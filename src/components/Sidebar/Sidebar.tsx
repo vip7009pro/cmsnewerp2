@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { SidebarData } from "./Sidebardata";
 import SubMenu from "./Submenu";
 import MenuIcon from "@mui/icons-material/Menu";
-import "./Sidebar2.scss";
+import "./Sidebar.scss";
 
 const Sidebar = () => {
   const [sidebar, setSidebar] = useState(false);

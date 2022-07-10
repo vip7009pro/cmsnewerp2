@@ -8,31 +8,20 @@ import Widget from "../../components/Widget/Widget";
 import "../home/home.scss";
 
 function Home() {
-
-  type paramss =  {
+  type paramss = {
     row: {
-      id: number,
-      firstName: string,
-      lastName: string
-    }   
-  }
+      id: number;
+      firstName: string;
+      lastName: string;
+    };
+  };
   const columns = [
     { field: "id", headerName: "ID", width: 70 },
     { field: "firstName", headerName: "First name", width: 130 },
     { field: "lastName", headerName: "Last name", width: 130 },
-    {
-      field: "age",
-      headerName: "Age",
-      type: "number",
-      width: 90,
-    },
-    {
-      field: "fullName",
-      headerName: "Full name",
-      description: "This column has a value getter and is not sortable.",
-      sortable: false,
-      width: 160,
-      valueGetter: (params:paramss) =>
+    { field: "age", headerName: "Age", type: "number", width: 90 },
+    { field: "fullName", headerName: "Full name", description: "This column has a value getter and is not sortable.", sortable: false, width: 160,
+      valueGetter: (params: paramss) =>
         `${params.row.firstName || ""} ${params.row.lastName || ""}`,
     },
   ];
@@ -64,7 +53,7 @@ function Home() {
           <Featured />
           <Chart />
         </div>
-        <div className='tables'>          
+        <div className='tables'>
           <DataTable columns={columns} rows={rows} />
         </div>
       </div>

@@ -4,14 +4,14 @@ import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import HomeIcon from '@mui/icons-material/Home';
 /* import String from "../../components/String/String"; */
 
+
 export const SidebarData = [
     {
       title: 'Home',
       path: '/',
       icon: <HomeIcon />,
       iconClosed: <KeyboardArrowDownIcon />,
-      iconOpened: <KeyboardArrowUpIcon />,
-  
+      iconOpened: <KeyboardArrowUpIcon />,  
       subNav: [
         {
           title: 'Dashboard',
@@ -30,8 +30,7 @@ export const SidebarData = [
       path: '/',
       icon: <HomeIcon />,
       iconClosed: <KeyboardArrowDownIcon />,
-      iconOpened: <KeyboardArrowUpIcon />,
-  
+      iconOpened: <KeyboardArrowUpIcon />,  
       subNav: [
         {
           title: 'Reports',
@@ -65,8 +64,7 @@ export const SidebarData = [
     {
       title: 'Messages',
       path: '/messages',
-      icon: <HomeIcon />,
-  
+      icon: <HomeIcon />,  
       iconClosed: <KeyboardArrowDownIcon />,
       iconOpened: <KeyboardArrowUpIcon />,
   
