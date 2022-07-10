@@ -1,15 +1,19 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import "./Submenu.scss"
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
+import "./Submenu.scss";
 
-const SubMenu = ({ item } : {item: any}) => {
+const SubMenu = ({ item }: { item: any }) => {
   const [subnav, setSubnav] = useState(false);
-  
+
   const showSubnav = () => setSubnav(!subnav);
 
   return (
     <>
-      <Link className='SidebarLink' to={item.path} onClick={item.subNav && showSubnav}>
+      <Link
+        className='SidebarLink'
+        to={item.path}
+        onClick={item.subNav && showSubnav}
+      >
         <div>
           {item.icon}
           <span className='SidebarLabel'>{item.title}</span>

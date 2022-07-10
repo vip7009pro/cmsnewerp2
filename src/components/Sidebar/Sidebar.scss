@@ -5,10 +5,12 @@
     justify-content: flex-start;
     align-items: center;
     position: fixed;
-    background-color: rgba(255,255,255,0);
+    background-color: rgba(255, 255, 255, 0);
+
     .NavIcon {
-        margin-top: 18px;
-        margin-left: 30px;
+        position: fixed;
+        margin-top: 0;
+        margin-left: 250px;
         font-size: 2rem;
         height: 80px;
         display: flex;
@@ -25,7 +27,7 @@
     display: flex;
     justify-content: center;
     position: fixed;
-    top: 0;      
+    top: 50px;
     transition: 250ms;
     z-index: 10;
     -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.29);
@@ -33,15 +35,19 @@
     margin-top: 15px;
     border-radius: 10px;
     margin-left: 15px;
+
     &.show-sidebar {
         left: 0;
     }
+
     &.hide-sidebar {
         left: -100%;
     }
 }
+
 .SidebarWrap {
     width: 100%;
+
     .NavIcon {
         margin-left: 15px;
         font-size: 2rem;
