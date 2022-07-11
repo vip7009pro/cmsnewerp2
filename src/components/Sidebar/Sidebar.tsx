@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { SidebarData } from "./Sidebardata";
 import SubMenu from "./Submenu";
 import MenuIcon from "@mui/icons-material/Menu";
+import { FcList } from 'react-icons/fc';
 import "./Sidebar.scss";
 
 const Sidebar = () => {
@@ -11,9 +12,9 @@ const Sidebar = () => {
   return (
     <>
       <div className='Nav'>
-        <Link to='#' className='NavIcon'>
-          <MenuIcon onClick={showSidebar} />
-        </Link>
+        {!sidebar && <Link to='#' className='NavIcon'>
+          <FcList onClick={showSidebar} />         
+        </Link>}
       </div>
       <nav
         className={`SidebarNav ${
@@ -22,7 +23,8 @@ const Sidebar = () => {
       >
         <div className='SidebarWrap'>
           <Link to='#' className='NavIcon'>
-            <MenuIcon onClick={showSidebar} />
+            <span className="cmslogo">CMSVINA</span>
+            <FcList onClick={showSidebar} />
           </Link>
           {SidebarData.map((item, index) => {
             return <SubMenu item={item} key={index} />;

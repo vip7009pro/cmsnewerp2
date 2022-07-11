@@ -1,4 +1,5 @@
 import React from "react";
+import { Outlet } from "react-router-dom";
 import Chart from "../../components/Chart/Chart";
 import DataTable from "../../components/DataTable/DataTable";
 import Featured from "../../components/Featured/Featured";
@@ -39,11 +40,12 @@ function Home() {
   ];
 
   return (
-    <div className='home'>
+    <div className='home'>   
       <Sidebar />
       <div className='homeContainer'>
         <Navbar />
-        <div className='widgets'>
+        <Outlet/> 
+       {/*  <div className='widgets'>
           <Widget type='user' />
           <Widget type='order' />
           <Widget type='earning' />
@@ -55,7 +57,7 @@ function Home() {
         </div>
         <div className='tables'>
           <DataTable columns={columns} rows={rows} />
-        </div>
+        </div> */}
       </div>
     </div>
   );

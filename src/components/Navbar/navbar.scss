@@ -1,24 +1,28 @@
 .navbar {
     height: 100px;    
     width: 100%;
-    border-bottom: 0.5px solid rgb(15, 25, 35);
+    border-bottom: 0.5px solid rgb(215, 225, 235);
     display: flex;
     align-items: center;
     font-size: 14px;
     color: #555;    
     top: 0;    
     .wrapper {
-        background-color: rgb(200, 211, 238);
+        -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.29);
+        box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.2);
+        background-color: rgb(238, 240, 247);
         display: flex;
         padding: 20px;
         align-items: center;
         justify-content: space-between;       
         width: 100%;
+        border-radius: 5px;
         .search {
             display: flex;
             align-items: center;
             border: 0.5px solid lightgray;
-            padding: 3px;              
+            padding: 3px;  
+            margin-left: 50px;
             input {
                 border: none;
                 outline: none;

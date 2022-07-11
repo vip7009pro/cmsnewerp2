@@ -4,9 +4,7 @@ import "./Submenu.scss";
 
 const SubMenu = ({ item }: { item: any }) => {
   const [subnav, setSubnav] = useState(false);
-
   const showSubnav = () => setSubnav(!subnav);
-
   return (
     <>
       <Link
