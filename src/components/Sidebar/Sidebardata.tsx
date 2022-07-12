@@ -6,47 +6,50 @@ import { FaDonate, FaFileInvoiceDollar,FaCheckCircle } from 'react-icons/fa';
 import { BiCart } from 'react-icons/bi';
 import { FcPlanner, FcSettings,FcBullish } from 'react-icons/fc';
 import { WiDayLightning } from "react-icons/wi";
+import getsentence from "../../components/String/String";
+
+const lang: string = 'kr';
 
 export const SidebarData = [
     {
-      title: 'Phòng Kinh Doanh',
+      title: getsentence(4,lang),
       path: 'kinhdoanh',
       icon: <FaDonate color='green' size={25}/>,
       iconClosed: <KeyboardArrowDownIcon />,
       iconOpened: <KeyboardArrowUpIcon />,  
       subNav: [
         {
-          title: 'Quản Lý PO',
+          title: getsentence(5,lang),
           path: '/kinhdoanh/pomanager',
           icon: <BiCart color='blue' size={25}/>
         },
         {
-          title: 'Quản lý invoice',
+          title: getsentence(6,lang),
           path: '/kinhdoanh/invoicemanager',
           icon: <FaFileInvoiceDollar color='red' size={25}/>
         },
         {
-          title: 'Quản lý Plan',
+          title: getsentence(7,lang),
           path: '/kinhdoanh/planmanager',
           icon: <FcPlanner size={25}/>
         },
         {
-          title: 'Quản lý FCST',
+          title: getsentence(8,lang),
           path: '/kinhdoanh/fcstmanager',
           icon: <WiDayLightning color='#cc99ff' size={25}/>
         },
         {
-          title: 'Quản lý YCSX',
+          title: getsentence(9,lang),
           path: '/kinhdoanh/ycsxmanager',
           icon: <FcSettings color='#cc99ff' size={25}/>
         },        
         {
-          title: 'PO Tích hợp tồn kho',
+          title: getsentence(10,lang),
           path: '/kinhdoanh/poandstockfull',
           icon: <FaCheckCircle color='#ff9900' size={25}/>
         },        
         {
-          title: 'Báo cáo',
+          title: getsentence(11,lang),
           path: '/kinhdoanh/kinhdoanhreport',
           icon: <FcBullish  size={25}/>
         }
