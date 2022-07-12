@@ -6,7 +6,7 @@ import { LangConText, UserContext } from "../../api/Context";
 import { login } from "../../api/Api";
 const Login = () => {    
   
-  const userData = useContext(UserContext);
+  const [userData,setUserData] = useContext(UserContext);
   const lang: string = useContext(LangConText);
   const [user,setUser] = useState('');
   const [pass,setPass] = useState('');
@@ -14,9 +14,8 @@ const Login = () => {
   const login_bt = async (e:React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     login(user, pass);
-  }
-  console.log(userData);
-  if (!userData) return <Navigate to='/' replace />;
+  }  
+  if (userData) return <Navigate to='/' replace />;
   return (
     <div className='login-form'>
       <div className='logo'>CMS VINA</div>

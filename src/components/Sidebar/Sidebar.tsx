@@ -23,7 +23,7 @@ const Sidebar = () => {
       >
         <div className='SidebarWrap'>
           <Link to='#' className='NavIcon'>
-            <span className="cmslogo">CMSVINA</span>
+            <span className="cmslogo">CMS VINA</span>
             <FcList onClick={showSidebar} />
           </Link>
           {SidebarData.map((item, index) => {

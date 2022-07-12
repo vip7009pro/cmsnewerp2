@@ -1,6 +1,9 @@
 
 import Cookies from "universal-cookie";
 import Swal from "sweetalert2";
+import { UserContext } from "./Context";
+
+
 const axios = require('axios').default;
 
 const cookies = new Cookies();

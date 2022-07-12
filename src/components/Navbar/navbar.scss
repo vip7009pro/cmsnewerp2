@@ -36,6 +36,7 @@
         .items {
             display: flex;
             align-items: center;
+            position: relative;
             .item {
                 display: flex;
                 align-items: center;
@@ -65,6 +66,45 @@
                     top:-5px;
                     right: -5px;
                 }
+            }
+            .avatarmenu {
+                display: flex;
+                width: 150px;
+                height: 80px;
+                background-color: white;
+                -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.29);
+                box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.2);
+                align-items: center;
+                justify-content: flex-start;
+                position: absolute;
+                top: 30px;
+                right: 10px;
+                border-radius: 10px;
+                padding: 1px;
+                .menu {
+                    font-weight: bold;
+                    font-size: 12px;      
+                    display: flex;
+                    flex-direction: column;  
+                    justify-content: space-between;   
+                    gap: 10px;     
+                    padding: 10px;
+                    
+                    .menu_item {
+                       list-style: none;  
+                       
+                       width: 100%;                
+                       .menulink {
+                           text-decoration: none;
+                           color: green;
+                           padding: 10px;                          
+                       }
+                       &:hover {
+                        background-color: rgb(239, 239, 243);     
+                       }
+                    }
+                }
+
             }
         }
     }

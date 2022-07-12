@@ -1,4 +1,4 @@
-import React, {Component, FC, useEffect, useState} from "react";
+import React, { Component, FC, useEffect, useState } from "react";
 import Home from "./pages/home/Home";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Login from "./pages/login/Login";
@@ -11,8 +11,9 @@ import PlanManager from "./pages/kinhdoanh/planmanager/PlanManager";
 import FCSTManager from "./pages/kinhdoanh/fcstmanager/FCSTManager";
 import YCSXManager from "./pages/kinhdoanh/ycsxmanager/YCSXManager";
 import POandStockFull from "./pages/kinhdoanh/poandstockfull/POandStockFull";
-import {UserContext} from "../src/api/Context"
+import { UserContext } from "../src/api/Context";
 
+//https://www.robinwieruch.de/react-router-private-routes/
 interface userDataInterface {
   ADD_COMMUNE: string;
   ADD_DISTRICT: string;
@@ -59,32 +60,131 @@ interface userDataInterface {
   WORK_STATUS_CODE: number;
   WORK_STATUS_NAME: string;
   WORK_STATUS_NAME_KR: string;
-};
+}
 
-const ProtectedRoute: any = ({user, children}: {user: string, children: Component}) => { 
-  if (!user) {
+const ProtectedRoute: any = ({
+  user,
+  children,
+}: {
+  user: userDataInterface;
+  children: Component;
+}) => {
+  if (user.EMPL_NO === "none") {
     return <Navigate to='/login' replace />;
   }
   return children;
 };
 function App() {
-  const [userData, setUserData] = useState<userDataInterface | any>(undefined);
-
+  const [userData, setUserData] = useState<userDataInterface | any>({
+    ADD_COMMUNE: "Đông Xuân",
+    ADD_DISTRICT: "Sóc Sơn",
+    ADD_PROVINCE: "Hà Nội",
+    ADD_VILLAGE: "Thôn Phú Thọ",
+    ATT_GROUP_CODE: 1,
+    CMS_ID: "CMS1179",
+    CTR_CD: "002",
+    DOB: "1993-10-18T00:00:00.000Z",
+    EMAIL: "nvh1903@cmsbando.com",
+    EMPL_NO: "none",
+    FACTORY_CODE: 1,
+    FACTORY_NAME: "Nhà máy 1",
+    FACTORY_NAME_KR: "1공장",
+    FIRST_NAME: "HÙNG3",
+    HOMETOWN: "Phụ Thọ - Đông Xuân - Sóc Sơn - Hà Nội",
+    JOB_CODE: 1,
+    JOB_NAME: "Dept Staff",
+    JOB_NAME_KR: "부서담당자",
+    MAINDEPTCODE: 1,
+    MAINDEPTNAME: "QC",
+    MAINDEPTNAME_KR: "품질",
+    MIDLAST_NAME: "NGUYỄN VĂN",
+    ONLINE_DATETIME: "2022-07-12T20:49:52.600Z",
+    PASSWORD: "dauxanhrauma",
+    PHONE_NUMBER: "0971092454",
+    POSITION_CODE: 3,
+    POSITION_NAME: "Staff",
+    POSITION_NAME_KR: "사원",
+    REMARK: null,
+    SEX_CODE: 1,
+    SEX_NAME: "Nam",
+    SEX_NAME_KR: "남자",
+    SUBDEPTCODE: 2,
+    SUBDEPTNAME: "PD",
+    SUBDEPTNAME_KR: "통역",
+    WORK_POSITION_CODE: 2,
+    WORK_POSITION_NAME: "PD",
+    WORK_POSITION_NAME_KR: "PD",
+    WORK_SHIFT_CODE: 0,
+    WORK_SHIF_NAME: "Hành Chính",
+    WORK_SHIF_NAME_KR: "정규",
+    WORK_START_DATE: "2019-03-11T00:00:00.000Z",
+    WORK_STATUS_CODE: 1,
+    WORK_STATUS_NAME: "Đang làm",
+    WORK_STATUS_NAME_KR: "근무중",
+  });
   useEffect(() => {
-    console.log("1");
-    //setUserData();     
+    setUserData(
+      {
+        ADD_COMMUNE: "Đông Xuân",
+        ADD_DISTRICT: "Sóc Sơn",
+        ADD_PROVINCE: "Hà Nội",
+        ADD_VILLAGE: "Thôn Phú Thọ",
+        ATT_GROUP_CODE: 1,
+        CMS_ID: "CMS1179",
+        CTR_CD: "002",
+        DOB: "1993-10-18T00:00:00.000Z",
+        EMAIL: "nvh1903@cmsbando.com",
+        EMPL_NO: "hung",
+        FACTORY_CODE: 1,
+        FACTORY_NAME: "Nhà máy 1",
+        FACTORY_NAME_KR: "1공장",
+        FIRST_NAME: "HÙNG3",
+        HOMETOWN: "Phụ Thọ - Đông Xuân - Sóc Sơn - Hà Nội",
+        JOB_CODE: 1,
+        JOB_NAME: "Dept Staff",
+        JOB_NAME_KR: "부서담당자",
+        MAINDEPTCODE: 1,
+        MAINDEPTNAME: "QC",
+        MAINDEPTNAME_KR: "품질",
+        MIDLAST_NAME: "NGUYỄN VĂN",
+        ONLINE_DATETIME: "2022-07-12T20:49:52.600Z",
+        PASSWORD: "dauxanhrauma",
+        PHONE_NUMBER: "0971092454",
+        POSITION_CODE: 3,
+        POSITION_NAME: "Staff",
+        POSITION_NAME_KR: "사원",
+        REMARK: null,
+        SEX_CODE: 1,
+        SEX_NAME: "Nam",
+        SEX_NAME_KR: "남자",
+        SUBDEPTCODE: 2,
+        SUBDEPTNAME: "PD",
+        SUBDEPTNAME_KR: "통역",
+        WORK_POSITION_CODE: 2,
+        WORK_POSITION_NAME: "PD",
+        WORK_POSITION_NAME_KR: "PD",
+        WORK_SHIFT_CODE: 0,
+        WORK_SHIF_NAME: "Hành Chính",
+        WORK_SHIF_NAME_KR: "정규",
+        WORK_START_DATE: "2019-03-11T00:00:00.000Z",
+        WORK_STATUS_CODE: 1,
+        WORK_STATUS_NAME: "Đang làm",
+        WORK_STATUS_NAME_KR: "근무중",
+      }
+    );
   }, []);
-  
-  
+
   return (
     <div className='App'>
-      <UserContext.Provider value={userData}>
+      <UserContext.Provider value={[userData,setUserData]}>
         <BrowserRouter>
           <Routes>
             <Route
               path='/'
-              element={ <Home/>
-                
+              element={
+                <ProtectedRoute user={userData}>
+                  <Home />
+                </ProtectedRoute>
               }
             >
               <Route path='kinhdoanh' element={<KinhDoanh />}>
