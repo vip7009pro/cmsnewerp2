@@ -1,31 +1,40 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
 import "./Login.scss";
 import getsentence from "../../components/String/String";
+import { LangConText, UserContext } from "../../api/Context";
+import { login } from "../../api/Api";
+const Login = () => {    
+  
+  const userData = useContext(UserContext);
+  const lang: string = useContext(LangConText);
+  const [user,setUser] = useState('');
+  const [pass,setPass] = useState('');
 
-const Login = () => {
-  const user = false;
-  const lang: string = 'vi';
-
-  if (user) return <Navigate to='/' replace />;
+  const login_bt = async (e:React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    login(user, pass);
+  }
+  console.log(userData);
+  if (!userData) return <Navigate to='/' replace />;
   return (
     <div className='login-form'>
       <div className='logo'>CMS VINA</div>
-      <span className='formname'>{getsentence(0,lang)}</span>
+      <span className='formname'>{getsentence(0,lang)}{/*Sign In*/}</span>
       <div className='login-input'>
-        <input type='text' placeholder='User name' required></input>
-        <input type='password' placeholder='Password' required></input>
+        <input type='text' placeholder='User name' required onChange={e => setUser(e.target.value)}></input>
+        <input type='password' placeholder='Password' required onChange={e => setPass(e.target.value)}></input>
       </div>
       <div className='submit'>
-        <button className='login_button'>{getsentence(0,lang)}</button>
+        <button className='login_button' onClick={login_bt} >{getsentence(0,lang)}{/*Login*/}</button>
       </div>
       <div className='bottom-text'>
         <label htmlFor='checkbox' className='btmtext'>
           <input type='checkbox' name='checkboxname' id='checkbox' />
-          {` `}{getsentence(1,lang)}
+          {` `}{getsentence(1,lang)}{/*Remember Me*/}
         </label>
         <a href='/' className='forgot-link'>
-            {getsentence(2,lang)}
+            {getsentence(2,lang)}{/*Forget password*/}
         </a>
       </div>
     </div>
