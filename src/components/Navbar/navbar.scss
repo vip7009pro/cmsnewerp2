@@ -69,8 +69,8 @@
             }
             .avatarmenu {
                 display: flex;
-                width: 150px;
-                height: 80px;
+                width: 200px;
+                height: 90px;
                 background-color: white;
                 -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.29);
                 box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.2);
@@ -79,25 +79,26 @@
                 position: absolute;
                 top: 30px;
                 right: 10px;
-                border-radius: 10px;
-                padding: 1px;
+                border-radius: 10px;               
                 .menu {
+                    display: flex;
                     font-weight: bold;
-                    font-size: 12px;      
+                    font-size: 15px;      
                     display: flex;
                     flex-direction: column;  
                     justify-content: space-between;   
-                    gap: 10px;     
-                    padding: 10px;
-                    
-                    .menu_item {
-                       list-style: none;  
-                       
-                       width: 100%;                
+                    gap: 10px; 
+                    width: 100%;   
+                    padding: 0px;                 
+                    .menu_item {       
+                       display: flex;  
+                       flex-direction: row;               
+                       list-style: none; 
+                       width: 100%;                                            
                        .menulink {
                            text-decoration: none;
                            color: green;
-                           padding: 10px;                          
+                           padding: 10px;                                                    
                        }
                        &:hover {
                         background-color: rgb(239, 239, 243);     

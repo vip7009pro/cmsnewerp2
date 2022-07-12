@@ -8,7 +8,8 @@ import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
 import ListIcon from '@mui/icons-material/List';
 import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
 import { Link } from 'react-router-dom';
-
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import LogoutIcon from '@mui/icons-material/Logout';
 export default function Navbar() {
   return (
     <div className='navbar'>
@@ -43,10 +44,10 @@ export default function Navbar() {
             <img src="https://cdn.24h.com.vn/upload/2-2021/images/2021-05-22/anh-8-1621645023-458-width650height813.jpg" alt="" className="avatar" />      
           </div>
           <div className="avatarmenu">
-           <ul className="menu">
-             <li className="menu_item"><Link to='/' className='menulink'>Account Information</Link></li>
-             <li className="menu_item"><Link to='' className='menulink'>Logout</Link></li>             
-           </ul>
+           <div className="menu">
+             <div className="menu_item"><Link to='/' className='menulink'><AccountCircleIcon />Account Information</Link></div>
+             <div className="menu_item"><Link to='' className='menulink'><LogoutIcon/>Logout</Link></div>             
+           </div>
           </div>
         </div>
       </div>
