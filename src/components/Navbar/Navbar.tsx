@@ -33,8 +33,11 @@ export default function Navbar() {
     setAvatarMenu(false);
   }
 
-  const changeLanguage= (e:React.MouseEvent<HTMLSpanElement, MouseEvent>)=> {
-   console.log(e.target);
+  const changeLanguage= (selectLang: string)=> {
+   console.log(selectLang);   
+   setLangMenu(false);
+   setLang(selectLang);
+   localStorage.setItem('lang',selectLang);
   }
   return (
     <div className='navbar'>
@@ -49,25 +52,25 @@ export default function Navbar() {
         <div className='items'>
           <div className='item' onClick={showhideLangMenu}>
             <LanguageIcon className='icon'/>
-            English
+            {lang ==='vi'? 'Tiếng Việt': lang==='kr'? '한국어' : 'English'}
           </div>
           {langmenu &&  <div className='langmenu'>
             <div className='menu'>
               <div className='menu_item'>
                 <AccountCircleIcon className="menu_icon"/>
-                <span className='menulink' onClick={(e)=> {changeLanguage(e)}}>                  
+                <span className='menulink' onClick={()=> {changeLanguage('vi')}}>                  
                   Tiếng Việt
                 </span>
               </div>
               <div className='menu_item'>
                 <LogoutIcon className="menu_icon"/>
-                <span className='menulink' onClick={logout_bt}>                  
+                <span className='menulink'  onClick={()=> {changeLanguage('kr')}}>                  
                   한국어
                 </span>
               </div>
               <div className='menu_item'>
                 <LogoutIcon className="menu_icon"/>
-                <span className='menulink' onClick={logout_bt}>                  
+                <span className='menulink'  onClick={()=> {changeLanguage('en')}}>                  
                   English
                 </span>
               </div>

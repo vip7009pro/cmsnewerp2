@@ -124,8 +124,7 @@ function App() {
     WORK_STATUS_NAME: "Đang làm",
     WORK_STATUS_NAME_KR: "근무중",
   });
-  useEffect(() => {    
-
+  useEffect(() => {
     checkLogin().then(data => {
       //console.log(data);
       if (data.data.tk_status == 'ng') {

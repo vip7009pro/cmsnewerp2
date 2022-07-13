@@ -7,10 +7,13 @@ import { login } from "../../api/Api";
 
 const Login = () => {      
   const [userData,setUserData] = useContext(UserContext);
-  const lang: string = useContext(LangConText);
+  const [lang,setLang] = useContext(LangConText);
   const [user,setUser] = useState('');
   const [pass,setPass] = useState('');
+  console.log(lang);
 
+  const lang2: any = localStorage.getItem('lang');
+  console.log('lang2: ' + lang2);
   const login_bt = async (e:React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     login(user, pass);
@@ -20,21 +23,21 @@ const Login = () => {
   return (
     <div className='login-form'>
       <div className='logo'>CMS VINA</div>
-      <span className='formname'>{getsentence(0,lang)}{/*Sign In*/}</span>
+      <span className='formname'>{getsentence(0,lang2)}{/*Sign In*/}</span>
       <div className='login-input'>
         <input type='text' placeholder='User name' required onChange={e => setUser(e.target.value)}></input>
         <input type='password' placeholder='Password' required onChange={e => setPass(e.target.value)}></input>
       </div>
       <div className='submit'>
-        <button className='login_button' onClick={login_bt} >{getsentence(0,lang)}{/*Login*/}</button>
+        <button className='login_button' onClick={login_bt} >{getsentence(0,lang2)}{/*Login*/}</button>
       </div>
       <div className='bottom-text'>
         <label htmlFor='checkbox' className='btmtext'>
           <input type='checkbox' name='checkboxname' id='checkbox' />
-          {` `}{getsentence(1,lang)}{/*Remember Me*/}
+          {` `}{getsentence(1,lang2)}{/*Remember Me*/}   
         </label>
         <a href='/' className='forgot-link'>
-            {getsentence(2,lang)}{/*Forget password*/}
+            {getsentence(2,lang2)}{/*Forget password*/}
         </a>
       </div>
     </div>

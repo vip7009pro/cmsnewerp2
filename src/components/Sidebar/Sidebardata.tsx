@@ -8,8 +8,7 @@ import { FcPlanner, FcSettings,FcBullish } from 'react-icons/fc';
 import { WiDayLightning } from "react-icons/wi";
 import getsentence from "../../components/String/String";
 
-const lang: string = 'vi';
-
+const lang: any = localStorage.getItem('lang');
 export const SidebarData = [
     {
       title: getsentence(4,lang), /*Phòng Kinh Doanh*/
