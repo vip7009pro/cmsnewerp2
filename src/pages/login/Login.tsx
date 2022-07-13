@@ -4,8 +4,8 @@ import "./Login.scss";
 import getsentence from "../../components/String/String";
 import { LangConText, UserContext } from "../../api/Context";
 import { login } from "../../api/Api";
-const Login = () => {    
-  
+
+const Login = () => {      
   const [userData,setUserData] = useContext(UserContext);
   const lang: string = useContext(LangConText);
   const [user,setUser] = useState('');
@@ -15,7 +15,8 @@ const Login = () => {
     e.preventDefault();
     login(user, pass);
   }  
-  if (userData) return <Navigate to='/' replace />;
+
+  if (userData.EMPL_NO!=='none') return <Navigate to='/' replace />;
   return (
     <div className='login-form'>
       <div className='logo'>CMS VINA</div>

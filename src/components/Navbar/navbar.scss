@@ -78,8 +78,10 @@
                 justify-content: flex-start;
                 position: absolute;
                 top: 30px;
-                right: 10px;
-                border-radius: 10px;               
+                right: 30px;
+                border-radius: 10px;  
+                padding-top: 10px;                 
+                padding-bottom: 10px;                 
                 .menu {
                     display: flex;
                     font-weight: bold;
@@ -89,12 +91,19 @@
                     justify-content: space-between;   
                     gap: 10px; 
                     width: 100%;   
-                    padding: 0px;                 
+                    padding: 0px;     
+                    margin-top: 10px;   
+                    margin-bottom: 10px;              
                     .menu_item {       
                        display: flex;  
                        flex-direction: row;               
                        list-style: none; 
-                       width: 100%;                                            
+                       width: 100%;    
+                       .menu_icon {
+                        margin-top: 8px;
+                        margin-left: 5px;
+                        color: rgb(105, 105, 231);
+                       }                                        
                        .menulink {
                            text-decoration: none;
                            color: green;
@@ -104,9 +113,62 @@
                         background-color: rgb(239, 239, 243);     
                        }
                     }
+                    
                 }
 
             }
+
+            .langmenu {
+                display: flex;
+                width: 200px;
+                height: 90px;
+                background-color: white;
+                -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.29);
+                box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.2);
+                align-items: center;
+                justify-content: flex-start;
+                position: absolute;
+                top: 30px;
+                right: 320px;
+                border-radius: 10px;  
+                padding-top: 10px;                 
+                padding-bottom: 10px;                 
+                .menu {
+                    display: flex;
+                    font-weight: bold;
+                    font-size: 15px;      
+                    display: flex;
+                    flex-direction: column;  
+                    justify-content: space-between;   
+                    
+                    width: 100%;   
+                    padding: 0px;     
+                    margin-top: 10px;   
+                    margin-bottom: 10px;              
+                    .menu_item {       
+                       display: flex;  
+                       flex-direction: row;               
+                       list-style: none; 
+                       width: 100%;    
+                       .menu_icon {
+                        margin-top: 8px;
+                        margin-left: 5px;
+                        color: rgb(105, 105, 231);
+                       }                                        
+                       .menulink {
+                           text-decoration: none;
+                           color: green;
+                           padding: 10px;                                                    
+                       }
+                       &:hover {
+                        background-color: rgb(239, 239, 243);     
+                       }
+                    }
+                    
+                }
+
+            }
+
         }
     }
 

@@ -11,7 +11,8 @@ import PlanManager from "./pages/kinhdoanh/planmanager/PlanManager";
 import FCSTManager from "./pages/kinhdoanh/fcstmanager/FCSTManager";
 import YCSXManager from "./pages/kinhdoanh/ycsxmanager/YCSXManager";
 import POandStockFull from "./pages/kinhdoanh/poandstockfull/POandStockFull";
-import { UserContext } from "../src/api/Context";
+import { LangConText, UserContext } from "../src/api/Context";
+import { checkLogin } from "./api/Api";
 
 //https://www.robinwieruch.de/react-router-private-routes/
 interface userDataInterface {
@@ -75,6 +76,7 @@ const ProtectedRoute: any = ({
   return children;
 };
 function App() {
+  const [lang, setLang] = useState('vi');
   const [userData, setUserData] = useState<userDataInterface | any>({
     ADD_COMMUNE: "Đông Xuân",
     ADD_DISTRICT: "Sóc Sơn",
@@ -122,60 +124,78 @@ function App() {
     WORK_STATUS_NAME: "Đang làm",
     WORK_STATUS_NAME_KR: "근무중",
   });
-  useEffect(() => {
-    setUserData(
-      {
-        ADD_COMMUNE: "Đông Xuân",
-        ADD_DISTRICT: "Sóc Sơn",
-        ADD_PROVINCE: "Hà Nội",
-        ADD_VILLAGE: "Thôn Phú Thọ",
-        ATT_GROUP_CODE: 1,
-        CMS_ID: "CMS1179",
-        CTR_CD: "002",
-        DOB: "1993-10-18T00:00:00.000Z",
-        EMAIL: "nvh1903@cmsbando.com",
-        EMPL_NO: "hung",
-        FACTORY_CODE: 1,
-        FACTORY_NAME: "Nhà máy 1",
-        FACTORY_NAME_KR: "1공장",
-        FIRST_NAME: "HÙNG3",
-        HOMETOWN: "Phụ Thọ - Đông Xuân - Sóc Sơn - Hà Nội",
-        JOB_CODE: 1,
-        JOB_NAME: "Dept Staff",
-        JOB_NAME_KR: "부서담당자",
-        MAINDEPTCODE: 1,
-        MAINDEPTNAME: "QC",
-        MAINDEPTNAME_KR: "품질",
-        MIDLAST_NAME: "NGUYỄN VĂN",
-        ONLINE_DATETIME: "2022-07-12T20:49:52.600Z",
-        PASSWORD: "dauxanhrauma",
-        PHONE_NUMBER: "0971092454",
-        POSITION_CODE: 3,
-        POSITION_NAME: "Staff",
-        POSITION_NAME_KR: "사원",
-        REMARK: null,
-        SEX_CODE: 1,
-        SEX_NAME: "Nam",
-        SEX_NAME_KR: "남자",
-        SUBDEPTCODE: 2,
-        SUBDEPTNAME: "PD",
-        SUBDEPTNAME_KR: "통역",
-        WORK_POSITION_CODE: 2,
-        WORK_POSITION_NAME: "PD",
-        WORK_POSITION_NAME_KR: "PD",
-        WORK_SHIFT_CODE: 0,
-        WORK_SHIF_NAME: "Hành Chính",
-        WORK_SHIF_NAME_KR: "정규",
-        WORK_START_DATE: "2019-03-11T00:00:00.000Z",
-        WORK_STATUS_CODE: 1,
-        WORK_STATUS_NAME: "Đang làm",
-        WORK_STATUS_NAME_KR: "근무중",
+  useEffect(() => {    
+
+    checkLogin().then(data => {
+      //console.log(data);
+      if (data.data.tk_status == 'ng') {
+        console.log('khong co token');            
+        setUserData(
+          {
+            ADD_COMMUNE: "Đông Xuân",
+            ADD_DISTRICT: "Sóc Sơn",
+            ADD_PROVINCE: "Hà Nội",
+            ADD_VILLAGE: "Thôn Phú Thọ",
+            ATT_GROUP_CODE: 1,
+            CMS_ID: "CMS1179",
+            CTR_CD: "002",
+            DOB: "1993-10-18T00:00:00.000Z",
+            EMAIL: "nvh1903@cmsbando.com",
+            EMPL_NO: "none",
+            FACTORY_CODE: 1,
+            FACTORY_NAME: "Nhà máy 1",
+            FACTORY_NAME_KR: "1공장",
+            FIRST_NAME: "HÙNG3",
+            HOMETOWN: "Phụ Thọ - Đông Xuân - Sóc Sơn - Hà Nội",
+            JOB_CODE: 1,
+            JOB_NAME: "Dept Staff",
+            JOB_NAME_KR: "부서담당자",
+            MAINDEPTCODE: 1,
+            MAINDEPTNAME: "QC",
+            MAINDEPTNAME_KR: "품질",
+            MIDLAST_NAME: "NGUYỄN VĂN",
+            ONLINE_DATETIME: "2022-07-12T20:49:52.600Z",
+            PASSWORD: "dauxanhrauma",
+            PHONE_NUMBER: "0971092454",
+            POSITION_CODE: 3,
+            POSITION_NAME: "Staff",
+            POSITION_NAME_KR: "사원",
+            REMARK: null,
+            SEX_CODE: 1,
+            SEX_NAME: "Nam",
+            SEX_NAME_KR: "남자",
+            SUBDEPTCODE: 2,
+            SUBDEPTNAME: "PD",
+            SUBDEPTNAME_KR: "통역",
+            WORK_POSITION_CODE: 2,
+            WORK_POSITION_NAME: "PD",
+            WORK_POSITION_NAME_KR: "PD",
+            WORK_SHIFT_CODE: 0,
+            WORK_SHIF_NAME: "Hành Chính",
+            WORK_SHIF_NAME_KR: "정규",
+            WORK_START_DATE: "2019-03-11T00:00:00.000Z",
+            WORK_STATUS_CODE: 1,
+            WORK_STATUS_NAME: "Đang làm",
+            WORK_STATUS_NAME_KR: "근무중",
+          }
+        );
       }
-    );
-  }, []);
+      else {       
+        console.log(data.data.data);       
+        setUserData(data.data.data);
+      }
+    })
+      .catch(err => {
+        console.log(err + ' ');
+      })
+    return () => {
+      
+    }
+  }, []); 
 
   return (
     <div className='App'>
+      <LangConText.Provider value={[lang,setLang]}>
       <UserContext.Provider value={[userData,setUserData]}>
         <BrowserRouter>
           <Routes>
@@ -201,6 +221,7 @@ function App() {
           </Routes>
         </BrowserRouter>
       </UserContext.Provider>
+      </LangConText.Provider>
     </div>
   );
 }

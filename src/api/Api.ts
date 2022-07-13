@@ -1,15 +1,14 @@
 
 import Cookies from "universal-cookie";
 import Swal from "sweetalert2";
-import { UserContext } from "./Context";
-
 
 const axios = require('axios').default;
 
 const cookies = new Cookies();
 axios.defaults.withCredentials = true;
 
- const API_URL = "http://14.160.33.94:5011/api";
+ //const API_URL = "http://14.160.33.94:5011/api";
+ const API_URL = "http://14.160.33.94:3007/api";
 
 export function login(user: string, pass: string) {
   axios.post(API_URL, {
@@ -44,7 +43,7 @@ export function logout() {
   Swal.fire("Thông báo", "Đăng xuất thành công !", "success");
   setTimeout(() => {
     window.location.href = "/";
-  }, 2000);
+  }, 1000);
 }
 export async function checkLogin() {
   let data = await axios.post(API_URL, {
