@@ -9,7 +9,7 @@ import { WiDayLightning } from "react-icons/wi";
 import getsentence from "../../components/String/String";
 
 const lang: any = localStorage.getItem('lang');
-export const SidebarData = [
+export const SidebarData = [  
     {
       title: getsentence(4,lang), /*Phòng Kinh Doanh*/
       path: 'kinhdoanh',

@@ -15,11 +15,55 @@ import { LangConText } from "../../api/Context";
 
 
 const Sidebar = () => {
-  const [sidebar, setSidebar] = useState(false);
+  const [sidebar, setSidebar] = useState(true);
   const showSidebar = () => setSidebar(!sidebar);
   const [lang,setLang] = useContext(LangConText);
 
   const SidebarData = [
+    {
+      title: getsentence(4,lang), /*Nhân sự*/
+      path: 'kinhdoanh',
+      icon: <FaDonate color='green' size={25}/>,
+      iconClosed: <KeyboardArrowDownIcon />,
+      iconOpened: <KeyboardArrowUpIcon />,  
+      subNav: [
+        {
+          title: getsentence(5,lang), /*Quản lý PO*/
+          path: '/kinhdoanh/pomanager',
+          icon: <BiCart color='blue' size={25}/>
+        },
+        {
+          title: getsentence(6,lang), /*Quản lý Invoice*/
+          path: '/kinhdoanh/invoicemanager',
+          icon: <FaFileInvoiceDollar color='red' size={25}/>
+        },
+        {
+          title: getsentence(7,lang), /*Quản Lý Plan*/
+          path: '/kinhdoanh/planmanager',
+          icon: <FcPlanner size={25}/>
+        },
+        {
+          title: getsentence(8,lang), /*Quản lý FCST*/
+          path: '/kinhdoanh/fcstmanager',
+          icon: <WiDayLightning color='#cc99ff' size={25}/>
+        },
+        {
+          title: getsentence(9,lang), /*Quản lý YCSX*/
+          path: '/kinhdoanh/ycsxmanager',
+          icon: <FcSettings color='#cc99ff' size={25}/>
+        },        
+        {
+          title: getsentence(10,lang), /*PO tích hợp tồn kho*/
+          path: '/kinhdoanh/poandstockfull',
+          icon: <FaCheckCircle color='#ff9900' size={25}/>
+        },        
+        {
+          title: getsentence(11,lang),/*Báo cáo*/
+          path: '/kinhdoanh/kinhdoanhreport',
+          icon: <FcBullish  size={25}/>
+        }
+      ]
+    },
     {
       title: getsentence(4,lang), /*Phòng Kinh Doanh*/
       path: 'kinhdoanh',

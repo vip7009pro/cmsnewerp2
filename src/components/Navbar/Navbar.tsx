@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useContext, useState } from "react";
+import React, { ChangeEvent, Component, useContext, useEffect, useState } from "react";
 import "./navbar.scss";
 import SearchIcon from "@mui/icons-material/Search";
 import LanguageIcon from "@mui/icons-material/Language";
@@ -20,6 +20,10 @@ export default function Navbar() {
   const [langmenu, setLangMenu] = useState(false);
   const [lang, setLang] = useContext(LangConText);
 
+  useEffect(() => {
+    setLang(localStorage.getItem('lang'));
+  }, []);
+  
   console.log(lang);
   const logout_bt = () => {
     logout();    
@@ -104,10 +108,10 @@ export default function Navbar() {
           {avatarmenu &&  <div className='avatarmenu'>
             <div className='menu'>
               <div className='menu_item'>
-                <AccountCircleIcon className="menu_icon"/>
-                <Link to='/' className='menulink'>                  
+                <AccountCircleIcon className="menu_icon"/>                
+                <Link to='/accountinfo' className='menulink' onClick={()=>setAvatarMenu(false)}>                  
                   Account Information
-                </Link>
+                </Link> 
               </div>
               <div className='menu_item'>
                 <LogoutIcon className="menu_icon"/>

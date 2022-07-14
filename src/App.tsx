@@ -13,6 +13,7 @@ import YCSXManager from "./pages/kinhdoanh/ycsxmanager/YCSXManager";
 import POandStockFull from "./pages/kinhdoanh/poandstockfull/POandStockFull";
 import { LangConText, UserContext } from "../src/api/Context";
 import { checkLogin } from "./api/Api";
+import AccountInfo from "./components/Navbar/AccountInfo/AccountInfo";
 
 //https://www.robinwieruch.de/react-router-private-routes/
 interface userDataInterface {
@@ -205,7 +206,8 @@ function App() {
                   <Home />
                 </ProtectedRoute>
               }
-            >
+            >              
+              <Route path='accountinfo' element={<AccountInfo />}></Route>
               <Route path='kinhdoanh' element={<KinhDoanh />}>
                 <Route path='pomanager' element={<PoManager />} />
                 <Route path='invoicemanager' element={<InvoiceManager />} />
