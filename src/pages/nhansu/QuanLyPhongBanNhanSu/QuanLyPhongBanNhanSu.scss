@@ -1,0 +1,23 @@
+.quanlyphongbannhansu {
+    height: 500px;
+    .quanlyphongban {
+        display: flex;
+        height: fit-content;  
+          
+        .maindept {
+            display: flex;
+            flex: 1;  
+            height: fit-content;
+            .maindept_table{
+                display: flex;                
+                height: fit-content;
+                background-image: linear-gradient(0deg, #afd3d1,#53eb6d);
+                background-color: bisque;
+                width: 100%;
+            }
+            
+        }
+
+
+    }
+}
