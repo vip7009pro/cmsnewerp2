@@ -14,6 +14,8 @@ import POandStockFull from "./pages/kinhdoanh/poandstockfull/POandStockFull";
 import { LangConText, UserContext } from "../src/api/Context";
 import { checkLogin } from "./api/Api";
 import AccountInfo from "./components/Navbar/AccountInfo/AccountInfo";
+import NhanSu from "./pages/nhansu/NhanSu";
+import QuanLyPhongBanNhanSu from "./pages/nhansu/QuanLyPhongBanNhanSu/QuanLyPhongBanNhanSu";
 
 //https://www.robinwieruch.de/react-router-private-routes/
 interface userDataInterface {
@@ -216,6 +218,12 @@ function App() {
                 <Route path='ycsxmanager' element={<YCSXManager />} />
                 <Route path='poandstockfull' element={<POandStockFull />} />
                 <Route path='kinhdoanhreport' element={<KinhDoanhReport />} />
+              </Route>
+              <Route path='nhansu' element={<NhanSu />}>
+                <Route path='quanlyphongbannhanvien' element={<QuanLyPhongBanNhanSu />} />
+                <Route path='diemdanhnhom' element={<InvoiceManager />} />
+                <Route path='dangky' element={<PlanManager />} />
+                <Route path='baocaonhansu' element={<FCSTManager />} />                
               </Route>
             </Route>
             <Route path='/login' element={<Login />} />

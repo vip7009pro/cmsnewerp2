@@ -16,12 +16,15 @@
         box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 200px 0 rgba(0, 0, 0, 0.19);
         padding: 20px;
         border-radius: 5px;   
-        height:fit-content;        
+        height:fit-content;
 
         .cot1 {
             display: flex;
             flex: 1;          
-            flex-direction: column;              
+            flex-direction: column;    
+            h5 {
+                font-size: 20px;
+            }          
             .emplInfoList {
                 list-style: decimal;
                 font-size: 16px; 
@@ -37,9 +40,6 @@
         }
     }
 }
-
-
-
 .emplInfoList{
     font-size: 18px;
 }

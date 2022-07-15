@@ -1,14 +1,16 @@
 import moment from "moment";
 import React, { useState, useEffect, useContext } from "react";
 import { generalQuery } from "../../../api/Api";
-import { UserContext } from "../../../api/Context";
+import { UserContext, LangConText } from "../../../api/Context";
 import "./AccountInfo.scss";
+
 
 import LinearProgress, {
   LinearProgressProps,
 } from "@mui/material/LinearProgress";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
+import getsentence from "../../String/String";
 
 function LinearProgressWithLabel(
   props: LinearProgressProps & { value: number }
@@ -29,6 +31,8 @@ function LinearProgressWithLabel(
 
 export default function AccountInfo() {
   const [userdata, setUserData] = useContext(UserContext);
+  const [lang,setLang] = useContext(LangConText);
+
   const [workday, setWorkDay] = useState(0);
   const [overtimeday, setOverTimeDay] = useState(0);
   const [nghiday, setNghiDay] = useState(0);
@@ -119,50 +123,49 @@ export default function AccountInfo() {
   };
   return (
     <div className='accountinfo'>
-      <h1>Thông tin đi làm của bạn trong năm:</h1>
+      <h1>{/* Thông tin của bạn */}{getsentence(17,lang)}</h1>
       <div className='panelhome'>
         <div className='cot1'>
-          <h5>Thông tin nhân viên:</h5>
+          <h5>{/* Thông tin nhân viên */}{getsentence(18,lang)}:</h5>
           <ul>
             <li className='emplInfoList'>
               {" "}
-              Họ và tên: {userdata.MIDLAST_NAME} {userdata.FIRST_NAME}
+             {/*  Họ và tên */}{getsentence(19,lang)}: {userdata.MIDLAST_NAME} {userdata.FIRST_NAME}
             </li>
-            <li className='emplInfoList'> Mã nhân sự: {userdata.CMS_ID}</li>
-            <li className='emplInfoList'> Mã ERP: {userdata.EMPL_NO}</li>
+            <li className='emplInfoList'> {/* Mã nhân sự */}{getsentence(20,lang)}: {userdata.CMS_ID}</li>
+            <li className='emplInfoList'> {/* Mã ERP */}{getsentence(21,lang)}: {userdata.EMPL_NO}</li>
             <li className='emplInfoList'>
               {" "}
-              Ngày tháng năm sinh: {DOB().slice(0, 10)}
+              {/* Ngày tháng năm sinh */}{getsentence(22,lang)}: {DOB().slice(0, 10)}
             </li>
-            <li className='emplInfoList'> Quê quán: {userdata.HOMETOWN}</li>
+            <li className='emplInfoList'> {/* Quê quán */}{getsentence(23,lang)}: {userdata.HOMETOWN}</li>
             <li className='emplInfoList'>
               {" "}
-              Địa chỉ: {userdata.ADD_VILLAGE}-{userdata.ADD_COMMUNE}-
+              {/* Địa chỉ */}{getsentence(24,lang)}: {userdata.ADD_VILLAGE}-{userdata.ADD_COMMUNE}-
               {userdata.ADD_DISTRICT}-{userdata.ADD_PROVINCE}
             </li>
             <li className='emplInfoList'>
               {" "}
-              Bộ phận chính: {userdata.MAINDEPTNAME}
+              {/* Bộ phận chính */}{getsentence(25,lang)}: {userdata.MAINDEPTNAME}
             </li>
             <li className='emplInfoList'>
               {" "}
-              Bộ phận phụ: {userdata.SUBDEPTNAME}
+              {/* Bộ phận phụ */}{getsentence(26,lang)}: {userdata.SUBDEPTNAME}
             </li>
             <li className='emplInfoList'>
               {" "}
-              Vị trí làm việc: {userdata.WORK_POSITION_NAME}
+             {/*  Vị trí làm việc */}{getsentence(27,lang)}: {userdata.WORK_POSITION_NAME}
             </li>
             <li className='emplInfoList'>
               {" "}
-              Nhóm điểm danh: {userdata.ATT_GROUP_CODE}
+              {/* Nhóm điểm danh */}{getsentence(28,lang)}: {userdata.ATT_GROUP_CODE}
             </li>
-            <li className='emplInfoList'> Chức vụ: {userdata.JOB_NAME}</li>
+            <li className='emplInfoList'> {/* Chức vụ */}{getsentence(29,lang)}: {userdata.JOB_NAME}</li>
           </ul>
         </div>
         <div className='cot2'>
           <h3 className='h3h3' style={{ color: "#cc33ff" }}>
-            1. Từ đầu năm đến giờ có : {Math.floor(days)} ngày (Tính cả ngày
-            nghỉ lễ nhưng k tính chủ nhật)
+            1. {/* Từ đầu năm đến giờ có */}{getsentence(30,lang)} : {Math.floor(days)} {/* ngày */} {getsentence(31,lang)}
           </h3>{" "}
           <br></br>
           {workday} / {Math.floor(days)}
@@ -172,7 +175,7 @@ export default function AccountInfo() {
             />
           </Box>
           <h3 className='h3h3' style={{ color: "purple" }}>
-            2. Số ngày bạn đi làm : {workday} ngày
+            2. {/* Số ngày bạn đi làm */} {getsentence(32,lang)}: {workday} {/* ngày */}{getsentence(31,lang)}
           </h3>{" "}
           <br></br>
           {overtimeday} / {Math.floor(workday)}
@@ -182,7 +185,7 @@ export default function AccountInfo() {
             />
           </Box>
           <h3 className='h3h3' style={{ color: "blue" }}>
-            3. Số ngày bạn tăng ca : {overtimeday} ngày
+            3. {/*Số ngày bạn tăng ca*/}{getsentence(33,lang)} : {overtimeday} {/* ngày */}{getsentence(31,lang)}
           </h3>{" "}
           <br></br>
           <Box sx={{ width: "100%" }}>
@@ -191,16 +194,16 @@ export default function AccountInfo() {
             />
           </Box>
           <h3 className='h3h3' style={{ color: "rgb(121 38 222)" }}>
-            4. Số ngày xác nhận chấm công : {countxacnhan} ngày
+            4. {/*Số ngày quên chấm công */}{getsentence(34,lang)} : {countxacnhan} {/* ngày */}{getsentence(31,lang)}
           </h3>{" "}
           <br></br>
           <h3 className='h3h3' style={{ color: "red" }}>
-            5. Số ngày bạn đăng ký nghỉ (ko tính chủ nhật và nửa phép):{" "}
-            {nghiday} ngày
+            5. {/* Số ngày bạn đăng ký nghỉ (ko tính chủ nhật và nửa phép) */}{getsentence(35,lang)}:{" "}
+            {nghiday} {/* ngày */} {getsentence(31,lang)}
           </h3>{" "}
           <br></br>
           <h3 className='h3h3' style={{ color: "black" }}>
-            6. Thưởng phạt: Khen thưởng: {thuongphat.count_thuong} , Kỷ luật:{" "}
+            6. {/* Thưởng phạt: Khen thưởng */} {getsentence(36,lang)}: {/*Khen thuong*/}{getsentence(37,lang)} {' '}{thuongphat.count_thuong} , {/* Kỷ luật */}{getsentence(38,lang)}:{" "}
             {thuongphat.count_phat}
           </h3>{" "}
           <br></br>
