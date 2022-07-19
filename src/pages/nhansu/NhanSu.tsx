@@ -4,7 +4,7 @@ import "./Nhansu.scss"
 
 const NhanSu = () => {
   return (
-    <div>NhanSu
+    <div>
         <Outlet/>
     </div>
     
