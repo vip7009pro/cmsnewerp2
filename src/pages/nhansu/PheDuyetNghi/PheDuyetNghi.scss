@@ -1,0 +1,223 @@
+.saveexcelbutton {
+    background-color: #00884f;
+    /* Green */
+    border: none;
+    color: white;
+    padding: 8px 8px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 14px;
+    border-radius: 5px;
+    outline: none;
+    box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
+    -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
+    -moz-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
+    &:hover {
+        background-color: #1deedd;
+    }
+}
+.pheduyetnghi {  
+    display: flex;
+    flex-direction: column;
+    h3 {
+        align-self: center;
+        padding: 10px;
+    }
+    .filterform {
+        align-items: center;
+        justify-content: center;
+        justify-self: center;
+        align-self: center;
+        padding: 20px;
+        width: 97%;
+        border-radius: 10px;
+        height: 4vh;
+        margin-left: 10px;
+        margin-bottom: 10px;
+        background-image: linear-gradient(0deg, #afd3d1, #a4ec51);
+        select {
+            margin-left: 20px;
+            outline: none;
+        }
+
+    }
+    .maindept_table {
+        align-items: center;
+        justify-content: center;
+        justify-self: center;
+        align-self: center;
+        padding: 20px;
+        width: 97%;
+        border-radius: 10px;
+        height: 80vh;
+        margin-left: 10px;
+        background-image: linear-gradient(0deg, #afd3d1, #fab688);
+
+        .onoffdiv {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;      
+            margin:2px;
+            width: 100%;   
+            flex-wrap: wrap;
+           
+            .onoffshowtext {
+                font-weight: bold;                
+                &.A0 {
+                    color:#ff140b;
+                }
+                &.A1{
+                    color:#058b27;
+                }
+            }
+            gap: 2px;
+            &.onbt {
+                background-color: #59c0fc;
+            }
+            &.offbt {
+                background-color: #131010;                
+            }
+
+            
+            .hcbt {
+                background-image: linear-gradient(0deg, #afd3d1, #4f6df1);
+                /* Green */
+                border: none;
+                color: white;
+                padding: 8px 8px;
+                text-align: center;
+                text-decoration: none;
+                display: inline-block;
+                font-size: 14px;
+                border-radius: 5px;
+                outline: none;
+                box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
+                -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
+                -moz-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
+                &:hover {
+                    background-color: #1deedd;
+                    }
+            }
+            .team1bt {
+                background-image: linear-gradient(0deg, #afd3d1, #86f746);
+                /* Green */
+                border: none;
+                color: white;
+                padding: 8px 8px;
+                text-align: center;
+                text-decoration: none;
+                display: inline-block;
+                font-size: 14px;
+                border-radius: 5px;
+                outline: none;
+                box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
+                -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
+                -moz-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
+                &:hover {
+                    background-color: #1deedd;
+                    }
+            }
+            .team2bt {
+                background-image: linear-gradient(0deg, #afd3d1, #ec41fc);
+                /* Green */
+                border: none;
+                color: white;
+                padding: 8px 8px;
+                text-align: center;
+                text-decoration: none;
+                display: inline-block;
+                font-size: 14px;
+                border-radius: 5px;
+                outline: none;
+                box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
+                -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
+                -moz-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
+                &:hover {
+                    background-color: #1deedd;
+                    }
+            }
+            .tcbutton {
+                background-image: linear-gradient(0deg, #afd3d1, #8248df);
+                /* Green */
+                border: none;
+                color: white;
+                padding: 8px 8px;
+                text-align: center;
+                text-decoration: none;
+                display: inline-block;
+                font-size: 14px;
+                border-radius: 5px;
+                outline: none;
+                box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
+                -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
+                -moz-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
+                &:hover {
+                    background-color: #1deedd;
+                    }
+            }
+
+            .onbutton {
+                background-color: #21a73e;
+                /* Green */
+                border: none;
+                color: white;
+                padding: 8px 8px;
+                text-align: center;
+                text-decoration: none;
+                display: inline-block;
+                font-size: 14px;
+                border-radius: 5px;
+                outline: none;
+                box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
+                -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
+                -moz-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
+                &:hover {
+                    background-color: #22fd7e;
+                    }
+                }
+            .offbutton {
+                background-color: #ff140b;
+                /* Green */
+                border: none;
+                color: white;
+                padding: 8px 8px;
+                text-align: center;
+                text-decoration: none;
+                display: inline-block;
+                font-size: 14px;
+                border-radius: 5px;
+                outline: none;
+                box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
+                -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
+                -moz-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
+                &:hover {
+                    background-color: #fde722;
+                    }
+            }
+            .resetbutton {
+                background-color: #329cff;
+                /* Green */
+                border: none;
+                color: white;
+                padding: 8px 8px;
+                text-align: center;
+                text-decoration: none;
+                display: inline-block;
+                font-size: 14px;
+                border-radius: 5px;
+                outline: none;
+                box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
+                -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
+                -moz-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
+                &:hover {
+                    background-color: #1deedd;
+                    }
+            }
+            
+        
+    }
+}
+
+
+}

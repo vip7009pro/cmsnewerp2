@@ -16,6 +16,12 @@ import { checkLogin } from "./api/Api";
 import AccountInfo from "./components/Navbar/AccountInfo/AccountInfo";
 import NhanSu from "./pages/nhansu/NhanSu";
 import QuanLyPhongBanNhanSu from "./pages/nhansu/QuanLyPhongBanNhanSu/QuanLyPhongBanNhanSu";
+import DiemDanhNhom from "./pages/nhansu/DiemDanhNhom/DiemDanhNhom";
+import DieuChuyenTeam from "./pages/nhansu/DieuChuyenTeam/DieuChuyenTeam";
+import TabDangKy from "./pages/nhansu/DangKy/TabDangKy";
+import PheDuyetNghi from "./pages/nhansu/PheDuyetNghi/PheDuyetNghi";
+import LichSu from "./pages/nhansu/LichSu/LichSu";
+import BaoCaoNhanSu from "./pages/nhansu/BaoCaoNhanSu/BaoCaoNhanSu";
 
 //https://www.robinwieruch.de/react-router-private-routes/
 interface userDataInterface {
@@ -157,7 +163,7 @@ function App() {
             MAINDEPTNAME_KR: "품질",
             MIDLAST_NAME: "NGUYỄN VĂN",
             ONLINE_DATETIME: "2022-07-12T20:49:52.600Z",
-            PASSWORD: "dauxanhrauma",
+            PASSWORD: "",
             PHONE_NUMBER: "0971092454",
             POSITION_CODE: 3,
             POSITION_NAME: "Staff",
@@ -190,8 +196,7 @@ function App() {
       .catch(err => {
         console.log(err + ' ');
       })
-    return () => {
-      
+    return () => {      
     }
   }, []); 
 
@@ -221,9 +226,12 @@ function App() {
               </Route>
               <Route path='nhansu' element={<NhanSu />}>
                 <Route path='quanlyphongbannhanvien' element={<QuanLyPhongBanNhanSu />} />
-                <Route path='diemdanhnhom' element={<InvoiceManager />} />
-                <Route path='dangky' element={<PlanManager />} />
-                <Route path='baocaonhansu' element={<FCSTManager />} />                
+                <Route path='diemdanhnhom' element={<DiemDanhNhom />} />
+                <Route path='dieuchuyenteam' element={<DieuChuyenTeam />} />
+                <Route path='dangky' element={<TabDangKy />} />
+                <Route path='pheduyetnghi' element={<PheDuyetNghi />} />
+                <Route path='lichsu' element={<LichSu />} />
+                <Route path='baocaonhansu' element={<BaoCaoNhanSu />} />                
               </Route>
             </Route>
             <Route path='/login' element={<Login />} />

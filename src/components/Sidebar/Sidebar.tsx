@@ -1,14 +1,14 @@
 import React, { useContext, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import SubMenu from "./Submenu";
-import { FcList } from 'react-icons/fc';
+import { FcApprove, FcList } from 'react-icons/fc';
 import "./Sidebar.scss";
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import HomeIcon from '@mui/icons-material/Home';
-import { FaDonate, FaFileInvoiceDollar,FaCheckCircle } from 'react-icons/fa';
+import { FaDonate, FaFileInvoiceDollar,FaCheckCircle, FaHistory } from 'react-icons/fa';
 import { BiCart } from 'react-icons/bi';
-import { FcPlanner, FcSettings,FcBullish, FcPortraitMode,FcManager,FcCheckmark,FcPieChart } from 'react-icons/fc';
+import { FcPlanner, FcSettings,FcBullish, FcPortraitMode,FcManager,FcCheckmark,FcPieChart,FcRefresh } from 'react-icons/fc';
 import { MdOutlineAppRegistration } from "react-icons/md";
 import { WiDayLightning } from "react-icons/wi";
 import getsentence from "../../components/String/String";
@@ -39,9 +39,24 @@ const Sidebar = () => {
           icon: <FcCheckmark color='red' size={25}/>
         },
         {
+          title: 'Điều chuyển team', /*  getsentence(14,lang), */ 
+          path: '/nhansu/dieuchuyenteam',
+          icon: <FcRefresh color='red' size={25}/>
+        },
+        {
           title: getsentence(15,lang), /*Đăng ký*/
           path: '/nhansu/dangky',
           icon: <MdOutlineAppRegistration size={25}/>
+        },
+        {
+          title:  'Phê duyệt nghỉ',
+          path: '/nhansu/pheduyetnghi',
+          icon: <FcApprove size={25}/>
+        },
+        {
+          title:  'Lịch Sử',
+          path: '/nhansu/lichsu',
+          icon: <FaHistory color="green" size={25}/>
         },
         {
           title: getsentence(16,lang), /*Báo cáo nhân sự*/

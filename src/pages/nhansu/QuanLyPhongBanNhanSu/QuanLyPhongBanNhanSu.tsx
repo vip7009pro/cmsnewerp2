@@ -4,6 +4,8 @@ import { generalQuery } from '../../../api/Api';
 import "./QuanLyPhongBanNhanSu.scss"
 import Swal from "sweetalert2";
 import LinearProgress from '@mui/material/LinearProgress';
+import SaveExcel from '../../../api/GlobalFunction';
+import moment from 'moment';
 
 interface MainDeptTableData {
   id: number;
@@ -84,12 +86,13 @@ const QuanLyPhongBanNhanSu = () => {
     const [isLoading, setisLoading] = useState(false);
     const [quanlyphongbanShow, setQuanLyPhongBanShow]  = useState(false);
     const [quanlynhansuShow, setQuanLyNhanSuShow]  = useState(true);
+    const [workpositionload, setWorkPositionLoad] = useState<Array<WorkPositionTableData>>([]);
 
     const [EMPL_NO,setEMPL_NO]= useState("");
     const [CMS_ID,setCMS_ID]= useState("");
     const [FIRST_NAME,setFIRST_NAME]= useState("");
     const [MIDLAST_NAME,setMIDLAST_NAME]= useState("");
-    const [DOB,setDOB]= useState("");
+    const [DOB,setDOB]= useState(moment().format('YYYY-MM-DD'));
     const [HOMETOWN,setHOMETOWN]= useState("");
     const [SEX_CODE,setSEX_CODE]= useState(0);
     const [ADD_PROVINCE,setADD_PROVINCE]= useState("");
@@ -97,7 +100,7 @@ const QuanLyPhongBanNhanSu = () => {
     const [ADD_COMMUNE,setADD_COMMUNE]= useState("");
     const [ADD_VILLAGE,setADD_VILLAGE]= useState("");
     const [PHONE_NUMBER,setPHONE_NUMBER]= useState("");
-    const [WORK_START_DATE,setWORK_START_DATE]= useState("");
+    const [WORK_START_DATE,setWORK_START_DATE]= useState(moment().format('YYYY-MM-DD'));
     const [PASSWORD,setPASSWORD]= useState("");
     const [EMAIL,setEMAIL]= useState("");
     const [WORK_POSITION_CODE,setWORK_POSITION_CODE]= useState(0);
@@ -108,69 +111,10 @@ const QuanLyPhongBanNhanSu = () => {
     const [WORK_STATUS_CODE,setWORK_STATUS_CODE]= useState(0);
     
     
-    const [employeeTable, setEmployeeTable] = useState<Array<EmployeeTableData>>([{    
-        id: "AA",   
-        EMPL_NO: "AA",
-        CMS_ID: "AA",
-        FIRST_NAME: "AA",
-        MIDLAST_NAME: "AA",
-        DOB: "AA",
-        HOMETOWN: "AA",
-        ADD_PROVINCE: "AA",
-        ADD_DISTRICT: "AA",
-        ADD_COMMUNE: "AA",
-        ADD_VILLAGE: "AA",
-        PHONE_NUMBER: "AA",
-        WORK_START_DATE: "AA",
-        PASSWORD: "AA",
-        EMAIL: "AA",
-        REMARK: "AA",
-        ONLINE_DATETIME: "AA",
-        CTR_CD: "AA",
-        SEX_CODE: 1,
-        SEX_NAME: "AA",
-        SEX_NAME_KR: "AA",
-        WORK_STATUS_CODE: 1,
-        WORK_STATUS_NAME: "AA",
-        WORK_STATUS_NAME_KR: "AA",
-        FACTORY_CODE: 1,
-        FACTORY_NAME: "AA",
-        FACTORY_NAME_KR: "AA",
-        JOB_CODE: 1,
-        JOB_NAME: "AA",
-        JOB_NAME_KR: "AA",
-        POSITION_CODE: 1,
-        POSITION_NAME: "AA",
-        POSITION_NAME_KR: "AA",
-        WORK_SHIFT_CODE: 1,
-        WORK_SHIF_NAME: "AA",
-        WORK_SHIF_NAME_KR: "AA",
-        WORK_POSITION_CODE: 1,
-        WORK_POSITION_NAME: "AA",
-        WORK_POSITION_NAME_KR: "AA",
-        ATT_GROUP_CODE: 1,
-        SUBDEPTCODE: 1,
-        SUBDEPTNAME: "AA",
-        SUBDEPTNAME_KR: "AA",
-        MAINDEPTCODE: 1,
-        MAINDEPTNAME: "AA",
-        MAINDEPTNAME_KR: "AA",
-    }]);
+    const [employeeTable, setEmployeeTable] = useState<Array<EmployeeTableData>>([]);
     
-    const [maindeptTable, setMainDeptTable] = useState<Array<MainDeptTableData>>([{      
-      id: 1,
-      CTR_CD: "002",
-      MAINDEPTCODE: 1,
-      MAINDEPTNAME: "QC",
-      MAINDEPTNAME_KR: "품질",      
-    }]);
-    const [maindeptDataFilter, setMainDeptDataFilter] = useState<Array<MainDeptTableData>>([{      
-        id: 1,
-        CTR_CD: "002",
-        MAINDEPTCODE: 1,
-        MAINDEPTNAME: "QC",
-        MAINDEPTNAME_KR: "품질",      
-      }]);
+    const [maindeptTable, setMainDeptTable] = useState<Array<MainDeptTableData>>([]);
+    const [maindeptDataFilter, setMainDeptDataFilter] = useState<Array<MainDeptTableData>>([]);
           
     const [maindeptcode,setMainDeptCode] = useState(1);
     const [maindeptname,setMainDeptName] = useState("");
@@ -625,78 +569,37 @@ const QuanLyPhongBanNhanSu = () => {
         })
     }
     const handle_xoa_employee = ()=> {
-        const insertData = {
-            CTR_CD: '002',           
-            SUBDEPTCODE: subdeptcode,
-            WORK_POSITION_CODE: workpositioncode,
-            WORK_POSITION_NAME: workpositionname,
-            WORK_POSITION_NAME_KR: workpositionnamekr,
-            ATT_GROUP_CODE: att_group_code
-        }   
-        generalQuery('deleteworkposition',insertData)
-        .then(response => {
-            console.log(response.data.data);  
-            if(response.data.tk_status === "OK")
-            {
-                Swal.fire("Thông báo", "Chúc mừng bạn, xoá thành công !", "success");
-                generalQuery('getworkposition',insertData)
-                .then(response => {
-                    if(response.data.tk_status==='OK')
-                    {
-                        console.log(response.data.data);  
-                        setSubDeptTable(response.data.data);
-                    }  
-                })
-                .catch(error => {
-                    console.log(error);
-                });
-            }
-            else
-            {
-                Swal.fire("Thông báo", "Xoá thất bại !", "error");
-            }            
-        })
-        .catch(error => {
-            console.log(error);
-        })
+        setEMPL_NO("");
+        setCMS_ID("");
+        setFIRST_NAME("");
+        setMIDLAST_NAME("");
+        setDOB("");
+        setHOMETOWN("");
+        setADD_PROVINCE("");
+        setADD_DISTRICT("");
+        setADD_COMMUNE("");
+        setADD_VILLAGE("");
+        setPHONE_NUMBER("");
+        setWORK_START_DATE("");
+        setPASSWORD("");
+        setEMAIL("");          
+        setSEX_CODE(0);
+        setWORK_STATUS_CODE(1);
+        setFACTORY_CODE(1);
+        setJOB_CODE(1);
+        setPOSITION_CODE(1);
+        setWORK_SHIFT_CODE(1);
+        setWORK_POSITION_CODE(1);
+        setATT_GROUP_CODE(1);         
+       
     }
 
-    const [subdeptTable, setSubDeptTable] = useState<Array<SubDeptTableData>>([{
-        id: 1,
-        CTR_CD: "002",
-        MAINDEPTCODE: 1,
-        SUBDEPTCODE: 1,
-        SUBDEPTNAME: "QC",
-        SUBDEPTNAME_KR: "품질",     
-    }]);
+    const [subdeptTable, setSubDeptTable] = useState<Array<SubDeptTableData>>([]);
 
-    const [subdeptDataFilter, setSubDeptDataFilter] = useState<Array<SubDeptTableData>>([{
-        id: 1,
-        CTR_CD: "002",
-        MAINDEPTCODE: 1,
-        SUBDEPTCODE: 1,
-        SUBDEPTNAME: "QC",
-        SUBDEPTNAME_KR: "품질",     
-    }]);
+    const [subdeptDataFilter, setSubDeptDataFilter] = useState<Array<SubDeptTableData>>([]);
 
-    const [workpositionTable, setWorkPositionTable] = useState<Array<WorkPositionTableData>>([{
-        id: 1,
-        CTR_CD: "002", 
-        SUBDEPTCODE: 1,
-        WORK_POSITION_CODE: 1,
-        WORK_POSITION_NAME: "QC",
-        WORK_POSITION_NAME_KR: "QC",
-        ATT_GROUP_CODE: 1,
-    }]);
-    const [workpositionDataFilter, setWorkPositionDataFilter] = useState<Array<WorkPositionTableData>>([{
-        id: 1,
-        CTR_CD: "002", 
-        SUBDEPTCODE: 1,
-        WORK_POSITION_CODE: 1,
-        WORK_POSITION_NAME: "QC",
-        WORK_POSITION_NAME_KR: "QC",
-        ATT_GROUP_CODE: 1,
-    }]);
+    const [workpositionTable, setWorkPositionTable] = useState<Array<WorkPositionTableData>>([]);
+    const [workpositionDataFilter, setWorkPositionDataFilter] = useState<Array<WorkPositionTableData>>([]);
 
 
     const columns_maindept =[
@@ -882,7 +785,7 @@ const QuanLyPhongBanNhanSu = () => {
             <GridToolbarColumnsButton />
             <GridToolbarFilterButton />
             <GridToolbarDensitySelector />
-            <GridToolbarExport />
+            <button className='saveexcelbutton' onClick={()=>{SaveExcel(employeeTable,"DanhSachNhanVien")}}>Save Excel</button>
           </GridToolbarContainer>
         );
       }
@@ -892,6 +795,15 @@ const QuanLyPhongBanNhanSu = () => {
         .then(response => {
             //console.log(response.data.data);  
             setMainDeptTable(response.data.data);
+            setisLoading(false);
+        })
+        .catch(error => {
+            console.log(error);
+        });
+        generalQuery('workpositionlist',{})
+        .then(response => {
+            //console.log(response.data.data);  
+            setWorkPositionLoad(response.data.data);
             setisLoading(false);
         })
         .catch(error => {
@@ -1026,8 +938,8 @@ const QuanLyPhongBanNhanSu = () => {
               <div className='maindeptinputbox'>
                 <label>Mã ERP: <input type='text' value={EMPL_NO} onChange={e => setEMPL_NO(e.target.value)}></input></label>
                 <label>Mã CMS: <input type='text' value={CMS_ID} onChange={e => setCMS_ID(e.target.value)}></input></label>
-                <label>Họ: <input type='text' value={FIRST_NAME} onChange={e => setFIRST_NAME(e.target.value)}></input></label>                
-                <label>Đệm và Tên: <input type='text' value={MIDLAST_NAME} onChange={e => setMIDLAST_NAME(e.target.value)}></input></label>                
+                <label>Tên: <input type='text' value={FIRST_NAME} onChange={e => setFIRST_NAME(e.target.value)}></input></label>                
+                <label>Họ và Đệm: <input type='text' value={MIDLAST_NAME} onChange={e => setMIDLAST_NAME(e.target.value)}></input></label>                
                 <label>Ngày tháng năm sinh: <input type='date' value={DOB.slice(0,10)} onChange={e => setDOB(e.target.value)}></input></label>                
                 <label>Quê quán: <input type='text' value={HOMETOWN} onChange={e => setHOMETOWN(e.target.value)}></input></label>                
                 <label>Giới tính: 
@@ -1050,41 +962,9 @@ const QuanLyPhongBanNhanSu = () => {
                 <label>Email: <input type='text' value={EMAIL} onChange={e => setEMAIL(e.target.value)}></input></label>                
                 <label>Vị trí làm việc:
                     <select name='vitrilamviec' value={WORK_POSITION_CODE}  onChange={e=> {setWORK_POSITION_CODE(Number(e.target.value));}}>
-                        <option value = {1}>QC</option>
-                        <option value = {2}>PD</option>
-                        <option value = {3}>IQC1</option>
-                        <option value = {4}>IQC3</option>
-                        <option value = {5}>PQC1</option>
-                        <option value = {6}>PQC3</option>
-                        <option value = {7}>PQC_LQCA</option>
-                        <option value = {8}>PQC_LQCB</option>
-                        <option value = {9}>PQC_LQC2</option>
-                        <option value = {10}>PQC_LQC3</option>
-                        <option value = {11}>OQC1</option>
-                        <option value = {12}>OQC3</option>
-                        <option value = {13}>KTXA1</option>
-                        <option value = {14}>KT3U1</option>
-                        <option value = {15}>CS</option>
-                        <option value = {16}>DTC1</option>
-                        <option value = {17}>DTC3</option>
-                        <option value = {18}>ISO</option>
-                        <option value = {19}>SYSTEM</option>
-                        <option value = {20}>DATA</option>
-                        <option value = {21}>MISS</option>
-                        <option value = {22}>KTXA2</option>
-                        <option value = {23}>KTXB1</option>
-                        <option value = {24}>KTXB2</option>
-                        <option value = {25}>KT3RS1</option>
-                        <option value = {26}>KT3RS2</option>
-                        <option value = {30}>SX_VP</option>
-                        <option value = {31}>KD</option>
-                        <option value = {40}>MUA_VP</option>
-                        <option value = {45}>KHO_VP</option>
-                        <option value = {46}>RND_VP</option>
-                        <option value = {47}>NHANSU_VP</option>
-                        <option value = {48}>KETOAN_VP</option>              
+                       { workpositionload.map((element, index) => (<option value={element.WORK_POSITION_CODE}>{element.WORK_POSITION_NAME}</option>))           }
                     </select>
-                </label>
+                </label>                
                 <label>Ca làm việc: 
                     <select name='calamviec' value={WORK_SHIFT_CODE}  onChange={e=> setWORK_SHIFT_CODE(Number(e.target.value))}>
                         <option value = {0}>Hành chính</option>  
@@ -1127,6 +1007,7 @@ const QuanLyPhongBanNhanSu = () => {
             <div className='maindeptbutton'>
                 <button className='thembutton' onClick={handle_them_employee}>Thêm</button>
                 <button className='suabutton' onClick={handle_sua_employee}>Sửa</button>                
+                <button className='xoabutton' onClick={handle_xoa_employee}>Clear</button>                
             </div>
           </div>
           <div className='maindept_table'>
