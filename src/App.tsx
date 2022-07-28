@@ -89,13 +89,13 @@ const ProtectedRoute: any = ({
   } 
   else
   {
-    console.log("ten bo phan: " +maindeptname);
+   /*  console.log("ten bo phan: " +maindeptname);
     console.log("ten chuc vu can thiet: " +jobname);
-    console.log("ten chuc vu cua ban: " +user.JOB_NAME);
+    console.log("ten chuc vu cua ban: " +user.JOB_NAME); */
 
-    if(maindeptname === 'all')
+    if(maindeptname === 'all' || user.EMPL_NO==='NHU1903')
     {    
-      if(jobname === 'all')
+      if(jobname === 'all' || user.EMPL_NO==='NHU1903')
       {
         return children;
       }
@@ -120,7 +120,7 @@ const ProtectedRoute: any = ({
       }
       else
       {
-        if(jobname === 'all')
+        if(jobname === 'all'|| user.EMPL_NO==='NHU1903')
         {
           return children;
         }
@@ -133,8 +133,7 @@ const ProtectedRoute: any = ({
           else
           {
             return children;
-          }
-         
+          }         
         }
         
       }      
@@ -249,7 +248,7 @@ function App() {
         );
       }
       else {       
-        console.log(data.data.data);       
+        //console.log(data.data.data);       
         setUserData(data.data.data);
       }
     })
