@@ -26,7 +26,7 @@ export default function Navbar() {
     setLang(localStorage.getItem('lang'));
   }, []);
   
-  console.log(lang);
+
   const logout_bt = () => {
     logout();    
   }
