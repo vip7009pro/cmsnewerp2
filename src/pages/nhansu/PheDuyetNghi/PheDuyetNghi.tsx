@@ -4,7 +4,7 @@ import { generalQuery } from '../../../api/Api';
 import "./PheDuyetNghi.scss"
 import Swal from "sweetalert2";
 import LinearProgress from '@mui/material/LinearProgress';
-import SaveExcel from '../../../api/GlobalFunction';
+import {SaveExcel} from '../../../api/GlobalFunction';
 
 
 interface DiemDanhNhomData {  

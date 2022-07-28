@@ -10,15 +10,15 @@ const Login = () => {
   const [lang,setLang] = useContext(LangConText);
   const [user,setUser] = useState('');
   const [pass,setPass] = useState('');
-  console.log(lang);
+  //console.log(lang);
 
   const lang2: any = localStorage.getItem('lang');
-  console.log('lang2: ' + lang2);
+  //console.log('lang2: ' + lang2);
   const login_bt = async (e:React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     login(user, pass);
-  }  
-
+  }
+  
   if (userData.EMPL_NO!=='none') return <Navigate to='/' replace />;
   return (
     <div className='login-form'>

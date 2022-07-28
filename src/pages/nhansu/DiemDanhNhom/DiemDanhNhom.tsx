@@ -4,7 +4,7 @@ import { generalQuery } from '../../../api/Api';
 import "./DiemDanhNhom.scss"
 import Swal from "sweetalert2";
 import LinearProgress from '@mui/material/LinearProgress';
-import SaveExcel from '../../../api/GlobalFunction';
+import {SaveExcel} from '../../../api/GlobalFunction';
 
 
 interface DiemDanhNhomData {  
@@ -294,9 +294,7 @@ const DiemDanhNhom = () => {
               columns={columns_diemdanhnhom}
               rowsPerPageOptions={[5, 10, 50, 100, 500]}
               editMode='row'    
-              getRowHeight={() => 'auto'} 
-             
-              
+              getRowHeight={() => 'auto'}
             />
           </div>
         </div> 
