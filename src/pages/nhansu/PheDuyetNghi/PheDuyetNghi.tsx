@@ -1,4 +1,4 @@
-import { DataGrid, GridSelectionModel, GridToolbar, GridToolbarContainer, GridToolbarExport, GridCsvExportOptions, GridToolbarColumnsButton, GridToolbarFilterButton, GridToolbarDensitySelector, GridRowsProp  } from '@mui/x-data-grid';
+import { DataGrid, GridSelectionModel, GridToolbar, GridToolbarContainer, GridToolbarExport, GridCsvExportOptions, GridToolbarColumnsButton, GridToolbarFilterButton, GridToolbarDensitySelector, GridRowsProp, GridToolbarQuickFilter  } from '@mui/x-data-grid';
 import React, { useEffect, useState } from 'react'
 import { generalQuery } from '../../../api/Api';
 import "./PheDuyetNghi.scss"
@@ -186,6 +186,7 @@ const PheDuyetNghi = () => {
             <GridToolbarFilterButton />
             <GridToolbarDensitySelector />
             <button className='saveexcelbutton' onClick={()=>{SaveExcel(diemdanhnhomtable,"PheDuyetNghi")}}>Save Excel</button>
+            <GridToolbarQuickFilter/>
           </GridToolbarContainer>
         );
       }
@@ -199,6 +200,7 @@ const PheDuyetNghi = () => {
             {
                 setDiemDanhNhomTable(response.data.data);
                 setisLoading(false);
+                Swal.fire("Thông báo", "Đã load " + response.data.data.length + " dòng", "success");  
             }
             else
             {
@@ -223,7 +225,7 @@ const PheDuyetNghi = () => {
               rowHeight={35}
               rows={diemdanhnhomtable}
               columns={columns_diemdanhnhom}
-              rowsPerPageOptions={[5, 10, 50, 100, 500]}
+              rowsPerPageOptions={[5, 10, 50, 100, 500,1000,2000]}
               editMode='row'    
               getRowHeight={() => 'auto'} 
             />

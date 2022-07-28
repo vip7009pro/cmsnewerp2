@@ -1,4 +1,4 @@
-import { DataGrid, GridSelectionModel, GridToolbar, GridToolbarContainer, GridToolbarExport, GridCsvExportOptions, GridToolbarColumnsButton, GridToolbarFilterButton, GridToolbarDensitySelector } from '@mui/x-data-grid';
+import { DataGrid, GridSelectionModel, GridToolbar, GridToolbarContainer, GridToolbarExport, GridCsvExportOptions, GridToolbarColumnsButton, GridToolbarFilterButton, GridToolbarDensitySelector, GridToolbarQuickFilter } from '@mui/x-data-grid';
 import React, { useEffect, useState } from 'react'
 import { generalQuery } from '../../../api/Api';
 import "./QuanLyPhongBanNhanSu.scss"
@@ -785,6 +785,7 @@ const QuanLyPhongBanNhanSu = () => {
             <GridToolbarColumnsButton />
             <GridToolbarFilterButton />
             <GridToolbarDensitySelector />
+            <GridToolbarQuickFilter/>
             <button className='saveexcelbutton' onClick={()=>{SaveExcel(employeeTable,"DanhSachNhanVien")}}>Save Excel</button>
           </GridToolbarContainer>
         );
@@ -805,6 +806,7 @@ const QuanLyPhongBanNhanSu = () => {
             //console.log(response.data.data);  
             setWorkPositionLoad(response.data.data);
             setisLoading(false);
+            
         })
         .catch(error => {
             console.log(error);
@@ -812,9 +814,17 @@ const QuanLyPhongBanNhanSu = () => {
 
         generalQuery('getemployee_full',{})
         .then(response => {
-            //console.log(response.data.data);  
-            setEmployeeTable(response.data.data);
-            setisLoading(false);
+            //console.log(response.data); 
+            if(response.data.tk_status !=='NG')
+            {
+                setEmployeeTable(response.data.data);
+                setisLoading(false);
+                Swal.fire("Thông báo", "Đã load " + response.data.data.length + " dòng", "success");  
+            }
+            else
+            {
+              Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");  
+            }
         })
         .catch(error => {
             console.log(error);
@@ -962,7 +972,7 @@ const QuanLyPhongBanNhanSu = () => {
                 <label>Email: <input type='text' value={EMAIL} onChange={e => setEMAIL(e.target.value)}></input></label>                
                 <label>Vị trí làm việc:
                     <select name='vitrilamviec' value={WORK_POSITION_CODE}  onChange={e=> {setWORK_POSITION_CODE(Number(e.target.value));}}>
-                       { workpositionload.map((element, index) => (<option value={element.WORK_POSITION_CODE}>{element.WORK_POSITION_NAME}</option>))           }
+                       { workpositionload.map((element, index) => (<option key={index} value={element.WORK_POSITION_CODE}>{element.WORK_POSITION_NAME}</option>))           }
                     </select>
                 </label>                
                 <label>Ca làm việc: 

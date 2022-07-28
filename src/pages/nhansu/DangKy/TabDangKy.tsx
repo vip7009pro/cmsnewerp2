@@ -136,7 +136,7 @@ const TabDangKy = () => {
                         <option value = {6}>Lý do khác</option>                                      
                     </select>
                 </label>                
-                <label><b>Lý do cụ thể:</b> <input type='text' value={reason} onChange={e => setReason(e.target.value)}></input></label>
+                <label><b>Lý do cụ thể:</b> <input type='text' placeholder='Viết ngắn gọn lý do vào đây' value={reason} onChange={e => setReason(e.target.value)}></input></label>
                </div>              
             </div>
             <div className='dangkybutton'>
@@ -151,8 +151,8 @@ const TabDangKy = () => {
         <div className='dangkyform'>
             <div className='dangkyinput'>             
               <div className='dangkyinputbox'> 
-                <label><b>Thời gian bắt đầu:</b> <input type='text' value={starttime} onChange={e => setStartTime(e.target.value)}></input></label>
-                <label><b>Thời gian kết thúc:</b> <input type='text' value={finishtime} onChange={e => setFinishTime(e.target.value)}></input></label>
+                <label><b>Thời gian bắt đầu:</b> <input type='text' placeholder='1700' value={starttime} onChange={e => setStartTime(e.target.value)}></input></label>
+                <label><b>Thời gian kết thúc:</b> <input type='text' placeholder='2000' value={finishtime} onChange={e => setFinishTime(e.target.value)}></input></label>
                </div>              
             </div>
             <div className='dangkybutton'>

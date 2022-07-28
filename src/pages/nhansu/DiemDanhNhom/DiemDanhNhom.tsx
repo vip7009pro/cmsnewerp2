@@ -1,4 +1,4 @@
-import { DataGrid, GridSelectionModel, GridToolbar, GridToolbarContainer, GridToolbarExport, GridCsvExportOptions, GridToolbarColumnsButton, GridToolbarFilterButton, GridToolbarDensitySelector, GridRowsProp  } from '@mui/x-data-grid';
+import { DataGrid, GridSelectionModel, GridToolbar, GridToolbarContainer, GridToolbarExport, GridCsvExportOptions, GridToolbarColumnsButton, GridToolbarFilterButton, GridToolbarDensitySelector, GridRowsProp, GridToolbarQuickFilter  } from '@mui/x-data-grid';
 import React, { useEffect, useState } from 'react'
 import { generalQuery } from '../../../api/Api';
 import "./DiemDanhNhom.scss"
@@ -223,8 +223,9 @@ const DiemDanhNhom = () => {
           <GridToolbarContainer>
             <GridToolbarColumnsButton />
             <GridToolbarFilterButton />
-            <GridToolbarDensitySelector />
+            <GridToolbarDensitySelector />           
             <button className='saveexcelbutton' onClick={()=>{SaveExcel(diemdanhnhomtable,"DiemDanhNhom")}}>Save Excel</button>
+            <GridToolbarQuickFilter/>
           </GridToolbarContainer>
         );
       }
@@ -236,6 +237,7 @@ const DiemDanhNhom = () => {
             //console.log(response.data.data);            
             setDiemDanhNhomTable(response.data.data);
             setisLoading(false);
+            Swal.fire("Thông báo", "Đã load " + response.data.data.length + " dòng", "success");  
         })
         .catch(error => {
             console.log(error);
@@ -251,6 +253,7 @@ const DiemDanhNhom = () => {
             {
               setDiemDanhNhomTable(response.data.data);
               setisLoading(false);
+              Swal.fire("Thông báo", "Đã load " + response.data.data.length + " dòng", "success");  
             }
             else
             {
@@ -282,7 +285,7 @@ const DiemDanhNhom = () => {
           <div className='maindept_table'>
             <DataGrid
               components={{
-                Toolbar: CustomToolbar,
+                Toolbar: CustomToolbar, 
                 LoadingOverlay: LinearProgress,
               }}
               loading={isLoading}
@@ -292,6 +295,8 @@ const DiemDanhNhom = () => {
               rowsPerPageOptions={[5, 10, 50, 100, 500]}
               editMode='row'    
               getRowHeight={() => 'auto'} 
+             
+              
             />
           </div>
         </div> 

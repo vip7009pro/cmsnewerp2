@@ -13,12 +13,14 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import { logout } from "../../api/Api";
 import { LangConText } from "../../api/Context";
 import Swal from "sweetalert2";
+import { UserContext } from "../../api/Context";
 
 
 export default function Navbar() {
   const [avatarmenu, setAvatarMenu] = useState(false);
   const [langmenu, setLangMenu] = useState(false);
   const [lang, setLang] = useContext(LangConText);
+  const [userData, setUserData] = useContext(UserContext);
 
   useEffect(() => {
     setLang(localStorage.getItem('lang'));
@@ -98,12 +100,9 @@ export default function Navbar() {
             <ListIcon className='icon' />
           </div>
           <div className='item'>
-            <img
-              src='https://cdn.24h.com.vn/upload/2-2021/images/2021-05-22/anh-8-1621645023-458-width650height813.jpg'
-              alt=''
-              className='avatar'  
-              onClick={showhideAvatarMenu}            
-            />
+            <div className='avatar' onClick={showhideAvatarMenu}>
+              {userData.FIRST_NAME.slice(0,1)}
+            </div>            
           </div>
           {avatarmenu &&  <div className='avatarmenu'>
             <div className='menu'>

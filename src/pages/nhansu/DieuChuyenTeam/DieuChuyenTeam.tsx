@@ -1,4 +1,4 @@
-import { DataGrid, GridSelectionModel, GridToolbar, GridToolbarContainer, GridToolbarExport, GridCsvExportOptions, GridToolbarColumnsButton, GridToolbarFilterButton, GridToolbarDensitySelector, GridRowsProp  } from '@mui/x-data-grid';
+import { DataGrid, GridSelectionModel, GridToolbar, GridToolbarContainer, GridToolbarExport, GridCsvExportOptions, GridToolbarColumnsButton, GridToolbarFilterButton, GridToolbarDensitySelector, GridRowsProp, GridToolbarQuickFilter  } from '@mui/x-data-grid';
 import React, { useEffect, useState } from 'react'
 import { generalQuery } from '../../../api/Api';
 import "./DieuChuyenTeam.scss"
@@ -144,6 +144,7 @@ const DieuChuyenTeam = () => {
             <GridToolbarFilterButton />
             <GridToolbarDensitySelector />
             <button className='saveexcelbutton' onClick={()=>{SaveExcel(diemdanhnhomtable,"DieuChuyenTeam")}}>Save Excel</button>
+            <GridToolbarQuickFilter/>
           </GridToolbarContainer>
         );
       }
@@ -170,6 +171,7 @@ const DieuChuyenTeam = () => {
             {
                 setDiemDanhNhomTable(response.data.data);
                 setisLoading(false);
+                Swal.fire("Thông báo", "Đã load " + response.data.data.length + " dòng", "success");  
             }
             else
             {
