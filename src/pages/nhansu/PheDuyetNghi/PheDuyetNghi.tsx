@@ -228,6 +228,8 @@ const PheDuyetNghi = () => {
               rowsPerPageOptions={[5, 10, 50, 100, 500,1000,2000]}
               editMode='row'    
               getRowHeight={() => 'auto'} 
+              checkboxSelection
+              disableSelectionOnClick
             />
           </div>
         </div> 

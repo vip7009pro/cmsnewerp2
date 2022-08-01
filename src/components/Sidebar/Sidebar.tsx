@@ -14,7 +14,6 @@ import { WiDayLightning } from "react-icons/wi";
 import getsentence from "../../components/String/String";
 import { LangConText } from "../../api/Context";
 
-
 const Sidebar = () => {
   const [sidebar, setSidebar] = useState(true);
   const showSidebar = () => setSidebar(!sidebar);

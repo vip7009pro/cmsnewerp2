@@ -8,12 +8,12 @@ const KinhDoanh = () => {
 
   return (
     <div className='kinhdoanh'>
-        <div className='widgets'>
+       {/*  <div className='widgets'>
           <Widget type='user' />
           <Widget type='order' />
           <Widget type='earning' />
           <Widget type='balance' />
-        </div>       
+        </div>        */}
         <Outlet/>
     </div>
   )
