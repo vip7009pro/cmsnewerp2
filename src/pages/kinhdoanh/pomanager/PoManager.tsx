@@ -1,10 +1,11 @@
-import { Button,  LinearProgress } from '@mui/material';
+import { Autocomplete, Button,  LinearProgress, TextField } from '@mui/material';
 import { DataGrid, GridToolbarColumnsButton, GridToolbarContainer, GridToolbarDensitySelector, GridToolbarFilterButton, GridToolbarQuickFilter } from '@mui/x-data-grid';
 import moment from 'moment';
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import Swal from 'sweetalert2';
 import * as XLSX from 'xlsx';
 import { generalQuery } from '../../../api/Api';
+import { UserContext } from '../../../api/Context';
 import { SaveExcel } from '../../../api/GlobalFunction';
 import "./PoManager.scss"
 
@@ -53,6 +54,12 @@ interface POSummaryData {
 }
 
 const PoManager = () => {
+  const [selection, setSelection] = useState<any>({
+    trapo: true,
+    thempohangloat:false,
+    them1po: false,
+  });
+  const [userData, setUserData] = useContext(UserContext);
   const [uploadExcelJson, setUploadExcelJSon] = useState<Array<any>>([]);
   const [isLoading, setisLoading] = useState(false);   
   const [column_excel, setColumn_Excel]= useState<Array<any>>([]);
@@ -114,6 +121,21 @@ const PoManager = () => {
   ];
 
 
+  const column_excel2 = [
+    { field: "CUST_CD", headerName: "CUST_CD", width: 120 },    
+    { field: "G_CODE", headerName: "G_CODE", width: 120 },
+    { field: "PO_NO", headerName: "PO_NO", width: 120 },
+    { field: "PO_QTY", headerName: "PO_QTY", width: 120, renderCell: (params:any) => {return <span style={{color:'blue'}}><b>{params.row.PO_QTY.toLocaleString('en-US')}</b></span>}  },
+    { field: "PO_DATE", headerName: "PO_DATE", width: 200 },
+    { field: "RD_DATE", headerName: "RD_DATE", width: 200 },
+    { field: "PROD_PRICE", headerName: "PROD_PRICE", width: 200, renderCell: (params:any) => {return <span style={{color:'gray'}}><b>{params.row.PROD_PRICE.toLocaleString('en-US' ,{style:'decimal',maximumFractionDigits:8})}</b></span>} },
+    { field: "CHECKSTATUS", headerName: "CHECKSTATUS", width: 200 , renderCell: (params:any) => {
+      if(params.row.CHECKSTATUS.slice(0,2) === 'OK')
+      return <span style={{color:'green'}}><b>{params.row.CHECKSTATUS}</b></span>
+      return <span style={{color:'red'}}><b>{params.row.CHECKSTATUS}</b></span>
+    }
+  },
+  ]
   function CustomToolbar() {
     return (
       <GridToolbarContainer>
@@ -136,7 +158,6 @@ const PoManager = () => {
       </GridToolbarContainer>
     );
   }
-
 
   const readUploadFile = (e:any) => {
     e.preventDefault();    
@@ -231,6 +252,8 @@ const PoManager = () => {
 
 
   const handle_checkPOHangLoat = async () => {
+
+    setisLoading(true);
     let tempjson = uploadExcelJson;
     for (let i = 0; i < uploadExcelJson.length; i++) {
       let err_code:number = 0;
@@ -241,7 +264,7 @@ const PoManager = () => {
         PO_NO: uploadExcelJson[i].PO_NO,
       })
         .then((response) => {
-          console.log(response.data.tk_status);
+          console.log(response.data.tk_status);         
           if (response.data.tk_status !== "NG") {
             
           } else {
@@ -250,7 +273,7 @@ const PoManager = () => {
           }
         })
         .catch((error) => {
-          console.log(error);
+          console.log(error);          
         });
 
         let now = moment();
@@ -313,9 +336,12 @@ const PoManager = () => {
             tempjson[i].CHECKSTATUS = "NG: Không có code CMS này";
           }      
     }
+    setisLoading(false);
+    Swal.fire("Thông báo", "Đã hoàn thành check PO hàng loạt", "success");  
     setUploadExcelJSon(tempjson);
   };
   const handle_upPOHangLoat = async () => {
+   
     let tempjson = uploadExcelJson;
     for (let i = 0; i < uploadExcelJson.length; i++) {
       let err_code:number = 0;
@@ -350,7 +376,6 @@ const PoManager = () => {
           //tempjson[i].CHECKSTATUS = "OK";
         }
 
-
         await generalQuery("checkGCodeVer", {
           G_CODE: uploadExcelJson[i].G_CODE         
         })
@@ -379,7 +404,28 @@ const PoManager = () => {
         
           if(err_code === 0)
           {
-            tempjson[i].CHECKSTATUS = "OK";
+            await generalQuery("insert_po", {
+              G_CODE: uploadExcelJson[i].G_CODE,
+              CUST_CD: uploadExcelJson[i].CUST_CD,
+              PO_NO: uploadExcelJson[i].PO_NO,
+              EMPL_NO: userData.EMPL_NO,
+              PO_QTY: uploadExcelJson[i].PO_QTY,
+              PO_DATE: uploadExcelJson[i].PO_DATE,
+              RD_DATE: uploadExcelJson[i].RD_DATE,
+              PROD_PRICE: uploadExcelJson[i].PROD_PRICE, 
+            })
+              .then((response) => {
+                console.log(response.data.tk_status);
+                if (response.data.tk_status !== "NG") {
+                  tempjson[i].CHECKSTATUS = "OK";
+                } else {                  
+                  err_code = 5;
+                  tempjson[i].CHECKSTATUS = "NG: Lỗi SQL: " + response.data.message;
+                }
+              })
+              .catch((error) => {
+                console.log(error);
+              });
           }
           else if(err_code ===1)
           {
@@ -396,12 +442,196 @@ const PoManager = () => {
           else if(err_code ===4)
           {
             tempjson[i].CHECKSTATUS = "NG: Không có code CMS này";
-          }      
+          } 
+           
     }
+    Swal.fire("Thông báo", "Đã hoàn thành thêm PO hàng loạt", "success");  
     setUploadExcelJSon(tempjson);
   };
 
+  const confirmUpPoHangLoat = () => {
+    Swal.fire({
+      title: 'Chắc chắn muốn thêm PO hàng loạt ?',
+      text: "Thêm rồi mà sai, sửa là hơi vất đấy",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Vẫn thêm!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        Swal.fire(
+          'Tiến hành thêm',
+          'Đang thêm PO hàng loạt',
+          'success'
+        );
+        handle_upPOHangLoat();
+      }
+    })
 
+  }
+  const confirmCheckPoHangLoat = () => {
+    Swal.fire({
+      title: 'Chắc chắn muốn check PO hàng loạt ?',
+      text: "Sẽ bắt đầu check po hàng loạt",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Vẫn check!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        Swal.fire(
+          'Tiến hành check',
+          'Đang check PO hàng loạt',
+          'success'
+        );
+        handle_checkPOHangLoat();
+      }
+    })
+  }
+
+  const setNav = (choose: number) => {
+    if(choose ===1 )
+    {
+      setSelection({...selection, trapo: true, thempohangloat:false, them1po:false});
+    }
+    else if(choose ===2 )
+    {
+      setSelection({...selection, trapo: false, thempohangloat:true, them1po:false});
+    }
+    else if(choose ===3 )
+    {
+      setSelection({...selection, trapo: false, thempohangloat:false, them1po:true});
+    }
+  }
+
+  const top100Films = [
+    { label: 'The Shawshank Redemption', year: 1994 },
+    { label: 'The Godfather', year: 1972 },
+    { label: 'The Godfather: Part II', year: 1974 },
+    { label: 'The Dark Knight', year: 2008 },
+    { label: '12 Angry Men', year: 1957 },
+    { label: "Schindler's List", year: 1993 },
+    { label: 'Pulp Fiction', year: 1994 },
+    {
+      label: 'The Lord of the Rings: The Return of the King',
+      year: 2003,
+    },
+    { label: 'The Good, the Bad and the Ugly', year: 1966 },
+    { label: 'Fight Club', year: 1999 },
+    {
+      label: 'The Lord of the Rings: The Fellowship of the Ring',
+      year: 2001,
+    },
+    {
+      label: 'Star Wars: Episode V - The Empire Strikes Back',
+      year: 1980,
+    },
+    { label: 'Forrest Gump', year: 1994 },
+    { label: 'Inception', year: 2010 },
+    {
+      label: 'The Lord of the Rings: The Two Towers',
+      year: 2002,
+    },
+    { label: "One Flew Over the Cuckoo's Nest", year: 1975 },
+    { label: 'Goodfellas', year: 1990 },
+    { label: 'The Matrix', year: 1999 },
+    { label: 'Seven Samurai', year: 1954 },
+    {
+      label: 'Star Wars: Episode IV - A New Hope',
+      year: 1977,
+    },
+    { label: 'City of God', year: 2002 },
+    { label: 'Se7en', year: 1995 },
+    { label: 'The Silence of the Lambs', year: 1991 },
+    { label: "It's a Wonderful Life", year: 1946 },
+    { label: 'Life Is Beautiful', year: 1997 },
+    { label: 'The Usual Suspects', year: 1995 },
+    { label: 'Léon: The Professional', year: 1994 },
+    { label: 'Spirited Away', year: 2001 },
+    { label: 'Saving Private Ryan', year: 1998 },
+    { label: 'Once Upon a Time in the West', year: 1968 },
+    { label: 'American History X', year: 1998 },
+    { label: 'Interstellar', year: 2014 },
+    { label: 'Casablanca', year: 1942 },
+    { label: 'City Lights', year: 1931 },
+    { label: 'Psycho', year: 1960 },
+    { label: 'The Green Mile', year: 1999 },
+    { label: 'The Intouchables', year: 2011 },
+    { label: 'Modern Times', year: 1936 },
+    { label: 'Raiders of the Lost Ark', year: 1981 },
+    { label: 'Rear Window', year: 1954 },
+    { label: 'The Pianist', year: 2002 },
+    { label: 'The Departed', year: 2006 },
+    { label: 'Terminator 2: Judgment Day', year: 1991 },
+    { label: 'Back to the Future', year: 1985 },
+    { label: 'Whiplash', year: 2014 },
+    { label: 'Gladiator', year: 2000 },
+    { label: 'Memento', year: 2000 },
+    { label: 'The Prestige', year: 2006 },
+    { label: 'The Lion King', year: 1994 },
+    { label: 'Apocalypse Now', year: 1979 },
+    { label: 'Alien', year: 1979 },
+    { label: 'Sunset Boulevard', year: 1950 },
+    {
+      label: 'Dr. Strangelove or: How I Learned to Stop Worrying and Love the Bomb',
+      year: 1964,
+    },
+    { label: 'The Great Dictator', year: 1940 },
+    { label: 'Cinema Paradiso', year: 1988 },
+    { label: 'The Lives of Others', year: 2006 },
+    { label: 'Grave of the Fireflies', year: 1988 },
+    { label: 'Paths of Glory', year: 1957 },
+    { label: 'Django Unchained', year: 2012 },
+    { label: 'The Shining', year: 1980 },
+    { label: 'WALL·E', year: 2008 },
+    { label: 'American Beauty', year: 1999 },
+    { label: 'The Dark Knight Rises', year: 2012 },
+    { label: 'Princess Mononoke', year: 1997 },
+    { label: 'Aliens', year: 1986 },
+    { label: 'Oldboy', year: 2003 },
+    { label: 'Once Upon a Time in America', year: 1984 },
+    { label: 'Witness for the Prosecution', year: 1957 },
+    { label: 'Das Boot', year: 1981 },
+    { label: 'Citizen Kane', year: 1941 },
+    { label: 'North by Northwest', year: 1959 },
+    { label: 'Vertigo', year: 1958 },
+    {
+      label: 'Star Wars: Episode VI - Return of the Jedi',
+      year: 1983,
+    },
+    { label: 'Reservoir Dogs', year: 1992 },
+    { label: 'Braveheart', year: 1995 },
+    { label: 'M', year: 1931 },
+    { label: 'Requiem for a Dream', year: 2000 },
+    { label: 'Amélie', year: 2001 },
+    { label: 'A Clockwork Orange', year: 1971 },
+    { label: 'Like Stars on Earth', year: 2007 },
+    { label: 'Taxi Driver', year: 1976 },
+    { label: 'Lawrence of Arabia', year: 1962 },
+    { label: 'Double Indemnity', year: 1944 },
+    {
+      label: 'Eternal Sunshine of the Spotless Mind',
+      year: 2004,
+    },
+    { label: 'Amadeus', year: 1984 },
+    { label: 'To Kill a Mockingbird', year: 1962 },
+    { label: 'Toy Story 3', year: 2010 },
+    { label: 'Logan', year: 2017 },
+    { label: 'Full Metal Jacket', year: 1987 },
+    { label: 'Dangal', year: 2016 },
+    { label: 'The Sting', year: 1973 },
+    { label: '2001: A Space Odyssey', year: 1968 },
+    { label: "Singin' in the Rain", year: 1952 },
+    { label: 'Toy Story', year: 1995 },
+    { label: 'Bicycle Thieves', year: 1948 },
+    { label: 'The Kid', year: 1921 },
+    { label: 'Inglourious Basterds', year: 2009 },
+    { label: 'Snatch', year: 2000 },
+    { label: '3 Idiots', year: 2009 },
+    { label: 'Monty Python and the Holy Grail', year: 1975 },
+  ];
 
   useEffect(()=>{
         
@@ -412,33 +642,60 @@ const PoManager = () => {
     <div className='pomanager'>
       <div className='mininavbar'>
         <div className='mininavitem'>
-          <span className='mininavtext'>Tra cứu PO</span>
+          <span className='mininavtext' onClick={() => setNav(1)}>
+            Tra cứu PO
+          </span>
         </div>
         <div className='mininavitem'>
-          <span className='mininavtext'>Thêm 1 PO</span>
+          <span className='mininavtext' onClick={() => setNav(3)}>
+            Thêm 1 PO
+          </span>
         </div>
         <div className='mininavitem'>
-          <span className='mininavtext'>Thêm PO hàng loạt</span>
+          <span className='mininavtext' onClick={() => setNav(2)}>
+            Thêm PO hàng loạt
+          </span>
         </div>
         <div className='mininavitem'>
           <span className='mininavtext'>Sửa PO</span>
         </div>
       </div>
-      {true && (
+      {selection.thempohangloat && (
         <div className='newpo'>
-          <h3>Thêm PO Hàng Loạt</h3><br></br>
+          <h3>Thêm PO Hàng Loạt</h3>
+          <br></br>
           <div className='batchnewpo'>
-            <form className='formupload'>              
-              <label htmlFor='upload'>Chọn file Excel: </label>
-              <button onClick={(e)=> {e.preventDefault(); handle_checkPOHangLoat();}}>Test</button>
-              <input
-                type='file'
-                name='upload'
-                id='upload'
-                onChange={(e: any) => {
-                  readUploadFile(e);
+            <form className='formupload'>
+              <label htmlFor='upload'>
+                <b>Chọn file Excel: </b>
+                <input
+                  className='selectfilebutton'
+                  type='file'
+                  name='upload'
+                  id='upload'
+                  onChange={(e: any) => {
+                    readUploadFile(e);
+                  }}
+                />
+              </label>
+              <div
+                className='checkpobutton'
+                onClick={(e) => {
+                  e.preventDefault();
+                  confirmCheckPoHangLoat();
                 }}
-              />
+              >
+                Check PO
+              </div>
+              <div
+                className='uppobutton'
+                onClick={(e) => {
+                  e.preventDefault();
+                  confirmUpPoHangLoat();
+                }}
+              >
+                Up PO
+              </div>
             </form>
             <div className='insertPOTable'>
               {true && (
@@ -450,7 +707,7 @@ const PoManager = () => {
                   loading={isLoading}
                   rowHeight={35}
                   rows={uploadExcelJson}
-                  columns={column_excel}
+                  columns={column_excel2}
                   rowsPerPageOptions={[
                     5, 10, 50, 100, 500, 1000, 5000, 10000, 100000,
                   ]}
@@ -463,173 +720,212 @@ const PoManager = () => {
           <div className='singlenewpo'></div>
         </div>
       )}
-      { false && <div className='tracuuPO'>
-        <div className='tracuuPOform'>         
-          <div className='forminput'>
-            <div className='forminputcolumn'>
-              <label>
-                <b>Từ ngày:</b>
-                <input
-                  type='date'
-                  value={fromdate.slice(0, 10)}
-                  onChange={(e) => setFromDate(e.target.value)}
-                ></input>
-              </label>
-              <label>
-                <b>Tới ngày:</b>{" "}
-                <input
-                  type='date'
-                  value={todate.slice(0, 10)}
-                  onChange={(e) => setToDate(e.target.value)}
-                ></input>
-              </label>
+      {selection.trapo && (
+        <div className='tracuuPO'>
+          <div className='tracuuPOform'>
+            <div className='forminput'>
+              <div className='forminputcolumn'>
+                <label>
+                  <b>Từ ngày:</b>
+                  <input
+                    type='date'
+                    value={fromdate.slice(0, 10)}
+                    onChange={(e) => setFromDate(e.target.value)}
+                  ></input>
+                </label>
+                <label>
+                  <b>Tới ngày:</b>{" "}
+                  <input
+                    type='date'
+                    value={todate.slice(0, 10)}
+                    onChange={(e) => setToDate(e.target.value)}
+                  ></input>
+                </label>
+              </div>
+              <div className='forminputcolumn'>
+                <label>
+                  <b>Code KD:</b>{" "}
+                  <input
+                    type='text'
+                    placeholder='GH63-xxxxxx'
+                    value={codeKD}
+                    onChange={(e) => setCodeKD(e.target.value)}
+                  ></input>
+                </label>
+                <label>
+                  <b>Code CMS:</b>{" "}
+                  <input
+                    type='text'
+                    placeholder='7C123xxx'
+                    value={codeCMS}
+                    onChange={(e) => setCodeCMS(e.target.value)}
+                  ></input>
+                </label>
+              </div>
+              <div className='forminputcolumn'>
+                <label>
+                  <b>Tên nhân viên:</b>{" "}
+                  <input
+                    type='text'
+                    placeholder='Trang'
+                    value={empl_name}
+                    onChange={(e) => setEmpl_Name(e.target.value)}
+                  ></input>
+                </label>
+                <label>
+                  <b>Khách:</b>{" "}
+                  <input
+                    type='text'
+                    placeholder='SEVT'
+                    value={cust_name}
+                    onChange={(e) => setCust_Name(e.target.value)}
+                  ></input>
+                </label>
+              </div>
+              <div className='forminputcolumn'>
+                <label>
+                  <b>Loại sản phẩm:</b>{" "}
+                  <input
+                    type='text'
+                    placeholder='TSP'
+                    value={prod_type}
+                    onChange={(e) => setProdType(e.target.value)}
+                  ></input>
+                </label>
+                <label>
+                  <b>ID:</b>{" "}
+                  <input
+                    type='text'
+                    placeholder='12345'
+                    value={id}
+                    onChange={(e) => setID(e.target.value)}
+                  ></input>
+                </label>
+              </div>
+              <div className='forminputcolumn'>
+                <label>
+                  <b>PO NO:</b>{" "}
+                  <input
+                    type='text'
+                    placeholder='123abc'
+                    value={po_no}
+                    onChange={(e) => setPo_No(e.target.value)}
+                  ></input>
+                </label>
+                <label>
+                  <b>Vật liệu:</b>{" "}
+                  <input
+                    type='text'
+                    placeholder='SJ-203020HC'
+                    value={material}
+                    onChange={(e) => setMaterial(e.target.value)}
+                  ></input>
+                </label>
+              </div>
+              <div className='forminputcolumn'>
+                <label>
+                  <b>Over/OK:</b>{" "}
+                  <input
+                    type='text'
+                    placeholder='OVER'
+                    value={over}
+                    onChange={(e) => setOver(e.target.value)}
+                  ></input>
+                </label>
+                <label>
+                  <b>Invoice No:</b>{" "}
+                  <input
+                    type='text'
+                    placeholder='số invoice'
+                    value={invoice_no}
+                    onChange={(e) => setInvoice_No(e.target.value)}
+                  ></input>
+                </label>
+              </div>
             </div>
-            <div className='forminputcolumn'>
+            <div className='formbutton'>
               <label>
-                <b>Code KD:</b>{" "}
+                <b>All Time:</b>
                 <input
-                  type='text'
-                  placeholder='GH63-xxxxxx'
-                  value={codeKD}
-                  onChange={(e) => setCodeKD(e.target.value)}
+                  type='checkbox'
+                  name='alltimecheckbox'
+                  defaultChecked={alltime}
+                  onChange={() => setAllTime(!alltime)}
                 ></input>
               </label>
               <label>
-                <b>Code CMS:</b>{" "}
+                <b>Chỉ PO Tồn:</b>
                 <input
-                  type='text'
-                  placeholder='7C123xxx'
-                  value={codeCMS}
-                  onChange={(e) => setCodeCMS(e.target.value)}
+                  type='checkbox'
+                  name='pobalancecheckbox'
+                  defaultChecked={justpobalance}
+                  onChange={() => setJustPOBalance(!justpobalance)}
                 ></input>
               </label>
+              <Button
+                variant='contained'
+                color='success'
+                onClick={() => {
+                  handletraPO();
+                }}
+              >
+                Search
+              </Button>
             </div>
-            <div className='forminputcolumn'>
-              <label>
-                <b>Tên nhân viên:</b>{" "}
-                <input
-                  type='text'
-                  placeholder='Trang'
-                  value={empl_name}
-                  onChange={(e) => setEmpl_Name(e.target.value)}
-                ></input>
-              </label>
-              <label>
-                <b>Khách:</b>{" "}
-                <input
-                  type='text'
-                  placeholder='SEVT'
-                  value={cust_name}
-                  onChange={(e) => setCust_Name(e.target.value)}
-                ></input>
-              </label>
-            </div>
-            <div className='forminputcolumn'>
-              <label>
-                <b>Loại sản phẩm:</b>{" "}
-                <input
-                  type='text'
-                  placeholder='TSP'
-                  value={prod_type}
-                  onChange={(e) => setProdType(e.target.value)}
-                ></input>
-              </label>
-              <label>
-                <b>ID:</b>{" "}
-                <input
-                  type='text'
-                  placeholder='12345'
-                  value={id}
-                  onChange={(e) => setID(e.target.value)}
-                ></input>
-              </label>
-            </div>
-            <div className='forminputcolumn'>
-              <label>
-                <b>PO NO:</b>{" "}
-                <input
-                  type='text'
-                  placeholder='123abc'
-                  value={po_no}
-                  onChange={(e) => setPo_No(e.target.value)}
-                ></input>
-              </label>
-              <label>
-                <b>Vật liệu:</b>{" "}
-                <input
-                  type='text'
-                  placeholder='SJ-203020HC'
-                  value={material}
-                  onChange={(e) => setMaterial(e.target.value)}
-                ></input>
-              </label>
-            </div>
-            <div className='forminputcolumn'>
-              <label>
-                <b>Over/OK:</b>{" "}
-                <input
-                  type='text'
-                  placeholder='OVER'
-                  value={over}
-                  onChange={(e) => setOver(e.target.value)}
-                ></input>
-              </label>
-              <label>
-                <b>Invoice No:</b>{" "}
-                <input
-                  type='text'
-                  placeholder='số invoice'
-                  value={invoice_no}
-                  onChange={(e) => setInvoice_No(e.target.value)}
-                ></input>
-              </label>
+            <div className='formsummary'>
+              <div className='summarygroup'>
+                <div className='summaryvalue'>
+                  <b>
+                    PO QTY: {poSummary.total_po_qty.toLocaleString("en-US")} EA
+                  </b>
+                </div>
+                <div className='summaryvalue'>
+                  <b>
+                    PO AMOUNT:{" "}
+                    {poSummary.total_po_amount.toLocaleString("en-US", {
+                      style: "currency",
+                      currency: "USD",
+                    })}
+                  </b>
+                </div>
+              </div>
+              <div className='summarygroup'>
+                <div className='summaryvalue'>
+                  <b>
+                    DELIVERED QTY:{" "}
+                    {poSummary.total_delivered_qty.toLocaleString("en-US")} EA
+                  </b>
+                </div>
+                <div className='summaryvalue'>
+                  <b>
+                    DELIVERED AMOUNT:{" "}
+                    {poSummary.total_delivered_amount.toLocaleString("en-US", {
+                      style: "currency",
+                      currency: "USD",
+                    })}
+                  </b>
+                </div>
+              </div>
+              <div className='summarygroup'>
+                <div className='summaryvalue'>
+                  <b>
+                    PO BALANCE QTY:{" "}
+                    {poSummary.total_pobalance_qty.toLocaleString("en-US")} EA
+                  </b>
+                </div>
+                <div className='summaryvalue'>
+                  <b>
+                    PO BALANCE AMOUNT:{" "}
+                    {poSummary.total_pobalance_amount.toLocaleString("en-US", {
+                      style: "currency",
+                      currency: "USD",
+                    })}
+                  </b>
+                </div>
+              </div>
             </div>
           </div>
-          <div className='formbutton'>
-            <label>
-              <b>All Time:</b>
-              <input
-                type='checkbox'
-                name='alltimecheckbox'
-                defaultChecked={alltime}
-                onChange={() => setAllTime(!alltime)}
-              ></input>
-            </label>
-            <label>
-              <b>Chỉ PO Tồn:</b>
-              <input
-                type='checkbox'
-                name='pobalancecheckbox'
-                defaultChecked={justpobalance}
-                onChange={() => setJustPOBalance(!justpobalance)}
-              ></input>
-            </label>
-            <Button
-              variant='contained'
-              color='success'
-              onClick={() => {
-                handletraPO();
-              }}
-            >
-              Search
-            </Button>
-          </div>
-          <div className='formsummary'>
-            <div className='summarygroup'>
-              <div className="summaryvalue"><b>PO QTY: {poSummary.total_po_qty.toLocaleString('en-US')} EA</b></div>
-              <div className="summaryvalue"><b>PO AMOUNT: {poSummary.total_po_amount.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</b></div>             
-            </div>
-            <div className='summarygroup'>
-            <div className="summaryvalue"><b>DELIVERED QTY: {poSummary.total_delivered_qty.toLocaleString('en-US')} EA</b></div>             
-              <div className="summaryvalue"><b>DELIVERED AMOUNT: {poSummary.total_delivered_amount.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</b></div>              
-            </div>
-            <div className='summarygroup'>
-            <div className="summaryvalue"><b>PO BALANCE QTY: {poSummary.total_pobalance_qty.toLocaleString('en-US')} EA</b></div>
-            <div className="summaryvalue"><b>PO BALANCE AMOUNT: {poSummary.total_pobalance_amount.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</b></div>             
-            </div>
-          </div>
-        </div>
-        <div className='tracuuPOTable'>         
+          <div className='tracuuPOTable'>
             <DataGrid
               components={{
                 Toolbar: CustomToolbarPOTable,
@@ -647,9 +943,89 @@ const PoManager = () => {
               checkboxSelection
               disableSelectionOnClick
               onSelectionModelChange={(ids) => {}}
-            />          
+            />
+          </div>
         </div>
-      </div>}
+      )}
+
+      {selection.them1po && (
+        <div className='them1po'>
+          <div className='formnho'>
+           
+            <div className='dangkyform'>
+            <h3>Thêm PO mới</h3>
+              <div className='dangkyinput'>
+                <div className='dangkyinputbox'>
+                <label>
+                    <b>Khách hàng:</b>{" "}
+                  <Autocomplete
+                   size="small"
+                    disablePortal                    
+                    options={top100Films}
+                    className='autocomplete'                    
+                    renderInput={(params) => (
+                     <TextField {...params} label='Movie'/>
+                    )}
+                  />
+                  </label>
+                  <label>
+                    <b>Code hàng:</b>{" "}
+                  <Autocomplete
+                    size="small"
+                    disablePortal                    
+                    options={top100Films}
+                    className='autocomplete'                    
+                    renderInput={(params) => (
+                     <TextField {...params} label='Movie'/>
+                    )}
+                  />
+                  </label>
+                  <label>
+                    <b>PO Date:</b>
+                    <input
+                      className='inputdata' 
+                      type='date'
+                      value={fromdate.slice(0, 10)}
+                      onChange={(e) => setFromDate(e.target.value)}
+                    ></input>
+                  </label>
+                  <label>
+                    <b>RD Date:</b>{" "}
+                    <input
+                      className='inputdata' 
+                      type='date'
+                      value={todate.slice(0, 10)}
+                      onChange={(e) => setToDate(e.target.value)}
+                    ></input>
+                  </label>
+
+                  <label>
+                    <b>PO NO:</b>{" "}
+                  <TextField  size="small" color="success" className='autocomplete' id="outlined-basic" label="Số PO" variant="outlined" />
+                  </label>
+                  <label>
+                    <b>PO QTY:</b>{" "}
+                  <TextField  size="small" color="success" className='autocomplete' id="outlined-basic" label="PO QTY" variant="outlined" />
+                  </label>
+                  <label>
+                    <b>Price:</b>{" "}
+                  <TextField  size="small"  color="success" className='autocomplete' id="outlined-basic" label="Price" variant="outlined" />
+                  </label>                 
+                  <label>
+                    <b>Remark:</b>{" "}
+                  <TextField  size="small"  color="success" className='autocomplete' id="outlined-basic" label="Remark" variant="outlined" />
+                  </label>                 
+                 
+                </div>
+              </div>
+              <div className='dangkybutton'>
+                <button className='thembutton'>Đăng ký</button>
+                <button className='xoabutton'>Clear</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
