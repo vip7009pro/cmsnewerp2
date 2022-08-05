@@ -1,14 +1,17 @@
-import { Autocomplete, Button,  LinearProgress, TextField } from '@mui/material';
-import { DataGrid, GridToolbarColumnsButton, GridToolbarContainer, GridToolbarDensitySelector, GridToolbarFilterButton, GridToolbarQuickFilter } from '@mui/x-data-grid';
+import { Autocomplete,  IconButton,  LinearProgress,TextField } from '@mui/material';
+import { DataGrid, GridSelectionModel, GridToolbarColumnsButton, GridToolbarContainer, GridToolbarDensitySelector, GridToolbarFilterButton, GridToolbarQuickFilter } from '@mui/x-data-grid';
 import moment from 'moment';
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState, useTransition } from 'react'
+import {FcSearch } from 'react-icons/fc';
+import {AiFillEdit, AiFillFileAdd, AiFillFileExcel } from "react-icons/ai";
 import Swal from 'sweetalert2';
 import * as XLSX from 'xlsx';
 import { generalQuery } from '../../../api/Api';
 import { UserContext } from '../../../api/Context';
 import { SaveExcel } from '../../../api/GlobalFunction';
+import { MdOutlineDelete } from 'react-icons/md';
 import "./PoManager.scss"
-
+import { FaFileInvoiceDollar } from 'react-icons/fa';
 
 
 interface POTableData {
@@ -43,7 +46,6 @@ interface POTableData {
   OVERDUE: string;
   REMARK: string;
 }
-
 interface POSummaryData {
   total_po_qty :number,
   total_delivered_qty: number,
@@ -52,12 +54,26 @@ interface POSummaryData {
   total_delivered_amount: number,
   total_pobalance_amount: number,
 }
-
+interface  CodeListData {
+  G_CODE: string, 
+  G_NAME: string, 
+  PROD_LAST_PRICE: number,
+  USE_YN: string,  
+}
+interface CustomerListData {
+  CUST_CD: string, 
+  CUST_NAME_KD: string
+}
 const PoManager = () => {
+
+
+
+  const [isPending, startTransition] = useTransition();
   const [selection, setSelection] = useState<any>({
     trapo: true,
     thempohangloat:false,
     them1po: false,
+    them1invoice:false
   });
   const [userData, setUserData] = useContext(UserContext);
   const [uploadExcelJson, setUploadExcelJSon] = useState<Array<any>>([]);
@@ -73,54 +89,67 @@ const PoManager = () => {
   const [id,setID] =useState('');
   const [alltime, setAllTime] = useState(true); 
   const [justpobalance, setJustPOBalance] = useState(true); 
+  const [selectedCode, setSelectedCode] = useState<CodeListData|null>();
+  const [selectedCust_CD, setSelectedCust_CD] = useState<CustomerListData|null>();
+  const [newpodate, setNewPoDate] = useState(moment().format('YYYY-MM-DD'));
+  const [newrddate, setNewRdDate] = useState(moment().format('YYYY-MM-DD'));
+  const [newpono, setNewPoNo] = useState('');
+  const [newpoqty, setNewPoQty] = useState('');
+  const [newpoprice, setNewPoPrice] = useState('');
+  const [newporemark, setNewPoRemark] = useState('');
+
+  const [newinvoiceQTY, setNewInvoiceQty] =  useState<number>(0);
+  const [newinvoicedate, setNewInvoiceDate] = useState(moment().format('YYYY-MM-DD'));
+  const [newinvoiceRemark,setNewInvoiceRemark] = useState('');
+
+
   const [poSummary, setPoSummary] = useState<POSummaryData>({
     total_po_qty :0,
     total_delivered_qty: 0,
-    total_pobalance_qty: 1000000,
+    total_pobalance_qty: 0,
     total_po_amount :0,
     total_delivered_amount: 0,
     total_pobalance_amount: 0,
   });
-
-
+  const [customerList, setCustomerList] = useState<CustomerListData[]>([]);
+  const [codeList, setCodeList] = useState<CodeListData[]>([]);
   const [po_no,setPo_No] =useState('');
   const [material,setMaterial] =useState('');
   const [over,setOver] =useState('');
   const [invoice_no,setInvoice_No] =useState('');
-
   const [podatatable, setPoDataTable] = useState<Array<POTableData>>([]);
-  const column_potable = [
-    { field: "PO_ID", headerName: "PO_ID", width: 100 },
-    { field: "CUST_NAME_KD", headerName: "CUST_NAME_KD", width: 200 },
+  const [podatatablefilter, setPoDataTableFilter] = useState<Array<POTableData>>([]);
+  const [selectedID,setSelectedID] = useState<number|null>();
+  const column_potable = [   
+    { field: "CUST_NAME_KD", headerName: "CUST_NAME_KD", width: 120 },
     { field: "PO_NO", headerName: "PO_NO", width: 110 },
-    { field: "G_NAME", headerName: "G_NAME", width: 310,},
-    { field: "G_NAME_KD", headerName: "G_NAME_KD", width: 230 },
-    { field: "G_CODE", headerName: "G_CODE", width: 110 },
-    { field: "PO_DATE", headerName: "PO_DATE", width: 110 },
-    { field: "RD_DATE", headerName: "RD_DATE", width: 110 },
-    { field: "PROD_PRICE", headerName: "PROD_PRICE", width: 110 , renderCell: (params:any) => {return <span style={{color:'gray'}}><b>{params.row.PROD_PRICE.toLocaleString('en-US' ,{style:'decimal',maximumFractionDigits:8})}</b></span>}},
-    { field: "PO_QTY", headerName: "PO_QTY", width: 110 , renderCell: (params:any) => {return <span style={{color:'blue'}}><b>{params.row.PO_QTY.toLocaleString('en-US')}</b></span>} },
+    { field: "G_NAME", headerName: "G_NAME", width: 150,},
+    { field: "G_NAME_KD", headerName: "G_NAME_KD", width: 120 },
+    { field: "G_CODE", headerName: "G_CODE", width: 100 },
+    { field: "PO_DATE", headerName: "PO_DATE", width: 100 },
+    { field: "RD_DATE", headerName: "RD_DATE", width: 100 },
+    { field: "PROD_PRICE", headerName: "PROD_PRICE", width: 100 , renderCell: (params:any) => {return <span style={{color:'gray'}}><b>{params.row.PROD_PRICE.toLocaleString('en-US' ,{style:'decimal',maximumFractionDigits:8})}</b></span>}},
+    { field: "PO_QTY", headerName: "PO_QTY", width: 100 , renderCell: (params:any) => {return <span style={{color:'blue'}}><b>{params.row.PO_QTY.toLocaleString('en-US')}</b></span>} },
     { field: "TOTAL_DELIVERED", headerName: "TOTAL_DELIVERED", width: 110 , renderCell: (params:any) => {return <span style={{color:'blue'}}><b>{params.row.TOTAL_DELIVERED.toLocaleString('en-US')}</b></span>} },
-    { field: "PO_BALANCE", headerName: "PO_BALANCE", width: 110 , renderCell: (params:any) => {return <span style={{color:'blue'}}><b>{params.row.PO_BALANCE.toLocaleString('en-US')}</b></span>} },
-    { field: "PO_AMOUNT", headerName: "PO_AMOUNT", width: 110, renderCell: (params:any) => {return <span style={{color:'green'}}><b>{params.row.PO_AMOUNT.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</b></span>}  },
-    { field: "DELIVERED_AMOUNT", headerName: "DELIVERED_AMOUNT", width: 110, renderCell: (params:any) => {return <span style={{color:'green'}}><b>{params.row.DELIVERED_AMOUNT.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</b></span>}  },
-    { field: "BALANCE_AMOUNT", headerName: "BALANCE_AMOUNT", width: 110, renderCell: (params:any) => {return <span style={{color:'green'}}><b>{params.row.BALANCE_AMOUNT.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</b></span>}  },
-    { field: "TON_KIEM", headerName: "TON_KIEM", width: 110, renderCell: (params:any) => {return <span>{params.row.TON_KIEM.toLocaleString('en-US')}</span>}  },
-    { field: "BTP", headerName: "BTP", width: 110, renderCell: (params:any) => {return <span>{params.row.BTP.toLocaleString('en-US')}</span>}   },
-    { field: "TP", headerName: "TP", width: 110, renderCell: (params:any) => {return <span>{params.row.TP.toLocaleString('en-US')}</span>}   },
-    { field: "BLOCK_QTY", headerName: "BLOCK_QTY", width: 110, renderCell: (params:any) => {return <span>{params.row.BLOCK_QTY.toLocaleString('en-US')}</span>}   },
-    { field: "GRAND_TOTAL_STOCK", headerName: "GRAND_TOTAL_STOCK", width: 110 , renderCell: (params:any) => {return <span><b>{params.row.GRAND_TOTAL_STOCK.toLocaleString('en-US')}</b></span>}  },
-    { field: "EMPL_NAME", headerName: "EMPL_NAME", width: 210 },
-    { field: "PROD_TYPE", headerName: "PROD_TYPE", width: 110 },
-    { field: "M_NAME_FULLBOM", headerName: "M_NAME_FULLBOM", width: 510 },
+    { field: "PO_BALANCE", headerName: "PO_BALANCE", width: 100 , renderCell: (params:any) => {return <span style={{color:'blue'}}><b>{params.row.PO_BALANCE.toLocaleString('en-US')}</b></span>} },
+    { field: "PO_AMOUNT", headerName: "PO_AMOUNT", width: 100, renderCell: (params:any) => {return <span style={{color:'green'}}><b>{params.row.PO_AMOUNT.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</b></span>}  },
+    { field: "DELIVERED_AMOUNT", headerName: "DELIVERED_AMOUNT", width: 100, renderCell: (params:any) => {return <span style={{color:'green'}}><b>{params.row.DELIVERED_AMOUNT.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</b></span>}  },
+    { field: "BALANCE_AMOUNT", headerName: "BALANCE_AMOUNT", width: 100, renderCell: (params:any) => {return <span style={{color:'green'}}><b>{params.row.BALANCE_AMOUNT.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</b></span>}  },
+    { field: "TON_KIEM", headerName: "TON_KIEM", width: 100, renderCell: (params:any) => {return <span>{params.row.TON_KIEM.toLocaleString('en-US')}</span>}  },
+    { field: "BTP", headerName: "BTP", width: 90, renderCell: (params:any) => {return <span>{params.row.BTP.toLocaleString('en-US')}</span>}   },
+    { field: "TP", headerName: "TP", width: 90, renderCell: (params:any) => {return <span>{params.row.TP.toLocaleString('en-US')}</span>}   },
+    { field: "BLOCK_QTY", headerName: "BLOCK_QTY", width: 90, renderCell: (params:any) => {return <span>{params.row.BLOCK_QTY.toLocaleString('en-US')}</span>}   },
+    { field: "GRAND_TOTAL_STOCK", headerName: "GRAND_TOTAL_STOCK", width: 90 , renderCell: (params:any) => {return <span><b>{params.row.GRAND_TOTAL_STOCK.toLocaleString('en-US')}</b></span>}  },
+    { field: "EMPL_NAME", headerName: "EMPL_NAME", width: 150 },
+    { field: "PROD_TYPE", headerName: "PROD_TYPE", width: 90 },
+    { field: "M_NAME_FULLBOM", headerName: "M_NAME_FULLBOM", width: 110 },
     { field: "PROD_MAIN_MATERIAL", headerName: "PROD_MAIN_MATERIAL", width: 110},
     { field: "POMONTH", headerName: "POMONTH", width: 80 },
     { field: "POWEEKNUM", headerName: "POWEEKNUM", width: 80 },
     { field: "OVERDUE", headerName: "OVERDUE", width: 80 },
     { field: "REMARK", headerName: "REMARK", width: 110 },
+    { field: "PO_ID", headerName: "PO_ID", width: 90 },
   ];
-
-
   const column_excel2 = [
     { field: "CUST_CD", headerName: "CUST_CD", width: 120 },    
     { field: "G_CODE", headerName: "G_CODE", width: 120 },
@@ -152,13 +181,16 @@ const PoManager = () => {
       <GridToolbarContainer>
         <GridToolbarColumnsButton />
         <GridToolbarFilterButton />
-        <GridToolbarDensitySelector />           
-        <button className='saveexcelbutton' onClick={()=>{SaveExcel(podatatable,"PO Table")}}>Save Excel</button>
+        <GridToolbarDensitySelector /> 
+        <IconButton className='buttonIcon'onClick={()=>{SaveExcel(podatatable,"PO Table")}}><AiFillFileExcel color='green' size={25}/>SAVE</IconButton>
+        <IconButton className='buttonIcon'onClick={()=>{setSelection({...selection, trapo: true, thempohangloat:false, them1po:!selection.them1po, them1invoice: false}); clearPOform();}}><AiFillFileAdd color='blue' size={25}/>NEW PO</IconButton>
+        <IconButton className='buttonIcon'onClick={()=>{handle_fillsuaformInvoice(); }}><FaFileInvoiceDollar color='lightgreen' size={25}/>NEW INV</IconButton>
+        <IconButton className='buttonIcon'onClick={()=>{ handle_fillsuaform();}}><AiFillEdit color='orange' size={25}/>SỬA PO</IconButton>
+        <IconButton className='buttonIcon'onClick={()=>{handleConfirmDeletePO();}}><MdOutlineDelete color='red' size={25}/>XÓA PO</IconButton>        
         <GridToolbarQuickFilter/>
       </GridToolbarContainer>
     );
   }
-
   const readUploadFile = (e:any) => {
     e.preventDefault();    
     if (e.target.files) {
@@ -176,7 +208,6 @@ const PoManager = () => {
               }
             });
             uploadexcelcolumn.push ({field: 'CHECKSTATUS', headerName: 'CHECKSTATUS', width: 350});
-
             setColumn_Excel(uploadexcelcolumn);
             setUploadExcelJSon(json.map((element:any, index:number) => {
               return {...element, id: index, CHECKSTATUS:'Waiting'}
@@ -186,7 +217,6 @@ const PoManager = () => {
         reader.readAsArrayBuffer(e.target.files[0]);        
     }
 }
-
   const handletraPO = ()=> {
     setisLoading(true);
     generalQuery('traPODataFull',{
@@ -215,7 +245,6 @@ const PoManager = () => {
               RD_DATE : element.RD_DATE.slice(0,10),
             }
           })
-          
           let po_summary_temp: POSummaryData = {
             total_po_qty :0,
             total_delivered_qty: 0,
@@ -247,17 +276,12 @@ const PoManager = () => {
     .catch(error => {
         console.log(error);
     });
-
   }
-
-
   const handle_checkPOHangLoat = async () => {
-
     setisLoading(true);
     let tempjson = uploadExcelJson;
     for (let i = 0; i < uploadExcelJson.length; i++) {
       let err_code:number = 0;
-
       await generalQuery("checkPOExist", {
         G_CODE: uploadExcelJson[i].G_CODE,
         CUST_CD: uploadExcelJson[i].CUST_CD,
@@ -266,19 +290,16 @@ const PoManager = () => {
         .then((response) => {
           console.log(response.data.tk_status);         
           if (response.data.tk_status !== "NG") {
-            
+            err_code = 1;
           } else {
             //tempjson[i].CHECKSTATUS = "NG: Đã tồn tại PO";
-            err_code = 1;
           }
         })
         .catch((error) => {
           console.log(error);          
         });
-
         let now = moment();
         let po_date = moment(uploadExcelJson[i].PO_DATE);
-
         if(now < po_date) {
           err_code =2;
           //tempjson[i].CHECKSTATUS = "NG: Ngày PO không được trước ngày hôm nay";
@@ -287,13 +308,11 @@ const PoManager = () => {
         {
           //tempjson[i].CHECKSTATUS = "OK";
         }
-
-
         await generalQuery("checkGCodeVer", {
           G_CODE: uploadExcelJson[i].G_CODE         
         })
           .then((response) => {
-            console.log(response.data.tk_status);
+            //console.log(response.data.tk_status);
             if (response.data.tk_status !== "NG") {
               console.log(response.data.data);
               if(response.data.data[0].USE_YN ==='Y')
@@ -305,7 +324,6 @@ const PoManager = () => {
                 //tempjson[i].CHECKSTATUS = "NG: Ver này đã bị khóa";
                 err_code =3;
               }
-              
             } else {
               //tempjson[i].CHECKSTATUS = "NG: Không có code CMS này";
               err_code = 4;
@@ -314,7 +332,6 @@ const PoManager = () => {
           .catch((error) => {
             console.log(error);
           });
-        
           if(err_code === 0)
           {
             tempjson[i].CHECKSTATUS = "OK";
@@ -341,11 +358,9 @@ const PoManager = () => {
     setUploadExcelJSon(tempjson);
   };
   const handle_upPOHangLoat = async () => {
-   
     let tempjson = uploadExcelJson;
     for (let i = 0; i < uploadExcelJson.length; i++) {
       let err_code:number = 0;
-
       await generalQuery("checkPOExist", {
         G_CODE: uploadExcelJson[i].G_CODE,
         CUST_CD: uploadExcelJson[i].CUST_CD,
@@ -354,19 +369,16 @@ const PoManager = () => {
         .then((response) => {
           console.log(response.data.tk_status);
           if (response.data.tk_status !== "NG") {
-            
-          } else {
-            //tempjson[i].CHECKSTATUS = "NG: Đã tồn tại PO";
             err_code = 1;
+            //tempjson[i].CHECKSTATUS = "NG: Đã tồn tại PO";
+          } else {
           }
         })
         .catch((error) => {
           console.log(error);
         });
-
         let now = moment();
         let po_date = moment(uploadExcelJson[i].PO_DATE);
-
         if(now < po_date) {
           err_code =2;
           //tempjson[i].CHECKSTATUS = "NG: Ngày PO không được trước ngày hôm nay";
@@ -375,7 +387,6 @@ const PoManager = () => {
         {
           //tempjson[i].CHECKSTATUS = "OK";
         }
-
         await generalQuery("checkGCodeVer", {
           G_CODE: uploadExcelJson[i].G_CODE         
         })
@@ -392,7 +403,6 @@ const PoManager = () => {
                 //tempjson[i].CHECKSTATUS = "NG: Ver này đã bị khóa";
                 err_code =3;
               }
-              
             } else {
               //tempjson[i].CHECKSTATUS = "NG: Không có code CMS này";
               err_code = 4;
@@ -401,7 +411,6 @@ const PoManager = () => {
           .catch((error) => {
             console.log(error);
           });
-        
           if(err_code === 0)
           {
             await generalQuery("insert_po", {
@@ -443,12 +452,10 @@ const PoManager = () => {
           {
             tempjson[i].CHECKSTATUS = "NG: Không có code CMS này";
           } 
-           
     }
     Swal.fire("Thông báo", "Đã hoàn thành thêm PO hàng loạt", "success");  
     setUploadExcelJSon(tempjson);
   };
-
   const confirmUpPoHangLoat = () => {
     Swal.fire({
       title: 'Chắc chắn muốn thêm PO hàng loạt ?',
@@ -468,7 +475,6 @@ const PoManager = () => {
         handle_upPOHangLoat();
       }
     })
-
   }
   const confirmCheckPoHangLoat = () => {
     Swal.fire({
@@ -490,154 +496,442 @@ const PoManager = () => {
       }
     })
   }
-
+  const getcustomerlist =()=> {
+     generalQuery("selectcustomerList", { })
+      .then((response) => {        
+        if (response.data.tk_status !== "NG") {
+          setCustomerList(response.data.data);          
+        } else {          
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+  const getcodelist = (G_NAME: string) => {
+    startTransition(() => {
+      generalQuery("selectcodeList", { G_NAME: G_NAME})
+      .then((response) => {        
+        if (response.data.tk_status !== "NG") {
+          setCodeList(response.data.data);          
+        } else {
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });     
+    });   
+  }
   const setNav = (choose: number) => {
     if(choose ===1 )
     {
-      setSelection({...selection, trapo: true, thempohangloat:false, them1po:false});
+      setSelection({...selection, trapo: true, thempohangloat:false, them1po:false,them1invoice:false});
     }
     else if(choose ===2 )
     {
-      setSelection({...selection, trapo: false, thempohangloat:true, them1po:false});
+      setSelection({...selection, trapo: false, thempohangloat:true, them1po:false,them1invoice:false});
     }
     else if(choose ===3 )
     {
-      setSelection({...selection, trapo: false, thempohangloat:false, them1po:true});
+      setSelection({...selection, trapo: false, thempohangloat:false, them1po:true,them1invoice:false});
+    }
+  }
+  const handle_add_1PO = async ()=> {
+    let err_code:number = 0;
+      await generalQuery("checkPOExist", {
+        G_CODE: selectedCode?.G_CODE,
+        CUST_CD: selectedCust_CD?.CUST_CD,
+        PO_NO: newpono,
+      })
+        .then((response) => {
+          console.log(response.data.tk_status);
+          if (response.data.tk_status !== "NG") {
+            err_code = 1;
+            //tempjson[i].CHECKSTATUS = "NG: Đã tồn tại PO";
+          } else {            
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+        let now = moment();
+        let po_date = moment(newpodate);
+        if(now < po_date) {
+          err_code =2;
+          //tempjson[i].CHECKSTATUS = "NG: Ngày PO không được trước ngày hôm nay";
+        }
+        else
+        {
+          //tempjson[i].CHECKSTATUS = "OK";
+        }
+        if(selectedCode?.USE_YN==='N')
+        {
+          err_code =3;
+        }
+        if(selectedCode?.G_CODE === '' || selectedCust_CD?.CUST_CD === '' || newpono ==='' || userData.EMPL_NO ==='' || newpoprice=== '')
+        {
+          err_code = 4;
+        }
+          if(err_code === 0)
+          {
+            await generalQuery("insert_po", {
+              G_CODE: selectedCode?.G_CODE,
+              CUST_CD: selectedCust_CD?.CUST_CD,
+              PO_NO: newpono,
+              EMPL_NO: userData.EMPL_NO,
+              PO_QTY: newpoqty,
+              PO_DATE: newpodate,
+              RD_DATE: newrddate,
+              PROD_PRICE: newpoprice, 
+              REMARK: newporemark
+            })
+              .then((response) => {
+                console.log(response.data.tk_status);
+                if (response.data.tk_status !== "NG") {
+                  Swal.fire("Thông báo", "Thêm PO mới thành công", "success");  
+                } else {     
+                  Swal.fire("Thông báo", "Thêm PO mới thất bại: " +response.data.message , "error"); 
+                }
+              })
+              .catch((error) => {
+                console.log(error);
+              });
+          }
+          else if(err_code ===1)
+          {
+            Swal.fire("Thông báo", "NG: Đã tồn tại PO" , "error"); 
+          }
+          else if(err_code ===2)
+          {
+            Swal.fire("Thông báo", "NG: Ngày PO không được trước ngày hôm nay" , "error"); 
+          }
+          else if(err_code ===3)
+          {
+            Swal.fire("Thông báo", "NG: Ver này đã bị khóa" , "error"); 
+          }
+          else if(err_code ===4)
+          {            
+            Swal.fire("Thông báo", "NG: Không để trống thông tin bắt buộc" , "error"); 
+          } 
+  }
+  const handle_add_1Invoice = async ()=> {
+    let err_code:number = 0;
+      await generalQuery("checkPOExist", {
+        G_CODE: selectedCode?.G_CODE,
+        CUST_CD: selectedCust_CD?.CUST_CD,
+        PO_NO: newpono,
+      })
+        .then((response) => {
+          console.log(response.data.tk_status);
+          if (response.data.tk_status !== "NG") {
+           
+            //tempjson[i].CHECKSTATUS = "NG: Đã tồn tại PO";
+          } else {   
+            err_code = 1;         
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+        let now = moment();
+        let invoicedate = moment(newinvoicedate);
+        if(now < invoicedate) {
+          err_code =2;
+          //tempjson[i].CHECKSTATUS = "NG: Ngày PO không được trước ngày hôm nay";
+        }
+        else
+        {
+          //tempjson[i].CHECKSTATUS = "OK";
+        }
+        if(selectedCode?.USE_YN==='N')
+        {
+          err_code =3;
+        }
+        if(selectedCode?.G_CODE === '' || selectedCust_CD?.CUST_CD === '' || newinvoicedate ==='' || userData.EMPL_NO ==='' || newinvoiceQTY=== 0)
+        {
+          err_code = 4;
+        }
+          if(err_code === 0)
+          {
+            await generalQuery("insert_invoice", {
+              G_CODE: selectedCode?.G_CODE,
+              CUST_CD: selectedCust_CD?.CUST_CD,
+              PO_NO: newpono,
+              EMPL_NO: userData.EMPL_NO,
+              DELIVERY_QTY: newinvoiceQTY,
+              PO_DATE: newpodate,
+              RD_DATE: newrddate,
+              DELIVERY_DATE: newinvoicedate, 
+              REMARK: newinvoiceRemark
+            })
+              .then((response) => {
+                console.log(response.data.tk_status);
+                if (response.data.tk_status !== "NG") {
+                  Swal.fire("Thông báo", "Thêm Invoice mới thành công", "success");  
+                } else {     
+                  Swal.fire("Thông báo", "Thêm Invoice mới thất bại: " +response.data.message , "error"); 
+                }
+              })
+              .catch((error) => {
+                console.log(error);
+              });
+          }
+          else if(err_code ===1)
+          {
+            Swal.fire("Thông báo", "NG: Không tồn tại PO" , "error"); 
+          }
+          else if(err_code ===2)
+          {
+            Swal.fire("Thông báo", "NG: Ngày Invoice không được trước ngày hôm nay" , "error"); 
+          }
+          else if(err_code ===3)
+          {
+            Swal.fire("Thông báo", "NG: Ver này đã bị khóa" , "error"); 
+          }
+          else if(err_code ===4)
+          {            
+            Swal.fire("Thông báo", "NG: Không để trống thông tin bắt buộc" , "error"); 
+          } 
+  }
+  const clearPOform = () => {
+    setNewPoDate(moment().format('YYYY-MM-DD'));
+    setNewRdDate(moment().format('YYYY-MM-DD'));
+    setNewPoNo('');
+    setNewPoQty('');
+    setNewPoPrice('');
+    setNewPoRemark('');
+  }
+  const clearInvoiceform = () => {
+    setNewPoDate(moment().format('YYYY-MM-DD'));
+    setNewRdDate(moment().format('YYYY-MM-DD'));
+    setNewPoNo('');
+    setNewInvoiceQty(0);
+    setNewInvoiceDate('');
+    setNewInvoiceRemark('');
+  }
+  const handlePOSelectionforUpdate =(ids: GridSelectionModel) => {   
+    const selectedID = new Set(ids);
+    let datafilter = podatatable.filter((element: any) => selectedID.has(element.PO_ID));
+    if(datafilter.length>0)
+    {
+      setPoDataTableFilter(datafilter);      
+    }
+  }
+  const handle_fillsuaform =() => {
+    if(podatatablefilter.length ===1)
+    {
+      setSelection({...selection, trapo: true, thempohangloat:false, them1po:!selection.them1po});
+      const selectedCodeFilter: CodeListData = {
+        G_CODE: podatatablefilter[podatatablefilter.length-1].G_CODE, 
+        G_NAME: podatatablefilter[podatatablefilter.length-1].G_NAME, 
+        PROD_LAST_PRICE: Number(podatatablefilter[podatatablefilter.length-1].PROD_PRICE),
+        USE_YN: 'Y', 
+      }  
+      const selectedCustomerFilter: CustomerListData = {
+        CUST_CD: podatatablefilter[podatatablefilter.length-1].CUST_CD,  
+        CUST_NAME_KD: podatatablefilter[podatatablefilter.length-1].CUST_NAME_KD, 
+      }
+      setSelectedCode(selectedCodeFilter);
+      setSelectedCust_CD(selectedCustomerFilter);
+      setNewPoDate(podatatablefilter[podatatablefilter.length-1].PO_DATE);
+      setNewRdDate(podatatablefilter[podatatablefilter.length-1].RD_DATE);
+      setNewPoQty(podatatablefilter[podatatablefilter.length-1].PO_QTY.toString());
+      setNewPoNo(podatatablefilter[podatatablefilter.length-1].PO_NO);
+      setNewPoPrice(podatatablefilter[podatatablefilter.length-1].PROD_PRICE);
+      setNewPoRemark(podatatablefilter[podatatablefilter.length-1].REMARK);
+      setSelectedID(podatatablefilter[podatatablefilter.length-1].PO_ID);
+    }
+    else if(podatatablefilter.length ===0)
+    {
+      clearPOform();
+      Swal.fire("Thông báo", "Lỗi: Chọn ít nhất 1 PO để sửa" , "error");
+    }
+    else{
+      Swal.fire("Thông báo", "Lỗi: Chỉ tích chọn 1 dòng để sửa thôi" , "error");
     }
   }
 
-  const top100Films = [
-    { label: 'The Shawshank Redemption', year: 1994 },
-    { label: 'The Godfather', year: 1972 },
-    { label: 'The Godfather: Part II', year: 1974 },
-    { label: 'The Dark Knight', year: 2008 },
-    { label: '12 Angry Men', year: 1957 },
-    { label: "Schindler's List", year: 1993 },
-    { label: 'Pulp Fiction', year: 1994 },
+  const handle_fillsuaformInvoice =() => {
+    if(podatatablefilter.length ===1)
     {
-      label: 'The Lord of the Rings: The Return of the King',
-      year: 2003,
-    },
-    { label: 'The Good, the Bad and the Ugly', year: 1966 },
-    { label: 'Fight Club', year: 1999 },
+      setSelection({...selection, trapo: true, thempohangloat:false, them1po:false, them1invoice: true});       
+      const selectedCodeFilter: CodeListData = {
+        G_CODE: podatatablefilter[podatatablefilter.length-1].G_CODE, 
+        G_NAME: podatatablefilter[podatatablefilter.length-1].G_NAME, 
+        PROD_LAST_PRICE: Number(podatatablefilter[podatatablefilter.length-1].PROD_PRICE),
+        USE_YN: 'Y', 
+      }  
+      const selectedCustomerFilter: CustomerListData = {
+        CUST_CD: podatatablefilter[podatatablefilter.length-1].CUST_CD,  
+        CUST_NAME_KD: podatatablefilter[podatatablefilter.length-1].CUST_NAME_KD, 
+      }
+      setSelectedCode(selectedCodeFilter);
+      setSelectedCust_CD(selectedCustomerFilter);
+      setNewPoDate(podatatablefilter[podatatablefilter.length-1].PO_DATE);
+      setNewRdDate(podatatablefilter[podatatablefilter.length-1].RD_DATE);
+      setNewInvoiceQty(0);
+      setNewPoNo(podatatablefilter[podatatablefilter.length-1].PO_NO);
+      setNewInvoiceDate(moment().format('YYYY-MM-DD'));
+      setNewInvoiceRemark('');
+      setSelectedID(podatatablefilter[podatatablefilter.length-1].PO_ID);
+    }
+    else if(podatatablefilter.length ===0)
     {
-      label: 'The Lord of the Rings: The Fellowship of the Ring',
-      year: 2001,
-    },
-    {
-      label: 'Star Wars: Episode V - The Empire Strikes Back',
-      year: 1980,
-    },
-    { label: 'Forrest Gump', year: 1994 },
-    { label: 'Inception', year: 2010 },
-    {
-      label: 'The Lord of the Rings: The Two Towers',
-      year: 2002,
-    },
-    { label: "One Flew Over the Cuckoo's Nest", year: 1975 },
-    { label: 'Goodfellas', year: 1990 },
-    { label: 'The Matrix', year: 1999 },
-    { label: 'Seven Samurai', year: 1954 },
-    {
-      label: 'Star Wars: Episode IV - A New Hope',
-      year: 1977,
-    },
-    { label: 'City of God', year: 2002 },
-    { label: 'Se7en', year: 1995 },
-    { label: 'The Silence of the Lambs', year: 1991 },
-    { label: "It's a Wonderful Life", year: 1946 },
-    { label: 'Life Is Beautiful', year: 1997 },
-    { label: 'The Usual Suspects', year: 1995 },
-    { label: 'Léon: The Professional', year: 1994 },
-    { label: 'Spirited Away', year: 2001 },
-    { label: 'Saving Private Ryan', year: 1998 },
-    { label: 'Once Upon a Time in the West', year: 1968 },
-    { label: 'American History X', year: 1998 },
-    { label: 'Interstellar', year: 2014 },
-    { label: 'Casablanca', year: 1942 },
-    { label: 'City Lights', year: 1931 },
-    { label: 'Psycho', year: 1960 },
-    { label: 'The Green Mile', year: 1999 },
-    { label: 'The Intouchables', year: 2011 },
-    { label: 'Modern Times', year: 1936 },
-    { label: 'Raiders of the Lost Ark', year: 1981 },
-    { label: 'Rear Window', year: 1954 },
-    { label: 'The Pianist', year: 2002 },
-    { label: 'The Departed', year: 2006 },
-    { label: 'Terminator 2: Judgment Day', year: 1991 },
-    { label: 'Back to the Future', year: 1985 },
-    { label: 'Whiplash', year: 2014 },
-    { label: 'Gladiator', year: 2000 },
-    { label: 'Memento', year: 2000 },
-    { label: 'The Prestige', year: 2006 },
-    { label: 'The Lion King', year: 1994 },
-    { label: 'Apocalypse Now', year: 1979 },
-    { label: 'Alien', year: 1979 },
-    { label: 'Sunset Boulevard', year: 1950 },
-    {
-      label: 'Dr. Strangelove or: How I Learned to Stop Worrying and Love the Bomb',
-      year: 1964,
-    },
-    { label: 'The Great Dictator', year: 1940 },
-    { label: 'Cinema Paradiso', year: 1988 },
-    { label: 'The Lives of Others', year: 2006 },
-    { label: 'Grave of the Fireflies', year: 1988 },
-    { label: 'Paths of Glory', year: 1957 },
-    { label: 'Django Unchained', year: 2012 },
-    { label: 'The Shining', year: 1980 },
-    { label: 'WALL·E', year: 2008 },
-    { label: 'American Beauty', year: 1999 },
-    { label: 'The Dark Knight Rises', year: 2012 },
-    { label: 'Princess Mononoke', year: 1997 },
-    { label: 'Aliens', year: 1986 },
-    { label: 'Oldboy', year: 2003 },
-    { label: 'Once Upon a Time in America', year: 1984 },
-    { label: 'Witness for the Prosecution', year: 1957 },
-    { label: 'Das Boot', year: 1981 },
-    { label: 'Citizen Kane', year: 1941 },
-    { label: 'North by Northwest', year: 1959 },
-    { label: 'Vertigo', year: 1958 },
-    {
-      label: 'Star Wars: Episode VI - Return of the Jedi',
-      year: 1983,
-    },
-    { label: 'Reservoir Dogs', year: 1992 },
-    { label: 'Braveheart', year: 1995 },
-    { label: 'M', year: 1931 },
-    { label: 'Requiem for a Dream', year: 2000 },
-    { label: 'Amélie', year: 2001 },
-    { label: 'A Clockwork Orange', year: 1971 },
-    { label: 'Like Stars on Earth', year: 2007 },
-    { label: 'Taxi Driver', year: 1976 },
-    { label: 'Lawrence of Arabia', year: 1962 },
-    { label: 'Double Indemnity', year: 1944 },
-    {
-      label: 'Eternal Sunshine of the Spotless Mind',
-      year: 2004,
-    },
-    { label: 'Amadeus', year: 1984 },
-    { label: 'To Kill a Mockingbird', year: 1962 },
-    { label: 'Toy Story 3', year: 2010 },
-    { label: 'Logan', year: 2017 },
-    { label: 'Full Metal Jacket', year: 1987 },
-    { label: 'Dangal', year: 2016 },
-    { label: 'The Sting', year: 1973 },
-    { label: '2001: A Space Odyssey', year: 1968 },
-    { label: "Singin' in the Rain", year: 1952 },
-    { label: 'Toy Story', year: 1995 },
-    { label: 'Bicycle Thieves', year: 1948 },
-    { label: 'The Kid', year: 1921 },
-    { label: 'Inglourious Basterds', year: 2009 },
-    { label: 'Snatch', year: 2000 },
-    { label: '3 Idiots', year: 2009 },
-    { label: 'Monty Python and the Holy Grail', year: 1975 },
-  ];
+      clearPOform();
+      Swal.fire("Thông báo", "Lỗi: Chọn ít nhất 1 PO để thêm invoice" , "error");
+    }
+    else{
+      Swal.fire("Thông báo", "Lỗi: Chỉ tích chọn 1 dòng thêm thôi" , "error");
+    }
+  }
 
+  const updatePO= async()=> {
+    let err_code:number = 0;
+      await generalQuery("checkPOExist", {
+        G_CODE: selectedCode?.G_CODE,
+        CUST_CD: selectedCust_CD?.CUST_CD,
+        PO_NO: newpono,
+      })
+        .then((response) => {
+          console.log(response.data.tk_status);
+          if (response.data.tk_status !== "NG") {
+            //tempjson[i].CHECKSTATUS = "NG: Đã tồn tại PO";
+          } else {      
+            err_code = 1;      
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+        let now = moment();
+        let po_date = moment(newpodate);
+        if(now < po_date) {
+          err_code =2;
+          //tempjson[i].CHECKSTATUS = "NG: Ngày PO không được trước ngày hôm nay";
+        }
+        else
+        {
+          //tempjson[i].CHECKSTATUS = "OK";
+        }
+        if(selectedCode?.USE_YN==='N')
+        {
+          err_code =3;
+        }
+        if(selectedCode?.G_CODE === '' || selectedCust_CD?.CUST_CD === '' || newpono ==='' || userData.EMPL_NO ==='' || newpoprice=== '')
+        {
+          err_code = 4;
+        }
+          if(err_code === 0)
+          {
+            await generalQuery("update_po", {
+              G_CODE: selectedCode?.G_CODE,
+              CUST_CD: selectedCust_CD?.CUST_CD,
+              PO_NO: newpono,
+              EMPL_NO: userData.EMPL_NO,
+              PO_QTY: newpoqty,
+              PO_DATE: newpodate,
+              RD_DATE: newrddate,
+              PROD_PRICE: newpoprice, 
+              REMARK: newporemark,
+              PO_ID: selectedID
+            })
+              .then((response) => {
+                console.log(response.data.tk_status);
+                if (response.data.tk_status !== "NG") {
+                  Swal.fire("Thông báo", "Update Po thành công", "success");  
+                } else {     
+                  Swal.fire("Thông báo", "Update PO thất bại: " +response.data.message , "error"); 
+                }
+              })
+              .catch((error) => {
+                console.log(error);
+              });
+          }
+          else if(err_code ===1)
+          {
+            Swal.fire("Thông báo", "NG: Không tồn tại PO" , "error"); 
+          }
+          else if(err_code ===2)
+          {
+            Swal.fire("Thông báo", "NG: Ngày PO không được trước ngày hôm nay" , "error"); 
+          }
+          else if(err_code ===3)
+          {
+            Swal.fire("Thông báo", "NG: Ver này đã bị khóa" , "error"); 
+          }
+          else if(err_code ===4)
+          {            
+            Swal.fire("Thông báo", "NG: Không để trống thông tin bắt buộc" , "error"); 
+          } 
+          else 
+          {
+            Swal.fire("Thông báo", "Kiểm tra xem PO có giao hàng chưa?" , "error"); 
+          }
+  }
+  const deletePO= async()=> {
+    if(podatatablefilter.length>=1)
+    {
+      let err_code:boolean =false;
+      for(let i=0;i<podatatablefilter.length;i++)
+      {
+        if(podatatablefilter[i].EMPL_NO === userData.EMPL_NO)
+        {
+          await generalQuery("delete_po", {           
+            PO_ID: podatatablefilter[i].PO_ID
+          })
+          .then((response) => {
+            console.log(response.data.tk_status);
+            if (response.data.tk_status !== "NG") {
+              //Swal.fire("Thông báo", "Delete Po thành công", "success");  
+            } else {     
+              //Swal.fire("Thông báo", "Update PO thất bại: " +response.data.message , "error"); 
+              err_code = true;
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });  
+        }
+      }      
+
+      if(!err_code)
+      {
+        Swal.fire("Thông báo", "Xóa PO thành công (chỉ PO của người đăng nhập)!" , "success"); 
+      }
+      else
+      {
+        Swal.fire("Thông báo", "Có lỗi, khả năng xóa phải PO đã có phát sinh giao hàng!" , "error"); 
+      } 
+    }
+    else
+    {
+      Swal.fire("Thông báo", "Chọn ít nhất 1 PO để xóa !" , "error"); 
+    }
+  }
+  const handleConfirmDeletePO =()=>{
+    Swal.fire({
+      title: 'Chắc chắn muốn xóa PO đã chọn ?',
+      text: "Sẽ bắt đầu xóa po đã chọn",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Vẫn Xóa!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        Swal.fire(
+          'Tiến hành Xóa',
+          'Đang Xóa PO hàng loạt',
+          'success'
+        );
+        deletePO();
+      }
+    })
+  }
   useEffect(()=>{
-        
-
+        getcustomerlist();
+        getcodelist('');
   },[]);
-
   return (
     <div className='pomanager'>
       <div className='mininavbar'>
@@ -645,19 +939,11 @@ const PoManager = () => {
           <span className='mininavtext' onClick={() => setNav(1)}>
             Tra cứu PO
           </span>
-        </div>
-        <div className='mininavitem'>
-          <span className='mininavtext' onClick={() => setNav(3)}>
-            Thêm 1 PO
-          </span>
-        </div>
+        </div>       
         <div className='mininavitem'>
           <span className='mininavtext' onClick={() => setNav(2)}>
             Thêm PO hàng loạt
           </span>
-        </div>
-        <div className='mininavitem'>
-          <span className='mininavtext'>Sửa PO</span>
         </div>
       </div>
       {selection.thempohangloat && (
@@ -862,7 +1148,10 @@ const PoManager = () => {
                   onChange={() => setJustPOBalance(!justpobalance)}
                 ></input>
               </label>
-              <Button
+              <IconButton className='buttonIcon' onClick={() => {
+                  handletraPO();
+                }}><FcSearch color='green' size={30}/>Search</IconButton>
+              {/* <Button
                 variant='contained'
                 color='success'
                 onClick={() => {
@@ -870,7 +1159,7 @@ const PoManager = () => {
                 }}
               >
                 Search
-              </Button>
+              </Button> */}
             </div>
             <div className='formsummary'>
               <div className='summarygroup'>
@@ -927,6 +1216,7 @@ const PoManager = () => {
           </div>
           <div className='tracuuPOTable'>
             <DataGrid
+              sx={{fontSize:12, flex:1}}
               components={{
                 Toolbar: CustomToolbarPOTable,
                 LoadingOverlay: LinearProgress,
@@ -942,18 +1232,16 @@ const PoManager = () => {
               getRowId={(row) => row.PO_ID}
               checkboxSelection
               disableSelectionOnClick
-              onSelectionModelChange={(ids) => {}}
+              onSelectionModelChange={(ids) => {handlePOSelectionforUpdate(ids);}}
             />
           </div>
         </div>
       )}
-
       {selection.them1po && (
         <div className='them1po'>
           <div className='formnho'>
-           
             <div className='dangkyform'>
-            <h3>Thêm PO mới</h3>
+            <h3>Thêm PO mới</h3>           
               <div className='dangkyinput'>
                 <div className='dangkyinputbox'>
                 <label>
@@ -961,11 +1249,17 @@ const PoManager = () => {
                   <Autocomplete
                    size="small"
                     disablePortal                    
-                    options={top100Films}
-                    className='autocomplete'                    
+                    options={customerList}
+                    className='autocomplete'   
+                    getOptionLabel={(option:CustomerListData) => `${option.CUST_CD}: ${option.CUST_NAME_KD}`}                 
                     renderInput={(params) => (
-                     <TextField {...params} label='Movie'/>
+                     <TextField {...params} label='Select customer'/>
                     )}
+                    value={selectedCust_CD}
+                    onChange={(event:any, newValue: CustomerListData| null)=>{
+                      console.log(newValue); 
+                      setSelectedCust_CD(newValue);                     
+                    }}
                   />
                   </label>
                   <label>
@@ -973,11 +1267,18 @@ const PoManager = () => {
                   <Autocomplete
                     size="small"
                     disablePortal                    
-                    options={top100Films}
-                    className='autocomplete'                    
+                    options={codeList}
+                    className='autocomplete'   
+                    getOptionLabel={(option:CodeListData) => `${option.G_CODE}: ${option.G_NAME}`}                     
                     renderInput={(params) => (
-                     <TextField {...params} label='Movie'/>
-                    )}
+                     <TextField {...params} label='Select code'/>
+                    )}    
+                    onChange={(event:any, newValue: CodeListData| null)=>{
+                      console.log(newValue);   
+                      setNewPoPrice(newValue ===null ? '' : newValue.PROD_LAST_PRICE.toString());        
+                      setSelectedCode(newValue);
+                    }}  
+                    value={selectedCode}   
                   />
                   </label>
                   <label>
@@ -985,8 +1286,8 @@ const PoManager = () => {
                     <input
                       className='inputdata' 
                       type='date'
-                      value={fromdate.slice(0, 10)}
-                      onChange={(e) => setFromDate(e.target.value)}
+                      value={newpodate.slice(0, 10)}
+                      onChange={(e) => setNewPoDate(e.target.value)}
                     ></input>
                   </label>
                   <label>
@@ -994,41 +1295,136 @@ const PoManager = () => {
                     <input
                       className='inputdata' 
                       type='date'
-                      value={todate.slice(0, 10)}
-                      onChange={(e) => setToDate(e.target.value)}
+                      value={newrddate.slice(0, 10)}
+                      onChange={(e) => setNewRdDate(e.target.value)}
                     ></input>
                   </label>
-
+                </div>
+                <div className='dangkyinputbox'>  
                   <label>
                     <b>PO NO:</b>{" "}
-                  <TextField  size="small" color="success" className='autocomplete' id="outlined-basic" label="Số PO" variant="outlined" />
+                  <TextField  value={newpono}  onChange={(e:React.ChangeEvent<HTMLInputElement>)=> setNewPoNo(e.target.value)} size="small" color="success" className='autocomplete' id="outlined-basic" label="Số PO" variant="outlined" />
                   </label>
                   <label>
                     <b>PO QTY:</b>{" "}
-                  <TextField  size="small" color="success" className='autocomplete' id="outlined-basic" label="PO QTY" variant="outlined" />
+                  <TextField  value={newpoqty}  onChange={(e:React.ChangeEvent<HTMLInputElement>)=> setNewPoQty(e.target.value)} size="small" color="success" className='autocomplete' id="outlined-basic" label="PO QTY" variant="outlined" />
                   </label>
                   <label>
                     <b>Price:</b>{" "}
-                  <TextField  size="small"  color="success" className='autocomplete' id="outlined-basic" label="Price" variant="outlined" />
+                  <TextField value={newpoprice}  onChange={(e:React.ChangeEvent<HTMLInputElement>)=> setNewPoPrice(e.target.value)} size="small"  color="success" className='autocomplete' id="outlined-basic" label="Price" variant="outlined" />
                   </label>                 
                   <label>
                     <b>Remark:</b>{" "}
-                  <TextField  size="small"  color="success" className='autocomplete' id="outlined-basic" label="Remark" variant="outlined" />
-                  </label>                 
-                 
+                  <TextField  value={newporemark}   onChange={(e:React.ChangeEvent<HTMLInputElement>)=> setNewPoRemark(e.target.value)} size="small"  color="success" className='autocomplete' id="outlined-basic" label="Remark" variant="outlined" />
+                  </label>  
                 </div>
               </div>
               <div className='dangkybutton'>
-                <button className='thembutton'>Đăng ký</button>
-                <button className='xoabutton'>Clear</button>
+                <button className='thembutton' onClick={()=>{handle_add_1PO();}}>Thêm PO</button>
+                <button className='suabutton' onClick={()=>{updatePO();}}>Sửa PO</button>
+                <button className='xoabutton' onClick={()=> {clearPOform();}}>Clear</button>
+                <button className='closebutton' onClick={()=> {setSelection({...selection, trapo: true, thempohangloat:false, them1po:false});}}>Close</button>
               </div>
             </div>
           </div>
         </div>
-      )}
+      )}    
+
+      {selection.them1invoice && <div className='them1invoice'>
+          <div className='formnho'>
+            <div className='dangkyform'>
+            <h3>Thêm Invoice mới</h3>           
+              <div className='dangkyinput'>
+                <div className='dangkyinputbox'>
+                <label>
+                    <b>Khách hàng:</b>{" "}
+                  <Autocomplete
+                   size="small"
+                    disablePortal                    
+                    options={customerList}
+                    className='autocomplete'   
+                    getOptionLabel={(option:CustomerListData) => `${option.CUST_CD}: ${option.CUST_NAME_KD}`}                 
+                    renderInput={(params) => (
+                     <TextField {...params} label='Select customer'/>
+                    )}
+                    value={selectedCust_CD}
+                    onChange={(event:any, newValue: CustomerListData| null)=>{
+                      console.log(newValue); 
+                      setSelectedCust_CD(newValue);                     
+                    }}
+                  />
+                  </label>
+                  <label>
+                    <b>Code hàng:</b>{" "}
+                  <Autocomplete
+                    size="small"
+                    disablePortal                    
+                    options={codeList}
+                    className='autocomplete'   
+                    getOptionLabel={(option:CodeListData) => `${option.G_CODE}: ${option.G_NAME}`}                     
+                    renderInput={(params) => (
+                     <TextField {...params} label='Select code'/>
+                    )}    
+                    onChange={(event:any, newValue: CodeListData| null)=>{
+                      console.log(newValue);   
+                      setNewPoPrice(newValue ===null ? '' : newValue.PROD_LAST_PRICE.toString());        
+                      setSelectedCode(newValue);
+                    }}  
+                    value={selectedCode}   
+                  />
+                  </label>
+                  <label>
+                    <b>PO Date:</b>
+                    <input
+                      className='inputdata' 
+                      type='date'
+                      value={newpodate.slice(0, 10)}
+                      onChange={(e) => setNewPoDate(e.target.value)}
+                    ></input>
+                  </label>
+                  <label>
+                    <b>RD Date:</b>{" "}
+                    <input
+                      className='inputdata' 
+                      type='date'
+                      value={newrddate.slice(0, 10)}
+                      onChange={(e) => setNewRdDate(e.target.value)}
+                    ></input>
+                  </label>
+                </div>
+                <div className='dangkyinputbox'>  
+                  <label>
+                    <b>PO NO:</b>{" "}
+                  <TextField  value={newpono}  onChange={(e:React.ChangeEvent<HTMLInputElement>)=> setNewPoNo(e.target.value)} size="small" color="success" className='autocomplete' id="outlined-basic" label="Số PO" variant="outlined" />
+                  </label>
+                  <label>
+                    <b>Invoice QTY:</b>{" "}
+                  <TextField  value={newinvoiceQTY}  onChange={(e:React.ChangeEvent<HTMLInputElement>)=> setNewInvoiceQty(Number(e.target.value))} size="small" color="success" className='autocomplete' id="outlined-basic" label="INVOICE QTY" variant="outlined" />
+                  </label>
+                  <label>
+                    <b>Invoice Date:</b>{" "}
+                    <input
+                      className='inputdata' 
+                      type='date'
+                      value={newinvoicedate.slice(0, 10)}
+                      onChange={(e) => setNewInvoiceDate(e.target.value)}
+                    ></input>
+                  </label>               
+                  <label>
+                    <b>Remark:</b>{" "}
+                  <TextField  value={newinvoiceRemark}   onChange={(e:React.ChangeEvent<HTMLInputElement>)=> setNewInvoiceRemark(e.target.value)} size="small"   className='autocomplete' id="outlined-basic" label="Remark" variant="outlined" />
+                  </label>  
+                </div>
+              </div>
+              <div className='dangkybutton'>
+                <button className='thembutton' onClick={()=>{handle_add_1Invoice();}}>Thêm Invoice</button>                
+                <button className='suabutton' onClick={()=>{clearInvoiceform();}}>Clear</button>                
+                <button className='closebutton' onClick={()=> {setSelection({...selection, trapo: true, thempohangloat:false, them1po:false, them1invoice: false});}}>Close</button>
+              </div>
+            </div>
+          </div>
+        </div>}
     </div>
   );
 }
-
-
 export default PoManager

@@ -6,13 +6,14 @@ import "./Sidebar.scss";
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import HomeIcon from '@mui/icons-material/Home';
-import { FaDonate, FaFileInvoiceDollar,FaCheckCircle, FaHistory } from 'react-icons/fa';
+import { FaDonate, FaFileInvoiceDollar,FaCheckCircle, FaHistory, FaBomb } from 'react-icons/fa';
 import { BiCart } from 'react-icons/bi';
 import { FcPlanner, FcSettings,FcBullish, FcPortraitMode,FcManager,FcCheckmark,FcPieChart,FcRefresh } from 'react-icons/fc';
-import { MdOutlineAppRegistration } from "react-icons/md";
+import { MdDesignServices, MdOutlineAppRegistration, MdPriceChange } from "react-icons/md";
 import { WiDayLightning } from "react-icons/wi";
 import getsentence from "../../components/String/String";
 import { LangConText } from "../../api/Context";
+import { AiFillAmazonCircle, AiFillAmazonSquare } from "react-icons/ai";
 
 const Sidebar = () => {
   const [sidebar, setSidebar] = useState(true);
@@ -102,6 +103,11 @@ const Sidebar = () => {
           icon: <FaCheckCircle color='#ff9900' size={25}/>
         },        
         {
+          title: 'Quản lý Giá', /*Quản lý giá*/
+          path: '/kinhdoanh/quanlygia',
+          icon: <MdPriceChange color='#cc00ff' size={25}/>
+        },        
+        {
           title: getsentence(11,lang),/*Báo cáo*/
           path: '/kinhdoanh/kinhdoanhreport',
           icon: <FcBullish  size={25}/>
@@ -109,28 +115,28 @@ const Sidebar = () => {
       ]
     },
     {
-      title: 'Phòng QLSX',
+      title: 'Phòng RnD',
       path: '/',
-      icon: <HomeIcon />,
+      icon: <MdDesignServices color='#3366ff' size={25}/>,
       iconClosed: <KeyboardArrowDownIcon />,
       iconOpened: <KeyboardArrowUpIcon />,  
       subNav: [
         {
-          title: 'Reports',
-          path: '/reports/reports1',
-          icon: <HomeIcon />,
+          title: 'Quản lý Code- Bom',
+          path: '/rnd/quanlycodebom',
+          icon: <FaBomb color='black' size={25}/>,
           cName: 'sub-nav'
         },
         {
-          title: 'Reports 2',
-          path: '/reports/reports2',
-          icon: <HomeIcon />,
+          title: 'Thêm BOM AMAZON',
+          path: '/rnd/thembomamazon',
+          icon: <AiFillAmazonSquare color='green' size={25}/>,
           cName: 'sub-nav'
         },
         {
-          title: 'Reports 3',
-          path: '/reports/reports3',
-          icon: <HomeIcon />
+          title: 'Thiết kế DESIGN AMAZON',
+          path: '/rnd/designamazon',
+          icon: <AiFillAmazonCircle color='blue' size={25}/>
         }
       ]
     },

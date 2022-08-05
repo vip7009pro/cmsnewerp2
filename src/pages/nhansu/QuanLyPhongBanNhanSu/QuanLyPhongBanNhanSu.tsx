@@ -1,5 +1,5 @@
-import { DataGrid, GridSelectionModel, GridToolbar, GridToolbarContainer, GridToolbarExport, GridCsvExportOptions, GridToolbarColumnsButton, GridToolbarFilterButton, GridToolbarDensitySelector, GridToolbarQuickFilter } from '@mui/x-data-grid';
-import React, { useEffect, useState } from 'react'
+import { DataGrid, GridSelectionModel,  GridToolbarContainer, GridToolbarColumnsButton, GridToolbarFilterButton, GridToolbarDensitySelector, GridToolbarQuickFilter } from '@mui/x-data-grid';
+import  { useEffect, useState } from 'react'
 import { generalQuery } from '../../../api/Api';
 import "./QuanLyPhongBanNhanSu.scss"
 import Swal from "sweetalert2";
@@ -744,6 +744,7 @@ const QuanLyPhongBanNhanSu = () => {
         setWorkPositionDataFilter(datafilter); 
         console.log(datafilter);        
     }
+
     const handleEmployeeSelection = (ids:GridSelectionModel)=> {
         const selectedID = new Set(ids);
         var datafilter = employeeTable.filter((element: any) =>

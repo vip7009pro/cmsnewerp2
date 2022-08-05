@@ -1,6 +1,6 @@
 .SidebarLink {
     display: flex;
-    color: black;
+    color: rgb(69, 69, 219);
     justify-content: space-between;
     align-items: center;
     padding: 10px 15px 0px 10px;
@@ -20,13 +20,13 @@
 
 .DropdownLink {
     background: rgba(255, 255, 255, 0.7);  
-    height: 60px;
-    padding-left: 3rem;
+    height: 30px;
+    padding-left: 1.8rem;
     display: flex;        
     align-items: center;
     text-decoration: none;
     color: black;
-    font-size: 15px;
+    font-size: 13px;
     &:hover {
       background: rgba(0, 0, 0, 0.1);
       cursor: pointer;
