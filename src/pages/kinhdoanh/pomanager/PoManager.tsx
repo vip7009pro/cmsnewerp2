@@ -59,6 +59,7 @@ interface  CodeListData {
   G_NAME: string, 
   PROD_LAST_PRICE: number,
   USE_YN: string,  
+  PO_BALANCE?: number
 }
 interface CustomerListData {
   CUST_CD: string, 
@@ -508,19 +509,23 @@ const PoManager = () => {
         console.log(error);
       });
   }
-  const getcodelist = (G_NAME: string) => {
-    startTransition(() => {
+  const getcodelist = (G_NAME: string) => {   
       generalQuery("selectcodeList", { G_NAME: G_NAME})
       .then((response) => {        
         if (response.data.tk_status !== "NG") {
-          setCodeList(response.data.data);          
-        } else {
+          if(!isPending)
+          {
+            startTransition(() => {
+            setCodeList(response.data.data); 
+            });
+          }              
+        } 
+        else {
         }
       })
       .catch((error) => {
         console.log(error);
-      });     
-    });   
+      }); 
   }
   const setNav = (choose: number) => {
     if(choose ===1 )
@@ -572,6 +577,7 @@ const PoManager = () => {
         {
           err_code = 4;
         }
+        
           if(err_code === 0)
           {
             await generalQuery("insert_po", {
@@ -651,6 +657,16 @@ const PoManager = () => {
         {
           err_code = 4;
         }
+        if(selectedCode?.PO_BALANCE !== undefined)
+        {
+          Swal.fire("Thông báo", "PO BALANCE: " + selectedCode?.PO_BALANCE, "success");  
+          if(selectedCode?.PO_BALANCE < newinvoiceQTY)
+          {
+            err_code = 5; //invoice nhieu hon po balance
+          }
+        }
+       
+       
           if(err_code === 0)
           {
             await generalQuery("insert_invoice", {
@@ -692,6 +708,10 @@ const PoManager = () => {
           {            
             Swal.fire("Thông báo", "NG: Không để trống thông tin bắt buộc" , "error"); 
           } 
+          else if(err_code ===5)
+          {            
+            Swal.fire("Thông báo", "NG: Invoice QTY nhiều hơn PO BALANCE" , "error"); 
+          } 
   }
   const clearPOform = () => {
     setNewPoDate(moment().format('YYYY-MM-DD'));
@@ -712,9 +732,14 @@ const PoManager = () => {
   const handlePOSelectionforUpdate =(ids: GridSelectionModel) => {   
     const selectedID = new Set(ids);
     let datafilter = podatatable.filter((element: any) => selectedID.has(element.PO_ID));
+    
     if(datafilter.length>0)
     {
       setPoDataTableFilter(datafilter);      
+    }
+    else
+    {
+      setPoDataTableFilter([]);  
     }
   }
   const handle_fillsuaform =() => {
@@ -726,6 +751,7 @@ const PoManager = () => {
         G_NAME: podatatablefilter[podatatablefilter.length-1].G_NAME, 
         PROD_LAST_PRICE: Number(podatatablefilter[podatatablefilter.length-1].PROD_PRICE),
         USE_YN: 'Y', 
+        PO_BALANCE: Number(podatatablefilter[podatatablefilter.length-1].PO_BALANCE),
       }  
       const selectedCustomerFilter: CustomerListData = {
         CUST_CD: podatatablefilter[podatatablefilter.length-1].CUST_CD,  
@@ -760,6 +786,7 @@ const PoManager = () => {
         G_NAME: podatatablefilter[podatatablefilter.length-1].G_NAME, 
         PROD_LAST_PRICE: Number(podatatablefilter[podatatablefilter.length-1].PROD_PRICE),
         USE_YN: 'Y', 
+        PO_BALANCE: Number(podatatablefilter[podatatablefilter.length-1].PO_BALANCE),
       }  
       const selectedCustomerFilter: CustomerListData = {
         CUST_CD: podatatablefilter[podatatablefilter.length-1].CUST_CD,  

@@ -104,7 +104,7 @@ const Sidebar = () => {
         },        
         {
           title: 'Quản lý Giá', /*Quản lý giá*/
-          path: '/kinhdoanh/quanlygia',
+          path: '/kinhdoanh/quotationmanager',
           icon: <MdPriceChange color='#cc00ff' size={25}/>
         },        
         {

@@ -32,11 +32,11 @@
 
     }
 
-    .newpo {
+    .newinvoice {
         display: flex;
         flex-direction: column; 
 
-        .batchnewpo {
+        .batchnewinvoice {
             display: flex;
             flex-direction: column; 
             gap: 10px;
@@ -50,7 +50,7 @@
                     display: flex;
                     align-items: center;
                     justify-content: center;
-                    width: 80px;
+                    width: 100px;
                     height: 15px;
                     background-color: #99f86d;
                     outline: none;
@@ -69,7 +69,7 @@
                     display: flex;
                     align-items: center;
                     justify-content: center;
-                    width: 80px;
+                    width: 100px;
                     height: 15px;
                     background-color: #ee1010;
                     color: white;
@@ -82,13 +82,11 @@
                     &:hover{
                         background-color: rgb(127, 219, 255);
                         cursor: pointer;
-                    }            
-
+                    }  
                 }
-
             }
 
-            .insertPOTable {
+            .insertInvoiceTable {
                 display: flex;
                 width: 99%;
                 height: 80vh;
@@ -199,198 +197,6 @@
         }
 
     }
-
-    .them1po {
-        display: flex;
-        position: fixed;
-        top: 35vh;
-        left: 60vh;
-        .formnho {
-            display: flex;
-            flex-direction: column;
-            flex: 1;  
-            height: fit-content;
-            flex-wrap: wrap;
-            background-image: linear-gradient(0deg, #9fc2eb,#42e9ff);
-            border-radius: 10px;
-            box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
-            -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
-            -moz-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
-            padding-right: 30px;
-            
-            h3 {
-                align-self: center;
-                padding: 10px;
-            }
-            .maindept_table{
-                align-items: center;
-                justify-content: center;
-                justify-self: center;
-                padding: 20px;                
-                width: 97%;    
-                border-radius: 10px; 
-                height: 40vh;
-                margin-left: 10px;
-                align-self: center;                             
-                background-image: linear-gradient(0deg, #afd3d1,#7fca98);
-                
-                
-            }
-            .dangkyform {
-                display: flex; 
-                flex-direction: column;   
-                margin-bottom: 10px;
-                gap: 10px;
-                align-items: center;
-                justify-content: space-around;
-                padding: 20px;
-                height: fit-content;
-                .dangkyinput{
-                    display: flex;
-                    flex-direction: row;
-                    gap: 20px;
-                    align-items: center;
-                    justify-content: space-around;
-                    justify-self: center;
-                    width: 100%;
-                    
-                    .maindeptinputlabel{
-                        display: flex;
-                    }
-                    .dangkyinputbox{
-                        display: flex;
-                        flex-direction: column;
-                        align-items: flex-end;
-                        gap: 10px;
-
-                        .autocomplete {             
-                            width: 320px; 
-                            margin-left: 20px;
-                        }
-                        select {
-                            width: 200px;
-                            height: 24px;
-                        }
-                        .inputdata {
-                            padding-left: 5px;
-                            margin-left: 2px;
-                            width: 310px;
-                            height: 35px;  
-                            background-color: transparent;                          
-                            outline: none;
-                            border:  solid 0.5px;
-                            border-color: rgba(0, 0, 0,0.3);
-                            border-radius: 5px;
-                            font-size: 16px;
-                            margin-left: 20px;
-                            color: black;
-                            
-
-                        }
-                        label {
-                            display: flex;
-                            flex-direction: row;
-                            align-items: flex-end;                            
-                        }
-                        
-
-                    }
-                }
-                .dangkybutton{
-                    display: flex;
-                    gap: 10px;
-                    align-items: center;
-                    justify-content: space-between;
-                    .thembutton {
-                        background-color: #21a73e;
-                        /* Green */
-                        border: none;
-                        color: white;
-                        padding: 15px 32px;
-                        text-align: center;
-                        text-decoration: none;
-                        display: inline-block;
-                        font-size: 16px;                        
-                        border-radius: 10px;
-                        outline: none;
-                        box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
-                        -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
-                        -moz-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);                
-                        &:hover {
-                            background-color: #22fd7e;
-                        }
-
-                    }
-                    .suabutton {
-                        background-color: #ddff19;
-                        /* Green */
-                        border: none;
-                        color: rgb(7, 32, 255);
-                        padding: 15px 32px;
-                        text-align: center;
-                        text-decoration: none;
-                        display: inline-block;
-                        font-size: 16px;                        
-                        border-radius: 10px;
-                        outline: none;
-                        box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
-                        -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
-                        -moz-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);                
-                        &:hover {
-                            background-color: #22fd7e;
-                        }
-
-                    }
-                    .closebutton {
-                        background-color: #be19ff;
-                        
-                        /* Green */
-                        border: none;
-                        color: rgb(255, 255, 255);
-                        padding: 15px 32px;
-                        text-align: center;
-                        text-decoration: none;
-                        display: inline-block;
-                        font-size: 16px;                        
-                        border-radius: 10px;
-                        outline: none;
-                        box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
-                        -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
-                        -moz-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);                
-                        &:hover {
-                            background-color: #22fd7e;
-                        }
-
-                    }
-                    .xoabutton {
-                        background-color: #3633f7;
-                        /* Green */
-                        border: none;
-                        color: rgb(194, 255, 28);
-                        padding: 15px 32px;
-                        text-align: center;
-                        text-decoration: none;
-                        display: inline-block;
-                        font-size: 16px;                        
-                        border-radius: 10px;
-                        outline: none;
-                        box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
-                        -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
-                        -moz-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);                
-                        &:hover {
-                            background-color: #dde020;
-                            color:#35a9f7;
-                        }
-
-                    }
-
-                }
-
-            }
-
-            
-        }   
-    }    
 
     .them1invoice {
         display: flex;
