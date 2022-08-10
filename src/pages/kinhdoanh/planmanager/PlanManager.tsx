@@ -154,7 +154,8 @@ const PlanManager = () => {
             uploadexcelcolumn.push ({field: 'CHECKSTATUS', headerName: 'CHECKSTATUS', width: 350});
             setColumn_Excel(uploadexcelcolumn);
             setUploadExcelJSon(json.map((element:any, index:number) => {
-              return {...element, id: index, CHECKSTATUS:'Waiting', D1: (element.D1 ===''? 0: element.D1),
+              return {...element, id: index, CHECKSTATUS:'Waiting', 
+              D1: (element.D1 ===undefined|| element.D1 ===''? 0: element.D1),
               D2: (element.D2 ===undefined|| element.D2 ===''? 0: element.D2),
               D3: (element.D3 ===undefined|| element.D2 ===''? 0: element.D3),
               D4: (element.D4 ===undefined|| element.D2 ===''? 0: element.D4),
@@ -425,8 +426,8 @@ const PlanManager = () => {
   }
   const confirmCheckPlanHangLoat = () => {
     Swal.fire({
-      title: 'Chắc chắn muốn check Invoice hàng loạt ?',
-      text: "Sẽ bắt đầu check Invoice hàng loạt",
+      title: 'Chắc chắn muốn check Plan hàng loạt ?',
+      text: "Sẽ bắt đầu check Plan hàng loạt",
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
@@ -436,7 +437,7 @@ const PlanManager = () => {
       if (result.isConfirmed) {
         Swal.fire(
           'Tiến hành check',
-          'Đang check Invoice hàng loạt',
+          'Đang check Plan hàng loạt',
           'success'
         );
         handle_checkPlanHangLoat();
@@ -499,7 +500,7 @@ const PlanManager = () => {
       }      
       if(!err_code)
       {
-        Swal.fire("Thông báo", "Xóa Invoice thành công (chỉ Plan của người đăng nhập)!" , "success"); 
+        Swal.fire("Thông báo", "Xóa Plan thành công (chỉ Plan của người đăng nhập)!" , "success"); 
       }
       else
       {
@@ -508,7 +509,7 @@ const PlanManager = () => {
     }
     else
     {
-      Swal.fire("Thông báo", "Chọn ít nhất 1 Invoice để xóa !" , "error"); 
+      Swal.fire("Thông báo", "Chọn ít nhất 1 Plan để xóa !" , "error"); 
     }
   }
   const handleConfirmDeletePlan =()=>{
