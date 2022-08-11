@@ -1431,7 +1431,7 @@ const PoManager = () => {
                   <label>
                     <b>Invoice Date:</b>{" "}
                     <input
-                      className='inputdata' 
+                      className='inputdata'
                       type='date'
                       value={newinvoicedate.slice(0, 10)}
                       onChange={(e) => setNewInvoiceDate(e.target.value)}

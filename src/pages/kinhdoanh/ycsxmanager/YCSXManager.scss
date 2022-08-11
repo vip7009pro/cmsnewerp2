@@ -50,7 +50,7 @@
                     display: flex;
                     align-items: center;
                     justify-content: center;
-                    width: 80px;
+                    width: 100px;
                     height: 15px;
                     background-color: #99f86d;
                     outline: none;
@@ -69,10 +69,30 @@
                     display: flex;
                     align-items: center;
                     justify-content: center;
-                    width: 80px;
+                    width: 100px;
                     height: 15px;
                     background-color: #ee1010;
                     color: white;
+                    outline: none;
+                    border: none;
+                    padding: 5px;
+                    border-radius: 5px;
+                    -webkit-box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27); 
+                    box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27);
+                    &:hover{
+                        background-color: rgb(127, 219, 255);
+                        cursor: pointer;
+                    }            
+
+                }
+                .clearobutton{
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    width: 100px;
+                    height: 15px;
+                    background-color: #14f1d4;
+                    color: rgb(0, 0, 0);
                     outline: none;
                     border: none;
                     padding: 5px;
@@ -93,7 +113,7 @@
                 width: 99%;
                 height: 80vh;
                 margin-top: 10px;
-                background-image: linear-gradient(0deg, #afd3d1, #a0d898);
+                background-image: linear-gradient(0deg, #afd3d1, #b0e954);
                 padding: 10px;
                 border-radius: 10px;               
                 
@@ -211,9 +231,9 @@
 
     .them1ycsx {
         display: flex;
-        position: fixed;
-        top: 35vh;
-        left: 60vh;
+        /* position: fixed; */
+        top: 50%;
+        left: 20%;
         .formnho {
             display: flex;
             flex-direction: column;

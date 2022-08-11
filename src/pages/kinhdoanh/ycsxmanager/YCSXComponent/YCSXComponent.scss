@@ -1,0 +1,131 @@
+.ycsxcomponent {
+    display: flex;
+    flex-direction: column;
+    width: 210mm;
+    height: 297mm;       
+    padding: 10px;
+    box-sizing: border-box;
+    border: 0.1px solid black;
+
+    .tieudeycsx {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        padding: 10px;
+        background-color: aquamarine;
+        .title{
+            display: flex;
+            font-weight: bold;
+            font-size: 30px;
+            align-items: center;
+
+        }
+        .soycsx {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            align-items: center;
+        }
+
+    }
+    .thongtinycsx {
+        display: flex;
+        flex-direction: column;
+        margin-top: 5px;
+        .text1 {
+            font-weight: bold;
+            font-size: 18px;
+            margin-left: 8px;
+        }
+        .thongtinyeucau {
+            display: flex;
+            flex-direction: row;
+            gap: 5px;
+            padding-left: 5px;
+            padding-right: 5px;
+            table {
+                font-size: 10px;
+                font-family: arial, sans-serif;
+                border-collapse: collapse;
+                width: 100%;
+            }
+            
+            td {
+                border: 1px solid #dddddd;
+                text-align: left;
+                padding: 8px;                
+            }
+            thead td {
+                border: 1px solid #dddddd;
+                text-align: left;
+                padding: 8px;
+                font-weight: bold;
+                font-size: 12px;
+                background-color: rgb(219, 206, 206);
+                
+            }
+          
+        }
+        .thongtinsanpham {
+            display: flex;
+            flex-direction: row;
+            gap: 5px;
+            padding-left: 5px;
+            padding-right: 5px;
+            table {
+                font-size: 10px;
+                font-family: arial, sans-serif;
+                border-collapse: collapse;
+                width: 100%;
+            }
+            
+            td {
+                border: 1px solid #dddddd;
+                text-align: left;
+                padding: 8px;                
+            }
+            thead td {
+                border: 1px solid #dddddd;
+                text-align: left;
+                padding: 8px;
+                font-weight: bold;
+                font-size: 12px;
+                background-color: rgb(219, 206, 206);
+                
+            }
+          
+        }
+        .thongtinvatlieu {
+            display: flex;
+            flex-direction: row;
+            gap: 5px;
+            padding-left: 5px;
+            padding-right: 5px;
+            table {
+                font-size: 10px;
+                font-family: arial, sans-serif;
+                border-collapse: collapse;
+                width: 100%;
+            }
+            
+            td {
+                border: 1px solid #dddddd;
+                text-align: left;
+                padding: 8px;                
+            }
+            thead td {
+                border: 1px solid #dddddd;
+                text-align: left;
+                padding: 8px;
+                font-weight: bold;
+                font-size: 12px;
+                background-color: rgb(219, 206, 206);
+                
+            }
+          
+        }
+    }
+
+
+   
+}
