@@ -12,6 +12,11 @@ import { SaveExcel } from '../../../api/GlobalFunction';
 import { MdOutlineDelete, MdOutlinePendingActions } from 'react-icons/md';
 import "./YCSXManager.scss"
 import { FaArrowRight } from 'react-icons/fa';
+import  { ReactElement, useRef,  } from 'react';
+import { useReactToPrint } from 'react-to-print';
+import YCSXComponent from './YCSXComponent/YCSXComponent';
+import DrawComponent from './DrawComponent/DrawComponent';
+
 interface POBALANCETDYCSX{ G_CODE: string; PO_BALANCE: number }
 interface TONKHOTDYCSX {
   G_CODE: string;
@@ -84,6 +89,19 @@ interface CustomerListData {
   CUST_NAME_KD: string
 }
 const YCSXManager = () => {
+  const [ycsxlistrender, setYCSXListRender] = useState<Array<ReactElement>>();
+  const ycsxprintref = useRef(null);
+  const handlePrint = useReactToPrint({
+    content :  () => ycsxprintref.current,
+  });
+
+  const renderYCSX = (ycsxlist: YCSXTableData[]) => {
+    return  ycsxlist.map((element,index)=> <YCSXComponent key={index} PROD_REQUEST_NO={element.PROD_REQUEST_NO} G_CODE={element.G_CODE} PO_TDYCSX={element.PO_TDYCSX}  TOTAL_TKHO_TDYCSX={ element.TOTAL_TKHO_TDYCSX}  TKHO_TDYCSX={ element.TKHO_TDYCSX}  BTP_TDYCSX={ element.BTP_TDYCSX}  CK_TDYCSX={ element.CK_TDYCSX}  BLOCK_TDYCSX={ element.BLOCK_TDYCSX}  FCST_TDYCSX={ element.FCST_TDYCSX}/>)
+  }
+  const renderBanVe = (ycsxlist: YCSXTableData[]) => {
+    return  ycsxlist.map((element,index)=><DrawComponent key={index}/> )
+  }
+
   const [file, setFile] = useState<any>();
   const [isPending, startTransition] = useTransition();
   const [selection, setSelection] = useState<any>({
@@ -93,7 +111,9 @@ const YCSXManager = () => {
     them1invoice:false,
     themycsx: false,
     suaycsx:false,
-    inserttableycsx: false
+    inserttableycsx: false,
+    renderycsx:false,
+    renderbanve:false
   });
   const [userData, setUserData] = useContext(UserContext);
   const [uploadExcelJson, setUploadExcelJSon] = useState<Array<any>>([]);
@@ -220,8 +240,29 @@ const YCSXManager = () => {
         <GridToolbarQuickFilter/>      
         <IconButton className='buttonIcon'onClick={()=>{handleConfirmSetClosedYCSX();}}><FaArrowRight color='green' size={25}/>SET CLOSED</IconButton>
         <IconButton className='buttonIcon'onClick={()=>{handleConfirmSetPendingYCSX();}}><MdOutlinePendingActions color='red' size={25}/>SET PENDING</IconButton>
-        <IconButton className='buttonIcon'onClick={()=>{}}><AiOutlinePrinter color='#0066ff' size={25}/>Print YCSX</IconButton>
-        <IconButton className='buttonIcon'onClick={()=>{}}><MdOutlinePendingActions color='#ff0066' size={25}/>Save File YCSX</IconButton>
+        <IconButton className='buttonIcon'onClick={()=>{
+          if(ycsxdatatablefilter.length>0)
+          {
+            setSelection({ ...selection, renderycsx: (ycsxdatatablefilter.length>0) }); 
+            setYCSXListRender(renderYCSX(ycsxdatatablefilter));
+          }
+          else{
+            Swal.fire("Thông báo","Chọn ít nhất 1 YCSX để in",'error');
+          }
+          
+          }}><AiOutlinePrinter color='#0066ff' size={25}/>Print YCSX</IconButton> 
+
+        <IconButton className='buttonIcon'onClick={()=>{
+          if(ycsxdatatablefilter.length>0)
+          {
+            setSelection({ ...selection, renderbanve: (ycsxdatatablefilter.length>0) }); 
+            setYCSXListRender(renderBanVe(ycsxdatatablefilter));
+          }
+          else{
+            Swal.fire("Thông báo","Chọn ít nhất 1 YCSX để in",'error');
+          }
+          
+          }}><AiOutlinePrinter color='#ff751a' size={25}/>Print Bản Vẽ</IconButton>        
         <IconButton className='buttonIcon'onClick={()=>{handleConfirmPDuyetYCSX();}}><FcApprove color='red' size={25}/>Phê Duyệt</IconButton>
       </GridToolbarContainer>
     );
@@ -1465,12 +1506,12 @@ const YCSXManager = () => {
           <span className='mininavtext' onClick={() => setNav(1)}>
             Tra cứu YCSX
           </span>
-        </div>       
+        </div>
         <div className='mininavitem'>
           <span className='mininavtext' onClick={() => setNav(2)}>
             Thêm YCSX (nhiều)
           </span>
-        </div>       
+        </div>
         <div className='mininavitem'>
           <span className='mininavtext' onClick={() => setNav(2)}>
             Thêm DATA AMAZON
@@ -1481,51 +1522,62 @@ const YCSXManager = () => {
         <div className='them1ycsx'>
           <div className='formnho'>
             <div className='dangkyform'>
-            <h3>Thêm YCSX mới</h3>           
+              <h3>Thêm YCSX mới</h3>
               <div className='dangkyinput'>
                 <div className='dangkyinputbox'>
-                <label>
+                  <label>
                     <b>Khách hàng:</b>{" "}
-                  <Autocomplete
-                   size="small"
-                    disablePortal                    
-                    options={customerList}
-                    className='autocomplete'   
-                    getOptionLabel={(option:CustomerListData) => { return (`${option.CUST_CD}: ${option.CUST_NAME_KD}`)}}                 
-                    renderInput={(params) => (
-                     <TextField {...params} label='Select customer'/>
-                    )}
-                    value={selectedCust_CD}
-                    onChange={(event:any, newValue: CustomerListData| null)=>{
-                      console.log(newValue); 
-                      setSelectedCust_CD(newValue);                     
-                    }}
-                    isOptionEqualToValue={(option, value) => option.CUST_CD === value.CUST_CD}
-                  />
+                    <Autocomplete
+                      size='small'
+                      disablePortal
+                      options={customerList}
+                      className='autocomplete'
+                      getOptionLabel={(option: CustomerListData) => {
+                        return `${option.CUST_CD}: ${option.CUST_NAME_KD}`;
+                      }}
+                      renderInput={(params) => (
+                        <TextField {...params} label='Select customer' />
+                      )}
+                      value={selectedCust_CD}
+                      onChange={(
+                        event: any,
+                        newValue: CustomerListData | null
+                      ) => {
+                        console.log(newValue);
+                        setSelectedCust_CD(newValue);
+                      }}
+                      isOptionEqualToValue={(option, value) =>
+                        option.CUST_CD === value.CUST_CD
+                      }
+                    />
                   </label>
                   <label>
                     <b>Code hàng:</b>{" "}
-                  <Autocomplete
-                    size="small"
-                    disablePortal                    
-                    options={codeList}
-                    className='autocomplete'   
-                    getOptionLabel={(option:CodeListData) => `${option.G_CODE}: ${option.G_NAME}`}                     
-                    renderInput={(params) => (
-                     <TextField {...params} label='Select code'/>
-                    )}    
-                    onChange={(event:any, newValue: CodeListData| null)=>{
-                      console.log(newValue); 
-                      setSelectedCode(newValue);
-                    }}  
-                    value={selectedCode}   
-                    isOptionEqualToValue={(option, value) => option.G_CODE === value.G_CODE}
-                  />
+                    <Autocomplete
+                      size='small'
+                      disablePortal
+                      options={codeList}
+                      className='autocomplete'
+                      getOptionLabel={(option: CodeListData) =>
+                        `${option.G_CODE}: ${option.G_NAME}`
+                      }
+                      renderInput={(params) => (
+                        <TextField {...params} label='Select code' />
+                      )}
+                      onChange={(event: any, newValue: CodeListData | null) => {
+                        console.log(newValue);
+                        setSelectedCode(newValue);
+                      }}
+                      value={selectedCode}
+                      isOptionEqualToValue={(option, value) =>
+                        option.G_CODE === value.G_CODE
+                      }
+                    />
                   </label>
                   <label>
                     <b>Delivery Date:</b>
                     <input
-                      className='inputdata' 
+                      className='inputdata'
                       type='date'
                       value={deliverydate.slice(0, 10)}
                       onChange={(e) => setNewDeliveryDate(e.target.value)}
@@ -1533,75 +1585,138 @@ const YCSXManager = () => {
                   </label>
                   <label>
                     <b>Loại hàng</b>
-                      <select                  
-                        name='phanloaihang'
-                        value={newphanloai}
-                        onChange={(e) => {
-                          setNewPhanLoai(e.target.value);
-                        }}                  
-                      >
-                        <option value='TT'>Hàng Thường</option>
-                        <option value='SP'>SP</option>
-                        <option value='RB'>RB</option>
-                        <option value='HQ'>HQ</option>                       
-                      </select>
+                    <select
+                      name='phanloaihang'
+                      value={newphanloai}
+                      onChange={(e) => {
+                        setNewPhanLoai(e.target.value);
+                      }}
+                    >
+                      <option value='TT'>Hàng Thường</option>
+                      <option value='SP'>SP</option>
+                      <option value='RB'>RB</option>
+                      <option value='HQ'>HQ</option>
+                    </select>
                   </label>
                 </div>
-                <div className='dangkyinputbox'>  
+                <div className='dangkyinputbox'>
                   <label>
                     <b>Loại sản xuất</b>
-                      <select                  
-                        name='loasx'
-                        value={loaisx}
-                        onChange={(e) => {
-                          setLoaiSX(e.target.value);
-                        }}                  
-                      >
-                        <option value='01'>Thông Thường</option>
-                        <option value='02'>SDI</option>
-                        <option value='03'>ETC</option>
-                        <option value='04'>SAMPLE</option>                       
-                      </select>
-                  </label>              
+                    <select
+                      name='loasx'
+                      value={loaisx}
+                      onChange={(e) => {
+                        setLoaiSX(e.target.value);
+                      }}
+                    >
+                      <option value='01'>Thông Thường</option>
+                      <option value='02'>SDI</option>
+                      <option value='03'>ETC</option>
+                      <option value='04'>SAMPLE</option>
+                    </select>
+                  </label>
                   <label>
                     <b>Loại xuất hàng</b>
-                      <select                  
-                        name='loaixh'
-                        value={loaixh}
-                        onChange={(e) => {
-                          setLoaiXH(e.target.value);
-                        }}                  
-                      >
-                        <option value='01'>GC</option>
-                        <option value='02'>SK</option>
-                        <option value='03'>KD</option>
-                        <option value='04'>VN</option>                       
-                        <option value='05'>SAMPLE</option>                       
-                        <option value='06'>Vai bac 4</option>                       
-                        <option value='07'>ETC</option>                       
-                      </select>
-                  </label>              
+                    <select
+                      name='loaixh'
+                      value={loaixh}
+                      onChange={(e) => {
+                        setLoaiXH(e.target.value);
+                      }}
+                    >
+                      <option value='01'>GC</option>
+                      <option value='02'>SK</option>
+                      <option value='03'>KD</option>
+                      <option value='04'>VN</option>
+                      <option value='05'>SAMPLE</option>
+                      <option value='06'>Vai bac 4</option>
+                      <option value='07'>ETC</option>
+                    </select>
+                  </label>
                   <label>
                     <b>YCSX QTY:</b>{" "}
-                  <TextField  value={newycsxqty}  onChange={(e:React.ChangeEvent<HTMLInputElement>)=> setNewYcsxQty(e.target.value)} size="small" color="success" className='autocomplete' id="outlined-basic" label="YCSX QTY" variant="outlined" />
-                  </label>               
+                    <TextField
+                      value={newycsxqty}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        setNewYcsxQty(e.target.value)
+                      }
+                      size='small'
+                      color='success'
+                      className='autocomplete'
+                      id='outlined-basic'
+                      label='YCSX QTY'
+                      variant='outlined'
+                    />
+                  </label>
                   <label>
                     <b>Remark:</b>{" "}
-                  <TextField  value={newycsxremark}   onChange={(e:React.ChangeEvent<HTMLInputElement>)=> setNewYcsxRemark(e.target.value)} size="small"  color="success" className='autocomplete' id="outlined-basic" label="Remark" variant="outlined" />
-                  </label>  
+                    <TextField
+                      value={newycsxremark}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        setNewYcsxRemark(e.target.value)
+                      }
+                      size='small'
+                      color='success'
+                      className='autocomplete'
+                      id='outlined-basic'
+                      label='Remark'
+                      variant='outlined'
+                    />
+                  </label>
                 </div>
               </div>
               <div className='dangkybutton'>
-                {selection.themycsx && <button className='thembutton' onClick={()=>{handle_add_1YCSX();}}>Thêm YCSX</button>}
-                {selection.inserttableycsx && <button className='thembutton' onClick={()=>{handle_InsertYCSXTable();}}>Insert YCSX</button>}
-                {selection.suaycsx && <button className='suabutton' onClick={()=>{updateYCSX();}}>Sửa YCSX</button>}
-                <button className='xoabutton' onClick={()=> {clearYCSXform();}}>Clear</button>
-                <button className='closebutton' onClick={()=> {setSelection({...selection, them1po:false});}}>Close</button>
+                {selection.themycsx && (
+                  <button
+                    className='thembutton'
+                    onClick={() => {
+                      handle_add_1YCSX();
+                    }}
+                  >
+                    Thêm YCSX
+                  </button>
+                )}
+                {selection.inserttableycsx && (
+                  <button
+                    className='thembutton'
+                    onClick={() => {
+                      handle_InsertYCSXTable();
+                    }}
+                  >
+                    Insert YCSX
+                  </button>
+                )}
+                {selection.suaycsx && (
+                  <button
+                    className='suabutton'
+                    onClick={() => {
+                      updateYCSX();
+                    }}
+                  >
+                    Sửa YCSX
+                  </button>
+                )}
+                <button
+                  className='xoabutton'
+                  onClick={() => {
+                    clearYCSXform();
+                  }}
+                >
+                  Clear
+                </button>
+                <button
+                  className='closebutton'
+                  onClick={() => {
+                    setSelection({ ...selection, them1po: false });
+                  }}
+                >
+                  Close
+                </button>
               </div>
             </div>
           </div>
         </div>
-      )} 
+      )}
       {selection.thempohangloat && (
         <div className='newycsx'>
           <h3>Thêm YCSX Hàng Loạt</h3>
@@ -1614,7 +1729,7 @@ const YCSXManager = () => {
                   className='selectfilebutton'
                   type='file'
                   name='upload'
-                  id='upload' 
+                  id='upload'
                   onChange={(e: any) => {
                     readUploadFile(e);
                   }}
@@ -1664,12 +1779,14 @@ const YCSXManager = () => {
                   ]}
                   editMode='row'
                   getRowHeight={() => "auto"}
-                  checkboxSelection 
-                  onSelectionModelChange={(ids) => {handleYCSXSelectionforUpdateExcel(ids);}}              
+                  checkboxSelection
+                  onSelectionModelChange={(ids) => {
+                    handleYCSXSelectionforUpdateExcel(ids);
+                  }}
                 />
               )}
             </div>
-          </div>          
+          </div>
         </div>
       )}
       {selection.trapo && (
@@ -1755,23 +1872,23 @@ const YCSXManager = () => {
                 </label>
               </div>
               <div className='forminputcolumn'>
-              <label>
-              <b>Phân loại:</b>
-                <select                  
-                  name='phanloai'
-                  value={phanloai}
-                  onChange={(e) => {
-                    setPhanLoai(e.target.value);
-                  }}                  
-                >
-                  <option value='00'>ALL</option>
-                  <option value='01'>Thông thường</option>
-                  <option value='02'>SDI</option>
-                  <option value='03'>GC</option>
-                  <option value='04'>SAMPLE</option>
-                  <option value='22'>NOT SAMPLE</option>
-                </select>
-            </label>
+                <label>
+                  <b>Phân loại:</b>
+                  <select
+                    name='phanloai'
+                    value={phanloai}
+                    onChange={(e) => {
+                      setPhanLoai(e.target.value);
+                    }}
+                  >
+                    <option value='00'>ALL</option>
+                    <option value='01'>Thông thường</option>
+                    <option value='02'>SDI</option>
+                    <option value='03'>GC</option>
+                    <option value='04'>SAMPLE</option>
+                    <option value='22'>NOT SAMPLE</option>
+                  </select>
+                </label>
                 <label>
                   <b>Vật liệu:</b>{" "}
                   <input
@@ -1783,24 +1900,24 @@ const YCSXManager = () => {
                 </label>
               </div>
               <div className='forminputcolumn'>
-              <label>
-                <b>YCSX Pending:</b>
-                <input
-                  type='checkbox'
-                  name='alltimecheckbox'
-                  defaultChecked={ycsxpendingcheck}
-                  onChange={() => setYCSXPendingCheck(!ycsxpendingcheck)}
-                ></input>
-              </label>
-              <label>
-                <b>Vào kiểm:</b>
-                <input
-                  type='checkbox'
-                  name='alltimecheckbox'
-                  defaultChecked={inspectInputcheck}
-                  onChange={() => setInspectInputCheck(!inspectInputcheck)}
-                ></input>
-              </label>
+                <label>
+                  <b>YCSX Pending:</b>
+                  <input
+                    type='checkbox'
+                    name='alltimecheckbox'
+                    defaultChecked={ycsxpendingcheck}
+                    onChange={() => setYCSXPendingCheck(!ycsxpendingcheck)}
+                  ></input>
+                </label>
+                <label>
+                  <b>Vào kiểm:</b>
+                  <input
+                    type='checkbox'
+                    name='alltimecheckbox'
+                    defaultChecked={inspectInputcheck}
+                    onChange={() => setInspectInputCheck(!inspectInputcheck)}
+                  ></input>
+                </label>
               </div>
             </div>
             <div className='formbutton'>
@@ -1812,15 +1929,21 @@ const YCSXManager = () => {
                   defaultChecked={alltime}
                   onChange={() => setAllTime(!alltime)}
                 ></input>
-              </label>              
-              <IconButton className='buttonIcon' onClick={() => {
+              </label>
+              <IconButton
+                className='buttonIcon'
+                onClick={() => {
                   handletraYCSX();
-                }}><FcSearch color='green' size={30}/>Search</IconButton>             
-            </div>           
+                }}
+              >
+                <FcSearch color='green' size={30} />
+                Search
+              </IconButton>
+            </div>
           </div>
           <div className='tracuuYCSXTable'>
             <DataGrid
-              sx={{fontSize:12, flex:1}}
+              sx={{ fontSize: 12, flex: 1 }}
               components={{
                 Toolbar: CustomToolbarPOTable,
                 LoadingOverlay: LinearProgress,
@@ -1830,17 +1953,51 @@ const YCSXManager = () => {
               rows={ycsxdatatable}
               columns={column_ycsxtable}
               rowsPerPageOptions={[
-                5, 10, 50, 100, 500, 1000, 5000, 10000, 500000, 
+                5, 10, 50, 100, 500, 1000, 5000, 10000, 500000,
               ]}
               editMode='row'
               getRowId={(row) => row.PROD_REQUEST_NO}
               checkboxSelection
               disableSelectionOnClick
-              onSelectionModelChange={(ids) => {handleYCSXSelectionforUpdate(ids);}}
+              onSelectionModelChange={(ids) => {
+                handleYCSXSelectionforUpdate(ids);
+              }}
             />
           </div>
         </div>
       )}
+      {selection.renderycsx && 
+        <div className='printycsxpage'>
+          <div className='buttongroup'>
+            <button
+              onClick={() => {
+                setYCSXListRender(renderYCSX(ycsxdatatablefilter));
+              }}
+            >
+              Render YCSX
+            </button>
+            <button onClick={handlePrint}>Print YCSX</button>
+            <button onClick={() => {setSelection({ ...selection, renderycsx: false });}}>Close</button>
+          </div>
+          <div className='ycsxrender' ref={ycsxprintref}>{ycsxlistrender}</div>
+        </div>
+      }
+      {selection.renderbanve && 
+        <div className='printycsxpage'>
+          <div className='buttongroup'>
+            <button
+              onClick={() => {
+                setYCSXListRender(renderBanVe(ycsxdatatablefilter));
+              }}
+            >
+              Render Bản Vẽ
+            </button>
+            <button onClick={handlePrint}>Print Bản Vẽ</button>
+            <button onClick={() => {setSelection({ ...selection, renderbanve: false });}}>Close</button>
+          </div>
+          <div className='ycsxrender' ref={ycsxprintref}>{ycsxlistrender}</div>
+        </div>
+      }
     </div>
   );
 }

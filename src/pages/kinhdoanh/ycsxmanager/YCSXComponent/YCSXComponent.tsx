@@ -18,6 +18,44 @@ interface TONKHOTDYCSX {
   GRAND_TOTAL_STOCK: number;
 }
 
+interface YCSXTableData {
+    PROD_MAIN_MATERIAL?: string,
+    PROD_TYPE?: string,
+    EMPL_NO?: string,
+    CUST_CD?: string,
+    G_CODE?: string,
+    G_NAME?: string,
+    EMPL_NAME?: string,
+    CUST_NAME_KD?: string,
+    PROD_REQUEST_NO?: string,
+    PROD_REQUEST_DATE?: string,
+    PROD_REQUEST_QTY?: number,
+    LOT_TOTAL_INPUT_QTY_EA?: number,
+    LOT_TOTAL_OUTPUT_QTY_EA?: number,
+    INSPECT_BALANCE?: number,
+    SHORTAGE_YCSX?: number,
+    YCSX_PENDING?: number,
+    PHAN_LOAI?: string,
+    REMARK?: string,
+    PO_TDYCSX?: number,
+    TOTAL_TKHO_TDYCSX?: number,
+    TKHO_TDYCSX?: number,
+    BTP_TDYCSX?: number,
+    CK_TDYCSX?: number,
+    BLOCK_TDYCSX?: number,
+    FCST_TDYCSX?: number,
+    W1?: number,
+    W2?: number,
+    W3?: number,
+    W4?: number,
+    W5?: number,
+    W6?: number,
+    W7?: number,
+    W8?: number,
+    PDUYET?: number,  
+    LOAIXH?: string
+  }
+
 interface YCSX {
     PROD_REQUEST_NO: string,
     G_CODE: string
@@ -69,8 +107,11 @@ interface FullBOM {
     EMPL_NAME: string,
     CODE_03: string,
     REMARK: string,
+    TONLIEU: number,
+    HOLDING: number,
+    TONG_TON_LIEU: number
 }
-const YCSXComponent = ({PROD_REQUEST_NO, G_CODE}:YCSX) => {
+const YCSXComponent = ({G_CODE,PROD_TYPE,PROD_MAIN_MATERIAL,G_NAME,EMPL_NAME,EMPL_NO,CUST_NAME_KD,CUST_CD,PROD_REQUEST_NO,PROD_REQUEST_DATE,PROD_REQUEST_QTY,LOT_TOTAL_INPUT_QTY_EA,LOT_TOTAL_OUTPUT_QTY_EA,INSPECT_BALANCE,SHORTAGE_YCSX,YCSX_PENDING,PHAN_LOAI,REMARK,PO_TDYCSX,TOTAL_TKHO_TDYCSX,TKHO_TDYCSX,BTP_TDYCSX,CK_TDYCSX,BLOCK_TDYCSX,FCST_TDYCSX,W1,W2,W3,W4,W5,W6,W7,W8,PDUYET,LOAIXH}:YCSXTableData) => {
     const [tvl_tdycsx,setTVL_TDYCSX] = useState<Array<TONVL>>([{
         M_CODE: 'string',
         M_NAME: 'string',
@@ -132,14 +173,71 @@ const YCSXComponent = ({PROD_REQUEST_NO, G_CODE}:YCSX) => {
         EMPL_NAME: 'NGUYEN THI THAO',
         CODE_03: '01',
         REMARK: '',
+        TONLIEU:0,
+        HOLDING: 0,
+        TONG_TON_LIEU:0
     }]);
-    console.log(request_codeinfo[0]);
-    useEffect(()=> {
-            generalQuery("ycsx_fullinfo", {
-            PROD_REQUEST_NO: PROD_REQUEST_NO
+   
+    const material_render = async (element: FullBOM, index: number)=> 
+    {
+        let total_tonlieu: number =0;
+        let block: number =0;      
+      
+        await generalQuery("tonlieugcode", {
+            M_CODE: element.M_CODE,
+            inventory: moment().format("YYYYMM"),
+            tradate: moment().format("YYYY-MM-01 08:00:00")                               
+            })
+        .then((response) => {
+            console.log(response.data.tk_status);
+            if (response.data.tk_status !== "NG") {
+                total_tonlieu = response.data.data[0].GRAND_TOTAL;
+                block = response.data.data[0].HOLDING;                                    
+            //Swal.fire("Thông báo", "Update Po thành công", "success");  
+            } else {     
+            // Swal.fire("Thông báo", "Update PO thất bại: " +response.data.message , "error"); 
+            }
+        })
+        .catch((error) => {
+            console.log(error);
+        });
+       
+        return (
+            <tr key={index}>
+            <td>{index}</td>
+            <td>{element.M_CODE}</td>
+            <td>{element.M_NAME}</td>
+            <td>{element.WIDTH_CD}</td>
+            <td>{(total_tonlieu - block).toLocaleString("en-US")} M</td>
+            <td>{block.toLocaleString("en-US")} M</td>
+            <td>{total_tonlieu.toLocaleString("en-US")} M</td>
+            <td>{element.REMARK}</td>
+            </tr>
+        )  
+    }
+
+    const initYCSX = async() => {
+        let inventorydate:string= '202207';
+        await generalQuery("check_inventorydate", { 
+            G_CODE: G_CODE
+          })
+            .then((response) => {
+              if (response.data.tk_status !== "NG") {                   
+                inventorydate = (response.data.data[0].INVENTORY_DATE);
+              } else { 
+              }        
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+
+        generalQuery("ycsx_fullinfo", {
+            PROD_REQUEST_NO: PROD_REQUEST_NO,  
+            TRADATE: moment(inventorydate).format("YYYY-MM-DD 08:00:00"),
+            INVENTORY: inventorydate
             })
             .then((response) => {
-                console.log(response.data.tk_status);
+                //console.log(response.data.tk_status);
                 if (response.data.tk_status !== "NG") {
                 setRequest_CodeInfo(response.data.data);                
                 } else {   
@@ -178,6 +276,9 @@ const YCSXComponent = ({PROD_REQUEST_NO, G_CODE}:YCSX) => {
                     EMPL_NAME: '',
                     CODE_03: '01',
                     REMARK: '',
+                    TONLIEU:0,
+                    HOLDING:0,
+                    TONG_TON_LIEU: 0
                 }])  
                 //Swal.fire("Thông báo","Số yêu cầu " + PROD_REQUEST_NO + "không tồn tại","error");                
                 }
@@ -211,6 +312,10 @@ const YCSXComponent = ({PROD_REQUEST_NO, G_CODE}:YCSX) => {
                   console.log(error);
                 });
 
+    }
+    useEffect(()=> {
+            initYCSX();
+            
 
     },[PROD_REQUEST_NO]);
 
@@ -218,9 +323,9 @@ const YCSXComponent = ({PROD_REQUEST_NO, G_CODE}:YCSX) => {
   return (
     <div className='ycsxcomponent'>         
       <div className='tieudeycsx'>
-        <div className='title'>CMSV 생산요청서 - Yêu cầu sản xuất</div>
+        <div className='title'>CMSV 생산요청서 - Yêu cầu sản xuất<br></br><span style={{fontSize:15}}>Thời điểm in YCSX: {moment().format("YYYY-MM-DD HH:mm:ss")}</span></div>
         <div className='soycsx'>
-          <div className='ycsxno'>{request_codeinfo[0].PROD_REQUEST_DATE}-{request_codeinfo[0].PROD_REQUEST_NO}</div>
+          <div className='ycsxno'>{request_codeinfo[0].PROD_REQUEST_DATE}-{request_codeinfo[0].PROD_REQUEST_NO} </div>
           <div className='ycsxbarcode'>
             <Barcode
               value={request_codeinfo[0]?.PROD_REQUEST_NO}
@@ -233,10 +338,11 @@ const YCSXComponent = ({PROD_REQUEST_NO, G_CODE}:YCSX) => {
               margin={0}
             />
           </div>
+          
         </div>
       </div>
       <div className='thongtinycsx'>
-        <div className='text1'>1. 요청 정보 Thông tin yêu cầu</div>
+        <div className='text1'>1. 요청 정보 Thông tin yêu cầu ({request_codeinfo[0].G_NAME} )</div>
         <div className='thongtinyeucau'>
           <table className='ttyc1'>
             <thead>
@@ -278,7 +384,7 @@ const YCSXComponent = ({PROD_REQUEST_NO, G_CODE}:YCSX) => {
               </tr>
               <tr>
                 <td>Số lượng tồn/재고수량</td>
-                <td>20,000 EA</td>
+                <td>{(tk_tdycsx?.CHO_KIEM+tk_tdycsx?.CHO_KIEM_RMA+tk_tdycsx?.CHO_KIEM_RMA + tk_tdycsx?.TON_TP + tk_tdycsx?.BTP - tk_tdycsx?.BLOCK_QTY).toLocaleString("en-US")} EA</td>
               </tr>
               <tr>
                 <td>Số lượng giao/납품수량</td>
@@ -449,11 +555,11 @@ const YCSXComponent = ({PROD_REQUEST_NO, G_CODE}:YCSX) => {
             <tbody>
               <tr>
                 <td className='hangmuc'>Mã Dao</td>
-                <td>123456789</td>
+                <td></td>
               </tr>
               <tr>
                 <td className='hangmuc'>Mã Film</td>
-                <td>abcdefgh</td>
+                <td></td>
               </tr>
             </tbody>
           </table>
@@ -472,52 +578,23 @@ const YCSXComponent = ({PROD_REQUEST_NO, G_CODE}:YCSX) => {
                 <th>Tồn block/블록재고</th>
                 <th>Tổng tồn liệu/총 재고</th>
                 <th>Ghi chú/비고</th>
-
                 </tr>
                 
               </thead>
               <tbody>
                 {
-                    request_codeinfo.map((element, index)=> 
-                    {
-                        let total_tonlieu: number =10000;
-                        let block: number =10000;
-                       
-                        (async () => {  
-                            await generalQuery("tonlieugcode", {
-                                M_CODE: element.M_CODE,
-                                inventory: moment().format("YYYYMM"),
-                                tradate: moment().format("YYYY-MM-01 08:00:00")                               
-                              })
-                            .then((response) => {
-                                console.log(response.data.tk_status);
-                                if (response.data.tk_status !== "NG") {
-                                    total_tonlieu = response.data.data[0].GRAND_TOTAL;
-                                    block = response.data.data[0].HOLDING;                                    
-                                //Swal.fire("Thông báo", "Update Po thành công", "success");  
-                                } else {     
-                                // Swal.fire("Thông báo", "Update PO thất bại: " +response.data.message , "error"); 
-                                }
-                            })
-                            .catch((error) => {
-                                console.log(error);
-                            });
-                        })()
-                        return (
-                            <tr key={index}>
-                            <td>{index}</td>
-                            <td>{element.M_CODE}</td>
-                            <td>{element.M_NAME}</td>
-                            <td>{element.WIDTH_CD}</td>
-                            <td>{(total_tonlieu - block).toLocaleString("en-US")} M</td>
-                            <td>{block.toLocaleString("en-US")} M</td>
-                            <td>{total_tonlieu.toLocaleString("en-US")} M</td>
-                            <td>{element.REMARK}</td>
-                            </tr>
-                        )  
-                    }
-                    )
-                }               
+                    request_codeinfo.map((element, index)=>  
+                    <tr key={index}>
+                        <td>{index}</td>
+                        <td>{element.M_CODE}</td>
+                        <td>{element.M_NAME}</td>
+                        <td>{element.WIDTH_CD}</td>
+                        <td>{element.TONLIEU.toLocaleString("en-US")} M</td>
+                        <td>{element.HOLDING.toLocaleString("en-US")} M</td>
+                        <td>{element.TONG_TON_LIEU.toLocaleString("en-US")} M</td>
+                        <td>{element.REMARK}</td>
+                    </tr>)
+                }          
               </tbody>
             </table>
           </div>}
@@ -536,20 +613,20 @@ const YCSXComponent = ({PROD_REQUEST_NO, G_CODE}:YCSX) => {
                 <th>Ghi chú/비고</th>
                 </tr>
                 </thead>
-                <tbody>                 
-                    {
-                        request_codeinfo.map((element, index)=> (index<=12) && 
-                        <tr key={index}>
-                            <td>{index}</td>
-                            <td>{element.M_CODE}</td>
-                            <td>{element.M_NAME}</td>
-                            <td>{element.WIDTH_CD}</td>
-                            <td>1,500M</td>
-                            <td>500M</td>
-                            <td>1,000M</td>
-                            <td>{element.REMARK}</td>
-                        </tr>)
-                    }
+                <tbody>   
+                {
+                    request_codeinfo.map((element, index)=>  
+                    (index<=12) && <tr key={index}>
+                        <td>{index}</td>
+                        <td>{element.M_CODE}</td>
+                        <td>{element.M_NAME}</td>
+                        <td>{element.WIDTH_CD}</td>
+                        <td>{element.TONLIEU.toLocaleString("en-US")} M</td>
+                        <td>{element.HOLDING.toLocaleString("en-US")} M</td>
+                        <td>{element.TONG_TON_LIEU.toLocaleString("en-US")} M</td>
+                        <td>{element.REMARK}</td>
+                    </tr>)
+                } 
                 </tbody>
               </table>
             </div>
@@ -569,20 +646,21 @@ const YCSXComponent = ({PROD_REQUEST_NO, G_CODE}:YCSX) => {
                 <th>Ghi chú/비고</th>
                 </tr>
                 </thead>
-                <tbody>                
-                    {
-                        request_codeinfo.map((element, index)=> (index>12) && 
-                        <tr key={index}>
-                            <td>{index}</td>
-                            <td>{element.M_CODE}</td>
-                            <td>{element.M_NAME}</td>
-                            <td>{element.WIDTH_CD}</td>
-                            <td>1,500M</td>
-                            <td>500M</td>
-                            <td>1,000M</td>
-                            <td>{element.REMARK}</td>
-                        </tr>)
-                    }       
+                <tbody>  
+                {
+                    request_codeinfo.map((element, index)=>  
+                    (index>12) && <tr key={index}>
+                        <td>{index}</td>
+                        <td>{element.M_CODE}</td>
+                        <td>{element.M_NAME}</td>
+                        <td>{element.WIDTH_CD}</td>
+                        <td>{element.TONLIEU.toLocaleString("en-US")} M</td>
+                        <td>{element.HOLDING.toLocaleString("en-US")} M</td>
+                        <td>{element.TONG_TON_LIEU.toLocaleString("en-US")} M</td>
+                        <td>{element.REMARK}</td>
+                    </tr>)
+                }          
+                     
                    
                 </tbody>
               </table>
