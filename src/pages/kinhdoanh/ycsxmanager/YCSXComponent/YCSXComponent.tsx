@@ -73,6 +73,8 @@ interface TONVL {
 }
 
 interface FullBOM {
+    NO_INSPECTION?: string,
+    PDUYET?: number,
     REMK: string,
     PROD_REQUEST_QTY: number,
     PROD_REQUEST_NO: string,
@@ -237,7 +239,8 @@ const YCSXComponent = ({G_CODE,PROD_TYPE,PROD_MAIN_MATERIAL,G_NAME,EMPL_NAME,EMP
             INVENTORY: inventorydate
             })
             .then((response) => {
-                //console.log(response.data.tk_status);
+              console.log('Data request full ycsx :');
+                console.log(response.data.data);
                 if (response.data.tk_status !== "NG") {
                 setRequest_CodeInfo(response.data.data);                
                 } else {   
@@ -278,7 +281,8 @@ const YCSXComponent = ({G_CODE,PROD_TYPE,PROD_MAIN_MATERIAL,G_NAME,EMPL_NAME,EMP
                     REMARK: '',
                     TONLIEU:0,
                     HOLDING:0,
-                    TONG_TON_LIEU: 0
+                    TONG_TON_LIEU: 0,
+                    NO_INSPECTION:'N'
                 }])  
                 //Swal.fire("Thông báo","Số yêu cầu " + PROD_REQUEST_NO + "không tồn tại","error");                
                 }
@@ -314,16 +318,14 @@ const YCSXComponent = ({G_CODE,PROD_TYPE,PROD_MAIN_MATERIAL,G_NAME,EMPL_NAME,EMP
 
     }
     useEffect(()=> {
-            initYCSX();
-            
+            initYCSX();            
 
     },[PROD_REQUEST_NO]);
 
-
   return (
     <div className='ycsxcomponent'>         
-      <div className='tieudeycsx'>
-        <div className='title'>CMSV 생산요청서 - Yêu cầu sản xuất<br></br><span style={{fontSize:15}}>Thời điểm in YCSX: {moment().format("YYYY-MM-DD HH:mm:ss")}</span></div>
+     { request_codeinfo[0].PDUYET &&  <div className='tieudeycsx'>
+        <div className='title'>CMSV 생산요청서 - Yêu cầu sản xuất<br></br><span style={{fontSize:12}}>Thời điểm in YCSX: {moment().format("YYYY-MM-DD HH:mm:ss")}</span><br></br> {(request_codeinfo[0].NO_INSPECTION ==='Y') && <span style={{fontSize:18}}>(Sản phẩm không kiểm tra ngoại quan)</span>}</div>
         <div className='soycsx'>
           <div className='ycsxno'>{request_codeinfo[0].PROD_REQUEST_DATE}-{request_codeinfo[0].PROD_REQUEST_NO} </div>
           <div className='ycsxbarcode'>
@@ -340,8 +342,8 @@ const YCSXComponent = ({G_CODE,PROD_TYPE,PROD_MAIN_MATERIAL,G_NAME,EMPL_NAME,EMP
           </div>
           
         </div>
-      </div>
-      <div className='thongtinycsx'>
+      </div>}
+      {request_codeinfo[0].PDUYET && <div className='thongtinycsx'>
         <div className='text1'>1. 요청 정보 Thông tin yêu cầu ({request_codeinfo[0].G_NAME} )</div>
         <div className='thongtinyeucau'>
           <table className='ttyc1'>
@@ -667,7 +669,7 @@ const YCSXComponent = ({G_CODE,PROD_TYPE,PROD_MAIN_MATERIAL,G_NAME,EMPL_NAME,EMP
             </div>
           )}
         </div>
-      </div>
+      </div>}
     </div>
   );
 };

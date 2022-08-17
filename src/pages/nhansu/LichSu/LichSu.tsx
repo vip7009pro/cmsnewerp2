@@ -38,7 +38,7 @@ interface DiemDanhNhomData {
 const LichSu = () => {
     const [isLoading, setisLoading] = useState(false); 
     const [diemdanhnhomtable,setDiemDanhNhomTable ] = useState<Array<DiemDanhNhomData>>([]);
-    const [fromdate, setFromDate] = useState(moment().format('YYYY-MM-DD'));
+    const [fromdate, setFromDate] = useState(moment().format('YYYY-MM-01'));
     const [todate, setToDate] = useState(moment().format('YYYY-MM-DD'));
     const columns_diemdanhnhom =[ 
         { field: "APPLY_DATE", headerName: "APPLY_DATE", width: 120,valueGetter: (params: any) => {return params.row.APPLY_DATE?params.row.APPLY_DATE.slice(0,10):''} }, 

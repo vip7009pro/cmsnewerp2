@@ -36,8 +36,6 @@ const Login = () => {
     login(user, pass);
   }
   
-
-
   if (userData.EMPL_NO!=='none') return <Navigate to='/' replace />;
   return (
     <div className='login-form'>

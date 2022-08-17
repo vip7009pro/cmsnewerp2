@@ -3,7 +3,7 @@ import { DataGrid, GridSelectionModel, GridToolbarColumnsButton, GridToolbarCont
 import moment from 'moment';
 import React, { useContext, useEffect, useState, useTransition } from 'react'
 import {FcApprove, FcSearch } from 'react-icons/fc';
-import {AiFillEdit, AiFillFileAdd, AiFillFileExcel, AiOutlinePrinter } from "react-icons/ai";
+import {AiFillEdit, AiFillFileAdd, AiFillFileExcel, AiOutlineCloudUpload, AiOutlinePrinter } from "react-icons/ai";
 import Swal from 'sweetalert2';
 import * as XLSX from 'xlsx';
 import { generalQuery } from '../../../api/Api';
@@ -16,6 +16,7 @@ import  { ReactElement, useRef,  } from 'react';
 import { useReactToPrint } from 'react-to-print';
 import YCSXComponent from './YCSXComponent/YCSXComponent';
 import DrawComponent from './DrawComponent/DrawComponent';
+const axios = require('axios').default;
 
 interface POBALANCETDYCSX{ G_CODE: string; PO_BALANCE: number }
 interface TONKHOTDYCSX {
@@ -41,6 +42,7 @@ interface FCSTTDYCSX{
   W8: number;
 }
 interface YCSXTableData {
+  BANVE?: string,
   PROD_MAIN_MATERIAL?: string,
   PROD_TYPE?: string,
   EMPL_NO: string,
@@ -99,7 +101,7 @@ const YCSXManager = () => {
     return  ycsxlist.map((element,index)=> <YCSXComponent key={index} PROD_REQUEST_NO={element.PROD_REQUEST_NO} G_CODE={element.G_CODE} PO_TDYCSX={element.PO_TDYCSX}  TOTAL_TKHO_TDYCSX={ element.TOTAL_TKHO_TDYCSX}  TKHO_TDYCSX={ element.TKHO_TDYCSX}  BTP_TDYCSX={ element.BTP_TDYCSX}  CK_TDYCSX={ element.CK_TDYCSX}  BLOCK_TDYCSX={ element.BLOCK_TDYCSX}  FCST_TDYCSX={ element.FCST_TDYCSX}/>)
   }
   const renderBanVe = (ycsxlist: YCSXTableData[]) => {
-    return  ycsxlist.map((element,index)=><DrawComponent key={index}/> )
+    return  ycsxlist.map((element,index)=>(element.BANVE === 'Y' ? <DrawComponent key={index} G_CODE = {element.G_CODE}/> : <div>Code: {element.G_NAME} : Không có bản vẽ</div> ))
   }
 
   const [file, setFile] = useState<any>();
@@ -113,7 +115,8 @@ const YCSXManager = () => {
     suaycsx:false,
     inserttableycsx: false,
     renderycsx:false,
-    renderbanve:false
+    renderbanve:false,
+    amazontab: false
   });
   const [userData, setUserData] = useContext(UserContext);
   const [uploadExcelJson, setUploadExcelJSon] = useState<Array<any>>([]);
@@ -140,7 +143,7 @@ const YCSXManager = () => {
   const [loaisx,setLoaiSX] =useState('01');
   const [loaixh,setLoaiXH] =useState('02');
   const [material,setMaterial] =useState('');
-  const [ycsxdatatable, setPoDataTable] = useState<Array<YCSXTableData>>([]);
+  const [ycsxdatatable, setYcsxDataTable] = useState<Array<YCSXTableData>>([]);
   const [ycsxdatatablefilter, setYcsxDataTableFilter] = useState<Array<YCSXTableData>>([]);
   const [ycsxdatatablefilterexcel, setYcsxDataTableFilterExcel] = useState<Array<any>>([]);
   const [selectedID,setSelectedID] = useState<string|null>();
@@ -195,6 +198,60 @@ const YCSXManager = () => {
       else
       return <span style={{color:'red'}}><b>Không Duyệt</b></span>
     }},
+    { field: "BANVE", headerName: "BANVE", width: 250 , renderCell: (params:any) => {
+
+      let file:any = null;
+
+      const uploadFile = async (e:any) => {
+        console.log(file);
+        const formData = new FormData();
+        formData.append("banve", file);        
+        formData.append("filename", params.row.G_CODE);        
+        try {
+          const response = await axios.post(
+            "http://14.160.33.94:3007/upload",
+            formData
+          );
+          //console.log("ket qua");
+          //console.log(response);
+          if(response.data.tk_status === 'OK')
+          {
+            //Swal.fire('Thông báo','Upload bản vẽ thành công','success');
+             generalQuery("update_banve_value", { G_CODE: params.row.G_CODE, banvevalue: 'Y' })
+            .then((response) => {        
+              if (response.data.tk_status !== "NG") 
+              {
+                Swal.fire('Thông báo','Upload bản vẽ thành công','success');
+                let tempycsxdatatable = ycsxdatatable.map((element, index)=> {                 
+                  return ( element.PROD_REQUEST_NO === params.row.PROD_REQUEST_NO ? {...element, BANVE: 'Y'}: element);
+                });
+                setYcsxDataTable(tempycsxdatatable);
+              } 
+              else {
+                Swal.fire('Thông báo','Upload bản vẽ thất bại','error');
+              }
+            })
+            .catch((error) => {
+              console.log(error);
+            });  
+          }
+          else
+          {
+            Swal.fire('Thông báo',response.data.message,'error');
+          }
+          //console.log(response.data);
+        } catch (ex) {
+          console.log(ex);
+        }
+      }
+      if(params.row.BANVE==='Y')
+      return <span style={{color:'green'}}><b>Đã có bản vẽ</b></span>
+      else
+      return <div className="uploadfile"> 
+       <IconButton className='buttonIcon'onClick={uploadFile}><AiOutlineCloudUpload color='yellow' size={25}/>Upload</IconButton>
+       <input  accept=".pdf" type="file" onChange={(e:any)=> {file = e.target.files[0]; console.log(file);}} />
+      </div>
+    }},
   ];
   const column_excel2 = [
     { field: "id", headerName: "id", width: 180 },
@@ -230,9 +287,9 @@ const YCSXManager = () => {
   function CustomToolbarPOTable() {
     return (
       <GridToolbarContainer>
-        <GridToolbarColumnsButton />
+       {/*  <GridToolbarColumnsButton />
         <GridToolbarFilterButton />
-        <GridToolbarDensitySelector /> 
+        <GridToolbarDensitySelector />  */}
         <IconButton className='buttonIcon'onClick={()=>{SaveExcel(ycsxdatatable,"YCSX Table")}}><AiFillFileExcel color='green' size={25}/>SAVE</IconButton>
         <IconButton className='buttonIcon'onClick={()=>{setSelection({...selection, trapo: true, thempohangloat:false, them1po:!selection.them1po, them1invoice: false, themycsx:true, suaycsx: false, inserttableycsx: false}); clearYCSXform();}}><AiFillFileAdd color='blue' size={25}/>NEW YCSX</IconButton>  
         <IconButton className='buttonIcon'onClick={()=>{ handle_fillsuaform();}}><AiFillEdit color='orange' size={25}/>SỬA YCSX</IconButton>
@@ -252,6 +309,17 @@ const YCSXManager = () => {
           
           }}><AiOutlinePrinter color='#0066ff' size={25}/>Print YCSX</IconButton> 
 
+        <IconButton className='buttonIcon'onClick={()=>{
+          if(ycsxdatatablefilter.length>0)
+          {
+             
+            
+          }
+          else{
+            Swal.fire("Thông báo","Chọn ít nhất 1 YCSX để check",'error');
+          }
+
+          }}><AiOutlinePrinter color='#00701a' size={25}/>Check Bản Vẽ</IconButton>        
         <IconButton className='buttonIcon'onClick={()=>{
           if(ycsxdatatablefilter.length>0)
           {
@@ -384,7 +452,7 @@ const YCSXManager = () => {
               PROD_REQUEST_QTY: (element.PROD_REQUEST_QTY===undefined|| element.PROD_REQUEST_QTY ===null? 0: element.PROD_REQUEST_QTY),
             }
           })         
-          setPoDataTable(loadeddata);
+          setYcsxDataTable(loadeddata);
           setisLoading(false);
           Swal.fire("Thông báo", "Đã load " + response.data.data.length + " dòng", "success");  
         }
@@ -828,15 +896,15 @@ const YCSXManager = () => {
   const setNav = (choose: number) => {
     if(choose ===1 )
     {
-      setSelection({...selection, trapo: true, thempohangloat:false, them1po:false,them1invoice:false,inserttableycsx: false});
+      setSelection({...selection, trapo: true, thempohangloat:false, them1po:false,them1invoice:false,inserttableycsx: false, amazontab:false});
     }
     else if(choose ===2 )
     {
-      setSelection({...selection, trapo: false, thempohangloat:true, them1po:true,them1invoice:false,themycsx:false, suaycsx: false,inserttableycsx: true});
+      setSelection({...selection, trapo: false, thempohangloat:true, them1po:true,them1invoice:false,themycsx:false, suaycsx: false,inserttableycsx: true, amazontab:false});
     }
     else if(choose ===3 )
     {
-      setSelection({...selection, trapo: false, thempohangloat:false, them1po:true,them1invoice:false,inserttableycsx: false});
+      setSelection({...selection, trapo: false, thempohangloat:false, them1po:false,them1invoice:false,inserttableycsx: false, amazontab:true});
     }
   }
   const handle_add_1YCSX = async ()=> {
@@ -1513,7 +1581,7 @@ const YCSXManager = () => {
           </span>
         </div>
         <div className='mininavitem'>
-          <span className='mininavtext' onClick={() => setNav(2)}>
+          <span className='mininavtext' onClick={() => setNav(3)}>
             Thêm DATA AMAZON
           </span>
         </div>
@@ -1996,6 +2064,185 @@ const YCSXManager = () => {
             <button onClick={() => {setSelection({ ...selection, renderbanve: false });}}>Close</button>
           </div>
           <div className='ycsxrender' ref={ycsxprintref}>{ycsxlistrender}</div>
+        </div>
+      }
+      {
+        selection.amazontab && <div className="amazonetab">
+          <div className='tracuuYCSX'>
+          <div className='tracuuYCSXform'>
+            <div className='forminput'>
+              <div className='forminputcolumn'>
+                <label>
+                  <b>Từ ngày:</b>
+                  <input
+                    type='date'
+                    value={fromdate.slice(0, 10)}
+                    onChange={(e) => setFromDate(e.target.value)}
+                  ></input>
+                </label>
+                <label>
+                  <b>Tới ngày:</b>{" "}
+                  <input
+                    type='date'
+                    value={todate.slice(0, 10)}
+                    onChange={(e) => setToDate(e.target.value)}
+                  ></input>
+                </label>
+              </div>
+              <div className='forminputcolumn'>
+                <label>
+                  <b>Code KD:</b>{" "}
+                  <input
+                    type='text'
+                    placeholder='GH63-xxxxxx'
+                    value={codeKD}
+                    onChange={(e) => setCodeKD(e.target.value)}
+                  ></input>
+                </label>
+                <label>
+                  <b>Code CMS:</b>{" "}
+                  <input
+                    type='text'
+                    placeholder='7C123xxx'
+                    value={codeCMS}
+                    onChange={(e) => setCodeCMS(e.target.value)}
+                  ></input>
+                </label>
+              </div>
+              <div className='forminputcolumn'>
+                <label>
+                  <b>Tên nhân viên:</b>{" "}
+                  <input
+                    type='text'
+                    placeholder='Trang'
+                    value={empl_name}
+                    onChange={(e) => setEmpl_Name(e.target.value)}
+                  ></input>
+                </label>
+                <label>
+                  <b>Khách:</b>{" "}
+                  <input
+                    type='text'
+                    placeholder='SEVT'
+                    value={cust_name}
+                    onChange={(e) => setCust_Name(e.target.value)}
+                  ></input>
+                </label>
+              </div>
+              <div className='forminputcolumn'>
+                <label>
+                  <b>Loại sản phẩm:</b>{" "}
+                  <input
+                    type='text'
+                    placeholder='TSP'
+                    value={prod_type}
+                    onChange={(e) => setProdType(e.target.value)}
+                  ></input>
+                </label>
+                <label>
+                  <b>Số YCSX:</b>{" "}
+                  <input
+                    type='text'
+                    placeholder='12345'
+                    value={prodrequestno}
+                    onChange={(e) => setProdRequestNo(e.target.value)}
+                  ></input>
+                </label>
+              </div>
+              <div className='forminputcolumn'>
+                <label>
+                  <b>Phân loại:</b>
+                  <select
+                    name='phanloai'
+                    value={phanloai}
+                    onChange={(e) => {
+                      setPhanLoai(e.target.value);
+                    }}
+                  >
+                    <option value='00'>ALL</option>
+                    <option value='01'>Thông thường</option>
+                    <option value='02'>SDI</option>
+                    <option value='03'>GC</option>
+                    <option value='04'>SAMPLE</option>
+                    <option value='22'>NOT SAMPLE</option>
+                  </select>
+                </label>
+                <label>
+                  <b>Vật liệu:</b>{" "}
+                  <input
+                    type='text'
+                    placeholder='SJ-203020HC'
+                    value={material}
+                    onChange={(e) => setMaterial(e.target.value)}
+                  ></input>
+                </label>
+              </div>
+              <div className='forminputcolumn'>
+                <label>
+                  <b>YCSX Pending:</b>
+                  <input
+                    type='checkbox'
+                    name='alltimecheckbox'
+                    defaultChecked={ycsxpendingcheck}
+                    onChange={() => setYCSXPendingCheck(!ycsxpendingcheck)}
+                  ></input>
+                </label>
+                <label>
+                  <b>Vào kiểm:</b>
+                  <input
+                    type='checkbox'
+                    name='alltimecheckbox'
+                    defaultChecked={inspectInputcheck}
+                    onChange={() => setInspectInputCheck(!inspectInputcheck)}
+                  ></input>
+                </label>
+              </div>
+            </div>
+            <div className='formbutton'>
+              <label>
+                <b>All Time:</b>
+                <input
+                  type='checkbox'
+                  name='alltimecheckbox'
+                  defaultChecked={alltime}
+                  onChange={() => setAllTime(!alltime)}
+                ></input>
+              </label>
+              <IconButton
+                className='buttonIcon'
+                onClick={() => {
+                  handletraYCSX();
+                }}
+              >
+                <FcSearch color='green' size={30} />
+                Search
+              </IconButton>
+            </div>
+          </div>
+          <div className='tracuuYCSXTable'>
+            <DataGrid
+              sx={{ fontSize: 12, flex: 1 }}
+              components={{
+                Toolbar: CustomToolbarPOTable,
+                LoadingOverlay: LinearProgress,
+              }}
+              loading={isLoading}
+              rowHeight={30}
+              rows={ycsxdatatable}
+              columns={column_ycsxtable}
+              rowsPerPageOptions={[
+                5, 10, 50, 100, 500, 1000, 5000, 10000, 500000,
+              ]}
+              editMode='row'
+              getRowId={(row) => row.PROD_REQUEST_NO}
+              checkboxSelection
+              disableSelectionOnClick
+              onSelectionModelChange={(ids) => {
+                handleYCSXSelectionforUpdate(ids);
+              }}
+            />
+          </div>
+        </div>
         </div>
       }
     </div>
