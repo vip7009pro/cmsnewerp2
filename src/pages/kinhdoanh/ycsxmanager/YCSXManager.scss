@@ -19,7 +19,7 @@
 
         .mininavitem {
             padding: 10px;
-            background-color: aquamarine;
+            background-color: rgb(100, 240, 95);
             margin-left: 5px;
             border-radius: 10px;
             -webkit-box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27); 
@@ -116,6 +116,166 @@
                 background-image: linear-gradient(0deg, #afd3d1, #b0e954);
                 padding: 10px;
                 border-radius: 10px;               
+                
+            }
+        }
+    }
+    .newamazon {
+        display: flex;
+        flex-direction: column; 
+        .amazonInputform {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            margin-bottom: 10px;
+            
+            background-image: linear-gradient(0deg, #afd3d1, #eea94f);
+            -webkit-box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27); 
+            box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27);
+            border-radius: 8px;
+            padding: 5px;
+            &:hover {
+                background-image: linear-gradient(0deg, #afd3d1, #eaec67);                
+            }
+            span {
+                padding: 10px;
+                font-size: 20px;
+                margin: auto;
+            }
+
+
+            .forminput {
+                display: flex;
+                gap: 5px;
+                flex-wrap: wrap;
+                align-items: center;
+                justify-content: space-around;
+                padding: 2px;
+                width: 100%;      
+                flex-direction: column;     
+
+                .forminputcolumn {
+                    display: flex;
+                    flex-direction: row;
+                    gap: 10px;
+                    align-items: flex-end;
+                    justify-content: center;
+                    flex-wrap: wrap;
+                    .prod_request_info {
+                        display: flex;
+                        font-weight: bold;
+                        gap: 50px;
+                    }
+                    input {
+                        width: 150px;
+                        height: 20px;
+                        outline: none;
+                        border-radius: 5px;
+                        border: none;
+                        padding: 5px;
+                        margin-left: 5px;
+                        background-image: linear-gradient(0deg, #ececec, #9dee95);
+                    }
+                    select {
+                        width: 160px;
+                        height: 30px;
+                        outline: none;
+                        border-radius: 5px;
+                        border: none;
+                        padding: 5px;
+                        margin-left: 5px;
+                        background-image: linear-gradient(0deg, #ececec, #9dee95);
+                    }
+                }
+            }
+            .formbutton {
+                display: flex;
+                align-items: center;
+                justify-content: space-around;                
+            }
+
+        }
+
+        .batchnewycsx {
+            display: flex;
+            flex-direction: column; 
+            gap: 10px;
+
+            .formupload {
+                display: flex;
+                gap: 20px;
+
+               
+                .checkpobutton {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    width: fit-content;
+                    height: 15px;
+                    background-color: #99f86d;
+                    outline: none;
+                    border: none;
+                    padding: 15px;
+                    border-radius: 5px;
+                    -webkit-box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27); 
+                    box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27);
+                    &:hover{
+                        background-color: rgb(127, 219, 255);
+                        cursor: pointer;
+                    }            
+                    
+                }
+                .uppobutton{
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    width: fit-content;
+                    height: 15px;
+                    background-color: #ee1010;
+                    color: white;
+                    outline: none;
+                    border: none;
+                    padding: 15px;
+                    border-radius: 5px;
+                    -webkit-box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27); 
+                    box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27);
+                    &:hover{
+                        background-color: rgb(127, 219, 255);
+                        cursor: pointer;
+                    }            
+
+                }
+                .clearobutton{
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    width: fit-content;
+                    height: 15px;
+                    background-color: #14f1d4;
+                    color: rgb(0, 0, 0);
+                    outline: none;
+                    border: none;
+                    padding: 15px;
+                    border-radius: 5px;
+                    -webkit-box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27); 
+                    box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27);
+                    &:hover{
+                        background-color: rgb(127, 219, 255);
+                        cursor: pointer;
+                    }            
+
+                }
+
+            }
+
+            .insertYCSXTable {
+                display: flex;
+                width: 99%;
+                height: 80vh;
+                margin-top: 10px;                
+                background-image: linear-gradient(0deg, #afd3d1, #9670f0);
+                padding: 10px;
+                border-radius: 2px;               
                 
             }
         }

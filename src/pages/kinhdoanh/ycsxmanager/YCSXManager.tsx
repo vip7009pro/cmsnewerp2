@@ -90,6 +90,19 @@ interface CustomerListData {
   CUST_CD: string, 
   CUST_NAME_KD: string
 }
+interface UploadAmazonData {
+  G_CODE?: string, 
+  PROD_REQUEST_NO?: string, 
+  NO_IN?: string, 
+  ROW_NO?: number, 
+  DATA1?: string,
+  DATA2?: string,
+  DATA3?: string,
+  DATA4?: string,
+  STATUS?: string, 
+  INLAI_COUNT?: number, 
+  REMARK?: string
+}
 const YCSXManager = () => {
   const [ycsxlistrender, setYCSXListRender] = useState<Array<ReactElement>>();
   const ycsxprintref = useRef(null);
@@ -149,6 +162,10 @@ const YCSXManager = () => {
   const [selectedID,setSelectedID] = useState<string|null>();
   const [ycsxpendingcheck, setYCSXPendingCheck] = useState(false);
   const [inspectInputcheck, setInspectInputCheck] = useState(false);
+  const [progressvalue, setProgressValue] = useState(0);
+  const [id_congviec, setID_CongViec] = useState('');
+  const [cavityAmazon, setCavityAmazon] = useState(0);
+  const [prod_model, setProd_Model] = useState('');
   const column_ycsxtable = [   
     { field: "G_CODE", headerName: "G_CODE", width: 80 },
     { field: "G_NAME", headerName: "G_NAME", width: 180, },
@@ -268,10 +285,35 @@ const YCSXManager = () => {
     { field: "PHANLOAI", headerName: "PHANLOAI", width: 80 },   
     { field: "CHECKSTATUS", headerName: "CHECKSTATUS", width: 200 , renderCell: (params:any) => {
       if(params.row.CHECKSTATUS.slice(0,2) === 'OK')
-      return <span style={{color:'green'}}><b>{params.row.CHECKSTATUS}</b></span>
-      return <span style={{color:'red'}}><b>{params.row.CHECKSTATUS}</b></span>
+      {
+        return <span style={{color:'green'}}><b>{params.row.CHECKSTATUS}</b></span>
+      }
+      else if(params.row.CHECKSTATUS.slice(0,2) === 'NG')
+      {
+        return <span style={{color:'red'}}><b>{params.row.CHECKSTATUS}</b></span>
+      } 
+      else {
+        return <span style={{color:'yellow'}}><b>{params.row.CHECKSTATUS}</b></span>
+      } 
     }
   },
+  ]
+  const column_excel_amazon = [
+    { field: "id", headerName: "id", width: 50 },
+    { field: "DATA", headerName: "DATA", width: 320 },
+    { field: "CHECKSTATUS", headerName: "CHECKSTATUS", width: 120, renderCell: (params:any) => {
+      if(params.row.CHECKSTATUS.slice(0,2) === 'OK')
+      {
+        return <span style={{color:'green'}}><b>{params.row.CHECKSTATUS}</b></span>
+      }
+      else if(params.row.CHECKSTATUS.slice(0,2) === 'NG')
+      {
+        return <span style={{color:'red'}}><b>{params.row.CHECKSTATUS}</b></span>
+      } 
+      else {
+        return <span style={{color:'yellow'}}>{params.row.CHECKSTATUS}</span>
+      } 
+    }   },
   ]
   function CustomToolbar() {
     return (
@@ -281,6 +323,17 @@ const YCSXManager = () => {
         <GridToolbarDensitySelector />           
         <button className='saveexcelbutton' onClick={()=>{SaveExcel(uploadExcelJson,"Uploaded PO")}}>Save Excel</button>
         <GridToolbarQuickFilter/>
+      </GridToolbarContainer>
+    );
+  }
+  function CustomToolbarAmazon() {
+    return (
+      <GridToolbarContainer>
+        <GridToolbarColumnsButton />
+        <GridToolbarFilterButton />
+        <GridToolbarDensitySelector />           
+        <button className='saveexcelbutton' onClick={()=>{SaveExcel(uploadExcelJson,"Uploaded Amazon")}}>Save Excel</button>
+        <GridToolbarQuickFilter/>        
       </GridToolbarContainer>
     );
   }
@@ -410,6 +463,222 @@ const YCSXManager = () => {
         reader.readAsArrayBuffer(e.target.files[0]);        
     }
 }
+const handleAmazonData = (amazon_data: {id:number, DATA: string, CHECKSTATUS:string}[], cavity:number, G_CODE: string, PROD_REQUEST_NO: string, NO_IN: string) => 
+{  
+  let handled_Amazon_Table:UploadAmazonData[] = [];
+  if(amazon_data.length % cavity !==0)
+  {
+    Swal.fire("Thông báo","Số dòng lẻ so với cavity","error");
+  }
+  else
+  {
+
+    for(let i=1; i<=amazon_data.length / cavity;i++)
+    {
+      let temp_amazon_row: UploadAmazonData = {
+      };
+
+      temp_amazon_row.G_CODE = G_CODE;
+      temp_amazon_row.PROD_REQUEST_NO = PROD_REQUEST_NO;
+      temp_amazon_row.NO_IN = NO_IN;
+      temp_amazon_row.ROW_NO = i; 
+
+      if(cavity === 1)
+      {
+        temp_amazon_row.DATA1 = amazon_data[i].DATA;
+      }
+      else if(cavity === 2)
+      {
+        temp_amazon_row.DATA1 = amazon_data[i*cavity-2].DATA;
+        temp_amazon_row.DATA2 = amazon_data[i*cavity-1].DATA;
+      }
+      else if(cavity === 3)
+      {
+        temp_amazon_row.DATA1 = amazon_data[i*cavity-3].DATA;
+        temp_amazon_row.DATA2 = amazon_data[i*cavity-2].DATA;  
+        temp_amazon_row.DATA3 = amazon_data[i*cavity-1].DATA;  
+      }
+      else if(cavity === 4)
+      {
+        temp_amazon_row.DATA1 = amazon_data[i*cavity-4].DATA;
+        temp_amazon_row.DATA2 = amazon_data[i*cavity-3].DATA;  
+        temp_amazon_row.DATA3 = amazon_data[i*cavity-2].DATA;    
+        temp_amazon_row.DATA4 = amazon_data[i*cavity-1].DATA;    
+      }
+      temp_amazon_row.INLAI_COUNT = 0;
+      temp_amazon_row.REMARK='';
+      handled_Amazon_Table.push(temp_amazon_row);
+      //console.log(temp_amazon_row);
+    }
+   
+  }
+  //console.log(handled_Amazon_Table);
+  return handled_Amazon_Table;
+}
+const upAmazonData = async ()=> {
+  let uploadAmazonData =  handleAmazonData(uploadExcelJson,cavityAmazon,codeCMS,prodrequestno,id_congviec);    
+  //console.log(uploadAmazonData);
+  for(let i=0;i<uploadAmazonData.length; i++) 
+  {
+    await generalQuery("insertData_Amazon", {        
+      G_CODE: uploadAmazonData[i].G_CODE,
+      PROD_REQUEST_NO : uploadAmazonData[i].PROD_REQUEST_NO,
+      NO_IN: uploadAmazonData[i].NO_IN,
+      ROW_NO: uploadAmazonData[i].ROW_NO,
+      DATA_1: uploadAmazonData[i].DATA1===undefined?'': uploadAmazonData[i].DATA1,
+      DATA_2: uploadAmazonData[i].DATA2===undefined?'': uploadAmazonData[i].DATA2,
+      DATA_3: uploadAmazonData[i].DATA3===undefined?'': uploadAmazonData[i].DATA3,
+      DATA_4: uploadAmazonData[i].DATA4===undefined?'': uploadAmazonData[i].DATA4,
+      PRINT_STATUS: '',
+      INLAI_COUNT: 0,
+      REMARK:'',
+      INS_EMPL: userData.EMPL_NO,  
+    })
+      .then((response) => {
+        console.log(response.data.tk_status);
+        if (response.data.tk_status !== "NG") {
+          setProgressValue((i+1)*2);
+        } else {      
+         
+          
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+  Swal.fire("Thông báo","Upload data Amazon Hoàn thành","success");
+
+}
+const checkAmazonData = async (amazon_data: {id:number, DATA: string, CHECKSTATUS: string}[]) => {
+  //Swal.fire("Thông báo","Bắt đầu check Amazon Data","success");
+  let segment:number = 400;
+  for(let i=segment;i<amazon_data.length;i+=(segment+1)){
+    for(let j=segment;j>1;j--)
+    {
+      generalQuery("check_amazon_data", {
+        DATA: amazon_data[i-j].DATA
+       })
+      .then((response) => {
+        setProgressValue(i-j);            
+        if (response.data.tk_status !== "NG") {
+          
+          amazon_data = amazon_data.map((ele,index) => {
+            return ele===amazon_data[i-j] ? {...ele, CHECKSTATUS:'NG'}: ele;
+          }); 
+          setUploadExcelJSon(amazon_data);       
+          
+        } else {      
+          amazon_data = amazon_data.map((ele,index) => {
+            return ele===amazon_data[i-j] ? {...ele, CHECKSTATUS:'OK'}: ele;
+          });
+          setUploadExcelJSon(amazon_data);       
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+
+    }  
+    await generalQuery("check_amazon_data", {
+      DATA: amazon_data[i].DATA
+     })
+    .then((response) => {        
+      if (response.data.tk_status !== "NG") {
+        setProgressValue(i);    
+        amazon_data = amazon_data.map((ele,index) => {
+          return ele===amazon_data[i] ? {...ele, CHECKSTATUS:'NG'}: ele;
+        }); 
+        setUploadExcelJSon(amazon_data);       
+        
+      } else {      
+        amazon_data = amazon_data.map((ele,index) => {
+          return ele===amazon_data[i] ? {...ele, CHECKSTATUS:'OK'}: ele;
+        });
+        setUploadExcelJSon(amazon_data);       
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+
+  }
+
+}
+const readUploadFileAmazon = (e:any) => {
+  e.preventDefault();    
+  if (e.target.files) {
+      console.log(e.target.files[0].name);
+      let filename:string = e.target.files[0].name;
+      let checkmodel:boolean = filename.search(prod_model)===-1? false:true;
+      let checkIDCV:boolean = filename.search(id_congviec)===-1? false: true;
+      if(!checkmodel)
+      {
+        Swal.fire("Thông báo","Nghi vấn sai model","error");
+      }
+      else if(!checkIDCV)
+      {
+        Swal.fire("Thông báo","Không đúng ID công việc đã nhập","error");
+      }
+      else
+      {
+        const reader = new FileReader();
+        reader.onload = (e:any) => {            
+            const data = e.target.result;
+            const workbook = XLSX.read(data, { type: "array" });
+            const sheetName = workbook.SheetNames[0];
+            const worksheet = workbook.Sheets[sheetName];            
+          
+            XLSX.utils.sheet_add_aoa(worksheet, [
+              [worksheet.A1.v]
+            ], {origin: -1});
+            XLSX.utils.sheet_add_aoa(worksheet, [
+              ['DATA']
+            ], {origin: 'A1'});
+            const newworksheet = worksheet;
+            console.log(worksheet);
+            let json:any = XLSX.utils.sheet_to_json(newworksheet);   
+  
+            console.log(json);
+            /* check trung */
+            let valueArray = json.map((element:any)=>  element.DATA);
+            //console.log(valueArray);
+            var isDuplicate = valueArray.some(function(item:any, idx:number){ 
+              return valueArray.indexOf(item) !== idx 
+            });
+            console.log(isDuplicate);
+            if(isDuplicate)
+            {
+              Swal.fire("Thông báo","Có giá trị trùng lặp !","error");
+  
+            }
+            else
+            {
+              const keys = Object.keys(json[0]);
+              let uploadexcelcolumn = keys.map((element, index) => {
+                return {
+                    field: element, headerName: element, width: 450
+                }
+              });
+              uploadexcelcolumn.push ({field: 'CHECKSTATUS', headerName: 'CHECKSTATUS', width: 350});
+              setColumn_Excel(uploadexcelcolumn);   
+              let newjson = json.map((element:any, index:number) => {
+                return {...element, id: index, CHECKSTATUS:'Waiting'}
+              }
+              );           
+              setUploadExcelJSon(newjson);
+            }
+            
+        };
+        reader.readAsArrayBuffer(e.target.files[0]);        
+
+      }
+
+     
+  }
+}
+
+ 
   const handletraYCSX = ()=> {
     setisLoading(true);
     generalQuery('traYCSXDataFull',{
@@ -901,10 +1170,12 @@ const YCSXManager = () => {
     else if(choose ===2 )
     {
       setSelection({...selection, trapo: false, thempohangloat:true, them1po:true,them1invoice:false,themycsx:false, suaycsx: false,inserttableycsx: true, amazontab:false});
+      setUploadExcelJSon([]);
     }
     else if(choose ===3 )
     {
       setSelection({...selection, trapo: false, thempohangloat:false, them1po:false,them1invoice:false,inserttableycsx: false, amazontab:true});
+      setUploadExcelJSon([]);
     }
   }
   const handle_add_1YCSX = async ()=> {
@@ -1240,7 +1511,9 @@ const YCSXManager = () => {
     }
   }
   const updateYCSX= async()=> {
-    let err_code:number = 0;
+    if(userData.EMPL_NO==='LVT1906'||userData.EMPL_NO==='lvt1906'||userData.EMPL_NO==='nhu1903'||userData.EMPL_NO==='NHU1903')
+    {
+      let err_code:number = 0;
       await generalQuery("checkYcsxExist", {        
         PROD_REQUEST_NO : selectedID,
       })
@@ -1291,7 +1564,14 @@ const YCSXManager = () => {
           else if(err_code ===4)
           {            
             Swal.fire("Thông báo", "NG: Không để trống thông tin bắt buộc" , "error"); 
-          }          
+          }   
+
+    }
+    else
+    {
+      Swal.fire("Thông báo","Không đủ quyền hạn để sửa !","error");
+    }
+           
   }
   const deleteYCSX= async()=> {
     if(ycsxdatatablefilter.length>=1)
@@ -1496,7 +1776,6 @@ const YCSXManager = () => {
       }
     })
   }
-
   const handleConfirmPDuyetYCSX =()=>{
     Swal.fire({
       title: 'Chắc chắn muốn SET Phê duyệt YCSX đã chọn ?',
@@ -1563,6 +1842,37 @@ const YCSXManager = () => {
       Swal.fire("Thông báo", "Chọn ít nhất một dòng để xóa", "error"); 
     } 
   }
+  const handle_findAmazonCodeInfo = async (prod_request_no:string) => {
+    console.log(prod_request_no);
+    await generalQuery("get_ycsxInfo2", { ycsxno: prod_request_no})
+    .then((response) => {        
+      if (response.data.tk_status !== "NG") {
+        console.log(response.data.data);
+        setCodeKD(response.data.data[0].G_NAME);          
+        setCodeCMS(response.data.data[0].G_CODE);    
+        setProd_Model(response.data.data[0].PROD_MODEL);  
+        generalQuery("get_cavityAmazon", { g_code: response.data.data[0].G_CODE})
+        .then((response) => {        
+          if (response.data.tk_status !== "NG") {
+            console.log(response.data.data);
+            setCavityAmazon(response.data.data[0].CAVITY_PRINT); 
+          } else {          
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+
+      } else {          
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+
+   
+  }
+
   useEffect(()=>{
         getcustomerlist();
         getcodelist('');
@@ -2067,182 +2377,109 @@ const YCSXManager = () => {
         </div>
       }
       {
-        selection.amazontab && <div className="amazonetab">
-          <div className='tracuuYCSX'>
-          <div className='tracuuYCSXform'>
-            <div className='forminput'>
+        selection.amazontab && <div className="amazonetab">         
+           <div className='newamazon'>
+          <h3>Thêm Data Amazon</h3>
+          <br></br>
+          <div className='amazonInputform'>
+            <div className='forminput'>              
               <div className='forminputcolumn'>
-                <label>
-                  <b>Từ ngày:</b>
-                  <input
-                    type='date'
-                    value={fromdate.slice(0, 10)}
-                    onChange={(e) => setFromDate(e.target.value)}
-                  ></input>
-                </label>
-                <label>
-                  <b>Tới ngày:</b>{" "}
-                  <input
-                    type='date'
-                    value={todate.slice(0, 10)}
-                    onChange={(e) => setToDate(e.target.value)}
-                  ></input>
-                </label>
-              </div>
-              <div className='forminputcolumn'>
-                <label>
-                  <b>Code KD:</b>{" "}
-                  <input
-                    type='text'
-                    placeholder='GH63-xxxxxx'
-                    value={codeKD}
-                    onChange={(e) => setCodeKD(e.target.value)}
-                  ></input>
-                </label>
-                <label>
-                  <b>Code CMS:</b>{" "}
-                  <input
-                    type='text'
-                    placeholder='7C123xxx'
-                    value={codeCMS}
-                    onChange={(e) => setCodeCMS(e.target.value)}
-                  ></input>
-                </label>
-              </div>
-              <div className='forminputcolumn'>
-                <label>
-                  <b>Tên nhân viên:</b>{" "}
-                  <input
-                    type='text'
-                    placeholder='Trang'
-                    value={empl_name}
-                    onChange={(e) => setEmpl_Name(e.target.value)}
-                  ></input>
-                </label>
-                <label>
-                  <b>Khách:</b>{" "}
-                  <input
-                    type='text'
-                    placeholder='SEVT'
-                    value={cust_name}
-                    onChange={(e) => setCust_Name(e.target.value)}
-                  ></input>
-                </label>
-              </div>
-              <div className='forminputcolumn'>
-                <label>
-                  <b>Loại sản phẩm:</b>{" "}
-                  <input
-                    type='text'
-                    placeholder='TSP'
-                    value={prod_type}
-                    onChange={(e) => setProdType(e.target.value)}
-                  ></input>
-                </label>
                 <label>
                   <b>Số YCSX:</b>{" "}
                   <input
                     type='text'
-                    placeholder='12345'
+                    placeholder='GH63-xxxxxx'
                     value={prodrequestno}
-                    onChange={(e) => setProdRequestNo(e.target.value)}
-                  ></input>
-                </label>
-              </div>
-              <div className='forminputcolumn'>
-                <label>
-                  <b>Phân loại:</b>
-                  <select
-                    name='phanloai'
-                    value={phanloai}
                     onChange={(e) => {
-                      setPhanLoai(e.target.value);
-                    }}
-                  >
-                    <option value='00'>ALL</option>
-                    <option value='01'>Thông thường</option>
-                    <option value='02'>SDI</option>
-                    <option value='03'>GC</option>
-                    <option value='04'>SAMPLE</option>
-                    <option value='22'>NOT SAMPLE</option>
-                  </select>
-                </label>
+                      setProdRequestNo(e.target.value); 
+                      handle_findAmazonCodeInfo(e.target.value);}}
+                  ></input>
+                </label>                
                 <label>
-                  <b>Vật liệu:</b>{" "}
+                  <b>ID Công việc:</b>{" "}
                   <input
                     type='text'
-                    placeholder='SJ-203020HC'
-                    value={material}
-                    onChange={(e) => setMaterial(e.target.value)}
+                    placeholder='CG7607845474986040938'
+                    value={id_congviec}
+                    onChange={(e) => setID_CongViec(e.target.value)}
                   ></input>
-                </label>
-              </div>
-              <div className='forminputcolumn'>
-                <label>
-                  <b>YCSX Pending:</b>
-                  <input
-                    type='checkbox'
-                    name='alltimecheckbox'
-                    defaultChecked={ycsxpendingcheck}
-                    onChange={() => setYCSXPendingCheck(!ycsxpendingcheck)}
-                  ></input>
-                </label>
-                <label>
-                  <b>Vào kiểm:</b>
-                  <input
-                    type='checkbox'
-                    name='alltimecheckbox'
-                    defaultChecked={inspectInputcheck}
-                    onChange={() => setInspectInputCheck(!inspectInputcheck)}
-                  ></input>
-                </label>
-              </div>
-            </div>
-            <div className='formbutton'>
-              <label>
-                <b>All Time:</b>
+                </label>              
+              </div>  
+              <div className="forminputcolumn">
+                <div className='prod_request_info'>
+                  <div style={{color:'green'}}>Code KD: {codeKD}</div>
+                  <div style={{color:'red'}}>Code CMS: {codeCMS}</div>
+                  <div style={{color:'blue'}}>Cavity Amazon: {cavityAmazon}</div>
+                  <div style={{color:'black'}}>Model: {prod_model}</div>
+                </div>
+              </div>           
+            </div>           
+          </div>          
+          <div className='batchnewycsx'>
+            <form className='formupload'>
+              <label htmlFor='upload'>
+                <b>Chọn file Excel: </b>
                 <input
-                  type='checkbox'
-                  name='alltimecheckbox'
-                  defaultChecked={alltime}
-                  onChange={() => setAllTime(!alltime)}
-                ></input>
+                  className='selectfilebutton'
+                  type='file'
+                  name='upload'
+                  id='upload'
+                  onChange={(e: any) => {
+                    readUploadFileAmazon(e);
+                  }}
+                />
               </label>
-              <IconButton
-                className='buttonIcon'
-                onClick={() => {
-                  handletraYCSX();
+              <div
+                className='checkpobutton'
+                onClick={(e) => {
+                  e.preventDefault();
+                  checkAmazonData(uploadExcelJson);
                 }}
               >
-                <FcSearch color='green' size={30} />
-                Search
-              </IconButton>
+                Check Data Amazon
+              </div>
+              <div
+                className='uppobutton'
+                onClick={(e) => {
+                  e.preventDefault();
+                  upAmazonData();
+                  
+                }}
+              >
+                Up Data Amazon
+              </div>
+              <div
+                className='clearobutton'
+                onClick={(e) => {
+                  e.preventDefault();
+                  setUploadExcelJSon([]);                  
+                }}
+              >
+                Clear bảng
+              </div>
+              {progressvalue}/{uploadExcelJson.length}
+            </form>
+            <div className='insertYCSXTable'>
+              {true && (
+                <DataGrid
+                  components={{
+                    Toolbar: CustomToolbarAmazon,
+                    LoadingOverlay: LinearProgress,
+                  }}
+                  loading={isLoading}
+                  rowHeight={35}
+                  rows={uploadExcelJson}
+                  columns={column_excel_amazon}
+                  rowsPerPageOptions={[
+                    5, 10, 50, 100, 500, 1000, 5000, 10000, 100000,
+                  ]}
+                  editMode='row'
+                  getRowHeight={() => "auto"}  
+                />
+              )}
             </div>
           </div>
-          <div className='tracuuYCSXTable'>
-            <DataGrid
-              sx={{ fontSize: 12, flex: 1 }}
-              components={{
-                Toolbar: CustomToolbarPOTable,
-                LoadingOverlay: LinearProgress,
-              }}
-              loading={isLoading}
-              rowHeight={30}
-              rows={ycsxdatatable}
-              columns={column_ycsxtable}
-              rowsPerPageOptions={[
-                5, 10, 50, 100, 500, 1000, 5000, 10000, 500000,
-              ]}
-              editMode='row'
-              getRowId={(row) => row.PROD_REQUEST_NO}
-              checkboxSelection
-              disableSelectionOnClick
-              onSelectionModelChange={(ids) => {
-                handleYCSXSelectionforUpdate(ids);
-              }}
-            />
-          </div>
-        </div>
+          </div>          
         </div>
       }
     </div>
