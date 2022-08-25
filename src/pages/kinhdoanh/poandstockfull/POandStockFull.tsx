@@ -1,12 +1,338 @@
-import './POandStockFull.scss'
+import { IconButton,  LinearProgress} from '@mui/material';
+import { DataGrid, GridSelectionModel, GridToolbarColumnsButton, GridToolbarContainer, GridToolbarDensitySelector, GridToolbarFilterButton, GridToolbarQuickFilter } from '@mui/x-data-grid';
+import moment from 'moment';
+import  { useContext, useEffect, useState, useTransition } from 'react'
+import {FcSearch } from 'react-icons/fc';
+import {AiFillFileExcel } from "react-icons/ai";
+import Swal from 'sweetalert2';
+import { generalQuery } from '../../../api/Api';
+import { UserContext } from '../../../api/Context';
+import { SaveExcel } from '../../../api/GlobalFunction';
+
+import "./POandStockFull.scss"
+import INSPECTION from '../../qc/inspection/INSPECTION';
 
 
-const POandStockFull = () => {    
- 
+
+interface FCSTTableData {
+  EMPL_NO?: string,
+  FCST_ID: number;
+  FCSTYEAR: number;
+  FCSTWEEKNO: number;
+  G_CODE: string;
+  G_NAME_KD: string;
+  G_NAME: string;
+  EMPL_NAME: string;
+  CUST_NAME_KD: string;
+  PROD_PROJECT: string;
+  PROD_MODEL: string;
+  PROD_MAIN_MATERIAL: string;
+  PROD_PRICE: number;
+  W1: number;
+  W2: number;
+  W3: number;
+  W4: number;
+  W5: number;
+  W6: number;
+  W7: number;
+  W8: number;
+  W9: number;
+  W10: number;
+  W11: number;
+  W12: number;
+  W13: number;
+  W14: number;
+  W15: number;
+  W16: number;
+  W17: number;
+  W18: number;
+  W19: number;
+  W20: number;
+  W21: number;
+  W22: number;
+  W1A: number;
+  W2A: number;
+  W3A: number;
+  W4A: number;
+  W5A: number;
+  W6A: number;
+  W7A: number;
+  W8A: number;
+  W9A: number;
+  W10A: number;
+  W11A: number;
+  W12A: number;
+  W13A: number;
+  W14A: number;
+  W15A: number;
+  W16A: number;
+  W17A: number;
+  W18A: number;
+  W19A: number;
+  W20A: number;
+  W21A: number;
+  W22A: number;
+}
+
+interface POFullCMS {
+  G_CODE: string,
+  G_NAME: string,
+  G_NAME_KD: string,
+  PO_QTY: number,
+  TOTAL_DELIVERED: number,
+  PO_BALANCE: number,
+  CHO_KIEM: number,
+  CHO_CS_CHECK: number,
+  CHO_KIEM_RMA: number,
+  TONG_TON_KIEM: number,
+  BTP: number,
+  TON_TP: number,
+  BLOCK_QTY: number,
+  GRAND_TOTAL_STOCK: number,
+  THUA_THIEU: number,
+  
+}
+interface POFullKD {
+  G_NAME_KD: string,
+  PO_QTY: number,
+  TOTAL_DELIVERED: number,
+  PO_BALANCE: number,
+  CHO_KIEM: number,
+  CHO_CS_CHECK: number,
+  CHO_KIEM_RMA: number,
+  TONG_TON_KIEM: number,
+  BTP: number,
+  TON_TP: number,
+  BLOCK_QTY: number,
+  GRAND_TOTAL_STOCK: number,
+  THUA_THIEU: number,
+  
+}
+
+const POandStockFull = () => {
+
+  const [selection, setSelection] = useState<any>({
+    trapo: true,
+    thempohangloat:false,
+    them1po: false,
+    them1invoice:false,
+    testinvoicetable: false
+  });
+  const [userData, setUserData] = useContext(UserContext);
+  const [isLoading, setisLoading] = useState(false); 
+  const [codeCMS,setCodeCMS] =useState('');
+  const [alltime, setAllTime] = useState(true); 
+  const [pofulldatatable, setPOFULLDataTable] = useState<Array<any>>([]);
+
+  const column_codeCMS = [
+    { field: "id", headerName: "No", width: 80 },
+    { field: "G_CODE", headerName: "G_CODE", width: 80 },
+    { field: "G_NAME", headerName: "G_NAME", width: 150 },
+    { field: "G_NAME_KD", headerName: "G_NAME_KD", width: 170 },
+    { field: "PO_QTY", headerName: "PO_QTY", width: 80, renderCell: (params:any) => {return <span style={{color:'blue'}}><b>{params.row.PO_QTY.toLocaleString('en-US')}</b></span>} },
+    { field: "TOTAL_DELIVERED", headerName: "TOTAL_DELIVERED", width: 80, renderCell: (params:any) => {return <span style={{color:'blue'}}><b>{params.row.TOTAL_DELIVERED.toLocaleString('en-US')}</b></span>} },
+    { field: "PO_BALANCE", headerName: "PO_BALANCE", width: 90 , renderCell: (params:any) => {return <span style={{color:'red'}}><b>{params.row.PO_BALANCE.toLocaleString('en-US')}</b></span>}},
+    { field: "CHO_KIEM", headerName: "CHO_KIEM", width: 90 , renderCell: (params:any) => {return <span style={{color:'blue'}}><b>{params.row.CHO_KIEM.toLocaleString('en-US')}</b></span>}},
+    { field: "CHO_CS_CHECK", headerName: "CS", width: 90, renderCell: (params:any) => {return <span style={{color:'blue'}}><b>{params.row.CHO_CS_CHECK.toLocaleString('en-US')}</b></span>} },
+    { field: "CHO_KIEM_RMA", headerName: "RMA", width: 90 , renderCell: (params:any) => {return <span style={{color:'blue'}}><b>{params.row.CHO_KIEM_RMA.toLocaleString('en-US')}</b></span>}},
+    { field: "TONG_TON_KIEM", headerName: "Total TKiem", width: 110 , renderCell: (params:any) => {return <span style={{color:'yellow'}}><b>{params.row.TONG_TON_KIEM.toLocaleString('en-US')}</b></span>}},
+    { field: "BTP", headerName: "BTP", width: 90 , renderCell: (params:any) => {return <span style={{color:'yellow'}}><b>{params.row.BTP.toLocaleString('en-US')}</b></span>}},
+    { field: "TON_TP", headerName: "TON_TP", width: 90, renderCell: (params:any) => {return <span style={{color:'yellow'}}><b>{params.row.TON_TP.toLocaleString('en-US')}</b></span>} },
+    { field: "BLOCK_QTY", headerName: "BLOCK_QTY", width: 90 , renderCell: (params:any) => {return <span style={{color:'blue'}}><b>{params.row.BLOCK_QTY.toLocaleString('en-US')}</b></span>}},
+    { field: "GRAND_TOTAL_STOCK", headerName: "GRAND_TOTAL_STOCK", width: 90 , renderCell: (params:any) => {return <span style={{color:'green'}}><b>{params.row.GRAND_TOTAL_STOCK.toLocaleString('en-US')}</b></span>}},
+    { field: "THUA_THIEU", headerName: "THUA_THIEU", width: 120 , renderCell: (params:any) => {return <span style={{color:'black'}}><b>{params.row.THUA_THIEU.toLocaleString('en-US')}</b></span>}},
+  ];
+  const column_codeKD = [
+    { field: "id", headerName: "No", width: 80 },
+    { field: "G_NAME_KD", headerName: "G_NAME_KD", width: 170 },
+    { field: "PO_QTY", headerName: "PO_QTY", width: 80, renderCell: (params:any) => {return <span style={{color:'blue'}}><b>{params.row.PO_QTY.toLocaleString('en-US')}</b></span>} },
+    { field: "TOTAL_DELIVERED", headerName: "TOTAL_DELIVERED", width: 80, renderCell: (params:any) => {return <span style={{color:'blue'}}><b>{params.row.TOTAL_DELIVERED.toLocaleString('en-US')}</b></span>} },
+    { field: "PO_BALANCE", headerName: "PO_BALANCE", width: 90 , renderCell: (params:any) => {return <span style={{color:'red'}}><b>{params.row.PO_BALANCE.toLocaleString('en-US')}</b></span>}},
+    { field: "CHO_KIEM", headerName: "CHO_KIEM", width: 90 , renderCell: (params:any) => {return <span style={{color:'blue'}}><b>{params.row.CHO_KIEM.toLocaleString('en-US')}</b></span>}},
+    { field: "CHO_CS_CHECK", headerName: "CHO_CS_CHECK", width: 90, renderCell: (params:any) => {return <span style={{color:'blue'}}><b>{params.row.CHO_CS_CHECK.toLocaleString('en-US')}</b></span>} },
+    { field: "CHO_KIEM_RMA", headerName: "CHO_KIEM_RMA", width: 90 , renderCell: (params:any) => {return <span style={{color:'blue'}}><b>{params.row.CHO_KIEM_RMA.toLocaleString('en-US')}</b></span>}},
+    { field: "TONG_TON_KIEM", headerName: "Total TKiem", width: 90 , renderCell: (params:any) => {return <span style={{color:'yellow'}}><b>{params.row.TONG_TON_KIEM.toLocaleString('en-US')}</b></span>}},
+    { field: "BTP", headerName: "BTP", width: 90 , renderCell: (params:any) => {return <span style={{color:'yellow'}}><b>{params.row.BTP.toLocaleString('en-US')}</b></span>}},
+    { field: "TON_TP", headerName: "TON_TP", width: 90, renderCell: (params:any) => {return <span style={{color:'yellow'}}><b>{params.row.TON_TP.toLocaleString('en-US')}</b></span>} },
+    { field: "BLOCK_QTY", headerName: "BLOCK_QTY", width: 90 , renderCell: (params:any) => {return <span style={{color:'blue'}}><b>{params.row.BLOCK_QTY.toLocaleString('en-US')}</b></span>}},
+    { field: "GRAND_TOTAL_STOCK", headerName: "GRAND_TOTAL_STOCK", width: 90 , renderCell: (params:any) => {return <span style={{color:'green'}}><b>{params.row.GRAND_TOTAL_STOCK.toLocaleString('en-US')}</b></span>}},
+    { field: "THUA_THIEU", headerName: "THUA_THIEU", width: 90 , renderCell: (params:any) => {return <span style={{color:'blue'}}><b>{params.row.THUA_THIEU.toLocaleString('en-US')}</b></span>}},
+
+  ]
+
+  const [columnDefinition, setColumnDefinition] = useState<Array<any>>(column_codeCMS);
+
+  function CustomToolbarPOTable() {
+    return (
+      <GridToolbarContainer>
+        <GridToolbarColumnsButton />
+        <GridToolbarFilterButton />
+        <GridToolbarDensitySelector /> 
+        <IconButton className='buttonIcon'onClick={()=>{SaveExcel(pofulldatatable,"Ton kho full Table")}}><AiFillFileExcel color='green' size={25}/>SAVE</IconButton> 
+        <GridToolbarQuickFilter/>
+      </GridToolbarContainer>
+    );
+  }
+
+  const handletraPOFullCMS = ()=> {
+    setisLoading(true);
+    setColumnDefinition(column_codeCMS);
+    generalQuery('traPOFullCMS',{
+      allcode: alltime,    
+      codeSearch: codeCMS,        
+    })
+    .then(response => {
+        //console.log(response.data);
+        if(response.data.tk_status !=='NG')
+        {
+          const loadeddata: POFullCMS[] =  response.data.data.map((element:POFullCMS,index: number)=> {
+            return {
+              ...element,   id:  index                  
+            }
+          })   
+          setPOFULLDataTable(loadeddata);
+          setisLoading(false);
+          Swal.fire("Thông báo", "Đã load " + response.data.data.length + " dòng", "success");  
+        }
+        else
+        {
+          Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");  
+          setisLoading(false);
+        }        
+    })
+    .catch(error => {
+        console.log(error);
+    });
+  }
+  const handletraPOFullKD = ()=> {
+    setisLoading(true);
+    setColumnDefinition(column_codeKD);
+    generalQuery('traPOFullKD',{
+      allcode: alltime,    
+      codeSearch: codeCMS,        
+    })
+    .then(response => {
+        //console.log(response.data);
+        if(response.data.tk_status !=='NG')
+        {
+          const loadeddata: POFullCMS[] =  response.data.data.map((element:POFullCMS,index: number)=> {
+            return {
+              ...element,   id:  index                  
+            }
+          })   
+          setPOFULLDataTable(loadeddata);
+          setisLoading(false);
+          Swal.fire("Thông báo", "Đã load " + response.data.data.length + " dòng", "success");  
+        }
+        else
+        {
+          Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");  
+          setisLoading(false);
+        }        
+    })
+    .catch(error => {
+        console.log(error);
+    });
+  }
+
+  const setNav = (choose: number) => {
+    if(choose ===1 )
+    {
+      setSelection({...selection, trapo: true, thempohangloat:false, them1po:false,them1invoice:false,testinvoicetable: false});
+    }
+    else if(choose ===2 )
+    {
+      setSelection({...selection, trapo: false, thempohangloat:true, them1po:false,them1invoice:false,testinvoicetable: false});
+    }
+    else if(choose ===3 )
+    {
+      setSelection({...selection, trapo: false, thempohangloat:false, them1po:false,them1invoice:false,testinvoicetable: true});
+    }
+  }
+
+  useEffect(()=>{
+        
+  },[]);
   return (
-    <div>        
+    <div className='poandstockfull'>
+      <div className='mininavbar'>
+        <div className='mininavitem' onClick={() => setNav(1)}>
+          <span className='mininavtext'>Tra cứu PO Tồn Kho Full</span>
+        </div>
+        <div className='mininavitem' onClick={() => setNav(2)}>
+          <span className='mininavtext'>Phòng kiểm tra</span>
+        </div>
+      </div>
+      {selection.trapo && (
+        <div className='tracuuFcst'>
+          <div className='tracuuFcstform'>
+            <div className='forminput'>
+              <div className='forminputcolumn'>
+                <label>
+                  <b>Code:</b>{" "}
+                  <input
+                    type='text'
+                    placeholder='Nhập code vào đây'
+                    value={codeCMS}
+                    onChange={(e) => setCodeCMS(e.target.value)}
+                  ></input>
+                </label>
+                <label>
+                  <b>Chỉ code tồn PO</b>
+                  <input
+                    type='checkbox'
+                    name='alltimecheckbox'
+                    defaultChecked={alltime}
+                    onChange={() => setAllTime(!alltime)}
+                  ></input>
+                </label>                
+                <IconButton 
+                  className='buttonIcon'
+                  onClick={() => {
+                    handletraPOFullCMS();
+                  }}
+                >
+                  <FcSearch color='green' size={30} />
+                  Search code CMS
+                </IconButton>
+
+                <IconButton
+                  className='buttonIcon'
+                  onClick={() => {
+                    handletraPOFullKD();
+                  }}
+                >
+                  <FcSearch color='green' size={30} />
+                  Search code KD
+                </IconButton>
+              </div>
+            </div>
+          </div>
+          <div className='tracuuFcstTable'>
+            <DataGrid
+              components={{
+                Toolbar: CustomToolbarPOTable,
+                LoadingOverlay: LinearProgress,
+              }}
+              sx={{ fontSize: 12 }}
+              loading={isLoading}
+              rowHeight={30}
+              rows={pofulldatatable}
+              columns={columnDefinition}
+              rowsPerPageOptions={[
+                5, 10, 50, 100, 500, 1000, 5000, 10000, 100000,
+              ]}
+              editMode='row'              
+            />
+          </div>
+        </div>
+      )}
+      {
+        selection.thempohangloat && <div className="inspection">
+          <INSPECTION/>
+        </div>
+      }
     </div>
   );
 }
-
 export default POandStockFull

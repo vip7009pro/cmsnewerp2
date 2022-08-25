@@ -661,13 +661,13 @@ const FCSTManager = () => {
   return (
     <div className='fcstmanager'>
       <div className='mininavbar'>
-        <div className='mininavitem'>
-          <span className='mininavtext' onClick={() => setNav(1)}>
+        <div className='mininavitem'  onClick={() => setNav(1)}>
+          <span className='mininavtext'>
             Tra cứu FCST
           </span>
         </div>       
-        <div className='mininavitem'>
-          <span className='mininavtext' onClick={() => setNav(2)}>
+        <div className='mininavitem' onClick={() => setNav(2)}>
+          <span className='mininavtext' >
             Thêm FCST hàng loạt
           </span>
         </div>      

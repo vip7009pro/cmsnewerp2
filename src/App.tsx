@@ -1,8 +1,9 @@
-import React, { Component, FC, useEffect, useState } from "react";
+import React, { Component, FC, useEffect, useState, lazy } from "react";
 import Home from "./pages/home/Home";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { LangConText, UserContext } from "../src/api/Context";
+import { checkLogin } from "./api/Api";
 import Login from "./pages/login/Login";
-import "./App.scss";
 import KinhDoanh from "./pages/kinhdoanh/KinhDoanh";
 import PoManager from "./pages/kinhdoanh/pomanager/PoManager";
 import KinhDoanhReport from "./pages/kinhdoanh/kinhdoanhreport/KinhDoanhReport";
@@ -11,8 +12,6 @@ import PlanManager from "./pages/kinhdoanh/planmanager/PlanManager";
 import FCSTManager from "./pages/kinhdoanh/fcstmanager/FCSTManager";
 import YCSXManager from "./pages/kinhdoanh/ycsxmanager/YCSXManager";
 import POandStockFull from "./pages/kinhdoanh/poandstockfull/POandStockFull";
-import { LangConText, UserContext } from "../src/api/Context";
-import { checkLogin } from "./api/Api";
 import AccountInfo from "./components/Navbar/AccountInfo/AccountInfo";
 import NhanSu from "./pages/nhansu/NhanSu";
 import QuanLyPhongBanNhanSu from "./pages/nhansu/QuanLyPhongBanNhanSu/QuanLyPhongBanNhanSu";
@@ -24,6 +23,7 @@ import LichSu from "./pages/nhansu/LichSu/LichSu";
 import BaoCaoNhanSu from "./pages/nhansu/BaoCaoNhanSu/BaoCaoNhanSu";
 import Swal from "sweetalert2";
 import QuotationManager from "./pages/kinhdoanh/quotationmanager/QuotationManager";
+import "./App.scss";
 
 //https://www.robinwieruch.de/react-router-private-routes/
 interface userDataInterface {

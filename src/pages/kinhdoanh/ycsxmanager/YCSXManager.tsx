@@ -1869,8 +1869,6 @@ const readUploadFileAmazon = (e:any) => {
     .catch((error) => {
       console.log(error);
     });
-
-   
   }
 
   useEffect(()=>{
@@ -1880,18 +1878,18 @@ const readUploadFileAmazon = (e:any) => {
   return (
     <div className='ycsxmanager'>
       <div className='mininavbar'>
-        <div className='mininavitem'>
-          <span className='mininavtext' onClick={() => setNav(1)}>
+        <div className='mininavitem'  onClick={() => setNav(1)}>
+          <span className='mininavtext'>
             Tra cứu YCSX
           </span>
         </div>
-        <div className='mininavitem'>
-          <span className='mininavtext' onClick={() => setNav(2)}>
+        <div className='mininavitem'  onClick={() => setNav(2)}>
+          <span className='mininavtext'>
             Thêm YCSX (nhiều)
           </span>
         </div>
-        <div className='mininavitem'>
-          <span className='mininavtext' onClick={() => setNav(3)}>
+        <div className='mininavitem'  onClick={() => setNav(3)}>
+          <span className='mininavtext'>
             Thêm DATA AMAZON
           </span>
         </div>
