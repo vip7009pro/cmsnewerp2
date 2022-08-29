@@ -7,7 +7,7 @@ import Swal from 'sweetalert2';
 import { generalQuery } from '../../../api/Api';
 import { UserContext } from '../../../api/Context';
 import { SaveExcel } from '../../../api/GlobalFunction';
-import "./INSPECTION.scss"
+import "./KHOTP.scss"
 
 interface INSPECT_OUTPUT_DATA {
   INSPECT_OUTPUT_ID: string,
@@ -134,7 +134,7 @@ interface INSPECT_NG_DATA  {
   ERR32: number,
   CNDB_ENCODES: string,
 }
-const INSPECTION = () => { 
+const KHOTP = () => { 
   const [readyRender, setReadyRender] = useState(false);
   const [selection, setSelection] = useState<any>({
     trapo: true,
@@ -675,4 +675,4 @@ const INSPECTION = () => {
     </div>
   );
 }
-export default INSPECTION
+export default KHOTP

@@ -5,7 +5,7 @@
 
 .poandstockfull{
     width: 100%;
-    height: 500px;
+    height: 100%;
     display: flex;
     flex-direction: column;
 
@@ -109,7 +109,7 @@
             background-image: linear-gradient(0deg, #5ae5fd, #73bd52);
             -webkit-box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27); 
             box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27);
-            border-radius: 8px;
+            border-radius: 3px;
             padding: 5px;
             &:hover {
                 background-image: linear-gradient(0deg, #5ae5fd, #5cf0b2);                
@@ -123,6 +123,7 @@
 
             .forminput {
                 display: flex;
+                flex-direction: column;
                 gap: 5px;
                 flex-wrap: wrap;
                 align-items: center;
@@ -137,6 +138,21 @@
                     align-items: center;
                     justify-content: center;
                     flex-wrap: wrap;
+                    
+                    table {
+                        border:3px solid gray;
+                        width: 100%;
+                    }
+                    table thead tr td{
+                        font-weight: bold;
+                        border: 1px solid gray;
+                        padding-left: 10px;
+                        padding-right: 10px; 
+                    }
+                    table tbody tr td{                        
+                        border: 1px solid gray;                       
+                    }
+
                     input {
                         width: 150px;
                         height: 20px;
@@ -147,6 +163,46 @@
                         margin-left: 5px;
                         background-image: linear-gradient(0deg, #ececec, #eee7e7);
                     }
+
+                    .tranhapkiembutton
+                    {
+                        font-weight: bold;
+                        padding-left: 5px;
+                        padding-right: 5px;
+                        height: 30px;
+                        background-color: #99f86d;
+                        outline:none;
+                        border: none;
+                        border-radius: 5px;
+                        -webkit-box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27); 
+                        box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27);  
+                        margin-bottom: 5px;     
+                        margin-top: 5px;  
+                        &:hover {
+                            cursor: pointer;
+                            background-color: #54a32f;
+                        }
+                    }
+                    .traxuatkiembutton
+                    {
+                        font-weight: bold;
+                        padding-left: 5px;
+                        padding-right: 5px;
+                        height: 30px;
+                        background-color: #3ebdf8;
+                        outline:none;
+                        border: none;
+                        border-radius: 5px;
+                        -webkit-box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27); 
+                        box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27);  
+                        margin-bottom: 5px;     
+                        margin-top: 5px;  
+                        &:hover {
+                            cursor: pointer;
+                            background-color: #1b80af;
+                        }
+                    }
+
                 }
             }
             .formbutton {
@@ -163,7 +219,7 @@
             background-image: linear-gradient(0deg, #afd3d1, #a1c0bd);
             -webkit-box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27); 
             box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27);
-            border-radius: 8px; 
+            border-radius: 3px; 
         }
 
     }

@@ -8,12 +8,9 @@ import Swal from 'sweetalert2';
 import { generalQuery } from '../../../api/Api';
 import { UserContext } from '../../../api/Context';
 import { SaveExcel } from '../../../api/GlobalFunction';
-
 import "./POandStockFull.scss"
 import INSPECTION from '../../qc/inspection/INSPECTION';
-
-
-
+import KHOTP from '../../kho/khotp/KHOTP';
 interface FCSTTableData {
   EMPL_NO?: string,
   FCST_ID: number;
@@ -73,7 +70,6 @@ interface FCSTTableData {
   W21A: number;
   W22A: number;
 }
-
 interface POFullCMS {
   G_CODE: string,
   G_NAME: string,
@@ -90,7 +86,6 @@ interface POFullCMS {
   BLOCK_QTY: number,
   GRAND_TOTAL_STOCK: number,
   THUA_THIEU: number,
-  
 }
 interface POFullKD {
   G_NAME_KD: string,
@@ -106,11 +101,26 @@ interface POFullKD {
   BLOCK_QTY: number,
   GRAND_TOTAL_STOCK: number,
   THUA_THIEU: number,
-  
 }
-
+interface POFullSummary {
+  PO_BALANCE: number, 
+  TP: number, 
+  BTP: number,
+  CK: number,
+  BLOCK: number,
+  TONG_TON: number,
+  THUATHIEU: number
+}
 const POandStockFull = () => {
-
+  const [pofullSummary, setPOFullSummary] = useState<POFullSummary>({
+    PO_BALANCE: 0, 
+    TP: 0, 
+    BTP: 0,
+    CK: 0,
+    BLOCK: 0,
+    TONG_TON: 0,
+    THUATHIEU: 0
+  });
   const [selection, setSelection] = useState<any>({
     trapo: true,
     thempohangloat:false,
@@ -123,7 +133,6 @@ const POandStockFull = () => {
   const [codeCMS,setCodeCMS] =useState('');
   const [alltime, setAllTime] = useState(true); 
   const [pofulldatatable, setPOFULLDataTable] = useState<Array<any>>([]);
-
   const column_codeCMS = [
     { field: "id", headerName: "No", width: 80 },
     { field: "G_CODE", headerName: "G_CODE", width: 80 },
@@ -157,11 +166,8 @@ const POandStockFull = () => {
     { field: "BLOCK_QTY", headerName: "BLOCK_QTY", width: 90 , renderCell: (params:any) => {return <span style={{color:'blue'}}><b>{params.row.BLOCK_QTY.toLocaleString('en-US')}</b></span>}},
     { field: "GRAND_TOTAL_STOCK", headerName: "GRAND_TOTAL_STOCK", width: 90 , renderCell: (params:any) => {return <span style={{color:'green'}}><b>{params.row.GRAND_TOTAL_STOCK.toLocaleString('en-US')}</b></span>}},
     { field: "THUA_THIEU", headerName: "THUA_THIEU", width: 90 , renderCell: (params:any) => {return <span style={{color:'blue'}}><b>{params.row.THUA_THIEU.toLocaleString('en-US')}</b></span>}},
-
   ]
-
   const [columnDefinition, setColumnDefinition] = useState<Array<any>>(column_codeCMS);
-
   function CustomToolbarPOTable() {
     return (
       <GridToolbarContainer>
@@ -172,8 +178,7 @@ const POandStockFull = () => {
         <GridToolbarQuickFilter/>
       </GridToolbarContainer>
     );
-  }
-
+  }  
   const handletraPOFullCMS = ()=> {
     setisLoading(true);
     setColumnDefinition(column_codeCMS);
@@ -183,13 +188,30 @@ const POandStockFull = () => {
     })
     .then(response => {
         //console.log(response.data);
+        let temp_summary :POFullSummary = {
+          PO_BALANCE: 0, 
+          TP: 0, 
+          BTP: 0,
+          CK: 0,
+          BLOCK: 0,
+          TONG_TON: 0,
+          THUATHIEU: 0
+        };
         if(response.data.tk_status !=='NG')
         {
           const loadeddata: POFullCMS[] =  response.data.data.map((element:POFullCMS,index: number)=> {
+            temp_summary.PO_BALANCE += element.PO_BALANCE;
+            temp_summary.TP += element.TON_TP;
+            temp_summary.BTP += element.BTP;
+            temp_summary.CK += element.TONG_TON_KIEM;
+            temp_summary.BLOCK += element.BLOCK_QTY;
+            temp_summary.TONG_TON += element.GRAND_TOTAL_STOCK;
+            temp_summary.THUATHIEU += element.THUA_THIEU;
             return {
               ...element,   id:  index                  
             }
-          })   
+          }) ;
+          setPOFullSummary(temp_summary);
           setPOFULLDataTable(loadeddata);
           setisLoading(false);
           Swal.fire("Thông báo", "Đã load " + response.data.data.length + " dòng", "success");  
@@ -234,7 +256,6 @@ const POandStockFull = () => {
         console.log(error);
     });
   }
-
   const setNav = (choose: number) => {
     if(choose ===1 )
     {
@@ -249,9 +270,7 @@ const POandStockFull = () => {
       setSelection({...selection, trapo: false, thempohangloat:false, them1po:false,them1invoice:false,testinvoicetable: true});
     }
   }
-
   useEffect(()=>{
-        
   },[]);
   return (
     <div className='poandstockfull'>
@@ -262,8 +281,12 @@ const POandStockFull = () => {
         <div className='mininavitem' onClick={() => setNav(2)}>
           <span className='mininavtext'>Phòng kiểm tra</span>
         </div>
+        <div className='mininavitem' onClick={() => setNav(3)}>
+          <span className='mininavtext'>Nhập-Xuất-Tồn Kho</span>
+        </div>
       </div>
-      {selection.trapo && (
+      {
+        selection.trapo && (
         <div className='tracuuFcst'>
           <div className='tracuuFcstform'>
             <div className='forminput'>
@@ -285,26 +308,43 @@ const POandStockFull = () => {
                     defaultChecked={alltime}
                     onChange={() => setAllTime(!alltime)}
                   ></input>
-                </label>                
-                <IconButton 
-                  className='buttonIcon'
-                  onClick={() => {
-                    handletraPOFullCMS();
-                  }}
-                >
-                  <FcSearch color='green' size={30} />
-                  Search code CMS
-                </IconButton>
-
-                <IconButton
-                  className='buttonIcon'
-                  onClick={() => {
-                    handletraPOFullKD();
-                  }}
-                >
-                  <FcSearch color='green' size={30} />
-                  Search code KD
-                </IconButton>
+                </label>    
+                <button className='tranhapkiembutton'  onClick={() => {
+                  handletraPOFullCMS();
+                }}>
+                  Search(CMS)
+                </button>   
+                <button className='traxuatkiembutton'  onClick={() => {
+                   handletraPOFullKD();
+                }}>
+                  Search(KD)
+              </button> 
+              </div>
+              <div className="forminputcolumn">
+                <table>
+                  <thead>
+                    <tr>
+                      <td>PO BALANCE</td>
+                      <td>TP</td>
+                      <td>BTP</td>
+                      <td>CK</td>
+                      <td>BLOCK</td>
+                      <td>TONG TON</td>
+                      <td>THUA THIEU</td>
+                    </tr>                   
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td style={{color:'blue'}}>{pofullSummary.PO_BALANCE.toLocaleString('en-US')}</td>
+                      <td style={{color:'purple'}}>{pofullSummary.TP.toLocaleString('en-US')}</td>
+                      <td style={{color:'purple'}}>{pofullSummary.BTP.toLocaleString('en-US')}</td>
+                      <td style={{color:'purple'}}>{pofullSummary.CK.toLocaleString('en-US')}</td>
+                      <td style={{color:'red'}}>{pofullSummary.BLOCK.toLocaleString('en-US')}</td>
+                      <td style={{color:'blue', fontWeight:'bold'}}>{pofullSummary.TONG_TON.toLocaleString('en-US')}</td>
+                      <td style={{color:'brown', fontWeight:'bold'}}>{pofullSummary.THUATHIEU.toLocaleString('en-US')}</td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
             </div>
           </div>
@@ -326,10 +366,16 @@ const POandStockFull = () => {
             />
           </div>
         </div>
-      )}
+        )
+      }
       {
         selection.thempohangloat && <div className="inspection">
           <INSPECTION/>
+        </div>
+      }
+      {
+        selection.testinvoicetable && <div className="inspection">
+        <KHOTP/>
         </div>
       }
     </div>

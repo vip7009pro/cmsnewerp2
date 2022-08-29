@@ -152,7 +152,7 @@ const YCSXComponent = ({G_CODE,PROD_TYPE,PROD_MAIN_MATERIAL,G_NAME,EMPL_NAME,EMP
         RIV_NO: 'A',
         M_QTY: 1,
         M_CODE: 'A0009027',
-        CUST_NAME: 'Samsung Electronics Viet nam',
+        CUST_NAME: '',
         ROLE_EA_QTY: 2000,
         PACK_DRT: '',
         PROD_PRINT_TIMES: 1,
@@ -160,63 +160,25 @@ const YCSXComponent = ({G_CODE,PROD_TYPE,PROD_MAIN_MATERIAL,G_NAME,EMPL_NAME,EMP
         G_SG_R: 2,
         G_SG_L: 2,
         G_R: 0,
-        G_NAME: 'GH68-54791A_A_SM-R920NZTAXAA',
+        G_NAME: '',
         G_LG: 3,
         G_LENGTH: 23,
-        G_CODE_C: 'GH68-54791A_A_SM-R920NZTAXAA',
+        G_CODE_C: '',
         G_CG: 4,
         G_C: 1,
         G_C_R: 4,
         PD: 31.6,
         CODE_33: '02',
-        M_NAME: 'CK-ART80',
+        M_NAME: '',
         WIDTH_CD: 110,
-        EMPL_NO: 'NTT2003',
-        EMPL_NAME: 'NGUYEN THI THAO',
+        EMPL_NO: '',
+        EMPL_NAME: '',
         CODE_03: '01',
         REMARK: '',
         TONLIEU:0,
         HOLDING: 0,
         TONG_TON_LIEU:0
-    }]);
-   
-    const material_render = async (element: FullBOM, index: number)=> 
-    {
-        let total_tonlieu: number =0;
-        let block: number =0;      
-      
-        await generalQuery("tonlieugcode", {
-            M_CODE: element.M_CODE,
-            inventory: moment().format("YYYYMM"),
-            tradate: moment().format("YYYY-MM-01 08:00:00")                               
-            })
-        .then((response) => {
-            console.log(response.data.tk_status);
-            if (response.data.tk_status !== "NG") {
-                total_tonlieu = response.data.data[0].GRAND_TOTAL;
-                block = response.data.data[0].HOLDING;                                    
-            //Swal.fire("Thông báo", "Update Po thành công", "success");  
-            } else {     
-            // Swal.fire("Thông báo", "Update PO thất bại: " +response.data.message , "error"); 
-            }
-        })
-        .catch((error) => {
-            console.log(error);
-        });
-       
-        return (
-            <tr key={index}>
-            <td>{index}</td>
-            <td>{element.M_CODE}</td>
-            <td>{element.M_NAME}</td>
-            <td>{element.WIDTH_CD}</td>
-            <td>{(total_tonlieu - block).toLocaleString("en-US")} M</td>
-            <td>{block.toLocaleString("en-US")} M</td>
-            <td>{total_tonlieu.toLocaleString("en-US")} M</td>
-            <td>{element.REMARK}</td>
-            </tr>
-        )  
-    }
+    }]);   
 
     const initYCSX = async() => {
         let inventorydate:string= '202207';
@@ -239,8 +201,8 @@ const YCSXComponent = ({G_CODE,PROD_TYPE,PROD_MAIN_MATERIAL,G_NAME,EMPL_NAME,EMP
             INVENTORY: inventorydate
             })
             .then((response) => {
-              console.log('Data request full ycsx :');
-                console.log(response.data.data);
+              //console.log('Data request full ycsx :');
+                //console.log(response.data.data);
                 if (response.data.tk_status !== "NG") {
                 setRequest_CodeInfo(response.data.data);                
                 } else {   
@@ -318,8 +280,7 @@ const YCSXComponent = ({G_CODE,PROD_TYPE,PROD_MAIN_MATERIAL,G_NAME,EMPL_NAME,EMP
 
     }
     useEffect(()=> {
-            initYCSX();            
-
+            initYCSX();  
     },[PROD_REQUEST_NO]);
 
   return (

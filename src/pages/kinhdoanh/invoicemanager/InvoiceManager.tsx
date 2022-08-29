@@ -1078,8 +1078,28 @@ const InvoiceManager = () => {
                   handletraInvoice();
                 }}><FcSearch color='green' size={30}/>Search</IconButton>              
             </div>
-            <div className='formsummary'>              
-              <div className='summarygroup'>
+            <div className='formsummary'>  
+
+              <table>
+                    <thead>
+                      <tr>                       
+                        <td>DELIVERED QTY</td>                      
+                        <td>DELIVERED AMOUNT</td>                                           
+                      </tr>                   
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td style={{color:'purple', fontWeight:'bold'}}> {invoiceSummary.total_delivered_qty.toLocaleString("en-US")} EA</td>
+                        <td style={{color:'purple', fontWeight:'bold'}}> {invoiceSummary.total_delivered_amount.toLocaleString("en-US", {
+                      style: "currency",
+                      currency: "USD",
+                    })} </td>                  
+                      </tr>
+                    </tbody>
+              </table>   
+
+
+             {/*  <div className='summarygroup'>
                 <div className='summaryvalue'>
                   <b>
                     DELIVERED QTY:{" "}
@@ -1095,7 +1115,7 @@ const InvoiceManager = () => {
                     })}
                   </b>
                 </div>
-              </div>             
+              </div>         */}     
             </div>
           </div>
           <div className='tracuuInvoiceTable'>

@@ -1189,56 +1189,37 @@ const PoManager = () => {
               </Button> */}
             </div>
             <div className='formsummary'>
-              <div className='summarygroup'>
-                <div className='summaryvalue'>
-                  <b>
-                    PO QTY: {poSummary.total_po_qty.toLocaleString("en-US")} EA
-                  </b>
-                </div>
-                <div className='summaryvalue'>
-                  <b>
-                    PO AMOUNT:{" "}
-                    {poSummary.total_po_amount.toLocaleString("en-US", {
+              <table>
+                    <thead>
+                      <tr>
+                        <td>PO QTY</td>
+                        <td>DELIVERED QTY</td>
+                        <td>PO BALANCE QTY</td>                       
+                        <td>PO AMOUNT</td>
+                        <td>DELIVERED AMOUNT</td>
+                        <td>PO BALANCE AMOUNT</td>                       
+                      </tr>                   
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td style={{color:'purple', fontWeight:'bold'}}>{poSummary.total_po_qty.toLocaleString("en-US")} EA</td>
+                        <td style={{color:'purple', fontWeight:'bold'}}> {poSummary.total_delivered_qty.toLocaleString("en-US")} EA</td>
+                        <td style={{color:'purple', fontWeight:'bold'}}> {poSummary.total_pobalance_qty.toLocaleString("en-US")} EA</td>                        
+                        <td style={{color:'blue', fontWeight:'bold'}}> {poSummary.total_po_amount.toLocaleString("en-US", {
                       style: "currency",
                       currency: "USD",
-                    })}
-                  </b>
-                </div>
-              </div>
-              <div className='summarygroup'>
-                <div className='summaryvalue'>
-                  <b>
-                    DELIVERED QTY:{" "}
-                    {poSummary.total_delivered_qty.toLocaleString("en-US")} EA
-                  </b>
-                </div>
-                <div className='summaryvalue'>
-                  <b>
-                    DELIVERED AMOUNT:{" "}
-                    {poSummary.total_delivered_amount.toLocaleString("en-US", {
+                    })}</td>
+                        <td style={{color:'blue', fontWeight:'bold'}}>  {poSummary.total_delivered_amount.toLocaleString("en-US", {
                       style: "currency",
                       currency: "USD",
-                    })}
-                  </b>
-                </div>
-              </div>
-              <div className='summarygroup'>
-                <div className='summaryvalue'>
-                  <b>
-                    PO BALANCE QTY:{" "}
-                    {poSummary.total_pobalance_qty.toLocaleString("en-US")} EA
-                  </b>
-                </div>
-                <div className='summaryvalue'>
-                  <b>
-                    PO BALANCE AMOUNT:{" "}
-                    {poSummary.total_pobalance_amount.toLocaleString("en-US", {
+                    })}</td>
+                        <td style={{color:'blue', fontWeight:'bold'}}>  {poSummary.total_pobalance_amount.toLocaleString("en-US", {
                       style: "currency",
                       currency: "USD",
-                    })}
-                  </b>
-                </div>
-              </div>
+                    })}</td>                        
+                      </tr>
+                    </tbody>
+              </table>          
             </div>
           </div>
           <div className='tracuuPOTable'>

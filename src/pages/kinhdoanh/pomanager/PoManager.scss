@@ -167,20 +167,18 @@
                 margin-top: 5px;
                 
 
-                .summarygroup {
-                    display: flex;
-                    flex-direction: column;
-                    align-items: flex-start;
-                    justify-items: flex-start;                    
-                    gap: 10px;
-                    .summaryvalue {                        
-                        display: flex;
-                        font-size: 16px;
-                        justify-self: flex-end;
-                        align-self: flex-end;
-                        padding: 5px;
-                        color: rgb(83, 36, 255);
-                    }                    
+                table {
+                    border:3px solid gray;
+                    width: 100%;
+                }
+                table thead tr td{
+                    font-weight: bold;
+                    border: 1px solid gray;
+                    padding-left: 10px;
+                    padding-right: 10px; 
+                }
+                table tbody tr td{                        
+                    border: 1px solid gray;                       
                 }
 
             }

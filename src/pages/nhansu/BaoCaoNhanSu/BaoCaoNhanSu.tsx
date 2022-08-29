@@ -32,14 +32,11 @@ import {
   ResponsiveContainer,
   Label,
   LabelList,
+  PieChart,
+  Pie,
+  Cell,
   /*   ResponsiveContainer, */
 } from "recharts";
-
-const addId = (arr: Array<any>) => {
-  return arr.map((obj: any, index: number) => {
-    return Object.assign({}, obj, { id: index });
-  });
-};
 
 interface DiemDanhNhomData {
   id: string;
@@ -108,6 +105,9 @@ const BaoCaoNhanSu = () => {
   const [diemdanhnhomtable, setDiemDanhNhomTable] = useState<
     Array<DiemDanhNhomData>
   >([]);
+  const [piechartdata, setPieChartData] = useState<
+    Array<DiemDanhNhomData>
+  >([]);
   const [fromdate, setFromDate] = useState(
     moment().add(-8, "day").format("YYYY-MM-DD")
   );
@@ -125,29 +125,10 @@ const BaoCaoNhanSu = () => {
     Array<DiemDanhFullData>
   >([]);
 
-  const columns_diemdanhhistory = [
-    {
-      field: "APPLY_DATE",
-      headerName: "APPLY_DATE",
-      width: 120,
-      renderCell: (params: any) => {
-        return (
-          <span style={{ fontWeight: "bold", color: "black" }}>
-            {params.row.APPLY_DATE.slice(0, 10)}
-          </span>
-        );
-      },
-    },
-    { field: "TOTAL", headerName: "TOTAL_NM1", width: 90 },
-    { field: "TOTAL_ON", headerName: "TOTAL_ON", width: 90 },
-    { field: "TOTAL_OFF", headerName: "TOTAL_OFF", width: 90 },
-    { field: "ON_RATE", headerName: "ON_RATE", width: 90 },
-  ];
-
   const columns_diemdanhnhom = [
     {
       field: "MAINDEPTNAME",
-      headerName: "MAINDEPTNAME",
+      headerName: "BP Chính",
       width: 120,
       renderCell: (params: any) => {
         return (
@@ -161,7 +142,7 @@ const BaoCaoNhanSu = () => {
     },
     {
       field: "SUBDEPTNAME",
-      headerName: "SUBDEPTNAME",
+      headerName: "BP Phụ",
       width: 120,
       renderCell: (params: any) => {
         return (
@@ -175,7 +156,7 @@ const BaoCaoNhanSu = () => {
     },
     {
       field: "TOTAL_ALL",
-      headerName: "TOTAL_ALL",
+      headerName: "Tổng",
       width: 90,
       renderCell: (params: any) => {
         return (
@@ -189,7 +170,7 @@ const BaoCaoNhanSu = () => {
     },
     {
       field: "TOTAL_ON",
-      headerName: "TOTAL_ON",
+      headerName: "Đi Làm",
       width: 90,
       renderCell: (params: any) => {
         return (
@@ -203,7 +184,7 @@ const BaoCaoNhanSu = () => {
     },
     {
       field: "TOTAL_OFF",
-      headerName: "TOTAL_OFF",
+      headerName: "Nghỉ Làm",
       width: 90,
       renderCell: (params: any) => {
         return (
@@ -217,7 +198,7 @@ const BaoCaoNhanSu = () => {
     },
     {
       field: "TOTAL_CDD",
-      headerName: "TOTAL_CDD",
+      headerName: "Chưa ĐD",
       width: 90,
       renderCell: (params: any) => {
         return (
@@ -228,15 +209,21 @@ const BaoCaoNhanSu = () => {
           </div>
         );
       },
-    },
-    { field: "TOTAL_NM1", headerName: "TOTAL_NM1", width: 90 },
-    { field: "TOTAL_NM2", headerName: "TOTAL_NM2", width: 90 },
-    { field: "ON_NM1", headerName: "ON_NM1", width: 90 },
-    { field: "ON_NM2", headerName: "ON_NM2", width: 90 },
-    { field: "OFF_NM1", headerName: "OFF_NM1", width: 90 },
-    { field: "OFF_NM2", headerName: "OFF_NM2", width: 90 },
-    { field: "CDD_NM1", headerName: "CDD_NM1", width: 90 },
-    { field: "CDD_NM2", headerName: "CDD_NM2", width: 90 },
+    },    
+    {
+      field: "ON_RATE",
+      headerName: "TL ĐI LÀM",
+      width: 120,
+      renderCell: (params: any) => {
+        return (
+          <div className='onoffdiv'>
+            <span style={{ fontWeight: "bold", color: "black" }}>
+              {(params.row.TOTAL_ON/params.row.TOTAL_ALL*100).toLocaleString('en-US' ,{style:'decimal',maximumFractionDigits:2})}%
+            </span>
+          </div>
+        );
+      },
+    },    
   ];
 
   const columns_diemdanhfull = [
@@ -337,43 +324,6 @@ const BaoCaoNhanSu = () => {
 
     { field: "OFF_ID", headerName: "OFF_ID", width: 120 },
   ];
-  function CustomToolbar() {
-    return (
-      <GridToolbarContainer>
-        <GridToolbarColumnsButton />
-        <GridToolbarFilterButton />
-        <GridToolbarDensitySelector />
-        <GridToolbarQuickFilter />
-        <button
-          className='saveexcelbutton'
-          onClick={() => {
-            SaveExcel(diemdanhnhomtable, "BaoCaoNhanSu");
-          }}
-        >
-          Save Excel
-        </button>
-      </GridToolbarContainer>
-    );
-  }
-
-  function CustomToolbar2() {
-    return (
-      <GridToolbarContainer>
-        <GridToolbarColumnsButton />
-        <GridToolbarFilterButton />
-        <GridToolbarDensitySelector />
-        <GridToolbarQuickFilter />
-        <button
-          className='saveexcelbutton'
-          onClick={() => {
-            SaveExcel(diemdanh_historyTable, "DiemdanhHistory");
-          }}
-        >
-          Save Excel
-        </button>
-      </GridToolbarContainer>
-    );
-  }
 
   function CustomToolbar3() {
     return (
@@ -393,69 +343,6 @@ const BaoCaoNhanSu = () => {
       </GridToolbarContainer>
     );
   }
-
-  const handleSearch = () => {
-    generalQuery("diemdanhsummarynhom", { from_date: fromdate })
-      .then((response) => {
-        //console.log(response.data.data);
-        if (response.data.tk_status !== "NG") {
-          setDiemDanhNhomTable(addTotal(response.data.data));
-          setisLoading(false);
-          Swal.fire(
-            "Thông báo",
-            "Đã load " + response.data.data.length + " dòng",
-            "success"
-          );
-        } else {
-          Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-
-    generalQuery("diemdanhhistorynhom", {
-      start_date: fromdate,
-      end_date: todate,
-      MAINDEPTCODE: maindeptcode,
-      WORK_SHIFT_CODE: ca,
-      FACTORY_CODE: nhamay,
-    })
-      .then((response) => {
-        console.log(response.data.data);
-        if (response.data.tk_status !== "NG") {
-          const newdiemdanhtb: Array<DiemDanhHistoryData> =
-            response.data.data.map((obj: { APPLY_DATE: string | any[] }) => {
-              return { ...obj, APPLY_DATE: obj.APPLY_DATE.slice(0, 10) };
-            });
-          setDiemDanh_HistoryTable(newdiemdanhtb);
-        } else {
-          Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-
-    generalQuery("diemdanhfull", { from_date: fromdate, to_date: todate })
-      .then((response) => {
-        //console.log(response.data.data);
-        if (response.data.tk_status !== "NG") {
-          setDiemDanhFullTable(response.data.data);
-          setisLoading(false);
-          Swal.fire(
-            "Thông báo",
-            "Đã load " + response.data.data.length + " dòng",
-            "success"
-          );
-        } else {
-          Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
 
   const addTotal = (tabledata: Array<DiemDanhNhomData>) => {
     var TOTAL_ALL: number = 0;
@@ -507,7 +394,8 @@ const BaoCaoNhanSu = () => {
     tabledata.push(grandTotalOBJ);
     return tabledata;
   };
-  useEffect(() => {
+
+  const handleSearch2 = () => {
     setisLoading(true);
     generalQuery("getmaindeptlist", { from_date: fromdate })
       .then((response) => {
@@ -524,6 +412,7 @@ const BaoCaoNhanSu = () => {
       .then((response) => {
         //console.log(response.data.data);
         if (response.data.tk_status !== "NG") {
+          setPieChartData(response.data.data);
           setDiemDanhNhomTable(addTotal(response.data.data));
           setisLoading(false);
         } else {
@@ -575,15 +464,17 @@ const BaoCaoNhanSu = () => {
       .catch((error) => {
         console.log(error);
       });
-  }, []);
-
-  const renderCustomizedLabel = (props: any) => {
-    const { x, y, width, height, value } = props;
-    console.log(value);
-    const radius = 10;
-
-    return <span style={{ color: "red" }}>{value}</span>;
   };
+
+  const handleSearch = () => {
+    handleSearch2();  
+  };
+
+  const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
+  
+  useEffect(() => {
+   handleSearch2();
+  }, []);
 
   return (
     <div className='baocaonhansu'>
@@ -710,20 +601,44 @@ const BaoCaoNhanSu = () => {
 
         <h3>Nhân lực điểm danh trong ngày theo bộ phận</h3>
         <div className='maindept_table'>
-          <DataGrid
-            components={{
-              Toolbar: CustomToolbar,
-              LoadingOverlay: LinearProgress,
-            }}
-            style={{ padding: "20px" }}
-            loading={isLoading}
-            rowHeight={35}
-            rows={diemdanhnhomtable}
-            columns={columns_diemdanhnhom}
-            rowsPerPageOptions={[5, 10, 30, 50, 100, 500]}
-            editMode='row'
-            getRowHeight={() => "auto"}
-          />
+          <div className='tiledilamtable'>
+            <DataGrid
+              components={{
+                LoadingOverlay: LinearProgress,
+              }}
+              style={{ padding: "20px" }}
+              loading={isLoading}
+              rows={diemdanhnhomtable}
+              columns={columns_diemdanhnhom}
+              getRowHeight={() => "auto"}
+              hideFooterPagination
+              hideFooter
+            />
+          </div>
+          <div className='titrongphongbangraph'>
+            <ResponsiveContainer width='100%' height='100%'>              
+              <PieChart width={500} height={500}>
+                {piechartdata && <Pie
+                  data={piechartdata.slice(0,piechartdata.length-1)}
+                  isAnimationActive={false}
+                  cx='50%'
+                  cy='50%'
+                  outerRadius={80}
+                  fill='#80bfff'
+                  dataKey='TOTAL_ALL'
+                  nameKey="SUBDEPTNAME"
+                  label
+                >
+                  {piechartdata.map((entry, index) => (
+                    <Cell
+                      key={`cell-${index}`}
+                      fill={COLORS[index % COLORS.length]}
+                    />
+                  ))}
+                </Pie>}
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
         </div>
         <h3>Lịch sử đi làm full info</h3>
 
