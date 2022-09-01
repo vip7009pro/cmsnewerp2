@@ -1,7 +1,7 @@
 import React, { useContext, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import SubMenu from "./Submenu";
-import { FcApprove, FcList } from 'react-icons/fc';
+import { FcAbout, FcApprove, FcCustomerSupport, FcList } from 'react-icons/fc';
 import "./Sidebar.scss";
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
@@ -101,11 +101,16 @@ const Sidebar = () => {
           title: getsentence(10,lang), /*PO tích hợp tồn kho*/
           path: '/kinhdoanh/poandstockfull',
           icon: <FaCheckCircle color='#ff9900' size={25}/>
+        },    
+        {
+          title: 'Thông tin sản phẩm', /*Quản lý giá*/
+          path: '/kinhdoanh/codeinfo',
+          icon: <FcAbout color='#cc00ff' size={25}/>
         },        
         {
-          title: 'Quản lý Giá', /*Quản lý giá*/
-          path: '/kinhdoanh/quotationmanager',
-          icon: <MdPriceChange color='#cc00ff' size={25}/>
+          title: 'Quản lý khách hàng', /*Quản lý giá*/
+          path: '/kinhdoanh/customermanager',
+          icon: <FcCustomerSupport color='#cc00ff' size={25}/>
         },        
         {
           title: getsentence(11,lang),/*Báo cáo*/

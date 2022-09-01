@@ -53,7 +53,7 @@ const DiemDanhNhom = () => {
                       EMPL_NO: params.row.EMPL_NO
                     })
                       .then((response) => {
-                        console.log(response.data.tk_status);
+                        console.log(response.data);
                         if (response.data.tk_status === "OK") {
                           const newProjects = diemdanhnhomtable.map((p) =>
                             p.EMPL_NO === params.row.EMPL_NO
@@ -107,7 +107,7 @@ const DiemDanhNhom = () => {
                 );
             }    
         },      
-        { field: "TANGCA", headerName: "TANGCA", width: 170, 
+        { field: "TANGCA", headerName: "TANGCA",minWidth: 200,  flex:1, 
             renderCell: (params:any) => { 
                 let typeclass:string =params.row.OVERTIME===1 ? "onbt": params.row.OVERTIME===0 ?"offbt" : "";
                 const onClick = (overtimeinfo: string) => {                
@@ -118,7 +118,7 @@ const DiemDanhNhom = () => {
                       overtime_info: overtimeinfo,
                     })
                       .then((response) => {
-                        console.log(response.data.tk_status);
+                        console.log(response.data);
                         if (response.data.tk_status === "OK") {
                           const newProjects = diemdanhnhomtable.map((p) =>
                             p.EMPL_NO === params.row.EMPL_NO

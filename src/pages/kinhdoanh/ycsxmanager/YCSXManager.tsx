@@ -88,7 +88,8 @@ interface  CodeListData {
 }
 interface CustomerListData {
   CUST_CD: string, 
-  CUST_NAME_KD: string
+  CUST_NAME_KD: string,
+  CUST_NAME?: string
 }
 interface UploadAmazonData {
   G_CODE?: string, 

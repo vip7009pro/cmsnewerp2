@@ -24,6 +24,8 @@ import BaoCaoNhanSu from "./pages/nhansu/BaoCaoNhanSu/BaoCaoNhanSu";
 import Swal from "sweetalert2";
 import QuotationManager from "./pages/kinhdoanh/quotationmanager/QuotationManager";
 import "./App.scss";
+import CODE_MANAGER from "./pages/rnd/code_manager/CODE_MANAGER";
+import CUST_MANAGER from "./pages/kinhdoanh/custManager/CUST_MANAGER";
 
 //https://www.robinwieruch.de/react-router-private-routes/
 interface userDataInterface {
@@ -287,6 +289,8 @@ function App() {
                 <Route path='ycsxmanager' element={<YCSXManager />} />
                 <Route path='poandstockfull' element={<POandStockFull />} />
                 <Route path='kinhdoanhreport' element={<KinhDoanhReport />} />
+                <Route path='codeinfo' element={<CODE_MANAGER />} />
+                <Route path='customermanager' element={<CUST_MANAGER />} />
                 <Route path='quotationmanager' element={<QuotationManager />} />
               </Route>
               <Route path='nhansu' element={
