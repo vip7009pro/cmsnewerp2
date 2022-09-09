@@ -1,6 +1,6 @@
 import React, { Component, FC, useEffect, useState, lazy } from "react";
 import Home from "./pages/home/Home";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate,   } from "react-router-dom";
 import { LangConText, UserContext } from "../src/api/Context";
 import { checkLogin } from "./api/Api";
 import Login from "./pages/login/Login";
@@ -147,6 +147,7 @@ const ProtectedRoute: any = ({
   
 };
 function App() {
+  console.log(window.location.pathname);
   const [lang, setLang] = useState('vi');
   const [userData, setUserData] = useState<userDataInterface | any>({
     ADD_COMMUNE: "Đông Xuân",
@@ -266,13 +267,13 @@ function App() {
     <div className='App'>
       <LangConText.Provider value={[lang,setLang]}>
       <UserContext.Provider value={[userData,setUserData]}>
-        <BrowserRouter>
+        <BrowserRouter> 
           <Routes>
             <Route
               path='/'
               element={
                 <ProtectedRoute user={userData} maindeptname='all' jobname='all'>
-                  <Home />
+                  <Home />                  
                 </ProtectedRoute>
               }
             >              

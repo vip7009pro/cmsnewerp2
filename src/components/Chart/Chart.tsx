@@ -8,6 +8,7 @@ import {
   CartesianGrid,
   Tooltip,
   Legend,
+  ResponsiveContainer,
 /*   ResponsiveContainer, */
 } from "recharts";
 
@@ -58,12 +59,9 @@ export default function Chart() {
   ];
 
   return (
-    <div className='chart'>
-      <div className="title">Daily Revenue</div>
-      {/* <ResponsiveContainer width='50%' height={350}> */}
-      
+    <ResponsiveContainer width="99%" height={350}>
         <LineChart        
-          width={900}
+          width={1618}
           height= {300}
           data={data}
           margin={{
@@ -86,7 +84,6 @@ export default function Chart() {
           />
           <Line type='monotone' dataKey='uv' stroke='#82ca9d' />
         </LineChart>
-      {/* </ResponsiveContainer> */}
-    </div>
+        </ResponsiveContainer>
   );
 }

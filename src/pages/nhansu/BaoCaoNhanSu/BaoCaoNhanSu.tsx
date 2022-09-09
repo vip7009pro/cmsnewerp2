@@ -37,6 +37,7 @@ import {
   Cell,
   /*   ResponsiveContainer, */
 } from "recharts";
+import { Grid } from "@mui/material";
 
 interface DiemDanhNhomData {
   id: string;
@@ -616,28 +617,32 @@ const BaoCaoNhanSu = () => {
             />
           </div>
           <div className='titrongphongbangraph'>
-            <ResponsiveContainer width='100%' height='100%'>              
-              <PieChart width={500} height={500}>
-                {piechartdata && <Pie
-                  data={piechartdata.slice(0,piechartdata.length-1)}
-                  isAnimationActive={false}
-                  cx='50%'
-                  cy='50%'
-                  outerRadius={80}
-                  fill='#80bfff'
-                  dataKey='TOTAL_ALL'
-                  nameKey="SUBDEPTNAME"
-                  label
-                >
-                  {piechartdata.map((entry, index) => (
-                    <Cell
-                      key={`cell-${index}`}
-                      fill={COLORS[index % COLORS.length]}
-                    />
-                  ))}
-                </Pie>}
-              </PieChart>
-            </ResponsiveContainer>
+           
+              <ResponsiveContainer width='100%' height='100%'>
+                <PieChart width={500} height={500}>
+                  {piechartdata && (
+                    <Pie
+                      data={piechartdata.slice(0, piechartdata.length - 1)}
+                      isAnimationActive={false}
+                      cx='50%'
+                      cy='50%'
+                      outerRadius={80}
+                      fill='#80bfff'
+                      dataKey='TOTAL_ALL'
+                      nameKey='SUBDEPTNAME'
+                      paddingAngle={5}
+                      label
+                    >
+                      {piechartdata.map((entry, index) => (
+                        <Cell
+                          key={`cell-${index}`}
+                          fill={COLORS[index % COLORS.length]}
+                        />
+                      ))}
+                    </Pie>
+                  )}
+                </PieChart>
+              </ResponsiveContainer>            
           </div>
         </div>
         <h3>Lịch sử đi làm full info</h3>

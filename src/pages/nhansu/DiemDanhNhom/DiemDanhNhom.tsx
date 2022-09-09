@@ -40,8 +40,9 @@ const DiemDanhNhom = () => {
     const [WORK_SHIFT_CODE, setWORK_SHIFT_CODE]= useState(0);
     const [diemdanhnhomtable,setDiemDanhNhomTable ] = useState<Array<DiemDanhNhomData>>([]);
 
-    const columns_diemdanhnhom =[
-        { field: "id", headerName: "ID", width: 100, valueGetter: (params: any) => {return params.row.EMPL_NO} },      
+    const columns_diemdanhnhom =[  
+      { field: "EMPL_NO", headerName: "EMPL_NO", width: 170 },
+      { field: "CMS_ID", headerName: "CMS_ID", width: 100 },      
         { field: "DIEMDANH", headerName: "DIEMDANH", width: 170, 
             renderCell: (params:any) => { 
                 let typeclass:string =params.row.ON_OFF===1 ? "onbt": params.row.ON_OFF===0 ?"offbt" : "";
@@ -191,9 +192,7 @@ const DiemDanhNhom = () => {
                   </div>
                 );
             }    
-        },      
-        { field: "EMPL_NO", headerName: "EMPL_NO", width: 170 },
-        { field: "CMS_ID", headerName: "CMS_ID", width: 100 },
+        },     
         { field: "MIDLAST_NAME", headerName: "MIDLAST_NAME", width: 130 },
         { field: "FIRST_NAME", headerName: "FIRST_NAME", width: 130 },
         { field: "PHONE_NUMBER", headerName: "PHONE_NUMBER", width: 130 },

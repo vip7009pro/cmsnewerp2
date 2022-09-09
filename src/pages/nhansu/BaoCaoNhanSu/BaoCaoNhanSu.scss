@@ -1,3 +1,4 @@
+
 .baocaonhansu {  
     display: flex;
     flex-direction: column;
@@ -77,10 +78,10 @@
                 width: 50%;
             }
             .titrongphongbangraph {
+                svg {width: 100%;height: auto;}
                 height: 100%;
                 width: 50%;
-            }
-    
+            }   
             
     }
     

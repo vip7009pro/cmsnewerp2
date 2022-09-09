@@ -1,0 +1,70 @@
+.kinhdoanhreport {
+    display: flex;
+    flex-direction: column;
+    .doanhthureport {
+        display: flex;
+        flex-direction: column;
+        .section_title {
+            font-size: 20px;
+            font-weight: bold;
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+        .revenuewidget {
+            display: flex;            
+            flex-direction: row;
+            flex-wrap: wrap;
+            justify-content: space-around;      
+            gap: 5%; 
+            margin-top: 5px;
+            .revenuwdg {
+                display: flex;
+                flex:1;
+            }            
+        }
+        .graph {
+            display: flex;
+            width: 100%;
+            flex-direction: column;
+            .dailygraphtotal {
+                display: flex;
+                width: 100%;
+                flex: 1;
+                margin-bottom: 20px;
+
+                .dailygraph {
+                    display: flex;
+                    width: 100%;
+                    flex: 1;
+                }
+                
+
+            }
+            .monthlyweeklygraph {
+                display: flex;
+                width: 100%;
+                flex: 1;
+
+                .dailygraph {
+                    display: flex;
+                    width: 100%;
+                    flex: 1;
+                }
+            }
+          
+            .revenuebycustomergraph {
+                display: flex;
+                width: 100%;
+                flex: 1;
+
+                .dailygraph {
+                    display: flex;
+                    width: 100%;
+                    flex: 1;
+                }
+            }
+          
+
+        }
+    }
+}

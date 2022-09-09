@@ -661,40 +661,6 @@ const InvoiceManager = () => {
       setInvoiceDataTableFilter([]);  
     }
   }
- /*  const handle_fillsuaform =() => {
-    if(invoicedatatablefilter.length ===1)
-    {
-      setSelection({...selection, trapo: true, thempohangloat:false, them1po:!selection.them1po});
-      const selectedCodeFilter: CodeListData = {
-        G_CODE: invoicedatatablefilter[invoicedatatablefilter.length-1].G_CODE, 
-        G_NAME: invoicedatatablefilter[invoicedatatablefilter.length-1].G_NAME, 
-        PROD_LAST_PRICE: Number(invoicedatatablefilter[invoicedatatablefilter.length-1].PROD_PRICE),
-        USE_YN: 'Y', 
-      }  
-      const selectedCustomerFilter: CustomerListData = {
-        CUST_CD: invoicedatatablefilter[invoicedatatablefilter.length-1].CUST_CD,  
-        CUST_NAME_KD: invoicedatatablefilter[invoicedatatablefilter.length-1].CUST_NAME_KD, 
-      }
-      setSelectedCode(selectedCodeFilter);
-      setSelectedCust_CD(selectedCustomerFilter);
-      setNewPoDate(invoicedatatablefilter[invoicedatatablefilter.length-1].PO_DATE);
-      setNewRdDate(invoicedatatablefilter[invoicedatatablefilter.length-1].RD_DATE);
-      setNewPoQty(invoicedatatablefilter[invoicedatatablefilter.length-1].PO_QTY.toString());
-      setNewPoNo(invoicedatatablefilter[invoicedatatablefilter.length-1].PO_NO);
-      setNewPoPrice(invoicedatatablefilter[invoicedatatablefilter.length-1].PROD_PRICE);
-      setNewPoRemark(invoicedatatablefilter[invoicedatatablefilter.length-1].REMARK);
-      setSelectedID(invoicedatatablefilter[invoicedatatablefilter.length-1].PO_ID);
-    }
-    else if(invoicedatatablefilter.length ===0)
-    {
-      clearPOform();
-      Swal.fire("Thông báo", "Lỗi: Chọn ít nhất 1 PO để sửa" , "error");
-    }
-    else{
-      Swal.fire("Thông báo", "Lỗi: Chỉ tích chọn 1 dòng để sửa thôi" , "error");
-    }
-  }
- */
   const handle_fillsuaformInvoice =() => {
     if(invoicedatatablefilter.length ===1)
     {

@@ -10,7 +10,6 @@ import { UserContext } from '../../../api/Context';
 import { SaveExcel } from '../../../api/GlobalFunction';
 import "./CUST_MANAGER.scss"
 
-
 interface CUST_INFO {
    id: string,
    name: string, 
@@ -32,11 +31,15 @@ const CUST_MANAGER = () => {
   const [cust_cd, setCust_Cd] = useState('0000');
   const [cust_name, setCustName] = useState('Seojin Vina');
   const [cust_name_kd, setCust_Name_KD] = useState('SEOJIN');
+  const [edittable,setEditTable] = useState(true);
+  const handleEditTable = (e: React.ChangeEvent<HTMLInputElement>) => {
+    
 
-  const column_custinfo = [
-    { field: "id", headerName: "CUST_CD", width: 80 },
-    { field: "name", headerName: "CUST_NAME", width: 280 },
-    { field: "CUST_NAME_KD", headerName: "CUST_NAME_KD", width: 220 },   
+  }
+  let column_custinfo = [
+    { field: "id", headerName: "CUST_CD", width: 80, renderCell: (params:any) => {return <span style={{color:'gray'}}><b><input className='customerinput' disabled={edittable} onChange={(e:React.ChangeEvent<HTMLInputElement>)=> {handleEditTable(e);}} defaultValue={params.row.id}></input></b></span>}  },
+    { field: "name", headerName: "CUST_NAME", width: 280, renderCell: (params:any) => {return <span style={{color:'gray'}}><b><input className='customerinput' disabled={edittable}   defaultValue={params.row.name}></input></b></span>}   },
+    { field: "CUST_NAME_KD", headerName: "CUST_NAME_KD", width: 220 , renderCell: (params:any) => {return <span style={{color:'gray'}}><b><input className='customerinput' disabled={edittable} defaultValue={params.row.CUST_NAME_KD}></input></b></span>}},   
   ];
 
   const handleEmployeeSelection = (ids:GridSelectionModel)=> {
@@ -50,8 +53,7 @@ const CUST_MANAGER = () => {
         setCustName(datafilter[datafilter.length-1].name);
         setCust_Name_KD(datafilter[datafilter.length-1].CUST_NAME_KD);      
        
-    }       
-    console.log(datafilter);        
+    } 
 }
 
   const [columnDefinition, setColumnDefinition] = useState<Array<any>>(column_custinfo);
@@ -62,6 +64,7 @@ const CUST_MANAGER = () => {
         <GridToolbarFilterButton />
         <GridToolbarDensitySelector /> 
         <IconButton className='buttonIcon'onClick={()=>{SaveExcel(custinfodatatable,"Code Info Table")}}><AiFillFileExcel color='green' size={25}/>SAVE</IconButton> 
+        <button onClick={()=>{setEditTable(!edittable); console.log(edittable); setColumnDefinition(column_custinfo)}}>Bật Tắt Sửa</button>
         <GridToolbarQuickFilter/>
       </GridToolbarContainer>
     );
@@ -94,6 +97,59 @@ const CUST_MANAGER = () => {
         console.log(error);
     });
   }
+
+  const handle_addCustomer = ()=> {
+    setisLoading(true);
+    setColumnDefinition(column_custinfo);
+    generalQuery('add_customer',{ 
+        CUST_CD: cust_cd,
+        CUST_NAME: cust_name,
+        CUST_NAME_KD: cust_name_kd
+    })
+    .then(response => {
+       /// console.log(response.data.data);
+        if(response.data.tk_status !=='NG')
+        {         
+          setisLoading(false);
+          Swal.fire("Thông báo", "Thêm khách thành công", "success");  
+        }
+        else
+        {
+          Swal.fire("Thông báo", "Thêm khách thất bại: " + response.data.message, "error");  
+          setisLoading(false);
+        }        
+    })
+    .catch(error => {
+        console.log(error);
+    });
+  }
+  
+  const handle_editCustomer = ()=> {
+    setisLoading(true);
+    setColumnDefinition(column_custinfo);
+    generalQuery('edit_customer',{ 
+        CUST_CD: cust_cd,
+        CUST_NAME: cust_name,
+        CUST_NAME_KD: cust_name_kd
+    })
+    .then(response => {
+       /// console.log(response.data.data);
+        if(response.data.tk_status !=='NG')
+        {         
+          setisLoading(false);
+          Swal.fire("Thông báo", "Sửa khách thành công", "success");  
+        }
+        else
+        {
+          Swal.fire("Thông báo", "Sửa khách thất bại: " + response.data.message, "error");  
+          setisLoading(false);
+        }        
+    })
+    .catch(error => {
+        console.log(error);
+    });
+  }
+
   const setNav = (choose: number) => {
     if(choose ===1 )
     {
@@ -113,7 +169,9 @@ const CUST_MANAGER = () => {
   },[]);
 
   return (
+  
     <div className='customermamanger'>   
+      <span style={{fontWeight:'bold', fontSize:20, marginTop:5 }}>Quản lý Khách Hàng</span>
       {
         selection.trapo && (
         <div className='tracuuFcst'>     
@@ -159,8 +217,8 @@ const CUST_MANAGER = () => {
                 </div>                
               </div>
               <div className='dangkybutton'>
-                <button className='thembutton' onClick={()=>{}}>Thêm</button>
-                <button className='suabutton' onClick={()=>{}}>Sửa</button>                
+                <button className='thembutton' onClick={()=>{handle_addCustomer();}}>Thêm</button>
+                <button className='suabutton' onClick={()=>{handle_editCustomer();}}>Sửa</button>                
                
               </div>
             </div>

@@ -93,7 +93,13 @@ const CODE_MANAGER = () => {
     { field: "PROD_PROJECT", headerName: "PROD_PROJECT", width: 120 },
     { field: "PROD_MODEL", headerName: "PROD_MODEL", width: 120 },
     { field: "M_NAME_FULLBOM", headerName: "FULLBOM", width: 250 },
-    { field: "BANVE", headerName: "BANVE", width: 80 },
+    { field: "BANVE", headerName: "BANVE", width: 80 , renderCell: (params:any) => {
+      let hreftlink = '/banve/' + params.row.G_CODE + '.pdf';
+      if(params.row.BANVE !=='N')
+      return <span style={{color:'gray'}}>
+        <a target="_blank" rel="noopener noreferrer" href={hreftlink}>LINK</a>
+      </span>
+    }},
     { field: "NO_INSPECTION", headerName: "NO_INSPECTION", width: 100 },
     { field: "USE_YN", headerName: "USE_YN", width: 80 },
   ];

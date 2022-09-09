@@ -144,42 +144,7 @@ const Sidebar = () => {
           icon: <AiFillAmazonCircle color='blue' size={25}/>
         }
       ]
-    },
-    {
-      title: 'Products',
-      path: '/products',
-      icon: <HomeIcon />
-    },
-    {
-      title: 'Team',
-      path: '/team',
-      icon: <HomeIcon />
-    },
-    {
-      title: 'Messages',
-      path: '/messages',
-      icon: <HomeIcon />,  
-      iconClosed: <KeyboardArrowDownIcon />,
-      iconOpened: <KeyboardArrowUpIcon />,
-  
-      subNav: [
-        {
-          title: 'Message 1',
-          path: '/messages/message1',
-          icon: <HomeIcon />
-        },
-        {
-          title: 'Message 2',
-          path: '/messages/message2',
-          icon: <HomeIcon />
-        }
-      ]
-    },
-    {
-      title: 'Support',
-      path: '/support',
-      icon: <HomeIcon />
-    }
+    },    
   ];
 
   return (
