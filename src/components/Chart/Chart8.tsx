@@ -24,7 +24,7 @@ interface RunningPOData {
   RUNNING_DEL_QTY: number;
   RUNNING_PO_BALANCE: number;
 }
-const Chart4 = () => {
+const Chart8 = () => {
   const [runningPOData, setRunningPOData] = useState<Array<RunningPOData>>([]);
   const formatCash = (n: number) => {
     if (n < 1e3) return n;
@@ -98,11 +98,11 @@ const Chart4 = () => {
             type='monotone'
             dataKey='RUNNING_PO_BALANCE'
             stroke='white'
-            fill='#00b3b3'
+            fill='#cc66ff'
             label={{ position: "top", formatter: labelFormatter }}
           ></Bar>
         </ComposedChart>
       </ResponsiveContainer>
   );
 };
-export default Chart4;
+export default Chart8;

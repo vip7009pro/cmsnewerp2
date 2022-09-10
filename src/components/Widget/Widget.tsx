@@ -1,7 +1,5 @@
 import "../Widget/Widget.scss"
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
-
-
 interface WidgetInfo {
   widgettype:string,  
   label: string,
@@ -11,7 +9,6 @@ interface WidgetInfo {
   topColor: string,
   botColor: string,
 }
-
 export default function Widget({widgettype,label,qty,amount, percentage,topColor, botColor}: WidgetInfo) {
   if(widgettype === 'revenue')
   {
@@ -35,5 +32,4 @@ export default function Widget({widgettype,label,qty,amount, percentage,topColor
   }
   else
   return <div>NONO</div>
-  
 }

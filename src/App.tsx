@@ -147,7 +147,7 @@ const ProtectedRoute: any = ({
   
 };
 function App() {
-  console.log(window.location.pathname);
+
   const [lang, setLang] = useState('vi');
   const [userData, setUserData] = useState<userDataInterface | any>({
     ADD_COMMUNE: "Đông Xuân",

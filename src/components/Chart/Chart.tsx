@@ -1,89 +1,91 @@
-import React from "react";
-import "../Chart/Chart.scss";
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
-/*   ResponsiveContainer, */
-} from "recharts";
+import moment from 'moment';
+import React, { PureComponent, useEffect, useState } from 'react';
+import { BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ComposedChart, Label, LabelList, Line } from 'recharts';
+import Swal from 'sweetalert2';
+import { generalQuery } from '../../api/Api';
 
-export default function Chart() {
-  const data = [
-    {
-      name: "Page A",
-      uv: 4000,
-      pv: 2400,
-      amt: 2400,
-    },
-    {
-      name: "Page B",
-      uv: 3000,
-      pv: 1398,
-      amt: 2210,
-    },
-    {
-      name: "Page C",
-      uv: 2000,
-      pv: 9800,
-      amt: 2290,
-    },
-    {
-      name: "Page D",
-      uv: 2780,
-      pv: 3908,
-      amt: 2000,
-    },
-    {
-      name: "Page E",
-      uv: 1890,
-      pv: 4800,
-      amt: 2181,
-    },
-    {
-      name: "Page F",
-      uv: 2390,
-      pv: 3800,
-      amt: 2500,
-    },
-    {
-      name: "Page G",
-      uv: 3490,
-      pv: 4300,
-      amt: 2100,
-    },
-  ];
 
-  return (
-    <ResponsiveContainer width="99%" height={350}>
-        <LineChart        
-          width={1618}
-          height= {300}
-          data={data}
-          margin={{
-            top: 5,
-            right: 30,
-            left: 20,
-            bottom: 5,
-          }}
-        >
-        <CartesianGrid strokeDasharray='3 3' className="chartGrid"/>
-          <XAxis dataKey='name'/>
-          <YAxis />
-          <Tooltip />
-          <Legend />
-          <Line
-            type='monotone'
-            dataKey='pv'
-            stroke='#8884d8'
-            activeDot={{ r: 8 }}
-          />
-          <Line type='monotone' dataKey='uv' stroke='#82ca9d' />
-        </LineChart>
-        </ResponsiveContainer>
-  );
+interface WeeklyClosingData {
+  DEL_WEEK: string, 
+  DELIVERY_QTY: number, 
+  DELIVERED_AMOUNT: number
 }
+
+const ChartWeekLy = () => {  
+  const [weeklyClosingData, setWeeklyClosingData] = useState<Array<WeeklyClosingData>>([]);
+  const formatCash = (n:number) => {
+    if (n < 1e3) return n;
+    if (n >= 1e3) return +(n / 1e3).toFixed(1) + "K$";
+  };
+
+  const labelFormatter = (value: number) => {
+    return formatCash(value);
+  };
+
+  const handleGetDailyClosing = () => {
+    generalQuery("kd_weeklyclosing", { YEAR: moment().format("YYYY") })
+    .then((response) => {      
+      if (response.data.tk_status !== "NG") {
+        const loadeddata: WeeklyClosingData[] =  response.data.data.map((element:WeeklyClosingData,index: number)=> {
+          return {
+            ...element,
+          }
+        });
+        setWeeklyClosingData(loadeddata);
+        console.log(loadeddata);
+        /* Swal.fire(
+          "Thông báo",
+          "Đã load " + response.data.data.length + " dòng",
+          "success"
+        ); */
+      } else {
+        Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  }
+
+  useEffect(()=> {
+    handleGetDailyClosing();
+  },[]);
+  return (
+    <ResponsiveContainer width='99%' height='100%'>
+    <ComposedChart
+      width={500}
+      height={300}
+      data={weeklyClosingData}
+      margin={{
+        top: 5,
+        right: 30,
+        left: 20,
+        bottom: 5,
+      }}
+    >
+      <CartesianGrid strokeDasharray='3 3' className='chartGrid' />
+      <XAxis dataKey='DEL_WEEK'>        
+        <Label value='Tuần' offset={0} position='insideBottom' />
+      </XAxis>
+      <YAxis yAxisId="left-axis"  label={{
+          value: "Số lượng",
+          angle: -90,
+          position: "insideLeft",
+        }} tickFormatter={(value) => new Intl.NumberFormat('en', { notation: "compact", compactDisplay: "short" }).format(value)}/>
+      <YAxis yAxisId="right-axis" orientation="right" 
+       label={{
+        value: "Số tiền",
+        angle: -90,
+        position: "insideRight",
+      }} tickFormatter={(value) => new Intl.NumberFormat('en-US', { maximumSignificantDigits: 3}).format(value) + '$'}/>
+      <Tooltip />
+      <Legend />
+      <Line yAxisId="left-axis" type="monotone" dataKey="DELIVERY_QTY" stroke="green"/>
+      <Bar yAxisId="right-axis" type="monotone" dataKey="DELIVERED_AMOUNT" stroke="#804d00" fill='#ff9900' label={{ position: 'top', formatter: labelFormatter }}>      
+      </Bar>
+    </ComposedChart>
+  </ResponsiveContainer>
+  )
+}
+export default ChartWeekLy
+

@@ -471,8 +471,15 @@ const BaoCaoNhanSu = () => {
     handleSearch2();  
   };
 
-  const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
+  const COLORS = ['#ff8c66','#ffb366','#ffd966','#ffff66','#d9ff66','#b3ff66','#8cff66','#66ff66','#66ff8c','#66ffb3','#66ffd9','#66ffff','#66d9ff','#66b3ff','#668cff','#6666ff','#8c66ff','#b366ff','#d966ff','#ff66ff','#ff66d9','#ff66b3','#ff668c','#ff6666'];
   
+  const labelFormatter = (value: number) => {
+    return ( new Intl.NumberFormat("en", {
+      notation: "compact",
+      compactDisplay: "short",
+    }).format(value));
+  };
+
   useEffect(() => {
    handleSearch2();
   }, []);
@@ -576,25 +583,36 @@ const BaoCaoNhanSu = () => {
                 <Label value='Ngày tháng' offset={0} position='insideBottom' />
               </XAxis>
               <YAxis
+               yAxisId='left-axis'
                 label={{
                   value: "Số lượng đi làm",
                   angle: -90,
                   position: "insideLeft",
                 }}
               />
+              <YAxis
+                orientation="right"
+                yAxisId='right-axis'
+                label={{
+                  value: "Tỉ lệ đi làm",
+                  angle: -90,
+                  position: "outsideRight",
+                }}
+              />
               <Tooltip />
               <Legend />
-              <Bar dataKey='TOTAL_ON' stackId='a' fill='#8884d8'>
+              <Bar yAxisId='left-axis' dataKey='TOTAL_ON' stackId='a' fill='#8884d8'>
                 <LabelList dataKey='TOTAL_ON' position='inside' />
               </Bar>
-              <Bar dataKey='TOTAL_OFF' stackId='a' fill='#82ca9d'>
+              <Bar yAxisId='left-axis' dataKey='TOTAL_OFF' stackId='a' fill='#82ca9d'>
                 <LabelList dataKey='TOTAL_OFF' position='inside' />
               </Bar>
               <Line
+                yAxisId='right-axis'
                 type='monotone'
                 dataKey='ON_RATE'
                 stroke='#FF0000'
-                activeDot={{ r: 8 }}
+                activeDot={{ r: 8 }}               
               ></Line>
             </ComposedChart>
           </ResponsiveContainer>
@@ -620,6 +638,8 @@ const BaoCaoNhanSu = () => {
            
               <ResponsiveContainer width='100%' height='100%'>
                 <PieChart width={500} height={500}>
+                  <Legend/>
+                  <Tooltip/>
                   {piechartdata && (
                     <Pie
                       data={piechartdata.slice(0, piechartdata.length - 1)}
@@ -632,6 +652,7 @@ const BaoCaoNhanSu = () => {
                       nameKey='SUBDEPTNAME'
                       paddingAngle={5}
                       label
+                      labelLine={true}                      
                     >
                       {piechartdata.map((entry, index) => (
                         <Cell

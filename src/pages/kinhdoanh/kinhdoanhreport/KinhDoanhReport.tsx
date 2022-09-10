@@ -2,10 +2,14 @@ import moment from 'moment'
 import React, { useEffect, useState } from 'react'
 import Swal from 'sweetalert2'
 import { generalQuery } from '../../../api/Api'
+import ChartWeekLy from '../../../components/Chart/Chart'
 import Chart from '../../../components/Chart/Chart'
 import Chart2 from '../../../components/Chart/Chart2'
 import Chart3 from '../../../components/Chart/Chart3'
 import Chart4 from '../../../components/Chart/Chart4'
+import ChartMonthLy from '../../../components/Chart/Chart5'
+import ChartYearly from '../../../components/Chart/Chart6'
+import Chart7 from '../../../components/Chart/Chart7'
 import Widget from '../../../components/Widget/Widget'
 import './KinhDoanhReport.scss'
 
@@ -200,55 +204,59 @@ useEffect(()=> {
   handletraInvoice('month', 'this',startOfMonth,endOfMonth);
   handletraInvoice('year', 'this',startOfYear,rightnow);
 },[]);
-
   return (
     <div className='kinhdoanhreport'>
       <div className='doanhthureport'>
-        <span className='section_title'>1. Doanh thu</span>
+        <span className='section_title'>1. Revenue</span>
         <div className='revenuewidget'>
           <div className='revenuwdg'>
-            <Widget widgettype='revenue' label='Hôm qua' topColor='#b3c6ff' botColor='#b3ecff' qty={widgetdata_yesterday.yesterday_qty} amount={widgetdata_yesterday.yesterday_amount} percentage={20}/> 
+            <Widget widgettype='revenue' label='Yesterday' topColor='#b3c6ff' botColor='#b3ecff' qty={widgetdata_yesterday.yesterday_qty} amount={widgetdata_yesterday.yesterday_amount} percentage={20}/> 
           </div>
           <div className='revenuwdg'>
-            <Widget widgettype='revenue' label='Tuần này' topColor='#ccffcc' botColor='#80ff80' qty={widgetdata_thisweek.thisweek_qty} amount={widgetdata_thisweek.thisweek_amount} percentage={20}/>
+            <Widget widgettype='revenue' label='This week' topColor='#ccffcc' botColor='#80ff80' qty={widgetdata_thisweek.thisweek_qty} amount={widgetdata_thisweek.thisweek_amount} percentage={20}/>
           </div>
           <div className='revenuwdg'>
-            <Widget widgettype='revenue' label='Tháng này'  topColor='#fff2e6' botColor='#ffbf80' qty={widgetdata_thismonth.thismonth_qty} amount={widgetdata_thismonth.thismonth_amount} percentage={20}/>
+            <Widget widgettype='revenue' label='This month'  topColor='#fff2e6' botColor='#ffbf80' qty={widgetdata_thismonth.thismonth_qty} amount={widgetdata_thismonth.thismonth_amount} percentage={20}/>
           </div>
           <div className='revenuwdg'>
-            <Widget widgettype='revenue' label='Năm nay'   topColor='#ffe6e6' botColor='#ffb3b3' qty={widgetdata_thisyear.thisyear_qty} amount={widgetdata_thisyear.thisyear_amount} percentage={20}/>
+            <Widget widgettype='revenue' label='This year'   topColor='#ffe6e6' botColor='#ffb3b3' qty={widgetdata_thisyear.thisyear_qty} amount={widgetdata_thisyear.thisyear_amount} percentage={20}/>
           </div>
         </div>
-        <span className='section_title'>2.Trending</span>
+        <span className='section_title'>2. Revenue Trending</span>
         <div className='graph'>
           <div className='dailygraphtotal'>
             <div className='dailygraph'>
+              Daily
               <Chart2 />
             </div>
-          </div>
-          <div className='monthlyweeklygraph'>
             <div className='dailygraph'>
-              <Chart />
-            </div>
-            <div className='dailygraph'>
-              <Chart />
-            </div>
-            <div className='dailygraph'>
-              <Chart />
+              Weekly
+              <ChartWeekLy />
             </div>
           </div>
           <div className='monthlyweeklygraph'>
+            
             <div className='dailygraph'>
-              <Chart3 />
+              Monthly
+              <ChartMonthLy />
             </div>
             <div className='dailygraph'>
-              <Chart3 />
-            </div>           
-          </div>         
+              Yearly
+              <ChartYearly />
+            </div>
+          </div>    
+          <span className='section_title'>3. Purchase Order (PO)</span>          
           <div className='monthlyweeklygraph'>
             <div className='dailygraph'>
+              PO Balance Trending (By Week)
               <Chart4 />
             </div>                   
+          </div>  
+          <div className='monthlyweeklygraph'>
+            <div className='dailygraph'>              
+            </div>
+            <div className='dailygraph'>              
+            </div>           
           </div>         
         </div>
       </div>

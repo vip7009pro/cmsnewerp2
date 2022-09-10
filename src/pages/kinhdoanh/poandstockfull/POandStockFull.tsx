@@ -11,6 +11,7 @@ import { SaveExcel } from '../../../api/GlobalFunction';
 import "./POandStockFull.scss"
 import INSPECTION from '../../qc/inspection/INSPECTION';
 import KHOTP from '../../kho/khotp/KHOTP';
+import KHOLIEU from '../../kho/kholieu/KHOLIEU';
 interface FCSTTableData {
   EMPL_NO?: string,
   FCST_ID: number;
@@ -126,7 +127,8 @@ const POandStockFull = () => {
     thempohangloat:false,
     them1po: false,
     them1invoice:false,
-    testinvoicetable: false
+    testinvoicetable: false,
+    kholieu: false
   });
   const [userData, setUserData] = useContext(UserContext);
   const [isLoading, setisLoading] = useState(false); 
@@ -259,15 +261,23 @@ const POandStockFull = () => {
   const setNav = (choose: number) => {
     if(choose ===1 )
     {
-      setSelection({...selection, trapo: true, thempohangloat:false, them1po:false,them1invoice:false,testinvoicetable: false});
+      setSelection({...selection, trapo: true, thempohangloat:false, them1po:false,them1invoice:false,testinvoicetable: false,
+        kholieu: false});
     }
     else if(choose ===2 )
     {
-      setSelection({...selection, trapo: false, thempohangloat:true, them1po:false,them1invoice:false,testinvoicetable: false});
+      setSelection({...selection, trapo: false, thempohangloat:true, them1po:false,them1invoice:false,testinvoicetable: false,
+        kholieu: false});
     }
     else if(choose ===3 )
     {
-      setSelection({...selection, trapo: false, thempohangloat:false, them1po:false,them1invoice:false,testinvoicetable: true});
+      setSelection({...selection, trapo: false, thempohangloat:false, them1po:false,them1invoice:false,testinvoicetable: true,
+        kholieu: false});
+    }
+    else if(choose ===4 )
+    {
+      setSelection({...selection, trapo: false, thempohangloat:false, them1po:false,them1invoice:false,testinvoicetable: false,
+      kholieu: true});
     }
   }
   useEffect(()=>{
@@ -283,6 +293,9 @@ const POandStockFull = () => {
         </div>
         <div className='mininavitem' onClick={() => setNav(3)}>
           <span className='mininavtext'>Nhập-Xuất-Tồn Kho</span>
+        </div>
+        <div className='mininavitem' onClick={() => setNav(4)}>
+          <span className='mininavtext'>Nhập-Xuất-Tồn Liệu</span>
         </div>
       </div>
       {
@@ -376,6 +389,11 @@ const POandStockFull = () => {
       {
         selection.testinvoicetable && <div className="inspection">
         <KHOTP/>
+        </div>
+      }
+      {
+        selection.kholieu && <div className="inspection">
+        <KHOLIEU/>
         </div>
       }
     </div>

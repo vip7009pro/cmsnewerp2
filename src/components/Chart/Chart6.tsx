@@ -5,19 +5,14 @@ import Swal from 'sweetalert2';
 import { generalQuery } from '../../api/Api';
 
 
-interface DailyClosingData {
-  DELIVERY_DATE: string, 
+interface YearlyClosingData {
+  YEAR_NUM: string, 
   DELIVERY_QTY: number, 
   DELIVERED_AMOUNT: number
 }
 
-const Chart2 = () => {  
-  const [dailyClosingData, setDailyClosingData] = useState<Array<DailyClosingData>>([]);
-  /* const startOfMonth = moment().startOf("month").format("YYYY-MM-DD");
-  const endOfMonth = moment().endOf("month").format("YYYY-MM-DD"); */
-  const startOfMonth = moment().add(-20, "day").format("YYYY-MM-DD");
-  const endOfMonth = moment().format("YYYY-MM-DD");
-
+const ChartYearly = () => {  
+  const [yearlyClosingData, setYearlyClosingData] = useState<Array<YearlyClosingData>>([]);
   const formatCash = (n:number) => {
     if (n < 1e3) return n;
     if (n >= 1e3) return +(n / 1e3).toFixed(1) + "K$";
@@ -28,20 +23,17 @@ const Chart2 = () => {
   };
 
   const handleGetDailyClosing = () => {
-    generalQuery("kd_dailyclosing", { START_DATE: startOfMonth, END_DATE: endOfMonth })
-    .then((response) => {
-      
+    generalQuery("kd_annuallyclosing", {  })
+    .then((response) => {      
       if (response.data.tk_status !== "NG") {
-        const loadeddata: DailyClosingData[] =  response.data.data.map((element:DailyClosingData,index: number)=> {
+        const loadeddata: YearlyClosingData[] =  response.data.data.map((element:YearlyClosingData,index: number)=> {
           return {
             ...element,
-            DELIVERY_DATE : element.DELIVERY_DATE.slice(0,10),            
           }
-        })
-
-        setDailyClosingData(loadeddata);
+        });
+        setYearlyClosingData(loadeddata);
         console.log(loadeddata);
-        /* Swal.fire(
+       /*  Swal.fire(
           "Thông báo",
           "Đã load " + response.data.data.length + " dòng",
           "success"
@@ -63,7 +55,7 @@ const Chart2 = () => {
     <ComposedChart
       width={500}
       height={300}
-      data={dailyClosingData}
+      data={yearlyClosingData}
       margin={{
         top: 5,
         right: 30,
@@ -72,9 +64,8 @@ const Chart2 = () => {
       }}
     >
       <CartesianGrid strokeDasharray='3 3' className='chartGrid' />
-      <XAxis dataKey='DELIVERY_DATE'>
-        {" "}
-        <Label value='Ngày tháng' offset={0} position='insideBottom' />
+      <XAxis dataKey='YEAR_NUM'>        
+        <Label value='Năm' offset={0} position='insideBottom' />
       </XAxis>
       <YAxis yAxisId="left-axis"  label={{
           value: "Số lượng",
@@ -89,12 +80,12 @@ const Chart2 = () => {
       }} tickFormatter={(value) => new Intl.NumberFormat('en-US', { maximumSignificantDigits: 3}).format(value) + '$'}/>
       <Tooltip />
       <Legend />
-      <Line yAxisId="left-axis" type="monotone" dataKey="DELIVERY_QTY" stroke="green"/>
-      <Bar yAxisId="right-axis" type="monotone" dataKey="DELIVERED_AMOUNT" stroke="white" fill='#cc66ff' label={{ position: 'top', formatter: labelFormatter }}>      
+      <Line yAxisId="left-axis" type="monotone" dataKey="DELIVERY_QTY" stroke="blue"/>
+      <Bar yAxisId="right-axis" type="monotone" dataKey="DELIVERED_AMOUNT" stroke="#ff6666" fill='#ff1a1a' label={{ position: 'top', formatter: labelFormatter }}>      
       </Bar>
     </ComposedChart>
   </ResponsiveContainer>
   )
 }
-export default Chart2
+export default ChartYearly
 

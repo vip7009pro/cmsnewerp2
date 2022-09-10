@@ -333,8 +333,8 @@ const INSPECTION = () => {
             summaryInput += element.INPUT_QTY_EA;
             return {
               ...element, 
-              PROD_DATETIME: moment(element.PROD_DATETIME).format("YYYY-MM-DD HH:mm:ss"),
-              INPUT_DATETIME: moment(element.INPUT_DATETIME).format("YYYY-MM-DD HH:mm:ss"),             
+              PROD_DATETIME: moment.utc(element.PROD_DATETIME).format("YYYY-MM-DD HH:mm:ss"),
+              INPUT_DATETIME: moment.utc(element.INPUT_DATETIME).format("YYYY-MM-DD HH:mm:ss"),             
               id: index
             }
           })     
@@ -377,9 +377,9 @@ const INSPECTION = () => {
           const loadeddata: INSPECT_OUTPUT_DATA[] =  response.data.data.map((element:INSPECT_OUTPUT_DATA,index: number)=> {
             summaryOutput += element.OUTPUT_QTY_EA;
             return {
-              ...element, 
-              PROD_DATETIME: moment(element.PROD_DATETIME).format("YYYY-MM-DD HH:mm:ss"),
-              OUTPUT_DATETIME: moment(element.OUTPUT_DATETIME).format("YYYY-MM-DD HH:mm:ss"),
+              ...element,              
+              PROD_DATETIME: moment.utc(element.PROD_DATETIME).format("YYYY-MM-DD HH:mm:ss"),
+              OUTPUT_DATETIME: moment.utc(element.OUTPUT_DATETIME).format("YYYY-MM-DD HH:mm:ss"),
               NGAY_LAM_VIEC: element.NGAY_LAM_VIEC.slice(0,10),
               id: index
             }
