@@ -48,7 +48,7 @@ const Chart4 = () => {
             }
           );
           setRunningPOData(loadeddata);
-          console.log(loadeddata);
+          //console.log(loadeddata);
         } else {
           Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
         }

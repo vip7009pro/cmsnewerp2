@@ -104,41 +104,12 @@ const InvoiceManager = () => {
   const [invoicedatatable, setInvoiceDataTable] = useState<Array<InvoiceTableData>>([]);
   const [invoicedatatablefilter, setInvoiceDataTableFilter] = useState<Array<InvoiceTableData>>([]);
   const [selectedID,setSelectedID] = useState<number|null>();
-  const column_potable = [   
-    { field: "CUST_NAME_KD", headerName: "CUST_NAME_KD", width: 120 },
-    { field: "PO_NO", headerName: "PO_NO", width: 110 },
-    { field: "G_NAME", headerName: "G_NAME", width: 150,},
-    { field: "G_NAME_KD", headerName: "G_NAME_KD", width: 120 },
-    { field: "G_CODE", headerName: "G_CODE", width: 100 },
-    { field: "PO_DATE", headerName: "PO_DATE", width: 100 },
-    { field: "RD_DATE", headerName: "RD_DATE", width: 100 },
-    { field: "PROD_PRICE", headerName: "PROD_PRICE", width: 100 , renderCell: (params:any) => {return <span style={{color:'gray'}}><b>{params.row.PROD_PRICE.toLocaleString('en-US' ,{style:'decimal',maximumFractionDigits:8})}</b></span>}},
-    { field: "PO_QTY", headerName: "PO_QTY", width: 100 , renderCell: (params:any) => {return <span style={{color:'blue'}}><b>{params.row.PO_QTY.toLocaleString('en-US')}</b></span>} },
-    { field: "TOTAL_DELIVERED", headerName: "TOTAL_DELIVERED", width: 110 , renderCell: (params:any) => {return <span style={{color:'blue'}}><b>{params.row.TOTAL_DELIVERED.toLocaleString('en-US')}</b></span>} },
-    { field: "PO_BALANCE", headerName: "PO_BALANCE", width: 100 , renderCell: (params:any) => {return <span style={{color:'blue'}}><b>{params.row.PO_BALANCE.toLocaleString('en-US')}</b></span>} },
-    { field: "PO_AMOUNT", headerName: "PO_AMOUNT", width: 100, renderCell: (params:any) => {return <span style={{color:'green'}}><b>{params.row.PO_AMOUNT.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</b></span>}  },
-    { field: "DELIVERED_AMOUNT", headerName: "DELIVERED_AMOUNT", width: 100, renderCell: (params:any) => {return <span style={{color:'green'}}><b>{params.row.DELIVERED_AMOUNT.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</b></span>}  },
-    { field: "BALANCE_AMOUNT", headerName: "BALANCE_AMOUNT", width: 100, renderCell: (params:any) => {return <span style={{color:'green'}}><b>{params.row.BALANCE_AMOUNT.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</b></span>}  },
-    { field: "TON_KIEM", headerName: "TON_KIEM", width: 100, renderCell: (params:any) => {return <span>{params.row.TON_KIEM.toLocaleString('en-US')}</span>}  },
-    { field: "BTP", headerName: "BTP", width: 90, renderCell: (params:any) => {return <span>{params.row.BTP.toLocaleString('en-US')}</span>}   },
-    { field: "TP", headerName: "TP", width: 90, renderCell: (params:any) => {return <span>{params.row.TP.toLocaleString('en-US')}</span>}   },
-    { field: "BLOCK_QTY", headerName: "BLOCK_QTY", width: 90, renderCell: (params:any) => {return <span>{params.row.BLOCK_QTY.toLocaleString('en-US')}</span>}   },
-    { field: "GRAND_TOTAL_STOCK", headerName: "GRAND_TOTAL_STOCK", width: 90 , renderCell: (params:any) => {return <span><b>{params.row.GRAND_TOTAL_STOCK.toLocaleString('en-US')}</b></span>}  },
-    { field: "EMPL_NAME", headerName: "EMPL_NAME", width: 150 },
-    { field: "PROD_TYPE", headerName: "PROD_TYPE", width: 90 },
-    { field: "M_NAME_FULLBOM", headerName: "M_NAME_FULLBOM", width: 110 },
-    { field: "PROD_MAIN_MATERIAL", headerName: "PROD_MAIN_MATERIAL", width: 110},
-    { field: "POMONTH", headerName: "POMONTH", width: 80 },
-    { field: "POWEEKNUM", headerName: "POWEEKNUM", width: 80 },
-    { field: "OVERDUE", headerName: "OVERDUE", width: 80 },
-    { field: "REMARK", headerName: "REMARK", width: 110 },
-    { field: "PO_ID", headerName: "PO_ID", width: 90 },
-  ];
+
   const column_invoicetable = [       
     { field: "CUST_NAME_KD", headerName: "CUST_NAME_KD", width: 110},    
     { field: "EMPL_NAME", headerName: "EMPL_NAME", width: 130 },
     { field: "G_CODE", headerName: "G_CODE", width: 80 },
-    { field: "G_NAME", headerName: "G_NAME", width: 130, renderCell: (params:any) => {return <span style={{color:'red'}}><b>{params.row.G_NAME}</b></span>}  },
+    { field: "G_NAME", headerName: "G_NAME", flex: 1, minWidth: 180, renderCell: (params:any) => {return <span style={{color:'red'}}><b>{params.row.G_NAME}</b></span>}  },
     { field: "G_NAME_KD", headerName: "G_NAME_KD", width: 120 },
     { field: "PO_NO", headerName: "PO_NO", width: 100 },
     { field: "DELIVERY_DATE", headerName: "DELIVERY_DATE", width: 120 },

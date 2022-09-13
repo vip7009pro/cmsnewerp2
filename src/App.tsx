@@ -1,6 +1,6 @@
 import React, { Component, FC, useEffect, useState, lazy } from "react";
 import Home from "./pages/home/Home";
-import { BrowserRouter, Routes, Route, Navigate,   } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { LangConText, UserContext } from "../src/api/Context";
 import { checkLogin } from "./api/Api";
 import Login from "./pages/login/Login";
@@ -23,11 +23,10 @@ import LichSu from "./pages/nhansu/LichSu/LichSu";
 import BaoCaoNhanSu from "./pages/nhansu/BaoCaoNhanSu/BaoCaoNhanSu";
 import Swal from "sweetalert2";
 import QuotationManager from "./pages/kinhdoanh/quotationmanager/QuotationManager";
-import "./App.scss";
 import CODE_MANAGER from "./pages/rnd/code_manager/CODE_MANAGER";
 import CUST_MANAGER from "./pages/kinhdoanh/custManager/CUST_MANAGER";
+import "./App.scss";
 
-//https://www.robinwieruch.de/react-router-private-routes/
 interface userDataInterface {
   ADD_COMMUNE: string;
   ADD_DISTRICT: string;
@@ -75,7 +74,6 @@ interface userDataInterface {
   WORK_STATUS_NAME: string;
   WORK_STATUS_NAME_KR: string;
 }
-
 const ProtectedRoute: any = ({
   user,
   maindeptname,
@@ -83,72 +81,62 @@ const ProtectedRoute: any = ({
   children,
 }: {
   user: userDataInterface;
-  maindeptname: string,
-  jobname:string,
+  maindeptname: string;
+  jobname: string;
   children: Component;
 }) => {
   if (user.EMPL_NO === "none") {
     return <Navigate to='/login' replace />;
-  } 
-  else
-  {
-   /*  console.log("ten bo phan: " +maindeptname);
-    console.log("ten chuc vu can thiet: " +jobname);
-    console.log("ten chuc vu cua ban: " +user.JOB_NAME); */
-
-    if(maindeptname === 'all' || user.EMPL_NO==='NHU1903')
-    {    
-      if(jobname === 'all' || user.EMPL_NO==='NHU1903')
-      {
+  } else {
+    if (maindeptname === "all" || user.EMPL_NO === "NHU1903") {
+      if (jobname === "all" || user.EMPL_NO === "NHU1903") {
         return children;
-      }
-      else
-      {
-        if(user.JOB_NAME !== 'Leader' && user.JOB_NAME !== 'Sub Leader' && user.JOB_NAME !== 'Dept Staff')
-        {
-          Swal.fire("Thông báo", "Nội dung: Bạn không có quyền truy cập: ", "error");
-        }
-        else
-        {
+      } else {
+        if (
+          user.JOB_NAME !== "Leader" &&
+          user.JOB_NAME !== "Sub Leader" &&
+          user.JOB_NAME !== "Dept Staff"
+        ) {
+          Swal.fire(
+            "Thông báo",
+            "Nội dung: Bạn không có quyền truy cập: ",
+            "error"
+          );
+        } else {
           return children;
         }
-       
-      }      
-    } 
-    else 
-    {
-      if(user.MAINDEPTNAME !== maindeptname)
-      {
-        Swal.fire("Thông báo", "Nội dung: Bạn không phải người của bộ phận: " + maindeptname, "error");  
       }
-      else
-      {
-        if(jobname === 'all'|| user.EMPL_NO==='NHU1903')
-        {
+    } else {
+      if (user.MAINDEPTNAME !== maindeptname) {
+        Swal.fire(
+          "Thông báo",
+          "Nội dung: Bạn không phải người của bộ phận: " + maindeptname,
+          "error"
+        );
+      } else {
+        if (jobname === "all" || user.EMPL_NO === "NHU1903") {
           return children;
-        }
-        else
-        {
-          if(user.JOB_NAME !== 'Leader' && user.JOB_NAME !== 'Sub Leader' && user.JOB_NAME !== 'Dept Staff')
-          {
-            Swal.fire("Thông báo", "Nội dung: Bạn không có quyền truy cập: ", "error");
-          }
-          else
-          {
+        } else {
+          if (
+            user.JOB_NAME !== "Leader" &&
+            user.JOB_NAME !== "Sub Leader" &&
+            user.JOB_NAME !== "Dept Staff"
+          ) {
+            Swal.fire(
+              "Thông báo",
+              "Nội dung: Bạn không có quyền truy cập: ",
+              "error"
+            );
+          } else {
             return children;
-          }         
+          }
         }
-        
-      }      
+      }
     }
-
-  } 
- 
-  
+  }
 };
 function App() {
-
-  const [lang, setLang] = useState('vi');
+  const [lang, setLang] = useState("vi");
   const [userData, setUserData] = useState<userDataInterface | any>({
     ADD_COMMUNE: "Đông Xuân",
     ADD_DISTRICT: "Sóc Sơn",
@@ -197,12 +185,13 @@ function App() {
     WORK_STATUS_NAME_KR: "근무중",
   });
   useEffect(() => {
-    checkLogin().then(data => {
-      //console.log(data);
-      if (data.data.tk_status == 'ng') {
-        console.log('khong co token');            
-        setUserData(
-          {
+    console.log("check login");
+    checkLogin()
+      .then((data) => {
+        //console.log(data);
+        if (data.data.tk_status === "ng") {
+          console.log("khong co token");
+          setUserData({
             ADD_COMMUNE: "Đông Xuân",
             ADD_DISTRICT: "Sóc Sơn",
             ADD_PROVINCE: "Hà Nội",
@@ -248,95 +237,140 @@ function App() {
             WORK_STATUS_CODE: 1,
             WORK_STATUS_NAME: "Đang làm",
             WORK_STATUS_NAME_KR: "근무중",
-          }
-        );
-      }
-      else {       
-        //console.log(data.data.data);       
-        setUserData(data.data.data);
-      }
-    })
-      .catch(err => {
-        console.log(err + ' ');
+          });
+        } else {
+          //console.log(data.data.data);
+          setUserData(data.data.data);
+        }
       })
-    return () => {      
-    }
-  }, []); 
-
+      .catch((err) => {
+        console.log(err + " ");
+      });
+    return () => {};
+  }, []);
   return (
     <div className='App'>
-      <LangConText.Provider value={[lang,setLang]}>
-      <UserContext.Provider value={[userData,setUserData]}>
-        <BrowserRouter> 
-          <Routes>
-            <Route
-              path='/'
-              element={
-                <ProtectedRoute user={userData} maindeptname='all' jobname='all'>
-                  <Home />                  
-                </ProtectedRoute>
-              }
-            >              
-              <Route path='accountinfo' element={<AccountInfo />}></Route>
-              <Route path='kinhdoanh' element={
-                <ProtectedRoute user={userData} maindeptname='KD' jobname='all'>
+      <LangConText.Provider value={[lang, setLang]}>
+        <UserContext.Provider value={[userData, setUserData]}>
+          <BrowserRouter>
+            <Routes>
+              <Route
+                path='/'
+                element={
+                  <ProtectedRoute
+                    user={userData}
+                    maindeptname='all'
+                    jobname='all'
+                  >
+                    <Home />
+                  </ProtectedRoute>
+                }
+              >
+                <Route path='accountinfo' element={<AccountInfo />}></Route>
+                <Route
+                  path='kinhdoanh'
+                  element={                   
+                     <ProtectedRoute user={userData} maindeptname='KD' jobname='all'>
                 <KinhDoanh />
-              </ProtectedRoute>              
-              }>
-                <Route path='pomanager' element={<PoManager />} />
-                <Route path='invoicemanager' element={<InvoiceManager />} />
-                <Route path='planmanager' element={<PlanManager />} />
-                <Route path='fcstmanager' element={<FCSTManager />} />
-                <Route path='ycsxmanager' element={<YCSXManager />} />
-                <Route path='poandstockfull' element={<POandStockFull />} />
-                <Route path='kinhdoanhreport' element={<KinhDoanhReport />} />
-                <Route path='codeinfo' element={<CODE_MANAGER />} />
-                <Route path='customermanager' element={<CUST_MANAGER />} />
-                <Route path='quotationmanager' element={<QuotationManager />} />
+              </ProtectedRoute>   
+                  }
+                >
+                  <Route path='pomanager' element={<PoManager />} />
+                  <Route path='invoicemanager' element={<InvoiceManager />} />
+                  <Route path='planmanager' element={<PlanManager />} />
+                  <Route path='fcstmanager' element={<FCSTManager />} />
+                  <Route path='ycsxmanager' element={<YCSXManager />} />
+                  <Route path='poandstockfull' element={<POandStockFull />} />
+                  <Route path='kinhdoanhreport' element={<KinhDoanhReport />} />
+                  <Route path='codeinfo' element={<CODE_MANAGER />} />
+                  <Route path='customermanager' element={<CUST_MANAGER />} />
+                  <Route
+                    path='quotationmanager'
+                    element={<QuotationManager />}
+                  />
+                </Route>
+                <Route
+                  path='nhansu'
+                  element={
+                    <ProtectedRoute
+                      user={userData}
+                      maindeptname='all'
+                      jobname='all'
+                    >
+                      <NhanSu />
+                    </ProtectedRoute>
+                  }
+                >
+                  <Route
+                    path='quanlyphongbannhanvien'
+                    element={
+                      <ProtectedRoute
+                        user={userData}
+                        maindeptname='all'
+                        jobname='leader'
+                      >
+                        <QuanLyPhongBanNhanSu />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path='diemdanhnhom'
+                    element={
+                      <ProtectedRoute
+                        user={userData}
+                        maindeptname='all'
+                        jobname='leader'
+                      >
+                        <DiemDanhNhom />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path='dieuchuyenteam'
+                    element={
+                      <ProtectedRoute
+                        user={userData}
+                        maindeptname='all'
+                        jobname='leader'
+                      >
+                        <DieuChuyenTeam />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route path='dangky' element={<TabDangKy />} />
+                  <Route
+                    path='pheduyetnghi'
+                    element={
+                      <ProtectedRoute
+                        user={userData}
+                        maindeptname='all'
+                        jobname='leader'
+                      >
+                        <PheDuyetNghi />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route path='lichsu' element={<LichSu />} />
+                  <Route
+                    path='baocaonhansu'
+                    element={
+                      <ProtectedRoute
+                        user={userData}
+                        maindeptname='all'
+                        jobname='leader'
+                      >
+                        <BaoCaoNhanSu />
+                      </ProtectedRoute>
+                    }
+                  />
+                </Route>
               </Route>
-              <Route path='nhansu' element={
-                  <ProtectedRoute user={userData} maindeptname='all' jobname='all'>
-                   <NhanSu />
-                </ProtectedRoute>               
-              }>
-                <Route path='quanlyphongbannhanvien' element={
-                  <ProtectedRoute user={userData} maindeptname='all' jobname='leader'>
-                    <QuanLyPhongBanNhanSu />
-                  </ProtectedRoute>                
-                } />
-                <Route path='diemdanhnhom' element={
-                  <ProtectedRoute user={userData} maindeptname='all' jobname='leader'>
-                    <DiemDanhNhom />
-                </ProtectedRoute>   
-               
-                } />
-                <Route path='dieuchuyenteam' element={
-                   <ProtectedRoute user={userData} maindeptname='all' jobname='leader'>
-                   <DieuChuyenTeam />
-               </ProtectedRoute>   
-                
-                } />
-                <Route path='dangky' element={<TabDangKy />} />
-                <Route path='pheduyetnghi' element={
-                   <ProtectedRoute user={userData} maindeptname='all' jobname='leader'>
-                   <PheDuyetNghi />
-               </ProtectedRoute>
-                } />
-                <Route path='lichsu' element={<LichSu />} />
-                <Route path='baocaonhansu' element={               
-                <ProtectedRoute user={userData} maindeptname='all' jobname='leader'>
-                 <BaoCaoNhanSu />
-            </ProtectedRoute>
-                } />                
-              </Route>
-            </Route>
-            <Route path='/login' element={<Login />} />
-          </Routes>
-        </BrowserRouter>
-      </UserContext.Provider>
+              <Route path='/login' element={<Login />} />
+            </Routes>
+          </BrowserRouter>
+        </UserContext.Provider>
       </LangConText.Provider>
     </div>
   );
 }
-
 export default App;

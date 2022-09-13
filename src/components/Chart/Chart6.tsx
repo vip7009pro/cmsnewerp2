@@ -32,7 +32,7 @@ const ChartYearly = () => {
           }
         });
         setYearlyClosingData(loadeddata);
-        console.log(loadeddata);
+        //console.log(loadeddata);
        /*  Swal.fire(
           "Thông báo",
           "Đã load " + response.data.data.length + " dòng",

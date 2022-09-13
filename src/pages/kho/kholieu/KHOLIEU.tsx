@@ -8,53 +8,42 @@ import { generalQuery } from '../../../api/Api';
 import { UserContext } from '../../../api/Context';
 import { SaveExcel } from '../../../api/GlobalFunction';
 import "./KHOLIEU.scss"
-interface WH_IN_OUT {
-  Product_MaVach: string,
+
+
+interface NHAPLIEUDATA {
+  M_LOT_NO: string,
+  M_CODE: string, 
+  M_NAME:  string,
+  WIDTH_CD: number,
+  IN_CFM_QTY: number,
+  ROLL_QTY: number,
+  INS_DATE: string,
+  CUST_NAME_KD: string
+}
+interface XUATLIEUDATA {
+  G_CODE: string, 
   G_NAME: string,
-  G_NAME_KD: string,
-  Customer_ShortName: string,
-  IO_Date: string,
-  INPUT_DATETIME: string,
-  IO_Shift: string,
-  IO_Type: string,
-  IO_Qty: number,
+  PROD_REQUEST_NO: string,
+  M_CODE: string,
+  M_NAME: string, 
+  WIDTH_CD: number,
+  M_LOT_NO: string,
+  OUT_CFM_QTY: number,
+  ROLL_QTY: number,
+  INS_DATE: string
 }
-interface TONKIEMGOP_CMS {
-  G_CODE: string,
-  G_NAME: string,
-  G_NAME_KD: string,
-  CHO_KIEM: number,
-  CHO_CS_CHECK: number,
-  CHO_KIEM_RMA: number,
-  TONG_TON_KIEM: number,
-  BTP: number,
-  TON_TP: number,
-  BLOCK_QTY: number,
-  GRAND_TOTAL_STOCK: number,
+interface TONLIEUDATA {
+  M_CODE: string,
+  M_NAME: string,
+  WIDTH_CD: number,
+  TON_NM1: number,
+  TON_NM2: number,
+  HOLDING_NM1: number,
+  HOLDING_NM2: number,
+  TOTAL_OK: number,
+  TOTAL_HOLDING: number
 }
-interface TONKIEMGOP_KD {
-  G_NAME_KD: string,
-  CHO_KIEM: number,
-  CHO_CS_CHECK: number,
-  CHO_KIEM_RMA: number,
-  TONG_TON_KIEM: number,
-  BTP: number,
-  TON_TP: number,
-  BLOCK_QTY: number,
-  GRAND_TOTAL_STOCK: number,
-}
-interface TONKIEMTACH {
-  KHONAME: string,
-  LC_NAME: string,
-  G_CODE: string,
-  G_NAME: string,
-  G_NAME_KD: string, 
-  NHAPKHO: number,
-  XUATKHO: number,
-  TONKHO: number,
-  BLOCK_QTY: number,
-  GRAND_TOTAL_TP: number,
-}
+
 const KHOLIEU = () => { 
   const [readyRender, setReadyRender] = useState(false);
   const [selection, setSelection] = useState<any>({
@@ -73,62 +62,50 @@ const KHOLIEU = () => {
   const [isLoading, setisLoading] = useState(false);  
   const [fromdate, setFromDate] = useState(moment().format('YYYY-MM-DD'));
   const [todate, setToDate] = useState(moment().format('YYYY-MM-DD'));
+  const [m_name,setM_Name] =useState('');
+  const [m_code,setM_Code] =useState('');
   const [codeKD,setCodeKD] =useState('');
   const [codeCMS,setCodeCMS] =useState('');
   const [cust_name,setCustName] =useState('');
-  const [alltime, setAllTime] = useState(false); 
-  const [capbu, setCapBu] = useState(false); 
+  const [prod_request_no,setProd_Request_No] =useState('');
+  const [alltime, setAllTime] = useState(false);  
   const [justbalancecode, setJustBalanceCode] = useState(true); 
   const [whdatatable, setWhDataTable] = useState<Array<any>>([]);
   const [sumaryWH, setSummaryWH] = useState('');
-  const column_STOCK_TACH = [
-    { field: "KHO_NAME", headerName: "KHO_NAME", width: 90 },
-    { field: "LC_NAME", headerName: "LC_NAME", width: 90 },
-    { field: "G_CODE", headerName: "G_CODE", width: 90 },
-    { field: "G_NAME", headerName: "G_NAME", width: 180 },
-    { field: "G_NAME_KD", headerName: "G_NAME_KD", width: 180 },
-    { field: "NHAPKHO", headerName: "NHAPKHO", width: 120, renderCell: (params:any) => {return <span style={{color:'gray'}}><b>{params.row.NHAPKHO.toLocaleString('en-US')}</b></span>} },
-    { field: "XUATKHO", headerName: "XUATKHO", width: 120 , renderCell: (params:any) => {return <span style={{color:'gray'}}><b>{params.row.XUATKHO.toLocaleString('en-US')}</b></span>}},
-    { field: "TONKHO", headerName: "TONKHO", width: 100 , renderCell: (params:any) => {return <span style={{color:'blue'}}><b>{params.row.TONKHO.toLocaleString('en-US')}</b></span>}},
-    { field: "BLOCK_QTY", headerName: "BLOCK_QTY", width: 100 , renderCell: (params:any) => {return <span style={{color:'red'}}><b>{params.row.BLOCK_QTY.toLocaleString('en-US')}</b></span>}},
-    { field: "GRAND_TOTAL_TP", headerName: "GRAND_TOTAL_TP", width: 150, renderCell: (params:any) => {return <span style={{color:'green'}}><b>{params.row.GRAND_TOTAL_TP.toLocaleString('en-US')}</b></span>} },    
+  const column_STOCK_LIEU = [
+    { field: "M_CODE", headerName: "M_CODE", width: 90 },
+    { field: "M_NAME", headerName: "M_NAME", width: 180 },
+    { field: "WIDTH_CD", headerName: "WIDTH_CD", width: 90 },
+    { field: "TON_NM1", headerName: "TON_NM1", width: 120, renderCell: (params:any) => {return <span style={{color:'gray'}}><b>{params.row.TON_NM1.toLocaleString('en-US')}</b></span>} },
+    { field: "TON_NM2", headerName: "TON_NM2", width: 120 , renderCell: (params:any) => {return <span style={{color:'gray'}}><b>{params.row.TON_NM2.toLocaleString('en-US')}</b></span>}},
+    { field: "HOLDING_NM1", headerName: "HOLDING_NM1", width: 100 , renderCell: (params:any) => {return <span style={{color:'red'}}><b>{params.row.HOLDING_NM1.toLocaleString('en-US')}</b></span>}},
+    { field: "HOLDING_NM2", headerName: "HOLDING_NM2", width: 100 , renderCell: (params:any) => {return <span style={{color:'red'}}><b>{params.row.HOLDING_NM2.toLocaleString('en-US')}</b></span>}},
+    { field: "TOTAL_OK", headerName: "TOTAL_OK", width: 150, renderCell: (params:any) => {return <span style={{color:'green'}}><b>{params.row.TOTAL_OK.toLocaleString('en-US')}</b></span>} },    
+    { field: "TOTAL_HOLDING", headerName: "TOTAL_HOLDING", width: 150, renderCell: (params:any) => {return <span style={{color:'red'}}><b>{params.row.TOTAL_HOLDING.toLocaleString('en-US')}</b></span>} },    
   ]
-  const column_STOCK_CMS = [
-    { field: "G_CODE", headerName: "G_CODE", width: 90 },
-    { field: "G_NAME", headerName: "G_NAME", width: 180 },
-    { field: "G_NAME_KD", headerName: "G_NAME_KD", width: 180 },
-    { field: "CHO_KIEM", headerName: "CHO_KIEM", width: 120 , renderCell: (params:any) => {return <span style={{color:'gray'}}><b>{params.row.CHO_KIEM.toLocaleString('en-US')}</b></span>} },
-    { field: "CHO_CS_CHECK", headerName: "WAIT CS", width: 120 , renderCell: (params:any) => {return <span style={{color:'gray'}}><b>{params.row.CHO_CS_CHECK.toLocaleString('en-US')}</b></span>} },
-    { field: "CHO_KIEM_RMA", headerName: "WAIT RMA", width: 120, renderCell: (params:any) => {return <span style={{color:'gray'}}><b>{params.row.CHO_KIEM_RMA.toLocaleString('en-US')}</b></span>}  },
-    { field: "TONG_TON_KIEM", headerName: "TONG_TON_KIEM", width: 120 , renderCell: (params:any) => {return <span style={{color:'blue'}}><b>{params.row.TONG_TON_KIEM.toLocaleString('en-US')}</b></span>} },
-    { field: "BTP", headerName: "BTP", width: 100 , renderCell: (params:any) => {return <span style={{color:'blue'}}><b>{params.row.BTP.toLocaleString('en-US')}</b></span>} },
-    { field: "TON_TP", headerName: "TON_TP", width: 100 , renderCell: (params:any) => {return <span style={{color:'blue'}}><b>{params.row.TON_TP.toLocaleString('en-US')}</b></span>} },
-    { field: "BLOCK_QTY", headerName: "BLOCK_QTY", width: 100 , renderCell: (params:any) => {return <span style={{color:'red'}}><b>{params.row.BLOCK_QTY.toLocaleString('en-US')}</b></span>} },
-    { field: "GRAND_TOTAL_STOCK", headerName: "GRAND_TOTAL_STOCK", width: 150 , renderCell: (params:any) => {return <span style={{color:'green'}}><b>{params.row.GRAND_TOTAL_STOCK.toLocaleString('en-US')}</b></span>} },    
+  const column_XUATLIEUDATA = [
+    { field: "G_CODE", headerName: "G_CODE", width: 100 },    
+    { field: "G_NAME", headerName: "G_NAME", width: 220 },
+    { field: "PROD_REQUEST_NO", headerName: "SO YCSX", width: 90 },
+    { field: "M_CODE", headerName: "M_CODE", width: 100 },
+    { field: "M_NAME", headerName: "M_NAME", width: 180 },
+    { field: "WIDTH_CD", headerName: "WIDTH_CD", width: 90 },
+    { field: "M_LOT_NO", headerName: "M_LOT_NO", width: 100 },
+    { field: "OUT_CFM_QTY", headerName: "OUTPUT QTY", width: 120 , renderCell: (params:any) => {return <span style={{color:'green'}}><b>{params.row.OUT_CFM_QTY.toLocaleString('en-US')}</b></span>}},   
+    { field: "ROLL_QTY", headerName: "ROLL_QTY", width: 100 },
+    { field: "INS_DATE", headerName: "INS_DATE", width: 180 },
   ];
-  const column_STOCK_KD = [   
-    { field: "G_NAME_KD", headerName: "G_NAME_KD", width: 180 },
-    { field: "CHO_KIEM", headerName: "CHO_KIEM", width: 120 , renderCell: (params:any) => {return <span style={{color:'gray'}}><b>{params.row.CHO_KIEM.toLocaleString('en-US')}</b></span>}},
-    { field: "CHO_CS_CHECK", headerName: "WAIT CS", width: 120 , renderCell: (params:any) => {return <span style={{color:'gray'}}><b>{params.row.CHO_CS_CHECK.toLocaleString('en-US')}</b></span>}},
-    { field: "CHO_KIEM_RMA", headerName: "WAIT RMA", width: 120 , renderCell: (params:any) => {return <span style={{color:'gray'}}><b>{params.row.CHO_KIEM_RMA.toLocaleString('en-US')}</b></span>}},
-    { field: "TONG_TON_KIEM", headerName: "TONG_TON_KIEM", width: 120, renderCell: (params:any) => {return <span style={{color:'blue'}}><b>{params.row.TONG_TON_KIEM.toLocaleString('en-US')}</b></span>} },
-    { field: "BTP", headerName: "BTP", width: 100 , renderCell: (params:any) => {return <span style={{color:'blue'}}><b>{params.row.BTP.toLocaleString('en-US')}</b></span>}},
-    { field: "TON_TP", headerName: "TON_TP", width: 100 , renderCell: (params:any) => {return <span style={{color:'blue'}}><b>{params.row.TON_TP.toLocaleString('en-US')}</b></span>}},
-    { field: "BLOCK_QTY", headerName: "BLOCK_QTY", width: 100 , renderCell: (params:any) => {return <span style={{color:'red'}}><b>{params.row.BLOCK_QTY.toLocaleString('en-US')}</b></span>}},
-    { field: "GRAND_TOTAL_STOCK", headerName: "GRAND_TOTAL_STOCK", width: 150 , renderCell: (params:any) => {return <span style={{color:'green'}}><b>{params.row.GRAND_TOTAL_STOCK.toLocaleString('en-US')}</b></span>}},    
+  const column_NHAPLIEUDATA = [
+    { field: "CUST_NAME_KD", headerName: "CUST_NAME_KD", width: 150 },    
+    { field: "M_LOT_NO", headerName: "M_LOT_NO", width: 90 },
+    { field: "M_CODE", headerName: "M_CODE", width: 100 },
+    { field: "M_NAME", headerName: "M_NAME", width: 180 },
+    { field: "WIDTH_CD", headerName: "WIDTH_CD", width: 150 },
+    { field: "IN_CFM_QTY", headerName: "INPUT QTY", width: 120 , renderCell: (params:any) => {return <span style={{color:'green'}}><b>{params.row.IN_CFM_QTY.toLocaleString('en-US')}</b></span>}},   
+    { field: "ROLL_QTY", headerName: "ROLL_QTY", width: 100 },
+    { field: "INS_DATE", headerName: "INS_DATE", width: 150 },
   ];
-  const column_WH_IN_OUT = [
-    { field: "G_CODE", headerName: "G_CODE", width: 90 },
-    { field: "G_NAME", headerName: "G_NAME", width: 180 },
-    { field: "G_NAME_KD", headerName: "G_NAME_KD", width: 120 },
-    { field: "Customer_ShortName", headerName: "Customer_ShortName", width: 150 },
-    { field: "IO_Date", headerName: "IO_Date", width: 150 },
-    { field: "INPUT_DATETIME", headerName: "INPUT_DATETIME", width: 150 },
-    { field: "IO_Shift", headerName: "IO_Shift", width: 80 },
-    { field: "IO_Type", headerName: "IO_Type", width: 80 },
-    { field: "IO_Qty", headerName: "IO_Qty", width: 80 , renderCell: (params:any) => {return <span style={{color:'green'}}><b>{params.row.IO_Qty.toLocaleString('en-US')}</b></span>}},   
-  ];
-  const [columnDefinition, setColumnDefinition] = useState<Array<any>>(column_STOCK_CMS);
+  const [columnDefinition, setColumnDefinition] = useState<Array<any>>(column_XUATLIEUDATA);
   function CustomToolbarPOTable() {
     return (
       <GridToolbarContainer>      
@@ -139,38 +116,29 @@ const KHOLIEU = () => {
        </GridToolbarContainer>
     );
   }
-  const handletraWHInOut = (inout: string)=> {   
-    let inout_qty:number = 0;  
+  const handletra_inputlieu = ()=> { 
     setSummaryWH('');
     setisLoading(true);
-    generalQuery('trakhotpInOut',{   
-      G_CODE: codeCMS,
-      G_NAME: codeKD,
-      ALLTIME: alltime,
-      JUSTBALANCE: justbalancecode,    
-      CUST_NAME: cust_name,
+    generalQuery('tranhaplieu',{  
+      M_NAME: m_name,
       FROM_DATE: fromdate,
       TO_DATE: todate,
-      INOUT: inout,
-      CAPBU: capbu
+     
     })
     .then(response => {
         //console.log(response.data.data);
         if(response.data.tk_status !=='NG')
         {
-          const loadeddata: WH_IN_OUT[] =  response.data.data.map((element:WH_IN_OUT,index: number)=> {
-            inout_qty += element.IO_Qty;
+          const loadeddata: NHAPLIEUDATA[] =  response.data.data.map((element:NHAPLIEUDATA,index: number)=> {           
             return {
               ...element, 
               id: index,  
-              IO_Date: moment(element.IO_Date).format("YYYY-MM-DD"),
-              INPUT_DATETIME: moment(element.INPUT_DATETIME).format("YYYY-MM-DD HH:mm:ss"),
+              INS_DATE: moment.utc(element.INS_DATE).format("YYYY-MM-DD HH:mm:ss"),
             }
           })         
           setWhDataTable(loadeddata);
           setReadyRender(true);
-          setisLoading(false);
-          setSummaryWH('TOTAL QTY: ' +  inout_qty.toLocaleString('en-US') + 'EA');    
+          setisLoading(false);          
           Swal.fire("Thông báo", "Đã load " + response.data.data.length + " dòng", "success");  
         }
         else
@@ -183,15 +151,15 @@ const KHOLIEU = () => {
         console.log(error);
     });
   }
-  const handletraWHSTOCKCMS = ()=> {   
-    setSummaryWH('');
+  const handletra_outputlieu = ()=> {
     setisLoading(true);
-    generalQuery('traSTOCKCMS',{   
-      G_CODE: codeCMS,
+    generalQuery('traxuatlieu',{         
       G_NAME: codeKD,
       ALLTIME: alltime,
       JUSTBALANCE: justbalancecode,    
-      CUST_NAME: cust_name,
+      PROD_REQUEST_NO: prod_request_no,
+      M_NAME: m_name,
+      M_CODE: m_code,
       FROM_DATE: fromdate,
       TO_DATE: todate,      
     })
@@ -199,10 +167,11 @@ const KHOLIEU = () => {
         //console.log(response.data.data);
         if(response.data.tk_status !=='NG')
         {
-          const loadeddata: TONKIEMGOP_CMS[] =  response.data.data.map((element:TONKIEMGOP_CMS,index: number)=> {
+          const loadeddata: XUATLIEUDATA[] =  response.data.data.map((element:XUATLIEUDATA,index: number)=> {
             return {
               ...element, 
               id: index, 
+              INS_DATE: moment.utc(element.INS_DATE).format("YYYY-MM-DD HH:mm:ss"),
             }
           })         
           setWhDataTable(loadeddata);
@@ -220,60 +189,19 @@ const KHOLIEU = () => {
         console.log(error);
     });
   }
-  const handletraWHSTOCKKD = ()=> {   
+  const handletraWHSTOCKLIEU = ()=> {   
     setSummaryWH('');
     setisLoading(true);
-    generalQuery('traSTOCKKD',{   
-      G_CODE: codeCMS,
-      G_NAME: codeKD,
-      ALLTIME: alltime,
-      JUSTBALANCE: justbalancecode,    
-      CUST_NAME: cust_name,
-      FROM_DATE: fromdate,
-      TO_DATE: todate,      
+    generalQuery('tratonlieu',{   
+      M_CODE: m_code,
+      M_NAME: m_name,     
+      JUSTBALANCE: justbalancecode,  
     })
     .then(response => {
         //console.log(response.data.data);
         if(response.data.tk_status !=='NG')
         {
-          const loadeddata: TONKIEMGOP_KD[] =  response.data.data.map((element:TONKIEMGOP_KD,index: number)=> {
-            return {
-              ...element, 
-              id: index, 
-            }
-          })         
-          setWhDataTable(loadeddata);
-          setReadyRender(true);
-          setisLoading(false);
-          Swal.fire("Thông báo", "Đã load " + response.data.data.length + " dòng", "success");  
-        }
-        else
-        {
-          Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");  
-          setisLoading(false);
-        }        
-    })
-    .catch(error => {
-        console.log(error);
-    });
-  }
-  const handletraWHSTOCKTACH = ()=> {   
-    setSummaryWH('');
-    setisLoading(true);
-    generalQuery('traSTOCKTACH',{   
-      G_CODE: codeCMS,
-      G_NAME: codeKD,
-      ALLTIME: alltime,
-      JUSTBALANCE: justbalancecode,    
-      CUST_NAME: cust_name,
-      FROM_DATE: fromdate,
-      TO_DATE: todate,      
-    })
-    .then(response => {
-        //console.log(response.data.data);
-        if(response.data.tk_status !=='NG')
-        {
-          const loadeddata: TONKIEMTACH[] =  response.data.data.map((element:TONKIEMTACH,index: number)=> {
+          const loadeddata: TONLIEUDATA[] =  response.data.data.map((element:TONLIEUDATA,index: number)=> {
             return {
               ...element, 
               id: index, 
@@ -324,18 +252,18 @@ const KHOLIEU = () => {
                   <b>Tên Liệu:</b>{" "}
                   <input
                     type='text'
-                    placeholder='GH63-xxxxxx'
-                    value={codeKD}
-                    onChange={(e) => setCodeKD(e.target.value)}
+                    placeholder='SJ-203020HC'
+                    value={m_name}
+                    onChange={(e) => setM_Name(e.target.value)}
                   ></input>
                 </label>
                 <label>
                   <b>Mã Liệu CMS:</b>{" "}
                   <input
                     type='text'
-                    placeholder='7C123xxx'
-                    value={codeCMS}
-                    onChange={(e) => setCodeCMS(e.target.value)}
+                    placeholder='A123456'
+                    value={m_code}
+                    onChange={(e) => setM_Code(e.target.value)}
                   ></input>
                 </label>
               </div>
@@ -345,8 +273,8 @@ const KHOLIEU = () => {
                   <input
                     type='text'
                     placeholder='GH63-14904A'
-                    value={cust_name}
-                    onChange={(e) => setCustName(e.target.value)}
+                    value={codeKD}
+                    onChange={(e) => setCodeKD(e.target.value)}
                   ></input>
                 </label>
                 <label>
@@ -354,8 +282,8 @@ const KHOLIEU = () => {
                   <input
                     type='text'
                     placeholder='1F80008'
-                    value={cust_name}
-                    onChange={(e) => setCustName(e.target.value)}
+                    value={prod_request_no}
+                    onChange={(e) => setProd_Request_No(e.target.value)}
                   ></input>
                 </label>
               </div>        
@@ -384,24 +312,24 @@ const KHOLIEU = () => {
               <button className='tranhapkiembutton'  onClick={() => {
                   setisLoading(true);
                   setReadyRender(false);
-                  setColumnDefinition(column_WH_IN_OUT);
-                  handletraWHInOut('IN');
+                  setColumnDefinition(column_NHAPLIEUDATA);
+                  handletra_inputlieu();
                 }}>
                   Nhập Liệu
               </button>             
               <button className='tranhapkiembutton'  onClick={() => {
                   setisLoading(true);
                   setReadyRender(false);
-                  setColumnDefinition(column_WH_IN_OUT);
-                  handletraWHInOut('OUT');
+                  setColumnDefinition(column_XUATLIEUDATA);
+                  handletra_outputlieu();
                 }}>
                   Xuất Liệu
               </button>             
               <button className='traxuatkiembutton'  onClick={() => {
                   setisLoading(true);
                 setReadyRender(false);
-                 setColumnDefinition(column_STOCK_CMS);
-                 handletraWHSTOCKCMS();
+                 setColumnDefinition(column_STOCK_LIEU);
+                 handletraWHSTOCKLIEU();
                 }}>
                   Tồn Liệu
               </button>

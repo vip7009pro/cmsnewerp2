@@ -40,7 +40,7 @@ const Chart2 = () => {
         })
 
         setDailyClosingData(loadeddata);
-        console.log(loadeddata);
+        //console.log(loadeddata);
         /* Swal.fire(
           "Thông báo",
           "Đã load " + response.data.data.length + " dòng",
