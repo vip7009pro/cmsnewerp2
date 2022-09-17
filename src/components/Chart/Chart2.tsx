@@ -3,6 +3,7 @@ import React, { PureComponent, useEffect, useState } from 'react';
 import { BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ComposedChart, Label, LabelList, Line } from 'recharts';
 import Swal from 'sweetalert2';
 import { generalQuery } from '../../api/Api';
+import { CustomResponsiveContainer } from '../../api/GlobalFunction';
 
 
 interface DailyClosingData {
@@ -59,7 +60,7 @@ const Chart2 = () => {
     handleGetDailyClosing();
   },[]);
   return (
-    <ResponsiveContainer width='99%' height='100%'>
+    <CustomResponsiveContainer>
     <ComposedChart
       width={500}
       height={300}
@@ -80,20 +81,20 @@ const Chart2 = () => {
           value: "Số lượng",
           angle: -90,
           position: "insideLeft",
-        }} tickFormatter={(value) => new Intl.NumberFormat('en', { notation: "compact", compactDisplay: "short" }).format(value)}/>
+        }} tickFormatter={(value) => new Intl.NumberFormat('en', { notation: "compact", compactDisplay: "short" }).format(value)}  tickCount={6}/>
       <YAxis yAxisId="right-axis" orientation="right" 
        label={{
         value: "Số tiền",
         angle: -90,
         position: "insideRight",
-      }} tickFormatter={(value) => new Intl.NumberFormat('en-US', { maximumSignificantDigits: 3}).format(value) + '$'}/>
+      }} tickFormatter={(value) => new Intl.NumberFormat('en-US', { maximumSignificantDigits: 3}).format(value) + '$'}  tickCount={10} />
       <Tooltip />
       <Legend />
       <Line yAxisId="left-axis" type="monotone" dataKey="DELIVERY_QTY" stroke="green"/>
       <Bar yAxisId="right-axis" type="monotone" dataKey="DELIVERED_AMOUNT" stroke="white" fill='#cc66ff' label={{ position: 'top', formatter: labelFormatter }}>      
       </Bar>
     </ComposedChart>
-  </ResponsiveContainer>
+    </CustomResponsiveContainer>
   )
 }
 export default Chart2

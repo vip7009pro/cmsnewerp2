@@ -26,7 +26,7 @@ import QuotationManager from "./pages/kinhdoanh/quotationmanager/QuotationManage
 import CODE_MANAGER from "./pages/rnd/code_manager/CODE_MANAGER";
 import CUST_MANAGER from "./pages/kinhdoanh/custManager/CUST_MANAGER";
 import "./App.scss";
-
+import BulletinBoard from "./components/BulletinBoard/BulletinBoard";
 interface userDataInterface {
   ADD_COMMUNE: string;
   ADD_DISTRICT: string;
@@ -184,6 +184,7 @@ function App() {
     WORK_STATUS_NAME: "Đang làm",
     WORK_STATUS_NAME_KR: "근무중",
   });
+  const [loginState, setLoginState] = useState(false);
   useEffect(() => {
     console.log("check login");
     checkLogin()
@@ -191,6 +192,7 @@ function App() {
         //console.log(data);
         if (data.data.tk_status === "ng") {
           console.log("khong co token");
+          setLoginState(false);
           setUserData({
             ADD_COMMUNE: "Đông Xuân",
             ADD_DISTRICT: "Sóc Sơn",
@@ -241,6 +243,7 @@ function App() {
         } else {
           //console.log(data.data.data);
           setUserData(data.data.data);
+          setLoginState(true);
         }
       })
       .catch((err) => {
@@ -248,61 +251,71 @@ function App() {
       });
     return () => {};
   }, []);
-  return (
-    <div className='App'>
-      <LangConText.Provider value={[lang, setLang]}>
-        <UserContext.Provider value={[userData, setUserData]}>
-          <BrowserRouter>
-            <Routes>
-              <Route
-                path='/'
-                element={
-                  <ProtectedRoute
-                    user={userData}
-                    maindeptname='all'
-                    jobname='all'
-                  >
-                    <Home />
-                  </ProtectedRoute>
-                }
-              >
-                <Route path='accountinfo' element={<AccountInfo />}></Route>
+  if (loginState === true) {
+    return (
+      <div className='App'>
+        <LangConText.Provider value={[lang, setLang]}>
+          <UserContext.Provider value={[userData, setUserData]}>
+            <BrowserRouter>
+              <Routes>
                 <Route
-                  path='kinhdoanh'
-                  element={                   
-                     <ProtectedRoute user={userData} maindeptname='KD' jobname='all'>
-                <KinhDoanh />
-              </ProtectedRoute>   
-                  }
-                >
-                  <Route path='pomanager' element={<PoManager />} />
-                  <Route path='invoicemanager' element={<InvoiceManager />} />
-                  <Route path='planmanager' element={<PlanManager />} />
-                  <Route path='fcstmanager' element={<FCSTManager />} />
-                  <Route path='ycsxmanager' element={<YCSXManager />} />
-                  <Route path='poandstockfull' element={<POandStockFull />} />
-                  <Route path='kinhdoanhreport' element={<KinhDoanhReport />} />
-                  <Route path='codeinfo' element={<CODE_MANAGER />} />
-                  <Route path='customermanager' element={<CUST_MANAGER />} />
-                  <Route
-                    path='quotationmanager'
-                    element={<QuotationManager />}
-                  />
-                </Route>
-                <Route
-                  path='nhansu'
+                  path='/'
                   element={
                     <ProtectedRoute
                       user={userData}
                       maindeptname='all'
                       jobname='all'
                     >
-                      <NhanSu />
+                      <Home />
                     </ProtectedRoute>
                   }
                 >
+                  <Route index element={<BulletinBoard />} />
+                  <Route path='accountinfo' element={<AccountInfo />}></Route>
                   <Route
-                    path='quanlyphongbannhanvien'
+                    path='kinhdoanh'
+                    element={
+                      <ProtectedRoute
+                        user={userData}
+                        maindeptname='KD'
+                        jobname='all'
+                      >
+                        <KinhDoanh />
+                      </ProtectedRoute>
+                    }
+                  >
+                    <Route index element={<KinhDoanhReport />} />
+                    <Route path='pomanager' element={<PoManager />} />
+                    <Route path='invoicemanager' element={<InvoiceManager />} />
+                    <Route path='planmanager' element={<PlanManager />} />
+                    <Route path='fcstmanager' element={<FCSTManager />} />
+                    <Route path='ycsxmanager' element={<YCSXManager />} />
+                    <Route path='poandstockfull' element={<POandStockFull />} />
+                    <Route
+                      path='kinhdoanhreport'
+                      element={<KinhDoanhReport />}
+                    />
+                    <Route path='codeinfo' element={<CODE_MANAGER />} />
+                    <Route path='customermanager' element={<CUST_MANAGER />} />
+                    <Route
+                      path='quotationmanager'
+                      element={<QuotationManager />}
+                    />
+                  </Route>
+                  <Route
+                    path='nhansu'
+                    element={
+                      <ProtectedRoute
+                        user={userData}
+                        maindeptname='all'
+                        jobname='all'
+                      >
+                        <BaoCaoNhanSu />
+                      </ProtectedRoute>
+                    }
+                  ></Route>
+                  <Route
+                    path='nhansu/quanlyphongbannhanvien'
                     element={
                       <ProtectedRoute
                         user={userData}
@@ -314,7 +327,7 @@ function App() {
                     }
                   />
                   <Route
-                    path='diemdanhnhom'
+                    path='nhansu/diemdanhnhom'
                     element={
                       <ProtectedRoute
                         user={userData}
@@ -326,7 +339,7 @@ function App() {
                     }
                   />
                   <Route
-                    path='dieuchuyenteam'
+                    path='nhansu/dieuchuyenteam'
                     element={
                       <ProtectedRoute
                         user={userData}
@@ -337,9 +350,9 @@ function App() {
                       </ProtectedRoute>
                     }
                   />
-                  <Route path='dangky' element={<TabDangKy />} />
+                  <Route path='nhansu/dangky' element={<TabDangKy />} />
                   <Route
-                    path='pheduyetnghi'
+                    path='nhansu/pheduyetnghi'
                     element={
                       <ProtectedRoute
                         user={userData}
@@ -350,9 +363,9 @@ function App() {
                       </ProtectedRoute>
                     }
                   />
-                  <Route path='lichsu' element={<LichSu />} />
+                  <Route path='nhansu/lichsu' element={<LichSu />} />
                   <Route
-                    path='baocaonhansu'
+                    path='nhansu/baocaonhansu'
                     element={
                       <ProtectedRoute
                         user={userData}
@@ -364,13 +377,22 @@ function App() {
                     }
                   />
                 </Route>
-              </Route>
-              <Route path='/login' element={<Login />} />
-            </Routes>
-          </BrowserRouter>
-        </UserContext.Provider>
-      </LangConText.Provider>
-    </div>
-  );
+              </Routes>
+            </BrowserRouter>
+          </UserContext.Provider>
+        </LangConText.Provider>
+      </div>
+    );
+  } else {
+    return (
+      <div>
+        <LangConText.Provider value={[lang, setLang]}>
+          <UserContext.Provider value={[userData, setUserData]}>
+            <Login />
+          </UserContext.Provider>
+        </LangConText.Provider>
+      </div>
+    );
+  }
 }
 export default App;

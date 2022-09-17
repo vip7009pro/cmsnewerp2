@@ -28,6 +28,7 @@ interface INSPECT_OUTPUT_DATA {
   PIC_KD: string,
   CA_LAM_VIEC: string,
   NGAY_LAM_VIEC: string,  
+  STATUS: string
 }
 interface INSPECT_INPUT_DATA {
     INSPECT_INPUT_ID: string,
@@ -204,6 +205,21 @@ const INSPECTION = () => {
     { field: "PIC_KD", headerName: "PIC_KD", width:120 },
     { field: "CA_LAM_VIEC", headerName: "CA LV", width: 120 },
     { field: "NGAY_LAM_VIEC", headerName: "NGAY LV", width: 120 },
+    { field: "STATUS", headerName: "NHẬP KHO", width: 120, renderCell: (params:any) => {
+      if(params.row.STATUS.toUpperCase() === 'PENDING')    
+      {
+        return <span style={{color:'red'}}><b>{params.row.STATUS.toUpperCase()}</b></span>
+      }
+      else if(params.row.STATUS.toUpperCase() === 'PROGRS')
+      {
+        return <span style={{color:'orange'}}><b>ĐANG NHẬP</b></span>
+      }
+      else
+      {
+        return <span style={{color:'green'}}><b>{params.row.STATUS.toUpperCase()}</b></span>
+      }
+      
+    } },
    
 
   ]

@@ -16,7 +16,7 @@ import { generalQuery } from "../../../api/Api";
 import "./BaoCaoNhanSu.scss";
 import Swal from "sweetalert2";
 import LinearProgress from "@mui/material/LinearProgress";
-import { SaveExcel } from "../../../api/GlobalFunction";
+import { CustomResponsiveContainer, SaveExcel } from "../../../api/GlobalFunction";
 import moment from "moment";
 import { elementAcceptingRef } from "@mui/utils";
 import {
@@ -101,6 +101,8 @@ interface DiemDanhFullData {
   REMARK: string;
   XACNHAN: string;
 }
+
+
 const BaoCaoNhanSu = () => {
   const [isLoading, setisLoading] = useState(false);
   const [diemdanhnhomtable, setDiemDanhNhomTable] = useState<
@@ -565,7 +567,7 @@ const BaoCaoNhanSu = () => {
         </div>
         <h3>Biểu đồ trending tình hình đi làm</h3>
         <div className='diemdanhhistorychart'>
-          <ResponsiveContainer width='99%' height='100%' debounce={10}>
+          <CustomResponsiveContainer>
             <ComposedChart
               width={500}
               height={300}
@@ -615,7 +617,7 @@ const BaoCaoNhanSu = () => {
                 activeDot={{ r: 8 }}               
               ></Line>
             </ComposedChart>
-          </ResponsiveContainer>
+            </CustomResponsiveContainer>
         </div>
 
         <h3>Nhân lực điểm danh trong ngày theo bộ phận</h3>
@@ -636,7 +638,7 @@ const BaoCaoNhanSu = () => {
           </div>
           <div className='titrongphongbangraph'>
            
-              <ResponsiveContainer width='100%' height='100%'>
+              <CustomResponsiveContainer>
                 <PieChart width={500} height={500}>
                   <Legend/>
                   <Tooltip/>
@@ -663,7 +665,7 @@ const BaoCaoNhanSu = () => {
                     </Pie>
                   )}
                 </PieChart>
-              </ResponsiveContainer>            
+                </CustomResponsiveContainer>           
           </div>
         </div>
         <h3>Lịch sử đi làm full info</h3>

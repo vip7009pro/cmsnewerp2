@@ -38,7 +38,6 @@ export default function Navbar() {
     setLangMenu(!langmenu);
     setAvatarMenu(false);
   }
-
   const changeLanguage= (selectLang: string)=> {
    console.log(selectLang);   
    setLangMenu(false);
@@ -52,36 +51,64 @@ export default function Navbar() {
           <input type='text' placeholder='Search...' />
           <SearchIcon />
         </div>
-        <div className="cmslogo">
-          <img alt="cmsvina logo" src="logocmsvina.png" width={171.6} height={40.7}/>
+        <div className='cmslogo'>
+          <Link to='/' className='menulink'>
+            <img
+              alt='cmsvina logo'
+              src='/logocmsvina.png'
+              width={171.6}
+              height={40.7}
+            />
+          </Link>
         </div>
         <div className='items'>
           <div className='item' onClick={showhideLangMenu}>
-            <LanguageIcon className='icon'/>
-            {lang ==='vi'? 'Tiếng Việt': lang==='kr'? '한국어' : 'English'}
+            <LanguageIcon className='icon' />
+            {lang === "vi"
+              ? "Tiếng Việt"
+              : lang === "kr"
+              ? "한국어"
+              : "English"}
           </div>
-          {langmenu &&  <div className='langmenu'>
-            <div className='menu'>
-              <div className='menu_item'>
-                <AccountCircleIcon className="menu_icon"/>
-                <span className='menulink' onClick={()=> {changeLanguage('vi')}}>                  
-                  Tiếng Việt
-                </span>
-              </div>
-              <div className='menu_item'>
-                <LogoutIcon className="menu_icon"/>
-                <span className='menulink'  onClick={()=> {changeLanguage('kr')}}>                  
-                  한국어
-                </span>
-              </div>
-              <div className='menu_item'>
-                <LogoutIcon className="menu_icon"/>
-                <span className='menulink'  onClick={()=> {changeLanguage('en')}}>                  
-                  English
-                </span>
+          {langmenu && (
+            <div className='langmenu'>
+              <div className='menu'>
+                <div className='menu_item'>
+                  <AccountCircleIcon className='menu_icon' />
+                  <span
+                    className='menulink'
+                    onClick={() => {
+                      changeLanguage("vi");
+                    }}
+                  >
+                    Tiếng Việt
+                  </span>
+                </div>
+                <div className='menu_item'>
+                  <LogoutIcon className='menu_icon' />
+                  <span
+                    className='menulink'
+                    onClick={() => {
+                      changeLanguage("kr");
+                    }}
+                  >
+                    한국어
+                  </span>
+                </div>
+                <div className='menu_item'>
+                  <LogoutIcon className='menu_icon' />
+                  <span
+                    className='menulink'
+                    onClick={() => {
+                      changeLanguage("en");
+                    }}
+                  >
+                    English
+                  </span>
+                </div>
               </div>
             </div>
-          </div>}    
+          )}
           <div className='item'>
             <DarkModeIcon className='icon' />
           </div>
@@ -101,25 +128,31 @@ export default function Navbar() {
           </div>
           <div className='item'>
             <div className='avatar' onClick={showhideAvatarMenu}>
-              {userData.FIRST_NAME.slice(0,1)}
-            </div>            
+              {userData.FIRST_NAME.slice(0, 1)}
+            </div>
           </div>
-          {avatarmenu &&  <div className='avatarmenu'>
-            <div className='menu'>
-              <div className='menu_item'>
-                <AccountCircleIcon className="menu_icon"/>                
-                <Link to='/accountinfo' className='menulink' onClick={()=>setAvatarMenu(false)}>                  
-                  Account Information
-                </Link> 
-              </div>
-              <div className='menu_item'>
-                <LogoutIcon className="menu_icon"/>
-                <span className='menulink' onClick={logout_bt}>                  
-                  Logout
-                </span>
+          {avatarmenu && (
+            <div className='avatarmenu'>
+              <div className='menu'>
+                <div className='menu_item'>
+                  <AccountCircleIcon className='menu_icon' />
+                  <Link
+                    to='/accountinfo'
+                    className='menulink'
+                    onClick={() => setAvatarMenu(false)}
+                  >
+                    Account Information
+                  </Link>
+                </div>
+                <div className='menu_item'>
+                  <LogoutIcon className='menu_icon' />
+                  <span className='menulink' onClick={logout_bt}>
+                    Logout
+                  </span>
+                </div>
               </div>
             </div>
-          </div>}         
+          )}
         </div>
       </div>
     </div>

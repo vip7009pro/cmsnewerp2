@@ -4,9 +4,9 @@ import {
   Pie,
   Tooltip,
   Cell,
-  ResponsiveContainer,
   Legend,
 } from "recharts";
+import { CustomResponsiveContainer } from "../../api/GlobalFunction";
 
 const Chart3 = () => {
 
@@ -19,7 +19,7 @@ const Chart3 = () => {
   const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
   return (
     <div>
-       <ResponsiveContainer width='99%' height={350}>
+       <CustomResponsiveContainer>
         <PieChart width={800} height={800}>
           <Legend />
           <Tooltip />
@@ -41,7 +41,7 @@ const Chart3 = () => {
             ))}
           </Pie>
         </PieChart>
-      </ResponsiveContainer>
+        </CustomResponsiveContainer>
     </div>
   )
 }

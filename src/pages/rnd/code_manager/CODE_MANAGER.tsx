@@ -40,7 +40,7 @@ const CODE_MANAGER = () => {
   const [isLoading, setisLoading] = useState(false); 
   const [codeCMS,setCodeCMS] =useState('');
   const [codeinfodatatable, setCODEINFODataTable] = useState<Array<any>>([]);
-  const [enableEdit, setEnableEdit] = useState(true);
+  const [enableEdit, setEnableEdit] = useState(false);
   let column_codeinfo = [
     { field: "id", headerName: "ID", width: 70,  editable: enableEdit },
     { field: "G_CODE", headerName: "G_CODE", width: 80,  editable: enableEdit  },

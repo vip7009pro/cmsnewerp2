@@ -1,3 +1,4 @@
+import { ResponsiveContainer } from 'recharts';
 import * as XLSX from 'xlsx';
 
 export const SaveExcel = (data: any, title: string) => {
@@ -22,3 +23,21 @@ export const readUploadFile = (e:any) => {
         reader.readAsArrayBuffer(e.target.files[0]);
     }
 }
+
+export function CustomResponsiveContainer(props:any) {
+    return (
+      <div style={{ width: '100%', height: '100%', position: 'relative', }}>
+        <div
+          style={{
+            width: '100%',
+            height: '100%',
+            position: 'absolute',
+            top: 0,
+            left: 0
+          }}
+        >
+          <ResponsiveContainer {...props} />
+        </div>
+      </div>
+    );
+  }

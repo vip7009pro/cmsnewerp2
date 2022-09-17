@@ -3,6 +3,7 @@ import React, { PureComponent, useEffect, useState } from 'react';
 import { BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ComposedChart, Label, LabelList, Line } from 'recharts';
 import Swal from 'sweetalert2';
 import { generalQuery } from '../../api/Api';
+import { CustomResponsiveContainer } from '../../api/GlobalFunction';
 
 
 interface MonthlyClosingData {
@@ -51,7 +52,7 @@ const ChartMonthLy = () => {
     handleGetDailyClosing();
   },[]);
   return (
-    <ResponsiveContainer width='99%' height='100%'>
+    <CustomResponsiveContainer>
     <ComposedChart
       width={500}
       height={300}
@@ -84,7 +85,7 @@ const ChartMonthLy = () => {
       <Bar yAxisId="right-axis" type="monotone" dataKey="DELIVERED_AMOUNT" stroke="#196619" fill='#33cc33' label={{ position: 'top', formatter: labelFormatter }}>      
       </Bar>
     </ComposedChart>
-  </ResponsiveContainer>
+    </CustomResponsiveContainer>
   )
 }
 export default ChartMonthLy

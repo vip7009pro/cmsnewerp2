@@ -14,12 +14,10 @@ import { WiDayLightning } from "react-icons/wi";
 import getsentence from "../../components/String/String";
 import { LangConText } from "../../api/Context";
 import { AiFillAmazonCircle, AiFillAmazonSquare } from "react-icons/ai";
-
 const Sidebar = () => {
-  const [sidebar, setSidebar] = useState(true);
+  const [sidebar, setSidebar] = useState(false);
   const showSidebar = () => setSidebar(!sidebar);
   const [lang,setLang] = useContext(LangConText);
-
   const SidebarData = [
     {
       title: getsentence(12,lang), /*Nhân sự*/
@@ -146,7 +144,6 @@ const Sidebar = () => {
       ]
     },    
   ];
-
   return (
     <>
       <div className='Nav'>
@@ -161,7 +158,7 @@ const Sidebar = () => {
       >
         <div className='SidebarWrap'>
           <Link to='#' className='NavIcon'>
-            <img alt="logo" src="logocmsvina.png" width={85.8} height={20.35}/>
+            <img alt="logo" src="/logocmsvina.png" width={85.8} height={20.35}/>
             <FcList onClick={showSidebar} />
           </Link>
           {SidebarData.map((item, index) => {

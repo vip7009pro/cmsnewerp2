@@ -4,37 +4,35 @@ import { BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Resp
 import Swal from 'sweetalert2';
 import { generalQuery } from '../../api/Api';
 import { CustomResponsiveContainer } from '../../api/GlobalFunction';
-
-
-interface YearlyClosingData {
-  YEAR_NUM: string, 
+interface WeeklyClosingData {
+  DEL_WEEK: string, 
   DELIVERY_QTY: number, 
   DELIVERED_AMOUNT: number
 }
-
-const ChartYearly = () => {  
-  const [yearlyClosingData, setYearlyClosingData] = useState<Array<YearlyClosingData>>([]);
+const ChartWeekLyDelivery = () => {  
+  const [weeklyClosingData, setWeeklyClosingData] = useState<Array<WeeklyClosingData>>([]);
   const formatCash = (n:number) => {
     if (n < 1e3) return n;
     if (n >= 1e3) return +(n / 1e3).toFixed(1) + "K$";
   };
-
   const labelFormatter = (value: number) => {
-    return formatCash(value);
+    return ( new Intl.NumberFormat("en", {
+      notation: "compact",
+      compactDisplay: "short",
+    }).format(value));
   };
-
   const handleGetDailyClosing = () => {
-    generalQuery("kd_annuallyclosing", {  })
+    generalQuery("kd_weeklyclosing", { YEAR: moment().format("YYYY") })
     .then((response) => {      
       if (response.data.tk_status !== "NG") {
-        const loadeddata: YearlyClosingData[] =  response.data.data.map((element:YearlyClosingData,index: number)=> {
+        const loadeddata: WeeklyClosingData[] =  response.data.data.map((element:WeeklyClosingData,index: number)=> {
           return {
             ...element,
           }
         });
-        setYearlyClosingData(loadeddata);
+        setWeeklyClosingData(loadeddata);
         //console.log(loadeddata);
-       /*  Swal.fire(
+        /* Swal.fire(
           "Thông báo",
           "Đã load " + response.data.data.length + " dòng",
           "success"
@@ -47,7 +45,6 @@ const ChartYearly = () => {
       console.log(error);
     });
   }
-
   useEffect(()=> {
     handleGetDailyClosing();
   },[]);
@@ -56,7 +53,7 @@ const ChartYearly = () => {
     <ComposedChart
       width={500}
       height={300}
-      data={yearlyClosingData}
+      data={weeklyClosingData}
       margin={{
         top: 5,
         right: 30,
@@ -65,28 +62,21 @@ const ChartYearly = () => {
       }}
     >
       <CartesianGrid strokeDasharray='3 3' className='chartGrid' />
-      <XAxis dataKey='YEAR_NUM'>        
-        <Label value='Năm' offset={0} position='insideBottom' />
+      <XAxis dataKey='DEL_WEEK'>        
+        <Label value='Tuần' offset={0} position='insideBottom' />
       </XAxis>
       <YAxis yAxisId="left-axis"  label={{
           value: "Số lượng",
           angle: -90,
           position: "insideLeft",
-        }} tickFormatter={(value) => new Intl.NumberFormat('en', { notation: "compact", compactDisplay: "short" }).format(value)}/>
-      <YAxis yAxisId="right-axis" orientation="right" 
-       label={{
-        value: "Số tiền",
-        angle: -90,
-        position: "insideRight",
-      }} tickFormatter={(value) => new Intl.NumberFormat('en-US', { maximumSignificantDigits: 3}).format(value) + '$'}/>
+        }} tickFormatter={(value) => new Intl.NumberFormat('en', { notation: "compact", compactDisplay: "short" }).format(value)}
+        tickCount={7}/>
       <Tooltip />
-      <Legend />
-      <Line yAxisId="left-axis" type="monotone" dataKey="DELIVERY_QTY" stroke="blue"/>
-      <Bar yAxisId="right-axis" type="monotone" dataKey="DELIVERED_AMOUNT" stroke="#ff6666" fill='#ff1a1a' label={{ position: 'top', formatter: labelFormatter }}>      
+      <Legend />      
+      <Bar yAxisId="left-axis" type="monotone" dataKey="DELIVERY_QTY" stroke="#804d00" fill='#77b300' label={{ position: 'top', formatter: labelFormatter }}>      
       </Bar>
     </ComposedChart>
     </CustomResponsiveContainer>
   )
 }
-export default ChartYearly
-
+export default ChartWeekLyDelivery

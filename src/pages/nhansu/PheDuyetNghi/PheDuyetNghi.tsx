@@ -209,6 +209,7 @@ const PheDuyetNghi = () => {
         })
         .catch(error => {
             console.log(error);
+            setisLoading(false);
         });
     },[]);
   

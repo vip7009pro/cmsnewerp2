@@ -16,6 +16,7 @@ import {
 } from "recharts";
 import Swal from "sweetalert2";
 import { generalQuery } from "../../api/Api";
+import { CustomResponsiveContainer } from "../../api/GlobalFunction";
 interface RunningPOData {
   PO_YEAR: number;
   PO_WEEK: number;
@@ -61,7 +62,7 @@ const Chart4 = () => {
     handleGetDailyClosing();
   }, []);
   return (
-      <ResponsiveContainer width='99%' height='100%'>
+      <CustomResponsiveContainer>
         <ComposedChart
           width={500}
           height={300}
@@ -102,7 +103,7 @@ const Chart4 = () => {
             label={{ position: "top", formatter: labelFormatter }}
           ></Bar>
         </ComposedChart>
-      </ResponsiveContainer>
+        </CustomResponsiveContainer>
   );
 };
 export default Chart4;

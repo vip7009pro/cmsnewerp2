@@ -1,11 +1,10 @@
 import React, { useContext, useRef } from "react";
 import { Outlet } from "react-router-dom";
 import { UserContext } from "../../api/Context";
-import Widget from "../../components/Widget/Widget";
 const KinhDoanh = () => {
   const [userData, setUserData] = useContext(UserContext);
   return (
-    <div className='kinhdoanh'>
+    <div className='kinhdoanh'>     
       <Outlet />
     </div>
   );
