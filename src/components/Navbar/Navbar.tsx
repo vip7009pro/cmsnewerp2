@@ -109,13 +109,14 @@ export default function Navbar() {
               </div>
             </div>
           )}
+           {/* 
           <div className='item'>
             <DarkModeIcon className='icon' />
           </div>
           <div className='item'>
             <FullscreenExitIcon className='icon' />
           </div>
-          <div className='item'>
+         <div className='item'>
             <NotificationsNoneIcon className='icon' />
             <div className='counter'>2</div>
           </div>
@@ -125,7 +126,7 @@ export default function Navbar() {
           </div>
           <div className='item'>
             <ListIcon className='icon' />
-          </div>
+          </div> */}
           <div className='item'>
             <div className='avatar' onClick={showhideAvatarMenu}>
               {userData.FIRST_NAME.slice(0, 1)}

@@ -1,68 +1,145 @@
-.kinhdoanhreport {
-    display: flex;
-    flex-direction: column;
-    .doanhthureport {
+
+@media only screen and (max-width: 3000px) {
+    .kinhdoanhreport {
         display: flex;
         flex-direction: column;
-        .section_title {
-            font-size: 20px;
-            font-weight: bold;
-            margin-top: 10px;
-            margin-bottom: 10px;
-            color: blue;
-            font-style: italic;
-        }
-        .revenuewidget {
+        .doanhthureport {
             display: flex;
-            flex-direction: row;
-            flex-wrap: wrap;
-            justify-content: space-around;
-            gap: 5%;
-            margin-top: 5px;
-            .revenuwdg {
-                display: flex;
-                flex: 1;
-            }
-        }
-        .graph {
-            display: flex;
-            width: 100%;
             flex-direction: column;
-            .dailygraphtotal {
+            .section_title {
+                font-size: 20px;
+                font-weight: bold;
+                margin-top: 10px;
+                margin-bottom: 10px;
+                color: blue;
+                font-style: italic;
+            }
+            .revenuewidget {
                 display: flex;
-                width: 100%;
-                height: 100%;
-                flex: 1;
-                margin-bottom: 20px;
-                .dailygraph {
+                flex-direction: row;
+                flex-wrap: wrap;
+                justify-content: space-around;
+                gap: 5%;
+                margin-top: 5px;
+                .revenuwdg {
                     display: flex;
-                    flex-direction: column;
-                    width: 100%;
-                    height: 450px;
                     flex: 1;
-                    .subsection {
-                        font-weight: bold;
-                        padding-left: 90px;
-                    }
                 }
             }
-            .monthlyweeklygraph {
+            .graph {
                 display: flex;
                 width: 100%;
-                flex: 1;
-                height: 100%;
-                .dailygraph {
+                flex-direction: column;
+                .dailygraphtotal {
                     display: flex;
-                    flex-direction: column;
                     width: 100%;
-                    height: 450px;
+                    height: 100%;
                     flex: 1;
-                    .subsection {
-                        font-weight: bold;
-                        padding-left: 90px;
+                    margin-bottom: 20px;
+                    .dailygraph {
+                        display: flex;
+                        flex-direction: column;
+                        width: 100%;
+                        height: 450px;
+                        flex: 1;
+                        .subsection {
+                            font-weight: bold;
+                            padding-left: 90px;
+                        }
+                    }
+                }
+                .monthlyweeklygraph {
+                    display: flex;
+                    width: 100%;
+                    flex: 1;
+                    height: 100%;
+                    .dailygraph {
+                        display: flex;
+                        flex-direction: column;
+                        width: 100%;
+                        height: 450px;
+                        flex: 1;
+                        .subsection {
+                            font-weight: bold;
+                            padding-left: 90px;
+                        }
                     }
                 }
             }
         }
     }
+}
+ @media only screen and (max-width: 768px) {
+    .kinhdoanhreport {
+        display: flex;
+        flex-direction: column;
+        .doanhthureport {
+            display: flex;
+            flex-direction: column;
+            .section_title {
+                font-size: 20px;
+                font-weight: bold;
+                margin-top: 10px;
+                margin-bottom: 10px;
+                color: blue;
+                font-style: italic;
+            }
+            .revenuewidget {
+                display: flex;
+                flex-direction: column;
+                flex-wrap: wrap;
+                justify-content: space-around;
+                gap: 5%;
+                margin-top: 5px;
+                .revenuwdg {
+                    display: flex;
+                    flex: 1;
+                }
+            }
+            .graph {
+                display: flex;
+                width: 100%;
+                height: 2500px;
+                flex-direction: column;
+                .dailygraphtotal {
+                    display: flex; 
+                    flex-direction: column;
+                    width: 100%;
+                    height:500px;                    
+                    margin-bottom: 20px;
+                    .dailygraph {
+                        display: flex;
+                        flex-direction: column;
+                        width: 100%;
+                        height: 450px;
+                        flex: 1;
+                        .subsection {
+                            font-weight: bold;
+                            padding-left: 90px;
+                        }
+                    }
+                }
+                .monthlyweeklygraph {
+                    display: flex;
+                    flex-direction: column;
+                    width: 100%;
+                    flex: 1;
+                    height: 500px;
+                    .dailygraph {
+                        display: flex;
+                        flex-direction: column;
+                        width: 100%;
+                        height: 450px;
+                        flex: 1;
+                        .subsection {
+                            font-weight: bold;
+                            padding-left: 90px;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+ @media only screen and (max-width: 320px) {
 }

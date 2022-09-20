@@ -77,33 +77,87 @@ const PheDuyetNghi = () => {
             renderCell: (params:any) => {                 
                 const onClick = (pheduyet_value: number) => {                
                     //Swal.fire("Thông báo", "Gia tri = " + params.row.EMPL_NO, "success");  
-                    generalQuery("setpheduyetnhom", {                      
-                      off_id: params.row.OFF_ID,
-                      pheduyetvalue: pheduyet_value                    
-                    })
-                      .then((response) => {
-                        console.log(response.data.tk_status);
-                        if (response.data.tk_status === "OK") {
-                          const newProjects = diemdanhnhomtable.map((p) =>
-                            p.OFF_ID === params.row.OFF_ID
-                              ? {
-                                  ...p,
-                                  APPROVAL_STATUS: pheduyet_value                                  
-                                }
-                              : p
-                          );
-                          setDiemDanhNhomTable(newProjects);
-                        } else {
+                    if(pheduyet_value === 3)
+                    {
+                      Swal.fire({
+                        title: 'Chắc chắn muốn xóa đăng ký nghỉ đã chọn ?',
+                        text: "Sẽ xóa đăng ký nghỉ",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Vẫn Xóa!'
+                      }).then((result) => {
+                        if (result.isConfirmed) {
                           Swal.fire(
-                            "Có lỗi",
-                            "Nội dung: " + response.data.message,
-                            "error"
+                            'Tiến hành Xóa',
+                            'Đang Xóa Đăng ký nghỉ',
+                            'success'
                           );
+                          generalQuery("setpheduyetnhom", {                      
+                            off_id: params.row.OFF_ID,
+                            pheduyetvalue: pheduyet_value                    
+                          })
+                            .then((response) => {
+                              console.log(response.data.tk_status);
+                              if (response.data.tk_status === "OK") {
+                                const newProjects = diemdanhnhomtable.map((p) =>
+                                  p.OFF_ID === params.row.OFF_ID
+                                    ? {
+                                        ...p,
+                                        APPROVAL_STATUS: pheduyet_value                                  
+                                      }
+                                    : p
+                                );
+                                setDiemDanhNhomTable(newProjects);
+                              } else {
+                                Swal.fire(
+                                  "Có lỗi",
+                                  "Nội dung: " + response.data.message,
+                                  "error"
+                                );
+                              }
+                            })
+                            .catch((error) => {
+                              console.log(error);
+                            }); 
                         }
                       })
-                      .catch((error) => {
-                        console.log(error);
-                      }); 
+
+                    }
+                    else
+                    {
+                      generalQuery("setpheduyetnhom", {                      
+                        off_id: params.row.OFF_ID,
+                        pheduyetvalue: pheduyet_value                    
+                      })
+                        .then((response) => {
+                          console.log(response.data.tk_status);
+                          if (response.data.tk_status === "OK") {
+                            const newProjects = diemdanhnhomtable.map((p) =>
+                              p.OFF_ID === params.row.OFF_ID
+                                ? {
+                                    ...p,
+                                    APPROVAL_STATUS: pheduyet_value                                  
+                                  }
+                                : p
+                            );
+                            setDiemDanhNhomTable(newProjects);
+                          } else {
+                            Swal.fire(
+                              "Có lỗi",
+                              "Nội dung: " + response.data.message,
+                              "error"
+                            );
+                          }
+                        })
+                        .catch((error) => {
+                          console.log(error);
+                        }); 
+                    }
+                  
+
+                   
                 } 
 
                 const onReset =() => {
@@ -125,7 +179,10 @@ const PheDuyetNghi = () => {
                             <span style={{fontWeight: 'bold', color:'red'}}>Từ chối</span>
                           <button className='resetbutton' onClick={()=>onReset()}>
                           RESET
-                          </button>                                                                  
+                          </button>  
+                          <button className='deletebutton' onClick={()=>onClick(3)}>
+                      XÓA
+                      </button>                                                                  
                         </div>
                       );
                 }
@@ -137,6 +194,19 @@ const PheDuyetNghi = () => {
                       <button className='resetbutton' onClick={()=>onReset()}>
                       RESET
                       </button>                                                                  
+                      <button className='deletebutton' onClick={()=>onClick(3)}>
+                      XÓA
+                      </button>                                                                  
+                    </div>          
+                    );
+
+                }
+                else if(params.row.APPROVAL_STATUS===3)
+                {
+                    return (
+                        <div className='onoffdiv'>
+                        <span style={{fontWeight: 'bold', color:'red'}}>Đã xóa</span>
+                                                                                 
                     </div>          
                     );
 

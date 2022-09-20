@@ -8,7 +8,7 @@
 
     .NavIcon {
         position: fixed;
-        margin-top: 100px;
+        top: 8px;
         margin-left: 10px;
         font-size: 2rem;
         height: 80px;
@@ -19,7 +19,7 @@
 }
 
 .SidebarNav {
-    background: rgba(255, 255, 255, 0.5);
+    background: white;
     width: 15%;
     min-width: 250px;
     height: fit-content;

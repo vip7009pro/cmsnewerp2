@@ -42,6 +42,7 @@ interface FCSTTDYCSX{
   W8: number;
 }
 interface YCSXTableData {
+  PDBV?: string,
   BANVE?: string,
   PROD_MAIN_MATERIAL?: string,
   PROD_TYPE?: string,
@@ -112,10 +113,10 @@ const YCSXManager = () => {
   });
 
   const renderYCSX = (ycsxlist: YCSXTableData[]) => {
-    return  ycsxlist.map((element,index)=> <YCSXComponent key={index} PROD_REQUEST_NO={element.PROD_REQUEST_NO} G_CODE={element.G_CODE} PO_TDYCSX={element.PO_TDYCSX}  TOTAL_TKHO_TDYCSX={ element.TOTAL_TKHO_TDYCSX}  TKHO_TDYCSX={ element.TKHO_TDYCSX}  BTP_TDYCSX={ element.BTP_TDYCSX}  CK_TDYCSX={ element.CK_TDYCSX}  BLOCK_TDYCSX={ element.BLOCK_TDYCSX}  FCST_TDYCSX={ element.FCST_TDYCSX}/>)
+    return  ycsxlist.map((element,index)=> <YCSXComponent key={index} PROD_REQUEST_NO={element.PROD_REQUEST_NO} G_CODE={element.G_CODE} PO_TDYCSX={element.PO_TDYCSX}  TOTAL_TKHO_TDYCSX={ element.TOTAL_TKHO_TDYCSX}  TKHO_TDYCSX={ element.TKHO_TDYCSX}  BTP_TDYCSX={ element.BTP_TDYCSX}  CK_TDYCSX={ element.CK_TDYCSX}  BLOCK_TDYCSX={ element.BLOCK_TDYCSX}  FCST_TDYCSX={ element.FCST_TDYCSX} PDBV={element.PDBV}/>)
   }
   const renderBanVe = (ycsxlist: YCSXTableData[]) => {
-    return  ycsxlist.map((element,index)=>(element.BANVE === 'Y' ? <DrawComponent key={index} G_CODE = {element.G_CODE}/> : <div>Code: {element.G_NAME} : Không có bản vẽ</div> ))
+    return  ycsxlist.map((element,index)=>(element.BANVE === 'Y' ? <DrawComponent key={index} G_CODE = {element.G_CODE} PDBV ={element.PDBV}/> : <div>Code: {element.G_NAME} : Không có bản vẽ</div> ))
   }
 
   const [file, setFile] = useState<any>();
@@ -174,11 +175,11 @@ const YCSXManager = () => {
     { field: "CUST_NAME_KD", headerName: "KHÁCH", width: 120 },
     { field: "PROD_REQUEST_NO", headerName: "SỐ YCSX", width: 80 },
     { field: "PROD_REQUEST_DATE", headerName: "NGÀY YCSX", width: 80 },
-    { field: "PROD_REQUEST_QTY", headerName: "SL YCSX", width: 80 , renderCell: (params:any) => {return <span style={{color:'#009933'}}><b>{params.row.PROD_REQUEST_QTY.toLocaleString('en-US')}</b></span>} },
-    { field: "LOT_TOTAL_INPUT_QTY_EA", headerName: "NHẬP KIỂM", width: 80 , renderCell: (params:any) => {return <span style={{color:'#cc0099'}}><b>{params.row.LOT_TOTAL_INPUT_QTY_EA.toLocaleString('en-US')}</b></span>} },
-    { field: "LOT_TOTAL_OUTPUT_QTY_EA", headerName: "XUẤT KIỂM", width: 80 , renderCell: (params:any) => {return <span style={{color:'#cc0099'}}><b>{params.row.LOT_TOTAL_OUTPUT_QTY_EA.toLocaleString('en-US')}</b></span>} },
-    { field: "INSPECT_BALANCE", headerName: "TỒN KIỂM", width: 80 , renderCell: (params:any) => {return <span style={{color:'#cc0099'}}><b>{params.row.INSPECT_BALANCE.toLocaleString('en-US')}</b></span>} },
-    { field: "SHORTAGE_YCSX", headerName: "TỒN YCSX", width: 80 , renderCell: (params:any) => {return <span style={{color:'blue'}}><b>{params.row.SHORTAGE_YCSX.toLocaleString('en-US')}</b></span>} },
+    { field: "PROD_REQUEST_QTY", type: 'number',headerName: "SL YCSX", width: 80 , renderCell: (params:any) => {return <span style={{color:'#009933'}}><b>{params.row.PROD_REQUEST_QTY.toLocaleString('en-US')}</b></span>} },
+    { field: "LOT_TOTAL_INPUT_QTY_EA", type: 'number',headerName: "NHẬP KIỂM", width: 80 , renderCell: (params:any) => {return <span style={{color:'#cc0099'}}><b>{params.row.LOT_TOTAL_INPUT_QTY_EA.toLocaleString('en-US')}</b></span>} },
+    { field: "LOT_TOTAL_OUTPUT_QTY_EA", type: 'number',headerName: "XUẤT KIỂM", width: 80 , renderCell: (params:any) => {return <span style={{color:'#cc0099'}}><b>{params.row.LOT_TOTAL_OUTPUT_QTY_EA.toLocaleString('en-US')}</b></span>} },
+    { field: "INSPECT_BALANCE", type: 'number',headerName: "TỒN KIỂM", width: 80 , renderCell: (params:any) => {return <span style={{color:'#cc0099'}}><b>{params.row.INSPECT_BALANCE.toLocaleString('en-US')}</b></span>} },
+    { field: "SHORTAGE_YCSX", type: 'number',headerName: "TỒN YCSX", width: 80 , renderCell: (params:any) => {return <span style={{color:'blue'}}><b>{params.row.SHORTAGE_YCSX.toLocaleString('en-US')}</b></span>} },
     { field: "YCSX_PENDING", headerName: "YCSX_PENDING", width: 80, renderCell: (params:any) => {
       if(params.row.YCSX_PENDING === 1)
       return <span style={{color:'red'}}><b>PENDING</b></span>
@@ -195,21 +196,21 @@ const YCSXManager = () => {
       return <span style={{color:'black'}}><b>SAMPLE</b></span>      
     } },
     { field: "REMARK", headerName: "REMARK", width: 120 },
-    { field: "PO_TDYCSX", headerName: "PO_TDYCSX", width: 80 , renderCell: (params:any) => {return <span style={{color:'#6600ff'}}><b>{params.row.PO_TDYCSX.toLocaleString('en-US')}</b></span>} },
-    { field: "TOTAL_TKHO_TDYCSX", headerName: "TOTAL_TKHO_TDYCSX", width: 80 , renderCell: (params:any) => {return <span style={{color:'#6600ff'}}><b>{params.row.TOTAL_TKHO_TDYCSX.toLocaleString('en-US')}</b></span>} },
-    { field: "TKHO_TDYCSX", headerName: "TKHO_TDYCSX", width: 80 , renderCell: (params:any) => {return <span style={{color:'blue'}}>{params.row.TKHO_TDYCSX.toLocaleString('en-US')}</span>} },
-    { field: "BTP_TDYCSX", headerName: "BTP_TDYCSX", width: 80 , renderCell: (params:any) => {return <span style={{color:'blue'}}>{params.row.BTP_TDYCSX.toLocaleString('en-US')}</span>} },
-    { field: "CK_TDYCSX", headerName: "CK_TDYCSX", width: 80 , renderCell: (params:any) => {return <span style={{color:'blue'}}>{params.row.CK_TDYCSX.toLocaleString('en-US')}</span>} },
-    { field: "BLOCK_TDYCSX", headerName: "BLOCK_TDYCSX", width: 80 , renderCell: (params:any) => {return <span style={{color:'blue'}}>{params.row.BLOCK_TDYCSX.toLocaleString('en-US')}</span>} },
-    { field: "FCST_TDYCSX", headerName: "FCST_TDYCSX", width: 80 , renderCell: (params:any) => {return <span style={{color:'#6600ff'}}><b>{params.row.FCST_TDYCSX.toLocaleString('en-US')}</b></span>} },
-    { field: "W1", headerName: "W1", width: 80 , renderCell: (params:any) => {return <span style={{color:'blue'}}>{params.row.W1.toLocaleString('en-US')}</span>}},
-    { field: "W2", headerName: "W2", width: 80 , renderCell: (params:any) => {return <span style={{color:'blue'}}>{params.row.W2.toLocaleString('en-US')}</span>}},
-    { field: "W3", headerName: "W3", width: 80 , renderCell: (params:any) => {return <span style={{color:'blue'}}>{params.row.W3.toLocaleString('en-US')}</span>}},
-    { field: "W4", headerName: "W4", width: 80 , renderCell: (params:any) => {return <span style={{color:'blue'}}>{params.row.W4.toLocaleString('en-US')}</span>}},
-    { field: "W5", headerName: "W5", width: 80 , renderCell: (params:any) => {return <span style={{color:'blue'}}>{params.row.W5.toLocaleString('en-US')}</span>}},
-    { field: "W6", headerName: "W6", width: 80 , renderCell: (params:any) => {return <span style={{color:'blue'}}>{params.row.W6.toLocaleString('en-US')}</span>}},
-    { field: "W7", headerName: "W7", width: 80 , renderCell: (params:any) => {return <span style={{color:'blue'}}>{params.row.W7.toLocaleString('en-US')}</span>}},
-    { field: "W8", headerName: "W8", width: 80 , renderCell: (params:any) => {return <span style={{color:'blue'}}>{params.row.W8.toLocaleString('en-US')}</span>}},
+    { field: "PO_TDYCSX", type: 'number',headerName: "PO_TDYCSX", width: 80 , renderCell: (params:any) => {return <span style={{color:'#6600ff'}}><b>{params.row.PO_TDYCSX.toLocaleString('en-US')}</b></span>} },
+    { field: "TOTAL_TKHO_TDYCSX", type: 'number',headerName: "TOTAL_TKHO_TDYCSX", width: 80 , renderCell: (params:any) => {return <span style={{color:'#6600ff'}}><b>{params.row.TOTAL_TKHO_TDYCSX.toLocaleString('en-US')}</b></span>} },
+    { field: "TKHO_TDYCSX", type: 'number',headerName: "TKHO_TDYCSX", width: 80 , renderCell: (params:any) => {return <span style={{color:'blue'}}>{params.row.TKHO_TDYCSX.toLocaleString('en-US')}</span>} },
+    { field: "BTP_TDYCSX", type: 'number',headerName: "BTP_TDYCSX", width: 80 , renderCell: (params:any) => {return <span style={{color:'blue'}}>{params.row.BTP_TDYCSX.toLocaleString('en-US')}</span>} },
+    { field: "CK_TDYCSX", type: 'number',headerName: "CK_TDYCSX", width: 80 , renderCell: (params:any) => {return <span style={{color:'blue'}}>{params.row.CK_TDYCSX.toLocaleString('en-US')}</span>} },
+    { field: "BLOCK_TDYCSX", type: 'number',headerName: "BLOCK_TDYCSX", width: 80 , renderCell: (params:any) => {return <span style={{color:'blue'}}>{params.row.BLOCK_TDYCSX.toLocaleString('en-US')}</span>} },
+    { field: "FCST_TDYCSX", type: 'number',headerName: "FCST_TDYCSX", width: 80 , renderCell: (params:any) => {return <span style={{color:'#6600ff'}}><b>{params.row.FCST_TDYCSX.toLocaleString('en-US')}</b></span>} },
+    { field: "W1", type: 'number',headerName: "W1", width: 80 , renderCell: (params:any) => {return <span style={{color:'blue'}}>{params.row.W1.toLocaleString('en-US')}</span>}},
+    { field: "W2", type: 'number',headerName: "W2", width: 80 , renderCell: (params:any) => {return <span style={{color:'blue'}}>{params.row.W2.toLocaleString('en-US')}</span>}},
+    { field: "W3", type: 'number',headerName: "W3", width: 80 , renderCell: (params:any) => {return <span style={{color:'blue'}}>{params.row.W3.toLocaleString('en-US')}</span>}},
+    { field: "W4", type: 'number',headerName: "W4", width: 80 , renderCell: (params:any) => {return <span style={{color:'blue'}}>{params.row.W4.toLocaleString('en-US')}</span>}},
+    { field: "W5", type: 'number',headerName: "W5", width: 80 , renderCell: (params:any) => {return <span style={{color:'blue'}}>{params.row.W5.toLocaleString('en-US')}</span>}},
+    { field: "W6", type: 'number',headerName: "W6", width: 80 , renderCell: (params:any) => {return <span style={{color:'blue'}}>{params.row.W6.toLocaleString('en-US')}</span>}},
+    { field: "W7", type: 'number',headerName: "W7", width: 80 , renderCell: (params:any) => {return <span style={{color:'blue'}}>{params.row.W7.toLocaleString('en-US')}</span>}},
+    { field: "W8", type: 'number',headerName: "W8", width: 80 , renderCell: (params:any) => {return <span style={{color:'blue'}}>{params.row.W8.toLocaleString('en-US')}</span>}},
     { field: "PDUYET", headerName: "PDUYET", width: 80 , renderCell: (params:any) => {
       if(params.row.PDUYET===1)
       return <span style={{color:'green'}}><b>Đã Duyệt</b></span>
@@ -219,51 +220,64 @@ const YCSXManager = () => {
     { field: "BANVE", headerName: "BANVE", width: 250 , renderCell: (params:any) => {
 
       let file:any = null;
+      let upload_url = "http://14.160.33.94:5011/upload";
 
       const uploadFile = async (e:any) => {
         console.log(file);
         const formData = new FormData();
         formData.append("banve", file);        
-        formData.append("filename", params.row.G_CODE);        
-        try {
-          const response = await axios.post(
-            "http://14.160.33.94:3007/upload",
-            formData
-          );
-          //console.log("ket qua");
-          //console.log(response);
-          if(response.data.tk_status === 'OK')
-          {
-            //Swal.fire('Thông báo','Upload bản vẽ thành công','success');
-             generalQuery("update_banve_value", { G_CODE: params.row.G_CODE, banvevalue: 'Y' })
-            .then((response) => {        
-              if (response.data.tk_status !== "NG") 
-              {
-                Swal.fire('Thông báo','Upload bản vẽ thành công','success');
-                let tempycsxdatatable = ycsxdatatable.map((element, index)=> {                 
-                  return ( element.PROD_REQUEST_NO === params.row.PROD_REQUEST_NO ? {...element, BANVE: 'Y'}: element);
-                });
-                setYcsxDataTable(tempycsxdatatable);
-              } 
-              else {
-                Swal.fire('Thông báo','Upload bản vẽ thất bại','error');
-              }
-            })
-            .catch((error) => {
-              console.log(error);
-            });  
+        formData.append("filename", params.row.G_CODE);       
+        
+        if(userData.MAINDEPTNAME==='KD') 
+        {
+          try {
+            const response = await axios.post(
+              upload_url,
+              formData
+            );
+            //console.log("ket qua");
+            //console.log(response);
+            if(response.data.tk_status === 'OK')
+            {
+              //Swal.fire('Thông báo','Upload bản vẽ thành công','success');
+               generalQuery("update_banve_value", { G_CODE: params.row.G_CODE, banvevalue: 'Y' })
+              .then((response) => {        
+                if (response.data.tk_status !== "NG") 
+                {
+                  Swal.fire('Thông báo','Upload bản vẽ thành công','success');
+                  let tempycsxdatatable = ycsxdatatable.map((element, index)=> {                 
+                    return ( element.PROD_REQUEST_NO === params.row.PROD_REQUEST_NO ? {...element, BANVE: 'Y'}: element);
+                  });
+                  setYcsxDataTable(tempycsxdatatable);
+                } 
+                else {
+                  Swal.fire('Thông báo','Upload bản vẽ thất bại','error');
+                }
+              })
+              .catch((error) => {
+                console.log(error);
+              });  
+            }
+            else
+            {
+              Swal.fire('Thông báo',response.data.message,'error');
+            }
+            //console.log(response.data);
+          } catch (ex) {
+            console.log(ex);
           }
-          else
-          {
-            Swal.fire('Thông báo',response.data.message,'error');
-          }
-          //console.log(response.data);
-        } catch (ex) {
-          console.log(ex);
         }
+        else
+        {
+          Swal.fire('Thông báo','Chỉ bộ phận kinh doanh upload được bản vẽ','error');
+        }
+       
       }
+      let hreftlink = '/banve/' + params.row.G_CODE + '.pdf';
       if(params.row.BANVE==='Y')
-      return <span style={{color:'green'}}><b>Đã có bản vẽ</b></span>
+      return <span style={{color:'green'}}><b><a target='_blank' rel='noopener noreferrer' href={hreftlink}>
+      LINK
+    </a></b></span>
       else
       return <div className="uploadfile"> 
        <IconButton className='buttonIcon'onClick={uploadFile}><AiOutlineCloudUpload color='yellow' size={25}/>Upload</IconButton>
@@ -1095,7 +1109,7 @@ const readUploadFileAmazon = (e:any) => {
   };
   const confirmUpYcsxHangLoat = () => {
     Swal.fire({
-      title: 'Chắc chắn muốn thêm PO hàng loạt ?',
+      title: 'Chắc chắn muốn thêm YCSX hàng loạt ?',
       text: "Thêm rồi mà sai, sửa là hơi vất đấy",
       icon: 'warning',
       showCancelButton: true,
@@ -1106,7 +1120,7 @@ const readUploadFileAmazon = (e:any) => {
       if (result.isConfirmed) {
         Swal.fire(
           'Tiến hành thêm',
-          'Đang thêm PO hàng loạt',
+          'Đang thêm YCSX hàng loạt',
           'success'
         );
         handle_upYCSXHangLoat();
@@ -1115,8 +1129,8 @@ const readUploadFileAmazon = (e:any) => {
   }
   const confirmCheckYcsxHangLoat = () => {
     Swal.fire({
-      title: 'Chắc chắn muốn check PO hàng loạt ?',
-      text: "Sẽ bắt đầu check po hàng loạt",
+      title: 'Chắc chắn muốn check YCSX hàng loạt ?',
+      text: "Sẽ bắt đầu check ycsx hàng loạt",
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
@@ -1126,7 +1140,7 @@ const readUploadFileAmazon = (e:any) => {
       if (result.isConfirmed) {
         Swal.fire(
           'Tiến hành check',
-          'Đang check PO hàng loạt',
+          'Đang check YCSX hàng loạt',
           'success'
         );
         handle_checkYCSXHangLoat();
@@ -1785,7 +1799,7 @@ const readUploadFileAmazon = (e:any) => {
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
-      confirmButtonText: 'Vẫn Xóa!'
+      confirmButtonText: 'Phê duyệt!'
     }).then((result) => {
       if (result.isConfirmed) {
         Swal.fire(
@@ -1872,6 +1886,7 @@ const readUploadFileAmazon = (e:any) => {
     });
   }
 
+  //console.log(userData);
   useEffect(()=>{
         getcustomerlist();
         getcodelist('');
@@ -2112,32 +2127,34 @@ const readUploadFileAmazon = (e:any) => {
                   }}
                 />
               </label>
-              <div
-                className='checkpobutton'
-                onClick={(e) => {
-                  e.preventDefault();
-                  confirmCheckYcsxHangLoat();
-                }}
-              >
-                Check YCSX
-              </div>
-              <div
-                className='uppobutton'
-                onClick={(e) => {
-                  e.preventDefault();
-                  confirmUpYcsxHangLoat();
-                }}
-              >
-                Up YCSX
-              </div>
-              <div
-                className='clearobutton'
-                onClick={(e) => {
-                  e.preventDefault();
-                  handle_DeleteYCSX_Excel();
-                }}
-              >
-                Clear YCSX
+              <div className='ycsxbutton'>
+                <div
+                  className='checkpobutton'
+                  onClick={(e) => {
+                    e.preventDefault();
+                    confirmCheckYcsxHangLoat();
+                  }}
+                >
+                  Check YCSX
+                </div>
+                <div
+                  className='uppobutton'
+                  onClick={(e) => {
+                    e.preventDefault();
+                    confirmUpYcsxHangLoat();
+                  }}
+                >
+                  Up YCSX
+                </div>
+                <div
+                  className='clearobutton'
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handle_DeleteYCSX_Excel();
+                  }}
+                >
+                  Clear YCSX
+                </div>
               </div>
             </form>
             <div className='insertYCSXTable'>
@@ -2387,7 +2404,7 @@ const readUploadFileAmazon = (e:any) => {
                   <b>Số YCSX:</b>{" "}
                   <input
                     type='text'
-                    placeholder='GH63-xxxxxx'
+                    placeholder='1F80008'
                     value={prodrequestno}
                     onChange={(e) => {
                       setProdRequestNo(e.target.value); 

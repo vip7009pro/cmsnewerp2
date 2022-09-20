@@ -19,6 +19,7 @@ interface TONKHOTDYCSX {
 }
 
 interface YCSXTableData {
+    PDBV?: string,
     PROD_MAIN_MATERIAL?: string,
     PROD_TYPE?: string,
     EMPL_NO?: string,
@@ -73,6 +74,7 @@ interface TONVL {
 }
 
 interface FullBOM {
+    PDBV?: string,
     NO_INSPECTION?: string,
     PDUYET?: number,
     REMK: string,
@@ -113,7 +115,7 @@ interface FullBOM {
     HOLDING: number,
     TONG_TON_LIEU: number
 }
-const YCSXComponent = ({G_CODE,PROD_TYPE,PROD_MAIN_MATERIAL,G_NAME,EMPL_NAME,EMPL_NO,CUST_NAME_KD,CUST_CD,PROD_REQUEST_NO,PROD_REQUEST_DATE,PROD_REQUEST_QTY,LOT_TOTAL_INPUT_QTY_EA,LOT_TOTAL_OUTPUT_QTY_EA,INSPECT_BALANCE,SHORTAGE_YCSX,YCSX_PENDING,PHAN_LOAI,REMARK,PO_TDYCSX,TOTAL_TKHO_TDYCSX,TKHO_TDYCSX,BTP_TDYCSX,CK_TDYCSX,BLOCK_TDYCSX,FCST_TDYCSX,W1,W2,W3,W4,W5,W6,W7,W8,PDUYET,LOAIXH}:YCSXTableData) => {
+const YCSXComponent = ({G_CODE,PROD_TYPE,PROD_MAIN_MATERIAL,G_NAME,EMPL_NAME,EMPL_NO,CUST_NAME_KD,CUST_CD,PROD_REQUEST_NO,PROD_REQUEST_DATE,PROD_REQUEST_QTY,LOT_TOTAL_INPUT_QTY_EA,LOT_TOTAL_OUTPUT_QTY_EA,INSPECT_BALANCE,SHORTAGE_YCSX,YCSX_PENDING,PHAN_LOAI,REMARK,PO_TDYCSX,TOTAL_TKHO_TDYCSX,TKHO_TDYCSX,BTP_TDYCSX,CK_TDYCSX,BLOCK_TDYCSX,FCST_TDYCSX,W1,W2,W3,W4,W5,W6,W7,W8,PDUYET,LOAIXH, PDBV}:YCSXTableData) => {
     const [tvl_tdycsx,setTVL_TDYCSX] = useState<Array<TONVL>>([{
         M_CODE: 'string',
         M_NAME: 'string',
@@ -283,8 +285,12 @@ const YCSXComponent = ({G_CODE,PROD_TYPE,PROD_MAIN_MATERIAL,G_NAME,EMPL_NAME,EMP
             initYCSX();  
     },[PROD_REQUEST_NO]);
 
+    console.log(PDBV);
   return (
-    <div className='ycsxcomponent'>         
+    <div className='ycsxcomponent'>     
+      {(PDBV === 'Y') && <div className="qcpass">
+        <img alt="qcpass" src="/QC PASS20.png" width={440-100-10} height={400-100}/>
+      </div>  }  
      { request_codeinfo[0].PDUYET &&  <div className='tieudeycsx'>
         <div className='title'>CMSV 생산요청서 - Yêu cầu sản xuất<br></br><span style={{fontSize:12}}>Thời điểm in YCSX: {moment().format("YYYY-MM-DD HH:mm:ss")}</span><br></br> {(request_codeinfo[0].NO_INSPECTION ==='Y') && <span style={{fontSize:18}}>(Sản phẩm không kiểm tra ngoại quan)</span>}</div>
         <div className='soycsx'>

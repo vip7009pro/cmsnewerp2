@@ -130,36 +130,36 @@ const PoManager = () => {
     { field: "G_CODE", headerName: "G_CODE", width: 100 },
     { field: "PO_DATE", headerName: "PO_DATE", width: 100 },
     { field: "RD_DATE", headerName: "RD_DATE", width: 100 },
-    { field: "PROD_PRICE", headerName: "PROD_PRICE", width: 100 , renderCell: (params:any) => {return <span style={{color:'gray'}}><b>{params.row.PROD_PRICE.toLocaleString('en-US' ,{style:'decimal',maximumFractionDigits:8})}</b></span>}},
-    { field: "PO_QTY", headerName: "PO_QTY", width: 100 , renderCell: (params:any) => {return <span style={{color:'blue'}}><b>{params.row.PO_QTY.toLocaleString('en-US')}</b></span>} },
-    { field: "TOTAL_DELIVERED", headerName: "TOTAL_DELIVERED", width: 110 , renderCell: (params:any) => {return <span style={{color:'blue'}}><b>{params.row.TOTAL_DELIVERED.toLocaleString('en-US')}</b></span>} },
-    { field: "PO_BALANCE", headerName: "PO_BALANCE", width: 100 , renderCell: (params:any) => {return <span style={{color:'blue'}}><b>{params.row.PO_BALANCE.toLocaleString('en-US')}</b></span>} },
-    { field: "PO_AMOUNT", headerName: "PO_AMOUNT", width: 100, renderCell: (params:any) => {return <span style={{color:'green'}}><b>{params.row.PO_AMOUNT.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</b></span>}  },
-    { field: "DELIVERED_AMOUNT", headerName: "DELIVERED_AMOUNT", width: 100, renderCell: (params:any) => {return <span style={{color:'green'}}><b>{params.row.DELIVERED_AMOUNT.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</b></span>}  },
-    { field: "BALANCE_AMOUNT", headerName: "BALANCE_AMOUNT", width: 100, renderCell: (params:any) => {return <span style={{color:'green'}}><b>{params.row.BALANCE_AMOUNT.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</b></span>}  },
-    { field: "TON_KIEM", headerName: "TON_KIEM", width: 100, renderCell: (params:any) => {return <span>{params.row.TON_KIEM.toLocaleString('en-US')}</span>}  },
-    { field: "BTP", headerName: "BTP", width: 90, renderCell: (params:any) => {return <span>{params.row.BTP.toLocaleString('en-US')}</span>}   },
-    { field: "TP", headerName: "TP", width: 90, renderCell: (params:any) => {return <span>{params.row.TP.toLocaleString('en-US')}</span>}   },
-    { field: "BLOCK_QTY", headerName: "BLOCK_QTY", width: 90, renderCell: (params:any) => {return <span>{params.row.BLOCK_QTY.toLocaleString('en-US')}</span>}   },
-    { field: "GRAND_TOTAL_STOCK", headerName: "GRAND_TOTAL_STOCK", width: 90 , renderCell: (params:any) => {return <span><b>{params.row.GRAND_TOTAL_STOCK.toLocaleString('en-US')}</b></span>}  },
+    { field: "PROD_PRICE", type: 'number',headerName: "PROD_PRICE", width: 100 , renderCell: (params:any) => {return <span style={{color:'gray'}}><b>{params.row.PROD_PRICE.toLocaleString('en-US' ,{style:'decimal',maximumFractionDigits:8})}</b></span>}},
+    { field: "PO_QTY", type: 'number',headerName: "PO_QTY", width: 100 , renderCell: (params:any) => {return <span style={{color:'blue'}}><b>{params.row.PO_QTY.toLocaleString('en-US')}</b></span>} },
+    { field: "TOTAL_DELIVERED", type: 'number',headerName: "TOTAL_DELIVERED", width: 110 , renderCell: (params:any) => {return <span style={{color:'blue'}}><b>{params.row.TOTAL_DELIVERED.toLocaleString('en-US')}</b></span>} },
+    { field: "PO_BALANCE", type: 'number',headerName: "PO_BALANCE", width: 100 , renderCell: (params:any) => {return <span style={{color:'blue'}}><b>{params.row.PO_BALANCE.toLocaleString('en-US')}</b></span>} },
+    { field: "PO_AMOUNT", type: 'number',headerName: "PO_AMOUNT", width: 100, renderCell: (params:any) => {return <span style={{color:'green'}}><b>{params.row.PO_AMOUNT.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</b></span>}  },
+    { field: "DELIVERED_AMOUNT", type: 'number',headerName: "DELIVERED_AMOUNT", width: 100, renderCell: (params:any) => {return <span style={{color:'green'}}><b>{params.row.DELIVERED_AMOUNT.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</b></span>}  },
+    { field: "BALANCE_AMOUNT", type: 'number',headerName: "BALANCE_AMOUNT", width: 100, renderCell: (params:any) => {return <span style={{color:'green'}}><b>{params.row.BALANCE_AMOUNT.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</b></span>}  },
+    { field: "TON_KIEM", type: 'number',headerName: "TON_KIEM", width: 100, renderCell: (params:any) => {return <span>{params.row.TON_KIEM.toLocaleString('en-US')}</span>}  },
+    { field: "BTP", type: 'number',headerName: "BTP", width: 90, renderCell: (params:any) => {return <span>{params.row.BTP.toLocaleString('en-US')}</span>}   },
+    { field: "TP",type: 'number', headerName: "TP", width: 90, renderCell: (params:any) => {return <span>{params.row.TP.toLocaleString('en-US')}</span>}   },
+    { field: "BLOCK_QTY", type: 'number',headerName: "BLOCK_QTY", width: 90, renderCell: (params:any) => {return <span>{params.row.BLOCK_QTY.toLocaleString('en-US')}</span>}   },
+    { field: "GRAND_TOTAL_STOCK", type: 'number',headerName: "GRAND_TOTAL_STOCK", width: 90 , renderCell: (params:any) => {return <span><b>{params.row.GRAND_TOTAL_STOCK.toLocaleString('en-US')}</b></span>}  },
     { field: "EMPL_NAME", headerName: "EMPL_NAME", width: 150 },
     { field: "PROD_TYPE", headerName: "PROD_TYPE", width: 90 },
     { field: "M_NAME_FULLBOM", headerName: "M_NAME_FULLBOM", width: 110 },
     { field: "PROD_MAIN_MATERIAL", headerName: "PROD_MAIN_MATERIAL", width: 110},
-    { field: "POMONTH", headerName: "POMONTH", width: 80 },
-    { field: "POWEEKNUM", headerName: "POWEEKNUM", width: 80 },
+    { field: "POMONTH", type: 'number',headerName: "POMONTH", width: 80 },
+    { field: "POWEEKNUM", type: 'number',headerName: "POWEEKNUM", width: 80 },
     { field: "OVERDUE", headerName: "OVERDUE", width: 80 },
     { field: "REMARK", headerName: "REMARK", width: 110 },
-    { field: "PO_ID", headerName: "PO_ID", width: 90 },
+    { field: "PO_ID", type: 'number',headerName: "PO_ID", width: 90 },
   ];
   const column_excel2 = [
     { field: "CUST_CD", headerName: "CUST_CD", width: 120 },    
     { field: "G_CODE", headerName: "G_CODE", width: 120 },
     { field: "PO_NO", headerName: "PO_NO", width: 120 },
-    { field: "PO_QTY", headerName: "PO_QTY", width: 120, renderCell: (params:any) => {return <span style={{color:'blue'}}><b>{params.row.PO_QTY.toLocaleString('en-US')}</b></span>}  },
+    { field: "PO_QTY", type: 'number',headerName: "PO_QTY", width: 120, renderCell: (params:any) => {return <span style={{color:'blue'}}><b>{params.row.PO_QTY.toLocaleString('en-US')}</b></span>}  },
     { field: "PO_DATE", headerName: "PO_DATE", width: 200 },
     { field: "RD_DATE", headerName: "RD_DATE", width: 200 },
-    { field: "PROD_PRICE", headerName: "PROD_PRICE", width: 200, renderCell: (params:any) => {return <span style={{color:'gray'}}><b>{params.row.PROD_PRICE.toLocaleString('en-US' ,{style:'decimal',maximumFractionDigits:8})}</b></span>} },
+    { field: "PROD_PRICE", type: 'number',headerName: "PROD_PRICE", width: 200, renderCell: (params:any) => {return <span style={{color:'gray'}}><b>{params.row.PROD_PRICE.toLocaleString('en-US' ,{style:'decimal',maximumFractionDigits:8})}</b></span>} },
     { field: "CHECKSTATUS", headerName: "CHECKSTATUS", width: 200 , renderCell: (params:any) => {
       if(params.row.CHECKSTATUS.slice(0,2) === 'OK')
       return <span style={{color:'green'}}><b>{params.row.CHECKSTATUS}</b></span>
@@ -732,17 +732,17 @@ const PoManager = () => {
   }
   const handlePOSelectionforUpdate =(ids: GridSelectionModel) => {   
     const selectedID = new Set(ids);
-    let datafilter = podatatable.filter((element: any) => selectedID.has(element.PO_ID));
-    
+    let datafilter = podatatable.filter((element: any) => selectedID.has(element.PO_ID));    
     if(datafilter.length>0)
     {
-      setPoDataTableFilter(datafilter);      
+      setPoDataTableFilter(datafilter);
     }
     else
     {
-      setPoDataTableFilter([]);  
+      setPoDataTableFilter([]);
     }
   }
+
   const handle_fillsuaform =() => {
     if(podatatablefilter.length ===1)
     {
@@ -799,7 +799,7 @@ const PoManager = () => {
       setNewRdDate(podatatablefilter[podatatablefilter.length-1].RD_DATE);
       setNewInvoiceQty(0);
       setNewPoNo(podatatablefilter[podatatablefilter.length-1].PO_NO);
-      setNewInvoiceDate(moment().format('YYYY-MM-DD'));
+      setNewInvoiceDate(moment().add(-1,'day').format('YYYY-MM-DD'));
       setNewInvoiceRemark('');
       setSelectedID(podatatablefilter[podatatablefilter.length-1].PO_ID);
     }

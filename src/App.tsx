@@ -88,14 +88,15 @@ const ProtectedRoute: any = ({
   if (user.EMPL_NO === "none") {
     return <Navigate to='/login' replace />;
   } else {
-    if (maindeptname === "all" || user.EMPL_NO === "NHU1903") {
-      if (jobname === "all" || user.EMPL_NO === "NHU1903") {
+    if (maindeptname === "all" || user.EMPL_NO === "NHU1903" || user.JOB_NAME === "ADMIN") {
+      if (jobname === "all" || user.EMPL_NO === "NHU1903" || user.JOB_NAME === "ADMIN") {
         return children;
       } else {
         if (
           user.JOB_NAME !== "Leader" &&
           user.JOB_NAME !== "Sub Leader" &&
-          user.JOB_NAME !== "Dept Staff"
+          user.JOB_NAME !== "Dept Staff" &&
+          user.JOB_NAME !== "ADMIN"
         ) {
           Swal.fire(
             "Thông báo",
@@ -114,13 +115,14 @@ const ProtectedRoute: any = ({
           "error"
         );
       } else {
-        if (jobname === "all" || user.EMPL_NO === "NHU1903") {
+        if (jobname === "all" || user.EMPL_NO === "NHU1903" || user.JOB_NAME === "ADMIN") {
           return children;
         } else {
           if (
             user.JOB_NAME !== "Leader" &&
             user.JOB_NAME !== "Sub Leader" &&
-            user.JOB_NAME !== "Dept Staff"
+            user.JOB_NAME !== "Dept Staff" &&
+            user.JOB_NAME !== "ADMIN"
           ) {
             Swal.fire(
               "Thông báo",
@@ -303,6 +305,23 @@ function App() {
                     />
                   </Route>
                   <Route
+                    path='rnd'
+                    element={
+                      <ProtectedRoute
+                        user={userData}
+                        maindeptname='RND'
+                        jobname='all'
+                      >
+                        <KinhDoanh/>
+                      </ProtectedRoute>
+                    }
+                  >
+                    <Route index element={<KinhDoanhReport />} />
+                    <Route path='quanlycodebom' element={<CODE_MANAGER />} />
+                    <Route path='thembomamazon' element={<CODE_MANAGER />} />
+                    <Route path='designamazon' element={<CODE_MANAGER />} />                
+                  </Route>
+                  <Route
                     path='nhansu'
                     element={
                       <ProtectedRoute
@@ -310,7 +329,7 @@ function App() {
                         maindeptname='all'
                         jobname='all'
                       >
-                        <BaoCaoNhanSu />
+                        <AccountInfo />
                       </ProtectedRoute>
                     }
                   ></Route>

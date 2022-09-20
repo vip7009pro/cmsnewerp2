@@ -1,45 +1,83 @@
-.accountinfo {    
-    display: flex;
-    flex-direction: column;
-    background-image: linear-gradient(0deg, #afd3d1,#53eb6d);
-    height: fit-content;
-    padding: 20px;
-    border-radius: 5px;
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);    
-    height:fit-content;
-    gap: 20px;
-
-    .panelhome {
+@media only screen and (max-width: 3000px) {
+    .accountinfo {    
         display: flex;
-        flex-direction: row;
-        background-image: linear-gradient(0deg, #fafafa34,#edf1f12a);
-        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 200px 0 rgba(0, 0, 0, 0.19);
+        flex-direction: column;
+        background-image: linear-gradient(0deg, #afd3d1,#53eb6d);
+        height: fit-content;
         padding: 20px;
-        border-radius: 5px;   
+        border-radius: 5px;
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);    
         height:fit-content;
-
-        .cot1 {
+        gap: 20px;
+        width: 100%;
+        .panelhome {
             display: flex;
-            flex: 1;          
-            flex-direction: column;    
-            h5 {
-                font-size: 20px;
-            }          
-            .emplInfoList {
-                list-style: decimal;
-                font-size: 16px; 
-                margin: 10px;               
+            flex-direction: row;
+            background-image: linear-gradient(0deg, #fafafa34,#edf1f12a);
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 200px 0 rgba(0, 0, 0, 0.19);
+            padding: 20px;
+            border-radius: 5px;   
+            height:fit-content;
+            .cot1 {
+                display: flex;
+                flex: 1;          
+                flex-direction: column;    
+                h5 {
+                    font-size: 20px;
+                }          
+                .emplInfoList {
+                    list-style: decimal;
+                    font-size: 16px; 
+                    margin: 10px;               
+                }
             }
-        }
-
-        .cot2 {
-            
-            display: flex;
-            flex-direction: column;
-            flex: 1;
+            .cot2 {
+                display: flex;
+                flex-direction: column;
+                flex: 1;
+            }
         }
     }
 }
-.emplInfoList{
-    font-size: 18px;
+ @media only screen and (max-width: 768px) {    
+    .accountinfo {   
+        display: flex;
+        flex-direction: column;
+        background-image: linear-gradient(0deg, #afd3d1,#53eb6d);
+        height: fit-content;
+        border-radius: 5px;
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);    
+        width:fit-content;
+        gap: 20px;
+       
+        .panelhome {
+            display: flex;
+            flex-direction: column;
+            background-image: linear-gradient(0deg, #fafafa34,#edf1f12a);
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 200px 0 rgba(0, 0, 0, 0.19);            
+            border-radius: 5px;   
+            height:fit-content;
+            width: fit-content;
+            .cot1 {
+                display: flex;
+                flex: 1;          
+                flex-direction: column;    
+                h5 {
+                    font-size: 20px;
+                }          
+                .emplInfoList {
+                    list-style: decimal;
+                    font-size: 16px; 
+                    margin: 5px;               
+                }
+            }
+            .cot2 {                
+                display: flex;
+                flex-direction: column;
+                flex: 1;
+            }
+        }
+    }
+}
+ @media only screen and (max-width: 320px) {
 }

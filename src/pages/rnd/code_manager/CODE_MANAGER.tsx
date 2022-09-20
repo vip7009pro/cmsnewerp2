@@ -2,14 +2,17 @@ import { IconButton,  LinearProgress} from '@mui/material';
 import { DataGrid, GridSelectionModel, GridToolbarColumnsButton, GridToolbarContainer, GridToolbarDensitySelector, GridToolbarFilterButton, GridToolbarQuickFilter ,GridColumns, GridRowsProp, GridCellEditStopParams, MuiEvent, GridCellEditStopReasons, GridCellEditCommitParams, MuiBaseEvent, GridCallbackDetails } from '@mui/x-data-grid';
 import moment from 'moment';
 import  { useContext, useEffect, useState, useTransition } from 'react'
-import {FcSearch } from 'react-icons/fc';
-import {AiFillEdit, AiFillFileExcel } from "react-icons/ai";
+import {FcCancel, FcSearch } from 'react-icons/fc';
+import {AiFillCheckCircle, AiFillEdit, AiFillFileExcel, AiOutlineCheck, AiOutlineCloudUpload } from "react-icons/ai";
 import Swal from 'sweetalert2';
 import { generalQuery } from '../../../api/Api';
 import { UserContext } from '../../../api/Context';
 import { SaveExcel } from '../../../api/GlobalFunction';
 import "./CODE_MANAGER.scss"
+import { BiReset } from 'react-icons/bi';
+const axios = require('axios').default;
 interface CODE_INFO {
+    id: number,
     G_CODE: string,
     G_NAME: string,
     G_NAME_KD: string,
@@ -29,6 +32,7 @@ interface CODE_INFO {
 }
 
 const CODE_MANAGER = () => {
+  const [codedatatablefilter, setCodeDataTableFilter] = useState<Array<CODE_INFO>>([]);
   const [selection, setSelection] = useState<any>({
     trapo: true,
     thempohangloat:false,
@@ -39,7 +43,6 @@ const CODE_MANAGER = () => {
   const [userData, setUserData] = useContext(UserContext);
   const [isLoading, setisLoading] = useState(false); 
   const [codeCMS,setCodeCMS] =useState('');
-  const [codeinfodatatable, setCODEINFODataTable] = useState<Array<any>>([]);
   const [enableEdit, setEnableEdit] = useState(false);
   let column_codeinfo = [
     { field: "id", headerName: "ID", width: 70,  editable: enableEdit },
@@ -56,7 +59,62 @@ const CODE_MANAGER = () => {
     { field: "PROD_PROJECT", headerName: "PROD_PROJECT", width: 120,  editable: enableEdit  },
     { field: "PROD_MODEL", headerName: "PROD_MODEL", width: 120,  editable: enableEdit  },
     { field: "M_NAME_FULLBOM", headerName: "FULLBOM",  flex: 1, minWidth: 150,  editable: enableEdit  },
-    { field: "BANVE", headerName: "BANVE", width: 120 , renderCell: (params:any) => {
+    { field: "BANVE", headerName: "BANVE", width: 260 , renderCell: (params:any) => {
+      let file:any = null;
+      let upload_url = "http://14.160.33.94:5011/upload";
+      const uploadFile = async (e:any) => {
+        console.log(file);
+        const formData = new FormData();
+        formData.append("banve", file);        
+        formData.append("filename", params.row.G_CODE);      
+        if(userData.MAINDEPTNAME==='KD')  
+        {
+          try {
+            const response = await axios.post(
+              upload_url,
+              formData
+            );
+            //console.log("ket qua");
+            //console.log(response);
+            if(response.data.tk_status === 'OK')
+            {
+              //Swal.fire('Thông báo','Upload bản vẽ thành công','success');
+               generalQuery("update_banve_value", { G_CODE: params.row.G_CODE, banvevalue: 'Y' })
+              .then((response) => {        
+                if (response.data.tk_status !== "NG") 
+                {
+                  Swal.fire('Thông báo','Upload bản vẽ thành công','success');
+                  let tempcodeinfodatatable = rows.map((element, index)=> {                 
+                    return ( element.G_CODE === params.row.G_CODE ? {...element, BANVE: 'Y'}: element);
+                  });
+                  setRows(tempcodeinfodatatable);
+                } 
+                else {
+                  Swal.fire('Thông báo','Upload bản vẽ thất bại','error');
+                }
+              })
+              .catch((error) => {
+                console.log(error);
+              });  
+            }
+            else
+            {
+              Swal.fire('Thông báo',response.data.message,'error');
+            }
+            //console.log(response.data);
+          } catch (ex) {
+            console.log(ex);
+          }
+
+        }
+        else
+        {
+          Swal.fire('Thông báo','Chỉ bộ phận kinh doanh upload được bản vẽ','error');
+        }
+        
+      }
+     
+
       let hreftlink = '/banve/' + params.row.G_CODE + '.pdf';
       if (params.row.BANVE !== "N")
       {
@@ -70,7 +128,10 @@ const CODE_MANAGER = () => {
       }
       else
       {
-        return <span style={{ color: "red" }}>Chưa có bản vẽ</span>;
+        return <div className="uploadfile"> 
+       <IconButton className='buttonIcon'onClick={uploadFile}><AiOutlineCloudUpload color='yellow' size={25}/>Upload</IconButton>
+       <input  accept=".pdf" type="file" onChange={(e:any)=> {file = e.target.files[0]; console.log(file);}} />
+      </div>
       }        
     },  editable: enableEdit },
     { field: "NO_INSPECTION", headerName: "KT NGOAI QUAN", width: 120, renderCell: (params:any) => {     
@@ -103,17 +164,60 @@ const CODE_MANAGER = () => {
         <GridToolbarColumnsButton />
         <GridToolbarFilterButton />
         <GridToolbarDensitySelector /> 
-        <IconButton className='buttonIcon'onClick={()=>{SaveExcel(codeinfodatatable,"Code Info Table")}}><AiFillFileExcel color='green' size={25}/>SAVE</IconButton> 
+        <IconButton className='buttonIcon'onClick={()=>{SaveExcel(rows,"Code Info Table")}}><AiFillFileExcel color='green' size={25}/>SAVE</IconButton> 
+        <IconButton className='buttonIcon'onClick={()=>{ setNgoaiQuan('N');}}><AiFillCheckCircle color='blue' size={25}/>SET NGOAI QUAN</IconButton> 
+        <IconButton className='buttonIcon'onClick={()=>{ setNgoaiQuan('Y');}}><FcCancel color='green' size={25}/>SET K NGOAI QUAN</IconButton> 
+        <IconButton className='buttonIcon'onClick={()=>{resetBanVe('N'); }}><BiReset color='green' size={25}/>RESET BẢN VẼ</IconButton> 
         <IconButton className='buttonIcon'onClick={()=>{
           setColumns(columns.map((element, index:number)=> {
             return {...element, editable : !element.editable};
           }))
           Swal.fire("Thông báo","Bật/Tắt chế độ sửa","success");
-        }}><AiFillEdit color='yellow' size={25}/>Bật tắt sửa</IconButton> 
+        }}>
+          <AiFillEdit color='yellow' size={25}/>Bật tắt sửa</IconButton> 
         <GridToolbarQuickFilter/>
       </GridToolbarContainer>
     );
   }  
+  const resetBanVe= async(value: string)=> {
+    if(codedatatablefilter.length>=1)
+    {
+      if(userData.EMPL_NO==='VTT1901' || userData.EMPL_NO==='NHU1903'|| userData.EMPL_NO==='LVT1906')
+      {
+        for(let i=0;i<codedatatablefilter.length;i++)
+        {        
+            await generalQuery("resetbanve", {           
+              G_CODE: codedatatablefilter[i].G_CODE,
+              VALUE: value
+            })
+            .then((response) => {
+              console.log(response.data.tk_status);
+              if (response.data.tk_status !== "NG") {
+                //Swal.fire("Thông báo", "Delete Po thành công", "success");  
+              } else {     
+                //Swal.fire("Thông báo", "Update PO thất bại: " +response.data.message , "error");              
+              }
+            })
+            .catch((error) => {
+              console.log(error);
+            });  
+          
+        } 
+        Swal.fire("Thông báo", "RESET BAN VE THÀNH CÔNG", "success"); 
+
+      }
+      else
+      {
+        Swal.fire("Thông báo", "Không đủ quyền hạn!" , "error"); 
+      }
+      
+      
+    }
+    else
+    {
+      Swal.fire("Thông báo", "Chọn ít nhất 1 G_CODE để SET !" , "error"); 
+    }
+  }
   const handleCODEINFO = ()=> {
     setisLoading(true);
     setColumnDefinition(column_codeinfo);
@@ -158,6 +262,60 @@ const CODE_MANAGER = () => {
       setSelection({...selection, trapo: false, thempohangloat:false, them1po:false,them1invoice:false,testinvoicetable: true});
     }
   }
+  const handleCODESelectionforUpdate =(ids: GridSelectionModel) => {   
+    const selectedID = new Set(ids);    
+    let datafilter = rows.filter((element: CODE_INFO) => selectedID.has(element.id));    
+    //console.log(datafilter);
+    if(datafilter.length>0)
+    {
+      setCodeDataTableFilter(datafilter);
+    }
+    else
+    {
+      setCodeDataTableFilter([]);
+    }
+  }
+
+  const setNgoaiQuan= async(value: string)=> {
+    if(codedatatablefilter.length>=1)
+    {
+      if(userData.EMPL_NO==='VTT1901' || userData.EMPL_NO==='NHU1903'|| userData.EMPL_NO==='LVT1906')
+      {
+        for(let i=0;i<codedatatablefilter.length;i++)
+        {        
+            await generalQuery("setngoaiquan", {           
+              G_CODE: codedatatablefilter[i].G_CODE,
+              VALUE: value
+            })
+            .then((response) => {
+              console.log(response.data.tk_status);
+              if (response.data.tk_status !== "NG") {
+                //Swal.fire("Thông báo", "Delete Po thành công", "success");  
+              } else {     
+                //Swal.fire("Thông báo", "Update PO thất bại: " +response.data.message , "error");              
+              }
+            })
+            .catch((error) => {
+              console.log(error);
+            });  
+          
+        } 
+        Swal.fire("Thông báo", "SET TRẠNG KIỂM TRA NGOẠI QUAN THÀNH CÔNG", "success"); 
+
+      }
+      else
+      {
+        Swal.fire("Thông báo", "Không đủ quyền hạn!" , "error"); 
+      }
+      
+      
+    }
+    else
+    {
+      Swal.fire("Thông báo", "Chọn ít nhất 1 G_CODE để SET !" , "error"); 
+    }
+  }
+
   useEffect(()=>{
   },[]);
   return (
@@ -203,6 +361,8 @@ const CODE_MANAGER = () => {
               rowHeight={30}
               rows = {rows}
               columns={columns}
+              checkboxSelection
+              onSelectionModelChange={(ids) => {handleCODESelectionforUpdate(ids);}}
              /*  rows={codeinfodatatable}
               columns={columnDefinition} */
               rowsPerPageOptions={[

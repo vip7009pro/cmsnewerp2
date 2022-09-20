@@ -1,8 +1,65 @@
 .home {
-  display: flex;  
+ display: flex;
+ flex-direction: column;
+
+
+ @media only screen and (max-width: 3000px) {
   .homeContainer {      
-      flex: 1;
-      display: flex;
-      flex-direction: column; 
+    display: flex;
+    flex-direction: row;    
+    width: 100%;   
+    height: fit-content; 
+    .sidebardiv {
+      width: fit-content;
+
+    } 
+    .outletdiv {
+      width: 100%;
+    }
+    
   }
+}
+
+@media only screen and (max-width: 768px) {
+   
+  .homeContainer {      
+    display: flex;
+    flex-direction: column;    
+    width: 100%;   
+    height: fit-content; 
+    .sidebardiv {
+      width: fit-content;
+      position: fixed;
+      top:100;
+      left: 10;
+      z-index: 99999;
+    } 
+    .outletdiv {
+      width: 100%;
+    }
+  }
+}
+
+  @media only screen and (max-width: 320px) {
+   
+    .homeContainer {      
+      display: flex;
+      flex-direction: row;    
+      width: 100%;   
+      height: fit-content; 
+      .sidebardiv {
+        width: fit-content;
+  
+      } 
+      .outletdiv {
+        width: 100%;
+      }
+    }
+  }
+
+  
+
+
+
+
 }

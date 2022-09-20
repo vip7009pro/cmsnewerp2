@@ -6,6 +6,12 @@
     /* padding: 10px;  */ 
     margin-bottom: 6px; 
     border: 0.01px solid black;
+    position: relative;
+    .qcpass {
+        position: absolute;
+        top: 65mm;
+        left: 60mm;        
+    }
 
     .tieudeycsx {
         display: flex;

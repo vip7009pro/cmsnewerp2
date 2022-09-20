@@ -113,26 +113,26 @@ const InvoiceManager = () => {
     { field: "G_NAME_KD", headerName: "G_NAME_KD", width: 120 },
     { field: "PO_NO", headerName: "PO_NO", width: 100 },
     { field: "DELIVERY_DATE", headerName: "DELIVERY_DATE", width: 120 },
-    { field: "DELIVERY_QTY", headerName: "DELIVERY_QTY", width: 100, renderCell: (params:any) => {return <span style={{color:'blue'}}><b>{params.row.DELIVERY_QTY.toLocaleString('en-US')}</b></span>}  },
-    { field: "PROD_PRICE", headerName: "PROD_PRICE", width: 100, renderCell: (params:any) => {return <span style={{color:'gray'}}><b>{params.row.PROD_PRICE.toLocaleString('en-US' ,{style:'decimal',maximumFractionDigits:8})}</b></span>} },
-    { field: "DELIVERED_AMOUNT", headerName: "DELIVERED_AMOUNT", width: 120, renderCell: (params:any) => {return <span style={{color:'green'}}><b>{params.row.DELIVERED_AMOUNT.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</b></span>} },  
+    { field: "DELIVERY_QTY", type: 'number',headerName: "DELIVERY_QTY", width: 100, renderCell: (params:any) => {return <span style={{color:'blue'}}><b>{params.row.DELIVERY_QTY.toLocaleString('en-US')}</b></span>}  },
+    { field: "PROD_PRICE", type: 'number',headerName: "PROD_PRICE", width: 100, renderCell: (params:any) => {return <span style={{color:'gray'}}><b>{params.row.PROD_PRICE.toLocaleString('en-US' ,{style:'decimal',maximumFractionDigits:8})}</b></span>} },
+    { field: "DELIVERED_AMOUNT", type: 'number',headerName: "DELIVERED_AMOUNT", width: 120, renderCell: (params:any) => {return <span style={{color:'green'}}><b>{params.row.DELIVERED_AMOUNT.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</b></span>} },  
     { field: "PROD_TYPE", headerName: "PROD_TYPE", width: 90 },
     { field: "PROD_MODEL", headerName: "PROD_MODEL", width: 120 },
     { field: "PROD_PROJECT", headerName: "PROD_PROJECT", width: 120 },
     { field: "PROD_MAIN_MATERIAL", headerName: "PROD_MAIN_MATERIAL", width: 120 },
-    { field: "YEARNUM", headerName: "YEARNUM", width: 80 },
-    { field: "WEEKNUM", headerName: "WEEKNUM", width: 80 },      
-    { field: "DELIVERY_ID", headerName: "DELIVERY_ID", width: 90   }, 
+    { field: "YEARNUM", type: 'number',headerName: "YEARNUM", width: 80 },
+    { field: "WEEKNUM",type: 'number', headerName: "WEEKNUM", width: 80 },      
+    { field: "DELIVERY_ID", type: 'number',headerName: "DELIVERY_ID", width: 90   }, 
     { field: "REMARK", headerName: "REMARK", width: 120 },   
   ]
   const column_excel2 = [
     { field: "CUST_CD", headerName: "CUST_CD", width: 120 },    
     { field: "G_CODE", headerName: "G_CODE", width: 120 },
-    { field: "PO_NO", headerName: "PO_NO", width: 120 },
-    { field: "PO_QTY", headerName: "PO_QTY", width: 120, renderCell: (params:any) => {return <span style={{color:'blue'}}><b>{params.row.PO_QTY.toLocaleString('en-US')}</b></span>}  },
+    { field: "PO_NO", type: 'number',headerName: "PO_NO", width: 120 },
+    { field: "PO_QTY", type: 'number',headerName: "PO_QTY", width: 120, renderCell: (params:any) => {return <span style={{color:'blue'}}><b>{params.row.PO_QTY.toLocaleString('en-US')}</b></span>}  },
     { field: "PO_DATE", headerName: "PO_DATE", width: 200 },
     { field: "RD_DATE", headerName: "RD_DATE", width: 200 },
-    { field: "PROD_PRICE", headerName: "PROD_PRICE", width: 200, renderCell: (params:any) => {return <span style={{color:'gray'}}><b>{params.row.PROD_PRICE.toLocaleString('en-US' ,{style:'decimal',maximumFractionDigits:8})}</b></span>} },
+    { field: "PROD_PRICE", type: 'number',headerName: "PROD_PRICE", width: 200, renderCell: (params:any) => {return <span style={{color:'gray'}}><b>{params.row.PROD_PRICE.toLocaleString('en-US' ,{style:'decimal',maximumFractionDigits:8})}</b></span>} },
     { field: "CHECKSTATUS", headerName: "CHECKSTATUS", width: 200 , renderCell: (params:any) => {
       if(params.row.CHECKSTATUS.slice(0,2) === 'OK')
       return <span style={{color:'green'}}><b>{params.row.CHECKSTATUS}</b></span>
@@ -144,7 +144,7 @@ const InvoiceManager = () => {
     { field: "CUST_CD", headerName: "CUST_CD", width: 120 },    
     { field: "G_CODE", headerName: "G_CODE", width: 120 },
     { field: "PO_NO", headerName: "PO_NO", width: 120 },
-    { field: "DELIVERY_QTY", headerName: "DELIVERY_QTY", width: 120, renderCell: (params:any) => {return <span style={{color:'blue'}}><b>{params.row.DELIVERY_QTY}</b></span>}  },
+    { field: "DELIVERY_QTY", type: 'number',headerName: "DELIVERY_QTY", width: 120, renderCell: (params:any) => {return <span style={{color:'blue'}}><b>{params.row.DELIVERY_QTY}</b></span>}  },
     { field: "DELIVERY_DATE", headerName: "DELIVERY_DATE", width: 200 }, 
     { field: "CHECKSTATUS", headerName: "CHECKSTATUS", width: 200 , renderCell: (params:any) => {
       if(params.row.CHECKSTATUS.slice(0,2) === 'OK')

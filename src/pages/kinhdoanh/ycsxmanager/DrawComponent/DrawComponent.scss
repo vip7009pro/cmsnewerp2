@@ -1,7 +1,20 @@
 .drawcomponent{
+    position: relative;
     .draw {
+       
         width: 297mm !important;
         height: 208mm !important;
+        
+    }
+    .qcpass {
+        position: absolute;
+        top: 155mm;
+        left: 5mm;        
+    }
+    .qcpass2 {
+        position: absolute;
+        top: 0mm;
+        left: 235mm;        
     }
 
 }

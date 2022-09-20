@@ -5,10 +5,16 @@ import "../home/home.scss";
 function Home() {
   return (
     <div className='home'>
-      <Sidebar />
-      <div className='homeContainer'>
+      <div className='navdiv'>
         <Navbar />
-        <Outlet />
+      </div>
+      <div className='homeContainer'>
+        <div className='sidebardiv'>
+          <Sidebar />
+        </div>
+        <div className='outletdiv'>
+          <Outlet />
+        </div>
       </div>
     </div>
   );

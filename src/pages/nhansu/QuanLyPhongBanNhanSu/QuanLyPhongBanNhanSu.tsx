@@ -6,7 +6,6 @@ import Swal from "sweetalert2";
 import LinearProgress from '@mui/material/LinearProgress';
 import {SaveExcel} from '../../../api/GlobalFunction';
 import moment from 'moment';
-
 interface MainDeptTableData {
   id: number;
   CTR_CD: string;
@@ -22,7 +21,6 @@ interface SubDeptTableData {
   SUBDEPTNAME: string;
   SUBDEPTNAME_KR: string;
 }
-
 interface WorkPositionTableData {
   id: number;
   CTR_CD: string; 
@@ -32,7 +30,6 @@ interface WorkPositionTableData {
   WORK_POSITION_NAME_KR: string;
   ATT_GROUP_CODE: number;
 }
-
 interface EmployeeTableData {
     id: string,   
     EMPL_NO: string,
@@ -80,14 +77,12 @@ interface EmployeeTableData {
     MAINDEPTCODE: number,
     MAINDEPTNAME: string,
     MAINDEPTNAME_KR: string,
-
 }
 const QuanLyPhongBanNhanSu = () => {
     const [isLoading, setisLoading] = useState(false);
     const [quanlyphongbanShow, setQuanLyPhongBanShow]  = useState(false);
     const [quanlynhansuShow, setQuanLyNhanSuShow]  = useState(true);
     const [workpositionload, setWorkPositionLoad] = useState<Array<WorkPositionTableData>>([]);
-
     const [EMPL_NO,setEMPL_NO]= useState("");
     const [CMS_ID,setCMS_ID]= useState("");
     const [FIRST_NAME,setFIRST_NAME]= useState("");
@@ -109,28 +104,19 @@ const QuanLyPhongBanNhanSu = () => {
     const [JOB_CODE,setJOB_CODE]= useState(0);
     const [FACTORY_CODE,setFACTORY_CODE]= useState(1);
     const [WORK_STATUS_CODE,setWORK_STATUS_CODE]= useState(0);
-    
-    
     const [employeeTable, setEmployeeTable] = useState<Array<EmployeeTableData>>([]);
-    
     const [maindeptTable, setMainDeptTable] = useState<Array<MainDeptTableData>>([]);
     const [maindeptDataFilter, setMainDeptDataFilter] = useState<Array<MainDeptTableData>>([]);
-          
     const [maindeptcode,setMainDeptCode] = useState(1);
     const [maindeptname,setMainDeptName] = useState("");
     const [maindeptnamekr,setMainDeptNameKR] = useState("");
-
     const [subdeptcode,setSubDeptCode] = useState(1);
     const [subdeptname,setSubDeptName] = useState("");
     const [subdeptnamekr,setSubDeptNameKR] = useState("");
-
     const [workpositioncode,setWorkPositionCode] = useState(1);
     const [workpositionname,setWorkPositionName] = useState("");
     const [workpositionnamekr,setWorkPositionNameKR] = useState("");
     const [att_group_code,setATT_GROUP_CODE] = useState(1);
-
-
-
     const handle_them_maindept = ()=> {   
         const insertData = {
             CTR_CD: '002',
@@ -151,7 +137,6 @@ const QuanLyPhongBanNhanSu = () => {
                         console.log(response.data.data);  
                         setMainDeptTable(response.data.data);
                     }
-                    
                 })
                 .catch(error => {
                     console.log(error);
@@ -159,9 +144,8 @@ const QuanLyPhongBanNhanSu = () => {
             }
             else
             {
-                Swal.fire("Thông báo", "Thêm thất bại !", "error");
+                Swal.fire("Thông báo", "Thêm thất bại !"+ response.data.message, "error");
             }
-            
         })
         .catch(error => {
             console.log(error);
@@ -194,7 +178,7 @@ const QuanLyPhongBanNhanSu = () => {
             }
             else
             {
-                Swal.fire("Thông báo", "Sửa thất bại !", "error");
+                Swal.fire("Thông báo", "Sửa thất bại !"+ response.data.message, "error");
             }            
         })
         .catch(error => {
@@ -228,15 +212,13 @@ const QuanLyPhongBanNhanSu = () => {
             }
             else
             {
-                Swal.fire("Thông báo", "Xoá thất bại !", "error");
+                Swal.fire("Thông báo", "Xoá thất bại !"+ response.data.message, "error");
             }            
         })
         .catch(error => {
             console.log(error);
         })
     }
-
-
     const handle_them_subdept = ()=> {   
         const insertData = {
             CTR_CD: '002',
@@ -265,17 +247,12 @@ const QuanLyPhongBanNhanSu = () => {
             }
             else
             {
-                Swal.fire("Thông báo", "Thêm thất bại !", "error");
+                Swal.fire("Thông báo", "Thêm thất bại !"+ response.data.message, "error");
             }
-            
         })
         .catch(error => {
             console.log(error);
         });
-
-        
-
-        
     }
     const handle_sua_subdept = ()=> {
         const insertData = {
@@ -305,7 +282,7 @@ const QuanLyPhongBanNhanSu = () => {
             }
             else
             {
-                Swal.fire("Thông báo", "Sửa thất bại !", "error");
+                Swal.fire("Thông báo", "Sửa thất bại !"+ response.data.message, "error");
             }            
         })
         .catch(error => {
@@ -340,7 +317,7 @@ const QuanLyPhongBanNhanSu = () => {
             }
             else
             {
-                Swal.fire("Thông báo", "Xoá thất bại !", "error");
+                Swal.fire("Thông báo", "Xoá thất bại !"+ response.data.message, "error");
             }            
         })
         .catch(error => {
@@ -376,17 +353,12 @@ const QuanLyPhongBanNhanSu = () => {
             }
             else
             {
-                Swal.fire("Thông báo", "Thêm thất bại !", "error");
+                Swal.fire("Thông báo", "Thêm thất bại !"+ response.data.message, "error");
             }
-            
         })
         .catch(error => {
             console.log(error);
         });
-
-        
-
-        
     }
     const handle_sua_workposition = ()=> {
         const insertData = {
@@ -417,7 +389,7 @@ const QuanLyPhongBanNhanSu = () => {
             }
             else
             {
-                Swal.fire("Thông báo", "Sửa thất bại !", "error");
+                Swal.fire("Thông báo", "Sửa thất bại !"+ response.data.message, "error");
             }            
         })
         .catch(error => {
@@ -453,15 +425,13 @@ const QuanLyPhongBanNhanSu = () => {
             }
             else
             {
-                Swal.fire("Thông báo", "Xoá thất bại !", "error");
+                Swal.fire("Thông báo", "Xoá thất bại !" + response.data.message, "error");
             }            
         })
         .catch(error => {
             console.log(error);
         })
     }
-
-
     const handle_them_employee = ()=> {   
         const insertData = {            
             EMPL_NO: EMPL_NO,
@@ -506,16 +476,12 @@ const QuanLyPhongBanNhanSu = () => {
             }
             else
             {
-                Swal.fire("Thông báo", "Thêm thất bại !", "error");
+                Swal.fire("Thông báo", "Thêm thất bại ! " + response.data.message, "error");
             }            
         })
         .catch(error => {
             console.log(error);
         });
-
-        
-
-        
     }
     const handle_sua_employee = ()=> {
         const insertData = {            
@@ -561,7 +527,7 @@ const QuanLyPhongBanNhanSu = () => {
             }
             else
             {
-                Swal.fire("Thông báo", "Sửa thất bại !", "error");
+                Swal.fire("Thông báo", "Sửa thất bại !"+ response.data.message, "error");
             }            
         })
         .catch(error => {
@@ -591,17 +557,11 @@ const QuanLyPhongBanNhanSu = () => {
         setWORK_SHIFT_CODE(1);
         setWORK_POSITION_CODE(1);
         setATT_GROUP_CODE(1);         
-       
     }
-
     const [subdeptTable, setSubDeptTable] = useState<Array<SubDeptTableData>>([]);
-
     const [subdeptDataFilter, setSubDeptDataFilter] = useState<Array<SubDeptTableData>>([]);
-
     const [workpositionTable, setWorkPositionTable] = useState<Array<WorkPositionTableData>>([]);
     const [workpositionDataFilter, setWorkPositionDataFilter] = useState<Array<WorkPositionTableData>>([]);
-
-
     const columns_maindept =[
         { field: "id", headerName: "ID", width: 70 },
         { field: "CTR_CD", headerName: "CTR_CD", width: 70 },
@@ -673,9 +633,7 @@ const QuanLyPhongBanNhanSu = () => {
         { field: "MAINDEPTCODE", headerName: "MAINDEPTCODE", width: 170},  
         { field: "MAINDEPTNAME", headerName: "MAINDEPTNAME", width: 170},  
         { field: "MAINDEPTNAME_KR", headerName: "MAINDEPTNAME_KR", width: 170},  
-
  ];
-    
     const handleMainDeptSelection = (ids:GridSelectionModel)=> {
         const selectedID = new Set(ids);
         var datafilter = maindeptTable.filter((element: any) =>
@@ -693,17 +651,14 @@ const QuanLyPhongBanNhanSu = () => {
                         console.log(response.data.data);  
                         setSubDeptTable(response.data.data);
                     }
-                    
                 })
                 .catch(error => {
                     console.log(error);
                 });
-
         }
         setMainDeptDataFilter(datafilter); 
         console.log(datafilter);        
     }
-
     const handlesubDeptSelection = (ids:GridSelectionModel)=> {
         const selectedID = new Set(ids);
         var datafilter = subdeptTable.filter((element: any) =>
@@ -744,7 +699,6 @@ const QuanLyPhongBanNhanSu = () => {
         setWorkPositionDataFilter(datafilter); 
         console.log(datafilter);        
     }
-
     const handleEmployeeSelection = (ids:GridSelectionModel)=> {
         const selectedID = new Set(ids);
         var datafilter = employeeTable.filter((element: any) =>
@@ -774,12 +728,9 @@ const QuanLyPhongBanNhanSu = () => {
             setWORK_SHIFT_CODE(datafilter[datafilter.length-1].WORK_SHIFT_CODE);
             setWORK_POSITION_CODE(datafilter[datafilter.length-1].WORK_POSITION_CODE);
             setATT_GROUP_CODE(datafilter[datafilter.length-1].ATT_GROUP_CODE);
-          
-           
         }       
         console.log(datafilter);        
     }
-
     function CustomToolbar() {
         return (
           <GridToolbarContainer>
@@ -807,12 +758,10 @@ const QuanLyPhongBanNhanSu = () => {
             //console.log(response.data.data);  
             setWorkPositionLoad(response.data.data);
             setisLoading(false);
-            
         })
         .catch(error => {
             console.log(error);
         });
-
         generalQuery('getemployee_full',{})
         .then(response => {
             //console.log(response.data); 
@@ -830,10 +779,7 @@ const QuanLyPhongBanNhanSu = () => {
         .catch(error => {
             console.log(error);
         });
-
     },[]);
-
-  
   return (
     <div className='quanlyphongbannhansu'>
       <div className='quanlyphongban'>
@@ -1035,12 +981,9 @@ const QuanLyPhongBanNhanSu = () => {
               }}
             />
           </div>
-          
         </div>}
-
       </div>
     </div>
   );
 }
-
 export default QuanLyPhongBanNhanSu

@@ -286,7 +286,7 @@ const KinhDoanhReport = () => {
             <div className='dailygraph'>
               <span className='subsection'>PO Balance Trending (By Week)</span>
               <Chart4 />
-            </div>
+            </div>           
           </div>
         </div>
       </div>

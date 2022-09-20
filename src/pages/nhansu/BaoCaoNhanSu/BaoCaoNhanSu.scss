@@ -1,92 +1,173 @@
-
 .baocaonhansu {  
     display: flex;
     flex-direction: column;
-
-    .baocao1 {
-        h3 {
-            align-self: center;
-            padding: 10px;
-        }
-        .filterform {
-            display: flex;
-            flex-direction: row;        
-            align-items: center;
-            justify-content: center;
-            justify-self: center;
-            align-self: center;
-            padding: 20px;
-            width: 97%;
-            border-radius: 10px;
-            height: 4vh;
-            margin-left: 10px;
-            margin-bottom: 10px;
-            gap: 20px;
-            background-image: linear-gradient(0deg, #afd3d1, #67ecae);
-            
-            .searchbutton {
-                background-color: #21a73e;
-                /* Green */
-                border: none;
-                color: white;
-                padding: 8px 8px;
-                text-align: center;
-                text-decoration: none;
-                display: inline-block;
-                font-size: 14px;
-                border-radius: 5px;
-                outline: none;
-                box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
-                -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
-                -moz-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
-                &:hover {
-                    background-color: #22fd7e;
-                    }
-                }
-    
-                input {
-                    height: 30px;
-                    font-size: 20px;
-                }
-                select {
-                    height: 30px;
-                    font-size: 20px;
-                }
-    
-    
-        }
-        .diemdanhhistorychart {
-            display: flex;
-            width: 100%;
-            height: 450px;
-        }
-        .maindept_table {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            justify-content: center;
-            justify-self: center;
-            align-self: center;
-            
-            width: 100%;
-            border-radius: 10px;
-            height: 450px;
-            margin-left: 10px;
-            background-image: linear-gradient(0deg,  #6396f3,#edeeec);
-            .tiledilamtable {
-                height: 100%;
-                width: 50%;
+    width: 100%; 
+  
+    @media only screen and (max-width: 3000px) {
+        .baocao1 {
+            h3 {
+                align-self: center;
+                padding: 10px;
             }
-            .titrongphongbangraph {
-                svg {width: 100%;height: auto;}
-                height: 100%;
-                width: 50%;
-            }   
-            
+            .filterform {
+                display: flex;
+                flex-direction: row;        
+                align-items: center;
+                justify-content: center;
+                justify-self: center;
+                align-self: center;
+                padding: 20px;
+                width: 97%;
+                border-radius: 10px;
+                height: 4vh;
+                margin-left: 10px;
+                margin-bottom: 10px;
+                gap: 20px;
+                background-image: linear-gradient(0deg, #afd3d1, #67ecae);
+                .searchbutton {
+                    background-color: #21a73e;
+                    /* Green */
+                    border: none;
+                    color: white;
+                    padding: 8px 8px;
+                    text-align: center;
+                    text-decoration: none;
+                    display: inline-block;
+                    font-size: 14px;
+                    border-radius: 5px;
+                    outline: none;
+                    box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
+                    -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
+                    -moz-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
+                    &:hover {
+                        background-color: #22fd7e;
+                        }
+                    }
+                    input {
+                        height: 30px;
+                        font-size: 20px;
+                    }
+                    select {
+                        height: 30px;
+                        font-size: 20px;
+                    }
+            }
+            .diemdanhhistorychart {
+                display: flex;
+                width: 100%;
+                height: 450px;
+            }
+            .maindept_table {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                justify-content: center;
+                justify-self: center;
+                align-self: center;
+                width: 100%;
+                border-radius: 10px;
+                height: 450px;
+                margin-left: 10px;
+                background-image: linear-gradient(0deg,  #6396f3,#edeeec);
+                .tiledilamtable {
+                    height: 100%;
+                    width: 50%;
+                }
+                .titrongphongbangraph {
+                    svg {width: 100%;height: auto;}
+                    height: 100%;
+                    width: 50%;
+                }   
+        }
+        }
     }
-    
-
+     @media only screen and (max-width: 768px) {
+        * {
+            font-size: 12px;
+        }
+        .baocao1 {
+            display: flex;
+            flex-direction: column;
+            h3 {
+                align-self: center;
+                padding: 10px;
+            }
+            .filterform {
+                display: flex;
+                flex-direction: column;        
+                flex-wrap: wrap;
+                height: fit-content;
+                align-items: flex-end;
+                justify-content: flex-end;
+                justify-self: center;
+                align-self: center;
+                padding: 20px;
+                width: 100%;
+                border-radius: 10px;                
+                margin-left: 10px;
+                margin-bottom: 10px;
+                gap: 20px;
+                background-image: linear-gradient(0deg, #afd3d1, #67ecae);
+                .searchbutton {
+                    background-color: #21a73e;
+                    /* Green */
+                    border: none;
+                    color: white;
+                    padding: 8px 8px;
+                    text-align: center;
+                    text-decoration: none;
+                    display: inline-block;
+                    font-size: 14px;
+                    border-radius: 5px;
+                    outline: none;
+                    box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
+                    -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
+                    -moz-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
+                    &:hover {
+                        background-color: #22fd7e;
+                        }
+                    }
+                    input {
+                        height: 30px;
+                        font-size: 20px;
+                    }
+                    select {
+                        height: 30px;
+                        font-size: 20px;
+                    }
+            }
+            .diemdanhhistorychart {
+                display: flex;
+                width: 100%;
+                height: 250px;
+                border-radius: 10px;
+                background-image: linear-gradient(0deg,  #e7fa94,#edeeec);                
+            }
+            .maindept_table {
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                align-items: center;
+                justify-content: center;
+                justify-self: center;
+                align-self: center;
+                width: 100%;
+                border-radius: 10px;
+                height: 900px;                
+                background-image: linear-gradient(0deg,  #6396f3,#edeeec);
+                
+                .tiledilamtable {
+                    height: 150%;
+                    width: 100%;
+                }
+                .titrongphongbangraph {
+                    /* svg {width: 100%;height: auto;} */
+                    height: 200%;
+                    width: 100%;
+                }   
+        }
+        }
     }
-
-
+     @media only screen and (max-width: 320px) {
+    }
 }
