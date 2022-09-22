@@ -1,8 +1,11 @@
 import moment from "moment";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import { generalQuery } from "../../../../api/Api";
+import { UserContext } from "../../../../api/Context";
+
 import "./YCSXComponent.scss";
+
 var Barcode = require("react-barcode");
 
 interface POBALANCETDYCSX{ G_CODE: string; PO_BALANCE: number }
@@ -19,6 +22,8 @@ interface TONKHOTDYCSX {
 }
 
 interface YCSXTableData {
+    PDBV_EMPL?: string,
+    PDBV_DATE?: string,
     PDBV?: string,
     PROD_MAIN_MATERIAL?: string,
     PROD_TYPE?: string,
@@ -115,7 +120,8 @@ interface FullBOM {
     HOLDING: number,
     TONG_TON_LIEU: number
 }
-const YCSXComponent = ({G_CODE,PROD_TYPE,PROD_MAIN_MATERIAL,G_NAME,EMPL_NAME,EMPL_NO,CUST_NAME_KD,CUST_CD,PROD_REQUEST_NO,PROD_REQUEST_DATE,PROD_REQUEST_QTY,LOT_TOTAL_INPUT_QTY_EA,LOT_TOTAL_OUTPUT_QTY_EA,INSPECT_BALANCE,SHORTAGE_YCSX,YCSX_PENDING,PHAN_LOAI,REMARK,PO_TDYCSX,TOTAL_TKHO_TDYCSX,TKHO_TDYCSX,BTP_TDYCSX,CK_TDYCSX,BLOCK_TDYCSX,FCST_TDYCSX,W1,W2,W3,W4,W5,W6,W7,W8,PDUYET,LOAIXH, PDBV}:YCSXTableData) => {
+const YCSXComponent = ({G_CODE,PROD_TYPE,PROD_MAIN_MATERIAL,G_NAME,EMPL_NAME,EMPL_NO,CUST_NAME_KD,CUST_CD,PROD_REQUEST_NO,PROD_REQUEST_DATE,PROD_REQUEST_QTY,LOT_TOTAL_INPUT_QTY_EA,LOT_TOTAL_OUTPUT_QTY_EA,INSPECT_BALANCE,SHORTAGE_YCSX,YCSX_PENDING,PHAN_LOAI,REMARK,PO_TDYCSX,TOTAL_TKHO_TDYCSX,TKHO_TDYCSX,BTP_TDYCSX,CK_TDYCSX,BLOCK_TDYCSX,FCST_TDYCSX,W1,W2,W3,W4,W5,W6,W7,W8,PDUYET,LOAIXH, PDBV, PDBV_EMPL, PDBV_DATE}:YCSXTableData) => {
+    const [userData, setUserData] = useContext(UserContext);
     const [tvl_tdycsx,setTVL_TDYCSX] = useState<Array<TONVL>>([{
         M_CODE: 'string',
         M_NAME: 'string',
@@ -285,14 +291,15 @@ const YCSXComponent = ({G_CODE,PROD_TYPE,PROD_MAIN_MATERIAL,G_NAME,EMPL_NAME,EMP
             initYCSX();  
     },[PROD_REQUEST_NO]);
 
-    console.log(PDBV);
+    console.log(PDBV_EMPL);
   return (
     <div className='ycsxcomponent'>     
       {(PDBV === 'Y') && <div className="qcpass">
         <img alt="qcpass" src="/QC PASS20.png" width={440-100-10} height={400-100}/>
       </div>  }  
      { request_codeinfo[0].PDUYET &&  <div className='tieudeycsx'>
-        <div className='title'>CMSV 생산요청서 - Yêu cầu sản xuất<br></br><span style={{fontSize:12}}>Thời điểm in YCSX: {moment().format("YYYY-MM-DD HH:mm:ss")}</span><br></br> {(request_codeinfo[0].NO_INSPECTION ==='Y') && <span style={{fontSize:18}}>(Sản phẩm không kiểm tra ngoại quan)</span>}</div>
+     <img alt="logo" src="/logocmsvina.png" width={160} height={40}/>
+        <div className='title'> 생산요청서 - Yêu cầu sản xuất<br></br><span style={{fontSize:12}}>Thời điểm in YCSX: {moment().format("YYYY-MM-DD HH:mm:ss")}</span><br></br> {(request_codeinfo[0].NO_INSPECTION ==='Y') && <span style={{fontSize:18}}>(Sản phẩm không kiểm tra ngoại quan)</span>}</div>
         <div className='soycsx'>
           <div className='ycsxno'>{request_codeinfo[0].PROD_REQUEST_DATE}-{request_codeinfo[0].PROD_REQUEST_NO} </div>
           <div className='ycsxbarcode'>
@@ -384,7 +391,7 @@ const YCSXComponent = ({G_CODE,PROD_TYPE,PROD_MAIN_MATERIAL,G_NAME,EMPL_NAME,EMP
             </tbody>
           </table>
         </div>
-        <div className='text1'>2. 제품 정보 Thông tin sản phẩm</div>
+        <div className='text1'>2. 제품 정보 Thông tin sản phẩm <span className="approval_info"> TK IN: {userData.EMPL_NO}</span>  {(PDBV==='Y') && <span className="approval_info"> | (TTPD_YCSX_BV: {PDBV_EMPL} | {moment.utc( PDBV_DATE).format("YYYY-MM-DD HH:mm:ss")})</span>}</div>
         <div className='thongtinsanpham'>
           <div className='ttsp'>
             <table>

@@ -79,7 +79,7 @@ const globaltext: Array<sentences> = [
   },
   {
     sentenceID: 12,
-    vi: "Nhân sự",
+    vi: "Nhân sự bộ phận",
     en: "HR",
     kr: "인사",
   }, {

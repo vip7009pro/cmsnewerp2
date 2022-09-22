@@ -10,6 +10,7 @@ import { UserContext } from '../../../api/Context';
 import { SaveExcel } from '../../../api/GlobalFunction';
 import "./CODE_MANAGER.scss"
 import { BiReset } from 'react-icons/bi';
+import { MdOutlineDraw } from 'react-icons/md';
 const axios = require('axios').default;
 interface CODE_INFO {
     id: number,
@@ -47,7 +48,7 @@ const CODE_MANAGER = () => {
   let column_codeinfo = [
     { field: "id", headerName: "ID", width: 70,  editable: enableEdit },
     { field: "G_CODE", headerName: "G_CODE", width: 80,  editable: enableEdit  },
-    { field: "G_NAME", headerName: "G_NAME", flex: 1, minWidth: 150,  editable: enableEdit  },
+    { field: "G_NAME", headerName: "G_NAME", flex: 1, minWidth: 250,  editable: enableEdit  },
     { field: "G_NAME_KD", headerName: "G_NAME_KD", width: 120,  editable: enableEdit  },
     { field: "PROD_TYPE", headerName: "PROD_TYPE", width: 80,  editable: enableEdit  },
     { field: "PROD_LAST_PRICE", headerName: "PRICE", width: 80,  editable: enableEdit  },
@@ -152,6 +153,11 @@ const CODE_MANAGER = () => {
       MỞ
      </span>
     } ,editable: true},
+    { field: "PDBV", headerName: "PD BANVE", width: 80 , renderCell: (params:any) => {
+      if(params.row.PDBV==='P')
+      return <span style={{color:'red'}}><b>PENDING</b></span>
+      return <span style={{color:'green'}}><b>APPROVED</b></span>
+    } },
   ];
 
   const [rows, setRows] = useState<GridRowsProp>([]);
@@ -168,6 +174,7 @@ const CODE_MANAGER = () => {
         <IconButton className='buttonIcon'onClick={()=>{ setNgoaiQuan('N');}}><AiFillCheckCircle color='blue' size={25}/>SET NGOAI QUAN</IconButton> 
         <IconButton className='buttonIcon'onClick={()=>{ setNgoaiQuan('Y');}}><FcCancel color='green' size={25}/>SET K NGOAI QUAN</IconButton> 
         <IconButton className='buttonIcon'onClick={()=>{resetBanVe('N'); }}><BiReset color='green' size={25}/>RESET BẢN VẼ</IconButton> 
+        <IconButton className='buttonIcon'onClick={()=>{pdBanVe('Y'); }}><MdOutlineDraw color='red' size={25}/>PDUYET BẢN VẼ</IconButton> 
         <IconButton className='buttonIcon'onClick={()=>{
           setColumns(columns.map((element, index:number)=> {
             return {...element, editable : !element.editable};
@@ -216,6 +223,42 @@ const CODE_MANAGER = () => {
     else
     {
       Swal.fire("Thông báo", "Chọn ít nhất 1 G_CODE để SET !" , "error"); 
+    }
+  }
+
+  const pdBanVe= async(value: string)=> {
+    if(codedatatablefilter.length>=1)
+    {
+      if(((userData.SUBDEPTNAME==='PQC1' || userData.SUBDEPTNAME==='PQC3') && (userData.JOB_NAME==='Sub Leader' || userData.JOB_NAME==='Leader')))
+      {
+        for(let i=0;i<codedatatablefilter.length;i++)
+        {        
+            await generalQuery("pdbanve", {           
+              G_CODE: codedatatablefilter[i].G_CODE,
+              VALUE: value
+            })
+            .then((response) => {
+              console.log(response.data.tk_status);
+              if (response.data.tk_status !== "NG") {
+                //Swal.fire("Thông báo", "Delete Po thành công", "success");  
+              } else {     
+                //Swal.fire("Thông báo", "Update PO thất bại: " +response.data.message , "error");              
+              }
+            })
+            .catch((error) => {
+              console.log(error);
+            }); 
+        } 
+        Swal.fire("Thông báo", "Phê duyệt Bản Vẽ THÀNH CÔNG", "success"); 
+      }
+      else
+      {
+        Swal.fire("Thông báo", "Không đủ quyền hạn!" , "error"); 
+      }  
+    }
+    else
+    {
+      Swal.fire("Thông báo", "Chọn ít nhất 1 G_CODE để Phê Duyệt !" , "error"); 
     }
   }
   const handleCODEINFO = ()=> {

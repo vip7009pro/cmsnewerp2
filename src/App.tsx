@@ -27,6 +27,10 @@ import CODE_MANAGER from "./pages/rnd/code_manager/CODE_MANAGER";
 import CUST_MANAGER from "./pages/kinhdoanh/custManager/CUST_MANAGER";
 import "./App.scss";
 import BulletinBoard from "./components/BulletinBoard/BulletinBoard";
+import QC from "./pages/qc/QC";
+import INSPECTION from "./pages/qc/inspection/INSPECTION";
+import KIEMTRA from "./pages/qc/inspection/KIEMTRA";
+import PQC from "./pages/qc/pqc/PQC";
 interface userDataInterface {
   ADD_COMMUNE: string;
   ADD_DISTRICT: string;
@@ -88,8 +92,16 @@ const ProtectedRoute: any = ({
   if (user.EMPL_NO === "none") {
     return <Navigate to='/login' replace />;
   } else {
-    if (maindeptname === "all" || user.EMPL_NO === "NHU1903" || user.JOB_NAME === "ADMIN") {
-      if (jobname === "all" || user.EMPL_NO === "NHU1903" || user.JOB_NAME === "ADMIN") {
+    if (
+      maindeptname === "all" ||
+      user.EMPL_NO === "NHU1903" ||
+      user.JOB_NAME === "ADMIN"
+    ) {
+      if (
+        jobname === "all" ||
+        user.EMPL_NO === "NHU1903" ||
+        user.JOB_NAME === "ADMIN"
+      ) {
         return children;
       } else {
         if (
@@ -115,7 +127,11 @@ const ProtectedRoute: any = ({
           "error"
         );
       } else {
-        if (jobname === "all" || user.EMPL_NO === "NHU1903" || user.JOB_NAME === "ADMIN") {
+        if (
+          jobname === "all" ||
+          user.EMPL_NO === "NHU1903" ||
+          user.JOB_NAME === "ADMIN"
+        ) {
           return children;
         } else {
           if (
@@ -312,14 +328,36 @@ function App() {
                         maindeptname='RND'
                         jobname='all'
                       >
-                        <KinhDoanh/>
+                        <KinhDoanh />
                       </ProtectedRoute>
                     }
                   >
                     <Route index element={<KinhDoanhReport />} />
                     <Route path='quanlycodebom' element={<CODE_MANAGER />} />
                     <Route path='thembomamazon' element={<CODE_MANAGER />} />
-                    <Route path='designamazon' element={<CODE_MANAGER />} />                
+                    <Route path='designamazon' element={<CODE_MANAGER />} />
+                  </Route>
+                  <Route
+                    path='qc'
+                    element={
+                      <ProtectedRoute
+                        user={userData}
+                        maindeptname='QC'
+                        jobname='all'
+                      >
+                        <QC />
+                      </ProtectedRoute>
+                    }
+                  >
+                    <Route index element={<AccountInfo />} />
+                    <Route path='iqc' element={<CODE_MANAGER />} />
+                    <Route path='pqc' element={<PQC />} />
+                    <Route path='oqc' element={<CODE_MANAGER />} />
+                    <Route path='inspection' element={<KIEMTRA />} />
+                    <Route path='cs' element={<CODE_MANAGER />} />
+                    <Route path='dtc' element={<CODE_MANAGER />} />
+                    <Route path='iso' element={<CODE_MANAGER />} />
+                    <Route path='qcreport' element={<CODE_MANAGER />} />
                   </Route>
                   <Route
                     path='nhansu'
@@ -329,72 +367,74 @@ function App() {
                         maindeptname='all'
                         jobname='all'
                       >
-                        <AccountInfo />
+                        <NhanSu />
                       </ProtectedRoute>
                     }
-                  ></Route>
-                  <Route
-                    path='nhansu/quanlyphongbannhanvien'
-                    element={
-                      <ProtectedRoute
-                        user={userData}
-                        maindeptname='all'
-                        jobname='leader'
-                      >
-                        <QuanLyPhongBanNhanSu />
-                      </ProtectedRoute>
-                    }
-                  />
-                  <Route
-                    path='nhansu/diemdanhnhom'
-                    element={
-                      <ProtectedRoute
-                        user={userData}
-                        maindeptname='all'
-                        jobname='leader'
-                      >
-                        <DiemDanhNhom />
-                      </ProtectedRoute>
-                    }
-                  />
-                  <Route
-                    path='nhansu/dieuchuyenteam'
-                    element={
-                      <ProtectedRoute
-                        user={userData}
-                        maindeptname='all'
-                        jobname='leader'
-                      >
-                        <DieuChuyenTeam />
-                      </ProtectedRoute>
-                    }
-                  />
-                  <Route path='nhansu/dangky' element={<TabDangKy />} />
-                  <Route
-                    path='nhansu/pheduyetnghi'
-                    element={
-                      <ProtectedRoute
-                        user={userData}
-                        maindeptname='all'
-                        jobname='leader'
-                      >
-                        <PheDuyetNghi />
-                      </ProtectedRoute>
-                    }
-                  />
-                  <Route path='nhansu/lichsu' element={<LichSu />} />
-                  <Route
-                    path='nhansu/baocaonhansu'
-                    element={
-                      <ProtectedRoute
-                        user={userData}
-                        maindeptname='all'
-                        jobname='leader'
-                      >
-                        <BaoCaoNhanSu />
-                      </ProtectedRoute>
-                    }
-                  />
+                  >
+                    <Route index element={<AccountInfo />} />
+                    <Route
+                      path='quanlyphongbannhanvien'
+                      element={
+                        <ProtectedRoute
+                          user={userData}
+                          maindeptname='all'
+                          jobname='leader'
+                        >
+                          <QuanLyPhongBanNhanSu />
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route
+                      path='diemdanhnhom'
+                      element={
+                        <ProtectedRoute
+                          user={userData}
+                          maindeptname='all'
+                          jobname='leader'
+                        >
+                          <DiemDanhNhom />
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route
+                      path='dieuchuyenteam'
+                      element={
+                        <ProtectedRoute
+                          user={userData}
+                          maindeptname='all'
+                          jobname='leader'
+                        >
+                          <DieuChuyenTeam />
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route path='dangky' element={<TabDangKy />} />
+                    <Route
+                      path='pheduyetnghi'
+                      element={
+                        <ProtectedRoute
+                          user={userData}
+                          maindeptname='all'
+                          jobname='leader'
+                        >
+                          <PheDuyetNghi />
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route path='lichsu' element={<LichSu />} />
+                    <Route
+                      path='baocaonhansu'
+                      element={
+                        <ProtectedRoute
+                          user={userData}
+                          maindeptname='all'
+                          jobname='leader'
+                        >
+                          <BaoCaoNhanSu />
+                        </ProtectedRoute>
+                      }
+                    />
+                  </Route>
                 </Route>
               </Routes>
             </BrowserRouter>

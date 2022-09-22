@@ -42,6 +42,8 @@ interface FCSTTDYCSX{
   W8: number;
 }
 interface YCSXTableData {
+  PDBV_EMPL?: string,
+  PDBV_DATE?:string,
   PDBV?: string,
   BANVE?: string,
   PROD_MAIN_MATERIAL?: string,
@@ -113,10 +115,10 @@ const YCSXManager = () => {
   });
 
   const renderYCSX = (ycsxlist: YCSXTableData[]) => {
-    return  ycsxlist.map((element,index)=> <YCSXComponent key={index} PROD_REQUEST_NO={element.PROD_REQUEST_NO} G_CODE={element.G_CODE} PO_TDYCSX={element.PO_TDYCSX}  TOTAL_TKHO_TDYCSX={ element.TOTAL_TKHO_TDYCSX}  TKHO_TDYCSX={ element.TKHO_TDYCSX}  BTP_TDYCSX={ element.BTP_TDYCSX}  CK_TDYCSX={ element.CK_TDYCSX}  BLOCK_TDYCSX={ element.BLOCK_TDYCSX}  FCST_TDYCSX={ element.FCST_TDYCSX} PDBV={element.PDBV}/>)
+    return  ycsxlist.map((element,index)=> <YCSXComponent key={index} PROD_REQUEST_NO={element.PROD_REQUEST_NO} G_CODE={element.G_CODE} PO_TDYCSX={element.PO_TDYCSX}  TOTAL_TKHO_TDYCSX={ element.TOTAL_TKHO_TDYCSX}  TKHO_TDYCSX={ element.TKHO_TDYCSX}  BTP_TDYCSX={ element.BTP_TDYCSX}  CK_TDYCSX={ element.CK_TDYCSX}  BLOCK_TDYCSX={ element.BLOCK_TDYCSX}  FCST_TDYCSX={ element.FCST_TDYCSX} PDBV={element.PDBV} PDBV_EMPL={element.PDBV_EMPL} PDBV_DATE={element.PDBV_DATE}/>)
   }
   const renderBanVe = (ycsxlist: YCSXTableData[]) => {
-    return  ycsxlist.map((element,index)=>(element.BANVE === 'Y' ? <DrawComponent key={index} G_CODE = {element.G_CODE} PDBV ={element.PDBV}/> : <div>Code: {element.G_NAME} : Không có bản vẽ</div> ))
+    return  ycsxlist.map((element,index)=>(element.BANVE === 'Y' ? <DrawComponent key={index} G_CODE = {element.G_CODE} PDBV ={element.PDBV} PROD_REQUEST_NO={element.PROD_REQUEST_NO} PDBV_EMPL={element.PDBV_EMPL} PDBV_DATE={element.PDBV_DATE}/> : <div>Code: {element.G_NAME} : Không có bản vẽ</div> ))
   }
 
   const [file, setFile] = useState<any>();
@@ -170,7 +172,7 @@ const YCSXManager = () => {
   const [prod_model, setProd_Model] = useState('');
   const column_ycsxtable = [   
     { field: "G_CODE", headerName: "G_CODE", width: 80 },
-    { field: "G_NAME", headerName: "G_NAME", width: 180, },
+    { field: "G_NAME", headerName: "G_NAME", width: 250, },
     { field: "EMPL_NAME", headerName: "PIC KD", width: 150 },
     { field: "CUST_NAME_KD", headerName: "KHÁCH", width: 120 },
     { field: "PROD_REQUEST_NO", headerName: "SỐ YCSX", width: 80 },
@@ -217,6 +219,7 @@ const YCSXManager = () => {
       else
       return <span style={{color:'red'}}><b>Không Duyệt</b></span>
     }},
+    { field: "G_NAME", headerName: "G_NAME", width: 250, },
     { field: "BANVE", headerName: "BANVE", width: 250 , renderCell: (params:any) => {
 
       let file:any = null;
@@ -284,6 +287,12 @@ const YCSXManager = () => {
        <input  accept=".pdf" type="file" onChange={(e:any)=> {file = e.target.files[0]; console.log(file);}} />
       </div>
     }},
+    { field: "PDBV", headerName: "PD BANVE", width: 80 , renderCell: (params:any) => {
+      if(params.row.PDBV==='P')
+      return <span style={{color:'red'}}><b>PENDING</b></span>
+      return <span style={{color:'green'}}><b>APPROVED</b></span>
+    } },
+   
   ];
   const column_excel2 = [
     { field: "id", headerName: "id", width: 180 },

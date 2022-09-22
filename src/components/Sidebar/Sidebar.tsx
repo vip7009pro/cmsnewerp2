@@ -1,19 +1,20 @@
 import React, { useContext, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import SubMenu from "./Submenu";
-import { FcAbout, FcApprove, FcCustomerSupport, FcList } from 'react-icons/fc';
+import { FcAbout, FcApprove, FcCustomerSupport, FcInspection, FcList, FcProcess, FcServices } from 'react-icons/fc';
 import "./Sidebar.scss";
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import HomeIcon from '@mui/icons-material/Home';
 import { FaDonate, FaFileInvoiceDollar,FaCheckCircle, FaHistory, FaBomb } from 'react-icons/fa';
-import { BiCart } from 'react-icons/bi';
+import { BiCart, BiSortAZ } from 'react-icons/bi';
 import { FcPlanner, FcSettings,FcBullish, FcPortraitMode,FcManager,FcCheckmark,FcPieChart,FcRefresh } from 'react-icons/fc';
-import { MdDesignServices, MdOutlineAppRegistration, MdPriceChange } from "react-icons/md";
+import { MdBugReport, MdDesignServices, MdInput, MdOutlineAppRegistration, MdOutlineAspectRatio, MdPriceChange } from "react-icons/md";
 import { WiDayLightning } from "react-icons/wi";
 import getsentence from "../../components/String/String";
 import { LangConText } from "../../api/Context";
 import { AiFillAmazonCircle, AiFillAmazonSquare } from "react-icons/ai";
+import RuleRoundedIcon from '@mui/icons-material/RuleRounded';
 const Sidebar = () => {
   const [sidebar, setSidebar] = useState(false);
   const showSidebar = () => setSidebar(!sidebar);
@@ -118,6 +119,57 @@ const Sidebar = () => {
       ]
     },
     {
+      title: 'Phòng QC',
+      path: '/',
+      icon: <RuleRoundedIcon color="primary"/>,
+      iconClosed: <KeyboardArrowDownIcon />,
+      iconOpened: <KeyboardArrowUpIcon />,  
+      subNav: [
+        {
+          title: 'IQC',
+          path: '/qc/iqc',
+          icon: <MdInput color='blue' size={25}/>,
+          cName: 'sub-nav'
+        },
+        {
+          title: 'PQC',
+          path: '/qc/pqc',
+          icon: <FcProcess color='green' size={25}/>,
+          cName: 'sub-nav'
+        },
+        {
+          title: 'OQC',
+          path: '/qc/oqc',
+          icon: <MdInput color='green' size={25}/>
+        },
+        {
+          title: 'INSPECTION',
+          path: '/qc/inspection',
+          icon: <FcInspection color='blue' size={25}/>
+        },
+        {
+          title: 'CS',
+          path: '/qc/cs',
+          icon: <FcServices color='blue' size={25}/>        
+        },
+        {
+          title: 'DTC',
+          path: '/qc/dtc',
+          icon: <MdOutlineAspectRatio color='red' size={25}/>        
+        },        
+        {
+          title: 'ISO',
+          path: '/qc/iso',
+          icon: <BiSortAZ color='#fa1e9e' size={25}/>        
+        },
+        {
+          title: 'Báo cáo QC',
+          path: '/qc/qcreport',
+          icon: <MdBugReport color='blue' size={25}/>
+        }
+      ]
+    }, 
+    {
       title: 'Phòng RnD',
       path: '/',
       icon: <MdDesignServices color='#3366ff' size={25}/>,
@@ -143,6 +195,7 @@ const Sidebar = () => {
         }
       ]
     },    
+    
   ];
   return (
     <>

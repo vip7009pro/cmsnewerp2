@@ -1,8 +1,11 @@
-import React, { useRef, useState } from 'react'
+import React, { useContext, useRef, useState } from 'react'
 import './DrawComponent.scss'
 import Pdf, { usePdf } from '@mikecousins/react-pdf';
+import moment from 'moment';
+import { UserContext } from "../../../../api/Context";
 
-const DrawComponent = ({G_CODE, PDBV} : {G_CODE:string, PDBV?: string}) => {
+const DrawComponent = ({G_CODE, PDBV, PDBV_EMPL, PDBV_DATE, PROD_REQUEST_NO} : {G_CODE:string, PDBV_EMPL?: string,PDBV_DATE?: string, PDBV?: string,  PROD_REQUEST_NO?: string}) => {
+  const [userData, setUserData] = useContext(UserContext);
     const [page, setPage] = useState(1);
     const canvasRef = useRef(null);
     let draw_path = 'http://14.160.33.94/banve/';    
@@ -17,11 +20,13 @@ const DrawComponent = ({G_CODE, PDBV} : {G_CODE:string, PDBV?: string}) => {
   return (
     <div className='drawcomponent'>
        {(PDBV === 'Y') && <div className="qcpass">
-        <img alt="qcpass" src="/QC PASS20.png" width={220} height={200}/>
+        <img alt="qcpass" src="/QC PASS20.png" width={220} height={200}/>       
       </div>  }  
+      <span className='approval_info2'>TKIN: {userData.EMPL_NO}</span>
+      {(PDBV ==='Y') && <span className='approval_info'>| TTPD: {PDBV_EMPL}_{moment.utc( PDBV_DATE).format("YYYY-MM-DD HH:mm:ss")} | YCSX: {PROD_REQUEST_NO}</span>}
         <canvas className="draw" ref={canvasRef} />
         {(PDBV === 'Y') && <div className="qcpass2">
-        <img alt="qcpass2" src="/QC PASS20.png" width={220} height={200}/>
+        <img alt="qcpass2" src="/QC PASS20.png" width={220} height={200}/>       
       </div>  }   
     </div>
   )

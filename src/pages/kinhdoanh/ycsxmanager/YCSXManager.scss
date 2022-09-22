@@ -951,11 +951,13 @@
         }
         .newamazon {
             display: flex;
-            flex-direction: column; 
+            flex-direction: column;             
             .amazonInputform {
+                font-size: 12px;
                 display: flex;
-                flex-direction: row;
-                align-items: center;
+                flex-direction: column;
+                width: 100%;
+                align-items: flex-end;
                 margin-bottom: 10px;
                 
                 background-image: linear-gradient(0deg, #afd3d1, #eea94f);
@@ -970,14 +972,13 @@
                     padding: 10px;
                     font-size: 20px;
                     margin: auto;
-                }
-    
+                }    
     
                 .forminput {
                     display: flex;
                     gap: 5px;
                     flex-wrap: wrap;
-                    align-items: center;
+                    align-items: flex-start;
                     justify-content: space-around;
                     padding: 2px;
                     width: 100%;      
@@ -985,15 +986,17 @@
     
                     .forminputcolumn {
                         display: flex;
-                        flex-direction: row;
+                        flex-direction: column;
                         gap: 10px;
                         align-items: flex-end;
                         justify-content: center;
-                        flex-wrap: wrap;
+                       
                         .prod_request_info {
                             display: flex;
+                            flex-direction: column;
+                            align-items: flex-start;
                             font-weight: bold;
-                            gap: 50px;
+                            
                         }
                         input {
                             width: 150px;
@@ -1032,14 +1035,15 @@
     
                 .formupload {
                     display: flex;
-                    gap: 20px;
-    
+                    flex-direction: column;
+                    align-items: center;
+                    gap: 20px;    
                    
                     .checkpobutton {
                         display: flex;
                         align-items: center;
                         justify-content: center;
-                        width: fit-content;
+                        width: 200px;
                         height: 15px;
                         background-color: #99f86d;
                         outline: none;
@@ -1058,7 +1062,7 @@
                         display: flex;
                         align-items: center;
                         justify-content: center;
-                        width: fit-content;
+                        width: 200px;
                         height: 15px;
                         background-color: #ee1010;
                         color: white;
@@ -1078,7 +1082,7 @@
                         display: flex;
                         align-items: center;
                         justify-content: center;
-                        width: fit-content;
+                        width: 200px;
                         height: 15px;
                         background-color: #14f1d4;
                         color: rgb(0, 0, 0);
