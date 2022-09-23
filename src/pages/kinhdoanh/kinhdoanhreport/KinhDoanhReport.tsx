@@ -65,6 +65,29 @@ interface WidgetData {
   lastyear_qty: number;
   lastyear_amount: number;
 }
+
+interface YearlyClosingData {
+  YEAR_NUM: string, 
+  DELIVERY_QTY: number, 
+  DELIVERED_AMOUNT: number
+}
+interface MonthlyClosingData {
+  MONTH_NUM: string, 
+  DELIVERY_QTY: number, 
+  DELIVERED_AMOUNT: number
+}
+interface DailyClosingData {
+  DELIVERY_DATE: string, 
+  DELIVERY_QTY: number, 
+  DELIVERED_AMOUNT: number
+}
+interface WeeklyClosingData {
+  DEL_WEEK: string, 
+  DELIVERY_QTY: number, 
+  DELIVERED_AMOUNT: number
+}
+
+
 interface WidgetData_Yesterday {
   yesterday_qty: number;
   yesterday_amount: number;
@@ -180,19 +203,119 @@ const KinhDoanhReport = () => {
         console.log(error);
       });
   };
+
+  const handleGetDailyClosing = () => {
+    let yesterday = moment().add(-1, "day").format("YYYY-MM-DD");
+    generalQuery("kd_dailyclosing", { START_DATE: yesterday, END_DATE: yesterday })
+    .then((response) => {
+      
+      if (response.data.tk_status !== "NG") {
+        const loadeddata: DailyClosingData[] =  response.data.data.map((element:DailyClosingData,index: number)=> {
+          return {
+            ...element,
+            DELIVERY_DATE : element.DELIVERY_DATE.slice(0,10),            
+          }
+        })
+        setWidgetData_Yesterday({
+          yesterday_qty:loadeddata[0].DELIVERY_QTY,
+          yesterday_amount: loadeddata[0].DELIVERED_AMOUNT
+        })        
+      } else {
+        Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  }
+  const handleGetWeeklyClosing = () => {
+    generalQuery("kd_weeklyclosing", { YEAR: moment().format("YYYY") })
+    .then((response) => {      
+      if (response.data.tk_status !== "NG") {
+        const loadeddata: WeeklyClosingData[] =  response.data.data.map((element:WeeklyClosingData,index: number)=> {
+          return {
+            ...element,
+          }
+        });
+        setWidgetData_ThisWeek({
+          thisweek_qty:loadeddata[loadeddata.length-1].DELIVERY_QTY,
+          thisweek_amount: loadeddata[loadeddata.length-1].DELIVERED_AMOUNT
+        }) 
+       
+      } else {
+        Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  }
+  const handleGetMonthlyClosing = () => {
+    generalQuery("kd_monthlyclosing", { YEAR: moment().format("YYYY") })
+    .then((response) => {      
+      if (response.data.tk_status !== "NG") {
+        const loadeddata: MonthlyClosingData[] =  response.data.data.map((element:MonthlyClosingData,index: number)=> {
+          return {
+            ...element,
+          }
+        });
+        setWidgetData_ThisMonth({
+          thismonth_qty:loadeddata[loadeddata.length-1].DELIVERY_QTY,
+          thismonth_amount: loadeddata[loadeddata.length-1].DELIVERED_AMOUNT
+        }) 
+      } else {
+        Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  }
+  const handleGetYearlyClosing = () => {
+    generalQuery("kd_annuallyclosing", {  })
+    .then((response) => {      
+      if (response.data.tk_status !== "NG") {
+        const loadeddata: YearlyClosingData[] =  response.data.data.map((element:YearlyClosingData,index: number)=> {
+          return {
+            ...element,
+          }
+        });
+        setWidgetData_ThisYear({
+          thisyear_qty:loadeddata[loadeddata.length-1].DELIVERY_QTY,
+          thisyear_amount: loadeddata[loadeddata.length-1].DELIVERED_AMOUNT
+        }) 
+        //console.log(loadeddata);
+       /*  Swal.fire(
+          "Thông báo",
+          "Đã load " + response.data.data.length + " dòng",
+          "success"
+        ); */
+      } else {
+        Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  }
+
   useEffect(() => {
-    let now = moment();
+    /* let now = moment();
     let yesterday = moment().add(-1, "day").format("YYYY-MM-DD");
     let sunday = now.clone().weekday(0).format("YYYY-MM-DD");
     let monday = now.clone().weekday(6).format("YYYY-MM-DD");
     const startOfMonth = moment().startOf("month").format("YYYY-MM-DD");
     const endOfMonth = moment().endOf("month").format("YYYY-MM-DD");
     const startOfYear = moment().format("YYYY-01-01");
-    const rightnow = now.format("YYYY-MM-DD");
-    handletraInvoice("day", "this", yesterday, yesterday);
-    handletraInvoice("week", "this", sunday, monday);
-    handletraInvoice("month", "this", startOfMonth, endOfMonth);
-    handletraInvoice("year", "this", startOfYear, rightnow);
+    const rightnow = now.format("YYYY-MM-DD"); */
+    //handletraInvoice("day", "this", yesterday, yesterday);
+    handleGetDailyClosing();
+    //handletraInvoice("week", "this", sunday, monday);
+    handleGetWeeklyClosing();
+    //handletraInvoice("month", "this", startOfMonth, endOfMonth);
+    handleGetMonthlyClosing();
+    //handletraInvoice("year", "this", startOfYear, rightnow);
+    handleGetYearlyClosing();
   }, []);
   return (
     <div className='kinhdoanhreport'>

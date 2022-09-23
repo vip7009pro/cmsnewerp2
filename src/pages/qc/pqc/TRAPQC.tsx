@@ -61,87 +61,38 @@ interface PQC3_DATA {
     
 }
 interface DAO_FILM_DATA {
-  PIC_KD: string,
-  CUST_NAME_KD: string,
-  G_CODE: string,
-  G_NAME: string,
-  G_NAME_KD: string,
-  PROD_REQUEST_NO: string,
-  PROD_REQUEST_DATE: string,
-  PROD_REQUEST_QTY: number,
-  LOT_TOTAL_INPUT_QTY_EA: number,
-  LOT_TOTAL_OUTPUT_QTY_EA: number,
-  DA_KIEM_TRA: number,
-  OK_QTY: number,
-  LOSS_NG_QTY: number,
-  INSPECT_BALANCE: number,
-
+    KNIFE_FILM_ID: string,
+    FACTORY_NAME: number,
+    NGAYBANGIAO: number,
+    G_CODE: string,
+    G_NAME: string,
+    LOAIBANGIAO_PDP: string,
+    LOAIPHATHANH: string,
+    SOLUONG: string,
+    SOLUONGOHP: string,
+    LYDOBANGIAO: string,
+    PQC_EMPL_NO: number,
+    RND_EMPL_NO: string,
+    SX_EMPL_NO: string,
+    MA_DAO: string,
+    REMARK: number,    
 }
 interface CNDB_DATA  {
-  INSPECT_ID: number,
-  YEAR_WEEK: string,
-  CUST_NAME_KD: string,
-  PROD_REQUEST_NO: string,
-  G_NAME_KD: string,
-  G_NAME: string,
-  G_CODE: string,
-  PROD_TYPE: string,
-  M_LOT_NO: string,
-  M_NAME: string,
-  WIDTH_CD: number,
-  INSPECTOR: string,
-  LINEQC: string,
-  PROD_PIC: string,
-  UNIT: string,
-  PROCESS_LOT_NO: string,
-  PROCESS_IN_DATE: string,
-  INSPECT_DATETIME: string,
-  INSPECT_START_TIME: string,
-  INSPECT_FINISH_TIME: string,
-  FACTORY: string,
-  LINEQC_PIC: string,
-  MACHINE_NO: number,
-  INSPECT_TOTAL_QTY: number,
-  INSPECT_OK_QTY: number,
-  INSPECT_SPEED: number,
-  INSPECT_TOTAL_LOSS_QTY: number,
-  INSPECT_TOTAL_NG_QTY: number,
-  MATERIAL_NG_QTY: number,
-  PROCESS_NG_QTY: number,
-  PROD_PRICE: number,
-  ERR1: number,
-  ERR2: number,
-  ERR3: number,
-  ERR4: number,
-  ERR5: number,
-  ERR6: number,
-  ERR7: number,
-  ERR8: number,
-  ERR9: number,
-  ERR10: number,
-  ERR11: number,
-  ERR12: number,
-  ERR13: number,
-  ERR14: number,
-  ERR15: number,
-  ERR16: number,
-  ERR17: number,
-  ERR18: number,
-  ERR19: number,
-  ERR20: number,
-  ERR21: number,
-  ERR22: number,
-  ERR23: number,
-  ERR24: number,
-  ERR25: number,
-  ERR26: number,
-  ERR27: number,
-  ERR28: number,
-  ERR29: number,
-  ERR30: number,
-  ERR31: number,
-  ERR32: number,
-  CNDB_ENCODES: string,
+    CNDB_DATE: string,
+    CNDB_NO: string,
+    CNDB_ENCODE: string,
+    M_NAME: string,
+    DEFECT_NAME: string,
+    DEFECT_CONTENT: string,
+    REG_EMPL_NO: string,
+    REMARK: string,
+    M_NAME2: string,
+    INS_DATE: string,
+    APPROVAL_STATUS: string,
+    APPROVAL_EMPL: string,
+    APPROVAL_DATE: string,
+    G_CODE: string,
+    G_NAME: string,    
 }
 
 const TRAPQC = () => { 
@@ -230,90 +181,71 @@ const TRAPQC = () => {
 
   ]
   const column_daofilm_data = [
-    { field: "PIC_KD", headerName: "PIC_KD", width: 150 },
-    { field: "CUST_NAME_KD", headerName: "Khách", width: 120 },
+    { field: "KNIFE_FILM_ID", headerName: "ID", width: 80 },
+    { field: "FACTORY_NAME", headerName: "FACTORY", width: 80 },
+    { field: "NGAYBANGIAO", headerName: "NGAYBANGIAO", width: 100, renderCell: (params:any) => {return <span style={{color:'blue'}}>{moment.utc(params.row.NGAYBANGIAO).format("YYYY-MM-DD")}</span>}  },
     { field: "G_CODE", headerName: "G_CODE", width: 80 },
-    { field: "G_NAME", headerName: "G_NAME", width: 180 },
-    { field: "G_NAME_KD", headerName: "Code KD", width: 120 },
-    { field: "PROD_REQUEST_NO", headerName: "Số YC", width: 80 },
-    { field: "PROD_REQUEST_DATE", headerName: "Ngày YC", width: 80 },
-    { field: "PROD_REQUEST_QTY", headerName: "SL YC", width: 80  , renderCell: (params:any) => {return <span style={{color:'black'}}><b>{params.row.PROD_REQUEST_QTY.toLocaleString('en-US')}</b></span>}},
-    { field: "LOT_TOTAL_INPUT_QTY_EA", headerName: "Nhập EA", width: 80  , renderCell: (params:any) => {return <span style={{color:'blue'}}><b>{params.row.LOT_TOTAL_INPUT_QTY_EA.toLocaleString('en-US')}</b></span>}},
-    { field: "LOT_TOTAL_OUTPUT_QTY_EA", headerName: "Xuất EA", width: 80  , renderCell: (params:any) => {return <span style={{color:'blue'}}><b>{params.row.LOT_TOTAL_OUTPUT_QTY_EA.toLocaleString('en-US')}</b></span>}},
-    { field: "DA_KIEM_TRA", headerName: "Đã Kiểm", width: 80  , renderCell: (params:any) => {return <span style={{color:'gray'}}><b>{params.row.DA_KIEM_TRA.toLocaleString('en-US')}</b></span>}},
-    { field: "OK_QTY", headerName: "OK_QTY", width: 80 , renderCell: (params:any) => {return <span style={{color:'green'}}><b>{params.row.OK_QTY.toLocaleString('en-US')}</b></span>} },
-    { field: "LOSS_NG_QTY", headerName: "Loss và NG", width: 80 , renderCell: (params:any) => {return <span style={{color:'red'}}><b>{params.row.LOSS_NG_QTY.toLocaleString('en-US')}</b></span>} },
-    { field: "INSPECT_BALANCE", headerName: "Tồn kiểm", width: 80  , renderCell: (params:any) => {return <span style={{color:'purple'}}><b>{params.row.INSPECT_BALANCE.toLocaleString('en-US')}</b></span>}}, 
-
+    { field: "G_NAME", headerName: "G_NAME", width: 250 },
+    { field: "LOAIBANGIAO_PDP", headerName: "LOAIBANGIAO", width: 80, renderCell: (params:any) => {
+        switch(params.row.LOAIBANGIAO_PDP)
+        {
+            case 'D': return <span style={{color:'blue'}}>DAO</span>
+            break;
+            case 'F': return <span style={{color:'blue'}}>FILM</span>
+            break;
+            case 'T': return <span style={{color:'blue'}}>TAI LIEU</span>
+            break;
+            default: return <span style={{color:'blue'}}>N/A</span>
+            break;
+        }
+        
+    }  },
+    { field: "LOAIPHATHANH", headerName: "LOAIPHATHANH", width: 110 , renderCell: (params:any) => {
+        switch(params.row.LOAIPHATHANH)
+        {
+            case 'PH': return <span style={{color:'blue'}}>PHAT HANH</span>
+            break;
+            case 'TH': return <span style={{color:'blue'}}>THU HOI</span>
+            break;           
+            default: return <span style={{color:'blue'}}>N/A</span>
+            break;
+        }
+        
+    } },
+    { field: "SOLUONG", headerName: "SOLUONG", width: 80 },
+    { field: "SOLUONGOHP", headerName: "SOLUONGOHP", width: 80 },
+    { field: "LYDOBANGIAO", headerName: "LYDOBANGIAO", width: 120 },
+    { field: "PQC_EMPL_NO", headerName: "PQC_EMPL_NO", width: 80 },
+    { field: "RND_EMPL_NO", headerName: "RND_EMPL_NO", width: 80 },
+    { field: "SX_EMPL_NO", headerName: "SX_EMPL_NO", width: 80 },
+    { field: "MA_DAO", headerName: "MA_DAO", width: 100 },
+    { field: "REMARK", headerName: "REMARK", width: 150 },
   ]
 
   const column_cndb_data = [
-    { field: "INSPECT_ID", headerName: "INSPECT_ID", width: 80 },
-    { field: "YEAR_WEEK", headerName: "YEAR_WEEK", width: 80 },
-    { field: "CUST_NAME_KD", headerName: "Khách", width: 120 },
-    { field: "PROD_REQUEST_NO", headerName: "Số YC", width: 80 },
-    { field: "G_NAME_KD", headerName: "Code KD", width: 110 },
-    { field: "G_NAME", headerName: "Code full", width: 150 },
+    { field: "CNDB_DATE", type: 'date', headerName: "CNDB_DATE", width: 120 },
+    { field: "CNDB_NO", headerName: "CNDB_NO", width: 80 },
+    { field: "CNDB_ENCODE", headerName: "CNDB_ENCODE", width: 100 },
+    { field: "M_NAME", headerName: "M_NAME", width: 150 },
+    { field: "DEFECT_NAME", headerName: "DEFECT_NAME", width: 100 },
+    { field: "DEFECT_CONTENT", headerName: "DEFECT_CONTENT", width: 150 },
+    { field: "REG_EMPL_NO", headerName: "REG_EMPL_NO", width: 150 },
+    { field: "REMARK", headerName: "REMARK", width: 80 },
+    { field: "M_NAME2",  headerName: "M_NAME2", width: 120 },
+    { field: "INS_DATE", type: 'date',headerName: "INS_DATE", width: 120 , renderCell: (params:any) => {return <span style={{color:'blue'}}>{moment.utc(params.row.INS_DATE).format("YYYY-MM-DD HH:mm:ss")}</span>} },
+    { field: "APPROVAL_STATUS", headerName: "APPROVAL_STATUS", width: 120 , renderCell: (params:any) => {
+        if(params.row.APPROVAL_STATUS === 'Y')
+        return <span style={{color:'green'}}>Phê Duyệt</span>
+        return <span style={{color:'red'}}>Chưa duyệt</span>
+    }},
+    { field: "APPROVAL_EMPL", headerName: "APPROVAL_EMPL", width: 120 },
+    { field: "APPROVAL_DATE", headerName: "APPROVAL_DATE", width: 80 , renderCell: (params:any) => {
+        if(params.row.APPROVAL_DATE !== null)
+        return <span style={{color:'blue'}}>{moment.utc(params.row.APPROVAL_DATE).format("YYYY-MM-DD HH:mm:ss")}</span>
+        return <span style={{color:'red'}}>Chưa duyệt</span>
+    }},
     { field: "G_CODE", headerName: "G_CODE", width: 80 },
-    { field: "PROD_TYPE", headerName: "PROD_TYPE", width: 80 },
-    { field: "M_LOT_NO", headerName: "LOT VL", width: 80 },
-    { field: "M_NAME", headerName: "M_NAME", width: 120 },
-    { field: "WIDTH_CD", headerName: "WIDTH_CD", width: 80 },
-    { field: "INSPECTOR", headerName: "INSPECTOR", width: 80 },
-    { field: "LINEQC", headerName: "LINEQC", width: 80 },
-    { field: "PROD_PIC", headerName: "PROD_PIC", width: 80 },
-    { field: "UNIT", headerName: "UNIT", width: 80 },
-    { field: "PROCESS_LOT_NO", headerName: "LOT SX", width: 80 },
-    { field: "PROCESS_IN_DATE", headerName: "NGÀY SX", width: 120 },
-    { field: "INSPECT_DATETIME", headerName: "Ngày kiểm", width: 150 },
-    { field: "INSPECT_START_TIME", headerName: "INSPECT_START_TIME", width: 150 },
-    { field: "INSPECT_FINISH_TIME", headerName: "INSPECT_FINISH_TIME", width: 150 },
-    { field: "FACTORY", headerName: "FACTORY", width: 80 },
-    { field: "LINEQC_PIC", headerName: "LINEQC_PIC", width: 80 },
-    { field: "MACHINE_NO", headerName: "MACHINE_NO", width: 80 },
-    { field: "INSPECT_TOTAL_QTY", headerName: "Tổng Kiểm", width: 80 },
-    { field: "INSPECT_OK_QTY", headerName: "Tổng OK", width: 80 },
-    { field: "INSPECT_SPEED", headerName: "Tốc độ kiểm", width: 80 },
-    { field: "INSPECT_TOTAL_LOSS_QTY", headerName: "Tổng Loss", width: 80 },
-    { field: "INSPECT_TOTAL_NG_QTY", headerName: "Tông NG", width: 80 },
-    { field: "MATERIAL_NG_QTY", headerName: "NG MATERIAL", width: 100 },
-    { field: "PROCESS_NG_QTY", headerName: "NG PROCESS", width: 100 },
-    { field: "PROD_PRICE", headerName: "PROD_PRICE", width: 100 },
-    { field: "ERR1", headerName: "ERR1", width: 80 },
-    { field: "ERR2", headerName: "ERR2", width: 80 },
-    { field: "ERR3", headerName: "ERR3", width: 80 },
-    { field: "ERR4", headerName: "ERR4", width: 80 },
-    { field: "ERR5", headerName: "ERR5", width: 80 },
-    { field: "ERR6", headerName: "ERR6", width: 80 },
-    { field: "ERR7", headerName: "ERR7", width: 80 },
-    { field: "ERR8", headerName: "ERR8", width: 80 },
-    { field: "ERR9", headerName: "ERR9", width: 80 },
-    { field: "ERR10", headerName: "ERR10", width: 80 },
-    { field: "ERR11", headerName: "ERR11", width: 80 },
-    { field: "ERR12", headerName: "ERR12", width: 80 },
-    { field: "ERR13", headerName: "ERR13", width: 80 },
-    { field: "ERR14", headerName: "ERR14", width: 80 },
-    { field: "ERR15", headerName: "ERR15", width: 80 },
-    { field: "ERR16", headerName: "ERR16", width: 80 },
-    { field: "ERR17", headerName: "ERR17", width: 80 },
-    { field: "ERR18", headerName: "ERR18", width: 80 },
-    { field: "ERR19", headerName: "ERR19", width: 80 },
-    { field: "ERR20", headerName: "ERR20", width: 80 },
-    { field: "ERR21", headerName: "ERR21", width: 80 },
-    { field: "ERR22", headerName: "ERR22", width: 80 },
-    { field: "ERR23", headerName: "ERR23", width: 80 },
-    { field: "ERR24", headerName: "ERR24", width: 80 },
-    { field: "ERR25", headerName: "ERR25", width: 80 },
-    { field: "ERR26", headerName: "ERR26", width: 80 },
-    { field: "ERR27", headerName: "ERR27", width: 80 },
-    { field: "ERR28", headerName: "ERR28", width: 80 },
-    { field: "ERR29", headerName: "ERR29", width: 80 },
-    { field: "ERR30", headerName: "ERR30", width: 80 },
-    { field: "ERR31", headerName: "ERR31", width: 80 },
-    { field: "ERR32", headerName: "ERR32", width: 80 },
-    { field: "CNDB_ENCODES", headerName: "CNDB_ENCODES", width: 150 },
-   
-    
+    { field: "G_NAME", headerName: "G_NAME", width: 250 },    
   ]
 
   const [columnDefinition, setColumnDefinition] = useState<Array<any>>(column_pqc1_data);
@@ -326,6 +258,7 @@ const TRAPQC = () => {
         <IconButton className='buttonIcon'onClick={()=>{SaveExcel(pqcdatatable,"Inspection Data Table")}}
         ><AiFillFileExcel color='green' size={25}/>SAVE</IconButton>
         <span style={{fontWeight:'bold', fontSize: 18, paddingLeft:20, color: 'blue'}}>{sumaryINSPECT}</span>
+        <GridToolbarQuickFilter/>       
        </GridToolbarContainer>
     );
   }
@@ -425,8 +358,7 @@ const TRAPQC = () => {
   const handletraInspectionNG = ()=> {   
     setSummaryInspect('');
     setisLoading(true);
-    generalQuery('get_inspection',{
-      OPTIONS: 'Nhật Ký Kiểm Tra',
+    generalQuery('traCNDB',{      
       ALLTIME: alltime,      
       FROM_DATE: fromdate,
       TO_DATE: todate,
@@ -445,9 +377,7 @@ const TRAPQC = () => {
           const loadeddata: CNDB_DATA[] =  response.data.data.map((element:CNDB_DATA,index: number)=> {
             return {
               ...element, 
-              INSPECT_DATETIME: moment(element.INSPECT_DATETIME).format("YYYY-MM-DD HH:mm:ss"),
-              INSPECT_START_TIME: moment(element.INSPECT_START_TIME).format("YYYY-MM-DD HH:mm:ss"),
-              INSPECT_FINISH_TIME: moment(element.INSPECT_FINISH_TIME).format("YYYY-MM-DD HH:mm:ss"),
+              CNDB_DATE: moment.utc(element.CNDB_DATE).format("YYYY-MM-DD"),             
               id: index
             }
           })         
@@ -469,18 +399,13 @@ const TRAPQC = () => {
   const handletraInspectionInOut = ()=> {   
     setSummaryInspect('');
     setisLoading(true);
-    generalQuery('get_inspection',{
-      OPTIONS: 'Nhập Xuất Kiểm (YCSX)',
+    generalQuery('tradaofilm',{      
       ALLTIME: alltime,      
       FROM_DATE: fromdate,
-      TO_DATE: todate,
-      CUST_NAME: cust_name,
-      process_lot_no: process_lot_no,
+      TO_DATE: todate,      
       G_CODE: codeCMS,
-      G_NAME: codeKD,
-      PROD_TYPE: prod_type,
-      EMPL_NAME: empl_name, 
-      PROD_REQUEST_NO: prodrequestno,
+      G_NAME: codeKD,      
+      FACTORY: factory,      
     })
     .then(response => {
         //console.log(response.data.data);

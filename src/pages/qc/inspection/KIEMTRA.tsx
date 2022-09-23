@@ -34,7 +34,12 @@ const KIEMTRA = () => {
       <div className='mininavbar'>
         <div className='mininavitem'  onClick={() => setNav(1)}>
           <span className='mininavtext'>
-            Tra cứu data PQC
+            Data Kiểm Tra
+          </span>
+        </div>   
+        <div className='mininavitem'  onClick={() => setNav(2)}>
+          <span className='mininavtext'>
+            Report Kiểm Tra
           </span>
         </div>   
       </div>     

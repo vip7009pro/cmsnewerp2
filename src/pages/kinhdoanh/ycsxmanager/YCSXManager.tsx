@@ -357,7 +357,7 @@ const YCSXManager = () => {
         <GridToolbarFilterButton />
         <GridToolbarDensitySelector />           
         <button className='saveexcelbutton' onClick={()=>{SaveExcel(uploadExcelJson,"Uploaded Amazon")}}>Save Excel</button>
-        <GridToolbarQuickFilter/>        
+        <GridToolbarQuickFilter/>
       </GridToolbarContainer>
     );
   }
@@ -821,30 +821,32 @@ const readUploadFileAmazon = (e:any) => {
         await generalQuery("checkGCodeVer", {
           G_CODE: uploadExcelJson[i].G_CODE         
         })
-          .then((response) => {
-            //console.log(response.data.tk_status);
-            if (response.data.tk_status !== "NG") {
-              console.log(response.data.data);
-              if(response.data.data[0].USE_YN ==='Y')
-              {
-                //tempjson[i].CHECKSTATUS = "OK";
-              }
-              else
-              {
-                //tempjson[i].CHECKSTATUS = "NG: Ver này đã bị khóa";
-                err_code =3;
-              }
-            } else {
-              //tempjson[i].CHECKSTATUS = "NG: Không có code CMS này";
-              err_code = 4;
+        .then((response) => {
+          //console.log(response.data.tk_status);
+          if (response.data.tk_status !== "NG") {
+            console.log(response.data.data);
+            if(response.data.data[0].USE_YN ==='Y')
+            {
+              //tempjson[i].CHECKSTATUS = "OK";
             }
-          })
-          .catch((error) => {
-            console.log(error);
-          });
+            else
+            {
+              //tempjson[i].CHECKSTATUS = "NG: Ver này đã bị khóa";
+              err_code =3;
+            }
+          } else {
+            //tempjson[i].CHECKSTATUS = "NG: Không có code CMS này";
+            err_code = 4;
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+          
           if(err_code === 0)
           {
-            let err_code:number = 0;
+            console.log('vao den day');
+            let err_code1:number = 0;
             let last_prod_request_no: string='';
             let next_prod_request_no: string='';
             let next_header = await createHeader();
@@ -876,68 +878,68 @@ const readUploadFileAmazon = (e:any) => {
             };
             await generalQuery("checkLastYCSX", {        
             })
-              .then((response) => {
-                console.log(response.data.tk_status);        
-                if (response.data.tk_status !== "NG") {
-                  last_prod_request_no = response.data.data[0].PROD_REQUEST_NO;   
-                  next_prod_request_no =next_header + zeroPad(Number(last_prod_request_no.substring(3,7))+1,4);
-                } else {   
-                  next_prod_request_no =next_header + '0001';           
-                }        
-              })
-              .catch((error) => {
-                console.log(error);
-              });
+            .then((response) => {
+              console.log(response.data.tk_status);        
+              if (response.data.tk_status !== "NG") {
+                last_prod_request_no = response.data.data[0].PROD_REQUEST_NO;   
+                next_prod_request_no =next_header + zeroPad(Number(last_prod_request_no.substring(3,7))+1,4);
+              } else {   
+                next_prod_request_no =next_header + '0001';           
+              }        
+            })
+            .catch((error) => {
+              console.log(error);
+            });
               //check PO Balance, Ton Kho, FCST tai thoi diem YCSX
-              await generalQuery("checkpobalance_tdycsx", { 
-                G_CODE: uploadExcelJson[i].G_CODE
-              })
-                .then((response) => {
-                  if (response.data.tk_status !== "NG") {
-                    console.log(response.data.data);      
-                    pobalance_tdycsx = response.data.data[0];
-                  } else { 
-                  }        
-                })
-                .catch((error) => {
-                  console.log(error);
-                });
-              await generalQuery("checktonkho_tdycsx", { 
-                G_CODE: uploadExcelJson[i].G_CODE
-              })
-                .then((response) => {                  
-                  if (response.data.tk_status !== "NG") {
-                    console.log(response.data.data);      
-                    tonkho_tdycsx = response.data.data[0];
-                  } else { 
-                  }        
-                })
-                .catch((error) => {
-                  console.log(error);
-                });
-              await generalQuery("checkfcst_tdycsx", { 
-                G_CODE: uploadExcelJson[i].G_CODE
-              })
-                .then((response) => {             
-                  if (response.data.tk_status !== "NG") {
-                    console.log(response.data.data);      
-                    fcst_tdycsx = response.data.data[0];
-                  } else { 
-                  }        
-                })
-                .catch((error) => {
-                  console.log(error);
-                });        
-                //console.log(await process_lot_no_generate(phanloai));
-                if(selectedCode?.USE_YN==='N')
-                {
-                  err_code =3; // ver bi khoa
-                }
-                if(uploadExcelJson[i].G_CODE === '' || uploadExcelJson[i].CUST_CD === '' || uploadExcelJson[i].PROD_REQUEST_QTY ==='' || userData.EMPL_NO ==='')
-                {
-                  err_code = 4;
-                }
-                if(err_code === 0)
+            await generalQuery("checkpobalance_tdycsx", { 
+              G_CODE: uploadExcelJson[i].G_CODE
+            })
+            .then((response) => {
+              if (response.data.tk_status !== "NG") {
+                console.log(response.data.data);      
+                pobalance_tdycsx = response.data.data[0];
+              } else { 
+              }        
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+
+            await generalQuery("checktonkho_tdycsx", { 
+              G_CODE: uploadExcelJson[i].G_CODE
+            })
+            .then((response) => {                  
+              if (response.data.tk_status !== "NG") {
+                console.log(response.data.data);      
+                tonkho_tdycsx = response.data.data[0];
+              } else { 
+              }        
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+
+            await generalQuery("checkfcst_tdycsx", { 
+              G_CODE: uploadExcelJson[i].G_CODE
+            })
+            .then((response) => {             
+              if (response.data.tk_status !== "NG") {
+                console.log(response.data.data);      
+                fcst_tdycsx = response.data.data[0];
+              } else { 
+              }        
+            })
+            .catch((error) => {
+              console.log(error);
+            });        
+                //console.log(await process_lot_no_generate(phanloai));            
+            if(uploadExcelJson[i].G_CODE === '' || uploadExcelJson[i].CUST_CD === '' || uploadExcelJson[i].PROD_REQUEST_QTY ==='' || userData.EMPL_NO ==='')
+            {
+              err_code1 = 4;
+            }
+            
+            console.log('err_Code1 = ' + err_code1);
+            if(err_code1 === 0)
                 {          
                   if(uploadExcelJson[i].PHANLOAI === 'TT')
                   {
@@ -1113,7 +1115,7 @@ const readUploadFileAmazon = (e:any) => {
           }      
     }
     setisLoading(false);
-    Swal.fire("Thông báo", "Đã hoàn thành check YCSX hàng loạt", "success");  
+    Swal.fire("Thông báo", "Đã hoàn thành Up YCSX hàng loạt", "success");  
     setUploadExcelJSon(tempjson);
   };
   const confirmUpYcsxHangLoat = () => {

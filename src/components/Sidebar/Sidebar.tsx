@@ -22,7 +22,7 @@ const Sidebar = () => {
   const SidebarData = [
     {
       title: getsentence(12,lang), /*Nhân sự*/
-      path: 'nhansu',
+      path: '#',
       icon: <FcManager color='green' size={25}/>,
       iconClosed: <KeyboardArrowDownIcon />,
       iconOpened: <KeyboardArrowUpIcon />,  
@@ -66,7 +66,7 @@ const Sidebar = () => {
     },
     {
       title: getsentence(4,lang), /*Phòng Kinh Doanh*/
-      path: 'kinhdoanh',
+      path: '#',
       icon: <FaDonate color='green' size={25}/>,
       iconClosed: <KeyboardArrowDownIcon />,
       iconOpened: <KeyboardArrowUpIcon />,  
@@ -120,8 +120,8 @@ const Sidebar = () => {
     },
     {
       title: 'Phòng QC',
-      path: '/',
-      icon: <RuleRoundedIcon color="primary"/>,
+      path: '#',
+      icon: <RuleRoundedIcon color="error"/>,
       iconClosed: <KeyboardArrowDownIcon />,
       iconOpened: <KeyboardArrowUpIcon />,  
       subNav: [
@@ -171,7 +171,7 @@ const Sidebar = () => {
     }, 
     {
       title: 'Phòng RnD',
-      path: '/',
+      path: '#',
       icon: <MdDesignServices color='#3366ff' size={25}/>,
       iconClosed: <KeyboardArrowDownIcon />,
       iconOpened: <KeyboardArrowUpIcon />,  
