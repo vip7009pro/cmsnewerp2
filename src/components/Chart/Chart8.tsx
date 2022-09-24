@@ -37,19 +37,21 @@ const Chart8 = () => {
       compactDisplay: "short",
     }).format(value));
   };
+  
   const handleGetDailyClosing = () => {
     generalQuery("kd_runningpobalance", { YEAR: moment().format("YYYY") })
       .then((response) => {
         if (response.data.tk_status !== "NG") {
           const loadeddata: RunningPOData[] = response.data.data.map(
             (element: RunningPOData, index: number) => {
+             
               return {
                 ...element,
               };
             }
-          );
+          );         
           setRunningPOData(loadeddata);
-          //console.log(loadeddata);
+          console.log(loadeddata);
         } else {
           Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
         }

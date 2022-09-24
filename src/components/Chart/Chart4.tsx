@@ -37,14 +37,29 @@ const Chart4 = () => {
       compactDisplay: "short",
     }).format(value));
   };
+  const CustomTooltip = ({ active, payload, label } : {active?:any, payload?:any, label?: any}) => {
+    if (active && payload && payload.length) {
+      return (
+        <div className='custom-tooltip' style={{backgroundImage: "linear-gradient(to right, #ccffff, #00cccc)", padding: 20, borderRadius: 5}}>
+          <p>{label}:</p>
+          <p className='label'>QTY: {`${payload[0].value.toLocaleString("en-US")}`} EA</p>         
+        </div>
+      );
+    }
+    return null;
+}
+
   const handleGetDailyClosing = () => {
     generalQuery("kd_runningpobalance", { YEAR: moment().format("YYYY") })
       .then((response) => {
         if (response.data.tk_status !== "NG") {
           const loadeddata: RunningPOData[] = response.data.data.map(
             (element: RunningPOData, index: number) => {
+              let temp_data: number = (element.RUNNING_DEL_QTY ===0)? response.data.data[index-1].RUNNING_DEL_QTY : element.RUNNING_DEL_QTY
               return {
                 ...element,
+                RUNNING_DEL_QTY: temp_data,
+                RUNNING_PO_BALANCE: element.RUNNING_PO_QTY - temp_data
               };
             }
           );
@@ -91,8 +106,8 @@ const Chart4 = () => {
                 compactDisplay: "short",
               }).format(value)
             }
-          />        
-          <Tooltip />
+          />
+          <Tooltip content={<CustomTooltip/>}/>
           <Legend />
           <Bar
             yAxisId='left-axis'

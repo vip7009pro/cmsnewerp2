@@ -40,7 +40,7 @@ const DieuChuyenTeam = () => {
 
     const columns_diemdanhnhom =[
         { field: "id", headerName: "ID", width: 100, valueGetter: (params: any) => {return params.row.EMPL_NO} },      
-          
+        { field: "WORK_SHIF_NAME", headerName: "WORK_SHIF_NAME", width: 130 },
         { field: "SET_TEAM", headerName: "SET_TEAM", width: 200, 
             renderCell: (params:any) => {                 
                 const onClick = (teamvalue_info: number) => {                
@@ -118,18 +118,90 @@ const DieuChuyenTeam = () => {
                 
             }    
         },      
+        { field: "FACTORY_NAME", headerName: "FACTORY_NAME", width: 130 },
+        { field: "SET_NM", headerName: "SET_NM", width: 100, 
+            renderCell: (params:any) => {                 
+                const onClick = (teamvalue_info: number) => {                
+                    //Swal.fire("Thông báo", "Gia tri = " + params.row.EMPL_NO, "success");  
+                    generalQuery("setnhamay", {
+                      FACTORY: teamvalue_info,
+                      EMPL_NO: params.row.EMPL_NO                      
+                    })
+                      .then((response) => {
+                        //console.log(response.data.data);
+                        if (response.data.tk_status === "OK") {
+                          const newProjects = diemdanhnhomtable.map((p) =>
+                            p.EMPL_NO === params.row.EMPL_NO
+                              ? {
+                                  ...p,
+                                  FACTORY_NAME: teamvalue_info===1? "Nhà máy 1": "Nhà máy 2"
+                                }
+                              : p
+                          );
+                          setDiemDanhNhomTable(newProjects);
+                        } else {
+                          Swal.fire(
+                            "Có lỗi",
+                            "Nội dung: " + response.data.message,
+                            "error"
+                          );
+                        }
+                      })
+                      .catch((error) => {
+                        console.log(error);
+                      }); 
+                }    
+
+
+                if(params.row.FACTORY_NAME==='Nhà máy 1')
+                {
+                    return (
+                        <div className='onoffdiv'>                       
+                          <button className='team2bt' onClick={()=>onClick(2)}>
+                          SET NM2
+                          </button>                                            
+                        </div>
+                      );
+                }
+                else if(params.row.FACTORY_NAME==='Nhà máy 2')
+                {
+                    return (
+                        <div className='onoffdiv'>
+                        <button className='hcbt' onClick={()=>onClick(1)}>
+                        SET NM1
+                        </button>                                                            
+                      </div>              
+                    );
+
+                }
+                else
+                {
+                    return (
+                        <div className='onoffdiv'>
+                        <button className='team1bt' onClick={()=>onClick(1)}>
+                        SET NM1
+                        </button>
+                        <button className='hcbt' onClick={()=>onClick(2)}>
+                        SET NM2
+                        </button>                                            
+                      </div>              
+                    );
+                }
+                
+            }    
+        },      
         { field: "EMPL_NO", headerName: "EMPL_NO", width: 170 },
         { field: "CMS_ID", headerName: "CMS_ID", width: 100 },
         { field: "MIDLAST_NAME", headerName: "MIDLAST_NAME", width: 130 },
         { field: "FIRST_NAME", headerName: "FIRST_NAME", width: 130 },
         { field: "SUBDEPTNAME", headerName: "SUBDEPTNAME", width: 130 },
         { field: "MAINDEPTNAME", headerName: "MAINDEPTNAME", width: 130 }, 
-        { field: "WORK_SHIF_NAME", headerName: "WORK_SHIF_NAME", width: 130 },
+       
         { field: "WORK_POSITION_NAME", headerName: "WORK_POSITION_NAME", width: 130 },     
         { field: "PHONE_NUMBER", headerName: "PHONE_NUMBER", width: 130 },
         { field: "SEX_NAME", headerName: "SEX_NAME", width: 130 },
         { field: "WORK_STATUS_NAME", headerName: "WORK_STATUS_NAME", width: 130 },
-        { field: "FACTORY_NAME", headerName: "FACTORY_NAME", width: 130 },
+        
         { field: "JOB_NAME", headerName: "JOB_NAME", width: 130 },
         
          

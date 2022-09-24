@@ -48,17 +48,45 @@
                         }
                     }
                 }
+                .pobalancesummary {
+                    display: flex;      
+                    flex-direction: column;              
+                    align-self: center;
+                    width: 30%;
+                    margin-bottom: 10px;
+                    .subsection {
+                        font-weight: bold;
+                        
+                    }
+                }
                 .monthlyweeklygraph {
                     display: flex;
                     width: 100%;
                     flex: 1;
-                    height: 100%;
+                    height: fit-content;
                     .dailygraph {
                         display: flex;
                         flex-direction: column;
                         width: 100%;
                         height: 450px;
                         flex: 1;
+                        .subsection {
+                            font-weight: bold;
+                            padding-left: 90px;
+                        }
+                    }
+                }
+                .datatable {
+                    display: flex;
+                    width: 100%;
+                    flex: 1;
+                    height: fit-content;
+                    .dailygraph {
+                        display: flex;
+                        flex-direction: column;
+                        width: 100%;
+                        height: 550px;
+                        
                         .subsection {
                             font-weight: bold;
                             padding-left: 90px;
@@ -99,19 +127,19 @@
             .graph {
                 display: flex;
                 width: 100%;
-                height: 2500px;
+                height: 3500px;
                 flex-direction: column;
                 .dailygraphtotal {
                     display: flex; 
                     flex-direction: column;
                     width: 100%;
-                    height:500px;                    
+                    height:600px;                    
                     margin-bottom: 20px;
                     .dailygraph {
                         display: flex;
                         flex-direction: column;
                         width: 100%;
-                        height: 450px;
+                        height: 650px;
                         flex: 1;
                         .subsection {
                             font-weight: bold;
@@ -119,17 +147,28 @@
                         }
                     }
                 }
+                .pobalancesummary {
+                    display: flex;      
+                    flex-direction: column;              
+                    align-self: center;
+                    width: 100%;
+                    margin-bottom: 10px;
+                    .subsection {
+                        font-weight: bold;
+                        
+                    }
+                }
                 .monthlyweeklygraph {
                     display: flex;
                     flex-direction: column;
                     width: 100%;
                     flex: 1;
-                    height: 500px;
+                    height: 650px;
                     .dailygraph {
                         display: flex;
                         flex-direction: column;
                         width: 100%;
-                        height: 450px;
+                        height: 650px;
                         flex: 1;
                         .subsection {
                             font-weight: bold;

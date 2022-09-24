@@ -15,10 +15,12 @@
         display: flex;
         justify-content: flex-start;
         align-items: center;
+        z-index: 99999;
     }
 }
 
 .SidebarNav {
+    position: sticky;
     background: white;
     width: 15%;
     min-width: 250px;

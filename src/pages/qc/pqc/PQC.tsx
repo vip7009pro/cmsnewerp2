@@ -1,8 +1,8 @@
 
 import  { useEffect, useState} from 'react'
-import INSPECTION from '../inspection/INSPECTION';
-import "./PQC.scss"
+import INPUTPQC from './INPUTPQC';
 import TRAPQC from './TRAPQC';
+import "./PQC.scss"
 
 
 const PQC = () => {
@@ -36,10 +36,15 @@ const PQC = () => {
       <div className='mininavbar'>
         <div className='mininavitem'  onClick={() => setNav(1)}>
           <span className='mininavtext'>
-            Data PQC
+            Input PQC
           </span>
         </div>   
         <div className='mininavitem'  onClick={() => setNav(2)}>
+          <span className='mininavtext'>
+            Data PQC
+          </span>
+        </div>   
+        <div className='mininavitem'  onClick={() => setNav(3)}>
           <span className='mininavtext'>
             Report PQC
           </span>
@@ -47,12 +52,17 @@ const PQC = () => {
       </div>     
       {selection.tab1 && (
         <div className='trapqc'>
-            <TRAPQC/>          
+            <INPUTPQC/>          
         </div>
       )}
       {selection.tab2 && (
-        <div className='reportpqc'>
+        <div className='trapqc'>
             <TRAPQC/>          
+        </div>
+      )}
+      {selection.tab3 && (
+        <div className='report'>
+              
         </div>
       )}
     </div>

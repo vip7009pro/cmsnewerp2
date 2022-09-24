@@ -10,8 +10,11 @@ import Chart4 from "../../../components/Chart/Chart4";
 import ChartMonthLy from "../../../components/Chart/Chart5";
 import ChartYearly from "../../../components/Chart/Chart6";
 import Chart7 from "../../../components/Chart/Chart7";
+import ChartCustomerRevenue from "../../../components/Chart/ChartCustomerRevenue";
+import ChartPICRevenue from "../../../components/Chart/ChartPICRevenue";
 import ChartWeekLyDelivery from "../../../components/Chart/ChartWeeklyDelivery";
 import ChartWeeklyPO from "../../../components/Chart/ChartWeekLyPO";
+import CustomerPOBalanceByType from "../../../components/DataTable/CustomerPOBalanceByType";
 import Widget from "../../../components/Widget/Widget";
 import "./KinhDoanhReport.scss";
 interface InvoiceTableData {
@@ -86,7 +89,14 @@ interface WeeklyClosingData {
   DELIVERY_QTY: number, 
   DELIVERED_AMOUNT: number
 }
-
+interface POBalanceSummaryData {
+  PO_QTY: number,
+  TOTAL_DELIVERED: number, 
+  PO_BALANCE: number, 
+  PO_AMOUNT: number, 
+  DELIVERED_AMOUNT:number, 
+  BALANCE_AMOUNT: number
+}
 
 interface WidgetData_Yesterday {
   yesterday_qty: number;
@@ -103,6 +113,10 @@ interface WidgetData_ThisMonth {
 interface WidgetData_ThisYear {
   thisyear_qty: number;
   thisyear_amount: number;
+}
+interface WidgetData_POBalanceSummary {
+  po_balance_qty: number;
+  po_balance_amount: number;
 }
 const KinhDoanhReport = () => {
   const [widgetdata_yesterday, setWidgetData_Yesterday] =
@@ -124,6 +138,11 @@ const KinhDoanhReport = () => {
     useState<WidgetData_ThisYear>({
       thisyear_qty: 0,
       thisyear_amount: 0,
+    });
+  const [widgetdata_pobalancesummary, setWidgetData_PoBalanceSummary] =
+    useState<WidgetData_POBalanceSummary>({
+      po_balance_qty: 0,
+      po_balance_amount: 0,
     });
   const handletraInvoice = (
     invoice_type: string,
@@ -298,6 +317,33 @@ const KinhDoanhReport = () => {
       console.log(error);
     });
   }
+  const handleGetPOBalanceSummary = () => {
+    generalQuery("traPOSummaryTotal", {  })
+    .then((response) => {      
+      if (response.data.tk_status !== "NG") {
+        const loadeddata: POBalanceSummaryData[] =  response.data.data.map((element:POBalanceSummaryData,index: number)=> {
+          return {
+            ...element,
+          }
+        });
+        setWidgetData_PoBalanceSummary({
+          po_balance_qty:loadeddata[0].PO_BALANCE,
+          po_balance_amount: loadeddata[0].BALANCE_AMOUNT
+        }) 
+        //console.log(loadeddata);
+       /*  Swal.fire(
+          "Thông báo",
+          "Đã load " + response.data.data.length + " dòng",
+          "success"
+        ); */
+      } else {
+        Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  }
 
   useEffect(() => {
     /* let now = moment();
@@ -316,6 +362,7 @@ const KinhDoanhReport = () => {
     handleGetMonthlyClosing();
     //handletraInvoice("year", "this", startOfYear, rightnow);
     handleGetYearlyClosing();
+    handleGetPOBalanceSummary();
   }, []);
   return (
     <div className='kinhdoanhreport'>
@@ -391,10 +438,32 @@ const KinhDoanhReport = () => {
               <ChartYearly />
             </div>
           </div>
+          <div className='monthlyweeklygraph'>
+            <div className='dailygraph'>
+              <span className='subsection'>TOP 5 Customer Weekly Revenue</span>
+              <ChartCustomerRevenue />
+            </div>
+            <div className='dailygraph'>
+              <span className='subsection'>PIC Weekly Revenue</span>
+              <ChartPICRevenue />
+            </div>
+          </div>
           <br></br>
           <hr></hr>
           <span className='section_title'>3. Purchase Order (PO)</span>
           <br></br>
+          <div className="pobalancesummary">
+          <span className='subsection'>PO Balance info</span>
+          <Widget
+              widgettype='revenue'
+              label='PO BALANCE INFOMATION'
+              topColor='#ccff33'
+              botColor='#99ccff'
+              qty={widgetdata_pobalancesummary.po_balance_qty*1}
+              amount={widgetdata_pobalancesummary.po_balance_amount}
+              percentage={20}
+            />
+          </div>
           <div className='monthlyweeklygraph'>
             <div className='dailygraph'>
               <span className='subsection'>PO By Week</span>
@@ -410,6 +479,12 @@ const KinhDoanhReport = () => {
               <span className='subsection'>PO Balance Trending (By Week)</span>
               <Chart4 />
             </div>           
+          </div>
+          <div className='datatable'>
+            <div className='dailygraph'>
+              <span className='subsection'>Customer PO Balance By Product Type</span>
+              <CustomerPOBalanceByType />
+            </div> 
           </div>
         </div>
       </div>

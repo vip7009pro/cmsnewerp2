@@ -18,6 +18,22 @@ const ChartMonthLy = () => {
     if (n < 1e3) return n;
     if (n >= 1e3) return +(n / 1e3).toFixed(1) + "K$";
   };
+  const CustomTooltip = ({ active, payload, label } : {active?:any, payload?:any, label?: any}) => {
+    if (active && payload && payload.length) {
+      return (
+        <div className='custom-tooltip' style={{backgroundImage: "linear-gradient(to right, #ccffff, #00cccc)", padding: 20, borderRadius: 5}}>
+		    <p>Tháng {label}:</p>
+          <p className='label'>QTY: {`${payload[0].value.toLocaleString("en-US")}`} EA</p>
+          <p className='label'>AMOUNT: {`${payload[1].value.toLocaleString("en-US", {
+            style: "currency",
+            currency: "USD",
+          })}`}</p>
+        </div>
+      );
+    }
+    return null;
+}
+
 
   const labelFormatter = (value: number) => {
     return formatCash(value);
@@ -79,7 +95,7 @@ const ChartMonthLy = () => {
         angle: -90,
         position: "insideRight",
       }} tickFormatter={(value) => new Intl.NumberFormat('en-US', { maximumSignificantDigits: 3}).format(value) + '$'}/>
-      <Tooltip />
+      <Tooltip content={<CustomTooltip/>}/>
       <Legend />
       <Line yAxisId="left-axis" type="monotone" dataKey="DELIVERY_QTY" stroke="blue"/>
       <Bar yAxisId="right-axis" type="monotone" dataKey="DELIVERED_AMOUNT" stroke="#196619" fill='#33cc33' label={{ position: 'top', formatter: labelFormatter }}>      

@@ -23,6 +23,22 @@ const ChartYearly = () => {
     return formatCash(value);
   };
 
+  const CustomTooltip = ({ active, payload, label } : {active?:any, payload?:any, label?: any}) => {
+    if (active && payload && payload.length) {
+      return (
+        <div className='custom-tooltip' style={{backgroundImage: "linear-gradient(to right, #ccffff, #00cccc)", padding: 20, borderRadius: 5}}>
+		      <p>Năm {label}:</p>
+          <p className='label'>QTY: {`${payload[0].value.toLocaleString("en-US")}`} EA</p>
+          <p className='label'>AMOUNT: {`${payload[1].value.toLocaleString("en-US", {
+            style: "currency",
+            currency: "USD",
+          })}`}</p>
+        </div>
+      );
+    }
+    return null;
+}
+
   const handleGetDailyClosing = () => {
     generalQuery("kd_annuallyclosing", {  })
     .then((response) => {      
@@ -79,7 +95,7 @@ const ChartYearly = () => {
         angle: -90,
         position: "insideRight",
       }} tickFormatter={(value) => new Intl.NumberFormat('en-US', { maximumSignificantDigits: 3}).format(value) + '$'}/>
-      <Tooltip />
+      <Tooltip content={<CustomTooltip/>}/>
       <Legend />
       <Line yAxisId="left-axis" type="monotone" dataKey="DELIVERY_QTY" stroke="blue"/>
       <Bar yAxisId="right-axis" type="monotone" dataKey="DELIVERED_AMOUNT" stroke="#ff6666" fill='#ff1a1a' label={{ position: 'top', formatter: labelFormatter }}>      

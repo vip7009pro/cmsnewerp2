@@ -481,7 +481,7 @@ const BaoCaoNhanSu = () => {
       compactDisplay: "short",
     }).format(value));
   };
-
+  
   useEffect(() => {
    handleSearch2();
   }, []);

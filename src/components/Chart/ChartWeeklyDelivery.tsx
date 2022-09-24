@@ -21,6 +21,17 @@ const ChartWeekLyDelivery = () => {
       compactDisplay: "short",
     }).format(value));
   };
+  const CustomTooltip = ({ active, payload, label } : {active?:any, payload?:any, label?: any}) => {
+    if (active && payload && payload.length) {
+      return (
+        <div className='custom-tooltip' style={{backgroundImage: "linear-gradient(to right, #ccffff, #00cccc)", padding: 20, borderRadius: 5}}>
+          <p>W{label}:</p>
+          <p className='label'>BALANCE QTY: {`${payload[0].value.toLocaleString("en-US")}`} EA</p>         
+        </div>
+      );
+    }
+    return null;
+}
   const handleGetDailyClosing = () => {
     generalQuery("kd_weeklyclosing", { YEAR: moment().format("YYYY") })
     .then((response) => {      
@@ -71,7 +82,7 @@ const ChartWeekLyDelivery = () => {
           position: "insideLeft",
         }} tickFormatter={(value) => new Intl.NumberFormat('en', { notation: "compact", compactDisplay: "short" }).format(value)}
         tickCount={7}/>
-      <Tooltip />
+      <Tooltip content={<CustomTooltip/>}/>
       <Legend />      
       <Bar yAxisId="left-axis" type="monotone" dataKey="DELIVERY_QTY" stroke="#804d00" fill='#77b300' label={{ position: 'top', formatter: labelFormatter }}>      
       </Bar>

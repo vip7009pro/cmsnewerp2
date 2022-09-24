@@ -22,7 +22,7 @@ export default function Widget({widgettype,label,qty,amount, percentage,topColor
           <div className="right">
               <div className="percentage positive">
                   <KeyboardArrowUpIcon/>
-                  {percentage}%
+                 {/*  {percentage}% */}
               </div>
               <span className="title2">AMOUNT</span>
               <span className="counter">{amount.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</span>              

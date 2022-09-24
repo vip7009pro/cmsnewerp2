@@ -31,6 +31,7 @@ import QC from "./pages/qc/QC";
 import INSPECTION from "./pages/qc/inspection/INSPECTION";
 import KIEMTRA from "./pages/qc/inspection/KIEMTRA";
 import PQC from "./pages/qc/pqc/PQC";
+import IQC from "./pages/qc/iqc/IQC";
 interface userDataInterface {
   ADD_COMMUNE: string;
   ADD_DISTRICT: string;
@@ -350,7 +351,7 @@ function App() {
                     }
                   >
                     <Route index element={<AccountInfo />} />
-                    <Route path='iqc' element={<CODE_MANAGER />} />
+                    <Route path='iqc' element={<IQC />} />
                     <Route path='pqc' element={<PQC />} />
                     <Route path='oqc' element={<CODE_MANAGER />} />
                     <Route path='inspection' element={<KIEMTRA />} />

@@ -35,6 +35,17 @@ const ChartWeeklyPO = () => {
       compactDisplay: "short",
     }).format(value);
   };
+  const CustomTooltip = ({ active, payload, label } : {active?:any, payload?:any, label?: any}) => {
+    if (active && payload && payload.length) {
+      return (
+        <div className='custom-tooltip' style={{backgroundImage: "linear-gradient(to right, #ccffff, #00cccc)", padding: 20, borderRadius: 5}}>
+          <p>{label}:</p>
+          <p className='label'>QTY: {`${payload[0].value.toLocaleString("en-US")}`} EA</p>          
+        </div>
+      );
+    }
+    return null;
+}
   const handleGetDailyClosing = () => {
     generalQuery("kd_pooverweek", { YEAR: moment().format("YYYY") })
       .then((response) => {
@@ -93,7 +104,7 @@ const ChartWeeklyPO = () => {
           }
           tickCount={12}
         />
-        <Tooltip />
+        <Tooltip content={<CustomTooltip/>}/>
         <Legend />
         <Bar
           yAxisId='left-axis'
