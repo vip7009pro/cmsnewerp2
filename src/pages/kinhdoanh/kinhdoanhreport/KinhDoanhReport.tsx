@@ -11,6 +11,7 @@ import ChartMonthLy from "../../../components/Chart/Chart5";
 import ChartYearly from "../../../components/Chart/Chart6";
 import Chart7 from "../../../components/Chart/Chart7";
 import ChartCustomerRevenue from "../../../components/Chart/ChartCustomerRevenue";
+import ChartFCSTSamSung from "../../../components/Chart/ChartFCSTSamSung";
 import ChartPICRevenue from "../../../components/Chart/ChartPICRevenue";
 import ChartWeekLyDelivery from "../../../components/Chart/ChartWeeklyDelivery";
 import ChartWeeklyPO from "../../../components/Chart/ChartWeekLyPO";
@@ -97,7 +98,19 @@ interface POBalanceSummaryData {
   DELIVERED_AMOUNT:number, 
   BALANCE_AMOUNT: number
 }
+interface FCSTAmountData {
+  FCSTYEAR: number, 
+  FCSTWEEKNO: number,
+  FCST4W_QTY: number,
+  FCST4W_AMOUNT: number,
+  FCST8W_QTY: number,
+  FCST8W_AMOUNT: number,  
+}
 
+interface WidgetData_FCST {
+  fcstqty: number,
+  fcstamount: number
+}
 interface WidgetData_Yesterday {
   yesterday_qty: number;
   yesterday_amount: number;
@@ -143,6 +156,15 @@ const KinhDoanhReport = () => {
     useState<WidgetData_POBalanceSummary>({
       po_balance_qty: 0,
       po_balance_amount: 0,
+    });
+  const [widgetdata_fcstAmount, setWidgetData_FcstAmount] =
+    useState<FCSTAmountData>({
+     FCSTYEAR:0,
+     FCSTWEEKNO:1,
+     FCST4W_QTY:0,
+     FCST4W_AMOUNT:0,
+     FCST8W_QTY:0,
+     FCST8W_AMOUNT:0
     });
   const handletraInvoice = (
     invoice_type: string,
@@ -223,6 +245,45 @@ const KinhDoanhReport = () => {
       });
   };
 
+  const handleGetFCSTAmount = () => {
+    let fcstweek2:number = moment().add(1,'days').isoWeek();
+    let fcstyear2: number = moment().year(); 
+
+    generalQuery("fcstamount", { FCSTYEAR: fcstyear2, FCSTWEEKNO: fcstweek2 })
+    .then((response) => {
+      //console.log(response.data.data);
+      if (response.data.tk_status !== "NG") {
+        const loadeddata: FCSTAmountData[] =  response.data.data.map((element:FCSTAmountData,index: number)=> {
+          return {
+            ...element,                 
+          }
+        })
+        setWidgetData_FcstAmount(loadeddata[0]);        
+      } else {
+        generalQuery("fcstamount", { FCSTYEAR: fcstyear2, FCSTWEEKNO: fcstweek2-1 })
+        .then((response) => {
+          //console.log(response.data.data);
+          if (response.data.tk_status !== "NG") {
+            const loadeddata: FCSTAmountData[] =  response.data.data.map((element:FCSTAmountData,index: number)=> {
+              return {
+                ...element,                 
+              }
+            })
+            setWidgetData_FcstAmount(loadeddata[0]);        
+          } else {
+            //Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+        //Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  }
   const handleGetDailyClosing = () => {
     let yesterday = moment().add(-1, "day").format("YYYY-MM-DD");
     generalQuery("kd_dailyclosing", { START_DATE: yesterday, END_DATE: yesterday })
@@ -240,7 +301,7 @@ const KinhDoanhReport = () => {
           yesterday_amount: loadeddata[0].DELIVERED_AMOUNT
         })        
       } else {
-        Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
+        //Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
       }
     })
     .catch((error) => {
@@ -363,6 +424,7 @@ const KinhDoanhReport = () => {
     //handletraInvoice("year", "this", startOfYear, rightnow);
     handleGetYearlyClosing();
     handleGetPOBalanceSummary();
+    handleGetFCSTAmount();
   }, []);
   return (
     <div className='kinhdoanhreport'>
@@ -452,14 +514,14 @@ const KinhDoanhReport = () => {
           <hr></hr>
           <span className='section_title'>3. Purchase Order (PO)</span>
           <br></br>
-          <div className="pobalancesummary">
-          <span className='subsection'>PO Balance info</span>
-          <Widget
+          <div className='pobalancesummary'>
+            <span className='subsection'>PO Balance info</span>
+            <Widget
               widgettype='revenue'
               label='PO BALANCE INFOMATION'
               topColor='#ccff33'
               botColor='#99ccff'
-              qty={widgetdata_pobalancesummary.po_balance_qty*1}
+              qty={widgetdata_pobalancesummary.po_balance_qty * 1}
               amount={widgetdata_pobalancesummary.po_balance_amount}
               percentage={20}
             />
@@ -478,13 +540,54 @@ const KinhDoanhReport = () => {
             <div className='dailygraph'>
               <span className='subsection'>PO Balance Trending (By Week)</span>
               <Chart4 />
-            </div>           
+            </div>
           </div>
           <div className='datatable'>
             <div className='dailygraph'>
-              <span className='subsection'>Customer PO Balance By Product Type</span>
+              <span className='subsection'>
+                Customer PO Balance By Product Type
+              </span>
               <CustomerPOBalanceByType />
-            </div> 
+            </div>
+          </div>
+          <br></br>
+          <hr></hr>
+          <span className='section_title'>4. Forecast</span>
+          <br></br>
+          <div className='fcstsummary'>
+            <span className='subsection'>FCST Amount (FCST W{widgetdata_fcstAmount.FCSTWEEKNO})</span>
+            <div className='fcstwidget'>
+              <div className='fcstwidget1'>
+                <Widget
+                  widgettype='revenue'
+                  label='FCST AMOUNT(4 WEEK)'
+                  topColor='#eb99ff'
+                  botColor='#99ccff'
+                  qty={widgetdata_fcstAmount.FCST4W_QTY * 1}
+                  amount={widgetdata_fcstAmount.FCST4W_AMOUNT}
+                  percentage={20}
+                />
+              </div>
+              <div className='fcstwidget1'>
+                <Widget
+                  widgettype='revenue'
+                  label='FCST AMOUNT(8 WEEK)'
+                  topColor='#e6e600'
+                  botColor='#ff99c2'
+                  qty={widgetdata_fcstAmount.FCST8W_QTY * 1}
+                  amount={widgetdata_fcstAmount.FCST8W_AMOUNT}
+                  percentage={20}
+                />
+              </div>
+            </div>
+          </div>
+          <div className='monthlyweeklygraph'>
+            <div className='dailygraph'>
+              <span className='subsection'>
+                SamSung ForeCast (So sánh FCST 2 tuần liền kề)
+              </span>
+              <ChartFCSTSamSung />
+            </div>
           </div>
         </div>
       </div>

@@ -125,7 +125,10 @@ export default function AccountInfo() {
     <div className='accountinfo'>
       <h1>{/* Thông tin của bạn */}{getsentence(17,lang)}</h1>
       <div className='panelhome'>
-        <div className='cot1'>
+        <div className={`cot0 ${(userdata.EMPL_IMAGE ==='Y')? 'on':'off'}`}>        
+          {(userdata.EMPL_IMAGE ==='Y') && <img width={240} height={340} src={'/Picture_NS/NS_'+ userdata.EMPL_NO+'.jpg'} alt={userdata.EMPL_NO}></img>}
+        </div>
+        <div className={`cot1 ${(userdata.EMPL_IMAGE ==='Y')? 'on':'off'}`}>
           <h5>{/* Thông tin nhân viên */}{getsentence(18,lang)}:</h5>
           <ul>
             <li className='emplInfoList'>
@@ -163,7 +166,7 @@ export default function AccountInfo() {
             <li className='emplInfoList'> {/* Chức vụ */}{getsentence(29,lang)}: {userdata.JOB_NAME}</li>
           </ul>
         </div>
-        <div className='cot2'>
+        <div className={`cot2 ${(userdata.EMPL_IMAGE ==='Y')? 'on':'off'}`}>
           <h3 className='h3h3' style={{ color: "#cc33ff" }}>
             1. {/* Từ đầu năm đến giờ có */}{getsentence(30,lang)} : {Math.floor(days)} {/* ngày */} {getsentence(31,lang)}
           </h3>{" "}

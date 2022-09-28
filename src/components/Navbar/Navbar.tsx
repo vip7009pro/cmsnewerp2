@@ -128,8 +128,9 @@ export default function Navbar() {
             <ListIcon className='icon' />
           </div> */}
           <div className='item'>
-            <div className='avatar' onClick={showhideAvatarMenu}>
-              {userData.FIRST_NAME.slice(0, 1)}
+            <div className={'avatar'} onClick={showhideAvatarMenu}>
+              {(userData.EMPL_IMAGE !=='Y') && userData.FIRST_NAME.slice(0, 1)}
+              {(userData.EMPL_IMAGE ==='Y') && <img width={50} height={50} src={'/Picture_NS/NS_'+ userData.EMPL_NO+'.jpg'} alt={userData.EMPL_NO}></img>}
             </div>
           </div>
           {avatarmenu && (

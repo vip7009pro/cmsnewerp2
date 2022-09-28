@@ -1,11 +1,12 @@
 import { DataGrid, GridSelectionModel,  GridToolbarContainer, GridToolbarColumnsButton, GridToolbarFilterButton, GridToolbarDensitySelector, GridToolbarQuickFilter } from '@mui/x-data-grid';
-import  { useEffect, useState } from 'react'
+import  { useContext, useEffect, useState } from 'react'
 import { generalQuery } from '../../../api/Api';
 import "./QuanLyPhongBanNhanSu.scss"
 import Swal from "sweetalert2";
 import LinearProgress from '@mui/material/LinearProgress';
 import {SaveExcel} from '../../../api/GlobalFunction';
 import moment from 'moment';
+import { UserContext } from '../../../api/Context';
 interface MainDeptTableData {
   id: number;
   CTR_CD: string;
@@ -79,9 +80,8 @@ interface EmployeeTableData {
     MAINDEPTNAME_KR: string,
 }
 const QuanLyPhongBanNhanSu = () => {
+    const [userData, setUserData] = useContext(UserContext);
     const [isLoading, setisLoading] = useState(false);
-    const [quanlyphongbanShow, setQuanLyPhongBanShow]  = useState(false);
-    const [quanlynhansuShow, setQuanLyNhanSuShow]  = useState(true);
     const [workpositionload, setWorkPositionLoad] = useState<Array<WorkPositionTableData>>([]);
     const [EMPL_NO,setEMPL_NO]= useState("");
     const [CMS_ID,setCMS_ID]= useState("");
@@ -117,6 +117,8 @@ const QuanLyPhongBanNhanSu = () => {
     const [workpositionname,setWorkPositionName] = useState("");
     const [workpositionnamekr,setWorkPositionNameKR] = useState("");
     const [att_group_code,setATT_GROUP_CODE] = useState(1);
+    const [avatar, setAvatar] = useState('');
+
     const handle_them_maindept = ()=> {   
         const insertData = {
             CTR_CD: '002',
@@ -586,8 +588,7 @@ const QuanLyPhongBanNhanSu = () => {
         { field: "WORK_POSITION_NAME_KR", headerName: "WORK_POSITION_NAME_KR", width: 170},        
         { field: "ATT_GROUP_CODE", headerName: "ATT_GROUP_CODE", width: 170},        
     ];
-    const columns_employee_table =[
-        { field: "id", headerName: "ID", width: 100, valueGetter: (params: any) => {return params.row.EMPL_NO} },
+    const columns_employee_table =[       
         { field: "EMPL_NO", headerName: "EMPL_NO", width: 170},  
         { field: "CMS_ID", headerName: "CMS_ID", width: 170},  
         { field: "FIRST_NAME", headerName: "FIRST_NAME", width: 170},  
@@ -657,7 +658,7 @@ const QuanLyPhongBanNhanSu = () => {
                 });
         }
         setMainDeptDataFilter(datafilter); 
-        console.log(datafilter);        
+        //console.log(datafilter);        
     }
     const handlesubDeptSelection = (ids:GridSelectionModel)=> {
         const selectedID = new Set(ids);
@@ -682,7 +683,7 @@ const QuanLyPhongBanNhanSu = () => {
                 });
         }
         setSubDeptDataFilter(datafilter); 
-        console.log(datafilter);        
+        //console.log(datafilter);        
     }
     const handleworkPositionSelection = (ids:GridSelectionModel)=> {
         const selectedID = new Set(ids);
@@ -697,7 +698,7 @@ const QuanLyPhongBanNhanSu = () => {
             setATT_GROUP_CODE(datafilter[datafilter.length-1].ATT_GROUP_CODE);            
         }
         setWorkPositionDataFilter(datafilter); 
-        console.log(datafilter);        
+        //console.log(datafilter);        
     }
     const handleEmployeeSelection = (ids:GridSelectionModel)=> {
         const selectedID = new Set(ids);
@@ -728,8 +729,9 @@ const QuanLyPhongBanNhanSu = () => {
             setWORK_SHIFT_CODE(datafilter[datafilter.length-1].WORK_SHIFT_CODE);
             setWORK_POSITION_CODE(datafilter[datafilter.length-1].WORK_POSITION_CODE);
             setATT_GROUP_CODE(datafilter[datafilter.length-1].ATT_GROUP_CODE);
+            setAvatar(datafilter[datafilter.length-1].EMPL_NO);
         }       
-        console.log(datafilter);        
+        //console.log(datafilter);        
     }
     function CustomToolbar() {
         return (
@@ -738,9 +740,36 @@ const QuanLyPhongBanNhanSu = () => {
             <GridToolbarFilterButton />
             <GridToolbarDensitySelector />
             <GridToolbarQuickFilter/>
-            <button className='saveexcelbutton' onClick={()=>{SaveExcel(employeeTable,"DanhSachNhanVien")}}>Save Excel</button>
+            <button className='saveexcelbutton' onClick={()=>{SaveExcel(employeeTable.map((element:EmployeeTableData, index: number)=>{
+                return {
+                    ...element,
+                    PASSWORD:'xxx'
+                }
+
+            }),"DanhSachNhanVien")}}>Save Excel</button>
           </GridToolbarContainer>
         );
+      }
+
+      const [selection, setSelection] = useState<any>({
+        tab1: true,
+        tab2: false,
+        tab3: false
+      });
+
+      const setNav = (choose: number) => {
+        if(choose ===1 )
+        {
+          setSelection({...selection, tab1:true, tab2: false, tab3:false});
+        }
+        else if(choose ===2 )
+        {
+          setSelection({...selection, tab1:false, tab2: true, tab3:false});
+        }
+        else if(choose ===3 )
+        {
+          setSelection({...selection, tab1:false, tab2: false, tab3:true});
+        }
       }
     useEffect(()=> {
         setisLoading(true);
@@ -782,206 +811,450 @@ const QuanLyPhongBanNhanSu = () => {
     },[]);
   return (
     <div className='quanlyphongbannhansu'>
-      <div className='quanlyphongban'>
-        <button className='showhidebutton' onClick={()=>setQuanLyPhongBanShow(!quanlyphongbanShow)}>Quản lý phòng ban</button>
-        {quanlyphongbanShow && <div className='maindept'>
-          <div className='maindept_table'>
-            <DataGrid
-              rowHeight={35}
-              rows={maindeptTable}
-              columns={columns_maindept}
-              rowsPerPageOptions={[5, 10, 50, 100]}
-              /* checkboxSelection */
-              onSelectionModelChange={(ids) => {
-                handleMainDeptSelection(ids);
-              }}
-            />
-          </div>
-          <div className='maindeptform'>
-            <div className='maindeptinput'>
-              <div className='maindeptinputlabel'>
-                MAIN DEPT CODE:<br></br><br></br>
-                MAIN DEPT NAME:<br></br><br></br>
-                MAIN DEPT NAME KR:
-              </div>
-              <div className='maindeptinputbox'>
-                <input type='text' value={maindeptcode} onChange={e => setMainDeptCode(Number(e.target.value))}></input>
-                <input type='text' value={maindeptname} onChange={e => setMainDeptName(e.target.value)}></input>
-                <input type='text' value={maindeptnamekr} onChange={e => setMainDeptNameKR(e.target.value)}></input>                
-              </div>
-            </div>
-            <div className='maindeptbutton'>
-                <button className='thembutton' onClick={handle_them_maindept}>Thêm</button>
-                <button className='suabutton' onClick={handle_sua_maindept}>Sửa</button>
-                <button className='xoabutton' onClick={handle_xoa_maindept}>Xoá</button>
-            </div>
-          </div>
-        </div>}
-        {quanlyphongbanShow && <div className='subdept'>
-          <div className='subdept_table'>
-            <DataGrid
-              rowHeight={35}
-              rows={subdeptTable}
-              columns={columns_subdept}
-              rowsPerPageOptions={[5, 10, 50, 100]}
-              /* checkboxSelection */
-              onSelectionModelChange={(ids) => {
-                handlesubDeptSelection(ids);
-              }}
-            />
-          </div>
-          <div className='subdeptform'>
-            <div className='subdeptinput'>
-              <div className='subdeptinputlabel'>
-                SUB DEPT CODE:<br></br><br></br>
-                SUB DEPT NAME:<br></br><br></br>
-                SUB DEPT NAME KR:
-              </div>
-              <div className='subdeptinputbox'>
-                <input type='text' value={subdeptcode} onChange={e => setSubDeptCode(Number(e.target.value))}></input>
-                <input type='text' value={subdeptname} onChange={e => setSubDeptName(e.target.value)}></input>
-                <input type='text' value={subdeptnamekr} onChange={e => setSubDeptNameKR(e.target.value)}></input>
-              </div>
-            </div>
-            <div className='subdeptbutton'>
-                <button className='thembutton' onClick={handle_them_subdept}>Thêm</button>
-                <button className='suabutton' onClick={handle_sua_subdept}>Sửa</button>
-                <button className='xoabutton' onClick={handle_xoa_subdept}>Xoá</button>
-            </div>
-          </div>
-        </div> }
-        {quanlyphongbanShow && <div className='workposition'>
-          <div className='workposition_table'>
-            <DataGrid
-              rowHeight={35}
-              rows={workpositionTable}
-              columns={columns_work_position}
-              rowsPerPageOptions={[5, 10, 50, 100]}
-              /* checkboxSelection */
-              onSelectionModelChange={(ids) => {
-                handleworkPositionSelection(ids);
-              }}
-            />
-          </div>
-          <div className='workpositionform'>
-            <div className='workpositioninput'>
-              <div className='workpositioninputlabel'>
-                WORK POSITION CODE:<br></br><br></br>
-                WORK POSITION NAME:<br></br><br></br>
-                WORK POSITION NAME KR: <br></br><br></br>
-                ATT GROUP CDOE: 
-              </div>
-              <div className='workpositioninputbox'>
-                <input type='text' value={workpositioncode} onChange={e => setWorkPositionCode(Number(e.target.value))}></input>
-                <input type='text' value={workpositionname} onChange={e => setWorkPositionName(e.target.value)}></input>
-                <input type='text' value={workpositionnamekr} onChange={e => setWorkPositionNameKR(e.target.value)}></input>
-                <input type='text' value={att_group_code} onChange={e => setATT_GROUP_CODE(Number(e.target.value))}></input>
-              </div>
-            </div>
-            <div className='workpositionbutton'>
-                <button className='thembutton' onClick={handle_them_workposition}>Thêm</button>
-                <button className='suabutton' onClick={handle_sua_workposition}>Sửa</button>
-                <button className='xoabutton' onClick={handle_xoa_workposition}>Xoá</button>
-            </div>
-          </div>
-        </div> }
+      <div className='mininavbar'>
+        <div className='mininavitem' onClick={() => setNav(1)}>
+          <span className='mininavtext'>Quản lý Nhân Sự</span>
+        </div>
+        <div className='mininavitem' onClick={() => setNav(2)}>
+          <span className='mininavtext'>Quản Lý Phòng Ban</span>
+        </div>       
       </div>
-      <div className='quanlynhansu'>
-      <button className='showhidebutton' onClick={()=>setQuanLyNhanSuShow(!quanlynhansuShow)}>Quản lý nhân sự</button>
-      {quanlynhansuShow && <div className='maindept'>
-        <h3>Thông tin nhân lực</h3>
-        <div className='maindeptform'>
-            <div className='maindeptinput'>             
-              <div className='maindeptinputbox'>
-                <label>Mã ERP: <input type='text' value={EMPL_NO} onChange={e => setEMPL_NO(e.target.value)}></input></label>
-                <label>Mã CMS: <input type='text' value={CMS_ID} onChange={e => setCMS_ID(e.target.value)}></input></label>
-                <label>Tên: <input type='text' value={FIRST_NAME} onChange={e => setFIRST_NAME(e.target.value)}></input></label>                
-                <label>Họ và Đệm: <input type='text' value={MIDLAST_NAME} onChange={e => setMIDLAST_NAME(e.target.value)}></input></label>                
-                <label>Ngày tháng năm sinh: <input type='date' value={DOB.slice(0,10)} onChange={e => setDOB(e.target.value)}></input></label>                
-                <label>Quê quán: <input type='text' value={HOMETOWN} onChange={e => setHOMETOWN(e.target.value)}></input></label>                
-                <label>Giới tính: 
-                    <select name='gioitinh' value={SEX_CODE}  onChange={e=> setSEX_CODE(Number(e.target.value))}>
-                        <option value = {0}>Nữ</option>  
-                        <option value = {1}>Nam</option>                                      
-                    </select>
-                </label>                
+
+      <div className='quanlyphongban'>        
+        {selection.tab2 && (
+          <div className='maindept'>
+            <div className='maindept_table'>
+              <DataGrid
+                rowHeight={35}
+                rows={maindeptTable}
+                columns={columns_maindept}
+                rowsPerPageOptions={[5, 10, 50, 100]}
+                /* checkboxSelection */
+                onSelectionModelChange={(ids) => {
+                  handleMainDeptSelection(ids);
+                }}
+              />
+            </div>
+            <div className='maindeptform'>
+              <div className='maindeptinput'>
+                <div className='maindeptinputlabel'>
+                  MAIN DEPT CODE:<br></br>
+                  <br></br>
+                  MAIN DEPT NAME:<br></br>
+                  <br></br>
+                  MAIN DEPT NAME KR:
+                </div>
+                <div className='maindeptinputbox'>
+                  <input
+                    type='text'
+                    value={maindeptcode}
+                    onChange={(e) => setMainDeptCode(Number(e.target.value))}
+                  ></input>
+                  <input
+                    type='text'
+                    value={maindeptname}
+                    onChange={(e) => setMainDeptName(e.target.value)}
+                  ></input>
+                  <input
+                    type='text'
+                    value={maindeptnamekr}
+                    onChange={(e) => setMainDeptNameKR(e.target.value)}
+                  ></input>
+                </div>
               </div>
-              <div className='maindeptinputbox'>
-                <label>Tỉnh/thành phố: <input type='text' value={ADD_PROVINCE} onChange={e => setADD_PROVINCE(e.target.value)}></input></label>
-                <label>Quận/Huyện: <input type='text' value={ADD_DISTRICT} onChange={e => setADD_DISTRICT(e.target.value)}></input></label>
-                <label>Xã/Thị trấn: <input type='text' value={ADD_COMMUNE} onChange={e => setADD_COMMUNE(e.target.value)}></input></label>                
-                <label>Thôn/xóm: <input type='text' value={ADD_VILLAGE} onChange={e => setADD_VILLAGE(e.target.value)}></input></label>                
-                <label>Số điện thoại: <input type='text' value={PHONE_NUMBER} onChange={e => setPHONE_NUMBER(e.target.value)}></input></label>                
-                <label>Ngày bắt đầu làm việc: <input type='date' value={WORK_START_DATE.slice(0,10)} onChange={e => setWORK_START_DATE(e.target.value)}></input></label>                
-                <label>Password: <input type='password' value={PASSWORD} onChange={e => setPASSWORD(e.target.value)}></input></label>                
-              </div>
-              <div className='maindeptinputbox'>
-                <label>Email: <input type='text' value={EMAIL} onChange={e => setEMAIL(e.target.value)}></input></label>                
-                <label>Vị trí làm việc:
-                    <select name='vitrilamviec' value={WORK_POSITION_CODE}  onChange={e=> {setWORK_POSITION_CODE(Number(e.target.value));}}>
-                       { workpositionload.map((element, index) => (<option key={index} value={element.WORK_POSITION_CODE}>{element.WORK_POSITION_NAME}</option>))           }
-                    </select>
-                </label>                
-                <label>Ca làm việc: 
-                    <select name='calamviec' value={WORK_SHIFT_CODE}  onChange={e=> setWORK_SHIFT_CODE(Number(e.target.value))}>
-                        <option value = {0}>Hành chính</option>  
-                        <option value = {1}>TEAM 1</option>                                      
-                        <option value = {2}>TEAM 2</option>                                      
-                    </select>
-                </label>
-                <label>Chức danh: 
-                    <select name='chucdanh' value={POSITION_CODE}  onChange={e=> setPOSITION_CODE(Number(e.target.value))}>
-                        <option value = {1}>AM</option>  
-                        <option value = {2}>Senior</option>                                      
-                        <option value = {3}>Staff</option>                                      
-                        <option value = {4}>No Pos</option>                                      
-                    </select>
-                </label>
-                <label>Chức vụ: 
-                    <select name='chucvu' value={JOB_CODE}  onChange={e=> setJOB_CODE(Number(e.target.value))}>
-                        <option value = {0}>ADMIN</option>  
-                        <option value = {1}>Dept Staff</option>  
-                        <option value = {2}>Leader</option>                                      
-                        <option value = {3}>Sub Leader</option>                                      
-                        <option value = {4}>Worker</option>                                      
-                    </select>
-                </label> 
-                <label>Nhà máy:
-                    <select name='nhamay' value={FACTORY_CODE}  onChange={e=> setFACTORY_CODE(Number(e.target.value))}>                        
-                        <option value = {1}>Nhà máy 1</option>                                      
-                        <option value = {2}>Nhà máy 2</option>                                      
-                    </select>
-                </label>     
-                <label>Trạng thái làm việc:
-                    <select name='trangthailamviec' value={WORK_STATUS_CODE}  onChange={e=> setWORK_STATUS_CODE(Number(e.target.value))}>
-                        <option value = {0}>Đã nghỉ</option>  
-                        <option value = {1}>Đang làm</option>  
-                        <option value = {2}>Nghỉ sinh</option> 
-                    </select>
-                </label>
+              <div className='maindeptbutton'>
+                <button className='thembutton' onClick={handle_them_maindept}>
+                  Thêm
+                </button>
+                <button className='suabutton' onClick={handle_sua_maindept}>
+                  Sửa
+                </button>
+                <button className='xoabutton' onClick={handle_xoa_maindept}>
+                  Xoá
+                </button>
               </div>
             </div>
-            <div className='maindeptbutton'>
-                <button className='thembutton' onClick={handle_them_employee}>Thêm</button>
-                <button className='suabutton' onClick={handle_sua_employee}>Sửa</button>                
-                <button className='xoabutton' onClick={handle_xoa_employee}>Clear</button>                
+          </div>
+        )}
+        {selection.tab2 && (
+          <div className='subdept'>
+            <div className='subdept_table'>
+              <DataGrid
+                rowHeight={35}
+                rows={subdeptTable}
+                columns={columns_subdept}
+                rowsPerPageOptions={[5, 10, 50, 100]}
+                /* checkboxSelection */
+                onSelectionModelChange={(ids) => {
+                  handlesubDeptSelection(ids);
+                }}
+              />
+            </div>
+            <div className='subdeptform'>
+              <div className='subdeptinput'>
+                <div className='subdeptinputlabel'>
+                  SUB DEPT CODE:<br></br>
+                  <br></br>
+                  SUB DEPT NAME:<br></br>
+                  <br></br>
+                  SUB DEPT NAME KR:
+                </div>
+                <div className='subdeptinputbox'>
+                  <input
+                    type='text'
+                    value={subdeptcode}
+                    onChange={(e) => setSubDeptCode(Number(e.target.value))}
+                  ></input>
+                  <input
+                    type='text'
+                    value={subdeptname}
+                    onChange={(e) => setSubDeptName(e.target.value)}
+                  ></input>
+                  <input
+                    type='text'
+                    value={subdeptnamekr}
+                    onChange={(e) => setSubDeptNameKR(e.target.value)}
+                  ></input>
+                </div>
+              </div>
+              <div className='subdeptbutton'>
+                <button className='thembutton' onClick={handle_them_subdept}>
+                  Thêm
+                </button>
+                <button className='suabutton' onClick={handle_sua_subdept}>
+                  Sửa
+                </button>
+                <button className='xoabutton' onClick={handle_xoa_subdept}>
+                  Xoá
+                </button>
+              </div>
             </div>
           </div>
-          <div className='maindept_table'>
-            <DataGrid
-              components={{ Toolbar: CustomToolbar,  LoadingOverlay: LinearProgress,}}       
-              loading = {isLoading} 
-              rowHeight={35}
-              rows={employeeTable}
-              columns={columns_employee_table}
-              rowsPerPageOptions={[5, 10, 50, 100,500]}      
-              editMode="row"
-              onSelectionModelChange={(ids) => {
-                handleEmployeeSelection(ids);
-              }}
-            />
+        )}
+        {selection.tab2 && (
+          <div className='workposition'>
+            <div className='workposition_table'>
+              <DataGrid
+                rowHeight={35}
+                rows={workpositionTable}
+                columns={columns_work_position}
+                rowsPerPageOptions={[5, 10, 50, 100]}
+                /* checkboxSelection */
+                onSelectionModelChange={(ids) => {
+                  handleworkPositionSelection(ids);
+                }}
+              />
+            </div>
+            <div className='workpositionform'>
+              <div className='workpositioninput'>
+                <div className='workpositioninputlabel'>
+                  WORK POSITION CODE:<br></br>
+                  <br></br>
+                  WORK POSITION NAME:<br></br>
+                  <br></br>
+                  WORK POSITION NAME KR: <br></br>
+                  <br></br>
+                  ATT GROUP CDOE:
+                </div>
+                <div className='workpositioninputbox'>
+                  <input
+                    type='text'
+                    value={workpositioncode}
+                    onChange={(e) =>
+                      setWorkPositionCode(Number(e.target.value))
+                    }
+                  ></input>
+                  <input
+                    type='text'
+                    value={workpositionname}
+                    onChange={(e) => setWorkPositionName(e.target.value)}
+                  ></input>
+                  <input
+                    type='text'
+                    value={workpositionnamekr}
+                    onChange={(e) => setWorkPositionNameKR(e.target.value)}
+                  ></input>
+                  <input
+                    type='text'
+                    value={att_group_code}
+                    onChange={(e) => setATT_GROUP_CODE(Number(e.target.value))}
+                  ></input>
+                </div>
+              </div>
+              <div className='workpositionbutton'>
+                <button
+                  className='thembutton'
+                  onClick={handle_them_workposition}
+                >
+                  Thêm
+                </button>
+                <button className='suabutton' onClick={handle_sua_workposition}>
+                  Sửa
+                </button>
+                <button className='xoabutton' onClick={handle_xoa_workposition}>
+                  Xoá
+                </button>
+              </div>
+            </div>
           </div>
-        </div>}
+        )}
+      </div>
+      <div className='quanlynhansu'>       
+        {selection.tab1 && (
+          <div className='maindept'>
+            <h3>Thông tin nhân lực</h3>
+            <div className='maindeptform'>
+              <div className="inputform">
+                <div className="emplpicture">
+                  {<img width={220} height={300} src={'/Picture_NS/NS_'+ avatar+'.jpg'} alt={avatar}></img>}
+                </div>
+                <div className='maindeptinput'>
+                  <div className='maindeptinputbox'>
+                    <label>
+                      Mã ERP:{" "}
+                      <input
+                        type='text'
+                        value={EMPL_NO}
+                        onChange={(e) => setEMPL_NO(e.target.value)}
+                      ></input>
+                    </label>
+                    <label>
+                      Mã CMS:{" "}
+                      <input
+                        type='text'
+                        value={CMS_ID}
+                        onChange={(e) => setCMS_ID(e.target.value)}
+                      ></input>
+                    </label>
+                    <label>
+                      Tên:{" "}
+                      <input
+                        type='text'
+                        value={FIRST_NAME}
+                        onChange={(e) => setFIRST_NAME(e.target.value)}
+                      ></input>
+                    </label>
+                    <label>
+                      Họ và Đệm:{" "}
+                      <input
+                        type='text'
+                        value={MIDLAST_NAME}
+                        onChange={(e) => setMIDLAST_NAME(e.target.value)}
+                      ></input>
+                    </label>
+                    <label>
+                      Ngày tháng năm sinh:{" "}
+                      <input
+                        type='date'
+                        value={DOB.slice(0, 10)}
+                        onChange={(e) => setDOB(e.target.value)}
+                      ></input>
+                    </label>
+                    <label>
+                      Quê quán:{" "}
+                      <input
+                        type='text'
+                        value={HOMETOWN}
+                        onChange={(e) => setHOMETOWN(e.target.value)}
+                      ></input>
+                    </label>
+                    <label>
+                      Giới tính:
+                      <select
+                        name='gioitinh'
+                        value={SEX_CODE}
+                        onChange={(e) => setSEX_CODE(Number(e.target.value))}
+                      >
+                        <option value={0}>Nữ</option>
+                        <option value={1}>Nam</option>
+                      </select>
+                    </label>
+                  </div>
+                  <div className='maindeptinputbox'>
+                    <label>
+                      Tỉnh/thành phố:{" "}
+                      <input
+                        type='text'
+                        value={ADD_PROVINCE}
+                        onChange={(e) => setADD_PROVINCE(e.target.value)}
+                      ></input>
+                    </label>
+                    <label>
+                      Quận/Huyện:{" "}
+                      <input
+                        type='text'
+                        value={ADD_DISTRICT}
+                        onChange={(e) => setADD_DISTRICT(e.target.value)}
+                      ></input>
+                    </label>
+                    <label>
+                      Xã/Thị trấn:{" "}
+                      <input
+                        type='text'
+                        value={ADD_COMMUNE}
+                        onChange={(e) => setADD_COMMUNE(e.target.value)}
+                      ></input>
+                    </label>
+                    <label>
+                      Thôn/xóm:{" "}
+                      <input
+                        type='text'
+                        value={ADD_VILLAGE}
+                        onChange={(e) => setADD_VILLAGE(e.target.value)}
+                      ></input>
+                    </label>
+                    <label>
+                      Số điện thoại:{" "}
+                      <input
+                        type='text'
+                        value={PHONE_NUMBER}
+                        onChange={(e) => setPHONE_NUMBER(e.target.value)}
+                      ></input>
+                    </label>
+                    <label>
+                      Ngày bắt đầu làm việc:{" "}
+                      <input
+                        type='date'
+                        value={WORK_START_DATE.slice(0, 10)}
+                        onChange={(e) => setWORK_START_DATE(e.target.value)}
+                      ></input>
+                    </label>
+                    <label>
+                      Password:{" "}
+                      <input
+                        type='password'
+                        value={PASSWORD}
+                        onChange={(e) => setPASSWORD(e.target.value)}
+                      ></input>
+                    </label>
+                  </div>
+                  <div className='maindeptinputbox'>
+                    <label>
+                      Email:{" "}
+                      <input
+                        type='text'
+                        value={EMAIL}
+                        onChange={(e) => setEMAIL(e.target.value)}
+                      ></input>
+                    </label>
+                    <label>
+                      Vị trí làm việc:
+                      <select
+                        name='vitrilamviec'
+                        value={WORK_POSITION_CODE}
+                        onChange={(e) => {
+                          setWORK_POSITION_CODE(Number(e.target.value));
+                        }}
+                      >
+                        {workpositionload.map((element, index) => (
+                          <option key={index} value={element.WORK_POSITION_CODE}>
+                            {element.WORK_POSITION_NAME}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+                    <label>
+                      Ca làm việc:
+                      <select
+                        name='calamviec'
+                        value={WORK_SHIFT_CODE}
+                        onChange={(e) =>
+                          setWORK_SHIFT_CODE(Number(e.target.value))
+                        }
+                      >
+                        <option value={0}>Hành chính</option>
+                        <option value={1}>TEAM 1</option>
+                        <option value={2}>TEAM 2</option>
+                      </select>
+                    </label>
+                    <label>
+                      Chức danh:
+                      <select
+                        name='chucdanh'
+                        value={POSITION_CODE}
+                        onChange={(e) => setPOSITION_CODE(Number(e.target.value))}
+                      >
+                        <option value={1}>AM</option>
+                        <option value={2}>Senior</option>
+                        <option value={3}>Staff</option>
+                        <option value={4}>No Pos</option>
+                      </select>
+                    </label>
+                    <label>
+                      Chức vụ:
+                      <select
+                        name='chucvu'
+                        value={JOB_CODE}
+                        onChange={(e) => setJOB_CODE(Number(e.target.value))}
+                      >
+                        <option value={0}>ADMIN</option>
+                        <option value={1}>Dept Staff</option>
+                        <option value={2}>Leader</option>
+                        <option value={3}>Sub Leader</option>
+                        <option value={4}>Worker</option>
+                      </select>
+                    </label>
+                    <label>
+                      Nhà máy:
+                      <select
+                        name='nhamay'
+                        value={FACTORY_CODE}
+                        onChange={(e) => setFACTORY_CODE(Number(e.target.value))}
+                      >
+                        <option value={1}>Nhà máy 1</option>
+                        <option value={2}>Nhà máy 2</option>
+                      </select>
+                    </label>
+                    <label>
+                      Trạng thái làm việc:
+                      <select
+                        name='trangthailamviec'
+                        value={WORK_STATUS_CODE}
+                        onChange={(e) =>
+                          setWORK_STATUS_CODE(Number(e.target.value))
+                        }
+                      >
+                        <option value={0}>Đã nghỉ</option>
+                        <option value={1}>Đang làm</option>
+                        <option value={2}>Nghỉ sinh</option>
+                      </select>
+                    </label>
+                  </div>
+                </div>
+                <div className='maindeptbutton'>
+                <button className='thembutton' onClick={handle_them_employee}>
+                  Thêm
+                </button>
+                <button className='suabutton' onClick={handle_sua_employee}>
+                  Sửa
+                </button>
+                <button className='xoabutton' onClick={handle_xoa_employee}>
+                  Clear
+                </button>
+              </div>
+              </div>              
+              
+            </div>
+            <div className='maindept_table'>
+              <DataGrid
+                components={{
+                  Toolbar: CustomToolbar,
+                  LoadingOverlay: LinearProgress,
+                }}
+                loading={isLoading}
+                rowHeight={35}
+                rows={employeeTable}
+                columns={columns_employee_table}
+                rowsPerPageOptions={[5, 10, 50, 100, 500]}
+                editMode='row'
+                onSelectionModelChange={(ids) => {
+                  handleEmployeeSelection(ids);
+                }}
+              />
+            </div>
+           
+          </div>
+        )}
       </div>
     </div>
   );

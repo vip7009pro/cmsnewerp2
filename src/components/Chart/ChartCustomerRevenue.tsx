@@ -97,7 +97,33 @@ const CustomLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, value, index 
           setWeeklyClosingData(loadeddata);
                     
         } else {
-          Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
+          //Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
+           sunday = moment().clone().weekday(0).add(-7,'days').format("YYYY-MM-DD");
+           monday = moment().clone().weekday(6).add(-7,'days').format("YYYY-MM-DD");
+          generalQuery("customerRevenue", { START_DATE:sunday, END_DATE: monday  })
+            .then((response) => {
+              if (response.data.tk_status !== "NG") {
+                  //console.log(response.data.data);
+                let loadeddata: WeeklyClosingData[] = response.data.data.map(
+                  (element: WeeklyClosingData, index: number) => {
+                    return {
+                      ...element,
+                    };
+                  }
+                );
+
+                loadeddata = loadeddata.splice(0,5);
+                //console.log(loadeddata);
+                setWeeklyClosingData(loadeddata);
+                          
+              } else {
+                //Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
+              }
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+            
         }
       })
       .catch((error) => {

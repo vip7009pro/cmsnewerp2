@@ -32,7 +32,12 @@ import INSPECTION from "./pages/qc/inspection/INSPECTION";
 import KIEMTRA from "./pages/qc/inspection/KIEMTRA";
 import PQC from "./pages/qc/pqc/PQC";
 import IQC from "./pages/qc/iqc/IQC";
+import CS from "./pages/qc/cs/CS";
+import DTC from "./pages/qc/dtc/DTC";
+import ISO from "./pages/qc/iso/ISO";
+import OQC from "./pages/qc/oqc/OQC";
 interface userDataInterface {
+  EMPL_IMAGE?: string
   ADD_COMMUNE: string;
   ADD_DISTRICT: string;
   ADD_PROVINCE: string;
@@ -258,6 +263,7 @@ function App() {
             WORK_STATUS_CODE: 1,
             WORK_STATUS_NAME: "Đang làm",
             WORK_STATUS_NAME_KR: "근무중",
+            EMPL_IMAGE:'N'
           });
         } else {
           //console.log(data.data.data);
@@ -351,14 +357,69 @@ function App() {
                     }
                   >
                     <Route index element={<AccountInfo />} />
-                    <Route path='iqc' element={<IQC />} />
-                    <Route path='pqc' element={<PQC />} />
-                    <Route path='oqc' element={<CODE_MANAGER />} />
-                    <Route path='inspection' element={<KIEMTRA />} />
-                    <Route path='cs' element={<CODE_MANAGER />} />
-                    <Route path='dtc' element={<CODE_MANAGER />} />
-                    <Route path='iso' element={<CODE_MANAGER />} />
-                    <Route path='qcreport' element={<CODE_MANAGER />} />
+                    <Route path='tracuuchung' element={ <ProtectedRoute
+                        user={userData}
+                        maindeptname='QC'
+                        jobname='Leader'
+                      >
+                        <IQC />
+                      </ProtectedRoute>} />
+                    <Route path='iqc' element={ <ProtectedRoute
+                        user={userData}
+                        maindeptname='QC'
+                        jobname='Leader'
+                      >
+                        <IQC />
+                      </ProtectedRoute>} />
+                    <Route path='pqc' element={ <ProtectedRoute
+                        user={userData}
+                        maindeptname='QC'
+                        jobname='Leader'
+                      >
+                        <PQC />
+                      </ProtectedRoute>} />
+                    <Route path='oqc' element={ <ProtectedRoute
+                        user={userData}
+                        maindeptname='QC'
+                        jobname='Leader'
+                      >
+                        <OQC />
+                      </ProtectedRoute>} />
+                    <Route path='inspection' element={ <ProtectedRoute
+                        user={userData}
+                        maindeptname='QC'
+                        jobname='Leader'
+                      >
+                        <KIEMTRA />
+                      </ProtectedRoute>} />
+                    <Route path='cs' element={ <ProtectedRoute
+                        user={userData}
+                        maindeptname='QC'
+                        jobname='Leader'
+                      >
+                        <CS />
+                      </ProtectedRoute>} />
+                    <Route path='dtc' element={ <ProtectedRoute
+                        user={userData}
+                        maindeptname='QC'
+                        jobname='Leader'
+                      >
+                        <DTC />
+                      </ProtectedRoute>} />
+                    <Route path='iso' element={ <ProtectedRoute
+                        user={userData}
+                        maindeptname='QC'
+                        jobname='Leader'
+                      >
+                        <ISO />
+                      </ProtectedRoute>} />
+                    <Route path='qcreport' element={ <ProtectedRoute
+                        user={userData}
+                        maindeptname='QC'
+                        jobname='Leader'
+                      >
+                        <QC />
+                      </ProtectedRoute>} />
                   </Route>
                   <Route
                     path='nhansu'

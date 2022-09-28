@@ -40,8 +40,8 @@ const INPUTPQC = () => {
   const [isPending, startTransition] = useTransition();
   const [selection, setSelection] = useState<any>({
     tab1: true,
-    tab2: true,
-    tab3: true
+    tab2: false,
+    tab3: false
   });
   const [userData, setUserData] = useContext(UserContext);
   const [uploadExcelJson, setUploadExcelJSon] = useState<Array<any>>([]);
@@ -891,7 +891,7 @@ const INPUTPQC = () => {
         </div>
       </div>
       <div className='newycsx'>
-        <h3>Thêm DATA PQC1 Hàng Loạt</h3>
+        <h3>Thêm DATA PQC Hàng Loạt</h3>
         <br></br>
         <div className='batchnewycsx'>
           <form className='formupload'>

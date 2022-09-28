@@ -36,12 +36,7 @@ const KIEMTRA = () => {
           <span className='mininavtext'>
             Data Kiểm Tra
           </span>
-        </div>   
-        <div className='mininavitem'  onClick={() => setNav(2)}>
-          <span className='mininavtext'>
-            Report Kiểm Tra
-          </span>
-        </div>   
+        </div>          
       </div>     
       {selection.tab1 && (
         <div className='trainspection'>

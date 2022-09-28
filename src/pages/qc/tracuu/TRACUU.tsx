@@ -1,10 +1,7 @@
-
 import  { useEffect, useState} from 'react'
-import INPUTPQC from './INPUTPQC';
-import TRAPQC from './TRAPQC';
-import "./PQC.scss"
+import "./TRACUU.scss"
 
-const PQC = () => {
+const TRACUU = () => {
   const [selection, setSelection] = useState<any>({
     tab1: false,
     tab2: true,
@@ -29,26 +26,32 @@ const PQC = () => {
   useEffect(()=>{
         
   },[]);
-
+  
   return (
-    <div className='pqc'>
+    <div className='TRACUU'>
       <div className='mininavbar'>
         <div className='mininavitem' onClick={() => setNav(2)}>
-          <span className='mininavtext'>Data PQC</span>
-        </div>            
+          <span className='mininavtext'>Data TRACUU</span>
+        </div>
+        <div className='mininavitem' onClick={() => setNav(3)}>
+          <span className='mininavtext'>Report TRACUU</span>
+        </div>
+        <div className='mininavitem' onClick={() => setNav(1)}>
+          <span className='mininavtext'>Input TRACUU</span>
+        </div>       
       </div>
       {selection.tab2 && (
-        <div className='trapqc'>
-          <TRAPQC />
+        <div className='traTRACUU'>
+        
         </div>
       )}
       {false && (
         <div className='trapqc'>
-          <INPUTPQC />
+         
         </div>
       )}
       {selection.tab3 && <div className='report'></div>}
     </div>
   );
 }
-export default PQC
+export default TRACUU

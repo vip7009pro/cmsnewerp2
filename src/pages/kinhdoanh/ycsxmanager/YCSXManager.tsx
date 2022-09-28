@@ -42,6 +42,7 @@ interface FCSTTDYCSX{
   W8: number;
 }
 interface YCSXTableData {
+  DESCR?: string,
   PDBV_EMPL?: string,
   PDBV_DATE?:string,
   PDBV?: string,
@@ -115,7 +116,7 @@ const YCSXManager = () => {
   });
 
   const renderYCSX = (ycsxlist: YCSXTableData[]) => {
-    return  ycsxlist.map((element,index)=> <YCSXComponent key={index} PROD_REQUEST_NO={element.PROD_REQUEST_NO} G_CODE={element.G_CODE} PO_TDYCSX={element.PO_TDYCSX}  TOTAL_TKHO_TDYCSX={ element.TOTAL_TKHO_TDYCSX}  TKHO_TDYCSX={ element.TKHO_TDYCSX}  BTP_TDYCSX={ element.BTP_TDYCSX}  CK_TDYCSX={ element.CK_TDYCSX}  BLOCK_TDYCSX={ element.BLOCK_TDYCSX}  FCST_TDYCSX={ element.FCST_TDYCSX} PDBV={element.PDBV} PDBV_EMPL={element.PDBV_EMPL} PDBV_DATE={element.PDBV_DATE}/>)
+    return  ycsxlist.map((element,index)=> <YCSXComponent key={index} PROD_REQUEST_NO={element.PROD_REQUEST_NO} G_CODE={element.G_CODE} PO_TDYCSX={element.PO_TDYCSX}  TOTAL_TKHO_TDYCSX={ element.TOTAL_TKHO_TDYCSX}  TKHO_TDYCSX={ element.TKHO_TDYCSX}  BTP_TDYCSX={ element.BTP_TDYCSX}  CK_TDYCSX={ element.CK_TDYCSX}  BLOCK_TDYCSX={ element.BLOCK_TDYCSX}  FCST_TDYCSX={ element.FCST_TDYCSX} PDBV={element.PDBV} PDBV_EMPL={element.PDBV_EMPL} PDBV_DATE={element.PDBV_DATE} DESCR={element.DESCR}/>)
   }
   const renderBanVe = (ycsxlist: YCSXTableData[]) => {
     return  ycsxlist.map((element,index)=>(element.BANVE === 'Y' ? <DrawComponent key={index} G_CODE = {element.G_CODE} PDBV ={element.PDBV} PROD_REQUEST_NO={element.PROD_REQUEST_NO} PDBV_EMPL={element.PDBV_EMPL} PDBV_DATE={element.PDBV_DATE}/> : <div>Code: {element.G_NAME} : Không có bản vẽ</div> ))
@@ -172,7 +173,11 @@ const YCSXManager = () => {
   const [prod_model, setProd_Model] = useState('');
   const column_ycsxtable = [   
     { field: "G_CODE", headerName: "G_CODE", width: 80 },
-    { field: "G_NAME", headerName: "G_NAME", width: 250, },
+    { field: "G_NAME", headerName: "G_NAME", width: 250, renderCell: (params:any) => {
+      if(params.row.PDBV==='P' || params.row.PDBV===null)
+      return <span style={{color:'red'}}>{params.row.G_NAME}</span>
+      return <span style={{color:'green'}}>{params.row.G_NAME}</span>
+    } },
     { field: "EMPL_NAME", headerName: "PIC KD", width: 150 },
     { field: "CUST_NAME_KD", headerName: "KHÁCH", width: 120 },
     { field: "PROD_REQUEST_NO", headerName: "SỐ YCSX", width: 80 },
@@ -196,7 +201,7 @@ const YCSXManager = () => {
       return <span style={{color:'black'}}><b>GC</b></span>
       else if(params.row.PHAN_LOAI === '04')
       return <span style={{color:'black'}}><b>SAMPLE</b></span>      
-    } },
+    }},
     { field: "REMARK", headerName: "REMARK", width: 120 },
     { field: "PO_TDYCSX", type: 'number',headerName: "PO_TDYCSX", width: 80 , renderCell: (params:any) => {return <span style={{color:'#6600ff'}}><b>{params.row.PO_TDYCSX.toLocaleString('en-US')}</b></span>} },
     { field: "TOTAL_TKHO_TDYCSX", type: 'number',headerName: "TOTAL_TKHO_TDYCSX", width: 80 , renderCell: (params:any) => {return <span style={{color:'#6600ff'}}><b>{params.row.TOTAL_TKHO_TDYCSX.toLocaleString('en-US')}</b></span>} },
@@ -219,7 +224,11 @@ const YCSXManager = () => {
       else
       return <span style={{color:'red'}}><b>Không Duyệt</b></span>
     }},
-    { field: "G_NAME", headerName: "G_NAME", width: 250, },
+    { field: "G_NAME", headerName: "G_NAME", width: 250, renderCell: (params:any) => {
+      if(params.row.PDBV==='P' || params.row.PDBV===null)
+      return <span style={{color:'red'}}>{params.row.G_NAME}</span>
+      return <span style={{color:'green'}}>{params.row.G_NAME}</span>
+    } },
     { field: "BANVE", headerName: "BANVE", width: 250 , renderCell: (params:any) => {
 
       let file:any = null;
@@ -288,7 +297,7 @@ const YCSXManager = () => {
       </div>
     }},
     { field: "PDBV", headerName: "PD BANVE", width: 80 , renderCell: (params:any) => {
-      if(params.row.PDBV==='P')
+      if(params.row.PDBV==='P' || params.row.PDBV===null)
       return <span style={{color:'red'}}><b>PENDING</b></span>
       return <span style={{color:'green'}}><b>APPROVED</b></span>
     } },
@@ -724,6 +733,7 @@ const readUploadFileAmazon = (e:any) => {
         //console.log(response.data.data);
         if(response.data.tk_status !=='NG')
         {
+          console.log(response.data.data);   
           const loadeddata: YCSXTableData[] =  response.data.data.map((element:YCSXTableData,index: number)=> {
             return {
               ...element, 
@@ -744,7 +754,8 @@ const readUploadFileAmazon = (e:any) => {
               W8: (element.W8===undefined|| element.W8 ===null? 0: element.W8),
               PROD_REQUEST_QTY: (element.PROD_REQUEST_QTY===undefined|| element.PROD_REQUEST_QTY ===null? 0: element.PROD_REQUEST_QTY),
             }
-          })         
+          })  
+              
           setYcsxDataTable(loadeddata);
           setisLoading(false);
           Swal.fire("Thông báo", "Đã load " + response.data.data.length + " dòng", "success");  

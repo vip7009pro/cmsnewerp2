@@ -48,31 +48,73 @@ const DiemDanhNhom = () => {
                 let typeclass:string =params.row.ON_OFF===1 ? "onbt": params.row.ON_OFF===0 ?"offbt" : "";
                 const onClick = (type: number) => {                
                     //Swal.fire("Thông báo", "Gia tri = " + params.row.EMPL_NO, "success");
-
-                    generalQuery("setdiemdanhnhom", {
-                      diemdanhvalue: type,
-                      EMPL_NO: params.row.EMPL_NO
-                    })
-                      .then((response) => {
-                        console.log(response.data);
-                        if (response.data.tk_status === "OK") {
-                          const newProjects = diemdanhnhomtable.map((p) =>
-                            p.EMPL_NO === params.row.EMPL_NO
-                              ? { ...p, ON_OFF: type }
-                              : p
-                          );
-                          setDiemDanhNhomTable(newProjects);
-                        } else {
-                          Swal.fire(
-                            "Có lỗi",
-                            "Nội dung: " + response.data.message,
-                            "error"
-                          );
-                        }  
+                    console.log(params.row.OFF_ID)
+                    console.log(type)
+                    if(type===1)
+                    {
+                      if(params.row.OFF_ID  === null)
+                      {
+                        generalQuery("setdiemdanhnhom", {
+                          diemdanhvalue: type,
+                          EMPL_NO: params.row.EMPL_NO
+                        })
+                          .then((response) => {
+                            console.log(response.data);
+                            if (response.data.tk_status === "OK") {
+                              const newProjects = diemdanhnhomtable.map((p) =>
+                                p.EMPL_NO === params.row.EMPL_NO
+                                  ? { ...p, ON_OFF: type }
+                                  : p
+                              );
+                              setDiemDanhNhomTable(newProjects);
+                            } else {
+                              Swal.fire(
+                                "Có lỗi",
+                                "Nội dung: " + response.data.message,
+                                "error"
+                              );
+                            }  
+                          })
+                          .catch((error) => {
+                            console.log(error);
+                          }); 
+                      }
+                      else
+                      {
+                        Swal.fire(
+                          "Có lỗi",
+                          "Đã đăng ký nghỉ rồi, không điểm danh được",
+                          "error"
+                        );
+                      }
+                    }
+                    else
+                    {
+                      generalQuery("setdiemdanhnhom", {
+                        diemdanhvalue: type,
+                        EMPL_NO: params.row.EMPL_NO
                       })
-                      .catch((error) => {
-                        console.log(error);
-                      }); 
+                        .then((response) => {
+                          console.log(response.data);
+                          if (response.data.tk_status === "OK") {
+                            const newProjects = diemdanhnhomtable.map((p) =>
+                              p.EMPL_NO === params.row.EMPL_NO
+                                ? { ...p, ON_OFF: type }
+                                : p
+                            );
+                            setDiemDanhNhomTable(newProjects);
+                          } else {
+                            Swal.fire(
+                              "Có lỗi",
+                              "Nội dung: " + response.data.message,
+                              "error"
+                            );
+                          }  
+                        })
+                        .catch((error) => {
+                          console.log(error);
+                        }); 
+                    }
                    
                 }     
 

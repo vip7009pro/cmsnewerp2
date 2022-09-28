@@ -9,7 +9,7 @@
     top: 25;    
     
     @media only screen and (max-width: 3000px) {
-        .wrapper {
+        .wrapper {           
             -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.29);
             box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.2);
             background-color: rgb(238, 240, 247);
@@ -60,6 +60,9 @@
                         font-size: 30px;
                         background-color: rgb(255, 255, 255);
                         font-weight: bold;
+                        img {
+                            border-radius: 50%;
+                          }
     
                     }
                     .counter {
@@ -186,6 +189,9 @@
     }
     @media only screen and (max-width: 768px) {
         .wrapper {
+            position: fixed;
+            z-index: 9;
+            top: 0;
             -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.29);
             box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.2);
             background-color: rgb(238, 240, 247);

@@ -41,14 +41,10 @@ const IQC = () => {
         </div>   
         <div className='mininavitem'  onClick={() => setNav(2)}>
           <span className='mininavtext'>
-            Data KT IQC
+            Data KT DTC
           </span>
-        </div>   
-        <div className='mininavitem'  onClick={() => setNav(3)}>
-          <span className='mininavtext'>
-            Report IQC
-          </span>
-        </div>   
+        </div>  
+          
       </div>     
       {selection.tab1 && (
         <div className='traiqc'>
