@@ -1,15 +1,15 @@
 import React, { useContext, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import SubMenu from "./Submenu";
-import { FcAbout, FcApprove, FcCustomerSupport, FcInspection, FcList, FcProcess, FcServices } from 'react-icons/fc';
+import { FcAbout, FcApprove, FcCapacitor, FcCustomerSupport, FcInspection, FcList, FcProcess, FcServices } from 'react-icons/fc';
 import "./Sidebar.scss";
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import HomeIcon from '@mui/icons-material/Home';
-import { FaDonate, FaFileInvoiceDollar,FaCheckCircle, FaHistory, FaBomb } from 'react-icons/fa';
+import { FaDonate, FaFileInvoiceDollar,FaCheckCircle, FaHistory, FaBomb, FaPaperPlane } from 'react-icons/fa';
 import { BiCart, BiSortAZ } from 'react-icons/bi';
 import { FcPlanner, FcSettings,FcBullish, FcPortraitMode,FcManager,FcCheckmark,FcPieChart,FcRefresh } from 'react-icons/fc';
-import { MdBugReport, MdDesignServices, MdInput, MdOutlineAppRegistration, MdOutlineAspectRatio, MdPriceChange } from "react-icons/md";
+import { MdBugReport, MdDesignServices, MdInput, MdOutlineAppRegistration, MdOutlineAspectRatio, MdOutlineProductionQuantityLimits, MdPriceChange } from "react-icons/md";
 import { WiDayLightning } from "react-icons/wi";
 import getsentence from "../../components/String/String";
 import { LangConText } from "../../api/Context";
@@ -194,7 +194,38 @@ const Sidebar = () => {
           icon: <AiFillAmazonCircle color='blue' size={25}/>
         }
       ]
-    },    
+    },  
+    {
+      title: 'Phòng QLSX',
+      path: '#',
+      icon: <MdOutlineProductionQuantityLimits color='#00cc00' size={25}/>,
+      iconClosed: <KeyboardArrowDownIcon />,
+      iconOpened: <KeyboardArrowUpIcon />,  
+      subNav: [
+        {
+          title: 'Quản lý YCSX',
+          path: 'qlsx/ycsxmanager',
+          icon: <FcSettings color='#cc99ff' size={25}/>,
+          cName: 'sub-nav'
+        },
+        {
+          title: 'Tra thông tin code',
+          path: 'qlsx/codeinfo',
+          icon: <FcAbout color='#cc00ff' size={25}/>,
+          cName: 'sub-nav'
+        },
+        {
+          title: 'Quản lý PLAN',
+          path: 'qlsx/planmanager',
+          icon: <FaPaperPlane color='#ff33cc' size={25}/>
+        }        ,
+        {
+          title: 'Quản lý CAPA',
+          path: 'qlsx/capamanager',
+          icon: <FcCapacitor color='blue' size={25}/>
+        }
+      ]
+    },   
     
   ];
   return (

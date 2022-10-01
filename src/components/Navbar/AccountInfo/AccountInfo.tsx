@@ -11,6 +11,11 @@ import LinearProgress, {
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import getsentence from "../../String/String";
+import { IconButton } from "@mui/material";
+import { AiOutlineCloudUpload } from "react-icons/ai";
+import Swal from "sweetalert2";
+
+const axios = require('axios').default;
 
 function LinearProgressWithLabel(
   props: LinearProgressProps & { value: number }
@@ -110,10 +115,58 @@ export default function AccountInfo() {
         console.log(error);
       });
   };
+
+
+  let file:any = null;
+  let upload_url = "http://14.160.33.94:5011/uploadavatar";
+
+  const uploadFile = async (e:any) => {   
+    console.log(file);
+    const formData = new FormData();
+    formData.append("avatar", file);        
+    formData.append("filename", 'NS_'+ userdata.EMPL_NO); 
+      try {
+        const response = await axios.post(
+          upload_url,
+          formData
+        );
+        //console.log("ket qua");
+        //console.log(response);
+        if(response.data.tk_status === 'OK')
+        {          
+           generalQuery("update_empl_image", { EMPL_NO: userdata.EMPL_NO, EMPL_IMAGE: 'Y' })
+          .then((response) => {        
+            if (response.data.tk_status !== "NG") 
+            {
+
+              setUserData({...userdata, EMPL_IMAGE:'Y'});
+              Swal.fire('Thông báo','Upload avatar thành công','success');
+            } 
+            else {
+              Swal.fire('Thông báo','Upload avatar thất bại','error');
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });  
+        }
+        else
+        {
+          Swal.fire('Thông báo',response.data.message,'error');
+        }
+        //console.log(response.data);
+      } catch (ex) {
+        console.log(ex);
+      }   
+   
+  }
+
+
   useEffect(() => {
     getData();
     return () => {};
   }, []);
+
   const DOB = () => {
     if (userdata.DOB != null) {
       return userdata.DOB;
@@ -164,6 +217,10 @@ export default function AccountInfo() {
               {/* Nhóm điểm danh */}{getsentence(28,lang)}: {userdata.ATT_GROUP_CODE}
             </li>
             <li className='emplInfoList'> {/* Chức vụ */}{getsentence(29,lang)}: {userdata.JOB_NAME}</li>
+            {(userdata.EMPL_IMAGE!=='Y') && <li className='emplInfoList'> <div className="uploadfile"> Avatar:
+       <IconButton className='buttonIcon'onClick={uploadFile}><AiOutlineCloudUpload color='yellow' size={25}/>Upload</IconButton>
+       <input  accept=".jpg" type="file" onChange={(e:any)=> {file = e.target.files[0]; console.log(file);}} />
+      </div></li>}
           </ul>
         </div>
         <div className={`cot2 ${(userdata.EMPL_IMAGE ==='Y')? 'on':'off'}`}>

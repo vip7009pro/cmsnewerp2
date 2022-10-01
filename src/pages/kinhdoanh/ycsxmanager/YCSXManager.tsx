@@ -3,7 +3,7 @@ import { DataGrid, GridSelectionModel, GridToolbarColumnsButton, GridToolbarCont
 import moment from 'moment';
 import React, { useContext, useEffect, useState, useTransition } from 'react'
 import {FcApprove, FcSearch } from 'react-icons/fc';
-import {AiFillEdit, AiFillFileAdd, AiFillFileExcel, AiOutlineCloudUpload, AiOutlinePrinter } from "react-icons/ai";
+import {AiFillAmazonCircle, AiFillEdit, AiFillFileAdd, AiFillFileExcel, AiOutlineCloudUpload, AiOutlinePrinter } from "react-icons/ai";
 import Swal from 'sweetalert2';
 import * as XLSX from 'xlsx';
 import { generalQuery } from '../../../api/Api';
@@ -418,9 +418,27 @@ const YCSXManager = () => {
           
           }}><AiOutlinePrinter color='#ff751a' size={25}/>Print Bản Vẽ</IconButton>        
         <IconButton className='buttonIcon'onClick={()=>{handleConfirmPDuyetYCSX();}}><FcApprove color='red' size={25}/>Phê Duyệt</IconButton>
+        <IconButton className='buttonIcon'onClick={()=>{handleGoToAmazon();}}><AiFillAmazonCircle color='red' size={25}/>Up Amazon</IconButton>
       </GridToolbarContainer>
     );
   }
+  const handleGoToAmazon = ()=> {
+    console.log(ycsxdatatablefilter.length)
+    if(ycsxdatatablefilter.length ===1)
+    {
+       setProdRequestNo(ycsxdatatablefilter[ycsxdatatablefilter.length-1].PROD_REQUEST_NO);
+       handle_findAmazonCodeInfo(ycsxdatatablefilter[ycsxdatatablefilter.length-1].PROD_REQUEST_NO);
+       setNav(3);
+    }
+    else if(ycsxdatatablefilter.length > 1)
+    {
+      Swal.fire("Thông báo","Chỉ chọn 1 YCSX để qua Amazon",'error');
+    }
+    else{
+      Swal.fire("Thông báo","Chọn ít nhất 1 YCSX để qua Amazon",'error');
+    }
+  }
+
   const monthArray = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L" ];
   const dayArray = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V"];
   const createHeader = async() => {
@@ -584,8 +602,37 @@ const upAmazonData = async ()=> {
 
 }
 const checkAmazonData = async (amazon_data: {id:number, DATA: string, CHECKSTATUS: string}[]) => {
+  //Swal.fire("Thông báo","Bắt đầu check Amazon Data","success");  
+  for(let i=0;i<amazon_data.length;i++){
+      await generalQuery("check_amazon_data", {
+        DATA: amazon_data[i].DATA
+       })
+      .then((response) => {
+        setProgressValue(i+1);            
+        if (response.data.tk_status !== "NG") {
+          
+          amazon_data = amazon_data.map((ele,index) => {
+            return ele===amazon_data[i] ? {...ele, CHECKSTATUS:'NG'}: ele;
+          }); 
+          setUploadExcelJSon(amazon_data);       
+          
+        } else {      
+          amazon_data = amazon_data.map((ele,index) => {
+            return ele===amazon_data[i] ? {...ele, CHECKSTATUS:'OK'}: ele;
+          });
+          setUploadExcelJSon(amazon_data);       
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+
+  }
+
+}
+const checkAmazonData2 = async (amazon_data: {id:number, DATA: string, CHECKSTATUS: string}[]) => {
   //Swal.fire("Thông báo","Bắt đầu check Amazon Data","success");
-  let segment:number = 400;
+  let segment:number = 100;
   for(let i=segment;i<amazon_data.length;i+=(segment+1)){
     for(let j=segment;j>1;j--)
     {
@@ -1497,6 +1544,7 @@ const readUploadFileAmazon = (e:any) => {
     else
     {
       setYcsxDataTableFilter([]);  
+      console.log('xoa filter')
     }
   }
   const handleYCSXSelectionforUpdateExcel =(ids: GridSelectionModel) => {   

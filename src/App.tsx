@@ -36,6 +36,8 @@ import CS from "./pages/qc/cs/CS";
 import DTC from "./pages/qc/dtc/DTC";
 import ISO from "./pages/qc/iso/ISO";
 import OQC from "./pages/qc/oqc/OQC";
+import QLSX from "./pages/qlsx/QLSX";
+import BOM_MANAGER from "./pages/rnd/bom_manager/BOM_MANAGER";
 interface userDataInterface {
   EMPL_IMAGE?: string
   ADD_COMMUNE: string;
@@ -335,13 +337,30 @@ function App() {
                         maindeptname='RND'
                         jobname='all'
                       >
-                        <KinhDoanh />
+                        <KinhDoanh /> 
                       </ProtectedRoute>
                     }
                   >
                     <Route index element={<KinhDoanhReport />} />
-                    <Route path='quanlycodebom' element={<CODE_MANAGER />} />
+                    <Route path='quanlycodebom' element={<BOM_MANAGER />} />
                     <Route path='thembomamazon' element={<CODE_MANAGER />} />
+                    <Route path='designamazon' element={<CODE_MANAGER />} />
+                  </Route>
+                  <Route
+                    path='qlsx'
+                    element={
+                      <ProtectedRoute
+                        user={userData}
+                        maindeptname='QLSX'
+                        jobname='all'
+                      >
+                        <QLSX />
+                      </ProtectedRoute>
+                    }
+                  >
+                    <Route index element={<QLSX />} />
+                    <Route path='ycsxmanager' element={<YCSXManager />} />
+                    <Route path='codeinfo' element={<CODE_MANAGER />} />
                     <Route path='designamazon' element={<CODE_MANAGER />} />
                   </Route>
                   <Route

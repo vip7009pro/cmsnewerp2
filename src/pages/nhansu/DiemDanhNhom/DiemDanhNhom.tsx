@@ -52,7 +52,7 @@ const DiemDanhNhom = () => {
                     console.log(type)
                     if(type===1)
                     {
-                      if(params.row.OFF_ID  === null)
+                      if(params.row.OFF_ID  === null || params.row.REASON_NAME==='Nửa phép')
                       {
                         generalQuery("setdiemdanhnhom", {
                           diemdanhvalue: type,
@@ -114,8 +114,7 @@ const DiemDanhNhom = () => {
                         .catch((error) => {
                           console.log(error);
                         }); 
-                    }
-                   
+                    }                   
                 }     
 
                 const onReset =() => {

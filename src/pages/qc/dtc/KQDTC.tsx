@@ -9,132 +9,35 @@ import { UserContext } from '../../../api/Context';
 import { SaveExcel } from '../../../api/GlobalFunction';
 import "./KQDTC.scss"
 
-interface INSPECT_OUTPUT_DATA {
-  INSPECT_OUTPUT_ID: string,
-  CUST_NAME_KD: string,
-  EMPL_NAME: string,
-  G_CODE: string,
-  G_NAME: string,
-  PROD_TYPE: string,
-  G_NAME_KD: string,
-  PROD_REQUEST_NO: string,
-  PROD_REQUEST_DATE: string,
-  PROD_REQUEST_QTY: number,
-  PROCESS_LOT_NO: string,
-  PROD_DATETIME: string,
-  OUTPUT_DATETIME: string,
-  OUTPUT_QTY_EA: number,
-  REMARK: string,
-  PIC_KD: string,
-  CA_LAM_VIEC: string,
-  NGAY_LAM_VIEC: string,  
-  STATUS: string
-}
-interface INSPECT_INPUT_DATA {
-    INSPECT_INPUT_ID: string,
-    CUST_NAME_KD: string,
-    EMPL_NAME: string,
-    G_CODE: string,
-    G_NAME: string,
-    PROD_TYPE: string,
-    G_NAME_KD: string,
-    PROD_REQUEST_NO: string,
-    PROD_REQUEST_DATE: string,
-    PROD_REQUEST_QTY: number,
-    PROCESS_LOT_NO: string,
-    PROD_DATETIME: string,
-    INPUT_DATETIME: string,
-    INPUT_QTY_EA: number,
-    INPUT_QTY_KG: number,
-    REMARK: string,
-    CNDB_ENCODES: string,
-    PIC_KD: string,
-}
-
-interface INSPECT_INOUT_YCSX {
-  PIC_KD: string,
-  CUST_NAME_KD: string,
-  G_CODE: string,
-  G_NAME: string,
-  G_NAME_KD: string,
-  PROD_REQUEST_NO: string,
-  PROD_REQUEST_DATE: string,
-  PROD_REQUEST_QTY: number,
-  LOT_TOTAL_INPUT_QTY_EA: number,
-  LOT_TOTAL_OUTPUT_QTY_EA: number,
-  DA_KIEM_TRA: number,
-  OK_QTY: number,
-  LOSS_NG_QTY: number,
-  INSPECT_BALANCE: number,
-
-}
-
-interface INSPECT_NG_DATA  {
-  INSPECT_ID: number,
-  YEAR_WEEK: string,
-  CUST_NAME_KD: string,
-  PROD_REQUEST_NO: string,
-  G_NAME_KD: string,
-  G_NAME: string,
-  G_CODE: string,
-  PROD_TYPE: string,
-  M_LOT_NO: string,
-  M_NAME: string,
-  WIDTH_CD: number,
-  INSPECTOR: string,
-  LINEQC: string,
-  PROD_PIC: string,
-  UNIT: string,
-  PROCESS_LOT_NO: string,
-  PROCESS_IN_DATE: string,
-  INSPECT_DATETIME: string,
-  INSPECT_START_TIME: string,
-  INSPECT_FINISH_TIME: string,
+interface DTC_DATA {
+  DTC_ID: number,
   FACTORY: string,
-  LINEQC_PIC: string,
-  MACHINE_NO: number,
-  INSPECT_TOTAL_QTY: number,
-  INSPECT_OK_QTY: number,
-  INSPECT_SPEED: number,
-  INSPECT_TOTAL_LOSS_QTY: number,
-  INSPECT_TOTAL_NG_QTY: number,
-  MATERIAL_NG_QTY: number,
-  PROCESS_NG_QTY: number,
-  PROD_PRICE: number,
-  ERR1: number,
-  ERR2: number,
-  ERR3: number,
-  ERR4: number,
-  ERR5: number,
-  ERR6: number,
-  ERR7: number,
-  ERR8: number,
-  ERR9: number,
-  ERR10: number,
-  ERR11: number,
-  ERR12: number,
-  ERR13: number,
-  ERR14: number,
-  ERR15: number,
-  ERR16: number,
-  ERR17: number,
-  ERR18: number,
-  ERR19: number,
-  ERR20: number,
-  ERR21: number,
-  ERR22: number,
-  ERR23: number,
-  ERR24: number,
-  ERR25: number,
-  ERR26: number,
-  ERR27: number,
-  ERR28: number,
-  ERR29: number,
-  ERR30: number,
-  ERR31: number,
-  ERR32: number,
-  CNDB_ENCODES: string,
+  TEST_FINISH_TIME: string,
+  TEST_EMPL_NO: string,
+  G_CODE: string,
+  PROD_REQUEST_NO: string,
+  G_NAME: string,
+  TEST_NAME: string,
+  POINT_CODE: number,
+  CENTER_VALUE: number,
+  UPPER_TOR: number,
+  LOWER_TOR: number,
+  RESULT: number,
+  TEST_TYPE_NAME: string,
+  WORK_POSITION_NAME: string,
+  SAMPLE_NO: number,
+  REQUEST_DATETIME: string,
+  REQUEST_EMPL_NO: string,
+  M_CODE: string,
+  M_NAME: string,
+  SIZE: string,
+  LOTCMS: string,
+  TEST_CODE: number,
+  TDS: string,
+  TDS_EMPL: string,
+  TDS_UPD_DATE: string, 
 }
+
 const KQDTC = () => { 
   const [readyRender, setReadyRender] = useState(false);
   const [selection, setSelection] = useState<any>({
@@ -155,162 +58,66 @@ const KQDTC = () => {
   const [todate, setToDate] = useState(moment().format('YYYY-MM-DD'));
   const [codeKD,setCodeKD] =useState('');
   const [codeCMS,setCodeCMS] =useState('');
-  const [empl_name,setEmpl_Name] =useState('');
-  const [cust_name,setCustName] =useState('');
-  const [process_lot_no,setProcess_Lot_No] =useState('');
-  const [prod_type,setProdType] =useState('');
+
+  const [testname,setTestName] =useState('0');
+  const [testtype,setTestType] =useState('0');
   const [prodrequestno,setProdRequestNo] =useState('');
   const [alltime, setAllTime] = useState(false); 
   const [id,setID] =useState('');
   const [inspectiondatatable, setInspectionDataTable] = useState<Array<any>>([]);
   const [sumaryINSPECT, setSummaryInspect] = useState('');
+  const [m_name,setM_Name] =useState('');
+  const [m_code,setM_Code] =useState('');
 
-
-  const column_inspect_input = [
-    { field: "INSPECT_INPUT_ID", headerName: "ID", width: 80 },
-    { field: "CUST_NAME_KD", headerName: "Khách", width: 120 },
-    { field: "EMPL_NAME", headerName: "Nhân Viên", width: 150 },
+  const column_dtc_data = [
+    { field: "DTC_ID", headerName: "DTC_ID", width: 80 },
+    { field: "PROD_REQUEST_NO", headerName: "YCSX", width: 80 },
     { field: "G_CODE", headerName: "G_CODE", width: 80 },
-    { field: "G_NAME", headerName: "Tên SP", width: 250 },
-    { field: "INPUT_DATETIME", headerName: "Ngày nhập kiểm", width: 150 },
-    { field: "INPUT_QTY_EA", headerName: "SL NHẬP EA", width: 100 , renderCell: (params:any) => {return <span style={{color:'green'}}><b>{params.row.INPUT_QTY_EA.toLocaleString('en-US')}</b></span>}},
-    { field: "PROD_TYPE", headerName: "Loại", width: 70 },
-    { field: "G_NAME_KD", headerName: "Tên KD", width: 150 },
-    { field: "PROD_REQUEST_NO", headerName: "Số YC", width: 80 },
-    { field: "PROD_REQUEST_DATE", headerName: "Ngày YC", width: 80 },
-    { field: "PROD_REQUEST_QTY", headerName: "SL YC", width: 80 , renderCell: (params:any) => {return <span style={{color:'gray'}}><b>{params.row.PROD_REQUEST_QTY.toLocaleString('en-US')}</b></span>}},
-    { field: "PROCESS_LOT_NO", headerName: "LOT SX", width: 80 },
-    { field: "PROD_DATETIME", headerName: "NGÀY SX", width: 150 },  
-    { field: "INPUT_QTY_KG", headerName: "SL NHẬP GRAM", width: 100 , renderCell: (params:any) => {return <span style={{color:'gray'}}><b>{params.row.INPUT_QTY_KG.toLocaleString('en-US')}</b></span>}},
-    { field: "REMARK", headerName: "FACTORY", width: 80 },
-    { field: "CNDB_ENCODES", headerName: "CNDB_ENCODES", width: 80 },
-  ]
-  const column_inspect_output = [
-    { field: "INSPECT_OUTPUT_ID", headerName: "ID", width: 80 },
-    { field: "CUST_NAME_KD", headerName: "Khách hàng", width: 150 },
-    { field: "EMPL_NAME", headerName: "Nhân viên", width: 150 },
-    { field: "G_CODE", headerName: "G_CODE", width: 80 },
-    { field: "G_NAME", headerName: "G_NAME", width: 180 },
-    { field: "OUTPUT_DATETIME", headerName: "OUTPUT TIME", width: 150 },
-    { field: "OUTPUT_QTY_EA", headerName: "OUTPUT QTY", width: 110 , renderCell: (params:any) => {return <span style={{color:'green'}}><b>{params.row.OUTPUT_QTY_EA.toLocaleString('en-US')}</b></span>}},
-    { field: "PROD_TYPE", headerName: "PROD_TYPE", width: 80 },
-    { field: "G_NAME_KD", headerName: "Code KD", width: 120 },
-    { field: "PROD_REQUEST_NO", headerName: "Số YC", width: 80 },
-    { field: "PROD_REQUEST_DATE", headerName: "Ngày YC", width: 80 },
-    { field: "PROD_REQUEST_QTY", headerName: "SL YC", width: 80 , renderCell: (params:any) => {return <span style={{color:'gray'}}><b>{params.row.PROD_REQUEST_QTY.toLocaleString('en-US')}</b></span>}},
-    { field: "PROCESS_LOT_NO", headerName: "LOT SX", width: 80 },
-    { field: "PROD_DATETIME", headerName: "Ngày SX", width: 150 },
-  
-    { field: "REMARK", headerName: "REMARK", width: 80 },
-    { field: "PIC_KD", headerName: "PIC_KD", width:120 },
-    { field: "CA_LAM_VIEC", headerName: "CA LV", width: 120 },
-    { field: "NGAY_LAM_VIEC", headerName: "NGAY LV", width: 120 },
-    { field: "STATUS", headerName: "NHẬP KHO", width: 120, renderCell: (params:any) => {
-      if(params.row.STATUS.toUpperCase() === 'PENDING')    
-      {
-        return <span style={{color:'red'}}><b>{params.row.STATUS.toUpperCase()}</b></span>
-      }
-      else if(params.row.STATUS.toUpperCase() === 'PROGRS')
-      {
-        return <span style={{color:'orange'}}><b>ĐANG NHẬP</b></span>
-      }
-      else
-      {
-        return <span style={{color:'green'}}><b>{params.row.STATUS.toUpperCase()}</b></span>
-      }
-      
-    } },
-   
-
-  ]
-  const column_inspect_inoutycsx = [
-    { field: "PIC_KD", headerName: "PIC_KD", width: 150 },
-    { field: "CUST_NAME_KD", headerName: "Khách", width: 120 },
-    { field: "G_CODE", headerName: "G_CODE", width: 80 },
-    { field: "G_NAME", headerName: "G_NAME", width: 180 },
-    { field: "G_NAME_KD", headerName: "Code KD", width: 120 },
-    { field: "PROD_REQUEST_NO", headerName: "Số YC", width: 80 },
-    { field: "PROD_REQUEST_DATE", headerName: "Ngày YC", width: 80 },
-    { field: "PROD_REQUEST_QTY", headerName: "SL YC", width: 80  , renderCell: (params:any) => {return <span style={{color:'black'}}><b>{params.row.PROD_REQUEST_QTY.toLocaleString('en-US')}</b></span>}},
-    { field: "LOT_TOTAL_INPUT_QTY_EA", headerName: "Nhập EA", width: 80  , renderCell: (params:any) => {return <span style={{color:'blue'}}><b>{params.row.LOT_TOTAL_INPUT_QTY_EA.toLocaleString('en-US')}</b></span>}},
-    { field: "LOT_TOTAL_OUTPUT_QTY_EA", headerName: "Xuất EA", width: 80  , renderCell: (params:any) => {return <span style={{color:'blue'}}><b>{params.row.LOT_TOTAL_OUTPUT_QTY_EA.toLocaleString('en-US')}</b></span>}},
-    { field: "DA_KIEM_TRA", headerName: "Đã Kiểm", width: 80  , renderCell: (params:any) => {return <span style={{color:'gray'}}><b>{params.row.DA_KIEM_TRA.toLocaleString('en-US')}</b></span>}},
-    { field: "OK_QTY", headerName: "OK_QTY", width: 80 , renderCell: (params:any) => {return <span style={{color:'green'}}><b>{params.row.OK_QTY.toLocaleString('en-US')}</b></span>} },
-    { field: "LOSS_NG_QTY", headerName: "Loss và NG", width: 80 , renderCell: (params:any) => {return <span style={{color:'red'}}><b>{params.row.LOSS_NG_QTY.toLocaleString('en-US')}</b></span>} },
-    { field: "INSPECT_BALANCE", headerName: "Tồn kiểm", width: 80  , renderCell: (params:any) => {return <span style={{color:'purple'}}><b>{params.row.INSPECT_BALANCE.toLocaleString('en-US')}</b></span>}}, 
-
-  ]
-
-  const column_inspection_NG = [
-    { field: "INSPECT_ID", headerName: "INSPECT_ID", width: 80 },
-    { field: "YEAR_WEEK", headerName: "YEAR_WEEK", width: 80 },
-    { field: "CUST_NAME_KD", headerName: "Khách", width: 120 },
-    { field: "PROD_REQUEST_NO", headerName: "Số YC", width: 80 },
-    { field: "G_NAME_KD", headerName: "Code KD", width: 110 },
-    { field: "G_NAME", headerName: "Code full", width: 150 },
-    { field: "G_CODE", headerName: "G_CODE", width: 80 },
-    { field: "PROD_TYPE", headerName: "PROD_TYPE", width: 80 },
-    { field: "M_LOT_NO", headerName: "LOT VL", width: 80 },
-    { field: "M_NAME", headerName: "M_NAME", width: 120 },
-    { field: "WIDTH_CD", headerName: "WIDTH_CD", width: 80 },
-    { field: "INSPECTOR", headerName: "INSPECTOR", width: 80 },
-    { field: "LINEQC", headerName: "LINEQC", width: 80 },
-    { field: "PROD_PIC", headerName: "PROD_PIC", width: 80 },
-    { field: "UNIT", headerName: "UNIT", width: 80 },
-    { field: "PROCESS_LOT_NO", headerName: "LOT SX", width: 80 },
-    { field: "PROCESS_IN_DATE", headerName: "NGÀY SX", width: 120 },
-    { field: "INSPECT_DATETIME", headerName: "Ngày kiểm", width: 150 },
-    { field: "INSPECT_START_TIME", headerName: "INSPECT_START_TIME", width: 150 },
-    { field: "INSPECT_FINISH_TIME", headerName: "INSPECT_FINISH_TIME", width: 150 },
+    { field: "G_NAME", headerName: "G_NAME", width: 200 , renderCell: (params:any) => {
+      if(params.row.M_CODE !=='B0000035') return <span></span>
+      return <span><b>{params.row.G_NAME}</b></span>
+    }},
+    { field: "M_CODE", headerName: "M_CODE", width: 80 , renderCell: (params:any) => {
+      if(params.row.M_CODE ==='B0000035') return <span></span>
+      return <span><b>{params.row.M_CODE}</b></span>
+    }},
+    { field: "M_NAME", headerName: "TEN LIEU", width: 150 , renderCell: (params:any) => {
+      if(params.row.M_CODE ==='B0000035') return <span></span>
+      return <span><b>{params.row.M_NAME}</b></span>
+    }},
+    { field: "TEST_NAME", headerName: "TEST_NAME", width: 80 },
+    { field: "POINT_CODE", headerName: "POINT_CODE", width: 90 },
+    { field: "CENTER_VALUE", headerName: "CENTER_VALUE", width: 120 , renderCell: (params:any) => {     
+      return <span><b>{params.row.CENTER_VALUE}</b></span>
+    }},
+    { field: "UPPER_TOR", headerName: "UPPER_TOR", width: 80 , renderCell: (params:any) => {     
+      return <span><b>{params.row.UPPER_TOR}</b></span>
+    }},
+    { field: "LOWER_TOR", headerName: "LOWER_TOR", width: 80 , renderCell: (params:any) => {     
+      return <span><b>{params.row.LOWER_TOR}</b></span>
+    }},
+    { field: "RESULT", headerName: "RESULT", width: 80 },    
+    { field: "DANHGIA", headerName: "DANH_GIA", width: 80 , renderCell: (params:any) => { 
+      if(params.row.RESULT >= (params.row.CENTER_VALUE - params.row.LOWER_TOR) && params.row.RESULT <= (params.row.CENTER_VALUE + params.row.UPPER_TOR))    
+      return <span style={{color: 'green'}}><b>OK</b></span>
+      return <span style={{color: 'red'}}><b>NG</b></span>
+    }},    
     { field: "FACTORY", headerName: "FACTORY", width: 80 },
-    { field: "LINEQC_PIC", headerName: "LINEQC_PIC", width: 80 },
-    { field: "MACHINE_NO", headerName: "MACHINE_NO", width: 80 },
-    { field: "INSPECT_TOTAL_QTY", headerName: "Tổng Kiểm", width: 80 },
-    { field: "INSPECT_OK_QTY", headerName: "Tổng OK", width: 80 },
-    { field: "INSPECT_SPEED", headerName: "Tốc độ kiểm", width: 80 },
-    { field: "INSPECT_TOTAL_LOSS_QTY", headerName: "Tổng Loss", width: 80 },
-    { field: "INSPECT_TOTAL_NG_QTY", headerName: "Tông NG", width: 80 },
-    { field: "MATERIAL_NG_QTY", headerName: "NG MATERIAL", width: 100 },
-    { field: "PROCESS_NG_QTY", headerName: "NG PROCESS", width: 100 },
-    { field: "PROD_PRICE", headerName: "PROD_PRICE", width: 100 },
-    { field: "ERR1", headerName: "ERR1", width: 80 },
-    { field: "ERR2", headerName: "ERR2", width: 80 },
-    { field: "ERR3", headerName: "ERR3", width: 80 },
-    { field: "ERR4", headerName: "ERR4", width: 80 },
-    { field: "ERR5", headerName: "ERR5", width: 80 },
-    { field: "ERR6", headerName: "ERR6", width: 80 },
-    { field: "ERR7", headerName: "ERR7", width: 80 },
-    { field: "ERR8", headerName: "ERR8", width: 80 },
-    { field: "ERR9", headerName: "ERR9", width: 80 },
-    { field: "ERR10", headerName: "ERR10", width: 80 },
-    { field: "ERR11", headerName: "ERR11", width: 80 },
-    { field: "ERR12", headerName: "ERR12", width: 80 },
-    { field: "ERR13", headerName: "ERR13", width: 80 },
-    { field: "ERR14", headerName: "ERR14", width: 80 },
-    { field: "ERR15", headerName: "ERR15", width: 80 },
-    { field: "ERR16", headerName: "ERR16", width: 80 },
-    { field: "ERR17", headerName: "ERR17", width: 80 },
-    { field: "ERR18", headerName: "ERR18", width: 80 },
-    { field: "ERR19", headerName: "ERR19", width: 80 },
-    { field: "ERR20", headerName: "ERR20", width: 80 },
-    { field: "ERR21", headerName: "ERR21", width: 80 },
-    { field: "ERR22", headerName: "ERR22", width: 80 },
-    { field: "ERR23", headerName: "ERR23", width: 80 },
-    { field: "ERR24", headerName: "ERR24", width: 80 },
-    { field: "ERR25", headerName: "ERR25", width: 80 },
-    { field: "ERR26", headerName: "ERR26", width: 80 },
-    { field: "ERR27", headerName: "ERR27", width: 80 },
-    { field: "ERR28", headerName: "ERR28", width: 80 },
-    { field: "ERR29", headerName: "ERR29", width: 80 },
-    { field: "ERR30", headerName: "ERR30", width: 80 },
-    { field: "ERR31", headerName: "ERR31", width: 80 },
-    { field: "ERR32", headerName: "ERR32", width: 80 },
-    { field: "CNDB_ENCODES", headerName: "CNDB_ENCODES", width: 150 },
-   
-    
+    { field: "TEST_FINISH_TIME", headerName: "TEST_FINISH_TIME", width: 145 },
+    { field: "TEST_EMPL_NO", headerName: "NV TEST", width: 100 },
+    { field: "TEST_TYPE_NAME", headerName: "TEST_TYPE_NAME", width: 140 },
+    { field: "WORK_POSITION_NAME", headerName: "BO PHAN", width: 80 },
+    { field: "SAMPLE_NO", headerName: "SAMPLE_NO", width: 80 },
+    { field: "REQUEST_DATETIME", headerName: "NGAY YC", width: 145 },
+    { field: "REQUEST_EMPL_NO", headerName: "NV YC", width: 80 },
+    { field: "SIZE", headerName: "SIZE", width: 80 },
+    { field: "LOTCMS", headerName: "LOTCMS", width: 80 },
+    { field: "TEST_CODE", headerName: "TEST_CODE", width: 80 },
+    { field: "TDS", headerName: "TDS", width: 80 },
+    { field: "TDS_EMPL", headerName: "TDS_EMPL", width: 80 },
+    { field: "TDS_UPD_DATE", headerName: "TDS_UPD_DATE", width: 80 },    
   ]
-
-  const [columnDefinition, setColumnDefinition] = useState<Array<any>>(column_inspect_input);
+  const [columnDefinition, setColumnDefinition] = useState<Array<any>>(column_dtc_data);
 
   function CustomToolbarPOTable() {
     return (
@@ -323,124 +130,31 @@ const KQDTC = () => {
     );
   }
 
-  const handletraInspectionInput = ()=> {    
-    setisLoading(true);
-    let summaryInput:number =0;
-
-    generalQuery('get_inspection',{
-      OPTIONS: 'Nhập Kiểm (LOT)',
-      ALLTIME: alltime,      
-      FROM_DATE: fromdate,
-      TO_DATE: todate,
-      CUST_NAME: cust_name,
-      process_lot_no: process_lot_no,
-      G_CODE: codeCMS,
-      G_NAME: codeKD,
-      PROD_TYPE: prod_type,
-      EMPL_NAME: empl_name, 
-      PROD_REQUEST_NO: prodrequestno,
-    })
-    .then(response => {
-        //console.log(response.data.data);
-        if(response.data.tk_status !=='NG')
-        {
-          const loadeddata: INSPECT_INPUT_DATA[] =  response.data.data.map((element:INSPECT_INPUT_DATA,index: number)=> {
-            summaryInput += element.INPUT_QTY_EA;
-            return {
-              ...element, 
-              PROD_DATETIME: moment.utc(element.PROD_DATETIME).format("YYYY-MM-DD HH:mm:ss"),
-              INPUT_DATETIME: moment.utc(element.INPUT_DATETIME).format("YYYY-MM-DD HH:mm:ss"),             
-              id: index
-            }
-          })     
-          setSummaryInspect('Tổng Nhập: ' +  summaryInput.toLocaleString('en-US') + 'EA');    
-          setInspectionDataTable(loadeddata);
-          setReadyRender(true);
-          setisLoading(false);
-          Swal.fire("Thông báo", "Đã load " + response.data.data.length + " dòng", "success");  
-        }
-        else
-        {
-          Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");  
-          setisLoading(false);
-        }        
-    })
-    .catch(error => {
-        console.log(error);
-    });
-  }
-  const handletraInspectionOutput = ()=> { 
-    let summaryOutput:number = 0;  
-    setisLoading(true);
-    generalQuery('get_inspection',{
-      OPTIONS: 'Xuất Kiểm (LOT)',
-      ALLTIME: alltime,      
-      FROM_DATE: fromdate,
-      TO_DATE: todate,
-      CUST_NAME: cust_name,
-      process_lot_no: process_lot_no,
-      G_CODE: codeCMS,
-      G_NAME: codeKD,
-      PROD_TYPE: prod_type,
-      EMPL_NAME: empl_name, 
-      PROD_REQUEST_NO: prodrequestno,
-    })
-    .then(response => {
-        //console.log(response.data.data);
-        if(response.data.tk_status !=='NG')
-        {
-          const loadeddata: INSPECT_OUTPUT_DATA[] =  response.data.data.map((element:INSPECT_OUTPUT_DATA,index: number)=> {
-            summaryOutput += element.OUTPUT_QTY_EA;
-            return {
-              ...element,              
-              PROD_DATETIME: moment.utc(element.PROD_DATETIME).format("YYYY-MM-DD HH:mm:ss"),
-              OUTPUT_DATETIME: moment.utc(element.OUTPUT_DATETIME).format("YYYY-MM-DD HH:mm:ss"),
-              NGAY_LAM_VIEC: element.NGAY_LAM_VIEC.slice(0,10),
-              id: index
-            }
-          })         
-          setSummaryInspect('Tổng Xuất: ' +  summaryOutput.toLocaleString('en-US') + 'EA');    
-          setInspectionDataTable(loadeddata);
-          setReadyRender(true);
-          setisLoading(false);
-          Swal.fire("Thông báo", "Đã load " + response.data.data.length + " dòng", "success");  
-        }
-        else
-        {
-          Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");  
-          setisLoading(false);
-        }        
-    })
-    .catch(error => {
-        console.log(error);
-    });
-  }
-  const handletraInspectionNG = ()=> {   
+  const handletraDTCData = ()=> {   
     setSummaryInspect('');
     setisLoading(true);
-    generalQuery('get_inspection',{
-      OPTIONS: 'Nhật Ký Kiểm Tra',
+    generalQuery('dtcdata',{      
       ALLTIME: alltime,      
       FROM_DATE: fromdate,
       TO_DATE: todate,
-      CUST_NAME: cust_name,
-      process_lot_no: process_lot_no,
       G_CODE: codeCMS,
       G_NAME: codeKD,
-      PROD_TYPE: prod_type,
-      EMPL_NAME: empl_name, 
+      M_NAME: m_name,
+      M_CODE: m_code,      
+      TEST_NAME: testname,
       PROD_REQUEST_NO: prodrequestno,
+      TEST_TYPE: testtype,     
+      ID: id
     })
     .then(response => {
         //console.log(response.data.data);
         if(response.data.tk_status !=='NG')
         {
-          const loadeddata: INSPECT_NG_DATA[] =  response.data.data.map((element:INSPECT_NG_DATA,index: number)=> {
+          const loadeddata: DTC_DATA[] =  response.data.data.map((element:DTC_DATA,index: number)=> {
             return {
               ...element, 
-              INSPECT_DATETIME: moment(element.INSPECT_DATETIME).format("YYYY-MM-DD HH:mm:ss"),
-              INSPECT_START_TIME: moment(element.INSPECT_START_TIME).format("YYYY-MM-DD HH:mm:ss"),
-              INSPECT_FINISH_TIME: moment(element.INSPECT_FINISH_TIME).format("YYYY-MM-DD HH:mm:ss"),
+              TEST_FINISH_TIME: moment.utc(element.TEST_FINISH_TIME).format('YYYY-MM-DD HH:mm:ss'),
+              REQUEST_DATETIME: moment.utc(element.REQUEST_DATETIME).format('YYYY-MM-DD HH:mm:ss'),
               id: index
             }
           })         
@@ -459,218 +173,165 @@ const KQDTC = () => {
         console.log(error);
     });
   }
-  const handletraInspectionInOut = ()=> {   
-    setSummaryInspect('');
-    setisLoading(true);
-    generalQuery('get_inspection',{
-      OPTIONS: 'Nhập Xuất Kiểm (YCSX)',
-      ALLTIME: alltime,      
-      FROM_DATE: fromdate,
-      TO_DATE: todate,
-      CUST_NAME: cust_name,
-      process_lot_no: process_lot_no,
-      G_CODE: codeCMS,
-      G_NAME: codeKD,
-      PROD_TYPE: prod_type,
-      EMPL_NAME: empl_name, 
-      PROD_REQUEST_NO: prodrequestno,
-    })
-    .then(response => {
-        //console.log(response.data.data);
-        if(response.data.tk_status !=='NG')
-        {
-          const loadeddata: INSPECT_INOUT_YCSX[] =  response.data.data.map((element:INSPECT_INOUT_YCSX,index: number)=> {
-            return {
-              ...element, 
-              id: index
-            }
-          })         
-          setInspectionDataTable(loadeddata);
-          setReadyRender(true);
-          setisLoading(false);
-          Swal.fire("Thông báo", "Đã load " + response.data.data.length + " dòng", "success");  
-        }
-        else
-        {
-          Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");  
-          setisLoading(false);
-        }        
-    })
-    .catch(error => {
-        console.log(error);
-    });
-  }
-
-
-  const setNav = (choose: number) => {
-    if(choose ===1 )
-    {
-      setSelection({...selection, trapo: true, thempohangloat:false, them1po:false,them1invoice:false,inserttableycsx: false, amazontab:false});
-    }
-    else if(choose ===2 )
-    {
-      setSelection({...selection, trapo: false, thempohangloat:true, them1po:true,them1invoice:false,themycsx:false, suaycsx: false,inserttableycsx: true, amazontab:false});
-      
-    }
-    else if(choose ===3 )
-    {
-      setSelection({...selection, trapo: false, thempohangloat:false, them1po:false,them1invoice:false,inserttableycsx: false, amazontab:true});      
-    }
-  }
-
   useEffect(()=>{      
     //setColumnDefinition(column_inspect_output);
   },[]);
   return (
     <div className='inspection'>
-        <div className='tracuuDataInspection'>
-          <div className='tracuuDataInspectionform'>
-            <div className='forminput'>
-              <div className='forminputcolumn'>
-                <label>
-                  <b>Từ ngày:</b>
-                  <input
-                    type='date'
-                    value={fromdate.slice(0, 10)}
-                    onChange={(e) => setFromDate(e.target.value)}
-                  ></input>
-                </label>
-                <label>
-                  <b>Tới ngày:</b>{" "}
-                  <input
-                    type='date'
-                    value={todate.slice(0, 10)}
-                    onChange={(e) => setToDate(e.target.value)}
-                  ></input>
-                </label>
-              </div>
-              <div className='forminputcolumn'>
-                <label>
-                  <b>Code KD:</b>{" "}
-                  <input
-                    type='text'
-                    placeholder='GH63-xxxxxx'
-                    value={codeKD}
-                    onChange={(e) => setCodeKD(e.target.value)}
-                  ></input>
-                </label>
-                <label>
-                  <b>Code CMS:</b>{" "}
-                  <input
-                    type='text'
-                    placeholder='7C123xxx'
-                    value={codeCMS}
-                    onChange={(e) => setCodeCMS(e.target.value)}
-                  ></input>
-                </label>
-              </div>
-              <div className='forminputcolumn'>
-                <label>
-                  <b>Tên nhân viên:</b>{" "}
-                  <input
-                    type='text'
-                    placeholder='Trang'
-                    value={empl_name}
-                    onChange={(e) => setEmpl_Name(e.target.value)}
-                  ></input>
-                </label>
-                <label>
-                  <b>Khách:</b>{" "}
-                  <input
-                    type='text'
-                    placeholder='SEVT'
-                    value={cust_name}
-                    onChange={(e) => setCustName(e.target.value)}
-                  ></input>
-                </label>
-              </div>
-              <div className='forminputcolumn'>
-                <label>
-                  <b>Loại sản phẩm:</b>{" "}
-                  <input
-                    type='text'
-                    placeholder='TSP'
-                    value={prod_type}
-                    onChange={(e) => setProdType(e.target.value)}
-                  ></input>
-                </label>
-                <label>
-                  <b>Số YCSX:</b>{" "}
-                  <input
-                    type='text'
-                    placeholder='1H23456'
-                    value={prodrequestno}
-                    onChange={(e) => setProdRequestNo(e.target.value)}
-                  ></input>
-                </label>
-              </div>                    
-              <div className='forminputcolumn'>
-                <label>
-                  <b>LOT SX:</b>{" "}
-                  <input
-                    type='text'
-                    placeholder='ED2H3076'
-                    value={process_lot_no}
-                    onChange={(e) => setProcess_Lot_No(e.target.value)}
-                  ></input>
-                </label>
-                <label>
-                  <b>ID:</b>{" "}
-                  <input
-                    type='text'
-                    placeholder='12345'
-                    value={id}
-                    onChange={(e) => setID(e.target.value)}
-                  ></input>
-                </label>
-              </div>                    
-            </div>
-            <div className='formbutton'>
+      <div className='tracuuDataInspection'>
+        <div className='tracuuDataInspectionform'>
+          <div className='forminput'>
+            <div className='forminputcolumn'>
               <label>
-                <b>All Time:</b>
+                <b>Từ ngày:</b>
                 <input
-                  type='checkbox'
-                  name='alltimecheckbox'
-                  defaultChecked={alltime}
-                  onChange={() => setAllTime(!alltime)}
+                  type='date'
+                  value={fromdate.slice(0, 10)}
+                  onChange={(e) => setFromDate(e.target.value)}
                 ></input>
               </label>
-              <button className='tranhapkiembutton'  onClick={() => {
-                  setisLoading(true);
-                  setReadyRender(false);
-                  setColumnDefinition(column_inspect_input);
-                  handletraInspectionInput();                  
-                }}>
-                  Nhập Kiểm
-              </button>             
-              <button className='traxuatkiembutton'  onClick={() => {
-                  setisLoading(true);
-                setReadyRender(false);
-                 setColumnDefinition(column_inspect_output);
-                  handletraInspectionOutput();
-                }}>
-                  Xuất Kiểm
-              </button>             
-              <button className='tranhapxuatkiembutton'  onClick={() => {
-                  setisLoading(true);
-                  setReadyRender(false);
-                  setColumnDefinition(column_inspect_inoutycsx);
-                  handletraInspectionInOut();
-                }}>
-                  Nhập-Xuất(YCSX)
-              </button>             
-              <button className='tranhatky'  onClick={() => {
-                  setisLoading(true);
-                  setReadyRender(false);
-                  setColumnDefinition(column_inspection_NG);
-                  handletraInspectionNG();
-                }}>
-                  Nhật Ký KT
-              </button>             
+              <label>
+                <b>Tới ngày:</b>{" "}
+                <input
+                  type='date'
+                  value={todate.slice(0, 10)}
+                  onChange={(e) => setToDate(e.target.value)}
+                ></input>
+              </label>
+            </div>
+            <div className='forminputcolumn'>
+              <label>
+                <b>Code KD:</b>{" "}
+                <input
+                  type='text'
+                  placeholder='GH63-xxxxxx'
+                  value={codeKD}
+                  onChange={(e) => setCodeKD(e.target.value)}
+                ></input>
+              </label>
+              <label>
+                <b>Code CMS:</b>{" "}
+                <input
+                  type='text'
+                  placeholder='7C123xxx'
+                  value={codeCMS}
+                  onChange={(e) => setCodeCMS(e.target.value)}
+                ></input>
+              </label>
+            </div>
+            <div className='forminputcolumn'>
+              <label>
+                <b>Tên Liệu:</b>{" "}
+                <input
+                  type='text'
+                  placeholder='SJ-203020HC'
+                  value={m_name}
+                  onChange={(e) => setM_Name(e.target.value)}
+                ></input>
+              </label>
+              <label>
+                <b>Mã Liệu CMS:</b>{" "}
+                <input
+                  type='text'
+                  placeholder='A123456'
+                  value={m_code}
+                  onChange={(e) => setM_Code(e.target.value)}
+                ></input>
+              </label>
+            </div>
+            <div className='forminputcolumn'>
+              <label>
+                <b>Hạng mục test</b>
+                <select
+                  name='hangmuctest'
+                  value={testname}
+                  onChange={(e) => {
+                    setTestName(e.target.value);
+                  }}
+                >
+                  <option value='0'>ALL</option>
+                  <option value='1'>Kích thước</option>
+                  <option value='2'>Kéo keo</option>
+                  <option value='3'>XRF</option>
+                  <option value='4'>Điện trở</option>
+                  <option value='5'>Tĩnh điện</option>
+                  <option value='6'>Độ bóng</option>
+                  <option value='7'>Phtalate</option>
+                  <option value='8'>FTIR</option>
+                  <option value='9'>Mài mòn</option>
+                  <option value='10'>Màu sắc</option>
+                  <option value='11'>TVOC</option>
+                  <option value='12'>Cân nặng</option>
+                  <option value='13'>Scanbarcode</option>
+                  <option value='14'>Nhiệt cao Ẩm cao</option>
+                  <option value='15'>Shock nhiệt</option>
+                  <option value='1002'>Kéo keo 2 mặt</option>
+                </select>
+              </label>
+              <label>
+                <b>Số YCSX:</b>{" "}
+                <input
+                  type='text'
+                  placeholder='1H23456'
+                  value={prodrequestno}
+                  onChange={(e) => setProdRequestNo(e.target.value)}
+                ></input>
+              </label>
+            </div>
+            <div className='forminputcolumn'>
+            <label>
+              <b>Phân loại test</b>
+              <select
+                name='phanloaihang'
+                value={testtype}
+                onChange={(e) => {
+                  setTestType(e.target.value);
+                }}
+              >
+                <option value='0'>ALL</option>
+                <option value='1'>FIRST_LOT</option>
+                <option value='2'>ECN</option>
+                <option value='3'>MASS PRODUCTION</option>
+                <option value='4'>SAMPLE</option>
+              </select>
+            </label>
+            <label>
+              <b>DTC ID:</b>{" "}
+              <input
+                type='text'
+                placeholder='12345'
+                value={id}
+                onChange={(e) => setID(e.target.value)}
+              ></input>
+            </label>
             </div>
           </div>
-          <div className='tracuuYCSXTable'>
-            {readyRender && <DataGrid
+          <div className='formbutton'>
+            <label>
+              <b>All Time:</b>
+              <input
+                type='checkbox'
+                name='alltimecheckbox'
+                defaultChecked={alltime}
+                onChange={() => setAllTime(!alltime)}
+              ></input>
+            </label>
+            <button
+              className='tranhatky'
+              onClick={() => {
+                setisLoading(true);
+                setReadyRender(false);
+                setColumnDefinition(column_dtc_data);
+                handletraDTCData();
+              }}
+            >
+              Data DTC
+            </button>
+          </div>
+        </div>
+        <div className='tracuuYCSXTable'>
+          {readyRender && (
+            <DataGrid
               sx={{ fontSize: 12, flex: 1 }}
               components={{
                 Toolbar: CustomToolbarPOTable,
@@ -679,14 +340,15 @@ const KQDTC = () => {
               loading={isLoading}
               rowHeight={30}
               rows={inspectiondatatable}
-              columns={columnDefinition}
+              columns={column_dtc_data}
               rowsPerPageOptions={[
                 5, 10, 50, 100, 500, 1000, 5000, 10000, 500000,
               ]}
-              editMode='row'               
-            />}
-          </div>
-        </div>      
+              editMode='row'
+            />
+          )}
+        </div>
+      </div>
     </div>
   );
 }
