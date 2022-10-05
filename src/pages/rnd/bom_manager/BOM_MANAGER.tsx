@@ -2177,8 +2177,7 @@ const BOM_MANAGER = () => {
           </div>
           <div className='materiallist'>
             <Autocomplete
-              disabled={column_bomsx[0].editable || column_bomgia[0].editable }
-              sx={{ width: 450, height: 18, fontSize: 8 }}
+              disabled={column_bomsx[0].editable || column_bomgia[0].editable }              
               size='small'
               disablePortal
               options={materialList}

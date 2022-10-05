@@ -38,6 +38,7 @@ import ISO from "./pages/qc/iso/ISO";
 import OQC from "./pages/qc/oqc/OQC";
 import QLSX from "./pages/qlsx/QLSX";
 import BOM_MANAGER from "./pages/rnd/bom_manager/BOM_MANAGER";
+import BOM_AMAZON from "./pages/rnd/bom_amazon/BOM_AMAZON";
 interface userDataInterface {
   EMPL_IMAGE?: string
   ADD_COMMUNE: string;
@@ -343,7 +344,7 @@ function App() {
                   >
                     <Route index element={<KinhDoanhReport />} />
                     <Route path='quanlycodebom' element={<BOM_MANAGER />} />
-                    <Route path='thembomamazon' element={<CODE_MANAGER />} />
+                    <Route path='thembomamazon' element={<BOM_AMAZON />} />
                     <Route path='designamazon' element={<CODE_MANAGER />} />
                   </Route>
                   <Route

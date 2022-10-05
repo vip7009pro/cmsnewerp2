@@ -297,7 +297,12 @@
                 .materiallist {
                     display: flex;                  
                     align-self: center;
-                    margin-bottom: 10px;                    
+                    margin-bottom: 10px;   
+                    .autocomplete {
+                        width: 550px;
+                        height: 18px;
+                        font-size: 8px;
+                    }                 
                 }
                 .down {
                     display: flex;
@@ -445,6 +450,458 @@
     }
 }
  @media only screen and (max-width: 768px) {
+    .bom_manager {
+        display: flex;
+        flex-direction: column;
+        .mininavbar {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            margin-bottom: 5px;
+            margin-top: 5px;
+    
+            .mininavitem {
+                padding: 5px;
+                background-color: rgb(86, 163, 226);
+                margin-left: 5px;
+                border-radius: 5px;
+                color: white;
+                -webkit-box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27); 
+                box-shadow: 5px 5px 10px 5px rgba(0,0,0,0.27);
+                &:hover{
+                    background-color: rgb(127, 219, 255);
+                    cursor: pointer;
+                    color: black;
+                }            
+            }
+    
+        }
+        .bom_manager_wrapper {
+            display: flex;    
+            flex-direction: column;       
+            .left {
+                display: flex;
+                flex-direction: column;
+                flex: 1;
+                .codemanager{
+                    width: 100%;
+                    height: fit-content;
+                    display: flex;
+                    flex-direction: column;
+                    flex: 8;
+                    .tracuuFcst{
+                        .tracuuFcstform {
+                            display: flex;
+                            flex-direction: column;
+                            align-items: center;
+                            
+                            background-image: linear-gradient(0deg, #a5ddee, #16c08d);    
+                            -webkit-box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27); 
+                            box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27);
+                            border-radius: 3px;
+                            padding: 5px;
+                            &:hover {
+                                background-image: linear-gradient(0deg, #5ae5fd, #5cf0b2);                
+                            }
+                            span {
+                                padding: 10px;
+                                font-size: 20px;
+                                margin: auto;
+                            }
+                
+                
+                            .forminput {
+                                display: flex;
+                                flex-direction: column;
+                                gap: 5px;
+                                flex-wrap: wrap;
+                                align-items: center;
+                                justify-content: space-around;
+                                padding: 2px;
+                                width: 100%;           
+                
+                                .forminputcolumn {
+                                    display: flex;
+                                    flex-direction: row;
+                                    gap: 10px;
+                                    align-items: center;
+                                    justify-content: center;
+                                    flex-wrap: wrap;
+                                    
+                                    table {
+                                        border:3px solid gray;
+                                        width: 100%;
+                                    }
+                                    table thead tr td{
+                                        font-weight: bold;
+                                        border: 1px solid gray;
+                                        padding-left: 10px;
+                                        padding-right: 10px; 
+                                    }
+                                    table tbody tr td{                        
+                                        border: 1px solid gray;                       
+                                    }
+                
+                                    input {
+                                        width: 150px;
+                                        height: 20px;
+                                        outline: none;
+                                        border-radius: 5px;
+                                        border: none;
+                                        padding: 5px;
+                                        margin-left: 5px;
+                                        background-image: linear-gradient(0deg, #ececec, #eee7e7);
+                                    }
+                
+                                    .tranhapkiembutton
+                                    {
+                                        font-weight: bold;
+                                        padding-left: 5px;
+                                        padding-right: 5px;
+                                        height: 30px;
+                                        background-color: #99f86d;
+                                        outline:none;
+                                        border: none;
+                                        border-radius: 5px;
+                                        -webkit-box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27); 
+                                        box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27);  
+                                        margin-bottom: 5px;     
+                                        margin-top: 5px;  
+                                        &:hover {
+                                            cursor: pointer;
+                                            background-color: #54a32f;
+                                        }
+                                    }
+                                    .traxuatkiembutton
+                                    {
+                                        font-weight: bold;
+                                        padding-left: 5px;
+                                        padding-right: 5px;
+                                        height: 30px;
+                                        background-color: #3ebdf8;
+                                        outline:none;
+                                        border: none;
+                                        border-radius: 5px;
+                                        -webkit-box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27); 
+                                        box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27);  
+                                        margin-bottom: 5px;     
+                                        margin-top: 5px;  
+                                        &:hover {
+                                            cursor: pointer;
+                                            background-color: #1b80af;
+                                        }
+                                    }
+                
+                                }
+                            }
+                            .formbutton {
+                                display: flex;
+                                align-items: center;
+                                justify-content: space-around;
+                                gap: 20px;
+                            }
+                        }
+                        .codeinfotable {
+                            display: flex;
+                            margin-top: 5px;
+                            height: 70vh;
+                            background-image: linear-gradient(0deg, #75ddac, #81c981);                   
+                            -webkit-box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27); 
+                            box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27);
+                            border-radius: 3px; 
+                        }
+                
+                    }
+                   
+                }
+                .bom_manager_button {
+                    display: flex;
+                    flex-direction: column;   
+                    justify-items: center;    
+                    align-items: center;             
+                    flex: 1;
+                    border-radius: 10px;
+                    margin-bottom: 5px;
+                    background-image: linear-gradient(0deg, #7ae2f5, #80db17);
+                    -webkit-box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.17); 
+                            box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.17);
+                    .buttonrow1 {
+                        display: flex; 
+                        gap: 20px; 
+
+                    }
+                    .buttonrow2 {
+                        display: flex;
+                        gap: 20px; 
+                        
+
+                    }
+                }
+
+                
+            }
+            .right {
+                display: flex;
+                flex-direction: column;
+                flex: 4;                       
+                gap: 15px;     
+
+                .codeinfobig {
+                    display: flex;
+                    gap: 20px;
+                    padding: 20px;
+                    background-image: linear-gradient(0deg, #7ae2f5, #80db17);
+                    -webkit-box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.17); 
+                    box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.17);
+                    color: rgb(0, 0, 0);
+                    border-radius: 5px;
+                    margin-left: 5px;
+                    margin-right: 5px;                    
+                    justify-content: center;
+                    .biginfocms {
+                        display: flex;
+                        font-size: 25px;
+                        font-weight: bold;
+                        color: rgb(182, 6, 182);
+                    }
+                    .biginfokd {
+                        display: flex;
+                        font-size: 25px;
+                        font-weight: bold;
+                        color: rgb(41, 2, 216);
+                    }
+                } 
+                .up {
+                    display: flex;
+                    flex-direction: column;
+                    width: 100%;
+                    height: 120vh;
+                    .bomsx {
+                        display: flex;
+                        flex-direction: column;
+                        flex:1;  
+                        flex-grow: 1;
+                        justify-content: center;
+                        justify-self: center;  
+                        
+                        gap: 10px; 
+                        margin-left:5px;
+                        margin-right:5px;
+                        -webkit-box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.17); 
+                        box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.17);
+                        border-radius: 5px;       
+                      
+                        .bomsxtable {
+                            border-radius: 5px;
+                            display: flex;
+                            flex-direction: column;
+                            flex:1;  
+                            flex-grow: 1;
+                            justify-content: center;
+                            justify-self: center;     
+                            -webkit-box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.17); 
+                            box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.17);    
+                            background-image: linear-gradient(0deg, #cbe79d, #4ccfc9); 
+                        }
+                        .bomsxbutton {
+                            display: flex;
+                            align-self: center;
+                            background-color: rgb(223, 231, 188);
+                            border-radius: 5px;
+                            gap: 70px;
+                            
+                        }
+                    }
+                    .bomgia {
+                        display: flex;
+                        flex-direction: column;
+                        flex: 1;
+                        background-color:rgb(94, 221, 221);      
+                        gap: 10px;      
+                        margin-left:5px;
+                        margin-right:5px;    
+                        -webkit-box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.17); 
+                        box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.17);
+                        border-radius: 5px;       
+                        .bomgiatable {
+                            border-radius: 5px;
+                            display: flex;
+                            flex-direction: column;
+                            flex:1;  
+                            flex-grow: 1;
+                            justify-content: center;
+                            justify-self: center;         
+                            -webkit-box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.17); 
+                            box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.17);    
+                            background-image: linear-gradient(0deg, #cbe79d, #4ccfc9); 
+                        }
+                        .bomgiabutton {
+                            display: flex;
+                            align-self: center;
+                            background-color: rgb(224, 198, 198);
+                            border-radius: 5px;
+                            gap: 70px;
+                           
+                        }
+                        
+                    }
+
+                }
+                .materiallist {
+                    display: flex;                  
+                    align-self: center;
+                    margin-bottom: 10px;     
+                    .autocomplete {
+                        width: 300px;
+                        height: 18px;
+                        font-size: 8px;
+                    }
+                }
+                .down {
+                    display: flex;
+                    width: 100%;
+                    flex-direction: column;
+                    justify-items: flex-start;
+                    background-image: linear-gradient(0deg, #afd3d1,#72cf34); 
+                    -webkit-box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27); 
+                    box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27);  
+                    margin-left: 5px;                    
+                    border-radius: 5px;
+                    font-size: 13px;
+                    .ttc {
+                        display: flex;
+                        font-weight: bold;
+                        font-size: 16px;
+                        padding: 10px;
+                        justify-content: center;
+                    }
+                    .info12 {
+                        display: flex;   
+                        flex-direction: column;                     
+                        width: 100%;      
+                        padding-right: 10px;                 
+                        padding-top: 10px;                 
+                        padding-bottom: 10px;   
+                                  
+                        .info1 {
+                            display: flex;                            
+                            flex: 1;                           
+                            flex-direction: column;
+                            align-items: flex-end;
+                            gap: 2px;
+                            margin-left: 10px;
+                            margin-right: 10px;
+                            select {
+                                width: 150px;
+                                height: 20px;
+                            }
+                            input {
+                                padding-left: 5px;
+                                margin-left: 2px;
+                                width: 140px;
+                            }
+                            label {
+                                display: flex;
+                                flex-direction: row;
+                                align-items: flex-end;
+                                
+                            }
+                        }
+                        .info2 {
+                            display: flex;                            
+                            flex: 1;                           
+                            flex-direction: column;
+                            align-items: flex-end;
+                            gap: 2px;
+                            margin-left: 10px;
+                            margin-right: 10px;
+                            select {
+                                width: 150px;
+                                height: 20px;
+                            }
+                            input {
+                                padding-left: 5px;
+                                margin-left: 2px;
+                                width: 140px;
+                            }
+                            label {
+                                display: flex;
+                                flex-direction: row;
+                                align-items: flex-end;
+                                
+                            }
+                        }
+                        .info11 {
+                            display: flex;                            
+                            flex: 1;                           
+                            flex-direction: column;
+                            align-items: flex-end;
+                            gap: 2px;
+                            margin-left: 10px;
+                            margin-right: 10px;
+                            select {
+                                width: 150px;
+                                height: 20px;
+                            }
+                            input {
+                                padding-left: 5px;
+                                margin-left: 2px;
+                                width: 140px;
+                            }
+                            label {
+                                display: flex;
+                                flex-direction: row;
+                                align-items: flex-end;
+                                
+                            }
+                        }
+                        .info22 {
+                            display: flex;                            
+                            flex: 1;                           
+                            flex-direction: column;
+                            align-items: flex-end;
+                            gap: 2px;
+                            margin-left: 10px;
+                            margin-right: 10px;
+                            select {
+                                width: 150px;
+                                height: 20px;
+                            }
+                            input {
+                                padding-left: 5px;
+                                margin-left: 2px;
+                                width: 140px;
+                            }
+                            label {
+                                display: flex;
+                                flex-direction: row;
+                                align-items: flex-end;
+                                
+                            }
+                        }
+                        
+
+                    }
+                    .info34 {
+                        display: flex;
+                        width: 100%;
+                        .info3 {
+                            display: flex;
+                            flex: 1;
+                        }
+                        .info4 {
+                            display: flex;
+                            flex: 1;
+                        }
+
+                    }
+
+                }
+            }
+        }
+    
+     
+    }
 }
  @media only screen and (max-width: 320px) {
 }
