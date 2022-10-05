@@ -35,7 +35,7 @@ interface DiemDanhNhomData {
 
 const DieuChuyenTeam = () => {
     const [isLoading, setisLoading] = useState(false);   
-    const [WORK_SHIFT_CODE, setWORK_SHIFT_CODE]= useState(0);
+    const [WORK_SHIFT_CODE, setWORK_SHIFT_CODE]= useState(5);
     const [diemdanhnhomtable,setDiemDanhNhomTable ] = useState<Array<DiemDanhNhomData>>([]);
 
     const columns_diemdanhnhom =[

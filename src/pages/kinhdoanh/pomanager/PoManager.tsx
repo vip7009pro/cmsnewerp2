@@ -1260,6 +1260,7 @@ const PoManager = () => {
                     disablePortal                    
                     options={customerList}
                     className='autocomplete'   
+                    isOptionEqualToValue={(option, value) => option.CUST_CD === value.CUST_CD}
                     getOptionLabel={(option:CustomerListData) => `${option.CUST_CD}: ${option.CUST_NAME_KD}`}                 
                     renderInput={(params) => (
                      <TextField {...params} label='Select customer'/>
@@ -1278,6 +1279,7 @@ const PoManager = () => {
                     disablePortal                    
                     options={codeList}
                     className='autocomplete'   
+                    isOptionEqualToValue={(option, value) => option.G_CODE === value.G_CODE}
                     getOptionLabel={(option:CodeListData) => `${option.G_CODE}: ${option.G_NAME}`}                     
                     renderInput={(params) => (
                      <TextField {...params} label='Select code'/>

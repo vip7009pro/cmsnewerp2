@@ -32,9 +32,6 @@ interface DiemDanhNhomData {
     WORK_SHIF_NAME: string
     WORK_STATUS_NAME: string
 }
-
-
-
 const DiemDanhNhom = () => {
     const [isLoading, setisLoading] = useState(false);   
     const [WORK_SHIFT_CODE, setWORK_SHIFT_CODE]= useState(0);
@@ -42,7 +39,12 @@ const DiemDanhNhom = () => {
 
     const columns_diemdanhnhom =[  
       { field: "EMPL_NO", headerName: "EMPL_NO", width: 170 },
-      { field: "CMS_ID", headerName: "CMS_ID", width: 100 },      
+      { field: "CMS_ID", headerName: "CMS_ID", width: 100 },    
+      { field: "AVATAR", headerName: "AVATAR", width: 70,
+      renderCell: (params: any) => {
+       return <img width={70} height={90} src={'/Picture_NS/NS_'+ params.row.EMPL_NO+'.jpg'} alt={params.row.EMPL_NO}></img>
+      } },   
+
         { field: "DIEMDANH", headerName: "DIEMDANH", width: 170, 
             renderCell: (params:any) => { 
                 let typeclass:string =params.row.ON_OFF===1 ? "onbt": params.row.ON_OFF===0 ?"offbt" : "";

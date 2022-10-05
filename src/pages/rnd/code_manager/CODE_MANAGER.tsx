@@ -117,7 +117,7 @@ const CODE_MANAGER = () => {
      
 
       let hreftlink = '/banve/' + params.row.G_CODE + '.pdf';
-      if (params.row.BANVE !== "N")
+      if (params.row.BANVE !== "N" && params.row.BANVE !== null)
       {
         return (
           <span style={{ color: "gray" }}>
@@ -154,7 +154,7 @@ const CODE_MANAGER = () => {
      </span>
     } ,editable: true},
     { field: "PDBV", headerName: "PD BANVE", width: 80 , renderCell: (params:any) => {
-      if(params.row.PDBV==='P')
+      if(params.row.PDBV==='P' || params.row.PDBV==='R' || params.row.PDBV===null)
       return <span style={{color:'red'}}><b>PENDING</b></span>
       return <span style={{color:'green'}}><b>APPROVED</b></span>
     } },
@@ -359,6 +359,14 @@ const CODE_MANAGER = () => {
     }
   }
 
+  const handleSearchCodeKeyDown = (
+    e: React.KeyboardEvent<HTMLInputElement>
+  ) => {
+    if (e.key === "Enter") {
+      handleCODEINFO();
+    }
+  };
+
   useEffect(()=>{
   },[]);
   return (
@@ -380,13 +388,16 @@ const CODE_MANAGER = () => {
                     placeholder='Nhập code vào đây'
                     value={codeCMS}
                     onChange={(e) => setCodeCMS(e.target.value)}
+                    onKeyDown={(e) => {
+                      handleSearchCodeKeyDown(e);
+                    }}
                   ></input>
                 </label>
                 <button
                   className='traxuatkiembutton'
                   onClick={() => {
                     handleCODEINFO();
-                  }}
+                  }}                 
                 >
                   Tìm code
                 </button>

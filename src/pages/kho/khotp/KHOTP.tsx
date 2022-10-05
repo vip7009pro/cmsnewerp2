@@ -123,7 +123,7 @@ const KHOTP = () => {
     { field: "G_NAME_KD", headerName: "G_NAME_KD", width: 120 },
     { field: "Customer_ShortName", headerName: "Customer_ShortName", width: 150 },
     { field: "IO_Date", headerName: "IO_Date", width: 150 },
-    { field: "INPUT_DATETIME", headerName: "INPUT_DATETIME", width: 150 },
+    { field: "INPUT_DATETIME", headerName: "IN_OUT_TIME", width: 150 },
     { field: "IO_Shift", headerName: "IO_Shift", width: 80 },
     { field: "IO_Type", headerName: "IO_Type", width: 80 },
     { field: "IO_Qty", headerName: "IO_Qty", width: 80 , renderCell: (params:any) => {return <span style={{color:'green'}}><b>{params.row.IO_Qty.toLocaleString('en-US')}</b></span>}},   
@@ -163,8 +163,8 @@ const KHOTP = () => {
             return {
               ...element, 
               id: index,  
-              IO_Date: moment(element.IO_Date).format("YYYY-MM-DD"),
-              INPUT_DATETIME: moment(element.INPUT_DATETIME).format("YYYY-MM-DD HH:mm:ss"),
+              IO_Date: moment.utc(element.IO_Date).format("YYYY-MM-DD"),
+              INPUT_DATETIME: moment.utc(element.INPUT_DATETIME).format("YYYY-MM-DD HH:mm:ss"),
             }
           })         
           setWhDataTable(loadeddata);

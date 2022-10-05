@@ -3,6 +3,7 @@ import  { useEffect, useState} from 'react'
 import INPUTPQC from './INPUTPQC';
 import TRAPQC from './TRAPQC';
 import "./PQC.scss"
+import CODE_MANAGER from '../../rnd/code_manager/CODE_MANAGER';
 
 const PQC = () => {
   const [selection, setSelection] = useState<any>({
@@ -36,15 +37,18 @@ const PQC = () => {
         <div className='mininavitem' onClick={() => setNav(2)}>
           <span className='mininavtext'>Data PQC</span>
         </div>            
+        <div className='mininavitem' onClick={() => setNav(1)}>
+          <span className='mininavtext'>CODE INFO</span>
+        </div>            
       </div>
       {selection.tab2 && (
         <div className='trapqc'>
           <TRAPQC />
         </div>
       )}
-      {false && (
+      {selection.tab1 && (
         <div className='trapqc'>
-          <INPUTPQC />
+          <CODE_MANAGER />
         </div>
       )}
       {selection.tab3 && <div className='report'></div>}
