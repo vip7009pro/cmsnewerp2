@@ -6,7 +6,6 @@ import Swal from "sweetalert2";
 import LinearProgress from '@mui/material/LinearProgress';
 import {SaveExcel} from '../../../api/GlobalFunction';
 
-
 interface DiemDanhNhomData {  
     id: string,
     APPLY_DATE: string
@@ -37,7 +36,6 @@ const DieuChuyenTeam = () => {
     const [isLoading, setisLoading] = useState(false);   
     const [WORK_SHIFT_CODE, setWORK_SHIFT_CODE]= useState(5);
     const [diemdanhnhomtable,setDiemDanhNhomTable ] = useState<Array<DiemDanhNhomData>>([]);
-
     const columns_diemdanhnhom =[
         { field: "id", headerName: "ID", width: 100, valueGetter: (params: any) => {return params.row.EMPL_NO} },      
         { field: "WORK_SHIF_NAME", headerName: "WORK_SHIF_NAME", width: 130 },
@@ -207,8 +205,6 @@ const DieuChuyenTeam = () => {
          
              
     ];
-
-    
     function CustomToolbar() {
         return (
           <GridToolbarContainer>

@@ -12,8 +12,6 @@ import { SaveExcel } from '../../../api/GlobalFunction';
 import { MdOutlineDelete } from 'react-icons/md';
 import "./PoManager.scss"
 import { FaFileInvoiceDollar } from 'react-icons/fa';
-
-
 interface POTableData {
   PO_ID: number;
   CUST_NAME_KD: string;
@@ -67,9 +65,6 @@ interface CustomerListData {
   CUST_NAME?: string
 }
 const PoManager = () => {
-
-
-
   const [isPending, startTransition] = useTransition();
   const [selection, setSelection] = useState<any>({
     trapo: true,
@@ -99,12 +94,9 @@ const PoManager = () => {
   const [newpoqty, setNewPoQty] = useState('');
   const [newpoprice, setNewPoPrice] = useState('');
   const [newporemark, setNewPoRemark] = useState('');
-
   const [newinvoiceQTY, setNewInvoiceQty] =  useState<number>(0);
   const [newinvoicedate, setNewInvoiceDate] = useState(moment().format('YYYY-MM-DD'));
   const [newinvoiceRemark,setNewInvoiceRemark] = useState('');
-
-
   const [poSummary, setPoSummary] = useState<POSummaryData>({
     total_po_qty :0,
     total_delivered_qty: 0,
@@ -122,6 +114,13 @@ const PoManager = () => {
   const [podatatable, setPoDataTable] = useState<Array<POTableData>>([]);
   const [podatatablefilter, setPoDataTableFilter] = useState<Array<POTableData>>([]);
   const [selectedID,setSelectedID] = useState<number|null>();
+  const handleSearchCodeKeyDown = (
+    e: React.KeyboardEvent<HTMLInputElement>
+  ) => {
+    if (e.key === "Enter") {
+      handletraPO();
+    }
+  };
   const column_potable = [   
     { field: "CUST_NAME_KD", headerName: "CUST_NAME_KD", width: 120 },
     { field: "PO_NO", headerName: "PO_NO", width: 110 },
@@ -578,7 +577,6 @@ const PoManager = () => {
         {
           err_code = 4;
         }
-        
           if(err_code === 0)
           {
             await generalQuery("insert_po", {
@@ -631,7 +629,6 @@ const PoManager = () => {
         .then((response) => {
           console.log(response.data.tk_status);
           if (response.data.tk_status !== "NG") {
-           
             //tempjson[i].CHECKSTATUS = "NG: Đã tồn tại PO";
           } else {   
             err_code = 1;         
@@ -666,8 +663,6 @@ const PoManager = () => {
             err_code = 5; //invoice nhieu hon po balance
           }
         }
-       
-       
           if(err_code === 0)
           {
             await generalQuery("insert_invoice", {
@@ -742,7 +737,6 @@ const PoManager = () => {
       setPoDataTableFilter([]);
     }
   }
-
   const handle_fillsuaform =() => {
     if(podatatablefilter.length ===1)
     {
@@ -777,7 +771,6 @@ const PoManager = () => {
       Swal.fire("Thông báo", "Lỗi: Chỉ tích chọn 1 dòng để sửa thôi" , "error");
     }
   }
-
   const handle_fillsuaformInvoice =() => {
     if(podatatablefilter.length ===1)
     {
@@ -812,7 +805,6 @@ const PoManager = () => {
       Swal.fire("Thông báo", "Lỗi: Chỉ tích chọn 1 dòng thêm thôi" , "error");
     }
   }
-
   const updatePO= async()=> {
     let err_code:number = 0;
       await generalQuery("checkPOExist", {
@@ -921,7 +913,6 @@ const PoManager = () => {
           });  
         }
       }      
-
       if(!err_code)
       {
         Swal.fire("Thông báo", "Xóa PO thành công (chỉ PO của người đăng nhập)!" , "success"); 
@@ -982,7 +973,7 @@ const PoManager = () => {
             <form className='formupload'>
               <label htmlFor='upload'>
                 <b>Chọn file Excel: </b>
-                <input
+                <input onKeyDown={(e)=> {handleSearchCodeKeyDown(e);}}  
                   className='selectfilebutton'
                   type='file'
                   name='upload'
@@ -1041,7 +1032,7 @@ const PoManager = () => {
               <div className='forminputcolumn'>
                 <label>
                   <b>Từ ngày:</b>
-                  <input
+                  <input onKeyDown={(e)=> {handleSearchCodeKeyDown(e);}}  
                     type='date'
                     value={fromdate.slice(0, 10)}
                     onChange={(e) => setFromDate(e.target.value)}
@@ -1049,7 +1040,7 @@ const PoManager = () => {
                 </label>
                 <label>
                   <b>Tới ngày:</b>{" "}
-                  <input
+                  <input onKeyDown={(e)=> {handleSearchCodeKeyDown(e);}}  
                     type='date'
                     value={todate.slice(0, 10)}
                     onChange={(e) => setToDate(e.target.value)}
@@ -1059,7 +1050,7 @@ const PoManager = () => {
               <div className='forminputcolumn'>
                 <label>
                   <b>Code KD:</b>{" "}
-                  <input
+                  <input onKeyDown={(e)=> {handleSearchCodeKeyDown(e);}}  
                     type='text'
                     placeholder='GH63-xxxxxx'
                     value={codeKD}
@@ -1068,7 +1059,7 @@ const PoManager = () => {
                 </label>
                 <label>
                   <b>Code CMS:</b>{" "}
-                  <input
+                  <input onKeyDown={(e)=> {handleSearchCodeKeyDown(e);}}  
                     type='text'
                     placeholder='7C123xxx'
                     value={codeCMS}
@@ -1079,7 +1070,7 @@ const PoManager = () => {
               <div className='forminputcolumn'>
                 <label>
                   <b>Tên nhân viên:</b>{" "}
-                  <input
+                  <input onKeyDown={(e)=> {handleSearchCodeKeyDown(e);}}  
                     type='text'
                     placeholder='Trang'
                     value={empl_name}
@@ -1088,7 +1079,7 @@ const PoManager = () => {
                 </label>
                 <label>
                   <b>Khách:</b>{" "}
-                  <input
+                  <input onKeyDown={(e)=> {handleSearchCodeKeyDown(e);}}  
                     type='text'
                     placeholder='SEVT'
                     value={cust_name}
@@ -1099,7 +1090,7 @@ const PoManager = () => {
               <div className='forminputcolumn'>
                 <label>
                   <b>Loại sản phẩm:</b>{" "}
-                  <input
+                  <input onKeyDown={(e)=> {handleSearchCodeKeyDown(e);}}  
                     type='text'
                     placeholder='TSP'
                     value={prod_type}
@@ -1108,7 +1099,7 @@ const PoManager = () => {
                 </label>
                 <label>
                   <b>ID:</b>{" "}
-                  <input
+                  <input onKeyDown={(e)=> {handleSearchCodeKeyDown(e);}}  
                     type='text'
                     placeholder='12345'
                     value={id}
@@ -1119,7 +1110,7 @@ const PoManager = () => {
               <div className='forminputcolumn'>
                 <label>
                   <b>PO NO:</b>{" "}
-                  <input
+                  <input onKeyDown={(e)=> {handleSearchCodeKeyDown(e);}}  
                     type='text'
                     placeholder='123abc'
                     value={po_no}
@@ -1128,7 +1119,7 @@ const PoManager = () => {
                 </label>
                 <label>
                   <b>Vật liệu:</b>{" "}
-                  <input
+                  <input onKeyDown={(e)=> {handleSearchCodeKeyDown(e);}}  
                     type='text'
                     placeholder='SJ-203020HC'
                     value={material}
@@ -1139,7 +1130,7 @@ const PoManager = () => {
               <div className='forminputcolumn'>
                 <label>
                   <b>Over/OK:</b>{" "}
-                  <input
+                  <input onKeyDown={(e)=> {handleSearchCodeKeyDown(e);}}  
                     type='text'
                     placeholder='OVER'
                     value={over}
@@ -1148,7 +1139,7 @@ const PoManager = () => {
                 </label>
                 <label>
                   <b>Invoice No:</b>{" "}
-                  <input
+                  <input onKeyDown={(e)=> {handleSearchCodeKeyDown(e);}}  
                     type='text'
                     placeholder='số invoice'
                     value={invoice_no}
@@ -1160,7 +1151,7 @@ const PoManager = () => {
             <div className='formbutton'>
               <label>
                 <b>All Time:</b>
-                <input
+                <input onKeyDown={(e)=> {handleSearchCodeKeyDown(e);}}  
                   type='checkbox'
                   name='alltimecheckbox'
                   defaultChecked={alltime}
@@ -1169,7 +1160,7 @@ const PoManager = () => {
               </label>
               <label>
                 <b>Chỉ PO Tồn:</b>
-                <input
+                <input onKeyDown={(e)=> {handleSearchCodeKeyDown(e);}}  
                   type='checkbox'
                   name='pobalancecheckbox'
                   defaultChecked={justpobalance}
@@ -1294,7 +1285,7 @@ const PoManager = () => {
                   </label>
                   <label>
                     <b>PO Date:</b>
-                    <input
+                    <input onKeyDown={(e)=> {handleSearchCodeKeyDown(e);}}  
                       className='inputdata' 
                       type='date'
                       value={newpodate.slice(0, 10)}
@@ -1303,7 +1294,7 @@ const PoManager = () => {
                   </label>
                   <label>
                     <b>RD Date:</b>{" "}
-                    <input
+                    <input onKeyDown={(e)=> {handleSearchCodeKeyDown(e);}}  
                       className='inputdata' 
                       type='date'
                       value={newrddate.slice(0, 10)}
@@ -1340,7 +1331,6 @@ const PoManager = () => {
           </div>
         </div>
       )}    
-
       {selection.them1invoice && <div className='them1invoice'>
           <div className='formnho'>
             <div className='dangkyform'>
@@ -1386,7 +1376,7 @@ const PoManager = () => {
                   </label>
                   <label>
                     <b>PO Date:</b>
-                    <input
+                    <input onKeyDown={(e)=> {handleSearchCodeKeyDown(e);}}  
                       className='inputdata' 
                       type='date'
                       value={newpodate.slice(0, 10)}
@@ -1395,7 +1385,7 @@ const PoManager = () => {
                   </label>
                   <label>
                     <b>RD Date:</b>{" "}
-                    <input
+                    <input onKeyDown={(e)=> {handleSearchCodeKeyDown(e);}}  
                       className='inputdata' 
                       type='date'
                       value={newrddate.slice(0, 10)}
@@ -1414,7 +1404,7 @@ const PoManager = () => {
                   </label>
                   <label>
                     <b>Invoice Date:</b>{" "}
-                    <input
+                    <input onKeyDown={(e)=> {handleSearchCodeKeyDown(e);}}  
                       className='inputdata'
                       type='date'
                       value={newinvoicedate.slice(0, 10)}

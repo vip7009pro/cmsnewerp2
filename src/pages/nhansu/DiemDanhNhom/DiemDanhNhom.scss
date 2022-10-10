@@ -118,6 +118,25 @@
                     background-color: #fde722;
                     }
             }
+            .off50button {
+                background-color: #d0f13b;
+                /* Green */
+                border: none;
+                color: rgb(0, 0, 0);
+                padding: 8px 8px;
+                text-align: center;
+                text-decoration: none;
+                display: inline-block;
+                font-size: 14px;
+                border-radius: 5px;
+                outline: none;
+                box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
+                -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
+                -moz-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
+                &:hover {
+                    background-color: #fde722;
+                    }
+            }
             .resetbutton {
                 background-color: #329cff;
                 /* Green */

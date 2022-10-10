@@ -122,6 +122,7 @@ const InvoiceManager = () => {
     { field: "PROD_MAIN_MATERIAL", headerName: "PROD_MAIN_MATERIAL", width: 120 },
     { field: "YEARNUM", type: 'number',headerName: "YEARNUM", width: 80 },
     { field: "WEEKNUM",type: 'number', headerName: "WEEKNUM", width: 80 },      
+    { field: "INVOICE_NO",type: 'number', headerName: "INVOICE_NO", width: 120 },      
     { field: "DELIVERY_ID", type: 'number',headerName: "DELIVERY_ID", width: 90   }, 
     { field: "REMARK", headerName: "REMARK", width: 120 },   
   ]
@@ -146,6 +147,7 @@ const InvoiceManager = () => {
     { field: "PO_NO", headerName: "PO_NO", width: 120 },
     { field: "DELIVERY_QTY", type: 'number',headerName: "DELIVERY_QTY", width: 120, renderCell: (params:any) => {return <span style={{color:'blue'}}><b>{params.row.DELIVERY_QTY}</b></span>}  },
     { field: "DELIVERY_DATE", type:'date',headerName: "DELIVERY_DATE", width: 200 }, 
+    { field: "INVOICE_NO", type:'string',headerName: "INVOICE_NO", width: 200 }, 
     { field: "CHECKSTATUS", headerName: "CHECKSTATUS", width: 200 , renderCell: (params:any) => {
       if(params.row.CHECKSTATUS.slice(0,2) === 'OK')
       return <span style={{color:'green'}}><b>{params.row.CHECKSTATUS}</b></span>
@@ -153,6 +155,16 @@ const InvoiceManager = () => {
     }
   },
   ]
+
+  const handleSearchCodeKeyDown = (
+    e: React.KeyboardEvent<HTMLInputElement>
+  ) => {
+    if (e.key === "Enter") {
+      handletraInvoice();
+    }
+  };
+  
+
   function CustomToolbar() {
     return (
       <GridToolbarContainer>
@@ -414,6 +426,7 @@ const InvoiceManager = () => {
               CUST_CD: uploadExcelJson[i].CUST_CD,
               PO_NO: uploadExcelJson[i].PO_NO,
               EMPL_NO: userData.EMPL_NO,
+              INVOICE_NO: uploadExcelJson[i].INVOICE_NO,
             })
               .then((response) => {
                 console.log(response.data.tk_status);
@@ -581,7 +594,8 @@ const InvoiceManager = () => {
               EMPL_NO: userData.EMPL_NO,
               DELIVERY_QTY: newinvoiceQTY,             
               DELIVERY_DATE: newinvoicedate, 
-              REMARK: newinvoiceRemark
+              REMARK: newinvoiceRemark,
+              INVOICE_NO: ''
             })
               .then((response) => {
                 console.log(response.data.tk_status);
@@ -829,7 +843,7 @@ const InvoiceManager = () => {
             <form className='formupload'>
               <label htmlFor='upload'>
                 <b>Chọn file Excel: </b>
-                <input
+                <input onKeyDown={(e)=> {handleSearchCodeKeyDown(e);}}  
                   className='selectfilebutton'
                   type='file'
                   name='upload'
@@ -886,7 +900,7 @@ const InvoiceManager = () => {
               <div className='forminputcolumn'>
                 <label>
                   <b>Từ ngày:</b>
-                  <input
+                  <input onKeyDown={(e)=> {handleSearchCodeKeyDown(e);}}  
                     type='date'
                     value={fromdate.slice(0, 10)}
                     onChange={(e) => setFromDate(e.target.value)}
@@ -894,7 +908,7 @@ const InvoiceManager = () => {
                 </label>
                 <label>
                   <b>Tới ngày:</b>{" "}
-                  <input
+                  <input onKeyDown={(e)=> {handleSearchCodeKeyDown(e);}}  
                     type='date'
                     value={todate.slice(0, 10)}
                     onChange={(e) => setToDate(e.target.value)}
@@ -904,7 +918,7 @@ const InvoiceManager = () => {
               <div className='forminputcolumn'>
                 <label>
                   <b>Code KD:</b>{" "}
-                  <input
+                  <input onKeyDown={(e)=> {handleSearchCodeKeyDown(e);}}  
                     type='text'
                     placeholder='GH63-xxxxxx'
                     value={codeKD}
@@ -913,7 +927,7 @@ const InvoiceManager = () => {
                 </label>
                 <label>
                   <b>Code CMS:</b>{" "}
-                  <input
+                  <input onKeyDown={(e)=> {handleSearchCodeKeyDown(e);}}  
                     type='text'
                     placeholder='7C123xxx'
                     value={codeCMS}
@@ -924,7 +938,7 @@ const InvoiceManager = () => {
               <div className='forminputcolumn'>
                 <label>
                   <b>Tên nhân viên:</b>{" "}
-                  <input
+                  <input onKeyDown={(e)=> {handleSearchCodeKeyDown(e);}}  
                     type='text'
                     placeholder='Trang'
                     value={empl_name}
@@ -933,7 +947,7 @@ const InvoiceManager = () => {
                 </label>
                 <label>
                   <b>Khách:</b>{" "}
-                  <input
+                  <input onKeyDown={(e)=> {handleSearchCodeKeyDown(e);}}  
                     type='text'
                     placeholder='SEVT'
                     value={cust_name}
@@ -944,7 +958,7 @@ const InvoiceManager = () => {
               <div className='forminputcolumn'>
                 <label>
                   <b>Loại sản phẩm:</b>{" "}
-                  <input
+                  <input onKeyDown={(e)=> {handleSearchCodeKeyDown(e);}}  
                     type='text'
                     placeholder='TSP'
                     value={prod_type}
@@ -953,7 +967,7 @@ const InvoiceManager = () => {
                 </label>
                 <label>
                   <b>ID:</b>{" "}
-                  <input
+                  <input onKeyDown={(e)=> {handleSearchCodeKeyDown(e);}}  
                     type='text'
                     placeholder='12345'
                     value={id}
@@ -964,7 +978,7 @@ const InvoiceManager = () => {
               <div className='forminputcolumn'>
                 <label>
                   <b>PO NO:</b>{" "}
-                  <input
+                  <input onKeyDown={(e)=> {handleSearchCodeKeyDown(e);}}  
                     type='text'
                     placeholder='123abc'
                     value={po_no}
@@ -973,7 +987,7 @@ const InvoiceManager = () => {
                 </label>
                 <label>
                   <b>Vật liệu:</b>{" "}
-                  <input
+                  <input onKeyDown={(e)=> {handleSearchCodeKeyDown(e);}}  
                     type='text'
                     placeholder='SJ-203020HC'
                     value={material}
@@ -984,7 +998,7 @@ const InvoiceManager = () => {
               <div className='forminputcolumn'>
                 <label>
                   <b>Over/OK:</b>{" "}
-                  <input
+                  <input onKeyDown={(e)=> {handleSearchCodeKeyDown(e);}}  
                     type='text'
                     placeholder='OVER'
                     value={over}
@@ -993,7 +1007,7 @@ const InvoiceManager = () => {
                 </label>
                 <label>
                   <b>Invoice No:</b>{" "}
-                  <input
+                  <input onKeyDown={(e)=> {handleSearchCodeKeyDown(e);}}  
                     type='text'
                     placeholder='số invoice'
                     value={invoice_no}
@@ -1005,7 +1019,7 @@ const InvoiceManager = () => {
             <div className='formbutton'>
               <label>
                 <b>All Time:</b>
-                <input
+                <input onKeyDown={(e)=> {handleSearchCodeKeyDown(e);}}  
                   type='checkbox'
                   name='alltimecheckbox'
                   defaultChecked={alltime}
@@ -1134,7 +1148,7 @@ const InvoiceManager = () => {
                   </label>
                   <label>
                     <b>Invoice Date:</b>{" "}
-                    <input
+                    <input onKeyDown={(e)=> {handleSearchCodeKeyDown(e);}}  
                       className='inputdata' 
                       type='date'
                       value={newinvoicedate.slice(0, 10)}

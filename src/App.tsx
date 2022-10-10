@@ -25,10 +25,8 @@ import Swal from "sweetalert2";
 import QuotationManager from "./pages/kinhdoanh/quotationmanager/QuotationManager";
 import CODE_MANAGER from "./pages/rnd/code_manager/CODE_MANAGER";
 import CUST_MANAGER from "./pages/kinhdoanh/custManager/CUST_MANAGER";
-import "./App.scss";
 import BulletinBoard from "./components/BulletinBoard/BulletinBoard";
 import QC from "./pages/qc/QC";
-import INSPECTION from "./pages/qc/inspection/INSPECTION";
 import KIEMTRA from "./pages/qc/inspection/KIEMTRA";
 import PQC from "./pages/qc/pqc/PQC";
 import IQC from "./pages/qc/iqc/IQC";
@@ -39,6 +37,8 @@ import OQC from "./pages/qc/oqc/OQC";
 import QLSX from "./pages/qlsx/QLSX";
 import BOM_MANAGER from "./pages/rnd/bom_manager/BOM_MANAGER";
 import BOM_AMAZON from "./pages/rnd/bom_amazon/BOM_AMAZON";
+import "./App.scss";
+import QLSXPLAN from "./pages/qlsx/QLSXPLAN/QLSXPLAN";
 interface userDataInterface {
   EMPL_IMAGE?: string
   ADD_COMMUNE: string;
@@ -104,11 +104,13 @@ const ProtectedRoute: any = ({
     if (
       maindeptname === "all" ||
       user.EMPL_NO === "NHU1903" ||
+      user.EMPL_NO === "NVH1011" ||
       user.JOB_NAME === "ADMIN"
     ) {
       if (
         jobname === "all" ||
         user.EMPL_NO === "NHU1903" ||
+        user.EMPL_NO === "NVH1011" ||
         user.JOB_NAME === "ADMIN"
       ) {
         return children;
@@ -139,6 +141,7 @@ const ProtectedRoute: any = ({
         if (
           jobname === "all" ||
           user.EMPL_NO === "NHU1903" ||
+          user.EMPL_NO === "NVH1011" ||
           user.JOB_NAME === "ADMIN"
         ) {
           return children;
@@ -279,6 +282,7 @@ function App() {
       });
     return () => {};
   }, []);
+  //console.log(userData);
   if (loginState === true) {
     return (
       <div className='App'>
@@ -344,6 +348,7 @@ function App() {
                   >
                     <Route index element={<KinhDoanhReport />} />
                     <Route path='quanlycodebom' element={<BOM_MANAGER />} />
+                    <Route path='ycsxmanager' element={<YCSXManager />} />
                     <Route path='thembomamazon' element={<BOM_AMAZON />} />
                     <Route path='designamazon' element={<CODE_MANAGER />} />
                   </Route>
@@ -362,7 +367,7 @@ function App() {
                     <Route index element={<QLSX />} />
                     <Route path='ycsxmanager' element={<YCSXManager />} />
                     <Route path='codeinfo' element={<CODE_MANAGER />} />
-                    <Route path='designamazon' element={<CODE_MANAGER />} />
+                    <Route path='qlsxplan' element={<QLSXPLAN />} />
                   </Route>
                   <Route
                     path='qc'

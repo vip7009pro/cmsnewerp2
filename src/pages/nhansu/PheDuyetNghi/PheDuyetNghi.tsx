@@ -75,8 +75,8 @@ const PheDuyetNghi = () => {
         { field: "id", headerName: "ID", width: 100, valueGetter: (params: any) => {return params.row.OFF_ID} }, 
         { field: "PHE_DUYET", headerName: "PHE_DUYET", width: 200, 
             renderCell: (params:any) => {                 
-                const onClick = (pheduyet_value: number) => {                
-                    //Swal.fire("Thông báo", "Gia tri = " + params.row.EMPL_NO, "success");  
+                const onClick = (pheduyet_value: number) => { 
+
                     if(pheduyet_value === 3)
                     {
                       Swal.fire({
@@ -125,7 +125,7 @@ const PheDuyetNghi = () => {
                       })
 
                     }
-                    else
+                    else if(pheduyet_value === 0)
                     {
                       generalQuery("setpheduyetnhom", {                      
                         off_id: params.row.OFF_ID,
@@ -153,11 +153,48 @@ const PheDuyetNghi = () => {
                         })
                         .catch((error) => {
                           console.log(error);
-                        }); 
-                    }
-                  
+                        });                       
 
-                   
+                    }
+                    else
+                    {
+                      if((params.row.ON_OFF === 0 || params.row.ON_OFF === null || params.row.REASON_NAME==='Nửa phép') && pheduyet_value === 1)
+                      {
+                        generalQuery("setpheduyetnhom", {                      
+                          off_id: params.row.OFF_ID,
+                          pheduyetvalue: pheduyet_value                    
+                        })
+                          .then((response) => {
+                            console.log(response.data.tk_status);
+                            if (response.data.tk_status === "OK") {
+                              const newProjects = diemdanhnhomtable.map((p) =>
+                                p.OFF_ID === params.row.OFF_ID
+                                  ? {
+                                      ...p,
+                                      APPROVAL_STATUS: pheduyet_value                                  
+                                    }
+                                  : p
+                              );
+                              setDiemDanhNhomTable(newProjects);
+                            } else {
+                              Swal.fire(
+                                "Có lỗi",
+                                "Nội dung: " + response.data.message,
+                                "error"
+                              );
+                            }
+                          })
+                          .catch((error) => {
+                            console.log(error);
+                          }); 
+                      }
+                      else
+                      {
+                        Swal.fire('Thông báo', "Đã điểm danh đi làm, không phê duyệt nghỉ được");
+                      }
+                     
+                    }
+                                    
                 } 
 
                 const onReset =() => {

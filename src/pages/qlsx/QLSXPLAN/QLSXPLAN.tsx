@@ -1,12 +1,13 @@
 
 import  { useEffect, useState} from 'react'
 import KHOLIEU from '../../kho/kholieu/KHOLIEU';
-import KQDTC from '../dtc/KQDTC';
-import "./IQC.scss"
+import MACHINE from './Machine/MACHINE';
+import MACHINE2 from './Machine/MACHINE2';
+import "./QLSXPLAN.scss"
 
 
 
-const IQC = () => {
+const QLSXPLAN = () => {
   const [selection, setSelection] = useState<any>({
     tab1: true,
     tab2: false,
@@ -33,31 +34,31 @@ const IQC = () => {
   },[]);
 
   return (
-    <div className='iqc'>
+    <div className='qlsxplan'>
       <div className='mininavbar'>
         <div className='mininavitem'  onClick={() => setNav(1)}>
           <span className='mininavtext'>
-            Kho Liệu
+            PLAN VISUAL
           </span>
         </div>   
         <div className='mininavitem'  onClick={() => setNav(2)}>
           <span className='mininavtext'>
-            Data KT DTC
+            PLAN TABLE
           </span>
         </div>  
           
       </div>     
       {selection.tab1 && (
         <div className='traiqc'>
-          <KHOLIEU/>                     
+          <MACHINE/>                  
         </div>
       )}
       {selection.tab2 && (
         <div className='datadtc'>
-          <KQDTC/>                     
+            <MACHINE2/>                           
         </div>
       )}
     </div>
   );
 }
-export default IQC
+export default QLSXPLAN

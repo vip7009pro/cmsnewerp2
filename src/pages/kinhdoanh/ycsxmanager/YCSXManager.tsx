@@ -171,6 +171,7 @@ const YCSXManager = () => {
   const [id_congviec, setID_CongViec] = useState('');
   const [cavityAmazon, setCavityAmazon] = useState(0);
   const [prod_model, setProd_Model] = useState('');
+  
   const column_ycsxtable = [   
     { field: "G_CODE", headerName: "G_CODE", width: 80 },
     { field: "G_NAME", headerName: "G_NAME", width: 250, renderCell: (params:any) => {
@@ -224,7 +225,7 @@ const YCSXManager = () => {
       else
       return <span style={{color:'red'}}><b>Không Duyệt</b></span>
     }},
-    { field: "G_NAME", headerName: "G_NAME", width: 250, renderCell: (params:any) => {
+    { field: "", headerName: "G_NAME", width: 250, renderCell: (params:any) => {
       if(params.row.PDBV==='P' || params.row.PDBV===null)
       return <span style={{color:'red'}}>{params.row.G_NAME}</span>
       return <span style={{color:'green'}}>{params.row.G_NAME}</span>
@@ -387,6 +388,7 @@ const YCSXManager = () => {
           if(ycsxdatatablefilter.length>0)
           {
             setSelection({ ...selection, renderycsx: (ycsxdatatablefilter.length>0) }); 
+            console.log(ycsxdatatablefilter);
             setYCSXListRender(renderYCSX(ycsxdatatablefilter));
           }
           else{
@@ -438,6 +440,13 @@ const YCSXManager = () => {
       Swal.fire("Thông báo","Chọn ít nhất 1 YCSX để qua Amazon",'error');
     }
   }
+  const handleSearchCodeKeyDown = (
+    e: React.KeyboardEvent<HTMLInputElement>
+  ) => {
+    if (e.key === "Enter") {
+      handletraYCSX();
+    }
+  };
 
   const monthArray = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L" ];
   const dayArray = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V"];
@@ -780,7 +789,7 @@ const readUploadFileAmazon = (e:any) => {
         //console.log(response.data.data);
         if(response.data.tk_status !=='NG')
         {
-          console.log(response.data.data);   
+          //console.log(response.data.data);   
           const loadeddata: YCSXTableData[] =  response.data.data.map((element:YCSXTableData,index: number)=> {
             return {
               ...element, 
@@ -1032,7 +1041,7 @@ const readUploadFileAmazon = (e:any) => {
                       W8: fcst_tdycsx.W8,
                       BTP_TDYCSX: tonkho_tdycsx.BTP,
                       CK_TDYCSX: tonkho_tdycsx.TONG_TON_KIEM,
-                      PDUYET: pobalance_tdycsx.PO_BALANCE >0? 1:0,
+                      PDUYET: (pobalance_tdycsx.PO_BALANCE >0 || loaisx ==='04')? 1:0,
                       BLOCK_TDYCSX: tonkho_tdycsx.BLOCK_QTY,
                     })
                     .then((response) => {
@@ -1391,7 +1400,7 @@ const readUploadFileAmazon = (e:any) => {
               W8: fcst_tdycsx.W8,
               BTP_TDYCSX: tonkho_tdycsx.BTP,
               CK_TDYCSX: tonkho_tdycsx.TONG_TON_KIEM,
-              PDUYET: pobalance_tdycsx.PO_BALANCE >0? 1:0,
+              PDUYET: (pobalance_tdycsx.PO_BALANCE >0 || loaisx ==='04')? 1:0,
               BLOCK_TDYCSX: tonkho_tdycsx.BLOCK_QTY,
             })
             .then((response) => {
@@ -2261,6 +2270,7 @@ const readUploadFileAmazon = (e:any) => {
                 <label>
                   <b>Từ ngày:</b>
                   <input
+                    onKeyDown={(e)=> {handleSearchCodeKeyDown(e);}}
                     type='date'
                     value={fromdate.slice(0, 10)}
                     onChange={(e) => setFromDate(e.target.value)}
@@ -2269,6 +2279,7 @@ const readUploadFileAmazon = (e:any) => {
                 <label>
                   <b>Tới ngày:</b>{" "}
                   <input
+                    onKeyDown={(e)=> {handleSearchCodeKeyDown(e);}}
                     type='date'
                     value={todate.slice(0, 10)}
                     onChange={(e) => setToDate(e.target.value)}
@@ -2279,6 +2290,7 @@ const readUploadFileAmazon = (e:any) => {
                 <label>
                   <b>Code KD:</b>{" "}
                   <input
+                  onKeyDown={(e)=> {handleSearchCodeKeyDown(e);}}
                     type='text'
                     placeholder='GH63-xxxxxx'
                     value={codeKD}
@@ -2288,6 +2300,7 @@ const readUploadFileAmazon = (e:any) => {
                 <label>
                   <b>Code CMS:</b>{" "}
                   <input
+                  onKeyDown={(e)=> {handleSearchCodeKeyDown(e);}}
                     type='text'
                     placeholder='7C123xxx'
                     value={codeCMS}
@@ -2299,6 +2312,7 @@ const readUploadFileAmazon = (e:any) => {
                 <label>
                   <b>Tên nhân viên:</b>{" "}
                   <input
+                  onKeyDown={(e)=> {handleSearchCodeKeyDown(e);}}
                     type='text'
                     placeholder='Trang'
                     value={empl_name}
@@ -2308,6 +2322,7 @@ const readUploadFileAmazon = (e:any) => {
                 <label>
                   <b>Khách:</b>{" "}
                   <input
+                  onKeyDown={(e)=> {handleSearchCodeKeyDown(e);}}
                     type='text'
                     placeholder='SEVT'
                     value={cust_name}
@@ -2319,6 +2334,7 @@ const readUploadFileAmazon = (e:any) => {
                 <label>
                   <b>Loại sản phẩm:</b>{" "}
                   <input
+                  onKeyDown={(e)=> {handleSearchCodeKeyDown(e);}}
                     type='text'
                     placeholder='TSP'
                     value={prod_type}
@@ -2328,6 +2344,7 @@ const readUploadFileAmazon = (e:any) => {
                 <label>
                   <b>Số YCSX:</b>{" "}
                   <input
+                  onKeyDown={(e)=> {handleSearchCodeKeyDown(e);}}
                     type='text'
                     placeholder='12345'
                     value={prodrequestno}
@@ -2338,7 +2355,7 @@ const readUploadFileAmazon = (e:any) => {
               <div className='forminputcolumn'>
                 <label>
                   <b>Phân loại:</b>
-                  <select
+                  <select                  
                     name='phanloai'
                     value={phanloai}
                     onChange={(e) => {
@@ -2356,6 +2373,7 @@ const readUploadFileAmazon = (e:any) => {
                 <label>
                   <b>Vật liệu:</b>{" "}
                   <input
+                  onKeyDown={(e)=> {handleSearchCodeKeyDown(e);}}
                     type='text'
                     placeholder='SJ-203020HC'
                     value={material}
@@ -2367,6 +2385,7 @@ const readUploadFileAmazon = (e:any) => {
                 <label>
                   <b>YCSX Pending:</b>
                   <input
+                  onKeyDown={(e)=> {handleSearchCodeKeyDown(e);}}
                     type='checkbox'
                     name='alltimecheckbox'
                     defaultChecked={ycsxpendingcheck}
@@ -2376,6 +2395,7 @@ const readUploadFileAmazon = (e:any) => {
                 <label>
                   <b>Vào kiểm:</b>
                   <input
+                  onKeyDown={(e)=> {handleSearchCodeKeyDown(e);}}
                     type='checkbox'
                     name='alltimecheckbox'
                     defaultChecked={inspectInputcheck}

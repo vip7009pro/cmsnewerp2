@@ -201,6 +201,16 @@ const FCSTManager = () => {
     }
   },
   ]
+
+  const handleSearchCodeKeyDown = (
+    e: React.KeyboardEvent<HTMLInputElement>
+  ) => {
+    if (e.key === "Enter") {
+      handletraFcst();
+    }
+  };
+  
+
   function CustomToolbar() {
     return (
       <GridToolbarContainer>
@@ -680,7 +690,7 @@ const FCSTManager = () => {
             <form className='formupload'>
               <label htmlFor='upload'>
                 <b>Chọn file Excel: </b>
-                <input
+                <input onKeyDown={(e)=> {handleSearchCodeKeyDown(e);}}  
                   className='selectfilebutton'
                   type='file'
                   name='upload'
@@ -737,7 +747,7 @@ const FCSTManager = () => {
               <div className='forminputcolumn'>
                 <label>
                   <b>Từ ngày:</b>
-                  <input
+                  <input onKeyDown={(e)=> {handleSearchCodeKeyDown(e);}}  
                     type='date'
                     value={fromdate.slice(0, 10)}
                     onChange={(e) => setFromDate(e.target.value)}
@@ -745,7 +755,7 @@ const FCSTManager = () => {
                 </label>
                 <label>
                   <b>Tới ngày:</b>{" "}
-                  <input
+                  <input onKeyDown={(e)=> {handleSearchCodeKeyDown(e);}}  
                     type='date'
                     value={todate.slice(0, 10)}
                     onChange={(e) => setToDate(e.target.value)}
@@ -755,7 +765,7 @@ const FCSTManager = () => {
               <div className='forminputcolumn'>
                 <label>
                   <b>Code KD:</b>{" "}
-                  <input
+                  <input onKeyDown={(e)=> {handleSearchCodeKeyDown(e);}}  
                     type='text'
                     placeholder='GH63-xxxxxx'
                     value={codeKD}
@@ -764,7 +774,7 @@ const FCSTManager = () => {
                 </label>
                 <label>
                   <b>Code CMS:</b>{" "}
-                  <input
+                  <input onKeyDown={(e)=> {handleSearchCodeKeyDown(e);}}  
                     type='text'
                     placeholder='7C123xxx'
                     value={codeCMS}
@@ -775,7 +785,7 @@ const FCSTManager = () => {
               <div className='forminputcolumn'>
                 <label>
                   <b>Tên nhân viên:</b>{" "}
-                  <input
+                  <input onKeyDown={(e)=> {handleSearchCodeKeyDown(e);}}  
                     type='text'
                     placeholder='Trang'
                     value={empl_name}
@@ -784,7 +794,7 @@ const FCSTManager = () => {
                 </label>
                 <label>
                   <b>Khách:</b>{" "}
-                  <input
+                  <input onKeyDown={(e)=> {handleSearchCodeKeyDown(e);}}  
                     type='text'
                     placeholder='SEVT'
                     value={cust_name}
@@ -795,7 +805,7 @@ const FCSTManager = () => {
               <div className='forminputcolumn'>
                 <label>
                   <b>Loại sản phẩm:</b>{" "}
-                  <input
+                  <input onKeyDown={(e)=> {handleSearchCodeKeyDown(e);}}  
                     type='text'
                     placeholder='TSP'
                     value={prod_type}
@@ -804,7 +814,7 @@ const FCSTManager = () => {
                 </label>
                 <label>
                   <b>ID:</b>{" "}
-                  <input
+                  <input onKeyDown={(e)=> {handleSearchCodeKeyDown(e);}}  
                     type='text'
                     placeholder='12345'
                     value={id}
@@ -815,7 +825,7 @@ const FCSTManager = () => {
               <div className='forminputcolumn'>
                 <label>
                   <b>PO NO:</b>{" "}
-                  <input
+                  <input onKeyDown={(e)=> {handleSearchCodeKeyDown(e);}}  
                     type='text'
                     placeholder='123abc'
                     value={po_no}
@@ -824,7 +834,7 @@ const FCSTManager = () => {
                 </label>
                 <label>
                   <b>Vật liệu:</b>{" "}
-                  <input
+                  <input onKeyDown={(e)=> {handleSearchCodeKeyDown(e);}}  
                     type='text'
                     placeholder='SJ-203020HC'
                     value={material}
@@ -835,7 +845,7 @@ const FCSTManager = () => {
               <div className='forminputcolumn'>
                 <label>
                   <b>Over/OK:</b>{" "}
-                  <input
+                  <input onKeyDown={(e)=> {handleSearchCodeKeyDown(e);}}  
                     type='text'
                     placeholder='OVER'
                     value={over}
@@ -844,7 +854,7 @@ const FCSTManager = () => {
                 </label>
                 <label>
                   <b>Invoice No:</b>{" "}
-                  <input
+                  <input onKeyDown={(e)=> {handleSearchCodeKeyDown(e);}}  
                     type='text'
                     placeholder='số invoice'
                     value={invoice_no}
@@ -856,7 +866,7 @@ const FCSTManager = () => {
             <div className='formbutton'>
               <label>
                 <b>All Time:</b>
-                <input
+                <input onKeyDown={(e)=> {handleSearchCodeKeyDown(e);}}  
                   type='checkbox'
                   name='alltimecheckbox'
                   defaultChecked={alltime}

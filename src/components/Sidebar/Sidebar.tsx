@@ -13,7 +13,7 @@ import { MdBugReport, MdDesignServices, MdInput, MdOutlineAppRegistration, MdOut
 import { WiDayLightning } from "react-icons/wi";
 import getsentence from "../../components/String/String";
 import { LangConText } from "../../api/Context";
-import { AiFillAmazonCircle, AiFillAmazonSquare } from "react-icons/ai";
+import { AiFillAmazonCircle, AiFillAmazonSquare, AiOutlineCalendar } from "react-icons/ai";
 import RuleRoundedIcon from '@mui/icons-material/RuleRounded';
 const Sidebar = () => {
   const [sidebar, setSidebar] = useState(false);
@@ -189,6 +189,12 @@ const Sidebar = () => {
           cName: 'sub-nav'
         },
         {
+          title: 'Quản lý YCSX',
+          path: 'rnd/ycsxmanager',
+          icon: <FcSettings color='#cc99ff' size={25}/>,
+          cName: 'sub-nav'
+        },
+        {
           title: 'Thiết kế DESIGN AMAZON',
           path: '/rnd/designamazon',
           icon: <AiFillAmazonCircle color='blue' size={25}/>
@@ -216,13 +222,19 @@ const Sidebar = () => {
         },
         {
           title: 'Quản lý PLAN',
-          path: 'qlsx/planmanager',
+          path: 'qlsx/qlsxplan',
           icon: <FaPaperPlane color='#ff33cc' size={25}/>
         }        ,
         {
           title: 'Quản lý CAPA',
           path: 'qlsx/capamanager',
           icon: <FcCapacitor color='blue' size={25}/>
+        }
+               ,
+        {
+          title: 'Quản lý MRP',
+          path: 'qlsx/qlsxmrp',
+          icon: <AiOutlineCalendar color='blue' size={25}/>
         }
       ]
     },   

@@ -118,6 +118,7 @@ const QuanLyPhongBanNhanSu = () => {
     const [workpositionnamekr,setWorkPositionNameKR] = useState("");
     const [att_group_code,setATT_GROUP_CODE] = useState(1);
     const [avatar, setAvatar] = useState('');
+    const [enableEdit, setEnableEdit]= useState(false);
 
     const handle_them_maindept = ()=> {   
         const insertData = {
@@ -1013,6 +1014,7 @@ const QuanLyPhongBanNhanSu = () => {
                     <label>
                       Mã ERP:{" "}
                       <input
+                        disabled ={enableEdit}
                         type='text'
                         value={EMPL_NO}
                         onChange={(e) => setEMPL_NO(e.target.value)}
@@ -1021,6 +1023,7 @@ const QuanLyPhongBanNhanSu = () => {
                     <label>
                       Mã CMS:{" "}
                       <input
+                      disabled ={enableEdit}
                         type='text'
                         value={CMS_ID}
                         onChange={(e) => setCMS_ID(e.target.value)}
@@ -1029,6 +1032,7 @@ const QuanLyPhongBanNhanSu = () => {
                     <label>
                       Tên:{" "}
                       <input
+                        disabled ={enableEdit}
                         type='text'
                         value={FIRST_NAME}
                         onChange={(e) => setFIRST_NAME(e.target.value)}
@@ -1037,6 +1041,7 @@ const QuanLyPhongBanNhanSu = () => {
                     <label>
                       Họ và Đệm:{" "}
                       <input
+                        disabled ={enableEdit}
                         type='text'
                         value={MIDLAST_NAME}
                         onChange={(e) => setMIDLAST_NAME(e.target.value)}
@@ -1226,7 +1231,7 @@ const QuanLyPhongBanNhanSu = () => {
                   Thêm
                 </button>
                 <button className='suabutton' onClick={handle_sua_employee}>
-                  Sửa
+                  Update
                 </button>
                 <button className='xoabutton' onClick={handle_xoa_employee}>
                   Clear

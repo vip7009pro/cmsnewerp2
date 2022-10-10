@@ -16,7 +16,10 @@ import { generalQuery } from "../../../api/Api";
 import "./BaoCaoNhanSu.scss";
 import Swal from "sweetalert2";
 import LinearProgress from "@mui/material/LinearProgress";
-import { CustomResponsiveContainer, SaveExcel } from "../../../api/GlobalFunction";
+import {
+  CustomResponsiveContainer,
+  SaveExcel,
+} from "../../../api/GlobalFunction";
 import moment from "moment";
 import { elementAcceptingRef } from "@mui/utils";
 import {
@@ -38,7 +41,7 @@ import {
   /*   ResponsiveContainer, */
 } from "recharts";
 import { Grid } from "@mui/material";
-
+import ChartDiemDanhMAINDEPT from "../../../components/Chart/ChartDiemDanhMAINDEPT";
 interface DiemDanhNhomData {
   id: string;
   MAINDEPTNAME: string;
@@ -56,14 +59,12 @@ interface DiemDanhNhomData {
   CDD_NM1: number;
   CDD_NM2: number;
 }
-
 interface MainDeptData {
   id: number;
   MAINDEPTCODE: number;
   MAINDEPTNAME: string;
   MAINDEPTNAME_KR: string;
 }
-
 interface DiemDanhHistoryData {
   id: string;
   APPLY_DATE: string;
@@ -73,7 +74,6 @@ interface DiemDanhHistoryData {
   TOTAL_OFF: number;
   ON_RATE: number;
 }
-
 interface DiemDanhFullData {
   id: string;
   EMPL_NO: string;
@@ -101,16 +101,22 @@ interface DiemDanhFullData {
   REMARK: string;
   XACNHAN: string;
 }
-
-
+interface DIEMDANHMAINDEPT {
+  id: number, 
+  MAINDEPTNAME: string, 
+  COUNT_TOTAL: number,
+  COUT_ON: number,
+  COUT_OFF: number, 
+  COUNT_CDD: number,
+  ON_RATE: number
+}
 const BaoCaoNhanSu = () => {
   const [isLoading, setisLoading] = useState(false);
+  const [ddmaindepttb, setddmaindepttb] = useState<Array<DIEMDANHMAINDEPT>>([]);
   const [diemdanhnhomtable, setDiemDanhNhomTable] = useState<
     Array<DiemDanhNhomData>
   >([]);
-  const [piechartdata, setPieChartData] = useState<
-    Array<DiemDanhNhomData>
-  >([]);
+  const [piechartdata, setPieChartData] = useState<Array<DiemDanhNhomData>>([]);
   const [fromdate, setFromDate] = useState(
     moment().add(-8, "day").format("YYYY-MM-DD")
   );
@@ -119,15 +125,72 @@ const BaoCaoNhanSu = () => {
   const [nhamay, setNhaMay] = useState(0);
   const [maindeptcode, setmaindeptcode] = useState(0);
   const [maindepttable, setMainDeptTable] = useState<Array<MainDeptData>>([]);
-
   const [diemdanh_historyTable, setDiemDanh_HistoryTable] = useState<
     Array<DiemDanhHistoryData>
   >([]);
-
   const [diemdanhFullTable, setDiemDanhFullTable] = useState<
     Array<DiemDanhFullData>
   >([]);
-
+  const column_ddmaindepttb= [
+    { field: "MAINDEPTNAME", headerName: "BP Chính", width: 120, renderCell: (params: any) => {
+      return (        
+        <div className='onoffdiv'>
+          <span style={{ fontWeight: "bold", color: "black" }}>
+            {params.row.MAINDEPTNAME}
+          </span>
+        </div>
+      );
+    }},
+    { field: "COUNT_TOTAL", headerName: "Tổng", width: 120, renderCell: (params: any) => {
+      return (        
+        <div className='onoffdiv'>
+          <span style={{ fontWeight: "bold", color: "black" }}>
+            {params.row.COUNT_TOTAL}
+          </span>
+        </div>
+      );
+    }},
+    { field: "COUT_ON", headerName: "Đi làm", width: 120, renderCell: (params: any) => {
+      return (        
+        <div className='onoffdiv'>
+          <span style={{ fontWeight: "bold", color: "black" }}>
+            {params.row.COUT_ON}
+          </span>
+        </div>
+      );
+    }},
+    { field: "COUT_OFF", headerName: "Nghỉ làm", width: 120, renderCell: (params: any) => {
+      return (        
+        <div className='onoffdiv'>
+          <span style={{ fontWeight: "bold", color: "black" }}>
+            {params.row.COUT_OFF}
+          </span>
+        </div>
+      );
+    }},
+    { field: "COUNT_CDD", headerName: "Chưa điểm danh", width: 120, renderCell: (params: any) => {
+      return (        
+        <div className='onoffdiv'>
+          <span style={{ fontWeight: "bold", color: "black" }}>
+            {params.row.COUNT_CDD}
+          </span>
+        </div>
+      );
+    }},     
+    { field: "ON_RATE", headerName: "Tỉ lệ đi làm", width: 120, renderCell: (params: any) => {
+      return (
+        <div className='onoffdiv'>
+          <span style={{ fontWeight: "bold", color: "black" }}>
+            {
+              params.row.ON_RATE.toLocaleString("en-US", {
+              style: "decimal",
+              maximumFractionDigits: 2,})} %          
+            
+          </span>
+        </div>)
+    }},
+       
+  ];
   const columns_diemdanhnhom = [
     {
       field: "MAINDEPTNAME",
@@ -212,7 +275,7 @@ const BaoCaoNhanSu = () => {
           </div>
         );
       },
-    },    
+    },
     {
       field: "ON_RATE",
       headerName: "TL ĐI LÀM",
@@ -221,14 +284,20 @@ const BaoCaoNhanSu = () => {
         return (
           <div className='onoffdiv'>
             <span style={{ fontWeight: "bold", color: "black" }}>
-              {(params.row.TOTAL_ON/params.row.TOTAL_ALL*100).toLocaleString('en-US' ,{style:'decimal',maximumFractionDigits:2})}%
+              {(
+                (params.row.TOTAL_ON / params.row.TOTAL_ALL) *
+                100
+              ).toLocaleString("en-US", {
+                style: "decimal",
+                maximumFractionDigits: 2,
+              })}
+              %
             </span>
           </div>
         );
       },
-    },    
+    },
   ];
-
   const columns_diemdanhfull = [
     {
       field: "APPLY_DATE",
@@ -295,7 +364,6 @@ const BaoCaoNhanSu = () => {
     { field: "MIDLAST_NAME", headerName: "MIDLAST_NAME", width: 170 },
     { field: "FIRST_NAME", headerName: "FIRST_NAME", width: 120 },
     { field: "CA_NGHI", headerName: "CA_NGHI", width: 100 },
-
     { field: "OVERTIME_INFO", headerName: "OVERTIME_INFO", width: 120 },
     { field: "OVERTIME", headerName: "OVERTIME", width: 100 },
     { field: "REASON_NAME", headerName: "REASON_NAME", width: 120 },
@@ -324,10 +392,8 @@ const BaoCaoNhanSu = () => {
           : "";
       },
     },
-
     { field: "OFF_ID", headerName: "OFF_ID", width: 120 },
   ];
-
   function CustomToolbar3() {
     return (
       <GridToolbarContainer>
@@ -360,7 +426,6 @@ const BaoCaoNhanSu = () => {
     var OFF_NM2: number = 0;
     var CDD_NM1: number = 0;
     var CDD_NM2: number = 0;
-
     for (var i = 0; i < tabledata.length; i++) {
       var obj = tabledata[i];
       TOTAL_ALL += obj.TOTAL_ALL;
@@ -393,11 +458,10 @@ const BaoCaoNhanSu = () => {
       CDD_NM1: CDD_NM1,
       CDD_NM2: CDD_NM2,
     };
-
     tabledata.push(grandTotalOBJ);
     return tabledata;
   };
-
+  
   const handleSearch2 = () => {
     setisLoading(true);
     generalQuery("getmaindeptlist", { from_date: fromdate })
@@ -410,7 +474,6 @@ const BaoCaoNhanSu = () => {
       .catch((error) => {
         console.log(error);
       });
-
     generalQuery("diemdanhsummarynhom", { todate: todate })
       .then((response) => {
         //console.log(response.data.data);
@@ -425,7 +488,6 @@ const BaoCaoNhanSu = () => {
       .catch((error) => {
         console.log(error);
       });
-
     generalQuery("diemdanhhistorynhom", {
       start_date: fromdate,
       end_date: todate,
@@ -448,7 +510,6 @@ const BaoCaoNhanSu = () => {
       .catch((error) => {
         console.log(error);
       });
-
     generalQuery("diemdanhfull", { from_date: fromdate, to_date: todate })
       .then((response) => {
         //console.log(response.data.data);
@@ -467,25 +528,82 @@ const BaoCaoNhanSu = () => {
       .catch((error) => {
         console.log(error);
       });
-  };
+    generalQuery("getddmaindepttb", {})
+      .then((response) => {
+        //console.log(response.data.data);
+        if (response.data.tk_status !== "NG") {
+          let temp_total: DIEMDANHMAINDEPT = {
+            id: 1111,
+            MAINDEPTNAME: 'TOTAL',
+            COUNT_TOTAL:0,
+            COUT_ON:0,
+            COUT_OFF:0,
+            COUNT_CDD:0,
+            ON_RATE:0,            
+          };
 
+          let loadeddata = response.data.data.map((element: DIEMDANHMAINDEPT, index: number)=> {
+            temp_total = {
+              ...temp_total,              
+              COUNT_TOTAL: temp_total.COUNT_TOTAL + element.COUNT_TOTAL,
+              COUT_ON:temp_total.COUT_ON + element.COUT_ON,
+              COUT_OFF:temp_total.COUT_OFF + element.COUT_OFF,
+              COUNT_CDD:temp_total.COUNT_CDD + element.COUNT_CDD
+            };
+
+            return {
+              ...element, 
+              id: index
+            }
+          })
+          temp_total = {
+            ...temp_total,
+            ON_RATE: temp_total.COUT_ON/temp_total.COUNT_TOTAL*100
+          }
+          loadeddata = [...loadeddata,temp_total];
+          //console.log(loadeddata);
+          setddmaindepttb(loadeddata);
+          setisLoading(false);          
+        } else {
+          Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
   const handleSearch = () => {
-    handleSearch2();  
+    handleSearch2();
   };
-
-  const COLORS = ['#ff8c66','#ffb366','#ffd966','#ffff66','#d9ff66','#b3ff66','#8cff66','#66ff66','#66ff8c','#66ffb3','#66ffd9','#66ffff','#66d9ff','#66b3ff','#668cff','#6666ff','#8c66ff','#b366ff','#d966ff','#ff66ff','#ff66d9','#ff66b3','#ff668c','#ff6666'];
-  
-  const labelFormatter = (value: number) => {
-    return ( new Intl.NumberFormat("en", {
-      notation: "compact",
-      compactDisplay: "short",
-    }).format(value));
-  };
-  
-  useEffect(() => {
-   handleSearch2();
+  const COLORS = [
+    "#ff8c66",
+    "#ffb366",
+    "#ffd966",
+    "#ffff66",
+    "#d9ff66",
+    "#b3ff66",
+    "#8cff66",
+    "#66ff66",
+    "#66ff8c",
+    "#66ffb3",
+    "#66ffd9",
+    "#66ffff",
+    "#66d9ff",
+    "#66b3ff",
+    "#668cff",
+    "#6666ff",
+    "#8c66ff",
+    "#b366ff",
+    "#d966ff",
+    "#ff66ff",
+    "#ff66d9",
+    "#ff66b3",
+    "#ff668c",
+    "#ff6666",
+  ];
+  useEffect(() => {   
+    handleSearch2();
   }, []);
-
   return (
     <div className='baocaonhansu'>
       <div className='baocao1'>
@@ -555,7 +673,6 @@ const BaoCaoNhanSu = () => {
               onChange={(e) => setToDate(e.target.value)}
             ></input>
           </label>
-
           <button
             className='searchbutton'
             onClick={() => {
@@ -585,7 +702,7 @@ const BaoCaoNhanSu = () => {
                 <Label value='Ngày tháng' offset={0} position='insideBottom' />
               </XAxis>
               <YAxis
-               yAxisId='left-axis'
+                yAxisId='left-axis'
                 label={{
                   value: "Số lượng đi làm",
                   angle: -90,
@@ -593,7 +710,7 @@ const BaoCaoNhanSu = () => {
                 }}
               />
               <YAxis
-                orientation="right"
+                orientation='right'
                 yAxisId='right-axis'
                 label={{
                   value: "Tỉ lệ đi làm",
@@ -603,10 +720,20 @@ const BaoCaoNhanSu = () => {
               />
               <Tooltip />
               <Legend />
-              <Bar yAxisId='left-axis' dataKey='TOTAL_ON' stackId='a' fill='#8884d8'>
+              <Bar
+                yAxisId='left-axis'
+                dataKey='TOTAL_ON'
+                stackId='a'
+                fill='#8884d8'
+              >
                 <LabelList dataKey='TOTAL_ON' position='inside' />
               </Bar>
-              <Bar yAxisId='left-axis' dataKey='TOTAL_OFF' stackId='a' fill='#82ca9d'>
+              <Bar
+                yAxisId='left-axis'
+                dataKey='TOTAL_OFF'
+                stackId='a'
+                fill='#82ca9d'
+              >
                 <LabelList dataKey='TOTAL_OFF' position='inside' />
               </Bar>
               <Line
@@ -614,13 +741,34 @@ const BaoCaoNhanSu = () => {
                 type='monotone'
                 dataKey='ON_RATE'
                 stroke='#FF0000'
-                activeDot={{ r: 8 }}               
+                activeDot={{ r: 8 }}
               ></Line>
             </ComposedChart>
-            </CustomResponsiveContainer>
+          </CustomResponsiveContainer>
         </div>
-
-        <h3>Nhân lực điểm danh trong ngày theo bộ phận</h3>
+        <h3>Nhân lực điểm danh trong ngày theo bộ phận chính</h3>
+        <div className='maindept_tableOK'>
+          <div className='tiledilamtable'>
+            <DataGrid
+              components={{
+                LoadingOverlay: LinearProgress,
+              }}
+              style={{ padding: "20px" }}
+              loading={isLoading}
+              rows={ddmaindepttb}
+              rowHeight={30}
+              columns={column_ddmaindepttb}             
+              hideFooterPagination
+              hideFooter
+            />
+          </div>
+          <div className='titrongphongbangraph'>
+            <CustomResponsiveContainer>
+             <ChartDiemDanhMAINDEPT/>
+            </CustomResponsiveContainer>
+          </div>
+        </div>
+        <h3>Nhân lực điểm danh trong ngày theo bộ phận phụ</h3>
         <div className='maindept_table'>
           <div className='tiledilamtable'>
             <DataGrid
@@ -637,39 +785,37 @@ const BaoCaoNhanSu = () => {
             />
           </div>
           <div className='titrongphongbangraph'>
-           
-              <CustomResponsiveContainer>
-                <PieChart width={500} height={500}>
-                  <Legend/>
-                  <Tooltip/>
-                  {piechartdata && (
-                    <Pie
-                      data={piechartdata.slice(0, piechartdata.length - 1)}
-                      isAnimationActive={false}
-                      cx='50%'
-                      cy='50%'
-                      outerRadius={80}
-                      fill='#80bfff'
-                      dataKey='TOTAL_ALL'
-                      nameKey='SUBDEPTNAME'
-                      paddingAngle={5}
-                      label
-                      labelLine={true}                      
-                    >
-                      {piechartdata.map((entry, index) => (
-                        <Cell
-                          key={`cell-${index}`}
-                          fill={COLORS[index % COLORS.length]}
-                        />
-                      ))}
-                    </Pie>
-                  )}
-                </PieChart>
-                </CustomResponsiveContainer>           
+            <CustomResponsiveContainer>
+              <PieChart width={500} height={500}>
+                <Legend />
+                <Tooltip />
+                {piechartdata && (
+                  <Pie
+                    data={piechartdata.slice(0, piechartdata.length - 1)}
+                    isAnimationActive={false}
+                    cx='50%'
+                    cy='50%'
+                    outerRadius={80}
+                    fill='#80bfff'
+                    dataKey='TOTAL_ALL'
+                    nameKey='SUBDEPTNAME'
+                    paddingAngle={5}
+                    label
+                    labelLine={true}
+                  >
+                    {piechartdata.map((entry, index) => (
+                      <Cell
+                        key={`cell-${index}`}
+                        fill={COLORS[index % COLORS.length]}
+                      />
+                    ))}
+                  </Pie>
+                )}
+              </PieChart>
+            </CustomResponsiveContainer>
           </div>
         </div>
         <h3>Lịch sử đi làm full info</h3>
-
         <div className='maindept_table'>
           <DataGrid
             components={{
@@ -690,5 +836,4 @@ const BaoCaoNhanSu = () => {
     </div>
   );
 };
-
 export default BaoCaoNhanSu;
