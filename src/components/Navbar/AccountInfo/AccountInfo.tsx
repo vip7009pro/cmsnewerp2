@@ -102,10 +102,7 @@ export default function AccountInfo() {
       });
 
     generalQuery("countthuongphat", insertData)
-      .then((response) => {
-        console.log(response.data.data);
-        console.log(response.data.data.count_thuong[0].THUONG);
-        console.log(response.data.data.count_phat[0].PHAT);
+      .then((response) => {        
         setThuongPhat({
           count_thuong: response.data.data.count_thuong[0].THUONG,
           count_phat: response.data.data.count_phat[0].PHAT,

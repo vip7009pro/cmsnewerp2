@@ -143,7 +143,6 @@ const MACHINE = () => {
   const [selectedMachine, setSelectedMachine]= useState('FR1');
   const [selectedFactory, setSelectedFactory]= useState('NM1');
   const [showChiThi, setShowChiThi] = useState(true);
-
   const ycsxprintref = useRef(null);
   const handlePrint = useReactToPrint({
     content: () => ycsxprintref.current,
@@ -1475,7 +1474,7 @@ const MACHINE = () => {
                         Close
                       </button>
                     </div>
-                    <div className='ycsxrender' ref={ycsxprintref}>
+                    <div className='chithirender' ref={ycsxprintref}>
                       {ycsxlistrender}
                     </div>
                   </div>

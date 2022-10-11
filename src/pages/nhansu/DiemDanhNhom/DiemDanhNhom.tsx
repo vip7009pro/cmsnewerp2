@@ -121,7 +121,8 @@ const DiemDanhNhom = () => {
                       {
                         generalQuery("setdiemdanhnhom", {
                           diemdanhvalue: type,
-                          EMPL_NO: params.row.EMPL_NO
+                          EMPL_NO: params.row.EMPL_NO,  
+                          CURRENT_TEAM: (params.row.WORK_SHIF_NAME ==='Hành Chính' ? 0 : params.row.WORK_SHIF_NAME ==='TEAM 1' ? 1 : 2)                       
                         })
                           .then((response) => {
                             console.log(response.data);
@@ -131,7 +132,7 @@ const DiemDanhNhom = () => {
                                   ? { ...p, ON_OFF: type }
                                   : p
                               );
-                              setDiemDanhNhomTable(newProjects);
+                              setDiemDanhNhomTable(newProjects);                              
                             } else {
                               Swal.fire(
                                 "Có lỗi",
@@ -157,7 +158,8 @@ const DiemDanhNhom = () => {
                     {
                       generalQuery("setdiemdanhnhom", {
                         diemdanhvalue: type,
-                        EMPL_NO: params.row.EMPL_NO
+                        EMPL_NO: params.row.EMPL_NO,
+                        CURRENT_TEAM: (params.row.WORK_SHIF_NAME ==='Hành Chính' ? 0 : params.row.WORK_SHIF_NAME ==='TEAM 1' ? 1 : 2)
                       })
                         .then((response) => {
                           console.log(response.data);
@@ -187,7 +189,8 @@ const DiemDanhNhom = () => {
                     else if (type === 2){
                       generalQuery("setdiemdanhnhom", {
                         diemdanhvalue: 0,
-                        EMPL_NO: params.row.EMPL_NO
+                        EMPL_NO: params.row.EMPL_NO,
+                        CURRENT_TEAM: (params.row.WORK_SHIF_NAME ==='Hành Chính' ? 0 : params.row.WORK_SHIF_NAME ==='TEAM 1' ? 1 : 2)
                       })
                         .then((response) => {
                           console.log(response.data);

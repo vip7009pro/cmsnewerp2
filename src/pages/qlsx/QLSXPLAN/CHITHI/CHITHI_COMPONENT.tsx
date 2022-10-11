@@ -302,7 +302,7 @@ const CHITHI_COMPONENT = (YCSXDATA:YCSXTableData) => {
       </div>  }  
      {  <div className='tieudeycsx'>
      <img alt="logo" src="/logocmsvina.png" width={160} height={40}/>
-        <div className='title'> 생산요청서 - Yêu cầu sản xuất<br></br><span style={{fontSize:12}}>Thời điểm in YCSX: {moment().format("YYYY-MM-DD HH:mm:ss")}</span><br></br> {(request_codeinfo[0].NO_INSPECTION ==='Y') && <span style={{fontSize:18}}>(Sản phẩm không kiểm tra ngoại quan)</span>}</div>
+        <div className='title'>생산 지시서 - Chỉ thị Sản Xuất<br></br><span style={{fontSize:12}}>Thời điểm in CTSX: {moment().format("YYYY-MM-DD HH:mm:ss")}</span><br></br> {(request_codeinfo[0].NO_INSPECTION ==='Y') && <span style={{fontSize:18}}>(Sản phẩm không kiểm tra ngoại quan)</span>}</div>
         <div className='soycsx'>
           <div className='ycsxno'>{request_codeinfo[0].PROD_REQUEST_DATE}-{request_codeinfo[0].PROD_REQUEST_NO} </div>
           <div className='ycsxbarcode'>
@@ -320,7 +320,7 @@ const CHITHI_COMPONENT = (YCSXDATA:YCSXTableData) => {
           
         </div>
       </div>}
-      {request_codeinfo[0].PDUYET && <div className='thongtinycsx'>
+      <div className='thongtinycsx'>
         <div className='text1'>1. 요청 정보 Thông tin yêu cầu ({request_codeinfo[0].G_NAME} )</div>
         <div className='thongtinyeucau'>
           <table className='ttyc1'>
@@ -646,7 +646,7 @@ const CHITHI_COMPONENT = (YCSXDATA:YCSXTableData) => {
             </div>
           )}
         </div>
-      </div>}
+      </div>
     </div>
   );
 };
