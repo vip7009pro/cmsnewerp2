@@ -3,9 +3,11 @@ import { useContext, useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import { generalQuery } from "../../../../api/Api";
 import { UserContext } from "../../../../api/Context";
+import {RootState} from '../../../../redux/store'
+import {useSelector, useDispatch} from 'react-redux'
+import { changeDiemDanhState, changeUserData, UserData } from "../../../../redux/slices/globalSlice";
 
 import "./CHITHI_COMPONENT.scss";
-
 var Barcode = require("react-barcode");
 
 interface POBALANCETDYCSX{ G_CODE: string; PO_BALANCE: number }
@@ -20,7 +22,6 @@ interface TONKHOTDYCSX {
   BLOCK_QTY: number;
   GRAND_TOTAL_STOCK: number;
 }
-
 interface YCSXTableData {
     DESCR?: string,
     PDBV_EMPL?: string,
@@ -61,8 +62,7 @@ interface YCSXTableData {
     W8?: number,
     PDUYET?: number,  
     LOAIXH?: string
-  }
-
+}
 interface YCSX {
     PROD_REQUEST_NO: string,
     G_CODE: string
@@ -78,7 +78,6 @@ interface TONVL {
     HOLDING: number,
     GRAND_TOTAL: number,
 }
-
 interface FullBOM {
     PDBV?: string,
     NO_INSPECTION?: string,
@@ -121,8 +120,9 @@ interface FullBOM {
     HOLDING: number,
     TONG_TON_LIEU: number
 }
-const CHITHI_COMPONENT = (YCSXDATA:YCSXTableData) => {
-    const [userData, setUserData] = useContext(UserContext);
+const CHITHI_COMPONENT = ({G_CODE,PROD_TYPE,PROD_MAIN_MATERIAL,G_NAME,EMPL_NAME,EMPL_NO,CUST_NAME_KD,CUST_CD,PROD_REQUEST_NO,PROD_REQUEST_DATE,PROD_REQUEST_QTY,LOT_TOTAL_INPUT_QTY_EA,LOT_TOTAL_OUTPUT_QTY_EA,INSPECT_BALANCE,SHORTAGE_YCSX,YCSX_PENDING,PHAN_LOAI,REMARK,PO_TDYCSX,TOTAL_TKHO_TDYCSX,TKHO_TDYCSX,BTP_TDYCSX,CK_TDYCSX,BLOCK_TDYCSX,FCST_TDYCSX,W1,W2,W3,W4,W5,W6,W7,W8,PDUYET,LOAIXH, PDBV, PDBV_EMPL, PDBV_DATE, DESCR}:YCSXTableData) => {
+    const userData: UserData|undefined = useSelector((state:RootState)=>state.totalSlice.userData);
+
     const [tvl_tdycsx,setTVL_TDYCSX] = useState<Array<TONVL>>([{
         M_CODE: 'string',
         M_NAME: 'string',
@@ -189,10 +189,10 @@ const CHITHI_COMPONENT = (YCSXDATA:YCSXTableData) => {
         TONG_TON_LIEU:0
     }]);   
 
-    const initYCSX = async() => {
+    const initCTSX = async() => {
         let inventorydate:string= '202207';
         await generalQuery("check_inventorydate", { 
-            G_CODE: YCSXDATA.G_CODE
+            G_CODE: G_CODE
           })
             .then((response) => {
               if (response.data.tk_status !== "NG") {                   
@@ -205,7 +205,7 @@ const CHITHI_COMPONENT = (YCSXDATA:YCSXTableData) => {
             });
 
         generalQuery("ycsx_fullinfo", {
-            PROD_REQUEST_NO: YCSXDATA.PROD_REQUEST_NO,  
+            PROD_REQUEST_NO: PROD_REQUEST_NO,  
             TRADATE: moment(inventorydate).format("YYYY-MM-DD 08:00:00"),
             INVENTORY: inventorydate
             })
@@ -263,7 +263,7 @@ const CHITHI_COMPONENT = (YCSXDATA:YCSXTableData) => {
             });
 
             generalQuery("checkpobalance_tdycsx", { 
-                G_CODE: YCSXDATA.G_CODE
+                G_CODE: G_CODE
               })
                 .then((response) => {
                   if (response.data.tk_status !== "NG") {                   
@@ -275,7 +275,7 @@ const CHITHI_COMPONENT = (YCSXDATA:YCSXTableData) => {
                   console.log(error);
                 });
               generalQuery("checktonkho_tdycsx", { 
-                G_CODE:YCSXDATA.G_CODE
+                G_CODE:G_CODE
               })
                 .then((response) => {                  
                   if (response.data.tk_status !== "NG") {                   
@@ -289,15 +289,13 @@ const CHITHI_COMPONENT = (YCSXDATA:YCSXTableData) => {
 
     }
     useEffect(()=> {
-            initYCSX();  
-    },[YCSXDATA.PROD_REQUEST_NO]);
-
-    console.log(YCSXDATA.PDBV_EMPL);
-    console.log(YCSXDATA.PDBV);
+            initCTSX();  
+    },[PROD_REQUEST_NO]);
+  
 
   return (
     <div className='chithicomponent'>     
-      {(YCSXDATA.PDBV === 'Y') && <div className="qcpass">
+      {(PDBV === 'Y') && <div className="qcpass">
         <img alt="qcpass" src="/QC PASS20.png" width={440-100-10} height={400-100}/>
       </div>  }  
      {  <div className='tieudeycsx'>
@@ -394,7 +392,7 @@ const CHITHI_COMPONENT = (YCSXDATA:YCSXTableData) => {
             </tbody>
           </table>
         </div>
-        <div className='text1'>2. 제품 정보 Thông tin sản phẩm <span className="approval_info">(Specification: {YCSXDATA.DESCR}) </span></div>
+        <div className='text1'>2. 제품 정보 Thông tin sản phẩm <span className="approval_info">(Specification: {DESCR}) </span></div>
         <div className='thongtinsanpham'>
           <div className='ttsp'>
             <table>
@@ -490,7 +488,7 @@ const CHITHI_COMPONENT = (YCSXDATA:YCSXTableData) => {
               </tbody>
             </table>
           </div>
-          <div className='title'>Tồn các loại tại thời điểm IN YCSX<span className="approval_info"> &nbsp;&nbsp;&nbsp; TK IN: {userData.EMPL_NO}</span>  {(YCSXDATA.PDBV==='Y') && <span className="approval_info"> | (TTPD_YCSX_BV: {YCSXDATA.PDBV_EMPL} | {moment.utc(YCSXDATA.PDBV_DATE).format("YYYY-MM-DD HH:mm:ss")})</span>}</div>
+          <div className='title'>Tồn các loại tại thời điểm IN YCSX<span className="approval_info"> &nbsp;&nbsp;&nbsp; TK IN: {userData?.EMPL_NO}</span>  {(PDBV==='Y') && <span className="approval_info"> | (TTPD_YCSX_BV: {PDBV_EMPL} | {moment.utc(PDBV_DATE).format("YYYY-MM-DD HH:mm:ss")})</span>}</div>
           <div className='toncacloai'>
             <table>
               <thead>
@@ -638,9 +636,7 @@ const CHITHI_COMPONENT = (YCSXDATA:YCSXTableData) => {
                         <td>{element.TONG_TON_LIEU.toLocaleString("en-US")} M</td>
                         <td>{element.REMARK}</td>
                     </tr>)
-                }          
-                     
-                   
+                } 
                 </tbody>
               </table>
             </div>

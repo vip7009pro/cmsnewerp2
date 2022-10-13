@@ -144,8 +144,7 @@
         -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);        
         top: 0;
         justify-self: center;  
-        align-self: center;
-      
+        align-self: center;      
         
         .title {
             display: flex;
@@ -167,7 +166,7 @@
             .ycsxlist  {
                 display: flex;
                 flex-direction: column;
-                flex: 3;
+                flex: 2;
                 background-color: aquamarine;
                 height: 100%;
                 .tracuuYCSX{
@@ -311,11 +310,22 @@
                     }            
                 }   
             }
-            .planlist {
+            .chithidiv {
                 display: flex;
+                flex-direction: column;
                 flex: 4;
-                background-color: bisque;
-    
+                .planlist {
+                    display: flex;                    
+                    background-image: linear-gradient(0deg, #afd3d1, #66c4f0);
+                    flex: 1;
+        
+                }
+                .chithitable {
+                    display: flex;
+                    background-image: linear-gradient(0deg, #afd3d1, #f5df7e);
+                    flex:1;
+                    
+                }
             }
 
         }

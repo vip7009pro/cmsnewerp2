@@ -39,6 +39,10 @@ import BOM_MANAGER from "./pages/rnd/bom_manager/BOM_MANAGER";
 import BOM_AMAZON from "./pages/rnd/bom_amazon/BOM_AMAZON";
 import "./App.scss";
 import QLSXPLAN from "./pages/qlsx/QLSXPLAN/QLSXPLAN";
+import {RootState} from './redux/store'
+import {useSelector, useDispatch} from 'react-redux'
+import { changeDiemDanhState, changeUserData, UserData } from "./redux/slices/globalSlice";
+
 interface userDataInterface {
   EMPL_IMAGE?: string
   ADD_COMMUNE: string;
@@ -101,7 +105,8 @@ const ProtectedRoute: any = ({
   
 
   if (user.EMPL_NO === "none") {
-    return <Navigate to='/login' replace />;
+   /*  return <Navigate to='/login' replace />; */
+   return <Login/>;
   } else {
     if (
       maindeptname === "all" ||
@@ -193,7 +198,7 @@ function App() {
     MAINDEPTNAME_KR: "품질",
     MIDLAST_NAME: "NGUYỄN VĂN",
     ONLINE_DATETIME: "2022-07-12T20:49:52.600Z",
-    PASSWORD: "dauxanhrauma",
+    PASSWORD: "xxx",
     PHONE_NUMBER: "0971092454",
     POSITION_CODE: 3,
     POSITION_NAME: "Staff",
@@ -217,8 +222,10 @@ function App() {
     WORK_STATUS_NAME_KR: "근무중",
   });
   const [loginState, setLoginState] = useState(false);
-  const [diemdanhstate, setDiemDanhState] = useState(false);
-
+  const trangthaidiemdanh:boolean|undefined = useSelector((state:RootState)=> state.totalSlice.diemdanhstate);
+  const globalUserData: UserData|undefined = useSelector((state:RootState)=>state.totalSlice.userData);
+  
+  const dispatch = useDispatch();
   //console.log(userData.JOB_NAME);
   useEffect(() => {
     console.log("check login");
@@ -228,6 +235,54 @@ function App() {
         if (data.data.tk_status === "ng") {
           console.log("khong co token");
           setLoginState(false);
+          dispatch(changeUserData({
+            ADD_COMMUNE: "Đông Xuân",
+            ADD_DISTRICT: "Sóc Sơn",
+            ADD_PROVINCE: "Hà Nội",
+            ADD_VILLAGE: "Thôn Phú Thọ",
+            ATT_GROUP_CODE: 1,
+            CMS_ID: "CMS1179",
+            CTR_CD: "002",
+            DOB: "1993-10-18T00:00:00.000Z",
+            EMAIL: "nvh1903@cmsbando.com",
+            EMPL_NO: "none",
+            FACTORY_CODE: 1,
+            FACTORY_NAME: "Nhà máy 1",
+            FACTORY_NAME_KR: "1공장",
+            FIRST_NAME: "HÙNG3",
+            HOMETOWN: "Phụ Thọ - Đông Xuân - Sóc Sơn - Hà Nội",
+            JOB_CODE: 1,
+            JOB_NAME: "Dept Staff",
+            JOB_NAME_KR: "부서담당자",
+            MAINDEPTCODE: 1,
+            MAINDEPTNAME: "QC",
+            MAINDEPTNAME_KR: "품질",
+            MIDLAST_NAME: "NGUYỄN VĂN",
+            ONLINE_DATETIME: "2022-07-12T20:49:52.600Z",
+            PASSWORD: "",
+            PHONE_NUMBER: "0971092454",
+            POSITION_CODE: 3,
+            POSITION_NAME: "Staff",
+            POSITION_NAME_KR: "사원",
+            REMARK: '',
+            SEX_CODE: 1,
+            SEX_NAME: "Nam",
+            SEX_NAME_KR: "남자",
+            SUBDEPTCODE: 2,
+            SUBDEPTNAME: "PD",
+            SUBDEPTNAME_KR: "통역",
+            WORK_POSITION_CODE: 2,
+            WORK_POSITION_NAME: "PD",
+            WORK_POSITION_NAME_KR: "PD",
+            WORK_SHIFT_CODE: 0,
+            WORK_SHIF_NAME: "Hành Chính",
+            WORK_SHIF_NAME_KR: "정규",
+            WORK_START_DATE: "2019-03-11T00:00:00.000Z",
+            WORK_STATUS_CODE: 1,
+            WORK_STATUS_NAME: "Đang làm",
+            WORK_STATUS_NAME_KR: "근무중",
+            EMPL_IMAGE:'N'
+          }));
           setUserData({
             ADD_COMMUNE: "Đông Xuân",
             ADD_DISTRICT: "Sóc Sơn",
@@ -279,6 +334,7 @@ function App() {
         } else {
           //console.log(data.data.data);
           setUserData(data.data.data);
+          dispatch(changeUserData(data.data.data));         
           setLoginState(true);
         }
       })
@@ -291,10 +347,14 @@ function App() {
         //console.log(response.data);
         if (response.data.tk_status !== "NG") 
         {
-          setDiemDanhState(true);        
+          console.log('diem danh ok');
+          dispatch(changeDiemDanhState(true));
+          //setDiemDanhState(true);        
         } 
-        else {
-          setDiemDanhState(false);
+        else { 
+          console.log('diem danh NG');
+          dispatch(changeDiemDanhState(false));
+          //setDiemDanhState(false);
         }
 
       })
@@ -304,11 +364,7 @@ function App() {
     return () => {};
   }, []);
   //console.log(userData);
-  if (loginState === true) {    
-    if(!diemdanhstate)
-    {
-      Swal.fire('Thông báo','Điểm danh trước khi làm việc nhé !','warning');
-    }
+  if (loginState === true) {
       return (
         <div className='App'>
           <LangConText.Provider value={[lang, setLang]}>
@@ -319,15 +375,15 @@ function App() {
                     path='/'
                     element={
                       <ProtectedRoute
-                        user={userData}
+                        user={globalUserData}
                         maindeptname='all'
                         jobname='all'
                       >
-                        <Home />
+                       <Home/>
                       </ProtectedRoute>
                     }
                   >
-                    <Route index element={((diemdanhstate===true) || (userData.JOB_NAME==='Worker'))? <BulletinBoard/> :<DiemDanhNhom/>} />
+                    <Route index element={!((trangthaidiemdanh===true) || (globalUserData?.JOB_NAME==='Worker'))? <DiemDanhNhom/>: <BulletinBoard/>} />
                     <Route path='accountinfo' element={<AccountInfo />}></Route>
                     <Route
                       path='kinhdoanh'
@@ -381,7 +437,7 @@ function App() {
                       path='qlsx'
                       element={
                         <ProtectedRoute
-                          user={userData}
+                          user={globalUserData}
                           maindeptname='QLSX'
                           jobname='all'
                         >
@@ -393,6 +449,7 @@ function App() {
                       <Route path='ycsxmanager' element={<YCSXManager />} />
                       <Route path='codeinfo' element={<CODE_MANAGER />} />
                       <Route path='qlsxplan' element={<QLSXPLAN />} />
+                      <Route path='quanlycodebom' element={<BOM_MANAGER />} />
                     </Route>
                     <Route
                       path='qc'
@@ -475,7 +532,7 @@ function App() {
                       path='nhansu'
                       element={
                         <ProtectedRoute
-                          user={userData}
+                          user={globalUserData}
                           maindeptname='all'
                           jobname='all'
                         >
@@ -488,7 +545,7 @@ function App() {
                         path='quanlyphongbannhanvien'
                         element={
                           <ProtectedRoute
-                            user={userData}
+                            user={globalUserData}
                             maindeptname='all'
                             jobname='leader'
                           >
@@ -500,7 +557,7 @@ function App() {
                         path='diemdanhnhom'
                         element={
                           <ProtectedRoute
-                            user={userData}
+                            user={globalUserData}
                             maindeptname='all'
                             jobname='leader'
                           >
@@ -512,7 +569,7 @@ function App() {
                         path='dieuchuyenteam'
                         element={
                           <ProtectedRoute
-                            user={userData}
+                            user={globalUserData}
                             maindeptname='all'
                             jobname='leader'
                           >
@@ -525,7 +582,7 @@ function App() {
                         path='pheduyetnghi'
                         element={
                           <ProtectedRoute
-                            user={userData}
+                            user={globalUserData}
                             maindeptname='all'
                             jobname='leader'
                           >
@@ -538,7 +595,7 @@ function App() {
                         path='baocaonhansu'
                         element={
                           <ProtectedRoute
-                            user={userData}
+                            user={globalUserData}
                             maindeptname='all'
                             jobname='leader'
                           >
@@ -553,8 +610,7 @@ function App() {
             </UserContext.Provider>
           </LangConText.Provider>
         </div>
-      )    
-      
+      ) 
   } else {
     return (
       <div>

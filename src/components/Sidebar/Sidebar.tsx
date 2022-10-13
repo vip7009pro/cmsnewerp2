@@ -215,6 +215,12 @@ const Sidebar = () => {
           cName: 'sub-nav'
         },
         {
+          title: 'Quản lý code bom',
+          path: 'qlsx/quanlycodebom',
+          icon: <FaBomb color='black' size={25}/>,
+          cName: 'sub-nav'
+        },
+        {
           title: 'Tra thông tin code',
           path: 'qlsx/codeinfo',
           icon: <FcAbout color='#cc00ff' size={25}/>,

@@ -55,7 +55,7 @@ const QLSXPLAN = () => {
       )}
       {selection.tab2 && (
         <div className='datadtc'>
-            <MACHINE2/>                           
+                               
         </div>
       )}
     </div>

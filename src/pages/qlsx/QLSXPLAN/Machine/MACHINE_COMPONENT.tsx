@@ -4,7 +4,7 @@ import Swal from "sweetalert2";
 import "./MACHINE_COMPONENT.scss";
 
 interface QLSXPLANDATA {
-  PLAN_ID: number;
+  PLAN_ID: string;
   PLAN_DATE: string;
   PROD_REQUEST_NO: string;
   PLAN_QTY: number;

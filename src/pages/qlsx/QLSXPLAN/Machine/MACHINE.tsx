@@ -24,6 +24,7 @@ import {
   AiFillEdit,
   AiFillFileAdd,
   AiFillFileExcel,
+  AiFillFolderAdd,
   AiOutlineCloudUpload,
   AiOutlinePrinter,
 } from "react-icons/ai";
@@ -38,7 +39,7 @@ import CHITHI_COMPONENT from "../CHITHI/CHITHI_COMPONENT";
 const axios = require("axios").default;
 interface QLSXPLANDATA {
   id: number,
-  PLAN_ID: number;
+  PLAN_ID: string;
   PLAN_DATE: string;
   PROD_REQUEST_NO: string;
   PLAN_QTY: number;
@@ -97,6 +98,20 @@ interface YCSXTableData {
   PDUYET: number;
   LOAIXH: string;
 }
+interface QLSXCHITHIDATA {
+    CHITHI_ID: number,
+    PLAN_ID: string,
+    CHITHI_QTY: number,
+    M_CODE: string,
+    M_NAME: string, 
+    WIDTH_CD: number,
+    M_ROLL_QTY: number,
+    M_MET_QTY: number,
+    INS_EMPL: string,
+    INS_DATE: string,
+    UPD_EMPL: string,
+    UPD_DATE: string,
+}
 const MACHINE = () => {
   const [selection, setSelection] = useState<any>({
     tab1: true,
@@ -115,6 +130,7 @@ const MACHINE = () => {
     }
   };
   const [plandatatable, setPlanDataTable] = useState<QLSXPLANDATA[]>([]);
+  const [chithidatatable, setChiThiDataTable] = useState<QLSXCHITHIDATA[]>([]);
   const [showplanwindow, setShowPlanWindow] = useState(true);
   const [userData, setUserData] = useContext(UserContext);
   const [isLoading, setisLoading] = useState(false);
@@ -431,6 +447,38 @@ const MACHINE = () => {
     { field: "STEP", headerName: "STEP", width: 60 },
     { field: "INS_EMPL", headerName: "INS_EMPL", width: 80 },
   ]
+  const column_chithidatatable =[
+    { field: "PLAN_ID", headerName: "PLAN_ID", width: 80 },
+    { field: "CHITHI_QTY", headerName: "CHITHI_QTY", width: 80 },
+    { field: "M_CODE", headerName: "M_CODE", width: 80 },
+    { field: "M_NAME", headerName: "M_NAME", width: 120 },
+    { field: "WIDTH_CD", headerName: "WIDTH_CD", width: 80 },
+    { field: "M_ROLL_QTY", headerName: "M_ROLL_QTY", width: 110 },
+    { field: "M_MET_QTY", headerName: "M_MET_QTY", width: 110 },
+    { field: "INS_EMPL", headerName: "INS_EMPL", width: 120 },
+    { field: "INS_DATE", headerName: "INS_DATE", width: 120 },
+    { field: "UPD_EMPL", headerName: "UPD_EMPL", width: 120 },
+    { field: "UPD_DATE", headerName: "UPD_DATE", width: 120 },   
+  ]
+  const renderCHITHICOMPONENT = (ycsxlist: YCSXTableData[]) => {
+    return ycsxlist.map((element, index) => (
+      <CHITHI_COMPONENT  key={index}
+      PROD_REQUEST_NO={element.PROD_REQUEST_NO}
+      G_CODE={element.G_CODE}
+      PO_TDYCSX={element.PO_TDYCSX}
+      TOTAL_TKHO_TDYCSX={element.TOTAL_TKHO_TDYCSX}
+      TKHO_TDYCSX={element.TKHO_TDYCSX}
+      BTP_TDYCSX={element.BTP_TDYCSX}
+      CK_TDYCSX={element.CK_TDYCSX}
+      BLOCK_TDYCSX={element.BLOCK_TDYCSX}
+      FCST_TDYCSX={element.FCST_TDYCSX}
+      PDBV={element.PDBV}
+      PDBV_EMPL={element.PDBV_EMPL}
+      PDBV_DATE={element.PDBV_DATE}
+      DESCR={element.DESCR}/>
+    ));
+  };
+
   const renderYCSX = (ycsxlist: YCSXTableData[]) => {
     return ycsxlist.map((element, index) => (
       <YCSXComponent
@@ -491,6 +539,22 @@ const MACHINE = () => {
         console.log(error);
       });
   };
+  const handleGetChiThiTable = (PLAN_ID: string)=> {
+    generalQuery("getchithidatatable", {
+        PLAN_ID: PLAN_ID,        
+      })
+        .then((response) => {
+          console.log(response.data.tk_status);
+          if (response.data.tk_status !== "NG") {
+            setChiThiDataTable(response.data.data);
+          } else {
+            setChiThiDataTable([]);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+  }
   const handletraYCSX = () => {
     setisLoading(true);
     generalQuery("traYCSXDataFull", {
@@ -803,6 +867,74 @@ const MACHINE = () => {
           <AiOutlinePrinter color='#9066ff' size={25} />
           Print YCKT
         </IconButton>      
+        <IconButton
+          className='buttonIcon'
+          onClick={() => {
+            if (qlsxplandatafilter.length > 0) {
+              handleGetChiThiTable(qlsxplandatafilter[0].PLAN_ID);
+              if(chithidatatable.length <=0)
+              {
+
+              }
+
+            } else {
+              Swal.fire("Thông báo", "Chọn ít nhất 1 PLAN để thêm chỉ thị", "error");
+            }
+          }}
+        >
+          <AiFillFolderAdd color='#69f542' size={25} />
+          Thêm chỉ thị
+        </IconButton>      
+      </GridToolbarContainer>
+    );
+  }
+  function CustomToolbarCHITHITABLE() {
+    return (
+      <GridToolbarContainer>
+        {/*  <GridToolbarColumnsButton />
+        <GridToolbarFilterButton />
+        <GridToolbarDensitySelector />  */}
+        <IconButton
+          className='buttonIcon'
+          onClick={() => {
+            SaveExcel(ycsxdatatable, "YCSX Table");
+          }}
+        >
+          <AiFillFileExcel color='green' size={25} />
+          SAVE
+        </IconButton>
+        <GridToolbarQuickFilter />        
+        <IconButton
+          className='buttonIcon'
+          onClick={() => {
+            if (ycsxdatatablefilter.length > 0) {
+              setShowChiThi(true);
+              console.log(ycsxdatatablefilter);
+              //setYCSXListRender(renderYCSX(ycsxdatatablefilter));
+            } else {
+                setShowChiThi(true);
+              Swal.fire("Thông báo", "Chọn ít nhất 1 YCSX để in", "error");
+            }
+          }}
+        >
+          <AiOutlinePrinter color='#0066ff' size={25} />
+          Print Chỉ Thị
+        </IconButton>      
+        <IconButton
+          className='buttonIcon'
+          onClick={() => {
+            if (ycsxdatatablefilter.length > 0) {
+              setShowChiThi(true);
+              console.log(ycsxdatatablefilter);
+              //setYCSXListRender(renderYCSX(ycsxdatatablefilter));
+            } else {
+              Swal.fire("Thông báo", "Chọn ít nhất 1 YCSX để in", "error");
+            }
+          }}
+        >
+          <AiOutlinePrinter color='#9066ff' size={25} />
+          Print YCKT
+        </IconButton>      
       </GridToolbarContainer>
     );
   }
@@ -819,6 +951,20 @@ const MACHINE = () => {
     }
   };
   const handleQLSXPlanDataSelectionforUpdate = (ids: GridSelectionModel) => {
+    const selectedID = new Set(ids);
+    let datafilter = plandatatable.filter((element: any) =>
+      selectedID.has(element.PLAN_ID)
+    );
+    //console.log(datafilter);
+    if (datafilter.length > 0) {
+      setQlsxPlanDataFilter(datafilter);
+      handleGetChiThiTable(datafilter[0].PLAN_ID);
+    } else {
+        setQlsxPlanDataFilter([]);
+      console.log("xoa filter");
+    }
+  };
+  const handleQLSXCHITHIDataSelectionforUpdate = (ids: GridSelectionModel) => {
     const selectedID = new Set(ids);
     let datafilter = plandatatable.filter((element: any) =>
       selectedID.has(element.PLAN_ID)
@@ -1527,6 +1673,7 @@ const MACHINE = () => {
                 )}
               </div>
             </div>
+            <div className="chithidiv">
             <div className='planlist'>
               <DataGrid
                 sx={{ fontSize: 12, flex: 1 }}
@@ -1549,13 +1696,37 @@ const MACHINE = () => {
                   5, 10, 50, 100, 500, 1000, 5000, 10000, 500000,
                 ]}
                 editMode='row'
-                getRowId={(row) => row.PLAN_ID}
-                checkboxSelection
+                getRowId={(row) => row.PLAN_ID}                
                 onSelectionModelChange={(ids) => {
                     handleQLSXPlanDataSelectionforUpdate(ids);
                 }}
               />
             </div>
+            <div className="chithitable">
+            <DataGrid
+                sx={{ fontSize: 12, flex: 1 }}
+                components={{
+                  Toolbar: CustomToolbarCHITHITABLE,
+                  LoadingOverlay: LinearProgress,
+                }}
+                loading={isLoading}
+                rowHeight={30}
+                rows={chithidatatable}
+                columns={column_chithidatatable}
+                rowsPerPageOptions={[
+                  5, 10, 50, 100, 500, 1000, 5000, 10000, 500000,
+                ]}
+                editMode='row'
+                getRowId={(row) => row.PLAN_ID}
+                checkboxSelection
+                onSelectionModelChange={(ids) => {
+                    handleQLSXCHITHIDataSelectionforUpdate(ids);
+                }}
+              />
+            </div>
+
+            </div>
+           
           </div>
         </div>
       )}
