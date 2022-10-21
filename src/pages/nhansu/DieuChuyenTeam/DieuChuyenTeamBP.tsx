@@ -41,7 +41,7 @@ interface DiemDanhNhomData {
     WORK_STATUS_NAME: string
 }
 
-const DieuChuyenTeam = () => {
+const DieuChuyenTeamBP = () => {
     const [isLoading, setisLoading] = useState(false);   
     const [WORK_SHIFT_CODE, setWORK_SHIFT_CODE]= useState(5);
     const [diemdanhnhomtable,setDiemDanhNhomTable ] = useState<Array<DiemDanhNhomData>>([]);
@@ -310,7 +310,7 @@ const DieuChuyenTeam = () => {
 
     const onselectionteamhandle = (teamnamelist: number)=>{
       setWORK_SHIFT_CODE(teamnamelist);
-      generalQuery('diemdanhnhom',{team_name_list:teamnamelist})
+      generalQuery('diemdanhnhomBP',{team_name_list:teamnamelist})
         .then(response => {
             //console.log(response.data.data);
             setDiemDanhNhomTable(response.data.data);
@@ -333,7 +333,7 @@ const DieuChuyenTeam = () => {
             console.log(error);
         });
 
-        generalQuery('diemdanhnhom',{team_name_list:WORK_SHIFT_CODE})
+        generalQuery('diemdanhnhomBP',{team_name_list:WORK_SHIFT_CODE})
         .then(response => {
             //console.log(response.data.data);
             if(response.data.tk_status !=='NG')
@@ -377,7 +377,7 @@ const DieuChuyenTeam = () => {
               rowHeight={35}
               rows={diemdanhnhomtable}
               columns={columns_diemdanhnhom}
-              rowsPerPageOptions={[5, 10, 50, 100, 500]}
+              rowsPerPageOptions={[5, 10, 50, 100, 500,1000]}
               editMode='row'    
               getRowHeight={() => 'auto'} 
             />
@@ -386,4 +386,4 @@ const DieuChuyenTeam = () => {
   );
 }
 
-export default DieuChuyenTeam
+export default DieuChuyenTeamBP

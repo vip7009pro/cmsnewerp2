@@ -10,7 +10,7 @@ import {
   changeUserData,
   UserData,
 } from "../../../../redux/slices/globalSlice";
-import "./CHITHI_COMPONENT.scss";
+import "./YCKT.scss";
 var Barcode = require("react-barcode");
 interface YCSXTableData {
   DESCR?: string;
@@ -122,7 +122,7 @@ interface QLSXCHITHIDATA {
   UPD_EMPL: string;
   UPD_DATE: string;
 }
-const CHITHI_COMPONENT = ({
+const YCKT = ({
   PROD_REQUEST_NO,
   PDBV,
   PLAN_ID,
@@ -290,9 +290,9 @@ const CHITHI_COMPONENT = ({
             {PLAN_ID}
           </div>
           <div className='headertitle'>
-            생산 지시서 - Chỉ thị Sản Xuất({PLAN_EQ}- B{STEP})<br></br>
+            검사 요청서 - Yêu cầu kiểm tra({PLAN_EQ}- B{STEP})<br></br>
             <span style={{ fontSize: 12 }}>
-              Thời điểm in CTSX: {moment().format("YYYY-MM-DD HH:mm:ss")}
+              Thời điểm in YCKT: {moment().format("YYYY-MM-DD HH:mm:ss")}
             </span>
             <br></br>{" "}
             {request_codeinfo[0].NO_INSPECTION === "Y" && (
@@ -323,7 +323,7 @@ const CHITHI_COMPONENT = ({
       }
       <div className='thongtinycsx'>
         <div className='text1'>
-          1. 지시 정보 Thông tin chỉ thị ({request_codeinfo[0].G_NAME} )
+          1. 지시 정보 Thông tin yêu cầu({request_codeinfo[0].G_NAME} )
         </div>
         <div className='thongtinyeucau'>
           <table className='ttyc1'>
@@ -415,113 +415,39 @@ const CHITHI_COMPONENT = ({
             </tbody>
           </table>
         </div>       
-        <div className='text1'>2. 제품 정보 Thông tin vật liệu</div>
-        <div className='thongtinvatlieu'>
-          {chithidatatable.length <= max_lieu && (
+        <div className='text1'>2. 입고 정보 Thông tin nhập hàng</div>
+        <div className='thongtinvatlieu'>         
             <div className='vatlieugiua'>
               <table>
                 <thead>
                   <tr>
-                    <th>No</th>
-                    <th>Mã Liệu/원단코드</th>
-                    <th>Tên Liệu/원단명</th>
-                    <th>Size Liệu/원단폭</th>
-                    <th>SL chỉ thị/지시 수량</th>
-                    <th>Thực xuất M/실제 출고 M</th>
-                    <th>Thực xuất Roll/실제 출고 Roll</th>                    
-                    <th>Ghi chú/비고</th>
+                    <th>Ngày giờ nhập/입고일시</th>
+                    <th>Người giao/인수자명</th>
+                    <th>Dán label/라벨 부착</th>
+                    <th>Chiều cuốn/ 권취방향 확인</th>
+                    <th>Số lượng cân /무게</th>
+                    <th>Số lượng/수량 EA</th>
+                    <th>Người xác nhận/확인자</th>
                   </tr>
                 </thead>
-                <tbody>
-                  {chithidatatable.map((element, index) => (
+                <tbody>     
+                  {[1,2,3,4,5,6,7,8,9,10].map((element, index) => (
                     <tr key={index}>
-                      <td>{index}</td>
-                      <td>{element.M_CODE}</td>
-                      <td>{element.M_NAME}</td>
-                      <td>{element.WIDTH_CD}</td>
-                      <td>{element.M_MET_QTY} M</td>
+                      <td style={{height:30}}></td>
                       <td></td>
                       <td></td>
                       <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>                      
                     </tr>
                   ))}
                 </tbody>
               </table>
-            </div>
-          )}
-          {chithidatatable.length > max_lieu && (
-            <div className='vatlieutrai'>
-              <table>
-                <thead>
-                  <tr>
-                  <th>No</th>
-                    <th>Mã Liệu/원단코드</th>
-                    <th>Tên Liệu/원단명</th>
-                    <th>Size Liệu/원단폭</th>
-                    <th>SL chỉ thị/지시 수량</th>
-                    <th>Thực xuất M/실제 출고 M</th>
-                    <th>Thực xuất Roll/실제 출고 Roll</th>                    
-                    <th>Ghi chú/비고</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {chithidatatable.map(
-                    (element, index) =>
-                      index <= max_lieu && (
-                        <tr key={index}>
-                         <td>{index}</td>
-                        <td>{element.M_CODE}</td>
-                        <td>{element.M_NAME}</td>
-                        <td>{element.WIDTH_CD}</td>
-                        <td>{element.M_MET_QTY.toLocaleString("en-US")} M</td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        </tr>
-                      )
-                  )}
-                </tbody>
-              </table>
-            </div>
-          )}
-          {chithidatatable.length > max_lieu && (
-            <div className='vatlieuphai'>
-              <table>
-                <thead>
-                  <tr>
-                  <th>No</th>
-                    <th>Mã Liệu/원단코드</th>
-                    <th>Tên Liệu/원단명</th>
-                    <th>Size Liệu/원단폭</th>
-                    <th>SL chỉ thị/지시 수량</th>
-                    <th>Thực xuất M/실제 출고 M</th>
-                    <th>Thực xuất Roll/실제 출고 Roll</th>                    
-                    <th>Ghi chú/비고</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {chithidatatable.map(
-                    (element, index) =>
-                      index > max_lieu && (
-                        <tr key={index}>
-                         <td>{index}</td>
-                        <td>{element.M_CODE}</td>
-                        <td>{element.M_NAME}</td>
-                        <td>{element.WIDTH_CD}</td>
-                        <td>{element.M_MET_QTY.toLocaleString("en-US")} M</td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        </tr>
-                      )
-                  )}
-                </tbody>
-              </table>
-            </div>
-          )}
+            </div>                 
         </div>
       </div>
     </div>
   );
 };
-export default CHITHI_COMPONENT;
+export default YCKT;

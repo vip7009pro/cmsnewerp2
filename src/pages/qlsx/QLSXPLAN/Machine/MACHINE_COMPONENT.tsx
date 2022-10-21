@@ -27,6 +27,7 @@ interface MachineInterface {
   factory?: string;
   run_stop?: number;
   machine_data?: QLSXPLANDATA[];
+  onClick?:  (ev: any) => void;
 }
 
 const MACHINE_COMPONENT = (machine_data: MachineInterface) => {
@@ -46,6 +47,7 @@ const MACHINE_COMPONENT = (machine_data: MachineInterface) => {
           machine_data.run_stop === 1 ? runtopcolor : stoptopcolor
         }, ${machine_data.run_stop === 1 ? runbotcolor : stopbotcolor})`,
       }}
+      onDoubleClick={machine_data.onClick}
     >
       <div className='tieude'>
        {machine_data.machine_name}

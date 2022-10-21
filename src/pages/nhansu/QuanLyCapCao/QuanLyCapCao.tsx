@@ -1,10 +1,10 @@
 import  { useEffect, useState} from 'react'
-import KHOLIEU from '../../kho/kholieu/KHOLIEU';
-import MACHINE from './Machine/MACHINE';
-import MACHINE2 from './Machine/MACHINE2';
-import "./QLSXPLAN.scss"
+import DiemDanhNhomBP from '../DiemDanhNhom/DiemDanhBP';
+import DieuChuyenTeamBP from '../DieuChuyenTeam/DieuChuyenTeamBP';
+import PheDuyetNghiBP from '../PheDuyetNghi/PheDuyetNghiBP';
+import "./QuanLyCapCao.scss"
 
-const QLSXPLAN = () => {
+const QuanLyCapCao = () => {
   const [selection, setSelection] = useState<any>({
     tab1: true,
     tab2: false,
@@ -31,31 +31,41 @@ const QLSXPLAN = () => {
   },[]);
 
   return (
-    <div className='qlsxplan'>
+    <div className='quanlycapcao'>
       <div className='mininavbar'>
         <div className='mininavitem'  onClick={() => setNav(1)}>
           <span className='mininavtext'>
-            PLAN VISUAL
+           Điểm danh toàn bộ phận
           </span>
         </div>   
         <div className='mininavitem'  onClick={() => setNav(2)}>
           <span className='mininavtext'>
-            PLAN TABLE
+          Phê duyệt nghỉ toàn bộ phận
+          </span>
+        </div>  
+        <div className='mininavitem'  onClick={() => setNav(3)}>
+          <span className='mininavtext'>
+          Điều chuyển toàn bộ phận
           </span>
         </div>  
           
       </div>     
       {selection.tab1 && (
-        <div className='traiqc'>
-          <MACHINE/>                  
+        <div className='diemdanhbp'>
+            <DiemDanhNhomBP/>                      
         </div>
       )}
       {selection.tab2 && (
-        <div className='datadtc'>
-                               
+        <div className='pheduyetbp'>
+            <PheDuyetNghiBP/>                               
+        </div>
+      )}
+      {selection.tab3 && (
+        <div className='dieuchuyenbp'>
+            <DieuChuyenTeamBP/>                               
         </div>
       )}
     </div>
   );
 }
-export default QLSXPLAN
+export default QuanLyCapCao

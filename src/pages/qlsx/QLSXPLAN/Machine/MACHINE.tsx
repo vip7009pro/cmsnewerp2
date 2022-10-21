@@ -14,28 +14,36 @@ import moment from "moment";
 import { UserContext } from "../../../../api/Context";
 import {
   DataGrid,
+  GridCallbackDetails,
+  GridCellEditCommitParams,
   GridSelectionModel,
   GridToolbarContainer,
   GridToolbarQuickFilter,
+  MuiBaseEvent,
+  MuiEvent,
 } from "@mui/x-data-grid";
-import { IconButton, LinearProgress } from "@mui/material";
+import { Alert, IconButton, LinearProgress, TextField } from "@mui/material";
 import {
   AiFillAmazonCircle,
   AiFillEdit,
   AiFillFileAdd,
   AiFillFileExcel,
   AiFillFolderAdd,
+  AiFillSave,
+  AiOutlineBarcode,
   AiOutlineCloudUpload,
   AiOutlinePrinter,
 } from "react-icons/ai";
 import { MdOutlineDelete, MdOutlinePendingActions } from "react-icons/md";
 import { FaArrowRight } from "react-icons/fa";
-import { FcApprove, FcSearch } from "react-icons/fc";
+import { FcApprove, FcDeleteRow, FcSearch } from "react-icons/fc";
 import { SaveExcel } from "../../../../api/GlobalFunction";
 import YCSXComponent from "../../../kinhdoanh/ycsxmanager/YCSXComponent/YCSXComponent";
 import DrawComponent from "../../../kinhdoanh/ycsxmanager/DrawComponent/DrawComponent";
 import { useReactToPrint } from "react-to-print";
 import CHITHI_COMPONENT from "../CHITHI/CHITHI_COMPONENT";
+import { BiReset } from "react-icons/bi";
+import YCKT from "../YCKT/YCKT";
 const axios = require("axios").default;
 interface QLSXPLANDATA {
   id: number,
@@ -50,11 +58,14 @@ interface QLSXPLANDATA {
   INS_DATE: string;
   UPD_EMPL: string;
   UPD_DATE: string;
+  G_CODE: string;
   G_NAME: string;
   G_NAME_KD: string;
   PROD_REQUEST_DATE: string;
   PROD_REQUEST_QTY: number;
   STEP: string;
+  PLAN_ORDER: string;
+  PROCESS_NUMBER: number;
 }
 interface YCSXTableData {
   DESCR?: string;
@@ -99,14 +110,15 @@ interface YCSXTableData {
   LOAIXH: string;
 }
 interface QLSXCHITHIDATA {
+    id: string,
     CHITHI_ID: number,
-    PLAN_ID: string,
-    CHITHI_QTY: number,
+    PLAN_ID: string,    
     M_CODE: string,
     M_NAME: string, 
     WIDTH_CD: number,
     M_ROLL_QTY: number,
     M_MET_QTY: number,
+    M_QTY: number,
     INS_EMPL: string,
     INS_DATE: string,
     UPD_EMPL: string,
@@ -131,7 +143,7 @@ const MACHINE = () => {
   };
   const [plandatatable, setPlanDataTable] = useState<QLSXPLANDATA[]>([]);
   const [chithidatatable, setChiThiDataTable] = useState<QLSXCHITHIDATA[]>([]);
-  const [showplanwindow, setShowPlanWindow] = useState(true);
+  const [showplanwindow, setShowPlanWindow] = useState(false);
   const [userData, setUserData] = useContext(UserContext);
   const [isLoading, setisLoading] = useState(false);
   const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
@@ -152,13 +164,21 @@ const MACHINE = () => {
   const [qlsxplandatafilter, setQlsxPlanDataFilter] = useState<
     Array<QLSXPLANDATA>
   >([]);
-
+  const [qlsxchithidatafilter, setQlsxChiThiDataFilter] = useState<
+    Array<QLSXCHITHIDATA>
+  >([]);
   const [ycsxpendingcheck, setYCSXPendingCheck] = useState(false);
   const [inspectInputcheck, setInspectInputCheck] = useState(false);
   const [ycsxlistrender, setYCSXListRender] = useState<Array<ReactElement>>();
+  const [chithilistrender, setChiThiListRender] = useState<Array<ReactElement>>();
+  const [ycktlistrender, setYCKTListRender] = useState<Array<ReactElement>>();
   const [selectedMachine, setSelectedMachine]= useState('FR1');
   const [selectedFactory, setSelectedFactory]= useState('NM1');
-  const [showChiThi, setShowChiThi] = useState(true);
+  const [selectedPlanDate, setSelectedPlanDate] = useState('2022-10-07');//moment().format("YYYY-MM-DD")
+  const [showChiThi, setShowChiThi] = useState(false);
+  const [showYCKT, setShowYCKT] = useState(false);
+  const [editplan, seteditplan] = useState(true);
+  const [editchithi, seteditchithi] = useState(true);
   const ycsxprintref = useRef(null);
   const handlePrint = useReactToPrint({
     content: () => ycsxprintref.current,
@@ -435,50 +455,80 @@ const MACHINE = () => {
     },
   ];
   const column_plandatatable =[
-    { field: "PLAN_ID", headerName: "PLAN_ID", width: 70 },
-    { field: "PLAN_DATE", headerName: "PLAN_DATE", width: 110 },
-    { field: "PROD_REQUEST_NO", headerName: "YCSX NO", width: 80 },
-    { field: "PROD_REQUEST_DATE", headerName: "YCSX DATE", width: 80 },
-    { field: "PROD_REQUEST_QTY", headerName: "YCSX QTY", width: 80 },
-    { field: "G_NAME_KD", headerName: "G_NAME_KD", width: 120 },
-    { field: "PLAN_EQ", headerName: "PLAN_EQ", width: 80 },
-    { field: "PLAN_FACTORY", headerName: "FACTORY", width: 80 },
-    { field: "PLAN_QTY", headerName: "PLAN_QTY", width: 80 },
-    { field: "STEP", headerName: "STEP", width: 60 },
-    { field: "INS_EMPL", headerName: "INS_EMPL", width: 80 },
-  ]
+    { field: "PLAN_ID", headerName: "PLAN_ID", width: 90 , editable: false},
+    { field: "PLAN_DATE", headerName: "PLAN_DATE", width: 110, editable: false },
+    { field: "PROD_REQUEST_NO", headerName: "YCSX NO", width: 80, editable: false },
+    { field: "PROD_REQUEST_DATE", headerName: "YCSX DATE", width: 80, editable: false },
+    { field: "PROD_REQUEST_QTY", headerName: "YCSX QTY", width: 80, editable: false },
+    { field: "G_NAME_KD", headerName: "G_NAME_KD", width: 180, editable: false },
+    { field: "PLAN_EQ", headerName: "PLAN_EQ", width: 80, editable: false },
+    { field: "PLAN_FACTORY", headerName: "FACTORY", width: 80, editable: false },
+    { field: "PLAN_QTY", headerName: "PLAN_QTY", width: 80, editable: editplan },
+    { field: "PROCESS_NUMBER", headerName: "PROCESS_NUMBER", width: 110, editable: editplan },
+    { field: "STEP", headerName: "STEP", width: 60, editable: editplan },
+    { field: "PLAN_ORDER", headerName: "PLAN_ORDER", width: 110, editable: editplan },
+    { field: "INS_EMPL", headerName: "INS_EMPL", width: 120, editable: false, hide: true  },
+    { field: "INS_DATE", headerName: "INS_DATE", width: 120, editable: false, hide: true  },
+    { field: "UPD_EMPL", headerName: "UPD_EMPL", width: 120, editable: false , hide: true },
+    { field: "UPD_DATE", headerName: "UPD_DATE", width: 120, editable: false, hide: true  },   
+  ];
   const column_chithidatatable =[
-    { field: "PLAN_ID", headerName: "PLAN_ID", width: 80 },
-    { field: "CHITHI_QTY", headerName: "CHITHI_QTY", width: 80 },
-    { field: "M_CODE", headerName: "M_CODE", width: 80 },
-    { field: "M_NAME", headerName: "M_NAME", width: 120 },
-    { field: "WIDTH_CD", headerName: "WIDTH_CD", width: 80 },
-    { field: "M_ROLL_QTY", headerName: "M_ROLL_QTY", width: 110 },
-    { field: "M_MET_QTY", headerName: "M_MET_QTY", width: 110 },
-    { field: "INS_EMPL", headerName: "INS_EMPL", width: 120 },
-    { field: "INS_DATE", headerName: "INS_DATE", width: 120 },
-    { field: "UPD_EMPL", headerName: "UPD_EMPL", width: 120 },
-    { field: "UPD_DATE", headerName: "UPD_DATE", width: 120 },   
-  ]
-  const renderCHITHICOMPONENT = (ycsxlist: YCSXTableData[]) => {
-    return ycsxlist.map((element, index) => (
-      <CHITHI_COMPONENT  key={index}
+    { field: "CHITHI_ID", headerName: "CHITHI_ID", width: 90, editable: false },      
+    { field: "PLAN_ID", headerName: "PLAN_ID", width: 90, editable: false },    
+    { field: "M_CODE", headerName: "M_CODE", width: 80, editable: false },
+    { field: "M_NAME", headerName: "M_NAME", width: 120, editable: false },
+    { field: "WIDTH_CD", headerName: "WIDTH_CD", width: 80, editable: false },
+    { field: "M_ROLL_QTY", headerName: "M_ROLL_QTY", width: 110, editable: editchithi },
+    { field: "M_MET_QTY", headerName: "M_MET_QTY", width: 110, editable: editchithi },
+    { field: "M_QTY", headerName: "M_QTY", width: 110, editable: editchithi },
+    { field: "INS_EMPL", headerName: "INS_EMPL", width: 120, editable: false , hide: true },
+    { field: "INS_DATE", headerName: "INS_DATE", width: 120, editable: editchithi, hide: true  },
+    { field: "UPD_EMPL", headerName: "UPD_EMPL", width: 120, editable: false, hide: true  },
+    { field: "UPD_DATE", headerName: "UPD_DATE", width: 120, editable: false, hide: true },   
+  ];
+
+  const renderYCKT = (planlist: QLSXPLANDATA[]) => {
+    return planlist.map((element, index) => (
+      <YCKT   
+      key={index}     
+      PLAN_ID={element.PLAN_ID}
+      PLAN_DATE = {element.PLAN_DATE}     
       PROD_REQUEST_NO={element.PROD_REQUEST_NO}
-      G_CODE={element.G_CODE}
-      PO_TDYCSX={element.PO_TDYCSX}
-      TOTAL_TKHO_TDYCSX={element.TOTAL_TKHO_TDYCSX}
-      TKHO_TDYCSX={element.TKHO_TDYCSX}
-      BTP_TDYCSX={element.BTP_TDYCSX}
-      CK_TDYCSX={element.CK_TDYCSX}
-      BLOCK_TDYCSX={element.BLOCK_TDYCSX}
-      FCST_TDYCSX={element.FCST_TDYCSX}
-      PDBV={element.PDBV}
-      PDBV_EMPL={element.PDBV_EMPL}
-      PDBV_DATE={element.PDBV_DATE}
-      DESCR={element.DESCR}/>
+      PLAN_QTY={element.PLAN_QTY}
+      PLAN_EQ={element.PLAN_EQ}        
+      PLAN_FACTORY={element.PLAN_FACTORY}        
+      PLAN_LEADTIME={element.PLAN_LEADTIME}        
+      G_CODE={element.G_CODE}        
+      G_NAME={element.G_NAME}        
+      G_NAME_KD={element.G_NAME_KD}        
+      PROD_REQUEST_DATE={element.PROD_REQUEST_DATE}        
+      PROD_REQUEST_QTY={element.PROD_REQUEST_QTY}        
+      STEP={element.STEP}        
+      PLAN_ORDER={element.PLAN_ORDER}
+      />
     ));
   };
-
+  const renderChiThi = (planlist: QLSXPLANDATA[]) => {
+    return planlist.map((element, index) => (
+      <CHITHI_COMPONENT   
+      key={index}     
+      PLAN_ID={element.PLAN_ID}
+      PLAN_DATE = {element.PLAN_DATE}     
+      PROD_REQUEST_NO={element.PROD_REQUEST_NO}
+      PLAN_QTY={element.PLAN_QTY}
+      PLAN_EQ={element.PLAN_EQ}        
+      PLAN_FACTORY={element.PLAN_FACTORY}        
+      PLAN_LEADTIME={element.PLAN_LEADTIME}        
+      G_CODE={element.G_CODE}        
+      G_NAME={element.G_NAME}        
+      G_NAME_KD={element.G_NAME_KD}        
+      PROD_REQUEST_DATE={element.PROD_REQUEST_DATE}        
+      PROD_REQUEST_QTY={element.PROD_REQUEST_QTY}        
+      STEP={element.STEP}        
+      PLAN_ORDER={element.PLAN_ORDER}
+      />
+    ));
+  };
   const renderYCSX = (ycsxlist: YCSXTableData[]) => {
     return ycsxlist.map((element, index) => (
       <YCSXComponent
@@ -515,8 +565,9 @@ const MACHINE = () => {
       )
     );
   };
-  const loadQLSXPlan = () => {
-    generalQuery("getqlsxplan", { PLAN_DATE: "2022-10-07" })
+  const loadQLSXPlan = (plan_date: string) => {
+    //console.log(selectedPlanDate);
+    generalQuery("getqlsxplan", { PLAN_DATE: plan_date })
       .then((response) => {
         //console.log(response.data.data);
         if (response.data.tk_status !== "NG") {
@@ -532,6 +583,7 @@ const MACHINE = () => {
           //console.log(loadeddata);
           setPlanDataTable(loadeddata);
         } else {
+          setPlanDataTable([]);
           Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
         }
       })
@@ -539,14 +591,122 @@ const MACHINE = () => {
         console.log(error);
       });
   };
-  const handleGetChiThiTable = (PLAN_ID: string)=> {
+  const handleGetChiThiTable = async (PLAN_ID: string, G_CODE: string, PLAN_QTY: number)=> {
+
+    let PD: number = 0, CAVITY_NGANG:number =0, CAVITY_DOC:number = 0;
+    await generalQuery('getcodefullinfo',{
+      G_CODE: G_CODE
+    })
+    .then((response)=> {
+      if (response.data.tk_status !== "NG") {
+        //console.log(response.data.data)
+        PD = response.data.data[0].PD;
+        CAVITY_NGANG = response.data.data[0].G_C_R;
+        CAVITY_DOC = response.data.data[0].G_C;        
+      } else {
+
+      }
+      
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+
     generalQuery("getchithidatatable", {
         PLAN_ID: PLAN_ID,        
       })
         .then((response) => {
-          console.log(response.data.tk_status);
+          //console.log(response.data.tk_status);
           if (response.data.tk_status !== "NG") {
             setChiThiDataTable(response.data.data);
+          } else {             
+             generalQuery("getbomsx", {
+              G_CODE: G_CODE,        
+            })
+              .then((response) => {
+                //console.log(response.data.tk_status);
+                if (response.data.tk_status !== "NG") {
+                  const loaded_data: QLSXCHITHIDATA[] = response.data.data.map(
+                    (element: QLSXCHITHIDATA, index: number) => {
+                      return { 
+                        CHITHI_ID: 'NEW'+index,
+                        PLAN_ID: PLAN_ID,                        
+                        M_CODE: element.M_CODE,
+                        M_NAME: element.M_NAME, 
+                        WIDTH_CD: element.WIDTH_CD,
+                        M_ROLL_QTY: 0,
+                        M_MET_QTY: parseInt((PLAN_QTY*PD/(CAVITY_DOC*CAVITY_NGANG)/1000).toString()),
+                        M_QTY: element.M_QTY,
+                        INS_EMPL: '',
+                        INS_DATE: '',
+                        UPD_EMPL: '',
+                        UPD_DATE: '',
+                        id: index,
+                      };
+                    }
+                  );
+                  setChiThiDataTable(loaded_data);
+                } else {
+                  setChiThiDataTable([]);
+                }
+              })
+              .catch((error) => {
+                console.log(error);
+              });
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+  }
+  const handleResetChiThiTable = async ()=> {
+    if(qlsxplandatafilter.length >0)
+    {
+    let PD: number = 0, CAVITY_NGANG:number =0, CAVITY_DOC:number = 0, PLAN_QTY = qlsxplandatafilter[0].PLAN_QTY;
+    await generalQuery('getcodefullinfo',{
+      G_CODE: qlsxplandatafilter[0].G_CODE
+    })
+    .then((response)=> {
+      if (response.data.tk_status !== "NG") {
+        //console.log(response.data.data)
+        PD = response.data.data[0].PD;
+        CAVITY_NGANG = response.data.data[0].G_C_R;
+        CAVITY_DOC = response.data.data[0].G_C;        
+      } else {
+
+      }
+      
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+
+     await generalQuery("getbomsx", {
+        G_CODE: qlsxplandatafilter[0].G_CODE,
+      })
+        .then((response) => {
+          console.log(response.data.tk_status);
+          if (response.data.tk_status !== "NG") {
+            const loaded_data: QLSXCHITHIDATA[] = response.data.data.map(
+              (element: QLSXCHITHIDATA, index: number) => {
+                return { 
+                  CHITHI_ID: index,
+                  PLAN_ID: qlsxplandatafilter[0].PLAN_ID,
+                  M_CODE: element.M_CODE,
+                  M_NAME: element.M_NAME, 
+                  WIDTH_CD: element.WIDTH_CD,
+                  M_ROLL_QTY: 0,
+                  M_MET_QTY: parseInt((PLAN_QTY*PD/(CAVITY_DOC*CAVITY_NGANG)/1000).toString()),
+                  M_QTY: element.M_QTY,
+                  INS_EMPL: '',
+                  INS_DATE: '',
+                  UPD_EMPL: '',
+                  UPD_DATE: '',
+                  id: index,
+                };
+              }
+            );
+            setChiThiDataTable(loaded_data);
           } else {
             setChiThiDataTable([]);
           }
@@ -554,6 +714,11 @@ const MACHINE = () => {
         .catch((error) => {
           console.log(error);
         });
+    }
+    else
+    {
+      Swal.fire('Thông báo','Chọn ít nhất 1 PLAN để RESET Liệu','error');
+    }
   }
   const handletraYCSX = () => {
     setisLoading(true);
@@ -748,6 +913,278 @@ const MACHINE = () => {
       }
     });
   };
+  const handleConfirmDeletePlan = () => {
+    Swal.fire({
+      title: "Chắc chắn muốn xóa PLan đã chọn ?",
+      text: "Sẽ bắt đầu xóa Plan đã chọn",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Vẫn Xóa!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        Swal.fire(
+          "Tiến hành Xóa Plan",
+          "Đang xóa Plan",
+          "success"
+        );
+        handle_DeleteLinePLAN();
+      }
+    });
+  };
+  const handleConfirmRESETLIEU = () => {
+    Swal.fire({
+      title: "Chắc chắn muốn RESET liệu ?",
+      text: "Sẽ bắt đầu RESET liệu",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Vẫn RESET liệu!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        Swal.fire(
+          "Tiến hành RESET liệu",
+          "Đang RESET liệu",
+          "success"
+        );
+        handleResetChiThiTable();
+      }
+    });
+  };
+  const handleConfirmDeleteLieu = () => {
+    Swal.fire({
+      title: "Chắc chắn muốn xóa Liệu đã chọn ?",
+      text: "Sẽ bắt đầu xóa Liệu đã chọn",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Vẫn Xóa!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        Swal.fire(
+          "Tiến hành Xóa Liệu",
+          "Đang xóa Liệu",
+          "success"
+        );
+        handle_DeleteLineCHITHI();
+      }
+    });
+  };
+  const handle_DeleteLinePLAN = async() => {    
+    if(qlsxplandatafilter.length>0)
+    {     
+      let datafilter = [...plandatatable];
+      for(let i=0;i<qlsxplandatafilter.length; i++)
+      {
+        for(let j=0;j<datafilter.length;j++)
+        {          
+          if(qlsxplandatafilter[i].id === datafilter[j].id)
+          {
+            generalQuery("deletePlanQLSX", { PLAN_ID: qlsxplandatafilter[i].PLAN_ID })
+            .then((response) => {
+              console.log(response.data.tk_status);
+              if (response.data.tk_status !== "NG") {
+                datafilter.splice(j,1);   
+                setPlanDataTable(datafilter);    
+              } else {
+                Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
+              }
+            })
+            .catch((error) => {
+              console.log(error);
+            });              
+          }
+        }
+      } 
+    }
+    else
+    {
+      Swal.fire("Thông báo", "Chọn ít nhất một dòng để xóa", "error"); 
+    } 
+  }
+  const handle_DeleteLineCHITHI = () => {    
+    if(qlsxchithidatafilter.length>0)
+    {     
+      let datafilter = [...chithidatatable];     
+      for(let i=0;i<qlsxchithidatafilter.length; i++)
+      {
+        for(let j=0;j<datafilter.length;j++)
+        {          
+          if(qlsxchithidatafilter[i].CHITHI_ID === datafilter[j].CHITHI_ID)
+          {
+            datafilter.splice(j,1);          
+          }
+        }
+      }       
+      setChiThiDataTable(datafilter);
+    }
+    else
+    {
+      Swal.fire("Thông báo", "Chọn ít nhất một dòng để xóa", "error"); 
+    } 
+  }
+
+  const getNextPLAN_ID =async (PROD_REQUEST_NO: string) => {
+    let next_plan_id: string =PROD_REQUEST_NO;
+    let next_plan_order: number =1;
+    await generalQuery("getLastestPLAN_ID", {
+          PROD_REQUEST_NO: PROD_REQUEST_NO
+    })
+      .then((response) => {
+        //console.log(response.data.tk_status);
+        if (response.data.tk_status !== "NG") {
+          //console.log(response.data.data[0].PLAN_ID);
+          next_plan_id = PROD_REQUEST_NO +  String.fromCharCode(response.data.data[0].PLAN_ID.substring(7,8).charCodeAt(0) + 1);
+        } else {
+          next_plan_id = PROD_REQUEST_NO+'A'; 
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+      await generalQuery("getLastestPLANORDER", {
+        PLAN_DATE: selectedPlanDate,
+        PLAN_EQ: selectedMachine,
+        PLAN_FACTORY: selectedFactory
+  })
+    .then((response) => {
+      //console.log(response.data.tk_status);
+      if (response.data.tk_status !== "NG") {
+        //console.log(response.data.data[0].PLAN_ID);
+        next_plan_order = response.data.data[0].PLAN_ORDER + 1;
+      } else {
+        next_plan_order = 1; 
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+      //console.log(next_plan_id);
+      return {NEXT_PLAN_ID: next_plan_id, NEXT_PLAN_ORDER: next_plan_order};
+  }
+  const handle_AddPlan = async ()=> {
+    if (ycsxdatatablefilter.length >= 1) {      
+      for (let i = 0; i < ycsxdatatablefilter.length; i++) {
+         let nextPlan =  (await getNextPLAN_ID(ycsxdatatablefilter[i].PROD_REQUEST_NO));
+         let NextPlanID = nextPlan.NEXT_PLAN_ID;
+         let NextPlanOrder = nextPlan.NEXT_PLAN_ORDER;
+         await generalQuery("addPlanQLSX", {
+          PLAN_ID: NextPlanID,
+          PLAN_DATE: selectedPlanDate,
+          PROD_REQUEST_NO: ycsxdatatablefilter[i].PROD_REQUEST_NO,
+          PLAN_QTY: 0,
+          PLAN_EQ: selectedMachine,
+          PLAN_FACTORY: selectedFactory,
+          PLAN_LEADTIME: 0,
+          STEP: 1,         
+          PLAN_ORDER: NextPlanOrder,
+          PROCESS_NUMBER: 0,
+        })
+          .then((response) => {
+            console.log(response.data.tk_status);
+            if (response.data.tk_status !== "NG") {
+              loadQLSXPlan(selectedPlanDate);
+            } else {
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }     
+    } else {
+      Swal.fire("Thông báo", "Chọn ít nhất 1 YCSX để Add !", "error");
+    }
+  }
+  const handle_UpdatePlan =()=> {
+    let selectedPlanTable: QLSXPLANDATA[] = plandatatable.filter(
+      (element: QLSXPLANDATA, index: number) => {
+        return (
+          element.PLAN_EQ === selectedMachine &&
+          element.PLAN_FACTORY === selectedFactory
+        );
+      }
+    )
+    let err_code:string = '0';
+    for(let i=0; i< selectedPlanTable.length;i++)
+    {
+      generalQuery("updatePlanQLSX", {
+        PLAN_ID: selectedPlanTable[i].PLAN_ID,
+        STEP: selectedPlanTable[i].STEP,
+        PLAN_QTY: selectedPlanTable[i].PLAN_QTY,
+        PLAN_LEADTIME: selectedPlanTable[i].PLAN_LEADTIME,
+        PLAN_ORDER: selectedPlanTable[i].PLAN_ORDER,
+        PROCESS_NUMBER: selectedPlanTable[i].PROCESS_NUMBER,
+      })
+        .then((response) => {
+          console.log(response.data.tk_status);
+          if (response.data.tk_status !== "NG") {
+          } else {
+            err_code += '_'+ response.data.message;
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+    if(err_code  !=='0')
+    {
+      Swal.fire('Thông báo', 'Có lỗi !'+ err_code,'error');
+    }
+    else
+    {
+      Swal.fire('Thông báo', 'Lưu PLAN thành công','success');
+      loadQLSXPlan(selectedPlanDate);
+    }
+  }
+  const hanlde_SaveChiThi = async ()=> {
+    let err_code:string = '0';
+    await generalQuery("deleteChiThi", {
+      PLAN_ID: qlsxplandatafilter[0].PLAN_ID,      
+    })
+      .then((response) => {
+        console.log(response.data);
+        if (response.data.tk_status !== "NG") {
+        } else {
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+
+      for(let i=0; i<chithidatatable.length; i++)
+      {
+        generalQuery("insertChiThi", {
+          PLAN_ID: qlsxplandatafilter[0].PLAN_ID,
+          M_CODE: chithidatatable[i].M_CODE,
+          M_ROLL_QTY: chithidatatable[i].M_ROLL_QTY,
+          M_MET_QTY: chithidatatable[i].M_MET_QTY,
+          M_QTY: chithidatatable[i].M_QTY,
+        })
+          .then((response) => {
+            //console.log(response.data);
+            if (response.data.tk_status !== "NG") {
+            } else {
+              err_code += '_'+ response.data.message;              
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }
+
+    if(err_code  !=='0')
+    {
+      Swal.fire('Thông báo', 'Có lỗi !'+ err_code,'error');
+    }
+    else
+    {
+      Swal.fire('Thông báo', 'Lưu Chỉ thị thành công','success');
+      loadQLSXPlan(selectedPlanDate);
+    }
+  }
   function CustomToolbarPOTable() {
     return (
       <GridToolbarContainer>
@@ -817,6 +1254,19 @@ const MACHINE = () => {
           <AiOutlinePrinter color='#ff751a' size={25} />
           Print Bản Vẽ
         </IconButton>
+        <IconButton
+          className='buttonIcon'
+          onClick={() => {
+            if (ycsxdatatablefilter.length > 0) {
+              handle_AddPlan();
+            } else {
+              Swal.fire("Thông báo", "Chọn ít nhất 1 YCSX để thêm PLAN", "error");
+            }
+          }}
+        >
+          <AiFillFolderAdd color='#69f542' size={25} />
+          Add to PLAN
+        </IconButton> 
       </GridToolbarContainer>
     );
   }
@@ -839,13 +1289,13 @@ const MACHINE = () => {
         <IconButton
           className='buttonIcon'
           onClick={() => {
-            if (ycsxdatatablefilter.length > 0) {
+            if (qlsxplandatafilter.length > 0) {
               setShowChiThi(true);
-              console.log(ycsxdatatablefilter);
-              //setYCSXListRender(renderYCSX(ycsxdatatablefilter));
+              setChiThiListRender(renderChiThi(qlsxplandatafilter));
+              //console.log(ycsxdatatablefilter);
             } else {
                 setShowChiThi(true);
-              Swal.fire("Thông báo", "Chọn ít nhất 1 YCSX để in", "error");
+                Swal.fire("Thông báo", "Chọn ít nhất 1 Plan để in", "error");
             }
           }}
         >
@@ -854,37 +1304,39 @@ const MACHINE = () => {
         </IconButton>      
         <IconButton
           className='buttonIcon'
-          onClick={() => {
-            if (ycsxdatatablefilter.length > 0) {
-              setShowChiThi(true);
-              console.log(ycsxdatatablefilter);
-              //setYCSXListRender(renderYCSX(ycsxdatatablefilter));
+          onClick={ () => {
+            if (qlsxplandatafilter.length > 0) {
+              setShowYCKT(true);
+              setYCKTListRender(renderYCKT(qlsxplandatafilter));
+              //console.log(ycsxdatatablefilter);
             } else {
-              Swal.fire("Thông báo", "Chọn ít nhất 1 YCSX để in", "error");
-            }
-          }}
+                setShowChiThi(true);
+                Swal.fire("Thông báo", "Chọn ít nhất 1 Plan để in", "error");
+            }           
+          }
+        }
         >
           <AiOutlinePrinter color='#9066ff' size={25} />
           Print YCKT
-        </IconButton>      
+        </IconButton>
         <IconButton
           className='buttonIcon'
           onClick={() => {
-            if (qlsxplandatafilter.length > 0) {
-              handleGetChiThiTable(qlsxplandatafilter[0].PLAN_ID);
-              if(chithidatatable.length <=0)
-              {
-
-              }
-
-            } else {
-              Swal.fire("Thông báo", "Chọn ít nhất 1 PLAN để thêm chỉ thị", "error");
-            }
+            handle_UpdatePlan();
           }}
         >
-          <AiFillFolderAdd color='#69f542' size={25} />
-          Thêm chỉ thị
-        </IconButton>      
+          <AiFillSave color='blue' size={20} />
+          Lưu PLAN
+        </IconButton> 
+        <IconButton
+          className='buttonIcon'
+          onClick={() => {
+            handleConfirmDeletePlan();
+          }}
+        >
+          <FcDeleteRow color='yellow' size={20} />
+          Xóa PLAN
+        </IconButton>
       </GridToolbarContainer>
     );
   }
@@ -907,34 +1359,53 @@ const MACHINE = () => {
         <IconButton
           className='buttonIcon'
           onClick={() => {
-            if (ycsxdatatablefilter.length > 0) {
-              setShowChiThi(true);
-              console.log(ycsxdatatablefilter);
-              //setYCSXListRender(renderYCSX(ycsxdatatablefilter));
-            } else {
-                setShowChiThi(true);
-              Swal.fire("Thông báo", "Chọn ít nhất 1 YCSX để in", "error");
+            if (chithidatatable.length > 0) {
+              hanlde_SaveChiThi();             
+            } else {               
+              Swal.fire("Thông báo", "Không có liệu để chỉ thị", "error");
             }
           }}
         >
-          <AiOutlinePrinter color='#0066ff' size={25} />
-          Print Chỉ Thị
-        </IconButton>      
+          <AiFillSave color='blue' size={20} />
+          Lưu chỉ thị
+        </IconButton> 
         <IconButton
           className='buttonIcon'
           onClick={() => {
-            if (ycsxdatatablefilter.length > 0) {
-              setShowChiThi(true);
-              console.log(ycsxdatatablefilter);
-              //setYCSXListRender(renderYCSX(ycsxdatatablefilter));
-            } else {
-              Swal.fire("Thông báo", "Chọn ít nhất 1 YCSX để in", "error");
-            }
+            handleConfirmDeleteLieu();
           }}
         >
-          <AiOutlinePrinter color='#9066ff' size={25} />
-          Print YCKT
-        </IconButton>      
+          <FcDeleteRow color='yellow' size={20} />
+          Xóa Liệu
+        </IconButton>
+        <IconButton
+          className='buttonIcon'
+          onClick={() => {
+            handleConfirmRESETLIEU();
+          }}
+        >
+          <BiReset color='red' size={20} />
+          RESET Liệu
+        </IconButton>
+        <IconButton
+          className='buttonIcon'
+          onClick={() => { 
+            Swal.fire('Thông báo','Đăng ký xuất liệu','success');          
+          }}
+        >
+          <AiOutlineBarcode color='green' size={20} />
+          Đăng ký Xuất Liệu
+        </IconButton>
+        <span style={{fontSize:20, fontWeight: 'bold', color: 'red'}}>
+        {
+          qlsxplandatafilter[0]?.PLAN_ID
+        }
+        </span>_____
+        <span style={{fontSize:20, fontWeight: 'bold', color: 'blue'}}>
+        {
+          qlsxplandatafilter[0]?.G_NAME
+        }
+        </span>       
       </GridToolbarContainer>
     );
   }
@@ -958,28 +1429,91 @@ const MACHINE = () => {
     //console.log(datafilter);
     if (datafilter.length > 0) {
       setQlsxPlanDataFilter(datafilter);
-      handleGetChiThiTable(datafilter[0].PLAN_ID);
+      handleGetChiThiTable(datafilter[0].PLAN_ID, datafilter[0].G_CODE, datafilter[0].PLAN_QTY);
     } else {
         setQlsxPlanDataFilter([]);
+        setChiThiDataTable([]);
       console.log("xoa filter");
     }
   };
   const handleQLSXCHITHIDataSelectionforUpdate = (ids: GridSelectionModel) => {
     const selectedID = new Set(ids);
-    let datafilter = plandatatable.filter((element: any) =>
-      selectedID.has(element.PLAN_ID)
+    let datafilter = chithidatatable.filter((element: any) =>
+      selectedID.has(element.CHITHI_ID)
     );
     //console.log(datafilter);
     if (datafilter.length > 0) {
-      setQlsxPlanDataFilter(datafilter);
+      setQlsxChiThiDataFilter(datafilter);
     } else {
-        setQlsxPlanDataFilter([]);
+      setQlsxChiThiDataFilter([]);
       console.log("xoa filter");
     }
   };
+  const zeroPad = (num:number, places:number) => String(num).padStart(places, '0');
+
+  const handleDangKyXuatLieu = async (PLAN_ID: string, PROD_REQUEST_NO: string, PROD_REQUEST_DATE: string)=>
+  {
+    //get Next_ out_ no
+    let NEXT_OUT_NO: string = '001';
+    await generalQuery("getO300_LAST_OUT_NO", {      
+    })
+      .then((response) => {
+        //console.log(response.data);
+        if (response.data.tk_status !== "NG") {
+          NEXT_OUT_NO = zeroPad(parseInt(response.data.data[0].OUT_NO)+1,3);
+          console.log(NEXT_OUT_NO);
+        } else {
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+
+    // get code_50 phan loai giao hang GC, SK, KD
+
+    let CODE_50:string = '';
+    await generalQuery("getP400", {   
+      PROD_REQUEST_NO: PROD_REQUEST_NO,
+      PROD_REQUEST_DATE: PROD_REQUEST_DATE      
+    })
+    .then((response) => {
+      //console.log(response.data);
+      if (response.data.tk_status !== "NG") {
+        CODE_50 = response.data.data[0].CODE_50;        
+      } else {
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+
+    /////////////////////
+    await generalQuery("insertO300", {   
+      OUT_DATE: moment().format('YYYYMMDD'),
+      OUT_NO: NEXT_OUT_NO,
+      CODE_03: '01',
+      CODE_52: '01',
+      PROD_REQUEST_DATE: PROD_REQUEST_DATE,
+      PROD_REQUEST_NO: PROD_REQUEST_NO,
+
+    })
+    .then((response) => {
+      //console.log(response.data);
+      if (response.data.tk_status !== "NG") {
+        
+      } else {
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+        
+  }
   useEffect(() => {
-    loadQLSXPlan();
+    loadQLSXPlan(selectedPlanDate);
+    handleDangKyXuatLieu('','','');
   }, []);
+
   return (
     <div className='machineplan'>
       <div className='mininavbar'>
@@ -990,51 +1524,68 @@ const MACHINE = () => {
           <span className='mininavtext'>NM2</span>
         </div>
       </div>
+      <div className='plandateselect'>
+        <label>Plan Date</label>
+        <input         
+          className='inputdata'
+          type='date'
+          value={selectedPlanDate}
+          onChange={(e) => {setSelectedPlanDate(e.target.value);  console.log(e.target.value); loadQLSXPlan(e.target.value);}}
+        ></input>
+      </div>
       {selection.tab1 && (
         <div className='NM1'>
           <span className='machine_title'>FR-NM1</span>
-          <div className='FRlist'>
-            <div
-              className='machinebutton'
-              onClick={() => {
-                setShowPlanWindow(true);
-                setSelectedFactory("NM1");
-                setSelectedMachine("FR1");
-              }}
-            >
+          <div className='FRlist'>           
               <MACHINE_COMPONENT
                 factory='NM1'
                 machine_name='FR1'
                 run_stop={1}
                 machine_data={plandatatable}
-              />
-            </div>
-            <div
-              className='machinebutton'
-              onClick={() => {
-                setShowPlanWindow(true);
-                setSelectedFactory("NM1");
-                setSelectedMachine("FR2");
-              }}
-            >
+                onClick={()=>{
+                  setShowPlanWindow(true);
+                  setSelectedFactory("NM1");
+                  setSelectedMachine("FR1");
+                  setChiThiDataTable([]);
+                }}
+                />              
               <MACHINE_COMPONENT
                 factory='NM1'
                 machine_name='FR2'
                 run_stop={1}
                 machine_data={plandatatable}
+                onClick={()=>{
+                  setShowPlanWindow(true);
+                  setSelectedFactory("NM1");
+                  setSelectedMachine("FR2");
+                  setChiThiDataTable([]);
+                }}
               />
-            </div>
             <MACHINE_COMPONENT
               factory='NM1'
               machine_name='FR3'
               run_stop={1}
               machine_data={plandatatable}
+              onClick={()=>{
+                  setShowPlanWindow(true);
+                  setSelectedFactory("NM1");
+                  setSelectedMachine("FR3");
+                  setChiThiDataTable([]);
+                }
+              }
             />
             <MACHINE_COMPONENT
               factory='NM1'
               machine_name='FR4'
               run_stop={1}
               machine_data={plandatatable}
+              onClick={()=>{
+                setShowPlanWindow(true);
+                setSelectedFactory("NM1");
+                setSelectedMachine("FR4");
+                setChiThiDataTable([]);
+              }
+            }
             />
           </div>
           <span className='machine_title'>SR-NM1</span>
@@ -1620,7 +2171,7 @@ const MACHINE = () => {
                         Close
                       </button>
                     </div>
-                    <div className='chithirender' ref={ycsxprintref}>
+                    <div className='ycsxrender' ref={ycsxprintref}>
                       {ycsxlistrender}
                     </div>
                   </div>
@@ -1651,10 +2202,10 @@ const MACHINE = () => {
                 )}
                 {showChiThi && (
                   <div className='printycsxpage'>
-                     <div className='buttongroup'>
+                    <div className='buttongroup'>
                       <button
                         onClick={() => {
-                          setYCSXListRender(renderBanVe(ycsxdatatablefilter));
+                          setChiThiListRender(renderChiThi(qlsxplandatafilter));
                         }}
                       >
                         Render Chỉ Thị
@@ -1662,71 +2213,119 @@ const MACHINE = () => {
                       <button onClick={handlePrint}>Print Chỉ Thị</button>
                       <button
                         onClick={() => {
-                          setShowChiThi(!showChiThi);
+                          setShowChiThi(!showChiThi);                          
                         }}
                       >
                         Close
                       </button>
                     </div>
-                    <CHITHI_COMPONENT />
+                    <div className='ycsxrender' ref={ycsxprintref}>
+                      {chithilistrender}              
+                    </div>                                       
                   </div>
-                )}
+                )}                
+                {showYCKT && (
+                  <div className='printycsxpage'>
+                    <div className='buttongroup'>
+                      <button
+                        onClick={() => {
+                          setYCKTListRender(renderYCKT(qlsxplandatafilter));
+                        }}
+                      >
+                        Render YCKT
+                      </button>
+                      <button onClick={handlePrint}>Print Chỉ Thị</button>
+                      <button
+                        onClick={() => {
+                          setShowYCKT(!showYCKT);                          
+                        }}
+                      >
+                        Close
+                      </button>
+                    </div>
+                    <div className='ycsxrender' ref={ycsxprintref}>
+                      {ycktlistrender}              
+                    </div>                                       
+                  </div>
+                )}                
               </div>
             </div>
-            <div className="chithidiv">
-            <div className='planlist'>
-              <DataGrid
-                sx={{ fontSize: 12, flex: 1 }}
-                components={{
-                  Toolbar: CustomToolbarPLANTABLE,
-                  LoadingOverlay: LinearProgress,
-                }}
-                loading={isLoading}
-                rowHeight={30}
-                rows={plandatatable.filter(
-                  (element: QLSXPLANDATA, index: number) => {
-                    return (
-                      element.PLAN_EQ === selectedMachine &&
-                      element.PLAN_FACTORY === selectedFactory
-                    );
-                  }
-                )}
-                columns={column_plandatatable}
-                rowsPerPageOptions={[
-                  5, 10, 50, 100, 500, 1000, 5000, 10000, 500000,
-                ]}
-                editMode='row'
-                getRowId={(row) => row.PLAN_ID}                
-                onSelectionModelChange={(ids) => {
+            <div className='chithidiv'>
+              <div className='planlist'>
+                <DataGrid
+                  sx={{ fontSize: 12, flex: 1 }}
+                  components={{
+                    Toolbar: CustomToolbarPLANTABLE,
+                    LoadingOverlay: LinearProgress,
+                  }}
+                  loading={isLoading}
+                  rowHeight={30}
+                  rows={plandatatable.filter(
+                    (element: QLSXPLANDATA, index: number) => {
+                      return (
+                        element.PLAN_EQ === selectedMachine &&
+                        element.PLAN_FACTORY === selectedFactory
+                      );
+                    }
+                  )}
+                  columns={column_plandatatable}
+                  rowsPerPageOptions={[
+                    5, 10, 50, 100, 500, 1000, 5000, 10000, 500000,
+                  ]}
+                  editMode='cell'
+                  getRowId={(row) => row.PLAN_ID}
+                  onSelectionModelChange={(ids) => {
                     handleQLSXPlanDataSelectionforUpdate(ids);
-                }}
-              />
-            </div>
-            <div className="chithitable">
-            <DataGrid
-                sx={{ fontSize: 12, flex: 1 }}
-                components={{
-                  Toolbar: CustomToolbarCHITHITABLE,
-                  LoadingOverlay: LinearProgress,
-                }}
-                loading={isLoading}
-                rowHeight={30}
-                rows={chithidatatable}
-                columns={column_chithidatatable}
-                rowsPerPageOptions={[
-                  5, 10, 50, 100, 500, 1000, 5000, 10000, 500000,
-                ]}
-                editMode='row'
-                getRowId={(row) => row.PLAN_ID}
-                checkboxSelection
-                onSelectionModelChange={(ids) => {
+                  }}
+                  onCellEditCommit={(
+                    params: GridCellEditCommitParams,
+                    event: MuiEvent<MuiBaseEvent>,
+                    details: GridCallbackDetails
+                  ) => {
+                    const keyvar = params.field;
+                    const newdata = plandatatable.map((p) =>
+                      p.PLAN_ID === params.id ? { ...p, [keyvar]: params.value } : p
+                    );
+                    setPlanDataTable(newdata);
+                    //console.log(plandatatable);
+                  }}
+                />
+              </div>
+              <div className='chithitable'>
+                <DataGrid
+                  sx={{ fontSize: 12, flex: 1 }}
+                  components={{
+                    Toolbar: CustomToolbarCHITHITABLE,
+                    LoadingOverlay: LinearProgress,
+                  }}
+                  getRowId={(row) => row.CHITHI_ID}
+                  loading={isLoading}
+                  rowHeight={30}
+                  rows={chithidatatable}
+                  columns={column_chithidatatable}
+                  rowsPerPageOptions={[
+                    5, 10, 50, 100, 500, 1000, 5000, 10000, 500000,
+                  ]}
+                  editMode='cell'
+                  checkboxSelection
+                  onSelectionModelChange={(ids) => {
                     handleQLSXCHITHIDataSelectionforUpdate(ids);
-                }}
-              />
+                  }}
+                  onCellEditCommit={(
+                    params: GridCellEditCommitParams,
+                    event: MuiEvent<MuiBaseEvent>,
+                    details: GridCallbackDetails
+                  ) => {
+                    const keyvar = params.field;
+                    const newdata = chithidatatable.map((p) =>
+                      p.CHITHI_ID === params.id ? { ...p, [keyvar]: params.value } : p
+                    );
+                    setChiThiDataTable(newdata);
+                    //console.log(chithidatatable);
+                  }}
+                />
+              </div>
             </div>
-
-            </div>
-           
           </div>
         </div>
       )}

@@ -15,17 +15,22 @@ import getsentence from "../../components/String/String";
 import { LangConText } from "../../api/Context";
 import { AiFillAmazonCircle, AiFillAmazonSquare, AiOutlineCalendar } from "react-icons/ai";
 import RuleRoundedIcon from '@mui/icons-material/RuleRounded';
+import {RootState} from '../../redux/store'
+import {useSelector, useDispatch} from 'react-redux'
+import { changeDiemDanhState, changeUserData, UserData } from "../../redux/slices/globalSlice";
+
 const Sidebar = () => {
   const [sidebar, setSidebar] = useState(false);
   const showSidebar = () => setSidebar(!sidebar);
   const [lang,setLang] = useContext(LangConText);
+  const globalUserData: UserData|undefined = useSelector((state:RootState)=>state.totalSlice.userData);
   const SidebarData = [
     {
       title: getsentence(12,lang), /*Nhân sự*/
       path: '#',
       icon: <FcManager color='green' size={25}/>,
       iconClosed: <KeyboardArrowDownIcon />,
-      iconOpened: <KeyboardArrowUpIcon />,  
+      iconOpened: <KeyboardArrowUpIcon />,
       subNav: [
         {
           title: getsentence(13,lang), /*Quản lý phòng ban- nhân viên*/
@@ -61,6 +66,11 @@ const Sidebar = () => {
           title: getsentence(16,lang), /*Báo cáo nhân sự*/
           path: '/nhansu/baocaonhansu',
           icon: <FcPieChart color='#cc99ff' size={25}/>
+        },
+        {
+          title: 'Quản lý cấp cao', /*Báo cáo nhân sự*/
+          path: '/nhansu/quanlycapcao',
+          icon: <FcManager color='#cc99ff' size={25}/>,
         }
       ]
     },
@@ -105,7 +115,13 @@ const Sidebar = () => {
           title: 'Thông tin sản phẩm', /*Quản lý giá*/
           path: '/kinhdoanh/codeinfo',
           icon: <FcAbout color='#cc00ff' size={25}/>
-        },        
+        },  
+        {
+          title: 'Quản lý Code- Bom',
+          path: '/kinhdoanh/quanlycodebom',
+          icon: <FaBomb color='black' size={25}/>,
+          cName: 'sub-nav'
+        },      
         {
           title: 'Quản lý khách hàng', /*Quản lý giá*/
           path: '/kinhdoanh/customermanager',

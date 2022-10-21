@@ -1149,7 +1149,9 @@ const readUploadFileAmazon = (e:any) => {
                       next_process_in_no: next_p500_in_no,                    
                       EMPL_NO: userData.EMPL_NO,
                       next_process_lot_no:next_process_lot_no_p501,
-                      next_process_prt_seq: next_process_lot_no_p501.substring(5,8)             
+                      next_process_prt_seq: next_process_lot_no_p501.substring(5,8),
+                      PROD_REQUEST_DATE: moment().format("YYYYMMDD"), 
+                      PROD_REQUEST_NO: next_prod_request_no,                
                     })
                       .then((response) => {
                         if (response.data.tk_status !== "NG") {
@@ -1504,7 +1506,9 @@ const readUploadFileAmazon = (e:any) => {
             next_process_in_no: next_p500_in_no,                    
             EMPL_NO: userData.EMPL_NO,
             next_process_lot_no:next_process_lot_no_p501,
-            next_process_prt_seq: next_process_lot_no_p501.substring(5,8)             
+            next_process_prt_seq: next_process_lot_no_p501.substring(5,8),
+            PROD_REQUEST_DATE: moment().format("YYYYMMDD"), 
+            PROD_REQUEST_NO: next_prod_request_no,             
           })
             .then((response) => {
               if (response.data.tk_status !== "NG") {
@@ -1964,7 +1968,6 @@ const readUploadFileAmazon = (e:any) => {
       console.log(error);
     });
   }
-
   //console.log(userData);
   useEffect(()=>{
         getcustomerlist();

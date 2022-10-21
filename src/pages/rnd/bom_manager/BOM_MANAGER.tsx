@@ -51,6 +51,7 @@ import { SaveExcel } from "../../../api/GlobalFunction";
 import "./BOM_MANAGER.scss";
 import { BiAddToQueue, BiReset } from "react-icons/bi";
 import { MdOutlineDraw, MdOutlineUpdate, MdUpgrade } from "react-icons/md";
+import { FaRegClone } from "react-icons/fa";
 const axios = require("axios").default;
 interface CODE_INFO {
   id: number;
@@ -122,6 +123,7 @@ interface BOM_SX {
   M_NAME?: string;
   WIDTH_CD?: number;
   M_QTY?: number;
+  MAIN_M: string;
   INS_EMPL?: string;
   INS_DATE?: string;
   UPD_EMPL?: string;
@@ -142,6 +144,7 @@ interface BOM_GIA {
   M_SS_PRICE?: number;
   M_SLITTING_PRICE?: number;
   USAGE?: string;
+  MAIN_M: string;
   MAT_MASTER_WIDTH?: number;
   MAT_CUTWIDTH?: number;
   MAT_ROLL_LENGTH?: number;
@@ -248,10 +251,7 @@ const BOM_MANAGER = () => {
     //console.log(tempcodefullinfo);
     setCodeFullInfo(tempcodefullinfo);
   };
-
-
   const [pinBOM, setPINBOM] = useState(false);
-
   const [column_codeinfo, setcolumn_codeinfo] =
     useState<Array<any>>([
       { field: "id", headerName: "ID", width: 70, editable: enableEdit },
@@ -463,6 +463,7 @@ const BOM_MANAGER = () => {
       }, editable: enableEdit },
       { field: "WIDTH_CD", headerName: "SIZE", width: 80, editable: enableEdit },
       { field: "M_QTY", headerName: "M_QTY", width: 80 , editable: enableEdit},
+      { field: "MAIN_M", headerName: "MAIN_M", width: 80 , editable: enableEdit},
       { field: "INS_EMPL", headerName: "INS_EMPL", width: 80 , editable: enableEdit},
       { field: "INS_DATE", headerName: "INS_DATE", width: 150 , editable: enableEdit},
       { field: "UPD_EMPL", headerName: "UPD_EMPL", width: 80 , editable: enableEdit},
@@ -496,6 +497,7 @@ const BOM_MANAGER = () => {
           
         
       }  },
+      { field: "MAIN_M", headerName: "MAIN_M", width: 80, editable: enableEdit },
       { field: "MAT_MASTER_WIDTH", headerName: "Khổ liệu", width: 80, editable: enableEdit , renderCell: (params:any) => {
         if(params.row.MAT_MASTER_WIDTH === 0)
         {         
@@ -535,7 +537,6 @@ const BOM_MANAGER = () => {
       { field: "UPD_EMPL", headerName: "UPD_EMPL", width: 80 , editable: enableEdit},
       { field: "UPD_DATE", headerName: "UPD_DATE", width: 160 , editable: enableEdit},
     ]);
-
   function CustomToolbarPOTable() {
     return (
       <GridToolbarContainer>
@@ -691,11 +692,19 @@ const BOM_MANAGER = () => {
           <AiFillEdit color='yellow' size={25} />
           Bật tắt sửa
         </IconButton>
+        <IconButton
+          className='buttonIcon'
+          onClick={() => {
+            confirmCloneBOMSX();
+          }}
+        >
+          <FaRegClone color='red' size={20} />
+          Clone BOMSX
+        </IconButton>
         <GridToolbarQuickFilter />
       </GridToolbarContainer>
     );
   }
-
   const resetBanVe = async (value: string) => {
     if (codedatatablefilter.length >= 1) {
       if (
@@ -1212,6 +1221,7 @@ const BOM_MANAGER = () => {
         M_NAME: selectedMaterial?.M_NAME,
         WIDTH_CD: selectedMaterial?.WIDTH_CD,
         M_QTY: 1,
+        MAIN_M: '0',
         INS_EMPL: userData.EMPL_NO,
         INS_DATE: moment().format('YYYY-MM-DD HH:mm:ss.SSS'),
         UPD_EMPL: userData.EMPL_NO,
@@ -1250,25 +1260,24 @@ const BOM_MANAGER = () => {
     if (bomgiatable.length > 0) {
       if (bomsxtable.length > 0) {
         //delete old bom from M140
-        await generalQuery("deleteM140", {
-          G_CODE: codefullinfo.G_CODE,
-        })
-          .then((response) => {
-            if (response.data.tk_status !== "NG") {
-              //console.log(response.data.data);
-            } else {
-            }
-          })
-          .catch((error) => {
-            console.log(error);
-          });
 
-        for (let i = 0; i < bomsxtable.length; i++) {
-          await generalQuery("insertM140", {
+
+        let err_code: string ='0';
+        let checkMAIN_M:number =0;
+        for (let i = 0; i < bomsxtable.length; i++)
+        {
+          checkMAIN_M += parseInt(bomsxtable[i].MAIN_M);
+        }
+        if(checkMAIN_M === 0)
+        {
+          err_code += '| ' + 'Phải chỉ định liệu quản lý'
+        }        
+
+
+        if(err_code ==='0')
+        {
+          await generalQuery("deleteM140", {
             G_CODE: codefullinfo.G_CODE,
-            G_SEQ: zeroPad(i + 1, 3),
-            M_CODE: bomsxtable[i].M_CODE,
-            M_QTY: bomsxtable[i].M_QTY,
           })
             .then((response) => {
               if (response.data.tk_status !== "NG") {
@@ -1279,7 +1288,31 @@ const BOM_MANAGER = () => {
             .catch((error) => {
               console.log(error);
             });
+  
+          for (let i = 0; i < bomsxtable.length; i++) {
+            await generalQuery("insertM140", {
+              G_CODE: codefullinfo.G_CODE,
+              G_SEQ: zeroPad(i + 1, 3),
+              M_CODE: bomsxtable[i].M_CODE,
+              M_QTY: bomsxtable[i].M_QTY,
+              MAIN_M: bomsxtable[i].MAIN_M === null ? '0':  bomsxtable[i].MAIN_M,
+            })
+              .then((response) => {
+                if (response.data.tk_status !== "NG") {
+                  //console.log(response.data.data);
+                } else {
+                }
+              })
+              .catch((error) => {
+                console.log(error);
+              });
+          }
         }
+        else
+        {
+          Swal.fire("Thông báo", ""+ err_code, "error");
+        }
+      
       } else {
         Swal.fire("Thông báo", "Thêm ít nhất 1 liệu để lưu BOM", "warning");
       }
@@ -1314,6 +1347,7 @@ const BOM_MANAGER = () => {
             G_SEQ: zeroPad(i + 1, 3),
             M_CODE: bomgiatable[i].M_CODE,
             M_QTY: bomgiatable[i].M_QTY,
+            MAIN_M: bomgiatable[i].MAIN_M,
           })
             .then((response) => {
               if (response.data.tk_status !== "NG") {
@@ -1355,6 +1389,7 @@ const BOM_MANAGER = () => {
         M_SS_PRICE: 0,
         M_SLITTING_PRICE: 0,
         USAGE: '',
+        MAIN_M: '0',
         MAT_MASTER_WIDTH: 0,
         MAT_CUTWIDTH: selectedMaterial?.WIDTH_CD,
         MAT_ROLL_LENGTH: 0,
@@ -1398,36 +1433,30 @@ const BOM_MANAGER = () => {
   }
   const handleInsertBOMGIA = async () => {      
       if (bomgiatable.length > 0) {
-        //delete old bom from M140
-        console.log('vao bom gia insert')
-        await generalQuery("deleteBOM2", {
-          G_CODE: codefullinfo.G_CODE,
-        })
-          .then((response) => {
-            if (response.data.tk_status !== "NG") {
-              //console.log(response.data.data);
-            } else {
-            }
-          })
-          .catch((error) => {
-            console.log(error);
-          });
+        //delete old bom from M140       
 
-        for (let i = 0; i < bomgiatable.length; i++) {
-          await generalQuery("insertBOM2", {
+        let err_code: string ='0';
+        let checkMAIN_M:number =0;
+        for (let i = 0; i < bomgiatable.length; i++)
+        {
+          checkMAIN_M += parseInt(bomgiatable[i].MAIN_M);
+          if(bomgiatable[i].CUST_CD ==='' || bomgiatable[i].USAGE ===''  || bomgiatable[i].MAT_MASTER_WIDTH ===0  || bomgiatable[i].MAT_ROLL_LENGTH ===0 || bomgiatable[i].MAT_THICKNESS ===0)
+          {
+            err_code = 'Không được để ô nào NG màu đỏ';
+          }  
+        }    
+        console.log(checkMAIN_M);   
+        if(checkMAIN_M === 0)
+        {
+          err_code += '| ' + 'Phải chỉ định liệu quản lý';
+        }
+       
+        console.log(err_code);
+        if(err_code==='0')
+        {
+          console.log('vao bom gia insert')
+          await generalQuery("deleteBOM2", {
             G_CODE: codefullinfo.G_CODE,
-            G_SEQ: zeroPad(i + 1, 3),
-            M_CODE: bomgiatable[i].M_CODE,            
-            M_NAME: bomgiatable[i].M_NAME,
-            CUST_CD: bomgiatable[i].CUST_CD,
-            USAGE: bomgiatable[i].USAGE,
-            MAT_MASTER_WIDTH: bomgiatable[i].MAT_MASTER_WIDTH,
-            MAT_CUTWIDTH: bomgiatable[i].MAT_CUTWIDTH,
-            MAT_ROLL_LENGTH: bomgiatable[i].MAT_ROLL_LENGTH,
-            MAT_THICKNESS: bomgiatable[i].MAT_THICKNESS,
-            M_QTY: bomgiatable[i].M_QTY,
-            PROCESS_ORDER: bomgiatable[i].PROCESS_ORDER,
-            REMARK: bomgiatable[i].REMARK,
           })
             .then((response) => {
               if (response.data.tk_status !== "NG") {
@@ -1438,13 +1467,105 @@ const BOM_MANAGER = () => {
             .catch((error) => {
               console.log(error);
             });
+
+          for (let i = 0; i < bomgiatable.length; i++) {
+            await generalQuery("insertBOM2", {
+              G_CODE: codefullinfo.G_CODE,
+              G_SEQ: zeroPad(i + 1, 3),
+              M_CODE: bomgiatable[i].M_CODE,            
+              M_NAME: bomgiatable[i].M_NAME,
+              CUST_CD: bomgiatable[i].CUST_CD,
+              USAGE: bomgiatable[i].USAGE,
+              MAIN_M: bomgiatable[i].MAIN_M,
+              MAT_MASTER_WIDTH: bomgiatable[i].MAT_MASTER_WIDTH,
+              MAT_CUTWIDTH: bomgiatable[i].MAT_CUTWIDTH,
+              MAT_ROLL_LENGTH: bomgiatable[i].MAT_ROLL_LENGTH,
+              MAT_THICKNESS: bomgiatable[i].MAT_THICKNESS,
+              M_QTY: bomgiatable[i].M_QTY,
+              PROCESS_ORDER: bomgiatable[i].PROCESS_ORDER,
+              REMARK: bomgiatable[i].REMARK,
+            })
+              .then((response) => {
+                if (response.data.tk_status !== "NG") {
+                  //console.log(response.data.data);
+                } else {
+                }
+              })
+              .catch((error) => {
+                console.log(error);
+              });
+          }
+          handleInsertBOMSX_WITH_GIA();
         }
+        else
+        {
+          Swal.fire('Thông báo', err_code,'error');
+        }
+        
       } 
       else 
       {
         Swal.fire("Thông báo", "Thêm ít nhất 1 liệu để lưu BOM", "warning");
       }    
     
+  };
+  const handleCloneBOMSXsangBOMGIA = async () => {
+    if (bomsxtable.length > 0) {
+      let tempBOMGIA: BOM_GIA[] = [];
+
+      for (let i = 0; i < bomsxtable.length; i++) {
+        let tempeditrows:BOM_GIA = {
+          id: moment().format('YYYY-MM-DD HH:mm:ss.SSS')+bomsxtable[i]?.M_CODE,
+          BOM_ID: moment().format('YYYY-MM-DD HH:mm:ss.SSS')+bomsxtable[i]?.M_CODE,
+          G_CODE: codefullinfo.G_CODE,
+          RIV_NO: 'A',
+          G_SEQ: zeroPad(bomgiatable.length+1,3),
+          CATEGORY: 1,
+          M_CODE: bomsxtable[i]?.M_CODE,
+          M_NAME: bomsxtable[i]?.M_NAME,
+          CUST_CD: '',
+          IMPORT_CAT: '',
+          M_CMS_PRICE: 0,
+          M_SS_PRICE: 0,
+          M_SLITTING_PRICE: 0,
+          USAGE: '',
+          MAIN_M: '0',
+          MAT_MASTER_WIDTH: 0,
+          MAT_CUTWIDTH: bomsxtable[i]?.WIDTH_CD,
+          MAT_ROLL_LENGTH: 0,
+          MAT_THICKNESS: 0,
+          M_QTY: 1,
+          REMARK: '',
+          PROCESS_ORDER: i+1,
+          INS_EMPL: userData.EMPL_NO,
+          INS_DATE: moment().format('YYYY-MM-DD HH:mm:ss.SSS'),
+          UPD_EMPL: userData.EMPL_NO,
+          UPD_DATE: moment().format('YYYY-MM-DD HH:mm:ss.SSS'),
+        };
+        tempBOMGIA =[...tempBOMGIA, tempeditrows];
+      }
+      setBOMGIATable(tempBOMGIA);
+
+    } else {
+      Swal.fire("Thông báo", "Không có BOM SX để Clone sang", "error");
+    }
+  }; 
+     
+  const confirmCloneBOMSX= () => {
+    Swal.fire({
+      title: "Chắc chắn muốn Clone BOM SX ?",
+      text: "Clone BOM Sản xuất",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Vẫn Clone!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        Swal.fire("Tiến hành Clone BOM SX", "Đang Clone BOM", "success");
+        handleCloneBOMSXsangBOMGIA();
+      }
+    });
   };
 
   const confirmSaveBOMSX= () => {
@@ -1476,7 +1597,7 @@ const BOM_MANAGER = () => {
       if (result.isConfirmed) {
         Swal.fire("Tiến hành Lưu BOM GIÁ", "Đang lưu BOM", "success");
         handleInsertBOMGIA();
-        handleInsertBOMSX_WITH_GIA();
+        //handleInsertBOMSX_WITH_GIA();
       }
     });
   };

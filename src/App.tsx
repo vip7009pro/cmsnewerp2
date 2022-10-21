@@ -42,6 +42,7 @@ import QLSXPLAN from "./pages/qlsx/QLSXPLAN/QLSXPLAN";
 import {RootState} from './redux/store'
 import {useSelector, useDispatch} from 'react-redux'
 import { changeDiemDanhState, changeUserData, UserData } from "./redux/slices/globalSlice";
+import QuanLyCapCao from "./pages/nhansu/QuanLyCapCao/QuanLyCapCao";
 
 interface userDataInterface {
   EMPL_IMAGE?: string
@@ -230,139 +231,140 @@ function App() {
   useEffect(() => {
     console.log("check login");
     checkLogin()
-      .then((data) => {
-        //console.log(data);
-        if (data.data.tk_status === "ng") {
-          console.log("khong co token");
-          setLoginState(false);
-          dispatch(changeUserData({
-            ADD_COMMUNE: "Đông Xuân",
-            ADD_DISTRICT: "Sóc Sơn",
-            ADD_PROVINCE: "Hà Nội",
-            ADD_VILLAGE: "Thôn Phú Thọ",
-            ATT_GROUP_CODE: 1,
-            CMS_ID: "CMS1179",
-            CTR_CD: "002",
-            DOB: "1993-10-18T00:00:00.000Z",
-            EMAIL: "nvh1903@cmsbando.com",
-            EMPL_NO: "none",
-            FACTORY_CODE: 1,
-            FACTORY_NAME: "Nhà máy 1",
-            FACTORY_NAME_KR: "1공장",
-            FIRST_NAME: "HÙNG3",
-            HOMETOWN: "Phụ Thọ - Đông Xuân - Sóc Sơn - Hà Nội",
-            JOB_CODE: 1,
-            JOB_NAME: "Dept Staff",
-            JOB_NAME_KR: "부서담당자",
-            MAINDEPTCODE: 1,
-            MAINDEPTNAME: "QC",
-            MAINDEPTNAME_KR: "품질",
-            MIDLAST_NAME: "NGUYỄN VĂN",
-            ONLINE_DATETIME: "2022-07-12T20:49:52.600Z",
-            PASSWORD: "",
-            PHONE_NUMBER: "0971092454",
-            POSITION_CODE: 3,
-            POSITION_NAME: "Staff",
-            POSITION_NAME_KR: "사원",
-            REMARK: '',
-            SEX_CODE: 1,
-            SEX_NAME: "Nam",
-            SEX_NAME_KR: "남자",
-            SUBDEPTCODE: 2,
-            SUBDEPTNAME: "PD",
-            SUBDEPTNAME_KR: "통역",
-            WORK_POSITION_CODE: 2,
-            WORK_POSITION_NAME: "PD",
-            WORK_POSITION_NAME_KR: "PD",
-            WORK_SHIFT_CODE: 0,
-            WORK_SHIF_NAME: "Hành Chính",
-            WORK_SHIF_NAME_KR: "정규",
-            WORK_START_DATE: "2019-03-11T00:00:00.000Z",
-            WORK_STATUS_CODE: 1,
-            WORK_STATUS_NAME: "Đang làm",
-            WORK_STATUS_NAME_KR: "근무중",
-            EMPL_IMAGE:'N'
-          }));
-          setUserData({
-            ADD_COMMUNE: "Đông Xuân",
-            ADD_DISTRICT: "Sóc Sơn",
-            ADD_PROVINCE: "Hà Nội",
-            ADD_VILLAGE: "Thôn Phú Thọ",
-            ATT_GROUP_CODE: 1,
-            CMS_ID: "CMS1179",
-            CTR_CD: "002",
-            DOB: "1993-10-18T00:00:00.000Z",
-            EMAIL: "nvh1903@cmsbando.com",
-            EMPL_NO: "none",
-            FACTORY_CODE: 1,
-            FACTORY_NAME: "Nhà máy 1",
-            FACTORY_NAME_KR: "1공장",
-            FIRST_NAME: "HÙNG3",
-            HOMETOWN: "Phụ Thọ - Đông Xuân - Sóc Sơn - Hà Nội",
-            JOB_CODE: 1,
-            JOB_NAME: "Dept Staff",
-            JOB_NAME_KR: "부서담당자",
-            MAINDEPTCODE: 1,
-            MAINDEPTNAME: "QC",
-            MAINDEPTNAME_KR: "품질",
-            MIDLAST_NAME: "NGUYỄN VĂN",
-            ONLINE_DATETIME: "2022-07-12T20:49:52.600Z",
-            PASSWORD: "",
-            PHONE_NUMBER: "0971092454",
-            POSITION_CODE: 3,
-            POSITION_NAME: "Staff",
-            POSITION_NAME_KR: "사원",
-            REMARK: null,
-            SEX_CODE: 1,
-            SEX_NAME: "Nam",
-            SEX_NAME_KR: "남자",
-            SUBDEPTCODE: 2,
-            SUBDEPTNAME: "PD",
-            SUBDEPTNAME_KR: "통역",
-            WORK_POSITION_CODE: 2,
-            WORK_POSITION_NAME: "PD",
-            WORK_POSITION_NAME_KR: "PD",
-            WORK_SHIFT_CODE: 0,
-            WORK_SHIF_NAME: "Hành Chính",
-            WORK_SHIF_NAME_KR: "정규",
-            WORK_START_DATE: "2019-03-11T00:00:00.000Z",
-            WORK_STATUS_CODE: 1,
-            WORK_STATUS_NAME: "Đang làm",
-            WORK_STATUS_NAME_KR: "근무중",
-            EMPL_IMAGE:'N'
-          });
-        } else {
-          //console.log(data.data.data);
-          setUserData(data.data.data);
-          dispatch(changeUserData(data.data.data));         
-          setLoginState(true);
-        }
-      })
-      .catch((err) => {
-        console.log(err + " ");
-      });
+    .then((data) => {
+      //console.log(data);
+      if (data.data.tk_status === "ng") {
+        console.log("khong co token");
+        setLoginState(false);
+        dispatch(changeUserData({
+          ADD_COMMUNE: "Đông Xuân",
+          ADD_DISTRICT: "Sóc Sơn",
+          ADD_PROVINCE: "Hà Nội",
+          ADD_VILLAGE: "Thôn Phú Thọ",
+          ATT_GROUP_CODE: 1,
+          CMS_ID: "CMS1179",
+          CTR_CD: "002",
+          DOB: "1993-10-18T00:00:00.000Z",
+          EMAIL: "nvh1903@cmsbando.com",
+          EMPL_NO: "none",
+          FACTORY_CODE: 1,
+          FACTORY_NAME: "Nhà máy 1",
+          FACTORY_NAME_KR: "1공장",
+          FIRST_NAME: "HÙNG3",
+          HOMETOWN: "Phụ Thọ - Đông Xuân - Sóc Sơn - Hà Nội",
+          JOB_CODE: 1,
+          JOB_NAME: "Dept Staff",
+          JOB_NAME_KR: "부서담당자",
+          MAINDEPTCODE: 1,
+          MAINDEPTNAME: "QC",
+          MAINDEPTNAME_KR: "품질",
+          MIDLAST_NAME: "NGUYỄN VĂN",
+          ONLINE_DATETIME: "2022-07-12T20:49:52.600Z",
+          PASSWORD: "",
+          PHONE_NUMBER: "0971092454",
+          POSITION_CODE: 3,
+          POSITION_NAME: "Staff",
+          POSITION_NAME_KR: "사원",
+          REMARK: '',
+          SEX_CODE: 1,
+          SEX_NAME: "Nam",
+          SEX_NAME_KR: "남자",
+          SUBDEPTCODE: 2,
+          SUBDEPTNAME: "PD",
+          SUBDEPTNAME_KR: "통역",
+          WORK_POSITION_CODE: 2,
+          WORK_POSITION_NAME: "PD",
+          WORK_POSITION_NAME_KR: "PD",
+          WORK_SHIFT_CODE: 0,
+          WORK_SHIF_NAME: "Hành Chính",
+          WORK_SHIF_NAME_KR: "정규",
+          WORK_START_DATE: "2019-03-11T00:00:00.000Z",
+          WORK_STATUS_CODE: 1,
+          WORK_STATUS_NAME: "Đang làm",
+          WORK_STATUS_NAME_KR: "근무중",
+          EMPL_IMAGE:'N'
+        }));
+        setUserData({
+          ADD_COMMUNE: "Đông Xuân",
+          ADD_DISTRICT: "Sóc Sơn",
+          ADD_PROVINCE: "Hà Nội",
+          ADD_VILLAGE: "Thôn Phú Thọ",
+          ATT_GROUP_CODE: 1,
+          CMS_ID: "CMS1179",
+          CTR_CD: "002",
+          DOB: "1993-10-18T00:00:00.000Z",
+          EMAIL: "nvh1903@cmsbando.com",
+          EMPL_NO: "none",
+          FACTORY_CODE: 1,
+          FACTORY_NAME: "Nhà máy 1",
+          FACTORY_NAME_KR: "1공장",
+          FIRST_NAME: "HÙNG3",
+          HOMETOWN: "Phụ Thọ - Đông Xuân - Sóc Sơn - Hà Nội",
+          JOB_CODE: 1,
+          JOB_NAME: "Dept Staff",
+          JOB_NAME_KR: "부서담당자",
+          MAINDEPTCODE: 1,
+          MAINDEPTNAME: "QC",
+          MAINDEPTNAME_KR: "품질",
+          MIDLAST_NAME: "NGUYỄN VĂN",
+          ONLINE_DATETIME: "2022-07-12T20:49:52.600Z",
+          PASSWORD: "",
+          PHONE_NUMBER: "0971092454",
+          POSITION_CODE: 3,
+          POSITION_NAME: "Staff",
+          POSITION_NAME_KR: "사원",
+          REMARK: null,
+          SEX_CODE: 1,
+          SEX_NAME: "Nam",
+          SEX_NAME_KR: "남자",
+          SUBDEPTCODE: 2,
+          SUBDEPTNAME: "PD",
+          SUBDEPTNAME_KR: "통역",
+          WORK_POSITION_CODE: 2,
+          WORK_POSITION_NAME: "PD",
+          WORK_POSITION_NAME_KR: "PD",
+          WORK_SHIFT_CODE: 0,
+          WORK_SHIF_NAME: "Hành Chính",
+          WORK_SHIF_NAME_KR: "정규",
+          WORK_START_DATE: "2019-03-11T00:00:00.000Z",
+          WORK_STATUS_CODE: 1,
+          WORK_STATUS_NAME: "Đang làm",
+          WORK_STATUS_NAME_KR: "근무중",
+          EMPL_IMAGE:'N'
+        });
+      } else {
+        //console.log(data.data.data);
+        setUserData(data.data.data);
+        dispatch(changeUserData(data.data.data));         
+        setLoginState(true);
+      }
+    })
+    .catch((err) => {
+      console.log(err + " ");
+    });
 
-      generalQuery('checkdiemdanh',{})
-      .then((response) => {   
-        //console.log(response.data);
-        if (response.data.tk_status !== "NG") 
-        {
-          console.log('diem danh ok');
-          dispatch(changeDiemDanhState(true));
-          //setDiemDanhState(true);        
-        } 
-        else { 
-          console.log('diem danh NG');
-          dispatch(changeDiemDanhState(false));
-          //setDiemDanhState(false);
-        }
+    generalQuery('checkdiemdanh',{})
+    .then((response) => {   
+      //console.log(response.data);
+      if (response.data.tk_status !== "NG") 
+      {
+        console.log('diem danh ok');
+        dispatch(changeDiemDanhState(true));
+        //setDiemDanhState(true);        
+      } 
+      else { 
+        console.log('diem danh NG');
+        dispatch(changeDiemDanhState(false));
+        //setDiemDanhState(false);
+      }
 
-      })
-      .catch((error) => {
-        console.log(error);
-      });        
+    })
+    .catch((error) => {
+      console.log(error);
+    });        
     return () => {};
   }, []);
+
   //console.log(userData);
   if (loginState === true) {
       return (
@@ -403,6 +405,7 @@ function App() {
                       <Route path='planmanager' element={<PlanManager />} />
                       <Route path='fcstmanager' element={<FCSTManager />} />
                       <Route path='ycsxmanager' element={<YCSXManager />} />
+                      <Route path='quanlycodebom' element={<BOM_MANAGER />} />
                       <Route path='poandstockfull' element={<POandStockFull />} />
                       <Route
                         path='kinhdoanhreport'
@@ -600,6 +603,18 @@ function App() {
                             jobname='leader'
                           >
                             <BaoCaoNhanSu />
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route
+                        path='quanlycapcao'
+                        element={
+                          <ProtectedRoute
+                            user={globalUserData}
+                            maindeptname='all'
+                            jobname='leader'
+                          >
+                            <QuanLyCapCao />
                           </ProtectedRoute>
                         }
                       />
