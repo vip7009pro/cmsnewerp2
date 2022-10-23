@@ -7,11 +7,11 @@ import { BiCart } from 'react-icons/bi';
 import { FcPlanner, FcSettings,FcBullish } from 'react-icons/fc';
 import { WiDayLightning } from "react-icons/wi";
 import getsentence from "../../components/String/String";
-
+import { getlang } from '../../components/String/String';
 const lang: any = localStorage.getItem('lang');
 export const SidebarData = [  
     {
-      title: getsentence(4,lang), /*Phòng Kinh Doanh*/
+      title: getlang('phongkinhdoanh',lang), /*Phòng Kinh Doanh*/
       path: 'kinhdoanh',
       icon: <FaDonate color='green' size={25}/>,
       iconClosed: <KeyboardArrowDownIcon />,
