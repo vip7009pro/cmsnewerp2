@@ -1,3 +1,138 @@
+type vietnamese_sentences = {
+  ID: string;
+  CONTENT: string;
+};
+type korean_sentences = {
+  ID: string;
+  CONTENT: string;
+};
+type english_sentences = {
+  ID: string;
+  CONTENT: string;
+};
+
+export const vn_lang = {
+  dangnhap: "Đăng Nhập",
+  nhothongtindangnhap: "Nhớ thông tin đăng nhập",
+  quenmatkhau: "Quên mật khẩu",
+  phongkinhdoanh: "Phòng Kinh Doanh",
+  phongkinhdoanh2: "Phòng Kinh Doanh",
+  quanlypo: "Quản lý PO",
+  quanlyinvoices: "Quản lý Invoicé",
+  quanlyplan: "Quản lý Plan",
+  quanlyFCST: "Quản lý FCST",
+  quanlyYCSX: "Quản lý YCSX",
+  quanlyPOFull: "PO tích hợp tồn kho",
+  baocao: "Báo cáo",
+  nhansubophan: "Nhân sự bộ phận",
+  quanlyphongban: "Quản lý phòng ban-nhân sự",
+  diemdanhnhom: "Điểm danh nhóm",
+  dangky: "Đăng ký",
+  thongtincuaban: "Thông tin của bạn",
+  thongtinnhanvien: "Thông tin nhân viên",
+  hovaten: "Họ và tên",
+  manhansu: "Mã nhân sự",
+  maerp: "Mã ERP",
+  ngaythangnamsinh: "Ngày tháng năm sinh",
+  quequan: "Quê quán",
+  diachi: "Địa chỉ",
+  bophanchinh: "Bộ phận chính",
+  bophanphu: "Bộ phận phụ",
+  vitrilamviec: "Vị trí làm việc",
+  nhomdiemdanh: "Nhóm điểm danh",
+  chucvu: "Chức vụ",
+  tudaunamdengio: "Từ đầu năm đến giờ có",
+  ngay: "ngày",
+  songaybandilam: "Số ngày bạn đi làm",
+  songaybantangca: "Số ngày bạn tăng ca",
+  songayquenchamcong: "Số ngày quên chấm công",
+  songaydangkynghi: "Số ngày đăng ký nghỉ ( không tính chủ nhật và nửa phép)",
+  thuongphat: "Thưởng phạt",
+  khenthuong: "Khen Thưởng",
+  kyluat: "Kỷ luật",
+};
+export const en_lang = {
+  dangnhap: "Log in",
+  nhothongtindangnhap: "Remember login information",
+  quenmatkhau: "Forgot password",
+  phongkinhdoanh: "Business Department",
+  phongkinhdoanh2: "Business Department",
+  quanlypo: "PO management",
+  quanlyinvoices: "Manage Invoicé",
+  quanlyplan: "Plan Manager",
+  quanlyFCST: "FCST manager",
+  quanlyYCSX: "YCSX Management",
+  quanlyPOFull: "PO integrated inventory",
+  baocao: "Report",
+  nhansubophan: "Department personnel",
+  quanlyphongban: "Management of the Department",
+  diemdanhnhom: "Group attendance",
+  dangky: "Register",
+  thongtincuaban: "Your information",
+  thongtinnhanvien: "Staff information",
+  hovaten: "First and last name",
+  manhansu: "Human resources",
+  maerp: "ERP code",
+  ngaythangnamsinh: "Date of birth",
+  quequan: "Home town",
+  diachi: "Address",
+  bophanchinh: "Main divisions",
+  bophanphu: "Sub -division",
+  vitrilamviec: "Working position",
+  nhomdiemdanh: "Attendance group",
+  chucvu: "position",
+  tudaunamdengio: "From the beginning of the year until now",
+  ngay: "day",
+  songaybandilam: "Number of days you go to work",
+  songaybantangca: "Number of days you work overtime",
+  songayquenchamcong: "Number of days forgot to time time",
+  songaydangkynghi:
+    "Number of days of registration (excluding Sunday and half magic)",
+  thuongphat: "Payoff",
+  khenthuong: "Bonus",
+  kyluat: "Discipline",
+};
+export const kr_lang = {
+  dangnhap:'로그인',
+  nhothongtindangnhap:'로그인 정보를 기억하십시오',
+  quenmatkhau:'비밀번호를 잊으 셨나요',
+  phongkinhdoanh:'비즈니스 부서',
+  phongkinhdoanh2:'비즈니스 부서',
+  quanlypo:'PO 관리',
+  quanlyinvoices:'인보이스를 관리하십시오',
+  quanlyplan:'계획 관리자',
+  quanlyFCST:'FCST 관리자',
+  quanlyYCSX:'YCSX 관리',
+  quanlyPOFull:'PO 통합 재고',
+  baocao:'보고서',
+  nhansubophan:'부서 요원',
+  quanlyphongban:'부서 관리',
+  diemdanhnhom:'그룹 출석',
+  dangky:'등록하다',
+  thongtincuaban:'당신의 정보',
+  thongtinnhanvien:'직원 정보',
+  hovaten:'이름과 성',
+  manhansu:'인적 자원',
+  maerp:'ERP 코드',
+  ngaythangnamsinh:'생일',
+  quequan:'고향',
+  diachi:'주소',
+  bophanchinh:'주요 부서',
+  bophanphu:'하위 디비전',
+  vitrilamviec:'작업 위치',
+  nhomdiemdanh:'출석 그룹',
+  chucvu:'위치',
+  tudaunamdengio:'연초부터 지금까지',
+  ngay:'낮',
+  songaybandilam:'일하러가는 날 수',
+  songaybantangca:'초과 근무 일수',
+  songayquenchamcong:'시간을 잊어 버렸습니다',
+  songaydangkynghi:'등록 일 수 (일요일 및 반 마법 제외)',
+  thuongphat:'지불',
+  khenthuong:'보너스',
+  kyluat:'규율',
+};
+
 type sentences = {
   sentenceID: number;
   vi: string;
@@ -82,137 +217,163 @@ const globaltext: Array<sentences> = [
     vi: "Nhân sự bộ phận",
     en: "HR",
     kr: "인사",
-  }, {
+  },
+  {
     sentenceID: 13,
     vi: "Quản lý phòng ban- nhân sự",
     en: "Deparment - Employee Management",
     kr: "부서-인사 관리",
-  }, {
+  },
+  {
     sentenceID: 14,
     vi: "Điểm danh nhóm",
     en: "My Group Attendant",
     kr: "내 그룹 출석 체크",
-  }, {
+  },
+  {
     sentenceID: 15,
     vi: "Đăng ký",
     en: "Register",
     kr: "신청",
-  }, {
+  },
+  {
     sentenceID: 16,
     vi: "Báo cáo nhân sự",
     en: "HR Report",
     kr: "인사 보고",
-  }, {
+  },
+  {
     sentenceID: 17,
     vi: "Thông tin của bạn",
     en: "Your information",
     kr: "당신의 정보",
-  }, {
+  },
+  {
     sentenceID: 18,
     vi: "Thông tin nhân viên",
     en: "Employee Information",
     kr: "직원 정보",
-  }, {
+  },
+  {
     sentenceID: 19,
     vi: "Họ và tên",
     en: "Full Name",
     kr: "이름",
-  }, {
+  },
+  {
     sentenceID: 20,
     vi: "Mã nhân sự",
     en: "HR Code",
     kr: "사원 코드",
-  }, {
+  },
+  {
     sentenceID: 21,
     vi: "Mã ERP",
     en: "ERP Code",
     kr: "ERP코드",
-  }, {
+  },
+  {
     sentenceID: 22,
     vi: "Ngày tháng năm sinh",
     en: "Date of Birth",
     kr: "생년월일",
-  }, {
+  },
+  {
     sentenceID: 23,
     vi: "Quê quán",
     en: "HomeTown",
     kr: "고향",
-  }, {
+  },
+  {
     sentenceID: 24,
     vi: "Địa chỉ",
     en: "Living Address",
     kr: "거주 주소",
-  }, {
+  },
+  {
     sentenceID: 25,
     vi: "Bộ phận chính",
     en: "Main Department",
     kr: "대 부서",
-  }, {
+  },
+  {
     sentenceID: 26,
     vi: "Bộ phận phụ",
     en: "Sub Department",
     kr: "소 부서",
-  }, {
+  },
+  {
     sentenceID: 27,
     vi: "Vị trí làm việc",
     en: "Work Position",
     kr: "업무 위치",
-  }, {
+  },
+  {
     sentenceID: 28,
     vi: "Nhóm điểm danh",
     en: "Attendant Group",
     kr: "출석 체크 그룹",
-  }, {
+  },
+  {
     sentenceID: 29,
     vi: "Chức vụ",
     en: "Position",
     kr: "직무",
-  }, {
+  },
+  {
     sentenceID: 30,
     vi: "Từ đầu năm đến giờ có",
     en: "This year work days",
     kr: "올해 초부터 지금까지 근무일",
-  }, {
+  },
+  {
     sentenceID: 31,
     vi: "ngày",
     en: "days",
     kr: "일",
-  }, {
+  },
+  {
     sentenceID: 32,
     vi: "Số ngày bạn đi làm",
     en: "Your work days",
     kr: "당신이 근무일",
-  }, {
+  },
+  {
     sentenceID: 33,
     vi: "Số ngày bạn tăng ca",
     en: "Your overtime days",
     kr: "당신이 잔업일",
-  }, {
+  },
+  {
     sentenceID: 34,
     vi: "Số ngày quên chấm công",
     en: "Number of days missing fingerprint check",
     kr: "지문 체크 누락 일수",
-  }, {
+  },
+  {
     sentenceID: 35,
     vi: "Số ngày đăng ký nghỉ ( không tính chủ nhật và nửa phép)",
     en: "Number of registered days off (excluding Sunday and half leave)",
     kr: " 결근 신청 일수 (반차 및 일요일 미 포함)",
-  }, {
+  },
+  {
     sentenceID: 36,
     vi: "Thưởng phạt",
     en: "Payoff",
     kr: "장려 - 형벌",
-  }, {
+  },
+  {
     sentenceID: 37,
     vi: "Khen thưởng",
     en: "Reward",
     kr: "장려",
-  }, {
+  },
+  {
     sentenceID: 38,
     vi: "Kỷ luật",
     en: "Penalty",
     kr: "형벌",
-  }
+  },
 ];
 
 const getsentence = (sentence: number, lang: string): any => {
@@ -233,5 +394,21 @@ const getsentence = (sentence: number, lang: string): any => {
   }
   return output;
 };
+const getValue = (part:any, o: any) => Object.entries(o).find(([k, v]) => k.startsWith(part))?.[1]
 
+export const getlang = (key:string, lang: string)=> {
+  console.log(lang);
+  if(lang ==='vi')
+  {
+    return getValue(key, vn_lang);
+  }
+  else if(lang==='en')
+  {
+    return getValue(key, en_lang);
+  }
+  else if(lang==='kr')
+  {
+    return getValue(key, vn_lang);
+  }
+}
 export default getsentence;
