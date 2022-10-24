@@ -38,7 +38,7 @@ const MACHINE_COMPONENT = (machine_data: MachineInterface) => {
   let filteredDataTable = machine_data.machine_data?.filter((element: QLSXPLANDATA, index: number) => {
     return (element.PLAN_EQ === machine_data.machine_name && element.PLAN_FACTORY === machine_data.factory);
   });
-
+ 
   return (
     <div
       className='machine_component'

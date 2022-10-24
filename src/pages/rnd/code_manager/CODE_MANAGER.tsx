@@ -10,7 +10,7 @@ import { UserContext } from '../../../api/Context';
 import { SaveExcel } from '../../../api/GlobalFunction';
 import "./CODE_MANAGER.scss"
 import { BiReset } from 'react-icons/bi';
-import { MdOutlineDraw } from 'react-icons/md';
+import { MdOutlineDraw, MdUpdate } from 'react-icons/md';
 const axios = require('axios').default;
 interface CODE_INFO {
     id: number,
@@ -30,8 +30,24 @@ interface CODE_INFO {
     BANVE: string,
     NO_INSPECTION: string,
     USE_YN: string,
+    PDBV: string,
+    PROD_DIECUT_STEP: number,
+    PROD_PRINT_TIMES: number,
+    FACTORY: string,
+    EQ1: string,
+    EQ2: string, 
+    Setting1: string,
+    Setting2: string,
+    UPH1: number,
+    UPH2: number,
+    Step1: number,
+    Step2: number,
+    LOSS_SX1: number,
+    LOSS_SX2: number,
+    LOSS_SETTING1: number,
+    LOSS_SETTING2: number,
+    NOTE: string
 }
-
 const CODE_MANAGER = () => {
   const [codedatatablefilter, setCodeDataTableFilter] = useState<Array<CODE_INFO>>([]);
   const [selection, setSelection] = useState<any>({
@@ -106,16 +122,12 @@ const CODE_MANAGER = () => {
           } catch (ex) {
             console.log(ex);
           }
-
         }
         else
         {
           Swal.fire('Thông báo','Chỉ bộ phận kinh doanh upload được bản vẽ','error');
         }
-        
       }
-     
-
       let hreftlink = '/banve/' + params.row.G_CODE + '.pdf';
       if (params.row.BANVE !== "N" && params.row.BANVE !== null)
       {
@@ -158,8 +170,162 @@ const CODE_MANAGER = () => {
       return <span style={{color:'red'}}><b>PENDING</b></span>
       return <span style={{color:'green'}}><b>APPROVED</b></span>
     } },
+    { field: "TENCODE", headerName: "TENCODE", flex: 1, minWidth: 250,  editable: enableEdit ,renderCell: (params:any) => {           
+      return <span style={{color:'black'}}>{params.row.G_NAME}</span>
+    } },
+    { field: "PROD_DIECUT_STEP", headerName: "BC DIECUT", width: 120 ,renderCell: (params:any) => {  
+      
+      if(params.row.PROD_DIECUT_STEP === null)
+      {
+        return <span style={{backgroundColor:'red', fontWeight:'bold'}}>NG</span>        
+      }    
+      else
+      {
+        return <span style={{fontWeight:'bold'}}>{params.row.PROD_DIECUT_STEP}</span>       
+      }   
+    }},
+    { field: "PROD_PRINT_TIMES", headerName: "SO LAN IN", width: 120 ,renderCell: (params:any) => { 
+      if(params.row.PROD_PRINT_TIMES === null)
+      {
+        return <span style={{backgroundColor:'red', fontWeight:'bold'}}>NG</span>       
+      }    
+      else
+      {
+        return <span style={{fontWeight:'bold'}}>{params.row.PROD_PRINT_TIMES}</span>       
+      }   
+    }},
+    { field: "FACTORY", headerName: "FACTORY", width: 100 ,renderCell: (params:any) => { 
+      if(params.row.FACTORY === null)
+      {
+        return <span style={{backgroundColor:'red', fontWeight:'bold'}}>NG</span>       
+      }    
+      else
+      {
+        return <span style={{fontWeight:'bold'}}>{params.row.FACTORY}</span>       
+      }   
+    }},
+    { field: "EQ1", headerName: "EQ1", width: 80 ,renderCell: (params:any) => { 
+      if(params.row.EQ1 === null)
+      {
+        return <span style={{backgroundColor:'red', fontWeight:'bold'}}>NG</span>       
+      }    
+      else
+      {
+        return <span style={{fontWeight:'bold'}}>{params.row.EQ1}</span>       
+      }   
+    }},
+    { field: "EQ2", headerName: "EQ2", width: 80 ,renderCell: (params:any) => { 
+      if(params.row.EQ2 === null)
+      {
+        return <span style={{backgroundColor:'red', fontWeight:'bold'}}>NG</span>       
+      }    
+      else
+      {
+        return <span style={{fontWeight:'bold'}}>{params.row.EQ2}</span>
+      }   
+    }},
+    { field: "Setting1", headerName: "Setting1", width: 100 ,renderCell: (params:any) => { 
+      if(params.row.Setting1 === null)
+      {
+        return <span style={{backgroundColor:'red', fontWeight:'bold'}}>NG</span>       
+      }    
+      else
+      {
+        return <span style={{fontWeight:'bold'}}>{params.row.Setting1}</span>       
+      }   
+    }},
+    { field: "Setting2", headerName: "Setting2", width: 100 ,renderCell: (params:any) => { 
+      if(params.row.Setting2 === null)
+      {
+        return <span style={{backgroundColor:'red', fontWeight:'bold'}}>NG</span>       
+      }    
+      else
+      {
+        return <span style={{fontWeight:'bold'}}>{params.row.Setting2}</span>       
+      }   
+    }}, 
+    { field: "UPH1", headerName: "UPH1", width: 80 ,renderCell: (params:any) => { 
+      if(params.row.UPH1 === null)
+      {
+        return <span style={{backgroundColor:'red', fontWeight:'bold'}}>NG</span>       
+      }    
+      else
+      {
+        return <span style={{fontWeight:'bold'}}>{params.row.UPH1}</span>       
+      }   
+    }},
+    { field: "UPH2", headerName: "UPH2", width: 80 ,renderCell: (params:any) => { 
+      if(params.row.UPH2 === null)
+      {
+        return <span style={{backgroundColor:'red', fontWeight:'bold'}}>NG</span>       
+      }    
+      else
+      {
+        return <span style={{fontWeight:'bold'}}>{params.row.UPH2}</span>       
+      }   
+    }},
+    { field: "Step1", headerName: "Step1", width: 80 ,renderCell: (params:any) => { 
+      if(params.row.Step1 === null)
+      {
+        return <span style={{backgroundColor:'red', fontWeight:'bold'}}>NG</span>       
+      }    
+      else
+      {
+        return <span style={{fontWeight:'bold'}}>{params.row.Step1}</span>       
+      }   
+    }},
+    { field: "Step2", headerName: "Step2", width: 80 ,renderCell: (params:any) => { 
+      if(params.row.Step2 === null)
+      {
+        return <span style={{backgroundColor:'red', fontWeight:'bold'}}>NG</span>       
+      }    
+      else
+      {
+        return <span style={{fontWeight:'bold'}}>{params.row.Step2}</span>       
+      }   
+    }},
+    { field: "LOSS_SX1", headerName: "LOSS_SX1(%)", width: 100 ,renderCell: (params:any) => { 
+      if(params.row.LOSS_SX1 === null)
+      {
+        return <span style={{backgroundColor:'red', fontWeight:'bold'}}>NG</span>       
+      }    
+      else
+      {
+        return <span style={{fontWeight:'bold'}}>{params.row.LOSS_SX1}</span>       
+      }   
+    }},
+    { field: "LOSS_SX2", headerName: "LOSS_SX2(%)", width: 100 ,renderCell: (params:any) => { 
+      if(params.row.LOSS_SX2 === null)
+      {
+        return <span style={{backgroundColor:'red', fontWeight:'bold'}}>NG</span>       
+      }    
+      else
+      {
+        return <span style={{fontWeight:'bold'}}>{params.row.LOSS_SX2}</span>       
+      }   
+    }},
+    { field: "LOSS_SETTING1", headerName: "LOSS_SETTING1(m)", width: 130 ,renderCell: (params:any) => { 
+      if(params.row.LOSS_SETTING1 === null)
+      {
+        return <span style={{backgroundColor:'red', fontWeight:'bold'}}>NG</span>       
+      }    
+      else
+      {
+        return <span style={{fontWeight:'bold'}}>{params.row.LOSS_SETTING1}</span>       
+      }   
+    }},
+    { field: "LOSS_SETTING2", headerName: "LOSS_SETTING2(m)", width: 130 ,renderCell: (params:any) => { 
+      if(params.row.LOSS_SETTING2 === null)
+      {
+        return <span style={{backgroundColor:'red', fontWeight:'bold'}}>NG</span>       
+      }    
+      else
+      {
+        return <span style={{fontWeight:'bold'}}>{params.row.LOSS_SETTING2}</span>       
+      }   
+    }},
+    { field: "NOTE", headerName: "NOTE", width: 150 ,},
   ];
-
   const [rows, setRows] = useState<GridRowsProp>([]);
   const [columns, setColumns] = useState<GridColumns>(column_codeinfo);
   const [editedRows, setEditedRows] = useState<Array<GridCellEditCommitParams>>([]);
@@ -175,6 +341,9 @@ const CODE_MANAGER = () => {
         <IconButton className='buttonIcon'onClick={()=>{ setNgoaiQuan('Y');}}><FcCancel color='green' size={25}/>SET K NGOAI QUAN</IconButton> 
         <IconButton className='buttonIcon'onClick={()=>{resetBanVe('N'); }}><BiReset color='green' size={25}/>RESET BẢN VẼ</IconButton> 
         <IconButton className='buttonIcon'onClick={()=>{pdBanVe('Y'); }}><MdOutlineDraw color='red' size={25}/>PDUYET BẢN VẼ</IconButton> 
+        <IconButton className='buttonIcon'onClick={()=>{
+          handleSaveQLSX();
+         }}><MdUpdate color='blue' size={25}/>Update TT QLSX</IconButton> 
         <IconButton className='buttonIcon'onClick={()=>{
           setColumns(columns.map((element, index:number)=> {
             return {...element, editable : !element.editable};
@@ -208,24 +377,19 @@ const CODE_MANAGER = () => {
             .catch((error) => {
               console.log(error);
             });  
-          
         } 
         Swal.fire("Thông báo", "RESET BAN VE THÀNH CÔNG", "success"); 
-
       }
       else
       {
         Swal.fire("Thông báo", "Không đủ quyền hạn!" , "error"); 
       }
-      
-      
     }
     else
     {
       Swal.fire("Thông báo", "Chọn ít nhất 1 G_CODE để SET !" , "error"); 
     }
   }
-
   const pdBanVe= async(value: string)=> {
     if(codedatatablefilter.length>=1)
     {
@@ -318,7 +482,6 @@ const CODE_MANAGER = () => {
       setCodeDataTableFilter([]);
     }
   }
-
   const setNgoaiQuan= async(value: string)=> {
     if(codedatatablefilter.length>=1)
     {
@@ -341,17 +504,63 @@ const CODE_MANAGER = () => {
             .catch((error) => {
               console.log(error);
             });  
-          
         } 
         Swal.fire("Thông báo", "SET TRẠNG KIỂM TRA NGOẠI QUAN THÀNH CÔNG", "success"); 
-
       }
       else
       {
         Swal.fire("Thông báo", "Không đủ quyền hạn!" , "error"); 
       }
-      
-      
+    }
+    else
+    {
+      Swal.fire("Thông báo", "Chọn ít nhất 1 G_CODE để SET !" , "error"); 
+    }
+  }
+  const handleSaveQLSX= async()=> {
+    if(codedatatablefilter.length>=1)
+    {
+      if(userData.EMPL_NO==='NHU1903'|| userData.MAINDEPTNAME==='QLSX')
+      {
+        for(let i=0;i<codedatatablefilter.length;i++)
+        {        
+            await generalQuery("saveQLSX", {           
+              G_CODE: codedatatablefilter[i].G_CODE,
+              PROD_DIECUT_STEP: codedatatablefilter[i].PROD_DIECUT_STEP,
+              PROD_PRINT_TIMES: codedatatablefilter[i].PROD_PRINT_TIMES,
+              FACTORY: codedatatablefilter[i].FACTORY,
+              EQ1: codedatatablefilter[i].EQ1,
+              EQ2: codedatatablefilter[i].EQ2,
+              Setting1: codedatatablefilter[i].Setting1,
+              Setting2: codedatatablefilter[i].Setting2,
+              UPH1: codedatatablefilter[i].UPH1,
+              UPH2: codedatatablefilter[i].UPH2,
+              Step1: codedatatablefilter[i].Step1,
+              Step2: codedatatablefilter[i].Step2,
+              LOSS_SX1: codedatatablefilter[i].LOSS_SX1,
+              LOSS_SX2: codedatatablefilter[i].LOSS_SX2,
+              LOSS_SETTING1: codedatatablefilter[i].LOSS_SETTING1,
+              LOSS_SETTING2: codedatatablefilter[i].LOSS_SETTING2,
+              NOTE: codedatatablefilter[i].NOTE,             
+            })
+            .then((response) => {
+              console.log(response.data.tk_status);
+              if (response.data.tk_status !== "NG") {
+                
+              } else {     
+                         
+              }
+            })
+            .catch((error) => {
+              console.log(error);
+            });  
+        } 
+        Swal.fire("Thông báo", "Lưu thành công", "success"); 
+      }
+      else
+      {
+        Swal.fire("Thông báo", "Không đủ quyền hạn!" , "error"); 
+      }
     }
     else
     {
@@ -366,7 +575,6 @@ const CODE_MANAGER = () => {
       handleCODEINFO();
     }
   };
-
   useEffect(()=>{
   },[]);
   return (

@@ -107,6 +107,21 @@ interface FullBOM {
   TONLIEU: number;
   HOLDING: number;
   TONG_TON_LIEU: number;
+  PROD_DIECUT_STEP: number,  
+  FACTORY: string,
+  EQ1: string,
+  EQ2: string, 
+  Setting1: number,
+  Setting2: number,
+  UPH1: number,
+  UPH2: number,
+  Step1: number,
+  Step2: number,
+  LOSS_SX1: number,
+  LOSS_SX2: number,
+  LOSS_SETTING1 : number,
+  LOSS_SETTING2 : number,
+  NOTE:string
 }
 interface QLSXCHITHIDATA {
   id: string;
@@ -117,6 +132,7 @@ interface QLSXCHITHIDATA {
   WIDTH_CD: number;
   M_ROLL_QTY: number;
   M_MET_QTY: number;
+  M_QTY: number;
   INS_EMPL: string;
   INS_DATE: string;
   UPD_EMPL: string;
@@ -179,6 +195,21 @@ const CHITHI_COMPONENT = ({
       TONLIEU: 0,
       HOLDING: 0,
       TONG_TON_LIEU: 0,
+      PROD_DIECUT_STEP: 0,  
+      FACTORY: '',
+      EQ1: '',
+      EQ2: '', 
+      Setting1: 0,
+      Setting2: 0,
+      UPH1: 0,
+      UPH2: 0,
+      Step1: 0,
+      Step2: 0,
+      LOSS_SX1: 0,
+      LOSS_SX2: 0,
+      LOSS_SETTING1 : 0,
+      LOSS_SETTING2 : 0,
+      NOTE:''
     },
   ]);
   const [chithidatatable, setChiThiDataTable] = useState<QLSXCHITHIDATA[]>([]);
@@ -197,7 +228,7 @@ const CHITHI_COMPONENT = ({
         console.log(error);
       });
   };
-  const max_lieu:number =  23;
+  const max_lieu:number =  17;
   const initCTSX = async () => {
     generalQuery("ycsx_fullinfo", {
       PROD_REQUEST_NO: PROD_REQUEST_NO,
@@ -248,6 +279,21 @@ const CHITHI_COMPONENT = ({
               HOLDING: 0,
               TONG_TON_LIEU: 0,
               NO_INSPECTION: "N",
+              PROD_DIECUT_STEP: 0,  
+              FACTORY: '',
+              EQ1: '',
+              EQ2: '', 
+              Setting1: 0,
+              Setting2: 0,
+              UPH1: 0,
+              UPH2: 0,
+              Step1: 0,
+              Step2: 0,
+              LOSS_SX1: 0,
+              LOSS_SX2: 0,
+              LOSS_SETTING1 : 0,
+              LOSS_SETTING2 : 0,
+              NOTE:''
             },
           ]);
           //Swal.fire("Thông báo","Số yêu cầu " + PROD_REQUEST_NO + "không tồn tại","error");
@@ -409,13 +455,86 @@ const CHITHI_COMPONENT = ({
               </tr>
               <tr>
                 <td>Chú ý (QLSX)</td>
-                <td>                 
+                <td>     
+                  {request_codeinfo[0]?.NOTE}            
                 </td>
               </tr>
             </tbody>
           </table>
         </div>       
-        <div className='text1'>2. 제품 정보 Thông tin vật liệu</div>
+        <div className='text1'>
+          2. 생산 정보 Thông tin Sản xuất
+          {' '}
+          <Barcode
+              value={PLAN_ID}
+              format='CODE128'
+              width={1.5}
+              height={20}
+              displayValue={false}
+              background='#fff'
+              lineColor='black'
+              margin={0}
+            />
+             ({PLAN_ID})
+        </div>
+        <div className='thongtinyeucau'>
+          <table className='ttyc1'>
+            <thead>
+              <tr>
+                <th>Hạng mục/항목</th>
+                <th>Thông tin/정보</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>UPH1 (EA/h) - {request_codeinfo[0]?.EQ1}</td>
+                <td>{request_codeinfo[0]?.UPH1.toLocaleString("en-US")}</td>
+              </tr>
+              <tr>
+                <td>UPH2 (EA/h) - {request_codeinfo[0]?.EQ2}</td>
+                <td>{request_codeinfo[0]?.UPH2.toLocaleString("en-US")}</td>
+              </tr>
+              <tr>
+                <td>Thời gian setting 1 - {request_codeinfo[0]?.EQ1}</td>
+                <td>{request_codeinfo[0]?.Setting1}</td>
+              </tr>
+              <tr>
+                <td>Thời gian setting 2 - {request_codeinfo[0]?.EQ2}</td>
+                <td>{request_codeinfo[0]?.Setting2}</td>
+              </tr>
+            </tbody>
+          </table>
+          <table className='ttyc2'>
+            <thead>
+              <tr>
+                <th>Hạng mục/항목</th>
+                <th>Thông tin/정보</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>LOSS SX ĐỊNH MỨC 1- {request_codeinfo[0]?.EQ1}</td>
+                <td>
+                  {request_codeinfo[0]?.LOSS_SX1}{" "}
+                  %
+                </td>
+              </tr>
+              <tr>
+                <td>LOSS SX ĐỊNH MỨC 2- {request_codeinfo[0]?.EQ2}</td>
+                <td>{request_codeinfo[0]?.LOSS_SX2}%</td>
+              </tr>
+              <tr>
+                <td>LOSS SETTING ĐỊNH MỨC 1- {request_codeinfo[0]?.EQ1}</td>
+                <td>{request_codeinfo[0]?.LOSS_SETTING1.toLocaleString("en-US")} met</td>
+              </tr>
+              <tr>               
+                <td>LOSS SETTING ĐỊNH MỨC 2- {request_codeinfo[0]?.EQ2}</td>
+                <td>{request_codeinfo[0]?.LOSS_SETTING2.toLocaleString("en-US")} met</td>                
+              </tr>
+            </tbody>
+          </table>         
+        </div>       
+        <div className='text1'>3. 제품 정보 Thông tin vật liệu</div>
         <div className='thongtinvatlieu'>
           {chithidatatable.length <= max_lieu && (
             <div className='vatlieugiua'>
@@ -439,7 +558,7 @@ const CHITHI_COMPONENT = ({
                       <td>{element.M_CODE}</td>
                       <td>{element.M_NAME}</td>
                       <td>{element.WIDTH_CD}</td>
-                      <td>{element.M_MET_QTY} M</td>
+                      <td>{(element.M_MET_QTY * element.M_QTY).toLocaleString("en-US")} M</td>
                       <td></td>
                       <td></td>
                       <td></td>
@@ -473,7 +592,7 @@ const CHITHI_COMPONENT = ({
                         <td>{element.M_CODE}</td>
                         <td>{element.M_NAME}</td>
                         <td>{element.WIDTH_CD}</td>
-                        <td>{element.M_MET_QTY.toLocaleString("en-US")} M</td>
+                        <td>{(element.M_MET_QTY * element.M_QTY).toLocaleString("en-US")} M</td>
                         <td></td>
                         <td></td>
                         <td></td>
@@ -508,7 +627,7 @@ const CHITHI_COMPONENT = ({
                         <td>{element.M_CODE}</td>
                         <td>{element.M_NAME}</td>
                         <td>{element.WIDTH_CD}</td>
-                        <td>{element.M_MET_QTY.toLocaleString("en-US")} M</td>
+                        <td>{(element.M_MET_QTY * element.M_QTY).toLocaleString("en-US")} M</td>
                         <td></td>
                         <td></td>
                         <td></td>
