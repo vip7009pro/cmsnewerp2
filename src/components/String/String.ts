@@ -408,7 +408,7 @@ export const getlang = (key:string, lang: string)=> {
   }
   else if(lang==='kr')
   {
-    return getValue(key, vn_lang);
+    return getValue(key, kr_lang);
   }
 }
 export default getsentence;

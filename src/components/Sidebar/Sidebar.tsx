@@ -18,15 +18,17 @@ import RuleRoundedIcon from '@mui/icons-material/RuleRounded';
 import {RootState} from '../../redux/store'
 import {useSelector, useDispatch} from 'react-redux'
 import { changeDiemDanhState, changeUserData, UserData } from "../../redux/slices/globalSlice";
+import { getlang } from '../../components/String/String';
 
 const Sidebar = () => {
   const [sidebar, setSidebar] = useState(false);
   const showSidebar = () => setSidebar(!sidebar);
   const [lang,setLang] = useContext(LangConText);
   const globalUserData: UserData|undefined = useSelector((state:RootState)=>state.totalSlice.userData);
+
   const SidebarData = [
     {
-      title: getsentence(12,lang), /*Nhân sự*/
+      title: getlang('nhansu',lang), /*Nhân sự*/
       path: '#',
       icon: <FcManager color='green' size={25}/>,
       iconClosed: <KeyboardArrowDownIcon />,
@@ -63,19 +65,19 @@ const Sidebar = () => {
           icon: <FaHistory color="green" size={25}/>
         },
         {
-          title: getsentence(16,lang), /*Báo cáo nhân sự*/
-          path: '/nhansu/baocaonhansu',
-          icon: <FcPieChart color='#cc99ff' size={25}/>
-        },
-        {
           title: 'Quản lý cấp cao', /*Báo cáo nhân sự*/
           path: '/nhansu/quanlycapcao',
           icon: <FcManager color='#cc99ff' size={25}/>,
-        }
+        },
+        {
+          title: getsentence(16,lang), /*Báo cáo nhân sự*/
+          path: '/nhansu/baocaonhansu',
+          icon: <FcPieChart color='#cc99ff' size={25}/>
+        },       
       ]
     },
     {
-      title: getsentence(4,lang), /*Phòng Kinh Doanh*/
+      title: getlang('phongkinhdoanh',lang), /*Phòng Kinh Doanh*/
       path: '#',
       icon: <FaDonate color='green' size={25}/>,
       iconClosed: <KeyboardArrowDownIcon />,

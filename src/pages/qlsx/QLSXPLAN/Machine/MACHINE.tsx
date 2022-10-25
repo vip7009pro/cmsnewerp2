@@ -458,7 +458,12 @@ const MACHINE = () => {
     { field: "PLAN_DATE", headerName: "PLAN_DATE", width: 110, editable: false },
     { field: "PROD_REQUEST_NO", headerName: "YCSX NO", width: 80, editable: false },
     { field: "PROD_REQUEST_DATE", headerName: "YCSX DATE", width: 80, editable: false },
-    { field: "PROD_REQUEST_QTY", headerName: "YCSX QTY", width: 80, editable: false },
+    { field: "PROD_REQUEST_QTY", headerName: "YCSX QTY", width: 80, editable: false , renderCell: (params: any) => {
+           
+        return <span style={{color: 'blue'}}>{params.row.PROD_REQUEST_QTY.toLocaleString('en','US')}</span>
+      
+   } },
+    { field: "G_CODE", headerName: "G_CODE", width: 100, editable: false },
     { field: "G_NAME_KD", headerName: "G_NAME_KD", width: 180, editable: false },
     { field: "PLAN_EQ", headerName: "PLAN_EQ", width: 80, editable: false },
     { field: "PLAN_FACTORY", headerName: "FACTORY", width: 80, editable: false },
@@ -469,7 +474,7 @@ const MACHINE = () => {
         }
         else
         {
-          return <span style={{color: 'green'}}>{params.row.PLAN_QTY}</span>
+          return <span style={{color: 'green'}}>{params.row.PLAN_QTY.toLocaleString('en','US')}</span>
         }
      }  },
     { field: "PROCESS_NUMBER", headerName: "PROCESS_NUMBER", width: 110, editable: editplan , renderCell: (params: any) => {
@@ -617,9 +622,9 @@ const MACHINE = () => {
         console.log(error);
       });
   };
-  const handleGetChiThiTable = async (PLAN_ID: string, G_CODE: string, PLAN_QTY: number)=> {
+  const handleGetChiThiTable = async (PLAN_ID: string, G_CODE: string, PLAN_QTY: number, PROCESS_NUMBER: number)=> {
 
-    let PD: number = 0, CAVITY_NGANG:number =0, CAVITY_DOC:number = 0,  PROCESS_NUMBER: number = qlsxplandatafilter[0].PROCESS_NUMBER, LOSS_SX1: number =0, LOSS_SX2: number = 0, LOSS_SETTING1: number = 0, LOSS_SETTING2: number =0, FINAL_LOSS_SX: number =0, FINAL_LOSS_SETTING:number =0, M_MET_NEEDED:number =0;
+    let PD: number = 0, CAVITY_NGANG:number =0, CAVITY_DOC:number = 0, LOSS_SX1: number =0, LOSS_SX2: number = 0, LOSS_SETTING1: number = 0, LOSS_SETTING2: number =0, FINAL_LOSS_SX: number =0, FINAL_LOSS_SETTING:number =0, M_MET_NEEDED:number =0;
     await generalQuery('getcodefullinfo',{
       G_CODE: G_CODE
     })
@@ -1020,7 +1025,7 @@ const MACHINE = () => {
         {         
 
           hanlde_SaveChiThi();   
-          handleGetChiThiTable(qlsxplandatafilter[0].PLAN_ID, qlsxplandatafilter[0].G_CODE, qlsxplandatafilter[0].PLAN_QTY);
+          handleGetChiThiTable(qlsxplandatafilter[0].PLAN_ID, qlsxplandatafilter[0].G_CODE, qlsxplandatafilter[0].PLAN_QTY, qlsxplandatafilter[0].PROCESS_NUMBER);
           handleDangKyXuatLieu(qlsxplandatafilter[0].PLAN_ID,qlsxplandatafilter[0].PROD_REQUEST_NO, qlsxplandatafilter[0].PROD_REQUEST_DATE);            
         }
         else
@@ -1241,7 +1246,7 @@ const MACHINE = () => {
   }
   const hanlde_SaveChiThi = async ()=> {
     let err_code:string = '0';
-    await generalQuery("deleteChiThi", {
+    await generalQuery("deleteMCODEExistIN_O302", {
       PLAN_ID: qlsxplandatafilter[0].PLAN_ID,      
     })
       .then((response) => {
@@ -1258,24 +1263,70 @@ const MACHINE = () => {
       {
         if(chithidatatable[i].M_MET_QTY >0)
         {
-
-          generalQuery("insertChiThi", {
-            PLAN_ID: qlsxplandatafilter[0].PLAN_ID,
-            M_CODE: chithidatatable[i].M_CODE,
-            M_ROLL_QTY: chithidatatable[i].M_ROLL_QTY,
-            M_MET_QTY: chithidatatable[i].M_MET_QTY,
-            M_QTY: chithidatatable[i].M_QTY,
+          let checktontaiM_CODE: boolean = false;
+          await generalQuery("checkM_CODE_PLAN_ID_Exist", {
+            PLAN_ID: qlsxplandatafilter[0].PLAN_ID,   
+            M_CODE: chithidatatable[i].M_CODE
           })
             .then((response) => {
-              //console.log(response.data);
+              console.log(response.data);
+              
               if (response.data.tk_status !== "NG") {
+                checktontaiM_CODE = true;
               } else {
-                err_code += '_'+ response.data.message;              
               }
             })
             .catch((error) => {
               console.log(error);
             });
+
+
+      
+            console.log('checktontai',checktontaiM_CODE);
+
+            if(checktontaiM_CODE)
+            {
+              generalQuery("updateChiThi", {
+                PLAN_ID: qlsxplandatafilter[0].PLAN_ID,
+                M_CODE: chithidatatable[i].M_CODE,
+                M_ROLL_QTY: chithidatatable[i].M_ROLL_QTY,
+                M_MET_QTY: chithidatatable[i].M_MET_QTY,
+                M_QTY: chithidatatable[i].M_QTY,
+              })
+                .then((response) => {
+                  //console.log(response.data);
+                  if (response.data.tk_status !== "NG") {
+                  } else {
+                    err_code += '_'+ response.data.message;              
+                  }
+                })
+                .catch((error) => {
+                  console.log(error);
+                });
+
+            }
+            else
+            {
+              generalQuery("insertChiThi", {
+                PLAN_ID: qlsxplandatafilter[0].PLAN_ID,
+                M_CODE: chithidatatable[i].M_CODE,
+                M_ROLL_QTY: chithidatatable[i].M_ROLL_QTY,
+                M_MET_QTY: chithidatatable[i].M_MET_QTY,
+                M_QTY: chithidatatable[i].M_QTY,
+              })
+                .then((response) => {
+                  //console.log(response.data);
+                  if (response.data.tk_status !== "NG") {
+                  } else {
+                    err_code += '_'+ response.data.message;              
+                  }
+                })
+                .catch((error) => {
+                  console.log(error);
+                });
+            }
+
+         
 
         }    
         else
@@ -1548,7 +1599,7 @@ const MACHINE = () => {
     //console.log(datafilter);
     if (datafilter.length > 0) {
       setQlsxPlanDataFilter(datafilter);
-      handleGetChiThiTable(datafilter[0].PLAN_ID, datafilter[0].G_CODE, datafilter[0].PLAN_QTY);
+      handleGetChiThiTable(datafilter[0].PLAN_ID, datafilter[0].G_CODE, datafilter[0].PLAN_QTY, datafilter[0].PROCESS_NUMBER);
     } else {
         setQlsxPlanDataFilter([]);
         setChiThiDataTable([]);
