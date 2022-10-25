@@ -1269,7 +1269,7 @@ const MACHINE = () => {
             M_CODE: chithidatatable[i].M_CODE
           })
             .then((response) => {
-              console.log(response.data);
+              //console.log(response.data);
               
               if (response.data.tk_status !== "NG") {
                 checktontaiM_CODE = true;
@@ -1279,10 +1279,8 @@ const MACHINE = () => {
             .catch((error) => {
               console.log(error);
             });
-
-
-      
-            console.log('checktontai',checktontaiM_CODE);
+                  
+            //console.log('checktontai',checktontaiM_CODE);
 
             if(checktontaiM_CODE)
             {
@@ -1623,25 +1621,30 @@ const MACHINE = () => {
 
   const handleDangKyXuatLieu = async (PLAN_ID: string, PROD_REQUEST_NO: string, PROD_REQUEST_DATE: string)=>
   {
-    //kiem tra xem xuat lieu hay chua
-    let checkPlanIdO302: boolean = true;
-    await generalQuery("checkPLANID_O302", { PLAN_ID: PLAN_ID})
+    let checkPlanIdO300: boolean = true;
+    let NEXT_OUT_NO: string = "001";
+
+    await generalQuery("checkPLANID_O300", { PLAN_ID: PLAN_ID})
       .then((response) => {
-        //console.log(response.data);
+        console.log(response.data);
         if (response.data.tk_status !== "NG") {
-          checkPlanIdO302 = true;
+          checkPlanIdO300 = true;  
         } else {
-          checkPlanIdO302 = false;
+          checkPlanIdO300 = false;
         }
       })
       .catch((error) => {
         console.log(error);
       });
+    //kiem tra xem  dang ky xuat lieu hay chua
+
     let checkPlanIdO301: boolean = true;
+    let Last_O301_OUT_SEQ: number=0;
     await generalQuery("checkPLANID_O301", { PLAN_ID: PLAN_ID})
       .then((response) => {
         //console.log(response.data);
         if (response.data.tk_status !== "NG") {
+          Last_O301_OUT_SEQ = parseInt(response.data.data[0].OUT_SEQ);
           checkPlanIdO301 = true;
         } else {
           checkPlanIdO301 = false;
@@ -1652,9 +1655,10 @@ const MACHINE = () => {
       });
 
     //console.log(checkPlanIdO302 +' _ '+checkPlanIdO301)
-    if (!checkPlanIdO302 && !checkPlanIdO301) {
-      //get Next_ out_ no
-      let NEXT_OUT_NO: string = "001";
+    //get Next_ out_ no 
+
+    if(!checkPlanIdO300)
+    {
       await generalQuery("getO300_LAST_OUT_NO", {})
         .then((response) => {
           //console.log(response.data);
@@ -1671,7 +1675,6 @@ const MACHINE = () => {
           console.log(error);
         });
       // get code_50 phan loai giao hang GC, SK, KD
-
       let CODE_50: string = "";
       await generalQuery("getP400", {
         PROD_REQUEST_NO: PROD_REQUEST_NO,
@@ -1689,79 +1692,117 @@ const MACHINE = () => {
         });
       console.log(CODE_50);
 
-      let checkchithimettotal: number = 0;
-      for (let i = 0; i < chithidatatable.length; i++) {
-        checkchithimettotal+= chithidatatable[i].M_MET_QTY;
-      }
-      if(checkchithimettotal >0)
-      {
-        await generalQuery("insertO300", {
-          OUT_DATE: moment().format("YYYYMMDD"),
-          OUT_NO: NEXT_OUT_NO,
-          CODE_03: "01",
-          CODE_52: "01",
-          CODE_50: CODE_50,
-          USE_YN: "Y",
-          PROD_REQUEST_DATE: PROD_REQUEST_DATE,
-          PROD_REQUEST_NO: PROD_REQUEST_NO,
-          FACTORY: selectedFactory,
-          PLAN_ID: PLAN_ID,
+      await generalQuery("insertO300", {
+        OUT_DATE: moment().format("YYYYMMDD"),
+        OUT_NO: NEXT_OUT_NO,
+        CODE_03: "01",
+        CODE_52: "01",
+        CODE_50: CODE_50,
+        USE_YN: "Y",
+        PROD_REQUEST_DATE: PROD_REQUEST_DATE,
+        PROD_REQUEST_NO: PROD_REQUEST_NO,
+        FACTORY: selectedFactory,
+        PLAN_ID: PLAN_ID,
+      })
+        .then((response) => {
+          //console.log(response.data);
+          if (response.data.tk_status !== "NG") {
+          } else {
+          }
         })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+
+    /* xoa dong O301 chua co xuat hien trong O302*/
+    await generalQuery("deleteMCODE_O301_Not_ExistIN_O302", { PLAN_ID: PLAN_ID})
+    .then((response) => {
+      //console.log(response.data);
+      if (response.data.tk_status !== "NG") {
+        
+      } else {
+       
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+
+    let checkchithimettotal: number = 0;
+    for (let i = 0; i < chithidatatable.length; i++) {
+      checkchithimettotal+= chithidatatable[i].M_MET_QTY;
+    }
+    if(checkchithimettotal >0)
+    {
+      for (let i = 0; i < chithidatatable.length; i++) {
+        
+        if(chithidatatable[i].M_MET_QTY>0)
+        {
+          let TonTaiM_CODE_O301: boolean = false;
+          await generalQuery("checkM_CODE_PLAN_ID_Exist_in_O301", { PLAN_ID: PLAN_ID, M_CODE: chithidatatable[i].M_CODE})
           .then((response) => {
             //console.log(response.data);
             if (response.data.tk_status !== "NG") {
+              TonTaiM_CODE_O301 = true;
+             
             } else {
+              TonTaiM_CODE_O301= false;
             }
           })
           .catch((error) => {
             console.log(error);
           });
-
-
-          for (let i = 0; i < chithidatatable.length; i++) {
-            if(chithidatatable[i].M_MET_QTY>0)
-            {
-              generalQuery("insertO301", {
-                OUT_DATE: moment().format("YYYYMMDD"),
-                OUT_NO: NEXT_OUT_NO,
-                CODE_03: "01",
-                OUT_SEQ: zeroPad(i + 1, 3),
-                USE_YN: "Y",
-                M_CODE: chithidatatable[i].M_CODE,
-                OUT_PRE_QTY: chithidatatable[i].M_MET_QTY,
-                PLAN_ID: PLAN_ID,
-              })
-                .then((response) => {
-                  //console.log(response.data);
-                  if (response.data.tk_status !== "NG") {
-                  } else {
-                  }
-                })
-                .catch((error) => {
-                  console.log(error);
-                });
-            }
-           
+          
+          if(!TonTaiM_CODE_O301)
+          {
+            await generalQuery("insertO301", {
+              OUT_DATE: moment().format("YYYYMMDD"),
+              OUT_NO: NEXT_OUT_NO,
+              CODE_03: "01",
+              OUT_SEQ: zeroPad(Last_O301_OUT_SEQ+ i + 1, 3),
+              USE_YN: "Y",
+              M_CODE: chithidatatable[i].M_CODE,
+              OUT_PRE_QTY: chithidatatable[i].M_MET_QTY,
+              PLAN_ID: PLAN_ID,
+            })
+            .then((response) => {
+              //console.log(response.data);
+              if (response.data.tk_status !== "NG") {
+              } else {
+              }
+            })
+            .catch((error) => {
+              console.log(error);
+            });
           }
+          else
+          {
+            await generalQuery("updateO301", {             
+              M_CODE: chithidatatable[i].M_CODE,
+              OUT_PRE_QTY: chithidatatable[i].M_MET_QTY,
+              PLAN_ID: PLAN_ID,
+            })
+            .then((response) => {
+              //console.log(response.data);
+              if (response.data.tk_status !== "NG") {
+              } else {
+              }
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+          }          
+        }
+        
+      }
 
-      }
-      else
-      {
-        Swal.fire('Thông báo','Cần đăng ký ít nhất 1 met liệu')
-      }
-    } 
-    else if(checkPlanIdO301) {
-      Swal.fire(
-        "Thông báo",
-        "Chỉ thị này đã được đăng ký xuất liệu,  không thể đăng ký lại",'error'
-      );
     }
-    else if(checkPlanIdO302) {
-      Swal.fire(
-        "Thông báo",
-        "Chỉ thị này đã được kho xuất liệu,  không thể đăng ký lại",'error'
-      );
-    } 
+    else
+    {
+      Swal.fire('Thông báo','Cần đăng ký ít nhất 1 met lòng')
+    }    
+    
   }
   useEffect(() => {
     loadQLSXPlan(selectedPlanDate);
