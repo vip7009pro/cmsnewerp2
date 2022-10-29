@@ -17,6 +17,7 @@ interface NHAPLIEUDATA {
   WIDTH_CD: number,
   IN_CFM_QTY: number,
   ROLL_QTY: number,
+  TOTAL_IN_QTY: number,
   INS_DATE: string,
   CUST_NAME_KD: string
 }
@@ -30,6 +31,7 @@ interface XUATLIEUDATA {
   M_LOT_NO: string,
   OUT_CFM_QTY: number,
   ROLL_QTY: number,
+  TOTAL_OUT_QTY: number,
   INS_DATE: string
 }
 interface TONLIEUDATA {
@@ -91,8 +93,9 @@ const KHOLIEU = () => {
     { field: "M_NAME", headerName: "M_NAME", width: 180 },
     { field: "WIDTH_CD", headerName: "WIDTH_CD", width: 90 },
     { field: "M_LOT_NO", headerName: "M_LOT_NO", width: 100 },
-    { field: "OUT_CFM_QTY", headerName: "OUTPUT QTY", width: 120 , renderCell: (params:any) => {return <span style={{color:'green'}}><b>{params.row.OUT_CFM_QTY.toLocaleString('en-US')}</b></span>}},   
+    { field: "OUT_CFM_QTY", headerName: "UNIT_QTY", width: 120 , renderCell: (params:any) => {return <span style={{color:'green'}}><b>{params.row.OUT_CFM_QTY.toLocaleString('en-US')}</b></span>}},   
     { field: "ROLL_QTY", headerName: "ROLL_QTY", width: 100 },
+    { field: "TOTAL_OUT_QTY", headerName: "OUTPUT QTY", width: 120 , renderCell: (params:any) => {return <span style={{color:'green'}}><b>{(params.row.TOTAL_OUT_QTY).toLocaleString('en-US')}</b></span>}},   
     { field: "INS_DATE", headerName: "INS_DATE", width: 180 },
   ];
   const column_NHAPLIEUDATA = [
@@ -101,8 +104,9 @@ const KHOLIEU = () => {
     { field: "M_CODE", headerName: "M_CODE", width: 100 },
     { field: "M_NAME", headerName: "M_NAME", width: 180 },
     { field: "WIDTH_CD", headerName: "WIDTH_CD", width: 150 },
-    { field: "IN_CFM_QTY", headerName: "INPUT QTY", width: 120 , renderCell: (params:any) => {return <span style={{color:'green'}}><b>{params.row.IN_CFM_QTY.toLocaleString('en-US')}</b></span>}},   
+    { field: "IN_CFM_QTY", headerName: "UNIT QTY", width: 120 , renderCell: (params:any) => {return <span style={{color:'green'}}><b>{params.row.IN_CFM_QTY.toLocaleString('en-US')}</b></span>}},   
     { field: "ROLL_QTY", headerName: "ROLL_QTY", width: 100 },
+    { field: "TOTAL_IN_QTY", headerName: "INPUT QTY", width: 120 , renderCell: (params:any) => {return <span style={{color:'green'}}><b>{(params.row.TOTAL_IN_QTY).toLocaleString('en-US')}</b></span>}},   
     { field: "INS_DATE", headerName: "INS_DATE", width: 150 },
   ];
   const [columnDefinition, setColumnDefinition] = useState<Array<any>>(column_XUATLIEUDATA);

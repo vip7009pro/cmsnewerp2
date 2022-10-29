@@ -146,6 +146,7 @@ interface QLSXCHITHIDATA {
     M_ROLL_QTY: number,
     M_MET_QTY: number,
     M_QTY: number,
+    LIEUQL_SX: number,
     OUT_CFM_QTY: number,
     INS_EMPL: string,
     INS_DATE: string,
@@ -677,7 +678,16 @@ const MACHINE = () => {
     { field: "CHITHI_ID", headerName: "CHITHI_ID", width: 90, editable: false },      
     { field: "PLAN_ID", headerName: "PLAN_ID", width: 90, editable: false },    
     { field: "M_CODE", headerName: "M_CODE", width: 80, editable: false },
-    { field: "M_NAME", headerName: "M_NAME", width: 120, editable: false },
+    { field: "M_NAME", headerName: "M_NAME", width: 120, editable: false , renderCell: (params: any) => {
+      if(params.row.LIEUQL_SX ===1)
+      {
+        return <span style={{color: 'red', fontWeight:'bold'}}>{params.row.M_NAME}</span>
+      }
+      else
+      {
+        return <span style={{color: 'black'}}>{params.row.M_NAME}</span>
+      }
+   }},
     { field: "WIDTH_CD", headerName: "SIZE", width: 80, editable: false },   
     { field: "M_MET_QTY", headerName: "M_MET_QTY", width: 110, editable: editchithi , renderCell: (params: any) => {
       if(params.row.M_MET_QTY ===0)
@@ -690,6 +700,7 @@ const MACHINE = () => {
       }
    }  },
     { field: "M_QTY", headerName: "M_QTY", width: 110, editable: editchithi },
+    { field: "LIEUQL_SX", headerName: "LIEUQL_SX", width: 110, editable: editchithi },
     { field: "OUT_CFM_QTY", headerName: "OUT_CFM_QTY", width: 110, editable: editchithi },
     { field: "INS_EMPL", headerName: "INS_EMPL", width: 120, editable: false , hide: true },
     { field: "INS_DATE", headerName: "INS_DATE", width: 120, editable: editchithi, hide: true  },
@@ -839,8 +850,7 @@ const MACHINE = () => {
             setChiThiDataTable(response.data.data);
           } else { 
 
-            M_MET_NEEDED = parseInt((PLAN_QTY*PD/(CAVITY_DOC*CAVITY_NGANG)/1000).toString());  
-
+            M_MET_NEEDED = parseInt((PLAN_QTY*PD/(CAVITY_DOC*CAVITY_NGANG)/1000).toString());
              generalQuery("getbomsx", {
               G_CODE: G_CODE,        
             })
@@ -856,8 +866,9 @@ const MACHINE = () => {
                         M_NAME: element.M_NAME, 
                         WIDTH_CD: element.WIDTH_CD,
                         M_ROLL_QTY: 0,
-                        M_MET_QTY: M_MET_NEEDED +  M_MET_NEEDED* FINAL_LOSS_SX/100+ FINAL_LOSS_SETTING,
+                        M_MET_QTY: parseInt(''+ (M_MET_NEEDED +  M_MET_NEEDED* FINAL_LOSS_SX/100+ FINAL_LOSS_SETTING)),
                         M_QTY: element.M_QTY,
+                        LIEUQL_SX: element.LIEUQL_SX,
                         INS_EMPL: '',
                         INS_DATE: '',
                         UPD_EMPL: '',
@@ -899,8 +910,8 @@ const MACHINE = () => {
         LOSS_SETTING2 =  response.data.data[0].LOSS_SETTING2 === null? 0: response.data.data[0].LOSS_SETTING2;      
         FINAL_LOSS_SX = (PROCESS_NUMBER===1)? LOSS_SX1: LOSS_SX2;
         FINAL_LOSS_SETTING = (PROCESS_NUMBER===1)? LOSS_SETTING1: LOSS_SETTING2;        
-        console.log(LOSS_SX1)
-        console.log(LOSS_SETTING1)
+        //console.log(LOSS_SX1)
+        //console.log(LOSS_SETTING1)
       } else {
 
       }
@@ -911,7 +922,7 @@ const MACHINE = () => {
     });
 
     M_MET_NEEDED = parseInt((PLAN_QTY*PD/(CAVITY_DOC*CAVITY_NGANG)/1000).toString());
-    console.log(M_MET_NEEDED);
+    //console.log(M_MET_NEEDED);
      await generalQuery("getbomsx", {
         G_CODE: qlsxplandatafilter[0].G_CODE,
       })
@@ -927,8 +938,9 @@ const MACHINE = () => {
                   M_NAME: element.M_NAME, 
                   WIDTH_CD: element.WIDTH_CD,
                   M_ROLL_QTY: 0,
-                  M_MET_QTY:M_MET_NEEDED +  M_MET_NEEDED* FINAL_LOSS_SX/100+ FINAL_LOSS_SETTING,
+                  M_MET_QTY: parseInt(''+ (M_MET_NEEDED +  M_MET_NEEDED* FINAL_LOSS_SX/100+ FINAL_LOSS_SETTING)),
                   M_QTY: element.M_QTY,
+                  LIEUQL_SX: element.LIEUQL_SX,
                   INS_EMPL: '',
                   INS_DATE: '',
                   UPD_EMPL: '',
@@ -1359,6 +1371,7 @@ const MACHINE = () => {
           STEP: 1,         
           PLAN_ORDER: NextPlanOrder,
           PROCESS_NUMBER: 0,
+          G_CODE: ycsxdatatablefilter[i].G_CODE,
         })
           .then((response) => {
             console.log(response.data.tk_status);
@@ -1443,6 +1456,24 @@ const MACHINE = () => {
 
       for(let i=0; i<chithidatatable.length; i++)
       {
+        generalQuery("updateLIEUQL_SX_M140", {
+          G_CODE: qlsxplandatafilter[0].G_CODE,   
+          M_CODE: chithidatatable[i].M_CODE,
+          LIEUQL_SX: chithidatatable[i].LIEUQL_SX,
+        })
+          .then((response) => {
+            //console.log(response.data);
+            
+            if (response.data.tk_status !== "NG") {
+             
+            } else {
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+
+               
         if(chithidatatable[i].M_MET_QTY >0)
         {
           let checktontaiM_CODE: boolean = false;
@@ -1472,6 +1503,7 @@ const MACHINE = () => {
                 M_ROLL_QTY: chithidatatable[i].M_ROLL_QTY,
                 M_MET_QTY: chithidatatable[i].M_MET_QTY,
                 M_QTY: chithidatatable[i].M_QTY,
+                LIEUQL_SX: chithidatatable[i].LIEUQL_SX,
               })
                 .then((response) => {
                   //console.log(response.data);
@@ -1493,6 +1525,7 @@ const MACHINE = () => {
                 M_ROLL_QTY: chithidatatable[i].M_ROLL_QTY,
                 M_MET_QTY: chithidatatable[i].M_MET_QTY,
                 M_QTY: chithidatatable[i].M_QTY,
+                LIEUQL_SX: chithidatatable[i].LIEUQL_SX,
               })
                 .then((response) => {
                   //console.log(response.data);
@@ -1505,8 +1538,6 @@ const MACHINE = () => {
                   console.log(error);
                 });
             }
-
-         
 
         }    
         else

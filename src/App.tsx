@@ -43,6 +43,7 @@ import {RootState} from './redux/store'
 import {useSelector, useDispatch} from 'react-redux'
 import { changeDiemDanhState, changeUserData, UserData } from "./redux/slices/globalSlice";
 import QuanLyCapCao from "./pages/nhansu/QuanLyCapCao/QuanLyCapCao";
+import DESIGN_AMAZON from "./pages/rnd/design_amazon/DESIGN_AMAZON";
 
 interface userDataInterface {
   EMPL_IMAGE?: string
@@ -103,7 +104,6 @@ const ProtectedRoute: any = ({
   jobname: string;
   children: Component;
 }) => {
-  
 
   if (user.EMPL_NO === "none") {
    /*  return <Navigate to='/login' replace />; */
@@ -229,6 +229,7 @@ function App() {
   const dispatch = useDispatch();
   //console.log(userData.JOB_NAME);
   useEffect(() => {
+    setLang('vi');
     console.log("check login");
     checkLogin()
     .then((data) => {
@@ -348,12 +349,12 @@ function App() {
       //console.log(response.data);
       if (response.data.tk_status !== "NG") 
       {
-        console.log('diem danh ok');
+        //console.log('diem danh ok');
         dispatch(changeDiemDanhState(true));
         //setDiemDanhState(true);        
       } 
       else { 
-        console.log('diem danh NG');
+        //console.log('diem danh NG');
         dispatch(changeDiemDanhState(false));
         //setDiemDanhState(false);
       }
@@ -434,7 +435,7 @@ function App() {
                       <Route path='quanlycodebom' element={<BOM_MANAGER />} />
                       <Route path='ycsxmanager' element={<YCSXManager />} />
                       <Route path='thembomamazon' element={<BOM_AMAZON />} />
-                      <Route path='designamazon' element={<CODE_MANAGER />} />
+                      <Route path='designamazon' element={<DESIGN_AMAZON />} />
                     </Route>
                     <Route
                       path='qlsx'

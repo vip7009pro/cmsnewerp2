@@ -397,7 +397,7 @@ const getsentence = (sentence: number, lang: string): any => {
 const getValue = (part:any, o: any) => Object.entries(o).find(([k, v]) => k.startsWith(part))?.[1]
 
 export const getlang = (key:string, lang: string)=> {
-  console.log(lang);
+  //console.log(lang);
   if(lang ==='vi')
   {
     return getValue(key, vn_lang);
