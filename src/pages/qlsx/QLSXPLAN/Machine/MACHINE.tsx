@@ -900,7 +900,7 @@ const MACHINE = () => {
     })
     .then((response)=> {
       if (response.data.tk_status !== "NG") {
-        console.log(response.data.data)
+        //console.log(response.data.data)
         PD = response.data.data[0].PD;
         CAVITY_NGANG = response.data.data[0].G_C_R;
         CAVITY_DOC = response.data.data[0].G_C;  
@@ -1821,7 +1821,7 @@ const MACHINE = () => {
     } else {
         setQlsxPlanDataFilter([]);
         setChiThiDataTable([]);
-      console.log("xoa filter");
+      //console.log("xoa filter");
     }
   };
   const handleQLSXCHITHIDataSelectionforUpdate = (ids: GridSelectionModel) => {
@@ -1834,7 +1834,7 @@ const MACHINE = () => {
       setQlsxChiThiDataFilter(datafilter);
     } else {
       setQlsxChiThiDataFilter([]);
-      console.log("xoa filter");
+      //console.log("xoa filter");
     }
   };
   const zeroPad = (num:number, places:number) => String(num).padStart(places, '0');
