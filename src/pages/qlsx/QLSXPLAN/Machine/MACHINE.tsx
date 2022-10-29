@@ -65,6 +65,25 @@ interface QLSXPLANDATA {
   STEP: string;
   PLAN_ORDER: string;
   PROCESS_NUMBER: number;
+  KETQUASX: number;
+  CD1: number;
+  CD2: number;
+  TON_CD1: number;
+  TON_CD2: number;
+  FACTORY: string,
+  EQ1: string,
+  EQ2: string,
+  Setting1: number,
+  Setting2: number,
+  UPH1: number,
+  UPH2: number,
+  Step1: number,
+  Step2: number,
+  LOSS_SX1: number,
+  LOSS_SX2: number,
+  LOSS_SETTING1: number,
+  LOSS_SETTING2: number,
+  NOTE: string
 }
 interface YCSXTableData {
   DESCR?: string;
@@ -107,6 +126,15 @@ interface YCSXTableData {
   W8: number;
   PDUYET: number;
   LOAIXH: string;
+  PO_BALANCE: number,
+  EQ1: string,
+  EQ2: string,
+  CD1: number,
+  CD2: number,
+  CD_IN: number,
+  CD_DIECUT: number,
+  TON_CD1: number,
+  TON_CD2: number
 }
 interface QLSXCHITHIDATA {
     id: string,
@@ -118,6 +146,7 @@ interface QLSXCHITHIDATA {
     M_ROLL_QTY: number,
     M_MET_QTY: number,
     M_QTY: number,
+    OUT_CFM_QTY: number,
     INS_EMPL: string,
     INS_DATE: string,
     UPD_EMPL: string,
@@ -236,20 +265,7 @@ const MACHINE = () => {
           </span>
         );
       },
-    },
-    {
-      field: "INSPECT_BALANCE",
-      type: "number",
-      headerName: "TỒN KIỂM",
-      width: 80,
-      renderCell: (params: any) => {
-        return (
-          <span style={{ color: "#cc0099" }}>
-            <b>{params.row.INSPECT_BALANCE.toLocaleString("en-US")}</b>
-          </span>
-        );
-      },
-    },
+    },   
     {
       field: "SHORTAGE_YCSX",
       type: "number",
@@ -263,25 +279,7 @@ const MACHINE = () => {
         );
       },
     },
-    {
-      field: "YCSX_PENDING",
-      headerName: "YCSX_PENDING",
-      width: 80,
-      renderCell: (params: any) => {
-        if (params.row.YCSX_PENDING === 1)
-          return (
-            <span style={{ color: "red" }}>
-              <b>PENDING</b>
-            </span>
-          );
-        else
-          return (
-            <span style={{ color: "green" }}>
-              <b>CLOSED</b>
-            </span>
-          );
-      },
-    },
+    
     {
       field: "PHAN_LOAI",
       headerName: "PHAN_LOAI",
@@ -331,16 +329,6 @@ const MACHINE = () => {
               <b>Không Duyệt</b>
             </span>
           );
-      },
-    },
-    {
-      field: "",
-      headerName: "G_NAME",
-      width: 250,
-      renderCell: (params: any) => {
-        if (params.row.PDBV === "P" || params.row.PDBV === null)
-          return <span style={{ color: "red" }}>{params.row.G_NAME}</span>;
-        return <span style={{ color: "green" }}>{params.row.G_NAME}</span>;
       },
     },
     {
@@ -452,21 +440,206 @@ const MACHINE = () => {
         );
       },
     },
+    {
+      field: "",
+      headerName: "G_NAME",
+      width: 250,
+      renderCell: (params: any) => {
+        if (params.row.PDBV === "P" || params.row.PDBV === null)
+          return <span style={{ color: "red" }}>{params.row.G_NAME}</span>;
+        return <span style={{ color: "green" }}>{params.row.G_NAME}</span>;
+      },
+    },    
+    {
+      field: "PO_BALANCE",
+      headerName: "PO_BALANCE",
+      width: 110,
+      renderCell: (params: any) => {       
+        return (
+          <span style={{ color: "blue" }}>
+            <b>{params.row.PO_BALANCE.toLocaleString('en','US')}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "EQ1",
+      headerName: "EQ1",
+      width: 80,
+      renderCell: (params: any) => {       
+        return (
+          <span style={{ color: "black" }}>
+           {params.row.EQ1}
+          </span>
+        );
+      },
+    },
+    {
+      field: "EQ2",
+      headerName: "EQ2",
+      width: 80,
+      renderCell: (params: any) => {       
+        return (
+          <span style={{ color: "black" }}>
+           {params.row.EQ2}
+          </span>
+        );
+      },
+    },
+    {
+      field: "CD1",
+      headerName: "XUAT_CD1",
+      width: 100,
+      renderCell: (params: any) => {       
+        return (
+          <span style={{ color: "blue" }}>
+            <b>{params.row.CD1.toLocaleString('en','US')}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "CD2",
+      headerName: "XUAT_CD2",
+      width: 100,
+      renderCell: (params: any) => {       
+        return (
+          <span style={{ color: "blue" }}>
+            <b>{params.row.CD2.toLocaleString('en','US')}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "LOT_TOTAL_OUTPUT_QTY_EA",
+      type: "number",
+      headerName: "XUẤT KIỂM",
+      width: 100,
+      renderCell: (params: any) => {
+        return (
+          <span style={{ color: "#cc0099" }}>
+            <b>{params.row.LOT_TOTAL_OUTPUT_QTY_EA.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "CD_IN",
+      headerName: "CD_IN",
+      width: 80,
+      renderCell: (params: any) => {       
+        return (
+          <span style={{ color: "gray" }}>
+            <b>{params.row.CD_IN.toLocaleString('en','US')}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "CD_DIECUT",
+      headerName: "CD_DIECUT",
+      width: 80,
+      renderCell: (params: any) => {       
+        return (
+          <span style={{ color: "gray" }}>
+            <b>{params.row.CD_DIECUT.toLocaleString('en','US')}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "TON_CD1",
+      headerName: "TONYCSX_CD1",
+      width: 120,
+      renderCell: (params: any) => {       
+        return (
+          <span style={{ color: "red" }}>
+            <b>{params.row.TON_CD1.toLocaleString('en','US')}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "TON_CD2",
+      headerName: "TONYCSX_CD2",
+      width: 120,
+      renderCell: (params: any) => {       
+        return (
+          <span style={{ color: "red" }}>
+            <b>{params.row.TON_CD2.toLocaleString('en','US')}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "INSPECT_BALANCE",
+      type: "number",
+      headerName: "TỒN KIỂM",
+      width: 80,
+      renderCell: (params: any) => {
+        return (
+          <span style={{ color: "#cc0099" }}>
+            <b>{params.row.INSPECT_BALANCE.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "YCSX_PENDING",
+      headerName: "YCSX_PENDING",
+      width: 80,
+      renderCell: (params: any) => {
+        if (params.row.YCSX_PENDING === 1)
+          return (
+            <span style={{ color: "red" }}>
+              <b>PENDING</b>
+            </span>
+          );
+        else
+          return (
+            <span style={{ color: "green" }}>
+              <b>CLOSED</b>
+            </span>
+          );
+      },
+    },
   ];
   const column_plandatatable =[
-    { field: "PLAN_ID", headerName: "PLAN_ID", width: 90 , editable: false},
-    { field: "PLAN_DATE", headerName: "PLAN_DATE", width: 110, editable: false },
-    { field: "PROD_REQUEST_NO", headerName: "YCSX NO", width: 80, editable: false },
-    { field: "PROD_REQUEST_DATE", headerName: "YCSX DATE", width: 80, editable: false },
+    { field: "PLAN_ID", headerName: "PLAN_ID", width: 90 , editable: false},   
+    { field: "G_CODE", headerName: "G_CODE", width: 100, editable: false },
+    { field: "G_NAME_KD", headerName: "G_NAME_KD", width: 180, editable: false, renderCell: (params: any) => {
+           
+      if(params.row.FACTORY === null || params.row.EQ1 === null || params.row.EQ2 === null || params.row.Setting1 === null || params.row.Setting2 === null || params.row.UPH1 === null ||  params.row.UPH2 === null || params.row.Step1 === null || params.row.Step1 === null || params.row.LOSS_SX1 === null || params.row.LOSS_SX2 === null || params.row.LOSS_SETTING1 === null ||  params.row.LOSS_SETTING2 === null)
+      return <span style={{color: 'red'}}>{params.row.G_NAME_KD}</span>
+      return <span style={{color: 'green'}}>{params.row.G_NAME_KD}</span>
+
+    
+ }  },
     { field: "PROD_REQUEST_QTY", headerName: "YCSX QTY", width: 80, editable: false , renderCell: (params: any) => {
            
         return <span style={{color: 'blue'}}>{params.row.PROD_REQUEST_QTY.toLocaleString('en','US')}</span>
       
    } },
-    { field: "G_CODE", headerName: "G_CODE", width: 100, editable: false },
-    { field: "G_NAME_KD", headerName: "G_NAME_KD", width: 180, editable: false },
-    { field: "PLAN_EQ", headerName: "PLAN_EQ", width: 80, editable: false },
-    { field: "PLAN_FACTORY", headerName: "FACTORY", width: 80, editable: false },
+    { field: "CD1", headerName: "KQ_CD1", width: 80, editable: false , renderCell: (params: any) => {
+           
+        return <span style={{color: 'blue'}}>{params.row.CD1.toLocaleString('en','US')}</span>
+      
+   } },
+    { field: "CD2", headerName: "KQ_CD2", width: 80, editable: false , renderCell: (params: any) => {
+           
+        return <span style={{color: 'blue'}}>{params.row.CD2.toLocaleString('en','US')}</span>
+      
+   } },
+    { field: "TON_CD1", headerName: "TONYCSX_CD1", width: 120, editable: false , renderCell: (params: any) => {
+           
+        return <span style={{color: 'blue'}}>{params.row.TON_CD1.toLocaleString('en','US')}</span>
+      
+   } },
+    { field: "TON_CD2", headerName: "TONYCSX_CD2", width: 120, editable: false , renderCell: (params: any) => {
+           
+        return <span style={{color: 'blue'}}>{params.row.TON_CD2.toLocaleString('en','US')}</span>
+      
+   } },
     { field: "PLAN_QTY", headerName: "PLAN_QTY", width: 80, editable: editplan, renderCell: (params: any) => {
         if(params.row.PLAN_QTY ===0)
         {
@@ -490,6 +663,11 @@ const MACHINE = () => {
     { field: "STEP", headerName: "STEP", width: 60, editable: editplan },
     { field: "PLAN_ORDER", headerName: "PLAN_ORDER", width: 110, editable: editplan },
     { field: "KETQUASX", headerName: "KETQUASX", width: 110, editable: editplan },
+    { field: "PLAN_EQ", headerName: "PLAN_EQ", width: 80, editable: editplan },
+    { field: "PLAN_FACTORY", headerName: "FACTORY", width: 80, editable: false },
+    { field: "PLAN_DATE", headerName: "PLAN_DATE", width: 110, editable: false },
+    { field: "PROD_REQUEST_NO", headerName: "YCSX NO", width: 80, editable: false },
+    { field: "PROD_REQUEST_DATE", headerName: "YCSX DATE", width: 80, editable: false },
     { field: "INS_EMPL", headerName: "INS_EMPL", width: 120, editable: false, hide: true  },
     { field: "INS_DATE", headerName: "INS_DATE", width: 120, editable: false, hide: true  },
     { field: "UPD_EMPL", headerName: "UPD_EMPL", width: 120, editable: false , hide: true },
@@ -512,6 +690,7 @@ const MACHINE = () => {
       }
    }  },
     { field: "M_QTY", headerName: "M_QTY", width: 110, editable: editchithi },
+    { field: "OUT_CFM_QTY", headerName: "OUT_CFM_QTY", width: 110, editable: editchithi },
     { field: "INS_EMPL", headerName: "INS_EMPL", width: 120, editable: false , hide: true },
     { field: "INS_DATE", headerName: "INS_DATE", width: 120, editable: editchithi, hide: true  },
     { field: "UPD_EMPL", headerName: "UPD_EMPL", width: 120, editable: false, hide: true  },
@@ -774,7 +953,7 @@ const MACHINE = () => {
   }
   const handletraYCSX = () => {
     setisLoading(true);
-    generalQuery("traYCSXDataFull", {
+    generalQuery("traYCSXDataFull_QLSX", {
       alltime: alltime,
       start_date: fromdate,
       end_date: todate,
@@ -1068,19 +1247,20 @@ const MACHINE = () => {
           {
             generalQuery("checkPLANID_O302", {PLAN_ID: qlsxplandatafilter[i].PLAN_ID})
             .then((response) => {    
-              console.log(response.data);          
+              //console.log(response.data);          
               if (response.data.tk_status !== "NG") {
                
                
               } else {
                 generalQuery("deletePlanQLSX", { PLAN_ID: qlsxplandatafilter[i].PLAN_ID })
                 .then((response) => {
-                  console.log(response.data.tk_status);
+                  //console.log(response.data);
                   if (response.data.tk_status !== "NG") {
-                    datafilter.splice(j,1);   
-                    setPlanDataTable(datafilter);    
-                  } else {
                     Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
+                  } else {
+                    datafilter.splice(j,1);   
+                    setPlanDataTable(datafilter);   
+                    
                   }
                 })
                 .catch((error) => {
@@ -1214,11 +1394,13 @@ const MACHINE = () => {
           STEP: selectedPlanTable[i].STEP,
           PLAN_QTY: selectedPlanTable[i].PLAN_QTY,
           PLAN_LEADTIME: selectedPlanTable[i].PLAN_LEADTIME,
+          PLAN_EQ: selectedPlanTable[i].PLAN_EQ,
           PLAN_ORDER: selectedPlanTable[i].PLAN_ORDER,
           PROCESS_NUMBER: selectedPlanTable[i].PROCESS_NUMBER,
+          KETQUASX: selectedPlanTable[i].KETQUASX=== null? 0: selectedPlanTable[i].KETQUASX,
         })
           .then((response) => {
-            console.log(response.data.tk_status);
+            //console.log(response.data.tk_status);
             if (response.data.tk_status !== "NG") {
             } else {
               err_code += '_'+ response.data.message;
@@ -1449,8 +1631,15 @@ const MACHINE = () => {
           className='buttonIcon'
           onClick={() => {
             if (qlsxplandatafilter.length > 0) {
-              setShowChiThi(true);
-              setChiThiListRender(renderChiThi(qlsxplandatafilter));
+              if(qlsxplandatafilter[0].FACTORY === null || qlsxplandatafilter[0].EQ1 === null || qlsxplandatafilter[0].EQ2 === null || qlsxplandatafilter[0].Setting1 === null || qlsxplandatafilter[0].Setting2 === null || qlsxplandatafilter[0].UPH1 === null ||  qlsxplandatafilter[0].UPH2 === null || qlsxplandatafilter[0].Step1 === null || qlsxplandatafilter[0].Step1 === null || qlsxplandatafilter[0].LOSS_SX1 === null || qlsxplandatafilter[0].LOSS_SX2 === null || qlsxplandatafilter[0].LOSS_SETTING1 === null ||  qlsxplandatafilter[0].LOSS_SETTING2 === null)
+              {
+                Swal.fire("Thông báo", "Nhập data định mức trước khi chỉ thị", "error");
+              }
+              else
+              {
+                setShowChiThi(true);
+                setChiThiListRender(renderChiThi(qlsxplandatafilter));
+              }
               //console.log(ycsxdatatablefilter);
             } else {
                 setShowChiThi(false);
@@ -3179,8 +3368,7 @@ const MACHINE = () => {
                       5, 10, 50, 100, 500, 1000, 5000, 10000, 500000,
                     ]}
                     editMode='row'
-                    getRowId={(row) => row.PROD_REQUEST_NO}
-                    checkboxSelection
+                    getRowId={(row) => row.PROD_REQUEST_NO}                    
                     onSelectionModelChange={(ids) => {
                       handleYCSXSelectionforUpdate(ids);
                     }}

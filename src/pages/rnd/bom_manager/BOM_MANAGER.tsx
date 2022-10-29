@@ -996,7 +996,7 @@ const BOM_MANAGER = () => {
     let abc: CODE_FULL_INFO = codefullinfo;
     let result: boolean = true;
     for (const [k, v] of Object.entries(abc)) {
-      if ((v === null || v === "") && k !== "REMK") {
+      if ((v === null || v === "") && k !== "REMK" && k !== "FACTORY" && k !== "Setting1" && k !== "Setting2" && k !== "UPH1" && k !== "UPH2" && k !== "Step1" && k !== "Step2" && k !== "LOSS_SX1" && k !== "LOSS_SX2" && k !== "LOSS_SETTING1" && k !== "LOSS_SETTING2" && k !== "NOTE"   ) {
         Swal.fire("Thông báo", "Không được để trống: " + k, "error");
         result = false;
         break;

@@ -2,6 +2,7 @@ import  { useEffect, useState} from 'react'
 import KHOLIEU from '../../kho/kholieu/KHOLIEU';
 import MACHINE from './Machine/MACHINE';
 import MACHINE2 from './Machine/MACHINE2';
+import PLANTABLE from './PLANTABLE/PLANTABLE';
 import "./QLSXPLAN.scss"
 
 const QLSXPLAN = () => {
@@ -19,17 +20,16 @@ const QLSXPLAN = () => {
     else if(choose ===2 )
     {
       setSelection({...selection, tab1:false, tab2: true, tab3:false});
-    }
+    } 
     else if(choose ===3 )
     {
       setSelection({...selection, tab1:false, tab2: false, tab3:true});
     }
-  }
-  
+  }  
   useEffect(()=>{
-
+    
   },[]);
-
+  
   return (
     <div className='qlsxplan'>
       <div className='mininavbar'>
@@ -52,7 +52,7 @@ const QLSXPLAN = () => {
       )}
       {selection.tab2 && (
         <div className='datadtc'>
-                               
+          <PLANTABLE/>                               
         </div>
       )}
     </div>

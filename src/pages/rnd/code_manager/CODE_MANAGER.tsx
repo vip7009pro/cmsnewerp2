@@ -522,6 +522,7 @@ const CODE_MANAGER = () => {
     {
       if(userData.EMPL_NO==='NHU1903'|| userData.MAINDEPTNAME==='QLSX')
       {
+        let err_code: string ='0';
         for(let i=0;i<codedatatablefilter.length;i++)
         {        
             await generalQuery("saveQLSX", {           
@@ -548,14 +549,21 @@ const CODE_MANAGER = () => {
               if (response.data.tk_status !== "NG") {
                 
               } else {     
-                         
+                         err_code ='1'; 
               }
             })
             .catch((error) => {
               console.log(error);
             });  
         } 
-        Swal.fire("Thông báo", "Lưu thành công", "success"); 
+        if(err_code ==='1')
+        {
+          Swal.fire("Thông báo", "Lưu thất bại, không được để trống đỏ ô nào", "error"); 
+        }
+        else
+        {
+          Swal.fire("Thông báo", "Lưu thành công", "success"); 
+        }
       }
       else
       {

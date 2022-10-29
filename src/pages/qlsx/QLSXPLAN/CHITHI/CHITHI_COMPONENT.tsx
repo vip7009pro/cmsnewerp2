@@ -488,15 +488,15 @@ const CHITHI_COMPONENT = ({
             <tbody>
               <tr>
                 <td>UPH1 (EA/h) - {request_codeinfo[0]?.EQ1}</td>
-                <td>{request_codeinfo[0]?.UPH1.toLocaleString("en-US")}</td>
+                <td>{(request_codeinfo[0]?.UPH1 !== null )? request_codeinfo[0]?.UPH1.toLocaleString("en-US"):''}</td>
               </tr>
               <tr>
                 <td>UPH2 (EA/h) - {request_codeinfo[0]?.EQ2}</td>
-                <td>{request_codeinfo[0]?.UPH2.toLocaleString("en-US")}</td>
+                <td>{(request_codeinfo[0]?.UPH2 !== null )? request_codeinfo[0]?.UPH2.toLocaleString("en-US"):''}</td>
               </tr>
               <tr>
                 <td>Thời gian setting 1 - {request_codeinfo[0]?.EQ1}</td>
-                <td>{request_codeinfo[0]?.Setting1}</td>
+                <td>{(request_codeinfo[0]?.Setting1 !== null )? request_codeinfo[0]?.Setting1:''}</td>
               </tr>
               <tr>
                 <td>Thời gian setting 2 - {request_codeinfo[0]?.EQ2}</td>
@@ -525,11 +525,11 @@ const CHITHI_COMPONENT = ({
               </tr>
               <tr>
                 <td>LOSS SETTING ĐỊNH MỨC 1- {request_codeinfo[0]?.EQ1}</td>
-                <td>{request_codeinfo[0]?.LOSS_SETTING1.toLocaleString("en-US")} met</td>
+                <td>{(request_codeinfo[0]?.LOSS_SETTING1 !== null )? request_codeinfo[0]?.LOSS_SETTING1.toLocaleString("en-US"):''} met</td>
               </tr>
               <tr>               
                 <td>LOSS SETTING ĐỊNH MỨC 2- {request_codeinfo[0]?.EQ2}</td>
-                <td>{request_codeinfo[0]?.LOSS_SETTING2.toLocaleString("en-US")} met</td>                
+                <td>{(request_codeinfo[0]?.LOSS_SETTING2 !== null )? request_codeinfo[0]?.LOSS_SETTING2.toLocaleString("en-US"): ''} met</td>                
               </tr>
             </tbody>
           </table>         

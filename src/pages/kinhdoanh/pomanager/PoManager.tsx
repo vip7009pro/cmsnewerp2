@@ -588,7 +588,7 @@ const PoManager = () => {
               PO_DATE: newpodate,
               RD_DATE: newrddate,
               PROD_PRICE: newpoprice, 
-              REMARK: newporemark
+              REMARK: newporemark=== undefined? '': newporemark
             })
               .then((response) => {
                 console.log(response.data.tk_status);
