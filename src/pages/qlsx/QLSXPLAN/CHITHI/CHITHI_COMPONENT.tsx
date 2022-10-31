@@ -124,19 +124,21 @@ interface FullBOM {
   NOTE:string
 }
 interface QLSXCHITHIDATA {
-  id: string;
-  CHITHI_ID: number;
-  PLAN_ID: string;
-  M_CODE: string;
-  M_NAME: string;
-  WIDTH_CD: number;
-  M_ROLL_QTY: number;
-  M_MET_QTY: number;
-  M_QTY: number;
-  INS_EMPL: string;
-  INS_DATE: string;
-  UPD_EMPL: string;
-  UPD_DATE: string;
+  id: string,
+  CHITHI_ID: number,
+  PLAN_ID: string,    
+  M_CODE: string,
+  M_NAME: string, 
+  WIDTH_CD: number,
+  M_ROLL_QTY: number,
+  M_MET_QTY: number,
+  M_QTY: number,
+  LIEUQL_SX: number,
+  OUT_CFM_QTY: number,
+  INS_EMPL: string,
+  INS_DATE: string,
+  UPD_EMPL: string,
+  UPD_DATE: string,
 }
 const CHITHI_COMPONENT = ({
   PROD_REQUEST_NO,
@@ -556,7 +558,9 @@ const CHITHI_COMPONENT = ({
                     <tr key={index}>
                       <td>{index}</td>
                       <td>{element.M_CODE}</td>
-                      <td>{element.M_NAME}</td>
+                      {
+                        (element.LIEUQL_SX ===1)? <td style={{color:'red', fontWeight:'bold', backgroundColor:'lightgreen'}}>{element.M_NAME}</td>:<td>{element.M_NAME}</td>
+                      }                      
                       <td>{element.WIDTH_CD}</td>
                       <td>{(element.M_MET_QTY * element.M_QTY).toLocaleString("en-US")} M</td>
                       <td></td>

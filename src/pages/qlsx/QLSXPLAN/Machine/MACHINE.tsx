@@ -21,7 +21,7 @@ import {
   MuiBaseEvent,
   MuiEvent,
 } from "@mui/x-data-grid";
-import { Alert, IconButton, LinearProgress, TextField } from "@mui/material";
+import { Alert, Button, IconButton, LinearProgress, TextField } from "@mui/material";
 import {
   AiFillAmazonCircle,
   AiFillEdit,
@@ -44,6 +44,24 @@ import CHITHI_COMPONENT from "../CHITHI/CHITHI_COMPONENT";
 import { BiRefresh, BiReset } from "react-icons/bi";
 import YCKT from "../YCKT/YCKT";
 const axios = require("axios").default;
+
+interface DINHMUC_QSLX {
+  FACTORY: string,
+  EQ1: string,
+  EQ2: string,
+  Setting1: number,
+  Setting2: number,
+  UPH1: number,
+  UPH2: number,
+  Step1: number,
+  Step2: number,
+  LOSS_SX1: number,
+  LOSS_SX2: number,
+  LOSS_SETTING1: number,
+  LOSS_SETTING2: number,
+  NOTE: string
+}
+
 interface QLSXPLANDATA {
   id: number,
   PLAN_ID: string;
@@ -170,6 +188,22 @@ const MACHINE = () => {
       setSelection({ ...selection, tab1: false, tab2: false, tab3: true });
     }
   };
+  const [datadinhmuc, setDataDinhMuc] = useState<DINHMUC_QSLX>({
+    FACTORY: '',
+    EQ1: '',
+    EQ2: '',
+    Setting1: 0,
+    Setting2: 0,
+    UPH1: 0,
+    UPH2: 0,
+    Step1: 0,
+    Step2: 0,
+    LOSS_SX1: 0,
+    LOSS_SX2: 0,
+    LOSS_SETTING1: 0,
+    LOSS_SETTING2: 0,
+    NOTE: ''
+  });
   const [plandatatable, setPlanDataTable] = useState<QLSXPLANDATA[]>([]);
   const [chithidatatable, setChiThiDataTable] = useState<QLSXCHITHIDATA[]>([]);
   const [showplanwindow, setShowPlanWindow] = useState(false);
@@ -707,6 +741,72 @@ const MACHINE = () => {
     { field: "UPD_EMPL", headerName: "UPD_EMPL", width: 120, editable: false, hide: true  },
     { field: "UPD_DATE", headerName: "UPD_DATE", width: 120, editable: false, hide: true },   
   ];
+
+  const handleSaveQLSX= async()=> {
+    
+    if(qlsxplandatafilter.length>=1)
+    {
+      if(userData.EMPL_NO==='NHU1903'|| userData.MAINDEPTNAME==='QLSX')
+      {
+        let err_code: string ='0';
+              
+        console.log(datadinhmuc);
+        if(datadinhmuc.FACTORY === '' || datadinhmuc.EQ1 === 'NA' ||datadinhmuc.EQ1 === 'NO' || datadinhmuc.EQ2 === '' || datadinhmuc.Setting1 === 0 ||  datadinhmuc.UPH1 === 0 || datadinhmuc.Step1 === 0 ||  datadinhmuc.LOSS_SX1 === 0)
+        {
+          Swal.fire("Thông báo", "Lưu thất bại, hãy nhập đủ thông tin", "error"); 
+        }
+        else
+        {
+          generalQuery("saveQLSX", {           
+            G_CODE: qlsxplandatafilter[0].G_CODE,          
+            FACTORY: datadinhmuc.FACTORY,
+            EQ1: datadinhmuc.EQ1,
+            EQ2: datadinhmuc.EQ2,
+            Setting1: datadinhmuc.Setting1,
+            Setting2: datadinhmuc.Setting2,
+            UPH1: datadinhmuc.UPH1,
+            UPH2: datadinhmuc.UPH2,
+            Step1: datadinhmuc.Step1,
+            Step2: datadinhmuc.Step2,
+            LOSS_SX1: datadinhmuc.LOSS_SX1,
+            LOSS_SX2: datadinhmuc.LOSS_SX2,
+            LOSS_SETTING1: datadinhmuc.LOSS_SETTING1,
+            LOSS_SETTING2: datadinhmuc.LOSS_SETTING2,
+            NOTE: datadinhmuc.NOTE,         
+          })
+          .then((response) => {
+            console.log(response.data.tk_status);
+            if (response.data.tk_status !== "NG") {
+              
+            } else {     
+              err_code ='1'; 
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });  
+          if(err_code ==='1')
+          {
+            Swal.fire("Thông báo", "Lưu thất bại, không được để trống ô cần thiết", "error"); 
+          }
+          else
+          {
+            Swal.fire("Thông báo", "Lưu thành công", "success"); 
+          }
+        }        
+         
+       
+      }
+      else
+      {
+        Swal.fire("Thông báo", "Không đủ quyền hạn!" , "error"); 
+      }
+    }
+    else
+    {
+      Swal.fire("Thông báo", "Chọn ít nhất 1 G_CODE để SET !" , "error"); 
+    }
+  }
 
   const renderYCKT = (planlist: QLSXPLANDATA[]) => {
     return planlist.map((element, index) => (
@@ -1725,6 +1825,15 @@ const MACHINE = () => {
           <BiRefresh color='yellow' size={20} />
           Refresh PLAN
         </IconButton>
+        <IconButton
+          className='buttonIcon'
+          onClick={() => {
+            handleSaveQLSX();
+          }}
+        >
+          <AiFillSave color='lightgreen' size={20} />
+          Lưu Data Định Mức
+        </IconButton>
       </GridToolbarContainer>
     );
   }
@@ -1817,6 +1926,22 @@ const MACHINE = () => {
     //console.log(datafilter);
     if (datafilter.length > 0) {
       setQlsxPlanDataFilter(datafilter);
+      setDataDinhMuc({...datadinhmuc,
+        FACTORY: datafilter[0].FACTORY === null? '': datafilter[0].FACTORY,
+        EQ1: datafilter[0].EQ1 === null? 'NA': datafilter[0].EQ1 === ''? 'NO':datafilter[0].EQ1,
+        EQ2: datafilter[0].EQ2 === null? 'NA': datafilter[0].EQ2 === ''? 'NO':datafilter[0].EQ2,
+        Setting1: datafilter[0].Setting1 === null? 0: datafilter[0].Setting1,
+        Setting2: datafilter[0].Setting2 === null? 0: datafilter[0].Setting2,
+        UPH1: datafilter[0].UPH1 === null? 0: datafilter[0].UPH1,
+        UPH2: datafilter[0].UPH2 === null? 0: datafilter[0].UPH2,
+        Step1: datafilter[0].Step1 === null? 0: datafilter[0].Step1,
+        Step2: datafilter[0].Step2 === null? 0: datafilter[0].Step2,
+        LOSS_SX1: datafilter[0].LOSS_SX1 === null? 0: datafilter[0].LOSS_SX1,
+        LOSS_SX2: datafilter[0].LOSS_SX2 === null? 0: datafilter[0].LOSS_SX2,
+        LOSS_SETTING1: datafilter[0].LOSS_SETTING1 === null? 0: datafilter[0].LOSS_SETTING1,
+        LOSS_SETTING2: datafilter[0].LOSS_SETTING2 === null? 0: datafilter[0].LOSS_SETTING2,
+        NOTE: datafilter[0].NOTE === null? '': datafilter[0].NOTE,
+      });
       handleGetChiThiTable(datafilter[0].PLAN_ID, datafilter[0].G_CODE, datafilter[0].PLAN_QTY, datafilter[0].PROCESS_NUMBER);
     } else {
         setQlsxPlanDataFilter([]);
@@ -3543,6 +3668,165 @@ const MACHINE = () => {
                     //console.log(plandatatable);
                   }}
                 />
+              </div>
+              <div className="datadinhmuc">                        
+              <div className='forminputcolumn'>
+                    <label>
+                        <b>EQ1:</b>
+                        <select
+                          name='phanloai'
+                          value={datadinhmuc.EQ1}
+                          onChange={(e) => setDataDinhMuc({...datadinhmuc, EQ1: e.target.value })}
+                          style={{width:150, height: 22}}
+                        >
+                          <option value='FR'>FR</option>
+                          <option value='SR'>SR</option>
+                          <option value='DC'>DC</option>
+                          <option value='ED'>ED</option>
+                          <option value='NO'>NO</option>
+                          <option value='NA'>NA</option>
+                        </select>
+                      </label>
+                    <label>
+                        <b>EQ2:</b>
+                        <select
+                          name='phanloai'
+                          value={datadinhmuc.EQ2}
+                          onChange={(e) => setDataDinhMuc({...datadinhmuc, EQ2: e.target.value })}
+                          style={{width:150, height: 22}}
+                        >
+                          <option value='FR'>FR</option>
+                          <option value='SR'>SR</option>
+                          <option value='DC'>DC</option>
+                          <option value='ED'>ED</option>
+                          <option value='NO'>NO</option>
+                          <option value='NA'>NA</option>
+                        </select>
+                      </label>
+                    
+                </div>            
+              <div className='forminputcolumn'>
+                      <label>
+                        <b>Setting1(min):</b>{" "}
+                        <input                          
+                          type='text'
+                          placeholder='Thời gian setting 1'
+                          value={datadinhmuc.Setting1}
+                          onChange={(e) => setDataDinhMuc({...datadinhmuc, Setting1: Number(e.target.value) })}
+                        ></input>
+                      </label>
+                      <label>
+                        <b>Setting2(min):</b>{" "}
+                        <input                          
+                          type='text'
+                          placeholder='Thời gian setting 2'
+                          value={datadinhmuc.Setting2}
+                          onChange={(e) => setDataDinhMuc({...datadinhmuc, Setting2: Number(e.target.value) })}
+                        ></input>
+                      </label>
+                </div>            
+              <div className='forminputcolumn'>
+                      <label>
+                        <b>UPH1(EA/h):</b>{" "}
+                        <input                          
+                          type='text'
+                          placeholder='Tốc độ sx 1'
+                          value={datadinhmuc.UPH1}
+                          onChange={(e) => setDataDinhMuc({...datadinhmuc, UPH1: Number(e.target.value) })}
+                        ></input>
+                      </label>
+                      <label>
+                        <b>UPH2(EA/h):</b>{" "}
+                        <input                         
+                          type='text'
+                          placeholder='Tốc độ sx 2'
+                          value={datadinhmuc.UPH2}
+                          onChange={(e) => setDataDinhMuc({...datadinhmuc, UPH2: Number(e.target.value) })}
+                        ></input>
+                      </label>
+                </div>            
+              <div className='forminputcolumn'>
+                      <label>
+                        <b>Step1:</b>{" "}
+                        <input                          
+                          type='text'
+                          placeholder='Số bước 1'
+                          value={datadinhmuc.Step1}
+                          onChange={(e) => setDataDinhMuc({...datadinhmuc, Step1: Number(e.target.value) })}
+                        ></input>
+                      </label>
+                      <label>
+                        <b>Step2:</b>{" "}
+                        <input                          
+                          type='text'
+                          placeholder='Số bước 2'
+                          value={datadinhmuc.Step2}
+                          onChange={(e) => setDataDinhMuc({...datadinhmuc, Step2: Number(e.target.value) })}
+                        ></input>
+                      </label>
+                </div>            
+              <div className='forminputcolumn'>
+                      <label>
+                        <b>LOSS_SX1(%):</b>{" "}
+                        <input                          
+                          type='text'
+                          placeholder='% loss sx 1'
+                          value={datadinhmuc.LOSS_SX1}
+                          onChange={(e) => setDataDinhMuc({...datadinhmuc, LOSS_SX1: Number(e.target.value) })}
+                        ></input>
+                      </label>
+                      <label>
+                        <b>LOSS_SX2(%):</b>{" "}
+                        <input                          
+                          type='text'
+                          placeholder='% loss sx 2'
+                          value={datadinhmuc.LOSS_SX2}
+                          onChange={(e) => setDataDinhMuc({...datadinhmuc, LOSS_SX2: Number(e.target.value) })}
+                        ></input>
+                      </label>
+                </div>            
+              <div className='forminputcolumn'>
+                      <label>
+                        <b>LOSS SETTING1 (m):</b>{" "}
+                        <input                         
+                          type='text'
+                          placeholder='met setting 1'
+                          value={datadinhmuc.LOSS_SETTING1}
+                          onChange={(e) => setDataDinhMuc({...datadinhmuc, LOSS_SETTING1: Number(e.target.value) })}
+                        ></input>
+                      </label>
+                      <label>
+                        <b>LOSS SETTING2 (m):</b>{" "}
+                        <input                          
+                          type='text'
+                          placeholder='met setting 2'
+                          value={datadinhmuc.LOSS_SETTING2}
+                          onChange={(e) => setDataDinhMuc({...datadinhmuc, LOSS_SETTING2: Number(e.target.value) })}
+                        ></input>
+                      </label>
+                </div>  
+                <div className='forminputcolumn'>
+                  <label>
+                    <b>FACTORY:</b>{" "}
+                    <input                     
+                      type='text'
+                      placeholder='NM1'
+                      value={datadinhmuc.FACTORY}
+                      onChange={(e) => setDataDinhMuc({...datadinhmuc, FACTORY: e.target.value })}
+                    ></input>
+                  </label>
+                  <label>
+                    <b>NOTE (QLSX):</b>{" "}
+                    <input                      
+                      type='text'
+                      placeholder='Chú ý'
+                      value={datadinhmuc.NOTE}
+                      onChange={(e) => setDataDinhMuc({...datadinhmuc, NOTE: e.target.value })}
+                    ></input>
+                  </label>
+                                                                 
+                </div>            
+                     
               </div>
               <div className='chithitable'>
                 <DataGrid
