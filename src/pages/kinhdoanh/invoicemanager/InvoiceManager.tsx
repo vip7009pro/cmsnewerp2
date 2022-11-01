@@ -123,7 +123,7 @@ const InvoiceManager = () => {
     { field: "YEARNUM", type: 'number',headerName: "YEARNUM", width: 80 },
     { field: "WEEKNUM",type: 'number', headerName: "WEEKNUM", width: 80 },      
     { field: "INVOICE_NO",type: 'number', headerName: "INVOICE_NO", width: 120 },      
-    { field: "DELIVERY_ID", type: 'number',headerName: "DELIVERY_ID", width: 90   }, 
+    { field: "DELIVERY_ID", headerName: "DELIVERY_ID", width: 90   }, 
     { field: "REMARK", headerName: "REMARK", width: 120 },   
   ]
   const column_excel2 = [
@@ -234,7 +234,7 @@ const InvoiceManager = () => {
       material: material,
     })
     .then(response => {
-        console.log(response.data);
+        //console.log(response.data);
         if(response.data.tk_status !=='NG')
         {
           const loadeddata: InvoiceTableData[] =  response.data.data.map((element:InvoiceTableData,index: number)=> {

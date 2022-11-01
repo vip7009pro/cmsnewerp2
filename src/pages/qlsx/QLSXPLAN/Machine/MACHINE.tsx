@@ -30,11 +30,12 @@ import {
   AiFillFolderAdd,
   AiFillSave,
   AiOutlineBarcode,
+  AiOutlineCaretRight,
   AiOutlineCloudUpload,
   AiOutlinePrinter,
 } from "react-icons/ai";
 import { MdOutlineDelete, MdOutlinePendingActions } from "react-icons/md";
-import { FaArrowRight } from "react-icons/fa";
+import { FaArrowRight, FaWarehouse } from "react-icons/fa";
 import { FcApprove, FcDeleteRow, FcSearch } from "react-icons/fc";
 import { SaveExcel } from "../../../../api/GlobalFunction";
 import YCSXComponent from "../../../kinhdoanh/ycsxmanager/YCSXComponent/YCSXComponent";
@@ -44,6 +45,17 @@ import CHITHI_COMPONENT from "../CHITHI/CHITHI_COMPONENT";
 import { BiRefresh, BiReset } from "react-icons/bi";
 import YCKT from "../YCKT/YCKT";
 const axios = require("axios").default;
+
+interface TONLIEUXUONG {
+  FACTORY: string,
+  PLAN_ID_INPUT: string,
+  M_CODE: string,
+  M_NAME: string,
+  WIDTH_CD: number,
+  M_LOT_NO: string,
+  TON_LIEU_MET: number,
+  TON_LIEU_ROLL: number,
+}
 
 interface DINHMUC_QSLX {
   FACTORY: string,
@@ -207,6 +219,7 @@ const MACHINE = () => {
   const [plandatatable, setPlanDataTable] = useState<QLSXPLANDATA[]>([]);
   const [chithidatatable, setChiThiDataTable] = useState<QLSXCHITHIDATA[]>([]);
   const [showplanwindow, setShowPlanWindow] = useState(false);
+  const [showkhoao, setShowKhoAo] = useState(false);
   const [userData, setUserData] = useContext(UserContext);
   const [isLoading, setisLoading] = useState(false);
   const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
@@ -229,6 +242,12 @@ const MACHINE = () => {
   >([]);
   const [qlsxchithidatafilter, setQlsxChiThiDataFilter] = useState<
     Array<QLSXCHITHIDATA>
+  >([]);
+  const [tonlieuxuongdatatable, setTonLieuXuongDataTable] = useState<
+    Array<TONLIEUXUONG>
+  >([]);
+  const [tonlieuxuongdatafilter, setTonLieuXuongDataFilter] = useState<
+    Array<TONLIEUXUONG>
   >([]);
   const [ycsxpendingcheck, setYCSXPendingCheck] = useState(false);
   const [inspectInputcheck, setInspectInputCheck] = useState(false);
@@ -740,6 +759,44 @@ const MACHINE = () => {
     { field: "INS_DATE", headerName: "INS_DATE", width: 120, editable: editchithi, hide: true  },
     { field: "UPD_EMPL", headerName: "UPD_EMPL", width: 120, editable: false, hide: true  },
     { field: "UPD_DATE", headerName: "UPD_DATE", width: 120, editable: false, hide: true },   
+  ];
+  const column_tonlieuxuongtable =[
+    { field: "FACTORY", headerName: "FACTORY", width: 90, editable: false },      
+    { field: "PLAN_ID_INPUT", headerName: "PLAN_ID_INPUT", width: 120, editable: false },    
+    { field: "M_CODE", headerName: "M_CODE", width: 80, editable: false },
+    { field: "M_NAME", headerName: "M_NAME", width: 120, editable: false , renderCell: (params: any) => {
+      if(params.row.LIEUQL_SX ===1)
+      {
+        return <span style={{color: 'red', fontWeight:'bold'}}>{params.row.M_NAME}</span>
+      }
+      else
+      {
+        return <span style={{color: 'black'}}>{params.row.M_NAME}</span>
+      }
+   }},
+    { field: "WIDTH_CD", headerName: "SIZE", width: 80, editable: false },   
+    { field: "M_LOT_NO", headerName: "M_LOT_NO", width: 120, editable: false },   
+    { field: "TON_LIEU_MET", headerName: "TON_LIEU_MET", width: 110, editable: editchithi , renderCell: (params: any) => {
+      if(params.row.M_MET_QTY ===0)
+      {
+        return <span style={{color: 'red'}}>NG</span>
+      }
+      else
+      {
+        return <span style={{color: 'green'}}>{params.row.M_MET_QTY}</span>
+      }
+   }  },
+    { field: "TON_LIEU_ROLL", headerName: "TON_LIEU_ROLL", width: 110, editable: editchithi , renderCell: (params: any) => {
+      if(params.row.M_MET_QTY ===0)
+      {
+        return <span style={{color: 'red'}}>NG</span>
+      }
+      else
+      {
+        return <span style={{color: 'green'}}>{params.row.M_MET_QTY}</span>
+      }
+   }  },
+    
   ];
 
   const handleSaveQLSX= async()=> {
@@ -1540,112 +1597,120 @@ const MACHINE = () => {
     }
   }
   const hanlde_SaveChiThi = async ()=> {
-    let err_code:string = '0';
+    let err_code:string = '0';    
+    let total_lieuql_sx:number =0;
+    for(let i=0; i<chithidatatable.length; i++)
+    {
+      total_lieuql_sx += chithidatatable[i].LIEUQL_SX;
+    }
+    if(total_lieuql_sx >0)
+    {
+      
     await generalQuery("deleteMCODEExistIN_O302", {
       PLAN_ID: qlsxplandatafilter[0].PLAN_ID,      
     })
-      .then((response) => {
-        //console.log(response.data);
-        if (response.data.tk_status !== "NG") {
-        } else {
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    .then((response) => {
+      //console.log(response.data);
+      if (response.data.tk_status !== "NG") {
+      } else {
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
 
-      for(let i=0; i<chithidatatable.length; i++)
+    for(let i=0; i<chithidatatable.length; i++)
+    {
+      generalQuery("updateLIEUQL_SX_M140", {
+        G_CODE: qlsxplandatafilter[0].G_CODE,   
+        M_CODE: chithidatatable[i].M_CODE,
+        LIEUQL_SX: chithidatatable[i].LIEUQL_SX,
+      })
+        .then((response) => {
+          //console.log(response.data);
+          
+          if (response.data.tk_status !== "NG") {
+            
+          } else {
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+
+              
+      if(chithidatatable[i].M_MET_QTY >0)
       {
-        generalQuery("updateLIEUQL_SX_M140", {
-          G_CODE: qlsxplandatafilter[0].G_CODE,   
-          M_CODE: chithidatatable[i].M_CODE,
-          LIEUQL_SX: chithidatatable[i].LIEUQL_SX,
+        let checktontaiM_CODE: boolean = false;
+        await generalQuery("checkM_CODE_PLAN_ID_Exist", {
+          PLAN_ID: qlsxplandatafilter[0].PLAN_ID,   
+          M_CODE: chithidatatable[i].M_CODE
         })
           .then((response) => {
             //console.log(response.data);
             
             if (response.data.tk_status !== "NG") {
-             
+              checktontaiM_CODE = true;
             } else {
             }
           })
           .catch((error) => {
             console.log(error);
           });
+                
+          //console.log('checktontai',checktontaiM_CODE);
 
-               
-        if(chithidatatable[i].M_MET_QTY >0)
-        {
-          let checktontaiM_CODE: boolean = false;
-          await generalQuery("checkM_CODE_PLAN_ID_Exist", {
-            PLAN_ID: qlsxplandatafilter[0].PLAN_ID,   
-            M_CODE: chithidatatable[i].M_CODE
-          })
-            .then((response) => {
-              //console.log(response.data);
-              
-              if (response.data.tk_status !== "NG") {
-                checktontaiM_CODE = true;
-              } else {
-              }
+          if(checktontaiM_CODE)
+          {
+            generalQuery("updateChiThi", {
+              PLAN_ID: qlsxplandatafilter[0].PLAN_ID,
+              M_CODE: chithidatatable[i].M_CODE,
+              M_ROLL_QTY: chithidatatable[i].M_ROLL_QTY,
+              M_MET_QTY: chithidatatable[i].M_MET_QTY,
+              M_QTY: chithidatatable[i].M_QTY,
+              LIEUQL_SX: chithidatatable[i].LIEUQL_SX,
             })
-            .catch((error) => {
-              console.log(error);
-            });
-                  
-            //console.log('checktontai',checktontaiM_CODE);
-
-            if(checktontaiM_CODE)
-            {
-              generalQuery("updateChiThi", {
-                PLAN_ID: qlsxplandatafilter[0].PLAN_ID,
-                M_CODE: chithidatatable[i].M_CODE,
-                M_ROLL_QTY: chithidatatable[i].M_ROLL_QTY,
-                M_MET_QTY: chithidatatable[i].M_MET_QTY,
-                M_QTY: chithidatatable[i].M_QTY,
-                LIEUQL_SX: chithidatatable[i].LIEUQL_SX,
+              .then((response) => {
+                //console.log(response.data);
+                if (response.data.tk_status !== "NG") {
+                } else {
+                  err_code += '_'+ response.data.message;              
+                }
               })
-                .then((response) => {
-                  //console.log(response.data);
-                  if (response.data.tk_status !== "NG") {
-                  } else {
-                    err_code += '_'+ response.data.message;              
-                  }
-                })
-                .catch((error) => {
-                  console.log(error);
-                });
+              .catch((error) => {
+                console.log(error);
+              });
 
-            }
-            else
-            {
-              generalQuery("insertChiThi", {
-                PLAN_ID: qlsxplandatafilter[0].PLAN_ID,
-                M_CODE: chithidatatable[i].M_CODE,
-                M_ROLL_QTY: chithidatatable[i].M_ROLL_QTY,
-                M_MET_QTY: chithidatatable[i].M_MET_QTY,
-                M_QTY: chithidatatable[i].M_QTY,
-                LIEUQL_SX: chithidatatable[i].LIEUQL_SX,
+          }
+          else
+          {
+            generalQuery("insertChiThi", {
+              PLAN_ID: qlsxplandatafilter[0].PLAN_ID,
+              M_CODE: chithidatatable[i].M_CODE,
+              M_ROLL_QTY: chithidatatable[i].M_ROLL_QTY,
+              M_MET_QTY: chithidatatable[i].M_MET_QTY,
+              M_QTY: chithidatatable[i].M_QTY,
+              LIEUQL_SX: chithidatatable[i].LIEUQL_SX,
+            })
+              .then((response) => {
+                //console.log(response.data);
+                if (response.data.tk_status !== "NG") {
+                } else {
+                  err_code += '_'+ response.data.message;              
+                }
               })
-                .then((response) => {
-                  //console.log(response.data);
-                  if (response.data.tk_status !== "NG") {
-                  } else {
-                    err_code += '_'+ response.data.message;              
-                  }
-                })
-                .catch((error) => {
-                  console.log(error);
-                });
-            }
+              .catch((error) => {
+                console.log(error);
+              });
+          }
 
-        }    
-        else
-        {
-          err_code += '_' + chithidatatable[i].M_CODE +': so met = 0';
-        }    
-       
-      }
+      }    
+      else
+      {
+        err_code += '_' + chithidatatable[i].M_CODE +': so met = 0';
+      }    
+      
+    }
 
     if(err_code  !=='0')
     {
@@ -1656,6 +1721,13 @@ const MACHINE = () => {
       Swal.fire('Thông báo', 'Lưu Chỉ thị thành công','success');
       loadQLSXPlan(selectedPlanDate);
     }
+
+    }
+    else
+    {
+      Swal.fire('Thông báo', 'Phải chỉ định liệu quản lý','error');
+    }
+
   }
   function CustomToolbarPOTable() {
     return (
@@ -1887,11 +1959,20 @@ const MACHINE = () => {
         <IconButton
           className='buttonIcon'
           onClick={() => { 
+            setShowKhoAo(!showkhoao);    
+          }}
+        >
+          <FaWarehouse color='blue' size={20} />
+          Xuất kho ảo
+        </IconButton>
+        <IconButton
+          className='buttonIcon'
+          onClick={() => { 
             handleConfirmDKXL();           
           }}
         >
           <AiOutlineBarcode color='green' size={20} />
-          Đăng ký Xuất Liệu
+          Đăng ký Xuất Kho Thật
         </IconButton>
         <span style={{fontSize:20, fontWeight: 'bold', color: 'red'}}>
         {
@@ -1903,6 +1984,36 @@ const MACHINE = () => {
           qlsxplandatafilter[0]?.G_NAME
         }
         </span>       
+      </GridToolbarContainer>
+    );
+  }
+  function CustomToolbarKHOAO() {
+    return (
+      <GridToolbarContainer>
+        {/*  <GridToolbarColumnsButton />
+        <GridToolbarFilterButton />
+        <GridToolbarDensitySelector />  */}
+        <IconButton
+          className='buttonIcon'
+          onClick={() => {
+            SaveExcel(ycsxdatatable, "YCSX Table");
+          }}
+        >
+          <AiFillFileExcel color='green' size={25} />
+          SAVE
+        </IconButton>
+        <GridToolbarQuickFilter />
+        <IconButton
+          className='buttonIcon'
+          onClick={() => { 
+            setShowKhoAo(!showkhoao);    
+          }}
+        >
+          <AiOutlineCaretRight color='blue' size={20} />
+          Xuất kho
+        </IconButton>
+           
+         
       </GridToolbarContainer>
     );
   }
@@ -3578,6 +3689,53 @@ const MACHINE = () => {
                     </div>
                   </div>
                 )}
+                {showkhoao && (
+                  <div className='khoaodiv'>
+                    <div className="khoaotieude"  style={{fontSize: 25, fontWeight:'bold'}}>KHO ẢO
+                    <button
+                        onClick={() => {
+                          setShowKhoAo(!showkhoao);                          
+                        }}
+                      >
+                        Close
+                      </button>
+                    </div>                    
+                    <div className="tablekhoao" style={{height:'100%', width:'100%'}}>
+                    <DataGrid
+                      sx={{ fontSize: 12, flex: 1 }}
+                      components={{
+                        Toolbar: CustomToolbarKHOAO,
+                        LoadingOverlay: LinearProgress,
+                      }}
+                      getRowId={(row) => row.CHITHI_ID}
+                      loading={isLoading}
+                      rowHeight={30}
+                      rows={chithidatatable}
+                      columns={column_chithidatatable}
+                      rowsPerPageOptions={[
+                        5, 10, 50, 100, 500, 1000, 5000, 10000, 500000,
+                      ]}                     
+                      checkboxSelection
+                      onSelectionModelChange={(ids) => {
+                        handleQLSXCHITHIDataSelectionforUpdate(ids);
+                      }}
+                      onCellEditCommit={(
+                        params: GridCellEditCommitParams,
+                        event: MuiEvent<MuiBaseEvent>,
+                        details: GridCallbackDetails
+                      ) => {
+                        const keyvar = params.field;
+                        const newdata = chithidatatable.map((p) =>
+                          p.CHITHI_ID === params.id ? { ...p, [keyvar]: params.value } : p
+                        );
+                        setChiThiDataTable(newdata);
+                        //console.log(chithidatatable);
+                      }}
+                    />
+                    </div>                                  
+                  </div>
+                )}  
+
                 {showChiThi && (
                   <div className='printycsxpage'>
                     <div className='buttongroup'>

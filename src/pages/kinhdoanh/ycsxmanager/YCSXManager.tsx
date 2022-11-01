@@ -1064,7 +1064,7 @@ const readUploadFileAmazon = (e:any) => {
                     await generalQuery("insert_ycsx", {
                       G_CODE: uploadExcelJson[i].G_CODE,
                       CUST_CD: uploadExcelJson[i].CUST_CD,             
-                      REMK: uploadExcelJson[i].REMK,
+                      REMK: next_process_lot_no_p501,
                       PROD_REQUEST_DATE: moment().format("YYYYMMDD"),
                       PROD_REQUEST_NO: next_prod_request_no,
                       CODE_50: loaixh,
