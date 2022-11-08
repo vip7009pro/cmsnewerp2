@@ -578,36 +578,62 @@ const handleAmazonData = (amazon_data: {id:number, DATA: string, CHECKSTATUS:str
 const upAmazonData = async ()=> {
   let uploadAmazonData =  handleAmazonData(uploadExcelJson,cavityAmazon,codeCMS,prodrequestno,id_congviec);    
   //console.log(uploadAmazonData);
-  for(let i=0;i<uploadAmazonData.length; i++) 
-  {
-    await generalQuery("insertData_Amazon", {        
-      G_CODE: uploadAmazonData[i].G_CODE,
-      PROD_REQUEST_NO : uploadAmazonData[i].PROD_REQUEST_NO,
-      NO_IN: uploadAmazonData[i].NO_IN,
-      ROW_NO: uploadAmazonData[i].ROW_NO,
-      DATA_1: uploadAmazonData[i].DATA1===undefined?'': uploadAmazonData[i].DATA1,
-      DATA_2: uploadAmazonData[i].DATA2===undefined?'': uploadAmazonData[i].DATA2,
-      DATA_3: uploadAmazonData[i].DATA3===undefined?'': uploadAmazonData[i].DATA3,
-      DATA_4: uploadAmazonData[i].DATA4===undefined?'': uploadAmazonData[i].DATA4,
-      PRINT_STATUS: '',
-      INLAI_COUNT: 0,
-      REMARK:'',
-      INS_EMPL: userData.EMPL_NO,  
+  let checkIDcongViecTonTai:boolean = false;
+
+  await generalQuery("insertData_Amazon", {
+    NO_IN: id_congviec,
+  })
+    .then((response) => {
+      console.log(response.data.tk_status);
+      if (response.data.tk_status !== "NG") {  
+        checkIDcongViecTonTai =true;      
+      } else {
+        checkIDcongViecTonTai = false;
+      }
     })
-      .then((response) => {
-        console.log(response.data.tk_status);
-        if (response.data.tk_status !== "NG") {
-          setProgressValue((i+1)*2);
-        } else {      
-         
-          
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }
-  Swal.fire("Thông báo","Upload data Amazon Hoàn thành","success");
+    .catch((error) => {
+      console.log(error);
+    });
+  
+    if(checkIDcongViecTonTai)
+    {
+      for(let i=0;i<uploadAmazonData.length; i++) 
+      {
+        await generalQuery("insertData_Amazon", {        
+          G_CODE: uploadAmazonData[i].G_CODE,
+          PROD_REQUEST_NO : uploadAmazonData[i].PROD_REQUEST_NO,
+          NO_IN: uploadAmazonData[i].NO_IN,
+          ROW_NO: uploadAmazonData[i].ROW_NO,
+          DATA_1: uploadAmazonData[i].DATA1===undefined?'': uploadAmazonData[i].DATA1,
+          DATA_2: uploadAmazonData[i].DATA2===undefined?'': uploadAmazonData[i].DATA2,
+          DATA_3: uploadAmazonData[i].DATA3===undefined?'': uploadAmazonData[i].DATA3,
+          DATA_4: uploadAmazonData[i].DATA4===undefined?'': uploadAmazonData[i].DATA4,
+          PRINT_STATUS: '',
+          INLAI_COUNT: 0,
+          REMARK:'',
+          INS_EMPL: userData.EMPL_NO,  
+        })
+          .then((response) => {
+            console.log(response.data.tk_status);
+            if (response.data.tk_status !== "NG") {
+              setProgressValue((i+1)*2);
+            } else {      
+             
+              
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }
+      Swal.fire("Thông báo","Upload data Amazon Hoàn thành","success");
+
+    }
+    else
+    {
+      Swal.fire("Thông báo","ID công việc đã tồn tại","error");
+    }
+ 
 
 }
 const checkAmazonData = async (amazon_data: {id:number, DATA: string, CHECKSTATUS: string}[]) => {
@@ -1016,9 +1042,9 @@ const readUploadFileAmazon = (e:any) => {
                       REMK: uploadExcelJson[i].REMK,
                       PROD_REQUEST_DATE: moment().format("YYYYMMDD"),
                       PROD_REQUEST_NO: next_prod_request_no,
-                      CODE_50: loaixh,
+                      CODE_50:  uploadExcelJson[i].CODE_50,
                       CODE_03: '01',
-                      CODE_55: loaisx,            
+                      CODE_55: uploadExcelJson[i].CODE_55,            
                       RIV_NO: 'A',
                       PROD_REQUEST_QTY: uploadExcelJson[i].PROD_REQUEST_QTY,           
                       EMPL_NO: userData.EMPL_NO,                  
@@ -1067,9 +1093,9 @@ const readUploadFileAmazon = (e:any) => {
                       REMK: next_process_lot_no_p501,
                       PROD_REQUEST_DATE: moment().format("YYYYMMDD"),
                       PROD_REQUEST_NO: next_prod_request_no,
-                      CODE_50: loaixh,
+                      CODE_50: uploadExcelJson[i].CODE_50,
                       CODE_03: '01',
-                      CODE_55: loaisx,            
+                      CODE_55: uploadExcelJson[i].CODE_55,            
                       RIV_NO: 'A',
                       PROD_REQUEST_QTY: uploadExcelJson[i].PROD_REQUEST_QTY,           
                       EMPL_NO: userData.EMPL_NO,                  

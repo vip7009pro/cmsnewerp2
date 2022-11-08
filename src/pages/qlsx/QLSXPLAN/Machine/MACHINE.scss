@@ -334,7 +334,7 @@
                         flex-direction: column;        
                         justify-content: flex-start;
                         z-index: 3;
-                        width: 35%;
+                        width: 98%;
                         height:90vh;
                         align-items: center;
                         padding: 10px;
@@ -352,12 +352,54 @@
                             width: 100%;                                  
                             gap: 5px;
                         }
-                        .tablekhoao {                                                  
-                            background-color: white; 
-                            border-radius: 5px;
-                            height: 100%;                           
-                            background-image: linear-gradient(0deg, #afd3d1,#f7b7f1);
+                        .khoaodivtable {
+                            display: flex;
+                            background-color: transparent;
+                            height: 100%;
+                            width: 100%;
+                            gap: 10px;
+                            .tablekhoao {    
+                                display: flex;  
+                                flex: 2.5; 
+                                flex-direction: column;
+                                border-radius: 5px;     
+                                gap: 10px;                                             
+                                background-color: transparent;                                
+                                box-shadow: 5px 5px 15px 5px rgba(255,255,255,0.17);
+                                .tabletonkhoao {
+                                    display: flex;
+                                    flex: 1;
+                                    background-image: linear-gradient(0deg, #afd3d1,#f7b7f1);
+
+                                }
+                                .lichsuinputsanxuat {
+                                    display: flex;
+                                    flex:1;
+                                    background-image: linear-gradient(0deg, #afd3d1,#4eaae7);
+
+                                }
+                            }
+                            .nhapxuatkhoao  {
+                                display: flex;
+                                flex-direction: column;
+                                height: 100%;
+                                gap: 10px;
+                                flex: 3;
+                                .nhapkhoao {
+                                    display: flex;      
+                                    background-image: linear-gradient(0deg, #afd3d1,#4be7ec);  
+                                    -webkit-box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27); 
+                                    box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27);                            
+                                }
+                                .xuatkhoao {
+                                    display: flex;
+                                    background-image: linear-gradient(0deg, #afd3d1,#f7d36e);
+                                    -webkit-box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27); 
+                                    box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27);   
+                                }
+                            }
                         }
+                        
                     }            
                 }   
             }

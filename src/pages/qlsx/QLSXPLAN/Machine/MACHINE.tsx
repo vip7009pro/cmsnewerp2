@@ -33,10 +33,12 @@ import {
   AiOutlineCaretRight,
   AiOutlineCloudUpload,
   AiOutlinePrinter,
+  AiOutlineRollback,
+  AiOutlineSave,
 } from "react-icons/ai";
 import { MdOutlineDelete, MdOutlinePendingActions } from "react-icons/md";
 import { FaArrowRight, FaWarehouse } from "react-icons/fa";
-import { FcApprove, FcDeleteRow, FcSearch } from "react-icons/fc";
+import { FcApprove, FcCancel, FcDeleteRow, FcSearch } from "react-icons/fc";
 import { SaveExcel } from "../../../../api/GlobalFunction";
 import YCSXComponent from "../../../kinhdoanh/ycsxmanager/YCSXComponent/YCSXComponent";
 import DrawComponent from "../../../kinhdoanh/ycsxmanager/DrawComponent/DrawComponent";
@@ -47,7 +49,9 @@ import YCKT from "../YCKT/YCKT";
 const axios = require("axios").default;
 
 interface TONLIEUXUONG {
+  id: number,
   FACTORY: string,
+  PHANLOAI: string,
   PLAN_ID_INPUT: string,
   M_CODE: string,
   M_NAME: string,
@@ -56,7 +60,52 @@ interface TONLIEUXUONG {
   TON_LIEU_MET: number,
   TON_LIEU_ROLL: number,
 }
+interface LICHSUNHAPKHOAO {
+  id: string,
+  FACTORY: string,
+  PHANLOAI: string,
+  M_CODE: string,
+  M_NAME: string,
+  WIDTH_CD: number,
+  M_LOT_NO: string,
+  PLAN_ID_INPUT: string,
+  ROLL_QTY: number,
+  IN_QTY: number,
+  TOTAL_IN_QTY: number,
+  INS_DATE: string,
+}
+interface LICHSUXUATKHOAO {
+  id: string,
+  FACTORY: string,
+  PHANLOAI: string,
+  M_CODE: string,
+  M_NAME: string,
+  WIDTH_CD: number,
+  M_LOT_NO: string,
+  PLAN_ID_INPUT: string,
+  PLAN_ID_OUTPUT: string,
+  ROLL_QTY: number,
+  OUT_QTY: number,
+  TOTAL_OUT_QTY: number,
+  INS_DATE: string,
+}
+interface LICHSUINPUTLIEUSX {
+  id: string,
+  PLAN_ID: string,
+  G_NAME: string,
+  G_NAME_KD: string,
+  M_CODE: string,
+  M_NAME: string,
+  M_LOT_NO: string,
+  WIDTH_CD: number,
+  INPUT_QTY: number,
+  USED_QTY: number,
+  REMAIN_QTY: number,
+  EMPL_NO: string,
+  EQUIPMENT_CD: string,
+  INS_DATE: string,
 
+}
 interface DINHMUC_QSLX {
   FACTORY: string,
   EQ1: string,
@@ -73,7 +122,6 @@ interface DINHMUC_QSLX {
   LOSS_SETTING2: number,
   NOTE: string
 }
-
 interface QLSXPLANDATA {
   id: number,
   PLAN_ID: string;
@@ -177,6 +225,7 @@ interface QLSXCHITHIDATA {
     M_MET_QTY: number,
     M_QTY: number,
     LIEUQL_SX: number,
+    OUT_KHO_SX: number,
     OUT_CFM_QTY: number,
     INS_EMPL: string,
     INS_DATE: string,
@@ -216,6 +265,17 @@ const MACHINE = () => {
     LOSS_SETTING2: 0,
     NOTE: ''
   });
+  const [selectionModel, setSelectionModel] = useState<any>([]);
+  const [selectionModel_XUATKHOAO, setSelectionModel_XUATKHOAO] = useState<any>([]);
+  const [selectionModel_INPUTSX, setSelectionModel_INPUTSX] = useState<any>([]);
+  const [lichsunhapkhoaotable, setLichSuNhapKhoAoTable] = useState<LICHSUNHAPKHOAO[]>([]);
+  const [lichsunhapkhoaodatafilter, setLichSuNhapKhoAoDataFilter] = useState<
+  Array<LICHSUNHAPKHOAO>
+>([]);
+  const [lichsuxuatkhoaotable, setLichSuXuatKhoAoTable] = useState<LICHSUXUATKHOAO[]>([]);
+  const [lichsuxuatkhoaodatafilter, setLichSuXuatKhoAoDataFilter] = useState<Array<LICHSUXUATKHOAO>>([]);
+  const [lichsuinputlieutable, setLichSuInputLieuTable] = useState<LICHSUINPUTLIEUSX[]>([]);
+  const [lichsuinputlieudatafilter, setLichSuInputLieuDataFilter] = useState<Array<LICHSUINPUTLIEUSX>>([]);
   const [plandatatable, setPlanDataTable] = useState<QLSXPLANDATA[]>([]);
   const [chithidatatable, setChiThiDataTable] = useState<QLSXCHITHIDATA[]>([]);
   const [showplanwindow, setShowPlanWindow] = useState(false);
@@ -234,21 +294,11 @@ const MACHINE = () => {
   const [phanloai, setPhanLoai] = useState("00");
   const [material, setMaterial] = useState("");
   const [ycsxdatatable, setYcsxDataTable] = useState<Array<YCSXTableData>>([]);
-  const [ycsxdatatablefilter, setYcsxDataTableFilter] = useState<
-    Array<YCSXTableData>
-  >([]);
-  const [qlsxplandatafilter, setQlsxPlanDataFilter] = useState<
-    Array<QLSXPLANDATA>
-  >([]);
-  const [qlsxchithidatafilter, setQlsxChiThiDataFilter] = useState<
-    Array<QLSXCHITHIDATA>
-  >([]);
-  const [tonlieuxuongdatatable, setTonLieuXuongDataTable] = useState<
-    Array<TONLIEUXUONG>
-  >([]);
-  const [tonlieuxuongdatafilter, setTonLieuXuongDataFilter] = useState<
-    Array<TONLIEUXUONG>
-  >([]);
+  const [ycsxdatatablefilter, setYcsxDataTableFilter] = useState<Array<YCSXTableData>>([]);
+  const [qlsxplandatafilter, setQlsxPlanDataFilter] = useState<Array<QLSXPLANDATA>>([]);
+  const [qlsxchithidatafilter, setQlsxChiThiDataFilter] = useState<Array<QLSXCHITHIDATA>>([]);
+  const [tonlieuxuongdatatable, setTonLieuXuongDataTable] = useState<Array<TONLIEUXUONG>>([]);
+  const [tonlieuxuongdatafilter, setTonLieuXuongDataFilter] = useState<Array<TONLIEUXUONG>>([]);
   const [ycsxpendingcheck, setYCSXPendingCheck] = useState(false);
   const [inspectInputcheck, setInspectInputCheck] = useState(false);
   const [ycsxlistrender, setYCSXListRender] = useState<Array<ReactElement>>();
@@ -754,15 +804,19 @@ const MACHINE = () => {
    }  },
     { field: "M_QTY", headerName: "M_QTY", width: 110, editable: editchithi },
     { field: "LIEUQL_SX", headerName: "LIEUQL_SX", width: 110, editable: editchithi },
-    { field: "OUT_CFM_QTY", headerName: "OUT_CFM_QTY", width: 110, editable: editchithi },
+    { field: "OUT_KHO_SX", headerName: "OUT_KHO_SX", width: 110, editable: editchithi,renderCell: (params: any)=> {
+      return <p style={{color:'blue', fontWeight:'bold'}}>{(params.row.OUT_KHO_SX !== null) ? params.row.OUT_KHO_SX.toLocaleString('en','US'):0}</p>
+    }},
+    { field: "OUT_CFM_QTY", headerName: "OUT_KHO_THAT", width: 110, editable: editchithi },
     { field: "INS_EMPL", headerName: "INS_EMPL", width: 120, editable: false , hide: true },
     { field: "INS_DATE", headerName: "INS_DATE", width: 120, editable: editchithi, hide: true  },
     { field: "UPD_EMPL", headerName: "UPD_EMPL", width: 120, editable: false, hide: true  },
     { field: "UPD_DATE", headerName: "UPD_DATE", width: 120, editable: false, hide: true },   
   ];
   const column_tonlieuxuongtable =[
-    { field: "FACTORY", headerName: "FACTORY", width: 90, editable: false },      
-    { field: "PLAN_ID_INPUT", headerName: "PLAN_ID_INPUT", width: 120, editable: false },    
+    { field: "FACTORY", headerName: "NM", width: 40, editable: false },      
+    { field: "PLAN_ID_INPUT", headerName: "PLAN_ID", width: 80, editable: false },    
+    { field: "PHANLOAI", headerName: "PL", width: 40, editable: false },    
     { field: "M_CODE", headerName: "M_CODE", width: 80, editable: false },
     { field: "M_NAME", headerName: "M_NAME", width: 120, editable: false , renderCell: (params: any) => {
       if(params.row.LIEUQL_SX ===1)
@@ -774,31 +828,370 @@ const MACHINE = () => {
         return <span style={{color: 'black'}}>{params.row.M_NAME}</span>
       }
    }},
-    { field: "WIDTH_CD", headerName: "SIZE", width: 80, editable: false },   
-    { field: "M_LOT_NO", headerName: "M_LOT_NO", width: 120, editable: false },   
-    { field: "TON_LIEU_MET", headerName: "TON_LIEU_MET", width: 110, editable: editchithi , renderCell: (params: any) => {
-      if(params.row.M_MET_QTY ===0)
+    { field: "WIDTH_CD", headerName: "SIZE", width: 30, editable: false },   
+    { field: "M_LOT_NO", headerName: "M_LOT_NO", width: 90, editable: false },   
+    { field: "TON_LIEU_MET", headerName: "METQTY", width: 70, editable: false , renderCell: (params: any) => {      
+      if(params.row.PHANLOAI !=='F')
       {
-        return <span style={{color: 'red'}}>NG</span>
+        return <span style={{color: 'green'}}>{params.row.TON_LIEU_MET.toLocaleString('en','US')}</span>      
       }
       else
       {
-        return <span style={{color: 'green'}}>{params.row.M_MET_QTY}</span>
+        return <span style={{color: 'red', fontWeight:'bold'}}>{params.row.TON_LIEU_MET.toLocaleString('en','US')}</span>      
       }
    }  },
-    { field: "TON_LIEU_ROLL", headerName: "TON_LIEU_ROLL", width: 110, editable: editchithi , renderCell: (params: any) => {
-      if(params.row.M_MET_QTY ===0)
+    { field: "TON_LIEU_ROLL", headerName: "ROLLQTY", width: 70, editable: false , renderCell: (params: any) => {  
+      if(params.row.PHANLOAI !=='F')
       {
-        return <span style={{color: 'red'}}>NG</span>
+        return <span style={{color: 'green'}}>{params.row.TON_LIEU_ROLL.toLocaleString('en','US')}</span>      
       }
       else
       {
-        return <span style={{color: 'green'}}>{params.row.M_MET_QTY}</span>
+        return <span style={{color: 'red', fontWeight:'bold'}}>{params.row.TON_LIEU_ROLL.toLocaleString('en','US')}</span> 
       }
    }  },
     
   ];
+  const column_lichsunhapkhoaotable = [
+    { field: "FACTORY", headerName: "NM", width: 40 },
+    { field: "PHANLOAI", headerName: "PL", width: 30 },
+    { field: "M_CODE", headerName: "M_CODE", width: 80 },
+    { field: "M_NAME", headerName: "M_NAME", width: 120 },
+    { field: "WIDTH_CD", headerName: "SIZE", width: 30 },
+    { field: "M_LOT_NO", headerName: "M_LOT_NO", width: 90 },
+    { field: "PLAN_ID_INPUT", headerName: "PLAN_ID", width: 80 },
+    { field: "ROLL_QTY", headerName: "ROLLQTY", width: 70 },
+    { field: "IN_QTY", headerName: "IN_QTY", width: 80 },
+    { field: "TOTAL_IN_QTY", headerName: "TOTAL", width: 80 },
+    { field: "INS_DATE", headerName: "INS_DATE", width: 150 },   
+  ];
+  const column_lichsuxuatkhoaotable = [
+    { field: "FACTORY", headerName: "NM", width: 40 },
+    { field: "PHANLOAI", headerName: "PL", width: 30 },
+    { field: "M_CODE", headerName: "M_CODE", width: 80 },
+    { field: "M_NAME", headerName: "M_NAME", width: 120 },
+    { field: "WIDTH_CD", headerName: "SIZE", width: 30 },
+    { field: "M_LOT_NO", headerName: "M_LOT_NO", width: 90 },
+    { field: "PLAN_ID_INPUT", headerName: "PLAN_ID_IN", width: 90 },
+    { field: "PLAN_ID_OUTPUT", headerName: "PLAN_ID_OUT", width: 90 },
+    { field: "ROLL_QTY", headerName: "ROLL_QTY", width: 80 },
+    { field: "OUT_QTY", headerName: "OUT_QTY", width: 80 },
+    { field: "TOTAL_OUT_QTY", headerName: "TOTAL", width: 80 },
+    { field: "INS_DATE", headerName: "INS_DATE", width: 150 }, 
+  ];
+  const column_lichsuinputlieusanxuat = [
+    { field: "PLAN_ID", headerName: "PLAN_ID", width: 80},   
+    { field: "M_CODE", headerName: "M_CODE", width: 80 },
+    { field: "M_NAME", headerName: "M_NAME", width: 120 },
+    { field: "WIDTH_CD", headerName: "SIZE", width: 40 },
+    { field: "M_LOT_NO", headerName: "M_LOT_NO", width: 90 },
+    { field: "INPUT_QTY", headerName: "INPUT_QTY", width: 120 },
+    { field: "USED_QTY", headerName: "USED_QTY", width: 80 },
+    { field: "REMAIN_QTY", headerName: "REMAIN_QTY", width: 90, editable: true },
+    { field: "EMPL_NO", headerName: "EMPL_NO", width: 80 },
+    { field: "EQUIPMENT_CD", headerName: "MAY", width: 40 },
+    { field: "INS_DATE", headerName: "INS_DATE", width: 150 },   
+  ]
 
+
+  const handle_saveConfirmLieuTon = ()=>
+  {
+    if(lichsuinputlieudatafilter.length>0)
+    {
+      let err_code: string = '0';
+      for(let i=0;i<lichsuinputlieudatafilter.length;i++)
+      {
+        if(lichsuinputlieudatafilter[i].INPUT_QTY >= lichsuinputlieudatafilter[i].REMAIN_QTY)
+        {
+          generalQuery("confirmlieutonsx", {           
+            PLAN_ID: lichsuinputlieudatafilter[i].PLAN_ID,
+            M_CODE: lichsuinputlieudatafilter[i].M_CODE,
+            M_LOT_NO: lichsuinputlieudatafilter[i].M_LOT_NO,
+            EQUIPMENT_CD: lichsuinputlieudatafilter[i].EQUIPMENT_CD,
+            REMAIN_QTY: lichsuinputlieudatafilter[i].REMAIN_QTY,
+          })
+          .then((response) => {
+            console.log(response.data.data);
+            if (response.data.tk_status !== "NG") {
+            
+            
+            } else {     
+                
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });     
+
+        }
+        else
+        {
+          err_code += '| ' + 'Liệu: ' + lichsuinputlieudatafilter[i].M_NAME + ': Confirm Tồn nhiều hơn xuất\n';
+        }
+        
+      }
+      if(err_code !=='0')
+      {
+        Swal.fire('Thông báo','Lỗi: ' + err_code,'error')
+      }
+      else
+      {
+        Swal.fire('Thông báo','Confirm tồn thành công','success')
+      }
+    }
+    else {
+      Swal.fire('Thông báo','Chọn ít nhất 1 liệu để lưu','error')
+    }
+  }
+  const handle_nhaplaivaokhoao = ()=>
+  {
+    if(lichsuinputlieudatafilter.length>0)
+    {
+      let err_code: string = '0';
+      for(let i=0;i<lichsuinputlieudatafilter.length;i++)
+      {
+        if(lichsuinputlieudatafilter[i].INPUT_QTY >= lichsuinputlieudatafilter[i].REMAIN_QTY)
+        {
+          generalQuery("confirmlieutonsx", {           
+            PLAN_ID: lichsuinputlieudatafilter[i].PLAN_ID,
+            M_CODE: lichsuinputlieudatafilter[i].M_CODE,
+            M_LOT_NO: lichsuinputlieudatafilter[i].M_LOT_NO,
+            EQUIPMENT_CD: lichsuinputlieudatafilter[i].EQUIPMENT_CD,
+            REMAIN_QTY: lichsuinputlieudatafilter[i].REMAIN_QTY,
+          })
+          .then((response) => {
+            console.log(response.data.data);
+            if (response.data.tk_status !== "NG") {
+            
+            
+            } else {     
+                
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });     
+
+        }
+        else
+        {
+          err_code += '| ' + 'Liệu: ' + lichsuinputlieudatafilter[i].M_NAME + ': Confirm Tồn nhiều hơn xuất\n';
+        }
+        
+      }
+      if(err_code !=='0')
+      {
+        Swal.fire('Thông báo','Lỗi: ' + err_code,'error')
+      }
+      else
+      {
+        Swal.fire('Thông báo','Confirm tồn thành công','success')
+      }
+    }
+    else {
+      Swal.fire('Thông báo','Chọn ít nhất 1 liệu để lưu','error')
+    }
+  }
+  const handle_loadlichsuinputlieu = (PLAN_ID:string)=>
+  {
+     generalQuery("lichsuinputlieusanxuat", {           
+      PLAN_ID: PLAN_ID            
+    })
+    .then((response) => {
+      console.log(response.data.data);
+      if (response.data.tk_status !== "NG") {
+        const loaded_data: LICHSUINPUTLIEUSX[] = response.data.data.map((element: LICHSUINPUTLIEUSX, index: number)=> {
+          return {
+            ...element,
+            INS_DATE: moment(element.INS_DATE).utc().format('YYYY-MM-DD HH:mm:ss'),
+            id: index
+          }
+        })
+        setLichSuInputLieuTable(loaded_data);        
+      } else {     
+          
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });     
+  }
+  const handle_huyxuatkhoao = async ()=> {
+    if(lichsuxuatkhoaodatafilter.length >0)
+    {
+      let err_code: string = '0';
+        for(let i=0;i<lichsuxuatkhoaodatafilter.length;i++)
+        {
+          await generalQuery("deleteXuatKhoAo", {           
+            PLAN_ID_INPUT: lichsuxuatkhoaodatafilter[i].PLAN_ID_INPUT,
+            PLAN_ID_OUTPUT: lichsuxuatkhoaodatafilter[0].PLAN_ID_OUTPUT,
+            M_CODE: lichsuxuatkhoaodatafilter[i].M_CODE,
+            M_LOT_NO: lichsuxuatkhoaodatafilter[i].M_LOT_NO,            
+          })
+          .then((response) => {
+            //console.log(response.data.data);
+            if (response.data.tk_status !== "NG") {
+              
+            } else {     
+                 err_code += "| " + response.data.message;
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          }); 
+        }
+        if(err_code !=='0')
+        {
+          Swal.fire('Thông báo','Có lỗi: ' + err_code,'error');
+        }
+        handle_loadKhoAo();
+        handle_loadlichsunhapkhoao();
+        handle_loadlichsuxuatkhoao();   
+        handle_loadlichsuinputlieu(qlsxplandatafilter[0].PLAN_ID);
+        setSelectionModel_XUATKHOAO([]);
+    }
+  }
+  const handle_loadlichsunhapkhoao = ()=> {
+    generalQuery("lichsunhapkhoao", {
+    })
+    .then((response) => {
+      //console.log(response.data.data);
+      if (response.data.tk_status !== "NG") {
+        const loaded_data: LICHSUNHAPKHOAO[] = response.data.data.map((element: LICHSUNHAPKHOAO, index: number)=> {
+          return {
+            ...element,
+            INS_DATE: moment(element.INS_DATE).utc().format('YYYY-MM-DD HH:mm:ss'),
+            id: index
+          }
+
+        })
+        setLichSuNhapKhoAoTable(loaded_data);
+      } else {     
+        setLichSuNhapKhoAoTable([]);       
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });  
+  }
+  const handle_loadlichsuxuatkhoao = ()=> {
+    generalQuery("lichsuxuatkhoao", {
+    })
+    .then((response) => {
+      //console.log(response.data.data);
+      if (response.data.tk_status !== "NG") {
+        const loaded_data: LICHSUXUATKHOAO[] = response.data.data.map((element: LICHSUXUATKHOAO, index: number)=> {
+          return {
+            ...element,
+            INS_DATE: moment(element.INS_DATE).utc().format('YYYY-MM-DD HH:mm:ss'),
+            id: index
+          }
+
+        })
+        setLichSuXuatKhoAoTable(loaded_data);
+      } else {     
+        setLichSuXuatKhoAoTable([]);       
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });  
+  }
+  const handle_xuatKhoAo = async ()=>  {
+    if(qlsxplandatafilter.length >0)
+    {
+      if(tonlieuxuongdatafilter.length >0)
+      {
+        let err_code: string = '0';
+        for(let i=0;i<tonlieuxuongdatafilter.length;i++)
+        {
+          let checklieuchithi:boolean = true;
+          await generalQuery("checkM_CODE_CHITHI", {          
+            PLAN_ID_OUTPUT: qlsxplandatafilter[0].PLAN_ID,
+            M_CODE: tonlieuxuongdatafilter[i].M_CODE,           
+          })
+          .then((response) => {
+            console.log(response.data.data);
+            if (response.data.tk_status !== "NG") {
+              checklieuchithi=  true;
+            } else {     
+              checklieuchithi = false;
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          }); 
+
+          if(checklieuchithi===true)
+          {
+            await generalQuery("xuatkhoao", {
+              FACTORY: tonlieuxuongdatafilter[i].FACTORY,
+              PHANLOAI: 'B',
+              PLAN_ID_INPUT: tonlieuxuongdatafilter[i].PLAN_ID_INPUT,
+              PLAN_ID_OUTPUT: qlsxplandatafilter[0].PLAN_ID,
+              M_CODE: tonlieuxuongdatafilter[i].M_CODE,
+              M_LOT_NO: tonlieuxuongdatafilter[i].M_LOT_NO,
+              ROLL_QTY: tonlieuxuongdatafilter[i].TON_LIEU_ROLL,
+              OUT_QTY: tonlieuxuongdatafilter[i].TON_LIEU_MET,
+              TOTAL_OUT_QTY: tonlieuxuongdatafilter[i].TON_LIEU_MET,
+              USE_YN: 'N',
+            })
+            .then((response) => {
+              console.log(response.data.data);
+              if (response.data.tk_status !== "NG") {
+                
+              } else {     
+                   err_code += "| " + response.data.message;
+              }
+            })
+            .catch((error) => {
+              console.log(error);
+            }); 
+
+          }
+          else
+          {
+            err_code += "| " +  "Liệu: " + tonlieuxuongdatafilter[i].M_NAME + " chưa được đăng ký xuất liệu \n Đã xuất các liệu hợp lệ";
+          }
+
+        }
+        if(err_code !=='0')
+        {
+          Swal.fire('Thông báo','Có lỗi: ' + err_code,'error');
+        }
+        setTonLieuXuongDataFilter([]);
+        handle_loadKhoAo();
+        handle_loadlichsuxuatkhoao();
+        handle_loadlichsuinputlieu(qlsxplandatafilter[0].PLAN_ID);
+        setSelectionModel([]);
+      }
+      else
+      {
+        Swal.fire('Thông báo','Chọn ít nhất 1 liệu để xuất kho','error');
+      }
+    }
+  }
+  const handle_loadKhoAo = () => {
+    generalQuery("checktonlieutrongxuong", {
+    })
+    .then((response) => {
+      //console.log(response.data.data);
+      if (response.data.tk_status !== "NG") {
+        const loaded_data: TONLIEUXUONG[] = response.data.data.map((element: TONLIEUXUONG, index: number)=> {
+          return {
+            ...element,
+            id: index
+          }
+        })
+        setTonLieuXuongDataTable(loaded_data);
+      } else {     
+        setTonLieuXuongDataTable([]);       
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });  
+  }
   const handleSaveQLSX= async()=> {
     
     if(qlsxplandatafilter.length>=1)
@@ -997,7 +1390,6 @@ const MACHINE = () => {
     .catch((error) => {
       console.log(error);
     });
-
     generalQuery("getchithidatatable", {
         PLAN_ID: PLAN_ID,        
       })
@@ -1026,6 +1418,8 @@ const MACHINE = () => {
                         M_MET_QTY: parseInt(''+ (M_MET_NEEDED +  M_MET_NEEDED* FINAL_LOSS_SX/100+ FINAL_LOSS_SETTING)),
                         M_QTY: element.M_QTY,
                         LIEUQL_SX: element.LIEUQL_SX,
+                        OUT_KHO_SX: 0,
+                        OUT_KHO_THAT:0,
                         INS_EMPL: '',
                         INS_DATE: '',
                         UPD_EMPL: '',
@@ -1098,6 +1492,8 @@ const MACHINE = () => {
                   M_MET_QTY: parseInt(''+ (M_MET_NEEDED +  M_MET_NEEDED* FINAL_LOSS_SX/100+ FINAL_LOSS_SETTING)),
                   M_QTY: element.M_QTY,
                   LIEUQL_SX: element.LIEUQL_SX,
+                  OUT_KHO_SX: 0,
+                  OUT_KHO_THAT:0,
                   INS_EMPL: '',
                   INS_DATE: '',
                   UPD_EMPL: '',
@@ -1906,6 +2302,15 @@ const MACHINE = () => {
           <AiFillSave color='lightgreen' size={20} />
           Lưu Data Định Mức
         </IconButton>
+        <IconButton
+          className='buttonIcon'
+          onClick={() => {
+            
+          }}
+        >
+          <AiFillSave color='lightgreen' size={20} />
+          Thêm PLAN cùng dao
+        </IconButton>
       </GridToolbarContainer>
     );
   }
@@ -1959,7 +2364,18 @@ const MACHINE = () => {
         <IconButton
           className='buttonIcon'
           onClick={() => { 
-            setShowKhoAo(!showkhoao);    
+            if(qlsxplandatafilter.length >0)
+            {
+              setShowKhoAo(!showkhoao);   
+              handle_loadKhoAo(); 
+              handle_loadlichsuxuatkhoao();
+              handle_loadlichsunhapkhoao();
+              handle_loadlichsuinputlieu(qlsxplandatafilter[0].PLAN_ID);
+            }
+            else
+            {
+              Swal.fire('Thông báo','Hãy chọn một chỉ thị', 'error');
+            }
           }}
         >
           <FaWarehouse color='blue' size={20} />
@@ -1973,6 +2389,15 @@ const MACHINE = () => {
         >
           <AiOutlineBarcode color='green' size={20} />
           Đăng ký Xuất Kho Thật
+        </IconButton>
+        <IconButton
+          className='buttonIcon'
+          onClick={() => {
+            handleGetChiThiTable(qlsxplandatafilter[0].PLAN_ID, qlsxplandatafilter[0].G_CODE, qlsxplandatafilter[0].PLAN_QTY, qlsxplandatafilter[0].PROCESS_NUMBER);
+          }}
+        >
+          <BiRefresh color='yellow' size={20} />
+          Refresh chỉ thị
         </IconButton>
         <span style={{fontSize:20, fontWeight: 'bold', color: 'red'}}>
         {
@@ -2003,14 +2428,108 @@ const MACHINE = () => {
           SAVE
         </IconButton>
         <GridToolbarQuickFilter />
+        <div className="div" style={{fontSize:20, fontWeight:'bold'}}>Tồn kho ảo</div>
         <IconButton
           className='buttonIcon'
           onClick={() => { 
-            setShowKhoAo(!showkhoao);    
+            handle_xuatKhoAo();
+            
           }}
         >
           <AiOutlineCaretRight color='blue' size={20} />
           Xuất kho
+        </IconButton>
+           
+         
+      </GridToolbarContainer>
+    );
+  }
+  function CustomToolbarLICHSUINPUTSX() {
+    return (
+      <GridToolbarContainer>
+        {/*  <GridToolbarColumnsButton />
+        <GridToolbarFilterButton />
+        <GridToolbarDensitySelector />  */}
+        <IconButton
+          className='buttonIcon'
+          onClick={() => {
+            SaveExcel(ycsxdatatable, "YCSX Table");
+          }}
+        >
+          <AiFillFileExcel color='green' size={25} />
+          SAVE
+        </IconButton>
+        <GridToolbarQuickFilter />
+        <div className="div" style={{fontSize:20, fontWeight:'bold'}}>Lịch sử input liệu sản xuất</div>
+        <IconButton
+          className='buttonIcon'
+          onClick={() => { 
+            Swal.fire('Thông báo','Bên sản xuất sẽ confirm','info');
+            //handle_saveConfirmLieuTon();            
+          }}
+        >
+          <AiFillSave color='yellow' size={20} />
+          Lưu tồn liệu  
+        </IconButton>
+        <IconButton
+          className='buttonIcon'
+          onClick={() => { 
+            Swal.fire('Thông báo','Bên sản xuất sẽ confirm','info');                       
+          }}
+        >
+          <AiOutlineRollback color='yellow' size={20} />
+          Nhập lại vào kho ảo
+        </IconButton>          
+         
+      </GridToolbarContainer>
+    );
+  }
+  function CustomToolbarNHAPKHOAO() {
+    return (
+      <GridToolbarContainer>
+        {/*  <GridToolbarColumnsButton />
+        <GridToolbarFilterButton />
+        <GridToolbarDensitySelector />  */}
+        <IconButton
+          className='buttonIcon'
+          onClick={() => {
+            SaveExcel(ycsxdatatable, "YCSX Table");
+          }}
+        >
+          <AiFillFileExcel color='green' size={25} />
+          SAVE
+        </IconButton>
+        <GridToolbarQuickFilter />
+        <div className="div" style={{fontSize:20, fontWeight:'bold'}}>Lịch sử nhập kho ảo</div>        
+         
+      </GridToolbarContainer>
+    );
+  }
+  function CustomToolbarXUATKHOAO() {
+    return (
+      <GridToolbarContainer>
+        {/*  <GridToolbarColumnsButton />
+        <GridToolbarFilterButton />
+        <GridToolbarDensitySelector />  */}
+        <IconButton
+          className='buttonIcon'
+          onClick={() => {
+            SaveExcel(ycsxdatatable, "YCSX Table");
+          }}
+        >
+          <AiFillFileExcel color='green' size={25} />
+          SAVE
+        </IconButton>
+        <GridToolbarQuickFilter />
+        <div className="div" style={{fontSize:20, fontWeight:'bold'}}>Lịch sử xuất kho ảo</div>
+        <IconButton
+          className='buttonIcon'
+          onClick={() => { 
+            handle_huyxuatkhoao();            
+          }}
+        >
+          <FcCancel color='white' size={20} />
+          Hủy Xuất
         </IconButton>
            
          
@@ -2070,6 +2589,46 @@ const MACHINE = () => {
       setQlsxChiThiDataFilter(datafilter);
     } else {
       setQlsxChiThiDataFilter([]);
+      //console.log("xoa filter");
+    }
+  };
+  const handleTonLieuXuongDataSelectionforUpdate = (ids: GridSelectionModel) => {
+    const selectedID = new Set(ids);
+    let datafilter = tonlieuxuongdatatable.filter((element: any) =>
+      selectedID.has(element.id)
+    );
+    //console.log(datafilter);
+    if (datafilter.length > 0) {
+      setTonLieuXuongDataFilter(datafilter);
+    } else {
+      setTonLieuXuongDataFilter([]);
+      
+      //console.log("xoa filter");
+    }
+  };
+  const handleLichSuXuatKhoAoDataSelectionforUpdate = (ids: GridSelectionModel) => {
+    const selectedID = new Set(ids);
+    let datafilter = lichsuxuatkhoaotable.filter((element: any) =>
+      selectedID.has(element.id)
+    );
+    //console.log(datafilter);
+    if (datafilter.length > 0) {
+      setLichSuXuatKhoAoDataFilter(datafilter);
+    } else {
+      setLichSuXuatKhoAoDataFilter([]);      
+      //console.log("xoa filter");
+    }
+  };
+  const handleLichSuInputSXDataSelectionforUpdate = (ids: GridSelectionModel) => {
+    const selectedID = new Set(ids);
+    let datafilter = lichsuinputlieutable.filter((element: any) =>
+      selectedID.has(element.id)
+    );
+    //console.log(datafilter);
+    if (datafilter.length > 0) {
+      setLichSuInputLieuDataFilter(datafilter);
+    } else {
+      setLichSuInputLieuDataFilter([]);      
       //console.log("xoa filter");
     }
   };
@@ -3699,25 +4258,110 @@ const MACHINE = () => {
                       >
                         Close
                       </button>
-                    </div>                    
-                    <div className="tablekhoao" style={{height:'100%', width:'100%'}}>
-                    <DataGrid
+                    <button
+                        onClick={() => {
+                          handle_loadKhoAo();
+                          handle_loadlichsunhapkhoao();
+                          handle_loadlichsuxuatkhoao();     
+                          handle_loadlichsuinputlieu(qlsxplandatafilter[0].PLAN_ID);              
+                        }}
+                      >
+                        Refresh
+                      </button>
+                    </div>
+                    <div className="khoaodivtable">
+                    <div className="tablekhoao" style={{height:'100%', width:'50%'}}>
+                      <div className="tabletonkhoao">
+                          <DataGrid
+                          sx={{ fontSize: 12, flex: 1 }}
+                          components={{
+                            Toolbar: CustomToolbarKHOAO,
+                            LoadingOverlay: LinearProgress,
+                          }}
+                          getRowId={(row) => row.id}
+                          loading={isLoading}
+                          rowHeight={30}
+                          rows={tonlieuxuongdatatable}
+                          columns={column_tonlieuxuongtable}
+                          rowsPerPageOptions={[
+                            5, 10, 50, 100, 500, 1000, 5000, 10000, 500000,
+                          ]}                     
+                          checkboxSelection
+                          selectionModel={selectionModel}
+                          onSelectionModelChange={(ids) => {
+                            setSelectionModel(ids);
+                            handleTonLieuXuongDataSelectionforUpdate(ids);
+                          }}
+                          onCellEditCommit={(
+                            params: GridCellEditCommitParams,
+                            event: MuiEvent<MuiBaseEvent>,
+                            details: GridCallbackDetails
+                          ) => {
+                            const keyvar = params.field;
+                            const newdata = tonlieuxuongdatatable.map((p) =>
+                              p.id === params.id ? { ...p, [keyvar]: params.value } : p
+                            );
+                            setTonLieuXuongDataFilter(newdata);
+                            //console.log(chithidatatable);
+                          }}
+                        />
+                      </div>
+                      <div className="lichsuinputsanxuat">
+                      <DataGrid
+                          sx={{ fontSize: 12, flex: 1 }}
+                          components={{
+                            Toolbar: CustomToolbarLICHSUINPUTSX,
+                            LoadingOverlay: LinearProgress,
+                          }}
+                          getRowId={(row) => row.id}
+                          loading={isLoading}
+                          rowHeight={30}
+                          rows={lichsuinputlieutable}
+                          columns={column_lichsuinputlieusanxuat}
+                          rowsPerPageOptions={[
+                            5, 10, 50, 100, 500, 1000, 5000, 10000, 500000,
+                          ]}                     
+                          checkboxSelection
+                          selectionModel={selectionModel_INPUTSX}
+                          onSelectionModelChange={(ids) => {
+                            setSelectionModel_INPUTSX(ids);
+                            handleLichSuInputSXDataSelectionforUpdate(ids);
+                          }}
+                          onCellEditCommit={(
+                            params: GridCellEditCommitParams,
+                            event: MuiEvent<MuiBaseEvent>,
+                            details: GridCallbackDetails
+                          ) => {
+                            const keyvar = params.field;
+                            const newdata = lichsuinputlieutable.map((p) =>
+                              p.id === params.id ? { ...p, [keyvar]: params.value } : p
+                            );
+                            setLichSuInputLieuTable(newdata);
+                            //console.log(chithidatatable);
+                          }}
+                        />
+                      </div>
+                    
+                    </div>
+                    <div className="nhapxuatkhoao" style={{height:'100%', width:'50%'}}>
+                      <div className="nhapkhoao" style={{height:'100%', width:'100%'}}>
+                      <DataGrid
                       sx={{ fontSize: 12, flex: 1 }}
                       components={{
-                        Toolbar: CustomToolbarKHOAO,
+                        Toolbar: CustomToolbarNHAPKHOAO,
                         LoadingOverlay: LinearProgress,
                       }}
-                      getRowId={(row) => row.CHITHI_ID}
+                      getRowId={(row) => row.id}
                       loading={isLoading}
                       rowHeight={30}
-                      rows={chithidatatable}
-                      columns={column_chithidatatable}
+                      rows={lichsunhapkhoaotable}
+                      columns={column_lichsunhapkhoaotable}
                       rowsPerPageOptions={[
                         5, 10, 50, 100, 500, 1000, 5000, 10000, 500000,
                       ]}                     
-                      checkboxSelection
+                     /*  checkboxSelection */
                       onSelectionModelChange={(ids) => {
-                        handleQLSXCHITHIDataSelectionforUpdate(ids);
+                        handleTonLieuXuongDataSelectionforUpdate(ids);
                       }}
                       onCellEditCommit={(
                         params: GridCellEditCommitParams,
@@ -3725,13 +4369,54 @@ const MACHINE = () => {
                         details: GridCallbackDetails
                       ) => {
                         const keyvar = params.field;
-                        const newdata = chithidatatable.map((p) =>
-                          p.CHITHI_ID === params.id ? { ...p, [keyvar]: params.value } : p
+                        const newdata = lichsunhapkhoaotable.map((p) =>
+                          p.id === params.id ? { ...p, [keyvar]: params.value } : p
                         );
-                        setChiThiDataTable(newdata);
+                        setLichSuNhapKhoAoTable(newdata);
                         //console.log(chithidatatable);
                       }}
                     />
+
+                      </div>
+                      <div className="xuatkhoao" style={{height:'100%', width:'100%'}}>
+                      <DataGrid
+                      sx={{ fontSize: 12, flex: 1 }}
+                      components={{
+                        Toolbar: CustomToolbarXUATKHOAO,
+                        LoadingOverlay: LinearProgress,
+                      }}
+                      getRowId={(row) => row.id}
+                      loading={isLoading}
+                      rowHeight={30}
+                      rows={lichsuxuatkhoaotable}
+                      columns={column_lichsuxuatkhoaotable}
+                      rowsPerPageOptions={[
+                        5, 10, 50, 100, 500, 1000, 5000, 10000, 500000,
+                      ]}                     
+                      checkboxSelection
+                      selectionModel={selectionModel_XUATKHOAO}
+                      onSelectionModelChange={(ids) => {
+                        setSelectionModel_XUATKHOAO(ids);
+                        handleLichSuXuatKhoAoDataSelectionforUpdate(ids);
+                      }}
+                      onCellEditCommit={(
+                        params: GridCellEditCommitParams,
+                        event: MuiEvent<MuiBaseEvent>,
+                        details: GridCallbackDetails
+                      ) => {
+                        const keyvar = params.field;
+                        const newdata = lichsuxuatkhoaotable.map((p) =>
+                          p.id === params.id ? { ...p, [keyvar]: params.value } : p
+                        );
+                        setLichSuXuatKhoAoTable(newdata);
+                        //console.log(chithidatatable);
+                      }}
+                    />
+
+                      </div>
+
+                    </div>                    
+                    
                     </div>                                  
                   </div>
                 )}  
