@@ -1021,9 +1021,11 @@ const MACHINE = () => {
     if(lichsuxuatkhoaodatafilter.length >0)
     {
       let err_code: string = '0';
+      let current_plan_id: string = qlsxplandatafilter[0].PLAN_ID;
         for(let i=0;i<lichsuxuatkhoaodatafilter.length;i++)
         {
-          await generalQuery("deleteXuatKhoAo", {           
+          await generalQuery("deleteXuatKhoAo", { 
+            CURRENT_PLAN_ID: current_plan_id,          
             PLAN_ID_INPUT: lichsuxuatkhoaodatafilter[i].PLAN_ID_INPUT,
             PLAN_ID_OUTPUT: lichsuxuatkhoaodatafilter[0].PLAN_ID_OUTPUT,
             M_CODE: lichsuxuatkhoaodatafilter[i].M_CODE,
