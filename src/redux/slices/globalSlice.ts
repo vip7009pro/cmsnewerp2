@@ -1,5 +1,15 @@
 import {createSlice} from '@reduxjs/toolkit'
 import type {PayloadAction} from '@reduxjs/toolkit'
+import { io } from "socket.io-client";
+
+const socket =  io('http://14.160.33.94:3005')
+socket.on("connect", () => {
+  console.log(socket.id); // x8WIv7-mJelg7on_ALbx
+});
+
+socket.on("disconnect", () => {
+  console.log(socket.id); // undefined
+});
 
 export interface UserData  {
     EMPL_IMAGE?: string;
@@ -117,8 +127,11 @@ export const glbSlice = createSlice({
         changeUserData: (state, action: PayloadAction<UserData>)=> {
             //console.log(action.payload);
             state.userData = action.payload;            
-        }
+        },
+        update_socket: (state, action: PayloadAction<any>)=> {
+            socket.emit("notification", action.payload);
+          }
     }
 });
-export const {changeDiemDanhState, changeUserData } = glbSlice.actions;
+export const {changeDiemDanhState, changeUserData, update_socket } = glbSlice.actions;
 export default glbSlice.reducer;

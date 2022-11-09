@@ -41,9 +41,9 @@ import "./App.scss";
 import QLSXPLAN from "./pages/qlsx/QLSXPLAN/QLSXPLAN";
 import {RootState} from './redux/store'
 import {useSelector, useDispatch} from 'react-redux'
-import { changeDiemDanhState, changeUserData, UserData } from "./redux/slices/globalSlice";
 import QuanLyCapCao from "./pages/nhansu/QuanLyCapCao/QuanLyCapCao";
 import DESIGN_AMAZON from "./pages/rnd/design_amazon/DESIGN_AMAZON";
+import { changeDiemDanhState, changeUserData, UserData, update_socket } from "./redux/slices/globalSlice";
 
 interface userDataInterface {
   EMPL_IMAGE?: string
@@ -336,7 +336,8 @@ function App() {
       } else {
         //console.log(data.data.data);
         setUserData(data.data.data);
-        dispatch(changeUserData(data.data.data));         
+        dispatch(changeUserData(data.data.data));
+        dispatch(update_socket( data.data.data.EMPL_NO+' da dangnhap'));
         setLoginState(true);
       }
     })

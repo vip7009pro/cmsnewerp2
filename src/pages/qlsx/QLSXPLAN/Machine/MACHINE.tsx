@@ -13,6 +13,7 @@ import moment from "moment";
 import { UserContext } from "../../../../api/Context";
 import {
   DataGrid,
+  GridAddIcon,
   GridCallbackDetails,
   GridCellEditCommitParams,
   GridSelectionModel,
@@ -2308,7 +2309,7 @@ const MACHINE = () => {
             
           }}
         >
-          <AiFillSave color='lightgreen' size={20} />
+          <AiFillFileAdd color='yellow' size={20} />
           Thêm PLAN cùng dao
         </IconButton>
       </GridToolbarContainer>
