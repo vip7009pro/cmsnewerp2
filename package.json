@@ -9,7 +9,7 @@
     "@mikecousins/react-pdf": "^5.5.1",
     "@mui/icons-material": "^5.8.4",
     "@mui/material": "^5.8.7",
-    "@mui/x-data-grid": "^5.13.0",
+    "@mui/x-data-grid": "^5.17.10",
     "@react-pdf/renderer": "^2.3.0",
     "@reduxjs/toolkit": "^1.8.6",
     "@tanstack/react-table": "^8.5.10",

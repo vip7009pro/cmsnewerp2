@@ -236,7 +236,7 @@ const BOM_MANAGER = () => {
 
   const [enableform, setEnableForm] = useState(true);
 
-  const [rows, setRows] = useState<GridRowsProp>([]); 
+  const [rows, setRows] = useState<CODE_INFO[]>([]); 
   const [editedRows, setEditedRows] = useState<Array<GridCellEditCommitParams>>(
     []
   );

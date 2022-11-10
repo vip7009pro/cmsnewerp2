@@ -710,7 +710,7 @@ const MACHINE = () => {
     },
   ];
   const column_plandatatable =[
-    { field: "PLAN_ID", headerName: "PLAN_ID", width: 90 , editable: false},   
+    { field: "PLAN_ID", headerName: "PLAN_ID", width: 90 , editable: false, resizeable: true},   
     { field: "G_CODE", headerName: "G_CODE", width: 100, editable: false },
     { field: "G_NAME_KD", headerName: "G_NAME_KD", width: 180, editable: false, renderCell: (params: any) => {
            
@@ -2304,16 +2304,7 @@ const MACHINE = () => {
         >
           <AiFillSave color='lightgreen' size={20} />
           Lưu Data Định Mức
-        </IconButton>
-        <IconButton
-          className='buttonIcon'
-          onClick={() => {
-            
-          }}
-        >
-          <AiFillFileAdd color='yellow' size={20} />
-          Thêm PLAN cùng dao
-        </IconButton>
+        </IconButton>        
       </GridToolbarContainer>
     );
   }

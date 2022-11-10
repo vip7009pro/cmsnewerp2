@@ -184,7 +184,7 @@ import {
     const [isLoading, setisLoading] = useState(false);
     const [codeCMS, setCodeCMS] = useState("");
     const [enableEdit, setEnableEdit] = useState(false);
-    const [rows, setRows] = useState<GridRowsProp>([]); 
+    const [rows, setRows] = useState<CODE_INFO[]>([]); 
     const [editedRows, setEditedRows] = useState<Array<GridCellEditCommitParams>>(
       []
     );
