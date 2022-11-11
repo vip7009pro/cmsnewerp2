@@ -226,6 +226,7 @@ interface QLSXCHITHIDATA {
     M_MET_QTY: number,
     M_QTY: number,
     LIEUQL_SX: number,
+    MAIN_M: number,
     OUT_KHO_SX: number,
     OUT_CFM_QTY: number,
     INS_EMPL: string,
@@ -712,13 +713,10 @@ const MACHINE = () => {
   const column_plandatatable =[
     { field: "PLAN_ID", headerName: "PLAN_ID", width: 90 , editable: false, resizeable: true},   
     { field: "G_CODE", headerName: "G_CODE", width: 100, editable: false },
-    { field: "G_NAME_KD", headerName: "G_NAME_KD", width: 180, editable: false, renderCell: (params: any) => {
-           
+    { field: "G_NAME_KD", headerName: "G_NAME_KD", width: 180, editable: false, renderCell: (params: any) => {           
       if(params.row.FACTORY === null || params.row.EQ1 === null || params.row.EQ2 === null || params.row.Setting1 === null || params.row.Setting2 === null || params.row.UPH1 === null ||  params.row.UPH2 === null || params.row.Step1 === null || params.row.Step1 === null || params.row.LOSS_SX1 === null || params.row.LOSS_SX2 === null || params.row.LOSS_SETTING1 === null ||  params.row.LOSS_SETTING2 === null)
       return <span style={{color: 'red'}}>{params.row.G_NAME_KD}</span>
-      return <span style={{color: 'green'}}>{params.row.G_NAME_KD}</span>
-
-    
+      return <span style={{color: 'green'}}>{params.row.G_NAME_KD}</span>    
  }  },
     { field: "PROD_REQUEST_QTY", headerName: "YCSX QTY", width: 80, editable: false , renderCell: (params: any) => {
            
@@ -804,7 +802,7 @@ const MACHINE = () => {
       }
    }  },
     { field: "M_QTY", headerName: "M_QTY", width: 110, editable: editchithi },
-    { field: "LIEUQL_SX", headerName: "LIEUQL_SX", width: 110, editable: editchithi },
+    { field: "LIEUQL_SX", headerName: "LIEUQL_SX", width: 110, editable: editchithi },   
     { field: "OUT_KHO_SX", headerName: "OUT_KHO_SX", width: 110, editable: editchithi,renderCell: (params: any)=> {
       return <p style={{color:'blue', fontWeight:'bold'}}>{(params.row.OUT_KHO_SX !== null) ? params.row.OUT_KHO_SX.toLocaleString('en','US'):0}</p>
     }},
@@ -893,7 +891,6 @@ const MACHINE = () => {
     { field: "EQUIPMENT_CD", headerName: "MAY", width: 40 },
     { field: "INS_DATE", headerName: "INS_DATE", width: 150 },   
   ]
-
 
   const handle_saveConfirmLieuTon = ()=>
   {
@@ -1400,8 +1397,7 @@ const MACHINE = () => {
           //console.log(response.data.tk_status);
           if (response.data.tk_status !== "NG") {
             setChiThiDataTable(response.data.data);
-          } else { 
-
+          } else {
             M_MET_NEEDED = parseInt((PLAN_QTY*PD/(CAVITY_DOC*CAVITY_NGANG)/1000).toString());
              generalQuery("getbomsx", {
               G_CODE: G_CODE,        
@@ -1421,6 +1417,7 @@ const MACHINE = () => {
                         M_MET_QTY: parseInt(''+ (M_MET_NEEDED +  M_MET_NEEDED* FINAL_LOSS_SX/100+ FINAL_LOSS_SETTING)),
                         M_QTY: element.M_QTY,
                         LIEUQL_SX: element.LIEUQL_SX,
+                        MAIN_M: element.MAIN_M,
                         OUT_KHO_SX: 0,
                         OUT_KHO_THAT:0,
                         INS_EMPL: '',
@@ -1495,6 +1492,7 @@ const MACHINE = () => {
                   M_MET_QTY: parseInt(''+ (M_MET_NEEDED +  M_MET_NEEDED* FINAL_LOSS_SX/100+ FINAL_LOSS_SETTING)),
                   M_QTY: element.M_QTY,
                   LIEUQL_SX: element.LIEUQL_SX,
+                  MAIN_M: element.MAIN_M,
                   OUT_KHO_SX: 0,
                   OUT_KHO_THAT:0,
                   INS_EMPL: '',
@@ -2000,11 +1998,11 @@ const MACHINE = () => {
     let total_lieuql_sx:number =0;
     for(let i=0; i<chithidatatable.length; i++)
     {
-      total_lieuql_sx += chithidatatable[i].LIEUQL_SX;
+      let temp_check:number = (chithidatatable[i].LIEUQL_SX === 1) ? 1 : 0;
+      total_lieuql_sx += temp_check;
     }
     if(total_lieuql_sx >0)
-    {
-      
+    {      
     await generalQuery("deleteMCODEExistIN_O302", {
       PLAN_ID: qlsxplandatafilter[0].PLAN_ID,      
     })
@@ -2025,18 +2023,17 @@ const MACHINE = () => {
         M_CODE: chithidatatable[i].M_CODE,
         LIEUQL_SX: chithidatatable[i].LIEUQL_SX,
       })
-        .then((response) => {
-          //console.log(response.data);
+      .then((response) => {
+        //console.log(response.data);
+        
+        if (response.data.tk_status !== "NG") {
           
-          if (response.data.tk_status !== "NG") {
-            
-          } else {
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-
+        } else {
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
               
       if(chithidatatable[i].M_MET_QTY >0)
       {
@@ -2328,6 +2325,7 @@ const MACHINE = () => {
           className='buttonIcon'
           onClick={() => {
             if (chithidatatable.length > 0) {
+              Swal.fire("Thông báo", "Đang lưu chỉ thị, hãy chờ một chút", "info");
               hanlde_SaveChiThi();             
             } else {               
               Swal.fire("Thông báo", "Không có liệu để chỉ thị", "error");
@@ -3974,13 +3972,12 @@ const MACHINE = () => {
         <div className='planwindow'>
           <div className='title'>
             {selectedMachine}: {selectedFactory}
-            <button
-              onClick={() => {
+            <Button  onClick={() => {
                 setShowPlanWindow(false);
-              }}
-            >
-              Close
-            </button>
+              }}>
+                Close
+              </Button>
+           
             Plan hiện tại trên máy {selectedMachine}
           </div>
           <div className='content'>
@@ -4197,21 +4194,21 @@ const MACHINE = () => {
                 {selection.tabycsx && (
                   <div className='printycsxpage'>
                     <div className='buttongroup'>
-                      <button
+                      <Button
                         onClick={() => {
                           setYCSXListRender(renderYCSX(ycsxdatatablefilter));
                         }}
                       >
                         Render YCSX
-                      </button>
-                      <button onClick={handlePrint}>Print YCSX</button>
-                      <button
+                      </Button>
+                      <Button onClick={handlePrint}>Print YCSX</Button>
+                      <Button
                         onClick={() => {
                           setSelection({ ...selection, tabycsx: false });
                         }}
                       >
                         Close
-                      </button>
+                      </Button>
                     </div>
                     <div className='ycsxrender' ref={ycsxprintref}>
                       {ycsxlistrender}
@@ -4221,21 +4218,21 @@ const MACHINE = () => {
                 {selection.tabbanve && (
                   <div className='printycsxpage'>
                     <div className='buttongroup'>
-                      <button
+                      <Button
                         onClick={() => {
                           setYCSXListRender(renderBanVe(ycsxdatatablefilter));
                         }}
                       >
                         Render Bản Vẽ
-                      </button>
-                      <button onClick={handlePrint}>Print Bản Vẽ</button>
-                      <button
+                      </Button>
+                      <Button onClick={handlePrint}>Print Bản Vẽ</Button>
+                      <Button
                         onClick={() => {
                           setSelection({ ...selection, tabbanve: false });
                         }}
                       >
                         Close
-                      </button>
+                      </Button>
                     </div>
                     <div className='ycsxrender' ref={ycsxprintref}>
                       {ycsxlistrender}
@@ -4245,23 +4242,20 @@ const MACHINE = () => {
                 {showkhoao && (
                   <div className='khoaodiv'>
                     <div className="khoaotieude"  style={{fontSize: 25, fontWeight:'bold'}}>KHO ẢO
-                    <button
-                        onClick={() => {
-                          setShowKhoAo(!showkhoao);                          
-                        }}
-                      >
+                    <Button  onClick={() => {
+                      setShowKhoAo(!showkhoao);   
+                      }}>
                         Close
-                      </button>
-                    <button
-                        onClick={() => {
-                          handle_loadKhoAo();
-                          handle_loadlichsunhapkhoao();
-                          handle_loadlichsuxuatkhoao();     
-                          handle_loadlichsuinputlieu(qlsxplandatafilter[0].PLAN_ID);              
-                        }}
-                      >
+                      </Button>
+                  
+                    <Button  onClick={() => {
+                       handle_loadKhoAo();
+                       handle_loadlichsunhapkhoao();
+                       handle_loadlichsuxuatkhoao();     
+                       handle_loadlichsuinputlieu(qlsxplandatafilter[0].PLAN_ID);
+                      }}>
                         Refresh
-                      </button>
+                      </Button>                   
                     </div>
                     <div className="khoaodivtable">
                     <div className="tablekhoao" style={{height:'100%', width:'50%'}}>

@@ -1,4 +1,4 @@
-import { Autocomplete,  IconButton,  LinearProgress,TextField } from '@mui/material';
+import { Autocomplete,  Button,  IconButton,  LinearProgress,TextField } from '@mui/material';
 import { DataGrid, GridSelectionModel, GridToolbarColumnsButton, GridToolbarContainer, GridToolbarDensitySelector, GridToolbarFilterButton, GridToolbarQuickFilter } from '@mui/x-data-grid';
 import moment from 'moment';
 import React, { useContext, useEffect, useState, useTransition } from 'react'
@@ -2482,15 +2482,15 @@ const readUploadFileAmazon = (e:any) => {
       {selection.renderycsx && 
         <div className='printycsxpage'>
           <div className='buttongroup'>
-            <button
+            <Button
               onClick={() => {
                 setYCSXListRender(renderYCSX(ycsxdatatablefilter));
               }}
             >
               Render YCSX
-            </button>
-            <button onClick={handlePrint}>Print YCSX</button>
-            <button onClick={() => {setSelection({ ...selection, renderycsx: false });}}>Close</button>
+            </Button>
+            <Button onClick={handlePrint}>Print YCSX</Button>
+            <Button onClick={() => {setSelection({ ...selection, renderycsx: false });}}>Close</Button>
           </div>
           <div className='ycsxrender' ref={ycsxprintref}>{ycsxlistrender}</div>
         </div>
