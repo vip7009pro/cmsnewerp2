@@ -1946,8 +1946,7 @@ const PLANTABLE = () => {
     let selectedPlanTable: QLSXPLANDATA[] = plandatatable.filter(
       (element: QLSXPLANDATA, index: number) => {
         return (
-          element.PLAN_EQ === selectedMachine &&
-          element.PLAN_FACTORY === selectedFactory
+          element.PROD_REQUEST_NO === ycsxdatatablefilter[0].PROD_REQUEST_NO 
         );
       }
     )
