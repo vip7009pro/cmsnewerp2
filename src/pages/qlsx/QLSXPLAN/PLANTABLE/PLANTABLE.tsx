@@ -145,6 +145,7 @@ interface QLSXPLANDATA {
   PLAN_ORDER: string;
   PROCESS_NUMBER: number;
   KETQUASX: number;
+  KQ_SX_TAM: number;
   CD1: number;
   CD2: number;
   TON_CD1: number;
@@ -235,6 +236,8 @@ interface QLSXCHITHIDATA {
     UPD_DATE: string,
 }
 const PLANTABLE = () => {
+  const [currentPlanPD, setCurrentPlanPD]= useState(0);
+  const [currentPlanCAVITY, setCurrentPlanCAVITY]= useState(0);
   const [selection, setSelection] = useState<any>({
     tab1: true,
     tab2: false,
@@ -765,7 +768,26 @@ const PLANTABLE = () => {
    } },
     { field: "STEP", headerName: "STEP", width: 60, editable: editplan },
     { field: "PLAN_ORDER", headerName: "PLAN_ORDER", width: 110, editable: editplan },
-    { field: "KETQUASX", headerName: "KETQUASX", width: 110, editable: editplan },
+    { field: "KETQUASX", headerName: "KETQUASX", width: 110, editable: editplan , renderCell: (params: any)=> {
+      if(params.row.KETQUASX !== null)
+      {
+        return <span>{params.row.KETQUASX.toLocaleString('en-US')}</span>
+      }
+      else
+      {
+        return <span>0</span>
+      }
+    }},
+    { field: "KQ_SX_TAM", headerName: "KETQUASX_TAM", width: 120, editable: editplan, renderCell: (params: any)=> {
+      if(params.row.KQ_SX_TAM !== null)
+      {
+        return <span>{params.row.KQ_SX_TAM.toLocaleString('en-US')}</span>
+      }
+      else
+      {
+        return <span>0</span>
+      }
+    }},
     { field: "PLAN_EQ", headerName: "PLAN_EQ", width: 80, editable: editplan },
     { field: "PLAN_FACTORY", headerName: "FACTORY", width: 80, editable: false },
     { field: "PLAN_DATE", headerName: "PLAN_DATE", width: 110, editable: false },
@@ -1390,6 +1412,8 @@ const PLANTABLE = () => {
     .catch((error) => {
       console.log(error);
     });
+    setCurrentPlanPD(PD); 
+    setCurrentPlanCAVITY(CAVITY_NGANG*CAVITY_DOC);
     generalQuery("getchithidatatable", {
         PLAN_ID: PLAN_ID,        
       })
@@ -1472,6 +1496,8 @@ const PLANTABLE = () => {
       console.log(error);
     });
 
+    setCurrentPlanPD(PD); 
+    setCurrentPlanCAVITY(CAVITY_NGANG*CAVITY_DOC);
     M_MET_NEEDED = parseInt((PLAN_QTY*PD/(CAVITY_DOC*CAVITY_NGANG)/1000).toString());
     //console.log(M_MET_NEEDED);
      await generalQuery("getbomsx", {
@@ -1952,8 +1978,8 @@ const PLANTABLE = () => {
     )
     let err_code:string = '0';
     for(let i=0; i< selectedPlanTable.length;i++)
-    {
-      if(selectedPlanTable[i].PROCESS_NUMBER !== null && selectedPlanTable[i].PLAN_QTY !== 0)
+    {      
+      if(selectedPlanTable[i].PROCESS_NUMBER !== null && selectedPlanTable[i].PLAN_QTY !== 0 && selectedPlanTable[i].PLAN_QTY <= selectedPlanTable[i].PROD_REQUEST_QTY)
       {
         generalQuery("updatePlanQLSX", {
           PLAN_ID: selectedPlanTable[i].PLAN_ID,
@@ -1978,7 +2004,7 @@ const PLANTABLE = () => {
       }
       else
       {
-        err_code +='_'+  selectedPlanTable[i].G_NAME_KD + ': Plan QTY =0 hoặc Process number trắng sẽ ko được lưu';
+        err_code +='_'+  selectedPlanTable[i].G_NAME_KD + ': Plan QTY =0 hoặc Process number trắng, hoặc chỉ thị nhiều hơn ycsx qty sẽ ko được lưu';
       }
      
     }
@@ -2394,12 +2420,30 @@ const PLANTABLE = () => {
         {
           qlsxplandatafilter[0]?.PLAN_ID
         }
-        </span>_____
+        </span> ___
         <span style={{fontSize:20, fontWeight: 'bold', color: 'blue'}}>
         {
           qlsxplandatafilter[0]?.G_NAME
         }
-        </span>       
+        </span> 
+        <span style={{fontSize:20, fontWeight: 'bold', color: 'yellow'}}>
+        ___PD:
+        {
+          currentPlanPD
+        }
+        </span> 
+        <span style={{fontSize:20, fontWeight: 'bold', color: 'green'}}>
+        ___CAVITY:
+        {
+          currentPlanCAVITY
+        }
+        </span>
+        <span style={{fontSize:20, fontWeight: 'bold', color: 'white'}}>
+        ___PLAN_QTY:
+        {
+          qlsxplandatafilter[0]?.PLAN_QTY.toLocaleString('en-US')
+        }
+        </span>   
       </GridToolbarContainer>
     );
   }

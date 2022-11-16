@@ -9,15 +9,15 @@
     -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
     .tieude {
         display: flex;
+        flex-direction: column;
         flex: 1;        
         background-color: bisque;
         width: 100%;
         align-self: center;
-        justify-content: center;
+        justify-content: center;        
         font-weight: bold;
         font-size: 20px;
         align-items: center;
-
     }
     .machineplan {
         display: flex;

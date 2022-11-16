@@ -1,5 +1,6 @@
 import  { useEffect, useState} from 'react'
 import KHOLIEU from '../../kho/kholieu/KHOLIEU';
+import LICHSUINPUTLIEU from './LICHSUINPUTLIEU/LICHSUINPUTLIEU';
 import MACHINE from './Machine/MACHINE';
 import MACHINE2 from './Machine/MACHINE2';
 import PLANTABLE from './PLANTABLE/PLANTABLE';
@@ -43,6 +44,11 @@ const QLSXPLAN = () => {
             PLAN TABLE
           </span>
         </div>  
+        <div className='mininavitem'  onClick={() => setNav(3)}>
+          <span className='mininavtext'>
+            LỊCH SỬ
+          </span>
+        </div>  
           
       </div>     
       {selection.tab1 && (
@@ -53,6 +59,11 @@ const QLSXPLAN = () => {
       {selection.tab2 && (
         <div className='datadtc'>
           <PLANTABLE/>                               
+        </div>
+      )}
+      {selection.tab3 && (
+        <div className='datadtc'>
+          <LICHSUINPUTLIEU/>                               
         </div>
       )}
     </div>

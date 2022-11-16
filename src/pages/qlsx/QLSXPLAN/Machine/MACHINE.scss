@@ -82,6 +82,36 @@
             flex-wrap: wrap;
     
         }
+        .SRlist {
+            display: flex;
+            flex-direction: row;
+            width: 100%;
+            justify-content: space-around;
+            border: 1px solid black;
+            border-width: 3px;
+            border-radius: 5px;
+            padding: 10px;
+            margin-left: 10px;
+            margin-right: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+    
+        }
+        .DClist {
+            display: flex;
+            flex-direction: row;
+            width: 100%;
+            justify-content: space-around;
+            border: 1px solid black;
+            border-width: 3px;
+            border-radius: 5px;
+            padding: 10px;
+            margin-left: 10px;
+            margin-right: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+    
+        }
         .EDlist {
             display: flex;
             flex-direction: row;
@@ -101,6 +131,57 @@
         
     }
     .NM2 {
+        display: flex;  
+        flex-direction: column;  
+        gap: 20px;
+        align-items: center;
+        margin-left: 15px;
+        margin-right: 15px;
+        background-color: rgb(238, 148, 230);
+        padding: 20px;
+        box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
+        -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
+        border-radius: 10px;
+
+        .machine_title {
+            font-size: 30px;
+            font-weight: bold;
+            color: blue
+        }
+        .FRlist {
+            display: flex;
+            flex-direction: row;
+            width: 100%;
+            justify-content: space-around;
+            border: 1px solid black;
+            border-width: 3px;
+            border-radius: 5px;
+            padding: 10px;
+            margin-left: 10px;
+            margin-right: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+    
+        }
+        .EDlist {
+            display: flex;
+            flex-direction: row;
+            width: 100%;
+            flex-wrap: wrap;
+            border: 1px solid black;
+            border-width: 3px;
+            padding: 10px;
+            margin-left: 10px;
+            margin-right: 10px;
+            gap: 10px;       
+            justify-content: space-around;
+    
+        }
+
+
+
+    }
+    .NM3 {
         display: flex;  
         flex-direction: column;  
         gap: 20px;

@@ -1155,7 +1155,7 @@ const readUploadFileAmazon = (e:any) => {
                       next_process_in_no: next_p500_in_no,
                       PROD_REQUEST_DATE: moment().format("YYYYMMDD"), 
                       PROD_REQUEST_NO: next_prod_request_no,
-                      G_CODE: selectedCode?.G_CODE,
+                      G_CODE: uploadExcelJson[i].G_CODE,
                       EMPL_NO: userData.EMPL_NO,
                       phanloai: newphanloai,
                     })

@@ -47,6 +47,7 @@ import { useReactToPrint } from "react-to-print";
 import CHITHI_COMPONENT from "../CHITHI/CHITHI_COMPONENT";
 import { BiRefresh, BiReset } from "react-icons/bi";
 import YCKT from "../YCKT/YCKT";
+import { setInterval } from "timers/promises";
 const axios = require("axios").default;
 
 interface TONLIEUXUONG {
@@ -144,6 +145,7 @@ interface QLSXPLANDATA {
   STEP: string;
   PLAN_ORDER: string;
   PROCESS_NUMBER: number;
+  KQ_SX_TAM: number;
   KETQUASX: number;
   CD1: number;
   CD2: number;
@@ -234,7 +236,24 @@ interface QLSXCHITHIDATA {
     UPD_EMPL: string,
     UPD_DATE: string,
 }
+interface EQ_STATUS {
+  FACTORY: string,
+  EQ_NAME: string, 
+  EQ_ACTIVE: string,
+  REMARK: string,
+  EQ_STATUS: string, 
+  CURR_PLAN_ID: string,
+  CURR_G_CODE: string,
+  INS_EMPL: string, 
+  INS_DATE: string, 
+  UPD_EMPL: string,
+  UPD_DATE: string,
+  EQ_CODE: string,
+  G_NAME: string,
+}
 const MACHINE = () => {
+  const [currentPlanPD, setCurrentPlanPD]= useState(0);
+  const [currentPlanCAVITY, setCurrentPlanCAVITY]= useState(0);
   const [selection, setSelection] = useState<any>({
     tab1: true,
     tab2: false,
@@ -251,6 +270,7 @@ const MACHINE = () => {
       setSelection({ ...selection, tab1: false, tab2: false, tab3: true });
     }
   };
+  const [eq_status, setEQ_STATUS]=  useState<EQ_STATUS[]>([]);
   const [datadinhmuc, setDataDinhMuc] = useState<DINHMUC_QSLX>({
     FACTORY: '',
     EQ1: '',
@@ -765,7 +785,26 @@ const MACHINE = () => {
    } },
     { field: "STEP", headerName: "STEP", width: 60, editable: editplan },
     { field: "PLAN_ORDER", headerName: "PLAN_ORDER", width: 110, editable: editplan },
-    { field: "KETQUASX", headerName: "KETQUASX", width: 110, editable: editplan },
+    { field: "KETQUASX", headerName: "KETQUASX", width: 110, editable: editplan , renderCell: (params: any)=> {
+      if(params.row.KETQUASX !== null)
+      {
+        return <span>{params.row.KETQUASX.toLocaleString('en-US')}</span>
+      }
+      else
+      {
+        return <span>0</span>
+      }
+    }},
+    { field: "KQ_SX_TAM", headerName: "KETQUASX_TAM", width: 120, editable: editplan, renderCell: (params: any)=> {
+      if(params.row.KQ_SX_TAM !== null)
+      {
+        return <span>{params.row.KQ_SX_TAM.toLocaleString('en-US')}</span>
+      }
+      else
+      {
+        return <span>0</span>
+      }
+    }},
     { field: "PLAN_EQ", headerName: "PLAN_EQ", width: 80, editable: editplan },
     { field: "PLAN_FACTORY", headerName: "FACTORY", width: 80, editable: false },
     { field: "PLAN_DATE", headerName: "PLAN_DATE", width: 110, editable: false },
@@ -890,8 +929,29 @@ const MACHINE = () => {
     { field: "EMPL_NO", headerName: "EMPL_NO", width: 80 },
     { field: "EQUIPMENT_CD", headerName: "MAY", width: 40 },
     { field: "INS_DATE", headerName: "INS_DATE", width: 150 },   
-  ]
+  ];
 
+  const handle_loadEQ_STATUS =()=> {
+    generalQuery("checkEQ_STATUS", {
+    })
+    .then((response) => {
+      //console.log(response.data.data);
+      if (response.data.tk_status !== "NG") {
+        const loaded_data: EQ_STATUS[] = response.data.data.map((element: EQ_STATUS, index: number)=> {
+          return {
+            ...element,
+            id: index
+          }
+        })
+        setEQ_STATUS(loaded_data);
+      } else {     
+        setEQ_STATUS([]);       
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });  
+  }
   const handle_saveConfirmLieuTon = ()=>
   {
     if(lichsuinputlieudatafilter.length>0)
@@ -1390,6 +1450,8 @@ const MACHINE = () => {
     .catch((error) => {
       console.log(error);
     });
+    setCurrentPlanPD(PD); 
+    setCurrentPlanCAVITY(CAVITY_NGANG*CAVITY_DOC);
     generalQuery("getchithidatatable", {
         PLAN_ID: PLAN_ID,        
       })
@@ -1471,7 +1533,8 @@ const MACHINE = () => {
     .catch((error) => {
       console.log(error);
     });
-
+    setCurrentPlanPD(PD); 
+    setCurrentPlanCAVITY(CAVITY_NGANG*CAVITY_DOC);
     M_MET_NEEDED = parseInt((PLAN_QTY*PD/(CAVITY_DOC*CAVITY_NGANG)/1000).toString());
     //console.log(M_MET_NEEDED);
      await generalQuery("getbomsx", {
@@ -1954,7 +2017,7 @@ const MACHINE = () => {
     let err_code:string = '0';
     for(let i=0; i< selectedPlanTable.length;i++)
     {
-      if(selectedPlanTable[i].PROCESS_NUMBER !== null && selectedPlanTable[i].PLAN_QTY !== 0)
+      if(selectedPlanTable[i].PROCESS_NUMBER !== null && selectedPlanTable[i].PLAN_QTY !== 0  && selectedPlanTable[i].PLAN_QTY <= selectedPlanTable[i].PROD_REQUEST_QTY)
       {
         generalQuery("updatePlanQLSX", {
           PLAN_ID: selectedPlanTable[i].PLAN_ID,
@@ -1979,7 +2042,7 @@ const MACHINE = () => {
       }
       else
       {
-        err_code +='_'+  selectedPlanTable[i].G_NAME_KD + ': Plan QTY =0 hoặc Process number trắng sẽ ko được lưu';
+        err_code +='_'+  selectedPlanTable[i].G_NAME_KD + ': Plan QTY =0 hoặc Process number trắng, hoặc chỉ thị nhiều hơn ycsx qty sẽ ko được lưu';
       }
      
     }
@@ -2395,12 +2458,30 @@ const MACHINE = () => {
         {
           qlsxplandatafilter[0]?.PLAN_ID
         }
-        </span>_____
+        </span> ___
         <span style={{fontSize:20, fontWeight: 'bold', color: 'blue'}}>
         {
           qlsxplandatafilter[0]?.G_NAME
         }
-        </span>       
+        </span> 
+        <span style={{fontSize:20, fontWeight: 'bold', color: 'green'}}>
+        ___PD:
+        {
+          currentPlanPD
+        }
+        </span> 
+        <span style={{fontSize:20, fontWeight: 'bold', color: 'green'}}>
+        ___CAVITY:
+        {
+          currentPlanCAVITY
+        }
+        </span>
+        <span style={{fontSize:20, fontWeight: 'bold', color: 'green'}}>
+        ___PLAN_QTY:
+        {
+          qlsxplandatafilter[0]?.PLAN_QTY.toLocaleString('en-US')
+        }
+        </span>
       </GridToolbarContainer>
     );
   }
@@ -2812,8 +2893,8 @@ const MACHINE = () => {
     
   }
   useEffect(() => {
-    loadQLSXPlan(selectedPlanDate);
-    
+    loadQLSXPlan(selectedPlanDate);    
+    handle_loadEQ_STATUS();
   }, []);
 
   return (
@@ -2824,7 +2905,7 @@ const MACHINE = () => {
         </div>
         <div className='mininavitem' onClick={() => setNav(2)}>
           <span className='mininavtext'>NM2</span>
-        </div>
+        </div>       
       </div>
       <div className='plandateselect'>
         <label>Plan Date</label>
@@ -2834,1139 +2915,161 @@ const MACHINE = () => {
           value={selectedPlanDate}
           onChange={(e) => {setSelectedPlanDate(e.target.value.toString());  console.log(e.target.value); loadQLSXPlan(e.target.value);}}
         ></input>
-      </div>
+      </div>     
       {selection.tab1 && (
-        <div className='NM1'>
-          <span className='machine_title'>FR-NM1</span>
-          <div className='FRlist'>           
-              <MACHINE_COMPONENT
-                factory='NM1'
-                machine_name='FR01'
-                run_stop={1}
-                machine_data={plandatatable}
-                onClick={()=>{
-                  setShowPlanWindow(true);
-                  setSelectedFactory("NM1");
-                  setSelectedMachine("FR01");
-                  setChiThiDataTable([]);
-                }}
-                />              
-              <MACHINE_COMPONENT
-                factory='NM1'
-                machine_name='FR02'
-                run_stop={1}
-                machine_data={plandatatable}
-                onClick={()=>{
-                  setShowPlanWindow(true);
-                  setSelectedFactory("NM1");
-                  setSelectedMachine("FR02");
-                  setChiThiDataTable([]);
-                }}
-              />
-            <MACHINE_COMPONENT
-              factory='NM1'
-              machine_name='FR03'
-              run_stop={1}
-              machine_data={plandatatable}
-              onClick={()=>{
-                  setShowPlanWindow(true);
-                  setSelectedFactory("NM1");
-                  setSelectedMachine("FR03");
-                  setChiThiDataTable([]);
-                }
+          <div className="NM1">
+            <span className='machine_title'>FR-NM1</span>
+            <div className='FRlist'>
+              {
+                eq_status.filter((element:EQ_STATUS, index: number)=> element.FACTORY==='NM1' && element.EQ_NAME.substring(0,2)==='FR' ).map((element: EQ_STATUS, index: number)=>{
+
+                  return (<MACHINE_COMPONENT
+                  key={index}
+                  factory={element.FACTORY}
+                  machine_name= {element.EQ_NAME}
+                  eq_status ={element.EQ_STATUS}
+                  current_g_name ={element.G_NAME}
+                  current_plan_id ={element.CURR_PLAN_ID}
+                  run_stop={element.EQ_ACTIVE==='OK'? 1:0}
+                  machine_data={plandatatable}
+                   onClick={()=>{
+                      setShowPlanWindow(true);
+                      setSelectedFactory(element.FACTORY);
+                      setSelectedMachine(element.EQ_NAME);
+                      setChiThiDataTable([]);
+                    }}
+                />)
+                })
               }
-            />
-            <MACHINE_COMPONENT
-              factory='NM1'
-              machine_name='FR04'
-              run_stop={1}
-              machine_data={plandatatable}
-              onClick={()=>{
-                setShowPlanWindow(true);
-                setSelectedFactory("NM1");
-                setSelectedMachine("FR04");
-                setChiThiDataTable([]);
+
+            </div>            
+            <span className='machine_title'>SR-NM1</span>
+            <div className='SRlist'>
+              {
+                eq_status.filter((element:EQ_STATUS, index: number)=> element.FACTORY==='NM1' && element.EQ_NAME.substring(0,2)==='SR' ).map((element: EQ_STATUS, index: number)=>{
+
+                  return (<MACHINE_COMPONENT
+                  key={index}
+                  factory={element.FACTORY}
+                  eq_status ={element.EQ_STATUS}
+                  current_g_name ={element.G_NAME}
+                  current_plan_id ={element.CURR_PLAN_ID}
+                  machine_name= {element.EQ_NAME}
+                  run_stop={element.EQ_ACTIVE==='OK'? 1:0}
+                  machine_data={plandatatable}
+                   onClick={()=>{
+                      setShowPlanWindow(true);
+                      setSelectedFactory(element.FACTORY);
+                      setSelectedMachine(element.EQ_NAME);
+                      setChiThiDataTable([]);
+                    }}
+                />)
+                })
               }
-            }
-            />
+
+            </div>            
+            <span className='machine_title'>DC-NM1</span>
+            <div className='DClist'>
+              {
+                eq_status.filter((element:EQ_STATUS, index: number)=> element.FACTORY==='NM1' && element.EQ_NAME.substring(0,2)==='DC' ).map((element: EQ_STATUS, index: number)=>{
+
+                  return (<MACHINE_COMPONENT
+                  key={index}
+                  factory={element.FACTORY}
+                  machine_name= {element.EQ_NAME}
+                  eq_status ={element.EQ_STATUS}
+                  current_g_name ={element.G_NAME}
+                  current_plan_id ={element.CURR_PLAN_ID}
+                  run_stop={element.EQ_ACTIVE==='OK'? 1:0}
+                  machine_data={plandatatable}
+                   onClick={()=>{
+                      setShowPlanWindow(true);
+                      setSelectedFactory(element.FACTORY);
+                      setSelectedMachine(element.EQ_NAME);
+                      setChiThiDataTable([]);
+                    }}
+                />)
+                })
+              }
+
+            </div>            
+            <span className='machine_title'>ED-NM1</span>
+            <div className='EDlist'>
+            {
+                eq_status.filter((element:EQ_STATUS, index: number)=> element.FACTORY==='NM1' && element.EQ_NAME.substring(0,2)==='ED' ).map((element: EQ_STATUS, index: number)=>{
+
+                  return (<MACHINE_COMPONENT
+                  key={index}
+                  factory={element.FACTORY}
+                  machine_name= {element.EQ_NAME}
+                  eq_status ={element.EQ_STATUS}
+                  current_g_name ={element.G_NAME}
+                  current_plan_id ={element.CURR_PLAN_ID}
+                  run_stop={element.EQ_ACTIVE==='OK'? 1:0}
+                  machine_data={plandatatable}
+                   onClick={()=>{
+                      setShowPlanWindow(true);
+                      setSelectedFactory(element.FACTORY);
+                      setSelectedMachine(element.EQ_NAME);
+                      setChiThiDataTable([]);
+                    }}
+                />)
+                })
+              }
+            </div>
           </div>
-          <span className='machine_title'>SR-NM1</span>
-          <div className='FRlist'>
-            <MACHINE_COMPONENT
-              factory='NM1'
-              machine_name='SR01'
-              run_stop={1}
-              machine_data={plandatatable}
-              onClick={()=>{
-                setShowPlanWindow(true);
-                setSelectedFactory("NM1");
-                setSelectedMachine("SR01");
-                setChiThiDataTable([]);
-              }}
-            />
-            <MACHINE_COMPONENT
-              factory='NM1'
-              machine_name='SR02'
-              machine_data={plandatatable}
-              onClick={()=>{
-                setShowPlanWindow(true);
-                setSelectedFactory("NM1");
-                setSelectedMachine("SR02");
-                setChiThiDataTable([]);
-              }}
-            />
-            <MACHINE_COMPONENT
-              factory='NM1'
-              machine_name='SR03'
-              run_stop={1}
-              machine_data={plandatatable}
-              onClick={()=>{
-                setShowPlanWindow(true);
-                setSelectedFactory("NM1");
-                setSelectedMachine("SR03");
-                setChiThiDataTable([]);
-              }}
-            />
-            <MACHINE_COMPONENT
-              factory='NM1'
-              machine_name='SR04'
-              machine_data={plandatatable}
-              onClick={()=>{
-                setShowPlanWindow(true);
-                setSelectedFactory("NM1");
-                setSelectedMachine("SR04");
-                setChiThiDataTable([]);
-              }}
-            />
-            <MACHINE_COMPONENT
-              factory='NM1'
-              machine_name='SR05'
-              run_stop={1}
-              machine_data={plandatatable}
-              onClick={()=>{
-                setShowPlanWindow(true);
-                setSelectedFactory("NM1");
-                setSelectedMachine("SR05");
-                setChiThiDataTable([]);
-              }}
-            />
-            <MACHINE_COMPONENT
-              factory='NM1'
-              machine_name='SR06'
-              machine_data={plandatatable}
-              onClick={()=>{
-                setShowPlanWindow(true);
-                setSelectedFactory("NM1");
-                setSelectedMachine("SR06");
-                setChiThiDataTable([]);
-              }}
-            />
-            <MACHINE_COMPONENT
-              factory='NM1'
-              machine_name='SR07'
-              run_stop={1}
-              machine_data={plandatatable}
-              onClick={()=>{
-                setShowPlanWindow(true);
-                setSelectedFactory("NM1");
-                setSelectedMachine("SR07");
-                setChiThiDataTable([]);
-              }}
-            />
-            <MACHINE_COMPONENT
-              factory='NM1'
-              machine_name='SR08'
-              machine_data={plandatatable}
-              onClick={()=>{
-                setShowPlanWindow(true);
-                setSelectedFactory("NM1");
-                setSelectedMachine("SR08");
-                setChiThiDataTable([]);
-              }}
-            />
-          </div>
-          <span className='machine_title'>DC-NM1</span>
-          <div className='FRlist'>
-            <MACHINE_COMPONENT
-              factory='NM1'
-              machine_name='DC01'
-              run_stop={1}
-              machine_data={plandatatable}
-              onClick={()=>{
-                setShowPlanWindow(true);
-                setSelectedFactory("NM1");
-                setSelectedMachine("DC01");
-                setChiThiDataTable([]);
-              }}
-            />
-            <MACHINE_COMPONENT
-              factory='NM1'
-              machine_name='DC02'
-              run_stop={1}
-              machine_data={plandatatable}
-              onClick={()=>{
-                setShowPlanWindow(true);
-                setSelectedFactory("NM1");
-                setSelectedMachine("DC02");
-                setChiThiDataTable([]);
-              }}
-            />
-            <MACHINE_COMPONENT
-              factory='NM1'
-              machine_name='DC03'
-              run_stop={1}
-              machine_data={plandatatable} onClick={()=>{
-                  setShowPlanWindow(true);
-                  setSelectedFactory("NM1");
-                  setSelectedMachine("DC03");
-                  setChiThiDataTable([]);
-                }}
-            />
-            <MACHINE_COMPONENT
-              factory='NM1'
-              machine_name='DC04'
-              run_stop={1}
-              machine_data={plandatatable} onClick={()=>{
-                  setShowPlanWindow(true);
-                  setSelectedFactory("NM1");
-                  setSelectedMachine("DC04");
-                  setChiThiDataTable([]);
-                }}
-            />
-            <MACHINE_COMPONENT
-              factory='NM1'
-              machine_name='DC05'
-              run_stop={1}
-              machine_data={plandatatable} onClick={()=>{
-                  setShowPlanWindow(true);
-                  setSelectedFactory("NM1");
-                  setSelectedMachine("DC05");
-                  setChiThiDataTable([]);
-                }}
-            />
-          </div>
-          <span className='machine_title'>ED-NM1</span>
-          <div className='EDlist'>
-            <MACHINE_COMPONENT
-              factory='NM1'
-              machine_name='ED01'
-              run_stop={1}
-              machine_data={plandatatable}
-               onClick={()=>{
-                  setShowPlanWindow(true);
-                  setSelectedFactory("NM1");
-                  setSelectedMachine("ED01");
-                  setChiThiDataTable([]);
-                }}
-            />
-            <MACHINE_COMPONENT
-              factory='NM1'
-              machine_name='ED02'
-              run_stop={1}
-              machine_data={plandatatable}
-               onClick={()=>{
-                  setShowPlanWindow(true);
-                  setSelectedFactory("NM1");
-                  setSelectedMachine("ED02");
-                  setChiThiDataTable([]);
-                }}
-            />
-            <MACHINE_COMPONENT
-              factory='NM1'
-              machine_name='ED03'
-              run_stop={1}
-              machine_data={plandatatable}
-               onClick={()=>{
-                  setShowPlanWindow(true);
-                  setSelectedFactory("NM1");
-                  setSelectedMachine("ED03");
-                  setChiThiDataTable([]);
-                }}
-            />
-            <MACHINE_COMPONENT
-              factory='NM1'
-              machine_name='ED04'
-              run_stop={1}
-              machine_data={plandatatable}
-               onClick={()=>{
-                  setShowPlanWindow(true);
-                  setSelectedFactory("NM1");
-                  setSelectedMachine("ED04");
-                  setChiThiDataTable([]);
-                }}
-            />
-            <MACHINE_COMPONENT
-              factory='NM1'
-              machine_name='ED05'
-              run_stop={1}
-              machine_data={plandatatable}
-               onClick={()=>{
-                  setShowPlanWindow(true);
-                  setSelectedFactory("NM1");
-                  setSelectedMachine("ED05");
-                  setChiThiDataTable([]);
-                }}
-            />
-            <MACHINE_COMPONENT
-              factory='NM1'
-              machine_name='ED06'
-              run_stop={1}
-              machine_data={plandatatable}
-               onClick={()=>{
-                  setShowPlanWindow(true);
-                  setSelectedFactory("NM1");
-                  setSelectedMachine("ED06");
-                  setChiThiDataTable([]);
-                }}
-            />
-            <MACHINE_COMPONENT
-              factory='NM1'
-              machine_name='ED07'
-              run_stop={1}
-              machine_data={plandatatable}
-               onClick={()=>{
-                  setShowPlanWindow(true);
-                  setSelectedFactory("NM1");
-                  setSelectedMachine("ED07");
-                  setChiThiDataTable([]);
-                }}
-            />
-            <MACHINE_COMPONENT
-              factory='NM1'
-              machine_name='ED08'
-              run_stop={1}
-              machine_data={plandatatable}
-               onClick={()=>{
-                  setShowPlanWindow(true);
-                  setSelectedFactory("NM1");
-                  setSelectedMachine("ED08");
-                  setChiThiDataTable([]);
-                }}
-            />
-            <MACHINE_COMPONENT
-              factory='NM1'
-              machine_name='ED09'
-              run_stop={1}
-              machine_data={plandatatable}
-               onClick={()=>{
-                  setShowPlanWindow(true);
-                  setSelectedFactory("NM1");
-                  setSelectedMachine("ED09");
-                  setChiThiDataTable([]);
-                }}
-            />
-            <MACHINE_COMPONENT
-              factory='NM1'
-              machine_name='ED10'
-              machine_data={plandatatable}
-               onClick={()=>{
-                  setShowPlanWindow(true);
-                  setSelectedFactory("NM1");
-                  setSelectedMachine("ED10");
-                  setChiThiDataTable([]);
-                }}
-            />
-            <MACHINE_COMPONENT
-              factory='NM1'
-              machine_name='ED11'
-              machine_data={plandatatable}
-               onClick={()=>{
-                  setShowPlanWindow(true);
-                  setSelectedFactory("NM1");
-                  setSelectedMachine("ED11");
-                  setChiThiDataTable([]);
-                }}
-            />
-            <MACHINE_COMPONENT
-              factory='NM1'
-              machine_name='ED12'
-              machine_data={plandatatable}
-               onClick={()=>{
-                  setShowPlanWindow(true);
-                  setSelectedFactory("NM1");
-                  setSelectedMachine("ED12");
-                  setChiThiDataTable([]);
-                }}
-            />
-            <MACHINE_COMPONENT
-              factory='NM1'
-              machine_name='ED13'
-              machine_data={plandatatable}
-               onClick={()=>{
-                  setShowPlanWindow(true);
-                  setSelectedFactory("NM1");
-                  setSelectedMachine("ED13");
-                  setChiThiDataTable([]);
-                }}
-            />
-            <MACHINE_COMPONENT
-              factory='NM1'
-              machine_name='ED14'
-              machine_data={plandatatable}
-               onClick={()=>{
-                  setShowPlanWindow(true);
-                  setSelectedFactory("NM1");
-                  setSelectedMachine("ED14");
-                  setChiThiDataTable([]);
-                }}
-            />
-            <MACHINE_COMPONENT
-              factory='NM1'
-              machine_name='ED15'
-              machine_data={plandatatable}
-               onClick={()=>{
-                  setShowPlanWindow(true);
-                  setSelectedFactory("NM1");
-                  setSelectedMachine("ED15");
-                  setChiThiDataTable([]);
-                }}
-            />
-            <MACHINE_COMPONENT
-              factory='NM1'
-              machine_name='ED16'
-              machine_data={plandatatable}
-               onClick={()=>{
-                  setShowPlanWindow(true);
-                  setSelectedFactory("NM1");
-                  setSelectedMachine("ED16");
-                  setChiThiDataTable([]);
-                }}
-            />
-            <MACHINE_COMPONENT
-              factory='NM1'
-              machine_name='ED17'
-              run_stop={1}
-              machine_data={plandatatable}
-               onClick={()=>{
-                  setShowPlanWindow(true);
-                  setSelectedFactory("NM1");
-                  setSelectedMachine("ED17");
-                  setChiThiDataTable([]);
-                }}
-            />
-            <MACHINE_COMPONENT
-              factory='NM1'
-              machine_name='ED18'
-              run_stop={1}
-              machine_data={plandatatable}
-               onClick={()=>{
-                  setShowPlanWindow(true);
-                  setSelectedFactory("NM1");
-                  setSelectedMachine("ED18");
-                  setChiThiDataTable([]);
-                }}
-            />
-            <MACHINE_COMPONENT
-              factory='NM1'
-              machine_name='ED19'
-              run_stop={1}
-              machine_data={plandatatable}
-               onClick={()=>{
-                  setShowPlanWindow(true);
-                  setSelectedFactory("NM1");
-                  setSelectedMachine("ED19");
-                  setChiThiDataTable([]);
-                }}
-            />
-            <MACHINE_COMPONENT
-              factory='NM1'
-              machine_name='ED20'
-              run_stop={1}
-              machine_data={plandatatable}
-               onClick={()=>{
-                  setShowPlanWindow(true);
-                  setSelectedFactory("NM1");
-                  setSelectedMachine("ED20");
-                  setChiThiDataTable([]);
-                }}
-            />
-            <MACHINE_COMPONENT
-              factory='NM1'
-              machine_name='ED21'
-              run_stop={1}
-              machine_data={plandatatable}
-               onClick={()=>{
-                  setShowPlanWindow(true);
-                  setSelectedFactory("NM1");
-                  setSelectedMachine("ED21");
-                  setChiThiDataTable([]);
-                }}
-            />
-            <MACHINE_COMPONENT
-              factory='NM1'
-              machine_name='ED22'
-              run_stop={1}
-              machine_data={plandatatable}
-               onClick={()=>{
-                  setShowPlanWindow(true);
-                  setSelectedFactory("NM1");
-                  setSelectedMachine("ED22");
-                  setChiThiDataTable([]);
-                }}
-            />
-            <MACHINE_COMPONENT
-              factory='NM1'
-              machine_name='ED23'
-              run_stop={1}
-              machine_data={plandatatable}
-               onClick={()=>{
-                  setShowPlanWindow(true);
-                  setSelectedFactory("NM1");
-                  setSelectedMachine("ED23");
-                  setChiThiDataTable([]);
-                }}
-            />
-            <MACHINE_COMPONENT
-              factory='NM1'
-              machine_name='ED24'
-              run_stop={1}
-              machine_data={plandatatable}
-               onClick={()=>{
-                  setShowPlanWindow(true);
-                  setSelectedFactory("NM1");
-                  setSelectedMachine("ED24");
-                  setChiThiDataTable([]);
-                }}
-            />
-            <MACHINE_COMPONENT
-              factory='NM1'
-              machine_name='ED25'
-              run_stop={1}
-              machine_data={plandatatable}
-               onClick={()=>{
-                  setShowPlanWindow(true);
-                  setSelectedFactory("NM1");
-                  setSelectedMachine("ED25");
-                  setChiThiDataTable([]);
-                }}
-            />
-            <MACHINE_COMPONENT
-              factory='NM1'
-              machine_name='ED26'
-              run_stop={1}
-              machine_data={plandatatable}
-               onClick={()=>{
-                  setShowPlanWindow(true);
-                  setSelectedFactory("NM1");
-                  setSelectedMachine("ED26");
-                  setChiThiDataTable([]);
-                }}
-            />
-            <MACHINE_COMPONENT
-              factory='NM1'
-              machine_name='ED27'
-              run_stop={1}
-              machine_data={plandatatable}
-               onClick={()=>{
-                  setShowPlanWindow(true);
-                  setSelectedFactory("NM1");
-                  setSelectedMachine("ED27");
-                  setChiThiDataTable([]);
-                }}
-            />
-            <MACHINE_COMPONENT
-              factory='NM1'
-              machine_name='ED28'
-              run_stop={1}
-              machine_data={plandatatable}
-               onClick={()=>{
-                  setShowPlanWindow(true);
-                  setSelectedFactory("NM1");
-                  setSelectedMachine("ED28");
-                  setChiThiDataTable([]);
-                }}
-            />
-            <MACHINE_COMPONENT
-              factory='NM1'
-              machine_name='ED29'
-              machine_data={plandatatable}
-               onClick={()=>{
-                  setShowPlanWindow(true);
-                  setSelectedFactory("NM1");
-                  setSelectedMachine("ED29");
-                  setChiThiDataTable([]);
-                }}
-            />
-            <MACHINE_COMPONENT
-              factory='NM1'
-              machine_name='ED30'
-              machine_data={plandatatable}
-               onClick={()=>{
-                  setShowPlanWindow(true);
-                  setSelectedFactory("NM1");
-                  setSelectedMachine("ED30");
-                  setChiThiDataTable([]);
-                }}
-            />
-            <MACHINE_COMPONENT
-              factory='NM1'
-              machine_name='ED31'
-              machine_data={plandatatable}
-               onClick={()=>{
-                  setShowPlanWindow(true);
-                  setSelectedFactory("NM1");
-                  setSelectedMachine("ED31");
-                  setChiThiDataTable([]);
-                }}
-            />
-            <MACHINE_COMPONENT
-              factory='NM1'
-              machine_name='ED32'
-              machine_data={plandatatable}
-               onClick={()=>{
-                  setShowPlanWindow(true);
-                  setSelectedFactory("NM1");
-                  setSelectedMachine("ED32");
-                  setChiThiDataTable([]);
-                }}
-            />
-            <MACHINE_COMPONENT
-              factory='NM1'
-              machine_name='ED33'
-              machine_data={plandatatable}
-               onClick={()=>{
-                  setShowPlanWindow(true);
-                  setSelectedFactory("NM1");
-                  setSelectedMachine("ED33");
-                  setChiThiDataTable([]);
-                }}
-            />
-            <MACHINE_COMPONENT
-              factory='NM1'
-              machine_name='ED34'
-              machine_data={plandatatable}
-               onClick={()=>{
-                  setShowPlanWindow(true);
-                  setSelectedFactory("NM1");
-                  setSelectedMachine("ED34");
-                  setChiThiDataTable([]);
-                }}
-            />
-            <MACHINE_COMPONENT
-              factory='NM1'
-              machine_name='ED35'
-              machine_data={plandatatable}
-               onClick={()=>{
-                  setShowPlanWindow(true);
-                  setSelectedFactory("NM1");
-                  setSelectedMachine("ED35");
-                  setChiThiDataTable([]);
-                }}
-            />
-            <MACHINE_COMPONENT
-              factory='NM1'
-              machine_name='ED36'
-              machine_data={plandatatable}
-               onClick={()=>{
-                  setShowPlanWindow(true);
-                  setSelectedFactory("NM1");
-                  setSelectedMachine("ED36");
-                  setChiThiDataTable([]);
-                }}
-            />
-            <MACHINE_COMPONENT
-              factory='NM1'
-              machine_name='ED37'
-              machine_data={plandatatable}
-               onClick={()=>{
-                  setShowPlanWindow(true);
-                  setSelectedFactory("NM1");
-                  setSelectedMachine("ED37");
-                  setChiThiDataTable([]);
-                }}
-            />
-          </div>
-        </div>
       )}
       {selection.tab2 && (
-        <div className='NM2'>
-          <span className='machine_title'>FR-NM2</span>
-          <div className='FRlist'>
-          <MACHINE_COMPONENT
-              factory='NM2'
-              machine_name='FR01'
-              run_stop={1}
-              machine_data={plandatatable}
-               onClick={()=>{
-                  setShowPlanWindow(true);
-                  setSelectedFactory("NM2");
-                  setSelectedMachine("FR01");
-                  setChiThiDataTable([]);
-                }}
-            />
-          <MACHINE_COMPONENT
-              factory='NM2'
-              machine_name='FR02'
-              run_stop={1}
-              machine_data={plandatatable}
-               onClick={()=>{
-                  setShowPlanWindow(true);
-                  setSelectedFactory("NM2");
-                  setSelectedMachine("FR02");
-                  setChiThiDataTable([]);
-                }}
-            />
-          <MACHINE_COMPONENT
-              factory='NM2'
-              machine_name='FR03'
-              run_stop={1}
-              machine_data={plandatatable}
-               onClick={()=>{
-                  setShowPlanWindow(true);
-                  setSelectedFactory("NM2");
-                  setSelectedMachine("FR03");
-                  setChiThiDataTable([]);
-                }}
-            />
+          <div className="NM2">
+            <span className='machine_title'>FR-NM2</span>
+            <div className='FRlist'>
+              {
+                eq_status.filter((element:EQ_STATUS, index: number)=> element.FACTORY==='NM2' && element.EQ_NAME.substring(0,2)==='FR' ).map((element: EQ_STATUS, index: number)=>{
+
+                  return (<MACHINE_COMPONENT
+                  key={index}
+                  factory={element.FACTORY}
+                  machine_name= {element.EQ_NAME}
+                  eq_status ={element.EQ_STATUS}
+                  current_g_name ={element.G_NAME}
+                  current_plan_id ={element.CURR_PLAN_ID}
+                  run_stop={element.EQ_ACTIVE==='OK'? 1:0}
+                  machine_data={plandatatable}
+                   onClick={()=>{
+                      setShowPlanWindow(true);
+                      setSelectedFactory(element.FACTORY);
+                      setSelectedMachine(element.EQ_NAME);
+                      setChiThiDataTable([]);
+                    }}
+                />)
+                })
+              }
+            </div>            
+            <span className='machine_title'>ED-NM2</span>
+            <div className='EDlist'>
+            {
+                eq_status.filter((element:EQ_STATUS, index: number)=> element.FACTORY==='NM2' && element.EQ_NAME.substring(0,2)==='ED' ).map((element: EQ_STATUS, index: number)=>{
+
+                  return (<MACHINE_COMPONENT
+                  key={index}
+                  factory={element.FACTORY}
+                  machine_name= {element.EQ_NAME}
+                  eq_status ={element.EQ_STATUS}
+                  current_g_name ={element.G_NAME}
+                  current_plan_id ={element.CURR_PLAN_ID}
+                  run_stop={element.EQ_ACTIVE==='OK'? 1:0}
+                  machine_data={plandatatable}
+                   onClick={()=>{
+                      setShowPlanWindow(true);
+                      setSelectedFactory(element.FACTORY);
+                      setSelectedMachine(element.EQ_NAME);
+                      setChiThiDataTable([]);
+                    }}
+                />)
+                })
+              }
+            </div>
           </div>
-          <span className='machine_title'>ED-NM2</span>
-          <div className='EDlist'>
-          <MACHINE_COMPONENT
-              factory='NM2'
-              machine_name='ED01'
-              run_stop={1}
-              machine_data={plandatatable}
-               onClick={()=>{
-                  setShowPlanWindow(true);
-                  setSelectedFactory("NM2");
-                  setSelectedMachine("ED01");
-                  setChiThiDataTable([]);
-                }}
-            />
-            <MACHINE_COMPONENT
-              factory='NM2'
-              machine_name='ED02'
-              run_stop={1}
-              machine_data={plandatatable}
-               onClick={()=>{
-                  setShowPlanWindow(true);
-                  setSelectedFactory("NM2");
-                  setSelectedMachine("ED02");
-                  setChiThiDataTable([]);
-                }}
-            />
-            <MACHINE_COMPONENT
-              factory='NM2'
-              machine_name='ED03'
-              run_stop={1}
-              machine_data={plandatatable}
-               onClick={()=>{
-                  setShowPlanWindow(true);
-                  setSelectedFactory("NM2");
-                  setSelectedMachine("ED03");
-                  setChiThiDataTable([]);
-                }}
-            />
-            <MACHINE_COMPONENT
-              factory='NM2'
-              machine_name='ED04'
-              run_stop={1}
-              machine_data={plandatatable}
-               onClick={()=>{
-                  setShowPlanWindow(true);
-                  setSelectedFactory("NM2");
-                  setSelectedMachine("ED04");
-                  setChiThiDataTable([]);
-                }}
-            />
-            <MACHINE_COMPONENT
-              factory='NM2'
-              machine_name='ED05'
-              run_stop={1}
-              machine_data={plandatatable}
-               onClick={()=>{
-                  setShowPlanWindow(true);
-                  setSelectedFactory("NM2");
-                  setSelectedMachine("ED05");
-                  setChiThiDataTable([]);
-                }}
-            />
-            <MACHINE_COMPONENT
-              factory='NM2'
-              machine_name='ED06'
-              run_stop={1}
-              machine_data={plandatatable}
-               onClick={()=>{
-                  setShowPlanWindow(true);
-                  setSelectedFactory("NM2");
-                  setSelectedMachine("ED06");
-                  setChiThiDataTable([]);
-                }}
-            />
-            <MACHINE_COMPONENT
-              factory='NM2'
-              machine_name='ED07'
-              run_stop={1}
-              machine_data={plandatatable}
-               onClick={()=>{
-                  setShowPlanWindow(true);
-                  setSelectedFactory("NM2");
-                  setSelectedMachine("ED07");
-                  setChiThiDataTable([]);
-                }}
-            />
-            <MACHINE_COMPONENT
-              factory='NM2'
-              machine_name='ED08'
-              run_stop={1}
-              machine_data={plandatatable}
-               onClick={()=>{
-                  setShowPlanWindow(true);
-                  setSelectedFactory("NM2");
-                  setSelectedMachine("ED08");
-                  setChiThiDataTable([]);
-                }}
-            />
-            <MACHINE_COMPONENT
-              factory='NM2'
-              machine_name='ED09'
-              run_stop={1}
-              machine_data={plandatatable}
-               onClick={()=>{
-                  setShowPlanWindow(true);
-                  setSelectedFactory("NM2");
-                  setSelectedMachine("ED09");
-                  setChiThiDataTable([]);
-                }}
-            />
-            <MACHINE_COMPONENT
-              factory='NM2'
-              machine_name='ED10'
-              run_stop={1}
-              machine_data={plandatatable}
-               onClick={()=>{
-                  setShowPlanWindow(true);
-                  setSelectedFactory("NM2");
-                  setSelectedMachine("ED10");
-                  setChiThiDataTable([]);
-                }}
-            />
-            <MACHINE_COMPONENT
-              factory='NM2'
-              machine_name='ED11'
-              run_stop={1}
-              machine_data={plandatatable}
-               onClick={()=>{
-                  setShowPlanWindow(true);
-                  setSelectedFactory("NM2");
-                  setSelectedMachine("ED11");
-                  setChiThiDataTable([]);
-                }}
-            />
-            <MACHINE_COMPONENT
-              factory='NM2'
-              machine_name='ED12'
-              run_stop={1}
-              machine_data={plandatatable}
-               onClick={()=>{
-                  setShowPlanWindow(true);
-                  setSelectedFactory("NM2");
-                  setSelectedMachine("ED12");
-                  setChiThiDataTable([]);
-                }}
-            />
-            <MACHINE_COMPONENT
-              factory='NM2'
-              machine_name='ED13'
-              run_stop={1}
-              machine_data={plandatatable}
-               onClick={()=>{
-                  setShowPlanWindow(true);
-                  setSelectedFactory("NM2");
-                  setSelectedMachine("ED13");
-                  setChiThiDataTable([]);
-                }}
-            />
-            <MACHINE_COMPONENT
-              factory='NM2'
-              machine_name='ED14'
-              run_stop={1}
-              machine_data={plandatatable}
-               onClick={()=>{
-                  setShowPlanWindow(true);
-                  setSelectedFactory("NM2");
-                  setSelectedMachine("ED14");
-                  setChiThiDataTable([]);
-                }}
-            />
-            <MACHINE_COMPONENT
-              factory='NM2'
-              machine_name='ED15'
-              run_stop={1}
-              machine_data={plandatatable}
-               onClick={()=>{
-                  setShowPlanWindow(true);
-                  setSelectedFactory("NM2");
-                  setSelectedMachine("ED15");
-                  setChiThiDataTable([]);
-                }}
-            />
-            <MACHINE_COMPONENT
-              factory='NM2'
-              machine_name='ED16'
-              run_stop={1}
-              machine_data={plandatatable}
-               onClick={()=>{
-                  setShowPlanWindow(true);
-                  setSelectedFactory("NM2");
-                  setSelectedMachine("ED16");
-                  setChiThiDataTable([]);
-                }}
-            />
-            <MACHINE_COMPONENT
-              factory='NM2'
-              machine_name='ED17'
-              run_stop={1}
-              machine_data={plandatatable}
-               onClick={()=>{
-                  setShowPlanWindow(true);
-                  setSelectedFactory("NM2");
-                  setSelectedMachine("ED17");
-                  setChiThiDataTable([]);
-                }}
-            />
-            <MACHINE_COMPONENT
-              factory='NM2'
-              machine_name='ED18'
-              run_stop={1}
-              machine_data={plandatatable}
-               onClick={()=>{
-                  setShowPlanWindow(true);
-                  setSelectedFactory("NM2");
-                  setSelectedMachine("ED18");
-                  setChiThiDataTable([]);
-                }}
-            />
-            <MACHINE_COMPONENT
-              factory='NM2'
-              machine_name='ED19'
-              run_stop={1}
-              machine_data={plandatatable}
-               onClick={()=>{
-                  setShowPlanWindow(true);
-                  setSelectedFactory("NM2");
-                  setSelectedMachine("ED19");
-                  setChiThiDataTable([]);
-                }}
-            />
-            <MACHINE_COMPONENT
-              factory='NM2'
-              machine_name='ED20'
-              run_stop={1}
-              machine_data={plandatatable}
-               onClick={()=>{
-                  setShowPlanWindow(true);
-                  setSelectedFactory("NM2");
-                  setSelectedMachine("ED20");
-                  setChiThiDataTable([]);
-                }}
-            />
-            <MACHINE_COMPONENT
-              factory='NM2'
-              machine_name='ED21'
-              run_stop={1}
-              machine_data={plandatatable}
-               onClick={()=>{
-                  setShowPlanWindow(true);
-                  setSelectedFactory("NM2");
-                  setSelectedMachine("ED21");
-                  setChiThiDataTable([]);
-                }}
-            />
-            <MACHINE_COMPONENT
-              factory='NM2'
-              machine_name='ED22'
-              run_stop={1}
-              machine_data={plandatatable}
-               onClick={()=>{
-                  setShowPlanWindow(true);
-                  setSelectedFactory("NM2");
-                  setSelectedMachine("ED22");
-                  setChiThiDataTable([]);
-                }}
-            />
-            <MACHINE_COMPONENT
-              factory='NM2'
-              machine_name='ED23'
-              run_stop={1}
-              machine_data={plandatatable}
-               onClick={()=>{
-                  setShowPlanWindow(true);
-                  setSelectedFactory("NM2");
-                  setSelectedMachine("ED23");
-                  setChiThiDataTable([]);
-                }}
-            />
-            <MACHINE_COMPONENT
-              factory='NM2'
-              machine_name='ED24'
-              run_stop={1}
-              machine_data={plandatatable}
-               onClick={()=>{
-                  setShowPlanWindow(true);
-                  setSelectedFactory("NM2");
-                  setSelectedMachine("ED24");
-                  setChiThiDataTable([]);
-                }}
-            />
-            <MACHINE_COMPONENT
-              factory='NM2'
-              machine_name='ED25'
-              run_stop={1}
-              machine_data={plandatatable}
-               onClick={()=>{
-                  setShowPlanWindow(true);
-                  setSelectedFactory("NM2");
-                  setSelectedMachine("ED25");
-                  setChiThiDataTable([]);
-                }}
-            />
-            <MACHINE_COMPONENT
-              factory='NM2'
-              machine_name='ED26'
-              run_stop={1}
-              machine_data={plandatatable}
-               onClick={()=>{
-                  setShowPlanWindow(true);
-                  setSelectedFactory("NM2");
-                  setSelectedMachine("ED26");
-                  setChiThiDataTable([]);
-                }}
-            />
-            <MACHINE_COMPONENT
-              factory='NM2'
-              machine_name='ED27'
-              run_stop={1}
-              machine_data={plandatatable}
-               onClick={()=>{
-                  setShowPlanWindow(true);
-                  setSelectedFactory("NM2");
-                  setSelectedMachine("ED27");
-                  setChiThiDataTable([]);
-                }}
-            />
-            <MACHINE_COMPONENT
-              factory='NM2'
-              machine_name='ED28'
-              run_stop={1}
-              machine_data={plandatatable}
-               onClick={()=>{
-                  setShowPlanWindow(true);
-                  setSelectedFactory("NM2");
-                  setSelectedMachine("ED28");
-                  setChiThiDataTable([]);
-                }}
-            />
-            <MACHINE_COMPONENT
-              factory='NM2'
-              machine_name='ED29'
-              run_stop={1}
-              machine_data={plandatatable}
-               onClick={()=>{
-                  setShowPlanWindow(true);
-                  setSelectedFactory("NM2");
-                  setSelectedMachine("ED29");
-                  setChiThiDataTable([]);
-                }}
-            />
-            <MACHINE_COMPONENT
-              factory='NM2'
-              machine_name='ED30'
-              run_stop={1}
-              machine_data={plandatatable}
-               onClick={()=>{
-                  setShowPlanWindow(true);
-                  setSelectedFactory("NM2");
-                  setSelectedMachine("ED30");
-                  setChiThiDataTable([]);
-                }}
-            />
-            <MACHINE_COMPONENT
-              factory='NM2'
-              machine_name='ED31'
-              run_stop={1}
-              machine_data={plandatatable}
-               onClick={()=>{
-                  setShowPlanWindow(true);
-                  setSelectedFactory("NM2");
-                  setSelectedMachine("ED31");
-                  setChiThiDataTable([]);
-                }}
-            />
-            <MACHINE_COMPONENT
-              factory='NM2'
-              machine_name='ED32'
-              run_stop={1}
-              machine_data={plandatatable}
-               onClick={()=>{
-                  setShowPlanWindow(true);
-                  setSelectedFactory("NM2");
-                  setSelectedMachine("ED32");
-                  setChiThiDataTable([]);
-                }}
-            />
-            <MACHINE_COMPONENT
-              factory='NM2'
-              machine_name='ED33'
-              run_stop={1}
-              machine_data={plandatatable}
-               onClick={()=>{
-                  setShowPlanWindow(true);
-                  setSelectedFactory("NM2");
-                  setSelectedMachine("ED33");
-                  setChiThiDataTable([]);
-                }}
-            />
-            <MACHINE_COMPONENT
-              factory='NM2'
-              machine_name='ED34'
-              run_stop={1}
-              machine_data={plandatatable}
-               onClick={()=>{
-                  setShowPlanWindow(true);
-                  setSelectedFactory("NM2");
-                  setSelectedMachine("ED34");
-                  setChiThiDataTable([]);
-                }}
-            />
-            <MACHINE_COMPONENT
-              factory='NM2'
-              machine_name='ED35'
-              run_stop={1}
-              machine_data={plandatatable}
-               onClick={()=>{
-                  setShowPlanWindow(true);
-                  setSelectedFactory("NM2");
-                  setSelectedMachine("ED35");
-                  setChiThiDataTable([]);
-                }}
-            />
-            <MACHINE_COMPONENT
-              factory='NM2'
-              machine_name='ED36'
-              run_stop={1}
-              machine_data={plandatatable}
-               onClick={()=>{
-                  setShowPlanWindow(true);
-                  setSelectedFactory("NM2");
-                  setSelectedMachine("ED36");
-                  setChiThiDataTable([]);
-                }}
-            />
-            <MACHINE_COMPONENT
-              factory='NM2'
-              machine_name='ED37'
-              run_stop={1}
-              machine_data={plandatatable}
-               onClick={()=>{
-                  setShowPlanWindow(true);
-                  setSelectedFactory("NM2");
-                  setSelectedMachine("ED37");
-                  setChiThiDataTable([]);
-                }}
-            />
-          </div>
-        </div>
       )}
       {showplanwindow && (
         <div className='planwindow'>
