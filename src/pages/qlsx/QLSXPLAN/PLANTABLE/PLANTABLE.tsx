@@ -124,7 +124,7 @@ interface DINHMUC_QSLX {
   NOTE: string
 }
 interface QLSXPLANDATA {
-  id: number,
+  id: string,
   PLAN_ID: string;
   PLAN_DATE: string;
   PROD_REQUEST_NO: string;
@@ -2022,9 +2022,8 @@ const PLANTABLE = () => {
     let err_code:string = '0';    
     let total_lieuql_sx:number =0;
     for(let i=0; i<chithidatatable.length; i++)
-    {
-      let temp_check:number = (chithidatatable[i].LIEUQL_SX === 1) ? 1 : 0;
-      total_lieuql_sx += temp_check;
+    {      
+      total_lieuql_sx += chithidatatable[i].LIEUQL_SX;
     }
     if(total_lieuql_sx >0)
     {      

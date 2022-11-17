@@ -2058,12 +2058,12 @@ const MACHINE = () => {
   }
   const hanlde_SaveChiThi = async ()=> {
     let err_code:string = '0';    
-    let total_lieuql_sx:number =0;
+    let total_lieuql_sx:number =0;    
     for(let i=0; i<chithidatatable.length; i++)
-    {
-      let temp_check:number = (chithidatatable[i].LIEUQL_SX === 1) ? 1 : 0;
-      total_lieuql_sx += temp_check;
+    {      
+      total_lieuql_sx += chithidatatable[i].LIEUQL_SX;
     }
+    console.log(total_lieuql_sx);
     if(total_lieuql_sx >0)
     {      
     await generalQuery("deleteMCODEExistIN_O302", {
@@ -2895,6 +2895,14 @@ const MACHINE = () => {
   useEffect(() => {
     loadQLSXPlan(selectedPlanDate);    
     handle_loadEQ_STATUS();
+    let intervalID = window.setInterval(()=> { 
+      handle_loadEQ_STATUS();      
+    },3000);
+    return (
+      ()=> {
+        window.clearInterval(intervalID);
+      }
+    )
   }, []);
 
   return (
@@ -3021,6 +3029,30 @@ const MACHINE = () => {
       )}
       {selection.tab2 && (
           <div className="NM2">
+           {/*  <span className='machine_title'>SUPER ROTARY-NM2</span>
+            <div className='FRlist'>
+              {
+                eq_status.filter((element:EQ_STATUS, index: number)=> element.FACTORY==='NM2' && element.EQ_NAME.substring(0,2)==='SP' ).map((element: EQ_STATUS, index: number)=>{
+
+                  return (<MACHINE_COMPONENT
+                  key={index}
+                  factory={element.FACTORY}
+                  machine_name= {element.EQ_NAME}
+                  eq_status ={element.EQ_STATUS}
+                  current_g_name ={element.G_NAME}
+                  current_plan_id ={element.CURR_PLAN_ID}
+                  run_stop={element.EQ_ACTIVE==='OK'? 1:0}
+                  machine_data={plandatatable}
+                   onClick={()=>{
+                      setShowPlanWindow(true);
+                      setSelectedFactory(element.FACTORY);
+                      setSelectedMachine(element.EQ_NAME);
+                      setChiThiDataTable([]);
+                    }}
+                />)
+                })
+              }
+            </div>   */}          
             <span className='machine_title'>FR-NM2</span>
             <div className='FRlist'>
               {
@@ -3506,8 +3538,7 @@ const MACHINE = () => {
 
                       </div>
 
-                    </div>                    
-                    
+                    </div>
                     </div>                                  
                   </div>
                 )}  

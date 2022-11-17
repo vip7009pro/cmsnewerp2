@@ -172,7 +172,9 @@ const TRAPQC = () => {
     { field: "DEFECT_QTY", type:'number',headerName: "SL NG", width: 80 },
     { field: "DEFECT_AMOUNT", type:'number',headerName: "DEFECT_AMOUNT", width: 120 },
     { field: "DEFECT_PHENOMENON", headerName: "HIEN TUONG", width: 150 },
-    { field: "DEFECT_IMAGE_LINK", headerName: "IMAGE LINK", width: 80, renderCell: (params:any) => {return <span style={{color:'blue'}}><a target='_blank' rel='noopener noreferrer' href={params.row.DEFECT_IMAGE_LINK}>
+    { field: "DEFECT_IMAGE_LINK", headerName: "IMAGE LINK", width: 80, renderCell: (params:any) => {
+      let href_link = '/pqc/PQC3_'+ params.row.PQC3_ID +'.png';
+      return <span style={{color:'blue'}}><a target='_blank' rel='noopener noreferrer' href={href_link}>
     LINK
   </a></span>}  },
     { field: "REMARK", headerName: "REMARK", width: 120 },

@@ -16,6 +16,7 @@ import  { ReactElement, useRef,  } from 'react';
 import { useReactToPrint } from 'react-to-print';
 import YCSXComponent from './YCSXComponent/YCSXComponent';
 import DrawComponent from './DrawComponent/DrawComponent';
+import TraAMZ from './TraAMZ/TraAMZ';
 const axios = require('axios').default;
 
 interface POBALANCETDYCSX{ G_CODE: string; PO_BALANCE: number }
@@ -1286,16 +1287,21 @@ const readUploadFileAmazon = (e:any) => {
   const setNav = (choose: number) => {
     if(choose ===1 )
     {
-      setSelection({...selection, trapo: true, thempohangloat:false, them1po:false,them1invoice:false,inserttableycsx: false, amazontab:false});
+      setSelection({...selection, trapo: true, thempohangloat:false, them1po:false,them1invoice:false,inserttableycsx: false, amazontab:false, traamazdata: false});
     }
     else if(choose ===2 )
     {
-      setSelection({...selection, trapo: false, thempohangloat:true, them1po:true,them1invoice:false,themycsx:false, suaycsx: false,inserttableycsx: true, amazontab:false});
+      setSelection({...selection, trapo: false, thempohangloat:true, them1po:true,them1invoice:false,themycsx:false, suaycsx: false,inserttableycsx: true, amazontab:false, traamazdata: false});
       setUploadExcelJSon([]);
     }
     else if(choose ===3 )
     {
-      setSelection({...selection, trapo: false, thempohangloat:false, them1po:false,them1invoice:false,inserttableycsx: false, amazontab:true});
+      setSelection({...selection, trapo: false, thempohangloat:false, them1po:false,them1invoice:false,inserttableycsx: false, amazontab:true, traamazdata: false});
+      setUploadExcelJSon([]);
+    }
+    else if(choose ===4 )
+    {
+      setSelection({...selection, trapo: false, thempohangloat:false, them1po:false,them1invoice:false,inserttableycsx: false, amazontab:false, traamazdata: true});
       setUploadExcelJSon([]);
     }
   }
@@ -2004,17 +2010,22 @@ const readUploadFileAmazon = (e:any) => {
       <div className='mininavbar'>
         <div className='mininavitem'  onClick={() => setNav(1)}>
           <span className='mininavtext'>
-            Tra cứu YCSX
+            TRA YCSX
           </span>
         </div>
         <div className='mininavitem'  onClick={() => setNav(2)}>
           <span className='mininavtext'>
-            Thêm YCSX (nhiều)
+            ADD YCSX
           </span>
         </div>
         <div className='mininavitem'  onClick={() => setNav(3)}>
           <span className='mininavtext'>
-            Thêm DATA AMAZON
+            Add AMZ Data
+          </span>
+        </div>
+        <div className='mininavitem'  onClick={() => setNav(4)}>
+          <span className='mininavtext'>
+            TRA AMZ Data
           </span>
         </div>
       </div>
@@ -2617,6 +2628,12 @@ const readUploadFileAmazon = (e:any) => {
           </div>          
         </div>
       }
+      {
+        selection.traamazdata && <div className="traamazdata">
+          <TraAMZ/>
+        </div>
+      }
+
     </div>
   );
 }
