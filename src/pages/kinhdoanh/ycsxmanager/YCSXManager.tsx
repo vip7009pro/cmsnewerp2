@@ -633,9 +633,7 @@ const upAmazonData = async ()=> {
     else
     {
       Swal.fire("Thông báo","ID công việc đã tồn tại","error");
-    }
- 
-
+    } 
 }
 const checkAmazonData = async (amazon_data: {id:number, DATA: string, CHECKSTATUS: string}[]) => {
   //Swal.fire("Thông báo","Bắt đầu check Amazon Data","success");  

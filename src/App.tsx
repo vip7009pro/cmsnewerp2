@@ -532,6 +532,13 @@ function App() {
                         >
                           <QC />
                         </ProtectedRoute>} />
+                      <Route path='ycsxmanager' element={ <ProtectedRoute
+                          user={userData}
+                          maindeptname='QC'
+                          jobname='Leader'
+                        >
+                          <YCSXManager />
+                        </ProtectedRoute>} />
                     </Route>
                     <Route
                       path='nhansu'

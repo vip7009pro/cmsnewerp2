@@ -129,7 +129,7 @@ const Sidebar = () => {
           title: 'Quản lý khách hàng', /*Quản lý giá*/
           path: '/kinhdoanh/customermanager',
           icon: <FcCustomerSupport color='#cc00ff' size={25}/>
-        },        
+        },          
         {
           title: getsentence(11,lang),/*Báo cáo*/
           path: '/kinhdoanh/kinhdoanhreport',
@@ -144,6 +144,12 @@ const Sidebar = () => {
       iconClosed: <KeyboardArrowDownIcon />,
       iconOpened: <KeyboardArrowUpIcon />,  
       subNav: [
+        {
+          title: 'Quản lý YCSX',
+          path: '/qc/ycsxmanager',
+          icon: <FcSettings color='#cc99ff' size={25}/>,
+          cName: 'sub-nav'
+        }, 
         {
           title: 'IQC',
           path: '/qc/iqc',

@@ -1,8 +1,10 @@
 import React from 'react'
 import './RECTANGELE.scss'
-const RECTANGLE = () => {
+const RECTANGLE = () => { 
   return (
-    <div className='amazon_rectange'></div>
+    <div className='amazon_rectange'>
+      
+    </div>
   )
 }
 

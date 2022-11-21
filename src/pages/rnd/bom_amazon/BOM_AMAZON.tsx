@@ -1,5 +1,6 @@
 import {
     Autocomplete,
+    Button,
     Checkbox,
     FormControlLabel,
     IconButton,
@@ -122,7 +123,9 @@ import {
     DOITUONG_NO?: string,
     DOITUONG_NAME?: string,
     GIATRI?: string,
-    REMARK?: string   
+    REMARK?: string,
+    AMZ_COUNTRY?: string,
+    AMZ_PROD_NAME?: string,
   }
   interface CODEPHOI {
     G_CODE_MAU: string, 
@@ -201,6 +204,8 @@ import {
     };  
     const [codeinfoCMS, setcodeinfoCMS] = useState<any>('');
     const [codeinfoKD, setcodeinfoKD] = useState<any>('');
+    const [amz_country, setAMZ_COUNTRY] = useState<any>('');
+    const [amz_prod_name, setAMZ_PROD_NAME] = useState<any>('');
     const [column_codeinfo, setcolumn_codeinfo] = useState<Array<any>>([
       { field: "id", headerName: "ID", width: 70, editable: enableEdit },
       {
@@ -309,10 +314,51 @@ import {
             <AiFillEdit color='yellow' size={25} />
             Bật tắt sửa
           </IconButton>
-          <GridToolbarQuickFilter />
+          <GridToolbarQuickFilter />         
         </GridToolbarContainer>
       );
     } 
+    
+    const handle_saveAMAZONCODEINFO = async () => {
+      const {value: pass1} = await Swal.fire({
+        title: 'Xác nhận',
+        input:'password',
+        inputLabel: 'Nhập mật mã',
+        inputValue: '',
+        inputPlaceholder:'Mật mã',
+        showCancelButton: true,       
+      })      
+      if(pass1 === 'okema')
+      {
+         if(codeinfoCMS !== '')
+        {
+          generalQuery("updateAmazonBOMCodeInfo", {     
+            G_CODE: codeinfoCMS,       
+            AMZ_PROD_NAME: amz_prod_name,
+            AMZ_COUNTRY: amz_country
+          })
+            .then((response) => {
+              //console.log(response.data.data);
+              if (response.data.tk_status !== "NG") {
+                Swal.fire('Thông báo','Update data thành công','success');         
+              } else {
+                Swal.fire('Thông báo','Update data thất bại: ' + response.data.message,'error');
+              }
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+        }
+        else
+        {
+          Swal.fire('Thông báo','Chọn code trước đã !','error');
+        }
+      }
+      else
+      {
+        Swal.fire('Thông báo','Đã nhập sai mật mã !','error');
+      }
+    }
     const handleGETLISTBOMAMAZON = (G_NAME: string) => {
       setisLoading(true);    
       generalQuery("listAmazon", {
@@ -357,6 +403,8 @@ import {
                 };
               }
             );
+            setAMZ_COUNTRY(loadeddata[0].AMZ_COUNTRY);
+            setAMZ_PROD_NAME(loadeddata[0].AMZ_PROD_NAME);
             setBOMAMAZONTable(loadeddata);
             setisLoading(false);
           } else {
@@ -459,6 +507,7 @@ import {
         //console.log(datafilter);
         setcodeinfoCMS(datafilter[0]?.G_CODE);
         setcodeinfoKD(datafilter[0]?.G_NAME);
+        
         handleGETBOMAMAZON(datafilter[0].G_CODE);
         setBomSXDataTableFilter(datafilter);     
       } else {
@@ -567,6 +616,8 @@ import {
             DOITUONG_NO: bomamazontable[i].DOITUONG_NO,
             GIATRI:  bomamazontable[i].GIATRI,
             REMARK:  bomamazontable[i].REMARK,
+            AMZ_PROD_NAME: amz_prod_name,
+            AMZ_COUNTRY: amz_country
           })
             .then((response) => {
               //console.log(response.data.data);
@@ -592,6 +643,8 @@ import {
             DOITUONG_NO: bomamazontable[i].DOITUONG_NO,
             GIATRI:  bomamazontable[i].GIATRI,
             REMARK:  bomamazontable[i].REMARK, 
+            AMZ_PROD_NAME: amz_prod_name,
+            AMZ_COUNTRY: amz_country
           })
             .then((response) => {
               //console.log(response.data.data);
@@ -824,6 +877,47 @@ import {
                       setBOMAMAZONTable(newdata);
                     }}
                   />
+                </div>
+              </div>
+              <div className='product_infor'>
+                <div className='bomamazontable'>
+                  <span
+                    style={{
+                      fontSize: 30,
+                      fontWeight: "bold",
+                      marginLeft: 50,
+                      color: "black",
+                      padding: 10,
+                      justifyContent:'center',
+                      justifyItems:'center',
+                    }}
+                  >
+                    Thông tin sản phẩm
+                  </span>  
+                  <div className="section_title">1. Ảnh sản phẩm <br></br> </div>
+                  <div className="product_image">
+                  
+                  <img width={'350px'} height={'350px'} src={'/amazon_image/AMZ_'+ codeinfoCMS+'.jpg'} alt={'AMZ_'+ codeinfoCMS+'.jpg'}></img>
+                  </div>  
+                  <div className="section_title">2. Tên sản phẩm thực tế <br></br> </div> 
+                  <div className="amz_prod_name">                 
+                    <textarea value={amz_prod_name === null? 'Chưa nhập thông tin': amz_prod_name} onChange={(e:any)=> {
+                        setAMZ_PROD_NAME(e.target.value);
+                      }}></textarea>
+                  </div>    
+                  <div className="section_title">3. Thị trường <br></br> </div>      
+                  <div className="amz_country">                 
+                  <div className="country">
+                    <input type='text' value={amz_country === null?'Chưa nhập thông tin': amz_country} onChange={(e)=> {
+                      setAMZ_COUNTRY(e.target.value);
+                    }}></input>
+                    </div>
+                  </div>
+                  <div className="update_prod_info">                    
+                    <Button variant="contained" color="success" onClick={()=> {
+                      handle_saveAMAZONCODEINFO();
+                    }}>UPDATE</Button>
+                  </div>     
                 </div>
               </div>
             </div>

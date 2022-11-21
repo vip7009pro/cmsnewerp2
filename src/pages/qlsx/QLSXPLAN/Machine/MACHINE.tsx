@@ -3615,6 +3615,7 @@ const MACHINE = () => {
                   rowsPerPageOptions={[
                     5, 10, 50, 100, 500, 1000, 5000, 10000, 500000,
                   ]}
+                  checkboxSelection
                   editMode='cell'
                   getRowId={(row) => row.PLAN_ID}
                   onSelectionModelChange={(ids) => {

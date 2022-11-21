@@ -7,6 +7,9 @@ socket.on("connect", () => {
   console.log(socket.id); // x8WIv7-mJelg7on_ALbx
 });
 
+socket.on("notification", (data) => {
+    console.log(data); // x8WIv7-mJelg7on_ALbx
+  });
 socket.on("disconnect", () => {
   console.log(socket.id); // undefined
 });

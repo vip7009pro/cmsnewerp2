@@ -135,6 +135,9 @@ const LICHSUINPUTLIEU = () => {
   },[]);
   return (
     <div className='lichsuinputlieu'>
+       <div className="section_title" style={{fontWeight:'bold', fontSize: 30}}>
+            TRA CỨU LỊCH SỬ INPUT LIỆU
+        </div>
       <div className='tracuuDataInspection'>
         <div className='tracuuDataInspectionform'>
           <div className='forminput'>
