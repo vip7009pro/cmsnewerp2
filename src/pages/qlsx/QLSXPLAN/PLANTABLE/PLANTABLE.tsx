@@ -163,7 +163,8 @@ interface QLSXPLANDATA {
   LOSS_SX2: number,
   LOSS_SETTING1: number,
   LOSS_SETTING2: number,
-  NOTE: string
+  NOTE: string,
+  NEXT_PLAN_ID: string,
 }
 interface YCSXTableData {
   DESCR?: string;
@@ -793,6 +794,7 @@ const PLANTABLE = () => {
     { field: "PLAN_DATE", headerName: "PLAN_DATE", width: 110, editable: false },
     { field: "PROD_REQUEST_NO", headerName: "YCSX NO", width: 80, editable: false },
     { field: "PROD_REQUEST_DATE", headerName: "YCSX DATE", width: 80, editable: false },
+    { field: "NEXT_PLAN_ID", headerName: "NEXT_PLAN_ID", width: 120, editable: true },
     { field: "INS_EMPL", headerName: "INS_EMPL", width: 120, editable: false, hide: true  },
     { field: "INS_DATE", headerName: "INS_DATE", width: 120, editable: false, hide: true  },
     { field: "UPD_EMPL", headerName: "UPD_EMPL", width: 120, editable: false , hide: true },
@@ -1223,8 +1225,8 @@ const PLANTABLE = () => {
         let err_code: string ='0';
               
         console.log(datadinhmuc);
-        if(datadinhmuc.FACTORY === '' || datadinhmuc.EQ1 === 'NA' ||datadinhmuc.EQ1 === 'NO' || datadinhmuc.EQ2 === '' || datadinhmuc.Setting1 === 0 ||  datadinhmuc.UPH1 === 0 || datadinhmuc.Step1 === 0 ||  datadinhmuc.LOSS_SX1 === 0)
-        {
+        if(datadinhmuc.FACTORY === 'NA' || datadinhmuc.EQ1 === 'NA' ||datadinhmuc.EQ1 === 'NO' || datadinhmuc.EQ2 === '' || datadinhmuc.Setting1 === 0 ||  datadinhmuc.UPH1 === 0 || datadinhmuc.Step1 === 0 ||  datadinhmuc.LOSS_SX1 === 0)
+        { 
           Swal.fire("Thông báo", "Lưu thất bại, hãy nhập đủ thông tin", "error"); 
         }
         else
@@ -1952,6 +1954,7 @@ const PLANTABLE = () => {
           PLAN_ORDER: NextPlanOrder,
           PROCESS_NUMBER: 0,
           G_CODE: ycsxdatatablefilter[i].G_CODE,
+          NEXT_PLAN_ID: 'X'
         })
           .then((response) => {
             console.log(response.data.tk_status);
@@ -1990,6 +1993,7 @@ const PLANTABLE = () => {
           PLAN_ORDER: selectedPlanTable[i].PLAN_ORDER,
           PROCESS_NUMBER: selectedPlanTable[i].PROCESS_NUMBER,
           KETQUASX: selectedPlanTable[i].KETQUASX=== null? 0: selectedPlanTable[i].KETQUASX,
+          NEXT_PLAN_ID: selectedPlanTable[i].NEXT_PLAN_ID=== null? 'X': selectedPlanTable[i].NEXT_PLAN_ID,
         })
           .then((response) => {
             //console.log(response.data.tk_status);
@@ -3512,14 +3516,21 @@ const PLANTABLE = () => {
                       </label>
                 </div>  
                 <div className='forminputcolumn'>
-                  <label>
-                    <b>FACTORY:</b>{" "}
-                    <input                     
-                      type='text'
-                      placeholder='NM1'
-                      value={datadinhmuc.FACTORY}
-                      onChange={(e) => setDataDinhMuc({...datadinhmuc, FACTORY: e.target.value })}
-                    ></input>
+                <label>
+                  <b>FACTORY:</b>
+                  <select
+                      name='nhamay'
+                      value={datadinhmuc.FACTORY === null ? 'NA' : datadinhmuc.FACTORY }
+                      onChange={(e) => {
+                        setDataDinhMuc({...datadinhmuc, FACTORY: e.target.value })
+                      }}
+                      style={{width:162, height: 22}}
+                    >
+                      <option value='NA'>NA</option>
+                    <option value='NM1'>NM1</option>
+                    <option value='NM2'>NM2</option>
+                      
+                    </select>
                   </label>
                   <label>
                     <b>NOTE (QLSX):</b>{" "}

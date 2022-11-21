@@ -1,5 +1,5 @@
 import { Autocomplete,  IconButton,  LinearProgress,TextField } from '@mui/material';
-import { DataGrid, GridSelectionModel,GridToolbarContainer, GridToolbarDensitySelector, GridToolbarFilterButton, GridToolbarQuickFilter } from '@mui/x-data-grid';
+import { DataGrid, GridCallbackDetails, GridCellEditCommitParams, GridSelectionModel,GridToolbarContainer, GridToolbarDensitySelector, GridToolbarFilterButton, GridToolbarQuickFilter, MuiBaseEvent, MuiEvent } from '@mui/x-data-grid';
 import moment from 'moment';
 import React, { useContext, useEffect, useState, useTransition } from 'react'
 import {AiFillFileExcel, AiOutlineCloudUpload, AiOutlinePrinter } from "react-icons/ai";
@@ -52,15 +52,17 @@ interface QLSXPLANDATA {
     LOSS_SETTING2: number,
     NOTE: string
   }
-
 const PLAN_DATATB = () => { 
  const [selectionModel_INPUTSX, setSelectionModel_INPUTSX] = useState<any>([]);
   const [readyRender, setReadyRender] = useState(false);
   const [userData, setUserData] = useContext(UserContext);
   const [isLoading, setisLoading] = useState(false);  
   const [fromdate, setFromDate] = useState(moment().format('YYYY-MM-DD'));
+  const [todate, setToDate] = useState(moment().format('YYYY-MM-DD'));
+  const [factory, setFactory] = useState('ALL');
+  const [machine, setMachine] = useState('ALL');
   const [plandatatable, setPlanDataTable] = useState<QLSXPLANDATA[]>([]);
-
+  const [qlsxplandatafilter, setQlsxPlanDataFilter] = useState<Array<QLSXPLANDATA>>([]);
 
   const column_plandatatable =[
     { field: "PLAN_FACTORY", headerName: "FACTORY", width: 80, editable: false },
@@ -165,10 +167,14 @@ const PLAN_DATATB = () => {
       </GridToolbarContainer>
     );
   }
-
+  
   const loadQLSXPlan = (plan_date: string) => {
     //console.log(selectedPlanDate);
-    generalQuery("getqlsxplan", { PLAN_DATE: plan_date })
+    generalQuery("getqlsxplan2", { 
+        PLAN_DATE: plan_date,
+        MACHINE: machine,
+        FACTORY: factory
+     })
       .then((response) => {
         //console.log(response.data.data);
         if (response.data.tk_status !== "NG") {
@@ -185,6 +191,7 @@ const PLAN_DATATB = () => {
           setPlanDataTable(loadeddata);
           setReadyRender(true);
           setisLoading(false);
+          Swal.fire("Thông báo", "Đã load: " + response.data.data.length +' dòng', "success");
         } else {
           setPlanDataTable([]);
           Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
@@ -194,6 +201,104 @@ const PLAN_DATATB = () => {
         console.log(error);
       });
   };
+
+  const handle_movePlan = async ()=> {
+    if(qlsxplandatafilter.length >0)
+    {
+        let err_code: string ='0';
+        for(let i=0;i< qlsxplandatafilter.length ;i++)
+        {
+            let checkplansetting:boolean =false;
+
+            await generalQuery("checkplansetting", {
+                PLAN_ID: qlsxplandatafilter[i].PLAN_ID,                
+            })
+            .then((response) => {
+              console.log(response.data);
+              if (response.data.tk_status !== "NG") {
+                checkplansetting = true;               
+             
+              } else {     
+                checkplansetting = false
+              }
+            })
+            .catch((error) => {
+              console.log(error);
+            });  
+
+            if(!checkplansetting)
+            {
+                generalQuery("move_plan", {
+                    PLAN_ID: qlsxplandatafilter[i].PLAN_ID,
+                    PLAN_DATE: todate    
+                })
+                .then((response) => {
+                  //console.log(response.data.data);
+                  if (response.data.tk_status !== "NG") {
+                   
+                 
+                  } else {     
+                   err_code += 'Lỗi: ' + response.data.message + '\n';
+                  }
+                })
+                .catch((error) => {
+                  console.log(error);
+                });
+            }
+            else
+            {
+                err_code += 'Lỗi: PLAN_ID ' +  qlsxplandatafilter[i].PLAN_ID + ' đã setting nên không di chuyển được sang ngày khác, phải chốt';
+            }            
+
+        }
+        if(err_code !=='0')
+        {
+            Swal.fire('Thông báo', 'Lỗi: '+ err_code, 'error');
+        }
+        loadQLSXPlan(fromdate); 
+    }
+    else
+    {
+        Swal.fire('Thông báo', 'Chọn ít nhất một chỉ thị để di chuyển', 'error');
+    }
+  }
+
+  const handleConfirmMovePlan = () => {
+    Swal.fire({
+      title: "Chắc chắn muốn chuyển ngày cho plan đã chọn ?",
+      text: "Sẽ bắt đầu chuyển ngày đã chọn",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Vẫn chuyển!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        Swal.fire(
+          "Tiến hành chuyển ngày PLAN",
+          "Đang ngày plan",
+          "success"
+        );
+        handle_movePlan();
+      }
+    });
+  };
+
+
+  const handleQLSXPlanDataSelectionforUpdate = (ids: GridSelectionModel) => {
+    const selectedID = new Set(ids);
+    let datafilter = plandatatable.filter((element: any) =>
+      selectedID.has(element.PLAN_ID)
+    );
+    //console.log(datafilter);
+    if (datafilter.length > 0) {
+      setQlsxPlanDataFilter(datafilter);      
+    } else {
+        setQlsxPlanDataFilter([]);       
+      //console.log("xoa filter");
+    }
+  };
+
   useEffect(()=>{      
     //setColumnDefinition(column_inspect_output);
   },[]);
@@ -213,10 +318,64 @@ const PLAN_DATATB = () => {
                   value={fromdate.slice(0, 10)}
                   onChange={(e) => setFromDate(e.target.value)}
                 ></input>
-              </label>              
-            </div>        
-          </div>
-          <div className='formbutton'>          
+              </label> 
+            <label>
+            <b>FACTORY:</b>
+            <select
+                name='phanloai'
+                value={factory}
+                onChange={(e) => {
+                setFactory(e.target.value);
+                }}
+            >
+                <option value='ALL'>ALL</option>
+                <option value='NM1'>NM1</option>
+                <option value='NM2'>NM2</option>
+           
+            </select>
+            </label>          
+            </div>
+
+           
+
+            <div className='forminputcolumn'>   
+            <label>
+            <b>MACHINE:</b>
+            <select
+                name='machine'
+                value={machine}
+                onChange={(e) => {
+                setMachine(e.target.value);
+                }}
+            >
+                <option value='ALL'>ALL</option>
+                <option value='FR'>FR</option>
+                <option value='SR'>SR</option>
+                <option value='DC'>DC</option>
+                <option value='ED'>ED</option>
+           
+            </select>
+            </label>               
+              <label>
+                <b>MOVE TO DATE</b>
+                <input
+                  type='date'
+                  value={todate.slice(0, 10)}
+                  onChange={(e) => setToDate(e.target.value)}
+                ></input>
+              </label> 
+                
+            </div> 
+
+            <div className='forminputcolumn'> 
+            <button
+              className='tranhatky'
+              onClick={() => {
+                handleConfirmMovePlan();
+              }}
+            >
+              MOVE PLAN
+            </button>     
             <button
               className='tranhatky'
               onClick={() => {
@@ -226,7 +385,11 @@ const PLAN_DATATB = () => {
               }}
             >
               Tra PLAN
-            </button>
+            </button> 
+            </div> 
+          </div>
+          <div className='formbutton'>          
+            
           </div>
         </div>
         <div className='tracuuYCSXTable'>
@@ -237,14 +400,31 @@ const PLAN_DATATB = () => {
               Toolbar: CustomToolbarLICHSUINPUTSX,
               LoadingOverlay: LinearProgress,
             }}
-            getRowId={(row) => row.id}
             loading={isLoading}
             rowHeight={30}
             rows={plandatatable}
             columns={column_plandatatable}
             rowsPerPageOptions={[
               5, 10, 50, 100, 500, 1000, 5000, 10000, 500000,
-            ]} 
+            ]}
+            checkboxSelection
+            editMode='cell'
+            getRowId={(row) => row.PLAN_ID}
+            onSelectionModelChange={(ids) => {
+              handleQLSXPlanDataSelectionforUpdate(ids);
+            }}
+            onCellEditCommit={(
+              params: GridCellEditCommitParams,
+              event: MuiEvent<MuiBaseEvent>,
+              details: GridCallbackDetails
+            ) => {
+              const keyvar = params.field;
+              const newdata = plandatatable.map((p) =>
+                p.PLAN_ID === params.id ? { ...p, [keyvar]: params.value } : p
+              );
+              setPlanDataTable(newdata);
+              //console.log(plandatatable);
+            }}
           />
           )}
         </div>

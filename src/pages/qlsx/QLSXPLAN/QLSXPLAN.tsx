@@ -69,8 +69,7 @@ const QLSXPLAN = () => {
             LỊCH SỬ
           </span>
         </div>  
-        
-       
+             
           
       </div>     
       {selection.tab1 && (

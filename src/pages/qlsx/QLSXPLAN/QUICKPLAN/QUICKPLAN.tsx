@@ -48,63 +48,7 @@ import React, {
   import { BiRefresh, BiReset } from "react-icons/bi";
   import YCKT from "../YCKT/YCKT";
   const axios = require("axios").default;
-  interface TONLIEUXUONG {
-    id: number,
-    FACTORY: string,
-    PHANLOAI: string,
-    PLAN_ID_INPUT: string,
-    M_CODE: string,
-    M_NAME: string,
-    WIDTH_CD: number,
-    M_LOT_NO: string,
-    TON_LIEU_MET: number,
-    TON_LIEU_ROLL: number,
-  }
-  interface LICHSUNHAPKHOAO {
-    id: string,
-    FACTORY: string,
-    PHANLOAI: string,
-    M_CODE: string,
-    M_NAME: string,
-    WIDTH_CD: number,
-    M_LOT_NO: string,
-    PLAN_ID_INPUT: string,
-    ROLL_QTY: number,
-    IN_QTY: number,
-    TOTAL_IN_QTY: number,
-    INS_DATE: string,
-  }
-  interface LICHSUXUATKHOAO {
-    id: string,
-    FACTORY: string,
-    PHANLOAI: string,
-    M_CODE: string,
-    M_NAME: string,
-    WIDTH_CD: number,
-    M_LOT_NO: string,
-    PLAN_ID_INPUT: string,
-    PLAN_ID_OUTPUT: string,
-    ROLL_QTY: number,
-    OUT_QTY: number,
-    TOTAL_OUT_QTY: number,
-    INS_DATE: string,
-  }
-  interface LICHSUINPUTLIEUSX {
-    id: string,
-    PLAN_ID: string,
-    G_NAME: string,
-    G_NAME_KD: string,
-    M_CODE: string,
-    M_NAME: string,
-    M_LOT_NO: string,
-    WIDTH_CD: number,
-    INPUT_QTY: number,
-    USED_QTY: number,
-    REMAIN_QTY: number,
-    EMPL_NO: string,
-    EQUIPMENT_CD: string,
-    INS_DATE: string,
-  }
+
   interface DINHMUC_QSLX {
     FACTORY: string,
     EQ1: string,
@@ -161,7 +105,8 @@ import React, {
     LOSS_SX2: number,
     LOSS_SETTING1: number,
     LOSS_SETTING2: number,
-    NOTE: string
+    NOTE: string,
+    NEXT_PLAN_ID: string,
   }
   interface YCSXTableData {
     DESCR?: string;
@@ -745,6 +690,7 @@ import React, {
      }  },
       { field: "PLAN_FACTORY", headerName: "FACTORY", width: 80, editable: false },
       { field: "PLAN_DATE", headerName: "PLAN_DATE", width: 110, editable: false },
+      { field: "NEXT_PLAN_ID", headerName: "NEXT_PLAN_ID", width: 120, editable: true },
     ];
     const renderYCKT = (planlist: QLSXPLANDATA[]) => {
       return planlist.map((element, index) => (
@@ -1204,6 +1150,7 @@ import React, {
               LOSS_SETTING1: 0,
               LOSS_SETTING2: 0,
               NOTE: '',
+              NEXT_PLAN_ID: 'X'
             }
             setPlanDataTable([...plandatatable,
               temp_add_plan
@@ -1241,6 +1188,7 @@ import React, {
                 PROD_REQUEST_NO: qlsxplandatafilter[i].PROD_REQUEST_NO,           
                 PLAN_FACTORY: qlsxplandatafilter[i].PLAN_FACTORY,
                 G_CODE: qlsxplandatafilter[i].G_CODE,
+                NEXT_PLAN_ID: qlsxplandatafilter[i].NEXT_PLAN_ID,
               })
                 .then((response) => {
                   //console.log(response.data.tk_status);
@@ -1423,8 +1371,8 @@ import React, {
       let temp_max: number = 0;    
       let temp_string: any =  localStorage.getItem('temp_plan_table')?.toString();
       let temp_string2: any =  localStorage.getItem('temp_plan_table_max_id')?.toString();
-      console.log(temp_string);
-      console.log(temp_string2);
+      //console.log(temp_string);
+      //console.log(temp_string2);
       if(temp_string !== undefined && temp_string2 !== undefined)
       {
         temp_max = parseInt(temp_string2);

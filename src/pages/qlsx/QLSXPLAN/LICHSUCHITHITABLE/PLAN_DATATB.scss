@@ -33,6 +33,27 @@
                 padding: 2px;
                 width: 100%;           
 
+                .tranhatky
+                {
+                    font-weight: bold;
+                    padding-left: 5px;
+                    padding-right: 5px;
+                    height: 30px;
+                    background-color: #ccff14;
+                    outline:none;
+                    border: none;
+                    border-radius: 5px;
+                    -webkit-box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27); 
+                    box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27);  
+                    margin-bottom: 5px;     
+                    margin-top: 5px;  
+                    width: 100px;
+                    &:hover {
+                        cursor: pointer;
+                        background-color: #bd4dc7;
+                    }
+                }
+
                 .forminputcolumn {
                     display: flex;
                     flex-direction: column;
@@ -40,6 +61,8 @@
                     align-items: flex-end;
                     justify-content: center;
                     flex-wrap: wrap;
+                   
+
                     input {
                         width: 150px;
                         height: 20px;
@@ -124,25 +147,7 @@
                         background-color: #bd4dc7;
                     }
                 }
-                .tranhatky
-                {
-                    font-weight: bold;
-                    padding-left: 5px;
-                    padding-right: 5px;
-                    height: 30px;
-                    background-color: #ccff14;
-                    outline:none;
-                    border: none;
-                    border-radius: 5px;
-                    -webkit-box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27); 
-                    box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27);  
-                    margin-bottom: 5px;     
-                    margin-top: 5px;  
-                    &:hover {
-                        cursor: pointer;
-                        background-color: #bd4dc7;
-                    }
-                }
+               
             }
             .formsummary {
                 display: flex;
