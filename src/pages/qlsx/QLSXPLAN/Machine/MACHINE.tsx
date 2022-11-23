@@ -1136,7 +1136,6 @@ const MACHINE = () => {
             INS_DATE: moment(element.INS_DATE).utc().format('YYYY-MM-DD HH:mm:ss'),
             id: index
           }
-
         })
         setLichSuNhapKhoAoTable(loaded_data);
       } else {     
