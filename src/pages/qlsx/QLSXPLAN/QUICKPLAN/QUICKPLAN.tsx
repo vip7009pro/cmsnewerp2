@@ -1326,7 +1326,7 @@ import React, {
             }}
           >
             <AiFillSave color='blue' size={20} />
-            Lưu PLAN
+            LƯU PLAN
           </IconButton> 
           <IconButton
             className='buttonIcon'
@@ -1335,7 +1335,7 @@ import React, {
             }}
           >
             <FcDeleteRow color='yellow' size={20} />
-            Xóa PLAN
+            XÓA PLAN NHÁP
           </IconButton>                   
         </GridToolbarContainer>
       );

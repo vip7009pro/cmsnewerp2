@@ -307,7 +307,7 @@ const PLAN_DATATB = () => {
         <div className="section_title" style={{fontWeight:'bold', fontSize: 30}}>
             TRA CỨU PLAN THEO NGÀY
         </div>
-      <div className='tracuuDataInspection'>
+      <div className='tracuuDataInspection'>    
         <div className='tracuuDataInspectionform'>
           <div className='forminput'>
             <div className='forminputcolumn'>
@@ -330,14 +330,10 @@ const PLAN_DATATB = () => {
             >
                 <option value='ALL'>ALL</option>
                 <option value='NM1'>NM1</option>
-                <option value='NM2'>NM2</option>
-           
+                <option value='NM2'>NM2</option>           
             </select>
             </label>          
             </div>
-
-           
-
             <div className='forminputcolumn'>   
             <label>
             <b>MACHINE:</b>
@@ -352,8 +348,7 @@ const PLAN_DATATB = () => {
                 <option value='FR'>FR</option>
                 <option value='SR'>SR</option>
                 <option value='DC'>DC</option>
-                <option value='ED'>ED</option>
-           
+                <option value='ED'>ED</option>           
             </select>
             </label>               
               <label>

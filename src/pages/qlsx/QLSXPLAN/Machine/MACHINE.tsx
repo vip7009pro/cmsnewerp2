@@ -59,8 +59,9 @@ interface TONLIEUXUONG {
   M_NAME: string,
   WIDTH_CD: number,
   M_LOT_NO: string,
-  TON_LIEU_MET: number,
-  TON_LIEU_ROLL: number,
+  ROLL_QTY: number,
+  IN_QTY: number,
+  TOTAL_IN_QTY: number,
 }
 interface LICHSUNHAPKHOAO {
   id: string,
@@ -870,24 +871,34 @@ const MACHINE = () => {
    }},
     { field: "WIDTH_CD", headerName: "SIZE", width: 30, editable: false },   
     { field: "M_LOT_NO", headerName: "M_LOT_NO", width: 90, editable: false },   
-    { field: "TON_LIEU_MET", headerName: "METQTY", width: 70, editable: false , renderCell: (params: any) => {      
+    { field: "ROLL_QTY", headerName: "ROLL_QTY", width: 70, editable: false , renderCell: (params: any) => {      
       if(params.row.PHANLOAI !=='F')
       {
-        return <span style={{color: 'green'}}>{params.row.TON_LIEU_MET.toLocaleString('en','US')}</span>      
+        return <span style={{color: 'green'}}>{params.row.ROLL_QTY.toLocaleString('en','US')}</span>      
       }
       else
       {
-        return <span style={{color: 'red', fontWeight:'bold'}}>{params.row.TON_LIEU_MET.toLocaleString('en','US')}</span>      
+        return <span style={{color: 'red', fontWeight:'bold'}}>{params.row.ROLL_QTY.toLocaleString('en','US')}</span>      
       }
    }  },
-    { field: "TON_LIEU_ROLL", headerName: "ROLLQTY", width: 70, editable: false , renderCell: (params: any) => {  
+    { field: "IN_QTY", headerName: "IN_QTY", width: 70, editable: false , renderCell: (params: any) => {  
       if(params.row.PHANLOAI !=='F')
       {
-        return <span style={{color: 'green'}}>{params.row.TON_LIEU_ROLL.toLocaleString('en','US')}</span>      
+        return <span style={{color: 'green'}}>{params.row.IN_QTY.toLocaleString('en','US')}</span>      
       }
       else
       {
-        return <span style={{color: 'red', fontWeight:'bold'}}>{params.row.TON_LIEU_ROLL.toLocaleString('en','US')}</span> 
+        return <span style={{color: 'red', fontWeight:'bold'}}>{params.row.IN_QTY.toLocaleString('en','US')}</span> 
+      }
+   }  },
+    { field: "TOTAL_IN_QTY", headerName: "TOTAL_IN_QTY", width: 70, editable: false , renderCell: (params: any) => {  
+      if(params.row.PHANLOAI !=='F')
+      {
+        return <span style={{color: 'green'}}>{params.row.TOTAL_IN_QTY.toLocaleString('en','US')}</span>      
+      }
+      else
+      {
+        return <span style={{color: 'red', fontWeight:'bold'}}>{params.row.TOTAL_IN_QTY.toLocaleString('en','US')}</span> 
       }
    }  },
     
@@ -1193,9 +1204,9 @@ const MACHINE = () => {
               PLAN_ID_OUTPUT: qlsxplandatafilter[0].PLAN_ID,
               M_CODE: tonlieuxuongdatafilter[i].M_CODE,
               M_LOT_NO: tonlieuxuongdatafilter[i].M_LOT_NO,
-              ROLL_QTY: tonlieuxuongdatafilter[i].TON_LIEU_ROLL,
-              OUT_QTY: tonlieuxuongdatafilter[i].TON_LIEU_MET,
-              TOTAL_OUT_QTY: tonlieuxuongdatafilter[i].TON_LIEU_MET,
+              ROLL_QTY: tonlieuxuongdatafilter[i].ROLL_QTY,
+              OUT_QTY: tonlieuxuongdatafilter[i].IN_QTY,
+              TOTAL_OUT_QTY: tonlieuxuongdatafilter[i].TOTAL_IN_QTY,
               USE_YN: 'N',
             })
             .then((response) => {

@@ -57,7 +57,7 @@ const MACHINE_COMPONENT = (machine_data: MachineInterface) => {
           {machine_data.machine_name}
           {machine_data.eq_status === 'MASS' &&<img alt='running' src='/blink.gif' width={40} height={20}></img>}
         </div>
-        <div className="currentcode"  style={{color:`${machine_data.eq_status ==='STOP'? 'white':machine_data.eq_status ==='SETTING'? 'black' : `black` }`}}>
+        <div className="currentcode"  style={{ fontSize:12, color:`${machine_data.eq_status ==='STOP'? 'white':machine_data.eq_status ==='SETTING'? 'black' : `black` }`}}>
         {machine_data.current_g_name}
         </div>      
       </div>

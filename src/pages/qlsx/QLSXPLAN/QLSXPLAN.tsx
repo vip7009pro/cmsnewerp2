@@ -44,27 +44,27 @@ const QLSXPLAN = () => {
   return (
     <div className='qlsxplan'>
       <div className='mininavbar'>
-        <div className='mininavitem'  onClick={() => setNav(1)}>
+        <div className='mininavitem'  onClick={() => setNav(1)} style={{backgroundColor:selection.tab1 === true ? 'yellow':'red', color: selection.tab1 === true ? 'black':'yellow'}}>
           <span className='mininavtext'>
             PLAN VISUAL
           </span>
         </div>  
-        <div className='mininavitem'  onClick={() => setNav(4)}>
+        <div className='mininavitem'  onClick={() => setNav(4)} style={{backgroundColor:selection.tab4 === true ? 'yellow':'red', color: selection.tab4 === true ? 'black':'yellow'}}>
           <span className='mininavtext'>
             QUICK PLAN
           </span>
         </div>   
-        <div className='mininavitem'  onClick={() => setNav(2)}>
+        <div className='mininavitem'  onClick={() => setNav(2)} style={{backgroundColor:selection.tab2 === true ? 'yellow':'red', color: selection.tab2 === true ? 'black':'yellow'}}>
           <span className='mininavtext'>
             PLAN YCSX
           </span>
         </div>  
-        <div className='mininavitem'  onClick={() => setNav(5)}>
+        <div className='mininavitem'  onClick={() => setNav(5)} style={{backgroundColor:selection.tab5 === true ? 'yellow':'red', color: selection.tab5 === true ? 'black':'yellow'}}>
           <span className='mininavtext'>
             TRA PLAN
           </span>
         </div>  
-        <div className='mininavitem'  onClick={() => setNav(3)}>
+        <div className='mininavitem'  onClick={() => setNav(3)} style={{backgroundColor:selection.tab3 === true ? 'yellow':'red', color: selection.tab3 === true ? 'black':'yellow'}}>
           <span className='mininavtext'>
             LỊCH SỬ
           </span>
