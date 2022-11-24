@@ -1,3 +1,4 @@
+/* eslint-disable no-loop-func */
 import React, {
   ReactElement,
   useContext,
@@ -1095,15 +1096,41 @@ const MACHINE = () => {
         for(let i=0;i<lichsuxuatkhoaodatafilter.length;i++)
         {
           await generalQuery("deleteXuatKhoAo", { 
-            CURRENT_PLAN_ID: current_plan_id,          
+            CURRENT_PLAN_ID: current_plan_id,
             PLAN_ID_INPUT: lichsuxuatkhoaodatafilter[i].PLAN_ID_INPUT,
             PLAN_ID_OUTPUT: lichsuxuatkhoaodatafilter[0].PLAN_ID_OUTPUT,
             M_CODE: lichsuxuatkhoaodatafilter[i].M_CODE,
             M_LOT_NO: lichsuxuatkhoaodatafilter[i].M_LOT_NO,            
+            INS_DATE:lichsuxuatkhoaodatafilter[i].INS_DATE,
+            TOTAL_OUT_QTY: lichsuxuatkhoaodatafilter[i].TOTAL_OUT_QTY,
+            PHANLOAI: lichsuxuatkhoaodatafilter[i].PHANLOAI,
           })
           .then((response) => {
             //console.log(response.data.data);
             if (response.data.tk_status !== "NG") {
+
+              generalQuery("setUSE_YN_KHO_AO_INPUT", {
+                FACTORY: lichsuxuatkhoaodatafilter[i].FACTORY,
+                PHANLOAI: lichsuxuatkhoaodatafilter[i].PHANLOAI,
+                PLAN_ID_INPUT: lichsuxuatkhoaodatafilter[i].PLAN_ID_INPUT,
+                M_CODE: lichsuxuatkhoaodatafilter[i].M_CODE,
+                M_LOT_NO: lichsuxuatkhoaodatafilter[i].M_LOT_NO,                
+                TOTAL_IN_QTY: lichsuxuatkhoaodatafilter[i].TOTAL_OUT_QTY,                
+                USE_YN: 'Y',
+              })
+              .then((response) => {
+                console.log(response.data);
+                if (response.data.tk_status !== "NG") {
+                                  
+                } else {     
+                     
+                }
+              })
+              .catch((error) => {
+                console.log(error);
+              }); 
+
+
               
             } else {     
                  err_code += "| " + response.data.message;
@@ -1198,7 +1225,7 @@ const MACHINE = () => {
           {
             await generalQuery("xuatkhoao", {
               FACTORY: tonlieuxuongdatafilter[i].FACTORY,
-              PHANLOAI: 'B',
+              PHANLOAI: 'N',
               PLAN_ID_INPUT: tonlieuxuongdatafilter[i].PLAN_ID_INPUT,
               PLAN_ID_OUTPUT: qlsxplandatafilter[0].PLAN_ID,
               M_CODE: tonlieuxuongdatafilter[i].M_CODE,
@@ -1209,9 +1236,30 @@ const MACHINE = () => {
               USE_YN: 'N',
             })
             .then((response) => {
-              console.log(response.data.data);
+              console.log(response.data.tk_status);
               if (response.data.tk_status !== "NG") {
-                
+                console.log('set yes no');
+                 generalQuery("setUSE_YN_KHO_AO_INPUT", {
+                  FACTORY: tonlieuxuongdatafilter[i].FACTORY,
+                  PHANLOAI: tonlieuxuongdatafilter[i].PHANLOAI,
+                  PLAN_ID_INPUT: tonlieuxuongdatafilter[i].PLAN_ID_INPUT,
+                  M_CODE: tonlieuxuongdatafilter[i].M_CODE,
+                  M_LOT_NO: tonlieuxuongdatafilter[i].M_LOT_NO,                
+                  TOTAL_IN_QTY: tonlieuxuongdatafilter[i].TOTAL_IN_QTY,                
+                  USE_YN: 'N',
+                })
+                .then((response) => {
+                  console.log(response.data);
+                  if (response.data.tk_status !== "NG") {
+                                    
+                  } else {     
+                       
+                  }
+                })
+                .catch((error) => {
+                  console.log(error);
+                }); 
+                                
               } else {     
                    err_code += "| " + response.data.message;
               }
@@ -2068,13 +2116,31 @@ const MACHINE = () => {
   }
   const hanlde_SaveChiThi = async ()=> {
     let err_code:string = '0';    
-    let total_lieuql_sx:number =0;    
+    let total_lieuql_sx:number =0;   
+    let check_lieuql_sx_sot:number =0; 
+    //console.log(chithidatatable);
     for(let i=0; i<chithidatatable.length; i++)
     {      
-      total_lieuql_sx += chithidatatable[i].LIEUQL_SX;
+      total_lieuql_sx += chithidatatable[i].LIEUQL_SX;      
     }
-    console.log(total_lieuql_sx);
-    if(total_lieuql_sx >0)
+    for(let i=0; i<chithidatatable.length; i++)
+    {      
+      //console.log(chithidatatable[i].LIEUQL_SX);
+      if(parseInt(chithidatatable[i].LIEUQL_SX.toString()) ===1)    
+      {
+        
+        for(let j =0;j<chithidatatable.length;j++)
+        {
+          if(chithidatatable[j].M_NAME === chithidatatable[i].M_NAME && parseInt(chithidatatable[j].LIEUQL_SX.toString()) ===0)
+          {
+            check_lieuql_sx_sot += 1;
+          }         
+        }
+      }
+    }
+    //console.log('check lieu sot: ' + check_lieuql_sx_sot);
+    //console.log('tong lieu qly: '+ total_lieuql_sx);
+    if(total_lieuql_sx >0 && check_lieuql_sx_sot ===0)
     {      
     await generalQuery("deleteMCODEExistIN_O302", {
       PLAN_ID: qlsxplandatafilter[0].PLAN_ID,      
@@ -2194,7 +2260,7 @@ const MACHINE = () => {
     }
     else
     {
-      Swal.fire('Thông báo', 'Phải chỉ định liệu quản lý','error');
+      Swal.fire('Thông báo', 'Phải chỉ định liệu quản lý, k để sót size nào','error');
     }
 
   }
@@ -2608,7 +2674,8 @@ const MACHINE = () => {
         <IconButton
           className='buttonIcon'
           onClick={() => { 
-            handle_huyxuatkhoao();            
+            Swal.fire('Thông báo','Không được phép','error');
+            //handle_huyxuatkhoao();            
           }}
         >
           <FcCancel color='white' size={20} />

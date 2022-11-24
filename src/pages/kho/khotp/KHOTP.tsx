@@ -18,6 +18,7 @@ interface WH_IN_OUT {
   IO_Shift: string,
   IO_Type: string,
   IO_Qty: number,
+  CUST_NAME_KD: string,
 }
 interface TONKIEMGOP_CMS {
   G_CODE: string,
@@ -121,6 +122,7 @@ const KHOTP = () => {
     { field: "G_CODE", headerName: "G_CODE", width: 90 },
     { field: "G_NAME", headerName: "G_NAME", width: 180 },
     { field: "G_NAME_KD", headerName: "G_NAME_KD", width: 120 },
+    { field: "CUST_NAME_KD", headerName: "CUST_NAME_KD", width: 150 },
     { field: "Customer_ShortName", headerName: "Customer_ShortName", width: 150 },
     { field: "IO_Date", headerName: "IO_Date", width: 150 },
     { field: "INPUT_DATETIME", headerName: "IN_OUT_TIME", width: 150 },
