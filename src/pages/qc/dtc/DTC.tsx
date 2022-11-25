@@ -33,12 +33,12 @@ const DTC = () => {
 
   return (
     <div className='dtc'>
-      <div className='mininavbar'>
-        <div className='mininavitem'  onClick={() => setNav(1)}>
+      <div className='mininavbar'> 
+        <div className='mininavitem'  onClick={() => setNav(1)} style={{backgroundColor:selection.tab1 === true ? '#9933ff':'#d9b3ff', color: selection.tab1 === true ? 'yellow':'yellow'}}>
           <span className='mininavtext'>
-            DATA ĐTC
-          </span>         
-        </div>  
+          DATA ĐTC
+          </span>
+        </div> 
       </div>     
       {selection.tab1 && (
         <div className='trainspection'>

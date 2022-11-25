@@ -1374,7 +1374,7 @@ const MACHINE = () => {
     {
       Swal.fire("Thông báo", "Chọn ít nhất 1 G_CODE để SET !" , "error"); 
     }
-  }
+  }  
 
   const renderYCKT = (planlist: QLSXPLANDATA[]) => {
     return planlist.map((element, index) => (

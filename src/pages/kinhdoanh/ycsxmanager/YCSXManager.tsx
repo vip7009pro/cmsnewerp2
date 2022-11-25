@@ -2005,27 +2005,28 @@ const readUploadFileAmazon = (e:any) => {
   },[]);
   return (
     <div className='ycsxmanager'>
-      <div className='mininavbar'>
-        <div className='mininavitem'  onClick={() => setNav(1)}>
+      <div className='mininavbar'>       
+
+        <div className='mininavitem'  onClick={() => setNav(1)} style={{backgroundColor:selection.trapo === true ? '#9933ff':'#d9b3ff', color: selection.trapo === true ? 'yellow':'yellow'}}>
           <span className='mininavtext'>
-            TRA YCSX
+          Tra YCSX
           </span>
-        </div>
-        <div className='mininavitem'  onClick={() => setNav(2)}>
+        </div>  
+        <div className='mininavitem'  onClick={() => setNav(2)} style={{backgroundColor:selection.thempohangloat === true ? '#9933ff':'#d9b3ff', color: selection.thempohangloat === true ? 'yellow':'yellow'}}>
           <span className='mininavtext'>
-            ADD YCSX
+          ADD YCSX
           </span>
-        </div>
-        <div className='mininavitem'  onClick={() => setNav(3)}>
+          </div>
+        <div className='mininavitem'  onClick={() => setNav(3)} style={{backgroundColor:selection.amazontab === true ? '#9933ff':'#d9b3ff', color: selection.amazontab === true ? 'yellow':'yellow'}}>
           <span className='mininavtext'>
-            Add AMZ Data
+          Add AMZ Data
           </span>
-        </div>
-        <div className='mininavitem'  onClick={() => setNav(4)}>
+          </div>
+        <div className='mininavitem'  onClick={() => setNav(4)} style={{backgroundColor:selection.traamazdata === true ? '#9933ff':'#d9b3ff', color: selection.traamazdata === true ? 'yellow':'yellow'}}>
           <span className='mininavtext'>
-            TRA AMZ Data
+          TRA AMZ Data
           </span>
-        </div>
+          </div>
       </div>
       {selection.them1po && (
         <div className='them1ycsx'>

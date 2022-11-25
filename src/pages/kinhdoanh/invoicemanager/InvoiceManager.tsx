@@ -824,16 +824,16 @@ const InvoiceManager = () => {
   return (
     <div className='invoicemanager'>
       <div className='mininavbar'>
-        <div className='mininavitem'  onClick={() => setNav(1)}>
+        <div className='mininavitem'  onClick={() => setNav(1)} style={{backgroundColor:selection.trapo === true ? '#9933ff':'#d9b3ff', color: selection.trapo === true ? 'yellow':'yellow'}}>
           <span className='mininavtext'>
-            Tra cứu Invoice
+          Tra Invoice
           </span>
-        </div>       
-        <div className='mininavitem'  onClick={() => setNav(2)}>
+        </div>  
+        <div className='mininavitem'  onClick={() => setNav(2)} style={{backgroundColor:selection.thempohangloat === true ? '#9933ff':'#d9b3ff', color: selection.thempohangloat === true ? 'yellow':'yellow'}}>
           <span className='mininavtext'>
-            Thêm Invoice hàng loạt
+          Thêm Invoice
           </span>
-        </div>      
+        </div> 
       </div>
       {selection.thempohangloat && (
         <div className='newinvoice'>

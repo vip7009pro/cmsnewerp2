@@ -36,42 +36,42 @@ const Sidebar = () => {
       iconOpened: <KeyboardArrowUpIcon />,
       subNav: [
         {
-          title: getsentence(13,lang), /*Quản lý phòng ban- nhân viên*/
+          title: getlang('quanlyphongban',lang),
           path: '/nhansu/quanlyphongbannhanvien',
           icon: <FcPortraitMode color='blue' size={25}/>
         },
         {
-          title: getsentence(14,lang), /*Điểm danh nhóm*/
+          title:  getlang('diemdanhnhom',lang),
           path: '/nhansu/diemdanhnhom',
           icon: <FcCheckmark color='red' size={25}/>
         },
         {
-          title: 'Điều chuyển team', /*  getsentence(14,lang), */ 
+          title:  getlang('dieuchuyenteam',lang),
           path: '/nhansu/dieuchuyenteam',
           icon: <FcRefresh color='red' size={25}/>
         },
         {
-          title: getsentence(15,lang), /*Đăng ký*/
+          title: getlang('dangky',lang),
           path: '/nhansu/dangky',
           icon: <MdOutlineAppRegistration size={25}/>
         },
         {
-          title:  'Phê duyệt nghỉ',
+          title:  getlang('pheduyet',lang),
           path: '/nhansu/pheduyetnghi',
           icon: <FcApprove size={25}/>
         },
         {
-          title:  'Lịch Sử',
+          title:  getlang('lichsudilam',lang),
           path: '/nhansu/lichsu',
           icon: <FaHistory color="green" size={25}/>
         },
         {
-          title: 'Quản lý cấp cao', /*Báo cáo nhân sự*/
+          title: getlang('quanlycapcao',lang),
           path: '/nhansu/quanlycapcao',
           icon: <FcManager color='#cc99ff' size={25}/>,
         },
         {
-          title: getsentence(16,lang), /*Báo cáo nhân sự*/
+          title: getlang('baocaonhansu',lang),
           path: '/nhansu/baocaonhansu',
           icon: <FcPieChart color='#cc99ff' size={25}/>
         },       
@@ -85,71 +85,76 @@ const Sidebar = () => {
       iconOpened: <KeyboardArrowUpIcon />,  
       subNav: [
         {
-          title: getsentence(5,lang), /*Quản lý PO*/
+          title: getlang('quanlypo',lang), /*Quản lý PO*/
           path: '/kinhdoanh/pomanager',
           icon: <BiCart color='blue' size={25}/>
         },
         {
-          title: getsentence(6,lang), /*Quản lý Invoice*/
+          title: getlang('quanlyinvoices',lang), /*Quản lý Invoice*/
           path: '/kinhdoanh/invoicemanager',
           icon: <FaFileInvoiceDollar color='red' size={25}/>
         },
         {
-          title: getsentence(7,lang), /*Quản Lý Plan*/
+          title: getlang('quanlyplan',lang), /*Quản Lý Plan*/
           path: '/kinhdoanh/planmanager',
           icon: <FcPlanner size={25}/>
         },
         {
-          title: getsentence(8,lang), /*Quản lý FCST*/
+          title: getlang('quanlyFCST',lang), /*Quản lý FCST*/
           path: '/kinhdoanh/fcstmanager',
           icon: <WiDayLightning color='#cc99ff' size={25}/>
         },
         {
-          title: getsentence(9,lang), /*Quản lý YCSX*/
+          title: getlang('quanlyYCSX',lang), /*Quản lý YCSX*/
           path: '/kinhdoanh/ycsxmanager',
           icon: <FcSettings color='#cc99ff' size={25}/>
         },        
         {
-          title: getsentence(10,lang), /*PO tích hợp tồn kho*/
+          title: getlang('quanlyPOFull',lang), /*PO tích hợp tồn kho*/
           path: '/kinhdoanh/poandstockfull',
           icon: <FaCheckCircle color='#ff9900' size={25}/>
         },    
         {
-          title: 'Thông tin sản phẩm', /*Quản lý giá*/
+          title: getlang('thongtinsanpham',lang),
           path: '/kinhdoanh/codeinfo',
           icon: <FcAbout color='#cc00ff' size={25}/>
         },  
         {
-          title: 'Quản lý Code- Bom',
+          title: getlang('quanlycodebom',lang),
           path: '/kinhdoanh/quanlycodebom',
           icon: <FaBomb color='black' size={25}/>,
           cName: 'sub-nav'
         },      
         {
-          title: 'Quản lý khách hàng', /*Quản lý giá*/
+          title: getlang('quanlykhachhang',lang),
           path: '/kinhdoanh/customermanager',
           icon: <FcCustomerSupport color='#cc00ff' size={25}/>
         },          
         {
-          title: getsentence(11,lang),/*Báo cáo*/
+          title: getlang('baocao',lang),
           path: '/kinhdoanh/kinhdoanhreport',
           icon: <FcBullish  size={25}/>
         }
       ]
     },
     {
-      title: 'Phòng QC',
+      title: getlang('phongqc',lang),
       path: '#',
       icon: <RuleRoundedIcon color="error"/>,
       iconClosed: <KeyboardArrowDownIcon />,
       iconOpened: <KeyboardArrowUpIcon />,  
       subNav: [
         {
-          title: 'Quản lý YCSX',
+          title: getlang('quanlyYCSX',lang),
           path: '/qc/ycsxmanager',
           icon: <FcSettings color='#cc99ff' size={25}/>,
           cName: 'sub-nav'
         }, 
+        {
+          title:  getlang('thongtinsanpham',lang),
+          path: '/qc/codeinfo',
+          icon: <FcAbout color='#cc00ff' size={25}/>
+        },  
         {
           title: 'IQC',
           path: '/qc/iqc',
@@ -168,7 +173,7 @@ const Sidebar = () => {
           icon: <MdInput color='green' size={25}/>
         },
         {
-          title: 'INSPECTION',
+          title:  getlang('inspection',lang),
           path: '/qc/inspection',
           icon: <FcInspection color='blue' size={25}/>
         },
@@ -178,7 +183,7 @@ const Sidebar = () => {
           icon: <FcServices color='blue' size={25}/>        
         },
         {
-          title: 'DTC',
+          title: getlang('dtc',lang),
           path: '/qc/dtc',
           icon: <MdOutlineAspectRatio color='red' size={25}/>        
         },        
@@ -186,84 +191,84 @@ const Sidebar = () => {
           title: 'ISO',
           path: '/qc/iso',
           icon: <BiSortAZ color='#fa1e9e' size={25}/>        
-        },
+        },       
         {
-          title: 'Báo cáo QC',
+          title: getlang('baocaoqc',lang),
           path: '/qc/qcreport',
           icon: <MdBugReport color='blue' size={25}/>
         }
       ]
     }, 
     {
-      title: 'Phòng RnD',
+      title: getlang('phongrnd',lang),
       path: '#',
       icon: <MdDesignServices color='#3366ff' size={25}/>,
       iconClosed: <KeyboardArrowDownIcon />,
       iconOpened: <KeyboardArrowUpIcon />,  
       subNav: [
         {
-          title: 'Quản lý Code- Bom',
+          title: getlang('quanlycodebom',lang),
           path: '/rnd/quanlycodebom',
           icon: <FaBomb color='black' size={25}/>,
           cName: 'sub-nav'
         },
         {
-          title: 'Thêm BOM AMAZON',
+          title: getlang('thembomamazon',lang),
           path: '/rnd/thembomamazon',
           icon: <AiFillAmazonSquare color='green' size={25}/>,
           cName: 'sub-nav'
         },
         {
-          title: 'Quản lý YCSX',
+          title: getlang('quanlyYCSX',lang),
           path: 'rnd/ycsxmanager',
           icon: <FcSettings color='#cc99ff' size={25}/>,
           cName: 'sub-nav'
         },
         {
-          title: 'Thiết kế DESIGN AMAZON',
+          title: getlang('thietkedesignamazon',lang),
           path: '/rnd/designamazon',
           icon: <AiFillAmazonCircle color='blue' size={25}/>
         }
       ]
     },  
     {
-      title: 'Phòng QLSX',
+      title: getlang('phongqlsx',lang),
       path: '#',
       icon: <MdOutlineProductionQuantityLimits color='#00cc00' size={25}/>,
       iconClosed: <KeyboardArrowDownIcon />,
       iconOpened: <KeyboardArrowUpIcon />,  
       subNav: [
         {
-          title: 'Quản lý YCSX',
+          title: getlang('quanlyYCSX',lang),
           path: 'qlsx/ycsxmanager',
           icon: <FcSettings color='#cc99ff' size={25}/>,
           cName: 'sub-nav'
         },
         {
-          title: 'Quản lý code bom',
+          title: getlang('quanlycodebom',lang),
           path: 'qlsx/quanlycodebom',
           icon: <FaBomb color='black' size={25}/>,
           cName: 'sub-nav'
         },
         {
-          title: 'Tra thông tin code',
+          title: getlang('thongtinsanpham',lang),
           path: 'qlsx/codeinfo',
           icon: <FcAbout color='#cc00ff' size={25}/>,
           cName: 'sub-nav'
         },
         {
-          title: 'Quản lý PLAN',
+          title: getlang('quanlyplansx',lang),
           path: 'qlsx/qlsxplan',
           icon: <FaPaperPlane color='#ff33cc' size={25}/>
         }        ,
         {
-          title: 'Quản lý CAPA',
+          title: getlang('quanlycapa',lang),
           path: 'qlsx/capamanager',
           icon: <FcCapacitor color='blue' size={25}/>
         }
                ,
         {
-          title: 'Quản lý MRP',
+          title: getlang('quanlymrp',lang),
           path: 'qlsx/qlsxmrp',
           icon: <AiOutlineCalendar color='blue' size={25}/>
         }

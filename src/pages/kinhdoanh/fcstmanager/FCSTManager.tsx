@@ -671,16 +671,16 @@ const FCSTManager = () => {
   return (
     <div className='fcstmanager'>
       <div className='mininavbar'>
-        <div className='mininavitem'  onClick={() => setNav(1)}>
+      <div className='mininavitem'  onClick={() => setNav(1)} style={{backgroundColor:selection.trapo === true ? '#9933ff':'#d9b3ff', color: selection.trapo === true ? 'yellow':'yellow'}}>
           <span className='mininavtext'>
-            Tra cứu FCST
+          Tra FCST
           </span>
-        </div>       
-        <div className='mininavitem' onClick={() => setNav(2)}>
-          <span className='mininavtext' >
-            Thêm FCST hàng loạt
+        </div>  
+        <div className='mininavitem'  onClick={() => setNav(2)} style={{backgroundColor:selection.thempohangloat === true ? '#9933ff':'#d9b3ff', color: selection.thempohangloat === true ? 'yellow':'yellow'}}>
+          <span className='mininavtext'>
+          Thêm FCST
           </span>
-        </div>      
+        </div>    
       </div>
       {selection.thempohangloat && (
         <div className='newfcst'>

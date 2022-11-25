@@ -31,12 +31,12 @@ const KIEMTRA = () => {
 
   return (
     <div className='kiemtra'>
-      <div className='mininavbar'>
-        <div className='mininavitem'  onClick={() => setNav(1)}>
+      <div className='mininavbar'>       
+        <div className='mininavitem'  onClick={() => setNav(1)} style={{backgroundColor:selection.tab1 === true ? '#9933ff':'#d9b3ff', color: selection.tab1 === true ? 'yellow':'yellow'}}>
           <span className='mininavtext'>
-            Data Kiểm Tra
+          Data Kiểm Tra
           </span>
-        </div>          
+        </div>         
       </div>     
       {selection.tab1 && (
         <div className='trainspection'>

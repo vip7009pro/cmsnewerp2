@@ -812,13 +812,17 @@ const QuanLyPhongBanNhanSu = () => {
     },[]);
   return (
     <div className='quanlyphongbannhansu'>
-      <div className='mininavbar'>
-        <div className='mininavitem' onClick={() => setNav(1)}>
-          <span className='mininavtext'>Quản lý Nhân Sự</span>
-        </div>
-        <div className='mininavitem' onClick={() => setNav(2)}>
-          <span className='mininavtext'>Quản Lý Phòng Ban</span>
-        </div>       
+      <div className='mininavbar'>         
+        <div className='mininavitem'  onClick={() => setNav(1)} style={{backgroundColor:selection.tab1 === true ? '#9933ff':'#b366ff', color: selection.tab1 === true ? 'yellow':'yellow'}}>
+          <span className='mininavtext'>
+          Quản lý Nhân Sự
+          </span>
+        </div>  
+        <div className='mininavitem'  onClick={() => setNav(2)} style={{backgroundColor:selection.tab2 === true ? '#9933ff':'#b366ff', color: selection.tab2 === true ? 'yellow':'yellow'}}>
+          <span className='mininavtext'>
+          Quản Lý Phòng Ban
+          </span>
+        </div>      
       </div>
 
       <div className='quanlyphongban'>        

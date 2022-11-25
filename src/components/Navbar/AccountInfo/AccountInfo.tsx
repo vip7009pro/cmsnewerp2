@@ -37,7 +37,6 @@ function LinearProgressWithLabel(
 export default function AccountInfo() {
   const [userdata, setUserData] = useContext(UserContext);
   const [lang,setLang] = useContext(LangConText);
-
   const [workday, setWorkDay] = useState(0);
   const [overtimeday, setOverTimeDay] = useState(0);
   const [nghiday, setNghiDay] = useState(0);
@@ -113,10 +112,8 @@ export default function AccountInfo() {
       });
   };
 
-
   let file:any = null;
   let upload_url = "http://14.160.33.94:5011/uploadavatar";
-
   const uploadFile = async (e:any) => {   
     console.log(file);
     const formData = new FormData();
@@ -154,10 +151,8 @@ export default function AccountInfo() {
         //console.log(response.data);
       } catch (ex) {
         console.log(ex);
-      }   
-   
+      }
   }
-
 
   useEffect(() => {
     getData();

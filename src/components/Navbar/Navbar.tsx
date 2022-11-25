@@ -22,8 +22,16 @@ export default function Navbar() {
   const [lang, setLang] = useContext(LangConText);
   const [userData, setUserData] = useContext(UserContext);
 
-  useEffect(() => {
-    setLang(localStorage.getItem('lang'));
+  useEffect(() => {    
+    let saveLang: any =  localStorage.getItem('lang')?.toString();
+    if(saveLang !== undefined)
+    {
+      setLang(saveLang.toString());      
+    }
+    else
+    {
+      setLang('en');
+    }
   }, []);
   
 
@@ -39,7 +47,7 @@ export default function Navbar() {
     setAvatarMenu(false);
   }
   const changeLanguage= (selectLang: string)=> {
-   console.log(selectLang);   
+   //console.log(selectLang);   
    setLangMenu(false);
    setLang(selectLang);
    localStorage.setItem('lang',selectLang);

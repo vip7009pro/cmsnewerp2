@@ -34,12 +34,19 @@ const PQC = () => {
   return (
     <div className='pqc'>
       <div className='mininavbar'>
-        <div className='mininavitem' onClick={() => setNav(2)}>
-          <span className='mininavtext'>Data PQC</span>
-        </div>            
-        <div className='mininavitem' onClick={() => setNav(1)}>
-          <span className='mininavtext'>CODE INFO</span>
-        </div>            
+       
+      <div className='mininavitem'  onClick={() => setNav(2)} style={{backgroundColor:selection.tab2 === true ? '#9933ff':'#d9b3ff', color: selection.tab2 === true ? 'yellow':'yellow'}}>
+          <span className='mininavtext'>
+          Data PQC          
+          </span>
+        </div>    
+
+        <div className='mininavitem'  onClick={() => setNav(1)} style={{backgroundColor:selection.tab1 === true ? '#9933ff':'#d9b3ff', color: selection.tab1 === true ? 'yellow':'yellow'}}>
+          <span className='mininavtext'>
+          CODE INFO          
+          </span>
+        </div>  
+                      
       </div>
       {selection.tab2 && (
         <div className='trapqc'>
