@@ -49,6 +49,7 @@ import {
   UserData,
   update_socket,
 } from "./redux/slices/globalSlice";
+import { useSpring, animated } from '@react-spring/web'
 
 interface userDataInterface {
   EMPL_IMAGE?: string;
@@ -178,6 +179,10 @@ const ProtectedRoute: any = ({
   }
 };
 function App() {
+  const springs = useSpring({
+    from: { x: 1000, y: 100 },
+    to: { x: 0, y :0 },
+  })
   const [lang, setLang] = useState("vi");
   const [userData, setUserData] = useState<userDataInterface | any>({
     ADD_COMMUNE: "Đông Xuân",
@@ -391,7 +396,16 @@ function App() {
                       maindeptname='all'
                       jobname='all'
                     >
-                      <Home />
+                      <animated.div
+                        style={{
+                          width: "100%",
+                          height: "100%",
+                          borderRadius: 8,
+                          ...springs,
+                        }}
+                      >
+                        <Home />
+                      </animated.div>
                     </ProtectedRoute>
                   }
                 >

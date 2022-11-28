@@ -3,7 +3,7 @@ import React, { PureComponent, useEffect, useState } from 'react';
 import { BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ComposedChart, Label, LabelList, Line } from 'recharts';
 import Swal from 'sweetalert2';
 import { generalQuery } from '../../api/Api';
-import { CustomResponsiveContainer } from '../../api/GlobalFunction';
+import { CustomResponsiveContainer, nFormatter } from '../../api/GlobalFunction';
 
 
 interface DailyClosingData {
@@ -103,7 +103,7 @@ const Chart2 = () => {
         value: "Số tiền",
         angle: -90,
         position: "insideRight",
-      }} tickFormatter={(value) => new Intl.NumberFormat('en-US', { maximumSignificantDigits: 3}).format(value) + '$'}  tickCount={10} />
+      }} tickFormatter={(value) => nFormatter(value,2)+'$'}  tickCount={10} />
       <Tooltip content={<CustomTooltip/>}/>
       <Legend />
       <Line yAxisId="left-axis" type="monotone" dataKey="DELIVERY_QTY" stroke="green"/>

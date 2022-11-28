@@ -2,6 +2,7 @@
 import  { useEffect, useState} from 'react'
 import "./KIEMTRA.scss"
 import INSPECTION from './INSPECTION';
+import INSPECT_REPORT from './INSPECT_REPORT';
 
 const KIEMTRA = () => {
   const [selection, setSelection] = useState<any>({
@@ -37,10 +38,20 @@ const KIEMTRA = () => {
           Data Kiểm Tra
           </span>
         </div>         
+        <div className='mininavitem'  onClick={() => setNav(2)} style={{backgroundColor:selection.tab2 === true ? '#9933ff':'#d9b3ff', color: selection.tab2 === true ? 'yellow':'yellow'}}>
+          <span className='mininavtext'>
+          Báo cáo
+          </span>
+        </div>         
       </div>     
       {selection.tab1 && (
         <div className='trainspection'>
             <INSPECTION/>          
+        </div>
+      )}
+      {selection.tab2 && (
+        <div className='trainspection'>
+            <INSPECT_REPORT/>          
         </div>
       )}
     </div>

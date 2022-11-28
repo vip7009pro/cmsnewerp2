@@ -43,7 +43,8 @@ interface TONLIEUDATA {
   HOLDING_NM1: number,
   HOLDING_NM2: number,
   TOTAL_OK: number,
-  TOTAL_HOLDING: number
+  TOTAL_HOLDING: number,
+  TDS: string,
 }
 
 const KHOLIEU = () => { 
@@ -84,6 +85,21 @@ const KHOLIEU = () => {
     { field: "HOLDING_NM2", headerName: "HOLDING_NM2", width: 100 , renderCell: (params:any) => {return <span style={{color:'red'}}><b>{params.row.HOLDING_NM2.toLocaleString('en-US')}</b></span>}},
     { field: "TOTAL_OK", headerName: "TOTAL_OK", width: 150, renderCell: (params:any) => {return <span style={{color:'green'}}><b>{params.row.TOTAL_OK.toLocaleString('en-US')}</b></span>} },    
     { field: "TOTAL_HOLDING", headerName: "TOTAL_HOLDING", width: 150, renderCell: (params:any) => {return <span style={{color:'red'}}><b>{params.row.TOTAL_HOLDING.toLocaleString('en-US')}</b></span>} },    
+    { field: "TDS", headerName: "TDS", width: 150, renderCell: (params:any) => {
+      let hreftlink = '/tds/' + params.row.M_CODE + '.pdf';
+      if (params.row.TDS === "Y") {
+        return (
+          <span style={{ color: "gray" }}>
+            <a target='_blank' rel='noopener noreferrer' href={hreftlink}>
+              LINK
+            </a>
+          </span>
+        );
+      } else {
+        return <span style={{ color: "gray" }}>Chưa có TDS</span>;
+      }      
+    
+    } },    
   ]
   const column_XUATLIEUDATA = [
     { field: "G_CODE", headerName: "G_CODE", width: 100 },    
@@ -126,8 +142,7 @@ const KHOLIEU = () => {
     generalQuery('tranhaplieu',{  
       M_NAME: m_name,
       FROM_DATE: fromdate,
-      TO_DATE: todate,
-     
+      TO_DATE: todate,     
     })
     .then(response => {
         //console.log(response.data.data);

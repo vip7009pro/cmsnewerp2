@@ -3,7 +3,7 @@ import React, { PureComponent, useEffect, useState } from 'react';
 import { BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ComposedChart, Label, LabelList, Line } from 'recharts';
 import Swal from 'sweetalert2';
 import { generalQuery } from '../../api/Api';
-import { CustomResponsiveContainer } from '../../api/GlobalFunction';
+import { CustomResponsiveContainer, nFormatter } from '../../api/GlobalFunction';
 
 
 interface YearlyClosingData {
@@ -15,8 +15,7 @@ interface YearlyClosingData {
 const ChartYearly = () => {  
   const [yearlyClosingData, setYearlyClosingData] = useState<Array<YearlyClosingData>>([]);
   const formatCash = (n:number) => {
-    if (n < 1e3) return n;
-    if (n >= 1e3) return +(n / 1e3).toFixed(1) + "K$";
+    return nFormatter(n,2)+'$'
   };
 
   const labelFormatter = (value: number) => {
@@ -94,7 +93,7 @@ const ChartYearly = () => {
         value: "Số tiền",
         angle: -90,
         position: "insideRight",
-      }} tickFormatter={(value) => new Intl.NumberFormat('en-US', { maximumSignificantDigits: 3}).format(value) + '$'}/>
+      }} tickFormatter={(value) => nFormatter(value,2)+'$'}/>
       <Tooltip content={<CustomTooltip/>}/>
       <Legend />
       <Line yAxisId="left-axis" type="monotone" dataKey="DELIVERY_QTY" stroke="blue"/>
