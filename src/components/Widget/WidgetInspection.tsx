@@ -2,14 +2,16 @@ import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import './WidgetInspection.scss'
 interface WidgetInfo {
   widgettype?:string,  
-  label?: string,
-  qty?: number,
+  label?: string,  
   amount?: number,
   percentage?: number,
   topColor?: string,
   botColor?: string,
+  material_ppm?: number,
+  process_ppm?: number,
+  total_ppm?: number,
 }
-export default function WidgetInspection({widgettype,label,qty,topColor, botColor}: WidgetInfo) {
+export default function WidgetInspection({widgettype,label,topColor, botColor, material_ppm, process_ppm, total_ppm}: WidgetInfo) {
   if(widgettype === 'revenue')
   {
     return (    
@@ -22,9 +24,9 @@ export default function WidgetInspection({widgettype,label,qty,topColor, botColo
           </div>         
           <div className="right">
               <span className="title">{label}</span>              
-              <span className="materialNG">{qty?.toLocaleString('en-US')} ppm</span>
-              <span className="processNG">{qty?.toLocaleString('en-US')} ppm</span>
-              <span className="totalNG">{qty?.toLocaleString('en-US')} ppm</span>
+              <span className="materialNG">{material_ppm?.toLocaleString('en-US')} ppm</span>
+              <span className="processNG">{process_ppm?.toLocaleString('en-US')} ppm</span>
+              <span className="totalNG">{total_ppm?.toLocaleString('en-US')} ppm</span>
           </div>         
       </div>
     )    

@@ -19,140 +19,80 @@ import CustomerPOBalanceByType from "../../../components/DataTable/CustomerPOBal
 import Widget from "../../../components/Widget/Widget";
 import WidgetInspection from "../../../components/Widget/WidgetInspection";
 import "./INSPECT_REPORT.scss";
-interface InvoiceTableData {
-  DELIVERY_ID: number;
-  CUST_CD: string;
-  CUST_NAME_KD: string;
-  EMPL_NO: string;
-  EMPL_NAME: string;
-  G_CODE: string;
-  G_NAME: string;
-  G_NAME_KD: string;
-  PO_NO: string;
-  DELIVERY_DATE: string;
-  DELIVERY_QTY: number;
-  PROD_PRICE: string;
-  DELIVERED_AMOUNT: number;
-  REMARK: string;
-  INVOICE_NO: string;
-  PROD_TYPE: string;
-  PROD_MODEL: string;
-  PROD_PROJECT: string;
-  YEARNUM: number;
-  WEEKNUM: number;
-}
-interface InvoiceSummaryData {
-  total_po_qty: number;
-  total_delivered_qty: number;
-  total_pobalance_qty: number;
-  total_po_amount: number;
-  total_delivered_amount: number;
-  total_pobalance_amount: number;
-}
-interface WidgetData {
-  yesterday_qty: number;
-  yesterday_amount: number;
-  before_yesterday_qty: number;
-  before_yesterday_amount: number;
-  yesterday_percentage: number;
-  thisweek_qty: number;
-  thisweek_amount: number;
-  lastweek_qty: number;
-  lastweek_amount: number;
-  thisweek_percentage: number;
-  thismonth_qty: number;
-  thismonth_amount: number;
-  lastmonth_qty: number;
-  lastmonth_amount: number;
-  thismonth_percentage: number;
-  thisyear_qty: number;
-  thisyear_amount: number;
-  lastyear_qty: number;
-  lastyear_amount: number;
-}
 
-interface YearlyClosingData {
-  YEAR_NUM: string, 
-  DELIVERY_QTY: number, 
-  DELIVERED_AMOUNT: number
+interface DailyPPMData {
+  INSPECT_DATE?: string;
+  INSPECT_TOTAL_QTY?: number;
+  MATERIAL_NG?: number;
+  PROCESS_NG?: number;
+  TOTAL_NG?: number;
+  TOTAL_PPM?: number;
+  MATERIAL_PPM?: number;
+  PROCESS_PPM?: number;
 }
-interface MonthlyClosingData {
-  MONTH_NUM: string, 
-  DELIVERY_QTY: number, 
-  DELIVERED_AMOUNT: number
+interface MonthlyPPMData {
+  YEAR_NUM?: number;
+  MONTH_NUM?: number;
+  INSPECT_TOTAL_QTY?: number;
+  MATERIAL_NG?: number;
+  PROCESS_NG?: number;
+  TOTAL_NG?: number;
+  TOTAL_PPM?: number;
+  MATERIAL_PPM?: number;
+  PROCESS_PPM?: number;
 }
-interface DailyClosingData {
-  DELIVERY_DATE: string, 
-  DELIVERY_QTY: number, 
-  DELIVERED_AMOUNT: number
+interface WeeklyPPMData {
+  YEAR_NUM?: number;
+  WEEK_NUM?: number;
+  INSPECT_TOTAL_QTY?: number;
+  MATERIAL_NG?: number;
+  PROCESS_NG?: number;
+  TOTAL_NG?: number;
+  TOTAL_PPM?: number;
+  MATERIAL_PPM?: number;
+  PROCESS_PPM?: number;
 }
-interface WeeklyClosingData {
-  DEL_WEEK: string, 
-  DELIVERY_QTY: number, 
-  DELIVERED_AMOUNT: number
+interface YearlyPPMData {
+  YEAR_NUM?: number;
+  INSPECT_TOTAL_QTY?: number;
+  MATERIAL_NG?: number;
+  PROCESS_NG?: number;
+  TOTAL_NG?: number;
+  TOTAL_PPM?: number;
+  MATERIAL_PPM?: number;
+  PROCESS_PPM?: number;
 }
 interface POBalanceSummaryData {
-  PO_QTY: number,
-  TOTAL_DELIVERED: number, 
-  PO_BALANCE: number, 
-  PO_AMOUNT: number, 
-  DELIVERED_AMOUNT:number, 
-  BALANCE_AMOUNT: number
+  PO_QTY: number;
+  TOTAL_DELIVERED: number;
+  PO_BALANCE: number;
+  PO_AMOUNT: number;
+  DELIVERED_AMOUNT: number;
+  BALANCE_AMOUNT: number;
 }
 interface FCSTAmountData {
-  FCSTYEAR: number, 
-  FCSTWEEKNO: number,
-  FCST4W_QTY: number,
-  FCST4W_AMOUNT: number,
-  FCST8W_QTY: number,
-  FCST8W_AMOUNT: number,  
-}
-
-interface WidgetData_FCST {
-  fcstqty: number,
-  fcstamount: number
-}
-interface WidgetData_Yesterday {
-  yesterday_qty: number;
-  yesterday_amount: number;
-}
-interface WidgetData_ThisWeek {
-  thisweek_qty: number;
-  thisweek_amount: number;
-}
-interface WidgetData_ThisMonth {
-  thismonth_qty: number;
-  thismonth_amount: number;
-}
-interface WidgetData_ThisYear {
-  thisyear_qty: number;
-  thisyear_amount: number;
+  FCSTYEAR: number;
+  FCSTWEEKNO: number;
+  FCST4W_QTY: number;
+  FCST4W_AMOUNT: number;
+  FCST8W_QTY: number;
+  FCST8W_AMOUNT: number;
 }
 interface WidgetData_POBalanceSummary {
   po_balance_qty: number;
   po_balance_amount: number;
 }
 const INSPECT_REPORT = () => {
-  const [widgetdata_yesterday, setWidgetData_Yesterday] =
-    useState<WidgetData_Yesterday>({
-      yesterday_qty: 0,
-      yesterday_amount: 0,
-    });
-  const [widgetdata_thisweek, setWidgetData_ThisWeek] =
-    useState<WidgetData_ThisWeek>({
-      thisweek_qty: 0,
-      thisweek_amount: 0,
-    });
-  const [widgetdata_thismonth, setWidgetData_ThisMonth] =
-    useState<WidgetData_ThisMonth>({
-      thismonth_qty: 0,
-      thismonth_amount: 0,
-    });
-  const [widgetdata_thisyear, setWidgetData_ThisYear] =
-    useState<WidgetData_ThisYear>({
-      thisyear_qty: 0,
-      thisyear_amount: 0,
-    });
+  const [dailyppm1, setDailyPPM1] = useState<DailyPPMData[]>([]);
+  const [weeklyppm1, setWeeklyPPM1] = useState<WeeklyPPMData[]>([]);
+  const [monthlyppm1, setMonthlyPPM1] = useState<MonthlyPPMData[]>([]);
+  const [yearlyppm1, setYearlyPPM1] = useState<YearlyPPMData[]>([]);
+
+  const [dailyppm2, setDailyPPM2] = useState<DailyPPMData[]>([]);
+  const [weeklyppm2, setWeeklyPPM2] = useState<WeeklyPPMData[]>([]);
+  const [monthlyppm2, setMonthlyPPM2] = useState<MonthlyPPMData[]>([]);
+  const [yearlyppm2, setYearlyPPM2] = useState<YearlyPPMData[]>([]);
+  
   const [widgetdata_pobalancesummary, setWidgetData_PoBalanceSummary] =
     useState<WidgetData_POBalanceSummary>({
       po_balance_qty: 0,
@@ -160,201 +100,211 @@ const INSPECT_REPORT = () => {
     });
   const [widgetdata_fcstAmount, setWidgetData_FcstAmount] =
     useState<FCSTAmountData>({
-     FCSTYEAR:0,
-     FCSTWEEKNO:1,
-     FCST4W_QTY:0,
-     FCST4W_AMOUNT:0,
-     FCST8W_QTY:0,
-     FCST8W_AMOUNT:0
+      FCSTYEAR: 0,
+      FCSTWEEKNO: 1,
+      FCST4W_QTY: 0,
+      FCST4W_AMOUNT: 0,
+      FCST8W_QTY: 0,
+      FCST8W_AMOUNT: 0,
     });
 
+  const handle_getDailyPPM = (FACTORY: string) => {
+    generalQuery("inspect_daily_ppm", {
+      FACTORY: FACTORY,
+    })
+      .then((response) => {
+        //console.log(response.data.data);
+        if (response.data.tk_status !== "NG") {
+          const loadeddata: DailyPPMData[] = response.data.data.map(
+            (element: DailyPPMData, index: number) => {
+              return {
+                ...element,
+              };
+            }
+          );
+          if (FACTORY === "NM1") {
+            setDailyPPM1(loadeddata);
+          } else {
+            setDailyPPM2(loadeddata);
+          }
+        } else {
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+  const handle_getWeeklyPPM = (FACTORY: string) => {
+    generalQuery("inspect_weekly_ppm", {
+      FACTORY: FACTORY,
+    })
+      .then((response) => {
+        //console.log(response.data.data);
+        if (response.data.tk_status !== "NG") {
+          const loadeddata: WeeklyPPMData[] = response.data.data.map(
+            (element: WeeklyPPMData, index: number) => {
+              return {
+                ...element,
+              };
+            }
+          );
+          if (FACTORY === "NM1") {
+            setWeeklyPPM1(loadeddata);
+          } else {
+            setWeeklyPPM2(loadeddata);
+          }
+        } else {
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+  const handle_getMonthlyPPM = (FACTORY: string) => {
+    generalQuery("inspect_monthly_ppm", {
+      FACTORY: FACTORY,
+    })
+      .then((response) => {
+        //console.log(response.data.data);
+        if (response.data.tk_status !== "NG") {
+          const loadeddata: MonthlyPPMData[] = response.data.data.map(
+            (element: MonthlyPPMData, index: number) => {
+              return {
+                ...element,
+              };
+            }
+          );
+          if (FACTORY === "NM1") {
+            setMonthlyPPM1(loadeddata);
+          } else {
+            setMonthlyPPM2(loadeddata);
+          }
+        } else {
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+  const handle_getYearlyPPM = (FACTORY: string) => {
+    generalQuery("inspect_yearly_ppm", {
+      FACTORY: FACTORY,
+    })
+      .then((response) => {
+        //console.log(response.data.data);
+        if (response.data.tk_status !== "NG") {
+          const loadeddata: YearlyPPMData[] = response.data.data.map(
+            (element: YearlyPPMData, index: number) => {
+              return {
+                ...element,
+              };
+            }
+          );
+          if (FACTORY === "NM1") {
+            setYearlyPPM1(loadeddata);
+          } else {
+            setYearlyPPM2(loadeddata);
+          }
+        } else {
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 
   const handleGetFCSTAmount = () => {
-    let fcstweek2:number = moment().add(1,'days').isoWeek();
-    let fcstyear2: number = moment().year(); 
+    let fcstweek2: number = moment().add(1, "days").isoWeek();
+    let fcstyear2: number = moment().year();
 
     generalQuery("fcstamount", { FCSTYEAR: fcstyear2, FCSTWEEKNO: fcstweek2 })
-    .then((response) => {
-      //console.log(response.data.data);
-      if (response.data.tk_status !== "NG") {
-        const loadeddata: FCSTAmountData[] =  response.data.data.map((element:FCSTAmountData,index: number)=> {
-          return {
-            ...element,                 
-          }
-        })
-        setWidgetData_FcstAmount(loadeddata[0]);        
-      } else {
-        generalQuery("fcstamount", { FCSTYEAR: fcstyear2, FCSTWEEKNO: fcstweek2-1 })
-        .then((response) => {
-          //console.log(response.data.data);
-          if (response.data.tk_status !== "NG") {
-            const loadeddata: FCSTAmountData[] =  response.data.data.map((element:FCSTAmountData,index: number)=> {
+      .then((response) => {
+        //console.log(response.data.data);
+        if (response.data.tk_status !== "NG") {
+          const loadeddata: FCSTAmountData[] = response.data.data.map(
+            (element: FCSTAmountData, index: number) => {
               return {
-                ...element,                 
+                ...element,
+              };
+            }
+          );
+          setWidgetData_FcstAmount(loadeddata[0]);
+        } else {
+          generalQuery("fcstamount", {
+            FCSTYEAR: fcstyear2,
+            FCSTWEEKNO: fcstweek2 - 1,
+          })
+            .then((response) => {
+              //console.log(response.data.data);
+              if (response.data.tk_status !== "NG") {
+                const loadeddata: FCSTAmountData[] = response.data.data.map(
+                  (element: FCSTAmountData, index: number) => {
+                    return {
+                      ...element,
+                    };
+                  }
+                );
+                setWidgetData_FcstAmount(loadeddata[0]);
+              } else {
+                //Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
               }
             })
-            setWidgetData_FcstAmount(loadeddata[0]);        
-          } else {
-            //Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-        //Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
-      }
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-  }
-  const handleGetDailyClosing = () => {
-    let yesterday = moment().add(-1, "day").format("YYYY-MM-DD");
-    generalQuery("kd_dailyclosing", { START_DATE: yesterday, END_DATE: yesterday })
-    .then((response) => {
-      
-      if (response.data.tk_status !== "NG") {
-        const loadeddata: DailyClosingData[] =  response.data.data.map((element:DailyClosingData,index: number)=> {
-          return {
-            ...element,
-            DELIVERY_DATE : element.DELIVERY_DATE.slice(0,10),            
-          }
-        })
-        setWidgetData_Yesterday({
-          yesterday_qty:loadeddata[0].DELIVERY_QTY,
-          yesterday_amount: loadeddata[0].DELIVERED_AMOUNT
-        })        
-      } else {
-        //Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
-      }
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-  }
-  const handleGetWeeklyClosing = () => {
-    generalQuery("kd_weeklyclosing", { YEAR: moment().format("YYYY") })
-    .then((response) => {      
-      if (response.data.tk_status !== "NG") {
-        const loadeddata: WeeklyClosingData[] =  response.data.data.map((element:WeeklyClosingData,index: number)=> {
-          return {
-            ...element,
-          }
-        });
-        setWidgetData_ThisWeek({
-          thisweek_qty:loadeddata[loadeddata.length-1].DELIVERY_QTY,
-          thisweek_amount: loadeddata[loadeddata.length-1].DELIVERED_AMOUNT
-        }) 
-       
-      } else {
-        Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
-      }
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-  }
-  const handleGetMonthlyClosing = () => {
-    generalQuery("kd_monthlyclosing", { YEAR: moment().format("YYYY") })
-    .then((response) => {      
-      if (response.data.tk_status !== "NG") {
-        const loadeddata: MonthlyClosingData[] =  response.data.data.map((element:MonthlyClosingData,index: number)=> {
-          return {
-            ...element,
-          }
-        });
-        setWidgetData_ThisMonth({
-          thismonth_qty:loadeddata[loadeddata.length-1].DELIVERY_QTY,
-          thismonth_amount: loadeddata[loadeddata.length-1].DELIVERED_AMOUNT
-        }) 
-      } else {
-        Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
-      }
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-  }
-  const handleGetYearlyClosing = () => {
-    generalQuery("kd_annuallyclosing", {  })
-    .then((response) => {      
-      if (response.data.tk_status !== "NG") {
-        const loadeddata: YearlyClosingData[] =  response.data.data.map((element:YearlyClosingData,index: number)=> {
-          return {
-            ...element,
-          }
-        });
-        setWidgetData_ThisYear({
-          thisyear_qty:loadeddata[loadeddata.length-1].DELIVERY_QTY,
-          thisyear_amount: loadeddata[loadeddata.length-1].DELIVERED_AMOUNT
-        }) 
-        //console.log(loadeddata);
-       /*  Swal.fire(
-          "Thông báo",
-          "Đã load " + response.data.data.length + " dòng",
-          "success"
-        ); */
-      } else {
-        Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
-      }
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-  }
+            .catch((error) => {
+              console.log(error);
+            });
+          //Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
   const handleGetPOBalanceSummary = () => {
-    generalQuery("traPOSummaryTotal", {  })
-    .then((response) => {      
-      if (response.data.tk_status !== "NG") {
-        const loadeddata: POBalanceSummaryData[] =  response.data.data.map((element:POBalanceSummaryData,index: number)=> {
-          return {
-            ...element,
-          }
-        });
-        setWidgetData_PoBalanceSummary({
-          po_balance_qty:loadeddata[0].PO_BALANCE,
-          po_balance_amount: loadeddata[0].BALANCE_AMOUNT
-        }) 
-        //console.log(loadeddata);
-       /*  Swal.fire(
+    generalQuery("traPOSummaryTotal", {})
+      .then((response) => {
+        if (response.data.tk_status !== "NG") {
+          const loadeddata: POBalanceSummaryData[] = response.data.data.map(
+            (element: POBalanceSummaryData, index: number) => {
+              return {
+                ...element,
+              };
+            }
+          );
+          setWidgetData_PoBalanceSummary({
+            po_balance_qty: loadeddata[0].PO_BALANCE,
+            po_balance_amount: loadeddata[0].BALANCE_AMOUNT,
+          });
+          //console.log(loadeddata);
+          /*  Swal.fire(
           "Thông báo",
           "Đã load " + response.data.data.length + " dòng",
           "success"
         ); */
-      } else {
-        Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
-      }
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-  }
-
+        } else {
+          Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 
   useEffect(() => {
-    /* let now = moment();
-    let yesterday = moment().add(-1, "day").format("YYYY-MM-DD");
-    let sunday = now.clone().weekday(0).format("YYYY-MM-DD");
-    let monday = now.clone().weekday(6).format("YYYY-MM-DD");
-    const startOfMonth = moment().startOf("month").format("YYYY-MM-DD");
-    const endOfMonth = moment().endOf("month").format("YYYY-MM-DD");
-    const startOfYear = moment().format("YYYY-01-01");
-    const rightnow = now.format("YYYY-MM-DD"); */
-    //handletraInvoice("day", "this", yesterday, yesterday);
-    handleGetDailyClosing();
-    //handletraInvoice("week", "this", sunday, monday);
-    handleGetWeeklyClosing();
-    //handletraInvoice("month", "this", startOfMonth, endOfMonth);
-    handleGetMonthlyClosing();
-    //handletraInvoice("year", "this", startOfYear, rightnow);
-    handleGetYearlyClosing();
+    handle_getDailyPPM('NM1');
+    handle_getDailyPPM('NM2');
+    handle_getWeeklyPPM('NM1');
+    handle_getWeeklyPPM('NM2');
+    handle_getMonthlyPPM('NM1'); 
+    handle_getMonthlyPPM('NM2');
+    handle_getYearlyPPM('NM1');
+    handle_getYearlyPPM('NM2');
     handleGetPOBalanceSummary();
     handleGetFCSTAmount();
   }, []);
   return (
     <div className='inspectionreport'>
       <div className='doanhthureport'>
-        <span className='section_title'>1. Summary</span>
+        <span className='section_title'>1. Defect Summary</span>
         <div className='revenuewidget'>
           <div className='revenuwdg'>
             <WidgetInspection
@@ -362,34 +312,88 @@ const INSPECT_REPORT = () => {
               label='Yesterday'
               topColor='#b3c6ff'
               botColor='#b3ecff'
-              qty={13000}             
+              material_ppm={13000}
+              process_ppm={13000}
+              total_ppm={13000}
             />
           </div>
           <div className='revenuwdg'>
-          <WidgetInspection
+            <WidgetInspection
               widgettype='revenue'
               label='Yesterday'
               topColor='#b3c6ff'
               botColor='#b3ecff'
-              qty={1000}             
+              material_ppm={13000}
+              process_ppm={13000}
+              total_ppm={13000}
             />
           </div>
           <div className='revenuwdg'>
-          <WidgetInspection
+            <WidgetInspection
               widgettype='revenue'
               label='Yesterday'
               topColor='#b3c6ff'
               botColor='#b3ecff'
-              qty={1000}             
+              material_ppm={13000}
+              process_ppm={13000}
+              total_ppm={13000}
             />
           </div>
           <div className='revenuwdg'>
-          <WidgetInspection
+            <WidgetInspection
               widgettype='revenue'
               label='Yesterday'
               topColor='#b3c6ff'
               botColor='#b3ecff'
-              qty={1000}             
+              material_ppm={13000}
+              process_ppm={13000}
+              total_ppm={13000}
+            />
+          </div>
+        </div>
+        <div className='revenuewidget'>
+          <div className='revenuwdg'>
+            <WidgetInspection
+              widgettype='revenue'
+              label='Yesterday'
+              topColor='#b3c6ff'
+              botColor='#b3ecff'
+              material_ppm={13000}
+              process_ppm={13000}
+              total_ppm={13000}
+            />
+          </div>
+          <div className='revenuwdg'>
+            <WidgetInspection
+              widgettype='revenue'
+              label='Yesterday'
+              topColor='#b3c6ff'
+              botColor='#b3ecff'
+              material_ppm={13000}
+              process_ppm={13000}
+              total_ppm={13000}
+            />
+          </div>
+          <div className='revenuwdg'>
+            <WidgetInspection
+              widgettype='revenue'
+              label='Yesterday'
+              topColor='#b3c6ff'
+              botColor='#b3ecff'
+              material_ppm={13000}
+              process_ppm={13000}
+              total_ppm={13000}
+            />
+          </div>
+          <div className='revenuwdg'>
+            <WidgetInspection
+              widgettype='revenue'
+              label='Yesterday'
+              topColor='#b3c6ff'
+              botColor='#b3ecff'
+              material_ppm={13000}
+              process_ppm={13000}
+              total_ppm={13000}
             />
           </div>
         </div>
@@ -472,7 +476,9 @@ const INSPECT_REPORT = () => {
           <span className='section_title'>4. Forecast</span>
           <br></br>
           <div className='fcstsummary'>
-            <span className='subsection'>FCST Amount (FCST W{widgetdata_fcstAmount.FCSTWEEKNO})</span>
+            <span className='subsection'>
+              FCST Amount (FCST W{widgetdata_fcstAmount.FCSTWEEKNO})
+            </span>
             <div className='fcstwidget'>
               <div className='fcstwidget1'>
                 <Widget
