@@ -1936,7 +1936,7 @@ const MACHINE = () => {
             .then((response) => {    
               //console.log(response.data);          
               if (response.data.tk_status !== "NG") {
-               
+             
                
               } else {
                 generalQuery("deletePlanQLSX", { PLAN_ID: qlsxplandatafilter[i].PLAN_ID })
@@ -1955,6 +1955,20 @@ const MACHINE = () => {
                 }); 
 
               }
+             /*  generalQuery("deletePlanQLSX", { PLAN_ID: qlsxplandatafilter[i].PLAN_ID })
+              .then((response) => {
+                //console.log(response.data);
+                if (response.data.tk_status !== "NG") {
+                  Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
+                } else {
+                  datafilter.splice(j,1);   
+                  setPlanDataTable(datafilter);   
+                  
+                }
+              })
+              .catch((error) => {
+                console.log(error);
+              });  */
             })
             .catch((error) => {
               console.log(error);
