@@ -69,6 +69,7 @@ export const vn_lang = {
   quanlyplansx:'Quản Lý PLAN',
   quanlycapa:'Quản Lý CAPA',
   quanlymrp:'Quản Lý MRP',
+  phongsanxuat:'Phòng Sản Xuất',
 };
 export const en_lang = {
   dangnhap:'Log in',
@@ -128,6 +129,7 @@ export const en_lang = {
   quanlyplansx:'PROD Plan Management',
   quanlycapa:'CAPA Management',
   quanlymrp:'MRP Management',
+  phongsanxuat:'Production Team',
 };
 export const kr_lang = {
   dangnhap:'로그인',
@@ -187,6 +189,7 @@ export const kr_lang = {
   quanlyplansx:'생산계획 관리',
   quanlycapa:'캐파 관리',
   quanlymrp:'MRP 관리',
+  phongsanxuat:'생산팀',
 };
 
 type sentences = {

@@ -637,6 +637,56 @@ function App() {
                     />
                   </Route>
                   <Route
+                    path='sx'
+                    element={
+                      <ProtectedRoute
+                        user={userData}
+                        maindeptname='SX'
+                        jobname='all'
+                      >
+                        <QC />
+                      </ProtectedRoute>
+                    }
+                  >
+                    <Route index element={<AccountInfo />} />
+                    <Route
+                      path='tracuuchung'
+                      element={
+                        <ProtectedRoute
+                          user={userData}
+                          maindeptname='QC'
+                          jobname='Leader'
+                        >
+                          <IQC />
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route
+                      path='codeinfo'
+                      element={
+                        <ProtectedRoute
+                          user={userData}
+                          maindeptname='SX'
+                          jobname='Leader'
+                        >
+                          <CODE_MANAGER />
+                        </ProtectedRoute>
+                      }
+                    />               
+                    <Route
+                      path='ycsxmanager'
+                      element={
+                        <ProtectedRoute
+                          user={userData}
+                          maindeptname='SX'
+                          jobname='Leader'
+                        >
+                          <YCSXManager />
+                        </ProtectedRoute>
+                      }
+                    />
+                  </Route>
+                  <Route
                     path='nhansu'
                     element={
                       <ProtectedRoute

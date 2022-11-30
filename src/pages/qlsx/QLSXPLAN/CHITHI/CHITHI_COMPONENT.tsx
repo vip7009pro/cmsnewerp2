@@ -594,7 +594,9 @@ const CHITHI_COMPONENT = ({
                         <tr key={index}>
                          <td>{index}</td>
                         <td>{element.M_CODE}</td>
-                        <td>{element.M_NAME}</td>
+                        {
+                        (element.LIEUQL_SX ===1)? <td style={{color:'red', fontWeight:'bold', backgroundColor:'lightgreen'}}>{element.M_NAME}</td>:<td>{element.M_NAME}</td>
+                      }  
                         <td>{element.WIDTH_CD}</td>
                         <td>{(element.M_MET_QTY * element.M_QTY).toLocaleString("en-US")} M</td>
                         <td></td>
@@ -629,7 +631,9 @@ const CHITHI_COMPONENT = ({
                         <tr key={index}>
                          <td>{index}</td>
                         <td>{element.M_CODE}</td>
-                        <td>{element.M_NAME}</td>
+                        {
+                        (element.LIEUQL_SX ===1)? <td style={{color:'red', fontWeight:'bold', backgroundColor:'lightgreen'}}>{element.M_NAME}</td>:<td>{element.M_NAME}</td>
+                      }  
                         <td>{element.WIDTH_CD}</td>
                         <td>{(element.M_MET_QTY * element.M_QTY).toLocaleString("en-US")} M</td>
                         <td></td>

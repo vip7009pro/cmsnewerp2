@@ -1,5 +1,6 @@
 import  { useEffect, useState} from 'react'
 import KHOLIEU from '../../kho/kholieu/KHOLIEU';
+import DATASX from './DATASX/DATASX';
 import PLAN_DATATB from './LICHSUCHITHITABLE/PLAN_DATATB';
 import LICHSUINPUTLIEU from './LICHSUINPUTLIEU/LICHSUINPUTLIEU';
 import MACHINE from './Machine/MACHINE';
@@ -18,23 +19,27 @@ const QLSXPLAN = () => {
   const setNav = (choose: number) => {
     if(choose ===1 )
     {
-      setSelection({...selection, tab1:true, tab2: false, tab3:false, tab4: false, tab5: false});
+      setSelection({...selection, tab1:true, tab2: false, tab3:false, tab4: false, tab5: false, tab6: false});
     }
     else if(choose ===2 )
     {
-      setSelection({...selection, tab1:false, tab2: true, tab3:false, tab4: false, tab5: false});
+      setSelection({...selection, tab1:false, tab2: true, tab3:false, tab4: false, tab5: false, tab6: false});
     } 
     else if(choose ===3 )
     {
-      setSelection({...selection, tab1:false, tab2: false, tab3:true, tab4: false, tab5: false});
+      setSelection({...selection, tab1:false, tab2: false, tab3:true, tab4: false, tab5: false, tab6: false});
     }
     else if(choose ===4 )
     {
-      setSelection({...selection, tab1:false, tab2: false, tab3:false, tab4: true, tab5: false});
+      setSelection({...selection, tab1:false, tab2: false, tab3:false, tab4: true, tab5: false, tab6: false});
     }
     else if(choose ===5 )
     {
-      setSelection({...selection, tab1:false, tab2: false, tab3:false, tab4: false, tab5: true});
+      setSelection({...selection, tab1:false, tab2: false, tab3:false, tab4: false, tab5: true, tab6: false});
+    }
+    else if(choose ===6 )
+    {
+      setSelection({...selection, tab1:false, tab2: false, tab3:false, tab4: false, tab5: false, tab6: true});
     }
   }  
   useEffect(()=>{
@@ -69,6 +74,11 @@ const QLSXPLAN = () => {
             LỊCH SỬ
           </span>
         </div>  
+        <div className='mininavitem'  onClick={() => setNav(6)} style={{backgroundColor:selection.tab6 === true ? '#9933ff':'#d9b3ff', color: selection.tab6 === true ? 'yellow':'yellow'}}>
+          <span className='mininavtext'>
+            DATA SX
+          </span>
+        </div>  
              
           
       </div>     
@@ -95,6 +105,11 @@ const QLSXPLAN = () => {
       {selection.tab5 && (
         <div className='datadtc'>
           <PLAN_DATATB/>                               
+        </div>
+      )}
+      {selection.tab6 && (
+        <div className='datadtc'>
+          <DATASX/>                               
         </div>
       )}
     </div>

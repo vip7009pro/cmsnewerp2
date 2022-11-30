@@ -297,6 +297,7 @@ const MACHINE = () => {
   const [lichsunhapkhoaodatafilter, setLichSuNhapKhoAoDataFilter] = useState<
   Array<LICHSUNHAPKHOAO>
 >([]);
+  const [calc_loss_setting,setCalc_Loss_Setting]=  useState(true);
   const [lichsuxuatkhoaotable, setLichSuXuatKhoAoTable] = useState<LICHSUXUATKHOAO[]>([]);
   const [lichsuxuatkhoaodatafilter, setLichSuXuatKhoAoDataFilter] = useState<Array<LICHSUXUATKHOAO>>([]);
   const [lichsuinputlieutable, setLichSuInputLieuTable] = useState<LICHSUINPUTLIEUSX[]>([]);
@@ -1233,7 +1234,7 @@ const MACHINE = () => {
               ROLL_QTY: tonlieuxuongdatafilter[i].ROLL_QTY,
               OUT_QTY: tonlieuxuongdatafilter[i].IN_QTY,
               TOTAL_OUT_QTY: tonlieuxuongdatafilter[i].TOTAL_IN_QTY,
-              USE_YN: 'N',
+              USE_YN: 'O',
             })
             .then((response) => {
               console.log(response.data.tk_status);
@@ -1246,7 +1247,7 @@ const MACHINE = () => {
                   M_CODE: tonlieuxuongdatafilter[i].M_CODE,
                   M_LOT_NO: tonlieuxuongdatafilter[i].M_LOT_NO,                
                   TOTAL_IN_QTY: tonlieuxuongdatafilter[i].TOTAL_IN_QTY,                
-                  USE_YN: 'N',
+                  USE_YN: 'O',
                 })
                 .then((response) => {
                   console.log(response.data);
@@ -1497,7 +1498,7 @@ const MACHINE = () => {
         LOSS_SETTING1 =  response.data.data[0].LOSS_SETTING1 === null ? 0: response.data.data[0].LOSS_SETTING1;       
         LOSS_SETTING2 =  response.data.data[0].LOSS_SETTING2 === null? 0: response.data.data[0].LOSS_SETTING2;      
         FINAL_LOSS_SX = (PROCESS_NUMBER===1)? LOSS_SX1: LOSS_SX2;
-        FINAL_LOSS_SETTING = (PROCESS_NUMBER===1)? LOSS_SETTING1: LOSS_SETTING2;        
+        FINAL_LOSS_SETTING = (PROCESS_NUMBER===1)? (calc_loss_setting ? LOSS_SETTING1:0): (calc_loss_setting ? LOSS_SETTING2:0);        
         //console.log(LOSS_SX1)
         //console.log(LOSS_SETTING1)    
       } else {
@@ -1580,7 +1581,7 @@ const MACHINE = () => {
         LOSS_SETTING1 =  response.data.data[0].LOSS_SETTING1 === null ? 0: response.data.data[0].LOSS_SETTING1;       
         LOSS_SETTING2 =  response.data.data[0].LOSS_SETTING2 === null? 0: response.data.data[0].LOSS_SETTING2;      
         FINAL_LOSS_SX = (PROCESS_NUMBER===1)? LOSS_SX1: LOSS_SX2;
-        FINAL_LOSS_SETTING = (PROCESS_NUMBER===1)? LOSS_SETTING1: LOSS_SETTING2;        
+        FINAL_LOSS_SETTING = (PROCESS_NUMBER===1)? (calc_loss_setting ? LOSS_SETTING1:0): (calc_loss_setting ? LOSS_SETTING2:0);        
         //console.log(LOSS_SX1)
         //console.log(LOSS_SETTING1)
       } else {
@@ -1884,12 +1885,11 @@ const MACHINE = () => {
       if (result.isConfirmed) {
         Swal.fire(
           "Tiến hành ĐK liệu",
-          "Đang ĐK liệu",
-          "success"
+          "Đang ĐK liệu, hãy chờ cho tới khi hoàn thành",
+          "info"
         );  
         if(qlsxplandatafilter.length>0)
-        {         
-
+        {
           hanlde_SaveChiThi();   
           handleGetChiThiTable(qlsxplandatafilter[0].PLAN_ID, qlsxplandatafilter[0].G_CODE, qlsxplandatafilter[0].PLAN_QTY, qlsxplandatafilter[0].PROCESS_NUMBER);
           handleDangKyXuatLieu(qlsxplandatafilter[0].PLAN_ID,qlsxplandatafilter[0].PROD_REQUEST_NO, qlsxplandatafilter[0].PROD_REQUEST_DATE);            
@@ -2243,8 +2243,7 @@ const MACHINE = () => {
       else
       {
         err_code += '_' + chithidatatable[i].M_CODE +': so met = 0';
-      }    
-      
+      }
     }
 
     if(err_code  !=='0')
@@ -2256,7 +2255,6 @@ const MACHINE = () => {
       Swal.fire('Thông báo', 'Lưu Chỉ thị thành công','success');
       loadQLSXPlan(selectedPlanDate);
     }
-
     }
     else
     {
@@ -2459,21 +2457,25 @@ const MACHINE = () => {
           <AiFillFileExcel color='green' size={25} />
           SAVE
         </IconButton>
-        <GridToolbarQuickFilter />        
+        <GridToolbarQuickFilter />
         <IconButton
           className='buttonIcon'
           onClick={() => {
             if (chithidatatable.length > 0) {
-              Swal.fire("Thông báo", "Đang lưu chỉ thị, hãy chờ một chút", "info");
-              hanlde_SaveChiThi();             
-            } else {               
+              Swal.fire(
+                "Thông báo",
+                "Đang lưu chỉ thị, hãy chờ một chút",
+                "info"
+              );
+              hanlde_SaveChiThi();
+            } else {
               Swal.fire("Thông báo", "Không có liệu để chỉ thị", "error");
             }
           }}
         >
           <AiFillSave color='blue' size={20} />
           Lưu chỉ thị
-        </IconButton> 
+        </IconButton>
         <IconButton
           className='buttonIcon'
           onClick={() => {
@@ -2494,18 +2496,15 @@ const MACHINE = () => {
         </IconButton>
         <IconButton
           className='buttonIcon'
-          onClick={() => { 
-            if(qlsxplandatafilter.length >0)
-            {
-              setShowKhoAo(!showkhoao);   
-              handle_loadKhoAo(); 
+          onClick={() => {
+            if (qlsxplandatafilter.length > 0) {
+              setShowKhoAo(!showkhoao);
+              handle_loadKhoAo();
               handle_loadlichsuxuatkhoao();
               handle_loadlichsunhapkhoao();
               handle_loadlichsuinputlieu(qlsxplandatafilter[0].PLAN_ID);
-            }
-            else
-            {
-              Swal.fire('Thông báo','Hãy chọn một chỉ thị', 'error');
+            } else {
+              Swal.fire("Thông báo", "Hãy chọn một chỉ thị", "error");
             }
           }}
         >
@@ -2514,8 +2513,8 @@ const MACHINE = () => {
         </IconButton>
         <IconButton
           className='buttonIcon'
-          onClick={() => { 
-            handleConfirmDKXL();           
+          onClick={() => {
+            handleConfirmDKXL();
           }}
         >
           <AiOutlineBarcode color='green' size={20} />
@@ -2524,40 +2523,43 @@ const MACHINE = () => {
         <IconButton
           className='buttonIcon'
           onClick={() => {
-            handleGetChiThiTable(qlsxplandatafilter[0].PLAN_ID, qlsxplandatafilter[0].G_CODE, qlsxplandatafilter[0].PLAN_QTY, qlsxplandatafilter[0].PROCESS_NUMBER);
+            handleGetChiThiTable(
+              qlsxplandatafilter[0].PLAN_ID,
+              qlsxplandatafilter[0].G_CODE,
+              qlsxplandatafilter[0].PLAN_QTY,
+              qlsxplandatafilter[0].PROCESS_NUMBER
+            );
           }}
         >
           <BiRefresh color='yellow' size={20} />
           Refresh chỉ thị
         </IconButton>
-        <span style={{fontSize:20, fontWeight: 'bold', color: 'red'}}>
-        {
-          qlsxplandatafilter[0]?.PLAN_ID
-        }
-        </span> ___
-        <span style={{fontSize:20, fontWeight: 'bold', color: 'blue'}}>
-        {
-          qlsxplandatafilter[0]?.G_NAME
-        }
-        </span> 
-        <span style={{fontSize:20, fontWeight: 'bold', color: 'green'}}>
-        ___PD:
-        {
-          currentPlanPD
-        }
-        </span> 
-        <span style={{fontSize:20, fontWeight: 'bold', color: 'green'}}>
-        ___CAVITY:
-        {
-          currentPlanCAVITY
-        }
+        <span style={{ fontSize: 20, fontWeight: "bold", color: "red" }}>
+          {qlsxplandatafilter[0]?.PLAN_ID}
+        </span>{" "}
+        ___
+        <span style={{ fontSize: 20, fontWeight: "bold", color: "blue" }}>
+          {qlsxplandatafilter[0]?.G_NAME}
         </span>
-        <span style={{fontSize:20, fontWeight: 'bold', color: 'green'}}>
-        ___PLAN_QTY:
-        {
-          qlsxplandatafilter[0]?.PLAN_QTY.toLocaleString('en-US')
-        }
+        <span style={{ fontSize: 20, fontWeight: "bold", color: "green" }}>
+          ___PD:
+          {currentPlanPD}
         </span>
+        <span style={{ fontSize: 20, fontWeight: "bold", color: "green" }}>
+          ___CAVITY:
+          {currentPlanCAVITY}
+        </span>
+        <span style={{ fontSize: 20, fontWeight: "bold", color: "green" }}>
+          ___PLAN_QTY:
+          {qlsxplandatafilter[0]?.PLAN_QTY.toLocaleString("en-US")}
+        </span>
+        Có setting hay không?
+        <input          
+          type='checkbox'
+          name='alltimecheckbox'
+          defaultChecked={calc_loss_setting}
+          onChange={() => setCalc_Loss_Setting(!calc_loss_setting)}
+        ></input>
       </GridToolbarContainer>
     );
   }
@@ -2788,12 +2790,14 @@ const MACHINE = () => {
   {
     let checkPlanIdO300: boolean = true;
     let NEXT_OUT_NO: string = "001";
+    let NEXT_OUT_DATE: string = moment().format('YYYYMMDD');
 
     await generalQuery("checkPLANID_O300", { PLAN_ID: PLAN_ID})
       .then((response) => {
         console.log(response.data);
         if (response.data.tk_status !== "NG") {
           checkPlanIdO300 = true;  
+          NEXT_OUT_DATE = response.data.data[0].OUT_DATE;
         } else {
           checkPlanIdO300 = false;
         }
@@ -2822,6 +2826,7 @@ const MACHINE = () => {
     //console.log(checkPlanIdO302 +' _ '+checkPlanIdO301)
     //get Next_ out_ no 
 
+    console.log('check plan id o300',checkPlanIdO300);
     if(!checkPlanIdO300)
     {
       await generalQuery("getO300_LAST_OUT_NO", {})
@@ -2832,7 +2837,8 @@ const MACHINE = () => {
               parseInt(response.data.data[0].OUT_NO) + 1,
               3
             );
-            //console.log(NEXT_OUT_NO);
+          
+            console.log("nextoutno_o300", NEXT_OUT_NO);
           } else {
           }
         })
@@ -2858,7 +2864,7 @@ const MACHINE = () => {
       console.log(CODE_50);
 
       await generalQuery("insertO300", {
-        OUT_DATE: moment().format("YYYYMMDD"),
+        OUT_DATE: NEXT_OUT_DATE,
         OUT_NO: NEXT_OUT_NO,
         CODE_03: "01",
         CODE_52: "01",
@@ -2878,7 +2884,25 @@ const MACHINE = () => {
         .catch((error) => {
           console.log(error);
         });
-    }
+    } 
+    else
+    {
+      await generalQuery("getO300_ROW", {PLAN_ID: PLAN_ID})
+      .then((response) => {
+        //console.log(response.data);
+        if (response.data.tk_status !== "NG") {
+          NEXT_OUT_NO = zeroPad(
+            parseInt(response.data.data[0].OUT_NO),
+            3
+          );        
+          console.log("nextoutno_o300", NEXT_OUT_NO);
+        } else {
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    } 
 
     /* xoa dong O301 chua co xuat hien trong O302*/
     await generalQuery("deleteMCODE_O301_Not_ExistIN_O302", { PLAN_ID: PLAN_ID})
@@ -2900,14 +2924,15 @@ const MACHINE = () => {
     }
     if(checkchithimettotal >0)
     {
-      for (let i = 0; i < chithidatatable.length; i++) {
-        
+      for (let i = 0; i < chithidatatable.length; i++) {        
+       
         if(chithidatatable[i].M_MET_QTY>0)
         {
+          console.log('M_MET',chithidatatable[i].M_MET_QTY);
           let TonTaiM_CODE_O301: boolean = false;
           await generalQuery("checkM_CODE_PLAN_ID_Exist_in_O301", { PLAN_ID: PLAN_ID, M_CODE: chithidatatable[i].M_CODE})
           .then((response) => {
-            //console.log(response.data);
+            console.log(response.data);
             if (response.data.tk_status !== "NG") {
               TonTaiM_CODE_O301 = true;
              
@@ -2921,17 +2946,33 @@ const MACHINE = () => {
           
           if(!TonTaiM_CODE_O301)
           {
+            console.log('Next Out NO',NEXT_OUT_NO);
+            await generalQuery("checkPLANID_O301", { PLAN_ID: PLAN_ID })
+              .then((response) => {
+                //console.log(response.data);
+                if (response.data.tk_status !== "NG") {
+                  Last_O301_OUT_SEQ = parseInt(response.data.data[0].OUT_SEQ);                  
+                } else {
+                  
+                }
+              })
+              .catch((error) => {
+                console.log(error);
+              });
+      
+            console.log('outseq',Last_O301_OUT_SEQ );
             await generalQuery("insertO301", {
-              OUT_DATE: moment().format("YYYYMMDD"),
+              OUT_DATE: NEXT_OUT_DATE,
               OUT_NO: NEXT_OUT_NO,
               CODE_03: "01",
-              OUT_SEQ: zeroPad(Last_O301_OUT_SEQ+ i + 1, 3),
+              OUT_SEQ: zeroPad(Last_O301_OUT_SEQ +i + 1, 3),
               USE_YN: "Y",
               M_CODE: chithidatatable[i].M_CODE,
               OUT_PRE_QTY: chithidatatable[i].M_MET_QTY,
               PLAN_ID: PLAN_ID,
             })
             .then((response) => {
+              
               //console.log(response.data);
               if (response.data.tk_status !== "NG") {
               } else {
@@ -2949,7 +2990,7 @@ const MACHINE = () => {
               PLAN_ID: PLAN_ID,
             })
             .then((response) => {
-              //console.log(response.data);
+              console.log(response.data);
               if (response.data.tk_status !== "NG") {
               } else {
               }

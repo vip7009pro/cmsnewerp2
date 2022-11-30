@@ -9,7 +9,7 @@ import HomeIcon from '@mui/icons-material/Home';
 import { FaDonate, FaFileInvoiceDollar,FaCheckCircle, FaHistory, FaBomb, FaPaperPlane } from 'react-icons/fa';
 import { BiCart, BiSortAZ } from 'react-icons/bi';
 import { FcPlanner, FcSettings,FcBullish, FcPortraitMode,FcManager,FcCheckmark,FcPieChart,FcRefresh } from 'react-icons/fc';
-import { MdBugReport, MdDesignServices, MdInput, MdOutlineAppRegistration, MdOutlineAspectRatio, MdOutlineProductionQuantityLimits, MdPriceChange } from "react-icons/md";
+import { MdBugReport, MdDesignServices, MdInput, MdOutlineAppRegistration, MdOutlineAspectRatio, MdOutlineProductionQuantityLimits, MdPrecisionManufacturing, MdPriceChange } from "react-icons/md";
 import { WiDayLightning } from "react-icons/wi";
 import getsentence from "../../components/String/String";
 import { LangConText } from "../../api/Context";
@@ -272,6 +272,27 @@ const Sidebar = () => {
           path: 'qlsx/qlsxmrp',
           icon: <AiOutlineCalendar color='blue' size={25}/>
         }
+      ]
+    },   
+    {
+      title: getlang('phongsanxuat',lang),
+      path: '#',
+      icon: <MdPrecisionManufacturing color='red' size={25}/>,
+      iconClosed: <KeyboardArrowDownIcon />,
+      iconOpened: <KeyboardArrowUpIcon />,  
+      subNav: [
+        {
+          title: getlang('quanlyYCSX',lang),
+          path: 'sx/ycsxmanager',
+          icon: <FcSettings color='#cc99ff' size={25}/>,
+          cName: 'sub-nav'
+        },        
+        {
+          title: getlang('thongtinsanpham',lang),
+          path: 'sx/codeinfo',
+          icon: <FcAbout color='#cc00ff' size={25}/>,
+          cName: 'sub-nav'
+        },        
       ]
     },   
     

@@ -7,6 +7,7 @@ interface WidgetInfo {
   percentage?: number,
   topColor?: string,
   botColor?: string,
+  
   material_ppm?: number,
   process_ppm?: number,
   total_ppm?: number,

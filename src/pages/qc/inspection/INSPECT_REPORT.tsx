@@ -312,9 +312,9 @@ const INSPECT_REPORT = () => {
               label='Yesterday'
               topColor='#b3c6ff'
               botColor='#b3ecff'
-              material_ppm={13000}
-              process_ppm={13000}
-              total_ppm={13000}
+              material_ppm={dailyppm1[0].MATERIAL_PPM}
+              process_ppm={dailyppm1[0].PROCESS_NG}
+              total_ppm={dailyppm1[0].TOTAL_PPM}
             />
           </div>
           <div className='revenuwdg'>
