@@ -18,7 +18,7 @@ export default function WidgetInspection({widgettype,label,topColor, botColor, m
     return (    
       <div className='widgetinspection' style={{ backgroundImage: `linear-gradient(to right, ${topColor}, ${botColor})`}}>
           <div className="left">
-              <span className="title">{label}</span>              
+              <span className="title">Item</span>              
               <span className="materialNG">Material NG</span>
               <span className="processNG">Process NG</span>
               <span className="totalNG">Total NG</span>

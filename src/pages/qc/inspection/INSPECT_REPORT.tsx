@@ -15,6 +15,7 @@ import ChartFCSTSamSung from "../../../components/Chart/ChartFCSTSamSung";
 import ChartPICRevenue from "../../../components/Chart/ChartPICRevenue";
 import ChartWeekLyDelivery from "../../../components/Chart/ChartWeeklyDelivery";
 import ChartWeeklyPO from "../../../components/Chart/ChartWeekLyPO";
+import InspectionDailyPPM from "../../../components/Chart/InspectionDailyPPM";
 import CustomerPOBalanceByType from "../../../components/DataTable/CustomerPOBalanceByType";
 import Widget from "../../../components/Widget/Widget";
 import WidgetInspection from "../../../components/Widget/WidgetInspection";
@@ -117,11 +118,13 @@ const INSPECT_REPORT = () => {
         if (response.data.tk_status !== "NG") {
           const loadeddata: DailyPPMData[] = response.data.data.map(
             (element: DailyPPMData, index: number) => {
-              return {
+              return {                
                 ...element,
+                INSPECT_DATE: moment.utc(element.INSPECT_DATE).format('YYYY-MM-DD'),
               };
             }
           );
+          //console.log(loadeddata);
           if (FACTORY === "NM1") {
             setDailyPPM1(loadeddata);
           } else {
@@ -305,106 +308,108 @@ const INSPECT_REPORT = () => {
     <div className='inspectionreport'>
       <div className='doanhthureport'>
         <span className='section_title'>1. Defect Summary</span>
+        <span className='section_title'>a. FACTORY 1</span>        
         <div className='revenuewidget'>
           <div className='revenuwdg'>
             <WidgetInspection
               widgettype='revenue'
-              label='Yesterday'
+              label='Yesterday NG'
               topColor='#b3c6ff'
               botColor='#b3ecff'
-              material_ppm={dailyppm1[0].MATERIAL_PPM}
-              process_ppm={dailyppm1[0].PROCESS_NG}
-              total_ppm={dailyppm1[0].TOTAL_PPM}
+              material_ppm={dailyppm1[0]?.MATERIAL_PPM}
+              process_ppm={dailyppm1[0]?.PROCESS_PPM}
+              total_ppm={dailyppm1[0]?.TOTAL_PPM}
             />
           </div>
           <div className='revenuwdg'>
             <WidgetInspection
               widgettype='revenue'
-              label='Yesterday'
+              label='This Week NG'
               topColor='#b3c6ff'
               botColor='#b3ecff'
-              material_ppm={13000}
-              process_ppm={13000}
-              total_ppm={13000}
+              material_ppm={weeklyppm1[0]?.MATERIAL_PPM}
+              process_ppm={weeklyppm1[0]?.PROCESS_PPM}
+              total_ppm={weeklyppm1[0]?.TOTAL_PPM}
             />
           </div>
           <div className='revenuwdg'>
             <WidgetInspection
               widgettype='revenue'
-              label='Yesterday'
+              label='This month NG'
               topColor='#b3c6ff'
               botColor='#b3ecff'
-              material_ppm={13000}
-              process_ppm={13000}
-              total_ppm={13000}
+              material_ppm={monthlyppm1[0]?.MATERIAL_PPM}
+              process_ppm={monthlyppm1[0]?.PROCESS_PPM}
+              total_ppm={monthlyppm1[0]?.TOTAL_PPM}
             />
           </div>
           <div className='revenuwdg'>
             <WidgetInspection
               widgettype='revenue'
-              label='Yesterday'
+              label='This year NG'
               topColor='#b3c6ff'
               botColor='#b3ecff'
-              material_ppm={13000}
-              process_ppm={13000}
-              total_ppm={13000}
+              material_ppm={yearlyppm1[0]?.MATERIAL_PPM}
+              process_ppm={yearlyppm1[0]?.PROCESS_PPM}
+              total_ppm={yearlyppm1[0]?.TOTAL_PPM}
             />
           </div>
         </div>
+        <span className='section_title'>b. FACTORY 2</span>
         <div className='revenuewidget'>
           <div className='revenuwdg'>
             <WidgetInspection
               widgettype='revenue'
-              label='Yesterday'
-              topColor='#b3c6ff'
-              botColor='#b3ecff'
-              material_ppm={13000}
-              process_ppm={13000}
-              total_ppm={13000}
+              label='Yesterday NG'
+              topColor='#80ff80'
+              botColor='#e6ffe6'
+              material_ppm={dailyppm2[0]?.MATERIAL_PPM}
+              process_ppm={dailyppm2[0]?.PROCESS_PPM}
+              total_ppm={dailyppm2[0]?.TOTAL_PPM}
             />
           </div>
           <div className='revenuwdg'>
             <WidgetInspection
               widgettype='revenue'
-              label='Yesterday'
-              topColor='#b3c6ff'
-              botColor='#b3ecff'
-              material_ppm={13000}
-              process_ppm={13000}
-              total_ppm={13000}
+              label='This Week NG'
+              topColor='#80ff80'
+              botColor='#e6ffe6'
+              material_ppm={weeklyppm2[0]?.MATERIAL_PPM}
+              process_ppm={weeklyppm2[0]?.PROCESS_PPM}
+              total_ppm={weeklyppm2[0]?.TOTAL_PPM}
             />
           </div>
           <div className='revenuwdg'>
             <WidgetInspection
               widgettype='revenue'
-              label='Yesterday'
-              topColor='#b3c6ff'
-              botColor='#b3ecff'
-              material_ppm={13000}
-              process_ppm={13000}
-              total_ppm={13000}
+              label='This month NG'
+              topColor='#80ff80'
+              botColor='#e6ffe6'
+              material_ppm={monthlyppm2[0]?.MATERIAL_PPM}
+              process_ppm={monthlyppm2[0]?.PROCESS_PPM}
+              total_ppm={monthlyppm2[0]?.TOTAL_PPM}
             />
           </div>
           <div className='revenuwdg'>
             <WidgetInspection
               widgettype='revenue'
-              label='Yesterday'
-              topColor='#b3c6ff'
-              botColor='#b3ecff'
-              material_ppm={13000}
-              process_ppm={13000}
-              total_ppm={13000}
+              label='This year NG'
+              topColor='#80ff80'
+              botColor='#e6ffe6'
+              material_ppm={yearlyppm2[0]?.MATERIAL_PPM}
+              process_ppm={yearlyppm2[0]?.PROCESS_PPM}
+              total_ppm={yearlyppm2[0]?.TOTAL_PPM}
             />
           </div>
-        </div>
+        </div>        
         <br></br>
         <hr></hr>
         <div className='graph'>
-          <span className='section_title'>2. Closing</span>
+          <span className='section_title'>2. NG Trending</span>
           <div className='dailygraphtotal'>
             <div className='dailygraph'>
               <span className='subsection'>Daily Closing</span>
-              <Chart2 />
+              <InspectionDailyPPM dldata={dailyppm1}/>
             </div>
             <div className='dailygraph'>
               <span className='subsection'>Weekly Closing</span>

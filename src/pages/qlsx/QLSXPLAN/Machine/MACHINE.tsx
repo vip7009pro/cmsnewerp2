@@ -1362,6 +1362,7 @@ const MACHINE = () => {
           }
           else
           {
+            loadQLSXPlan(selectedPlanDate);
             Swal.fire("Thông báo", "Lưu thành công", "success"); 
           }
         } 
@@ -1500,16 +1501,15 @@ const MACHINE = () => {
         FINAL_LOSS_SX = (PROCESS_NUMBER===1)? LOSS_SX1: LOSS_SX2;
         FINAL_LOSS_SETTING = (PROCESS_NUMBER===1)? (calc_loss_setting ? LOSS_SETTING1:0): (calc_loss_setting ? LOSS_SETTING2:0);        
         //console.log(LOSS_SX1)
-        //console.log(LOSS_SETTING1)    
+        //console.log(LOSS_SETTING1)
       } else {
-
-      }
-      
+        
+      }      
     })
     .catch((error) => {
       console.log(error);
     });
-    setCurrentPlanPD(PD); 
+    setCurrentPlanPD(PD);
     setCurrentPlanCAVITY(CAVITY_NGANG*CAVITY_DOC);
     generalQuery("getchithidatatable", {
         PLAN_ID: PLAN_ID,        
@@ -3081,7 +3081,6 @@ const MACHINE = () => {
                 />)
                 })
               }
-
             </div>            
             <span className='machine_title'>SR-NM1</span>
             <div className='SRlist'>

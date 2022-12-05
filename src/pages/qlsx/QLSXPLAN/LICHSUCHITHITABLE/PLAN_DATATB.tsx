@@ -303,10 +303,7 @@ const PLAN_DATATB = () => {
     //setColumnDefinition(column_inspect_output);
   },[]);
   return (
-    <div className='lichsuplanTable'>
-        <div className="section_title" style={{fontWeight:'bold', fontSize: 30}}>
-            TRA CỨU PLAN THEO NGÀY
-        </div>
+    <div className='lichsuplanTable'>       
       <div className='tracuuDataInspection'>    
         <div className='tracuuDataInspectionform'>
           <div className='forminput'>

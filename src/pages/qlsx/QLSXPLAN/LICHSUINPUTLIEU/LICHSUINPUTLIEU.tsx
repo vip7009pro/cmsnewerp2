@@ -134,10 +134,7 @@ const LICHSUINPUTLIEU = () => {
     //setColumnDefinition(column_inspect_output);
   },[]);
   return (
-    <div className='lichsuinputlieu'>
-       <div className="section_title" style={{fontWeight:'bold', fontSize: 30}}>
-            TRA CỨU LỊCH SỬ INPUT LIỆU
-        </div>
+    <div className='lichsuinputlieu'>       
       <div className='tracuuDataInspection'>
         <div className='tracuuDataInspectionform'>
           <div className='forminput'>

@@ -1325,11 +1325,10 @@ const PLANTABLE = () => {
           }
           else
           {
+            loadQLSXPlan(qlsxplandatafilter[0].PROD_REQUEST_NO);
             Swal.fire("Thông báo", "Lưu thành công", "success"); 
           }
-        }        
-         
-       
+        } 
       }
       else
       {
