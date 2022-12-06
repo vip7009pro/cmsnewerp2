@@ -168,6 +168,12 @@ interface QLSXPLANDATA {
   LOSS_SETTING2: number,
   NOTE: string,
   NEXT_PLAN_ID: string,
+  XUATDAOFILM?: string,
+  EQ_STATUS?: string,
+  MAIN_MATERIAL?: string,
+  INT_TEM?: string,
+  CHOTBC?: string,
+  DKXL?: string,
 }
 interface YCSXTableData {
   DESCR?: string;
@@ -1244,6 +1250,7 @@ const MACHINE = () => {
                   FACTORY: tonlieuxuongdatafilter[i].FACTORY,
                   PHANLOAI: tonlieuxuongdatafilter[i].PHANLOAI,
                   PLAN_ID_INPUT: tonlieuxuongdatafilter[i].PLAN_ID_INPUT,
+                  PLAN_ID_SUDUNG: qlsxplandatafilter[0].PLAN_ID,
                   M_CODE: tonlieuxuongdatafilter[i].M_CODE,
                   M_LOT_NO: tonlieuxuongdatafilter[i].M_LOT_NO,                
                   TOTAL_IN_QTY: tonlieuxuongdatafilter[i].TOTAL_IN_QTY,                

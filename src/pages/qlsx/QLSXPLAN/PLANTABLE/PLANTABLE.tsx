@@ -1076,10 +1076,11 @@ const PLANTABLE = () => {
                 FACTORY: lichsuxuatkhoaodatafilter[i].FACTORY,
                 PHANLOAI: lichsuxuatkhoaodatafilter[i].PHANLOAI,
                 PLAN_ID_INPUT: lichsuxuatkhoaodatafilter[i].PLAN_ID_INPUT,
+                PLAN_ID_SUDUNG: qlsxplandatafilter[0].PLAN_ID,
                 M_CODE: lichsuxuatkhoaodatafilter[i].M_CODE,
                 M_LOT_NO: lichsuxuatkhoaodatafilter[i].M_LOT_NO,                
                 TOTAL_IN_QTY: lichsuxuatkhoaodatafilter[i].TOTAL_OUT_QTY,                
-                USE_YN: 'Y',
+                USE_YN: 'O',
               })
               .then((response) => {
                 console.log(response.data);
