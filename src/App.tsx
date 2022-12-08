@@ -50,6 +50,9 @@ import {
   update_socket,
 } from "./redux/slices/globalSlice";
 import { useSpring, animated } from '@react-spring/web'
+import DATASX from "./pages/qlsx/QLSXPLAN/DATASX/DATASX";
+import PLAN_STATUS from "./pages/qlsx/QLSXPLAN/PLAN_STATUS/PLAN_STATUS";
+import EQ_STATUS from "./pages/qlsx/QLSXPLAN/EQ_STATUS/EQ_STATUS";
 
 interface userDataInterface {
   EMPL_IMAGE?: string;
@@ -682,6 +685,42 @@ function App() {
                           jobname='Leader'
                         >
                           <YCSXManager />
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route
+                      path='datasx'
+                      element={
+                        <ProtectedRoute
+                          user={userData}
+                          maindeptname='SX'
+                          jobname='Leader'
+                        >
+                          <DATASX />
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route
+                      path='planstatus'
+                      element={
+                        <ProtectedRoute
+                          user={userData}
+                          maindeptname='SX'
+                          jobname='Leader'
+                        >
+                          <PLAN_STATUS />
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route
+                      path='eqstatus'
+                      element={
+                        <ProtectedRoute
+                          user={userData}
+                          maindeptname='SX'
+                          jobname='Leader'
+                        >
+                          <EQ_STATUS />
                         </ProtectedRoute>
                       }
                     />

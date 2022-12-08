@@ -70,8 +70,13 @@ export const vn_lang = {
   quanlycapa:'Quản Lý CAPA',
   quanlymrp:'Quản Lý MRP',
   phongsanxuat:'Phòng Sản Xuất',
+  datasanxuat:'DATA Sản Xuất',
+  planstatus:'Trạng Thái Chỉ Thị',
+  eqstatus:'Trạng Thái Máy',
 };
 export const en_lang = {
+  eqstatus:'Machine Status',
+  planstatus:'Production Status',
   dangnhap:'Log in',
   nhothongtindangnhap:'Remember login information',
   quenmatkhau:'Forgot password',
@@ -130,8 +135,11 @@ export const en_lang = {
   quanlycapa:'CAPA Management',
   quanlymrp:'MRP Management',
   phongsanxuat:'Production Team',
+  datasanxuat:'Production DATA',
 };
 export const kr_lang = {
+  eqstatus:'설비 상태',
+  planstatus:'생산 지시 상태',
   dangnhap:'로그인',
   nhothongtindangnhap:'로그인 정보 기억',
   quenmatkhau:'비민 번호 찾기',
@@ -190,6 +198,7 @@ export const kr_lang = {
   quanlycapa:'캐파 관리',
   quanlymrp:'MRP 관리',
   phongsanxuat:'생산팀',
+  datasanxuat:'생산 DATA',
 };
 
 type sentences = {

@@ -2807,6 +2807,21 @@ const MACHINE = () => {
   };
   const zeroPad = (num:number, places:number) => String(num).padStart(places, '0');
 
+  const updateDKXLPLAN =(PLAN_ID: string) => {
+     generalQuery("updateDKXLPLAN", { PLAN_ID: PLAN_ID})
+      .then((response) => {
+        console.log(response.data);
+        if (response.data.tk_status !== "NG") {
+          
+        } else {
+
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+
   const handleDangKyXuatLieu = async (PLAN_ID: string, PROD_REQUEST_NO: string, PROD_REQUEST_DATE: string)=>
   {
     let checkPlanIdO300: boolean = true;
@@ -2964,7 +2979,11 @@ const MACHINE = () => {
           .catch((error) => {
             console.log(error);
           });
-          
+                    
+          if(chithidatatable[i].LIEUQL_SX === 1)
+          {
+            updateDKXLPLAN(chithidatatable[i].PLAN_ID);
+          }
           if(!TonTaiM_CODE_O301)
           {
             console.log('Next Out NO',NEXT_OUT_NO);
@@ -3020,16 +3039,13 @@ const MACHINE = () => {
               console.log(error);
             });
           }          
-        }
-        
+        }        
       }
-
     }
     else
     {
       Swal.fire('Thông báo','Cần đăng ký ít nhất 1 met lòng')
-    }    
-    
+    } 
   }
   useEffect(() => {
     loadQLSXPlan(selectedPlanDate);    

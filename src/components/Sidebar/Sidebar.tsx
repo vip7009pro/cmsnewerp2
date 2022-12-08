@@ -1,7 +1,7 @@
 import React, { useContext, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import SubMenu from "./Submenu";
-import { FcAbout, FcApprove, FcCapacitor, FcCustomerSupport, FcInspection, FcList, FcProcess, FcServices } from 'react-icons/fc';
+import { FcAbout, FcAcceptDatabase, FcApprove, FcCapacitor, FcCustomerSupport, FcInspection, FcList, FcProcess, FcServices } from 'react-icons/fc';
 import "./Sidebar.scss";
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
@@ -9,8 +9,9 @@ import HomeIcon from '@mui/icons-material/Home';
 import { FaDonate, FaFileInvoiceDollar,FaCheckCircle, FaHistory, FaBomb, FaPaperPlane } from 'react-icons/fa';
 import { BiCart, BiSortAZ } from 'react-icons/bi';
 import { FcPlanner, FcSettings,FcBullish, FcPortraitMode,FcManager,FcCheckmark,FcPieChart,FcRefresh } from 'react-icons/fc';
-import { MdBugReport, MdDesignServices, MdInput, MdOutlineAppRegistration, MdOutlineAspectRatio, MdOutlineProductionQuantityLimits, MdPrecisionManufacturing, MdPriceChange } from "react-icons/md";
+import { MdBugReport, MdDesignServices, MdInput, MdOutlineAppRegistration, MdOutlineAspectRatio, MdOutlineProductionQuantityLimits, MdOutlineSignalWifiStatusbarNull, MdPrecisionManufacturing, MdPriceChange } from "react-icons/md";
 import { WiDayLightning } from "react-icons/wi";
+import { SiStatuspal } from "react-icons/si";
 import getsentence from "../../components/String/String";
 import { LangConText } from "../../api/Context";
 import { AiFillAmazonCircle, AiFillAmazonSquare, AiOutlineCalendar } from "react-icons/ai";
@@ -19,6 +20,7 @@ import {RootState} from '../../redux/store'
 import {useSelector, useDispatch} from 'react-redux'
 import { changeDiemDanhState, changeUserData, UserData } from "../../redux/slices/globalSlice";
 import { getlang } from '../../components/String/String';
+import { GrStatusUnknown } from "react-icons/gr";
 
 const Sidebar = () => {
   const [sidebar, setSidebar] = useState(false);
@@ -291,6 +293,24 @@ const Sidebar = () => {
           title: getlang('thongtinsanpham',lang),
           path: 'sx/codeinfo',
           icon: <FcAbout color='#cc00ff' size={25}/>,
+          cName: 'sub-nav'
+        },        
+        {
+          title: getlang('datasanxuat',lang),
+          path: 'sx/datasx',
+          icon: <FcAcceptDatabase color='#cc00ff' size={25}/>,
+          cName: 'sub-nav'
+        },        
+        {
+          title: getlang('planstatus',lang),
+          path: 'sx/planstatus',
+          icon: <SiStatuspal color='#02a112' size={25}/>,
+          cName: 'sub-nav'
+        },        
+        {
+          title: getlang('eqstatus',lang),
+          path: 'sx/eqstatus',
+          icon: <MdOutlineSignalWifiStatusbarNull color='#cc00ff' size={25}/>,
           cName: 'sub-nav'
         },        
       ]

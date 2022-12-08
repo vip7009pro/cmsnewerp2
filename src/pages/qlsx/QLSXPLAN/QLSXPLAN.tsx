@@ -1,11 +1,13 @@
 import  { useEffect, useState} from 'react'
 import KHOLIEU from '../../kho/kholieu/KHOLIEU';
 import DATASX from './DATASX/DATASX';
+import EQ_STATUS from './EQ_STATUS/EQ_STATUS';
 import PLAN_DATATB from './LICHSUCHITHITABLE/PLAN_DATATB';
 import LICHSUINPUTLIEU from './LICHSUINPUTLIEU/LICHSUINPUTLIEU';
 import MACHINE from './Machine/MACHINE';
 import MACHINE2 from './Machine/MACHINE2';
 import PLANTABLE from './PLANTABLE/PLANTABLE';
+import PLAN_STATUS from './PLAN_STATUS/PLAN_STATUS';
 import "./QLSXPLAN.scss"
 import QUICKPLAN from './QUICKPLAN/QUICKPLAN';
 
@@ -19,27 +21,35 @@ const QLSXPLAN = () => {
   const setNav = (choose: number) => {
     if(choose ===1 )
     {
-      setSelection({...selection, tab1:true, tab2: false, tab3:false, tab4: false, tab5: false, tab6: false});
+      setSelection({...selection, tab1:true, tab2: false, tab3:false, tab4: false, tab5: false, tab6: false, tab7:false, tab8: false});
     }
     else if(choose ===2 )
     {
-      setSelection({...selection, tab1:false, tab2: true, tab3:false, tab4: false, tab5: false, tab6: false});
+      setSelection({...selection, tab1:false, tab2: true, tab3:false, tab4: false, tab5: false, tab6: false, tab7:false, tab8: false});
     } 
     else if(choose ===3 )
     {
-      setSelection({...selection, tab1:false, tab2: false, tab3:true, tab4: false, tab5: false, tab6: false});
+      setSelection({...selection, tab1:false, tab2: false, tab3:true, tab4: false, tab5: false, tab6: false, tab7:false, tab8: false});
     }
     else if(choose ===4 )
     {
-      setSelection({...selection, tab1:false, tab2: false, tab3:false, tab4: true, tab5: false, tab6: false});
+      setSelection({...selection, tab1:false, tab2: false, tab3:false, tab4: true, tab5: false, tab6: false, tab7:false, tab8: false});
     }
     else if(choose ===5 )
     {
-      setSelection({...selection, tab1:false, tab2: false, tab3:false, tab4: false, tab5: true, tab6: false});
+      setSelection({...selection, tab1:false, tab2: false, tab3:false, tab4: false, tab5: true, tab6: false, tab7:false, tab8: false});
     }
     else if(choose ===6 )
     {
-      setSelection({...selection, tab1:false, tab2: false, tab3:false, tab4: false, tab5: false, tab6: true});
+      setSelection({...selection, tab1:false, tab2: false, tab3:false, tab4: false, tab5: false, tab6: true, tab7:false, tab8: false});
+    }
+    else if(choose ===7 )
+    {
+      setSelection({...selection, tab1:false, tab2: false, tab3:false, tab4: false, tab5: false, tab6: false, tab7:true, tab8: false});
+    }
+    else if(choose ===8 )
+    {
+      setSelection({...selection, tab1:false, tab2: false, tab3:false, tab4: false, tab5: false, tab6: false, tab7:false, tab8: true});
     }
   }  
   useEffect(()=>{
@@ -79,6 +89,16 @@ const QLSXPLAN = () => {
             DATA SX
           </span>
         </div>  
+        <div className='mininavitem'  onClick={() => setNav(7)} style={{backgroundColor:selection.tab7 === true ? '#9933ff':'#d9b3ff', color: selection.tab7 === true ? 'yellow':'yellow'}}>
+          <span className='mininavtext'>
+            PLAN STATUS
+          </span>
+        </div>  
+        <div className='mininavitem'  onClick={() => setNav(8)} style={{backgroundColor:selection.tab8 === true ? '#9933ff':'#d9b3ff', color: selection.tab8 === true ? 'yellow':'yellow'}}>
+          <span className='mininavtext'>
+            EQ STATUS
+          </span>
+        </div>  
              
           
       </div>     
@@ -110,6 +130,16 @@ const QLSXPLAN = () => {
       {selection.tab6 && (
         <div className='datadtc'>
           <DATASX/>                               
+        </div>
+      )}
+      {selection.tab7 && (
+        <div className='datadtc'>
+          <PLAN_STATUS/>                               
+        </div>
+      )}
+      {selection.tab8 && (
+        <div className='datadtc'>
+          <EQ_STATUS/>                               
         </div>
       )}
     </div>

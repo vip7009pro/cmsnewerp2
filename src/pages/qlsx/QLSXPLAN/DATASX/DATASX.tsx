@@ -98,6 +98,8 @@ const DATASX = () => {
   const [codeKD,setCodeKD] =useState('');
   const [codeCMS,setCodeCMS] =useState('');
 
+  const [machine, setMachine] = useState('ALL');
+  const [factory, setFactory] = useState('ALL');
   const [prodrequestno,setProdRequestNo] =useState('');
   const [plan_id,setPlanID] =useState('');
   const [alltime, setAllTime] = useState(false); 
@@ -188,7 +190,9 @@ const DATASX = () => {
         M_NAME: m_name,
         M_CODE: m_code,
         G_NAME: codeKD,
-        G_CODE: codeCMS             
+        G_CODE: codeCMS,
+        FACTORY: factory,
+        PLAN_EQ: machine
     })
     .then((response) => {
       console.log(response.data.data);
@@ -302,6 +306,38 @@ const DATASX = () => {
                 ></input>
               </label>
             </div> 
+            <div className='forminputcolumn'>              
+            <label>
+            <b>FACTORY:</b>
+            <select
+                name='phanloai'
+                value={factory}
+                onChange={(e) => {
+                setFactory(e.target.value);
+                }}
+            >
+                <option value='ALL'>ALL</option>
+                <option value='NM1'>NM1</option>
+                <option value='NM2'>NM2</option>           
+            </select>
+            </label>     
+            <label>
+            <b>MACHINE:</b>
+            <select
+                name='machine'
+                value={machine}
+                onChange={(e) => {
+                setMachine(e.target.value);
+                }}
+            >
+                <option value='ALL'>ALL</option>
+                <option value='FR'>FR</option>
+                <option value='SR'>SR</option>
+                <option value='DC'>DC</option>
+                <option value='ED'>ED</option>           
+            </select>
+            </label>       
+            </div>
           </div>
           <div className='formbutton'>
             <label>
@@ -322,7 +358,7 @@ const DATASX = () => {
                 handle_loadlichsuinputlieu();
               }}
             >
-              Tra lịch sử
+              Tra DATA SX
             </button>
           </div>
         </div>

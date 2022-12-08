@@ -1,0 +1,15 @@
+.plan_status_component {
+    display: flex;
+    justify-content: flex-start;
+    width: 100%;
+    height: fit-content;
+    padding: 5px;
+    gap: 5px;
+    align-self: center;
+    margin-left: 10px;
+    .flag {
+        -webkit-box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27); 
+        box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27);
+        border-radius: 5px;
+    }
+}
