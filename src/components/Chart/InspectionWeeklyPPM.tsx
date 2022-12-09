@@ -5,24 +5,23 @@ import Swal from 'sweetalert2';
 import { generalQuery } from '../../api/Api';
 import { CustomResponsiveContainer, nFormatter } from '../../api/GlobalFunction';
 
-
-
-interface DailyPPMData {
-    INSPECT_DATE?: string;
-    INSPECT_TOTAL_QTY?: number;
-    MATERIAL_NG?: number;
-    PROCESS_NG?: number;
-    TOTAL_NG?: number;
-    TOTAL_PPM?: number;
-    MATERIAL_PPM?: number;
-    PROCESS_PPM?: number;
-  }
-
-interface DailyData {
-    dldata?: DailyPPMData[]
+interface WeeklyPPMData {
+  YEAR_NUM?: number;
+  WEEK_NUM?: number;
+  INSPECT_TOTAL_QTY?: number;
+  MATERIAL_NG?: number;
+  PROCESS_NG?: number;
+  TOTAL_NG?: number;
+  TOTAL_PPM?: number;
+  MATERIAL_PPM?: number;
+  PROCESS_PPM?: number;
 }
 
-const InspectionDailyPPM = ({dldata} : DailyData) => {
+
+interface WeeklyData {
+  dldata?: WeeklyPPMData[]
+}
+const InspectionWeeklyPPM = ({dldata} : WeeklyData) => {
   const formatCash = (n:number) => {
     return nFormatter(n,1);
   };
@@ -32,7 +31,8 @@ const InspectionDailyPPM = ({dldata} : DailyData) => {
   };
 
   const CustomTooltip = ({ active, payload, label } : {active?:any, payload?:any, label?: any}) => {
-    if (active && payload && payload.length) {      
+    if (active && payload && payload.length) {
+      console.log(payload);      
       return (
         <div className='custom-tooltip' style={{backgroundImage: "linear-gradient(to right, #ccffff, #00cccc)", padding: 20, borderRadius: 5}}>
 		  <p>Ngày {label}:</p>
@@ -44,6 +44,7 @@ const InspectionDailyPPM = ({dldata} : DailyData) => {
     }
     return null;
 }
+
   useEffect(()=> {
     
   },[]);
@@ -61,15 +62,15 @@ const InspectionDailyPPM = ({dldata} : DailyData) => {
       }}
     >
       <CartesianGrid strokeDasharray='3 3' className='chartGrid' />
-      <XAxis dataKey='INSPECT_DATE'>
+      <XAxis dataKey='WEEK_NUM'>
         {" "}
-        <Label value='Ngày tháng' offset={0} position='insideBottom' />
+        <Label value='Tuần' offset={0} position='insideBottom' />
       </XAxis>
       <YAxis yAxisId="left-axis"  label={{
           value:"NG Rate",
           angle: -90,
           position: "insideLeft",
-        }} tickFormatter={(value) => new Intl.NumberFormat('en', { notation: "compact", compactDisplay: "short" }).format(value)}  tickCount={7}/>   
+        }} tickFormatter={(value) => new Intl.NumberFormat('en', { notation: "compact", compactDisplay: "short" }).format(value)}  tickCount={6}/>   
       <Tooltip content={<CustomTooltip/>}/>
       <Legend />
       <Line yAxisId="left-axis" type="monotone" dataKey="TOTAL_PPM" stroke="green" />
@@ -81,5 +82,5 @@ const InspectionDailyPPM = ({dldata} : DailyData) => {
     </CustomResponsiveContainer>
   )
 }
-export default InspectionDailyPPM
+export default InspectionWeeklyPPM
 

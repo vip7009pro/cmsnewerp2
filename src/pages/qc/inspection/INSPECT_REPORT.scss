@@ -14,6 +14,15 @@
                 color: blue;
                 font-style: italic;
             }
+            .subsection_title {
+                font-size: 15px;
+                font-weight: bold;
+                margin-top: 10px;
+                margin-bottom: 10px;
+                color: blue;
+                font-style: italic;
+            }
+            
             .revenuewidget {
                 display: flex;
                 flex-direction: row;
@@ -121,6 +130,14 @@
             flex-direction: column;
             .section_title {
                 font-size: 20px;
+                font-weight: bold;
+                margin-top: 10px;
+                margin-bottom: 10px;
+                color: blue;
+                font-style: italic;
+            }
+            .subsection_title {
+                font-size: 15px;
                 font-weight: bold;
                 margin-top: 10px;
                 margin-bottom: 10px;

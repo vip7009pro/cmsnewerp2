@@ -172,7 +172,7 @@ const YCSXManager = () => {
   const [id_congviec, setID_CongViec] = useState('');
   const [cavityAmazon, setCavityAmazon] = useState(0);
   const [prod_model, setProd_Model] = useState('');
-  
+  const [AMZ_check_flag, setAMZ_Check_Flag] = useState(false);
   const column_ycsxtable = [   
     { field: "G_CODE", headerName: "G_CODE", width: 80 },
     { field: "G_NAME", headerName: "G_NAME", width: 250, renderCell: (params:any) => {
@@ -581,7 +581,7 @@ const upAmazonData = async ()=> {
   //console.log(uploadAmazonData);
   let checkIDcongViecTonTai:boolean = false;
 
-  await generalQuery("insertData_Amazon", {
+  await generalQuery("checkIDCongViecAMZ", {
     NO_IN: id_congviec,
   })
     .then((response) => {
@@ -596,7 +596,13 @@ const upAmazonData = async ()=> {
       console.log(error);
     });
   
-    if(checkIDcongViecTonTai)
+    if(!AMZ_check_flag)
+    {
+      Swal.fire("Thông báo","Hãy check data trước khi up","error");
+    }
+    else
+    {
+      if(checkIDcongViecTonTai)
     {
       for(let i=0;i<uploadAmazonData.length; i++) 
       {
@@ -634,10 +640,14 @@ const upAmazonData = async ()=> {
     {
       Swal.fire("Thông báo","ID công việc đã tồn tại","error");
     } 
+    }
+    
 }
 const checkAmazonData = async (amazon_data: {id:number, DATA: string, CHECKSTATUS: string}[]) => {
   //Swal.fire("Thông báo","Bắt đầu check Amazon Data","success");  
-  for(let i=0;i<amazon_data.length;i++){
+  let err_code: string = '0';
+
+  for(let i=0;i<amazon_data.length;i++){    
       await generalQuery("check_amazon_data", {
         DATA: amazon_data[i].DATA
        })
@@ -647,6 +657,7 @@ const checkAmazonData = async (amazon_data: {id:number, DATA: string, CHECKSTATU
           
           amazon_data = amazon_data.map((ele,index) => {
             return ele===amazon_data[i] ? {...ele, CHECKSTATUS:'NG'}: ele;
+            err_code = 'NG';
           }); 
           setUploadExcelJSon(amazon_data);       
           
@@ -662,6 +673,17 @@ const checkAmazonData = async (amazon_data: {id:number, DATA: string, CHECKSTATU
       });
 
   }
+
+  if(err_code === '0')
+  {
+    setAMZ_Check_Flag(true);
+  }
+  else
+  {
+    setAMZ_Check_Flag(false);
+    Swal.fire('Thông báo',' Có lỗi trùng data', 'warning');
+  }
+ 
 
 }
 const checkAmazonData2 = async (amazon_data: {id:number, DATA: string, CHECKSTATUS: string}[]) => {
@@ -790,9 +812,7 @@ const readUploadFileAmazon = (e:any) => {
 
      
   }
-}
-
- 
+} 
   const handletraYCSX = ()=> {
     setisLoading(true);
     generalQuery('traYCSXDataFull',{

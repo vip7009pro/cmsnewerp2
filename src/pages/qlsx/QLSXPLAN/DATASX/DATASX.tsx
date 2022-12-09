@@ -59,23 +59,27 @@ interface SX_DATA {
   KHAC: number,
   REMARK: string,
 }
-interface LICHSUINPUTLIEU_DATA {
-    id: string,
-    PLAN_ID: string,
-    G_NAME: string,
-    G_NAME_KD: string,
-    M_CODE: string,
-    M_NAME: string,
-    M_LOT_NO: string,
-    WIDTH_CD: number,
-    INPUT_QTY: number,
-    USED_QTY: number,
-    REMAIN_QTY: number,
-    EMPL_NO: string,
-    EQUIPMENT_CD: string,
-    INS_DATE: string,
-    PROD_REQUEST_NO: string,
+interface YCSX_SX_DATA {
+  PROD_REQUEST_NO: string,
+  G_NAME: string,
+  G_NAME_KD: string,
+  FACTORY: string,
+  EQ1: string,
+  EQ2: string,
+  PROD_REQUEST_DATE: string,
+  PROD_REQUEST_QTY: number,
+  M_NAME: string,
+  M_OUTPUT: number,
+  PD: number,
+  CAVITY: number,
+  ESTIMATED_QTY: number,
+  CD1: number,
+  CD2: number,
+  INS_INPUT: number,
+  INS_OUTPUT: number,
 }
+
+
 const DATASX = () => { 
  const [selectionModel_INPUTSX, setSelectionModel_INPUTSX] = useState<any>([]);
   const [readyRender, setReadyRender] = useState(false);
@@ -104,7 +108,7 @@ const DATASX = () => {
   const [plan_id,setPlanID] =useState('');
   const [alltime, setAllTime] = useState(false); 
   const [id,setID] =useState('');
-  const [datasxtable, setDataSXTable] = useState<Array<any>>([]);
+  const [datasxtable, setDataSXTable] = useState<Array<any>>([]);  
   const [sumaryINSPECT, setSummaryInspect] = useState('');
   const [m_name,setM_Name] =useState('');
   const [m_code,setM_Code] =useState('');
@@ -160,6 +164,26 @@ const DATASX = () => {
     { field: "REMARK", headerName: "REMARK", minWidth: 120 , flex: 1},   
 
   ];
+  const column_ycsxdatasx = [
+    { field: "PROD_REQUEST_NO", headerName: "PROD_REQUEST_NO", width: 80 },
+    { field: "G_NAME", headerName: "G_NAME", width: 80 },
+    { field: "G_NAME_KD", headerName: "G_NAME_KD", width: 80 },
+    { field: "FACTORY", headerName: "FACTORY", width: 80 },
+    { field: "EQ1", headerName: "EQ1", width: 80 },
+    { field: "EQ2", headerName: "EQ2", width: 80 },
+    { field: "PROD_REQUEST_DATE", headerName: "PROD_REQUEST_DATE", width: 80 },
+    { field: "PROD_REQUEST_QTY", headerName: "PROD_REQUEST_QTY", width: 80 },
+    { field: "M_NAME", headerName: "M_NAME", width: 80 },
+    { field: "M_OUTPUT", headerName: "M_OUTPUT", width: 80 },
+    { field: "PD", headerName: "PD", width: 80 },
+    { field: "CAVITY", headerName: "CAVITY", width: 80 },
+    { field: "ESTIMATED_QTY", headerName: "ESTIMATED_QTY", width: 80 },
+    { field: "CD1", headerName: "CD1", width: 80 },
+    { field: "CD2", headerName: "CD2", width: 80 },
+    { field: "INS_INPUT", headerName: "INS_INPUT", width: 80 },
+    { field: "INS_OUTPUT", headerName: "INS_OUTPUT", width: 80 },
+   
+  ];
   const [columnDefinition, setColumnDefinition] = useState<Array<any>>(column_datasx);
 
   function CustomToolbarLICHSUINPUTSX() {
@@ -179,7 +203,7 @@ const DATASX = () => {
       </GridToolbarContainer>
     );
   }
-  const handle_loadlichsuinputlieu = ()=>
+  const handle_loaddatasx = ()=>
   {
      generalQuery("loadDataSX", {           
         ALLTIME: alltime,
@@ -205,6 +229,42 @@ const DATASX = () => {
             MASS_START_TIME: element.MASS_START_TIME === null ? '' : moment.utc(element.MASS_START_TIME).format('YYYY-MM-DD HH:mm:ss'),
             MASS_END_TIME: element.MASS_END_TIME === null ? '' : moment.utc(element.MASS_END_TIME).format('YYYY-MM-DD HH:mm:ss'),
             SX_DATE: element.SX_DATE === null ? '' :  moment.utc(element.SX_DATE).format('YYYY-MM-DD'),
+            id: index
+          }
+        })
+        setDataSXTable(loaded_data); 
+        setReadyRender(true); 
+        setisLoading(false);      
+      } else {     
+          
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });     
+  }
+  const handle_loaddatasxYCSX = ()=>
+  {
+    generalQuery("loadDataSX_YCSX", {           
+        ALLTIME: alltime,
+        FROM_DATE: fromdate,
+        TO_DATE: todate,
+        PROD_REQUEST_NO: prodrequestno,
+        PLAN_ID: plan_id,
+        M_NAME: m_name,
+        M_CODE: m_code,
+        G_NAME: codeKD,
+        G_CODE: codeCMS,
+        FACTORY: factory,
+        PLAN_EQ: machine
+    })
+    .then((response) => {
+      console.log(response.data.data);
+      if (response.data.tk_status !== "NG") {
+        const loaded_data: SX_DATA[] = response.data.data.map((element: YCSX_SX_DATA, index: number)=> {
+          return {
+            ...element, 
+            PROD_REQUEST_DATE: moment.utc(element.PROD_REQUEST_DATE).format('YYYY-MM-DD'),
             id: index
           }
         })
@@ -355,10 +415,21 @@ const DATASX = () => {
                 setisLoading(true);
                 setReadyRender(false);
                 setColumnDefinition(column_datasx);
-                handle_loadlichsuinputlieu();
+                handle_loaddatasx();
               }}
             >
-              Tra DATA SX
+              TRA CHỈ THỊ
+            </button>
+            <button
+              className='tranhatky'
+              onClick={() => {
+                setisLoading(true);
+                setReadyRender(false);
+                setColumnDefinition(column_ycsxdatasx);
+                handle_loaddatasxYCSX();
+              }}
+            >
+              TRA YCSX
             </button>
           </div>
         </div>

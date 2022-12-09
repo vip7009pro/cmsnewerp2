@@ -16,6 +16,9 @@ import ChartPICRevenue from "../../../components/Chart/ChartPICRevenue";
 import ChartWeekLyDelivery from "../../../components/Chart/ChartWeeklyDelivery";
 import ChartWeeklyPO from "../../../components/Chart/ChartWeekLyPO";
 import InspectionDailyPPM from "../../../components/Chart/InspectionDailyPPM";
+import InspectionMonthlyPPM from "../../../components/Chart/InspectionMonthlyPPM";
+import InspectionWeeklyPPM from "../../../components/Chart/InspectionWeeklyPPM";
+import InspectionYearlyPPM from "../../../components/Chart/InspectionYearlyPPM";
 import CustomerPOBalanceByType from "../../../components/DataTable/CustomerPOBalanceByType";
 import Widget from "../../../components/Widget/Widget";
 import WidgetInspection from "../../../components/Widget/WidgetInspection";
@@ -215,7 +218,6 @@ const INSPECT_REPORT = () => {
         console.log(error);
       });
   };
-
   const handleGetFCSTAmount = () => {
     let fcstweek2: number = moment().add(1, "days").isoWeek();
     let fcstyear2: number = moment().year();
@@ -291,7 +293,6 @@ const INSPECT_REPORT = () => {
         console.log(error);
       });
   };
-
   useEffect(() => {
     handle_getDailyPPM('NM1');
     handle_getDailyPPM('NM2');
@@ -308,7 +309,7 @@ const INSPECT_REPORT = () => {
     <div className='inspectionreport'>
       <div className='doanhthureport'>
         <span className='section_title'>1. Defect Summary</span>
-        <span className='section_title'>a. FACTORY 1</span>        
+        <span className='subsection_title'>a. FACTORY 1</span>        
         <div className='revenuewidget'>
           <div className='revenuwdg'>
             <WidgetInspection
@@ -355,7 +356,7 @@ const INSPECT_REPORT = () => {
             />
           </div>
         </div>
-        <span className='section_title'>b. FACTORY 2</span>
+        <span className='subsection_title'>b. FACTORY 2</span>
         <div className='revenuewidget'>
           <div className='revenuwdg'>
             <WidgetInspection
@@ -406,26 +407,50 @@ const INSPECT_REPORT = () => {
         <hr></hr>
         <div className='graph'>
           <span className='section_title'>2. NG Trending</span>
+          <span className='subsection_title'>a. FACTORY 1 NG Trending</span>
           <div className='dailygraphtotal'>
             <div className='dailygraph'>
-              <span className='subsection'>Daily Closing</span>
+              <span className='subsection'>Daily NG Rate</span>
               <InspectionDailyPPM dldata={dailyppm1}/>
             </div>
             <div className='dailygraph'>
-              <span className='subsection'>Weekly Closing</span>
-              <ChartWeekLy />
+              <span className='subsection'>Weekly NG Rate</span>
+              <InspectionWeeklyPPM dldata={weeklyppm1} />
             </div>
           </div>
           <div className='monthlyweeklygraph'>
             <div className='dailygraph'>
-              <span className='subsection'>Monthly Closing</span>
-              <ChartMonthLy />
+              <span className='subsection'>Monthly NG Rate</span>
+              <InspectionMonthlyPPM dldata={monthlyppm1} />
             </div>
             <div className='dailygraph'>
-              <span className='subsection'>Yearly Closing</span>
-              <ChartYearly />
+              <span className='subsection'>Yearly NG Rate</span>
+              <InspectionYearlyPPM dldata={yearlyppm1} />
             </div>
           </div>
+          <span className='subsection_title'>b. FACTORY 2 NG Trending</span>
+          <div className='dailygraphtotal'>
+            <div className='dailygraph'>
+              <span className='subsection'>Daily NG Rate</span>
+              <InspectionDailyPPM dldata={dailyppm2}/>
+            </div>
+            <div className='dailygraph'>
+              <span className='subsection'>Weekly NG Rate</span>
+              <InspectionWeeklyPPM dldata={weeklyppm2} />
+            </div>
+          </div>
+          <div className='monthlyweeklygraph'>
+            <div className='dailygraph'>
+              <span className='subsection'>Monthly NG Rate</span>
+              <InspectionMonthlyPPM dldata={monthlyppm2} />
+            </div>
+            <div className='dailygraph'>
+              <span className='subsection'>Yearly NG Rate</span>
+              <InspectionYearlyPPM dldata={yearlyppm2} />
+            </div>
+          </div>
+          
+
           <div className='monthlyweeklygraph'>
             <div className='dailygraph'>
               <span className='subsection'>TOP 5 Customer Weekly Revenue</span>

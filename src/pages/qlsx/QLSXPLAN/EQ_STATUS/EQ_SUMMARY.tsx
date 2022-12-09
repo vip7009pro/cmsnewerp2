@@ -117,7 +117,7 @@ const EQ_SUMMARY = ({ EQ_DATA }: EQ_STT_DATA) => {
             <td>{totalSETTING_FR}</td>
             <td>{totalMASS_FR}</td>
             <td>
-              {totalFR !== 0 ? displayPercent(totalMASS_FR / totalFR) : "0%"}
+              {totalFR !== 0 ? displayPercent((totalMASS_FR + totalSETTING_FR) / totalFR) : "0%"}
             </td>
           </tr>
           <tr>
@@ -127,7 +127,7 @@ const EQ_SUMMARY = ({ EQ_DATA }: EQ_STT_DATA) => {
             <td>{totalSETTING_SR}</td>
             <td>{totalMASS_SR}</td>
             <td>
-              {totalSR !== 0 ? displayPercent(totalMASS_SR / totalSR) : "0%"}
+              {totalSR !== 0 ? displayPercent((totalMASS_SR  + totalSETTING_SR) / totalSR) : "0%"}
             </td>
           </tr>
           <tr>
@@ -137,7 +137,7 @@ const EQ_SUMMARY = ({ EQ_DATA }: EQ_STT_DATA) => {
             <td>{totalSETTING_DC}</td>
             <td>{totalMASS_DC}</td>
             <td>
-              {totalDC !== 0 ? displayPercent(totalMASS_DC / totalDC) : "0%"}
+              {totalDC !== 0 ? displayPercent((totalMASS_DC  + totalSETTING_DC) / totalDC) : "0%"}
             </td>
           </tr>
           <tr>
@@ -147,7 +147,7 @@ const EQ_SUMMARY = ({ EQ_DATA }: EQ_STT_DATA) => {
             <td>{totalSETTING_ED}</td>
             <td>{totalMASS_ED}</td>
             <td>
-              {totalED !== 0 ? displayPercent(totalMASS_ED / totalED) : "0%"}
+              {totalED !== 0 ? displayPercent((totalMASS_ED   + totalSETTING_ED) / totalED) : "0%"}
             </td>
           </tr>
         </tbody>

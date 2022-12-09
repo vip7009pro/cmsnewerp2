@@ -6,23 +6,23 @@ import { generalQuery } from '../../api/Api';
 import { CustomResponsiveContainer, nFormatter } from '../../api/GlobalFunction';
 
 
-
-interface DailyPPMData {
-    INSPECT_DATE?: string;
-    INSPECT_TOTAL_QTY?: number;
-    MATERIAL_NG?: number;
-    PROCESS_NG?: number;
-    TOTAL_NG?: number;
-    TOTAL_PPM?: number;
-    MATERIAL_PPM?: number;
-    PROCESS_PPM?: number;
-  }
-
-interface DailyData {
-    dldata?: DailyPPMData[]
+interface MonthlyPPMData {
+  YEAR_NUM?: number;
+  MONTH_NUM?: number;
+  INSPECT_TOTAL_QTY?: number;
+  MATERIAL_NG?: number;
+  PROCESS_NG?: number;
+  TOTAL_NG?: number;
+  TOTAL_PPM?: number;
+  MATERIAL_PPM?: number;
+  PROCESS_PPM?: number;
 }
 
-const InspectionDailyPPM = ({dldata} : DailyData) => {
+
+interface MonthlyData {
+  dldata?: MonthlyPPMData[]
+}
+const InspectionMonthlyPPM = ({dldata} : MonthlyData) => {
   const formatCash = (n:number) => {
     return nFormatter(n,1);
   };
@@ -32,7 +32,8 @@ const InspectionDailyPPM = ({dldata} : DailyData) => {
   };
 
   const CustomTooltip = ({ active, payload, label } : {active?:any, payload?:any, label?: any}) => {
-    if (active && payload && payload.length) {      
+    if (active && payload && payload.length) {
+      console.log(payload);      
       return (
         <div className='custom-tooltip' style={{backgroundImage: "linear-gradient(to right, #ccffff, #00cccc)", padding: 20, borderRadius: 5}}>
 		  <p>Ngày {label}:</p>
@@ -44,6 +45,7 @@ const InspectionDailyPPM = ({dldata} : DailyData) => {
     }
     return null;
 }
+
   useEffect(()=> {
     
   },[]);
@@ -52,7 +54,7 @@ const InspectionDailyPPM = ({dldata} : DailyData) => {
     <ComposedChart
       width={500}
       height={300}
-      data={dldata?.slice(0,10).reverse()}
+      data={dldata?.reverse()}
       margin={{
         top: 5,
         right: 30,
@@ -61,9 +63,9 @@ const InspectionDailyPPM = ({dldata} : DailyData) => {
       }}
     >
       <CartesianGrid strokeDasharray='3 3' className='chartGrid' />
-      <XAxis dataKey='INSPECT_DATE'>
+      <XAxis dataKey='MONTH_NUM'>
         {" "}
-        <Label value='Ngày tháng' offset={0} position='insideBottom' />
+        <Label value='Tháng' offset={0} position='insideBottom' />
       </XAxis>
       <YAxis yAxisId="left-axis"  label={{
           value:"NG Rate",
@@ -81,5 +83,5 @@ const InspectionDailyPPM = ({dldata} : DailyData) => {
     </CustomResponsiveContainer>
   )
 }
-export default InspectionDailyPPM
+export default InspectionMonthlyPPM
 
