@@ -18,7 +18,6 @@ import YCSXComponent from './YCSXComponent/YCSXComponent';
 import DrawComponent from './DrawComponent/DrawComponent';
 import TraAMZ from './TraAMZ/TraAMZ';
 const axios = require('axios').default;
-
 interface POBALANCETDYCSX{ G_CODE: string; PO_BALANCE: number }
 interface TONKHOTDYCSX {
   G_CODE: string;
@@ -115,14 +114,12 @@ const YCSXManager = () => {
   const handlePrint = useReactToPrint({
     content :  () => ycsxprintref.current,
   });
-
   const renderYCSX = (ycsxlist: YCSXTableData[]) => {
     return  ycsxlist.map((element,index)=> <YCSXComponent key={index} PROD_REQUEST_NO={element.PROD_REQUEST_NO} G_CODE={element.G_CODE} PO_TDYCSX={element.PO_TDYCSX}  TOTAL_TKHO_TDYCSX={ element.TOTAL_TKHO_TDYCSX}  TKHO_TDYCSX={ element.TKHO_TDYCSX}  BTP_TDYCSX={ element.BTP_TDYCSX}  CK_TDYCSX={ element.CK_TDYCSX}  BLOCK_TDYCSX={ element.BLOCK_TDYCSX}  FCST_TDYCSX={ element.FCST_TDYCSX} PDBV={element.PDBV} PDBV_EMPL={element.PDBV_EMPL} PDBV_DATE={element.PDBV_DATE} DESCR={element.DESCR}/>)
   }
   const renderBanVe = (ycsxlist: YCSXTableData[]) => {
     return  ycsxlist.map((element,index)=>(element.BANVE === 'Y' ? <DrawComponent key={index} G_CODE = {element.G_CODE} PDBV ={element.PDBV} PROD_REQUEST_NO={element.PROD_REQUEST_NO} PDBV_EMPL={element.PDBV_EMPL} PDBV_DATE={element.PDBV_DATE}/> : <div>Code: {element.G_NAME} : Không có bản vẽ</div> ))
   }
-
   const [file, setFile] = useState<any>();
   const [isPending, startTransition] = useTransition();
   const [selection, setSelection] = useState<any>({
@@ -232,16 +229,13 @@ const YCSXManager = () => {
       return <span style={{color:'green'}}>{params.row.G_NAME}</span>
     } },
     { field: "BANVE", headerName: "BANVE", width: 250 , renderCell: (params:any) => {
-
       let file:any = null;
       let upload_url = "http://14.160.33.94:5011/upload";
-
       const uploadFile = async (e:any) => {
         console.log(file);
         const formData = new FormData();
         formData.append("banve", file);        
         formData.append("filename", params.row.G_CODE);       
-        
         if(userData.MAINDEPTNAME==='KD') 
         {
           try {
@@ -285,7 +279,6 @@ const YCSXManager = () => {
         {
           Swal.fire('Thông báo','Chỉ bộ phận kinh doanh upload được bản vẽ','error');
         }
-       
       }
       let hreftlink = '/banve/' + params.row.G_CODE + '.pdf';
       if(params.row.BANVE==='Y')
@@ -303,7 +296,6 @@ const YCSXManager = () => {
       return <span style={{color:'red'}}><b>PENDING</b></span>
       return <span style={{color:'green'}}><b>APPROVED</b></span>
     } },
-   
   ];
   const column_excel2 = [
     { field: "id", headerName: "id", width: 180 },
@@ -395,19 +387,14 @@ const YCSXManager = () => {
           else{
             Swal.fire("Thông báo","Chọn ít nhất 1 YCSX để in",'error');
           }
-          
           }}><AiOutlinePrinter color='#0066ff' size={25}/>Print YCSX</IconButton> 
-
         <IconButton className='buttonIcon'onClick={()=>{
           if(ycsxdatatablefilter.length>0)
           {
-             
-            
           }
           else{
             Swal.fire("Thông báo","Chọn ít nhất 1 YCSX để check",'error');
           }
-
           }}><AiOutlinePrinter color='#00701a' size={25}/>Check Bản Vẽ</IconButton>        
         <IconButton className='buttonIcon'onClick={()=>{
           if(ycsxdatatablefilter.length>0)
@@ -418,7 +405,6 @@ const YCSXManager = () => {
           else{
             Swal.fire("Thông báo","Chọn ít nhất 1 YCSX để in",'error');
           }
-          
           }}><AiOutlinePrinter color='#ff751a' size={25}/>Print Bản Vẽ</IconButton>        
         <IconButton className='buttonIcon'onClick={()=>{handleConfirmPDuyetYCSX();}}><FcApprove color='red' size={25}/>Phê Duyệt</IconButton>
         <IconButton className='buttonIcon'onClick={()=>{handleGoToAmazon();}}><AiFillAmazonCircle color='red' size={25}/>Up Amazon</IconButton>
@@ -448,7 +434,6 @@ const YCSXManager = () => {
       handletraYCSX();
     }
   };
-
   const monthArray = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L" ];
   const dayArray = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V"];
   const createHeader = async() => {
@@ -533,17 +518,14 @@ const handleAmazonData = (amazon_data: {id:number, DATA: string, CHECKSTATUS:str
   }
   else
   {
-
     for(let i=1; i<=amazon_data.length / cavity;i++)
     {
       let temp_amazon_row: UploadAmazonData = {
       };
-
       temp_amazon_row.G_CODE = G_CODE;
       temp_amazon_row.PROD_REQUEST_NO = PROD_REQUEST_NO;
       temp_amazon_row.NO_IN = NO_IN;
       temp_amazon_row.ROW_NO = i; 
-
       if(cavity === 1)
       {
         temp_amazon_row.DATA1 = amazon_data[i].DATA;
@@ -571,7 +553,6 @@ const handleAmazonData = (amazon_data: {id:number, DATA: string, CHECKSTATUS:str
       handled_Amazon_Table.push(temp_amazon_row);
       //console.log(temp_amazon_row);
     }
-   
   }
   //console.log(handled_Amazon_Table);
   return handled_Amazon_Table;
@@ -580,7 +561,6 @@ const upAmazonData = async ()=> {
   let uploadAmazonData =  handleAmazonData(uploadExcelJson,cavityAmazon,codeCMS,prodrequestno,id_congviec);    
   //console.log(uploadAmazonData);
   let checkIDcongViecTonTai:boolean = false;
-
   await generalQuery("checkIDCongViecAMZ", {
     NO_IN: id_congviec,
   })
@@ -595,7 +575,6 @@ const upAmazonData = async ()=> {
     .catch((error) => {
       console.log(error);
     });
-  
     if(!AMZ_check_flag)
     {
       Swal.fire("Thông báo","Hãy check data trước khi up","error");
@@ -623,10 +602,8 @@ const upAmazonData = async ()=> {
           .then((response) => {
             console.log(response.data.tk_status);
             if (response.data.tk_status !== "NG") {
-              setProgressValue((i+1)*2);
+              setProgressValue((i+1));
             } else {      
-             
-              
             }
           })
           .catch((error) => {
@@ -634,19 +611,16 @@ const upAmazonData = async ()=> {
           });
       }
       Swal.fire("Thông báo","Upload data Amazon Hoàn thành","success");
-
     }
     else
     {
       Swal.fire("Thông báo","ID công việc đã tồn tại","error");
     } 
     }
-    
 }
 const checkAmazonData = async (amazon_data: {id:number, DATA: string, CHECKSTATUS: string}[]) => {
   //Swal.fire("Thông báo","Bắt đầu check Amazon Data","success");  
   let err_code: string = '0';
-
   for(let i=0;i<amazon_data.length;i++){    
       await generalQuery("check_amazon_data", {
         DATA: amazon_data[i].DATA
@@ -654,13 +628,11 @@ const checkAmazonData = async (amazon_data: {id:number, DATA: string, CHECKSTATU
       .then((response) => {
         setProgressValue(i+1);            
         if (response.data.tk_status !== "NG") {
-          
           amazon_data = amazon_data.map((ele,index) => {
             return ele===amazon_data[i] ? {...ele, CHECKSTATUS:'NG'}: ele;
             err_code = 'NG';
           }); 
           setUploadExcelJSon(amazon_data);       
-          
         } else {      
           amazon_data = amazon_data.map((ele,index) => {
             return ele===amazon_data[i] ? {...ele, CHECKSTATUS:'OK'}: ele;
@@ -671,9 +643,7 @@ const checkAmazonData = async (amazon_data: {id:number, DATA: string, CHECKSTATU
       .catch((error) => {
         console.log(error);
       });
-
   }
-
   if(err_code === '0')
   {
     setAMZ_Check_Flag(true);
@@ -683,8 +653,6 @@ const checkAmazonData = async (amazon_data: {id:number, DATA: string, CHECKSTATU
     setAMZ_Check_Flag(false);
     Swal.fire('Thông báo',' Có lỗi trùng data', 'warning');
   }
- 
-
 }
 const checkAmazonData2 = async (amazon_data: {id:number, DATA: string, CHECKSTATUS: string}[]) => {
   //Swal.fire("Thông báo","Bắt đầu check Amazon Data","success");
@@ -698,12 +666,10 @@ const checkAmazonData2 = async (amazon_data: {id:number, DATA: string, CHECKSTAT
       .then((response) => {
         setProgressValue(i-j);            
         if (response.data.tk_status !== "NG") {
-          
           amazon_data = amazon_data.map((ele,index) => {
             return ele===amazon_data[i-j] ? {...ele, CHECKSTATUS:'NG'}: ele;
           }); 
           setUploadExcelJSon(amazon_data);       
-          
         } else {      
           amazon_data = amazon_data.map((ele,index) => {
             return ele===amazon_data[i-j] ? {...ele, CHECKSTATUS:'OK'}: ele;
@@ -714,7 +680,6 @@ const checkAmazonData2 = async (amazon_data: {id:number, DATA: string, CHECKSTAT
       .catch((error) => {
         console.log(error);
       });
-
     }  
     await generalQuery("check_amazon_data", {
       DATA: amazon_data[i].DATA
@@ -726,7 +691,6 @@ const checkAmazonData2 = async (amazon_data: {id:number, DATA: string, CHECKSTAT
           return ele===amazon_data[i] ? {...ele, CHECKSTATUS:'NG'}: ele;
         }); 
         setUploadExcelJSon(amazon_data);       
-        
       } else {      
         amazon_data = amazon_data.map((ele,index) => {
           return ele===amazon_data[i] ? {...ele, CHECKSTATUS:'OK'}: ele;
@@ -737,9 +701,7 @@ const checkAmazonData2 = async (amazon_data: {id:number, DATA: string, CHECKSTAT
     .catch((error) => {
       console.log(error);
     });
-
   }
-
 }
 const readUploadFileAmazon = (e:any) => {
   e.preventDefault();    
@@ -764,7 +726,6 @@ const readUploadFileAmazon = (e:any) => {
             const workbook = XLSX.read(data, { type: "array" });
             const sheetName = workbook.SheetNames[0];
             const worksheet = workbook.Sheets[sheetName];            
-          
             XLSX.utils.sheet_add_aoa(worksheet, [
               [worksheet.A1.v]
             ], {origin: -1});
@@ -774,7 +735,6 @@ const readUploadFileAmazon = (e:any) => {
             const newworksheet = worksheet;
             console.log(worksheet);
             let json:any = XLSX.utils.sheet_to_json(newworksheet);   
-  
             console.log(json);
             /* check trung */
             let valueArray = json.map((element:any)=>  element.DATA);
@@ -786,7 +746,6 @@ const readUploadFileAmazon = (e:any) => {
             if(isDuplicate)
             {
               Swal.fire("Thông báo","Có giá trị trùng lặp !","error");
-  
             }
             else
             {
@@ -804,13 +763,9 @@ const readUploadFileAmazon = (e:any) => {
               );           
               setUploadExcelJSon(newjson);
             }
-            
         };
         reader.readAsArrayBuffer(e.target.files[0]);        
-
       }
-
-     
   }
 } 
   const handletraYCSX = ()=> {
@@ -856,7 +811,6 @@ const readUploadFileAmazon = (e:any) => {
               PROD_REQUEST_QTY: (element.PROD_REQUEST_QTY===undefined|| element.PROD_REQUEST_QTY ===null? 0: element.PROD_REQUEST_QTY),
             }
           })  
-              
           setYcsxDataTable(loadeddata);
           setisLoading(false);
           Swal.fire("Thông báo", "Đã load " + response.data.data.length + " dòng", "success");  
@@ -954,7 +908,6 @@ const readUploadFileAmazon = (e:any) => {
         .catch((error) => {
           console.log(error);
         });
-          
           if(err_code === 0)
           {
             console.log('vao den day');
@@ -1016,7 +969,6 @@ const readUploadFileAmazon = (e:any) => {
             .catch((error) => {
               console.log(error);
             });
-
             await generalQuery("checktonkho_tdycsx", { 
               G_CODE: uploadExcelJson[i].G_CODE
             })
@@ -1030,7 +982,6 @@ const readUploadFileAmazon = (e:any) => {
             .catch((error) => {
               console.log(error);
             });
-
             await generalQuery("checkfcst_tdycsx", { 
               G_CODE: uploadExcelJson[i].G_CODE
             })
@@ -1049,7 +1000,6 @@ const readUploadFileAmazon = (e:any) => {
             {
               err_code1 = 4;
             }
-            
             console.log('err_Code1 = ' + err_code1);
             if(err_code1 === 0)
                 {          
@@ -1713,13 +1663,11 @@ const readUploadFileAmazon = (e:any) => {
           {            
             Swal.fire("Thông báo", "NG: Không để trống thông tin bắt buộc" , "error"); 
           }   
-
     }
     else
     {
       Swal.fire("Thông báo","Không đủ quyền hạn để sửa !","error");
     }
-           
   }
   const deleteYCSX= async()=> {
     if(ycsxdatatablefilter.length>=1)
@@ -1798,7 +1746,6 @@ const readUploadFileAmazon = (e:any) => {
           .then((response) => {
             console.log(response.data.tk_status);
             if (response.data.tk_status !== "NG") {
-             
             } else {  
               err_code = true;
             }
@@ -1820,13 +1767,11 @@ const readUploadFileAmazon = (e:any) => {
       {
         Swal.fire("Thông báo", "Chọn ít nhất 1 YCSX để PDuyet !" , "error"); 
       }
-
     }
     else
     {
       Swal.fire("Thông báo", "Không đủ quyền hạn phê duyệt !" , "error"); 
     }
-   
   }
   const setPendingYCSX= async(pending_value: number)=> {
     if(ycsxdatatablefilter.length>=1)
@@ -1841,7 +1786,6 @@ const readUploadFileAmazon = (e:any) => {
         .then((response) => {
           console.log(response.data.tk_status);
           if (response.data.tk_status !== "NG") {
-           
           } else {  
             err_code = true;
           }
@@ -2010,7 +1954,6 @@ const readUploadFileAmazon = (e:any) => {
         .catch((error) => {
           console.log(error);
         });
-
       } else {          
       }
     })
@@ -2026,7 +1969,6 @@ const readUploadFileAmazon = (e:any) => {
   return (
     <div className='ycsxmanager'>
       <div className='mininavbar'>       
-
         <div className='mininavitem'  onClick={() => setNav(1)} style={{backgroundColor:selection.trapo === true ? '#9933ff':'#d9b3ff', color: selection.trapo === true ? 'yellow':'yellow'}}>
           <span className='mininavtext'>
           Tra YCSX
@@ -2608,7 +2550,6 @@ const readUploadFileAmazon = (e:any) => {
                 onClick={(e) => {
                   e.preventDefault();
                   upAmazonData();
-                  
                 }}
               >
                 Up Data Amazon
@@ -2652,7 +2593,6 @@ const readUploadFileAmazon = (e:any) => {
           <TraAMZ/>
         </div>
       }
-
     </div>
   );
 }

@@ -96,7 +96,7 @@ const INSPECT_REPORT = () => {
   const [weeklyppm2, setWeeklyPPM2] = useState<WeeklyPPMData[]>([]);
   const [monthlyppm2, setMonthlyPPM2] = useState<MonthlyPPMData[]>([]);
   const [yearlyppm2, setYearlyPPM2] = useState<YearlyPPMData[]>([]);
-  
+
   const [widgetdata_pobalancesummary, setWidgetData_PoBalanceSummary] =
     useState<WidgetData_POBalanceSummary>({
       po_balance_qty: 0,
@@ -121,9 +121,11 @@ const INSPECT_REPORT = () => {
         if (response.data.tk_status !== "NG") {
           const loadeddata: DailyPPMData[] = response.data.data.map(
             (element: DailyPPMData, index: number) => {
-              return {                
+              return {
                 ...element,
-                INSPECT_DATE: moment.utc(element.INSPECT_DATE).format('YYYY-MM-DD'),
+                INSPECT_DATE: moment
+                  .utc(element.INSPECT_DATE)
+                  .format("YYYY-MM-DD"),
               };
             }
           );
@@ -294,14 +296,14 @@ const INSPECT_REPORT = () => {
       });
   };
   useEffect(() => {
-    handle_getDailyPPM('NM1');
-    handle_getDailyPPM('NM2');
-    handle_getWeeklyPPM('NM1');
-    handle_getWeeklyPPM('NM2');
-    handle_getMonthlyPPM('NM1'); 
-    handle_getMonthlyPPM('NM2');
-    handle_getYearlyPPM('NM1');
-    handle_getYearlyPPM('NM2');
+    handle_getDailyPPM("NM1");
+    handle_getDailyPPM("NM2");
+    handle_getWeeklyPPM("NM1");
+    handle_getWeeklyPPM("NM2");
+    handle_getMonthlyPPM("NM1");
+    handle_getMonthlyPPM("NM2");
+    handle_getYearlyPPM("NM1");
+    handle_getYearlyPPM("NM2");
     handleGetPOBalanceSummary();
     handleGetFCSTAmount();
   }, []);
@@ -309,7 +311,7 @@ const INSPECT_REPORT = () => {
     <div className='inspectionreport'>
       <div className='doanhthureport'>
         <span className='section_title'>1. Defect Summary</span>
-        <span className='subsection_title'>a. FACTORY 1</span>        
+        <span className='subsection_title'>a. FACTORY 1</span>
         <div className='revenuewidget'>
           <div className='revenuwdg'>
             <WidgetInspection
@@ -402,7 +404,7 @@ const INSPECT_REPORT = () => {
               total_ppm={yearlyppm2[0]?.TOTAL_PPM}
             />
           </div>
-        </div>        
+        </div>
         <br></br>
         <hr></hr>
         <div className='graph'>
@@ -411,7 +413,7 @@ const INSPECT_REPORT = () => {
           <div className='dailygraphtotal'>
             <div className='dailygraph'>
               <span className='subsection'>Daily NG Rate</span>
-              <InspectionDailyPPM dldata={dailyppm1}/>
+              <InspectionDailyPPM dldata={dailyppm1} />
             </div>
             <div className='dailygraph'>
               <span className='subsection'>Weekly NG Rate</span>
@@ -432,7 +434,7 @@ const INSPECT_REPORT = () => {
           <div className='dailygraphtotal'>
             <div className='dailygraph'>
               <span className='subsection'>Daily NG Rate</span>
-              <InspectionDailyPPM dldata={dailyppm2}/>
+              <InspectionDailyPPM dldata={dailyppm2} />
             </div>
             <div className='dailygraph'>
               <span className='subsection'>Weekly NG Rate</span>
@@ -449,7 +451,6 @@ const INSPECT_REPORT = () => {
               <InspectionYearlyPPM dldata={yearlyppm2} />
             </div>
           </div>
-          
 
           <div className='monthlyweeklygraph'>
             <div className='dailygraph'>

@@ -181,11 +181,9 @@ const DATASX = () => {
     { field: "CD1", headerName: "CD1", width: 80 },
     { field: "CD2", headerName: "CD2", width: 80 },
     { field: "INS_INPUT", headerName: "INS_INPUT", width: 80 },
-    { field: "INS_OUTPUT", headerName: "INS_OUTPUT", width: 80 },
-   
+    { field: "INS_OUTPUT", headerName: "INS_OUTPUT", width: 80 },   
   ];
   const [columnDefinition, setColumnDefinition] = useState<Array<any>>(column_datasx);
-
   function CustomToolbarLICHSUINPUTSX() {
     return (
       <GridToolbarContainer>      
