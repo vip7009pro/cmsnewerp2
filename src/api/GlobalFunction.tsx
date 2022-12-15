@@ -1,5 +1,6 @@
 import { ResponsiveContainer } from 'recharts';
 import * as XLSX from 'xlsx';
+import { generalQuery } from './Api';
 
 export const SaveExcel = (data: any, title: string) => {
     const worksheet = XLSX.utils.json_to_sheet(data);
@@ -58,3 +59,31 @@ export function CustomResponsiveContainer(props:any) {
     });
     return item ? (num / item.value).toFixed(digits).replace(rx, "$1") + item.symbol : "0";
   }
+
+ export async function checkver() {
+  let current_ver: number = 1;
+  let server_ver: number = 1;
+  await generalQuery("checkWebVer", {    
+  })
+    .then((response) => {
+      console.log(response.data.tk_status);
+      if (response.data.tk_status !== "NG") {
+        server_ver = response.data.data[0].VERWEB;
+      } else {
+       
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+
+    if(server_ver === current_ver)
+    {
+      return 1;
+    }
+    else
+    {
+      return 0;
+    }
+
+ }

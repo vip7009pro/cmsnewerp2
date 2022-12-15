@@ -59,7 +59,7 @@
                 }
                 .pobalancesummary {
                     display: flex;      
-                    flex-direction: column;              
+                    flex-direction: row;              
                     align-self: center;
                     width: 30%;
                     margin-bottom: 10px;
@@ -181,7 +181,7 @@
                 }
                 .pobalancesummary {
                     display: flex;      
-                    flex-direction: column;              
+                    flex-direction: row;              
                     align-self: center;
                     width: 100%;
                     margin-bottom: 10px;

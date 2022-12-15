@@ -6,8 +6,7 @@ interface WidgetInfo {
   amount?: number,
   percentage?: number,
   topColor?: string,
-  botColor?: string,
-  
+  botColor?: string,  
   material_ppm?: number,
   process_ppm?: number,
   total_ppm?: number,
@@ -30,7 +29,7 @@ export default function WidgetInspection({widgettype,label,topColor, botColor, m
               <span className="totalNG">{total_ppm?.toLocaleString('en-US')} ppm</span>
           </div>         
       </div>
-    )    
+    )
   }
   else
   return <div>NONO</div>

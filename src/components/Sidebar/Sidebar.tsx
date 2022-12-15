@@ -21,7 +21,7 @@ import {useSelector, useDispatch} from 'react-redux'
 import { changeDiemDanhState, changeUserData, UserData } from "../../redux/slices/globalSlice";
 import { getlang } from '../../components/String/String';
 import { GrStatusUnknown } from "react-icons/gr";
-
+import { FcDataProtection } from "react-icons/fc";
 const Sidebar = () => {
   const [sidebar, setSidebar] = useState(false);
   const showSidebar = () => setSidebar(!sidebar);
@@ -131,7 +131,13 @@ const Sidebar = () => {
           title: getlang('quanlykhachhang',lang),
           path: '/kinhdoanh/customermanager',
           icon: <FcCustomerSupport color='#cc00ff' size={25}/>
-        },          
+        },  
+        {
+          title: getlang('eqstatus',lang),
+          path: 'kinhdoanh/eqstatus',
+          icon: <MdOutlineSignalWifiStatusbarNull color='#cc00ff' size={25}/>,
+          cName: 'sub-nav'
+        },           
         {
           title: getlang('baocao',lang),
           path: '/kinhdoanh/kinhdoanhreport',
@@ -311,6 +317,12 @@ const Sidebar = () => {
           title: getlang('eqstatus',lang),
           path: 'sx/eqstatus',
           icon: <MdOutlineSignalWifiStatusbarNull color='#cc00ff' size={25}/>,
+          cName: 'sub-nav'
+        },        
+        {
+          title: getlang('lichsuxuatlieuthat',lang),
+          path: 'sx/lichsuxuatlieu',
+          icon: <FcDataProtection color='#cc00ff' size={25}/>,
           cName: 'sub-nav'
         },        
       ]

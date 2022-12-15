@@ -8,7 +8,6 @@ import { generalQuery } from '../../../../api/Api';
 import { UserContext } from '../../../../api/Context';
 import { SaveExcel } from '../../../../api/GlobalFunction';
 import "./DATASX.scss"
-
 interface SX_DATA {
   PLAN_ID: string,
   PLAN_DATE: string,
@@ -70,6 +69,8 @@ interface YCSX_SX_DATA {
   PROD_REQUEST_QTY: number,
   M_NAME: string,
   M_OUTPUT: number,
+  REMAIN_QTY: number,
+  USED_QTY: number,
   PD: number,
   CAVITY: number,
   ESTIMATED_QTY: number,
@@ -77,9 +78,13 @@ interface YCSX_SX_DATA {
   CD2: number,
   INS_INPUT: number,
   INS_OUTPUT: number,
+  LOSS_SX1: number,
+  LOSS_SX2: number,
+  LOSS_SX3: number,
+  LOSS_SX4: number,
+  TOTAL_LOSS: number,
+
 }
-
-
 const DATASX = () => { 
  const [selectionModel_INPUTSX, setSelectionModel_INPUTSX] = useState<any>([]);
   const [readyRender, setReadyRender] = useState(false);
@@ -101,43 +106,142 @@ const DATASX = () => {
   const [todate, setToDate] = useState(moment().format('YYYY-MM-DD'));
   const [codeKD,setCodeKD] =useState('');
   const [codeCMS,setCodeCMS] =useState('');
-
   const [machine, setMachine] = useState('ALL');
   const [factory, setFactory] = useState('ALL');
   const [prodrequestno,setProdRequestNo] =useState('');
   const [plan_id,setPlanID] =useState('');
-  const [alltime, setAllTime] = useState(false); 
+  const [alltime, setAllTime] = useState(true); 
   const [id,setID] =useState('');
   const [datasxtable, setDataSXTable] = useState<Array<any>>([]);  
   const [sumaryINSPECT, setSummaryInspect] = useState('');
   const [m_name,setM_Name] =useState('');
   const [m_code,setM_Code] =useState('');
-
   const column_datasx = [
     { field: "PLAN_ID", headerName: "PLAN_ID", minWidth: 120 , flex: 1},
     { field: "PLAN_DATE", headerName: "PLAN_DATE", minWidth: 120 , flex: 1},
     { field: "PROD_REQUEST_NO", headerName: "PROD_REQUEST_NO", minWidth: 120 , flex: 1},
     { field: "G_NAME", headerName: "G_NAME", minWidth: 120 , flex: 1},
     { field: "G_NAME_KD", headerName: "G_NAME_KD", minWidth: 120 , flex: 1},
-    { field: "PLAN_QTY", headerName: "PLAN_QTY", minWidth: 120 , flex: 1},
+    { field: "PLAN_QTY", headerName: "PLAN_QTY", minWidth: 120 , flex: 1, renderCell: (params: any)=> {
+      return <span style={{color: 'blue'}}>{params.row.PLAN_QTY.toLocaleString('en-US')}</span>
+    }},
     { field: "PLAN_EQ", headerName: "PLAN_EQ", minWidth: 120 , flex: 1},
     { field: "PLAN_FACTORY", headerName: "PLAN_FACTORY", minWidth: 120 , flex: 1},
     { field: "PROCESS_NUMBER", headerName: "PROCESS_NUMBER", minWidth: 120 , flex: 1},
     { field: "STEP", headerName: "STEP", minWidth: 120 , flex: 1},
     { field: "M_NAME", headerName: "M_NAME", minWidth: 120 , flex: 1},
-    { field: "TOTAL_OUT_QTY", headerName: "TOTAL_OUT_QTY", minWidth: 120 , flex: 1},
-    { field: "USED_QTY", headerName: "USED_QTY", minWidth: 120 , flex: 1},
-    { field: "REMAIN_QTY", headerName: "REMAIN_QTY", minWidth: 120 , flex: 1},
+    { field: "TOTAL_OUT_QTY", headerName: "TOTAL_OUT_QTY", minWidth: 120 , flex: 1, renderCell: (params: any)=> {
+      if(params.row.TOTAL_OUT_QTY !== null)
+      {
+        return <span style={{color: 'blue'}}>{params.row.TOTAL_OUT_QTY.toLocaleString('en-US')}</span>
+      }
+      else
+      {
+        return <></>
+      }
+    }},
+    { field: "USED_QTY", headerName: "USED_QTY", minWidth: 120 , flex: 1, renderCell: (params: any)=> {
+      if(params.row.USED_QTY !== null)
+      {
+        return <span style={{color: 'blue'}}>{params.row.USED_QTY.toLocaleString('en-US')}</span>
+      }
+      else
+      {
+        return <></>
+      }
+    }},
+    { field: "REMAIN_QTY", headerName: "REMAIN_QTY", minWidth: 120 , flex: 1, renderCell: (params: any)=> {
+      if(params.row.REMAIN_QTY !== null)
+      {
+        return <span style={{color: 'blue'}}>{params.row.REMAIN_QTY.toLocaleString('en-US')}</span>
+      }
+      else
+      {
+        return <></>
+      }
+    }},
     { field: "PD", headerName: "PD", minWidth: 120 , flex: 1},
     { field: "CAVITY", headerName: "CAVITY", minWidth: 120 , flex: 1},
-    { field: "SETTING_MET", headerName: "SETTING_MET", minWidth: 120 , flex: 1},
-    { field: "ESTIMATED_QTY", headerName: "ESTIMATED_QTY", minWidth: 120 , flex: 1},
-    { field: "KETQUASX", headerName: "KETQUASX", minWidth: 120 , flex: 1},
-    { field: "LOSS_SX", headerName: "LOSS_SX", minWidth: 120 , flex: 1},
-    { field: "INS_INPUT", headerName: "INS_INPUT", minWidth: 120 , flex: 1},
-    { field: "LOSS_SX_KT", headerName: "LOSS_SX_KT", minWidth: 120 , flex: 1},
-    { field: "INS_OUTPUT", headerName: "INS_OUTPUT", minWidth: 120 , flex: 1},
-    { field: "LOSS_KT", headerName: "LOSS_KT", minWidth: 120 , flex: 1},
+    { field: "SETTING_MET", headerName: "SETTING_MET", minWidth: 120 , flex: 1, renderCell: (params: any)=> {
+      if(params.row.SETTING_MET !== null)
+      {
+        return <span style={{color: 'blue'}}>{params.row.SETTING_MET.toLocaleString('en-US')}</span>
+      }
+      else
+      {
+        return <></>
+      }
+    }},
+    { field: "ESTIMATED_QTY", headerName: "ESTIMATED_QTY", minWidth: 120 , flex: 1, renderCell: (params: any)=> {
+      if(params.row.ESTIMATED_QTY !== null)
+      {
+        return <span style={{color: 'blue'}}>{params.row.ESTIMATED_QTY.toLocaleString('en-US')}</span>
+      }
+      else
+      {
+        return <></>
+      }
+    }},
+    { field: "KETQUASX", headerName: "KETQUASX", minWidth: 120 , flex: 1, renderCell: (params: any)=> {
+      if(params.row.KETQUASX !== null)
+      {
+        return <span style={{color: 'blue'}}>{params.row.KETQUASX.toLocaleString('en-US')}</span>
+      }
+      else
+      {
+        return <></>
+      }
+    }},
+    { field: "LOSS_SX", headerName: "LOSS_SX", minWidth: 120 , flex: 1, valueGetter: (params: any) => {
+      if(params.row.KETQUASX !== null && params.row.ESTIMATED_QTY !== null) 
+      { 
+        return (1-params.row.KETQUASX/params.row.ESTIMATED_QTY).toLocaleString('en-US',{ style: 'percent' })
+      }
+      else
+      {
+        return '0%';
+      }
+    } },
+    { field: "INS_INPUT", headerName: "INS_INPUT", minWidth: 120 , flex: 1, renderCell: (params: any)=> {
+      if(params.row.INS_INPUT !== null)
+      {
+        return <span style={{color: 'blue'}}>{params.row.INS_INPUT.toLocaleString('en-US')}</span>
+      }
+      else
+      {
+        return <></>
+      }
+    }},
+    { field: "LOSS_SX_KT", headerName: "LOSS_SX_KT", minWidth: 120 , flex: 1 , valueGetter: (params: any) => {
+      if(params.row.KETQUASX !== null && params.row.INS_INPUT !== null) 
+      { 
+        return (1-params.row.INS_INPUT/params.row.KETQUASX).toLocaleString('en-US',{ style: 'percent' })
+      }
+      else
+      {
+        return '0%';
+      }
+    } },
+    { field: "INS_OUTPUT", headerName: "INS_OUTPUT", minWidth: 120 , flex: 1, renderCell: (params: any)=> {
+      if(params.row.INS_OUTPUT !== null)
+      {
+        return <span style={{color: 'blue'}}>{params.row.INS_OUTPUT.toLocaleString('en-US')}</span>
+      }
+      else
+      {
+        return <></>
+      }
+    }},
+    { field: "LOSS_KT", headerName: "LOSS_KT", minWidth: 120 , flex: 1, valueGetter: (params: any) => {
+      if(params.row.INS_INPUT !== null && params.row.INS_OUTPUT !== null) 
+      { 
+        return (1-params.row.INS_OUTPUT/params.row.INS_INPUT).toLocaleString('en-US',{ style: 'percent' })
+      }
+      else
+      {
+        return '0%';
+      }
+    } },
     { field: "SETTING_START_TIME", headerName: "SETTING_START_TIME", minWidth: 120 , flex: 1},
     { field: "MASS_START_TIME", headerName: "MASS_START_TIME", minWidth: 120 , flex: 1},
     { field: "MASS_END_TIME", headerName: "MASS_END_TIME", minWidth: 120 , flex: 1},
@@ -162,26 +266,149 @@ const DATASX = () => {
     { field: "CHUYEN_CODE", headerName: "CHUYEN_CODE", minWidth: 120 , flex: 1},
     { field: "KHAC", headerName: "KHAC", minWidth: 120 , flex: 1},
     { field: "REMARK", headerName: "REMARK", minWidth: 120 , flex: 1},   
-
   ];
   const column_ycsxdatasx = [
     { field: "PROD_REQUEST_NO", headerName: "PROD_REQUEST_NO", width: 80 },
-    { field: "G_NAME", headerName: "G_NAME", width: 80 },
-    { field: "G_NAME_KD", headerName: "G_NAME_KD", width: 80 },
+    { field: "G_NAME", headerName: "G_NAME", width: 180 },
+    { field: "G_NAME_KD", headerName: "G_NAME_KD", width: 120 },
     { field: "FACTORY", headerName: "FACTORY", width: 80 },
     { field: "EQ1", headerName: "EQ1", width: 80 },
     { field: "EQ2", headerName: "EQ2", width: 80 },
-    { field: "PROD_REQUEST_DATE", headerName: "PROD_REQUEST_DATE", width: 80 },
-    { field: "PROD_REQUEST_QTY", headerName: "PROD_REQUEST_QTY", width: 80 },
-    { field: "M_NAME", headerName: "M_NAME", width: 80 },
-    { field: "M_OUTPUT", headerName: "M_OUTPUT", width: 80 },
+    { field: "PROD_REQUEST_DATE", headerName: "YCSX_DATE", width: 120 },
+    { field: "PROD_REQUEST_QTY", headerName: "YCSX_QTY", width: 80 },
+    { field: "M_NAME", headerName: "M_NAME", width: 150 },
+    { field: "M_OUTPUT", headerName: "M_OUTPUT", width: 80 , renderCell: (params: any)=> {
+      if(params.row.M_OUTPUT !== null)
+      {
+        return <span style={{color: 'blue'}}>{params.row.M_OUTPUT.toLocaleString('en-US')}</span>
+      }
+      else
+      {
+        return <></>
+      }
+    }},
+    { field: "REMAIN_QTY", headerName: "REMAIN_QTY", width: 110 , renderCell: (params: any)=> {
+      if(params.row.REMAIN_QTY !== null)
+      {
+        return <span style={{color: 'blue'}}>{params.row.REMAIN_QTY.toLocaleString('en-US')}</span>
+      }
+      else
+      {
+        return <></>
+      }
+    }},
+    { field: "USED_QTY", headerName: "USED_QTY", width: 100 , renderCell: (params: any)=> {
+      if(params.row.USED_QTY !== null)
+      {
+        return <span style={{color: 'blue'}}>{params.row.USED_QTY.toLocaleString('en-US')}</span>
+      }
+      else
+      {
+        return <></>
+      }
+    }},
     { field: "PD", headerName: "PD", width: 80 },
     { field: "CAVITY", headerName: "CAVITY", width: 80 },
-    { field: "ESTIMATED_QTY", headerName: "ESTIMATED_QTY", width: 80 },
-    { field: "CD1", headerName: "CD1", width: 80 },
-    { field: "CD2", headerName: "CD2", width: 80 },
-    { field: "INS_INPUT", headerName: "INS_INPUT", width: 80 },
-    { field: "INS_OUTPUT", headerName: "INS_OUTPUT", width: 80 },   
+    { field: "ESTIMATED_QTY", headerName: "ESTIMATED_QTY", width: 120 , renderCell: (params: any)=> {
+      if(params.row.ESTIMATED_QTY !== null)
+      {
+        return <span style={{color: 'green'}}>{params.row.ESTIMATED_QTY.toLocaleString('en-US')}</span>
+      }
+      else
+      {
+        return <></>
+      }
+    }},
+    { field: "CD1", headerName: "CD1", width: 100, renderCell: (params: any)=> {
+      if(params.row.CD1 !== null)
+      {
+        return <span style={{color: 'green'}}>{params.row.CD1.toLocaleString('en-US')}</span>
+      }
+      else
+      {
+        return <></>
+      }
+    } },
+    { field: "LOSS_SX1", headerName: "LOSS_SX1", minWidth: 120 , flex: 1, renderCell: (params: any)=> {
+      if(params.row.LOSS_SX1 !== null)
+      {
+        return <span style={{color: 'red'}}>{params.row.LOSS_SX1.toLocaleString('en-US',{ style: 'percent' })}</span>
+      }
+      else
+      {
+        return <></>
+      }
+    }},
+    { field: "CD2", headerName: "CD2", width: 100, renderCell: (params: any)=> {
+      if(params.row.CD2 !== null)
+      {
+        return <span style={{color: 'green'}}>{params.row.CD2.toLocaleString('en-US')}</span>
+      }
+      else
+      {
+        return <></>
+      }
+    }},
+    { field: "LOSS_SX2", headerName: "LOSS_SX2", minWidth: 120 , flex: 1, renderCell: (params: any)=> {
+      if(params.row.LOSS_SX2 !== null)
+      {
+        return <span style={{color: 'red'}}>{params.row.LOSS_SX2.toLocaleString('en-US',{ style: 'percent' })}</span>
+      }
+      else
+      {
+        return <></>
+      }
+    }},
+    { field: "INS_INPUT", headerName: "INS_INPUT", width: 100, renderCell: (params: any)=> {
+      if(params.row.INS_INPUT !== null)
+      {
+        return <span style={{color: 'green'}}>{params.row.INS_INPUT.toLocaleString('en-US')}</span>
+      }
+      else
+      {
+        return <></>
+      }
+    } },
+    { field: "LOSS_SX3", headerName: "LOSS_SX3", minWidth: 120 , flex: 1, renderCell: (params: any)=> {
+      if(params.row.LOSS_SX3 !== null)
+      {
+        return <span style={{color: 'red'}}>{params.row.LOSS_SX3.toLocaleString('en-US',{ style: 'percent' })}</span>
+      }
+      else
+      {
+        return <></>
+      }
+    }},
+    { field: "INS_OUTPUT", headerName: "INS_OUTPUT", width: 100, renderCell: (params: any)=> {
+      if(params.row.INS_OUTPUT !== null)
+      {
+        return <span style={{color: 'green'}}>{params.row.INS_OUTPUT.toLocaleString('en-US')}</span>
+      }
+      else
+      {
+        return <></>
+      }
+    } },   
+    { field: "LOSS_SX4", headerName: "LOSS_SX4", minWidth: 120 , flex: 1, renderCell: (params: any)=> {
+      if(params.row.LOSS_SX4 !== null)
+      {
+        return <span style={{color: 'red'}}>{params.row.LOSS_SX4.toLocaleString('en-US',{ style: 'percent' })}</span>
+      }
+      else
+      {
+        return <></>
+      }
+    }},
+    { field: "TOTAL_LOSS", headerName: "TOTAL_LOSS", minWidth: 120 , flex: 1, renderCell: (params: any)=> {
+      if(params.row.TOTAL_LOSS !== null)
+      {
+        return <span style={{color: 'red', fontWeight: 'bold', fontSize: 16}}>{params.row.TOTAL_LOSS.toLocaleString('en-US',{ style: 'percent' })}</span>
+      }
+      else
+      {
+        return <></>
+      }
+    }},
   ];
   const [columnDefinition, setColumnDefinition] = useState<Array<any>>(column_datasx);
   function CustomToolbarLICHSUINPUTSX() {
@@ -197,7 +424,7 @@ const DATASX = () => {
           SAVE
         </IconButton>
         <GridToolbarQuickFilter />
-        <div className="div" style={{fontSize:20, fontWeight:'bold'}}>DATA SẢN XUẤT THEO CHỈ THỊ</div>
+        <div className="div" style={{fontSize:20, fontWeight:'bold'}}>DATA SẢN XUẤT</div>
       </GridToolbarContainer>
     );
   }
@@ -234,7 +461,6 @@ const DATASX = () => {
         setReadyRender(true); 
         setisLoading(false);      
       } else {     
-          
       }
     })
     .catch((error) => {
@@ -257,7 +483,7 @@ const DATASX = () => {
         PLAN_EQ: machine
     })
     .then((response) => {
-      console.log(response.data.data);
+      //console.log(response.data.data);
       if (response.data.tk_status !== "NG") {
         const loaded_data: SX_DATA[] = response.data.data.map((element: YCSX_SX_DATA, index: number)=> {
           return {
@@ -270,14 +496,12 @@ const DATASX = () => {
         setReadyRender(true); 
         setisLoading(false);      
       } else {     
-          
       }
     })
     .catch((error) => {
       console.log(error);
     });     
   }
-
   useEffect(()=>{      
     //setColumnDefinition(column_inspect_output);
   },[]);
@@ -443,7 +667,7 @@ const DATASX = () => {
             loading={isLoading}
             rowHeight={30}
             rows={datasxtable}
-            columns={column_datasx}
+            columns={columnDefinition}
             rowsPerPageOptions={[
               5, 10, 50, 100, 500, 1000, 5000, 10000, 500000,
             ]} 

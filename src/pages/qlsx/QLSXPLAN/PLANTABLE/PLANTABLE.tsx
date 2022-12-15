@@ -172,6 +172,12 @@ interface QLSXPLANDATA {
   LOSS_SETTING2: number;
   NOTE: string;
   NEXT_PLAN_ID: string;
+  XUATDAOFILM?: string,
+  EQ_STATUS?: string,
+  MAIN_MATERIAL?: string,
+  INT_TEM?: string,
+  CHOTBC?: string,
+  DKXL?: string,
 }
 interface YCSXTableData {
   DESCR?: string;

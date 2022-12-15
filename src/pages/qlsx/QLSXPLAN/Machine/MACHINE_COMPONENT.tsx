@@ -58,7 +58,7 @@ const MACHINE_COMPONENT = (machine_data: MachineInterface) => {
           {machine_data.eq_status === 'MASS' &&<img alt='running' src='/blink.gif' width={40} height={20}></img>}
         </div>
         <div className="currentcode"  style={{ fontSize:12, color:`${machine_data.eq_status ==='STOP'? 'white':machine_data.eq_status ==='SETTING'? 'black' : `black` }`}}>
-        {machine_data.current_g_name}
+        {machine_data.current_plan_id}_{machine_data.current_g_name}
         </div>      
       </div>
       <div className='machineplan'>
@@ -66,7 +66,7 @@ const MACHINE_COMPONENT = (machine_data: MachineInterface) => {
             {
                 filteredDataTable?.map((element: QLSXPLANDATA, index: number)=> {
                     return (
-                        <li key={index}>{element.G_NAME_KD} | {element.PROD_REQUEST_NO} | B{element.STEP} | {element.PLAN_QTY} </li>
+                        <li  style={{color: element.PLAN_ID=== machine_data.current_plan_id? 'red':'black'}} key={index}>{element.G_NAME_KD} | {element.PLAN_ID} | B{element.STEP} | {element.PLAN_QTY} </li>
                     )
                 })
             }         

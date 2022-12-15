@@ -20,9 +20,11 @@ interface MonthlyPPMData {
 
 
 interface MonthlyData {
-  dldata?: MonthlyPPMData[]
+  dldata?: MonthlyPPMData[],
+  processColor?: string,
+  materialColor?: string,
 }
-const InspectionMonthlyPPM = ({dldata} : MonthlyData) => {
+const InspectionMonthlyPPM = ({dldata, processColor, materialColor} : MonthlyData) => {
   const formatCash = (n:number) => {
     return nFormatter(n,1);
   };
@@ -75,9 +77,9 @@ const InspectionMonthlyPPM = ({dldata} : MonthlyData) => {
       <Tooltip content={<CustomTooltip/>}/>
       <Legend />
       <Line yAxisId="left-axis" type="monotone" dataKey="TOTAL_PPM" stroke="green" />
-      <Bar  stackId='a' yAxisId="left-axis" type="monotone" dataKey="PROCESS_PPM" stroke="white" fill='#cc66ff' label={{ position: 'insideTop', formatter: labelFormatter }}>      
+      <Bar  stackId='a' yAxisId="left-axis" type="monotone" dataKey="PROCESS_PPM" stroke="white" fill={processColor} label={{ position: 'insideTop', formatter: labelFormatter }}>      
       </Bar>
-      <Bar  stackId='a' yAxisId="left-axis" type="monotone" dataKey="MATERIAL_PPM" stroke="white" fill='#00cc00' label={{ position: 'insideTop', formatter: labelFormatter }}>      
+      <Bar  stackId='a' yAxisId="left-axis" type="monotone" dataKey="MATERIAL_PPM" stroke="white" fill={materialColor} label={{ position: 'insideTop', formatter: labelFormatter }}>      
       </Bar>
     </ComposedChart>
     </CustomResponsiveContainer>

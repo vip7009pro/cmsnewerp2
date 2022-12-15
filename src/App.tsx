@@ -53,6 +53,7 @@ import { useSpring, animated } from '@react-spring/web'
 import DATASX from "./pages/qlsx/QLSXPLAN/DATASX/DATASX";
 import PLAN_STATUS from "./pages/qlsx/QLSXPLAN/PLAN_STATUS/PLAN_STATUS";
 import EQ_STATUS from "./pages/qlsx/QLSXPLAN/EQ_STATUS/EQ_STATUS";
+import LICHSUINPUTLIEU from "./pages/qlsx/QLSXPLAN/LICHSUINPUTLIEU/LICHSUINPUTLIEU";
 
 interface userDataInterface {
   EMPL_IMAGE?: string;
@@ -456,6 +457,10 @@ function App() {
                       path='quotationmanager'
                       element={<QuotationManager />}
                     />
+                    <Route
+                      path='eqstatus'
+                      element={<EQ_STATUS />}
+                    />                    
                   </Route>
                   <Route
                     path='rnd'
@@ -724,6 +729,19 @@ function App() {
                         </ProtectedRoute>
                       }
                     />
+                    <Route
+                      path='lichsuxuatlieu'
+                      element={
+                        <ProtectedRoute
+                          user={userData}
+                          maindeptname='SX'
+                          jobname='Leader'
+                        >
+                          <LICHSUINPUTLIEU />
+                        </ProtectedRoute>
+                      }
+                    />
+                    
                   </Route>
                   <Route
                     path='nhansu'

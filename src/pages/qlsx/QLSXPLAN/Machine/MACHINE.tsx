@@ -1320,8 +1320,7 @@ const MACHINE = () => {
       console.log(error);
     });  
   }
-  const handleSaveQLSX= async()=> {
-    
+  const handleSaveQLSX= async()=> {    
     if(qlsxplandatafilter.length>=1)
     {
       if(userData.EMPL_NO==='NHU1903'|| userData.MAINDEPTNAME==='QLSX')
@@ -2095,7 +2094,7 @@ const MACHINE = () => {
     let err_code:string = '0';
     for(let i=0; i< selectedPlanTable.length;i++)
     {
-      if(selectedPlanTable[i].PROCESS_NUMBER !== null && selectedPlanTable[i].PLAN_QTY !== 0  && selectedPlanTable[i].PLAN_QTY <= selectedPlanTable[i].PROD_REQUEST_QTY)
+      if(selectedPlanTable[i].PROCESS_NUMBER !== null && selectedPlanTable[i].PLAN_QTY !== 0  && selectedPlanTable[i].PLAN_QTY <= selectedPlanTable[i].PROD_REQUEST_QTY && selectedPlanTable[i].PLAN_ID !== selectedPlanTable[i].NEXT_PLAN_ID && selectedPlanTable[i].CHOTBC !=='V')
       {
         generalQuery("updatePlanQLSX", {
           PLAN_ID: selectedPlanTable[i].PLAN_ID,
@@ -2121,7 +2120,7 @@ const MACHINE = () => {
       }
       else
       {
-        err_code +='_'+  selectedPlanTable[i].G_NAME_KD + ': Plan QTY =0 hoặc Process number trắng, hoặc chỉ thị nhiều hơn ycsx qty sẽ ko được lưu';
+        err_code +='_'+  selectedPlanTable[i].G_NAME_KD + ': Plan QTY =0 hoặc Process number trắng, hoặc chỉ thị nhiều hơn ycsx qty, hoặc next Plan ID giống plan hiện tại, hoặc chỉ thị đã chốt báo cáo sẽ ko được lưu thay đổi';
       }
      
     }

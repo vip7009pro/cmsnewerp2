@@ -96,6 +96,8 @@ const INSPECT_REPORT = () => {
   const [weeklyppm2, setWeeklyPPM2] = useState<WeeklyPPMData[]>([]);
   const [monthlyppm2, setMonthlyPPM2] = useState<MonthlyPPMData[]>([]);
   const [yearlyppm2, setYearlyPPM2] = useState<YearlyPPMData[]>([]);
+  const [fromdate, setFromDate] = useState(moment().format('YYYY-MM-DD'));
+  const [todate, setToDate] = useState(moment().format('YYYY-MM-DD'));
 
   const [widgetdata_pobalancesummary, setWidgetData_PoBalanceSummary] =
     useState<WidgetData_POBalanceSummary>({
@@ -413,78 +415,74 @@ const INSPECT_REPORT = () => {
           <div className='dailygraphtotal'>
             <div className='dailygraph'>
               <span className='subsection'>Daily NG Rate</span>
-              <InspectionDailyPPM dldata={dailyppm1} />
+              <InspectionDailyPPM dldata={dailyppm1} processColor='#eb4034' materialColor='#34eb92'/>
             </div>
             <div className='dailygraph'>
               <span className='subsection'>Weekly NG Rate</span>
-              <InspectionWeeklyPPM dldata={weeklyppm1} />
+              <InspectionWeeklyPPM dldata={weeklyppm1}  processColor='#eb4034' materialColor='#34eb92' />
             </div>
           </div>
           <div className='monthlyweeklygraph'>
             <div className='dailygraph'>
               <span className='subsection'>Monthly NG Rate</span>
-              <InspectionMonthlyPPM dldata={monthlyppm1} />
+              <InspectionMonthlyPPM dldata={monthlyppm1}  processColor='#eb4034' materialColor='#34eb92'/>
             </div>
             <div className='dailygraph'>
               <span className='subsection'>Yearly NG Rate</span>
-              <InspectionYearlyPPM dldata={yearlyppm1} />
+              <InspectionYearlyPPM dldata={yearlyppm1}  processColor='#eb4034' materialColor='#34eb92'/>
             </div>
           </div>
           <span className='subsection_title'>b. FACTORY 2 NG Trending</span>
           <div className='dailygraphtotal'>
             <div className='dailygraph'>
               <span className='subsection'>Daily NG Rate</span>
-              <InspectionDailyPPM dldata={dailyppm2} />
+              <InspectionDailyPPM dldata={dailyppm2}  processColor='#eb5c34' materialColor='#53eb34'/>
             </div>
             <div className='dailygraph'>
               <span className='subsection'>Weekly NG Rate</span>
-              <InspectionWeeklyPPM dldata={weeklyppm2} />
+              <InspectionWeeklyPPM dldata={weeklyppm2}   processColor='#eb5c34' materialColor='#53eb34'/>
             </div>
           </div>
           <div className='monthlyweeklygraph'>
             <div className='dailygraph'>
               <span className='subsection'>Monthly NG Rate</span>
-              <InspectionMonthlyPPM dldata={monthlyppm2} />
+              <InspectionMonthlyPPM dldata={monthlyppm2}   processColor='#eb5c34' materialColor='#53eb34'/>
             </div>
             <div className='dailygraph'>
               <span className='subsection'>Yearly NG Rate</span>
-              <InspectionYearlyPPM dldata={yearlyppm2} />
+              <InspectionYearlyPPM dldata={yearlyppm2}   processColor='#eb5c34' materialColor='#53eb34'/>
             </div>
-          </div>
-
-          <div className='monthlyweeklygraph'>
-            <div className='dailygraph'>
-              <span className='subsection'>TOP 5 Customer Weekly Revenue</span>
-              <ChartCustomerRevenue />
-            </div>
-            <div className='dailygraph'>
-              <span className='subsection'>PIC Weekly Revenue</span>
-              <ChartPICRevenue />
-            </div>
-          </div>
+          </div>         
           <br></br>
           <hr></hr>
-          <span className='section_title'>3. Purchase Order (PO)</span>
+          <span className='section_title'>3. WORST</span>
           <br></br>
           <div className='pobalancesummary'>
-            <span className='subsection'>PO Balance info</span>
-            <Widget
-              widgettype='revenue'
-              label='PO BALANCE INFOMATION'
-              topColor='#ccff33'
-              botColor='#99ccff'
-              qty={widgetdata_pobalancesummary.po_balance_qty * 1}
-              amount={widgetdata_pobalancesummary.po_balance_amount}
-              percentage={20}
-            />
+            <span className='subsection'>Select Data Range: </span>
+            <label>
+                  <b>Từ ngày:</b>
+                  <input                   
+                    type='date'
+                    value={fromdate.slice(0, 10)}
+                    onChange={(e) => setFromDate(e.target.value)}
+                  ></input>
+                </label>
+                <label>
+                  <b>Tới ngày:</b>{" "}
+                  <input                    
+                    type='date'
+                    value={todate.slice(0, 10)}
+                    onChange={(e) => setToDate(e.target.value)}
+                  ></input>
+              </label>            
           </div>
           <div className='monthlyweeklygraph'>
             <div className='dailygraph'>
-              <span className='subsection'>PO By Week</span>
+              <span className='subsection'>NG NM1</span>
               <ChartWeeklyPO />
             </div>
             <div className='dailygraph'>
-              <span className='subsection'>Delivery By Week</span>
+              <span className='subsection'>NG NM2</span>
               <ChartWeekLyDelivery />
             </div>
           </div>
