@@ -17,7 +17,7 @@ import Swal from "sweetalert2";
 
 const axios = require('axios').default;
 
-function LinearProgressWithLabel(
+export function LinearProgressWithLabel(
   props: LinearProgressProps & { value: number }
 ) {
   return (

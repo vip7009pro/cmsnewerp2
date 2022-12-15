@@ -5,6 +5,7 @@ import { HiLogout, HiOutlineQrcode } from "react-icons/hi";
 import { TbReportAnalytics } from "react-icons/tb";
 
 import './PLAN_STATUS_COMPONENTS.scss'
+import { LinearProgressWithLabel } from '../../../../components/Navbar/AccountInfo/AccountInfo';
 interface SX_DATA {
     id: number,
     STEP?: number,
@@ -20,10 +21,45 @@ interface SX_DATA {
     MASS_END_TIME?: string,
     DKXL?: string,
     XUATLIEU?: string,
-    CHOTBC?: number,    
+    CHOTBC: number,   
+    KQ_SX_TAM: number,
+    KETQUASX: number, 
+    PLAN_QTY: number,
 }
 
-const PLAN_STATUS_COMPONENTS = ({id, PLAN_ID, PLAN_FACTORY, STEP, PLAN_DATE, PLAN_EQ, G_NAME, G_NAME_KD, XUATDAO, SETTING_START_TIME, MASS_START_TIME, MASS_END_TIME, DKXL, XUATLIEU, CHOTBC} : SX_DATA) => {
+const PLAN_STATUS_COMPONENTS = ({id, PLAN_ID, PLAN_QTY, KQ_SX_TAM, KETQUASX, PLAN_FACTORY, STEP, PLAN_DATE, PLAN_EQ, G_NAME, G_NAME_KD, XUATDAO, SETTING_START_TIME, MASS_START_TIME, MASS_END_TIME, DKXL, XUATLIEU, CHOTBC} : SX_DATA) => {
+let kq_tem: number = (CHOTBC===null? (KQ_SX_TAM===null? 0: KQ_SX_TAM): KETQUASX);
+let phantram_tem : number = PLAN_QTY===0? 0 : kq_tem/(PLAN_QTY) * 100;
+let backgroundColor:string ='white';
+if(phantram_tem >=0 && phantram_tem <20) 
+{
+    backgroundColor ='#ccccff';
+}
+if(phantram_tem >=20 && phantram_tem <40) 
+{
+    backgroundColor ='#66ffff';
+}
+if(phantram_tem >=40 && phantram_tem <60) 
+{
+    backgroundColor ='#00e6e6';
+}
+if(phantram_tem >=60 && phantram_tem <80) 
+{
+    backgroundColor ='#00ffcc';
+}
+if(phantram_tem >=80 && phantram_tem <=100) 
+{
+    backgroundColor ='#00ff00';
+}
+if(phantram_tem >100 && phantram_tem <=110) 
+{
+    backgroundColor ='#ff6666';
+}
+if(phantram_tem >110) 
+{
+    backgroundColor ='#ff3333';
+}
+ 
   return (
     <div className='plan_status_component'>    
         <div className='flag' style={{backgroundColor: 'green', padding: '10px', width:'20px', color:'white'}}>
@@ -64,7 +100,13 @@ const PLAN_STATUS_COMPONENTS = ({id, PLAN_ID, PLAN_FACTORY, STEP, PLAN_DATE, PLA
         </div> 
         <div className='flag' style={{backgroundColor: CHOTBC===null? 'red':'#6ffa48', padding: '10px', width:'200px',color: CHOTBC===null? 'white':'black'}}>
         <TbReportAnalytics color='black' size={25} />     {CHOTBC===null? `CHƯA CHỐT BC`: `ĐÃ CHỐT BC`}            
-        </div>        
+        </div>  
+        <div className='flag' style={{backgroundColor: backgroundColor, padding: '10px', color:'black', width: '200px', justifySelf: 'center', fontWeight:'bold'}}>
+            <b>{kq_tem?.toLocaleString('en-US')}/ {PLAN_QTY?.toLocaleString('en-US')} </b>
+            <LinearProgressWithLabel
+              value={phantram_tem}              
+            />
+        </div>       
     </div>
   )
 }

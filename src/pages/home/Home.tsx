@@ -5,6 +5,9 @@ import "../home/home.scss";
 import { useSpring, animated } from '@react-spring/web'
 import { useEffect, useState } from "react";
 import { generalQuery } from "../../api/Api";
+import Swal from "sweetalert2";
+
+export const current_ver:number =6;
 
 function Home() {
   const springs = useSpring({
@@ -13,9 +16,10 @@ function Home() {
   });
   
   const [checkVerWeb,setCheckVerWeb] = useState(1);
-  const current_ver:number =3;
+
   console.log('local ver', current_ver);
-  useEffect(()=> {   
+  useEffect(()=> {  
+    
      generalQuery("checkWebVer", {    
     })
       .then((response) => {
@@ -31,6 +35,56 @@ function Home() {
       .catch((error) => {
         console.log(error);
       });
+
+      let intervalID = window.setInterval(()=> { 
+        generalQuery("checkWebVer", {    
+        })
+          .then((response) => {            
+            if (response.data.tk_status !== "NG") {
+              //console.log('webver',response.data.data[0].VERWEB);
+              if(current_ver>= response.data.data[0].VERWEB){
+
+              }
+              else
+              {
+               
+                Swal.fire({
+                  title: "Có ver mới, hãy update?",
+                  text: "Update web",
+                  icon: "warning",
+                  showCancelButton: true,
+                  confirmButtonColor: "#3085d6",
+                  cancelButtonColor: "#d33",
+                  confirmButtonText: "Đã rõ",
+                }).then((result) => {
+                  if (result.isConfirmed) {
+                    Swal.fire('Thông báo','Update web','success');   
+                    window.clearInterval(intervalID);
+                    window.location.reload();         
+                  }
+                  else
+                  {
+                    Swal.fire('Thông báo','Nhớ F5 để update web nhé','info');   
+                    window.clearInterval(intervalID);
+                  }
+
+                });
+              }
+              
+            } else {
+             
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+        
+      },3000);
+      return (
+        ()=> {
+          window.clearInterval(intervalID);
+        }
+      )
 
   },[])
   return (
@@ -63,4 +117,5 @@ function Home() {
     </div>
   );
 }
+
 export default Home;

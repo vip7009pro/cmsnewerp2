@@ -26,6 +26,9 @@ interface SX_DATA {
     DKXL: string,
     XUATLIEU: string,
     CHOTBC: number,    
+    KQ_SX_TAM: number,
+    KETQUASX: number,
+    PLAN_QTY: number,
 }
 const PLAN_STATUS = () => { 
   const [readyRender, setReadyRender] = useState(false);
@@ -213,7 +216,7 @@ const PLAN_STATUS = () => {
           {readyRender && (
             datasxtable.map((element: SX_DATA, index: number) => {
                 return (
-                    <PLAN_STATUS_COMPONENTS key={index} PLAN_FACTORY={element.PLAN_FACTORY} STEP={element.STEP} id={element.id} PLAN_ID={element.PLAN_ID} PLAN_DATE={element.PLAN_DATE} PLAN_EQ={element.PLAN_EQ} G_NAME={element.G_NAME} G_NAME_KD={element.G_NAME_KD}   XUATDAO={element.XUATDAO} SETTING_START_TIME={element.SETTING_START_TIME} MASS_START_TIME={element.MASS_START_TIME} MASS_END_TIME={element.MASS_END_TIME} DKXL={element.DKXL} XUATLIEU={element.XUATLIEU} CHOTBC={element.CHOTBC} />
+                    <PLAN_STATUS_COMPONENTS key={index} PLAN_QTY={element.PLAN_QTY} KETQUASX={element.KETQUASX} KQ_SX_TAM ={element.KQ_SX_TAM} PLAN_FACTORY={element.PLAN_FACTORY} STEP={element.STEP} id={element.id} PLAN_ID={element.PLAN_ID} PLAN_DATE={element.PLAN_DATE} PLAN_EQ={element.PLAN_EQ} G_NAME={element.G_NAME} G_NAME_KD={element.G_NAME_KD}   XUATDAO={element.XUATDAO} SETTING_START_TIME={element.SETTING_START_TIME} MASS_START_TIME={element.MASS_START_TIME} MASS_END_TIME={element.MASS_END_TIME} DKXL={element.DKXL} XUATLIEU={element.XUATLIEU} CHOTBC={element.CHOTBC} />
                 )
             })
             
