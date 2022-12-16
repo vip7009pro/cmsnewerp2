@@ -329,22 +329,22 @@ const Sidebar = () => {
     },   
     
   ];
+
+  const sidebarStatus: boolean | undefined = useSelector(
+    (state: RootState) => state.totalSlice.sidebarmenu
+  );
+
   return (
-    <>
-      <div className='Nav'>
-        {!sidebar && <Link to='#' className='NavIcon'>
-          <FcList onClick={showSidebar} />         
-        </Link>}
-      </div>
+    <> 
       <nav
         className={`SidebarNav ${
-          sidebar === true ? "show-sidebar" : "hide-sidebar"
+          sidebarStatus === true ? "show-sidebar" : "hide-sidebar"
         }`}
       >
         <div className='SidebarWrap'>
           <Link to='#' className='NavIcon'>
             <img alt="logo" src="/logocmsvina.png" width={85.8} height={20.35}/>
-            <FcList onClick={showSidebar} />
+            
           </Link>
           {SidebarData.map((item, index) => {
             return <SubMenu item={item} key={index} />;

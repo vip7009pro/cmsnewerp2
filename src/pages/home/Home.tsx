@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 import { generalQuery } from "../../api/Api";
 import Swal from "sweetalert2";
 
-export const current_ver:number =6;
+export const current_ver:number =10;
 
 function Home() {
   const springs = useSpring({
@@ -16,7 +16,6 @@ function Home() {
   });
   
   const [checkVerWeb,setCheckVerWeb] = useState(1);
-
   console.log('local ver', current_ver);
   useEffect(()=> {  
     
@@ -46,8 +45,8 @@ function Home() {
 
               }
               else
-              {
-               
+              {               
+                window.clearInterval(intervalID);
                 Swal.fire({
                   title: "Có ver mới, hãy update?",
                   text: "Update web",
@@ -58,14 +57,12 @@ function Home() {
                   confirmButtonText: "Đã rõ",
                 }).then((result) => {
                   if (result.isConfirmed) {
-                    Swal.fire('Thông báo','Update web','success');   
-                    window.clearInterval(intervalID);
+                    Swal.fire('Thông báo','Update web','success'); 
                     window.location.reload();         
                   }
                   else
                   {
-                    Swal.fire('Thông báo','Nhớ F5 để update web nhé','info');   
-                    window.clearInterval(intervalID);
+                    Swal.fire('Thông báo','Nhớ F5 để update web nhé','info');
                   }
 
                 });
@@ -89,14 +86,17 @@ function Home() {
   },[])
   return (
     <div className='home'>
+      
       <div className='navdiv'>
         <Navbar />
+        {/* <PrimarySearchAppBar/>         */}
       </div>
       <div className='homeContainer'>
         <div className='sidebardiv'>
           <Sidebar />
         </div>
         <div className='outletdiv'>
+        
 
         <animated.div
           style={{

@@ -66,6 +66,7 @@ export interface GlobalInterface {
     userData?: UserData,
     diemdanhstate?: boolean,
     lang?: string
+    sidebarmenu?: boolean,
 }
 const initialState:GlobalInterface = {   
     userData: {
@@ -116,7 +117,8 @@ const initialState:GlobalInterface = {
         WORK_STATUS_NAME_KR: "근무중",
       },
     diemdanhstate: false,
-    lang: 'vi'
+    lang: 'vi',
+    sidebarmenu: false,
 
 }
 export const glbSlice = createSlice({
@@ -133,8 +135,12 @@ export const glbSlice = createSlice({
         },
         update_socket: (state, action: PayloadAction<any>)=> {
             socket.emit("notification", action.payload);
-          }
+          },
+        toggleSidebar: (state,action: PayloadAction<any>)=> {         
+          state.sidebarmenu = !state.sidebarmenu;
+        }
+
     }
 });
-export const {changeDiemDanhState, changeUserData, update_socket } = glbSlice.actions;
+export const {changeDiemDanhState, changeUserData, update_socket,toggleSidebar } = glbSlice.actions;
 export default glbSlice.reducer;

@@ -51,7 +51,7 @@ const MACHINE_COMPONENT2 = (machine_data: MachineInterface) => {
       }}
       onDoubleClick={machine_data.onClick}
     >
-      <div className='tieude' style={{backgroundColor:`${machine_data.eq_status ==='STOP'? 'red':machine_data.eq_status ==='SETTING'? 'yellow' : `#50f73e` }`}}>
+      <div className='tieude' style={{backgroundColor:`${machine_data.eq_status ==='STOP'? 'red':machine_data.eq_status ==='SETTING'? 'yellow' : `#3ff258` }`}}>
         <div className="eqname"  style={{color:`${machine_data.eq_status ==='STOP'? 'white':machine_data.eq_status ==='SETTING'? 'black' : `black` }`}}>
           {machine_data.machine_name}
           {machine_data.eq_status === 'MASS' &&<img alt='running' src='/blink.gif' width={40} height={20}></img>}

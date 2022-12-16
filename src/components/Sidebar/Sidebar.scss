@@ -21,8 +21,7 @@
 
 .SidebarNav {
     position: sticky;
-    background: white;
-    width: 15%;
+    background: white;    
     min-width: 250px;
     height: fit-content;
     display: flex;
@@ -38,12 +37,42 @@
     padding-right: 10px;
     
     &.show-sidebar {
-        display: flex;        
+        display: flex;    
+        width: 15%;       
+        animation: inAnimation 250ms ease-in;
     }
 
     &.hide-sidebar {
        display: none;
+       width: 0%;       
+       animation: outAnimation 270ms ease-out;
     }
+
+    @keyframes inAnimation {
+        0% {
+          opacity: 0;
+          visibility: hidden;
+          left: -100;
+        }
+        100% {
+          opacity: 1;
+          visibility: visible;
+          left:0;
+        }
+      }
+      
+      @keyframes outAnimation {
+        0% {
+          opacity: 1;
+          left: 0;
+        }
+        100% {
+          opacity: 0;
+          visibility: hidden;
+          left: -100;
+        }
+      }
+      
 }
 .SidebarWrap {
     width: 100%;  

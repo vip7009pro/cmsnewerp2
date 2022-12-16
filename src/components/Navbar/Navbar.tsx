@@ -14,6 +14,10 @@ import { logout } from "../../api/Api";
 import { LangConText } from "../../api/Context";
 import Swal from "sweetalert2";
 import { UserContext } from "../../api/Context";
+import { FcList } from "react-icons/fc";
+import { useDispatch } from "react-redux";
+import { toggleSidebar } from "../../redux/slices/globalSlice";
+
 
 
 export default function Navbar() {
@@ -21,6 +25,8 @@ export default function Navbar() {
   const [langmenu, setLangMenu] = useState(false);
   const [lang, setLang] = useContext(LangConText);
   const [userData, setUserData] = useContext(UserContext);
+
+  const dispatch = useDispatch();
 
   useEffect(() => {    
     let saveLang: any =  localStorage.getItem('lang')?.toString();
@@ -53,8 +59,9 @@ export default function Navbar() {
    localStorage.setItem('lang',selectLang);
   }
   return (
-    <div className='navbar'>
+    <div className='navbar'>     
       <div className='wrapper'>
+        <FcList onClick={()=>{dispatch(toggleSidebar('2'))}} size={30}/> 
         <div className='search'>
           <input type='text' placeholder='Search...' />
           <SearchIcon />
