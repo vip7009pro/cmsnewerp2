@@ -17,8 +17,7 @@ function Home() {
   
   const [checkVerWeb,setCheckVerWeb] = useState(1);
   console.log('local ver', current_ver);
-  useEffect(()=> {  
-    
+  useEffect(()=> {
      generalQuery("checkWebVer", {    
     })
       .then((response) => {
