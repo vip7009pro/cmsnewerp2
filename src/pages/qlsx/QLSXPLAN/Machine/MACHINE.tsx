@@ -31,6 +31,7 @@ import {
   AiFillFileExcel,
   AiFillFolderAdd,
   AiFillSave,
+  AiOutlineArrowRight,
   AiOutlineBarcode,
   AiOutlineCaretRight,
   AiOutlineCloudUpload,
@@ -49,6 +50,7 @@ import CHITHI_COMPONENT from "../CHITHI/CHITHI_COMPONENT";
 import { BiRefresh, BiReset } from "react-icons/bi";
 import YCKT from "../YCKT/YCKT";
 import { setInterval } from "timers/promises";
+import { GiCurvyKnife } from "react-icons/gi";
 const axios = require("axios").default;
 
 interface TONLIEUXUONG {
@@ -174,6 +176,7 @@ interface QLSXPLANDATA {
   INT_TEM?: string,
   CHOTBC?: string,
   DKXL?: string,
+  OLD_PLAN_QTY?: string,
 }
 interface YCSXTableData {
   DESCR?: string;
@@ -2094,12 +2097,27 @@ const MACHINE = () => {
     let err_code:string = '0';
     for(let i=0; i< selectedPlanTable.length;i++)
     {
-      if(selectedPlanTable[i].PROCESS_NUMBER !== null && selectedPlanTable[i].PLAN_QTY !== 0  && selectedPlanTable[i].PLAN_QTY <= selectedPlanTable[i].PROD_REQUEST_QTY && selectedPlanTable[i].PLAN_ID !== selectedPlanTable[i].NEXT_PLAN_ID && selectedPlanTable[i].CHOTBC !=='V')
+      let check_NEXT_PLAN_ID: boolean = true;
+      if(selectedPlanTable[i].NEXT_PLAN_ID !=='X')
       {
+        if(selectedPlanTable[i].NEXT_PLAN_ID===selectedPlanTable[i+1].PLAN_ID)
+        {
+          check_NEXT_PLAN_ID = true;
+        }
+        else
+        {
+          check_NEXT_PLAN_ID = false;
+        }
+      }
+
+      if(selectedPlanTable[i].PROCESS_NUMBER !== null && selectedPlanTable[i].PLAN_QTY !== 0  && selectedPlanTable[i].PLAN_QTY <= selectedPlanTable[i].PROD_REQUEST_QTY && selectedPlanTable[i].PLAN_ID !== selectedPlanTable[i].NEXT_PLAN_ID && selectedPlanTable[i].CHOTBC !=='V' && check_NEXT_PLAN_ID)
+      {
+
         generalQuery("updatePlanQLSX", {
           PLAN_ID: selectedPlanTable[i].PLAN_ID,
           STEP: selectedPlanTable[i].STEP,
           PLAN_QTY: selectedPlanTable[i].PLAN_QTY,
+          OLD_PLAN_QTY: selectedPlanTable[i].PLAN_QTY,
           PLAN_LEADTIME: selectedPlanTable[i].PLAN_LEADTIME,
           PLAN_EQ: selectedPlanTable[i].PLAN_EQ,
           PLAN_ORDER: selectedPlanTable[i].PLAN_ORDER,
@@ -2120,7 +2138,31 @@ const MACHINE = () => {
       }
       else
       {
-        err_code +='_'+  selectedPlanTable[i].G_NAME_KD + ': Plan QTY =0 hoặc Process number trắng, hoặc chỉ thị nhiều hơn ycsx qty, hoặc next Plan ID giống plan hiện tại, hoặc chỉ thị đã chốt báo cáo sẽ ko được lưu thay đổi';
+        err_code +='_' + selectedPlanTable[i].G_NAME_KD + ":";
+        if(selectedPlanTable[i].PROCESS_NUMBER === null)
+        {
+           err_code += '_: Process number chưa xác định';
+        }
+        if(selectedPlanTable[i].PLAN_QTY === 0)
+        {
+           err_code += '_: Số lượng chỉ thị =0';
+        }
+        if(selectedPlanTable[i].PLAN_QTY > selectedPlanTable[i].PROD_REQUEST_QTY)
+        {
+           err_code += '_: Số lượng chỉ thị lớn hơn số lượng yêu cầu sx';
+        }
+        if(selectedPlanTable[i].PLAN_ID === selectedPlanTable[i].NEXT_PLAN_ID)
+        {
+           err_code += '_: NEXT_PLAN_ID không được giống PLAN_ID hiện tại';
+        }
+        if(!check_NEXT_PLAN_ID)
+        {
+           err_code += '_: NEXT_PLAN_ID không giống với PLAN_ID ở dòng tiếp theo';
+        }
+        if(selectedPlanTable[i].CHOTBC ==='V')
+        {
+           err_code += '_: Chỉ thị đã chốt báo cáo, sẽ ko sửa được, thông tin các chỉ thị khác trong máy được lưu thành công';
+        }        
       }
      
     }
@@ -2138,6 +2180,8 @@ const MACHINE = () => {
     let err_code:string = '0';    
     let total_lieuql_sx:number =0;   
     let check_lieuql_sx_sot:number =0; 
+    let check_num_lieuql_sx: number =1;
+
     //console.log(chithidatatable);
     for(let i=0; i<chithidatatable.length; i++)
     {      
@@ -2158,9 +2202,26 @@ const MACHINE = () => {
         }
       }
     }
+    for(let i=0;i<chithidatatable.length; i++)
+    {
+      if(chithidatatable[i].LIEUQL_SX === 1)
+      {
+        for(let j=0;j<chithidatatable.length; j++)
+        {
+          if(chithidatatable[j].LIEUQL_SX ===1)
+          {
+            if(chithidatatable[i].LIEUQL_SX !== chithidatatable[j].LIEUQL_SX)
+            {
+              check_num_lieuql_sx = 2;
+            }
+          }
+        }
+
+      }
+    }
     //console.log('check lieu sot: ' + check_lieuql_sx_sot);
     //console.log('tong lieu qly: '+ total_lieuql_sx);
-    if(total_lieuql_sx >0 && check_lieuql_sx_sot ===0)
+    if(total_lieuql_sx >0 && check_lieuql_sx_sot ===0 && check_num_lieuql_sx ===1)
     {      
     await generalQuery("deleteMCODEExistIN_O302", {
       PLAN_ID: qlsxplandatafilter[0].PLAN_ID,      
@@ -2278,7 +2339,7 @@ const MACHINE = () => {
     }
     else
     {
-      Swal.fire('Thông báo', 'Phải chỉ định liệu quản lý, k để sót size nào','error');
+      Swal.fire('Thông báo', 'Phải chỉ định liệu quản lý, k để sót size nào, và chỉ chọn 1 loại liệu làm liệu chính','error');
     }
 
   }
@@ -2554,6 +2615,24 @@ const MACHINE = () => {
           <BiRefresh color='yellow' size={20} />
           Refresh chỉ thị
         </IconButton>
+        <IconButton
+          className='buttonIcon'
+          onClick={() => {
+            handle_xuatdaosample();
+          }}
+        >
+          <GiCurvyKnife color='red' size={20} />
+          Xuất dao sample
+        </IconButton>
+        <IconButton
+          className='buttonIcon'
+          onClick={() => {
+            
+          }}
+        >
+          <AiOutlineArrowRight color='blue' size={20} />
+          Xuất liệu sample
+        </IconButton>
         <span style={{ fontSize: 20, fontWeight: "bold", color: "red" }}>
           {qlsxplandatafilter[0]?.PLAN_ID}
         </span>{" "}
@@ -2583,6 +2662,212 @@ const MACHINE = () => {
       </GridToolbarContainer>
     );
   }
+
+  const handle_xuatdaosample = async () => {
+    if(qlsxplandatafilter.length>0)
+    {
+      let prod_request_no:string = qlsxplandatafilter[0].PROD_REQUEST_NO;
+      let check_ycsx_sample: boolean = false;
+      let checkPLANID_EXIST_OUT_KNIFE_FILM: boolean = false;
+  
+      await generalQuery("getP4002", { PROD_REQUEST_NO: prod_request_no })
+      .then((response) => {
+        //console.log(response.data.data);
+        if (response.data.tk_status !== "NG") {
+          //console.log(response.data.data);
+          let loadeddata = response.data.data.map(
+            (element: any, index: number) => {
+              return {
+                ...element,             
+                id: index,
+              };
+            }
+          );
+          
+         
+          if(loadeddata[0].CODE_55 === '04')
+          {
+            check_ycsx_sample = true;
+          }
+          else
+          {
+            check_ycsx_sample = false;
+          }
+  
+        } else {
+          check_ycsx_sample = false;
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  
+      console.log(check_ycsx_sample);
+     
+      await generalQuery("check_PLAN_ID_OUT_KNIFE_FILM", { PLAN_ID: qlsxplandatafilter[0].PLAN_ID})
+      .then((response) => {
+        //console.log(response.data.data);
+        if (response.data.tk_status !== "NG") {
+          console.log(response.data.data);
+          if(response.data.data.length > 0)
+          {
+            checkPLANID_EXIST_OUT_KNIFE_FILM = true;
+          }
+          else
+          {
+            checkPLANID_EXIST_OUT_KNIFE_FILM = false;
+          }        
+  
+        } else {
+          
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+
+
+      if(check_ycsx_sample)
+      {
+        if(checkPLANID_EXIST_OUT_KNIFE_FILM === false)
+        {
+          await generalQuery("insert_OUT_KNIFE_FILM", { PLAN_ID: qlsxplandatafilter[0].PLAN_ID, EQ_THUC_TE: qlsxplandatafilter[0].PLAN_EQ, CA_LAM_VIEC: 'Day', EMPL_NO: userData.EMPL_NO, KNIFE_FILM_NO: '1K22LH20'})
+          .then((response) => {
+            //console.log(response.data.data);
+            if (response.data.tk_status !== "NG") {
+              //console.log(response.data.data);
+            
+      
+            } else {
+              
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+  
+        }
+        else
+        {
+          Swal.fire('Thông báo','Đã xuất dao film rồi','info');
+        }
+      }
+      else
+      {
+        Swal.fire('Thông báo','Đây không phải ycsx sample','info');
+      }
+     
+    }
+    else
+    {
+      Swal.fire('Thông báo','Hãy chọn ít nhất 1 chỉ thị','error');
+    }
+   
+
+  }
+  const handle_xuatlieusample = async () => {
+    if(qlsxplandatafilter.length>0)
+    {
+      let prod_request_no:string = qlsxplandatafilter[0].PROD_REQUEST_NO;
+      let check_ycsx_sample: boolean = false;
+      let checkPLANID_EXIST_OUT_KNIFE_FILM: boolean = false;
+  
+      await generalQuery("getP4002", { PROD_REQUEST_NO: prod_request_no })
+      .then((response) => {
+        //console.log(response.data.data);
+        if (response.data.tk_status !== "NG") {
+          //console.log(response.data.data);
+          let loadeddata = response.data.data.map(
+            (element: any, index: number) => {
+              return {
+                ...element,             
+                id: index,
+              };
+            }
+          );
+          
+         
+          if(loadeddata[0].CODE_55 === '04')
+          {
+            check_ycsx_sample = true;
+          }
+          else
+          {
+            check_ycsx_sample = false;
+          }
+  
+        } else {
+          check_ycsx_sample = false;
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  
+      console.log(check_ycsx_sample);
+     
+      await generalQuery("check_PLAN_ID_OUT_KNIFE_FILM", { PLAN_ID: qlsxplandatafilter[0].PLAN_ID})
+      .then((response) => {
+        //console.log(response.data.data);
+        if (response.data.tk_status !== "NG") {
+          console.log(response.data.data);
+          if(response.data.data.length > 0)
+          {
+            checkPLANID_EXIST_OUT_KNIFE_FILM = true;
+          }
+          else
+          {
+            checkPLANID_EXIST_OUT_KNIFE_FILM = false;
+          }        
+  
+        } else {
+          
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+
+
+      if(check_ycsx_sample)
+      {
+        if(checkPLANID_EXIST_OUT_KNIFE_FILM === false)
+        {
+         /*  await generalQuery("insert_OUT_KNIFE_FILM", { PLAN_ID: qlsxplandatafilter[0].PLAN_ID, EQ_THUC_TE: qlsxplandatafilter[0].PLAN_EQ, CA_LAM_VIEC: 'Day', EMPL_NO: userData.EMPL_NO, KNIFE_FILM_NO: '1K22LH20'})
+          .then((response) => {
+            //console.log(response.data.data);
+            if (response.data.tk_status !== "NG") {
+              //console.log(response.data.data);
+            
+      
+            } else {
+              
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+   */
+        }
+        else
+        {
+          Swal.fire('Thông báo','Đã xuất liệu rồi','info');
+        }
+      }
+      else
+      {
+        Swal.fire('Thông báo','Đây không phải ycsx sample','info');
+      }
+     
+    }
+    else
+    {
+      Swal.fire('Thông báo','Hãy chọn ít nhất 1 chỉ thị','error');
+    }
+   
+
+  }
+
   function CustomToolbarKHOAO() {
     return (
       <GridToolbarContainer>
@@ -3747,6 +4032,7 @@ const MACHINE = () => {
               </div>
             </div>
             <div className='chithidiv'>
+              <div className="listchithi">
               <div className='planlist'>
                 <DataGrid
                   sx={{ fontSize: 12, flex: 1 }}
@@ -3787,6 +4073,9 @@ const MACHINE = () => {
                   }}
                 />
               </div>
+
+              </div>
+              
               <div className="datadinhmuc">                        
               <div className='forminputcolumn'>
                     <label>
@@ -3955,40 +4244,42 @@ const MACHINE = () => {
                 </div>            
                      
               </div>
-              <div className='chithitable'>
-                <DataGrid
-                  sx={{ fontSize: 12, flex: 1 }}
-                  components={{
-                    Toolbar: CustomToolbarCHITHITABLE,
-                    LoadingOverlay: LinearProgress,
-                  }}
-                  getRowId={(row) => row.CHITHI_ID}
-                  loading={isLoading}
-                  rowHeight={30}
-                  rows={chithidatatable}
-                  columns={column_chithidatatable}
-                  rowsPerPageOptions={[
-                    5, 10, 50, 100, 500, 1000, 5000, 10000, 500000,
-                  ]}
-                  editMode='cell'
-                  checkboxSelection
-                  onSelectionModelChange={(ids) => {
-                    handleQLSXCHITHIDataSelectionforUpdate(ids);
-                  }}
-                  onCellEditCommit={(
-                    params: GridCellEditCommitParams,
-                    event: MuiEvent<MuiBaseEvent>,
-                    details: GridCallbackDetails
-                  ) => {
-                    const keyvar = params.field;
-                    const newdata = chithidatatable.map((p) =>
-                      p.CHITHI_ID === params.id ? { ...p, [keyvar]: params.value } : p
-                    );
-                    setChiThiDataTable(newdata);
-                    //console.log(chithidatatable);
-                  }}
-                />
-              </div>
+              <div className="listlieuchithi">
+                <div className='chithitable'>
+                  <DataGrid
+                    sx={{ fontSize: 12, flex: 1 }}
+                    components={{
+                      Toolbar: CustomToolbarCHITHITABLE,
+                      LoadingOverlay: LinearProgress,
+                    }}
+                    getRowId={(row) => row.CHITHI_ID}
+                    loading={isLoading}
+                    rowHeight={30}
+                    rows={chithidatatable}
+                    columns={column_chithidatatable}
+                    rowsPerPageOptions={[
+                      5, 10, 50, 100, 500, 1000, 5000, 10000, 500000,
+                    ]}
+                    editMode='cell'
+                    checkboxSelection
+                    onSelectionModelChange={(ids) => {
+                      handleQLSXCHITHIDataSelectionforUpdate(ids);
+                    }}
+                    onCellEditCommit={(
+                      params: GridCellEditCommitParams,
+                      event: MuiEvent<MuiBaseEvent>,
+                      details: GridCallbackDetails
+                    ) => {
+                      const keyvar = params.field;
+                      const newdata = chithidatatable.map((p) =>
+                        p.CHITHI_ID === params.id ? { ...p, [keyvar]: params.value } : p
+                      );
+                      setChiThiDataTable(newdata);
+                      //console.log(chithidatatable);
+                    }}
+                  />
+                </div>
+              </div>             
             </div>
           </div>
         </div>

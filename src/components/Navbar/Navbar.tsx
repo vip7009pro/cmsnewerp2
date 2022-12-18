@@ -66,13 +66,14 @@ export default function Navbar() {
           <input type='text' placeholder='Search...' />
           <SearchIcon />
         </div>
-        <div className='cmslogo'>
-          <Link to='/' className='menulink'>
+        <div className='cmslogo'  style={{cursor:'pointer'}}>
+          <Link to='/' className='menulink' >
             <img
               alt='cmsvina logo'
               src='/logocmsvina.png'
               width={171.6}
               height={40.7}
+             
             />
           </Link>
         </div>
