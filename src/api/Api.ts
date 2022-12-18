@@ -7,8 +7,8 @@ const cookies = new Cookies();
 axios.defaults.withCredentials = true;
 
 //const API_URL = "http://14.160.33.94:5011/api";
-const API_URL = "http://14.160.33.94:3007/api";
-//const API_URL = "http://localhost:3007/api";
+//const API_URL = "http://14.160.33.94:3007/api";
+const API_URL = "http://localhost:3007/api";
 
 export function login(user: string, pass: string) {
   axios.post(API_URL, { 
