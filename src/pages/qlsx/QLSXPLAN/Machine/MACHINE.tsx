@@ -2618,7 +2618,8 @@ const MACHINE = () => {
         <IconButton
           className='buttonIcon'
           onClick={() => {
-            handle_xuatdaosample();
+            handle_xuatdao_sample();
+            
           }}
         >
           <GiCurvyKnife color='red' size={20} />
@@ -2627,7 +2628,7 @@ const MACHINE = () => {
         <IconButton
           className='buttonIcon'
           onClick={() => {
-            
+            handle_xuatlieu_sample();
           }}
         >
           <AiOutlineArrowRight color='blue' size={20} />
@@ -2663,7 +2664,150 @@ const MACHINE = () => {
     );
   }
 
-  const handle_xuatdaosample = async () => {
+  const handle_xuatlieu_sample = async () => {
+    if(qlsxplandatafilter.length>0)
+    {
+      let prod_request_no:string = qlsxplandatafilter[0].PROD_REQUEST_NO;
+      let check_ycsx_sample: boolean = false;
+      let checkPLANID_EXIST_OUT_KHO_SX: boolean = false;
+  
+      await generalQuery("getP4002", { PROD_REQUEST_NO: prod_request_no })
+      .then((response) => {
+        //console.log(response.data.data);
+        if (response.data.tk_status !== "NG") {
+          //console.log(response.data.data);
+          let loadeddata = response.data.data.map(
+            (element: any, index: number) => {
+              return {
+                ...element,             
+                id: index,
+              };
+            }
+          );
+          
+         
+          if(loadeddata[0].CODE_55 === '04')
+          {
+            check_ycsx_sample = true;
+          }
+          else
+          {
+            check_ycsx_sample = false;
+          }
+  
+        } else {
+          check_ycsx_sample = false;
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  
+      //console.log('check ycsx sample', check_ycsx_sample);
+     
+      await generalQuery("check_PLAN_ID_KHO_AO", { PLAN_ID: qlsxplandatafilter[0].PLAN_ID})
+      .then((response) => {
+        //console.log(response.data.data);
+        if (response.data.tk_status !== "NG") {
+          console.log(response.data.data);
+          if(response.data.data.length > 0)
+          {
+            checkPLANID_EXIST_OUT_KHO_SX = true;
+          }
+          else
+          {
+            checkPLANID_EXIST_OUT_KHO_SX = false;
+          }        
+  
+        } else {
+          
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+
+
+      //console.log('check ton tai out kho ao',checkPLANID_EXIST_OUT_KHO_SX );
+      if(check_ycsx_sample)
+      {
+        if(checkPLANID_EXIST_OUT_KHO_SX === false)
+        {
+
+          //nhap kho ao
+          await generalQuery("nhapkhoao", {
+            FACTORY: selectedFactory,
+            PHANLOAI: 'N',
+            PLAN_ID_INPUT: qlsxplandatafilter[0].PLAN_ID,
+            PLAN_ID_SUDUNG: qlsxplandatafilter[0].PLAN_ID,
+            M_CODE: 'A0009680',
+            M_LOT_NO: '2201010001',
+            ROLL_QTY: 1,
+            IN_QTY: 1,
+            TOTAL_IN_QTY: 1,
+            USE_YN: 'O',
+          })
+          .then((response) => {
+            console.log(response.data.tk_status);
+            if (response.data.tk_status !== "NG") {             
+              
+                              
+            } else {    
+                 
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          }); 
+
+          //xuat kho ao
+          await generalQuery("xuatkhoao", {
+            FACTORY: selectedFactory,
+            PHANLOAI: 'N',
+            PLAN_ID_INPUT: qlsxplandatafilter[0].PLAN_ID,
+            PLAN_ID_OUTPUT: qlsxplandatafilter[0].PLAN_ID,
+            M_CODE: 'A0009680',
+            M_LOT_NO: '2201010001',
+            ROLL_QTY: 1,
+            OUT_QTY: 1,
+            TOTAL_OUT_QTY: 1,
+            USE_YN: 'O',
+          })
+          .then((response) => {
+            console.log(response.data.tk_status);
+            if (response.data.tk_status !== "NG") {             
+              
+                              
+            } else {    
+                 
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          }); 
+
+          Swal.fire('Thông báo','Đã xuất liệu ảo thành công','info');
+  
+        }
+        else
+        {
+          Swal.fire('Thông báo','Đã xuất liệu chính rồi','info');
+        }
+      }
+      else
+      {
+        Swal.fire('Thông báo','Đây không phải ycsx sample','info');
+      }
+     
+    }
+    else
+    {
+      Swal.fire('Thông báo','Hãy chọn ít nhất 1 chỉ thị','error');
+    }
+   
+
+  }
+  const handle_xuatdao_sample = async () => {
     if(qlsxplandatafilter.length>0)
     {
       let prod_request_no:string = qlsxplandatafilter[0].PROD_REQUEST_NO;
@@ -2708,7 +2852,7 @@ const MACHINE = () => {
       .then((response) => {
         //console.log(response.data.data);
         if (response.data.tk_status !== "NG") {
-          console.log(response.data.data);
+          //console.log(response.data.data);
           if(response.data.data.length > 0)
           {
             checkPLANID_EXIST_OUT_KNIFE_FILM = true;
@@ -2736,7 +2880,7 @@ const MACHINE = () => {
             //console.log(response.data.data);
             if (response.data.tk_status !== "NG") {
               //console.log(response.data.data);
-            
+              
       
             } else {
               
@@ -2745,113 +2889,12 @@ const MACHINE = () => {
           .catch((error) => {
             console.log(error);
           });
+          Swal.fire('Thông báo','Đã xuất dao ảo thành công','success');
   
         }
         else
         {
-          Swal.fire('Thông báo','Đã xuất dao film rồi','info');
-        }
-      }
-      else
-      {
-        Swal.fire('Thông báo','Đây không phải ycsx sample','info');
-      }
-     
-    }
-    else
-    {
-      Swal.fire('Thông báo','Hãy chọn ít nhất 1 chỉ thị','error');
-    }
-   
-
-  }
-  const handle_xuatlieusample = async () => {
-    if(qlsxplandatafilter.length>0)
-    {
-      let prod_request_no:string = qlsxplandatafilter[0].PROD_REQUEST_NO;
-      let check_ycsx_sample: boolean = false;
-      let checkPLANID_EXIST_OUT_KNIFE_FILM: boolean = false;
-  
-      await generalQuery("getP4002", { PROD_REQUEST_NO: prod_request_no })
-      .then((response) => {
-        //console.log(response.data.data);
-        if (response.data.tk_status !== "NG") {
-          //console.log(response.data.data);
-          let loadeddata = response.data.data.map(
-            (element: any, index: number) => {
-              return {
-                ...element,             
-                id: index,
-              };
-            }
-          );
-          
-         
-          if(loadeddata[0].CODE_55 === '04')
-          {
-            check_ycsx_sample = true;
-          }
-          else
-          {
-            check_ycsx_sample = false;
-          }
-  
-        } else {
-          check_ycsx_sample = false;
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  
-      console.log(check_ycsx_sample);
-     
-      await generalQuery("check_PLAN_ID_OUT_KNIFE_FILM", { PLAN_ID: qlsxplandatafilter[0].PLAN_ID})
-      .then((response) => {
-        //console.log(response.data.data);
-        if (response.data.tk_status !== "NG") {
-          console.log(response.data.data);
-          if(response.data.data.length > 0)
-          {
-            checkPLANID_EXIST_OUT_KNIFE_FILM = true;
-          }
-          else
-          {
-            checkPLANID_EXIST_OUT_KNIFE_FILM = false;
-          }        
-  
-        } else {
-          
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-
-
-      if(check_ycsx_sample)
-      {
-        if(checkPLANID_EXIST_OUT_KNIFE_FILM === false)
-        {
-         /*  await generalQuery("insert_OUT_KNIFE_FILM", { PLAN_ID: qlsxplandatafilter[0].PLAN_ID, EQ_THUC_TE: qlsxplandatafilter[0].PLAN_EQ, CA_LAM_VIEC: 'Day', EMPL_NO: userData.EMPL_NO, KNIFE_FILM_NO: '1K22LH20'})
-          .then((response) => {
-            //console.log(response.data.data);
-            if (response.data.tk_status !== "NG") {
-              //console.log(response.data.data);
-            
-      
-            } else {
-              
-            }
-          })
-          .catch((error) => {
-            console.log(error);
-          });
-   */
-        }
-        else
-        {
-          Swal.fire('Thông báo','Đã xuất liệu rồi','info');
+          Swal.fire('Thông báo','Đã xuất dao rồi','info');
         }
       }
       else
