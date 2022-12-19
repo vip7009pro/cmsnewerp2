@@ -2050,13 +2050,41 @@ const MACHINE = () => {
       //console.log(next_plan_id);
       return {NEXT_PLAN_ID: next_plan_id, NEXT_PLAN_ORDER: next_plan_order};
   }
+
   const handle_AddPlan = async ()=> {
     if (ycsxdatatablefilter.length >= 1) {      
       for (let i = 0; i < ycsxdatatablefilter.length; i++) {
-         let nextPlan =  (await getNextPLAN_ID(ycsxdatatablefilter[i].PROD_REQUEST_NO));
-         let NextPlanID = nextPlan.NEXT_PLAN_ID;
-         let NextPlanOrder = nextPlan.NEXT_PLAN_ORDER;
-         await generalQuery("addPlanQLSX", {
+        
+        let check_ycsx_hethongcu: boolean = false;
+        await generalQuery("checkProd_request_no_Exist_O302", {
+          PROD_REQUEST_NO: ycsxdatatablefilter[i].PROD_REQUEST_NO,
+        })
+          .then((response) => {
+            //console.log(response.data.tk_status);
+            if (response.data.tk_status !== "NG") {
+              //console.log(response.data.data[0].PLAN_ID);
+              if(response.data.data.length >0 )
+              {
+              check_ycsx_hethongcu = true;
+              }
+              else
+              {
+              check_ycsx_hethongcu =false;
+              }
+            } else {
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });     
+    
+
+        let nextPlan =  (await getNextPLAN_ID(ycsxdatatablefilter[i].PROD_REQUEST_NO));
+        let NextPlanID = nextPlan.NEXT_PLAN_ID;
+        let NextPlanOrder = nextPlan.NEXT_PLAN_ORDER;
+        if(check_ycsx_hethongcu === false)
+        {
+        await generalQuery("addPlanQLSX", {
           PLAN_ID: NextPlanID,
           PLAN_DATE: selectedPlanDate,
           PROD_REQUEST_NO: ycsxdatatablefilter[i].PROD_REQUEST_NO,
@@ -2080,6 +2108,11 @@ const MACHINE = () => {
           .catch((error) => {
             console.log(error);
           });
+        }
+        else
+        {
+        Swal.fire('Thông báo','Yêu cầu sản xuất này đã chạy từ hệ thống cũ, không chạy được lẫn lộn cũ mới, hãy chạy hết bằng hệ thống cũ với yc này','error');
+        }        
       }     
     } else {
       Swal.fire("Thông báo", "Chọn ít nhất 1 YCSX để Add !", "error");
