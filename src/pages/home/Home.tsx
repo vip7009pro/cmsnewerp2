@@ -6,7 +6,7 @@ import { useSpring, animated } from "@react-spring/web";
 import { useEffect, useState } from "react";
 import { generalQuery } from "../../api/Api";
 import Swal from "sweetalert2";
-export const current_ver: number = 13;
+export const current_ver: number = 15;
 function Home() {
   const springs = useSpring({
     from: { x: 1000, y: 100 },

@@ -1127,6 +1127,7 @@ const readUploadFileAmazon = (e:any) => {
                       G_CODE: uploadExcelJson[i].G_CODE,
                       EMPL_NO: userData.EMPL_NO,
                       phanloai: newphanloai,
+                      PLAN_ID: next_prod_request_no + 'A',
                     })
                       .then((response) => {
                         if (response.data.tk_status !== "NG") {
@@ -1146,7 +1147,8 @@ const readUploadFileAmazon = (e:any) => {
                       next_process_lot_no:next_process_lot_no_p501,
                       next_process_prt_seq: next_process_lot_no_p501.substring(5,8),
                       PROD_REQUEST_DATE: moment().format("YYYYMMDD"), 
-                      PROD_REQUEST_NO: next_prod_request_no,                
+                      PROD_REQUEST_NO: next_prod_request_no,          
+                      PLAN_ID: next_prod_request_no + 'A',      
                     })
                       .then((response) => {
                         if (response.data.tk_status !== "NG") {
@@ -1489,6 +1491,7 @@ const readUploadFileAmazon = (e:any) => {
             G_CODE: selectedCode?.G_CODE,
             EMPL_NO: userData.EMPL_NO,
             phanloai: newphanloai,
+            PLAN_ID: next_prod_request_no + 'A',
           })
             .then((response) => {
               if (response.data.tk_status !== "NG") {
@@ -1508,7 +1511,8 @@ const readUploadFileAmazon = (e:any) => {
             next_process_lot_no:next_process_lot_no_p501,
             next_process_prt_seq: next_process_lot_no_p501.substring(5,8),
             PROD_REQUEST_DATE: moment().format("YYYYMMDD"), 
-            PROD_REQUEST_NO: next_prod_request_no,             
+            PROD_REQUEST_NO: next_prod_request_no,       
+            PLAN_ID: next_prod_request_no + 'A',      
           })
             .then((response) => {
               if (response.data.tk_status !== "NG") {
@@ -2068,6 +2072,7 @@ const readUploadFileAmazon = (e:any) => {
                       <option value='SP'>SP</option>
                       <option value='RB'>RB</option>
                       <option value='HQ'>HQ</option>
+                      <option value='AM'>AM</option>
                     </select>
                   </label>
                 </div>
