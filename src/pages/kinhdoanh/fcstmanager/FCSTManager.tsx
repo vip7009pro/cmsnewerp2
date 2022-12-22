@@ -8,7 +8,7 @@ import Swal from 'sweetalert2';
 import * as XLSX from 'xlsx';
 import { generalQuery } from '../../../api/Api';
 import { UserContext } from '../../../api/Context';
-import { SaveExcel } from '../../../api/GlobalFunction';
+import { checkBP, SaveExcel } from '../../../api/GlobalFunction';
 import { MdOutlineDelete } from 'react-icons/md';
 import "./FCSTManager.scss"
 
@@ -229,7 +229,10 @@ const FCSTManager = () => {
         <GridToolbarFilterButton />
         <GridToolbarDensitySelector /> 
         <IconButton className='buttonIcon'onClick={()=>{SaveExcel(fcstdatatable,"Fcst Table")}}><AiFillFileExcel color='green' size={25}/>SAVE</IconButton> 
-        <IconButton className='buttonIcon'onClick={()=>{handleConfirmDeleteFcst();}}><MdOutlineDelete color='red' size={25}/>XÓA FCST</IconButton>        
+        <IconButton className='buttonIcon'onClick={()=>{
+          checkBP(userData.EMPL_NO,userData.MAINDEPTNAME,'KD', handleConfirmDeleteFcst);
+          //handleConfirmDeleteFcst();
+          }}><MdOutlineDelete color='red' size={25}/>XÓA FCST</IconButton>        
         <GridToolbarQuickFilter/>
       </GridToolbarContainer>
     );
@@ -676,7 +679,11 @@ const FCSTManager = () => {
           Tra FCST
           </span>
         </div>  
-        <div className='mininavitem'  onClick={() => setNav(2)} style={{backgroundColor:selection.thempohangloat === true ? '#9933ff':'#d9b3ff', color: selection.thempohangloat === true ? 'yellow':'yellow'}}>
+        <div className='mininavitem'  onClick={() =>
+            checkBP(userData.EMPL_NO, userData.MAINDEPTNAME, "KD", () => {
+              setNav(2);
+            })
+          } style={{backgroundColor:selection.thempohangloat === true ? '#9933ff':'#d9b3ff', color: selection.thempohangloat === true ? 'yellow':'yellow'}}>
           <span className='mininavtext'>
           Thêm FCST
           </span>

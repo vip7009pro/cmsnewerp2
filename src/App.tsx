@@ -741,6 +741,18 @@ function App() {
                         </ProtectedRoute>
                       }
                     />
+                    <Route
+                      path='inspection'
+                      element={
+                        <ProtectedRoute
+                          user={userData}
+                          maindeptname='SX'
+                          jobname='Leader'
+                        >
+                          <KIEMTRA />
+                        </ProtectedRoute>
+                      }
+                    />
                     
                   </Route>
                   <Route

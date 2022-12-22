@@ -48,7 +48,7 @@ import {
   import Swal from "sweetalert2";
   import { generalQuery } from "../../../api/Api";
   import { UserContext } from "../../../api/Context";
-  import { SaveExcel } from "../../../api/GlobalFunction";
+  import { checkBP, SaveExcel } from "../../../api/GlobalFunction";
   import "./BOM_AMAZON.scss";
   import { BiAddToQueue, BiReset } from "react-icons/bi";
   import { MdOutlineDraw, MdOutlineUpdate, MdUpgrade } from "react-icons/md";
@@ -294,7 +294,8 @@ import {
           <IconButton
             className='buttonIcon'
             onClick={() => {
-              confirmSaveBOMAMAZON();
+              checkBP(userData.EMPL_NO,userData.MAINDEPTNAME,'RND', confirmSaveBOMAMAZON);
+              //confirmSaveBOMAMAZON();
             }}
           >
             <AiFillSave color='blue' size={20} />
@@ -303,12 +304,15 @@ import {
           <IconButton
             className='buttonIcon'
             onClick={() => {
-              setcolumn_bomgia(
-                column_bomgia.map((element, index: number) => {
-                  return { ...element, editable: !element.editable };
-                })
-              );
-              Swal.fire("Thông báo", "Bật/Tắt chế độ sửa", "success");
+              checkBP(userData.EMPL_NO,userData.MAINDEPTNAME,'RND', ()=>{
+                setcolumn_bomgia(
+                  column_bomgia.map((element, index: number) => {
+                    return { ...element, editable: !element.editable };
+                  })
+                );
+                Swal.fire("Thông báo", "Bật/Tắt chế độ sửa", "success");
+              });
+             
             }}
           >
             <AiFillEdit color='yellow' size={25} />

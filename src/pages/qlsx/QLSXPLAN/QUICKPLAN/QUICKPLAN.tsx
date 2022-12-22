@@ -634,14 +634,14 @@ import React, {
     ];
     const column_plandatatable =[    
       { field: "PLAN_ID", headerName: "PLAN_ID", width: 90 , editable: false, resizeable: true},   
+      { field: "PROD_REQUEST_NO", headerName: "YCSX_NO", width: 80, editable: true },
       { field: "G_CODE", headerName: "G_CODE", width: 80, editable: false },
-      { field: "PROD_REQUEST_NO", headerName: "YCSX NO", width: 80, editable: false },
       { field: "G_NAME_KD", headerName: "G_NAME_KD", width: 180, editable: false, renderCell: (params: any) => {           
         if(params.row.FACTORY === null || params.row.EQ1 === null || params.row.EQ2 === null || params.row.Setting1 === null || params.row.Setting2 === null || params.row.UPH1 === null ||  params.row.UPH2 === null || params.row.Step1 === null || params.row.Step1 === null || params.row.LOSS_SX1 === null || params.row.LOSS_SX2 === null || params.row.LOSS_SETTING1 === null ||  params.row.LOSS_SETTING2 === null)
         return <span style={{color: 'red'}}>{params.row.G_NAME_KD}</span>
         return <span style={{color: 'green'}}>{params.row.G_NAME_KD}</span>    
    }  },
-      { field: "PROD_REQUEST_QTY", headerName: "YCSX QTY", width: 80, editable: false , renderCell: (params: any) => {
+      { field: "PROD_REQUEST_QTY", headerName: "YCSX_QTY", width: 80, editable: false , renderCell: (params: any) => {
           return <span style={{color: 'blue'}}>{params.row.PROD_REQUEST_QTY.toLocaleString('en','US')}</span>
      } },  
      { field: "CD1", headerName: "KQ_CD1", width: 80, editable: false , renderCell: (params: any) => {
@@ -1044,7 +1044,7 @@ import React, {
               let len: number = datafilter.length-1;
               if(prev_length === 1)
               {
-                console.log('vao day');
+                //console.log('vao day');
                 setTemID(0);
                 localStorage.setItem('temp_plan_table_max_id','0');
               }
@@ -1163,6 +1163,63 @@ import React, {
           Swal.fire("Thông báo", "Chọn ít nhất 1 YCSX để Add !", "error");
         }
       }
+    const handle_AddBlankPlan = async ()=> {
+      let temp_:number = temp_id;
+      temp_++;
+      setTemID(temp_);
+      localStorage.setItem('temp_plan_table_max_id',temp_.toString());
+             
+              
+            let temp_add_plan: QLSXPLANDATA = {
+              id: temp_id+1+'',
+              PLAN_ID: 'PL'+ (temp_id+1),
+              PLAN_DATE: moment().format('YYYY-MM-DD'),
+              PROD_REQUEST_NO: '',
+              PLAN_QTY: 0,
+              PLAN_EQ: '',
+              PLAN_FACTORY: userData.FACTORY_CODE===1? 'NM1': 'NM2',
+              PLAN_LEADTIME: 0,
+              INS_EMPL: userData.EMPL_NO,
+              INS_DATE: moment().format('YYYY-MM-DD HH:mm:ss'),
+              UPD_EMPL: userData.EMPL_NO,
+              UPD_DATE: moment().format('YYYY-MM-DD HH:mm:ss'),
+              G_CODE: '',
+              G_NAME: '',
+              G_NAME_KD: '',
+              PROD_REQUEST_DATE: '',
+              PROD_REQUEST_QTY: 0,
+              STEP: '1',
+              PLAN_ORDER: '1',
+              PROCESS_NUMBER: 1,
+              KETQUASX: 0,
+              KQ_SX_TAM: 0,
+              CD1: 0,
+              CD2: 0,
+              TON_CD1: 0,
+              TON_CD2: 0,
+              FACTORY: '',
+              EQ1: '',
+              EQ2: '',
+              Setting1: 0,
+              Setting2: 0,
+              UPH1: 0,
+              UPH2: 0,
+              Step1: 0,
+              Step2: 0,
+              LOSS_SX1: 0,
+              LOSS_SX2: 0,
+              LOSS_SETTING1: 0,
+              LOSS_SETTING2: 0,
+              NOTE: '',
+              NEXT_PLAN_ID: 'X'
+            }
+            setPlanDataTable([...plandatatable,
+              temp_add_plan
+            ])
+            localStorage.setItem('temp_plan_table',JSON.stringify([...plandatatable,
+              temp_add_plan
+            ]));
+      }
     const handle_SavePlan = async ()=> {
       if(qlsxplandatafilter.length !==0)
       {
@@ -1170,11 +1227,11 @@ import React, {
         let err_code:string = '0';
         for(let i=0; i< qlsxplandatafilter.length;i++)
         { 
-            if(qlsxplandatafilter[i].PROCESS_NUMBER !== null && qlsxplandatafilter[i].PLAN_QTY !== 0 && qlsxplandatafilter[i].PLAN_QTY <= qlsxplandatafilter[i].PROD_REQUEST_QTY && (qlsxplandatafilter[i].PLAN_EQ !=='' && (qlsxplandatafilter[i].PLAN_EQ !=='FR'|| qlsxplandatafilter[i].PLAN_EQ !=='SR'|| qlsxplandatafilter[i].PLAN_EQ !=='DC'|| qlsxplandatafilter[i].PLAN_EQ !=='ED') ))
+            if((parseInt(qlsxplandatafilter[i].PROCESS_NUMBER.toString()) ===1 ||  parseInt(qlsxplandatafilter[i].PROCESS_NUMBER.toString()) ===2) && qlsxplandatafilter[i].PLAN_QTY !== 0 && qlsxplandatafilter[i].PLAN_QTY <= qlsxplandatafilter[i].PROD_REQUEST_QTY && (qlsxplandatafilter[i].PLAN_EQ.substring(0,2) !=='' && (qlsxplandatafilter[i].PLAN_EQ.substring(0,2) ==='FR'|| qlsxplandatafilter[i].PLAN_EQ.substring(0,2) ==='SR'|| qlsxplandatafilter[i].PLAN_EQ.substring(0,2) ==='DC'|| qlsxplandatafilter[i].PLAN_EQ.substring(0,2) ==='ED')  && (parseInt(qlsxplandatafilter[i].STEP.toString())>=0 &&  parseInt(qlsxplandatafilter[i].STEP.toString())<=9) ))
             {
               let check_ycsx_hethongcu: boolean = false;
               await generalQuery("checkProd_request_no_Exist_O302", {
-                PROD_REQUEST_NO: ycsxdatatablefilter[i].PROD_REQUEST_NO,
+                PROD_REQUEST_NO: qlsxplandatafilter[i].PROD_REQUEST_NO,
               })
                 .then((response) => {
                   //console.log(response.data.tk_status);
@@ -1195,6 +1252,7 @@ import React, {
                   console.log(error);
                 });     
 
+              //check_ycsx_hethongcu = false;
               let nextPlan =  (await getNextPLAN_ID(qlsxplandatafilter[i].PROD_REQUEST_NO,qlsxplandatafilter[i] ));
               let NextPlanID = nextPlan.NEXT_PLAN_ID;
               let NextPlanOrder = nextPlan.NEXT_PLAN_ORDER;
@@ -1218,6 +1276,7 @@ import React, {
                   .then((response) => {
                     //console.log(response.data.tk_status);
                     if (response.data.tk_status !== "NG") {
+                      handle_DeleteLinePLAN();
                     } else {
                       err_code += '_'+ response.data.message;
                     }
@@ -1236,7 +1295,7 @@ import React, {
             }
             else
             {
-              err_code +='_'+  qlsxplandatafilter[i].G_NAME_KD + ': Plan QTY =0 hoặc Process number trắng, hoặc chỉ thị nhiều hơn ycsx qty, hoặc PLAN_EQ rỗng, hoặc không hợp lệ sẽ ko được lưu';
+              err_code +='_'+  qlsxplandatafilter[i].G_NAME_KD + ': Plan QTY =0 hoặc Process number trắng hoặc khác giá trị 1 or 2, hoặc chỉ thị nhiều hơn ycsx qty, hoặc PLAN_EQ rỗng, hoặc không hợp lệ, hoặc Step không nằm trong khoảng từ 0 đến 9 sẽ ko được lưu';
             }
           }
           if(err_code  !=='0')
@@ -1334,6 +1393,15 @@ import React, {
           >
             <AiFillFolderAdd color='#69f542' size={25} />
             Add to PLAN
+          </IconButton> 
+          <IconButton
+            className='buttonIcon'
+            onClick={() => {             
+                handle_AddBlankPlan();             
+            }}
+          >
+            <AiFillFolderAdd color='#69f542' size={25} />
+            Add Blank PLAN
           </IconButton> 
         </GridToolbarContainer>
       );
@@ -1760,8 +1828,59 @@ import React, {
                     ) => {
                       const keyvar = params.field;
                       const newdata = plandatatable.map((p) =>
-                        p.PLAN_ID === params.id ? { ...p, [keyvar]: params.value } : p
+                      {
+                        if(p.PLAN_ID === params.id){
+                          if(keyvar ==='PROD_REQUEST_NO')
+                          {
+                            console.log(keyvar);
+                            const temp_ycsx_data: YCSXTableData[] = ycsxdatatable.filter((element:YCSXTableData) => {
+                              return element.PROD_REQUEST_NO === params.value;
+                            });
+
+                            
+                            if(temp_ycsx_data.length>0)
+                            {
+
+                              return(
+                                { ...p, 
+                                  [keyvar]: params.value,
+                                  G_CODE: temp_ycsx_data[0].G_CODE,
+                                  G_NAME_KD: temp_ycsx_data[0].G_NAME,
+                                  PROD_REQUEST_QTY: temp_ycsx_data[0].PROD_REQUEST_QTY,
+                                  CD1: temp_ycsx_data[0].CD1,
+                                  CD2: temp_ycsx_data[0].CD2,
+                                  TON_CD1: temp_ycsx_data[0].TON_CD1,
+                                  TON_CD2: temp_ycsx_data[0].TON_CD2,  
+                                }  
+                              )
+
+                            }
+                            else
+                            {
+                              return(
+                                { ...p, [keyvar]: params.value }  
+                              )
+
+                            }
+                          }
+                          else
+                          {
+                            console.log(keyvar);
+                            return(
+                              { ...p, [keyvar]: params.value }  
+                            )
+
+                          }
+                          
+                        }                        
+                        else
+                        {
+                          return p;
+                        }
+                        
+                      }
                       );
+                      //console.log(newdata);
                       setPlanDataTable(newdata);
                       //console.log(plandatatable);
                     }}

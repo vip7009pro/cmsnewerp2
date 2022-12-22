@@ -566,7 +566,7 @@ const CHITHI_COMPONENT = ({
                       <td>{(element.M_MET_QTY * element.M_QTY).toLocaleString("en-US")} M</td>
                       <td></td>
                       <td></td>
-                      <td></td>
+                      <td>{element.LIEUQL_SX}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -602,7 +602,7 @@ const CHITHI_COMPONENT = ({
                         <td>{(element.M_MET_QTY * element.M_QTY).toLocaleString("en-US")} M</td>
                         <td></td>
                         <td></td>
-                        <td></td>
+                        <td>{element.LIEUQL_SX}</td>
                         </tr>
                       )
                   )}
@@ -639,7 +639,7 @@ const CHITHI_COMPONENT = ({
                         <td>{(element.M_MET_QTY * element.M_QTY).toLocaleString("en-US")} M</td>
                         <td></td>
                         <td></td>
-                        <td></td>
+                        <td>{element.LIEUQL_SX}</td>
                         </tr>
                       )
                   )}

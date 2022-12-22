@@ -105,6 +105,8 @@ const EQ_STATUS = () => {
                     current_g_name={element.G_NAME_KD}
                     current_plan_id={element.CURR_PLAN_ID}
                     run_stop={element.EQ_ACTIVE === "OK" ? 1 : 0}
+                    upd_time ={element.UPD_DATE}
+                    upd_empl ={element.UPD_EMPL}
                     onClick={() => {}}
                   />
                 );
@@ -127,6 +129,8 @@ const EQ_STATUS = () => {
                     current_g_name={element.G_NAME_KD}
                     current_plan_id={element.CURR_PLAN_ID}
                     run_stop={element.EQ_ACTIVE === "OK" ? 1 : 0}
+                    upd_time ={element.UPD_DATE}
+                    upd_empl ={element.UPD_EMPL}
                     onClick={() => {}}
                   />
                 );
@@ -149,6 +153,8 @@ const EQ_STATUS = () => {
                     current_g_name={element.G_NAME_KD}
                     current_plan_id={element.CURR_PLAN_ID}
                     run_stop={element.EQ_ACTIVE === "OK" ? 1 : 0}
+                    upd_time ={element.UPD_DATE}
+                    upd_empl ={element.UPD_EMPL}
                     onClick={() => {}}
                   />
                 );
@@ -171,6 +177,8 @@ const EQ_STATUS = () => {
                     current_g_name={element.G_NAME_KD}
                     current_plan_id={element.CURR_PLAN_ID}
                     run_stop={element.EQ_ACTIVE === "OK" ? 1 : 0}
+                    upd_time ={element.UPD_DATE}
+                    upd_empl ={element.UPD_EMPL}
                     onClick={() => {}}
                   />
                 );
@@ -204,6 +212,8 @@ const EQ_STATUS = () => {
                     current_g_name={element.G_NAME_KD}
                     current_plan_id={element.CURR_PLAN_ID}
                     run_stop={element.EQ_ACTIVE === "OK" ? 1 : 0}
+                    upd_time ={element.UPD_DATE}
+                    upd_empl ={element.UPD_EMPL}
                     onClick={() => {}}
                   />
                 );
@@ -226,6 +236,8 @@ const EQ_STATUS = () => {
                     current_g_name={element.G_NAME_KD}
                     current_plan_id={element.CURR_PLAN_ID}
                     run_stop={element.EQ_ACTIVE === "OK" ? 1 : 0}
+                    upd_time ={element.UPD_DATE}
+                    upd_empl ={element.UPD_EMPL}
                     onClick={() => {}}
                   />
                 );

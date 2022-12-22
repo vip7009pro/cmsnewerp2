@@ -55,7 +55,6 @@ import CHITHI_COMPONENT from "../CHITHI/CHITHI_COMPONENT";
 import { BiRefresh, BiReset } from "react-icons/bi";
 import YCKT from "../YCKT/YCKT";
 const axios = require("axios").default;
-
 interface TONLIEUXUONG {
   id: number;
   FACTORY: string;
@@ -172,12 +171,12 @@ interface QLSXPLANDATA {
   LOSS_SETTING2: number;
   NOTE: string;
   NEXT_PLAN_ID: string;
-  XUATDAOFILM?: string,
-  EQ_STATUS?: string,
-  MAIN_MATERIAL?: string,
-  INT_TEM?: string,
-  CHOTBC?: string,
-  DKXL?: string,
+  XUATDAOFILM?: string;
+  EQ_STATUS?: string;
+  MAIN_MATERIAL?: string;
+  INT_TEM?: string;
+  CHOTBC?: string;
+  DKXL?: string;
 }
 interface YCSXTableData {
   DESCR?: string;
@@ -428,7 +427,6 @@ const PLANTABLE = () => {
         );
       },
     },
-
     {
       field: "PHAN_LOAI",
       headerName: "PHAN_LOAI",
@@ -752,6 +750,16 @@ const PLANTABLE = () => {
       width: 90,
       editable: false,
       resizeable: true,
+      renderCell: (params: any)=> {
+        if(params.row.DKXL ===null)
+        {
+          return <span style={{color: 'red'}}>{params.row.PLAN_ID}</span>
+        }
+        else
+        {
+          return <span style={{color: 'green'}}>{params.row.PLAN_ID}</span>
+        }
+      }
     },
     { field: "G_CODE", headerName: "G_CODE", width: 100, editable: false },
     {
@@ -1202,7 +1210,6 @@ const PLANTABLE = () => {
     { field: "EQUIPMENT_CD", headerName: "MAY", width: 40 },
     { field: "INS_DATE", headerName: "INS_DATE", width: 150 },
   ];
-
   const handle_saveConfirmLieuTon = () => {
     if (lichsuinputlieudatafilter.length > 0) {
       let err_code: string = "0";
@@ -1437,7 +1444,6 @@ const PLANTABLE = () => {
             .catch((error) => {
               console.log(error);
             });
-
           if (checklieuchithi === true) {
             await generalQuery("xuatkhoao", {
               FACTORY: tonlieuxuongdatafilter[i].FACTORY,
@@ -1527,7 +1533,6 @@ const PLANTABLE = () => {
     if (qlsxplandatafilter.length >= 1) {
       if (userData.EMPL_NO === "NHU1903" || userData.MAINDEPTNAME === "QLSX") {
         let err_code: string = "0";
-
         console.log(datadinhmuc);
         if (
           datadinhmuc.FACTORY === "NA" ||
@@ -1590,7 +1595,6 @@ const PLANTABLE = () => {
       Swal.fire("Thông báo", "Chọn ít nhất 1 G_CODE để SET !", "error");
     }
   };
-
   const renderYCKT = (planlist: QLSXPLANDATA[]) => {
     return planlist.map((element, index) => (
       <YCKT
@@ -1870,7 +1874,6 @@ const PLANTABLE = () => {
         .catch((error) => {
           console.log(error);
         });
-
       setCurrentPlanPD(PD);
       setCurrentPlanCAVITY(CAVITY_NGANG * CAVITY_DOC);
       M_MET_NEEDED = parseInt(
@@ -2240,7 +2243,6 @@ const PLANTABLE = () => {
                 } else {
                   datafilter.splice(j,1);   
                   setPlanDataTable(datafilter);   
-                  
                 }
               })
               .catch((error) => {
@@ -2317,38 +2319,32 @@ const PLANTABLE = () => {
   const handle_AddPlan = async () => {
     if (ycsxdatatablefilter.length >= 1) {
       for (let i = 0; i < ycsxdatatablefilter.length; i++) {
-
         let check_ycsx_hethongcu: boolean = false;
-         await generalQuery("checkProd_request_no_Exist_O302", {
-           PROD_REQUEST_NO: ycsxdatatablefilter[i].PROD_REQUEST_NO,
-         })
-           .then((response) => {
-             //console.log(response.data.tk_status);
-             if (response.data.tk_status !== "NG") {
-               //console.log(response.data.data[0].PLAN_ID);
-               if(response.data.data.length >0 )
-               {
+        await generalQuery("checkProd_request_no_Exist_O302", {
+          PROD_REQUEST_NO: ycsxdatatablefilter[i].PROD_REQUEST_NO,
+        })
+          .then((response) => {
+            //console.log(response.data.tk_status);
+            if (response.data.tk_status !== "NG") {
+              //console.log(response.data.data[0].PLAN_ID);
+              if (response.data.data.length > 0) {
                 check_ycsx_hethongcu = true;
-               }
-               else
-               {
-                check_ycsx_hethongcu =false;
-               }
-             } else {
-             }
-           })
-           .catch((error) => {
-             console.log(error);
-           }); 
-
+              } else {
+                check_ycsx_hethongcu = false;
+              }
+            } else {
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+        //check_ycsx_hethongcu = false;
         let nextPlan = await getNextPLAN_ID(
           ycsxdatatablefilter[i].PROD_REQUEST_NO
         );
         let NextPlanID = nextPlan.NEXT_PLAN_ID;
         let NextPlanOrder = nextPlan.NEXT_PLAN_ORDER;
-
-        if(check_ycsx_hethongcu === false)
-        {
+        if (check_ycsx_hethongcu === false) {
           await generalQuery("addPlanQLSX", {
             PLAN_ID: NextPlanID,
             PLAN_DATE: selectedPlanDate,
@@ -2373,18 +2369,19 @@ const PLANTABLE = () => {
             .catch((error) => {
               console.log(error);
             });
+        } else {
+          Swal.fire(
+            "Thông báo",
+            "Yêu cầu sản xuất này đã chạy từ hệ thống cũ, không chạy được lẫn lộn cũ mới, hãy chạy hết bằng hệ thống cũ với yc này",
+            "error"
+          );
         }
-        else
-        {
-        Swal.fire('Thông báo','Yêu cầu sản xuất này đã chạy từ hệ thống cũ, không chạy được lẫn lộn cũ mới, hãy chạy hết bằng hệ thống cũ với yc này','error');
-        }
-       
       }
     } else {
       Swal.fire("Thông báo", "Chọn ít nhất 1 YCSX để Add !", "error");
     }
   };
-  const handle_UpdatePlan =()=> {
+  const handle_UpdatePlan = () => {
     let selectedPlanTable: QLSXPLANDATA[] = plandatatable.filter(
       (element: QLSXPLANDATA, index: number) => {
         return (
@@ -2392,26 +2389,28 @@ const PLANTABLE = () => {
           element.PLAN_FACTORY === selectedFactory
         );
       }
-    )
-    let err_code:string = '0';
-    for(let i=0; i< selectedPlanTable.length;i++)
-    {
+    );
+    let err_code: string = "0";
+    for (let i = 0; i < selectedPlanTable.length; i++) {
       let check_NEXT_PLAN_ID: boolean = true;
-      if(selectedPlanTable[i].NEXT_PLAN_ID !=='X')
-      {
-        if(selectedPlanTable[i].NEXT_PLAN_ID===selectedPlanTable[i+1].PLAN_ID)
-        {
+      if (selectedPlanTable[i].NEXT_PLAN_ID !== "X") {
+        if (
+          selectedPlanTable[i].NEXT_PLAN_ID === selectedPlanTable[i + 1].PLAN_ID
+        ) {
           check_NEXT_PLAN_ID = true;
-        }
-        else
-        {
+        } else {
           check_NEXT_PLAN_ID = false;
         }
       }
-
-      if(selectedPlanTable[i].PROCESS_NUMBER !== null && selectedPlanTable[i].PLAN_QTY !== 0  && selectedPlanTable[i].PLAN_QTY <= selectedPlanTable[i].PROD_REQUEST_QTY && selectedPlanTable[i].PLAN_ID !== selectedPlanTable[i].NEXT_PLAN_ID && selectedPlanTable[i].CHOTBC !=='V' && check_NEXT_PLAN_ID)
-      {
-
+      if (
+        (parseInt(selectedPlanTable[i].PROCESS_NUMBER.toString()) ===1 ||  parseInt(selectedPlanTable[i].PROCESS_NUMBER.toString()) ===2) &&
+        selectedPlanTable[i].PLAN_QTY !== 0 &&
+        selectedPlanTable[i].PLAN_QTY <=
+          selectedPlanTable[i].PROD_REQUEST_QTY &&
+        selectedPlanTable[i].PLAN_ID !== selectedPlanTable[i].NEXT_PLAN_ID &&
+        selectedPlanTable[i].CHOTBC !== "V" &&
+        check_NEXT_PLAN_ID && (parseInt(selectedPlanTable[i].STEP.toString())>=0 &&  parseInt(selectedPlanTable[i].STEP.toString())<=9)
+      ) {
         generalQuery("updatePlanQLSX", {
           PLAN_ID: selectedPlanTable[i].PLAN_ID,
           STEP: selectedPlanTable[i].STEP,
@@ -2421,162 +2420,149 @@ const PLANTABLE = () => {
           PLAN_EQ: selectedPlanTable[i].PLAN_EQ,
           PLAN_ORDER: selectedPlanTable[i].PLAN_ORDER,
           PROCESS_NUMBER: selectedPlanTable[i].PROCESS_NUMBER,
-          KETQUASX: selectedPlanTable[i].KETQUASX=== null? 0: selectedPlanTable[i].KETQUASX,
-          NEXT_PLAN_ID: selectedPlanTable[i].NEXT_PLAN_ID=== null? 'X': selectedPlanTable[i].NEXT_PLAN_ID,
+          KETQUASX:
+            selectedPlanTable[i].KETQUASX === null
+              ? 0
+              : selectedPlanTable[i].KETQUASX,
+          NEXT_PLAN_ID:
+            selectedPlanTable[i].NEXT_PLAN_ID === null
+              ? "X"
+              : selectedPlanTable[i].NEXT_PLAN_ID,
         })
           .then((response) => {
             //console.log(response.data.tk_status);
             if (response.data.tk_status !== "NG") {
             } else {
-              err_code += '_'+ response.data.message;
+              err_code += "_" + response.data.message;
             }
           })
           .catch((error) => {
             console.log(error);
           });
+      } else {
+        err_code += "_" + selectedPlanTable[i].G_NAME_KD + ":";
+        if ( !(parseInt(selectedPlanTable[i].PROCESS_NUMBER.toString()) ===1 ||  parseInt(selectedPlanTable[i].PROCESS_NUMBER.toString()) ===2)) {
+          err_code += "_: Process number chưa đúng";
+        }
+        if (selectedPlanTable[i].PLAN_QTY === 0) {
+          err_code += "_: Số lượng chỉ thị =0";
+        }
+        if (
+          selectedPlanTable[i].PLAN_QTY > selectedPlanTable[i].PROD_REQUEST_QTY
+        ) {
+          err_code += "_: Số lượng chỉ thị lớn hơn số lượng yêu cầu sx";
+        }
+        if (
+          selectedPlanTable[i].PLAN_ID === selectedPlanTable[i].NEXT_PLAN_ID
+        ) {
+          err_code += "_: NEXT_PLAN_ID không được giống PLAN_ID hiện tại";
+        }
+        if (!check_NEXT_PLAN_ID) {
+          err_code +=
+            "_: NEXT_PLAN_ID không giống với PLAN_ID ở dòng tiếp theo";
+        }
+        if (selectedPlanTable[i].CHOTBC === "V") {
+          err_code +=
+            "_: Chỉ thị đã chốt báo cáo, sẽ ko sửa được, thông tin các chỉ thị khác trong máy được lưu thành công";
+        }
+        if (!(parseInt(selectedPlanTable[i].STEP.toString())>=0 &&  parseInt(selectedPlanTable[i].STEP.toString())<=9)) {
+          err_code +=
+            "_: Hãy nhập STEP từ 0 -> 9";
+        }
       }
-      else
-      {
-        err_code +='_' + selectedPlanTable[i].G_NAME_KD + ":";
-        if(selectedPlanTable[i].PROCESS_NUMBER === null)
-        {
-           err_code += '_: Process number chưa xác định';
-        }
-        if(selectedPlanTable[i].PLAN_QTY === 0)
-        {
-           err_code += '_: Số lượng chỉ thị =0';
-        }
-        if(selectedPlanTable[i].PLAN_QTY > selectedPlanTable[i].PROD_REQUEST_QTY)
-        {
-           err_code += '_: Số lượng chỉ thị lớn hơn số lượng yêu cầu sx';
-        }
-        if(selectedPlanTable[i].PLAN_ID === selectedPlanTable[i].NEXT_PLAN_ID)
-        {
-           err_code += '_: NEXT_PLAN_ID không được giống PLAN_ID hiện tại';
-        }
-        if(!check_NEXT_PLAN_ID)
-        {
-           err_code += '_: NEXT_PLAN_ID không giống với PLAN_ID ở dòng tiếp theo';
-        }
-        if(selectedPlanTable[i].CHOTBC ==='V')
-        {
-           err_code += '_: Chỉ thị đã chốt báo cáo, sẽ ko sửa được, thông tin các chỉ thị khác trong máy được lưu thành công';
-        }        
-      }
-     
     }
-    if(err_code  !=='0')
-    {
-      Swal.fire('Thông báo', 'Có lỗi !'+ err_code,'error');
-    }
-    else
-    {
-      Swal.fire('Thông báo', 'Lưu PLAN thành công','success');
+    if (err_code !== "0") {
+      Swal.fire("Thông báo", "Có lỗi !" + err_code, "error");
+    } else {
+      Swal.fire("Thông báo", "Lưu PLAN thành công", "success");
       loadQLSXPlan(ycsxdatatablefilter[0].PROD_REQUEST_NO);
     }
-  }
-  const hanlde_SaveChiThi = async ()=> {
-    let err_code:string = '0';    
-    let total_lieuql_sx:number =0;   
-    let check_lieuql_sx_sot:number =0; 
-    let check_num_lieuql_sx: number =1;
-
+  };
+  const hanlde_SaveChiThi = async () => {
+    let err_code: string = "0";
+    let total_lieuql_sx: number = 0;
+    let check_lieuql_sx_sot: number = 0;
+    let check_num_lieuql_sx: number = 1;
     //console.log(chithidatatable);
-    for(let i=0; i<chithidatatable.length; i++)
-    {      
-      total_lieuql_sx += chithidatatable[i].LIEUQL_SX;      
+    for (let i = 0; i < chithidatatable.length; i++) {
+      total_lieuql_sx += chithidatatable[i].LIEUQL_SX;
     }
-    for(let i=0; i<chithidatatable.length; i++)
-    {      
+    for (let i = 0; i < chithidatatable.length; i++) {
       //console.log(chithidatatable[i].LIEUQL_SX);
-      if(parseInt(chithidatatable[i].LIEUQL_SX.toString()) ===1)    
-      {
-        
-        for(let j =0;j<chithidatatable.length;j++)
-        {
-          if(chithidatatable[j].M_NAME === chithidatatable[i].M_NAME && parseInt(chithidatatable[j].LIEUQL_SX.toString()) ===0)
-          {
+      if (parseInt(chithidatatable[i].LIEUQL_SX.toString()) === 1) {
+        for (let j = 0; j < chithidatatable.length; j++) {
+          if (
+            chithidatatable[j].M_NAME === chithidatatable[i].M_NAME &&
+            parseInt(chithidatatable[j].LIEUQL_SX.toString()) === 0
+          ) {
             check_lieuql_sx_sot += 1;
-          }         
+          }
         }
       }
     }
-    for(let i=0;i<chithidatatable.length; i++)
-    {
-      if(chithidatatable[i].LIEUQL_SX === 1)
-      {
-        for(let j=0;j<chithidatatable.length; j++)
-        {
-          if(chithidatatable[j].LIEUQL_SX ===1)
-          {
-            if(chithidatatable[i].LIEUQL_SX !== chithidatatable[j].LIEUQL_SX)
-            {
+    for (let i = 0; i < chithidatatable.length; i++) {
+      if (chithidatatable[i].LIEUQL_SX === 1) {
+        for (let j = 0; j < chithidatatable.length; j++) {
+          if (chithidatatable[j].LIEUQL_SX === 1) {
+            if (chithidatatable[i].LIEUQL_SX !== chithidatatable[j].LIEUQL_SX) {
               check_num_lieuql_sx = 2;
             }
           }
         }
-
       }
     }
     //console.log('check lieu sot: ' + check_lieuql_sx_sot);
     //console.log('tong lieu qly: '+ total_lieuql_sx);
-    if(total_lieuql_sx >0 && check_lieuql_sx_sot ===0 && check_num_lieuql_sx ===1)
-    {      
-    await generalQuery("deleteMCODEExistIN_O302", {
-      PLAN_ID: qlsxplandatafilter[0].PLAN_ID,      
-    })
-    .then((response) => {
-      //console.log(response.data);
-      if (response.data.tk_status !== "NG") {
-      } else {
-      }
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-
-    for(let i=0; i<chithidatatable.length; i++)
-    {
-      generalQuery("updateLIEUQL_SX_M140", {
-        G_CODE: qlsxplandatafilter[0].G_CODE,   
-        M_CODE: chithidatatable[i].M_CODE,
-        LIEUQL_SX: chithidatatable[i].LIEUQL_SX,
+    if (
+      total_lieuql_sx > 0 &&
+      check_lieuql_sx_sot === 0 &&
+      check_num_lieuql_sx === 1
+    ) {
+      await generalQuery("deleteMCODEExistIN_O302", {
+        PLAN_ID: qlsxplandatafilter[0].PLAN_ID,
       })
-      .then((response) => {
-        //console.log(response.data);
-        
-        if (response.data.tk_status !== "NG") {
-          
-        } else {
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-              
-      if(chithidatatable[i].M_MET_QTY >0)
-      {
-        let checktontaiM_CODE: boolean = false;
-        await generalQuery("checkM_CODE_PLAN_ID_Exist", {
-          PLAN_ID: qlsxplandatafilter[0].PLAN_ID,   
-          M_CODE: chithidatatable[i].M_CODE
+        .then((response) => {
+          //console.log(response.data);
+          if (response.data.tk_status !== "NG") {
+          } else {
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+      for (let i = 0; i < chithidatatable.length; i++) {
+        generalQuery("updateLIEUQL_SX_M140", {
+          G_CODE: qlsxplandatafilter[0].G_CODE,
+          M_CODE: chithidatatable[i].M_CODE,
+          LIEUQL_SX: chithidatatable[i].LIEUQL_SX,
         })
           .then((response) => {
             //console.log(response.data);
-            
             if (response.data.tk_status !== "NG") {
-              checktontaiM_CODE = true;
             } else {
             }
           })
           .catch((error) => {
             console.log(error);
           });
-                
+        if (chithidatatable[i].M_MET_QTY > 0) {
+          let checktontaiM_CODE: boolean = false;
+          await generalQuery("checkM_CODE_PLAN_ID_Exist", {
+            PLAN_ID: qlsxplandatafilter[0].PLAN_ID,
+            M_CODE: chithidatatable[i].M_CODE,
+          })
+            .then((response) => {
+              //console.log(response.data);
+              if (response.data.tk_status !== "NG") {
+                checktontaiM_CODE = true;
+              } else {
+              }
+            })
+            .catch((error) => {
+              console.log(error);
+            });
           //console.log('checktontai',checktontaiM_CODE);
-
-          if(checktontaiM_CODE)
-          {
+          if (checktontaiM_CODE) {
             generalQuery("updateChiThi", {
               PLAN_ID: qlsxplandatafilter[0].PLAN_ID,
               M_CODE: chithidatatable[i].M_CODE,
@@ -2589,16 +2575,13 @@ const PLANTABLE = () => {
                 //console.log(response.data);
                 if (response.data.tk_status !== "NG") {
                 } else {
-                  err_code += '_'+ response.data.message;              
+                  err_code += "_" + response.data.message;
                 }
               })
               .catch((error) => {
                 console.log(error);
               });
-
-          }
-          else
-          {
+          } else {
             generalQuery("insertChiThi", {
               PLAN_ID: qlsxplandatafilter[0].PLAN_ID,
               M_CODE: chithidatatable[i].M_CODE,
@@ -2611,37 +2594,31 @@ const PLANTABLE = () => {
                 //console.log(response.data);
                 if (response.data.tk_status !== "NG") {
                 } else {
-                  err_code += '_'+ response.data.message;              
+                  err_code += "_" + response.data.message;
                 }
               })
               .catch((error) => {
                 console.log(error);
               });
           }
-
-      }    
-      else
-      {
-        err_code += '_' + chithidatatable[i].M_CODE +': so met = 0';
+        } else {
+          err_code += "_" + chithidatatable[i].M_CODE + ": so met = 0";
+        }
       }
+      if (err_code !== "0") {
+        Swal.fire("Thông báo", "Có lỗi !" + err_code, "error");
+      } else {
+        Swal.fire("Thông báo", "Lưu Chỉ thị thành công", "success");
+        loadQLSXPlan(ycsxdatatablefilter[0].PROD_REQUEST_NO);
+      }
+    } else {
+      Swal.fire(
+        "Thông báo",
+        "Phải chỉ định liệu quản lý, k để sót size nào, và chỉ chọn 1 loại liệu làm liệu chính",
+        "error"
+      );
     }
-
-    if(err_code  !=='0')
-    {
-      Swal.fire('Thông báo', 'Có lỗi !'+ err_code,'error');
-    }
-    else
-    {
-      Swal.fire('Thông báo', 'Lưu Chỉ thị thành công','success');
-      loadQLSXPlan(ycsxdatatablefilter[0].PROD_REQUEST_NO);
-    }
-    }
-    else
-    {
-      Swal.fire('Thông báo', 'Phải chỉ định liệu quản lý, k để sót size nào, và chỉ chọn 1 loại liệu làm liệu chính','error');
-    }
-
-  }
+  };
   function CustomToolbarPOTable() {
     return (
       <GridToolbarContainer>
@@ -3178,7 +3155,6 @@ const PLANTABLE = () => {
       setTonLieuXuongDataFilter(datafilter);
     } else {
       setTonLieuXuongDataFilter([]);
-
       //console.log("xoa filter");
     }
   };
@@ -3214,7 +3190,6 @@ const PLANTABLE = () => {
   };
   const zeroPad = (num: number, places: number) =>
     String(num).padStart(places, "0");
-
   const updateDKXLPLAN = (PLAN_ID: string) => {
     generalQuery("updateDKXLPLAN", { PLAN_ID: PLAN_ID })
       .then((response) => {
@@ -3227,7 +3202,6 @@ const PLANTABLE = () => {
         console.log(error);
       });
   };
-
   const handleDangKyXuatLieu = async (
     PLAN_ID: string,
     PROD_REQUEST_NO: string,
@@ -3236,7 +3210,6 @@ const PLANTABLE = () => {
     let checkPlanIdO300: boolean = true;
     let NEXT_OUT_NO: string = "001";
     let NEXT_OUT_DATE: string = moment().format("YYYYMMDD");
-
     await generalQuery("checkPLANID_O300", { PLAN_ID: PLAN_ID })
       .then((response) => {
         console.log(response.data);
@@ -3251,7 +3224,6 @@ const PLANTABLE = () => {
         console.log(error);
       });
     //kiem tra xem  dang ky xuat lieu hay chua
-
     let checkPlanIdO301: boolean = true;
     let Last_O301_OUT_SEQ: number = 0;
     await generalQuery("checkPLANID_O301", { PLAN_ID: PLAN_ID })
@@ -3267,10 +3239,8 @@ const PLANTABLE = () => {
       .catch((error) => {
         console.log(error);
       });
-
     //console.log(checkPlanIdO302 +' _ '+checkPlanIdO301)
     //get Next_ out_ no
-
     console.log("check plan id o300", checkPlanIdO300);
     if (!checkPlanIdO300) {
       await generalQuery("getO300_LAST_OUT_NO", {})
@@ -3281,7 +3251,6 @@ const PLANTABLE = () => {
               parseInt(response.data.data[0].OUT_NO) + 1,
               3
             );
-
             console.log("nextoutno_o300", NEXT_OUT_NO);
           } else {
           }
@@ -3306,7 +3275,6 @@ const PLANTABLE = () => {
           console.log(error);
         });
       console.log(CODE_50);
-
       await generalQuery("insertO300", {
         OUT_DATE: NEXT_OUT_DATE,
         OUT_NO: NEXT_OUT_NO,
@@ -3342,7 +3310,6 @@ const PLANTABLE = () => {
           console.log(error);
         });
     }
-
     /* xoa dong O301 chua co xuat hien trong O302*/
     await generalQuery("deleteMCODE_O301_Not_ExistIN_O302", {
       PLAN_ID: PLAN_ID,
@@ -3356,7 +3323,6 @@ const PLANTABLE = () => {
       .catch((error) => {
         console.log(error);
       });
-
     let checkchithimettotal: number = 0;
     for (let i = 0; i < chithidatatable.length; i++) {
       checkchithimettotal += chithidatatable[i].M_MET_QTY;
@@ -3381,12 +3347,9 @@ const PLANTABLE = () => {
             .catch((error) => {
               console.log(error);
             });
-
-          if(chithidatatable[i].LIEUQL_SX === 1)
-          {
+          if (chithidatatable[i].LIEUQL_SX === 1) {
             updateDKXLPLAN(chithidatatable[i].PLAN_ID);
           }
-
           if (!TonTaiM_CODE_O301) {
             console.log("Next Out NO", NEXT_OUT_NO);
             await generalQuery("checkPLANID_O301", { PLAN_ID: PLAN_ID })
@@ -3400,7 +3363,6 @@ const PLANTABLE = () => {
               .catch((error) => {
                 console.log(error);
               });
-
             console.log("outseq", Last_O301_OUT_SEQ);
             await generalQuery("insertO301", {
               OUT_DATE: NEXT_OUT_DATE,
@@ -3447,7 +3409,6 @@ const PLANTABLE = () => {
     if (ycsxdatatablefilter.length > 0)
       loadQLSXPlan(ycsxdatatablefilter[0].PROD_REQUEST_NO);
   }, []);
-
   return (
     <div className='tableplan'>
       <div className='planwindow'>
@@ -3901,7 +3862,6 @@ const PLANTABLE = () => {
                   </div>
                 </div>
               )}
-
               {showChiThi && (
                 <div className='printycsxpage'>
                   <div className='buttongroup'>

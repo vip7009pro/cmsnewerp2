@@ -8,7 +8,7 @@ import Swal from 'sweetalert2';
 import * as XLSX from 'xlsx';
 import { generalQuery } from '../../../api/Api';
 import { UserContext } from '../../../api/Context';
-import { SaveExcel } from '../../../api/GlobalFunction';
+import { checkBP, SaveExcel } from '../../../api/GlobalFunction';
 import { MdOutlineDelete } from 'react-icons/md';
 import "./PlanManager.scss"
 
@@ -130,7 +130,10 @@ const PlanManager = () => {
         <GridToolbarFilterButton />
         <GridToolbarDensitySelector /> 
         <IconButton className='buttonIcon'onClick={()=>{SaveExcel(plandatatable,"Plan Table")}}><AiFillFileExcel color='green' size={25}/>SAVE</IconButton> 
-        <IconButton className='buttonIcon'onClick={()=>{handleConfirmDeletePlan();}}><MdOutlineDelete color='red' size={25}/>XÓA PLAN</IconButton>        
+        <IconButton className='buttonIcon'onClick={()=>{
+           checkBP(userData.EMPL_NO,userData.MAINDEPTNAME,'KD', handleConfirmDeletePlan);
+          //handleConfirmDeletePlan();
+          }}><MdOutlineDelete color='red' size={25}/>XÓA PLAN</IconButton>        
         <GridToolbarQuickFilter/>
       </GridToolbarContainer>
     );
@@ -543,7 +546,11 @@ const PlanManager = () => {
           Tra PLAN
           </span>
         </div>  
-        <div className='mininavitem'  onClick={() => setNav(2)} style={{backgroundColor:selection.thempohangloat === true ? '#9933ff':'#d9b3ff', color: selection.thempohangloat === true ? 'yellow':'yellow'}}>
+        <div className='mininavitem'   onClick={() =>
+            checkBP(userData.EMPL_NO, userData.MAINDEPTNAME, "KD", () => {
+              setNav(2);
+            })
+          } style={{backgroundColor:selection.thempohangloat === true ? '#9933ff':'#d9b3ff', color: selection.thempohangloat === true ? 'yellow':'yellow'}}>
           <span className='mininavtext'>
           Thêm PLAN
           </span>

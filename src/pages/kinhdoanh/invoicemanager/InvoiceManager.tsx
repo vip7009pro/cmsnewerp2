@@ -1,160 +1,327 @@
-import { Autocomplete,  IconButton,  LinearProgress,TextField } from '@mui/material';
-import { DataGrid, GridSelectionModel, GridToolbarColumnsButton, GridToolbarContainer, GridToolbarDensitySelector, GridToolbarFilterButton, GridToolbarQuickFilter } from '@mui/x-data-grid';
-import moment from 'moment';
-import React, { useContext, useEffect, useState, useTransition } from 'react'
-import {FcSearch } from 'react-icons/fc';
-import {AiFillEdit, AiFillFileAdd, AiFillFileExcel } from "react-icons/ai";
-import Swal from 'sweetalert2';
-import * as XLSX from 'xlsx';
-import { generalQuery } from '../../../api/Api';
-import { UserContext } from '../../../api/Context';
-import { SaveExcel } from '../../../api/GlobalFunction';
-import { MdOutlineDelete } from 'react-icons/md';
-import "./InvoiceManager.scss"
-import { FaFileInvoiceDollar } from 'react-icons/fa';
+import {
+  Autocomplete,
+  IconButton,
+  LinearProgress,
+  TextField,
+} from "@mui/material";
+import {
+  DataGrid,
+  GridSelectionModel,
+  GridToolbarColumnsButton,
+  GridToolbarContainer,
+  GridToolbarDensitySelector,
+  GridToolbarFilterButton,
+  GridToolbarQuickFilter,
+} from "@mui/x-data-grid";
+import moment from "moment";
+import React, { useContext, useEffect, useState, useTransition } from "react";
+import { FcSearch } from "react-icons/fc";
+import { AiFillEdit, AiFillFileAdd, AiFillFileExcel } from "react-icons/ai";
+import Swal from "sweetalert2";
+import * as XLSX from "xlsx";
+import { generalQuery } from "../../../api/Api";
+import { UserContext } from "../../../api/Context";
+import { checkBP, SaveExcel } from "../../../api/GlobalFunction";
+import { MdOutlineDelete } from "react-icons/md";
+import "./InvoiceManager.scss";
+import { FaFileInvoiceDollar } from "react-icons/fa";
 interface InvoiceTableData {
-  DELIVERY_ID: number,
-  CUST_CD: string,
-  CUST_NAME_KD: string,
-  EMPL_NO: string,
-  EMPL_NAME: string,
-  G_CODE: string,
-  G_NAME: string,
-  G_NAME_KD: string,
-  PO_NO: string,
-  DELIVERY_DATE: string,
-  DELIVERY_QTY: number,
-  PROD_PRICE: string,
-  DELIVERED_AMOUNT: number,
-  REMARK: string,
-  INVOICE_NO: string,
-  PROD_TYPE: string,
-  PROD_MODEL: string,
-  PROD_PROJECT: string,
-  YEARNUM: number,
-  WEEKNUM: number  
+  DELIVERY_ID: number;
+  CUST_CD: string;
+  CUST_NAME_KD: string;
+  EMPL_NO: string;
+  EMPL_NAME: string;
+  G_CODE: string;
+  G_NAME: string;
+  G_NAME_KD: string;
+  PO_NO: string;
+  DELIVERY_DATE: string;
+  DELIVERY_QTY: number;
+  PROD_PRICE: string;
+  DELIVERED_AMOUNT: number;
+  REMARK: string;
+  INVOICE_NO: string;
+  PROD_TYPE: string;
+  PROD_MODEL: string;
+  PROD_PROJECT: string;
+  YEARNUM: number;
+  WEEKNUM: number;
 }
 interface InvoiceSummaryData {
-  total_po_qty :number,
-  total_delivered_qty: number,
-  total_pobalance_qty: number,
-  total_po_amount :number,
-  total_delivered_amount: number,
-  total_pobalance_amount: number,
+  total_po_qty: number;
+  total_delivered_qty: number;
+  total_pobalance_qty: number;
+  total_po_amount: number;
+  total_delivered_amount: number;
+  total_pobalance_amount: number;
 }
-interface  CodeListData {
-  G_CODE: string, 
-  G_NAME: string, 
-  PROD_LAST_PRICE: number,
-  USE_YN: string,  
+interface CodeListData {
+  G_CODE: string;
+  G_NAME: string;
+  PROD_LAST_PRICE: number;
+  USE_YN: string;
 }
 interface CustomerListData {
-  CUST_CD: string, 
-  CUST_NAME_KD: string,
-  CUST_NAME?: string
+  CUST_CD: string;
+  CUST_NAME_KD: string;
+  CUST_NAME?: string;
 }
 const InvoiceManager = () => {
   const [isPending, startTransition] = useTransition();
   const [selection, setSelection] = useState<any>({
     trapo: true,
-    thempohangloat:false,
+    thempohangloat: false,
     them1po: false,
-    them1invoice:false,
-    testinvoicetable: false
+    them1invoice: false,
+    testinvoicetable: false,
   });
   const [userData, setUserData] = useContext(UserContext);
   const [uploadExcelJson, setUploadExcelJSon] = useState<Array<any>>([]);
-  const [isLoading, setisLoading] = useState(false);   
-  const [column_excel, setColumn_Excel]= useState<Array<any>>([]);
-  const [fromdate, setFromDate] = useState(moment().format('YYYY-MM-DD'));
-  const [todate, setToDate] = useState(moment().format('YYYY-MM-DD'));
-  const [codeKD,setCodeKD] =useState('');
-  const [codeCMS,setCodeCMS] =useState('');
-  const [empl_name,setEmpl_Name] =useState('');
-  const [cust_name,setCust_Name] =useState('');
-  const [prod_type,setProdType] =useState('');
-  const [id,setID] =useState('');
-  const [alltime, setAllTime] = useState(true); 
-  const [justpobalance, setJustPOBalance] = useState(true); 
-  const [selectedCode, setSelectedCode] = useState<CodeListData|null>();
-  const [selectedCust_CD, setSelectedCust_CD] = useState<CustomerListData|null>();
-  const [newpodate, setNewPoDate] = useState(moment().format('YYYY-MM-DD'));
-  const [newrddate, setNewRdDate] = useState(moment().format('YYYY-MM-DD'));
-  const [newpono, setNewPoNo] = useState('');
-  const [newpoqty, setNewPoQty] = useState('');
-  const [newpoprice, setNewPoPrice] = useState('');
-  const [newporemark, setNewPoRemark] = useState('');
-  const [newinvoiceQTY, setNewInvoiceQty] =  useState<number>(0);
-  const [newinvoicedate, setNewInvoiceDate] = useState(moment().format('YYYY-MM-DD'));
-  const [newinvoiceRemark,setNewInvoiceRemark] = useState('');
+  const [isLoading, setisLoading] = useState(false);
+  const [column_excel, setColumn_Excel] = useState<Array<any>>([]);
+  const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
+  const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));
+  const [codeKD, setCodeKD] = useState("");
+  const [codeCMS, setCodeCMS] = useState("");
+  const [empl_name, setEmpl_Name] = useState("");
+  const [cust_name, setCust_Name] = useState("");
+  const [prod_type, setProdType] = useState("");
+  const [id, setID] = useState("");
+  const [alltime, setAllTime] = useState(true);
+  const [justpobalance, setJustPOBalance] = useState(true);
+  const [selectedCode, setSelectedCode] = useState<CodeListData | null>();
+  const [selectedCust_CD, setSelectedCust_CD] =
+    useState<CustomerListData | null>();
+  const [newpodate, setNewPoDate] = useState(moment().format("YYYY-MM-DD"));
+  const [newrddate, setNewRdDate] = useState(moment().format("YYYY-MM-DD"));
+  const [newpono, setNewPoNo] = useState("");
+  const [newpoqty, setNewPoQty] = useState("");
+  const [newpoprice, setNewPoPrice] = useState("");
+  const [newporemark, setNewPoRemark] = useState("");
+  const [newinvoiceQTY, setNewInvoiceQty] = useState<number>(0);
+  const [newinvoicedate, setNewInvoiceDate] = useState(
+    moment().format("YYYY-MM-DD")
+  );
+  const [newinvoiceRemark, setNewInvoiceRemark] = useState("");
   const [invoiceSummary, setInvoiceSummary] = useState<InvoiceSummaryData>({
-    total_po_qty :0,
+    total_po_qty: 0,
     total_delivered_qty: 0,
     total_pobalance_qty: 0,
-    total_po_amount :0,
+    total_po_amount: 0,
     total_delivered_amount: 0,
     total_pobalance_amount: 0,
   });
   const [customerList, setCustomerList] = useState<CustomerListData[]>([]);
   const [codeList, setCodeList] = useState<CodeListData[]>([]);
-  const [po_no,setPo_No] =useState('');
-  const [material,setMaterial] =useState('');
-  const [over,setOver] =useState('');
-  const [invoice_no,setInvoice_No] =useState('');
-  const [invoicedatatable, setInvoiceDataTable] = useState<Array<InvoiceTableData>>([]);
-  const [invoicedatatablefilter, setInvoiceDataTableFilter] = useState<Array<InvoiceTableData>>([]);
-  const [selectedID,setSelectedID] = useState<number|null>();
+  const [po_no, setPo_No] = useState("");
+  const [material, setMaterial] = useState("");
+  const [over, setOver] = useState("");
+  const [invoice_no, setInvoice_No] = useState("");
+  const [invoicedatatable, setInvoiceDataTable] = useState<
+    Array<InvoiceTableData>
+  >([]);
+  const [invoicedatatablefilter, setInvoiceDataTableFilter] = useState<
+    Array<InvoiceTableData>
+  >([]);
+  const [selectedID, setSelectedID] = useState<number | null>();
 
-  const column_invoicetable = [       
-    { field: "CUST_NAME_KD", headerName: "CUST_NAME_KD", width: 110},    
+  const column_invoicetable = [
+    { field: "CUST_NAME_KD", headerName: "CUST_NAME_KD", width: 110 },
     { field: "EMPL_NAME", headerName: "EMPL_NAME", width: 130 },
     { field: "G_CODE", headerName: "G_CODE", width: 80 },
-    { field: "G_NAME", headerName: "G_NAME", flex: 1, minWidth: 180, renderCell: (params:any) => {return <span style={{color:'red'}}><b>{params.row.G_NAME}</b></span>}  },
+    {
+      field: "G_NAME",
+      headerName: "G_NAME",
+      flex: 1,
+      minWidth: 180,
+      renderCell: (params: any) => {
+        return (
+          <span style={{ color: "red" }}>
+            <b>{params.row.G_NAME}</b>
+          </span>
+        );
+      },
+    },
     { field: "G_NAME_KD", headerName: "G_NAME_KD", width: 120 },
     { field: "PO_NO", headerName: "PO_NO", width: 100 },
-    { field: "DELIVERY_DATE", type:'date',headerName: "DELIVERY_DATE", width: 120 },
-    { field: "DELIVERY_QTY", type: 'number',headerName: "DELIVERY_QTY", width: 100, renderCell: (params:any) => {return <span style={{color:'blue'}}><b>{params.row.DELIVERY_QTY.toLocaleString('en-US')}</b></span>}  },
-    { field: "PROD_PRICE", type: 'number',headerName: "PROD_PRICE", width: 100, renderCell: (params:any) => {return <span style={{color:'gray'}}><b>{params.row.PROD_PRICE.toLocaleString('en-US' ,{style:'decimal',maximumFractionDigits:8})}</b></span>} },
-    { field: "DELIVERED_AMOUNT", type: 'number',headerName: "DELIVERED_AMOUNT", width: 120, renderCell: (params:any) => {return <span style={{color:'green'}}><b>{params.row.DELIVERED_AMOUNT.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</b></span>} },  
+    {
+      field: "DELIVERY_DATE",
+      type: "date",
+      headerName: "DELIVERY_DATE",
+      width: 120,
+    },
+    {
+      field: "DELIVERY_QTY",
+      type: "number",
+      headerName: "DELIVERY_QTY",
+      width: 100,
+      renderCell: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            <b>{params.row.DELIVERY_QTY.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "PROD_PRICE",
+      type: "number",
+      headerName: "PROD_PRICE",
+      width: 100,
+      renderCell: (params: any) => {
+        return (
+          <span style={{ color: "gray" }}>
+            <b>
+              {params.row.PROD_PRICE.toLocaleString("en-US", {
+                style: "decimal",
+                maximumFractionDigits: 8,
+              })}
+            </b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "DELIVERED_AMOUNT",
+      type: "number",
+      headerName: "DELIVERED_AMOUNT",
+      width: 120,
+      renderCell: (params: any) => {
+        return (
+          <span style={{ color: "green" }}>
+            <b>
+              {params.row.DELIVERED_AMOUNT.toLocaleString("en-US", {
+                style: "currency",
+                currency: "USD",
+              })}
+            </b>
+          </span>
+        );
+      },
+    },
     { field: "PROD_TYPE", headerName: "PROD_TYPE", width: 90 },
     { field: "PROD_MODEL", headerName: "PROD_MODEL", width: 120 },
     { field: "PROD_PROJECT", headerName: "PROD_PROJECT", width: 120 },
-    { field: "PROD_MAIN_MATERIAL", headerName: "PROD_MAIN_MATERIAL", width: 120 },
-    { field: "YEARNUM", type: 'number',headerName: "YEARNUM", width: 80 },
-    { field: "WEEKNUM",type: 'number', headerName: "WEEKNUM", width: 80 },      
-    { field: "INVOICE_NO",type: 'number', headerName: "INVOICE_NO", width: 120 },      
-    { field: "DELIVERY_ID", headerName: "DELIVERY_ID", width: 90   }, 
-    { field: "REMARK", headerName: "REMARK", width: 120 },   
-  ]
+    {
+      field: "PROD_MAIN_MATERIAL",
+      headerName: "PROD_MAIN_MATERIAL",
+      width: 120,
+    },
+    { field: "YEARNUM", type: "number", headerName: "YEARNUM", width: 80 },
+    { field: "WEEKNUM", type: "number", headerName: "WEEKNUM", width: 80 },
+    {
+      field: "INVOICE_NO",
+      type: "number",
+      headerName: "INVOICE_NO",
+      width: 120,
+    },
+    { field: "DELIVERY_ID", headerName: "DELIVERY_ID", width: 90 },
+    { field: "REMARK", headerName: "REMARK", width: 120 },
+  ];
   const column_excel2 = [
-    { field: "CUST_CD", headerName: "CUST_CD", width: 120 },    
+    { field: "CUST_CD", headerName: "CUST_CD", width: 120 },
     { field: "G_CODE", headerName: "G_CODE", width: 120 },
-    { field: "PO_NO", type: 'number',headerName: "PO_NO", width: 120 },
-    { field: "PO_QTY", type: 'number',headerName: "PO_QTY", width: 120, renderCell: (params:any) => {return <span style={{color:'blue'}}><b>{params.row.PO_QTY.toLocaleString('en-US')}</b></span>}  },
-    { field: "PO_DATE", type:'date',headerName: "PO_DATE", width: 200 },
-    { field: "RD_DATE", type:'date',headerName: "RD_DATE", width: 200 },
-    { field: "PROD_PRICE", type: 'number',headerName: "PROD_PRICE", width: 200, renderCell: (params:any) => {return <span style={{color:'gray'}}><b>{params.row.PROD_PRICE.toLocaleString('en-US' ,{style:'decimal',maximumFractionDigits:8})}</b></span>} },
-    { field: "CHECKSTATUS", headerName: "CHECKSTATUS", width: 200 , renderCell: (params:any) => {
-      if(params.row.CHECKSTATUS.slice(0,2) === 'OK')
-      return <span style={{color:'green'}}><b>{params.row.CHECKSTATUS}</b></span>
-      return <span style={{color:'red'}}><b>{params.row.CHECKSTATUS}</b></span>
-    }
-  },
-  ]
+    { field: "PO_NO", type: "number", headerName: "PO_NO", width: 120 },
+    {
+      field: "PO_QTY",
+      type: "number",
+      headerName: "PO_QTY",
+      width: 120,
+      renderCell: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            <b>{params.row.PO_QTY.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    { field: "PO_DATE", type: "date", headerName: "PO_DATE", width: 200 },
+    { field: "RD_DATE", type: "date", headerName: "RD_DATE", width: 200 },
+    {
+      field: "PROD_PRICE",
+      type: "number",
+      headerName: "PROD_PRICE",
+      width: 200,
+      renderCell: (params: any) => {
+        return (
+          <span style={{ color: "gray" }}>
+            <b>
+              {params.row.PROD_PRICE.toLocaleString("en-US", {
+                style: "decimal",
+                maximumFractionDigits: 8,
+              })}
+            </b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "CHECKSTATUS",
+      headerName: "CHECKSTATUS",
+      width: 200,
+      renderCell: (params: any) => {
+        if (params.row.CHECKSTATUS.slice(0, 2) === "OK")
+          return (
+            <span style={{ color: "green" }}>
+              <b>{params.row.CHECKSTATUS}</b>
+            </span>
+          );
+        return (
+          <span style={{ color: "red" }}>
+            <b>{params.row.CHECKSTATUS}</b>
+          </span>
+        );
+      },
+    },
+  ];
   const column_excelinvoice2 = [
-    { field: "CUST_CD", headerName: "CUST_CD", width: 120 },    
+    { field: "CUST_CD", headerName: "CUST_CD", width: 120 },
     { field: "G_CODE", headerName: "G_CODE", width: 120 },
     { field: "PO_NO", headerName: "PO_NO", width: 120 },
-    { field: "DELIVERY_QTY", type: 'number',headerName: "DELIVERY_QTY", width: 120, renderCell: (params:any) => {return <span style={{color:'blue'}}><b>{params.row.DELIVERY_QTY}</b></span>}  },
-    { field: "DELIVERY_DATE", type:'date',headerName: "DELIVERY_DATE", width: 200 }, 
-    { field: "INVOICE_NO", type:'string',headerName: "INVOICE_NO", width: 200 }, 
-    { field: "CHECKSTATUS", headerName: "CHECKSTATUS", width: 200 , renderCell: (params:any) => {
-      if(params.row.CHECKSTATUS.slice(0,2) === 'OK')
-      return <span style={{color:'green'}}><b>{params.row.CHECKSTATUS}</b></span>
-      return <span style={{color:'red'}}><b>{params.row.CHECKSTATUS}</b></span>
-    }
-  },
-  ]
+    {
+      field: "DELIVERY_QTY",
+      type: "number",
+      headerName: "DELIVERY_QTY",
+      width: 120,
+      renderCell: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            <b>{params.row.DELIVERY_QTY}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "DELIVERY_DATE",
+      type: "date",
+      headerName: "DELIVERY_DATE",
+      width: 200,
+    },
+    {
+      field: "INVOICE_NO",
+      type: "string",
+      headerName: "INVOICE_NO",
+      width: 200,
+    },
+    {
+      field: "CHECKSTATUS",
+      headerName: "CHECKSTATUS",
+      width: 200,
+      renderCell: (params: any) => {
+        if (params.row.CHECKSTATUS.slice(0, 2) === "OK")
+          return (
+            <span style={{ color: "green" }}>
+              <b>{params.row.CHECKSTATUS}</b>
+            </span>
+          );
+        return (
+          <span style={{ color: "red" }}>
+            <b>{params.row.CHECKSTATUS}</b>
+          </span>
+        );
+      },
+    },
+  ];
 
   const handleSearchCodeKeyDown = (
     e: React.KeyboardEvent<HTMLInputElement>
@@ -163,16 +330,22 @@ const InvoiceManager = () => {
       handletraInvoice();
     }
   };
-  
 
   function CustomToolbar() {
     return (
       <GridToolbarContainer>
         <GridToolbarColumnsButton />
         <GridToolbarFilterButton />
-        <GridToolbarDensitySelector />           
-        <button className='saveexcelbutton' onClick={()=>{SaveExcel(uploadExcelJson,"Uploaded PO")}}>Save Excel</button>
-        <GridToolbarQuickFilter/>
+        <GridToolbarDensitySelector />
+        <button
+          className='saveexcelbutton'
+          onClick={() => {
+            SaveExcel(uploadExcelJson, "Uploaded PO");
+          }}
+        >
+          Save Excel
+        </button>
+        <GridToolbarQuickFilter />
       </GridToolbarContainer>
     );
   }
@@ -181,44 +354,94 @@ const InvoiceManager = () => {
       <GridToolbarContainer>
         <GridToolbarColumnsButton />
         <GridToolbarFilterButton />
-        <GridToolbarDensitySelector /> 
-        <IconButton className='buttonIcon'onClick={()=>{SaveExcel(invoicedatatable,"Invoice Table")}}><AiFillFileExcel color='green' size={25}/>SAVE</IconButton>
-        <IconButton className='buttonIcon'onClick={()=>{setSelection({...selection, trapo: true, thempohangloat:false, them1po:false, them1invoice: true}); clearInvoiceform();}}><AiFillFileAdd color='blue' size={25}/>NEW INV</IconButton>
-        <IconButton className='buttonIcon'onClick={()=>{handle_fillsuaformInvoice(); }}><FaFileInvoiceDollar color='lightgreen' size={25}/>SỬA INV</IconButton>      
-        <IconButton className='buttonIcon'onClick={()=>{handleConfirmDeleteInvoice();}}><MdOutlineDelete color='red' size={25}/>XÓA INV</IconButton>        
-        <GridToolbarQuickFilter/>
+        <GridToolbarDensitySelector />
+        <IconButton
+          className='buttonIcon'
+          onClick={() => {
+            SaveExcel(invoicedatatable, "Invoice Table");
+          }}
+        >
+          <AiFillFileExcel color='green' size={25} />
+          SAVE
+        </IconButton>
+        <IconButton
+          className='buttonIcon'
+          onClick={() => {
+            checkBP(userData.EMPL_NO,userData.MAINDEPTNAME,'KD', ()=>{
+              setSelection({
+                ...selection,
+                trapo: true,
+                thempohangloat: false,
+                them1po: false,
+                them1invoice: true,
+              });
+              clearInvoiceform();
+            });            
+          }}
+        >
+          <AiFillFileAdd color='blue' size={25} />
+          NEW INV
+        </IconButton>
+        <IconButton
+          className='buttonIcon'
+          onClick={() => {
+            checkBP(userData.EMPL_NO,userData.MAINDEPTNAME,'KD', handle_fillsuaformInvoice);
+            //handle_fillsuaformInvoice();
+          }}
+        >
+          <FaFileInvoiceDollar color='lightgreen' size={25} />
+          SỬA INV
+        </IconButton>
+        <IconButton
+          className='buttonIcon'
+          onClick={() => {
+            checkBP(userData.EMPL_NO,userData.MAINDEPTNAME,'KD', handleConfirmDeleteInvoice);
+            //handleConfirmDeleteInvoice();
+          }}
+        >
+          <MdOutlineDelete color='red' size={25} />
+          XÓA INV
+        </IconButton>
+        <GridToolbarQuickFilter />
       </GridToolbarContainer>
     );
   }
-  const readUploadFile = (e:any) => {
-    e.preventDefault();    
+  const readUploadFile = (e: any) => {
+    e.preventDefault();
     if (e.target.files) {
-        const reader = new FileReader();
-        reader.onload = (e:any) => {
-            const data = e.target.result;
-            const workbook = XLSX.read(data, { type: "array" });
-            const sheetName = workbook.SheetNames[0];
-            const worksheet = workbook.Sheets[sheetName];
-            const json:any = XLSX.utils.sheet_to_json(worksheet); 
-            const keys = Object.keys(json[0]);
-            let uploadexcelcolumn = keys.map((element, index) => {
-              return {
-                 field: element, headerName: element, width: 150
-              }
-            });
-            uploadexcelcolumn.push ({field: 'CHECKSTATUS', headerName: 'CHECKSTATUS', width: 350});
-            setColumn_Excel(uploadexcelcolumn);
-            setUploadExcelJSon(json.map((element:any, index:number) => {
-              return {...element, id: index, CHECKSTATUS:'Waiting'}
-            }
-            ));
-        };
-        reader.readAsArrayBuffer(e.target.files[0]);        
+      const reader = new FileReader();
+      reader.onload = (e: any) => {
+        const data = e.target.result;
+        const workbook = XLSX.read(data, { type: "array" });
+        const sheetName = workbook.SheetNames[0];
+        const worksheet = workbook.Sheets[sheetName];
+        const json: any = XLSX.utils.sheet_to_json(worksheet);
+        const keys = Object.keys(json[0]);
+        let uploadexcelcolumn = keys.map((element, index) => {
+          return {
+            field: element,
+            headerName: element,
+            width: 150,
+          };
+        });
+        uploadexcelcolumn.push({
+          field: "CHECKSTATUS",
+          headerName: "CHECKSTATUS",
+          width: 350,
+        });
+        setColumn_Excel(uploadexcelcolumn);
+        setUploadExcelJSon(
+          json.map((element: any, index: number) => {
+            return { ...element, id: index, CHECKSTATUS: "Waiting" };
+          })
+        );
+      };
+      reader.readAsArrayBuffer(e.target.files[0]);
     }
-}
-  const handletraInvoice = ()=> {
+  };
+  const handletraInvoice = () => {
     setisLoading(true);
-    generalQuery('traInvoiceDataFull',{
+    generalQuery("traInvoiceDataFull", {
       alltime: alltime,
       justPoBalance: justpobalance,
       start_date: fromdate,
@@ -229,611 +452,616 @@ const InvoiceManager = () => {
       prod_type: prod_type,
       empl_name: empl_name,
       po_no: po_no,
-      over:over,
+      over: over,
       id: id,
       material: material,
     })
-    .then(response => {
+      .then((response) => {
         //console.log(response.data);
-        if(response.data.tk_status !=='NG')
-        {
-          const loadeddata: InvoiceTableData[] =  response.data.data.map((element:InvoiceTableData,index: number)=> {
-            return {
-              ...element,
-              DELIVERY_DATE : element.DELIVERY_DATE.slice(0,10),              
+        if (response.data.tk_status !== "NG") {
+          const loadeddata: InvoiceTableData[] = response.data.data.map(
+            (element: InvoiceTableData, index: number) => {
+              return {
+                ...element,
+                DELIVERY_DATE: element.DELIVERY_DATE.slice(0, 10),
+              };
             }
-          })
+          );
           let invoice_summary_temp: InvoiceSummaryData = {
-            total_po_qty :0,
+            total_po_qty: 0,
             total_delivered_qty: 0,
             total_pobalance_qty: 0,
-            total_po_amount :0,
+            total_po_amount: 0,
             total_delivered_amount: 0,
             total_pobalance_amount: 0,
+          };
+          for (let i = 0; i < loadeddata.length; i++) {
+            invoice_summary_temp.total_delivered_qty +=
+              loadeddata[i].DELIVERY_QTY;
+            invoice_summary_temp.total_delivered_amount +=
+              loadeddata[i].DELIVERED_AMOUNT;
           }
-          for(let i=0;i<loadeddata.length;i++)
-          {            
-            invoice_summary_temp.total_delivered_qty += loadeddata[i].DELIVERY_QTY;           
-            invoice_summary_temp.total_delivered_amount += loadeddata[i].DELIVERED_AMOUNT;                  
-          }
-          setInvoiceSummary(invoice_summary_temp);         
+          setInvoiceSummary(invoice_summary_temp);
           setInvoiceDataTable(loadeddata);
           setisLoading(false);
-          Swal.fire("Thông báo", "Đã load " + response.data.data.length + " dòng", "success");  
-        }
-        else
-        {
-          Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");  
+          Swal.fire(
+            "Thông báo",
+            "Đã load " + response.data.data.length + " dòng",
+            "success"
+          );
+        } else {
+          Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
           setisLoading(false);
-        }        
-    })
-    .catch(error => {
-        console.log(error);
-    });
-  }
-  const handle_checkInvoiceHangLoat = async () => {
-    setisLoading(true);
-    let tempjson = uploadExcelJson;
-    for (let i = 0; i < uploadExcelJson.length; i++) {
-      let err_code:number = 0;
-      await generalQuery("checkPOExist", {
-        G_CODE: uploadExcelJson[i].G_CODE,
-        CUST_CD: uploadExcelJson[i].CUST_CD,
-        PO_NO: uploadExcelJson[i].PO_NO,
-      })
-        .then((response) => {
-          if (response.data.tk_status !== "NG") {          
-            if( uploadExcelJson[i].DELIVERY_QTY > response.data.data[0].PO_BALANCE)
-            {
-              err_code=5; //giao hang nhieu hon PO balance
-            }
-          } else {
-            //tempjson[i].CHECKSTATUS = "NG: Đã tồn tại PO";
-            err_code = 1;
-          }
-        })
-        .catch((error) => {
-          console.log(error);          
-        });
-        let now = moment();
-        let deliverydate = moment(uploadExcelJson[i].DELIVERY_DATE);
-        if(now < deliverydate) {
-          err_code =2;
-          //tempjson[i].CHECKSTATUS = "NG: Ngày PO không được trước ngày hôm nay";
-        }
-        else
-        {
-          //tempjson[i].CHECKSTATUS = "OK";
-        }
-        await generalQuery("checkGCodeVer", {
-          G_CODE: uploadExcelJson[i].G_CODE         
-        })
-          .then((response) => {
-            //console.log(response.data.tk_status);
-            if (response.data.tk_status !== "NG") {
-              //console.log(response.data.data);
-              if(response.data.data[0].USE_YN ==='Y')
-              {
-                //tempjson[i].CHECKSTATUS = "OK";
-              }
-              else
-              {
-                //tempjson[i].CHECKSTATUS = "NG: Ver này đã bị khóa";
-                err_code =3;
-              }
-            } else {
-              //tempjson[i].CHECKSTATUS = "NG: Không có code CMS này";
-              err_code = 4;
-            }
-          })
-          .catch((error) => {
-            console.log(error);
-          });
-          if(err_code === 0)
-          {
-            tempjson[i].CHECKSTATUS = "OK";
-          }
-          else if(err_code ===1)
-          {
-            tempjson[i].CHECKSTATUS = "NG: Không tồn tại PO";
-          }
-          else if(err_code ===2)
-          {
-            tempjson[i].CHECKSTATUS = "NG: Ngày Giao hàng không được trước ngày hôm nay";
-          }
-          else if(err_code ===3)
-          {
-            tempjson[i].CHECKSTATUS = "NG: Ver này đã bị khóa";
-          }
-          else if(err_code ===4)
-          {
-            tempjson[i].CHECKSTATUS = "NG: Không có code CMS này";
-          }      
-          else if(err_code ===5)
-          {
-            tempjson[i].CHECKSTATUS = "NG: Giao hàng nhiều hơn PO";
-          }      
-    }
-    setisLoading(false);
-    Swal.fire("Thông báo", "Đã hoàn thành check Invoice hàng loạt", "success");  
-    setUploadExcelJSon(tempjson);
-  };
-  const handle_upInvoiceHangLoat = async () => {
-    let tempjson = uploadExcelJson;
-    for (let i = 0; i < uploadExcelJson.length; i++) {
-      let err_code:number = 0;
-      await generalQuery("checkPOExist", {
-        G_CODE: uploadExcelJson[i].G_CODE,
-        CUST_CD: uploadExcelJson[i].CUST_CD,
-        PO_NO: uploadExcelJson[i].PO_NO,
-      })
-        .then((response) => {
-          console.log(response.data.tk_status);
-          if (response.data.tk_status !== "NG") {
-            if( uploadExcelJson[i].DELIVERY_QTY > response.data.data[0].PO_BALANCE)
-            {
-              err_code=5; //giao hang nhieu hon PO balance
-            }            
-            //tempjson[i].CHECKSTATUS = "NG: Đã tồn tại PO";
-          } else {
-            err_code = 1;
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-        let now = moment();
-        let deliverydate = moment(uploadExcelJson[i].DELIVERY_DATE);
-        if(now < deliverydate) {
-          err_code =2;
-          //tempjson[i].CHECKSTATUS = "NG: Ngày PO không được trước ngày hôm nay";
-        }
-        else
-        {
-          //tempjson[i].CHECKSTATUS = "OK";
-        }
-        await generalQuery("checkGCodeVer", {
-          G_CODE: uploadExcelJson[i].G_CODE         
-        })
-          .then((response) => {
-            console.log(response.data.tk_status);
-            if (response.data.tk_status !== "NG") {
-              console.log(response.data.data);
-              if(response.data.data[0].USE_YN ==='Y')
-              {
-                //tempjson[i].CHECKSTATUS = "OK";
-              }
-              else
-              {
-                //tempjson[i].CHECKSTATUS = "NG: Ver này đã bị khóa";
-                err_code =3;
-              }
-            } else {
-              //tempjson[i].CHECKSTATUS = "NG: Không có code CMS này";
-              err_code = 4;
-            }
-          })
-          .catch((error) => {
-            console.log(error);
-          });
-          if(err_code === 0)
-          {
-            await generalQuery("insert_invoice", {
-              DELIVERY_QTY: uploadExcelJson[i].DELIVERY_QTY,              
-              DELIVERY_DATE: uploadExcelJson[i].DELIVERY_DATE, 
-              REMARK: '',
-              G_CODE: uploadExcelJson[i].G_CODE,
-              CUST_CD: uploadExcelJson[i].CUST_CD,
-              PO_NO: uploadExcelJson[i].PO_NO,
-              EMPL_NO: userData.EMPL_NO,
-              INVOICE_NO: uploadExcelJson[i].INVOICE_NO,
-            })
-              .then((response) => {
-                console.log(response.data.tk_status);
-                if (response.data.tk_status !== "NG") {
-                  tempjson[i].CHECKSTATUS = "OK";
-                } else {                  
-                  err_code = 5;
-                  tempjson[i].CHECKSTATUS = "NG: Lỗi SQL: " + response.data.message;
-                }
-              })
-              .catch((error) => {
-                console.log(error);
-              });
-          }
-          else if(err_code ===1)
-          {
-            tempjson[i].CHECKSTATUS = "NG: Không tồn tại PO";
-          }
-          else if(err_code ===2)
-          {
-            tempjson[i].CHECKSTATUS = "NG: Ngày Giao hàng không được trước ngày hôm nay";
-          }
-          else if(err_code ===3)
-          {
-            tempjson[i].CHECKSTATUS = "NG: Ver này đã bị khóa";
-          }
-          else if(err_code ===4)
-          {
-            tempjson[i].CHECKSTATUS = "NG: Không có code CMS này";
-          }      
-          else if(err_code ===5)
-          {
-            tempjson[i].CHECKSTATUS = "NG: Giao hàng nhiều hơn PO";
-          }      
-    }
-    Swal.fire("Thông báo", "Đã hoàn thành thêm Invoice hàng loạt", "success");  
-    setUploadExcelJSon(tempjson);
-  };
-  const confirmUpInvoiceHangLoat = () => {
-    Swal.fire({
-      title: 'Chắc chắn muốn thêm Invoice hàng loạt ?',
-      text: "Thêm rồi mà sai, sửa là hơi vất đấy",
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Vẫn thêm!'
-    }).then((result) => {
-      if (result.isConfirmed) {
-        Swal.fire(
-          'Tiến hành thêm',
-          'Đang thêm Invoice hàng loạt',
-          'success'
-        );
-        handle_upInvoiceHangLoat();
-      }
-    })
-  }
-  const confirmCheckInvoiceHangLoat = () => {
-    Swal.fire({
-      title: 'Chắc chắn muốn check Invoice hàng loạt ?',
-      text: "Sẽ bắt đầu check Invoice hàng loạt",
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Vẫn check!'
-    }).then((result) => {
-      if (result.isConfirmed) {
-        Swal.fire(
-          'Tiến hành check',
-          'Đang check Invoice hàng loạt',
-          'success'
-        );
-        handle_checkInvoiceHangLoat();
-      }
-    })
-  }
-  const getcustomerlist =()=> {
-     generalQuery("selectcustomerList", { })
-      .then((response) => {        
-        if (response.data.tk_status !== "NG") {
-          setCustomerList(response.data.data);          
-        } else {          
         }
       })
       .catch((error) => {
         console.log(error);
       });
-  }
-  const getcodelist = (G_NAME: string) => {
-    startTransition(() => {
-      generalQuery("selectcodeList", { G_NAME: G_NAME})
-      .then((response) => {        
+  };
+  const handle_checkInvoiceHangLoat = async () => {
+    setisLoading(true);
+    let tempjson = uploadExcelJson;
+    for (let i = 0; i < uploadExcelJson.length; i++) {
+      let err_code: number = 0;
+      await generalQuery("checkPOExist", {
+        G_CODE: uploadExcelJson[i].G_CODE,
+        CUST_CD: uploadExcelJson[i].CUST_CD,
+        PO_NO: uploadExcelJson[i].PO_NO,
+      })
+        .then((response) => {
+          if (response.data.tk_status !== "NG") {
+            if (
+              uploadExcelJson[i].DELIVERY_QTY > response.data.data[0].PO_BALANCE
+            ) {
+              err_code = 5; //giao hang nhieu hon PO balance
+            }
+          } else {
+            //tempjson[i].CHECKSTATUS = "NG: Đã tồn tại PO";
+            err_code = 1;
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+      let now = moment();
+      let deliverydate = moment(uploadExcelJson[i].DELIVERY_DATE);
+      if (now < deliverydate) {
+        err_code = 2;
+        //tempjson[i].CHECKSTATUS = "NG: Ngày PO không được trước ngày hôm nay";
+      } else {
+        //tempjson[i].CHECKSTATUS = "OK";
+      }
+      await generalQuery("checkGCodeVer", {
+        G_CODE: uploadExcelJson[i].G_CODE,
+      })
+        .then((response) => {
+          //console.log(response.data.tk_status);
+          if (response.data.tk_status !== "NG") {
+            //console.log(response.data.data);
+            if (response.data.data[0].USE_YN === "Y") {
+              //tempjson[i].CHECKSTATUS = "OK";
+            } else {
+              //tempjson[i].CHECKSTATUS = "NG: Ver này đã bị khóa";
+              err_code = 3;
+            }
+          } else {
+            //tempjson[i].CHECKSTATUS = "NG: Không có code CMS này";
+            err_code = 4;
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+      if (err_code === 0) {
+        tempjson[i].CHECKSTATUS = "OK";
+      } else if (err_code === 1) {
+        tempjson[i].CHECKSTATUS = "NG: Không tồn tại PO";
+      } else if (err_code === 2) {
+        tempjson[i].CHECKSTATUS =
+          "NG: Ngày Giao hàng không được trước ngày hôm nay";
+      } else if (err_code === 3) {
+        tempjson[i].CHECKSTATUS = "NG: Ver này đã bị khóa";
+      } else if (err_code === 4) {
+        tempjson[i].CHECKSTATUS = "NG: Không có code CMS này";
+      } else if (err_code === 5) {
+        tempjson[i].CHECKSTATUS = "NG: Giao hàng nhiều hơn PO";
+      }
+    }
+    setisLoading(false);
+    Swal.fire("Thông báo", "Đã hoàn thành check Invoice hàng loạt", "success");
+    setUploadExcelJSon(tempjson);
+  };
+  const handle_upInvoiceHangLoat = async () => {
+    let tempjson = uploadExcelJson;
+    for (let i = 0; i < uploadExcelJson.length; i++) {
+      let err_code: number = 0;
+      await generalQuery("checkPOExist", {
+        G_CODE: uploadExcelJson[i].G_CODE,
+        CUST_CD: uploadExcelJson[i].CUST_CD,
+        PO_NO: uploadExcelJson[i].PO_NO,
+      })
+        .then((response) => {
+          console.log(response.data.tk_status);
+          if (response.data.tk_status !== "NG") {
+            if (
+              uploadExcelJson[i].DELIVERY_QTY > response.data.data[0].PO_BALANCE
+            ) {
+              err_code = 5; //giao hang nhieu hon PO balance
+            }
+            //tempjson[i].CHECKSTATUS = "NG: Đã tồn tại PO";
+          } else {
+            err_code = 1;
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+      let now = moment();
+      let deliverydate = moment(uploadExcelJson[i].DELIVERY_DATE);
+      if (now < deliverydate) {
+        err_code = 2;
+        //tempjson[i].CHECKSTATUS = "NG: Ngày PO không được trước ngày hôm nay";
+      } else {
+        //tempjson[i].CHECKSTATUS = "OK";
+      }
+      await generalQuery("checkGCodeVer", {
+        G_CODE: uploadExcelJson[i].G_CODE,
+      })
+        .then((response) => {
+          console.log(response.data.tk_status);
+          if (response.data.tk_status !== "NG") {
+            console.log(response.data.data);
+            if (response.data.data[0].USE_YN === "Y") {
+              //tempjson[i].CHECKSTATUS = "OK";
+            } else {
+              //tempjson[i].CHECKSTATUS = "NG: Ver này đã bị khóa";
+              err_code = 3;
+            }
+          } else {
+            //tempjson[i].CHECKSTATUS = "NG: Không có code CMS này";
+            err_code = 4;
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+      if (err_code === 0) {
+        await generalQuery("insert_invoice", {
+          DELIVERY_QTY: uploadExcelJson[i].DELIVERY_QTY,
+          DELIVERY_DATE: uploadExcelJson[i].DELIVERY_DATE,
+          REMARK: "",
+          G_CODE: uploadExcelJson[i].G_CODE,
+          CUST_CD: uploadExcelJson[i].CUST_CD,
+          PO_NO: uploadExcelJson[i].PO_NO,
+          EMPL_NO: userData.EMPL_NO,
+          INVOICE_NO: uploadExcelJson[i].INVOICE_NO,
+        })
+          .then((response) => {
+            console.log(response.data.tk_status);
+            if (response.data.tk_status !== "NG") {
+              tempjson[i].CHECKSTATUS = "OK";
+            } else {
+              err_code = 5;
+              tempjson[i].CHECKSTATUS = "NG: Lỗi SQL: " + response.data.message;
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      } else if (err_code === 1) {
+        tempjson[i].CHECKSTATUS = "NG: Không tồn tại PO";
+      } else if (err_code === 2) {
+        tempjson[i].CHECKSTATUS =
+          "NG: Ngày Giao hàng không được trước ngày hôm nay";
+      } else if (err_code === 3) {
+        tempjson[i].CHECKSTATUS = "NG: Ver này đã bị khóa";
+      } else if (err_code === 4) {
+        tempjson[i].CHECKSTATUS = "NG: Không có code CMS này";
+      } else if (err_code === 5) {
+        tempjson[i].CHECKSTATUS = "NG: Giao hàng nhiều hơn PO";
+      }
+    }
+    Swal.fire("Thông báo", "Đã hoàn thành thêm Invoice hàng loạt", "success");
+    setUploadExcelJSon(tempjson);
+  };
+  const confirmUpInvoiceHangLoat = () => {
+    Swal.fire({
+      title: "Chắc chắn muốn thêm Invoice hàng loạt ?",
+      text: "Thêm rồi mà sai, sửa là hơi vất đấy",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Vẫn thêm!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        Swal.fire("Tiến hành thêm", "Đang thêm Invoice hàng loạt", "success");
+        handle_upInvoiceHangLoat();
+      }
+    });
+  };
+  const confirmCheckInvoiceHangLoat = () => {
+    Swal.fire({
+      title: "Chắc chắn muốn check Invoice hàng loạt ?",
+      text: "Sẽ bắt đầu check Invoice hàng loạt",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Vẫn check!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        Swal.fire("Tiến hành check", "Đang check Invoice hàng loạt", "success");
+        handle_checkInvoiceHangLoat();
+      }
+    });
+  };
+  const getcustomerlist = () => {
+    generalQuery("selectcustomerList", {})
+      .then((response) => {
         if (response.data.tk_status !== "NG") {
-          setCodeList(response.data.data);          
+          setCustomerList(response.data.data);
         } else {
         }
       })
       .catch((error) => {
         console.log(error);
-      });     
-    });   
-  }
+      });
+  };
+  const getcodelist = (G_NAME: string) => {
+    startTransition(() => {
+      generalQuery("selectcodeList", { G_NAME: G_NAME })
+        .then((response) => {
+          if (response.data.tk_status !== "NG") {
+            setCodeList(response.data.data);
+          } else {
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    });
+  };
   const setNav = (choose: number) => {
-    if(choose ===1 )
-    {
-      setSelection({...selection, trapo: true, thempohangloat:false, them1po:false,them1invoice:false,testinvoicetable: false});
+    if (choose === 1) {
+      setSelection({
+        ...selection,
+        trapo: true,
+        thempohangloat: false,
+        them1po: false,
+        them1invoice: false,
+        testinvoicetable: false,
+      });
+    } else if (choose === 2) {
+      setSelection({
+        ...selection,
+        trapo: false,
+        thempohangloat: true,
+        them1po: false,
+        them1invoice: false,
+        testinvoicetable: false,
+      });
+    } else if (choose === 3) {
+      setSelection({
+        ...selection,
+        trapo: false,
+        thempohangloat: false,
+        them1po: false,
+        them1invoice: false,
+        testinvoicetable: true,
+      });
     }
-    else if(choose ===2 )
-    {
-      setSelection({...selection, trapo: false, thempohangloat:true, them1po:false,them1invoice:false,testinvoicetable: false});
+  };
+  const handle_add_1Invoice = async () => {
+    let err_code: number = 0;
+    await generalQuery("checkPOExist", {
+      G_CODE: selectedCode?.G_CODE,
+      CUST_CD: selectedCust_CD?.CUST_CD,
+      PO_NO: newpono,
+    })
+      .then((response) => {
+        console.log(response.data.tk_status);
+        if (response.data.tk_status !== "NG") {
+          if (newinvoiceQTY > response.data.data.PO_BALANCE) {
+            err_code = 5; //giao hang nhieu hon PO balance
+          }
+          //tempjson[i].CHECKSTATUS = "NG: Đã tồn tại PO";
+        } else {
+          err_code = 1;
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    let now = moment();
+    let invoicedate = moment(newinvoicedate);
+    if (now < invoicedate) {
+      err_code = 2;
+      //tempjson[i].CHECKSTATUS = "NG: Ngày PO không được trước ngày hôm nay";
+    } else {
+      //tempjson[i].CHECKSTATUS = "OK";
     }
-    else if(choose ===3 )
-    {
-      setSelection({...selection, trapo: false, thempohangloat:false, them1po:false,them1invoice:false,testinvoicetable: true});
+    if (selectedCode?.USE_YN === "N") {
+      err_code = 3;
     }
-  }
-  const handle_add_1Invoice = async ()=> {
-    let err_code:number = 0;
-      await generalQuery("checkPOExist", {
+    if (
+      selectedCode?.G_CODE === "" ||
+      selectedCust_CD?.CUST_CD === "" ||
+      newinvoicedate === "" ||
+      userData.EMPL_NO === "" ||
+      newinvoiceQTY === 0
+    ) {
+      err_code = 4;
+    }
+    if (err_code === 0) {
+      await generalQuery("insert_invoice", {
         G_CODE: selectedCode?.G_CODE,
         CUST_CD: selectedCust_CD?.CUST_CD,
         PO_NO: newpono,
+        EMPL_NO: userData.EMPL_NO,
+        DELIVERY_QTY: newinvoiceQTY,
+        DELIVERY_DATE: newinvoicedate,
+        REMARK: newinvoiceRemark,
+        INVOICE_NO: "",
       })
         .then((response) => {
           console.log(response.data.tk_status);
           if (response.data.tk_status !== "NG") {
-            if(newinvoiceQTY > response.data.data.PO_BALANCE)
-            {
-              err_code=5; //giao hang nhieu hon PO balance
-            }           
-            //tempjson[i].CHECKSTATUS = "NG: Đã tồn tại PO";
-          } else {   
-            err_code = 1;         
+            Swal.fire("Thông báo", "Thêm Invoice mới thành công", "success");
+          } else {
+            Swal.fire(
+              "Thông báo",
+              "Thêm Invoice mới thất bại: " + response.data.message,
+              "error"
+            );
           }
         })
         .catch((error) => {
           console.log(error);
         });
-        let now = moment();
-        let invoicedate = moment(newinvoicedate);
-        if(now < invoicedate) {
-          err_code =2;
-          //tempjson[i].CHECKSTATUS = "NG: Ngày PO không được trước ngày hôm nay";
-        }
-        else
-        {
-          //tempjson[i].CHECKSTATUS = "OK";
-        }
-        if(selectedCode?.USE_YN==='N')
-        {
-          err_code =3;
-        }
-        if(selectedCode?.G_CODE === '' || selectedCust_CD?.CUST_CD === '' || newinvoicedate ==='' || userData.EMPL_NO ==='' || newinvoiceQTY=== 0)
-        {
-          err_code = 4;
-        }  
-          if(err_code === 0)
-          {
-            await generalQuery("insert_invoice", {
-              G_CODE: selectedCode?.G_CODE,
-              CUST_CD: selectedCust_CD?.CUST_CD,
-              PO_NO: newpono,
-              EMPL_NO: userData.EMPL_NO,
-              DELIVERY_QTY: newinvoiceQTY,             
-              DELIVERY_DATE: newinvoicedate, 
-              REMARK: newinvoiceRemark,
-              INVOICE_NO: ''
-            })
-              .then((response) => {
-                console.log(response.data.tk_status);
-                if (response.data.tk_status !== "NG") {
-                  Swal.fire("Thông báo", "Thêm Invoice mới thành công", "success");  
-                } else {     
-                  Swal.fire("Thông báo", "Thêm Invoice mới thất bại: " +response.data.message , "error"); 
-                }
-              })
-              .catch((error) => {
-                console.log(error);
-              });
-          }
-          else if(err_code ===1)
-          {
-            Swal.fire("Thông báo", "NG: Không tồn tại PO" , "error"); 
-          }
-          else if(err_code ===2)
-          {
-            Swal.fire("Thông báo", "NG: Ngày Invoice không được trước ngày hôm nay" , "error"); 
-          }
-          else if(err_code ===3)
-          {
-            Swal.fire("Thông báo", "NG: Ver này đã bị khóa" , "error"); 
-          }
-          else if(err_code ===4)
-          {            
-            Swal.fire("Thông báo", "NG: Không để trống thông tin bắt buộc" , "error"); 
-          } 
-  }
+    } else if (err_code === 1) {
+      Swal.fire("Thông báo", "NG: Không tồn tại PO", "error");
+    } else if (err_code === 2) {
+      Swal.fire(
+        "Thông báo",
+        "NG: Ngày Invoice không được trước ngày hôm nay",
+        "error"
+      );
+    } else if (err_code === 3) {
+      Swal.fire("Thông báo", "NG: Ver này đã bị khóa", "error");
+    } else if (err_code === 4) {
+      Swal.fire("Thông báo", "NG: Không để trống thông tin bắt buộc", "error");
+    }
+  };
   const clearInvoiceform = () => {
-    setNewPoDate(moment().format('YYYY-MM-DD'));
-    setNewRdDate(moment().format('YYYY-MM-DD'));
-    setNewPoNo('');
+    setNewPoDate(moment().format("YYYY-MM-DD"));
+    setNewRdDate(moment().format("YYYY-MM-DD"));
+    setNewPoNo("");
     setNewInvoiceQty(0);
-    setNewInvoiceDate(moment().format('YYYY-MM-DD'));
-    setNewInvoiceRemark('');
-  }
-  const handleInvoiceSelectionforUpdate =(ids: GridSelectionModel) => {   
+    setNewInvoiceDate(moment().format("YYYY-MM-DD"));
+    setNewInvoiceRemark("");
+  };
+  const handleInvoiceSelectionforUpdate = (ids: GridSelectionModel) => {
     const selectedID = new Set(ids);
-    let datafilter = invoicedatatable.filter((element: any) => selectedID.has(element.DELIVERY_ID));
-    if(datafilter.length>0)
-    {
-      setInvoiceDataTableFilter(datafilter);      
+    let datafilter = invoicedatatable.filter((element: any) =>
+      selectedID.has(element.DELIVERY_ID)
+    );
+    if (datafilter.length > 0) {
+      setInvoiceDataTableFilter(datafilter);
+    } else {
+      setInvoiceDataTableFilter([]);
     }
-    else
-    {
-      setInvoiceDataTableFilter([]);  
-    }
-  }
-  const handle_fillsuaformInvoice =() => {
-    if(invoicedatatablefilter.length ===1)
-    {
-      setSelection({...selection, trapo: true, thempohangloat:false, them1po:false, them1invoice: true});       
+  };
+  const handle_fillsuaformInvoice = () => {
+    if (invoicedatatablefilter.length === 1) {
+      setSelection({
+        ...selection,
+        trapo: true,
+        thempohangloat: false,
+        them1po: false,
+        them1invoice: true,
+      });
       const selectedCodeFilter: CodeListData = {
-        G_CODE: invoicedatatablefilter[invoicedatatablefilter.length-1].G_CODE, 
-        G_NAME: invoicedatatablefilter[invoicedatatablefilter.length-1].G_NAME, 
-        PROD_LAST_PRICE: Number(invoicedatatablefilter[invoicedatatablefilter.length-1].PROD_PRICE),
-        USE_YN: 'Y', 
-      }  
+        G_CODE:
+          invoicedatatablefilter[invoicedatatablefilter.length - 1].G_CODE,
+        G_NAME:
+          invoicedatatablefilter[invoicedatatablefilter.length - 1].G_NAME,
+        PROD_LAST_PRICE: Number(
+          invoicedatatablefilter[invoicedatatablefilter.length - 1].PROD_PRICE
+        ),
+        USE_YN: "Y",
+      };
       const selectedCustomerFilter: CustomerListData = {
-        CUST_CD: invoicedatatablefilter[invoicedatatablefilter.length-1].CUST_CD,  
-        CUST_NAME_KD: invoicedatatablefilter[invoicedatatablefilter.length-1].CUST_NAME_KD, 
-      }
+        CUST_CD:
+          invoicedatatablefilter[invoicedatatablefilter.length - 1].CUST_CD,
+        CUST_NAME_KD:
+          invoicedatatablefilter[invoicedatatablefilter.length - 1]
+            .CUST_NAME_KD,
+      };
       setSelectedCode(selectedCodeFilter);
-      setSelectedCust_CD(selectedCustomerFilter);      
-      setNewInvoiceQty(invoicedatatablefilter[invoicedatatablefilter.length-1].DELIVERY_QTY);
-      setNewPoNo(invoicedatatablefilter[invoicedatatablefilter.length-1].PO_NO);
-      setNewInvoiceDate(moment().format('YYYY-MM-DD'));
-      setNewInvoiceRemark(invoicedatatablefilter[invoicedatatablefilter.length-1].REMARK);
-      setSelectedID(invoicedatatablefilter[invoicedatatablefilter.length-1].DELIVERY_ID);
-    }
-    else if(invoicedatatablefilter.length ===0)
-    {
+      setSelectedCust_CD(selectedCustomerFilter);
+      setNewInvoiceQty(
+        invoicedatatablefilter[invoicedatatablefilter.length - 1].DELIVERY_QTY
+      );
+      setNewPoNo(
+        invoicedatatablefilter[invoicedatatablefilter.length - 1].PO_NO
+      );
+      setNewInvoiceDate(moment().format("YYYY-MM-DD"));
+      setNewInvoiceRemark(
+        invoicedatatablefilter[invoicedatatablefilter.length - 1].REMARK
+      );
+      setSelectedID(
+        invoicedatatablefilter[invoicedatatablefilter.length - 1].DELIVERY_ID
+      );
+    } else if (invoicedatatablefilter.length === 0) {
       clearInvoiceform();
-      Swal.fire("Thông báo", "Lỗi: Chọn ít nhất 1 Invoice để sửa" , "error");
+      Swal.fire("Thông báo", "Lỗi: Chọn ít nhất 1 Invoice để sửa", "error");
+    } else {
+      Swal.fire("Thông báo", "Lỗi: Chỉ tích chọn 1 dòng thêm thôi", "error");
     }
-    else{
-      Swal.fire("Thông báo", "Lỗi: Chỉ tích chọn 1 dòng thêm thôi" , "error");
+  };
+  const updateInvoice = async () => {
+    let err_code: number = 0;
+    await generalQuery("checkPOExist", {
+      G_CODE: selectedCode?.G_CODE,
+      CUST_CD: selectedCust_CD?.CUST_CD,
+      PO_NO: newpono,
+    })
+      .then((response) => {
+        console.log(response.data.tk_status);
+        if (response.data.tk_status !== "NG") {
+          //tempjson[i].CHECKSTATUS = "NG: Đã tồn tại PO";
+        } else {
+          err_code = 1;
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    let now = moment();
+    let invoicedate = moment(newinvoicedate);
+    if (now < invoicedate) {
+      err_code = 2;
+      //tempjson[i].CHECKSTATUS = "NG: Ngày PO không được trước ngày hôm nay";
+    } else {
+      //tempjson[i].CHECKSTATUS = "OK";
     }
-  }
-  const updateInvoice= async()=> {
-    let err_code:number = 0;
-      await generalQuery("checkPOExist", {
+    if (selectedCode?.USE_YN === "N") {
+      err_code = 3;
+    }
+    if (
+      selectedCode?.G_CODE === "" ||
+      selectedCust_CD?.CUST_CD === "" ||
+      newpono === "" ||
+      userData.EMPL_NO === ""
+    ) {
+      err_code = 4;
+    }
+    if (err_code === 0) {
+      await generalQuery("update_invoice", {
         G_CODE: selectedCode?.G_CODE,
         CUST_CD: selectedCust_CD?.CUST_CD,
         PO_NO: newpono,
+        EMPL_NO: userData.EMPL_NO,
+        DELIVERY_DATE: newinvoicedate,
+        DELIVERY_QTY: newinvoiceQTY,
+        REMARK: newinvoiceRemark,
+        DELIVERY_ID: selectedID,
       })
         .then((response) => {
           console.log(response.data.tk_status);
           if (response.data.tk_status !== "NG") {
-            //tempjson[i].CHECKSTATUS = "NG: Đã tồn tại PO";
-          } else {      
-            err_code = 1;      
+            Swal.fire("Thông báo", "Update Invoice thành công", "success");
+          } else {
+            Swal.fire(
+              "Thông báo",
+              "Update Invoice thất bại: " + response.data.message,
+              "error"
+            );
           }
         })
         .catch((error) => {
           console.log(error);
         });
-        let now = moment();
-        let invoicedate = moment(newinvoicedate);
-        if(now < invoicedate) {
-          err_code =2;
-          //tempjson[i].CHECKSTATUS = "NG: Ngày PO không được trước ngày hôm nay";
-        }
-        else
-        {
-          //tempjson[i].CHECKSTATUS = "OK";
-        }
-        if(selectedCode?.USE_YN==='N')
-        {
-          err_code =3;
-        }
-        if(selectedCode?.G_CODE === '' || selectedCust_CD?.CUST_CD === '' || newpono ==='' || userData.EMPL_NO ==='')
-        {
-          err_code = 4;
-        }
-          if(err_code === 0)
-          {
-            await generalQuery("update_invoice", {
-              G_CODE: selectedCode?.G_CODE,
-              CUST_CD: selectedCust_CD?.CUST_CD,
-              PO_NO: newpono,
-              EMPL_NO: userData.EMPL_NO,
-              DELIVERY_DATE: newinvoicedate,
-              DELIVERY_QTY: newinvoiceQTY,
-              REMARK: newinvoiceRemark,
-              DELIVERY_ID: selectedID
+    } else if (err_code === 1) {
+      Swal.fire("Thông báo", "NG: Không tồn tại PO", "error");
+    } else if (err_code === 2) {
+      Swal.fire(
+        "Thông báo",
+        "NG: Ngày Giao Hàng không được trước ngày hôm nay",
+        "error"
+      );
+    } else if (err_code === 3) {
+      Swal.fire("Thông báo", "NG: Ver này đã bị khóa", "error");
+    } else if (err_code === 4) {
+      Swal.fire("Thông báo", "NG: Không để trống thông tin bắt buộc", "error");
+    } else {
+      Swal.fire("Thông báo", "Lỗi", "error");
+    }
+  };
+  const deleteInvoice = async () => {
+    if (invoicedatatablefilter.length >= 1) {
+      let err_code: boolean = false;
+      for (let i = 0; i < invoicedatatablefilter.length; i++) {
+        if (invoicedatatablefilter[i].EMPL_NO === userData.EMPL_NO) {
+          await generalQuery("delete_invoice", {
+            DELIVERY_ID: invoicedatatablefilter[i].DELIVERY_ID,
+          })
+            .then((response) => {
+              console.log(response.data.tk_status);
+              if (response.data.tk_status !== "NG") {
+                //Swal.fire("Thông báo", "Delete Po thành công", "success");
+              } else {
+                //Swal.fire("Thông báo", "Update PO thất bại: " +response.data.message , "error");
+                err_code = true;
+              }
             })
-              .then((response) => {
-                console.log(response.data.tk_status);
-                if (response.data.tk_status !== "NG") {
-                  Swal.fire("Thông báo", "Update Invoice thành công", "success");  
-                } else {     
-                  Swal.fire("Thông báo", "Update Invoice thất bại: " +response.data.message , "error"); 
-                }
-              })
-              .catch((error) => {
-                console.log(error);
-              });
-          }
-          else if(err_code ===1)
-          {
-            Swal.fire("Thông báo", "NG: Không tồn tại PO" , "error"); 
-          }
-          else if(err_code ===2)
-          {
-            Swal.fire("Thông báo", "NG: Ngày Giao Hàng không được trước ngày hôm nay" , "error"); 
-          }
-          else if(err_code ===3)
-          {
-            Swal.fire("Thông báo", "NG: Ver này đã bị khóa" , "error"); 
-          }
-          else if(err_code ===4)
-          {            
-            Swal.fire("Thông báo", "NG: Không để trống thông tin bắt buộc" , "error"); 
-          } 
-          else 
-          {
-            Swal.fire("Thông báo", "Lỗi" , "error"); 
-          }
-  }
-  const deleteInvoice= async()=> {
-    if(invoicedatatablefilter.length>=1)
-    {
-      let err_code:boolean =false;
-      for(let i=0;i<invoicedatatablefilter.length;i++)
-      {
-        if(invoicedatatablefilter[i].EMPL_NO === userData.EMPL_NO)
-        {
-          await generalQuery("delete_invoice", {           
-            DELIVERY_ID: invoicedatatablefilter[i].DELIVERY_ID
-          })
-          .then((response) => {
-            console.log(response.data.tk_status);
-            if (response.data.tk_status !== "NG") {
-              //Swal.fire("Thông báo", "Delete Po thành công", "success");  
-            } else {     
-              //Swal.fire("Thông báo", "Update PO thất bại: " +response.data.message , "error"); 
-              err_code = true;
-            }
-          })
-          .catch((error) => {
-            console.log(error);
-          });  
+            .catch((error) => {
+              console.log(error);
+            });
         }
-      }      
-      if(!err_code)
-      {
-        Swal.fire("Thông báo", "Xóa Invoice thành công (chỉ Invoice của người đăng nhập)!" , "success"); 
       }
-      else
-      {
-        Swal.fire("Thông báo", "Có lỗi SQL!" , "error"); 
-      } 
+      if (!err_code) {
+        Swal.fire(
+          "Thông báo",
+          "Xóa Invoice thành công (chỉ Invoice của người đăng nhập)!",
+          "success"
+        );
+      } else {
+        Swal.fire("Thông báo", "Có lỗi SQL!", "error");
+      }
+    } else {
+      Swal.fire("Thông báo", "Chọn ít nhất 1 Invoice để xóa !", "error");
     }
-    else
-    {
-      Swal.fire("Thông báo", "Chọn ít nhất 1 Invoice để xóa !" , "error"); 
-    }
-  }
-  const handleConfirmDeleteInvoice =()=>{
+  };
+  const handleConfirmDeleteInvoice = () => {
     Swal.fire({
-      title: 'Chắc chắn muốn xóa Invoice đã chọn ?',
+      title: "Chắc chắn muốn xóa Invoice đã chọn ?",
       text: "Sẽ chỉ xóa invoice do bạn up lên",
-      icon: 'warning',
+      icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Vẫn Xóa!'
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Vẫn Xóa!",
     }).then((result) => {
       if (result.isConfirmed) {
-        Swal.fire(
-          'Tiến hành Xóa',
-          'Đang Xóa Invoice hàng loạt',
-          'success'
-        );
+        Swal.fire("Tiến hành Xóa", "Đang Xóa Invoice hàng loạt", "success");
         deleteInvoice();
       }
-    })
-  }
-  useEffect(()=>{
-        getcustomerlist();
-        getcodelist('');
-  },[]);
+    });
+  };
+  useEffect(() => {
+    getcustomerlist();
+    getcodelist("");
+  }, []);
   return (
     <div className='invoicemanager'>
       <div className='mininavbar'>
-        <div className='mininavitem'  onClick={() => setNav(1)} style={{backgroundColor:selection.trapo === true ? '#9933ff':'#d9b3ff', color: selection.trapo === true ? 'yellow':'yellow'}}>
-          <span className='mininavtext'>
-          Tra Invoice
-          </span>
-        </div>  
-        <div className='mininavitem'  onClick={() => setNav(2)} style={{backgroundColor:selection.thempohangloat === true ? '#9933ff':'#d9b3ff', color: selection.thempohangloat === true ? 'yellow':'yellow'}}>
-          <span className='mininavtext'>
-          Thêm Invoice
-          </span>
-        </div> 
+        <div
+          className='mininavitem'
+          onClick={() => setNav(1)}
+          style={{
+            backgroundColor: selection.trapo === true ? "#9933ff" : "#d9b3ff",
+            color: selection.trapo === true ? "yellow" : "yellow",
+          }}
+        >
+          <span className='mininavtext'>Tra Invoice</span>
+        </div>
+        <div
+          className='mininavitem'
+          onClick={() =>
+            checkBP(userData.EMPL_NO, userData.MAINDEPTNAME, "KD", () => {
+              setNav(2);
+            })
+          }
+          style={{
+            backgroundColor:
+              selection.thempohangloat === true ? "#9933ff" : "#d9b3ff",
+            color: selection.thempohangloat === true ? "yellow" : "yellow",
+          }}
+        >
+          <span className='mininavtext'>Thêm Invoice</span>
+        </div>
       </div>
       {selection.thempohangloat && (
         <div className='newinvoice'>
@@ -843,7 +1071,10 @@ const InvoiceManager = () => {
             <form className='formupload'>
               <label htmlFor='upload'>
                 <b>Chọn file Excel: </b>
-                <input onKeyDown={(e)=> {handleSearchCodeKeyDown(e);}}  
+                <input
+                  onKeyDown={(e) => {
+                    handleSearchCodeKeyDown(e);
+                  }}
                   className='selectfilebutton'
                   type='file'
                   name='upload'
@@ -886,11 +1117,11 @@ const InvoiceManager = () => {
                   rowsPerPageOptions={[
                     5, 10, 50, 100, 500, 1000, 5000, 10000, 100000,
                   ]}
-                  editMode='row'                  
+                  editMode='row'
                 />
               )}
             </div>
-          </div>          
+          </div>
         </div>
       )}
       {selection.trapo && (
@@ -900,7 +1131,10 @@ const InvoiceManager = () => {
               <div className='forminputcolumn'>
                 <label>
                   <b>Từ ngày:</b>
-                  <input onKeyDown={(e)=> {handleSearchCodeKeyDown(e);}}  
+                  <input
+                    onKeyDown={(e) => {
+                      handleSearchCodeKeyDown(e);
+                    }}
                     type='date'
                     value={fromdate.slice(0, 10)}
                     onChange={(e) => setFromDate(e.target.value)}
@@ -908,7 +1142,10 @@ const InvoiceManager = () => {
                 </label>
                 <label>
                   <b>Tới ngày:</b>{" "}
-                  <input onKeyDown={(e)=> {handleSearchCodeKeyDown(e);}}  
+                  <input
+                    onKeyDown={(e) => {
+                      handleSearchCodeKeyDown(e);
+                    }}
                     type='date'
                     value={todate.slice(0, 10)}
                     onChange={(e) => setToDate(e.target.value)}
@@ -918,7 +1155,10 @@ const InvoiceManager = () => {
               <div className='forminputcolumn'>
                 <label>
                   <b>Code KD:</b>{" "}
-                  <input onKeyDown={(e)=> {handleSearchCodeKeyDown(e);}}  
+                  <input
+                    onKeyDown={(e) => {
+                      handleSearchCodeKeyDown(e);
+                    }}
                     type='text'
                     placeholder='GH63-xxxxxx'
                     value={codeKD}
@@ -927,7 +1167,10 @@ const InvoiceManager = () => {
                 </label>
                 <label>
                   <b>Code CMS:</b>{" "}
-                  <input onKeyDown={(e)=> {handleSearchCodeKeyDown(e);}}  
+                  <input
+                    onKeyDown={(e) => {
+                      handleSearchCodeKeyDown(e);
+                    }}
                     type='text'
                     placeholder='7C123xxx'
                     value={codeCMS}
@@ -938,7 +1181,10 @@ const InvoiceManager = () => {
               <div className='forminputcolumn'>
                 <label>
                   <b>Tên nhân viên:</b>{" "}
-                  <input onKeyDown={(e)=> {handleSearchCodeKeyDown(e);}}  
+                  <input
+                    onKeyDown={(e) => {
+                      handleSearchCodeKeyDown(e);
+                    }}
                     type='text'
                     placeholder='Trang'
                     value={empl_name}
@@ -947,7 +1193,10 @@ const InvoiceManager = () => {
                 </label>
                 <label>
                   <b>Khách:</b>{" "}
-                  <input onKeyDown={(e)=> {handleSearchCodeKeyDown(e);}}  
+                  <input
+                    onKeyDown={(e) => {
+                      handleSearchCodeKeyDown(e);
+                    }}
                     type='text'
                     placeholder='SEVT'
                     value={cust_name}
@@ -958,7 +1207,10 @@ const InvoiceManager = () => {
               <div className='forminputcolumn'>
                 <label>
                   <b>Loại sản phẩm:</b>{" "}
-                  <input onKeyDown={(e)=> {handleSearchCodeKeyDown(e);}}  
+                  <input
+                    onKeyDown={(e) => {
+                      handleSearchCodeKeyDown(e);
+                    }}
                     type='text'
                     placeholder='TSP'
                     value={prod_type}
@@ -967,7 +1219,10 @@ const InvoiceManager = () => {
                 </label>
                 <label>
                   <b>ID:</b>{" "}
-                  <input onKeyDown={(e)=> {handleSearchCodeKeyDown(e);}}  
+                  <input
+                    onKeyDown={(e) => {
+                      handleSearchCodeKeyDown(e);
+                    }}
                     type='text'
                     placeholder='12345'
                     value={id}
@@ -978,7 +1233,10 @@ const InvoiceManager = () => {
               <div className='forminputcolumn'>
                 <label>
                   <b>PO NO:</b>{" "}
-                  <input onKeyDown={(e)=> {handleSearchCodeKeyDown(e);}}  
+                  <input
+                    onKeyDown={(e) => {
+                      handleSearchCodeKeyDown(e);
+                    }}
                     type='text'
                     placeholder='123abc'
                     value={po_no}
@@ -987,7 +1245,10 @@ const InvoiceManager = () => {
                 </label>
                 <label>
                   <b>Vật liệu:</b>{" "}
-                  <input onKeyDown={(e)=> {handleSearchCodeKeyDown(e);}}  
+                  <input
+                    onKeyDown={(e) => {
+                      handleSearchCodeKeyDown(e);
+                    }}
                     type='text'
                     placeholder='SJ-203020HC'
                     value={material}
@@ -998,7 +1259,10 @@ const InvoiceManager = () => {
               <div className='forminputcolumn'>
                 <label>
                   <b>Over/OK:</b>{" "}
-                  <input onKeyDown={(e)=> {handleSearchCodeKeyDown(e);}}  
+                  <input
+                    onKeyDown={(e) => {
+                      handleSearchCodeKeyDown(e);
+                    }}
                     type='text'
                     placeholder='OVER'
                     value={over}
@@ -1007,7 +1271,10 @@ const InvoiceManager = () => {
                 </label>
                 <label>
                   <b>Invoice No:</b>{" "}
-                  <input onKeyDown={(e)=> {handleSearchCodeKeyDown(e);}}  
+                  <input
+                    onKeyDown={(e) => {
+                      handleSearchCodeKeyDown(e);
+                    }}
                     type='text'
                     placeholder='số invoice'
                     value={invoice_no}
@@ -1019,39 +1286,58 @@ const InvoiceManager = () => {
             <div className='formbutton'>
               <label>
                 <b>All Time:</b>
-                <input onKeyDown={(e)=> {handleSearchCodeKeyDown(e);}}  
+                <input
+                  onKeyDown={(e) => {
+                    handleSearchCodeKeyDown(e);
+                  }}
                   type='checkbox'
                   name='alltimecheckbox'
                   defaultChecked={alltime}
                   onChange={() => setAllTime(!alltime)}
                 ></input>
               </label>
-              <IconButton className='buttonIcon' onClick={() => {
+              <IconButton
+                className='buttonIcon'
+                onClick={() => {
                   handletraInvoice();
-                }}><FcSearch color='green' size={30}/>Search</IconButton>              
+                }}
+              >
+                <FcSearch color='green' size={30} />
+                Search
+              </IconButton>
             </div>
-            <div className='formsummary'>  
-
+            <div className='formsummary'>
               <table>
-                    <thead>
-                      <tr>                       
-                        <td>DELIVERED QTY</td>                      
-                        <td>DELIVERED AMOUNT</td>                                           
-                      </tr>                   
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td style={{color:'purple', fontWeight:'bold'}}> {invoiceSummary.total_delivered_qty.toLocaleString("en-US")} EA</td>
-                        <td style={{color:'purple', fontWeight:'bold'}}> {invoiceSummary.total_delivered_amount.toLocaleString("en-US", {
-                      style: "currency",
-                      currency: "USD",
-                    })} </td>                  
-                      </tr>
-                    </tbody>
-              </table>   
+                <thead>
+                  <tr>
+                    <td>DELIVERED QTY</td>
+                    <td>DELIVERED AMOUNT</td>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td style={{ color: "purple", fontWeight: "bold" }}>
+                      {" "}
+                      {invoiceSummary.total_delivered_qty.toLocaleString(
+                        "en-US"
+                      )}{" "}
+                      EA
+                    </td>
+                    <td style={{ color: "purple", fontWeight: "bold" }}>
+                      {" "}
+                      {invoiceSummary.total_delivered_amount.toLocaleString(
+                        "en-US",
+                        {
+                          style: "currency",
+                          currency: "USD",
+                        }
+                      )}{" "}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
 
-
-             {/*  <div className='summarygroup'>
+              {/*  <div className='summarygroup'>
                 <div className='summaryvalue'>
                   <b>
                     DELIVERED QTY:{" "}
@@ -1067,7 +1353,7 @@ const InvoiceManager = () => {
                     })}
                   </b>
                 </div>
-              </div>         */}     
+              </div>         */}
             </div>
           </div>
           <div className='tracuuInvoiceTable'>
@@ -1076,7 +1362,7 @@ const InvoiceManager = () => {
                 Toolbar: CustomToolbarPOTable,
                 LoadingOverlay: LinearProgress,
               }}
-              sx={{fontSize: 12}}
+              sx={{ fontSize: 12 }}
               loading={isLoading}
               rowHeight={30}
               rows={invoicedatatable}
@@ -1088,91 +1374,174 @@ const InvoiceManager = () => {
               getRowId={(row) => row.DELIVERY_ID}
               checkboxSelection
               disableSelectionOnClick
-              onSelectionModelChange={(ids) => {handleInvoiceSelectionforUpdate(ids);}}
+              onSelectionModelChange={(ids) => {
+                handleInvoiceSelectionforUpdate(ids);
+              }}
             />
           </div>
         </div>
       )}
-      {selection.them1invoice && <div className='them1invoice'>
+      {selection.them1invoice && (
+        <div className='them1invoice'>
           <div className='formnho'>
             <div className='dangkyform'>
-            <h3>Thêm Invoice mới</h3>           
+              <h3>Thêm Invoice mới</h3>
               <div className='dangkyinput'>
                 <div className='dangkyinputbox'>
-                <label>
+                  <label>
                     <b>Khách hàng:</b>{" "}
-                  <Autocomplete
-                   size="small"
-                    disablePortal                    
-                    options={customerList}
-                    className='autocomplete'   
-                    getOptionLabel={(option:CustomerListData) => `${option.CUST_CD}: ${option.CUST_NAME_KD}`}                 
-                    renderInput={(params) => (
-                     <TextField {...params} label='Select customer'/>
-                    )}
-                    value={selectedCust_CD}
-                    onChange={(event:any, newValue: CustomerListData| null)=>{
-                      console.log(newValue); 
-                      setSelectedCust_CD(newValue);                     
-                    }}
-                  />
+                    <Autocomplete
+                      size='small'
+                      disablePortal
+                      options={customerList}
+                      className='autocomplete'
+                      getOptionLabel={(option: CustomerListData) =>
+                        `${option.CUST_CD}: ${option.CUST_NAME_KD}`
+                      }
+                      renderInput={(params) => (
+                        <TextField {...params} label='Select customer' />
+                      )}
+                      value={selectedCust_CD}
+                      onChange={(
+                        event: any,
+                        newValue: CustomerListData | null
+                      ) => {
+                        console.log(newValue);
+                        setSelectedCust_CD(newValue);
+                      }}
+                    />
                   </label>
                   <label>
                     <b>Code hàng:</b>{" "}
-                  <Autocomplete
-                    size="small"
-                    disablePortal                    
-                    options={codeList}
-                    className='autocomplete'   
-                    getOptionLabel={(option:CodeListData) => `${option.G_CODE}: ${option.G_NAME}`}                     
-                    renderInput={(params) => (
-                     <TextField {...params} label='Select code'/>
-                    )}    
-                    onChange={(event:any, newValue: CodeListData| null)=>{
-                      console.log(newValue);   
-                      setNewPoPrice(newValue ===null ? '' : newValue.PROD_LAST_PRICE.toString());        
-                      setSelectedCode(newValue);
-                    }}  
-                    value={selectedCode}   
-                  />
-                  </label>   
+                    <Autocomplete
+                      size='small'
+                      disablePortal
+                      options={codeList}
+                      className='autocomplete'
+                      getOptionLabel={(option: CodeListData) =>
+                        `${option.G_CODE}: ${option.G_NAME}`
+                      }
+                      renderInput={(params) => (
+                        <TextField {...params} label='Select code' />
+                      )}
+                      onChange={(event: any, newValue: CodeListData | null) => {
+                        console.log(newValue);
+                        setNewPoPrice(
+                          newValue === null
+                            ? ""
+                            : newValue.PROD_LAST_PRICE.toString()
+                        );
+                        setSelectedCode(newValue);
+                      }}
+                      value={selectedCode}
+                    />
+                  </label>
                   <label>
                     <b>PO NO:</b>{" "}
-                  <TextField  value={newpono}  onChange={(e:React.ChangeEvent<HTMLInputElement>)=> setNewPoNo(e.target.value)} size="small" color="success" className='autocomplete' id="outlined-basic" label="Số PO" variant="outlined" />
-                  </label>              
+                    <TextField
+                      value={newpono}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        setNewPoNo(e.target.value)
+                      }
+                      size='small'
+                      color='success'
+                      className='autocomplete'
+                      id='outlined-basic'
+                      label='Số PO'
+                      variant='outlined'
+                    />
+                  </label>
                 </div>
-                <div className='dangkyinputbox'>  
+                <div className='dangkyinputbox'>
                   <label>
                     <b>Invoice QTY:</b>{" "}
-                  <TextField  value={newinvoiceQTY}  onChange={(e:React.ChangeEvent<HTMLInputElement>)=> setNewInvoiceQty(Number(e.target.value))} size="small" color="success" className='autocomplete' id="outlined-basic" label="INVOICE QTY" variant="outlined" />
+                    <TextField
+                      value={newinvoiceQTY}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        setNewInvoiceQty(Number(e.target.value))
+                      }
+                      size='small'
+                      color='success'
+                      className='autocomplete'
+                      id='outlined-basic'
+                      label='INVOICE QTY'
+                      variant='outlined'
+                    />
                   </label>
                   <label>
                     <b>Invoice Date:</b>{" "}
-                    <input onKeyDown={(e)=> {handleSearchCodeKeyDown(e);}}  
-                      className='inputdata' 
+                    <input
+                      onKeyDown={(e) => {
+                        handleSearchCodeKeyDown(e);
+                      }}
+                      className='inputdata'
                       type='date'
                       value={newinvoicedate.slice(0, 10)}
                       onChange={(e) => setNewInvoiceDate(e.target.value)}
                     ></input>
-                  </label>               
+                  </label>
                   <label>
                     <b>Remark:</b>{" "}
-                  <TextField  value={newinvoiceRemark}   onChange={(e:React.ChangeEvent<HTMLInputElement>)=> setNewInvoiceRemark(e.target.value)} size="small"   className='autocomplete' id="outlined-basic" label="Remark" variant="outlined" />
-                  </label>  
+                    <TextField
+                      value={newinvoiceRemark}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        setNewInvoiceRemark(e.target.value)
+                      }
+                      size='small'
+                      className='autocomplete'
+                      id='outlined-basic'
+                      label='Remark'
+                      variant='outlined'
+                    />
+                  </label>
                 </div>
               </div>
               <div className='dangkybutton'>
-                <button className='thembutton' onClick={()=>{handle_add_1Invoice();}}>Thêm Invoice</button>                
-                <button className='closebutton' onClick={()=>{updateInvoice();}}>Sửa Invoice</button>                
-                <button className='suabutton' onClick={()=>{clearInvoiceform();}}>Clear</button>                
-                <button className='closebutton' onClick={()=> {setSelection({...selection, trapo: true, thempohangloat:false, them1po:false, them1invoice: false});}}>Close</button>
+                <button
+                  className='thembutton'
+                  onClick={() => {
+                    handle_add_1Invoice();
+                  }}
+                >
+                  Thêm Invoice
+                </button>
+                <button
+                  className='closebutton'
+                  onClick={() => {
+                    updateInvoice();
+                  }}
+                >
+                  Sửa Invoice
+                </button>
+                <button
+                  className='suabutton'
+                  onClick={() => {
+                    clearInvoiceform();
+                  }}
+                >
+                  Clear
+                </button>
+                <button
+                  className='closebutton'
+                  onClick={() => {
+                    setSelection({
+                      ...selection,
+                      trapo: true,
+                      thempohangloat: false,
+                      them1po: false,
+                      them1invoice: false,
+                    });
+                  }}
+                >
+                  Close
+                </button>
               </div>
             </div>
           </div>
-        </div>}
-      {selection.testinvoicetable && <div className="testinvoicetable">
-      </div>}
+        </div>
+      )}
+      {selection.testinvoicetable && <div className='testinvoicetable'></div>}
     </div>
   );
-}
-export default InvoiceManager
+};
+export default InvoiceManager;

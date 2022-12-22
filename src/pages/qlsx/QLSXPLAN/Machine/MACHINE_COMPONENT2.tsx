@@ -1,4 +1,5 @@
 import { Button } from "@mui/material";
+import moment from "moment";
 import React from "react";
 import Swal from "sweetalert2";
 import "./MACHINE_COMPONENT2.scss";
@@ -29,7 +30,9 @@ interface MachineInterface {
   machine_data?: QLSXPLANDATA[];
   current_plan_id?: string;
   current_g_name?: string;
-  eq_status?: string;  
+  eq_status?: string;
+  upd_time?: string;
+  upd_empl?: string;
   onClick?:  (ev: any) => void;
 }
 
@@ -39,6 +42,11 @@ const MACHINE_COMPONENT2 = (machine_data: MachineInterface) => {
   const stoptopcolor: string = "white";
   const stopbotcolor: string = "black";
  
+  
+  var date1 = moment.utc();
+  var date2 = moment.utc(machine_data.upd_time);
+  var diff: number = date1.diff(date2,'minutes');  
+
   return (
     <div
       className='machine_component2'
@@ -51,10 +59,12 @@ const MACHINE_COMPONENT2 = (machine_data: MachineInterface) => {
       }}
       onDoubleClick={machine_data.onClick}
     >
+      {/* {(machine_data.eq_status === 'STOP' && machine_data.upd_empl !== '') && <div className="downtime" style={{fontSize:11}}>{diff}</div>} */}
       <div className='tieude' style={{backgroundColor:`${machine_data.eq_status ==='STOP'? 'red':machine_data.eq_status ==='SETTING'? 'yellow' : `#3ff258` }`}}>
         <div className="eqname"  style={{color:`${machine_data.eq_status ==='STOP'? 'white':machine_data.eq_status ==='SETTING'? 'black' : `black` }`}}>
           {machine_data.machine_name}
           {machine_data.eq_status === 'MASS' &&<img alt='running' src='/blink.gif' width={40} height={20}></img>}
+          {machine_data.eq_status === 'SETTING' &&<img alt='running' src='/setting3.gif' width={30} height={30}></img>}
         </div>            
       </div>
       <div className='machineplan'>

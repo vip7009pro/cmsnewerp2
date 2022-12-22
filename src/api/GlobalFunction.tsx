@@ -1,6 +1,9 @@
+import { useContext } from 'react';
 import { ResponsiveContainer } from 'recharts';
+import Swal from 'sweetalert2';
 import * as XLSX from 'xlsx';
 import { generalQuery } from './Api';
+
 
 export const SaveExcel = (data: any, title: string) => {
     const worksheet = XLSX.utils.json_to_sheet(data);
@@ -86,4 +89,16 @@ export function CustomResponsiveContainer(props:any) {
       return 0;
     }
 
+ }
+
+ export async function checkBP(input_EMPL_NO: string,input_maindept:string,permitted_main_dept: string, func:any) {
+  if(input_maindept === permitted_main_dept || input_EMPL_NO==='NHU1903')
+  {
+    await func();
+  }
+  else
+  {    
+    Swal.fire('Thông báo', 'Bạn không phải người bộ phận '+ permitted_main_dept,'warning');    
+  }
+  
  }

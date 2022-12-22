@@ -8,7 +8,7 @@ import Swal from 'sweetalert2';
 import * as XLSX from 'xlsx';
 import { generalQuery } from '../../../api/Api';
 import { UserContext } from '../../../api/Context';
-import { SaveExcel } from '../../../api/GlobalFunction';
+import { checkBP, SaveExcel } from '../../../api/GlobalFunction';
 import { MdOutlineDelete } from 'react-icons/md';
 import "./PoManager.scss"
 import { FaFileInvoiceDollar } from 'react-icons/fa';
@@ -177,18 +177,71 @@ const PoManager = () => {
       </GridToolbarContainer>
     );
   }
+  const showNewPO = ()=> {
+    setSelection({
+      ...selection,
+      trapo: true,
+      thempohangloat: false,
+      them1po: !selection.them1po,
+      them1invoice: false,
+    })
+  }
   function CustomToolbarPOTable() {
     return (
       <GridToolbarContainer>
         <GridToolbarColumnsButton />
         <GridToolbarFilterButton />
-        <GridToolbarDensitySelector /> 
-        <IconButton className='buttonIcon'onClick={()=>{SaveExcel(podatatable,"PO Table")}}><AiFillFileExcel color='green' size={25}/>SAVE</IconButton>
-        <IconButton className='buttonIcon'onClick={()=>{setSelection({...selection, trapo: true, thempohangloat:false, them1po:!selection.them1po, them1invoice: false}); clearPOform();}}><AiFillFileAdd color='blue' size={25}/>NEW PO</IconButton>
-        <IconButton className='buttonIcon'onClick={()=>{handle_fillsuaformInvoice(); }}><FaFileInvoiceDollar color='lightgreen' size={25}/>NEW INV</IconButton>
-        <IconButton className='buttonIcon'onClick={()=>{ handle_fillsuaform();}}><AiFillEdit color='orange' size={25}/>SỬA PO</IconButton>
-        <IconButton className='buttonIcon'onClick={()=>{handleConfirmDeletePO();}}><MdOutlineDelete color='red' size={25}/>XÓA PO</IconButton>        
-        <GridToolbarQuickFilter/>
+        <GridToolbarDensitySelector />
+        <IconButton
+          className='buttonIcon'
+          onClick={() => {
+            SaveExcel(podatatable, "PO Table");
+          }}
+        >
+          <AiFillFileExcel color='green' size={25} />
+          SAVE
+        </IconButton>
+        <IconButton
+          className='buttonIcon'
+          onClick={() => {
+            checkBP(userData.EMPL_NO,userData.MAINDEPTNAME,'KD', showNewPO);
+            clearPOform();
+          }}
+        >
+          <AiFillFileAdd color='blue' size={25} />
+          NEW PO
+        </IconButton>
+        <IconButton
+          className='buttonIcon'
+          onClick={() => {
+            checkBP(userData.EMPL_NO,userData.MAINDEPTNAME,'KD', handle_fillsuaformInvoice);
+            //handle_fillsuaformInvoice();
+          }}
+        >
+          <FaFileInvoiceDollar color='lightgreen' size={25} />
+          NEW INV
+        </IconButton>
+        <IconButton
+          className='buttonIcon'
+          onClick={() => {
+            checkBP(userData.EMPL_NO,userData.MAINDEPTNAME,'KD', handle_fillsuaform);
+            //handle_fillsuaform();
+          }}
+        >
+          <AiFillEdit color='orange' size={25} />
+          SỬA PO
+        </IconButton>
+        <IconButton
+          className='buttonIcon'
+          onClick={() => {
+            checkBP(userData.EMPL_NO,userData.MAINDEPTNAME,'KD', handleConfirmDeletePO);
+            //handleConfirmDeletePO();
+          }}
+        >
+          <MdOutlineDelete color='red' size={25} />
+          XÓA PO
+        </IconButton>
+        <GridToolbarQuickFilter />
       </GridToolbarContainer>
     );
   }
@@ -959,7 +1012,7 @@ const PoManager = () => {
           Tra PO
           </span>
         </div>  
-        <div className='mininavitem'  onClick={() => setNav(2)} style={{backgroundColor:selection.thempohangloat === true ? '#9933ff':'#d9b3ff', color: selection.thempohangloat === true ? 'yellow':'yellow'}}>
+        <div className='mininavitem'  onClick={() =>  checkBP(userData.EMPL_NO,userData.MAINDEPTNAME,'KD', ()=> {setNav(2)})} style={{backgroundColor:selection.thempohangloat === true ? '#9933ff':'#d9b3ff', color: selection.thempohangloat === true ? 'yellow':'yellow'}}>
           <span className='mininavtext'>
           Thêm PO
           </span>

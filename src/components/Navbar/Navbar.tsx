@@ -17,6 +17,7 @@ import { UserContext } from "../../api/Context";
 import { FcList } from "react-icons/fc";
 import { useDispatch } from "react-redux";
 import { toggleSidebar } from "../../redux/slices/globalSlice";
+import { current_ver } from "../../pages/home/Home";
 
 
 
@@ -66,6 +67,7 @@ export default function Navbar() {
           <input type='text' placeholder='Search...' />
           <SearchIcon />
         </div>
+        
         <div className='cmslogo'  style={{cursor:'pointer'}}>
           <Link to='/' className='menulink' >
             <img
@@ -77,7 +79,10 @@ export default function Navbar() {
             />
           </Link>
         </div>
+
+        <b> Web Ver: {current_ver} </b>
         <div className='items'>
+          
           <div className='item' onClick={showhideLangMenu}>
             <LanguageIcon className='icon' />
             {lang === "vi"
@@ -88,8 +93,8 @@ export default function Navbar() {
           </div>
           {langmenu && (
             <div className='langmenu'>
-              <div className='menu'>
-                <div className='menu_item'>
+              <div className='menu'>              
+                <div className='menu_item'>                  
                   <AccountCircleIcon className='menu_icon' />
                   <span
                     className='menulink'

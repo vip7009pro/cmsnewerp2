@@ -306,7 +306,12 @@ const Sidebar = () => {
           path: 'sx/datasx',
           icon: <FcAcceptDatabase color='#cc00ff' size={25}/>,
           cName: 'sub-nav'
-        },        
+        },      
+        {
+          title:  getlang('inspection',lang),
+          path: 'sx/inspection',
+          icon: <FcInspection color='blue' size={25}/>
+        },  
         {
           title: getlang('planstatus',lang),
           path: 'sx/planstatus',
