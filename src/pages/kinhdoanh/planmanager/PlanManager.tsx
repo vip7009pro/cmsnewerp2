@@ -131,7 +131,7 @@ const PlanManager = () => {
         <GridToolbarDensitySelector /> 
         <IconButton className='buttonIcon'onClick={()=>{SaveExcel(plandatatable,"Plan Table")}}><AiFillFileExcel color='green' size={25}/>SAVE</IconButton> 
         <IconButton className='buttonIcon'onClick={()=>{
-           checkBP(userData.EMPL_NO,userData.MAINDEPTNAME,'KD', handleConfirmDeletePlan);
+           checkBP(userData.EMPL_NO,userData.MAINDEPTNAME,['KD'], handleConfirmDeletePlan);
           //handleConfirmDeletePlan();
           }}><MdOutlineDelete color='red' size={25}/>XÓA PLAN</IconButton>        
         <GridToolbarQuickFilter/>
@@ -531,7 +531,8 @@ const PlanManager = () => {
           'Đang Xóa Plan hàng loạt',
           'success'
         );
-        deletePlan();
+        checkBP(userData.EMPL_NO,userData.MAINDEPTNAME,['KD'], deletePlan);
+        //deletePlan();
       }
     })
   }
@@ -547,7 +548,7 @@ const PlanManager = () => {
           </span>
         </div>  
         <div className='mininavitem'   onClick={() =>
-            checkBP(userData.EMPL_NO, userData.MAINDEPTNAME, "KD", () => {
+            checkBP(userData.EMPL_NO, userData.MAINDEPTNAME, ['KD'], () => {
               setNav(2);
             })
           } style={{backgroundColor:selection.thempohangloat === true ? '#9933ff':'#d9b3ff', color: selection.thempohangloat === true ? 'yellow':'yellow'}}>

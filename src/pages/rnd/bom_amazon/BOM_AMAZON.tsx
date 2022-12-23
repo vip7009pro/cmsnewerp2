@@ -294,7 +294,7 @@ import {
           <IconButton
             className='buttonIcon'
             onClick={() => {
-              checkBP(userData.EMPL_NO,userData.MAINDEPTNAME,'RND', confirmSaveBOMAMAZON);
+              checkBP(userData.EMPL_NO,userData.MAINDEPTNAME,['RND'], confirmSaveBOMAMAZON);
               //confirmSaveBOMAMAZON();
             }}
           >
@@ -304,7 +304,7 @@ import {
           <IconButton
             className='buttonIcon'
             onClick={() => {
-              checkBP(userData.EMPL_NO,userData.MAINDEPTNAME,'RND', ()=>{
+              checkBP(userData.EMPL_NO,userData.MAINDEPTNAME,['RND'], ()=>{
                 setcolumn_bomgia(
                   column_bomgia.map((element, index: number) => {
                     return { ...element, editable: !element.editable };

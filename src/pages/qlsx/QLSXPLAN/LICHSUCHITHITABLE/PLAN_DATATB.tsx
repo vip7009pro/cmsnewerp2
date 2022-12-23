@@ -6,7 +6,7 @@ import {AiFillFileExcel, AiOutlineCloudUpload, AiOutlinePrinter } from "react-ic
 import Swal from 'sweetalert2';
 import { generalQuery } from '../../../../api/Api';
 import { UserContext } from '../../../../api/Context';
-import { SaveExcel } from '../../../../api/GlobalFunction';
+import { checkBP, SaveExcel } from '../../../../api/GlobalFunction';
 
 import "./PLAN_DATATB.scss"
 
@@ -279,7 +279,8 @@ const PLAN_DATATB = () => {
           "Đang ngày plan",
           "success"
         );
-        handle_movePlan();
+        checkBP(userData.EMPL_NO,userData.MAINDEPTNAME,['QLSX'], handle_movePlan);
+        //handle_movePlan();
       }
     });
   };

@@ -47,7 +47,7 @@ import {
 import { MdOutlineDelete, MdOutlinePendingActions } from "react-icons/md";
 import { FaArrowRight, FaWarehouse } from "react-icons/fa";
 import { FcApprove, FcCancel, FcDeleteRow, FcSearch } from "react-icons/fc";
-import { SaveExcel } from "../../../../api/GlobalFunction";
+import { checkBP, SaveExcel } from "../../../../api/GlobalFunction";
 import YCSXComponent from "../../../kinhdoanh/ycsxmanager/YCSXComponent/YCSXComponent";
 import DrawComponent from "../../../kinhdoanh/ycsxmanager/DrawComponent/DrawComponent";
 import { useReactToPrint } from "react-to-print";
@@ -2781,7 +2781,8 @@ const PLANTABLE = () => {
         <IconButton
           className='buttonIcon'
           onClick={() => {
-            handle_UpdatePlan();
+            checkBP(userData.EMPL_NO,userData.MAINDEPTNAME,['QLSX'], handle_UpdatePlan);
+            //handle_UpdatePlan();
           }}
         >
           <AiFillSave color='blue' size={20} />
@@ -2790,7 +2791,8 @@ const PLANTABLE = () => {
         <IconButton
           className='buttonIcon'
           onClick={() => {
-            handleConfirmDeletePlan();
+            checkBP(userData.EMPL_NO,userData.MAINDEPTNAME,['QLSX'], handleConfirmDeletePlan);
+            //handleConfirmDeletePlan();
           }}
         >
           <FcDeleteRow color='yellow' size={20} />
@@ -2808,7 +2810,8 @@ const PLANTABLE = () => {
         <IconButton
           className='buttonIcon'
           onClick={() => {
-            handleSaveQLSX();
+            checkBP(userData.EMPL_NO,userData.MAINDEPTNAME,['QLSX'], handleSaveQLSX);
+            //handleSaveQLSX();
           }}
         >
           <AiFillSave color='lightgreen' size={20} />
@@ -2842,7 +2845,8 @@ const PLANTABLE = () => {
                 "Đang lưu chỉ thị, hãy chờ một chút",
                 "info"
               );
-              hanlde_SaveChiThi();
+              checkBP(userData.EMPL_NO,userData.MAINDEPTNAME,['QLSX'], hanlde_SaveChiThi);
+              //hanlde_SaveChiThi();
             } else {
               Swal.fire("Thông báo", "Không có liệu để chỉ thị", "error");
             }
@@ -2854,7 +2858,8 @@ const PLANTABLE = () => {
         <IconButton
           className='buttonIcon'
           onClick={() => {
-            handleConfirmDeleteLieu();
+            checkBP(userData.EMPL_NO,userData.MAINDEPTNAME,['QLSX'], handleConfirmDeleteLieu);
+            //handleConfirmDeleteLieu();
           }}
         >
           <FcDeleteRow color='yellow' size={20} />
@@ -2863,7 +2868,8 @@ const PLANTABLE = () => {
         <IconButton
           className='buttonIcon'
           onClick={() => {
-            handleConfirmRESETLIEU();
+            checkBP(userData.EMPL_NO,userData.MAINDEPTNAME,['QLSX'], handleConfirmRESETLIEU);
+            //handleConfirmRESETLIEU();
           }}
         >
           <BiReset color='red' size={20} />
@@ -2872,15 +2878,19 @@ const PLANTABLE = () => {
         <IconButton
           className='buttonIcon'
           onClick={() => {
-            if (qlsxplandatafilter.length > 0) {
-              setShowKhoAo(!showkhoao);
-              handle_loadKhoAo();
-              handle_loadlichsuxuatkhoao();
-              handle_loadlichsunhapkhoao();
-              handle_loadlichsuinputlieu(qlsxplandatafilter[0].PLAN_ID);
-            } else {
-              Swal.fire("Thông báo", "Hãy chọn một chỉ thị", "error");
-            }
+            checkBP(userData.EMPL_NO,userData.MAINDEPTNAME,['QLSX'], ()=> {
+              if (qlsxplandatafilter.length > 0) {
+                setShowKhoAo(!showkhoao);
+                handle_loadKhoAo();
+                handle_loadlichsuxuatkhoao();
+                handle_loadlichsunhapkhoao();
+                handle_loadlichsuinputlieu(qlsxplandatafilter[0].PLAN_ID);
+              } else {
+                Swal.fire("Thông báo", "Hãy chọn một chỉ thị", "error");
+              }
+
+            });
+           
           }}
         >
           <FaWarehouse color='blue' size={20} />
@@ -2889,6 +2899,7 @@ const PLANTABLE = () => {
         <IconButton
           className='buttonIcon'
           onClick={() => {
+            checkBP(userData.EMPL_NO,userData.MAINDEPTNAME,['QLSX'], handleConfirmDKXL);
             handleConfirmDKXL();
           }}
         >

@@ -432,8 +432,8 @@ function App() {
                     element={
                       <ProtectedRoute
                         user={userData}
-                        maindeptname='KD'
-                        jobname='all'
+                        maindeptname='all'
+                        jobname='Leader'
                       >
                         <KinhDoanh />
                       </ProtectedRoute>
@@ -467,8 +467,8 @@ function App() {
                     element={
                       <ProtectedRoute
                         user={userData}
-                        maindeptname='RND'
-                        jobname='all'
+                        maindeptname='all'
+                        jobname='Leader'
                       >
                         <KinhDoanh />
                       </ProtectedRoute>
@@ -485,8 +485,8 @@ function App() {
                     element={
                       <ProtectedRoute
                         user={globalUserData}
-                        maindeptname='QLSX'
-                        jobname='all'
+                        maindeptname='all'
+                        jobname='Leader'
                       >
                         <QLSX />
                       </ProtectedRoute>
@@ -503,8 +503,8 @@ function App() {
                     element={
                       <ProtectedRoute
                         user={userData}
-                        maindeptname='QC'
-                        jobname='all'
+                        maindeptname='all'
+                        jobname='Leader'
                       >
                         <QC />
                       </ProtectedRoute>
@@ -516,7 +516,7 @@ function App() {
                       element={
                         <ProtectedRoute
                           user={userData}
-                          maindeptname='QC'
+                          maindeptname='all'
                           jobname='Leader'
                         >
                           <IQC />
@@ -528,7 +528,7 @@ function App() {
                       element={
                         <ProtectedRoute
                           user={userData}
-                          maindeptname='QC'
+                          maindeptname='all'
                           jobname='Leader'
                         >
                           <CODE_MANAGER />
@@ -540,7 +540,7 @@ function App() {
                       element={
                         <ProtectedRoute
                           user={userData}
-                          maindeptname='QC'
+                          maindeptname='all'
                           jobname='Leader'
                         >
                           <IQC />
@@ -552,7 +552,7 @@ function App() {
                       element={
                         <ProtectedRoute
                           user={userData}
-                          maindeptname='QC'
+                          maindeptname='all'
                           jobname='Leader'
                         >
                           <PQC />
@@ -564,7 +564,7 @@ function App() {
                       element={
                         <ProtectedRoute
                           user={userData}
-                          maindeptname='QC'
+                          maindeptname='all'
                           jobname='Leader'
                         >
                           <OQC />
@@ -576,7 +576,7 @@ function App() {
                       element={
                         <ProtectedRoute
                           user={userData}
-                          maindeptname='QC'
+                          maindeptname='all'
                           jobname='Leader'
                         >
                           <KIEMTRA />
@@ -588,7 +588,7 @@ function App() {
                       element={
                         <ProtectedRoute
                           user={userData}
-                          maindeptname='QC'
+                          maindeptname='all'
                           jobname='Leader'
                         >
                           <CS />
@@ -600,7 +600,7 @@ function App() {
                       element={
                         <ProtectedRoute
                           user={userData}
-                          maindeptname='QC'
+                          maindeptname='all'
                           jobname='Leader'
                         >
                           <DTC />
@@ -612,7 +612,7 @@ function App() {
                       element={
                         <ProtectedRoute
                           user={userData}
-                          maindeptname='QC'
+                          maindeptname='all'
                           jobname='Leader'
                         >
                           <ISO />
@@ -624,7 +624,7 @@ function App() {
                       element={
                         <ProtectedRoute
                           user={userData}
-                          maindeptname='QC'
+                          maindeptname='all'
                           jobname='Leader'
                         >
                           <QC />
@@ -636,7 +636,7 @@ function App() {
                       element={
                         <ProtectedRoute
                           user={userData}
-                          maindeptname='QC'
+                          maindeptname='all'
                           jobname='Leader'
                         >
                           <YCSXManager />
@@ -649,8 +649,8 @@ function App() {
                     element={
                       <ProtectedRoute
                         user={userData}
-                        maindeptname='SX'
-                        jobname='all'
+                        maindeptname='all'
+                        jobname='Leader'
                       >
                         <QC />
                       </ProtectedRoute>
@@ -662,7 +662,7 @@ function App() {
                       element={
                         <ProtectedRoute
                           user={userData}
-                          maindeptname='QC'
+                          maindeptname='all'
                           jobname='Leader'
                         >
                           <IQC />
@@ -674,7 +674,7 @@ function App() {
                       element={
                         <ProtectedRoute
                           user={userData}
-                          maindeptname='SX'
+                          maindeptname='all'
                           jobname='Leader'
                         >
                           <CODE_MANAGER />
@@ -686,7 +686,7 @@ function App() {
                       element={
                         <ProtectedRoute
                           user={userData}
-                          maindeptname='SX'
+                          maindeptname='all'
                           jobname='Leader'
                         >
                           <YCSXManager />
@@ -698,7 +698,7 @@ function App() {
                       element={
                         <ProtectedRoute
                           user={userData}
-                          maindeptname='SX'
+                          maindeptname='all'
                           jobname='Leader'
                         >
                           <DATASX />
@@ -710,7 +710,7 @@ function App() {
                       element={
                         <ProtectedRoute
                           user={userData}
-                          maindeptname='SX'
+                          maindeptname='all'
                           jobname='Leader'
                         >
                           <PLAN_STATUS />
@@ -722,7 +722,7 @@ function App() {
                       element={
                         <ProtectedRoute
                           user={userData}
-                          maindeptname='SX'
+                          maindeptname='all'
                           jobname='Leader'
                         >
                           <EQ_STATUS />
@@ -734,7 +734,7 @@ function App() {
                       element={
                         <ProtectedRoute
                           user={userData}
-                          maindeptname='SX'
+                          maindeptname='all'
                           jobname='Leader'
                         >
                           <LICHSUINPUTLIEU />
@@ -746,7 +746,7 @@ function App() {
                       element={
                         <ProtectedRoute
                           user={userData}
-                          maindeptname='SX'
+                          maindeptname='all'
                           jobname='Leader'
                         >
                           <KIEMTRA />

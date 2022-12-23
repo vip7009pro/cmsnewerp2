@@ -367,7 +367,7 @@ const InvoiceManager = () => {
         <IconButton
           className='buttonIcon'
           onClick={() => {
-            checkBP(userData.EMPL_NO,userData.MAINDEPTNAME,'KD', ()=>{
+            checkBP(userData.EMPL_NO,userData.MAINDEPTNAME,['KD'], ()=>{
               setSelection({
                 ...selection,
                 trapo: true,
@@ -385,7 +385,7 @@ const InvoiceManager = () => {
         <IconButton
           className='buttonIcon'
           onClick={() => {
-            checkBP(userData.EMPL_NO,userData.MAINDEPTNAME,'KD', handle_fillsuaformInvoice);
+            checkBP(userData.EMPL_NO,userData.MAINDEPTNAME,['KD'], handle_fillsuaformInvoice);
             //handle_fillsuaformInvoice();
           }}
         >
@@ -395,7 +395,7 @@ const InvoiceManager = () => {
         <IconButton
           className='buttonIcon'
           onClick={() => {
-            checkBP(userData.EMPL_NO,userData.MAINDEPTNAME,'KD', handleConfirmDeleteInvoice);
+            checkBP(userData.EMPL_NO,userData.MAINDEPTNAME,['KD'], handleConfirmDeleteInvoice);
             //handleConfirmDeleteInvoice();
           }}
         >
@@ -1050,7 +1050,7 @@ const InvoiceManager = () => {
         <div
           className='mininavitem'
           onClick={() =>
-            checkBP(userData.EMPL_NO, userData.MAINDEPTNAME, "KD", () => {
+            checkBP(userData.EMPL_NO, userData.MAINDEPTNAME, ['KD'], () => {
               setNav(2);
             })
           }

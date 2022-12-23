@@ -2549,18 +2549,23 @@ const MACHINE = () => {
         }
       }
     }
+
+    //console.log('bang chi thi', chithidatatable);
     for (let i = 0; i < chithidatatable.length; i++) {
-      if (chithidatatable[i].LIEUQL_SX >= 1) {
+      if (parseInt(chithidatatable[i].LIEUQL_SX.toString()) === 1) {
         for (let j = 0; j < chithidatatable.length; j++) {
-          if (chithidatatable[j].LIEUQL_SX >= 1) {
-            if (chithidatatable[i].LIEUQL_SX !== chithidatatable[j].LIEUQL_SX) {
+          if (parseInt(chithidatatable[j].LIEUQL_SX.toString()) === 1) {
+            //console.log('i', chithidatatable[i].M_NAME);
+            //console.log('j', chithidatatable[j].M_NAME);
+            if (chithidatatable[i].M_NAME !== chithidatatable[j].M_NAME) {
               check_num_lieuql_sx = 2;
             }
           }
         }
       }
     }
-    //console.log('check lieu sot: ' + check_lieuql_sx_sot);
+
+    //console.log('num lieu qlsx: ' + check_num_lieuql_sx);
     //console.log('tong lieu qly: '+ total_lieuql_sx);
     if (
       total_lieuql_sx > 0 &&
@@ -2659,6 +2664,8 @@ const MACHINE = () => {
       } else {
         Swal.fire("Thông báo", "Lưu Chỉ thị thành công", "success");
         loadQLSXPlan(selectedPlanDate);
+        
+
       }
     } else {
       Swal.fire(
@@ -2830,7 +2837,7 @@ const MACHINE = () => {
         <IconButton
           className='buttonIcon'
           onClick={() => {
-            checkBP(userData.EMPL_NO,userData.MAINDEPTNAME,'QLSX', handle_UpdatePlan);
+            checkBP(userData.EMPL_NO,userData.MAINDEPTNAME,['QLSX'], handle_UpdatePlan);
             //handle_UpdatePlan();
           }}
         >
@@ -2840,7 +2847,7 @@ const MACHINE = () => {
         <IconButton
           className='buttonIcon'
           onClick={() => {
-            checkBP(userData.EMPL_NO,userData.MAINDEPTNAME,'QLSX', handleConfirmDeletePlan);
+            checkBP(userData.EMPL_NO,userData.MAINDEPTNAME,['QLSX'], handleConfirmDeletePlan);
             //handleConfirmDeletePlan();
           }}
         >
@@ -2859,7 +2866,7 @@ const MACHINE = () => {
         <IconButton
           className='buttonIcon'
           onClick={() => {
-            checkBP(userData.EMPL_NO,userData.MAINDEPTNAME,'QLSX', handleSaveQLSX);
+            checkBP(userData.EMPL_NO,userData.MAINDEPTNAME,['QLSX'], handleSaveQLSX);
             //handleSaveQLSX();
           }}
         >
@@ -2894,7 +2901,7 @@ const MACHINE = () => {
                 "Đang lưu chỉ thị, hãy chờ một chút",
                 "info"
               );
-              checkBP(userData.EMPL_NO,userData.MAINDEPTNAME,'QLSX', hanlde_SaveChiThi);
+              checkBP(userData.EMPL_NO,userData.MAINDEPTNAME,['QLSX'], hanlde_SaveChiThi);
               //hanlde_SaveChiThi();
             } else {
               Swal.fire("Thông báo", "Không có liệu để chỉ thị", "error");
@@ -2907,7 +2914,7 @@ const MACHINE = () => {
         <IconButton
           className='buttonIcon'
           onClick={() => {
-            checkBP(userData.EMPL_NO,userData.MAINDEPTNAME,'QLSX', handleConfirmDeleteLieu);
+            checkBP(userData.EMPL_NO,userData.MAINDEPTNAME,['QLSX'], handleConfirmDeleteLieu);
             //handleConfirmDeleteLieu();
           }}
         >
@@ -2917,7 +2924,7 @@ const MACHINE = () => {
         <IconButton
           className='buttonIcon'
           onClick={() => {
-            checkBP(userData.EMPL_NO,userData.MAINDEPTNAME,'QLSX', handleConfirmRESETLIEU);
+            checkBP(userData.EMPL_NO,userData.MAINDEPTNAME,['QLSX'], handleConfirmRESETLIEU);
             //handleConfirmRESETLIEU();
           }}
         >
@@ -2928,7 +2935,7 @@ const MACHINE = () => {
           className='buttonIcon'
           onClick={() => {
             if (qlsxplandatafilter.length > 0) {
-              checkBP(userData.EMPL_NO,userData.MAINDEPTNAME,'QLSX', ()=>{
+              checkBP(userData.EMPL_NO,userData.MAINDEPTNAME,['QLSX'], ()=>{
                 setShowKhoAo(!showkhoao);
                 handle_loadKhoAo();
                 handle_loadlichsuxuatkhoao();
@@ -2948,7 +2955,7 @@ const MACHINE = () => {
         <IconButton
           className='buttonIcon'
           onClick={() => {
-            checkBP(userData.EMPL_NO,userData.MAINDEPTNAME,'QLSX', handleConfirmDKXL);            
+            checkBP(userData.EMPL_NO,userData.MAINDEPTNAME,['QLSX'], handleConfirmDKXL);            
           }}
         >
           <AiOutlineBarcode color='green' size={20} />
@@ -2971,7 +2978,7 @@ const MACHINE = () => {
         <IconButton
           className='buttonIcon'
           onClick={() => {
-            checkBP(userData.EMPL_NO,userData.MAINDEPTNAME,'QLSX', handle_xuatdao_sample);   
+            checkBP(userData.EMPL_NO,userData.MAINDEPTNAME,['QLSX'], handle_xuatdao_sample);   
             //handle_xuatdao_sample();
           }}
         >
@@ -2981,7 +2988,7 @@ const MACHINE = () => {
         <IconButton
           className='buttonIcon'
           onClick={() => {
-            checkBP(userData.EMPL_NO,userData.MAINDEPTNAME,'QLSX', handle_xuatlieu_sample);   
+            checkBP(userData.EMPL_NO,userData.MAINDEPTNAME,['QLSX'], handle_xuatlieu_sample);
             //handle_xuatlieu_sample();
           }}
         >
@@ -3107,6 +3114,7 @@ const MACHINE = () => {
             .then((response) => {
               console.log(response.data.tk_status);
               if (response.data.tk_status !== "NG") {
+                updateXUATLIEUCHINHPLAN(qlsxplandatafilter[0].PLAN_ID);
               } else {
               }
             })
@@ -3115,6 +3123,7 @@ const MACHINE = () => {
             });
           Swal.fire("Thông báo", "Đã xuất liệu ảo thành công", "info");
         } else {
+          updateXUATLIEUCHINHPLAN(qlsxplandatafilter[0].PLAN_ID);
           Swal.fire("Thông báo", "Đã xuất liệu chính rồi", "info");
         }
       } else {
@@ -3185,6 +3194,7 @@ const MACHINE = () => {
             .then((response) => {
               //console.log(response.data.data);
               if (response.data.tk_status !== "NG") {
+                updateXUAT_DAO_FILM_PLAN(qlsxplandatafilter[0].PLAN_ID);
                 //console.log(response.data.data);
               } else {
               }
@@ -3454,8 +3464,33 @@ const MACHINE = () => {
   };
   const zeroPad = (num: number, places: number) =>
     String(num).padStart(places, "0");
+
   const updateDKXLPLAN = (PLAN_ID: string) => {
     generalQuery("updateDKXLPLAN", { PLAN_ID: PLAN_ID })
+      .then((response) => {
+        console.log(response.data);
+        if (response.data.tk_status !== "NG") {
+        } else {
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+  const updateXUATLIEUCHINHPLAN = (PLAN_ID: string) => {
+    generalQuery("updateXUATLIEUCHINH_PLAN", { PLAN_ID: PLAN_ID })
+      .then((response) => {
+        console.log(response.data);
+        if (response.data.tk_status !== "NG") {
+        } else {
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+  const updateXUAT_DAO_FILM_PLAN = (PLAN_ID: string) => {
+    generalQuery("update_XUAT_DAO_FILM_PLAN", { PLAN_ID: PLAN_ID })
       .then((response) => {
         console.log(response.data);
         if (response.data.tk_status !== "NG") {
@@ -4725,8 +4760,9 @@ const MACHINE = () => {
                           ? { ...p, [keyvar]: params.value }
                           : p
                       );
+                      //console.log(newdata);
                       setChiThiDataTable(newdata);
-                      //console.log(chithidatatable);
+                      
                     }}
                   />
                 </div>

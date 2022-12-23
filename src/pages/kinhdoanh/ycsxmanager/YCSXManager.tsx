@@ -2073,6 +2073,7 @@ const readUploadFileAmazon = (e:any) => {
                       <option value='RB'>RB</option>
                       <option value='HQ'>HQ</option>
                       <option value='AM'>AM</option>
+                      <option value='DL'>DL</option>
                     </select>
                   </label>
                 </div>

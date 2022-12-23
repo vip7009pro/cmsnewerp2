@@ -230,7 +230,7 @@ const FCSTManager = () => {
         <GridToolbarDensitySelector /> 
         <IconButton className='buttonIcon'onClick={()=>{SaveExcel(fcstdatatable,"Fcst Table")}}><AiFillFileExcel color='green' size={25}/>SAVE</IconButton> 
         <IconButton className='buttonIcon'onClick={()=>{
-          checkBP(userData.EMPL_NO,userData.MAINDEPTNAME,'KD', handleConfirmDeleteFcst);
+          checkBP(userData.EMPL_NO,userData.MAINDEPTNAME,['KD'], handleConfirmDeleteFcst);
           //handleConfirmDeleteFcst();
           }}><MdOutlineDelete color='red' size={25}/>XÓA FCST</IconButton>        
         <GridToolbarQuickFilter/>
@@ -664,7 +664,8 @@ const FCSTManager = () => {
           'Đang Xóa FCST hàng loạt',
           'success'
         );
-        deleteFcst();
+        checkBP(userData.EMPL_NO,userData.MAINDEPTNAME,['KD'], deleteFcst);
+        //deleteFcst();
       }
     })
   }
@@ -680,7 +681,7 @@ const FCSTManager = () => {
           </span>
         </div>  
         <div className='mininavitem'  onClick={() =>
-            checkBP(userData.EMPL_NO, userData.MAINDEPTNAME, "KD", () => {
+            checkBP(userData.EMPL_NO, userData.MAINDEPTNAME, ['KD'], () => {
               setNav(2);
             })
           } style={{backgroundColor:selection.thempohangloat === true ? '#9933ff':'#d9b3ff', color: selection.thempohangloat === true ? 'yellow':'yellow'}}>

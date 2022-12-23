@@ -91,8 +91,8 @@ export function CustomResponsiveContainer(props:any) {
 
  }
 
- export async function checkBP(input_EMPL_NO: string,input_maindept:string,permitted_main_dept: string, func:any) {
-  if(input_maindept === permitted_main_dept || input_EMPL_NO==='NHU1903')
+ export async function checkBP(input_EMPL_NO: string,input_maindept: string,permitted_main_dept: Array<string>, func:any) {
+  if(permitted_main_dept.indexOf(input_maindept)>-1 || input_EMPL_NO==='NHU1903')
   {
     await func();
   }

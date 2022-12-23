@@ -40,7 +40,7 @@ import React, {
   import { MdOutlineDelete, MdOutlinePendingActions } from "react-icons/md";
   import { FaArrowRight, FaWarehouse } from "react-icons/fa";
   import { FcApprove, FcCancel, FcDeleteRow, FcSearch } from "react-icons/fc";
-  import { SaveExcel } from "../../../../api/GlobalFunction";
+  import { checkBP, SaveExcel } from "../../../../api/GlobalFunction";
   import YCSXComponent from "../../../kinhdoanh/ycsxmanager/YCSXComponent/YCSXComponent";
   import DrawComponent from "../../../kinhdoanh/ycsxmanager/DrawComponent/DrawComponent";
   import { useReactToPrint } from "react-to-print";
@@ -1423,7 +1423,8 @@ import React, {
           <IconButton
             className='buttonIcon'
             onClick={() => {
-              handleConfirmSavePlan();
+              checkBP(userData.EMPL_NO,userData.MAINDEPTNAME,['QLSX'], handleConfirmSavePlan);
+              //handleConfirmSavePlan();
             }}
           >
             <AiFillSave color='blue' size={20} />

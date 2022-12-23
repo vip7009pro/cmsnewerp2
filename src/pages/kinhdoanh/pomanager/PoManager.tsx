@@ -204,7 +204,7 @@ const PoManager = () => {
         <IconButton
           className='buttonIcon'
           onClick={() => {
-            checkBP(userData.EMPL_NO,userData.MAINDEPTNAME,'KD', showNewPO);
+            checkBP(userData.EMPL_NO,userData.MAINDEPTNAME,['KD'], showNewPO);
             clearPOform();
           }}
         >
@@ -214,7 +214,7 @@ const PoManager = () => {
         <IconButton
           className='buttonIcon'
           onClick={() => {
-            checkBP(userData.EMPL_NO,userData.MAINDEPTNAME,'KD', handle_fillsuaformInvoice);
+            checkBP(userData.EMPL_NO,userData.MAINDEPTNAME,['KD'], handle_fillsuaformInvoice);
             //handle_fillsuaformInvoice();
           }}
         >
@@ -224,7 +224,7 @@ const PoManager = () => {
         <IconButton
           className='buttonIcon'
           onClick={() => {
-            checkBP(userData.EMPL_NO,userData.MAINDEPTNAME,'KD', handle_fillsuaform);
+            checkBP(userData.EMPL_NO,userData.MAINDEPTNAME,['KD'], handle_fillsuaform);
             //handle_fillsuaform();
           }}
         >
@@ -234,7 +234,7 @@ const PoManager = () => {
         <IconButton
           className='buttonIcon'
           onClick={() => {
-            checkBP(userData.EMPL_NO,userData.MAINDEPTNAME,'KD', handleConfirmDeletePO);
+            checkBP(userData.EMPL_NO,userData.MAINDEPTNAME,['KD'], handleConfirmDeletePO);
             //handleConfirmDeletePO();
           }}
         >
@@ -1012,7 +1012,7 @@ const PoManager = () => {
           Tra PO
           </span>
         </div>  
-        <div className='mininavitem'  onClick={() =>  checkBP(userData.EMPL_NO,userData.MAINDEPTNAME,'KD', ()=> {setNav(2)})} style={{backgroundColor:selection.thempohangloat === true ? '#9933ff':'#d9b3ff', color: selection.thempohangloat === true ? 'yellow':'yellow'}}>
+        <div className='mininavitem'  onClick={() =>  checkBP(userData.EMPL_NO,userData.MAINDEPTNAME,['KD'], ()=> {setNav(2)})} style={{backgroundColor:selection.thempohangloat === true ? '#9933ff':'#d9b3ff', color: selection.thempohangloat === true ? 'yellow':'yellow'}}>
           <span className='mininavtext'>
           Thêm PO
           </span>
