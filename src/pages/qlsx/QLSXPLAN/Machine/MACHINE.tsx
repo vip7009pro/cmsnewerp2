@@ -3331,7 +3331,7 @@ const MACHINE = () => {
         <IconButton
           className='buttonIcon'
           onClick={() => {
-            SaveExcel(ycsxdatatable, "YCSX Table");
+            SaveExcel(tonlieuxuongdatatable, "Ton kho ao Table");
           }}
         >
           <AiFillFileExcel color='green' size={25} />
@@ -3362,7 +3362,7 @@ const MACHINE = () => {
         <IconButton
           className='buttonIcon'
           onClick={() => {
-            SaveExcel(ycsxdatatable, "YCSX Table");
+            SaveExcel(lichsuinputlieutable, "Lich Su Input Lieu Table");
           }}
         >
           <AiFillFileExcel color='green' size={25} />
@@ -3403,7 +3403,7 @@ const MACHINE = () => {
         <IconButton
           className='buttonIcon'
           onClick={() => {
-            SaveExcel(ycsxdatatable, "YCSX Table");
+            SaveExcel(lichsunhapkhoaotable, "Lich Su Nhap Kho Ao Table");
           }}
         >
           <AiFillFileExcel color='green' size={25} />
@@ -3425,7 +3425,7 @@ const MACHINE = () => {
         <IconButton
           className='buttonIcon'
           onClick={() => {
-            SaveExcel(ycsxdatatable, "YCSX Table");
+            SaveExcel(lichsuxuatkhoaotable, "Xuat kho ao Table");
           }}
         >
           <AiFillFileExcel color='green' size={25} />

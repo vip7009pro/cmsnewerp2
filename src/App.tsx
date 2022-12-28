@@ -49,7 +49,7 @@ import {
   UserData,
   update_socket,
 } from "./redux/slices/globalSlice";
-import { useSpring, animated } from '@react-spring/web'
+import { useSpring, animated } from "@react-spring/web";
 import DATASX from "./pages/qlsx/QLSXPLAN/DATASX/DATASX";
 import PLAN_STATUS from "./pages/qlsx/QLSXPLAN/PLAN_STATUS/PLAN_STATUS";
 import EQ_STATUS from "./pages/qlsx/QLSXPLAN/EQ_STATUS/EQ_STATUS";
@@ -185,8 +185,8 @@ const ProtectedRoute: any = ({
 function App() {
   const springs = useSpring({
     from: { x: 1000, y: 100 },
-    to: { x: 0, y :0 },
-  })
+    to: { x: 0, y: 0 },
+  });
   const [lang, setLang] = useState("vi");
   const [userData, setUserData] = useState<userDataInterface | any>({
     ADD_COMMUNE: "Đông Xuân",
@@ -245,8 +245,8 @@ function App() {
 
   const dispatch = useDispatch();
   //console.log(userData.JOB_NAME);
-  useEffect(() => {    
-    console.log("check login");   
+  useEffect(() => {
+    console.log("check login");
 
     checkLogin()
       .then((data) => {
@@ -457,10 +457,7 @@ function App() {
                       path='quotationmanager'
                       element={<QuotationManager />}
                     />
-                    <Route
-                      path='eqstatus'
-                      element={<EQ_STATUS />}
-                    />                    
+                    <Route path='eqstatus' element={<EQ_STATUS />} />
                   </Route>
                   <Route
                     path='rnd'
@@ -680,7 +677,7 @@ function App() {
                           <CODE_MANAGER />
                         </ProtectedRoute>
                       }
-                    />               
+                    />
                     <Route
                       path='ycsxmanager'
                       element={
@@ -753,7 +750,6 @@ function App() {
                         </ProtectedRoute>
                       }
                     />
-                    
                   </Route>
                   <Route
                     path='nhansu'
