@@ -1,27 +1,34 @@
-.machine_component2 {
+.mc2 {
     display: flex;
     flex-direction: column;
-    width: 100px;
-    height: 60px;
-    background-image: linear-gradient(0deg,  #cbeea3,#ffffff);
-    border-radius: 10px;
-    box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
-    -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
-    .tieude {
+    justify-items: center;
+    background-color: white;
+    .machine_component2 {
         display: flex;
         flex-direction: column;
-        flex: 1;        
-        background-color: bisque;
-        width: 100%;
-        align-self: center;
-        justify-content: center;        
-        font-weight: bold;
-        font-size: 15px;
-        align-items: center;        
+        width: 100px;
+        height: 60px;
+        background-image: linear-gradient(0deg,  #cbeea3,#ffffff);
+        border-radius: 10px;
+        box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
+        -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
+        .tieude {
+            display: flex;
+            flex-direction: column;
+            flex: 1;        
+            background-color: bisque;
+            width: 100%;
+            align-self: center;
+            justify-content: center;        
+            font-weight: bold;
+            font-size: 15px;
+            align-items: center;        
+        }
+        .machineplan {
+            font-size: 10px;
+            overflow-x: inherit;
+            flex: 0;
+        }
     }
-    .machineplan {
-        font-size: 10px;
-        overflow-x: inherit;
-        flex: 0;
-    }
+
 }

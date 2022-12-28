@@ -6,8 +6,8 @@ const axios = require('axios').default;
 const cookies = new Cookies();
 axios.defaults.withCredentials = true;
 
-//const API_URL = "http://14.160.33.94:5011/api";
-const API_URL = "http://14.160.33.94:3007/api";
+const API_URL = "http://14.160.33.94:5011/api";
+//const API_URL = "http://14.160.33.94:3007/api";
 //const API_URL = "http://localhost:3007/api";
 
 export function login(user: string, pass: string) {
@@ -21,7 +21,7 @@ export function login(user: string, pass: string) {
       console.log(response.data);
       var Jresult = response.data;
       console.log("Status = " + Jresult.tk_status);
-      console.log("Tokent content = " + Jresult.token_content);
+      console.log("Token content = " + Jresult.token_content);
       if (Jresult.tk_status === "ok") {
         console.log(Jresult.token_content);
         Swal.fire("Thông báo", "Chúc mừng bạn, đăng nhập thành công !", "success");

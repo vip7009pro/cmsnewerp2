@@ -154,7 +154,7 @@ const CHITHI_COMPONENT = ({
   G_NAME,
   G_NAME_KD,
   STEP,
-  PLAN_ORDER, 
+  PLAN_ORDER,
 }: YCSXTableData) => {
   const userData: UserData | undefined = useSelector(
     (state: RootState) => state.totalSlice.userData

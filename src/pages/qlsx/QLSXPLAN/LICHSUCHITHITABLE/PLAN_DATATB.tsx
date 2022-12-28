@@ -214,7 +214,7 @@ const PLAN_DATATB = () => {
                 PLAN_ID: qlsxplandatafilter[i].PLAN_ID,                
             })
             .then((response) => {
-              console.log(response.data);
+              //console.log(response.data);
               if (response.data.tk_status !== "NG") {
                 checkplansetting = true;               
              
@@ -413,7 +413,7 @@ const PLAN_DATATB = () => {
             ) => {
               const keyvar = params.field;
               const newdata = plandatatable.map((p) =>
-                p.PLAN_ID === params.id ? { ...p, [keyvar]: params.value } : p
+                p.id === params.id ? { ...p, [keyvar]: params.value } : p
               );
               setPlanDataTable(newdata);
               //console.log(plandatatable);

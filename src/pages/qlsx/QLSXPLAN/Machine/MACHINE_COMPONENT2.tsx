@@ -42,12 +42,15 @@ const MACHINE_COMPONENT2 = (machine_data: MachineInterface) => {
   const stoptopcolor: string = "white";
   const stopbotcolor: string = "black";
  
-  
-  var date1 = moment.utc();
-  var date2 = moment.utc(machine_data.upd_time);
+  //console.log(`${machine_data.machine_name}`,moment.utc(machine_data.upd_time).format('YYYY-MM-DD HH:mm:ss'));
+  var date1 = moment();
+  var date2 = moment.utc(machine_data.upd_time).format('YYYY-MM-DD HH:mm:ss');
   var diff: number = date1.diff(date2,'minutes');  
 
+
   return (
+    <div className="mc2">
+   {/*  {(machine_data.eq_status === 'STOP' && machine_data.upd_empl !== '') && <div className="downtime" style={{fontSize:11}}>  Stop: {diff} min</div>} */}
     <div
       className='machine_component2'
       style={{
@@ -59,7 +62,7 @@ const MACHINE_COMPONENT2 = (machine_data: MachineInterface) => {
       }}
       onDoubleClick={machine_data.onClick}
     >
-      {/* {(machine_data.eq_status === 'STOP' && machine_data.upd_empl !== '') && <div className="downtime" style={{fontSize:11}}>{diff}</div>} */}
+     
       <div className='tieude' style={{backgroundColor:`${machine_data.eq_status ==='STOP'? 'red':machine_data.eq_status ==='SETTING'? 'yellow' : `#3ff258` }`}}>
         <div className="eqname"  style={{color:`${machine_data.eq_status ==='STOP'? 'white':machine_data.eq_status ==='SETTING'? 'black' : `black` }`}}>
           {machine_data.machine_name}
@@ -70,6 +73,7 @@ const MACHINE_COMPONENT2 = (machine_data: MachineInterface) => {
       <div className='machineplan'>
         {machine_data.current_g_name}
       </div>
+    </div>
     </div>
   );
 };

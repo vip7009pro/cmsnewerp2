@@ -48,7 +48,11 @@ import {
 import { MdOutlineDelete, MdOutlinePendingActions } from "react-icons/md";
 import { FaArrowRight, FaWarehouse } from "react-icons/fa";
 import { FcApprove, FcCancel, FcDeleteRow, FcSearch } from "react-icons/fc";
-import { checkBP, SaveExcel } from "../../../../api/GlobalFunction";
+import {
+  checkBP,
+  PLAN_ID_ARRAY,
+  SaveExcel,
+} from "../../../../api/GlobalFunction";
 import YCSXComponent from "../../../kinhdoanh/ycsxmanager/YCSXComponent/YCSXComponent";
 import DrawComponent from "../../../kinhdoanh/ycsxmanager/DrawComponent/DrawComponent";
 import { useReactToPrint } from "react-to-print";
@@ -770,16 +774,13 @@ const MACHINE = () => {
       width: 90,
       editable: false,
       resizeable: true,
-      renderCell: (params: any)=> {
-        if(params.row.DKXL ===null)
-        {
-          return <span style={{color: 'red'}}>{params.row.PLAN_ID}</span>
+      renderCell: (params: any) => {
+        if (params.row.DKXL === null) {
+          return <span style={{ color: "red" }}>{params.row.PLAN_ID}</span>;
+        } else {
+          return <span style={{ color: "green" }}>{params.row.PLAN_ID}</span>;
         }
-        else
-        {
-          return <span style={{color: 'green'}}>{params.row.PLAN_ID}</span>
-        }
-      }
+      },
     },
     { field: "G_CODE", headerName: "G_CODE", width: 100, editable: false },
     {
@@ -2129,7 +2130,7 @@ const MACHINE = () => {
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
-      confirmButtonText: "Vẫn Xóa!",
+      confirmButtonText: "Vẫn Xóa!",      
     }).then((result) => {
       if (result.isConfirmed) {
         Swal.fire(
@@ -2204,11 +2205,21 @@ const MACHINE = () => {
       confirmButtonText: "Vẫn ĐK liệu!",
     }).then((result) => {
       if (result.isConfirmed) {
-        Swal.fire(
+        Swal.fire({
+          title: "Đăng ký xuất liệu kho thật",
+          text: "Đang đăng ký xuất liệu, hay chờ cho tới khi hoàn thành",
+          icon: "info",
+          showCancelButton: false,
+          allowOutsideClick: false,      
+          confirmButtonText:'OK',
+          showConfirmButton: false,
+        });
+
+       /*  Swal.fire(
           "Tiến hành ĐK liệu",
           "Đang ĐK liệu, hãy chờ cho tới khi hoàn thành",
           "info"
-        );
+        ); */
         if (qlsxplandatafilter.length > 0) {
           hanlde_SaveChiThi();
           handleGetChiThiTable(
@@ -2329,12 +2340,35 @@ const MACHINE = () => {
       .then((response) => {
         //console.log(response.data.tk_status);
         if (response.data.tk_status !== "NG") {
-          //console.log(response.data.data[0].PLAN_ID);
-          next_plan_id =
+          let old_plan_id: string = response.data.data[0].PLAN_ID;
+          if (old_plan_id.substring(7, 8) === "Z") {
+            if (old_plan_id.substring(3, 4) === "0") {
+              next_plan_id =
+                old_plan_id.substring(0, 3) +
+                "A" +
+                old_plan_id.substring(4, 7) +
+                "A";
+            } else {
+              next_plan_id =
+                old_plan_id.substring(0, 3) +
+                PLAN_ID_ARRAY[
+                  PLAN_ID_ARRAY.indexOf(old_plan_id.substring(3, 4)) + 1
+                ] +
+                old_plan_id.substring(4, 7) +
+                "A";
+            }
+          } else {
+            next_plan_id =
+              old_plan_id.substring(0, 7) +
+              PLAN_ID_ARRAY[
+                PLAN_ID_ARRAY.indexOf(old_plan_id.substring(7, 8)) + 1
+              ];
+          }
+          /*  next_plan_id =
             PROD_REQUEST_NO +
             String.fromCharCode(
               response.data.data[0].PLAN_ID.substring(7, 8).charCodeAt(0) + 1
-            );
+            ); */
         } else {
           next_plan_id = PROD_REQUEST_NO + "A";
         }
@@ -2428,6 +2462,16 @@ const MACHINE = () => {
     }
   };
   const handle_UpdatePlan = () => {
+    Swal.fire({
+      title: "Lưu Plan",
+      text: "Đang lưu plan, hãy chờ một chút",
+      icon: "info",
+      showCancelButton: false,
+      allowOutsideClick: false,      
+      confirmButtonText:'OK',
+      showConfirmButton: false,
+    });
+
     let selectedPlanTable: QLSXPLANDATA[] = plandatatable.filter(
       (element: QLSXPLANDATA, index: number) => {
         return (
@@ -2448,15 +2492,17 @@ const MACHINE = () => {
           check_NEXT_PLAN_ID = false;
         }
       }
-      
       if (
-        (parseInt(selectedPlanTable[i].PROCESS_NUMBER.toString()) ===1 ||  parseInt(selectedPlanTable[i].PROCESS_NUMBER.toString()) ===2) &&
+        (parseInt(selectedPlanTable[i].PROCESS_NUMBER.toString()) === 1 ||
+          parseInt(selectedPlanTable[i].PROCESS_NUMBER.toString()) === 2) &&
         selectedPlanTable[i].PLAN_QTY !== 0 &&
         selectedPlanTable[i].PLAN_QTY <=
           selectedPlanTable[i].PROD_REQUEST_QTY &&
         selectedPlanTable[i].PLAN_ID !== selectedPlanTable[i].NEXT_PLAN_ID &&
         selectedPlanTable[i].CHOTBC !== "V" &&
-        check_NEXT_PLAN_ID && (parseInt(selectedPlanTable[i].STEP.toString())>=0 &&  parseInt(selectedPlanTable[i].STEP.toString())<=9)
+        check_NEXT_PLAN_ID &&
+        parseInt(selectedPlanTable[i].STEP.toString()) >= 0 &&
+        parseInt(selectedPlanTable[i].STEP.toString()) <= 9
       ) {
         generalQuery("updatePlanQLSX", {
           PLAN_ID: selectedPlanTable[i].PLAN_ID,
@@ -2487,8 +2533,13 @@ const MACHINE = () => {
             console.log(error);
           });
       } else {
-        err_code += "_" + selectedPlanTable[i].G_NAME_KD + ":";        
-        if ( !(parseInt(selectedPlanTable[i].PROCESS_NUMBER.toString()) ===1 ||  parseInt(selectedPlanTable[i].PROCESS_NUMBER.toString()) ===2)) {
+        err_code += "_" + selectedPlanTable[i].G_NAME_KD + ":";
+        if (
+          !(
+            parseInt(selectedPlanTable[i].PROCESS_NUMBER.toString()) === 1 ||
+            parseInt(selectedPlanTable[i].PROCESS_NUMBER.toString()) === 2
+          )
+        ) {
           err_code += "_: Process number chưa đúng";
         }
         if (selectedPlanTable[i].PLAN_QTY === 0) {
@@ -2512,9 +2563,13 @@ const MACHINE = () => {
           err_code +=
             "_: Chỉ thị đã chốt báo cáo, sẽ ko sửa được, thông tin các chỉ thị khác trong máy được lưu thành công";
         }
-        if (!(parseInt(selectedPlanTable[i].STEP.toString())>=0 &&  parseInt(selectedPlanTable[i].STEP.toString())<=9)) {
-          err_code +=
-            "_: Hãy nhập STEP từ 0 -> 9";
+        if (
+          !(
+            parseInt(selectedPlanTable[i].STEP.toString()) >= 0 &&
+            parseInt(selectedPlanTable[i].STEP.toString()) <= 9
+          )
+        ) {
+          err_code += "_: Hãy nhập STEP từ 0 -> 9";
         }
       }
     }
@@ -2530,11 +2585,11 @@ const MACHINE = () => {
     let total_lieuql_sx: number = 0;
     let check_lieuql_sx_sot: number = 0;
     let check_num_lieuql_sx: number = 1;
-    let check_lieu_qlsx_khac1: number =0;
+    let check_lieu_qlsx_khac1: number = 0;
     //console.log(chithidatatable);
     for (let i = 0; i < chithidatatable.length; i++) {
       total_lieuql_sx += chithidatatable[i].LIEUQL_SX;
-      if(chithidatatable[i].LIEUQL_SX >1) check_lieu_qlsx_khac1 +=1;
+      if (chithidatatable[i].LIEUQL_SX > 1) check_lieu_qlsx_khac1 += 1;
     }
     for (let i = 0; i < chithidatatable.length; i++) {
       //console.log(chithidatatable[i].LIEUQL_SX);
@@ -2549,7 +2604,6 @@ const MACHINE = () => {
         }
       }
     }
-
     //console.log('bang chi thi', chithidatatable);
     for (let i = 0; i < chithidatatable.length; i++) {
       if (parseInt(chithidatatable[i].LIEUQL_SX.toString()) === 1) {
@@ -2564,13 +2618,13 @@ const MACHINE = () => {
         }
       }
     }
-
     //console.log('num lieu qlsx: ' + check_num_lieuql_sx);
     //console.log('tong lieu qly: '+ total_lieuql_sx);
     if (
       total_lieuql_sx > 0 &&
       check_lieuql_sx_sot === 0 &&
-      check_num_lieuql_sx === 1 && check_lieu_qlsx_khac1 ===0
+      check_num_lieuql_sx === 1 &&
+      check_lieu_qlsx_khac1 === 0
     ) {
       await generalQuery("deleteMCODEExistIN_O302", {
         PLAN_ID: qlsxplandatafilter[0].PLAN_ID,
@@ -2588,7 +2642,7 @@ const MACHINE = () => {
         generalQuery("updateLIEUQL_SX_M140", {
           G_CODE: qlsxplandatafilter[0].G_CODE,
           M_CODE: chithidatatable[i].M_CODE,
-          LIEUQL_SX: chithidatatable[i].LIEUQL_SX>=1 ? 1: 0,
+          LIEUQL_SX: chithidatatable[i].LIEUQL_SX >= 1 ? 1 : 0,
         })
           .then((response) => {
             //console.log(response.data);
@@ -2623,7 +2677,7 @@ const MACHINE = () => {
               M_ROLL_QTY: chithidatatable[i].M_ROLL_QTY,
               M_MET_QTY: chithidatatable[i].M_MET_QTY,
               M_QTY: chithidatatable[i].M_QTY,
-              LIEUQL_SX: chithidatatable[i].LIEUQL_SX>=1?1:0,
+              LIEUQL_SX: chithidatatable[i].LIEUQL_SX >= 1 ? 1 : 0,
             })
               .then((response) => {
                 //console.log(response.data);
@@ -2664,8 +2718,6 @@ const MACHINE = () => {
       } else {
         Swal.fire("Thông báo", "Lưu Chỉ thị thành công", "success");
         loadQLSXPlan(selectedPlanDate);
-        
-
       }
     } else {
       Swal.fire(
@@ -2837,7 +2889,12 @@ const MACHINE = () => {
         <IconButton
           className='buttonIcon'
           onClick={() => {
-            checkBP(userData.EMPL_NO,userData.MAINDEPTNAME,['QLSX'], handle_UpdatePlan);
+            checkBP(
+              userData.EMPL_NO,
+              userData.MAINDEPTNAME,
+              ["QLSX"],
+              handle_UpdatePlan
+            );
             //handle_UpdatePlan();
           }}
         >
@@ -2847,7 +2904,12 @@ const MACHINE = () => {
         <IconButton
           className='buttonIcon'
           onClick={() => {
-            checkBP(userData.EMPL_NO,userData.MAINDEPTNAME,['QLSX'], handleConfirmDeletePlan);
+            checkBP(
+              userData.EMPL_NO,
+              userData.MAINDEPTNAME,
+              ["QLSX"],
+              handleConfirmDeletePlan
+            );
             //handleConfirmDeletePlan();
           }}
         >
@@ -2856,7 +2918,7 @@ const MACHINE = () => {
         </IconButton>
         <IconButton
           className='buttonIcon'
-          onClick={() => {            
+          onClick={() => {
             loadQLSXPlan(selectedPlanDate);
           }}
         >
@@ -2866,7 +2928,12 @@ const MACHINE = () => {
         <IconButton
           className='buttonIcon'
           onClick={() => {
-            checkBP(userData.EMPL_NO,userData.MAINDEPTNAME,['QLSX'], handleSaveQLSX);
+            checkBP(
+              userData.EMPL_NO,
+              userData.MAINDEPTNAME,
+              ["QLSX"],
+              handleSaveQLSX
+            );
             //handleSaveQLSX();
           }}
         >
@@ -2895,13 +2962,32 @@ const MACHINE = () => {
         <IconButton
           className='buttonIcon'
           onClick={() => {
-            if (chithidatatable.length > 0) {
-              Swal.fire(
+            if (chithidatatable.length > 0) {              
+              Swal.fire({
+                title: "Lưu chỉ thị",
+                text: "Đang lưu chỉ thị, hãy chờ một",
+                icon: "info",
+                showCancelButton: false,
+                allowOutsideClick: false,      
+                confirmButtonText:'OK',
+                showConfirmButton: false,
+              });
+
+             /*  confirmButtonColor: "#3085d6",
+              cancelButtonColor: "#d33",
+              confirmButtonText: "Vẫn Xóa!", */
+
+             /*  Swal.fire(
                 "Thông báo",
                 "Đang lưu chỉ thị, hãy chờ một chút",
                 "info"
+              ); */
+              checkBP(
+                userData.EMPL_NO,
+                userData.MAINDEPTNAME,
+                ["QLSX"],
+                hanlde_SaveChiThi
               );
-              checkBP(userData.EMPL_NO,userData.MAINDEPTNAME,['QLSX'], hanlde_SaveChiThi);
               //hanlde_SaveChiThi();
             } else {
               Swal.fire("Thông báo", "Không có liệu để chỉ thị", "error");
@@ -2914,7 +3000,12 @@ const MACHINE = () => {
         <IconButton
           className='buttonIcon'
           onClick={() => {
-            checkBP(userData.EMPL_NO,userData.MAINDEPTNAME,['QLSX'], handleConfirmDeleteLieu);
+            checkBP(
+              userData.EMPL_NO,
+              userData.MAINDEPTNAME,
+              ["QLSX"],
+              handleConfirmDeleteLieu
+            );
             //handleConfirmDeleteLieu();
           }}
         >
@@ -2924,7 +3015,12 @@ const MACHINE = () => {
         <IconButton
           className='buttonIcon'
           onClick={() => {
-            checkBP(userData.EMPL_NO,userData.MAINDEPTNAME,['QLSX'], handleConfirmRESETLIEU);
+            checkBP(
+              userData.EMPL_NO,
+              userData.MAINDEPTNAME,
+              ["QLSX"],
+              handleConfirmRESETLIEU
+            );
             //handleConfirmRESETLIEU();
           }}
         >
@@ -2935,15 +3031,13 @@ const MACHINE = () => {
           className='buttonIcon'
           onClick={() => {
             if (qlsxplandatafilter.length > 0) {
-              checkBP(userData.EMPL_NO,userData.MAINDEPTNAME,['QLSX'], ()=>{
+              checkBP(userData.EMPL_NO, userData.MAINDEPTNAME, ["QLSX"], () => {
                 setShowKhoAo(!showkhoao);
                 handle_loadKhoAo();
                 handle_loadlichsuxuatkhoao();
                 handle_loadlichsunhapkhoao();
                 handle_loadlichsuinputlieu(qlsxplandatafilter[0].PLAN_ID);
-
               });
-              
             } else {
               Swal.fire("Thông báo", "Hãy chọn một chỉ thị", "error");
             }
@@ -2955,7 +3049,12 @@ const MACHINE = () => {
         <IconButton
           className='buttonIcon'
           onClick={() => {
-            checkBP(userData.EMPL_NO,userData.MAINDEPTNAME,['QLSX'], handleConfirmDKXL);            
+            checkBP(
+              userData.EMPL_NO,
+              userData.MAINDEPTNAME,
+              ["QLSX"],
+              handleConfirmDKXL
+            );
           }}
         >
           <AiOutlineBarcode color='green' size={20} />
@@ -2963,7 +3062,7 @@ const MACHINE = () => {
         </IconButton>
         <IconButton
           className='buttonIcon'
-          onClick={() => {            
+          onClick={() => {
             handleGetChiThiTable(
               qlsxplandatafilter[0].PLAN_ID,
               qlsxplandatafilter[0].G_CODE,
@@ -2978,7 +3077,12 @@ const MACHINE = () => {
         <IconButton
           className='buttonIcon'
           onClick={() => {
-            checkBP(userData.EMPL_NO,userData.MAINDEPTNAME,['QLSX'], handle_xuatdao_sample);   
+            checkBP(
+              userData.EMPL_NO,
+              userData.MAINDEPTNAME,
+              ["QLSX"],
+              handle_xuatdao_sample
+            );
             //handle_xuatdao_sample();
           }}
         >
@@ -2988,7 +3092,12 @@ const MACHINE = () => {
         <IconButton
           className='buttonIcon'
           onClick={() => {
-            checkBP(userData.EMPL_NO,userData.MAINDEPTNAME,['QLSX'], handle_xuatlieu_sample);
+            checkBP(
+              userData.EMPL_NO,
+              userData.MAINDEPTNAME,
+              ["QLSX"],
+              handle_xuatlieu_sample
+            );
             //handle_xuatlieu_sample();
           }}
         >
@@ -3464,7 +3573,6 @@ const MACHINE = () => {
   };
   const zeroPad = (num: number, places: number) =>
     String(num).padStart(places, "0");
-
   const updateDKXLPLAN = (PLAN_ID: string) => {
     generalQuery("updateDKXLPLAN", { PLAN_ID: PLAN_ID })
       .then((response) => {
@@ -3724,6 +3832,9 @@ const MACHINE = () => {
         <div className='mininavitem' onClick={() => setNav(2)}>
           <span className='mininavtext'>NM2</span>
         </div>
+        <div className='mininavitem' onClick={() => setNav(3)}>
+          <span className='mininavtext'>ALL_IN_ONE</span>
+        </div>
       </div>
       <div className='plandateselect'>
         <label>Plan Date</label>
@@ -3943,6 +4054,7 @@ const MACHINE = () => {
           </div>
         </div>
       )}
+      {selection.tab3 && <div className='allinone'>ALL IN ONE</div>}
       {showplanwindow && (
         <div className='planwindow'>
           <div className='title'>
@@ -4762,7 +4874,6 @@ const MACHINE = () => {
                       );
                       //console.log(newdata);
                       setChiThiDataTable(newdata);
-                      
                     }}
                   />
                 </div>

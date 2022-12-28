@@ -6,7 +6,7 @@ import { useSpring, animated } from "@react-spring/web";
 import { useEffect, useState } from "react";
 import { generalQuery } from "../../api/Api";
 import Swal from "sweetalert2";
-export const current_ver: number = 30;
+export const current_ver: number = 34;
 function Home() {
   const springs = useSpring({
     from: { x: 1000, y: 100 },
@@ -22,6 +22,7 @@ function Home() {
           console.log("webver", response.data.data[0].VERWEB);
           setCheckVerWeb(response.data.data[0].VERWEB);
         } else {
+
         }
       })
       .catch((error) => {

@@ -1165,10 +1165,12 @@ const BOM_MANAGER = () => {
       }
       console.log(newGCODE);
       console.log(nextseqno);
-      await generalQuery("insertM100", {
+      console.log('NEXT REV',NEXT_REV_NO);
+      await generalQuery("insertM100_AddVer", {
         G_CODE: newGCODE,
         CODE_27: CODE_27,
         NEXT_SEQ_NO: nextseqno,
+        REV_NO: NEXT_REV_NO,
         CODE_FULL_INFO: codefullinfo,
       })
         .then((response) => {
@@ -1263,8 +1265,6 @@ const BOM_MANAGER = () => {
     if (bomgiatable.length > 0) {
       if (bomsxtable.length > 0) {
         //delete old bom from M140
-
-
         let err_code: string ='0';
         let checkMAIN_M:number =0;
         for (let i = 0; i < bomsxtable.length; i++)

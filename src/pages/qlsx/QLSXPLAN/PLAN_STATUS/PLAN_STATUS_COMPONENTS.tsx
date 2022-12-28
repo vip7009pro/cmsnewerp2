@@ -31,7 +31,16 @@ const PLAN_STATUS_COMPONENTS = ({id, PLAN_ID, PLAN_QTY, KQ_SX_TAM, KETQUASX, PLA
 let kq_tem: number = (CHOTBC===null? (KQ_SX_TAM===null? 0: KQ_SX_TAM): KETQUASX);
 let phantram_tem : number = PLAN_QTY===0? 0 : kq_tem/(PLAN_QTY) * 100;
 let backgroundColor:string ='white';
-if(phantram_tem >=0 && phantram_tem <20) 
+
+if(kq_tem >0) 
+{
+     backgroundColor ='#c9f261';
+} 
+else
+{
+     backgroundColor ='white';
+}
+/* if(phantram_tem >=0 && phantram_tem <20) 
 {
     backgroundColor ='#ccccff';
 }
@@ -58,7 +67,7 @@ if(phantram_tem >100 && phantram_tem <=110)
 if(phantram_tem >110) 
 {
     backgroundColor ='#ff3333';
-}
+} */
  
   return (
     <div className='plan_status_component'>    

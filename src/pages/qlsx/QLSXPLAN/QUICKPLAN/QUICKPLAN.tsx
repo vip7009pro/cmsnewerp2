@@ -40,7 +40,7 @@ import React, {
   import { MdOutlineDelete, MdOutlinePendingActions } from "react-icons/md";
   import { FaArrowRight, FaWarehouse } from "react-icons/fa";
   import { FcApprove, FcCancel, FcDeleteRow, FcSearch } from "react-icons/fc";
-  import { checkBP, SaveExcel } from "../../../../api/GlobalFunction";
+  import { checkBP, PLAN_ID_ARRAY, SaveExcel } from "../../../../api/GlobalFunction";
   import YCSXComponent from "../../../kinhdoanh/ycsxmanager/YCSXComponent/YCSXComponent";
   import DrawComponent from "../../../kinhdoanh/ycsxmanager/DrawComponent/DrawComponent";
   import { useReactToPrint } from "react-to-print";
@@ -1074,7 +1074,26 @@ import React, {
           //console.log(response.data.tk_status);
           if (response.data.tk_status !== "NG") {
             //console.log(response.data.data[0].PLAN_ID);
-            next_plan_id = PROD_REQUEST_NO +  String.fromCharCode(response.data.data[0].PLAN_ID.substring(7,8).charCodeAt(0) + 1);
+            let old_plan_id: string =  response.data.data[0].PLAN_ID;         
+            if(old_plan_id.substring(7, 8) === 'Z')
+            {
+              if(old_plan_id.substring(3,4) ==='0')
+              {
+                next_plan_id = old_plan_id.substring(0,3) +'A' + old_plan_id.substring(4,7) +'A';
+              }
+              else
+              {
+                next_plan_id = old_plan_id.substring(0,3) + PLAN_ID_ARRAY[PLAN_ID_ARRAY.indexOf(old_plan_id.substring(3, 4))+1] + old_plan_id.substring(4,7) +'A';
+              }     
+            }
+            else
+            {
+              next_plan_id = old_plan_id.substring(0,7)  + PLAN_ID_ARRAY[PLAN_ID_ARRAY.indexOf(old_plan_id.substring(7, 8))+1];
+            }
+          
+            
+
+            /* next_plan_id = PROD_REQUEST_NO +  String.fromCharCode(response.data.data[0].PLAN_ID.substring(7,8).charCodeAt(0) + 1); */
           } else {
             next_plan_id = PROD_REQUEST_NO+'A'; 
           }
@@ -1167,8 +1186,7 @@ import React, {
       let temp_:number = temp_id;
       temp_++;
       setTemID(temp_);
-      localStorage.setItem('temp_plan_table_max_id',temp_.toString());
-             
+      localStorage.setItem('temp_plan_table_max_id',temp_.toString());             
               
             let temp_add_plan: QLSXPLANDATA = {
               id: temp_id+1+'',
@@ -1822,7 +1840,7 @@ import React, {
                     onSelectionModelChange={(ids) => {
                       handleQLSXPlanDataSelectionforUpdate(ids);
                     }}
-                    onCellEditCommit={(
+                    onCellEditCommit={ (
                       params: GridCellEditCommitParams,
                       event: MuiEvent<MuiBaseEvent>,
                       details: GridCallbackDetails
@@ -1834,10 +1852,116 @@ import React, {
                           if(keyvar ==='PROD_REQUEST_NO')
                           {
                             console.log(keyvar);
-                            const temp_ycsx_data: YCSXTableData[] = ycsxdatatable.filter((element:YCSXTableData) => {
+                            let temp_ycsx_data: YCSXTableData[] = ycsxdatatable.filter((element:YCSXTableData) => {
                               return element.PROD_REQUEST_NO === params.value;
                             });
 
+                            /*  generalQuery("traYCSXDataFull_QLSX", {
+                              alltime: true,
+                              start_date: fromdate,
+                              end_date: todate,
+                              cust_name: '',
+                              codeCMS: '',
+                              codeKD: '',
+                              prod_type: '',
+                              empl_name: '',
+                              phanloai: phanloai,
+                              ycsx_pending: false,
+                              inspect_inputcheck: false,
+                              prod_request_no: params.value,
+                              material: '',
+                            })
+                              .then((response) => {
+                                //console.log(response.data.data);
+                                if (response.data.tk_status !== "NG") {
+                                  //console.log(response.data.data);
+                                  const loadeddata: YCSXTableData[] = response.data.data.map(
+                                    (element: YCSXTableData, index: number) => {
+                                      return {
+                                        ...element,
+                                        PO_TDYCSX:
+                                          element.PO_TDYCSX === undefined || element.PO_TDYCSX === null
+                                            ? 0
+                                            : element.PO_TDYCSX,
+                                        TOTAL_TKHO_TDYCSX:
+                                          element.TOTAL_TKHO_TDYCSX === undefined ||
+                                          element.TOTAL_TKHO_TDYCSX === null
+                                            ? 0
+                                            : element.TOTAL_TKHO_TDYCSX,
+                                        TKHO_TDYCSX:
+                                          element.TKHO_TDYCSX === undefined ||
+                                          element.TKHO_TDYCSX === null
+                                            ? 0
+                                            : element.TKHO_TDYCSX,
+                                        BTP_TDYCSX:
+                                          element.BTP_TDYCSX === undefined ||
+                                          element.BTP_TDYCSX === null
+                                            ? 0
+                                            : element.BTP_TDYCSX,
+                                        CK_TDYCSX:
+                                          element.CK_TDYCSX === undefined || element.CK_TDYCSX === null
+                                            ? 0
+                                            : element.CK_TDYCSX,
+                                        BLOCK_TDYCSX:
+                                          element.BLOCK_TDYCSX === undefined ||
+                                          element.BLOCK_TDYCSX === null
+                                            ? 0
+                                            : element.BLOCK_TDYCSX,
+                                        FCST_TDYCSX:
+                                          element.FCST_TDYCSX === undefined ||
+                                          element.FCST_TDYCSX === null
+                                            ? 0
+                                            : element.FCST_TDYCSX,
+                                        W1:
+                                          element.W1 === undefined || element.W1 === null
+                                            ? 0
+                                            : element.W1,
+                                        W2:
+                                          element.W2 === undefined || element.W2 === null
+                                            ? 0
+                                            : element.W2,
+                                        W3:
+                                          element.W3 === undefined || element.W3 === null
+                                            ? 0
+                                            : element.W3,
+                                        W4:
+                                          element.W4 === undefined || element.W4 === null
+                                            ? 0
+                                            : element.W4,
+                                        W5:
+                                          element.W5 === undefined || element.W5 === null
+                                            ? 0
+                                            : element.W5,
+                                        W6:
+                                          element.W6 === undefined || element.W6 === null
+                                            ? 0
+                                            : element.W6,
+                                        W7:
+                                          element.W7 === undefined || element.W7 === null
+                                            ? 0
+                                            : element.W7,
+                                        W8:
+                                          element.W8 === undefined || element.W8 === null
+                                            ? 0
+                                            : element.W8,
+                                        PROD_REQUEST_QTY:
+                                          element.PROD_REQUEST_QTY === undefined ||
+                                          element.PROD_REQUEST_QTY === null
+                                            ? 0
+                                            : element.PROD_REQUEST_QTY,
+                                      };
+                                    }
+                                  );
+                                 temp_ycsx_data = loadeddata;
+                                 
+                                 
+                                } else {
+                                  Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");                                 
+                                }
+                              })
+                              .catch((error) => {
+                                console.log(error);
+                              }); */
                             
                             if(temp_ycsx_data.length>0)
                             {

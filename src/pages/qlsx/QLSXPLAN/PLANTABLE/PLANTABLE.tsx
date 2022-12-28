@@ -47,7 +47,7 @@ import {
 import { MdOutlineDelete, MdOutlinePendingActions } from "react-icons/md";
 import { FaArrowRight, FaWarehouse } from "react-icons/fa";
 import { FcApprove, FcCancel, FcDeleteRow, FcSearch } from "react-icons/fc";
-import { checkBP, SaveExcel } from "../../../../api/GlobalFunction";
+import { checkBP, PLAN_ID_ARRAY, SaveExcel } from "../../../../api/GlobalFunction";
 import YCSXComponent from "../../../kinhdoanh/ycsxmanager/YCSXComponent/YCSXComponent";
 import DrawComponent from "../../../kinhdoanh/ycsxmanager/DrawComponent/DrawComponent";
 import { useReactToPrint } from "react-to-print";
@@ -2162,7 +2162,16 @@ const PLANTABLE = () => {
       confirmButtonText: "Vẫn ĐK liệu!",
     }).then((result) => {
       if (result.isConfirmed) {
-        Swal.fire("Tiến hành ĐK liệu", "Đang ĐK liệu", "success");
+        Swal.fire({
+          title: "Đăng ký xuất liệu",
+          text: "Đang đăng ký xuất liệu kho thật, hãy chờ một chút",
+          icon: "info",
+          showCancelButton: false,
+          allowOutsideClick: false,      
+          confirmButtonText:'OK',
+          showConfirmButton: false,
+        });
+        //Swal.fire("Tiến hành ĐK liệu", "Đang ĐK liệu", "success");
         if (qlsxplandatafilter.length > 0) {
           hanlde_SaveChiThi();
           handleGetChiThiTable(
@@ -2283,12 +2292,32 @@ const PLANTABLE = () => {
       .then((response) => {
         //console.log(response.data.tk_status);
         if (response.data.tk_status !== "NG") {
-          //console.log(response.data.data[0].PLAN_ID);
-          next_plan_id =
+          console.log(response.data.data[0].PLAN_ID);
+          console.log('length', response.data.data[0].PLAN_ID.length);
+          let old_plan_id: string =  response.data.data[0].PLAN_ID;         
+          if(old_plan_id.substring(7, 8) === 'Z')
+          {
+            if(old_plan_id.substring(3,4) ==='0')
+            {
+              next_plan_id = old_plan_id.substring(0,3) +'A' + old_plan_id.substring(4,7) +'A';
+            }
+            else
+            {
+              next_plan_id = old_plan_id.substring(0,3) + PLAN_ID_ARRAY[PLAN_ID_ARRAY.indexOf(old_plan_id.substring(3, 4))+1] + old_plan_id.substring(4,7) +'A';
+            }  
+                      
+          }
+          else
+          {
+            next_plan_id = old_plan_id.substring(0,7)  + PLAN_ID_ARRAY[PLAN_ID_ARRAY.indexOf(old_plan_id.substring(7, 8))+1];
+          }
+          
+
+         /*  next_plan_id =
             PROD_REQUEST_NO +
             String.fromCharCode(
               response.data.data[0].PLAN_ID.substring(7, 8).charCodeAt(0) + 1
-            );
+            ); */
         } else {
           next_plan_id = PROD_REQUEST_NO + "A";
         }
@@ -2840,11 +2869,15 @@ const PLANTABLE = () => {
           className='buttonIcon'
           onClick={() => {
             if (chithidatatable.length > 0) {
-              Swal.fire(
-                "Thông báo",
-                "Đang lưu chỉ thị, hãy chờ một chút",
-                "info"
-              );
+              Swal.fire({
+                title: "Lưu Chỉ thị",
+                text: "Đang lưu chỉ thị, hãy chờ một chút",
+                icon: "info",
+                showCancelButton: false,
+                allowOutsideClick: false,      
+                confirmButtonText:'OK',
+                showConfirmButton: false,
+              });
               checkBP(userData.EMPL_NO,userData.MAINDEPTNAME,['QLSX'], hanlde_SaveChiThi);
               //hanlde_SaveChiThi();
             } else {

@@ -1,6 +1,7 @@
 
 import  { useEffect, useState} from 'react'
 import KHOTP from '../../kho/khotp/KHOTP';
+import DKDTC from './DKDTC';
 import "./DTC.scss"
 import KQDTC from './KQDTC';
 import SPECDTC from './SPECDTC';
@@ -39,12 +40,13 @@ const DTC = () => {
           DATA ĐTC
           </span>
         </div> 
+        
       </div>     
       {selection.tab1 && (
         <div className='trainspection'>
           <KQDTC/>
         </div>
-      )}     
+      )} 
     </div>
   );
 }

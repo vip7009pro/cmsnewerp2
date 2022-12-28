@@ -69,11 +69,11 @@ const QLSXPLAN = () => {
             QUICK PLAN
           </span>
         </div>   
-        <div className='mininavitem'  onClick={() => setNav(2)} style={{backgroundColor:selection.tab2 === true ? '#9933ff':'#d9b3ff', color: selection.tab2 === true ? 'yellow':'yellow'}}>
+       {/*  <div className='mininavitem'  onClick={() => setNav(2)} style={{backgroundColor:selection.tab2 === true ? '#9933ff':'#d9b3ff', color: selection.tab2 === true ? 'yellow':'yellow'}}>
           <span className='mininavtext'>
             PLAN YCSX
           </span>
-        </div>  
+        </div>   */}
         <div className='mininavitem'  onClick={() => setNav(5)} style={{backgroundColor:selection.tab5 === true ? '#9933ff':'#d9b3ff', color: selection.tab5 === true ? 'yellow':'yellow'}}>
           <span className='mininavtext'>
             TRA PLAN
