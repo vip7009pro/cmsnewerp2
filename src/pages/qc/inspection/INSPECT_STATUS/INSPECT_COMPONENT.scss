@@ -1,0 +1,25 @@
+.inspect_component {
+    width: 200px;
+    height: 50px;
+    background-image: linear-gradient(0deg, #cbeea3, #1ee4b9);
+    border-radius: 10px;
+    box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
+    -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
+    .tieude {
+        display: flex;
+        flex-direction: column;
+        flex: 1;        
+        background-color: bisque;
+        width: 100%;
+        align-self: center;
+        justify-content: center;        
+        font-weight: bold;
+        font-size: 15px;
+        align-items: center;        
+    }
+    .machineplan {
+        font-size: 20px;
+        overflow-x: inherit;
+        flex: 0;
+    }
+}

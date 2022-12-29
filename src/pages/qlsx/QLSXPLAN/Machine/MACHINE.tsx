@@ -2130,7 +2130,7 @@ const MACHINE = () => {
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
-      confirmButtonText: "Vẫn Xóa!",      
+      confirmButtonText: "Vẫn Xóa!",
     }).then((result) => {
       if (result.isConfirmed) {
         Swal.fire(
@@ -2210,12 +2210,11 @@ const MACHINE = () => {
           text: "Đang đăng ký xuất liệu, hay chờ cho tới khi hoàn thành",
           icon: "info",
           showCancelButton: false,
-          allowOutsideClick: false,      
-          confirmButtonText:'OK',
+          allowOutsideClick: false,
+          confirmButtonText: "OK",
           showConfirmButton: false,
         });
-
-       /*  Swal.fire(
+        /*  Swal.fire(
           "Tiến hành ĐK liệu",
           "Đang ĐK liệu, hãy chờ cho tới khi hoàn thành",
           "info"
@@ -2467,11 +2466,10 @@ const MACHINE = () => {
       text: "Đang lưu plan, hãy chờ một chút",
       icon: "info",
       showCancelButton: false,
-      allowOutsideClick: false,      
-      confirmButtonText:'OK',
+      allowOutsideClick: false,
+      confirmButtonText: "OK",
       showConfirmButton: false,
     });
-
     let selectedPlanTable: QLSXPLANDATA[] = plandatatable.filter(
       (element: QLSXPLANDATA, index: number) => {
         return (
@@ -2962,22 +2960,20 @@ const MACHINE = () => {
         <IconButton
           className='buttonIcon'
           onClick={() => {
-            if (chithidatatable.length > 0) {              
+            if (chithidatatable.length > 0) {
               Swal.fire({
                 title: "Lưu chỉ thị",
                 text: "Đang lưu chỉ thị, hãy chờ một",
                 icon: "info",
                 showCancelButton: false,
-                allowOutsideClick: false,      
-                confirmButtonText:'OK',
+                allowOutsideClick: false,
+                confirmButtonText: "OK",
                 showConfirmButton: false,
               });
-
-             /*  confirmButtonColor: "#3085d6",
+              /*  confirmButtonColor: "#3085d6",
               cancelButtonColor: "#d33",
               confirmButtonText: "Vẫn Xóa!", */
-
-             /*  Swal.fire(
+              /*  Swal.fire(
                 "Thông báo",
                 "Đang lưu chỉ thị, hãy chờ một chút",
                 "info"
