@@ -16,6 +16,7 @@ import {
   GridAddIcon,
   GridCallbackDetails,
   GridCellEditCommitParams,
+  GridEventListener,
   GridSelectionModel,
   GridToolbarContainer,
   GridToolbarQuickFilter,
@@ -654,14 +655,14 @@ const QUICKPLAN = () => {
     {
       field: "PROD_REQUEST_NO",
       headerName: "YCSX_NO",
-      width: 80,
+      width: 100,
       editable: true,
     },
     { field: "G_CODE", headerName: "G_CODE", width: 80, editable: false },
     {
       field: "G_NAME_KD",
       headerName: "G_NAME_KD",
-      width: 180,
+      width: 200,
       editable: false,
       renderCell: (params: any) => {
         if (
@@ -1745,6 +1746,16 @@ const QUICKPLAN = () => {
       });
     return temp_data;
   };
+
+  const handleEvent: GridEventListener<'rowClick'> = (
+    params, // GridRowParams
+    event, // MuiEvent<React.MouseEvent<HTMLElement>>
+    details, // GridCallbackDetails
+  ) => {
+    //console.log(params.row);
+  };
+
+
   useEffect(() => {
     let temp_table: any = [];
     let temp_max: number = 0;
@@ -2151,9 +2162,16 @@ const QUICKPLAN = () => {
                           return p;
                         }
                       });
+                      localStorage.setItem("temp_plan_table", JSON.stringify(newdata));  
                       setPlanDataTable(newdata);
                     } else if (keyvar === "PLAN_EQ"){
 
+                      let current_PROD_REQUEST_NO: string|undefined = plandatatable.find(element=> element.PLAN_ID === params.id)?.PROD_REQUEST_NO;
+
+                      if(current_PROD_REQUEST_NO !== undefined)
+                      {
+                        temp_ycsx_data = await get1YCSXDATA(current_PROD_REQUEST_NO);
+                      }
                       const newdata = plandatatable.map((p) => {
                         if (p.PLAN_ID === params.id) {
                           if (keyvar === "PLAN_EQ") {
@@ -2170,11 +2188,16 @@ const QUICKPLAN = () => {
                                   ...p,
                                   [keyvar]: params.value,
                                   PROCESS_NUMBER: 1,
+                                  CD1: temp_ycsx_data[0].CD1,
+                                  CD2: temp_ycsx_data[0].CD2,
+                                  TON_CD1: temp_ycsx_data[0].TON_CD1,
+                                  TON_CD2: temp_ycsx_data[0].TON_CD2,
+
                                   PLAN_QTY:
-                                    p.TON_CD1 <= 0
+                                    temp_ycsx_data[0].TON_CD1 <= 0
                                       ? 0
-                                      : p.TON_CD1 < UPH1 * 10
-                                      ? p.TON_CD1
+                                      : temp_ycsx_data[0].TON_CD1 < UPH1 * 10
+                                      ? temp_ycsx_data[0].TON_CD1
                                       : UPH1 * 10,
                                 };
                               } else if (plan_temp === p.EQ2) {
@@ -2182,11 +2205,15 @@ const QUICKPLAN = () => {
                                   ...p,
                                   [keyvar]: params.value,
                                   PROCESS_NUMBER: 2,
+                                  CD1: temp_ycsx_data[0].CD1,
+                                  CD2: temp_ycsx_data[0].CD2,
+                                  TON_CD1: temp_ycsx_data[0].TON_CD1,
+                                  TON_CD2: temp_ycsx_data[0].TON_CD2,
                                   PLAN_QTY:
-                                    p.TON_CD2 <= 0
+                                    temp_ycsx_data[0].TON_CD2 <= 0
                                       ? 0
-                                      : p.TON_CD2 < UPH2 * 10
-                                      ? p.TON_CD2
+                                      : temp_ycsx_data[0].TON_CD2 < UPH2 * 10
+                                      ? temp_ycsx_data[0].TON_CD2
                                       : UPH2 * 10,
                                 };
                               } else {
@@ -2212,14 +2239,25 @@ const QUICKPLAN = () => {
                         } else {
                           return p;
                         }
-                      });
+                      });               
+                      localStorage.setItem("temp_plan_table", JSON.stringify(newdata));                                              
+                      setPlanDataTable(newdata);
+                    }
+                    else
+                    {
+                      const newdata = plandatatable.map((p) => {                        
+                          return p;                        
+                      });   
+                      localStorage.setItem("temp_plan_table", JSON.stringify(newdata));                                                        
                       setPlanDataTable(newdata);
                     }
                   })();
+                  
                   //setPlanDataTable(newdata);
                   //console.log(newdata);
                   //console.log(plandatatable);
                 }}
+                onRowClick={handleEvent}
               />
             </div>
           </div>
