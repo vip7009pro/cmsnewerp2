@@ -170,6 +170,16 @@ interface YCSXTableData {
   TON_CD2: number;
   UPH1: number;
   UPH2: number;
+  FACTORY: string,
+  Setting1: number,
+  Setting2: number,
+  Step1: number,
+  Step2: number,
+  LOSS_SX1: number,
+  LOSS_SX2: number,
+  LOSS_SETTING1: number,
+  LOSS_SETTING2: number,
+  NOTE: string,
 }
 interface QLSXCHITHIDATA {
   id: string;
@@ -201,9 +211,9 @@ const QUICKPLAN = () => {
     tabbanve: false,
   });
   const [datadinhmuc, setDataDinhMuc] = useState<DINHMUC_QSLX>({
-    FACTORY: "",
-    EQ1: "",
-    EQ2: "",
+    FACTORY: "NA",
+    EQ1: "NA",
+    EQ2: "NA",
     Setting1: 0,
     Setting2: 0,
     UPH1: 0,
@@ -246,6 +256,8 @@ const QUICKPLAN = () => {
   const [chithilistrender, setChiThiListRender] =
     useState<Array<ReactElement>>();
   const [ycktlistrender, setYCKTListRender] = useState<Array<ReactElement>>();
+  const [selectedCode, setSelectedCode] = useState("CODE: ");
+  const [selectedG_Code, setSelectedG_Code] = useState("");
   const [selectedMachine, setSelectedMachine] = useState("FR01");
   const [selectedFactory, setSelectedFactory] = useState("NM1");
   const [selectedPlanDate, setSelectedPlanDate] = useState(
@@ -255,7 +267,8 @@ const QUICKPLAN = () => {
   const [showYCKT, setShowYCKT] = useState(false);
   const [editplan, seteditplan] = useState(true);
   const [temp_id, setTemID] = useState(0);
-  const [showhideycsxtable, setShowHideYCSXTable] = useState(true);
+  const [showhideycsxtable, setShowHideYCSXTable] = useState(false);
+  const [showhidedinhmuc, setShowHideDinhMuc] = useState(true);
   const ycsxprintref = useRef(null);
   const handlePrint = useReactToPrint({
     content: () => ycsxprintref.current,
@@ -1457,6 +1470,75 @@ const QUICKPLAN = () => {
       Swal.fire("Thông báo", "Chọn ít nhất 1 dòng để lưu", "error");
     }
   };
+
+  const handleSaveQLSX = async () => {
+    if (selectedG_Code !=='') {
+      if (userData.EMPL_NO === "NHU1903" || userData.MAINDEPTNAME === "QLSX") {
+        let err_code: string = "0";
+        console.log(datadinhmuc);
+        if (
+          datadinhmuc.FACTORY === "NA" ||
+          datadinhmuc.EQ1 === "NA" ||
+          datadinhmuc.EQ1 === "NO" ||
+          datadinhmuc.EQ2 === "" ||
+          datadinhmuc.Setting1 === 0 ||
+          datadinhmuc.UPH1 === 0 ||
+          datadinhmuc.Step1 === 0 ||
+          datadinhmuc.LOSS_SX1 === 0
+        ) {
+          Swal.fire(
+            "Thông báo",
+            "Lưu thất bại, hãy nhập đủ thông tin",
+            "error"
+          );
+        } else {
+          generalQuery("saveQLSX", {
+            G_CODE: selectedG_Code,
+            FACTORY: datadinhmuc.FACTORY,
+            EQ1: datadinhmuc.EQ1,
+            EQ2: datadinhmuc.EQ2,
+            Setting1: datadinhmuc.Setting1,
+            Setting2: datadinhmuc.Setting2,
+            UPH1: datadinhmuc.UPH1,
+            UPH2: datadinhmuc.UPH2,
+            Step1: datadinhmuc.Step1,
+            Step2: datadinhmuc.Step2,
+            LOSS_SX1: datadinhmuc.LOSS_SX1,
+            LOSS_SX2: datadinhmuc.LOSS_SX2,
+            LOSS_SETTING1: datadinhmuc.LOSS_SETTING1,
+            LOSS_SETTING2: datadinhmuc.LOSS_SETTING2,
+            NOTE: datadinhmuc.NOTE,
+          })
+            .then((response) => {
+              console.log(response.data.tk_status);
+              if (response.data.tk_status !== "NG") {
+              } else {
+                err_code = "1";
+              }
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+          if (err_code === "1") {
+            Swal.fire(
+              "Thông báo",
+              "Lưu thất bại, không được để trống ô cần thiết",
+              "error"
+            );
+          } else {
+            loadQLSXPlan(selectedPlanDate);
+            Swal.fire("Thông báo", "Lưu thành công", "success");
+          }
+        }
+      } else {
+        Swal.fire("Thông báo", "Không đủ quyền hạn!", "error");
+      }
+    } else {
+      Swal.fire("Thông báo", "Chọn ít nhất 1 Code để SET !", "error");
+    }
+  };
+
+
   function CustomToolbarPOTable() {
     return (
       <GridToolbarContainer>
@@ -1543,7 +1625,6 @@ const QUICKPLAN = () => {
           <AiFillFolderAdd color='#69f542' size={25} />
           Add to PLAN
         </IconButton>
-       
       </GridToolbarContainer>
     );
   }
@@ -1574,7 +1655,6 @@ const QUICKPLAN = () => {
           Add Blank PLAN
         </IconButton>
 
-        
         <IconButton
           className='buttonIcon'
           onClick={() => {
@@ -1608,6 +1688,23 @@ const QUICKPLAN = () => {
           <BiShow color='green' size={20} />
           Ẩn /Hiện
         </IconButton>
+
+        <IconButton
+          className='buttonIcon'
+          onClick={() => {
+            checkBP(
+              userData.EMPL_NO,
+              userData.MAINDEPTNAME,
+              ["QLSX"],
+              handleSaveQLSX
+            );
+            //handleSaveQLSX();
+          }}
+        >
+          <AiFillSave color='lightgreen' size={20} />
+          Lưu Data Định Mức
+        </IconButton>
+
       </GridToolbarContainer>
     );
   }
@@ -1747,14 +1844,178 @@ const QUICKPLAN = () => {
     return temp_data;
   };
 
-  const handleEvent: GridEventListener<'rowClick'> = (
+  const handleEvent: GridEventListener<"rowClick"> = (
     params, // GridRowParams
     event, // MuiEvent<React.MouseEvent<HTMLElement>>
-    details, // GridCallbackDetails
+    details // GridCallbackDetails
   ) => {
+    let rowData: QLSXPLANDATA =params.row;
+    //console.log(rowData);
+    setSelectedCode('CODE: ' + rowData.G_NAME_KD);
+    setSelectedG_Code(rowData.G_CODE);
+    
+    setDataDinhMuc({
+      ...datadinhmuc,
+      FACTORY: rowData.FACTORY,
+      EQ1:rowData.EQ1===''? 'NA':rowData.EQ1 ,
+      EQ2:rowData.EQ2===''? 'NA':rowData.EQ2 ,      
+      Setting1: rowData.Setting1,
+      Setting2: rowData.Setting2,
+      UPH1: rowData.UPH1,
+      UPH2: rowData.UPH2,
+      Step1: rowData.Step1,
+      Step2: rowData.Step2,
+      LOSS_SX1: rowData.LOSS_SX1,
+      LOSS_SX2: rowData.LOSS_SX2,
+      LOSS_SETTING1: rowData.LOSS_SETTING1,
+      LOSS_SETTING2: rowData.LOSS_SETTING2,
+      NOTE: rowData.NOTE,      
+    })
     //console.log(params.row);
   };
 
+  const cellEditHandler = (
+    params: GridCellEditCommitParams,
+    event: MuiEvent<MuiBaseEvent>,
+    details: GridCallbackDetails
+  ) => {
+    (async () => {
+      const keyvar = params.field;
+      /* let temp_ycsx_data: YCSXTableData[] = ycsxdatatable.filter((element:YCSXTableData) => {
+            return element.PROD_REQUEST_NO === params.value;
+          }); */
+      let temp_ycsx_data: YCSXTableData[] = [];
+      if (keyvar === "PROD_REQUEST_NO") {
+        temp_ycsx_data = await get1YCSXDATA(params.value);
+        const newdata = plandatatable.map((p) => {
+          if (p.PLAN_ID === params.id) {
+            if (keyvar === "PROD_REQUEST_NO") {
+              //console.log(keyvar);
+              if (temp_ycsx_data.length > 0) {
+                return {
+                  ...p,
+                  [keyvar]: params.value,
+                  G_CODE: temp_ycsx_data[0].G_CODE,
+                  G_NAME_KD: temp_ycsx_data[0].G_NAME,
+                  PROD_REQUEST_QTY: temp_ycsx_data[0].PROD_REQUEST_QTY,
+                  CD1: temp_ycsx_data[0].CD1,
+                  CD2: temp_ycsx_data[0].CD2,
+                  TON_CD1: temp_ycsx_data[0].TON_CD1,
+                  TON_CD2: temp_ycsx_data[0].TON_CD2,
+                  EQ1: temp_ycsx_data[0].EQ1,
+                  EQ2: temp_ycsx_data[0].EQ2,
+                  UPH1: temp_ycsx_data[0].UPH1,
+                  UPH2: temp_ycsx_data[0].UPH2,
+                  FACTORY: temp_ycsx_data[0].FACTORY,
+                  Setting1: temp_ycsx_data[0].Setting1,
+                  Setting2: temp_ycsx_data[0].Setting2,
+                  Step1: temp_ycsx_data[0].Step1,
+                  Step2: temp_ycsx_data[0].Step2,
+                  LOSS_SX1: temp_ycsx_data[0].LOSS_SX1,
+                  LOSS_SX2: temp_ycsx_data[0].LOSS_SX2,
+                  LOSS_SETTING1: temp_ycsx_data[0].LOSS_SETTING1,
+                  LOSS_SETTING2: temp_ycsx_data[0].LOSS_SETTING2,
+                  NOTE: temp_ycsx_data[0].NOTE,
+                  
+                   
+                };
+              } else {
+                Swal.fire("Thông báo", "Không có số yc này", "error");
+                return { ...p, [keyvar]: "" };
+              }
+              //setPlanDataTable(newdata);
+              //console.log(temp_ycsx_data);
+            } else {
+              console.log(keyvar);
+              return { ...p, [keyvar]: params.value };
+            }
+          } else {
+            return p;
+          }
+        });
+        localStorage.setItem("temp_plan_table", JSON.stringify(newdata));
+        setPlanDataTable(newdata);
+      } else if (keyvar === "PLAN_EQ") {
+        let current_PROD_REQUEST_NO: string | undefined = plandatatable.find(
+          (element) => element.PLAN_ID === params.id
+        )?.PROD_REQUEST_NO;
+
+        if (current_PROD_REQUEST_NO !== undefined) {
+          temp_ycsx_data = await get1YCSXDATA(current_PROD_REQUEST_NO);
+        }
+        const newdata = plandatatable.map((p) => {
+          if (p.PLAN_ID === params.id) {
+            if (keyvar === "PLAN_EQ") {
+              if (params.value.length === 4) {
+                let plan_temp = params.value.substring(0, 2);
+                let UPH1: number = p.UPH1 === null ? 999999999 : p.UPH1;
+                let UPH2: number = p.UPH2 === null ? 999999999 : p.UPH2;
+                console.log("UPH1", UPH1);
+                console.log("UPH2", UPH2);
+                if (plan_temp === p.EQ1) {
+                  return {
+                    ...p,
+                    [keyvar]: params.value,
+                    PROCESS_NUMBER: 1,
+                    CD1: temp_ycsx_data[0].CD1,
+                    CD2: temp_ycsx_data[0].CD2,
+                    TON_CD1: temp_ycsx_data[0].TON_CD1,
+                    TON_CD2: temp_ycsx_data[0].TON_CD2,
+
+                    PLAN_QTY:
+                      temp_ycsx_data[0].TON_CD1 <= 0
+                        ? 0
+                        : temp_ycsx_data[0].TON_CD1 < UPH1 * 10
+                        ? temp_ycsx_data[0].TON_CD1
+                        : UPH1 * 10,
+                  };
+                } else if (plan_temp === p.EQ2) {
+                  return {
+                    ...p,
+                    [keyvar]: params.value,
+                    PROCESS_NUMBER: 2,
+                    CD1: temp_ycsx_data[0].CD1,
+                    CD2: temp_ycsx_data[0].CD2,
+                    TON_CD1: temp_ycsx_data[0].TON_CD1,
+                    TON_CD2: temp_ycsx_data[0].TON_CD2,
+                    PLAN_QTY:
+                      temp_ycsx_data[0].TON_CD2 <= 0
+                        ? 0
+                        : temp_ycsx_data[0].TON_CD2 < UPH2 * 10
+                        ? temp_ycsx_data[0].TON_CD2
+                        : UPH2 * 10,
+                  };
+                } else {
+                  Swal.fire(
+                    "Thông báo",
+                    "Máy đã nhập ko giống trong BOM",
+                    "warning"
+                  );
+                  return { ...p, [keyvar]: params.value };
+                }
+              } else {
+                Swal.fire("Thông báo", "Nhập máy không đúng", "error");
+                return { ...p, [keyvar]: "" };
+              }
+            } else {
+              console.log(keyvar);
+              return { ...p, [keyvar]: params.value };
+            }
+          } else {
+            return p;
+          }
+        });
+        localStorage.setItem("temp_plan_table", JSON.stringify(newdata));
+        setPlanDataTable(newdata);
+      } else {
+        const newdata = plandatatable.map((p) => {
+          return p;
+        });
+        localStorage.setItem("temp_plan_table", JSON.stringify(newdata));
+        setPlanDataTable(newdata);
+      }
+    })();
+  };
 
   useEffect(() => {
     let temp_table: any = [];
@@ -1778,6 +2039,234 @@ const QUICKPLAN = () => {
   return (
     <div className='quickplan'>
       <div className='planwindow'>
+        <span style={{fontSize:25, color:'blue', marginLeft:20}}>{selectedCode}</span>
+      {showhidedinhmuc && (
+            
+            <div className='datadinhmuc'>
+              <div className='forminputcolumn'>
+                <label>
+                  <b>EQ1:</b>
+                  <select
+                    name='phanloai'
+                    value={datadinhmuc.EQ1}
+                    onChange={(e) =>
+                      setDataDinhMuc({ ...datadinhmuc, EQ1: e.target.value })
+                    }
+                    style={{ width: 150, height: 22 }}
+                  >
+                    <option value='FR'>FR</option>
+                    <option value='SR'>SR</option>
+                    <option value='DC'>DC</option>
+                    <option value='ED'>ED</option>
+                    <option value='NO'>NO</option>
+                    <option value='NA'>NA</option>
+                  </select>
+                </label>
+                <label>
+                  <b>EQ2:</b>
+                  <select
+                    name='phanloai'
+                    value={datadinhmuc.EQ2}
+                    onChange={(e) =>
+                      setDataDinhMuc({ ...datadinhmuc, EQ2: e.target.value })
+                    }
+                    style={{ width: 150, height: 22 }}
+                  >
+                    <option value='FR'>FR</option>
+                    <option value='SR'>SR</option>
+                    <option value='DC'>DC</option>
+                    <option value='ED'>ED</option>
+                    <option value='NO'>NO</option>
+                    <option value='NA'>NA</option>
+                  </select>
+                </label>
+              </div>
+              <div className='forminputcolumn'>
+                <label>
+                  <b>Setting1(min):</b>{" "}
+                  <input
+                    type='text'
+                    placeholder='Thời gian setting 1'
+                    value={datadinhmuc.Setting1}
+                    onChange={(e) =>
+                      setDataDinhMuc({
+                        ...datadinhmuc,
+                        Setting1: Number(e.target.value),
+                      })
+                    }
+                  ></input>
+                </label>
+                <label>
+                  <b>Setting2(min):</b>{" "}
+                  <input
+                    type='text'
+                    placeholder='Thời gian setting 2'
+                    value={datadinhmuc.Setting2}
+                    onChange={(e) =>
+                      setDataDinhMuc({
+                        ...datadinhmuc,
+                        Setting2: Number(e.target.value),
+                      })
+                    }
+                  ></input>
+                </label>
+              </div>
+              <div className='forminputcolumn'>
+                <label>
+                  <b>UPH1(EA/h):</b>{" "}
+                  <input
+                    type='text'
+                    placeholder='Tốc độ sx 1'
+                    value={datadinhmuc.UPH1}
+                    onChange={(e) =>
+                      setDataDinhMuc({
+                        ...datadinhmuc,
+                        UPH1: Number(e.target.value),
+                      })
+                    }
+                  ></input>
+                </label>
+                <label>
+                  <b>UPH2(EA/h):</b>{" "}
+                  <input
+                    type='text'
+                    placeholder='Tốc độ sx 2'
+                    value={datadinhmuc.UPH2}
+                    onChange={(e) =>
+                      setDataDinhMuc({
+                        ...datadinhmuc,
+                        UPH2: Number(e.target.value),
+                      })
+                    }
+                  ></input>
+                </label>
+              </div>
+              <div className='forminputcolumn'>
+                <label>
+                  <b>Step1:</b>{" "}
+                  <input
+                    type='text'
+                    placeholder='Số bước 1'
+                    value={datadinhmuc.Step1}
+                    onChange={(e) =>
+                      setDataDinhMuc({
+                        ...datadinhmuc,
+                        Step1: Number(e.target.value),
+                      })
+                    }
+                  ></input>
+                </label>
+                <label>
+                  <b>Step2:</b>{" "}
+                  <input
+                    type='text'
+                    placeholder='Số bước 2'
+                    value={datadinhmuc.Step2}
+                    onChange={(e) =>
+                      setDataDinhMuc({
+                        ...datadinhmuc,
+                        Step2: Number(e.target.value),
+                      })
+                    }
+                  ></input>
+                </label>
+              </div>
+              <div className='forminputcolumn'>
+                <label>
+                  <b>LOSS_SX1(%):</b>{" "}
+                  <input
+                    type='text'
+                    placeholder='% loss sx 1'
+                    value={datadinhmuc.LOSS_SX1}
+                    onChange={(e) =>
+                      setDataDinhMuc({
+                        ...datadinhmuc,
+                        LOSS_SX1: Number(e.target.value),
+                      })
+                    }
+                  ></input>
+                </label>
+                <label>
+                  <b>LOSS_SX2(%):</b>{" "}
+                  <input
+                    type='text'
+                    placeholder='% loss sx 2'
+                    value={datadinhmuc.LOSS_SX2}
+                    onChange={(e) =>
+                      setDataDinhMuc({
+                        ...datadinhmuc,
+                        LOSS_SX2: Number(e.target.value),
+                      })
+                    }
+                  ></input>
+                </label>
+              </div>
+              <div className='forminputcolumn'>
+                <label>
+                  <b>LOSS SETTING1 (m):</b>{" "}
+                  <input
+                    type='text'
+                    placeholder='met setting 1'
+                    value={datadinhmuc.LOSS_SETTING1}
+                    onChange={(e) =>
+                      setDataDinhMuc({
+                        ...datadinhmuc,
+                        LOSS_SETTING1: Number(e.target.value),
+                      })
+                    }
+                  ></input>
+                </label>
+                <label>
+                  <b>LOSS SETTING2 (m):</b>{" "}
+                  <input
+                    type='text'
+                    placeholder='met setting 2'
+                    value={datadinhmuc.LOSS_SETTING2}
+                    onChange={(e) =>
+                      setDataDinhMuc({
+                        ...datadinhmuc,
+                        LOSS_SETTING2: Number(e.target.value),
+                      })
+                    }
+                  ></input>
+                </label>
+              </div>
+              <div className='forminputcolumn'>
+                <label>
+                  <b>FACTORY:</b>
+                  <select
+                    name='phanloai'
+                    value={
+                      datadinhmuc.FACTORY === null ? "NA" : datadinhmuc.FACTORY
+                    }
+                    onChange={(e) => {
+                      setDataDinhMuc({
+                        ...datadinhmuc,
+                        FACTORY: e.target.value,
+                      });
+                    }}
+                    style={{ width: 162, height: 22 }}
+                  >
+                    <option value='NA'>NA</option>
+                    <option value='NM1'>NM1</option>
+                    <option value='NM2'>NM2</option>
+                  </select>
+                </label>
+                <label>
+                  <b>NOTE (QLSX):</b>{" "}
+                  <input
+                    type='text'
+                    placeholder='Chú ý'
+                    value={datadinhmuc.NOTE}
+                    onChange={(e) =>
+                      setDataDinhMuc({ ...datadinhmuc, NOTE: e.target.value })
+                    }
+                  ></input>
+                </label>
+              </div>
+            </div>
+          )}
+
         <div className='content'>
           {showhideycsxtable && (
             <div className='ycsxlist'>
@@ -2104,163 +2593,19 @@ const QUICKPLAN = () => {
                 rowsPerPageOptions={[
                   5, 10, 50, 100, 500, 1000, 5000, 10000, 500000,
                 ]}
+                disableSelectionOnClick
                 checkboxSelection
                 editMode='cell'
                 getRowId={(row) => row.PLAN_ID}
                 onSelectionModelChange={(ids) => {
                   handleQLSXPlanDataSelectionforUpdate(ids);
                 }}
-                onCellEditCommit={(
-                  params: GridCellEditCommitParams,
-                  event: MuiEvent<MuiBaseEvent>,
-                  details: GridCallbackDetails
-                ) => {
-                  (async () => {
-                    const keyvar = params.field;
-                    /* let temp_ycsx_data: YCSXTableData[] = ycsxdatatable.filter((element:YCSXTableData) => {
-                          return element.PROD_REQUEST_NO === params.value;
-                        }); */
-                    let temp_ycsx_data: YCSXTableData[] = [];
-                    if (keyvar === "PROD_REQUEST_NO") {
-                      temp_ycsx_data = await get1YCSXDATA(params.value);
-                      const newdata = plandatatable.map((p) => {
-                        if (p.PLAN_ID === params.id) {
-                          if (keyvar === "PROD_REQUEST_NO") {
-                            //console.log(keyvar);
-                            if (temp_ycsx_data.length > 0) {
-                              return {
-                                ...p,
-                                [keyvar]: params.value,
-                                G_CODE: temp_ycsx_data[0].G_CODE,
-                                G_NAME_KD: temp_ycsx_data[0].G_NAME,
-                                PROD_REQUEST_QTY:
-                                  temp_ycsx_data[0].PROD_REQUEST_QTY,
-                                CD1: temp_ycsx_data[0].CD1,
-                                CD2: temp_ycsx_data[0].CD2,
-                                TON_CD1: temp_ycsx_data[0].TON_CD1,
-                                TON_CD2: temp_ycsx_data[0].TON_CD2,
-                                EQ1: temp_ycsx_data[0].EQ1,
-                                EQ2: temp_ycsx_data[0].EQ2,
-                                UPH1: temp_ycsx_data[0].UPH1,
-                                UPH2: temp_ycsx_data[0].UPH2,
-                              };
-                            } else {
-                              Swal.fire(
-                                "Thông báo",
-                                "Không có số yc này",
-                                "error"
-                              );
-                              return { ...p, [keyvar]: "" };
-                            }
-                            //setPlanDataTable(newdata);
-                            //console.log(temp_ycsx_data);
-                          } else {
-                            console.log(keyvar);
-                            return { ...p, [keyvar]: params.value };
-                          }
-                        } else {
-                          return p;
-                        }
-                      });
-                      localStorage.setItem("temp_plan_table", JSON.stringify(newdata));  
-                      setPlanDataTable(newdata);
-                    } else if (keyvar === "PLAN_EQ"){
-
-                      let current_PROD_REQUEST_NO: string|undefined = plandatatable.find(element=> element.PLAN_ID === params.id)?.PROD_REQUEST_NO;
-
-                      if(current_PROD_REQUEST_NO !== undefined)
-                      {
-                        temp_ycsx_data = await get1YCSXDATA(current_PROD_REQUEST_NO);
-                      }
-                      const newdata = plandatatable.map((p) => {
-                        if (p.PLAN_ID === params.id) {
-                          if (keyvar === "PLAN_EQ") {
-                            if (params.value.length === 4) {
-                              let plan_temp = params.value.substring(0, 2);
-                              let UPH1: number =
-                                p.UPH1 === null ? 999999999 : p.UPH1;
-                              let UPH2: number =
-                                p.UPH2 === null ? 999999999 : p.UPH2;
-                              console.log("UPH1", UPH1);
-                              console.log("UPH2", UPH2);
-                              if (plan_temp === p.EQ1) {
-                                return {
-                                  ...p,
-                                  [keyvar]: params.value,
-                                  PROCESS_NUMBER: 1,
-                                  CD1: temp_ycsx_data[0].CD1,
-                                  CD2: temp_ycsx_data[0].CD2,
-                                  TON_CD1: temp_ycsx_data[0].TON_CD1,
-                                  TON_CD2: temp_ycsx_data[0].TON_CD2,
-
-                                  PLAN_QTY:
-                                    temp_ycsx_data[0].TON_CD1 <= 0
-                                      ? 0
-                                      : temp_ycsx_data[0].TON_CD1 < UPH1 * 10
-                                      ? temp_ycsx_data[0].TON_CD1
-                                      : UPH1 * 10,
-                                };
-                              } else if (plan_temp === p.EQ2) {
-                                return {
-                                  ...p,
-                                  [keyvar]: params.value,
-                                  PROCESS_NUMBER: 2,
-                                  CD1: temp_ycsx_data[0].CD1,
-                                  CD2: temp_ycsx_data[0].CD2,
-                                  TON_CD1: temp_ycsx_data[0].TON_CD1,
-                                  TON_CD2: temp_ycsx_data[0].TON_CD2,
-                                  PLAN_QTY:
-                                    temp_ycsx_data[0].TON_CD2 <= 0
-                                      ? 0
-                                      : temp_ycsx_data[0].TON_CD2 < UPH2 * 10
-                                      ? temp_ycsx_data[0].TON_CD2
-                                      : UPH2 * 10,
-                                };
-                              } else {
-                                Swal.fire(
-                                  "Thông báo",
-                                  "Máy đã nhập ko giống trong BOM",
-                                  "warning"
-                                );
-                                return { ...p, [keyvar]: params.value };
-                              }
-                            } else {
-                              Swal.fire(
-                                "Thông báo",
-                                "Nhập máy không đúng",
-                                "error"
-                              );
-                              return { ...p, [keyvar]: "" };
-                            }
-                          } else {
-                            console.log(keyvar);
-                            return { ...p, [keyvar]: params.value };
-                          }
-                        } else {
-                          return p;
-                        }
-                      });               
-                      localStorage.setItem("temp_plan_table", JSON.stringify(newdata));                                              
-                      setPlanDataTable(newdata);
-                    }
-                    else
-                    {
-                      const newdata = plandatatable.map((p) => {                        
-                          return p;                        
-                      });   
-                      localStorage.setItem("temp_plan_table", JSON.stringify(newdata));                                                        
-                      setPlanDataTable(newdata);
-                    }
-                  })();
-                  
-                  //setPlanDataTable(newdata);
-                  //console.log(newdata);
-                  //console.log(plandatatable);
-                }}
+                onCellEditCommit={cellEditHandler}
                 onRowClick={handleEvent}
               />
             </div>
           </div>
+          
         </div>
       </div>
     </div>

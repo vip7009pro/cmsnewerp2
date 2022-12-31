@@ -18,6 +18,31 @@
         -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
         justify-self: center;  
         align-self: center;
+        .datadinhmuc {
+            display: flex;
+            flex:1;                
+            background-image: linear-gradient(0deg, #afd3d1,#25d468);
+            padding: 10px;
+            gap: 2px;
+            width:100%;
+            border-radius: 5px;
+            box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
+            -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
+            height: fit-content;
+            margin-top: 10px;
+            margin: auto;
+            .forminputcolumn {
+                display: flex;
+                flex-direction: column;
+                align-items: flex-end;
+                justify-content: center;
+
+
+            }
+            align-items: center;
+            
+        }
+
         .content 
         {
             display: flex;            
@@ -192,6 +217,7 @@
                 }
                 
             }
+            
 
         }
         

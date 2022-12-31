@@ -6,7 +6,8 @@ import { useSpring, animated } from "@react-spring/web";
 import { useEffect, useState } from "react";
 import { generalQuery } from "../../api/Api";
 import Swal from "sweetalert2";
-export const current_ver: number = 36;
+import PrimarySearchAppBar from "../../components/AppBar/AppBarCustom";
+export const current_ver: number = 37;
 function Home() {
   const springs = useSpring({
     from: { x: 1000, y: 100 },
@@ -67,8 +68,8 @@ function Home() {
   return (
     <div className='home'>
       <div className='navdiv'>
-        <Navbar />
-        {/* <PrimarySearchAppBar/>         */}
+        {/* <Navbar /> */}
+        <PrimarySearchAppBar/>        
       </div>
       <div className='homeContainer'>
         <div className='sidebardiv'>
