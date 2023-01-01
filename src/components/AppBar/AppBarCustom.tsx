@@ -15,14 +15,11 @@ import AccountCircle from "@mui/icons-material/AccountCircle";
 import MailIcon from "@mui/icons-material/Mail";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import MoreIcon from "@mui/icons-material/MoreVert";
-import LanguageIcon from '@mui/icons-material/Language';
+import LanguageIcon from "@mui/icons-material/Language";
 import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
 import { useSelector, useDispatch } from "react-redux";
-import {
-  toggleSidebar, 
-  UserData,  
-} from "../../redux/slices/globalSlice";
+import { toggleSidebar, UserData } from "../../redux/slices/globalSlice";
 import { RootState } from "../../redux/store";
 import { logout } from "../../api/Api";
 
@@ -108,19 +105,27 @@ export default function PrimarySearchAppBar() {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={()=>{        
-        handleMenuClose();        
-      }}><Link
-      to='/accountinfo'
-      className='menulink'     
-      style={{textDecoration:'none', color:'black' }}
-    >
-      Profile
-    </Link></MenuItem>
-      <MenuItem onClick={()=>{
-        logout();
-        handleMenuClose();
-        }}>Logout</MenuItem>
+      <MenuItem
+        onClick={() => {
+          handleMenuClose();
+        }}
+      >
+        <Link
+          to='/accountinfo'
+          className='menulink'
+          style={{ textDecoration: "none", color: "black" }}
+        >
+          Profile
+        </Link>
+      </MenuItem>
+      <MenuItem
+        onClick={() => {
+          logout();
+          handleMenuClose();
+        }}
+      >
+        Logout
+      </MenuItem>
     </Menu>
   );
   const mobileMenuId = "primary-search-account-menu-mobile";
@@ -140,50 +145,52 @@ export default function PrimarySearchAppBar() {
       open={isMobileMenuOpen}
       onClose={handleMobileMenuClose}
     >
-      <MenuItem>
-        <IconButton size='large' aria-label='show 4 new mails' color='inherit'>
-          <Badge badgeContent={4} color='error'>
-            <LanguageIcon />
-          </Badge>
-        </IconButton>
-        <p>Messages</p>
-      </MenuItem>
-      <MenuItem>
-        <IconButton
-          size='large'
-          aria-label='show 17 new notifications'
-          color='inherit'
+      <MenuItem
+        onClick={() => {
+          handleMenuClose();
+        }}
+      >
+        <Link
+          to='/accountinfo'
+          className='menulink'
+          style={{ textDecoration: "none", color: "black" }}
         >
-          <Badge badgeContent={17} color='error'>
-            <NotificationsIcon />
-          </Badge>
-        </IconButton>
-        <p>Notifications</p>
+          Language
+        </Link>
       </MenuItem>
-      <MenuItem onClick={handleProfileMenuOpen}>
-        <IconButton
-          size='large'
-          aria-label='account of current user'
-          aria-controls='primary-search-account-menu'
-          aria-haspopup='true'
-          color='inherit'
+      <MenuItem
+        onClick={() => {
+          handleMenuClose();
+        }}
+      >
+        <Link
+          to='/accountinfo'
+          className='menulink'
+          style={{ textDecoration: "none", color: "black" }}
         >
-          <AccountCircle />
-        </IconButton>
-        <p>Profile</p>
+          Profile
+        </Link>
+      </MenuItem>
+      <MenuItem
+        onClick={() => {
+          logout();
+          handleMenuClose();
+        }}
+      >
+        Logout
       </MenuItem>
     </Menu>
   );
-
   const globalUserData: UserData | undefined = useSelector(
     (state: RootState) => state.totalSlice.userData
   );
-
   const dispatch = useDispatch();
-
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar position='static'  sx={{backgroundColor:'white', color:'black', borderRadius: '5px'}}>
+      <AppBar
+        position='static'
+        sx={{ backgroundColor: "white", color: "black", borderRadius: "5px" }}
+      >
         <Toolbar>
           <IconButton
             size='large'
@@ -191,54 +198,40 @@ export default function PrimarySearchAppBar() {
             color='inherit'
             aria-label='open drawer'
             sx={{ mr: 2 }}
-            onClick={()=>{
-              dispatch(toggleSidebar('2'));
+            onClick={() => {
+              dispatch(toggleSidebar("2"));
             }}
           >
             <MenuIcon />
-          </IconButton>          
-          <Search>
-            <SearchIconWrapper>
-              <SearchIcon />
-            </SearchIconWrapper>
-            <StyledInputBase
-              placeholder='Search…'
-              inputProps={{ "aria-label": "search" }}
-            />
-          </Search>
-          <Box sx={{ flexGrow: 0.5 }} />
-          <Link to='/' className='menulink' >
+          </IconButton>
+          <Box sx={{ flexGrow: 1 }} />
+          <Link to='/' className='menulink'>
             <img
               alt='cmsvina logo'
               src='/logocmsvina.png'
               width={171.6}
               height={40.7}
-             
             />
           </Link>
-        
           <Typography
             variant='h6'
             noWrap
             component='div'
-            sx={{ display: { xs: "none", sm: "block", fontSize: '10px' } }}
-            onClick={()=>{}}
+            sx={{ display: { xs: "none", sm: "block", fontSize: "10px" } }}
+            onClick={() => {}}
           >
-             | WebVer: 37
+            | WebVer: 37
           </Typography>
-          
           <Box sx={{ flexGrow: 1 }} />
           <Box sx={{ display: { xs: "none", md: "flex" } }}>
             <IconButton
               size='large'
               aria-label='show 4 new mails'
               color='inherit'
-              onClick={()=> {
-
-              }}
-            >             
-              <LanguageIcon />             
-            </IconButton>            
+              onClick={() => {}}
+            >
+              <LanguageIcon />
+            </IconButton>
             <IconButton
               size='large'
               edge='end'
@@ -249,7 +242,13 @@ export default function PrimarySearchAppBar() {
               color='inherit'
             >
               {/* <AccountCircle /> */}
-              <img width={50}  style={{borderRadius:'50%'}} height={50} src={'/Picture_NS/NS_'+ globalUserData?.EMPL_NO+'.jpg'} alt={globalUserData?.EMPL_NO}></img>
+              <img
+                width={50}
+                style={{ borderRadius: "50%" }}
+                height={50}
+                src={"/Picture_NS/NS_" + globalUserData?.EMPL_NO + ".jpg"}
+                alt={globalUserData?.EMPL_NO}
+              ></img>
             </IconButton>
           </Box>
           <Box sx={{ display: { xs: "flex", md: "none" } }}>
