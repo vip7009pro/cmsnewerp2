@@ -1,8 +1,10 @@
 import {createSlice} from '@reduxjs/toolkit'
 import type {PayloadAction} from '@reduxjs/toolkit'
 import { io } from "socket.io-client";
+import Swal from 'sweetalert2';
 
-const socket =  io('http://14.160.33.94:3005')
+///const socket =  io('http://14.160.33.94:3005')
+const socket =  io('http://localhost:3005')
 socket.on("connect", () => {
   console.log(socket.id); // x8WIv7-mJelg7on_ALbx
 });
@@ -62,11 +64,62 @@ export interface UserData  {
     WORK_STATUS_NAME: string;
     WORK_STATUS_NAME_KR: string;
 }
+interface QLSXPLANDATA {
+  id: number;
+  PLAN_ID: string;
+  PLAN_DATE: string;
+  PROD_REQUEST_NO: string;
+  PLAN_QTY: number;
+  PLAN_EQ: string;
+  PLAN_FACTORY: string;
+  PLAN_LEADTIME: number;
+  INS_EMPL: string;
+  INS_DATE: string;
+  UPD_EMPL: string;
+  UPD_DATE: string;
+  G_CODE: string;
+  G_NAME: string;
+  G_NAME_KD: string;
+  PROD_REQUEST_DATE: string;
+  PROD_REQUEST_QTY: number;
+  STEP: string;
+  PLAN_ORDER: string;
+  PROCESS_NUMBER: number;
+  KQ_SX_TAM: number;
+  KETQUASX: number;
+  CD1: number;
+  CD2: number;
+  TON_CD1: number;
+  TON_CD2: number;
+  FACTORY: string;
+  EQ1: string;
+  EQ2: string;
+  Setting1: number;
+  Setting2: number;
+  UPH1: number;
+  UPH2: number;
+  Step1: number;
+  Step2: number;
+  LOSS_SX1: number;
+  LOSS_SX2: number;
+  LOSS_SETTING1: number;
+  LOSS_SETTING2: number;
+  NOTE: string;
+  NEXT_PLAN_ID: string;
+  XUATDAOFILM?: string;
+  EQ_STATUS?: string;
+  MAIN_MATERIAL?: string;
+  INT_TEM?: string;
+  CHOTBC?: string;
+  DKXL?: string;
+  OLD_PLAN_QTY?: string;
+}
 export interface GlobalInterface {
     userData?: UserData,
     diemdanhstate?: boolean,
     lang?: string
     sidebarmenu?: boolean,
+    multiple_chithi_array: QLSXPLANDATA[],
 }
 const initialState:GlobalInterface = {   
     userData: {
@@ -119,6 +172,7 @@ const initialState:GlobalInterface = {
     diemdanhstate: false,
     lang: 'vi',
     sidebarmenu: false,
+    multiple_chithi_array: []
 
 }
 export const glbSlice = createSlice({
@@ -138,9 +192,28 @@ export const glbSlice = createSlice({
           },
         toggleSidebar: (state,action: PayloadAction<any>)=> {         
           state.sidebarmenu = !state.sidebarmenu;
-        }
+        },
+        addChithiArray: (state, action: PayloadAction<QLSXPLANDATA>)=> {
+          
+          
+          if(state.multiple_chithi_array.indexOf(action.payload) !== -1)
+          {
+            Swal.fire('Thông báo','PLAN ID đã được thêm rồi','error');            
+          }
+          else{
+            state.multiple_chithi_array = [...state.multiple_chithi_array, action.payload];
+            console.log(state.multiple_chithi_array);
+            Swal.fire('Thông báo','Thêm PLAN ID thành công','success');
+          }
+
+        },        
+        resetChithiArray: (state, action: PayloadAction<string>)=> {
+          state.multiple_chithi_array =[];
+          Swal.fire('Thông báo','Reset Plan in combo thành công','success');
+        },
+        
 
     }
 });
-export const {changeDiemDanhState, changeUserData, update_socket,toggleSidebar } = glbSlice.actions;
+export const {changeDiemDanhState, changeUserData, update_socket,toggleSidebar, addChithiArray, resetChithiArray } = glbSlice.actions;
 export default glbSlice.reducer;

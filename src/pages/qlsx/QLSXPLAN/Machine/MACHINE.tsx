@@ -61,6 +61,9 @@ import { BiRefresh, BiReset } from "react-icons/bi";
 import YCKT from "../YCKT/YCKT";
 import { setInterval } from "timers/promises";
 import { GiCurvyKnife } from "react-icons/gi";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../../../../redux/store";
+import { addChithiArray, resetChithiArray } from "../../../../redux/slices/globalSlice";
 const axios = require("axios").default;
 interface TONLIEUXUONG {
   id: number;
@@ -272,6 +275,12 @@ interface EQ_STATUS {
   G_NAME: string;
 }
 const MACHINE = () => {
+
+  const chithiarray: QLSXPLANDATA[] | undefined = useSelector(
+    (state: RootState) => state.totalSlice.multiple_chithi_array
+  );
+  const dispatch = useDispatch();
+  
   const [currentPlanPD, setCurrentPlanPD] = useState(0);
   const [currentPlanCAVITY, setCurrentPlanCAVITY] = useState(0);
   const [selection, setSelection] = useState<any>({
@@ -2938,6 +2947,27 @@ const MACHINE = () => {
           <AiFillSave color='lightgreen' size={20} />
           Lưu Data Định Mức
         </IconButton>
+
+        <IconButton
+          className='buttonIcon'
+          onClick={() => {
+            dispatch(addChithiArray(qlsxplandatafilter[0]));   
+          }}
+        >
+          <BiRefresh color='yellow' size={20} />
+          Add to Print Plan
+        </IconButton>
+        <IconButton
+          className='buttonIcon'
+          onClick={() => {
+            dispatch(resetChithiArray(''));   
+          }}
+        >
+          <BiRefresh color='yellow' size={20} />
+          Reset Print Plan
+        </IconButton>
+
+
       </GridToolbarContainer>
     );
   }

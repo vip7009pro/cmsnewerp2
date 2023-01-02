@@ -68,8 +68,8 @@ function Home() {
   return (
     <div className='home'>
       <div className='navdiv'>
-        {/* <Navbar /> */}
-        <PrimarySearchAppBar/>        
+        <Navbar />
+        {/* <PrimarySearchAppBar/>  */}       
       </div>
       <div className='homeContainer'>
         <div className='sidebardiv'>
