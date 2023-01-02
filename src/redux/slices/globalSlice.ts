@@ -3,8 +3,8 @@ import type {PayloadAction} from '@reduxjs/toolkit'
 import { io } from "socket.io-client";
 import Swal from 'sweetalert2';
 
-///const socket =  io('http://14.160.33.94:3005')
-const socket =  io('http://localhost:3005')
+const socket =  io('http://14.160.33.94:3005')
+//const socket =  io('http://localhost:3005')
 socket.on("connect", () => {
   console.log(socket.id); // x8WIv7-mJelg7on_ALbx
 });
