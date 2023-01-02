@@ -82,7 +82,7 @@ interface QLSXPLANDATA {
   G_NAME_KD: string;
   PROD_REQUEST_DATE: string;
   PROD_REQUEST_QTY: number;
-  STEP: string;
+  STEP: number;
   PLAN_ORDER: string;
   PROCESS_NUMBER: number;
   KQ_SX_TAM: number;
@@ -194,18 +194,49 @@ export const glbSlice = createSlice({
           state.sidebarmenu = !state.sidebarmenu;
         },
         addChithiArray: (state, action: PayloadAction<QLSXPLANDATA>)=> {
-          
-          
-          if(state.multiple_chithi_array.indexOf(action.payload) !== -1)
+
+        let temp_plan_id_array: string[] = state.multiple_chithi_array.map((element: QLSXPLANDATA, index: number)=> {
+          return element.PLAN_ID
+        });
+        let temp_plan_step_array: QLSXPLANDATA[] =  state.multiple_chithi_array.filter((element: QLSXPLANDATA, index: number)=> {
+          return element.STEP === 0
+        });
+        
+
+          if(temp_plan_id_array.indexOf(action.payload.PLAN_ID) !== -1)
           {
             Swal.fire('Thông báo','PLAN ID đã được thêm rồi','error');            
           }
           else{
-            state.multiple_chithi_array = [...state.multiple_chithi_array, action.payload];
-            console.log(state.multiple_chithi_array);
-            Swal.fire('Thông báo','Thêm PLAN ID thành công','success');
-          }
+            if(temp_plan_step_array.length >0 && action.payload.STEP ===0)
+            {
+              Swal.fire('Thông báo','Chỉ thêm 1 chỉ thị Bước 0 vào combo','error');     
+            }
+            else
+            {
+              if(state.multiple_chithi_array.length===0)
+              {
+                state.multiple_chithi_array = [...state.multiple_chithi_array, action.payload];
+                //console.log(state.multiple_chithi_array);
+                Swal.fire('Thông báo','Thêm PLAN ID thành công','success');
+              }
+              else
+              {
+                if(state.multiple_chithi_array[0].PROD_REQUEST_NO === action.payload.PROD_REQUEST_NO)
+                {
+                  state.multiple_chithi_array = [...state.multiple_chithi_array, action.payload];
+                  //console.log(state.multiple_chithi_array);
+                  Swal.fire('Thông báo','Thêm PLAN ID thành công','success');
+                }
+                else{
+                  Swal.fire('Thông báo','Chỉ thêm các chỉ thị của cùng 1 ycsx vào combo','error');     
+                }
 
+              }
+              
+            }
+            
+          }
         },        
         resetChithiArray: (state, action: PayloadAction<string>)=> {
           state.multiple_chithi_array =[];

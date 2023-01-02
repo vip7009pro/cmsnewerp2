@@ -19,7 +19,7 @@ interface QLSXPLANDATA {
   G_NAME_KD: string;
   PROD_REQUEST_DATE: string;
   PROD_REQUEST_QTY: number;
-  STEP: string
+  STEP: number
 }
 
 interface MachineInterface {

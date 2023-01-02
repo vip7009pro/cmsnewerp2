@@ -93,7 +93,7 @@ interface QLSXPLANDATA {
   G_NAME_KD: string;
   PROD_REQUEST_DATE: string;
   PROD_REQUEST_QTY: number;
-  STEP: string;
+  STEP: number;
   PLAN_ORDER: string;
   PROCESS_NUMBER: number;
   KETQUASX: number;
@@ -1286,7 +1286,7 @@ const QUICKPLAN = () => {
           G_NAME_KD: ycsxdatatablefilter[i].G_NAME,
           PROD_REQUEST_DATE: ycsxdatatablefilter[i].PROD_REQUEST_DATE,
           PROD_REQUEST_QTY: ycsxdatatablefilter[i].PROD_REQUEST_QTY,
-          STEP: "1",
+          STEP: 1,
           PLAN_ORDER: "1",
           PROCESS_NUMBER: 1,
           KETQUASX: 0,
@@ -1344,7 +1344,7 @@ const QUICKPLAN = () => {
       G_NAME_KD: "",
       PROD_REQUEST_DATE: "",
       PROD_REQUEST_QTY: 0,
-      STEP: "1",
+      STEP:1,
       PLAN_ORDER: "1",
       PROCESS_NUMBER: 1,
       KETQUASX: 0,

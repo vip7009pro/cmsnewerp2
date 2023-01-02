@@ -64,6 +64,7 @@ import { GiCurvyKnife } from "react-icons/gi";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../../redux/store";
 import { addChithiArray, resetChithiArray } from "../../../../redux/slices/globalSlice";
+import CHITHI_COMPONENT2 from "../CHITHI/CHITHI_COMPONENT2";
 const axios = require("axios").default;
 interface TONLIEUXUONG {
   id: number;
@@ -157,7 +158,7 @@ interface QLSXPLANDATA {
   G_NAME_KD: string;
   PROD_REQUEST_DATE: string;
   PROD_REQUEST_QTY: number;
-  STEP: string;
+  STEP: number;
   PLAN_ORDER: string;
   PROCESS_NUMBER: number;
   KQ_SX_TAM: number;
@@ -376,8 +377,8 @@ const MACHINE = () => {
   const [ycsxpendingcheck, setYCSXPendingCheck] = useState(false);
   const [inspectInputcheck, setInspectInputCheck] = useState(false);
   const [ycsxlistrender, setYCSXListRender] = useState<Array<ReactElement>>();
-  const [chithilistrender, setChiThiListRender] =
-    useState<Array<ReactElement>>();
+  const [chithilistrender, setChiThiListRender] = useState<Array<ReactElement>>();
+  const [chithilistrender2, setChiThiListRender2] = useState<ReactElement>();
   const [ycktlistrender, setYCKTListRender] = useState<Array<ReactElement>>();
   const [selectedMachine, setSelectedMachine] = useState("FR1");
   const [selectedFactory, setSelectedFactory] = useState("NM1");
@@ -385,6 +386,7 @@ const MACHINE = () => {
     moment().format("YYYY-MM-DD")
   );
   const [showChiThi, setShowChiThi] = useState(false);
+  const [showChiThi2, setShowChiThi2] = useState(false);
   const [showYCKT, setShowYCKT] = useState(false);
   const [editplan, seteditplan] = useState(true);
   const [editchithi, seteditchithi] = useState(true);
@@ -1689,6 +1691,10 @@ const MACHINE = () => {
       />
     ));
   };
+  const renderChiThi2 = (planlist: QLSXPLANDATA[]) => {
+    //console.log(planlist);
+    return <CHITHI_COMPONENT2 PLAN_LIST={planlist} />;
+  };
   const renderYCSX = (ycsxlist: YCSXTableData[]) => {
     return ycsxlist.map((element, index) => (
       <YCSXComponent
@@ -2876,6 +2882,57 @@ const MACHINE = () => {
         >
           <AiOutlinePrinter color='#0066ff' size={25} />
           Print Chỉ Thị
+        </IconButton>
+        <IconButton
+          className='buttonIcon'
+          onClick={() => {
+            if (chithiarray !== undefined && chithiarray.length > 0) {
+              if (
+                chithiarray[0].FACTORY === null ||
+                chithiarray[0].EQ1 === null ||
+                chithiarray[0].EQ2 === null ||
+                chithiarray[0].Setting1 === null ||
+                chithiarray[0].Setting2 === null ||
+                chithiarray[0].UPH1 === null ||
+                chithiarray[0].UPH2 === null ||
+                chithiarray[0].Step1 === null ||
+                chithiarray[0].Step1 === null ||
+                chithiarray[0].LOSS_SX1 === null ||
+                chithiarray[0].LOSS_SX2 === null ||
+                chithiarray[0].LOSS_SETTING1 === null ||
+                chithiarray[0].LOSS_SETTING2 === null
+              ) {
+                Swal.fire(
+                  "Thông báo",
+                  "Nhập data định mức trước khi chỉ thị",
+                  "error"
+                );
+              } else {
+                let chithimain: QLSXPLANDATA[] = chithiarray.filter((element: QLSXPLANDATA, index: number)=> element.STEP ===0);
+                if(chithimain.length >0)
+                {
+                  setShowChiThi2(true);
+                  setChiThiListRender2(renderChiThi2(chithiarray));
+                }
+                else
+                {
+                  Swal.fire(
+                    "Thông báo",
+                    "Chưa có chỉ thị chính (B0)",
+                    "error"
+                  );
+                }
+                
+              }
+              //console.log(ycsxdatatablefilter);
+            } else {
+              setShowChiThi2(false);
+              Swal.fire("Thông báo", "Chọn ít nhất 1 Plan để in", "error");
+            }
+          }}
+        >
+          <AiOutlinePrinter color='#0066ff' size={25} />
+          Print Chỉ Thị Combo
         </IconButton>
         <IconButton
           className='buttonIcon'
@@ -4567,6 +4624,30 @@ const MACHINE = () => {
                     </div>
                     <div className='ycsxrender' ref={ycsxprintref}>
                       {chithilistrender}
+                    </div>
+                  </div>
+                )}
+                {showChiThi2 && (
+                  <div className='printycsxpage'>
+                    <div className='buttongroup'>
+                      <button
+                        onClick={() => {
+                          setChiThiListRender2(renderChiThi2(chithiarray));
+                        }}
+                      >
+                        Render Chỉ Thị 2
+                      </button>
+                      <button onClick={handlePrint}>Print Chỉ Thị</button>
+                      <button
+                        onClick={() => {
+                          setShowChiThi2(!showChiThi2);
+                        }}
+                      >
+                        Close
+                      </button>
+                    </div>
+                    <div className='ycsxrender' ref={ycsxprintref}>
+                      {chithilistrender2}
                     </div>
                   </div>
                 )}

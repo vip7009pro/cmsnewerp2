@@ -10,7 +10,7 @@ import {
   changeUserData,
   UserData,
 } from "../../../../redux/slices/globalSlice";
-import "./CHITHI_COMPONENT.scss";
+import "./CHITHI_COMPONENT2.scss";
 var Barcode = require("react-barcode");
 interface YCSXTableData {
   DESCR?: string;
@@ -63,7 +63,7 @@ interface YCSXTableData {
   G_NAME_KD?: string;
   PROD_REQUEST_DATE?: string;
   PROD_REQUEST_QTY?: number;
-  STEP?: number;
+  STEP?: string;
   PLAN_ORDER?: string;
   OLD_PLAN_QTY?: string,
 }
@@ -141,21 +141,64 @@ interface QLSXCHITHIDATA {
   UPD_EMPL: string,
   UPD_DATE: string,
 }
-const CHITHI_COMPONENT = ({
-  PROD_REQUEST_NO,
-  PDBV,
-  PLAN_ID,
-  PLAN_QTY,
-  PLAN_DATE,
-  PLAN_EQ,
-  PLAN_FACTORY,
-  PLAN_LEADTIME,
-  G_CODE,
-  G_NAME,
-  G_NAME_KD,
-  STEP,
-  PLAN_ORDER,
-}: YCSXTableData) => {
+interface QLSXPLANDATA {
+    id: number;
+    PLAN_ID: string;
+    PLAN_DATE: string;
+    PROD_REQUEST_NO: string;
+    PLAN_QTY: number;
+    PLAN_EQ: string;
+    PLAN_FACTORY: string;
+    PLAN_LEADTIME: number;
+    INS_EMPL: string;
+    INS_DATE: string;
+    UPD_EMPL: string;
+    UPD_DATE: string;
+    G_CODE: string;
+    G_NAME: string;
+    G_NAME_KD: string;
+    PROD_REQUEST_DATE: string;
+    PROD_REQUEST_QTY: number;
+    STEP: number;
+    PLAN_ORDER: string;
+    PROCESS_NUMBER: number;
+    KQ_SX_TAM: number;
+    KETQUASX: number;
+    CD1: number;
+    CD2: number;
+    TON_CD1: number;
+    TON_CD2: number;
+    FACTORY: string;
+    EQ1: string;
+    EQ2: string;
+    Setting1: number;
+    Setting2: number;
+    UPH1: number;
+    UPH2: number;
+    Step1: number;
+    Step2: number;
+    LOSS_SX1: number;
+    LOSS_SX2: number;
+    LOSS_SETTING1: number;
+    LOSS_SETTING2: number;
+    NOTE: string;
+    NEXT_PLAN_ID: string;
+    XUATDAOFILM?: string;
+    EQ_STATUS?: string;
+    MAIN_MATERIAL?: string;
+    INT_TEM?: string;
+    CHOTBC?: string;
+    DKXL?: string;
+    OLD_PLAN_QTY?: string;
+  }
+  interface PLAN_COMBO {
+    PLAN_LIST: QLSXPLANDATA[]
+  }
+
+const CHITHI_COMPONENT2 = ({PLAN_LIST}: PLAN_COMBO) => {
+    //console.log(PLAN_LIST);
+    let main_plan: QLSXPLANDATA = PLAN_LIST.filter((element, index)=> element.STEP ===0)[0];    
+
   const userData: UserData | undefined = useSelector(
     (state: RootState) => state.totalSlice.userData
   );
@@ -218,7 +261,7 @@ const CHITHI_COMPONENT = ({
   const [chithidatatable, setChiThiDataTable] = useState<QLSXCHITHIDATA[]>([]);
   const handleGetChiThiTable = async () => {
     generalQuery("getchithidatatable", {
-      PLAN_ID: PLAN_ID,
+      PLAN_ID: main_plan.PLAN_ID,
     })
       .then((response) => {
         //console.log(response.data.tk_status);
@@ -234,7 +277,7 @@ const CHITHI_COMPONENT = ({
   const max_lieu:number =  17;
   const initCTSX = async () => {
     generalQuery("ycsx_fullinfo", {
-      PROD_REQUEST_NO: PROD_REQUEST_NO,
+      PROD_REQUEST_NO: main_plan.PROD_REQUEST_NO,
     })
       .then((response) => {
         //console.log('Data request full ycsx :');
@@ -309,25 +352,15 @@ const CHITHI_COMPONENT = ({
   useEffect(() => {
     initCTSX();
     handleGetChiThiTable();
-  }, [PLAN_ID]);
+  }, []);
   return (
-    <div className='chithicomponent'>
-      {PDBV === "Y" && (
-        <div className='qcpass'>
-          <img
-            alt='qcpass'
-            src='/QC PASS20.png'
-            width={440 - 100 - 10}
-            height={400 - 100}
-          />
-        </div>
-      )}
+    <div className='chithicomponent2'>
       {
         <div className='tieudeycsx'>
           <div className='leftlogobarcode'>
             <img alt='logo' src='/logocmsvina.png' width={160} height={40} />
             <Barcode
-              value={PLAN_ID}
+              value={main_plan.PLAN_ID}
               format='CODE128'
               width={1}
               height={50}
@@ -336,10 +369,11 @@ const CHITHI_COMPONENT = ({
               lineColor='black'
               margin={0}
             />
-            {PLAN_ID}
+            {main_plan.PLAN_ID}
           </div>
           <div className='headertitle'>
-            생산 지시서 - Chỉ thị Sản Xuất({PLAN_EQ}- B{STEP})<br></br>
+            생산 지시서 - Chỉ thị Sản Xuất({main_plan.PLAN_EQ}- B
+            {main_plan.STEP})<br></br>
             <span style={{ fontSize: 12 }}>
               Thời điểm in CTSX: {moment().format("YYYY-MM-DD HH:mm:ss")}
             </span>
@@ -420,7 +454,7 @@ const CHITHI_COMPONENT = ({
               </tr>
               <tr>
                 <td>Số lượng chỉ thị/지시 수량</td>
-                <td>{PLAN_QTY?.toLocaleString("en-US")} EA</td>
+                <td>{main_plan.PLAN_QTY?.toLocaleString("en-US")} EA</td>
               </tr>
               <tr>
                 <td>P/D</td>
@@ -443,42 +477,39 @@ const CHITHI_COMPONENT = ({
               </tr>
             </thead>
             <tbody>
-            <tr>
+              <tr>
                 <td>Nhà máy/공장</td>
-                <td>{PLAN_FACTORY}</td>
+                <td>{main_plan.PLAN_FACTORY}</td>
               </tr>
               <tr>
                 <td>Máy/호기</td>
-                <td>{PLAN_EQ}</td>
+                <td>{main_plan.PLAN_EQ}</td>
               </tr>
-             
+
               <tr>
                 <td>Note (KD)</td>
                 <td>{request_codeinfo[0].REMK}</td>
               </tr>
               <tr>
                 <td>Chú ý (QLSX)</td>
-                <td>     
-                  {request_codeinfo[0]?.NOTE}            
-                </td>
+                <td>{request_codeinfo[0]?.NOTE}</td>
               </tr>
             </tbody>
           </table>
-        </div>       
+        </div>
         <div className='text1'>
-          2. 생산 정보 Thông tin Sản xuất
-          {' '}
+          2. 생산 정보 Thông tin Sản xuất{" "}
           <Barcode
-              value={PLAN_ID}
-              format='CODE128'
-              width={1.5}
-              height={20}
-              displayValue={false}
-              background='#fff'
-              lineColor='black'
-              margin={0}
-            />
-             ({PLAN_ID})
+            value={main_plan.PLAN_ID}
+            format='CODE128'
+            width={1.5}
+            height={20}
+            displayValue={false}
+            background='#fff'
+            lineColor='black'
+            margin={0}
+          />
+          ({main_plan.PLAN_ID})
         </div>
         <div className='thongtinyeucau'>
           <table className='ttyc1'>
@@ -491,15 +522,27 @@ const CHITHI_COMPONENT = ({
             <tbody>
               <tr>
                 <td>UPH1 (EA/h) - {request_codeinfo[0]?.EQ1}</td>
-                <td>{(request_codeinfo[0]?.UPH1 !== null )? request_codeinfo[0]?.UPH1.toLocaleString("en-US"):''}</td>
+                <td>
+                  {request_codeinfo[0]?.UPH1 !== null
+                    ? request_codeinfo[0]?.UPH1.toLocaleString("en-US")
+                    : ""}
+                </td>
               </tr>
               <tr>
                 <td>UPH2 (EA/h) - {request_codeinfo[0]?.EQ2}</td>
-                <td>{(request_codeinfo[0]?.UPH2 !== null )? request_codeinfo[0]?.UPH2.toLocaleString("en-US"):''}</td>
+                <td>
+                  {request_codeinfo[0]?.UPH2 !== null
+                    ? request_codeinfo[0]?.UPH2.toLocaleString("en-US")
+                    : ""}
+                </td>
               </tr>
               <tr>
                 <td>Thời gian setting 1 - {request_codeinfo[0]?.EQ1}</td>
-                <td>{(request_codeinfo[0]?.Setting1 !== null )? request_codeinfo[0]?.Setting1:''}</td>
+                <td>
+                  {request_codeinfo[0]?.Setting1 !== null
+                    ? request_codeinfo[0]?.Setting1
+                    : ""}
+                </td>
               </tr>
               <tr>
                 <td>Thời gian setting 2 - {request_codeinfo[0]?.EQ2}</td>
@@ -517,10 +560,7 @@ const CHITHI_COMPONENT = ({
             <tbody>
               <tr>
                 <td>LOSS SX ĐỊNH MỨC 1- {request_codeinfo[0]?.EQ1}</td>
-                <td>
-                  {request_codeinfo[0]?.LOSS_SX1}{" "}
-                  %
-                </td>
+                <td>{request_codeinfo[0]?.LOSS_SX1} %</td>
               </tr>
               <tr>
                 <td>LOSS SX ĐỊNH MỨC 2- {request_codeinfo[0]?.EQ2}</td>
@@ -528,16 +568,76 @@ const CHITHI_COMPONENT = ({
               </tr>
               <tr>
                 <td>LOSS SETTING ĐỊNH MỨC 1- {request_codeinfo[0]?.EQ1}</td>
-                <td>{(request_codeinfo[0]?.LOSS_SETTING1 !== null )? request_codeinfo[0]?.LOSS_SETTING1.toLocaleString("en-US"):''} met</td>
+                <td>
+                  {request_codeinfo[0]?.LOSS_SETTING1 !== null
+                    ? request_codeinfo[0]?.LOSS_SETTING1.toLocaleString("en-US")
+                    : ""}{" "}
+                  met
+                </td>
               </tr>
-              <tr>               
+              <tr>
                 <td>LOSS SETTING ĐỊNH MỨC 2- {request_codeinfo[0]?.EQ2}</td>
-                <td>{(request_codeinfo[0]?.LOSS_SETTING2 !== null )? request_codeinfo[0]?.LOSS_SETTING2.toLocaleString("en-US"): ''} met</td>                
+                <td>
+                  {request_codeinfo[0]?.LOSS_SETTING2 !== null
+                    ? request_codeinfo[0]?.LOSS_SETTING2.toLocaleString("en-US")
+                    : ""}{" "}
+                  met
+                </td>
               </tr>
             </tbody>
-          </table>         
-        </div>       
-        <div className='text1'>3. 제품 정보 Thông tin vật liệu</div>
+          </table>
+        </div>
+        <div className='text1'>3. Thông tin combo chỉ thị</div>
+        <div className='combochithi'>
+          <table>
+            <thead>
+              <tr>
+                <th>No</th>
+                <th>PLAN_ID</th>
+                <th>Barcode</th>
+                <th>Machine</th>
+                <th>Step</th>
+                <th>Plan QTY</th>
+              </tr>
+            </thead>
+            <tbody>
+              {PLAN_LIST.map((element: QLSXPLANDATA, index: number) => (
+                <tr key={index}>
+                  <td>{index}</td>                  
+                  {element.STEP === 0 ? (
+                    <td
+                      style={{
+                        color: "red",
+                        fontWeight: "bold",
+                        backgroundColor: "lightgreen",
+                      }}
+                    >
+                      {element.PLAN_ID}
+                    </td>
+                  ) : (
+                    <td>{element.PLAN_ID}</td>
+                  )}
+                  <td>
+                    <Barcode
+                      value={element.PLAN_ID}
+                      format='CODE128'
+                      width={1.5}
+                      height={25}
+                      displayValue={false}
+                      background='#fff'
+                      lineColor='black'
+                      margin={0}
+                    />
+                  </td>
+                  <td>{element.PLAN_EQ}</td>
+                  <td>{element.STEP}</td>
+                  <td>{element.PLAN_QTY.toLocaleString("en-US")}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div className='text1'>4. 제품 정보 Thông tin vật liệu</div>
         <div className='thongtinvatlieu'>
           {chithidatatable.length <= max_lieu && (
             <div className='vatlieugiua'>
@@ -550,7 +650,7 @@ const CHITHI_COMPONENT = ({
                     <th>Size Liệu/원단폭</th>
                     <th>SL chỉ thị/지시 수량</th>
                     <th>Thực xuất M/실제 출고 M</th>
-                    <th>Thực xuất Roll/실제 출고 Roll</th>                    
+                    <th>Thực xuất Roll/실제 출고 Roll</th>
                     <th>Ghi chú/비고</th>
                   </tr>
                 </thead>
@@ -559,11 +659,26 @@ const CHITHI_COMPONENT = ({
                     <tr key={index}>
                       <td>{index}</td>
                       <td>{element.M_CODE}</td>
-                      {
-                        (element.LIEUQL_SX ===1)? <td style={{color:'red', fontWeight:'bold', backgroundColor:'lightgreen'}}>{element.M_NAME}</td>:<td>{element.M_NAME}</td>
-                      }                      
+                      {element.LIEUQL_SX === 1 ? (
+                        <td
+                          style={{
+                            color: "red",
+                            fontWeight: "bold",
+                            backgroundColor: "lightgreen",
+                          }}
+                        >
+                          {element.M_NAME}
+                        </td>
+                      ) : (
+                        <td>{element.M_NAME}</td>
+                      )}
                       <td>{element.WIDTH_CD}</td>
-                      <td>{(element.M_MET_QTY * element.M_QTY).toLocaleString("en-US")} M</td>
+                      <td>
+                        {(element.M_MET_QTY * element.M_QTY).toLocaleString(
+                          "en-US"
+                        )}{" "}
+                        M
+                      </td>
                       <td></td>
                       <td></td>
                       <td>{element.LIEUQL_SX}</td>
@@ -578,13 +693,13 @@ const CHITHI_COMPONENT = ({
               <table>
                 <thead>
                   <tr>
-                  <th>No</th>
+                    <th>No</th>
                     <th>Mã Liệu/원단코드</th>
                     <th>Tên Liệu/원단명</th>
                     <th>Size Liệu/원단폭</th>
                     <th>SL chỉ thị/지시 수량</th>
                     <th>Thực xuất M/실제 출고 M</th>
-                    <th>Thực xuất Roll/실제 출고 Roll</th>                    
+                    <th>Thực xuất Roll/실제 출고 Roll</th>
                     <th>Ghi chú/비고</th>
                   </tr>
                 </thead>
@@ -593,16 +708,31 @@ const CHITHI_COMPONENT = ({
                     (element, index) =>
                       index <= max_lieu && (
                         <tr key={index}>
-                         <td>{index}</td>
-                        <td>{element.M_CODE}</td>
-                        {
-                        (element.LIEUQL_SX ===1)? <td style={{color:'red', fontWeight:'bold', backgroundColor:'lightgreen'}}>{element.M_NAME}</td>:<td>{element.M_NAME}</td>
-                      }  
-                        <td>{element.WIDTH_CD}</td>
-                        <td>{(element.M_MET_QTY * element.M_QTY).toLocaleString("en-US")} M</td>
-                        <td></td>
-                        <td></td>
-                        <td>{element.LIEUQL_SX}</td>
+                          <td>{index}</td>
+                          <td>{element.M_CODE}</td>
+                          {element.LIEUQL_SX === 1 ? (
+                            <td
+                              style={{
+                                color: "red",
+                                fontWeight: "bold",
+                                backgroundColor: "lightgreen",
+                              }}
+                            >
+                              {element.M_NAME}
+                            </td>
+                          ) : (
+                            <td>{element.M_NAME}</td>
+                          )}
+                          <td>{element.WIDTH_CD}</td>
+                          <td>
+                            {(element.M_MET_QTY * element.M_QTY).toLocaleString(
+                              "en-US"
+                            )}{" "}
+                            M
+                          </td>
+                          <td></td>
+                          <td></td>
+                          <td>{element.LIEUQL_SX}</td>
                         </tr>
                       )
                   )}
@@ -615,13 +745,13 @@ const CHITHI_COMPONENT = ({
               <table>
                 <thead>
                   <tr>
-                  <th>No</th>
+                    <th>No</th>
                     <th>Mã Liệu/원단코드</th>
                     <th>Tên Liệu/원단명</th>
                     <th>Size Liệu/원단폭</th>
                     <th>SL chỉ thị/지시 수량</th>
                     <th>Thực xuất M/실제 출고 M</th>
-                    <th>Thực xuất Roll/실제 출고 Roll</th>                    
+                    <th>Thực xuất Roll/실제 출고 Roll</th>
                     <th>Ghi chú/비고</th>
                   </tr>
                 </thead>
@@ -630,16 +760,31 @@ const CHITHI_COMPONENT = ({
                     (element, index) =>
                       index > max_lieu && (
                         <tr key={index}>
-                         <td>{index}</td>
-                        <td>{element.M_CODE}</td>
-                        {
-                        (element.LIEUQL_SX ===1)? <td style={{color:'red', fontWeight:'bold', backgroundColor:'lightgreen'}}>{element.M_NAME}</td>:<td>{element.M_NAME}</td>
-                      }  
-                        <td>{element.WIDTH_CD}</td>
-                        <td>{(element.M_MET_QTY * element.M_QTY).toLocaleString("en-US")} M</td>
-                        <td></td>
-                        <td></td>
-                        <td>{element.LIEUQL_SX}</td>
+                          <td>{index}</td>
+                          <td>{element.M_CODE}</td>
+                          {element.LIEUQL_SX === 1 ? (
+                            <td
+                              style={{
+                                color: "red",
+                                fontWeight: "bold",
+                                backgroundColor: "lightgreen",
+                              }}
+                            >
+                              {element.M_NAME}
+                            </td>
+                          ) : (
+                            <td>{element.M_NAME}</td>
+                          )}
+                          <td>{element.WIDTH_CD}</td>
+                          <td>
+                            {(element.M_MET_QTY * element.M_QTY).toLocaleString(
+                              "en-US"
+                            )}{" "}
+                            M
+                          </td>
+                          <td></td>
+                          <td></td>
+                          <td>{element.LIEUQL_SX}</td>
                         </tr>
                       )
                   )}
@@ -652,4 +797,4 @@ const CHITHI_COMPONENT = ({
     </div>
   );
 };
-export default CHITHI_COMPONENT;
+export default CHITHI_COMPONENT2;
