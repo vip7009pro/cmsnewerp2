@@ -47,10 +47,11 @@ const MACHINE_COMPONENT2 = (machine_data: MachineInterface) => {
   var date2 = moment.utc(machine_data.upd_time).format('YYYY-MM-DD HH:mm:ss');
   var diff: number = date1.diff(date2,'minutes');  
 
-
   return (
     <div className="mc2">
    {/*  {(machine_data.eq_status === 'STOP' && machine_data.upd_empl !== '') && <div className="downtime" style={{fontSize:11}}>  Stop: {diff} min</div>} */}
+    {(machine_data.eq_status === 'SETTING' && machine_data.upd_empl !== '') && <div className="downtime" style={{fontSize:11}}>  Setting: {diff} min</div>}
+    {(machine_data.eq_status === 'MASS' && machine_data.upd_empl !== '') && <div className="downtime" style={{fontSize:11}}>  Run: {diff} min</div>}
     <div
       className='machine_component2'
       style={{

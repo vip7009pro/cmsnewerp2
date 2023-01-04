@@ -248,8 +248,9 @@ const KinhDoanhReport = () => {
   const handleGetFCSTAmount = () => {
     let fcstweek2:number = moment().add(1,'days').isoWeek();
     let fcstyear2: number = moment().year(); 
+    console.log(fcstweek2);
 
-    generalQuery("fcstamount", { FCSTYEAR: fcstyear2, FCSTWEEKNO: fcstweek2 })
+    generalQuery("fcstamount", { FCSTYEAR: fcstyear2, FCSTWEEKNO: fcstweek2})
     .then((response) => {
       //console.log(response.data.data);
       if (response.data.tk_status !== "NG") {
@@ -260,7 +261,8 @@ const KinhDoanhReport = () => {
         })
         setWidgetData_FcstAmount(loadeddata[0]);        
       } else {
-        generalQuery("fcstamount", { FCSTYEAR: fcstyear2, FCSTWEEKNO: fcstweek2-1 })
+        
+        generalQuery("fcstamount", { FCSTYEAR: fcstweek2-1 ===0? fcstyear2-1 : fcstyear2, FCSTWEEKNO: fcstweek2-1 ===0? 52:fcstweek2-1  })
         .then((response) => {
           //console.log(response.data.data);
           if (response.data.tk_status !== "NG") {

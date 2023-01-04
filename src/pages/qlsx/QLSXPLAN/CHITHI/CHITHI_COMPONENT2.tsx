@@ -274,7 +274,7 @@ const CHITHI_COMPONENT2 = ({PLAN_LIST}: PLAN_COMBO) => {
         console.log(error);
       });
   };
-  const max_lieu:number =  17;
+  const max_lieu:number =  12;
   const initCTSX = async () => {
     generalQuery("ycsx_fullinfo", {
       PROD_REQUEST_NO: main_plan.PROD_REQUEST_NO,

@@ -461,6 +461,7 @@ const DATASX = () => {
         setReadyRender(true); 
         setisLoading(false);      
       } else {     
+        Swal.fire('Thông báo', ' Có lỗi : '+ response.data.message,'error');  
       }
     })
     .catch((error) => {
@@ -495,11 +496,13 @@ const DATASX = () => {
         setDataSXTable(loaded_data); 
         setReadyRender(true); 
         setisLoading(false);      
-      } else {     
+      } else {   
+        Swal.fire('Thông báo', ' Có lỗi : '+ response.data.message,'error');  
       }
     })
     .catch((error) => {
       console.log(error);
+      Swal.fire('Thông báo', ' Có lỗi : '+ error,'error');  
     });     
   }
   useEffect(()=>{      

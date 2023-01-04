@@ -17,6 +17,7 @@ import {
   GridAddIcon,
   GridCallbackDetails,
   GridCellEditCommitParams,
+  GridEventListener,
   GridSelectionModel,
   GridToolbarContainer,
   GridToolbarQuickFilter,
@@ -63,7 +64,10 @@ import { setInterval } from "timers/promises";
 import { GiCurvyKnife } from "react-icons/gi";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../../redux/store";
-import { addChithiArray, resetChithiArray } from "../../../../redux/slices/globalSlice";
+import {
+  addChithiArray,
+  resetChithiArray,
+} from "../../../../redux/slices/globalSlice";
 import CHITHI_COMPONENT2 from "../CHITHI/CHITHI_COMPONENT2";
 const axios = require("axios").default;
 interface TONLIEUXUONG {
@@ -276,12 +280,10 @@ interface EQ_STATUS {
   G_NAME: string;
 }
 const MACHINE = () => {
-
   const chithiarray: QLSXPLANDATA[] | undefined = useSelector(
     (state: RootState) => state.totalSlice.multiple_chithi_array
   );
   const dispatch = useDispatch();
-  
   const [currentPlanPD, setCurrentPlanPD] = useState(0);
   const [currentPlanCAVITY, setCurrentPlanCAVITY] = useState(0);
   const [selection, setSelection] = useState<any>({
@@ -377,7 +379,8 @@ const MACHINE = () => {
   const [ycsxpendingcheck, setYCSXPendingCheck] = useState(false);
   const [inspectInputcheck, setInspectInputCheck] = useState(false);
   const [ycsxlistrender, setYCSXListRender] = useState<Array<ReactElement>>();
-  const [chithilistrender, setChiThiListRender] = useState<Array<ReactElement>>();
+  const [chithilistrender, setChiThiListRender] =
+    useState<Array<ReactElement>>();
   const [chithilistrender2, setChiThiListRender2] = useState<ReactElement>();
   const [ycktlistrender, setYCKTListRender] = useState<Array<ReactElement>>();
   const [selectedMachine, setSelectedMachine] = useState("FR1");
@@ -385,6 +388,7 @@ const MACHINE = () => {
   const [selectedPlanDate, setSelectedPlanDate] = useState(
     moment().format("YYYY-MM-DD")
   );
+  const [selectedPlan, setSelectedPlan] = useState<QLSXPLANDATA>();
   const [showChiThi, setShowChiThi] = useState(false);
   const [showChiThi2, setShowChiThi2] = useState(false);
   const [showYCKT, setShowYCKT] = useState(false);
@@ -1375,7 +1379,8 @@ const MACHINE = () => {
   const handle_huyxuatkhoao = async () => {
     if (lichsuxuatkhoaodatafilter.length > 0) {
       let err_code: string = "0";
-      let current_plan_id: string = qlsxplandatafilter[0].PLAN_ID;
+      let current_plan_id: string =
+        selectedPlan?.PLAN_ID === undefined ? "xxx" : selectedPlan?.PLAN_ID;
       for (let i = 0; i < lichsuxuatkhoaodatafilter.length; i++) {
         await generalQuery("deleteXuatKhoAo", {
           CURRENT_PLAN_ID: current_plan_id,
@@ -1422,7 +1427,9 @@ const MACHINE = () => {
       handle_loadKhoAo();
       handle_loadlichsunhapkhoao();
       handle_loadlichsuxuatkhoao();
-      handle_loadlichsuinputlieu(qlsxplandatafilter[0].PLAN_ID);
+      handle_loadlichsuinputlieu(
+        selectedPlan?.PLAN_ID === undefined ? "xxx" : selectedPlan?.PLAN_ID
+      );
       setSelectionModel_XUATKHOAO([]);
     }
   };
@@ -1477,13 +1484,13 @@ const MACHINE = () => {
       });
   };
   const handle_xuatKhoAo = async () => {
-    if (qlsxplandatafilter.length > 0) {
+    if (selectedPlan !== undefined) {
       if (tonlieuxuongdatafilter.length > 0) {
         let err_code: string = "0";
         for (let i = 0; i < tonlieuxuongdatafilter.length; i++) {
           let checklieuchithi: boolean = true;
           await generalQuery("checkM_CODE_CHITHI", {
-            PLAN_ID_OUTPUT: qlsxplandatafilter[0].PLAN_ID,
+            PLAN_ID_OUTPUT: selectedPlan?.PLAN_ID,
             M_CODE: tonlieuxuongdatafilter[i].M_CODE,
           })
             .then((response) => {
@@ -1502,7 +1509,7 @@ const MACHINE = () => {
               FACTORY: tonlieuxuongdatafilter[i].FACTORY,
               PHANLOAI: "N",
               PLAN_ID_INPUT: tonlieuxuongdatafilter[i].PLAN_ID_INPUT,
-              PLAN_ID_OUTPUT: qlsxplandatafilter[0].PLAN_ID,
+              PLAN_ID_OUTPUT: selectedPlan?.PLAN_ID,
               M_CODE: tonlieuxuongdatafilter[i].M_CODE,
               M_LOT_NO: tonlieuxuongdatafilter[i].M_LOT_NO,
               ROLL_QTY: tonlieuxuongdatafilter[i].ROLL_QTY,
@@ -1518,7 +1525,7 @@ const MACHINE = () => {
                     FACTORY: tonlieuxuongdatafilter[i].FACTORY,
                     PHANLOAI: tonlieuxuongdatafilter[i].PHANLOAI,
                     PLAN_ID_INPUT: tonlieuxuongdatafilter[i].PLAN_ID_INPUT,
-                    PLAN_ID_SUDUNG: qlsxplandatafilter[0].PLAN_ID,
+                    PLAN_ID_SUDUNG: selectedPlan?.PLAN_ID,
                     M_CODE: tonlieuxuongdatafilter[i].M_CODE,
                     M_LOT_NO: tonlieuxuongdatafilter[i].M_LOT_NO,
                     TOTAL_IN_QTY: tonlieuxuongdatafilter[i].TOTAL_IN_QTY,
@@ -1554,7 +1561,9 @@ const MACHINE = () => {
         setTonLieuXuongDataFilter([]);
         handle_loadKhoAo();
         handle_loadlichsuxuatkhoao();
-        handle_loadlichsuinputlieu(qlsxplandatafilter[0].PLAN_ID);
+        handle_loadlichsuinputlieu(
+          selectedPlan?.PLAN_ID === undefined ? "xxx" : selectedPlan?.PLAN_ID
+        );
         setSelectionModel([]);
       } else {
         Swal.fire("Thông báo", "Chọn ít nhất 1 liệu để xuất kho", "error");
@@ -1584,7 +1593,7 @@ const MACHINE = () => {
       });
   };
   const handleSaveQLSX = async () => {
-    if (qlsxplandatafilter.length >= 1) {
+    if (selectedPlan !== undefined) {
       if (userData.EMPL_NO === "NHU1903" || userData.MAINDEPTNAME === "QLSX") {
         let err_code: string = "0";
         console.log(datadinhmuc);
@@ -1605,7 +1614,7 @@ const MACHINE = () => {
           );
         } else {
           generalQuery("saveQLSX", {
-            G_CODE: qlsxplandatafilter[0].G_CODE,
+            G_CODE: selectedPlan?.G_CODE,
             FACTORY: datadinhmuc.FACTORY,
             EQ1: datadinhmuc.EQ1,
             EQ2: datadinhmuc.EQ2,
@@ -1877,12 +1886,16 @@ const MACHINE = () => {
       });
   };
   const handleResetChiThiTable = async () => {
-    if (qlsxplandatafilter.length > 0) {
+    if (selectedPlan !== undefined) {
       let PD: number = 0,
         CAVITY_NGANG: number = 0,
         CAVITY_DOC: number = 0,
-        PLAN_QTY: number = qlsxplandatafilter[0].PLAN_QTY,
-        PROCESS_NUMBER: number = qlsxplandatafilter[0].PROCESS_NUMBER,
+        PLAN_QTY: number =
+          selectedPlan?.PLAN_QTY === undefined ? 0 : selectedPlan?.PLAN_QTY,
+        PROCESS_NUMBER: number =
+          selectedPlan?.PROCESS_NUMBER === undefined
+            ? 1
+            : selectedPlan?.PROCESS_NUMBER,
         LOSS_SX1: number = 0,
         LOSS_SX2: number = 0,
         LOSS_SETTING1: number = 0,
@@ -1891,7 +1904,7 @@ const MACHINE = () => {
         FINAL_LOSS_SETTING: number = 0,
         M_MET_NEEDED: number = 0;
       await generalQuery("getcodefullinfo", {
-        G_CODE: qlsxplandatafilter[0].G_CODE,
+        G_CODE: selectedPlan?.G_CODE,
       })
         .then((response) => {
           if (response.data.tk_status !== "NG") {
@@ -1939,7 +1952,7 @@ const MACHINE = () => {
       );
       //console.log(M_MET_NEEDED);
       await generalQuery("getbomsx", {
-        G_CODE: qlsxplandatafilter[0].G_CODE,
+        G_CODE: selectedPlan?.G_CODE,
       })
         .then((response) => {
           console.log(response.data.tk_status);
@@ -1948,7 +1961,7 @@ const MACHINE = () => {
               (element: QLSXCHITHIDATA, index: number) => {
                 return {
                   CHITHI_ID: index,
-                  PLAN_ID: qlsxplandatafilter[0].PLAN_ID,
+                  PLAN_ID: selectedPlan?.PLAN_ID,
                   M_CODE: element.M_CODE,
                   M_NAME: element.M_NAME,
                   WIDTH_CD: element.WIDTH_CD,
@@ -2234,18 +2247,24 @@ const MACHINE = () => {
           "Đang ĐK liệu, hãy chờ cho tới khi hoàn thành",
           "info"
         ); */
-        if (qlsxplandatafilter.length > 0) {
+        if (selectedPlan !== undefined) {
           hanlde_SaveChiThi();
           handleGetChiThiTable(
-            qlsxplandatafilter[0].PLAN_ID,
-            qlsxplandatafilter[0].G_CODE,
-            qlsxplandatafilter[0].PLAN_QTY,
-            qlsxplandatafilter[0].PROCESS_NUMBER
+            selectedPlan?.PLAN_ID === undefined ? "xxx" : selectedPlan?.PLAN_ID,
+            selectedPlan?.G_CODE === undefined ? "xxx" : selectedPlan?.G_CODE,
+            selectedPlan?.PLAN_QTY === undefined ? 0 : selectedPlan?.PLAN_QTY,
+            selectedPlan?.PROCESS_NUMBER === undefined
+              ? 1
+              : selectedPlan?.PROCESS_NUMBER
           );
           handleDangKyXuatLieu(
-            qlsxplandatafilter[0].PLAN_ID,
-            qlsxplandatafilter[0].PROD_REQUEST_NO,
-            qlsxplandatafilter[0].PROD_REQUEST_DATE
+            selectedPlan?.PLAN_ID === undefined ? "xxx" : selectedPlan?.PLAN_ID,
+            selectedPlan?.PROD_REQUEST_NO === undefined
+              ? "xxx"
+              : selectedPlan?.PROD_REQUEST_NO,
+            selectedPlan?.PROD_REQUEST_DATE === undefined
+              ? "xxx"
+              : selectedPlan?.PROD_REQUEST_DATE
           );
         } else {
           Swal.fire(
@@ -2640,7 +2659,8 @@ const MACHINE = () => {
       check_lieu_qlsx_khac1 === 0
     ) {
       await generalQuery("deleteMCODEExistIN_O302", {
-        PLAN_ID: qlsxplandatafilter[0].PLAN_ID,
+        //PLAN_ID: qlsxplandatafilter[0].PLAN_ID,
+        PLAN_ID: selectedPlan?.PLAN_ID,
       })
         .then((response) => {
           //console.log(response.data);
@@ -2652,8 +2672,9 @@ const MACHINE = () => {
           console.log(error);
         });
       for (let i = 0; i < chithidatatable.length; i++) {
-        generalQuery("updateLIEUQL_SX_M140", {
-          G_CODE: qlsxplandatafilter[0].G_CODE,
+        await generalQuery("updateLIEUQL_SX_M140", {
+          //G_CODE: qlsxplandatafilter[0].G_CODE,
+          G_CODE: selectedPlan?.G_CODE,
           M_CODE: chithidatatable[i].M_CODE,
           LIEUQL_SX: chithidatatable[i].LIEUQL_SX >= 1 ? 1 : 0,
         })
@@ -2669,7 +2690,8 @@ const MACHINE = () => {
         if (chithidatatable[i].M_MET_QTY > 0) {
           let checktontaiM_CODE: boolean = false;
           await generalQuery("checkM_CODE_PLAN_ID_Exist", {
-            PLAN_ID: qlsxplandatafilter[0].PLAN_ID,
+            //PLAN_ID: qlsxplandatafilter[0].PLAN_ID,
+            PLAN_ID: selectedPlan?.PLAN_ID,
             M_CODE: chithidatatable[i].M_CODE,
           })
             .then((response) => {
@@ -2684,8 +2706,8 @@ const MACHINE = () => {
             });
           //console.log('checktontai',checktontaiM_CODE);
           if (checktontaiM_CODE) {
-            generalQuery("updateChiThi", {
-              PLAN_ID: qlsxplandatafilter[0].PLAN_ID,
+            await generalQuery("updateChiThi", {
+              PLAN_ID: selectedPlan?.PLAN_ID,
               M_CODE: chithidatatable[i].M_CODE,
               M_ROLL_QTY: chithidatatable[i].M_ROLL_QTY,
               M_MET_QTY: chithidatatable[i].M_MET_QTY,
@@ -2703,8 +2725,9 @@ const MACHINE = () => {
                 console.log(error);
               });
           } else {
-            generalQuery("insertChiThi", {
-              PLAN_ID: qlsxplandatafilter[0].PLAN_ID,
+            await generalQuery("insertChiThi", {
+              //PLAN_ID: qlsxplandatafilter[0].PLAN_ID,
+              PLAN_ID: selectedPlan?.PLAN_ID,
               M_CODE: chithidatatable[i].M_CODE,
               M_ROLL_QTY: chithidatatable[i].M_ROLL_QTY,
               M_MET_QTY: chithidatatable[i].M_MET_QTY,
@@ -2908,21 +2931,15 @@ const MACHINE = () => {
                   "error"
                 );
               } else {
-                let chithimain: QLSXPLANDATA[] = chithiarray.filter((element: QLSXPLANDATA, index: number)=> element.STEP ===0);
-                if(chithimain.length >0)
-                {
+                let chithimain: QLSXPLANDATA[] = chithiarray.filter(
+                  (element: QLSXPLANDATA, index: number) => element.STEP === 0
+                );
+                if (chithimain.length > 0) {
                   setShowChiThi2(true);
                   setChiThiListRender2(renderChiThi2(chithiarray));
+                } else {
+                  Swal.fire("Thông báo", "Chưa có chỉ thị chính (B0)", "error");
                 }
-                else
-                {
-                  Swal.fire(
-                    "Thông báo",
-                    "Chưa có chỉ thị chính (B0)",
-                    "error"
-                  );
-                }
-                
               }
               //console.log(ycsxdatatablefilter);
             } else {
@@ -3004,27 +3021,33 @@ const MACHINE = () => {
           <AiFillSave color='lightgreen' size={20} />
           Lưu Data Định Mức
         </IconButton>
-
         <IconButton
           className='buttonIcon'
           onClick={() => {
-            dispatch(addChithiArray(qlsxplandatafilter[0]));   
+            dispatch(addChithiArray(qlsxplandatafilter[0]));
           }}
         >
-          <BiRefresh color='yellow' size={20} />
-          Add to Print Plan
+          <AiFillFolderAdd color='#69f542' size={20} />
+          Add to Print Combo
         </IconButton>
         <IconButton
           className='buttonIcon'
           onClick={() => {
-            dispatch(resetChithiArray(''));   
+            dispatch(resetChithiArray(""));
           }}
         >
-          <BiRefresh color='yellow' size={20} />
-          Reset Print Plan
+          <BiRefresh color='red' size={20} />
+          Reset Print Combo
         </IconButton>
-
-
+        <IconButton
+          className='buttonIcon'
+          onClick={() => {
+            console.log(selectedPlan);
+          }}
+        >
+          <BiRefresh color='red' size={20} />
+          show selected row
+        </IconButton>
       </GridToolbarContainer>
     );
   }
@@ -3113,13 +3136,17 @@ const MACHINE = () => {
         <IconButton
           className='buttonIcon'
           onClick={() => {
-            if (qlsxplandatafilter.length > 0) {
+            if (selectedPlan !== undefined) {
               checkBP(userData.EMPL_NO, userData.MAINDEPTNAME, ["QLSX"], () => {
                 setShowKhoAo(!showkhoao);
                 handle_loadKhoAo();
                 handle_loadlichsuxuatkhoao();
                 handle_loadlichsunhapkhoao();
-                handle_loadlichsuinputlieu(qlsxplandatafilter[0].PLAN_ID);
+                handle_loadlichsuinputlieu(
+                  selectedPlan?.PLAN_ID === undefined
+                    ? "xxx"
+                    : selectedPlan?.PLAN_ID
+                );
               });
             } else {
               Swal.fire("Thông báo", "Hãy chọn một chỉ thị", "error");
@@ -3147,10 +3174,14 @@ const MACHINE = () => {
           className='buttonIcon'
           onClick={() => {
             handleGetChiThiTable(
-              qlsxplandatafilter[0].PLAN_ID,
-              qlsxplandatafilter[0].G_CODE,
-              qlsxplandatafilter[0].PLAN_QTY,
-              qlsxplandatafilter[0].PROCESS_NUMBER
+              selectedPlan?.PLAN_ID === undefined
+                ? "xxx"
+                : selectedPlan?.PLAN_ID,
+              selectedPlan?.G_CODE === undefined ? "xxx" : selectedPlan?.G_CODE,
+              selectedPlan?.PLAN_QTY === undefined ? 0 : selectedPlan?.PLAN_QTY,
+              selectedPlan?.PROCESS_NUMBER === undefined
+                ? 0
+                : selectedPlan?.PROCESS_NUMBER
             );
           }}
         >
@@ -3188,11 +3219,11 @@ const MACHINE = () => {
           Xuất liệu sample
         </IconButton>
         <span style={{ fontSize: 20, fontWeight: "bold", color: "red" }}>
-          {qlsxplandatafilter[0]?.PLAN_ID}
+          {selectedPlan?.PLAN_ID}
         </span>{" "}
         ___
         <span style={{ fontSize: 20, fontWeight: "bold", color: "blue" }}>
-          {qlsxplandatafilter[0]?.G_NAME}
+          {selectedPlan?.G_NAME}
         </span>
         <span style={{ fontSize: 20, fontWeight: "bold", color: "green" }}>
           ___PD:
@@ -3204,7 +3235,7 @@ const MACHINE = () => {
         </span>
         <span style={{ fontSize: 20, fontWeight: "bold", color: "green" }}>
           ___PLAN_QTY:
-          {qlsxplandatafilter[0]?.PLAN_QTY.toLocaleString("en-US")}
+          {selectedPlan?.PLAN_QTY.toLocaleString("en-US")}
         </span>
         Có setting hay không?
         <input
@@ -3213,12 +3244,24 @@ const MACHINE = () => {
           defaultChecked={calc_loss_setting}
           onChange={() => setCalc_Loss_Setting(!calc_loss_setting)}
         ></input>
+        {/*   <IconButton
+            className='buttonIcon'
+            onClick={() => {
+             console.log(selectedPlan);
+            }}
+          >
+            <BiRefresh color='yellow' size={20} />
+            show selected plan
+          </IconButton> */}
       </GridToolbarContainer>
     );
   }
   const handle_xuatlieu_sample = async () => {
-    if (qlsxplandatafilter.length > 0) {
-      let prod_request_no: string = qlsxplandatafilter[0].PROD_REQUEST_NO;
+    if (selectedPlan !== undefined) {
+      let prod_request_no: string =
+        selectedPlan?.PROD_REQUEST_NO === undefined
+          ? "xxx"
+          : selectedPlan?.PROD_REQUEST_NO;
       let check_ycsx_sample: boolean = false;
       let checkPLANID_EXIST_OUT_KHO_SX: boolean = false;
       await generalQuery("getP4002", { PROD_REQUEST_NO: prod_request_no })
@@ -3248,7 +3291,7 @@ const MACHINE = () => {
         });
       //console.log('check ycsx sample', check_ycsx_sample);
       await generalQuery("check_PLAN_ID_KHO_AO", {
-        PLAN_ID: qlsxplandatafilter[0].PLAN_ID,
+        PLAN_ID: selectedPlan?.PLAN_ID,
       })
         .then((response) => {
           //console.log(response.data.data);
@@ -3272,8 +3315,8 @@ const MACHINE = () => {
           await generalQuery("nhapkhoao", {
             FACTORY: selectedFactory,
             PHANLOAI: "N",
-            PLAN_ID_INPUT: qlsxplandatafilter[0].PLAN_ID,
-            PLAN_ID_SUDUNG: qlsxplandatafilter[0].PLAN_ID,
+            PLAN_ID_INPUT: selectedPlan?.PLAN_ID,
+            PLAN_ID_SUDUNG: selectedPlan?.PLAN_ID,
             M_CODE: "A0009680",
             M_LOT_NO: "2201010001",
             ROLL_QTY: 1,
@@ -3294,8 +3337,8 @@ const MACHINE = () => {
           await generalQuery("xuatkhoao", {
             FACTORY: selectedFactory,
             PHANLOAI: "N",
-            PLAN_ID_INPUT: qlsxplandatafilter[0].PLAN_ID,
-            PLAN_ID_OUTPUT: qlsxplandatafilter[0].PLAN_ID,
+            PLAN_ID_INPUT: selectedPlan?.PLAN_ID,
+            PLAN_ID_OUTPUT: selectedPlan?.PLAN_ID,
             M_CODE: "A0009680",
             M_LOT_NO: "2201010001",
             ROLL_QTY: 1,
@@ -3306,7 +3349,11 @@ const MACHINE = () => {
             .then((response) => {
               console.log(response.data.tk_status);
               if (response.data.tk_status !== "NG") {
-                updateXUATLIEUCHINHPLAN(qlsxplandatafilter[0].PLAN_ID);
+                updateXUATLIEUCHINHPLAN(
+                  selectedPlan?.PLAN_ID === undefined
+                    ? "xxx"
+                    : selectedPlan?.PLAN_ID
+                );
               } else {
               }
             })
@@ -3315,7 +3362,9 @@ const MACHINE = () => {
             });
           Swal.fire("Thông báo", "Đã xuất liệu ảo thành công", "info");
         } else {
-          updateXUATLIEUCHINHPLAN(qlsxplandatafilter[0].PLAN_ID);
+          updateXUATLIEUCHINHPLAN(
+            selectedPlan?.PLAN_ID === undefined ? "xxx" : selectedPlan?.PLAN_ID
+          );
           Swal.fire("Thông báo", "Đã xuất liệu chính rồi", "info");
         }
       } else {
@@ -3326,8 +3375,11 @@ const MACHINE = () => {
     }
   };
   const handle_xuatdao_sample = async () => {
-    if (qlsxplandatafilter.length > 0) {
-      let prod_request_no: string = qlsxplandatafilter[0].PROD_REQUEST_NO;
+    if (selectedPlan !== undefined) {
+      let prod_request_no: string =
+        selectedPlan?.PROD_REQUEST_NO === undefined
+          ? "xxx"
+          : selectedPlan?.PROD_REQUEST_NO;
       let check_ycsx_sample: boolean = false;
       let checkPLANID_EXIST_OUT_KNIFE_FILM: boolean = false;
       await generalQuery("getP4002", { PROD_REQUEST_NO: prod_request_no })
@@ -3357,7 +3409,7 @@ const MACHINE = () => {
         });
       console.log(check_ycsx_sample);
       await generalQuery("check_PLAN_ID_OUT_KNIFE_FILM", {
-        PLAN_ID: qlsxplandatafilter[0].PLAN_ID,
+        PLAN_ID: selectedPlan?.PLAN_ID,
       })
         .then((response) => {
           //console.log(response.data.data);
@@ -3377,8 +3429,8 @@ const MACHINE = () => {
       if (check_ycsx_sample) {
         if (checkPLANID_EXIST_OUT_KNIFE_FILM === false) {
           await generalQuery("insert_OUT_KNIFE_FILM", {
-            PLAN_ID: qlsxplandatafilter[0].PLAN_ID,
-            EQ_THUC_TE: qlsxplandatafilter[0].PLAN_EQ,
+            PLAN_ID: selectedPlan?.PLAN_ID,
+            EQ_THUC_TE: selectedPlan?.PLAN_EQ,
             CA_LAM_VIEC: "Day",
             EMPL_NO: userData.EMPL_NO,
             KNIFE_FILM_NO: "1K22LH20",
@@ -3386,7 +3438,11 @@ const MACHINE = () => {
             .then((response) => {
               //console.log(response.data.data);
               if (response.data.tk_status !== "NG") {
-                updateXUAT_DAO_FILM_PLAN(qlsxplandatafilter[0].PLAN_ID);
+                updateXUAT_DAO_FILM_PLAN(
+                  selectedPlan?.PLAN_ID === undefined
+                    ? "xxx"
+                    : selectedPlan?.PLAN_ID
+                );
                 //console.log(response.data.data);
               } else {
               }
@@ -3895,6 +3951,39 @@ const MACHINE = () => {
     } else {
       Swal.fire("Thông báo", "Cần đăng ký ít nhất 1 met lòng");
     }
+  };
+  const handleEvent: GridEventListener<"rowClick"> = (
+    params, // GridRowParams
+    event, // MuiEvent<React.MouseEvent<HTMLElement>>
+    details // GridCallbackDetails
+  ) => {
+    let rowData: QLSXPLANDATA = params.row;
+    //console.log(rowData);
+    setSelectedPlan(rowData);
+    setDataDinhMuc({
+      ...datadinhmuc,
+      FACTORY: rowData.FACTORY,
+      EQ1: rowData.EQ1 === "" ? "NA" : rowData.EQ1,
+      EQ2: rowData.EQ2 === "" ? "NA" : rowData.EQ2,
+      Setting1: rowData.Setting1,
+      Setting2: rowData.Setting2,
+      UPH1: rowData.UPH1,
+      UPH2: rowData.UPH2,
+      Step1: rowData.Step1,
+      Step2: rowData.Step2,
+      LOSS_SX1: rowData.LOSS_SX1,
+      LOSS_SX2: rowData.LOSS_SX2,
+      LOSS_SETTING1: rowData.LOSS_SETTING1,
+      LOSS_SETTING2: rowData.LOSS_SETTING2,
+      NOTE: rowData.NOTE,
+    });
+    handleGetChiThiTable(
+      rowData.PLAN_ID,
+      rowData.G_CODE,
+      rowData.PLAN_QTY,
+      rowData.PROCESS_NUMBER
+    );
+    //console.log(params.row);
   };
   useEffect(() => {
     loadQLSXPlan(selectedPlanDate);
@@ -4430,7 +4519,9 @@ const MACHINE = () => {
                           handle_loadlichsunhapkhoao();
                           handle_loadlichsuxuatkhoao();
                           handle_loadlichsuinputlieu(
-                            qlsxplandatafilter[0].PLAN_ID
+                            selectedPlan?.PLAN_ID === undefined
+                              ? "xxx"
+                              : selectedPlan?.PLAN_ID
                           );
                         }}
                       >
@@ -4702,9 +4793,11 @@ const MACHINE = () => {
                     ]}
                     editMode='cell'
                     getRowId={(row) => row.PLAN_ID}
+                    checkboxSelection
                     onSelectionModelChange={(ids) => {
                       handleQLSXPlanDataSelectionforUpdate(ids);
                     }}
+                    disableSelectionOnClick
                     onCellEditCommit={(
                       params: GridCellEditCommitParams,
                       event: MuiEvent<MuiBaseEvent>,
@@ -4719,6 +4812,7 @@ const MACHINE = () => {
                       setPlanDataTable(newdata);
                       //console.log(plandatatable);
                     }}
+                    onRowClick={handleEvent}
                   />
                 </div>
               </div>

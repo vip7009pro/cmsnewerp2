@@ -1,6 +1,6 @@
 .inspect_component {
-    width: 200px;
-    height: 50px;
+    width: 150px;
+    height: 80px;
     background-image: linear-gradient(0deg, #cbeea3, #1ee4b9);
     border-radius: 10px;
     box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
@@ -18,8 +18,14 @@
         align-items: center;        
     }
     .machineplan {
-        font-size: 20px;
+        display: flex;        
         overflow-x: inherit;
         flex: 0;
+        .codename {
+            font-size: 13px;
+        }
+        .username {
+            font-size: 12px;
+        }
     }
 }

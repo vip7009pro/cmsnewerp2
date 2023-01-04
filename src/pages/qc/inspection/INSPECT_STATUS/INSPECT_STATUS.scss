@@ -1,0 +1,95 @@
+.ins_status {
+    display: flex;
+    gap: 30px;
+
+    .NM1 {
+        justify-self: center;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        border: 2px solid black;
+        padding: 2px;
+        flex: 1.5;
+        -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+        box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+
+        .title {
+
+            text-align: center;
+            color: blue;
+            font-size: 20px;
+            font-weight: bold;
+
+        }
+
+        .table {
+            display: flex;
+            gap: 20px;
+            .xuongA {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 10px;
+                border: 2px solid black;
+            }
+
+            .xuongB {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 10px;
+                border: 2px solid black;
+            }
+
+        }
+
+
+    }
+
+    .NM2 {
+        display: flex;
+        gap: 10px;
+        border: 2px solid black;
+        padding: 2px;
+        flex-direction: column;
+        flex: 2;
+        -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+        box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+        .title {
+            text-align: center;
+            color: blue;
+            font-size: 20px;
+            font-weight: bold;
+
+        }
+
+        .table {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+
+            .normal {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 10px;
+                border: 2px solid black;
+            }
+
+            .oled {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 10px;
+                border: 2px solid black;
+            }
+
+            .uv {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 10px;
+                border: 2px solid black;
+            }
+        }
+
+
+
+    }
+
+}

@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 import { generalQuery } from "../../api/Api";
 import Swal from "sweetalert2";
 import PrimarySearchAppBar from "../../components/AppBar/AppBarCustom";
-export const current_ver: number = 38;
+export const current_ver: number = 46;
 function Home() {
   const springs = useSpring({
     from: { x: 1000, y: 100 },
@@ -23,7 +23,7 @@ function Home() {
           console.log("webver", response.data.data[0].VERWEB);
           setCheckVerWeb(response.data.data[0].VERWEB);
         } else {
-
+          
         }
       })
       .catch((error) => {

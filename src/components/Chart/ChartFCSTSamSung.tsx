@@ -45,8 +45,8 @@ const ChartFCSTSamSung = () => {
       return (
         <div className='custom-tooltip' style={{backgroundImage: "linear-gradient(to right, #ccffff, #00cccc)", padding: 20, borderRadius: 5}}>
           <p>{label}:</p>
-          <p className='label'>QTY Tuần Trước: {`${(payload[0].value + payload[1].value+payload[2].value).toLocaleString("en-US")}`} EA</p>          
-          <p className='label'>QTY Tuần Này: {`${(payload[3].value + payload[4].value + payload[5].value).toLocaleString("en-US")}`} EA</p>          
+          <p className='label'>QTY Tuần Trước: {`${(payload[0]?.value + payload[1]?.value+payload[2]?.value).toLocaleString("en-US")}`} EA</p>          
+          <p className='label'>QTY Tuần Này: {`${(payload[3]?.value + payload[4]?.value + payload[5]?.value).toLocaleString("en-US")}`} EA</p>          
         </div>
       );
     }
@@ -58,10 +58,18 @@ const ChartFCSTSamSung = () => {
     let fcstyear2: number = moment().year(); 
     let fcstweek1:number = moment().add(1,'days').isoWeek()-1;
     let fcstyear1: number = moment().year();
+    //console.log('fcst week 1',fcstweek1)
+    //console.log('fcst week 2',fcstweek2)
     if(fcstweek2 ===1)
     {
         fcstweek1 = 52;
         fcstyear1 = fcstyear2 -1;
+    }
+    else if(fcstweek2 ===0)
+    {
+      fcstweek2 =1;
+      fcstweek1 = 52;
+      fcstyear1 = fcstyear2 -1;
     }
     
     generalQuery("baocaofcstss", {FCSTYEAR1: fcstyear1, FCSTYEAR2: fcstyear2, FCSTWEEKNUM1: fcstweek1, FCSTWEEKNUM2: fcstweek2 })
