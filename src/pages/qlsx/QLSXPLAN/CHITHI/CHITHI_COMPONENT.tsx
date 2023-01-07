@@ -66,6 +66,7 @@ interface YCSXTableData {
   STEP?: number;
   PLAN_ORDER?: string;
   OLD_PLAN_QTY?: string,
+  PROCESS_NUMBER?: number,
 }
 interface FullBOM {
   PDBV?: string;
@@ -154,7 +155,8 @@ const CHITHI_COMPONENT = ({
   G_NAME,
   G_NAME_KD,
   STEP,
-  PLAN_ORDER,
+  PLAN_ORDER,  
+  PROCESS_NUMBER
 }: YCSXTableData) => {
   const userData: UserData | undefined = useSelector(
     (state: RootState) => state.totalSlice.userData
@@ -216,6 +218,7 @@ const CHITHI_COMPONENT = ({
     },
   ]);
   const [chithidatatable, setChiThiDataTable] = useState<QLSXCHITHIDATA[]>([]);
+  const [checklieuqlsx, setChecklieuqlsx] = useState(false);
   const handleGetChiThiTable = async () => {
     generalQuery("getchithidatatable", {
       PLAN_ID: PLAN_ID,
@@ -306,22 +309,56 @@ const CHITHI_COMPONENT = ({
         console.log(error);
       });
   };
+  const check_dinh_muc =()=> {
+    if(request_codeinfo[0].FACTORY === null ||
+    request_codeinfo[0].EQ1 === null ||
+    request_codeinfo[0].EQ2 === null ||
+    request_codeinfo[0].Setting1 === null ||
+    request_codeinfo[0].Setting2 === null ||
+    request_codeinfo[0].UPH1 === null ||
+    request_codeinfo[0].UPH2 === null ||
+    request_codeinfo[0].Step1 === null ||
+    request_codeinfo[0].Step1 === null ||
+    request_codeinfo[0].LOSS_SX1 === null ||
+    request_codeinfo[0].LOSS_SX2 === null ||
+    request_codeinfo[0].LOSS_SETTING1 === null ||
+    request_codeinfo[0].LOSS_SETTING2 === null)
+    {
+      console.log(false)
+      return false;
+    }
+    else
+    {
+      console.log(true)
+      return true;
+    }
+  }
+  const check_lieuql_sx_m140 =  ()=> {
+   
+     generalQuery("check_lieuql_sx_m140", {
+      G_CODE: G_CODE,
+    })
+      .then((response) => {
+        console.log(response.data);
+        if (response.data.tk_status !== "NG") {
+          setChecklieuqlsx(true);        
+          
+        } else {
+          setChecklieuqlsx(false);         
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });     
+  }
+
   useEffect(() => {
+    check_lieuql_sx_m140();
     initCTSX();
     handleGetChiThiTable();
   }, [PLAN_ID]);
   return (
-    <div className='chithicomponent'>
-      {PDBV === "Y" && (
-        <div className='qcpass'>
-          <img
-            alt='qcpass'
-            src='/QC PASS20.png'
-            width={440 - 100 - 10}
-            height={400 - 100}
-          />
-        </div>
-      )}
+    <div className='chithicomponent'>     
       {
         <div className='tieudeycsx'>
           <div className='leftlogobarcode'>
@@ -370,7 +407,7 @@ const CHITHI_COMPONENT = ({
           </div>
         </div>
       }
-      <div className='thongtinycsx'>
+      {(check_dinh_muc() && checklieuqlsx && PLAN_QTY !==0 && PROCESS_NUMBER !==0) && <div className='thongtinycsx'>
         <div className='text1'>
           1. 지시 정보 Thông tin chỉ thị ({request_codeinfo[0].G_NAME} )
         </div>
@@ -648,7 +685,11 @@ const CHITHI_COMPONENT = ({
             </div>
           )}
         </div>
-      </div>
+      </div>}
+      {!check_dinh_muc() && <div>Chưa đủ thông tin định mức</div>}      
+      {!checklieuqlsx && <div>Chưa chỉ định liệu chính, hãy lưu liệu chỉ thị để đồng bộ liệu chính lên BOM</div>}
+      {(PLAN_QTY ===0) && <div>Số lượng chỉ thị không thể khác 0</div>}
+      {(PROCESS_NUMBER ===0) && <div>PROCESS_NUMBER phải đặt 1 hoặc 2</div>}
     </div>
   );
 };

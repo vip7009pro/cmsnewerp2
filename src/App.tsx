@@ -54,6 +54,8 @@ import DATASX from "./pages/qlsx/QLSXPLAN/DATASX/DATASX";
 import PLAN_STATUS from "./pages/qlsx/QLSXPLAN/PLAN_STATUS/PLAN_STATUS";
 import EQ_STATUS from "./pages/qlsx/QLSXPLAN/EQ_STATUS/EQ_STATUS";
 import LICHSUINPUTLIEU from "./pages/qlsx/QLSXPLAN/LICHSUINPUTLIEU/LICHSUINPUTLIEU";
+import INSPECT_STATUS from "./pages/qc/inspection/INSPECT_STATUS/INSPECT_STATUS";
+import ShortageKD from "./pages/kinhdoanh/shortageKD/ShortageKD";
 
 interface userDataInterface {
   EMPL_IMAGE?: string;
@@ -458,6 +460,8 @@ function App() {
                       element={<QuotationManager />}
                     />
                     <Route path='eqstatus' element={<EQ_STATUS />} />
+                    <Route path='ins_status' element={<INSPECT_STATUS />} />
+                    <Route path='shortage' element={<ShortageKD />} />
                   </Route>
                   <Route
                     path='rnd'

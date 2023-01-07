@@ -14,7 +14,7 @@ import { WiDayLightning } from "react-icons/wi";
 import { SiStatuspal } from "react-icons/si";
 import getsentence from "../../components/String/String";
 import { LangConText } from "../../api/Context";
-import { AiFillAmazonCircle, AiFillAmazonSquare, AiOutlineCalendar } from "react-icons/ai";
+import { AiFillAmazonCircle, AiFillAmazonSquare, AiFillMinusCircle, AiOutlineCalendar } from "react-icons/ai";
 import RuleRoundedIcon from '@mui/icons-material/RuleRounded';
 import {RootState} from '../../redux/store'
 import {useSelector, useDispatch} from 'react-redux'
@@ -102,6 +102,11 @@ const Sidebar = () => {
           icon: <FcPlanner size={25}/>
         },
         {
+          title: getlang('shortage',lang), /*Quản Lý Plan*/
+          path: '/kinhdoanh/shortage',
+          icon: <AiFillMinusCircle size={25} color='red'/>
+        },
+        {
           title: getlang('quanlyFCST',lang), /*Quản lý FCST*/
           path: '/kinhdoanh/fcstmanager',
           icon: <WiDayLightning color='#cc99ff' size={25}/>
@@ -136,6 +141,12 @@ const Sidebar = () => {
           title: getlang('eqstatus',lang),
           path: 'kinhdoanh/eqstatus',
           icon: <MdOutlineSignalWifiStatusbarNull color='#cc00ff' size={25}/>,
+          cName: 'sub-nav'
+        },           
+        {
+          title: getlang('ins_status',lang),
+          path: 'kinhdoanh/ins_status',
+          icon: <FcInspection color='#cc00ff' size={25}/>,
           cName: 'sub-nav'
         },           
         {

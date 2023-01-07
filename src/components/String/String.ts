@@ -12,7 +12,9 @@ type english_sentences = {
 };
 
 export const vn_lang = {
-  lichsuxuatlieuthat:'Lịch Sử Xuất Liệu Kho Thật',
+  shortage: 'Shortage',
+  ins_status:'Tình trạng KT',
+  lichsuxuatlieuthat:'Lịch sử bắn lot liệu SX',
   dangnhap:'Đăng Nhập',
   nhothongtindangnhap:'Nhớ thông tin đăng nhập',
   quenmatkhau:'Quên mật khẩu',
@@ -76,7 +78,9 @@ export const vn_lang = {
   eqstatus:'Trạng Thái Máy',
 };
 export const en_lang = {
-  lichsuxuatlieuthat:'Material Output History',
+  shortage: 'Shortage',
+  ins_status:'Inspection Status',
+  lichsuxuatlieuthat:'Material Input History',
   eqstatus:'Machine Status',
   planstatus:'Production Status',
   dangnhap:'Log in',
@@ -140,7 +144,9 @@ export const en_lang = {
   datasanxuat:'Production DATA',
 };
 export const kr_lang = {
-  lichsuxuatlieuthat:'원단 출고 이력',
+  shortage: '쇼티지',
+  ins_status:'검사 상태',
+  lichsuxuatlieuthat:'원단 투입 이력',
   eqstatus:'설비 상태',
   planstatus:'생산 지시 상태',
   dangnhap:'로그인',

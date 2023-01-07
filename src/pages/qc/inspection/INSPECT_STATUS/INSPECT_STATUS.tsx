@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { generalQuery } from "../../../../api/Api";
 import INSPECT_COMPONENT from "./INSPECT_COMPONENT";
 import "./INSPECT_STATUS.scss";
+import INS_SUMMARY from "./INS_SUMMARY";
 interface INS_STATUS {
   KHUVUC: string;
   FACTORY: string;
@@ -64,11 +65,15 @@ const INSPECT_STATUS = () => {
 
   return (
     <div className='ins_status'>
+      <div className="ins_summary">
+        <INS_SUMMARY INS_DATA={ins_status_data}/>
+      </div>
+      <div className="ins_div">
       <div className='NM1'>
         <div className='title'>NM1 INSPECTION STATUS</div>
         <div className='table'>
           <div className='xuongA'>
-             Xưởng A:
+             <b>Xưởng A:</b>
             {ins_status_data
               .filter((element: INS_STATUS) => element.KHUVUC === "A")
               .map((element: INS_STATUS, index: number) => {
@@ -95,7 +100,7 @@ const INSPECT_STATUS = () => {
               })}
           </div>
           <div className='xuongB'>
-            Xưởng B:
+            <b>Xưởng B:</b>
             {ins_status_data
               .filter((element: INS_STATUS) => element.KHUVUC === "B")
               .map((element: INS_STATUS, index: number) => {
@@ -127,7 +132,7 @@ const INSPECT_STATUS = () => {
         <div className='title'>NM2 INSPECTION STATUS</div>
         <div className='table'>
           <div className='normal'>
-            Hàng Thường:
+            <b>Hàng Thường:</b>
             {ins_status_data
               .filter((element: INS_STATUS) => element.KHUVUC === "N")
               .map((element: INS_STATUS, index: number) => {
@@ -154,7 +159,7 @@ const INSPECT_STATUS = () => {
               })}
           </div>
           <div className='oled'>
-            OLED:
+            <b>OLED:</b>
             {ins_status_data
               .filter((element: INS_STATUS) => element.KHUVUC === "O")
               .map((element: INS_STATUS, index: number) => {
@@ -181,7 +186,7 @@ const INSPECT_STATUS = () => {
               })}
           </div>
           <div className='uv'>
-            UV:
+            <b>UV:</b>
             {ins_status_data
               .filter((element: INS_STATUS) => element.KHUVUC === "U")
               .map((element: INS_STATUS, index: number) => {
@@ -209,6 +214,9 @@ const INSPECT_STATUS = () => {
           </div>
         </div>
       </div>
+
+      </div>
+      
     </div>
   );
 };

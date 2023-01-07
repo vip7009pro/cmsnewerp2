@@ -55,7 +55,7 @@ const INSPECT_COMPONENT = ({ INS_DATA }: { INS_DATA?: INS_STATUS }) => {
             }`,
           }}
         >
-          {INS_DATA?.EQ_NAME}
+           {INS_DATA?.EQ_NAME}
           {INS_DATA?.EQ_STATUS === "START" && (
             <img alt='running' src='/blink.gif' width={40} height={20}></img>
           )}

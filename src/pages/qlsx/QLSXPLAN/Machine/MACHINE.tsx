@@ -192,7 +192,7 @@ interface QLSXPLANDATA {
   INT_TEM?: string;
   CHOTBC?: string;
   DKXL?: string;
-  OLD_PLAN_QTY?: string;
+  OLD_PLAN_QTY?: string;  
 }
 interface YCSXTableData {
   DESCR?: string;
@@ -1689,14 +1689,15 @@ const MACHINE = () => {
         PLAN_QTY={element.PLAN_QTY}
         PLAN_EQ={element.PLAN_EQ}
         PLAN_FACTORY={element.PLAN_FACTORY}
-        PLAN_LEADTIME={element.PLAN_LEADTIME}
+        PLAN_LEADTIME={element.PLAN_LEADTIME} 
         G_CODE={element.G_CODE}
         G_NAME={element.G_NAME}
         G_NAME_KD={element.G_NAME_KD}
         PROD_REQUEST_DATE={element.PROD_REQUEST_DATE}
         PROD_REQUEST_QTY={element.PROD_REQUEST_QTY}
         STEP={element.STEP}
-        PLAN_ORDER={element.PLAN_ORDER}
+        PLAN_ORDER={element.PLAN_ORDER}      
+        PROCESS_NUMBER={element.PROCESS_NUMBER}  
       />
     ));
   };
@@ -2248,15 +2249,7 @@ const MACHINE = () => {
           "info"
         ); */
         if (selectedPlan !== undefined) {
-          hanlde_SaveChiThi();
-          handleGetChiThiTable(
-            selectedPlan?.PLAN_ID === undefined ? "xxx" : selectedPlan?.PLAN_ID,
-            selectedPlan?.G_CODE === undefined ? "xxx" : selectedPlan?.G_CODE,
-            selectedPlan?.PLAN_QTY === undefined ? 0 : selectedPlan?.PLAN_QTY,
-            selectedPlan?.PROCESS_NUMBER === undefined
-              ? 1
-              : selectedPlan?.PROCESS_NUMBER
-          );
+          hanlde_SaveChiThi();         
           handleDangKyXuatLieu(
             selectedPlan?.PLAN_ID === undefined ? "xxx" : selectedPlan?.PLAN_ID,
             selectedPlan?.PROD_REQUEST_NO === undefined
@@ -2466,7 +2459,7 @@ const MACHINE = () => {
             PLAN_EQ: selectedMachine,
             PLAN_FACTORY: selectedFactory,
             PLAN_LEADTIME: 0,
-            STEP: 1,
+            STEP: 0,
             PLAN_ORDER: NextPlanOrder,
             PROCESS_NUMBER: 0,
             G_CODE: ycsxdatatablefilter[i].G_CODE,
@@ -2762,6 +2755,15 @@ const MACHINE = () => {
         "error"
       );
     }
+    handleGetChiThiTable(
+      selectedPlan?.PLAN_ID === undefined ? "xxx" : selectedPlan?.PLAN_ID,
+      selectedPlan?.G_CODE === undefined ? "xxx" : selectedPlan?.G_CODE,
+      selectedPlan?.PLAN_QTY === undefined ? 0 : selectedPlan?.PLAN_QTY,
+      selectedPlan?.PROCESS_NUMBER === undefined
+        ? 1
+        : selectedPlan?.PROCESS_NUMBER
+    );
+
   };
   function CustomToolbarPOTable() {
     return (
@@ -2872,30 +2874,8 @@ const MACHINE = () => {
           className='buttonIcon'
           onClick={() => {
             if (qlsxplandatafilter.length > 0) {
-              if (
-                qlsxplandatafilter[0].FACTORY === null ||
-                qlsxplandatafilter[0].EQ1 === null ||
-                qlsxplandatafilter[0].EQ2 === null ||
-                qlsxplandatafilter[0].Setting1 === null ||
-                qlsxplandatafilter[0].Setting2 === null ||
-                qlsxplandatafilter[0].UPH1 === null ||
-                qlsxplandatafilter[0].UPH2 === null ||
-                qlsxplandatafilter[0].Step1 === null ||
-                qlsxplandatafilter[0].Step1 === null ||
-                qlsxplandatafilter[0].LOSS_SX1 === null ||
-                qlsxplandatafilter[0].LOSS_SX2 === null ||
-                qlsxplandatafilter[0].LOSS_SETTING1 === null ||
-                qlsxplandatafilter[0].LOSS_SETTING2 === null
-              ) {
-                Swal.fire(
-                  "Thông báo",
-                  "Nhập data định mức trước khi chỉ thị",
-                  "error"
-                );
-              } else {
-                setShowChiThi(true);
-                setChiThiListRender(renderChiThi(qlsxplandatafilter));
-              }
+              setShowChiThi(true);
+              setChiThiListRender(renderChiThi(qlsxplandatafilter));
               //console.log(ycsxdatatablefilter);
             } else {
               setShowChiThi(false);
@@ -3042,11 +3022,24 @@ const MACHINE = () => {
         <IconButton
           className='buttonIcon'
           onClick={() => {
-            console.log(selectedPlan);
+            let temp_combo: string = '';
+            if(chithiarray !== undefined) 
+            {
+              for(let i=0;i<chithiarray?.length; i++)
+              {
+                temp_combo+= (i+1)+ '_PLAN_ID: '+  chithiarray[i].PLAN_ID + "_CODE: " + chithiarray[i].G_NAME_KD + '_STEP: '+chithiarray[i].STEP+ '*******';
+              }
+              Swal.fire('Thong bao',temp_combo,'info');
+            }
+            else
+            {
+              Swal.fire('Thong bao','Chưa có chỉ thị trong combo','info');
+            }
+           
           }}
         >
           <BiRefresh color='red' size={20} />
-          show selected row
+          Show Combo
         </IconButton>
       </GridToolbarContainer>
     );
@@ -3607,7 +3600,7 @@ const MACHINE = () => {
     //console.log(datafilter);
     if (datafilter.length > 0) {
       setQlsxPlanDataFilter(datafilter);
-      setDataDinhMuc({
+      /* setDataDinhMuc({
         ...datadinhmuc,
         FACTORY: datafilter[0].FACTORY === null ? "" : datafilter[0].FACTORY,
         EQ1:
@@ -3645,10 +3638,10 @@ const MACHINE = () => {
         datafilter[0].G_CODE,
         datafilter[0].PLAN_QTY,
         datafilter[0].PROCESS_NUMBER
-      );
+      ); */
     } else {
       setQlsxPlanDataFilter([]);
-      setChiThiDataTable([]);
+      //setChiThiDataTable([]);
       //console.log("xoa filter");
     }
   };
@@ -3962,20 +3955,20 @@ const MACHINE = () => {
     setSelectedPlan(rowData);
     setDataDinhMuc({
       ...datadinhmuc,
-      FACTORY: rowData.FACTORY,
+      FACTORY: rowData.FACTORY===null? 'NA': rowData.FACTORY,
       EQ1: rowData.EQ1 === "" ? "NA" : rowData.EQ1,
       EQ2: rowData.EQ2 === "" ? "NA" : rowData.EQ2,
-      Setting1: rowData.Setting1,
-      Setting2: rowData.Setting2,
-      UPH1: rowData.UPH1,
-      UPH2: rowData.UPH2,
-      Step1: rowData.Step1,
-      Step2: rowData.Step2,
-      LOSS_SX1: rowData.LOSS_SX1,
-      LOSS_SX2: rowData.LOSS_SX2,
-      LOSS_SETTING1: rowData.LOSS_SETTING1,
-      LOSS_SETTING2: rowData.LOSS_SETTING2,
-      NOTE: rowData.NOTE,
+      Setting1: rowData.Setting1 === null? 0 : rowData.Setting1,
+      Setting2: rowData.Setting2 === null? 0 : rowData.Setting2,
+      UPH1: rowData.UPH1 ===  null? 0: rowData.UPH1,
+      UPH2: rowData.UPH2 ===  null? 0: rowData.UPH2,
+      Step1: rowData.Step1 ===  null? 0: rowData.Step1,
+      Step2: rowData.Step2 ===  null? 0: rowData.Step2,
+      LOSS_SX1: rowData.LOSS_SX1 ===  null? 0: rowData.LOSS_SX1,
+      LOSS_SX2: rowData.LOSS_SX2 ===  null? 0: rowData.LOSS_SX2,
+      LOSS_SETTING1: rowData.LOSS_SETTING1 ===  null? 0: rowData.LOSS_SETTING1,
+      LOSS_SETTING2: rowData.LOSS_SETTING2 ===  null? 0: rowData.LOSS_SETTING2,
+      NOTE: rowData.NOTE ===  null? '': rowData.NOTE,
     });
     handleGetChiThiTable(
       rowData.PLAN_ID,
@@ -4046,8 +4039,10 @@ const MACHINE = () => {
                       setShowPlanWindow(true);
                       setSelectedFactory(element.FACTORY);
                       setSelectedMachine(element.EQ_NAME);
+                      setSelectedPlan(undefined);
                       setChiThiDataTable([]);
                     }}
+                    
                   />
                 );
               })}
@@ -4234,6 +4229,7 @@ const MACHINE = () => {
             <Button
               onClick={() => {
                 setShowPlanWindow(false);
+                setSelectedPlan(undefined);
               }}
             >
               Close

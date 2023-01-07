@@ -6,7 +6,7 @@ import React, {
   useState,
 } from "react";
 import MACHINE_COMPONENT from "../Machine/MACHINE_COMPONENT";
-import "./QUICKPLAN.scss";
+import "./KHCT.scss";
 import Swal from "sweetalert2";
 import { generalQuery } from "../../../../api/Api";
 import moment from "moment";
@@ -116,7 +116,7 @@ interface QLSXPLANDATA {
   LOSS_SETTING1: number;
   LOSS_SETTING2: number;
   NOTE: string;
-  NEXT_PLAN_ID: string;  
+  NEXT_PLAN_ID: string;
 }
 interface YCSXTableData {
   DESCR?: string;
@@ -200,7 +200,7 @@ interface QLSXCHITHIDATA {
   UPD_EMPL: string;
   UPD_DATE: string;
 }
-const QUICKPLAN = () => {
+const KHCT = () => {
   const [currentPlanPD, setCurrentPlanPD] = useState(0);
   const [currentPlanCAVITY, setCurrentPlanCAVITY] = useState(0);
   const [selection, setSelection] = useState<any>({
@@ -268,7 +268,15 @@ const QUICKPLAN = () => {
   const [editplan, seteditplan] = useState(true);
   const [temp_id, setTemID] = useState(0);
   const [showhideycsxtable, setShowHideYCSXTable] = useState(false);
+  const [showhideplanlisttable, setshowhideplanlisttable] = useState(false);
   const [showhidedinhmuc, setShowHideDinhMuc] = useState(true);
+
+
+
+  const [factory, setFactory] = useState(userData.FACTORY_CODE === 1? 'NM1' : 'NM2');
+  const [machine, setMachine] = useState('ALL');
+ 
+
   const ycsxprintref = useRef(null);
   const handlePrint = useReactToPrint({
     content: () => ycsxprintref.current,
@@ -658,6 +666,187 @@ const QUICKPLAN = () => {
     },
   ];
   const column_plandatatable = [
+    {
+      field: "PLAN_ID",
+      headerName: "PLAN_ID",
+      width: 90,
+      editable: false,
+      resizeable: true,
+    },
+    {
+      field: "PROD_REQUEST_NO",
+      headerName: "YCSX_NO",
+      width: 100,
+      editable: true,
+    },
+    { field: "G_CODE", headerName: "G_CODE", width: 80, editable: false },
+    {
+      field: "G_NAME_KD",
+      headerName: "G_NAME_KD",
+      width: 200,
+      editable: false,
+      renderCell: (params: any) => {
+        if (
+          params.row.FACTORY === null ||
+          params.row.EQ1 === null ||
+          params.row.EQ2 === null ||
+          params.row.Setting1 === null ||
+          params.row.Setting2 === null ||
+          params.row.UPH1 === null ||
+          params.row.UPH2 === null ||
+          params.row.Step1 === null ||
+          params.row.Step1 === null ||
+          params.row.LOSS_SX1 === null ||
+          params.row.LOSS_SX2 === null ||
+          params.row.LOSS_SETTING1 === null ||
+          params.row.LOSS_SETTING2 === null
+        )
+          return <span style={{ color: "red" }}>{params.row.G_NAME_KD}</span>;
+        return <span style={{ color: "green" }}>{params.row.G_NAME_KD}</span>;
+      },
+    },
+    {
+      field: "PROD_REQUEST_QTY",
+      headerName: "YCSX_QTY",
+      width: 80,
+      editable: false,
+      renderCell: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            {params.row.PROD_REQUEST_QTY.toLocaleString("en", "US")}
+          </span>
+        );
+      },
+    },
+    {
+      field: "CD1",
+      headerName: "KQ_CD1",
+      width: 80,
+      editable: false,
+      renderCell: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            {params.row.CD1.toLocaleString("en", "US")}
+          </span>
+        );
+      },
+    },
+    {
+      field: "CD2",
+      headerName: "KQ_CD2",
+      width: 80,
+      editable: false,
+      renderCell: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            {params.row.CD2.toLocaleString("en", "US")}
+          </span>
+        );
+      },
+    },
+    {
+      field: "TON_CD1",
+      headerName: "TONYCSX_CD1",
+      width: 120,
+      editable: false,
+      renderCell: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            {params.row.TON_CD1.toLocaleString("en", "US")}
+          </span>
+        );
+      },
+    },
+    {
+      field: "TON_CD2",
+      headerName: "TONYCSX_CD2",
+      width: 120,
+      editable: false,
+      renderCell: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            {params.row.TON_CD2.toLocaleString("en", "US")}
+          </span>
+        );
+      },
+    },
+    {
+      field: "PLAN_QTY",
+      headerName: "PLAN_QTY",
+      width: 80,
+      editable: editplan,
+      renderCell: (params: any) => {
+        if (params.row.PLAN_QTY === 0) {
+          return <span style={{ color: "red" }}>NG</span>;
+        } else {
+          return (
+            <span style={{ color: "green" }}>
+              {params.row.PLAN_QTY.toLocaleString("en", "US")}
+            </span>
+          );
+        }
+      },
+    },
+    {
+      field: "PROCESS_NUMBER",
+      headerName: "PROCESS_NUMBER",
+      width: 110,
+      editable: editplan,
+      renderCell: (params: any) => {
+        if (
+          params.row.PROCESS_NUMBER === null ||
+          params.row.PROCESS_NUMBER === 0
+        ) {
+          return <span style={{ color: "red" }}>NG</span>;
+        } else {
+          return (
+            <span style={{ color: "green" }}>{params.row.PROCESS_NUMBER}</span>
+          );
+        }
+      },
+    },
+    {
+      field: "PLAN_ORDER",
+      headerName: "PLAN_ORDER",
+      width: 110,
+      editable: editplan,
+    },
+    { field: "EQ1", headerName: "EQ1", width: 80, editable: editplan },
+    { field: "EQ2", headerName: "EQ2", width: 80, editable: editplan },
+    {
+      field: "PLAN_EQ",
+      headerName: "PLAN_EQ",
+      width: 80,
+      editable: editplan,
+      renderCell: (params: any) => {
+        if (params.row.PLAN_EQ === null || params.row.PLAN_EQ === "") {
+          return <span style={{ color: "red" }}>NG</span>;
+        } else {
+          return <span style={{ color: "green" }}>{params.row.PLAN_EQ}</span>;
+        }
+      },
+    },
+    { field: "STEP", headerName: "STEP", width: 60, editable: editplan },
+    {
+      field: "PLAN_FACTORY",
+      headerName: "FACTORY",
+      width: 80,
+      editable: false,
+    },
+    {
+      field: "PLAN_DATE",
+      headerName: "PLAN_DATE",
+      width: 110,
+      editable: false,
+    },
+    {
+      field: "NEXT_PLAN_ID",
+      headerName: "NEXT_PLAN_ID",
+      width: 120,
+      editable: true,
+    },
+  ];
+  const column_listchithi = [
     {
       field: "PLAN_ID",
       headerName: "PLAN_ID",
@@ -1639,7 +1828,7 @@ const QUICKPLAN = () => {
         </IconButton>
         <GridToolbarQuickFilter />
         <span style={{ fontSize: 20, fontWeight: "bold" }}>
-          Bảng tạm xắp PLAN
+          BẢNG KẾ HOẠCH CHỈ THỊ
         </span>
         <IconButton
           className='buttonIcon'
@@ -1681,7 +1870,16 @@ const QUICKPLAN = () => {
           }}
         >
           <BiShow color='green' size={20} />
-          Ẩn /Hiện
+          Ẩn /Hiện YCSX
+        </IconButton>
+        <IconButton
+          className='buttonIcon'
+          onClick={() => {
+            setshowhideplanlisttable(!showhideplanlisttable);
+          }}
+        >
+          <BiShow color='green' size={20} />
+          Ẩn /Hiện LIST CT
         </IconButton>
         <IconButton
           className='buttonIcon'
@@ -1698,6 +1896,35 @@ const QUICKPLAN = () => {
           <AiFillSave color='lightgreen' size={20} />
           Lưu Data Định Mức
         </IconButton>
+      </GridToolbarContainer>
+    );
+  }
+  function CustomToolbarPLANLIST() {
+    return (
+      <GridToolbarContainer>
+        <IconButton
+          className='buttonIcon'
+          onClick={() => {
+            SaveExcel(plandatatable, "Plan Table");
+          }}
+        >
+          <AiFillFileExcel color='green' size={25} />
+          SAVE
+        </IconButton>
+        <GridToolbarQuickFilter />
+        <span style={{ fontSize: 20, fontWeight: "bold" }}>
+          Lịch sử chỉ thị
+        </span>
+        <IconButton
+          className='buttonIcon'
+          onClick={() => {
+            handle_AddBlankPlan();
+          }}
+        >
+          <AiFillFolderAdd color='#69f542' size={25} />
+          Add Blank PLAN
+        </IconButton>
+       
       </GridToolbarContainer>
     );
   }
@@ -2026,11 +2253,92 @@ const QUICKPLAN = () => {
     }
   }, []);
   return (
-    <div className='quickplan'>
+    <div className='khct'>
       <div className='planwindow'>
         <span style={{ fontSize: 25, color: "blue", marginLeft: 20 }}>
           {selectedCode}
         </span>
+
+        <div className='tracuuDataInspectionform'>
+          <div className='forminput'>
+            <div className='forminputcolumn'>
+              <label>
+                <b>KH DATE</b>
+                <input
+                  type='date'
+                  value={fromdate.slice(0, 10)}
+                  onChange={(e) => setFromDate(e.target.value)}
+                ></input>
+              </label> 
+            <label>
+            <b>FACTORY:</b>
+            <select
+                name='phanloai'
+                value={factory}
+                onChange={(e) => {
+                setFactory(e.target.value);
+                }}
+            >
+                <option value='ALL'>ALL</option>
+                <option value='NM1'>NM1</option>
+                <option value='NM2'>NM2</option>           
+            </select>
+            </label>          
+            </div>
+            <div className='forminputcolumn'>   
+            <label>
+            <b>MACHINE:</b>
+            <select
+                name='machine'
+                value={machine}
+                onChange={(e) => {
+                setMachine(e.target.value);
+                }}
+            >
+                <option value='ALL'>ALL</option>
+                <option value='FR'>FR</option>
+                <option value='SR'>SR</option>
+                <option value='DC'>DC</option>
+                <option value='ED'>ED</option>           
+            </select>
+            </label>               
+              <label>
+                <b>MOVE TO DATE</b>
+                <input
+                  type='date'
+                  value={todate.slice(0, 10)}
+                  onChange={(e) => setToDate(e.target.value)}
+                ></input>
+              </label> 
+                
+            </div> 
+
+            <div className='forminputcolumn'> 
+            <button
+              className='tranhatky'
+              onClick={() => {
+                
+              }}
+            >
+              MOVE KH
+            </button>     
+            <button
+              className='tranhatky'
+              onClick={() => {
+                setisLoading(true);                            
+                loadQLSXPlan(fromdate);
+              }}
+            >
+              Tra PLAN
+            </button> 
+            </div> 
+          </div>
+          <div className='formbutton'>          
+            
+          </div>
+        </div>
+
+
         {showhidedinhmuc && (
           <div className='datadinhmuc'>
             <div className='forminputcolumn'>
@@ -2256,6 +2564,7 @@ const QUICKPLAN = () => {
             </div>
           </div>
         )}
+        
         <div className='content'>
           {showhideycsxtable && (
             <div className='ycsxlist'>
@@ -2594,9 +2903,30 @@ const QUICKPLAN = () => {
               />
             </div>
           </div>
+          {showhideplanlisttable && <div className='planlist'>
+              <DataGrid
+                sx={{ fontSize: 12, flex: 1 }}
+                components={{
+                  Toolbar: CustomToolbarPLANLIST,
+                  LoadingOverlay: LinearProgress,
+                }}
+                loading={isLoading}
+                rowHeight={30}
+                rows={plandatatable}
+                columns={column_listchithi}
+                rowsPerPageOptions={[
+                  5, 10, 50, 100, 500, 1000, 5000, 10000, 500000,
+                ]}
+                editMode='cell'
+                getRowId={(row) => row.PLAN_ID}
+                onSelectionModelChange={(ids) => {
+                  handleQLSXPlanDataSelectionforUpdate(ids);
+                }}                
+              />
+            </div>}
         </div>
       </div>
     </div>
   );
 };
-export default QUICKPLAN;
+export default KHCT;

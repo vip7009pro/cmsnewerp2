@@ -2,6 +2,7 @@ import  { useEffect, useState} from 'react'
 import KHOLIEU from '../../kho/kholieu/KHOLIEU';
 import DATASX from './DATASX/DATASX';
 import EQ_STATUS from './EQ_STATUS/EQ_STATUS';
+import KHCT from './KHCT/KHCT';
 import PLAN_DATATB from './LICHSUCHITHITABLE/PLAN_DATATB';
 import LICHSUINPUTLIEU from './LICHSUINPUTLIEU/LICHSUINPUTLIEU';
 import MACHINE from './Machine/MACHINE';
@@ -21,35 +22,39 @@ const QLSXPLAN = () => {
   const setNav = (choose: number) => {
     if(choose ===1 )
     {
-      setSelection({...selection, tab1:true, tab2: false, tab3:false, tab4: false, tab5: false, tab6: false, tab7:false, tab8: false});
+      setSelection({...selection, tab1:true, tab2: false, tab3:false, tab4: false, tab5: false, tab6: false, tab7:false, tab8: false, tab9: false});
     }
     else if(choose ===2 )
     {
-      setSelection({...selection, tab1:false, tab2: true, tab3:false, tab4: false, tab5: false, tab6: false, tab7:false, tab8: false});
+      setSelection({...selection, tab1:false, tab2: true, tab3:false, tab4: false, tab5: false, tab6: false, tab7:false, tab8: false, tab9: false});
     } 
     else if(choose ===3 )
     {
-      setSelection({...selection, tab1:false, tab2: false, tab3:true, tab4: false, tab5: false, tab6: false, tab7:false, tab8: false});
+      setSelection({...selection, tab1:false, tab2: false, tab3:true, tab4: false, tab5: false, tab6: false, tab7:false, tab8: false, tab9: false});
     }
     else if(choose ===4 )
     {
-      setSelection({...selection, tab1:false, tab2: false, tab3:false, tab4: true, tab5: false, tab6: false, tab7:false, tab8: false});
+      setSelection({...selection, tab1:false, tab2: false, tab3:false, tab4: true, tab5: false, tab6: false, tab7:false, tab8: false, tab9: false});
     }
     else if(choose ===5 )
     {
-      setSelection({...selection, tab1:false, tab2: false, tab3:false, tab4: false, tab5: true, tab6: false, tab7:false, tab8: false});
+      setSelection({...selection, tab1:false, tab2: false, tab3:false, tab4: false, tab5: true, tab6: false, tab7:false, tab8: false, tab9: false});
     }
     else if(choose ===6 )
     {
-      setSelection({...selection, tab1:false, tab2: false, tab3:false, tab4: false, tab5: false, tab6: true, tab7:false, tab8: false});
+      setSelection({...selection, tab1:false, tab2: false, tab3:false, tab4: false, tab5: false, tab6: true, tab7:false, tab8: false, tab9: false});
     }
     else if(choose ===7 )
     {
-      setSelection({...selection, tab1:false, tab2: false, tab3:false, tab4: false, tab5: false, tab6: false, tab7:true, tab8: false});
+      setSelection({...selection, tab1:false, tab2: false, tab3:false, tab4: false, tab5: false, tab6: false, tab7:true, tab8: false, tab9: false});
     }
     else if(choose ===8 )
     {
-      setSelection({...selection, tab1:false, tab2: false, tab3:false, tab4: false, tab5: false, tab6: false, tab7:false, tab8: true});
+      setSelection({...selection, tab1:false, tab2: false, tab3:false, tab4: false, tab5: false, tab6: false, tab7:false, tab8: true, tab9: false});
+    }
+    else if(choose ===9 )
+    {
+      setSelection({...selection, tab1:false, tab2: false, tab3:false, tab4: false, tab5: false, tab6: false, tab7:false, tab8: false, tab9: true});
     }
   }  
   useEffect(()=>{
@@ -64,6 +69,11 @@ const QLSXPLAN = () => {
             PLAN VISUAL
           </span>
         </div>  
+        <div className='mininavitem'  onClick={() => setNav(9)} style={{backgroundColor:selection.tab9 === true ? '#9933ff':'#d9b3ff', color: selection.tab9 === true ? 'yellow':'yellow'}}>
+          <span className='mininavtext'>
+            KH-CT
+          </span>
+        </div>   
         <div className='mininavitem'  onClick={() => setNav(4)} style={{backgroundColor:selection.tab4 === true ? '#9933ff':'#d9b3ff', color: selection.tab4 === true ? 'yellow':'yellow'}}>
           <span className='mininavtext'>
             QUICK PLAN
@@ -140,6 +150,11 @@ const QLSXPLAN = () => {
       {selection.tab8 && (
         <div className='datadtc'>
           <EQ_STATUS/>                               
+        </div>
+      )}
+      {selection.tab9 && (
+        <div className='datadtc'>
+          <KHCT/>                               
         </div>
       )}
     </div>

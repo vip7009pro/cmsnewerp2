@@ -108,6 +108,8 @@ const EQ_STATUS = () => {
                     upd_time ={element.UPD_DATE}
                     upd_empl ={element.UPD_EMPL}
                     onClick={() => {}}
+                    onMouseEnter={()=>{}}
+                    onMouseLeave={()=>{}}
                   />
                 );
               })}

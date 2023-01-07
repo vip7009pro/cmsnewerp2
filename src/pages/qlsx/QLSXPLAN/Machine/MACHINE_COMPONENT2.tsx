@@ -1,6 +1,6 @@
 import { Button } from "@mui/material";
 import moment from "moment";
-import React from "react";
+import React, { useState } from "react";
 import Swal from "sweetalert2";
 import "./MACHINE_COMPONENT2.scss";
 
@@ -34,6 +34,8 @@ interface MachineInterface {
   upd_time?: string;
   upd_empl?: string;
   onClick?:  (ev: any) => void;
+  onMouseEnter?: (ev:any)=> void;
+  onMouseLeave?: (ev:any)=> void;
 }
 
 const MACHINE_COMPONENT2 = (machine_data: MachineInterface) => {
@@ -46,10 +48,11 @@ const MACHINE_COMPONENT2 = (machine_data: MachineInterface) => {
   var date1 = moment();
   var date2 = moment.utc(machine_data.upd_time).format('YYYY-MM-DD HH:mm:ss');
   var diff: number = date1.diff(date2,'minutes');  
+  const [showhideDetail,setShowHideDetail]= useState(false);
 
   return (
     <div className="mc2">
-   {/*  {(machine_data.eq_status === 'STOP' && machine_data.upd_empl !== '') && <div className="downtime" style={{fontSize:11}}>  Stop: {diff} min</div>} */}
+    {(machine_data.eq_status === 'STOP' && machine_data.upd_empl !== '') && <div className="downtime" style={{fontSize:11}}>  Stop: {diff} min</div>}
     {(machine_data.eq_status === 'SETTING' && machine_data.upd_empl !== '') && <div className="downtime" style={{fontSize:11}}>  Setting: {diff} min</div>}
     {(machine_data.eq_status === 'MASS' && machine_data.upd_empl !== '') && <div className="downtime" style={{fontSize:11}}>  Run: {diff} min</div>}
     <div
@@ -62,6 +65,8 @@ const MACHINE_COMPONENT2 = (machine_data: MachineInterface) => {
         borderRadius: '4px'
       }}
       onDoubleClick={machine_data.onClick}
+      onMouseEnter={()=>{setShowHideDetail(true)}}
+      onMouseLeave={()=>{setShowHideDetail(false)}}
     >
      
       <div className='tieude' style={{backgroundColor:`${machine_data.eq_status ==='STOP'? 'red':machine_data.eq_status ==='SETTING'? 'yellow' : `#3ff258` }`}}>
@@ -75,6 +80,9 @@ const MACHINE_COMPONENT2 = (machine_data: MachineInterface) => {
         {machine_data.current_g_name}
       </div>
     </div>
+    {showhideDetail && <div className="chitiet">
+      
+    </div>}
     </div>
   );
 };
