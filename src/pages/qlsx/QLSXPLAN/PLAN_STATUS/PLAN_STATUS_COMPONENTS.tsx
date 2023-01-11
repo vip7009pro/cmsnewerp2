@@ -25,9 +25,10 @@ interface SX_DATA {
     KQ_SX_TAM: number,
     KETQUASX: number, 
     PLAN_QTY: number,
+    WORK_SHIFT: string,
 }
 
-const PLAN_STATUS_COMPONENTS = ({id, PLAN_ID, PLAN_QTY, KQ_SX_TAM, KETQUASX, PLAN_FACTORY, STEP, PLAN_DATE, PLAN_EQ, G_NAME, G_NAME_KD, XUATDAO, SETTING_START_TIME, MASS_START_TIME, MASS_END_TIME, DKXL, XUATLIEU, CHOTBC} : SX_DATA) => {
+const PLAN_STATUS_COMPONENTS = ({id, PLAN_ID, PLAN_QTY, KQ_SX_TAM, KETQUASX, PLAN_FACTORY, STEP, PLAN_DATE, PLAN_EQ, G_NAME, G_NAME_KD, XUATDAO, SETTING_START_TIME, MASS_START_TIME, MASS_END_TIME, DKXL, XUATLIEU, CHOTBC, WORK_SHIFT} : SX_DATA) => {
 let kq_tem: number = (CHOTBC===null? (KQ_SX_TAM===null? 0: KQ_SX_TAM): KETQUASX);
 let phantram_tem : number = PLAN_QTY===0? 0 : kq_tem/(PLAN_QTY) * 100;
 let backgroundColor:string ='white';
@@ -82,6 +83,9 @@ if(phantram_tem >110)
         </div>
         <div className='flag' style={{backgroundColor: '#6efad7', padding: '10px'}}>
             {PLAN_DATE}           
+        </div> 
+        <div className='flag' style={{backgroundColor: '#6efad7', padding: '10px'}}>
+            {WORK_SHIFT===null? 'CHƯA SX': WORK_SHIFT==='DAY'? 'CA_NGÀY': 'CA__ĐÊM'}           
         </div> 
         <div className='flag' style={{backgroundColor: '#5230fc', padding: '10px', color:'yellow'}}>
             {PLAN_FACTORY}           

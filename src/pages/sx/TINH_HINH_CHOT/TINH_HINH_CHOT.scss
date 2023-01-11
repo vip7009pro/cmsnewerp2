@@ -1,0 +1,24 @@
+.tinhhinhchotbaocao {
+    display: flex;
+    height: 80vh;
+    justify-items: center;
+    gap: 20px;
+
+    .nhamay1 {
+        display: flex;
+        flex: 1;
+        -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+        box-shadow: 5px 5px 10px 5px rgba(0, 0, 0, 0.27);
+        background-image: linear-gradient(0deg, #ececec, #9dee95);
+
+    }
+
+    .nhamay2 {
+        display: flex;
+        flex: 1;
+        -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+        box-shadow: 5px 5px 10px 5px rgba(0, 0, 0, 0.27);
+        background-image: linear-gradient(0deg, #ececec, #c0eeea);
+
+    }
+}

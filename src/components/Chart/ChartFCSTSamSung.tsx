@@ -58,8 +58,8 @@ const ChartFCSTSamSung = () => {
     let fcstyear2: number = moment().year(); 
     let fcstweek1:number = moment().add(1,'days').isoWeek()-1;
     let fcstyear1: number = moment().year();
-    //console.log('fcst week 1',fcstweek1)
-    //console.log('fcst week 2',fcstweek2)
+    console.log('fcst week 1',fcstweek1)
+    console.log('fcst week 2',fcstweek2)
     if(fcstweek2 ===1)
     {
         fcstweek1 = 52;
@@ -71,56 +71,60 @@ const ChartFCSTSamSung = () => {
       fcstweek1 = 52;
       fcstyear1 = fcstyear2 -1;
     }
-    
-    generalQuery("baocaofcstss", {FCSTYEAR1: fcstyear1, FCSTYEAR2: fcstyear2, FCSTWEEKNUM1: fcstweek1, FCSTWEEKNUM2: fcstweek2 })
-      .then((response) => {
-        //console.log(response.data.data)
-        if (response.data.tk_status !== "NG") {
-          const loadeddata: SamSungFCSTData[] = response.data.data.map(
-            (element: SamSungFCSTData, index: number) => {
-              return {
-                ...element,
-                WEEKNO: (fcstweek2 + index) > 52 ? 'W'+ ((fcstweek2 + index-52-1===0)? 52:1) + '_W'+ (fcstweek2 + index-52): 'W'+ (fcstweek2 + index-1) + '_W'+ (fcstweek2 + index)
-              };
-            }
-          );
-          if(loadeddata[0].TT_SS1 !== null && loadeddata[0].TT_SS2 !== null)
-          {
-              setSamSungFCSTData(loadeddata.splice(0,15));
-          }
-          else
-          {
-            generalQuery("baocaofcstss", {FCSTYEAR1: fcstyear1, FCSTYEAR2: fcstyear2, FCSTWEEKNUM1: fcstweek1-1, FCSTWEEKNUM2: fcstweek2-1 })
-            .then((response) => {
-              //console.log(response.data.data)
-              if (response.data.tk_status !== "NG") {
-                const loadeddata: SamSungFCSTData[] = response.data.data.map(
-                  (element: SamSungFCSTData, index: number) => {
-                    return {
-                      ...element,
-                      WEEKNO: (fcstweek2 + index) > 52 ? 'W'+ ((fcstweek2 + index-52-1===0)? 52:1) + '_W'+ (fcstweek2 + index-52): 'W'+ (fcstweek2 + index-1) + '_W'+ (fcstweek2 + index)
-                    };
-                  }
-                );
-                setSamSungFCSTData(loadeddata.splice(0,15));
-                //console.log(loadeddata);
-              } else {
-                Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
-              }
-            })
-            .catch((error) => {
-              console.log(error);
-            });
 
+    //console.log('fcst week 1',fcstweek1)
+   // console.log('fcst week 2',fcstweek2)
+
+    generalQuery("baocaofcstss", {FCSTYEAR1: fcstyear1, FCSTYEAR2: fcstyear2, FCSTWEEKNUM1: fcstweek1, FCSTWEEKNUM2: fcstweek2 })
+    .then((response) => {
+      //console.log(response.data.data)
+      if (response.data.tk_status !== "NG") {
+        const loadeddata: SamSungFCSTData[] = response.data.data.map(
+          (element: SamSungFCSTData, index: number) => {
+            return {
+              ...element,
+              WEEKNO: (fcstweek2 + index) > 52 ? 'W'+ ((fcstweek2 + index-52-1===0)? 52:1) + '_W'+ (fcstweek2 + index-52): 'W'+ (fcstweek2 + index-1) + '_W'+ (fcstweek2 + index)
+            };
           }
-          //console.log(loadeddata);
-        } else {
-          Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
+        );
+        if(loadeddata[0].TT_SS1 !== null && loadeddata[0].TT_SS2 !== null)
+        {
+            setSamSungFCSTData(loadeddata.splice(0,15));
         }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+        else
+        {
+          generalQuery("baocaofcstss", {FCSTYEAR1: fcstweek1-1 === 0 ? fcstyear1-1:fcstyear1, FCSTYEAR2: fcstyear2, FCSTWEEKNUM1: fcstweek1-1 === 0? 52: fcstweek1-1 , FCSTWEEKNUM2: fcstweek2-1 ===0 ? 1:  fcstweek2-1})
+          .then((response) => {
+           // console.log('vao fcst 2')
+            //console.log(response.data.data)
+            if (response.data.tk_status !== "NG") {
+              const loadeddata: SamSungFCSTData[] = response.data.data.map(
+                (element: SamSungFCSTData, index: number) => {
+                  return {
+                    ...element,
+                    WEEKNO: (fcstweek2 + index) > 52 ? 'W'+ ((fcstweek2 + index-52-1===0)? 52:1) + '_W'+ (fcstweek2 + index-52): 'W'+ (fcstweek2 + index-1) + '_W'+ (fcstweek2 + index)
+                  };
+                }
+              );
+              setSamSungFCSTData(loadeddata.splice(0,15));
+              //console.log(loadeddata);
+            } else {
+              Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+
+        }
+        //console.log(loadeddata);
+      } else {
+        Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
   };
   useEffect(() => {
     handleGetDailyClosing();

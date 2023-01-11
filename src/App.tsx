@@ -56,7 +56,7 @@ import EQ_STATUS from "./pages/qlsx/QLSXPLAN/EQ_STATUS/EQ_STATUS";
 import LICHSUINPUTLIEU from "./pages/qlsx/QLSXPLAN/LICHSUINPUTLIEU/LICHSUINPUTLIEU";
 import INSPECT_STATUS from "./pages/qc/inspection/INSPECT_STATUS/INSPECT_STATUS";
 import ShortageKD from "./pages/kinhdoanh/shortageKD/ShortageKD";
-
+import TRANGTHAICHITHI from "./pages/sx/TRANGTHAICHITHI/TRANGTHAICHITHI";
 interface userDataInterface {
   EMPL_IMAGE?: string;
   ADD_COMMUNE: string;
@@ -244,12 +244,10 @@ function App() {
   const globalUserData: UserData | undefined = useSelector(
     (state: RootState) => state.totalSlice.userData
   );
-
   const dispatch = useDispatch();
   //console.log(userData.JOB_NAME);
   useEffect(() => {
     console.log("check login");
-
     checkLogin()
       .then((data) => {
         //console.log(data);
@@ -365,7 +363,6 @@ function App() {
       .catch((err) => {
         console.log(err + " ");
       });
-
     generalQuery("checkdiemdanh", {})
       .then((response) => {
         //console.log(response.data);
@@ -382,10 +379,8 @@ function App() {
       .catch((error) => {
         console.log(error);
       });
-
     return () => {};
   }, []);
-
   //console.log(userData);
   if (loginState === true) {
     return (
@@ -714,7 +709,7 @@ function App() {
                           maindeptname='all'
                           jobname='Leader'
                         >
-                          <PLAN_STATUS />
+                          <TRANGTHAICHITHI />
                         </ProtectedRoute>
                       }
                     />

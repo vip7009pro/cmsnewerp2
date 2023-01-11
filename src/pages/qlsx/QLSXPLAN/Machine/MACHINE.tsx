@@ -2294,47 +2294,56 @@ const MACHINE = () => {
             generalQuery("checkPLANID_O302", {
               PLAN_ID: qlsxplandatafilter[i].PLAN_ID,
             })
-              .then((response) => {
-                //console.log(response.data);
-                if (response.data.tk_status !== "NG") {
-                } else {
+            .then((response) => {
+              //console.log(response.data);
+              if (response.data.tk_status !== "NG") {
+              } else {
+                if(qlsxplandatafilter[i].CHOTBC ===null)
+                {
                   generalQuery("deletePlanQLSX", {
                     PLAN_ID: qlsxplandatafilter[i].PLAN_ID,
                   })
-                    .then((response) => {
-                      //console.log(response.data);
-                      if (response.data.tk_status !== "NG") {
-                        Swal.fire(
-                          "Thông báo",
-                          "Nội dung: " + response.data.message,
-                          "error"
-                        );
-                      } else {
-                        datafilter.splice(j, 1);
-                        setPlanDataTable(datafilter);
-                      }
-                    })
-                    .catch((error) => {
-                      console.log(error);
-                    });
+                  .then((response) => {
+                    //console.log(response.data);
+                    if (response.data.tk_status !== "NG") {
+                      Swal.fire(
+                        "Thông báo",
+                        "Nội dung: " + response.data.message,
+                        "error"
+                      );
+                    } else {
+                      datafilter.splice(j, 1);
+                      setPlanDataTable(datafilter);
+                    }
+                  })
+                  .catch((error) => {
+                    console.log(error);
+                  });
+
                 }
-                /*  generalQuery("deletePlanQLSX", { PLAN_ID: qlsxplandatafilter[i].PLAN_ID })
-              .then((response) => {
-                //console.log(response.data);
-                if (response.data.tk_status !== "NG") {
-                  Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
-                } else {
-                  datafilter.splice(j,1);   
-                  setPlanDataTable(datafilter);   
+                else
+                {
+                  Swal.fire('Thông báo', 'Chỉ thị + '+ qlsxplandatafilter[i].PLAN_ID+':  +đã chốt báo cáo, ko xóa được chỉ thị','error');
                 }
-              })
-              .catch((error) => {
-                console.log(error);
-              });  */
-              })
-              .catch((error) => {
-                console.log(error);
-              });
+                
+              }
+              /*  generalQuery("deletePlanQLSX", { PLAN_ID: qlsxplandatafilter[i].PLAN_ID })
+            .then((response) => {
+              //console.log(response.data);
+              if (response.data.tk_status !== "NG") {
+                Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
+              } else {
+                datafilter.splice(j,1);   
+                setPlanDataTable(datafilter);   
+              }
+            })
+            .catch((error) => {
+              console.log(error);
+            });  */
+            })
+            .catch((error) => {
+              console.log(error);
+            });
           }
         }
       }
@@ -2527,7 +2536,7 @@ const MACHINE = () => {
         selectedPlanTable[i].CHOTBC !== "V" &&
         check_NEXT_PLAN_ID &&
         parseInt(selectedPlanTable[i].STEP.toString()) >= 0 &&
-        parseInt(selectedPlanTable[i].STEP.toString()) <= 9
+        parseInt(selectedPlanTable[i].STEP.toString()) <= 9 && parseInt(selectedPlanTable[i].PROCESS_NUMBER.toString()) >=1 && parseInt(selectedPlanTable[i].PROCESS_NUMBER.toString()) <=2
       ) {
         generalQuery("updatePlanQLSX", {
           PLAN_ID: selectedPlanTable[i].PLAN_ID,
@@ -2596,6 +2605,10 @@ const MACHINE = () => {
         ) {
           err_code += "_: Hãy nhập STEP từ 0 -> 9";
         }
+        if(!(parseInt(selectedPlanTable[i].PROCESS_NUMBER.toString()) >=1 && parseInt(selectedPlanTable[i].PROCESS_NUMBER.toString()) <=2))
+        {
+          err_code += "_: Hãy nhập PROCESS NUMBER từ 1 hoặc 2";
+        }        
       }
     }
     if (err_code !== "0") {
