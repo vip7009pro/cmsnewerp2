@@ -120,6 +120,7 @@ export interface GlobalInterface {
     lang?: string
     sidebarmenu?: boolean,
     multiple_chithi_array: QLSXPLANDATA[],
+    server_ip: string,
 }
 const initialState:GlobalInterface = {   
     userData: {
@@ -172,7 +173,8 @@ const initialState:GlobalInterface = {
     diemdanhstate: false,
     lang: 'vi',
     sidebarmenu: false,
-    multiple_chithi_array: []
+    multiple_chithi_array: [],
+    server_ip: 'http://14.160.33.94:5011/api'
 
 }
 export const glbSlice = createSlice({
@@ -242,9 +244,11 @@ export const glbSlice = createSlice({
           state.multiple_chithi_array =[];
           Swal.fire('Thông báo','Reset Plan in combo thành công','success');
         },
-        
-
+        changeServer: (state,action: PayloadAction<string>)=> {
+          state.server_ip = action.payload;
+          Swal.fire('Thông báo','Đã đổi server sang : ' + action.payload);
+        }  
     }
 });
-export const {changeDiemDanhState, changeUserData, update_socket,toggleSidebar, addChithiArray, resetChithiArray } = glbSlice.actions;
+export const {changeDiemDanhState, changeUserData, update_socket,toggleSidebar, addChithiArray, resetChithiArray, changeServer } = glbSlice.actions;
 export default glbSlice.reducer;

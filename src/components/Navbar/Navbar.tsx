@@ -19,13 +19,12 @@ import { useDispatch } from "react-redux";
 import { toggleSidebar } from "../../redux/slices/globalSlice";
 import { current_ver } from "../../pages/home/Home";
 
-
-
 export default function Navbar() {
   const [avatarmenu, setAvatarMenu] = useState(false);
   const [langmenu, setLangMenu] = useState(false);
   const [lang, setLang] = useContext(LangConText);
   const [userData, setUserData] = useContext(UserContext);
+  const [server_string, setServer_String] = useState('http://14.160.33.94:5011/api');
 
   const dispatch = useDispatch();
 
@@ -39,6 +38,18 @@ export default function Navbar() {
     {
       setLang('en');
     }
+
+
+
+    let server_ip_local: any = localStorage.getItem("server_ip")?.toString();
+    if (server_ip_local !== undefined) {
+      setServer_String(server_ip_local);
+    } else {      
+      localStorage.setItem("server_ip", 'http://14.160.33.94:5011/api');
+    }
+
+
+
   }, []);
   
 
@@ -61,7 +72,7 @@ export default function Navbar() {
   }
   return (
     <div className='navbar'>     
-      <div className='wrapper'>
+      <div className='wrapper' style={{backgroundColor: server_string ==='http://14.160.33.94:5011/api'?'':'#eb99ff'}}>
         <FcList onClick={()=>{dispatch(toggleSidebar('2'))}} size={30}/> 
         <div className='search'>
           <input type='text' placeholder='Search...' />
@@ -79,6 +90,7 @@ export default function Navbar() {
             />
           </Link>
         </div>
+        {server_string ==='http://14.160.33.94:5011/api'? 'MAIN SERVER':'SUB SERVER'}
 
         <b> Web Ver: {current_ver} </b>
         <div className='items'>

@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 import { generalQuery } from "../../api/Api";
 import Swal from "sweetalert2";
 import PrimarySearchAppBar from "../../components/AppBar/AppBarCustom";
-export const current_ver: number = 57;
+export const current_ver: number = 59;
 function Home() {
   const springs = useSpring({
     from: { x: 1000, y: 100 },
@@ -60,7 +60,7 @@ function Home() {
         .catch((error) => {
           console.log(error);
         });
-    }, 3000);
+    }, 30000);
     return () => {
       window.clearInterval(intervalID);
     };
