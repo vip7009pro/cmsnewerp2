@@ -502,7 +502,7 @@ const CHITHI_COMPONENT = ({
             </tbody>
           </table>
         </div>       
-        <div className='text1'>
+        {/* <div className='text1'>
           2. 생산 정보 Thông tin Sản xuất
           {' '}
           <Barcode
@@ -573,8 +573,47 @@ const CHITHI_COMPONENT = ({
               </tr>
             </tbody>
           </table>         
+        </div> */}
+        <div className='text1'>3. LOSS INFO__ {' '}{PLAN_ID} {':  '}
+          <Barcode
+              value={PLAN_ID}
+              format='CODE128'
+              width={1.5}
+              height={20}
+              displayValue={false}
+              background='#fff'
+              lineColor='black'
+              margin={0}
+            /></div>
+        <div className='thongtinyeucau'>
+          <table className='ttyc1'>
+            <thead>
+              <tr>
+                <th>Bóc kiểm (EA)/파괴검사</th>
+                <th>Lấy đồ/도구 준비</th>
+                <th>Máy hỏng/설비 고장</th>
+                <th>Dao NG/칼 불량</th>
+                <th>Chờ liệu/원단 대기</th>
+                <th>Chờ BTP/BTP 대기</th>
+                <th>Hết liệu/원단 떨어짐</th>
+                <th>Liệu NG/원단 불량</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td style={{height: '20px'}}></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>               
+              </tr>             
+            </tbody>
+          </table>               
         </div>       
-        <div className='text1'>3. 제품 정보 Thông tin vật liệu</div>
+        <div className='text1'>4. 제품 정보 Thông tin vật liệu</div>
         <div className='thongtinvatlieu'>
           {chithidatatable.length <= max_lieu && (
             <div className='vatlieugiua'>

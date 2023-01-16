@@ -9,6 +9,7 @@ import { UserContext } from '../../../../api/Context';
 import { SaveExcel } from '../../../../api/GlobalFunction';
 import "./DATASX.scss"
 interface SX_DATA {
+  G_CODE: string,
   PHAN_LOAI: string,
   PLAN_ID: string,
   PLAN_DATE: string,
@@ -123,6 +124,7 @@ const DATASX = () => {
     { field: "PLAN_ID", headerName: "PLAN_ID", minWidth: 120 , flex: 1},
     { field: "PLAN_DATE", headerName: "PLAN_DATE", minWidth: 120 , flex: 1},
     { field: "PROD_REQUEST_NO", headerName: "PROD_REQUEST_NO", minWidth: 120 , flex: 1},
+    { field: "G_CODE", headerName: "G_CODE", minWidth: 120 , flex: 1},
     { field: "G_NAME", headerName: "G_NAME", minWidth: 120 , flex: 1},
     { field: "G_NAME_KD", headerName: "G_NAME_KD", minWidth: 120 , flex: 1},
     { field: "PLAN_QTY", headerName: "PLAN_QTY", minWidth: 120 , flex: 1, renderCell: (params: any)=> {
@@ -273,6 +275,7 @@ const DATASX = () => {
   const column_ycsxdatasx = [
     { field: "PHAN_LOAI", headerName: "PHAN_LOAI", minWidth: 120 , flex: 1},
     { field: "PROD_REQUEST_NO", headerName: "PROD_REQUEST_NO", width: 80 },
+    { field: "G_CODE", headerName: "G_CODE", width: 80 },
     { field: "G_NAME", headerName: "G_NAME", width: 180 },
     { field: "G_NAME_KD", headerName: "G_NAME_KD", width: 120 },
     { field: "FACTORY", headerName: "FACTORY", width: 80 },

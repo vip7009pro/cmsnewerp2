@@ -497,7 +497,7 @@ const CHITHI_COMPONENT2 = ({PLAN_LIST}: PLAN_COMBO) => {
             </tbody>
           </table>
         </div>
-        <div className='text1'>
+        {/* <div className='text1'>
           2. 생산 정보 Thông tin Sản xuất{" "}
           <Barcode
             value={main_plan.PLAN_ID}
@@ -586,8 +586,8 @@ const CHITHI_COMPONENT2 = ({PLAN_LIST}: PLAN_COMBO) => {
               </tr>
             </tbody>
           </table>
-        </div>
-        <div className='text1'>3. Thông tin combo chỉ thị</div>
+        </div> */}
+        <div className='text1'>2. Thông tin combo chỉ thị</div>
         <div className='combochithi'>
           <table>
             <thead>
@@ -637,7 +637,47 @@ const CHITHI_COMPONENT2 = ({PLAN_LIST}: PLAN_COMBO) => {
             </tbody>
           </table>
         </div>
-        <div className='text1'>4. 제품 정보 Thông tin vật liệu</div>
+        <div className='text1'>3. LOSS INFO </div>
+        <div className='thongtinyeucau'>
+          <table className='ttyc1'>
+            <thead>
+              <tr>
+                <th>PLAN_ID</th>
+                <th>STEP</th>
+                <th>Bóc kiểm (EA)/파괴검사</th>
+                <th>Lấy đồ/도구 준비</th>
+                <th>Máy hỏng/설비 고장</th>
+                <th>Dao NG/칼 불량</th>
+                <th>Chờ liệu/원단 대기</th>
+                <th>Chờ BTP/BTP 대기</th>
+                <th>Hết liệu/원단 떨어짐</th>
+                <th>Liệu NG/원단 불량</th>
+              </tr>
+            </thead>
+            <tbody>
+              {
+                PLAN_LIST.map((element: QLSXPLANDATA,index: number)=> {
+                  return(
+                    <tr>
+                    <td style={{height: '20px'}}>{element.PLAN_ID}</td>
+                    <td style={{height: '20px'}}>{element.STEP}</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>               
+                    <td></td>               
+                  </tr> 
+                  )
+                })
+              }
+                         
+            </tbody>
+          </table>               
+        </div>  
+        <div className='text1'>5. 제품 정보 Thông tin vật liệu</div>
         <div className='thongtinvatlieu'>
           {chithidatatable.length <= max_lieu && (
             <div className='vatlieugiua'>

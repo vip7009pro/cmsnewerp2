@@ -89,8 +89,7 @@ export default function Navbar() {
              
             />
           </Link>
-        </div>
-        {server_string ==='http://14.160.33.94:5011/api'? 'MAIN SERVER':'SUB SERVER'}
+        </div>       
 
         <b> Web Ver: {current_ver} </b>
         <div className='items'>
