@@ -114,7 +114,7 @@ interface CustomerListData {
   CUST_NAME: string;
 }
 interface BOM_SX {
-  id: string,
+  id: string;
   G_CODE?: string;
   G_NAME?: string;
   G_NAME_KD?: string;
@@ -124,13 +124,14 @@ interface BOM_SX {
   WIDTH_CD?: number;
   M_QTY?: number;
   MAIN_M: string;
+  LIEUQL_SX: number;
   INS_EMPL?: string;
   INS_DATE?: string;
   UPD_EMPL?: string;
   UPD_DATE?: string;
 }
 interface BOM_GIA {
-  id: string,
+  id: string;
   BOM_ID?: string;
   G_CODE?: string;
   RIV_NO?: string;
@@ -158,9 +159,9 @@ interface BOM_GIA {
   UPD_DATE?: string;
 }
 interface MaterialListData {
-  M_CODE: string, 
-  M_NAME: string, 
-  WIDTH_CD: number
+  M_CODE: string;
+  M_NAME: string;
+  WIDTH_CD: number;
 }
 const BOM_MANAGER = () => {
   const [codedatatablefilter, setCodeDataTableFilter] = useState<
@@ -211,17 +212,21 @@ const BOM_MANAGER = () => {
   const [bomsxtable, setBOMSXTable] = useState<BOM_SX[]>([]);
   const [bomgiatable, setBOMGIATable] = useState<BOM_GIA[]>([]);
   const [customerList, setCustomerList] = useState<CustomerListData[]>([]);
-  const [selectedCust_CD, setSelectedCust_CD] = useState<CustomerListData|null>();
-  const [materialList, setMaterialList] = useState<MaterialListData[]>([{
-    M_CODE:'A0000001',
-    M_NAME: '#200',
-    WIDTH_CD: 1200
-  }]);
-  const [selectedMaterial, setSelectedMaterial] = useState<MaterialListData|null>({
-    M_CODE:'A0000001',
-    M_NAME: '#200',
-    WIDTH_CD: 1200
-  });
+  const [selectedCust_CD, setSelectedCust_CD] =
+    useState<CustomerListData | null>();
+  const [materialList, setMaterialList] = useState<MaterialListData[]>([
+    {
+      M_CODE: "A0000001",
+      M_NAME: "#200",
+      WIDTH_CD: 1200,
+    },
+  ]);
+  const [selectedMaterial, setSelectedMaterial] =
+    useState<MaterialListData | null>({
+      M_CODE: "A0000001",
+      M_NAME: "#200",
+      WIDTH_CD: 1200,
+    });
   const [selection, setSelection] = useState<any>({
     trapo: true,
     thempohangloat: false,
@@ -233,310 +238,387 @@ const BOM_MANAGER = () => {
   const [isLoading, setisLoading] = useState(false);
   const [codeCMS, setCodeCMS] = useState("");
   const [enableEdit, setEnableEdit] = useState(false);
-
   const [enableform, setEnableForm] = useState(true);
-
-  const [rows, setRows] = useState<CODE_INFO[]>([]); 
+  const [rows, setRows] = useState<CODE_INFO[]>([]);
   const [editedRows, setEditedRows] = useState<Array<GridCellEditCommitParams>>(
     []
   );
-  const [editedBOMSXRows, setEditedBOMSXRows] = useState<Array<GridCellEditCommitParams>>(
-    []
-  );
-  const [editedBOMGIARows, setEditedBOMGIARows] = useState<Array<GridCellEditCommitParams>>(
-    []
-  );
+  const [editedBOMSXRows, setEditedBOMSXRows] = useState<
+    Array<GridCellEditCommitParams>
+  >([]);
+  const [editedBOMGIARows, setEditedBOMGIARows] = useState<
+    Array<GridCellEditCommitParams>
+  >([]);
   const handleSetCodeInfo = (keyname: string, value: any) => {
     let tempcodefullinfo = { ...codefullinfo, [keyname]: value };
     //console.log(tempcodefullinfo);
     setCodeFullInfo(tempcodefullinfo);
   };
   const [pinBOM, setPINBOM] = useState(false);
-  const [column_codeinfo, setcolumn_codeinfo] =
-    useState<Array<any>>([
-      { field: "id", headerName: "ID", width: 70, editable: enableEdit },
-      { field: "G_CODE", headerName: "G_CODE", width: 80, editable: enableEdit },
-      {
-        field: "G_NAME",
-        headerName: "G_NAME",
-        flex: 1,
-        minWidth: 250,
-        editable: enableEdit,
-      },
-      {
-        field: "G_NAME_KD",
-        headerName: "G_NAME_KD",
-        width: 120,
-        editable: enableEdit,
-      },
-      {
-        field: "PROD_TYPE",
-        headerName: "PROD_TYPE",
-        width: 80,
-        editable: enableEdit,
-      },
-      {
-        field: "PROD_LAST_PRICE",
-        headerName: "PRICE",
-        width: 80,
-        editable: enableEdit,
-      },
-      { field: "PD", headerName: "PD", width: 80, editable: enableEdit },
-      { field: "CAVITY", headerName: "CAVITY", width: 80, editable: enableEdit },
-      {
-        field: "PACKING_QTY",
-        headerName: "PACKING_QTY",
-        width: 80,
-        editable: enableEdit,
-      },
-      {
-        field: "G_WIDTH",
-        headerName: "G_WIDTH",
-        width: 80,
-        editable: enableEdit,
-      },
-      {
-        field: "G_LENGTH",
-        headerName: "G_LENGTH",
-        width: 80,
-        editable: enableEdit,
-      },
-      {
-        field: "PROD_PROJECT",
-        headerName: "PROD_PROJECT",
-        width: 120,
-        editable: enableEdit,
-      },
-      {
-        field: "PROD_MODEL",
-        headerName: "PROD_MODEL",
-        width: 120,
-        editable: enableEdit,
-      },
-      {
-        field: "M_NAME_FULLBOM",
-        headerName: "FULLBOM",
-        flex: 1,
-        minWidth: 150,
-        editable: enableEdit,
-      },
-      {
-        field: "BANVE",
-        headerName: "BANVE",
-        width: 260,
-        renderCell: (params: any) => {
-          let file: any = null;
-          let upload_url = "http://14.160.33.94:5011/upload";
-          const uploadFile = async (e: any) => {
-            console.log(file);
-            const formData = new FormData();
-            formData.append("banve", file);
-            formData.append("filename", params.row.G_CODE);
-            if (userData.MAINDEPTNAME === "KD" || userData.MAINDEPTNAME === "RND") {
-              try {
-                const response = await axios.post(upload_url, formData);
-                //console.log("ket qua");
-                //console.log(response);
-                if (response.data.tk_status === "OK") {
-                  //Swal.fire('Thông báo','Upload bản vẽ thành công','success');
-                  generalQuery("update_banve_value", {
-                    G_CODE: params.row.G_CODE,
-                    banvevalue: "Y",
+  const [column_codeinfo, setcolumn_codeinfo] = useState<Array<any>>([
+    { field: "id", headerName: "ID", width: 70, editable: enableEdit },
+    { field: "G_CODE", headerName: "G_CODE", width: 80, editable: enableEdit },
+    {
+      field: "G_NAME",
+      headerName: "G_NAME",
+      flex: 1,
+      minWidth: 250,
+      editable: enableEdit,
+    },
+    {
+      field: "G_NAME_KD",
+      headerName: "G_NAME_KD",
+      width: 120,
+      editable: enableEdit,
+    },
+    {
+      field: "PROD_TYPE",
+      headerName: "PROD_TYPE",
+      width: 80,
+      editable: enableEdit,
+    },
+    {
+      field: "PROD_LAST_PRICE",
+      headerName: "PRICE",
+      width: 80,
+      editable: enableEdit,
+    },
+    { field: "PD", headerName: "PD", width: 80, editable: enableEdit },
+    { field: "CAVITY", headerName: "CAVITY", width: 80, editable: enableEdit },
+    {
+      field: "PACKING_QTY",
+      headerName: "PACKING_QTY",
+      width: 80,
+      editable: enableEdit,
+    },
+    {
+      field: "G_WIDTH",
+      headerName: "G_WIDTH",
+      width: 80,
+      editable: enableEdit,
+    },
+    {
+      field: "G_LENGTH",
+      headerName: "G_LENGTH",
+      width: 80,
+      editable: enableEdit,
+    },
+    {
+      field: "PROD_PROJECT",
+      headerName: "PROD_PROJECT",
+      width: 120,
+      editable: enableEdit,
+    },
+    {
+      field: "PROD_MODEL",
+      headerName: "PROD_MODEL",
+      width: 120,
+      editable: enableEdit,
+    },
+    {
+      field: "M_NAME_FULLBOM",
+      headerName: "FULLBOM",
+      flex: 1,
+      minWidth: 150,
+      editable: enableEdit,
+    },
+    {
+      field: "BANVE",
+      headerName: "BANVE",
+      width: 260,
+      renderCell: (params: any) => {
+        let file: any = null;
+        let upload_url = "http://14.160.33.94:5011/upload";
+        const uploadFile = async (e: any) => {
+          console.log(file);
+          const formData = new FormData();
+          formData.append("banve", file);
+          formData.append("filename", params.row.G_CODE);
+          if (
+            userData.MAINDEPTNAME === "KD" ||
+            userData.MAINDEPTNAME === "RND"
+          ) {
+            try {
+              const response = await axios.post(upload_url, formData);
+              //console.log("ket qua");
+              //console.log(response);
+              if (response.data.tk_status === "OK") {
+                //Swal.fire('Thông báo','Upload bản vẽ thành công','success');
+                generalQuery("update_banve_value", {
+                  G_CODE: params.row.G_CODE,
+                  banvevalue: "Y",
+                })
+                  .then((response) => {
+                    if (response.data.tk_status !== "NG") {
+                      Swal.fire(
+                        "Thông báo",
+                        "Upload bản vẽ thành công",
+                        "success"
+                      );
+                      let tempcodeinfodatatable = rows.map((element, index) => {
+                        return element.G_CODE === params.row.G_CODE
+                          ? { ...element, BANVE: "Y" }
+                          : element;
+                      });
+                      setRows(tempcodeinfodatatable);
+                    } else {
+                      Swal.fire("Thông báo", "Upload bản vẽ thất bại", "error");
+                    }
                   })
-                    .then((response) => {
-                      if (response.data.tk_status !== "NG") {
-                        Swal.fire(
-                          "Thông báo",
-                          "Upload bản vẽ thành công",
-                          "success"
-                        );
-                        let tempcodeinfodatatable = rows.map((element, index) => {
-                          return element.G_CODE === params.row.G_CODE
-                            ? { ...element, BANVE: "Y" }
-                            : element;
-                        });
-                        setRows(tempcodeinfodatatable);
-                      } else {
-                        Swal.fire("Thông báo", "Upload bản vẽ thất bại", "error");
-                      }
-                    })
-                    .catch((error) => {
-                      console.log(error);
-                    });
-                } else {
-                  Swal.fire("Thông báo", response.data.message, "error");
-                }
-                //console.log(response.data);
-              } catch (ex) {
-                console.log(ex);
+                  .catch((error) => {
+                    console.log(error);
+                  });
+              } else {
+                Swal.fire("Thông báo", response.data.message, "error");
               }
-            } else {
-              Swal.fire(
-                "Thông báo",
-                "Chỉ bộ phận kinh doanh upload được bản vẽ",
-                "error"
-              );
+              //console.log(response.data);
+            } catch (ex) {
+              console.log(ex);
             }
-          };
-          let hreftlink = "/banve/" + params.row.G_CODE + ".pdf";
-          if (params.row.BANVE !== "N" && params.row.BANVE !== null) {
-            return (
-              <span style={{ color: "gray" }}>
-                <a target='_blank' rel='noopener noreferrer' href={hreftlink}>
-                  LINK
-                </a>
-              </span>
-            );
           } else {
-            return (
-              <div className='uploadfile'>
-                <IconButton className='buttonIcon' onClick={uploadFile}>
-                  <AiOutlineCloudUpload color='yellow' size={25} />
-                  Upload
-                </IconButton>
-                <input
-                  accept='.pdf'
-                  type='file'
-                  onChange={(e: any) => {
-                    file = e.target.files[0];
-                    console.log(file);
-                  }}
-                />
-              </div>
+            Swal.fire(
+              "Thông báo",
+              "Chỉ bộ phận kinh doanh upload được bản vẽ",
+              "error"
             );
           }
-        },
-        editable: enableEdit,
-      },
-      {
-        field: "NO_INSPECTION",
-        headerName: "KT NGOAI QUAN",
-        width: 120,
-        renderCell: (params: any) => {
-          if (params.row.NO_INSPECTION !== "Y")
-            return <span style={{ color: "green" }}>Kiểm tra</span>;
-          return <span style={{ color: "red" }}>Không kiểm tra</span>;
-        },
-        editable: enableEdit,
-      },
-      {
-        field: "USE_YN",
-        headerName: "SỬ DỤNG",
-        width: 80,
-        renderCell: (params: any) => {
-          if (params.row.USE_YN !== "Y")
-            return <span style={{ color: "red" }}>KHÓA</span>;
-          return <span style={{ color: "green" }}>MỞ</span>;
-        },
-        editable: true,
-      },
-      {
-        field: "PDBV",
-        headerName: "PD BANVE",
-        width: 80,
-        renderCell: (params: any) => {
-          if (
-            params.row.PDBV === "P" ||
-            params.row.PDBV === "R" ||
-            params.row.PDBV === null
-          )
-            return (
-              <span style={{ color: "red" }}>
-                <b>PENDING</b>
-              </span>
-            );
+        };
+        let hreftlink = "/banve/" + params.row.G_CODE + ".pdf";
+        if (params.row.BANVE !== "N" && params.row.BANVE !== null) {
           return (
-            <span style={{ color: "green" }}>
-              <b>APPROVED</b>
+            <span style={{ color: "gray" }}>
+              <a target='_blank' rel='noopener noreferrer' href={hreftlink}>
+                LINK
+              </a>
             </span>
           );
-        },
+        } else {
+          return (
+            <div className='uploadfile'>
+              <IconButton className='buttonIcon' onClick={uploadFile}>
+                <AiOutlineCloudUpload color='yellow' size={25} />
+                Upload
+              </IconButton>
+              <input
+                accept='.pdf'
+                type='file'
+                onChange={(e: any) => {
+                  file = e.target.files[0];
+                  console.log(file);
+                }}
+              />
+            </div>
+          );
+        }
       },
-    ]);
-  const [column_bomsx, setcolumn_bomsx] =
-    useState<Array<any>>([ 
-      { field: "M_CODE", headerName: "M_CODE", width: 80, renderCell: (params: any) => {
-        return <span style={{color:'blue'}}>{params.row.M_CODE} </span>
-      }  , editable: enableEdit},
-      { field: "M_NAME", headerName: "M_NAME", width: 110, renderCell: (params: any) => {
-        return <span style={{color:'red'}}>{params.row.M_NAME} </span>
-      }, editable: enableEdit },
-      { field: "WIDTH_CD", headerName: "SIZE", width: 80, editable: enableEdit },
-      { field: "M_QTY", headerName: "M_QTY", width: 80 , editable: enableEdit},
-      { field: "MAIN_M", headerName: "MAIN_M", width: 80 , editable: enableEdit},
-      { field: "INS_EMPL", headerName: "INS_EMPL", width: 80 , editable: enableEdit},
-      { field: "INS_DATE", headerName: "INS_DATE", width: 150 , editable: enableEdit},
-      { field: "UPD_EMPL", headerName: "UPD_EMPL", width: 80 , editable: enableEdit},
-      { field: "UPD_DATE", headerName: "UPD_DATE", width: 150 , editable: enableEdit},
-    ]);
-  const [column_bomgia, setcolumn_bomgia] =
-    useState<Array<any>>([ 
-      { field: "M_CODE", headerName: "M_CODE", width: 80, editable: enableEdit },
-      { field: "M_NAME", headerName: "M_NAME", width: 110, editable: enableEdit },
-      { field: "CUST_CD", headerName: "Vendor", width: 80, editable: enableEdit, renderCell: (params:any) => {
-        if(params.row.CUST_CD === '')
-        {          
-          return <span style={{backgroundColor:'red'}}>NG</span>          
-        } 
-        else
-        {          
-          return  <span>{params.row.CUST_CD}</span>
+      editable: enableEdit,
+    },
+    {
+      field: "NO_INSPECTION",
+      headerName: "KT NGOAI QUAN",
+      width: 120,
+      renderCell: (params: any) => {
+        if (params.row.NO_INSPECTION !== "Y")
+          return <span style={{ color: "green" }}>Kiểm tra</span>;
+        return <span style={{ color: "red" }}>Không kiểm tra</span>;
+      },
+      editable: enableEdit,
+    },
+    {
+      field: "USE_YN",
+      headerName: "SỬ DỤNG",
+      width: 80,
+      renderCell: (params: any) => {
+        if (params.row.USE_YN !== "Y")
+          return <span style={{ color: "red" }}>KHÓA</span>;
+        return <span style={{ color: "green" }}>MỞ</span>;
+      },
+      editable: true,
+    },
+    {
+      field: "PDBV",
+      headerName: "PD BANVE",
+      width: 80,
+      renderCell: (params: any) => {
+        if (
+          params.row.PDBV === "P" ||
+          params.row.PDBV === "R" ||
+          params.row.PDBV === null
+        )
+          return (
+            <span style={{ color: "red" }}>
+              <b>PENDING</b>
+            </span>
+          );
+        return (
+          <span style={{ color: "green" }}>
+            <b>APPROVED</b>
+          </span>
+        );
+      },
+    },
+  ]);
+  const [column_bomsx, setcolumn_bomsx] = useState<Array<any>>([
+    {
+      field: "M_CODE",
+      headerName: "M_CODE",
+      width: 80,
+      renderCell: (params: any) => {
+        return <span style={{ color: "blue" }}>{params.row.M_CODE} </span>;
+      },
+      editable: enableEdit,
+    },
+    {
+      field: "M_NAME",
+      headerName: "M_NAME",
+      width: 110,
+      renderCell: (params: any) => {
+        return <span style={{ color: "red" }}>{params.row.M_NAME} </span>;
+      },
+      editable: enableEdit,
+    },
+    { field: "WIDTH_CD", headerName: "SIZE", width: 80, editable: enableEdit },
+    { field: "M_QTY", headerName: "M_QTY", width: 80, editable: enableEdit },
+    {
+      field: "LIEUQL_SX",
+      headerName: "LIEUQL_SX",
+      width: 80,
+      editable: enableEdit,
+    },
+    { field: "MAIN_M", headerName: "MAIN_M", width: 80, editable: enableEdit },
+    {
+      field: "INS_EMPL",
+      headerName: "INS_EMPL",
+      width: 80,
+      editable: enableEdit,
+    },
+    {
+      field: "INS_DATE",
+      headerName: "INS_DATE",
+      width: 150,
+      editable: enableEdit,
+    },
+    {
+      field: "UPD_EMPL",
+      headerName: "UPD_EMPL",
+      width: 80,
+      editable: enableEdit,
+    },
+    {
+      field: "UPD_DATE",
+      headerName: "UPD_DATE",
+      width: 150,
+      editable: enableEdit,
+    },
+  ]);
+  const [column_bomgia, setcolumn_bomgia] = useState<Array<any>>([
+    { field: "M_CODE", headerName: "M_CODE", width: 80, editable: enableEdit },
+    { field: "M_NAME", headerName: "M_NAME", width: 110, editable: enableEdit },
+    {
+      field: "CUST_CD",
+      headerName: "Vendor",
+      width: 80,
+      editable: enableEdit,
+      renderCell: (params: any) => {
+        if (params.row.CUST_CD === "") {
+          return <span style={{ backgroundColor: "red" }}>NG</span>;
+        } else {
+          return <span>{params.row.CUST_CD}</span>;
         }
-          
-        
-      } },      
-      { field: "USAGE", headerName: "USAGE", width: 80, editable: enableEdit, renderCell: (params:any) => {
-        if(params.row.USAGE === '')
-        {          
-          return <span style={{backgroundColor:'red'}}>NG</span>          
-        } 
-        else
-        {         
-          return  <span>{params.row.USAGE}</span>
+      },
+    },
+    {
+      field: "USAGE",
+      headerName: "USAGE",
+      width: 80,
+      editable: enableEdit,
+      renderCell: (params: any) => {
+        if (params.row.USAGE === "") {
+          return <span style={{ backgroundColor: "red" }}>NG</span>;
+        } else {
+          return <span>{params.row.USAGE}</span>;
         }
-          
-        
-      }  },
-      { field: "MAIN_M", headerName: "MAIN_M", width: 80, editable: enableEdit },
-      { field: "MAT_MASTER_WIDTH", headerName: "Khổ liệu", width: 80, editable: enableEdit , renderCell: (params:any) => {
-        if(params.row.MAT_MASTER_WIDTH === 0)
-        {         
-          return <span style={{backgroundColor:'red'}}>NG</span>          
-        } 
-        else
-        {          
-          return  <span>{params.row.MAT_MASTER_WIDTH}</span>
+      },
+    },
+    { field: "MAIN_M", headerName: "MAIN_M", width: 80, editable: enableEdit },
+    {
+      field: "MAT_MASTER_WIDTH",
+      headerName: "Khổ liệu",
+      width: 80,
+      editable: enableEdit,
+      renderCell: (params: any) => {
+        if (params.row.MAT_MASTER_WIDTH === 0) {
+          return <span style={{ backgroundColor: "red" }}>NG</span>;
+        } else {
+          return <span>{params.row.MAT_MASTER_WIDTH}</span>;
         }
-      }},
-      { field: "MAT_CUTWIDTH", headerName: "Khổ SD", width: 80, editable: enableEdit },
-      { field: "MAT_ROLL_LENGTH", headerName: "Dài liệu", width: 110, editable: enableEdit , renderCell: (params:any) => {
-        if(params.row.MAT_ROLL_LENGTH === 0)
-        {         
-          return <span style={{backgroundColor:'red'}}>NG</span>          
-        } 
-        else
-        {         
-          return  <span>{params.row.MAT_ROLL_LENGTH}</span>
+      },
+    },
+    {
+      field: "MAT_CUTWIDTH",
+      headerName: "Khổ SD",
+      width: 80,
+      editable: enableEdit,
+    },
+    {
+      field: "MAT_ROLL_LENGTH",
+      headerName: "Dài liệu",
+      width: 110,
+      editable: enableEdit,
+      renderCell: (params: any) => {
+        if (params.row.MAT_ROLL_LENGTH === 0) {
+          return <span style={{ backgroundColor: "red" }}>NG</span>;
+        } else {
+          return <span>{params.row.MAT_ROLL_LENGTH}</span>;
         }
-      }},
-      { field: "MAT_THICKNESS", headerName: "Độ dày", width: 80, editable: enableEdit , renderCell: (params:any) => {
-        if(params.row.MAT_THICKNESS === 0)
-        {         
-          return <span style={{backgroundColor:'red'}}>NG</span>          
-        } 
-        else
-        {         
-          return  <span>{params.row.MAT_THICKNESS}</span>
+      },
+    },
+    {
+      field: "MAT_THICKNESS",
+      headerName: "Độ dày",
+      width: 80,
+      editable: enableEdit,
+      renderCell: (params: any) => {
+        if (params.row.MAT_THICKNESS === 0) {
+          return <span style={{ backgroundColor: "red" }}>NG</span>;
+        } else {
+          return <span>{params.row.MAT_THICKNESS}</span>;
         }
-      }},
-      { field: "M_QTY", headerName: "M_QTY", width: 80, editable: enableEdit },
-      { field: "REMARK", headerName: "REMARK", width: 80, editable: enableEdit },
-      { field: "PROCESS_ORDER", headerName: "Thứ tự", width: 80 , editable: enableEdit},
-      { field: "INS_EMPL", headerName: "INS_EMPL", width: 80 , editable: enableEdit},
-      { field: "INS_DATE", headerName: "INS_DATE", width: 160 , editable: enableEdit},
-      { field: "UPD_EMPL", headerName: "UPD_EMPL", width: 80 , editable: enableEdit},
-      { field: "UPD_DATE", headerName: "UPD_DATE", width: 160 , editable: enableEdit},
-    ]);
+      },
+    },
+    { field: "M_QTY", headerName: "M_QTY", width: 80, editable: enableEdit },
+    { field: "REMARK", headerName: "REMARK", width: 80, editable: enableEdit },
+    {
+      field: "PROCESS_ORDER",
+      headerName: "Thứ tự",
+      width: 80,
+      editable: enableEdit,
+    },
+    {
+      field: "INS_EMPL",
+      headerName: "INS_EMPL",
+      width: 80,
+      editable: enableEdit,
+    },
+    {
+      field: "INS_DATE",
+      headerName: "INS_DATE",
+      width: 160,
+      editable: enableEdit,
+    },
+    {
+      field: "UPD_EMPL",
+      headerName: "UPD_EMPL",
+      width: 80,
+      editable: enableEdit,
+    },
+    {
+      field: "UPD_DATE",
+      headerName: "UPD_DATE",
+      width: 160,
+      editable: enableEdit,
+    },
+  ]);
   function CustomToolbarPOTable() {
     return (
       <GridToolbarContainer>
@@ -561,7 +643,7 @@ const BOM_MANAGER = () => {
         <IconButton
           className='buttonIcon'
           onClick={() => {
-            setEnableForm(!enableform);   
+            setEnableForm(!enableform);
             Swal.fire("Thông báo", "Bật/Tắt chế độ sửa", "success");
           }}
         >
@@ -570,8 +652,8 @@ const BOM_MANAGER = () => {
         </IconButton>
         <IconButton
           className='buttonIcon'
-          onClick={() => {  
-            setPINBOM(!pinBOM);          
+          onClick={() => {
+            setPINBOM(!pinBOM);
             Swal.fire("Thông báo", "Ghim/ bỏ ghim BOM thành công", "success");
           }}
         >
@@ -738,7 +820,7 @@ const BOM_MANAGER = () => {
     }
   };
   const handleGETBOMSX = (G_CODE: string) => {
-    setisLoading(true);    
+    setisLoading(true);
     generalQuery("getbomsx", {
       G_CODE: G_CODE,
     })
@@ -772,13 +854,13 @@ const BOM_MANAGER = () => {
       });
   };
   const handleGETBOMGIA = (G_CODE: string) => {
-    setisLoading(true);    
+    setisLoading(true);
     generalQuery("getbomgia", {
       G_CODE: G_CODE,
     })
       .then((response) => {
         //console.log(response.data);
-        if (response.data.tk_status !== "NG") {          
+        if (response.data.tk_status !== "NG") {
           const loadeddata: BOM_GIA[] = response.data.data.map(
             (element: BOM_GIA, index: number) => {
               return {
@@ -806,7 +888,7 @@ const BOM_MANAGER = () => {
       });
   };
   const handleCODEINFO = () => {
-    setisLoading(true);    
+    setisLoading(true);
     generalQuery("codeinfo", {
       G_NAME: codeCMS,
     })
@@ -920,11 +1002,10 @@ const BOM_MANAGER = () => {
     if (datafilter.length > 0) {
       //console.log(datafilter);
       setCodeDataTableFilter(datafilter);
-      if(!pinBOM)
-      {
+      if (!pinBOM) {
         handleGETBOMSX(datafilter[0].G_CODE);
         handleGETBOMGIA(datafilter[0].G_CODE);
-      }      
+      }
       handlecodefullinfo(datafilter[0].G_CODE);
     } else {
       setCodeDataTableFilter([]);
@@ -937,7 +1018,7 @@ const BOM_MANAGER = () => {
     );
     if (datafilter.length > 0) {
       //console.log(datafilter);
-      setBomSXDataTableFilter(datafilter);     
+      setBomSXDataTableFilter(datafilter);
     } else {
       setBomSXDataTableFilter([]);
     }
@@ -949,7 +1030,7 @@ const BOM_MANAGER = () => {
     );
     if (datafilter.length > 0) {
       //console.log(datafilter);
-      setBomGiaDataTableFilter(datafilter);     
+      setBomGiaDataTableFilter(datafilter);
     } else {
       setBomGiaDataTableFilter([]);
     }
@@ -996,7 +1077,22 @@ const BOM_MANAGER = () => {
     let abc: CODE_FULL_INFO = codefullinfo;
     let result: boolean = true;
     for (const [k, v] of Object.entries(abc)) {
-      if ((v === null || v === "") && k !== "REMK" && k !== "FACTORY" && k !== "Setting1" && k !== "Setting2" && k !== "UPH1" && k !== "UPH2" && k !== "Step1" && k !== "Step2" && k !== "LOSS_SX1" && k !== "LOSS_SX2" && k !== "LOSS_SETTING1" && k !== "LOSS_SETTING2" && k !== "NOTE"   ) {
+      if (
+        (v === null || v === "") &&
+        k !== "REMK" &&
+        k !== "FACTORY" &&
+        k !== "Setting1" &&
+        k !== "Setting2" &&
+        k !== "UPH1" &&
+        k !== "UPH2" &&
+        k !== "Step1" &&
+        k !== "Step2" &&
+        k !== "LOSS_SX1" &&
+        k !== "LOSS_SX2" &&
+        k !== "LOSS_SETTING1" &&
+        k !== "LOSS_SETTING2" &&
+        k !== "NOTE"
+      ) {
         Swal.fire("Thông báo", "Không được để trống: " + k, "error");
         result = false;
         break;
@@ -1016,7 +1112,12 @@ const BOM_MANAGER = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         Swal.fire("Tiến hành thêm", "Đang thêm Code mới", "success");
-        checkBP(userData.EMPL_NO,userData.MAINDEPTNAME,['RND'], handleAddNewCode);
+        checkBP(
+          userData.EMPL_NO,
+          userData.MAINDEPTNAME,
+          ["RND"],
+          handleAddNewCode
+        );
         //handleAddNewCode();
       }
     });
@@ -1033,7 +1134,12 @@ const BOM_MANAGER = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         Swal.fire("Tiến hành thêm", "Đang thêm Ver mới", "success");
-        checkBP(userData.EMPL_NO,userData.MAINDEPTNAME,['RND'], handleAddNewVer);
+        checkBP(
+          userData.EMPL_NO,
+          userData.MAINDEPTNAME,
+          ["RND"],
+          handleAddNewVer
+        );
         //handleAddNewVer();
       }
     });
@@ -1050,7 +1156,12 @@ const BOM_MANAGER = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         Swal.fire("Tiến hành Update", "Đang update code", "success");
-        checkBP(userData.EMPL_NO,userData.MAINDEPTNAME,['RND', 'QLSX'], handleUpdateCode);
+        checkBP(
+          userData.EMPL_NO,
+          userData.MAINDEPTNAME,
+          ["RND", "QLSX"],
+          handleUpdateCode
+        );
         //handleUpdateCode();
       }
     });
@@ -1165,7 +1276,7 @@ const BOM_MANAGER = () => {
       }
       console.log(newGCODE);
       console.log(nextseqno);
-      console.log('NEXT REV',NEXT_REV_NO);
+      console.log("NEXT REV", NEXT_REV_NO);
       await generalQuery("insertM100_AddVer", {
         G_CODE: newGCODE,
         CODE_27: CODE_27,
@@ -1213,135 +1324,215 @@ const BOM_MANAGER = () => {
       handleCODEINFO();
     }
   };
-  const handleAddNewLineBOMSX = async ()=> {    
-    if(codedatatablefilter.length >0)
-    {
-      let tempeditrows:BOM_SX = {
-        id: moment().format('YYYY-MM-DD HH:mm:ss.SSS'),
+  const handleAddNewLineBOMSX = async () => {
+    if (codedatatablefilter.length > 0) {
+      let tempeditrows: BOM_SX = {
+        id: moment().format("YYYY-MM-DD HH:mm:ss.SSS"),
         G_CODE: codefullinfo.G_CODE,
         G_NAME: codefullinfo?.G_NAME,
         G_NAME_KD: codefullinfo?.G_NAME_KD,
-        RIV_NO: 'A',
+        RIV_NO: "A",
         M_CODE: selectedMaterial?.M_CODE,
         M_NAME: selectedMaterial?.M_NAME,
         WIDTH_CD: selectedMaterial?.WIDTH_CD,
         M_QTY: 1,
-        MAIN_M: '0',
+        MAIN_M: "0",
+        LIEUQL_SX: 0,
         INS_EMPL: userData.EMPL_NO,
-        INS_DATE: moment().format('YYYY-MM-DD HH:mm:ss.SSS'),
+        INS_DATE: moment().format("YYYY-MM-DD HH:mm:ss.SSS"),
         UPD_EMPL: userData.EMPL_NO,
-        UPD_DATE: moment().format('YYYY-MM-DD HH:mm:ss.SSS'),
+        UPD_DATE: moment().format("YYYY-MM-DD HH:mm:ss.SSS"),
       };
       //console.log(tempeditrows);
       setBOMSXTable([...bomsxtable, tempeditrows]);
+    } else {
+      Swal.fire("Thông báo", "Chọn 1 code trong list để thêm liệu", "warning");
     }
-    else 
-    {
-      Swal.fire('Thông báo', "Chọn 1 code trong list để thêm liệu",'warning');
-    }    
-  }
-  const handle_DeleteLineBOMSX = () => {    
-    if(bomsxdatatablefilter.length>0)
-    {     
-      let datafilter = [...bomsxtable];     
-      for(let i=0;i<bomsxdatatablefilter.length; i++)
-      {
-        for(let j=0;j<datafilter.length;j++)
-        {          
-          if(bomsxdatatablefilter[i].id === datafilter[j].id)
-          {
-            datafilter.splice(j,1);          
+  };
+  const handle_DeleteLineBOMSX = () => {
+    if (bomsxdatatablefilter.length > 0) {
+      let datafilter = [...bomsxtable];
+      for (let i = 0; i < bomsxdatatablefilter.length; i++) {
+        for (let j = 0; j < datafilter.length; j++) {
+          if (bomsxdatatablefilter[i].id === datafilter[j].id) {
+            datafilter.splice(j, 1);
           }
         }
-      }       
+      }
       setBOMSXTable(datafilter);
+    } else {
+      Swal.fire("Thông báo", "Chọn ít nhất một dòng để xóa", "error");
     }
-    else
-    {
-      Swal.fire("Thông báo", "Chọn ít nhất một dòng để xóa", "error"); 
-    } 
-  }
+  };
   const handleInsertBOMSX = async () => {
     if (bomgiatable.length > 0) {
       if (bomsxtable.length > 0) {
         //delete old bom from M140
-        let err_code: string ='0';
-        let checkMAIN_M:number =0;
-        for (let i = 0; i < bomsxtable.length; i++)
-        {
-          checkMAIN_M += parseInt(bomsxtable[i].MAIN_M);
+        let err_code: string = "0";
+        let total_lieuql_sx: number = 0;
+        let check_lieuql_sx_sot: number = 0;
+        let check_num_lieuql_sx: number = 1;
+        let check_lieu_qlsx_khac1: number = 0;
+        //console.log(chithidatatable);
+        for (let i = 0; i < bomsxtable.length; i++) {
+          total_lieuql_sx += bomsxtable[i].LIEUQL_SX;
+          if (bomsxtable[i].LIEUQL_SX > 1) check_lieu_qlsx_khac1 += 1;
         }
-        if(checkMAIN_M === 0)
-        {
-          err_code += '| ' + 'Phải chỉ định liệu quản lý'
-        }        
-
-
-        if(err_code ==='0')
-        {
-          await generalQuery("deleteM140", {
+        for (let i = 0; i < bomsxtable.length; i++) {
+          //console.log(bomsxtable[i].LIEUQL_SX);
+          if (parseInt(bomsxtable[i].LIEUQL_SX.toString()) === 1) {
+            for (let j = 0; j < bomsxtable.length; j++) {
+              if (
+                bomsxtable[j].M_NAME === bomsxtable[i].M_NAME &&
+                parseInt(bomsxtable[j].LIEUQL_SX.toString()) === 0
+              ) {
+                check_lieuql_sx_sot += 1;
+              }
+            }
+          }
+        }
+        //console.log('bang chi thi', bomsxtable);
+        for (let i = 0; i < bomsxtable.length; i++) {
+          if (parseInt(bomsxtable[i].LIEUQL_SX.toString()) === 1) {
+            for (let j = 0; j < bomsxtable.length; j++) {
+              if (parseInt(bomsxtable[j].LIEUQL_SX.toString()) === 1) {
+                //console.log('i', bomsxtable[i].M_NAME);
+                //console.log('j', bomsxtable[j].M_NAME);
+                if (bomsxtable[i].M_NAME !== bomsxtable[j].M_NAME) {
+                  check_num_lieuql_sx = 2;
+                }
+              }
+            }
+          }
+        }
+        //console.log('num lieu qlsx: ' + check_num_lieuql_sx);
+        //console.log('tong lieu qly: '+ total_lieuql_sx);
+        if (
+          total_lieuql_sx > 0 &&
+          check_lieuql_sx_sot === 0 &&
+          check_num_lieuql_sx === 1 &&
+          check_lieu_qlsx_khac1 === 0
+        ) {
+        } else {
+          err_code += " | Check lại liệu quản lý (liệu chính)";
+        }
+        if (err_code === "0") {
+          /*  await generalQuery("deleteM140", {
+            G_CODE: codefullinfo.G_CODE,
+          })
+          .then((response) => {
+            if (response.data.tk_status !== "NG") {
+              //console.log(response.data.data);
+            } else {
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          }); */
+          let max_g_seq: string = "001";
+          await generalQuery("checkGSEQ_M140", {
             G_CODE: codefullinfo.G_CODE,
           })
             .then((response) => {
               if (response.data.tk_status !== "NG") {
                 //console.log(response.data.data);
+                max_g_seq = response.data.data[0].MAX_G_SEQ;
               } else {
+                max_g_seq = "001";
               }
             })
             .catch((error) => {
               console.log(error);
             });
-  
           for (let i = 0; i < bomsxtable.length; i++) {
-            await generalQuery("insertM140", {
+            let check_M_CODE: boolean = false;
+            await generalQuery("check_m_code_m140", {
               G_CODE: codefullinfo.G_CODE,
-              G_SEQ: zeroPad(i + 1, 3),
               M_CODE: bomsxtable[i].M_CODE,
-              M_QTY: bomsxtable[i].M_QTY,
-              MAIN_M: bomsxtable[i].MAIN_M === null ? '0':  bomsxtable[i].MAIN_M,
             })
               .then((response) => {
                 if (response.data.tk_status !== "NG") {
                   //console.log(response.data.data);
+                  check_M_CODE = true;
                 } else {
+                  check_M_CODE = false;
                 }
               })
               .catch((error) => {
                 console.log(error);
               });
+            if (check_M_CODE) {
+              await generalQuery("update_M140", {
+                G_CODE: codefullinfo.G_CODE,
+                M_CODE: bomsxtable[i].M_CODE,
+                M_QTY: bomsxtable[i].M_QTY,
+                MAIN_M:
+                  bomsxtable[i].MAIN_M === null ? "0" : bomsxtable[i].MAIN_M,
+                LIEUQL_SX:
+                  bomsxtable[i].LIEUQL_SX === null
+                    ? "0"
+                    : bomsxtable[i].LIEUQL_SX,
+              })
+                .then((response) => {
+                  if (response.data.tk_status !== "NG") {
+                    //console.log(response.data.data);
+                  } else {
+                  }
+                })
+                .catch((error) => {
+                  console.log(error);
+                });
+            } else {
+              await generalQuery("insertM140", {
+                G_CODE: codefullinfo.G_CODE,
+                G_SEQ: zeroPad(parseInt(max_g_seq) + i + 1, 3),
+                M_CODE: bomsxtable[i].M_CODE,
+                M_QTY: bomsxtable[i].M_QTY,
+                MAIN_M:
+                  bomsxtable[i].MAIN_M === null ? "0" : bomsxtable[i].MAIN_M,
+                LIEUQL_SX:
+                  bomsxtable[i].LIEUQL_SX === null
+                    ? "0"
+                    : bomsxtable[i].LIEUQL_SX,
+              })
+                .then((response) => {
+                  if (response.data.tk_status !== "NG") {
+                    //console.log(response.data.data);
+                  } else {
+                  }
+                })
+                .catch((error) => {
+                  console.log(error);
+                });
+            }
           }
+        } else {
+          Swal.fire("Thông báo", "" + err_code, "error");
         }
-        else
-        {
-          Swal.fire("Thông báo", ""+ err_code, "error");
-        }
-      
       } else {
         Swal.fire("Thông báo", "Thêm ít nhất 1 liệu để lưu BOM", "warning");
       }
-    }
-    else
-    {
-      Swal.fire("Thông báo", "Code chưa có BOM giá, phải thêm BOM giá trước", "warning");
+    } else {
+      Swal.fire(
+        "Thông báo",
+        "Code chưa có BOM giá, phải thêm BOM giá trước",
+        "warning"
+      );
     }
   };
   const handleInsertBOMSX2 = async () => {
     if (bomgiatable.length > 0) {
       if (bomsxtable.length > 0) {
         //delete old bom from M140
-        let err_code: string ='0';
-        let checkMAIN_M:number =0;
-        for (let i = 0; i < bomsxtable.length; i++)
-        {
+        let err_code: string = "0";
+        let checkMAIN_M: number = 0;
+        for (let i = 0; i < bomsxtable.length; i++) {
           checkMAIN_M += parseInt(bomsxtable[i].MAIN_M);
         }
-        if(checkMAIN_M === 0)
-        {
-          err_code += '| ' + 'Phải chỉ định liệu quản lý'
-        } 
-        
-        if(err_code ==='0')
-        {
+        if (checkMAIN_M === 0) {
+          err_code += "| " + "Phải chỉ định liệu quản lý";
+        }
+        if (err_code === "0") {
           await generalQuery("deleteM140", {
             G_CODE: codefullinfo.G_CODE,
           })
@@ -1354,14 +1545,14 @@ const BOM_MANAGER = () => {
             .catch((error) => {
               console.log(error);
             });
-  
           for (let i = 0; i < bomsxtable.length; i++) {
             await generalQuery("insertM140", {
               G_CODE: codefullinfo.G_CODE,
               G_SEQ: zeroPad(i + 1, 3),
               M_CODE: bomsxtable[i].M_CODE,
               M_QTY: bomsxtable[i].M_QTY,
-              MAIN_M: bomsxtable[i].MAIN_M === null ? '0':  bomsxtable[i].MAIN_M,
+              MAIN_M:
+                bomsxtable[i].MAIN_M === null ? "0" : bomsxtable[i].MAIN_M,
             })
               .then((response) => {
                 if (response.data.tk_status !== "NG") {
@@ -1373,25 +1564,22 @@ const BOM_MANAGER = () => {
                 console.log(error);
               });
           }
+        } else {
+          Swal.fire("Thông báo", "" + err_code, "error");
         }
-        else
-        {
-          Swal.fire("Thông báo", ""+ err_code, "error");
-        }
-      
       } else {
         Swal.fire("Thông báo", "Thêm ít nhất 1 liệu để lưu BOM", "warning");
       }
-    }
-    else
-    {
-      Swal.fire("Thông báo", "Code chưa có BOM giá, phải thêm BOM giá trước", "warning");
+    } else {
+      Swal.fire(
+        "Thông báo",
+        "Code chưa có BOM giá, phải thêm BOM giá trước",
+        "warning"
+      );
     }
   };
-  const handleInsertBOMSX_WITH_GIA = async () => {   
-    
-    if(bomsxtable.length<=0)
-    {
+  const handleInsertBOMSX_WITH_GIA = async () => {
+    if (bomsxtable.length <= 0) {
       if (bomgiatable.length > 0) {
         //delete old bom from M140
         await generalQuery("deleteM140", {
@@ -1406,7 +1594,6 @@ const BOM_MANAGER = () => {
           .catch((error) => {
             console.log(error);
           });
-
         for (let i = 0; i < bomgiatable.length; i++) {
           await generalQuery("insertM140", {
             G_CODE: codefullinfo.G_CODE,
@@ -1428,101 +1615,117 @@ const BOM_MANAGER = () => {
       } else {
         Swal.fire("Thông báo", "Thêm ít nhất 1 liệu để lưu BOM", "warning");
       }
+    } else {
+      Swal.fire(
+        "Thông báo",
+        "Code đã có BOM SX, Sẽ chỉ lưu lại bom giá mà ko lưu thêm BOM SX nữa",
+        "warning"
+      );
     }
-    else
-    {
-      Swal.fire("Thông báo", "Code đã có BOM SX, Sẽ chỉ lưu lại bom giá mà ko lưu thêm BOM SX nữa", "warning");
-    }
-     
-    
-  
-  };    
-  const handleAddNewLineBOMGIA = async ()=> {    
-    if(codedatatablefilter.length >0)
-    {
-      let tempeditrows:BOM_GIA = {
-        id: moment().format('YYYY-MM-DD HH:mm:ss.SSS'),
-        BOM_ID: moment().format('YYYY-MM-DD HH:mm:ss.SSS'),
+  };
+  const handleAddNewLineBOMGIA = async () => {
+    if (codedatatablefilter.length > 0) {
+      let tempeditrows: BOM_GIA = {
+        id: moment().format("YYYY-MM-DD HH:mm:ss.SSS"),
+        BOM_ID: moment().format("YYYY-MM-DD HH:mm:ss.SSS"),
         G_CODE: codefullinfo.G_CODE,
-        RIV_NO: 'A',
-        G_SEQ: zeroPad(bomgiatable.length+1,3),
+        RIV_NO: "A",
+        G_SEQ: zeroPad(bomgiatable.length + 1, 3),
         CATEGORY: 1,
         M_CODE: selectedMaterial?.M_CODE,
         M_NAME: selectedMaterial?.M_NAME,
-        CUST_CD: '',
-        IMPORT_CAT: '',
+        CUST_CD: "",
+        IMPORT_CAT: "",
         M_CMS_PRICE: 0,
         M_SS_PRICE: 0,
         M_SLITTING_PRICE: 0,
-        USAGE: '',
-        MAIN_M: '0',
+        USAGE: "",
+        MAIN_M: "0",
         MAT_MASTER_WIDTH: 0,
         MAT_CUTWIDTH: selectedMaterial?.WIDTH_CD,
         MAT_ROLL_LENGTH: 0,
         MAT_THICKNESS: 0,
         M_QTY: 1,
-        REMARK: '',
-        PROCESS_ORDER: bomgiatable.length+1,
+        REMARK: "",
+        PROCESS_ORDER: bomgiatable.length + 1,
         INS_EMPL: userData.EMPL_NO,
-        INS_DATE: moment().format('YYYY-MM-DD HH:mm:ss.SSS'),
+        INS_DATE: moment().format("YYYY-MM-DD HH:mm:ss.SSS"),
         UPD_EMPL: userData.EMPL_NO,
-        UPD_DATE: moment().format('YYYY-MM-DD HH:mm:ss.SSS'),
+        UPD_DATE: moment().format("YYYY-MM-DD HH:mm:ss.SSS"),
       };
       //console.log(tempeditrows);
       setBOMGIATable([...bomgiatable, tempeditrows]);
+    } else {
+      Swal.fire("Thông báo", "Chọn 1 code trong list để thêm liệu", "warning");
     }
-    else 
-    {
-      Swal.fire('Thông báo', "Chọn 1 code trong list để thêm liệu",'warning');
-    }    
-  }
-  const handle_DeleteLineBOMGIA = () => {    
-    if(bomgiadatatablefilter.length>0)
-    {     
-      let datafilter = [...bomgiatable];     
-      for(let i=0;i<bomgiadatatablefilter.length; i++)
-      {
-        for(let j=0;j<datafilter.length;j++)
-        {          
-          if(bomgiadatatablefilter[i].id === datafilter[j].id)
-          {
-            datafilter.splice(j,1);          
+  };
+  const handle_DeleteLineBOMGIA = () => {
+    if (bomgiadatatablefilter.length > 0) {
+      let datafilter = [...bomgiatable];
+      for (let i = 0; i < bomgiadatatablefilter.length; i++) {
+        for (let j = 0; j < datafilter.length; j++) {
+          if (bomgiadatatablefilter[i].id === datafilter[j].id) {
+            datafilter.splice(j, 1);
           }
         }
-      }       
+      }
       setBOMGIATable(datafilter);
+    } else {
+      Swal.fire("Thông báo", "Chọn ít nhất một dòng để xóa", "error");
     }
-    else
-    {
-      Swal.fire("Thông báo", "Chọn ít nhất một dòng để xóa", "error"); 
-    } 
-  }
-  const handleInsertBOMGIA = async () => {      
-      if (bomgiatable.length > 0) {
-        //delete old bom from M140       
-
-        let err_code: string ='0';
-        let checkMAIN_M:number =0;
-        for (let i = 0; i < bomgiatable.length; i++)
-        {
-          checkMAIN_M += parseInt(bomgiatable[i].MAIN_M);
-          if(bomgiatable[i].CUST_CD ==='' || bomgiatable[i].USAGE ===''  || bomgiatable[i].MAT_MASTER_WIDTH ===0  || bomgiatable[i].MAT_ROLL_LENGTH ===0 || bomgiatable[i].MAT_THICKNESS ===0)
-          {
-            err_code = 'Không được để ô nào NG màu đỏ';
-          }  
-        }    
-        console.log(checkMAIN_M);   
-        if(checkMAIN_M === 0)
-        {
-          err_code += '| ' + 'Phải chỉ định liệu quản lý';
+  };
+  const handleInsertBOMGIA = async () => {
+    if (bomgiatable.length > 0) {
+      //delete old bom from M140
+      let err_code: string = "0";
+      let checkMAIN_M: number = 0;
+      for (let i = 0; i < bomgiatable.length; i++) {
+        checkMAIN_M += parseInt(bomgiatable[i].MAIN_M);
+        if (
+          bomgiatable[i].CUST_CD === "" ||
+          bomgiatable[i].USAGE === "" ||
+          bomgiatable[i].MAT_MASTER_WIDTH === 0 ||
+          bomgiatable[i].MAT_ROLL_LENGTH === 0 ||
+          bomgiatable[i].MAT_THICKNESS === 0
+        ) {
+          err_code = "Không được để ô nào NG màu đỏ";
         }
-       
-        console.log(err_code);
-        if(err_code==='0')
-        {
-          console.log('vao bom gia insert')
-          await generalQuery("deleteBOM2", {
+      }
+      console.log(checkMAIN_M);
+      if (checkMAIN_M === 0) {
+        err_code += "| " + "Phải chỉ định liệu quản lý";
+      }
+      console.log(err_code);
+      if (err_code === "0") {
+        console.log("vao bom gia insert");
+        await generalQuery("deleteBOM2", {
+          G_CODE: codefullinfo.G_CODE,
+        })
+          .then((response) => {
+            if (response.data.tk_status !== "NG") {
+              //console.log(response.data.data);
+            } else {
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+        for (let i = 0; i < bomgiatable.length; i++) {
+          await generalQuery("insertBOM2", {
             G_CODE: codefullinfo.G_CODE,
+            G_SEQ: zeroPad(i + 1, 3),
+            M_CODE: bomgiatable[i].M_CODE,
+            M_NAME: bomgiatable[i].M_NAME,
+            CUST_CD: bomgiatable[i].CUST_CD,
+            USAGE: bomgiatable[i].USAGE,
+            MAIN_M: bomgiatable[i].MAIN_M,
+            MAT_MASTER_WIDTH: bomgiatable[i].MAT_MASTER_WIDTH,
+            MAT_CUTWIDTH: bomgiatable[i].MAT_CUTWIDTH,
+            MAT_ROLL_LENGTH: bomgiatable[i].MAT_ROLL_LENGTH,
+            MAT_THICKNESS: bomgiatable[i].MAT_THICKNESS,
+            M_QTY: bomgiatable[i].M_QTY,
+            PROCESS_ORDER: bomgiatable[i].PROCESS_ORDER,
+            REMARK: bomgiatable[i].REMARK,
           })
             .then((response) => {
               if (response.data.tk_status !== "NG") {
@@ -1533,91 +1736,57 @@ const BOM_MANAGER = () => {
             .catch((error) => {
               console.log(error);
             });
-
-          for (let i = 0; i < bomgiatable.length; i++) {
-            await generalQuery("insertBOM2", {
-              G_CODE: codefullinfo.G_CODE,
-              G_SEQ: zeroPad(i + 1, 3),
-              M_CODE: bomgiatable[i].M_CODE,            
-              M_NAME: bomgiatable[i].M_NAME,
-              CUST_CD: bomgiatable[i].CUST_CD,
-              USAGE: bomgiatable[i].USAGE,
-              MAIN_M: bomgiatable[i].MAIN_M,
-              MAT_MASTER_WIDTH: bomgiatable[i].MAT_MASTER_WIDTH,
-              MAT_CUTWIDTH: bomgiatable[i].MAT_CUTWIDTH,
-              MAT_ROLL_LENGTH: bomgiatable[i].MAT_ROLL_LENGTH,
-              MAT_THICKNESS: bomgiatable[i].MAT_THICKNESS,
-              M_QTY: bomgiatable[i].M_QTY,
-              PROCESS_ORDER: bomgiatable[i].PROCESS_ORDER,
-              REMARK: bomgiatable[i].REMARK,
-            })
-              .then((response) => {
-                if (response.data.tk_status !== "NG") {
-                  //console.log(response.data.data);
-                } else {
-                }
-              })
-              .catch((error) => {
-                console.log(error);
-              });
-          }
-          handleInsertBOMSX_WITH_GIA();
         }
-        else
-        {
-          Swal.fire('Thông báo', err_code,'error');
-        }
-        
-      } 
-      else 
-      {
-        Swal.fire("Thông báo", "Thêm ít nhất 1 liệu để lưu BOM", "warning");
-      }    
-    
+        handleInsertBOMSX_WITH_GIA();
+      } else {
+        Swal.fire("Thông báo", err_code, "error");
+      }
+    } else {
+      Swal.fire("Thông báo", "Thêm ít nhất 1 liệu để lưu BOM", "warning");
+    }
   };
   const handleCloneBOMSXsangBOMGIA = async () => {
     if (bomsxtable.length > 0) {
       let tempBOMGIA: BOM_GIA[] = [];
-
       for (let i = 0; i < bomsxtable.length; i++) {
-        let tempeditrows:BOM_GIA = {
-          id: moment().format('YYYY-MM-DD HH:mm:ss.SSS')+bomsxtable[i]?.M_CODE,
-          BOM_ID: moment().format('YYYY-MM-DD HH:mm:ss.SSS')+bomsxtable[i]?.M_CODE,
+        let tempeditrows: BOM_GIA = {
+          id:
+            moment().format("YYYY-MM-DD HH:mm:ss.SSS") + bomsxtable[i]?.M_CODE,
+          BOM_ID:
+            moment().format("YYYY-MM-DD HH:mm:ss.SSS") + bomsxtable[i]?.M_CODE,
           G_CODE: codefullinfo.G_CODE,
-          RIV_NO: 'A',
-          G_SEQ: zeroPad(bomgiatable.length+1,3),
+          RIV_NO: "A",
+          G_SEQ: zeroPad(bomgiatable.length + 1, 3),
           CATEGORY: 1,
           M_CODE: bomsxtable[i]?.M_CODE,
           M_NAME: bomsxtable[i]?.M_NAME,
-          CUST_CD: '',
-          IMPORT_CAT: '',
+          CUST_CD: "",
+          IMPORT_CAT: "",
           M_CMS_PRICE: 0,
           M_SS_PRICE: 0,
           M_SLITTING_PRICE: 0,
-          USAGE: '',
-          MAIN_M: '0',
+          USAGE: "",
+          MAIN_M: "0",
           MAT_MASTER_WIDTH: 0,
           MAT_CUTWIDTH: bomsxtable[i]?.WIDTH_CD,
           MAT_ROLL_LENGTH: 0,
           MAT_THICKNESS: 0,
           M_QTY: 1,
-          REMARK: '',
-          PROCESS_ORDER: i+1,
+          REMARK: "",
+          PROCESS_ORDER: i + 1,
           INS_EMPL: userData.EMPL_NO,
-          INS_DATE: moment().format('YYYY-MM-DD HH:mm:ss.SSS'),
+          INS_DATE: moment().format("YYYY-MM-DD HH:mm:ss.SSS"),
           UPD_EMPL: userData.EMPL_NO,
-          UPD_DATE: moment().format('YYYY-MM-DD HH:mm:ss.SSS'),
+          UPD_DATE: moment().format("YYYY-MM-DD HH:mm:ss.SSS"),
         };
-        tempBOMGIA =[...tempBOMGIA, tempeditrows];
+        tempBOMGIA = [...tempBOMGIA, tempeditrows];
       }
       setBOMGIATable(tempBOMGIA);
-
     } else {
       Swal.fire("Thông báo", "Không có BOM SX để Clone sang", "error");
     }
-  }; 
-     
-  const confirmCloneBOMSX= () => {
+  };
+  const confirmCloneBOMSX = () => {
     Swal.fire({
       title: "Chắc chắn muốn Clone BOM SX ?",
       text: "Clone BOM Sản xuất",
@@ -1633,8 +1802,7 @@ const BOM_MANAGER = () => {
       }
     });
   };
-
-  const confirmSaveBOMSX= () => {
+  const confirmSaveBOMSX = () => {
     Swal.fire({
       title: "Chắc chắn muốn lưu BOM SX ?",
       text: "Lưu BOM Sản xuất",
@@ -1646,12 +1814,17 @@ const BOM_MANAGER = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         Swal.fire("Tiến hành Lưu BOM SX", "Đang lưu BOM", "success");
-        checkBP(userData.EMPL_NO,userData.MAINDEPTNAME,['RND', 'QLSX'], handleInsertBOMSX);
+        checkBP(
+          userData.EMPL_NO,
+          userData.MAINDEPTNAME,
+          ["RND", "QLSX"],
+          handleInsertBOMSX
+        );
         //handleInsertBOMSX();
       }
     });
   };
-  const confirmSaveBOMGIA= () => {
+  const confirmSaveBOMGIA = () => {
     Swal.fire({
       title: "Chắc chắn muốn lưu BOM GIÁ ?",
       text: "Lưu BOM GIÁ",
@@ -1663,13 +1836,18 @@ const BOM_MANAGER = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         Swal.fire("Tiến hành Lưu BOM GIÁ", "Đang lưu BOM", "success");
-        checkBP(userData.EMPL_NO,userData.MAINDEPTNAME,['RND', 'QLSX'], handleInsertBOMGIA);
+        checkBP(
+          userData.EMPL_NO,
+          userData.MAINDEPTNAME,
+          ["RND", "QLSX"],
+          handleInsertBOMGIA
+        );
         //handleInsertBOMGIA();
         //handleInsertBOMSX_WITH_GIA();
       }
     });
   };
-  const confirmResetBanVe= () => {
+  const confirmResetBanVe = () => {
     Swal.fire({
       title: "Chắc chắn muốn RESET các bản vẽ đã chọn ?",
       text: "RESET bản vẽ",
@@ -1681,14 +1859,13 @@ const BOM_MANAGER = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         Swal.fire("Tiến RESET Bản vẽ", "Đang Reset bản vẽ", "success");
-        resetBanVe('N');
+        resetBanVe("N");
       }
     });
   };
-
   useEffect(() => {
     getmateriallist();
-    getcustomerlist();    
+    getcustomerlist();
   }, []);
   return (
     <div className='bom_manager'>
@@ -2366,25 +2543,31 @@ const BOM_MANAGER = () => {
           </div>
           <div className='materiallist'>
             <Autocomplete
-              disabled={column_bomsx[0].editable || column_bomgia[0].editable }              
+              disabled={column_bomsx[0].editable || column_bomgia[0].editable}
               size='small'
               disablePortal
               options={materialList}
               className='autocomplete'
-              isOptionEqualToValue={(option, value) => option.M_CODE === value.M_CODE}
+              isOptionEqualToValue={(option, value) =>
+                option.M_CODE === value.M_CODE
+              }
               getOptionLabel={(option: MaterialListData) =>
                 `${option.M_NAME}|${option.WIDTH_CD}|${option.M_CODE}`
               }
               renderInput={(params) => (
                 <TextField {...params} label='Select material' />
               )}
-              defaultValue={{M_CODE: "A0007770", M_NAME: "SJ-203020HC", WIDTH_CD: 208}}
+              defaultValue={{
+                M_CODE: "A0007770",
+                M_NAME: "SJ-203020HC",
+                WIDTH_CD: 208,
+              }}
               value={selectedMaterial}
               onChange={(event: any, newValue: MaterialListData | null) => {
                 console.log(newValue);
                 setSelectedMaterial(newValue);
               }}
-            />            
+            />
           </div>
           <div className='up'>
             <div className='bomsx'>
@@ -2393,7 +2576,8 @@ const BOM_MANAGER = () => {
                   style={{ fontSize: 16, fontWeight: "bold", marginLeft: 10 }}
                 >
                   BOM SẢN XUẤT (
-                  {column_bomsx[0].editable ? "Bật Sửa" : "Tắt Sửa"}) {pinBOM? '(Đang ghim BOM)':''}
+                  {column_bomsx[0].editable ? "Bật Sửa" : "Tắt Sửa"}){" "}
+                  {pinBOM ? "(Đang ghim BOM)" : ""}
                 </span>
                 <DataGrid
                   components={{
@@ -2440,7 +2624,8 @@ const BOM_MANAGER = () => {
                 <span
                   style={{ fontSize: 16, fontWeight: "bold", marginLeft: 10 }}
                 >
-                  BOM GIÁ({column_bomgia[0].editable ? "Bật Sửa" : "Tắt Sửa"}){pinBOM? '(Đang ghim BOM)':''}
+                  BOM GIÁ({column_bomgia[0].editable ? "Bật Sửa" : "Tắt Sửa"})
+                  {pinBOM ? "(Đang ghim BOM)" : ""}
                 </span>
                 <DataGrid
                   components={{
