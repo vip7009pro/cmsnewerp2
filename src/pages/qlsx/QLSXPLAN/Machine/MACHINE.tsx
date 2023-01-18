@@ -395,6 +395,18 @@ const MACHINE = () => {
   const [editplan, seteditplan] = useState(true);
   const [editchithi, seteditchithi] = useState(true);
   const ycsxprintref = useRef(null);
+  const [maxLieu, setMaxLieu]=  useState(12);
+  const checkMaxLieu =()=> {
+    let temp_maxLieu: any = localStorage.getItem("maxLieu")?.toString();
+    if (temp_maxLieu !== undefined) {
+      console.log('temp max lieu: ',temp_maxLieu)
+      setMaxLieu(temp_maxLieu);
+    } else {      
+      localStorage.setItem("maxLieu", '12');
+    }
+  }
+
+
   const handlePrint = useReactToPrint({
     content: () => ycsxprintref.current,
   });
@@ -3992,6 +4004,7 @@ const MACHINE = () => {
     //console.log(params.row);
   };
   useEffect(() => {
+    checkMaxLieu();
     loadQLSXPlan(selectedPlanDate);
     handle_loadEQ_STATUS();
     let intervalID = window.setInterval(() => {
@@ -4706,6 +4719,15 @@ const MACHINE = () => {
                 {showChiThi && (
                   <div className='printycsxpage'>
                     <div className='buttongroup'>
+                      <input type='text' value={maxLieu} onChange={(e)=> {setMaxLieu(Number(e.target.value)); }}></input>
+                      <button
+                        onClick={() => {  
+                          localStorage.setItem("maxLieu", maxLieu.toString());
+                          Swal.fire('Thông báo','Đã set lại max dòng','success');
+                        }}
+                      >
+                        Set dòng
+                      </button>
                       <button
                         onClick={() => {
                           setChiThiListRender(renderChiThi(qlsxplandatafilter));
@@ -4730,6 +4752,15 @@ const MACHINE = () => {
                 {showChiThi2 && (
                   <div className='printycsxpage'>
                     <div className='buttongroup'>
+                    <input type='text' value={maxLieu} onChange={(e)=> {setMaxLieu(Number(e.target.value)); }}></input>
+                      <button
+                        onClick={() => {  
+                          localStorage.setItem("maxLieu", maxLieu.toString());
+                          Swal.fire('Thông báo','Đã set lại max dòng','success');
+                        }}
+                      >
+                        Set dòng
+                      </button>
                       <button
                         onClick={() => {
                           setChiThiListRender2(renderChiThi2(chithiarray));
