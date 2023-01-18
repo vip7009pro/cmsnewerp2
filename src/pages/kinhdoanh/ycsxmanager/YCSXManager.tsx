@@ -2860,6 +2860,7 @@ const YCSXManager = () => {
                       <option value='AM'>AM</option>
                       <option value='DL'>DL</option>
                       <option value='M4'>M4</option>
+                      <option value='SL'>SL</option>
                     </select>
                   </label>
                 </div>
