@@ -259,6 +259,7 @@ const CHITHI_COMPONENT2 = ({PLAN_LIST}: PLAN_COMBO) => {
     },
   ]);
   const [chithidatatable, setChiThiDataTable] = useState<QLSXCHITHIDATA[]>([]);
+  const [maxLieu, setMaxLieu]=  useState(12);
   const handleGetChiThiTable = async () => {
     generalQuery("getchithidatatable", {
       PLAN_ID: main_plan.PLAN_ID,
@@ -349,7 +350,18 @@ const CHITHI_COMPONENT2 = ({PLAN_LIST}: PLAN_COMBO) => {
         console.log(error);
       });
   };
+  const checkMaxLieu =()=> {
+
+    let temp_maxLieu: any = localStorage.getItem("maxLieu")?.toString();
+    if (temp_maxLieu !== undefined) {
+      console.log('temp max lieu: ',temp_maxLieu)
+      setMaxLieu(temp_maxLieu);
+    } else {      
+      localStorage.setItem("maxLieu", '12');
+    }
+  }
   useEffect(() => {
+    checkMaxLieu();
     initCTSX();
     handleGetChiThiTable();
   }, []);
@@ -679,7 +691,7 @@ const CHITHI_COMPONENT2 = ({PLAN_LIST}: PLAN_COMBO) => {
         </div>  
         <div className='text1'>5. 제품 정보 Thông tin vật liệu</div>
         <div className='thongtinvatlieu'>
-          {chithidatatable.length <= max_lieu && (
+          {chithidatatable.length <= maxLieu && (
             <div className='vatlieugiua'>
               <table>
                 <thead>
@@ -728,7 +740,7 @@ const CHITHI_COMPONENT2 = ({PLAN_LIST}: PLAN_COMBO) => {
               </table>
             </div>
           )}
-          {chithidatatable.length > max_lieu && (
+          {chithidatatable.length > maxLieu && (
             <div className='vatlieutrai'>
               <table>
                 <thead>
@@ -746,7 +758,7 @@ const CHITHI_COMPONENT2 = ({PLAN_LIST}: PLAN_COMBO) => {
                 <tbody>
                   {chithidatatable.map(
                     (element, index) =>
-                      index <= max_lieu && (
+                      index <= maxLieu && (
                         <tr key={index}>
                           <td>{index}</td>
                           <td>{element.M_CODE}</td>
@@ -780,7 +792,7 @@ const CHITHI_COMPONENT2 = ({PLAN_LIST}: PLAN_COMBO) => {
               </table>
             </div>
           )}
-          {chithidatatable.length > max_lieu && (
+          {chithidatatable.length > maxLieu && (
             <div className='vatlieuphai'>
               <table>
                 <thead>
@@ -798,7 +810,7 @@ const CHITHI_COMPONENT2 = ({PLAN_LIST}: PLAN_COMBO) => {
                 <tbody>
                   {chithidatatable.map(
                     (element, index) =>
-                      index > max_lieu && (
+                      index > maxLieu && (
                         <tr key={index}>
                           <td>{index}</td>
                           <td>{element.M_CODE}</td>

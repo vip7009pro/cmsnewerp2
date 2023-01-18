@@ -219,6 +219,7 @@ const CHITHI_COMPONENT = ({
   ]);
   const [chithidatatable, setChiThiDataTable] = useState<QLSXCHITHIDATA[]>([]);
   const [checklieuqlsx, setChecklieuqlsx] = useState(false);
+  const [maxLieu, setMaxLieu]=  useState(12);
   const handleGetChiThiTable = async () => {
     generalQuery("getchithidatatable", {
       PLAN_ID: PLAN_ID,
@@ -324,12 +325,12 @@ const CHITHI_COMPONENT = ({
     request_codeinfo[0].LOSS_SETTING1 === null ||
     request_codeinfo[0].LOSS_SETTING2 === null)
     {
-      console.log(false)
+      //console.log(false)
       return false;
     }
     else
     {
-      console.log(true)
+      //console.log(true)
       return true;
     }
   }
@@ -339,7 +340,7 @@ const CHITHI_COMPONENT = ({
       G_CODE: G_CODE,
     })
       .then((response) => {
-        console.log(response.data);
+        //console.log(response.data);
         if (response.data.tk_status !== "NG") {
           setChecklieuqlsx(true);        
           
@@ -352,7 +353,18 @@ const CHITHI_COMPONENT = ({
       });     
   }
 
+  const checkMaxLieu =()=> {
+
+    let temp_maxLieu: any = localStorage.getItem("maxLieu")?.toString();
+    if (temp_maxLieu !== undefined) {
+      console.log('temp max lieu : ',temp_maxLieu)
+      setMaxLieu(temp_maxLieu);
+    } else {      
+      localStorage.setItem("maxLieu", '12');
+    }
+  }
   useEffect(() => {
+    checkMaxLieu();
     check_lieuql_sx_m140();
     initCTSX();
     handleGetChiThiTable();
@@ -615,7 +627,7 @@ const CHITHI_COMPONENT = ({
         </div>       
         <div className='text1'>4. 제품 정보 Thông tin vật liệu</div>
         <div className='thongtinvatlieu'>
-          {chithidatatable.length <= max_lieu && (
+          {chithidatatable.length <= maxLieu && (
             <div className='vatlieugiua'>
               <table>
                 <thead>
@@ -649,7 +661,7 @@ const CHITHI_COMPONENT = ({
               </table>
             </div>
           )}
-          {chithidatatable.length > max_lieu && (
+          {chithidatatable.length > maxLieu && (
             <div className='vatlieutrai'>
               <table>
                 <thead>
@@ -667,7 +679,7 @@ const CHITHI_COMPONENT = ({
                 <tbody>
                   {chithidatatable.map(
                     (element, index) =>
-                      index <= max_lieu && (
+                      index <= maxLieu && (
                         <tr key={index}>
                          <td>{index}</td>
                         <td>{element.M_CODE}</td>
@@ -686,7 +698,7 @@ const CHITHI_COMPONENT = ({
               </table>
             </div>
           )}
-          {chithidatatable.length > max_lieu && (
+          {chithidatatable.length > maxLieu && (
             <div className='vatlieuphai'>
               <table>
                 <thead>
@@ -704,7 +716,7 @@ const CHITHI_COMPONENT = ({
                 <tbody>
                   {chithidatatable.map(
                     (element, index) =>
-                      index > max_lieu && (
+                      index > maxLieu && (
                         <tr key={index}>
                          <td>{index}</td>
                         <td>{element.M_CODE}</td>
@@ -727,7 +739,7 @@ const CHITHI_COMPONENT = ({
       </div>}
       {!check_dinh_muc() && <div>Chưa đủ thông tin định mức</div>}      
       {!checklieuqlsx && <div>Chưa chỉ định liệu chính, hãy lưu liệu chỉ thị để đồng bộ liệu chính lên BOM</div>}
-      {(PLAN_QTY ===0) && <div>Số lượng chỉ thị không thể khác 0</div>}
+      {(PLAN_QTY ===0) && <div>Số lượng chỉ thị không thể = 0</div>}
       {(PROCESS_NUMBER ===0) && <div>PROCESS_NUMBER phải đặt 1 hoặc 2</div>}
     </div>
   );
