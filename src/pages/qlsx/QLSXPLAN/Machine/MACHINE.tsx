@@ -69,6 +69,7 @@ import {
   resetChithiArray,
 } from "../../../../redux/slices/globalSlice";
 import CHITHI_COMPONENT2 from "../CHITHI/CHITHI_COMPONENT2";
+import KHOAO from "../KHOAO/KHOAO";
 const axios = require("axios").default;
 interface TONLIEUXUONG {
   id: number;
@@ -4521,7 +4522,20 @@ const MACHINE = () => {
                     </div>
                   </div>
                 )}
-                {showkhoao && (
+                {
+                  showkhoao && (<div className="khoaodiv">
+                    <Button
+                        onClick={() => {
+                          setShowKhoAo(!showkhoao);
+                        }}
+                      >
+                        Close
+                      </Button>
+                    <KHOAO NEXT_PLAN={selectedPlan?.PLAN_ID}/>
+                  </div>)
+                }
+
+                {false && (
                   <div className='khoaodiv'>
                     <div
                       className='khoaotieude'
