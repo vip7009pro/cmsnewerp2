@@ -388,7 +388,7 @@ const CHITHI_COMPONENT = ({
             {PLAN_ID}
           </div>
           <div className='headertitle'>
-            생산 지시서 - Chỉ thị Sản Xuất({PLAN_EQ}- B{STEP})<br></br>
+            <span style={{fontSize: 16}}>생산 지시서 - Chỉ thị Sản Xuất({PLAN_EQ}- B{STEP})</span><br></br>
             <span style={{ fontSize: 12 }}>
               Thời điểm in CTSX: {moment().format("YYYY-MM-DD HH:mm:ss")}
             </span>

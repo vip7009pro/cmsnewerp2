@@ -505,7 +505,11 @@ const KHOAO = ({NEXT_PLAN}:{NEXT_PLAN?:string}) => {
 
 
   const load_nhapkhoao = () => {
-    generalQuery("lichsunhapkhoao", {})
+    generalQuery("lichsunhapkhoao", {
+      FROM_DATE: fromdate,
+      TO_DATE: todate,
+      FACTORY: factory,      
+    })
       .then((response) => {
         //console.log(response.data.data);
         if (response.data.tk_status !== "NG") {
@@ -541,7 +545,11 @@ const KHOAO = ({NEXT_PLAN}:{NEXT_PLAN?:string}) => {
       });
   };
   const load_xuatkhoao = () => {
-    generalQuery("lichsuxuatkhoao", {})
+    generalQuery("lichsuxuatkhoao", {
+      FROM_DATE: fromdate,
+      TO_DATE: todate,
+      FACTORY: factory,
+    })
       .then((response) => {
         //console.log(response.data.data);
         if (response.data.tk_status !== "NG") {
@@ -576,7 +584,9 @@ const KHOAO = ({NEXT_PLAN}:{NEXT_PLAN?:string}) => {
       });
   };
   const handle_loadKhoAo = () => {
-    generalQuery("checktonlieutrongxuong", {})
+    generalQuery("checktonlieutrongxuong", {
+      FACTORY: factory
+    })
       .then((response) => {
         //console.log(response.data.data);
         if (response.data.tk_status !== "NG") {

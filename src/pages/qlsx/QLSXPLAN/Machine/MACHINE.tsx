@@ -193,7 +193,7 @@ interface QLSXPLANDATA {
   INT_TEM?: string;
   CHOTBC?: string;
   DKXL?: string;
-  OLD_PLAN_QTY?: string;  
+  OLD_PLAN_QTY?: string;
 }
 interface YCSXTableData {
   DESCR?: string;
@@ -396,17 +396,16 @@ const MACHINE = () => {
   const [editplan, seteditplan] = useState(true);
   const [editchithi, seteditchithi] = useState(true);
   const ycsxprintref = useRef(null);
-  const [maxLieu, setMaxLieu]=  useState(12);
-  const checkMaxLieu =()=> {
+  const [maxLieu, setMaxLieu] = useState(12);
+  const checkMaxLieu = () => {
     let temp_maxLieu: any = localStorage.getItem("maxLieu")?.toString();
     if (temp_maxLieu !== undefined) {
-      console.log('temp max lieu: ',temp_maxLieu)
+      console.log("temp max lieu: ", temp_maxLieu);
       setMaxLieu(temp_maxLieu);
-    } else {      
-      localStorage.setItem("maxLieu", '12');
+    } else {
+      localStorage.setItem("maxLieu", "12");
     }
-  }
-
+  };
 
   const handlePrint = useReactToPrint({
     content: () => ycsxprintref.current,
@@ -1702,15 +1701,15 @@ const MACHINE = () => {
         PLAN_QTY={element.PLAN_QTY}
         PLAN_EQ={element.PLAN_EQ}
         PLAN_FACTORY={element.PLAN_FACTORY}
-        PLAN_LEADTIME={element.PLAN_LEADTIME} 
+        PLAN_LEADTIME={element.PLAN_LEADTIME}
         G_CODE={element.G_CODE}
         G_NAME={element.G_NAME}
         G_NAME_KD={element.G_NAME_KD}
         PROD_REQUEST_DATE={element.PROD_REQUEST_DATE}
         PROD_REQUEST_QTY={element.PROD_REQUEST_QTY}
         STEP={element.STEP}
-        PLAN_ORDER={element.PLAN_ORDER}      
-        PROCESS_NUMBER={element.PROCESS_NUMBER}  
+        PLAN_ORDER={element.PLAN_ORDER}
+        PROCESS_NUMBER={element.PROCESS_NUMBER}
       />
     ));
   };
@@ -2262,7 +2261,7 @@ const MACHINE = () => {
           "info"
         ); */
         if (selectedPlan !== undefined) {
-          hanlde_SaveChiThi();         
+          hanlde_SaveChiThi();
           handleDangKyXuatLieu(
             selectedPlan?.PLAN_ID === undefined ? "xxx" : selectedPlan?.PLAN_ID,
             selectedPlan?.PROD_REQUEST_NO === undefined
@@ -2307,40 +2306,41 @@ const MACHINE = () => {
             generalQuery("checkPLANID_O302", {
               PLAN_ID: qlsxplandatafilter[i].PLAN_ID,
             })
-            .then((response) => {
-              //console.log(response.data);
-              if (response.data.tk_status !== "NG") {
-              } else {
-                if(qlsxplandatafilter[i].CHOTBC ===null)
-                {
-                  generalQuery("deletePlanQLSX", {
-                    PLAN_ID: qlsxplandatafilter[i].PLAN_ID,
-                  })
-                  .then((response) => {
-                    //console.log(response.data);
-                    if (response.data.tk_status !== "NG") {
-                      Swal.fire(
-                        "Thông báo",
-                        "Nội dung: " + response.data.message,
-                        "error"
-                      );
-                    } else {
-                      datafilter.splice(j, 1);
-                      setPlanDataTable(datafilter);
-                    }
-                  })
-                  .catch((error) => {
-                    console.log(error);
-                  });
-
+              .then((response) => {
+                //console.log(response.data);
+                if (response.data.tk_status !== "NG") {
+                } else {
+                  if (qlsxplandatafilter[i].CHOTBC === null) {
+                    generalQuery("deletePlanQLSX", {
+                      PLAN_ID: qlsxplandatafilter[i].PLAN_ID,
+                    })
+                      .then((response) => {
+                        //console.log(response.data);
+                        if (response.data.tk_status !== "NG") {
+                          Swal.fire(
+                            "Thông báo",
+                            "Nội dung: " + response.data.message,
+                            "error"
+                          );
+                        } else {
+                          datafilter.splice(j, 1);
+                          setPlanDataTable(datafilter);
+                        }
+                      })
+                      .catch((error) => {
+                        console.log(error);
+                      });
+                  } else {
+                    Swal.fire(
+                      "Thông báo",
+                      "Chỉ thị + " +
+                        qlsxplandatafilter[i].PLAN_ID +
+                        ":  +đã chốt báo cáo, ko xóa được chỉ thị",
+                      "error"
+                    );
+                  }
                 }
-                else
-                {
-                  Swal.fire('Thông báo', 'Chỉ thị + '+ qlsxplandatafilter[i].PLAN_ID+':  +đã chốt báo cáo, ko xóa được chỉ thị','error');
-                }
-                
-              }
-              /*  generalQuery("deletePlanQLSX", { PLAN_ID: qlsxplandatafilter[i].PLAN_ID })
+                /*  generalQuery("deletePlanQLSX", { PLAN_ID: qlsxplandatafilter[i].PLAN_ID })
             .then((response) => {
               //console.log(response.data);
               if (response.data.tk_status !== "NG") {
@@ -2353,10 +2353,10 @@ const MACHINE = () => {
             .catch((error) => {
               console.log(error);
             });  */
-            })
-            .catch((error) => {
-              console.log(error);
-            });
+              })
+              .catch((error) => {
+                console.log(error);
+              });
           }
         }
       }
@@ -2549,7 +2549,9 @@ const MACHINE = () => {
         selectedPlanTable[i].CHOTBC !== "V" &&
         check_NEXT_PLAN_ID &&
         parseInt(selectedPlanTable[i].STEP.toString()) >= 0 &&
-        parseInt(selectedPlanTable[i].STEP.toString()) <= 9 && parseInt(selectedPlanTable[i].PROCESS_NUMBER.toString()) >=1 && parseInt(selectedPlanTable[i].PROCESS_NUMBER.toString()) <=2
+        parseInt(selectedPlanTable[i].STEP.toString()) <= 9 &&
+        parseInt(selectedPlanTable[i].PROCESS_NUMBER.toString()) >= 1 &&
+        parseInt(selectedPlanTable[i].PROCESS_NUMBER.toString()) <= 2
       ) {
         generalQuery("updatePlanQLSX", {
           PLAN_ID: selectedPlanTable[i].PLAN_ID,
@@ -2618,10 +2620,14 @@ const MACHINE = () => {
         ) {
           err_code += "_: Hãy nhập STEP từ 0 -> 9";
         }
-        if(!(parseInt(selectedPlanTable[i].PROCESS_NUMBER.toString()) >=1 && parseInt(selectedPlanTable[i].PROCESS_NUMBER.toString()) <=2))
-        {
+        if (
+          !(
+            parseInt(selectedPlanTable[i].PROCESS_NUMBER.toString()) >= 1 &&
+            parseInt(selectedPlanTable[i].PROCESS_NUMBER.toString()) <= 2
+          )
+        ) {
           err_code += "_: Hãy nhập PROCESS NUMBER từ 1 hoặc 2";
-        }        
+        }
       }
     }
     if (err_code !== "0") {
@@ -2789,7 +2795,6 @@ const MACHINE = () => {
         ? 1
         : selectedPlan?.PROCESS_NUMBER
     );
-
   };
   function CustomToolbarPOTable() {
     return (
@@ -3048,20 +3053,24 @@ const MACHINE = () => {
         <IconButton
           className='buttonIcon'
           onClick={() => {
-            let temp_combo: string = '';
-            if(chithiarray !== undefined) 
-            {
-              for(let i=0;i<chithiarray?.length; i++)
-              {
-                temp_combo+= (i+1)+ '_PLAN_ID: '+  chithiarray[i].PLAN_ID + "_CODE: " + chithiarray[i].G_NAME_KD + '_STEP: '+chithiarray[i].STEP+ '*******';
+            let temp_combo: string = "";
+            if (chithiarray !== undefined) {
+              for (let i = 0; i < chithiarray?.length; i++) {
+                temp_combo +=
+                  i +
+                  1 +
+                  "_PLAN_ID: " +
+                  chithiarray[i].PLAN_ID +
+                  "_CODE: " +
+                  chithiarray[i].G_NAME_KD +
+                  "_STEP: " +
+                  chithiarray[i].STEP +
+                  "*******";
               }
-              Swal.fire('Thong bao',temp_combo,'info');
+              Swal.fire("Thong bao", temp_combo, "info");
+            } else {
+              Swal.fire("Thong bao", "Chưa có chỉ thị trong combo", "info");
             }
-            else
-            {
-              Swal.fire('Thong bao','Chưa có chỉ thị trong combo','info');
-            }
-           
           }}
         >
           <BiRefresh color='red' size={20} />
@@ -3981,20 +3990,20 @@ const MACHINE = () => {
     setSelectedPlan(rowData);
     setDataDinhMuc({
       ...datadinhmuc,
-      FACTORY: rowData.FACTORY===null? 'NA': rowData.FACTORY,
+      FACTORY: rowData.FACTORY === null ? "NA" : rowData.FACTORY,
       EQ1: rowData.EQ1 === "" ? "NA" : rowData.EQ1,
       EQ2: rowData.EQ2 === "" ? "NA" : rowData.EQ2,
-      Setting1: rowData.Setting1 === null? 0 : rowData.Setting1,
-      Setting2: rowData.Setting2 === null? 0 : rowData.Setting2,
-      UPH1: rowData.UPH1 ===  null? 0: rowData.UPH1,
-      UPH2: rowData.UPH2 ===  null? 0: rowData.UPH2,
-      Step1: rowData.Step1 ===  null? 0: rowData.Step1,
-      Step2: rowData.Step2 ===  null? 0: rowData.Step2,
-      LOSS_SX1: rowData.LOSS_SX1 ===  null? 0: rowData.LOSS_SX1,
-      LOSS_SX2: rowData.LOSS_SX2 ===  null? 0: rowData.LOSS_SX2,
-      LOSS_SETTING1: rowData.LOSS_SETTING1 ===  null? 0: rowData.LOSS_SETTING1,
-      LOSS_SETTING2: rowData.LOSS_SETTING2 ===  null? 0: rowData.LOSS_SETTING2,
-      NOTE: rowData.NOTE ===  null? '': rowData.NOTE,
+      Setting1: rowData.Setting1 === null ? 0 : rowData.Setting1,
+      Setting2: rowData.Setting2 === null ? 0 : rowData.Setting2,
+      UPH1: rowData.UPH1 === null ? 0 : rowData.UPH1,
+      UPH2: rowData.UPH2 === null ? 0 : rowData.UPH2,
+      Step1: rowData.Step1 === null ? 0 : rowData.Step1,
+      Step2: rowData.Step2 === null ? 0 : rowData.Step2,
+      LOSS_SX1: rowData.LOSS_SX1 === null ? 0 : rowData.LOSS_SX1,
+      LOSS_SX2: rowData.LOSS_SX2 === null ? 0 : rowData.LOSS_SX2,
+      LOSS_SETTING1: rowData.LOSS_SETTING1 === null ? 0 : rowData.LOSS_SETTING1,
+      LOSS_SETTING2: rowData.LOSS_SETTING2 === null ? 0 : rowData.LOSS_SETTING2,
+      NOTE: rowData.NOTE === null ? "" : rowData.NOTE,
     });
     handleGetChiThiTable(
       rowData.PLAN_ID,
@@ -4069,7 +4078,6 @@ const MACHINE = () => {
                       setSelectedPlan(undefined);
                       setChiThiDataTable([]);
                     }}
-                    
                   />
                 );
               })}
@@ -4522,18 +4530,18 @@ const MACHINE = () => {
                     </div>
                   </div>
                 )}
-                {
-                  showkhoao && (<div className="khoaodiv">
+                {showkhoao && (
+                  <div className='khoaodiv'>
                     <Button
-                        onClick={() => {
-                          setShowKhoAo(!showkhoao);
-                        }}
-                      >
-                        Close
-                      </Button>
-                    <KHOAO NEXT_PLAN={selectedPlan?.PLAN_ID}/>
-                  </div>)
-                }
+                      onClick={() => {
+                        setShowKhoAo(!showkhoao);
+                      }}
+                    >
+                      Close
+                    </Button>
+                    <KHOAO NEXT_PLAN={selectedPlan?.PLAN_ID} />
+                  </div>
+                )}
 
                 {false && (
                   <div className='khoaodiv'>
@@ -4733,11 +4741,21 @@ const MACHINE = () => {
                 {showChiThi && (
                   <div className='printycsxpage'>
                     <div className='buttongroup'>
-                      <input type='text' value={maxLieu} onChange={(e)=> {setMaxLieu(Number(e.target.value)); }}></input>
+                      <input
+                        type='text'
+                        value={maxLieu}
+                        onChange={(e) => {
+                          setMaxLieu(Number(e.target.value));
+                        }}
+                      ></input>
                       <button
-                        onClick={() => {  
+                        onClick={() => {
                           localStorage.setItem("maxLieu", maxLieu.toString());
-                          Swal.fire('Thông báo','Đã set lại max dòng','success');
+                          Swal.fire(
+                            "Thông báo",
+                            "Đã set lại max dòng",
+                            "success"
+                          );
                         }}
                       >
                         Set dòng
@@ -4766,11 +4784,21 @@ const MACHINE = () => {
                 {showChiThi2 && (
                   <div className='printycsxpage'>
                     <div className='buttongroup'>
-                    <input type='text' value={maxLieu} onChange={(e)=> {setMaxLieu(Number(e.target.value)); }}></input>
+                      <input
+                        type='text'
+                        value={maxLieu}
+                        onChange={(e) => {
+                          setMaxLieu(Number(e.target.value));
+                        }}
+                      ></input>
                       <button
-                        onClick={() => {  
+                        onClick={() => {
                           localStorage.setItem("maxLieu", maxLieu.toString());
-                          Swal.fire('Thông báo','Đã set lại max dòng','success');
+                          Swal.fire(
+                            "Thông báo",
+                            "Đã set lại max dòng",
+                            "success"
+                          );
                         }}
                       >
                         Set dòng

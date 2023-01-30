@@ -53,13 +53,33 @@ const ChartFCSTSamSung = () => {
     return null;
 }
 //console.log(moment().add(1,'days').isoWeek());
-  const handleGetDailyClosing = () => {
+  const handleGetDailyClosing = async () => {
     let fcstweek2:number = moment().add(1,'days').isoWeek();
     let fcstyear2: number = moment().year(); 
     let fcstweek1:number = moment().add(1,'days').isoWeek()-1;
     let fcstyear1: number = moment().year();
-    console.log('fcst week 1',fcstweek1)
-    console.log('fcst week 2',fcstweek2)
+   
+
+
+    await generalQuery("checklastfcstweekno", { 
+      FCSTWEEKNO: fcstyear2,
+    })
+    .then((response) => {
+      //console.log(response.data.data)
+      if (response.data.tk_status !== "NG") {
+        fcstweek2 = response.data.data[0].FCSTWEEKNO;                        
+        console.log(response.data.data);
+      } else {
+        Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+
+
+    
+    
     if(fcstweek2 ===1)
     {
         fcstweek1 = 52;
@@ -71,6 +91,13 @@ const ChartFCSTSamSung = () => {
       fcstweek1 = 52;
       fcstyear1 = fcstyear2 -1;
     }
+    else
+    {
+      fcstweek1 = fcstweek2 -1;
+    }
+
+    console.log('fcst week 1',fcstweek1);
+    console.log('fcst week 2',fcstweek2);
 
     //console.log('fcst week 1',fcstweek1)
    // console.log('fcst week 2',fcstweek2)

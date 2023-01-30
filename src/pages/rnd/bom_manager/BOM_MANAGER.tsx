@@ -1373,7 +1373,7 @@ const BOM_MANAGER = () => {
         let check_lieuql_sx_sot: number = 0;
         let check_num_lieuql_sx: number = 1;
         let check_lieu_qlsx_khac1: number = 0;
-        let m_list : string ='';
+        let m_list: string = "";
         //console.log(chithidatatable);
         for (let i = 0; i < bomsxtable.length; i++) {
           total_lieuql_sx += bomsxtable[i].LIEUQL_SX;
@@ -1408,12 +1408,11 @@ const BOM_MANAGER = () => {
         }
         //console.log('num lieu qlsx: ' + check_num_lieuql_sx);
         //console.log('tong lieu qly: '+ total_lieuql_sx);
-        for(let i=0;i<bomsxtable.length-1;i++)  
-        {
-          m_list +=`'${bomsxtable[i].M_CODE}',`;
+        for (let i = 0; i < bomsxtable.length - 1; i++) {
+          m_list += `'${bomsxtable[i].M_CODE}',`;
         }
-        m_list +=`'${bomsxtable[bomsxtable.length-1].M_CODE}'`;
-        console.log('m_list',m_list);
+        m_list += `'${bomsxtable[bomsxtable.length - 1].M_CODE}'`;
+        console.log("m_list", m_list);
 
         if (
           total_lieuql_sx > 0 &&
@@ -1425,22 +1424,19 @@ const BOM_MANAGER = () => {
           err_code += " | Check lại liệu quản lý (liệu chính)";
         }
         if (err_code === "0") {
-
-
-           await generalQuery("deleteM140_2", {
+          await generalQuery("deleteM140_2", {
             G_CODE: codefullinfo.G_CODE,
-            M_LIST: m_list,            
+            M_LIST: m_list,
           })
-          .then((response) => {
-            if (response.data.tk_status !== "NG") {
-              //console.log(response.data.data);
-            } else {
-            }
-          })
-          .catch((error) => {
-            console.log(error);
-          });
-
+            .then((response) => {
+              if (response.data.tk_status !== "NG") {
+                //console.log(response.data.data);
+              } else {
+              }
+            })
+            .catch((error) => {
+              console.log(error);
+            });
 
           let max_g_seq: string = "001";
           await generalQuery("checkGSEQ_M140", {
