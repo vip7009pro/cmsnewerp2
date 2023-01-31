@@ -245,10 +245,28 @@ const KinhDoanhReport = () => {
       });
   };
 
-  const handleGetFCSTAmount = () => {
+  const handleGetFCSTAmount =  async () => {
     let fcstweek2:number = moment().add(1,'days').isoWeek();
     let fcstyear2: number = moment().year(); 
-    console.log(fcstweek2);
+
+    
+    await generalQuery("checklastfcstweekno", { 
+      FCSTWEEKNO: fcstyear2,
+    })
+    .then((response) => {
+      //console.log(response.data.data)
+      if (response.data.tk_status !== "NG") {
+        fcstweek2 = response.data.data[0].FCSTWEEKNO;                        
+        //console.log(response.data.data);
+      } else {
+        Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+
+    console.log('fcst week2->: ' , fcstweek2);
 
     generalQuery("fcstamount", { FCSTYEAR: fcstyear2, FCSTWEEKNO: fcstweek2})
     .then((response) => {

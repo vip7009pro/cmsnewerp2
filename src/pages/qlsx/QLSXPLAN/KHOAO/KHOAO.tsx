@@ -28,9 +28,7 @@ import Swal from "sweetalert2";
 import { generalQuery } from "../../../../api/Api";
 import { UserContext } from "../../../../api/Context";
 import { checkBP, SaveExcel } from "../../../../api/GlobalFunction";
-
 import "./KHOAO.scss";
-
 interface QLSXPLANDATA {
   id: number;
   PLAN_ID: string;
@@ -115,7 +113,7 @@ interface LICHSUXUATKHOAO {
   TOTAL_OUT_QTY: number;
   INS_DATE: string;
 }
-const KHOAO = ({NEXT_PLAN}:{NEXT_PLAN?:string}) => {
+const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
   const [selectionModel_INPUTSX, setSelectionModel_INPUTSX] = useState<any>([]);
   const [readyRender, setReadyRender] = useState(false);
   const [userData, setUserData] = useContext(UserContext);
@@ -133,7 +131,7 @@ const KHOAO = ({NEXT_PLAN}:{NEXT_PLAN?:string}) => {
   const [tonkhoaodatafilter, setTonKhoAoDataFilter] = useState<
     Array<TONLIEUXUONG>
   >([]);
-  const [nextPlan, setNextPlan]= useState(NEXT_PLAN);
+  const [nextPlan, setNextPlan] = useState(NEXT_PLAN);
   const [tonkhoaotable, setTonKhoAoTable] = useState<Array<TONLIEUXUONG>>([]);
   const [lichsunhapkhoao, setLichSuNhapKhoAo] = useState<
     Array<LICHSUNHAPKHOAO>
@@ -142,7 +140,6 @@ const KHOAO = ({NEXT_PLAN}:{NEXT_PLAN?:string}) => {
     Array<LICHSUXUATKHOAO>
   >([]);
   const [tableTitle, setTableTitle] = useState("");
-
   const column_plandatatable = [
     {
       field: "PLAN_FACTORY",
@@ -328,7 +325,6 @@ const KHOAO = ({NEXT_PLAN}:{NEXT_PLAN?:string}) => {
       },
     },
     { field: "PLAN_EQ", headerName: "PLAN_EQ", width: 80 },
-
     {
       field: "INS_EMPL",
       headerName: "INS_EMPL",
@@ -358,7 +354,6 @@ const KHOAO = ({NEXT_PLAN}:{NEXT_PLAN?:string}) => {
       hide: true,
     },
   ];
-
   const column_nhapkhoaotable = [
     { field: "FACTORY", headerName: "FACTORY", width: 80 },
     { field: "PHANLOAI", headerName: "PHANLOAI", width: 80 },
@@ -465,7 +460,7 @@ const KHOAO = ({NEXT_PLAN}:{NEXT_PLAN?:string}) => {
       renderCell: (params: any) => {
         if (params.row.PHANLOAI !== "F") {
           return (
-            <span style={{ color: "green" , fontWeight:'bold'}}>
+            <span style={{ color: "green", fontWeight: "bold" }}>
               {params.row.TOTAL_IN_QTY.toLocaleString("en", "US")}
             </span>
           );
@@ -479,7 +474,6 @@ const KHOAO = ({NEXT_PLAN}:{NEXT_PLAN?:string}) => {
       },
     },
   ];
-
   function CustomToolbarLICHSUINPUTSX() {
     return (
       <GridToolbarContainer>
@@ -497,18 +491,16 @@ const KHOAO = ({NEXT_PLAN}:{NEXT_PLAN?:string}) => {
           {tableTitle}
         </div>
         <div className='div' style={{ fontSize: 20, fontWeight: "bold" }}>
-          _|_Liệu xuất next sẽ vào chỉ thị:  {nextPlan}
+          _|_Liệu xuất next sẽ vào chỉ thị: {nextPlan}
         </div>
       </GridToolbarContainer>
     );
   }
-
-
   const load_nhapkhoao = () => {
     generalQuery("lichsunhapkhoao", {
       FROM_DATE: fromdate,
       TO_DATE: todate,
-      FACTORY: factory,      
+      FACTORY: factory,
     })
       .then((response) => {
         //console.log(response.data.data);
@@ -565,7 +557,7 @@ const KHOAO = ({NEXT_PLAN}:{NEXT_PLAN?:string}) => {
             }
           );
           //console.log(loadeddata);
-          setDataTable(loadeddata);          
+          setDataTable(loadeddata);
           setReadyRender(true);
           setisLoading(false);
           setTableTitle("LỊCH SỬ XUẤT KHO ẢO");
@@ -585,7 +577,7 @@ const KHOAO = ({NEXT_PLAN}:{NEXT_PLAN?:string}) => {
   };
   const handle_loadKhoAo = () => {
     generalQuery("checktonlieutrongxuong", {
-      FACTORY: factory
+      FACTORY: factory,
     })
       .then((response) => {
         //console.log(response.data.data);
@@ -598,7 +590,6 @@ const KHOAO = ({NEXT_PLAN}:{NEXT_PLAN?:string}) => {
               };
             }
           );
-          
           setDataTable(loadeddata);
           setCurrent_Column(column_tonkhoaotable);
           setReadyRender(true);
@@ -617,10 +608,9 @@ const KHOAO = ({NEXT_PLAN}:{NEXT_PLAN?:string}) => {
         console.log(error);
       });
   };
-
   const handle_xuatKhoAo = async () => {
     console.log(nextPlan);
-    if (nextPlan !== '' && nextPlan !== undefined) {
+    if (nextPlan !== "" && nextPlan !== undefined) {
       if (tonkhoaodatafilter.length > 0) {
         let err_code: string = "0";
         for (let i = 0; i < tonkhoaodatafilter.length; i++) {
@@ -655,7 +645,7 @@ const KHOAO = ({NEXT_PLAN}:{NEXT_PLAN?:string}) => {
             })
               .then((response) => {
                 console.log(response.data.tk_status);
-                if (response.data.tk_status !== "NG") {                 
+                if (response.data.tk_status !== "NG") {
                   generalQuery("setUSE_YN_KHO_AO_INPUT", {
                     FACTORY: tonkhoaodatafilter[i].FACTORY,
                     PHANLOAI: tonkhoaodatafilter[i].PHANLOAI,
@@ -694,19 +684,14 @@ const KHOAO = ({NEXT_PLAN}:{NEXT_PLAN?:string}) => {
           Swal.fire("Thông báo", "Có lỗi: " + err_code, "error");
         }
         setTonKhoAoDataFilter([]);
-        handle_loadKhoAo();       
-        
+        handle_loadKhoAo();
       } else {
         Swal.fire("Thông báo", "Chọn ít nhất 1 liệu để xuất kho", "error");
       }
-    }
-    else
-    {
-      Swal.fire('Thông báo', 'Chưa nhập next PLAN', 'error');
+    } else {
+      Swal.fire("Thông báo", "Chưa nhập next PLAN", "error");
     }
   };
-
-
   const handleTonKhoAoDataSelectionforUpdate = (ids: GridSelectionModel) => {
     const selectedID = new Set(ids);
     let datafilter = datatable.filter((element: any) =>
@@ -720,7 +705,6 @@ const KHOAO = ({NEXT_PLAN}:{NEXT_PLAN?:string}) => {
       //console.log("xoa filter");
     }
   };
-
   useEffect(() => {
     setisLoading(true);
     setReadyRender(false);
@@ -749,10 +733,10 @@ const KHOAO = ({NEXT_PLAN}:{NEXT_PLAN?:string}) => {
                   value={todate.slice(0, 10)}
                   onChange={(e) => setToDate(e.target.value)}
                 ></input>
-              </label>             
+              </label>
             </div>
             <div className='forminputcolumn'>
-            <label>
+              <label>
                 <b>FACTORY:</b>
                 <select
                   name='phanloai'
@@ -775,7 +759,6 @@ const KHOAO = ({NEXT_PLAN}:{NEXT_PLAN?:string}) => {
                 ></input>
               </label>
             </div>
-
             <div className='forminputcolumn'>
               <button
                 className='tranhatky'
@@ -804,8 +787,13 @@ const KHOAO = ({NEXT_PLAN}:{NEXT_PLAN?:string}) => {
               <button
                 className='xuatnext'
                 onClick={() => {
-                  checkBP(userData.EMPL_NO,userData.MAINDEPTNAME,['QLSX'], handle_xuatKhoAo);
-                  //handle_xuatKhoAo();                  
+                  checkBP(
+                    userData.EMPL_NO,
+                    userData.MAINDEPTNAME,
+                    ["QLSX"],
+                    handle_xuatKhoAo
+                  );
+                  //handle_xuatKhoAo();
                 }}
               >
                 XUẤT NEXT

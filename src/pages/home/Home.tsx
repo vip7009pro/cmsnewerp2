@@ -23,7 +23,6 @@ function Home() {
           console.log("webver", response.data.data[0].VERWEB);
           setCheckVerWeb(response.data.data[0].VERWEB);
         } else {
-          
         }
       })
       .catch((error) => {
@@ -69,7 +68,7 @@ function Home() {
     <div className='home'>
       <div className='navdiv'>
         <Navbar />
-        {/* <PrimarySearchAppBar/>  */}       
+        {/* <PrimarySearchAppBar/>  */}
       </div>
       <div className='homeContainer'>
         <div className='sidebardiv'>

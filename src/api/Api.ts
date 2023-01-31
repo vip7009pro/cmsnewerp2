@@ -1,32 +1,25 @@
-
 import Cookies from "universal-cookie";
 import Swal from "sweetalert2";
 import { store } from "../redux/store";
-const axios = require('axios').default;
-
+const axios = require("axios").default;
 const cookies = new Cookies();
 axios.defaults.withCredentials = true;
-
-
 //const API_URL = "http://14.160.33.94:3007/api";
-//const API_URL = "http://localhost:3007/api";  
-
+//const API_URL = "http://localhost:3007/api";
 export function getSever(): string {
   const state = store.getState();
   console.log(state.totalSlice.server_ip);
   return state.totalSlice.server_ip;
 }
-
-let API_URL =  'http://14.160.33.94:5011/api';
+let API_URL = "http://14.160.33.94:5011/api";
 let server_ip_local: any = localStorage.getItem("server_ip")?.toString();
 if (server_ip_local !== undefined) {
   API_URL = server_ip_local;
-} else {  
-  
+} else {
 }
-
 export function login(user: string, pass: string) {
-  axios.post(API_URL, { 
+  axios
+    .post(API_URL, {
       command: "login",
       user: user,
       pass: pass,
@@ -39,7 +32,11 @@ export function login(user: string, pass: string) {
       console.log("Token content = " + Jresult.token_content);
       if (Jresult.tk_status === "ok") {
         console.log(Jresult.token_content);
-        Swal.fire("Thông báo", "Chúc mừng bạn, đăng nhập thành công !", "success");
+        Swal.fire(
+          "Thông báo",
+          "Chúc mừng bạn, đăng nhập thành công !",
+          "success"
+        );
         //alert("Đăng nhập thành công");
         cookies.set("token", Jresult.token_content, { path: "/" });
         setTimeout(() => {

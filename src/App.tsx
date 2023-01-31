@@ -48,7 +48,7 @@ import {
   changeUserData,
   UserData,
   update_socket,
-  changeServer
+  changeServer,
 } from "./redux/slices/globalSlice";
 import { useSpring, animated } from "@react-spring/web";
 import DATASX from "./pages/qlsx/QLSXPLAN/DATASX/DATASX";
@@ -381,13 +381,11 @@ function App() {
         console.log(error);
       });
 
-      let server_ip_local: any = localStorage.getItem("server_ip")?.toString();
-      if (server_ip_local !== undefined) {
-        
-      } else {
-        
-        localStorage.setItem("server_ip", 'http://14.160.33.94:5011/api');
-      }
+    let server_ip_local: any = localStorage.getItem("server_ip")?.toString();
+    if (server_ip_local !== undefined) {
+    } else {
+      localStorage.setItem("server_ip", "http://14.160.33.94:5011/api");
+    }
 
     return () => {};
   }, []);
