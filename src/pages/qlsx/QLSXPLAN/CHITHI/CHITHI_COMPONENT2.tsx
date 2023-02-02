@@ -499,7 +499,7 @@ const CHITHI_COMPONENT2 = ({PLAN_LIST}: PLAN_COMBO) => {
               </tr>
 
               <tr>
-                <td>Note (KD)</td>
+                <td>Chú ý (Kdoanh)</td>
                 <td>{request_codeinfo[0].REMK}</td>
               </tr>
               <tr>
@@ -649,7 +649,7 @@ const CHITHI_COMPONENT2 = ({PLAN_LIST}: PLAN_COMBO) => {
             </tbody>
           </table>
         </div>
-        <div className='text1'>3. LOSS INFO </div>
+        <div className='text1'>3. LOSS INFO (Phân loại: {request_codeinfo[0].CODE_50 ==='01'? 'GC': request_codeinfo[0].CODE_50 ==='02'? 'SK': request_codeinfo[0].CODE_50 ==='03'? 'KD' : request_codeinfo[0].CODE_50 ==='04'? 'VN' : request_codeinfo[0].CODE_50 ==='05' ? 'SAMPLE' : request_codeinfo[0].CODE_50 ==='06' ? 'Vai bac 4' :'ETC'})    </div>
         <div className='thongtinyeucau'>
           <table className='ttyc1'>
             <thead>

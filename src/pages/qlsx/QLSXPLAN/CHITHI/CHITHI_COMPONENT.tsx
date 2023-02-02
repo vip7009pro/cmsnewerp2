@@ -499,10 +499,9 @@ const CHITHI_COMPONENT = ({
               <tr>
                 <td>Máy/호기</td>
                 <td>{PLAN_EQ}</td>
-              </tr>
-             
+              </tr>             
               <tr>
-                <td>Note (KD)</td>
+                <td>Chú ý (Kdoanh)</td>
                 <td>{request_codeinfo[0].REMK}</td>
               </tr>
               <tr>
@@ -586,7 +585,7 @@ const CHITHI_COMPONENT = ({
             </tbody>
           </table>         
         </div> */}
-        <div className='text1'>3. LOSS INFO__ {' '}{PLAN_ID} {':  '}
+        <div className='text1'>3. LOSS INFO__ {' '}{PLAN_ID} {':  '} (Phân loại: {request_codeinfo[0].CODE_50 ==='01'? 'GC': request_codeinfo[0].CODE_50 ==='02'? 'SK': request_codeinfo[0].CODE_50 ==='03'? 'KD' : request_codeinfo[0].CODE_50 ==='04'? 'VN' : request_codeinfo[0].CODE_50 ==='05' ? 'SAMPLE' : request_codeinfo[0].CODE_50 ==='06' ? 'Vai bac 4' :'ETC'})  
           <Barcode
               value={PLAN_ID}
               format='CODE128'
@@ -597,6 +596,7 @@ const CHITHI_COMPONENT = ({
               lineColor='black'
               margin={0}
             /></div>
+             
         <div className='thongtinyeucau'>
           <table className='ttyc1'>
             <thead>

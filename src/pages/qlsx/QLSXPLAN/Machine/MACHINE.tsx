@@ -4032,10 +4032,7 @@ const MACHINE = () => {
         </div>
         <div className='mininavitem' onClick={() => setNav(2)}>
           <span className='mininavtext'>NM2</span>
-        </div>
-        <div className='mininavitem' onClick={() => setNav(3)}>
-          <span className='mininavtext'>ALL_IN_ONE</span>
-        </div>
+        </div>       
       </div>
       <div className='plandateselect'>
         <label>Plan Date</label>

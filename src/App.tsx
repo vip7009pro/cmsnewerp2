@@ -386,7 +386,6 @@ function App() {
     } else {
       localStorage.setItem("server_ip", "http://14.160.33.94:5011/api");
     }
-
     return () => {};
   }, []);
   //console.log(userData);
