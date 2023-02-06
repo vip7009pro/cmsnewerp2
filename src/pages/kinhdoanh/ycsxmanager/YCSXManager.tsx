@@ -2853,14 +2853,15 @@ const YCSXManager = () => {
                         setNewPhanLoai(e.target.value);
                       }}
                     >
-                      <option value='TT'>Hàng Thường</option>
-                      <option value='SP'>SP</option>
-                      <option value='RB'>RB</option>
-                      <option value='HQ'>HQ</option>
-                      <option value='AM'>AM</option>
-                      <option value='DL'>DL</option>
-                      <option value='M4'>M4</option>
-                      <option value='SL'>SL</option>
+                      <option value='TT'>Hàng Thường (TT)</option>
+                      <option value='SP'>Sample sang FL (SP)</option>
+                      <option value='RB'>Ribbon (RB)</option>
+                      <option value='HQ'>Hàn Quốc (HQ)</option>
+                      <option value='VN'>Việt Nam (VN)</option>
+                      <option value='AM'>Amazon (AM)</option>
+                      <option value='DL'>Đổi LOT (DL)</option>
+                      <option value='M4'>NM4 (M4)</option>
+                      <option value='SL'>Slitting (SL)</option>
                     </select>
                   </label>
                 </div>
