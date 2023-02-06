@@ -480,7 +480,7 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
         <IconButton
           className='buttonIcon'
           onClick={() => {
-            SaveExcel(plandatatable, "PLAN Table");
+            SaveExcel(datatable, "Kho AO DATA Table");
           }}
         >
           <AiFillFileExcel color='green' size={25} />
