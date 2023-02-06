@@ -406,7 +406,6 @@ const MACHINE = () => {
       localStorage.setItem("maxLieu", "12");
     }
   };
-
   const handlePrint = useReactToPrint({
     content: () => ycsxprintref.current,
   });
@@ -4032,7 +4031,7 @@ const MACHINE = () => {
         </div>
         <div className='mininavitem' onClick={() => setNav(2)}>
           <span className='mininavtext'>NM2</span>
-        </div>       
+        </div>
       </div>
       <div className='plandateselect'>
         <label>Plan Date</label>
@@ -4539,7 +4538,6 @@ const MACHINE = () => {
                     <KHOAO NEXT_PLAN={selectedPlan?.PLAN_ID} />
                   </div>
                 )}
-
                 {false && (
                   <div className='khoaodiv'>
                     <div
