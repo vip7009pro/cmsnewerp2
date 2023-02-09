@@ -164,6 +164,16 @@ interface MaterialListData {
   M_NAME: string;
   WIDTH_CD: number;
 }
+interface MATERIAL_INFO {
+  M_ID: number,
+  M_NAME: string, 
+  CUST_CD: string,
+  SSPRICE: number,
+  CMSPRICE: number,
+  SLITTING_PRICE: number,
+  MASTER_WIDTH: number,
+  ROLL_LENGTH: number
+}
 const BOM_MANAGER = () => {
   const [codedatatablefilter, setCodeDataTableFilter] = useState<
     Array<CODE_INFO>
@@ -514,7 +524,7 @@ const BOM_MANAGER = () => {
   ]);
   const [column_bomgia, setcolumn_bomgia] = useState<Array<any>>([
     { field: "M_CODE", headerName: "M_CODE", width: 80, editable: enableEdit },
-    { field: "M_NAME", headerName: "M_NAME", width: 110, editable: enableEdit },
+    { field: "M_NAME", headerName: "M_NAME", width: 150, editable: enableEdit },
     {
       field: "CUST_CD",
       headerName: "Vendor",
@@ -573,50 +583,13 @@ const BOM_MANAGER = () => {
           return <span>{params.row.MAT_ROLL_LENGTH}</span>;
         }
       },
-    },
-    {
-      field: "MAT_THICKNESS",
-      headerName: "Độ dày",
-      width: 80,
-      editable: enableEdit,
-      renderCell: (params: any) => {
-        if (params.row.MAT_THICKNESS === 0) {
-          return <span style={{ backgroundColor: "red" }}>NG</span>;
-        } else {
-          return <span>{params.row.MAT_THICKNESS}</span>;
-        }
-      },
-    },
+    },    
     { field: "M_QTY", headerName: "M_QTY", width: 80, editable: enableEdit },
     { field: "REMARK", headerName: "REMARK", width: 80, editable: enableEdit },
     {
       field: "PROCESS_ORDER",
       headerName: "Thứ tự",
       width: 80,
-      editable: enableEdit,
-    },
-    {
-      field: "INS_EMPL",
-      headerName: "INS_EMPL",
-      width: 80,
-      editable: enableEdit,
-    },
-    {
-      field: "INS_DATE",
-      headerName: "INS_DATE",
-      width: 160,
-      editable: enableEdit,
-    },
-    {
-      field: "UPD_EMPL",
-      headerName: "UPD_EMPL",
-      width: 80,
-      editable: enableEdit,
-    },
-    {
-      field: "UPD_DATE",
-      headerName: "UPD_DATE",
-      width: 160,
       editable: enableEdit,
     },
   ]);
@@ -1414,7 +1387,6 @@ const BOM_MANAGER = () => {
         }
         m_list += `'${bomsxtable[bomsxtable.length - 1].M_CODE}'`;
         console.log("m_list", m_list);
-
         if (
           total_lieuql_sx > 0 &&
           check_lieuql_sx_sot === 0 &&
@@ -1438,7 +1410,6 @@ const BOM_MANAGER = () => {
             .catch((error) => {
               console.log(error);
             });
-
           let max_g_seq: string = "001";
           await generalQuery("checkGSEQ_M140", {
             G_CODE: codefullinfo.G_CODE,
@@ -1635,6 +1606,32 @@ const BOM_MANAGER = () => {
   };
   const handleAddNewLineBOMGIA = async () => {
     if (codedatatablefilter.length > 0) {
+
+      let selected_Material_Info: MATERIAL_INFO = {
+        M_ID: 564,
+        M_NAME: 'OS75-006WP', 
+        CUST_CD: 'C-TECH',
+        SSPRICE: 1.3,
+        CMSPRICE: 1.234545455,
+        SLITTING_PRICE: 0.054545455,
+        MASTER_WIDTH: 1080,
+        ROLL_LENGTH: 1000
+      }
+      await generalQuery("checkMaterialInfo", {
+        M_NAME: selectedMaterial?.M_NAME,
+      })
+        .then((response) => {
+          if (response.data.tk_status !== "NG") {
+            //console.log(response.data.data);
+            selected_Material_Info = response.data.data[0];
+          } else {
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+
+
       let tempeditrows: BOM_GIA = {
         id: moment().format("YYYY-MM-DD HH:mm:ss.SSS"),
         BOM_ID: moment().format("YYYY-MM-DD HH:mm:ss.SSS"),
@@ -1644,16 +1641,16 @@ const BOM_MANAGER = () => {
         CATEGORY: 1,
         M_CODE: selectedMaterial?.M_CODE,
         M_NAME: selectedMaterial?.M_NAME,
-        CUST_CD: "",
+        CUST_CD: selected_Material_Info.CUST_CD,
         IMPORT_CAT: "",
-        M_CMS_PRICE: 0,
-        M_SS_PRICE: 0,
-        M_SLITTING_PRICE: 0,
+        M_CMS_PRICE: selected_Material_Info.CMSPRICE,
+        M_SS_PRICE: selected_Material_Info.SSPRICE,
+        M_SLITTING_PRICE: selected_Material_Info.SLITTING_PRICE,
         USAGE: "",
         MAIN_M: "0",
-        MAT_MASTER_WIDTH: 0,
+        MAT_MASTER_WIDTH: selected_Material_Info.MASTER_WIDTH,
         MAT_CUTWIDTH: selectedMaterial?.WIDTH_CD,
-        MAT_ROLL_LENGTH: 0,
+        MAT_ROLL_LENGTH: selected_Material_Info.ROLL_LENGTH,
         MAT_THICKNESS: 0,
         M_QTY: 1,
         REMARK: "",
@@ -1695,17 +1692,16 @@ const BOM_MANAGER = () => {
           bomgiatable[i].CUST_CD === "" ||
           bomgiatable[i].USAGE === "" ||
           bomgiatable[i].MAT_MASTER_WIDTH === 0 ||
-          bomgiatable[i].MAT_ROLL_LENGTH === 0 ||
-          bomgiatable[i].MAT_THICKNESS === 0
+          bomgiatable[i].MAT_ROLL_LENGTH === 0        
         ) {
           err_code = "Không được để ô nào NG màu đỏ";
         }
       }
       console.log(checkMAIN_M);
       if (checkMAIN_M === 0) {
-        err_code += "| " + "Phải chỉ định liệu quản lý";
+        err_code += "| Phải chỉ định liệu quản lý";
       }
-      console.log(err_code);
+      //console.log(err_code);
       if (err_code === "0") {
         console.log("vao bom gia insert");
         await generalQuery("deleteBOM2", {
@@ -1880,819 +1876,856 @@ const BOM_MANAGER = () => {
   return (
     <div className='bom_manager'>
       <div className='mininavbar'>
-      <div className='mininavitem'  onClick={() => setNav(1)} style={{backgroundColor:selection.trapo === true ? '#9933ff':'#d9b3ff', color: selection.trapo === true ? 'yellow':'yellow'}}>
-          <span className='mininavtext'>
-          Thông tin code
-          </span>
-        </div>  
-        <div className='mininavitem'  onClick={() =>
-            checkBP(userData.EMPL_NO, userData.MAINDEPTNAME, ['KD','RND'], () => {
-              setNav(2);
-            })
-          } style={{backgroundColor:selection.thempohangloat === true ? '#9933ff':'#d9b3ff', color: selection.thempohangloat === true ? 'yellow':'yellow'}}>
-          <span className='mininavtext'>
-          Quản lý Liệu
-          </span>
-        </div>    
+        <div
+          className='mininavitem'
+          onClick={() => setNav(1)}
+          style={{
+            backgroundColor: selection.trapo === true ? "#9933ff" : "#d9b3ff",
+            color: selection.trapo === true ? "yellow" : "yellow",
+          }}
+        >
+          <span className='mininavtext'>Thông tin code</span>
+        </div>
+        <div
+          className='mininavitem'
+          onClick={() =>
+            checkBP(
+              userData.EMPL_NO,
+              userData.MAINDEPTNAME,
+              ["KD", "RND"],
+              () => {
+                setNav(2);
+              }
+            )
+          }
+          style={{
+            backgroundColor:
+              selection.thempohangloat === true ? "#9933ff" : "#d9b3ff",
+            color: selection.thempohangloat === true ? "yellow" : "yellow",
+          }}
+        >
+          <span className='mininavtext'>Quản lý Liệu</span>
+        </div>
       </div>
-      {selection.trapo && <div className='bom_manager_wrapper'>
-        <div className='left'>
-          <div className='bom_manager_button'>
-            <div className='buttonrow1'>
-              <IconButton
-                className='buttonIcon'
-                onClick={() => {
-                  confirmAddNewCode();
-                }}
-              >
-                <AiFillFileAdd color='#3366ff' size={25} />
-                ADD
-              </IconButton>
-              <IconButton
-                className='buttonIcon'
-                onClick={() => {
-                  confirmUpdateCode();
-                }}
-              >
-                <MdOutlineUpdate color='#ffff00' size={25} />
-                UPDATE
-              </IconButton>
+      {selection.trapo && (
+        <div className='bom_manager_wrapper'>
+          <div className='left'>
+            <div className='bom_manager_button'>
+              <div className='buttonrow1'>
+                <IconButton
+                  className='buttonIcon'
+                  onClick={() => {
+                    confirmAddNewCode();
+                  }}
+                >
+                  <AiFillFileAdd color='#3366ff' size={25} />
+                  ADD
+                </IconButton>
+                <IconButton
+                  className='buttonIcon'
+                  onClick={() => {
+                    confirmUpdateCode();
+                  }}
+                >
+                  <MdOutlineUpdate color='#ffff00' size={25} />
+                  UPDATE
+                </IconButton>
+              </div>
+              <div className='buttonrow2'>
+                <IconButton
+                  className='buttonIcon'
+                  onClick={() => {
+                    confirmAddNewVer();
+                  }}
+                >
+                  <MdUpgrade color='#cc33ff' size={25} />
+                  ADD VER
+                </IconButton>
+                <IconButton
+                  className='buttonIcon'
+                  onClick={() => {
+                    handleClearInfo();
+                  }}
+                >
+                  <AiFillDelete color='red' size={25} />
+                  Clear
+                </IconButton>
+              </div>
             </div>
-            <div className='buttonrow2'>
-              <IconButton
-                className='buttonIcon'
-                onClick={() => {
-                  confirmAddNewVer();
-                }}
-              >
-                <MdUpgrade color='#cc33ff' size={25} />
-                ADD VER
-              </IconButton>
-              <IconButton
-                className='buttonIcon'
-                onClick={() => {
-                  handleClearInfo();
-                }}
-              >
-                <AiFillDelete color='red' size={25} />
-                Clear
-              </IconButton>
+            <div className='codemanager'>
+              <div className='tracuuFcst'>
+                <div className='tracuuFcstform'>
+                  <div className='forminput'>
+                    <div className='forminputcolumn'>
+                      <label>
+                        <b>Code:</b>{" "}
+                        <input
+                          type='text'
+                          placeholder='Nhập code vào đây'
+                          value={codeCMS}
+                          onChange={(e) => setCodeCMS(e.target.value)}
+                          onKeyDown={(e) => {
+                            handleSearchCodeKeyDown(e);
+                          }}
+                        ></input>
+                      </label>
+                      <button
+                        className='traxuatkiembutton'
+                        onClick={() => {
+                          handleCODEINFO();
+                        }}
+                      >
+                        Tìm code
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                <div className='codeinfotable'>
+                  <DataGrid
+                    components={{
+                      Toolbar: CustomToolbarPOTable,
+                      LoadingOverlay: LinearProgress,
+                    }}
+                    sx={{ fontSize: 12 }}
+                    loading={isLoading}
+                    rowHeight={30}
+                    rows={rows}
+                    columns={column_codeinfo}
+                    onSelectionModelChange={(ids) => {
+                      handleCODESelectionforUpdate(ids);
+                    }}
+                    /*  rows={codeinfodatatable}
+              columns={columnDefinition} */
+                    rowsPerPageOptions={[
+                      5, 10, 50, 100, 500, 1000, 5000, 10000, 100000,
+                    ]}
+                    editMode='cell'
+                    /* experimentalFeatures={{ newEditingApi: true }}  */
+                    onCellEditCommit={(
+                      params: GridCellEditCommitParams,
+                      event: MuiEvent<MuiBaseEvent>,
+                      details: GridCallbackDetails
+                    ) => {
+                      //console.log(params);
+                      let tempeditrows = editedRows;
+                      tempeditrows.push(params);
+                      setEditedRows(tempeditrows);
+                      //console.log(editedRows);
+                      const keyvar = params.field;
+                      const newdata = rows.map((p) =>
+                        p.id === params.id
+                          ? { ...p, [keyvar]: params.value }
+                          : p
+                      );
+                      setRows(newdata);
+                    }}
+                  />
+                </div>
+              </div>
             </div>
           </div>
-          <div className='codemanager'>
-            <div className='tracuuFcst'>
-              <div className='tracuuFcstform'>
-                <div className='forminput'>
-                  <div className='forminputcolumn'>
+          <div className='right'>
+            <div className='codeinfobig'>
+              <div className='biginfocms'>
+                {" "}
+                {codedatatablefilter[0]?.G_CODE}:{" "}
+              </div>
+              <div className='biginfokd'> {codedatatablefilter[0]?.G_NAME}</div>
+            </div>
+            <div className='down'>
+              <div className='codeinfo'>
+                <div className='info12'>
+                  <div className='info1'>
                     <label>
-                      <b>Code:</b>{" "}
+                      Khách hàng:
+                      <select
+                        disabled={enableform}
+                        name='khachhang'
+                        value={
+                          codefullinfo?.CUST_CD === null
+                            ? ""
+                            : codefullinfo?.CUST_CD
+                        }
+                        onChange={(e) => {
+                          handleSetCodeInfo("CUST_CD", e.target.value);
+                        }}
+                      >
+                        {customerList.map((element, index) => (
+                          <option key={index} value={element.CUST_CD}>
+                            {element.CUST_NAME_KD}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+                    <label>
+                      Dự án/Project:{" "}
                       <input
+                        disabled={enableform}
                         type='text'
-                        placeholder='Nhập code vào đây'
-                        value={codeCMS}
-                        onChange={(e) => setCodeCMS(e.target.value)}
-                        onKeyDown={(e) => {
-                          handleSearchCodeKeyDown(e);
+                        value={
+                          codefullinfo?.PROD_PROJECT === null
+                            ? ""
+                            : codefullinfo?.PROD_PROJECT
+                        }
+                        onChange={(e) => {
+                          handleSetCodeInfo("PROD_PROJECT", e.target.value);
                         }}
                       ></input>
                     </label>
-                    <button
-                      className='traxuatkiembutton'
-                      onClick={() => {
-                        handleCODEINFO();
-                      }}
-                    >
-                      Tìm code
-                    </button>
-                  </div>
-                </div>
-              </div>
-              <div className='codeinfotable'>
-                <DataGrid
-                  components={{
-                    Toolbar: CustomToolbarPOTable,
-                    LoadingOverlay: LinearProgress,
-                  }}
-                  sx={{ fontSize: 12 }}
-                  loading={isLoading}
-                  rowHeight={30}
-                  rows={rows}
-                  columns={column_codeinfo}
-                  onSelectionModelChange={(ids) => {
-                    handleCODESelectionforUpdate(ids);
-                  }}
-                  /*  rows={codeinfodatatable}
-              columns={columnDefinition} */
-                  rowsPerPageOptions={[
-                    5, 10, 50, 100, 500, 1000, 5000, 10000, 100000,
-                  ]}
-                  editMode='cell'
-                  /* experimentalFeatures={{ newEditingApi: true }}  */
-                  onCellEditCommit={(
-                    params: GridCellEditCommitParams,
-                    event: MuiEvent<MuiBaseEvent>,
-                    details: GridCallbackDetails
-                  ) => {
-                    //console.log(params);
-                    let tempeditrows = editedRows;
-                    tempeditrows.push(params);
-                    setEditedRows(tempeditrows);
-                    //console.log(editedRows);
-                    const keyvar = params.field;
-                    const newdata = rows.map((p) =>
-                      p.id === params.id ? { ...p, [keyvar]: params.value } : p
-                    );
-                    setRows(newdata);
-                  }}
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className='right'>
-          <div className='codeinfobig'>
-            <div className='biginfocms'>
-              {" "}
-              {codedatatablefilter[0]?.G_CODE}:{" "}
-            </div>
-            <div className='biginfokd'> {codedatatablefilter[0]?.G_NAME}</div>
-          </div>
-          <div className='down'>
-            <div className='codeinfo'>
-              <div className='info12'>
-                <div className='info1'>
-                  <label>
-                    Khách hàng:
-                    <select
-                      disabled={enableform}
-                      name='khachhang'
-                      value={
-                        codefullinfo?.CUST_CD === null
-                          ? ""
-                          : codefullinfo?.CUST_CD
-                      }
-                      onChange={(e) => {
-                        handleSetCodeInfo("CUST_CD", e.target.value);
-                      }}
-                    >
-                      {customerList.map((element, index) => (
-                        <option key={index} value={element.CUST_CD}>
-                          {element.CUST_NAME_KD}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
-                  <label>
-                    Dự án/Project:{" "}
-                    <input
-                      disabled={enableform}
-                      type='text'
-                      value={
-                        codefullinfo?.PROD_PROJECT === null
-                          ? ""
-                          : codefullinfo?.PROD_PROJECT
-                      }
-                      onChange={(e) => {
-                        handleSetCodeInfo("PROD_PROJECT", e.target.value);
-                      }}
-                    ></input>
-                  </label>
-                  <label>
-                    Model:{" "}
-                    <input
-                      disabled={enableform}
-                      type='text'
-                      value={
-                        codefullinfo?.PROD_MODEL === null
-                          ? ""
-                          : codefullinfo?.PROD_MODEL
-                      }
-                      onChange={(e) => {
-                        handleSetCodeInfo("PROD_MODEL", e.target.value);
-                      }}
-                    ></input>
-                  </label>
-                  <label>
-                    Đặc tính sản phẩm:
-                    <select
-                      disabled={enableform}
-                      name='dactinhsanpham'
-                      value={
-                        codefullinfo?.CODE_12 === null
-                          ? ""
-                          : codefullinfo?.CODE_12
-                      }
-                      onChange={(e) => {
-                        handleSetCodeInfo("CODE_12", e.target.value);
-                      }}
-                    >
-                      <option value={6}>Bán Thành Phẩm</option>
-                      <option value={7}>Thành Phẩm</option>
-                      <option value={8}>Nguyên Chiếc Không Ribbon</option>
-                      <option value={9}>Nguyên Chiếc Ribbon</option>
-                    </select>
-                  </label>
-                  <label>
-                    Phân loại sản phẩm:
-                    <select
-                      disabled={enableform}
-                      name='phanloaisanpham'
-                      value={
-                        codefullinfo?.PROD_TYPE === null
-                          ? ""
-                          : codefullinfo?.PROD_TYPE
-                      }
-                      onChange={(e) => {
-                        handleSetCodeInfo("PROD_TYPE", e.target.value);
-                      }}
-                    >
-                      <option value='TSP'>TSP</option>
-                      <option value='OLED'>OLED</option>
-                      <option value='UV'>UV</option>
-                      <option value='TAPE'>TAPE</option>
-                      <option value='LABEL'>LABEL</option>
-                      <option value='RIBBON'>RIBBON</option>
-                      <option value='SPT'>SPT</option>
-                    </select>
-                  </label>
-                  <label>
-                    Code KD:{" "}
-                    <input
-                      disabled={enableform}
-                      type='text'
-                      value={
-                        codefullinfo?.G_NAME_KD === null
-                          ? ""
-                          : codefullinfo?.G_NAME_KD
-                      }
-                      onChange={(e) => {
-                        handleSetCodeInfo("G_NAME_KD", e.target.value);
-                      }}
-                    ></input>
-                  </label>
-                  <label>
-                    Mô tả/Spec:{" "}
-                    <input
-                      disabled={enableform}
-                      type='text'
-                      value={
-                        codefullinfo?.DESCR === null ? "" : codefullinfo?.DESCR
-                      }
-                      onChange={(e) => {
-                        handleSetCodeInfo("DESCR", e.target.value);
-                      }}
-                    ></input>
-                  </label>
-                  <label>
-                    VL Chính:{" "}
-                    <input
-                      disabled={enableform}
-                      type='text'
-                      value={
-                        codefullinfo?.PROD_MAIN_MATERIAL === null
-                          ? ""
-                          : codefullinfo?.PROD_MAIN_MATERIAL
-                      }
-                      onChange={(e) => {
-                        handleSetCodeInfo("PROD_MAIN_MATERIAL", e.target.value);
-                      }}
-                    ></input>
-                  </label>
-                  <label>
-                    Code RnD:{" "}
-                    <input
-                      disabled={enableform}
-                      type='text'
-                      value={
-                        codefullinfo?.G_NAME === null
-                          ? ""
-                          : codefullinfo?.G_NAME
-                      }
-                      onChange={(e) => {
-                        handleSetCodeInfo("G_NAME", e.target.value);
-                      }}
-                    ></input>
-                  </label>
-                </div>
-                <div className='info2'>
-                  <label>
-                    Chiều dài sp(Length):{" "}
-                    <input
-                      disabled={enableform}
-                      type='text'
-                      value={
-                        codefullinfo?.G_LENGTH === null
-                          ? ""
-                          : codefullinfo?.G_LENGTH
-                      }
-                      onChange={(e) => {
-                        handleSetCodeInfo("G_LENGTH", e.target.value);
-                      }}
-                    ></input>
-                  </label>
-                  <label>
-                    Chiều rộng sp(Width):{" "}
-                    <input
-                      disabled={enableform}
-                      type='text'
-                      value={
-                        codefullinfo?.G_WIDTH === null
-                          ? ""
-                          : codefullinfo?.G_WIDTH
-                      }
-                      onChange={(e) => {
-                        handleSetCodeInfo("G_WIDTH", e.target.value);
-                      }}
-                    ></input>
-                  </label>
-                  <label>
-                    P/D:{" "}
-                    <input
-                      disabled={enableform}
-                      type='text'
-                      value={codefullinfo?.PD === null ? "" : codefullinfo?.PD}
-                      onChange={(e) => {
-                        handleSetCodeInfo("PD", e.target.value);
-                      }}
-                    ></input>
-                  </label>
-                  <label>
-                    Cavity hàng:{" "}
-                    <input
-                      disabled={enableform}
-                      type='text'
-                      value={
-                        codefullinfo?.G_C_R === null ? "" : codefullinfo?.G_C_R
-                      }
-                      onChange={(e) => {
-                        handleSetCodeInfo("G_C_R", e.target.value);
-                      }}
-                    ></input>
-                  </label>
-                  <label>
-                    Cavity cột:{" "}
-                    <input
-                      disabled={enableform}
-                      type='text'
-                      value={
-                        codefullinfo?.G_C === null ? "" : codefullinfo?.G_C
-                      }
-                      onChange={(e) => {
-                        handleSetCodeInfo("G_C", e.target.value);
-                      }}
-                    ></input>
-                  </label>
-                  <label>
-                    K/c hàng:{" "}
-                    <input
-                      disabled={enableform}
-                      type='text'
-                      value={
-                        codefullinfo?.G_LG === null ? "" : codefullinfo?.G_LG
-                      }
-                      onChange={(e) => {
-                        handleSetCodeInfo("G_LG", e.target.value);
-                      }}
-                    ></input>
-                  </label>
-                  <label>
-                    K/c cột:{" "}
-                    <input
-                      disabled={enableform}
-                      type='text'
-                      value={
-                        codefullinfo?.G_CG === null ? "" : codefullinfo?.G_CG
-                      }
-                      onChange={(e) => {
-                        handleSetCodeInfo("G_CG", e.target.value);
-                      }}
-                    ></input>
-                  </label>
-                  <label>
-                    K/c tới liner trái:{" "}
-                    <input
-                      disabled={enableform}
-                      type='text'
-                      value={
-                        codefullinfo?.G_SG_L === null
-                          ? ""
-                          : codefullinfo?.G_SG_L
-                      }
-                      onChange={(e) => {
-                        handleSetCodeInfo("G_SG_L", e.target.value);
-                      }}
-                    ></input>
-                  </label>
-                  <label>
-                    K/c tới liner phải:{" "}
-                    <input
-                      disabled={enableform}
-                      type='text'
-                      value={
-                        codefullinfo?.G_SG_R === null
-                          ? ""
-                          : codefullinfo?.G_SG_R
-                      }
-                      onChange={(e) => {
-                        handleSetCodeInfo("G_SG_R", e.target.value);
-                      }}
-                    ></input>
-                  </label>
-                </div>
-                <div className='info11'>
-                  <label>
-                    Hướng mở roll:
-                    <select
-                      disabled={enableform}
-                      name='huongmoroll'
-                      value={
-                        codefullinfo?.PACK_DRT === null
-                          ? ""
-                          : codefullinfo?.PACK_DRT
-                      }
-                      onChange={(e) => {
-                        handleSetCodeInfo("PACK_DRT", e.target.value);
-                      }}
-                    >
-                      <option value='1'>FORWARD</option>
-                      <option value='0'>REVERSE</option>
-                    </select>
-                  </label>
-                  <label>
-                    Loại dao:
-                    <select
-                      disabled={enableform}
-                      name='loaidao'
-                      value={
-                        codefullinfo?.KNIFE_TYPE === null
-                          ? ""
-                          : codefullinfo?.KNIFE_TYPE
-                      }
-                      onChange={(e) => {
-                        handleSetCodeInfo("KNIFE_TYPE", e.target.value);
-                      }}
-                    >
-                      <option value={0}>PVC</option>
-                      <option value={1}>PINACLE</option>
-                      <option value={2}>NO</option>
-                    </select>
-                  </label>
-                  <label>
-                    Tuổi dao (Số dập):{" "}
-                    <input
-                      disabled={enableform}
-                      type='text'
-                      value={
-                        codefullinfo?.KNIFE_LIFECYCLE === null
-                          ? ""
-                          : codefullinfo?.KNIFE_LIFECYCLE
-                      }
-                      onChange={(e) => {
-                        handleSetCodeInfo("KNIFE_LIFECYCLE", e.target.value);
-                      }}
-                    ></input>
-                  </label>
-                  <label>
-                    Đơn giá dao:{" "}
-                    <input
-                      disabled={enableform}
-                      type='text'
-                      value={
-                        codefullinfo?.KNIFE_PRICE === null
-                          ? ""
-                          : codefullinfo?.KNIFE_PRICE
-                      }
-                      onChange={(e) => {
-                        handleSetCodeInfo("KNIFE_PRICE", e.target.value);
-                      }}
-                    ></input>
-                  </label>
-                  <label>
-                    Packing Type:
-                    <select
-                      disabled={enableform}
-                      name='packingtype'
-                      value={
-                        codefullinfo?.CODE_33 === null
-                          ? ""
-                          : codefullinfo?.CODE_33
-                      }
-                      onChange={(e) => {
-                        handleSetCodeInfo("CODE_33", e.target.value);
-                      }}
-                    >
-                      <option value='02'>ROLL</option>
-                      <option value='03'>SHEET</option>
-                    </select>
-                  </label>
-                  <label>
-                    Packing QTY:{" "}
-                    <input
-                      disabled={enableform}
-                      type='text'
-                      value={
-                        codefullinfo?.ROLE_EA_QTY === null
-                          ? ""
-                          : codefullinfo?.ROLE_EA_QTY
-                      }
-                      onChange={(e) => {
-                        handleSetCodeInfo("ROLE_EA_QTY", e.target.value);
-                      }}
-                    ></input>
-                  </label>
-                  <label>
-                    RPM:{" "}
-                    <input
-                      disabled={enableform}
-                      type='text'
-                      value={
-                        codefullinfo?.RPM === null ? "" : codefullinfo?.RPM
-                      }
-                      onChange={(e) => {
-                        handleSetCodeInfo("RPM", e.target.value);
-                      }}
-                    ></input>
-                  </label>
-                  <label>
-                    PIN DISTANCE:{" "}
-                    <input
-                      disabled={enableform}
-                      type='text'
-                      value={
-                        codefullinfo?.PIN_DISTANCE === null
-                          ? ""
-                          : codefullinfo?.PIN_DISTANCE
-                      }
-                      onChange={(e) => {
-                        handleSetCodeInfo("PIN_DISTANCE", e.target.value);
-                      }}
-                    ></input>
-                  </label>
-                  <label>
-                    PROCESS TYPE:{" "}
-                    <input
-                      disabled={enableform}
-                      type='text'
-                      value={
-                        codefullinfo?.PROCESS_TYPE === null
-                          ? ""
-                          : codefullinfo?.PROCESS_TYPE
-                      }
-                      onChange={(e) => {
-                        handleSetCodeInfo("PROCESS_TYPE", e.target.value);
-                      }}
-                    ></input>
-                  </label>
-                </div>
-                <div className='info22'>
-                  <label>
-                    Máy 1:
-                    <select
-                      disabled={enableform}
-                      name='may1'
-                      value={
-                        codefullinfo?.EQ1 === null || codefullinfo?.EQ1 === ""
-                          ? "NA"
-                          : codefullinfo?.EQ1
-                      }
-                      onChange={(e) => {
-                        handleSetCodeInfo("EQ1", e.target.value);
-                      }}
-                    >
-                      <option value='FR'>FR</option>
-                      <option value='SR'>SR</option>
-                      <option value='DC'>DC</option>
-                      <option value='ED'>ED</option>
-                      <option value='NO'>NO</option>
-                      <option value='NA'>NA</option>
-                    </select>
-                  </label>
-                  <label>
-                    Máy 2:
-                    <select
-                      disabled={enableform}
-                      name='may2'
-                      value={
-                        codefullinfo?.EQ2 === null || codefullinfo?.EQ2 === ""
-                          ? "NA"
-                          : codefullinfo?.EQ2
-                      }
-                      onChange={(e) => {
-                        handleSetCodeInfo("EQ2", e.target.value);
-                      }}
-                    >
-                      <option value='FR'>FR</option>
-                      <option value='SR'>SR</option>
-                      <option value='DC'>DC</option>
-                      <option value='ED'>ED</option>
-                      <option value='NO'>NO</option>
-                      <option value='NA'>NA</option>
-                    </select>
-                  </label>
-                  <label>
-                    Số bước (dao):{" "}
-                    <input
-                      disabled={enableform}
-                      type='text'
-                      value={
-                        codefullinfo?.PROD_DIECUT_STEP === null
-                          ? ""
-                          : codefullinfo?.PROD_DIECUT_STEP
-                      }
-                      onChange={(e) => {
-                        handleSetCodeInfo("PROD_DIECUT_STEP", e.target.value);
-                      }}
-                    ></input>
-                  </label>
-                  <label>
-                    Số lần in:{" "}
-                    <input
-                      disabled={enableform}
-                      type='text'
-                      value={
-                        codefullinfo?.PROD_PRINT_TIMES === null
-                          ? ""
-                          : codefullinfo?.PROD_PRINT_TIMES
-                      }
-                      onChange={(e) => {
-                        handleSetCodeInfo("PROD_PRINT_TIMES", e.target.value);
-                      }}
-                    ></input>
-                  </label>
-                  <label>
-                    Remark:{" "}
-                    <input
-                      disabled={enableform}
-                      type='text'
-                      value={
-                        codefullinfo?.REMK === null ? "" : codefullinfo?.REMK
-                      }
-                      onChange={(e) => {
-                        handleSetCodeInfo("REMK", e.target.value);
-                      }}
-                    ></input>
-                  </label>
-                  <FormControlLabel
-                    disabled={enableform}
-                    label='Mở/Khóa'
-                    control={
-                      <Checkbox
-                        checked={codefullinfo?.USE_YN === "Y"}
+                    <label>
+                      Model:{" "}
+                      <input
+                        disabled={enableform}
+                        type='text'
+                        value={
+                          codefullinfo?.PROD_MODEL === null
+                            ? ""
+                            : codefullinfo?.PROD_MODEL
+                        }
+                        onChange={(e) => {
+                          handleSetCodeInfo("PROD_MODEL", e.target.value);
+                        }}
+                      ></input>
+                    </label>
+                    <label>
+                      Đặc tính sản phẩm:
+                      <select
+                        disabled={enableform}
+                        name='dactinhsanpham'
+                        value={
+                          codefullinfo?.CODE_12 === null
+                            ? ""
+                            : codefullinfo?.CODE_12
+                        }
+                        onChange={(e) => {
+                          handleSetCodeInfo("CODE_12", e.target.value);
+                        }}
+                      >
+                        <option value={6}>Bán Thành Phẩm</option>
+                        <option value={7}>Thành Phẩm</option>
+                        <option value={8}>Nguyên Chiếc Không Ribbon</option>
+                        <option value={9}>Nguyên Chiếc Ribbon</option>
+                      </select>
+                    </label>
+                    <label>
+                      Phân loại sản phẩm:
+                      <select
+                        disabled={enableform}
+                        name='phanloaisanpham'
+                        value={
+                          codefullinfo?.PROD_TYPE === null
+                            ? ""
+                            : codefullinfo?.PROD_TYPE
+                        }
+                        onChange={(e) => {
+                          handleSetCodeInfo("PROD_TYPE", e.target.value);
+                        }}
+                      >
+                        <option value='TSP'>TSP</option>
+                        <option value='OLED'>OLED</option>
+                        <option value='UV'>UV</option>
+                        <option value='TAPE'>TAPE</option>
+                        <option value='LABEL'>LABEL</option>
+                        <option value='RIBBON'>RIBBON</option>
+                        <option value='SPT'>SPT</option>
+                      </select>
+                    </label>
+                    <label>
+                      Code KD:{" "}
+                      <input
+                        disabled={enableform}
+                        type='text'
+                        value={
+                          codefullinfo?.G_NAME_KD === null
+                            ? ""
+                            : codefullinfo?.G_NAME_KD
+                        }
+                        onChange={(e) => {
+                          handleSetCodeInfo("G_NAME_KD", e.target.value);
+                        }}
+                      ></input>
+                    </label>
+                    <label>
+                      Mô tả/Spec:{" "}
+                      <input
+                        disabled={enableform}
+                        type='text'
+                        value={
+                          codefullinfo?.DESCR === null
+                            ? ""
+                            : codefullinfo?.DESCR
+                        }
+                        onChange={(e) => {
+                          handleSetCodeInfo("DESCR", e.target.value);
+                        }}
+                      ></input>
+                    </label>
+                    <label>
+                      VL Chính:{" "}
+                      <input
+                        disabled={enableform}
+                        type='text'
+                        value={
+                          codefullinfo?.PROD_MAIN_MATERIAL === null
+                            ? ""
+                            : codefullinfo?.PROD_MAIN_MATERIAL
+                        }
                         onChange={(e) => {
                           handleSetCodeInfo(
-                            "USE_YN",
-                            e.target.checked === true ? "Y" : "N"
+                            "PROD_MAIN_MATERIAL",
+                            e.target.value
                           );
                         }}
-                        inputProps={{ "aria-label": "controlled" }}
-                      />
-                    }
-                  />
-                  {/*  <input
+                      ></input>
+                    </label>
+                    <label>
+                      Code RnD:{" "}
+                      <input
+                        disabled={enableform}
+                        type='text'
+                        value={
+                          codefullinfo?.G_NAME === null
+                            ? ""
+                            : codefullinfo?.G_NAME
+                        }
+                        onChange={(e) => {
+                          handleSetCodeInfo("G_NAME", e.target.value);
+                        }}
+                      ></input>
+                    </label>
+                  </div>
+                  <div className='info2'>
+                    <label>
+                      Chiều dài sp(Length):{" "}
+                      <input
+                        disabled={enableform}
+                        type='text'
+                        value={
+                          codefullinfo?.G_LENGTH === null
+                            ? ""
+                            : codefullinfo?.G_LENGTH
+                        }
+                        onChange={(e) => {
+                          handleSetCodeInfo("G_LENGTH", e.target.value);
+                        }}
+                      ></input>
+                    </label>
+                    <label>
+                      Chiều rộng sp(Width):{" "}
+                      <input
+                        disabled={enableform}
+                        type='text'
+                        value={
+                          codefullinfo?.G_WIDTH === null
+                            ? ""
+                            : codefullinfo?.G_WIDTH
+                        }
+                        onChange={(e) => {
+                          handleSetCodeInfo("G_WIDTH", e.target.value);
+                        }}
+                      ></input>
+                    </label>
+                    <label>
+                      P/D:{" "}
+                      <input
+                        disabled={enableform}
+                        type='text'
+                        value={
+                          codefullinfo?.PD === null ? "" : codefullinfo?.PD
+                        }
+                        onChange={(e) => {
+                          handleSetCodeInfo("PD", e.target.value);
+                        }}
+                      ></input>
+                    </label>
+                    <label>
+                      Cavity hàng:{" "}
+                      <input
+                        disabled={enableform}
+                        type='text'
+                        value={
+                          codefullinfo?.G_C_R === null
+                            ? ""
+                            : codefullinfo?.G_C_R
+                        }
+                        onChange={(e) => {
+                          handleSetCodeInfo("G_C_R", e.target.value);
+                        }}
+                      ></input>
+                    </label>
+                    <label>
+                      Cavity cột:{" "}
+                      <input
+                        disabled={enableform}
+                        type='text'
+                        value={
+                          codefullinfo?.G_C === null ? "" : codefullinfo?.G_C
+                        }
+                        onChange={(e) => {
+                          handleSetCodeInfo("G_C", e.target.value);
+                        }}
+                      ></input>
+                    </label>
+                    <label>
+                      K/c hàng:{" "}
+                      <input
+                        disabled={enableform}
+                        type='text'
+                        value={
+                          codefullinfo?.G_LG === null ? "" : codefullinfo?.G_LG
+                        }
+                        onChange={(e) => {
+                          handleSetCodeInfo("G_LG", e.target.value);
+                        }}
+                      ></input>
+                    </label>
+                    <label>
+                      K/c cột:{" "}
+                      <input
+                        disabled={enableform}
+                        type='text'
+                        value={
+                          codefullinfo?.G_CG === null ? "" : codefullinfo?.G_CG
+                        }
+                        onChange={(e) => {
+                          handleSetCodeInfo("G_CG", e.target.value);
+                        }}
+                      ></input>
+                    </label>
+                    <label>
+                      K/c tới liner trái:{" "}
+                      <input
+                        disabled={enableform}
+                        type='text'
+                        value={
+                          codefullinfo?.G_SG_L === null
+                            ? ""
+                            : codefullinfo?.G_SG_L
+                        }
+                        onChange={(e) => {
+                          handleSetCodeInfo("G_SG_L", e.target.value);
+                        }}
+                      ></input>
+                    </label>
+                    <label>
+                      K/c tới liner phải:{" "}
+                      <input
+                        disabled={enableform}
+                        type='text'
+                        value={
+                          codefullinfo?.G_SG_R === null
+                            ? ""
+                            : codefullinfo?.G_SG_R
+                        }
+                        onChange={(e) => {
+                          handleSetCodeInfo("G_SG_R", e.target.value);
+                        }}
+                      ></input>
+                    </label>
+                  </div>
+                  <div className='info11'>
+                    <label>
+                      Hướng mở roll:
+                      <select
+                        disabled={enableform}
+                        name='huongmoroll'
+                        value={
+                          codefullinfo?.PACK_DRT === null
+                            ? ""
+                            : codefullinfo?.PACK_DRT
+                        }
+                        onChange={(e) => {
+                          handleSetCodeInfo("PACK_DRT", e.target.value);
+                        }}
+                      >
+                        <option value='1'>FORWARD</option>
+                        <option value='0'>REVERSE</option>
+                      </select>
+                    </label>
+                    <label>
+                      Loại dao:
+                      <select
+                        disabled={enableform}
+                        name='loaidao'
+                        value={
+                          codefullinfo?.KNIFE_TYPE === null
+                            ? ""
+                            : codefullinfo?.KNIFE_TYPE
+                        }
+                        onChange={(e) => {
+                          handleSetCodeInfo("KNIFE_TYPE", e.target.value);
+                        }}
+                      >
+                        <option value={0}>PVC</option>
+                        <option value={1}>PINACLE</option>
+                        <option value={2}>NO</option>
+                      </select>
+                    </label>
+                    <label>
+                      Tuổi dao (Số dập):{" "}
+                      <input
+                        disabled={enableform}
+                        type='text'
+                        value={
+                          codefullinfo?.KNIFE_LIFECYCLE === null
+                            ? ""
+                            : codefullinfo?.KNIFE_LIFECYCLE
+                        }
+                        onChange={(e) => {
+                          handleSetCodeInfo("KNIFE_LIFECYCLE", e.target.value);
+                        }}
+                      ></input>
+                    </label>
+                    <label>
+                      Đơn giá dao:{" "}
+                      <input
+                        disabled={enableform}
+                        type='text'
+                        value={
+                          codefullinfo?.KNIFE_PRICE === null
+                            ? ""
+                            : codefullinfo?.KNIFE_PRICE
+                        }
+                        onChange={(e) => {
+                          handleSetCodeInfo("KNIFE_PRICE", e.target.value);
+                        }}
+                      ></input>
+                    </label>
+                    <label>
+                      Packing Type:
+                      <select
+                        disabled={enableform}
+                        name='packingtype'
+                        value={
+                          codefullinfo?.CODE_33 === null
+                            ? ""
+                            : codefullinfo?.CODE_33
+                        }
+                        onChange={(e) => {
+                          handleSetCodeInfo("CODE_33", e.target.value);
+                        }}
+                      >
+                        <option value='02'>ROLL</option>
+                        <option value='03'>SHEET</option>
+                      </select>
+                    </label>
+                    <label>
+                      Packing QTY:{" "}
+                      <input
+                        disabled={enableform}
+                        type='text'
+                        value={
+                          codefullinfo?.ROLE_EA_QTY === null
+                            ? ""
+                            : codefullinfo?.ROLE_EA_QTY
+                        }
+                        onChange={(e) => {
+                          handleSetCodeInfo("ROLE_EA_QTY", e.target.value);
+                        }}
+                      ></input>
+                    </label>
+                    <label>
+                      RPM:{" "}
+                      <input
+                        disabled={enableform}
+                        type='text'
+                        value={
+                          codefullinfo?.RPM === null ? "" : codefullinfo?.RPM
+                        }
+                        onChange={(e) => {
+                          handleSetCodeInfo("RPM", e.target.value);
+                        }}
+                      ></input>
+                    </label>
+                    <label>
+                      PIN DISTANCE:{" "}
+                      <input
+                        disabled={enableform}
+                        type='text'
+                        value={
+                          codefullinfo?.PIN_DISTANCE === null
+                            ? ""
+                            : codefullinfo?.PIN_DISTANCE
+                        }
+                        onChange={(e) => {
+                          handleSetCodeInfo("PIN_DISTANCE", e.target.value);
+                        }}
+                      ></input>
+                    </label>
+                    <label>
+                      PROCESS TYPE:{" "}
+                      <input
+                        disabled={enableform}
+                        type='text'
+                        value={
+                          codefullinfo?.PROCESS_TYPE === null
+                            ? ""
+                            : codefullinfo?.PROCESS_TYPE
+                        }
+                        onChange={(e) => {
+                          handleSetCodeInfo("PROCESS_TYPE", e.target.value);
+                        }}
+                      ></input>
+                    </label>
+                  </div>
+                  <div className='info22'>
+                    <label>
+                      Máy 1:
+                      <select
+                        disabled={enableform}
+                        name='may1'
+                        value={
+                          codefullinfo?.EQ1 === null || codefullinfo?.EQ1 === ""
+                            ? "NA"
+                            : codefullinfo?.EQ1
+                        }
+                        onChange={(e) => {
+                          handleSetCodeInfo("EQ1", e.target.value);
+                        }}
+                      >
+                        <option value='FR'>FR</option>
+                        <option value='SR'>SR</option>
+                        <option value='DC'>DC</option>
+                        <option value='ED'>ED</option>
+                        <option value='NO'>NO</option>
+                        <option value='NA'>NA</option>
+                      </select>
+                    </label>
+                    <label>
+                      Máy 2:
+                      <select
+                        disabled={enableform}
+                        name='may2'
+                        value={
+                          codefullinfo?.EQ2 === null || codefullinfo?.EQ2 === ""
+                            ? "NA"
+                            : codefullinfo?.EQ2
+                        }
+                        onChange={(e) => {
+                          handleSetCodeInfo("EQ2", e.target.value);
+                        }}
+                      >
+                        <option value='FR'>FR</option>
+                        <option value='SR'>SR</option>
+                        <option value='DC'>DC</option>
+                        <option value='ED'>ED</option>
+                        <option value='NO'>NO</option>
+                        <option value='NA'>NA</option>
+                      </select>
+                    </label>
+                    <label>
+                      Số bước (dao):{" "}
+                      <input
+                        disabled={enableform}
+                        type='text'
+                        value={
+                          codefullinfo?.PROD_DIECUT_STEP === null
+                            ? ""
+                            : codefullinfo?.PROD_DIECUT_STEP
+                        }
+                        onChange={(e) => {
+                          handleSetCodeInfo("PROD_DIECUT_STEP", e.target.value);
+                        }}
+                      ></input>
+                    </label>
+                    <label>
+                      Số lần in:{" "}
+                      <input
+                        disabled={enableform}
+                        type='text'
+                        value={
+                          codefullinfo?.PROD_PRINT_TIMES === null
+                            ? ""
+                            : codefullinfo?.PROD_PRINT_TIMES
+                        }
+                        onChange={(e) => {
+                          handleSetCodeInfo("PROD_PRINT_TIMES", e.target.value);
+                        }}
+                      ></input>
+                    </label>
+                    <label>
+                      Remark:{" "}
+                      <input
+                        disabled={enableform}
+                        type='text'
+                        value={
+                          codefullinfo?.REMK === null ? "" : codefullinfo?.REMK
+                        }
+                        onChange={(e) => {
+                          handleSetCodeInfo("REMK", e.target.value);
+                        }}
+                      ></input>
+                    </label>
+                    <FormControlLabel
+                      disabled={enableform}
+                      label='Mở/Khóa'
+                      control={
+                        <Checkbox
+                          checked={codefullinfo?.USE_YN === "Y"}
+                          onChange={(e) => {
+                            handleSetCodeInfo(
+                              "USE_YN",
+                              e.target.checked === true ? "Y" : "N"
+                            );
+                          }}
+                          inputProps={{ "aria-label": "controlled" }}
+                        />
+                      }
+                    />
+                    {/*  <input
                       type='checkbox'
                       name='alltimecheckbox'                      
                       defaultChecked={(codefullinfo?.USE_YN ==='Y')}
                       onChange={(e)=> {handleSetCodeInfo('USE_YN',(Boolean(e.target.value)===true?'Y':'N'))}}
                     ></input> */}
+                  </div>
+                </div>
+                <div className='info34'>
+                  <div className='info3'></div>
+                  <div className='info4'></div>
                 </div>
               </div>
-              <div className='info34'>
-                <div className='info3'></div>
-                <div className='info4'></div>
-              </div>
             </div>
-          </div>
-          <div className='materiallist'>
-            <Autocomplete
-              disabled={column_bomsx[0].editable || column_bomgia[0].editable}
-              size='small'
-              disablePortal
-              options={materialList}
-              className='autocomplete'
-              isOptionEqualToValue={(option, value) =>
-                option.M_CODE === value.M_CODE
-              }
-              getOptionLabel={(option: MaterialListData) =>
-                `${option.M_NAME}|${option.WIDTH_CD}|${option.M_CODE}`
-              }
-              renderInput={(params) => (
-                <TextField {...params} label='Select material' />
-              )}
-              defaultValue={{
-                M_CODE: "A0007770",
-                M_NAME: "SJ-203020HC",
-                WIDTH_CD: 208,
-              }}
-              value={selectedMaterial}
-              onChange={(event: any, newValue: MaterialListData | null) => {
-                console.log(newValue);
-                setSelectedMaterial(newValue);
-              }}
-            />
-          </div>
-          <div className='up'>
-            <div className='bomsx'>
-              <div className='bomsxtable'>
-                <span
-                  style={{ fontSize: 16, fontWeight: "bold", marginLeft: 10 }}
-                >
-                  BOM SẢN XUẤT (
-                  {column_bomsx[0].editable ? "Bật Sửa" : "Tắt Sửa"}){" "}
-                  {pinBOM ? "(Đang ghim BOM)" : ""}
-                </span>
-                <DataGrid
-                  components={{
-                    Toolbar: CustomToolbarBOMSXTable,
-                    LoadingOverlay: LinearProgress,
-                  }}
-                  sx={{ fontSize: 12 }}
-                  loading={isLoading}
-                  rowHeight={30}
-                  rows={bomsxtable}
-                  columns={column_bomsx}
-                  checkboxSelection
-                  onSelectionModelChange={(ids) => {
-                    handleBOMSXSelectionforUpdate(ids);
-                  }}
-                  /*  rows={codeinfodatatable}
+            <div className='materiallist'>
+              <Autocomplete
+                disabled={column_bomsx[0].editable || column_bomgia[0].editable}
+                size='small'
+                disablePortal
+                options={materialList}
+                className='autocomplete'
+                isOptionEqualToValue={(option, value) =>
+                  option.M_CODE === value.M_CODE
+                }
+                getOptionLabel={(option: MaterialListData) =>
+                  `${option.M_NAME}|${option.WIDTH_CD}|${option.M_CODE}`
+                }
+                renderInput={(params) => (
+                  <TextField {...params} label='Select material' />
+                )}
+                defaultValue={{
+                  M_CODE: "A0007770",
+                  M_NAME: "SJ-203020HC",
+                  WIDTH_CD: 208,
+                }}
+                value={selectedMaterial}
+                onChange={(event: any, newValue: MaterialListData | null) => {
+                  console.log(newValue);
+                  setSelectedMaterial(newValue);
+                }}
+              />
+            </div>
+            <div className='up'>
+              <div className='bomsx'>
+                <div className='bomsxtable'>
+                  <span
+                    style={{ fontSize: 16, fontWeight: "bold", marginLeft: 10 }}
+                  >
+                    BOM SẢN XUẤT (
+                    {column_bomsx[0].editable ? "Bật Sửa" : "Tắt Sửa"}){" "}
+                    {pinBOM ? "(Đang ghim BOM)" : ""}
+                  </span>
+                  <DataGrid
+                    components={{
+                      Toolbar: CustomToolbarBOMSXTable,
+                      LoadingOverlay: LinearProgress,
+                    }}
+                    sx={{ fontSize: 12 }}
+                    loading={isLoading}
+                    rowHeight={30}
+                    rows={bomsxtable}
+                    columns={column_bomsx}
+                    checkboxSelection
+                    onSelectionModelChange={(ids) => {
+                      handleBOMSXSelectionforUpdate(ids);
+                    }}
+                    /*  rows={codeinfodatatable}
               columns={columnDefinition} */
-                  rowsPerPageOptions={[
-                    5, 10, 50, 100, 500, 1000, 5000, 10000, 100000,
-                  ]}
-                  editMode='cell'
-                  /* experimentalFeatures={{ newEditingApi: true }}  */
-                  onCellEditCommit={(
-                    params: GridCellEditCommitParams,
-                    event: MuiEvent<MuiBaseEvent>,
-                    details: GridCallbackDetails
-                  ) => {
-                    //console.log(params);
-                    let tempeditrows = editedRows;
-                    tempeditrows.push(params);
-                    setEditedBOMSXRows(tempeditrows);
-                    //console.log(editedRows);
-                    const keyvar = params.field;
-                    const newdata = bomsxtable.map((p) =>
-                      p.id === params.id ? { ...p, [keyvar]: params.value } : p
-                    );
-                    setBOMSXTable(newdata);
-                  }}
-                />
+                    rowsPerPageOptions={[
+                      5, 10, 50, 100, 500, 1000, 5000, 10000, 100000,
+                    ]}
+                    editMode='cell'
+                    /* experimentalFeatures={{ newEditingApi: true }}  */
+                    onCellEditCommit={(
+                      params: GridCellEditCommitParams,
+                      event: MuiEvent<MuiBaseEvent>,
+                      details: GridCallbackDetails
+                    ) => {
+                      //console.log(params);
+                      let tempeditrows = editedRows;
+                      tempeditrows.push(params);
+                      setEditedBOMSXRows(tempeditrows);
+                      //console.log(editedRows);
+                      const keyvar = params.field;
+                      const newdata = bomsxtable.map((p) =>
+                        p.id === params.id
+                          ? { ...p, [keyvar]: params.value }
+                          : p
+                      );
+                      setBOMSXTable(newdata);
+                    }}
+                  />
+                </div>
               </div>
-            </div>
-            <div className='bomgia'>
-              <div className='bomgiatable'>
-                <span
-                  style={{ fontSize: 16, fontWeight: "bold", marginLeft: 10 }}
-                >
-                  BOM GIÁ({column_bomgia[0].editable ? "Bật Sửa" : "Tắt Sửa"})
-                  {pinBOM ? "(Đang ghim BOM)" : ""}
-                </span>
-                <DataGrid
-                  components={{
-                    Toolbar: CustomToolbarBOMGIATable,
-                    LoadingOverlay: LinearProgress,
-                  }}
-                  sx={{ fontSize: 12 }}
-                  loading={isLoading}
-                  rowHeight={30}
-                  rows={bomgiatable}
-                  columns={column_bomgia}
-                  checkboxSelection
-                  onSelectionModelChange={(ids) => {
-                    handleBOMGIASelectionforUpdate(ids);
-                  }}
-                  /*  rows={codeinfodatatable}
+              <div className='bomgia'>
+                <div className='bomgiatable'>
+                  <span
+                    style={{ fontSize: 16, fontWeight: "bold", marginLeft: 10 }}
+                  >
+                    BOM GIÁ({column_bomgia[0].editable ? "Bật Sửa" : "Tắt Sửa"})
+                    {pinBOM ? "(Đang ghim BOM)" : ""}
+                  </span>
+                  <DataGrid
+                    components={{
+                      Toolbar: CustomToolbarBOMGIATable,
+                      LoadingOverlay: LinearProgress,
+                    }}
+                    sx={{ fontSize: 12 }}
+                    loading={isLoading}
+                    rowHeight={30}
+                    rows={bomgiatable}
+                    columns={column_bomgia}
+                    checkboxSelection
+                    onSelectionModelChange={(ids) => {
+                      handleBOMGIASelectionforUpdate(ids);
+                    }}
+                    /*  rows={codeinfodatatable}
               columns={columnDefinition} */
-                  rowsPerPageOptions={[
-                    5, 10, 50, 100, 500, 1000, 5000, 10000, 100000,
-                  ]}
-                  editMode='cell'
-                  /* experimentalFeatures={{ newEditingApi: true }}  */
-                  onCellEditCommit={(
-                    params: GridCellEditCommitParams,
-                    event: MuiEvent<MuiBaseEvent>,
-                    details: GridCallbackDetails
-                  ) => {
-                    //console.log(params);
-                    let tempeditrows = editedRows;
-                    tempeditrows.push(params);
-                    setEditedBOMGIARows(tempeditrows);
-                    //console.log(editedRows);
-                    const keyvar = params.field;
-                    const newdata = bomgiatable.map((p) =>
-                      p.id === params.id ? { ...p, [keyvar]: params.value } : p
-                    );
-                    setBOMGIATable(newdata);
-                  }}
-                />
+                    rowsPerPageOptions={[
+                      5, 10, 50, 100, 500, 1000, 5000, 10000, 100000,
+                    ]}
+                    editMode='cell'
+                    /* experimentalFeatures={{ newEditingApi: true }}  */
+                    onCellEditCommit={(
+                      params: GridCellEditCommitParams,
+                      event: MuiEvent<MuiBaseEvent>,
+                      details: GridCallbackDetails
+                    ) => {
+                      //console.log(params);
+                      let tempeditrows = editedRows;
+                      tempeditrows.push(params);
+                      setEditedBOMGIARows(tempeditrows);
+                      //console.log(editedRows);
+                      const keyvar = params.field;
+                      const newdata = bomgiatable.map((p) =>
+                        p.id === params.id
+                          ? { ...p, [keyvar]: params.value }
+                          : p
+                      );
+                      setBOMGIATable(newdata);
+                    }}
+                  />
+                </div>
               </div>
             </div>
+            <div className='bottom'></div>
           </div>
-          <div className='bottom'></div>
         </div>
-      </div>}
-      {selection.thempohangloat && <div className="quanlylieu"><MATERIAL_MANAGER/></div>}
+      )}
+      {selection.thempohangloat && (
+        <div className='quanlylieu'>
+          <MATERIAL_MANAGER />
+        </div>
+      )}
     </div>
   );
 };
