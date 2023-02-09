@@ -52,6 +52,7 @@ import "./BOM_MANAGER.scss";
 import { BiAddToQueue, BiReset } from "react-icons/bi";
 import { MdOutlineDraw, MdOutlineUpdate, MdUpgrade } from "react-icons/md";
 import { FaRegClone } from "react-icons/fa";
+import MATERIAL_MANAGER from "../material_manager/MATERIAL_MANAGER";
 const axios = require("axios").default;
 interface CODE_INFO {
   id: number;
@@ -1879,11 +1880,22 @@ const BOM_MANAGER = () => {
   return (
     <div className='bom_manager'>
       <div className='mininavbar'>
-        <div className='mininavitem' onClick={() => setNav(1)}>
-          <span className='mininavtext'>Thông tin sản phẩm</span>
-        </div>
+      <div className='mininavitem'  onClick={() => setNav(1)} style={{backgroundColor:selection.trapo === true ? '#9933ff':'#d9b3ff', color: selection.trapo === true ? 'yellow':'yellow'}}>
+          <span className='mininavtext'>
+          Thông tin code
+          </span>
+        </div>  
+        <div className='mininavitem'  onClick={() =>
+            checkBP(userData.EMPL_NO, userData.MAINDEPTNAME, ['KD','RND'], () => {
+              setNav(2);
+            })
+          } style={{backgroundColor:selection.thempohangloat === true ? '#9933ff':'#d9b3ff', color: selection.thempohangloat === true ? 'yellow':'yellow'}}>
+          <span className='mininavtext'>
+          Quản lý Liệu
+          </span>
+        </div>    
       </div>
-      <div className='bom_manager_wrapper'>
+      {selection.trapo && <div className='bom_manager_wrapper'>
         <div className='left'>
           <div className='bom_manager_button'>
             <div className='buttonrow1'>
@@ -2679,7 +2691,8 @@ const BOM_MANAGER = () => {
           </div>
           <div className='bottom'></div>
         </div>
-      </div>
+      </div>}
+      {selection.thempohangloat && <div className="quanlylieu"><MATERIAL_MANAGER/></div>}
     </div>
   );
 };
