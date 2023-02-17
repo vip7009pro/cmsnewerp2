@@ -95,7 +95,6 @@ interface MATERIAL_TABLE_DATA {
   MASTER_WIDTH: number;
   ROLL_LENGTH: number;
 }
-
 const MATERIAL_MANAGER = () => {
   const [alltime, setAllTime] = useState(false);
   const [editedRows, setEditedRows] = useState<Array<GridCellEditCommitParams>>(
@@ -111,9 +110,8 @@ const MATERIAL_MANAGER = () => {
   const [material_table_data_filter, set_material_table_data_filter] = useState<
     Array<MATERIAL_TABLE_DATA>
   >([]);
-  const [nextPlan, setNextPlan] = useState('');
+  const [nextPlan, setNextPlan] = useState("");
   const [tableTitle, setTableTitle] = useState("BẢNG VẬT LIỆU");
-
   const column_material_table = [
     { field: "M_ID", headerName: "M_ID", width: 80, editable: editable },
     { field: "M_NAME", headerName: "M_NAME", width: 150, editable: editable },
@@ -176,8 +174,8 @@ const MATERIAL_MANAGER = () => {
   }
   const load_material_table = () => {
     generalQuery("get_material_table", {
-        M_NAME: nextPlan,
-        NGMATERIAL: alltime
+      M_NAME: nextPlan,
+      NGMATERIAL: alltime,
     })
       .then((response) => {
         //console.log(response.data.data);
@@ -209,6 +207,60 @@ const MATERIAL_MANAGER = () => {
         console.log(error);
       });
   };
+  const save_material_table = async () => {
+    if (material_table_data_filter.length > 0) {
+      console.log(material_table_data_filter);
+      let err_code: string = "";
+      for (let i = 0; i < material_table_data_filter.length; i++) {
+        if (
+          material_table_data_filter[i].CUST_CD === null ||
+          material_table_data_filter[i].CUST_CD === ""
+        ) {
+          err_code += " | Tên vendor không được để trống";
+        } else if (material_table_data_filter[i].SSPRICE === null) {
+          err_code += " | Giá SS không được để trống";
+        } else if (material_table_data_filter[i].CMSPRICE === null) {
+          err_code += " | Giá CMS không được để trống";
+        } else if (material_table_data_filter[i].MASTER_WIDTH === null) {
+          err_code += " | Khổ cây không được để trống";
+        } else if (material_table_data_filter[i].ROLL_LENGTH === null) {
+          err_code += " | Độ dài liệu không được để trống";
+        } else {
+          await generalQuery("update_material_info", {
+            M_ID: material_table_data_filter[i].M_ID,
+            CUST_CD: material_table_data_filter[i].CUST_CD,
+            SSPRICE: material_table_data_filter[i].SSPRICE,
+            CMSPRICE: material_table_data_filter[i].CMSPRICE,
+            SLITTING_PRICE: material_table_data_filter[i].SLITTING_PRICE,
+            MASTER_WIDTH: material_table_data_filter[i].MASTER_WIDTH,
+            ROLL_LENGTH: material_table_data_filter[i].ROLL_LENGTH,
+          })
+            .then((response) => {
+              //console.log(response.data.data);
+              if (response.data.tk_status !== "NG") {
+              } else {
+                setDataTable([]);
+                Swal.fire(
+                  "Thông báo",
+                  "Nội dung: " + response.data.message,
+                  "error"
+                );
+              }
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+        }
+        if (err_code !== "") {
+          console.log(material_table_data_filter[i].M_NAME + ": " + err_code);
+        } else {
+          Swal.fire("Thông báo", "Đã lưu thông tin vật liệu thành công");
+        }
+      }
+    } else {
+      Swal.fire("Thông báo", "Chọn ít nhất 1 liệu để lưu data", "error");
+    }
+  };
   const handleMaterialDataSelectionforUpdate = (ids: GridSelectionModel) => {
     const selectedID = new Set(ids);
     let datafilter = datatable.filter((element: any) =>
@@ -216,7 +268,7 @@ const MATERIAL_MANAGER = () => {
     );
     //console.log(datafilter);
     if (datafilter.length > 0) {
-        set_material_table_data_filter(datafilter);
+      set_material_table_data_filter(datafilter);
     } else {
       set_material_table_data_filter([]);
     }
@@ -225,15 +277,15 @@ const MATERIAL_MANAGER = () => {
     e: React.KeyboardEvent<HTMLInputElement>
   ) => {
     if (e.key === "Enter") {
-        setisLoading(true);
-        setReadyRender(false);
-        setCurrent_Column(column_material_table);
-        load_material_table();      
+      setisLoading(true);
+      setReadyRender(false);
+      setCurrent_Column(column_material_table);
+      load_material_table();
     }
   };
   useEffect(() => {
     setisLoading(false);
-    setReadyRender(true);    
+    setReadyRender(true);
   }, []);
   return (
     <div className='material_manager'>
@@ -254,7 +306,7 @@ const MATERIAL_MANAGER = () => {
               </label>
             </div>
             <div className='forminputcolumn'>
-            <label>
+              <label>
                 <b>Chỉ liệu thiếu thông tin:</b>
                 <input
                   type='checkbox'
@@ -275,6 +327,22 @@ const MATERIAL_MANAGER = () => {
                 }}
               >
                 TRA LIỆU
+              </button>
+            </div>
+            <div className='forminputcolumn'>
+              <button
+                className='xuatnext'
+                onClick={() => {
+                  checkBP(
+                    userData.EMPL_NO,
+                    userData.MAINDEPTNAME,
+                    ["KD", "RND"],
+                    save_material_table
+                  );
+                  //save_material_table();
+                }}
+              >
+                SAVE
               </button>
             </div>
           </div>
@@ -314,7 +382,7 @@ const MATERIAL_MANAGER = () => {
                 //console.log(editedRows);
                 const keyvar = params.field;
                 const newdata = datatable.map((p) =>
-                  p.id === params.id ? { ...p, [keyvar]: params.value } : p
+                  p.M_ID === params.id ? { ...p, [keyvar]: params.value } : p
                 );
                 setDataTable(newdata);
               }}

@@ -3093,43 +3093,7 @@ const MACHINE = () => {
           <AiFillFileExcel color='green' size={25} />
           SAVE
         </IconButton>
-        <GridToolbarQuickFilter />
-        <IconButton
-          className='buttonIcon'
-          onClick={() => {
-            if (chithidatatable.length > 0) {
-              Swal.fire({
-                title: "Lưu chỉ thị",
-                text: "Đang lưu chỉ thị, hãy chờ một",
-                icon: "info",
-                showCancelButton: false,
-                allowOutsideClick: false,
-                confirmButtonText: "OK",
-                showConfirmButton: false,
-              });
-              /*  confirmButtonColor: "#3085d6",
-              cancelButtonColor: "#d33",
-              confirmButtonText: "Vẫn Xóa!", */
-              /*  Swal.fire(
-                "Thông báo",
-                "Đang lưu chỉ thị, hãy chờ một chút",
-                "info"
-              ); */
-              checkBP(
-                userData.EMPL_NO,
-                userData.MAINDEPTNAME,
-                ["QLSX"],
-                hanlde_SaveChiThi
-              );
-              //hanlde_SaveChiThi();
-            } else {
-              Swal.fire("Thông báo", "Không có liệu để chỉ thị", "error");
-            }
-          }}
-        >
-          <AiFillSave color='blue' size={20} />
-          Lưu chỉ thị
-        </IconButton>
+        <GridToolbarQuickFilter />        
         <IconButton
           className='buttonIcon'
           onClick={() => {
@@ -3181,7 +3145,7 @@ const MACHINE = () => {
           }}
         >
           <FaWarehouse color='blue' size={20} />
-          Xuất kho ảo
+          KHO ẢO
         </IconButton>
         <IconButton
           className='buttonIcon'
@@ -3195,7 +3159,7 @@ const MACHINE = () => {
           }}
         >
           <AiOutlineBarcode color='green' size={20} />
-          Đăng ký Xuất Kho Thật
+          Lưu CT + ĐKXK
         </IconButton>
         <IconButton
           className='buttonIcon'

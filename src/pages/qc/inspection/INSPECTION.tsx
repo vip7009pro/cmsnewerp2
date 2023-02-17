@@ -8,7 +8,6 @@ import { generalQuery } from '../../../api/Api';
 import { UserContext } from '../../../api/Context';
 import { SaveExcel } from '../../../api/GlobalFunction';
 import "./INSPECTION.scss"
-
 interface INSPECT_OUTPUT_DATA {
   INSPECT_OUTPUT_ID: string,
   CUST_NAME_KD: string,
@@ -50,7 +49,6 @@ interface INSPECT_INPUT_DATA {
     CNDB_ENCODES: string,
     PIC_KD: string,
 }
-
 interface INSPECT_INOUT_YCSX {
   PIC_KD: string,
   CUST_NAME_KD: string,
@@ -66,9 +64,7 @@ interface INSPECT_INOUT_YCSX {
   OK_QTY: number,
   LOSS_NG_QTY: number,
   INSPECT_BALANCE: number,
-
 }
-
 interface INSPECT_NG_DATA  {
   INSPECT_ID: number,
   YEAR_WEEK: string,
@@ -164,8 +160,6 @@ const INSPECTION = () => {
   const [id,setID] =useState('');
   const [inspectiondatatable, setInspectionDataTable] = useState<Array<any>>([]);
   const [sumaryINSPECT, setSummaryInspect] = useState('');
-
-
   const column_inspect_input = [
     { field: "INSPECT_INPUT_ID", headerName: "ID", width: 80 },
     { field: "CUST_NAME_KD", headerName: "Khách", width: 120 },
@@ -200,7 +194,6 @@ const INSPECTION = () => {
     { field: "PROD_REQUEST_QTY", headerName: "SL YC", width: 80 , renderCell: (params:any) => {return <span style={{color:'gray'}}><b>{params.row.PROD_REQUEST_QTY.toLocaleString('en-US')}</b></span>}},
     { field: "PROCESS_LOT_NO", headerName: "LOT SX", width: 80 },
     { field: "PROD_DATETIME", headerName: "Ngày SX", width: 150 },
-  
     { field: "REMARK", headerName: "REMARK", width: 80 },
     { field: "PIC_KD", headerName: "PIC_KD", width:120 },
     { field: "CA_LAM_VIEC", headerName: "CA LV", width: 120 },
@@ -218,10 +211,7 @@ const INSPECTION = () => {
       {
         return <span style={{color:'green'}}><b>{params.row.STATUS.toUpperCase()}</b></span>
       }
-      
     } },
-   
-
   ]
   const column_inspect_inoutycsx = [
     { field: "PIC_KD", headerName: "PIC_KD", width: 150 },
@@ -238,9 +228,7 @@ const INSPECTION = () => {
     { field: "OK_QTY", headerName: "OK_QTY", width: 80 , renderCell: (params:any) => {return <span style={{color:'green'}}><b>{params.row.OK_QTY.toLocaleString('en-US')}</b></span>} },
     { field: "LOSS_NG_QTY", headerName: "Loss và NG", width: 80 , renderCell: (params:any) => {return <span style={{color:'red'}}><b>{params.row.LOSS_NG_QTY.toLocaleString('en-US')}</b></span>} },
     { field: "INSPECT_BALANCE", headerName: "Tồn kiểm", width: 80  , renderCell: (params:any) => {return <span style={{color:'purple'}}><b>{params.row.INSPECT_BALANCE.toLocaleString('en-US')}</b></span>}}, 
-
   ]
-
   const column_inspection_NG = [
     { field: "INSPECT_ID", headerName: "INSPECT_ID", width: 80 },
     { field: "YEAR_WEEK", headerName: "YEAR_WEEK", width: 80 },
@@ -306,12 +294,8 @@ const INSPECTION = () => {
     { field: "ERR31", headerName: "ERR31", width: 80 },
     { field: "ERR32", headerName: "ERR32", width: 80 },
     { field: "CNDB_ENCODES", headerName: "CNDB_ENCODES", width: 150 },
-   
-    
   ]
-
   const [columnDefinition, setColumnDefinition] = useState<Array<any>>(column_inspect_input);
-
   function CustomToolbarPOTable() {
     return (
       <GridToolbarContainer>      
@@ -322,11 +306,9 @@ const INSPECTION = () => {
        </GridToolbarContainer>
     );
   }
-
   const handletraInspectionInput = ()=> {    
     setisLoading(true);
     let summaryInput:number =0;
-
     generalQuery('get_inspection',{
       OPTIONS: 'Nhập Kiểm (LOT)',
       ALLTIME: alltime,      
@@ -500,8 +482,6 @@ const INSPECTION = () => {
         console.log(error);
     });
   }
-
-
   const setNav = (choose: number) => {
     if(choose ===1 )
     {
@@ -510,14 +490,12 @@ const INSPECTION = () => {
     else if(choose ===2 )
     {
       setSelection({...selection, trapo: false, thempohangloat:true, them1po:true,them1invoice:false,themycsx:false, suaycsx: false,inserttableycsx: true, amazontab:false});
-      
     }
     else if(choose ===3 )
     {
       setSelection({...selection, trapo: false, thempohangloat:false, them1po:false,them1invoice:false,inserttableycsx: false, amazontab:true});      
     }
   }
-
   useEffect(()=>{      
     //setColumnDefinition(column_inspect_output);
   },[]);
@@ -676,6 +654,7 @@ const INSPECTION = () => {
                 Toolbar: CustomToolbarPOTable,
                 LoadingOverlay: LinearProgress,
               }}
+              headerHeight={58}
               loading={isLoading}
               rowHeight={30}
               rows={inspectiondatatable}

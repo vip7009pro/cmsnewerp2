@@ -37,8 +37,18 @@ const OQC = () => {
           Data Kho Thành Phẩm     
           </span>
         </div>         
+        <div className='mininavitem'  onClick={() => setNav(2)} style={{backgroundColor:selection.tab2 === true ? '#9933ff':'#d9b3ff', color: selection.tab2 === true ? 'yellow':'yellow'}}>
+          <span className='mininavtext'>
+          Data OQC
+          </span>
+        </div>         
       </div>     
       {selection.tab1 && (
+        <div className='trainspection'>
+            <KHOTP/>          
+        </div>
+      )}
+      {selection.tab2 && (
         <div className='trainspection'>
             <KHOTP/>          
         </div>

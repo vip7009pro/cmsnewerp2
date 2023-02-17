@@ -5,7 +5,6 @@ import React, {
   useRef,
   useState,
 } from "react";
-import MACHINE_COMPONENT from "../Machine/MACHINE_COMPONENT";
 import "./KHCT.scss";
 import Swal from "sweetalert2";
 import { generalQuery } from "../../../../api/Api";
@@ -200,6 +199,55 @@ interface QLSXCHITHIDATA {
   UPD_EMPL: string;
   UPD_DATE: string;
 }
+interface KHCTDATA {
+  id: number,
+  KH_ID: number;
+  KH_FACTORY: string;
+  KH_DATE: string;
+  KH_EQ: string;
+  PROD_REQUEST_NO: string;
+  SELECTED_PLAN_ID: string;
+  G_CODE: string;
+  G_NAME: string;
+  G_NAME_KD: string;
+  PROD_REQUEST_DATE: string;
+  PROD_REQUEST_QTY: number;
+  CD1: number;
+  CD2: number;
+  TON_CD1: number;
+  TON_CD2: number;
+  FACTORY: string;
+  EQ1: string;
+  EQ2: string;
+  Setting1: number;
+  Setting2: number;
+  UPH1: number;
+  UPH2: number;
+  Step1: number;
+  Step2: number;
+  LOSS_SX1: number;
+  LOSS_SX2: number;
+  LOSS_SETTING1: number;
+  LOSS_SETTING2: number;
+  NOTE: string;
+  XUATDAOFILM: string;
+  EQ_STATUS: string;
+  MAIN_MATERIAL: string;
+  INT_TEM: string;
+  CHOTBC: string;
+  DKXL: string;
+  NEXT_PLAN_ID: string;
+  KQ_SX_TAM: number;
+  KETQUASX: number;
+  PROCESS_NUMBER: number;
+  PLAN_ORDER: number;
+  STEP: number;
+  PLAN_ID: string;
+  PLAN_DATE: string;
+  PLAN_QTY: number;
+  PLAN_EQ: string;
+  PLAN_FACTORY: string;
+}
 const KHCT = () => {
   const [currentPlanPD, setCurrentPlanPD] = useState(0);
   const [currentPlanCAVITY, setCurrentPlanCAVITY] = useState(0);
@@ -227,6 +275,7 @@ const KHCT = () => {
     NOTE: "",
   });
   const [plandatatable, setPlanDataTable] = useState<QLSXPLANDATA[]>([]);
+  const [khcttable, setKHCTTable] = useState<KHCTDATA[]>([]);
   const [chithidatatable, setChiThiDataTable] = useState<QLSXCHITHIDATA[]>([]);
   const [showplanwindow, setShowPlanWindow] = useState(false);
   const [showkhoao, setShowKhoAo] = useState(false);
@@ -270,17 +319,51 @@ const KHCT = () => {
   const [showhideycsxtable, setShowHideYCSXTable] = useState(false);
   const [showhideplanlisttable, setshowhideplanlisttable] = useState(false);
   const [showhidedinhmuc, setShowHideDinhMuc] = useState(true);
-
-
-
-  const [factory, setFactory] = useState(userData.FACTORY_CODE === 1? 'NM1' : 'NM2');
-  const [machine, setMachine] = useState('ALL');
- 
-
+  const [factory, setFactory] = useState(
+    userData.FACTORY_CODE === 1 ? "NM1" : "NM2"
+  );
+  const [machine, setMachine] = useState("ALL");
   const ycsxprintref = useRef(null);
   const handlePrint = useReactToPrint({
     content: () => ycsxprintref.current,
   });
+  const column_khcttable = [
+    { field: "KH_ID", headerName: "KH_ID", width: 80 },
+    { field: "KH_FACTORY", headerName: "KH_FACTORY", width: 80 },
+    { field: "KH_DATE", headerName: "KH_DATE", width: 80 },
+    { field: "KH_EQ", headerName: "KH_EQ", width: 80 },
+    { field: "PROD_REQUEST_NO", headerName: "PROD_REQUEST_NO", width: 80 },
+    { field: "SELECTED_PLAN_ID", headerName: "SELECTED_PLAN_ID", width: 80 },
+    { field: "G_CODE", headerName: "G_CODE", width: 80 },
+    { field: "G_NAME", headerName: "G_NAME", width: 80 },
+    { field: "G_NAME_KD", headerName: "G_NAME_KD", width: 80 },
+    { field: "PROD_REQUEST_DATE", headerName: "PROD_REQUEST_DATE", width: 80 },
+    { field: "PROD_REQUEST_QTY", headerName: "PROD_REQUEST_QTY", width: 80 },
+    { field: "CD1", headerName: "CD1", width: 80 },
+    { field: "CD2", headerName: "CD2", width: 80 },
+    { field: "TON_CD1", headerName: "TON_CD1", width: 80 },
+    { field: "TON_CD2", headerName: "TON_CD2", width: 80 },
+    { field: "FACTORY", headerName: "FACTORY", width: 80 },
+    { field: "EQ1", headerName: "EQ1", width: 80 },
+    { field: "EQ2", headerName: "EQ2", width: 80 },
+    { field: "XUATDAOFILM", headerName: "XUATDAOFILM", width: 80 },
+    { field: "EQ_STATUS", headerName: "EQ_STATUS", width: 80 },
+    { field: "MAIN_MATERIAL", headerName: "MAIN_MATERIAL", width: 80 },
+    { field: "INT_TEM", headerName: "INT_TEM", width: 80 },
+    { field: "CHOTBC", headerName: "CHOTBC", width: 80 },
+    { field: "DKXL", headerName: "DKXL", width: 80 },
+    { field: "NEXT_PLAN_ID", headerName: "NEXT_PLAN_ID", width: 80 },
+    { field: "KQ_SX_TAM", headerName: "KQ_SX_TAM", width: 80 },
+    { field: "KETQUASX", headerName: "KETQUASX", width: 80 },
+    { field: "PROCESS_NUMBER", headerName: "PROCESS_NUMBER", width: 80 },
+    { field: "PLAN_ORDER", headerName: "PLAN_ORDER", width: 80 },
+    { field: "STEP", headerName: "STEP", width: 80 },
+    { field: "PLAN_ID", headerName: "PLAN_ID", width: 80 },
+    { field: "PLAN_DATE", headerName: "PLAN_DATE", width: 80 },
+    { field: "PLAN_QTY", headerName: "PLAN_QTY", width: 80 },
+    { field: "PLAN_EQ", headerName: "PLAN_EQ", width: 80 },
+    { field: "PLAN_FACTORY", headerName: "PLAN_FACTORY", width: 80 },
+  ];
   const column_ycsxtable = [
     { field: "G_CODE", headerName: "G_CODE", width: 80 },
     {
@@ -665,187 +748,6 @@ const KHCT = () => {
       },
     },
   ];
-  const column_plandatatable = [
-    {
-      field: "PLAN_ID",
-      headerName: "PLAN_ID",
-      width: 90,
-      editable: false,
-      resizeable: true,
-    },
-    {
-      field: "PROD_REQUEST_NO",
-      headerName: "YCSX_NO",
-      width: 100,
-      editable: true,
-    },
-    { field: "G_CODE", headerName: "G_CODE", width: 80, editable: false },
-    {
-      field: "G_NAME_KD",
-      headerName: "G_NAME_KD",
-      width: 200,
-      editable: false,
-      renderCell: (params: any) => {
-        if (
-          params.row.FACTORY === null ||
-          params.row.EQ1 === null ||
-          params.row.EQ2 === null ||
-          params.row.Setting1 === null ||
-          params.row.Setting2 === null ||
-          params.row.UPH1 === null ||
-          params.row.UPH2 === null ||
-          params.row.Step1 === null ||
-          params.row.Step1 === null ||
-          params.row.LOSS_SX1 === null ||
-          params.row.LOSS_SX2 === null ||
-          params.row.LOSS_SETTING1 === null ||
-          params.row.LOSS_SETTING2 === null
-        )
-          return <span style={{ color: "red" }}>{params.row.G_NAME_KD}</span>;
-        return <span style={{ color: "green" }}>{params.row.G_NAME_KD}</span>;
-      },
-    },
-    {
-      field: "PROD_REQUEST_QTY",
-      headerName: "YCSX_QTY",
-      width: 80,
-      editable: false,
-      renderCell: (params: any) => {
-        return (
-          <span style={{ color: "blue" }}>
-            {params.row.PROD_REQUEST_QTY.toLocaleString("en", "US")}
-          </span>
-        );
-      },
-    },
-    {
-      field: "CD1",
-      headerName: "KQ_CD1",
-      width: 80,
-      editable: false,
-      renderCell: (params: any) => {
-        return (
-          <span style={{ color: "blue" }}>
-            {params.row.CD1.toLocaleString("en", "US")}
-          </span>
-        );
-      },
-    },
-    {
-      field: "CD2",
-      headerName: "KQ_CD2",
-      width: 80,
-      editable: false,
-      renderCell: (params: any) => {
-        return (
-          <span style={{ color: "blue" }}>
-            {params.row.CD2.toLocaleString("en", "US")}
-          </span>
-        );
-      },
-    },
-    {
-      field: "TON_CD1",
-      headerName: "TONYCSX_CD1",
-      width: 120,
-      editable: false,
-      renderCell: (params: any) => {
-        return (
-          <span style={{ color: "blue" }}>
-            {params.row.TON_CD1.toLocaleString("en", "US")}
-          </span>
-        );
-      },
-    },
-    {
-      field: "TON_CD2",
-      headerName: "TONYCSX_CD2",
-      width: 120,
-      editable: false,
-      renderCell: (params: any) => {
-        return (
-          <span style={{ color: "blue" }}>
-            {params.row.TON_CD2.toLocaleString("en", "US")}
-          </span>
-        );
-      },
-    },
-    {
-      field: "PLAN_QTY",
-      headerName: "PLAN_QTY",
-      width: 80,
-      editable: editplan,
-      renderCell: (params: any) => {
-        if (params.row.PLAN_QTY === 0) {
-          return <span style={{ color: "red" }}>NG</span>;
-        } else {
-          return (
-            <span style={{ color: "green" }}>
-              {params.row.PLAN_QTY.toLocaleString("en", "US")}
-            </span>
-          );
-        }
-      },
-    },
-    {
-      field: "PROCESS_NUMBER",
-      headerName: "PROCESS_NUMBER",
-      width: 110,
-      editable: editplan,
-      renderCell: (params: any) => {
-        if (
-          params.row.PROCESS_NUMBER === null ||
-          params.row.PROCESS_NUMBER === 0
-        ) {
-          return <span style={{ color: "red" }}>NG</span>;
-        } else {
-          return (
-            <span style={{ color: "green" }}>{params.row.PROCESS_NUMBER}</span>
-          );
-        }
-      },
-    },
-    {
-      field: "PLAN_ORDER",
-      headerName: "PLAN_ORDER",
-      width: 110,
-      editable: editplan,
-    },
-    { field: "EQ1", headerName: "EQ1", width: 80, editable: editplan },
-    { field: "EQ2", headerName: "EQ2", width: 80, editable: editplan },
-    {
-      field: "PLAN_EQ",
-      headerName: "PLAN_EQ",
-      width: 80,
-      editable: editplan,
-      renderCell: (params: any) => {
-        if (params.row.PLAN_EQ === null || params.row.PLAN_EQ === "") {
-          return <span style={{ color: "red" }}>NG</span>;
-        } else {
-          return <span style={{ color: "green" }}>{params.row.PLAN_EQ}</span>;
-        }
-      },
-    },
-    { field: "STEP", headerName: "STEP", width: 60, editable: editplan },
-    {
-      field: "PLAN_FACTORY",
-      headerName: "FACTORY",
-      width: 80,
-      editable: false,
-    },
-    {
-      field: "PLAN_DATE",
-      headerName: "PLAN_DATE",
-      width: 110,
-      editable: false,
-    },
-    {
-      field: "NEXT_PLAN_ID",
-      headerName: "NEXT_PLAN_ID",
-      width: 120,
-      editable: true,
-    },
-  ];
   const column_listchithi = [
     {
       field: "PLAN_ID",
@@ -1065,7 +967,7 @@ const KHCT = () => {
         PROD_REQUEST_DATE={element.PROD_REQUEST_DATE}
         PROD_REQUEST_QTY={element.PROD_REQUEST_QTY}
         STEP={element.STEP}
-        PLAN_ORDER={element.PLAN_ORDER}        
+        PLAN_ORDER={element.PLAN_ORDER}
       />
     ));
   };
@@ -1124,6 +1026,32 @@ const KHCT = () => {
           setPlanDataTable(loadeddata);
         } else {
           setPlanDataTable([]);
+          Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+  const load_KHCT = (KH_DATE: string) => {
+    //console.log(selectedPlanDate);
+    generalQuery("load_kehoachchithi", { KH_DATE: KH_DATE })
+      .then((response) => {
+        //console.log(response.data.data);
+        if (response.data.tk_status !== "NG") {
+          let loadeddata = response.data.data.map(
+            (element: KHCTDATA, index: number) => {
+              return {
+                ...element,
+                KH_DATE: moment.utc(element.KH_DATE).format("YYYY-MM-DD"),
+                id: index,
+              };
+            }
+          );
+          //console.log(loadeddata);
+          setKHCTTable(loadeddata);
+        } else {
+          setKHCTTable([]);
           Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
         }
       })
@@ -1924,7 +1852,6 @@ const KHCT = () => {
           <AiFillFolderAdd color='#69f542' size={25} />
           Add Blank PLAN
         </IconButton>
-       
       </GridToolbarContainer>
     );
   }
@@ -2074,21 +2001,23 @@ const KHCT = () => {
     setSelectedG_Code(rowData.G_CODE);
     setDataDinhMuc({
       ...datadinhmuc,
-      FACTORY: rowData.FACTORY===null? 'NA': rowData.FACTORY,
+      FACTORY: rowData.FACTORY === null ? "NA" : rowData.FACTORY,
       EQ1: rowData.EQ1 === "" ? "NA" : rowData.EQ1,
       EQ2: rowData.EQ2 === "" ? "NA" : rowData.EQ2,
-      Setting1: rowData.Setting1 === null? 0 : rowData.Setting1,
-      Setting2: rowData.Setting2 === null? 0 : rowData.Setting2,
-      UPH1: rowData.UPH1 ===  null? 0: rowData.UPH1,
-      UPH2: rowData.UPH2 ===  null? 0: rowData.UPH2,
-      Step1: rowData.Step1 ===  null? 0: rowData.Step1,
-      Step2: rowData.Step2 ===  null? 0: rowData.Step2,
-      LOSS_SX1: rowData.LOSS_SX1 ===  null? 0: rowData.LOSS_SX1,
-      LOSS_SX2: rowData.LOSS_SX2 ===  null? 0: rowData.LOSS_SX2,
-      LOSS_SETTING1: rowData.LOSS_SETTING1 ===  null? 0: rowData.LOSS_SETTING1,
-      LOSS_SETTING2: rowData.LOSS_SETTING2 ===  null? 0: rowData.LOSS_SETTING2,
-      NOTE: rowData.NOTE ===  null? '': rowData.NOTE,
+      Setting1: rowData.Setting1 === null ? 0 : rowData.Setting1,
+      Setting2: rowData.Setting2 === null ? 0 : rowData.Setting2,
+      UPH1: rowData.UPH1 === null ? 0 : rowData.UPH1,
+      UPH2: rowData.UPH2 === null ? 0 : rowData.UPH2,
+      Step1: rowData.Step1 === null ? 0 : rowData.Step1,
+      Step2: rowData.Step2 === null ? 0 : rowData.Step2,
+      LOSS_SX1: rowData.LOSS_SX1 === null ? 0 : rowData.LOSS_SX1,
+      LOSS_SX2: rowData.LOSS_SX2 === null ? 0 : rowData.LOSS_SX2,
+      LOSS_SETTING1: rowData.LOSS_SETTING1 === null ? 0 : rowData.LOSS_SETTING1,
+      LOSS_SETTING2: rowData.LOSS_SETTING2 === null ? 0 : rowData.LOSS_SETTING2,
+      NOTE: rowData.NOTE === null ? "" : rowData.NOTE,
     });
+    loadQLSXPlan(rowData.PROD_REQUEST_NO);
+
     //console.log(params.row);
   };
   const cellEditHandler = (
@@ -2251,6 +2180,7 @@ const KHCT = () => {
       setPlanDataTable([]);
       setTemID(0);
     }
+    load_KHCT('2023-01-07');
   }, []);
   return (
     <div className='khct'>
@@ -2258,7 +2188,6 @@ const KHCT = () => {
         <span style={{ fontSize: 25, color: "blue", marginLeft: 20 }}>
           {selectedCode}
         </span>
-
         <div className='tracuuDataInspectionform'>
           <div className='forminput'>
             <div className='forminputcolumn'>
@@ -2269,39 +2198,39 @@ const KHCT = () => {
                   value={fromdate.slice(0, 10)}
                   onChange={(e) => setFromDate(e.target.value)}
                 ></input>
-              </label> 
-            <label>
-            <b>FACTORY:</b>
-            <select
-                name='phanloai'
-                value={factory}
-                onChange={(e) => {
-                setFactory(e.target.value);
-                }}
-            >
-                <option value='ALL'>ALL</option>
-                <option value='NM1'>NM1</option>
-                <option value='NM2'>NM2</option>           
-            </select>
-            </label>          
+              </label>
+              <label>
+                <b>FACTORY:</b>
+                <select
+                  name='phanloai'
+                  value={factory}
+                  onChange={(e) => {
+                    setFactory(e.target.value);
+                  }}
+                >
+                  <option value='ALL'>ALL</option>
+                  <option value='NM1'>NM1</option>
+                  <option value='NM2'>NM2</option>
+                </select>
+              </label>
             </div>
-            <div className='forminputcolumn'>   
-            <label>
-            <b>MACHINE:</b>
-            <select
-                name='machine'
-                value={machine}
-                onChange={(e) => {
-                setMachine(e.target.value);
-                }}
-            >
-                <option value='ALL'>ALL</option>
-                <option value='FR'>FR</option>
-                <option value='SR'>SR</option>
-                <option value='DC'>DC</option>
-                <option value='ED'>ED</option>           
-            </select>
-            </label>               
+            <div className='forminputcolumn'>
+              <label>
+                <b>MACHINE:</b>
+                <select
+                  name='machine'
+                  value={machine}
+                  onChange={(e) => {
+                    setMachine(e.target.value);
+                  }}
+                >
+                  <option value='ALL'>ALL</option>
+                  <option value='FR'>FR</option>
+                  <option value='SR'>SR</option>
+                  <option value='DC'>DC</option>
+                  <option value='ED'>ED</option>
+                </select>
+              </label>
               <label>
                 <b>MOVE TO DATE</b>
                 <input
@@ -2309,36 +2238,25 @@ const KHCT = () => {
                   value={todate.slice(0, 10)}
                   onChange={(e) => setToDate(e.target.value)}
                 ></input>
-              </label> 
-                
-            </div> 
-
-            <div className='forminputcolumn'> 
-            <button
-              className='tranhatky'
-              onClick={() => {
-                
-              }}
-            >
-              MOVE KH
-            </button>     
-            <button
-              className='tranhatky'
-              onClick={() => {
-                setisLoading(true);                            
-                loadQLSXPlan(fromdate);
-              }}
-            >
-              Tra PLAN
-            </button> 
-            </div> 
+              </label>
+            </div>
+            <div className='forminputcolumn'>
+              <button className='tranhatky' onClick={() => {}}>
+                MOVE KH
+              </button>
+              <button
+                className='tranhatky'
+                onClick={() => {
+                  setisLoading(true);
+                  loadQLSXPlan(fromdate);
+                }}
+              >
+                Tra PLAN
+              </button>
+            </div>
           </div>
-          <div className='formbutton'>          
-            
-          </div>
+          <div className='formbutton'></div>
         </div>
-
-
         {showhidedinhmuc && (
           <div className='datadinhmuc'>
             <div className='forminputcolumn'>
@@ -2564,7 +2482,6 @@ const KHCT = () => {
             </div>
           </div>
         )}
-        
         <div className='content'>
           {showhideycsxtable && (
             <div className='ycsxlist'>
@@ -2886,8 +2803,8 @@ const KHCT = () => {
                 }}
                 loading={isLoading}
                 rowHeight={30}
-                rows={plandatatable}
-                columns={column_plandatatable}
+                rows={khcttable}
+                columns={column_khcttable}
                 rowsPerPageOptions={[
                   5, 10, 50, 100, 500, 1000, 5000, 10000, 500000,
                 ]}
@@ -2903,7 +2820,8 @@ const KHCT = () => {
               />
             </div>
           </div>
-          {showhideplanlisttable && <div className='planlist'>
+          {showhideplanlisttable && (
+            <div className='planlist'>
               <DataGrid
                 sx={{ fontSize: 12, flex: 1 }}
                 components={{
@@ -2918,12 +2836,13 @@ const KHCT = () => {
                   5, 10, 50, 100, 500, 1000, 5000, 10000, 500000,
                 ]}
                 editMode='cell'
-                getRowId={(row) => row.PLAN_ID}
+                getRowId={(row) => row.id}
                 onSelectionModelChange={(ids) => {
                   handleQLSXPlanDataSelectionforUpdate(ids);
-                }}                
+                }}
               />
-            </div>}
+            </div>
+          )}
         </div>
       </div>
     </div>

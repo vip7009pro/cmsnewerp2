@@ -401,6 +401,7 @@ const CHITHI_COMPONENT = ({
           </div>
           <div className='soycsx'>
             <div className='ycsxbarcode'>
+              
               <Barcode
                 value={request_codeinfo[0]?.PROD_REQUEST_NO}
                 format='CODE128'
@@ -411,7 +412,7 @@ const CHITHI_COMPONENT = ({
                 lineColor='black'
                 margin={0}
               />
-              <div className='ycsxno'>
+               <div className='ycsxno'>
                 {request_codeinfo[0].PROD_REQUEST_DATE}-
                 {request_codeinfo[0].PROD_REQUEST_NO}{" "}
               </div>

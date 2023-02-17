@@ -1161,25 +1161,31 @@ const YCSXManager = () => {
     //console.log(handled_Amazon_Table);
     return handled_Amazon_Table;
   };
-
   const checkDuplicateAMZ = async () => {
-    await generalQuery("checktrungAMZ_Full", {      
-    })
-    .then((response) => {
-      console.log(response.data.tk_status);
-      if (response.data.tk_status !== "NG") {
-        Swal.fire('Thông báo', 'Yêu cầu có data trùng: ' + response.data.data[0].PROD_REQUEST_NO + '______ ID công việc của data trùng: '+  response.data.data[0].NO_IN,'error');
-       
-      } else {
-        Swal.fire('Thông báo','Không có dòng trùng, up data hoàn thành', 'success');
-        
-      }
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-  }
-
+    await generalQuery("checktrungAMZ_Full", {})
+      .then((response) => {
+        console.log(response.data.tk_status);
+        if (response.data.tk_status !== "NG") {
+          Swal.fire(
+            "Thông báo",
+            "Yêu cầu có data trùng: " +
+              response.data.data[0].PROD_REQUEST_NO +
+              "______ ID công việc của data trùng: " +
+              response.data.data[0].NO_IN,
+            "error"
+          );
+        } else {
+          Swal.fire(
+            "Thông báo",
+            "Không có dòng trùng, up data hoàn thành",
+            "success"
+          );
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
   const upAmazonData = async () => {
     let uploadAmazonData = handleAmazonData(
       uploadExcelJson,
@@ -1193,19 +1199,19 @@ const YCSXManager = () => {
     await generalQuery("checkIDCongViecAMZ", {
       NO_IN: id_congviec,
     })
-    .then((response) => {
-      console.log(response.data.tk_status);
-      if (response.data.tk_status !== "NG") {
-        checkIDcongViecTonTai = true;
-      } else {
-        checkIDcongViecTonTai = false;
-      }
-    })
-    .catch((error) => {
-      console.log(error);
-    });
+      .then((response) => {
+        console.log(response.data.tk_status);
+        if (response.data.tk_status !== "NG") {
+          checkIDcongViecTonTai = true;
+        } else {
+          checkIDcongViecTonTai = false;
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
     //if (!AMZ_check_flag) {
-      if (false) {
+    if (false) {
       Swal.fire("Thông báo", "Hãy check data trước khi up", "error");
     } else {
       if (!checkIDcongViecTonTai) {
@@ -1239,7 +1245,7 @@ const YCSXManager = () => {
             .then((response) => {
               console.log(response.data.tk_status);
               if (response.data.tk_status !== "NG") {
-                setProgressValue((i + 1)*2);
+                setProgressValue((i + 1) * 2);
               } else {
               }
             })
@@ -2467,6 +2473,7 @@ const YCSXManager = () => {
               console.log(response.data.tk_status);
               if (response.data.tk_status !== "NG") {
                 checkO300 = true;
+                err_code = true;
                 //Swal.fire("Thông báo", "Delete YCSX thành công", "success");
               } else {
                 //Swal.fire("Thông báo", "Update YCSX thất bại: " +response.data.message , "error");
@@ -2475,6 +2482,7 @@ const YCSXManager = () => {
             .catch((error) => {
               console.log(error);
             });
+          console.log("O300", checkO300);
           if (checkO300) {
             Swal.fire(
               "Thông báo",
@@ -2507,7 +2515,11 @@ const YCSXManager = () => {
           "success"
         );
       } else {
-        Swal.fire("Thông báo", "Có lỗi SQL: ", "error");
+        Swal.fire(
+          "Thông báo",
+          "Có lỗi: Có thể ycsx này đã được đăng ký xuất liệu",
+          "error"
+        );
       }
     } else {
       Swal.fire("Thông báo", "Chọn ít nhất 1 YCSX để xóa !", "error");
@@ -3370,7 +3382,7 @@ const YCSXManager = () => {
                       readUploadFileAmazon(e);
                     }}
                   />
-                </label>                
+                </label>
                 <div
                   className='uppobutton'
                   onClick={(e) => {

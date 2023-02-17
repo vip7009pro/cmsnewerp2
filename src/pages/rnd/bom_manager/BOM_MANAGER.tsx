@@ -1501,64 +1501,6 @@ const BOM_MANAGER = () => {
       );
     }
   };
-  const handleInsertBOMSX2 = async () => {
-    if (bomgiatable.length > 0) {
-      if (bomsxtable.length > 0) {
-        //delete old bom from M140
-        let err_code: string = "0";
-        let checkMAIN_M: number = 0;
-        for (let i = 0; i < bomsxtable.length; i++) {
-          checkMAIN_M += parseInt(bomsxtable[i].MAIN_M);
-        }
-        if (checkMAIN_M === 0) {
-          err_code += "| " + "Phải chỉ định liệu quản lý";
-        }
-        if (err_code === "0") {
-          await generalQuery("deleteM140", {
-            G_CODE: codefullinfo.G_CODE,
-          })
-            .then((response) => {
-              if (response.data.tk_status !== "NG") {
-                //console.log(response.data.data);
-              } else {
-              }
-            })
-            .catch((error) => {
-              console.log(error);
-            });
-          for (let i = 0; i < bomsxtable.length; i++) {
-            await generalQuery("insertM140", {
-              G_CODE: codefullinfo.G_CODE,
-              G_SEQ: zeroPad(i + 1, 3),
-              M_CODE: bomsxtable[i].M_CODE,
-              M_QTY: bomsxtable[i].M_QTY,
-              MAIN_M:
-                bomsxtable[i].MAIN_M === null ? "0" : bomsxtable[i].MAIN_M,
-            })
-              .then((response) => {
-                if (response.data.tk_status !== "NG") {
-                  //console.log(response.data.data);
-                } else {
-                }
-              })
-              .catch((error) => {
-                console.log(error);
-              });
-          }
-        } else {
-          Swal.fire("Thông báo", "" + err_code, "error");
-        }
-      } else {
-        Swal.fire("Thông báo", "Thêm ít nhất 1 liệu để lưu BOM", "warning");
-      }
-    } else {
-      Swal.fire(
-        "Thông báo",
-        "Code chưa có BOM giá, phải thêm BOM giá trước",
-        "warning"
-      );
-    }
-  };
   const handleInsertBOMSX_WITH_GIA = async () => {
     if (bomsxtable.length <= 0) {
       if (bomgiatable.length > 0) {

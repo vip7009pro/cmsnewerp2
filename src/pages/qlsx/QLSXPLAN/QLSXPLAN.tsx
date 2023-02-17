@@ -74,11 +74,11 @@ const QLSXPLAN = () => {
             PLAN VISUAL
           </span>
         </div>  
-        <div className='mininavitem'  onClick={() => setNav(9)} style={{backgroundColor:selection.tab9 === true ? '#9933ff':'#d9b3ff', color: selection.tab9 === true ? 'yellow':'yellow'}}>
+       {/*  <div className='mininavitem'  onClick={() => setNav(9)} style={{backgroundColor:selection.tab9 === true ? '#9933ff':'#d9b3ff', color: selection.tab9 === true ? 'yellow':'yellow'}}>
           <span className='mininavtext'>
             KH-CT
           </span>
-        </div>   
+        </div>   */} 
         <div className='mininavitem'  onClick={() => setNav(4)} style={{backgroundColor:selection.tab4 === true ? '#9933ff':'#d9b3ff', color: selection.tab4 === true ? 'yellow':'yellow'}}>
           <span className='mininavtext'>
             QUICK PLAN
@@ -118,9 +118,7 @@ const QLSXPLAN = () => {
           <span className='mininavtext'>
             KHO ẢO
           </span>
-        </div>  
-             
-          
+        </div> 
       </div>     
       {selection.tab1 && (
         <div className='traiqc'>
@@ -162,11 +160,11 @@ const QLSXPLAN = () => {
           <EQ_STATUS/>                               
         </div>
       )}
-      {selection.tab9 && (
+      {/* {selection.tab9 && (
         <div className='datadtc'>
           <KHCT/>                               
         </div>
-      )}
+      )} */}
       {selection.tab10 && (
         <div className='datadtc'>
           <KHOAO/>                               
