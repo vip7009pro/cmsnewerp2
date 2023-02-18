@@ -12,10 +12,13 @@
     height: fit-content; 
     .sidebardiv {
       width: fit-content;
-
+      z-index: 99999;
     } 
     .outletdiv {
       width: 100%;
+    }
+    .navdiv {
+      z-index: 999999;
     }
     .chatroom {
       display: flex;

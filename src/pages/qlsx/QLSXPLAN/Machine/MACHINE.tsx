@@ -3093,7 +3093,21 @@ const MACHINE = () => {
           <AiFillFileExcel color='green' size={25} />
           SAVE
         </IconButton>
-        <GridToolbarQuickFilter />        
+        <GridToolbarQuickFilter />       
+        <IconButton
+          className='buttonIcon'
+          onClick={() => {
+            checkBP(
+              userData.EMPL_NO,
+              userData.MAINDEPTNAME,
+              ["QLSX"],
+              handleConfirmDKXL
+            );
+          }}
+        >
+          <AiOutlineBarcode color='green' size={20} />
+          Lưu CT + ĐKXK
+        </IconButton> 
         <IconButton
           className='buttonIcon'
           onClick={() => {
@@ -3147,20 +3161,7 @@ const MACHINE = () => {
           <FaWarehouse color='blue' size={20} />
           KHO ẢO
         </IconButton>
-        <IconButton
-          className='buttonIcon'
-          onClick={() => {
-            checkBP(
-              userData.EMPL_NO,
-              userData.MAINDEPTNAME,
-              ["QLSX"],
-              handleConfirmDKXL
-            );
-          }}
-        >
-          <AiOutlineBarcode color='green' size={20} />
-          Lưu CT + ĐKXK
-        </IconButton>
+        
         <IconButton
           className='buttonIcon'
           onClick={() => {

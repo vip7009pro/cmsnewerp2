@@ -8,6 +8,7 @@
     color: #555;    
     top: 25;    
     
+    
     @media only screen and (max-width: 3000px) {
         .wrapper {           
             -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.29);
@@ -96,7 +97,8 @@
                     right: 30px;
                     border-radius: 10px;  
                     padding-top: 10px;                 
-                    padding-bottom: 10px;                 
+                    padding-bottom: 10px; 
+                    z-index: 999999;                
                     .menu {
                         display: flex;
                         font-weight: bold;
@@ -147,7 +149,8 @@
                     right: 120px;
                     border-radius: 10px;  
                     padding-top: 10px;                 
-                    padding-bottom: 10px;                 
+                    padding-bottom: 10px;       
+                    z-index: 999999;          
                     .menu {
                         display: flex;
                         font-weight: bold;
@@ -274,7 +277,8 @@
                     right: 30px;
                     border-radius: 10px;  
                     padding-top: 10px;                 
-                    padding-bottom: 10px;                 
+                    padding-bottom: 10px;     
+                    z-index: 999999;            
                     .menu {
                         display: flex;
                         font-weight: bold;
@@ -325,7 +329,8 @@
                     right: 120px;
                     border-radius: 10px;  
                     padding-top: 10px;                 
-                    padding-bottom: 10px;                 
+                    padding-bottom: 10px;      
+                    z-index: 999999;           
                     .menu {
                         display: flex;
                         font-weight: bold;
