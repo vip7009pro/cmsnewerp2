@@ -3909,7 +3909,7 @@ const MACHINE = () => {
               OUT_SEQ: zeroPad(Last_O301_OUT_SEQ + i + 1, 3),
               USE_YN: "Y",
               M_CODE: chithidatatable[i].M_CODE,
-              OUT_PRE_QTY: chithidatatable[i].M_MET_QTY,
+              OUT_PRE_QTY: chithidatatable[i].M_MET_QTY* chithidatatable[i].M_QTY,
               PLAN_ID: PLAN_ID,
             })
               .then((response) => {
@@ -3924,7 +3924,7 @@ const MACHINE = () => {
           } else {
             await generalQuery("updateO301", {
               M_CODE: chithidatatable[i].M_CODE,
-              OUT_PRE_QTY: chithidatatable[i].M_MET_QTY,
+              OUT_PRE_QTY: chithidatatable[i].M_MET_QTY *chithidatatable[i].M_QTY ,
               PLAN_ID: PLAN_ID,
             })
               .then((response) => {
