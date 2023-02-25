@@ -12,12 +12,19 @@ import {
   TableInlineCellEditing,
   DragDropProvider,
   TableColumnReordering,
+  PagingPanel,
+  VirtualTable,
+  TableFilterRow,
 } from "@devexpress/dx-react-grid-material-ui";
 import { Button } from "@mui/material";
 import Swal from "sweetalert2";
 import {
   EditingState,
+  FilteringState,
+  IntegratedFiltering,
+  IntegratedPaging,
   IntegratedSorting,
+  PagingState,
   SortingState,
 } from "@devexpress/dx-react-grid";
 const CAPASX = () => {
@@ -29,7 +36,7 @@ const CAPASX = () => {
     deleted?: ReadonlyArray<number | string>;
   }
   const columns = [
-    { name: "id", title: "ID" },
+    { name: "id", title: "ID", },
     { name: "product", title: "Product" },
     { name: "owner", title: "Owner" },
     { name: "owner2", title: "Owner2" },
@@ -41,10 +48,9 @@ const CAPASX = () => {
       },
     },
   ];
-  const column_name_array = columns.map((element: any)=> {
+  const column_name_array = columns.map((element: any) => {
     return element.name;
   });
-
   const getRowId = (row: any) => row.id;
   const [rows, setRows] = useState([
     { id: 0, product: "XDevExtreme", owner: "ZDevExpress", owner2: "TDev2" },
@@ -62,6 +68,138 @@ const CAPASX = () => {
     },
     {
       id: 3,
+      product: "CDevExtreme Reactive3",
+      owner: "BDevExpress3",
+      owner2: "Dev2",
+    },
+    {
+      id: 4,
+      product: "CDevExtreme Reactive3",
+      owner: "BDevExpress3",
+      owner2: "Dev2",
+    },
+    {
+      id: 5,
+      product: "CDevExtreme Reactive3",
+      owner: "BDevExpress3",
+      owner2: "Dev2",
+    },
+    {
+      id: 6,
+      product: "CDevExtreme Reactive3",
+      owner: "BDevExpress3",
+      owner2: "Dev2",
+    },
+    {
+      id: 7,
+      product: "CDevExtreme Reactive3",
+      owner: "BDevExpress3",
+      owner2: "Dev2",
+    },
+    {
+      id: 8,
+      product: "CDevExtreme Reactive3",
+      owner: "BDevExpress3",
+      owner2: "Dev2",
+    },
+    {
+      id: 9,
+      product: "CDevExtreme Reactive3",
+      owner: "BDevExpress3",
+      owner2: "Dev2",
+    },
+    {
+      id: 10,
+      product: "CDevExtreme Reactive3",
+      owner: "BDevExpress3",
+      owner2: "Dev2",
+    },
+    {
+      id: 11,
+      product: "CDevExtreme Reactive3",
+      owner: "BDevExpress3",
+      owner2: "Dev2",
+    },
+    {
+      id: 12,
+      product: "CDevExtreme Reactive3",
+      owner: "BDevExpress3",
+      owner2: "Dev2",
+    },
+    {
+      id: 13,
+      product: "CDevExtreme Reactive3",
+      owner: "BDevExpress3",
+      owner2: "Dev2",
+    },
+    {
+      id: 14,
+      product: "CDevExtreme Reactive3",
+      owner: "BDevExpress3",
+      owner2: "Dev2",
+    },
+    {
+      id: 15,
+      product: "CDevExtreme Reactive3",
+      owner: "BDevExpress3",
+      owner2: "Dev2",
+    },
+    {
+      id: 16,
+      product: "CDevExtreme Reactive3",
+      owner: "BDevExpress3",
+      owner2: "Dev2",
+    },
+    {
+      id: 17,
+      product: "CDevExtreme Reactive3",
+      owner: "BDevExpress3",
+      owner2: "Dev2",
+    },
+    {
+      id: 18,
+      product: "CDevExtreme Reactive3",
+      owner: "BDevExpress3",
+      owner2: "Dev2",
+    },
+    {
+      id: 19,
+      product: "CDevExtreme Reactive3",
+      owner: "BDevExpress3",
+      owner2: "Dev2",
+    },
+    {
+      id: 20,
+      product: "CDevExtreme Reactive3",
+      owner: "BDevExpress3",
+      owner2: "Dev2",
+    },
+    {
+      id: 21,
+      product: "CDevExtreme Reactive3",
+      owner: "BDevExpress3",
+      owner2: "Dev2",
+    },
+    {
+      id: 22,
+      product: "CDevExtreme Reactive3",
+      owner: "BDevExpress3",
+      owner2: "Dev2",
+    },
+    {
+      id: 23,
+      product: "CDevExtreme Reactive3",
+      owner: "BDevExpress3",
+      owner2: "Dev2",
+    },
+    {
+      id: 24,
+      product: "CDevExtreme Reactive3",
+      owner: "BDevExpress3",
+      owner2: "Dev2",
+    },
+    {
+      id: 25,
       product: "CDevExtreme Reactive3",
       owner: "BDevExpress3",
       owner2: "Dev2",
@@ -102,7 +240,6 @@ const CAPASX = () => {
     }
     setRows(changedRows);
   };
-  const [startEditAction, setStartEditAction] = useState("doubleClick");
   const [selectTextOnEditStart, setSelectTextOnEditStart] = useState(true);
   const ToolbarTable1 = () => {
     return (
@@ -142,25 +279,30 @@ const CAPASX = () => {
       </div>
     );
   };
+
   return (
     <div>
-      <Paper sx={{margin: '20px'}}>
+      <Paper sx={{ margin: "20px", height: "500px", overflow: "scroll" }}>
         <Grid rows={rows} columns={columns} getRowId={getRowId}>
+          <VirtualTable />
+          <PagingState defaultCurrentPage={0} pageSize={100} />
+          <IntegratedPaging />
           <SortingState
             defaultSorting={[{ columnName: "id", direction: "asc" }]}
           />
           <IntegratedSorting />
+          <FilteringState defaultFilters={[]} />
+          <IntegratedFiltering />
           <Table />
           <DragDropProvider />
-          <TableColumnReordering
-            defaultOrder={column_name_array}
-          />
+          <TableColumnReordering defaultOrder={column_name_array} />
           <TableColumnResizing
             defaultColumnWidths={columnWidths}
             resizingMode={"widget"}
           />
           <EditingState onCommitChanges={commitChanges} />
           <TableHeaderRow showSortingControls={true} />
+          <PagingPanel />
           <TableEditRow />
           <TableEditColumn
             showAddCommand={false}
@@ -172,6 +314,7 @@ const CAPASX = () => {
             selectTextOnEditStart={selectTextOnEditStart}
           />
           <Toolbar rootComponent={ToolbarTable1} />
+          <TableFilterRow  />
         </Grid>
       </Paper>
     </div>
