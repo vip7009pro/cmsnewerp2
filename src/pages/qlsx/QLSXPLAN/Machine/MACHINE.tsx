@@ -3849,7 +3849,7 @@ const MACHINE = () => {
         });
     }
     /* xoa dong O301 chua co xuat hien trong O302*/
-    await generalQuery("deleteMCODE_O301_Not_ExistIN_O302", {
+   /*  await generalQuery("deleteMCODE_O301_Not_ExistIN_O302", {
       PLAN_ID: PLAN_ID,
     })
       .then((response) => {
@@ -3860,7 +3860,7 @@ const MACHINE = () => {
       })
       .catch((error) => {
         console.log(error);
-      });
+      }); */
     let checkchithimettotal: number = 0;
     for (let i = 0; i < chithidatatable.length; i++) {
       checkchithimettotal += chithidatatable[i].M_MET_QTY;

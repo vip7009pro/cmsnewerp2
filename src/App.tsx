@@ -58,6 +58,7 @@ import LICHSUINPUTLIEU from "./pages/qlsx/QLSXPLAN/LICHSUINPUTLIEU/LICHSUINPUTLI
 import INSPECT_STATUS from "./pages/qc/inspection/INSPECT_STATUS/INSPECT_STATUS";
 import ShortageKD from "./pages/kinhdoanh/shortageKD/ShortageKD";
 import TRANGTHAICHITHI from "./pages/sx/TRANGTHAICHITHI/TRANGTHAICHITHI";
+import CAPASX from "./pages/qlsx/QLSXPLAN/CAPA/CAPASX";
 interface userDataInterface {
   EMPL_IMAGE?: string;
   ADD_COMMUNE: string;
@@ -500,6 +501,8 @@ function App() {
                     <Route path='codeinfo' element={<CODE_MANAGER />} />
                     <Route path='qlsxplan' element={<QLSXPLAN />} />
                     <Route path='quanlycodebom' element={<BOM_MANAGER />} />
+                    <Route path='capamanager' element={<CAPASX />} />
+                    <Route path='qlsxmrp' element={<CAPASX />} />
                   </Route>
                   <Route
                     path='qc'

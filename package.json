@@ -3,6 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@devexpress/dx-react-core": "^4.0.3",
+    "@devexpress/dx-react-grid": "^4.0.3",
+    "@devexpress/dx-react-grid-material-ui": "^4.0.3",
     "@emotion/react": "^11.9.3",
     "@emotion/styled": "^11.9.3",
     "@inovua/reactdatagrid-community": "^4.21.0",
