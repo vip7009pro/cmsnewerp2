@@ -12,6 +12,7 @@ type english_sentences = {
 };
 
 export const vn_lang = {
+  khoao:'Kho Ảo',
   shortage: 'Shortage',
   ins_status:'Tình trạng KT',
   lichsuxuatlieuthat:'Lịch sử bắn lot liệu SX',
@@ -78,6 +79,7 @@ export const vn_lang = {
   eqstatus:'Trạng Thái Máy',
 };
 export const en_lang = {
+  khoao:'Virtual Warehouse',
   shortage: 'Shortage',
   ins_status:'Inspection Status',
   lichsuxuatlieuthat:'Material Input History',
@@ -144,6 +146,7 @@ export const en_lang = {
   datasanxuat:'Production DATA',
 };
 export const kr_lang = {
+  khoao:'공정 원단 재고',
   shortage: '쇼티지',
   ins_status:'검사 상태',
   lichsuxuatlieuthat:'원단 투입 이력',

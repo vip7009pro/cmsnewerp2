@@ -15,6 +15,8 @@ import {
   PagingPanel,
   VirtualTable,
   TableFilterRow,
+  SearchPanel,
+  TableSelection,
 } from "@devexpress/dx-react-grid-material-ui";
 import { Button } from "@mui/material";
 import Swal from "sweetalert2";
@@ -23,8 +25,11 @@ import {
   FilteringState,
   IntegratedFiltering,
   IntegratedPaging,
+  IntegratedSelection,
   IntegratedSorting,
   PagingState,
+  SearchState,
+  SelectionState,
   SortingState,
 } from "@devexpress/dx-react-grid";
 const CAPASX = () => {
@@ -36,7 +41,7 @@ const CAPASX = () => {
     deleted?: ReadonlyArray<number | string>;
   }
   const columns = [
-    { name: "id", title: "ID", },
+    { name: "id", title: "ID" },
     { name: "product", title: "Product" },
     { name: "owner", title: "Owner" },
     { name: "owner2", title: "Owner2" },
@@ -52,6 +57,7 @@ const CAPASX = () => {
     return element.name;
   });
   const getRowId = (row: any) => row.id;
+  const [selection, setSelection] = useState<Array<string|number>>([]);
   const [rows, setRows] = useState([
     { id: 0, product: "XDevExtreme", owner: "ZDevExpress", owner2: "TDev2" },
     {
@@ -279,12 +285,18 @@ const CAPASX = () => {
       </div>
     );
   };
-
   return (
     <div>
       <Paper sx={{ margin: "20px", height: "500px", overflow: "scroll" }}>
         <Grid rows={rows} columns={columns} getRowId={getRowId}>
           <VirtualTable />
+          <SelectionState          
+          selection={selection}
+          onSelectionChange={(e:any)=>{
+            console.log(e);
+            setSelection(e);}}
+            
+        />
           <PagingState defaultCurrentPage={0} pageSize={100} />
           <IntegratedPaging />
           <SortingState
@@ -292,6 +304,7 @@ const CAPASX = () => {
           />
           <IntegratedSorting />
           <FilteringState defaultFilters={[]} />
+          <SearchState defaultValue='' />
           <IntegratedFiltering />
           <Table />
           <DragDropProvider />
@@ -314,7 +327,10 @@ const CAPASX = () => {
             selectTextOnEditStart={selectTextOnEditStart}
           />
           <Toolbar rootComponent={ToolbarTable1} />
-          <TableFilterRow  />
+          <TableFilterRow />
+          <SearchPanel />
+          <IntegratedSelection  />
+          <TableSelection selectByRowClick showSelectAll selectionColumnWidth={15} />
         </Grid>
       </Paper>
     </div>

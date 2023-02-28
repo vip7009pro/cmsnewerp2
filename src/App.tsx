@@ -59,6 +59,7 @@ import INSPECT_STATUS from "./pages/qc/inspection/INSPECT_STATUS/INSPECT_STATUS"
 import ShortageKD from "./pages/kinhdoanh/shortageKD/ShortageKD";
 import TRANGTHAICHITHI from "./pages/sx/TRANGTHAICHITHI/TRANGTHAICHITHI";
 import CAPASX from "./pages/qlsx/QLSXPLAN/CAPA/CAPASX";
+import KHOAO from "./pages/qlsx/QLSXPLAN/KHOAO/KHOAO";
 interface userDataInterface {
   EMPL_IMAGE?: string;
   ADD_COMMUNE: string;
@@ -744,6 +745,18 @@ function App() {
                           jobname='Leader'
                         >
                           <LICHSUINPUTLIEU />
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route
+                      path='khoao'
+                      element={
+                        <ProtectedRoute
+                          user={userData}
+                          maindeptname='all'
+                          jobname='Leader'
+                        >
+                          <KHOAO />
                         </ProtectedRoute>
                       }
                     />

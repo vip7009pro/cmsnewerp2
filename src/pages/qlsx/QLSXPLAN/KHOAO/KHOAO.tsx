@@ -73,6 +73,7 @@ interface QLSXPLANDATA {
 }
 interface TONLIEUXUONG {
   id: number;
+  IN_KHO_ID: number,
   FACTORY: string;
   PHANLOAI: string;
   PLAN_ID_INPUT: string;
@@ -86,6 +87,7 @@ interface TONLIEUXUONG {
 }
 interface LICHSUNHAPKHOAO {
   id: string;
+  IN_KHO_ID: number,
   FACTORY: string;
   PHANLOAI: string;
   M_CODE: string;
@@ -100,6 +102,7 @@ interface LICHSUNHAPKHOAO {
 }
 interface LICHSUXUATKHOAO {
   id: string;
+  OUT_KHO_ID: number,
   FACTORY: string;
   PHANLOAI: string;
   M_CODE: string;
@@ -140,221 +143,8 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
     Array<LICHSUXUATKHOAO>
   >([]);
   const [tableTitle, setTableTitle] = useState("");
-  const column_plandatatable = [
-    {
-      field: "PLAN_FACTORY",
-      headerName: "FACTORY",
-      width: 80,
-      editable: false,
-    },
-    {
-      field: "PLAN_DATE",
-      headerName: "PLAN_DATE",
-      width: 110,
-      editable: false,
-    },
-    {
-      field: "PROD_REQUEST_NO",
-      headerName: "YCSX NO",
-      width: 80,
-      editable: false,
-    },
-    {
-      field: "PROD_REQUEST_DATE",
-      headerName: "YCSX DATE",
-      width: 80,
-      editable: false,
-    },
-    {
-      field: "PLAN_ID",
-      headerName: "PLAN_ID",
-      width: 90,
-      editable: false,
-      resizeable: true,
-    },
-    { field: "G_CODE", headerName: "G_CODE", width: 100, editable: false },
-    {
-      field: "G_NAME_KD",
-      headerName: "G_NAME_KD",
-      width: 180,
-      editable: false,
-      renderCell: (params: any) => {
-        if (
-          params.row.FACTORY === null ||
-          params.row.EQ1 === null ||
-          params.row.EQ2 === null ||
-          params.row.Setting1 === null ||
-          params.row.Setting2 === null ||
-          params.row.UPH1 === null ||
-          params.row.UPH2 === null ||
-          params.row.Step1 === null ||
-          params.row.Step1 === null ||
-          params.row.LOSS_SX1 === null ||
-          params.row.LOSS_SX2 === null ||
-          params.row.LOSS_SETTING1 === null ||
-          params.row.LOSS_SETTING2 === null
-        )
-          return <span style={{ color: "red" }}>{params.row.G_NAME_KD}</span>;
-        return <span style={{ color: "green" }}>{params.row.G_NAME_KD}</span>;
-      },
-    },
-    {
-      field: "PROD_REQUEST_QTY",
-      headerName: "YCSX QTY",
-      width: 80,
-      editable: false,
-      renderCell: (params: any) => {
-        return (
-          <span style={{ color: "blue" }}>
-            {params.row.PROD_REQUEST_QTY.toLocaleString("en", "US")}
-          </span>
-        );
-      },
-    },
-    { field: "EQ1", headerName: "EQ1", width: 30, editable: false },
-    { field: "EQ2", headerName: "EQ2", width: 30, editable: false },
-    {
-      field: "CD1",
-      headerName: "KQ_CD1",
-      width: 80,
-      editable: false,
-      renderCell: (params: any) => {
-        return (
-          <span style={{ color: "blue" }}>
-            {params.row.CD1.toLocaleString("en", "US")}
-          </span>
-        );
-      },
-    },
-    {
-      field: "CD2",
-      headerName: "KQ_CD2",
-      width: 80,
-      editable: false,
-      renderCell: (params: any) => {
-        return (
-          <span style={{ color: "blue" }}>
-            {params.row.CD2.toLocaleString("en", "US")}
-          </span>
-        );
-      },
-    },
-    {
-      field: "TON_CD1",
-      headerName: "TONYCSX_CD1",
-      width: 120,
-      editable: false,
-      renderCell: (params: any) => {
-        return (
-          <span style={{ color: "blue" }}>
-            {params.row.TON_CD1.toLocaleString("en", "US")}
-          </span>
-        );
-      },
-    },
-    {
-      field: "TON_CD2",
-      headerName: "TONYCSX_CD2",
-      width: 120,
-      editable: false,
-      renderCell: (params: any) => {
-        return (
-          <span style={{ color: "blue" }}>
-            {params.row.TON_CD2.toLocaleString("en", "US")}
-          </span>
-        );
-      },
-    },
-    {
-      field: "PLAN_QTY",
-      headerName: "PLAN_QTY",
-      width: 80,
-      renderCell: (params: any) => {
-        if (params.row.PLAN_QTY === 0) {
-          return <span style={{ color: "red" }}>NG</span>;
-        } else {
-          return (
-            <span style={{ color: "green" }}>
-              {params.row.PLAN_QTY.toLocaleString("en", "US")}
-            </span>
-          );
-        }
-      },
-    },
-    {
-      field: "PROCESS_NUMBER",
-      headerName: "PROCESS_NUMBER",
-      width: 110,
-      renderCell: (params: any) => {
-        if (
-          params.row.PROCESS_NUMBER === null ||
-          params.row.PROCESS_NUMBER === 0
-        ) {
-          return <span style={{ color: "red" }}>NG</span>;
-        } else {
-          return (
-            <span style={{ color: "green" }}>{params.row.PROCESS_NUMBER}</span>
-          );
-        }
-      },
-    },
-    { field: "STEP", headerName: "STEP", width: 60 },
-    { field: "PLAN_ORDER", headerName: "PLAN_ORDER", width: 110 },
-    {
-      field: "KETQUASX",
-      headerName: "KETQUASX",
-      width: 110,
-      renderCell: (params: any) => {
-        if (params.row.KETQUASX !== null) {
-          return <span>{params.row.KETQUASX.toLocaleString("en-US")}</span>;
-        } else {
-          return <span>0</span>;
-        }
-      },
-    },
-    {
-      field: "KQ_SX_TAM",
-      headerName: "KETQUASX_TAM",
-      width: 120,
-      renderCell: (params: any) => {
-        if (params.row.KQ_SX_TAM !== null) {
-          return <span>{params.row.KQ_SX_TAM.toLocaleString("en-US")}</span>;
-        } else {
-          return <span>0</span>;
-        }
-      },
-    },
-    { field: "PLAN_EQ", headerName: "PLAN_EQ", width: 80 },
-    {
-      field: "INS_EMPL",
-      headerName: "INS_EMPL",
-      width: 120,
-      editable: false,
-      hide: false,
-    },
-    {
-      field: "INS_DATE",
-      headerName: "INS_DATE",
-      width: 120,
-      editable: false,
-      hide: true,
-    },
-    {
-      field: "UPD_EMPL",
-      headerName: "UPD_EMPL",
-      width: 120,
-      editable: false,
-      hide: true,
-    },
-    {
-      field: "UPD_DATE",
-      headerName: "UPD_DATE",
-      width: 120,
-      editable: false,
-      hide: true,
-    },
-  ];
   const column_nhapkhoaotable = [
+    { field: "IN_KHO_ID", headerName: "IN_KHO_ID", width: 100 },
     { field: "FACTORY", headerName: "FACTORY", width: 80 },
     { field: "PHANLOAI", headerName: "PHANLOAI", width: 80 },
     { field: "M_CODE", headerName: "M_CODE", width: 80 },
@@ -368,6 +158,7 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
     { field: "INS_DATE", headerName: "INS_DATE", width: 150 },
   ];
   const column_xuatkhoaotable = [
+    { field: "OUT_KHO_ID", headerName: "OUT_KHO_ID", width: 100 },
     { field: "FACTORY", headerName: "FACTORY", width: 80 },
     { field: "PHANLOAI", headerName: "PHANLOAI", width: 80 },
     { field: "M_CODE", headerName: "M_CODE", width: 80 },
@@ -382,6 +173,7 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
     { field: "INS_DATE", headerName: "INS_DATE", width: 150 },
   ];
   const column_tonkhoaotable = [
+    { field: "IN_KHO_ID", headerName: "IN_KHO_ID", width: 100 },
     { field: "FACTORY", headerName: "NM", width: 40, editable: false },
     {
       field: "PLAN_ID_INPUT",
@@ -692,6 +484,229 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
       Swal.fire("Thông báo", "Chưa nhập next PLAN", "error");
     }
   };
+
+  const handle_nhappassword_xoarac = async () => {
+    const {value: pass1} = await Swal.fire({
+      title: 'Xác nhận xóa rác',
+      input:'password',
+      inputLabel: 'Nhập mật mã',
+      inputValue: '',
+      inputPlaceholder:'Mật mã',
+      showCancelButton: true,       
+    })      
+    if(pass1 === 'quantrisanxuat2023' && (userData.EMPL_NO==='DTL1906' || userData.EMPL_NO==='THU1402' || userData.EMPL_NO==='NHU1903'))
+    {
+       handleConfirmXoaRac();     
+    }
+    else
+    {
+      Swal.fire('Thông báo','Đã nhập sai mật mã hoặc tài khoản ko đủ quyền hạn!','error');
+    }
+  }
+  const handle_nhappassword_anrac = async () => {
+    const {value: pass1} = await Swal.fire({
+      title: 'Xác nhận ẩn rác',
+      input:'password',
+      inputLabel: 'Nhập mật mã',
+      inputValue: '',
+      inputPlaceholder:'Mật mã',
+      showCancelButton: true,       
+    })      
+    if(pass1 === 'quantrisanxuat2023' && (userData.EMPL_NO==='DTL1906' || userData.EMPL_NO==='THU1402' || userData.EMPL_NO==='NHU1903'))
+    {
+       handleConfirmAnRac();     
+    }
+    else
+    {
+      Swal.fire('Thông báo','Đã nhập sai mật mã hoặc tài khoản ko đủ quyền hạn!','error');
+    }
+  }
+
+
+  const handleConfirmXoaRac = () => {
+    Swal.fire({
+      title: "Chắc chắn muốn Xóa liệu đã chọn ?",
+      text: "Sẽ bắt đầu Xóa liệu đã chọn",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Vẫn Xóa!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        Swal.fire(
+          "Tiến hành Xóa",
+          "Đang xóa hàng loạt",
+          "success"
+        );
+        checkBP(
+          userData.EMPL_NO,
+          userData.MAINDEPTNAME,
+          ["SX"],
+          handle_xoa_rac
+        );
+      }
+    });
+  };
+  const handleConfirmAnRac = () => {
+    Swal.fire({
+      title: "Chắc chắn muốn Ẩn liệu đã chọn ?",
+      text: "Sẽ bắt đầu Ẩn liệu đã chọn",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Vẫn Ẩn!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        Swal.fire(
+          "Tiến hành Ẩn",
+          "Đang Ẩn hàng loạt",
+          "success"
+        );
+        checkBP(
+          userData.EMPL_NO,
+          userData.MAINDEPTNAME,
+          ["SX"],
+          handle_an_rac
+        );
+      }
+    });
+  };
+  const handle_xoa_rac = async ()=> {   
+    if (tonkhoaodatafilter.length > 0) {
+      let err_code: string = "0";
+      for (let i = 0; i < tonkhoaodatafilter.length; i++) {
+        let check_2_m_code_in_kho_ao: boolean = false;
+        let check_m_lot_exist_p500: boolean = false;
+        await generalQuery("check_2_m_code_in_kho_ao", {
+          PLAN_ID_INPUT: tonkhoaodatafilter[i].PLAN_ID_INPUT,   
+        })
+          .then((response) => {
+            //console.log(response.data.data);
+            if (response.data.tk_status !== "NG") {
+              if(response.data.data[0].COUNT_M_CODE>1)
+              {
+                check_2_m_code_in_kho_ao = true;
+              }
+              else
+              {
+
+              }                
+            } else {
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+        await generalQuery("check_m_lot_exist_p500", {
+          PLAN_ID_INPUT: tonkhoaodatafilter[i].PLAN_ID_INPUT,   
+          M_LOT_NO: tonkhoaodatafilter[i].M_LOT_NO
+        })
+          .then((response) => {
+            //console.log(response.data.data);
+            if (response.data.tk_status !== "NG") {
+              if(response.data.data.length >0)
+              {                
+                check_m_lot_exist_p500 = true;
+              }    
+              else
+              {
+              }            
+            } else {
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+          if(check_2_m_code_in_kho_ao && !check_m_lot_exist_p500) 
+          {
+            console.log('check_2_m_code_in_kho_ao',check_2_m_code_in_kho_ao);
+            console.log('check_m_lot_exist_p500',check_m_lot_exist_p500);
+            Swal.fire('Thông báo','Xóa kho ảo thành công','success');
+            await generalQuery("delete_in_kho_ao", {
+              IN_KHO_ID: tonkhoaodatafilter[i].IN_KHO_ID, 
+            })
+              .then((response) => {
+                //console.log(response.data.data);
+                if (response.data.tk_status !== "NG") {
+                  if(response.data.data.length >0)
+                  {
+                    check_m_lot_exist_p500 = true;
+                  }                
+                } else {
+                }
+              })
+              .catch((error) => {
+                console.log(error);
+              });
+            await generalQuery("delete_out_kho_ao", {
+              PLAN_ID_INPUT: tonkhoaodatafilter[i].PLAN_ID_INPUT, 
+              M_LOT_NO: tonkhoaodatafilter[i].M_LOT_NO, 
+            })
+              .then((response) => {
+                //console.log(response.data.data);
+                if (response.data.tk_status !== "NG") {
+                  if(response.data.data.length >0)
+                  {
+                    check_m_lot_exist_p500 = true;
+                  }                
+                } else {
+                }
+              })
+              .catch((error) => {
+                console.log(error);
+              });
+          }
+          else
+          {
+            //console.log('check_2_m_code_in_kho_ao',check_2_m_code_in_kho_ao);
+            //console.log('check_m_lot_exist_p500',check_m_lot_exist_p500);
+            if(!check_2_m_code_in_kho_ao)
+            {
+              err_code +=  ` | ${tonkhoaodatafilter[i].M_LOT_NO}: Liệu chỉ có 1 liệu chính ko xóa được`;
+            }
+            else if(check_m_lot_exist_p500)
+            {
+              err_code +=  ` | ${tonkhoaodatafilter[i].M_LOT_NO}: Liệu đã input sx ko xóa được`;
+            }           
+          }      
+      }
+      if (err_code !== "0") {
+        Swal.fire("Thông báo", "Có lỗi: " + err_code, "error");
+      }
+      //setTonKhoAoDataFilter([]);
+      //handle_loadKhoAo();
+    } else {
+      Swal.fire("Thông báo", "Chọn ít nhất 1 liệu để xóa", "error");
+    }
+  }
+  const handle_an_rac = async ()=> { 
+    if (tonkhoaodatafilter.length > 0) {
+      let err_code: string = "0";
+      for (let i = 0; i < tonkhoaodatafilter.length; i++) { 
+           await generalQuery("an_lieu_kho_ao", {
+              IN_KHO_ID: tonkhoaodatafilter[i].IN_KHO_ID, 
+            })
+              .then((response) => {
+                //console.log(response.data.data);
+                if (response.data.tk_status !== "NG") {
+                } else {
+                }
+              })
+              .catch((error) => {
+                console.log(error);
+              });
+      }
+      if (err_code !== "0") {
+        Swal.fire("Thông báo", "Có lỗi: " + err_code, "error");
+      }
+      //setTonKhoAoDataFilter([]);
+      //handle_loadKhoAo();
+    } else {
+      Swal.fire("Thông báo", "Chọn ít nhất 1 liệu để ẩn", "error");
+    }
+  }
   const handleTonKhoAoDataSelectionforUpdate = (ids: GridSelectionModel) => {
     const selectedID = new Set(ids);
     let datafilter = datatable.filter((element: any) =>
@@ -808,6 +823,25 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
                 }}
               >
                 LS OUT
+              </button>
+            </div>
+            <div className='forminputcolumn'>
+              <button
+                className='xoakhoao'
+                onClick={() => {
+                  handle_nhappassword_xoarac();
+                  //handle_xuatKhoAo();
+                }}
+              >
+                Xóa rác
+              </button>
+              <button
+                className='xoakhoao'
+                onClick={() => {
+                  handle_nhappassword_anrac();
+                }}
+              >
+                Ẩn rác
               </button>
             </div>
           </div>
