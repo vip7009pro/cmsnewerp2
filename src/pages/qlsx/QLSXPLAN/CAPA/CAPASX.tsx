@@ -13,10 +13,11 @@ import {
   DragDropProvider,
   TableColumnReordering,
   PagingPanel,
+  SearchPanel,
   VirtualTable,
   TableFilterRow,
-  SearchPanel,
   TableSelection,
+  TableKeyboardNavigation,
 } from "@devexpress/dx-react-grid-material-ui";
 import { Button } from "@mui/material";
 import Swal from "sweetalert2";
@@ -31,6 +32,7 @@ import {
   SearchState,
   SelectionState,
   SortingState,
+  TableRowDetail,
 } from "@devexpress/dx-react-grid";
 const CAPASX = () => {
   interface ChangesData {
@@ -57,7 +59,8 @@ const CAPASX = () => {
     return element.name;
   });
   const getRowId = (row: any) => row.id;
-  const [selection, setSelection] = useState<Array<string|number>>([]);
+  const [selection, setSelection] = useState<Array<string | number>>([]);
+  const [searchValue, setSearchState] = useState("");
   const [rows, setRows] = useState([
     { id: 0, product: "XDevExtreme", owner: "ZDevExpress", owner2: "TDev2" },
     {
@@ -211,6 +214,7 @@ const CAPASX = () => {
       owner2: "Dev2",
     },
   ]);
+  const [datafilter, setDataFilter] = useState<Array<any>>([]);
   const [columnWidths, setColumnWidths] = useState([
     { columnName: "id", width: 80 },
     { columnName: "product", width: 180 },
@@ -249,23 +253,7 @@ const CAPASX = () => {
   const [selectTextOnEditStart, setSelectTextOnEditStart] = useState(true);
   const ToolbarTable1 = () => {
     return (
-      <div style={{ backgroundColor: "#002233" }}>
-        <Button
-          onClick={() => {
-            Swal.fire("Thông báo", "Đã click", "success");
-          }}
-          color='warning'
-        >
-          Clickvao day
-        </Button>
-        <Button
-          onClick={() => {
-            Swal.fire("Thông báo", "Đã click", "success");
-          }}
-          color='warning'
-        >
-          Clickvao day
-        </Button>
+      <div className='tabletoolbar' style={{ backgroundColor: "#002233" }}>
         <Button
           onClick={() => {
             Swal.fire("Thông báo", "Đã click", "success");
@@ -287,24 +275,46 @@ const CAPASX = () => {
   };
   return (
     <div>
-      <Paper sx={{ margin: "20px", height: "500px", overflow: "scroll" }}>
+      <Paper
+        sx={{
+          margin: "20px",
+          height: "500px",
+          overflow: "scroll",
+          backgroundColor: "#e8f5c6",
+        }}
+      >
+        <div className='searchbar'>
+          Search:{" "}
+          <input
+            /* autoFocus={true} */ key='searchbarkey'
+            type='text'
+            value={searchValue}
+            onChange={(e) => {
+              setSearchState(e.target.value);
+            }}
+          ></input>
+        </div>
         <Grid rows={rows} columns={columns} getRowId={getRowId}>
-          <VirtualTable />
-          <SelectionState          
-          selection={selection}
-          onSelectionChange={(e:any)=>{
-            console.log(e);
-            setSelection(e);}}
-            
-        />
-          <PagingState defaultCurrentPage={0} pageSize={100} />
+          <VirtualTable/>
+          <SelectionState
+            selection={selection}
+            onSelectionChange={(e: any) => {
+              setSelection(e);
+              setDataFilter(
+                rows.filter((element: any) => {
+                  return e.includes(element.id);
+                })
+              );
+            }}
+          />
+          <PagingState defaultCurrentPage={0} pageSize={100} defaultPageSize={100}/>
           <IntegratedPaging />
           <SortingState
             defaultSorting={[{ columnName: "id", direction: "asc" }]}
           />
           <IntegratedSorting />
           <FilteringState defaultFilters={[]} />
-          <SearchState defaultValue='' />
+          <SearchState value={searchValue} />
           <IntegratedFiltering />
           <Table />
           <DragDropProvider />
@@ -315,8 +325,8 @@ const CAPASX = () => {
           />
           <EditingState onCommitChanges={commitChanges} />
           <TableHeaderRow showSortingControls={true} />
-          <PagingPanel />
-          <TableEditRow />
+          <PagingPanel pageSizes={[100,1000,10000,100000,1000000]}/>
+          <TableEditRow rowHeight={5} />
           <TableEditColumn
             showAddCommand={false}
             showEditCommand={false}
@@ -324,13 +334,23 @@ const CAPASX = () => {
           />
           <TableInlineCellEditing
             startEditAction='doubleClick'
-            selectTextOnEditStart={selectTextOnEditStart}
+            selectTextOnEditStart={selectTextOnEditStart}            
           />
           <Toolbar rootComponent={ToolbarTable1} />
-          <TableFilterRow />
           <SearchPanel />
-          <IntegratedSelection  />
-          <TableSelection selectByRowClick showSelectAll selectionColumnWidth={15} />
+          <TableFilterRow />
+          <IntegratedSelection />
+          <TableSelection
+            highlightRow={true}
+            showSelectAll
+            selectionColumnWidth={15}
+          />
+            <TableKeyboardNavigation
+          defaultFocusedCell={{
+            rowKey: `${(Table.ROW_TYPE).toString()}_0`,
+            columnKey: `${(Table.COLUMN_TYPE).toString()}_id`,
+          }}
+        />
         </Grid>
       </Paper>
     </div>
