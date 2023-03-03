@@ -295,7 +295,7 @@ const CAPASX = () => {
           ></input>
         </div>
         <Grid rows={rows} columns={columns} getRowId={getRowId}>
-          <VirtualTable/>
+          <VirtualTable />
           <SelectionState
             selection={selection}
             onSelectionChange={(e: any) => {
@@ -307,7 +307,11 @@ const CAPASX = () => {
               );
             }}
           />
-          <PagingState defaultCurrentPage={0} pageSize={100} defaultPageSize={100}/>
+          <PagingState
+            defaultCurrentPage={0}
+            pageSize={100}
+            defaultPageSize={100}
+          />
           <IntegratedPaging />
           <SortingState
             defaultSorting={[{ columnName: "id", direction: "asc" }]}
@@ -325,7 +329,7 @@ const CAPASX = () => {
           />
           <EditingState onCommitChanges={commitChanges} />
           <TableHeaderRow showSortingControls={true} />
-          <PagingPanel pageSizes={[100,1000,10000,100000,1000000]}/>
+          <PagingPanel pageSizes={[100, 1000, 10000, 100000, 1000000]} />
           <TableEditRow rowHeight={5} />
           <TableEditColumn
             showAddCommand={false}
@@ -334,7 +338,7 @@ const CAPASX = () => {
           />
           <TableInlineCellEditing
             startEditAction='doubleClick'
-            selectTextOnEditStart={selectTextOnEditStart}            
+            selectTextOnEditStart={selectTextOnEditStart}
           />
           <Toolbar rootComponent={ToolbarTable1} />
           <SearchPanel />
@@ -345,12 +349,15 @@ const CAPASX = () => {
             showSelectAll
             selectionColumnWidth={15}
           />
-            <TableKeyboardNavigation
-          defaultFocusedCell={{
-            rowKey: `${(Table.ROW_TYPE).toString()}_0`,
-            columnKey: `${(Table.COLUMN_TYPE).toString()}_id`,
-          }}
-        />
+          <TableKeyboardNavigation
+            defaultFocusedCell={{
+              rowKey: `${Table.ROW_TYPE.toString()}_0`,
+              columnKey: `${Table.COLUMN_TYPE.toString()}_id`,
+            }}
+            onFocusedCellChange={(e) => {
+              console.log(e);
+            }}
+          />
         </Grid>
       </Paper>
     </div>
