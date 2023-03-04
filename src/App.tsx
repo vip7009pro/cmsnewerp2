@@ -1,3 +1,5 @@
+import 'devextreme/dist/css/dx.light.css';
+import 'devextreme/dist/css/dx.light.css';
 import React, { Component, FC, useEffect, useState, lazy } from "react";
 import Home from "./pages/home/Home";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
@@ -60,6 +62,7 @@ import ShortageKD from "./pages/kinhdoanh/shortageKD/ShortageKD";
 import TRANGTHAICHITHI from "./pages/sx/TRANGTHAICHITHI/TRANGTHAICHITHI";
 import CAPASX from "./pages/qlsx/QLSXPLAN/CAPA/CAPASX";
 import KHOAO from "./pages/qlsx/QLSXPLAN/KHOAO/KHOAO";
+import DATATBNEW from "./pages/qlsx/QLSXPLAN/CAPA/DATATBNEW";
 interface userDataInterface {
   EMPL_IMAGE?: string;
   ADD_COMMUNE: string;
@@ -503,7 +506,7 @@ function App() {
                     <Route path='qlsxplan' element={<QLSXPLAN />} />
                     <Route path='quanlycodebom' element={<BOM_MANAGER />} />
                     <Route path='capamanager' element={<CAPASX />} />
-                    <Route path='qlsxmrp' element={<CAPASX />} />
+                    <Route path='qlsxmrp' element={<DATATBNEW />} />
                   </Route>
                   <Route
                     path='qc'

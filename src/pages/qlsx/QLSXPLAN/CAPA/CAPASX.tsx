@@ -249,6 +249,7 @@ const CAPASX = () => {
       changedRows = rows.filter((row) => !deletedSet.has(row.id));
     }
     setRows(changedRows);
+    
   };
   const [selectTextOnEditStart, setSelectTextOnEditStart] = useState(true);
   const ToolbarTable1 = () => {
@@ -357,6 +358,7 @@ const CAPASX = () => {
             onFocusedCellChange={(e) => {
               console.log(e);
             }}
+            /* focusedCell ={{rowKey:'Symbol(data)_2', columnKey:'Symbol(data)_owner'}} */
           />
         </Grid>
       </Paper>

@@ -402,17 +402,17 @@ const DATASX = () => {
     { field: "REMARK", headerName: "REMARK", minWidth: 120, flex: 1 },
   ];
   const column_ycsxdatasx = [
-    { field: "PHAN_LOAI", headerName: "PHAN_LOAI", minWidth: 120, flex: 1 },
-    { field: "PROD_REQUEST_NO", headerName: "PROD_REQUEST_NO", width: 80 },
-    { field: "G_CODE", headerName: "G_CODE", width: 80 },
-    { field: "G_NAME", headerName: "G_NAME", width: 180 },
-    { field: "G_NAME_KD", headerName: "G_NAME_KD", width: 120 },
-    { field: "FACTORY", headerName: "FACTORY", width: 80 },
-    { field: "EQ1", headerName: "EQ1", width: 80 },
-    { field: "EQ2", headerName: "EQ2", width: 80 },
-    { field: "PROD_REQUEST_DATE", headerName: "YCSX_DATE", width: 120 },
-    { field: "PROD_REQUEST_QTY", headerName: "YCSX_QTY", width: 80 },
-    { field: "M_NAME", headerName: "M_NAME", width: 150 },
+    { field: "PHAN_LOAI", headerName: "PHAN_LOAI", minWidth: 120, flex: 1, resizable: true },
+    { field: "PROD_REQUEST_NO", headerName: "PROD_REQUEST_NO", width: 80, resizable: true },
+    { field: "G_CODE", headerName: "G_CODE", width: 80, resizable: true },
+    { field: "G_NAME", headerName: "G_NAME", width: 180, resizable: true },
+    { field: "G_NAME_KD", headerName: "G_NAME_KD", width: 120, resizable: true },
+    { field: "FACTORY", headerName: "FACTORY", width: 80, resizable: true },
+    { field: "EQ1", headerName: "EQ1", width: 80, resizable: true },
+    { field: "EQ2", headerName: "EQ2", width: 80, resizable: true },
+    { field: "PROD_REQUEST_DATE", headerName: "YCSX_DATE", width: 120, resizable: true },
+    { field: "PROD_REQUEST_QTY", headerName: "YCSX_QTY", width: 80, resizable: true },
+    { field: "M_NAME", headerName: "M_NAME", width: 150, resizable: true },
     {
       field: "M_OUTPUT",
       headerName: "M_OUTPUT",
@@ -427,7 +427,7 @@ const DATASX = () => {
         } else {
           return <></>;
         }
-      },
+      }, resizable: true
     },
     {
       field: "REMAIN_QTY",
@@ -443,7 +443,7 @@ const DATASX = () => {
         } else {
           return <></>;
         }
-      },
+      }, resizable: true
     },
     {
       field: "USED_QTY",
@@ -459,7 +459,7 @@ const DATASX = () => {
         } else {
           return <></>;
         }
-      },
+      }, resizable: true
     },
     { field: "PD", headerName: "PD", width: 80 },
     { field: "CAVITY", headerName: "CAVITY", width: 80 },
@@ -477,7 +477,7 @@ const DATASX = () => {
         } else {
           return <></>;
         }
-      },
+      }, resizable: true
     },
     {
       field: "CD1",
@@ -493,7 +493,7 @@ const DATASX = () => {
         } else {
           return <></>;
         }
-      },
+      }, resizable: true
     },
     {
       field: "LOSS_SX1",
@@ -512,7 +512,7 @@ const DATASX = () => {
         } else {
           return <></>;
         }
-      },
+      }, resizable: true
     },
     {
       field: "CD2",
@@ -528,7 +528,7 @@ const DATASX = () => {
         } else {
           return <></>;
         }
-      },
+      }, resizable: true
     },
     {
       field: "LOSS_SX2",
@@ -547,7 +547,7 @@ const DATASX = () => {
         } else {
           return <></>;
         }
-      },
+      }, resizable: true
     },
     {
       field: "INS_INPUT",
@@ -563,7 +563,7 @@ const DATASX = () => {
         } else {
           return <></>;
         }
-      },
+      }, resizable: true
     },
     {
       field: "LOSS_SX3",
@@ -582,7 +582,7 @@ const DATASX = () => {
         } else {
           return <></>;
         }
-      },
+      }, resizable: true
     },
     {
       field: "INS_OUTPUT",
@@ -598,7 +598,7 @@ const DATASX = () => {
         } else {
           return <></>;
         }
-      },
+      }, resizable: true
     },
     {
       field: "LOSS_SX4",
@@ -617,7 +617,7 @@ const DATASX = () => {
         } else {
           return <></>;
         }
-      },
+      }, resizable: true
     },
     {
       field: "TOTAL_LOSS",
@@ -636,7 +636,7 @@ const DATASX = () => {
         } else {
           return <></>;
         }
-      },
+      }, resizable: true
     },
   ];
   const [columnDefinition, setColumnDefinition] =
@@ -914,12 +914,13 @@ const DATASX = () => {
         </div>
         <div className='tracuuYCSXTable'>
           {readyRender && (
-            <DataGrid
+            <DataGrid             
               sx={{ fontSize: 12, flex: 1 }}
               components={{
                 Toolbar: CustomToolbarLICHSUINPUTSX,
                 LoadingOverlay: LinearProgress,
-              }}
+              }}     
+                        
               getRowId={(row) => row.id}
               loading={isLoading}
               rowHeight={30}
