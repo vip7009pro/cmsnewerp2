@@ -23,6 +23,8 @@ interface WH_IN_OUT {
   IO_Type: string;
   IO_Qty: number;
   CUST_NAME_KD: string;
+  IO_Note: string;
+  IO_Number: string;
 }
 interface TONKIEMGOP_CMS {
   G_CODE: string;
@@ -379,6 +381,8 @@ const KHOTP = () => {
         );
       },
     },
+    { field: "IO_Note", headerName: "IO_Note", width: 150 },
+    { field: "IO_Number", headerName: "IO_Number", width: 100 },
   ];
   const [columnDefinition, setColumnDefinition] =
     useState<Array<any>>(column_STOCK_CMS);
@@ -724,7 +728,7 @@ const KHOTP = () => {
         </div>
         <div className='tracuuWHTable'>
           {readyRender && (
-            <DataGrid
+            <DataGrid            
               sx={{ fontSize: 12, flex: 1 }}
               components={{
                 Toolbar: CustomToolbarPOTable,

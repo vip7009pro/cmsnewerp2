@@ -957,8 +957,17 @@ const BOM_MANAGER = () => {
         //console.log(response.data);
         if (response.data.tk_status !== "NG") {
           //console.log(response.data.data[0]);
-          let loaded_data: CODE_FULL_INFO = response.data.data[0];
-          setCodeFullInfo(loaded_data);
+          let loaded_data: CODE_FULL_INFO[] = response.data.data.map(
+            (element: CODE_FULL_INFO, index: number) => {
+              return {
+                ...element,
+                PROD_TYPE: element.PROD_TYPE.trim(),
+                id: index,
+              };
+            }
+          );
+
+          setCodeFullInfo(loaded_data[0]);
         } else {
           Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
           setisLoading(false);
@@ -980,6 +989,7 @@ const BOM_MANAGER = () => {
         handleGETBOMSX(datafilter[0].G_CODE);
         handleGETBOMGIA(datafilter[0].G_CODE);
       }
+      //console.log(datafilter[0]);
       handlecodefullinfo(datafilter[0].G_CODE);
     } else {
       setCodeDataTableFilter([]);
@@ -1179,18 +1189,18 @@ const BOM_MANAGER = () => {
   const handleAddNewCode = async () => {
     console.log(handleCheckCodeInfo());
     if (handleCheckCodeInfo()) {
-      let CODE_27 = "";
+      let CODE_27 = "C";
       if (
-        codefullinfo.PROD_TYPE === "TSP" ||
-        codefullinfo.PROD_TYPE === "OLED" ||
-        codefullinfo.PROD_TYPE === "UV"
+        codefullinfo.PROD_TYPE.trim() === "TSP" ||
+        codefullinfo.PROD_TYPE.trim() === "OLED" ||
+        codefullinfo.PROD_TYPE.trim() === "UV"
       ) {
         CODE_27 = "C";
-      } else if (codefullinfo.PROD_TYPE === "LABEL") {
+      } else if (codefullinfo.PROD_TYPE.trim() === "LABEL") {
         CODE_27 = "A";
-      } else if (codefullinfo.PROD_TYPE === "TAPE") {
+      } else if (codefullinfo.PROD_TYPE.trim() === "TAPE") {
         CODE_27 = "B";
-      } else if (codefullinfo.PROD_TYPE === "RIBBON") {
+      } else if (codefullinfo.PROD_TYPE.trim() === "RIBBON") {
         CODE_27 = "E";
       }
       let nextcodeinfo = await await getNextG_CODE(
@@ -1221,18 +1231,18 @@ const BOM_MANAGER = () => {
   };
   const handleAddNewVer = async () => {
     if (handleCheckCodeInfo()) {
-      let CODE_27 = "";
+      let CODE_27 = "C";
       if (
-        codefullinfo.PROD_TYPE === "TSP" ||
-        codefullinfo.PROD_TYPE === "OLED" ||
-        codefullinfo.PROD_TYPE === "UV"
+        codefullinfo.PROD_TYPE.trim() === "TSP" ||
+        codefullinfo.PROD_TYPE.trim() === "OLED" ||
+        codefullinfo.PROD_TYPE.trim() === "UV"
       ) {
         CODE_27 = "C";
-      } else if (codefullinfo.PROD_TYPE === "LABEL") {
+      } else if (codefullinfo.PROD_TYPE.trim() === "LABEL") {
         CODE_27 = "A";
-      } else if (codefullinfo.PROD_TYPE === "TAPE") {
+      } else if (codefullinfo.PROD_TYPE.trim() === "TAPE") {
         CODE_27 = "B";
-      } else if (codefullinfo.PROD_TYPE === "RIBBON") {
+      } else if (codefullinfo.PROD_TYPE.trim() === "RIBBON") {
         CODE_27 = "E";
       }
       let newGCODE = "";
@@ -2056,7 +2066,7 @@ const BOM_MANAGER = () => {
                         name='phanloaisanpham'
                         value={
                           codefullinfo?.PROD_TYPE === null
-                            ? ""
+                            ? "C"
                             : codefullinfo?.PROD_TYPE
                         }
                         onChange={(e) => {
