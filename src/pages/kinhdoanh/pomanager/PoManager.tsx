@@ -476,6 +476,7 @@ const PoManager = () => {
               PO_DATE: uploadExcelJson[i].PO_DATE,
               RD_DATE: uploadExcelJson[i].RD_DATE,
               PROD_PRICE: uploadExcelJson[i].PROD_PRICE, 
+              REMARK: uploadExcelJson[i].REMARK, 
             })
               .then((response) => {
                 console.log(response.data.tk_status);

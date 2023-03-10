@@ -13,13 +13,23 @@ import {
 } from "devextreme-react/data-grid";
 import { employees } from "./employees";
 function DATATBNEW() {
+
+  const renderHeader =(data:any)=> {    
+    return (
+      <p style={{fontWeight:'bold', fontSize: 12, color: 'red'}}>{data.column.caption}</p>
+    )
+  }
+
+  const calculatedCellFunction = (data:any) => {
+    return (
+      data.EmployeeID + '_' + data.FullName
+    )
+  }
   return (
     <div
       className='App'
-      style={{
-        backgroundColor: "black",
-        padding: "10px",
-        width: "100%",
+      style={{        
+        width: "90%",
         height: "50vh",
       }}
     >
@@ -51,9 +61,9 @@ function DATATBNEW() {
         {/* or "onScroll" | "always" | "never" */}
         <Selection mode='multiple' selectAllMode='page' />
         <Editing
-          allowUpdating={true}
-          allowAdding={true}
-          allowDeleting={true}
+          allowUpdating={false}
+          allowAdding={false}
+          allowDeleting={false}
           mode='batch'
           confirmDelete={true}
           onChangesChange={(e) => {
@@ -73,6 +83,7 @@ function DATATBNEW() {
           caption={"Mã Nhân Viên"}
           fixed={false}
           width={100}
+          headerCellRender={renderHeader}
         ></Column>
         <Column
           dataField='FullName'
@@ -126,13 +137,20 @@ function DATATBNEW() {
           dataField='Notes'
           caption={"Ghi chú"}
           fixed={false}
-          width={100}
+          width={100}          
         ></Column>
         <Column
           dataField='ReportsTo'
           caption={"Báo cáo tới"}
           fixed={false}
           width={100}
+        ></Column>
+        <Column
+          dataField='autofield'
+          caption={"AUTO FIELD"}
+          fixed={false}
+          width={100}
+          calculateCellValue={calculatedCellFunction}          
         ></Column>
       </DataGrid>
     </div>
