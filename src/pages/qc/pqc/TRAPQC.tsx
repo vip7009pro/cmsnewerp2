@@ -73,6 +73,7 @@ interface PQC3_DATA {
   REMARK: string;
   WORST5: string;
   WORST5_MONTH: string;
+  ERR_CODE: string;
 }
 interface DAO_FILM_DATA {
   KNIFE_FILM_ID: string;
@@ -246,6 +247,7 @@ const TRAPQC = () => {
       headerName: "DEFECT_AMOUNT",
       width: 120,
     },
+    { field: "ERR_CODE", headerName: "ERR_CODE", width: 80 },
     { field: "DEFECT_PHENOMENON", headerName: "HIEN TUONG", width: 150 },
     {
       field: "DEFECT_IMAGE_LINK",
