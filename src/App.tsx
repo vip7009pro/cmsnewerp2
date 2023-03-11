@@ -63,6 +63,7 @@ import TRANGTHAICHITHI from "./pages/sx/TRANGTHAICHITHI/TRANGTHAICHITHI";
 import CAPASX from "./pages/qlsx/QLSXPLAN/CAPA/CAPASX";
 import KHOAO from "./pages/qlsx/QLSXPLAN/KHOAO/KHOAO";
 import DATATBNEW from "./pages/qlsx/QLSXPLAN/CAPA/DATATBNEW";
+import KHOLIEU from './pages/kho/kholieu/KHOLIEU';
 interface userDataInterface {
   EMPL_IMAGE?: string;
   ADD_COMMUNE: string;
@@ -760,6 +761,18 @@ function App() {
                           jobname='Leader'
                         >
                           <KHOAO />
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route
+                      path='khothat'
+                      element={
+                        <ProtectedRoute
+                          user={userData}
+                          maindeptname='all'
+                          jobname='Leader'
+                        >
+                          <KHOLIEU />
                         </ProtectedRoute>
                       }
                     />

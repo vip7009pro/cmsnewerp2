@@ -334,19 +334,26 @@ const Sidebar = () => {
           path: 'sx/eqstatus',
           icon: <MdOutlineSignalWifiStatusbarNull color='#cc00ff' size={25}/>,
           cName: 'sub-nav'
-        },        
+        },     
+        {
+          title: getlang('khothat',lang),
+          path: 'sx/khothat',
+          icon: <FaWarehouse color='#2BFC27' size={25}/>,
+          cName: 'sub-nav'
+        },       
+        {
+          title: getlang('khoao',lang),
+          path: 'sx/khoao',
+          icon: <FaWarehouse color='#fc00ff' size={25}/>,
+          cName: 'sub-nav'
+        },       
         {
           title: getlang('lichsuxuatlieuthat',lang),
           path: 'sx/lichsuxuatlieu',
           icon: <FcDataProtection color='#cc00ff' size={25}/>,
           cName: 'sub-nav'
         },        
-        {
-          title: getlang('khoao',lang),
-          path: 'sx/khoao',
-          icon: <FaWarehouse color='#fc00ff' size={25}/>,
-          cName: 'sub-nav'
-        },        
+           
       ]
     },   
     

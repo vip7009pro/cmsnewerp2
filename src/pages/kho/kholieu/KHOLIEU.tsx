@@ -72,6 +72,7 @@ const KHOLIEU = () => {
   const [codeCMS,setCodeCMS] =useState('');
   const [cust_name,setCustName] =useState('');
   const [prod_request_no,setProd_Request_No] =useState('');
+  const [plan_id,setPlanID] =useState('');
   const [alltime, setAllTime] = useState(false);  
   const [justbalancecode, setJustBalanceCode] = useState(true); 
   const [whdatatable, setWhDataTable] = useState<Array<any>>([]);
@@ -183,6 +184,7 @@ const KHOLIEU = () => {
       M_CODE: m_code,
       FROM_DATE: fromdate,
       TO_DATE: todate,      
+      PLAN_ID: plan_id
     })
     .then(response => {
         //console.log(response.data.data);
@@ -307,6 +309,17 @@ const KHOLIEU = () => {
                     onChange={(e) => setProd_Request_No(e.target.value)}
                   ></input>
                 </label>
+              </div>        
+              <div className='forminputcolumn'>                
+                <label>
+                  <b>PLAN_ID:</b>{" "}
+                  <input
+                    type='text'
+                    placeholder='1F80008A'
+                    value={plan_id}
+                    onChange={(e) => setPlanID(e.target.value)}
+                  ></input>
+                </label>               
               </div>        
               <div className='forminputcolumn'>
               <label>
