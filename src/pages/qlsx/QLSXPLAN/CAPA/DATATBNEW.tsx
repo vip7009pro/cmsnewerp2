@@ -49,7 +49,7 @@ function DATATBNEW() {
         onSelectionChanged={(e) => {}}
         onRowClick={(e) => {
           console.log(e.data);
-        }}
+        }}        
       >
         <LoadPanel enabled />
         <Scrolling
