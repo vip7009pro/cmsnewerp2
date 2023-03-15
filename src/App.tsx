@@ -64,6 +64,7 @@ import CAPASX from "./pages/qlsx/QLSXPLAN/CAPA/CAPASX";
 import KHOAO from "./pages/qlsx/QLSXPLAN/KHOAO/KHOAO";
 import DATATBNEW from "./pages/qlsx/QLSXPLAN/CAPA/DATATBNEW";
 import KHOLIEU from './pages/kho/kholieu/KHOLIEU';
+import BANLIEU from './pages/sx/BANLIEU/BANLIEU';
 interface userDataInterface {
   EMPL_IMAGE?: string;
   ADD_COMMUNE: string;
@@ -507,7 +508,7 @@ function App() {
                     <Route path='qlsxplan' element={<QLSXPLAN />} />
                     <Route path='quanlycodebom' element={<BOM_MANAGER />} />
                     <Route path='capamanager' element={<CAPASX />} />
-                    <Route path='qlsxmrp' element={<DATATBNEW />} />
+                    <Route path='qlsxmrp' element={<BANLIEU />} />
                   </Route>
                   <Route
                     path='qc'

@@ -55,8 +55,10 @@ function DATATBNEW() {
         <Scrolling
           useNative={false}
           scrollByContent={true}
-          scrollByThumb={true}
+          scrollByThumb={false}
           showScrollbar='onHover'
+          mode='virtual'
+          columnRenderingMode="virtual"
         />{" "}
         {/* or "onScroll" | "always" | "never" */}
         <Selection mode='multiple' selectAllMode='page' />
@@ -82,13 +84,12 @@ function DATATBNEW() {
           dataField='EmployeeID'
           caption={"Mã Nhân Viên"}
           fixed={false}
-          width={100}
-          headerCellRender={renderHeader}
+          width={100}          
         ></Column>
         <Column
           dataField='FullName'
           caption={"Tên đầy đủ"}
-          fixed={true}
+          fixed={false}
         ></Column>
         <Column dataField='Position' caption={"Vị trí"} fixed={false}></Column>
         <Column

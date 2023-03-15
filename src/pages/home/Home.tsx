@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { generalQuery } from "../../api/Api";
 import Swal from "sweetalert2";
 import PrimarySearchAppBar from "../../components/AppBar/AppBarCustom";
+import CHAT from "../chat/CHAT";
 export const current_ver: number = 76;
 function Home() {
   const springs = useSpring({
@@ -90,8 +91,8 @@ function Home() {
             )}
           </animated.div>
         </div>
-       {/*  <div className="chatroom">
-          CHAT
+        {/* <div className="chatroom">
+          <CHAT/>
         </div> */}
       </div>
     </div>
