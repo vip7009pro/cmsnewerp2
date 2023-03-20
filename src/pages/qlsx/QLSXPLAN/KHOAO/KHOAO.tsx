@@ -422,7 +422,7 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
             .catch((error) => {
               console.log(error);
             });
-          if (checklieuchithi === true) {
+          if (checklieuchithi === true && nextPlan !== tonkhoaodatafilter[i].PLAN_ID_INPUT) {
             await generalQuery("xuatkhoao", {
               FACTORY: tonkhoaodatafilter[i].FACTORY,
               PHANLOAI: "N",
@@ -475,8 +475,12 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
         if (err_code !== "0") {
           Swal.fire("Thông báo", "Có lỗi: " + err_code, "error");
         }
-        setTonKhoAoDataFilter([]);
-        handle_loadKhoAo();
+        else
+        {
+          setTonKhoAoDataFilter([]);
+          handle_loadKhoAo();
+        }
+        
       } else {
         Swal.fire("Thông báo", "Chọn ít nhất 1 liệu để xuất kho", "error");
       }

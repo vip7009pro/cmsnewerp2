@@ -371,6 +371,11 @@ const CHITHI_COMPONENT = ({
   }, [PLAN_ID]);
   return (
     <div className='chithicomponent'>     
+    <div className="qcpass">
+        <img alt="qcpass" src="/QC PASS20.png" width={440-100-10} height={400-100}/>
+      </div>    
+     
+
       {
         <div className='tieudeycsx'>
           <div className='leftlogobarcode'>
@@ -400,8 +405,7 @@ const CHITHI_COMPONENT = ({
             )}
           </div>
           <div className='soycsx'>
-            <div className='ycsxbarcode'>
-              
+            <div className='ycsxbarcode'>              
               <Barcode
                 value={request_codeinfo[0]?.PROD_REQUEST_NO}
                 format='CODE128'

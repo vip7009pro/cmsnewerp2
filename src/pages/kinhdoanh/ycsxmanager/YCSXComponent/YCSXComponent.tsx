@@ -296,8 +296,8 @@ const YCSXComponent = ({G_CODE,PROD_TYPE,PROD_MAIN_MATERIAL,G_NAME,EMPL_NAME,EMP
     console.log(PDBV);
 
   return (
-    <div className='ycsxcomponent'>     
-      {(PDBV === 'Y') && <div className="qcpass">
+    <div className='ycsxcomponent'>
+      {<div className="qcpass">
         <img alt="qcpass" src="/QC PASS20.png" width={440-100-10} height={400-100}/>
       </div>  }  
      { request_codeinfo[0].PDUYET &&  <div className='tieudeycsx'>
@@ -638,9 +638,7 @@ const YCSXComponent = ({G_CODE,PROD_TYPE,PROD_MAIN_MATERIAL,G_NAME,EMPL_NAME,EMP
                         <td>{element.TONG_TON_LIEU.toLocaleString("en-US")} M</td>
                         <td>{element.REMARK}</td>
                     </tr>)
-                }          
-                     
-                   
+                } 
                 </tbody>
               </table>
             </div>

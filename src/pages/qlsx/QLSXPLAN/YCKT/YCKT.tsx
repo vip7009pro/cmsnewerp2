@@ -262,7 +262,7 @@ const YCKT = ({
     handleGetChiThiTable();
   }, [PLAN_ID]);
   return (
-    <div className='chithicomponent'>
+    <div className='ycktcomponent'>
       {PDBV === "Y" && (
         <div className='qcpass'>
           <img
