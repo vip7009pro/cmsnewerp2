@@ -297,7 +297,7 @@ const YCSXComponent = ({G_CODE,PROD_TYPE,PROD_MAIN_MATERIAL,G_NAME,EMPL_NAME,EMP
 
   return (
     <div className='ycsxcomponent'>
-      {<div className="qcpass">
+      {(PDBV==='Y') &&  <div className="qcpass">
         <img alt="qcpass" src="/QC PASS20.png" width={440-100-10} height={400-100}/>
       </div>  }  
      { request_codeinfo[0].PDUYET &&  <div className='tieudeycsx'>

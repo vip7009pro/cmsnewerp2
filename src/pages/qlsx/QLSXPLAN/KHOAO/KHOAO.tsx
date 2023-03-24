@@ -447,6 +447,7 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
                     M_LOT_NO: tonkhoaodatafilter[i].M_LOT_NO,
                     TOTAL_IN_QTY: tonkhoaodatafilter[i].TOTAL_IN_QTY,
                     USE_YN: "O",
+                    IN_KHO_ID:  tonkhoaodatafilter[i].IN_KHO_ID,
                   })
                     .then((response) => {
                       console.log(response.data);
