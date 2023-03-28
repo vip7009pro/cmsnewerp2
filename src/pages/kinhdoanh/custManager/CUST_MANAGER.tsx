@@ -348,15 +348,31 @@ const CUST_MANAGER = () => {
                   <button
                     className='thembutton'
                     onClick={() => {
-                      handle_addCustomer();
+                      if(userData.EMPL_NO==='LVT1906' || userData.EMPL_NO==='NHU1903')
+                      {
+                        handle_addCustomer();
+                      }
+                      else
+                      {
+                        Swal.fire('Thông báo','Chỉ leader kinh doanh mới tạo khách mới được', 'error');
+
+                      }
+                      
                     }}
                   >
                     Thêm
                   </button>
                   <button
                     className='suabutton'
-                    onClick={() => {
-                      handle_editCustomer();
+                    onClick={() => {                     
+                      if(userData.EMPL_NO==='LVT1906' || userData.EMPL_NO==='NHU1903')
+                      {
+                        handle_editCustomer();
+                      }
+                      else
+                      {
+                        Swal.fire('Thông báo','Chỉ leader kinh doanh mới sửa khách được', 'error');
+                      }
                     }}
                   >
                     Sửa

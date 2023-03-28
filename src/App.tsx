@@ -508,7 +508,7 @@ function App() {
                     <Route path='qlsxplan' element={<QLSXPLAN />} />
                     <Route path='quanlycodebom' element={<BOM_MANAGER />} />
                     <Route path='capamanager' element={<CAPASX />} />
-                    <Route path='qlsxmrp' element={<BANLIEU />} />
+                    <Route path='qlsxmrp' element={<CAPASX />} />
                   </Route>
                   <Route
                     path='qc'

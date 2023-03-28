@@ -1,14 +1,12 @@
 import {
   Autocomplete,
+  Button,
   IconButton,
   LinearProgress,
   TextField,
 } from "@mui/material";
-import {
-  GridToolbarContainer,
-  GridToolbarQuickFilter,
-} from "@mui/x-data-grid";
-import { Column, Editing, FilterRow, LoadPanel, Pager, Scrolling, SearchPanel, Selection, DataGrid } from "devextreme-react/data-grid";
+
+import { Column, Editing, FilterRow,  Pager, Scrolling, SearchPanel, Selection, DataGrid, Paging, Toolbar, Item } from "devextreme-react/data-grid";
 import moment from "moment";
 import React, { useContext, useEffect, useState, useTransition } from "react";
 import {
@@ -360,87 +358,7 @@ const CS = () => {
     { field: "MA_DAO", headerName: "MA_DAO", width: 100 },
     { field: "REMARK", headerName: "REMARK", width: 150 },
   ];
-  const column_cndb_data = [
-    { field: "CNDB_DATE", type: "date", headerName: "CNDB_DATE", width: 120 },
-    { field: "CNDB_NO", headerName: "CNDB_NO", width: 80 },
-    { field: "CNDB_ENCODE", headerName: "CNDB_ENCODE", width: 100 },
-    { field: "M_NAME", headerName: "M_NAME", width: 150 },
-    { field: "DEFECT_NAME", headerName: "DEFECT_NAME", width: 100 },
-    { field: "DEFECT_CONTENT", headerName: "DEFECT_CONTENT", width: 150 },
-    { field: "REG_EMPL_NO", headerName: "REG_EMPL_NO", width: 150 },
-    { field: "REMARK", headerName: "REMARK", width: 80 },
-    { field: "M_NAME2", headerName: "M_NAME2", width: 120 },
-    {
-      field: "INS_DATE",
-      type: "date",
-      headerName: "INS_DATE",
-      width: 120,
-      renderCell: (params: any) => {
-        return (
-          <span style={{ color: "blue" }}>
-            {moment.utc(params.row.INS_DATE).format("YYYY-MM-DD HH:mm:ss")}
-          </span>
-        );
-      },
-    },
-    {
-      field: "APPROVAL_STATUS",
-      headerName: "APPROVAL_STATUS",
-      width: 120,
-      renderCell: (params: any) => {
-        if (params.row.APPROVAL_STATUS === "Y")
-          return <span style={{ color: "green" }}>Phê Duyệt</span>;
-        return <span style={{ color: "red" }}>Chưa duyệt</span>;
-      },
-    },
-    { field: "APPROVAL_EMPL", headerName: "APPROVAL_EMPL", width: 120 },
-    {
-      field: "APPROVAL_DATE",
-      headerName: "APPROVAL_DATE",
-      width: 80,
-      renderCell: (params: any) => {
-        if (params.row.APPROVAL_DATE !== null)
-          return (
-            <span style={{ color: "blue" }}>
-              {moment
-                .utc(params.row.APPROVAL_DATE)
-                .format("YYYY-MM-DD HH:mm:ss")}
-            </span>
-          );
-        return <span style={{ color: "red" }}>Chưa duyệt</span>;
-      },
-    },
-    { field: "G_CODE", headerName: "G_CODE", width: 80 },
-    { field: "G_NAME", headerName: "G_NAME", width: 250 },
-  ];
-  const [columnDefinition, setColumnDefinition] =
-    useState<Array<any>>(column_pqc1_data);
-  function CustomToolbarPOTable() {
-    return (
-      <GridToolbarContainer>
-        <IconButton
-          className='buttonIcon'
-          onClick={() => {
-            SaveExcel(pqcdatatable, "Inspection Data Table");
-          }}
-        >
-          <AiFillFileExcel color='green' size={25} />
-          SAVE
-        </IconButton>
-        <span
-          style={{
-            fontWeight: "bold",
-            fontSize: 18,
-            paddingLeft: 20,
-            color: "blue",
-          }}
-        >
-          {sumaryINSPECT}
-        </span>
-        <GridToolbarQuickFilter />
-      </GridToolbarContainer>
-    );
-  }
+
   const handletraInspectionInput = () => {
     setisLoading(true);
     let summaryInput: number = 0;
@@ -544,50 +462,6 @@ const CS = () => {
         console.log(error);
       });
   };
-  const handletraInspectionNG = () => {
-    setSummaryInspect("");
-    setisLoading(true);
-    generalQuery("traCNDB", {
-      ALLTIME: alltime,
-      FROM_DATE: fromdate,
-      TO_DATE: todate,
-      CUST_NAME: cust_name,
-      process_lot_no: process_lot_no,
-      G_CODE: codeCMS,
-      G_NAME: codeKD,
-      PROD_TYPE: prod_type,
-      EMPL_NAME: empl_name,
-      PROD_REQUEST_NO: prodrequestno,
-    })
-      .then((response) => {
-        //console.log(response.data.data);
-        if (response.data.tk_status !== "NG") {
-          const loadeddata: CNDB_DATA[] = response.data.data.map(
-            (element: CNDB_DATA, index: number) => {
-              return {
-                ...element,
-                CNDB_DATE: moment.utc(element.CNDB_DATE).format("YYYY-MM-DD"),
-                id: index,
-              };
-            }
-          );
-          setPqcDataTable(loadeddata);
-          setReadyRender(true);
-          setisLoading(false);
-          Swal.fire(
-            "Thông báo",
-            "Đã load " + response.data.data.length + " dòng",
-            "success"
-          );
-        } else {
-          Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
-          setisLoading(false);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
   const handletraInspectionInOut = () => {
     setSummaryInspect("");
     setisLoading(true);
@@ -668,6 +542,7 @@ const CS = () => {
         console.log(error);
       });
   }
+
   useEffect(() => {
     //setColumnDefinition(column_pqc3_data);
   }, []);
@@ -794,8 +669,7 @@ const CS = () => {
               className='pqc1button'
               onClick={() => {
                 setisLoading(true);
-                setReadyRender(false);
-                setColumnDefinition(column_pqc1_data);
+                setReadyRender(false);              
                 handletraInspectionInput();
               }}
             >
@@ -805,8 +679,7 @@ const CS = () => {
               className='pqc3button'
               onClick={() => {
                 setisLoading(true);
-                setReadyRender(false);
-                setColumnDefinition(column_pqc3_data);
+                setReadyRender(false);                
                 handletraInspectionOutput();
               }}
             >
@@ -816,8 +689,7 @@ const CS = () => {
               className='daofilmbutton'
               onClick={() => {
                 setisLoading(true);
-                setReadyRender(false);
-                setColumnDefinition(column_daofilm_data);
+                setReadyRender(false);                
                 handletraInspectionInOut();
               }}
             >
@@ -849,21 +721,21 @@ const CS = () => {
             dataSource={pqcdatatable}
             columnWidth='auto'
             keyExpr='CONFIRM_ID'
-            paging={{ enabled: true, pageIndex: 0, pageSize: 50 }}
             height={"70vh"}
             onSelectionChanged={(e) => {}}
             onRowClick={(e) => {
-              console.log(e.data);
-            }}        
+              //console.log(e.data);
+            }}              
           >
-            <LoadPanel enabled />
+            
             <Scrolling
-              useNative={false}
+              useNative={true}
               scrollByContent={true}
               scrollByThumb={true}
               showScrollbar='onHover'
+              mode='virtual'
             />           
-            <Selection mode='multiple' selectAllMode='page' />
+            <Selection mode='multiple' selectAllMode='allPages' />
             <Editing
               allowUpdating={false}
               allowAdding={false}
@@ -871,17 +743,21 @@ const CS = () => {
               mode='batch'
               confirmDelete={true}
               onChangesChange={(e) => {
-                
               }}
-            />
-            <Pager
-              showPageSizeSelector={true}
-              allowedPageSizes={[5, 10, 15, 20, 100, 1000, 10000, 100000, 1000000]}
-              showNavigationButtons={true}
-            />
+            /> 
+            <Toolbar disabled={false}>             
+              <Item location="before">
+               <Button>OK MA</Button>
+               <Button>OK MA1</Button>
+               <Button>OK MA2</Button>
+              </Item>
+              <Item
+                name="searchPanel"
+              />
+            </Toolbar>
             <FilterRow visible={true} />
-            <SearchPanel visible={true} />
-            <Column dataField='YEAR_WEEK' caption='YEAR_WEEK' width={100}></Column>
+            <SearchPanel visible={true} /> 
+            {/* <Column dataField='YEAR_WEEK' caption='YEAR_WEEK' width={100}></Column>
             <Column dataField='CONFIRM_ID' caption='CONFIRM_ID' width={100}></Column>
             <Column dataField='CONFIRM_DATE' caption='CONFIRM_DATE' width={100}></Column>
             <Column dataField='CONTACT_ID' caption='CONTACT_ID' width={100}></Column>
@@ -908,11 +784,19 @@ const CS = () => {
             <Column dataField='PROD_TYPE' caption='PROD_TYPE' width={100}></Column>
             <Column dataField='PROD_MODEL' caption='PROD_MODEL' width={100}></Column>
             <Column dataField='PROD_PROJECT' caption='PROD_PROJECT' width={100}></Column>
-            <Column dataField='PROD_LAST_PRICE' caption='PROD_LAST_PRICE' width={100}></Column>            
+            <Column dataField='PROD_LAST_PRICE' caption='PROD_LAST_PRICE' width={100}></Column>     */}
+            <Paging defaultPageSize={15} />
+            <Pager
+              showPageSizeSelector={true}
+              allowedPageSizes={[5, 10, 15, 20, 100, 1000, 10000, 'all']}
+              showNavigationButtons={true}
+              showInfo={true}
+              infoText="Page #{0}. Total: {1} ({2} items)"
+              displayMode='compact'
+            />        
           </DataGrid>
           )}
         </div>  
-        
         </div>
       </div>
     </div>
