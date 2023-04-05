@@ -38,12 +38,14 @@ interface SX_DATA {
   PROCESS_NUMBER: number;
   STEP: number;
   M_NAME: string;
+  WAREHOUSE_OUTPUT_QTY: number;
   TOTAL_OUT_QTY: number;
   USED_QTY: number;
   REMAIN_QTY: number;
   PD: number;
   CAVITY: number;
   SETTING_MET: number;
+  WAREHOUSE_ESTIMATED_QTY: number;
   ESTIMATED_QTY: number;
   KETQUASX: number;
   LOSS_SX: number;
@@ -77,6 +79,7 @@ interface SX_DATA {
   REMARK: string;
 }
 interface YCSX_SX_DATA {
+  YCSX_STATUS: string,
   PHAN_LOAI: string;
   PROD_REQUEST_NO: string;
   G_NAME: string;
@@ -88,10 +91,12 @@ interface YCSX_SX_DATA {
   PROD_REQUEST_QTY: number;
   M_NAME: string;
   M_OUTPUT: number;
+  SCANNED_QTY: number;
   REMAIN_QTY: number;
   USED_QTY: number;
   PD: number;
   CAVITY: number;
+  WAREHOUSE_ESTIMATED_QTY: number;
   ESTIMATED_QTY: number;
   CD1: number;
   CD2: number;
@@ -102,8 +107,34 @@ interface YCSX_SX_DATA {
   LOSS_SX3: number;
   LOSS_SX4: number;
   TOTAL_LOSS: number;
+  TOTAL_LOSS2: number;
+}
+interface LOSS_TABLE_DATA {
+  XUATKHO_MET: number,
+  XUATKHO_EA: number,
+  SCANNED_MET: number,
+  SCANNED_EA: number,
+  PROCESS1_RESULT: number,
+  PROCESS2_RESULT: number,
+  INSPECTION_INPUT: number,
+  INSPECTION_OUTPUT: number,
+  LOSS_INS_OUT_VS_SCANNED_EA: number,
+  LOSS_INS_OUT_VS_XUATKHO_EA: number,
 }
 const DATASX = () => {
+  const [showloss,setShowLoss]  = useState(false);
+  const [losstableinfo,setLossTableInfo] = useState<LOSS_TABLE_DATA>({
+    XUATKHO_MET: 0,
+  XUATKHO_EA: 0,
+  SCANNED_MET: 0,
+  SCANNED_EA: 0,
+  PROCESS1_RESULT: 0,
+  PROCESS2_RESULT: 0,
+  INSPECTION_INPUT: 0,
+  INSPECTION_OUTPUT: 0,
+  LOSS_INS_OUT_VS_SCANNED_EA: 0,
+  LOSS_INS_OUT_VS_XUATKHO_EA: 0,
+  });
   const [selectionModel_INPUTSX, setSelectionModel_INPUTSX] = useState<any>([]);
   const [readyRender, setReadyRender] = useState(false);
   const [selection, setSelection] = useState<any>({
@@ -176,6 +207,23 @@ const DATASX = () => {
     { field: "STEP", headerName: "STEP", minWidth: 120, flex: 1 },
     { field: "M_NAME", headerName: "M_NAME", minWidth: 120, flex: 1 },
     {
+      field: "WAREHOUSE_OUTPUT_QTY",
+      headerName: "WAREHOUSE_OUTPUT_QTY",
+      minWidth: 150,
+      flex: 1,
+      renderCell: (params: any) => {
+        if (params.row.WAREHOUSE_OUTPUT_QTY !== null) {
+          return (
+            <span style={{ color: "blue" }}>
+              {params.row.WAREHOUSE_OUTPUT_QTY.toLocaleString("en-US")}
+            </span>
+          );
+        } else {
+          return <></>;
+        }
+      },
+    },
+    {
       field: "TOTAL_OUT_QTY",
       headerName: "TOTAL_OUT_QTY",
       minWidth: 120,
@@ -238,6 +286,23 @@ const DATASX = () => {
           return (
             <span style={{ color: "blue" }}>
               {params.row.SETTING_MET.toLocaleString("en-US")}
+            </span>
+          );
+        } else {
+          return <></>;
+        }
+      },
+    },
+    {
+      field: "WAREHOUSE_ESTIMATED_QTY",
+      headerName: "WAREHOUSE_ESTIMATED_QTY",
+      minWidth: 120,
+      flex: 1,
+      renderCell: (params: any) => {
+        if (params.row.WAREHOUSE_ESTIMATED_QTY !== null) {
+          return (
+            <span style={{ color: "blue" }}>
+              {params.row.WAREHOUSE_ESTIMATED_QTY.toLocaleString("en-US")}
             </span>
           );
         } else {
@@ -402,17 +467,18 @@ const DATASX = () => {
     { field: "REMARK", headerName: "REMARK", minWidth: 120, flex: 1 },
   ];
   const column_ycsxdatasx = [
-    { field: "PHAN_LOAI", headerName: "PHAN_LOAI", minWidth: 120, flex: 1, resizable: true },
-    { field: "PROD_REQUEST_NO", headerName: "PROD_REQUEST_NO", width: 80, resizable: true },
-    { field: "G_CODE", headerName: "G_CODE", width: 80, resizable: true },
-    { field: "G_NAME", headerName: "G_NAME", width: 180, resizable: true },
-    { field: "G_NAME_KD", headerName: "G_NAME_KD", width: 120, resizable: true },
-    { field: "FACTORY", headerName: "FACTORY", width: 80, resizable: true },
-    { field: "EQ1", headerName: "EQ1", width: 80, resizable: true },
-    { field: "EQ2", headerName: "EQ2", width: 80, resizable: true },
-    { field: "PROD_REQUEST_DATE", headerName: "YCSX_DATE", width: 120, resizable: true },
-    { field: "PROD_REQUEST_QTY", headerName: "YCSX_QTY", width: 80, resizable: true },
-    { field: "M_NAME", headerName: "M_NAME", width: 150, resizable: true },
+    { field: "YCSX_STATUS", headerName: "YCSX_STATUS", minWidth: 120, flex: 1, },
+    { field: "PHAN_LOAI", headerName: "PHAN_LOAI", minWidth: 120, flex: 1, },
+    { field: "PROD_REQUEST_NO", headerName: "PROD_REQUEST_NO", width: 80, },
+    { field: "G_CODE", headerName: "G_CODE", width: 80, },
+    { field: "G_NAME", headerName: "G_NAME", width: 180, },
+    { field: "G_NAME_KD", headerName: "G_NAME_KD", width: 120, },
+    { field: "FACTORY", headerName: "FACTORY", width: 80, },
+    { field: "EQ1", headerName: "EQ1", width: 80, },
+    { field: "EQ2", headerName: "EQ2", width: 80, },
+    { field: "PROD_REQUEST_DATE", headerName: "YCSX_DATE", width: 120, },
+    { field: "PROD_REQUEST_QTY", headerName: "YCSX_QTY", width: 80, },
+    { field: "M_NAME", headerName: "M_NAME", width: 150, },
     {
       field: "M_OUTPUT",
       headerName: "M_OUTPUT",
@@ -427,7 +493,23 @@ const DATASX = () => {
         } else {
           return <></>;
         }
-      }, resizable: true
+      },
+    },
+    {
+      field: "SCANNED_QTY",
+      headerName: "SCANNED_QTY",
+      width: 100,
+      renderCell: (params: any) => {
+        if (params.row.SCANNED_QTY !== null) {
+          return (
+            <span style={{ color: "blue" }}>
+              {params.row.SCANNED_QTY.toLocaleString("en-US")}
+            </span>
+          );
+        } else {
+          return <></>;
+        }
+      },
     },
     {
       field: "REMAIN_QTY",
@@ -443,7 +525,7 @@ const DATASX = () => {
         } else {
           return <></>;
         }
-      }, resizable: true
+      },
     },
     {
       field: "USED_QTY",
@@ -459,10 +541,26 @@ const DATASX = () => {
         } else {
           return <></>;
         }
-      }, resizable: true
+      },
     },
     { field: "PD", headerName: "PD", width: 80 },
     { field: "CAVITY", headerName: "CAVITY", width: 80 },
+    {
+      field: "WAREHOUSE_ESTIMATED_QTY",
+      headerName: "WAREHOUSE_ESTIMATED_QTY",
+      width: 150,
+      renderCell: (params: any) => {
+        if (params.row.WAREHOUSE_ESTIMATED_QTY !== null) {
+          return (
+            <span style={{ color: "green" }}>
+              {params.row.WAREHOUSE_ESTIMATED_QTY.toLocaleString("en-US")}
+            </span>
+          );
+        } else {
+          return <></>;
+        }
+      },
+    },
     {
       field: "ESTIMATED_QTY",
       headerName: "ESTIMATED_QTY",
@@ -477,7 +575,7 @@ const DATASX = () => {
         } else {
           return <></>;
         }
-      }, resizable: true
+      },
     },
     {
       field: "CD1",
@@ -493,7 +591,7 @@ const DATASX = () => {
         } else {
           return <></>;
         }
-      }, resizable: true
+      },
     },
     {
       field: "LOSS_SX1",
@@ -512,7 +610,7 @@ const DATASX = () => {
         } else {
           return <></>;
         }
-      }, resizable: true
+      },
     },
     {
       field: "CD2",
@@ -528,7 +626,7 @@ const DATASX = () => {
         } else {
           return <></>;
         }
-      }, resizable: true
+      },
     },
     {
       field: "LOSS_SX2",
@@ -547,7 +645,7 @@ const DATASX = () => {
         } else {
           return <></>;
         }
-      }, resizable: true
+      },
     },
     {
       field: "INS_INPUT",
@@ -563,7 +661,7 @@ const DATASX = () => {
         } else {
           return <></>;
         }
-      }, resizable: true
+      },
     },
     {
       field: "LOSS_SX3",
@@ -582,7 +680,7 @@ const DATASX = () => {
         } else {
           return <></>;
         }
-      }, resizable: true
+      },
     },
     {
       field: "INS_OUTPUT",
@@ -598,7 +696,7 @@ const DATASX = () => {
         } else {
           return <></>;
         }
-      }, resizable: true
+      },
     },
     {
       field: "LOSS_SX4",
@@ -617,7 +715,7 @@ const DATASX = () => {
         } else {
           return <></>;
         }
-      }, resizable: true
+      },
     },
     {
       field: "TOTAL_LOSS",
@@ -636,7 +734,26 @@ const DATASX = () => {
         } else {
           return <></>;
         }
-      }, resizable: true
+      },
+    },
+    {
+      field: "TOTAL_LOSS2",
+      headerName: "TOTAL_LOSS2",
+      minWidth: 120,
+      flex: 1,
+      renderCell: (params: any) => {
+        if (params.row.TOTAL_LOSS2 !== null) {
+          return (
+            <span style={{ color: "red", fontWeight: "bold", fontSize: 16 }}>
+              {params.row.TOTAL_LOSS2.toLocaleString("en-US", {
+                style: "percent",
+              })}
+            </span>
+          );
+        } else {
+          return <></>;
+        }
+      },
     },
   ];
   const [columnDefinition, setColumnDefinition] =
@@ -708,7 +825,9 @@ const DATASX = () => {
               };
             }
           );
-          setDataSXTable(loaded_data);
+         
+          setShowLoss(false);
+          setDataSXTable(loaded_data);          
           setReadyRender(true);
           setisLoading(false);
         } else {
@@ -736,7 +855,7 @@ const DATASX = () => {
       .then((response) => {
         //console.log(response.data.data);
         if (response.data.tk_status !== "NG") {
-          const loaded_data: SX_DATA[] = response.data.data.map(
+          const loaded_data: YCSX_SX_DATA[] = response.data.data.map(
             (element: YCSX_SX_DATA, index: number) => {
               return {
                 ...element,
@@ -747,6 +866,34 @@ const DATASX = () => {
               };
             }
           );
+          let temp_loss_info: LOSS_TABLE_DATA = {
+            XUATKHO_MET: 0,
+            XUATKHO_EA: 0,
+            SCANNED_MET: 0,
+            SCANNED_EA: 0,
+            PROCESS1_RESULT: 0,
+            PROCESS2_RESULT: 0,
+            INSPECTION_INPUT: 0,
+            INSPECTION_OUTPUT: 0,
+            LOSS_INS_OUT_VS_SCANNED_EA: 0,
+            LOSS_INS_OUT_VS_XUATKHO_EA: 0,
+          };
+
+          for(let i=0;i<loaded_data.length; i++)
+          {
+            temp_loss_info.XUATKHO_MET += loaded_data[i].M_OUTPUT;
+            temp_loss_info.XUATKHO_EA += loaded_data[i].WAREHOUSE_ESTIMATED_QTY;
+            temp_loss_info.SCANNED_MET += loaded_data[i].USED_QTY;
+            temp_loss_info.SCANNED_EA += loaded_data[i].ESTIMATED_QTY;
+            temp_loss_info.PROCESS1_RESULT += loaded_data[i].CD1;
+            temp_loss_info.PROCESS2_RESULT += loaded_data[i].CD2;
+            temp_loss_info.INSPECTION_INPUT += loaded_data[i].INS_INPUT;
+            temp_loss_info.INSPECTION_OUTPUT += loaded_data[i].INS_OUTPUT;
+            temp_loss_info.LOSS_INS_OUT_VS_SCANNED_EA = 1- temp_loss_info.INSPECTION_OUTPUT / temp_loss_info.SCANNED_EA ;
+            temp_loss_info.LOSS_INS_OUT_VS_XUATKHO_EA = 1- temp_loss_info.INSPECTION_OUTPUT / temp_loss_info.XUATKHO_EA ;           
+          };
+          setLossTableInfo(temp_loss_info);
+          setShowLoss(true);
           setDataSXTable(loaded_data);
           setReadyRender(true);
           setisLoading(false);
@@ -763,7 +910,7 @@ const DATASX = () => {
     //setColumnDefinition(column_inspect_output);
   }, []);
   return (
-    <div className='lichsuinputlieu'>
+    <div className='datasx'>
       <div className='tracuuDataInspection'>
         <div className='tracuuDataInspectionform'>
           <div className='forminput'>
@@ -912,6 +1059,38 @@ const DATASX = () => {
             </button>
           </div>
         </div>
+        { showloss && <div className="losstable">
+          <table>
+            <thead>
+              <tr>
+              <th style={{color:'black', fontWeight:'bold'}}>1.XUAT KHO MET</th>
+              <th style={{color:'black', fontWeight:'bold'}}>2.XUAT KHO EA</th>
+              <th style={{color:'black', fontWeight:'bold'}}>3.USED MET</th>
+              <th style={{color:'black', fontWeight:'bold'}}>4.USED EA</th>
+              <th style={{color:'black', fontWeight:'bold'}}>5.PROCESS 1 RESULT</th>
+              <th style={{color:'black', fontWeight:'bold'}}>6.PROCESS 2 RESULT</th>
+              <th style={{color:'black', fontWeight:'bold'}}>7.INSPECTION INPUT</th>
+              <th style={{color:'black', fontWeight:'bold'}}>8.INSPECTION OUTPUT</th>
+              <th style={{color:'black', fontWeight:'bold'}}>9.TOTAL_LOSS (8 vs 4) %</th>
+              <th style={{color:'black', fontWeight:'bold'}}>10.TOTAL_LOSS2 (8 vs2) %</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td style={{color:'blue', fontWeight:'bold'}}>{losstableinfo.XUATKHO_MET.toLocaleString("en-US")}</td>
+                <td style={{color:'blue', fontWeight:'bold'}}>{losstableinfo.XUATKHO_EA.toLocaleString("en-US")}</td>
+                <td style={{color:'#fc2df6', fontWeight:'bold'}}>{losstableinfo.SCANNED_MET.toLocaleString("en-US")}</td>
+                <td style={{color:'#fc2df6', fontWeight:'bold'}}>{losstableinfo.SCANNED_EA.toLocaleString("en-US")}</td>
+                <td style={{color:'green', fontWeight:'bold'}}>{losstableinfo.PROCESS1_RESULT.toLocaleString("en-US")}</td>
+                <td style={{color:'green', fontWeight:'bold'}}>{losstableinfo.PROCESS2_RESULT.toLocaleString("en-US")}</td>
+                <td style={{color:'green', fontWeight:'bold'}}>{losstableinfo.INSPECTION_INPUT.toLocaleString("en-US")}</td>
+                <td style={{color:'green', fontWeight:'bold'}}>{losstableinfo.INSPECTION_OUTPUT.toLocaleString("en-US")}</td>
+                <td style={{color:'#b56600', fontWeight:'bold'}}>{(losstableinfo.LOSS_INS_OUT_VS_SCANNED_EA*100).toLocaleString("en-US")}</td>
+                <td style={{color:'red', fontWeight:'bold'}}>{(losstableinfo.LOSS_INS_OUT_VS_XUATKHO_EA*100).toLocaleString("en-US")}</td>               
+              </tr>
+            </tbody>
+          </table>
+        </div>}
         <div className='tracuuYCSXTable'>
           {readyRender && (
             <DataGrid             

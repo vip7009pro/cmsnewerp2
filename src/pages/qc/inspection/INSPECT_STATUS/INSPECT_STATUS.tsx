@@ -1,9 +1,11 @@
+import { MenuItem, Select, TextField } from "@mui/material";
 import moment from "moment";
 import React, { useEffect, useState } from "react";
 import { generalQuery } from "../../../../api/Api";
 import INSPECT_COMPONENT from "./INSPECT_COMPONENT";
 import "./INSPECT_STATUS.scss";
 import INS_SUMMARY from "./INS_SUMMARY";
+import INS_SUMMARY2 from "./INS_SUMMARY2";
 interface INS_STATUS {
   KHUVUC: string;
   FACTORY: string;
@@ -20,9 +22,25 @@ interface INS_STATUS {
   G_NAME_KD: string;
   G_NAME: string;
 }
+interface SummaryData {
+  totalSheetA:  number,
+    totalRollB:  number,
+    totalNormal:  number,
+    totalOLED:  number,
+    totalUV:  number,
+}
 
 const INSPECT_STATUS = () => {
+  const [searchString, setSearchString]= useState('');
+  const [selectedFactory, setSelectedFactory] = useState(0);
   const [ins_status_data, setIns_Status_Data] = useState<INS_STATUS[]>([]);
+  const [inspectionsummary,setInspectionSummary] = useState<SummaryData>({
+    totalSheetA:  0,
+    totalRollB:  0,
+    totalNormal:  0,
+    totalOLED:  0,
+    totalUV:  0,
+  })
 
   const handle_getINS_STATUS = () => {
     generalQuery("getIns_Status", {})
@@ -44,6 +62,23 @@ const INSPECT_STATUS = () => {
             }
           );
           //console.log(loaded_data);
+          let tem_summary_data : SummaryData= {
+            totalSheetA:  0,
+            totalRollB:  0,
+            totalNormal:  0,
+            totalOLED:  0,
+            totalUV:  0,
+          };
+
+          for(let i=0; i< loaded_data.length;i++)
+          {
+            tem_summary_data.totalSheetA += loaded_data[i].KHUVUC === 'A'? loaded_data[i].EMPL_COUNT :0 ;
+            tem_summary_data.totalRollB += loaded_data[i].KHUVUC === 'B'? loaded_data[i].EMPL_COUNT :0 ;
+            tem_summary_data.totalNormal += loaded_data[i].KHUVUC === 'N'? loaded_data[i].EMPL_COUNT :0 ;
+            tem_summary_data.totalOLED += loaded_data[i].KHUVUC === 'O'? loaded_data[i].EMPL_COUNT :0 ;
+            tem_summary_data.totalUV += loaded_data[i].KHUVUC === 'U'? loaded_data[i].EMPL_COUNT :0 ;
+          }
+          setInspectionSummary(tem_summary_data);
           setIns_Status_Data(loaded_data);
         } else {
         }
@@ -56,7 +91,7 @@ const INSPECT_STATUS = () => {
     handle_getINS_STATUS();   
     let intervalID = window.setInterval(() => {
       handle_getINS_STATUS();
-      console.log('ff')
+      //console.log('ff')
     }, 3000);
     return () => {
       window.clearInterval(intervalID);
@@ -65,15 +100,31 @@ const INSPECT_STATUS = () => {
 
   return (
     <div className='ins_status'>
-      <div className="ins_summary">
-        <INS_SUMMARY INS_DATA={ins_status_data}/>
+      <div className="ins_summary">    
+      <div className="selectform">
+        <div className="label">
+          Select Factory
+        </div>
+      <Select value={selectedFactory} label='Select Factory' onChange={(e)=> {setSelectedFactory(Number(e.target.value))}} style={{width: '200px', height: '40px'}} placeholder='Chọn nhà máy'>
+        <MenuItem value={0}>ALL</MenuItem>
+        <MenuItem value={1}>NM1</MenuItem>
+        <MenuItem value={2}>NM3</MenuItem>
+       </Select>
+       <TextField placeholder="Search Code" value={searchString} onChange={(e)=> {setSearchString(e.target.value)}} />
+        </div>    
+       
+        {/* <INS_SUMMARY INS_DATA={ins_status_data}/>
+        <INS_SUMMARY INS_DATA={ins_status_data}/> */}        
       </div>
       <div className="ins_div">
-      <div className='NM1'>
-        <div className='title'>NM1 INSPECTION STATUS</div>
+      {(selectedFactory ===0  || selectedFactory ===1) && <div className='NM1'>
+        <div className='title'>NM1 INSPECTION STATUS ({inspectionsummary.totalSheetA + inspectionsummary.totalRollB} người)</div>
         <div className='table'>
           <div className='xuongA'>
-             <b>Xưởng A:</b>
+            <div className="subtitle">
+            <b>Xưởng A: ({inspectionsummary.totalSheetA} người đang kiểm tra)</b> 
+            </div>
+            <div className="submachine">
             {ins_status_data
               .filter((element: INS_STATUS) => element.KHUVUC === "A")
               .map((element: INS_STATUS, index: number) => {
@@ -81,6 +132,7 @@ const INSPECT_STATUS = () => {
                   <INSPECT_COMPONENT
                     key={index}
                     INS_DATA={{
+                      SEARCH_STRING: searchString,
                       FACTORY: element.FACTORY,
                       EQ_NAME: element.EQ_NAME,
                       EMPL_COUNT: element.EMPL_COUNT,
@@ -94,13 +146,20 @@ const INSPECT_STATUS = () => {
                       INS_DATE: element.INS_DATE,
                       UPD_EMPL: element.UPD_EMPL,
                       UPD_DATE: element.UPD_DATE,
+                      
                     }}
                   />
                 );
               })}
+            </div>
+             
+            
           </div>
           <div className='xuongB'>
-            <b>Xưởng B:</b>
+            <div className="subtitle">
+            <b>Xưởng B: ({inspectionsummary.totalRollB} người đang kiểm tra)</b>
+            </div>
+            <div className="submachine">
             {ins_status_data
               .filter((element: INS_STATUS) => element.KHUVUC === "B")
               .map((element: INS_STATUS, index: number) => {
@@ -108,6 +167,7 @@ const INSPECT_STATUS = () => {
                   <INSPECT_COMPONENT
                     key={index}
                     INS_DATA={{
+                      SEARCH_STRING: searchString,
                       FACTORY: element.FACTORY,
                       EQ_NAME: element.EQ_NAME,
                       EMPL_COUNT: element.EMPL_COUNT,
@@ -125,21 +185,28 @@ const INSPECT_STATUS = () => {
                   />
                 );
               })}
+            </div>
+            
+           
           </div>
         </div>
-      </div>
-      <div className='NM2'>
-        <div className='title'>NM2 INSPECTION STATUS</div>
+      </div>}
+      {(selectedFactory ===0  || selectedFactory ===2) && <div className='NM2'>
+        <div className='title'>NM2 INSPECTION STATUS ({inspectionsummary.totalNormal + inspectionsummary.totalOLED + inspectionsummary.totalUV} người)</div>
         <div className='table'>
           <div className='normal'>
-            <b>Hàng Thường:</b>
-            {ins_status_data
+              <div className="subtitle">
+              <b>Hàng Thường: ({inspectionsummary.totalNormal} người đang kiểm tra)</b>
+              </div>
+              <div className="submachine">
+              {ins_status_data
               .filter((element: INS_STATUS) => element.KHUVUC === "N")
               .map((element: INS_STATUS, index: number) => {
                 return (
                   <INSPECT_COMPONENT
                     key={index}
                     INS_DATA={{
+                      SEARCH_STRING: searchString,
                       FACTORY: element.FACTORY,
                       EQ_NAME: element.EQ_NAME,
                       EMPL_COUNT: element.EMPL_COUNT,
@@ -157,9 +224,15 @@ const INSPECT_STATUS = () => {
                   />
                 );
               })}
+              </div>
+            
+           
           </div>
           <div className='oled'>
-            <b>OLED:</b>
+            <div className="subtitle">
+            <b>OLED: ({inspectionsummary.totalOLED} người đang kiểm tra)</b>
+            </div>
+            <div className="submachine">
             {ins_status_data
               .filter((element: INS_STATUS) => element.KHUVUC === "O")
               .map((element: INS_STATUS, index: number) => {
@@ -167,6 +240,7 @@ const INSPECT_STATUS = () => {
                   <INSPECT_COMPONENT
                     key={index}
                     INS_DATA={{
+                      SEARCH_STRING: searchString,
                       FACTORY: element.FACTORY,
                       EQ_NAME: element.EQ_NAME,
                       EMPL_COUNT: element.EMPL_COUNT,
@@ -184,9 +258,16 @@ const INSPECT_STATUS = () => {
                   />
                 );
               })}
+
+            </div>
+            
+           
           </div>
           <div className='uv'>
-            <b>UV:</b>
+            <div className="subtitle">
+            <b>UV: ({inspectionsummary.totalUV} người đang kiểm tra)</b>
+            </div>
+            <div className="submachine">
             {ins_status_data
               .filter((element: INS_STATUS) => element.KHUVUC === "U")
               .map((element: INS_STATUS, index: number) => {
@@ -194,6 +275,7 @@ const INSPECT_STATUS = () => {
                   <INSPECT_COMPONENT
                     key={index}
                     INS_DATA={{
+                      SEARCH_STRING: searchString,
                       FACTORY: element.FACTORY,
                       EQ_NAME: element.EQ_NAME,
                       EMPL_COUNT: element.EMPL_COUNT,
@@ -211,9 +293,12 @@ const INSPECT_STATUS = () => {
                   />
                 );
               })}
+            </div>
+            
+           
           </div>
         </div>
-      </div>
+      </div>}
 
       </div>
       

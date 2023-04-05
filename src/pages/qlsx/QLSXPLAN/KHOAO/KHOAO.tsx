@@ -99,6 +99,9 @@ interface LICHSUNHAPKHOAO {
   IN_QTY: number;
   TOTAL_IN_QTY: number;
   INS_DATE: string;
+  REMARK: string, 
+  USE_YN: string, 
+  PLAN_ID_SUDUNG: string,
 }
 interface LICHSUXUATKHOAO {
   id: string;
@@ -117,6 +120,7 @@ interface LICHSUXUATKHOAO {
   INS_DATE: string;
 }
 const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
+  const [nextPermission, setNextPermission]= useState(true);
   const [selectionModel_INPUTSX, setSelectionModel_INPUTSX] = useState<any>([]);
   const [readyRender, setReadyRender] = useState(false);
   const [userData, setUserData] = useContext(UserContext);
@@ -155,6 +159,9 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
     { field: "ROLL_QTY", headerName: "ROLL_QTY", width: 80 },
     { field: "IN_QTY", headerName: "IN_QTY", width: 80 },
     { field: "TOTAL_IN_QTY", headerName: "TOTAL_IN_QTY", width: 120 },
+    { field: "PLAN_ID_SUDUNG", headerName: "PLAN_ID_SUDUNG", width: 120 },
+    { field: "USE_YN", headerName: "USE_YN", width: 90 },
+    { field: "REMARK", headerName: "REMARK", width: 90 },
     { field: "INS_DATE", headerName: "INS_DATE", width: 150 },
   ];
   const column_xuatkhoaotable = [
@@ -527,7 +534,6 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
     }
   }
 
-
   const handleConfirmXoaRac = () => {
     Swal.fire({
       title: "Chắc chắn muốn Xóa liệu đã chọn ?",
@@ -786,6 +792,7 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
                   setisLoading(true);
                   setReadyRender(false);
                   setCurrent_Column(column_tonkhoaotable);
+                  setNextPermission(true);
                   handle_loadKhoAo();
                 }}
               >
@@ -797,6 +804,7 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
                   setisLoading(true);
                   setReadyRender(false);
                   setCurrent_Column(column_nhapkhoaotable);
+                  setNextPermission(false);
                   load_nhapkhoao();
                 }}
               >
@@ -807,12 +815,21 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
               <button
                 className='xuatnext'
                 onClick={() => {
-                  checkBP(
-                    userData.EMPL_NO,
-                    userData.MAINDEPTNAME,
-                    ["QLSX"],
-                    handle_xuatKhoAo
-                  );
+                  if(nextPermission)
+                  {
+                    checkBP(
+                      userData.EMPL_NO,
+                      userData.MAINDEPTNAME,
+                      ["QLSX"],
+                      handle_xuatKhoAo
+                    );
+
+                  }
+                  else
+                  {
+                    Swal.fire('Thông báo', 'Đang không ở tab tồn kho ảo','error');
+                  }
+                 
                   //handle_xuatKhoAo();
                 }}
               >
@@ -824,6 +841,7 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
                   setisLoading(true);
                   setReadyRender(false);
                   setCurrent_Column(column_xuatkhoaotable);
+                  setNextPermission(false);
                   load_xuatkhoao();
                 }}
               >

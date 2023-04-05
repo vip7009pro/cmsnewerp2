@@ -119,7 +119,8 @@ interface FullBOM {
     REMARK: string,
     TONLIEU: number,
     HOLDING: number,
-    TONG_TON_LIEU: number
+    TONG_TON_LIEU: number,
+    PO_TYPE?: string,
 }
 const YCSXComponent = ({G_CODE,PROD_TYPE,PROD_MAIN_MATERIAL,G_NAME,EMPL_NAME,EMPL_NO,CUST_NAME_KD,CUST_CD,PROD_REQUEST_NO,PROD_REQUEST_DATE,PROD_REQUEST_QTY,LOT_TOTAL_INPUT_QTY_EA,LOT_TOTAL_OUTPUT_QTY_EA,INSPECT_BALANCE,SHORTAGE_YCSX,YCSX_PENDING,PHAN_LOAI,REMARK,PO_TDYCSX,TOTAL_TKHO_TDYCSX,TKHO_TDYCSX,BTP_TDYCSX,CK_TDYCSX,BLOCK_TDYCSX,FCST_TDYCSX,W1,W2,W3,W4,W5,W6,W7,W8,PDUYET,LOAIXH, PDBV, PDBV_EMPL, PDBV_DATE, DESCR}:YCSXTableData) => {
     const [userData, setUserData] = useContext(UserContext);
@@ -186,7 +187,8 @@ const YCSXComponent = ({G_CODE,PROD_TYPE,PROD_MAIN_MATERIAL,G_NAME,EMPL_NAME,EMP
         REMARK: '',
         TONLIEU:0,
         HOLDING: 0,
-        TONG_TON_LIEU:0
+        TONG_TON_LIEU:0,
+        PO_TYPE:'E1'
     }]);   
 
     const initYCSX = async() => {
@@ -321,7 +323,7 @@ const YCSXComponent = ({G_CODE,PROD_TYPE,PROD_MAIN_MATERIAL,G_NAME,EMPL_NAME,EMP
         </div>
       </div>}
       {request_codeinfo[0].PDUYET && <div className='thongtinycsx'>
-        <div className='text1'>1. 요청 정보 Thông tin yêu cầu ({request_codeinfo[0].G_NAME} )</div>
+        <div className='text1'>1. 요청 정보 Thông tin yêu cầu ({request_codeinfo[0].G_NAME} ) _ PO_TYPE: ({request_codeinfo[0]?.PO_TYPE} )</div>
         <div className='thongtinyeucau'>
           <table className='ttyc1'>
             <thead>

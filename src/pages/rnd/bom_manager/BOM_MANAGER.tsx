@@ -107,6 +107,7 @@ interface CODE_FULL_INFO {
   PROD_PRINT_TIMES?: number;
   REMK?: string;
   USE_YN?: string;
+  PO_TYPE?: string;
   G_CODE: string;
 }
 interface CustomerListData {
@@ -219,6 +220,7 @@ const BOM_MANAGER = () => {
     REMK: "",
     USE_YN: "N",
     G_CODE: "-------",
+    PO_TYPE:'E1'
   });
   const [bomsxtable, setBOMSXTable] = useState<BOM_SX[]>([]);
   const [bomgiatable, setBOMGIATable] = useState<BOM_GIA[]>([]);
@@ -966,7 +968,7 @@ const BOM_MANAGER = () => {
               };
             }
           );
-
+          //console.log(loaded_data[0]);
           setCodeFullInfo(loaded_data[0]);
         } else {
           Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
@@ -2496,6 +2498,24 @@ const BOM_MANAGER = () => {
                       ></input>
                     </label>
                     <label>
+                      PO TYPE:
+                      <select
+                        disabled={enableform}
+                        name='may1'
+                        value={
+                          codefullinfo?.PO_TYPE === null || codefullinfo?.PO_TYPE === ""
+                            ? "NA"
+                            : codefullinfo?.PO_TYPE
+                        }
+                        onChange={(e) => {
+                          handleSetCodeInfo("PO_TYPE", e.target.value);
+                        }}
+                      >
+                        <option value='E1'>E1</option>
+                        <option value='E2'>E2</option>                 
+                      </select>
+                    </label>
+                    <label>
                       Remark:{" "}
                       <input
                         disabled={enableform}
@@ -2508,6 +2528,7 @@ const BOM_MANAGER = () => {
                         }}
                       ></input>
                     </label>
+                   
                     <FormControlLabel
                       disabled={enableform}
                       label='Mở/Khóa'

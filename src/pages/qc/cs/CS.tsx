@@ -6,7 +6,7 @@ import {
   TextField,
 } from "@mui/material";
 
-import { Column, Editing, FilterRow,  Pager, Scrolling, SearchPanel, Selection, DataGrid, Paging, Toolbar, Item } from "devextreme-react/data-grid";
+import { Column, Editing, FilterRow,  Pager, Scrolling, SearchPanel, Selection, DataGrid, Paging, Toolbar, Item, Export } from "devextreme-react/data-grid";
 import moment from "moment";
 import React, { useContext, useEffect, useState, useTransition } from "react";
 import {
@@ -543,6 +543,7 @@ const CS = () => {
       });
   }
 
+
   useEffect(() => {
     //setColumnDefinition(column_pqc3_data);
   }, []);
@@ -711,7 +712,7 @@ const CS = () => {
         <div className="datatb">
         {readyRender && (
             <DataGrid
-            autoNavigateToFocusedRow={true}
+            autoNavigateToFocusedRow={true}            
             allowColumnReordering={true}
             allowColumnResizing={true}
             columnAutoWidth={false}
@@ -738,27 +739,35 @@ const CS = () => {
             <Selection mode='multiple' selectAllMode='allPages' />
             <Editing
               allowUpdating={false}
-              allowAdding={false}
+              allowAdding={true}
               allowDeleting={false}
               mode='batch'
               confirmDelete={true}
               onChangesChange={(e) => {
               }}
             /> 
-            <Toolbar disabled={false}>             
+            <Export enabled={true} />
+            <Toolbar disabled={false} >             
               <Item location="before">
                <Button>OK MA</Button>
                <Button>OK MA1</Button>
                <Button>OK MA2</Button>
-              </Item>
+              </Item>                       
               <Item
                 name="searchPanel"
               />
-            </Toolbar>
+              <Item
+                name="exportButton"
+              />             
+            </Toolbar>            
             <FilterRow visible={true} />
             <SearchPanel visible={true} /> 
-            {/* <Column dataField='YEAR_WEEK' caption='YEAR_WEEK' width={100}></Column>
-            <Column dataField='CONFIRM_ID' caption='CONFIRM_ID' width={100}></Column>
+            <Column dataField='YEAR_WEEK' caption='YEAR_WEEK' width={100} cellRender={(e:any)=> {              
+              return (
+                <span style={{color:'blue', fontWeight:'bold'}}>{e.data.YEAR_WEEK}</span>
+              );
+            }}></Column>
+            <Column dataField='CONFIRM_ID' caption='CONFIRM_ID' width={100}></Column>            
             <Column dataField='CONFIRM_DATE' caption='CONFIRM_DATE' width={100}></Column>
             <Column dataField='CONTACT_ID' caption='CONTACT_ID' width={100}></Column>
             <Column dataField='CS_EMPL_NO' caption='CS_EMPL_NO' width={100}></Column>
@@ -784,7 +793,7 @@ const CS = () => {
             <Column dataField='PROD_TYPE' caption='PROD_TYPE' width={100}></Column>
             <Column dataField='PROD_MODEL' caption='PROD_MODEL' width={100}></Column>
             <Column dataField='PROD_PROJECT' caption='PROD_PROJECT' width={100}></Column>
-            <Column dataField='PROD_LAST_PRICE' caption='PROD_LAST_PRICE' width={100}></Column>     */}
+            <Column dataField='PROD_LAST_PRICE' caption='PROD_LAST_PRICE' width={100}></Column>
             <Paging defaultPageSize={15} />
             <Pager
               showPageSizeSelector={true}
@@ -793,7 +802,7 @@ const CS = () => {
               showInfo={true}
               infoText="Page #{0}. Total: {1} ({2} items)"
               displayMode='compact'
-            />        
+            />
           </DataGrid>
           )}
         </div>  

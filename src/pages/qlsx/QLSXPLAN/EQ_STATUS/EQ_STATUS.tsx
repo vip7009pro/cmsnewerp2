@@ -13,6 +13,7 @@ import moment from "moment";
 import { UserContext } from "../../../../api/Context";
 import MACHINE_COMPONENT2 from "../Machine/MACHINE_COMPONENT2";
 import EQ_SUMMARY from "./EQ_SUMMARY";
+import { TextField } from "@mui/material";
 interface EQ_STT {
   FACTORY: string;
   EQ_NAME: string;
@@ -27,8 +28,10 @@ interface EQ_STT {
   UPD_DATE: string;
   EQ_CODE: string;
   G_NAME_KD: string;
+  STEP: number;
 }
 const EQ_STATUS = () => {
+  const [searchString, setSearchString]= useState('');
   const [selection, setSelection] = useState<any>({
     tab1: true,
     tab2: false,
@@ -59,6 +62,7 @@ const EQ_STATUS = () => {
               };
             }
           );
+          //console.log(loaded_data);
           setEQ_STATUS(loaded_data);
         } else {
           setEQ_STATUS([]);
@@ -79,10 +83,13 @@ const EQ_STATUS = () => {
   }, []);
   return (
     <div className='eq_status'>
+      <div className="searchcode">
+        <TextField placeholder="Search Code" value={searchString} onChange={(e)=> {setSearchString(e.target.value)}}/>
+      </div>
+      <div className="machinelist">
       <div className='eqlist'>
         <div className='NM1'>
-          <span className='machine_title'>NM1</span>
-          <span className='subtitle'> NM1 EQUIPMENT STATUS</span>
+          <span className='machine_title'>NM1</span>          
           <EQ_SUMMARY
             EQ_DATA={eq_status.filter(
               (element: EQ_STT, index: number) => element.FACTORY === "NM1"
@@ -98,15 +105,17 @@ const EQ_STATUS = () => {
               .map((element: EQ_STT, index: number) => {
                 return (
                   <MACHINE_COMPONENT2
+                    search_string={searchString}                    
                     key={index}
                     factory={element.FACTORY}
                     machine_name={element.EQ_NAME}
                     eq_status={element.EQ_STATUS}
                     current_g_name={element.G_NAME_KD}
                     current_plan_id={element.CURR_PLAN_ID}
+                    current_step = {element.STEP}
                     run_stop={element.EQ_ACTIVE === "OK" ? 1 : 0}
                     upd_time ={element.UPD_DATE}
-                    upd_empl ={element.UPD_EMPL}
+                    upd_empl ={element.UPD_EMPL}                    
                     onClick={() => {}}
                     onMouseEnter={()=>{}}
                     onMouseLeave={()=>{}}
@@ -124,11 +133,13 @@ const EQ_STATUS = () => {
               .map((element: EQ_STT, index: number) => {
                 return (
                   <MACHINE_COMPONENT2
+                    search_string={searchString}
                     key={index}
                     factory={element.FACTORY}
                     machine_name={element.EQ_NAME}
                     eq_status={element.EQ_STATUS}
                     current_g_name={element.G_NAME_KD}
+                    current_step = {element.STEP}
                     current_plan_id={element.CURR_PLAN_ID}
                     run_stop={element.EQ_ACTIVE === "OK" ? 1 : 0}
                     upd_time ={element.UPD_DATE}
@@ -148,11 +159,13 @@ const EQ_STATUS = () => {
               .map((element: EQ_STT, index: number) => {
                 return (
                   <MACHINE_COMPONENT2
+                    search_string={searchString}
                     key={index}
                     factory={element.FACTORY}
                     machine_name={element.EQ_NAME}
                     eq_status={element.EQ_STATUS}
                     current_g_name={element.G_NAME_KD}
+                    current_step = {element.STEP}
                     current_plan_id={element.CURR_PLAN_ID}
                     run_stop={element.EQ_ACTIVE === "OK" ? 1 : 0}
                     upd_time ={element.UPD_DATE}
@@ -172,11 +185,13 @@ const EQ_STATUS = () => {
               .map((element: EQ_STT, index: number) => {
                 return (
                   <MACHINE_COMPONENT2
+                    search_string={searchString}
                     key={index}
                     factory={element.FACTORY}
                     machine_name={element.EQ_NAME}
                     eq_status={element.EQ_STATUS}
                     current_g_name={element.G_NAME_KD}
+                    current_step = {element.STEP}
                     current_plan_id={element.CURR_PLAN_ID}
                     run_stop={element.EQ_ACTIVE === "OK" ? 1 : 0}
                     upd_time ={element.UPD_DATE}
@@ -190,8 +205,7 @@ const EQ_STATUS = () => {
       </div>
       <div className='eqinfo'>
         <div className='NM2'>
-          <span className='machine_title'>NM2</span>
-          <span className='subtitle'> NM2 EQUIPMENT STATUS</span>
+          <span className='machine_title'>NM2</span>          
           <EQ_SUMMARY
             EQ_DATA={eq_status.filter(
               (element: EQ_STT, index: number) => element.FACTORY === "NM2"
@@ -207,12 +221,14 @@ const EQ_STATUS = () => {
               .map((element: EQ_STT, index: number) => {
                 return (
                   <MACHINE_COMPONENT2
+                    search_string={searchString}
                     key={index}
                     factory={element.FACTORY}
                     machine_name={element.EQ_NAME}
                     eq_status={element.EQ_STATUS}
                     current_g_name={element.G_NAME_KD}
                     current_plan_id={element.CURR_PLAN_ID}
+                    current_step = {element.STEP}
                     run_stop={element.EQ_ACTIVE === "OK" ? 1 : 0}
                     upd_time ={element.UPD_DATE}
                     upd_empl ={element.UPD_EMPL}
@@ -231,11 +247,13 @@ const EQ_STATUS = () => {
               .map((element: EQ_STT, index: number) => {
                 return (
                   <MACHINE_COMPONENT2
+                    search_string={searchString}
                     key={index}
                     factory={element.FACTORY}
                     machine_name={element.EQ_NAME}
                     eq_status={element.EQ_STATUS}
                     current_g_name={element.G_NAME_KD}
+                    current_step = {element.STEP}
                     current_plan_id={element.CURR_PLAN_ID}
                     run_stop={element.EQ_ACTIVE === "OK" ? 1 : 0}
                     upd_time ={element.UPD_DATE}
@@ -247,6 +265,9 @@ const EQ_STATUS = () => {
           </div>
         </div>
       </div>
+
+      </div>
+      
     </div>
   );
 };

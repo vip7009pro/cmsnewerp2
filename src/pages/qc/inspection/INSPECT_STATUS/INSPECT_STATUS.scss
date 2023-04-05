@@ -1,7 +1,7 @@
 .ins_status {
     display: flex;
     flex-direction: column;
-    gap: 30px;
+    gap: 10px;
     align-items: center;
     align-content: center;
     align-self: center;
@@ -10,15 +10,18 @@
     justify-self: center;
     .ins_summary {
         display: flex;
-        align-items: center;
-        align-content: center;
-        align-self: center;
-        justify-items: center;
-        justify-content: center;
-        justify-self: center;
+        justify-content: space-around;
+        .selectform {
+            display: flex;
+            align-items: center;
+            justify-items: flex-start;
+            gap: 20px;
+            .label {
+                font-weight: bold;
+                font-size: large;
+            }
+        }
     }
-
-    
     .ins_div {
         display: flex;
         gap: 30px;
@@ -29,41 +32,50 @@
             gap: 10px;
             border: 2px solid black;
             padding: 2px;
-            flex: 1.5;
+            flex: 1.8;
             -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
             box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
-    
             .title {
-    
                 text-align: center;
                 color: blue;
                 font-size: 20px;
                 font-weight: bold;
-    
             }
-    
             .table {
                 display: flex;
                 gap: 20px;
                 .xuongA {
                     display: flex;
-                    flex-wrap: wrap;
-                    gap: 10px;
-                    border: 2px solid black;
+                    flex-direction: column;
+                    align-items: flex-start;
+                    .subtitle {
+                        display: flex;
+                    }
+                    .submachine {
+                        display: flex;
+                        flex-wrap: wrap;
+                        border: 2px solid black;
+                        align-items: flex-start;
+                        gap: 10px;
+                    }
                 }
-    
                 .xuongB {
                     display: flex;
-                    flex-wrap: wrap;
-                    gap: 10px;
-                    border: 2px solid black;
+                    flex-direction: column;
+                    align-items: flex-start;
+                    .subtitle {
+                        display: flex;
+                    }
+                    .submachine {
+                        display: flex;
+                        flex-wrap: wrap;
+                        border: 2px solid black;
+                        align-items: flex-start;
+                        gap: 10px;
+                    }
                 }
-    
             }
-    
-    
         }
-    
         .NM2 {
             display: flex;
             gap: 10px;
@@ -78,41 +90,57 @@
                 color: blue;
                 font-size: 20px;
                 font-weight: bold;
-    
             }
-    
             .table {
                 display: flex;
                 flex-direction: column;
                 gap: 30px;
-    
                 .normal {
                     display: flex;
-                    flex-wrap: wrap;
-                    gap: 10px;
-                    border: 2px solid black;
+                    flex-direction: column;
+                    align-items: flex-start;
+                    .subtitle {
+                        display: flex;
+                    }
+                    .submachine {
+                        display: flex;
+                        flex-wrap: wrap;
+                        border: 2px solid black;
+                        align-items: flex-start;
+                        gap: 10px;
+                    }
                 }
-    
                 .oled {
                     display: flex;
-                    flex-wrap: wrap;
-                    gap: 10px;
-                    border: 2px solid black;
+                    flex-direction: column;
+                    align-items: flex-start;
+                    .subtitle {
+                        display: flex;
+                    }
+                    .submachine {
+                        display: flex;
+                        flex-wrap: wrap;
+                        border: 2px solid black;
+                        align-items: flex-start;
+                        gap: 10px;
+                    }
                 }
-    
                 .uv {
                     display: flex;
-                    flex-wrap: wrap;
-                    gap: 10px;
-                    border: 2px solid black;
+                    flex-direction: column;
+                    align-items: flex-start;
+                    .subtitle {
+                        display: flex;
+                    }
+                    .submachine {
+                        display: flex;
+                        flex-wrap: wrap;
+                        border: 2px solid black;
+                        align-items: flex-start;
+                        gap: 10px;
+                    }
                 }
             }
-    
-    
-    
         }
-    
-    
     }
-   
 }

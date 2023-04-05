@@ -2472,6 +2472,7 @@ const MACHINE = () => {
         let NextPlanID = nextPlan.NEXT_PLAN_ID;
         let NextPlanOrder = nextPlan.NEXT_PLAN_ORDER;
         if (check_ycsx_hethongcu === false) {
+          //console.log(selectedMachine.substring(0,2));
           await generalQuery("addPlanQLSX", {
             PLAN_ID: NextPlanID,
             PLAN_DATE: selectedPlanDate,
@@ -2482,7 +2483,7 @@ const MACHINE = () => {
             PLAN_LEADTIME: 0,
             STEP: 0,
             PLAN_ORDER: NextPlanOrder,
-            PROCESS_NUMBER: 0,
+            PROCESS_NUMBER: selectedMachine.substring(0,2)=== ycsxdatatablefilter[i].EQ1 ? 1:selectedMachine.substring(0,2)=== ycsxdatatablefilter[i].EQ2 ? 2 :0 ,
             G_CODE: ycsxdatatablefilter[i].G_CODE,
             NEXT_PLAN_ID: "X",
           })

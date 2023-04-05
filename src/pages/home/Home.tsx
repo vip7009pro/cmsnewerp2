@@ -8,7 +8,7 @@ import { generalQuery } from "../../api/Api";
 import Swal from "sweetalert2";
 import PrimarySearchAppBar from "../../components/AppBar/AppBarCustom";
 import CHAT from "../chat/CHAT";
-export const current_ver: number = 80;
+export const current_ver: number = 87;
 function Home() {
   const springs = useSpring({
     from: { x: 1000, y: 100 },
@@ -24,6 +24,7 @@ function Home() {
           console.log("webver", response.data.data[0].VERWEB);
           setCheckVerWeb(response.data.data[0].VERWEB);
         } else {
+
         }
       })
       .catch((error) => {
