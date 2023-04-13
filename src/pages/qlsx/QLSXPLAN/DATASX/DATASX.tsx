@@ -33,6 +33,8 @@ interface SX_DATA {
   G_NAME: string;
   G_NAME_KD: string;
   PLAN_QTY: number;
+  EQ1: string, 
+  EQ2: string,
   PLAN_EQ: string;
   PLAN_FACTORY: string;
   PROCESS_NUMBER: number;
@@ -116,6 +118,7 @@ interface LOSS_TABLE_DATA {
   SCANNED_EA: number,
   PROCESS1_RESULT: number,
   PROCESS2_RESULT: number,
+  SX_RESULT: number,
   INSPECTION_INPUT: number,
   INSPECTION_OUTPUT: number,
   LOSS_INS_OUT_VS_SCANNED_EA: number,
@@ -130,6 +133,7 @@ const DATASX = () => {
   SCANNED_EA: 0,
   PROCESS1_RESULT: 0,
   PROCESS2_RESULT: 0,
+  SX_RESULT:0,
   INSPECTION_INPUT: 0,
   INSPECTION_OUTPUT: 0,
   LOSS_INS_OUT_VS_SCANNED_EA: 0,
@@ -792,7 +796,7 @@ const DATASX = () => {
       PLAN_EQ: machine,
     })
       .then((response) => {
-        console.log(response.data.data);
+        //console.log(response.data.data);
         if (response.data.tk_status !== "NG") {
           const loaded_data: SX_DATA[] = response.data.data.map(
             (element: SX_DATA, index: number) => {
@@ -826,7 +830,36 @@ const DATASX = () => {
             }
           );
          
-          setShowLoss(false);
+          //setShowLoss(false);
+          let temp_loss_info: LOSS_TABLE_DATA = {
+            XUATKHO_MET: 0,
+            XUATKHO_EA: 0,
+            SCANNED_MET: 0,
+            SCANNED_EA: 0,
+            PROCESS1_RESULT: 0,
+            PROCESS2_RESULT: 0,      
+            SX_RESULT:0,      
+            INSPECTION_INPUT: 0,
+            INSPECTION_OUTPUT: 0,
+            LOSS_INS_OUT_VS_SCANNED_EA: 0,
+            LOSS_INS_OUT_VS_XUATKHO_EA: 0,
+          };
+
+          for(let i=0;i<loaded_data.length; i++)
+          {
+            temp_loss_info.XUATKHO_MET += loaded_data[i].WAREHOUSE_OUTPUT_QTY;
+            temp_loss_info.XUATKHO_EA += loaded_data[i].WAREHOUSE_ESTIMATED_QTY;
+            temp_loss_info.SCANNED_MET += loaded_data[i].USED_QTY;
+            temp_loss_info.SCANNED_EA += loaded_data[i].ESTIMATED_QTY;  
+            temp_loss_info.PROCESS1_RESULT += (loaded_data[i].PROCESS_NUMBER===1 && loaded_data[i].STEP===0) ? loaded_data[i].KETQUASX :0;
+            temp_loss_info.PROCESS2_RESULT += (loaded_data[i].PROCESS_NUMBER===2 && loaded_data[i].STEP===0) ? loaded_data[i].KETQUASX :0;      
+            temp_loss_info.INSPECTION_INPUT += loaded_data[i].INS_INPUT;
+            temp_loss_info.INSPECTION_OUTPUT += loaded_data[i].INS_OUTPUT; 
+          };
+          temp_loss_info.LOSS_INS_OUT_VS_SCANNED_EA = 1- temp_loss_info.INSPECTION_OUTPUT / temp_loss_info.SCANNED_EA ;
+          temp_loss_info.LOSS_INS_OUT_VS_XUATKHO_EA = 1- temp_loss_info.INSPECTION_OUTPUT / temp_loss_info.XUATKHO_EA ;  
+
+          setLossTableInfo(temp_loss_info);
           setDataSXTable(loaded_data);          
           setReadyRender(true);
           setisLoading(false);
@@ -873,6 +906,7 @@ const DATASX = () => {
             SCANNED_EA: 0,
             PROCESS1_RESULT: 0,
             PROCESS2_RESULT: 0,
+            SX_RESULT:0,
             INSPECTION_INPUT: 0,
             INSPECTION_OUTPUT: 0,
             LOSS_INS_OUT_VS_SCANNED_EA: 0,
@@ -887,6 +921,7 @@ const DATASX = () => {
             temp_loss_info.SCANNED_EA += loaded_data[i].ESTIMATED_QTY;
             temp_loss_info.PROCESS1_RESULT += loaded_data[i].CD1;
             temp_loss_info.PROCESS2_RESULT += loaded_data[i].CD2;
+            temp_loss_info.SX_RESULT += (loaded_data[i].EQ2 === 'NO' || loaded_data[i].EQ2 === 'NA' || loaded_data[i].EQ2 === null) ? loaded_data[i].CD1 :  loaded_data[i].CD2;
             temp_loss_info.INSPECTION_INPUT += loaded_data[i].INS_INPUT;
             temp_loss_info.INSPECTION_OUTPUT += loaded_data[i].INS_OUTPUT;
             temp_loss_info.LOSS_INS_OUT_VS_SCANNED_EA = 1- temp_loss_info.INSPECTION_OUTPUT / temp_loss_info.SCANNED_EA ;
@@ -1059,7 +1094,7 @@ const DATASX = () => {
             </button>
           </div>
         </div>
-        { showloss && <div className="losstable">
+        { <div className="losstable">
           <table>
             <thead>
               <tr>
@@ -1069,6 +1104,7 @@ const DATASX = () => {
               <th style={{color:'black', fontWeight:'bold'}}>4.USED EA</th>
               <th style={{color:'black', fontWeight:'bold'}}>5.PROCESS 1 RESULT</th>
               <th style={{color:'black', fontWeight:'bold'}}>6.PROCESS 2 RESULT</th>
+              <th style={{color:'black', fontWeight:'bold'}}>6.SX RESULT</th>
               <th style={{color:'black', fontWeight:'bold'}}>7.INSPECTION INPUT</th>
               <th style={{color:'black', fontWeight:'bold'}}>8.INSPECTION OUTPUT</th>
               <th style={{color:'black', fontWeight:'bold'}}>9.TOTAL_LOSS (8 vs 4) %</th>
@@ -1083,6 +1119,7 @@ const DATASX = () => {
                 <td style={{color:'#fc2df6', fontWeight:'bold'}}>{losstableinfo.SCANNED_EA.toLocaleString("en-US")}</td>
                 <td style={{color:'green', fontWeight:'bold'}}>{losstableinfo.PROCESS1_RESULT.toLocaleString("en-US")}</td>
                 <td style={{color:'green', fontWeight:'bold'}}>{losstableinfo.PROCESS2_RESULT.toLocaleString("en-US")}</td>
+                <td style={{color:'green', fontWeight:'bold'}}>{losstableinfo.SX_RESULT.toLocaleString("en-US")}</td>
                 <td style={{color:'green', fontWeight:'bold'}}>{losstableinfo.INSPECTION_INPUT.toLocaleString("en-US")}</td>
                 <td style={{color:'green', fontWeight:'bold'}}>{losstableinfo.INSPECTION_OUTPUT.toLocaleString("en-US")}</td>
                 <td style={{color:'#b56600', fontWeight:'bold'}}>{(losstableinfo.LOSS_INS_OUT_VS_SCANNED_EA*100).toLocaleString("en-US")}</td>

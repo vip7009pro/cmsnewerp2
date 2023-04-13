@@ -4,6 +4,7 @@ import "./KIEMTRA.scss"
 import INSPECTION from './INSPECTION';
 import INSPECT_REPORT from './INSPECT_REPORT';
 import INSPECT_STATUS from './INSPECT_STATUS/INSPECT_STATUS';
+import TINHHINHCUONLIEU from '../../sx/TINH_HINH_CUON_LIEU/TINHINHCUONLIEU';
 
 const KIEMTRA = () => {
   const [selection, setSelection] = useState<any>({
@@ -15,15 +16,19 @@ const KIEMTRA = () => {
   const setNav = (choose: number) => {
     if(choose ===1 )
     {
-      setSelection({...selection, tab1:true, tab2: false, tab3:false});
+      setSelection({...selection, tab1:true, tab2: false, tab3:false, tab4: false});
     }
     else if(choose ===2 )
     {
-      setSelection({...selection, tab1:false, tab2: true, tab3:false});
+      setSelection({...selection, tab1:false, tab2: true, tab3:false, tab4: false});
     }
     else if(choose ===3 )
     {
-      setSelection({...selection, tab1:false, tab2: false, tab3:true});
+      setSelection({...selection, tab1:false, tab2: false, tab3:true, tab4: false});
+    }
+    else if(choose ===4 )
+    {
+      setSelection({...selection, tab1:false, tab2: false, tab3:false, tab4: true});
     }
   }
 
@@ -49,6 +54,11 @@ const KIEMTRA = () => {
           ISP STATUS
           </span>
         </div>         
+        <div className='mininavitem'  onClick={() => setNav(4)} style={{backgroundColor:selection.tab4 === true ? '#9933ff':'#d9b3ff', color: selection.tab4 === true ? 'yellow':'yellow'}}>
+          <span className='mininavtext'>
+          Material Status
+          </span>
+        </div>         
       </div>     
       {selection.tab1 && (
         <div className='trainspection'>
@@ -63,6 +73,11 @@ const KIEMTRA = () => {
       {selection.tab3 && (
         <div className='trainspection'>
             <INSPECT_STATUS/>          
+        </div>
+      )}
+      {selection.tab4 && (
+        <div className='trainspection'>
+            <TINHHINHCUONLIEU/>          
         </div>
       )}
     </div>

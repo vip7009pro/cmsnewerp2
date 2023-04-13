@@ -12,8 +12,16 @@ socket.on("connect", () => {
 socket.on("notification", (data) => {
     console.log(data); // x8WIv7-mJelg7on_ALbx
   });
+socket.on("login", (data) => {
+    //console.log(data); 
+    // x8WIv7-mJelg7on_ALbx
+  });
+socket.on("logout", (data) => {
+    console.log(data); 
+    // x8WIv7-mJelg7on_ALbx
+  });
 socket.on("disconnect", () => {
-  console.log(socket.id); // undefined
+  console.log(socket.id); //undefined
 });
 
 export interface UserData  {
@@ -120,7 +128,7 @@ export interface GlobalInterface {
     lang?: string
     sidebarmenu?: boolean,
     multiple_chithi_array: QLSXPLANDATA[],
-    server_ip: string,
+    server_ip: string,    
 }
 const initialState:GlobalInterface = {   
     userData: {
@@ -174,9 +182,9 @@ const initialState:GlobalInterface = {
     lang: 'vi',
     sidebarmenu: false,
     multiple_chithi_array: [],
-    server_ip: 'http://14.160.33.94:5011/api'
-
+    server_ip: 'http://14.160.33.94:5011/api',    
 }
+
 export const glbSlice = createSlice({
     name: 'totalSlice',
     initialState,
@@ -190,8 +198,36 @@ export const glbSlice = createSlice({
             state.userData = action.payload;            
         },
         update_socket: (state, action: PayloadAction<any>)=> {
-            socket.emit("notification", action.payload);
-          },
+           socket.emit(action.payload.event, action.payload.data);
+          },   
+        listen_socket: (state, action: PayloadAction<any>)  => {          
+           socket.on(action.payload.event, (data:any)=> {
+            switch(action.payload.event)
+            {
+              case 'login': 
+                console.log(data);
+              break;  
+
+              case 'logout': 
+                console.log(data + 'da dang xuat');
+              break;             
+
+              case 'connect':
+                console.log(socket.id);
+              break;
+
+              case 'disconnect':
+                console.log(data);
+              break;
+
+              case 'notification':
+
+              break;
+
+            }
+            
+          })
+        },
         toggleSidebar: (state,action: PayloadAction<any>)=> {         
           state.sidebarmenu = !state.sidebarmenu;
         },
@@ -248,7 +284,8 @@ export const glbSlice = createSlice({
           state.server_ip = action.payload;
           Swal.fire('Thông báo','Đã đổi server sang : ' + action.payload);
         }  
+
     }
 });
-export const {changeDiemDanhState, changeUserData, update_socket,toggleSidebar, addChithiArray, resetChithiArray, changeServer } = glbSlice.actions;
+export const {changeDiemDanhState, changeUserData, update_socket,toggleSidebar, addChithiArray, resetChithiArray, changeServer, listen_socket } = glbSlice.actions;
 export default glbSlice.reducer;

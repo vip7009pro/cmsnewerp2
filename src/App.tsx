@@ -1,6 +1,5 @@
-import 'devextreme/dist/css/dx.light.css';
-import 'devextreme/dist/css/dx.light.css';
-import React, { Component, FC, useEffect, useState, lazy } from "react";
+import "devextreme/dist/css/dx.light.css";
+import React, { Component, FC, useEffect, useState, lazy, Suspense } from "react";
 import Home from "./pages/home/Home";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { LangConText, UserContext } from "../src/api/Context";
@@ -63,8 +62,12 @@ import TRANGTHAICHITHI from "./pages/sx/TRANGTHAICHITHI/TRANGTHAICHITHI";
 import CAPASX from "./pages/qlsx/QLSXPLAN/CAPA/CAPASX";
 import KHOAO from "./pages/qlsx/QLSXPLAN/KHOAO/KHOAO";
 import DATATBNEW from "./pages/qlsx/QLSXPLAN/CAPA/DATATBNEW";
-import KHOLIEU from './pages/kho/kholieu/KHOLIEU';
-import BANLIEU from './pages/sx/BANLIEU/BANLIEU';
+import KHOLIEU from "./pages/kho/kholieu/KHOLIEU";
+import BANLIEU from "./pages/sx/BANLIEU/BANLIEU";
+import CSTOTAL from "./pages/qc/cs/CSTOTAL";
+import TINHINHCUONLIEU from "./pages/sx/TINH_HINH_CUON_LIEU/TINHINHCUONLIEU";
+
+/* const KinhDoanh= lazy(()=> import('./pages/kinhdoanh/KinhDoanh')); */
 interface userDataInterface {
   EMPL_IMAGE?: string;
   ADD_COMMUNE: string;
@@ -364,7 +367,13 @@ function App() {
           //console.log(data.data.data);
           setUserData(data.data.data);
           dispatch(changeUserData(data.data.data));
-          dispatch(update_socket(data.data.data.EMPL_NO + " da dangnhap"));
+          //dispatch(update_socket(data.data.data.EMPL_NO + " da dangnhap"));
+          dispatch(
+            update_socket({
+              event: "login",
+              data: data.data.data.EMPL_NO,
+            })
+          );
           setLoginState(true);
         }
       })
@@ -387,7 +396,6 @@ function App() {
       .catch((error) => {
         console.log(error);
       });
-
     let server_ip_local: any = localStorage.getItem("server_ip")?.toString();
     if (server_ip_local !== undefined) {
     } else {
@@ -398,7 +406,7 @@ function App() {
   //console.log(userData);
   if (loginState === true) {
     return (
-      <div className='App'>
+      <div className='App'>       
         <LangConText.Provider value={[lang, setLang]}>
           <UserContext.Provider value={[userData, setUserData]}>
             <BrowserRouter>
@@ -603,7 +611,7 @@ function App() {
                           maindeptname='all'
                           jobname='Leader'
                         >
-                          <CS />
+                          <CSTOTAL />
                         </ProtectedRoute>
                       }
                     />
@@ -754,6 +762,18 @@ function App() {
                       }
                     />
                     <Route
+                      path='materiallotstatus'
+                      element={
+                        <ProtectedRoute
+                          user={userData}
+                          maindeptname='all'
+                          jobname='Leader'
+                        >
+                          <TINHINHCUONLIEU />
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route
                       path='khoao'
                       element={
                         <ProtectedRoute
@@ -882,7 +902,7 @@ function App() {
               </Routes>
             </BrowserRouter>
           </UserContext.Provider>
-        </LangConText.Provider>
+        </LangConText.Provider>       
       </div>
     );
   } else {

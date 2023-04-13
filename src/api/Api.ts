@@ -1,6 +1,7 @@
 import Cookies from "universal-cookie";
 import Swal from "sweetalert2";
 import { store } from "../redux/store";
+
 const axios = require("axios").default;
 const cookies = new Cookies();
 axios.defaults.withCredentials = true;

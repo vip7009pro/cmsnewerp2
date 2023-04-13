@@ -65,7 +65,7 @@ const MACHINE_COMPONENT2 = (machine_data: MachineInterface) => {
     }
     else
     {
-      checkSearch = machine_data.current_g_name.includes(machine_data.search_string);
+      checkSearch = machine_data.current_g_name.toLowerCase().includes(machine_data.search_string.toLowerCase());
     }
   }
   return (

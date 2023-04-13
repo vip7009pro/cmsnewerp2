@@ -32,7 +32,7 @@ const INSPECT_COMPONENT = ({ INS_DATA }: { INS_DATA?: INS_STATUS }) => {
     }
     else 
     {
-      checkSearch = INS_DATA.G_NAME.includes(INS_DATA.SEARCH_STRING);
+      checkSearch = INS_DATA.G_NAME.toLowerCase().includes(INS_DATA.SEARCH_STRING.toLowerCase());
     }
   }
   

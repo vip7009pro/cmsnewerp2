@@ -338,7 +338,6 @@ const CHITHI_COMPONENT = ({
     }
   }
   const check_lieuql_sx_m140 =  ()=> {
-   
      generalQuery("check_lieuql_sx_m140", {
       G_CODE: G_CODE,
     })
@@ -346,7 +345,6 @@ const CHITHI_COMPONENT = ({
         //console.log(response.data);
         if (response.data.tk_status !== "NG") {
           setChecklieuqlsx(true);        
-          
         } else {
           setChecklieuqlsx(false);         
         }
@@ -355,9 +353,7 @@ const CHITHI_COMPONENT = ({
         console.log(error);
       });     
   }
-
   const checkMaxLieu =()=> {
-
     let temp_maxLieu: any = localStorage.getItem("maxLieu")?.toString();
     if (temp_maxLieu !== undefined) {
       console.log('temp max lieu : ',temp_maxLieu)
@@ -377,8 +373,6 @@ const CHITHI_COMPONENT = ({
     <div className="qcpass">
         <img alt="qcpass" src="/QC PASS20.png" width={440-100-10} height={400-100}/>
       </div>    
-     
-
       {
         <div className='tieudeycsx'>
           <div className='leftlogobarcode'>
@@ -604,7 +598,6 @@ const CHITHI_COMPONENT = ({
               lineColor='black'
               margin={0}
             /></div>
-             
         <div className='thongtinyeucau'>
           <table className='ttyc1'>
             <thead>

@@ -2466,7 +2466,7 @@ const YCSXManager = () => {
       for (let i = 0; i < ycsxdatatablefilter.length; i++) {
         if (ycsxdatatablefilter[i].EMPL_NO === userData.EMPL_NO) {
           let checkO300: boolean = false;
-          await generalQuery("checkYCSXO300", {
+          await generalQuery("checkYCSXQLSXPLAN", {
             PROD_REQUEST_NO: ycsxdatatablefilter[i].PROD_REQUEST_NO,
           })
             .then((response) => {
@@ -2604,8 +2604,9 @@ const YCSXManager = () => {
       confirmButtonText: "Vẫn Xóa!",
     }).then((result) => {
       if (result.isConfirmed) {
-        Swal.fire("Tiến hành Xóa", "Đang Xóa YCSX hàng loạt", "success");
-        deleteYCSX();
+        //Swal.fire("Thông báo", "Không thể xóa YCSX", "error");
+      Swal.fire("Tiến hành Xóa", "Đang Xóa YCSX hàng loạt", "success");
+      deleteYCSX();
       }
     });
   };

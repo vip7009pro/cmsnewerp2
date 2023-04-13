@@ -731,7 +731,8 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
       //console.log("xoa filter");
     }
   };
-  useEffect(() => {
+  useEffect(() => {   
+    if(NEXT_PLAN === undefined) setNextPlan('');
     setisLoading(true);
     setReadyRender(false);
     setCurrent_Column(column_tonkhoaotable);

@@ -1086,6 +1086,7 @@ const BOM_MANAGER = () => {
     }
     return result;
   };
+  
   const confirmAddNewCode = () => {
     Swal.fire({
       title: "Chắc chắn muốn thêm code mới ?",

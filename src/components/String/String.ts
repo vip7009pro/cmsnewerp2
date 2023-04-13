@@ -11,6 +11,7 @@ type english_sentences = {
   CONTENT: string;
 };
 export const vn_lang = {
+  materiallotstatus: "Tình hình cuộn liệu",
   khothat: "Kho Thật",
   khoao: "Kho Ảo",
   shortage: "Shortage",
@@ -79,6 +80,7 @@ export const vn_lang = {
   eqstatus: "Trạng Thái Máy",
 };
 export const en_lang = {
+  materiallotstatus: "Material Lot Status",
   khothat: "Real Warehouse",
   khoao: "Virtual Warehouse",
   shortage: "Shortage",
@@ -148,6 +150,7 @@ export const en_lang = {
   datasanxuat: "Production DATA",
 };
 export const kr_lang = {
+  materiallotstatus: "원단 상태",
   khothat: "원단 창고",
   khoao: "공정 원단 재고",
   shortage: "쇼티지",

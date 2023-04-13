@@ -16,7 +16,7 @@ import Swal from "sweetalert2";
 import { UserContext } from "../../api/Context";
 import { FcList } from "react-icons/fc";
 import { useDispatch } from "react-redux";
-import { toggleSidebar } from "../../redux/slices/globalSlice";
+import { toggleSidebar, listen_socket, update_socket } from "../../redux/slices/globalSlice";
 import { current_ver } from "../../pages/home/Home";
 
 export default function Navbar() {
@@ -180,7 +180,9 @@ export default function Navbar() {
                 </div>
                 <div className='menu_item'>
                   <LogoutIcon className='menu_icon' />
-                  <span className='menulink' onClick={logout_bt}>
+                  <span className='menulink' onClick={()=> {                    
+                    logout_bt();
+                  }}>
                     Logout
                   </span>
                 </div>

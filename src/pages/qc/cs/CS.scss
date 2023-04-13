@@ -172,7 +172,8 @@
     
             }
             .tracuuCSTable {
-                display: flex;                   
+                display: flex;   
+                flex-direction: column;                
                 margin-top: 10px;
                 height: fit-content;
                 background-image: linear-gradient(0deg, #afd3d1, #c3ced3);

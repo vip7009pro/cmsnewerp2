@@ -6,7 +6,7 @@ import "./Sidebar.scss";
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import HomeIcon from '@mui/icons-material/Home';
-import { FaDonate, FaFileInvoiceDollar,FaCheckCircle, FaHistory, FaBomb, FaPaperPlane, FaWarehouse } from 'react-icons/fa';
+import { FaDonate, FaFileInvoiceDollar,FaCheckCircle, FaHistory, FaBomb, FaPaperPlane, FaWarehouse, FaScroll } from 'react-icons/fa';
 import { BiCart, BiSortAZ } from 'react-icons/bi';
 import { FcPlanner, FcSettings,FcBullish, FcPortraitMode,FcManager,FcCheckmark,FcPieChart,FcRefresh } from 'react-icons/fc';
 import { MdBugReport, MdDesignServices, MdInput, MdOutlineAppRegistration, MdOutlineAspectRatio, MdOutlineProductionQuantityLimits, MdOutlineSignalWifiStatusbarNull, MdPrecisionManufacturing, MdPriceChange } from "react-icons/md";
@@ -351,6 +351,12 @@ const Sidebar = () => {
           title: getlang('lichsuxuatlieuthat',lang),
           path: 'sx/lichsuxuatlieu',
           icon: <FcDataProtection color='#cc00ff' size={25}/>,
+          cName: 'sub-nav'
+        },        
+        {
+          title: getlang('materiallotstatus',lang),
+          path: 'sx/materiallotstatus',
+          icon: <FaScroll color='black' size={25}/>,
           cName: 'sub-nav'
         },        
            
