@@ -65,6 +65,7 @@ interface MATERIAL_STATUS {
   INSPECT_TOTAL_QTY: number;
   INSPECT_OK_QTY: number;
   INS_OUT: number;
+  ROLL_LOSS: number;
 }
 
 interface LOSS_TABLE_DATA {
@@ -402,6 +403,7 @@ const TINHHINHCUONLIEU = () => {
   ];
   const [selectedRows, setSelectedRows] = useState<number>(0);
 
+
   const [columnDefinition, setColumnDefinition] =
     useState<Array<any>>(column_datasx);
 
@@ -470,7 +472,6 @@ const TINHHINHCUONLIEU = () => {
         console.log(error);
       });
   };
-
   const materialDataTable = React.useMemo(
     () => (
       <div className='datatb'>
@@ -974,6 +975,20 @@ const TINHHINHCUONLIEU = () => {
               );
             }}
           ></Column>
+          <Column
+            dataField='ROLL_LOSS'
+            caption='ROLL_LOSS'
+            width={100}
+            dataType='number'
+            format={"percent"}
+            cellRender={(e: any) => {
+              return (
+                <span style={{ color: "green", fontWeight: "bold" }}>
+                  {100*e.data.ROLL_LOSS?.toLocaleString("en-US",)} %
+                </span>
+              );
+            }}
+          ></Column>         
           <Column dataField='PD' caption='PD' width={100}></Column>
           <Column dataField='CAVITY' caption='CAVITY' width={100}></Column>
           <Column
