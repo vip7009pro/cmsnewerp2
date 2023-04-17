@@ -1,10 +1,11 @@
 
-import  { useEffect, useState} from 'react'
+import  { useEffect, useState,  lazy, Suspense} from 'react'
 import "./KIEMTRA.scss"
-import INSPECTION from './INSPECTION';
-import INSPECT_REPORT from './INSPECT_REPORT';
-import INSPECT_STATUS from './INSPECT_STATUS/INSPECT_STATUS';
-import TINHHINHCUONLIEU from '../../sx/TINH_HINH_CUON_LIEU/TINHINHCUONLIEU';
+
+const INSPECTION= lazy(()=> import('./INSPECTION'));
+const INSPECT_REPORT= lazy(()=> import('./INSPECT_REPORT'));
+const INSPECT_STATUS= lazy(()=> import('./INSPECT_STATUS/INSPECT_STATUS'));
+const TINHHINHCUONLIEU= lazy(()=> import('../../sx/TINH_HINH_CUON_LIEU/TINHINHCUONLIEU'));
 
 const KIEMTRA = () => {
   const [selection, setSelection] = useState<any>({
@@ -38,6 +39,7 @@ const KIEMTRA = () => {
 
   return (
     <div className='kiemtra'>
+      <Suspense fallback={<div>Loading</div>}>
       <div className='mininavbar'>       
         <div className='mininavitem'  onClick={() => setNav(1)} style={{backgroundColor:selection.tab1 === true ? '#9933ff':'#d9b3ff', color: selection.tab1 === true ? 'yellow':'yellow'}}>
           <span className='mininavtext'>
@@ -80,6 +82,7 @@ const KIEMTRA = () => {
             <TINHHINHCUONLIEU/>          
         </div>
       )}
+      </Suspense>
     </div>
   );
 }

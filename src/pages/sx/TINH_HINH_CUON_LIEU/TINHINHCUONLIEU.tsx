@@ -1,11 +1,6 @@
 import {
-  Autocomplete,
-  Button,
   IconButton,
-  LinearProgress,
-  TextField,
 } from "@mui/material";
-import { GridToolbarContainer, GridToolbarQuickFilter } from "@mui/x-data-grid";
 import {
   Column,
   Editing,
@@ -28,8 +23,6 @@ import moment from "moment";
 import React, { useContext, useEffect, useState } from "react";
 import {
   AiFillFileExcel,
-  AiOutlineCloudUpload,
-  AiOutlinePrinter,
 } from "react-icons/ai";
 import Swal from "sweetalert2";
 
@@ -65,7 +58,22 @@ interface MATERIAL_STATUS {
   INSPECT_TOTAL_QTY: number;
   INSPECT_OK_QTY: number;
   INS_OUT: number;
+  ROLL_LOSS_KT: number;
   ROLL_LOSS: number;
+  PD: number;
+  CAVITY: number;
+  FR_RESULT: number;
+  SR_RESULT: number;
+  DC_RESULT: number;
+  ED_RESULT: number;
+  TOTAL_OUT_EA: number;
+  FR_EA: number;
+  SR_EA: number;
+  DC_EA: number;
+  ED_EA: number;
+  INSPECT_TOTAL_EA: number;
+  INSPECT_OK_EA: number;
+  INS_OUTPUT_EA: number;
 }
 
 interface LOSS_TABLE_DATA {
@@ -73,6 +81,7 @@ interface LOSS_TABLE_DATA {
   INSPECTION_INPUT: number;
   INSPECTION_OK: number;
   INSPECTION_OUTPUT: number;
+  TOTAL_LOSS_KT: number;
   TOTAL_LOSS: number;
 }
 
@@ -82,12 +91,12 @@ const TINHHINHCUONLIEU = () => {
     INSPECTION_INPUT: 0,
     INSPECTION_OK: 0,
     INSPECTION_OUTPUT: 0,
+    TOTAL_LOSS_KT: 0,
     TOTAL_LOSS: 0,
   });
-  const [showloss, setShowLoss] = useState(false);
-  const [readyRender, setReadyRender] = useState(false);
+
+
   const [userData, setUserData] = useContext(UserContext);
-  const [isLoading, setisLoading] = useState(false);
   const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
   const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));
   const [codeKD, setCodeKD] = useState("");
@@ -100,314 +109,27 @@ const TINHHINHCUONLIEU = () => {
   const [datasxtable, setDataSXTable] = useState<Array<any>>([]);
   const [m_name, setM_Name] = useState("");
   const [m_code, setM_Code] = useState("");
-  const column_datasx = [
-    { field: "PHAN_LOAI", headerName: "PHAN_LOAI", minWidth: 120, flex: 1 },
-    { field: "PLAN_ID", headerName: "PLAN_ID", minWidth: 120, flex: 1 },
-    { field: "PLAN_DATE", headerName: "PLAN_DATE", minWidth: 120, flex: 1 },
-    {
-      field: "PROD_REQUEST_NO",
-      headerName: "PROD_REQUEST_NO",
-      minWidth: 120,
-      flex: 1,
-    },
-    { field: "G_CODE", headerName: "G_CODE", minWidth: 120, flex: 1 },
-    { field: "G_NAME", headerName: "G_NAME", minWidth: 120, flex: 1 },
-    { field: "G_NAME_KD", headerName: "G_NAME_KD", minWidth: 120, flex: 1 },
-    {
-      field: "PLAN_QTY",
-      headerName: "PLAN_QTY",
-      minWidth: 120,
-      flex: 1,
-      renderCell: (params: any) => {
-        return (
-          <span style={{ color: "blue" }}>
-            {params.row.PLAN_QTY.toLocaleString("en-US")}
-          </span>
-        );
-      },
-    },
-    { field: "PLAN_EQ", headerName: "PLAN_EQ", minWidth: 120, flex: 1 },
-    {
-      field: "PLAN_FACTORY",
-      headerName: "PLAN_FACTORY",
-      minWidth: 120,
-      flex: 1,
-    },
-    {
-      field: "PROCESS_NUMBER",
-      headerName: "PROCESS_NUMBER",
-      minWidth: 120,
-      flex: 1,
-    },
-    { field: "STEP", headerName: "STEP", minWidth: 120, flex: 1 },
-    { field: "M_NAME", headerName: "M_NAME", minWidth: 120, flex: 1 },
-    {
-      field: "WAREHOUSE_OUTPUT_QTY",
-      headerName: "WAREHOUSE_OUTPUT_QTY",
-      minWidth: 150,
-      flex: 1,
-      renderCell: (params: any) => {
-        if (params.row.WAREHOUSE_OUTPUT_QTY !== null) {
-          return (
-            <span style={{ color: "blue" }}>
-              {params.row.WAREHOUSE_OUTPUT_QTY.toLocaleString("en-US")}
-            </span>
-          );
-        } else {
-          return <></>;
-        }
-      },
-    },
-    {
-      field: "TOTAL_OUT_QTY",
-      headerName: "TOTAL_OUT_QTY",
-      minWidth: 120,
-      flex: 1,
-      renderCell: (params: any) => {
-        if (params.row.TOTAL_OUT_QTY !== null) {
-          return (
-            <span style={{ color: "blue" }}>
-              {params.row.TOTAL_OUT_QTY.toLocaleString("en-US")}
-            </span>
-          );
-        } else {
-          return <></>;
-        }
-      },
-    },
-    {
-      field: "USED_QTY",
-      headerName: "USED_QTY",
-      minWidth: 120,
-      flex: 1,
-      renderCell: (params: any) => {
-        if (params.row.USED_QTY !== null) {
-          return (
-            <span style={{ color: "blue" }}>
-              {params.row.USED_QTY.toLocaleString("en-US")}
-            </span>
-          );
-        } else {
-          return <></>;
-        }
-      },
-    },
-    {
-      field: "REMAIN_QTY",
-      headerName: "REMAIN_QTY",
-      minWidth: 120,
-      flex: 1,
-      renderCell: (params: any) => {
-        if (params.row.REMAIN_QTY !== null) {
-          return (
-            <span style={{ color: "blue" }}>
-              {params.row.REMAIN_QTY.toLocaleString("en-US")}
-            </span>
-          );
-        } else {
-          return <></>;
-        }
-      },
-    },
-    { field: "PD", headerName: "PD", minWidth: 120, flex: 1 },
-    { field: "CAVITY", headerName: "CAVITY", minWidth: 120, flex: 1 },
-    {
-      field: "SETTING_MET",
-      headerName: "SETTING_MET",
-      minWidth: 120,
-      flex: 1,
-      renderCell: (params: any) => {
-        if (params.row.SETTING_MET !== null) {
-          return (
-            <span style={{ color: "blue" }}>
-              {params.row.SETTING_MET.toLocaleString("en-US")}
-            </span>
-          );
-        } else {
-          return <></>;
-        }
-      },
-    },
-    {
-      field: "WAREHOUSE_ESTIMATED_QTY",
-      headerName: "WAREHOUSE_ESTIMATED_QTY",
-      minWidth: 120,
-      flex: 1,
-      renderCell: (params: any) => {
-        if (params.row.WAREHOUSE_ESTIMATED_QTY !== null) {
-          return (
-            <span style={{ color: "blue" }}>
-              {params.row.WAREHOUSE_ESTIMATED_QTY.toLocaleString("en-US")}
-            </span>
-          );
-        } else {
-          return <></>;
-        }
-      },
-    },
-    {
-      field: "ESTIMATED_QTY",
-      headerName: "ESTIMATED_QTY",
-      minWidth: 120,
-      flex: 1,
-      renderCell: (params: any) => {
-        if (params.row.ESTIMATED_QTY !== null) {
-          return (
-            <span style={{ color: "blue" }}>
-              {params.row.ESTIMATED_QTY.toLocaleString("en-US")}
-            </span>
-          );
-        } else {
-          return <></>;
-        }
-      },
-    },
-    {
-      field: "KETQUASX",
-      headerName: "KETQUASX",
-      minWidth: 120,
-      flex: 1,
-      renderCell: (params: any) => {
-        if (params.row.KETQUASX !== null) {
-          return (
-            <span style={{ color: "blue" }}>
-              {params.row.KETQUASX.toLocaleString("en-US")}
-            </span>
-          );
-        } else {
-          return <></>;
-        }
-      },
-    },
-    {
-      field: "LOSS_SX",
-      headerName: "LOSS_SX",
-      minWidth: 120,
-      flex: 1,
-      valueGetter: (params: any) => {
-        if (params.row.KETQUASX !== null && params.row.ESTIMATED_QTY !== null) {
-          return (
-            1 -
-            params.row.KETQUASX / params.row.ESTIMATED_QTY
-          ).toLocaleString("en-US", { style: "percent" });
-        } else {
-          return "0%";
-        }
-      },
-    },
-    {
-      field: "INS_INPUT",
-      headerName: "INS_INPUT",
-      minWidth: 120,
-      flex: 1,
-      renderCell: (params: any) => {
-        if (params.row.INS_INPUT !== null) {
-          return (
-            <span style={{ color: "blue" }}>
-              {params.row.INS_INPUT.toLocaleString("en-US")}
-            </span>
-          );
-        } else {
-          return <></>;
-        }
-      },
-    },
-    {
-      field: "LOSS_SX_KT",
-      headerName: "LOSS_SX_KT",
-      minWidth: 120,
-      flex: 1,
-      valueGetter: (params: any) => {
-        if (params.row.KETQUASX !== null && params.row.INS_INPUT !== null) {
-          return (
-            1 -
-            params.row.INS_INPUT / params.row.KETQUASX
-          ).toLocaleString("en-US", { style: "percent" });
-        } else {
-          return "0%";
-        }
-      },
-    },
-    {
-      field: "INS_OUTPUT",
-      headerName: "INS_OUTPUT",
-      minWidth: 120,
-      flex: 1,
-      renderCell: (params: any) => {
-        if (params.row.INS_OUTPUT !== null) {
-          return (
-            <span style={{ color: "blue" }}>
-              {params.row.INS_OUTPUT.toLocaleString("en-US")}
-            </span>
-          );
-        } else {
-          return <></>;
-        }
-      },
-    },
-    {
-      field: "LOSS_KT",
-      headerName: "LOSS_KT",
-      minWidth: 120,
-      flex: 1,
-      valueGetter: (params: any) => {
-        if (params.row.INS_INPUT !== null && params.row.INS_OUTPUT !== null) {
-          return (
-            1 -
-            params.row.INS_OUTPUT / params.row.INS_INPUT
-          ).toLocaleString("en-US", { style: "percent" });
-        } else {
-          return "0%";
-        }
-      },
-    },
-    {
-      field: "SETTING_START_TIME",
-      headerName: "SETTING_START_TIME",
-      minWidth: 120,
-      flex: 1,
-    },
-    {
-      field: "MASS_START_TIME",
-      headerName: "MASS_START_TIME",
-      minWidth: 120,
-      flex: 1,
-    },
-    {
-      field: "MASS_END_TIME",
-      headerName: "MASS_END_TIME",
-      minWidth: 120,
-      flex: 1,
-    },
-    { field: "RPM", headerName: "RPM", minWidth: 120, flex: 1 },
-    { field: "EQ_NAME_TT", headerName: "EQ_NAME_TT", minWidth: 120, flex: 1 },
-    { field: "SX_DATE", headerName: "SX_DATE", minWidth: 120, flex: 1 },
-    { field: "WORK_SHIFT", headerName: "WORK_SHIFT", minWidth: 120, flex: 1 },
-    { field: "INS_EMPL", headerName: "INS_EMPL", minWidth: 120, flex: 1 },
-    { field: "FACTORY", headerName: "FACTORY", minWidth: 120, flex: 1 },
-    { field: "BOC_KIEM", headerName: "BOC_KIEM", minWidth: 120, flex: 1 },
-    { field: "LAY_DO", headerName: "LAY_DO", minWidth: 120, flex: 1 },
-    { field: "MAY_HONG", headerName: "MAY_HONG", minWidth: 120, flex: 1 },
-    { field: "DAO_NG", headerName: "DAO_NG", minWidth: 120, flex: 1 },
-    { field: "CHO_LIEU", headerName: "CHO_LIEU", minWidth: 120, flex: 1 },
-    { field: "CHO_BTP", headerName: "CHO_BTP", minWidth: 120, flex: 1 },
-    { field: "HET_LIEU", headerName: "HET_LIEU", minWidth: 120, flex: 1 },
-    { field: "LIEU_NG", headerName: "LIEU_NG", minWidth: 120, flex: 1 },
-    { field: "CAN_HANG", headerName: "CAN_HANG", minWidth: 120, flex: 1 },
-    { field: "HOP_FL", headerName: "HOP_FL", minWidth: 120, flex: 1 },
-    { field: "CHO_QC", headerName: "CHO_QC", minWidth: 120, flex: 1 },
-    { field: "CHOT_BAOCAO", headerName: "CHOT_BAOCAO", minWidth: 120, flex: 1 },
-    { field: "CHUYEN_CODE", headerName: "CHUYEN_CODE", minWidth: 120, flex: 1 },
-    { field: "KHAC", headerName: "KHAC", minWidth: 120, flex: 1 },
-    { field: "REMARK", headerName: "REMARK", minWidth: 120, flex: 1 },
-  ];
   const [selectedRows, setSelectedRows] = useState<number>(0);
 
+  const handleSearchCodeKeyDown = (
+    e: React.KeyboardEvent<HTMLInputElement>
+  ) => {
+    if (e.key === "Enter") {                      
+      handle_loaddatasx();
+    }
+  };
 
-  const [columnDefinition, setColumnDefinition] =
-    useState<Array<any>>(column_datasx);
 
   const handle_loaddatasx = () => {
+    Swal.fire({
+      title: "Tra cứu trạng thái cuộn liệu",
+      text: "Đang tải dữ liệu, hãy chờ chút",
+      icon: "info",
+      showCancelButton: false,
+      allowOutsideClick: false,
+      confirmButtonText: "OK",
+      showConfirmButton: false,
+    });
     generalQuery("materialLotStatus", {
       ALLTIME: alltime,
       FROM_DATE: fromdate,
@@ -450,6 +172,7 @@ const TINHHINHCUONLIEU = () => {
             INSPECTION_INPUT: 0,
             INSPECTION_OK: 0,
             INSPECTION_OUTPUT: 0,
+            TOTAL_LOSS_KT: 0,
             TOTAL_LOSS: 0,
           };
           for (let i = 0; i < loaded_data.length; i++) {
@@ -458,12 +181,12 @@ const TINHHINHCUONLIEU = () => {
             temp_loss_info.INSPECTION_OK += loaded_data[i].INSPECT_OK_QTY;
             temp_loss_info.INSPECTION_OUTPUT += loaded_data[i].INS_OUT;
           }
+          temp_loss_info.TOTAL_LOSS_KT =
+            1 - temp_loss_info.INSPECTION_OK / temp_loss_info.XUATKHO_MET;
           temp_loss_info.TOTAL_LOSS =
             1 - temp_loss_info.INSPECTION_OUTPUT / temp_loss_info.XUATKHO_MET;
           setLossTableInfo(temp_loss_info);
           setDataSXTable(loaded_data);
-          setReadyRender(true);
-          setisLoading(false);
         } else {
           Swal.fire("Thông báo", " Có lỗi : " + response.data.message, "error");
         }
@@ -492,6 +215,9 @@ const TINHHINHCUONLIEU = () => {
                   8.KT OUTPUT MET
                 </th>
                 <th style={{ color: "black", fontWeight: "bold" }}>
+                  9.TOTAL_LOSS_KT
+                </th>
+                <th style={{ color: "black", fontWeight: "bold" }}>
                   9.TOTAL_LOSS
                 </th>
               </tr>
@@ -517,6 +243,13 @@ const TINHHINHCUONLIEU = () => {
                   {losstableinfo.INSPECTION_OUTPUT.toLocaleString("en-US", {
                     minimumFractionDigits: 0,
                     maximumFractionDigits: 0,
+                  })}
+                </td>
+                <td style={{ color: "green", fontWeight: "bold" }}>
+                  {losstableinfo.TOTAL_LOSS_KT.toLocaleString("en-US", {
+                    style: "percent",
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
                   })}
                 </td>
                 <td style={{ color: "green", fontWeight: "bold" }}>
@@ -817,7 +550,25 @@ const TINHHINHCUONLIEU = () => {
                     Y
                   </div>
                 );
-              } else {
+              } 
+              else if (e.data.CONFIRM_GIAONHAN === "R")  {
+                return (
+                  <div
+                    style={{
+                      color: "black",
+                      fontWeight: "bold",
+                      height: "20px",
+                      width: "80px",
+                      backgroundColor: "yellow",
+                      textAlign: "center",
+                    }}
+                  >
+                    R
+                  </div>
+                );
+
+              }
+              else {
                 return (
                   <div
                     style={{
@@ -934,6 +685,62 @@ const TINHHINHCUONLIEU = () => {
             }}
           ></Column>
           <Column
+            dataField='FR_RESULT'
+            caption='FR_RESULT'
+            width={100}
+            dataType='number'
+            format={"decimal"}
+            cellRender={(e: any) => {
+              return (
+                <span style={{ color: "blue", fontWeight: "bold" }}>
+                  {e.data.FR_RESULT?.toLocaleString("en-US")}
+                </span>
+              );
+            }}
+          ></Column>
+          <Column
+            dataField='SR_RESULT'
+            caption='SR_RESULT'
+            width={100}
+            dataType='number'
+            format={"decimal"}
+            cellRender={(e: any) => {
+              return (
+                <span style={{ color: "blue", fontWeight: "bold" }}>
+                  {e.data.SR_RESULT?.toLocaleString("en-US")}
+                </span>
+              );
+            }}
+          ></Column>
+          <Column
+            dataField='DC_RESULT'
+            caption='DC_RESULT'
+            width={100}
+            dataType='number'
+            format={"decimal"}
+            cellRender={(e: any) => {
+              return (
+                <span style={{ color: "blue", fontWeight: "bold" }}>
+                  {e.data.DC_RESULT?.toLocaleString("en-US")}
+                </span>
+              );
+            }}
+          ></Column>
+          <Column
+            dataField='ED_RESULT'
+            caption='ED_RESULT'
+            width={100}
+            dataType='number'
+            format={"decimal"}
+            cellRender={(e: any) => {
+              return (
+                <span style={{ color: "blue", fontWeight: "bold" }}>
+                  {e.data.ED_RESULT?.toLocaleString("en-US")}
+                </span>
+              );
+            }}
+          ></Column>
+          <Column
             dataField='INSPECT_TOTAL_QTY'
             caption='INSPECT_TOTAL_QTY'
             width={100}
@@ -941,7 +748,7 @@ const TINHHINHCUONLIEU = () => {
             format={"decimal"}
             cellRender={(e: any) => {
               return (
-                <span style={{ color: "red", fontWeight: "bold" }}>
+                <span style={{ color: "blue", fontWeight: "bold" }}>
                   {e.data.INSPECT_TOTAL_QTY?.toLocaleString("en-US")}
                 </span>
               );
@@ -955,7 +762,7 @@ const TINHHINHCUONLIEU = () => {
             format={"decimal"}
             cellRender={(e: any) => {
               return (
-                <span style={{ color: "#54e00d", fontWeight: "bold" }}>
+                <span style={{ color: "blue", fontWeight: "bold" }}>
                   {e.data.INSPECT_OK_QTY?.toLocaleString("en-US")}
                 </span>
               );
@@ -969,12 +776,139 @@ const TINHHINHCUONLIEU = () => {
             format={"decimal"}
             cellRender={(e: any) => {
               return (
-                <span style={{ color: "green", fontWeight: "bold" }}>
+                <span style={{ color: "blue", fontWeight: "bold" }}>
                   {e.data.INS_OUT?.toLocaleString("en-US")}
                 </span>
               );
             }}
           ></Column>
+          <Column
+            dataField='TOTAL_OUT_EA'
+            caption='TOTAL_OUT_EA'
+            width={100}
+            dataType='number'
+            format={"decimal"}
+            cellRender={(e: any) => {
+              return (
+                <span style={{ color: "green", fontWeight: "bold" }}>
+                  {e.data.TOTAL_OUT_EA?.toLocaleString("en-US")}
+                </span>
+              );
+            }}
+          ></Column>
+          <Column
+            dataField='FR_EA'
+            caption='FR_EA'
+            width={100}
+            dataType='number'
+            format={"decimal"}
+            cellRender={(e: any) => {
+              return (
+                <span style={{ color: "green", fontWeight: "bold" }}>
+                  {e.data.FR_EA?.toLocaleString("en-US")}
+                </span>
+              );
+            }}
+          ></Column>
+          <Column
+            dataField='SR_EA'
+            caption='SR_EA'
+            width={100}
+            dataType='number'
+            format={"decimal"}
+            cellRender={(e: any) => {
+              return (
+                <span style={{ color: "green", fontWeight: "bold" }}>
+                  {e.data.SR_EA?.toLocaleString("en-US")}
+                </span>
+              );
+            }}
+          ></Column>
+          <Column
+            dataField='DC_EA'
+            caption='DC_EA'
+            width={100}
+            dataType='number'
+            format={"decimal"}
+            cellRender={(e: any) => {
+              return (
+                <span style={{ color: "green", fontWeight: "bold" }}>
+                  {e.data.DC_EA?.toLocaleString("en-US")}
+                </span>
+              );
+            }}
+          ></Column>
+          <Column
+            dataField='ED_EA'
+            caption='ED_EA'
+            width={100}
+            dataType='number'
+            format={"decimal"}
+            cellRender={(e: any) => {
+              return (
+                <span style={{ color: "green", fontWeight: "bold" }}>
+                  {e.data.ED_EA?.toLocaleString("en-US")}
+                </span>
+              );
+            }}
+          ></Column>
+          <Column
+            dataField='INSPECT_TOTAL_EA'
+            caption='INSPECT_TOTAL_EA'
+            width={100}
+            dataType='number'
+            format={"decimal"}
+            cellRender={(e: any) => {
+              return (
+                <span style={{ color: "green", fontWeight: "bold" }}>
+                  {e.data.INSPECT_TOTAL_EA?.toLocaleString("en-US")}
+                </span>
+              );
+            }}
+          ></Column>
+          <Column
+            dataField='INSPECT_OK_EA'
+            caption='INSPECT_OK_EA'
+            width={100}
+            dataType='number'
+            format={"decimal"}
+            cellRender={(e: any) => {
+              return (
+                <span style={{ color: "green", fontWeight: "bold" }}>
+                  {e.data.INSPECT_OK_EA?.toLocaleString("en-US")}
+                </span>
+              );
+            }}
+          ></Column>
+          <Column
+            dataField='INS_OUTPUT_EA'
+            caption='INS_OUTPUT_EA'
+            width={100}
+            dataType='number'
+            format={"decimal"}
+            cellRender={(e: any) => {
+              return (
+                <span style={{ color: "green", fontWeight: "bold" }}>
+                  {e.data.INS_OUTPUT_EA?.toLocaleString("en-US")}
+                </span>
+              );
+            }}
+          ></Column>
+
+          <Column
+            dataField='ROLL_LOSS_KT'
+            caption='ROLL_LOSS_KT'
+            width={100}
+            dataType='number'
+            format={"percent"}
+            cellRender={(e: any) => {
+              return (
+                <span style={{ color: "green", fontWeight: "bold" }}>
+                  {100*e.data.ROLL_LOSS_KT?.toLocaleString("en-US",)} %
+                </span>
+              );
+            }}
+          ></Column>         
           <Column
             dataField='ROLL_LOSS'
             caption='ROLL_LOSS'
@@ -1024,6 +958,60 @@ const TINHHINHCUONLIEU = () => {
             />
             <TotalItem
               alignment='right'
+              column='TOTAL_OUT_EA'
+              summaryType='sum'
+              valueFormat={"thousands"}
+            />
+            <TotalItem
+              alignment='right'
+              column='FR_RESULT'
+              summaryType='sum'
+              valueFormat={"thousands"}
+            />
+            <TotalItem
+              alignment='right'
+              column='SR_RESULT'
+              summaryType='sum'
+              valueFormat={"thousands"}
+            />
+            <TotalItem
+              alignment='right'
+              column='DC_RESULT'
+              summaryType='sum'
+              valueFormat={"thousands"}
+            />
+            <TotalItem
+              alignment='right'
+              column='ED_RESULT'
+              summaryType='sum'
+              valueFormat={"thousands"}
+            />
+            <TotalItem
+              alignment='right'
+              column='FR_EA'
+              summaryType='sum'
+              valueFormat={"thousands"}
+            />
+            <TotalItem
+              alignment='right'
+              column='SR_EA'
+              summaryType='sum'
+              valueFormat={"thousands"}
+            />
+            <TotalItem
+              alignment='right'
+              column='DC_EA'
+              summaryType='sum'
+              valueFormat={"thousands"}
+            />
+            <TotalItem
+              alignment='right'
+              column='ED_EA'
+              summaryType='sum'
+              valueFormat={"thousands"}
+            />
+            <TotalItem
+              alignment='right'
               column='INSPECT_TOTAL_QTY'
               summaryType='sum'
               valueFormat={"thousands"}
@@ -1040,6 +1028,24 @@ const TINHHINHCUONLIEU = () => {
               summaryType='sum'
               valueFormat={"thousands"}
             />
+            <TotalItem
+              alignment='right'
+              column='INSPECT_TOTAL_EA'
+              summaryType='sum'
+              valueFormat={"thousands"}
+            />
+            <TotalItem
+              alignment='right'
+              column='INSPECT_OK_EA'
+              summaryType='sum'
+              valueFormat={"thousands"}
+            />
+            <TotalItem
+              alignment='right'
+              column='INS_OUTPUT_EA'
+              summaryType='sum'
+              valueFormat={"thousands"}
+            />
           </Summary>
         </DataGrid>
       </div>
@@ -1051,14 +1057,14 @@ const TINHHINHCUONLIEU = () => {
     //setColumnDefinition(column_inspect_output);
   }, []);
   return (
-    <div className='datasx'>
+    <div className='tinhinhcuonlieu'>
       <div className='tracuuDataInspection'>
         <div className='tracuuDataInspectionform'>
           <div className='forminput'>
             <div className='forminputcolumn'>
               <label>
                 <b>Từ ngày:</b>
-                <input
+                <input onKeyDown={(e)=> {handleSearchCodeKeyDown(e);} }
                   type='date'
                   value={fromdate.slice(0, 10)}
                   onChange={(e) => setFromDate(e.target.value)}
@@ -1066,7 +1072,7 @@ const TINHHINHCUONLIEU = () => {
               </label>
               <label>
                 <b>Tới ngày:</b>{" "}
-                <input
+                <input onKeyDown={(e)=> {handleSearchCodeKeyDown(e);} }
                   type='date'
                   value={todate.slice(0, 10)}
                   onChange={(e) => setToDate(e.target.value)}
@@ -1076,7 +1082,8 @@ const TINHHINHCUONLIEU = () => {
             <div className='forminputcolumn'>
               <label>
                 <b>Code KD:</b>{" "}
-                <input
+                <input 
+                  onKeyDown={(e)=> {handleSearchCodeKeyDown(e);} }
                   type='text'
                   placeholder='GH63-xxxxxx'
                   value={codeKD}
@@ -1085,7 +1092,7 @@ const TINHHINHCUONLIEU = () => {
               </label>
               <label>
                 <b>Code CMS:</b>{" "}
-                <input
+                <input onKeyDown={(e)=> {handleSearchCodeKeyDown(e);} }
                   type='text'
                   placeholder='7C123xxx'
                   value={codeCMS}
@@ -1096,7 +1103,7 @@ const TINHHINHCUONLIEU = () => {
             <div className='forminputcolumn'>
               <label>
                 <b>Tên Liệu:</b>{" "}
-                <input
+                <input onKeyDown={(e)=> {handleSearchCodeKeyDown(e);} }
                   type='text'
                   placeholder='SJ-203020HC'
                   value={m_name}
@@ -1105,7 +1112,7 @@ const TINHHINHCUONLIEU = () => {
               </label>
               <label>
                 <b>Mã Liệu CMS:</b>{" "}
-                <input
+                <input onKeyDown={(e)=> {handleSearchCodeKeyDown(e);} }
                   type='text'
                   placeholder='A123456'
                   value={m_code}
@@ -1116,7 +1123,7 @@ const TINHHINHCUONLIEU = () => {
             <div className='forminputcolumn'>
               <label>
                 <b>Số YCSX:</b>{" "}
-                <input
+                <input onKeyDown={(e)=> {handleSearchCodeKeyDown(e);} }
                   type='text'
                   placeholder='1F80008'
                   value={prodrequestno}
@@ -1125,7 +1132,7 @@ const TINHHINHCUONLIEU = () => {
               </label>
               <label>
                 <b>Số chỉ thị:</b>{" "}
-                <input
+                <input onKeyDown={(e)=> {handleSearchCodeKeyDown(e);} }
                   type='text'
                   placeholder='A123456'
                   value={plan_id}
@@ -1136,7 +1143,7 @@ const TINHHINHCUONLIEU = () => {
             <div className='forminputcolumn'>
               <label>
                 <b>FACTORY:</b>
-                <select
+                <select                  
                   name='phanloai'
                   value={factory}
                   onChange={(e) => {
@@ -1150,7 +1157,7 @@ const TINHHINHCUONLIEU = () => {
               </label>
               <label>
                 <b>MACHINE:</b>
-                <select
+                <select                  
                   name='machine'
                   value={machine}
                   onChange={(e) => {
@@ -1169,7 +1176,7 @@ const TINHHINHCUONLIEU = () => {
           <div className='formbutton'>
             <label>
               <b>All Time:</b>
-              <input
+              <input onKeyDown={(e)=> {handleSearchCodeKeyDown(e);} }
                 type='checkbox'
                 name='alltimecheckbox'
                 defaultChecked={alltime}
@@ -1178,10 +1185,7 @@ const TINHHINHCUONLIEU = () => {
             </label>
             <button
               className='tranhatky'
-              onClick={() => {
-                setisLoading(true);
-                setReadyRender(false);
-                setColumnDefinition(column_datasx);
+              onClick={() => {                                          
                 handle_loaddatasx();
               }}
             >

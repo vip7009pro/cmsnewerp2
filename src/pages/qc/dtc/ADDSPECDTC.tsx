@@ -1,12 +1,12 @@
-import { IconButton,} from '@mui/material';
+import { Autocomplete, IconButton, TextField,} from '@mui/material';
 import moment from 'moment';
-import React, { useContext, useEffect, useState, } from 'react'
+import React, { useContext, useEffect, useState, useTransition, } from 'react'
 import {AiFillFileExcel,} from "react-icons/ai";
 import Swal from 'sweetalert2';
 import { generalQuery } from '../../../api/Api';
 import { UserContext } from '../../../api/Context';
 import { SaveExcel } from '../../../api/GlobalFunction';
-import "./SPECDTC.scss"
+import "./ADDSPECTDTC.scss"
 import DataGrid, { Column, ColumnChooser, Editing, Export, FilterRow, Item, Pager, Paging, Scrolling, SearchPanel, Selection, Summary, Toolbar, TotalItem } from 'devextreme-react/data-grid';
 interface DTC_SPEC_DATA {
   CUST_NAME_KD: string,
@@ -28,7 +28,43 @@ interface DTC_SPEC_DATA {
   TDS: string,
   BANVE: string
 }
-const SPECDTC = () => { 
+interface  CodeListData {
+    G_CODE: string, 
+    G_NAME: string, 
+    PROD_LAST_PRICE: number,
+    USE_YN: string, 
+  }
+
+interface MaterialListData {
+M_CODE: string;
+M_NAME: string;
+WIDTH_CD: number;
+}
+
+const ADDSPECTDTC = () => { 
+
+    const [materialList, setMaterialList] = useState<MaterialListData[]>([
+        {
+            M_CODE: "A0000001",
+            M_NAME: "#200",
+            WIDTH_CD: 1200,
+        },
+        ]);
+    const [selectedMaterial, setSelectedMaterial] =
+    useState<MaterialListData | null>({
+        M_CODE: "A0000001",
+        M_NAME: "#200",
+        WIDTH_CD: 1200,
+    });
+    
+  const [isPending, startTransition] = useTransition();
+  const [codeList, setCodeList] = useState<CodeListData[]>([]);
+  const [selectedCode, setSelectedCode] = useState<CodeListData|null>({
+    G_CODE: '7C03925A', 
+    G_NAME: 'GH63-18084A_A_SM-A515F', 
+    PROD_LAST_PRICE: 0.318346,
+    USE_YN: 'Y', 
+  });
   const [userData, setUserData] = useContext(UserContext);
   const [fromdate, setFromDate] = useState(moment().format('YYYY-MM-DD'));
   const [todate, setToDate] = useState(moment().format('YYYY-MM-DD'));
@@ -37,12 +73,46 @@ const SPECDTC = () => {
   const [testname,setTestName] =useState('0');
   const [testtype,setTestType] =useState('0');
   const [prodrequestno,setProdRequestNo] =useState('');
-  const [alltime, setAllTime] = useState(false); 
+  const [checkNVL, setCheckNVL] = useState(false); 
   const [id,setID] =useState('');
   const [inspectiondatatable, setInspectionDataTable] = useState<Array<any>>([]);
   const [m_name,setM_Name] =useState('');
   const [m_code,setM_Code] =useState('');
   const [selectedRows, setSelectedRows] = useState<number>(0);
+
+  const getcodelist = (G_NAME: string) => {   
+    generalQuery("selectcodeList", { G_NAME: G_NAME})
+    .then((response) => {        
+      if (response.data.tk_status !== "NG") {
+        if(!isPending)
+        {
+          startTransition(() => {
+          setCodeList(response.data.data); 
+          });
+        }              
+      } 
+      else {
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    }); 
+}
+
+const getmateriallist = () => {
+    generalQuery("getMaterialList", {})
+      .then((response) => {
+        if (response.data.tk_status !== "NG") {
+          //console.log(response.data.data);
+          setMaterialList(response.data.data);
+        } else {
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
   const materialDataTable = React.useMemo(
     () => (
       <div className='datatb'>       
@@ -244,7 +314,7 @@ const SPECDTC = () => {
       showConfirmButton: false,
     });
     generalQuery('dtcspec',{      
-      ALLTIME: alltime,      
+      checkNVL: checkNVL,      
       FROM_DATE: fromdate,
       TO_DATE: todate,
       G_CODE: codeCMS,
@@ -279,56 +349,66 @@ const SPECDTC = () => {
     });
   }
   useEffect(()=>{      
-    //setColumnDefinition(column_inspect_output);
+    getcodelist('');
+    getmateriallist();
   },[]);
   return (
-    <div className='specdtc'>
+    <div className='addspecdtc'>
       <div className='tracuuDataInspection'>
         <div className='tracuuDataInspectionform'>
           <div className='forminput'>            
-            <div className='forminputcolumn'>
-              <label>
-                <b>Code KD:</b>{" "}
-                <input onKeyDown={(e)=> {handleSearchCodeKeyDown(e);} }
-                  type='text'
-                  placeholder='GH63-xxxxxx'
-                  value={codeKD}
-                  onChange={(e) => setCodeKD(e.target.value)}
-                ></input>
-              </label>
-              <label>
-                <b>Code CMS:</b>{" "}
-                <input onKeyDown={(e)=> {handleSearchCodeKeyDown(e);} }
-                  type='text'
-                  placeholder='7C123xxx'
-                  value={codeCMS}
-                  onChange={(e) => setCodeCMS(e.target.value)}
-                ></input>
-              </label>
-            </div>
-            <div className='forminputcolumn'>
-              <label>
-                <b>Tên Liệu:</b>{" "}
-                <input onKeyDown={(e)=> {handleSearchCodeKeyDown(e);} }
-                  type='text'
-                  placeholder='SJ-203020HC'
-                  value={m_name}
-                  onChange={(e) => setM_Name(e.target.value)}
-                ></input>
-              </label>
-              <label>
-                <b>Mã Liệu CMS:</b>{" "}
-                <input onKeyDown={(e)=> {handleSearchCodeKeyDown(e);} }
-                  type='text'
-                  placeholder='A123456'
-                  value={m_code}
-                  onChange={(e) => setM_Code(e.target.value)}
-                ></input>
-              </label>
-            </div>
-            <div className='forminputcolumn'>
-              <label>
-                <b>Hạng mục test</b>
+            <div className='forminputcolumn'>              
+              <label>                
+                  <Autocomplete
+                   hidden= {checkNVL}
+                    disabled= {checkNVL}
+                    size="small"
+                    disablePortal                    
+                    options={codeList}
+                    className='autocomplete'   
+                    isOptionEqualToValue={(option, value) => option.G_CODE === value.G_CODE}
+                    getOptionLabel={(option:CodeListData) => `${option.G_CODE}: ${option.G_NAME}`}                     
+                    renderInput={(params) => (
+                     <TextField {...params} label='Chọn sản phẩm'/>
+                    )}    
+                    onChange={(event:any, newValue: CodeListData| null)=>{
+                      console.log(newValue);
+                      setSelectedCode(newValue);
+                    }}  
+                    value={selectedCode}   
+                  />
+                  </label>
+              <label>                
+                    <Autocomplete
+                    hidden= {!checkNVL}
+                    disabled={!checkNVL}
+                    size='small'
+                    disablePortal
+                    options={materialList}
+                    className='autocomplete'
+                    isOptionEqualToValue={(option, value) =>
+                    option.M_CODE === value.M_CODE
+                    }
+                    getOptionLabel={(option: MaterialListData) =>
+                    `${option.M_NAME}|${option.WIDTH_CD}|${option.M_CODE}`
+                    }
+                    renderInput={(params) => (
+                    <TextField {...params} label='Chọn NVL'/>
+                    )}
+                    defaultValue={{
+                    M_CODE: "A0007770",
+                    M_NAME: "SJ-203020HC",
+                    WIDTH_CD: 208,
+                    }}
+                    value={selectedMaterial}
+                    onChange={(event: any, newValue: MaterialListData | null) => {
+                    console.log(newValue);
+                    setSelectedMaterial(newValue);
+                    }}
+                />
+                  </label>
+                  <label>
+                <b>Hạng mục test</b><br></br>
                 <select
                   name='hangmuctest'
                   value={testname}
@@ -355,6 +435,10 @@ const SPECDTC = () => {
                   <option value='1002'>Kéo keo 2 mặt</option>
                 </select>
               </label>
+
+             
+            </div>           
+            <div className='forminputcolumn'>              
               <label>
                 <b>Số YCSX:</b>{" "}
                 <input onKeyDown={(e)=> {handleSearchCodeKeyDown(e);} }
@@ -370,12 +454,12 @@ const SPECDTC = () => {
           </div>
           <div className='formbutton'>
             <label>
-              <b>All Time:</b>
+              <b>{checkNVL === true? 'Nguyên vật liệu (bỏ tick để chọn Sản phẩm)': 'Sản phẩm (tick để chọn NVL)'}:</b>
               <input onKeyDown={(e)=> {handleSearchCodeKeyDown(e);} }
                 type='checkbox'
                 name='alltimecheckbox'
-                defaultChecked={alltime}
-                onChange={() => setAllTime(!alltime)}
+                defaultChecked={checkNVL}
+                onChange={() => setCheckNVL(!checkNVL)}
               ></input>
             </label>
             <button
@@ -384,7 +468,7 @@ const SPECDTC = () => {
                 handletraDTCData();
               }}
             >
-              Spec DTC
+              Add Spec DTC
             </button>
           </div>
         </div>
@@ -395,4 +479,4 @@ const SPECDTC = () => {
     </div>
   );
 }
-export default SPECDTC
+export default ADDSPECTDTC

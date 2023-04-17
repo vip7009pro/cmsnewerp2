@@ -1,17 +1,15 @@
-import  { useEffect, useState} from 'react'
-import KHOLIEU from '../../kho/kholieu/KHOLIEU';
-import DATASX from './DATASX/DATASX';
-import EQ_STATUS from './EQ_STATUS/EQ_STATUS';
-import KHCT from './KHCT/KHCT';
-import KHOAO from './KHOAO/KHOAO';
-import PLAN_DATATB from './LICHSUCHITHITABLE/PLAN_DATATB';
-import LICHSUINPUTLIEU from './LICHSUINPUTLIEU/LICHSUINPUTLIEU';
-import MACHINE from './Machine/MACHINE';
-import MACHINE2 from './Machine/MACHINE2';
-import PLANTABLE from './PLANTABLE/PLANTABLE';
-import PLAN_STATUS from './PLAN_STATUS/PLAN_STATUS';
+import  { useEffect, useState,  lazy, Suspense} from 'react'
 import "./QLSXPLAN.scss"
-import QUICKPLAN from './QUICKPLAN/QUICKPLAN';
+const DATASX= lazy(()=> import('./DATASX/DATASX'));
+const EQ_STATUS= lazy(()=> import('./EQ_STATUS/EQ_STATUS'));
+const KHOAO= lazy(()=> import('./KHOAO/KHOAO'));
+const PLAN_DATATB= lazy(()=> import('./LICHSUCHITHITABLE/PLAN_DATATB'));
+const LICHSUINPUTLIEU= lazy(()=> import('./LICHSUINPUTLIEU/LICHSUINPUTLIEU'));
+const MACHINE= lazy(()=> import('./Machine/MACHINE'));
+const PLANTABLE= lazy(()=> import('./PLANTABLE/PLANTABLE'));
+const PLAN_STATUS= lazy(()=> import('./PLAN_STATUS/PLAN_STATUS'));
+const QUICKPLAN= lazy(()=> import('./QUICKPLAN/QUICKPLAN'));
+
 
 const QLSXPLAN = () => {
   const [selection, setSelection] = useState<any>({
@@ -68,6 +66,7 @@ const QLSXPLAN = () => {
   
   return (
     <div className='qlsxplan'>
+      <Suspense fallback  ={<div> Loading...</div>}>
       <div className='mininavbar'>
       <div className='mininavitem'  onClick={() => setNav(1)} style={{backgroundColor:selection.tab1 === true ? '#9933ff':'#d9b3ff', color: selection.tab1 === true ? 'yellow':'yellow'}}>
           <span className='mininavtext'>
@@ -170,6 +169,7 @@ const QLSXPLAN = () => {
           <KHOAO/>                               
         </div>
       )}
+      </Suspense>
     </div>
   );
 }

@@ -138,7 +138,7 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
   const [tonkhoaodatafilter, setTonKhoAoDataFilter] = useState<
     Array<TONLIEUXUONG>
   >([]);
-  const [nextPlan, setNextPlan] = useState(NEXT_PLAN);
+  const [nextPlan, setNextPlan] = useState(NEXT_PLAN===undefined ? '':NEXT_PLAN);
   const [tonkhoaotable, setTonKhoAoTable] = useState<Array<TONLIEUXUONG>>([]);
   const [lichsunhapkhoao, setLichSuNhapKhoAo] = useState<
     Array<LICHSUNHAPKHOAO>

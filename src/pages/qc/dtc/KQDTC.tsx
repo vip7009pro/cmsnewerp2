@@ -129,6 +129,14 @@ const KQDTC = () => {
        </GridToolbarContainer>
     );
   }
+  const handleSearchCodeKeyDown = (
+    e: React.KeyboardEvent<HTMLInputElement>
+  ) => {
+    if (e.key === "Enter") {                      
+      handletraDTCData();
+    }
+  };
+
 
   const handletraDTCData = ()=> {   
     setSummaryInspect('');
@@ -177,14 +185,14 @@ const KQDTC = () => {
     //setColumnDefinition(column_inspect_output);
   },[]);
   return (
-    <div className='inspection'>
+    <div className='kqdtc'>
       <div className='tracuuDataInspection'>
         <div className='tracuuDataInspectionform'>
           <div className='forminput'>
             <div className='forminputcolumn'>
               <label>
                 <b>Từ ngày:</b>
-                <input
+                <input onKeyDown={(e)=> {handleSearchCodeKeyDown(e);} }
                   type='date'
                   value={fromdate.slice(0, 10)}
                   onChange={(e) => setFromDate(e.target.value)}
@@ -192,7 +200,7 @@ const KQDTC = () => {
               </label>
               <label>
                 <b>Tới ngày:</b>{" "}
-                <input
+                <input onKeyDown={(e)=> {handleSearchCodeKeyDown(e);} }
                   type='date'
                   value={todate.slice(0, 10)}
                   onChange={(e) => setToDate(e.target.value)}
@@ -202,7 +210,7 @@ const KQDTC = () => {
             <div className='forminputcolumn'>
               <label>
                 <b>Code KD:</b>{" "}
-                <input
+                <input onKeyDown={(e)=> {handleSearchCodeKeyDown(e);} }
                   type='text'
                   placeholder='GH63-xxxxxx'
                   value={codeKD}
@@ -211,7 +219,7 @@ const KQDTC = () => {
               </label>
               <label>
                 <b>Code CMS:</b>{" "}
-                <input
+                <input onKeyDown={(e)=> {handleSearchCodeKeyDown(e);} }
                   type='text'
                   placeholder='7C123xxx'
                   value={codeCMS}
@@ -222,7 +230,7 @@ const KQDTC = () => {
             <div className='forminputcolumn'>
               <label>
                 <b>Tên Liệu:</b>{" "}
-                <input
+                <input onKeyDown={(e)=> {handleSearchCodeKeyDown(e);} }
                   type='text'
                   placeholder='SJ-203020HC'
                   value={m_name}
@@ -231,7 +239,7 @@ const KQDTC = () => {
               </label>
               <label>
                 <b>Mã Liệu CMS:</b>{" "}
-                <input
+                <input onKeyDown={(e)=> {handleSearchCodeKeyDown(e);} }
                   type='text'
                   placeholder='A123456'
                   value={m_code}
@@ -270,7 +278,7 @@ const KQDTC = () => {
               </label>
               <label>
                 <b>Số YCSX:</b>{" "}
-                <input
+                <input onKeyDown={(e)=> {handleSearchCodeKeyDown(e);} }
                   type='text'
                   placeholder='1H23456'
                   value={prodrequestno}
@@ -297,7 +305,7 @@ const KQDTC = () => {
             </label>
             <label>
               <b>DTC ID:</b>{" "}
-              <input
+              <input onKeyDown={(e)=> {handleSearchCodeKeyDown(e);} }
                 type='text'
                 placeholder='12345'
                 value={id}
@@ -309,7 +317,7 @@ const KQDTC = () => {
           <div className='formbutton'>
             <label>
               <b>All Time:</b>
-              <input
+              <input onKeyDown={(e)=> {handleSearchCodeKeyDown(e);} }
                 type='checkbox'
                 name='alltimecheckbox'
                 defaultChecked={alltime}
