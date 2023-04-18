@@ -10,7 +10,8 @@ const DTC = () => {
   const [selection, setSelection] = useState<any>({
     tab1: true,
     tab2: false,
-    tab3: false
+    tab3: false,
+    tab4: false,
   });
 
   const setNav = (choose: number) => {
@@ -55,6 +56,11 @@ const DTC = () => {
           ADD SPEC ĐTC
           </span>
         </div> 
+        <div className='mininavitem'  onClick={() => setNav(4)} style={{backgroundColor:selection.tab4 === true ? '#9933ff':'#d9b3ff', color: selection.tab4 === true ? 'yellow':'yellow'}}>
+          <span className='mininavtext'>
+          ĐKÝ TEST ĐTC
+          </span>
+        </div> 
         
       </div>     
       {selection.tab1 && (
@@ -70,6 +76,11 @@ const DTC = () => {
       {selection.tab3 && (
         <div className='trainspection'>
           <ADDSPECDTC/>
+        </div>
+      )} 
+      {selection.tab4 && (
+        <div className='trainspection'>
+          <DKDTC/>
         </div>
       )} 
     </div>

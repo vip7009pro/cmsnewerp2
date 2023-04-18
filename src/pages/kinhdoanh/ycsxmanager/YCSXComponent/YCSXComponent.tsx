@@ -121,6 +121,8 @@ interface FullBOM {
     HOLDING: number,
     TONG_TON_LIEU: number,
     PO_TYPE?: string,
+    PROD_MAIN_MATERIAL?: string,
+    LIEUQL_SX?: number,
 }
 const YCSXComponent = ({G_CODE,PROD_TYPE,PROD_MAIN_MATERIAL,G_NAME,EMPL_NAME,EMPL_NO,CUST_NAME_KD,CUST_CD,PROD_REQUEST_NO,PROD_REQUEST_DATE,PROD_REQUEST_QTY,LOT_TOTAL_INPUT_QTY_EA,LOT_TOTAL_OUTPUT_QTY_EA,INSPECT_BALANCE,SHORTAGE_YCSX,YCSX_PENDING,PHAN_LOAI,REMARK,PO_TDYCSX,TOTAL_TKHO_TDYCSX,TKHO_TDYCSX,BTP_TDYCSX,CK_TDYCSX,BLOCK_TDYCSX,FCST_TDYCSX,W1,W2,W3,W4,W5,W6,W7,W8,PDUYET,LOAIXH, PDBV, PDBV_EMPL, PDBV_DATE, DESCR}:YCSXTableData) => {
     const [userData, setUserData] = useContext(UserContext);
@@ -188,106 +190,121 @@ const YCSXComponent = ({G_CODE,PROD_TYPE,PROD_MAIN_MATERIAL,G_NAME,EMPL_NAME,EMP
         TONLIEU:0,
         HOLDING: 0,
         TONG_TON_LIEU:0,
-        PO_TYPE:'E1'
+        PO_TYPE:'E1',
+        PROD_MAIN_MATERIAL:'',
+        LIEUQL_SX: 0
     }]);   
+
+    const [checklieuchinh,setCheckLieuChinh] = useState(false);
 
     const initYCSX = async() => {
         let inventorydate:string= '202207';
         await generalQuery("check_inventorydate", { 
             G_CODE: G_CODE
           })
+        .then((response) => {
+          if (response.data.tk_status !== "NG") {                   
+            inventorydate = (response.data.data[0].INVENTORY_DATE);
+          } else { 
+          }        
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+
+          generalQuery("ycsx_fullinfo", {
+        PROD_REQUEST_NO: PROD_REQUEST_NO,  
+        TRADATE: moment(inventorydate).format("YYYY-MM-DD 08:00:00"),
+        INVENTORY: inventorydate
+        })
+        .then((response) => {
+          //console.log('Data request full ycsx :');
+            //console.log(response.data.data);
+            if (response.data.tk_status !== "NG") {
+              for(let i=0;i<response.data.data.length ;i++)
+              {
+                if(response.data.data[i].PROD_MAIN_MATERIAL === response.data.data[i].M_NAME && response.data.data[i].LIEUQL_SX===1)
+                {
+                  setCheckLieuChinh(true);
+                }
+              }
+            setRequest_CodeInfo(response.data.data);  
+
+
+            } else {   
+              setRequest_CodeInfo([{
+                REMK: '',
+                PROD_REQUEST_QTY: 0,
+                PROD_REQUEST_NO: '',
+                PROD_REQUEST_DATE: '',
+                G_CODE: '',
+                DELIVERY_DT: '',
+                CODE_55: '03',
+                CODE_50: '02',
+                RIV_NO: '',
+                M_QTY: 1,
+                M_CODE: '',
+                CUST_NAME: '',
+                ROLE_EA_QTY: 0,
+                PACK_DRT: '',
+                PROD_PRINT_TIMES: 0,
+                G_WIDTH: 0,
+                G_SG_R: 0,
+                G_SG_L: 0,
+                G_R: 0,
+                G_NAME: '',
+                G_LG: 0,
+                G_LENGTH: 0,
+                G_CODE_C: '',
+                G_CG: 0,
+                G_C: 0,
+                G_C_R: 0,
+                PD: 0,
+                CODE_33: '02',
+                M_NAME: '',
+                WIDTH_CD: 0,
+                EMPL_NO: '',
+                EMPL_NAME: '',
+                CODE_03: '01',
+                REMARK: '',
+                TONLIEU:0,
+                HOLDING:0,
+                TONG_TON_LIEU: 0,
+                NO_INSPECTION:'N',
+                PROD_MAIN_MATERIAL:'',
+                LIEUQL_SX: 0,
+            }])  
+            //Swal.fire("Thông báo","Số yêu cầu " + PROD_REQUEST_NO + "không tồn tại","error");                
+            }
+        })
+        .catch((error) => {
+            console.log(error);
+        });
+
+             generalQuery("checkpobalance_tdycsx", { 
+            G_CODE: G_CODE
+          })
             .then((response) => {
               if (response.data.tk_status !== "NG") {                   
-                inventorydate = (response.data.data[0].INVENTORY_DATE);
+                setPOBalanceTdycsx(response.data.data[0]);
               } else { 
               }        
             })
             .catch((error) => {
               console.log(error);
             });
-
-        generalQuery("ycsx_fullinfo", {
-            PROD_REQUEST_NO: PROD_REQUEST_NO,  
-            TRADATE: moment(inventorydate).format("YYYY-MM-DD 08:00:00"),
-            INVENTORY: inventorydate
-            })
-            .then((response) => {
-              //console.log('Data request full ycsx :');
-                //console.log(response.data.data);
-                if (response.data.tk_status !== "NG") {
-                setRequest_CodeInfo(response.data.data);                
-                } else {   
-                  setRequest_CodeInfo([{
-                    REMK: '',
-                    PROD_REQUEST_QTY: 0,
-                    PROD_REQUEST_NO: '',
-                    PROD_REQUEST_DATE: '',
-                    G_CODE: '',
-                    DELIVERY_DT: '',
-                    CODE_55: '03',
-                    CODE_50: '02',
-                    RIV_NO: '',
-                    M_QTY: 1,
-                    M_CODE: '',
-                    CUST_NAME: '',
-                    ROLE_EA_QTY: 0,
-                    PACK_DRT: '',
-                    PROD_PRINT_TIMES: 0,
-                    G_WIDTH: 0,
-                    G_SG_R: 0,
-                    G_SG_L: 0,
-                    G_R: 0,
-                    G_NAME: '',
-                    G_LG: 0,
-                    G_LENGTH: 0,
-                    G_CODE_C: '',
-                    G_CG: 0,
-                    G_C: 0,
-                    G_C_R: 0,
-                    PD: 0,
-                    CODE_33: '02',
-                    M_NAME: '',
-                    WIDTH_CD: 0,
-                    EMPL_NO: '',
-                    EMPL_NAME: '',
-                    CODE_03: '01',
-                    REMARK: '',
-                    TONLIEU:0,
-                    HOLDING:0,
-                    TONG_TON_LIEU: 0,
-                    NO_INSPECTION:'N'
-                }])  
-                //Swal.fire("Thông báo","Số yêu cầu " + PROD_REQUEST_NO + "không tồn tại","error");                
-                }
-            })
-            .catch((error) => {
-                console.log(error);
-            });
-
-            generalQuery("checkpobalance_tdycsx", { 
-                G_CODE: G_CODE
-              })
-                .then((response) => {
-                  if (response.data.tk_status !== "NG") {                   
-                    setPOBalanceTdycsx(response.data.data[0]);
-                  } else { 
-                  }        
-                })
-                .catch((error) => {
-                  console.log(error);
-                });
-              generalQuery("checktonkho_tdycsx", { 
-                G_CODE:G_CODE
-              })
-                .then((response) => {                  
-                  if (response.data.tk_status !== "NG") {                   
-                    setTK_TDYCSX(response.data.data[0]);
-                  } else { 
-                  }        
-                })
-                .catch((error) => {
-                  console.log(error);
-                });
+        generalQuery("checktonkho_tdycsx", { 
+          G_CODE:G_CODE
+        })
+          .then((response) => {                  
+            if (response.data.tk_status !== "NG") {                   
+              setTK_TDYCSX(response.data.data[0]);
+            } else { 
+            }        
+          })
+          .catch((error) => {
+            console.log(error);
+          });
 
     }
     useEffect(()=> {
@@ -299,7 +316,7 @@ const YCSXComponent = ({G_CODE,PROD_TYPE,PROD_MAIN_MATERIAL,G_NAME,EMPL_NAME,EMP
 
   return (
     <div className='ycsxcomponent'>
-      {(PDBV==='Y') &&  <div className="qcpass">
+      {(PDBV==='Y' && checklieuchinh ===true) &&  <div className="qcpass">
         <img alt="qcpass" src="/QC PASS20.png" width={440-100-10} height={400-100}/>
       </div>  }  
      { request_codeinfo[0].PDUYET &&  <div className='tieudeycsx'>
@@ -545,7 +562,7 @@ const YCSXComponent = ({G_CODE,PROD_TYPE,PROD_MAIN_MATERIAL,G_NAME,EMPL_NAME,EMP
             </tbody>
           </table>
         </div>
-        <div className='text1'>4. 제품 정보 Thông tin vật liệu</div>
+        <div className='text1'>4. 제품 정보 Thông tin vật liệu | Liệu chính {request_codeinfo[0].PROD_MAIN_MATERIAL} | {checklieuchinh ===true? 'Đã SET':'Chưa SET'} </div>
         <div className='thongtinvatlieu'>
           {(request_codeinfo.length <= 12) && <div className='vatlieugiua'>
             <table>

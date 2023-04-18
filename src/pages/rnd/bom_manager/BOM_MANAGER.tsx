@@ -166,14 +166,14 @@ interface MaterialListData {
   WIDTH_CD: number;
 }
 interface MATERIAL_INFO {
-  M_ID: number,
-  M_NAME: string, 
-  CUST_CD: string,
-  SSPRICE: number,
-  CMSPRICE: number,
-  SLITTING_PRICE: number,
-  MASTER_WIDTH: number,
-  ROLL_LENGTH: number
+  M_ID: number;
+  M_NAME: string;
+  CUST_CD: string;
+  SSPRICE: number;
+  CMSPRICE: number;
+  SLITTING_PRICE: number;
+  MASTER_WIDTH: number;
+  ROLL_LENGTH: number;
 }
 const BOM_MANAGER = () => {
   const [codedatatablefilter, setCodeDataTableFilter] = useState<
@@ -220,7 +220,7 @@ const BOM_MANAGER = () => {
     REMK: "",
     USE_YN: "N",
     G_CODE: "-------",
-    PO_TYPE:'E1'
+    PO_TYPE: "E1",
   });
   const [bomsxtable, setBOMSXTable] = useState<BOM_SX[]>([]);
   const [bomgiatable, setBOMGIATable] = useState<BOM_GIA[]>([]);
@@ -585,7 +585,7 @@ const BOM_MANAGER = () => {
           return <span>{params.row.MAT_ROLL_LENGTH}</span>;
         }
       },
-    },    
+    },
     { field: "M_QTY", headerName: "M_QTY", width: 80, editable: enableEdit },
     { field: "REMARK", headerName: "REMARK", width: 80, editable: enableEdit },
     {
@@ -1086,7 +1086,7 @@ const BOM_MANAGER = () => {
     }
     return result;
   };
-  
+
   const confirmAddNewCode = () => {
     Swal.fire({
       title: "Chắc chắn muốn thêm code mới ?",
@@ -1561,17 +1561,16 @@ const BOM_MANAGER = () => {
   };
   const handleAddNewLineBOMGIA = async () => {
     if (codedatatablefilter.length > 0) {
-
       let selected_Material_Info: MATERIAL_INFO = {
         M_ID: 564,
-        M_NAME: 'OS75-006WP', 
-        CUST_CD: 'C-TECH',
+        M_NAME: "OS75-006WP",
+        CUST_CD: "C-TECH",
         SSPRICE: 1.3,
         CMSPRICE: 1.234545455,
         SLITTING_PRICE: 0.054545455,
         MASTER_WIDTH: 1080,
-        ROLL_LENGTH: 1000
-      }
+        ROLL_LENGTH: 1000,
+      };
       await generalQuery("checkMaterialInfo", {
         M_NAME: selectedMaterial?.M_NAME,
       })
@@ -1585,7 +1584,6 @@ const BOM_MANAGER = () => {
         .catch((error) => {
           console.log(error);
         });
-
 
       let tempeditrows: BOM_GIA = {
         id: moment().format("YYYY-MM-DD HH:mm:ss.SSS"),
@@ -1647,7 +1645,7 @@ const BOM_MANAGER = () => {
           bomgiatable[i].CUST_CD === "" ||
           bomgiatable[i].USAGE === "" ||
           bomgiatable[i].MAT_MASTER_WIDTH === 0 ||
-          bomgiatable[i].MAT_ROLL_LENGTH === 0        
+          bomgiatable[i].MAT_ROLL_LENGTH === 0
         ) {
           err_code = "Không được để ô nào NG màu đỏ";
         }
@@ -2118,7 +2116,7 @@ const BOM_MANAGER = () => {
                     <label>
                       VL Chính:{" "}
                       <input
-                        disabled={enableform}
+                        disabled={true}
                         type='text'
                         value={
                           codefullinfo?.PROD_MAIN_MATERIAL === null
@@ -2133,6 +2131,7 @@ const BOM_MANAGER = () => {
                         }}
                       ></input>
                     </label>
+                    
                     <label>
                       Code RnD:{" "}
                       <input
@@ -2504,7 +2503,8 @@ const BOM_MANAGER = () => {
                         disabled={enableform}
                         name='may1'
                         value={
-                          codefullinfo?.PO_TYPE === null || codefullinfo?.PO_TYPE === ""
+                          codefullinfo?.PO_TYPE === null ||
+                          codefullinfo?.PO_TYPE === ""
                             ? "NA"
                             : codefullinfo?.PO_TYPE
                         }
@@ -2513,7 +2513,7 @@ const BOM_MANAGER = () => {
                         }}
                       >
                         <option value='E1'>E1</option>
-                        <option value='E2'>E2</option>                 
+                        <option value='E2'>E2</option>
                       </select>
                     </label>
                     <label>
@@ -2529,7 +2529,8 @@ const BOM_MANAGER = () => {
                         }}
                       ></input>
                     </label>
-                   
+                    
+
                     <FormControlLabel
                       disabled={enableform}
                       label='Mở/Khóa'
@@ -2546,6 +2547,43 @@ const BOM_MANAGER = () => {
                         />
                       }
                     />
+                    <label>                      
+                      <Autocomplete
+                      sx={{height:10, margin: '1px', position: 'initial'}}
+                        disabled={
+                          enableform
+                        }
+                        size='small'
+                        disablePortal
+                        options={materialList}
+                        className='autocomplete'
+                        isOptionEqualToValue={(option, value) =>
+                          option.M_CODE === value.M_CODE
+                        }
+                        getOptionLabel={(option: MaterialListData) =>
+                          `${option.M_NAME}|${option.WIDTH_CD}|${option.M_CODE}`
+                        }
+                        renderInput={(params) => (
+                          <TextField {...params} label='Select Main Material' />
+                        )}
+                        defaultValue={{
+                          M_CODE: "A0007770",
+                          M_NAME: "SJ-203020HC",
+                          WIDTH_CD: 208,
+                        }}
+                        value={selectedMaterial}
+                        onChange={(
+                          event: any,
+                          newValue: MaterialListData | null
+                        ) => {
+                          console.log(newValue);
+                          handleSetCodeInfo(
+                            "PROD_MAIN_MATERIAL",
+                            newValue === null? '': newValue.M_NAME
+                          );
+                        }}
+                      />
+                    </label>
                     {/*  <input
                       type='checkbox'
                       name='alltimecheckbox'                      

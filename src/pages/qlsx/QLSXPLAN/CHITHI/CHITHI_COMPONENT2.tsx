@@ -122,7 +122,10 @@ interface FullBOM {
   LOSS_SX2: number,
   LOSS_SETTING1 : number,
   LOSS_SETTING2 : number,
-  NOTE:string
+  NOTE:string,
+  PO_TYPE?: string,
+  PROD_MAIN_MATERIAL?: string,
+  LIEUQL_SX?: number,
 }
 interface QLSXCHITHIDATA {
   id: string,
@@ -196,6 +199,7 @@ interface QLSXPLANDATA {
   }
 
 const CHITHI_COMPONENT2 = ({PLAN_LIST}: PLAN_COMBO) => {
+  const [checklieuchinh,setCheckLieuChinh] = useState(false);
     //console.log(PLAN_LIST);
     let main_plan: QLSXPLANDATA = PLAN_LIST.filter((element, index)=> element.STEP ===0)[0];    
 
@@ -284,6 +288,13 @@ const CHITHI_COMPONENT2 = ({PLAN_LIST}: PLAN_COMBO) => {
         //console.log('Data request full ycsx :');
         //console.log(response.data.data);
         if (response.data.tk_status !== "NG") {
+          for(let i=0;i<response.data.data.length ;i++)
+          {
+            if(response.data.data[i].PROD_MAIN_MATERIAL === response.data.data[i].M_NAME && response.data.data[i].LIEUQL_SX===1)
+            {
+              setCheckLieuChinh(true);
+            }
+          }
           setRequest_CodeInfo(response.data.data);
         } else {
           setRequest_CodeInfo([
@@ -370,7 +381,7 @@ const CHITHI_COMPONENT2 = ({PLAN_LIST}: PLAN_COMBO) => {
       {
         <div className='tieudeycsx'>
           <div className='leftlogobarcode'>
-            <img alt='logo' src='/logocmsvina.png' width={160} height={40} />
+            {(request_codeinfo[0].PDBV==='Y' && checklieuchinh ===true) && <img alt='logo' src='/logocmsvina.png' width={160} height={40} />}
             <Barcode
               value={main_plan.PLAN_ID}
               format='CODE128'
@@ -418,7 +429,7 @@ const CHITHI_COMPONENT2 = ({PLAN_LIST}: PLAN_COMBO) => {
       }
       <div className='thongtinycsx'>
         <div className='text1'>
-          1. 지시 정보 Thông tin chỉ thị ({request_codeinfo[0].G_NAME} )
+        1. 지시 정보 Thông tin chỉ thị ({request_codeinfo[0].G_NAME} ) __ PO_TYPE: {request_codeinfo[0].PO_TYPE} 
         </div>
         <div className='thongtinyeucau'>
           <table className='ttyc1'>
@@ -689,7 +700,7 @@ const CHITHI_COMPONENT2 = ({PLAN_LIST}: PLAN_COMBO) => {
             </tbody>
           </table>               
         </div>  
-        <div className='text1'>5. 제품 정보 Thông tin vật liệu</div>
+        <div className='text1'>5. 제품 정보 Thông tin vật liệu | Liệu chính {request_codeinfo[0].PROD_MAIN_MATERIAL} | {checklieuchinh ===true? 'Đã SET':'Chưa SET'}</div>
         <div className='thongtinvatlieu'>
           {chithidatatable.length <= maxLieu && (
             <div className='vatlieugiua'>

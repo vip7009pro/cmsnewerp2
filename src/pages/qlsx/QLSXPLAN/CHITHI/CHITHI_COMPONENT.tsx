@@ -125,6 +125,8 @@ interface FullBOM {
   LOSS_SETTING2 : number,
   NOTE:string,
   PO_TYPE: string,
+  PROD_MAIN_MATERIAL?: string,
+  LIEUQL_SX?: number,
 }
 interface QLSXCHITHIDATA {
   id: string,
@@ -159,6 +161,7 @@ const CHITHI_COMPONENT = ({
   PLAN_ORDER,  
   PROCESS_NUMBER
 }: YCSXTableData) => {
+  const [checklieuchinh,setCheckLieuChinh] = useState(false);
   const userData: UserData | undefined = useSelector(
     (state: RootState) => state.totalSlice.userData
   );
@@ -216,7 +219,9 @@ const CHITHI_COMPONENT = ({
       LOSS_SETTING1 : 0,
       LOSS_SETTING2 : 0,
       NOTE:'',
-      PO_TYPE:'E1'
+      PO_TYPE:'E1',
+      PROD_MAIN_MATERIAL: '',
+      LIEUQL_SX: 0,
     },
   ]);
   const [chithidatatable, setChiThiDataTable] = useState<QLSXCHITHIDATA[]>([]);
@@ -246,6 +251,13 @@ const CHITHI_COMPONENT = ({
         //console.log('Data request full ycsx :');
         //console.log(response.data.data);
         if (response.data.tk_status !== "NG") {
+          for(let i=0;i<response.data.data.length ;i++)
+          {
+            if(response.data.data[i].PROD_MAIN_MATERIAL === response.data.data[i].M_NAME && response.data.data[i].LIEUQL_SX===1)
+            {
+              setCheckLieuChinh(true);
+            }
+          }
           setRequest_CodeInfo(response.data.data);
         } else {
           setRequest_CodeInfo([
@@ -371,7 +383,7 @@ const CHITHI_COMPONENT = ({
   return (
     <div className='chithicomponent'>     
     <div className="qcpass">
-        <img alt="qcpass" src="/QC PASS20.png" width={440-100-10} height={400-100}/>
+        {(request_codeinfo[0].PDBV==='Y' && checklieuchinh ===true) && <img alt="qcpass" src="/QC PASS20.png" width={440-100-10} height={400-100}/>}
       </div>    
       {
         <div className='tieudeycsx'>
@@ -626,7 +638,7 @@ const CHITHI_COMPONENT = ({
             </tbody>
           </table>               
         </div>       
-        <div className='text1'>4. 제품 정보 Thông tin vật liệu</div>
+        <div className='text1'>4. 제품 정보 Thông tin vật liệu | Liệu chính {request_codeinfo[0].PROD_MAIN_MATERIAL} | {checklieuchinh ===true? 'Đã SET':'Chưa SET'}</div>
         <div className='thongtinvatlieu'>
           {chithidatatable.length <= maxLieu && (
             <div className='vatlieugiua'>

@@ -166,7 +166,6 @@ const TINHHINHCUONLIEU = () => {
             "Đã load : " + loaded_data.length + " dòng",
             "success"
           );
-
           let temp_loss_info: LOSS_TABLE_DATA = {
             XUATKHO_MET: 0,
             INSPECTION_INPUT: 0,

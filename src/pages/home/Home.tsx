@@ -8,7 +8,7 @@ import { generalQuery } from "../../api/Api";
 import Swal from "sweetalert2";
 import PrimarySearchAppBar from "../../components/AppBar/AppBarCustom";
 import CHAT from "../chat/CHAT";
-export const current_ver: number = 101;
+export const current_ver: number = 102;
 function Home() {
   const springs = useSpring({
     from: { x: 1000, y: 100 },

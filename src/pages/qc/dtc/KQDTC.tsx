@@ -273,7 +273,7 @@ const KQDTC = () => {
                   <option value='13'>Scanbarcode</option>
                   <option value='14'>Nhiệt cao Ẩm cao</option>
                   <option value='15'>Shock nhiệt</option>
-                  <option value='1002'>Kéo keo 2 mặt</option>
+                  <option value='1002'>Kéo keo 2</option>
                 </select>
               </label>
               <label>
