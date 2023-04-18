@@ -630,6 +630,7 @@ const ADDSPECTDTC = () => {
   useEffect(() => {
     getcodelist("");
     getmateriallist();
+    checkAddedSpec(undefined,'7C03925A');
   }, []);
   return (
     <div className='addspecdtc'>
