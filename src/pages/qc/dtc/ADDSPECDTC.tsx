@@ -163,8 +163,8 @@ const ADDSPECTDTC = () => {
           <Editing
             allowUpdating={true}
             allowAdding={false}
-            allowDeleting={false}
-            mode='batch'
+            allowDeleting={true}
+            mode='cell'
             confirmDelete={true}
             onChangesChange={(e) => {}}
           />
@@ -616,7 +616,7 @@ const ADDSPECTDTC = () => {
       M_CODE: checkNVL ? m_code : "B0000035",
       G_CODE: checkNVL ? "7A07540A" : g_code,
     })
-      .then((response) => { 
+      .then((response) => {
         if (response.data.tk_status !== "NG") {
           //console.log(response.data.data);
           setAddedSpec(response.data.data);
@@ -629,13 +629,18 @@ const ADDSPECTDTC = () => {
   };
   useEffect(() => {
     getcodelist("");
-    getmateriallist();
-    checkAddedSpec(undefined,'7C03925A');
+    getmateriallist();    
   }, []);
   return (
     <div className='addspecdtc'>
       <div className='tracuuDataInspection'>
         <div className='tracuuDataInspectionform'>
+            <b style={{ color: "blue" }}>
+              {checkNVL
+                ? "ADD SPEC ĐTC NVL (IQC)"
+                : "ADD SPEC ĐTC SẢN PHẨM (RND)"}
+            </b>
+            <br></br>
           <div className='forminput'>
             <div className='forminputcolumn'>
               {!checkNVL && (
@@ -694,7 +699,7 @@ const ADDSPECTDTC = () => {
                       event: any,
                       newValue: MaterialListData | null
                     ) => {
-                      console.log(newValue);
+                      //console.log(newValue);
                       checkAddedSpec(newValue?.M_CODE, undefined);
                       handletraDTCData(testname);
                       setSelectedMaterial(newValue);
@@ -741,25 +746,7 @@ const ADDSPECTDTC = () => {
             </div>
             <div className='forminputcolumn'></div>
           </div>
-          <div className='formbutton'>
-            <label>
-              <b>
-                {checkNVL === true
-                  ? "Nguyên vật liệu (Bỏ tick để chọn Sản phẩm)"
-                  : "Sản phẩm (tick để chọn NVL)"}
-                :
-              </b>
-              <input
-                type='checkbox'
-                name='alltimecheckbox'
-                defaultChecked={checkNVL}
-                onChange={() => {
-                  setCheckNVL(!checkNVL);
-                  setAddedSpec([]);
-                  setInspectionDataTable([]);
-                }}
-              ></input>
-            </label>
+          <div className='formbutton'>           
             <button
               className='tranhatky'
               onClick={() => {
@@ -784,33 +771,46 @@ const ADDSPECTDTC = () => {
               }}
             >
               Update SPEC
-            </button>
-            <button
-              className='tranhatky'
-              onClick={() => {
-                console.log(inspectiondatatable);
-              }}
-            >
-              Show data
-            </button>
+            </button>            
           </div>
-          <div className='formbutton' style={{ marginTop: "20px" }}>
+          <div
+            className='formbutton'
+            style={{ display: "flex",  flexWrap: "wrap" , marginTop: "20px", marginBottom: "20px" }}
+          >
             {addedSpec.map((element: CheckAddedSPECDATA, index: number) => {
               return (
-                <div key={index} style={{ fontSize: 12 }}>
-                  {element.TEST_NAME}:{" "}
+                <div
+                  key={index}
+                  style={{  }}
+                >
+                  <span style={{ fontSize: 12 }}>{element.TEST_NAME}:</span>
                   <span
                     style={{
                       fontSize: 12,
-                      fontWeight: "bold",
-                      backgroundColor: element.CHECKADDED ? "#80ff00" : "red",
+                      fontWeight: element.CHECKADDED ? "bold" : 'normal',
+                      color: element.CHECKADDED ? "blue" : "red",
                     }}
                   >
                     {element.CHECKADDED ? "YES" : "NO"}
                   </span>
                 </div>
               );
-            })}
+            })}             
+          </div>
+          <div className="formbutton">
+          <label>
+              <b>{checkNVL === true ? "Swap (SP)" : "Swap (NVL)"}:</b>
+              <input
+                type='checkbox'
+                name='alltimecheckbox'
+                defaultChecked={checkNVL}
+                onChange={() => {
+                  setCheckNVL(!checkNVL);
+                  setAddedSpec([]);
+                  setInspectionDataTable([]);
+                }}
+              ></input>
+            </label>
           </div>
         </div>
         <div className='tracuuYCSXTable'>{materialDataTable}</div>

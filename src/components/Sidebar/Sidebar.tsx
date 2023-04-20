@@ -238,6 +238,11 @@ const Sidebar = () => {
           cName: 'sub-nav'
         },
         {
+          title: getlang('dtc',lang),
+          path: '/rnd/dtc',
+          icon: <MdOutlineAspectRatio color='red' size={25}/>        
+        }, 
+        {
           title: getlang('quanlyYCSX',lang),
           path: 'rnd/ycsxmanager',
           icon: <FcSettings color='#cc99ff' size={25}/>,

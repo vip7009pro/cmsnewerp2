@@ -1,4 +1,12 @@
-import { Autocomplete, IconButton, TextField } from "@mui/material";
+import {
+  Autocomplete,
+  Button,
+  Checkbox,
+  FormControlLabel,
+  IconButton,
+  TextField,
+  Typography,
+} from "@mui/material";
 import moment from "moment";
 import React, { useContext, useEffect, useState, useTransition } from "react";
 import { AiFillFileExcel } from "react-icons/ai";
@@ -23,111 +31,70 @@ import DataGrid, {
   Toolbar,
   TotalItem,
 } from "devextreme-react/data-grid";
-interface DTC_ADD_SPEC_DATA {
-  CUST_NAME_KD: string;
-  G_CODE: string;
-  G_NAME: string;
-  TEST_CODE: number;
-  POINT_CODE: number;
+
+interface DTC_REG_DATA {
+  DTC_ID: number,
+  FACTORY: string,
+  TEST_FINISH_TIME: string,
+  TEST_EMPL_NO: string,
+  G_CODE: string,
+  PROD_REQUEST_NO: number,
+  G_NAME: number,
+  TEST_NAME: number,
+  TEST_TYPE_NAME: number,
+  WORK_POSITION_NAME: number,
+  REQUEST_DATETIME: string,
+  REQUEST_EMPL_NO: string,
+  M_NAME: string,
+  SIZE: number,
+  REMARK: string,
+  LOTCMS: string,
+}
+interface TestListTable {
+  TEST_CODE: string;
   TEST_NAME: string;
-  POINT_NAME: string;
-  PRI: number;
-  CENTER_VALUE: number;
-  UPPER_TOR: number;
-  LOWER_TOR: number;
-  BARCODE_CONTENT: string;
-  REMARK: string;
-  M_NAME: string;
-  WIDTH_CD: number;
-  M_CODE: string;
-  TDS: string;
-  BANVE: string;
-}
-interface CodeListData {
-  G_CODE: string;
-  G_NAME: string;
-  PROD_LAST_PRICE: number;
-  USE_YN: string;
-}
-interface MaterialListData {
-  M_CODE: string;
-  M_NAME: string;
-  WIDTH_CD: number;
-}
-interface CheckAddedSPECDATA {
-  TEST_CODE: number,
-  TEST_NAME: string,
-  CHECKADDED: number,
+  SELECTED: boolean;
 }
 const DKDTC = () => {
-  const [addedSpec, setAddedSpec] = useState<CheckAddedSPECDATA[]>([]);
-  const [materialList, setMaterialList] = useState<MaterialListData[]>([
-    {
-      M_CODE: "A0000001",
-      M_NAME: "#200",
-      WIDTH_CD: 1200,
-    },
-  ]);
-  const [selectedMaterial, setSelectedMaterial] =
-    useState<MaterialListData | null>({
-      M_CODE: "A0000001",
-      M_NAME: "#200",
-      WIDTH_CD: 1200,
-    });
-  const [isPending, startTransition] = useTransition();
-  const [codeList, setCodeList] = useState<CodeListData[]>([]);
-  const [selectedCode, setSelectedCode] = useState<CodeListData | null>({
-    G_CODE: "7C03925A",
-    G_NAME: "GH63-18084A_A_SM-A515F",
-    PROD_LAST_PRICE: 0.318346,
-    USE_YN: "Y",
-  });
+
   const [userData, setUserData] = useContext(UserContext);
-  const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
-  const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));
-  const [codeKD, setCodeKD] = useState("");
-  const [codeCMS, setCodeCMS] = useState("");
-  const [testname, setTestName] = useState("0");
-  const [testtype, setTestType] = useState("0");
-  const [prodrequestno, setProdRequestNo] = useState("");
+  const [testtype, setTestType] = useState("3");
+  const [inputno, setInputNo] = useState("");
   const [checkNVL, setCheckNVL] = useState(false);
-  const [id, setID] = useState("");
+  const [request_empl, setrequest_empl] = useState("");
+  const [remark, setReMark] = useState("");
+  const [testList, setTestList] = useState<TestListTable[]>([
+    { TEST_CODE: "1", TEST_NAME: "Kích thước", SELECTED: false },
+    { TEST_CODE: "2", TEST_NAME: "Kéo keo", SELECTED: false },
+    { TEST_CODE: "3", TEST_NAME: "XRF", SELECTED: false },
+    { TEST_CODE: "4", TEST_NAME: "Điện trở", SELECTED: false },
+    { TEST_CODE: "5", TEST_NAME: "Tĩnh điện", SELECTED: false },
+    { TEST_CODE: "6", TEST_NAME: "Độ bóng", SELECTED: false },
+    { TEST_CODE: "7", TEST_NAME: "Phtalate", SELECTED: false },
+    { TEST_CODE: "8", TEST_NAME: "FTIR", SELECTED: false },
+    { TEST_CODE: "9", TEST_NAME: "Mài mòn", SELECTED: false },
+    { TEST_CODE: "10", TEST_NAME: "Màu sắc", SELECTED: false },
+    { TEST_CODE: "11", TEST_NAME: "TVOC", SELECTED: false },
+    { TEST_CODE: "12", TEST_NAME: "Cân nặng", SELECTED: false },
+    { TEST_CODE: "13", TEST_NAME: "Scanbarcode", SELECTED: false },
+    { TEST_CODE: "14", TEST_NAME: "Nhiệt cao Ẩm cao", SELECTED: false },
+    { TEST_CODE: "15", TEST_NAME: "Shock nhiệt", SELECTED: false },
+    { TEST_CODE: "1002", TEST_NAME: "Kéo keo 2", SELECTED: false },
+  ]);
   const [inspectiondatatable, setInspectionDataTable] = useState<Array<any>>(
     []
   );
-  const [m_name, setM_Name] = useState("");
   const [selectedRowsData, setSelectedRowsData] = useState<
-    Array<DTC_ADD_SPEC_DATA>
+    Array<DTC_REG_DATA>
   >([]);
-  const getcodelist = (G_NAME: string) => {
-    generalQuery("selectcodeList", { G_NAME: G_NAME })
-      .then((response) => {
-        if (response.data.tk_status !== "NG") {
-          if (!isPending) {
-            startTransition(() => {
-              setCodeList(response.data.data);
-            });
-          }
-        } else {
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
-  const getmateriallist = () => {
-    generalQuery("getMaterialList", {})
-      .then((response) => {
-        if (response.data.tk_status !== "NG") {
-          //console.log(response.data.data);
-          setMaterialList(response.data.data);
-        } else {
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
+  const [empl_name, setEmplName] = useState('');
+  const [reqDeptCode, setReqDeptCode] = useState('');
+  const [g_name, setGName] = useState('');
+  const [g_code, setGCode] = useState('');
+  const [m_name, setM_Name] = useState('');
+  const [m_code, setM_Code] = useState('');
+  const [prodrequestno, setProdRequestNo] = useState('');
+  const [prodreqdate, setProdReqDate] = useState('');
   const materialDataTable = React.useMemo(
     () => (
       <div className='datatb'>
@@ -145,8 +112,8 @@ const DKDTC = () => {
           height={"70vh"}
           showBorders={true}
           onSelectionChanged={(e) => {
-            console.log(e.selectedRowsData);
-            setSelectedRowsData(e.selectedRowsData);
+            //console.log(e.selectedRowsData);
+            //setSelectedRowsData(e.selectedRowsData);
           }}
           onRowClick={(e) => {
             //console.log(e.data);
@@ -161,7 +128,7 @@ const DKDTC = () => {
           />
           <Selection mode='multiple' selectAllMode='allPages' />
           <Editing
-            allowUpdating={true}
+            allowUpdating={false}
             allowAdding={false}
             allowDeleting={false}
             mode='batch'
@@ -180,6 +147,7 @@ const DKDTC = () => {
                 <AiFillFileExcel color='green' size={25} />
                 SAVE
               </IconButton>
+              <span style={{fontSize: 20, fontWeight: 'bold'}}>200 đăng ký test gần đây</span>
             </Item>
             <Item name='searchPanel' />
             <Item name='exportButton' />
@@ -200,587 +168,383 @@ const DKDTC = () => {
             infoText='Page #{0}. Total: {1} ({2} items)'
             displayMode='compact'
           />
-          <Column dataField='CUST_NAME_KD' caption='CUST_NAME_KD'></Column>
-          <Column dataField='G_CODE' caption='G_CODE'></Column>
-          <Column dataField='G_NAME' caption='G_NAME' width={150}></Column>
-          <Column dataField='TEST_NAME' caption='TEST_NAME'></Column>
-          <Column dataField='POINT_NAME' caption='POINT_NAME'></Column>
-          <Column dataField='PRI' caption='PRI'></Column>
-          <Column
-            dataField='CENTER_VALUE'
-            caption='CENTER_VALUE'
-            width={120}
-          ></Column>
-          <Column
-            dataField='UPPER_TOR'
-            caption='UPPER_TOR'
-            width={120}
-          ></Column>
-          <Column
-            dataField='LOWER_TOR'
-            caption='LOWER_TOR'
-            width={120}
-          ></Column>
-          <Column
-            dataField='BARCODE_CONTENT'
-            caption='BARCODE_CONTENT'
-          ></Column>
-          <Column dataField='REMARK' caption='REMARK'></Column>
-          <Column dataField='M_NAME' caption='M_NAME' width={120}></Column>
-          <Column dataField='WIDTH_CD' caption='WIDTH_CD'></Column>
-          <Column dataField='M_CODE' caption='M_CODE'></Column>
-          <Column
-            caption='BANVE/TDS'
-            width={150}
-            cellRender={(e: any) => {
-              if (e.data.M_CODE === "B0000035") {
-                let link: string = `/banve/${e.data.G_CODE}.pdf`;
-                if (e.data.BANVE === "Y") {
-                  return (
-                    <div
-                      style={{
-                        color: "white",
-                        fontWeight: "bold",
-                        height: "20px",
-                        width: "80px",
-                        backgroundColor: "#54e00d",
-                        textAlign: "center",
-                      }}
-                    >
-                      <a href={link} target='_blank' rel='noopener noreferrer'>
-                        Bản Vẽ
-                      </a>
-                    </div>
-                  );
-                } else {
-                  return (
-                    <div
-                      style={{
-                        color: "white",
-                        fontWeight: "bold",
-                        height: "20px",
-                        width: "80px",
-                        backgroundColor: "gray",
-                        textAlign: "center",
-                      }}
-                    >
-                      Chưa có bản vẽ
-                    </div>
-                  );
-                }
-              } else {
-                let link: string = `/tds/${e.data.M_CODE}.pdf`;
-                if (e.data.TDS === "Y") {
-                  return (
-                    <div
-                      style={{
-                        color: "white",
-                        fontWeight: "bold",
-                        height: "20px",
-                        width: "80px",
-                        backgroundColor: "red",
-                        textAlign: "center",
-                      }}
-                    >
-                      <a href={link} target='_blank' rel='noopener noreferrer'>
-                        TDS
-                      </a>
-                    </div>
-                  );
-                } else {
-                  return (
-                    <div
-                      style={{
-                        color: "white",
-                        fontWeight: "bold",
-                        height: "20px",
-                        width: "80px",
-                        backgroundColor: "gray",
-                        textAlign: "center",
-                      }}
-                    >
-                      Chưa có TDS
-                    </div>
-                  );
-                }
-              }
-            }}
-          ></Column>
-          <Summary>
-            <TotalItem
-              alignment='right'
-              column='G_CODE'
-              summaryType='count'
-              valueFormat={"decimal"}
-            />
-          </Summary>
+          <Column dataField='DTC_ID' caption='DTC_ID' width={100}></Column>
+          <Column dataField='REQUEST_DATETIME' caption='REQUEST_DATETIME' width={100}></Column>
+          <Column dataField='REQUEST_EMPL_NO' caption='REQUEST_EMPL_NO' width={100}></Column>
+          <Column dataField='FACTORY' caption='FACTORY' width={100}></Column>
+          <Column dataField='TEST_FINISH_TIME' caption='TEST_FINISH_TIME' width={100}></Column>
+          <Column dataField='TEST_EMPL_NO' caption='TEST_EMPL_NO' width={100}></Column>
+          <Column dataField='G_CODE' caption='G_CODE' width={100}></Column>
+          <Column dataField='PROD_REQUEST_NO' caption='PROD_REQUEST_NO' width={100}></Column>
+          <Column dataField='G_NAME' caption='G_NAME' width={100}></Column>
+          <Column dataField='TEST_NAME' caption='TEST_NAME' width={100}></Column>
+          <Column dataField='TEST_TYPE_NAME' caption='TEST_TYPE_NAME' width={100}></Column>
+          <Column dataField='WORK_POSITION_NAME' caption='WORK_POSITION_NAME' width={100}></Column>          
+          <Column dataField='M_NAME' caption='M_NAME' width={100}></Column>
+          <Column dataField='SIZE' caption='SIZE' width={100}></Column>
+          <Column dataField='REMARK' caption='REMARK' width={100}></Column>
+          <Column dataField='LOTCMS' caption='LOTCMS' width={100}></Column>
         </DataGrid>
       </div>
     ),
     [inspectiondatatable]
   );
-  const handletraDTCData = (test_name: string) => {
-    generalQuery("checkSpecDTC", {
-      checkNVL: checkNVL,
-      FROM_DATE: fromdate,
-      TO_DATE: todate,
-      G_CODE: checkNVL === true ? "" : selectedCode?.G_CODE,
-      G_NAME: codeKD,
-      M_NAME: m_name,
-      M_CODE: checkNVL === true ? selectedMaterial?.M_CODE : "",
-      TEST_NAME: test_name,
-      PROD_REQUEST_NO: prodrequestno,
-      TEST_TYPE: testtype,
-      ID: id,
+  const handletraDTCData = () => {
+    generalQuery("loadrecentRegisteredDTCData", {
     })
       .then((response) => {
         //console.log(response.data.data);
         if (response.data.tk_status !== "NG") {
-          const loadeddata: DTC_ADD_SPEC_DATA[] = response.data.data.map(
-            (element: DTC_ADD_SPEC_DATA, index: number) => {
+          const loadeddata: DTC_REG_DATA[] = response.data.data.map(
+            (element: DTC_REG_DATA, index: number) => {
               return {
                 ...element,
+                TEST_FINISH_TIME: element.TEST_FINISH_TIME === '1900-01-01T00:00:00.000Z' || element.TEST_FINISH_TIME === null ? '': moment(element.TEST_FINISH_TIME).utc().format('YYYY-MM-DD HH:mm:ss'),
+                REQUEST_DATETIME: element.REQUEST_DATETIME === '1900-01-01T00:00:00.000Z' || element.REQUEST_DATETIME === null? '': moment(element.REQUEST_DATETIME).utc().format('YYYY-MM-DD HH:mm:ss'),
                 id: index,
               };
             }
           );
-          setInspectionDataTable(loadeddata);
-          Swal.fire(
-            "Thông báo",
-            "Đã load " + response.data.data.length + " dòng",
-            "success"
-          );
-          checkAddedSpec();
+          setInspectionDataTable(loadeddata);              
         } else {
-          generalQuery("checkSpecDTC2", {
-            checkNVL: checkNVL,
-            FROM_DATE: fromdate,
-            TO_DATE: todate,
-            G_CODE: checkNVL === true ? "" : selectedCode?.G_CODE,
-            G_NAME: codeKD,
-            M_NAME: m_name,
-            M_CODE: checkNVL === true ? selectedMaterial?.M_CODE : "",
-            TEST_NAME: test_name,
-            PROD_REQUEST_NO: prodrequestno,
-            TEST_TYPE: testtype,
-            ID: id,
-          })
-            .then((response) => {
-              //console.log(response.data.data);
-              if (response.data.tk_status !== "NG") {
-                const loadeddata: DTC_ADD_SPEC_DATA[] = response.data.data.map(
-                  (element: DTC_ADD_SPEC_DATA, index: number) => {
-                    return {
-                      ...element,
-                      id: index,
-                    };
-                  }
-                );
-                setInspectionDataTable(loadeddata);
-                Swal.fire(
-                  "Thông báo",
-                  "Chưa có SPEC, Đã load bảng trắng để nhập " +
-                    response.data.data.length +
-                    " dòng",
-                  "warning"
-                );
-                checkAddedSpec();
-              } else {
-                setInspectionDataTable([]);
-              }
-            })
-            .catch((error) => {
-              console.log(error);
-            });
         }
       })
       .catch((error) => {
         console.log(error);
       });
   };
-  const handleInsertSpec = async () => {
-    Swal.fire({
-      title: "Insert SPEC",
-      text: "Đang Insert SPEC",
-      icon: "info",
-      showCancelButton: false,
-      allowOutsideClick: false,
-      confirmButtonText: "OK",
-      showConfirmButton: false,
-    });
-    if (testname === "0") {
-      Swal.fire("Thông báo", "Hãy chọn một hạng mục test bất kỳ", "error");
-    } else {
-      if (!checkNVL) {
-        let err_code: string = "";
-        for (let i = 0; i < inspectiondatatable.length; i++) {
-          await generalQuery("insertSpecDTC", {
-            checkNVL: checkNVL,
-            G_CODE: selectedCode?.G_CODE,
-            M_CODE: "B0000035",
-            TEST_CODE: testname,
-            POINT_CODE: inspectiondatatable[i].POINT_CODE,
-            PRI: inspectiondatatable[i].PRI,
-            CENTER_VALUE: inspectiondatatable[i].CENTER_VALUE,
-            UPPER_TOR: inspectiondatatable[i].UPPER_TOR,
-            LOWER_TOR: inspectiondatatable[i].LOWER_TOR,
-            BARCODE_CONTENT: inspectiondatatable[i].BARCODE_CONTENT,
-            REMARK: inspectiondatatable[i].REMARK,
-          })
-            // eslint-disable-next-line no-loop-func
-            .then((response) => {
-              //console.log(response.data.data);
-              if (response.data.tk_status !== "NG") {
-              } else {
-                err_code +=
-                  " Lỗi: " +
-                  inspectiondatatable[i].TEST_CODE +
-                  "| " +
-                  inspectiondatatable[i].POINT_CODE +
-                  " : " +
-                  response.data.message;
-              }
-            })
-            .catch((error) => {
-              console.log(error);
-            });
-        }
-        if (err_code !== "") {
-          Swal.fire("Thông báo: ", "Có lỗi : " + err_code, "error");
+  const checkEMPL_NAME =(EMPL_NO: string)=> {
+    generalQuery("checkEMPL_NO_mobile", {EMPL_NO: EMPL_NO})
+      .then((response) => {
+        if (response.data.tk_status !== "NG") {
+          //console.log(response.data.data);
+          setEmplName(response.data.data[0].MIDLAST_NAME+ ' ' +  response.data.data[0].FIRST_NAME );
+          setReqDeptCode(response.data.data[0].WORK_POSITION_CODE)
         } else {
-          Swal.fire("Thông báo: ", "Add SPEC thành công", "success");
+          setEmplName('');
+          setReqDeptCode('');
         }
-      } else {
-        let mCodeList: string[] = materialList
-          .filter((element: MaterialListData) => {
-            return element.M_NAME === selectedMaterial?.M_NAME;
-          })
-          .map((ele2: MaterialListData) => {
-            return ele2.M_CODE;
-          });
-        let err_code: string = "";
-        for (let j = 0; j < mCodeList.length; j++) {
-          for (let i = 0; i < inspectiondatatable.length; i++) {
-            await generalQuery("insertSpecDTC", {
-              checkNVL: checkNVL,
-              G_CODE: "7A07540A",
-              M_CODE: mCodeList[j],
-              TEST_CODE: testname,
-              POINT_CODE: inspectiondatatable[i].POINT_CODE,
-              PRI: inspectiondatatable[i].PRI,
-              CENTER_VALUE: inspectiondatatable[i].CENTER_VALUE,
-              UPPER_TOR: inspectiondatatable[i].UPPER_TOR,
-              LOWER_TOR: inspectiondatatable[i].LOWER_TOR,
-              BARCODE_CONTENT: inspectiondatatable[i].BARCODE_CONTENT,
-              REMARK: inspectiondatatable[i].REMARK,
-            })
-              // eslint-disable-next-line no-loop-func
-              .then((response) => {
-                //console.log(response.data.data);
-                if (response.data.tk_status !== "NG") {
-                } else {
-                  err_code +=
-                    " Lỗi: " +
-                    inspectiondatatable[i].TEST_CODE +
-                    "| " +
-                    inspectiondatatable[i].POINT_CODE +
-                    " : " +
-                    response.data.message;
-                }
-              })
-              .catch((error) => {
-                console.log(error);
-              });
-          }
-        }
-        if (err_code !== "") {
-          Swal.fire("Thông báo: ", "Có lỗi : " + err_code, "error");
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+  const checkYCSX =(PROD_REQUEST_NO: string)=> {
+    generalQuery("ycsx_fullinfo", {PROD_REQUEST_NO: PROD_REQUEST_NO})
+      .then((response) => {
+        if (response.data.tk_status !== "NG") {
+          //console.log(response.data.data);
+          setProdRequestNo(PROD_REQUEST_NO);
+          setGName(response.data.data[0].G_NAME);     
+          setProdReqDate(response.data.data[0].PROD_REQUEST_DATE);  
+          setGCode(response.data.data[0].G_CODE);  
         } else {
-          Swal.fire("Thông báo: ", "Add SPEC thành công", "success");
+          setProdRequestNo('');
+          setGName('');     
+          setProdReqDate('');  
+          setGCode('');  
         }
-      }
-      checkAddedSpec();
-    }
-  };
-  const handleUpdateSpec = async () => {
-    Swal.fire({
-      title: "Update SPEC",
-      text: "Đang Update SPEC",
-      icon: "info",
-      showCancelButton: false,
-      allowOutsideClick: false,
-      confirmButtonText: "OK",
-      showConfirmButton: false,
-    });
-    if (testname === "0") {
-      Swal.fire("Thông báo", "Hãy chọn một hạng mục test bất kỳ", "error");
-    } else if (selectedRowsData.length < 1) {
-      Swal.fire("Thông báo", "Chọn ít nhất một dòng để update", "error");
-    } else {
-      if (!checkNVL) {
-        let err_code: string = "";
-        for (let i = 0; i < selectedRowsData.length; i++) {
-          await generalQuery("updateSpecDTC", {
-            checkNVL: checkNVL,
-            G_CODE: selectedCode?.G_CODE,
-            M_CODE: "B0000035",
-            TEST_CODE: testname,
-            POINT_CODE: selectedRowsData[i].POINT_CODE,
-            PRI: selectedRowsData[i].PRI,
-            CENTER_VALUE: selectedRowsData[i].CENTER_VALUE,
-            UPPER_TOR: selectedRowsData[i].UPPER_TOR,
-            LOWER_TOR: selectedRowsData[i].LOWER_TOR,
-            BARCODE_CONTENT: selectedRowsData[i].BARCODE_CONTENT,
-            REMARK: selectedRowsData[i].REMARK,
-          })
-            // eslint-disable-next-line no-loop-func
-            .then((response) => {
-              //console.log(response.data.data);
-              if (response.data.tk_status !== "NG") {
-              } else {
-                err_code +=
-                  " Lỗi: " +
-                  inspectiondatatable[i].TEST_CODE +
-                  "| " +
-                  inspectiondatatable[i].POINT_CODE +
-                  " : " +
-                  response.data.message;
-              }
-            })
-            .catch((error) => {
-              console.log(error);
-            });
-        }
-        if (err_code !== "") {
-          Swal.fire("Thông báo: ", "Có lỗi : " + err_code, "error");
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+  const checkLotNVL  =(M_LOT_NO: string)=> {
+    generalQuery("checkMNAMEfromLot", {M_LOT_NO: M_LOT_NO})
+      .then((response) => {
+        if (response.data.tk_status !== "NG") {
+          //console.log(response.data.data);
+          setM_Name(response.data.data[0].M_NAME+ ' | ' +  response.data.data[0].WIDTH_CD ); 
+          setM_Code(response.data.data[0].M_CODE); 
         } else {
-          Swal.fire("Thông báo: ", "Add SPEC thành công", "success");
+          setM_Name(''); 
+          setM_Code(''); 
         }
-      } else {
-        let mCodeList: string[] = materialList
-          .filter((element: MaterialListData) => {
-            return element.M_NAME === selectedMaterial?.M_NAME;
-          })
-          .map((ele2: MaterialListData) => {
-            return ele2.M_CODE;
-          });
-        let err_code: string = "";
-        for (let j = 0; j < mCodeList.length; j++) {
-          for (let i = 0; i < selectedRowsData.length; i++) {
-            await generalQuery("updateSpecDTC", {
-              checkNVL: checkNVL,
-              G_CODE: "7A07540A",
-              M_CODE: mCodeList[j],
-              TEST_CODE: testname,
-              POINT_CODE: selectedRowsData[i].POINT_CODE,
-              PRI: selectedRowsData[i].PRI,
-              CENTER_VALUE: selectedRowsData[i].CENTER_VALUE,
-              UPPER_TOR: selectedRowsData[i].UPPER_TOR,
-              LOWER_TOR: selectedRowsData[i].LOWER_TOR,
-              BARCODE_CONTENT: selectedRowsData[i].BARCODE_CONTENT,
-              REMARK: selectedRowsData[i].REMARK,
-            })
-              // eslint-disable-next-line no-loop-func
-              .then((response) => {
-                //console.log(response.data.data);
-                if (response.data.tk_status !== "NG") {
-                } else {
-                  err_code +=
-                    " Lỗi: " +
-                    inspectiondatatable[i].TEST_CODE +
-                    "| " +
-                    inspectiondatatable[i].POINT_CODE +
-                    " : " +
-                    response.data.message;
-                }
-              })
-              .catch((error) => {
-                console.log(error);
-              });
-          }
-        }
-        if (err_code !== "") {
-          Swal.fire("Thông báo: ", "Có lỗi : " + err_code, "error");
-        } else {
-          Swal.fire("Thông báo: ", "Add SPEC thành công", "success");
-        }
-      }
-      checkAddedSpec();
-    }
-  };
-  const checkAddedSpec = () => {
-    generalQuery("checkAddedSpec", { 
-      M_CODE: checkNVL? selectedMaterial?.M_CODE: 'B0000035',
-      G_CODE: checkNVL? '7A07540A' : selectedCode?.G_CODE
-    })
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+  const getLastDTC_ID = async ()=> {  
+    let nextid: number = 0;  
+    await generalQuery("getLastDTCID", {})
     .then((response) => {
-      if (response.data.tk_status !== "NG") { 
-            setAddedSpec(response.data.data);
+      if (response.data.tk_status !== "NG") {
+        //console.log(response.data.data);
+        nextid = response.data.data[0].LAST_DCT_ID+1;   
+      } else {
       }
-        else
-        {
-
-        }
-      } 
-            
-    )
+    })
     .catch((error) => {
       console.log(error);
     });
+    return nextid;
   }
-  useEffect(() => {
-    getcodelist("");
-    getmateriallist();
+  const checkLabelID = (LABEL_ID: string)=> {
+    generalQuery("checkLabelID2", {LABEL_ID2: LABEL_ID})
+      .then((response) => {
+        if (response.data.tk_status !== "NG") {
+          //console.log(response.data.data);
+          setProdRequestNo(response.data.data[0].PROD_REQUEST_NO);
+          setGName(response.data.data[0].G_NAME);     
+          setProdReqDate(response.data.data[0].PROD_REQUEST_DATE);  
+          setGCode(response.data.data[0].G_CODE);  
+        } else {
+          setProdRequestNo('');
+          setGName('');     
+          setProdReqDate('');  
+          setGCode('');  
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+  const registerDTC = async () => {
+    let err_code: string = '';
+    let nextDTC_ID: number = await getLastDTC_ID();
+    for(let i=0; i<testList.length;i++)
+    {
+      if(testList[i].SELECTED)
+      {
+        let data = {
+          DTC_ID: nextDTC_ID,
+          TEST_CODE: testList[i].TEST_CODE,
+          TEST_TYPE_CODE: testtype,
+          REQUEST_DEPT_CODE: reqDeptCode,
+          PROD_REQUEST_NO: checkNVL? '1IG0008': prodrequestno,
+          M_LOT_NO: checkNVL? inputno: '2101011325',
+          PROD_REQUEST_DATE: checkNVL? '20210916' : prodreqdate,
+          REQUEST_EMPL_NO: request_empl,          
+          REMARK: remark,
+          G_CODE: checkNVL? '7A07540A': g_code,
+          M_CODE: checkNVL? m_code: 'B0000035',
+        };
+        //console.log(data);
+        await generalQuery("registerDTCTest", data)
+        // eslint-disable-next-line no-loop-func
+        .then((response) => {
+          if (response.data.tk_status !== "NG") {            
+          } else {
+            err_code += 'Lỗi: ' + response.data.message + ' ';
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+      }
+    }
+    if(err_code ==='')
+    {
+      Swal.fire('Thông báo','Đăng ký ĐTC thành công, ID test là: ' + nextDTC_ID,'success');
+      setGCode('');
+      setGName('');
+      setrequest_empl('');      
+      handletraDTCData();      
+    }
+    else
+    {
+      Swal.fire('Thông báo','Đăng ký ĐTC thất bại: '  + err_code,'error');
+    }
+    
+  }
+  const checkInput = ():boolean=> {
+    if(inputno !=='' && request_empl !=='') {
+      return true;
+    }
+    else 
+    {
+      return false;
+    }
+  }
+  useEffect(() => {        
+    handletraDTCData();    
   }, []);
   return (
     <div className='dkdtc'>
-      <div className='tracuuDataInspection'>
-      <div className="addedspec">
-          {
-            addedSpec.map((element: CheckAddedSPECDATA,index: number)=> {
-              return (
-                <div key={index} style={{fontSize:12,}}>{element.TEST_NAME}: <span style={{fontSize:10, fontWeight:'bold', backgroundColor: element.CHECKADDED? '#80ff00':'red'}}>{element.CHECKADDED? 'YES':'NO'}</span></div>
-              )
-            })
-           }
-          </div>
-          <div className="maintable">
-          <div className='tracuuDataInspectionform'>          
-          <div className='forminput'>
-            <div className='forminputcolumn'>
-              {!checkNVL && (
+      <div className='tracuuDataInspection'>       
+        <div className='maintable'>
+          <div className='tracuuDataInspectionform'>
+            <b style={{ color: "blue" }}>
+              {checkNVL
+                ? "ĐĂNG KÝ TEST LIỆU (IQC)"
+                : "ĐĂNG KÝ TEST SẢN PHẨM (PQC/OQC)"}
+            </b>
+            <div className='forminput'>
+              <div className='forminputcolumn'>
                 <label>
-                  <Autocomplete
-                    hidden={checkNVL}
-                    disabled={checkNVL}
-                    size='small'
-                    disablePortal
-                    options={codeList}
-                    className='autocomplete'
-                    isOptionEqualToValue={(option, value) =>
-                      option.G_CODE === value.G_CODE
-                    }
-                    getOptionLabel={(option: CodeListData) =>
-                      `${option.G_CODE}: ${option.G_NAME}`
-                    }
-                    renderInput={(params) => (
-                      <TextField {...params} label='Chọn sản phẩm' />
-                    )}
-                    onChange={(event: any, newValue: CodeListData | null) => {
-                      //console.log(newValue);
-                      setSelectedCode(newValue);                      
+                  <b>Phân loại test</b>
+                  <select
+                    name='phanloaihang'
+                    value={testtype}
+                    onChange={(e) => {
+                      setTestType(e.target.value);
                     }}
-                    value={selectedCode}
-                  />
+                  >
+                    <option value='1'>FIRST_LOT</option>
+                    <option value='2'>ECN</option>
+                    <option value='3'>MASS PRODUCTION</option>
+                    <option value='4'>SAMPLE</option>
+                  </select>
                 </label>
-              )}
-              {checkNVL && (
                 <label>
-                  <Autocomplete
-                    hidden={!checkNVL}
-                    disabled={!checkNVL}
-                    size='small'
-                    disablePortal
-                    options={materialList}
-                    className='autocomplete'
-                    isOptionEqualToValue={(option, value) =>
-                      option.M_CODE === value.M_CODE
-                    }
-                    getOptionLabel={(option: MaterialListData) =>
-                      `${option.M_NAME}|${option.WIDTH_CD}|${option.M_CODE}`
-                    }
-                    renderInput={(params) => (
-                      <TextField {...params} label='Chọn NVL' />
-                    )}
-                    defaultValue={{
-                      M_CODE: "A0007770",
-                      M_NAME: "SJ-203020HC",
-                      WIDTH_CD: 208,
+                  <b>{checkNVL ? "LOT NVL CMS" : "YCSX/LABEL_ID"}</b>{" "}
+                  <input
+                    type='text'
+                    placeholder={checkNVL ? "202304190123" : "1F80008/13AB19S5"}
+                    value={inputno}
+                    onChange={(e) => {
+                      if(e.target.value.length>=7) 
+                      {
+                        if(checkNVL)
+                        {
+                          checkLotNVL(e.target.value);
+                        }
+                        else
+                        {
+                          if(e.target.value.length ===7){
+                            checkYCSX(e.target.value);
+                          }
+                          else if(e.target.value.length === 8)
+                          {
+                            checkLabelID(e.target.value);
+                          }
+                        }
+                      }                     
+                      setInputNo(e.target.value);
                     }}
-                    value={selectedMaterial}
-                    onChange={(
-                      event: any,
-                      newValue: MaterialListData | null
-                    ) => {
-                      console.log(newValue);
-                      setSelectedMaterial(newValue);
-                    }}
-                  />
+                  ></input>
+                  <span style={{fontSize: 15, fontWeight:'bold', color:'blue'}}>{checkNVL? m_name: g_name}</span>
+                </label>                
+                <label>
+                  <b>Mã nhân viên yêu cầu test</b>
+                  <input
+                    type='text'
+                    placeholder={"NVD1201"}
+                    value={request_empl}
+                    onChange={(e) => {
+                      if(e.target.value.length >=7)
+                      {
+                        checkEMPL_NAME(e.target.value);
+                      }                      
+                      setrequest_empl(e.target.value);}}
+                  ></input>
+                  <span style={{fontSize: 15, fontWeight:'bold', color:'blue'}}>{empl_name}</span>
+                </label>                
+              </div>
+              <div className='forminputcolumn'>
+                <label>
+                  <b>Hạng mục test</b>
+                  <div className='checkboxarray'>
+                    {testList.map((element: TestListTable, index: number) => {
+                      return (
+                        <FormControlLabel
+                          key={index}
+                          style={{ fontSize: 5 }}
+                          label={
+                            <Typography style={{ fontSize: 13 }}>
+                              {element.TEST_NAME}
+                            </Typography>
+                          }
+                          sx={{ fontSize: 5 }}
+                          control={
+                            <Checkbox
+                              classes={{ root: "custom-checkbox-root" }}
+                              name={element.TEST_CODE}
+                              key={element.TEST_CODE}
+                              checked={element.SELECTED}
+                              onChange={(
+                                event: React.ChangeEvent<HTMLInputElement>
+                              ) => {
+                                let temp_testList = testList.map(
+                                  (element: TestListTable, index: number) => {
+                                    if (
+                                      element.TEST_CODE === event.target.name
+                                    ) {
+                                      return {
+                                        ...element,
+                                        SELECTED: !element.SELECTED,
+                                      };
+                                    } else {
+                                      return {
+                                        ...element,
+                                      };
+                                    }
+                                  }
+                                );
+                                setTestList(temp_testList);
+                              }}
+                            />
+                          }
+                        />
+                      );
+                    })}
+                  </div>
                 </label>
-              )}
+              </div>
+              <div className='forminputcolumn'>
+                <label>
+              <b>Remark</b>
+                  <input
+                    type='text'
+                    placeholder={"Ghi chú"}
+                    value={remark}
+                    onChange={(e) => {
+                     setReMark(e.target.value);}}
+                  ></input>
+                  </label>
+              </div>
             </div>
-            <div className='forminputcolumn'>
+            <div className='formbutton'>
               <label>
-                <b>Hạng mục test</b>
-                <br></br>
-                <select
-                  name='hangmuctest'
-                  value={testname}
-                  onChange={(e) => {
-                    setTestName(e.target.value);
-                    handletraDTCData(e.target.value);
-                    checkAddedSpec();
+                <b>{checkNVL === true ? "Swap" : "Swap"}:</b>
+                <input
+                  type='checkbox'
+                  name='alltimecheckbox'
+                  defaultChecked={checkNVL}
+                  onChange={() => {
+                    setCheckNVL(!checkNVL);  
                   }}
-                >
-                  <option value='0'>ALL</option>
-                  <option value='1'>Kích thước</option>
-                  <option value='2'>Kéo keo</option>
-                  <option value='3'>XRF</option>
-                  <option value='4'>Điện trở</option>
-                  <option value='5'>Tĩnh điện</option>
-                  <option value='6'>Độ bóng</option>
-                  <option value='7'>Phtalate</option>
-                  <option value='8'>FTIR</option>
-                  <option value='9'>Mài mòn</option>
-                  <option value='10'>Màu sắc</option>
-                  <option value='11'>TVOC</option>
-                  <option value='12'>Cân nặng</option>
-                  <option value='13'>Scanbarcode</option>
-                  <option value='14'>Nhiệt cao Ẩm cao</option>
-                  <option value='15'>Shock nhiệt</option>
-                  <option value='1002'>Kéo keo 2</option>
-                </select>
+                ></input>
               </label>
-            </div>
-            <div className='forminputcolumn'></div>
-          </div>
-          <div className='formbutton'>
-            <label>
-              <b>
-                {checkNVL === true
-                  ? "Swap"
-                  : "Swap"}
-                :
-              </b>
-              <input
-                type='checkbox'
-                name='alltimecheckbox'
-                defaultChecked={checkNVL}
-                onChange={() => {
-                  setCheckNVL(!checkNVL);
-                  setAddedSpec([]);
-                  setInspectionDataTable([]);
-                }}
-              ></input>
-            </label>
-            <button
-              className='tranhatky'
-              onClick={() => {
-                handletraDTCData(testname);
-                checkAddedSpec();
-              }}
-            >
-              Load SPEC
-            </button>            
-          </div>
-          <div className='formbutton' style={{marginTop:'20px', display:'flex', flexWrap:'wrap'}}>            
-          
-          </div>
-        </div>
-        <div className='tracuuYCSXTable'>{materialDataTable}</div>
+              <button
+                className='tranhatky'
+                onClick={() => {
 
+
+                  setTestList((tl)=> tl.map((e)=> {
+                    return {
+                      ...e,
+                      SELECTED: false
+                    }
+                  }));
+                }}
+              >
+                Reset hạng mục
+              </button>
+              <button
+                className='tranhatky'
+                onClick={() => {
+                  if(checkInput())
+                  {
+                    registerDTC();    
+                  }
+                  else
+                  {
+                    Swal.fire('Thông báo','Hãy nhập đủ thông tin trước khi đăng ký','error');
+                  }          
+                }}
+              >
+                Đăng ký TEST
+              </button>
+            </div>
+            <div
+              className='formbutton'
+              style={{ marginTop: "20px", display: "flex", flexWrap: "wrap" }}
+            ></div>
           </div>
-       
+          <div className='tracuuYCSXTable'>{materialDataTable}</div>
+        </div>
       </div>
     </div>
   );

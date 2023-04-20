@@ -498,6 +498,7 @@ function App() {
                     <Route index element={<KinhDoanhReport />} />
                     <Route path='quanlycodebom' element={<BOM_MANAGER />} />
                     <Route path='ycsxmanager' element={<YCSXManager />} />
+                    <Route path='dtc' element={<DTC />}/>
                     <Route path='thembomamazon' element={<BOM_AMAZON />} />
                     <Route path='designamazon' element={<DESIGN_AMAZON />} />
                   </Route>

@@ -1,11 +1,11 @@
 
-import  { useEffect, useState} from 'react'
-import KHOTP from '../../kho/khotp/KHOTP';
-import DKDTC from './DKDTC';
+import  { Profiler, useEffect, useState} from 'react'
 import "./DTC.scss"
+import DKDTC from './DKDTC';
 import KQDTC from './KQDTC';
 import SPECDTC from './SPECDTC';
 import ADDSPECDTC from './ADDSPECDTC';
+
 const DTC = () => {
   const [selection, setSelection] = useState<any>({
     tab1: true,
@@ -38,7 +38,7 @@ const DTC = () => {
   },[]);
   
 
-  return (
+  return (    
     <div className='dtc'>
       <div className='mininavbar'> 
         <div className='mininavitem'  onClick={() => setNav(1)} style={{backgroundColor:selection.tab1 === true ? '#9933ff':'#d9b3ff', color: selection.tab1 === true ? 'yellow':'yellow'}}>
@@ -83,7 +83,7 @@ const DTC = () => {
           <DKDTC/>
         </div>
       )} 
-    </div>
+    </div>    
   );
 }
 export default DTC
