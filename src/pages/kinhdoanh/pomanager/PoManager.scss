@@ -206,6 +206,7 @@
             position: fixed;
             top: 35vh;
             left: 60vh;
+            z-index: 9999999;
             .formnho {
                 display: flex;
                 flex-direction: column;
@@ -791,6 +792,7 @@
             position: fixed;
             top: 35vh;
             left: 60vh;
+            z-index: 9999999;
             .formnho {
                 display: flex;
                 flex-direction: column;
