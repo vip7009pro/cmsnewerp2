@@ -3,8 +3,8 @@ var Barcode = require("react-barcode");
 
 interface BARCODE_DATA {
   text: string;
-  width: string;
-  height: string;
+  width: number;
+  height: number;
   top: string;
   left: string;
   type: string;

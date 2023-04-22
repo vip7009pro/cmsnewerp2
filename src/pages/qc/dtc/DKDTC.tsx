@@ -80,6 +80,7 @@ const DKDTC = () => {
     { TEST_CODE: "14", TEST_NAME: "Nhiệt cao Ẩm cao", SELECTED: false },
     { TEST_CODE: "15", TEST_NAME: "Shock nhiệt", SELECTED: false },
     { TEST_CODE: "1002", TEST_NAME: "Kéo keo 2", SELECTED: false },
+    { TEST_CODE: "1003", TEST_NAME: "Ngoại Quan", SELECTED: false },
   ]);
   const [inspectiondatatable, setInspectionDataTable] = useState<Array<any>>(
     []

@@ -675,7 +675,7 @@ const FCSTManager = () => {
   return (
     <div className='fcstmanager'>
       <div className='mininavbar'>
-      <div className='mininavitem'  onClick={() => setNav(1)} style={{backgroundColor:selection.trapo === true ? '#9933ff':'#d9b3ff', color: selection.trapo === true ? 'yellow':'yellow'}}>
+      <div className='mininavitem'  onClick={() => setNav(1)} style={{backgroundColor:selection.trapo === true ? '#02c712':'#abc9ae', color: selection.trapo === true ? 'yellow':'yellow'}}>
           <span className='mininavtext'>
           Tra FCST
           </span>
@@ -684,7 +684,7 @@ const FCSTManager = () => {
             checkBP(userData.EMPL_NO, userData.MAINDEPTNAME, ['KD'], () => {
               setNav(2);
             })
-          } style={{backgroundColor:selection.thempohangloat === true ? '#9933ff':'#d9b3ff', color: selection.thempohangloat === true ? 'yellow':'yellow'}}>
+          } style={{backgroundColor:selection.thempohangloat === true ? '#02c712':'#abc9ae', color: selection.thempohangloat === true ? 'yellow':'yellow'}}>
           <span className='mininavtext'>
           Thêm FCST
           </span>

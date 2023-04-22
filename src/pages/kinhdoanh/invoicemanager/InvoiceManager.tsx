@@ -3,6 +3,7 @@ import {
   IconButton,
   LinearProgress,
   TextField,
+  createFilterOptions,
 } from "@mui/material";
 import {
   DataGrid,
@@ -1030,6 +1031,10 @@ const InvoiceManager = () => {
       }
     });
   };
+  const filterOptions1 = createFilterOptions({
+    matchFrom: 'any',
+    limit: 100,
+  });
   useEffect(() => {
     getcustomerlist();
     getcodelist("");
@@ -1041,7 +1046,7 @@ const InvoiceManager = () => {
           className='mininavitem'
           onClick={() => setNav(1)}
           style={{
-            backgroundColor: selection.trapo === true ? "#9933ff" : "#d9b3ff",
+            backgroundColor: selection.trapo === true ? '#02c712':'#abc9ae',
             color: selection.trapo === true ? "yellow" : "yellow",
           }}
         >
@@ -1056,7 +1061,7 @@ const InvoiceManager = () => {
           }
           style={{
             backgroundColor:
-              selection.thempohangloat === true ? "#9933ff" : "#d9b3ff",
+              selection.thempohangloat === true ? '#02c712':'#abc9ae',
             color: selection.thempohangloat === true ? "yellow" : "yellow",
           }}
         >
@@ -1418,13 +1423,14 @@ const InvoiceManager = () => {
                       disablePortal
                       options={codeList}
                       className='autocomplete'
-                      getOptionLabel={(option: CodeListData) =>
+                      filterOptions={filterOptions1}
+                      getOptionLabel={(option: CodeListData| any) =>
                         `${option.G_CODE}: ${option.G_NAME}`
                       }
                       renderInput={(params) => (
                         <TextField {...params} label='Select code' />
                       )}
-                      onChange={(event: any, newValue: CodeListData | null) => {
+                      onChange={(event: any, newValue: CodeListData | any) => {
                         console.log(newValue);
                         setNewPoPrice(
                           newValue === null

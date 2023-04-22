@@ -1,4 +1,4 @@
-import { Autocomplete, IconButton, TextField } from "@mui/material";
+import { Autocomplete, IconButton, TextField, createFilterOptions } from "@mui/material";
 import moment from "moment";
 import React, { useContext, useEffect, useState, useTransition } from "react";
 import { AiFillFileExcel } from "react-icons/ai";
@@ -145,7 +145,7 @@ const ADDSPECTDTC = () => {
           height={"70vh"}
           showBorders={true}
           onSelectionChanged={(e) => {
-            console.log(e.selectedRowsData);
+            //console.log(e.selectedRowsData);
             setSelectedRowsData(e.selectedRowsData);
           }}
           onRowClick={(e) => {
@@ -165,7 +165,7 @@ const ADDSPECTDTC = () => {
             allowAdding={false}
             allowDeleting={true}
             mode='cell'
-            confirmDelete={true}
+            confirmDelete={false}
             onChangesChange={(e) => {}}
           />
           <Export enabled={true} />
@@ -185,7 +185,7 @@ const ADDSPECTDTC = () => {
             <Item name='exportButton' />
             <Item name='columnChooserButton' />
             <Item name='addRowButton' />
-            <Item name='saveButton' />
+            <Item name='saveButton' />            
             <Item name='revertButton' />
           </Toolbar>
           <FilterRow visible={true} />
@@ -278,7 +278,7 @@ const ADDSPECTDTC = () => {
                         fontWeight: "bold",
                         height: "20px",
                         width: "80px",
-                        backgroundColor: "red",
+                        backgroundColor: "#54e00d",
                         textAlign: "center",
                       }}
                     >
@@ -343,7 +343,7 @@ const ADDSPECTDTC = () => {
                 id: index,
               };
             }
-          );
+          );          
           setInspectionDataTable(loadeddata);
           Swal.fire(
             "Thông báo",
@@ -376,14 +376,28 @@ const ADDSPECTDTC = () => {
                     };
                   }
                 );
-                setInspectionDataTable(loadeddata);
-                Swal.fire(
-                  "Thông báo",
-                  "Chưa có SPEC, Đã load bảng trắng để nhập " +
-                    response.data.data.length +
-                    " dòng",
-                  "warning"
-                );
+                if(checkNVL && test_name ==='1')
+                {
+                  let temp_loaded:DTC_ADD_SPEC_DATA[] = [];
+                  setInspectionDataTable([...temp_loaded, loadeddata[0]]);
+                  Swal.fire(
+                    "Thông báo",
+                    "Chưa có SPEC, Đã load bảng trắng để nhập 1 dòng",
+                    "warning"
+                  );
+                }
+                else
+                {
+                  setInspectionDataTable(loadeddata);
+                  Swal.fire(
+                    "Thông báo",
+                    "Chưa có SPEC, Đã load bảng trắng để nhập " +
+                      response.data.data.length +
+                      " dòng",
+                    "warning"
+                  );
+                }
+                
                 checkAddedSpec(selectedMaterial?.M_CODE, selectedCode?.G_CODE);
               } else {
                 setInspectionDataTable([]);
@@ -424,8 +438,8 @@ const ADDSPECTDTC = () => {
             CENTER_VALUE: inspectiondatatable[i].CENTER_VALUE,
             UPPER_TOR: inspectiondatatable[i].UPPER_TOR,
             LOWER_TOR: inspectiondatatable[i].LOWER_TOR,
-            BARCODE_CONTENT: inspectiondatatable[i].BARCODE_CONTENT,
-            REMARK: inspectiondatatable[i].REMARK,
+            BARCODE_CONTENT: inspectiondatatable[i].BARCODE_CONTENT === undefined ? '': inspectiondatatable[i].BARCODE_CONTENT,
+            REMARK: inspectiondatatable[i].REMARK === undefined ? '': inspectiondatatable[i].REMARK,
           })
             // eslint-disable-next-line no-loop-func
             .then((response) => {
@@ -451,12 +465,15 @@ const ADDSPECTDTC = () => {
           Swal.fire("Thông báo: ", "Add SPEC thành công", "success");
         }
       } else {
-        let mCodeList: string[] = materialList
+        let mCodeList: {M_CODE: string, WIDTH_CD: number}[] = materialList
           .filter((element: MaterialListData) => {
             return element.M_NAME === selectedMaterial?.M_NAME;
           })
           .map((ele2: MaterialListData) => {
-            return ele2.M_CODE;
+            return {
+              M_CODE: ele2.M_CODE,
+              WIDTH_CD: ele2.WIDTH_CD
+            }
           });
         let err_code: string = "";
         for (let j = 0; j < mCodeList.length; j++) {
@@ -464,15 +481,15 @@ const ADDSPECTDTC = () => {
             await generalQuery("insertSpecDTC", {
               checkNVL: checkNVL,
               G_CODE: "7A07540A",
-              M_CODE: mCodeList[j],
+              M_CODE: mCodeList[j].M_CODE,
               TEST_CODE: testname,
               POINT_CODE: inspectiondatatable[i].POINT_CODE,
               PRI: inspectiondatatable[i].PRI,
-              CENTER_VALUE: inspectiondatatable[i].CENTER_VALUE,
+              CENTER_VALUE: testname ==='1' ? mCodeList[j].WIDTH_CD : inspectiondatatable[i].CENTER_VALUE,
               UPPER_TOR: inspectiondatatable[i].UPPER_TOR,
               LOWER_TOR: inspectiondatatable[i].LOWER_TOR,
-              BARCODE_CONTENT: inspectiondatatable[i].BARCODE_CONTENT,
-              REMARK: inspectiondatatable[i].REMARK,
+              BARCODE_CONTENT: inspectiondatatable[i].BARCODE_CONTENT === undefined ? '': inspectiondatatable[i].BARCODE_CONTENT,
+              REMARK: inspectiondatatable[i].REMARK === undefined ? '': inspectiondatatable[i].REMARK,
             })
               // eslint-disable-next-line no-loop-func
               .then((response) => {
@@ -557,24 +574,28 @@ const ADDSPECTDTC = () => {
           Swal.fire("Thông báo: ", "Add SPEC thành công", "success");
         }
       } else {
-        let mCodeList: string[] = materialList
-          .filter((element: MaterialListData) => {
-            return element.M_NAME === selectedMaterial?.M_NAME;
-          })
-          .map((ele2: MaterialListData) => {
-            return ele2.M_CODE;
-          });
+        let mCodeList: {M_CODE: string, WIDTH_CD: number}[] = materialList
+        .filter((element: MaterialListData) => {
+          return element.M_NAME === selectedMaterial?.M_NAME;
+        })
+        .map((ele2: MaterialListData) => {
+          return {
+            M_CODE: ele2.M_CODE,
+            WIDTH_CD: ele2.WIDTH_CD
+          }
+        });
+
         let err_code: string = "";
         for (let j = 0; j < mCodeList.length; j++) {
           for (let i = 0; i < selectedRowsData.length; i++) {
             await generalQuery("updateSpecDTC", {
               checkNVL: checkNVL,
               G_CODE: "7A07540A",
-              M_CODE: mCodeList[j],
+              M_CODE: mCodeList[j].M_CODE,
               TEST_CODE: testname,
               POINT_CODE: selectedRowsData[i].POINT_CODE,
               PRI: selectedRowsData[i].PRI,
-              CENTER_VALUE: selectedRowsData[i].CENTER_VALUE,
+              CENTER_VALUE: testname === '1' ? mCodeList[j].WIDTH_CD: selectedRowsData[i].CENTER_VALUE,
               UPPER_TOR: selectedRowsData[i].UPPER_TOR,
               LOWER_TOR: selectedRowsData[i].LOWER_TOR,
               BARCODE_CONTENT: selectedRowsData[i].BARCODE_CONTENT,
@@ -627,6 +648,10 @@ const ADDSPECTDTC = () => {
         console.log(error);
       });
   };
+  const filterOptions1 = createFilterOptions({
+    matchFrom: 'any',
+    limit: 100,
+  });
   useEffect(() => {
     getcodelist("");
     getmateriallist();    
@@ -645,26 +670,27 @@ const ADDSPECTDTC = () => {
             <div className='forminputcolumn'>
               {!checkNVL && (
                 <label>
-                  <Autocomplete
+                  <Autocomplete                    
                     hidden={checkNVL}
                     disabled={checkNVL}
                     size='small'
                     disablePortal
                     options={codeList}
-                    className='autocomplete'
-                    isOptionEqualToValue={(option, value) =>
+                    className='autocomplete'                    
+                    filterOptions={filterOptions1}
+                    isOptionEqualToValue={(option: any, value: any) =>
                       option.G_CODE === value.G_CODE
                     }
-                    getOptionLabel={(option: CodeListData) =>
+                    getOptionLabel={(option: any) =>
                       `${option.G_CODE}: ${option.G_NAME}`
                     }
                     renderInput={(params) => (
                       <TextField {...params} label='Chọn sản phẩm' />
-                    )}
-                    onChange={(event: any, newValue: CodeListData | null) => {
+                    )}                    
+                    onChange={(event: any, newValue: any) => {
                       //console.log(newValue);
-                      checkAddedSpec(undefined, selectedCode?.G_CODE);
-                      handletraDTCData(testname);
+                      //checkAddedSpec(undefined, selectedCode?.G_CODE);
+                      //handletraDTCData(testname);
                       setSelectedCode(newValue);
                     }}
                     value={selectedCode}
@@ -680,10 +706,11 @@ const ADDSPECTDTC = () => {
                     disablePortal
                     options={materialList}
                     className='autocomplete'
-                    isOptionEqualToValue={(option, value) =>
+                    filterOptions={filterOptions1}
+                    isOptionEqualToValue={(option:any, value:any) =>
                       option.M_CODE === value.M_CODE
                     }
-                    getOptionLabel={(option: MaterialListData) =>
+                    getOptionLabel={(option: any) =>
                       `${option.M_NAME}|${option.WIDTH_CD}|${option.M_CODE}`
                     }
                     renderInput={(params) => (
@@ -697,11 +724,11 @@ const ADDSPECTDTC = () => {
                     value={selectedMaterial}
                     onChange={(
                       event: any,
-                      newValue: MaterialListData | null
+                      newValue: any
                     ) => {
                       //console.log(newValue);
-                      checkAddedSpec(newValue?.M_CODE, undefined);
-                      handletraDTCData(testname);
+                      //checkAddedSpec(newValue?.M_CODE, undefined);
+                      //handletraDTCData(testname);
                       setSelectedMaterial(newValue);
                     }}
                   />
@@ -741,6 +768,7 @@ const ADDSPECTDTC = () => {
                   <option value='14'>Nhiệt cao Ẩm cao</option>
                   <option value='15'>Shock nhiệt</option>
                   <option value='1002'>Kéo keo 2</option>
+                  <option value='1003'>Ngoại Quan</option>
                 </select>
               </label>
             </div>

@@ -285,22 +285,22 @@ const POandStockFull = () => {
   return (
     <div className='poandstockfull'>
       <div className='mininavbar'>
-        <div className='mininavitem'  onClick={() => setNav(1)} style={{backgroundColor:selection.trapo === true ? '#9933ff':'#d9b3ff', color: selection.trapo === true ? 'yellow':'yellow'}}>
+        <div className='mininavitem'  onClick={() => setNav(1)} style={{backgroundColor:selection.trapo === true ? '#02c712':'#abc9ae', color: selection.trapo === true ? 'yellow':'yellow'}}>
           <span className='mininavtext'>
           PO+TK FULL
           </span>
         </div>  
-        <div className='mininavitem'  onClick={() => setNav(2)} style={{backgroundColor:selection.thempohangloat === true ? '#9933ff':'#d9b3ff', color: selection.thempohangloat === true ? 'yellow':'yellow'}}>
+        <div className='mininavitem'  onClick={() => setNav(2)} style={{backgroundColor:selection.thempohangloat === true ? '#02c712':'#abc9ae', color: selection.thempohangloat === true ? 'yellow':'yellow'}}>
           <span className='mininavtext'>
           Phòng Kiểm Tra
           </span>
         </div>  
-        <div className='mininavitem'  onClick={() => setNav(3)} style={{backgroundColor:selection.testinvoicetable === true ? '#9933ff':'#d9b3ff', color: selection.testinvoicetable === true ? 'yellow':'yellow'}}>
+        <div className='mininavitem'  onClick={() => setNav(3)} style={{backgroundColor:selection.testinvoicetable === true ? '#02c712':'#abc9ae', color: selection.testinvoicetable === true ? 'yellow':'yellow'}}>
           <span className='mininavtext'>
           Kho Thành Phẩm
           </span>
         </div>  
-        <div className='mininavitem'  onClick={() => setNav(4)} style={{backgroundColor:selection.kholieu === true ? '#9933ff':'#d9b3ff', color: selection.kholieu === true ? 'yellow':'yellow'}}>
+        <div className='mininavitem'  onClick={() => setNav(4)} style={{backgroundColor:selection.kholieu === true ? '#02c712':'#abc9ae', color: selection.kholieu === true ? 'yellow':'yellow'}}>
           <span className='mininavtext'>
           Kho Liệu
           </span>

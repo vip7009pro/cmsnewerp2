@@ -1,6 +1,7 @@
 import {
   Autocomplete,
   Checkbox,
+  createFilterOptions,
   FormControlLabel,
   IconButton,
   keyframes,
@@ -1822,6 +1823,11 @@ const BOM_MANAGER = () => {
       }
     });
   };
+  const filterOptions1 = createFilterOptions({
+    matchFrom: 'any',
+    limit: 100,
+  });
+
   useEffect(() => {
     getmateriallist();
     getcustomerlist();
@@ -1833,7 +1839,7 @@ const BOM_MANAGER = () => {
           className='mininavitem'
           onClick={() => setNav(1)}
           style={{
-            backgroundColor: selection.trapo === true ? "#9933ff" : "#d9b3ff",
+            backgroundColor: selection.trapo === true ? '#02c712':'#abc9ae',
             color: selection.trapo === true ? "yellow" : "yellow",
           }}
         >
@@ -1853,7 +1859,7 @@ const BOM_MANAGER = () => {
           }
           style={{
             backgroundColor:
-              selection.thempohangloat === true ? "#9933ff" : "#d9b3ff",
+              selection.thempohangloat === true ? '#02c712':'#abc9ae',
             color: selection.thempohangloat === true ? "yellow" : "yellow",
           }}
         >
@@ -2557,10 +2563,11 @@ const BOM_MANAGER = () => {
                         disablePortal
                         options={materialList}
                         className='autocomplete'
-                        isOptionEqualToValue={(option, value) =>
+                        filterOptions={filterOptions1}
+                        isOptionEqualToValue={(option:any, value:any) =>
                           option.M_CODE === value.M_CODE
                         }
-                        getOptionLabel={(option: MaterialListData) =>
+                        getOptionLabel={(option: MaterialListData | any) =>
                           `${option.M_NAME}|${option.WIDTH_CD}|${option.M_CODE}`
                         }
                         renderInput={(params) => (
@@ -2574,7 +2581,7 @@ const BOM_MANAGER = () => {
                         value={selectedMaterial}
                         onChange={(
                           event: any,
-                          newValue: MaterialListData | null
+                          newValue: MaterialListData | any
                         ) => {
                           console.log(newValue);
                           handleSetCodeInfo(
@@ -2605,10 +2612,11 @@ const BOM_MANAGER = () => {
                 disablePortal
                 options={materialList}
                 className='autocomplete'
-                isOptionEqualToValue={(option, value) =>
+                filterOptions={filterOptions1}
+                isOptionEqualToValue={(option:any, value:any) =>
                   option.M_CODE === value.M_CODE
                 }
-                getOptionLabel={(option: MaterialListData) =>
+                getOptionLabel={(option: MaterialListData | any) =>
                   `${option.M_NAME}|${option.WIDTH_CD}|${option.M_CODE}`
                 }
                 renderInput={(params) => (
@@ -2620,7 +2628,7 @@ const BOM_MANAGER = () => {
                   WIDTH_CD: 208,
                 }}
                 value={selectedMaterial}
-                onChange={(event: any, newValue: MaterialListData | null) => {
+                onChange={(event: any, newValue: MaterialListData | any) => {
                   console.log(newValue);
                   setSelectedMaterial(newValue);
                 }}

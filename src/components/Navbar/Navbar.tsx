@@ -72,7 +72,7 @@ export default function Navbar() {
   }
   return (
     <div className='navbar'>     
-      <div className='wrapper' style={{backgroundColor: server_string ==='http://14.160.33.94:5011/api'?'':'#eb99ff'}}>
+      <div className='wrapper' style={{backgroundColor: server_string ==='http://14.160.33.94:5011/api'?'':'#f37cf7'}}>
         <FcList onClick={()=>{dispatch(toggleSidebar('2'))}} size={30}/> 
         <div className='search'>
           <input type='text' placeholder='Search...' />

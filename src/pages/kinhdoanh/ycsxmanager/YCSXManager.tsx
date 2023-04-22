@@ -2752,7 +2752,7 @@ const YCSXManager = () => {
           className='mininavitem'
           onClick={() => setNav(1)}
           style={{
-            backgroundColor: selection.trapo === true ? "#9933ff" : "#d9b3ff",
+            backgroundColor: selection.trapo === true ? '#02c712':'#abc9ae',
             color: selection.trapo === true ? "yellow" : "yellow",
           }}
         >
@@ -2763,7 +2763,7 @@ const YCSXManager = () => {
           onClick={() => setNav(2)}
           style={{
             backgroundColor:
-              selection.thempohangloat === true ? "#9933ff" : "#d9b3ff",
+              selection.thempohangloat === true ? '#02c712':'#abc9ae',
             color: selection.thempohangloat === true ? "yellow" : "yellow",
           }}
         >
@@ -2774,7 +2774,7 @@ const YCSXManager = () => {
           onClick={() => setNav(3)}
           style={{
             backgroundColor:
-              selection.amazontab === true ? "#9933ff" : "#d9b3ff",
+              selection.amazontab === true ? '#02c712':'#abc9ae',
             color: selection.amazontab === true ? "yellow" : "yellow",
           }}
         >
@@ -2785,7 +2785,7 @@ const YCSXManager = () => {
           onClick={() => setNav(4)}
           style={{
             backgroundColor:
-              selection.traamazdata === true ? "#9933ff" : "#d9b3ff",
+              selection.traamazdata === true ? '#02c712':'#abc9ae',
             color: selection.traamazdata === true ? "yellow" : "yellow",
           }}
         >

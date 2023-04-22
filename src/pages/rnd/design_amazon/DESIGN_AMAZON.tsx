@@ -23,8 +23,8 @@ interface RECT_DATA  {
  
  interface BARCODE_DATA {
   text: string;
-  width: string;
-  height: string;
+  width: number;
+  height: number;
   top: string;
   left: string;
   type: string;
@@ -47,8 +47,8 @@ const DESIGN_AMAZON = () => {
 
   const barcodedt : BARCODE_DATA = {
     text: 'GH68-54619A',
-    width: '1',
-    height: '20',
+    width: 1,
+    height: 20,
     top: '30mm',
     left: '20mm',
     type: 'CODE128',

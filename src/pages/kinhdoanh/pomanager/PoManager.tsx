@@ -1,4 +1,4 @@
-import { Autocomplete,  IconButton,  LinearProgress,TextField } from '@mui/material';
+import { Autocomplete,  IconButton,  LinearProgress,TextField, createFilterOptions } from '@mui/material';
 import { DataGrid, GridSelectionModel, GridToolbarColumnsButton, GridToolbarContainer, GridToolbarDensitySelector, GridToolbarFilterButton, GridToolbarQuickFilter } from '@mui/x-data-grid';
 import moment from 'moment';
 import React, { useContext, useEffect, useState, useTransition } from 'react'
@@ -1001,6 +1001,10 @@ const PoManager = () => {
       }
     })
   }
+  const filterOptions1 = createFilterOptions({
+    matchFrom: 'any',
+    limit: 100,
+  });
   useEffect(()=>{
         getcustomerlist();
         getcodelist('');
@@ -1008,12 +1012,12 @@ const PoManager = () => {
   return (
     <div className='pomanager'>
       <div className='mininavbar'>      
-        <div className='mininavitem'  onClick={() => setNav(1)} style={{backgroundColor:selection.trapo === true ? '#9933ff':'#d9b3ff', color: selection.trapo === true ? 'yellow':'yellow'}}>
+        <div className='mininavitem'  onClick={() => setNav(1)} style={{backgroundColor:selection.trapo === true ? '#02c712':'#abc9ae', color: selection.trapo === true ? 'yellow':'yellow'}}>
           <span className='mininavtext'>
           Tra PO
           </span>
         </div>  
-        <div className='mininavitem'  onClick={() =>  checkBP(userData.EMPL_NO,userData.MAINDEPTNAME,['KD'], ()=> {setNav(2)})} style={{backgroundColor:selection.thempohangloat === true ? '#9933ff':'#d9b3ff', color: selection.thempohangloat === true ? 'yellow':'yellow'}}>
+        <div className='mininavitem'  onClick={() =>  checkBP(userData.EMPL_NO,userData.MAINDEPTNAME,['KD'], ()=> {setNav(2)})} style={{backgroundColor:selection.thempohangloat === true ? '#02c712':'#abc9ae', color: selection.thempohangloat === true ? 'yellow':'yellow'}}>
           <span className='mininavtext'>
           Thêm PO
           </span>
@@ -1305,13 +1309,14 @@ const PoManager = () => {
                     disablePortal                    
                     options={customerList}
                     className='autocomplete'   
-                    isOptionEqualToValue={(option, value) => option.CUST_CD === value.CUST_CD}
-                    getOptionLabel={(option:CustomerListData) => `${option.CUST_CD}: ${option.CUST_NAME_KD}`}                 
+                    filterOptions={filterOptions1}
+                    isOptionEqualToValue={(option:any, value:any) => option.CUST_CD === value.CUST_CD}
+                    getOptionLabel={(option:CustomerListData| any) => `${option.CUST_CD}: ${option.CUST_NAME_KD}`}                 
                     renderInput={(params) => (
                      <TextField {...params} label='Select customer'/>
                     )}
                     value={selectedCust_CD}
-                    onChange={(event:any, newValue: CustomerListData| null)=>{
+                    onChange={(event:any, newValue: CustomerListData| any)=>{
                       console.log(newValue); 
                       setSelectedCust_CD(newValue);                     
                     }}
@@ -1324,12 +1329,13 @@ const PoManager = () => {
                     disablePortal                    
                     options={codeList}
                     className='autocomplete'   
-                    isOptionEqualToValue={(option, value) => option.G_CODE === value.G_CODE}
-                    getOptionLabel={(option:CodeListData) => `${option.G_CODE}: ${option.G_NAME}`}                     
+                    filterOptions={filterOptions1}
+                    isOptionEqualToValue={(option: any, value: any) => option.G_CODE === value.G_CODE}
+                    getOptionLabel={(option:CodeListData| any) => `${option.G_CODE}: ${option.G_NAME}`}                     
                     renderInput={(params) => (
                      <TextField {...params} label='Select code'/>
                     )}    
-                    onChange={(event:any, newValue: CodeListData| null)=>{
+                    onChange={(event:any, newValue: CodeListData| any)=>{
                       console.log(newValue);   
                       setNewPoPrice(newValue ===null ? '' : newValue.PROD_LAST_PRICE.toString());        
                       setSelectedCode(newValue);
@@ -1397,7 +1403,7 @@ const PoManager = () => {
                    size="small"
                     disablePortal                    
                     options={customerList}
-                    className='autocomplete'   
+                    className='autocomplete'
                     getOptionLabel={(option:CustomerListData) => `${option.CUST_CD}: ${option.CUST_NAME_KD}`}                 
                     renderInput={(params) => (
                      <TextField {...params} label='Select customer'/>
@@ -1416,11 +1422,12 @@ const PoManager = () => {
                     disablePortal                    
                     options={codeList}
                     className='autocomplete'   
-                    getOptionLabel={(option:CodeListData) => `${option.G_CODE}: ${option.G_NAME}`}                     
+                    filterOptions={filterOptions1}
+                    getOptionLabel={(option:CodeListData| any) => `${option.G_CODE}: ${option.G_NAME}`}                     
                     renderInput={(params) => (
                      <TextField {...params} label='Select code'/>
                     )}    
-                    onChange={(event:any, newValue: CodeListData| null)=>{
+                    onChange={(event:any, newValue: CodeListData| any)=>{
                       console.log(newValue);   
                       setNewPoPrice(newValue ===null ? '' : newValue.PROD_LAST_PRICE.toString());        
                       setSelectedCode(newValue);
