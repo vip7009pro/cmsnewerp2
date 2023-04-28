@@ -1,4 +1,4 @@
-.dkdtc {
+.failing {
     width: 100%;
     height: 100%;
     display: flex;
@@ -7,11 +7,12 @@
         width: 100%;
         height: 100%;
         display: flex;
-        flex-direction: row;
+        flex-direction: column;
         gap: 10px;
         align-items: flex-start;
         justify-items: flex-start;
         justify-content: flex-start;    
+
        
         .maintable {
             display: flex;
@@ -22,11 +23,11 @@
 
             .tracuuDataInspectionform {
                 display: flex;
-                width: 20%;
+                width: 15vw;
                 gap: 10px;
                 flex-direction: column;
-                align-content: center;               
-                justify-content: flex-start;
+                align-items: center;
+                justify-items: flex-start;               
                 background-image: linear-gradient(0deg, #fa7fb9, #f5e876);
                 -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
                 box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
@@ -140,6 +141,7 @@
                         }
                     }
                     .tranhatky {
+                        width: 50px;
                         font-weight: bold;
                         padding-left: 5px;
                         padding-right: 5px;
@@ -186,12 +188,14 @@
             }
             .tracuuYCSXTable {
                 display: flex;
-                width: 80%;
+                flex-direction: column;
+                width: 80vw;       
                 height: fit-content;
                 background-image: linear-gradient(0deg, #afd3d1, #6dd1f8);
                 -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
                 box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
                 border-radius: 3px;
+
                 
                 .datatb {
                     justify-items: center;

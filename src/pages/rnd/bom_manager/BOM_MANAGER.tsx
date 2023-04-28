@@ -109,6 +109,7 @@ interface CODE_FULL_INFO {
   REMK?: string;
   USE_YN?: string;
   PO_TYPE?: string;
+  FSC: string,
   G_CODE: string;
 }
 interface CustomerListData {
@@ -222,6 +223,7 @@ const BOM_MANAGER = () => {
     USE_YN: "N",
     G_CODE: "-------",
     PO_TYPE: "E1",
+    FSC: 'N',
   });
   const [bomsxtable, setBOMSXTable] = useState<BOM_SX[]>([]);
   const [bomgiatable, setBOMGIATable] = useState<BOM_GIA[]>([]);
@@ -1058,6 +1060,7 @@ const BOM_MANAGER = () => {
       REMK: "",
       USE_YN: "Y",
       G_CODE: "",
+      FSC:'N'
     });
   };
   const handleCheckCodeInfo = () => {
@@ -2520,6 +2523,25 @@ const BOM_MANAGER = () => {
                       >
                         <option value='E1'>E1</option>
                         <option value='E2'>E2</option>
+                      </select>
+                    </label>
+                    <label>
+                      FSC:
+                      <select
+                        disabled={enableform}
+                        name='may1'
+                        value={
+                          codefullinfo?.FSC === null ||
+                          codefullinfo?.FSC === ""
+                            ? "NA"
+                            : codefullinfo?.FSC
+                        }
+                        onChange={(e) => {
+                          handleSetCodeInfo("FSC", e.target.value);
+                        }}
+                      >
+                        <option value='Y'>YES</option>
+                        <option value='N'>NO</option>
                       </select>
                     </label>
                     <label>

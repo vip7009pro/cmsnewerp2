@@ -124,6 +124,7 @@ interface FullBOM {
   LOSS_SETTING2 : number,
   NOTE:string,
   PO_TYPE?: string,
+  FSC: string,
   PROD_MAIN_MATERIAL?: string,
   LIEUQL_SX?: number,
 }
@@ -259,7 +260,8 @@ const CHITHI_COMPONENT2 = ({PLAN_LIST}: PLAN_COMBO) => {
       LOSS_SX2: 0,
       LOSS_SETTING1 : 0,
       LOSS_SETTING2 : 0,
-      NOTE:''
+      NOTE:'',
+      FSC: 'N'
     },
   ]);
   const [chithidatatable, setChiThiDataTable] = useState<QLSXCHITHIDATA[]>([]);
@@ -351,7 +353,8 @@ const CHITHI_COMPONENT2 = ({PLAN_LIST}: PLAN_COMBO) => {
               LOSS_SX2: 0,
               LOSS_SETTING1 : 0,
               LOSS_SETTING2 : 0,
-              NOTE:''
+              NOTE:'',
+              FSC:'N'
             },
           ]);
           //Swal.fire("Thông báo","Số yêu cầu " + PROD_REQUEST_NO + "không tồn tại","error");
@@ -429,7 +432,7 @@ const CHITHI_COMPONENT2 = ({PLAN_LIST}: PLAN_COMBO) => {
       }
       <div className='thongtinycsx'>
         <div className='text1'>
-        1. 지시 정보 Thông tin chỉ thị ({request_codeinfo[0].G_NAME} ) __ PO_TYPE: {request_codeinfo[0].PO_TYPE} 
+        1. 지시 정보 Thông tin chỉ thị ({request_codeinfo[0].G_NAME} ) __ PO_TYPE: {request_codeinfo[0].PO_TYPE}  _ FSC: ({request_codeinfo[0]?.FSC ==='Y' ? 'YES':'NO'} )
         </div>
         <div className='thongtinyeucau'>
           <table className='ttyc1'>

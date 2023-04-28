@@ -121,6 +121,7 @@ interface FullBOM {
     HOLDING: number,
     TONG_TON_LIEU: number,
     PO_TYPE?: string,
+    FSC: string,
     PROD_MAIN_MATERIAL?: string,
     LIEUQL_SX?: number,
 }
@@ -192,7 +193,8 @@ const YCSXComponent = ({G_CODE,PROD_TYPE,PROD_MAIN_MATERIAL,G_NAME,EMPL_NAME,EMP
         TONG_TON_LIEU:0,
         PO_TYPE:'E1',
         PROD_MAIN_MATERIAL:'',
-        LIEUQL_SX: 0
+        LIEUQL_SX: 0,        
+        FSC: 'N'
     }]);   
 
     const [checklieuchinh,setCheckLieuChinh] = useState(false);
@@ -273,6 +275,7 @@ const YCSXComponent = ({G_CODE,PROD_TYPE,PROD_MAIN_MATERIAL,G_NAME,EMPL_NAME,EMP
                 NO_INSPECTION:'N',
                 PROD_MAIN_MATERIAL:'',
                 LIEUQL_SX: 0,
+                FSC:'N'
             }])  
             //Swal.fire("Thông báo","Số yêu cầu " + PROD_REQUEST_NO + "không tồn tại","error");                
             }
@@ -340,7 +343,7 @@ const YCSXComponent = ({G_CODE,PROD_TYPE,PROD_MAIN_MATERIAL,G_NAME,EMPL_NAME,EMP
         </div>
       </div>}
       {request_codeinfo[0].PDUYET && <div className='thongtinycsx'>
-        <div className='text1'>1. 요청 정보 Thông tin yêu cầu ({request_codeinfo[0].G_NAME} ) _ PO_TYPE: ({request_codeinfo[0]?.PO_TYPE} )</div>
+        <div className='text1'>1. 정보 Thông tin({request_codeinfo[0].G_NAME} ) _ PO_TYPE: ({request_codeinfo[0]?.PO_TYPE} ) _ FSC: ({request_codeinfo[0]?.FSC ==='Y' ? 'YES':'NO'} )</div>
         <div className='thongtinyeucau'>
           <table className='ttyc1'>
             <thead>

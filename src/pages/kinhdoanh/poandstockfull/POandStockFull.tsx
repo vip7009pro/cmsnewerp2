@@ -208,7 +208,7 @@ const POandStockFull = () => {
             temp_summary.CK += element.TONG_TON_KIEM;
             temp_summary.BLOCK += element.BLOCK_QTY;
             temp_summary.TONG_TON += element.GRAND_TOTAL_STOCK;
-            temp_summary.THUATHIEU += element.THUA_THIEU;
+            temp_summary.THUATHIEU += element.THUA_THIEU<0 ? element.THUA_THIEU : 0;
             return {
               ...element,   id:  index                  
             }

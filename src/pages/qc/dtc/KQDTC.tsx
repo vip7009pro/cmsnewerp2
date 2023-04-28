@@ -274,6 +274,8 @@ const KQDTC = () => {
                   <option value='14'>Nhiệt cao Ẩm cao</option>
                   <option value='15'>Shock nhiệt</option>
                   <option value='1002'>Kéo keo 2</option>
+                  <option value='1003'>Ngoại quan</option>
+                  <option value='1005'>Độ dày</option>
                 </select>
               </label>
               <label>

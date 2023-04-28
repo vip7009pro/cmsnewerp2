@@ -98,6 +98,7 @@ const DTCRESULT = () => {
     { TEST_CODE: "15", TEST_NAME: "Shock nhiệt", CHECKADDED: false },
     { TEST_CODE: "1002", TEST_NAME: "Kéo keo 2", CHECKADDED: false },
     { TEST_CODE: "1003", TEST_NAME: "Ngoại Quan", CHECKADDED: false },
+    { TEST_CODE: "1005", TEST_NAME: "Độ dày", CHECKADDED: false },
   ]);
   const [inspectiondatatable, setInspectionDataTable] = useState<Array<any>>(
     []
@@ -288,8 +289,9 @@ const DTCRESULT = () => {
               //console.log(response.data.data);
              
             } else {
+              err_code += `Lỗi : ` + response.data.message;
             }
-            err_code += `Lỗi : ` + response.data.message;
+           
           })
           .catch((error) => {
             console.log(error);
@@ -298,6 +300,7 @@ const DTCRESULT = () => {
       }
       if(err_code === '')
       {
+        updateDTCTESEMPL(inspectiondatatable[0].DTC_ID,inspectiondatatable[0].TEST_CODE);
         Swal.fire('Thông báo','Up kết quả thành công','success');
       }
       else
@@ -307,6 +310,21 @@ const DTCRESULT = () => {
 
     }
   }
+  const updateDTCTESEMPL =(dtc_id: string, test_code: string)=> {
+    generalQuery("updateDTC_TEST_EMPL", {
+      DTC_ID: dtc_id,
+      TEST_CODE: test_code
+    })
+      .then((response) => {
+        if (response.data.tk_status !== "NG") {
+          
+        } else {
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }  
   useEffect(() => {
     
   }, []);

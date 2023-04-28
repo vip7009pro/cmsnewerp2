@@ -1,44 +1,38 @@
-.addspecdtc {
+.holding{
     width: 100%;
     height: 100%;
     display: flex;
-    flex-direction: row;
-    .tracuuDataInspection {
-        width: 100%;
-        height: 100%;
-        display: flex;
-        flex-direction: row;
-        gap: 10px;
-        align-items: flex-start;
-        justify-items: flex-start;
-        justify-content: flex-start;
+    flex-direction: column;
+    
+    .tracuuDataInspection{
         .tracuuDataInspectionform {
             display: flex;
-            width: 20%;
-            height: 71vh;
             flex-direction: column;
-            align-items: center;
-            justify-items: flex-start;
-            justify-content: flex-start;
-            background-image: linear-gradient(0deg, #91fa7b, #75e7c1);
-            -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
-            box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+            align-items: center;            
+            background-image: linear-gradient(0deg, #afd3d1, #eea94f);
+            -webkit-box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27); 
+            box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27);
             border-radius: 3px;
             padding: 5px;
+            &:hover {
+                background-image: linear-gradient(0deg, #afd3d1, #eaec67);                
+            }
             span {
                 padding: 10px;
                 font-size: 20px;
                 margin: auto;
             }
+
+
             .forminput {
                 display: flex;
-                flex-direction: column;
                 gap: 5px;
                 flex-wrap: wrap;
-                align-items: flex-start;
-                justify-content: flex-start;
+                align-items: center;
+                justify-content: space-around;
                 padding: 2px;
-                width: 100%;
+                width: 100%;           
+
                 .forminputcolumn {
                     display: flex;
                     flex-direction: column;
@@ -47,23 +41,24 @@
                     justify-content: center;
                     flex-wrap: wrap;
                     input {
-                        width: 250px;
+                        width: 150px;
                         height: 20px;
                         outline: none;
                         border-radius: 5px;
                         border: none;
                         padding: 5px;
                         margin-left: 5px;
+                        background-image: linear-gradient(0deg, #ececec, #9dee95);
                     }
                     select {
-                        width: 330px;
-                        height: 42px;
+                        width: 160px;
+                        height: 30px;
                         outline: none;
-                        border-radius: 3px;
-                        border-color: rgba(128, 128, 128, 0.397);
+                        border-radius: 5px;
+                        border: none;
                         padding: 5px;
                         margin-left: 5px;
-                        background-color: transparent;
+                        background-image: linear-gradient(0deg, #ececec, #9dee95);
                     }
                 }
             }
@@ -72,73 +67,77 @@
                 align-items: center;
                 justify-content: space-around;
                 gap: 20px;
-                .tranhapkiembutton {
+                .tranhapkiembutton
+                {
                     font-weight: bold;
                     padding-left: 5px;
                     padding-right: 5px;
                     height: 30px;
                     background-color: #99f86d;
-                    outline: none;
+                    outline:none;
                     border: none;
                     border-radius: 5px;
-                    -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
-                    box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
-                    margin-bottom: 5px;
-                    margin-top: 5px;
+                    -webkit-box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27); 
+                    box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27);  
+                    margin-bottom: 5px;     
+                    margin-top: 5px;  
                     &:hover {
                         cursor: pointer;
                         background-color: #67c73a;
                     }
                 }
-                .traxuatkiembutton {
+                .traxuatkiembutton
+                {
                     font-weight: bold;
                     padding-left: 5px;
                     padding-right: 5px;
                     height: 30px;
                     background-color: #3ebdf8;
-                    outline: none;
+                    outline:none;
                     border: none;
                     border-radius: 5px;
-                    -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
-                    box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
-                    margin-bottom: 5px;
-                    margin-top: 5px;
+                    -webkit-box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27); 
+                    box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27);  
+                    margin-bottom: 5px;     
+                    margin-top: 5px;  
                     &:hover {
                         cursor: pointer;
                         background-color: #3f9eca;
                     }
                 }
-                .tranhapxuatkiembutton {
+                .tranhapxuatkiembutton
+                {
                     font-weight: bold;
                     padding-left: 5px;
                     padding-right: 5px;
                     height: 30px;
                     background-color: #f04dff;
-                    outline: none;
+                    outline:none;
                     border: none;
                     border-radius: 5px;
-                    -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
-                    box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
-                    margin-bottom: 5px;
-                    margin-top: 5px;
+                    -webkit-box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27); 
+                    box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27);  
+                    margin-bottom: 5px;     
+                    margin-top: 5px;  
                     &:hover {
                         cursor: pointer;
                         background-color: #bd4dc7;
                     }
                 }
-                .tranhatky {
+                .tranhatky
+                {
                     font-weight: bold;
                     padding-left: 5px;
                     padding-right: 5px;
-                    height: 35px;
+                    height: 30px;
                     background-color: #ccff14;
-                    outline: none;
+                    outline:none;
                     border: none;
                     border-radius: 5px;
-                    -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
-                    box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
-                    margin-bottom: 5px;
-                    margin-top: 5px;
+                    -webkit-box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27); 
+                    box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27);  
+                    margin-bottom: 5px;     
+                    margin-top: 5px;  
                     &:hover {
                         cursor: pointer;
                         background-color: #bd4dc7;
@@ -148,42 +147,48 @@
             .formsummary {
                 display: flex;
                 flex-direction: row;
-                background-image: linear-gradient(0deg, #ececec, #99f86d);
-                -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
-                box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
-                gap: 20px;
-                border-radius: 10px;
+                background-image: linear-gradient(0deg, #ececec, #99f86d);       
+                -webkit-box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27); 
+                box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27);         
+                gap: 20px;         
+                border-radius: 10px;   
                 margin-top: 5px;
+                
+
                 .summarygroup {
                     display: flex;
                     flex-direction: column;
                     align-items: flex-start;
-                    justify-items: flex-start;
+                    justify-items: flex-start;                    
                     gap: 10px;
-                    .summaryvalue {
+                    .summaryvalue {                        
                         display: flex;
                         font-size: 16px;
                         justify-self: flex-end;
                         align-self: flex-end;
                         padding: 5px;
                         color: rgb(83, 36, 255);
-                    }
+                    }                    
                 }
+
             }
+
         }
         .tracuuYCSXTable {
             display: flex;
-            width: 80%;
+            margin-top: 10px;
             height: fit-content;
             background-image: linear-gradient(0deg, #afd3d1, #6dd1f8);
-            -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
-            box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+            -webkit-box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27); 
+            box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27);
             border-radius: 3px;
-            .datatb {
-                justify-items: center;
+            .datatb { 
+                justify-items: center;                    
                 width: 99%;
                 padding: 10px;
+             
             }
+
         }
     }
 }

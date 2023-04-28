@@ -70,8 +70,7 @@ const DTC = () => {
           <span className='mininavtext'>
           NHẬP KQ ĐTC
           </span>
-        </div> 
-        
+        </div>
       </div>     
       {selection.tab1 && (
         <div className='trainspection'>

@@ -1,6 +1,6 @@
 import { Autocomplete, IconButton, TextField, createFilterOptions } from "@mui/material";
 import moment from "moment";
-import React, { useContext, useEffect, useState, useTransition } from "react";
+import React, { useCallback, useContext, useEffect, useState, useTransition } from "react";
 import { AiFillFileExcel } from "react-icons/ai";
 import Swal from "sweetalert2";
 import { generalQuery } from "../../../api/Api";
@@ -23,6 +23,7 @@ import DataGrid, {
   Toolbar,
   TotalItem,
 } from "devextreme-react/data-grid";
+/* import { Autocomplete } from 'devextreme-react'; */
 interface DTC_ADD_SPEC_DATA {
   CUST_NAME_KD: string;
   G_CODE: string;
@@ -90,7 +91,7 @@ const ADDSPECTDTC = () => {
   const [testname, setTestName] = useState("0");
   const [testtype, setTestType] = useState("0");
   const [prodrequestno, setProdRequestNo] = useState("");
-  const [checkNVL, setCheckNVL] = useState(false);
+  const [checkNVL, setCheckNVL] = useState((userData.SUBDEPTNAME === 'IQC'? true: false));
   const [id, setID] = useState("");
   const [inspectiondatatable, setInspectionDataTable] = useState<Array<any>>(
     []
@@ -200,9 +201,7 @@ const ADDSPECTDTC = () => {
             infoText='Page #{0}. Total: {1} ({2} items)'
             displayMode='compact'
           />
-          <Column dataField='CUST_NAME_KD' caption='CUST_NAME_KD'></Column>
-          <Column dataField='G_CODE' caption='G_CODE'></Column>
-          <Column dataField='G_NAME' caption='G_NAME' width={150}></Column>
+          
           <Column dataField='TEST_NAME' caption='TEST_NAME'></Column>
           <Column dataField='POINT_NAME' caption='POINT_NAME'></Column>
           <Column dataField='PRI' caption='PRI'></Column>
@@ -306,6 +305,9 @@ const ADDSPECTDTC = () => {
               }
             }}
           ></Column>
+          <Column dataField='CUST_NAME_KD' caption='CUST_NAME_KD'></Column>
+          <Column dataField='G_CODE' caption='G_CODE'></Column>
+          <Column dataField='G_NAME' caption='G_NAME' width={150}></Column>
           <Summary>
             <TotalItem
               alignment='right'
@@ -637,21 +639,94 @@ const ADDSPECTDTC = () => {
       M_CODE: checkNVL ? m_code : "B0000035",
       G_CODE: checkNVL ? "7A07540A" : g_code,
     })
-      .then((response) => {
-        if (response.data.tk_status !== "NG") {
-          //console.log(response.data.data);
-          setAddedSpec(response.data.data);
-        } else {
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+        //console.log(response.data.data);
+        setAddedSpec(response.data.data);
+      } else {
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
   };
   const filterOptions1 = createFilterOptions({
     matchFrom: 'any',
     limit: 100,
   });
+
+  const onValueChanged = useCallback((e:any) => {    
+    console.log(e.value);
+}, []);
+
+  const employeesTasks = [
+    {
+        ID: 1,
+        Assignee: "Mr. John Heart",
+        Subject: "Choose between PPO and HMO Health Plan",
+        disabled: true
+    }, {
+        ID: 2,
+        Assignee: "Mr. John Heart",
+        Subject: "Google AdWords Strategy"
+    }, {
+        ID: 3,
+        Assignee: "Mr. John Heart",
+        Subject: "New Brochures"
+    }, {
+        ID: 4,
+        Assignee: "Mr. John Heart",
+        Subject: "Update NDA Agreement"
+    }, {
+        ID: 5,
+        Assignee: "Mr. John Heart",
+        Subject: "Review Product Recall Report by Engineering Team"
+    }, {
+        ID: 6,
+        Assignee: "Mrs. Olivia Peyton",
+        Subject: "Update Personnel Files"
+    }, {
+        ID: 7,
+        Assignee: "Mrs. Olivia Peyton",
+        Subject: "Review Health Insurance Options Under the Affordable Care Act"
+    }, {
+        ID: 8,
+        Assignee: "Mrs. Olivia Peyton",
+        Subject: "Non-Compete Agreements"
+    }, {
+        ID: 9,
+        Assignee: "Mrs. Olivia Peyton",
+        Subject: "Give Final Approval for Refunds"
+    }, {
+        ID: 10,
+        Assignee: "Mr. Robert Reagan",
+        Subject: "Deliver R&D Plans for 2013"
+    }, {
+        ID: 11,
+        Assignee: "Mr. Robert Reagan",
+        Subject: "Decide on Mobile Devices to Use in the Field"
+    }, {
+        ID: 12,
+        Assignee: "Mr. Robert Reagan",
+        Subject: "Try New Touch-Enabled WinForms Apps"
+    }, {
+        ID: 13,
+        Assignee: "Mr. Robert Reagan",
+        Subject: "Approval on Converting to New HDMI Specification"
+    }, {
+        ID: 14,
+        Assignee: "Ms. Greta Sims",
+        Subject: "Approve Hiring of John Jeffers"
+    }, {
+        ID: 15,
+        Assignee: "Ms. Greta Sims",
+        Subject: "Update Employee Files with New NDA"
+    }, {
+        ID: 16,
+        Assignee: "Ms. Greta Sims",
+        Subject: "Provide New Health Insurance Docs"
+    }
+];
   useEffect(() => {
     getcodelist("");
     getmateriallist();    
@@ -667,9 +742,19 @@ const ADDSPECTDTC = () => {
             </b>
             <br></br>
           <div className='forminput'>
-            <div className='forminputcolumn'>
+            <b>Chọn sản phẩm/ vật liệu</b>            
+            <div className='forminputcolumn'>            
               {!checkNVL && (
                 <label>
+                  {/* <Autocomplete
+                  style={{width: 280}}
+                  dataSource={employeesTasks}                 
+                  valueExpr="Subject"
+                  searchTimeout={0}
+                  showClearButton={true}
+                  onValueChanged={onValueChanged}
+                  /> */}
+                  
                   <Autocomplete                    
                     hidden={checkNVL}
                     disabled={checkNVL}
@@ -685,7 +770,7 @@ const ADDSPECTDTC = () => {
                       `${option.G_CODE}: ${option.G_NAME}`
                     }
                     renderInput={(params) => (
-                      <TextField {...params} label='Chọn sản phẩm' />
+                      <TextField {...params} />
                     )}                    
                     onChange={(event: any, newValue: any) => {
                       //console.log(newValue);
@@ -735,10 +820,9 @@ const ADDSPECTDTC = () => {
                 </label>
               )}
             </div>
-            <div className='forminputcolumn'>
+            <b>Hạng mục test</b>
+            <div className='forminputcolumn'>            
               <label>
-                <b>Hạng mục test</b>
-                <br></br>
                 <select
                   name='hangmuctest'
                   value={testname}
@@ -769,6 +853,7 @@ const ADDSPECTDTC = () => {
                   <option value='15'>Shock nhiệt</option>
                   <option value='1002'>Kéo keo 2</option>
                   <option value='1003'>Ngoại Quan</option>
+                  <option value='1005'>Độ dày</option>
                 </select>
               </label>
             </div>
