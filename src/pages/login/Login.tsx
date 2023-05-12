@@ -114,6 +114,7 @@ const Login = () => {
           >
             <option value={'http://14.160.33.94:5011/api'}>MAIN_SERVER</option>
             <option value={'http://14.160.33.94:3007/api'}>SUB_SERVER</option>
+            <option value={'http://localhost:3007/api'}>TEST_SERVER</option>
           </select>
         </label>
       </div>

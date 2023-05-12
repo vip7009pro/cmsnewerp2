@@ -308,7 +308,7 @@ const DKDTC = () => {
       });
   };
   const checkLotNVL = (M_LOT_NO: string) => {
-    generalQuery("checkMNAMEfromLot", { M_LOT_NO: M_LOT_NO })
+    generalQuery("checkMNAMEfromLotI222", { M_LOT_NO: M_LOT_NO })
       .then((response) => {
         if (response.data.tk_status !== "NG") {
           //console.log(response.data.data);
@@ -475,6 +475,7 @@ const DKDTC = () => {
                     onChange={(e) => {
                       if (e.target.value.length >= 7) {
                         if (checkNVL) {
+                          console.log(e.target.value);
                           checkLotNVL(e.target.value);
                         } else {
                           if (e.target.value.length === 7) {

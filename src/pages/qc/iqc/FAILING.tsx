@@ -8,7 +8,13 @@ import {
   Typography,
 } from "@mui/material";
 import moment from "moment";
-import React, { useContext, useEffect, useState, useTransition } from "react";
+import React, {
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+  useTransition,
+} from "react";
 import { AiFillFileExcel, AiOutlineSearch } from "react-icons/ai";
 import Swal from "sweetalert2";
 import { generalQuery } from "../../../api/Api";
@@ -34,11 +40,7 @@ import DataGrid, {
 import { BiShow } from "react-icons/bi";
 import { GrStatusGood } from "react-icons/gr";
 import { FcCancel } from "react-icons/fc";
-interface TestListTable {
-  TEST_CODE: string;
-  TEST_NAME: string;
-  SELECTED: boolean;
-}
+import internal from "stream";
 interface QC_FAIL_DATA {
   id?: number;
   FACTORY: string;
@@ -66,44 +68,40 @@ interface QC_FAIL_DATA {
   QC_PASS_DATE: string;
   QC_PASS_EMPL: string;
   REMARK: string;
+  IN1_EMPL: string;
+  IN2_EMPL: string;
+  OUT1_EMPL: string;
+  OUT2_EMPL: string;
+  OUT_PLAN_ID: string;
+  IN_CUST_CD: string;
+  OUT_CUST_CD: string;
+  IN_CUST_NAME: string;
+  OUT_CUST_NAME: string;
+  REMARK_OUT: string;
+  FAIL_ID: number;
+}
+interface CustomerListData {
+  CUST_CD: string;
+  CUST_NAME_KD: string;
+  CUST_NAME: string;
 }
 const FAILING = () => {
+  const [cmsvcheck, setCMSVCheck] = useState(true);
+  const [customerList, setCustomerList] = useState<CustomerListData[]>([]);
   const [userData, setUserData] = useContext(UserContext);
   const [testtype, setTestType] = useState("NVL");
   const [inputno, setInputNo] = useState("");
-  const [checkNVL, setCheckNVL] = useState(
-    userData.SUBDEPTNAME === "IQC" ? true : false
-  );
   const [request_empl, setrequest_empl] = useState("");
+  const [request_empl2, setrequest_empl2] = useState("");
   const [remark, setReMark] = useState("");
-  const [testList, setTestList] = useState<TestListTable[]>([
-    { TEST_CODE: "1", TEST_NAME: "Kích thước", SELECTED: false },
-    { TEST_CODE: "2", TEST_NAME: "Kéo keo", SELECTED: false },
-    { TEST_CODE: "3", TEST_NAME: "XRF", SELECTED: false },
-    { TEST_CODE: "4", TEST_NAME: "Điện trở", SELECTED: false },
-    { TEST_CODE: "5", TEST_NAME: "Tĩnh điện", SELECTED: false },
-    { TEST_CODE: "6", TEST_NAME: "Độ bóng", SELECTED: false },
-    { TEST_CODE: "7", TEST_NAME: "Phtalate", SELECTED: false },
-    { TEST_CODE: "8", TEST_NAME: "FTIR", SELECTED: false },
-    { TEST_CODE: "9", TEST_NAME: "Mài mòn", SELECTED: false },
-    { TEST_CODE: "10", TEST_NAME: "Màu sắc", SELECTED: false },
-    { TEST_CODE: "11", TEST_NAME: "TVOC", SELECTED: false },
-    { TEST_CODE: "12", TEST_NAME: "Cân nặng", SELECTED: false },
-    { TEST_CODE: "13", TEST_NAME: "Scanbarcode", SELECTED: false },
-    { TEST_CODE: "14", TEST_NAME: "Nhiệt cao Ẩm cao", SELECTED: false },
-    { TEST_CODE: "15", TEST_NAME: "Shock nhiệt", SELECTED: false },
-    { TEST_CODE: "1002", TEST_NAME: "Kéo keo 2", SELECTED: false },
-    { TEST_CODE: "1003", TEST_NAME: "Ngoại Quan", SELECTED: false },
-    { TEST_CODE: "1005", TEST_NAME: "Độ dày", SELECTED: false },
-  ]);
   const [inspectiondatatable, setInspectionDataTable] = useState<Array<any>>(
     []
   );
-  const [selectedRowsData, setSelectedRowsData] = useState<Array<QC_FAIL_DATA>>(
-    []
-  );
+  const [selectedRowsDataA, setSelectedRowsData] = useState<
+    Array<QC_FAIL_DATA>
+  >([]);
   const [empl_name, setEmplName] = useState("");
-  const [reqDeptCode, setReqDeptCode] = useState("");
+  const [empl_name2, setEmplName2] = useState("");
   const [g_name, setGName] = useState("");
   const [g_code, setGCode] = useState("");
   const [m_name, setM_Name] = useState("");
@@ -119,11 +117,11 @@ const FAILING = () => {
   const [vendorLot, setVendorLot] = useState("");
   const [lieql_sx, setLieuQL_SX] = useState(0);
   const [out_date, setOut_Date] = useState("");
-  const [mLotArray, setmLotArray] = useState<string[]>([]);
   const [showhideinput, setShowHideInput] = useState(true);
+  const [cust_cd, setCust_Cd] = useState("6969");
   const setQCPASS = async (value: string) => {
-    //console.log(selectedRowsData);
-    if (selectedRowsData.length > 0) {
+    console.log(selectedRowsDataA);
+    if (selectedRowsDataA.length > 0) {
       Swal.fire({
         title: "Tra cứu vật liệu Holding",
         text: "Đang tải dữ liệu, hãy chờ chút",
@@ -134,10 +132,10 @@ const FAILING = () => {
         showConfirmButton: false,
       });
       let err_code: string = "";
-      for (let i = 0; i < selectedRowsData.length; i++) {
+      for (let i = 0; i < selectedRowsDataA.length; i++) {
         await generalQuery("updateQCPASS_FAILING", {
-          M_LOT_NO: selectedRowsData[i].M_LOT_NO,
-          PLAN_ID_SUDUNG: selectedRowsData[i].PLAN_ID_SUDUNG,
+          M_LOT_NO: selectedRowsDataA[i].M_LOT_NO,
+          PLAN_ID_SUDUNG: selectedRowsDataA[i].PLAN_ID_SUDUNG,
           VALUE: value,
         })
           // eslint-disable-next-line no-loop-func
@@ -161,60 +159,15 @@ const FAILING = () => {
       Swal.fire("Thông báo", "Chọn ít nhất 1 dòng để thực hiện", "error");
     }
   };
+  const setselecterowfunction = (e: any) => {
+    console.log(e);
+    setSelectedRowsData(e);
+  };
   const materialDataTable = React.useMemo(
     () => (
       <div className='datatb'>
-        <DataGrid
-          autoNavigateToFocusedRow={true}
-          allowColumnReordering={true}
-          allowColumnResizing={true}
-          columnAutoWidth={false}
-          cellHintEnabled={true}
-          columnResizingMode={"widget"}
-          showColumnLines={true}
-          dataSource={inspectiondatatable}
-          columnWidth='auto'
-          keyExpr='id'
-          height={"70vh"}
-          showBorders={true}
-          onSelectionChanged={(e) => {
-            //console.log(e.selectedRowsData);
-            //setSelectedRowsData(e.selectedRowsData);
-            setSelectedRowsData(e.selectedRowsData);
-          }}
-          onRowClick={(e) => {
-            //console.log(e.data);
-          }}
-        >
-          <Scrolling
-            useNative={true}
-            scrollByContent={true}
-            scrollByThumb={true}
-            showScrollbar='onHover'
-            mode='virtual'
-          />
-          <Selection mode='multiple' selectAllMode='allPages' />
-          <Editing
-            allowUpdating={true}
-            allowAdding={false}
-            allowDeleting={true}
-            mode='cell'
-            confirmDelete={true}
-            onChangesChange={(e) => {}}
-          />
-          <Export enabled={true} />
-          <Toolbar disabled={false}>
-            <Item location='before'>
-              <IconButton
-                className='buttonIcon'
-                onClick={() => {
-                  SaveExcel(inspectiondatatable, "SPEC DTC");
-                }}
-              >
-                <AiFillFileExcel color='green' size={25} />
-                SAVE
-              </IconButton>
-              <IconButton
+        <div className="menubar">
+        <IconButton
                 className='buttonIcon'
                 onClick={() => {
                   setShowHideInput((pre) => !pre);
@@ -236,47 +189,64 @@ const FAILING = () => {
               >
                 <AiOutlineSearch color='red' size={25} />
                 Tra Data
-              </IconButton>
+              </IconButton>    
+
+        </div>
+        <DataGrid
+          autoNavigateToFocusedRow={true}
+          allowColumnReordering={true}
+          allowColumnResizing={true}
+          columnAutoWidth={false}
+          cellHintEnabled={true}
+          columnResizingMode={"widget"}
+          showColumnLines={true}
+          dataSource={inspectiondatatable}
+          columnWidth='auto'
+          keyExpr='id'
+          height={"70vh"}
+          showBorders={true}
+          onSelectionChanged={(e) => {
+            //console.log(e.selectedRowsData);
+            //setselecterowfunction(e.selectedRowsData);
+            setSelectedRowsData(e.selectedRowsData);
+          }}
+          onRowClick={(e) => {
+            //console.log(e.data);
+          }}
+          onRowUpdated={(e) => {
+            //console.log(e);
+          }}
+        >
+          <Scrolling
+            useNative={false}
+            scrollByContent={true}
+            scrollByThumb={true}
+            showScrollbar='onHover'
+            mode='virtual'
+          />
+          <Selection mode='multiple' selectAllMode='allPages' />
+          <Editing
+            allowUpdating={true}
+            allowAdding={false}
+            allowDeleting={false}
+            mode='cell'
+            confirmDelete={true}
+            onChangesChange={(e) => {}}
+          />
+          <Export enabled={true} />
+          <Toolbar disabled={false}>
+            <Item location='before'>
               <IconButton
                 className='buttonIcon'
                 onClick={() => {
-                  if (userData.SUBDEPTNAME === "IQC") {
-                    setQCPASS("Y");
-                  } else {
-                    Swal.fire(
-                      "Thông báo",
-                      "Bạn không phải người bộ phận IQC",
-                      "error"
-                    );
-                  }
-                  //checkBP(userData.EMPL_NO,userData.MAINDEPTNAME,['QC'], ()=>{setQCPASS('Y');});
-                  //checkBP(userData.EMPL_NO,userData.MAINDEPTNAME,['QLSX'], setQCPASS('Y'));
-                  //setQCPASS('Y');
+                  SaveExcel(inspectiondatatable, "SPEC DTC");
                 }}
               >
-                <GrStatusGood color='green' size={25} />
-                SET PASS
+                <AiFillFileExcel color='green' size={25} />
+                SAVE
               </IconButton>
-              <IconButton
-                className='buttonIcon'
-                onClick={() => {
-                  if (userData.SUBDEPTNAME === "IQC") {
-                    setQCPASS("N");
-                  } else {
-                    Swal.fire(
-                      "Thông báo",
-                      "Bạn không phải người bộ phận IQC",
-                      "error"
-                    );
-                  }
-                  //checkBP(userData.EMPL_NO,userData.MAINDEPTNAME,['QC'], ()=>{setQCPASS('Y');});
-                  //checkBP(userData.EMPL_NO,userData.MAINDEPTNAME,['QLSX'], setQCPASS('N'));
-                  //setQCPASS('N');
-                }}
-              >
-                <FcCancel color='red' size={25} />
-                RESET PASS
-              </IconButton>
+                       
+             
             </Item>
             <Item name='searchPanel' />
             <Item name='exportButton' />
@@ -297,6 +267,12 @@ const FAILING = () => {
             infoText='Page #{0}. Total: {1} ({2} items)'
             displayMode='compact'
           />
+          <Column
+            dataField='FAIL_ID'
+            caption='FAIL_ID'
+            width={100}
+            allowEditing={false}
+          ></Column>
           <Column
             dataField='FACTORY'
             caption='FACTORY'
@@ -331,7 +307,7 @@ const FAILING = () => {
             dataField='M_LOT_NO'
             caption='M_LOT_NO'
             width={100}
-            allowEditing={false}
+            allowEditing={true}
           ></Column>
           <Column
             dataField='VENDOR_LOT'
@@ -436,6 +412,92 @@ const FAILING = () => {
             width={100}
             allowEditing={false}
           ></Column>
+          <Column
+            dataField='IN1_EMPL'
+            caption='IN1_EMPL'
+            width={100}
+            allowEditing={false}
+          ></Column>
+          <Column
+            dataField='IN2_EMPL'
+            caption='IN2_EMPL'
+            width={100}
+            allowEditing={false}
+          ></Column>
+          <Column
+            dataField='OUT1_EMPL'
+            caption='OUT1_EMPL'
+            width={100}
+            allowEditing={false}
+          ></Column>
+          <Column
+            dataField='OUT2_EMPL'
+            caption='OUT2_EMPL'
+            width={100}
+            allowEditing={false}
+          ></Column>
+          <Column
+            dataField='IN_CUST_CD'
+            caption='IN_CUST_CD'
+            width={100}
+            allowEditing={false}
+          ></Column>
+          <Column
+            dataField='OUT_CUST_CD'
+            caption='OUT_CUST_CD'
+            width={100}
+            allowEditing={false}
+          ></Column>
+          <Column
+            dataField='IN_CUST_NAME'
+            caption='IN_CUST_NAME'
+            width={100}
+            allowEditing={false}
+          ></Column>
+          <Column
+            dataField='OUT_CUST_NAME'
+            caption='OUT_CUST_NAME'
+            width={100}
+            allowEditing={false}
+          ></Column>
+          <Column
+            dataField='OUT_PLAN_ID'
+            caption='OUT_PLAN_ID'
+            width={100}
+            allowEditing={false}
+          ></Column>
+          <Column
+            dataField='REMARK_OUT'
+            caption='REMARK_OUT'
+            width={100}
+            allowEditing={false}
+          ></Column>
+          <Summary>
+            <TotalItem
+              alignment='right'
+              column='M_CODE'
+              summaryType='count'
+              valueFormat={"decimal"}
+            />
+            <TotalItem
+              alignment='right'
+              column='ROLL_QTY'
+              summaryType='sum'
+              valueFormat={"decimal"}
+            />
+            <TotalItem
+              alignment='right'
+              column='IN_QTY'
+              summaryType='sum'
+              valueFormat={"decimal"}
+            />
+            <TotalItem
+              alignment='right'
+              column='TOTAL_IN_QTY'
+              summaryType='sum'
+              valueFormat={"decimal"}
+            />
+          </Summary>
         </DataGrid>
       </div>
     ),
@@ -485,20 +547,27 @@ const FAILING = () => {
         console.log(error);
       });
   };
-  const checkEMPL_NAME = (EMPL_NO: string) => {
+  const checkEMPL_NAME = (selection: number, EMPL_NO: string) => {
     generalQuery("checkEMPL_NO_mobile", { EMPL_NO: EMPL_NO })
       .then((response) => {
         if (response.data.tk_status !== "NG") {
-          //console.log(response.data.data);
-          setEmplName(
-            response.data.data[0].MIDLAST_NAME +
-              " " +
-              response.data.data[0].FIRST_NAME
-          );
-          setReqDeptCode(response.data.data[0].WORK_POSITION_CODE);
+          //console.log(response.data.data);\
+          if (selection === 1) {
+            setEmplName(
+              response.data.data[0].MIDLAST_NAME +
+                " " +
+                response.data.data[0].FIRST_NAME
+            );
+          } else {
+            setEmplName2(
+              response.data.data[0].MIDLAST_NAME +
+                " " +
+                response.data.data[0].FIRST_NAME
+            );
+          }
         } else {
           setEmplName("");
-          setReqDeptCode("");
+          setEmplName2("");
         }
       })
       .catch((error) => {
@@ -533,6 +602,8 @@ const FAILING = () => {
           setPQC3ID(response.data.data[0].PQC3_ID);
           setDefectPhenomenon(response.data.data[0].DEFECT_PHENOMENON);
         } else {
+          setPQC3ID(0);
+          setDefectPhenomenon("");
         }
       })
       .catch((error) => {
@@ -543,7 +614,7 @@ const FAILING = () => {
     generalQuery("checkMNAMEfromLot", { M_LOT_NO: M_LOT_NO })
       .then((response) => {
         if (response.data.tk_status !== "NG") {
-          //console.log(response.data.data);
+          console.log(response.data.data);
           setM_Name(
             response.data.data[0].M_NAME +
               " | " +
@@ -613,23 +684,162 @@ const FAILING = () => {
       QC_PASS_DATE: "",
       QC_PASS_EMPL: "",
       REMARK: remark,
+      IN1_EMPL: "",
+      IN2_EMPL: "",
+      OUT1_EMPL: "",
+      OUT2_EMPL: "",
+      OUT_PLAN_ID: "",
+      IN_CUST_CD: "",
+      OUT_CUST_CD: "",
+      IN_CUST_NAME: "",
+      OUT_CUST_NAME: "",
+      REMARK_OUT: "",
+      FAIL_ID: 0,
     };
     setInspectionDataTable((prev) => {
       return [...prev, temp_row];
     });
   };
+  const saveFailingData = async () => {
+    if (inspectiondatatable.length > 0) {
+      let err_code: string = "";
+      for (let i = 0; i < inspectiondatatable.length; i++) {
+        await generalQuery("insertFailingData", {
+          FACTORY: inspectiondatatable[i].FACTORY,
+          PLAN_ID_SUDUNG: inspectiondatatable[i].PLAN_ID_SUDUNG,
+          LIEUQL_SX: inspectiondatatable[i].LIEUQL_SX,
+          M_CODE: inspectiondatatable[i].M_CODE,
+          M_LOT_NO: inspectiondatatable[i].M_LOT_NO,
+          VENDOR_LOT: inspectiondatatable[i].VENDOR_LOT,
+          ROLL_QTY: inspectiondatatable[i].ROLL_QTY,
+          IN_QTY: inspectiondatatable[i].IN_QTY,
+          TOTAL_IN_QTY: inspectiondatatable[i].TOTAL_IN_QTY,
+          USE_YN: inspectiondatatable[i].USE_YN,
+          PQC3_ID: inspectiondatatable[i].PQC3_ID,
+          OUT_DATE: inspectiondatatable[i].OUT_DATE,
+          INS_EMPL: inspectiondatatable[i].INS_EMPL,
+          INS_DATE: inspectiondatatable[i].INS_DATE,
+          UPD_EMPL: inspectiondatatable[i].UPD_EMPL,
+          UPD_DATE: inspectiondatatable[i].UPD_DATE,
+          PHANLOAI: inspectiondatatable[i].PHANLOAI,
+          QC_PASS: inspectiondatatable[i].QC_PASS,
+          QC_PASS_DATE: inspectiondatatable[i].QC_PASS_DATE,
+          QC_PASS_EMPL: inspectiondatatable[i].QC_PASS_EMPL,
+          REMARK: inspectiondatatable[i].REMARK,
+          IN1_EMPL: inspectiondatatable[i].IN1_EMPL,
+          IN2_EMPL: inspectiondatatable[i].IN2_EMPL,
+          OUT1_EMPL: inspectiondatatable[i].OUT1_EMPL,
+          OUT2_EMPL: inspectiondatatable[i].OUT2_EMPL,
+          OUT_PLAN_ID: inspectiondatatable[i].OUT_PLAN_ID,
+          IN_CUST_CD: inspectiondatatable[i].IN_CUST_CD,
+          OUT_CUST_CD: inspectiondatatable[i].OUT_CUST_CD,
+        })
+          // eslint-disable-next-line no-loop-func
+          .then((response) => {
+            if (response.data.tk_status !== "NG") {
+              //console.log(response.data.data);
+            } else {
+              err_code += "Lỗi: " + response.data.message + "| ";
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }
+      if (err_code === "") {
+        Swal.fire("Thông báo", "Thêm data thành công", "success");
+      } else {
+        Swal.fire("Thông báo", "Lỗi: " + err_code, "error");
+      }
+    } else {
+    }
+  };
+  const getcustomerlist = () => {
+    generalQuery("selectcustomerList", {})
+      .then((response) => {
+        if (response.data.tk_status !== "NG") {
+          setCustomerList(response.data.data);
+        } else {
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+  const updateQCFailTable = async () => {
+    if (selectedRowsDataA.length > 0) {
+      let err_code: string = "";
+      for (let i = 0; i < selectedRowsDataA.length; i++) {
+        await generalQuery("updateQCFailTableData", {
+          OUT1_EMPL: request_empl,
+          OUT2_EMPL: request_empl2,
+          OUT_CUST_CD: cust_cd,
+          OUT_PLAN_ID: planId,
+          REMARK_OUT: remark,
+          FAIL_ID: selectedRowsDataA[i].FAIL_ID,
+        })
+          // eslint-disable-next-line no-loop-func
+          .then((response) => {
+            if (response.data.tk_status !== "NG") {
+            } else {
+              err_code += ` Lỗi: ${response.data.message} | `;
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }
+      if (err_code === "") {
+        Swal.fire("Thông báo", "Xuất thành công", "success");
+      } else {
+        Swal.fire("Thông báo", "Có lỗi: " + err_code, "error");
+      }
+    } else {
+      Swal.fire("Chọn ít nhất 1 dòng để thực hiện");
+    }
+  };
   useEffect(() => {
+    getcustomerlist();
     ///handletraFailingData();
   }, []);
   return (
     <div className='failing'>
       <div className='tracuuDataInspection'>
-        <div className='maintable'>
+        <div className='maintable'>         
           {showhideinput && (
             <div className='tracuuDataInspectionform'>
               <b style={{ color: "blue" }}>INPUT LIỆU QC FAIL</b>
               <div className='forminput'>
                 <div className='forminputcolumn'>
+                  <label>
+                    Vendor:
+                    <select
+                      disabled={cmsvcheck}
+                      name='khachhang'
+                      value={cust_cd}
+                      onChange={(e) => {
+                        setCust_Cd(e.target.value);
+                      }}
+                    >
+                      {customerList.map((element, index) => (
+                        <option key={index} value={element.CUST_CD}>
+                          {element.CUST_NAME_KD}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                  <label>
+                    CMSV
+                    <input
+                      type='checkbox'
+                      name='alltimecheckbox'
+                      defaultChecked={cmsvcheck}
+                      onChange={(e) => {
+                        if (cmsvcheck === false) setCust_Cd("6969");
+                        setCMSVCheck(!cmsvcheck);
+                      }}
+                    ></input>
+                  </label>
                   <b>Phân loại hàng</b>
                   <label>
                     <select
@@ -676,7 +886,9 @@ const FAILING = () => {
                       placeholder='202304190123'
                       value={inputno}
                       onChange={(e) => {
+                        //console.log(e.target.value.length);
                         if (e.target.value.length >= 7) {
+                          //console.log(e.target.value);
                           checkLotNVL(e.target.value);
                         }
                         setInputNo(e.target.value);
@@ -698,7 +910,7 @@ const FAILING = () => {
                   <label>
                     <input
                       type='text'
-                      placeholder={"NVD1201"}
+                      placeholder={"54951949844984"}
                       value={vendorLot}
                       onChange={(e) => {
                         setVendorLot(e.target.value);
@@ -713,7 +925,7 @@ const FAILING = () => {
                       value={request_empl}
                       onChange={(e) => {
                         if (e.target.value.length >= 7) {
-                          checkEMPL_NAME(e.target.value);
+                          checkEMPL_NAME(1, e.target.value);
                         }
                         setrequest_empl(e.target.value);
                       }}
@@ -728,6 +940,31 @@ const FAILING = () => {
                       }}
                     >
                       {empl_name}
+                    </span>
+                  )}
+                  <b>Mã nhân viên nhận</b>
+                  <label>
+                    <input
+                      type='text'
+                      placeholder={"NVD1201"}
+                      value={request_empl2}
+                      onChange={(e) => {
+                        if (e.target.value.length >= 7) {
+                          checkEMPL_NAME(2, e.target.value);
+                        }
+                        setrequest_empl2(e.target.value);
+                      }}
+                    ></input>
+                  </label>
+                  {request_empl2 && (
+                    <span
+                      style={{
+                        fontSize: 15,
+                        fontWeight: "bold",
+                        color: "blue",
+                      }}
+                    >
+                      {empl_name2}
                     </span>
                   )}
                 </div>
@@ -786,14 +1023,7 @@ const FAILING = () => {
                 <button
                   className='tranhatky'
                   onClick={() => {
-                    if (checkInput()) {
-                    } else {
-                      Swal.fire(
-                        "Thông báo",
-                        "Hãy nhập đủ thông tin trước khi đăng ký",
-                        "error"
-                      );
-                    }
+                    saveFailingData();
                   }}
                 >
                   Save
@@ -806,6 +1036,188 @@ const FAILING = () => {
             </div>
           )}
           <div className='tracuuYCSXTable'>{materialDataTable}</div>
+          {!showhideinput && (
+            <div className='tracuuDataInspectionform'>
+              <b style={{ color: "blue" }}>OUTPUT LIỆU QC FAIL</b>
+              <div className='forminput'>
+                <div className='forminputcolumn'>
+                  <label>
+                    Vendor:
+                    <select
+                      disabled={cmsvcheck}
+                      name='khachhang'
+                      value={cust_cd}
+                      onChange={(e) => {
+                        setCust_Cd(e.target.value);
+                      }}
+                    >
+                      {customerList.map((element, index) => (
+                        <option key={index} value={element.CUST_CD}>
+                          {element.CUST_NAME_KD}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                  <label>
+                    CMSV
+                    <input
+                      type='checkbox'
+                      name='alltimecheckbox'
+                      defaultChecked={cmsvcheck}
+                      onChange={(e) => {
+                        if (cmsvcheck === false) setCust_Cd("6969");
+                        setCMSVCheck(!cmsvcheck);
+                      }}
+                    ></input>
+                  </label>
+                  <b>Số chỉ thị xuất ra</b>
+                  <label>
+                    <input
+                      type='text'
+                      placeholder='1F80008A'
+                      value={planId}
+                      onChange={(e) => {
+                        if (e.target.value.length >= 7) {
+                          checkPlanID(e.target.value);
+                        }
+                        setPlanId(e.target.value);
+                      }}
+                    ></input>
+                  </label>
+                  {g_name && (
+                    <span
+                      style={{
+                        fontSize: 15,
+                        fontWeight: "bold",
+                        color: "blue",
+                      }}
+                    >
+                      {g_name}
+                    </span>
+                  )}
+                  <b>Mã nhân viên giao</b>
+                  <label>
+                    <input
+                      type='text'
+                      placeholder={"NVD1201"}
+                      value={request_empl}
+                      onChange={(e) => {
+                        if (e.target.value.length >= 7) {
+                          checkEMPL_NAME(1, e.target.value);
+                        }
+                        setrequest_empl(e.target.value);
+                      }}
+                    ></input>
+                  </label>
+                  {request_empl && (
+                    <span
+                      style={{
+                        fontSize: 15,
+                        fontWeight: "bold",
+                        color: "blue",
+                      }}
+                    >
+                      {empl_name}
+                    </span>
+                  )}
+                  <b>Mã nhân viên nhận</b>
+                  <label>
+                    <input
+                      type='text'
+                      placeholder={"NVD1201"}
+                      value={request_empl2}
+                      onChange={(e) => {
+                        if (e.target.value.length >= 7) {
+                          checkEMPL_NAME(2, e.target.value);
+                        }
+                        setrequest_empl2(e.target.value);
+                      }}
+                    ></input>
+                  </label>
+                  {request_empl2 && (
+                    <span
+                      style={{
+                        fontSize: 15,
+                        fontWeight: "bold",
+                        color: "blue",
+                      }}
+                    >
+                      {empl_name2}
+                    </span>
+                  )}
+                </div>
+                <b>Remark</b>
+                <div className='forminputcolumn'>
+                  <label>
+                    <input
+                      type='text'
+                      placeholder={"Ghi chú"}
+                      value={remark}
+                      onChange={(e) => {
+                        setReMark(e.target.value);
+                      }}
+                    ></input>
+                  </label>
+                </div>
+              </div>
+              <div className='formbutton'>
+                <button
+                  className='tranhatky'
+                  onClick={() => {
+                    updateQCFailTable();
+                  }}
+                >
+                  Xuất
+                </button>               
+              
+              </div>
+              <div className='formbutton'>               
+                <IconButton
+                className='buttonIcon'
+                onClick={() => {
+                  if (userData.SUBDEPTNAME === "IQC") {
+                    //console.log(selectedRowsDataA);
+                    setQCPASS("Y");
+                  } else {
+                    Swal.fire(
+                      "Thông báo",
+                      "Bạn không phải người bộ phận IQC",
+                      "error"
+                    );
+                  }                  
+                }}
+              >
+                <GrStatusGood color='green' size={25} />
+                SET PASS
+              </IconButton>
+              <IconButton
+                className='buttonIcon'
+                onClick={() => {
+                  if (userData.SUBDEPTNAME === "IQC") {
+                    setQCPASS("N");
+                  } else {
+                    Swal.fire(
+                      "Thông báo",
+                      "Bạn không phải người bộ phận IQC",
+                      "error"
+                    );
+                  }
+                  //checkBP(userData.EMPL_NO,userData.MAINDEPTNAME,['QC'], ()=>{setQCPASS('Y');});
+                  //checkBP(userData.EMPL_NO,userData.MAINDEPTNAME,['QLSX'], setQCPASS('N'));
+                  //setQCPASS('N');
+                }}
+              >
+                <FcCancel color='red' size={25} />
+                RESET PASS
+              </IconButton>
+
+              </div>
+              <div
+                className='formbutton'
+                style={{ marginTop: "20px", display: "flex", flexWrap: "wrap" }}
+              ></div>
+            </div>
+          )}
         </div>
       </div>
     </div>

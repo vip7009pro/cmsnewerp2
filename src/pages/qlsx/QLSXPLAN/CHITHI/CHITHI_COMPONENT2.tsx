@@ -432,7 +432,7 @@ const CHITHI_COMPONENT2 = ({PLAN_LIST}: PLAN_COMBO) => {
       }
       <div className='thongtinycsx'>
         <div className='text1'>
-        1. 지시 정보 Thông tin chỉ thị ({request_codeinfo[0].G_NAME} ) __ PO_TYPE: {request_codeinfo[0].PO_TYPE}  _ FSC: ({request_codeinfo[0]?.FSC ==='Y' ? 'YES':'NO'} )
+        1. 지시 정보 Thông tin chỉ thị ({request_codeinfo[0].G_NAME} ) __ PO_TYPE: {request_codeinfo[0].PO_TYPE}
         </div>
         <div className='thongtinyeucau'>
           <table className='ttyc1'>
@@ -663,7 +663,7 @@ const CHITHI_COMPONENT2 = ({PLAN_LIST}: PLAN_COMBO) => {
             </tbody>
           </table>
         </div>
-        <div className='text1'>3. LOSS INFO (Phân loại: {request_codeinfo[0].CODE_50 ==='01'? 'GC': request_codeinfo[0].CODE_50 ==='02'? 'SK': request_codeinfo[0].CODE_50 ==='03'? 'KD' : request_codeinfo[0].CODE_50 ==='04'? 'VN' : request_codeinfo[0].CODE_50 ==='05' ? 'SAMPLE' : request_codeinfo[0].CODE_50 ==='06' ? 'Vai bac 4' :'ETC'})    </div>
+        <div className='text1'>3. LOSS INFO (Phân loại: {request_codeinfo[0].CODE_50 ==='01'? 'GC': request_codeinfo[0].CODE_50 ==='02'? 'SK': request_codeinfo[0].CODE_50 ==='03'? 'KD' : request_codeinfo[0].CODE_50 ==='04'? 'VN' : request_codeinfo[0].CODE_50 ==='05' ? 'SAMPLE' : request_codeinfo[0].CODE_50 ==='06' ? 'Vai bac 4' :'ETC'})  _{request_codeinfo[0]?.FSC ==='Y' ? '(FSC Mix Credit)':''}  </div>
         <div className='thongtinyeucau'>
           <table className='ttyc1'>
             <thead>

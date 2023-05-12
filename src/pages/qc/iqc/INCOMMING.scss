@@ -109,7 +109,7 @@
                         padding-left: 5px;
                         padding-right: 5px;
                         height: 30px;
-                        background-color: #3ebdf8;
+                        background-color: #76c6eb;
                         outline: none;
                         border: none;
                         border-radius: 5px;
@@ -191,7 +191,7 @@
                 flex-direction: column;
                 width: 80vw;        
                 height: fit-content;
-                background-image: linear-gradient(0deg, #afd3d1, #6dd1f8);
+                background-color:#76c6eb ;
                 -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
                 box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
                 border-radius: 3px;
@@ -200,7 +200,61 @@
                     justify-items: center;
                     width: 99%;
                     padding: 10px; 
+
+                    /* .dx-datagrid-header-panel {
+                        border-bottom: 1px solid #0c8d00;
+                        background-color:#76c6eb ;
+                    }
+                    .dx-widget .dx-visibility-change-handler {
+                        background-color:#76c6eb ;
+
+                    }
+                    .dx-datagrid-content .dx-datagrid-scroll-container {
+                        background-color:#76c6eb ;
+                    }
+                    .dx-datagrid-table .dx-datagrid-table-fixed {
+                        background-color:#76c6eb ;
+                    }
+                    .dx-datagrid-action .dx-cell-focus-disabled .dx-datagrid-drag-action {
+                        background-color:#76c6eb ;
+                    }
+                    .dx-datagrid-columns-separator .dx-datagrid-columns-separator-transparent {
+                        background-color:#76c6eb ;
+                    }
+                    .dx-texteditor-input {
+                        background-color:#76c6eb ;
+                    }
+                    .dx-datagrid-action .dx-cell-focus-disabled .dx-datagrid-drag-action {
+                        background-color:#76c6eb ;
+                    }
+                                      
+                    .dx-command-select .dx-cell-focus-disabled .dx-editor-cell .dx-editor-inline-block {
+                        background-color:#76c6eb ;
+                    }
+                    .dx-command-select {
+                        background-color:#76c6eb ;
+                    } */
+                    
                 }
+            }
+            .tracuuDataInspectionform2 {
+                display: flex;
+                width: 15vw;
+                gap: 10px;
+                flex-direction: column;
+                align-items: center;
+                justify-items: flex-start;               
+                background-image: linear-gradient(0deg, #fa7fb9, #f5e876);
+                -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+                box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+                border-radius: 3px;
+                padding: 10px;
+                height: 70vh;
+                span {
+                    padding: 10px;                   
+                    margin: auto;
+                }
+              
             }
         }
     }

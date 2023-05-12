@@ -7,6 +7,7 @@ import {
     TextField,
     Typography,
   } from "@mui/material";
+  import { DataGrid as Datagrid2, GridSelectionModel,GridToolbarContainer, GridToolbarDensitySelector, GridToolbarFilterButton, GridToolbarQuickFilter } from '@mui/x-data-grid';
   import moment from "moment";
   import React, { useContext, useEffect, useState, useTransition } from "react";
   import { AiFillFileExcel, AiOutlineSearch } from "react-icons/ai";
@@ -15,6 +16,7 @@ import {
   import { UserContext } from "../../../api/Context";
   import { SaveExcel } from "../../../api/GlobalFunction";
   import "./INCOMMING.scss";
+
   import DataGrid, {
     Column,
     ColumnChooser,
@@ -74,9 +76,134 @@ import {
     INS_EMPL: string,
     UPD_DATE: string,
     UPD_EMPL: string,
+    REMARK: string,
   }
+  interface DTC_DATA {
+    DTC_ID: number,
+    FACTORY: string,
+    TEST_FINISH_TIME: string,
+    TEST_EMPL_NO: string,
+    G_CODE: string,
+    PROD_REQUEST_NO: string,
+    G_NAME: string,
+    TEST_NAME: string,
+    POINT_CODE: number,
+    CENTER_VALUE: number,
+    UPPER_TOR: number,
+    LOWER_TOR: number,
+    RESULT: number,
+    TEST_TYPE_NAME: string,
+    WORK_POSITION_NAME: string,
+    SAMPLE_NO: number,
+    REQUEST_DATETIME: string,
+    REQUEST_EMPL_NO: string,
+    M_CODE: string,
+    M_NAME: string,
+    SIZE: string,
+    LOTCMS: string,
+    TEST_CODE: number,
+    TDS: string,
+    TDS_EMPL: string,
+    TDS_UPD_DATE: string, 
+  }
+  const INCOMMING = () => {    
+    function CustomToolbarPOTable() {
+      return (
+        <GridToolbarContainer>      
+          <IconButton className='buttonIcon'onClick={()=>{SaveExcel(inspectiondatatable,"Inspection Data Table")}}
+          ><AiFillFileExcel color='green' size={25}/>SAVE</IconButton>          
+          <GridToolbarQuickFilter/>  
+         </GridToolbarContainer>
+      );
+    }
 
-  const INCOMMING = () => {
+    const column_dtc_data = [
+      { field: "TEST_NAME", headerName: "TEST_NAME", width: 80 },
+      { field: "POINT_CODE", headerName: "POINT_CODE", width: 90 },
+      { field: "DANHGIA", headerName: "DANH_GIA", width: 80 , renderCell: (params:any) => { 
+        if(params.row.RESULT >= (params.row.CENTER_VALUE - params.row.LOWER_TOR) && params.row.RESULT <= (params.row.CENTER_VALUE + params.row.UPPER_TOR))    
+        return <span style={{color: 'green'}}><b>OK</b></span>
+        return <span style={{color: 'red'}}><b>NG</b></span>
+      }}, 
+      { field: "CENTER_VALUE", headerName: "CENTER_VALUE", width: 120 , renderCell: (params:any) => {     
+        return <span><b>{params.row.CENTER_VALUE}</b></span>
+      }},
+      { field: "UPPER_TOR", headerName: "UPPER_TOR", width: 80 , renderCell: (params:any) => {     
+        return <span><b>{params.row.UPPER_TOR}</b></span>
+      }},
+      { field: "LOWER_TOR", headerName: "LOWER_TOR", width: 80 , renderCell: (params:any) => {     
+        return <span><b>{params.row.LOWER_TOR}</b></span>
+      }},
+      { field: "RESULT", headerName: "RESULT", width: 80 },   
+     
+      { field: "DTC_ID", headerName: "DTC_ID", width: 80 },
+      { field: "PROD_REQUEST_NO", headerName: "YCSX", width: 80 },
+      { field: "G_CODE", headerName: "G_CODE", width: 80 },
+      { field: "G_NAME", headerName: "G_NAME", width: 200 , renderCell: (params:any) => {
+        if(params.row.M_CODE !=='B0000035') return <span></span>
+        return <span><b>{params.row.G_NAME}</b></span>
+      }},
+      { field: "M_CODE", headerName: "M_CODE", width: 80 , renderCell: (params:any) => {
+        if(params.row.M_CODE ==='B0000035') return <span></span>
+        return <span><b>{params.row.M_CODE}</b></span>
+      }},
+      { field: "M_NAME", headerName: "TEN LIEU", width: 150 , renderCell: (params:any) => {
+        if(params.row.M_CODE ==='B0000035') return <span></span>
+        return <span><b>{params.row.M_NAME}</b></span>
+      }},        
+      { field: "FACTORY", headerName: "FACTORY", width: 80 },
+      { field: "TEST_FINISH_TIME", headerName: "TEST_FINISH_TIME", width: 145 },
+      { field: "TEST_EMPL_NO", headerName: "NV TEST", width: 100 },
+      { field: "TEST_TYPE_NAME", headerName: "TEST_TYPE_NAME", width: 140 },
+      { field: "WORK_POSITION_NAME", headerName: "BO PHAN", width: 80 },
+      { field: "SAMPLE_NO", headerName: "SAMPLE_NO", width: 80 },
+      { field: "REQUEST_DATETIME", headerName: "NGAY YC", width: 145 },
+      { field: "REQUEST_EMPL_NO", headerName: "NV YC", width: 80 },
+      { field: "SIZE", headerName: "SIZE", width: 80 },
+      { field: "LOTCMS", headerName: "LOTCMS", width: 80 },
+      { field: "TEST_CODE", headerName: "TEST_CODE", width: 80 },
+      { field: "TDS", headerName: "TDS", width: 80 },
+      { field: "TDS_EMPL", headerName: "TDS_EMPL", width: 80 },
+      { field: "TDS_UPD_DATE", headerName: "TDS_UPD_DATE", width: 80 },    
+    ]
+    const handletraDTCData = (dtc_id: number)=> { 
+      generalQuery('dtcdata',{     
+        ALLTIME: true,
+        FROM_DATE: '',
+        TO_DATE: '',
+        G_CODE: '',
+        G_NAME: '',
+        M_NAME: '',
+        M_CODE: '',      
+        TEST_NAME: '0',
+        PROD_REQUEST_NO: '',
+        TEST_TYPE: '0',     
+        ID: dtc_id
+      })
+      .then(response => {
+          //console.log(response.data.data);
+          if(response.data.tk_status !=='NG')
+          {
+            const loadeddata: DTC_DATA[] =  response.data.data.map((element:DTC_DATA,index: number)=> {
+              return {
+                ...element, 
+                TEST_FINISH_TIME: moment.utc(element.TEST_FINISH_TIME).format('YYYY-MM-DD HH:mm:ss'),
+                REQUEST_DATETIME: moment.utc(element.REQUEST_DATETIME).format('YYYY-MM-DD HH:mm:ss'),
+                id: index
+              }
+            })         
+            setDtcDataTable(loadeddata);
+           
+          }
+          else
+          {
+            Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
+          }        
+      })
+      .catch(error => {
+          console.log(error);
+      });
+    }
     const [userData, setUserData] = useContext(UserContext);
     const [testtype, setTestType] = useState("NVL");
     const [inputno, setInputNo] = useState("");
@@ -86,7 +213,10 @@ import {
     const [request_empl, setrequest_empl] = useState("");
     const [remark, setReMark] = useState("");
 
-    const [inspectiondatatable, setInspectionDataTable] = useState<Array<any>>(
+    const [inspectiondatatable, setInspectionDataTable] = useState<Array<IQC_INCOMMING_DATA>>(
+      []
+    );
+    const [dtcDataTable, setDtcDataTable] = useState<Array<DTC_DATA>>(
       []
     );
     const [selectedRowsData, setSelectedRowsData] = useState<Array<IQC_INCOMMING_DATA>>(
@@ -109,7 +239,7 @@ import {
     const [nq_qty, setNQ_QTY] = useState(0);
     const [showhideinput, setShowHideInput] = useState(true);
     const setQCPASS = async (value: string) => {
-      //console.log(selectedRowsData);
+      console.log(selectedRowsData);
       if (selectedRowsData.length > 0) {
         Swal.fire({
           title: "Tra cứu vật liệu Holding",
@@ -142,6 +272,8 @@ import {
             M_CODE: selectedRowsData[i].M_CODE,
             LOT_CMS:  selectedRowsData[i].LOT_CMS,            
             VALUE: value==='Y'? 'OK':'NG',
+            IQC1_ID: selectedRowsData[i].IQC1_ID,
+            REMARK: selectedRowsData[i].REMARK,
           })
             // eslint-disable-next-line no-loop-func
             .then((response) => {
@@ -168,61 +300,13 @@ import {
     const materialDataTable = React.useMemo(
       () => (
         <div className='datatb'>
-          <DataGrid
-            autoNavigateToFocusedRow={true}
-            allowColumnReordering={true}
-            allowColumnResizing={true}
-            columnAutoWidth={false}
-            cellHintEnabled={true}
-            columnResizingMode={"widget"}
-            showColumnLines={true}
-            dataSource={inspectiondatatable}
-            columnWidth='auto'
-            keyExpr='id'
-            height={"70vh"}
-            showBorders={true}
-            onSelectionChanged={(e) => {
-              //console.log(e.selectedRowsData);
-              //setSelectedRowsData(e.selectedRowsData);
-              setSelectedRowsData(e.selectedRowsData);
-            }}
-            onRowClick={(e) => {
-              //console.log(e.data);
-            }}
-          >
-            <Scrolling
-              useNative={true}
-              scrollByContent={true}
-              scrollByThumb={true}
-              showScrollbar='onHover'
-              mode='virtual'
-            />
-            <Selection mode='multiple' selectAllMode='allPages' />
-            <Editing
-              allowUpdating={false}
-              allowAdding={false}
-              allowDeleting={false}
-              mode='cell'
-              confirmDelete={true}
-              onChangesChange={(e) => {}}
-            />
-            <Export enabled={true} />
-            <Toolbar disabled={false}>
-              <Item location='before'>
-                <IconButton
-                  className='buttonIcon'
-                  onClick={() => {
-                    SaveExcel(inspectiondatatable, "SPEC DTC");
-                  }}
-                >
-                  <AiFillFileExcel color='green' size={25} />
-                  SAVE
-                </IconButton>
-                <IconButton
+          <div className="menubar">
+          <IconButton
                   className='buttonIcon'
                   onClick={() => {
                     setShowHideInput((pre) => !pre);
                     setInspectionDataTable([]);
+                    setDtcDataTable([]);
                   }}
                 >
                   <BiShow color='blue' size={25} />
@@ -281,6 +365,60 @@ import {
                   <FcCancel color='red' size={25} />
                   RESET PASS
                 </IconButton>
+
+          </div>
+          <DataGrid
+            autoNavigateToFocusedRow={true}
+            allowColumnReordering={true}
+            allowColumnResizing={true}
+            columnAutoWidth={false}
+            cellHintEnabled={true}
+            columnResizingMode={"widget"}
+            showColumnLines={true}
+            dataSource={inspectiondatatable}
+            columnWidth='auto'
+            keyExpr='id'
+            height={"70vh"}
+            showBorders={false}            
+            onSelectionChanged={(e) => {
+              ///console.log(e.selectedRowsData);
+              //setSelectedRowsData(e.selectedRowsData);
+              setSelectedRowsData(e.selectedRowsData);
+            }}
+            onRowClick={(e:any) => {
+              //console.log(e.data);
+              handletraDTCData(e.data.DTC_ID);
+            }}
+          >
+            <Scrolling
+              useNative={true}
+              scrollByContent={true}
+              scrollByThumb={true}
+              showScrollbar='onHover'
+              mode='virtual'
+            />
+            <Selection mode='multiple' selectAllMode='allPages' />
+            <Editing
+              allowUpdating={true}
+              allowAdding={false}
+              allowDeleting={false}
+              mode='cell'
+              confirmDelete={true}
+              onChangesChange={(e) => {}}
+            />
+            <Export enabled={true} />
+            <Toolbar disabled={false}>
+              <Item location='before'>
+                <IconButton
+                  className='buttonIcon'
+                  onClick={() => {
+                    SaveExcel(inspectiondatatable, "SPEC DTC");
+                  }}
+                >
+                  <AiFillFileExcel color='green' size={25} />
+                  SAVE
+                </IconButton>
+               
               </Item>
               <Item name='searchPanel' />
               <Item name='exportButton' />
@@ -302,18 +440,18 @@ import {
               displayMode='compact'
             />
             <Column dataField='IQC1_ID' caption='IQC1_ID' width={100} allowEditing={false}></Column>
-            <Column dataField='M_CODE' caption='M_CODE' width={100}></Column>
-            <Column dataField='M_LOT_NO' caption='M_LOT_NO' width={100}></Column>
-            <Column dataField='LOT_CMS' caption='LOT_CMS' width={100}></Column>
+            <Column dataField='M_CODE' caption='M_CODE' width={100} allowEditing={false}></Column>
+            <Column dataField='M_LOT_NO' caption='M_LOT_NO' width={100} allowEditing={false}></Column>
+            <Column dataField='LOT_CMS' caption='LOT_CMS' width={100} allowEditing={false}></Column>
             <Column dataField='LOT_VENDOR' caption='LOT_VENDOR' width={100}></Column>
-            <Column dataField='CUST_CD' caption='CUST_CD' width={100}></Column>
-            <Column dataField='CUST_NAME_KD' caption='VENDOR NAME' width={120}></Column>
+            <Column dataField='CUST_CD' caption='CUST_CD' width={100} allowEditing={false}></Column>
+            <Column dataField='CUST_NAME_KD' caption='VENDOR NAME' width={120} allowEditing={false}></Column>
             <Column dataField='EXP_DATE' caption='EXP_DATE' width={150}></Column>
-            <Column dataField='INPUT_LENGTH' caption='INPUT_LENGTH' width={100}></Column>
-            <Column dataField='TOTAL_ROLL' caption='TOTAL_ROLL' width={100}></Column>
-            <Column dataField='NQ_CHECK_ROLL' caption='NQ_CHECK_ROLL' width={100}></Column>
-            <Column dataField='DTC_ID' caption='DTC_ID' width={100}></Column>
-            <Column dataField='TEST_EMPL' caption='TEST_EMPL' width={100}></Column>
+            <Column dataField='INPUT_LENGTH' caption='INPUT_LENGTH' width={100} allowEditing={false}></Column>
+            <Column dataField='TOTAL_ROLL' caption='TOTAL_ROLL' width={100} allowEditing={false}></Column>
+            <Column dataField='NQ_CHECK_ROLL' caption='NQ_CHECK_ROLL' width={100} allowEditing={false}></Column>
+            <Column dataField='DTC_ID' caption='DTC_ID' width={100} allowEditing={false}></Column>
+            <Column dataField='TEST_EMPL' caption='TEST_EMPL' width={100} allowEditing={false}></Column>
             <Column dataField='TOTAL_RESULT' caption='TOTAL_RESULT' width={100} cellRender={(e: any) =>{
                 if(e.data.TOTAL_RESULT ==='OK')
                 {
@@ -334,7 +472,7 @@ import {
                     )
                 }
 
-            }}></Column>
+            }} allowEditing={false}></Column>
             <Column dataField='AUTO_JUDGEMENT' caption='AUTO_JUDGEMENT' width={100} cellRender={(e: any) =>{
                 if(e.data.AUTO_JUDGEMENT ==='OK')
                 {
@@ -349,7 +487,7 @@ import {
                     )
                 }
 
-            }}></Column>
+            }} allowEditing={false}></Column>
             <Column dataField='NGOAIQUAN' caption='NGOAIQUAN' width={100}  cellRender={(e: any) =>{
                 if(e.data.NGOAIQUAN ===1)
                 {
@@ -370,7 +508,7 @@ import {
                     )
                 }
 
-            }}></Column>
+            }} allowEditing={false}></Column>
             <Column dataField='KICHTHUOC' caption='KICHTHUOC' width={100} cellRender={(e: any) =>{
                 if(e.data.KICHTHUOC ===1)
                 {
@@ -391,7 +529,7 @@ import {
                     )
                 }
 
-            }}></Column>
+            }} allowEditing={false}></Column>
             <Column dataField='THICKNESS' caption='THICKNESS' width={100} cellRender={(e: any) =>{
                 if(e.data.THICKNESS ===1)
                 {
@@ -412,7 +550,7 @@ import {
                     )
                 }
 
-            }}></Column>
+            }} allowEditing={false}></Column>
             <Column dataField='DIENTRO' caption='DIENTRO' width={100} cellRender={(e: any) =>{
                 if(e.data.DIENTRO ===1)
                 {
@@ -433,7 +571,7 @@ import {
                     )
                 }
 
-            }}></Column>
+            }} allowEditing={false}></Column>
             <Column dataField='CANNANG' caption='CANNANG' width={100} cellRender={(e: any) =>{
                 if(e.data.CANNANG ===1)
                 {
@@ -454,7 +592,7 @@ import {
                     )
                 }
 
-            }}></Column>
+            }} allowEditing={false}></Column>
             <Column dataField='KEOKEO' caption='KEOKEO' width={100} cellRender={(e: any) =>{
                 if(e.data.KEOKEO ===1)
                 {
@@ -475,7 +613,7 @@ import {
                     )
                 }
 
-            }}></Column>
+            }} allowEditing={false}></Column>
             <Column dataField='KEOKEO2' caption='KEOKEO2' width={100} cellRender={(e: any) =>{
                 if(e.data.KEOKEO2 ===1)
                 {
@@ -496,7 +634,7 @@ import {
                     )
                 }
 
-            }}></Column>
+            }} allowEditing={false}></Column>
             <Column dataField='FTIR' caption='FTIR' width={100} cellRender={(e: any) =>{
                 if(e.data.FTIR ===1)
                 {
@@ -517,7 +655,7 @@ import {
                     )
                 }
 
-            }}></Column>
+            }} allowEditing={false}></Column>
             <Column dataField='MAIMON' caption='MAIMON' width={100} cellRender={(e: any) =>{
                 if(e.data.MAIMON ===1)
                 {
@@ -538,7 +676,7 @@ import {
                     )
                 }
 
-            }}></Column>
+            }} allowEditing={false}></Column>
             <Column dataField='XRF' caption='XRF' width={100} cellRender={(e: any) =>{
                 if(e.data.XRF ===1)
                 {
@@ -559,7 +697,7 @@ import {
                     )
                 }
 
-            }}></Column>
+            }} allowEditing={false}></Column>
             <Column dataField='SCANBARCODE' caption='SCANBARCODE' width={100} cellRender={(e: any) =>{
                 if(e.data.SCANBARCODE ===1)
                 {
@@ -580,7 +718,7 @@ import {
                     )
                 }
 
-            }}></Column>
+            }} allowEditing={false}></Column>
             <Column dataField='PHTHALATE' caption='PHTHALATE' width={100} cellRender={(e: any) =>{
                 if(e.data.PHTHALATE ===1)
                 {
@@ -601,7 +739,7 @@ import {
                     )
                 }
 
-            }}></Column>
+            }} allowEditing={false}></Column>
             <Column dataField='MAUSAC' caption='MAUSAC' width={100} cellRender={(e: any) =>{
                 if(e.data.MAUSAC ===1)
                 {
@@ -622,7 +760,7 @@ import {
                     )
                 }
 
-            }}></Column>
+            }} allowEditing={false}></Column>
             <Column dataField='SHOCKNHIET' caption='SHOCKNHIET' width={100} cellRender={(e: any) =>{
                 if(e.data.SHOCKNHIET ===1)
                 {
@@ -643,7 +781,7 @@ import {
                     )
                 }
 
-            }}></Column>
+            }} allowEditing={false}></Column>
             <Column dataField='TINHDIEN' caption='TINHDIEN' width={100} cellRender={(e: any) =>{
                 if(e.data.TINHDIEN ===1)
                 {
@@ -664,7 +802,7 @@ import {
                     )
                 }
 
-            }}></Column>
+            }} allowEditing={false}></Column>
             <Column dataField='NHIETAM' caption='NHIETAM' width={100} cellRender={(e: any) =>{
                 if(e.data.NHIETAM ===1)
                 {
@@ -685,7 +823,7 @@ import {
                     )
                 }
 
-            }}></Column>
+            }} allowEditing={false}></Column>
             <Column dataField='TVOC' caption='TVOC' width={100} cellRender={(e: any) =>{
                 if(e.data.TVOC ===1)
                 {
@@ -706,7 +844,7 @@ import {
                     )
                 }
 
-            }}></Column>
+            }} allowEditing={false}></Column>
             <Column dataField='DOBONG' caption='DOBONG' width={100}  cellRender={(e: any) =>{
                 if(e.data.DOBONG ===1)
                 {
@@ -727,11 +865,12 @@ import {
                     )
                 }
 
-            }}></Column>
-            <Column dataField='INS_DATE' caption='INS_DATE' width={100} ></Column>
-            <Column dataField='INS_EMPL' caption='INS_EMPL' width={100} ></Column>
-            <Column dataField='UPD_DATE' caption='UPD_DATE' width={100} ></Column>
-            <Column dataField='UPD_EMPL' caption='UPD_EMPL' width={100} ></Column>
+            }} allowEditing={false}></Column>
+            <Column dataField='INS_DATE' caption='INS_DATE' width={100}  allowEditing={false}></Column>
+            <Column dataField='INS_EMPL' caption='INS_EMPL' width={100}  allowEditing={false}></Column>
+            <Column dataField='UPD_DATE' caption='UPD_DATE' width={100}  allowEditing={false}></Column>
+            <Column dataField='UPD_EMPL' caption='UPD_EMPL' width={100}  allowEditing={false}></Column>
+            <Column dataField='REMARK' caption='REMARK' width={150} allowEditing={true}></Column>
 
           </DataGrid>
         </div>
@@ -904,7 +1043,8 @@ import {
         INS_DATE: '',
         INS_EMPL: '',
         UPD_DATE: '',
-        UPD_EMPL: '',        
+        UPD_EMPL: '',
+        REMARK: '',
       };      
       setInspectionDataTable((prev) => {
         return [...prev, temp_row];
@@ -954,8 +1094,6 @@ import {
 
       
     }
-
-
     useEffect(() => {
       //handletraIQC1Data();
     }, []);
@@ -1108,6 +1246,25 @@ import {
               </div>
             )}
             <div className='tracuuYCSXTable'>{materialDataTable}</div>
+            {!showhideinput && (
+              <div className='tracuuDataInspectionform2'>
+                <b style={{ color: "blue" }}>Kết quả ĐTC</b>
+                <Datagrid2
+                sx={{ fontSize: 12, flex: 1 }}
+                components={{
+                  Toolbar: CustomToolbarPOTable,                  
+                }}               
+                rowHeight={30}
+                rows={dtcDataTable}
+                columns={column_dtc_data}
+                rowsPerPageOptions={[
+                  5, 10, 50, 100, 500, 1000, 5000, 10000, 500000,
+                ]}
+                editMode='row'
+              />
+                
+              </div>
+            )}
           </div>
         </div>
       </div>

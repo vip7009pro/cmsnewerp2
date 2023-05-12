@@ -358,7 +358,7 @@ const CODE_MANAGER = () => {
   const resetBanVe= async(value: string)=> {
     if(codedatatablefilter.length>=1)
     {
-      if(userData.EMPL_NO==='VTT1901' || userData.EMPL_NO==='NHU1903'|| userData.EMPL_NO==='LVT1906')
+      if(userData.EMPL_NO==='NBT1901' ||userData.EMPL_NO==='VTT1901' || userData.EMPL_NO==='NHU1903'|| userData.EMPL_NO==='LVT1906')
       {
         for(let i=0;i<codedatatablefilter.length;i++)
         {        

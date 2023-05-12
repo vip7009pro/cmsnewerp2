@@ -13,6 +13,12 @@
         top: 65mm;
         left: 60mm;        
     }
+    .fsc {
+        position: absolute;
+        bottom: 5mm;
+        left: 60mm;      
+        opacity: 0.1;  
+    }
     .tieudeycsx {
         display: flex;
         flex-direction: row;

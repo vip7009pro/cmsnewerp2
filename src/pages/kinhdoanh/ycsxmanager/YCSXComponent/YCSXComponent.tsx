@@ -322,6 +322,9 @@ const YCSXComponent = ({G_CODE,PROD_TYPE,PROD_MAIN_MATERIAL,G_NAME,EMPL_NAME,EMP
       {(PDBV==='Y' && checklieuchinh ===true) &&  <div className="qcpass">
         <img alt="qcpass" src="/QC PASS20.png" width={440-100-10} height={400-100}/>
       </div>  }  
+      {(request_codeinfo[0]?.FSC ==='Y') && <div className="fsc">
+        <img alt="qcpass" src="/fsc logo2.png" width={440-100-10} height={400-100}/>
+      </div>}  
      { request_codeinfo[0].PDUYET &&  <div className='tieudeycsx'>
      <img alt="logo" src="/logocmsvina.png" width={160} height={40}/>
         <div className='title'> 생산요청서 - Yêu cầu sản xuất<br></br><span style={{fontSize:12}}>Thời điểm in YCSX: {moment().format("YYYY-MM-DD HH:mm:ss")}</span><br></br> {(request_codeinfo[0].NO_INSPECTION ==='Y') && <span style={{fontSize:18}}>(Sản phẩm không kiểm tra ngoại quan)</span>}</div>
@@ -343,7 +346,7 @@ const YCSXComponent = ({G_CODE,PROD_TYPE,PROD_MAIN_MATERIAL,G_NAME,EMPL_NAME,EMP
         </div>
       </div>}
       {request_codeinfo[0].PDUYET && <div className='thongtinycsx'>
-        <div className='text1'>1. 정보 Thông tin({request_codeinfo[0].G_NAME} ) _ PO_TYPE: ({request_codeinfo[0]?.PO_TYPE} ) _ FSC: ({request_codeinfo[0]?.FSC ==='Y' ? 'YES':'NO'} )</div>
+        <div className='text1'>1. 정보 Thông tin({request_codeinfo[0].G_NAME} ) _ PO_TYPE: ({request_codeinfo[0]?.PO_TYPE} ) </div>
         <div className='thongtinyeucau'>
           <table className='ttyc1'>
             <thead>
@@ -416,7 +419,7 @@ const YCSXComponent = ({G_CODE,PROD_TYPE,PROD_MAIN_MATERIAL,G_NAME,EMPL_NAME,EMP
             </tbody>
           </table>
         </div>
-        <div className='text1'>2. 제품 정보 Thông tin sản phẩm <span className="approval_info">(Specification: {DESCR}) </span></div>
+        <div className='text1'>2. 제품 정보 Thông tin sản phẩm  _{request_codeinfo[0]?.FSC ==='Y' ? '(FSC Mix Credit)':''} <span className="approval_info">(Specification: {DESCR}) </span></div>
         <div className='thongtinsanpham'>
           <div className='ttsp'>
             <table>

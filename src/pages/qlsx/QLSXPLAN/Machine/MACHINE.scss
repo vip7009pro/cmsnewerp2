@@ -409,8 +409,7 @@
                                 background-color: white;                            
                                 
                             }
-                        }      
-    
+                        } 
                         .khoaodiv {
                             position: fixed;
                             display: flex;
@@ -493,6 +492,112 @@
                     flex: 3;
                     padding: 10px;
                     gap: 10px;    
+                    .printycsxpage {
+                        position: fixed;
+                        display: flex;
+                        flex-direction: column;        
+                        justify-content: space-between;
+                        z-index: 3;
+                        width: fit-content;
+                        height:200mm;
+                        align-items: center;
+                        padding: 10px;
+                        gap:20px;
+                        border-radius: 10px;
+                        -webkit-box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27); 
+                        box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27);
+                        //background-color: rgba(233, 222, 222, 0.664);
+                        background-color: white;                
+                        top: 50px;
+                        left: 30%;                       
+                       
+                        .buttongroup {
+                            display: flex;
+                            flex-direction: row;
+                            align-items:flex-start;            
+                            gap: 5px;
+                        }
+                        .ycsxrender {
+                            overflow: scroll;
+                            border: 1px solid black;
+                            background-color: white;                            
+                            
+                        }
+                    } 
+                    .khoaodiv {
+                        position: fixed;
+                        display: flex;
+                        flex-direction: column;        
+                        justify-content: flex-start;
+                        z-index: 3;
+                        width: 98%;
+                        height:90vh;
+                        align-items: center;
+                        padding: 10px;
+                        gap:20px;
+                        border-radius: 10px;
+                        -webkit-box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27); 
+                        box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27);
+                        //background-color: rgba(233, 222, 222, 0.664);
+                        background-color: rgba(255, 255, 255, 0.78);                
+                        top: 70px;
+                        left: 0.5%;                       
+                        z-index: 10;
+                        .buttongroup {
+                            display: flex;
+                            flex-direction: row;
+                            width: 100%;                                  
+                            gap: 5px;
+                        }
+                        .khoaodivtable {
+                            display: flex;
+                            background-color: transparent;
+                            height: 100%;
+                            width: 100%;
+                            gap: 10px;
+                            .tablekhoao {    
+                                display: flex;  
+                                flex: 2.5; 
+                                flex-direction: column;
+                                border-radius: 5px;     
+                                gap: 10px;                                             
+                                background-color: transparent;                                
+                                box-shadow: 5px 5px 15px 5px rgba(255,255,255,0.17);
+                                .tabletonkhoao {
+                                    display: flex;
+                                    flex: 1;
+                                    background-image: linear-gradient(0deg, #afd3d1,#f7b7f1);
+
+                                }
+                                .lichsuinputsanxuat {
+                                    display: flex;
+                                    flex:1;
+                                    background-image: linear-gradient(0deg, #afd3d1,#4eaae7);
+
+                                }
+                            }
+                            .nhapxuatkhoao  {
+                                display: flex;
+                                flex-direction: column;
+                                height: 100%;
+                                gap: 10px;
+                                flex: 3;
+                                .nhapkhoao {
+                                    display: flex;      
+                                    background-image: linear-gradient(0deg, #afd3d1,#4be7ec);  
+                                    -webkit-box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27); 
+                                    box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27);                            
+                                }
+                                .xuatkhoao {
+                                    display: flex;
+                                    background-image: linear-gradient(0deg, #afd3d1,#f7d36e);
+                                    -webkit-box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27); 
+                                    box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27);   
+                                }
+                            }
+                        }
+                        
+                    }                     
                     .listchithi {
                         display: flex;
                         flex: 0.5;
@@ -516,8 +621,7 @@
                         box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
                         -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);  
     
-                    }
-    
+                    }    
                     .listlieuchithi {
                         display: flex;
                         flex: 0.5;

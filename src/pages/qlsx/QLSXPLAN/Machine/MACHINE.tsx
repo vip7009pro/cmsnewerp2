@@ -377,6 +377,7 @@ const MACHINE = () => {
   const [tonlieuxuongdatafilter, setTonLieuXuongDataFilter] = useState<
     Array<TONLIEUXUONG>
   >([]);
+  const [showYCSX,setShowYCSX]= useState(true);
   const [ycsxpendingcheck, setYCSXPendingCheck] = useState(false);
   const [inspectInputcheck, setInspectInputCheck] = useState(false);
   const [ycsxlistrender, setYCSXListRender] = useState<Array<ReactElement>>();
@@ -2302,7 +2303,7 @@ const MACHINE = () => {
       for (let i = 0; i < qlsxplandatafilter.length; i++) {
         for (let j = 0; j < datafilter.length; j++) {
           if (qlsxplandatafilter[i].id === datafilter[j].id) {
-            generalQuery("checkPLANID_O302", {
+            await generalQuery("checkPLANID_O302", {
               PLAN_ID: qlsxplandatafilter[i].PLAN_ID,
             })
               .then((response) => {
@@ -2509,7 +2510,7 @@ const MACHINE = () => {
       Swal.fire("Thông báo", "Chọn ít nhất 1 YCSX để Add !", "error");
     }
   };
-  const handle_UpdatePlan = () => {
+  const handle_UpdatePlan = async() => {
     Swal.fire({
       title: "Lưu Plan",
       text: "Đang lưu plan, hãy chờ một chút",
@@ -2539,6 +2540,25 @@ const MACHINE = () => {
           check_NEXT_PLAN_ID = false;
         }
       }
+
+      let checkPlanIdP500:boolean = false;      
+      await generalQuery("checkP500PlanID_mobile", {
+        PLAN_ID: selectedPlanTable[i].PLAN_ID,
+      })
+        .then((response) => {
+          //console.log(response.data);
+          if (response.data.tk_status !== "NG") {
+            checkPlanIdP500 = true;
+
+          } else {
+            checkPlanIdP500 = false;
+           
+          }
+        })       
+        .catch((error) => {
+          console.log(error);
+        });
+
       if (
         (parseInt(selectedPlanTable[i].PROCESS_NUMBER.toString()) === 1 ||
           parseInt(selectedPlanTable[i].PROCESS_NUMBER.toString()) === 2) &&
@@ -2551,9 +2571,10 @@ const MACHINE = () => {
         parseInt(selectedPlanTable[i].STEP.toString()) >= 0 &&
         parseInt(selectedPlanTable[i].STEP.toString()) <= 9 &&
         parseInt(selectedPlanTable[i].PROCESS_NUMBER.toString()) >= 1 &&
-        parseInt(selectedPlanTable[i].PROCESS_NUMBER.toString()) <= 2
+        parseInt(selectedPlanTable[i].PROCESS_NUMBER.toString()) <= 2 &&
+        checkPlanIdP500 === false
       ) {
-        generalQuery("updatePlanQLSX", {
+        await generalQuery("updatePlanQLSX", {
           PLAN_ID: selectedPlanTable[i].PLAN_ID,
           STEP: selectedPlanTable[i].STEP,
           PLAN_QTY: selectedPlanTable[i].PLAN_QTY,
@@ -2582,7 +2603,7 @@ const MACHINE = () => {
             console.log(error);
           });
       } else {
-        err_code += "_" + selectedPlanTable[i].G_NAME_KD + ":";
+        err_code += "_" + selectedPlanTable[i].G_NAME_KD + ":";        
         if (
           !(
             parseInt(selectedPlanTable[i].PROCESS_NUMBER.toString()) === 1 ||
@@ -2627,7 +2648,7 @@ const MACHINE = () => {
           )
         ) {
           err_code += "_: Hãy nhập PROCESS NUMBER từ 1 hoặc 2";
-        }
+        }       
       }
     }
     if (err_code !== "0") {
@@ -3075,6 +3096,15 @@ const MACHINE = () => {
         >
           <BiRefresh color='red' size={20} />
           Show Combo
+        </IconButton>
+        <IconButton
+          className='buttonIcon'
+          onClick={() => {
+           setShowYCSX(!showYCSX);
+          }}
+        >
+          <BiRefresh color='red' size={20} />
+          Show/Hide YCSX
         </IconButton>
       </GridToolbarContainer>
     );
@@ -4234,7 +4264,7 @@ const MACHINE = () => {
             Plan hiện tại trên máy {selectedMachine}
           </div>
           <div className='content'>
-            <div className='ycsxlist'>
+            {showYCSX && <div className='ycsxlist'>
               <div className='tracuuYCSX'>
                 <div className='tracuuYCSXform'>
                   <div className='forminput'>
@@ -4444,7 +4474,322 @@ const MACHINE = () => {
                     }}
                   />
                 </div>
-                {selection.tabycsx && (
+                
+              </div>
+            </div>}
+            <div className='chithidiv'>
+              <div className='listchithi'>
+                <div className='planlist'>
+                  <DataGrid
+                    sx={{ fontSize: 12, flex: 1 }}
+                    components={{
+                      Toolbar: CustomToolbarPLANTABLE,
+                      LoadingOverlay: LinearProgress,
+                    }}
+                    loading={isLoading}
+                    rowHeight={30}
+                    rows={plandatatable.filter(
+                      (element: QLSXPLANDATA, index: number) => {
+                        return (
+                          element.PLAN_EQ === selectedMachine &&
+                          element.PLAN_FACTORY === selectedFactory
+                        );
+                      }
+                    )}
+                    columns={column_plandatatable}
+                    rowsPerPageOptions={[
+                      5, 10, 50, 100, 500, 1000, 5000, 10000, 500000,
+                    ]}
+                    editMode='cell'
+                    getRowId={(row) => row.PLAN_ID}
+                    checkboxSelection
+                    onSelectionModelChange={(ids) => {
+                      handleQLSXPlanDataSelectionforUpdate(ids);
+                    }}
+                    disableSelectionOnClick
+                    onCellEditCommit={(
+                      params: GridCellEditCommitParams,
+                      event: MuiEvent<MuiBaseEvent>,
+                      details: GridCallbackDetails
+                    ) => {
+                      const keyvar = params.field;
+                      const newdata = plandatatable.map((p) =>
+                        p.PLAN_ID === params.id
+                          ? { ...p, [keyvar]: params.value }
+                          : p
+                      );
+                      setPlanDataTable(newdata);
+                      //console.log(plandatatable);
+                    }}
+                    onRowClick={handleEvent}
+                  />
+                </div>
+              </div>
+              <div className='datadinhmuc'>
+                <div className='forminputcolumn'>
+                  <label>
+                    <b>EQ1:</b>
+                    <select
+                      name='phanloai'
+                      value={datadinhmuc.EQ1}
+                      onChange={(e) =>
+                        setDataDinhMuc({ ...datadinhmuc, EQ1: e.target.value })
+                      }
+                      style={{ width: 150, height: 22 }}
+                    >
+                      <option value='FR'>FR</option>
+                      <option value='SR'>SR</option>
+                      <option value='DC'>DC</option>
+                      <option value='ED'>ED</option>
+                      <option value='NO'>NO</option>
+                      <option value='NA'>NA</option>
+                    </select>
+                  </label>
+                  <label>
+                    <b>EQ2:</b>
+                    <select
+                      name='phanloai'
+                      value={datadinhmuc.EQ2}
+                      onChange={(e) =>
+                        setDataDinhMuc({ ...datadinhmuc, EQ2: e.target.value })
+                      }
+                      style={{ width: 150, height: 22 }}
+                    >
+                      <option value='FR'>FR</option>
+                      <option value='SR'>SR</option>
+                      <option value='DC'>DC</option>
+                      <option value='ED'>ED</option>
+                      <option value='NO'>NO</option>
+                      <option value='NA'>NA</option>
+                    </select>
+                  </label>
+                </div>
+                <div className='forminputcolumn'>
+                  <label>
+                    <b>Setting1(min):</b>{" "}
+                    <input
+                      type='text'
+                      placeholder='Thời gian setting 1'
+                      value={datadinhmuc.Setting1}
+                      onChange={(e) =>
+                        setDataDinhMuc({
+                          ...datadinhmuc,
+                          Setting1: Number(e.target.value),
+                        })
+                      }
+                    ></input>
+                  </label>
+                  <label>
+                    <b>Setting2(min):</b>{" "}
+                    <input
+                      type='text'
+                      placeholder='Thời gian setting 2'
+                      value={datadinhmuc.Setting2}
+                      onChange={(e) =>
+                        setDataDinhMuc({
+                          ...datadinhmuc,
+                          Setting2: Number(e.target.value),
+                        })
+                      }
+                    ></input>
+                  </label>
+                </div>
+                <div className='forminputcolumn'>
+                  <label>
+                    <b>UPH1(EA/h):</b>{" "}
+                    <input
+                      type='text'
+                      placeholder='Tốc độ sx 1'
+                      value={datadinhmuc.UPH1}
+                      onChange={(e) =>
+                        setDataDinhMuc({
+                          ...datadinhmuc,
+                          UPH1: Number(e.target.value),
+                        })
+                      }
+                    ></input>
+                  </label>
+                  <label>
+                    <b>UPH2(EA/h):</b>{" "}
+                    <input
+                      type='text'
+                      placeholder='Tốc độ sx 2'
+                      value={datadinhmuc.UPH2}
+                      onChange={(e) =>
+                        setDataDinhMuc({
+                          ...datadinhmuc,
+                          UPH2: Number(e.target.value),
+                        })
+                      }
+                    ></input>
+                  </label>
+                </div>
+                <div className='forminputcolumn'>
+                  <label>
+                    <b>Step1:</b>{" "}
+                    <input
+                      type='text'
+                      placeholder='Số bước 1'
+                      value={datadinhmuc.Step1}
+                      onChange={(e) =>
+                        setDataDinhMuc({
+                          ...datadinhmuc,
+                          Step1: Number(e.target.value),
+                        })
+                      }
+                    ></input>
+                  </label>
+                  <label>
+                    <b>Step2:</b>{" "}
+                    <input
+                      type='text'
+                      placeholder='Số bước 2'
+                      value={datadinhmuc.Step2}
+                      onChange={(e) =>
+                        setDataDinhMuc({
+                          ...datadinhmuc,
+                          Step2: Number(e.target.value),
+                        })
+                      }
+                    ></input>
+                  </label>
+                </div>
+                <div className='forminputcolumn'>
+                  <label>
+                    <b>LOSS_SX1(%):</b>{" "}
+                    <input
+                      type='text'
+                      placeholder='% loss sx 1'
+                      value={datadinhmuc.LOSS_SX1}
+                      onChange={(e) =>
+                        setDataDinhMuc({
+                          ...datadinhmuc,
+                          LOSS_SX1: Number(e.target.value),
+                        })
+                      }
+                    ></input>
+                  </label>
+                  <label>
+                    <b>LOSS_SX2(%):</b>{" "}
+                    <input
+                      type='text'
+                      placeholder='% loss sx 2'
+                      value={datadinhmuc.LOSS_SX2}
+                      onChange={(e) =>
+                        setDataDinhMuc({
+                          ...datadinhmuc,
+                          LOSS_SX2: Number(e.target.value),
+                        })
+                      }
+                    ></input>
+                  </label>
+                </div>
+                <div className='forminputcolumn'>
+                  <label>
+                    <b>LOSS SETTING1 (m):</b>{" "}
+                    <input
+                      type='text'
+                      placeholder='met setting 1'
+                      value={datadinhmuc.LOSS_SETTING1}
+                      onChange={(e) =>
+                        setDataDinhMuc({
+                          ...datadinhmuc,
+                          LOSS_SETTING1: Number(e.target.value),
+                        })
+                      }
+                    ></input>
+                  </label>
+                  <label>
+                    <b>LOSS SETTING2 (m):</b>{" "}
+                    <input
+                      type='text'
+                      placeholder='met setting 2'
+                      value={datadinhmuc.LOSS_SETTING2}
+                      onChange={(e) =>
+                        setDataDinhMuc({
+                          ...datadinhmuc,
+                          LOSS_SETTING2: Number(e.target.value),
+                        })
+                      }
+                    ></input>
+                  </label>
+                </div>
+                <div className='forminputcolumn'>
+                  <label>
+                    <b>FACTORY:</b>
+                    <select
+                      name='phanloai'
+                      value={
+                        datadinhmuc.FACTORY === null
+                          ? "NA"
+                          : datadinhmuc.FACTORY
+                      }
+                      onChange={(e) => {
+                        setDataDinhMuc({
+                          ...datadinhmuc,
+                          FACTORY: e.target.value,
+                        });
+                      }}
+                      style={{ width: 162, height: 22 }}
+                    >
+                      <option value='NA'>NA</option>
+                      <option value='NM1'>NM1</option>
+                      <option value='NM2'>NM2</option>
+                    </select>
+                  </label>
+                  <label>
+                    <b>NOTE (QLSX):</b>{" "}
+                    <input
+                      type='text'
+                      placeholder='Chú ý'
+                      value={datadinhmuc.NOTE}
+                      onChange={(e) =>
+                        setDataDinhMuc({ ...datadinhmuc, NOTE: e.target.value })
+                      }
+                    ></input>
+                  </label>
+                </div>
+              </div>
+              <div className='listlieuchithi'>
+                <div className='chithitable'>
+                  <DataGrid
+                    sx={{ fontSize: 12, flex: 1 }}
+                    components={{
+                      Toolbar: CustomToolbarCHITHITABLE,
+                      LoadingOverlay: LinearProgress,
+                    }}
+                    getRowId={(row) => row.CHITHI_ID}
+                    loading={isLoading}
+                    rowHeight={30}
+                    rows={chithidatatable}
+                    columns={column_chithidatatable}
+                    rowsPerPageOptions={[
+                      5, 10, 50, 100, 500, 1000, 5000, 10000, 500000,
+                    ]}
+                    editMode='cell'
+                    checkboxSelection
+                    onSelectionModelChange={(ids) => {
+                      handleQLSXCHITHIDataSelectionforUpdate(ids);
+                    }}
+                    onCellEditCommit={(
+                      params: GridCellEditCommitParams,
+                      event: MuiEvent<MuiBaseEvent>,
+                      details: GridCallbackDetails
+                    ) => {
+                      const keyvar = params.field;
+                      const newdata = chithidatatable.map((p) =>
+                        p.CHITHI_ID === params.id
+                          ? { ...p, [keyvar]: params.value }
+                          : p
+                      );
+                      //console.log(newdata);
+                      setChiThiDataTable(newdata);
+                    }}
+                  />
+                </div>
+              </div>
+
+              {selection.tabycsx && (
                   <div className='printycsxpage'>
                     <div className='buttongroup'>
                       <Button
@@ -4809,319 +5154,6 @@ const MACHINE = () => {
                     </div>
                   </div>
                 )}
-              </div>
-            </div>
-            <div className='chithidiv'>
-              <div className='listchithi'>
-                <div className='planlist'>
-                  <DataGrid
-                    sx={{ fontSize: 12, flex: 1 }}
-                    components={{
-                      Toolbar: CustomToolbarPLANTABLE,
-                      LoadingOverlay: LinearProgress,
-                    }}
-                    loading={isLoading}
-                    rowHeight={30}
-                    rows={plandatatable.filter(
-                      (element: QLSXPLANDATA, index: number) => {
-                        return (
-                          element.PLAN_EQ === selectedMachine &&
-                          element.PLAN_FACTORY === selectedFactory
-                        );
-                      }
-                    )}
-                    columns={column_plandatatable}
-                    rowsPerPageOptions={[
-                      5, 10, 50, 100, 500, 1000, 5000, 10000, 500000,
-                    ]}
-                    editMode='cell'
-                    getRowId={(row) => row.PLAN_ID}
-                    checkboxSelection
-                    onSelectionModelChange={(ids) => {
-                      handleQLSXPlanDataSelectionforUpdate(ids);
-                    }}
-                    disableSelectionOnClick
-                    onCellEditCommit={(
-                      params: GridCellEditCommitParams,
-                      event: MuiEvent<MuiBaseEvent>,
-                      details: GridCallbackDetails
-                    ) => {
-                      const keyvar = params.field;
-                      const newdata = plandatatable.map((p) =>
-                        p.PLAN_ID === params.id
-                          ? { ...p, [keyvar]: params.value }
-                          : p
-                      );
-                      setPlanDataTable(newdata);
-                      //console.log(plandatatable);
-                    }}
-                    onRowClick={handleEvent}
-                  />
-                </div>
-              </div>
-              <div className='datadinhmuc'>
-                <div className='forminputcolumn'>
-                  <label>
-                    <b>EQ1:</b>
-                    <select
-                      name='phanloai'
-                      value={datadinhmuc.EQ1}
-                      onChange={(e) =>
-                        setDataDinhMuc({ ...datadinhmuc, EQ1: e.target.value })
-                      }
-                      style={{ width: 150, height: 22 }}
-                    >
-                      <option value='FR'>FR</option>
-                      <option value='SR'>SR</option>
-                      <option value='DC'>DC</option>
-                      <option value='ED'>ED</option>
-                      <option value='NO'>NO</option>
-                      <option value='NA'>NA</option>
-                    </select>
-                  </label>
-                  <label>
-                    <b>EQ2:</b>
-                    <select
-                      name='phanloai'
-                      value={datadinhmuc.EQ2}
-                      onChange={(e) =>
-                        setDataDinhMuc({ ...datadinhmuc, EQ2: e.target.value })
-                      }
-                      style={{ width: 150, height: 22 }}
-                    >
-                      <option value='FR'>FR</option>
-                      <option value='SR'>SR</option>
-                      <option value='DC'>DC</option>
-                      <option value='ED'>ED</option>
-                      <option value='NO'>NO</option>
-                      <option value='NA'>NA</option>
-                    </select>
-                  </label>
-                </div>
-                <div className='forminputcolumn'>
-                  <label>
-                    <b>Setting1(min):</b>{" "}
-                    <input
-                      type='text'
-                      placeholder='Thời gian setting 1'
-                      value={datadinhmuc.Setting1}
-                      onChange={(e) =>
-                        setDataDinhMuc({
-                          ...datadinhmuc,
-                          Setting1: Number(e.target.value),
-                        })
-                      }
-                    ></input>
-                  </label>
-                  <label>
-                    <b>Setting2(min):</b>{" "}
-                    <input
-                      type='text'
-                      placeholder='Thời gian setting 2'
-                      value={datadinhmuc.Setting2}
-                      onChange={(e) =>
-                        setDataDinhMuc({
-                          ...datadinhmuc,
-                          Setting2: Number(e.target.value),
-                        })
-                      }
-                    ></input>
-                  </label>
-                </div>
-                <div className='forminputcolumn'>
-                  <label>
-                    <b>UPH1(EA/h):</b>{" "}
-                    <input
-                      type='text'
-                      placeholder='Tốc độ sx 1'
-                      value={datadinhmuc.UPH1}
-                      onChange={(e) =>
-                        setDataDinhMuc({
-                          ...datadinhmuc,
-                          UPH1: Number(e.target.value),
-                        })
-                      }
-                    ></input>
-                  </label>
-                  <label>
-                    <b>UPH2(EA/h):</b>{" "}
-                    <input
-                      type='text'
-                      placeholder='Tốc độ sx 2'
-                      value={datadinhmuc.UPH2}
-                      onChange={(e) =>
-                        setDataDinhMuc({
-                          ...datadinhmuc,
-                          UPH2: Number(e.target.value),
-                        })
-                      }
-                    ></input>
-                  </label>
-                </div>
-                <div className='forminputcolumn'>
-                  <label>
-                    <b>Step1:</b>{" "}
-                    <input
-                      type='text'
-                      placeholder='Số bước 1'
-                      value={datadinhmuc.Step1}
-                      onChange={(e) =>
-                        setDataDinhMuc({
-                          ...datadinhmuc,
-                          Step1: Number(e.target.value),
-                        })
-                      }
-                    ></input>
-                  </label>
-                  <label>
-                    <b>Step2:</b>{" "}
-                    <input
-                      type='text'
-                      placeholder='Số bước 2'
-                      value={datadinhmuc.Step2}
-                      onChange={(e) =>
-                        setDataDinhMuc({
-                          ...datadinhmuc,
-                          Step2: Number(e.target.value),
-                        })
-                      }
-                    ></input>
-                  </label>
-                </div>
-                <div className='forminputcolumn'>
-                  <label>
-                    <b>LOSS_SX1(%):</b>{" "}
-                    <input
-                      type='text'
-                      placeholder='% loss sx 1'
-                      value={datadinhmuc.LOSS_SX1}
-                      onChange={(e) =>
-                        setDataDinhMuc({
-                          ...datadinhmuc,
-                          LOSS_SX1: Number(e.target.value),
-                        })
-                      }
-                    ></input>
-                  </label>
-                  <label>
-                    <b>LOSS_SX2(%):</b>{" "}
-                    <input
-                      type='text'
-                      placeholder='% loss sx 2'
-                      value={datadinhmuc.LOSS_SX2}
-                      onChange={(e) =>
-                        setDataDinhMuc({
-                          ...datadinhmuc,
-                          LOSS_SX2: Number(e.target.value),
-                        })
-                      }
-                    ></input>
-                  </label>
-                </div>
-                <div className='forminputcolumn'>
-                  <label>
-                    <b>LOSS SETTING1 (m):</b>{" "}
-                    <input
-                      type='text'
-                      placeholder='met setting 1'
-                      value={datadinhmuc.LOSS_SETTING1}
-                      onChange={(e) =>
-                        setDataDinhMuc({
-                          ...datadinhmuc,
-                          LOSS_SETTING1: Number(e.target.value),
-                        })
-                      }
-                    ></input>
-                  </label>
-                  <label>
-                    <b>LOSS SETTING2 (m):</b>{" "}
-                    <input
-                      type='text'
-                      placeholder='met setting 2'
-                      value={datadinhmuc.LOSS_SETTING2}
-                      onChange={(e) =>
-                        setDataDinhMuc({
-                          ...datadinhmuc,
-                          LOSS_SETTING2: Number(e.target.value),
-                        })
-                      }
-                    ></input>
-                  </label>
-                </div>
-                <div className='forminputcolumn'>
-                  <label>
-                    <b>FACTORY:</b>
-                    <select
-                      name='phanloai'
-                      value={
-                        datadinhmuc.FACTORY === null
-                          ? "NA"
-                          : datadinhmuc.FACTORY
-                      }
-                      onChange={(e) => {
-                        setDataDinhMuc({
-                          ...datadinhmuc,
-                          FACTORY: e.target.value,
-                        });
-                      }}
-                      style={{ width: 162, height: 22 }}
-                    >
-                      <option value='NA'>NA</option>
-                      <option value='NM1'>NM1</option>
-                      <option value='NM2'>NM2</option>
-                    </select>
-                  </label>
-                  <label>
-                    <b>NOTE (QLSX):</b>{" "}
-                    <input
-                      type='text'
-                      placeholder='Chú ý'
-                      value={datadinhmuc.NOTE}
-                      onChange={(e) =>
-                        setDataDinhMuc({ ...datadinhmuc, NOTE: e.target.value })
-                      }
-                    ></input>
-                  </label>
-                </div>
-              </div>
-              <div className='listlieuchithi'>
-                <div className='chithitable'>
-                  <DataGrid
-                    sx={{ fontSize: 12, flex: 1 }}
-                    components={{
-                      Toolbar: CustomToolbarCHITHITABLE,
-                      LoadingOverlay: LinearProgress,
-                    }}
-                    getRowId={(row) => row.CHITHI_ID}
-                    loading={isLoading}
-                    rowHeight={30}
-                    rows={chithidatatable}
-                    columns={column_chithidatatable}
-                    rowsPerPageOptions={[
-                      5, 10, 50, 100, 500, 1000, 5000, 10000, 500000,
-                    ]}
-                    editMode='cell'
-                    checkboxSelection
-                    onSelectionModelChange={(ids) => {
-                      handleQLSXCHITHIDataSelectionforUpdate(ids);
-                    }}
-                    onCellEditCommit={(
-                      params: GridCellEditCommitParams,
-                      event: MuiEvent<MuiBaseEvent>,
-                      details: GridCallbackDetails
-                    ) => {
-                      const keyvar = params.field;
-                      const newdata = chithidatatable.map((p) =>
-                        p.CHITHI_ID === params.id
-                          ? { ...p, [keyvar]: params.value }
-                          : p
-                      );
-                      //console.log(newdata);
-                      setChiThiDataTable(newdata);
-                    }}
-                  />
-                </div>
-              </div>
             </div>
           </div>
         </div>

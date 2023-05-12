@@ -388,6 +388,9 @@ const CHITHI_COMPONENT = ({
     <div className="qcpass">
         {(request_codeinfo[0].PDBV==='Y' && checklieuchinh ===true) && <img alt="qcpass" src="/QC PASS20.png" width={440-100-10} height={400-100}/>}
       </div>    
+    {(request_codeinfo[0]?.FSC ==='Y') && <div className="fsc">
+        <img alt="qcpass" src="/fsc logo2.png" width={440-100-10} height={400-100}/>
+      </div>}    
       {
         <div className='tieudeycsx'>
           <div className='leftlogobarcode'>
@@ -438,7 +441,7 @@ const CHITHI_COMPONENT = ({
       }
       {(check_dinh_muc() && checklieuqlsx && PLAN_QTY !==0 && PROCESS_NUMBER !==0) && <div className='thongtinycsx'>
         <div className='text1'>
-          1. 지시 정보 Thông tin chỉ thị ({request_codeinfo[0].G_NAME} ) __ PO_TYPE: {request_codeinfo[0].PO_TYPE} _ FSC: ({request_codeinfo[0]?.FSC ==='Y' ? 'YES':'NO'} )
+          1. 지시 정보 Thông tin chỉ thị ({request_codeinfo[0].G_NAME} ) __ PO_TYPE: {request_codeinfo[0].PO_TYPE} 
         </div>
         <div className='thongtinyeucau'>
           <table className='ttyc1'>
@@ -612,7 +615,8 @@ const CHITHI_COMPONENT = ({
               background='#fff'
               lineColor='black'
               margin={0}
-            /></div>
+            />_{request_codeinfo[0]?.FSC ==='Y' ? '(FSC Mix Credit)':''}</div>
+            
         <div className='thongtinyeucau'>
           <table className='ttyc1'>
             <thead>

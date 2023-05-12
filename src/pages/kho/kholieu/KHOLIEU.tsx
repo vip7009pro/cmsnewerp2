@@ -19,7 +19,10 @@ interface NHAPLIEUDATA {
   ROLL_QTY: number,
   TOTAL_IN_QTY: number,
   INS_DATE: string,
-  CUST_NAME_KD: string
+  CUST_NAME_KD: string,
+  QC_PASS: string,
+  QC_PASS_EMPL: string, 
+  QC_PASS_DATE: string,
 }
 interface XUATLIEUDATA {
   G_CODE: string, 
@@ -115,7 +118,7 @@ const KHOLIEU = () => {
     { field: "OUT_CFM_QTY", headerName: "UNIT_QTY", width: 120 , renderCell: (params:any) => {return <span style={{color:'green'}}><b>{params.row.OUT_CFM_QTY.toLocaleString('en-US')}</b></span>}},   
     { field: "ROLL_QTY", headerName: "ROLL_QTY", width: 100 },
     { field: "TOTAL_OUT_QTY", headerName: "OUTPUT QTY", width: 120 , renderCell: (params:any) => {return <span style={{color:'green'}}><b>{(params.row.TOTAL_OUT_QTY).toLocaleString('en-US')}</b></span>}},   
-    { field: "INS_DATE", headerName: "INS_DATE", width: 180 },
+    { field: "INS_DATE", headerName: "INS_DATE", width: 180 }, 
   ];
   const column_NHAPLIEUDATA = [
     { field: "CUST_NAME_KD", headerName: "CUST_NAME_KD", width: 150 },    
@@ -127,6 +130,9 @@ const KHOLIEU = () => {
     { field: "ROLL_QTY", headerName: "ROLL_QTY", width: 100 },
     { field: "TOTAL_IN_QTY", headerName: "INPUT QTY", width: 120 , renderCell: (params:any) => {return <span style={{color:'green'}}><b>{(params.row.TOTAL_IN_QTY).toLocaleString('en-US')}</b></span>}},   
     { field: "INS_DATE", headerName: "INS_DATE", width: 150 },
+    { field: "QC_PASS", headerName: "QC_PASS", width: 180 },
+    { field: "QC_PASS_EMPL", headerName: "QC_PASS_EMPL", width: 180 },
+    { field: "QC_PASS_DATE", headerName: "QC_PASS_DATE", width: 180 },
   ];
   const [columnDefinition, setColumnDefinition] = useState<Array<any>>(column_XUATLIEUDATA);
   function CustomToolbarPOTable() {
@@ -156,6 +162,7 @@ const KHOLIEU = () => {
               ...element, 
               id: index,  
               INS_DATE: moment.utc(element.INS_DATE).format("YYYY-MM-DD HH:mm:ss"),
+              QC_PASS_DATE: element.QC_PASS_DATE !==null ? moment.utc(element.QC_PASS_DATE).format("YYYY-MM-DD HH:mm:ss"):'',
             }
           })         
           setWhDataTable(loadeddata);

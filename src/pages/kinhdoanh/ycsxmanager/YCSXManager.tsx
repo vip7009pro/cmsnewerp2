@@ -4,6 +4,7 @@ import {
   IconButton,
   LinearProgress,
   TextField,
+  createFilterOptions
 } from "@mui/material";
 import {
   DataGrid,
@@ -12,7 +13,7 @@ import {
   GridToolbarContainer,
   GridToolbarDensitySelector,
   GridToolbarFilterButton,
-  GridToolbarQuickFilter,
+  GridToolbarQuickFilter,  
 } from "@mui/x-data-grid";
 import moment from "moment";
 import React, { useContext, useEffect, useState, useTransition } from "react";
@@ -2740,6 +2741,10 @@ const YCSXManager = () => {
         console.log(error);
       });
   };
+  const filterOptions1 = createFilterOptions({
+    matchFrom: 'any',
+    limit: 100,
+  });
   //console.log(userData);
   useEffect(() => {
     getcustomerlist();
@@ -2832,18 +2837,19 @@ const YCSXManager = () => {
                       disablePortal
                       options={codeList}
                       className='autocomplete'
-                      getOptionLabel={(option: CodeListData) =>
+                      filterOptions={filterOptions1}
+                      getOptionLabel={(option: CodeListData | any) =>
                         `${option.G_CODE}: ${option.G_NAME}`
                       }
                       renderInput={(params) => (
                         <TextField {...params} label='Select code' />
                       )}
-                      onChange={(event: any, newValue: CodeListData | null) => {
+                      onChange={(event: any, newValue: CodeListData | any) => {
                         console.log(newValue);
                         setSelectedCode(newValue);
                       }}
                       value={selectedCode}
-                      isOptionEqualToValue={(option, value) =>
+                      isOptionEqualToValue={(option: any, value: any) =>
                         option.G_CODE === value.G_CODE
                       }
                     />

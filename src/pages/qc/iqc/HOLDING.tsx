@@ -27,6 +27,7 @@ import { GrStatusGood } from "react-icons/gr";
 import { FcCancel } from "react-icons/fc";
 
 interface HOLDING_DATA {
+  HOLD_ID: number,
   ID: number;
   HOLDING_MONTH: string;
   FACTORY: string;
@@ -50,6 +51,7 @@ interface HOLDING_DATA {
   QC_PASS: string;
   QC_PASS_DATE: string;
   QC_PASS_EMPL: string;
+  REASON: string,
 }
 const HOLDING = () => {
 const [selectedRowsData, setSelectedRowsData] = useState<
@@ -74,8 +76,8 @@ const [selectedRowsData, setSelectedRowsData] = useState<
     if(selectedRowsData.length>0)
     {
         Swal.fire({
-            title: "Tra cứu vật liệu Holding",
-            text: "Đang tải dữ liệu, hãy chờ chút",
+            title: "SET/REST PASS",
+            text: "Đang SET/RESET PASS liệu",
             icon: "info",
             showCancelButton: false,
             allowOutsideClick: false,
@@ -106,6 +108,54 @@ const [selectedRowsData, setSelectedRowsData] = useState<
         if(err_code ==='')
         {
             Swal.fire('Thông báo','SET thành công','success');
+        }
+        else
+        {
+            Swal.fire('Thông báo','Lỗi: '+ err_code,'error');
+        }
+    }
+    else
+    {
+        Swal.fire('Thông báo','Chọn ít nhất 1 dòng để thực hiện','error');
+    }
+
+  }
+  const updateReason = async ()=> {
+    console.log(selectedRowsData);
+    if(selectedRowsData.length>0)
+    {
+        Swal.fire({
+            title: "Update hiện tượng lỗi",
+            text: "Đang update thông tin lỗi",
+            icon: "info",
+            showCancelButton: false,
+            allowOutsideClick: false,
+            confirmButtonText: "OK",
+            showConfirmButton: false,
+        });
+        let err_code: string ='';
+        for(let i=0;i<selectedRowsData.length;i++)
+        {
+        await generalQuery("updateMaterialHoldingReason", {
+              HOLD_ID: selectedRowsData[i].HOLD_ID,
+              REASON: selectedRowsData[i].REASON           
+            })
+            // eslint-disable-next-line no-loop-func
+            .then((response) => {
+            //console.log(response.data.data);
+            if (response.data.tk_status !== "NG") {
+            
+            } else {
+                err_code += ` Lỗi: ${response.data.message}`; 
+            }
+            })
+            .catch((error) => {
+            console.log(error);
+            });
+        }
+        if(err_code ==='')
+        {
+            Swal.fire('Thông báo','Update thành công','success');
         }
         else
         {
@@ -152,10 +202,10 @@ const [selectedRowsData, setSelectedRowsData] = useState<
           />
           <Selection mode='multiple' selectAllMode='allPages' />
           <Editing
-            allowUpdating={false}
-            allowAdding={true}
+            allowUpdating={true}
+            allowAdding={false}
             allowDeleting={false}
-            mode='batch'
+            mode='cell'
             confirmDelete={true}
             onChangesChange={(e) => {}}
           />
@@ -171,44 +221,7 @@ const [selectedRowsData, setSelectedRowsData] = useState<
                 <AiFillFileExcel color='green' size={25} />
                 SAVE
               </IconButton>
-              <IconButton
-                className='buttonIcon'
-                onClick={() => {
-                    if(userData.SUBDEPTNAME === 'IQC')
-                    {
-                        setQCPASS('Y');                          
-                    }
-                    else
-                    {
-                        Swal.fire('Thông báo','Bạn không phải người bộ phận IQC','error');
-                    }
-                    //checkBP(userData.EMPL_NO,userData.MAINDEPTNAME,['QC'], ()=>{setQCPASS('Y');});
-                    //checkBP(userData.EMPL_NO,userData.MAINDEPTNAME,['QLSX'], setQCPASS('Y'));
-                    //setQCPASS('Y');                  
-                }}
-              >
-                <GrStatusGood color='green' size={25} />
-                SET PASS
-              </IconButton>
-              <IconButton
-                className='buttonIcon'
-                onClick={() => {
-                    if(userData.SUBDEPTNAME === 'IQC')
-                    {
-                        setQCPASS('N');                          
-                    }
-                    else
-                    {
-                        Swal.fire('Thông báo','Bạn không phải người bộ phận IQC','error');
-                    }
-                    //checkBP(userData.EMPL_NO,userData.MAINDEPTNAME,['QC'], ()=>{setQCPASS('Y');});
-                    //checkBP(userData.EMPL_NO,userData.MAINDEPTNAME,['QLSX'], setQCPASS('N'));
-                    //setQCPASS('N');     
-                }}
-              >
-                <FcCancel color='red' size={25} />
-                RESET PASS
-              </IconButton>
+              
             </Item>
             <Item name='searchPanel' />
             <Item name='exportButton' />
@@ -226,29 +239,31 @@ const [selectedRowsData, setSelectedRowsData] = useState<
             infoText='Page #{0}. Total: {1} ({2} items)'
             displayMode='compact'
           />
-            <Column dataField='ID' caption='ID' width={100}></Column>
-            <Column dataField='HOLDING_MONTH' caption='HOLDING_MONTH' width={100}></Column>
-            <Column dataField='FACTORY' caption='FACTORY' width={100}></Column>
-            <Column dataField='WAHS_CD' caption='WAHS_CD' width={100}></Column>
-            <Column dataField='LOC_CD' caption='LOC_CD' width={100}></Column>
-            <Column dataField='M_LOT_NO' caption='M_LOT_NO' width={100}></Column>
-            <Column dataField='M_CODE' caption='M_CODE' width={100}></Column>
-            <Column dataField='M_NAME' caption='M_NAME' width={150}></Column>
-            <Column dataField='WIDTH_CD' caption='WIDTH_CD' width={100}></Column>
-            <Column dataField='HOLDING_ROLL_QTY' caption='HOLDING_ROLL_QTY' width={100}></Column>
-            <Column dataField='HOLDING_QTY' caption='HOLDING_QTY' width={100}></Column>
-            <Column dataField='HOLDING_TOTAL_QTY' caption='HOLDING_TOTAL_QTY' width={100}></Column>
-            <Column dataField='HOLDING_IN_DATE' caption='HOLDING_IN_DATE' width={100}></Column>
-            <Column dataField='HOLDING_OUT_DATE' caption='HOLDING_OUT_DATE' width={100}></Column>
-            <Column dataField='VENDOR_LOT' caption='VENDOR_LOT' width={100}></Column>
-            <Column dataField='USE_YN' caption='USE_YN' width={100}></Column>
-            <Column dataField='INS_DATE' caption='INS_DATE' width={150}></Column>
-            <Column dataField='INS_EMPL' caption='INS_EMPL' width={100}></Column>
-            <Column dataField='UPD_DATE' caption='UPD_DATE' width={150}></Column>
-            <Column dataField='UPD_EMPL' caption='UPD_EMPL' width={100}></Column>
-            <Column dataField='QC_PASS' caption='QC_PASS' width={100}></Column>
-            <Column dataField='QC_PASS_DATE' caption='QC_PASS_DATE' width={150}></Column>
-            <Column dataField='QC_PASS_EMPL' caption='QC_PASS_EMPL' width={100}></Column>
+            <Column dataField='HOLD_ID' caption='HOLD_ID' width={100} allowEditing={false}></Column>
+            <Column dataField='ID' caption='ID' width={100} allowEditing={false}></Column>
+            <Column dataField='HOLDING_MONTH' caption='HOLDING_MONTH' width={100} allowEditing={false}></Column>
+            <Column dataField='FACTORY' caption='FACTORY' width={100} allowEditing={false}></Column>
+            <Column dataField='WAHS_CD' caption='WAHS_CD' width={100} allowEditing={false}></Column>
+            <Column dataField='LOC_CD' caption='LOC_CD' width={100} allowEditing={false}></Column>
+            <Column dataField='M_LOT_NO' caption='M_LOT_NO' width={100} allowEditing={false}></Column>
+            <Column dataField='M_CODE' caption='M_CODE' width={100} allowEditing={false}></Column>
+            <Column dataField='M_NAME' caption='M_NAME' width={150} allowEditing={false}></Column>
+            <Column dataField='WIDTH_CD' caption='WIDTH_CD' width={100} allowEditing={false}></Column>
+            <Column dataField='HOLDING_ROLL_QTY' caption='HOLDING_ROLL_QTY' width={100} allowEditing={false}></Column>
+            <Column dataField='HOLDING_QTY' caption='HOLDING_QTY' width={100} allowEditing={false}></Column>
+            <Column dataField='HOLDING_TOTAL_QTY' caption='HOLDING_TOTAL_QTY' width={100} allowEditing={false}></Column>
+            <Column dataField='REASON' caption='REASON' width={150} allowEditing={true}></Column>
+            <Column dataField='HOLDING_IN_DATE' caption='HOLDING_IN_DATE' width={100} allowEditing={false}></Column>
+            <Column dataField='HOLDING_OUT_DATE' caption='HOLDING_OUT_DATE' width={100} allowEditing={false}></Column>
+            <Column dataField='VENDOR_LOT' caption='VENDOR_LOT' width={100} allowEditing={false}></Column>
+            <Column dataField='USE_YN' caption='USE_YN' width={100} allowEditing={false}></Column>
+            <Column dataField='INS_DATE' caption='INS_DATE' width={150} allowEditing={false}></Column>
+            <Column dataField='INS_EMPL' caption='INS_EMPL' width={100} allowEditing={false}></Column>
+            <Column dataField='UPD_DATE' caption='UPD_DATE' width={150} allowEditing={false}></Column>
+            <Column dataField='UPD_EMPL' caption='UPD_EMPL' width={100} allowEditing={false}></Column>
+            <Column dataField='QC_PASS' caption='QC_PASS' width={100} allowEditing={false}></Column>
+            <Column dataField='QC_PASS_DATE' caption='QC_PASS_DATE' width={150} allowEditing={false}></Column>
+            <Column dataField='QC_PASS_EMPL' caption='QC_PASS_EMPL' width={100} allowEditing={false}></Column>
 
           <Summary>
             <TotalItem
@@ -279,7 +294,7 @@ const [selectedRowsData, setSelectedRowsData] = useState<
         </DataGrid>
       </div>
     ),
-    [holdingdatatable]
+    [holdingdatatable,]
   );
   const handleSearchCodeKeyDown = (
     e: React.KeyboardEvent<HTMLInputElement>
@@ -336,6 +351,7 @@ const [selectedRowsData, setSelectedRowsData] = useState<
     console.log(error);
     });
   };
+
   useEffect(() => {
     //setColumnDefinition(column_inspect_output);
   }, []);
@@ -439,6 +455,52 @@ const [selectedRowsData, setSelectedRowsData] = useState<
             >
              Tra Holding
             </button>
+            <button
+              className='tranhatky'
+              onClick={() => {
+                updateReason();
+              }}
+            >
+             Update Reason
+            </button>
+            <IconButton
+                className='buttonIcon'
+                onClick={() => {
+                    if(userData.SUBDEPTNAME === 'IQC')
+                    {
+                        setQCPASS('Y');                          
+                    }
+                    else
+                    {
+                        Swal.fire('Thông báo','Bạn không phải người bộ phận IQC','error');
+                    }
+                    //checkBP(userData.EMPL_NO,userData.MAINDEPTNAME,['QC'], ()=>{setQCPASS('Y');});
+                    //checkBP(userData.EMPL_NO,userData.MAINDEPTNAME,['QLSX'], setQCPASS('Y'));
+                    //setQCPASS('Y');                  
+                }}
+              >
+                <GrStatusGood color='green' size={25} />
+                SET PASS
+              </IconButton>
+              <IconButton
+                className='buttonIcon'
+                onClick={() => {
+                    if(userData.SUBDEPTNAME === 'IQC')
+                    {
+                        setQCPASS('N');                          
+                    }
+                    else
+                    {
+                        Swal.fire('Thông báo','Bạn không phải người bộ phận IQC','error');
+                    }
+                    //checkBP(userData.EMPL_NO,userData.MAINDEPTNAME,['QC'], ()=>{setQCPASS('Y');});
+                    //checkBP(userData.EMPL_NO,userData.MAINDEPTNAME,['QLSX'], setQCPASS('N'));
+                    //setQCPASS('N');     
+                }}
+              >
+                <FcCancel color='red' size={25} />
+                RESET PASS
+              </IconButton>
           </div>
         </div>
         <div className='tracuuYCSXTable'>{materialDataTable}</div>

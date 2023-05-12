@@ -23,8 +23,8 @@
 .SidebarNav {
     position: sticky;
     background: white;    
-    min-width: 250px;
-    height: fit-content;
+    min-width: 260px;
+    height: 85vh;
     display: flex;
     justify-content: center;    
     top: 45px;    
@@ -36,6 +36,8 @@
     margin-left: 1px;
     margin-right: 10px; 
     padding-right: 10px;
+    overflow-y: scroll;
+    
     
     &.show-sidebar {
         display: flex;    
@@ -74,6 +76,14 @@
         }
       }
       
+}
+::-webkit-scrollbar {
+  width: 2;  /* Remove scrollbar space */
+  background: transparent;  /* Optional: just make scrollbar invisible */
+}
+/* Optional: show position indicator in red */
+::-webkit-scrollbar-thumb {
+  background: #56d170;
 }
 .SidebarWrap {
     width: 100%;  
