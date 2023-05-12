@@ -13,11 +13,14 @@ export function getSever(): string {
   return state.totalSlice.server_ip;
 }
 let API_URL = "http://14.160.33.94:5011/api";
+
 let server_ip_local: any = localStorage.getItem("server_ip")?.toString();
 if (server_ip_local !== undefined) {
   API_URL = server_ip_local;
 } else {
 }
+
+
 export function login(user: string, pass: string) {
   axios
     .post(API_URL, {
