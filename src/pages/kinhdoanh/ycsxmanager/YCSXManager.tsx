@@ -1163,10 +1163,21 @@ const YCSXManager = () => {
     return handled_Amazon_Table;
   };
   const checkDuplicateAMZ = async () => {
+    let isDuplicated: boolean = false;
+    Swal.fire({
+      title: "Check trùng",
+      text: "Đang check trùng AMZ DATA",
+      icon: "info",
+      showCancelButton: false,
+      allowOutsideClick: false,
+      confirmButtonText: "OK",
+      showConfirmButton: false,
+    });
     await generalQuery("checktrungAMZ_Full", {})
       .then((response) => {
         console.log(response.data.tk_status);
         if (response.data.tk_status !== "NG") {
+          isDuplicated = true;
           Swal.fire(
             "Thông báo",
             "Yêu cầu có data trùng: " +
@@ -1178,7 +1189,7 @@ const YCSXManager = () => {
         } else {
           Swal.fire(
             "Thông báo",
-            "Không có dòng trùng, up data hoàn thành",
+            "Không có dòng trùng",
             "success"
           );
         }
@@ -1186,80 +1197,88 @@ const YCSXManager = () => {
       .catch((error) => {
         console.log(error);
       });
+      return isDuplicated;
   };
   const upAmazonData = async () => {
-    let uploadAmazonData = handleAmazonData(
-      uploadExcelJson,
-      cavityAmazon,
-      codeCMS,
-      prodrequestno,
-      id_congviec
-    );
-    //console.log(uploadAmazonData);
-    let checkIDcongViecTonTai: boolean = false;
-    await generalQuery("checkIDCongViecAMZ", {
-      NO_IN: id_congviec,
-    })
-      .then((response) => {
-        console.log(response.data.tk_status);
-        if (response.data.tk_status !== "NG") {
-          checkIDcongViecTonTai = true;
-        } else {
-          checkIDcongViecTonTai = false;
-        }
+    let isDuplicated: boolean = false;
+    isDuplicated = await checkDuplicateAMZ();
+    if(!isDuplicated)
+    {
+      let uploadAmazonData = handleAmazonData(
+        uploadExcelJson,
+        cavityAmazon,
+        codeCMS,
+        prodrequestno,
+        id_congviec
+      );
+      //console.log(uploadAmazonData);
+      let checkIDcongViecTonTai: boolean = false;
+      await generalQuery("checkIDCongViecAMZ", {
+        NO_IN: id_congviec,
       })
-      .catch((error) => {
-        console.log(error);
-      });
-    //if (!AMZ_check_flag) {
-    if (false) {
-      Swal.fire("Thông báo", "Hãy check data trước khi up", "error");
-    } else {
-      if (!checkIDcongViecTonTai) {
-        for (let i = 0; i < uploadAmazonData.length; i++) {
-          await generalQuery("insertData_Amazon", {
-            G_CODE: uploadAmazonData[i].G_CODE,
-            PROD_REQUEST_NO: uploadAmazonData[i].PROD_REQUEST_NO,
-            NO_IN: uploadAmazonData[i].NO_IN,
-            ROW_NO: uploadAmazonData[i].ROW_NO,
-            DATA_1:
-              uploadAmazonData[i].DATA1 === undefined
-                ? ""
-                : uploadAmazonData[i].DATA1,
-            DATA_2:
-              uploadAmazonData[i].DATA2 === undefined
-                ? ""
-                : uploadAmazonData[i].DATA2,
-            DATA_3:
-              uploadAmazonData[i].DATA3 === undefined
-                ? ""
-                : uploadAmazonData[i].DATA3,
-            DATA_4:
-              uploadAmazonData[i].DATA4 === undefined
-                ? ""
-                : uploadAmazonData[i].DATA4,
-            PRINT_STATUS: "",
-            INLAI_COUNT: 0,
-            REMARK: "0109",
-            INS_EMPL: userData.EMPL_NO,
-          })
-            .then((response) => {
-              console.log(response.data.tk_status);
-              if (response.data.tk_status !== "NG") {
-                setProgressValue((i + 1) * 2);
-              } else {
-              }
-            })
-            .catch((error) => {
-              console.log(error);
-            });
-        }
-        checkDuplicateAMZ();
-        //Swal.fire("Thông báo", "Upload data Amazon Hoàn thành", "success");
+        .then((response) => {
+          console.log(response.data.tk_status);
+          if (response.data.tk_status !== "NG") {
+            checkIDcongViecTonTai = true;
+          } else {
+            checkIDcongViecTonTai = false;
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+      //if (!AMZ_check_flag) {
+      if (false) {
+        Swal.fire("Thông báo", "Hãy check data trước khi up", "error");
       } else {
-        Swal.fire("Thông báo", "ID công việc đã tồn tại", "error");
+        if (!checkIDcongViecTonTai) {
+          for (let i = 0; i < uploadAmazonData.length; i++) {
+            await generalQuery("insertData_Amazon", {
+              G_CODE: uploadAmazonData[i].G_CODE,
+              PROD_REQUEST_NO: uploadAmazonData[i].PROD_REQUEST_NO,
+              NO_IN: uploadAmazonData[i].NO_IN,
+              ROW_NO: uploadAmazonData[i].ROW_NO,
+              DATA_1:
+                uploadAmazonData[i].DATA1 === undefined
+                  ? ""
+                  : uploadAmazonData[i].DATA1,
+              DATA_2:
+                uploadAmazonData[i].DATA2 === undefined
+                  ? ""
+                  : uploadAmazonData[i].DATA2,
+              DATA_3:
+                uploadAmazonData[i].DATA3 === undefined
+                  ? ""
+                  : uploadAmazonData[i].DATA3,
+              DATA_4:
+                uploadAmazonData[i].DATA4 === undefined
+                  ? ""
+                  : uploadAmazonData[i].DATA4,
+              PRINT_STATUS: "",
+              INLAI_COUNT: 0,
+              REMARK: "0109",
+              INS_EMPL: userData.EMPL_NO,
+            })
+              .then((response) => {
+                console.log(response.data.tk_status);
+                if (response.data.tk_status !== "NG") {
+                  setProgressValue((i + 1) * 2);
+                } else {
+                }
+              })
+              .catch((error) => {
+                console.log(error);
+              });
+          }
+          checkDuplicateAMZ();
+          //Swal.fire("Thông báo", "Upload data Amazon Hoàn thành", "success");
+        } else {
+          Swal.fire("Thông báo", "ID công việc đã tồn tại", "error");
+        }
       }
-    }
+
+    }    
+    
   };
   const checkAmazonData = async (
     amazon_data: { id: number; DATA: string; CHECKSTATUS: string }[]

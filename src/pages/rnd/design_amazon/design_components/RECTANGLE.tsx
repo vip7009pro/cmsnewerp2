@@ -1,17 +1,27 @@
 import React from 'react'
 
-interface RECT_DATA  {
- backgroundColor: string,
- width: string,
- height: string,
- top: string,
- left: string,
+interface COMPONENT_DATA {
+  G_CODE_MAU: string,
+  DOITUONG_NO: number,
+  DOITUONG_NAME: string,
+  PHANLOAI_DT: string,
+  DOITUONG_STT: string,
+  CAVITY_PRINT: number,
+  GIATRI: string,
+  FONT_NAME: string,
+  FONT_SIZE: number,
+  FONT_STYLE: string,
+  POS_X: number,
+  POS_Y: number,
+  SIZE_W: number,
+  SIZE_H: number,
+  ROTATE: number,
+  REMARK: string,
 }
 
-const RECTANGLE = ({DATA}: {DATA: RECT_DATA}) => { 
+const RECTANGLE = ({DATA}: {DATA: COMPONENT_DATA}) => { 
   return (
-    <div className='amazon_rectange' style={{backgroundColor: DATA.backgroundColor, width: DATA.width, height: DATA.height, top: DATA.top, left: DATA.left, position: 'absolute',}}>
-      
+    <div className='amazon_rectange' style={{ backgroundColor:'white', width: `${DATA.SIZE_W}mm`, height: `${DATA.SIZE_H}mm`, top: `${DATA.POS_Y}mm`, left: `${DATA.POS_X}mm`, position: 'absolute'}}>      
     </div>
   )
 }

@@ -5,7 +5,7 @@ import  { useContext, useEffect, useState, useTransition } from 'react'
 import {FcCancel, FcSearch } from 'react-icons/fc';
 import {AiFillCheckCircle, AiFillEdit, AiFillFileExcel, AiOutlineCheck, AiOutlineCloudUpload } from "react-icons/ai";
 import Swal from 'sweetalert2';
-import { generalQuery } from '../../../api/Api';
+import { generalQuery, uploadQuery } from '../../../api/Api';
 import { UserContext } from '../../../api/Context';
 import { SaveExcel } from '../../../api/GlobalFunction';
 import "./CODE_MANAGER.scss"
@@ -49,6 +49,7 @@ interface CODE_INFO {
     NOTE: string
 }
 const CODE_MANAGER = () => {
+  const [uploadfile,setUploadFile] = useState<any>(null);
   const [codedatatablefilter, setCodeDataTableFilter] = useState<Array<CODE_INFO>>([]);
   const [selection, setSelection] = useState<any>({
     trapo: true,
@@ -61,6 +62,23 @@ const CODE_MANAGER = () => {
   const [isLoading, setisLoading] = useState(false); 
   const [codeCMS,setCodeCMS] =useState('');
   const [enableEdit, setEnableEdit] = useState(false);
+  const handleUploadFile = (ulf: any)=> {
+    console.log(ulf);
+    uploadQuery('uploadfile',uploadfile,'tenfilemoi.pdf','foldertest')
+    .then((response)=> {
+      if (response.data.tk_status !== "NG") {
+        Swal.fire('Thông báo','Upload file thành công','success');             
+      } else {
+        Swal.fire('Thông báo','Upload file thất bại:' + response.data.message,'error');       
+       
+      }
+
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+
+  }
   let column_codeinfo = [
     { field: "id", headerName: "ID", width: 70,  editable: enableEdit },
     { field: "G_CODE", headerName: "G_CODE", width: 80,  editable: enableEdit  },
@@ -84,7 +102,7 @@ const CODE_MANAGER = () => {
         const formData = new FormData();
         formData.append("banve", file);        
         formData.append("filename", params.row.G_CODE);      
-        if(userData.MAINDEPTNAME==='KD')  
+        if(userData.MAINDEPTNAME==='KD')
         {
           try {
             const response = await axios.post(
@@ -617,6 +635,16 @@ const CODE_MANAGER = () => {
                 >
                   Tìm code
                 </button>
+                <input  accept=".*" type="file" onChange={(e:any)=> {let file = e.target.files[0];  setUploadFile(file); }} />
+                <button
+                  className='traxuatkiembutton'
+                  onClick={() => {
+                    handleUploadFile(uploadfile);
+                  }}                 
+                >
+                  Upload File
+                </button>
+                
               </div>
             </div>
           </div>
