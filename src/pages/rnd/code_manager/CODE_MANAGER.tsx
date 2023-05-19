@@ -62,22 +62,20 @@ const CODE_MANAGER = () => {
   const [isLoading, setisLoading] = useState(false); 
   const [codeCMS,setCodeCMS] =useState('');
   const [enableEdit, setEnableEdit] = useState(false);
-  const handleUploadFile = (ulf: any)=> {
+
+  const handleUploadFile = (ulf: any,newfilename:string)=> {
     console.log(ulf);
-    uploadQuery('uploadfile',uploadfile,'tenfilemoi.pdf','foldertest')
+    uploadQuery(uploadfile,newfilename,'banve')
     .then((response)=> {
       if (response.data.tk_status !== "NG") {
         Swal.fire('Thông báo','Upload file thành công','success');             
       } else {
-        Swal.fire('Thông báo','Upload file thất bại:' + response.data.message,'error');       
-       
+        Swal.fire('Thông báo','Upload file thất bại:' + response.data.message,'error'); 
       }
-
     })
     .catch((error) => {
       console.log(error);
     });
-
   }
   let column_codeinfo = [
     { field: "id", headerName: "ID", width: 70,  editable: enableEdit },
@@ -96,50 +94,38 @@ const CODE_MANAGER = () => {
     { field: "M_NAME_FULLBOM", headerName: "FULLBOM",  flex: 1, minWidth: 150,  editable: enableEdit  },
     { field: "BANVE", headerName: "BANVE", width: 260 , renderCell: (params:any) => {
       let file:any = null;
-      let upload_url = "http://14.160.33.94:5011/upload";
-      const uploadFile = async (e:any) => {
-        console.log(file);
-        const formData = new FormData();
-        formData.append("banve", file);        
-        formData.append("filename", params.row.G_CODE);      
+      const uploadFile2 = async (e:any) => {
+        console.log(file); 
         if(userData.MAINDEPTNAME==='KD')
         {
-          try {
-            const response = await axios.post(
-              upload_url,
-              formData
-            );
-            //console.log("ket qua");
-            //console.log(response);
-            if(response.data.tk_status === 'OK')
-            {
-              //Swal.fire('Thông báo','Upload bản vẽ thành công','success');
-               generalQuery("update_banve_value", { G_CODE: params.row.G_CODE, banvevalue: 'Y' })
-              .then((response) => {        
-                if (response.data.tk_status !== "NG") 
-                {
-                  Swal.fire('Thông báo','Upload bản vẽ thành công','success');
-                  let tempcodeinfodatatable = rows.map((element, index)=> {                 
-                    return ( element.G_CODE === params.row.G_CODE ? {...element, BANVE: 'Y'}: element);
-                  });
-                  setRows(tempcodeinfodatatable);
-                } 
-                else {
-                  Swal.fire('Thông báo','Upload bản vẽ thất bại','error');
-                }
-              })
-              .catch((error) => {
-                console.log(error);
-              });  
+          uploadQuery(file,params.row.G_CODE +'.pdf','banve')
+          .then((response)=> {
+            if (response.data.tk_status !== "NG") {
+                generalQuery("update_banve_value", { G_CODE: params.row.G_CODE, banvevalue: 'Y' })
+                .then((response) => {        
+                  if (response.data.tk_status !== "NG") 
+                  {
+                    Swal.fire('Thông báo','Upload bản vẽ thành công','success');
+                    let tempcodeinfodatatable = rows.map((element, index)=> {                 
+                      return ( element.G_CODE === params.row.G_CODE ? {...element, BANVE: 'Y'}: element);
+                    });
+                    setRows(tempcodeinfodatatable);
+                  } 
+                  else {
+                    Swal.fire('Thông báo','Upload bản vẽ thất bại','error');
+                  }
+                })
+                .catch((error) => {
+                  console.log(error);
+                });       
+            } else {
+              Swal.fire('Thông báo','Upload file thất bại:' + response.data.message,'error'); 
             }
-            else
-            {
-              Swal.fire('Thông báo',response.data.message,'error');
-            }
-            //console.log(response.data);
-          } catch (ex) {
-            console.log(ex);
-          }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+
         }
         else
         {
@@ -160,7 +146,7 @@ const CODE_MANAGER = () => {
       else
       {
         return <div className="uploadfile"> 
-       <IconButton className='buttonIcon'onClick={uploadFile}><AiOutlineCloudUpload color='yellow' size={25}/>Upload</IconButton>
+       <IconButton className='buttonIcon'onClick={uploadFile2}><AiOutlineCloudUpload color='yellow' size={25}/>Upload</IconButton>
        <input  accept=".pdf" type="file" onChange={(e:any)=> {file = e.target.files[0]; console.log(file);}} />
       </div>
       }        
@@ -635,7 +621,7 @@ const CODE_MANAGER = () => {
                 >
                   Tìm code
                 </button>
-                <input  accept=".*" type="file" onChange={(e:any)=> {let file = e.target.files[0];  setUploadFile(file); }} />
+                {/* <input  accept=".pdf" type="file" onChange={(e:any)=> {let file = e.target.files[0];  setUploadFile(file); }} />
                 <button
                   className='traxuatkiembutton'
                   onClick={() => {
@@ -643,7 +629,7 @@ const CODE_MANAGER = () => {
                   }}                 
                 >
                   Upload File
-                </button>
+                </button> */}
                 
               </div>
             </div>

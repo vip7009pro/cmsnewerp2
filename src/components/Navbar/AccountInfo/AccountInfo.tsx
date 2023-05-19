@@ -1,6 +1,6 @@
 import moment from "moment";
 import React, { useState, useEffect, useContext } from "react";
-import { generalQuery } from "../../../api/Api";
+import { generalQuery, uploadQuery } from "../../../api/Api";
 import { UserContext, LangConText } from "../../../api/Context";
 import "./AccountInfo.scss";
 
@@ -111,47 +111,33 @@ export default function AccountInfo() {
         console.log(error);
       });
   };
-
   let file:any = null;
-  let upload_url = "http://14.160.33.94:5011/uploadavatar";
-  const uploadFile = async (e:any) => {   
-    console.log(file);
-    const formData = new FormData();
-    formData.append("avatar", file);        
-    formData.append("filename", 'NS_'+ userdata.EMPL_NO); 
-      try {
-        const response = await axios.post(
-          upload_url,
-          formData
-        );
-        //console.log("ket qua");
-        //console.log(response);
-        if(response.data.tk_status === 'OK')
-        {          
-           generalQuery("update_empl_image", { EMPL_NO: userdata.EMPL_NO, EMPL_IMAGE: 'Y' })
-          .then((response) => {        
-            if (response.data.tk_status !== "NG") 
-            {
-
-              setUserData({...userdata, EMPL_IMAGE:'Y'});
-              Swal.fire('Thông báo','Upload avatar thành công','success');
-            } 
-            else {
-              Swal.fire('Thông báo','Upload avatar thất bại','error');
+  const uploadFile2 = async(e:any)=> {
+    uploadQuery(file,'NS_'+ userdata.EMPL_NO+'.jpg','Picture_NS')
+          .then((response)=> {
+            if (response.data.tk_status !== "NG") {
+              generalQuery("update_empl_image", { EMPL_NO: userdata.EMPL_NO, EMPL_IMAGE: 'Y' })
+              .then((response) => {        
+                if (response.data.tk_status !== "NG") 
+                {
+                  setUserData({...userdata, EMPL_IMAGE:'Y'});
+                  Swal.fire('Thông báo','Upload avatar thành công','success');
+                } 
+                else {
+                  Swal.fire('Thông báo','Upload avatar thất bại','error');
+                }
+              })
+              .catch((error) => {
+                console.log(error);
+              });  
+                     
+            } else {
+              Swal.fire('Thông báo','Upload file thất bại:' + response.data.message,'error'); 
             }
           })
           .catch((error) => {
             console.log(error);
-          });  
-        }
-        else
-        {
-          Swal.fire('Thông báo',response.data.message,'error');
-        }
-        //console.log(response.data);
-      } catch (ex) {
-        console.log(ex);
-      }
+          });
   }
 
   useEffect(() => {
@@ -210,7 +196,7 @@ export default function AccountInfo() {
             </li>
             <li className='emplInfoList'> {/* Chức vụ */}{getsentence(29,lang)}: {userdata.JOB_NAME}</li>
             {(userdata.EMPL_IMAGE!=='Y') && <li className='emplInfoList'> <div className="uploadfile"> Avatar:
-       <IconButton className='buttonIcon'onClick={uploadFile}><AiOutlineCloudUpload color='yellow' size={25}/>Upload</IconButton>
+       <IconButton className='buttonIcon'onClick={uploadFile2}><AiOutlineCloudUpload color='yellow' size={25}/>Upload</IconButton>
        <input  accept=".jpg" type="file" onChange={(e:any)=> {file = e.target.files[0]; console.log(file);}} />
       </div></li>}
           </ul>

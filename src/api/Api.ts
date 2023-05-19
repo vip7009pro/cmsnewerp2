@@ -16,7 +16,7 @@ export function getSever(): string {
 let API_URL = "http://14.160.33.94:5011/api";
 
 
-let UPLOAD_URL = "http://14.160.33.94:3007/api";
+let UPLOAD_URL = "http://14.160.33.94:5011/uploadfile";
 
 
 let server_ip_local: any = localStorage.getItem("server_ip")?.toString();
@@ -80,15 +80,11 @@ export async function generalQuery(command: string, queryData: any) {
   return data;
 }
 
-export async function uploadQuery(command: string, file: any, filename: string, uploadfoldername:string) {
+export async function uploadQuery(file: any, filename: string, uploadfoldername:string) {
   const formData = new FormData();
-  formData.append("rawfile", file);
+  formData.append("uploadedfile", file);
   formData.append("filename", filename);
-  formData.append("uploadfoldername", uploadfoldername);
-  
-  let data = await axios.post(UPLOAD_URL, {
-    command: command,
-    DATA: formData,
-  });
+  formData.append("uploadfoldername", uploadfoldername);  
+  let data = await axios.post(UPLOAD_URL, formData);
   return data;
 }
