@@ -95,7 +95,7 @@ const CODE_MANAGER = () => {
     { field: "BANVE", headerName: "BANVE", width: 260 , renderCell: (params:any) => {
       let file:any = null;
       const uploadFile2 = async (e:any) => {
-        console.log(file); 
+        //console.log(file); 
         if(userData.MAINDEPTNAME==='KD')
         {
           uploadQuery(file,params.row.G_CODE +'.pdf','banve')

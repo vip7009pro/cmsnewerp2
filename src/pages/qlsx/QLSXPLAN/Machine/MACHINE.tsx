@@ -377,7 +377,7 @@ const MACHINE = () => {
   const [tonlieuxuongdatafilter, setTonLieuXuongDataFilter] = useState<
     Array<TONLIEUXUONG>
   >([]);
-  const [showYCSX,setShowYCSX]= useState(true);
+  const [showYCSX, setShowYCSX] = useState(true);
   const [ycsxpendingcheck, setYCSXPendingCheck] = useState(false);
   const [inspectInputcheck, setInspectInputCheck] = useState(false);
   const [ycsxlistrender, setYCSXListRender] = useState<Array<ReactElement>>();
@@ -2484,7 +2484,12 @@ const MACHINE = () => {
             PLAN_LEADTIME: 0,
             STEP: 0,
             PLAN_ORDER: NextPlanOrder,
-            PROCESS_NUMBER: selectedMachine.substring(0,2)=== ycsxdatatablefilter[i].EQ1 ? 1:selectedMachine.substring(0,2)=== ycsxdatatablefilter[i].EQ2 ? 2 :0 ,
+            PROCESS_NUMBER:
+              selectedMachine.substring(0, 2) === ycsxdatatablefilter[i].EQ1
+                ? 1
+                : selectedMachine.substring(0, 2) === ycsxdatatablefilter[i].EQ2
+                ? 2
+                : 0,
             G_CODE: ycsxdatatablefilter[i].G_CODE,
             NEXT_PLAN_ID: "X",
           })
@@ -2510,7 +2515,7 @@ const MACHINE = () => {
       Swal.fire("Thông báo", "Chọn ít nhất 1 YCSX để Add !", "error");
     }
   };
-  const handle_UpdatePlan = async() => {
+  const handle_UpdatePlan = async () => {
     Swal.fire({
       title: "Lưu Plan",
       text: "Đang lưu plan, hãy chờ một chút",
@@ -2540,8 +2545,7 @@ const MACHINE = () => {
           check_NEXT_PLAN_ID = false;
         }
       }
-
-      let checkPlanIdP500:boolean = false;      
+      let checkPlanIdP500: boolean = false;
       await generalQuery("checkP500PlanID_mobile", {
         PLAN_ID: selectedPlanTable[i].PLAN_ID,
       })
@@ -2549,16 +2553,13 @@ const MACHINE = () => {
           //console.log(response.data);
           if (response.data.tk_status !== "NG") {
             checkPlanIdP500 = true;
-
           } else {
             checkPlanIdP500 = false;
-           
           }
-        })       
+        })
         .catch((error) => {
           console.log(error);
         });
-
       if (
         (parseInt(selectedPlanTable[i].PROCESS_NUMBER.toString()) === 1 ||
           parseInt(selectedPlanTable[i].PROCESS_NUMBER.toString()) === 2) &&
@@ -2603,7 +2604,7 @@ const MACHINE = () => {
             console.log(error);
           });
       } else {
-        err_code += "_" + selectedPlanTable[i].G_NAME_KD + ":";        
+        err_code += "_" + selectedPlanTable[i].G_NAME_KD + ":";
         if (
           !(
             parseInt(selectedPlanTable[i].PROCESS_NUMBER.toString()) === 1 ||
@@ -2648,7 +2649,7 @@ const MACHINE = () => {
           )
         ) {
           err_code += "_: Hãy nhập PROCESS NUMBER từ 1 hoặc 2";
-        }       
+        }
       }
     }
     if (err_code !== "0") {
@@ -3100,7 +3101,7 @@ const MACHINE = () => {
         <IconButton
           className='buttonIcon'
           onClick={() => {
-           setShowYCSX(!showYCSX);
+            setShowYCSX(!showYCSX);
           }}
         >
           <BiRefresh color='red' size={20} />
@@ -3124,7 +3125,7 @@ const MACHINE = () => {
           <AiFillFileExcel color='green' size={25} />
           SAVE
         </IconButton>
-        <GridToolbarQuickFilter />       
+        <GridToolbarQuickFilter />
         <IconButton
           className='buttonIcon'
           onClick={() => {
@@ -3138,7 +3139,7 @@ const MACHINE = () => {
         >
           <AiOutlineBarcode color='green' size={20} />
           Lưu CT + ĐKXK
-        </IconButton> 
+        </IconButton>
         <IconButton
           className='buttonIcon'
           onClick={() => {
@@ -3192,7 +3193,6 @@ const MACHINE = () => {
           <FaWarehouse color='blue' size={20} />
           KHO ẢO
         </IconButton>
-        
         <IconButton
           className='buttonIcon'
           onClick={() => {
@@ -3880,7 +3880,7 @@ const MACHINE = () => {
         });
     }
     /* xoa dong O301 chua co xuat hien trong O302*/
-   /*  await generalQuery("deleteMCODE_O301_Not_ExistIN_O302", {
+    /*  await generalQuery("deleteMCODE_O301_Not_ExistIN_O302", {
       PLAN_ID: PLAN_ID,
     })
       .then((response) => {
@@ -3940,7 +3940,8 @@ const MACHINE = () => {
               OUT_SEQ: zeroPad(Last_O301_OUT_SEQ + i + 1, 3),
               USE_YN: "Y",
               M_CODE: chithidatatable[i].M_CODE,
-              OUT_PRE_QTY: chithidatatable[i].M_MET_QTY* chithidatatable[i].M_QTY,
+              OUT_PRE_QTY:
+                chithidatatable[i].M_MET_QTY * chithidatatable[i].M_QTY,
               PLAN_ID: PLAN_ID,
             })
               .then((response) => {
@@ -3955,7 +3956,8 @@ const MACHINE = () => {
           } else {
             await generalQuery("updateO301", {
               M_CODE: chithidatatable[i].M_CODE,
-              OUT_PRE_QTY: chithidatatable[i].M_MET_QTY *chithidatatable[i].M_QTY ,
+              OUT_PRE_QTY:
+                chithidatatable[i].M_MET_QTY * chithidatatable[i].M_QTY,
               PLAN_ID: PLAN_ID,
             })
               .then((response) => {
@@ -4264,219 +4266,220 @@ const MACHINE = () => {
             Plan hiện tại trên máy {selectedMachine}
           </div>
           <div className='content'>
-            {showYCSX && <div className='ycsxlist'>
-              <div className='tracuuYCSX'>
-                <div className='tracuuYCSXform'>
-                  <div className='forminput'>
-                    <div className='forminputcolumn'>
-                      <label>
-                        <b>Từ ngày:</b>
-                        <input
-                          onKeyDown={(e) => {
-                            handleSearchCodeKeyDown(e);
-                          }}
-                          type='date'
-                          value={fromdate.slice(0, 10)}
-                          onChange={(e) => setFromDate(e.target.value)}
-                        ></input>
-                      </label>
-                      <label>
-                        <b>Tới ngày:</b>{" "}
-                        <input
-                          onKeyDown={(e) => {
-                            handleSearchCodeKeyDown(e);
-                          }}
-                          type='date'
-                          value={todate.slice(0, 10)}
-                          onChange={(e) => setToDate(e.target.value)}
-                        ></input>
-                      </label>
+            {showYCSX && (
+              <div className='ycsxlist'>
+                <div className='tracuuYCSX'>
+                  <div className='tracuuYCSXform'>
+                    <div className='forminput'>
+                      <div className='forminputcolumn'>
+                        <label>
+                          <b>Từ ngày:</b>
+                          <input
+                            onKeyDown={(e) => {
+                              handleSearchCodeKeyDown(e);
+                            }}
+                            type='date'
+                            value={fromdate.slice(0, 10)}
+                            onChange={(e) => setFromDate(e.target.value)}
+                          ></input>
+                        </label>
+                        <label>
+                          <b>Tới ngày:</b>{" "}
+                          <input
+                            onKeyDown={(e) => {
+                              handleSearchCodeKeyDown(e);
+                            }}
+                            type='date'
+                            value={todate.slice(0, 10)}
+                            onChange={(e) => setToDate(e.target.value)}
+                          ></input>
+                        </label>
+                      </div>
+                      <div className='forminputcolumn'>
+                        <label>
+                          <b>Code KD:</b>{" "}
+                          <input
+                            onKeyDown={(e) => {
+                              handleSearchCodeKeyDown(e);
+                            }}
+                            type='text'
+                            placeholder='GH63-xxxxxx'
+                            value={codeKD}
+                            onChange={(e) => setCodeKD(e.target.value)}
+                          ></input>
+                        </label>
+                        <label>
+                          <b>Code CMS:</b>{" "}
+                          <input
+                            onKeyDown={(e) => {
+                              handleSearchCodeKeyDown(e);
+                            }}
+                            type='text'
+                            placeholder='7C123xxx'
+                            value={codeCMS}
+                            onChange={(e) => setCodeCMS(e.target.value)}
+                          ></input>
+                        </label>
+                      </div>
+                      <div className='forminputcolumn'>
+                        <label>
+                          <b>Tên nhân viên:</b>{" "}
+                          <input
+                            onKeyDown={(e) => {
+                              handleSearchCodeKeyDown(e);
+                            }}
+                            type='text'
+                            placeholder='Trang'
+                            value={empl_name}
+                            onChange={(e) => setEmpl_Name(e.target.value)}
+                          ></input>
+                        </label>
+                        <label>
+                          <b>Khách:</b>{" "}
+                          <input
+                            onKeyDown={(e) => {
+                              handleSearchCodeKeyDown(e);
+                            }}
+                            type='text'
+                            placeholder='SEVT'
+                            value={cust_name}
+                            onChange={(e) => setCust_Name(e.target.value)}
+                          ></input>
+                        </label>
+                      </div>
+                      <div className='forminputcolumn'>
+                        <label>
+                          <b>Loại sản phẩm:</b>{" "}
+                          <input
+                            onKeyDown={(e) => {
+                              handleSearchCodeKeyDown(e);
+                            }}
+                            type='text'
+                            placeholder='TSP'
+                            value={prod_type}
+                            onChange={(e) => setProdType(e.target.value)}
+                          ></input>
+                        </label>
+                        <label>
+                          <b>Số YCSX:</b>{" "}
+                          <input
+                            onKeyDown={(e) => {
+                              handleSearchCodeKeyDown(e);
+                            }}
+                            type='text'
+                            placeholder='12345'
+                            value={prodrequestno}
+                            onChange={(e) => setProdRequestNo(e.target.value)}
+                          ></input>
+                        </label>
+                      </div>
+                      <div className='forminputcolumn'>
+                        <label>
+                          <b>Phân loại:</b>
+                          <select
+                            name='phanloai'
+                            value={phanloai}
+                            onChange={(e) => {
+                              setPhanLoai(e.target.value);
+                            }}
+                          >
+                            <option value='00'>ALL</option>
+                            <option value='01'>Thông thường</option>
+                            <option value='02'>SDI</option>
+                            <option value='03'>GC</option>
+                            <option value='04'>SAMPLE</option>
+                            <option value='22'>NOT SAMPLE</option>
+                          </select>
+                        </label>
+                        <label>
+                          <b>Vật liệu:</b>{" "}
+                          <input
+                            onKeyDown={(e) => {
+                              handleSearchCodeKeyDown(e);
+                            }}
+                            type='text'
+                            placeholder='SJ-203020HC'
+                            value={material}
+                            onChange={(e) => setMaterial(e.target.value)}
+                          ></input>
+                        </label>
+                      </div>
+                      <div className='forminputcolumn'>
+                        <label>
+                          <b>YCSX Pending:</b>
+                          <input
+                            onKeyDown={(e) => {
+                              handleSearchCodeKeyDown(e);
+                            }}
+                            type='checkbox'
+                            name='alltimecheckbox'
+                            defaultChecked={ycsxpendingcheck}
+                            onChange={() =>
+                              setYCSXPendingCheck(!ycsxpendingcheck)
+                            }
+                          ></input>
+                        </label>
+                        <label>
+                          <b>Vào kiểm:</b>
+                          <input
+                            onKeyDown={(e) => {
+                              handleSearchCodeKeyDown(e);
+                            }}
+                            type='checkbox'
+                            name='alltimecheckbox'
+                            defaultChecked={inspectInputcheck}
+                            onChange={() =>
+                              setInspectInputCheck(!inspectInputcheck)
+                            }
+                          ></input>
+                        </label>
+                      </div>
                     </div>
-                    <div className='forminputcolumn'>
+                    <div className='formbutton'>
                       <label>
-                        <b>Code KD:</b>{" "}
+                        <b>All Time:</b>
                         <input
-                          onKeyDown={(e) => {
-                            handleSearchCodeKeyDown(e);
-                          }}
-                          type='text'
-                          placeholder='GH63-xxxxxx'
-                          value={codeKD}
-                          onChange={(e) => setCodeKD(e.target.value)}
-                        ></input>
-                      </label>
-                      <label>
-                        <b>Code CMS:</b>{" "}
-                        <input
-                          onKeyDown={(e) => {
-                            handleSearchCodeKeyDown(e);
-                          }}
-                          type='text'
-                          placeholder='7C123xxx'
-                          value={codeCMS}
-                          onChange={(e) => setCodeCMS(e.target.value)}
-                        ></input>
-                      </label>
-                    </div>
-                    <div className='forminputcolumn'>
-                      <label>
-                        <b>Tên nhân viên:</b>{" "}
-                        <input
-                          onKeyDown={(e) => {
-                            handleSearchCodeKeyDown(e);
-                          }}
-                          type='text'
-                          placeholder='Trang'
-                          value={empl_name}
-                          onChange={(e) => setEmpl_Name(e.target.value)}
-                        ></input>
-                      </label>
-                      <label>
-                        <b>Khách:</b>{" "}
-                        <input
-                          onKeyDown={(e) => {
-                            handleSearchCodeKeyDown(e);
-                          }}
-                          type='text'
-                          placeholder='SEVT'
-                          value={cust_name}
-                          onChange={(e) => setCust_Name(e.target.value)}
-                        ></input>
-                      </label>
-                    </div>
-                    <div className='forminputcolumn'>
-                      <label>
-                        <b>Loại sản phẩm:</b>{" "}
-                        <input
-                          onKeyDown={(e) => {
-                            handleSearchCodeKeyDown(e);
-                          }}
-                          type='text'
-                          placeholder='TSP'
-                          value={prod_type}
-                          onChange={(e) => setProdType(e.target.value)}
-                        ></input>
-                      </label>
-                      <label>
-                        <b>Số YCSX:</b>{" "}
-                        <input
-                          onKeyDown={(e) => {
-                            handleSearchCodeKeyDown(e);
-                          }}
-                          type='text'
-                          placeholder='12345'
-                          value={prodrequestno}
-                          onChange={(e) => setProdRequestNo(e.target.value)}
-                        ></input>
-                      </label>
-                    </div>
-                    <div className='forminputcolumn'>
-                      <label>
-                        <b>Phân loại:</b>
-                        <select
-                          name='phanloai'
-                          value={phanloai}
-                          onChange={(e) => {
-                            setPhanLoai(e.target.value);
-                          }}
-                        >
-                          <option value='00'>ALL</option>
-                          <option value='01'>Thông thường</option>
-                          <option value='02'>SDI</option>
-                          <option value='03'>GC</option>
-                          <option value='04'>SAMPLE</option>
-                          <option value='22'>NOT SAMPLE</option>
-                        </select>
-                      </label>
-                      <label>
-                        <b>Vật liệu:</b>{" "}
-                        <input
-                          onKeyDown={(e) => {
-                            handleSearchCodeKeyDown(e);
-                          }}
-                          type='text'
-                          placeholder='SJ-203020HC'
-                          value={material}
-                          onChange={(e) => setMaterial(e.target.value)}
-                        ></input>
-                      </label>
-                    </div>
-                    <div className='forminputcolumn'>
-                      <label>
-                        <b>YCSX Pending:</b>
-                        <input
-                          onKeyDown={(e) => {
-                            handleSearchCodeKeyDown(e);
-                          }}
                           type='checkbox'
                           name='alltimecheckbox'
-                          defaultChecked={ycsxpendingcheck}
-                          onChange={() =>
-                            setYCSXPendingCheck(!ycsxpendingcheck)
-                          }
+                          defaultChecked={alltime}
+                          onChange={() => setAllTime(!alltime)}
                         ></input>
                       </label>
-                      <label>
-                        <b>Vào kiểm:</b>
-                        <input
-                          onKeyDown={(e) => {
-                            handleSearchCodeKeyDown(e);
-                          }}
-                          type='checkbox'
-                          name='alltimecheckbox'
-                          defaultChecked={inspectInputcheck}
-                          onChange={() =>
-                            setInspectInputCheck(!inspectInputcheck)
-                          }
-                        ></input>
-                      </label>
+                      <IconButton
+                        className='buttonIcon'
+                        onClick={() => {
+                          handletraYCSX();
+                        }}
+                      >
+                        <FcSearch color='green' size={30} />
+                        Search
+                      </IconButton>
                     </div>
                   </div>
-                  <div className='formbutton'>
-                    <label>
-                      <b>All Time:</b>
-                      <input
-                        type='checkbox'
-                        name='alltimecheckbox'
-                        defaultChecked={alltime}
-                        onChange={() => setAllTime(!alltime)}
-                      ></input>
-                    </label>
-                    <IconButton
-                      className='buttonIcon'
-                      onClick={() => {
-                        handletraYCSX();
+                  <div className='tracuuYCSXTable'>
+                    <DataGrid
+                      sx={{ fontSize: 12, flex: 1 }}
+                      components={{
+                        Toolbar: CustomToolbarPOTable,
+                        LoadingOverlay: LinearProgress,
                       }}
-                    >
-                      <FcSearch color='green' size={30} />
-                      Search
-                    </IconButton>
+                      loading={isLoading}
+                      rowHeight={30}
+                      rows={ycsxdatatable}
+                      columns={column_ycsxtable}
+                      rowsPerPageOptions={[
+                        5, 10, 50, 100, 500, 1000, 5000, 10000, 500000,
+                      ]}
+                      editMode='row'
+                      getRowId={(row) => row.PROD_REQUEST_NO}
+                      onSelectionModelChange={(ids) => {
+                        handleYCSXSelectionforUpdate(ids);
+                      }}
+                    />
                   </div>
                 </div>
-                <div className='tracuuYCSXTable'>
-                  <DataGrid
-                    sx={{ fontSize: 12, flex: 1 }}
-                    components={{
-                      Toolbar: CustomToolbarPOTable,
-                      LoadingOverlay: LinearProgress,
-                    }}
-                    loading={isLoading}
-                    rowHeight={30}
-                    rows={ycsxdatatable}
-                    columns={column_ycsxtable}
-                    rowsPerPageOptions={[
-                      5, 10, 50, 100, 500, 1000, 5000, 10000, 500000,
-                    ]}
-                    editMode='row'
-                    getRowId={(row) => row.PROD_REQUEST_NO}
-                    onSelectionModelChange={(ids) => {
-                      handleYCSXSelectionforUpdate(ids);
-                    }}
-                  />
-                </div>
-                
               </div>
-            </div>}
+            )}
             <div className='chithidiv'>
               <div className='listchithi'>
                 <div className='planlist'>
@@ -4788,57 +4791,73 @@ const MACHINE = () => {
                   />
                 </div>
               </div>
-
               {selection.tabycsx && (
-                  <div className='printycsxpage'>
-                    <div className='buttongroup'>
-                      <Button
-                        onClick={() => {
-                          setYCSXListRender(renderYCSX(ycsxdatatablefilter));
-                        }}
-                      >
-                        Render YCSX
-                      </Button>
-                      <Button onClick={handlePrint}>Print YCSX</Button>
-                      <Button
-                        onClick={() => {
-                          setSelection({ ...selection, tabycsx: false });
-                        }}
-                      >
-                        Close
-                      </Button>
-                    </div>
-                    <div className='ycsxrender' ref={ycsxprintref}>
-                      {ycsxlistrender}
-                    </div>
+                <div className='printycsxpage'>
+                  <div className='buttongroup'>
+                    <Button
+                      onClick={() => {
+                        setYCSXListRender(renderYCSX(ycsxdatatablefilter));
+                      }}
+                    >
+                      Render YCSX
+                    </Button>
+                    <Button onClick={handlePrint}>Print YCSX</Button>
+                    <Button
+                      onClick={() => {
+                        setSelection({ ...selection, tabycsx: false });
+                      }}
+                    >
+                      Close
+                    </Button>
                   </div>
-                )}
-                {selection.tabbanve && (
-                  <div className='printycsxpage'>
-                    <div className='buttongroup'>
-                      <Button
-                        onClick={() => {
-                          setYCSXListRender(renderBanVe(ycsxdatatablefilter));
-                        }}
-                      >
-                        Render Bản Vẽ
-                      </Button>
-                      <Button onClick={handlePrint}>Print Bản Vẽ</Button>
-                      <Button
-                        onClick={() => {
-                          setSelection({ ...selection, tabbanve: false });
-                        }}
-                      >
-                        Close
-                      </Button>
-                    </div>
-                    <div className='ycsxrender' ref={ycsxprintref}>
-                      {ycsxlistrender}
-                    </div>
+                  <div className='ycsxrender' ref={ycsxprintref}>
+                    {ycsxlistrender}
                   </div>
-                )}
-                {showkhoao && (
-                  <div className='khoaodiv'>
+                </div>
+              )}
+              {selection.tabbanve && (
+                <div className='printycsxpage'>
+                  <div className='buttongroup'>
+                    <Button
+                      onClick={() => {
+                        setYCSXListRender(renderBanVe(ycsxdatatablefilter));
+                      }}
+                    >
+                      Render Bản Vẽ
+                    </Button>
+                    <Button onClick={handlePrint}>Print Bản Vẽ</Button>
+                    <Button
+                      onClick={() => {
+                        setSelection({ ...selection, tabbanve: false });
+                      }}
+                    >
+                      Close
+                    </Button>
+                  </div>
+                  <div className='ycsxrender' ref={ycsxprintref}>
+                    {ycsxlistrender}
+                  </div>
+                </div>
+              )}
+              {showkhoao && (
+                <div className='khoaodiv'>
+                  <Button
+                    onClick={() => {
+                      setShowKhoAo(!showkhoao);
+                    }}
+                  >
+                    Close
+                  </Button>
+                  <KHOAO NEXT_PLAN={selectedPlan?.PLAN_ID} />
+                </div>
+              )}
+              {false && (
+                <div className='khoaodiv'>
+                  <div
+                    className='khoaotieude'
+                    style={{ fontSize: 25, fontWeight: "bold" }}
+                  >
+                    KHO ẢO
                     <Button
                       onClick={() => {
                         setShowKhoAo(!showkhoao);
@@ -4846,314 +4865,297 @@ const MACHINE = () => {
                     >
                       Close
                     </Button>
-                    <KHOAO NEXT_PLAN={selectedPlan?.PLAN_ID} />
-                  </div>
-                )}
-                {false && (
-                  <div className='khoaodiv'>
-                    <div
-                      className='khoaotieude'
-                      style={{ fontSize: 25, fontWeight: "bold" }}
+                    <Button
+                      onClick={() => {
+                        handle_loadKhoAo();
+                        handle_loadlichsunhapkhoao();
+                        handle_loadlichsuxuatkhoao();
+                        handle_loadlichsuinputlieu(
+                          selectedPlan?.PLAN_ID === undefined
+                            ? "xxx"
+                            : selectedPlan?.PLAN_ID
+                        );
+                      }}
                     >
-                      KHO ẢO
-                      <Button
-                        onClick={() => {
-                          setShowKhoAo(!showkhoao);
-                        }}
-                      >
-                        Close
-                      </Button>
-                      <Button
-                        onClick={() => {
-                          handle_loadKhoAo();
-                          handle_loadlichsunhapkhoao();
-                          handle_loadlichsuxuatkhoao();
-                          handle_loadlichsuinputlieu(
-                            selectedPlan?.PLAN_ID === undefined
-                              ? "xxx"
-                              : selectedPlan?.PLAN_ID
-                          );
-                        }}
-                      >
-                        Refresh
-                      </Button>
+                      Refresh
+                    </Button>
+                  </div>
+                  <div className='khoaodivtable'>
+                    <div
+                      className='tablekhoao'
+                      style={{ height: "100%", width: "50%" }}
+                    >
+                      <div className='tabletonkhoao'>
+                        <DataGrid
+                          sx={{ fontSize: 12, flex: 1 }}
+                          components={{
+                            Toolbar: CustomToolbarKHOAO,
+                            LoadingOverlay: LinearProgress,
+                          }}
+                          getRowId={(row) => row.id}
+                          loading={isLoading}
+                          rowHeight={30}
+                          rows={tonlieuxuongdatatable}
+                          columns={column_tonlieuxuongtable}
+                          rowsPerPageOptions={[
+                            5, 10, 50, 100, 500, 1000, 5000, 10000, 500000,
+                          ]}
+                          checkboxSelection
+                          selectionModel={selectionModel}
+                          onSelectionModelChange={(ids) => {
+                            setSelectionModel(ids);
+                            handleTonLieuXuongDataSelectionforUpdate(ids);
+                          }}
+                          onCellEditCommit={(
+                            params: GridCellEditCommitParams,
+                            event: MuiEvent<MuiBaseEvent>,
+                            details: GridCallbackDetails
+                          ) => {
+                            const keyvar = params.field;
+                            const newdata = tonlieuxuongdatatable.map((p) =>
+                              p.id === params.id
+                                ? { ...p, [keyvar]: params.value }
+                                : p
+                            );
+                            setTonLieuXuongDataFilter(newdata);
+                            //console.log(chithidatatable);
+                          }}
+                        />
+                      </div>
+                      <div className='lichsuinputsanxuat'>
+                        <DataGrid
+                          sx={{ fontSize: 12, flex: 1 }}
+                          components={{
+                            Toolbar: CustomToolbarLICHSUINPUTSX,
+                            LoadingOverlay: LinearProgress,
+                          }}
+                          getRowId={(row) => row.id}
+                          loading={isLoading}
+                          rowHeight={30}
+                          rows={lichsuinputlieutable}
+                          columns={column_lichsuinputlieusanxuat}
+                          rowsPerPageOptions={[
+                            5, 10, 50, 100, 500, 1000, 5000, 10000, 500000,
+                          ]}
+                          checkboxSelection
+                          selectionModel={selectionModel_INPUTSX}
+                          onSelectionModelChange={(ids) => {
+                            setSelectionModel_INPUTSX(ids);
+                            handleLichSuInputSXDataSelectionforUpdate(ids);
+                          }}
+                          onCellEditCommit={(
+                            params: GridCellEditCommitParams,
+                            event: MuiEvent<MuiBaseEvent>,
+                            details: GridCallbackDetails
+                          ) => {
+                            const keyvar = params.field;
+                            const newdata = lichsuinputlieutable.map((p) =>
+                              p.id === params.id
+                                ? { ...p, [keyvar]: params.value }
+                                : p
+                            );
+                            setLichSuInputLieuTable(newdata);
+                            //console.log(chithidatatable);
+                          }}
+                        />
+                      </div>
                     </div>
-                    <div className='khoaodivtable'>
+                    <div
+                      className='nhapxuatkhoao'
+                      style={{ height: "100%", width: "50%" }}
+                    >
                       <div
-                        className='tablekhoao'
-                        style={{ height: "100%", width: "50%" }}
+                        className='nhapkhoao'
+                        style={{ height: "100%", width: "100%" }}
                       >
-                        <div className='tabletonkhoao'>
-                          <DataGrid
-                            sx={{ fontSize: 12, flex: 1 }}
-                            components={{
-                              Toolbar: CustomToolbarKHOAO,
-                              LoadingOverlay: LinearProgress,
-                            }}
-                            getRowId={(row) => row.id}
-                            loading={isLoading}
-                            rowHeight={30}
-                            rows={tonlieuxuongdatatable}
-                            columns={column_tonlieuxuongtable}
-                            rowsPerPageOptions={[
-                              5, 10, 50, 100, 500, 1000, 5000, 10000, 500000,
-                            ]}
-                            checkboxSelection
-                            selectionModel={selectionModel}
-                            onSelectionModelChange={(ids) => {
-                              setSelectionModel(ids);
-                              handleTonLieuXuongDataSelectionforUpdate(ids);
-                            }}
-                            onCellEditCommit={(
-                              params: GridCellEditCommitParams,
-                              event: MuiEvent<MuiBaseEvent>,
-                              details: GridCallbackDetails
-                            ) => {
-                              const keyvar = params.field;
-                              const newdata = tonlieuxuongdatatable.map((p) =>
-                                p.id === params.id
-                                  ? { ...p, [keyvar]: params.value }
-                                  : p
-                              );
-                              setTonLieuXuongDataFilter(newdata);
-                              //console.log(chithidatatable);
-                            }}
-                          />
-                        </div>
-                        <div className='lichsuinputsanxuat'>
-                          <DataGrid
-                            sx={{ fontSize: 12, flex: 1 }}
-                            components={{
-                              Toolbar: CustomToolbarLICHSUINPUTSX,
-                              LoadingOverlay: LinearProgress,
-                            }}
-                            getRowId={(row) => row.id}
-                            loading={isLoading}
-                            rowHeight={30}
-                            rows={lichsuinputlieutable}
-                            columns={column_lichsuinputlieusanxuat}
-                            rowsPerPageOptions={[
-                              5, 10, 50, 100, 500, 1000, 5000, 10000, 500000,
-                            ]}
-                            checkboxSelection
-                            selectionModel={selectionModel_INPUTSX}
-                            onSelectionModelChange={(ids) => {
-                              setSelectionModel_INPUTSX(ids);
-                              handleLichSuInputSXDataSelectionforUpdate(ids);
-                            }}
-                            onCellEditCommit={(
-                              params: GridCellEditCommitParams,
-                              event: MuiEvent<MuiBaseEvent>,
-                              details: GridCallbackDetails
-                            ) => {
-                              const keyvar = params.field;
-                              const newdata = lichsuinputlieutable.map((p) =>
-                                p.id === params.id
-                                  ? { ...p, [keyvar]: params.value }
-                                  : p
-                              );
-                              setLichSuInputLieuTable(newdata);
-                              //console.log(chithidatatable);
-                            }}
-                          />
-                        </div>
+                        <DataGrid
+                          sx={{ fontSize: 12, flex: 1 }}
+                          components={{
+                            Toolbar: CustomToolbarNHAPKHOAO,
+                            LoadingOverlay: LinearProgress,
+                          }}
+                          getRowId={(row) => row.id}
+                          loading={isLoading}
+                          rowHeight={30}
+                          rows={lichsunhapkhoaotable}
+                          columns={column_lichsunhapkhoaotable}
+                          rowsPerPageOptions={[
+                            5, 10, 50, 100, 500, 1000, 5000, 10000, 500000,
+                          ]}
+                          /*  checkboxSelection */
+                          onSelectionModelChange={(ids) => {
+                            handleTonLieuXuongDataSelectionforUpdate(ids);
+                          }}
+                          onCellEditCommit={(
+                            params: GridCellEditCommitParams,
+                            event: MuiEvent<MuiBaseEvent>,
+                            details: GridCallbackDetails
+                          ) => {
+                            const keyvar = params.field;
+                            const newdata = lichsunhapkhoaotable.map((p) =>
+                              p.id === params.id
+                                ? { ...p, [keyvar]: params.value }
+                                : p
+                            );
+                            setLichSuNhapKhoAoTable(newdata);
+                            //console.log(chithidatatable);
+                          }}
+                        />
                       </div>
                       <div
-                        className='nhapxuatkhoao'
-                        style={{ height: "100%", width: "50%" }}
+                        className='xuatkhoao'
+                        style={{ height: "100%", width: "100%" }}
                       >
-                        <div
-                          className='nhapkhoao'
-                          style={{ height: "100%", width: "100%" }}
-                        >
-                          <DataGrid
-                            sx={{ fontSize: 12, flex: 1 }}
-                            components={{
-                              Toolbar: CustomToolbarNHAPKHOAO,
-                              LoadingOverlay: LinearProgress,
-                            }}
-                            getRowId={(row) => row.id}
-                            loading={isLoading}
-                            rowHeight={30}
-                            rows={lichsunhapkhoaotable}
-                            columns={column_lichsunhapkhoaotable}
-                            rowsPerPageOptions={[
-                              5, 10, 50, 100, 500, 1000, 5000, 10000, 500000,
-                            ]}
-                            /*  checkboxSelection */
-                            onSelectionModelChange={(ids) => {
-                              handleTonLieuXuongDataSelectionforUpdate(ids);
-                            }}
-                            onCellEditCommit={(
-                              params: GridCellEditCommitParams,
-                              event: MuiEvent<MuiBaseEvent>,
-                              details: GridCallbackDetails
-                            ) => {
-                              const keyvar = params.field;
-                              const newdata = lichsunhapkhoaotable.map((p) =>
-                                p.id === params.id
-                                  ? { ...p, [keyvar]: params.value }
-                                  : p
-                              );
-                              setLichSuNhapKhoAoTable(newdata);
-                              //console.log(chithidatatable);
-                            }}
-                          />
-                        </div>
-                        <div
-                          className='xuatkhoao'
-                          style={{ height: "100%", width: "100%" }}
-                        >
-                          <DataGrid
-                            sx={{ fontSize: 12, flex: 1 }}
-                            components={{
-                              Toolbar: CustomToolbarXUATKHOAO,
-                              LoadingOverlay: LinearProgress,
-                            }}
-                            getRowId={(row) => row.id}
-                            loading={isLoading}
-                            rowHeight={30}
-                            rows={lichsuxuatkhoaotable}
-                            columns={column_lichsuxuatkhoaotable}
-                            rowsPerPageOptions={[
-                              5, 10, 50, 100, 500, 1000, 5000, 10000, 500000,
-                            ]}
-                            checkboxSelection
-                            selectionModel={selectionModel_XUATKHOAO}
-                            onSelectionModelChange={(ids) => {
-                              setSelectionModel_XUATKHOAO(ids);
-                              handleLichSuXuatKhoAoDataSelectionforUpdate(ids);
-                            }}
-                            onCellEditCommit={(
-                              params: GridCellEditCommitParams,
-                              event: MuiEvent<MuiBaseEvent>,
-                              details: GridCallbackDetails
-                            ) => {
-                              const keyvar = params.field;
-                              const newdata = lichsuxuatkhoaotable.map((p) =>
-                                p.id === params.id
-                                  ? { ...p, [keyvar]: params.value }
-                                  : p
-                              );
-                              setLichSuXuatKhoAoTable(newdata);
-                              //console.log(chithidatatable);
-                            }}
-                          />
-                        </div>
+                        <DataGrid
+                          sx={{ fontSize: 12, flex: 1 }}
+                          components={{
+                            Toolbar: CustomToolbarXUATKHOAO,
+                            LoadingOverlay: LinearProgress,
+                          }}
+                          getRowId={(row) => row.id}
+                          loading={isLoading}
+                          rowHeight={30}
+                          rows={lichsuxuatkhoaotable}
+                          columns={column_lichsuxuatkhoaotable}
+                          rowsPerPageOptions={[
+                            5, 10, 50, 100, 500, 1000, 5000, 10000, 500000,
+                          ]}
+                          checkboxSelection
+                          selectionModel={selectionModel_XUATKHOAO}
+                          onSelectionModelChange={(ids) => {
+                            setSelectionModel_XUATKHOAO(ids);
+                            handleLichSuXuatKhoAoDataSelectionforUpdate(ids);
+                          }}
+                          onCellEditCommit={(
+                            params: GridCellEditCommitParams,
+                            event: MuiEvent<MuiBaseEvent>,
+                            details: GridCallbackDetails
+                          ) => {
+                            const keyvar = params.field;
+                            const newdata = lichsuxuatkhoaotable.map((p) =>
+                              p.id === params.id
+                                ? { ...p, [keyvar]: params.value }
+                                : p
+                            );
+                            setLichSuXuatKhoAoTable(newdata);
+                            //console.log(chithidatatable);
+                          }}
+                        />
                       </div>
                     </div>
                   </div>
-                )}
-                {showChiThi && (
-                  <div className='printycsxpage'>
-                    <div className='buttongroup'>
-                      <input
-                        type='text'
-                        value={maxLieu}
-                        onChange={(e) => {
-                          setMaxLieu(Number(e.target.value));
-                        }}
-                      ></input>
-                      <button
-                        onClick={() => {
-                          localStorage.setItem("maxLieu", maxLieu.toString());
-                          Swal.fire(
-                            "Thông báo",
-                            "Đã set lại max dòng",
-                            "success"
-                          );
-                        }}
-                      >
-                        Set dòng
-                      </button>
-                      <button
-                        onClick={() => {
-                          setChiThiListRender(renderChiThi(qlsxplandatafilter));
-                        }}
-                      >
-                        Render Chỉ Thị
-                      </button>
-                      <button onClick={handlePrint}>Print Chỉ Thị</button>
-                      <button
-                        onClick={() => {
-                          setShowChiThi(!showChiThi);
-                        }}
-                      >
-                        Close
-                      </button>
-                    </div>
-                    <div className='ycsxrender' ref={ycsxprintref}>
-                      {chithilistrender}
-                    </div>
+                </div>
+              )}
+              {showChiThi && (
+                <div className='printycsxpage'>
+                  <div className='buttongroup'>
+                    <input
+                      type='text'
+                      value={maxLieu}
+                      onChange={(e) => {
+                        setMaxLieu(Number(e.target.value));
+                      }}
+                    ></input>
+                    <button
+                      onClick={() => {
+                        localStorage.setItem("maxLieu", maxLieu.toString());
+                        Swal.fire(
+                          "Thông báo",
+                          "Đã set lại max dòng",
+                          "success"
+                        );
+                      }}
+                    >
+                      Set dòng
+                    </button>
+                    <button
+                      onClick={() => {
+                        setChiThiListRender(renderChiThi(qlsxplandatafilter));
+                      }}
+                    >
+                      Render Chỉ Thị
+                    </button>
+                    <button onClick={handlePrint}>Print Chỉ Thị</button>
+                    <button
+                      onClick={() => {
+                        setShowChiThi(!showChiThi);
+                      }}
+                    >
+                      Close
+                    </button>
                   </div>
-                )}
-                {showChiThi2 && (
-                  <div className='printycsxpage'>
-                    <div className='buttongroup'>
-                      <input
-                        type='text'
-                        value={maxLieu}
-                        onChange={(e) => {
-                          setMaxLieu(Number(e.target.value));
-                        }}
-                      ></input>
-                      <button
-                        onClick={() => {
-                          localStorage.setItem("maxLieu", maxLieu.toString());
-                          Swal.fire(
-                            "Thông báo",
-                            "Đã set lại max dòng",
-                            "success"
-                          );
-                        }}
-                      >
-                        Set dòng
-                      </button>
-                      <button
-                        onClick={() => {
-                          setChiThiListRender2(renderChiThi2(chithiarray));
-                        }}
-                      >
-                        Render Chỉ Thị 2
-                      </button>
-                      <button onClick={handlePrint}>Print Chỉ Thị</button>
-                      <button
-                        onClick={() => {
-                          setShowChiThi2(!showChiThi2);
-                        }}
-                      >
-                        Close
-                      </button>
-                    </div>
-                    <div className='ycsxrender' ref={ycsxprintref}>
-                      {chithilistrender2}
-                    </div>
+                  <div className='ycsxrender' ref={ycsxprintref}>
+                    {chithilistrender}
                   </div>
-                )}
-                {showYCKT && (
-                  <div className='printycsxpage'>
-                    <div className='buttongroup'>
-                      <button
-                        onClick={() => {
-                          setYCKTListRender(renderYCKT(qlsxplandatafilter));
-                        }}
-                      >
-                        Render YCKT
-                      </button>
-                      <button onClick={handlePrint}>Print Chỉ Thị</button>
-                      <button
-                        onClick={() => {
-                          setShowYCKT(!showYCKT);
-                        }}
-                      >
-                        Close
-                      </button>
-                    </div>
-                    <div className='ycsxrender' ref={ycsxprintref}>
-                      {ycktlistrender}
-                    </div>
+                </div>
+              )}
+              {showChiThi2 && (
+                <div className='printycsxpage'>
+                  <div className='buttongroup'>
+                    <input
+                      type='text'
+                      value={maxLieu}
+                      onChange={(e) => {
+                        setMaxLieu(Number(e.target.value));
+                      }}
+                    ></input>
+                    <button
+                      onClick={() => {
+                        localStorage.setItem("maxLieu", maxLieu.toString());
+                        Swal.fire(
+                          "Thông báo",
+                          "Đã set lại max dòng",
+                          "success"
+                        );
+                      }}
+                    >
+                      Set dòng
+                    </button>
+                    <button
+                      onClick={() => {
+                        setChiThiListRender2(renderChiThi2(chithiarray));
+                      }}
+                    >
+                      Render Chỉ Thị 2
+                    </button>
+                    <button onClick={handlePrint}>Print Chỉ Thị</button>
+                    <button
+                      onClick={() => {
+                        setShowChiThi2(!showChiThi2);
+                      }}
+                    >
+                      Close
+                    </button>
                   </div>
-                )}
+                  <div className='ycsxrender' ref={ycsxprintref}>
+                    {chithilistrender2}
+                  </div>
+                </div>
+              )}
+              {showYCKT && (
+                <div className='printycsxpage'>
+                  <div className='buttongroup'>
+                    <button
+                      onClick={() => {
+                        setYCKTListRender(renderYCKT(qlsxplandatafilter));
+                      }}
+                    >
+                      Render YCKT
+                    </button>
+                    <button onClick={handlePrint}>Print Chỉ Thị</button>
+                    <button
+                      onClick={() => {
+                        setShowYCKT(!showYCKT);
+                      }}
+                    >
+                      Close
+                    </button>
+                  </div>
+                  <div className='ycsxrender' ref={ycsxprintref}>
+                    {ycktlistrender}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>

@@ -1,17 +1,22 @@
 import {
-  Autocomplete,
   IconButton,
-  LinearProgress,
-  TextField,
 } from "@mui/material";
-import {
-  DataGrid,
-  GridSelectionModel,
-  GridToolbarContainer,
-  GridToolbarDensitySelector,
-  GridToolbarFilterButton,
-  GridToolbarQuickFilter,
-} from "@mui/x-data-grid";
+import DataGrid, {
+  Column,
+  ColumnChooser,
+  Editing,
+  Export,
+  FilterRow,
+  Item,
+  Pager,
+  Paging,
+  Scrolling,
+  SearchPanel,
+  Selection,
+  Summary,
+  Toolbar,
+  TotalItem,
+} from "devextreme-react/data-grid";
 import moment from "moment";
 import React, { useContext, useEffect, useState, useTransition } from "react";
 import {
@@ -127,7 +132,7 @@ interface LOSS_TABLE_DATA {
   LOSS_INS_OUT_VS_SCANNED_EA: number,
   LOSS_INS_OUT_VS_XUATKHO_EA: number,
 }
-const DATASX = () => {
+const DATASX2 = () => {
   const [showloss,setShowLoss]  = useState(false);
   const [losstableinfo,setLossTableInfo] = useState<LOSS_TABLE_DATA>({
     XUATKHO_MET: 0,
@@ -172,6 +177,159 @@ const DATASX = () => {
   const [sumaryINSPECT, setSummaryInspect] = useState("");
   const [m_name, setM_Name] = useState("");
   const [m_code, setM_Code] = useState("");
+  const [selectedRowsDataCHITHI, setSelectedRowsDataCHITHI] = useState<
+  Array<SX_DATA>
+>([]);
+  const [selectedRowsDataYCSX, setSelectedRowsDataYCSX] = useState<
+  Array<YCSX_SX_DATA>
+>([]);
+
+  const materialDataTable = React.useMemo(
+    () => (
+      <div className='datatb'>
+        <DataGrid
+          autoNavigateToFocusedRow={true}
+          allowColumnReordering={true}
+          allowColumnResizing={true}
+          columnAutoWidth={false}
+          cellHintEnabled={true}
+          columnResizingMode={"widget"}
+          showColumnLines={true}
+          dataSource={datasxtable}
+          columnWidth='auto'
+          keyExpr='id'
+          height={"70vh"}
+          showBorders={true}
+          onSelectionChanged={(e) => {
+            //console.log(e.selectedRowsData);
+            setSelectedRowsDataCHITHI(e.selectedRowsData);
+          }}
+          onRowClick={(e) => {
+            //console.log(e.data);
+          }}
+        >
+          <Scrolling
+            useNative={true}
+            scrollByContent={true}
+            scrollByThumb={true}
+            showScrollbar='onHover'
+            mode='virtual'
+          />
+          <Selection mode='multiple' selectAllMode='allPages' />
+          <Editing
+            allowUpdating={false}
+            allowAdding={false}
+            allowDeleting={false}
+            mode='cell'
+            confirmDelete={false}
+            onChangesChange={(e) => {}}
+          />
+          <Export enabled={true} />
+          <Toolbar disabled={false}>
+            <Item location='before'>
+              <IconButton
+                className='buttonIcon'
+                onClick={() => {
+                  SaveExcel(datasxtable, "SXDATATABLE");
+                }}
+              >
+                <AiFillFileExcel color='green' size={25} />
+                SAVE
+              </IconButton>
+            </Item>
+            <Item name='searchPanel' />
+            <Item name='exportButton' />
+            <Item name='columnChooserButton' />
+            <Item name='addRowButton' />
+            <Item name='saveButton' />            
+            <Item name='revertButton' />
+          </Toolbar>
+          <FilterRow visible={true} />
+          <SearchPanel visible={true} />
+          <ColumnChooser enabled={true} />
+          <Paging defaultPageSize={15} />
+          <Pager
+            showPageSizeSelector={true}
+            allowedPageSizes={[5, 10, 15, 20, 100, 1000, 10000, "all"]}
+            showNavigationButtons={true}
+            showInfo={true}
+            infoText='Page #{0}. Total: {1} ({2} items)'
+            displayMode='compact'
+          /> 
+          <Column dataField='PHAN_LOAI' caption='PHAN_LOAI' width={100}></Column>
+          <Column dataField='G_CODE' caption='G_CODE' width={100}></Column>
+          <Column dataField='PLAN_ID' caption='PLAN_ID' width={100}></Column>
+          <Column dataField='PLAN_DATE' caption='PLAN_DATE' width={100}></Column>
+          <Column dataField='PROD_REQUEST_NO' caption='PROD_REQUEST_NO' width={100}></Column>
+          <Column dataField='G_NAME' caption='G_NAME' width={100}></Column>
+          <Column dataField='G_NAME_KD' caption='G_NAME_KD' width={100}></Column>
+          <Column dataField='PLAN_QTY' caption='PLAN_QTY' width={100}></Column>
+          <Column dataField='EQ1' caption='EQ1' width={100}></Column>
+          <Column dataField='EQ2' caption='EQ2' width={100}></Column>
+          <Column dataField='PLAN_EQ' caption='PLAN_EQ' width={100}></Column>
+          <Column dataField='PLAN_FACTORY' caption='PLAN_FACTORY' width={100}></Column>
+          <Column dataField='PROCESS_NUMBER' caption='PROCESS_NUMBER' width={100}></Column>
+          <Column dataField='STEP' caption='STEP' width={100}></Column>
+          <Column dataField='M_NAME' caption='M_NAME' width={100}></Column>
+          <Column dataField='WAREHOUSE_OUTPUT_QTY' caption='WAREHOUSE_OUTPUT_QTY' width={100}></Column>
+          <Column dataField='TOTAL_OUT_QTY' caption='TOTAL_OUT_QTY' width={100}></Column>
+          <Column dataField='USED_QTY' caption='USED_QTY' width={100}></Column>
+          <Column dataField='REMAIN_QTY' caption='REMAIN_QTY' width={100}></Column>
+          <Column dataField='PD' caption='PD' width={100}></Column>
+          <Column dataField='CAVITY' caption='CAVITY' width={100}></Column>
+          <Column dataField='SETTING_MET_TC' caption='SETTING_MET_TC' width={150}></Column>
+          <Column dataField='SETTING_MET' caption='SETTING_MET' width={120}></Column>
+          <Column dataField='WAREHOUSE_ESTIMATED_QTY' caption='WAREHOUSE_ESTIMATED_QTY' width={100}></Column>
+          <Column dataField='ESTIMATED_QTY' caption='ESTIMATED_QTY' width={100}></Column>
+          <Column dataField='ESTIMATED_QTY_ST' caption='ESTIMATED_QTY_ST' width={100}></Column>
+          <Column dataField='KETQUASX' caption='KETQUASX' width={100}></Column>
+          <Column dataField='LOSS_SX_ST' caption='LOSS_SX_ST' width={100}></Column>
+          <Column dataField='LOSS_SX' caption='LOSS_SX' width={100}></Column>
+          <Column dataField='INS_INPUT' caption='INS_INPUT' width={100}></Column>
+          <Column dataField='LOSS_SX_KT' caption='LOSS_SX_KT' width={100}></Column>          
+          <Column dataField='INS_OUTPUT' caption='INS_OUTPUT' width={100}></Column>
+          <Column dataField='LOSS_KT' caption='LOSS_KT' width={100}></Column>
+          <Column dataField='SETTING_START_TIME' caption='SETTING_START_TIME' width={150}></Column>
+          <Column dataField='MASS_START_TIME' caption='MASS_START_TIME' width={150}></Column>
+          <Column dataField='MASS_END_TIME' caption='MASS_END_TIME' width={150}></Column>
+          <Column dataField='RPM' caption='RPM' width={100}></Column>
+          <Column dataField='EQ_NAME_TT' caption='EQ_NAME_TT' width={100}></Column>
+          <Column dataField='SX_DATE' caption='SX_DATE' width={100}></Column>
+          <Column dataField='WORK_SHIFT' caption='WORK_SHIFT' width={100}></Column>
+          <Column dataField='INS_EMPL' caption='INS_EMPL' width={100}></Column>
+          <Column dataField='FACTORY' caption='FACTORY' width={100}></Column>
+          <Column dataField='BOC_KIEM' caption='BOC_KIEM' width={100}></Column>
+          <Column dataField='LAY_DO' caption='LAY_DO' width={100}></Column>
+          <Column dataField='MAY_HONG' caption='MAY_HONG' width={100}></Column>
+          <Column dataField='DAO_NG' caption='DAO_NG' width={100}></Column>
+          <Column dataField='CHO_LIEU' caption='CHO_LIEU' width={100}></Column>
+          <Column dataField='CHO_BTP' caption='CHO_BTP' width={100}></Column>
+          <Column dataField='HET_LIEU' caption='HET_LIEU' width={100}></Column>
+          <Column dataField='LIEU_NG' caption='LIEU_NG' width={100}></Column>
+          <Column dataField='CAN_HANG' caption='CAN_HANG' width={100}></Column>
+          <Column dataField='HOP_FL' caption='HOP_FL' width={100}></Column>
+          <Column dataField='CHO_QC' caption='CHO_QC' width={100}></Column>
+          <Column dataField='CHOT_BAOCAO' caption='CHOT_BAOCAO' width={100}></Column>
+          <Column dataField='CHUYEN_CODE' caption='CHUYEN_CODE' width={100}></Column>
+          <Column dataField='KHAC' caption='KHAC' width={100}></Column>
+          <Column dataField='REMARK' caption='REMARK' width={100}></Column>         
+          
+
+          <Summary>
+            <TotalItem
+              alignment='right'
+              column='PHAN_LOAI'
+              summaryType='count'
+              valueFormat={"decimal"}
+            />
+          </Summary>
+        </DataGrid>
+      </div>
+    ),
+    [datasxtable]
+  );
+
+
   const column_datasx = [
     { field: "PHAN_LOAI", headerName: "PHAN_LOAI", minWidth: 120, flex: 1 },
     { field: "PLAN_ID", headerName: "PLAN_ID", minWidth: 120, flex: 1 },
@@ -814,25 +972,8 @@ const DATASX = () => {
   ];
   const [columnDefinition, setColumnDefinition] =
     useState<Array<any>>(column_datasx);
-  function CustomToolbarLICHSUINPUTSX() {
-    return (
-      <GridToolbarContainer>
-        <IconButton
-          className='buttonIcon'
-          onClick={() => {
-            SaveExcel(datasxtable, "Data SX Table");
-          }}
-        >
-          <AiFillFileExcel color='green' size={25} />
-          SAVE
-        </IconButton>
-        <GridToolbarQuickFilter />
-        <div className='div' style={{ fontSize: 20, fontWeight: "bold" }}>
-          DATA SẢN XUẤT
-        </div>
-      </GridToolbarContainer>
-    );
-  }
+
+
   const handle_loaddatasx = () => {
     generalQuery("loadDataSX", {
       ALLTIME: alltime,
@@ -1185,27 +1326,10 @@ const DATASX = () => {
           </table>
         </div>}
         <div className='tracuuYCSXTable'>
-          {readyRender && (
-            <DataGrid             
-              sx={{ fontSize: 12, flex: 1 }}
-              components={{
-                Toolbar: CustomToolbarLICHSUINPUTSX,
-                LoadingOverlay: LinearProgress,
-              }}     
-                        
-              getRowId={(row) => row.id}
-              loading={isLoading}
-              rowHeight={30}
-              rows={datasxtable}
-              columns={columnDefinition}
-              rowsPerPageOptions={[
-                5, 10, 50, 100, 500, 1000, 5000, 10000, 500000,
-              ]}
-            />
-          )}
+          {materialDataTable}
         </div>
       </div>
     </div>
   );
 };
-export default DATASX;
+export default DATASX2;

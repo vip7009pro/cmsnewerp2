@@ -1,5 +1,6 @@
 import  { useEffect, useState,  lazy, Suspense} from 'react'
 import "./QLSXPLAN.scss"
+import DATASX2 from './DATASX/DATASX2';
 const DATASX= lazy(()=> import('./DATASX/DATASX'));
 const EQ_STATUS= lazy(()=> import('./EQ_STATUS/EQ_STATUS'));
 const KHOAO= lazy(()=> import('./KHOAO/KHOAO'));
@@ -146,7 +147,7 @@ const QLSXPLAN = () => {
       )}
       {selection.tab6 && (
         <div className='datadtc'>
-          <DATASX/>                               
+          <DATASX2/>                               
         </div>
       )}
       {selection.tab7 && (
