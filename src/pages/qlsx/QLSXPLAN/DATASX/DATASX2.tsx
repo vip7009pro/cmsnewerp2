@@ -52,6 +52,7 @@ interface SX_DATA {
   PD: number;
   CAVITY: number;
   SETTING_MET_TC: number;
+  SETTING_DM_SX: number;
   SETTING_MET: number;
   WAREHOUSE_ESTIMATED_QTY: number;
   ESTIMATED_QTY_ST: number;
@@ -132,7 +133,25 @@ interface LOSS_TABLE_DATA {
   LOSS_INS_OUT_VS_SCANNED_EA: number,
   LOSS_INS_OUT_VS_XUATKHO_EA: number,
 }
+interface LICHSUINPUTLIEU_DATA {
+  id: string,
+  PLAN_ID: string,
+  G_NAME: string,
+  G_NAME_KD: string,
+  M_CODE: string,
+  M_NAME: string,
+  M_LOT_NO: string,
+  WIDTH_CD: number,
+  INPUT_QTY: number,
+  USED_QTY: number,
+  REMAIN_QTY: number,
+  EMPL_NO: string,
+  EQUIPMENT_CD: string,
+  INS_DATE: string,
+  PROD_REQUEST_NO: string,
+}
 const DATASX2 = () => {
+  const [inputlieudatatable,setInputLieuDataTable]= useState<LICHSUINPUTLIEU_DATA[]>([]);
   const [showloss,setShowLoss]  = useState(false);
   const [losstableinfo,setLossTableInfo] = useState<LOSS_TABLE_DATA>({
     XUATKHO_MET: 0,
@@ -147,22 +166,8 @@ const DATASX2 = () => {
   LOSS_INS_OUT_VS_SCANNED_EA: 0,
   LOSS_INS_OUT_VS_XUATKHO_EA: 0,
   });
-  const [selectionModel_INPUTSX, setSelectionModel_INPUTSX] = useState<any>([]);
-  const [readyRender, setReadyRender] = useState(false);
-  const [selection, setSelection] = useState<any>({
-    trapo: true,
-    thempohangloat: false,
-    them1po: false,
-    them1invoice: false,
-    themycsx: false,
-    suaycsx: false,
-    inserttableycsx: false,
-    renderycsx: false,
-    renderbanve: false,
-    amazontab: false,
-  });
+  const [selectbutton,setSelectButton]= useState(true);
   const [userData, setUserData] = useContext(UserContext);
-  const [isLoading, setisLoading] = useState(false);
   const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
   const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));
   const [codeKD, setCodeKD] = useState("");
@@ -174,7 +179,6 @@ const DATASX2 = () => {
   const [alltime, setAllTime] = useState(false);
   const [id, setID] = useState("");
   const [datasxtable, setDataSXTable] = useState<Array<any>>([]);
-  const [sumaryINSPECT, setSummaryInspect] = useState("");
   const [m_name, setM_Name] = useState("");
   const [m_code, setM_Code] = useState("");
   const [selectedRowsDataCHITHI, setSelectedRowsDataCHITHI] = useState<
@@ -183,8 +187,7 @@ const DATASX2 = () => {
   const [selectedRowsDataYCSX, setSelectedRowsDataYCSX] = useState<
   Array<YCSX_SX_DATA>
 >([]);
-
-  const materialDataTable = React.useMemo(
+  const datasx_chithi = React.useMemo(
     () => (
       <div className='datatb'>
         <DataGrid
@@ -205,7 +208,8 @@ const DATASX2 = () => {
             setSelectedRowsDataCHITHI(e.selectedRowsData);
           }}
           onRowClick={(e) => {
-            //console.log(e.data);
+            console.log(e.data);
+            handle_loadlichsuinputlieu(e.data.PLAN_ID);
           }}
         >
           <Scrolling
@@ -261,9 +265,17 @@ const DATASX2 = () => {
           <Column dataField='PLAN_ID' caption='PLAN_ID' width={100}></Column>
           <Column dataField='PLAN_DATE' caption='PLAN_DATE' width={100}></Column>
           <Column dataField='PROD_REQUEST_NO' caption='PROD_REQUEST_NO' width={100}></Column>
-          <Column dataField='G_NAME' caption='G_NAME' width={100}></Column>
-          <Column dataField='G_NAME_KD' caption='G_NAME_KD' width={100}></Column>
-          <Column dataField='PLAN_QTY' caption='PLAN_QTY' width={100}></Column>
+          <Column dataField='G_NAME' caption='G_NAME' width={150}></Column>
+          <Column dataField='G_NAME_KD' caption='G_NAME_KD' width={120}></Column>
+          <Column dataField='PLAN_QTY' caption='PLAN_QTY' width={100} dataType='number'
+            format={"decimal"}
+            cellRender={(e: any) => {
+              return (
+                <span style={{ color: "green", fontWeight: "bold" }}>
+                  {e.data.PLAN_QTY?.toLocaleString("en-US")}
+                </span>
+              );
+            }}></Column>
           <Column dataField='EQ1' caption='EQ1' width={100}></Column>
           <Column dataField='EQ2' caption='EQ2' width={100}></Column>
           <Column dataField='PLAN_EQ' caption='PLAN_EQ' width={100}></Column>
@@ -271,24 +283,164 @@ const DATASX2 = () => {
           <Column dataField='PROCESS_NUMBER' caption='PROCESS_NUMBER' width={100}></Column>
           <Column dataField='STEP' caption='STEP' width={100}></Column>
           <Column dataField='M_NAME' caption='M_NAME' width={100}></Column>
-          <Column dataField='WAREHOUSE_OUTPUT_QTY' caption='WAREHOUSE_OUTPUT_QTY' width={100}></Column>
-          <Column dataField='TOTAL_OUT_QTY' caption='TOTAL_OUT_QTY' width={100}></Column>
-          <Column dataField='USED_QTY' caption='USED_QTY' width={100}></Column>
-          <Column dataField='REMAIN_QTY' caption='REMAIN_QTY' width={100}></Column>
+          <Column dataField='WAREHOUSE_OUTPUT_QTY' caption='WAREHOUSE_OUTPUT_QTY' width={100} dataType='number'
+            format={"decimal"}
+            cellRender={(e: any) => {
+              return (
+                <span style={{ color: "black", fontWeight: "bold" }}>
+                  {e.data.WAREHOUSE_OUTPUT_QTY?.toLocaleString("en-US")}
+                </span>
+              );
+            }}></Column>
+          <Column dataField='TOTAL_OUT_QTY' caption='TOTAL_OUT_QTY' width={100} dataType='number'
+            format={"decimal"}
+            cellRender={(e: any) => {
+              return (
+                <span style={{ color: "blue", fontWeight: "bold" }}>
+                  {e.data.TOTAL_OUT_QTY?.toLocaleString("en-US")}
+                </span>
+              );
+            }}></Column>
+          <Column dataField='USED_QTY' caption='USED_QTY' width={100} dataType='number'
+            format={"decimal"}
+            cellRender={(e: any) => {
+              return (
+                <span style={{ color: "green", fontWeight: "bold" }}>
+                  {e.data.USED_QTY?.toLocaleString("en-US")}
+                </span>
+              );
+            }}></Column>
+          <Column dataField='REMAIN_QTY' caption='REMAIN_QTY' width={100} dataType='number'
+            format={"decimal"}
+            cellRender={(e: any) => {
+              return (
+                <span style={{ color: "red", fontWeight: "bold" }}>
+                  {e.data.REMAIN_QTY?.toLocaleString("en-US")}
+                </span>
+              );
+            }}></Column>
           <Column dataField='PD' caption='PD' width={100}></Column>
           <Column dataField='CAVITY' caption='CAVITY' width={100}></Column>
-          <Column dataField='SETTING_MET_TC' caption='SETTING_MET_TC' width={150}></Column>
-          <Column dataField='SETTING_MET' caption='SETTING_MET' width={120}></Column>
-          <Column dataField='WAREHOUSE_ESTIMATED_QTY' caption='WAREHOUSE_ESTIMATED_QTY' width={100}></Column>
-          <Column dataField='ESTIMATED_QTY' caption='ESTIMATED_QTY' width={100}></Column>
-          <Column dataField='ESTIMATED_QTY_ST' caption='ESTIMATED_QTY_ST' width={100}></Column>
-          <Column dataField='KETQUASX' caption='KETQUASX' width={100}></Column>
-          <Column dataField='LOSS_SX_ST' caption='LOSS_SX_ST' width={100}></Column>
-          <Column dataField='LOSS_SX' caption='LOSS_SX' width={100}></Column>
-          <Column dataField='INS_INPUT' caption='INS_INPUT' width={100}></Column>
-          <Column dataField='LOSS_SX_KT' caption='LOSS_SX_KT' width={100}></Column>          
-          <Column dataField='INS_OUTPUT' caption='INS_OUTPUT' width={100}></Column>
-          <Column dataField='LOSS_KT' caption='LOSS_KT' width={100}></Column>
+          <Column dataField='SETTING_MET_TC' caption='SETTING_MET_TC' width={150} dataType='number'
+            format={"decimal"}
+            cellRender={(e: any) => {
+              return (
+                <span style={{ color: "#B42ED8", fontWeight: "bold" }}>
+                  {e.data.SETTING_MET_TC?.toLocaleString("en-US")}
+                </span>
+              );
+            }}></Column>
+          <Column dataField='SETTING_DM_SX' caption='SETTING_DM_SX' width={150} dataType='number'
+            format={"decimal"}
+            cellRender={(e: any) => {
+              return (
+                <span style={{ color: "#B42ED8", fontWeight: "bold" }}>
+                  {e.data.SETTING_DM_SX?.toLocaleString("en-US")}
+                </span>
+              );
+            }}></Column>
+          <Column dataField='SETTING_MET' caption='SETTING_MET' width={120} dataType='number'
+            format={"decimal"}
+            cellRender={(e: any) => {
+              return (
+                <span style={{ color: "#B42ED8", fontWeight: "bold" }}>
+                  {e.data.SETTING_MET?.toLocaleString("en-US")}
+                </span>
+              );
+            }}></Column>
+          <Column dataField='WAREHOUSE_ESTIMATED_QTY' caption='WAREHOUSE_ESTIMATED_QTY' width={100} dataType='number'
+            format={"decimal"}
+            cellRender={(e: any) => {
+              return (
+                <span style={{ color: "#DF6709", fontWeight: "bold" }}>
+                  {e.data.WAREHOUSE_ESTIMATED_QTY?.toLocaleString("en-US")}
+                </span>
+              );
+            }}></Column>
+            <Column dataField='ESTIMATED_QTY_ST' caption='ESTIMATED_QTY_ST' width={100} dataType='number'
+            format={"decimal"}
+            cellRender={(e: any) => {
+              return (
+                <span style={{ color: "#DF6709", fontWeight: "bold" }}>
+                  {e.data.ESTIMATED_QTY_ST?.toLocaleString("en-US")}
+                </span>
+              );
+            }}></Column>
+          <Column dataField='ESTIMATED_QTY' caption='ESTIMATED_QTY' width={100} dataType='number'
+            format={"decimal"}
+            cellRender={(e: any) => {
+              return (
+                <span style={{ color: "#DF6709", fontWeight: "bold" }}>
+                  {e.data.ESTIMATED_QTY?.toLocaleString("en-US")}
+                </span>
+              );
+            }}></Column>
+          <Column dataField='KETQUASX' caption='KETQUASX' width={100} dataType='number'
+            format={"decimal"}
+            cellRender={(e: any) => {
+              return (
+                <span style={{ color: "blue", fontWeight: "bold" }}>
+                  {e.data.KETQUASX?.toLocaleString("en-US")}
+                </span>
+              );
+            }}></Column>
+          <Column dataField='LOSS_SX_ST' caption='LOSS_SX_ST' width={100} dataType='number'
+            format={"percent"}
+            cellRender={(e: any) => {
+              return (
+                <span style={{ color: "green", fontWeight: "bold" }}>
+                  {100*e.data.LOSS_SX_ST?.toFixed(2).toLocaleString("en-US",{
+                    maximumFractionDigits: 2,
+                    minimumFractionDigits: 2
+                  })} %
+                </span>
+              );
+            }}></Column>
+          <Column dataField='LOSS_SX' caption='LOSS_SX' width={100} dataType='number'
+            format={"percent"}
+            cellRender={(e: any) => {
+              return (
+                <span style={{ color: "green", fontWeight: "bold" }}>
+                  {100*e.data.LOSS_SX?.toLocaleString("en-US",)} %
+                </span>
+              );
+            }}></Column>
+          <Column dataField='INS_INPUT' caption='INS_INPUT' width={100} dataType='number'
+            format={"decimal"}
+            cellRender={(e: any) => {
+              return (
+                <span style={{ color: "#DF6709", fontWeight: "bold" }}>
+                  {e.data.INS_INPUT?.toLocaleString("en-US")}
+                </span>
+              );
+            }}></Column>
+          <Column dataField='LOSS_SX_KT' caption='LOSS_SX_KT' width={100} dataType='number'
+            format={"percent"}
+            cellRender={(e: any) => {
+              return (
+                <span style={{ color: "green", fontWeight: "bold" }}>
+                  {100*e.data.LOSS_SX_KT?.toLocaleString("en-US",)} %
+                </span>
+              );
+            }}></Column>          
+          <Column dataField='INS_OUTPUT' caption='INS_OUTPUT' width={100} dataType='number'
+            format={"decimal"}
+            cellRender={(e: any) => {
+              return (
+                <span style={{ color: "#DF6709", fontWeight: "bold" }}>
+                  {e.data.INS_OUTPUT?.toLocaleString("en-US")}
+                </span>
+              );
+            }}></Column>
+          <Column dataField='LOSS_KT' caption='LOSS_KT' width={100} dataType='number'
+            format={"percent"}
+            cellRender={(e: any) => {
+              return (
+                <span style={{ color: "green", fontWeight: "bold" }}>
+                  {100*e.data.LOSS_KT?.toLocaleString("en-US",)} %
+                </span>
+              );
+            }}></Column>
           <Column dataField='SETTING_START_TIME' caption='SETTING_START_TIME' width={150}></Column>
           <Column dataField='MASS_START_TIME' caption='MASS_START_TIME' width={150}></Column>
           <Column dataField='MASS_END_TIME' caption='MASS_END_TIME' width={150}></Column>
@@ -312,9 +464,336 @@ const DATASX2 = () => {
           <Column dataField='CHOT_BAOCAO' caption='CHOT_BAOCAO' width={100}></Column>
           <Column dataField='CHUYEN_CODE' caption='CHUYEN_CODE' width={100}></Column>
           <Column dataField='KHAC' caption='KHAC' width={100}></Column>
-          <Column dataField='REMARK' caption='REMARK' width={100}></Column>         
-          
-
+          <Column dataField='REMARK' caption='REMARK' width={100}></Column> 
+          <Summary>
+            <TotalItem
+              alignment='right'
+              column='PHAN_LOAI'
+              summaryType='count'
+              valueFormat={"decimal"}
+            />
+            <TotalItem
+              alignment='right'
+              column='WAREHOUSE_OUTPUT_QTY'
+              summaryType='sum'
+              valueFormat={"thousands"}
+            />
+            <TotalItem
+              alignment='right'
+              column='TOTAL_OUT_QTY'
+              summaryType='sum'
+              valueFormat={"thousands"}
+            />
+            <TotalItem
+              alignment='right'
+              column='USED_QTY'
+              summaryType='sum'
+              valueFormat={"thousands"}
+            />
+            <TotalItem
+              alignment='right'
+              column='REMAIN_QTY'
+              summaryType='sum'
+              valueFormat={"thousands"}
+            />
+            <TotalItem
+              alignment='right'
+              column='SETTING_MET_TC'
+              summaryType='sum'
+              valueFormat={"thousands"}
+            />
+            <TotalItem
+              alignment='right'
+              column='SETTING_DM_SX'
+              summaryType='sum'
+              valueFormat={"thousands"}
+            />
+            <TotalItem
+              alignment='right'
+              column='SETTING_MET'
+              summaryType='sum'
+              valueFormat={"thousands"}
+            />
+            <TotalItem
+              alignment='right'
+              column='WAREHOUSE_ESTIMATED_QTY'
+              summaryType='sum'
+              valueFormat={"thousands"}
+            />
+            <TotalItem
+              alignment='right'
+              column='ESTIMATED_QTY_ST'
+              summaryType='sum'
+              valueFormat={"thousands"}
+            />
+            <TotalItem
+              alignment='right'
+              column='ESTIMATED_QTY'
+              summaryType='sum'
+              valueFormat={"thousands"}
+            />
+            <TotalItem
+              alignment='right'
+              column='KETQUASX'
+              summaryType='sum'
+              valueFormat={"thousands"}
+            />
+            <TotalItem
+              alignment='right'
+              column='INS_INPUT'
+              summaryType='sum'
+              valueFormat={"thousands"}
+            />
+            <TotalItem
+              alignment='right'
+              column='INS_OUTPUT'
+              summaryType='sum'
+              valueFormat={"thousands"}
+            />
+          </Summary>
+        </DataGrid>
+      </div>
+    ),
+    [datasxtable]
+  );
+  const datasx_ycsx = React.useMemo(
+    () => (
+      <div className='datatb'>
+        <DataGrid
+          autoNavigateToFocusedRow={true}
+          allowColumnReordering={true}
+          allowColumnResizing={true}
+          columnAutoWidth={false}
+          cellHintEnabled={true}
+          columnResizingMode={"widget"}
+          showColumnLines={true}
+          dataSource={datasxtable}
+          columnWidth='auto'
+          keyExpr='id'
+          height={"70vh"}
+          showBorders={true}
+          onSelectionChanged={(e) => {
+            //console.log(e.selectedRowsData);
+            setSelectedRowsDataYCSX(e.selectedRowsData);
+          }}
+          onRowClick={(e) => {
+            //console.log(e.data);
+          }}
+        >
+          <Scrolling
+            useNative={true}
+            scrollByContent={true}
+            scrollByThumb={true}
+            showScrollbar='onHover'
+            mode='virtual'
+          />
+          <Selection mode='multiple' selectAllMode='allPages' />
+          <Editing
+            allowUpdating={false}
+            allowAdding={false}
+            allowDeleting={false}
+            mode='cell'
+            confirmDelete={false}
+            onChangesChange={(e) => {}}
+          />
+          <Export enabled={true} />
+          <Toolbar disabled={false}>
+            <Item location='before'>
+              <IconButton
+                className='buttonIcon'
+                onClick={() => {
+                  SaveExcel(datasxtable, "SXDATATABLE");
+                }}
+              >
+                <AiFillFileExcel color='green' size={25} />
+                SAVE
+              </IconButton>
+            </Item>
+            <Item name='searchPanel' />
+            <Item name='exportButton' />
+            <Item name='columnChooserButton' />
+            <Item name='addRowButton' />
+            <Item name='saveButton' />            
+            <Item name='revertButton' />
+          </Toolbar>
+          <FilterRow visible={true} />
+          <SearchPanel visible={true} />
+          <ColumnChooser enabled={true} />
+          <Paging defaultPageSize={15} />
+          <Pager
+            showPageSizeSelector={true}
+            allowedPageSizes={[5, 10, 15, 20, 100, 1000, 10000, "all"]}
+            showNavigationButtons={true}
+            showInfo={true}
+            infoText='Page #{0}. Total: {1} ({2} items)'
+            displayMode='compact'
+          /> 
+          <Column dataField='YCSX_STATUS' caption='YCSX_STATUS' width={100}></Column>
+          <Column dataField='G_CODE' caption='G_CODE' width={100}></Column>
+          <Column dataField='PHAN_LOAI' caption='PHAN_LOAI' width={100}></Column>
+          <Column dataField='PROD_REQUEST_NO' caption='PROD_REQUEST_NO' width={100}></Column>
+          <Column dataField='G_NAME' caption='G_NAME' width={100}></Column>
+          <Column dataField='G_NAME_KD' caption='G_NAME_KD' width={100}></Column>
+          <Column dataField='FACTORY' caption='FACTORY' width={100}></Column>
+          <Column dataField='EQ1' caption='EQ1' width={100}></Column>
+          <Column dataField='EQ2' caption='EQ2' width={100}></Column>
+          <Column dataField='PROD_REQUEST_DATE' caption='PROD_REQUEST_DATE' width={100}></Column>
+          <Column dataField='PROD_REQUEST_QTY' caption='PROD_REQUEST_QTY' width={100} dataType='number'
+            format={"decimal"}
+            cellRender={(e: any) => {
+              return (
+                <span style={{ color: "black", fontWeight: "bold" }}>
+                  {e.data.PROD_REQUEST_QTY?.toLocaleString("en-US")}
+                </span>
+              );
+            }}></Column>
+          <Column dataField='M_NAME' caption='M_NAME' width={100}></Column>
+          <Column dataField='M_OUTPUT' caption='M_OUTPUT' width={100} dataType='number'
+            format={"decimal"}
+            cellRender={(e: any) => {
+              return (
+                <span style={{ color: "blue", fontWeight: "bold" }}>
+                  {e.data.M_OUTPUT?.toLocaleString("en-US")}
+                </span>
+              );
+            }}></Column>
+          <Column dataField='SCANNED_QTY' caption='SCANNED_QTY' width={100} dataType='number'
+            format={"decimal"}
+            cellRender={(e: any) => {
+              return (
+                <span style={{ color: "green", fontWeight: "bold" }}>
+                  {e.data.SCANNED_QTY?.toLocaleString("en-US")}
+                </span>
+              );
+            }}></Column>
+          <Column dataField='REMAIN_QTY' caption='REMAIN_QTY' width={100} dataType='number'
+            format={"decimal"}
+            cellRender={(e: any) => {
+              return (
+                <span style={{ color: "red", fontWeight: "bold" }}>
+                  {e.data.REMAIN_QTY?.toLocaleString("en-US")}
+                </span>
+              );
+            }}></Column>
+          <Column dataField='USED_QTY' caption='USED_QTY' width={100} dataType='number'
+            format={"decimal"}
+            cellRender={(e: any) => {
+              return (
+                <span style={{ color: "blue", fontWeight: "bold" }}>
+                  {e.data.USED_QTY?.toLocaleString("en-US")}
+                </span>
+              );
+            }}></Column>
+          <Column dataField='PD' caption='PD' width={100}></Column>
+          <Column dataField='CAVITY' caption='CAVITY' width={100}></Column>
+          <Column dataField='WAREHOUSE_ESTIMATED_QTY' caption='WAREHOUSE_ESTIMATED_QTY' width={100} dataType='number'
+            format={"decimal"}
+            cellRender={(e: any) => {
+              return (
+                <span style={{ color: "green", fontWeight: "bold" }}>
+                  {e.data.WAREHOUSE_ESTIMATED_QTY?.toLocaleString("en-US")}
+                </span>
+              );
+            }}></Column>
+          <Column dataField='ESTIMATED_QTY' caption='ESTIMATED_QTY' width={100} dataType='number'
+            format={"decimal"}
+            cellRender={(e: any) => {
+              return (
+                <span style={{ color: "green", fontWeight: "bold" }}>
+                  {e.data.ESTIMATED_QTY?.toLocaleString("en-US")}
+                </span>
+              );
+            }}></Column>
+          <Column dataField='CD1' caption='CD1' width={100} dataType='number'
+            format={"decimal"}
+            cellRender={(e: any) => {
+              return (
+                <span style={{ color: "#FF00D4", fontWeight: "bold" }}>
+                  {e.data.CD1?.toLocaleString("en-US")}
+                </span>
+              );
+            }}></Column>
+          <Column dataField='CD2' caption='CD2' width={100} dataType='number'
+            format={"decimal"}
+            cellRender={(e: any) => {
+              return (
+                <span style={{ color: "#FF00D4", fontWeight: "bold" }}>
+                  {e.data.CD2?.toLocaleString("en-US")}
+                </span>
+              );
+            }}></Column>
+          <Column dataField='INS_INPUT' caption='INS_INPUT' width={100} dataType='number'
+            format={"decimal"}
+            cellRender={(e: any) => {
+              return (
+                <span style={{ color: "blue", fontWeight: "bold" }}>
+                  {e.data.INS_INPUT?.toLocaleString("en-US")}
+                </span>
+              );
+            }}></Column>
+          <Column dataField='INS_OUTPUT' caption='INS_OUTPUT' width={100} dataType='number'
+            format={"decimal"}
+            cellRender={(e: any) => {
+              return (
+                <span style={{ color: "blue", fontWeight: "bold" }}>
+                  {e.data.INS_OUTPUT?.toLocaleString("en-US")}
+                </span>
+              );
+            }}></Column>
+          <Column dataField='LOSS_SX1' caption='LOSS_SX1' width={100} dataType='number'
+            format={"percent"}
+            cellRender={(e: any) => {
+              return (
+                <span style={{ color: "#F58A02", fontWeight: "bold" }}>
+                  {100*e.data.LOSS_SX1?.toLocaleString("en-US",)} %
+                </span>
+              );
+            }}></Column>
+          <Column dataField='LOSS_SX2' caption='LOSS_SX2' width={100} dataType='number'
+            format={"percent"}
+            cellRender={(e: any) => {
+              return (
+                <span style={{ color: "#F58A02", fontWeight: "bold" }}>
+                  {100*e.data.LOSS_SX2?.toLocaleString("en-US",)} %
+                </span>
+              );
+            }}></Column>
+          <Column dataField='LOSS_SX3' caption='LOSS_SX3' width={100} dataType='number'
+            format={"percent"}
+            cellRender={(e: any) => {
+              return (
+                <span style={{ color: "#F58A02", fontWeight: "bold" }}>
+                  {100*e.data.LOSS_SX3?.toLocaleString("en-US",)} %
+                </span>
+              );
+            }}></Column>
+          <Column dataField='LOSS_SX4' caption='LOSS_SX4' width={100} dataType='number'
+            format={"percent"}
+            cellRender={(e: any) => {
+              return (
+                <span style={{ color: "#F58A02", fontWeight: "bold" }}>
+                  {100*e.data.LOSS_SX4?.toLocaleString("en-US",)} %
+                </span>
+              );
+            }}></Column>
+          <Column dataField='TOTAL_LOSS' caption='TOTAL_LOSS' width={100} dataType='number'
+            format={"percent"}
+            cellRender={(e: any) => {
+              return (
+                <span style={{ color: "#0027EA", fontWeight: "bold" }}>
+                  {100*e.data.TOTAL_LOSS?.toLocaleString("en-US",)} %
+                </span>
+              );
+            }}></Column>
+          <Column dataField='TOTAL_LOSS2' caption='TOTAL_LOSS2' width={100} dataType='number'
+            format={"percent"}
+            cellRender={(e: any) => {
+              return (
+                <span style={{ color: "#0027EA", fontWeight: "bold" }}>
+                  {100*e.data.TOTAL_LOSS2?.toLocaleString("en-US",)} %
+                </span>
+              );
+            }}></Column>
           <Summary>
             <TotalItem
               alignment='right'
@@ -328,653 +807,191 @@ const DATASX2 = () => {
     ),
     [datasxtable]
   );
-
-
-  const column_datasx = [
-    { field: "PHAN_LOAI", headerName: "PHAN_LOAI", minWidth: 120, flex: 1 },
-    { field: "PLAN_ID", headerName: "PLAN_ID", minWidth: 120, flex: 1 },
-    { field: "PLAN_DATE", headerName: "PLAN_DATE", minWidth: 120, flex: 1 },
-    {
-      field: "PROD_REQUEST_NO",
-      headerName: "PROD_REQUEST_NO",
-      minWidth: 120,
-      flex: 1,
-    },
-    { field: "G_CODE", headerName: "G_CODE", minWidth: 120, flex: 1 },
-    { field: "G_NAME", headerName: "G_NAME", minWidth: 120, flex: 1 },
-    { field: "G_NAME_KD", headerName: "G_NAME_KD", minWidth: 120, flex: 1 },
-    {
-      field: "PLAN_QTY",
-      headerName: "PLAN_QTY",
-      minWidth: 120,
-      flex: 1,
-      renderCell: (params: any) => {
-        return (
-          <span style={{ color: "blue" }}>
-            {params.row.PLAN_QTY.toLocaleString("en-US")}
-          </span>
-        );
-      },
-    },
-    { field: "PLAN_EQ", headerName: "PLAN_EQ", minWidth: 120, flex: 1 },
-    {
-      field: "PLAN_FACTORY",
-      headerName: "PLAN_FACTORY",
-      minWidth: 120,
-      flex: 1,
-    },
-    {
-      field: "PROCESS_NUMBER",
-      headerName: "PROCESS_NUMBER",
-      minWidth: 120,
-      flex: 1,
-    },
-    { field: "STEP", headerName: "STEP", minWidth: 120, flex: 1 },
-    { field: "M_NAME", headerName: "M_NAME", minWidth: 120, flex: 1 },
-    {
-      field: "WAREHOUSE_OUTPUT_QTY",
-      headerName: "WAREHOUSE_OUTPUT_QTY",
-      minWidth: 150,
-      flex: 1,
-      renderCell: (params: any) => {
-        if (params.row.WAREHOUSE_OUTPUT_QTY !== null) {
-          return (
-            <span style={{ color: "blue", fontWeight:'bold' }}>
-              {params.row.WAREHOUSE_OUTPUT_QTY.toLocaleString("en-US")}
-            </span>
-          );
-        } else {
-          return <></>;
-        }
-      },
-    },
-    {
-      field: "TOTAL_OUT_QTY",
-      headerName: "TOTAL_OUT_QTY",
-      minWidth: 120,
-      flex: 1,
-      renderCell: (params: any) => {
-        if (params.row.TOTAL_OUT_QTY !== null) {
-          return (
-            <span style={{ color: "red", fontWeight:'bold' }}>
-              {params.row.TOTAL_OUT_QTY.toLocaleString("en-US")}
-            </span>
-          );
-        } else {
-          return <></>;
-        }
-      },
-    },
-    {
-      field: "USED_QTY",
-      headerName: "USED_QTY",
-      minWidth: 120,
-      flex: 1,
-      renderCell: (params: any) => {
-        if (params.row.USED_QTY !== null) {
-          return (
-            <span style={{ color: "green", fontWeight:'bold' }}>
-              {params.row.USED_QTY.toLocaleString("en-US")}
-            </span>
-          );
-        } else {
-          return <></>;
-        }
-      },
-    },
-    {
-      field: "REMAIN_QTY",
-      headerName: "REMAIN_QTY",
-      minWidth: 120,
-      flex: 1,
-      renderCell: (params: any) => {
-        if (params.row.REMAIN_QTY !== null) {
-          return (
-            <span style={{ color: "blue" }}>
-              {params.row.REMAIN_QTY.toLocaleString("en-US")}
-            </span>
-          );
-        } else {
-          return <></>;
-        }
-      },
-    },
-    { field: "PD", headerName: "PD", minWidth: 120, flex: 1 },
-    { field: "CAVITY", headerName: "CAVITY", minWidth: 120, flex: 1 },
-    {
-      field: "SETTING_MET_TC",
-      headerName: "SETTING_MET_TC",
-      minWidth: 120,
-      flex: 1,
-      renderCell: (params: any) => {
-        if (params.row.SETTING_MET_TC !== null) {
-          return (
-            <span style={{ color: "blue" }}>
-              {params.row.SETTING_MET_TC.toLocaleString("en-US")}
-            </span>
-          );
-        } else {
-          return <></>;
-        }
-      },
-    },
-    {
-      field: "SETTING_MET",
-      headerName: "SETTING_MET",
-      minWidth: 120,
-      flex: 1,
-      renderCell: (params: any) => {
-        if (params.row.SETTING_MET !== null) {
-          return (
-            <span style={{ color: "blue" }}>
-              {params.row.SETTING_MET.toLocaleString("en-US")}
-            </span>
-          );
-        } else {
-          return <></>;
-        }
-      },
-    },
-    {
-      field: "WAREHOUSE_ESTIMATED_QTY",
-      headerName: "WAREHOUSE_ESTIMATED_QTY",
-      minWidth: 120,
-      flex: 1,
-      renderCell: (params: any) => {
-        if (params.row.WAREHOUSE_ESTIMATED_QTY !== null) {
-          return (
-            <span style={{ color: "blue" }}>
-              {params.row.WAREHOUSE_ESTIMATED_QTY.toLocaleString("en-US")}
-            </span>
-          );
-        } else {
-          return <></>;
-        }
-      },
-    },
-    {
-      field: "ESTIMATED_QTY_ST",
-      headerName: "ESTIMATED_QTY_ST",
-      minWidth: 150,
-      flex: 1,
-      renderCell: (params: any) => {
-        if (params.row.ESTIMATED_QTY_ST !== null) {
-          return (
-            <span style={{ color: "blue" }}>
-              {params.row.ESTIMATED_QTY_ST.toLocaleString("en-US")}
-            </span>
-          );
-        } else {
-          return <></>;
-        }
-      },
-    },
-    {
-      field: "ESTIMATED_QTY",
-      headerName: "ESTIMATED_QTY",
-      minWidth: 120,
-      flex: 1,
-      renderCell: (params: any) => {
-        if (params.row.ESTIMATED_QTY !== null) {
-          return (
-            <span style={{ color: "blue" }}>
-              {params.row.ESTIMATED_QTY.toLocaleString("en-US")}
-            </span>
-          );
-        } else {
-          return <></>;
-        }
-      },
-    },
-    {
-      field: "KETQUASX",
-      headerName: "KETQUASX",
-      minWidth: 120,
-      flex: 1,
-      renderCell: (params: any) => {
-        if (params.row.KETQUASX !== null) {
-          return (
-            <span style={{ color: "red", fontWeight:'bold' }}>
-              {params.row.KETQUASX.toLocaleString("en-US")}
-            </span>
-          );
-        } else {
-          return <></>;
-        }
-      },
-    },
-    {
-      field: "LOSS_SX_ST",
-      headerName: "LOSS_SX_ST",
-      minWidth: 120,
-      flex: 1,
-      valueGetter: (params: any) => {
-        if (params.row.KETQUASX !== null && params.row.ESTIMATED_QTY_ST !== null) {
-          return (
-            1 -
-            params.row.KETQUASX / params.row.ESTIMATED_QTY_ST
-          ).toLocaleString("en-US", { style: "percent" });
-        } else {
-          return "0%";
-        }
-      },
-    },
-    {
-      field: "LOSS_SX",
-      headerName: "LOSS_SX",
-      minWidth: 120,
-      flex: 1,
-      valueGetter: (params: any) => {
-        if (params.row.KETQUASX !== null && params.row.ESTIMATED_QTY !== null) {
-          return (
-            1 - 
-            params.row.KETQUASX / params.row.ESTIMATED_QTY
-          ).toLocaleString("en-US", { style: "percent" });
-        } else {
-          return "0%";
-        }
-      },
-    },
-    {
-      field: "INS_INPUT",
-      headerName: "INS_INPUT",
-      minWidth: 120,
-      flex: 1,
-      renderCell: (params: any) => {
-        if (params.row.INS_INPUT !== null) {
-          return (
-            <span style={{ color: "blue" }}>
-              {params.row.INS_INPUT.toLocaleString("en-US")}
-            </span>
-          );
-        } else {
-          return <></>;
-        }
-      },
-    },
-    {
-      field: "LOSS_SX_KT",
-      headerName: "LOSS_SX_KT",
-      minWidth: 120,
-      flex: 1,
-      valueGetter: (params: any) => {
-        if (params.row.KETQUASX !== null && params.row.INS_INPUT !== null) {
-          return (
-            1 - params.row.INS_INPUT / params.row.KETQUASX
-          ).toLocaleString("en-US", { style: "percent" });
-        } else {
-          return "0%";
-        }
-      },
-    },
-    {
-      field: "INS_OUTPUT",
-      headerName: "INS_OUTPUT",
-      minWidth: 120,
-      flex: 1,
-      renderCell: (params: any) => {
-        if (params.row.INS_OUTPUT !== null) {
-          return (
-            <span style={{ color: "blue" }}>
-              {params.row.INS_OUTPUT.toLocaleString("en-US")}
-            </span>
-          );
-        } else {
-          return <></>;
-        }
-      },
-    },
-    {
-      field: "LOSS_KT",
-      headerName: "LOSS_KT",
-      minWidth: 120,
-      flex: 1,
-      valueGetter: (params: any) => {
-        if (params.row.INS_INPUT !== null && params.row.INS_OUTPUT !== null) {
-          return (
-            1 -
-            params.row.INS_OUTPUT / params.row.INS_INPUT
-          ).toLocaleString("en-US", { style: "percent" });
-        } else {
-          return "0%";
-        }
-      },
-    },
-    {
-      field: "SETTING_START_TIME",
-      headerName: "SETTING_START_TIME",
-      minWidth: 150,
-      flex: 1,
-    },
-    {
-      field: "MASS_START_TIME",
-      headerName: "MASS_START_TIME",
-      minWidth: 150,
-      flex: 1,
-    },
-    {
-      field: "MASS_END_TIME",
-      headerName: "MASS_END_TIME",
-      minWidth: 150,
-      flex: 1,
-    },
-    { field: "RPM", headerName: "RPM", minWidth: 120, flex: 1 },
-    { field: "EQ_NAME_TT", headerName: "EQ_NAME_TT", minWidth: 120, flex: 1 },
-    { field: "SX_DATE", headerName: "SX_DATE", minWidth: 120, flex: 1 },
-    { field: "WORK_SHIFT", headerName: "WORK_SHIFT", minWidth: 120, flex: 1 },
-    { field: "INS_EMPL", headerName: "INS_EMPL", minWidth: 120, flex: 1 },
-    { field: "FACTORY", headerName: "FACTORY", minWidth: 120, flex: 1 },
-    { field: "BOC_KIEM", headerName: "BOC_KIEM", minWidth: 120, flex: 1 },
-    { field: "LAY_DO", headerName: "LAY_DO", minWidth: 120, flex: 1 },
-    { field: "MAY_HONG", headerName: "MAY_HONG", minWidth: 120, flex: 1 },
-    { field: "DAO_NG", headerName: "DAO_NG", minWidth: 120, flex: 1 },
-    { field: "CHO_LIEU", headerName: "CHO_LIEU", minWidth: 120, flex: 1 },
-    { field: "CHO_BTP", headerName: "CHO_BTP", minWidth: 120, flex: 1 },
-    { field: "HET_LIEU", headerName: "HET_LIEU", minWidth: 120, flex: 1 },
-    { field: "LIEU_NG", headerName: "LIEU_NG", minWidth: 120, flex: 1 },
-    { field: "CAN_HANG", headerName: "CAN_HANG", minWidth: 120, flex: 1 },
-    { field: "HOP_FL", headerName: "HOP_FL", minWidth: 120, flex: 1 },
-    { field: "CHO_QC", headerName: "CHO_QC", minWidth: 120, flex: 1 },
-    { field: "CHOT_BAOCAO", headerName: "CHOT_BAOCAO", minWidth: 120, flex: 1 },
-    { field: "CHUYEN_CODE", headerName: "CHUYEN_CODE", minWidth: 120, flex: 1 },
-    { field: "KHAC", headerName: "KHAC", minWidth: 120, flex: 1 },
-    { field: "REMARK", headerName: "REMARK", minWidth: 120, flex: 1 },
-  ];
-  const column_ycsxdatasx = [
-    { field: "YCSX_STATUS", headerName: "YCSX_STATUS", minWidth: 120, flex: 1, },
-    { field: "PHAN_LOAI", headerName: "PHAN_LOAI", minWidth: 120, flex: 1, },
-    { field: "PROD_REQUEST_NO", headerName: "PROD_REQUEST_NO", width: 80, },
-    { field: "G_CODE", headerName: "G_CODE", width: 80, },
-    { field: "G_NAME", headerName: "G_NAME", width: 180, },
-    { field: "G_NAME_KD", headerName: "G_NAME_KD", width: 120, },
-    { field: "FACTORY", headerName: "FACTORY", width: 80, },
-    { field: "EQ1", headerName: "EQ1", width: 80, },
-    { field: "EQ2", headerName: "EQ2", width: 80, },
-    { field: "PROD_REQUEST_DATE", headerName: "YCSX_DATE", width: 120, },
-    { field: "PROD_REQUEST_QTY", headerName: "YCSX_QTY", width: 80, },
-    { field: "M_NAME", headerName: "M_NAME", width: 150, },
-    {
-      field: "M_OUTPUT",
-      headerName: "M_OUTPUT",
-      width: 80,
-      renderCell: (params: any) => {
-        if (params.row.M_OUTPUT !== null) {
-          return (
-            <span style={{ color: "blue" }}>
-              {params.row.M_OUTPUT.toLocaleString("en-US")}
-            </span>
-          );
-        } else {
-          return <></>;
-        }
-      },
-    },
-    {
-      field: "SCANNED_QTY",
-      headerName: "SCANNED_QTY",
-      width: 100,
-      renderCell: (params: any) => {
-        if (params.row.SCANNED_QTY !== null) {
-          return (
-            <span style={{ color: "blue" }}>
-              {params.row.SCANNED_QTY.toLocaleString("en-US")}
-            </span>
-          );
-        } else {
-          return <></>;
-        }
-      },
-    },
-    {
-      field: "REMAIN_QTY",
-      headerName: "REMAIN_QTY",
-      width: 110,
-      renderCell: (params: any) => {
-        if (params.row.REMAIN_QTY !== null) {
-          return (
-            <span style={{ color: "blue" }}>
-              {params.row.REMAIN_QTY.toLocaleString("en-US")}
-            </span>
-          );
-        } else {
-          return <></>;
-        }
-      },
-    },
-    {
-      field: "USED_QTY",
-      headerName: "USED_QTY",
-      width: 100,
-      renderCell: (params: any) => {
-        if (params.row.USED_QTY !== null) {
-          return (
-            <span style={{ color: "blue" }}>
-              {params.row.USED_QTY.toLocaleString("en-US")}
-            </span>
-          );
-        } else {
-          return <></>;
-        }
-      },
-    },
-    { field: "PD", headerName: "PD", width: 80 },
-    { field: "CAVITY", headerName: "CAVITY", width: 80 },
-    {
-      field: "WAREHOUSE_ESTIMATED_QTY",
-      headerName: "WAREHOUSE_ESTIMATED_QTY",
-      width: 150,
-      renderCell: (params: any) => {
-        if (params.row.WAREHOUSE_ESTIMATED_QTY !== null) {
-          return (
-            <span style={{ color: "green" }}>
-              {params.row.WAREHOUSE_ESTIMATED_QTY.toLocaleString("en-US")}
-            </span>
-          );
-        } else {
-          return <></>;
-        }
-      },
-    },
-    {
-      field: "ESTIMATED_QTY",
-      headerName: "ESTIMATED_QTY",
-      width: 120,
-      renderCell: (params: any) => {
-        if (params.row.ESTIMATED_QTY !== null) {
-          return (
-            <span style={{ color: "green" }}>
-              {params.row.ESTIMATED_QTY.toLocaleString("en-US")}
-            </span>
-          );
-        } else {
-          return <></>;
-        }
-      },
-    },
-    {
-      field: "CD1",
-      headerName: "CD1",
-      width: 100,
-      renderCell: (params: any) => {
-        if (params.row.CD1 !== null) {
-          return (
-            <span style={{ color: "green" }}>
-              {params.row.CD1.toLocaleString("en-US")}
-            </span>
-          );
-        } else {
-          return <></>;
-        }
-      },
-    },
-    {
-      field: "LOSS_SX1",
-      headerName: "LOSS_SX1",
-      minWidth: 120,
-      flex: 1,
-      renderCell: (params: any) => {
-        if (params.row.LOSS_SX1 !== null) {
-          return (
-            <span style={{ color: "red" }}>
-              {params.row.LOSS_SX1.toLocaleString("en-US", {
-                style: "percent",
-              })}
-            </span>
-          );
-        } else {
-          return <></>;
-        }
-      },
-    },
-    {
-      field: "CD2",
-      headerName: "CD2",
-      width: 100,
-      renderCell: (params: any) => {
-        if (params.row.CD2 !== null) {
-          return (
-            <span style={{ color: "green" }}>
-              {params.row.CD2.toLocaleString("en-US")}
-            </span>
-          );
-        } else {
-          return <></>;
-        }
-      },
-    },
-    {
-      field: "LOSS_SX2",
-      headerName: "LOSS_SX2",
-      minWidth: 120,
-      flex: 1,
-      renderCell: (params: any) => {
-        if (params.row.LOSS_SX2 !== null) {
-          return (
-            <span style={{ color: "red" }}>
-              {params.row.LOSS_SX2.toLocaleString("en-US", {
-                style: "percent",
-              })}
-            </span>
-          );
-        } else {
-          return <></>;
-        }
-      },
-    },
-    {
-      field: "INS_INPUT",
-      headerName: "INS_INPUT",
-      width: 100,
-      renderCell: (params: any) => {
-        if (params.row.INS_INPUT !== null) {
-          return (
-            <span style={{ color: "green" }}>
-              {params.row.INS_INPUT.toLocaleString("en-US")}
-            </span>
-          );
-        } else {
-          return <></>;
-        }
-      },
-    },
-    {
-      field: "LOSS_SX3",
-      headerName: "LOSS_SX3",
-      minWidth: 120,
-      flex: 1,
-      renderCell: (params: any) => {
-        if (params.row.LOSS_SX3 !== null) {
-          return (
-            <span style={{ color: "red" }}>
-              {params.row.LOSS_SX3.toLocaleString("en-US", {
-                style: "percent",
-              })}
-            </span>
-          );
-        } else {
-          return <></>;
-        }
-      },
-    },
-    {
-      field: "INS_OUTPUT",
-      headerName: "INS_OUTPUT",
-      width: 100,
-      renderCell: (params: any) => {
-        if (params.row.INS_OUTPUT !== null) {
-          return (
-            <span style={{ color: "green" }}>
-              {params.row.INS_OUTPUT.toLocaleString("en-US")}
-            </span>
-          );
-        } else {
-          return <></>;
-        }
-      },
-    },
-    {
-      field: "LOSS_SX4",
-      headerName: "LOSS_SX4",
-      minWidth: 120,
-      flex: 1,
-      renderCell: (params: any) => {
-        if (params.row.LOSS_SX4 !== null) {
-          return (
-            <span style={{ color: "red" }}>
-              {params.row.LOSS_SX4.toLocaleString("en-US", {
-                style: "percent",
-              })}
-            </span>
-          );
-        } else {
-          return <></>;
-        }
-      },
-    },
-    {
-      field: "TOTAL_LOSS",
-      headerName: "TOTAL_LOSS",
-      minWidth: 120,
-      flex: 1,
-      renderCell: (params: any) => {
-        if (params.row.TOTAL_LOSS !== null) {
-          return (
-            <span style={{ color: "red", fontWeight: "bold", fontSize: 16 }}>
-              {params.row.TOTAL_LOSS.toLocaleString("en-US", {
-                style: "percent",
-              })}
-            </span>
-          );
-        } else {
-          return <></>;
-        }
-      },
-    },
-    {
-      field: "TOTAL_LOSS2",
-      headerName: "TOTAL_LOSS2",
-      minWidth: 120,
-      flex: 1,
-      renderCell: (params: any) => {
-        if (params.row.TOTAL_LOSS2 !== null) {
-          return (
-            <span style={{ color: "red", fontWeight: "bold", fontSize: 16 }}>
-              {params.row.TOTAL_LOSS2.toLocaleString("en-US", {
-                style: "percent",
-              })}
-            </span>
-          );
-        } else {
-          return <></>;
-        }
-      },
-    },
-  ];
-  const [columnDefinition, setColumnDefinition] =
-    useState<Array<any>>(column_datasx);
-
-
+  const datasx_lichsuxuatlieu = React.useMemo(
+    () => (
+      <div className='datatb2'>
+        <DataGrid
+          autoNavigateToFocusedRow={true}
+          allowColumnReordering={true}
+          allowColumnResizing={true}
+          columnAutoWidth={false}
+          cellHintEnabled={true}
+          columnResizingMode={"widget"}
+          showColumnLines={true}
+          dataSource={inputlieudatatable}
+          columnWidth='auto'
+          keyExpr='id'
+          height={"70vh"}
+          showBorders={true}
+          onSelectionChanged={(e) => {
+            //console.log(e.selectedRowsData);
+            //setSelectedRowsDataYCSX(e.selectedRowsData);
+          }}
+          onRowClick={(e) => {
+            //console.log(e.data);
+          }}
+        >
+          <Scrolling
+            useNative={true}
+            scrollByContent={true}
+            scrollByThumb={true}
+            showScrollbar='onHover'
+            mode='virtual'
+          />
+          
+          <Editing
+            allowUpdating={false}
+            allowAdding={false}
+            allowDeleting={false}
+            mode='cell'
+            confirmDelete={false}
+            onChangesChange={(e) => {}}
+          />
+          <Export enabled={true} />
+          <Toolbar disabled={false}>
+            <Item location='before'>
+              <IconButton
+                className='buttonIcon'
+                onClick={() => {
+                  SaveExcel(inputlieudatatable, "LICHSUINPUTLIEU");
+                }}
+              >
+                <AiFillFileExcel color='green' size={25} />
+                SAVE
+              </IconButton>
+            </Item>
+            <Item name='searchPanel' />
+            <Item name='exportButton' />
+            <Item name='columnChooserButton' />
+            <Item name='addRowButton' />
+            <Item name='saveButton' />            
+            <Item name='revertButton' />
+          </Toolbar>
+          <FilterRow visible={true} />
+          <SearchPanel visible={true} />
+          <ColumnChooser enabled={true} />
+          <Paging defaultPageSize={15} />
+          <Pager
+            showPageSizeSelector={true}
+            allowedPageSizes={[5, 10, 15, 20, 100, 1000, 10000, "all"]}
+            showNavigationButtons={true}
+            showInfo={true}
+            infoText='Page #{0}. Total: {1} ({2} items)'
+            displayMode='compact'
+          />    
+          <Column dataField='PLAN_ID' caption='PLAN_ID' width={100}></Column>
+          <Column dataField='M_NAME' caption='M_NAME' width={150}></Column>
+          <Column dataField='WIDTH_CD' caption='WIDTH_CD' width={100}></Column>
+          <Column dataField='INPUT_QTY' caption='INPUT_QTY' width={100} dataType='number'
+            format={"decimal"}
+            cellRender={(e: any) => {
+              return (
+                <span style={{ color: "blue", fontWeight: "bold" }}>
+                  {e.data.INPUT_QTY?.toLocaleString("en-US")}
+                </span>
+              );
+            }}></Column>
+          <Column dataField='USED_QTY' caption='USED_QTY' width={100} dataType='number'
+            format={"decimal"}
+            cellRender={(e: any) => {
+              return (
+                <span style={{ color: "green", fontWeight: "bold" }}>
+                  {e.data.USED_QTY?.toLocaleString("en-US")}
+                </span>
+              );
+            }}></Column>
+          <Column dataField='REMAIN_QTY' caption='REMAIN_QTY' width={100} dataType='number'
+            format={"decimal"}
+            cellRender={(e: any) => {
+              return (
+                <span style={{ color: "red", fontWeight: "bold" }}>
+                  {e.data.REMAIN_QTY?.toLocaleString("en-US")}
+                </span>
+              );
+            }}></Column>
+          <Column dataField='PROD_REQUEST_NO' caption='PROD_REQUEST_NO' width={100}></Column>
+          <Column dataField='G_NAME' caption='G_NAME' width={100}></Column>
+          <Column dataField='G_CODE' caption='G_CODE' width={100}></Column>
+          <Column dataField='G_NAME_KD' caption='G_NAME_KD' width={100}></Column>
+          <Column dataField='M_CODE' caption='M_CODE' width={100}></Column>          
+          <Column dataField='M_LOT_NO' caption='M_LOT_NO' width={100}></Column>          
+          <Column dataField='EMPL_NO' caption='EMPL_NO' width={100}></Column>
+          <Column dataField='EQUIPMENT_CD' caption='EQUIPMENT_CD' width={100}></Column>
+          <Column dataField='INS_DATE' caption='INS_DATE' width={100}></Column>
+       
+          <Summary>
+            <TotalItem
+              alignment='right'
+              column='PLAN_ID'
+              summaryType='count'
+              valueFormat={"decimal"}
+            />
+            <TotalItem
+              alignment='right'
+              column='INPUT_QTY'
+              summaryType='sum'
+              valueFormat={"decimal"}
+            />
+            <TotalItem
+              alignment='right'
+              column='USED_QTY'
+              summaryType='sum'
+              valueFormat={"decimal"}
+            />
+            <TotalItem
+              alignment='right'
+              column='REMAIN_QTY'
+              summaryType='sum'
+              valueFormat={"decimal"}
+            />
+          </Summary>
+        </DataGrid>
+      </div>
+    ),
+    [inputlieudatatable]
+  );
+  const handle_loadlichsuinputlieu = (PLAN_ID: string)=>
+  {
+     generalQuery("lichsuinputlieusanxuat_full", {           
+        ALLTIME: true,
+        FROM_DATE: fromdate,
+        TO_DATE: todate,
+        PROD_REQUEST_NO: '',
+        PLAN_ID: PLAN_ID,
+        M_NAME: '',
+        M_CODE: '',
+        G_NAME: '',
+        G_CODE: ''             
+    })
+    .then((response) => {
+      //console.log(response.data.data);
+      if (response.data.tk_status !== "NG") {
+        const loaded_data: LICHSUINPUTLIEU_DATA[] = response.data.data.map((element: LICHSUINPUTLIEU_DATA, index: number)=> {
+          return {
+            ...element,
+            INS_DATE: moment(element.INS_DATE).utc().format('YYYY-MM-DD HH:mm:ss'),
+            id: index
+          }
+        })
+        setInputLieuDataTable(loaded_data); 
+      } else {    
+        setInputLieuDataTable([]);
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });     
+  }
   const handle_loaddatasx = () => {
+    Swal.fire({
+      title: "Tra data chỉ thị",
+      text: "Đang tải dữ liệu, hãy chờ chút",
+      icon: "info",
+      showCancelButton: false,
+      allowOutsideClick: false,
+      confirmButtonText: "OK",
+      showConfirmButton: false,
+    });
     generalQuery("loadDataSX", {
       ALLTIME: alltime,
       FROM_DATE: fromdate,
@@ -1026,7 +1043,6 @@ const DATASX2 = () => {
               };
             }
           );
-         
           //setShowLoss(false);
           let temp_loss_info: LOSS_TABLE_DATA = {
             XUATKHO_MET: 0,
@@ -1041,7 +1057,6 @@ const DATASX2 = () => {
             LOSS_INS_OUT_VS_SCANNED_EA: 0,
             LOSS_INS_OUT_VS_XUATKHO_EA: 0,
           };
-
           for(let i=0;i<loaded_data.length; i++)
           {
             temp_loss_info.XUATKHO_MET += loaded_data[i].WAREHOUSE_OUTPUT_QTY;
@@ -1055,11 +1070,10 @@ const DATASX2 = () => {
           };
           temp_loss_info.LOSS_INS_OUT_VS_SCANNED_EA = 1- temp_loss_info.INSPECTION_OUTPUT / temp_loss_info.SCANNED_EA ;
           temp_loss_info.LOSS_INS_OUT_VS_XUATKHO_EA = 1- temp_loss_info.INSPECTION_OUTPUT / temp_loss_info.XUATKHO_EA ;  
-
           setLossTableInfo(temp_loss_info);
-          setDataSXTable(loaded_data);          
-          setReadyRender(true);
-          setisLoading(false);
+          setDataSXTable(loaded_data); 
+          setSelectButton(true);     
+          Swal.fire("Thông báo", " Đã tải: " + loaded_data.length +' dòng', "success");    
         } else {
           Swal.fire("Thông báo", " Có lỗi : " + response.data.message, "error");
         }
@@ -1069,6 +1083,15 @@ const DATASX2 = () => {
       });
   };
   const handle_loaddatasxYCSX = () => {
+    Swal.fire({
+      title: "Tra data chỉ thị",
+      text: "Đang tải dữ liệu, hãy chờ chút",
+      icon: "info",
+      showCancelButton: false,
+      allowOutsideClick: false,
+      confirmButtonText: "OK",
+      showConfirmButton: false,
+    });
     generalQuery("loadDataSX_YCSX", {
       ALLTIME: alltime,
       FROM_DATE: fromdate,
@@ -1109,7 +1132,6 @@ const DATASX2 = () => {
             LOSS_INS_OUT_VS_SCANNED_EA: 0,
             LOSS_INS_OUT_VS_XUATKHO_EA: 0,
           };
-
           for(let i=0;i<loaded_data.length; i++)
           {
             temp_loss_info.XUATKHO_MET += loaded_data[i].M_OUTPUT;
@@ -1127,8 +1149,8 @@ const DATASX2 = () => {
           setLossTableInfo(temp_loss_info);
           setShowLoss(true);
           setDataSXTable(loaded_data);
-          setReadyRender(true);
-          setisLoading(false);
+          setSelectButton(false);
+          Swal.fire("Thông báo", " Đã tải: " + loaded_data.length +' dòng', "success");
         } else {
           Swal.fire("Thông báo", " Có lỗi : " + response.data.message, "error");
         }
@@ -1269,10 +1291,7 @@ const DATASX2 = () => {
             </label>
             <button
               className='tranhatky'
-              onClick={() => {
-                setisLoading(true);
-                setReadyRender(false);
-                setColumnDefinition(column_datasx);
+              onClick={() => { 
                 handle_loaddatasx();
               }}
             >
@@ -1281,9 +1300,6 @@ const DATASX2 = () => {
             <button
               className='tranhatky'
               onClick={() => {
-                setisLoading(true);
-                setReadyRender(false);
-                setColumnDefinition(column_ycsxdatasx);
                 handle_loaddatasxYCSX();
               }}
             >
@@ -1326,7 +1342,9 @@ const DATASX2 = () => {
           </table>
         </div>}
         <div className='tracuuYCSXTable'>
-          {materialDataTable}
+          {selectbutton && datasx_chithi}
+          {!selectbutton && datasx_ycsx}
+          {selectbutton && datasx_lichsuxuatlieu}
         </div>
       </div>
     </div>

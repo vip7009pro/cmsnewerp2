@@ -3,13 +3,35 @@ import Navbar from "../../components/Navbar/Navbar";
 import Sidebar from "../../components/Sidebar/Sidebar";
 import "../home/home.scss";
 import { useSpring, animated } from "@react-spring/web";
-import { useEffect, useState } from "react";
+import { ReactElement, useEffect, useState } from "react";
 import { generalQuery } from "../../api/Api";
 import Swal from "sweetalert2";
 import PrimarySearchAppBar from "../../components/AppBar/AppBarCustom";
 import CHAT from "../chat/CHAT";
-export const current_ver: number = 123;
+import { Box, IconButton, Tab, Tabs, Typography } from "@mui/material";
+import DATASX2 from "../qlsx/QLSXPLAN/DATASX/DATASX2";
+import PoManager from "../kinhdoanh/pomanager/PoManager";
+import KinhDoanhReport from "../kinhdoanh/kinhdoanhreport/KinhDoanhReport";
+import { AiOutlineCloseCircle } from "react-icons/ai";
+import { RootState } from "../../redux/store";
+import { useSelector, useDispatch } from "react-redux";
+import { addTab, closeTab, settabIndex } from "../../redux/slices/globalSlice";
+export const current_ver: number = 127;
+interface ELE_ARRAY {
+  REACT_ELE: ReactElement;
+  ELE_NAME: string;
+}
 function Home() {
+  const tabs: ELE_ARRAY[] = useSelector(
+    (state: RootState) => state.totalSlice.tabs
+  );
+  const tabIndex: number = useSelector(
+    (state: RootState) => state.totalSlice.tabIndex
+  );
+  const tabModeSwap: boolean = useSelector(
+    (state: RootState) => state.totalSlice.tabModeSwap
+  );
+  const dispatch = useDispatch();
   const springs = useSpring({
     from: { x: 1000, y: 100 },
     to: { x: 0, y: 0 },
@@ -84,8 +106,67 @@ function Home() {
               ...springs,
             }}
           >
-            {current_ver >= checkVerWeb ? (
-              <Outlet />
+            <div
+              className='closeTab'
+              style={{
+                position: "absolute",
+                top: "10px",
+                right: 10,
+                zIndex: 999,
+              }}
+            >
+              <IconButton
+                className='buttonIcon'
+                onClick={() => {
+                  dispatch(closeTab(1));
+                }}
+              >
+                <AiOutlineCloseCircle color='red' size={25} />
+              </IconButton>
+            </div>
+            
+            {tabModeSwap && <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+              <Tabs
+                value={tabIndex}
+                onChange={(event: React.SyntheticEvent, newValue: number) => {
+                  console.log(newValue);
+                  dispatch(settabIndex(newValue));
+                }}
+                variant="scrollable"
+                aria-label='ERP TABS'
+                scrollButtons
+                allowScrollButtonsMobile
+              >
+                {tabs.map((ele: ELE_ARRAY, index: number) => {
+                  return (
+                    <Tab
+                      key={index}
+                      label={index + 1 + "." + ele.ELE_NAME}
+                      value={index}
+                    ></Tab>
+                  );
+                })}
+              </Tabs>
+            </Box>}          
+            {tabModeSwap &&  tabs.map((ele: ELE_ARRAY, index: number) => {
+              return (
+                <div
+                  key={index}
+                  className='component_element'
+                  style={{
+                    visibility: index === tabIndex ? "visible" : "hidden",
+                    position: "absolute",
+                    top: "50px",
+                    left: 0,
+                    width: "100%",
+                  }}
+                >
+                  {ele.REACT_ELE}
+                </div>
+              );
+            })}
+             {current_ver >= checkVerWeb? (
+              !tabModeSwap && <Outlet />
             ) : (
               <p>Web có câp nhật, Ctrl +F5 để cập nhật web</p>
             )}

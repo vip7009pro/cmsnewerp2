@@ -46,6 +46,8 @@ interface CODE_INFO {
     LOSS_SX2: number,
     LOSS_SETTING1: number,
     LOSS_SETTING2: number,
+    LOSS_ST_SX1: number,
+    LOSS_ST_SX2: number,
     NOTE: string
 }
 const CODE_MANAGER = () => {
@@ -62,6 +64,7 @@ const CODE_MANAGER = () => {
   const [isLoading, setisLoading] = useState(false); 
   const [codeCMS,setCodeCMS] =useState('');
   const [enableEdit, setEnableEdit] = useState(false);
+  const [isPending, startTransition] = useTransition();
 
   const handleUploadFile = (ulf: any,newfilename:string)=> {
     console.log(ulf);
@@ -328,6 +331,26 @@ const CODE_MANAGER = () => {
         return <span style={{fontWeight:'bold'}}>{params.row.LOSS_SETTING2}</span>       
       }   
     }},
+    { field: "LOSS_ST_SX1", headerName: "LOSS_SETTING_SX1(m)", width: 130 ,renderCell: (params:any) => { 
+      if(params.row.LOSS_ST_SX1 === null)
+      {
+        return <span style={{backgroundColor:'red', fontWeight:'bold'}}>NG</span>       
+      }    
+      else
+      {
+        return <span style={{fontWeight:'bold'}}>{params.row.LOSS_ST_SX1}</span>       
+      }   
+    }},
+    { field: "LOSS_ST_SX2", headerName: "LOSS_SETTING_SX2(m)", width: 130 ,renderCell: (params:any) => { 
+      if(params.row.LOSS_ST_SX2 === null)
+      {
+        return <span style={{backgroundColor:'red', fontWeight:'bold'}}>NG</span>       
+      }    
+      else
+      {
+        return <span style={{fontWeight:'bold'}}>{params.row.LOSS_ST_SX2}</span>       
+      }   
+    }},
     { field: "NOTE", headerName: "NOTE", width: 150 ,},
   ];
   const [rows, setRows] = useState<CODE_INFO[]>([]);
@@ -356,6 +379,9 @@ const CODE_MANAGER = () => {
         }}>
           <AiFillEdit color='yellow' size={25}/>Bật tắt sửa</IconButton> 
         <GridToolbarQuickFilter/>
+        <IconButton className='buttonIcon'onClick={()=>{
+          handleSaveLossSX();
+         }}><MdUpdate color='blue' size={25}/>Update LOSS SX</IconButton> 
       </GridToolbarContainer>
     );
   }  
@@ -524,7 +550,7 @@ const CODE_MANAGER = () => {
   const handleSaveQLSX= async()=> {
     if(codedatatablefilter.length>=1)
     {
-      if(userData.EMPL_NO==='NHU1903'|| userData.MAINDEPTNAME==='QLSX')
+      if(userData.EMPL_NO==='NHU1903'|| userData.EMPL_NO==='DTL1906'|| userData.EMPL_NO==='LVQ0103')
       {
         let err_code: string ='0';
         for(let i=0;i<codedatatablefilter.length;i++)
@@ -567,6 +593,53 @@ const CODE_MANAGER = () => {
         else
         {
           Swal.fire("Thông báo", "Lưu thành công", "success"); 
+          setCodeDataTableFilter([]);
+        }
+      }
+      else
+      {
+        Swal.fire("Thông báo", "Không đủ quyền hạn!" , "error"); 
+      }
+    }
+    else
+    {
+      Swal.fire("Thông báo", "Chọn ít nhất 1 G_CODE để SET !" , "error"); 
+    }
+  }
+  const handleSaveLossSX= async()=> {
+    if(codedatatablefilter.length>=1)
+    {
+      if(userData.EMPL_NO==='NHU1903'||  userData.MAINDEPTNAME==='SX')
+      {
+        let err_code: string ='0';
+        for(let i=0;i<codedatatablefilter.length;i++)
+        {        
+            await generalQuery("saveLOSS_SETTING_SX", {           
+              G_CODE: codedatatablefilter[i].G_CODE,             
+              LOSS_ST_SX1: codedatatablefilter[i].LOSS_ST_SX1,
+              LOSS_ST_SX2: codedatatablefilter[i].LOSS_ST_SX2,                          
+            })
+            // eslint-disable-next-line no-loop-func
+            .then((response) => {
+              console.log(response.data.tk_status);
+              if (response.data.tk_status !== "NG") {
+                
+              } else {     
+                         err_code ='1'; 
+              }
+            })
+            .catch((error) => {
+              console.log(error);
+            });  
+        } 
+        if(err_code ==='1')
+        {
+          Swal.fire("Thông báo", "Lưu thất bại, không được để trống đỏ ô nào", "error"); 
+        }
+        else
+        {
+          Swal.fire("Thông báo", "Lưu thành công", "success"); 
+          setCodeDataTableFilter([]);
         }
       }
       else
@@ -664,7 +737,10 @@ const CODE_MANAGER = () => {
                 const newdata = rows.map((p) =>
                   p.id === params.id ? { ...p, [keyvar]: params.value } : p
                 );
-                setRows(newdata);
+                startTransition(() => {
+                  setRows(newdata);
+                });
+                
               }}
             />
           </div>

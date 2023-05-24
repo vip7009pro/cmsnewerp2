@@ -1,5 +1,6 @@
 import {createSlice} from '@reduxjs/toolkit'
 import type {PayloadAction} from '@reduxjs/toolkit'
+import { ReactElement } from 'react';
 import { io } from "socket.io-client";
 import Swal from 'sweetalert2';
 
@@ -122,6 +123,10 @@ interface QLSXPLANDATA {
   DKXL?: string;
   OLD_PLAN_QTY?: string;
 }
+export interface ELE_ARRAY {
+  REACT_ELE: ReactElement,
+  ELE_NAME: string
+}
 export interface GlobalInterface {
     userData?: UserData,
     diemdanhstate?: boolean,
@@ -129,7 +134,11 @@ export interface GlobalInterface {
     sidebarmenu?: boolean,
     multiple_chithi_array: QLSXPLANDATA[],
     server_ip: string,    
+    tabs: ELE_ARRAY[],
+    tabIndex: number,
+    tabModeSwap: boolean,
 }
+
 const initialState:GlobalInterface = {   
     userData: {
         ADD_COMMUNE: "Đông Xuân",
@@ -182,7 +191,11 @@ const initialState:GlobalInterface = {
     lang: 'vi',
     sidebarmenu: false,
     multiple_chithi_array: [],
-    server_ip: 'http://14.160.33.94:5011/api',    
+    server_ip: 'http://14.160.33.94:5011/api',   
+    tabs: [],
+    tabIndex: 0,
+    tabModeSwap: false,
+     
 }
 
 export const glbSlice = createSlice({
@@ -283,9 +296,28 @@ export const glbSlice = createSlice({
         changeServer: (state,action: PayloadAction<string>)=> {
           state.server_ip = action.payload;
           Swal.fire('Thông báo','Đã đổi server sang : ' + action.payload);
-        }  
-
+        },
+        addTab:  (state,action: PayloadAction<ELE_ARRAY>)=> {
+          state.tabs=[...state.tabs, action.payload];
+        },
+        resetTab:  (state,action: PayloadAction<any>)=> {
+          state.tabs=[];
+        },
+        closeTab:  (state,action: PayloadAction<number>)=> {
+          state.tabs = state.tabs.filter(
+            (ele: ELE_ARRAY, index1: number) => {
+              return index1 !== state.tabIndex;
+            }
+          );
+          state.tabIndex = state.tabIndex-1>0? state.tabIndex-1: 0;
+        },
+        settabIndex: (state, action: PayloadAction<number>)=> {
+          state.tabIndex = action.payload;
+        },
+        setTabModeSwap: (state, action:PayloadAction<boolean>)=> {
+          state.tabModeSwap = action.payload;
+        }
     }
 });
-export const {changeDiemDanhState, changeUserData, update_socket,toggleSidebar, addChithiArray, resetChithiArray, changeServer, listen_socket } = glbSlice.actions;
+export const {changeDiemDanhState, changeUserData, update_socket,toggleSidebar, addChithiArray, resetChithiArray, changeServer, listen_socket,addTab,closeTab,settabIndex, setTabModeSwap,resetTab } = glbSlice.actions;
 export default glbSlice.reducer;

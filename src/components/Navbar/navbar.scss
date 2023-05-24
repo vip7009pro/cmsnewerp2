@@ -22,18 +22,8 @@
             border-radius: 5px;
             .search {
                 display: flex;
-                align-items: center;
-                border: 0.5px solid lightgray;
-                padding: 3px;  
-                margin-left: 50px;
-                input {
-                    border: none;
-                    outline: none;
-                    background-color: transparent;
-                    &::placeholder {
-                        font-size: 12px;
-                    }
-                }
+                align-items: center; 
+                justify-items: center;
             }
     
             .items {
@@ -207,17 +197,7 @@
             .search {
                 display: none;
                 align-items: center;
-                border: 0.5px solid lightgray;
-                padding: 3px;  
-                margin-left: 50px;
-                input {
-                    border: none;
-                    outline: none;
-                    background-color: transparent;
-                    &::placeholder {
-                        font-size: 12px;
-                    }
-                }
+                justify-items: center;
             }                
             .items {
                 display: flex;

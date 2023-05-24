@@ -19,6 +19,7 @@ import {
 import { useSpring, animated } from "@react-spring/web";
 
 import "./App.scss";
+import DATASX2 from "./pages/qlsx/QLSXPLAN/DATASX/DATASX2";
 
 const Home= lazy(()=> import('./pages/home/Home'));
 
@@ -725,7 +726,7 @@ function App() {
                           maindeptname='all'
                           jobname='Leader'
                         >
-                          <DATASX />
+                          <DATASX2 />
                         </ProtectedRoute>
                       }
                     />
