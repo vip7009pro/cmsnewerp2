@@ -30,6 +30,7 @@ interface PQC1_DATA {
   PROD_REQUEST_NO: string;
   PROD_REQUEST_QTY: number;
   PROD_REQUEST_DATE: string;
+  PLAN_ID: string;
   PROCESS_LOT_NO: string;
   G_NAME: string;
   G_NAME_KD: string;
@@ -145,6 +146,7 @@ const TRAPQC = () => {
     { field: "PROD_REQUEST_NO", headerName: "PROD_REQUEST_NO", width: 80 },
     { field: "PROD_REQUEST_QTY", headerName: "PROD_REQUEST_QTY", width: 80 },
     { field: "PROD_REQUEST_DATE", headerName: "PROD_REQUEST_DATE", width: 80 },
+    { field: "PLAN_ID", headerName: "PLAN_ID", width: 80 },
     { field: "PROCESS_LOT_NO", headerName: "PROCESS_LOT_NO", width: 80 },
     { field: "G_NAME", headerName: "G_NAME", width: 250 },
     { field: "G_NAME_KD", headerName: "G_NAME_KD", width: 120 },

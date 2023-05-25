@@ -194,7 +194,7 @@ const initialState:GlobalInterface = {
     server_ip: 'http://14.160.33.94:5011/api',   
     tabs: [],
     tabIndex: 0,
-    tabModeSwap: false,
+    tabModeSwap: true,
      
 }
 

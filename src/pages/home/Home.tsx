@@ -9,14 +9,12 @@ import Swal from "sweetalert2";
 import PrimarySearchAppBar from "../../components/AppBar/AppBarCustom";
 import CHAT from "../chat/CHAT";
 import { Box, IconButton, Tab, Tabs, Typography } from "@mui/material";
-import DATASX2 from "../qlsx/QLSXPLAN/DATASX/DATASX2";
-import PoManager from "../kinhdoanh/pomanager/PoManager";
-import KinhDoanhReport from "../kinhdoanh/kinhdoanhreport/KinhDoanhReport";
 import { AiOutlineCloseCircle } from "react-icons/ai";
 import { RootState } from "../../redux/store";
 import { useSelector, useDispatch } from "react-redux";
 import { addTab, closeTab, settabIndex } from "../../redux/slices/globalSlice";
-export const current_ver: number = 127;
+import AccountInfo from "../../components/Navbar/AccountInfo/AccountInfo";
+export const current_ver: number = 135;
 interface ELE_ARRAY {
   REACT_ELE: ReactElement;
   ELE_NAME: string;
@@ -95,7 +93,7 @@ function Home() {
       </div>
       <div className='homeContainer'>
         <div className='sidebardiv'>
-          <Sidebar />
+          {!tabModeSwap && <Sidebar />}
         </div>
         <div className='outletdiv'>
           <animated.div
@@ -115,16 +113,15 @@ function Home() {
                 zIndex: 999,
               }}
             >
-              <IconButton
+              {tabModeSwap && <IconButton
                 className='buttonIcon'
                 onClick={() => {
                   dispatch(closeTab(1));
                 }}
               >
                 <AiOutlineCloseCircle color='red' size={25} />
-              </IconButton>
-            </div>
-            
+              </IconButton>}
+            </div>            
             {tabModeSwap && <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
               <Tabs
                 value={tabIndex}
@@ -165,6 +162,7 @@ function Home() {
                 </div>
               );
             })}
+            {tabModeSwap && tabs.length ===0 && <AccountInfo/>}
              {current_ver >= checkVerWeb? (
               !tabModeSwap && <Outlet />
             ) : (

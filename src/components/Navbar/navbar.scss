@@ -188,14 +188,19 @@
             -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.29);
             box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.2);
             background-color: rgb(238, 240, 247);
-            display: flex;            
+            display: flex;     
+            flex-wrap: wrap;       
             padding: 10px;
             align-items: center;
             justify-content: space-between;       
             width: 100%;
-            border-radius: 5px;            
-            .search {
+            border-radius: 5px;   
+           
+            .cmslogo {
                 display: none;
+
+            }
+            .search {                
                 align-items: center;
                 justify-items: center;
             }                

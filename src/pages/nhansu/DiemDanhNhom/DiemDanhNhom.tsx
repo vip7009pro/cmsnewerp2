@@ -395,15 +395,15 @@ const DiemDanhNhom = () => {
             console.log(error);
         });
     }
-    useEffect(()=> {
-        setisLoading(true);
+    
+    useEffect(()=> {   
+      console.log('vao day');           
         generalQuery('diemdanhnhom',{team_name_list:WORK_SHIFT_CODE})
         .then(response => {
             //console.log(response.data.data);
             if(response.data.tk_status !=='NG')
             {
-              setDiemDanhNhomTable(response.data.data);
-              setisLoading(false);
+              setDiemDanhNhomTable(response.data.data);              
               Swal.fire("Thông báo", "Đã load " + response.data.data.length + " dòng", "success");  
             }
             else

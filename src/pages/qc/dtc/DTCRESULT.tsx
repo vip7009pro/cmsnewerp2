@@ -26,6 +26,7 @@ import DataGrid, {
   Export,
   FilterRow,
   Item,
+  KeyboardNavigation,
   Pager,
   Paging,
   Scrolling,
@@ -139,6 +140,10 @@ const DTCRESULT = () => {
             //console.log(e.data);
           }}
         >
+           <KeyboardNavigation
+            editOnKeyPress={true}
+            enterKeyAction={'moveFocus'}
+            enterKeyDirection={'column'} />
           <Scrolling
             useNative={true}
             scrollByContent={true}

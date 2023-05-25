@@ -19,10 +19,54 @@ import {
 import { useSpring, animated } from "@react-spring/web";
 
 import "./App.scss";
-import DATASX2 from "./pages/qlsx/QLSXPLAN/DATASX/DATASX2";
+/* import DATASX2 from "./pages/qlsx/QLSXPLAN/DATASX/DATASX2";
+import Home from "./pages/home/Home";
+import DiemDanhNhom from "./pages/nhansu/DiemDanhNhom/DiemDanhNhom";
+import BulletinBoard from "./components/BulletinBoard/BulletinBoard";
+import AccountInfo from "./components/Navbar/AccountInfo/AccountInfo";
+import KinhDoanh from "./pages/kinhdoanh/KinhDoanh";
+import KinhDoanhReport from "./pages/kinhdoanh/kinhdoanhreport/KinhDoanhReport";
+import PoManager from "./pages/kinhdoanh/pomanager/PoManager";
+import InvoiceManager from "./pages/kinhdoanh/invoicemanager/InvoiceManager";
+import PlanManager from "./pages/kinhdoanh/planmanager/PlanManager";
+import FCSTManager from "./pages/kinhdoanh/fcstmanager/FCSTManager";
+import YCSXManager from "./pages/kinhdoanh/ycsxmanager/YCSXManager";
+import BOM_MANAGER from "./pages/rnd/bom_manager/BOM_MANAGER";
+import POandStockFull from "./pages/kinhdoanh/poandstockfull/POandStockFull";
+import CODE_MANAGER from "./pages/rnd/code_manager/CODE_MANAGER";
+import CUST_MANAGER from "./pages/kinhdoanh/custManager/CUST_MANAGER";
+import QuotationManager from "./pages/kinhdoanh/quotationmanager/QuotationManager";
+import EQ_STATUS from "./pages/qlsx/QLSXPLAN/EQ_STATUS/EQ_STATUS";
+import INSPECT_STATUS from "./pages/qc/inspection/INSPECT_STATUS/INSPECT_STATUS";
+import ShortageKD from "./pages/kinhdoanh/shortageKD/ShortageKD";
+import DTC from "./pages/qc/dtc/DTC";
+import BOM_AMAZON from "./pages/rnd/bom_amazon/BOM_AMAZON";
+import DESIGN_AMAZON from "./pages/rnd/design_amazon/DESIGN_AMAZON";
+import QLSX from "./pages/qlsx/QLSX";
+import QLSXPLAN from "./pages/qlsx/QLSXPLAN/QLSXPLAN";
+import CAPASX from "./pages/qlsx/QLSXPLAN/CAPA/CAPASX";
+import QC from "./pages/qc/QC";
+import IQC from "./pages/qc/iqc/IQC";
+import PQC from "./pages/qc/pqc/PQC";
+import OQC from "./pages/qc/oqc/OQC";
+import KIEMTRA from "./pages/qc/inspection/KIEMTRA";
+import CSTOTAL from "./pages/qc/cs/CSTOTAL";
+import ISO from "./pages/qc/iso/ISO";
+import TRANGTHAICHITHI from "./pages/sx/TRANGTHAICHITHI/TRANGTHAICHITHI";
+import LICHSUINPUTLIEU from "./pages/qlsx/QLSXPLAN/LICHSUINPUTLIEU/LICHSUINPUTLIEU";
+import TINHHINHCUONLIEU from "./pages/sx/TINH_HINH_CUON_LIEU/TINHINHCUONLIEU";
+import KHOAO from "./pages/qlsx/QLSXPLAN/KHOAO/KHOAO";
+import KHOLIEU from "./pages/kho/kholieu/KHOLIEU";
+import NhanSu from "./pages/nhansu/NhanSu";
+import QuanLyPhongBanNhanSu from "./pages/nhansu/QuanLyPhongBanNhanSu/QuanLyPhongBanNhanSu";
+import DieuChuyenTeam from "./pages/nhansu/DieuChuyenTeam/DieuChuyenTeam";
+import TabDangKy from "./pages/nhansu/DangKy/TabDangKy";
+import PheDuyetNghi from "./pages/nhansu/PheDuyetNghi/PheDuyetNghi";
+import LichSu from "./pages/nhansu/LichSu/LichSu";
+import BaoCaoNhanSu from "./pages/nhansu/BaoCaoNhanSu/BaoCaoNhanSu";
+import QuanLyCapCao from "./pages/nhansu/QuanLyCapCao/QuanLyCapCao"; */
 
 const Home= lazy(()=> import('./pages/home/Home'));
-
 const KIEMTRA= lazy(()=> import('./pages/qc/inspection/KIEMTRA'));
 const PQC= lazy(()=> import('./pages/qc/pqc/PQC'));
 const IQC= lazy(()=> import('./pages/qc/iqc/IQC'));
@@ -68,8 +112,8 @@ const PlanManager= lazy(()=> import('./pages/kinhdoanh/planmanager/PlanManager')
 const FCSTManager= lazy(()=> import('./pages/kinhdoanh/fcstmanager/FCSTManager'));
 const YCSXManager= lazy(()=> import('./pages/kinhdoanh/ycsxmanager/YCSXManager'));
 const POandStockFull= lazy(()=> import('./pages/kinhdoanh/poandstockfull/POandStockFull'));
-
-
+const TINHHINHCUONLIEU= lazy(()=> import('./pages/sx/TINH_HINH_CUON_LIEU/TINHINHCUONLIEU'));
+const DATASX2= lazy(()=> import('./pages/qlsx/QLSXPLAN/DATASX/DATASX2'));
 
 interface userDataInterface {
   EMPL_IMAGE?: string;
@@ -774,7 +818,7 @@ function App() {
                           maindeptname='all'
                           jobname='Leader'
                         >
-                          <TINHINHCUONLIEU />
+                          <TINHHINHCUONLIEU />
                         </ProtectedRoute>
                       }
                     />

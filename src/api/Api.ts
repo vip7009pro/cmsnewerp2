@@ -16,7 +16,7 @@ export function getSever(): string {
 let API_URL = "http://14.160.33.94:5011/api";
 
 
-let UPLOAD_URL = "http://14.160.33.94:3007/uploadfile";
+let UPLOAD_URL = "http://14.160.33.94:5011/uploadfile";
 
 
 let server_ip_local: any = localStorage.getItem("server_ip")?.toString();

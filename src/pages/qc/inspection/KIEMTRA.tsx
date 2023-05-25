@@ -1,11 +1,15 @@
 
 import  { useEffect, useState,  lazy, Suspense} from 'react'
 import "./KIEMTRA.scss"
+import INSPECTION from './INSPECTION';
+import INSPECT_REPORT from './INSPECT_REPORT';
+import INSPECT_STATUS from './INSPECT_STATUS/INSPECT_STATUS';
+import TINHHINHCUONLIEU from '../../sx/TINH_HINH_CUON_LIEU/TINHINHCUONLIEU';
 
-const INSPECTION= lazy(()=> import('./INSPECTION'));
+/* const INSPECTION= lazy(()=> import('./INSPECTION'));
 const INSPECT_REPORT= lazy(()=> import('./INSPECT_REPORT'));
 const INSPECT_STATUS= lazy(()=> import('./INSPECT_STATUS/INSPECT_STATUS'));
-const TINHHINHCUONLIEU= lazy(()=> import('../../sx/TINH_HINH_CUON_LIEU/TINHINHCUONLIEU'));
+const TINHHINHCUONLIEU= lazy(()=> import('../../sx/TINH_HINH_CUON_LIEU/TINHINHCUONLIEU')); */
 
 const KIEMTRA = () => {
   const [selection, setSelection] = useState<any>({

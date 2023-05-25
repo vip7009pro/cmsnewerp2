@@ -550,7 +550,7 @@ const CODE_MANAGER = () => {
   const handleSaveQLSX= async()=> {
     if(codedatatablefilter.length>=1)
     {
-      if(userData.EMPL_NO==='NHU1903'|| userData.EMPL_NO==='DTL1906'|| userData.EMPL_NO==='LVQ0103')
+      if(userData.EMPL_NO==='NHU1903' || userData.MAINDEPTNAME==='QLSX')
       {
         let err_code: string ='0';
         for(let i=0;i<codedatatablefilter.length;i++)
@@ -609,7 +609,7 @@ const CODE_MANAGER = () => {
   const handleSaveLossSX= async()=> {
     if(codedatatablefilter.length>=1)
     {
-      if(userData.EMPL_NO==='NHU1903'||  userData.MAINDEPTNAME==='SX')
+      if(userData.EMPL_NO==='NHU1903'||  userData.EMPL_NO==='DTL1906'|| userData.EMPL_NO==='LVQ0103')
       {
         let err_code: string ='0';
         for(let i=0;i<codedatatablefilter.length;i++)

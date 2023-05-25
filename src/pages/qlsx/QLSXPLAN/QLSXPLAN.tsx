@@ -1,15 +1,23 @@
 import  { useEffect, useState,  lazy, Suspense} from 'react'
 import "./QLSXPLAN.scss"
 import DATASX2 from './DATASX/DATASX2';
-const DATASX= lazy(()=> import('./DATASX/DATASX'));
-const EQ_STATUS= lazy(()=> import('./EQ_STATUS/EQ_STATUS'));
+import MACHINE from './Machine/MACHINE';
+import PLANTABLE from './PLANTABLE/PLANTABLE';
+import LICHSUINPUTLIEU from './LICHSUINPUTLIEU/LICHSUINPUTLIEU';
+import QUICKPLAN from './QUICKPLAN/QUICKPLAN';
+import PLAN_DATATB from './LICHSUCHITHITABLE/PLAN_DATATB';
+import PLAN_STATUS from './PLAN_STATUS/PLAN_STATUS';
+import EQ_STATUS from './EQ_STATUS/EQ_STATUS';
+import KHOAO from './KHOAO/KHOAO';
+
+/* const EQ_STATUS= lazy(()=> import('./EQ_STATUS/EQ_STATUS'));
 const KHOAO= lazy(()=> import('./KHOAO/KHOAO'));
 const PLAN_DATATB= lazy(()=> import('./LICHSUCHITHITABLE/PLAN_DATATB'));
 const LICHSUINPUTLIEU= lazy(()=> import('./LICHSUINPUTLIEU/LICHSUINPUTLIEU'));
 const MACHINE= lazy(()=> import('./Machine/MACHINE'));
 const PLANTABLE= lazy(()=> import('./PLANTABLE/PLANTABLE'));
 const PLAN_STATUS= lazy(()=> import('./PLAN_STATUS/PLAN_STATUS'));
-const QUICKPLAN= lazy(()=> import('./QUICKPLAN/QUICKPLAN'));
+const QUICKPLAN= lazy(()=> import('./QUICKPLAN/QUICKPLAN')); */
 
 
 const QLSXPLAN = () => {

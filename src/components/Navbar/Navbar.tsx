@@ -2,6 +2,8 @@ import React, {
   ChangeEvent,
   Component,
   ReactElement,
+  lazy,
+  useCallback,
   useContext,
   useEffect,
   useState,
@@ -18,7 +20,8 @@ import { UserContext } from "../../api/Context";
 import { FcList } from "react-icons/fc";
 import {
   toggleSidebar,
-  setTabModeSwap
+  setTabModeSwap,
+  ELE_ARRAY
 } from "../../redux/slices/globalSlice";
 import { RootState } from "../../redux/store";
 import { useSelector, useDispatch } from "react-redux";
@@ -26,6 +29,11 @@ import { addTab, closeTab, settabIndex, resetTab } from "../../redux/slices/glob
 import { current_ver } from "../../pages/home/Home";
 import { Autocomplete, Checkbox, FormControlLabel, TextField, createFilterOptions } from "@mui/material";
 import { getlang } from "../String/String";
+import "./navbar.scss";
+import MACHINE from "../../pages/qlsx/QLSXPLAN/Machine/MACHINE";
+import QUICKPLAN from "../../pages/qlsx/QLSXPLAN/QUICKPLAN/QUICKPLAN";
+import PLAN_STATUS from "../../pages/qlsx/QLSXPLAN/PLAN_STATUS/PLAN_STATUS";
+
 import QuanLyPhongBanNhanSu from "../../pages/nhansu/QuanLyPhongBanNhanSu/QuanLyPhongBanNhanSu";
 import DiemDanhNhom from "../../pages/nhansu/DiemDanhNhom/DiemDanhNhom";
 import DieuChuyenTeam from "../../pages/nhansu/DieuChuyenTeam/DieuChuyenTeam";
@@ -34,8 +42,6 @@ import PheDuyetNghi from "../../pages/nhansu/PheDuyetNghi/PheDuyetNghi";
 import LichSu from "../../pages/nhansu/LichSu/LichSu";
 import QuanLyCapCao from "../../pages/nhansu/QuanLyCapCao/QuanLyCapCao";
 import BaoCaoNhanSu from "../../pages/nhansu/BaoCaoNhanSu/BaoCaoNhanSu";
-import "./navbar.scss";
-import { ELE_ARRAY } from "../../redux/slices/globalSlice";
 import PoManager from "../../pages/kinhdoanh/pomanager/PoManager";
 import InvoiceManager from "../../pages/kinhdoanh/invoicemanager/InvoiceManager";
 import PlanManager from "../../pages/kinhdoanh/planmanager/PlanManager";
@@ -67,6 +73,59 @@ import KHOLIEU from "../../pages/kho/kholieu/KHOLIEU";
 import KHOAO from "../../pages/qlsx/QLSXPLAN/KHOAO/KHOAO";
 import LICHSUINPUTLIEU from "../../pages/qlsx/QLSXPLAN/LICHSUINPUTLIEU/LICHSUINPUTLIEU";
 import TINHHINHCUONLIEU from "../../pages/sx/TINH_HINH_CUON_LIEU/TINHINHCUONLIEU";
+import CSTOTAL from "../../pages/qc/cs/CSTOTAL";
+import AccountInfo from "../../components/Navbar/AccountInfo/AccountInfo";
+import { randomInt } from "crypto";
+
+/* 
+const KIEMTRA= lazy(()=> import('../../pages/qc/inspection/KIEMTRA'));
+const PQC= lazy(()=> import('../../pages/qc/pqc/PQC'));
+const IQC= lazy(()=> import('../../pages/qc/iqc/IQC'));
+const DTC= lazy(()=> import('../../pages/qc/dtc/DTC'));
+const ISO= lazy(()=> import('../../pages/qc/iso/ISO'));
+const OQC= lazy(()=> import('../../pages/qc/oqc/OQC'));
+const CSTOTAL= lazy(()=> import('../../pages/qc/cs/CSTOTAL'));
+const QuotationManager= lazy(()=> import('../../pages/kinhdoanh/quotationmanager/QuotationManager'));
+const BulletinBoard= lazy(()=> import('../../components/BulletinBoard/BulletinBoard'));
+const QLSX= lazy(()=> import('../../pages/qlsx/QLSX'));
+const QC= lazy(()=> import('../../pages/qc/QC'));
+const NhanSu= lazy(()=> import('../../pages/nhansu/NhanSu'));
+const KinhDoanh= lazy(()=> import('../../pages/kinhdoanh/KinhDoanh'));
+const AccountInfo= lazy(()=> import('../../components/Navbar/AccountInfo/AccountInfo'));
+const QuanLyCapCao= lazy(()=> import('../../pages/nhansu/QuanLyCapCao/QuanLyCapCao'));
+const DESIGN_AMAZON= lazy(()=> import('../../pages/rnd/design_amazon/DESIGN_AMAZON'));
+const KHOLIEU= lazy(()=> import('../../pages/kho/kholieu/KHOLIEU'));
+const DATASX= lazy(()=> import('../../pages/qlsx/QLSXPLAN/DATASX/DATASX'));
+const EQ_STATUS= lazy(()=> import('../../pages/qlsx/QLSXPLAN/EQ_STATUS/EQ_STATUS'));
+const LICHSUINPUTLIEU= lazy(()=> import('../../pages/qlsx/QLSXPLAN/LICHSUINPUTLIEU/LICHSUINPUTLIEU'));
+const INSPECT_STATUS= lazy(()=> import('../../pages/qc/inspection/INSPECT_STATUS/INSPECT_STATUS'));
+const ShortageKD= lazy(()=> import('../../pages/kinhdoanh/shortageKD/ShortageKD'));
+const TRANGTHAICHITHI= lazy(()=> import('../../pages/sx/TRANGTHAICHITHI/TRANGTHAICHITHI'));
+const CAPASX= lazy(()=> import('../../pages/qlsx/QLSXPLAN/CAPA/CAPASX'));
+const KHOAO= lazy(()=> import('../../pages/qlsx/QLSXPLAN/KHOAO/KHOAO'));
+const QLSXPLAN= lazy(()=> import('../../pages/qlsx/QLSXPLAN/QLSXPLAN'));
+const BOM_MANAGER= lazy(()=> import('../../pages/rnd/bom_manager/BOM_MANAGER'));
+const BOM_AMAZON= lazy(()=> import('../../pages/rnd/bom_amazon/BOM_AMAZON'));
+const CODE_MANAGER= lazy(()=> import('../../pages/rnd/code_manager/CODE_MANAGER'));
+const CUST_MANAGER= lazy(()=> import('../../pages/kinhdoanh/custManager/CUST_MANAGER'));
+const QuanLyPhongBanNhanSu= lazy(()=> import('../../pages/nhansu/QuanLyPhongBanNhanSu/QuanLyPhongBanNhanSu'));
+const DiemDanhNhom= lazy(()=> import('../../pages/nhansu/DiemDanhNhom/DiemDanhNhom'));
+const DieuChuyenTeam= lazy(()=> import('../../pages/nhansu/DieuChuyenTeam/DieuChuyenTeam'));
+const TabDangKy= lazy(()=> import('../../pages/nhansu/DangKy/TabDangKy'));
+const PheDuyetNghi= lazy(()=> import('../../pages/nhansu/PheDuyetNghi/PheDuyetNghi'));
+const LichSu= lazy(()=> import('../../pages/nhansu/LichSu/LichSu'));
+const BaoCaoNhanSu= lazy(()=> import('../../pages/nhansu/BaoCaoNhanSu/BaoCaoNhanSu'));
+const PoManager= lazy(()=> import('../../pages/kinhdoanh/pomanager/PoManager'));
+const KinhDoanhReport= lazy(()=> import('../../pages/kinhdoanh/kinhdoanhreport/KinhDoanhReport'));
+const InvoiceManager= lazy(()=> import('../../pages/kinhdoanh/invoicemanager/InvoiceManager'));
+const PlanManager= lazy(()=> import('../../pages/kinhdoanh/planmanager/PlanManager'));
+const FCSTManager= lazy(()=> import('../../pages/kinhdoanh/fcstmanager/FCSTManager'));
+const YCSXManager= lazy(()=> import('../../pages/kinhdoanh/ycsxmanager/YCSXManager'));
+const POandStockFull= lazy(()=> import('../../pages/kinhdoanh/poandstockfull/POandStockFull'));
+const CS= lazy(()=> import('../../pages/qc/cs/CS'));
+const DATASX2= lazy(()=> import('../../pages/qlsx/QLSXPLAN/DATASX/DATASX2'));
+const TINHHINHCUONLIEU= lazy(()=> import('../../pages/sx/TINH_HINH_CUON_LIEU/TINHINHCUONLIEU')); */
+
 interface MENU_LIST_DATA {
   MENU_CODE: string;
   MENU_NAME: string;
@@ -84,7 +143,7 @@ export default function Navbar() {
   const [server_string, setServer_String] = useState(
     "http://14.160.33.94:5011/api"
   );
-  const menulist: MENU_LIST_DATA[]=([
+  const menulist: MENU_LIST_DATA[]=([   
     {
       MENU_CODE: "NS1",
       MENU_NAME: getlang("quanlyphongban", lang),
@@ -222,8 +281,8 @@ export default function Navbar() {
     },
     {
       MENU_CODE: "QC7",
-      MENU_NAME: getlang('inspection',lang),
-      MENU_ITEM: <CS />,
+      MENU_NAME: 'CS',
+      MENU_ITEM: <CSTOTAL />,
     },
     {
       MENU_CODE: "QC8",
@@ -296,6 +355,36 @@ export default function Navbar() {
       MENU_ITEM: <CAPASX />,
     },
     {
+      MENU_CODE: "QL7",
+      MENU_NAME: 'PLAN VISUAL',
+      MENU_ITEM: <MACHINE />,
+    },
+    {
+      MENU_CODE: "QL8",
+      MENU_NAME: 'QUICK PLAN',
+      MENU_ITEM: <QUICKPLAN />,
+    },
+    {
+      MENU_CODE: "QL9",
+      MENU_NAME: 'TRA PLAN',
+      MENU_ITEM: <QUICKPLAN />,
+    },
+    {
+      MENU_CODE: "QL10",
+      MENU_NAME: 'INPUT LIEU',
+      MENU_ITEM: <LICHSUINPUTLIEU />,
+    },
+    {
+      MENU_CODE: "QL11",
+      MENU_NAME: 'PLAN STATUS',
+      MENU_ITEM: <PLAN_STATUS />,
+    },
+    {
+      MENU_CODE: "QL12",
+      MENU_NAME: 'EQ STATUS',
+      MENU_ITEM: <EQ_STATUS />,
+    },
+    {
       MENU_CODE: "SX1",
       MENU_NAME: getlang('quanlyYCSX',lang),
       MENU_ITEM: <YCSXManager />,
@@ -307,7 +396,7 @@ export default function Navbar() {
     },
     {
       MENU_CODE: "SX3",
-      MENU_NAME: getlang('thongtinsanpham',lang),
+      MENU_NAME: getlang('datasanxuat',lang),
       MENU_ITEM: <DATASX2 />,
     },
     {
@@ -345,6 +434,11 @@ export default function Navbar() {
       MENU_NAME: getlang('materiallotstatus',lang),
       MENU_ITEM: <TINHHINHCUONLIEU />,
     },
+    {
+      MENU_CODE: "",
+      MENU_NAME: '',
+      MENU_ITEM: <AccountInfo />,
+    },
   ]);
   const [selectedTab, setSelectedTab] = useState<SEARCH_LIST_DATA>({
     MENU_CODE: "NS2",
@@ -353,13 +447,16 @@ export default function Navbar() {
   const tabModeSwap: boolean = useSelector(
     (state: RootState) => state.totalSlice.tabModeSwap
   );
-  const dispatch = useDispatch();
+
   const tabIndex: number = useSelector(
     (state: RootState) => state.totalSlice.tabIndex
   );
   const tabs: ELE_ARRAY[] = useSelector(
     (state: RootState) => state.totalSlice.tabs
   );
+
+  const dispatch = useDispatch();
+  
   useEffect(() => {
     let saveLang: any = localStorage.getItem("lang")?.toString();
     if (saveLang !== undefined) {
@@ -372,7 +469,7 @@ export default function Navbar() {
       setServer_String(server_ip_local);
     } else {
       localStorage.setItem("server_ip", "http://14.160.33.94:5011/api");
-    }
+    }   
   }, []);
   const filterOptions1 = createFilterOptions({
     matchFrom: "any",
@@ -404,14 +501,15 @@ export default function Navbar() {
             server_string === "http://14.160.33.94:5011/api" ? "" : "#f37cf7",
         }}
       >
-        <FcList
+        {!tabModeSwap && <FcList
           onClick={() => {
             dispatch(toggleSidebar("2"));
           }}
           size={30}
-        />
+        />}
         <div className='search'>
-          <Autocomplete
+          {tabModeSwap && <Autocomplete
+            autoComplete={false}
             autoFocus={true}
             sx={{
               height: 10,
@@ -433,12 +531,18 @@ export default function Navbar() {
             isOptionEqualToValue={(option: any, value: any) =>
               option.MENU_CODE === value.MENU_CODE
             }
-            getOptionLabel={(option: SEARCH_LIST_DATA | any) =>
-              `${option.MENU_CODE}|${option.MENU_NAME}`
+             getOptionLabel={(option: SEARCH_LIST_DATA | any) =>
+              `${option.MENU_CODE}${option.MENU_NAME}`
+            }            
+            autoHighlight={true}            
+            renderInput={(params) => {              
+              return (
+                <div className="listitem">
+                  <TextField {...params} label='Quick Tab' />
+                </div>                
+              )
             }
-            renderInput={(params) => (
-              <TextField {...params} label='Quick Tab' />
-            )}
+            }
             defaultValue={{
               MENU_CODE: "NS2",
               MENU_NAME: getlang("diemdanhnhom", lang),
@@ -462,6 +566,10 @@ export default function Navbar() {
                       })
                     );
                     dispatch(settabIndex(tabs.length));
+                    setSelectedTab({
+                      MENU_CODE: "",
+                      MENU_NAME: '',
+                    });
                   }
                 }
                 else
@@ -470,24 +578,31 @@ export default function Navbar() {
                 } 
               }
             }}
-          />
-          <SearchIcon />
+          />}
+          {tabModeSwap && <SearchIcon />}
           <FormControlLabel          
           label={tabModeSwap? 'MULTIPLE TAB': 'SINGLE TAB'}
           control={
             <Checkbox
               checked={tabModeSwap}
               onChange={(e) => {
-                if(!tabModeSwap) dispatch(resetTab(0));
+                if(!tabModeSwap) 
+                {
+                  dispatch(resetTab(0));
+                  dispatch(addTab({
+                    ELE_NAME: 'ACCOUNT_INFO',
+                    REACT_ELE: <AccountInfo/>,
+                  }));
+                }
+
+
                dispatch(setTabModeSwap(!tabModeSwap));
               }}
               inputProps={{ "aria-label": "controlled" }}
             />
           }
         />
-        </div>
-        
-
+        </div> 
         <div className='cmslogo' style={{ cursor: "pointer" }}>
           <Link to='/' className='menulink'>
             <img

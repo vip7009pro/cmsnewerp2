@@ -7,7 +7,7 @@ import { generalQuery } from '../../../api/Api';
 import { UserContext } from '../../../api/Context';
 import { SaveExcel } from '../../../api/GlobalFunction';
 import "./SPECDTC.scss"
-import DataGrid, { Column, ColumnChooser, Editing, Export, FilterRow, Item, Pager, Paging, Scrolling, SearchPanel, Selection, Summary, Toolbar, TotalItem } from 'devextreme-react/data-grid';
+import DataGrid, { Column, ColumnChooser, Editing, Export, FilterRow, Item, KeyboardNavigation, Pager, Paging, Scrolling, SearchPanel, Selection, Summary, Toolbar, TotalItem } from 'devextreme-react/data-grid';
 interface DTC_SPEC_DATA {
   CUST_NAME_KD: string,
   G_CODE: string,
@@ -66,6 +66,10 @@ const SPECDTC = () => {
             //console.log(e.data);
           }}
         >
+           <KeyboardNavigation
+            editOnKeyPress={true}
+            enterKeyAction={'moveFocus'}
+            enterKeyDirection={'column'} />
           <Scrolling
             useNative={true}
             scrollByContent={true}

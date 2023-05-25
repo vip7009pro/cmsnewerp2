@@ -28,6 +28,7 @@ import DataGrid, {
   Export,
   FilterRow,
   Item,
+  KeyboardNavigation,
   Pager,
   Paging,
   Scrolling,
@@ -41,65 +42,111 @@ import { BiShow } from "react-icons/bi";
 import { GrStatusGood } from "react-icons/gr";
 import { FcCancel } from "react-icons/fc";
 import internal from "stream";
-interface QC_FAIL_DATA {
-  id?: number;
-  FACTORY: string;
-  PLAN_ID_SUDUNG: string;
+
+interface PQC1_DATA {
+  PQC1_ID: string;
+  YEAR_WEEK: string;
+  PROD_REQUEST_NO: string;
+  PROD_REQUEST_QTY: number;
+  PROD_REQUEST_DATE: string;
+  PLAN_ID: string;
+  PROCESS_LOT_NO: string;
   G_NAME: string;
-  LIEUQL_SX: number;
-  M_CODE: string;
-  M_LOT_NO: string;
-  VENDOR_LOT: string;
-  M_NAME: string;
-  WIDTH_CD: number;
-  ROLL_QTY: number;
-  IN_QTY: number;
-  TOTAL_IN_QTY: number;
-  USE_YN: string;
-  PQC3_ID: number;
-  DEFECT_PHENOMENON: string;
-  OUT_DATE: string;
-  INS_EMPL: string;
-  INS_DATE: string;
-  UPD_EMPL: string;
-  UPD_DATE: string;
-  PHANLOAI: string;
-  QC_PASS: string;
-  QC_PASS_DATE: string;
-  QC_PASS_EMPL: string;
+  G_NAME_KD: string;
+  LINEQC_PIC: string;
+  PROD_PIC: string;
+  PROD_LEADER: string;
+  LINE_NO: number;
+  STEPS: string;
+  CAVITY: number;
+  SETTING_OK_TIME: string;
+  FACTORY: string;
+  INSPECT_SAMPLE_QTY: number;
+  PROD_LAST_PRICE: number;
+  SAMPLE_AMOUNT: number;
   REMARK: string;
-  IN1_EMPL: string;
-  IN2_EMPL: string;
-  OUT1_EMPL: string;
-  OUT2_EMPL: string;
-  OUT_PLAN_ID: string;
-  IN_CUST_CD: string;
-  OUT_CUST_CD: string;
-  IN_CUST_NAME: string;
-  OUT_CUST_NAME: string;
-  REMARK_OUT: string;
-  FAIL_ID: number;
+  INS_DATE: string;
+  UPD_DATE: string;
 }
 interface CustomerListData {
   CUST_CD: string;
   CUST_NAME_KD: string;
   CUST_NAME: string;
 }
+interface SX_DATA {
+  G_CODE: string;
+  PHAN_LOAI: string;
+  PLAN_ID: string;
+  PLAN_DATE: string;
+  PROD_REQUEST_NO: string;
+  G_NAME: string;
+  G_NAME_KD: string;
+  PLAN_QTY: number;
+  EQ1: string, 
+  EQ2: string,
+  PLAN_EQ: string;
+  PLAN_FACTORY: string;
+  PROCESS_NUMBER: number;
+  STEP: number;
+  M_NAME: string;
+  WAREHOUSE_OUTPUT_QTY: number;
+  TOTAL_OUT_QTY: number;
+  USED_QTY: number;
+  REMAIN_QTY: number;
+  PD: number;
+  CAVITY: number;
+  SETTING_MET_TC: number;
+  SETTING_DM_SX: number;
+  SETTING_MET: number;
+  WAREHOUSE_ESTIMATED_QTY: number;
+  ESTIMATED_QTY_ST: number;
+  ESTIMATED_QTY: number;
+  KETQUASX: number;
+  LOSS_SX_ST: number;
+  LOSS_SX: number;
+  INS_INPUT: number;
+  LOSS_SX_KT: number;
+  INS_OUTPUT: number;
+  LOSS_KT: number;
+  SETTING_START_TIME: string;
+  MASS_START_TIME: string;
+  MASS_END_TIME: string;
+  RPM: number;
+  EQ_NAME_TT: string;
+  SX_DATE: string;
+  WORK_SHIFT: string;
+  INS_EMPL: string;
+  FACTORY: string;
+  BOC_KIEM: number;
+  LAY_DO: number;
+  MAY_HONG: number;
+  DAO_NG: number;
+  CHO_LIEU: number;
+  CHO_BTP: number;
+  HET_LIEU: number;
+  LIEU_NG: number;
+  CAN_HANG: number;
+  HOP_FL: number;
+  CHO_QC: number;
+  CHOT_BAOCAO: number;
+  CHUYEN_CODE: number;
+  KHAC: number;
+  REMARK: string;
+}
 const PQC1 = () => {
-  const [cmsvcheck, setCMSVCheck] = useState(true);
   const [customerList, setCustomerList] = useState<CustomerListData[]>([]);
   const [userData, setUserData] = useContext(UserContext);
   const [testtype, setTestType] = useState("NVL");
   const [inputno, setInputNo] = useState("");
-  const [request_empl, setrequest_empl] = useState("");
-  const [request_empl2, setrequest_empl2] = useState("");
+  const [lineqc_empl, setLineqc_empl] = useState("");
+  const [prod_leader_empl, setprod_leader_empl] = useState("");
   const [remark, setReMark] = useState("");
   const [inspectiondatatable, setInspectionDataTable] = useState<Array<any>>(
     []
   );
-  const [selectedRowsDataA, setSelectedRowsData] = useState<
-    Array<QC_FAIL_DATA>
-  >([]);
+  const [selectedRowsDataA, setSelectedRowsData] = useState<Array<PQC1_DATA>>(
+    []
+  );
   const [empl_name, setEmplName] = useState("");
   const [empl_name2, setEmplName2] = useState("");
   const [g_name, setGName] = useState("");
@@ -120,7 +167,96 @@ const PQC1 = () => {
   const [out_date, setOut_Date] = useState("");
   const [showhideinput, setShowHideInput] = useState(true);
   const [cust_cd, setCust_Cd] = useState("6969");
-  const [factory, setFactory] = useState(userData.FACTORY_CODE===1?'NM1':'NM2');
+  const [factory, setFactory] = useState(
+    userData.FACTORY_CODE === 1 ? "NM1" : "NM2"
+  );
+  const [pqc1datatable, setPqc1DataTable] = useState<Array<PQC1_DATA>>([]);
+  const [sx_data, setSXData] = useState<SX_DATA[]>([])
+  const [ktdtc,setKTDTC] = useState('CKT');
+  
+  const checkKTDTC = (PROCESS_LOT_NO: string) =>  {
+    generalQuery("checkktdtc", { PROCESS_LOT_NO: PROCESS_LOT_NO })
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+        //console.log(response.data.data);
+        if(response.data.data[0].TRANGTHAI !== null)
+        {
+          setKTDTC('DKT');
+        }
+        else
+        {
+          setKTDTC('CKT');
+        }
+       
+      } else {
+        setKTDTC('CKT');       
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+
+  }
+  const checkDataSX = (PLAN_ID: string)=> {    
+    generalQuery("loadDataSX", {
+      ALLTIME: true,
+      FROM_DATE: '',
+      TO_DATE: '',
+      PROD_REQUEST_NO: '',
+      PLAN_ID: PLAN_ID,
+      M_NAME: '',
+      M_CODE: '',
+      G_NAME: '',
+      G_CODE: '',
+      FACTORY: 'ALL',
+      PLAN_EQ: 'ALL',
+    })
+      .then((response) => {
+        //console.log(response.data.data);
+        if (response.data.tk_status !== "NG") {
+          const loaded_data: SX_DATA[] = response.data.data.map(
+            (element: SX_DATA, index: number) => {
+              return {
+                ...element,
+                PLAN_DATE: moment.utc(element.PLAN_DATE).format("YYYY-MM-DD"),
+                SETTING_START_TIME:
+                  element.SETTING_START_TIME === null
+                    ? ""
+                    : moment
+                        .utc(element.SETTING_START_TIME)
+                        .format("YYYY-MM-DD HH:mm:ss"),
+                MASS_START_TIME:
+                  element.MASS_START_TIME === null
+                    ? ""
+                    : moment
+                        .utc(element.MASS_START_TIME)
+                        .format("YYYY-MM-DD HH:mm:ss"),
+                MASS_END_TIME:
+                  element.MASS_END_TIME === null
+                    ? ""
+                    : moment
+                        .utc(element.MASS_END_TIME)
+                        .format("YYYY-MM-DD HH:mm:ss"),
+                SX_DATE:
+                  element.SX_DATE === null
+                    ? ""
+                    : moment.utc(element.SX_DATE).format("YYYY-MM-DD"),        
+                id: index,
+              };
+            }
+          );
+          //console.log(loaded_data);
+          setSXData(loaded_data);    
+          checkPlanIDP501(loaded_data);      
+           
+        } else {
+          Swal.fire("Thông báo", " Có lỗi : " + response.data.message, "error");
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
   const setQCPASS = async (value: string) => {
     console.log(selectedRowsDataA);
     if (selectedRowsDataA.length > 0) {
@@ -136,8 +272,6 @@ const PQC1 = () => {
       let err_code: string = "";
       for (let i = 0; i < selectedRowsDataA.length; i++) {
         await generalQuery("updateQCPASS_FAILING", {
-          M_LOT_NO: selectedRowsDataA[i].M_LOT_NO,
-          PLAN_ID_SUDUNG: selectedRowsDataA[i].PLAN_ID_SUDUNG,
           VALUE: value,
         })
           // eslint-disable-next-line no-loop-func
@@ -161,38 +295,33 @@ const PQC1 = () => {
       Swal.fire("Thông báo", "Chọn ít nhất 1 dòng để thực hiện", "error");
     }
   };
-  const setselecterowfunction = (e: any) => {
-    console.log(e);
-    setSelectedRowsData(e);
-  };
-  const materialDataTable = React.useMemo(
+  const pqc1DataTable = React.useMemo(
     () => (
       <div className='datatb'>
-        <div className="menubar">
-        <IconButton
-                className='buttonIcon'
-                onClick={() => {
-                  setShowHideInput((pre) => !pre);
-                  setInspectionDataTable([]);
-                }}
-              >
-                <BiShow color='blue' size={25} />
-                Show/Hide Input
-              </IconButton>
-              <span style={{ fontSize: 20, fontWeight: "bold" }}>
-                BẢNG NHẬP THÔNG TIN SETTING PQC
-              </span>
-              <IconButton
-                className='buttonIcon'
-                onClick={() => {
-                  handletraFailingData();
-                  setShowHideInput(false);
-                }}
-              >
-                <AiOutlineSearch color='red' size={25} />
-                Tra Data
-              </IconButton>    
-
+        <div className='menubar'>
+          <IconButton
+            className='buttonIcon'
+            onClick={() => {
+              setShowHideInput((pre) => !pre);
+              setInspectionDataTable([]);
+            }}
+          >
+            <BiShow color='blue' size={25} />
+            Show/Hide Input
+          </IconButton>
+          <span style={{ fontSize: 20, fontWeight: "bold" }}>
+            BẢNG NHẬP THÔNG TIN SETTING PQC
+          </span>
+          <IconButton
+            className='buttonIcon'
+            onClick={() => {
+              
+              setShowHideInput(false);
+            }}
+          >
+            <AiOutlineSearch color='red' size={25} />
+            Tra Data
+          </IconButton>
         </div>
         <DataGrid
           autoNavigateToFocusedRow={true}
@@ -202,7 +331,7 @@ const PQC1 = () => {
           cellHintEnabled={true}
           columnResizingMode={"widget"}
           showColumnLines={true}
-          dataSource={inspectiondatatable}
+          dataSource={pqc1datatable}
           columnWidth='auto'
           keyExpr='id'
           height={"70vh"}
@@ -219,6 +348,11 @@ const PQC1 = () => {
             //console.log(e);
           }}
         >
+          <KeyboardNavigation
+            editOnKeyPress={true}
+            enterKeyAction={"moveFocus"}
+            enterKeyDirection={"column"}
+          />
           <Scrolling
             useNative={false}
             scrollByContent={true}
@@ -229,7 +363,7 @@ const PQC1 = () => {
           <Selection mode='multiple' selectAllMode='allPages' />
           <Editing
             allowUpdating={true}
-            allowAdding={false}
+            allowAdding={true}
             allowDeleting={false}
             mode='cell'
             confirmDelete={true}
@@ -247,8 +381,6 @@ const PQC1 = () => {
                 <AiFillFileExcel color='green' size={25} />
                 SAVE
               </IconButton>
-                       
-             
             </Item>
             <Item name='searchPanel' />
             <Item name='exportButton' />
@@ -269,280 +401,60 @@ const PQC1 = () => {
             infoText='Page #{0}. Total: {1} ({2} items)'
             displayMode='compact'
           />
-          <Column
-            dataField='FAIL_ID'
-            caption='FAIL_ID'
-            width={100}
-            allowEditing={false}
-          ></Column>
-          <Column
-            dataField='FACTORY'
-            caption='FACTORY'
-            width={100}
-            allowEditing={false}
-          ></Column>
-          <Column
-            dataField='PLAN_ID_SUDUNG'
-            caption='PLAN_ID_SUDUNG'
-            width={100}
-            allowEditing={false}
-          ></Column>
-          <Column
-            dataField='G_NAME'
-            caption='G_NAME'
-            width={100}
-            allowEditing={false}
-          ></Column>
-          <Column
-            dataField='LIEUQL_SX'
-            caption='LIEUQL_SX'
-            width={100}
-            allowEditing={false}
-          ></Column>
-          <Column
-            dataField='M_CODE'
-            caption='M_CODE'
-            width={100}
-            allowEditing={false}
-          ></Column>
-          <Column
-            dataField='M_LOT_NO'
-            caption='M_LOT_NO'
-            width={100}
-            allowEditing={true}
-          ></Column>
-          <Column
-            dataField='VENDOR_LOT'
-            caption='VENDOR_LOT'
-            width={100}
-            allowEditing={false}
-          ></Column>
-          <Column
-            dataField='M_NAME'
-            caption='M_NAME'
-            width={100}
-            allowEditing={false}
-          ></Column>
-          <Column
-            dataField='WIDTH_CD'
-            caption='WIDTH_CD'
-            width={100}
-            allowEditing={false}
-          ></Column>
-          <Column dataField='ROLL_QTY' caption='ROLL_QTY' width={100}></Column>
-          <Column dataField='IN_QTY' caption='IN_QTY' width={100}></Column>
-          <Column
-            dataField='TOTAL_IN_QTY'
-            caption='TOTAL_IN_QTY'
-            width={100}
-          ></Column>
-          <Column
-            dataField='USE_YN'
-            caption='USE_YN'
-            width={100}
-            allowEditing={false}
-          ></Column>
-          <Column
-            dataField='PQC3_ID'
-            caption='PQC3_ID'
-            width={100}
-            allowEditing={false}
-          ></Column>
-          <Column
-            dataField='DEFECT_PHENOMENON'
-            caption='DEFECT_PHENOMENON'
-            width={100}
-            allowEditing={false}
-          ></Column>
-          <Column
-            dataField='OUT_DATE'
-            caption='OUT_DATE'
-            width={100}
-            allowEditing={false}
-          ></Column>
-          <Column
-            dataField='INS_EMPL'
-            caption='INS_EMPL'
-            width={100}
-            allowEditing={false}
-          ></Column>
-          <Column
-            dataField='INS_DATE'
-            caption='INS_DATE'
-            width={100}
-            allowEditing={false}
-          ></Column>
-          <Column
-            dataField='UPD_EMPL'
-            caption='UPD_EMPL'
-            width={100}
-            allowEditing={false}
-          ></Column>
-          <Column
-            dataField='UPD_DATE'
-            caption='UPD_DATE'
-            width={100}
-            allowEditing={false}
-          ></Column>
-          <Column
-            dataField='PHANLOAI'
-            caption='PHANLOAI'
-            width={100}
-            allowEditing={false}
-          ></Column>
-          <Column
-            dataField='QC_PASS'
-            caption='QC_PASS'
-            width={100}
-            allowEditing={false}
-          ></Column>
-          <Column
-            dataField='QC_PASS_DATE'
-            caption='QC_PASS_DATE'
-            width={100}
-            allowEditing={false}
-          ></Column>
-          <Column
-            dataField='QC_PASS_EMPL'
-            caption='QC_PASS_EMPL'
-            width={100}
-            allowEditing={false}
-          ></Column>
-          <Column
-            dataField='REMARK'
-            caption='REMARK'
-            width={100}
-            allowEditing={false}
-          ></Column>
-          <Column
-            dataField='IN1_EMPL'
-            caption='IN1_EMPL'
-            width={100}
-            allowEditing={false}
-          ></Column>
-          <Column
-            dataField='IN2_EMPL'
-            caption='IN2_EMPL'
-            width={100}
-            allowEditing={false}
-          ></Column>
-          <Column
-            dataField='OUT1_EMPL'
-            caption='OUT1_EMPL'
-            width={100}
-            allowEditing={false}
-          ></Column>
-          <Column
-            dataField='OUT2_EMPL'
-            caption='OUT2_EMPL'
-            width={100}
-            allowEditing={false}
-          ></Column>
-          <Column
-            dataField='IN_CUST_CD'
-            caption='IN_CUST_CD'
-            width={100}
-            allowEditing={false}
-          ></Column>
-          <Column
-            dataField='OUT_CUST_CD'
-            caption='OUT_CUST_CD'
-            width={100}
-            allowEditing={false}
-          ></Column>
-          <Column
-            dataField='IN_CUST_NAME'
-            caption='IN_CUST_NAME'
-            width={100}
-            allowEditing={false}
-          ></Column>
-          <Column
-            dataField='OUT_CUST_NAME'
-            caption='OUT_CUST_NAME'
-            width={100}
-            allowEditing={false}
-          ></Column>
-          <Column
-            dataField='OUT_PLAN_ID'
-            caption='OUT_PLAN_ID'
-            width={100}
-            allowEditing={false}
-          ></Column>
-          <Column
-            dataField='REMARK_OUT'
-            caption='REMARK_OUT'
-            width={100}
-            allowEditing={false}
-          ></Column>
           <Summary>
             <TotalItem
               alignment='right'
-              column='M_CODE'
+              column='PQC1_ID'
               summaryType='count'
-              valueFormat={"decimal"}
-            />
-            <TotalItem
-              alignment='right'
-              column='ROLL_QTY'
-              summaryType='sum'
-              valueFormat={"decimal"}
-            />
-            <TotalItem
-              alignment='right'
-              column='IN_QTY'
-              summaryType='sum'
-              valueFormat={"decimal"}
-            />
-            <TotalItem
-              alignment='right'
-              column='TOTAL_IN_QTY'
-              summaryType='sum'
               valueFormat={"decimal"}
             />
           </Summary>
         </DataGrid>
       </div>
     ),
-    [inspectiondatatable]
+    [pqc1datatable]
   );
-  const handletraFailingData = () => {
-    generalQuery("loadQCFailData", {})
+
+  const traPQC1Data = () => {
+    generalQuery("trapqc1data", {
+      ALLTIME: false,
+      FROM_DATE: moment().add(-2, "day").format("YYYY-MM-DD"),
+      TO_DATE: moment().format("YYYY-MM-DD"),
+      CUST_NAME: "",
+      PROCESS_LOT_NO: "",
+      G_CODE: "",
+      G_NAME: "",
+      PROD_TYPE: "",
+      EMPL_NAME: "",
+      PROD_REQUEST_NO: "",
+      ID: "",
+      FACTORY: userData.FACTORY_CODE === 1 ? "NM1" : "NM2",
+    })
       .then((response) => {
         //console.log(response.data.data);
         if (response.data.tk_status !== "NG") {
-          const loadeddata: QC_FAIL_DATA[] = response.data.data.map(
-            (element: QC_FAIL_DATA, index: number) => {
+          const loadeddata: PQC1_DATA[] = response.data.data.map(
+            (element: PQC1_DATA, index: number) => {
+              //summaryInput += element.INPUT_QTY_EA;
               return {
                 ...element,
-                INS_DATE:
-                  element.INS_DATE === null
-                    ? ""
-                    : moment(element.INS_DATE)
-                        .utc()
-                        .format("YYYY-MM-DD HH:mm:ss"),
-                UPD_DATE:
-                  element.UPD_DATE === null
-                    ? ""
-                    : moment(element.UPD_DATE)
-                        .utc()
-                        .format("YYYY-MM-DD HH:mm:ss"),
-                QC_PASS_DATE:
-                  element.QC_PASS_DATE === null
-                    ? ""
-                    : moment(element.QC_PASS_DATE)
-                        .utc()
-                        .format("YYYY-MM-DD HH:mm:ss"),
+                INS_DATE: moment
+                  .utc(element.INS_DATE)
+                  .format("YYYY-MM-DD HH:mm:ss"),
+                UPD_DATE: moment
+                  .utc(element.UPD_DATE)
+                  .format("YYYY-MM-DD HH:mm:ss"),
+                SETTING_OK_TIME: moment
+                  .utc(element.SETTING_OK_TIME)
+                  .format("YYYY-MM-DD HH:mm:ss"),
                 id: index,
               };
             }
           );
-          setInspectionDataTable(loadeddata);
-          Swal.fire(
-            "Thông báo",
-            "Đã load :" + loadeddata.length + " dòng",
-            "success"
-          );
+          //setSummaryInspect('Tổng Nhập: ' +  summaryInput.toLocaleString('en-US') + 'EA');
+          setPqc1DataTable(loadeddata);
         } else {
+          Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
         }
       })
       .catch((error) => {
@@ -583,6 +495,7 @@ const PQC1 = () => {
           //console.log(response.data.data);
           setPlanId(PLAN_ID);
           setGName(response.data.data[0].G_NAME);
+          setProdRequestNo(response.data.data[0].PROD_REQUEST_NO);
           setProdReqDate(response.data.data[0].PROD_REQUEST_DATE);
           setGCode(response.data.data[0].G_CODE);
         } else {
@@ -603,20 +516,61 @@ const PQC1 = () => {
           //console.log(response.data.data);
           setPlanId(response.data.data[0].PLAN_ID);
           checkPlanID(response.data.data[0].PLAN_ID);
-          
         } else {
-          setPlanId('');          
+          setPlanId("");
         }
       })
       .catch((error) => {
         console.log(error);
       });
   };
+  const checkPlanIDP501 = (SXDATA: SX_DATA[]) =>  {
+    generalQuery("checkPlanIdP501", { PLAN_ID: SXDATA[0].PLAN_ID })
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+        //console.log(response.data.data);
+        setInputNo(response.data.data[0].M_LOT_NO);
+        checkLotNVL(response.data.data[0].M_LOT_NO);
+        setProcessLotNo(response.data.data[0].PROCESS_LOT_NO);   
+        checkKTDTC(response.data.data[0].PROCESS_LOT_NO);
+      } else {        
+        if(SXDATA[0].PROCESS_NUMBER===0)
+        {
+          setInputNo('');
+          setProcessLotNo('');
+        }
+        else
+        {
+          generalQuery("checkProcessLotNo_Prod_Req_No", { PROD_REQUEST_NO: SXDATA[0].PROD_REQUEST_NO })
+          .then((response) => {
+            if (response.data.tk_status !== "NG") {
+              //console.log(response.data.data);
+              setInputNo(response.data.data[0].M_LOT_NO);
+              checkLotNVL(response.data.data[0].M_LOT_NO);
+              setProcessLotNo(response.data.data[0].PROCESS_LOT_NO);   
+              checkKTDTC(response.data.data[0].PROCESS_LOT_NO);
+            } else {
+              setInputNo('');
+              setProcessLotNo('');
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+        }
+        
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+
+  }
   const checkLotNVL = (M_LOT_NO: string) => {
     generalQuery("checkMNAMEfromLot", { M_LOT_NO: M_LOT_NO })
       .then((response) => {
         if (response.data.tk_status !== "NG") {
-          console.log(response.data.data);
+          //console.log(response.data.data);
           setM_Name(
             response.data.data[0].M_NAME +
               " | " +
@@ -646,285 +600,115 @@ const PQC1 = () => {
         console.log(error);
       });
   };
+
+  const inputDataPqc1 = () => {
+    generalQuery("insert_pqc1", {
+      PROCESS_LOT_NO: process_lot_no,
+      LINEQC_PIC: lineqc_empl.toUpperCase(),
+      PROD_PIC:  sx_data[0].INS_EMPL,
+      PROD_LEADER:  prod_leader_empl.toUpperCase(),
+      STEPS: sx_data[0].STEP,
+      CAVITY: sx_data[0].CAVITY,
+      SETTING_OK_TIME: sx_data[0].MASS_START_TIME,
+      FACTORY: sx_data[0].PLAN_FACTORY,
+      REMARK: ktdtc,
+      PROD_REQUEST_NO: sx_data[0].PROD_REQUEST_NO,
+      G_CODE: sx_data[0].G_CODE,
+      PLAN_ID: sx_data[0].PLAN_ID,
+      PROCESS_NUMBER: sx_data[0].PROCESS_NUMBER,
+      LINE_NO: sx_data[0].EQ_NAME_TT,
+      REMARK2: remark
+     })
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+        //console.log(response.data.data);
+        traPQC1Data();       
+      } else {
+         Swal.fire('Cảnh báo','Có lỗi: ' + response.data.message,'error');
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  }
   const checkInput = (): boolean => {
     if (
       inputno !== "" &&
-      planId !== "" &&
-      vendorLot !== "" &&
-      request_empl !== ""
+      planId !== "" &&     
+      lineqc_empl !== "" && 
+      sx_data.length !== 0 &&
+      process_lot_no !== '' 
     ) {
       return true;
     } else {
       return false;
     }
   };
-  const addRow = async () => {
-    let temp_row: QC_FAIL_DATA = {
-      id: inspectiondatatable.length,
-      FACTORY: userData.FACTORY_CODE === 1 ? "NM1" : "NM2",
-      PLAN_ID_SUDUNG: planId,
-      G_NAME: g_name,
-      LIEUQL_SX: lieql_sx,
-      M_CODE: m_code,
-      M_LOT_NO: inputno,
-      VENDOR_LOT: vendorLot,
-      M_NAME: m_name,
-      WIDTH_CD: width_cd,
-      ROLL_QTY: roll_qty,
-      IN_QTY: in_cfm_qty,
-      TOTAL_IN_QTY: roll_qty * in_cfm_qty,
-      USE_YN: "Y",
-      PQC3_ID: pqc3Id,
-      DEFECT_PHENOMENON: defect_phenomenon,
-      OUT_DATE: out_date,
-      INS_EMPL: userData.EMPL_NO,
-      INS_DATE: moment().format("YYYY-MM-DD HH:mm:ss"),
-      UPD_EMPL: "",
-      UPD_DATE: "",
-      PHANLOAI: testtype,
-      QC_PASS: "N",
-      QC_PASS_DATE: "",
-      QC_PASS_EMPL: "",
-      REMARK: remark,
-      IN1_EMPL: "",
-      IN2_EMPL: "",
-      OUT1_EMPL: "",
-      OUT2_EMPL: "",
-      OUT_PLAN_ID: "",
-      IN_CUST_CD: "",
-      OUT_CUST_CD: "",
-      IN_CUST_NAME: "",
-      OUT_CUST_NAME: "",
-      REMARK_OUT: "",
-      FAIL_ID: 0,
-    };
-    setInspectionDataTable((prev) => {
-      return [...prev, temp_row];
-    });
-  };
-  const saveFailingData = async () => {
-    if (inspectiondatatable.length > 0) {
-      let err_code: string = "";
-      for (let i = 0; i < inspectiondatatable.length; i++) {
-        await generalQuery("insertFailingData", {
-          FACTORY: inspectiondatatable[i].FACTORY,
-          PLAN_ID_SUDUNG: inspectiondatatable[i].PLAN_ID_SUDUNG,
-          LIEUQL_SX: inspectiondatatable[i].LIEUQL_SX,
-          M_CODE: inspectiondatatable[i].M_CODE,
-          M_LOT_NO: inspectiondatatable[i].M_LOT_NO,
-          VENDOR_LOT: inspectiondatatable[i].VENDOR_LOT,
-          ROLL_QTY: inspectiondatatable[i].ROLL_QTY,
-          IN_QTY: inspectiondatatable[i].IN_QTY,
-          TOTAL_IN_QTY: inspectiondatatable[i].TOTAL_IN_QTY,
-          USE_YN: inspectiondatatable[i].USE_YN,
-          PQC3_ID: inspectiondatatable[i].PQC3_ID,
-          OUT_DATE: inspectiondatatable[i].OUT_DATE,
-          INS_EMPL: inspectiondatatable[i].INS_EMPL,
-          INS_DATE: inspectiondatatable[i].INS_DATE,
-          UPD_EMPL: inspectiondatatable[i].UPD_EMPL,
-          UPD_DATE: inspectiondatatable[i].UPD_DATE,
-          PHANLOAI: inspectiondatatable[i].PHANLOAI,
-          QC_PASS: inspectiondatatable[i].QC_PASS,
-          QC_PASS_DATE: inspectiondatatable[i].QC_PASS_DATE,
-          QC_PASS_EMPL: inspectiondatatable[i].QC_PASS_EMPL,
-          REMARK: inspectiondatatable[i].REMARK,
-          IN1_EMPL: inspectiondatatable[i].IN1_EMPL,
-          IN2_EMPL: inspectiondatatable[i].IN2_EMPL,
-          OUT1_EMPL: inspectiondatatable[i].OUT1_EMPL,
-          OUT2_EMPL: inspectiondatatable[i].OUT2_EMPL,
-          OUT_PLAN_ID: inspectiondatatable[i].OUT_PLAN_ID,
-          IN_CUST_CD: inspectiondatatable[i].IN_CUST_CD,
-          OUT_CUST_CD: inspectiondatatable[i].OUT_CUST_CD,
-        })
-          // eslint-disable-next-line no-loop-func
-          .then((response) => {
-            if (response.data.tk_status !== "NG") {
-              //console.log(response.data.data);
-            } else {
-              err_code += "Lỗi: " + response.data.message + "| ";
-            }
-          })
-          .catch((error) => {
-            console.log(error);
-          });
-      }
-      if (err_code === "") {
-        Swal.fire("Thông báo", "Thêm data thành công", "success");
-      } else {
-        Swal.fire("Thông báo", "Lỗi: " + err_code, "error");
-      }
-    } else {
-    }
-  };
-  const getcustomerlist = () => {
-    generalQuery("selectcustomerList", {})
-      .then((response) => {
-        if (response.data.tk_status !== "NG") {
-          setCustomerList(response.data.data);
-        } else {
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
-  const updateQCFailTable = async () => {
-    if (selectedRowsDataA.length > 0) {
-      let err_code: string = "";
-      for (let i = 0; i < selectedRowsDataA.length; i++) {
-        await generalQuery("updateQCFailTableData", {
-          OUT1_EMPL: request_empl,
-          OUT2_EMPL: request_empl2,
-          OUT_CUST_CD: cust_cd,
-          OUT_PLAN_ID: planId,
-          REMARK_OUT: remark,
-          FAIL_ID: selectedRowsDataA[i].FAIL_ID,
-        })
-          // eslint-disable-next-line no-loop-func
-          .then((response) => {
-            if (response.data.tk_status !== "NG") {
-            } else {
-              err_code += ` Lỗi: ${response.data.message} | `;
-            }
-          })
-          .catch((error) => {
-            console.log(error);
-          });
-      }
-      if (err_code === "") {
-        Swal.fire("Thông báo", "Xuất thành công", "success");
-      } else {
-        Swal.fire("Thông báo", "Có lỗi: " + err_code, "error");
-      }
-    } else {
-      Swal.fire("Chọn ít nhất 1 dòng để thực hiện");
-    }
-  };
+
+
   useEffect(() => {
-    getcustomerlist();
+    traPQC1Data();
     ///handletraFailingData();
   }, []);
   return (
-    <div className='failing'>
+    <div className='pqc1'>
       <div className='tracuuDataInspection'>
-        <div className='maintable'>         
+        <div className='maintable'>
           {showhideinput && (
             <div className='tracuuDataInspectionform'>
               <b style={{ color: "blue" }}>NHẬP THÔNG TIN SETTING</b>
               <div className='forminput'>
                 <div className='forminputcolumn'>
-                  <label>
-                    FACTORY:
+                  <b>FACTORY</b>
+                  <label>                   
                     <select
-                      disabled={userData.EMPL_NO==='NHU1903'}
+                      disabled={userData.EMPL_NO === "NHU1903"}
                       name='factory'
                       value={factory}
                       onChange={(e) => {
                         setFactory(e.target.value);
                       }}
-                    >                     
-                        <option value='NM1'>
-                          NM1
-                        </option>
-                        <option value='NM2'>
-                          NM2
-                        </option>
-                     
+                    >
+                      <option value='NM1'>NM1</option>
+                      <option value='NM2'>NM2</option>
                     </select>
-                  </label>
-                  <b>LOT sản xuất</b>
-                  <label>
-                    <input
-                      type='text'
-                      placeholder='13B2E612'
-                      value={process_lot_no}
-                      onChange={(e) => {
-                        if (e.target.value.length >= 7) {
-                          checkProcessLotNo(e.target.value);
-                        }
-                        setProcessLotNo(e.target.value);
-                      }}
-                    ></input>
                   </label>
                   <b>Số chỉ thị sản xuất</b>
                   <label>
                     <input
-                      disabled={true}
                       type='text'
                       placeholder='1F80008A'
                       value={planId}
                       onChange={(e) => {
-                        if (e.target.value.length >= 7) {
+                        if (e.target.value.length >= 8) {
+                         
                           checkPlanID(e.target.value);                          
+                          checkDataSX(e.target.value);
+                        }
+                        else{
+                          setSXData([]);
+                          setInputNo('');
+                          setProcessLotNo('');
                         }
                         setPlanId(e.target.value);
                       }}
                     ></input>
-                  </label>
-                  {g_name && (
-                    <span
-                      style={{
-                        fontSize: 15,
-                        fontWeight: "bold",
-                        color: "blue",
-                      }}
-                    >
-                      {g_name}
-                    </span>
-                  )}
-                  <b>LOT NVL CMS</b>
-                  <label>
-                    <input
-                      type='text'
-                      placeholder='202304190123'
-                      value={inputno}
-                      onChange={(e) => {
-                        //console.log(e.target.value.length);
-                        if (e.target.value.length >= 7) {
-                          //console.log(e.target.value);
-                          checkLotNVL(e.target.value);
-                        }
-                        setInputNo(e.target.value);
-                      }}
-                    ></input>
-                  </label>
-                  {m_name && (
-                    <span
-                      style={{
-                        fontSize: 15,
-                        fontWeight: "bold",
-                        color: "blue",
-                      }}
-                    >
-                      {m_name}
-                    </span>
-                  )}
-                  <b>VENDOR LOT</b>
-                  <label>
-                    <input
-                      type='text'
-                      placeholder={"54951949844984"}
-                      value={vendorLot}
-                      onChange={(e) => {
-                        setVendorLot(e.target.value);
-                      }}
-                    ></input>
-                  </label>
-                  <b>Mã nhân viên giao</b>
+                  </label>                  
+                  <b>Mã LINEQC</b>
                   <label>
                     <input
                       type='text'
                       placeholder={"NVD1201"}
-                      value={request_empl}
+                      value={lineqc_empl}
                       onChange={(e) => {
                         if (e.target.value.length >= 7) {
                           checkEMPL_NAME(1, e.target.value);
                         }
-                        setrequest_empl(e.target.value);
+                        setLineqc_empl(e.target.value);
                       }}
                     ></input>
                   </label>
-                  {request_empl && (
+                  {lineqc_empl && (
                     <span
                       style={{
                         fontSize: 15,
@@ -935,21 +719,21 @@ const PQC1 = () => {
                       {empl_name}
                     </span>
                   )}
-                  <b>Mã nhân viên nhận</b>
+                  <b>Mã Leader SX</b>
                   <label>
                     <input
                       type='text'
                       placeholder={"NVD1201"}
-                      value={request_empl2}
+                      value={prod_leader_empl}
                       onChange={(e) => {
                         if (e.target.value.length >= 7) {
                           checkEMPL_NAME(2, e.target.value);
                         }
-                        setrequest_empl2(e.target.value);
+                        setprod_leader_empl(e.target.value);
                       }}
                     ></input>
                   </label>
-                  {request_empl2 && (
+                  {prod_leader_empl && (
                     <span
                       style={{
                         fontSize: 15,
@@ -973,54 +757,25 @@ const PQC1 = () => {
                       }}
                     ></input>
                   </label>
-                </div>
+                </div>               
               </div>
               <div className='formbutton'>
                 <button
                   className='tranhatky'
                   onClick={() => {
                     if (checkInput()) {
-                      let lotArray = inspectiondatatable.map(
-                        (element: QC_FAIL_DATA, index: number) => {
-                          return element.M_LOT_NO;
-                        }
-                      );
-                      if (pqc3Id !== 0) {
-                        if (lotArray.indexOf(inputno) < 0) {
-                          addRow();
-                        } else {
-                          Swal.fire(
-                            "Thông tin",
-                            "Đã thêm cuộn này rồi",
-                            "error"
-                          );
-                        }
-                      } else {
-                        Swal.fire(
-                          "Thông tin",
-                          "Số chỉ thị này PQC chưa lập lỗi, không thêm được",
-                          "error"
-                        );
-                      }
+                      inputDataPqc1();
                     } else {
                       Swal.fire(
                         "Thông báo",
-                        "Hãy nhập đủ thông tin trước khi đăng ký",
+                        "Hãy nhập đủ thông tin trước khi input",
                         "error"
                       );
                     }
                   }}
                 >
-                  Add
-                </button>
-                <button
-                  className='tranhatky'
-                  onClick={() => {
-                    saveFailingData();
-                  }}
-                >
-                  Save
-                </button>
+                  Input Data
+                </button>               
               </div>
               <div
                 className='formbutton'
@@ -1028,7 +783,156 @@ const PQC1 = () => {
               ></div>
             </div>
           )}
-          <div className='tracuuYCSXTable'>{materialDataTable}</div>          
+          {showhideinput && (
+            <div className='tracuuDataInspectionform2'>
+              <b style={{ color: "blue" }}>THÔNG TIN CHỈ THỊ</b>
+              <div className='forminput'>
+                <div className='forminputcolumn'>                  
+                  <b style={{color:'gray'}}>LOT sản xuất</b>
+                  <label>
+                    <input
+                      disabled={true}
+                      type='text'                      
+                      value={process_lot_no}
+                      onChange={(e) => {
+                        if (e.target.value.length >= 7) {
+                          checkProcessLotNo(e.target.value);
+                        }
+                        setProcessLotNo(e.target.value);
+                      }}
+                    ></input>
+                  </label>
+                  {g_name && (
+                    <span
+                      style={{
+                        fontSize: 15,
+                        fontWeight: "bold",
+                        color: "blue",
+                      }}
+                    >
+                      {g_name}
+                    </span>
+                  )}
+                  <b style={{color:'gray'}}>LOT NVL CMS</b>
+                  <label>
+                    <input
+                      disabled={true}
+                      type='text'                      
+                      value={inputno}
+                      onChange={(e) => {
+                        //console.log(e.target.value.length);
+                        if (e.target.value.length >= 7) {
+                          //console.log(e.target.value);
+                          checkLotNVL(e.target.value);
+                        }
+                        setInputNo(e.target.value);
+                      }}
+                    ></input>
+                  </label>                 
+                  {m_name && (
+                    <span
+                      style={{
+                        fontSize: 15,
+                        fontWeight: "bold",
+                        color: "blue",
+                      }}
+                    >
+                      {m_name}
+                    </span>
+                  )} 
+                   <b style={{color:'gray'}}>LINE NO</b>
+                  <label>
+                    <input
+                      disabled={true}
+                      type='text'                      
+                      value={sx_data[0] !== undefined?  sx_data[0]?.EQ_NAME_TT : ''}
+                      onChange={(e) => {
+                       
+                      }}
+                    ></input>
+                  </label>
+
+                  <b style={{color:'gray'}}>PROCESS_NUMBER (Công đoạn)</b>
+                  <label>
+                    <input
+                      disabled={true}
+                      type='text'                     
+                      value={sx_data[0] !== undefined? sx_data[0]?.PROCESS_NUMBER : ''}
+                      onChange={(e) => {
+                       
+                      }}
+                    ></input>
+                  </label>
+
+                  <b style={{color:'gray'}}>STEP</b>
+                  <label>
+                    <input
+                      disabled={true}
+                      type='text'                      
+                      value={sx_data[0] !== undefined? sx_data[0]?.STEP : ''}
+                      onChange={(e) => {
+                       
+                      }}
+                    ></input>
+                  </label>
+
+                  <b style={{color:'gray'}}>PD</b>
+                  <label>
+                    <input
+                      disabled={true}
+                      type='text'                      
+                      value={sx_data[0] !== undefined? sx_data[0]?.PD : ''}
+                      onChange={(e) => {
+                       
+                      }}
+                    ></input>
+                  </label>
+
+                  <b style={{color:'gray'}}>CAVITY</b>
+                  <label>
+                    <input
+                      disabled={true}
+                      type='text'                      
+                      value={sx_data[0] !== undefined? sx_data[0]?.CAVITY : ''}
+                      onChange={(e) => {
+                       
+                      }}
+                    ></input>
+                  </label>
+
+                  <b style={{color:'gray'}}>SETTING_OK_TIME</b>
+                  <label>
+                    <input
+                      disabled={true}
+                      type='text'                      
+                      value={sx_data[0] !== undefined? sx_data[0]?.MASS_START_TIME : ''}
+                      onChange={(e) => {
+                       
+                      }}
+                    ></input>
+                  </label>
+
+                  <b style={{color:'gray'}}>Mã CNSX</b>
+                  <label>
+                    <input
+                      disabled={true}
+                      type='text'                      
+                      value={sx_data[0] !== undefined? sx_data[0]?.INS_EMPL : ''}
+                      onChange={(e) => {
+                       
+                      }}
+                    ></input>
+                  </label>
+                 
+                </div>                          
+              </div>            
+              <div
+                className='formbutton'
+                style={{ marginTop: "20px", display: "flex", flexWrap: "wrap" }}
+              ></div>
+            </div>
+          )}
+          <div className='tracuuYCSXTable' style={{width: showhideinput? '65vw': '99vw'}}>{pqc1DataTable}</div>
         </div>
       </div>
     </div>
