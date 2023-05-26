@@ -774,6 +774,33 @@ const YCSXManager = () => {
       },
     },
   ];
+  const handle_AddPlan = async (PROD_REQUEST_NO: string, PROD_REQUEST_QTY: number, PLAN_EQ: string, G_CODE: string) => {
+    await generalQuery("addPlanQLSX", {
+      PLAN_ID: PROD_REQUEST_NO+'A',
+      PLAN_DATE: moment().format('YYYY-MM-DD'),
+      PROD_REQUEST_NO: PROD_REQUEST_NO,
+      PLAN_QTY: PROD_REQUEST_QTY,
+      PLAN_EQ: PLAN_EQ,
+      PLAN_FACTORY: 'NM1',
+      PLAN_LEADTIME: 0,
+      STEP: 0,
+      PLAN_ORDER: 1,
+      PROCESS_NUMBER:1,
+      G_CODE: G_CODE,
+      NEXT_PLAN_ID: "X",
+    })
+      .then((response) => {
+        console.log(response.data.tk_status);
+        if (response.data.tk_status !== "NG") {
+          
+        } else {
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
   function CustomToolbar() {
     return (
       <GridToolbarContainer>
@@ -2888,7 +2915,7 @@ const YCSXManager = () => {
                       <option value='AM'>Amazon (AM)</option>
                       <option value='DL'>Đổi LOT (DL)</option>
                       <option value='M4'>NM4 (M4)</option>
-                      <option value='SL'>Slitting (SL)</option>
+                      {/* <option value='SL'>Slitting (SL)</option> */}
                     </select>
                   </label>
                 </div>

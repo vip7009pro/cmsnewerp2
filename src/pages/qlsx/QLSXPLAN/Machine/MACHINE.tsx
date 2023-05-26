@@ -2535,6 +2535,7 @@ const MACHINE = () => {
         );
       }
     );
+    //console.log(selectedPlanTable);
     let err_code: string = "0";
     for (let i = 0; i < selectedPlanTable.length; i++) {
       let check_NEXT_PLAN_ID: boolean = true;
@@ -2615,28 +2616,28 @@ const MACHINE = () => {
         ) {
           err_code += "_: Process number chưa đúng";
         }
-        if (selectedPlanTable[i].PLAN_QTY === 0) {
+        else if (selectedPlanTable[i].PLAN_QTY === 0) {
           err_code += "_: Số lượng chỉ thị =0";
         }
-        if (
+        else if (
           selectedPlanTable[i].PLAN_QTY > selectedPlanTable[i].PROD_REQUEST_QTY
         ) {
           err_code += "_: Số lượng chỉ thị lớn hơn số lượng yêu cầu sx";
         }
-        if (
+        else if (
           selectedPlanTable[i].PLAN_ID === selectedPlanTable[i].NEXT_PLAN_ID
         ) {
           err_code += "_: NEXT_PLAN_ID không được giống PLAN_ID hiện tại";
         }
-        if (!check_NEXT_PLAN_ID) {
+        else if (!check_NEXT_PLAN_ID) {
           err_code +=
             "_: NEXT_PLAN_ID không giống với PLAN_ID ở dòng tiếp theo";
         }
-        if (selectedPlanTable[i].CHOTBC === "V") {
+        else if (selectedPlanTable[i].CHOTBC === "V") {
           err_code +=
             "_: Chỉ thị đã chốt báo cáo, sẽ ko sửa được, thông tin các chỉ thị khác trong máy được lưu thành công";
         }
-        if (
+        else if (
           !(
             parseInt(selectedPlanTable[i].STEP.toString()) >= 0 &&
             parseInt(selectedPlanTable[i].STEP.toString()) <= 9
@@ -2644,13 +2645,17 @@ const MACHINE = () => {
         ) {
           err_code += "_: Hãy nhập STEP từ 0 -> 9";
         }
-        if (
+        else if (
           !(
             parseInt(selectedPlanTable[i].PROCESS_NUMBER.toString()) >= 1 &&
             parseInt(selectedPlanTable[i].PROCESS_NUMBER.toString()) <= 2
           )
         ) {
           err_code += "_: Hãy nhập PROCESS NUMBER từ 1 hoặc 2";
+        }
+        else  if (checkPlanIdP500)
+        {
+          err_code += "_: Đã bắn liệu vào sản xuất, không sửa chỉ thị được";
         }
       }
     }

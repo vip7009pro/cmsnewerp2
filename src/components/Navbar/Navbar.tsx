@@ -76,6 +76,7 @@ import TINHHINHCUONLIEU from "../../pages/sx/TINH_HINH_CUON_LIEU/TINHINHCUONLIEU
 import CSTOTAL from "../../pages/qc/cs/CSTOTAL";
 import AccountInfo from "../../components/Navbar/AccountInfo/AccountInfo";
 import { randomInt } from "crypto";
+import PLAN_DATATB from "../../pages/qlsx/QLSXPLAN/LICHSUCHITHITABLE/PLAN_DATATB";
 
 /* 
 const KIEMTRA= lazy(()=> import('../../pages/qc/inspection/KIEMTRA'));
@@ -144,6 +145,11 @@ export default function Navbar() {
     "http://14.160.33.94:5011/api"
   );
   const menulist: MENU_LIST_DATA[]=([   
+    {
+      MENU_CODE: "NS0",
+      MENU_NAME: 'Account Info',
+      MENU_ITEM: <AccountInfo />,
+    },
     {
       MENU_CODE: "NS1",
       MENU_NAME: getlang("quanlyphongban", lang),
@@ -363,11 +369,11 @@ export default function Navbar() {
       MENU_CODE: "QL8",
       MENU_NAME: 'QUICK PLAN',
       MENU_ITEM: <QUICKPLAN />,
-    },
+    }, 
     {
       MENU_CODE: "QL9",
       MENU_NAME: 'TRA PLAN',
-      MENU_ITEM: <QUICKPLAN />,
+      MENU_ITEM: <PLAN_DATATB />,
     },
     {
       MENU_CODE: "QL10",
@@ -439,6 +445,11 @@ export default function Navbar() {
       MENU_NAME: '',
       MENU_ITEM: <AccountInfo />,
     },
+    {
+      MENU_CODE: "-1",
+      MENU_NAME: '',
+      MENU_ITEM: <AccountInfo />,
+    },
   ]);
   const [selectedTab, setSelectedTab] = useState<SEARCH_LIST_DATA>({
     MENU_CODE: "NS2",
@@ -469,7 +480,35 @@ export default function Navbar() {
       setServer_String(server_ip_local);
     } else {
       localStorage.setItem("server_ip", "http://14.160.33.94:5011/api");
-    }   
+    }
+    let saveTab: any = localStorage.getItem("tabs")?.toString();   
+    if (saveTab !== undefined) {      
+      let tempTab:SEARCH_LIST_DATA[] = JSON.parse(saveTab);
+      for(let i=0;i<tempTab.length; i++)
+      {
+        if(tempTab[i].MENU_CODE !=='-1')
+        dispatch(
+          addTab({
+            ELE_CODE: tempTab[i].MENU_CODE,
+            ELE_NAME: tempTab[i].MENU_NAME,
+            REACT_ELE: menulist.filter(
+              (ele: MENU_LIST_DATA, index: number) =>
+                ele.MENU_CODE === tempTab[i].MENU_CODE
+            )[0].MENU_ITEM,
+          })
+        );
+      }
+      dispatch(settabIndex(tempTab.filter((ele:SEARCH_LIST_DATA, index: number)=> ele.MENU_CODE !=='-1').length));
+      localStorage.setItem('tabs', JSON.stringify(tempTab.filter((ele:SEARCH_LIST_DATA, index: number)=> ele.MENU_CODE !=='-1')));      
+      setSelectedTab({
+        MENU_CODE: "",
+        MENU_NAME: '',
+      });
+      
+    } else {
+      
+    }
+    
   }, []);
   const filterOptions1 = createFilterOptions({
     matchFrom: "any",
@@ -559,6 +598,7 @@ export default function Navbar() {
                     dispatch(
                       addTab({
                         ELE_NAME: newValue.MENU_NAME,
+                        ELE_CODE: newValue.MENU_CODE,
                         REACT_ELE: menulist.filter(
                           (ele: MENU_LIST_DATA, index: number) =>
                             ele.MENU_CODE === newValue.MENU_CODE
@@ -590,6 +630,7 @@ export default function Navbar() {
                 {
                   dispatch(resetTab(0));
                   dispatch(addTab({
+                    ELE_CODE: 'NS0',
                     ELE_NAME: 'ACCOUNT_INFO',
                     REACT_ELE: <AccountInfo/>,
                   }));

@@ -14,10 +14,11 @@ import { RootState } from "../../redux/store";
 import { useSelector, useDispatch } from "react-redux";
 import { addTab, closeTab, settabIndex } from "../../redux/slices/globalSlice";
 import AccountInfo from "../../components/Navbar/AccountInfo/AccountInfo";
-export const current_ver: number = 135;
+export const current_ver: number = 138;
 interface ELE_ARRAY {
   REACT_ELE: ReactElement;
   ELE_NAME: string;
+  ELE_CODE: string;
 }
 function Home() {
   const tabs: ELE_ARRAY[] = useSelector(
@@ -58,19 +59,20 @@ function Home() {
             } else {
               window.clearInterval(intervalID);
               Swal.fire({
-                title: "Có ver mới, hãy update?",
-                text: "Update web",
+                title: "ERP has updates?",
+                text: "Update Web",
                 icon: "warning",
                 showCancelButton: true,
                 confirmButtonColor: "#3085d6",
                 cancelButtonColor: "#d33",
-                confirmButtonText: "Đã rõ",
+                confirmButtonText: "Update",
+                cancelButtonText: "Update later"
               }).then((result) => {
                 if (result.isConfirmed) {
-                  Swal.fire("Thông báo", "Update web", "success");
+                  Swal.fire("Notification", "Update Web", "success");
                   window.location.reload();
                 } else {
-                  Swal.fire("Thông báo", "Nhớ F5 để update web nhé", "info");
+                  Swal.fire("Notification", "Press Ctrl + F5 to update the Web", "info");
                 }
               });
             }
@@ -85,6 +87,7 @@ function Home() {
       window.clearInterval(intervalID);
     };
   }, []);
+  //console.log(tabs)
   return (
     <div className='home'>
       <div className='navdiv'>
@@ -126,7 +129,7 @@ function Home() {
               <Tabs
                 value={tabIndex}
                 onChange={(event: React.SyntheticEvent, newValue: number) => {
-                  console.log(newValue);
+                  //console.log(newValue);
                   dispatch(settabIndex(newValue));
                 }}
                 variant="scrollable"
@@ -135,6 +138,7 @@ function Home() {
                 allowScrollButtonsMobile
               >
                 {tabs.map((ele: ELE_ARRAY, index: number) => {
+                  if(ele.ELE_CODE !=='-1')
                   return (
                     <Tab
                       key={index}
@@ -144,8 +148,10 @@ function Home() {
                   );
                 })}
               </Tabs>
-            </Box>}          
+            </Box>}  
+                
             {tabModeSwap &&  tabs.map((ele: ELE_ARRAY, index: number) => {
+              if(ele.ELE_CODE !=='-1')
               return (
                 <div
                   key={index}
@@ -162,12 +168,13 @@ function Home() {
                 </div>
               );
             })}
-            {tabModeSwap && tabs.length ===0 && <AccountInfo/>}
-             {current_ver >= checkVerWeb? (
+            
+             {(current_ver >= checkVerWeb)? (
               !tabModeSwap && <Outlet />
             ) : (
-              <p>Web có câp nhật, Ctrl +F5 để cập nhật web</p>
+              <p style={{fontSize:35, backgroundColor:'red', width:'800px', height: '200px', zIndex:1000}}>ERP has updates, Press Ctrl +F5 to update web</p>
             )}
+            {tabModeSwap && tabs.length ===0 && <AccountInfo/>}
           </animated.div>
         </div>
         {/* <div className="chatroom">

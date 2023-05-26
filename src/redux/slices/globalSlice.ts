@@ -124,8 +124,9 @@ interface QLSXPLANDATA {
   OLD_PLAN_QTY?: string;
 }
 export interface ELE_ARRAY {
-  REACT_ELE: ReactElement,
-  ELE_NAME: string
+  REACT_ELE: any,
+  ELE_NAME: string,
+  ELE_CODE: string,
 }
 export interface GlobalInterface {
     userData?: UserData,
@@ -138,6 +139,7 @@ export interface GlobalInterface {
     tabIndex: number,
     tabModeSwap: boolean,
 }
+
 
 const initialState:GlobalInterface = {   
     userData: {
@@ -251,43 +253,42 @@ export const glbSlice = createSlice({
         });
         let temp_plan_step_array: QLSXPLANDATA[] =  state.multiple_chithi_array.filter((element: QLSXPLANDATA, index: number)=> {
           return element.STEP === 0
-        });
-        
+        });        
 
-          if(temp_plan_id_array.indexOf(action.payload.PLAN_ID) !== -1)
+        if(temp_plan_id_array.indexOf(action.payload.PLAN_ID) !== -1)
+        {
+          Swal.fire('Thông báo','PLAN ID đã được thêm rồi','error');            
+        }
+        else{
+          if(temp_plan_step_array.length >0 && action.payload.STEP ===0)
           {
-            Swal.fire('Thông báo','PLAN ID đã được thêm rồi','error');            
+            Swal.fire('Thông báo','Chỉ thêm 1 chỉ thị Bước 0 vào combo','error');     
           }
-          else{
-            if(temp_plan_step_array.length >0 && action.payload.STEP ===0)
+          else
+          {
+            if(state.multiple_chithi_array.length===0)
             {
-              Swal.fire('Thông báo','Chỉ thêm 1 chỉ thị Bước 0 vào combo','error');     
+              state.multiple_chithi_array = [...state.multiple_chithi_array, action.payload];
+              //console.log(state.multiple_chithi_array);
+              Swal.fire('Thông báo','Thêm PLAN ID thành công','success');
             }
             else
             {
-              if(state.multiple_chithi_array.length===0)
+              if(state.multiple_chithi_array[0].PROD_REQUEST_NO === action.payload.PROD_REQUEST_NO)
               {
                 state.multiple_chithi_array = [...state.multiple_chithi_array, action.payload];
                 //console.log(state.multiple_chithi_array);
                 Swal.fire('Thông báo','Thêm PLAN ID thành công','success');
               }
-              else
-              {
-                if(state.multiple_chithi_array[0].PROD_REQUEST_NO === action.payload.PROD_REQUEST_NO)
-                {
-                  state.multiple_chithi_array = [...state.multiple_chithi_array, action.payload];
-                  //console.log(state.multiple_chithi_array);
-                  Swal.fire('Thông báo','Thêm PLAN ID thành công','success');
-                }
-                else{
-                  Swal.fire('Thông báo','Chỉ thêm các chỉ thị của cùng 1 ycsx vào combo','error');     
-                }
-
+              else{
+                Swal.fire('Thông báo','Chỉ thêm các chỉ thị của cùng 1 ycsx vào combo','error');     
               }
-              
+
             }
             
           }
+          
+        }
         },        
         resetChithiArray: (state, action: PayloadAction<string>)=> {
           state.multiple_chithi_array =[];
@@ -299,17 +300,51 @@ export const glbSlice = createSlice({
         },
         addTab:  (state,action: PayloadAction<ELE_ARRAY>)=> {
           state.tabs=[...state.tabs, action.payload];
+          localStorage.setItem('tabs',JSON.stringify(state.tabs.map((ele:ELE_ARRAY, index:number)=> {
+            return {              
+                MENU_CODE: ele.ELE_CODE,
+                MENU_NAME: ele.ELE_NAME              
+            }
+          })));
         },
         resetTab:  (state,action: PayloadAction<any>)=> {
-          state.tabs=[];
+          state.tabs=[];   
+          localStorage.setItem('tabs',JSON.stringify(state.tabs.map((ele:ELE_ARRAY, index:number)=> {
+            return {              
+                MENU_CODE: ele.ELE_CODE,
+                MENU_NAME: ele.ELE_NAME              
+            }
+          })));      
         },
         closeTab:  (state,action: PayloadAction<number>)=> {
-          state.tabs = state.tabs.filter(
+         /*  state.tabs = state.tabs.filter(
             (ele: ELE_ARRAY, index1: number) => {
               return index1 !== state.tabIndex;
             }
-          );
-          state.tabIndex = state.tabIndex-1>0? state.tabIndex-1: 0;
+          ); */
+          state.tabs[state.tabIndex] = {
+            ELE_CODE:'-1',
+            ELE_NAME:'DELETED',
+            REACT_ELE: ''
+          }
+          localStorage.setItem('tabs',JSON.stringify(state.tabs.map((ele:ELE_ARRAY, index:number)=> {
+            return {              
+                MENU_CODE: ele.ELE_CODE,
+                MENU_NAME: ele.ELE_NAME              
+            }
+          })));
+          //let i=state.tabIndex;
+          while(state.tabIndex >0 && state.tabs[state.tabIndex].ELE_CODE==='-1')
+          {
+            state.tabIndex--;
+          }
+          if(state.tabIndex===0) {
+            while(state.tabIndex < state.tabs.length && state.tabs[state.tabIndex].ELE_CODE==='-1')
+            {
+              state.tabIndex++;
+            }
+          }
+          /* state.tabIndex = state.tabIndex-1>0? state.tabIndex-1: 0;  */
         },
         settabIndex: (state, action: PayloadAction<number>)=> {
           state.tabIndex = action.payload;
