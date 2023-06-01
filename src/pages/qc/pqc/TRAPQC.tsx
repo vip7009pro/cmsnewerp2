@@ -182,7 +182,7 @@ const TRAPQC = () => {
         return (
           <span style={{ color: "gray" }}>
             <b>
-              {params.row.SAMPLE_AMOUNT.toLocaleString("en-US", {
+              {params.row.SAMPLE_AMOUNT?.toLocaleString("en-US", {
                 style: "decimal",
                 maximumFractionDigits: 8,
               })}

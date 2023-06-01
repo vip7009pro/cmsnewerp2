@@ -84,6 +84,7 @@ interface TONLIEUXUONG {
   ROLL_QTY: number;
   IN_QTY: number;
   TOTAL_IN_QTY: number;
+  FSC: string;
 }
 interface LICHSUNHAPKHOAO {
   id: string;
@@ -272,6 +273,27 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
         }
       },
     },
+    {
+      field: "FSC",
+      headerName: "FSC",
+      width: 120,
+      editable: false,
+      renderCell: (params: any) => {
+        if (params.row.PHANLOAI === "Y") {
+          return (
+            <span style={{ color: "green", fontWeight: "bold" }}>
+              YES
+            </span>
+          );
+        } else {
+          return (
+            <span style={{ color: "red", fontWeight: "bold" }}>
+             NO
+            </span>
+          );
+        }
+      },
+    },
   ];
   function CustomToolbarLICHSUINPUTSX() {
     return (
@@ -407,8 +429,26 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
         console.log(error);
       });
   };
+  const checkNextPlanFSC = async (NEXT_PLAN:string)=> {
+    let checkFSC:string = 'N';
+    await generalQuery("checkFSC_PLAN_ID", {
+      PLAN_ID: NEXT_PLAN,      
+    })
+      .then((response) => {
+        console.log(response.data.data);
+        if (response.data.tk_status !== "NG") {
+          checkFSC = response.data.data[0].FSC;
+        } else {
+         
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    return checkFSC;
+  }
   const handle_xuatKhoAo = async () => {
-    console.log(nextPlan);
+    //console.log(nextPlan);
     if (nextPlan !== "" && nextPlan !== undefined) {
       if (tonkhoaodatafilter.length > 0) {
         let err_code: string = "0";
@@ -429,7 +469,10 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
             .catch((error) => {
               console.log(error);
             });
-          if (checklieuchithi === true && nextPlan !== tonkhoaodatafilter[i].PLAN_ID_INPUT) {
+
+            let checkFSC:string = await checkNextPlanFSC(nextPlan);    
+          
+          if (checklieuchithi === true && nextPlan !== tonkhoaodatafilter[i].PLAN_ID_INPUT && (checkFSC ===tonkhoaodatafilter[i].FSC)) {
             await generalQuery("xuatkhoao", {
               FACTORY: tonkhoaodatafilter[i].FACTORY,
               PHANLOAI: "N",

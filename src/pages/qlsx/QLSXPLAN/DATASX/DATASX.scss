@@ -9,15 +9,11 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            background-image: linear-gradient(0deg, #afd3d1, #eea94f);
+            background-image: linear-gradient(0deg, #afd3d1, #86cfff);
             -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
             box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
             border-radius: 3px;
             padding: 5px;
-
-            &:hover {
-                background-image: linear-gradient(0deg, #afd3d1, #eaec67);
-            }
 
             span {
                 padding: 10px;
@@ -189,17 +185,17 @@
         .losstable {
             display: flex;
             flex-direction: row;
-            background-image: linear-gradient(0deg, #ececec, #99f86d);
+            background-image: linear-gradient(0deg, #afd3d1, #86cfff);
             -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
             box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
             gap: 20px;
-            border-radius: 10px;
+            border-radius: 5px;
             margin-top: 5px;
             padding: 10px;
 
 
             table {
-                border: 3px solid gray;
+                border: 2px solid gray;
                 width: 100%;
                 text-align: center;
             }
@@ -223,10 +219,10 @@
             flex-direction: row;
             margin-top: 10px;
             height: fit-content;
-            background-image: linear-gradient(0deg, #afd3d1, #6dd1f8);
+            background-image: linear-gradient(0deg, #afd3d1, #86cfff);
             -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
             box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
-            border-radius: 3px;
+            border-radius: 5px;
             .datatb { 
                 justify-items: center;                    
                 width: 70%;

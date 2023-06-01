@@ -263,6 +263,7 @@ const EQ_STATUS = () => {
                 );
               })}
           </div>
+          
         </div>
       </div>
 

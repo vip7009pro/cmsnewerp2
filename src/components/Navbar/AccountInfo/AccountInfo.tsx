@@ -154,13 +154,13 @@ export default function AccountInfo() {
   };
   return (
     <div className='accountinfo'>
-      <h1>{/* Thông tin của bạn */}{getsentence(17,lang)}</h1>
+      <h1 className="text-3xl">{/* Thông tin của bạn */}{getsentence(17,lang)}</h1>
       <div className='panelhome'>
         <div className={`cot0 ${(userdata.EMPL_IMAGE ==='Y')? 'on':'off'}`}>        
           {(userdata.EMPL_IMAGE ==='Y') && <img width={240} height={340} src={'/Picture_NS/NS_'+ userdata.EMPL_NO+'.jpg'} alt={userdata.EMPL_NO}></img>}
         </div>
         <div className={`cot1 ${(userdata.EMPL_IMAGE ==='Y')? 'on':'off'}`}>
-          <h5>{/* Thông tin nhân viên */}{getsentence(18,lang)}:</h5>
+          <h5 className="text-3xl">{/* Thông tin nhân viên */}{getsentence(18,lang)}:</h5>
           <ul>
             <li className='emplInfoList'>
               {" "}

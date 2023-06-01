@@ -140,7 +140,6 @@ export interface GlobalInterface {
     tabModeSwap: boolean,
 }
 
-
 const initialState:GlobalInterface = {   
     userData: {
         ADD_COMMUNE: "Đông Xuân",
@@ -191,7 +190,7 @@ const initialState:GlobalInterface = {
       },
     diemdanhstate: false,
     lang: 'vi',
-    sidebarmenu: false,
+    sidebarmenu: true,
     multiple_chithi_array: [],
     server_ip: 'http://14.160.33.94:5011/api',   
     tabs: [],
@@ -322,29 +321,40 @@ export const glbSlice = createSlice({
               return index1 !== state.tabIndex;
             }
           ); */
-          state.tabs[state.tabIndex] = {
-            ELE_CODE:'-1',
-            ELE_NAME:'DELETED',
-            REACT_ELE: ''
-          }
-          localStorage.setItem('tabs',JSON.stringify(state.tabs.map((ele:ELE_ARRAY, index:number)=> {
-            return {              
-                MENU_CODE: ele.ELE_CODE,
-                MENU_NAME: ele.ELE_NAME              
-            }
-          })));
-          //let i=state.tabIndex;
-          while(state.tabIndex >0 && state.tabs[state.tabIndex].ELE_CODE==='-1')
+          let checkallDeleted: boolean = true;
+          for(let i=0;i<state.tabs.length; i++)
           {
-            state.tabIndex--;
+            if(state.tabs[i].ELE_CODE!=='-1') checkallDeleted =false;            
           }
-          if(state.tabIndex===0) {
-            while(state.tabIndex < state.tabs.length && state.tabs[state.tabIndex].ELE_CODE==='-1')
-            {
-              state.tabIndex++;
+
+          if(!checkallDeleted)
+          {
+            state.tabs[state.tabIndex] = {
+              ELE_CODE:'-1',
+              ELE_NAME:'DELETED',
+              REACT_ELE: ''
             }
+            localStorage.setItem('tabs',JSON.stringify(state.tabs.map((ele:ELE_ARRAY, index:number)=> {
+              return {              
+                  MENU_CODE: ele.ELE_CODE,
+                  MENU_NAME: ele.ELE_NAME              
+              }
+            })));
+            //let i=state.tabIndex;
+            while(state.tabIndex >0 && state.tabs[state.tabIndex].ELE_CODE==='-1')
+            {
+              state.tabIndex--;
+            }
+            if((state.tabIndex)===0) {
+              while(state.tabIndex < state.tabs.length && state.tabs[state.tabIndex].ELE_CODE==='-1')
+              {
+                state.tabIndex++;
+              }
+            }
+            /* state.tabIndex = state.tabIndex-1>0? state.tabIndex-1: 0;  */
+
           }
-          /* state.tabIndex = state.tabIndex-1>0? state.tabIndex-1: 0;  */
+         
         },
         settabIndex: (state, action: PayloadAction<number>)=> {
           state.tabIndex = action.payload;

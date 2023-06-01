@@ -22,7 +22,6 @@ const TabDangKy = () => {
     const [confirm_type, setConfirm_Type] = useState('GD');
     const [confirm_date, setConfirm_Date] = useState(moment().format('YYYY-MM-DD'));
 
-
     const handleclearxacnhan =() => {
         setConfirm_WorkTime('');
         setConfirm_Date('');

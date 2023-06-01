@@ -13,19 +13,33 @@
         .wrapper {           
             -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.29);
             box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.2);
-            background-color: rgb(159, 216, 248);
+            background-image: linear-gradient(310deg, rgba(86, 199, 252, 0.8), rgba(200, 229, 240, 0.8)); 
+            /* background-color: rgb(159, 216, 248); */
             display: flex;
+            flex-wrap: wrap;
             padding: 10px;
             align-items: center;
             justify-content: space-between;       
             width: 100%;
             border-radius: 5px;
-            .search {
-                display: flex;
-                align-items: center; 
-                justify-items: center;
+          
+            .navleft {
+
             }
-    
+            .navcenter {
+                display: flex;
+                align-items: center;
+
+            }
+            .navright {
+                display: flex;
+                align-items: center;
+                .search {
+                    display: flex;
+                    align-items: center; 
+                    justify-items: center;
+                }  
+                    
             .items {
                 display: flex;
                 align-items: center;
@@ -76,7 +90,7 @@
                 .avatarmenu {
                     display: flex;
                     width: 200px;
-                    height: 90px;
+                    height: 120px;
                     background-color: white;
                     -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.29);
                     box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.2);
@@ -178,6 +192,10 @@
                 }
     
             }
+               
+                    
+
+            }
         }
     }
     @media only screen and (max-width: 768px) {
@@ -188,18 +206,16 @@
             -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.29);
             box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.2);
             background-color: rgb(238, 240, 247);
-            display: flex;     
-            flex-wrap: wrap;       
+            display: flex;            
             padding: 10px;
             align-items: center;
             justify-content: space-between;       
             width: 100%;
             border-radius: 5px;   
-           
-            .cmslogo {
+            .cmslogo    Ơ
+            
+            .search {
                 display: none;
-            }
-            .search {                
                 align-items: center;
                 justify-items: center;
             }                
@@ -353,7 +369,6 @@
     
             }
         }
-
     }
     @media only screen and (max-width: 320px) {
 

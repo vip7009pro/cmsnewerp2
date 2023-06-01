@@ -94,7 +94,7 @@
                     width: 99%;
                     height: 80vh;
                     margin-top: 10px;
-                    background-image: linear-gradient(0deg, #5e6666, #c0c0c9);
+                    background-image: linear-gradient(0deg, #dce4e4, #84ccf7);
                     padding: 10px;
                     border-radius: 10px;               
                     
@@ -108,14 +108,11 @@
                 flex-direction: column;
                 align-items: center;
                 
-                background-image: linear-gradient(0deg, #5ae5fd, #73bd52);
+                background-image: linear-gradient(0deg, #9be6f8, #66ceee);
                 -webkit-box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27); 
                 box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27);
                 border-radius: 3px;
-                padding: 5px;
-                &:hover {
-                    background-image: linear-gradient(0deg, #5ae5fd, #5cf0b2);                
-                }
+                padding: 5px;              
                 span {
                     padding: 10px;
                     font-size: 20px;
@@ -218,7 +215,7 @@
                 display: flex;
                 margin-top: 10px;
                 height: 68vh;
-                background-image: linear-gradient(0deg, #afd3d1, #a1c0bd);
+                background-image: linear-gradient(0deg, #e6f4f8, #7dd5f0);
                 -webkit-box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27); 
                 box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27);
                 border-radius: 3px; 

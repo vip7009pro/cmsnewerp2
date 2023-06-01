@@ -16,14 +16,12 @@
                 display: flex;
                 flex-direction: column;
                 align-items: center;
-                background-image: linear-gradient(0deg, #5ae5fd, #73bd52);
+                background-image: linear-gradient(0deg, #afd3d1, #86cfff);
                 -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
                 box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
                 border-radius: 3px;
                 padding: 5px;
-                &:hover {
-                    background-image: linear-gradient(0deg, #5ae5fd, #5cf0b2);
-                }
+           
                 span {
                     padding: 10px;
                     font-size: 20px;
@@ -118,7 +116,7 @@
                 flex: 1;
                 margin-top: 10px;
                 height: 87vh;
-                background-image: linear-gradient(0deg, #afd3d1, #a1c0bd);
+                background-image: linear-gradient(0deg, #afd3d1, #86cfff);
                 -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
                 box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
                 border-radius: 3px;
@@ -132,7 +130,7 @@
                     flex: 1;
                     height: fit-content;
                     flex-wrap: wrap;
-                    background-image: linear-gradient(0deg, #bbc7d4, #8880f5);
+                    background-image: linear-gradient(0deg, #afd3d1, #86cfff);
                     border-radius: 10px;
                     box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
                     -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);

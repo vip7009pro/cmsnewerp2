@@ -315,7 +315,7 @@ const PQC1 = () => {
           <IconButton
             className='buttonIcon'
             onClick={() => {
-              
+              traPQC1Data();              
               setShowHideInput(false);
             }}
           >

@@ -673,7 +673,7 @@ const ShortageKD = () => {
         
   },[]);
   return (
-    <div className='planmanager'>
+    <div className='shortage'>
       <div className='mininavbar'>         
         <div className='mininavitem'  onClick={() => setNav(1)} style={{backgroundColor:selection.trapo === true ? '#02c712':'#abc9ae', color: selection.trapo === true ? 'yellow':'yellow'}}>
           <span className='mininavtext'>

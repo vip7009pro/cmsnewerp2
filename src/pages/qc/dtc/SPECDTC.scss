@@ -3,25 +3,25 @@
     height: 100%;
     display: flex;
     flex-direction: column;
+    box-sizing: border-box;
     
     .tracuuDataInspection{
+        
         .tracuuDataInspectionform {
             display: flex;
             flex-direction: column;
             align-items: center;            
-            background-image: linear-gradient(0deg, #afd3d1, #eea94f);
+            background-image: linear-gradient(0deg, #afd3d1, #86cfff);
             -webkit-box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27); 
             box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27);
             border-radius: 3px;
-            padding: 5px;
-            &:hover {
-                background-image: linear-gradient(0deg, #afd3d1, #eaec67);                
-            }
+            padding: 5px;         
             span {
                 padding: 10px;
                 font-size: 20px;
                 margin: auto;
             }
+            box-sizing: border-box;
 
 
             .forminput {
@@ -177,16 +177,16 @@
         .tracuuYCSXTable {
             display: flex;
             margin-top: 10px;
-            height: 68vh;
-            background-image: linear-gradient(0deg, #afd3d1, #6dd1f8);
+            height: 68vh;           
+            background-image: linear-gradient(0deg, #afd3d1, #86cfff);
             -webkit-box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27); 
             box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27);
             border-radius: 3px;
             .datatb { 
                 justify-items: center;                    
-                width: 99%;
-                padding: 10px;
-             
+                width: 100%;
+                padding: 5px;  
+                height: 100%;                
             }
 
         }

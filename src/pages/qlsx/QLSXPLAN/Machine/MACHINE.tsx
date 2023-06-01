@@ -4230,30 +4230,7 @@ const MACHINE = () => {
         </div>
       )}
       {selection.tab2 && (
-        <div className='NM2'>
-          {/*  <span className='machine_title'>SUPER ROTARY-NM2</span>
-            <div className='FRlist'>
-              {
-                eq_status.filter((element:EQ_STATUS, index: number)=> element.FACTORY==='NM2' && element.EQ_NAME.substring(0,2)==='SP' ).map((element: EQ_STATUS, index: number)=>{
-                  return (<MACHINE_COMPONENT
-                  key={index}
-                  factory={element.FACTORY}
-                  machine_name= {element.EQ_NAME}
-                  eq_status ={element.EQ_STATUS}
-                  current_g_name ={element.G_NAME}
-                  current_plan_id ={element.CURR_PLAN_ID}
-                  run_stop={element.EQ_ACTIVE==='OK'? 1:0}
-                  machine_data={plandatatable}
-                   onClick={()=>{
-                      setShowPlanWindow(true);
-                      setSelectedFactory(element.FACTORY);
-                      setSelectedMachine(element.EQ_NAME);
-                      setChiThiDataTable([]);
-                    }}
-                />)
-                })
-              }
-            </div>   */}
+        <div className='NM2'>         
           <span className='machine_title'>FR-NM2</span>
           <div className='FRlist'>
             {eq_status

@@ -27,7 +27,6 @@
         }
 
     }
-
    
     .tracuuFcst{
         .tracuuFcstform {
@@ -35,14 +34,12 @@
             flex-direction: column;
             align-items: center;
             
-            background-image: linear-gradient(0deg, #5ae5fd, #73bd52);
+            background-image: linear-gradient(0deg, #c2f2f8, #9fd4ff);
             -webkit-box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27); 
             box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27);
             border-radius: 3px;
             padding: 5px;
-            &:hover {
-                background-image: linear-gradient(0deg, #5ae5fd, #5cf0b2);                
-            }
+          
             span {
                 padding: 10px;
                 font-size: 20px;
@@ -145,7 +142,7 @@
             display: flex;
             margin-top: 10px;
             height: 75vh;
-            background-image: linear-gradient(0deg, #868c8f, #c5d4d4);
+            background-image: linear-gradient(0deg, #c2f2f8, #9fd4ff);
             -webkit-box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27); 
             box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27);
             border-radius: 3px; 

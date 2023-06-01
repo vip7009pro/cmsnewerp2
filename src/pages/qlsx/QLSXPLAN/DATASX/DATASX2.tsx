@@ -208,7 +208,7 @@ const DATASX2 = () => {
             setSelectedRowsDataCHITHI(e.selectedRowsData);
           }}
           onRowClick={(e) => {
-            console.log(e.data);
+            //console.log(e.data);
             handle_loadlichsuinputlieu(e.data.PLAN_ID);
           }}
         >

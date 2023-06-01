@@ -46,7 +46,8 @@ const SPECDTC = () => {
   const materialDataTable = React.useMemo(
     () => (
       <div className='datatb'>       
-        <DataGrid
+        <DataGrid          
+          width={'100%'}                  
           autoNavigateToFocusedRow={true}
           allowColumnReordering={true}
           allowColumnResizing={true}
@@ -57,7 +58,7 @@ const SPECDTC = () => {
           dataSource={inspectiondatatable}
           columnWidth='auto'
           keyExpr='id'
-          height={"70vh"}
+          height={"100%"}
           showBorders={true}
           onSelectionChanged={(e) => {
             setSelectedRows(e.selectedRowsData.length);

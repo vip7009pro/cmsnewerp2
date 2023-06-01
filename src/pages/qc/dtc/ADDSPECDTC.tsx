@@ -144,7 +144,7 @@ const ADDSPECTDTC = () => {
           dataSource={inspectiondatatable}
           columnWidth='auto'
           keyExpr='id'
-          height={"70vh"}
+          height={"71vh"}
           showBorders={true}
           onSelectionChanged={(e) => {
             //console.log(e.selectedRowsData);

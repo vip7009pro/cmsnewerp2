@@ -1,64 +1,57 @@
-.quickplan {
-    display: flex;  
-    flex-direction: column;  
-    gap: 20px;
-    align-items: center;
-    margin-left: 15px;
-    margin-right: 15px;
-    z-index: 0;
-
+.quickplan { 
+    padding: 1px;
+ 
     .planwindow {
-        display: flex;   
-        flex-direction: column;     
-        background-color: rgba(255, 255, 255, 0.58); 
+        display: flex;
+        flex-direction: column;
+        background-color: rgba(255, 255, 255, 0.58);
         width: 100%;
         height: 100%;
         position: fixed;
         box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
         -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
-        justify-self: center;  
+        justify-self: center;
         align-self: center;
-        .datadinhmuc {
+        .dinhmucdiv {
             display: flex;
-            flex:1;                
-            background-image: linear-gradient(0deg, #afd3d1,#25d468);
             padding: 10px;
-            gap: 2px;
-            width:100%;
-            border-radius: 5px;
-            box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
-            -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
-            height: fit-content;
-            margin-top: 10px;
-            margin: auto;
-            .forminputcolumn {
+            .datadinhmuc {
                 display: flex;
-                flex-direction: column;
-                align-items: flex-end;
-                justify-content: center;
-
-
+                flex: 1;
+                background-image: linear-gradient(0deg, #afd3d1, #86cfff);
+                padding: 10px;
+                gap: 2px;
+                border-radius: 5px;
+                box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
+                -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
+                height: fit-content;            
+                box-sizing: border-box;
+                width: 100%;
+                height: 100%;
+                align-self: center;
+                justify-content: space-around;
+                .forminputcolumn {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: flex-end;
+                    justify-content: center;
+                }
+                align-items: center;
             }
-            align-items: center;
-            
         }
-
-        .content 
-        {
-            display: flex;            
+        .content {
+            display: flex;
             width: 100%;
             height: 100%;
             flex: 15;
             align-self: center;
-            background-color: white;
-
-            .ycsxlist  {
+            .ycsxlist {
                 display: flex;
                 flex-direction: column;
-                flex: 2;                
+                flex: 2;
                 height: 100%;
-                padding: 10px;                
-                .tracuuYCSX{
+                padding: 10px;
+                .tracuuYCSX {
                     .tracuuYCSXform {
                         display: flex;
                         flex-direction: column;
@@ -66,20 +59,18 @@
                         flex: 1;
                         font-size: 12px;
                         background-image: linear-gradient(0deg, #afd3d1, #d4f167);
-                        -webkit-box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27); 
-                        box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27);
+                        -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+                        box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
                         border-radius: 8px;
                         padding: 5px;
                         &:hover {
-                            background-image: linear-gradient(0deg, #afd3d1, #486ac9);                
+                            background-image: linear-gradient(0deg, #afd3d1, #486ac9);
                         }
                         span {
                             padding: 10px;
                             font-size: 12px;
                             margin: auto;
                         }
-            
-            
                         .forminput {
                             display: flex;
                             gap: 5px;
@@ -87,8 +78,7 @@
                             align-items: center;
                             justify-content: space-around;
                             padding: 2px;
-                            width: 100%;           
-            
+                            width: 100%;
                             .forminputcolumn {
                                 display: flex;
                                 flex-direction: column;
@@ -127,102 +117,88 @@
                         .formsummary {
                             display: flex;
                             flex-direction: row;
-                            background-image: linear-gradient(0deg, #ececec, #99f86d);       
-                            -webkit-box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27); 
-                            box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27);         
-                            gap: 20px;         
-                            border-radius: 10px;   
+                            background-image: linear-gradient(0deg, #ececec, #99f86d);
+                            -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+                            box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+                            gap: 20px;
+                            border-radius: 10px;
                             margin-top: 5px;
-                            
-            
                             .summarygroup {
                                 display: flex;
                                 flex-direction: column;
                                 align-items: flex-start;
-                                justify-items: flex-start;                    
+                                justify-items: flex-start;
                                 gap: 10px;
-                                .summaryvalue {                        
+                                .summaryvalue {
                                     display: flex;
                                     font-size: 16px;
                                     justify-self: flex-end;
                                     align-self: flex-end;
                                     padding: 5px;
                                     color: rgb(83, 36, 255);
-                                }                    
+                                }
                             }
-            
                         }
-            
                     }
                     .tracuuYCSXTable {
                         display: flex;
                         margin-top: 10px;
                         height: 59vh;
                         background-image: linear-gradient(0deg, #afd3d1, #f7f7f7);
-                        -webkit-box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27); 
-                        box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27);
+                        -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+                        box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
                         border-radius: 8px;
-            
                     }
                     .printycsxpage {
                         position: fixed;
                         display: flex;
-                        flex-direction: column;        
+                        flex-direction: column;
                         justify-content: space-between;
                         z-index: 3;
                         width: fit-content;
-                        height:200mm;
+                        height: 200mm;
                         align-items: center;
                         padding: 10px;
-                        gap:20px;
+                        gap: 20px;
                         border-radius: 10px;
-                        -webkit-box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27); 
-                        box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27);
+                        -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+                        box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
                         //background-color: rgba(233, 222, 222, 0.664);
-                        background-color: white;                
+                        background-color: white;
                         top: 50px;
-                        left: 30%;                       
-                       
+                        left: 30%;
                         .buttongroup {
                             display: flex;
                             flex-direction: row;
-                            align-items:flex-start;            
+                            align-items: flex-start;
                             gap: 5px;
                         }
                         .ycsxrender {
                             overflow: scroll;
                             border: 1px solid black;
-                            background-color: white;                            
-                            
+                            background-color: white;
                         }
                     }
-                            
-                }   
+                }
             }
             .chithidiv {
                 display: flex;
                 flex-direction: column;
                 flex: 4;
                 padding: 10px;
-                gap: 10px; 
-                margin-bottom: 150px;     
-                height:70vh;          
+                gap: 10px;
+                margin-bottom: 150px;
+                height: 70vh;
                 .planlist {
-                    display: flex;        
-                    height: 100%;            
-                    background-image: linear-gradient(0deg, #afd3d1, #f39add);
+                    display: flex;
+                    height: 100%;
+                    background-image: linear-gradient(0deg, #afd3d1, #86cfff);
                     flex: 1;
                     border-radius: 5px;
                     box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
-                    -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);  
-        
+                    -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
                 }
-                
             }
-            
-
         }
-        
-
     }
 }

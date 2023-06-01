@@ -8,13 +8,14 @@ import { generalQuery } from "../../api/Api";
 import Swal from "sweetalert2";
 import PrimarySearchAppBar from "../../components/AppBar/AppBarCustom";
 import CHAT from "../chat/CHAT";
-import { Box, IconButton, Tab, Tabs, Typography } from "@mui/material";
+import { Box, IconButton, Tab, Tabs, Typography,  } from "@mui/material";
+
 import { AiOutlineCloseCircle } from "react-icons/ai";
 import { RootState } from "../../redux/store";
 import { useSelector, useDispatch } from "react-redux";
 import { addTab, closeTab, settabIndex } from "../../redux/slices/globalSlice";
 import AccountInfo from "../../components/Navbar/AccountInfo/AccountInfo";
-export const current_ver: number = 138;
+export const current_ver: number = 143;
 interface ELE_ARRAY {
   REACT_ELE: ReactElement;
   ELE_NAME: string;
@@ -37,6 +38,7 @@ function Home() {
   });
   const [checkVerWeb, setCheckVerWeb] = useState(1);
   console.log("local ver", current_ver);
+
   useEffect(() => {
     generalQuery("checkWebVer", {})
       .then((response) => {
@@ -66,13 +68,17 @@ function Home() {
                 confirmButtonColor: "#3085d6",
                 cancelButtonColor: "#d33",
                 confirmButtonText: "Update",
-                cancelButtonText: "Update later"
+                cancelButtonText: "Update later",
               }).then((result) => {
                 if (result.isConfirmed) {
                   Swal.fire("Notification", "Update Web", "success");
                   window.location.reload();
                 } else {
-                  Swal.fire("Notification", "Press Ctrl + F5 to update the Web", "info");
+                  Swal.fire(
+                    "Notification",
+                    "Press Ctrl + F5 to update the Web",
+                    "info"
+                  );
                 }
               });
             }
@@ -96,7 +102,7 @@ function Home() {
       </div>
       <div className='homeContainer'>
         <div className='sidebardiv'>
-          {!tabModeSwap && <Sidebar />}
+          <Sidebar />
         </div>
         <div className='outletdiv'>
           <animated.div
@@ -116,65 +122,79 @@ function Home() {
                 zIndex: 999,
               }}
             >
-              {tabModeSwap && <IconButton
-                className='buttonIcon'
-                onClick={() => {
-                  dispatch(closeTab(1));
-                }}
-              >
-                <AiOutlineCloseCircle color='red' size={25} />
-              </IconButton>}
-            </div>            
-            {tabModeSwap && <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-              <Tabs
-                value={tabIndex}
-                onChange={(event: React.SyntheticEvent, newValue: number) => {
-                  //console.log(newValue);
-                  dispatch(settabIndex(newValue));
-                }}
-                variant="scrollable"
-                aria-label='ERP TABS'
-                scrollButtons
-                allowScrollButtonsMobile
-              >
-                {tabs.map((ele: ELE_ARRAY, index: number) => {
-                  if(ele.ELE_CODE !=='-1')
-                  return (
-                    <Tab
-                      key={index}
-                      label={index + 1 + "." + ele.ELE_NAME}
-                      value={index}
-                    ></Tab>
-                  );
-                })}
-              </Tabs>
-            </Box>}  
-                
-            {tabModeSwap &&  tabs.map((ele: ELE_ARRAY, index: number) => {
-              if(ele.ELE_CODE !=='-1')
-              return (
-                <div
-                  key={index}
-                  className='component_element'
-                  style={{
-                    visibility: index === tabIndex ? "visible" : "hidden",
-                    position: "absolute",
-                    top: "50px",
-                    left: 0,
-                    width: "100%",
+              {tabModeSwap && (
+                <IconButton
+                  className='buttonIcon'
+                  onClick={() => {
+                    dispatch(closeTab(1));
                   }}
                 >
-                  {ele.REACT_ELE}
-                </div>
-              );
-            })}
-            
-             {(current_ver >= checkVerWeb)? (
+                  <AiOutlineCloseCircle color='red' size={25} />
+                </IconButton>
+              )}
+            </div>
+            {(tabModeSwap && tabs.filter((ele:ELE_ARRAY, index: number)=> ele.ELE_CODE !=='-1').length>0) && (
+              <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+                <Tabs
+                  value={tabIndex}
+                  onChange={(event: React.SyntheticEvent, newValue: number) => {
+                    //console.log(newValue);
+                    dispatch(settabIndex(newValue));
+                  }}
+                  variant='scrollable'
+                  aria-label='ERP TABS'
+                  scrollButtons
+                  allowScrollButtonsMobile                  
+                  style={{backgroundImage:`linear-gradient(0deg, #61d6fa, #a0daf5)`, marginRight:'5px', border:'none', height:'2px', boxSizing:'border-box', borderRadius:'5px'}}     
+                >
+                  {tabs.map((ele: ELE_ARRAY, index: number) => {
+                    if (ele.ELE_CODE !== "-1")
+                      return (
+                        <Tab
+                          key={index}
+                          label={index + 1 + "." + ele.ELE_NAME}
+                          value={index}                                              
+                        ></Tab>
+                      );
+                  })}
+                </Tabs>
+              </Box>
+            )}
+            {tabModeSwap &&
+              tabs.map((ele: ELE_ARRAY, index: number) => {
+                if (ele.ELE_CODE !== "-1")
+                  return (
+                    <div
+                      key={index}
+                      className='component_element'
+                      style={{
+                        visibility: index === tabIndex ? "visible" : "hidden",
+                        position: "absolute",
+                        top: "50px",
+                        /* left: 0, */
+                        width: "100%",
+                      }}
+                    >                    
+                        {ele.REACT_ELE}                      
+                    </div>
+                  );
+              })}
+            {current_ver >= checkVerWeb ? (
               !tabModeSwap && <Outlet />
             ) : (
-              <p style={{fontSize:35, backgroundColor:'red', width:'800px', height: '200px', zIndex:1000}}>ERP has updates, Press Ctrl +F5 to update web</p>
+              <p
+                style={{
+                  fontSize: 35,
+                  backgroundColor: "red",
+                  width: "800px",
+                  height: "200px",
+                  zIndex: 1000,
+                }}
+              >
+                ERP has updates, Press Ctrl +F5 to update web
+              </p>
             )}
-            {tabModeSwap && tabs.length ===0 && <AccountInfo/>}
+            {tabModeSwap && tabs.length === 0 && <AccountInfo />}
           </animated.div>
         </div>
         {/* <div className="chatroom">

@@ -18,7 +18,8 @@ import {
 } from "./redux/slices/globalSlice";
 import { useSpring, animated } from "@react-spring/web";
 
-import "./App.scss";
+import "./App.css";
+import FallBackComponent from "./components/Fallback/FallBackComponent";
 /* import DATASX2 from "./pages/qlsx/QLSXPLAN/DATASX/DATASX2";
 import Home from "./pages/home/Home";
 import DiemDanhNhom from "./pages/nhansu/DiemDanhNhom/DiemDanhNhom";
@@ -454,7 +455,7 @@ function App() {
   if (loginState === true) {
     return (
       <div className='App'>   
-      <Suspense fallback  ={<div> Loading...</div>}>
+      <Suspense fallback  ={<FallBackComponent/>}>
         <LangConText.Provider value={[lang, setLang]}>
           <UserContext.Provider value={[userData, setUserData]}>
             <BrowserRouter>

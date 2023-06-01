@@ -277,7 +277,7 @@ const TINHHINHCUONLIEU = () => {
           showBorders={true}
           onSelectionChanged={(e) => {
             setSelectedRows(e.selectedRowsData.length);
-          }}
+          }}          
           onRowClick={(e) => {
             //console.log(e.data);
           }}
@@ -1193,7 +1193,7 @@ const TINHHINHCUONLIEU = () => {
           </div>
         </div>
         <div className='tracuuYCSXTable'>
-          Số dòng đã chọn: {selectedRows} / {datasxtable.length}
+          <span style={{fontSize:10}}>Số dòng đã chọn: {selectedRows} / {datasxtable.length}</span>
           {materialDataTable}
         </div>
       </div>
