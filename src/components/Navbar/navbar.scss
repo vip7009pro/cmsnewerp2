@@ -1,29 +1,25 @@
 .navbar {
-    height: 100px;    
-    width: 100%;
-    border-bottom: 0.5px solid rgb(215, 225, 235);
     display: flex;
-    align-items: center;
-    font-size: 14px;
-    color: #555;    
-    top: 25;    
-    
-    
+    margin-top: 5px;
+    width: 100%;   
+    font-size: 14px;    
+
     @media only screen and (max-width: 3000px) {
-        .wrapper {           
+        .wrapper {  
             -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.29);
             box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.2);
             background-image: linear-gradient(310deg, rgba(86, 199, 252, 0.8), rgba(200, 229, 240, 0.8)); 
             /* background-color: rgb(159, 216, 248); */
             display: flex;
             flex-wrap: wrap;
-            padding: 10px;
+            padding: 2px;
             align-items: center;
             justify-content: space-between;       
-            width: 100%;
+            width: 100%;         
             border-radius: 5px;
-          
+
             .navleft {
+                margin-left: 10px;
 
             }
             .navcenter {
@@ -58,8 +54,8 @@
                         display: flex;
                         justify-content: center;
                         align-items: center;                    
-                        width: 50px;
-                        height: 50px;
+                        width: 35px;
+                        height: 35px;
                         border-radius: 50%;
                         color: rgb(20, 0, 196);
                         font-size: 30px;

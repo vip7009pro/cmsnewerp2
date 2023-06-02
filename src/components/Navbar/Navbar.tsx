@@ -556,7 +556,7 @@ export default function Navbar() {
           onClick={() => {
             dispatch(toggleSidebar("2"));
           }}
-          size={30}
+          size={20}
         />
 
         </div>
@@ -566,13 +566,13 @@ export default function Navbar() {
             <img
               alt='cmsvina logo'
               src='/logocmsvina.png'
-              width={171.6}
-              height={40.7}
+              width={114.4}
+              height={27.13333}
             />
           </Link>
          
         </div>
-        <div className="webver">
+        <div className="webver" style={{fontSize:'8pt'}}>
           <b> Web Ver: {current_ver} </b>
         </div>
         
@@ -711,8 +711,8 @@ export default function Navbar() {
               {userData.EMPL_IMAGE !== "Y" && userData.FIRST_NAME.slice(0, 1)}
               {userData.EMPL_IMAGE === "Y" && (
                 <img
-                  width={50}
-                  height={50}
+                  width={35}
+                  height={35}
                   src={"/Picture_NS/NS_" + userData.EMPL_NO + ".jpg"}
                   alt={userData.EMPL_NO}
                 ></img>

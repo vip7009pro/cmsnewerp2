@@ -5,7 +5,7 @@
     .showhidebutton
         {
             width: 150px;
-            background-color: #44ce67;
+            background-image: linear-gradient(0deg, #afd3d1, #86cfff);
             /* Green */
             border: none;
             color: white;            
@@ -14,6 +14,8 @@
             display: inline-block;
             font-size: 16px;                        
             border-radius: 5px;
+            font-size: 0.7rem;           
+            padding:5px;
             outline: none;
             box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
             -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
@@ -26,18 +28,19 @@
     .formdangkys {
         display: flex;
         height: fit-content;   
+        width: 100%;
         flex-direction: row;
-        gap: 20px;
+        gap: 10px;
         flex-wrap: wrap;        
         box-sizing: border-box;
-        
+                
         .formnho {
             display: flex;
             flex-direction: column;
-            flex: 1;  
+            width: fit-content;
             height: fit-content;
             flex-wrap: wrap;
-            background-image: linear-gradient(0deg, #96ebb0,#d8ce41);
+            background-image: linear-gradient(0deg, #afd3d1, #86cfff);
             border-radius: 10px;
             box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
             -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
@@ -58,8 +61,7 @@
                 height: 40vh;
                 margin-left: 10px;
                 align-self: center;                             
-                background-image: linear-gradient(0deg, #afd3d1,#2ffc73);
-                
+                background-image: linear-gradient(0deg, #afd3d1,#2ffc73);                
                 
             }
             .dangkyform {

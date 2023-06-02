@@ -433,6 +433,7 @@ const DiemDanhNhom = () => {
           </div>
           <div className='maindept_table'>
             <DataGrid
+              sx={{fontSize:'1rem'}}
               components={{
                 Toolbar: CustomToolbar, 
                 LoadingOverlay: LinearProgress,

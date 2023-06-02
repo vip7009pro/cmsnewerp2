@@ -1,7 +1,7 @@
 import { IconButton, LinearProgress, } from "@mui/material";
 import { DataGrid, GridToolbarContainer, GridToolbarQuickFilter } from "@mui/x-data-grid";
 import moment from "moment";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useTransition } from "react";
 import { AiFillFileExcel } from "react-icons/ai";
 import { generalQuery } from "../../../api/Api";
 import { SaveExcel } from "../../../api/GlobalFunction";
@@ -15,6 +15,7 @@ interface TINH_HINH_CHOT_BC {
   CHUA_NHAP_HIEUSUAT: number;
 }
 const TINH_HINH_CHOT = () => {
+  const [isPending, startTransition] = useTransition();
   const [tinh_hinh_chot_NM1, setTinh_Hinh_Chot_NM1] = useState<
     Array<TINH_HINH_CHOT_BC>
   >([]);
@@ -98,8 +99,10 @@ const TINH_HINH_CHOT = () => {
                   };
                 }
               );
-
-            setTinh_Hinh_Chot_NM1(loadeddata);
+              startTransition(() => {
+                setTinh_Hinh_Chot_NM1(loadeddata);
+              });
+            
           } else {
             let loadeddata = response.data.data.map(
                 (element: TINH_HINH_CHOT_BC, index: number) => {
@@ -109,8 +112,10 @@ const TINH_HINH_CHOT = () => {
                     id: index,
                   };
                 }
-              );
-            setTinh_Hinh_Chot_NM2(loadeddata);
+              );           
+            startTransition(() => {
+              setTinh_Hinh_Chot_NM2(loadeddata);
+            });
           }
         } else {
         }
