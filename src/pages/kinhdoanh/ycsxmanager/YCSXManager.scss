@@ -315,7 +315,8 @@
                     align-items: center;
                     justify-content: space-around;
                     padding: 2px;
-                    width: 100%;           
+                    width: 100%; 
+                    font-size: 0.7rem;          
     
                     .forminputcolumn {
                         display: flex;
@@ -327,6 +328,7 @@
                         input {
                             width: 150px;
                             height: 20px;
+                            font-size: 0.7rem;
                             outline: none;
                             border-radius: 5px;
                             border: none;
@@ -337,6 +339,7 @@
                         select {
                             width: 160px;
                             height: 30px;
+                            font-size: 0.7rem;
                             outline: none;
                             border-radius: 5px;
                             border: none;

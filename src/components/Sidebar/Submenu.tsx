@@ -435,7 +435,7 @@ const SubMenu = ({ item }: { item: any }) => {
                       )[0].MENU_ITEM,
                     })
                   );
-                  dispatch(settabIndex(tabs.length));             
+                  dispatch(settabIndex(tabs.length)); 
                 }
               }
               else

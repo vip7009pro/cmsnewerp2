@@ -830,7 +830,8 @@ const QuanLyPhongBanNhanSu = () => {
           <div className='maindept'>
             <div className='maindept_table'>
               <DataGrid
-                rowHeight={35}
+                sx={{fontSize:'0.7rem'}}
+                rowHeight={25}
                 rows={maindeptTable}
                 columns={columns_maindept}
                 rowsPerPageOptions={[5, 10, 50, 100]}
@@ -885,7 +886,8 @@ const QuanLyPhongBanNhanSu = () => {
           <div className='subdept'>
             <div className='subdept_table'>
               <DataGrid
-                rowHeight={35}
+                sx={{fontSize:'0.7rem'}}
+                rowHeight={25}
                 rows={subdeptTable}
                 columns={columns_subdept}
                 rowsPerPageOptions={[5, 10, 50, 100]}
@@ -940,7 +942,8 @@ const QuanLyPhongBanNhanSu = () => {
           <div className='workposition'>
             <div className='workposition_table'>
               <DataGrid
-                rowHeight={35}
+                sx={{fontSize:'0.7rem'}}
+                rowHeight={25}
                 rows={workpositionTable}
                 columns={columns_work_position}
                 rowsPerPageOptions={[5, 10, 50, 100]}
@@ -1246,6 +1249,7 @@ const QuanLyPhongBanNhanSu = () => {
             </div>
             <div className='maindept_table'>
               <DataGrid
+              sx={{fontSize:'0.8rem'}}
                 components={{
                   Toolbar: CustomToolbar,
                   LoadingOverlay: LinearProgress,

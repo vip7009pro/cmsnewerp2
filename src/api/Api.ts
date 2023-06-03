@@ -73,9 +73,9 @@ export async function checkLogin() {
   return data;
 }
 export async function generalQuery(command: string, queryData: any) {
-  let data = await axios.post(API_URL, {
+  let data = await axios.post(API_URL, {    
     command: command,
-    DATA: queryData,
+    DATA: {...queryData, token_string: cookies.get('token'),},
   });
   return data;
 }

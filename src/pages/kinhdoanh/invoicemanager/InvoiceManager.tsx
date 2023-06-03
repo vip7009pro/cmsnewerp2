@@ -1111,6 +1111,7 @@ const InvoiceManager = () => {
             <div className='insertInvoiceTable'>
               {true && (
                 <DataGrid
+                sx={{fontSize:'0.7rem', flex:1}}
                   components={{
                     Toolbar: CustomToolbar,
                     LoadingOverlay: LinearProgress,
@@ -1363,11 +1364,11 @@ const InvoiceManager = () => {
           </div>
           <div className='tracuuInvoiceTable'>
             <DataGrid
+              sx={{fontSize:'0.7rem'}}
               components={{
                 Toolbar: CustomToolbarPOTable,
                 LoadingOverlay: LinearProgress,
-              }}
-              sx={{ fontSize: 12 }}
+              }}              
               loading={isLoading}
               rowHeight={30}
               rows={invoicedatatable}

@@ -3088,6 +3088,7 @@ const YCSXManager = () => {
             <div className='insertYCSXTable'>
               {true && (
                 <DataGrid
+                  sx={{fontSize:'0.7rem'}}
                   components={{
                     Toolbar: CustomToolbar,
                     LoadingOverlay: LinearProgress,
@@ -3298,7 +3299,7 @@ const YCSXManager = () => {
           </div>
           <div className='tracuuYCSXTable'>
             <DataGrid
-              sx={{ fontSize: 12, flex: 1 }}
+              sx={{fontSize:'0.7rem'}}
               components={{
                 Toolbar: CustomToolbarPOTable,
                 LoadingOverlay: LinearProgress,
@@ -3457,6 +3458,7 @@ const YCSXManager = () => {
               <div className='insertYCSXTable'>
                 {true && (
                   <DataGrid
+                  sx={{fontSize:'0.7rem'}}
                     components={{
                       Toolbar: CustomToolbarAmazon,
                       LoadingOverlay: LinearProgress,

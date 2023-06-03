@@ -1063,6 +1063,7 @@ const PoManager = () => {
             <div className='insertPOTable'>
               {true && (
                 <DataGrid
+                  sx={{fontSize: '0.6rem'}}
                   components={{
                     Toolbar: CustomToolbar,
                     LoadingOverlay: LinearProgress,
@@ -1274,7 +1275,7 @@ const PoManager = () => {
           </div>
           <div className='tracuuPOTable'>
             <DataGrid
-              sx={{fontSize:12, flex:1}}
+              sx={{fontSize:'0.7rem', flex:1}}
               components={{
                 Toolbar: CustomToolbarPOTable,
                 LoadingOverlay: LinearProgress,

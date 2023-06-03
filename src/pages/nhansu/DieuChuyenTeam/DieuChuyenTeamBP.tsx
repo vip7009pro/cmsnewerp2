@@ -369,6 +369,7 @@ const DieuChuyenTeamBP = () => {
           </div>
           <div className='maindept_table'>
             <DataGrid
+              sx={{fontSize:'0.7rem'}}
               components={{
                 Toolbar: CustomToolbar,
                 LoadingOverlay: LinearProgress,

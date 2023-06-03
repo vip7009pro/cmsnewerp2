@@ -730,6 +730,7 @@ const ShortageKD = () => {
             <div className='insertPlanTable'>
               {true && (
                 <DataGrid
+                sx={{fontSize:'0.7rem'}}
                   components={{
                     Toolbar: CustomToolbar,
                     LoadingOverlay: LinearProgress,
@@ -892,7 +893,7 @@ const ShortageKD = () => {
                 Toolbar: CustomToolbarPOTable,
                 LoadingOverlay: LinearProgress,
               }}
-              sx={{fontSize: 12}}
+              sx={{fontSize:'0.7rem'}}
               loading={isLoading}
               rowHeight={30}
               rows={shortagedatatable}

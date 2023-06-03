@@ -541,13 +541,13 @@ export default function Navbar() {
     localStorage.setItem("lang", selectLang);
   };
   return (
-    <div className='navbar'>
+    <div className='navbar' >
       <div
         className='wrapper'
         style={
           {
-            /* backgroundColor:
-            server_string === "http://14.160.33.94:5011/api" ? "" : "#f37cf7", */
+            backgroundColor:
+            server_string === "http://14.160.33.94:5011/api" ? "" : "#EC40FA",
           }
         }
       >

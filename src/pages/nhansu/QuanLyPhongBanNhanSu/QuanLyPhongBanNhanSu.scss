@@ -32,6 +32,7 @@
             display: flex;
             height: fit-content;   
             flex-direction: column;
+            align-items: center;
             gap: 20px;
             width: 100%;
            
@@ -45,7 +46,7 @@
                 text-align: center;
                 text-decoration: none;
                 display: inline-block;
-                font-size: 16px;                        
+                font-size: 0.8rem;                        
                 border-radius: 5px;
                 outline: none;
                 box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
@@ -60,6 +61,7 @@
                 display: flex;
                 flex: 1;  
                 height: fit-content;
+                width: fit-content;
                 background-image: linear-gradient(0deg, #afd3d1,#35a9f7);
                 border-radius: 10px;
                 box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
@@ -72,15 +74,16 @@
                     justify-self: center;
                     padding: 20px; 
                     min-height: 450px;  
-                    width: 100%;    
+                    width: 620px;   
                     border-radius: 10px; 
-                    flex:3;
+                    
                 }
                 .maindeptform {
                     display: flex; 
-                    flex-direction: column;               
-                    flex:1;
+                    flex-direction: column; 
                     gap: 10px;
+                    padding: 10px;
+                    width:335px;
                     align-items: center;
                     justify-content: space-around;
                     
@@ -89,13 +92,15 @@
                         flex-direction: row;
                         gap: 20px;
                         .maindeptinputlabel{
-                            display: flex;                      
+                            display: flex;  
+                            font-size: 0.8rem;                    
     
                         }
                         .maindeptinputbox{
                             display: flex;
                             flex-direction: column;
-                            gap: 15px;
+                            gap: 8px;
+                            font-size: 0.7rem;     
                         }
                     }
                     
@@ -104,16 +109,17 @@
                         gap: 10px;
                         align-items: center;
                         justify-content: space-evenly;
+                        font-size: 0.8rem;     
                         .thembutton {
                             background-color: #21a73e;
+                            font-size: 0.8rem;
                             /* Green */
                             border: none;
                             color: white;
                             padding: 15px 32px;
                             text-align: center;
                             text-decoration: none;
-                            display: inline-block;
-                            font-size: 16px;                        
+                            display: inline-block;                                         
                             border-radius: 10px;
                             outline: none;
                             box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
@@ -126,14 +132,14 @@
                         }
                         .suabutton {
                             background-color: #ddff19;
+                            font-size: 0.8rem;
                             /* Green */
                             border: none;
                             color: rgb(7, 32, 255);
                             padding: 15px 32px;
                             text-align: center;
                             text-decoration: none;
-                            display: inline-block;
-                            font-size: 16px;                        
+                            display: inline-block;                                                
                             border-radius: 10px;
                             outline: none;
                             box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
@@ -146,14 +152,14 @@
                         }
                         .xoabutton {
                             background-color: #3633f7;
+                            font-size: 0.8rem;
                             /* Green */
                             border: none;
                             color: rgb(194, 255, 28);
                             padding: 15px 32px;
                             text-align: center;
                             text-decoration: none;
-                            display: inline-block;
-                            font-size: 16px;                        
+                            display: inline-block;                                                 
                             border-radius: 10px;
                             outline: none;
                             box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
@@ -180,6 +186,7 @@
                 height: fit-content;
                 background-image: linear-gradient(0deg, #afd3d1,#f187c5);
                 border-radius: 10px;
+                width: fit-content; 
                 box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
                 -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
                 -moz-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
@@ -190,29 +197,33 @@
                     justify-self: center;
                     padding: 20px; 
                     min-height: 450px;  
-                    width: 100%;    
+                    width: 620px;    
                     border-radius: 10px; 
-                    flex:3;
+                    
                 }
                 .subdeptform {
                     display: flex; 
-                    flex-direction: column;               
-                    flex:1;
+                    flex-direction: column;
                     gap: 10px;
+                    padding: 15px;
+                    width:325px;
                     align-items: center;
                     justify-content: space-around;
+
                     .subdeptinput{
                         display: flex;
                         flex-direction: row;
                         gap: 20px;
                         .subdeptinputlabel{
-                            display: flex;                      
+                            display: flex;   
+                            font-size: 0.8rem;                   
     
                         }
                         .subdeptinputbox{
                             display: flex;
                             flex-direction: column;
-                            gap: 15px;
+                            gap: 8px;
+                            font-size: 0.7rem;     
                         }
                     }
                     .subdeptbutton{
@@ -229,7 +240,7 @@
                             text-align: center;
                             text-decoration: none;
                             display: inline-block;
-                            font-size: 16px;                        
+                            font-size: 0.8rem;                        
                             border-radius: 10px;
                             outline: none;
                             box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
@@ -249,7 +260,7 @@
                             text-align: center;
                             text-decoration: none;
                             display: inline-block;
-                            font-size: 16px;                        
+                            font-size: 0.8rem;                        
                             border-radius: 10px;
                             outline: none;
                             box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
@@ -269,7 +280,7 @@
                             text-align: center;
                             text-decoration: none;
                             display: inline-block;
-                            font-size: 16px;                        
+                            font-size: 0.8rem;                       
                             border-radius: 10px;
                             outline: none;
                             box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
@@ -293,6 +304,7 @@
                 display: flex;
                 flex: 1;  
                 height: fit-content;
+                width: fit-content;
                 background-image: linear-gradient(0deg, #afd3d1,#5bee5b);
                 border-radius: 10px;
                 box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
@@ -305,14 +317,15 @@
                     justify-self: center;
                     padding: 20px; 
                     min-height: 450px;  
-                    width: 100%;    
+                    width: 620px;  
                     border-radius: 10px; 
-                    flex:3;
+                    
                 }
                 .workpositionform {
                     display: flex; 
-                    flex-direction: column;               
-                    flex:1;
+                    flex-direction: column;  
+                    padding: 10px;             
+                    
                     gap: 10px;
                     align-items: center;
                     justify-content: space-around;
@@ -321,13 +334,15 @@
                         flex-direction: row;
                         gap: 20px;
                         .workpositioninputlabel{
-                            display: flex;                      
+                            display: flex;   
+                            font-size: 0.8rem;                   
     
                         }
                         .workpositioninputbox{
                             display: flex;
                             flex-direction: column;
-                            gap: 15px;
+                            gap: 8px;
+                            font-size: 0.7rem;
                         }
                     }
                     .workpositionbutton{
@@ -344,7 +359,7 @@
                             text-align: center;
                             text-decoration: none;
                             display: inline-block;
-                            font-size: 16px;                        
+                            font-size: 0.8rem;                        
                             border-radius: 10px;
                             outline: none;
                             box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
@@ -364,7 +379,7 @@
                             text-align: center;
                             text-decoration: none;
                             display: inline-block;
-                            font-size: 16px;                        
+                            font-size: 0.8rem;                        
                             border-radius: 10px;
                             outline: none;
                             box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
@@ -384,7 +399,7 @@
                             text-align: center;
                             text-decoration: none;
                             display: inline-block;
-                            font-size: 16px;                        
+                            font-size: 0.8rem;                        
                             border-radius: 10px;
                             outline: none;
                             box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
@@ -408,7 +423,7 @@
             display: flex;
             height: fit-content;   
             flex-direction: column;
-            gap: 20px;
+            gap: 10px;
             
             .showhidebutton
             {
@@ -420,7 +435,7 @@
                 text-align: center;
                 text-decoration: none;
                 display: inline-block;
-                font-size: 16px;                        
+                font-size: 0.8rem;                       
                 border-radius: 5px;
                 outline: none;
                 box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
@@ -488,8 +503,10 @@
                         .maindeptinput{
                             display: flex;
                             flex-direction: row;
-                            width: 70%;
+                            justify-items: start;
+                            width: fit-content;
                             gap: 20px;
+                            font-size: 0.8rem;
                             .maindeptinputlabel{
                                 display: flex;
                             }
@@ -499,17 +516,20 @@
                                 align-items: flex-end;
                                 gap: 15px;
                                 select {
-                                    width: 200px;
+                                    width: 120px;
                                     height: 24px;
+                                    font-size: 0.7rem;
                                 }
                                 input {
+                                    width: 120px;
                                     padding-left: 5px;
                                     margin-left: 2px;
+                                    font-size: 0.7rem;
                                 }
                                 label {
                                     display: flex;
                                     flex-direction: row;
-                                    align-items: flex-end;
+                                    align-items: flex-end;                                    
                                     
                                 }
                                 
@@ -529,11 +549,12 @@
                                 /* Green */
                                 border: none;
                                 color: white;
-                                padding: 15px 32px;
+                                padding: 15px 20px;
+                                width: 80px;
                                 text-align: center;
                                 text-decoration: none;
                                 display: inline-block;
-                                font-size: 16px;                        
+                                font-size: 0.8rem;                        
                                 border-radius: 10px;
                                 outline: none;
                                 box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
@@ -545,15 +566,16 @@
         
                             }
                             .suabutton {
-                                background-color: #ddff19;
+                                background-color: #ddff19;                               
                                 /* Green */
                                 border: none;
-                                color: rgb(7, 32, 255);
-                                padding: 15px 32px;
+                                color: rgb(28, 12, 255);
+                                padding: 15px 20px;
                                 text-align: center;
+                                width: 80px;
                                 text-decoration: none;
                                 display: inline-block;
-                                font-size: 16px;                        
+                                font-size: 0.8rem;                        
                                 border-radius: 10px;
                                 outline: none;
                                 box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
@@ -566,22 +588,21 @@
                             }
                             .xoabutton {
                                 background-color: #3633f7;
-                                /* Green */
                                 border: none;
-                                color: rgb(194, 255, 28);
-                                padding: 15px 32px;
+                                color: white;
+                                padding: 15px 20px;
                                 text-align: center;
                                 text-decoration: none;
                                 display: inline-block;
-                                font-size: 16px;                        
+                                width: 80px;
+                                font-size: 0.8rem;                   
                                 border-radius: 10px;
                                 outline: none;
                                 box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
                                 -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
                                 -moz-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);                
                                 &:hover {
-                                    background-color: #dde020;
-                                    color:#35a9f7;
+                                    background-color: #22fd7e;
                                 }
         
                             }
@@ -620,7 +641,7 @@
                 text-align: center;
                 text-decoration: none;
                 display: inline-block;
-                font-size: 16px;                        
+                font-size: 0.8rem;                        
                 border-radius: 5px;
                 outline: none;
                 box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
@@ -677,6 +698,7 @@
                             display: flex;
                             flex-direction: column;
                             gap: 15px;
+                            font-size: 0.7rem;
                         }
                     }
                     .maindeptbutton{
@@ -694,7 +716,7 @@
                             text-align: center;
                             text-decoration: none;
                             display: inline-block;
-                            font-size: 16px;                        
+                            font-size: 0.8rem;                       
                             border-radius: 10px;
                             outline: none;
                             box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
@@ -714,7 +736,7 @@
                             text-align: center;
                             text-decoration: none;
                             display: inline-block;
-                            font-size: 16px;                        
+                            font-size: 0.8rem;                        
                             border-radius: 10px;
                             outline: none;
                             box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
@@ -734,7 +756,7 @@
                             text-align: center;
                             text-decoration: none;
                             display: inline-block;
-                            font-size: 16px;                        
+                            font-size: 0.8rem;                       
                             border-radius: 10px;
                             outline: none;
                             box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
@@ -779,13 +801,16 @@
                     gap: 10px;
                     align-items: center;
                     justify-content: space-around;
+                    
                     .subdeptinput{
                         display: flex;
                         flex-direction: column;
                         gap: 20px;
                         
+                        
                         .subdeptinputlabel{
-                            display: flex;                      
+                            display: flex;  
+                            font-size: 0.8rem;                    
     
                         }
                         .subdeptinputbox{
@@ -793,6 +818,7 @@
                             flex-direction: column;
                             gap: 15px;
                             width: 100px;
+                            font-size: 0.7rem;
                         }
                     }
                     .subdeptbutton{
@@ -810,7 +836,7 @@
                             text-align: center;
                             text-decoration: none;
                             display: inline-block;
-                            font-size: 16px;                        
+                            font-size: 0.8rem;                       
                             border-radius: 10px;
                             outline: none;
                             box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
@@ -830,7 +856,7 @@
                             text-align: center;
                             text-decoration: none;
                             display: inline-block;
-                            font-size: 16px;                        
+                            font-size: 0.8rem;                       
                             border-radius: 10px;
                             outline: none;
                             box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
@@ -850,7 +876,7 @@
                             text-align: center;
                             text-decoration: none;
                             display: inline-block;
-                            font-size: 16px;                        
+                            font-size: 0.8rem;                        
                             border-radius: 10px;
                             outline: none;
                             box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
@@ -910,6 +936,7 @@
                             flex-direction: column;
                             gap: 15px;
                             width: 100px;
+                            font-size: 0.7rem;
                         }
                     }
                     .workpositionbutton{
@@ -927,7 +954,7 @@
                             text-align: center;
                             text-decoration: none;
                             display: inline-block;
-                            font-size: 16px;                        
+                            font-size: 0.8rem;                        
                             border-radius: 10px;
                             outline: none;
                             box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
@@ -947,7 +974,7 @@
                             text-align: center;
                             text-decoration: none;
                             display: inline-block;
-                            font-size: 16px;                        
+                            font-size: 0.8rem;                        
                             border-radius: 10px;
                             outline: none;
                             box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
@@ -967,7 +994,7 @@
                             text-align: center;
                             text-decoration: none;
                             display: inline-block;
-                            font-size: 16px;                        
+                            font-size: 0.8rem;                        
                             border-radius: 10px;
                             outline: none;
                             box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
@@ -1003,7 +1030,7 @@
                 text-align: center;
                 text-decoration: none;
                 display: inline-block;
-                font-size: 16px;                        
+                font-size: 0.8rem;                        
                 border-radius: 5px;
                 outline: none;
                 box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
@@ -1084,6 +1111,7 @@
                                 input {
                                     padding-left: 5px;
                                     margin-left: 2px;
+                                    font-size: 0.7rem;
                                 }
                                 label {
                                     display: flex;
@@ -1112,7 +1140,7 @@
                             text-align: center;
                             text-decoration: none;
                             display: inline-block;
-                            font-size: 16px;                        
+                            font-size: 0.8rem;                        
                             border-radius: 10px;
                             outline: none;
                             box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
@@ -1132,7 +1160,7 @@
                             text-align: center;
                             text-decoration: none;
                             display: inline-block;
-                            font-size: 16px;                        
+                            font-size: 0.8rem;                        
                             border-radius: 10px;
                             outline: none;
                             box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
@@ -1152,7 +1180,7 @@
                             text-align: center;
                             text-decoration: none;
                             display: inline-block;
-                            font-size: 16px;                        
+                            font-size: 0.8rem;                        
                             border-radius: 10px;
                             outline: none;
                             box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);

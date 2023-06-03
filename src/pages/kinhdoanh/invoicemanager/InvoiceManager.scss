@@ -129,7 +129,8 @@
                 align-items: center;
                 justify-content: space-around;
                 padding: 2px;
-                width: 100%;           
+                width: 100%;     
+                font-size: 0.7rem;      
 
                 .forminputcolumn {
                     display: flex;
@@ -141,6 +142,7 @@
                     input {
                         width: 150px;
                         height: 20px;
+                        font-size: 0.7rem;
                         outline: none;
                         border-radius: 5px;
                         border: none;
@@ -165,6 +167,7 @@
                 gap: 20px;         
                 border-radius: 10px;   
                 margin-top: 5px;
+                font-size: 0.7rem;
                 
                 table {
                     border:3px solid gray;

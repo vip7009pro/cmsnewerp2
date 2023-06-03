@@ -191,6 +191,7 @@ const DATASX2 = () => {
     () => (
       <div className='datatb'>
         <DataGrid
+          style={{fontSize:'0.7rem'}}
           autoNavigateToFocusedRow={true}
           allowColumnReordering={true}
           allowColumnResizing={true}
@@ -560,6 +561,7 @@ const DATASX2 = () => {
     () => (
       <div className='datatb'>
         <DataGrid
+          style={{fontSize:'0.7rem'}}
           autoNavigateToFocusedRow={true}
           allowColumnReordering={true}
           allowColumnResizing={true}
@@ -811,6 +813,7 @@ const DATASX2 = () => {
     () => (
       <div className='datatb2'>
         <DataGrid
+          style={{fontSize:'0.7rem'}}
           autoNavigateToFocusedRow={true}
           allowColumnReordering={true}
           allowColumnResizing={true}

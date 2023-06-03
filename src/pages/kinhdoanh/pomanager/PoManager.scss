@@ -3,8 +3,6 @@
     color: rgb(59, 45, 182) !important;
 }
 
-
-
 @media only screen and (max-width: 3000px) {
     .pomanager{   
         display: flex;
@@ -118,6 +116,7 @@
                 width: 100%; 
                 flex-direction: column;
                 align-items: center;
+                font-size: 0.8rem;
                 
                 background-image: linear-gradient(0deg, #afd3d1, #54ca45);
                 -webkit-box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27); 
@@ -129,8 +128,7 @@
                     font-size: 20px;
                     margin: auto;
                 }
-                box-sizing: border-box;
-    
+                box-sizing: border-box;   
     
                 .forminput {
                     display: flex;
@@ -151,6 +149,7 @@
                         input {              
                             width: 150px;         
                             height: 20px;
+                            font-size: 0.7rem;
                             outline: none;
                             border-radius: 5px;
                             border: none;
