@@ -368,6 +368,7 @@ import {
 
           </div>
           <DataGrid
+            style={{fontSize:'0.7rem'}}
             autoNavigateToFocusedRow={true}
             allowColumnReordering={true}
             allowColumnResizing={true}
@@ -1250,7 +1251,7 @@ import {
               <div className='tracuuDataInspectionform2'>
                 <b style={{ color: "blue" }}>Kết quả ĐTC</b>
                 <Datagrid2
-                sx={{ fontSize: 12, flex: 1 }}
+                sx={{ fontSize: '0.7rem', flex: 1 }}
                 components={{
                   Toolbar: CustomToolbarPOTable,                  
                 }}               

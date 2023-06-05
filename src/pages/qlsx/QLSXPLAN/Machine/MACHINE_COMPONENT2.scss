@@ -16,11 +16,12 @@
         display: flex;
         flex-direction: column;
         width: 100px;
-        height: 60px;
+        height: 50px;
         background-image: linear-gradient(0deg,  #cbeea3,#ffffff);
         border-radius: 10px;
         box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
         -webkit-box-shadow: 19px 15px 27px 0px rgba(0.5, 0, 0, 0.18);
+        font-size: 0.5rem;
         .tieude {
             display: flex;
             flex-direction: column;
@@ -30,18 +31,19 @@
             align-self: center;
             justify-content: center;        
             font-weight: bold;
-            font-size: 15px;
+            font-size: 0.8rem;
             align-items: center;        
         }
         .machineplan {
-            font-size: 10px;
+            font-size: 0.5rem;
             overflow-x: inherit;
             flex: 0;
         }
        
     }
     .chitiet {
-        background-color: #cbeea3;     
+        background-color: #cbeea3;    
+        font-size: 0.5rem; 
         position: initial; 
     }
 

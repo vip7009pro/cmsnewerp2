@@ -243,7 +243,7 @@ const LICHSUINPUTLIEU = () => {
         <div className='tracuuYCSXTable'>
           {readyRender && (
             <DataGrid
-            sx={{ fontSize: 12, flex: 1 }}
+            sx={{ fontSize: '0.7rem', flex: 1 }}
             components={{
               Toolbar: CustomToolbarLICHSUINPUTSX,
               LoadingOverlay: LinearProgress,

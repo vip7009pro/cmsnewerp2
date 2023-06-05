@@ -76,7 +76,7 @@ const INSPECT_COMPONENT = ({ INS_DATA }: { INS_DATA?: INS_STATUS }) => {
         >
            {INS_DATA?.EQ_NAME}
           {checkSearch && (INS_DATA?.EQ_STATUS === "START") && (
-            <img alt='running' src='/blink.gif' width={40} height={20}></img>
+            <img alt='running' src='/blink.gif' width={40} height={15}></img>
           )}
           { checkSearch && (INS_DATA?.EQ_STATUS === "SETTING") && (
             <img alt='running' src='/setting3.gif' width={30} height={30}></img>

@@ -261,14 +261,14 @@ const DATASX2 = () => {
             infoText='Page #{0}. Total: {1} ({2} items)'
             displayMode='compact'
           /> 
-          <Column dataField='PHAN_LOAI' caption='PHAN_LOAI' width={100}></Column>
-          <Column dataField='G_CODE' caption='G_CODE' width={100}></Column>
-          <Column dataField='PLAN_ID' caption='PLAN_ID' width={100}></Column>
-          <Column dataField='PLAN_DATE' caption='PLAN_DATE' width={100}></Column>
-          <Column dataField='PROD_REQUEST_NO' caption='PROD_REQUEST_NO' width={100}></Column>
+          <Column dataField='PHAN_LOAI' caption='PHAN_LOAI' minWidth={100}></Column>
+          <Column dataField='G_CODE' caption='G_CODE' minWidth={100}></Column>
+          <Column dataField='PLAN_ID' caption='PLAN_ID' minWidth={100}></Column>
+          <Column dataField='PLAN_DATE' caption='PLAN_DATE' minWidth={100}></Column>
+          <Column dataField='PROD_REQUEST_NO' caption='PROD_REQUEST_NO' minWidth={100}></Column>
           <Column dataField='G_NAME' caption='G_NAME' width={150}></Column>
           <Column dataField='G_NAME_KD' caption='G_NAME_KD' width={120}></Column>
-          <Column dataField='PLAN_QTY' caption='PLAN_QTY' width={100} dataType='number'
+          <Column dataField='PLAN_QTY' caption='PLAN_QTY' minWidth={100} dataType='number'
             format={"decimal"}
             cellRender={(e: any) => {
               return (
@@ -277,14 +277,14 @@ const DATASX2 = () => {
                 </span>
               );
             }}></Column>
-          <Column dataField='EQ1' caption='EQ1' width={100}></Column>
-          <Column dataField='EQ2' caption='EQ2' width={100}></Column>
-          <Column dataField='PLAN_EQ' caption='PLAN_EQ' width={100}></Column>
-          <Column dataField='PLAN_FACTORY' caption='PLAN_FACTORY' width={100}></Column>
-          <Column dataField='PROCESS_NUMBER' caption='PROCESS_NUMBER' width={100}></Column>
-          <Column dataField='STEP' caption='STEP' width={100}></Column>
-          <Column dataField='M_NAME' caption='M_NAME' width={100}></Column>
-          <Column dataField='WAREHOUSE_OUTPUT_QTY' caption='WAREHOUSE_OUTPUT_QTY' width={100} dataType='number'
+          <Column dataField='EQ1' caption='EQ1' minWidth={100}></Column>
+          <Column dataField='EQ2' caption='EQ2' minWidth={100}></Column>
+          <Column dataField='PLAN_EQ' caption='PLAN_EQ' minWidth={100}></Column>
+          <Column dataField='PLAN_FACTORY' caption='PLAN_FACTORY' minWidth={100}></Column>
+          <Column dataField='PROCESS_NUMBER' caption='PROCESS_NUMBER' minWidth={100}></Column>
+          <Column dataField='STEP' caption='STEP' minWidth={100}></Column>
+          <Column dataField='M_NAME' caption='M_NAME' minWidth={100}></Column>
+          <Column dataField='WAREHOUSE_OUTPUT_QTY' caption='WAREHOUSE_OUTPUT_QTY' minWidth={100} dataType='number'
             format={"decimal"}
             cellRender={(e: any) => {
               return (
@@ -293,7 +293,7 @@ const DATASX2 = () => {
                 </span>
               );
             }}></Column>
-          <Column dataField='TOTAL_OUT_QTY' caption='TOTAL_OUT_QTY' width={100} dataType='number'
+          <Column dataField='TOTAL_OUT_QTY' caption='TOTAL_OUT_QTY' minWidth={100} dataType='number'
             format={"decimal"}
             cellRender={(e: any) => {
               return (
@@ -302,7 +302,7 @@ const DATASX2 = () => {
                 </span>
               );
             }}></Column>
-          <Column dataField='USED_QTY' caption='USED_QTY' width={100} dataType='number'
+          <Column dataField='USED_QTY' caption='USED_QTY' minWidth={100} dataType='number'
             format={"decimal"}
             cellRender={(e: any) => {
               return (
@@ -311,7 +311,7 @@ const DATASX2 = () => {
                 </span>
               );
             }}></Column>
-          <Column dataField='REMAIN_QTY' caption='REMAIN_QTY' width={100} dataType='number'
+          <Column dataField='REMAIN_QTY' caption='REMAIN_QTY' minWidth={100} dataType='number'
             format={"decimal"}
             cellRender={(e: any) => {
               return (
@@ -320,8 +320,8 @@ const DATASX2 = () => {
                 </span>
               );
             }}></Column>
-          <Column dataField='PD' caption='PD' width={100}></Column>
-          <Column dataField='CAVITY' caption='CAVITY' width={100}></Column>
+          <Column dataField='PD' caption='PD' minWidth={100}></Column>
+          <Column dataField='CAVITY' caption='CAVITY' minWidth={100}></Column>
           <Column dataField='SETTING_MET_TC' caption='SETTING_MET_TC' width={150} dataType='number'
             format={"decimal"}
             cellRender={(e: any) => {
@@ -349,7 +349,7 @@ const DATASX2 = () => {
                 </span>
               );
             }}></Column>
-          <Column dataField='WAREHOUSE_ESTIMATED_QTY' caption='WAREHOUSE_ESTIMATED_QTY' width={100} dataType='number'
+          <Column dataField='WAREHOUSE_ESTIMATED_QTY' caption='WAREHOUSE_ESTIMATED_QTY' minWidth={100} dataType='number'
             format={"decimal"}
             cellRender={(e: any) => {
               return (
@@ -358,7 +358,7 @@ const DATASX2 = () => {
                 </span>
               );
             }}></Column>
-            <Column dataField='ESTIMATED_QTY_ST' caption='ESTIMATED_QTY_ST' width={100} dataType='number'
+            <Column dataField='ESTIMATED_QTY_ST' caption='ESTIMATED_QTY_ST' minWidth={100} dataType='number'
             format={"decimal"}
             cellRender={(e: any) => {
               return (
@@ -367,7 +367,7 @@ const DATASX2 = () => {
                 </span>
               );
             }}></Column>
-          <Column dataField='ESTIMATED_QTY' caption='ESTIMATED_QTY' width={100} dataType='number'
+          <Column dataField='ESTIMATED_QTY' caption='ESTIMATED_QTY' minWidth={100} dataType='number'
             format={"decimal"}
             cellRender={(e: any) => {
               return (
@@ -376,7 +376,7 @@ const DATASX2 = () => {
                 </span>
               );
             }}></Column>
-          <Column dataField='KETQUASX' caption='KETQUASX' width={100} dataType='number'
+          <Column dataField='KETQUASX' caption='KETQUASX' minWidth={100} dataType='number'
             format={"decimal"}
             cellRender={(e: any) => {
               return (
@@ -385,7 +385,7 @@ const DATASX2 = () => {
                 </span>
               );
             }}></Column>
-          <Column dataField='LOSS_SX_ST' caption='LOSS_SX_ST' width={100} dataType='number'
+          <Column dataField='LOSS_SX_ST' caption='LOSS_SX_ST' minWidth={100} dataType='number'
             format={"percent"}
             cellRender={(e: any) => {
               return (
@@ -397,7 +397,7 @@ const DATASX2 = () => {
                 </span>
               );
             }}></Column>
-          <Column dataField='LOSS_SX' caption='LOSS_SX' width={100} dataType='number'
+          <Column dataField='LOSS_SX' caption='LOSS_SX' minWidth={100} dataType='number'
             format={"percent"}
             cellRender={(e: any) => {
               return (
@@ -406,7 +406,7 @@ const DATASX2 = () => {
                 </span>
               );
             }}></Column>
-          <Column dataField='INS_INPUT' caption='INS_INPUT' width={100} dataType='number'
+          <Column dataField='INS_INPUT' caption='INS_INPUT' minWidth={100} dataType='number'
             format={"decimal"}
             cellRender={(e: any) => {
               return (
@@ -415,7 +415,7 @@ const DATASX2 = () => {
                 </span>
               );
             }}></Column>
-          <Column dataField='LOSS_SX_KT' caption='LOSS_SX_KT' width={100} dataType='number'
+          <Column dataField='LOSS_SX_KT' caption='LOSS_SX_KT' minWidth={100} dataType='number'
             format={"percent"}
             cellRender={(e: any) => {
               return (
@@ -424,7 +424,7 @@ const DATASX2 = () => {
                 </span>
               );
             }}></Column>          
-          <Column dataField='INS_OUTPUT' caption='INS_OUTPUT' width={100} dataType='number'
+          <Column dataField='INS_OUTPUT' caption='INS_OUTPUT' minWidth={100} dataType='number'
             format={"decimal"}
             cellRender={(e: any) => {
               return (
@@ -433,7 +433,7 @@ const DATASX2 = () => {
                 </span>
               );
             }}></Column>
-          <Column dataField='LOSS_KT' caption='LOSS_KT' width={100} dataType='number'
+          <Column dataField='LOSS_KT' caption='LOSS_KT' minWidth={100} dataType='number'
             format={"percent"}
             cellRender={(e: any) => {
               return (
@@ -445,27 +445,27 @@ const DATASX2 = () => {
           <Column dataField='SETTING_START_TIME' caption='SETTING_START_TIME' width={150}></Column>
           <Column dataField='MASS_START_TIME' caption='MASS_START_TIME' width={150}></Column>
           <Column dataField='MASS_END_TIME' caption='MASS_END_TIME' width={150}></Column>
-          <Column dataField='RPM' caption='RPM' width={100}></Column>
-          <Column dataField='EQ_NAME_TT' caption='EQ_NAME_TT' width={100}></Column>
-          <Column dataField='SX_DATE' caption='SX_DATE' width={100}></Column>
-          <Column dataField='WORK_SHIFT' caption='WORK_SHIFT' width={100}></Column>
-          <Column dataField='INS_EMPL' caption='INS_EMPL' width={100}></Column>
-          <Column dataField='FACTORY' caption='FACTORY' width={100}></Column>
-          <Column dataField='BOC_KIEM' caption='BOC_KIEM' width={100}></Column>
-          <Column dataField='LAY_DO' caption='LAY_DO' width={100}></Column>
-          <Column dataField='MAY_HONG' caption='MAY_HONG' width={100}></Column>
-          <Column dataField='DAO_NG' caption='DAO_NG' width={100}></Column>
-          <Column dataField='CHO_LIEU' caption='CHO_LIEU' width={100}></Column>
-          <Column dataField='CHO_BTP' caption='CHO_BTP' width={100}></Column>
-          <Column dataField='HET_LIEU' caption='HET_LIEU' width={100}></Column>
-          <Column dataField='LIEU_NG' caption='LIEU_NG' width={100}></Column>
-          <Column dataField='CAN_HANG' caption='CAN_HANG' width={100}></Column>
-          <Column dataField='HOP_FL' caption='HOP_FL' width={100}></Column>
-          <Column dataField='CHO_QC' caption='CHO_QC' width={100}></Column>
-          <Column dataField='CHOT_BAOCAO' caption='CHOT_BAOCAO' width={100}></Column>
-          <Column dataField='CHUYEN_CODE' caption='CHUYEN_CODE' width={100}></Column>
-          <Column dataField='KHAC' caption='KHAC' width={100}></Column>
-          <Column dataField='REMARK' caption='REMARK' width={100}></Column> 
+          <Column dataField='RPM' caption='RPM' minWidth={100}></Column>
+          <Column dataField='EQ_NAME_TT' caption='EQ_NAME_TT' minWidth={100}></Column>
+          <Column dataField='SX_DATE' caption='SX_DATE' minWidth={100}></Column>
+          <Column dataField='WORK_SHIFT' caption='WORK_SHIFT' minWidth={100}></Column>
+          <Column dataField='INS_EMPL' caption='INS_EMPL' minWidth={100}></Column>
+          <Column dataField='FACTORY' caption='FACTORY' minWidth={100}></Column>
+          <Column dataField='BOC_KIEM' caption='BOC_KIEM' minWidth={100}></Column>
+          <Column dataField='LAY_DO' caption='LAY_DO' minWidth={100}></Column>
+          <Column dataField='MAY_HONG' caption='MAY_HONG' minWidth={100}></Column>
+          <Column dataField='DAO_NG' caption='DAO_NG' minWidth={100}></Column>
+          <Column dataField='CHO_LIEU' caption='CHO_LIEU' minWidth={100}></Column>
+          <Column dataField='CHO_BTP' caption='CHO_BTP' minWidth={100}></Column>
+          <Column dataField='HET_LIEU' caption='HET_LIEU' minWidth={100}></Column>
+          <Column dataField='LIEU_NG' caption='LIEU_NG' minWidth={100}></Column>
+          <Column dataField='CAN_HANG' caption='CAN_HANG' minWidth={100}></Column>
+          <Column dataField='HOP_FL' caption='HOP_FL' minWidth={100}></Column>
+          <Column dataField='CHO_QC' caption='CHO_QC' minWidth={100}></Column>
+          <Column dataField='CHOT_BAOCAO' caption='CHOT_BAOCAO' minWidth={100}></Column>
+          <Column dataField='CHUYEN_CODE' caption='CHUYEN_CODE' minWidth={100}></Column>
+          <Column dataField='KHAC' caption='KHAC' minWidth={100}></Column>
+          <Column dataField='REMARK' caption='REMARK' minWidth={100}></Column> 
           <Summary>
             <TotalItem
               alignment='right'
@@ -630,17 +630,17 @@ const DATASX2 = () => {
             infoText='Page #{0}. Total: {1} ({2} items)'
             displayMode='compact'
           /> 
-          <Column dataField='YCSX_STATUS' caption='YCSX_STATUS' width={100}></Column>
-          <Column dataField='G_CODE' caption='G_CODE' width={100}></Column>
-          <Column dataField='PHAN_LOAI' caption='PHAN_LOAI' width={100}></Column>
-          <Column dataField='PROD_REQUEST_NO' caption='PROD_REQUEST_NO' width={100}></Column>
-          <Column dataField='G_NAME' caption='G_NAME' width={100}></Column>
-          <Column dataField='G_NAME_KD' caption='G_NAME_KD' width={100}></Column>
-          <Column dataField='FACTORY' caption='FACTORY' width={100}></Column>
-          <Column dataField='EQ1' caption='EQ1' width={100}></Column>
-          <Column dataField='EQ2' caption='EQ2' width={100}></Column>
-          <Column dataField='PROD_REQUEST_DATE' caption='PROD_REQUEST_DATE' width={100}></Column>
-          <Column dataField='PROD_REQUEST_QTY' caption='PROD_REQUEST_QTY' width={100} dataType='number'
+          <Column dataField='YCSX_STATUS' caption='YCSX_STATUS' minWidth={100}></Column>
+          <Column dataField='G_CODE' caption='G_CODE' minWidth={100}></Column>
+          <Column dataField='PHAN_LOAI' caption='PHAN_LOAI' minWidth={100}></Column>
+          <Column dataField='PROD_REQUEST_NO' caption='PROD_REQUEST_NO' minWidth={100}></Column>
+          <Column dataField='G_NAME' caption='G_NAME' minWidth={100}></Column>
+          <Column dataField='G_NAME_KD' caption='G_NAME_KD' minWidth={100}></Column>
+          <Column dataField='FACTORY' caption='FACTORY' minWidth={100}></Column>
+          <Column dataField='EQ1' caption='EQ1' minWidth={100}></Column>
+          <Column dataField='EQ2' caption='EQ2' minWidth={100}></Column>
+          <Column dataField='PROD_REQUEST_DATE' caption='PROD_REQUEST_DATE' minWidth={100}></Column>
+          <Column dataField='PROD_REQUEST_QTY' caption='PROD_REQUEST_QTY' minWidth={100} dataType='number'
             format={"decimal"}
             cellRender={(e: any) => {
               return (
@@ -649,8 +649,8 @@ const DATASX2 = () => {
                 </span>
               );
             }}></Column>
-          <Column dataField='M_NAME' caption='M_NAME' width={100}></Column>
-          <Column dataField='M_OUTPUT' caption='M_OUTPUT' width={100} dataType='number'
+          <Column dataField='M_NAME' caption='M_NAME' minWidth={100}></Column>
+          <Column dataField='M_OUTPUT' caption='M_OUTPUT' minWidth={100} dataType='number'
             format={"decimal"}
             cellRender={(e: any) => {
               return (
@@ -659,7 +659,7 @@ const DATASX2 = () => {
                 </span>
               );
             }}></Column>
-          <Column dataField='SCANNED_QTY' caption='SCANNED_QTY' width={100} dataType='number'
+          <Column dataField='SCANNED_QTY' caption='SCANNED_QTY' minWidth={100} dataType='number'
             format={"decimal"}
             cellRender={(e: any) => {
               return (
@@ -668,7 +668,7 @@ const DATASX2 = () => {
                 </span>
               );
             }}></Column>
-          <Column dataField='REMAIN_QTY' caption='REMAIN_QTY' width={100} dataType='number'
+          <Column dataField='REMAIN_QTY' caption='REMAIN_QTY' minWidth={100} dataType='number'
             format={"decimal"}
             cellRender={(e: any) => {
               return (
@@ -677,7 +677,7 @@ const DATASX2 = () => {
                 </span>
               );
             }}></Column>
-          <Column dataField='USED_QTY' caption='USED_QTY' width={100} dataType='number'
+          <Column dataField='USED_QTY' caption='USED_QTY' minWidth={100} dataType='number'
             format={"decimal"}
             cellRender={(e: any) => {
               return (
@@ -686,9 +686,9 @@ const DATASX2 = () => {
                 </span>
               );
             }}></Column>
-          <Column dataField='PD' caption='PD' width={100}></Column>
-          <Column dataField='CAVITY' caption='CAVITY' width={100}></Column>
-          <Column dataField='WAREHOUSE_ESTIMATED_QTY' caption='WAREHOUSE_ESTIMATED_QTY' width={100} dataType='number'
+          <Column dataField='PD' caption='PD' minWidth={100}></Column>
+          <Column dataField='CAVITY' caption='CAVITY' minWidth={100}></Column>
+          <Column dataField='WAREHOUSE_ESTIMATED_QTY' caption='WAREHOUSE_ESTIMATED_QTY' minWidth={100} dataType='number'
             format={"decimal"}
             cellRender={(e: any) => {
               return (
@@ -697,7 +697,7 @@ const DATASX2 = () => {
                 </span>
               );
             }}></Column>
-          <Column dataField='ESTIMATED_QTY' caption='ESTIMATED_QTY' width={100} dataType='number'
+          <Column dataField='ESTIMATED_QTY' caption='ESTIMATED_QTY' minWidth={100} dataType='number'
             format={"decimal"}
             cellRender={(e: any) => {
               return (
@@ -706,7 +706,7 @@ const DATASX2 = () => {
                 </span>
               );
             }}></Column>
-          <Column dataField='CD1' caption='CD1' width={100} dataType='number'
+          <Column dataField='CD1' caption='CD1' minWidth={100} dataType='number'
             format={"decimal"}
             cellRender={(e: any) => {
               return (
@@ -715,7 +715,7 @@ const DATASX2 = () => {
                 </span>
               );
             }}></Column>
-          <Column dataField='CD2' caption='CD2' width={100} dataType='number'
+          <Column dataField='CD2' caption='CD2' minWidth={100} dataType='number'
             format={"decimal"}
             cellRender={(e: any) => {
               return (
@@ -724,7 +724,7 @@ const DATASX2 = () => {
                 </span>
               );
             }}></Column>
-          <Column dataField='INS_INPUT' caption='INS_INPUT' width={100} dataType='number'
+          <Column dataField='INS_INPUT' caption='INS_INPUT' minWidth={100} dataType='number'
             format={"decimal"}
             cellRender={(e: any) => {
               return (
@@ -733,7 +733,7 @@ const DATASX2 = () => {
                 </span>
               );
             }}></Column>
-          <Column dataField='INS_OUTPUT' caption='INS_OUTPUT' width={100} dataType='number'
+          <Column dataField='INS_OUTPUT' caption='INS_OUTPUT' minWidth={100} dataType='number'
             format={"decimal"}
             cellRender={(e: any) => {
               return (
@@ -742,7 +742,7 @@ const DATASX2 = () => {
                 </span>
               );
             }}></Column>
-          <Column dataField='LOSS_SX1' caption='LOSS_SX1' width={100} dataType='number'
+          <Column dataField='LOSS_SX1' caption='LOSS_SX1' minWidth={100} dataType='number'
             format={"percent"}
             cellRender={(e: any) => {
               return (
@@ -751,7 +751,7 @@ const DATASX2 = () => {
                 </span>
               );
             }}></Column>
-          <Column dataField='LOSS_SX2' caption='LOSS_SX2' width={100} dataType='number'
+          <Column dataField='LOSS_SX2' caption='LOSS_SX2' minWidth={100} dataType='number'
             format={"percent"}
             cellRender={(e: any) => {
               return (
@@ -760,7 +760,7 @@ const DATASX2 = () => {
                 </span>
               );
             }}></Column>
-          <Column dataField='LOSS_SX3' caption='LOSS_SX3' width={100} dataType='number'
+          <Column dataField='LOSS_SX3' caption='LOSS_SX3' minWidth={100} dataType='number'
             format={"percent"}
             cellRender={(e: any) => {
               return (
@@ -769,7 +769,7 @@ const DATASX2 = () => {
                 </span>
               );
             }}></Column>
-          <Column dataField='LOSS_SX4' caption='LOSS_SX4' width={100} dataType='number'
+          <Column dataField='LOSS_SX4' caption='LOSS_SX4' minWidth={100} dataType='number'
             format={"percent"}
             cellRender={(e: any) => {
               return (
@@ -778,7 +778,7 @@ const DATASX2 = () => {
                 </span>
               );
             }}></Column>
-          <Column dataField='TOTAL_LOSS' caption='TOTAL_LOSS' width={100} dataType='number'
+          <Column dataField='TOTAL_LOSS' caption='TOTAL_LOSS' minWidth={100} dataType='number'
             format={"percent"}
             cellRender={(e: any) => {
               return (
@@ -787,7 +787,7 @@ const DATASX2 = () => {
                 </span>
               );
             }}></Column>
-          <Column dataField='TOTAL_LOSS2' caption='TOTAL_LOSS2' width={100} dataType='number'
+          <Column dataField='TOTAL_LOSS2' caption='TOTAL_LOSS2' minWidth={100} dataType='number'
             format={"percent"}
             cellRender={(e: any) => {
               return (
@@ -802,7 +802,67 @@ const DATASX2 = () => {
               column='PHAN_LOAI'
               summaryType='count'
               valueFormat={"decimal"}
+            />    
+            <TotalItem
+              alignment='right'
+              column='M_OUTPUT'
+              summaryType='sum'
+              valueFormat={"thousands"}
             />
+            <TotalItem
+              alignment='right'
+              column='SCANNED_QTY'
+              summaryType='sum'
+              valueFormat={"thousands"}
+            />   
+            <TotalItem
+              alignment='right'
+              column='REMAIN_QTY'
+              summaryType='sum'
+              valueFormat={"thousands"}
+            />   
+            <TotalItem
+              alignment='right'
+              column='USED_QTY'
+              summaryType='sum'
+              valueFormat={"thousands"}
+            />   
+            <TotalItem
+              alignment='right'
+              column='WAREHOUSE_ESTIMATED_QTY'
+              summaryType='sum'
+              valueFormat={"thousands"}
+            />   
+            <TotalItem
+              alignment='right'
+              column='ESTIMATED_QTY'
+              summaryType='sum'
+              valueFormat={"thousands"}
+            />   
+            <TotalItem
+              alignment='right'
+              column='CD1'
+              summaryType='sum'
+              valueFormat={"thousands"}
+            />   
+            <TotalItem
+              alignment='right'
+              column='CD2'
+              summaryType='sum'
+              valueFormat={"thousands"}
+            />   
+            <TotalItem
+              alignment='right'
+              column='INS_INPUT'
+              summaryType='sum'
+              valueFormat={"thousands"}
+            />   
+            <TotalItem
+              alignment='right'
+              column='INS_OUTPUT'
+              summaryType='sum'
+              valueFormat={"thousands"}
+            />   
           </Summary>
         </DataGrid>
       </div>
@@ -882,10 +942,10 @@ const DATASX2 = () => {
             infoText='Page #{0}. Total: {1} ({2} items)'
             displayMode='compact'
           />    
-          <Column dataField='PLAN_ID' caption='PLAN_ID' width={100}></Column>
+          <Column dataField='PLAN_ID' caption='PLAN_ID' minWidth={100}></Column>
           <Column dataField='M_NAME' caption='M_NAME' width={150}></Column>
-          <Column dataField='WIDTH_CD' caption='WIDTH_CD' width={100}></Column>
-          <Column dataField='INPUT_QTY' caption='INPUT_QTY' width={100} dataType='number'
+          <Column dataField='WIDTH_CD' caption='WIDTH_CD' minWidth={100}></Column>
+          <Column dataField='INPUT_QTY' caption='INPUT_QTY' minWidth={100} dataType='number'
             format={"decimal"}
             cellRender={(e: any) => {
               return (
@@ -894,7 +954,7 @@ const DATASX2 = () => {
                 </span>
               );
             }}></Column>
-          <Column dataField='USED_QTY' caption='USED_QTY' width={100} dataType='number'
+          <Column dataField='USED_QTY' caption='USED_QTY' minWidth={100} dataType='number'
             format={"decimal"}
             cellRender={(e: any) => {
               return (
@@ -903,7 +963,7 @@ const DATASX2 = () => {
                 </span>
               );
             }}></Column>
-          <Column dataField='REMAIN_QTY' caption='REMAIN_QTY' width={100} dataType='number'
+          <Column dataField='REMAIN_QTY' caption='REMAIN_QTY' minWidth={100} dataType='number'
             format={"decimal"}
             cellRender={(e: any) => {
               return (
@@ -912,15 +972,15 @@ const DATASX2 = () => {
                 </span>
               );
             }}></Column>
-          <Column dataField='PROD_REQUEST_NO' caption='PROD_REQUEST_NO' width={100}></Column>
-          <Column dataField='G_NAME' caption='G_NAME' width={100}></Column>
-          <Column dataField='G_CODE' caption='G_CODE' width={100}></Column>
-          <Column dataField='G_NAME_KD' caption='G_NAME_KD' width={100}></Column>
-          <Column dataField='M_CODE' caption='M_CODE' width={100}></Column>          
-          <Column dataField='M_LOT_NO' caption='M_LOT_NO' width={100}></Column>          
-          <Column dataField='EMPL_NO' caption='EMPL_NO' width={100}></Column>
-          <Column dataField='EQUIPMENT_CD' caption='EQUIPMENT_CD' width={100}></Column>
-          <Column dataField='INS_DATE' caption='INS_DATE' width={100}></Column>
+          <Column dataField='PROD_REQUEST_NO' caption='PROD_REQUEST_NO' minWidth={100}></Column>
+          <Column dataField='G_NAME' caption='G_NAME' minWidth={100}></Column>
+          <Column dataField='G_CODE' caption='G_CODE' minWidth={100}></Column>
+          <Column dataField='G_NAME_KD' caption='G_NAME_KD' minWidth={100}></Column>
+          <Column dataField='M_CODE' caption='M_CODE' minWidth={100}></Column>          
+          <Column dataField='M_LOT_NO' caption='M_LOT_NO' minWidth={100}></Column>          
+          <Column dataField='EMPL_NO' caption='EMPL_NO' minWidth={100}></Column>
+          <Column dataField='EQUIPMENT_CD' caption='EQUIPMENT_CD' minWidth={100}></Column>
+          <Column dataField='INS_DATE' caption='INS_DATE' minWidth={100}></Column>
        
           <Summary>
             <TotalItem

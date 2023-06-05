@@ -285,8 +285,7 @@ export const glbSlice = createSlice({
 
             }
             
-          }
-          
+          }          
         }
         },        
         resetChithiArray: (state, action: PayloadAction<string>)=> {
@@ -297,14 +296,28 @@ export const glbSlice = createSlice({
           state.server_ip = action.payload;
           Swal.fire('Thông báo','Đã đổi server sang : ' + action.payload);
         },
-        addTab:  (state,action: PayloadAction<ELE_ARRAY>)=> {
+        addTab:  (state,action: PayloadAction<ELE_ARRAY>)=> {     
+         /*  let ele_code_array: string[] = state.tabs.map((ele:ELE_ARRAY, index: number)=> {
+            return ele.ELE_CODE;
+          })     
+          let tab_index: number = ele_code_array.indexOf(action.payload.ELE_CODE);
+          console.log(tab_index);
+          if(tab_index !==-1)
+          {
+                   
+          }
+          else
+          {
+            
+          } */
           state.tabs=[...state.tabs, action.payload];
-          localStorage.setItem('tabs',JSON.stringify(state.tabs.map((ele:ELE_ARRAY, index:number)=> {
-            return {              
-                MENU_CODE: ele.ELE_CODE,
-                MENU_NAME: ele.ELE_NAME              
-            }
-          })));
+            localStorage.setItem('tabs',JSON.stringify(state.tabs.map((ele:ELE_ARRAY, index:number)=> {
+              return {              
+                  MENU_CODE: ele.ELE_CODE,
+                  MENU_NAME: ele.ELE_NAME              
+              }
+            })));
+          
         },
         resetTab:  (state,action: PayloadAction<any>)=> {
           state.tabs=[];   

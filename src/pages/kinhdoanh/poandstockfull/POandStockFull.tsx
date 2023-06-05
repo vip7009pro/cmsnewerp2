@@ -372,12 +372,12 @@ const POandStockFull = () => {
             </div>
           </div>
           <div className='tracuuFcstTable'>
-            <DataGrid
+            <DataGrid              
               components={{
                 Toolbar: CustomToolbarPOTable,
                 LoadingOverlay: LinearProgress,
               }}
-              sx={{ fontSize: 12 }}
+              sx={{ fontSize: '0.7rem' }}
               loading={isLoading}
               rowHeight={30}
               rows={pofulldatatable}

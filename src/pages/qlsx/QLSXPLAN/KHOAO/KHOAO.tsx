@@ -308,10 +308,10 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
           SAVE
         </IconButton>
         <GridToolbarQuickFilter />
-        <div className='div' style={{ fontSize: 20, fontWeight: "bold" }}>
+        <div className='div' style={{ fontSize: '1rem', fontWeight: "bold" }}>
           {tableTitle}
         </div>
-        <div className='div' style={{ fontSize: 20, fontWeight: "bold" }}>
+        <div className='div' style={{ fontSize: '1rem', fontWeight: "bold" }}>
           _|_Liệu xuất next sẽ vào chỉ thị: {nextPlan}
         </div>
       </GridToolbarContainer>
@@ -917,7 +917,7 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
         <div className='tracuuYCSXTable'>
           {readyRender && (
             <DataGrid
-              sx={{ fontSize: 12, flex: 1 }}
+              sx={{ fontSize: '0.7rem', flex: 1 }}
               components={{
                 Toolbar: CustomToolbarLICHSUINPUTSX,
                 LoadingOverlay: LinearProgress,

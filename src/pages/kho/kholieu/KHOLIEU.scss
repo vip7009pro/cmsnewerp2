@@ -13,7 +13,8 @@
             -webkit-box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27); 
             box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27);
             border-radius: 3px;
-            padding: 5px;           
+            padding: 5px;   
+            font-size: 0.8rem;        
             span {
                 padding: 10px;
                 font-size: 20px;
@@ -35,6 +36,7 @@
                     align-items: flex-end;
                     justify-content: center;
                     flex-wrap: wrap;
+                    
                     input {
                         width: 150px;
                         height: 20px;

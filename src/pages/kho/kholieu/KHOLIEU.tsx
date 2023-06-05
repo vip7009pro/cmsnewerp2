@@ -378,7 +378,7 @@ const KHOLIEU = () => {
           </div>
           <div className='tracuuWHTable'>
             {readyRender && <DataGrid
-              sx={{ fontSize: 12, flex: 1 }}
+              sx={{ fontSize: '0.7rem', flex: 1 }}
               components={{
                 Toolbar: CustomToolbarPOTable,
                 LoadingOverlay: LinearProgress,

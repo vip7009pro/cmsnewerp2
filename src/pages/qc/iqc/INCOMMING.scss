@@ -33,7 +33,8 @@
                 box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
                 border-radius: 3px;
                 padding: 10px;
-                height: 70vh;
+                height: fit-content;
+                font-size: 0.8rem;
                 span {
                     padding: 10px;
                     font-size: 20px;
@@ -194,47 +195,66 @@
                 background-color:#76c6eb ;
                 -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
                 box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
-                border-radius: 3px;
+                border-radius: 3px;               
 
                 .datatb {
                     justify-items: center;
                     width: 99%;
                     padding: 10px; 
-
-                    /* .dx-datagrid-header-panel {
-                        border-bottom: 1px solid #0c8d00;
-                        background-color:#76c6eb ;
+                    font-size: 0.8rem;
+                    .dx-datagrid-borders > .dx-datagrid-header-panel {
+                        border-bottom: 0;
+                        background-color: #b5f398;
                     }
-                    .dx-widget .dx-visibility-change-handler {
-                        background-color:#76c6eb ;
-
-                    }
-                    .dx-datagrid-content .dx-datagrid-scroll-container {
-                        background-color:#76c6eb ;
-                    }
-                    .dx-datagrid-table .dx-datagrid-table-fixed {
-                        background-color:#76c6eb ;
-                    }
-                    .dx-datagrid-action .dx-cell-focus-disabled .dx-datagrid-drag-action {
-                        background-color:#76c6eb ;
-                    }
-                    .dx-datagrid-columns-separator .dx-datagrid-columns-separator-transparent {
-                        background-color:#76c6eb ;
-                    }
-                    .dx-texteditor-input {
-                        background-color:#76c6eb ;
-                    }
-                    .dx-datagrid-action .dx-cell-focus-disabled .dx-datagrid-drag-action {
-                        background-color:#76c6eb ;
-                    }
-                                      
-                    .dx-command-select .dx-cell-focus-disabled .dx-editor-cell .dx-editor-inline-block {
-                        background-color:#76c6eb ;
-                    }
-                    .dx-command-select {
-                        background-color:#76c6eb ;
-                    } */
                     
+                    .dx-toolbar .dx-toolbar-items-container {
+                        height: 25px;
+                        overflow: visible;
+                        background-color: #b5f398;
+                    }
+    
+                    //toan bo bang
+                    .dx-gridbase-container > .dx-datagrid-rowsview.dx-scrollable {
+                        display: -ms-flexbox;
+                        display: flex;
+                        background-image: linear-gradient(0deg, #e9e1eb, #e4a5f7);
+                        font-size: 0.7rem;
+                    }
+    
+                    .dx-datagrid-borders > .dx-datagrid-filter-panel, .dx-datagrid-borders > .dx-datagrid-headers {
+                        border-top: 1px solid #ddd;
+                        background-image: linear-gradient(0deg, #e9e1eb, #a0f87e);
+                        color: black;
+                        font-size: 0.7rem;
+                    }
+                    //filter row input
+                    .dx-datagrid-filter-row .dx-editor-cell .dx-editor-with-menu .dx-placeholder::before, .dx-datagrid-filter-row .dx-editor-cell .dx-editor-with-menu .dx-texteditor-input {
+                        padding-left: 32px;                    
+                        background-image: linear-gradient(0deg, #e9e1eb, #a0f87e);     
+                        color: black;   
+                        height: 10px;           
+    
+                    }
+                    .dx-editor-cell .dx-texteditor, .dx-editor-cell .dx-texteditor .dx-texteditor-input {
+                        background-image: linear-gradient(0deg, #e9e1eb, #a0f87e);  
+                    }
+    
+    
+                    .dx-searchbox .dx-placeholder::before, .dx-searchbox .dx-texteditor-input {
+                        padding-left: 34px;
+                        background-image: linear-gradient(0deg, #e9e1eb, #d7f0cd);     
+                    }
+    
+                    .dx-button-mode-contained {
+                        background-color: #a0f87e;
+                        border-color: #cacafa;
+                        color: #430fff;
+                    }
+    
+                    .dx-datagrid-total-footer > .dx-datagrid-content {
+                        padding-top: 0px;
+                        padding-bottom: 0px;
+                    }
                 }
             }
             .tracuuDataInspectionform2 {

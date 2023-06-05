@@ -1,7 +1,7 @@
 @media only screen and (max-width: 15000px) {
     .bom_amazon {
         display: flex;
-        flex-direction: column;
+        flex-direction: column;        
         .mininavbar {
             display: flex;
             flex-direction: row;
@@ -26,7 +26,8 @@
     
         }
         .bom_manager_wrapper {
-            display: flex;           
+            display: flex;    
+              
             .left {
                 display: flex;
                 flex-direction: column;
@@ -43,20 +44,18 @@
                             flex-direction: column;
                             align-items: center;
                             
-                            background-image: linear-gradient(0deg, #a5ddee, #9298f5);    
+                            background-image: linear-gradient(0deg, #afd3d1, #86cfff);   
                             -webkit-box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27); 
                             box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27);
                             border-radius: 3px;
                             padding: 5px;
-                            &:hover {
-                                background-image: linear-gradient(0deg, #5ae5fd, #5565f2);                
-                            }
+                            font-size: 0.8rem;     
+                           
                             span {
                                 padding: 10px;
                                 font-size: 20px;
                                 margin: auto;
-                            }
-                
+                            }                
                 
                             .forminput {
                                 display: flex;
@@ -153,40 +152,39 @@
                             display: flex;
                             margin-top: 5px;
                             height: 70vh;
-                            background-image: linear-gradient(0deg, #75ddac, #4ecde4);                   
+                            background-image: linear-gradient(0deg, #afd3d1, #86cfff);                  
                             -webkit-box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27); 
                             box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27);
                             border-radius: 3px; 
-                        }
-                
-                    }
-                   
+                        }                
+                    }                   
                 }
                 .bom_manager_button {
                     display: flex;
                     flex-direction: column;   
-                    justify-items: center;    
+                    justify-content: center;
                     align-items: center;             
                     flex: 1;
-                    border-radius: 10px;
+                    border-radius: 5px;
                     margin-bottom: 5px;
                     background-image: linear-gradient(0deg, #7ae2f5, #717bd4);
                     -webkit-box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.17); 
-                            box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.17);
-                    
+                    box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.17);
+
                     .selectcodephoi {
                         display: flex;
-                        flex-direction: column;                        
-                        align-items: center;
-                        justify-items: center;
+                        flex-direction: column;
                         align-content: center;
-                        padding: 20px;
+                        justify-items: center;
+                        padding: 5px;
+                        font-size: 0.8rem;                        
                         .codephoiselection {
                             justify-self: center;
                             align-self: center;
-                            width: 250px;         
-                            height: 30px;        
-                            border-radius: 10px;     
+                            width: 200px;         
+                            height: 30px;   
+                            font-size: 0.7rem;          
+                            border-radius: 5px;     
                             padding-left: 10px;     
                             padding-right: 10px;     
                         }
@@ -257,7 +255,7 @@
                             justify-self: center;     
                             -webkit-box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.17); 
                             box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.17);    
-                            background-image: linear-gradient(0deg, #cbe79d, #5565f2); 
+                            background-image: linear-gradient(0deg, #afd3d1, #86cfff); 
                         }
                         .bomsxbutton {
                             display: flex;
@@ -289,7 +287,7 @@
                             justify-self: center;         
                             -webkit-box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.17); 
                             box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.17);    
-                            background-image: linear-gradient(0deg, #cbe79d, #5565f2); 
+                            background-image: linear-gradient(0deg, #afd3d1, #86cfff);
                         }
                         .bomgiabutton {
                             display: flex;
@@ -306,8 +304,8 @@
                         flex-direction: column;
                         flex: 2;
                         
-                        background-color:rgb(94, 221, 126);      
-                        height: 100%;    
+                        background-image: linear-gradient(0deg, #afd3d1, #86cfff);    
+                        height: fit-content;    
                         margin-left:5px;
                         margin-right:5px;    
                         -webkit-box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.17); 
@@ -316,11 +314,11 @@
 
                         align-items: center;
                         justify-content: flex-start;
-                        justify-items:center ;
+                        justify-items:center ;                        
                         
                         .section_title {
                             font-weight: bold;
-                            font-size: 20px;
+                            font-size: 1rem;
                             margin-top: 10px;
                             
                         }

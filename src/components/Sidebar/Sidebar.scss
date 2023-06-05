@@ -83,25 +83,20 @@
 }
 
 ::-webkit-scrollbar {
-  width: 10px;
-  background-image: linear-gradient(0deg, #afd3d1, #86cfff);
+  width: 8px;
+  height: 8px;
+  /* background-image: linear-gradient(0deg, #ffffff, #ffffff); */
 }
 
 /* Optional: show position indicator in red */
 ::-webkit-scrollbar-thumb {
-  border-radius: 10px;
+  border-radius: 2px;
   background-color: #FFF;
-  background-image: -webkit-gradient(linear,
-      40% 0%,
-      75% 84%,
-      from(#748cf8),
-      to(#6668fd),
-      color-stop(.6, #5db1ff))
+  background-image: linear-gradient(0deg, #7bf8a4, #02c722);
 }
 
 .SidebarWrap {
   width: 100%;
-
   .cmslogo {
     text-decoration: none;
     padding: 10px;

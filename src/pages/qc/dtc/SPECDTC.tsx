@@ -46,7 +46,8 @@ const SPECDTC = () => {
   const materialDataTable = React.useMemo(
     () => (
       <div className='datatb'>       
-        <DataGrid          
+        <DataGrid       
+          style={{fontSize:'0.8rem'}}   
           width={'100%'}                  
           autoNavigateToFocusedRow={true}
           allowColumnReordering={true}

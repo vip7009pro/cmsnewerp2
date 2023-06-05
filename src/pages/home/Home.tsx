@@ -8,14 +8,13 @@ import { generalQuery } from "../../api/Api";
 import Swal from "sweetalert2";
 import PrimarySearchAppBar from "../../components/AppBar/AppBarCustom";
 import CHAT from "../chat/CHAT";
-import { Box, IconButton, Tab, Tabs, Typography,  } from "@mui/material";
-
+import { Box, IconButton, Tab, Tabs, Typography } from "@mui/material";
 import { AiOutlineCloseCircle } from "react-icons/ai";
 import { RootState } from "../../redux/store";
 import { useSelector, useDispatch } from "react-redux";
 import { addTab, closeTab, settabIndex } from "../../redux/slices/globalSlice";
 import AccountInfo from "../../components/Navbar/AccountInfo/AccountInfo";
-export const current_ver: number = 144;
+export const current_ver: number = 145;
 interface ELE_ARRAY {
   REACT_ELE: ReactElement;
   ELE_NAME: string;
@@ -41,7 +40,6 @@ function Home() {
   });
   const [checkVerWeb, setCheckVerWeb] = useState(1);
   console.log("local ver", current_ver);
-
   useEffect(() => {
     generalQuery("checkWebVer", {})
       .then((response) => {
@@ -104,11 +102,12 @@ function Home() {
         {/* <PrimarySearchAppBar/>  */}
       </div>
       <div className='homeContainer'>
-       {sidebarStatus && <div className='sidebardiv'>
+        <div className='sidebardiv'>
           <Sidebar />
-        </div>}
+        </div>
         <div className='outletdiv'>
           <animated.div
+            className='animated_div'
             style={{
               width: "100%",
               height: "100%",
@@ -136,34 +135,54 @@ function Home() {
                 </IconButton>
               )}
             </div>
-            {(tabModeSwap && tabs.filter((ele:ELE_ARRAY, index: number)=> ele.ELE_CODE !=='-1').length>0) && (
-              <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-                <Tabs
-                  value={tabIndex}
-                  onChange={(event: React.SyntheticEvent, newValue: number) => {
-                    //console.log(newValue);
-                    dispatch(settabIndex(newValue));
-                  }}
-                  variant='scrollable'
-                  aria-label='ERP TABS'
-                  scrollButtons
-                  allowScrollButtonsMobile                  
-                  style={{backgroundImage:`linear-gradient(0deg, #afd3d1, #86cfff)`, marginRight:'5px', border:'none', minHeight:'2px', boxSizing:'border-box',marginTop: 2, borderRadius:'2px'}}     
-                >
-                  {tabs.map((ele: ELE_ARRAY, index: number) => {
-                    if (ele.ELE_CODE !== "-1")
-                      return (
-                        <Tab
-                          key={index}
-                          label={index + 1 + "." + ele.ELE_NAME}
-                          value={index}     
-                          style={{minHeight:'2px', height: '5px', boxSizing:'border-box', borderRadius:'5px'}}                                            
-                        ></Tab>
-                      );
-                  })}
-                </Tabs>
-              </Box>
-            )}
+            {tabModeSwap &&
+              tabs.filter(
+                (ele: ELE_ARRAY, index: number) => ele.ELE_CODE !== "-1"
+              ).length > 0 && (
+                <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+                  <Tabs
+                    value={tabIndex}
+                    onChange={(
+                      event: React.SyntheticEvent,
+                      newValue: number
+                    ) => {
+                      //console.log(newValue);
+                      dispatch(settabIndex(newValue));
+                    }}
+                    variant='scrollable'
+                    aria-label='ERP TABS'
+                    scrollButtons
+                    allowScrollButtonsMobile
+                    style={{
+                      backgroundImage: `linear-gradient(0deg, #afd3d1, #86cfff)`,
+                      marginRight: "5px",
+                      border: "none",
+                      minHeight: "2px",
+                      boxSizing: "border-box",
+                      marginTop: 2,
+                      borderRadius: "2px",
+                    }}
+                  >
+                    {tabs.map((ele: ELE_ARRAY, index: number) => {
+                      if (ele.ELE_CODE !== "-1") {
+                        return (
+                          <Tab
+                            key={index}
+                            label={index + 1 + "." + ele.ELE_NAME}
+                            value={index}
+                            style={{
+                              minHeight: "2px",
+                              height: "5px",
+                              boxSizing: "border-box",
+                              borderRadius: "5px",
+                            }}
+                          ></Tab>
+                        );
+                      }
+                    })}
+                  </Tabs>
+                </Box>
+              )}
             {tabModeSwap &&
               tabs.map((ele: ELE_ARRAY, index: number) => {
                 if (ele.ELE_CODE !== "-1")
@@ -174,12 +193,11 @@ function Home() {
                       style={{
                         visibility: index === tabIndex ? "visible" : "hidden",
                         position: "absolute",
-                        top: "25px",
-                        /* left: 0, */
-                        width: "100%",
+                        top: "25px",                        
+                        width: sidebarStatus?  '85%': "100%",
                       }}
-                    >                    
-                        {ele.REACT_ELE}                      
+                    >
+                      {ele.REACT_ELE}
                     </div>
                   );
               })}

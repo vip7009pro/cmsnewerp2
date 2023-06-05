@@ -730,7 +730,7 @@ import {
                       Toolbar: CustomToolbarCODETable,
                       LoadingOverlay: LinearProgress,
                     }}
-                    sx={{ fontSize: 12 }}
+                    sx={{ fontSize: '0.7rem' }}
                     loading={isLoading}
                     rowHeight={30}
                     rows={rows}
@@ -778,10 +778,10 @@ import {
                 <div className='listamazontable'>
                   <span
                     style={{
-                      fontSize: 20,
+                      fontSize: '1rem',
                       fontWeight: "bold",
                       marginLeft: 10,
-                      color: "white",
+                      color: "black",
                       padding: 10,
                     }}
                   >
@@ -792,7 +792,7 @@ import {
                       Toolbar: CustomToolbarLISTBOMAMAZONTable,
                       LoadingOverlay: LinearProgress,
                     }}
-                    sx={{ fontSize: 12 }}
+                    sx={{ fontSize: '0.7rem' }}
                     loading={isLoading}
                     rowHeight={30}
                     rows={listamazontable}
@@ -832,10 +832,10 @@ import {
                 <div className='bomamazontable'>
                   <span
                     style={{
-                      fontSize: 20,
+                      fontSize: '1rem',
                       fontWeight: "bold",
                       marginLeft: 10,
-                      color: "white",
+                      color: "black",
                       padding: 10,
                     }}
                   >
@@ -847,7 +847,7 @@ import {
                       Toolbar: CustomToolbarBOMAMAZONTable,
                       LoadingOverlay: LinearProgress,
                     }}
-                    sx={{ fontSize: 12 }}
+                    sx={{ fontSize: '0.7rem' }}
                     loading={isLoading}
                     rowHeight={30}
                     rows={bomamazontable}
@@ -887,7 +887,7 @@ import {
                 <div className='bomamazontable'>
                   <span
                     style={{
-                      fontSize: 30,
+                      fontSize: '1.5rem',
                       fontWeight: "bold",
                       marginLeft: 50,
                       color: "black",

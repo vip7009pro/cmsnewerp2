@@ -193,6 +193,7 @@ const FAILING = () => {
 
         </div>
         <DataGrid
+          style={{fontSize:'0.7rem'}}
           autoNavigateToFocusedRow={true}
           allowColumnReordering={true}
           allowColumnResizing={true}

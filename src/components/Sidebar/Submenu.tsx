@@ -425,17 +425,33 @@ const SubMenu = ({ item }: { item: any }) => {
               {
                 if(tabModeSwap)
                 {
-                  dispatch(
-                    addTab({
-                      ELE_NAME: item.title,
-                      ELE_CODE: item.MENU_CODE,
-                      REACT_ELE: menulist.filter(
-                        (ele: MENU_LIST_DATA, index: number) =>
-                          ele.MENU_CODE === item.MENU_CODE
-                      )[0].MENU_ITEM,
-                    })
-                  );
-                  dispatch(settabIndex(tabs.length)); 
+                  let ele_code_array: string[] = tabs.map((ele:ELE_ARRAY, index: number)=> {
+                    return ele.ELE_CODE;
+                  })     
+                  let tab_index: number = ele_code_array.indexOf(item.MENU_CODE);
+                  console.log(tab_index);
+                  if(tab_index !==-1)
+                  {
+                    console.log('co tab roi');
+                    dispatch(settabIndex(tab_index));                           
+                  }
+                  else
+                  {
+                    console.log('chua co tab');
+                    dispatch(
+                      addTab({
+                        ELE_NAME: item.title,
+                        ELE_CODE: item.MENU_CODE,
+                        REACT_ELE: menulist.filter(
+                          (ele: MENU_LIST_DATA, index: number) =>
+                            ele.MENU_CODE === item.MENU_CODE
+                        )[0].MENU_ITEM,
+                      })
+                    );
+                    dispatch(settabIndex(tabs.length));
+                  } 
+
+                 
                 }
               }
               else

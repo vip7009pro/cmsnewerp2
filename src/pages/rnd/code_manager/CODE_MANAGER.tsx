@@ -707,13 +707,13 @@ const CODE_MANAGER = () => {
               </div>
             </div>
           </div>
-          <div className='tracuuFcstTable'>       
+          <div className='tracuuFcstTable'>
             <DataGrid
               components={{
                 Toolbar: CustomToolbarPOTable,
                 LoadingOverlay: LinearProgress,
               }}
-              sx={{ fontSize: 12 }}
+              sx={{ fontSize: '0.7rem' }}
               loading={isLoading}
               rowHeight={30}
               rows = {rows}
