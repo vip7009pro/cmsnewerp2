@@ -245,6 +245,9 @@ export const glbSlice = createSlice({
         toggleSidebar: (state,action: PayloadAction<any>)=> {         
           state.sidebarmenu = !state.sidebarmenu;
         },
+        hideSidebar: (state,action: PayloadAction<any>)=> {         
+          state.sidebarmenu = false;
+        },
         addChithiArray: (state, action: PayloadAction<QLSXPLANDATA>)=> {
 
         let temp_plan_id_array: string[] = state.multiple_chithi_array.map((element: QLSXPLANDATA, index: number)=> {
@@ -297,19 +300,7 @@ export const glbSlice = createSlice({
           Swal.fire('Thông báo','Đã đổi server sang : ' + action.payload);
         },
         addTab:  (state,action: PayloadAction<ELE_ARRAY>)=> {     
-         /*  let ele_code_array: string[] = state.tabs.map((ele:ELE_ARRAY, index: number)=> {
-            return ele.ELE_CODE;
-          })     
-          let tab_index: number = ele_code_array.indexOf(action.payload.ELE_CODE);
-          console.log(tab_index);
-          if(tab_index !==-1)
-          {
-                   
-          }
-          else
-          {
-            
-          } */
+        
           state.tabs=[...state.tabs, action.payload];
             localStorage.setItem('tabs',JSON.stringify(state.tabs.map((ele:ELE_ARRAY, index:number)=> {
               return {              
@@ -369,6 +360,7 @@ export const glbSlice = createSlice({
 
           }
          
+         
         },
         settabIndex: (state, action: PayloadAction<number>)=> {
           state.tabIndex = action.payload;
@@ -378,5 +370,5 @@ export const glbSlice = createSlice({
         }
     }
 });
-export const {changeDiemDanhState, changeUserData, update_socket,toggleSidebar, addChithiArray, resetChithiArray, changeServer, listen_socket,addTab,closeTab,settabIndex, setTabModeSwap,resetTab } = glbSlice.actions;
+export const {changeDiemDanhState, changeUserData, update_socket,toggleSidebar, hideSidebar, addChithiArray, resetChithiArray, changeServer, listen_socket,addTab,closeTab,settabIndex, setTabModeSwap,resetTab } = glbSlice.actions;
 export default glbSlice.reducer;

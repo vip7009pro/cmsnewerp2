@@ -22,6 +22,7 @@ import {
 import moment from "moment";
 import React, { useContext, useEffect, useState } from "react";
 import {
+  AiFillCloseCircle,
   AiFillFileExcel,
 } from "react-icons/ai";
 import Swal from "sweetalert2";
@@ -30,6 +31,9 @@ import "./TINHHINHCUONLIEU.scss";
 import { UserContext } from "../../../api/Context";
 import { generalQuery } from "../../../api/Api";
 import { SaveExcel } from "../../../api/GlobalFunction";
+import { MdOutlinePivotTableChart } from "react-icons/md";
+import PivotTable from "../../../components/PivotChart/PivotChart";
+import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
 
 interface MATERIAL_STATUS {
   INS_DATE: string;
@@ -86,6 +90,7 @@ interface LOSS_TABLE_DATA {
 }
 
 const TINHHINHCUONLIEU = () => {
+  const [showhidePivotTable, setShowHidePivotTable] = useState(false);
   const [losstableinfo, setLossTableInfo] = useState<LOSS_TABLE_DATA>({
     XUATKHO_MET: 0,
     INSPECTION_INPUT: 0,
@@ -94,8 +99,6 @@ const TINHHINHCUONLIEU = () => {
     TOTAL_LOSS_KT: 0,
     TOTAL_LOSS: 0,
   });
-
-
   const [userData, setUserData] = useContext(UserContext);
   const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
   const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));
@@ -310,6 +313,15 @@ const TINHHINHCUONLIEU = () => {
                 <AiFillFileExcel color='green' size={25} />
                 SAVE
               </IconButton>
+              <IconButton
+          className='buttonIcon'
+          onClick={() => {
+            setShowHidePivotTable(!showhidePivotTable);
+          }}
+        >
+          <MdOutlinePivotTableChart color='#ff33bb' size={25} />
+          Pivot
+        </IconButton>
             </Item>
 
             <Item name='searchPanel' />
@@ -1052,6 +1064,641 @@ const TINHHINHCUONLIEU = () => {
     [datasxtable]
   );
 
+  const dataSource = new PivotGridDataSource({
+    fields: [
+      {
+        caption: "INS_DATE",
+        width: 80,
+        dataField: "INS_DATE",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "date",
+        summaryType: "count",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "M_LOT_NO",
+        width: 80,
+        dataField: "M_LOT_NO",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "string",
+        summaryType: "count",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "M_CODE",
+        width: 80,
+        dataField: "M_CODE",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "string",
+        summaryType: "count",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "M_NAME",
+        width: 80,
+        dataField: "M_NAME",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "string",
+        summaryType: "count",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "WIDTH_CD",
+        width: 80,
+        dataField: "WIDTH_CD",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "string",
+        summaryType: "count",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "XUAT_KHO",
+        width: 80,
+        dataField: "XUAT_KHO",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "string",
+        summaryType: "count",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "VAO_FR",
+        width: 80,
+        dataField: "VAO_FR",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "string",
+        summaryType: "count",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "VAO_SR",
+        width: 80,
+        dataField: "VAO_SR",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "string",
+        summaryType: "count",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "VAO_DC",
+        width: 80,
+        dataField: "VAO_DC",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "string",
+        summaryType: "count",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "VAO_ED",
+        width: 80,
+        dataField: "VAO_ED",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "string",
+        summaryType: "count",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "CONFIRM_GIAONHAN",
+        width: 80,
+        dataField: "CONFIRM_GIAONHAN",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "string",
+        summaryType: "count",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "VAO_KIEM",
+        width: 80,
+        dataField: "VAO_KIEM",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "string",
+        summaryType: "count",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "NHATKY_KT",
+        width: 80,
+        dataField: "NHATKY_KT",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "string",
+        summaryType: "count",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "RA_KIEM",
+        width: 80,
+        dataField: "RA_KIEM",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "string",
+        summaryType: "count",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "ROLL_QTY",
+        width: 80,
+        dataField: "ROLL_QTY",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "number",
+        summaryType: "sum",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "OUT_CFM_QTY",
+        width: 80,
+        dataField: "OUT_CFM_QTY",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "number",
+        summaryType: "sum",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "TOTAL_OUT_QTY",
+        width: 80,
+        dataField: "TOTAL_OUT_QTY",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "number",
+        summaryType: "sum",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "FR_RESULT",
+        width: 80,
+        dataField: "FR_RESULT",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "number",
+        summaryType: "sum",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "SR_RESULT",
+        width: 80,
+        dataField: "SR_RESULT",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "number",
+        summaryType: "sum",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "DC_RESULT",
+        width: 80,
+        dataField: "DC_RESULT",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "number",
+        summaryType: "sum",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "ED_RESULT",
+        width: 80,
+        dataField: "ED_RESULT",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "number",
+        summaryType: "sum",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "INSPECT_TOTAL_QTY",
+        width: 80,
+        dataField: "INSPECT_TOTAL_QTY",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "number",
+        summaryType: "sum",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "INSPECT_OK_QTY",
+        width: 80,
+        dataField: "INSPECT_OK_QTY",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "number",
+        summaryType: "sum",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "INS_OUT",
+        width: 80,
+        dataField: "INS_OUT",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "number",
+        summaryType: "sum",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "PD",
+        width: 80,
+        dataField: "PD",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "number",
+        summaryType: "sum",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "CAVITY",
+        width: 80,
+        dataField: "CAVITY",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "number",
+        summaryType: "sum",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "TOTAL_OUT_EA",
+        width: 80,
+        dataField: "TOTAL_OUT_EA",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "number",
+        summaryType: "sum",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "FR_EA",
+        width: 80,
+        dataField: "FR_EA",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "number",
+        summaryType: "sum",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "SR_EA",
+        width: 80,
+        dataField: "SR_EA",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "number",
+        summaryType: "sum",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "DC_EA",
+        width: 80,
+        dataField: "DC_EA",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "number",
+        summaryType: "sum",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "ED_EA",
+        width: 80,
+        dataField: "ED_EA",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "number",
+        summaryType: "sum",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "INSPECT_TOTAL_EA",
+        width: 80,
+        dataField: "INSPECT_TOTAL_EA",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "number",
+        summaryType: "sum",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "INSPECT_OK_EA",
+        width: 80,
+        dataField: "INSPECT_OK_EA",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "number",
+        summaryType: "sum",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "INS_OUTPUT_EA",
+        width: 80,
+        dataField: "INS_OUTPUT_EA",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "number",
+        summaryType: "sum",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "ROLL_LOSS_KT",
+        width: 80,
+        dataField: "ROLL_LOSS_KT",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "number",
+        summaryType: "sum",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "ROLL_LOSS",
+        width: 80,
+        dataField: "ROLL_LOSS",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "number",
+        summaryType: "sum",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "PROD_REQUEST_NO",
+        width: 80,
+        dataField: "PROD_REQUEST_NO",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "string",
+        summaryType: "count",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "PLAN_ID",
+        width: 80,
+        dataField: "PLAN_ID",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "string",
+        summaryType: "count",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "PLAN_EQ",
+        width: 80,
+        dataField: "PLAN_EQ",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "string",
+        summaryType: "count",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "G_CODE",
+        width: 80,
+        dataField: "G_CODE",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "string",
+        summaryType: "count",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "G_NAME",
+        width: 80,
+        dataField: "G_NAME",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "string",
+        summaryType: "count",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "FACTORY",
+        width: 80,
+        dataField: "FACTORY",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "string",
+        summaryType: "count",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+    ],
+    store: datasxtable,
+  });
   useEffect(() => {
     //setColumnDefinition(column_inspect_output);
   }, []);
@@ -1196,6 +1843,20 @@ const TINHHINHCUONLIEU = () => {
           <span style={{fontSize:10}}>Số dòng đã chọn: {selectedRows} / {datasxtable.length}</span>
           {materialDataTable}
         </div>
+        {showhidePivotTable && (
+        <div className='pivottable1'>
+          <IconButton
+            className='buttonIcon'
+            onClick={() => {
+              setShowHidePivotTable(false);
+            }}
+          >
+            <AiFillCloseCircle color='blue' size={25} />
+            Close
+          </IconButton>
+          <PivotTable datasource={dataSource} tableID='invoicetablepivot' />
+        </div>
+      )}
       </div>
     </div>
   );

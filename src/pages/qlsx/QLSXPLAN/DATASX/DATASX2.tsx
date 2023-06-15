@@ -20,6 +20,7 @@ import DataGrid, {
 import moment from "moment";
 import React, { useContext, useEffect, useState, useTransition } from "react";
 import {
+  AiFillCloseCircle,
   AiFillFileExcel,
   AiOutlineCloudUpload,
   AiOutlinePrinter,
@@ -29,6 +30,9 @@ import { generalQuery } from "../../../../api/Api";
 import { UserContext } from "../../../../api/Context";
 import { SaveExcel } from "../../../../api/GlobalFunction";
 import "./DATASX.scss";
+import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
+import { MdOutlinePivotTableChart } from "react-icons/md";
+import PivotTable from "../../../../components/PivotChart/PivotChart";
 interface SX_DATA {
   G_CODE: string;
   PHAN_LOAI: string;
@@ -90,7 +94,7 @@ interface SX_DATA {
   REMARK: string;
 }
 interface YCSX_SX_DATA {
-  YCSX_STATUS: string,
+  YCSX_PENDING: string,
   PHAN_LOAI: string;
   PROD_REQUEST_NO: string;
   G_NAME: string;
@@ -112,6 +116,12 @@ interface YCSX_SX_DATA {
   CD1: number;
   CD2: number;
   INS_INPUT: number;
+  INSPECT_TOTAL_QTY: number;
+  INSPECT_OK_QTY: number;
+  INSPECT_LOSS_QTY: number;
+  INSPECT_TOTAL_NG: number;
+  INSPECT_MATERIAL_NG: number;
+  INSPECT_PROCESS_NG: number;
   INS_OUTPUT: number;
   LOSS_SX1: number;
   LOSS_SX2: number;
@@ -151,6 +161,7 @@ interface LICHSUINPUTLIEU_DATA {
   PROD_REQUEST_NO: string,
 }
 const DATASX2 = () => {
+  const [showhidePivotTable, setShowHidePivotTable] = useState(false);
   const [inputlieudatatable,setInputLieuDataTable]= useState<LICHSUINPUTLIEU_DATA[]>([]);
   const [showloss,setShowLoss]  = useState(false);
   const [losstableinfo,setLossTableInfo] = useState<LOSS_TABLE_DATA>({
@@ -187,6 +198,1325 @@ const DATASX2 = () => {
   const [selectedRowsDataYCSX, setSelectedRowsDataYCSX] = useState<
   Array<YCSX_SX_DATA>
 >([]);
+
+const fields_datasx_chithi: any = [
+  {
+    caption: "PHAN_LOAI",
+    width: 80,
+    dataField: "PHAN_LOAI",
+    allowSorting: true,
+    allowFiltering: true,
+    dataType: "string",
+    summaryType: "count",
+    format: "fixedPoint",
+    headerFilter: {
+      allowSearch: true,
+      height: 500,
+      width: 300,
+    },
+  },
+  {
+    caption: "G_CODE",
+    width: 80,
+    dataField: "G_CODE",
+    allowSorting: true,
+    allowFiltering: true,
+    dataType: "string",
+    summaryType: "count",
+    format: "fixedPoint",
+    headerFilter: {
+      allowSearch: true,
+      height: 500,
+      width: 300,
+    },
+  },
+  {
+    caption: "PLAN_ID",
+    width: 80,
+    dataField: "PLAN_ID",
+    allowSorting: true,
+    allowFiltering: true,
+    dataType: "string",
+    summaryType: "count",
+    format: "fixedPoint",
+    headerFilter: {
+      allowSearch: true,
+      height: 500,
+      width: 300,
+    },
+  },
+  {
+    caption: "PLAN_DATE",
+    width: 80,
+    dataField: "PLAN_DATE",
+    allowSorting: true,
+    allowFiltering: true,
+    dataType: "date",
+    summaryType: "count",
+    format: "fixedPoint",
+    headerFilter: {
+      allowSearch: true,
+      height: 500,
+      width: 300,
+    },
+  },
+  {
+    caption: "PROD_REQUEST_NO",
+    width: 80,
+    dataField: "PROD_REQUEST_NO",
+    allowSorting: true,
+    allowFiltering: true,
+    dataType: "string",
+    summaryType: "count",
+    format: "fixedPoint",
+    headerFilter: {
+      allowSearch: true,
+      height: 500,
+      width: 300,
+    },
+  },
+  {
+    caption: "G_NAME",
+    width: 80,
+    dataField: "G_NAME",
+    allowSorting: true,
+    allowFiltering: true,
+    dataType: "string",
+    summaryType: "count",
+    format: "fixedPoint",
+    headerFilter: {
+      allowSearch: true,
+      height: 500,
+      width: 300,
+    },
+  },
+  {
+    caption: "G_NAME_KD",
+    width: 80,
+    dataField: "G_NAME_KD",
+    allowSorting: true,
+    allowFiltering: true,
+    dataType: "string",
+    summaryType: "count",
+    format: "fixedPoint",
+    headerFilter: {
+      allowSearch: true,
+      height: 500,
+      width: 300,
+    },
+  },
+  {
+    caption: "PLAN_QTY",
+    width: 80,
+    dataField: "PLAN_QTY",
+    allowSorting: true,
+    allowFiltering: true,
+    dataType: "string",
+    summaryType: "count",
+    format: "fixedPoint",
+    headerFilter: {
+      allowSearch: true,
+      height: 500,
+      width: 300,
+    },
+  },
+  {
+    caption: "EQ1",
+    width: 80,
+    dataField: "EQ1",
+    allowSorting: true,
+    allowFiltering: true,
+    dataType: "string",
+    summaryType: "count",
+    format: "fixedPoint",
+    headerFilter: {
+      allowSearch: true,
+      height: 500,
+      width: 300,
+    },
+  },
+  {
+    caption: "EQ2",
+    width: 80,
+    dataField: "EQ2",
+    allowSorting: true,
+    allowFiltering: true,
+    dataType: "string",
+    summaryType: "count",
+    format: "fixedPoint",
+    headerFilter: {
+      allowSearch: true,
+      height: 500,
+      width: 300,
+    },
+  },
+  {
+    caption: "PLAN_EQ",
+    width: 80,
+    dataField: "PLAN_EQ",
+    allowSorting: true,
+    allowFiltering: true,
+    dataType: "string",
+    summaryType: "count",
+    format: "fixedPoint",
+    headerFilter: {
+      allowSearch: true,
+      height: 500,
+      width: 300,
+    },
+  },
+  {
+    caption: "PLAN_FACTORY",
+    width: 80,
+    dataField: "PLAN_FACTORY",
+    allowSorting: true,
+    allowFiltering: true,
+    dataType: "string",
+    summaryType: "count",
+    format: "fixedPoint",
+    headerFilter: {
+      allowSearch: true,
+      height: 500,
+      width: 300,
+    },
+  },
+  {
+    caption: "PROCESS_NUMBER",
+    width: 80,
+    dataField: "PROCESS_NUMBER",
+    allowSorting: true,
+    allowFiltering: true,
+    dataType: "number",
+    summaryType: "sum",
+    format: "fixedPoint",
+    headerFilter: {
+      allowSearch: true,
+      height: 500,
+      width: 300,
+    },
+  },
+  {
+    caption: "STEP",
+    width: 80,
+    dataField: "STEP",
+    allowSorting: true,
+    allowFiltering: true,
+    dataType: "string",
+    summaryType: "count",
+    format: "fixedPoint",
+    headerFilter: {
+      allowSearch: true,
+      height: 500,
+      width: 300,
+    },
+  },
+  {
+    caption: "M_NAME",
+    width: 80,
+    dataField: "M_NAME",
+    allowSorting: true,
+    allowFiltering: true,
+    dataType: "string",
+    summaryType: "count",
+    format: "fixedPoint",
+    headerFilter: {
+      allowSearch: true,
+      height: 500,
+      width: 300,
+    },
+  },
+  {
+    caption: "WAREHOUSE_OUTPUT_QTY",
+    width: 80,
+    dataField: "WAREHOUSE_OUTPUT_QTY",
+    allowSorting: true,
+    allowFiltering: true,
+    dataType: "number",
+    summaryType: "sum",
+    format: "fixedPoint",
+    headerFilter: {
+      allowSearch: true,
+      height: 500,
+      width: 300,
+    },
+  },
+  {
+    caption: "TOTAL_OUT_QTY",
+    width: 80,
+    dataField: "TOTAL_OUT_QTY",
+    allowSorting: true,
+    allowFiltering: true,
+    dataType: "number",
+    summaryType: "sum",
+    format: "fixedPoint",
+    headerFilter: {
+      allowSearch: true,
+      height: 500,
+      width: 300,
+    },
+  },
+  {
+    caption: "USED_QTY",
+    width: 80,
+    dataField: "USED_QTY",
+    allowSorting: true,
+    allowFiltering: true,
+    dataType: "number",
+    summaryType: "sum",
+    format: "fixedPoint",
+    headerFilter: {
+      allowSearch: true,
+      height: 500,
+      width: 300,
+    },
+  },
+  {
+    caption: "REMAIN_QTY",
+    width: 80,
+    dataField: "REMAIN_QTY",
+    allowSorting: true,
+    allowFiltering: true,
+    dataType: "number",
+    summaryType: "sum",
+    format: "fixedPoint",
+    headerFilter: {
+      allowSearch: true,
+      height: 500,
+      width: 300,
+    },
+  },
+  {
+    caption: "PD",
+    width: 80,
+    dataField: "PD",
+    allowSorting: true,
+    allowFiltering: true,
+    dataType: "number",
+    summaryType: "sum",
+    format: "fixedPoint",
+    headerFilter: {
+      allowSearch: true,
+      height: 500,
+      width: 300,
+    },
+  },
+  {
+    caption: "CAVITY",
+    width: 80,
+    dataField: "CAVITY",
+    allowSorting: true,
+    allowFiltering: true,
+    dataType: "number",
+    summaryType: "sum",
+    format: "fixedPoint",
+    headerFilter: {
+      allowSearch: true,
+      height: 500,
+      width: 300,
+    },
+  },
+  {
+    caption: "SETTING_MET",
+    width: 80,
+    dataField: "SETTING_MET",
+    allowSorting: true,
+    allowFiltering: true,
+    dataType: "number",
+    summaryType: "sum",
+    format: "fixedPoint",
+    headerFilter: {
+      allowSearch: true,
+      height: 500,
+      width: 300,
+    },
+  },
+  {
+    caption: "WAREHOUSE_ESTIMATED_QTY",
+    width: 80,
+    dataField: "WAREHOUSE_ESTIMATED_QTY",
+    allowSorting: true,
+    allowFiltering: true,
+    dataType: "number",
+    summaryType: "sum",
+    format: "fixedPoint",
+    headerFilter: {
+      allowSearch: true,
+      height: 500,
+      width: 300,
+    },
+  },
+  {
+    caption: "ESTIMATED_QTY",
+    width: 80,
+    dataField: "ESTIMATED_QTY",
+    allowSorting: true,
+    allowFiltering: true,
+    dataType: "number",
+    summaryType: "sum",
+    format: "fixedPoint",
+    headerFilter: {
+      allowSearch: true,
+      height: 500,
+      width: 300,
+    },
+  },
+  {
+    caption: "KETQUASX",
+    width: 80,
+    dataField: "KETQUASX",
+    allowSorting: true,
+    allowFiltering: true,
+    dataType: "number",
+    summaryType: "sum",
+    format: "fixedPoint",
+    headerFilter: {
+      allowSearch: true,
+      height: 500,
+      width: 300,
+    },
+  },
+  {
+    caption: "INS_INPUT",
+    width: 80,
+    dataField: "INS_INPUT",
+    allowSorting: true,
+    allowFiltering: true,
+    dataType: "number",
+    summaryType: "sum",
+    format: "fixedPoint",
+    headerFilter: {
+      allowSearch: true,
+      height: 500,
+      width: 300,
+    },
+  },
+  {
+    caption: "INS_OUTPUT",
+    width: 80,
+    dataField: "INS_OUTPUT",
+    allowSorting: true,
+    allowFiltering: true,
+    dataType: "number",
+    summaryType: "sum",
+    format: "fixedPoint",
+    headerFilter: {
+      allowSearch: true,
+      height: 500,
+      width: 300,
+    },
+  },
+  {
+    caption: "SETTING_START_TIME",
+    width: 80,
+    dataField: "SETTING_START_TIME",
+    allowSorting: true,
+    allowFiltering: true,
+    dataType: "date",
+    summaryType: "count",
+    format: "fixedPoint",
+    headerFilter: {
+      allowSearch: true,
+      height: 500,
+      width: 300,
+    },
+  },
+  {
+    caption: "MASS_START_TIME",
+    width: 80,
+    dataField: "MASS_START_TIME",
+    allowSorting: true,
+    allowFiltering: true,
+    dataType: "date",
+    summaryType: "count",
+    format: "fixedPoint",
+    headerFilter: {
+      allowSearch: true,
+      height: 500,
+      width: 300,
+    },
+  },
+  {
+    caption: "MASS_END_TIME",
+    width: 80,
+    dataField: "MASS_END_TIME",
+    allowSorting: true,
+    allowFiltering: true,
+    dataType: "date",
+    summaryType: "count",
+    format: "fixedPoint",
+    headerFilter: {
+      allowSearch: true,
+      height: 500,
+      width: 300,
+    },
+  },
+  {
+    caption: "RPM",
+    width: 80,
+    dataField: "RPM",
+    allowSorting: true,
+    allowFiltering: true,
+    dataType: "string",
+    summaryType: "count",
+    format: "fixedPoint",
+    headerFilter: {
+      allowSearch: true,
+      height: 500,
+      width: 300,
+    },
+  },
+  {
+    caption: "EQ_NAME_TT",
+    width: 80,
+    dataField: "EQ_NAME_TT",
+    allowSorting: true,
+    allowFiltering: true,
+    dataType: "string",
+    summaryType: "count",
+    format: "fixedPoint",
+    headerFilter: {
+      allowSearch: true,
+      height: 500,
+      width: 300,
+    },
+  },
+  {
+    caption: "SX_DATE",
+    width: 80,
+    dataField: "SX_DATE",
+    allowSorting: true,
+    allowFiltering: true,
+    dataType: "string",
+    summaryType: "count",
+    format: "fixedPoint",
+    headerFilter: {
+      allowSearch: true,
+      height: 500,
+      width: 300,
+    },
+  },
+  {
+    caption: "WORK_SHIFT",
+    width: 80,
+    dataField: "WORK_SHIFT",
+    allowSorting: true,
+    allowFiltering: true,
+    dataType: "string",
+    summaryType: "count",
+    format: "fixedPoint",
+    headerFilter: {
+      allowSearch: true,
+      height: 500,
+      width: 300,
+    },
+  },
+  {
+    caption: "INS_EMPL",
+    width: 80,
+    dataField: "INS_EMPL",
+    allowSorting: true,
+    allowFiltering: true,
+    dataType: "string",
+    summaryType: "count",
+    format: "fixedPoint",
+    headerFilter: {
+      allowSearch: true,
+      height: 500,
+      width: 300,
+    },
+  },
+  {
+    caption: "FACTORY",
+    width: 80,
+    dataField: "FACTORY",
+    allowSorting: true,
+    allowFiltering: true,
+    dataType: "string",
+    summaryType: "count",
+    format: "fixedPoint",
+    headerFilter: {
+      allowSearch: true,
+      height: 500,
+      width: 300,
+    },
+  },
+  {
+    caption: "BOC_KIEM",
+    width: 80,
+    dataField: "BOC_KIEM",
+    allowSorting: true,
+    allowFiltering: true,
+    dataType: "number",
+    summaryType: "sum",
+    format: "fixedPoint",
+    headerFilter: {
+      allowSearch: true,
+      height: 500,
+      width: 300,
+    },
+  },
+  {
+    caption: "LAY_DO",
+    width: 80,
+    dataField: "LAY_DO",
+    allowSorting: true,
+    allowFiltering: true,
+    dataType: "number",
+    summaryType: "sum",
+    format: "fixedPoint",
+    headerFilter: {
+      allowSearch: true,
+      height: 500,
+      width: 300,
+    },
+  },
+  {
+    caption: "MAY_HONG",
+    width: 80,
+    dataField: "MAY_HONG",
+    allowSorting: true,
+    allowFiltering: true,
+    dataType: "number",
+    summaryType: "sum",
+    format: "fixedPoint",
+    headerFilter: {
+      allowSearch: true,
+      height: 500,
+      width: 300,
+    },
+  },
+  {
+    caption: "DAO_NG",
+    width: 80,
+    dataField: "DAO_NG",
+    allowSorting: true,
+    allowFiltering: true,
+    dataType: "number",
+    summaryType: "sum",
+    format: "fixedPoint",
+    headerFilter: {
+      allowSearch: true,
+      height: 500,
+      width: 300,
+    },
+  },
+  {
+    caption: "CHO_LIEU",
+    width: 80,
+    dataField: "CHO_LIEU",
+    allowSorting: true,
+    allowFiltering: true,
+    dataType: "number",
+    summaryType: "sum",
+    format: "fixedPoint",
+    headerFilter: {
+      allowSearch: true,
+      height: 500,
+      width: 300,
+    },
+  },
+  {
+    caption: "CHO_BTP",
+    width: 80,
+    dataField: "CHO_BTP",
+    allowSorting: true,
+    allowFiltering: true,
+    dataType: "number",
+    summaryType: "sum",
+    format: "fixedPoint",
+    headerFilter: {
+      allowSearch: true,
+      height: 500,
+      width: 300,
+    },
+  },
+  {
+    caption: "HET_LIEU",
+    width: 80,
+    dataField: "HET_LIEU",
+    allowSorting: true,
+    allowFiltering: true,
+    dataType: "number",
+    summaryType: "sum",
+    format: "fixedPoint",
+    headerFilter: {
+      allowSearch: true,
+      height: 500,
+      width: 300,
+    },
+  },
+  {
+    caption: "LIEU_NG",
+    width: 80,
+    dataField: "LIEU_NG",
+    allowSorting: true,
+    allowFiltering: true,
+    dataType: "number",
+    summaryType: "sum",
+    format: "fixedPoint",
+    headerFilter: {
+      allowSearch: true,
+      height: 500,
+      width: 300,
+    },
+  },
+  {
+    caption: "CAN_HANG",
+    width: 80,
+    dataField: "CAN_HANG",
+    allowSorting: true,
+    allowFiltering: true,
+    dataType: "number",
+    summaryType: "sum",
+    format: "fixedPoint",
+    headerFilter: {
+      allowSearch: true,
+      height: 500,
+      width: 300,
+    },
+  },
+  {
+    caption: "HOP_FL",
+    width: 80,
+    dataField: "HOP_FL",
+    allowSorting: true,
+    allowFiltering: true,
+    dataType: "number",
+    summaryType: "sum",
+    format: "fixedPoint",
+    headerFilter: {
+      allowSearch: true,
+      height: 500,
+      width: 300,
+    },
+  },
+  {
+    caption: "CHO_QC",
+    width: 80,
+    dataField: "CHO_QC",
+    allowSorting: true,
+    allowFiltering: true,
+    dataType: "number",
+    summaryType: "sum",
+    format: "fixedPoint",
+    headerFilter: {
+      allowSearch: true,
+      height: 500,
+      width: 300,
+    },
+  },
+  {
+    caption: "CHOT_BAOCAO",
+    width: 80,
+    dataField: "CHOT_BAOCAO",
+    allowSorting: true,
+    allowFiltering: true,
+    dataType: "number",
+    summaryType: "sum",
+    format: "fixedPoint",
+    headerFilter: {
+      allowSearch: true,
+      height: 500,
+      width: 300,
+    },
+  },
+  {
+    caption: "CHUYEN_CODE",
+    width: 80,
+    dataField: "CHUYEN_CODE",
+    allowSorting: true,
+    allowFiltering: true,
+    dataType: "number",
+    summaryType: "sum",
+    format: "fixedPoint",
+    headerFilter: {
+      allowSearch: true,
+      height: 500,
+      width: 300,
+    },
+  },
+  {
+    caption: "KHAC",
+    width: 80,
+    dataField: "KHAC",
+    allowSorting: true,
+    allowFiltering: true,
+    dataType: "number",
+    summaryType: "sum",
+    format: "fixedPoint",
+    headerFilter: {
+      allowSearch: true,
+      height: 500,
+      width: 300,
+    },
+  },
+  {
+    caption: "REMARK",
+    width: 80,
+    dataField: "REMARK",
+    allowSorting: true,
+    allowFiltering: true,
+    dataType: "string",
+    summaryType: "count",
+    format: "fixedPoint",
+    headerFilter: {
+      allowSearch: true,
+      height: 500,
+      width: 300,
+    },
+  },
+];
+const fields_datasx_ycsx: any = [
+  {
+    caption: "YCSX_PENDING",
+    width: 80,
+    dataField: "YCSX_PENDING",
+    allowSorting: true,
+    allowFiltering: true,
+    dataType: "string",
+    summaryType: "count",
+    format: "fixedPoint",
+    headerFilter: {
+      allowSearch: true,
+      height: 500,
+      width: 300,
+    },
+  },
+  {
+    caption: "G_CODE",
+    width: 80,
+    dataField: "G_CODE",
+    allowSorting: true,
+    allowFiltering: true,
+    dataType: "string",
+    summaryType: "count",
+    format: "fixedPoint",
+    headerFilter: {
+      allowSearch: true,
+      height: 500,
+      width: 300,
+    },
+  },
+  {
+    caption: "PHAN_LOAI",
+    width: 80,
+    dataField: "PHAN_LOAI",
+    allowSorting: true,
+    allowFiltering: true,
+    dataType: "string",
+    summaryType: "count",
+    format: "fixedPoint",
+    headerFilter: {
+      allowSearch: true,
+      height: 500,
+      width: 300,
+    },
+  },
+  {
+    caption: "PROD_REQUEST_NO",
+    width: 80,
+    dataField: "PROD_REQUEST_NO",
+    allowSorting: true,
+    allowFiltering: true,
+    dataType: "string",
+    summaryType: "count",
+    format: "fixedPoint",
+    headerFilter: {
+      allowSearch: true,
+      height: 500,
+      width: 300,
+    },
+  },
+  {
+    caption: "G_NAME",
+    width: 80,
+    dataField: "G_NAME",
+    allowSorting: true,
+    allowFiltering: true,
+    dataType: "string",
+    summaryType: "count",
+    format: "fixedPoint",
+    headerFilter: {
+      allowSearch: true,
+      height: 500,
+      width: 300,
+    },
+  },
+  {
+    caption: "G_NAME_KD",
+    width: 80,
+    dataField: "G_NAME_KD",
+    allowSorting: true,
+    allowFiltering: true,
+    dataType: "string",
+    summaryType: "count",
+    format: "fixedPoint",
+    headerFilter: {
+      allowSearch: true,
+      height: 500,
+      width: 300,
+    },
+  },
+  {
+    caption: "FACTORY",
+    width: 80,
+    dataField: "FACTORY",
+    allowSorting: true,
+    allowFiltering: true,
+    dataType: "string",
+    summaryType: "count",
+    format: "fixedPoint",
+    headerFilter: {
+      allowSearch: true,
+      height: 500,
+      width: 300,
+    },
+  },
+  {
+    caption: "EQ1",
+    width: 80,
+    dataField: "EQ1",
+    allowSorting: true,
+    allowFiltering: true,
+    dataType: "string",
+    summaryType: "count",
+    format: "fixedPoint",
+    headerFilter: {
+      allowSearch: true,
+      height: 500,
+      width: 300,
+    },
+  },
+  {
+    caption: "EQ2",
+    width: 80,
+    dataField: "EQ2",
+    allowSorting: true,
+    allowFiltering: true,
+    dataType: "string",
+    summaryType: "count",
+    format: "fixedPoint",
+    headerFilter: {
+      allowSearch: true,
+      height: 500,
+      width: 300,
+    },
+  },
+  {
+    caption: "PROD_REQUEST_DATE",
+    width: 80,
+    dataField: "PROD_REQUEST_DATE",
+    allowSorting: true,
+    allowFiltering: true,
+    dataType: "date",
+    summaryType: "count",
+    format: "fixedPoint",
+    headerFilter: {
+      allowSearch: true,
+      height: 500,
+      width: 300,
+    },
+  },
+  {
+    caption: "PROD_REQUEST_QTY",
+    width: 80,
+    dataField: "PROD_REQUEST_QTY",
+    allowSorting: true,
+    allowFiltering: true,
+    dataType: "number",
+    summaryType: "sum",
+    format: "fixedPoint",
+    headerFilter: {
+      allowSearch: true,
+      height: 500,
+      width: 300,
+    },
+  },
+  {
+    caption: "M_NAME",
+    width: 80,
+    dataField: "M_NAME",
+    allowSorting: true,
+    allowFiltering: true,
+    dataType: "string",
+    summaryType: "count",
+    format: "fixedPoint",
+    headerFilter: {
+      allowSearch: true,
+      height: 500,
+      width: 300,
+    },
+  },
+  {
+    caption: "M_OUTPUT",
+    width: 80,
+    dataField: "M_OUTPUT",
+    allowSorting: true,
+    allowFiltering: true,
+    dataType: "number",
+    summaryType: "sum",
+    format: "fixedPoint",
+    headerFilter: {
+      allowSearch: true,
+      height: 500,
+      width: 300,
+    },
+  },
+  {
+    caption: "SCANNED_QTY",
+    width: 80,
+    dataField: "SCANNED_QTY",
+    allowSorting: true,
+    allowFiltering: true,
+    dataType: "number",
+    summaryType: "sum",
+    format: "fixedPoint",
+    headerFilter: {
+      allowSearch: true,
+      height: 500,
+      width: 300,
+    },
+  },
+  {
+    caption: "REMAIN_QTY",
+    width: 80,
+    dataField: "REMAIN_QTY",
+    allowSorting: true,
+    allowFiltering: true,
+    dataType: "number",
+    summaryType: "sum",
+    format: "fixedPoint",
+    headerFilter: {
+      allowSearch: true,
+      height: 500,
+      width: 300,
+    },
+  },
+  {
+    caption: "USED_QTY",
+    width: 80,
+    dataField: "USED_QTY",
+    allowSorting: true,
+    allowFiltering: true,
+    dataType: "number",
+    summaryType: "sum",
+    format: "fixedPoint",
+    headerFilter: {
+      allowSearch: true,
+      height: 500,
+      width: 300,
+    },
+  },
+  {
+    caption: "PD",
+    width: 80,
+    dataField: "PD",
+    allowSorting: true,
+    allowFiltering: true,
+    dataType: "number",
+    summaryType: "sum",
+    format: "fixedPoint",
+    headerFilter: {
+      allowSearch: true,
+      height: 500,
+      width: 300,
+    },
+  },
+  {
+    caption: "CAVITY",
+    width: 80,
+    dataField: "CAVITY",
+    allowSorting: true,
+    allowFiltering: true,
+    dataType: "number",
+    summaryType: "sum",
+    format: "fixedPoint",
+    headerFilter: {
+      allowSearch: true,
+      height: 500,
+      width: 300,
+    },
+  },
+  {
+    caption: "WAREHOUSE_ESTIMATED_QTY",
+    width: 80,
+    dataField: "WAREHOUSE_ESTIMATED_QTY",
+    allowSorting: true,
+    allowFiltering: true,
+    dataType: "number",
+    summaryType: "sum",
+    format: "fixedPoint",
+    headerFilter: {
+      allowSearch: true,
+      height: 500,
+      width: 300,
+    },
+  },
+  {
+    caption: "ESTIMATED_QTY",
+    width: 80,
+    dataField: "ESTIMATED_QTY",
+    allowSorting: true,
+    allowFiltering: true,
+    dataType: "number",
+    summaryType: "sum",
+    format: "fixedPoint",
+    headerFilter: {
+      allowSearch: true,
+      height: 500,
+      width: 300,
+    },
+  },
+  {
+    caption: "CD1",
+    width: 80,
+    dataField: "CD1",
+    allowSorting: true,
+    allowFiltering: true,
+    dataType: "number",
+    summaryType: "sum",
+    format: "fixedPoint",
+    headerFilter: {
+      allowSearch: true,
+      height: 500,
+      width: 300,
+    },
+  },
+  {
+    caption: "CD2",
+    width: 80,
+    dataField: "CD2",
+    allowSorting: true,
+    allowFiltering: true,
+    dataType: "number",
+    summaryType: "sum",
+    format: "fixedPoint",
+    headerFilter: {
+      allowSearch: true,
+      height: 500,
+      width: 300,
+    },
+  },
+  {
+    caption: "INS_INPUT",
+    width: 80,
+    dataField: "INS_INPUT",
+    allowSorting: true,
+    allowFiltering: true,
+    dataType: "number",
+    summaryType: "sum",
+    format: "fixedPoint",
+    headerFilter: {
+      allowSearch: true,
+      height: 500,
+      width: 300,
+    },
+  },
+  {
+    caption: "INSPECT_TOTAL_QTY",
+    width: 80,
+    dataField: "INSPECT_TOTAL_QTY",
+    allowSorting: true,
+    allowFiltering: true,
+    dataType: "number",
+    summaryType: "sum",
+    format: "fixedPoint",
+    headerFilter: {
+      allowSearch: true,
+      height: 500,
+      width: 300,
+    },
+  },
+  {
+    caption: "INSPECT_OK_QTY",
+    width: 80,
+    dataField: "INSPECT_OK_QTY",
+    allowSorting: true,
+    allowFiltering: true,
+    dataType: "number",
+    summaryType: "sum",
+    format: "fixedPoint",
+    headerFilter: {
+      allowSearch: true,
+      height: 500,
+      width: 300,
+    },
+  },
+  {
+    caption: "INSPECT_LOSS_QTY",
+    width: 80,
+    dataField: "INSPECT_LOSS_QTY",
+    allowSorting: true,
+    allowFiltering: true,
+    dataType: "number",
+    summaryType: "sum",
+    format: "fixedPoint",
+    headerFilter: {
+      allowSearch: true,
+      height: 500,
+      width: 300,
+    },
+  },
+  {
+    caption: "INSPECT_TOTAL_NG",
+    width: 80,
+    dataField: "INSPECT_TOTAL_NG",
+    allowSorting: true,
+    allowFiltering: true,
+    dataType: "number",
+    summaryType: "sum",
+    format: "fixedPoint",
+    headerFilter: {
+      allowSearch: true,
+      height: 500,
+      width: 300,
+    },
+  },
+  {
+    caption: "INSPECT_MATERIAL_NG",
+    width: 80,
+    dataField: "INSPECT_MATERIAL_NG",
+    allowSorting: true,
+    allowFiltering: true,
+    dataType: "number",
+    summaryType: "sum",
+    format: "fixedPoint",
+    headerFilter: {
+      allowSearch: true,
+      height: 500,
+      width: 300,
+    },
+  },
+  {
+    caption: "INSPECT_PROCESS_NG",
+    width: 80,
+    dataField: "INSPECT_PROCESS_NG",
+    allowSorting: true,
+    allowFiltering: true,
+    dataType: "number",
+    summaryType: "sum",
+    format: "fixedPoint",
+    headerFilter: {
+      allowSearch: true,
+      height: 500,
+      width: 300,
+    },
+  },
+  {
+    caption: "INS_OUTPUT",
+    width: 80,
+    dataField: "INS_OUTPUT",
+    allowSorting: true,
+    allowFiltering: true,
+    dataType: "number",
+    summaryType: "sum",
+    format: "fixedPoint",
+    headerFilter: {
+      allowSearch: true,
+      height: 500,
+      width: 300,
+    },
+  },
+  {
+    caption: "LOSS_SX1",
+    width: 80,
+    dataField: "LOSS_SX1",
+    allowSorting: true,
+    allowFiltering: true,
+    dataType: "number",
+    summaryType: "sum",
+    format: "fixedPoint",
+    headerFilter: {
+      allowSearch: true,
+      height: 500,
+      width: 300,
+    },
+  },
+  {
+    caption: "LOSS_SX2",
+    width: 80,
+    dataField: "LOSS_SX2",
+    allowSorting: true,
+    allowFiltering: true,
+    dataType: "number",
+    summaryType: "sum",
+    format: "fixedPoint",
+    headerFilter: {
+      allowSearch: true,
+      height: 500,
+      width: 300,
+    },
+  },
+  {
+    caption: "LOSS_SX3",
+    width: 80,
+    dataField: "LOSS_SX3",
+    allowSorting: true,
+    allowFiltering: true,
+    dataType: "number",
+    summaryType: "sum",
+    format: "fixedPoint",
+    headerFilter: {
+      allowSearch: true,
+      height: 500,
+      width: 300,
+    },
+  },
+  {
+    caption: "LOSS_SX4",
+    width: 80,
+    dataField: "LOSS_SX4",
+    allowSorting: true,
+    allowFiltering: true,
+    dataType: "number",
+    summaryType: "sum",
+    format: "fixedPoint",
+    headerFilter: {
+      allowSearch: true,
+      height: 500,
+      width: 300,
+    },
+  },
+  {
+    caption: "TOTAL_LOSS",
+    width: 80,
+    dataField: "TOTAL_LOSS",
+    allowSorting: true,
+    allowFiltering: true,
+    dataType: "number",
+    summaryType: "sum",
+    format: "fixedPoint",
+    headerFilter: {
+      allowSearch: true,
+      height: 500,
+      width: 300,
+    },
+  },
+  {
+    caption: "TOTAL_LOSS2",
+    width: 80,
+    dataField: "TOTAL_LOSS2",
+    allowSorting: true,
+    allowFiltering: true,
+    dataType: "number",
+    summaryType: "sum",
+    format: "fixedPoint",
+    headerFilter: {
+      allowSearch: true,
+      height: 500,
+      width: 300,
+    },
+  },
+];
+
+const [selectedDataSource, setSelectedDataSource] =
+useState<PivotGridDataSource>(
+  new PivotGridDataSource({
+    fields: fields_datasx_chithi,
+    store: datasxtable,
+  })
+);
+
   const datasx_chithi = React.useMemo(
     () => (
       <div className='datatb'>
@@ -210,7 +1540,10 @@ const DATASX2 = () => {
           }}
           onRowClick={(e) => {
             //console.log(e.data);
-            handle_loadlichsuinputlieu(e.data.PLAN_ID);
+            if(e.data.PLAN_ID !== undefined)
+            {
+              handle_loadlichsuinputlieu(e.data.PLAN_ID);
+            }
           }}
         >
           <Scrolling
@@ -241,6 +1574,15 @@ const DATASX2 = () => {
                 <AiFillFileExcel color='green' size={25} />
                 SAVE
               </IconButton>
+              <IconButton
+          className='buttonIcon'
+          onClick={() => {
+            setShowHidePivotTable(!showhidePivotTable);
+          }}
+        >
+          <MdOutlinePivotTableChart color='#ff33bb' size={25} />
+          Pivot
+        </IconButton>
             </Item>
             <Item name='searchPanel' />
             <Item name='exportButton' />
@@ -561,7 +1903,7 @@ const DATASX2 = () => {
     () => (
       <div className='datatb'>
         <DataGrid
-          style={{fontSize:'0.7rem'}}
+          style={{ fontSize: "0.7rem" }}
           autoNavigateToFocusedRow={true}
           allowColumnReordering={true}
           allowColumnResizing={true}
@@ -610,12 +1952,21 @@ const DATASX2 = () => {
                 <AiFillFileExcel color='green' size={25} />
                 SAVE
               </IconButton>
+              <IconButton
+                className='buttonIcon'
+                onClick={() => {
+                  setShowHidePivotTable(!showhidePivotTable);
+                }}
+              >
+                <MdOutlinePivotTableChart color='#ff33bb' size={25} />
+                Pivot
+              </IconButton>
             </Item>
             <Item name='searchPanel' />
             <Item name='exportButton' />
             <Item name='columnChooserButton' />
             <Item name='addRowButton' />
-            <Item name='saveButton' />            
+            <Item name='saveButton' />
             <Item name='revertButton' />
           </Toolbar>
           <FilterRow visible={true} />
@@ -629,18 +1980,57 @@ const DATASX2 = () => {
             showInfo={true}
             infoText='Page #{0}. Total: {1} ({2} items)'
             displayMode='compact'
-          /> 
-          <Column dataField='YCSX_STATUS' caption='YCSX_STATUS' minWidth={100}></Column>
+          />
+          <Column
+            dataField='YCSX_PENDING'
+            caption='YCSX_STATUS'
+            minWidth={100}
+            cellRender={(e: any) => {
+              if (e.data.YCSX_PENDING === "CLOSED") {
+                return (
+                  <span style={{ color: "green", fontWeight: "bold" }}>
+                    CLOSED
+                  </span>
+                );
+              } else {
+                return (
+                  <span style={{ color: "red", fontWeight: "bold" }}>
+                    PENDING
+                  </span>
+                );
+              }
+            }}
+          ></Column>
           <Column dataField='G_CODE' caption='G_CODE' minWidth={100}></Column>
-          <Column dataField='PHAN_LOAI' caption='PHAN_LOAI' minWidth={100}></Column>
-          <Column dataField='PROD_REQUEST_NO' caption='PROD_REQUEST_NO' minWidth={100}></Column>
+          <Column
+            dataField='PHAN_LOAI'
+            caption='PHAN_LOAI'
+            minWidth={100}
+          ></Column>
+          <Column
+            dataField='PROD_REQUEST_NO'
+            caption='PROD_REQUEST_NO'
+            minWidth={100}
+          ></Column>
           <Column dataField='G_NAME' caption='G_NAME' minWidth={100}></Column>
-          <Column dataField='G_NAME_KD' caption='G_NAME_KD' minWidth={100}></Column>
+          <Column
+            dataField='G_NAME_KD'
+            caption='G_NAME_KD'
+            minWidth={100}
+          ></Column>
           <Column dataField='FACTORY' caption='FACTORY' minWidth={100}></Column>
           <Column dataField='EQ1' caption='EQ1' minWidth={100}></Column>
           <Column dataField='EQ2' caption='EQ2' minWidth={100}></Column>
-          <Column dataField='PROD_REQUEST_DATE' caption='PROD_REQUEST_DATE' minWidth={100}></Column>
-          <Column dataField='PROD_REQUEST_QTY' caption='PROD_REQUEST_QTY' minWidth={100} dataType='number'
+          <Column
+            dataField='PROD_REQUEST_DATE'
+            caption='PROD_REQUEST_DATE'
+            minWidth={100}
+          ></Column>
+          <Column
+            dataField='PROD_REQUEST_QTY'
+            caption='PROD_REQUEST_QTY'
+            minWidth={100}
+            dataType='number'
             format={"decimal"}
             cellRender={(e: any) => {
               return (
@@ -648,9 +2038,14 @@ const DATASX2 = () => {
                   {e.data.PROD_REQUEST_QTY?.toLocaleString("en-US")}
                 </span>
               );
-            }}></Column>
+            }}
+          ></Column>
           <Column dataField='M_NAME' caption='M_NAME' minWidth={100}></Column>
-          <Column dataField='M_OUTPUT' caption='M_OUTPUT' minWidth={100} dataType='number'
+          <Column
+            dataField='M_OUTPUT'
+            caption='M_OUTPUT'
+            minWidth={100}
+            dataType='number'
             format={"decimal"}
             cellRender={(e: any) => {
               return (
@@ -658,8 +2053,13 @@ const DATASX2 = () => {
                   {e.data.M_OUTPUT?.toLocaleString("en-US")}
                 </span>
               );
-            }}></Column>
-          <Column dataField='SCANNED_QTY' caption='SCANNED_QTY' minWidth={100} dataType='number'
+            }}
+          ></Column>
+          <Column
+            dataField='SCANNED_QTY'
+            caption='SCANNED_QTY'
+            minWidth={100}
+            dataType='number'
             format={"decimal"}
             cellRender={(e: any) => {
               return (
@@ -667,8 +2067,13 @@ const DATASX2 = () => {
                   {e.data.SCANNED_QTY?.toLocaleString("en-US")}
                 </span>
               );
-            }}></Column>
-          <Column dataField='REMAIN_QTY' caption='REMAIN_QTY' minWidth={100} dataType='number'
+            }}
+          ></Column>
+          <Column
+            dataField='REMAIN_QTY'
+            caption='REMAIN_QTY'
+            minWidth={100}
+            dataType='number'
             format={"decimal"}
             cellRender={(e: any) => {
               return (
@@ -676,8 +2081,13 @@ const DATASX2 = () => {
                   {e.data.REMAIN_QTY?.toLocaleString("en-US")}
                 </span>
               );
-            }}></Column>
-          <Column dataField='USED_QTY' caption='USED_QTY' minWidth={100} dataType='number'
+            }}
+          ></Column>
+          <Column
+            dataField='USED_QTY'
+            caption='USED_QTY'
+            minWidth={100}
+            dataType='number'
             format={"decimal"}
             cellRender={(e: any) => {
               return (
@@ -685,10 +2095,15 @@ const DATASX2 = () => {
                   {e.data.USED_QTY?.toLocaleString("en-US")}
                 </span>
               );
-            }}></Column>
+            }}
+          ></Column>
           <Column dataField='PD' caption='PD' minWidth={100}></Column>
           <Column dataField='CAVITY' caption='CAVITY' minWidth={100}></Column>
-          <Column dataField='WAREHOUSE_ESTIMATED_QTY' caption='WAREHOUSE_ESTIMATED_QTY' minWidth={100} dataType='number'
+          <Column
+            dataField='WAREHOUSE_ESTIMATED_QTY'
+            caption='WAREHOUSE_ESTIMATED_QTY'
+            minWidth={100}
+            dataType='number'
             format={"decimal"}
             cellRender={(e: any) => {
               return (
@@ -696,8 +2111,13 @@ const DATASX2 = () => {
                   {e.data.WAREHOUSE_ESTIMATED_QTY?.toLocaleString("en-US")}
                 </span>
               );
-            }}></Column>
-          <Column dataField='ESTIMATED_QTY' caption='ESTIMATED_QTY' minWidth={100} dataType='number'
+            }}
+          ></Column>
+          <Column
+            dataField='ESTIMATED_QTY'
+            caption='ESTIMATED_QTY'
+            minWidth={100}
+            dataType='number'
             format={"decimal"}
             cellRender={(e: any) => {
               return (
@@ -705,8 +2125,13 @@ const DATASX2 = () => {
                   {e.data.ESTIMATED_QTY?.toLocaleString("en-US")}
                 </span>
               );
-            }}></Column>
-          <Column dataField='CD1' caption='CD1' minWidth={100} dataType='number'
+            }}
+          ></Column>
+          <Column
+            dataField='CD1'
+            caption='CD1'
+            minWidth={100}
+            dataType='number'
             format={"decimal"}
             cellRender={(e: any) => {
               return (
@@ -714,8 +2139,13 @@ const DATASX2 = () => {
                   {e.data.CD1?.toLocaleString("en-US")}
                 </span>
               );
-            }}></Column>
-          <Column dataField='CD2' caption='CD2' minWidth={100} dataType='number'
+            }}
+          ></Column>
+          <Column
+            dataField='CD2'
+            caption='CD2'
+            minWidth={100}
+            dataType='number'
             format={"decimal"}
             cellRender={(e: any) => {
               return (
@@ -723,8 +2153,13 @@ const DATASX2 = () => {
                   {e.data.CD2?.toLocaleString("en-US")}
                 </span>
               );
-            }}></Column>
-          <Column dataField='INS_INPUT' caption='INS_INPUT' minWidth={100} dataType='number'
+            }}
+          ></Column>
+          <Column
+            dataField='INS_INPUT'
+            caption='INS_INPUT'
+            minWidth={100}
+            dataType='number'
             format={"decimal"}
             cellRender={(e: any) => {
               return (
@@ -732,8 +2167,99 @@ const DATASX2 = () => {
                   {e.data.INS_INPUT?.toLocaleString("en-US")}
                 </span>
               );
-            }}></Column>
-          <Column dataField='INS_OUTPUT' caption='INS_OUTPUT' minWidth={100} dataType='number'
+            }}
+          ></Column>
+
+          <Column
+            dataField='INSPECT_TOTAL_QTY'
+            caption='INSPECT_TOTAL_QTY'
+            minWidth={100}
+            dataType='number'
+            format={"decimal"}
+            cellRender={(e: any) => {
+              return (
+                <span style={{ color: "black", fontWeight: "bold" }}>
+                  {e.data.INSPECT_TOTAL_QTY?.toLocaleString("en-US")}
+                </span>
+              );
+            }}
+          ></Column>
+          <Column
+            dataField='INSPECT_OK_QTY'
+            caption='INSPECT_OK_QTY'
+            minWidth={100}
+            dataType='number'
+            format={"decimal"}
+            cellRender={(e: any) => {
+              return (
+                <span style={{ color: "black", fontWeight: "bold" }}>
+                  {e.data.INSPECT_OK_QTY?.toLocaleString("en-US")}
+                </span>
+              );
+            }}
+          ></Column>
+          <Column
+            dataField='INSPECT_LOSS_QTY'
+            caption='INSPECT_LOSS_QTY'
+            minWidth={100}
+            dataType='number'
+            format={"decimal"}
+            cellRender={(e: any) => {
+              return (
+                <span style={{ color: "black", fontWeight: "bold" }}>
+                  {e.data.INSPECT_LOSS_QTY?.toLocaleString("en-US")}
+                </span>
+              );
+            }}
+          ></Column>
+          <Column
+            dataField='INSPECT_TOTAL_NG'
+            caption='INSPECT_TOTAL_NG'
+            minWidth={100}
+            dataType='number'
+            format={"decimal"}
+            cellRender={(e: any) => {
+              return (
+                <span style={{ color: "black", fontWeight: "bold" }}>
+                  {e.data.INSPECT_TOTAL_NG?.toLocaleString("en-US")}
+                </span>
+              );
+            }}
+          ></Column>
+          <Column
+            dataField='INSPECT_MATERIAL_NG'
+            caption='INSPECT_MATERIAL_NG'
+            minWidth={100}
+            dataType='number'
+            format={"decimal"}
+            cellRender={(e: any) => {
+              return (
+                <span style={{ color: "black", fontWeight: "bold" }}>
+                  {e.data.INSPECT_MATERIAL_NG?.toLocaleString("en-US")}
+                </span>
+              );
+            }}
+          ></Column>
+          <Column
+            dataField='INSPECT_PROCESS_NG'
+            caption='INSPECT_PROCESS_NG'
+            minWidth={100}
+            dataType='number'
+            format={"decimal"}
+            cellRender={(e: any) => {
+              return (
+                <span style={{ color: "black", fontWeight: "bold" }}>
+                  {e.data.INSPECT_PROCESS_NG?.toLocaleString("en-US")}
+                </span>
+              );
+            }}
+          ></Column>
+
+          <Column
+            dataField='INS_OUTPUT'
+            caption='INS_OUTPUT'
+            minWidth={100}
+            dataType='number'
             format={"decimal"}
             cellRender={(e: any) => {
               return (
@@ -741,68 +2267,99 @@ const DATASX2 = () => {
                   {e.data.INS_OUTPUT?.toLocaleString("en-US")}
                 </span>
               );
-            }}></Column>
-          <Column dataField='LOSS_SX1' caption='LOSS_SX1' minWidth={100} dataType='number'
+            }}
+          ></Column>
+          <Column
+            dataField='LOSS_SX1'
+            caption='LOSS_SX1'
+            minWidth={100}
+            dataType='number'
             format={"percent"}
             cellRender={(e: any) => {
               return (
                 <span style={{ color: "#F58A02", fontWeight: "bold" }}>
-                  {100*e.data.LOSS_SX1?.toLocaleString("en-US",)} %
+                  {100 * e.data.LOSS_SX1?.toLocaleString("en-US")} %
                 </span>
               );
-            }}></Column>
-          <Column dataField='LOSS_SX2' caption='LOSS_SX2' minWidth={100} dataType='number'
+            }}
+          ></Column>
+          <Column
+            dataField='LOSS_SX2'
+            caption='LOSS_SX2'
+            minWidth={100}
+            dataType='number'
             format={"percent"}
             cellRender={(e: any) => {
               return (
                 <span style={{ color: "#F58A02", fontWeight: "bold" }}>
-                  {100*e.data.LOSS_SX2?.toLocaleString("en-US",)} %
+                  {100 * e.data.LOSS_SX2?.toLocaleString("en-US")} %
                 </span>
               );
-            }}></Column>
-          <Column dataField='LOSS_SX3' caption='LOSS_SX3' minWidth={100} dataType='number'
+            }}
+          ></Column>
+          <Column
+            dataField='LOSS_SX3'
+            caption='LOSS_SX3'
+            minWidth={100}
+            dataType='number'
             format={"percent"}
             cellRender={(e: any) => {
               return (
                 <span style={{ color: "#F58A02", fontWeight: "bold" }}>
-                  {100*e.data.LOSS_SX3?.toLocaleString("en-US",)} %
+                  {100 * e.data.LOSS_SX3?.toLocaleString("en-US")} %
                 </span>
               );
-            }}></Column>
-          <Column dataField='LOSS_SX4' caption='LOSS_SX4' minWidth={100} dataType='number'
+            }}
+          ></Column>
+          <Column
+            dataField='LOSS_SX4'
+            caption='LOSS_SX4'
+            minWidth={100}
+            dataType='number'
             format={"percent"}
             cellRender={(e: any) => {
               return (
                 <span style={{ color: "#F58A02", fontWeight: "bold" }}>
-                  {100*e.data.LOSS_SX4?.toLocaleString("en-US",)} %
+                  {100 * e.data.LOSS_SX4?.toLocaleString("en-US")} %
                 </span>
               );
-            }}></Column>
-          <Column dataField='TOTAL_LOSS' caption='TOTAL_LOSS' minWidth={100} dataType='number'
+            }}
+          ></Column>
+          <Column
+            dataField='TOTAL_LOSS'
+            caption='TOTAL_LOSS'
+            minWidth={100}
+            dataType='number'
             format={"percent"}
             cellRender={(e: any) => {
               return (
                 <span style={{ color: "#0027EA", fontWeight: "bold" }}>
-                  {100*e.data.TOTAL_LOSS?.toLocaleString("en-US",)} %
+                  {100 * e.data.TOTAL_LOSS?.toLocaleString("en-US")} %
                 </span>
               );
-            }}></Column>
-          <Column dataField='TOTAL_LOSS2' caption='TOTAL_LOSS2' minWidth={100} dataType='number'
+            }}
+          ></Column>
+          <Column
+            dataField='TOTAL_LOSS2'
+            caption='TOTAL_LOSS2'
+            minWidth={100}
+            dataType='number'
             format={"percent"}
             cellRender={(e: any) => {
               return (
                 <span style={{ color: "#0027EA", fontWeight: "bold" }}>
-                  {100*e.data.TOTAL_LOSS2?.toLocaleString("en-US",)} %
+                  {100 * e.data.TOTAL_LOSS2?.toLocaleString("en-US")} %
                 </span>
               );
-            }}></Column>
+            }}
+          ></Column>
           <Summary>
             <TotalItem
               alignment='right'
               column='PHAN_LOAI'
               summaryType='count'
               valueFormat={"decimal"}
-            />    
+            />
             <TotalItem
               alignment='right'
               column='M_OUTPUT'
@@ -814,55 +2371,91 @@ const DATASX2 = () => {
               column='SCANNED_QTY'
               summaryType='sum'
               valueFormat={"thousands"}
-            />   
+            />
             <TotalItem
               alignment='right'
               column='REMAIN_QTY'
               summaryType='sum'
               valueFormat={"thousands"}
-            />   
+            />
             <TotalItem
               alignment='right'
               column='USED_QTY'
               summaryType='sum'
               valueFormat={"thousands"}
-            />   
+            />
             <TotalItem
               alignment='right'
               column='WAREHOUSE_ESTIMATED_QTY'
               summaryType='sum'
               valueFormat={"thousands"}
-            />   
+            />
             <TotalItem
               alignment='right'
               column='ESTIMATED_QTY'
               summaryType='sum'
               valueFormat={"thousands"}
-            />   
+            />
             <TotalItem
               alignment='right'
               column='CD1'
               summaryType='sum'
               valueFormat={"thousands"}
-            />   
+            />
             <TotalItem
               alignment='right'
               column='CD2'
               summaryType='sum'
               valueFormat={"thousands"}
-            />   
+            />
             <TotalItem
               alignment='right'
               column='INS_INPUT'
               summaryType='sum'
               valueFormat={"thousands"}
-            />   
+            />
             <TotalItem
               alignment='right'
               column='INS_OUTPUT'
               summaryType='sum'
               valueFormat={"thousands"}
-            />   
+            />
+            <TotalItem
+              alignment='right'
+              column='INSPECT_TOTAL_QTY'
+              summaryType='sum'
+              valueFormat={"thousands"}
+            />
+            <TotalItem
+              alignment='right'
+              column='INSPECT_OK_QTY'
+              summaryType='sum'
+              valueFormat={"thousands"}
+            />
+            <TotalItem
+              alignment='right'
+              column='INSPECT_LOSS_QTY'
+              summaryType='sum'
+              valueFormat={"thousands"}
+            />
+            <TotalItem
+              alignment='right'
+              column='INSPECT_TOTAL_NG'
+              summaryType='sum'
+              valueFormat={"thousands"}
+            />
+            <TotalItem
+              alignment='right'
+              column='INSPECT_MATERIAL_NG'
+              summaryType='sum'
+              valueFormat={"thousands"}
+            />
+            <TotalItem
+              alignment='right'
+              column='INSPECT_PROCESS_NG'
+              summaryType='sum'
+              valueFormat={"thousands"}
+            />
           </Summary>
         </DataGrid>
       </div>
@@ -1135,6 +2728,12 @@ const DATASX2 = () => {
           temp_loss_info.LOSS_INS_OUT_VS_XUATKHO_EA = 1- temp_loss_info.INSPECTION_OUTPUT / temp_loss_info.XUATKHO_EA ;  
           setLossTableInfo(temp_loss_info);
           setDataSXTable(loaded_data); 
+          setSelectedDataSource(
+            new PivotGridDataSource({
+              fields: fields_datasx_chithi,
+              store: loaded_data,
+            })
+          );
           setSelectButton(true);     
           Swal.fire("Thông báo", " Đã tải: " + loaded_data.length +' dòng', "success");    
         } else {
@@ -1212,6 +2811,12 @@ const DATASX2 = () => {
           setLossTableInfo(temp_loss_info);
           setShowLoss(true);
           setDataSXTable(loaded_data);
+          setSelectedDataSource(
+            new PivotGridDataSource({
+              fields: fields_datasx_ycsx,
+              store: loaded_data,
+            })
+          );
           setSelectButton(false);
           Swal.fire("Thông báo", " Đã tải: " + loaded_data.length +' dòng', "success");
         } else {
@@ -1223,6 +2828,9 @@ const DATASX2 = () => {
         Swal.fire("Thông báo", " Có lỗi : " + error, "error");
       });
   };
+
+
+
   useEffect(() => {
     //setColumnDefinition(column_inspect_output);
   }, []);
@@ -1409,6 +3017,20 @@ const DATASX2 = () => {
           {!selectbutton && datasx_ycsx}
           {selectbutton && datasx_lichsuxuatlieu}
         </div>
+        {showhidePivotTable && (
+        <div className='pivottable1'>
+          <IconButton
+            className='buttonIcon'
+            onClick={() => {
+              setShowHidePivotTable(false);
+            }}
+          >
+            <AiFillCloseCircle color='blue' size={25} />
+            Close
+          </IconButton>
+          <PivotTable datasource={selectedDataSource} tableID='datasxtablepivot' />
+        </div>
+      )}
       </div>
     </div>
   );

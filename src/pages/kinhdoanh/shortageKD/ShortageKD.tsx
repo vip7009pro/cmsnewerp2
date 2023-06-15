@@ -691,10 +691,9 @@ const ShortageKD = () => {
         </div>    
       </div>
       {selection.thempohangloat && (
-        <div className='newplan'>
-          <h3>Thêm Shortage Hàng Loạt</h3>
-          <br></br>
+        <div className='newplan'>          
           <div className='batchnewplan'>
+          <h3>Thêm Shortage Hàng Loạt</h3>          
             <form className='formupload'>
               <label htmlFor='upload'>
                 <b>Chọn file Excel: </b>

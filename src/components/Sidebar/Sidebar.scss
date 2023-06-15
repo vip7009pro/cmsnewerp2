@@ -30,15 +30,14 @@
   justify-content: center;
   top: 45px;
   z-index: 10;
-  -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.8);
-  box-shadow: 5px 5px 15px 5px rgba(2, 2, 2, 0.5);
+  -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.1);
+  box-shadow: 5px 5px 15px 5px rgba(2, 2, 2, 0.1);
   margin-top: 2px;
-  border-radius: 10px;
+  border-radius: 5px;
   margin-left: 1px;
   margin-right: 2px;
   padding-right: 5px;
-  overflow-y: scroll;
-  border: 2px solid rgb(57, 165, 253);
+  overflow-y: scroll;  
 
 
   &.show-sidebar {

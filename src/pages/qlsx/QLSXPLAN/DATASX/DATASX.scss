@@ -253,7 +253,7 @@
                 .dx-gridbase-container > .dx-datagrid-rowsview.dx-scrollable {
                     display: -ms-flexbox;
                     display: flex;
-                    background-image: linear-gradient(0deg, #e9e1eb, #e4a5f7);
+                    background-image: linear-gradient(0deg, #e9e1eb, #f1f5cf);
                     font-size: 0.7rem;
                 }
 
@@ -316,7 +316,7 @@
                 .dx-gridbase-container > .dx-datagrid-rowsview.dx-scrollable {
                     display: -ms-flexbox;
                     display: flex;
-                    background-image: linear-gradient(0deg, #e9e1eb, #e4a5f7);
+                    background-image: linear-gradient(0deg, #e9e1eb, #f1f5cf);
                     font-size: 0.7rem;
                 }
 
@@ -353,6 +353,26 @@
                     padding-top: 0px;
                     padding-bottom: 0px;
                 }             
+            }
+        }
+        .pivottable1 {
+            display: flex;
+            align-items: flex-start;
+            flex-direction: column;
+            position: absolute;
+            top: 1vh;
+            left: 1%;
+            width:95%;
+            height: 85vh;
+            overflow: scroll;
+            padding: 10px;
+            border-radius: 5px;
+            background-image: linear-gradient(0deg, #afd3d1, #86cfff);
+            -webkit-box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27); 
+            box-shadow: 5px 5px 10px 5px rgba(0,0,0,0.27);
+            z-index: 100;
+            * {
+                font-size: 0.7rem;
             }
         }
     }

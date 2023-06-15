@@ -17,15 +17,22 @@ import {
 import moment from "moment";
 import React, { useContext, useEffect, useState, useTransition } from "react";
 import { FcSearch } from "react-icons/fc";
-import { AiFillEdit, AiFillFileAdd, AiFillFileExcel } from "react-icons/ai";
+import {
+  AiFillCloseCircle,
+  AiFillEdit,
+  AiFillFileAdd,
+  AiFillFileExcel,
+} from "react-icons/ai";
 import Swal from "sweetalert2";
 import * as XLSX from "xlsx";
 import { generalQuery } from "../../../api/Api";
 import { UserContext } from "../../../api/Context";
 import { checkBP, SaveExcel } from "../../../api/GlobalFunction";
-import { MdOutlineDelete } from "react-icons/md";
+import { MdOutlineDelete, MdOutlinePivotTableChart } from "react-icons/md";
 import "./InvoiceManager.scss";
 import { FaFileInvoiceDollar } from "react-icons/fa";
+import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
+import PivotTable from "../../../components/PivotChart/PivotChart";
 interface InvoiceTableData {
   DELIVERY_ID: number;
   CUST_CD: string;
@@ -125,6 +132,7 @@ const InvoiceManager = () => {
     Array<InvoiceTableData>
   >([]);
   const [selectedID, setSelectedID] = useState<number | null>();
+  const [showhidePivotTable, setShowHidePivotTable] = useState(false);
 
   const column_invoicetable = [
     { field: "CUST_NAME_KD", headerName: "CUST_NAME_KD", width: 110 },
@@ -368,7 +376,7 @@ const InvoiceManager = () => {
         <IconButton
           className='buttonIcon'
           onClick={() => {
-            checkBP(userData.EMPL_NO,userData.MAINDEPTNAME,['KD'], ()=>{
+            checkBP(userData.EMPL_NO, userData.MAINDEPTNAME, ["KD"], () => {
               setSelection({
                 ...selection,
                 trapo: true,
@@ -377,7 +385,7 @@ const InvoiceManager = () => {
                 them1invoice: true,
               });
               clearInvoiceform();
-            });            
+            });
           }}
         >
           <AiFillFileAdd color='blue' size={25} />
@@ -386,7 +394,12 @@ const InvoiceManager = () => {
         <IconButton
           className='buttonIcon'
           onClick={() => {
-            checkBP(userData.EMPL_NO,userData.MAINDEPTNAME,['KD'], handle_fillsuaformInvoice);
+            checkBP(
+              userData.EMPL_NO,
+              userData.MAINDEPTNAME,
+              ["KD"],
+              handle_fillsuaformInvoice
+            );
             //handle_fillsuaformInvoice();
           }}
         >
@@ -396,7 +409,12 @@ const InvoiceManager = () => {
         <IconButton
           className='buttonIcon'
           onClick={() => {
-            checkBP(userData.EMPL_NO,userData.MAINDEPTNAME,['KD'], handleConfirmDeleteInvoice);
+            checkBP(
+              userData.EMPL_NO,
+              userData.MAINDEPTNAME,
+              ["KD"],
+              handleConfirmDeleteInvoice
+            );
             //handleConfirmDeleteInvoice();
           }}
         >
@@ -404,6 +422,15 @@ const InvoiceManager = () => {
           XÓA INV
         </IconButton>
         <GridToolbarQuickFilter />
+        <IconButton
+          className='buttonIcon'
+          onClick={() => {
+            setShowHidePivotTable(!showhidePivotTable);
+          }}
+        >
+          <MdOutlinePivotTableChart color='#ff33bb' size={25} />
+          Pivot
+        </IconButton>
       </GridToolbarContainer>
     );
   }
@@ -553,6 +580,24 @@ const InvoiceManager = () => {
         .catch((error) => {
           console.log(error);
         });
+
+      await generalQuery("checkcustcodeponoPOBALANCE", {
+        G_CODE: selectedCode?.G_CODE,
+        CUST_CD: selectedCust_CD?.CUST_CD,
+        PO_NO: newpono,
+      })
+        .then((response) => {
+          console.log(response.data.tk_status);
+          if (response.data.tk_status !== "NG") {
+            let tem_this_po_balance: number = response.data.data[0].PO_BALANCE;
+            if (tem_this_po_balance < newinvoiceQTY) err_code = 5;
+          } else {
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+
       if (err_code === 0) {
         tempjson[i].CHECKSTATUS = "OK";
       } else if (err_code === 1) {
@@ -626,6 +671,24 @@ const InvoiceManager = () => {
         .catch((error) => {
           console.log(error);
         });
+
+      await generalQuery("checkcustcodeponoPOBALANCE", {
+        G_CODE: selectedCode?.G_CODE,
+        CUST_CD: selectedCust_CD?.CUST_CD,
+        PO_NO: newpono,
+      })
+        .then((response) => {
+          console.log(response.data.tk_status);
+          if (response.data.tk_status !== "NG") {
+            let tem_this_po_balance: number = response.data.data[0].PO_BALANCE;
+            if (tem_this_po_balance < newinvoiceQTY) err_code = 5;
+          } else {
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+
       if (err_code === 0) {
         await generalQuery("insert_invoice", {
           DELIVERY_QTY: uploadExcelJson[i].DELIVERY_QTY,
@@ -794,6 +857,24 @@ const InvoiceManager = () => {
     ) {
       err_code = 4;
     }
+
+    await generalQuery("checkcustcodeponoPOBALANCE", {
+      G_CODE: selectedCode?.G_CODE,
+      CUST_CD: selectedCust_CD?.CUST_CD,
+      PO_NO: newpono,
+    })
+      .then((response) => {
+        console.log(response.data.tk_status);
+        if (response.data.tk_status !== "NG") {
+          let tem_this_po_balance: number = response.data.data[0].PO_BALANCE;
+          if (tem_this_po_balance < newinvoiceQTY) err_code = 5;
+        } else {
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+
     if (err_code === 0) {
       await generalQuery("insert_invoice", {
         G_CODE: selectedCode?.G_CODE,
@@ -832,6 +913,12 @@ const InvoiceManager = () => {
       Swal.fire("Thông báo", "NG: Ver này đã bị khóa", "error");
     } else if (err_code === 4) {
       Swal.fire("Thông báo", "NG: Không để trống thông tin bắt buộc", "error");
+    } else if (err_code === 5) {
+      Swal.fire(
+        "Thông báo",
+        "NG: Số lượng giao hàng nhiều hơn PO BALANCE",
+        "error"
+      );
     }
   };
   const clearInvoiceform = () => {
@@ -938,6 +1025,7 @@ const InvoiceManager = () => {
     ) {
       err_code = 4;
     }
+
     if (err_code === 0) {
       await generalQuery("update_invoice", {
         G_CODE: selectedCode?.G_CODE,
@@ -1032,8 +1120,328 @@ const InvoiceManager = () => {
     });
   };
   const filterOptions1 = createFilterOptions({
-    matchFrom: 'any',
+    matchFrom: "any",
     limit: 100,
+  });
+  const dataSource = new PivotGridDataSource({
+    fields: [
+      {
+        caption: "PROD_MAIN_MATERIAL",
+        width: 80,
+        dataField: "PROD_MAIN_MATERIAL",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "string",
+        summaryType: "count",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "DELIVERY_ID",
+        width: 80,
+        dataField: "DELIVERY_ID",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "number",
+        summaryType: "sum",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "CUST_CD",
+        width: 80,
+        dataField: "CUST_CD",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "string",
+        summaryType: "count",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "CUST_NAME_KD",
+        width: 80,
+        dataField: "CUST_NAME_KD",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "string",
+        summaryType: "count",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "EMPL_NO",
+        width: 80,
+        dataField: "EMPL_NO",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "string",
+        summaryType: "count",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "EMPL_NAME",
+        width: 80,
+        dataField: "EMPL_NAME",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "string",
+        summaryType: "count",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "G_CODE",
+        width: 80,
+        dataField: "G_CODE",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "string",
+        summaryType: "count",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "G_NAME",
+        width: 80,
+        dataField: "G_NAME",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "string",
+        summaryType: "count",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "G_NAME_KD",
+        width: 80,
+        dataField: "G_NAME_KD",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "string",
+        summaryType: "count",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "PO_NO",
+        width: 80,
+        dataField: "PO_NO",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "string",
+        summaryType: "count",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "DELIVERY_DATE",
+        width: 80,
+        dataField: "DELIVERY_DATE",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "date",
+        summaryType: "count",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "DELIVERY_QTY",
+        width: 80,
+        dataField: "DELIVERY_QTY",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "number",
+        summaryType: "sum",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "PROD_PRICE",
+        width: 80,
+        dataField: "PROD_PRICE",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "number",
+        summaryType: "sum",
+        format: "currency",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "DELIVERED_AMOUNT",
+        width: 80,
+        dataField: "DELIVERED_AMOUNT",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "number",
+        summaryType: "sum",
+        format: "currency",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "REMARK",
+        width: 80,
+        dataField: "REMARK",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "string",
+        summaryType: "count",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "INVOICE_NO",
+        width: 80,
+        dataField: "INVOICE_NO",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "string",
+        summaryType: "count",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "PROD_TYPE",
+        width: 80,
+        dataField: "PROD_TYPE",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "string",
+        summaryType: "count",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "PROD_MODEL",
+        width: 80,
+        dataField: "PROD_MODEL",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "string",
+        summaryType: "count",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "PROD_PROJECT",
+        width: 80,
+        dataField: "PROD_PROJECT",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "string",
+        summaryType: "count",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "YEARNUM",
+        width: 80,
+        dataField: "YEARNUM",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "number",
+        summaryType: "sum",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "WEEKNUM",
+        width: 80,
+        dataField: "WEEKNUM",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "number",
+        summaryType: "sum",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+    ],
+    store: invoicedatatable,
   });
   useEffect(() => {
     getcustomerlist();
@@ -1046,7 +1454,7 @@ const InvoiceManager = () => {
           className='mininavitem'
           onClick={() => setNav(1)}
           style={{
-            backgroundColor: selection.trapo === true ? '#02c712':'#abc9ae',
+            backgroundColor: selection.trapo === true ? "#02c712" : "#abc9ae",
             color: selection.trapo === true ? "yellow" : "yellow",
           }}
         >
@@ -1055,13 +1463,13 @@ const InvoiceManager = () => {
         <div
           className='mininavitem'
           onClick={() =>
-            checkBP(userData.EMPL_NO, userData.MAINDEPTNAME, ['KD'], () => {
+            checkBP(userData.EMPL_NO, userData.MAINDEPTNAME, ["KD"], () => {
               setNav(2);
             })
           }
           style={{
             backgroundColor:
-              selection.thempohangloat === true ? '#02c712':'#abc9ae',
+              selection.thempohangloat === true ? "#02c712" : "#abc9ae",
             color: selection.thempohangloat === true ? "yellow" : "yellow",
           }}
         >
@@ -1070,9 +1478,8 @@ const InvoiceManager = () => {
       </div>
       {selection.thempohangloat && (
         <div className='newinvoice'>
-          <h3>Thêm Invoice Hàng Loạt</h3>
-          <br></br>
           <div className='batchnewinvoice'>
+          <h3>Thêm Invoice Hàng Loạt</h3>
             <form className='formupload'>
               <label htmlFor='upload'>
                 <b>Chọn file Excel: </b>
@@ -1111,7 +1518,7 @@ const InvoiceManager = () => {
             <div className='insertInvoiceTable'>
               {true && (
                 <DataGrid
-                sx={{fontSize:'0.7rem', flex:1}}
+                  sx={{ fontSize: "0.7rem", flex: 1 }}
                   components={{
                     Toolbar: CustomToolbar,
                     LoadingOverlay: LinearProgress,
@@ -1364,11 +1771,11 @@ const InvoiceManager = () => {
           </div>
           <div className='tracuuInvoiceTable'>
             <DataGrid
-              sx={{fontSize:'0.7rem'}}
+              sx={{ fontSize: "0.7rem" }}
               components={{
                 Toolbar: CustomToolbarPOTable,
                 LoadingOverlay: LinearProgress,
-              }}              
+              }}
               loading={isLoading}
               rowHeight={30}
               rows={invoicedatatable}
@@ -1425,7 +1832,7 @@ const InvoiceManager = () => {
                       options={codeList}
                       className='autocomplete'
                       filterOptions={filterOptions1}
-                      getOptionLabel={(option: CodeListData| any) =>
+                      getOptionLabel={(option: CodeListData | any) =>
                         `${option.G_CODE}: ${option.G_NAME}`
                       }
                       renderInput={(params) => (
@@ -1547,7 +1954,20 @@ const InvoiceManager = () => {
           </div>
         </div>
       )}
-      {selection.testinvoicetable && <div className='testinvoicetable'></div>}
+      {showhidePivotTable && (
+        <div className='pivottable1'>
+          <IconButton
+            className='buttonIcon'
+            onClick={() => {
+              setShowHidePivotTable(false);
+            }}
+          >
+            <AiFillCloseCircle color='blue' size={25} />
+            Close
+          </IconButton>
+          <PivotTable datasource={dataSource} tableID='invoicetablepivot' />
+        </div>
+      )}
     </div>
   );
 };

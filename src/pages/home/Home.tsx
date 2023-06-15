@@ -14,7 +14,7 @@ import { RootState } from "../../redux/store";
 import { useSelector, useDispatch } from "react-redux";
 import { addTab, closeTab, settabIndex } from "../../redux/slices/globalSlice";
 import AccountInfo from "../../components/Navbar/AccountInfo/AccountInfo";
-export const current_ver: number = 145;
+export const current_ver: number = 151;
 interface ELE_ARRAY {
   REACT_ELE: ReactElement;
   ELE_NAME: string;
@@ -115,29 +115,10 @@ function Home() {
               ...springs,
             }}
           >
-            <div
-              className='closeTab'
-              style={{
-                position: "absolute",
-                top: "-6px",
-                right: 10,
-                zIndex: 999,
-              }}
-            >
-              {tabModeSwap && (
-                <IconButton
-                  className='buttonIcon'
-                  onClick={() => {
-                    dispatch(closeTab(1));
-                  }}
-                >
-                  <AiOutlineCloseCircle color='red' size={22} />
-                </IconButton>
-              )}
-            </div>
             {tabModeSwap &&
               tabs.filter(
-                (ele: ELE_ARRAY, index: number) => ele.ELE_CODE !== "-1"
+                (ele: ELE_ARRAY, index: number) =>
+                  ele.ELE_CODE !== "-1" && ele.ELE_CODE !== "NS0"
               ).length > 0 && (
                 <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
                   <Tabs
@@ -193,8 +174,8 @@ function Home() {
                       style={{
                         visibility: index === tabIndex ? "visible" : "hidden",
                         position: "absolute",
-                        top: "25px",                        
-                        width: sidebarStatus?  '85%': "100%",
+                        top: "25px",
+                        width: sidebarStatus ? "85%" : "100%",
                       }}
                     >
                       {ele.REACT_ELE}

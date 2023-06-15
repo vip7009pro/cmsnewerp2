@@ -1852,6 +1852,9 @@ const MACHINE = () => {
           M_MET_NEEDED = parseInt(
             ((PLAN_QTY * PD) / (CAVITY_DOC * CAVITY_NGANG) / 1000).toString()
           );
+          /*  console.log('M_MET_NEEDED', M_MET_NEEDED);
+          console.log('FINAL_LOSS_SX', FINAL_LOSS_SX);
+          console.log('FINAL_LOSS_SETTING', FINAL_LOSS_SETTING); */
           generalQuery("getbomsx", {
             G_CODE: G_CODE,
           })
@@ -2615,46 +2618,37 @@ const MACHINE = () => {
           )
         ) {
           err_code += "_: Process number chưa đúng";
-        }
-        else if (selectedPlanTable[i].PLAN_QTY === 0) {
+        } else if (selectedPlanTable[i].PLAN_QTY === 0) {
           err_code += "_: Số lượng chỉ thị =0";
-        }
-        else if (
+        } else if (
           selectedPlanTable[i].PLAN_QTY > selectedPlanTable[i].PROD_REQUEST_QTY
         ) {
           err_code += "_: Số lượng chỉ thị lớn hơn số lượng yêu cầu sx";
-        }
-        else if (
+        } else if (
           selectedPlanTable[i].PLAN_ID === selectedPlanTable[i].NEXT_PLAN_ID
         ) {
           err_code += "_: NEXT_PLAN_ID không được giống PLAN_ID hiện tại";
-        }
-        else if (!check_NEXT_PLAN_ID) {
+        } else if (!check_NEXT_PLAN_ID) {
           err_code +=
             "_: NEXT_PLAN_ID không giống với PLAN_ID ở dòng tiếp theo";
-        }
-        else if (selectedPlanTable[i].CHOTBC === "V") {
+        } else if (selectedPlanTable[i].CHOTBC === "V") {
           err_code +=
             "_: Chỉ thị đã chốt báo cáo, sẽ ko sửa được, thông tin các chỉ thị khác trong máy được lưu thành công";
-        }
-        else if (
+        } else if (
           !(
             parseInt(selectedPlanTable[i].STEP.toString()) >= 0 &&
             parseInt(selectedPlanTable[i].STEP.toString()) <= 9
           )
         ) {
           err_code += "_: Hãy nhập STEP từ 0 -> 9";
-        }
-        else if (
+        } else if (
           !(
             parseInt(selectedPlanTable[i].PROCESS_NUMBER.toString()) >= 1 &&
             parseInt(selectedPlanTable[i].PROCESS_NUMBER.toString()) <= 2
           )
         ) {
           err_code += "_: Hãy nhập PROCESS NUMBER từ 1 hoặc 2";
-        }
-        else  if (checkPlanIdP500)
-        {
+        } else if (checkPlanIdP500) {
           err_code += "_: Đã bắn liệu vào sản xuất, không sửa chỉ thị được";
         }
       }
@@ -4017,53 +4011,150 @@ const MACHINE = () => {
     );
     //console.log(params.row);
   };
-  let temp_key: string='';
-  let machine_array: string[] = ['F1','F2','F3','F4','S1','S2','S3','S4','S5','S6','S7','S8','D1','D2','D3','D4','D5','E1','E2','E3','E4','E5','E6','E7','E8','E9','E10','E11','E12','E13','E14','E15','E16','E17','E18','E19','E20','E21','E22','E23','E24','E25','E26','E27','E28','E29','E30','E31','E32','E33','E34','E35','E36','E37','E38'];
-  let machine_array2: string[] = ['FR01','FR02','FR03','FR04','SR01','SR02','SR03','SR04','SR05','SR06','SR07','SR08','DC01','DC02','DC03','DC04','DC05','ED01','ED02','ED03','ED04','ED05','ED06','ED07','ED08','ED09','ED10','ED11','ED12','ED13','ED14','ED15','ED16','ED17','ED18','ED19','ED20','ED21','ED22','ED23','ED24','ED25','ED26','ED27','ED28','ED29','ED30','ED31','ED32','ED33','ED34','ED35','ED36','ED37','ED38'];
-  const handleKeyDown = (event:React.KeyboardEvent<HTMLElement>) => {
+  let temp_key: string = "";
+  let machine_array: string[] = [
+    "F1",
+    "F2",
+    "F3",
+    "F4",
+    "S1",
+    "S2",
+    "S3",
+    "S4",
+    "S5",
+    "S6",
+    "S7",
+    "S8",
+    "D1",
+    "D2",
+    "D3",
+    "D4",
+    "D5",
+    "E1",
+    "E2",
+    "E3",
+    "E4",
+    "E5",
+    "E6",
+    "E7",
+    "E8",
+    "E9",
+    "E10",
+    "E11",
+    "E12",
+    "E13",
+    "E14",
+    "E15",
+    "E16",
+    "E17",
+    "E18",
+    "E19",
+    "E20",
+    "E21",
+    "E22",
+    "E23",
+    "E24",
+    "E25",
+    "E26",
+    "E27",
+    "E28",
+    "E29",
+    "E30",
+    "E31",
+    "E32",
+    "E33",
+    "E34",
+    "E35",
+    "E36",
+    "E37",
+    "E38",
+  ];
+  let machine_array2: string[] = [
+    "FR01",
+    "FR02",
+    "FR03",
+    "FR04",
+    "SR01",
+    "SR02",
+    "SR03",
+    "SR04",
+    "SR05",
+    "SR06",
+    "SR07",
+    "SR08",
+    "DC01",
+    "DC02",
+    "DC03",
+    "DC04",
+    "DC05",
+    "ED01",
+    "ED02",
+    "ED03",
+    "ED04",
+    "ED05",
+    "ED06",
+    "ED07",
+    "ED08",
+    "ED09",
+    "ED10",
+    "ED11",
+    "ED12",
+    "ED13",
+    "ED14",
+    "ED15",
+    "ED16",
+    "ED17",
+    "ED18",
+    "ED19",
+    "ED20",
+    "ED21",
+    "ED22",
+    "ED23",
+    "ED24",
+    "ED25",
+    "ED26",
+    "ED27",
+    "ED28",
+    "ED29",
+    "ED30",
+    "ED31",
+    "ED32",
+    "ED33",
+    "ED34",
+    "ED35",
+    "ED36",
+    "ED37",
+    "ED38",
+  ];
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLElement>) => {
     //console.log('User pressed: ', event.key);
-    if( event.key !== 'Enter')
-    temp_key += event.key;
-    if(event.key==='F2')
-    {
+    if (event.key !== "Enter") temp_key += event.key;
+    if (event.key === "F2") {
       ////console.log('F2 pressed');
       loadQLSXPlan(selectedPlanDate);
       dispatch(resetChithiArray(""));
-    }
-    else if(event.key==='Enter' && showplanwindow === false)
-    {
+    } else if (event.key === "Enter" && showplanwindow === false) {
       //console.log(temp_key);
-      if(machine_array.indexOf(temp_key.toUpperCase()) <0 ) 
-      {        
-        alert('Không có máy này: ' + temp_key.toUpperCase());
-      }
-      else
-      {
+      if (machine_array.indexOf(temp_key.toUpperCase()) < 0) {
+        alert("Không có máy này: " + temp_key.toUpperCase());
+      } else {
         setShowPlanWindow(true);
-        setSelectedFactory(selection.tab1 === true ? 'NM1':'NM2');
-        setSelectedMachine(machine_array2[machine_array.indexOf(temp_key.toUpperCase())]);
+        setSelectedFactory(selection.tab1 === true ? "NM1" : "NM2");
+        setSelectedMachine(
+          machine_array2[machine_array.indexOf(temp_key.toUpperCase())]
+        );
         setChiThiDataTable([]);
       }
-      temp_key='';      
-    }
-    else if(event.key ==='[')
-    {
+      temp_key = "";
+    } else if (event.key === "[") {
       setNav(1);
-
-    }
-    else if(event.key ===']')
-    {
+    } else if (event.key === "]") {
       setNav(2);
-    }
-    else if(event.key ==='Escape')
-    {
+    } else if (event.key === "Escape") {
       setShowPlanWindow(false);
       setSelectedPlan(undefined);
     }
-    
   };
-
-
   useEffect(() => {
     checkMaxLieu();
     loadQLSXPlan(selectedPlanDate);
@@ -4230,7 +4321,7 @@ const MACHINE = () => {
         </div>
       )}
       {selection.tab2 && (
-        <div className='NM2'>         
+        <div className='NM2'>
           <span className='machine_title'>FR-NM2</span>
           <div className='FRlist'>
             {eq_status

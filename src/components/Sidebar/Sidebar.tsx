@@ -1,4 +1,4 @@
-import React, { useContext, useMemo, useState } from "react";
+import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import SubMenu from "./Submenu";
 import { FcAbout, FcAcceptDatabase, FcApprove, FcCapacitor, FcCustomerSupport, FcInspection, FcList, FcProcess, FcServices } from 'react-icons/fc';
@@ -18,10 +18,11 @@ import { AiFillAmazonCircle, AiFillAmazonSquare, AiFillMinusCircle, AiOutlineCal
 import RuleRoundedIcon from '@mui/icons-material/RuleRounded';
 import {RootState} from '../../redux/store'
 import {useSelector, useDispatch} from 'react-redux'
-import { changeDiemDanhState, changeUserData, UserData } from "../../redux/slices/globalSlice";
+import { changeDiemDanhState, changeUserData, UserData, toggleSidebar, hideSidebar } from "../../redux/slices/globalSlice";
 import { getlang } from '../../components/String/String';
 import { GrStatusUnknown } from "react-icons/gr";
 import { FcDataProtection } from "react-icons/fc";
+import useOutsideClick from "../../api/customHooks";
 
 interface SEARCH_LIST_DATA {
   MENU_CODE: string;
@@ -29,10 +30,19 @@ interface SEARCH_LIST_DATA {
 }
 
 const Sidebar = () => {
+  const boxRef = useRef<HTMLDivElement>(null);  
   const [sidebar, setSidebar] = useState(false);
   const showSidebar = () => setSidebar(!sidebar);
   const [lang,setLang] = useContext(LangConText);
   const globalUserData: UserData|undefined = useSelector((state:RootState)=>state.totalSlice.userData);
+  const dispatch = useDispatch();
+  useOutsideClick(boxRef,()=> {
+    //console.log('outsideclick');  
+    //dispatch(hideSidebar(1));
+
+  }, ()=> {
+    //console.log('insideclick');
+  });
   
 
   const SidebarData = [
@@ -417,8 +427,11 @@ const Sidebar = () => {
     (state: RootState) => state.totalSlice.sidebarmenu
   );
 
+  useEffect(()=> {    
+
+  },[])
   return (
-    <> 
+    <div ref={boxRef} > 
       <nav
         className={`SidebarNav ${
           sidebarStatus === true ? "show-sidebar" : "hide-sidebar"
@@ -433,7 +446,7 @@ const Sidebar = () => {
           })}
         </div>
       </nav>
-    </>
+    </div>
   );
 };
 export default Sidebar;

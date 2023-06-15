@@ -53,6 +53,7 @@ interface PQC3_DATA {
   YEAR_WEEK: string;
   PQC3_ID: number;
   PQC1_ID: number;
+  CUST_NAME_KD: string;
   FACTORY: string;
   PROD_REQUEST_NO: string;
   PROD_REQUEST_DATE: string;
@@ -223,6 +224,7 @@ const TRAPQC = () => {
     { field: "YEAR_WEEK", headerName: "YEAR_WEEK", width: 80 },
     { field: "PQC3_ID", headerName: "PQC3_ID", width: 80 },
     { field: "PQC1_ID", headerName: "PQC1_ID", width: 80 },
+    { field: "CUST_NAME_KD", headerName: "CUST_NAME_KD", width: 120 },
     { field: "FACTORY", headerName: "FACTORY", width: 80 },
     { field: "PROD_REQUEST_NO", headerName: "PROD_REQUEST_NO", width: 80 },
     { field: "PROD_REQUEST_DATE", headerName: "PROD_REQUEST_DATE", width: 80 },

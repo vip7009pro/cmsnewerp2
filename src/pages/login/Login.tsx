@@ -64,7 +64,7 @@ const Login = () => {
     let saveLang: any = localStorage.getItem("lang")?.toString();
     if (saveLang !== undefined) {
       setLang(saveLang.toString());
-      console.log(getlang("dangnhap", lang));
+      //console.log(getlang("dangnhap", lang));
     } else {
       setLang("en");
     }   

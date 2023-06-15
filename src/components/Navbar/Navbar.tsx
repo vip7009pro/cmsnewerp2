@@ -6,13 +6,14 @@ import React, {
   useCallback,
   useContext,
   useEffect,
+  useRef,
   useState,
 } from "react";
 import SearchIcon from "@mui/icons-material/Search";
 import LanguageIcon from "@mui/icons-material/Language";
 import { Link } from "react-router-dom";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import SwitchRightIcon from '@mui/icons-material/SwitchRight';
+import SwitchRightIcon from "@mui/icons-material/SwitchRight";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { logout } from "../../api/Api";
 import { LangConText } from "../../api/Context";
@@ -23,6 +24,7 @@ import {
   toggleSidebar,
   setTabModeSwap,
   ELE_ARRAY,
+  closeTab,
 } from "../../redux/slices/globalSlice";
 import { RootState } from "../../redux/store";
 import { useSelector, useDispatch } from "react-redux";
@@ -32,6 +34,7 @@ import {
   Autocomplete,
   Checkbox,
   FormControlLabel,
+  IconButton,
   TextField,
   createFilterOptions,
 } from "@mui/material";
@@ -81,6 +84,9 @@ import TINHHINHCUONLIEU from "../../pages/sx/TINH_HINH_CUON_LIEU/TINHINHCUONLIEU
 import CSTOTAL from "../../pages/qc/cs/CSTOTAL";
 import AccountInfo from "../../components/Navbar/AccountInfo/AccountInfo";
 import PLAN_DATATB from "../../pages/qlsx/QLSXPLAN/LICHSUCHITHITABLE/PLAN_DATATB";
+import useOutsideClick from "../../api/customHooks";
+import BulletinBoard from "../BulletinBoard/BulletinBoard";
+import { AiOutlineCloseCircle } from "react-icons/ai";
 /* 
 const KIEMTRA= lazy(()=> import('../../pages/qc/inspection/KIEMTRA'));
 const PQC= lazy(()=> import('../../pages/qc/pqc/PQC'));
@@ -143,14 +149,30 @@ export default function Navbar() {
   const [langmenu, setLangMenu] = useState(false);
   const [lang, setLang] = useContext(LangConText);
   const [userData, setUserData] = useContext(UserContext);
+  const refLang = useRef<HTMLDivElement>(null);
+  const refMenu = useRef<HTMLDivElement>(null);
+  useOutsideClick(
+    refLang,
+    () => {
+      setLangMenu(false);
+    },
+    () => {}
+  );
+  useOutsideClick(
+    refMenu,
+    () => {
+      setAvatarMenu(false);
+    },
+    () => {}
+  );
   const [server_string, setServer_String] = useState(
     "http://14.160.33.94:5011/api"
   );
   const menulist: MENU_LIST_DATA[] = [
     {
       MENU_CODE: "NS0",
-      MENU_NAME: "Account Info",
-      MENU_ITEM: <AccountInfo />,
+      MENU_NAME: "Bulletin Board",
+      MENU_ITEM: <BulletinBoard />,
     },
     {
       MENU_CODE: "NS1",
@@ -484,6 +506,7 @@ export default function Navbar() {
     //console.log('savetab',saveTab);
     if (saveTab !== undefined) {
       let tempTab: SEARCH_LIST_DATA[] = JSON.parse(saveTab);
+      
       for (let i = 0; i < tempTab.length; i++) {
         if (tempTab[i].MENU_CODE !== "-1")
           dispatch(
@@ -498,11 +521,7 @@ export default function Navbar() {
           );
       }
       dispatch(
-        settabIndex(
-          tempTab.filter(
-            (ele: SEARCH_LIST_DATA, index: number) => ele.MENU_CODE !== "-1"
-          ).length
-        )
+        settabIndex(0)
       );
       localStorage.setItem(
         "tabs",
@@ -541,96 +560,90 @@ export default function Navbar() {
     localStorage.setItem("lang", selectLang);
   };
   return (
-    <div className='navbar' >
+    <div className='navbar'>
       <div
         className='wrapper'
-        style={
-          {
-            backgroundColor:
+        style={{
+          backgroundColor:
             server_string === "http://14.160.33.94:5011/api" ? "" : "#EC40FA",
-          }
-        }
+        }}
       >
-        <div className="navleft">
-        <FcList
-          onClick={() => {
-            dispatch(toggleSidebar("2"));
-          }}
-          size={20}
-        />
-
+        <div className='navleft'>
+          <FcList
+            onClick={() => {
+              dispatch(toggleSidebar("2"));
+            }}
+            size={20}
+          />
         </div>
-        <div className="navcenter">
-        <div className='cmslogo' style={{ cursor: "pointer" }}>
-          <Link to='/' className='menulink'>
-            <img
-              alt='cmsvina logo'
-              src='/logocmsvina.png'
-              width={114.4}
-              height={27.13333}
-            />
-          </Link>
-         
+        <div className='navcenter'>
+          <div className='cmslogo' style={{ cursor: "pointer" }}>
+            <Link to='/' className='menulink'>
+              <img
+                alt='cmsvina logo'
+                src='/logocmsvina.png'
+                width={114.4}
+                height={27.13333}
+              />
+            </Link>
+          </div>
+          <div className='webver' style={{ fontSize: "8pt" }}>
+            <b> Web Ver: {current_ver} </b>
+          </div>
         </div>
-        <div className="webver" style={{fontSize:'8pt'}}>
-          <b> Web Ver: {current_ver} </b>
-        </div>
-        
-
-        </div>
-        <div className="navright">
-        <div className='search'>
-          {tabModeSwap && (
-            <Autocomplete
-              autoComplete={false}
-              autoFocus={true}
-              sx={{
-                height: 10,
-                margin: "1px",
-                position: "initial",
-                width: "280px",
-                marginBottom: "35px",
-              }}
-              size='small'
-              disablePortal
-              options={menulist.map((ele: MENU_LIST_DATA, index: number) => {
-                return {
-                  MENU_CODE: ele.MENU_CODE,
-                  MENU_NAME: ele.MENU_NAME,
-                };
-              })}
-              className='autocomplete'
-              filterOptions={filterOptions1}
-              isOptionEqualToValue={(option: any, value: any) =>
-                option.MENU_CODE === value.MENU_CODE
-              }
-              getOptionLabel={(option: SEARCH_LIST_DATA | any) =>
-                `${option.MENU_CODE}${option.MENU_NAME}`
-              }
-              autoHighlight={true}
-              renderInput={(params) => {
-                return (
-                  <div className='listitem'>
-                    <TextField {...params} label='Quick Search' />
-                  </div>
-                );
-              }}
-              defaultValue={{
-                MENU_CODE: "NS2",
-                MENU_NAME: getlang("diemdanhnhom", lang),
-              }}
-              value={selectedTab}
-              onChange={(event: any, newValue: SEARCH_LIST_DATA | any) => {
-                //console.log(newValue);
-                if (newValue !== null) {
-                  setSelectedTab(newValue);
-                  if (
-                    userData.JOB_NAME === "ADMIN" ||
-                    userData.JOB_NAME === "Leader" ||
-                    userData.JOB_NAME === "Sub Leader" ||
-                    userData.JOB_NAME === "Dept Staff"
-                  ) {
-                    if (tabModeSwap) {
+        <div className='navright'>
+          <div className='search'>
+            {tabModeSwap && (
+              <Autocomplete
+                autoComplete={false}
+                autoFocus={true}
+                sx={{
+                  height: 10,
+                  margin: "1px",
+                  position: "initial",
+                  width: "280px",
+                  marginBottom: "35px",
+                }}
+                size='small'
+                disablePortal
+                options={menulist.map((ele: MENU_LIST_DATA, index: number) => {
+                  return {
+                    MENU_CODE: ele.MENU_CODE,
+                    MENU_NAME: ele.MENU_NAME,
+                  };
+                })}
+                className='autocomplete'
+                filterOptions={filterOptions1}
+                isOptionEqualToValue={(option: any, value: any) =>
+                  option.MENU_CODE === value.MENU_CODE
+                }
+                getOptionLabel={(option: SEARCH_LIST_DATA | any) =>
+                  `${option.MENU_CODE}${option.MENU_NAME}`
+                }
+                autoHighlight={true}
+                renderInput={(params) => {
+                  return (
+                    <div className='listitem'>
+                      <TextField {...params} label='Quick Search' />
+                    </div>
+                  );
+                }}
+                defaultValue={{
+                  MENU_CODE: "NS2",
+                  MENU_NAME: getlang("diemdanhnhom", lang),
+                }}
+                value={selectedTab}
+                onChange={(event: any, newValue: SEARCH_LIST_DATA | any) => {
+                  //console.log(newValue);
+                  if (newValue !== null) {
+                    setSelectedTab(newValue);
+                    if (
+                      userData.JOB_NAME === "ADMIN" ||
+                      userData.JOB_NAME === "Leader" ||
+                      userData.JOB_NAME === "Sub Leader" ||
+                      userData.JOB_NAME === "Dept Staff"
+                    ) {
+                      /* if (tabModeSwap) {
                       dispatch(
                         addTab({
                           ELE_NAME: newValue.MENU_NAME,
@@ -646,137 +659,198 @@ export default function Navbar() {
                         MENU_CODE: "",
                         MENU_NAME: "",
                       });
-                    }
-                  } else {
-                    Swal.fire("Cảnh báo", "Không đủ quyền hạn", "error");
-                  }
-                }
-              }}
-            />
-          )}     
-         
-        </div>
-        
-       
-        <div className='items'>
-          <div className='item' onClick={showhideLangMenu}>
-            <LanguageIcon className='icon' />
-            {lang === "vi"
-              ? "Tiếng Việt"
-              : lang === "kr"
-              ? "한국어"
-              : "English"}
-          </div>
-          {langmenu && (
-            <div className='langmenu'>
-              <div className='menu'>
-                <div className='menu_item'>
-                  <AccountCircleIcon className='menu_icon' />
-                  <span
-                    className='menulink'
-                    onClick={() => {
-                      changeLanguage("vi");
-                    }}
-                  >
-                    Tiếng Việt
-                  </span>
-                </div>
-                <div className='menu_item'>
-                  <LogoutIcon className='menu_icon' />
-                  <span
-                    className='menulink'
-                    onClick={() => {
-                      changeLanguage("kr");
-                    }}
-                  >
-                    한국어
-                  </span>
-                </div>
-                <div className='menu_item'>
-                  <LogoutIcon className='menu_icon' />
-                  <span
-                    className='menulink'
-                    onClick={() => {
-                      changeLanguage("en");
-                    }}
-                  >
-                    English
-                  </span>
-                </div>
-              </div>
-            </div>
-          )}
-          <div className='item'>
-            <div className={"avatar"} onClick={showhideAvatarMenu}>
-              {userData.EMPL_IMAGE !== "Y" && userData.FIRST_NAME.slice(0, 1)}
-              {userData.EMPL_IMAGE === "Y" && (
-                <img
-                  width={35}
-                  height={35}
-                  src={"/Picture_NS/NS_" + userData.EMPL_NO + ".jpg"}
-                  alt={userData.EMPL_NO}
-                ></img>
-              )}
-            </div>
-          </div>
-          {avatarmenu && (
-            <div className='avatarmenu'>
-              <div className='menu'>
-                <div className='menu_item'>
-                  <AccountCircleIcon className='menu_icon' />
-                  <Link
-                    to='/accountinfo'
-                    className='menulink'
-                    onClick={() => setAvatarMenu(false)}
-                  >
-                    Account Information
-                  </Link>
-                </div>
-                <div className='menu_item'>
-                  <SwitchRightIcon className='menu_icon' />
-                  <FormControlLabel
-                    label={tabModeSwap ? "Multiple Tabs" : "Single Tab"}
-                    control={
-                      <Checkbox
-                        checked={tabModeSwap}
-                        onChange={(e) => {
-                          if (!tabModeSwap) {
-                            dispatch(resetTab(0));
-                            dispatch(
-                              addTab({
-                                ELE_CODE: "NS0",
-                                ELE_NAME: "ACCOUNT_INFO",
-                                REACT_ELE: <AccountInfo />,
-                              })
-                            );
+                    } */
+                      if (tabModeSwap) {
+                        let ele_code_array: string[] = tabs.map(
+                          (ele: ELE_ARRAY, index: number) => {
+                            return ele.ELE_CODE;
                           }
-                          dispatch(setTabModeSwap(!tabModeSwap));
-                        }}
-                        inputProps={{ "aria-label": "controlled" }}
-                      />
+                        );
+                        let tab_index: number = ele_code_array.indexOf(
+                          newValue.MENU_CODE
+                        );
+                        //console.log(tab_index);
+                        if (tab_index !== -1) {
+                          //console.log('co tab roi');
+                          dispatch(settabIndex(tab_index));
+                        } else {
+                          //console.log('chua co tab');
+                          dispatch(
+                            addTab({
+                              ELE_NAME: newValue.MENU_NAME,
+                              ELE_CODE: newValue.MENU_CODE,
+                              REACT_ELE: menulist.filter(
+                                (ele: MENU_LIST_DATA, index: number) =>
+                                  ele.MENU_CODE === newValue.MENU_CODE
+                              )[0].MENU_ITEM,
+                            })
+                          );
+                          dispatch(settabIndex(tabs.length));
+                        }
+                      }
+                    } else {
+                      Swal.fire("Cảnh báo", "Không đủ quyền hạn", "error");
                     }
-                  />
-                  
-                </div>
-                <div className='menu_item'>
-                  <LogoutIcon className='menu_icon' />
-                  <span
-                    className='menulink'
-                    onClick={() => {
-                      logout_bt();
-                    }}
-                  >
-                    Logout
-                  </span>
+                  }
+                }}
+              />
+            )}
+          </div>
+          <div className='items'>
+            <div className='item' onClick={showhideLangMenu}>
+              <LanguageIcon className='icon' />
+              {lang === "vi"
+                ? "Tiếng Việt"
+                : lang === "kr"
+                ? "한국어"
+                : "English"}
+            </div>
+            {langmenu && (
+              <div className='langmenu' ref={refLang}>
+                <div className='menu'>
+                  <div className='menu_item'>
+                    <AccountCircleIcon className='menu_icon' />
+                    <span
+                      className='menulink'
+                      onClick={() => {
+                        changeLanguage("vi");
+                      }}
+                    >
+                      Tiếng Việt
+                    </span>
+                  </div>
+                  <div className='menu_item'>
+                    <LogoutIcon className='menu_icon' />
+                    <span
+                      className='menulink'
+                      onClick={() => {
+                        changeLanguage("kr");
+                      }}
+                    >
+                      한국어
+                    </span>
+                  </div>
+                  <div className='menu_item'>
+                    <LogoutIcon className='menu_icon' />
+                    <span
+                      className='menulink'
+                      onClick={() => {
+                        changeLanguage("en");
+                      }}
+                    >
+                      English
+                    </span>
+                  </div>
                 </div>
               </div>
+            )}
+            <div className='item'>
+              <div
+                className={"avatar"}
+                onClick={showhideAvatarMenu}               
+              >
+                {userData.EMPL_IMAGE !== "Y" && userData.FIRST_NAME.slice(0, 1)}
+                {userData.EMPL_IMAGE === "Y" && (
+                  <img
+                    width={35}
+                    height={35}
+                    src={"/Picture_NS/NS_" + userData.EMPL_NO + ".jpg"}
+                    alt={userData.EMPL_NO}
+                  ></img>
+                )}
+              </div>
+            </div>
+            {avatarmenu && (
+              <div className='avatarmenu'  ref={refMenu}>
+                <div className='menu'>
+                  <div className='menu_item'>
+                    <AccountCircleIcon className='menu_icon' />
+                    <Link
+                      to='/accountinfo'
+                      className='menulink'
+                      onClick={() => setAvatarMenu(false)}
+                    >
+                      Account Information
+                    </Link>
+                  </div>
+                  <div className='menu_item'>
+                    <SwitchRightIcon className='menu_icon' />
+                    <FormControlLabel
+                      label={tabModeSwap ? "Multiple Tabs" : "Single Tab"}
+                      control={
+                        <Checkbox
+                          checked={tabModeSwap}
+                          onChange={(e) => {
+                            if (!tabModeSwap) {
+                              dispatch(resetTab(0));
+                              dispatch(
+                                addTab({
+                                  ELE_CODE: "NS0",
+                                  ELE_NAME: "ACCOUNT_INFO",
+                                  REACT_ELE: <BulletinBoard />,
+                                })
+                              );
+                            }
+                            dispatch(setTabModeSwap(!tabModeSwap));
+                          }}
+                          inputProps={{ "aria-label": "controlled" }}
+                        />
+                      }
+                    />
+                  </div>
+                  <div className='menu_item'>
+                    <LogoutIcon className='menu_icon' />
+                    <span
+                      className='menulink'
+                      onClick={() => {
+                        logout_bt();
+                      }}
+                    >
+                      Logout
+                    </span>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+        {tabModeSwap &&
+          tabs.filter(
+            (ele: ELE_ARRAY, index: number) =>
+              ele.ELE_CODE !== "-1" && ele.ELE_CODE !== "NS0"
+          ).length > 0 && (
+            <div className='closeTab'>
+              {tabModeSwap &&
+                tabs.find(
+                  (ele: ELE_ARRAY, index: number) => ele.ELE_CODE !== "-1"
+                ) !== undefined && (
+                  <IconButton
+                    className='buttonIcon'
+                    onClick={() => {
+                      dispatch(closeTab(1));
+                      //console.log(tabs);
+                      let checktab: ELE_ARRAY[] = tabs.filter(
+                        (ele: ELE_ARRAY, index: number) => ele.ELE_CODE !== "-1"
+                      );
+                      if (checktab.length === 1) {
+                        dispatch(
+                          addTab({
+                            ELE_NAME: "Bulletin Board",
+                            ELE_CODE: "NS0",
+                            REACT_ELE: menulist.filter(
+                              (ele: MENU_LIST_DATA, index: number) =>
+                                ele.MENU_CODE === "NS0"
+                            )[0].MENU_ITEM,
+                          })
+                        );
+                      }
+                    }}
+                  >
+                    <AiOutlineCloseCircle color='red' size={22} />
+                  </IconButton>
+                )}
             </div>
           )}
-        </div>
-
-        </div>
-       
-        
       </div>
     </div>
   );

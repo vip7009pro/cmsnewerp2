@@ -3,14 +3,16 @@ import { DataGrid, GridSelectionModel, GridToolbarColumnsButton, GridToolbarCont
 import moment from 'moment';
 import  { useContext, useEffect, useState, useTransition } from 'react'
 import {FcSearch } from 'react-icons/fc';
-import {AiFillFileExcel } from "react-icons/ai";
+import {AiFillCloseCircle, AiFillFileExcel } from "react-icons/ai";
 import Swal from 'sweetalert2';
 import * as XLSX from 'xlsx';
 import { generalQuery } from '../../../api/Api';
 import { UserContext } from '../../../api/Context';
 import { checkBP, SaveExcel } from '../../../api/GlobalFunction';
-import { MdOutlineDelete } from 'react-icons/md';
+import { MdOutlineDelete, MdOutlinePivotTableChart } from 'react-icons/md';
 import "./FCSTManager.scss"
+import PivotGridDataSource from 'devextreme/ui/pivot_grid/data_source';
+import PivotTable from '../../../components/PivotChart/PivotChart';
 
 
 
@@ -104,7 +106,7 @@ const FCSTManager = () => {
   const [invoice_no,setInvoice_No] =useState('');
   const [fcstdatatable, setFCSTDataTable] = useState<Array<FCSTTableData>>([]);
   const [fcstdatatablefilter, setFCSTDataTableFilter] = useState<Array<FCSTTableData>>([]);
- 
+  const [showhidePivotTable, setShowHidePivotTable] = useState(false);
 
   const column_fcsttable = [ 
     { field: "FCST_ID", headerName: "FCST_ID", width: 80 },
@@ -218,7 +220,7 @@ const FCSTManager = () => {
         <GridToolbarFilterButton />
         <GridToolbarDensitySelector />           
         <button className='saveexcelbutton' onClick={()=>{SaveExcel(uploadExcelJson,"Uploaded Fcst")}}>Save Excel</button>
-        <GridToolbarQuickFilter/>
+        <GridToolbarQuickFilter/>        
       </GridToolbarContainer>
     );
   }
@@ -234,6 +236,15 @@ const FCSTManager = () => {
           //handleConfirmDeleteFcst();
           }}><MdOutlineDelete color='red' size={25}/>XÓA FCST</IconButton>        
         <GridToolbarQuickFilter/>
+        <IconButton
+          className='buttonIcon'
+          onClick={() => {
+            setShowHidePivotTable(!showhidePivotTable);
+          }}
+        >
+          <MdOutlinePivotTableChart color='#ff33bb' size={25} />
+          Pivot
+        </IconButton>
       </GridToolbarContainer>
     );
   }
@@ -669,6 +680,866 @@ const FCSTManager = () => {
       }
     })
   }
+  const dataSource = new PivotGridDataSource({
+    fields: [
+      {
+        caption: "FCST_ID",
+        width: 80,
+        dataField: "FCST_ID",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "number",
+        summaryType: "sum",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "FCSTYEAR",
+        width: 80,
+        dataField: "FCSTYEAR",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "number",
+        summaryType: "sum",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "FCSTWEEKNO",
+        width: 80,
+        dataField: "FCSTWEEKNO",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "number",
+        summaryType: "sum",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "G_CODE",
+        width: 80,
+        dataField: "G_CODE",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "string",
+        summaryType: "count",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "G_NAME_KD",
+        width: 80,
+        dataField: "G_NAME_KD",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "string",
+        summaryType: "count",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "G_NAME",
+        width: 80,
+        dataField: "G_NAME",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "string",
+        summaryType: "count",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "EMPL_NAME",
+        width: 80,
+        dataField: "EMPL_NAME",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "string",
+        summaryType: "count",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "EMPL_NO",
+        width: 80,
+        dataField: "EMPL_NO",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "string",
+        summaryType: "count",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "CUST_NAME_KD",
+        width: 80,
+        dataField: "CUST_NAME_KD",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "string",
+        summaryType: "count",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "PROD_PROJECT",
+        width: 80,
+        dataField: "PROD_PROJECT",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "string",
+        summaryType: "count",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "PROD_MODEL",
+        width: 80,
+        dataField: "PROD_MODEL",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "string",
+        summaryType: "count",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "PROD_MAIN_MATERIAL",
+        width: 80,
+        dataField: "PROD_MAIN_MATERIAL",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "string",
+        summaryType: "count",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "PROD_PRICE",
+        width: 80,
+        dataField: "PROD_PRICE",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "number",
+        summaryType: "sum",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "W1",
+        width: 80,
+        dataField: "W1",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "number",
+        summaryType: "sum",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "W2",
+        width: 80,
+        dataField: "W2",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "number",
+        summaryType: "sum",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "W3",
+        width: 80,
+        dataField: "W3",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "number",
+        summaryType: "sum",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "W4",
+        width: 80,
+        dataField: "W4",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "number",
+        summaryType: "sum",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "W5",
+        width: 80,
+        dataField: "W5",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "number",
+        summaryType: "sum",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "W6",
+        width: 80,
+        dataField: "W6",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "number",
+        summaryType: "sum",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "W7",
+        width: 80,
+        dataField: "W7",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "number",
+        summaryType: "sum",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "W8",
+        width: 80,
+        dataField: "W8",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "number",
+        summaryType: "sum",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "W9",
+        width: 80,
+        dataField: "W9",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "number",
+        summaryType: "sum",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "W10",
+        width: 80,
+        dataField: "W10",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "number",
+        summaryType: "sum",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "W11",
+        width: 80,
+        dataField: "W11",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "number",
+        summaryType: "sum",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "W12",
+        width: 80,
+        dataField: "W12",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "number",
+        summaryType: "sum",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "W13",
+        width: 80,
+        dataField: "W13",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "number",
+        summaryType: "sum",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "W14",
+        width: 80,
+        dataField: "W14",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "number",
+        summaryType: "sum",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "W15",
+        width: 80,
+        dataField: "W15",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "number",
+        summaryType: "sum",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "W16",
+        width: 80,
+        dataField: "W16",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "number",
+        summaryType: "sum",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "W17",
+        width: 80,
+        dataField: "W17",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "number",
+        summaryType: "sum",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "W18",
+        width: 80,
+        dataField: "W18",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "number",
+        summaryType: "sum",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "W19",
+        width: 80,
+        dataField: "W19",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "number",
+        summaryType: "sum",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "W20",
+        width: 80,
+        dataField: "W20",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "number",
+        summaryType: "sum",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "W21",
+        width: 80,
+        dataField: "W21",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "number",
+        summaryType: "sum",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "W22",
+        width: 80,
+        dataField: "W22",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "number",
+        summaryType: "sum",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "W1A",
+        width: 80,
+        dataField: "W1A",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "number",
+        summaryType: "sum",
+        format: "currency",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "W2A",
+        width: 80,
+        dataField: "W2A",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "number",
+        summaryType: "sum",
+        format: "currency",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "W3A",
+        width: 80,
+        dataField: "W3A",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "number",
+        summaryType: "sum",
+        format: "currency",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "W4A",
+        width: 80,
+        dataField: "W4A",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "number",
+        summaryType: "sum",
+        format: "currency",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "W5A",
+        width: 80,
+        dataField: "W5A",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "number",
+        summaryType: "sum",
+        format: "currency",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "W6A",
+        width: 80,
+        dataField: "W6A",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "number",
+        summaryType: "sum",
+        format: "currency",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "W7A",
+        width: 80,
+        dataField: "W7A",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "number",
+        summaryType: "sum",
+        format: "currency",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "W8A",
+        width: 80,
+        dataField: "W8A",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "number",
+        summaryType: "sum",
+        format: "currency",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "W9A",
+        width: 80,
+        dataField: "W9A",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "number",
+        summaryType: "sum",
+        format: "currency",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "W10A",
+        width: 80,
+        dataField: "W10A",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "number",
+        summaryType: "sum",
+        format: "currency",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "W11A",
+        width: 80,
+        dataField: "W11A",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "number",
+        summaryType: "sum",
+        format: "currency",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "W12A",
+        width: 80,
+        dataField: "W12A",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "number",
+        summaryType: "sum",
+        format: "currency",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "W13A",
+        width: 80,
+        dataField: "W13A",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "number",
+        summaryType: "sum",
+        format: "currency",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "W14A",
+        width: 80,
+        dataField: "W14A",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "number",
+        summaryType: "sum",
+        format: "currency",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "W15A",
+        width: 80,
+        dataField: "W15A",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "number",
+        summaryType: "sum",
+        format: "currency",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "W16A",
+        width: 80,
+        dataField: "W16A",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "number",
+        summaryType: "sum",
+        format: "currency",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "W17A",
+        width: 80,
+        dataField: "W17A",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "number",
+        summaryType: "sum",
+        format: "currency",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "W18A",
+        width: 80,
+        dataField: "W18A",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "number",
+        summaryType: "sum",
+        format: "currency",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "W19A",
+        width: 80,
+        dataField: "W19A",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "number",
+        summaryType: "sum",
+        format: "currency",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "W20A",
+        width: 80,
+        dataField: "W20A",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "number",
+        summaryType: "sum",
+        format: "currency",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "W21A",
+        width: 80,
+        dataField: "W21A",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "number",
+        summaryType: "sum",
+        format: "currency",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "W22A",
+        width: 80,
+        dataField: "W22A",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "number",
+        summaryType: "sum",
+        format: "currency",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+    ],
+    store: fcstdatatable,
+  });
   useEffect(()=>{
         
   },[]);
@@ -691,10 +1562,9 @@ const FCSTManager = () => {
         </div>    
       </div>
       {selection.thempohangloat && (
-        <div className='newfcst'>
-          <h3>Thêm FCST Hàng Loạt</h3>
-          <br></br>
+        <div className='newfcst'>          
           <div className='batchnewplan'>
+          <h3>Thêm FCST Hàng Loạt</h3>          
             <form className='formupload'>
               <label htmlFor='upload'>
                 <b>Chọn file Excel: </b>
@@ -908,6 +1778,20 @@ const FCSTManager = () => {
               onSelectionModelChange={(ids) => {handleFcstSelectionforUpdate(ids);}}
             />
           </div>
+        </div>
+      )}
+      {showhidePivotTable && (
+        <div className='pivottable1'>
+          <IconButton
+            className='buttonIcon'
+            onClick={() => {
+              setShowHidePivotTable(false);
+            }}
+          >
+            <AiFillCloseCircle color='blue' size={25} />
+            Close
+          </IconButton>
+          <PivotTable datasource={dataSource} tableID='invoicetablepivot' />
         </div>
       )}
     </div>

@@ -88,11 +88,10 @@ const MACHINE_COMPONENT2 = (machine_data: MachineInterface) => {
       onDoubleClick={machine_data.onClick}
       onMouseEnter={()=>{setShowHideDetail(true)}}
       onMouseLeave={()=>{setShowHideDetail(false)}}
-    >
-     
+    >     
       <div className='tieude' style={{backgroundColor:`${checkSearch? machine_data.eq_status ==='STOP'? 'red':machine_data.eq_status ==='SETTING'? 'yellow' : `#3ff258` : 'black'}`}}>
         <div className="eqname"  style={{color:`${machine_data.eq_status ==='STOP'? 'white':machine_data.eq_status ==='SETTING'? 'black' : `black` }`}}>
-          {machine_data.machine_name==='ED36'?'ED36(SP01)':machine_data.machine_name}
+          {machine_data.machine_name==='ED36' && machine_data.factory==='NM2' ? 'ED36(SP01)':machine_data.machine_name}
           {checkSearch && machine_data.eq_status === 'MASS' &&<img alt='running' src='/blink.gif' width={40} height={20}></img>}
           {checkSearch && machine_data.eq_status === 'SETTING' &&<img alt='running' src='/setting3.gif' width={30} height={30}></img>}
         </div>            

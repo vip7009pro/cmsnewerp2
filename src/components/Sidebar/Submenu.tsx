@@ -429,15 +429,15 @@ const SubMenu = ({ item }: { item: any }) => {
                     return ele.ELE_CODE;
                   })     
                   let tab_index: number = ele_code_array.indexOf(item.MENU_CODE);
-                  console.log(tab_index);
+                  //console.log(tab_index);
                   if(tab_index !==-1)
                   {
-                    console.log('co tab roi');
+                    //console.log('co tab roi');
                     dispatch(settabIndex(tab_index));                           
                   }
                   else
                   {
-                    console.log('chua co tab');
+                    //console.log('chua co tab');
                     dispatch(
                       addTab({
                         ELE_NAME: item.title,

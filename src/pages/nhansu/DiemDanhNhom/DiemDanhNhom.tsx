@@ -55,7 +55,7 @@ const DiemDanhNhom = () => {
                     ngayketthuc: moment().format('YYYY-MM-DD'),
                     EMPL_NO: params.row.EMPL_NO
                   };
-                  //console.log(insertData);
+                  ////console.log(insertData);
                   generalQuery("dangkynghi2_AUTO", insertData)
                     .then((response) => {
                       if (response.data.tk_status === "OK") {
@@ -81,7 +81,7 @@ const DiemDanhNhom = () => {
                       }
                     })
                     .catch((error) => {
-                      console.log(error);
+                      //console.log(error);
                     });
                 };
 
@@ -90,10 +90,10 @@ const DiemDanhNhom = () => {
                   const insertData = {
                     EMPL_NO: params.row.EMPL_NO                  
                   };
-                  //console.log(insertData);
+                  ////console.log(insertData);
                   generalQuery("xoadangkynghi_AUTO", insertData)
                     .then((response) => {
-                      console.log(response.data.tk_status)
+                      //console.log(response.data.tk_status)
                       if (response.data.tk_status === "OK") {
                         
                       } else {
@@ -106,15 +106,15 @@ const DiemDanhNhom = () => {
                       }
                     })
                     .catch((error) => {
-                      console.log(error);
+                      //console.log(error);
                     });
 
                 }
 
                 const onClick = (type: number) => {                
                     //Swal.fire("Thông báo", "Gia tri = " + params.row.EMPL_NO, "success");
-                    console.log(params.row.OFF_ID)
-                    console.log(type)
+                    //console.log(params.row.OFF_ID)
+                    //console.log(type)
                     if(type===1)
                     {
                       if(params.row.OFF_ID  === null || params.row.REASON_NAME==='Nửa phép')
@@ -125,7 +125,7 @@ const DiemDanhNhom = () => {
                           CURRENT_TEAM: (params.row.WORK_SHIF_NAME ==='Hành Chính' ? 0 : params.row.WORK_SHIF_NAME ==='TEAM 1' ? 1 : 2)                       
                         })
                           .then((response) => {
-                            console.log(response.data);
+                            //console.log(response.data);
                             if (response.data.tk_status === "OK") {
                               const newProjects = diemdanhnhomtable.map((p) =>
                                 p.EMPL_NO === params.row.EMPL_NO
@@ -142,7 +142,7 @@ const DiemDanhNhom = () => {
                             }  
                           })
                           .catch((error) => {
-                            console.log(error);
+                            //console.log(error);
                           }); 
                       }
                       else
@@ -162,7 +162,7 @@ const DiemDanhNhom = () => {
                         CURRENT_TEAM: (params.row.WORK_SHIF_NAME ==='Hành Chính' ? 0 : params.row.WORK_SHIF_NAME ==='TEAM 1' ? 1 : 2)
                       })
                         .then((response) => {
-                          console.log(response.data);
+                          //console.log(response.data);
                           if (response.data.tk_status === "OK") {
                             const newProjects = diemdanhnhomtable.map((p) =>
                               p.EMPL_NO === params.row.EMPL_NO
@@ -183,7 +183,7 @@ const DiemDanhNhom = () => {
                           }  
                         })
                         .catch((error) => {
-                          console.log(error);
+                          //console.log(error);
                         }); 
                     } 
                     else if (type === 2){
@@ -193,7 +193,7 @@ const DiemDanhNhom = () => {
                         CURRENT_TEAM: (params.row.WORK_SHIF_NAME ==='Hành Chính' ? 0 : params.row.WORK_SHIF_NAME ==='TEAM 1' ? 1 : 2)
                       })
                         .then((response) => {
-                          console.log(response.data);
+                          //console.log(response.data);
                           if (response.data.tk_status === "OK") {
                             const newProjects = diemdanhnhomtable.map((p) =>
                               p.EMPL_NO === params.row.EMPL_NO
@@ -214,7 +214,7 @@ const DiemDanhNhom = () => {
                           }  
                         })
                         .catch((error) => {
-                          console.log(error);
+                          //console.log(error);
                         }); 
 
                     }                  
@@ -281,7 +281,7 @@ const DiemDanhNhom = () => {
                       overtime_info: overtimeinfo,
                     })
                       .then((response) => {
-                        console.log(response.data);
+                        //console.log(response.data);
                         if (response.data.tk_status === "OK") {
                           const newProjects = diemdanhnhomtable.map((p) =>
                             p.EMPL_NO === params.row.EMPL_NO
@@ -302,7 +302,7 @@ const DiemDanhNhom = () => {
                         }
                       })
                       .catch((error) => {
-                        console.log(error);
+                        //console.log(error);
                       }); 
                 }     
                 const onReset =() => {
@@ -311,7 +311,7 @@ const DiemDanhNhom = () => {
                           ? { ...p, OVERTIME: null,OVERTIME_INFO: null }
                           : p
                     );              
-                    //console.log(newProjects);
+                    ////console.log(newProjects);
                     setDiemDanhNhomTable(newProjects);
                 }
                 if(params.row.OVERTIME===null)
@@ -386,21 +386,21 @@ const DiemDanhNhom = () => {
       setWORK_SHIFT_CODE(teamnamelist);
       generalQuery('diemdanhnhom',{team_name_list:teamnamelist})
         .then(response => {
-            //console.log(response.data.data);            
+            ////console.log(response.data.data);            
             setDiemDanhNhomTable(response.data.data);
             setisLoading(false);
             Swal.fire("Thông báo", "Đã load " + response.data.data.length + " dòng", "success");  
         })
         .catch(error => {
-            console.log(error);
+            //console.log(error);
         });
     }
     
     useEffect(()=> {   
-      console.log('vao day');           
+      //console.log('vao day');           
         generalQuery('diemdanhnhom',{team_name_list:WORK_SHIFT_CODE})
         .then(response => {
-            //console.log(response.data.data);
+            ////console.log(response.data.data);
             if(response.data.tk_status !=='NG')
             {
               setDiemDanhNhomTable(response.data.data);              
@@ -412,7 +412,7 @@ const DiemDanhNhom = () => {
             }
         })
         .catch(error => {
-            console.log(error);
+            //console.log(error);
         });
     },[]);
     
