@@ -69,6 +69,7 @@ export function logout() {
 export async function checkLogin() {
   let data = await axios.post(API_URL, {
     command: "checklogin",
+    DATA: {token_string: cookies.get('token'),},
   });
   return data;
 }
