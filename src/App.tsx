@@ -21,6 +21,7 @@ import { useSpring, animated } from "@react-spring/web";
 import "./App.css";
 import FallBackComponent from "./components/Fallback/FallBackComponent";
 import PivotChart from "./components/PivotChart/PivotChart";
+import CAPA_MANAGER from "./pages/qlsx/QLSXPLAN/CAPA/CAPA_MANAGER";
 /* import DATASX2 from "./pages/qlsx/QLSXPLAN/DATASX/DATASX2";
 import Home from "./pages/home/Home";
 import DiemDanhNhom from "./pages/nhansu/DiemDanhNhom/DiemDanhNhom";
@@ -857,6 +858,18 @@ function App() {
                           jobname='Leader'
                         >
                           <KIEMTRA />
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route
+                      path='capamanager'
+                      element={
+                        <ProtectedRoute
+                          user={userData}
+                          maindeptname='all'
+                          jobname='Leader'
+                        >
+                          <CAPA_MANAGER />
                         </ProtectedRoute>
                       }
                     />

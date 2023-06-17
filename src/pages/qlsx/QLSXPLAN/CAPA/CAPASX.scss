@@ -1,10 +1,21 @@
 .capaqlsx {
     display: flex;
-    flex-direction: column;
-    /* justify-items: center;
-    align-items: center; */
+    flex-direction: column;  
     margin-top: 20px;
+    align-items: center;
+    background-image: linear-gradient(0deg, #afd3d1, #4ef197);
+    -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+    box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+    border-radius: 5px;
+    padding: 10px;
    
+    .maintitle {
+        display: flex;
+        flex-direction: column;
+        align-self: flex-start;
+        justify-self: center;
+        font-weight: bold;        
+    }
     .title {
         display: flex;
         flex-direction: column;
@@ -12,35 +23,71 @@
         justify-self: center;
         font-weight: bold;
     }
+    .wfandeqstatus {
+        display: flex;
+        align-items: center;
+        justify-content: space-evenly;
+        gap: 20px;
+        
+        .sectiondiv {
+            display: flex;
+            flex-direction: column;            
+            
+            .totalwfdiv {
+                display: flex;
+                align-items: center;
+                justify-content: space-evenly;               
+                border-radius: 10px;
+                padding: 10px;
+                gap: 30px;
+                background-image: linear-gradient(0deg, #afd3d1, #4ef197);
+                -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+                box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+            }
+
+        }
+        
+    }
+    
     .workforcechart {
         display: flex;
         flex-direction: row;
-        justify-content: center;
+        justify-content: center;        
         width: 100%;        
         gap: 15px;
-        padding: 20px;
-        .starndardworkforce {
-            background-image: linear-gradient(0deg, #ebf2f2, #cad3da);
-            -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
-            box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
-                      
-        }
-        .capachart {
+        padding: 20px;       
+        border-radius: 10px;
+        
+
+        .sectiondiv {
             display: flex;
-            flex-direction: column; 
-            background-image: linear-gradient(0deg, #ebf2f2, #cad3da);
-            -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
-            box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
-            padding: 5px;
-    
+            flex-direction: column;
+            justify-content: space-around;
+            .starndardworkforce {
+                background-image: linear-gradient(0deg, #ebf2f2, #cad3da);
+                -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+                box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+                          
+            }
+            .capachart {
+                display: flex;
+                flex-direction: column; 
+                background-image: linear-gradient(0deg, #ebf2f2, #cad3da);
+                -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+                box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+                padding: 5px;
+        
+            }
+
         }
+       
     }
     
 
     .ycsxbalancedatatable {
         display: flex;
         flex-direction: row;
-        background-image: linear-gradient(0deg, #afd3d1, #86cfff);
+        background-image: linear-gradient(0deg, #afd3d1, #72efaa);
         -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
         box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
         gap: 20px;

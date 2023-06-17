@@ -368,7 +368,7 @@ const Sidebar = () => {
           icon: <FcAcceptDatabase color='#cc00ff' size={25}/>,
           MENU_CODE: 'SX3',
           cName: 'sub-nav'
-        },      
+        },
         {
           title:  getlang('inspection',lang),
           path: 'sx/inspection',
@@ -416,7 +416,13 @@ const Sidebar = () => {
           icon: <FaScroll color='black' size={25}/>,
           MENU_CODE: 'SX10',
           cName: 'sub-nav'
-        },        
+        },  
+        {
+          title: getlang('quanlycapa',lang),
+          path: 'sx/capamanager',
+          icon: <FcCapacitor color='blue' size={25}/>,
+          MENU_CODE: 'SX11'
+        },       
            
       ]
     },   

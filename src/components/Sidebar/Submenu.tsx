@@ -48,7 +48,6 @@ import OQC from "../../pages/qc/oqc/OQC";
 import BOM_AMAZON from "../../pages/rnd/bom_amazon/BOM_AMAZON";
 import DESIGN_AMAZON from "../../pages/rnd/design_amazon/DESIGN_AMAZON";
 import QLSXPLAN from "../../pages/qlsx/QLSXPLAN/QLSXPLAN";
-import CAPASX from "../../pages/qlsx/QLSXPLAN/CAPA/CAPASX";
 import DATASX2 from "../../pages/qlsx/QLSXPLAN/DATASX/DATASX2";
 import TRANGTHAICHITHI from "../../pages/sx/TRANGTHAICHITHI/TRANGTHAICHITHI";
 import KHOLIEU from "../../pages/kho/kholieu/KHOLIEU";
@@ -61,6 +60,7 @@ import PLAN_DATATB from "../../pages/qlsx/QLSXPLAN/LICHSUCHITHITABLE/PLAN_DATATB
 import Swal from "sweetalert2";
 import { LangConText, UserContext } from "../../api/Context";
 import { getlang } from "../String/String";
+import CAPA_MANAGER from "../../pages/qlsx/QLSXPLAN/CAPA/CAPA_MANAGER";
 
 interface MENU_LIST_DATA {
   MENU_CODE: string;
@@ -283,12 +283,12 @@ const SubMenu = ({ item }: { item: any }) => {
     {
       MENU_CODE: "QL5",
       MENU_NAME: getlang('quanlycapa',lang),
-      MENU_ITEM: <CAPASX />,
+      MENU_ITEM: <CAPA_MANAGER />,
     },
     {
       MENU_CODE: "QL6",
       MENU_NAME: getlang('quanlymrp',lang),
-      MENU_ITEM: <CAPASX />,
+      MENU_ITEM: <CAPA_MANAGER />,
     },
     {
       MENU_CODE: "QL7",
@@ -369,6 +369,11 @@ const SubMenu = ({ item }: { item: any }) => {
       MENU_CODE: "SX10",
       MENU_NAME: getlang('materiallotstatus',lang),
       MENU_ITEM: <TINHHINHCUONLIEU />,
+    },
+    {
+      MENU_CODE: "SX11",
+      MENU_NAME: getlang('quanlycapa',lang),
+      MENU_ITEM: <CAPA_MANAGER />,
     },
     {
       MENU_CODE: "",

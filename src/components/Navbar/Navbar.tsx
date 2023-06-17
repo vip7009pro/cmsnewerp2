@@ -87,6 +87,7 @@ import PLAN_DATATB from "../../pages/qlsx/QLSXPLAN/LICHSUCHITHITABLE/PLAN_DATATB
 import useOutsideClick from "../../api/customHooks";
 import BulletinBoard from "../BulletinBoard/BulletinBoard";
 import { AiOutlineCloseCircle } from "react-icons/ai";
+import CAPA_MANAGER from "../../pages/qlsx/QLSXPLAN/CAPA/CAPA_MANAGER";
 /* 
 const KIEMTRA= lazy(()=> import('../../pages/qc/inspection/KIEMTRA'));
 const PQC= lazy(()=> import('../../pages/qc/pqc/PQC'));
@@ -377,12 +378,12 @@ export default function Navbar() {
     {
       MENU_CODE: "QL5",
       MENU_NAME: getlang("quanlycapa", lang),
-      MENU_ITEM: <CAPASX />,
+      MENU_ITEM: <CAPA_MANAGER />,
     },
     {
       MENU_CODE: "QL6",
       MENU_NAME: getlang("quanlymrp", lang),
-      MENU_ITEM: <CAPASX />,
+      MENU_ITEM: <CAPA_MANAGER />,
     },
     {
       MENU_CODE: "QL7",
@@ -463,6 +464,11 @@ export default function Navbar() {
       MENU_CODE: "SX10",
       MENU_NAME: getlang("materiallotstatus", lang),
       MENU_ITEM: <TINHHINHCUONLIEU />,
+    },
+    {
+      MENU_CODE: "SX11",
+      MENU_NAME: getlang("quanlycapa", lang),
+      MENU_ITEM: <CAPA_MANAGER />,
     },
     {
       MENU_CODE: "",

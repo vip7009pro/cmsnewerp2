@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import Swal from "sweetalert2";
 import {
   EditingState,
@@ -66,8 +66,25 @@ interface YCSX_BALANCE_CAPA_DATA {
   EQ_NAME: string;
   YCSX_BALANCE: number;
 }
+interface EQ_STT {
+  FACTORY: string;
+  EQ_NAME: string;
+  EQ_ACTIVE: string;
+  REMARK: string;
+  EQ_STATUS: string;
+  CURR_PLAN_ID: string;
+  CURR_G_CODE: string;
+  INS_EMPL: string;
+  INS_DATE: string;
+  UPD_EMPL: string;
+  UPD_DATE: string;
+  EQ_CODE: string;
+  G_NAME_KD: string;
+  STEP: number;
+}
 const CAPASX = () => {
   const dailytime: number = 1260;
+  const [eq_status, setEQ_STATUS] = useState<EQ_STT[]>([]);
   const [datadiemdanh, setDataDiemDanh] = useState<DATA_DIEM_DANH[]>([]);
   const [machinecount, setMachineCount] = useState<MACHINE_COUNTING[]>([]);
   const [ycsxbalance, setYCSXBALANCE] = useState<YCSX_BALANCE_CAPA_DATA[]>([]);
@@ -303,48 +320,25 @@ const CAPASX = () => {
   ];
   const dataSource_capa: any = [
     {
-      EQ_NAME: "FR",
+      EQ_NAME: "ED",
       EQ_LEADTIME:
         ycsxbalance.filter(
-          (ele: YCSX_BALANCE_CAPA_DATA, index: number) => ele.EQ_NAME === "FR"
+          (ele: YCSX_BALANCE_CAPA_DATA, index: number) => ele.EQ_NAME === "ED"
         )[0]?.YCSX_BALANCE /
         Math.min(
-          ((FR_EMPL.NM1 + FR_EMPL.NM2) / 4) * dailytime,
+          ((ED_EMPL.NM1 + ED_EMPL.NM2) / 4) * dailytime,
           machinecount.filter(
-            (ele: MACHINE_COUNTING, index: number) => ele.EQ_NAME === "FR"
+            (ele: MACHINE_COUNTING, index: number) => ele.EQ_NAME === "ED"
           )[0]?.EQ_QTY * dailytime
         ),
       EQ_AVL_LEADTIME:
         ycsxbalance.filter(
-          (ele: YCSX_BALANCE_CAPA_DATA, index: number) => ele.EQ_NAME === "FR"
+          (ele: YCSX_BALANCE_CAPA_DATA, index: number) => ele.EQ_NAME === "ED"
         )[0]?.YCSX_BALANCE /
         Math.min(
-          ((FR_EMPL.TNM1 + FR_EMPL.TNM2) / 4) * dailytime,
+          ((ED_EMPL.TNM1 + ED_EMPL.TNM2) / 4) * dailytime,
           machinecount.filter(
-            (ele: MACHINE_COUNTING, index: number) => ele.EQ_NAME === "FR"
-          )[0]?.EQ_QTY * dailytime
-        ),
-    },
-    {
-      EQ_NAME: "SR",
-      EQ_LEADTIME:
-        ycsxbalance.filter(
-          (ele: YCSX_BALANCE_CAPA_DATA, index: number) => ele.EQ_NAME === "SR"
-        )[0]?.YCSX_BALANCE /
-        Math.min(
-          ((SR_EMPL.NM1 + SR_EMPL.NM2) / 4) * dailytime,
-          machinecount.filter(
-            (ele: MACHINE_COUNTING, index: number) => ele.EQ_NAME === "SR"
-          )[0]?.EQ_QTY * dailytime
-        ),
-      EQ_AVL_LEADTIME:
-        ycsxbalance.filter(
-          (ele: YCSX_BALANCE_CAPA_DATA, index: number) => ele.EQ_NAME === "SR"
-        )[0]?.YCSX_BALANCE /
-        Math.min(
-          ((SR_EMPL.TNM1 + SR_EMPL.TNM2) / 4) * dailytime,
-          machinecount.filter(
-            (ele: MACHINE_COUNTING, index: number) => ele.EQ_NAME === "SR"
+            (ele: MACHINE_COUNTING, index: number) => ele.EQ_NAME === "ED"
           )[0]?.EQ_QTY * dailytime
         ),
     },
@@ -372,123 +366,362 @@ const CAPASX = () => {
         ),
     },
     {
-      EQ_NAME: "ED",
+      EQ_NAME: "SR",
       EQ_LEADTIME:
         ycsxbalance.filter(
-          (ele: YCSX_BALANCE_CAPA_DATA, index: number) => ele.EQ_NAME === "ED"
+          (ele: YCSX_BALANCE_CAPA_DATA, index: number) => ele.EQ_NAME === "SR"
         )[0]?.YCSX_BALANCE /
         Math.min(
-          ((ED_EMPL.NM1 + ED_EMPL.NM2) / 4) * dailytime,
+          ((SR_EMPL.NM1 + SR_EMPL.NM2) / 4) * dailytime,
           machinecount.filter(
-            (ele: MACHINE_COUNTING, index: number) => ele.EQ_NAME === "ED"
+            (ele: MACHINE_COUNTING, index: number) => ele.EQ_NAME === "SR"
           )[0]?.EQ_QTY * dailytime
         ),
       EQ_AVL_LEADTIME:
         ycsxbalance.filter(
-          (ele: YCSX_BALANCE_CAPA_DATA, index: number) => ele.EQ_NAME === "ED"
+          (ele: YCSX_BALANCE_CAPA_DATA, index: number) => ele.EQ_NAME === "SR"
         )[0]?.YCSX_BALANCE /
         Math.min(
-          ((ED_EMPL.TNM1 + ED_EMPL.TNM2) / 4) * dailytime,
+          ((SR_EMPL.TNM1 + SR_EMPL.TNM2) / 4) * dailytime,
           machinecount.filter(
-            (ele: MACHINE_COUNTING, index: number) => ele.EQ_NAME === "ED"
+            (ele: MACHINE_COUNTING, index: number) => ele.EQ_NAME === "SR"
+          )[0]?.EQ_QTY * dailytime
+        ),
+    },
+    {
+      EQ_NAME: "FR",
+      EQ_LEADTIME:
+        ycsxbalance.filter(
+          (ele: YCSX_BALANCE_CAPA_DATA, index: number) => ele.EQ_NAME === "FR"
+        )[0]?.YCSX_BALANCE /
+        Math.min(
+          ((FR_EMPL.NM1 + FR_EMPL.NM2) / 4) * dailytime,
+          machinecount.filter(
+            (ele: MACHINE_COUNTING, index: number) => ele.EQ_NAME === "FR"
+          )[0]?.EQ_QTY * dailytime
+        ),
+      EQ_AVL_LEADTIME:
+        ycsxbalance.filter(
+          (ele: YCSX_BALANCE_CAPA_DATA, index: number) => ele.EQ_NAME === "FR"
+        )[0]?.YCSX_BALANCE /
+        Math.min(
+          ((FR_EMPL.TNM1 + FR_EMPL.TNM2) / 4) * dailytime,
+          machinecount.filter(
+            (ele: MACHINE_COUNTING, index: number) => ele.EQ_NAME === "FR"
           )[0]?.EQ_QTY * dailytime
         ),
     },
   ];
+  const getTotalEMPL = () => {
+    return (
+      machinecount.filter(
+        (ele: MACHINE_COUNTING, index: number) => ele.EQ_NAME === "FR"
+      )[0]?.EQ_QTY *
+        2 *
+        2 +
+      machinecount.filter(
+        (ele: MACHINE_COUNTING, index: number) => ele.EQ_NAME === "SR"
+      )[0]?.EQ_QTY *
+        2 *
+        2 +
+      machinecount.filter(
+        (ele: MACHINE_COUNTING, index: number) => ele.EQ_NAME === "DC"
+      )[0]?.EQ_QTY *
+        2 *
+        1 +
+      machinecount.filter(
+        (ele: MACHINE_COUNTING, index: number) => ele.EQ_NAME === "ED"
+      )[0]?.EQ_QTY *
+        2 *
+        1
+    );
+  };
+  const getRetainEMPL = () => {
+    return datadiemdanh.filter(
+      (e: DATA_DIEM_DANH, index: number) =>
+        e.WORK_POSITION_NAME === "SX_DC1" ||
+        e.WORK_POSITION_NAME === "SX_SR1" ||
+        e.WORK_POSITION_NAME === "SX_ED1" ||
+        e.WORK_POSITION_NAME === "SX_FR1" ||
+        e.WORK_POSITION_NAME === "SX_ED3" ||
+        e.WORK_POSITION_NAME === "SX_FR3"
+    ).length;
+  };
+  const getRealTimeEMPL = () => {
+    return datadiemdanh.filter(
+      (e: DATA_DIEM_DANH, index: number) =>
+        (e.WORK_POSITION_NAME === "SX_DC1" ||
+          e.WORK_POSITION_NAME === "SX_SR1" ||
+          e.WORK_POSITION_NAME === "SX_ED1" ||
+          e.WORK_POSITION_NAME === "SX_FR1" ||
+          e.WORK_POSITION_NAME === "SX_ED3" ||
+          e.WORK_POSITION_NAME === "SX_FR3") &&
+        e.ON_OFF === 1
+    ).length;
+  };
+  const getFRTotal = () => {
+    return machinecount.filter(
+      (ele: MACHINE_COUNTING, index: number) => ele.EQ_NAME === "FR"
+    )[0]?.EQ_QTY;
+  };
+  const getSRTotal = () => {
+    return machinecount.filter(
+      (ele: MACHINE_COUNTING, index: number) => ele.EQ_NAME === "SR"
+    )[0]?.EQ_QTY;
+  };
+  const getDCTotal = () => {
+    return machinecount.filter(
+      (ele: MACHINE_COUNTING, index: number) => ele.EQ_NAME === "DC"
+    )[0]?.EQ_QTY;
+  };
+  const getEDTotal = () => {
+    return machinecount.filter(
+      (ele: MACHINE_COUNTING, index: number) => ele.EQ_NAME === "ED"
+    )[0]?.EQ_QTY;
+  };
+  const handle_loadEQ_STATUS = () => {
+    generalQuery("checkEQ_STATUS", {})
+      .then((response) => {
+        //console.log(response.data.data);
+        if (response.data.tk_status !== "NG") {
+          const loaded_data: EQ_STT[] = response.data.data.map(
+            (element: EQ_STT, index: number) => {
+              return {
+                ...element,
+                id: index,
+              };
+            }
+          );
+          //console.log(loaded_data);
+          setEQ_STATUS(loaded_data);
+        } else {
+          setEQ_STATUS([]);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+  const getrunningFR = () => {
+    return eq_status.filter(
+      (element: EQ_STT, index: number) =>
+        element.EQ_NAME.substring(0, 2) === "FR" &&
+        (element.EQ_STATUS === "MASS" || element.EQ_STATUS === "SETTING")
+    ).length;
+  };
+  const getrunningSR = () => {
+    return eq_status.filter(
+      (element: EQ_STT, index: number) =>
+        element.EQ_NAME.substring(0, 2) === "SR" &&
+        (element.EQ_STATUS === "MASS" || element.EQ_STATUS === "SETTING")
+    ).length;
+  };
+  const getrunningDC = () => {
+    return eq_status.filter(
+      (element: EQ_STT, index: number) =>
+        element.EQ_NAME.substring(0, 2) === "DC" &&
+        (element.EQ_STATUS === "MASS" || element.EQ_STATUS === "SETTING")
+    ).length;
+  };
+  const getrunningED = () => {
+    return eq_status.filter(
+      (element: EQ_STT, index: number) =>
+        element.EQ_NAME.substring(0, 2) === "ED" && element.EQ_STATUS === "MASS"
+    ).length;
+  };
+  const workforcechartMM = useMemo(() => {
+    return (
+      <Chart
+        id='workforcechart'
+        title='WORKFORCE STATUS'
+        dataSource={dataSource_eq}
+        width={700}
+      >
+        <ArgumentAxis title='MACHINE NAME' />
+        <ValueAxis title='Workforce (人)' />
+        <CommonSeriesSettings
+          argumentField='EQ_NAME'
+          type='bar'
+          hoverMode='allArgumentPoints'
+          selectionMode='allArgumentPoints'
+        >
+          <Label visible={true}>
+            <Format type='fixedPoint' precision={0} />
+          </Label>
+        </CommonSeriesSettings>
+        <Series
+          argumentField='EQ_NAME'
+          valueField='WF_FOR_FULL_CAPA'
+          name='WF_FOR_FULL_CAPA'
+          color='#DE14FE'
+        />
+        <Series
+          argumentField='EQ_NAME'
+          valueField='RETAIN_WF'
+          name='RETAIN_WF'
+          color='blue'
+        />
+        <Series
+          argumentField='EQ_NAME'
+          valueField='REALTIME_WF'
+          name='REALTIME_WF'
+          color='#01D201'
+        />
+        <Legend
+          verticalAlignment='bottom'
+          horizontalAlignment='center'
+        ></Legend>
+      </Chart>
+    );
+  }, [datadiemdanh]);
+  const leadtimechartMM = useMemo(() => {
+    return (
+      <Chart
+        id='chartcapa'
+        rotated={true}
+        dataSource={dataSource_capa}
+        width={700}
+      >
+        <ArgumentAxis title='MACHINE NAME' />
+        <ValueAxis title='LeadTime (days)' />
+        <Title
+          text='PRODUCTION LEADTIME BY EQUIPMENT'
+          subtitle='YCSX BALANCE STANDARD'
+        />
+        <Series
+          valueField='EQ_LEADTIME'
+          argumentField='EQ_NAME'
+          name='REAL LEADTIME'
+          type='bar'
+          color='red'
+        >
+          <Label
+            visible={true}
+            customizeText={(e: any) => {
+              return `${e.value.toLocaleString("en-US", {
+                maximumFractionDigits: 1,
+              })} days`;
+            }}
+          />
+        </Series>
+        <Series
+          valueField='EQ_AVL_LEADTIME'
+          argumentField='EQ_NAME'
+          name='AVAILABLE LEADTIME'
+          type='bar'
+          color='#3DC23D'
+        >
+          <Label
+            visible={true}
+            customizeText={(e: any) => {
+              return `${e.value.toLocaleString("en-US", {
+                maximumFractionDigits: 1,
+              })} days`;
+            }}
+          />
+        </Series>
+        <Legend visible={true} />
+        <Tooltip enabled={true} customizeTooltip={customizeTooltip} />
+      </Chart>
+    );
+  }, [ycsxbalance]);
   useEffect(() => {
     getDiemDanhAllBP();
     getMachineCounting();
-    getYCSXBALANCE(); 
+    getYCSXBALANCE();
+    handle_loadEQ_STATUS();
+    let intervalID = window.setInterval(() => {
+      handle_loadEQ_STATUS();
+      getDiemDanhAllBP();
+      getMachineCounting();
+      getYCSXBALANCE();
+    }, 5000);
+    return () => {
+      window.clearInterval(intervalID);
+    };
   }, []);
   return (
     <div className='capaqlsx'>
-      <CIRCLE_COMPONENT value={212} title="WORKFORCE FOR FULL CAPA"/>
-      <div className='title'>1. WORKFORCE STATUS AND PRODUCTION LEADTIME</div>
-      <div className='workforcechart'>
-        <div className='starndardworkforce'>
-          <Chart
-            id='workforcechart'
-            title='WORKFORCE STATUS'
-            dataSource={dataSource_eq}
-            width={700}
-          >
-            <ArgumentAxis title='MACHINE NAME' />
-            <ValueAxis title='Workforce (人)' />
-            <CommonSeriesSettings
-              argumentField='EQ_NAME'
-              type='bar'
-              hoverMode='allArgumentPoints'
-              selectionMode='allArgumentPoints'
-            >
-              <Label visible={true}>
-                <Format type='fixedPoint' precision={0} />
-              </Label>
-            </CommonSeriesSettings>
-            <Series
-              argumentField='EQ_NAME'
-              valueField='WF_FOR_FULL_CAPA'
-              name='WF_FOR_FULL_CAPA'
-            />
-            <Series
-              argumentField='EQ_NAME'
-              valueField='RETAIN_WF'
-              name='RETAIN_WF'
-            />
-            <Series
-              argumentField='EQ_NAME'
-              valueField='REALTIME_WF'
-              name='REALTIME_WF'
-            />
-            <Legend
-              verticalAlignment='bottom'
-              horizontalAlignment='center'
-            ></Legend>
-          </Chart>
-        </div>
-        <div className='capachart'>
-        <Chart id='chartcapa' rotated={true} dataSource={dataSource_capa}  width={700}>
-          <ArgumentAxis title='MACHINE NAME' />
-          <ValueAxis title='LeadTime (days)' />
-          <Title
-            text='PRODUCTION LEADTIME BY EQUIPMENT'
-            subtitle='YCSX BALANCE STANDARD'
-          />
-          <Series
-            valueField='EQ_LEADTIME'
-            argumentField='EQ_NAME'
-            name='REAL LEADTIME'
-            type='bar'
-            color='red'
-          >
-            <Label
-              visible={true}
-              customizeText={(e: any) => {
-                return `${e.value.toLocaleString("en-US", {
-                  maximumFractionDigits: 1,
-                })} days`;
-              }}
-            />
-          </Series>
-          <Series
-            valueField='EQ_AVL_LEADTIME'
-            argumentField='EQ_NAME'
-            name='AVAILABLE LEADTIME'
-            type='bar'
-            color='#3DC23D'
-          >
-            <Label
-              visible={true}
-              customizeText={(e: any) => {
-                return `${e.value.toLocaleString("en-US", {
-                  maximumFractionDigits: 1,
-                })} days`;
-              }}
-            />
-          </Series>
-          <Legend visible={true} />
-          <Tooltip enabled={true} customizeTooltip={customizeTooltip} />
-        </Chart>
+      <div
+        className='maintitle'
+        style={{ fontSize: "2rem", alignSelf: "center" }}
+      >
+        PRODUCTION CAPA MANAGEMENT
       </div>
+      <div className='wfandeqstatus'>
+        <div className='sectiondiv'>
+          <div className='title'>1. WORKFORCE STATUS (Workers Only)</div>
+          <div className='totalwfdiv'>
+            <CIRCLE_COMPONENT
+              type='workforce'
+              value={getTotalEMPL()?.toString()}
+              title='WORKFORCE FOR FULL CAPA'
+              color='#DE14FE'
+            />
+            <CIRCLE_COMPONENT
+              type='workforce'
+              value={getRetainEMPL()?.toString()}
+              title='RETAIN WORKFORCE'
+              color='blue'
+            />
+            <CIRCLE_COMPONENT
+              type='workforce'
+              value={getRealTimeEMPL()?.toString()}
+              title='REAL TIME WORKFORCE'
+              color='#01D201'
+            />
+          </div>
+        </div>
+        <div className='sectiondiv'>
+          <div className='title'>2. EQUIPMENT STATUS (Running/Total)</div>
+          <div className='totalwfdiv'>
+            <CIRCLE_COMPONENT
+              type='machine'
+              value={
+                getrunningFR()?.toString() + "/" + getFRTotal()?.toString()
+              }
+              title='FR'
+              color='blue'
+            />
+            <CIRCLE_COMPONENT
+              type='machine'
+              value={
+                getrunningSR()?.toString() + "/" + getSRTotal()?.toString()
+              }
+              title='SR'
+              color='red'
+            />
+            <CIRCLE_COMPONENT
+              type='machine'
+              value={
+                getrunningDC()?.toString() + "/" + getDCTotal()?.toString()
+              }
+              title='DC'
+              color='#DE14FE'
+            />
+            <CIRCLE_COMPONENT
+              type='machine'
+              value={
+                getrunningED()?.toString() + "/" + getEDTotal()?.toString()
+              }
+              title='ED'
+              color='#376DD4'
+            />
+          </div>
+        </div>
+      </div>
+      
+      <div className='workforcechart'>
+       
+        <div className="sectiondiv">
+        <div className='title'>3. WORKFORCE STATUS BY EQUIPMENT</div>
+          <div className='starndardworkforce'>{workforcechartMM}</div>          
+        </div>
+        <div className="sectiondiv">     
+        <div className='title'>4. PRODUCTION LEADTIME</div>    
+          <div className='capachart'>{leadtimechartMM}</div>
+        </div>
+       
       </div>
       <div className='ycsxbalancedatatable'>
         <table>

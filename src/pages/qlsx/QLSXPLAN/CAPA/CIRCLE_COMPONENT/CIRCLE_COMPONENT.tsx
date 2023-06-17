@@ -1,17 +1,47 @@
 import React from 'react'
 import './CIRCLE_COMPONENT.scss'
-
-const CIRCLE_COMPONENT = ({value, title, style}:{value?: number, title?: string, style?: any}) => {
-  return (
-    <div className='circlecomponent'>
-        <div className="value" style={style}>
-            {value}    
-        </div>
-        <div className="title" style={style}>
-            {title}
-        </div>    
-    </div>
-  )
+import { FcBusinessman } from 'react-icons/fc'
+import { MdOutlinePrecisionManufacturing } from 'react-icons/md'
+const CIRCLE_COMPONENT = ({type, value, title, color}:{type?: string, value?: string, title?: string, color?: string}) => {
+    if(type==='workforce')
+    {
+        return (
+            <div className='circlecomponent'>
+                <div className="value" style={{color: color}}>
+                    {value}<FcBusinessman/>   
+                </div>
+                <div className="title" style={{color: color}}>
+                    {title}
+                </div>    
+            </div>
+          )
+    }
+    else if(type==='machine')
+    {
+        return (
+            <div className='machinecirclecomponent'>
+                 <div className="title" style={{color: color}}>
+                    {title}
+                </div> 
+                <div className="value" style={{color: color}}> 
+                    {value} <img alt='running' src='/blink.gif' width={40} height={20}></img>                    
+                </div>
+                
+                  
+            </div>
+          )
+    }
+    else {
+        return (
+            <div className='circlecomponent'>
+                <div className="value" style={{color: color}}>
+                    {value}<FcBusinessman/>   
+                </div>
+                <div className="title" style={{color: color}}>
+                    {title}
+                </div>    
+            </div>
+          )
+    }
 }
-
 export default CIRCLE_COMPONENT

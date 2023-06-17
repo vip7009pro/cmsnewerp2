@@ -2,9 +2,9 @@
     display: flex;
     flex-direction: column;
     background-image: linear-gradient(0deg, #ebf2f2, #cad3da);
-    width: 200px;
-    height: 200px;
-    border-radius: 10px;
+    width: 180px;
+    height: 160px;
+    border-radius: 20%;
     -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
     box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
     justify-content: center;
@@ -13,11 +13,39 @@
     gap: 50px;
     
     .value {
-        font-size: 4rem;
+        display: flex;
+        font-size: 3rem;
         color:blue;
     }
     .title {
         font-size: 0.8rem;
+        align-self: center;        
+
+    }
+
+}
+.machinecirclecomponent {
+    display: flex;
+    flex-direction: column;
+    background-image: linear-gradient(0deg, #ebf2f2, #cad3da);
+    width: 180px;
+    height: 160px;
+    border-radius: 20%;
+    -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+    box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+    justify-content: center;
+    align-content:space-between ;
+    align-items: center;
+    gap: 50px;
+    
+    .value {
+        display: flex;
+        font-size: 2rem;
+        color:blue;
+        align-items: center;
+    }
+    .title {
+        font-size: 2rem;
         align-self: center;        
 
     }

@@ -1,115 +1,240 @@
-.Nav {
-  background: white;
-  height: fit-content;
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  background-color: rgba(255, 255, 255, 0);
-  overflow-y: scroll;
 
-  .NavIcon {
+@media only screen and (max-width: 3000px) {
+  .Nav {
+    background: white;
+    height: fit-content;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    background-color: rgba(255, 255, 255, 0);
+    overflow-y: scroll;
+  
+    .NavIcon {
+      position: fixed;
+      top: 8px;
+      margin-left: 10px;
+      font-size: 2rem;
+      height: 80px;
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      z-index: 99999;
+    }
+  }
+  
+  .SidebarNav {
+    position: sticky;
+    /*  background: rgb(255, 255, 255); */
+    background-image: linear-gradient(310deg, rgba(86, 199, 252, 1), rgba(200, 229, 240, 1));
+    min-width: 250px;
+    height: 87vh;
+    display: flex;
+    justify-content: center;
+    top: 45px;
+    z-index: 10;
+    -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.1);
+    box-shadow: 5px 5px 15px 5px rgba(2, 2, 2, 0.1);
+    margin-top: 2px;
+    border-radius: 5px;
+    margin-left: 1px;
+    margin-right: 2px;
+    padding-right: 5px;
+    overflow-y: scroll;  
+  
+  
+    &.show-sidebar {
+      display: flex;
+      width: 15%;
+      animation: inAnimation 250ms ease-in;
+    }
+  
+    &.hide-sidebar {
+      display: none;
+      width: 0%;
+      animation: outAnimation 270ms ease-out;
+    }
+  
+    @keyframes inAnimation {
+      0% {
+        opacity: 0;
+        visibility: hidden;
+        left: -100;
+      }
+  
+      100% {
+        opacity: 1;
+        visibility: visible;
+        left: 0;
+      }
+    }
+  
+    @keyframes outAnimation {
+      0% {
+        opacity: 1;
+        left: 0;
+      }
+  
+      100% {
+        opacity: 0;
+        visibility: hidden;
+        left: -100;
+      }
+    }
+  
+  }
+  
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+    /* background-image: linear-gradient(0deg, #ffffff, #ffffff); */
+  }
+  
+  /* Optional: show position indicator in red */
+  ::-webkit-scrollbar-thumb {
+    border-radius: 2px;
+    background-color: #FFF;
+    background-image: linear-gradient(0deg, #7bf8a4, #02c722);
+  }
+  
+  .SidebarWrap {
+    width: 100%;
+    .cmslogo {
+      text-decoration: none;
+      padding: 10px;
+      font-size: 20px;
+    }
+  
+    .NavIcon {
+      margin-left: 15px;
+      font-size: 2rem;
+      height: 80px;
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      text-decoration: none;
+      color: blue
+    }
+  }
+  
+
+}
+
+@media only screen and (max-width: 768px){
+  .Nav {
+    background: white;
+    height: fit-content;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    background-color: rgba(255, 255, 255, 0);
+    overflow-y: scroll;
+  
+    .NavIcon {
+      position: fixed;
+      top: 8px;
+      margin-left: 10px;
+      font-size: 2rem;
+      height: 80px;
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      z-index: 99999;
+    }
+  }
+  
+  .SidebarNav {
     position: fixed;
-    top: 8px;
-    margin-left: 10px;
-    font-size: 2rem;
-    height: 80px;
+    /*  background: rgb(255, 255, 255); */
+    background-image: linear-gradient(310deg, rgba(86, 199, 252, 1), rgba(200, 229, 240, 1));
+    min-width: 250px;
+    height: 87vh;
     display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    z-index: 99999;
-  }
-}
-
-.SidebarNav {
-  position: sticky;
-  /*  background: rgb(255, 255, 255); */
-  background-image: linear-gradient(310deg, rgba(86, 199, 252, 1), rgba(200, 229, 240, 1));
-  min-width: 250px;
-  height: 87vh;
-  display: flex;
-  justify-content: center;
-  top: 45px;
-  z-index: 10;
-  -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.1);
-  box-shadow: 5px 5px 15px 5px rgba(2, 2, 2, 0.1);
-  margin-top: 2px;
-  border-radius: 5px;
-  margin-left: 1px;
-  margin-right: 2px;
-  padding-right: 5px;
-  overflow-y: scroll;  
-
-
-  &.show-sidebar {
-    display: flex;
-    width: 15%;
-    animation: inAnimation 250ms ease-in;
-  }
-
-  &.hide-sidebar {
-    display: none;
-    width: 0%;
-    animation: outAnimation 270ms ease-out;
-  }
-
-  @keyframes inAnimation {
-    0% {
-      opacity: 0;
-      visibility: hidden;
-      left: -100;
+    justify-content: center;
+    top: 100px;
+    z-index: 10;
+    -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.1);
+    box-shadow: 5px 5px 15px 5px rgba(2, 2, 2, 0.1);
+    margin-top: 2px;
+    border-radius: 5px;
+    margin-left: 1px;
+    margin-right: 2px;
+    padding-right: 5px;
+    overflow-y: scroll;  
+  
+  
+    &.show-sidebar {
+      display: flex;
+      width: 15%;
+      animation: inAnimation 250ms ease-in;
     }
-
-    100% {
-      opacity: 1;
-      visibility: visible;
-      left: 0;
+  
+    &.hide-sidebar {
+      display: none;
+      width: 0%;
+      animation: outAnimation 270ms ease-out;
+    }
+  
+    @keyframes inAnimation {
+      0% {
+        opacity: 0;
+        visibility: hidden;
+        left: -100;
+      }
+  
+      100% {
+        opacity: 1;
+        visibility: visible;
+        left: 0;
+      }
+    }
+  
+    @keyframes outAnimation {
+      0% {
+        opacity: 1;
+        left: 0;
+      }
+  
+      100% {
+        opacity: 0;
+        visibility: hidden;
+        left: -100;
+      }
+    }
+  
+  }
+  
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+    /* background-image: linear-gradient(0deg, #ffffff, #ffffff); */
+  }
+  
+  /* Optional: show position indicator in red */
+  ::-webkit-scrollbar-thumb {
+    border-radius: 2px;
+    background-color: #FFF;
+    background-image: linear-gradient(0deg, #7bf8a4, #02c722);
+  }
+  
+  .SidebarWrap {
+    width: 100%;
+    .cmslogo {
+      text-decoration: none;
+      padding: 10px;
+      font-size: 20px;
+    }
+  
+    .NavIcon {
+      margin-left: 15px;
+      font-size: 2rem;
+      height: 80px;
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      text-decoration: none;
+      color: blue
     }
   }
+  
 
-  @keyframes outAnimation {
-    0% {
-      opacity: 1;
-      left: 0;
-    }
-
-    100% {
-      opacity: 0;
-      visibility: hidden;
-      left: -100;
-    }
-  }
-
-}
-
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-  /* background-image: linear-gradient(0deg, #ffffff, #ffffff); */
-}
-
-/* Optional: show position indicator in red */
-::-webkit-scrollbar-thumb {
-  border-radius: 2px;
-  background-color: #FFF;
-  background-image: linear-gradient(0deg, #7bf8a4, #02c722);
-}
-
-.SidebarWrap {
-  width: 100%;
-  .cmslogo {
-    text-decoration: none;
-    padding: 10px;
-    font-size: 20px;
-  }
-
-  .NavIcon {
-    margin-left: 15px;
-    font-size: 2rem;
-    height: 80px;
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    text-decoration: none;
-    color: blue
-  }
 }
