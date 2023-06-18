@@ -39,8 +39,9 @@ function Home() {
     to: { x: 0, y: 0 },
   });
   const [checkVerWeb, setCheckVerWeb] = useState(1);
-  console.log("local ver", current_ver);
+ 
   useEffect(() => {
+    console.log("local ver", current_ver);
     generalQuery("checkWebVer", {})
       .then((response) => {
         console.log(response.data.tk_status);

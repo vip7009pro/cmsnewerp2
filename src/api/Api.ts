@@ -1,6 +1,8 @@
 import Cookies from "universal-cookie";
 import Swal from "sweetalert2";
 import { store } from "../redux/store";
+import {login as loginSlice,logout as logoutSlice } from "../redux/slices/globalSlice"
+
 
 const axios = require("axios").default;
 const cookies = new Cookies();
@@ -35,12 +37,12 @@ export function login(user: string, pass: string) {
     })
     .then((response: any) => {
       console.log("ketqua");
-      console.log(response.data);
+      //console.log(response.data);
       var Jresult = response.data;
-      console.log("Status = " + Jresult.tk_status);
-      console.log("Token content = " + Jresult.token_content);
+      //console.log("Status = " + Jresult.tk_status);
+      //console.log("Token content = " + Jresult.token_content);
       if (Jresult.tk_status === "ok") {
-        console.log(Jresult.token_content);
+        //console.log(Jresult.token_content);
         Swal.fire(
           "Thông báo",
           "Chúc mừng bạn, đăng nhập thành công !",
@@ -49,7 +51,9 @@ export function login(user: string, pass: string) {
         //alert("Đăng nhập thành công");
         cookies.set("token", Jresult.token_content, { path: "/" });
         setTimeout(() => {
-          window.location.href = "/";
+          /* window.location.href = "/"; */
+          store.dispatch(loginSlice(true));
+
         }, 1000);
       } else {
         Swal.fire("Tên đăng nhập hoặc mật khẩu sai");
@@ -61,9 +65,10 @@ export function login(user: string, pass: string) {
 }
 export function logout() {
   cookies.set("token", "reset", { path: "/" });
-  Swal.fire("Thông báo", "Đăng xuất thành công !", "success");
+  /* Swal.fire("Thông báo", "Đăng xuất thành công !", "success"); */
   setTimeout(() => {
-    window.location.href = "/";
+    /* window.location.href = "/"; */
+    store.dispatch(logoutSlice(false));
   }, 1000);
 }
 export async function checkLogin() {

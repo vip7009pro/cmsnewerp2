@@ -4,8 +4,8 @@ import { ReactElement } from 'react';
 import { io } from "socket.io-client";
 import Swal from 'sweetalert2';
 
-const socket =  io('http://14.160.33.94:3005')
-//const socket =  io('http://localhost:3005')
+//const socket =  io('http://14.160.33.94:3005')
+const socket =  io('http://localhost:3005')
 socket.on("connect", () => {
   console.log(socket.id); // x8WIv7-mJelg7on_ALbx
 });
@@ -138,6 +138,7 @@ export interface GlobalInterface {
     tabs: ELE_ARRAY[],
     tabIndex: number,
     tabModeSwap: boolean,
+    loginState: boolean,
 }
 
 const initialState:GlobalInterface = {   
@@ -196,6 +197,7 @@ const initialState:GlobalInterface = {
     tabs: [],
     tabIndex: 0,
     tabModeSwap: true,
+    loginState: false,
      
 }
 
@@ -367,8 +369,14 @@ export const glbSlice = createSlice({
         },
         setTabModeSwap: (state, action:PayloadAction<boolean>)=> {
           state.tabModeSwap = action.payload;
+        },
+        logout: (state, action:PayloadAction<boolean>)=> {
+          state.loginState = false;
+        },
+        login: (state, action:PayloadAction<boolean>)=> {          
+          state.loginState = true;
         }
     }
 });
-export const {changeDiemDanhState, changeUserData, update_socket,toggleSidebar, hideSidebar, addChithiArray, resetChithiArray, changeServer, listen_socket,addTab,closeTab,settabIndex, setTabModeSwap,resetTab } = glbSlice.actions;
+export const {changeDiemDanhState, changeUserData, update_socket,toggleSidebar, hideSidebar, addChithiArray, resetChithiArray, changeServer, listen_socket,addTab,closeTab,settabIndex, setTabModeSwap,resetTab,logout, login } = glbSlice.actions;
 export default glbSlice.reducer;
