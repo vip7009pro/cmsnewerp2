@@ -13,6 +13,9 @@ import { MdOutlineDelete, MdOutlinePivotTableChart } from 'react-icons/md';
 import "./FCSTManager.scss"
 import PivotGridDataSource from 'devextreme/ui/pivot_grid/data_source';
 import PivotTable from '../../../components/PivotChart/PivotChart';
+import { UserData } from '../../../redux/slices/globalSlice';
+import { RootState } from '../../../redux/store';
+import { useSelector } from 'react-redux';
 
 
 
@@ -84,8 +87,10 @@ const FCSTManager = () => {
     them1po: false,
     them1invoice:false,
     testinvoicetable: false
-  });
-  const [userData, setUserData] = useContext(UserContext);
+  });  
+  const userData: UserData | undefined = useSelector(
+    (state: RootState) => state.totalSlice.userData
+  );
   const [uploadExcelJson, setUploadExcelJSon] = useState<Array<any>>([]);
   const [isLoading, setisLoading] = useState(false);   
   const [column_excel, setColumn_Excel]= useState<Array<any>>([]);
@@ -232,7 +237,7 @@ const FCSTManager = () => {
         <GridToolbarDensitySelector /> 
         <IconButton className='buttonIcon'onClick={()=>{SaveExcel(fcstdatatable,"Fcst Table")}}><AiFillFileExcel color='green' size={25}/>SAVE</IconButton> 
         <IconButton className='buttonIcon'onClick={()=>{
-          checkBP(userData.EMPL_NO,userData.MAINDEPTNAME,['KD'], handleConfirmDeleteFcst);
+          checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['KD'], handleConfirmDeleteFcst);
           //handleConfirmDeleteFcst();
           }}><MdOutlineDelete color='red' size={25}/>XÓA FCST</IconButton>        
         <GridToolbarQuickFilter/>
@@ -626,7 +631,7 @@ const FCSTManager = () => {
       let err_code:boolean =false;
       for(let i=0;i<fcstdatatablefilter.length;i++)
       {
-        if(fcstdatatablefilter[i].EMPL_NO === userData.EMPL_NO)
+        if(fcstdatatablefilter[i].EMPL_NO === userData?.EMPL_NO)
         {
           await generalQuery("delete_fcst", {           
             FCST_ID: fcstdatatablefilter[i].FCST_ID
@@ -675,7 +680,7 @@ const FCSTManager = () => {
           'Đang Xóa FCST hàng loạt',
           'success'
         );
-        checkBP(userData.EMPL_NO,userData.MAINDEPTNAME,['KD'], deleteFcst);
+        checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['KD'], deleteFcst);
         //deleteFcst();
       }
     })
@@ -1552,7 +1557,7 @@ const FCSTManager = () => {
           </span>
         </div>  
         <div className='mininavitem'  onClick={() =>
-            checkBP(userData.EMPL_NO, userData.MAINDEPTNAME, ['KD'], () => {
+            checkBP(userData?.EMPL_NO, userData?.MAINDEPTNAME, ['KD'], () => {
               setNav(2);
             })
           } style={{backgroundColor:selection.thempohangloat === true ? '#02c712':'#abc9ae', color: selection.thempohangloat === true ? 'yellow':'yellow'}}>

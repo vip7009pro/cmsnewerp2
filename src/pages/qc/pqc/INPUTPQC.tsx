@@ -20,6 +20,9 @@ import { generalQuery } from "../../../api/Api";
 import { UserContext } from "../../../api/Context";
 import { SaveExcel } from "../../../api/GlobalFunction";
 import "./INPUTPQC.scss";
+import { UserData } from "../../../redux/slices/globalSlice";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../redux/store";
 const axios = require("axios").default;
 
 interface CodeListData {
@@ -43,7 +46,9 @@ const INPUTPQC = () => {
     tab2: false,
     tab3: false
   });
-  const [userData, setUserData] = useContext(UserContext);
+  const userData: UserData | undefined = useSelector(
+    (state: RootState) => state.totalSlice.userData
+  );
   const [uploadExcelJson, setUploadExcelJSon] = useState<Array<any>>([]);
   const [isLoading, setisLoading] = useState(false);
   const [column_excel, setColumn_Excel] = useState<Array<any>>([]);
@@ -275,7 +280,7 @@ const INPUTPQC = () => {
       PROD_REQUEST_QTY: newycsxqty,
       G_CODE: selectedCode?.G_CODE,
       CUST_CD: selectedCust_CD?.CUST_CD,
-      EMPL_NO: userData.EMPL_NO,
+      EMPL_NO: userData?.EMPL_NO,
       REMK: newycsxremark,
       DELIVERY_DT: moment(deliverydate).format("YYYYMMDD"),
       CHECKSTATUS: "Waiting",

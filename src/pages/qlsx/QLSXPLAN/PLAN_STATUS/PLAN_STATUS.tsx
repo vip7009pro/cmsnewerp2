@@ -33,7 +33,6 @@ interface SX_DATA {
 }
 const PLAN_STATUS = () => { 
   const [readyRender, setReadyRender] = useState(false);
-  const [userData, setUserData] = useContext(UserContext);
   const [isLoading, setisLoading] = useState(false);  
   const [isPending, startTransition]=useTransition();
   const [fromdate, setFromDate] = useState(moment().format('YYYY-MM-DD'));

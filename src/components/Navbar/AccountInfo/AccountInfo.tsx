@@ -14,6 +14,9 @@ import getsentence from "../../String/String";
 import { IconButton } from "@mui/material";
 import { AiOutlineCloudUpload } from "react-icons/ai";
 import Swal from "sweetalert2";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../../../redux/store";
+import { UserData, changeUserData } from "../../../redux/slices/globalSlice";
 
 const axios = require('axios').default;
 
@@ -35,7 +38,10 @@ export function LinearProgressWithLabel(
 }
 
 export default function AccountInfo() {
-  const [userdata, setUserData] = useContext(UserContext);
+const userdata: UserData | undefined = useSelector(
+  (state: RootState) => state.totalSlice.userData
+);
+const dispatch = useDispatch();
   const [lang,setLang] = useContext(LangConText);
   const [workday, setWorkDay] = useState(0);
   const [overtimeday, setOverTimeDay] = useState(0);
@@ -69,7 +75,7 @@ export default function AccountInfo() {
     generalQuery("workdaycheck", insertData)
       .then((response) => {
         //console.log(response.data.data[0].WORK_DAY);
-        setWorkDay(response.data.data[0].WORK_DAY);
+        setWorkDay(response.data.data[0]?.WORK_DAY);
       })
       .catch((error) => {
         console.log(error);
@@ -77,7 +83,7 @@ export default function AccountInfo() {
     generalQuery("tangcadaycheck", insertData)
       .then((response) => {
         //console.log(response.data.data[0].WORK_DAY);
-        setOverTimeDay(response.data.data[0].TANGCA_DAY);
+        setOverTimeDay(response.data.data[0]?.TANGCA_DAY);
       })
       .catch((error) => {
         console.log(error);
@@ -85,7 +91,7 @@ export default function AccountInfo() {
     generalQuery("nghidaycheck", insertData)
       .then((response) => {
         //console.log(response.data.data[0].WORK_DAY);
-        setNghiDay(response.data.data[0].NGHI_DAY);
+        setNghiDay(response.data.data[0]?.NGHI_DAY);
       })
       .catch((error) => {
         console.log(error);
@@ -94,7 +100,7 @@ export default function AccountInfo() {
     generalQuery("countxacnhanchamcong", insertData)
       .then((response) => {
         //console.log(response.data.data[0].WORK_DAY);
-        setCountXacNhan(response.data.data[0].COUTNXN);
+        setCountXacNhan(response.data.data[0]?.COUTNXN);
       })
       .catch((error) => {
         console.log(error);
@@ -104,7 +110,7 @@ export default function AccountInfo() {
       .then((response) => {        
         setThuongPhat({
           count_thuong: response.data.data.count_thuong[0].THUONG,
-          count_phat: response.data.data.count_phat[0].PHAT,
+          count_phat: response.data.data.count_phat[0]?.PHAT,
         });
       })
       .catch((error) => {
@@ -113,14 +119,14 @@ export default function AccountInfo() {
   };
   let file:any = null;
   const uploadFile2 = async(e:any)=> {
-    uploadQuery(file,'NS_'+ userdata.EMPL_NO+'.jpg','Picture_NS')
+    uploadQuery(file,'NS_'+ userdata?.EMPL_NO+'.jpg','Picture_NS')
           .then((response)=> {
             if (response.data.tk_status !== "NG") {
-              generalQuery("update_empl_image", { EMPL_NO: userdata.EMPL_NO, EMPL_IMAGE: 'Y' })
+              generalQuery("update_empl_image", { EMPL_NO: userdata?.EMPL_NO, EMPL_IMAGE: 'Y' })
               .then((response) => {        
                 if (response.data.tk_status !== "NG") 
-                {
-                  setUserData({...userdata, EMPL_IMAGE:'Y'});
+                {                 
+                  dispatch(changeUserData({...userdata, EMPL_IMAGE:'Y'}));
                   Swal.fire('Thông báo','Upload avatar thành công','success');
                 } 
                 else {
@@ -140,14 +146,14 @@ export default function AccountInfo() {
           });
   }
 
-  useEffect(() => {
+  useEffect(() => {    
     getData();
     return () => {};
   }, []);
 
   const DOB = () => {
-    if (userdata.DOB != null) {
-      return userdata.DOB;
+    if (userdata?.DOB != null) {
+      return userdata?.DOB;
     } else {
       return "2021-12-16";
     }
@@ -156,52 +162,52 @@ export default function AccountInfo() {
     <div className='accountinfo'>
       <h1 className="text-3xl">{/* Thông tin của bạn */}{getsentence(17,lang)}</h1>
       <div className='panelhome'>
-        <div className={`cot0 ${(userdata.EMPL_IMAGE ==='Y')? 'on':'off'}`}>        
-          {(userdata.EMPL_IMAGE ==='Y') && <img width={240} height={340} src={'/Picture_NS/NS_'+ userdata.EMPL_NO+'.jpg'} alt={userdata.EMPL_NO}></img>}
+        <div className={`cot0 ${(userdata?.EMPL_IMAGE ==='Y')? 'on':'off'}`}>        
+          {(userdata?.EMPL_IMAGE ==='Y') && <img width={240} height={340} src={'/Picture_NS/NS_'+ userdata?.EMPL_NO+'.jpg'} alt={userdata?.EMPL_NO}></img>}
         </div>
-        <div className={`cot1 ${(userdata.EMPL_IMAGE ==='Y')? 'on':'off'}`}>
+        <div className={`cot1 ${(userdata?.EMPL_IMAGE ==='Y')? 'on':'off'}`}>
           <h5 className="text-3xl">{/* Thông tin nhân viên */}{getsentence(18,lang)}:</h5>
           <ul>
             <li className='emplInfoList'>
               {" "}
-             {/*  Họ và tên */}{getsentence(19,lang)}: {userdata.MIDLAST_NAME} {userdata.FIRST_NAME}
+             {/*  Họ và tên */}{getsentence(19,lang)}: {userdata?.MIDLAST_NAME} {userdata?.FIRST_NAME}
             </li>
-            <li className='emplInfoList'> {/* Mã nhân sự */}{getsentence(20,lang)}: {userdata.CMS_ID}</li>
-            <li className='emplInfoList'> {/* Mã ERP */}{getsentence(21,lang)}: {userdata.EMPL_NO}</li>
+            <li className='emplInfoList'> {/* Mã nhân sự */}{getsentence(20,lang)}: {userdata?.CMS_ID}</li>
+            <li className='emplInfoList'> {/* Mã ERP */}{getsentence(21,lang)}: {userdata?.EMPL_NO}</li>
             <li className='emplInfoList'>
               {" "}
               {/* Ngày tháng năm sinh */}{getsentence(22,lang)}: {DOB().slice(0, 10)}
             </li>
-            <li className='emplInfoList'> {/* Quê quán */}{getsentence(23,lang)}: {userdata.HOMETOWN}</li>
+            <li className='emplInfoList'> {/* Quê quán */}{getsentence(23,lang)}: {userdata?.HOMETOWN}</li>
             <li className='emplInfoList'>
               {" "}
-              {/* Địa chỉ */}{getsentence(24,lang)}: {userdata.ADD_VILLAGE}-{userdata.ADD_COMMUNE}-
-              {userdata.ADD_DISTRICT}-{userdata.ADD_PROVINCE}
+              {/* Địa chỉ */}{getsentence(24,lang)}: {userdata?.ADD_VILLAGE}-{userdata?.ADD_COMMUNE}-
+              {userdata?.ADD_DISTRICT}-{userdata?.ADD_PROVINCE}
             </li>
             <li className='emplInfoList'>
               {" "}
-              {/* Bộ phận chính */}{getsentence(25,lang)}: {userdata.MAINDEPTNAME}
+              {/* Bộ phận chính */}{getsentence(25,lang)}: {userdata?.MAINDEPTNAME}
             </li>
             <li className='emplInfoList'>
               {" "}
-              {/* Bộ phận phụ */}{getsentence(26,lang)}: {userdata.SUBDEPTNAME}
+              {/* Bộ phận phụ */}{getsentence(26,lang)}: {userdata?.SUBDEPTNAME}
             </li>
             <li className='emplInfoList'>
               {" "}
-             {/*  Vị trí làm việc */}{getsentence(27,lang)}: {userdata.WORK_POSITION_NAME}
+             {/*  Vị trí làm việc */}{getsentence(27,lang)}: {userdata?.WORK_POSITION_NAME}
             </li>
             <li className='emplInfoList'>
               {" "}
-              {/* Nhóm điểm danh */}{getsentence(28,lang)}: {userdata.ATT_GROUP_CODE}
+              {/* Nhóm điểm danh */}{getsentence(28,lang)}: {userdata?.ATT_GROUP_CODE}
             </li>
-            <li className='emplInfoList'> {/* Chức vụ */}{getsentence(29,lang)}: {userdata.JOB_NAME}</li>
-            {(userdata.EMPL_IMAGE!=='Y') && <li className='emplInfoList'> <div className="uploadfile"> Avatar:
+            <li className='emplInfoList'> {/* Chức vụ */}{getsentence(29,lang)}: {userdata?.JOB_NAME}</li>
+            {(userdata?.EMPL_IMAGE!=='Y') && <li className='emplInfoList'> <div className="uploadfile"> Avatar:
        <IconButton className='buttonIcon'onClick={uploadFile2}><AiOutlineCloudUpload color='yellow' size={25}/>Upload</IconButton>
        <input  accept=".jpg" type="file" onChange={(e:any)=> {file = e.target.files[0]; console.log(file);}} />
       </div></li>}
           </ul>
         </div>
-        <div className={`cot2 ${(userdata.EMPL_IMAGE ==='Y')? 'on':'off'}`}>
+        <div className={`cot2 ${(userdata?.EMPL_IMAGE ==='Y')? 'on':'off'}`}>
           <h3 className='h3h3' style={{ color: "#cc33ff" }}>
             1. {/* Từ đầu năm đến giờ có */}{getsentence(30,lang)} : {Math.floor(days)} {/* ngày */} {getsentence(31,lang)}
           </h3>{" "}

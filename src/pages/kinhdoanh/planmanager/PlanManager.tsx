@@ -21,6 +21,9 @@ import { MdOutlineDelete, MdOutlinePivotTableChart } from "react-icons/md";
 import "./PlanManager.scss";
 import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
 import PivotTable from "../../../components/PivotChart/PivotChart";
+import { UserData } from "../../../redux/slices/globalSlice";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../redux/store";
 
 interface PlanTableData {
   PLAN_ID: string;
@@ -53,7 +56,9 @@ const PlanManager = () => {
     them1invoice: false,
     testinvoicetable: false,
   });
-  const [userData, setUserData] = useContext(UserContext);
+  const userData: UserData | undefined = useSelector(
+    (state: RootState) => state.totalSlice.userData
+  );
   const [uploadExcelJson, setUploadExcelJSon] = useState<Array<any>>([]);
   const [isLoading, setisLoading] = useState(false);
   const [column_excel, setColumn_Excel] = useState<Array<any>>([]);
@@ -376,8 +381,8 @@ const PlanManager = () => {
           className='buttonIcon'
           onClick={() => {
             checkBP(
-              userData.EMPL_NO,
-              userData.MAINDEPTNAME,
+              userData?.EMPL_NO,
+              userData?.MAINDEPTNAME,
               ["KD"],
               handleConfirmDeletePlan
             );
@@ -617,7 +622,7 @@ const PlanManager = () => {
           G_CODE: uploadExcelJson[i].G_CODE,
           CUST_CD: uploadExcelJson[i].CUST_CD,
           PLAN_DATE: uploadExcelJson[i].PLAN_DATE,
-          EMPL_NO: userData.EMPL_NO,
+          EMPL_NO: userData?.EMPL_NO,
           D1: uploadExcelJson[i].D1,
           D2: uploadExcelJson[i].D2,
           D3: uploadExcelJson[i].D3,
@@ -736,7 +741,7 @@ const PlanManager = () => {
     if (plandatatablefilter.length >= 1) {
       let err_code: boolean = false;
       for (let i = 0; i < plandatatablefilter.length; i++) {
-        if (plandatatablefilter[i].EMPL_NO === userData.EMPL_NO) {
+        if (plandatatablefilter[i].EMPL_NO === userData?.EMPL_NO) {
           await generalQuery("delete_plan", {
             PLAN_ID: plandatatablefilter[i].PLAN_ID,
           })
@@ -779,7 +784,7 @@ const PlanManager = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         Swal.fire("Tiến hành Xóa", "Đang Xóa Plan hàng loạt", "success");
-        checkBP(userData.EMPL_NO, userData.MAINDEPTNAME, ["KD"], deletePlan);
+        checkBP(userData?.EMPL_NO, userData?.MAINDEPTNAME, ["KD"], deletePlan);
         //deletePlan();
       }
     });
@@ -1121,7 +1126,7 @@ const PlanManager = () => {
         <div
           className='mininavitem'
           onClick={() =>
-            checkBP(userData.EMPL_NO, userData.MAINDEPTNAME, ["KD"], () => {
+            checkBP(userData?.EMPL_NO, userData?.MAINDEPTNAME, ["KD"], () => {
               setNav(2);
             })
           }

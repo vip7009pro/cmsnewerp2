@@ -30,6 +30,9 @@ import { generalQuery } from "../../../api/Api";
 import { UserContext } from "../../../api/Context";
 import { checkBP, SaveExcel } from "../../../api/GlobalFunction";
 import "./MATERIAL_MANAGER.scss";
+import { UserData } from "../../../redux/slices/globalSlice";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../redux/store";
 interface QLSXPLANDATA {
   id: number;
   PLAN_ID: string;
@@ -102,7 +105,9 @@ const MATERIAL_MANAGER = () => {
   );
   const [editable, setEditTable] = useState(false);
   const [readyRender, setReadyRender] = useState(false);
-  const [userData, setUserData] = useContext(UserContext);
+  const userData: UserData | undefined = useSelector(
+    (state: RootState) => state.totalSlice.userData
+  );
   const [isLoading, setisLoading] = useState(false);
   const [plandatatable, setPlanDataTable] = useState<QLSXPLANDATA[]>([]);
   const [datatable, setDataTable] = useState<any[]>([]);
@@ -334,8 +339,8 @@ const MATERIAL_MANAGER = () => {
                 className='xuatnext'
                 onClick={() => {
                   checkBP(
-                    userData.EMPL_NO,
-                    userData.MAINDEPTNAME,
+                    userData?.EMPL_NO,
+                    userData?.MAINDEPTNAME,
                     ["KD", "RND"],
                     save_material_table
                   );

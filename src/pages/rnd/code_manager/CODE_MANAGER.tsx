@@ -11,6 +11,9 @@ import { SaveExcel } from '../../../api/GlobalFunction';
 import "./CODE_MANAGER.scss"
 import { BiReset } from 'react-icons/bi';
 import { MdOutlineDraw, MdUpdate } from 'react-icons/md';
+import { UserData } from '../../../redux/slices/globalSlice';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../../redux/store';
 const axios = require('axios').default;
 interface CODE_INFO {
     id: number,
@@ -60,7 +63,11 @@ const CODE_MANAGER = () => {
     them1invoice:false,
     testinvoicetable: false
   });
-  const [userData, setUserData] = useContext(UserContext);
+
+  const userData: UserData | undefined = useSelector(
+    (state: RootState) => state.totalSlice.userData
+  );
+
   const [isLoading, setisLoading] = useState(false); 
   const [codeCMS,setCodeCMS] =useState('');
   const [enableEdit, setEnableEdit] = useState(false);
@@ -99,7 +106,7 @@ const CODE_MANAGER = () => {
       let file:any = null;
       const uploadFile2 = async (e:any) => {
         //console.log(file); 
-        if(userData.MAINDEPTNAME==='KD')
+        if(userData?.MAINDEPTNAME==='KD')
         {
           uploadQuery(file,params.row.G_CODE +'.pdf','banve')
           .then((response)=> {
@@ -388,7 +395,7 @@ const CODE_MANAGER = () => {
   const resetBanVe= async(value: string)=> {
     if(codedatatablefilter.length>=1)
     {
-      if(userData.EMPL_NO==='NBT1901' ||userData.EMPL_NO==='VTT1901' || userData.EMPL_NO==='NHU1903'|| userData.EMPL_NO==='LVT1906')
+      if(userData?.EMPL_NO==='NBT1901' ||userData?.EMPL_NO==='VTT1901' || userData?.EMPL_NO==='NHU1903'|| userData?.EMPL_NO==='LVT1906')
       {
         for(let i=0;i<codedatatablefilter.length;i++)
         {        
@@ -423,7 +430,7 @@ const CODE_MANAGER = () => {
   const pdBanVe= async(value: string)=> {
     if(codedatatablefilter.length>=1)
     {
-      if(((userData.SUBDEPTNAME==='PQC1' || userData.SUBDEPTNAME==='PQC3') && (userData.JOB_NAME==='Sub Leader' || userData.JOB_NAME==='Leader')))
+      if(((userData?.SUBDEPTNAME==='PQC1' || userData?.SUBDEPTNAME==='PQC3') && (userData?.JOB_NAME==='Sub Leader' || userData?.JOB_NAME==='Leader')))
       {
         for(let i=0;i<codedatatablefilter.length;i++)
         {        
@@ -515,7 +522,7 @@ const CODE_MANAGER = () => {
   const setNgoaiQuan= async(value: string)=> {
     if(codedatatablefilter.length>=1)
     {
-      if(userData.EMPL_NO==='VTT1901' || userData.EMPL_NO==='NHU1903'|| userData.EMPL_NO==='LVT1906')
+      if(userData?.EMPL_NO==='VTT1901' || userData?.EMPL_NO==='NHU1903'|| userData?.EMPL_NO==='LVT1906')
       {
         for(let i=0;i<codedatatablefilter.length;i++)
         {        
@@ -550,7 +557,7 @@ const CODE_MANAGER = () => {
   const handleSaveQLSX= async()=> {
     if(codedatatablefilter.length>=1)
     {
-      if(userData.EMPL_NO==='NHU1903' || userData.MAINDEPTNAME==='QLSX')
+      if(userData?.EMPL_NO==='NHU1903' || userData?.MAINDEPTNAME==='QLSX')
       {
         let err_code: string ='0';
         for(let i=0;i<codedatatablefilter.length;i++)
@@ -609,7 +616,7 @@ const CODE_MANAGER = () => {
   const handleSaveLossSX= async()=> {
     if(codedatatablefilter.length>=1)
     {
-      if(userData.EMPL_NO==='NHU1903'||  userData.EMPL_NO==='DTL1906'|| userData.EMPL_NO==='LVQ0103')
+      if(userData?.EMPL_NO==='NHU1903'||  userData?.EMPL_NO==='DTL1906'|| userData?.EMPL_NO==='LVQ0103')
       {
         let err_code: string ='0';
         for(let i=0;i<codedatatablefilter.length;i++)

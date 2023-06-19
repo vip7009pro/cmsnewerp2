@@ -32,6 +32,9 @@ import DataGrid, {
   Toolbar,
   TotalItem,
 } from "devextreme-react/data-grid";
+import { UserData } from "../../../redux/slices/globalSlice";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../redux/store";
 interface DTC_REG_DATA {
   DTC_ID: number;
   FACTORY: string;
@@ -61,11 +64,14 @@ interface CheckAddedSPECDATA {
   CHECKADDED: number;
 }
 const DKDTC = () => {
-  const [userData, setUserData] = useContext(UserContext);
+
+  const userData: UserData | undefined = useSelector(
+    (state: RootState) => state.totalSlice.userData
+  );
   const [testtype, setTestType] = useState("3");
   const [inputno, setInputNo] = useState("");
   const [checkNVL, setCheckNVL] = useState(
-    userData.SUBDEPTNAME === "IQC" ? true : false
+    userData?.SUBDEPTNAME === "IQC" ? true : false
   );
   const [request_empl, setrequest_empl] = useState("");
   const [remark, setReMark] = useState("");

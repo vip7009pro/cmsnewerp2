@@ -70,7 +70,9 @@ interface MENU_LIST_DATA {
 
 
 const SubMenu = ({ item }: { item: any }) => {
-  const [userData, setUserData] = useContext(UserContext);
+  const userData: UserData | undefined = useSelector(
+    (state: RootState) => state.totalSlice.userData
+  );
   const [subnav, setSubnav] = useState(false);
   const [lang, setLang] = useContext(LangConText);
   const showSubnav = () => setSubnav(!subnav);
@@ -426,7 +428,7 @@ const SubMenu = ({ item }: { item: any }) => {
             <Link className='DropdownLink' to={item.path} key={index}  onClick={()=> {
              if(tabModeSwap)
              {
-              if(userData.JOB_NAME === 'ADMIN' || userData.JOB_NAME === 'Leader' || userData.JOB_NAME === 'Sub Leader' || userData.JOB_NAME === 'Dept Staff' || item.MENU_CODE==='NS4' || item.MENU_CODE==='NS6')
+              if(userData?.JOB_NAME === 'ADMIN' || userData?.JOB_NAME === 'Leader' || userData?.JOB_NAME === 'Sub Leader' || userData?.JOB_NAME === 'Dept Staff' || item.MENU_CODE==='NS4' || item.MENU_CODE==='NS6')
               {
                 if(tabModeSwap)
                 {

@@ -130,7 +130,6 @@ const POandStockFull = () => {
     testinvoicetable: false,
     kholieu: false
   });
-  const [userData, setUserData] = useContext(UserContext);
   const [isLoading, setisLoading] = useState(false); 
   const [codeCMS,setCodeCMS] =useState('');
   const [alltime, setAllTime] = useState(true); 

@@ -5,6 +5,9 @@ import { generalQuery } from "../../../../api/Api";
 import { UserContext } from "../../../../api/Context";
 
 import "./YCSXComponent.scss";
+import { UserData } from "../../../../redux/slices/globalSlice";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../../redux/store";
 
 var Barcode = require("react-barcode");
 
@@ -126,7 +129,9 @@ interface FullBOM {
     LIEUQL_SX?: number,
 }
 const YCSXComponent = ({G_CODE,PROD_TYPE,PROD_MAIN_MATERIAL,G_NAME,EMPL_NAME,EMPL_NO,CUST_NAME_KD,CUST_CD,PROD_REQUEST_NO,PROD_REQUEST_DATE,PROD_REQUEST_QTY,LOT_TOTAL_INPUT_QTY_EA,LOT_TOTAL_OUTPUT_QTY_EA,INSPECT_BALANCE,SHORTAGE_YCSX,YCSX_PENDING,PHAN_LOAI,REMARK,PO_TDYCSX,TOTAL_TKHO_TDYCSX,TKHO_TDYCSX,BTP_TDYCSX,CK_TDYCSX,BLOCK_TDYCSX,FCST_TDYCSX,W1,W2,W3,W4,W5,W6,W7,W8,PDUYET,LOAIXH, PDBV, PDBV_EMPL, PDBV_DATE, DESCR}:YCSXTableData) => {
-    const [userData, setUserData] = useContext(UserContext);
+    const userData: UserData | undefined = useSelector(
+      (state: RootState) => state.totalSlice.userData
+    );
     const [tvl_tdycsx,setTVL_TDYCSX] = useState<Array<TONVL>>([{
         M_CODE: 'string',
         M_NAME: 'string',
@@ -515,7 +520,7 @@ const YCSXComponent = ({G_CODE,PROD_TYPE,PROD_MAIN_MATERIAL,G_NAME,EMPL_NAME,EMP
               </tbody>
             </table>
           </div>
-          <div className='title'>Tồn các loại tại thời điểm IN YCSX<span className="approval_info"> &nbsp;&nbsp;&nbsp; TK IN: {userData.EMPL_NO}</span>  {(PDBV==='Y') && <span className="approval_info"> | (TTPD_YCSX_BV: {PDBV_EMPL} | {moment.utc( PDBV_DATE).format("YYYY-MM-DD HH:mm:ss")})</span>}</div>
+          <div className='title'>Tồn các loại tại thời điểm IN YCSX<span className="approval_info"> &nbsp;&nbsp;&nbsp; TK IN: {userData?.EMPL_NO}</span>  {(PDBV==='Y') && <span className="approval_info"> | (TTPD_YCSX_BV: {PDBV_EMPL} | {moment.utc( PDBV_DATE).format("YYYY-MM-DD HH:mm:ss")})</span>}</div>
           <div className='toncacloai'>
             <table>
               <thead>

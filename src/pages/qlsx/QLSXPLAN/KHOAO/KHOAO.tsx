@@ -29,6 +29,9 @@ import { generalQuery } from "../../../../api/Api";
 import { UserContext } from "../../../../api/Context";
 import { checkBP, SaveExcel } from "../../../../api/GlobalFunction";
 import "./KHOAO.scss";
+import { UserData } from "../../../../redux/slices/globalSlice";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../../redux/store";
 interface QLSXPLANDATA {
   id: number;
   PLAN_ID: string;
@@ -124,7 +127,9 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
   const [nextPermission, setNextPermission]= useState(true);
   const [selectionModel_INPUTSX, setSelectionModel_INPUTSX] = useState<any>([]);
   const [readyRender, setReadyRender] = useState(false);
-  const [userData, setUserData] = useContext(UserContext);
+  const userData: UserData | undefined = useSelector(
+    (state: RootState) => state.totalSlice.userData
+  );
   const [isLoading, setisLoading] = useState(false);
   const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
   const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));
@@ -549,7 +554,7 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
       inputPlaceholder:'Mật mã',
       showCancelButton: true,       
     })      
-    if(pass1 === 'quantrisanxuat2023' && (userData.EMPL_NO==='DTL1906' || userData.EMPL_NO==='THU1402' || userData.EMPL_NO==='NHU1903'))
+    if(pass1 === 'quantrisanxuat2023' && (userData?.EMPL_NO==='DTL1906' || userData?.EMPL_NO==='THU1402' || userData?.EMPL_NO==='NHU1903'))
     {
        handleConfirmXoaRac();     
     }
@@ -567,7 +572,7 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
       inputPlaceholder:'Mật mã',
       showCancelButton: true,       
     })      
-    if(pass1 === 'quantrisanxuat2023' && (userData.EMPL_NO==='DTL1906' || userData.EMPL_NO==='THU1402' || userData.EMPL_NO==='NHU1903'))
+    if(pass1 === 'quantrisanxuat2023' && (userData?.EMPL_NO==='DTL1906' || userData?.EMPL_NO==='THU1402' || userData?.EMPL_NO==='NHU1903'))
     {
        handleConfirmAnRac();     
     }
@@ -594,8 +599,8 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
           "success"
         );
         checkBP(
-          userData.EMPL_NO,
-          userData.MAINDEPTNAME,
+          userData?.EMPL_NO,
+          userData?.MAINDEPTNAME,
           ["SX"],
           handle_xoa_rac
         );
@@ -619,8 +624,8 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
           "success"
         );
         checkBP(
-          userData.EMPL_NO,
-          userData.MAINDEPTNAME,
+          userData?.EMPL_NO,
+          userData?.MAINDEPTNAME,
           ["SX"],
           handle_an_rac
         );
@@ -862,8 +867,8 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
                   if(nextPermission)
                   {
                     checkBP(
-                      userData.EMPL_NO,
-                      userData.MAINDEPTNAME,
+                      userData?.EMPL_NO,
+                      userData?.MAINDEPTNAME,
                       ["QLSX"],
                       handle_xuatKhoAo
                     );

@@ -52,6 +52,9 @@ import {
   import "./BOM_AMAZON.scss";
   import { BiAddToQueue, BiReset } from "react-icons/bi";
   import { MdOutlineDraw, MdOutlineUpdate, MdUpgrade } from "react-icons/md";
+import { UserData } from "../../../redux/slices/globalSlice";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../redux/store";
   const axios = require("axios").default;
   interface CODE_INFO {
     id: number;
@@ -183,7 +186,9 @@ import {
     const [listamazontable, setListBomAmazonTable] = useState<LIST_BOM_AMAZON[]>([]);
     const [bomamazontable, setBOMAMAZONTable] = useState<BOM_AMAZON[]>([]);
     const [G_CODE_MAU, setG_CODE_MAU] = useState('7A07994A');
-    const [userData, setUserData] = useContext(UserContext);
+    const userData: UserData | undefined = useSelector(
+      (state: RootState) => state.totalSlice.userData
+    );
     const [isLoading, setisLoading] = useState(false);
     const [codeCMS, setCodeCMS] = useState("");
     const [enableEdit, setEnableEdit] = useState(false);
@@ -294,7 +299,7 @@ import {
           <IconButton
             className='buttonIcon'
             onClick={() => {
-              checkBP(userData.EMPL_NO,userData.MAINDEPTNAME,['RND'], confirmSaveBOMAMAZON);
+              checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['RND'], confirmSaveBOMAMAZON);
               //confirmSaveBOMAMAZON();
             }}
           >
@@ -304,7 +309,7 @@ import {
           <IconButton
             className='buttonIcon'
             onClick={() => {
-              checkBP(userData.EMPL_NO,userData.MAINDEPTNAME,['RND'], ()=>{
+              checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['RND'], ()=>{
                 setcolumn_bomgia(
                   column_bomgia.map((element, index: number) => {
                     return { ...element, editable: !element.editable };

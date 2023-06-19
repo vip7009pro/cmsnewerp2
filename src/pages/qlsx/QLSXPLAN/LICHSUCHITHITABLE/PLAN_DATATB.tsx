@@ -28,6 +28,9 @@ import { generalQuery } from "../../../../api/Api";
 import { UserContext } from "../../../../api/Context";
 import { checkBP, SaveExcel } from "../../../../api/GlobalFunction";
 import "./PLAN_DATATB.scss";
+import { UserData } from "../../../../redux/slices/globalSlice";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../../redux/store";
 interface QLSXPLANDATA {
   id: number;
   PLAN_ID: string;
@@ -80,7 +83,9 @@ interface QLSXPLANDATA {
 const PLAN_DATATB = () => {
   const [selectionModel_INPUTSX, setSelectionModel_INPUTSX] = useState<any>([]);
   const [readyRender, setReadyRender] = useState(false);
-  const [userData, setUserData] = useContext(UserContext);
+  const userData: UserData | undefined = useSelector(
+    (state: RootState) => state.totalSlice.userData
+  );
   const [isLoading, setisLoading] = useState(false);
   const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
   const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));
@@ -454,8 +459,8 @@ const PLAN_DATATB = () => {
       if (result.isConfirmed) {
         Swal.fire("Tiến hành chuyển ngày PLAN", "Đang ngày plan", "success");
         checkBP(
-          userData.EMPL_NO,
-          userData.MAINDEPTNAME,
+          userData?.EMPL_NO,
+          userData?.MAINDEPTNAME,
           ["QLSX"],
           handle_movePlan
         );

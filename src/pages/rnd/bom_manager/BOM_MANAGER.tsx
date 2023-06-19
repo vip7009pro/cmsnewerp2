@@ -54,6 +54,9 @@ import { BiAddToQueue, BiReset } from "react-icons/bi";
 import { MdOutlineDraw, MdOutlineUpdate, MdUpgrade } from "react-icons/md";
 import { FaRegClone } from "react-icons/fa";
 import MATERIAL_MANAGER from "../material_manager/MATERIAL_MANAGER";
+import { UserData } from "../../../redux/slices/globalSlice";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../redux/store";
 const axios = require("axios").default;
 interface CODE_INFO {
   id: number;
@@ -250,7 +253,10 @@ const BOM_MANAGER = () => {
     them1invoice: false,
     testinvoicetable: false,
   });
-  const [userData, setUserData] = useContext(UserContext);
+
+  const userData: UserData | undefined = useSelector(
+    (state: RootState) => state.totalSlice.userData
+  );
   const [isLoading, setisLoading] = useState(false);
   const [codeCMS, setCodeCMS] = useState("");
   const [enableEdit, setEnableEdit] = useState(false);
@@ -351,8 +357,8 @@ const BOM_MANAGER = () => {
           formData.append("banve", file);
           formData.append("filename", params.row.G_CODE);
           if (
-            userData.MAINDEPTNAME === "KD" ||
-            userData.MAINDEPTNAME === "RND"
+            userData?.MAINDEPTNAME === "KD" ||
+            userData?.MAINDEPTNAME === "RND"
           ) {
             try {
               const response = await axios.post(upload_url, formData);
@@ -769,9 +775,9 @@ const BOM_MANAGER = () => {
   const resetBanVe = async (value: string) => {
     if (codedatatablefilter.length >= 1) {
       if (
-        userData.EMPL_NO.toUpperCase() === "NVH1011" ||
-        userData.EMPL_NO.toUpperCase() === "NHU1903" ||
-        userData.EMPL_NO.toUpperCase() === "LVT1906"
+        userData?.EMPL_NO?.toUpperCase() === "NVH1011" ||
+        userData?.EMPL_NO?.toUpperCase() === "NHU1903" ||
+        userData?.EMPL_NO?.toUpperCase() === "LVT1906"
       ) {
         for (let i = 0; i < codedatatablefilter.length; i++) {
           await generalQuery("resetbanve", {
@@ -1104,8 +1110,8 @@ const BOM_MANAGER = () => {
       if (result.isConfirmed) {
         Swal.fire("Tiến hành thêm", "Đang thêm Code mới", "success");
         checkBP(
-          userData.EMPL_NO,
-          userData.MAINDEPTNAME,
+          userData?.EMPL_NO,
+          userData?.MAINDEPTNAME,
           ["RND"],
           handleAddNewCode
         );
@@ -1126,8 +1132,8 @@ const BOM_MANAGER = () => {
       if (result.isConfirmed) {
         Swal.fire("Tiến hành thêm", "Đang thêm Ver mới", "success");
         checkBP(
-          userData.EMPL_NO,
-          userData.MAINDEPTNAME,
+          userData?.EMPL_NO,
+          userData?.MAINDEPTNAME,
           ["RND"],
           handleAddNewVer
         );
@@ -1148,8 +1154,8 @@ const BOM_MANAGER = () => {
       if (result.isConfirmed) {
         Swal.fire("Tiến hành Update", "Đang update code", "success");
         checkBP(
-          userData.EMPL_NO,
-          userData.MAINDEPTNAME,
+          userData?.EMPL_NO,
+          userData?.MAINDEPTNAME,
           ["RND", "QLSX"],
           handleUpdateCode
         );
@@ -1329,9 +1335,9 @@ const BOM_MANAGER = () => {
         M_QTY: 1,
         MAIN_M: "0",
         LIEUQL_SX: 0,
-        INS_EMPL: userData.EMPL_NO,
+        INS_EMPL: userData?.EMPL_NO,
         INS_DATE: moment().format("YYYY-MM-DD HH:mm:ss.SSS"),
-        UPD_EMPL: userData.EMPL_NO,
+        UPD_EMPL: userData?.EMPL_NO,
         UPD_DATE: moment().format("YYYY-MM-DD HH:mm:ss.SSS"),
       };
       //console.log(tempeditrows);
@@ -1612,9 +1618,9 @@ const BOM_MANAGER = () => {
         M_QTY: 1,
         REMARK: "",
         PROCESS_ORDER: bomgiatable.length + 1,
-        INS_EMPL: userData.EMPL_NO,
+        INS_EMPL: userData?.EMPL_NO,
         INS_DATE: moment().format("YYYY-MM-DD HH:mm:ss.SSS"),
-        UPD_EMPL: userData.EMPL_NO,
+        UPD_EMPL: userData?.EMPL_NO,
         UPD_DATE: moment().format("YYYY-MM-DD HH:mm:ss.SSS"),
       };
       //console.log(tempeditrows);
@@ -1737,9 +1743,9 @@ const BOM_MANAGER = () => {
           M_QTY: 1,
           REMARK: "",
           PROCESS_ORDER: i + 1,
-          INS_EMPL: userData.EMPL_NO,
+          INS_EMPL: userData?.EMPL_NO,
           INS_DATE: moment().format("YYYY-MM-DD HH:mm:ss.SSS"),
-          UPD_EMPL: userData.EMPL_NO,
+          UPD_EMPL: userData?.EMPL_NO,
           UPD_DATE: moment().format("YYYY-MM-DD HH:mm:ss.SSS"),
         };
         tempBOMGIA = [...tempBOMGIA, tempeditrows];
@@ -1778,8 +1784,8 @@ const BOM_MANAGER = () => {
       if (result.isConfirmed) {
         Swal.fire("Tiến hành Lưu BOM SX", "Đang lưu BOM", "success");
         checkBP(
-          userData.EMPL_NO,
-          userData.MAINDEPTNAME,
+          userData?.EMPL_NO,
+          userData?.MAINDEPTNAME,
           ["RND", "QLSX"],
           handleInsertBOMSX
         );
@@ -1800,8 +1806,8 @@ const BOM_MANAGER = () => {
       if (result.isConfirmed) {
         Swal.fire("Tiến hành Lưu BOM GIÁ", "Đang lưu BOM", "success");
         checkBP(
-          userData.EMPL_NO,
-          userData.MAINDEPTNAME,
+          userData?.EMPL_NO,
+          userData?.MAINDEPTNAME,
           ["RND", "QLSX"],
           handleInsertBOMGIA
         );
@@ -1852,8 +1858,8 @@ const BOM_MANAGER = () => {
           className='mininavitem'
           onClick={() =>
             checkBP(
-              userData.EMPL_NO,
-              userData.MAINDEPTNAME,
+              userData?.EMPL_NO,
+              userData?.MAINDEPTNAME,
               ["KD", "RND"],
               () => {
                 setNav(2);

@@ -54,6 +54,9 @@ import { useReactToPrint } from "react-to-print";
 import CHITHI_COMPONENT from "../CHITHI/CHITHI_COMPONENT";
 import { BiRefresh, BiReset } from "react-icons/bi";
 import YCKT from "../YCKT/YCKT";
+import { UserData } from "../../../../redux/slices/globalSlice";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../../redux/store";
 const axios = require("axios").default;
 interface TONLIEUXUONG {
   id: number;
@@ -311,7 +314,9 @@ const PLANTABLE = () => {
   const [chithidatatable, setChiThiDataTable] = useState<QLSXCHITHIDATA[]>([]);
   const [showplanwindow, setShowPlanWindow] = useState(false);
   const [showkhoao, setShowKhoAo] = useState(false);
-  const [userData, setUserData] = useContext(UserContext);
+  const userData: UserData | undefined = useSelector(
+    (state: RootState) => state.totalSlice.userData
+  );
   const [isLoading, setisLoading] = useState(false);
   const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
   const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));
@@ -490,7 +495,7 @@ const PLANTABLE = () => {
           const formData = new FormData();
           formData.append("banve", file);
           formData.append("filename", params.row.G_CODE);
-          if (userData.MAINDEPTNAME === "KD") {
+          if (userData?.MAINDEPTNAME === "KD") {
             try {
               const response = await axios.post(upload_url, formData);
               //console.log("ket qua");
@@ -1531,7 +1536,7 @@ const PLANTABLE = () => {
   };
   const handleSaveQLSX = async () => {
     if (qlsxplandatafilter.length >= 1) {
-      if (userData.EMPL_NO === "NHU1903" || userData.MAINDEPTNAME === "QLSX") {
+      if (userData?.EMPL_NO === "NHU1903" || userData?.MAINDEPTNAME === "QLSX") {
         let err_code: string = "0";
         console.log(datadinhmuc);
         if (
@@ -2810,7 +2815,7 @@ const PLANTABLE = () => {
         <IconButton
           className='buttonIcon'
           onClick={() => {
-            checkBP(userData.EMPL_NO,userData.MAINDEPTNAME,['QLSX'], handle_UpdatePlan);
+            checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['QLSX'], handle_UpdatePlan);
             //handle_UpdatePlan();
           }}
         >
@@ -2820,7 +2825,7 @@ const PLANTABLE = () => {
         <IconButton
           className='buttonIcon'
           onClick={() => {
-            checkBP(userData.EMPL_NO,userData.MAINDEPTNAME,['QLSX'], handleConfirmDeletePlan);
+            checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['QLSX'], handleConfirmDeletePlan);
             //handleConfirmDeletePlan();
           }}
         >
@@ -2839,7 +2844,7 @@ const PLANTABLE = () => {
         <IconButton
           className='buttonIcon'
           onClick={() => {
-            checkBP(userData.EMPL_NO,userData.MAINDEPTNAME,['QLSX'], handleSaveQLSX);
+            checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['QLSX'], handleSaveQLSX);
             //handleSaveQLSX();
           }}
         >
@@ -2878,7 +2883,7 @@ const PLANTABLE = () => {
                 confirmButtonText:'OK',
                 showConfirmButton: false,
               });
-              checkBP(userData.EMPL_NO,userData.MAINDEPTNAME,['QLSX'], hanlde_SaveChiThi);
+              checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['QLSX'], hanlde_SaveChiThi);
               //hanlde_SaveChiThi();
             } else {
               Swal.fire("Thông báo", "Không có liệu để chỉ thị", "error");
@@ -2891,7 +2896,7 @@ const PLANTABLE = () => {
         <IconButton
           className='buttonIcon'
           onClick={() => {
-            checkBP(userData.EMPL_NO,userData.MAINDEPTNAME,['QLSX'], handleConfirmDeleteLieu);
+            checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['QLSX'], handleConfirmDeleteLieu);
             //handleConfirmDeleteLieu();
           }}
         >
@@ -2901,7 +2906,7 @@ const PLANTABLE = () => {
         <IconButton
           className='buttonIcon'
           onClick={() => {
-            checkBP(userData.EMPL_NO,userData.MAINDEPTNAME,['QLSX'], handleConfirmRESETLIEU);
+            checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['QLSX'], handleConfirmRESETLIEU);
             //handleConfirmRESETLIEU();
           }}
         >
@@ -2911,7 +2916,7 @@ const PLANTABLE = () => {
         <IconButton
           className='buttonIcon'
           onClick={() => {
-            checkBP(userData.EMPL_NO,userData.MAINDEPTNAME,['QLSX'], ()=> {
+            checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['QLSX'], ()=> {
               if (qlsxplandatafilter.length > 0) {
                 setShowKhoAo(!showkhoao);
                 handle_loadKhoAo();
@@ -2932,7 +2937,7 @@ const PLANTABLE = () => {
         <IconButton
           className='buttonIcon'
           onClick={() => {
-            checkBP(userData.EMPL_NO,userData.MAINDEPTNAME,['QLSX'], handleConfirmDKXL);
+            checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['QLSX'], handleConfirmDKXL);
             handleConfirmDKXL();
           }}
         >

@@ -41,6 +41,9 @@ import { BiShow } from "react-icons/bi";
 import { GrStatusGood } from "react-icons/gr";
 import { FcCancel } from "react-icons/fc";
 import internal from "stream";
+import { UserData } from "../../../redux/slices/globalSlice";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../redux/store";
 interface QC_FAIL_DATA {
   id?: number;
   FACTORY: string;
@@ -59,7 +62,7 @@ interface QC_FAIL_DATA {
   PQC3_ID: number;
   DEFECT_PHENOMENON: string;
   OUT_DATE: string;
-  INS_EMPL: string;
+  INS_EMPL?: string;
   INS_DATE: string;
   UPD_EMPL: string;
   UPD_DATE: string;
@@ -88,7 +91,10 @@ interface CustomerListData {
 const FAILING = () => {
   const [cmsvcheck, setCMSVCheck] = useState(true);
   const [customerList, setCustomerList] = useState<CustomerListData[]>([]);
-  const [userData, setUserData] = useContext(UserContext);
+
+  const userData: UserData | undefined = useSelector(
+    (state: RootState) => state.totalSlice.userData
+  );
   const [testtype, setTestType] = useState("NVL");
   const [inputno, setInputNo] = useState("");
   const [request_empl, setrequest_empl] = useState("");
@@ -660,7 +666,7 @@ const FAILING = () => {
   const addRow = async () => {
     let temp_row: QC_FAIL_DATA = {
       id: inspectiondatatable.length,
-      FACTORY: userData.FACTORY_CODE === 1 ? "NM1" : "NM2",
+      FACTORY: userData?.FACTORY_CODE === 1 ? "NM1" : "NM2",
       PLAN_ID_SUDUNG: planId,
       G_NAME: g_name,
       LIEUQL_SX: lieql_sx,
@@ -676,7 +682,7 @@ const FAILING = () => {
       PQC3_ID: pqc3Id,
       DEFECT_PHENOMENON: defect_phenomenon,
       OUT_DATE: out_date,
-      INS_EMPL: userData.EMPL_NO,
+      INS_EMPL: userData?.EMPL_NO,
       INS_DATE: moment().format("YYYY-MM-DD HH:mm:ss"),
       UPD_EMPL: "",
       UPD_DATE: "",
@@ -1176,7 +1182,7 @@ const FAILING = () => {
                 <IconButton
                 className='buttonIcon'
                 onClick={() => {
-                  if (userData.SUBDEPTNAME === "IQC") {
+                  if (userData?.SUBDEPTNAME === "IQC") {
                     //console.log(selectedRowsDataA);
                     setQCPASS("Y");
                   } else {
@@ -1194,7 +1200,7 @@ const FAILING = () => {
               <IconButton
                 className='buttonIcon'
                 onClick={() => {
-                  if (userData.SUBDEPTNAME === "IQC") {
+                  if (userData?.SUBDEPTNAME === "IQC") {
                     setQCPASS("N");
                   } else {
                     Swal.fire(
@@ -1203,8 +1209,8 @@ const FAILING = () => {
                       "error"
                     );
                   }
-                  //checkBP(userData.EMPL_NO,userData.MAINDEPTNAME,['QC'], ()=>{setQCPASS('Y');});
-                  //checkBP(userData.EMPL_NO,userData.MAINDEPTNAME,['QLSX'], setQCPASS('N'));
+                  //checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['QC'], ()=>{setQCPASS('Y');});
+                  //checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['QLSX'], setQCPASS('N'));
                   //setQCPASS('N');
                 }}
               >

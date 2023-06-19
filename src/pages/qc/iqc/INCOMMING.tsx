@@ -36,6 +36,9 @@ import {
   import { BiShow } from "react-icons/bi";
   import { GrStatusGood } from "react-icons/gr";
   import { FcCancel } from "react-icons/fc";
+import { UserData } from "../../../redux/slices/globalSlice";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../redux/store";
 
   interface IQC_INCOMMING_DATA {
     id?: number,
@@ -192,8 +195,7 @@ import {
                 id: index
               }
             })         
-            setDtcDataTable(loadeddata);
-           
+            setDtcDataTable(loadeddata);           
           }
           else
           {
@@ -204,11 +206,14 @@ import {
           console.log(error);
       });
     }
-    const [userData, setUserData] = useContext(UserContext);
+
+    const userData: UserData | undefined = useSelector(
+      (state: RootState) => state.totalSlice.userData
+    );
     const [testtype, setTestType] = useState("NVL");
     const [inputno, setInputNo] = useState("");
     const [checkNVL, setCheckNVL] = useState(
-      userData.SUBDEPTNAME === "IQC" ? true : false
+      userData?.SUBDEPTNAME === "IQC" ? true : false
     );
     const [request_empl, setrequest_empl] = useState("");
     const [remark, setReMark] = useState("");
@@ -328,7 +333,7 @@ import {
                 <IconButton
                   className='buttonIcon'
                   onClick={() => {
-                    if (userData.SUBDEPTNAME === "IQC") {
+                    if (userData?.SUBDEPTNAME === "IQC") {
                       setQCPASS("Y");
                     } else {
                       Swal.fire(
@@ -337,8 +342,8 @@ import {
                         "error"
                       );
                     }
-                    //checkBP(userData.EMPL_NO,userData.MAINDEPTNAME,['QC'], ()=>{setQCPASS('Y');});
-                    //checkBP(userData.EMPL_NO,userData.MAINDEPTNAME,['QLSX'], setQCPASS('Y'));
+                    //checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['QC'], ()=>{setQCPASS('Y');});
+                    //checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['QLSX'], setQCPASS('Y'));
                     //setQCPASS('Y');
                   }}
                 >
@@ -348,7 +353,7 @@ import {
                 <IconButton
                   className='buttonIcon'
                   onClick={() => {
-                    if (userData.SUBDEPTNAME === "IQC") {
+                    if (userData?.SUBDEPTNAME === "IQC") {
                       setQCPASS("N");
                     } else {
                       Swal.fire(
@@ -357,8 +362,8 @@ import {
                         "error"
                       );
                     }
-                    //checkBP(userData.EMPL_NO,userData.MAINDEPTNAME,['QC'], ()=>{setQCPASS('Y');});
-                    //checkBP(userData.EMPL_NO,userData.MAINDEPTNAME,['QLSX'], setQCPASS('N'));
+                    //checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['QC'], ()=>{setQCPASS('Y');});
+                    //checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['QLSX'], setQCPASS('N'));
                     //setQCPASS('N');
                   }}
                 >

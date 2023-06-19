@@ -75,7 +75,6 @@ interface DTC_RESULT_INPUT {
 
 }
 const DTCRESULT = () => {
-  const [userData, setUserData] = useContext(UserContext);
   const [testtype, setTestType] = useState("3");
   const [inputno, setInputNo] = useState("");
   const [checkNVL, setCheckNVL] = useState(false);

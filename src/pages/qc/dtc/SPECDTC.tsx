@@ -29,7 +29,6 @@ interface DTC_SPEC_DATA {
   BANVE: string
 }
 const SPECDTC = () => { 
-  const [userData, setUserData] = useContext(UserContext);
   const [fromdate, setFromDate] = useState(moment().format('YYYY-MM-DD'));
   const [todate, setToDate] = useState(moment().format('YYYY-MM-DD'));
   const [codeKD,setCodeKD] =useState('');

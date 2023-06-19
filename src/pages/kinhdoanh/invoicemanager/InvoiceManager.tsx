@@ -33,6 +33,9 @@ import "./InvoiceManager.scss";
 import { FaFileInvoiceDollar } from "react-icons/fa";
 import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
 import PivotTable from "../../../components/PivotChart/PivotChart";
+import { UserData } from "../../../redux/slices/globalSlice";
+import { RootState } from "../../../redux/store";
+import { useSelector } from "react-redux";
 interface InvoiceTableData {
   DELIVERY_ID: number;
   CUST_CD: string;
@@ -83,7 +86,9 @@ const InvoiceManager = () => {
     them1invoice: false,
     testinvoicetable: false,
   });
-  const [userData, setUserData] = useContext(UserContext);
+  const userData: UserData | undefined = useSelector(
+    (state: RootState) => state.totalSlice.userData
+  );
   const [uploadExcelJson, setUploadExcelJSon] = useState<Array<any>>([]);
   const [isLoading, setisLoading] = useState(false);
   const [column_excel, setColumn_Excel] = useState<Array<any>>([]);
@@ -376,7 +381,7 @@ const InvoiceManager = () => {
         <IconButton
           className='buttonIcon'
           onClick={() => {
-            checkBP(userData.EMPL_NO, userData.MAINDEPTNAME, ["KD"], () => {
+            checkBP(userData?.EMPL_NO, userData?.MAINDEPTNAME, ["KD"], () => {
               setSelection({
                 ...selection,
                 trapo: true,
@@ -395,8 +400,8 @@ const InvoiceManager = () => {
           className='buttonIcon'
           onClick={() => {
             checkBP(
-              userData.EMPL_NO,
-              userData.MAINDEPTNAME,
+              userData?.EMPL_NO,
+              userData?.MAINDEPTNAME,
               ["KD"],
               handle_fillsuaformInvoice
             );
@@ -410,8 +415,8 @@ const InvoiceManager = () => {
           className='buttonIcon'
           onClick={() => {
             checkBP(
-              userData.EMPL_NO,
-              userData.MAINDEPTNAME,
+              userData?.EMPL_NO,
+              userData?.MAINDEPTNAME,
               ["KD"],
               handleConfirmDeleteInvoice
             );
@@ -697,7 +702,7 @@ const InvoiceManager = () => {
           G_CODE: uploadExcelJson[i].G_CODE,
           CUST_CD: uploadExcelJson[i].CUST_CD,
           PO_NO: uploadExcelJson[i].PO_NO,
-          EMPL_NO: userData.EMPL_NO,
+          EMPL_NO: userData?.EMPL_NO,
           INVOICE_NO: uploadExcelJson[i].INVOICE_NO,
         })
           .then((response) => {
@@ -852,7 +857,7 @@ const InvoiceManager = () => {
       selectedCode?.G_CODE === "" ||
       selectedCust_CD?.CUST_CD === "" ||
       newinvoicedate === "" ||
-      userData.EMPL_NO === "" ||
+      userData?.EMPL_NO === "" ||
       newinvoiceQTY === 0
     ) {
       err_code = 4;
@@ -880,7 +885,7 @@ const InvoiceManager = () => {
         G_CODE: selectedCode?.G_CODE,
         CUST_CD: selectedCust_CD?.CUST_CD,
         PO_NO: newpono,
-        EMPL_NO: userData.EMPL_NO,
+        EMPL_NO: userData?.EMPL_NO,
         DELIVERY_QTY: newinvoiceQTY,
         DELIVERY_DATE: newinvoicedate,
         REMARK: newinvoiceRemark,
@@ -1021,7 +1026,7 @@ const InvoiceManager = () => {
       selectedCode?.G_CODE === "" ||
       selectedCust_CD?.CUST_CD === "" ||
       newpono === "" ||
-      userData.EMPL_NO === ""
+      userData?.EMPL_NO === ""
     ) {
       err_code = 4;
     }
@@ -1031,7 +1036,7 @@ const InvoiceManager = () => {
         G_CODE: selectedCode?.G_CODE,
         CUST_CD: selectedCust_CD?.CUST_CD,
         PO_NO: newpono,
-        EMPL_NO: userData.EMPL_NO,
+        EMPL_NO: userData?.EMPL_NO,
         DELIVERY_DATE: newinvoicedate,
         DELIVERY_QTY: newinvoiceQTY,
         REMARK: newinvoiceRemark,
@@ -1072,7 +1077,7 @@ const InvoiceManager = () => {
     if (invoicedatatablefilter.length >= 1) {
       let err_code: boolean = false;
       for (let i = 0; i < invoicedatatablefilter.length; i++) {
-        if (invoicedatatablefilter[i].EMPL_NO === userData.EMPL_NO) {
+        if (invoicedatatablefilter[i].EMPL_NO === userData?.EMPL_NO) {
           await generalQuery("delete_invoice", {
             DELIVERY_ID: invoicedatatablefilter[i].DELIVERY_ID,
           })
@@ -1463,7 +1468,7 @@ const InvoiceManager = () => {
         <div
           className='mininavitem'
           onClick={() =>
-            checkBP(userData.EMPL_NO, userData.MAINDEPTNAME, ["KD"], () => {
+            checkBP(userData?.EMPL_NO, userData?.MAINDEPTNAME, ["KD"], () => {
               setNav(2);
             })
           }

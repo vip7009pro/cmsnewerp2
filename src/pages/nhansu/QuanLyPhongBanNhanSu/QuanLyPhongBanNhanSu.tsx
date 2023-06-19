@@ -80,7 +80,6 @@ interface EmployeeTableData {
     MAINDEPTNAME_KR: string,
 }
 const QuanLyPhongBanNhanSu = () => {
-    const [userData, setUserData] = useContext(UserContext);
     const [isLoading, setisLoading] = useState(false);
     const [workpositionload, setWorkPositionLoad] = useState<Array<WorkPositionTableData>>([]);
     const [EMPL_NO,setEMPL_NO]= useState("");

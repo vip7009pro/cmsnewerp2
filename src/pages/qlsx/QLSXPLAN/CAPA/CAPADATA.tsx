@@ -34,6 +34,9 @@ import { SaveExcel, checkBP } from "../../../../api/GlobalFunction";
 import { UserContext } from "../../../../api/Context";
 import PivotTable from "../../../../components/PivotChart/PivotChart";
 import { BiSearch } from "react-icons/bi";
+import { UserData } from "../../../../redux/slices/globalSlice";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../../redux/store";
 
   
   interface CAPA_LEADTIME_DATA {
@@ -71,7 +74,9 @@ import { BiSearch } from "react-icons/bi";
 
   const CAPADATA = () => {
     const [showhidePivotTable, setShowHidePivotTable] = useState(false);
-    const [userData, setUserData] = useContext(UserContext);
+    const userData: UserData | undefined = useSelector(
+      (state: RootState) => state.totalSlice.userData
+    );
     const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
     const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));
     const [codeKD, setCodeKD] = useState("");
@@ -495,7 +500,7 @@ import { BiSearch } from "react-icons/bi";
     });
     const handleSaveQLSX = async () => {
         if (selectedG_Code !== "") {
-          if (userData.EMPL_NO === "NHU1903" || userData.MAINDEPTNAME === "QLSX") {
+          if (userData?.EMPL_NO === "NHU1903" || userData?.MAINDEPTNAME === "QLSX") {
             let err_code: string = "0";
             console.log(datadinhmuc);
             if (
@@ -803,8 +808,8 @@ import { BiSearch } from "react-icons/bi";
                 className='tranhatky'
                 onClick={() => {                                          
                     checkBP(
-                        userData.EMPL_NO,
-                        userData.MAINDEPTNAME,
+                        userData?.EMPL_NO,
+                        userData?.MAINDEPTNAME,
                         ["QLSX"],
                         handleSaveQLSX
                       );

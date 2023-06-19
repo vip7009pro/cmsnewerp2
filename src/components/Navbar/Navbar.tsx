@@ -25,6 +25,7 @@ import {
   setTabModeSwap,
   ELE_ARRAY,
   closeTab,
+  UserData,
 } from "../../redux/slices/globalSlice";
 import { RootState } from "../../redux/store";
 import { useSelector, useDispatch } from "react-redux";
@@ -149,9 +150,13 @@ export default function Navbar() {
   const [avatarmenu, setAvatarMenu] = useState(false);
   const [langmenu, setLangMenu] = useState(false);
   const [lang, setLang] = useContext(LangConText);
-  const [userData, setUserData] = useContext(UserContext);
   const refLang = useRef<HTMLDivElement>(null);
   const refMenu = useRef<HTMLDivElement>(null);
+
+  const userData: UserData | undefined = useSelector(
+    (state: RootState) => state.totalSlice.userData
+  );
+
   useOutsideClick(
     refLang,
     () => {
@@ -495,7 +500,7 @@ export default function Navbar() {
     (state: RootState) => state.totalSlice.tabs
   );
   const dispatch = useDispatch();
-  useEffect(() => {
+  useEffect(() => {    
     let saveLang: any = localStorage.getItem("lang")?.toString();
     if (saveLang !== undefined) {
       setLang(saveLang.toString());
@@ -549,6 +554,7 @@ export default function Navbar() {
     limit: 100,
   });
   const logout_bt = () => {
+    dispatch(resetTab(0));
     logout();
   };
   const showhideAvatarMenu = () => {
@@ -644,10 +650,10 @@ export default function Navbar() {
                   if (newValue !== null) {
                     setSelectedTab(newValue);
                     if (
-                      userData.JOB_NAME === "ADMIN" ||
-                      userData.JOB_NAME === "Leader" ||
-                      userData.JOB_NAME === "Sub Leader" ||
-                      userData.JOB_NAME === "Dept Staff"
+                      userData?.JOB_NAME === "ADMIN" ||
+                      userData?.JOB_NAME === "Leader" ||
+                      userData?.JOB_NAME === "Sub Leader" ||
+                      userData?.JOB_NAME === "Dept Staff"
                     ) {
                       /* if (tabModeSwap) {
                       dispatch(
@@ -755,13 +761,13 @@ export default function Navbar() {
                 className={"avatar"}
                 onClick={showhideAvatarMenu}               
               >
-                {userData.EMPL_IMAGE !== "Y" && userData.FIRST_NAME.slice(0, 1)}
-                {userData.EMPL_IMAGE === "Y" && (
+                {userData?.EMPL_IMAGE !== "Y" && userData?.FIRST_NAME?.slice(0, 1)}
+                {userData?.EMPL_IMAGE === "Y" && (
                   <img
                     width={35}
                     height={35}
-                    src={"/Picture_NS/NS_" + userData.EMPL_NO + ".jpg"}
-                    alt={userData.EMPL_NO}
+                    src={"/Picture_NS/NS_" + userData?.EMPL_NO + ".jpg"}
+                    alt={userData?.EMPL_NO}
                   ></img>
                 )}
               </div>

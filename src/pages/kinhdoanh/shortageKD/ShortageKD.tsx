@@ -11,6 +11,9 @@ import { UserContext } from '../../../api/Context';
 import { checkBP, SaveExcel } from '../../../api/GlobalFunction';
 import { MdOutlineDelete } from 'react-icons/md';
 import "./ShortageKD.scss"
+import { UserData } from '../../../redux/slices/globalSlice';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../../redux/store';
 
 interface ShortageData {
   ST_ID: number,
@@ -70,7 +73,9 @@ const ShortageKD = () => {
     them1invoice:false,
     testinvoicetable: false
   });
-  const [userData, setUserData] = useContext(UserContext);
+  const userData: UserData | undefined = useSelector(
+    (state: RootState) => state.totalSlice.userData
+  );
   const [uploadExcelJson, setUploadExcelJSon] = useState<Array<any>>([]);
   const [isLoading, setisLoading] = useState(false);   
   const [column_excel, setColumn_Excel]= useState<Array<any>>([]);
@@ -236,7 +241,7 @@ const ShortageKD = () => {
         <GridToolbarDensitySelector /> 
         <IconButton className='buttonIcon'onClick={()=>{SaveExcel(shortagedatatable,"Shortage Table")}}><AiFillFileExcel color='green' size={25}/>SAVE</IconButton> 
         <IconButton className='buttonIcon'onClick={()=>{
-           checkBP(userData.EMPL_NO,userData.MAINDEPTNAME,['KD'], handleConfirmDeletePlan);
+           checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['KD'], handleConfirmDeletePlan);
           //handleConfirmDeletePlan();
           }}><MdOutlineDelete color='red' size={25}/>XÓA PLAN</IconButton>        
         <GridToolbarQuickFilter/>
@@ -432,7 +437,7 @@ const ShortageKD = () => {
               G_CODE: uploadExcelJson[i].G_CODE,
               CUST_CD: uploadExcelJson[i].CUST_CD,
               PLAN_DATE: uploadExcelJson[i].PLAN_DATE,
-              EMPL_NO: userData.EMPL_NO,
+              EMPL_NO: userData?.EMPL_NO,
               D1_9H: uploadExcelJson[i].D1_9H,
               D1_13H: uploadExcelJson[i].D1_13H,
               D1_19H: uploadExcelJson[i].D1_19H,
@@ -447,8 +452,8 @@ const ShortageKD = () => {
               D4_SANG: uploadExcelJson[i].D4_SANG,
               D4_CHIEU: uploadExcelJson[i].D4_CHIEU,
               PRIORITY: uploadExcelJson[i].PRIORITY,
-              INS_EMPL: userData.EMPL_NO,              
-              UPD_EMPL: userData.EMPL_NO,  
+              INS_EMPL: userData?.EMPL_NO,              
+              UPD_EMPL: userData?.EMPL_NO,  
             })
              .then((response) => {
                 console.log(response.data.tk_status);
@@ -626,7 +631,7 @@ const ShortageKD = () => {
           'Đang Xóa Plan hàng loạt',
           'success'
         );
-        checkBP(userData.EMPL_NO,userData.MAINDEPTNAME,['KD'], deletePlan);
+        checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['KD'], deletePlan);
         //deletePlan();
       }
     })
@@ -681,7 +686,7 @@ const ShortageKD = () => {
           </span>
         </div>  
         <div className='mininavitem'   onClick={() =>
-            checkBP(userData.EMPL_NO, userData.MAINDEPTNAME, ['KD'], () => {
+            checkBP(userData?.EMPL_NO, userData?.MAINDEPTNAME, ['KD'], () => {
               setNav(2);
             })
           } style={{backgroundColor:selection.thempohangloat === true ? '#02c712':'#abc9ae', color: selection.thempohangloat === true ? 'yellow':'yellow'}}>

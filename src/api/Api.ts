@@ -1,7 +1,7 @@
 import Cookies from "universal-cookie";
 import Swal from "sweetalert2";
 import { store } from "../redux/store";
-import {login as loginSlice,logout as logoutSlice } from "../redux/slices/globalSlice"
+import {changeUserData, login as loginSlice,logout as logoutSlice, update_socket } from "../redux/slices/globalSlice"
 
 
 const axios = require("axios").default;
@@ -50,10 +50,85 @@ export function login(user: string, pass: string) {
         );
         //alert("Đăng nhập thành công");
         cookies.set("token", Jresult.token_content, { path: "/" });
-        setTimeout(() => {
-          /* window.location.href = "/"; */
-          store.dispatch(loginSlice(true));
+        checkLogin()
+        .then((data) => {
+          //console.log(data);
+          if (data.data.tk_status === "ng") {
+            /* console.log("khong co token");
+            setLoginState(false); */
+            store.dispatch(logoutSlice(false));
+            store.dispatch(
+              changeUserData({
+                ADD_COMMUNE: "Đông Xuân",
+                ADD_DISTRICT: "Sóc Sơn",
+                ADD_PROVINCE: "Hà Nội",
+                ADD_VILLAGE: "Thôn Phú Thọ",
+                ATT_GROUP_CODE: 1,
+                CMS_ID: "CMS1179",
+                CTR_CD: "002",
+                DOB: "1993-10-18T00:00:00.000Z",
+                EMAIL: "nvh1903@cmsbando.com",
+                EMPL_NO: "none",
+                FACTORY_CODE: 1,
+                FACTORY_NAME: "Nhà máy 1",
+                FACTORY_NAME_KR: "1공장",
+                FIRST_NAME: "HÙNG3",
+                HOMETOWN: "Phụ Thọ - Đông Xuân - Sóc Sơn - Hà Nội",
+                JOB_CODE: 1,
+                JOB_NAME: "Dept Staff",
+                JOB_NAME_KR: "부서담당자",
+                MAINDEPTCODE: 1,
+                MAINDEPTNAME: "QC",
+                MAINDEPTNAME_KR: "품질",
+                MIDLAST_NAME: "NGUYỄN VĂN",
+                ONLINE_DATETIME: "2022-07-12T20:49:52.600Z",
+                PASSWORD: "",
+                PHONE_NUMBER: "0971092454",
+                POSITION_CODE: 3,
+                POSITION_NAME: "Staff",
+                POSITION_NAME_KR: "사원",
+                REMARK: "",
+                SEX_CODE: 1,
+                SEX_NAME: "Nam",
+                SEX_NAME_KR: "남자",
+                SUBDEPTCODE: 2,
+                SUBDEPTNAME: "PD",
+                SUBDEPTNAME_KR: "통역",
+                WORK_POSITION_CODE: 2,
+                WORK_POSITION_NAME: "PD",
+                WORK_POSITION_NAME_KR: "PD",
+                WORK_SHIFT_CODE: 0,
+                WORK_SHIF_NAME: "Hành Chính",
+                WORK_SHIF_NAME_KR: "정규",
+                WORK_START_DATE: "2019-03-11T00:00:00.000Z",
+                WORK_STATUS_CODE: 1,
+                WORK_STATUS_NAME: "Đang làm",
+                WORK_STATUS_NAME_KR: "근무중",
+                EMPL_IMAGE: "N",
+              })
+            );            
+          } else {
+            //console.log(data.data.data);            
+            store.dispatch(changeUserData(data.data.data));
+            //dispatch(update_socket(data.data.data.EMPL_NO + " da dangnhap"));
+            store.dispatch(
+              update_socket({
+                event: "login",
+                data: data.data.data.EMPL_NO,
+              })
+            );
+            /* setLoginState(true); */
+            store.dispatch(loginSlice(true));
+          }
+        })
+        .catch((err) => {
+          console.log(err + " ");
+        });
 
+        
+        setTimeout(() => {
+         /*  window.location.href = "/"; */
+          store.dispatch(loginSlice(true));          
         }, 1000);
       } else {
         Swal.fire("Tên đăng nhập hoặc mật khẩu sai");

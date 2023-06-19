@@ -166,7 +166,6 @@ const INSPECTION = () => {
     renderbanve: false,
     amazontab: false,
   });
-  const [userData, setUserData] = useContext(UserContext);
   const [isLoading, setisLoading] = useState(false);
   const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
   const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));

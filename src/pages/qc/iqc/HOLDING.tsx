@@ -25,6 +25,9 @@ import DataGrid, {
 } from "devextreme-react/data-grid";
 import { GrStatusGood } from "react-icons/gr";
 import { FcCancel } from "react-icons/fc";
+import { UserData } from "../../../redux/slices/globalSlice";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../redux/store";
 
 interface HOLDING_DATA {
   HOLD_ID: number,
@@ -57,7 +60,9 @@ const HOLDING = () => {
 const [selectedRowsData, setSelectedRowsData] = useState<
     Array<HOLDING_DATA>
   >([]);
-  const [userData, setUserData] = useContext(UserContext);
+  const userData: UserData | undefined = useSelector(
+    (state: RootState) => state.totalSlice.userData
+  );
   const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
   const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));
   const [codeKD, setCodeKD] = useState("");  
@@ -467,7 +472,7 @@ const [selectedRowsData, setSelectedRowsData] = useState<
             <IconButton
                 className='buttonIcon'
                 onClick={() => {
-                    if(userData.SUBDEPTNAME === 'IQC')
+                    if(userData?.SUBDEPTNAME === 'IQC')
                     {
                         setQCPASS('Y');                          
                     }
@@ -475,8 +480,8 @@ const [selectedRowsData, setSelectedRowsData] = useState<
                     {
                         Swal.fire('Thông báo','Bạn không phải người bộ phận IQC','error');
                     }
-                    //checkBP(userData.EMPL_NO,userData.MAINDEPTNAME,['QC'], ()=>{setQCPASS('Y');});
-                    //checkBP(userData.EMPL_NO,userData.MAINDEPTNAME,['QLSX'], setQCPASS('Y'));
+                    //checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['QC'], ()=>{setQCPASS('Y');});
+                    //checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['QLSX'], setQCPASS('Y'));
                     //setQCPASS('Y');                  
                 }}
               >
@@ -486,7 +491,7 @@ const [selectedRowsData, setSelectedRowsData] = useState<
               <IconButton
                 className='buttonIcon'
                 onClick={() => {
-                    if(userData.SUBDEPTNAME === 'IQC')
+                    if(userData?.SUBDEPTNAME === 'IQC')
                     {
                         setQCPASS('N');                          
                     }
@@ -494,8 +499,8 @@ const [selectedRowsData, setSelectedRowsData] = useState<
                     {
                         Swal.fire('Thông báo','Bạn không phải người bộ phận IQC','error');
                     }
-                    //checkBP(userData.EMPL_NO,userData.MAINDEPTNAME,['QC'], ()=>{setQCPASS('Y');});
-                    //checkBP(userData.EMPL_NO,userData.MAINDEPTNAME,['QLSX'], setQCPASS('N'));
+                    //checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['QC'], ()=>{setQCPASS('Y');});
+                    //checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['QLSX'], setQCPASS('N'));
                     //setQCPASS('N');     
                 }}
               >

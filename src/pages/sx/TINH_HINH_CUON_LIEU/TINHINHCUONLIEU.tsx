@@ -99,7 +99,6 @@ const TINHHINHCUONLIEU = () => {
     TOTAL_LOSS_KT: 0,
     TOTAL_LOSS: 0,
   });
-  const [userData, setUserData] = useContext(UserContext);
   const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
   const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));
   const [codeKD, setCodeKD] = useState("");

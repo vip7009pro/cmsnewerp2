@@ -39,6 +39,9 @@ import { AiFillFileExcel } from "react-icons/ai";
 import { BiPrinter, BiSave, BiShow } from "react-icons/bi";
 import { useReactToPrint } from "react-to-print";
 import { UserContext } from "../../../api/Context";
+import { UserData } from "../../../redux/slices/globalSlice";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../redux/store";
 interface COMPONENT_DATA {
   G_CODE_MAU: string;
   DOITUONG_NO: number;
@@ -99,7 +102,9 @@ interface  POINT_DATA {
   y: number
 }
 const DESIGN_AMAZON = () => {
-  const [userData, setUserData] = useContext(UserContext);
+  const userData: UserData | undefined = useSelector(
+    (state: RootState) => state.totalSlice.userData
+  );
   const labelprintref = useRef(null);
   const handlePrint = useReactToPrint({
     content: () => labelprintref.current,
@@ -557,8 +562,8 @@ const DESIGN_AMAZON = () => {
       if (result.isConfirmed) {
         Swal.fire("Tiến hành Lưu DESIGN", "Đang lưu DESIGN", "success");
         checkBP(
-          userData.EMPL_NO,
-          userData.MAINDEPTNAME,
+          userData?.EMPL_NO,
+          userData?.MAINDEPTNAME,
           ["RND"],
           saveDesignAmazon
         );

@@ -33,6 +33,9 @@ import "./PoManager.scss";
 import { FaFileInvoiceDollar } from "react-icons/fa";
 import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
 import PivotTable from "../../../components/PivotChart/PivotChart";
+import { UserData } from "../../../redux/slices/globalSlice";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../redux/store";
 interface POTableData {
   PO_ID: number;
   CUST_NAME_KD: string;
@@ -93,7 +96,9 @@ const PoManager = () => {
     them1po: false,
     them1invoice: false,
   });
-  const [userData, setUserData] = useContext(UserContext);
+  const userData: UserData | undefined = useSelector(
+    (state: RootState) => state.totalSlice.userData
+  );
   const [uploadExcelJson, setUploadExcelJSon] = useState<Array<any>>([]);
   const [isLoading, setisLoading] = useState(false);
   const [column_excel, setColumn_Excel] = useState<Array<any>>([]);
@@ -431,7 +436,7 @@ const PoManager = () => {
         <IconButton
           className='buttonIcon'
           onClick={() => {
-            checkBP(userData.EMPL_NO, userData.MAINDEPTNAME, ["KD"], showNewPO);
+            checkBP(userData?.EMPL_NO, userData?.MAINDEPTNAME, ["KD"], showNewPO);
             clearPOform();
           }}
         >
@@ -442,8 +447,8 @@ const PoManager = () => {
           className='buttonIcon'
           onClick={() => {
             checkBP(
-              userData.EMPL_NO,
-              userData.MAINDEPTNAME,
+              userData?.EMPL_NO,
+              userData?.MAINDEPTNAME,
               ["KD"],
               handle_fillsuaformInvoice
             );
@@ -457,8 +462,8 @@ const PoManager = () => {
           className='buttonIcon'
           onClick={() => {
             checkBP(
-              userData.EMPL_NO,
-              userData.MAINDEPTNAME,
+              userData?.EMPL_NO,
+              userData?.MAINDEPTNAME,
               ["KD"],
               handle_fillsuaform
             );
@@ -472,8 +477,8 @@ const PoManager = () => {
           className='buttonIcon'
           onClick={() => {
             checkBP(
-              userData.EMPL_NO,
-              userData.MAINDEPTNAME,
+              userData?.EMPL_NO,
+              userData?.MAINDEPTNAME,
               ["KD"],
               handleConfirmDeletePO
             );
@@ -714,7 +719,7 @@ const PoManager = () => {
           G_CODE: uploadExcelJson[i].G_CODE,
           CUST_CD: uploadExcelJson[i].CUST_CD,
           PO_NO: uploadExcelJson[i].PO_NO,
-          EMPL_NO: userData.EMPL_NO,
+          EMPL_NO: userData?.EMPL_NO,
           PO_QTY: uploadExcelJson[i].PO_QTY,
           PO_DATE: uploadExcelJson[i].PO_DATE,
           RD_DATE: uploadExcelJson[i].RD_DATE,
@@ -866,7 +871,7 @@ const PoManager = () => {
       selectedCode?.G_CODE === "" ||
       selectedCust_CD?.CUST_CD === "" ||
       newpono === "" ||
-      userData.EMPL_NO === "" ||
+      userData?.EMPL_NO === "" ||
       newpoprice === ""
     ) {
       err_code = 4;
@@ -876,7 +881,7 @@ const PoManager = () => {
         G_CODE: selectedCode?.G_CODE,
         CUST_CD: selectedCust_CD?.CUST_CD,
         PO_NO: newpono,
-        EMPL_NO: userData.EMPL_NO,
+        EMPL_NO: userData?.EMPL_NO,
         PO_QTY: newpoqty,
         PO_DATE: newpodate,
         RD_DATE: newrddate,
@@ -945,7 +950,7 @@ const PoManager = () => {
       selectedCode?.G_CODE === "" ||
       selectedCust_CD?.CUST_CD === "" ||
       newinvoicedate === "" ||
-      userData.EMPL_NO === "" ||
+      userData?.EMPL_NO === "" ||
       newinvoiceQTY === 0
     ) {
       err_code = 4;
@@ -965,7 +970,7 @@ const PoManager = () => {
         G_CODE: selectedCode?.G_CODE,
         CUST_CD: selectedCust_CD?.CUST_CD,
         PO_NO: newpono,
-        EMPL_NO: userData.EMPL_NO,
+        EMPL_NO: userData?.EMPL_NO,
         DELIVERY_QTY: newinvoiceQTY,
         PO_DATE: newpodate,
         RD_DATE: newrddate,
@@ -1146,7 +1151,7 @@ const PoManager = () => {
       selectedCode?.G_CODE === "" ||
       selectedCust_CD?.CUST_CD === "" ||
       newpono === "" ||
-      userData.EMPL_NO === "" ||
+      userData?.EMPL_NO === "" ||
       newpoprice === ""
     ) {
       err_code = 4;
@@ -1156,7 +1161,7 @@ const PoManager = () => {
         G_CODE: selectedCode?.G_CODE,
         CUST_CD: selectedCust_CD?.CUST_CD,
         PO_NO: newpono,
-        EMPL_NO: userData.EMPL_NO,
+        EMPL_NO: userData?.EMPL_NO,
         PO_QTY: newpoqty,
         PO_DATE: newpodate,
         RD_DATE: newrddate,
@@ -1199,7 +1204,7 @@ const PoManager = () => {
     if (podatatablefilter.length >= 1) {
       let err_code: boolean = false;
       for (let i = 0; i < podatatablefilter.length; i++) {
-        if (podatatablefilter[i].EMPL_NO === userData.EMPL_NO) {
+        if (podatatablefilter[i].EMPL_NO === userData?.EMPL_NO) {
           await generalQuery("delete_po", {
             PO_ID: podatatablefilter[i].PO_ID,
           })
@@ -1730,7 +1735,7 @@ const PoManager = () => {
         <div
           className='mininavitem'
           onClick={() =>
-            checkBP(userData.EMPL_NO, userData.MAINDEPTNAME, ["KD"], () => {
+            checkBP(userData?.EMPL_NO, userData?.MAINDEPTNAME, ["KD"], () => {
               setNav(2);
             })
           }

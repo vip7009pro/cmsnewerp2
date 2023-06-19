@@ -489,7 +489,7 @@ function App() {
       .catch((err) => {
         console.log(err + " ");
       });
-      console.log("check diem danh");
+    console.log("check diem danh");
     generalQuery("checkdiemdanh", {})
       .then((response) => {
         //console.log(response.data);
@@ -513,7 +513,6 @@ function App() {
     }
     return () => {};
   }, []);
-
   return (
     <>
       {globalLoginState && (

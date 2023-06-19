@@ -15,7 +15,6 @@ import {
 } from "../../redux/slices/globalSlice";
 const Login = () => {
   const ref = useRef<any>(null);
-  const [userData, setUserData] = useContext(UserContext);
   const [lang, setLang] = useContext(LangConText);
   const [user, setUser] = useState("");
   const [pass, setPass] = useState("");
@@ -49,8 +48,8 @@ const Login = () => {
   const server_ip: string | undefined = useSelector(
     (state: RootState) => state.totalSlice.server_ip
   );
-
   const dispatch = useDispatch();
+
   useEffect(() => {
 
     let server_ip_local: any = localStorage.getItem("server_ip")?.toString();

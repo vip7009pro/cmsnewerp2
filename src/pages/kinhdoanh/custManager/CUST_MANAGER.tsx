@@ -22,6 +22,9 @@ import { generalQuery } from "../../../api/Api";
 import { UserContext } from "../../../api/Context";
 import { SaveExcel } from "../../../api/GlobalFunction";
 import "./CUST_MANAGER.scss";
+import { UserData } from "../../../redux/slices/globalSlice";
+import { RootState } from "../../../redux/store";
+import { useSelector } from "react-redux";
 
 interface CUST_INFO {
   id: string;
@@ -36,7 +39,9 @@ const CUST_MANAGER = () => {
     them1invoice: false,
     testinvoicetable: false,
   });
-  const [userData, setUserData] = useContext(UserContext);
+  const userData: UserData | undefined = useSelector(
+    (state: RootState) => state.totalSlice.userData
+  );
   const [isLoading, setisLoading] = useState(false);
   const [custinfodatatable, setCUSTINFODataTable] = useState<Array<any>>([]);
   const [cust_cd, setCust_Cd] = useState("0000");
@@ -348,7 +353,7 @@ const CUST_MANAGER = () => {
                   <button
                     className='thembutton'
                     onClick={() => {
-                      if(userData.EMPL_NO==='LVT1906' || userData.EMPL_NO==='NHU1903')
+                      if(userData?.EMPL_NO==='LVT1906' || userData?.EMPL_NO==='NHU1903')
                       {
                         handle_addCustomer();
                       }
@@ -365,7 +370,7 @@ const CUST_MANAGER = () => {
                   <button
                     className='suabutton'
                     onClick={() => {                     
-                      if(userData.EMPL_NO==='LVT1906' || userData.EMPL_NO==='NHU1903')
+                      if(userData?.EMPL_NO==='LVT1906' || userData?.EMPL_NO==='NHU1903')
                       {
                         handle_editCustomer();
                       }

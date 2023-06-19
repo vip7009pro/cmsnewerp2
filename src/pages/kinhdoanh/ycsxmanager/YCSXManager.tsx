@@ -39,6 +39,9 @@ import { useReactToPrint } from "react-to-print";
 import YCSXComponent from "./YCSXComponent/YCSXComponent";
 import DrawComponent from "./DrawComponent/DrawComponent";
 import TraAMZ from "./TraAMZ/TraAMZ";
+import { UserData } from "../../../redux/slices/globalSlice";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../redux/store";
 const axios = require("axios").default;
 interface POBALANCETDYCSX {
   G_CODE: string;
@@ -189,7 +192,11 @@ const YCSXManager = () => {
     renderbanve: false,
     amazontab: false,
   });
-  const [userData, setUserData] = useContext(UserContext);
+
+  const userData: UserData | undefined = useSelector(
+    (state: RootState) => state.totalSlice.userData
+  );
+
   const [uploadExcelJson, setUploadExcelJSon] = useState<Array<any>>([]);
   const [isLoading, setisLoading] = useState(false);
   const [column_excel, setColumn_Excel] = useState<Array<any>>([]);
@@ -604,7 +611,7 @@ const YCSXManager = () => {
         let file: any = null; 
         const uploadFile2 = async (e:any) => {
           console.log(file); 
-          if(userData.MAINDEPTNAME==='KD')
+          if(userData?.MAINDEPTNAME==='KD')
           {
             uploadQuery(file,params.row.G_CODE +'.pdf','banve')
             .then((response)=> {
@@ -1273,7 +1280,7 @@ const YCSXManager = () => {
               PRINT_STATUS: "",
               INLAI_COUNT: 0,
               REMARK: "0109",
-              INS_EMPL: userData.EMPL_NO,
+              INS_EMPL: userData?.EMPL_NO,
             })
               .then((response) => {
                 console.log(response.data.tk_status);
@@ -1730,7 +1737,7 @@ const YCSXManager = () => {
           uploadExcelJson[i].G_CODE === "" ||
           uploadExcelJson[i].CUST_CD === "" ||
           uploadExcelJson[i].PROD_REQUEST_QTY === "" ||
-          userData.EMPL_NO === ""
+          userData?.EMPL_NO === ""
         ) {
           err_code1 = 4;
         }
@@ -1748,11 +1755,11 @@ const YCSXManager = () => {
               CODE_55: uploadExcelJson[i].CODE_55,
               RIV_NO: "A",
               PROD_REQUEST_QTY: uploadExcelJson[i].PROD_REQUEST_QTY,
-              EMPL_NO: userData.EMPL_NO,
+              EMPL_NO: userData?.EMPL_NO,
               USE_YN: "Y",
               DELIVERY_DT: uploadExcelJson[i].DELIVERY_DT,
-              INS_EMPL: userData.EMPL_NO,
-              UPD_EMPL: userData.EMPL_NO,
+              INS_EMPL: userData?.EMPL_NO,
+              UPD_EMPL: userData?.EMPL_NO,
               YCSX_PENDING: 1,
               G_CODE2: uploadExcelJson[i].G_CODE,
               PO_TDYCSX: pobalance_tdycsx.PO_BALANCE,
@@ -1808,11 +1815,11 @@ const YCSXManager = () => {
               CODE_55: uploadExcelJson[i].CODE_55,
               RIV_NO: "A",
               PROD_REQUEST_QTY: uploadExcelJson[i].PROD_REQUEST_QTY,
-              EMPL_NO: userData.EMPL_NO,
+              EMPL_NO: userData?.EMPL_NO,
               USE_YN: "Y",
               DELIVERY_DT: uploadExcelJson[i].DELIVERY_DT,
-              INS_EMPL: userData.EMPL_NO,
-              UPD_EMPL: userData.EMPL_NO,
+              INS_EMPL: userData?.EMPL_NO,
+              UPD_EMPL: userData?.EMPL_NO,
               YCSX_PENDING: 1,
               G_CODE2: uploadExcelJson[i].G_CODE,
               PO_TDYCSX: pobalance_tdycsx.PO_BALANCE,
@@ -1877,7 +1884,7 @@ const YCSXManager = () => {
               PROD_REQUEST_DATE: moment().format("YYYYMMDD"),
               PROD_REQUEST_NO: next_prod_request_no,
               G_CODE: uploadExcelJson[i].G_CODE,
-              EMPL_NO: userData.EMPL_NO,
+              EMPL_NO: userData?.EMPL_NO,
               phanloai: newphanloai,
               PLAN_ID: next_prod_request_no + "A",
             })
@@ -1895,7 +1902,7 @@ const YCSXManager = () => {
             await generalQuery("insert_p501", {
               in_date: moment().format("YYYYMMDD"),
               next_process_in_no: next_p500_in_no,
-              EMPL_NO: userData.EMPL_NO,
+              EMPL_NO: userData?.EMPL_NO,
               next_process_lot_no: next_process_lot_no_p501,
               next_process_prt_seq: next_process_lot_no_p501.substring(5, 8),
               PROD_REQUEST_DATE: moment().format("YYYYMMDD"),
@@ -2135,7 +2142,7 @@ const YCSXManager = () => {
       selectedCode?.G_CODE === "" ||
       selectedCust_CD?.CUST_CD === "" ||
       newycsxqty === "" ||
-      userData.EMPL_NO === ""
+      userData?.EMPL_NO === ""
     ) {
       err_code = 4;
     }
@@ -2152,11 +2159,11 @@ const YCSXManager = () => {
           CODE_55: loaisx,
           RIV_NO: "A",
           PROD_REQUEST_QTY: newycsxqty,
-          EMPL_NO: userData.EMPL_NO,
+          EMPL_NO: userData?.EMPL_NO,
           USE_YN: "Y",
           DELIVERY_DT: moment(deliverydate).format("YYYYMMDD"),
-          INS_EMPL: userData.EMPL_NO,
-          UPD_EMPL: userData.EMPL_NO,
+          INS_EMPL: userData?.EMPL_NO,
+          UPD_EMPL: userData?.EMPL_NO,
           YCSX_PENDING: 1,
           G_CODE2: selectedCode?.G_CODE,
           PO_TDYCSX: pobalance_tdycsx.PO_BALANCE,
@@ -2213,11 +2220,11 @@ const YCSXManager = () => {
           CODE_55: loaisx,
           RIV_NO: "A",
           PROD_REQUEST_QTY: newycsxqty,
-          EMPL_NO: userData.EMPL_NO,
+          EMPL_NO: userData?.EMPL_NO,
           USE_YN: "Y",
           DELIVERY_DT: moment(deliverydate).format("YYYYMMDD"),
-          INS_EMPL: userData.EMPL_NO,
-          UPD_EMPL: userData.EMPL_NO,
+          INS_EMPL: userData?.EMPL_NO,
+          UPD_EMPL: userData?.EMPL_NO,
           YCSX_PENDING: 1,
           G_CODE2: selectedCode?.G_CODE,
           PO_TDYCSX: pobalance_tdycsx.PO_BALANCE,
@@ -2283,7 +2290,7 @@ const YCSXManager = () => {
           PROD_REQUEST_DATE: moment().format("YYYYMMDD"),
           PROD_REQUEST_NO: next_prod_request_no,
           G_CODE: selectedCode?.G_CODE,
-          EMPL_NO: userData.EMPL_NO,
+          EMPL_NO: userData?.EMPL_NO,
           phanloai: newphanloai,
           PLAN_ID: next_prod_request_no + "A",
         })
@@ -2301,7 +2308,7 @@ const YCSXManager = () => {
         await generalQuery("insert_p501", {
           in_date: moment().format("YYYYMMDD"),
           next_process_in_no: next_p500_in_no,
-          EMPL_NO: userData.EMPL_NO,
+          EMPL_NO: userData?.EMPL_NO,
           next_process_lot_no: next_process_lot_no_p501,
           next_process_prt_seq: next_process_lot_no_p501.substring(5, 8),
           PROD_REQUEST_DATE: moment().format("YYYYMMDD"),
@@ -2428,10 +2435,10 @@ const YCSXManager = () => {
   };
   const updateYCSX = async () => {
     if (
-      userData.EMPL_NO === "LVT1906" ||
-      userData.EMPL_NO === "lvt1906" ||
-      userData.EMPL_NO === "nhu1903" ||
-      userData.EMPL_NO === "NHU1903"
+      userData?.EMPL_NO === "LVT1906" ||
+      userData?.EMPL_NO === "lvt1906" ||
+      userData?.EMPL_NO === "nhu1903" ||
+      userData?.EMPL_NO === "NHU1903"
     ) {
       let err_code: number = 0;
       await generalQuery("checkYcsxExist", {
@@ -2451,8 +2458,7 @@ const YCSXManager = () => {
       if (
         selectedCode?.G_CODE === "" ||
         selectedCust_CD?.CUST_CD === "" ||
-        newycsxqty === "" ||
-        userData.EMPL_NO === ""
+        newycsxqty === ""        
       ) {
         err_code = 4;
       }
@@ -2465,7 +2471,7 @@ const YCSXManager = () => {
           CODE_50: loaixh,
           CODE_55: loaisx,
           PROD_REQUEST_QTY: newycsxqty,
-          EMPL_NO: userData.EMPL_NO,
+          EMPL_NO: userData?.EMPL_NO,
           DELIVERY_DT: moment(deliverydate).format("YYYYMMDD"),
         })
           .then((response) => {
@@ -2500,7 +2506,7 @@ const YCSXManager = () => {
     if (ycsxdatatablefilter.length >= 1) {
       let err_code: boolean = false;
       for (let i = 0; i < ycsxdatatablefilter.length; i++) {
-        if (ycsxdatatablefilter[i].EMPL_NO === userData.EMPL_NO) {
+        if (ycsxdatatablefilter[i].EMPL_NO === userData?.EMPL_NO) {
           let checkO300: boolean = false;
           await generalQuery("checkYCSXQLSXPLAN", {
             PROD_REQUEST_NO: ycsxdatatablefilter[i].PROD_REQUEST_NO,
@@ -2563,8 +2569,8 @@ const YCSXManager = () => {
   };
   const setPDuyetYCSX = async (pduyet_value: number) => {
     if (
-      userData.EMPL_NO === "LVT1906" ||
-      userData.EMPL_NO === "lvt1906" ||
+      userData?.EMPL_NO === "LVT1906" ||
+      userData?.EMPL_NO === "lvt1906" ||
       empl_name === "pd"
     ) {
       if (ycsxdatatablefilter.length >= 1) {
@@ -2716,7 +2722,7 @@ const YCSXManager = () => {
       PROD_REQUEST_QTY: newycsxqty,
       G_CODE: selectedCode?.G_CODE,
       CUST_CD: selectedCust_CD?.CUST_CD,
-      EMPL_NO: userData.EMPL_NO,
+      EMPL_NO: userData?.EMPL_NO,
       REMK: newycsxremark,
       DELIVERY_DT: moment(deliverydate).format("YYYYMMDD"),
       CHECKSTATUS: "Waiting",

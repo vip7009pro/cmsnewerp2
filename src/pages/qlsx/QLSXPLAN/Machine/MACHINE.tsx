@@ -66,6 +66,7 @@ import { GiCurvyKnife } from "react-icons/gi";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../../redux/store";
 import {
+  UserData,
   addChithiArray,
   resetChithiArray,
 } from "../../../../redux/slices/globalSlice";
@@ -350,7 +351,9 @@ const MACHINE = () => {
   const [chithidatatable, setChiThiDataTable] = useState<QLSXCHITHIDATA[]>([]);
   const [showplanwindow, setShowPlanWindow] = useState(false);
   const [showkhoao, setShowKhoAo] = useState(false);
-  const [userData, setUserData] = useContext(UserContext);
+  const userData: UserData | undefined = useSelector(
+    (state: RootState) => state.totalSlice.userData
+  );
   const [isLoading, setisLoading] = useState(false);
   const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
   const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));
@@ -543,7 +546,7 @@ const MACHINE = () => {
           const formData = new FormData();
           formData.append("banve", file);
           formData.append("filename", params.row.G_CODE);
-          if (userData.MAINDEPTNAME === "KD") {
+          if (userData?.MAINDEPTNAME === "KD") {
             try {
               const response = await axios.post(upload_url, formData);
               //console.log("ket qua");
@@ -1608,7 +1611,7 @@ const MACHINE = () => {
   };
   const handleSaveQLSX = async () => {
     if (selectedPlan !== undefined) {
-      if (userData.EMPL_NO === "NHU1903" || userData.MAINDEPTNAME === "QLSX") {
+      if (userData?.EMPL_NO === "NHU1903" || userData?.MAINDEPTNAME === "QLSX") {
         let err_code: string = "0";
         console.log(datadinhmuc);
         if (
@@ -3005,8 +3008,8 @@ const MACHINE = () => {
           className='buttonIcon'
           onClick={() => {
             checkBP(
-              userData.EMPL_NO,
-              userData.MAINDEPTNAME,
+              userData?.EMPL_NO,
+              userData?.MAINDEPTNAME,
               ["QLSX"],
               handle_UpdatePlan
             );
@@ -3020,8 +3023,8 @@ const MACHINE = () => {
           className='buttonIcon'
           onClick={() => {
             checkBP(
-              userData.EMPL_NO,
-              userData.MAINDEPTNAME,
+              userData?.EMPL_NO,
+              userData?.MAINDEPTNAME,
               ["QLSX"],
               handleConfirmDeletePlan
             );
@@ -3044,8 +3047,8 @@ const MACHINE = () => {
           className='buttonIcon'
           onClick={() => {
             checkBP(
-              userData.EMPL_NO,
-              userData.MAINDEPTNAME,
+              userData?.EMPL_NO,
+              userData?.MAINDEPTNAME,
               ["QLSX"],
               handleSaveQLSX
             );
@@ -3131,8 +3134,8 @@ const MACHINE = () => {
           className='buttonIcon'
           onClick={() => {
             checkBP(
-              userData.EMPL_NO,
-              userData.MAINDEPTNAME,
+              userData?.EMPL_NO,
+              userData?.MAINDEPTNAME,
               ["QLSX"],
               handleConfirmDKXL
             );
@@ -3145,8 +3148,8 @@ const MACHINE = () => {
           className='buttonIcon'
           onClick={() => {
             checkBP(
-              userData.EMPL_NO,
-              userData.MAINDEPTNAME,
+              userData?.EMPL_NO,
+              userData?.MAINDEPTNAME,
               ["QLSX"],
               handleConfirmDeleteLieu
             );
@@ -3160,8 +3163,8 @@ const MACHINE = () => {
           className='buttonIcon'
           onClick={() => {
             checkBP(
-              userData.EMPL_NO,
-              userData.MAINDEPTNAME,
+              userData?.EMPL_NO,
+              userData?.MAINDEPTNAME,
               ["QLSX"],
               handleConfirmRESETLIEU
             );
@@ -3175,7 +3178,7 @@ const MACHINE = () => {
           className='buttonIcon'
           onClick={() => {
             if (selectedPlan !== undefined) {
-              checkBP(userData.EMPL_NO, userData.MAINDEPTNAME, ["QLSX"], () => {
+              checkBP(userData?.EMPL_NO, userData?.MAINDEPTNAME, ["QLSX"], () => {
                 setShowKhoAo(!showkhoao);
                 handle_loadKhoAo();
                 handle_loadlichsuxuatkhoao();
@@ -3216,8 +3219,8 @@ const MACHINE = () => {
           className='buttonIcon'
           onClick={() => {
             checkBP(
-              userData.EMPL_NO,
-              userData.MAINDEPTNAME,
+              userData?.EMPL_NO,
+              userData?.MAINDEPTNAME,
               ["QLSX"],
               handle_xuatdao_sample
             );
@@ -3231,8 +3234,8 @@ const MACHINE = () => {
           className='buttonIcon'
           onClick={() => {
             checkBP(
-              userData.EMPL_NO,
-              userData.MAINDEPTNAME,
+              userData?.EMPL_NO,
+              userData?.MAINDEPTNAME,
               ["QLSX"],
               handle_xuatlieu_sample
             );
@@ -3456,7 +3459,7 @@ const MACHINE = () => {
             PLAN_ID: selectedPlan?.PLAN_ID,
             EQ_THUC_TE: selectedPlan?.PLAN_EQ,
             CA_LAM_VIEC: "Day",
-            EMPL_NO: userData.EMPL_NO,
+            EMPL_NO: userData?.EMPL_NO,
             KNIFE_FILM_NO: "1K22LH20",
           })
             .then((response) => {

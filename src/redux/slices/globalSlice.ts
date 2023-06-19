@@ -4,8 +4,8 @@ import { ReactElement } from 'react';
 import { io } from "socket.io-client";
 import Swal from 'sweetalert2';
 
-//const socket =  io('http://14.160.33.94:3005')
-const socket =  io('http://localhost:3005')
+const socket =  io('http://14.160.33.94:3005')
+//const socket =  io('http://localhost:3005')
 socket.on("connect", () => {
   console.log(socket.id); // x8WIv7-mJelg7on_ALbx
 });
@@ -27,54 +27,55 @@ socket.on("disconnect", () => {
 
 export interface UserData  {
     EMPL_IMAGE?: string;
-    ADD_COMMUNE: string;
-    ADD_DISTRICT: string;
-    ADD_PROVINCE: string;
-    ADD_VILLAGE: string;
-    ATT_GROUP_CODE: number;
-    CMS_ID: string;
-    CTR_CD: string;
-    DOB: string;
-    EMAIL: string;
-    EMPL_NO: string;
-    FACTORY_CODE: number;
-    FACTORY_NAME: string;
-    FACTORY_NAME_KR: string;
-    FIRST_NAME: string;
-    HOMETOWN: string;
-    JOB_CODE: number;
-    JOB_NAME: string;
-    JOB_NAME_KR: string;
-    MAINDEPTCODE: number;
-    MAINDEPTNAME: string;
-    MAINDEPTNAME_KR: string;
-    MIDLAST_NAME: string;
-    ONLINE_DATETIME: string;
-    PASSWORD: string;
-    PHONE_NUMBER: string;
-    POSITION_CODE: number;
-    POSITION_NAME: string;
-    POSITION_NAME_KR: string;
+    ADD_COMMUNE?: string;
+    ADD_DISTRICT?: string;
+    ADD_PROVINCE?: string;
+    ADD_VILLAGE?: string;
+    ATT_GROUP_CODE?: number;
+    CMS_ID?: string;
+    CTR_CD?: string;
+    DOB?: string;
+    EMAIL?: string;
+    EMPL_NO?: string;
+    FACTORY_CODE?: number;
+    FACTORY_NAME?: string;
+    FACTORY_NAME_KR?: string;
+    FIRST_NAME?: string;
+    HOMETOWN?: string;
+    JOB_CODE?: number;
+    JOB_NAME?: string;
+    JOB_NAME_KR?: string;
+    MAINDEPTCODE?: number;
+    MAINDEPTNAME?: string;
+    MAINDEPTNAME_KR?: string;
+    MIDLAST_NAME?: string;
+    ONLINE_DATETIME?: string;
+    PASSWORD?: string;
+    PHONE_NUMBER?: string;
+    POSITION_CODE?: number;
+    POSITION_NAME?: string;
+    POSITION_NAME_KR?: string;
     REMARK?: string;
-    SEX_CODE: number;
-    SEX_NAME: string;
-    SEX_NAME_KR: string;
-    SUBDEPTCODE: number;
-    SUBDEPTNAME: string;
-    SUBDEPTNAME_KR: string;
-    WORK_POSITION_CODE: number;
-    WORK_POSITION_NAME: string;
-    WORK_POSITION_NAME_KR: string;
-    WORK_SHIFT_CODE: number;
-    WORK_SHIF_NAME: string;
-    WORK_SHIF_NAME_KR: string;
-    WORK_START_DATE: string;
-    WORK_STATUS_CODE: number;
-    WORK_STATUS_NAME: string;
-    WORK_STATUS_NAME_KR: string;
+    SEX_CODE?: number;
+    SEX_NAME?: string;
+    SEX_NAME_KR?: string;
+    SUBDEPTCODE?: number;
+    SUBDEPTNAME?: string;
+    SUBDEPTNAME_KR?: string;
+    WORK_POSITION_CODE?: number;
+    WORK_POSITION_NAME?: string;
+    WORK_POSITION_NAME_KR?: string;
+    WORK_SHIFT_CODE?: number;
+    WORK_SHIF_NAME?: string;
+    WORK_SHIF_NAME_KR?: string;
+    WORK_START_DATE?: string;
+    WORK_STATUS_CODE?: number;
+    WORK_STATUS_NAME?: string;
+    WORK_STATUS_NAME_KR?: string;
 }
 interface QLSXPLANDATA {
   id: number;
+
   PLAN_ID: string;
   PLAN_DATE: string;
   PROD_REQUEST_NO: string;
@@ -143,6 +144,7 @@ export interface GlobalInterface {
 
 const initialState:GlobalInterface = {   
     userData: {
+        EMPL_IMAGE:'Y',
         ADD_COMMUNE: "Đông Xuân",
         ADD_DISTRICT: "Sóc Sơn",
         ADD_PROVINCE: "Hà Nội",
@@ -211,6 +213,7 @@ export const glbSlice = createSlice({
         },
         changeUserData: (state, action: PayloadAction<UserData>)=> {
             //console.log(action.payload);
+            if(action.payload !== undefined)
             state.userData = action.payload;            
         },
         update_socket: (state, action: PayloadAction<any>)=> {

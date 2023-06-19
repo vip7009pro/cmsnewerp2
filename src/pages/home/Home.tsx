@@ -14,7 +14,7 @@ import { RootState } from "../../redux/store";
 import { useSelector, useDispatch } from "react-redux";
 import { addTab, closeTab, settabIndex } from "../../redux/slices/globalSlice";
 import AccountInfo from "../../components/Navbar/AccountInfo/AccountInfo";
-export const current_ver: number = 153;
+export const current_ver: number = 154;
 interface ELE_ARRAY {
   REACT_ELE: ReactElement;
   ELE_NAME: string;
@@ -39,7 +39,6 @@ function Home() {
     to: { x: 0, y: 0 },
   });
   const [checkVerWeb, setCheckVerWeb] = useState(1);
- 
   useEffect(() => {
     console.log("local ver", current_ver);
     generalQuery("checkWebVer", {})
@@ -57,7 +56,7 @@ function Home() {
     let intervalID = window.setInterval(() => {
       generalQuery("checkWebVer", {})
         .then((response) => {
-          if (response.data.tk_status !== "NG") {
+          if (response?.data?.tk_status !== "NG") {
             //console.log('webver',response.data.data[0].VERWEB);
             if (current_ver >= response.data.data[0].VERWEB) {
             } else {

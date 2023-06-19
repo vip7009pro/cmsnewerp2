@@ -65,7 +65,6 @@ interface CSCONFIRM_DATA {
 const CS = () => {
   const [searchSelection, setSearchSelection] = useState(1);
   const [selectedRows,setSelectedRows]= useState<number>(0);
-  const [userData, setUserData] = useContext(UserContext);
   const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
   const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));
   const [codeKD, setCodeKD] = useState("");

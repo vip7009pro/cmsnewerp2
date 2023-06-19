@@ -42,6 +42,9 @@ import { BiShow } from "react-icons/bi";
 import { GrStatusGood } from "react-icons/gr";
 import { FcCancel } from "react-icons/fc";
 import internal from "stream";
+import { UserData } from "../../../redux/slices/globalSlice";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../redux/store";
 
 interface PQC1_DATA {
   PQC1_ID: string;
@@ -135,7 +138,9 @@ interface SX_DATA {
 }
 const PQC1 = () => {
   const [customerList, setCustomerList] = useState<CustomerListData[]>([]);
-  const [userData, setUserData] = useContext(UserContext);
+  const userData: UserData | undefined = useSelector(
+    (state: RootState) => state.totalSlice.userData
+  );
   const [testtype, setTestType] = useState("NVL");
   const [inputno, setInputNo] = useState("");
   const [lineqc_empl, setLineqc_empl] = useState("");
@@ -168,7 +173,7 @@ const PQC1 = () => {
   const [showhideinput, setShowHideInput] = useState(true);
   const [cust_cd, setCust_Cd] = useState("6969");
   const [factory, setFactory] = useState(
-    userData.FACTORY_CODE === 1 ? "NM1" : "NM2"
+    userData?.FACTORY_CODE === 1 ? "NM1" : "NM2"
   );
   const [pqc1datatable, setPqc1DataTable] = useState<Array<PQC1_DATA>>([]);
   const [sx_data, setSXData] = useState<SX_DATA[]>([])
@@ -429,7 +434,7 @@ const PQC1 = () => {
       EMPL_NAME: "",
       PROD_REQUEST_NO: "",
       ID: "",
-      FACTORY: userData.FACTORY_CODE === 1 ? "NM1" : "NM2",
+      FACTORY: userData?.FACTORY_CODE === 1 ? "NM1" : "NM2",
     })
       .then((response) => {
         //console.log(response.data.data);
@@ -663,7 +668,7 @@ const PQC1 = () => {
                   <b>FACTORY</b>
                   <label>                   
                     <select
-                      disabled={userData.EMPL_NO === "NHU1903"}
+                      disabled={userData?.EMPL_NO === "NHU1903"}
                       name='factory'
                       value={factory}
                       onChange={(e) => {

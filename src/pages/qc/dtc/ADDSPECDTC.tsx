@@ -24,6 +24,9 @@ import DataGrid, {
   Toolbar,
   TotalItem,
 } from "devextreme-react/data-grid";
+import { UserData } from "../../../redux/slices/globalSlice";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../redux/store";
 /* import { Autocomplete } from 'devextreme-react'; */
 interface DTC_ADD_SPEC_DATA {
   CUST_NAME_KD: string;
@@ -84,7 +87,10 @@ const ADDSPECTDTC = () => {
     PROD_LAST_PRICE: 0.318346,
     USE_YN: "Y",
   });
-  const [userData, setUserData] = useContext(UserContext);
+
+  const userData: UserData | undefined = useSelector(
+    (state: RootState) => state.totalSlice.userData
+  );
   const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
   const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));
   const [codeKD, setCodeKD] = useState("");
@@ -92,7 +98,7 @@ const ADDSPECTDTC = () => {
   const [testname, setTestName] = useState("0");
   const [testtype, setTestType] = useState("0");
   const [prodrequestno, setProdRequestNo] = useState("");
-  const [checkNVL, setCheckNVL] = useState((userData.SUBDEPTNAME === 'IQC'? true: false));
+  const [checkNVL, setCheckNVL] = useState((userData?.SUBDEPTNAME === 'IQC'? true: false));
   const [id, setID] = useState("");
   const [inspectiondatatable, setInspectionDataTable] = useState<Array<any>>(
     []

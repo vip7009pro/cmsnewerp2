@@ -178,7 +178,6 @@ const DATASX2 = () => {
   LOSS_INS_OUT_VS_XUATKHO_EA: 0,
   });
   const [selectbutton,setSelectButton]= useState(true);
-  const [userData, setUserData] = useContext(UserContext);
   const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
   const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));
   const [codeKD, setCodeKD] = useState("");

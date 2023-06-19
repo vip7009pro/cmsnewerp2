@@ -58,6 +58,9 @@ import { useReactToPrint } from "react-to-print";
 import CHITHI_COMPONENT from "../CHITHI/CHITHI_COMPONENT";
 import { BiRefresh, BiReset, BiShow } from "react-icons/bi";
 import YCKT from "../YCKT/YCKT";
+import { UserData } from "../../../../redux/slices/globalSlice";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../../redux/store";
 const axios = require("axios").default;
 interface DINHMUC_QSLX {
   FACTORY: string;
@@ -84,9 +87,9 @@ interface QLSXPLANDATA {
   PLAN_EQ: string;
   PLAN_FACTORY: string;
   PLAN_LEADTIME: number;
-  INS_EMPL: string;
+  INS_EMPL?: string;
   INS_DATE: string;
-  UPD_EMPL: string;
+  UPD_EMPL?: string;
   UPD_DATE: string;
   G_CODE: string;
   G_NAME: string;
@@ -230,7 +233,9 @@ const QUICKPLAN = () => {
   const [chithidatatable, setChiThiDataTable] = useState<QLSXCHITHIDATA[]>([]);
   const [showplanwindow, setShowPlanWindow] = useState(false);
   const [showkhoao, setShowKhoAo] = useState(false);
-  const [userData, setUserData] = useContext(UserContext);
+  const userData: UserData | undefined = useSelector(
+    (state: RootState) => state.totalSlice.userData
+  );
   const [isLoading, setisLoading] = useState(false);
   const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
   const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));
@@ -404,7 +409,7 @@ const QUICKPLAN = () => {
           const formData = new FormData();
           formData.append("banve", file);
           formData.append("filename", params.row.G_CODE);
-          if (userData.MAINDEPTNAME === "KD") {
+          if (userData?.MAINDEPTNAME === "KD") {
             try {
               const response = await axios.post(upload_url, formData);
               //console.log("ket qua");
@@ -1275,11 +1280,11 @@ const QUICKPLAN = () => {
           PROD_REQUEST_NO: ycsxdatatablefilter[i].PROD_REQUEST_NO,
           PLAN_QTY: 0,
           PLAN_EQ: "",
-          PLAN_FACTORY: userData.FACTORY_CODE === 1 ? "NM1" : "NM2",
+          PLAN_FACTORY: userData?.FACTORY_CODE === 1 ? "NM1" : "NM2",
           PLAN_LEADTIME: 0,
-          INS_EMPL: userData.EMPL_NO,
+          INS_EMPL: userData?.EMPL_NO,
           INS_DATE: moment().format("YYYY-MM-DD HH:mm:ss"),
-          UPD_EMPL: userData.EMPL_NO,
+          UPD_EMPL: userData?.EMPL_NO,
           UPD_DATE: moment().format("YYYY-MM-DD HH:mm:ss"),
           G_CODE: ycsxdatatablefilter[i].G_CODE,
           G_NAME: ycsxdatatablefilter[i].G_NAME,
@@ -1333,11 +1338,11 @@ const QUICKPLAN = () => {
       PROD_REQUEST_NO: "",
       PLAN_QTY: 0,
       PLAN_EQ: "",
-      PLAN_FACTORY: userData.FACTORY_CODE === 1 ? "NM1" : "NM2",
+      PLAN_FACTORY: userData?.FACTORY_CODE === 1 ? "NM1" : "NM2",
       PLAN_LEADTIME: 0,
-      INS_EMPL: userData.EMPL_NO,
+      INS_EMPL: userData?.EMPL_NO,
       INS_DATE: moment().format("YYYY-MM-DD HH:mm:ss"),
-      UPD_EMPL: userData.EMPL_NO,
+      UPD_EMPL: userData?.EMPL_NO,
       UPD_DATE: moment().format("YYYY-MM-DD HH:mm:ss"),
       G_CODE: "",
       G_NAME: "",
@@ -1472,7 +1477,7 @@ const QUICKPLAN = () => {
   };
   const handleSaveQLSX = async () => {
     if (selectedG_Code !== undefined) {
-      if (userData.EMPL_NO === "NHU1903" || userData.MAINDEPTNAME === "QLSX") {
+      if (userData?.EMPL_NO === "NHU1903" || userData?.MAINDEPTNAME === "QLSX") {
         let err_code: string = "0";
         console.log(datadinhmuc);
         if (
@@ -1654,8 +1659,8 @@ const QUICKPLAN = () => {
           className='buttonIcon'
           onClick={() => {
             checkBP(
-              userData.EMPL_NO,
-              userData.MAINDEPTNAME,
+              userData?.EMPL_NO,
+              userData?.MAINDEPTNAME,
               ["QLSX"],
               handleConfirmSavePlan
             );
@@ -1687,8 +1692,8 @@ const QUICKPLAN = () => {
           className='buttonIcon'
           onClick={() => {
             checkBP(
-              userData.EMPL_NO,
-              userData.MAINDEPTNAME,
+              userData?.EMPL_NO,
+              userData?.MAINDEPTNAME,
               ["QLSX"],
               handleSaveQLSX
             );
