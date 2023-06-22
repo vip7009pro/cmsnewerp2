@@ -61,6 +61,7 @@ import Swal from "sweetalert2";
 import { LangConText, UserContext } from "../../api/Context";
 import { getlang } from "../String/String";
 import CAPA_MANAGER from "../../pages/qlsx/QLSXPLAN/CAPA/CAPA_MANAGER";
+import PLANRESULT from "../../pages/sx/PLANRESULT/PLANRESULT";
 
 interface MENU_LIST_DATA {
   MENU_CODE: string;
@@ -376,6 +377,11 @@ const SubMenu = ({ item }: { item: any }) => {
       MENU_CODE: "SX11",
       MENU_NAME: getlang('quanlycapa',lang),
       MENU_ITEM: <CAPA_MANAGER />,
+    },
+    {
+      MENU_CODE: "SX12",
+      MENU_NAME: 'PLAN RESULT',
+      MENU_ITEM: <PLANRESULT />,
     },
     {
       MENU_CODE: "",

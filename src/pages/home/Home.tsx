@@ -14,7 +14,7 @@ import { RootState } from "../../redux/store";
 import { useSelector, useDispatch } from "react-redux";
 import { addTab, closeTab, settabIndex } from "../../redux/slices/globalSlice";
 import AccountInfo from "../../components/Navbar/AccountInfo/AccountInfo";
-export const current_ver: number = 154;
+export const current_ver: number = 157;
 interface ELE_ARRAY {
   REACT_ELE: ReactElement;
   ELE_NAME: string;
@@ -172,10 +172,8 @@ function Home() {
                       key={index}
                       className='component_element'
                       style={{
-                        visibility: index === tabIndex ? "visible" : "hidden",
-                        position: "absolute",
-                        top: "25px",
-                        width: sidebarStatus ? "85%" : "100%",
+                        visibility: index === tabIndex ? "visible" : "hidden",     
+                        width: sidebarStatus ? "85%" : "100%",                  
                       }}
                     >
                       {ele.REACT_ELE}
@@ -190,7 +188,7 @@ function Home() {
                   fontSize: 35,
                   backgroundColor: "red",
                   width: "800px",
-                  height: "200px",
+                  height: "500px",
                   zIndex: 1000,
                 }}
               >

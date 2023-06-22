@@ -1,0 +1,1058 @@
+import React, { useEffect, useMemo, useState } from "react";
+import Swal from "sweetalert2";
+import {
+  EditingState,
+  FilteringState,
+  IntegratedFiltering,
+  IntegratedPaging,
+  IntegratedSelection,
+  IntegratedSorting,
+  PagingState,
+  SearchState,
+  SelectionState,
+  SortingState,
+  TableRowDetail,
+} from "@devexpress/dx-react-grid";
+import moment from "moment";
+import {
+  Chart,
+  Connector,
+  Legend,
+  Label,
+  Series,
+  Title,
+  Tooltip,
+  CommonSeriesSettings,
+  Format,
+  ArgumentAxis,
+  ValueAxis,
+} from "devextreme-react/chart";
+import PieChart, { Export, Font } from "devextreme-react/pie-chart";
+import "./PLANRESULT.scss";
+import { generalQuery } from "../../../api/Api";
+import CIRCLE_COMPONENT from "../../qlsx/QLSXPLAN/CAPA/CIRCLE_COMPONENT/CIRCLE_COMPONENT";
+import { ProgressBar } from "devextreme-react/progress-bar";
+import { CircularProgress, LinearProgress } from "@mui/material";
+
+interface DAILY_SX_DATA {
+  MACHINE_NAME: string;
+  SX_DATE: string;
+  SX_RESULT: number;
+  PLAN_QTY: number;
+  RATE: number;
+}
+interface ACHIVEMENT_DATA {
+  MACHINE_NAME: string;
+  PLAN_QTY: number;
+  SX_RESULT_TOTAL: number;
+  RESULT_STEP_FINAL: number;
+  RESULT_TO_NEXT_PROCESS: number;
+  RESULT_TO_INSPECTION: number;
+  INS_INPUT: number;
+  INSPECT_TOTAL_QTY: number;
+  INSPECT_OK_QTY: number;
+  INSPECT_NG_QTY: number;
+  INS_OUTPUT: number;
+  ACHIVEMENT_RATE: number;
+}
+interface WEEKLY_SX_DATA {
+    SX_WEEK: number,    
+    SX_RESULT: number,
+    PLAN_QTY: number,
+    RATE: number,
+}
+interface MONTHLY_SX_DATA {
+    SX_MONTH: number,    
+    SX_RESULT: number,
+    PLAN_QTY: number,
+    RATE: number,
+}
+
+const PLANRESULT = () => {
+  const dailytime: number = 1260;
+  const [fromdate, setFromDate] = useState(
+    moment().add(-30, "day").format("YYYY-MM-DD")
+  );
+  const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));
+  const [machine, setMachine] = useState("ALL");
+  const [factory, setFactory] = useState("ALL");
+  const [daily_sx_data, setDailySXData] = useState<DAILY_SX_DATA[]>([]);
+  const [weekly_sx_data, setWeeklySXData] = useState<WEEKLY_SX_DATA[]>([]);
+  const [monthly_sx_data, setMonthlySXData] = useState<MONTHLY_SX_DATA[]>([]);
+  const [sxachivementdata, setSXAchivementData] = useState<ACHIVEMENT_DATA[]>(
+    []
+  );
+
+  const getDailySXData = (mc: string, ft: string, fr: string, td: string) => {
+    generalQuery("dailysxdata", {
+      MACHINE: mc,
+      FACTORY: ft,
+      FROM_DATE: fr,
+      TO_DATE: td,
+    })
+      .then((response) => {
+        //console.log(response.data.data);
+        if (response.data.tk_status !== "NG") {
+          const loaded_data: DAILY_SX_DATA[] = response.data.data.map(
+            (element: DAILY_SX_DATA, index: number) => {
+              return {
+                ...element,
+                SX_DATE: moment(element.SX_DATE).utc().format("YYYY-MM-DD"),
+                RATE: (element.SX_RESULT / element.PLAN_QTY) * 100,
+              };
+            }
+          );
+          setDailySXData(loaded_data);
+        } else {
+          setDailySXData([]);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+  const getWeeklySXData = (mc: string, ft: string,fr: string, td: string) => {
+    generalQuery("sxweeklytrenddata", {
+        MACHINE: mc,
+        FACTORY: ft,
+        FROM_DATE: fr,
+        TO_DATE: td
+    })
+      .then((response) => {
+        //console.log(response.data.data);
+        if (response.data.tk_status !== "NG") {
+          const loaded_data: WEEKLY_SX_DATA[] = response.data.data.map(
+            (element: WEEKLY_SX_DATA, index: number) => {
+              return {
+                ...element,                
+                RATE: (element.SX_RESULT / element.PLAN_QTY) * 100,
+              };
+            }
+          );
+          setWeeklySXData(loaded_data);
+        } else {
+          setWeeklySXData([]);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+  const getMonthlySXData = (mc: string, ft: string,fr: string, td: string) => {
+    generalQuery("sxmonthlytrenddata", {
+        MACHINE: mc,
+        FACTORY: ft,
+        FROM_DATE: fr,
+        TO_DATE: td
+    })
+      .then((response) => {
+        //console.log(response.data.data);
+        if (response.data.tk_status !== "NG") {
+          const loaded_data: MONTHLY_SX_DATA[] = response.data.data.map(
+            (element: MONTHLY_SX_DATA, index: number) => {
+              return {
+                ...element,                
+                RATE: (element.SX_RESULT / element.PLAN_QTY) * 100,
+              };
+            }
+          );
+          setMonthlySXData(loaded_data);
+        } else {
+            setMonthlySXData([]);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+  const getSXAchiveMentData = (fr: string, td: string) => {
+    generalQuery("sxachivementdata", {
+      FROM_DATE: fr,
+      TO_DATE: td,
+    })
+      .then((response) => {
+        //console.log(response.data.data);
+        if (response.data.tk_status !== "NG") {
+          let loaded_data: ACHIVEMENT_DATA[] = response.data.data.map(
+            (element: ACHIVEMENT_DATA, index: number) => {
+              return {
+                ...element,
+                ACHIVEMENT_RATE:
+                  (element.SX_RESULT_TOTAL / element.PLAN_QTY) * 100,
+              };
+            }
+          );
+          let temp_TOTAL_ACHIVEMENT: ACHIVEMENT_DATA = {
+            MACHINE_NAME: "TOTAL",
+            PLAN_QTY: 0,
+            SX_RESULT_TOTAL: 0,
+            RESULT_STEP_FINAL: 0,
+            RESULT_TO_NEXT_PROCESS: 0,
+            RESULT_TO_INSPECTION: 0,
+            INS_INPUT: 0,
+            INSPECT_TOTAL_QTY: 0,
+            INSPECT_OK_QTY: 0,
+            INSPECT_NG_QTY: 0,
+            INS_OUTPUT: 0,
+            ACHIVEMENT_RATE: 0,
+          };
+          for (let i = 0; i < loaded_data.length; i++) {
+            temp_TOTAL_ACHIVEMENT.PLAN_QTY += loaded_data[i].PLAN_QTY;
+            temp_TOTAL_ACHIVEMENT.SX_RESULT_TOTAL +=
+              loaded_data[i].SX_RESULT_TOTAL;
+            temp_TOTAL_ACHIVEMENT.RESULT_STEP_FINAL +=
+              loaded_data[i].RESULT_STEP_FINAL;
+            temp_TOTAL_ACHIVEMENT.RESULT_TO_NEXT_PROCESS +=
+              loaded_data[i].RESULT_TO_NEXT_PROCESS;
+            temp_TOTAL_ACHIVEMENT.RESULT_TO_INSPECTION +=
+              loaded_data[i].RESULT_TO_INSPECTION;
+            temp_TOTAL_ACHIVEMENT.INS_INPUT += loaded_data[i].INS_INPUT;
+            temp_TOTAL_ACHIVEMENT.INSPECT_TOTAL_QTY +=
+              loaded_data[i].INSPECT_TOTAL_QTY;
+            temp_TOTAL_ACHIVEMENT.INSPECT_OK_QTY +=
+              loaded_data[i].INSPECT_OK_QTY;
+            temp_TOTAL_ACHIVEMENT.INSPECT_NG_QTY +=
+              loaded_data[i].INSPECT_NG_QTY;
+            temp_TOTAL_ACHIVEMENT.INS_OUTPUT += loaded_data[i].INS_OUTPUT;
+          }
+          temp_TOTAL_ACHIVEMENT.ACHIVEMENT_RATE =
+            (temp_TOTAL_ACHIVEMENT.SX_RESULT_TOTAL /
+              temp_TOTAL_ACHIVEMENT.PLAN_QTY) *
+            100;
+          loaded_data.push(temp_TOTAL_ACHIVEMENT);
+          setSXAchivementData(loaded_data);
+        } else {
+          setSXAchivementData([]);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+  function customizeTooltip(pointInfo: any) {
+    return {
+      text: `${pointInfo.argumentText}<br/>${Number(
+        pointInfo.valueText
+      ).toLocaleString("en-US", { maximumFractionDigits: 1 })} days`,
+    };
+  }
+  function nFormatter(num: number) {
+    if (num >= 1000000000) {
+      return (num / 1000000000).toFixed(1).replace(/\.0$/, "") + "B";
+    }
+    if (num >= 1000000) {
+      return (num / 1000000).toFixed(1).replace(/\.0$/, "") + "M";
+    }
+    if (num >= 1000) {
+      return (num / 1000).toFixed(1).replace(/\.0$/, "") + "K";
+    }
+    return num;
+  }
+  const productionresultchartMM = useMemo(() => {
+    return (
+      <Chart
+        id='workforcechart'
+        dataSource={daily_sx_data}
+        width={1500}
+        height={600}
+        resolveLabelOverlapping='hide'
+      >
+        <Title
+          text={`DAILY PRODUCTION RESULT`}
+          subtitle={`[${fromdate} ~ ${todate}] [${machine}] -[${factory}]`}
+        />
+        <ArgumentAxis title='PRODUCTION DATE' />
+        <ValueAxis
+          name='quantity'
+          position='left'
+          title='QUANTITY (EA)'
+          
+        />
+        <ValueAxis
+          name='rate'
+          position='right'
+          title='Achivement Rate (%)'
+          maxValueMargin={0.005}
+        />
+        <CommonSeriesSettings
+          argumentField='SX_DATE'
+          hoverMode='allArgumentPoints'
+          selectionMode='allArgumentPoints'
+        >
+          <Label visible={true}>
+            <Format type='fixedPoint' precision={0} />
+          </Label>
+        </CommonSeriesSettings>
+        <Series
+          axis='rate'
+          argumentField='SX_DATE'
+          valueField='RATE'
+          name='ACHIVEMENT RATE'
+          color='#019623'
+          type='line'
+        >
+          <Label
+            visible={true}
+            customizeText={(e: any) => {
+              return `${e.value.toLocaleString("en-US", {
+                maximumFractionDigits: 0,
+              })}%`;
+            }}
+          />
+        </Series>
+        <Series
+          axis='quantity'
+          argumentField='SX_DATE'
+          valueField='PLAN_QTY'
+          name='PLAN_QTY'
+          color='#A5A6A9'
+          type='line'
+        >
+          <Label
+            visible={true}
+            customizeText={(e: any) => {
+              return `${nFormatter(e.value)}`;
+            }}
+          />
+        </Series>
+        <Series
+          axis='quantity'
+          argumentField='SX_DATE'
+          valueField='SX_RESULT'
+          name='SX_RESULT'
+          color='blue'
+          type='bar'
+        >
+          <Label
+            visible={true}
+            customizeText={(e: any) => {
+              return `${nFormatter(e.value)}`;
+            }}
+          />
+        </Series>
+        <Legend
+          verticalAlignment='bottom'
+          horizontalAlignment='center'
+        ></Legend>
+      </Chart>
+    );
+  }, [daily_sx_data, fromdate, todate, machine, factory]);
+  const weeklySXchartMM = useMemo(() => {
+    return (
+      <Chart
+        id='workforcechart'
+        dataSource={weekly_sx_data}
+        width={740}
+        height={600}
+        resolveLabelOverlapping='hide'
+      >
+        <Title
+          text={`WEEKLY PRODUCTION TRENDING`}
+          subtitle={`[${fromdate} ~ ${todate}]`}
+        />
+        <ArgumentAxis title='PRODUCTION WEEK' />
+        <ValueAxis
+          name='quantity'
+          position='left'
+          title='QUANTITY (EA)'
+         
+        />
+        <ValueAxis
+          name='rate'
+          position='right'
+          title='Achivement Rate (%)'
+          maxValueMargin={0.05}
+        />
+        <CommonSeriesSettings
+          argumentField='SX_WEEK'         
+          type="stackedBar"
+        >
+          <Label visible={true}>
+            <Format type='fixedPoint' precision={0} />
+          </Label>
+        </CommonSeriesSettings>
+        <Series
+          axis='rate'        
+          argumentField='SX_WEEK' 
+          valueField='RATE'
+          name='ACHIVEMENT RATE'
+          color='#019623'
+          type='line'
+        >
+          <Label
+            visible={true}
+            customizeText={(e: any) => {
+              return `${e.value.toLocaleString("en-US", {
+                maximumFractionDigits: 0,
+              })}%`;
+            }}
+          />
+        </Series>
+        <Series
+          axis='quantity'
+          argumentField='SX_WEEK'
+          valueField='PLAN_QTY'
+          name='PLAN_QTY'
+          color='#A5A6A9'
+          type='line'
+        >
+          <Label
+            visible={true}
+            customizeText={(e: any) => {
+              return `${nFormatter(e.value)}`;
+            }}
+          />
+        </Series>
+        <Series
+          axis='quantity'
+          argumentField='SX_WEEK'
+          valueField='SX_RESULT'
+          name='SX_RESULT'
+          color='#FA9F0B'
+          type='bar'
+        >
+          <Label
+            visible={true}
+            customizeText={(e: any) => {
+              return `${nFormatter(e.value)}`;
+            }}
+          />
+        </Series>
+        <Legend
+          verticalAlignment='bottom'
+          horizontalAlignment='center'
+        ></Legend>
+      </Chart>
+    );
+  }, [weekly_sx_data, fromdate, todate]);
+  const monthlySXchartMM = useMemo(() => {
+    return (
+      <Chart
+        id='workforcechart'
+        dataSource={monthly_sx_data}
+        width={740}
+        height={600}
+        resolveLabelOverlapping='stack'
+      >
+        <Title
+          text={`MONTHLY PRODUCTION TRENDING`}
+          subtitle={`[${moment().format('YYYY')}]`}
+        />
+        <ArgumentAxis title='PRODUCTION MONTH' />
+        <ValueAxis
+          name='quantity'
+          position='left'
+          title='QUANTITY (EA)'
+         
+        />
+        <ValueAxis
+          name='rate'
+          position='right'
+          title='Achivement Rate (%)'
+          maxValueMargin={0.05}
+        />
+        <CommonSeriesSettings
+          argumentField='SX_MONTH'         
+          type="stackedBar"
+        >
+          <Label visible={true}>
+            <Format type='fixedPoint' precision={0} />
+          </Label>
+        </CommonSeriesSettings>
+        <Series
+          axis='rate'        
+          argumentField='SX_MONTH' 
+          valueField='RATE'
+          name='ACHIVEMENT RATE'
+          color='#019623'
+          type='line'
+        >
+          <Label
+            visible={true}
+            customizeText={(e: any) => {
+              return `${e.value.toLocaleString("en-US", {
+                maximumFractionDigits: 0,
+              })}%`;
+            }}
+          />
+        </Series>
+        <Series
+          axis='quantity'
+          argumentField='SX_MONTH'
+          valueField='PLAN_QTY'
+          name='PLAN_QTY'
+          color='#A5A6A9'
+          type='line'
+        >
+          <Label
+            visible={true}
+            customizeText={(e: any) => {
+              return `${nFormatter(e.value)}`;
+            }}
+          />
+        </Series>
+        <Series
+          axis='quantity'
+          argumentField='SX_MONTH'
+          valueField='SX_RESULT'
+          name='SX_RESULT'
+          color='#ED45B5'
+          type='bar'
+        >
+          <Label
+            visible={true}
+            customizeText={(e: any) => {
+              return `${nFormatter(e.value)}`;
+            }}
+          />
+        </Series>
+        <Legend
+          verticalAlignment='bottom'
+          horizontalAlignment='center'
+        ></Legend>
+      </Chart>
+    );
+  }, [monthly_sx_data, fromdate, todate]);
+
+  useEffect(() => {
+    getMonthlySXData(machine, factory,moment().format('YYYY')+'-01-01',moment().format('YYYY-MM-DD'));
+    getWeeklySXData(machine, factory,fromdate,todate);
+    getDailySXData(machine, factory, fromdate, todate);
+    getSXAchiveMentData(fromdate, todate);   
+
+    let intervalID = window.setInterval(() => {}, 5000);
+    return () => {
+      window.clearInterval(intervalID);
+    };
+  }, []);
+  return (
+    <div className='planresult'>
+      <div
+        className='maintitle'
+        style={{ fontSize: "1.2rem", alignSelf: "center" }}
+      >
+        PRODUCTION PERFORMANCE MANAGEMENT
+      </div>
+      <div className='inputformdiv'>
+        <div className='forminput'>
+          <div className='forminputcolumn'>
+            <label>
+              <b>Quick Select</b>
+              <select
+                  name='phanloai'                  
+                  onChange={(e) => {
+                    console.log(e.target.value);
+                    if(e.target.value ==='0')
+                    {                      
+                        getMonthlySXData(machine, factory,moment().format('YYYY')+'-01-01',moment().format('YYYY-MM-DD'));
+                        getWeeklySXData(machine, factory,moment().add(-30, "day").format("YYYY-MM-DD"),moment().format('YYYY-MM-DD'));
+                        getDailySXData(machine, factory, moment().add(-30, "day").format("YYYY-MM-DD"),moment().format('YYYY-MM-DD'));
+                        getSXAchiveMentData( moment().add(-30, "day").format("YYYY-MM-DD"),moment().format('YYYY-MM-DD')); 
+                        setFromDate(moment().add(-30, "day").format("YYYY-MM-DD"));
+                        setToDate(moment().format('YYYY-MM-DD'));
+                    }
+                    else if(e.target.value ==='1')
+                    {                        
+                        getMonthlySXData(machine, factory,moment().format('YYYY')+'-01-01',moment().format('YYYY-MM-DD'));
+                        getWeeklySXData(machine, factory,moment().format('YYYY-MM-DD'),moment().format('YYYY-MM-DD'));
+                        getDailySXData(machine, factory, moment().format('YYYY-MM-DD'),moment().format('YYYY-MM-DD'));
+                        getSXAchiveMentData(moment().format('YYYY-MM-DD'),moment().format('YYYY-MM-DD'));   
+                        setFromDate(moment().format('YYYY-MM-DD'));
+                        setToDate(moment().format('YYYY-MM-DD'));
+                    }
+                    else if(e.target.value ==='2')
+                    {                       
+                        getMonthlySXData(machine, factory,moment().format('YYYY')+'-01-01',moment().add(0, "day").format("YYYY-MM-DD"));
+                        getWeeklySXData(machine, factory,moment().add(-1, "day").format("YYYY-MM-DD"),moment().add(-1, "day").format("YYYY-MM-DD"));
+                        getDailySXData(machine, factory, moment().add(-1, "day").format("YYYY-MM-DD"),moment().add(-1, "day").format("YYYY-MM-DD"));
+                        getSXAchiveMentData(moment().add(-1, "day").format("YYYY-MM-DD"),moment().add(-1, "day").format("YYYY-MM-DD"));
+                        setFromDate(moment().add(-1, "day").format("YYYY-MM-DD"));
+                        setToDate(moment().add(-1, "day").format("YYYY-MM-DD"));   
+                    }                                       
+                  }}
+                >
+                  <option value='0'>LAST 30 DAYS</option>
+                  <option value='1'>TODAY</option>
+                  <option value='2'>YESTERDAY</option>
+                </select>
+            </label>           
+          </div>
+          <div className='forminputcolumn'>
+            <label>
+              <b>From:</b>
+              <input
+                type='date'
+                value={fromdate.slice(0, 10)}
+                onChange={(e) => {
+                  setFromDate(e.target.value);
+                  console.log(e.target.value);
+                  getDailySXData(machine, factory, e.target.value, todate);
+                  getSXAchiveMentData(e.target.value, todate);
+                  getWeeklySXData(machine, factory,e.target.value, todate);
+                }}
+              ></input>
+            </label>
+            <label>
+              <b>To:</b>{" "}
+              <input
+                type='date'
+                value={todate.slice(0, 10)}
+                onChange={(e) => {
+                  setToDate(e.target.value);
+                  console.log(e.target.value);
+                  getDailySXData(machine, factory, fromdate, e.target.value);
+                  getSXAchiveMentData(fromdate, e.target.value);
+                  getWeeklySXData(machine, factory,fromdate, e.target.value);
+                }}
+              ></input>
+            </label>
+          </div>
+          <div className='forminputcolumn'>
+            <label>
+              <b>FACTORY:</b>
+              <select
+                name='phanloai'
+                value={factory}
+                onChange={(e) => {
+                  setFactory(e.target.value);
+                  getDailySXData(machine, e.target.value, fromdate, todate);
+                  getWeeklySXData(machine, e.target.value,fromdate,todate);
+                  getMonthlySXData(machine, e.target.value,moment().format('YYYY')+'-01-01',moment().format('YYYY-MM-DD'));
+                }}
+              >
+                <option value='ALL'>ALL</option>
+                <option value='NM1'>NM1</option>
+                <option value='NM2'>NM2</option>
+              </select>
+            </label>
+            <label>
+              <b>MACHINE:</b>
+              <select
+                name='machine'
+                value={machine}
+                onChange={(e) => {
+                  setMachine(e.target.value);
+                  getDailySXData(e.target.value, factory, fromdate, todate);
+                  getWeeklySXData(e.target.value, factory,fromdate,todate);
+                  getMonthlySXData(e.target.value, factory,moment().format('YYYY')+'-01-01',moment().format('YYYY-MM-DD'));
+                }}
+              >
+                <option value='ALL'>ALL</option>
+                <option value='FR'>FR</option>
+                <option value='SR'>SR</option>
+                <option value='DC'>DC</option>
+                <option value='ED'>ED</option>
+              </select>
+            </label>
+          </div>
+        </div>
+      </div>
+      
+      <div className='progressdiv'>
+        <div className='titleprogressdiv'>
+            1.PRODUCTION ACHIVEMENT RATE BY MACHINE (%)
+        </div>       
+        <div className="mainprogressdiv">
+        <div className='subprogressdiv'>
+          <div className='sectiondiv'>
+            <div className="totalachivementdiv">
+            {
+                `${sxachivementdata
+                    .filter(
+                      (ele: ACHIVEMENT_DATA, index: number) =>
+                        ele.MACHINE_NAME === "TOTAL"
+                    )[0]
+                    ?.ACHIVEMENT_RATE?.toLocaleString("en-US", {
+                      maximumFractionDigits: 1,
+                    })}%`
+              }
+            </div>         
+          </div>
+        </div>
+        <div className='subprogressdiv'>
+          <div className='sectiondiv'>
+            FR:{" "}
+            {sxachivementdata
+              .filter(
+                (ele: ACHIVEMENT_DATA, index: number) =>
+                  ele.MACHINE_NAME === "FR"
+              )[0]
+              ?.ACHIVEMENT_RATE?.toLocaleString("en-US", {
+                maximumFractionDigits: 1,
+              })}{" "}
+            %
+            <LinearProgress
+              style={{ height: "10px" }}
+              variant='determinate'
+              color='primary'
+              aria-valuemin={0}
+              aria-valuemax={100}
+              value={
+                sxachivementdata.filter(
+                  (ele: ACHIVEMENT_DATA, index: number) =>
+                    ele.MACHINE_NAME === "FR"
+                )[0]?.ACHIVEMENT_RATE
+              }
+            />
+          </div>
+          <div className='sectiondiv'>
+            SR:{" "}
+            {sxachivementdata
+              .filter(
+                (ele: ACHIVEMENT_DATA, index: number) =>
+                  ele.MACHINE_NAME === "SR"
+              )[0]
+              ?.ACHIVEMENT_RATE?.toLocaleString("en-US", {
+                maximumFractionDigits: 1,
+              })}{" "}
+            %
+            <LinearProgress
+              style={{ height: "10px" }}
+              variant='determinate'
+              color='secondary'
+              aria-valuemin={0}
+              aria-valuemax={100}
+              value={
+                sxachivementdata.filter(
+                  (ele: ACHIVEMENT_DATA, index: number) =>
+                    ele.MACHINE_NAME === "SR"
+                )[0]?.ACHIVEMENT_RATE
+              }
+            />
+          </div>
+          <div className='sectiondiv'>
+            DC:{" "}
+            {sxachivementdata
+              .filter(
+                (ele: ACHIVEMENT_DATA, index: number) =>
+                  ele.MACHINE_NAME === "DC"
+              )[0]
+              ?.ACHIVEMENT_RATE?.toLocaleString("en-US", {
+                maximumFractionDigits: 1,
+              })}{" "}
+            %
+            <LinearProgress
+              style={{ height: "10px" }}
+              variant='determinate'
+              color='info'
+              aria-valuemin={0}
+              aria-valuemax={100}
+              value={
+                sxachivementdata.filter(
+                  (ele: ACHIVEMENT_DATA, index: number) =>
+                    ele.MACHINE_NAME === "DC"
+                )[0]?.ACHIVEMENT_RATE
+              }
+            />
+          </div>
+          <div className='sectiondiv'>
+            ED:{" "}
+            {sxachivementdata
+              .filter(
+                (ele: ACHIVEMENT_DATA, index: number) =>
+                  ele.MACHINE_NAME === "ED"
+              )[0]
+              ?.ACHIVEMENT_RATE?.toLocaleString("en-US", {
+                maximumFractionDigits: 1,
+              })}{" "}
+            %
+            <LinearProgress
+              style={{ height: "10px" }}
+              variant='determinate'
+              color='warning'
+              aria-valuemin={0}
+              aria-valuemax={100}
+              value={
+                sxachivementdata.filter(
+                  (ele: ACHIVEMENT_DATA, index: number) =>
+                    ele.MACHINE_NAME === "ED"
+                )[0]?.ACHIVEMENT_RATE
+              }
+            />
+          </div>
+        </div>
+        </div>
+      </div>
+
+      <div className='progressdiv'>
+        <div className='titleprogressdiv'>
+            2.PRODUCTION LOSS (%)
+        </div>       
+        <div className="mainprogressdiv">
+        <div className='subprogressdiv'>
+          <div className='sectiondiv'>    
+            <div className="lossdiv">
+            <CIRCLE_COMPONENT type="loss" value={`${nFormatter(sxachivementdata
+                    .filter(
+                      (ele: ACHIVEMENT_DATA, index: number) =>
+                        ele.MACHINE_NAME === "TOTAL"
+                    )[0]
+                    ?.PLAN_QTY)}`} title="PLAN QTY" color="blue"/>
+            <CIRCLE_COMPONENT type="loss" value={`${nFormatter(sxachivementdata
+                    .filter(
+                      (ele: ACHIVEMENT_DATA, index: number) =>
+                        ele.MACHINE_NAME === "TOTAL"
+                    )[0]
+                    ?.SX_RESULT_TOTAL)}`} title="RESULT_TOTAL" color="#02B93A"/>
+            <CIRCLE_COMPONENT type="loss" value={`${nFormatter(sxachivementdata
+                    .filter(
+                      (ele: ACHIVEMENT_DATA, index: number) =>
+                        ele.MACHINE_NAME === "TOTAL"
+                    )[0]
+                    ?.RESULT_TO_INSPECTION)}`} title="RESULT_INSP" color="#02B93A"/>
+            <CIRCLE_COMPONENT type="loss" value={`${nFormatter(sxachivementdata
+                    .filter(
+                      (ele: ACHIVEMENT_DATA, index: number) =>
+                        ele.MACHINE_NAME === "TOTAL"
+                    )[0]
+                    ?.INS_INPUT)}`} title="INSP INPUT" color="#CC26F9"/>           
+
+            <CIRCLE_COMPONENT type="loss" value={`${nFormatter(sxachivementdata
+            .filter(
+                (ele: ACHIVEMENT_DATA, index: number) =>
+                ele.MACHINE_NAME === "TOTAL"
+            )[0]
+            ?.INSPECT_TOTAL_QTY)}`} title="INSP TOTAL" color="blue"/>
+
+            <CIRCLE_COMPONENT type="loss" value={`${nFormatter(sxachivementdata
+                    .filter(
+                      (ele: ACHIVEMENT_DATA, index: number) =>
+                        ele.MACHINE_NAME === "TOTAL"
+                    )[0]
+                    ?.INSPECT_OK_QTY)}`} title="INSP OK" color="#00C50C"/>
+
+            <CIRCLE_COMPONENT type="loss" value={`${nFormatter(sxachivementdata
+                    .filter(
+                      (ele: ACHIVEMENT_DATA, index: number) =>
+                        ele.MACHINE_NAME === "TOTAL"
+                    )[0]
+                    ?.INSPECT_NG_QTY)}`} title="INSP NG" color="red"/>
+            <CIRCLE_COMPONENT type="loss" value={`${nFormatter(sxachivementdata
+                    .filter(
+                      (ele: ACHIVEMENT_DATA, index: number) =>
+                        ele.MACHINE_NAME === "TOTAL"
+                    )[0]
+                    ?.INS_OUTPUT)}`} title="INSP OUTPUT" color="#02D819"/>
+            
+
+
+            </div>
+          </div>
+         
+          <div className="sectiondiv">
+          <div className="totallosstdiv">
+            {
+                `TOTAL: ${(sxachivementdata
+                    .filter(
+                      (ele: ACHIVEMENT_DATA, index: number) =>
+                        ele.MACHINE_NAME === "TOTAL"
+                    )[0]
+                    ?.INS_OUTPUT/ sxachivementdata
+                    .filter(
+                      (ele: ACHIVEMENT_DATA, index: number) =>
+                        ele.MACHINE_NAME === "TOTAL"
+                    )[0]
+                    ?.RESULT_TO_INSPECTION*100-100)?.toLocaleString("en-US", {
+                      maximumFractionDigits: 1,
+                    })}%`
+              }
+            </div> 
+
+          </div>
+        </div>
+       
+        </div>
+      </div>
+      <div className='workforcechart'>
+        <div className='sectiondiv'>
+          <div className='titleplanresult'>2. PRODUCTION PERFOMANCE TRENDING</div>
+          <div className='starndardworkforce'>{productionresultchartMM}</div>
+        </div>
+      </div>   
+      <div className="chartdiv">
+        <div className="sectionchart">
+            {weeklySXchartMM}            
+        </div>
+        <div className="sectionchart">
+            {monthlySXchartMM}
+        </div>
+      </div> 
+      <div className='ycsxbalancedatatable'>
+        <table>
+          <thead>
+            <tr>
+              <th style={{ color: "black", fontWeight: "normal" }}>
+                MACHINE_NAME
+              </th>
+              <th style={{ color: "black", fontWeight: "normal" }}>PLAN_QTY</th>
+              <th style={{ color: "black", fontWeight: "normal" }}>
+                SX_RESULT_TOTAL
+              </th>
+              <th style={{ color: "black", fontWeight: "normal" }}>
+                RESULT_STEP_FINAL
+              </th>
+              <th style={{ color: "black", fontWeight: "normal" }}>
+                RESULT_TO_NEXT_PROCESS
+              </th>
+              <th style={{ color: "black", fontWeight: "normal" }}>
+                RESULT_TO_INSPECTION
+              </th>
+              <th style={{ color: "black", fontWeight: "normal" }}>
+                INS_INPUT
+              </th>
+              <th style={{ color: "black", fontWeight: "normal" }}>
+                INSPECT_TOTAL_QTY
+              </th>
+              <th style={{ color: "black", fontWeight: "normal" }}>
+                INSPECT_OK_QTY
+              </th>
+              <th style={{ color: "black", fontWeight: "normal" }}>
+                INSPECT_NG_QTY
+              </th>
+              <th style={{ color: "black", fontWeight: "normal" }}>
+                INS_OUTPUT
+              </th>
+              <th style={{ color: "black", fontWeight: "normal" }}>
+                ACHIVEMENT_RATE
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {sxachivementdata.map((ele: ACHIVEMENT_DATA, index: number) => {
+              if (ele.MACHINE_NAME !== "TOTAL") {
+                return (
+                  <tr key={index}>
+                    <td style={{ color: "blue", fontWeight: "bold" }}>
+                      {ele.MACHINE_NAME}
+                    </td>
+                    <td style={{ color: "#360EEA", fontWeight: "normal" }}>
+                      {ele.PLAN_QTY?.toLocaleString("en-US", {
+                        maximumFractionDigits: 0,
+                      })}
+                    </td>
+                    <td style={{ color: "#EA0EBA", fontWeight: "normal" }}>
+                      {ele.SX_RESULT_TOTAL?.toLocaleString("en-US", {
+                        maximumFractionDigits: 0,
+                      })}
+                    </td>
+                    <td style={{ color: "#EA0EBA", fontWeight: "normal" }}>
+                      {ele.RESULT_STEP_FINAL?.toLocaleString("en-US", {
+                        maximumFractionDigits: 0,
+                      })}
+                    </td>
+                    <td style={{ color: "#F16E05", fontWeight: "normal" }}>
+                      {ele.RESULT_TO_NEXT_PROCESS?.toLocaleString("en-US", {
+                        maximumFractionDigits: 0,
+                      })}
+                    </td>
+                    <td style={{ color: "#F16E05", fontWeight: "normal" }}>
+                      {ele.RESULT_TO_INSPECTION?.toLocaleString("en-US", {
+                        maximumFractionDigits: 0,
+                      })}
+                    </td>
+                    <td style={{ color: "#009E4D", fontWeight: "normal" }}>
+                      {ele.INS_INPUT?.toLocaleString("en-US", {
+                        maximumFractionDigits: 0,
+                      })}
+                    </td>
+                    <td style={{ color: "#009E4D", fontWeight: "normal" }}>
+                      {ele.INSPECT_TOTAL_QTY?.toLocaleString("en-US", {
+                        maximumFractionDigits: 0,
+                      })}
+                    </td>
+                    <td style={{ color: "#1C9E00", fontWeight: "normal" }}>
+                      {ele.INSPECT_OK_QTY?.toLocaleString("en-US", {
+                        maximumFractionDigits: 0,
+                      })}
+                    </td>
+                    <td style={{ color: "red", fontWeight: "normal" }}>
+                      {ele.INSPECT_NG_QTY?.toLocaleString("en-US", {
+                        maximumFractionDigits: 0,
+                      })}
+                    </td>
+                    <td style={{ color: "#929E00", fontWeight: "normal" }}>
+                      {ele.INS_OUTPUT?.toLocaleString("en-US", {
+                        maximumFractionDigits: 0,
+                      })}
+                    </td>
+                    <td style={{ color: "#21C502", fontWeight: "normal" }}>
+                      {ele.ACHIVEMENT_RATE?.toLocaleString("en-US", {
+                        maximumFractionDigits: 1,
+                      })}
+                      %
+                    </td>
+                  </tr>
+                );
+              } else {
+                return (
+                  <tr key={index}>
+                    <td style={{ color: "blue", fontWeight: "bold" }}>
+                      {ele.MACHINE_NAME}
+                    </td>
+                    <td style={{ color: "#360EEA", fontWeight: "bold" }}>
+                      {ele.PLAN_QTY?.toLocaleString("en-US", {
+                        maximumFractionDigits: 0,
+                      })}
+                    </td>
+                    <td style={{ color: "#EA0EBA", fontWeight: "bold" }}>
+                      {ele.SX_RESULT_TOTAL?.toLocaleString("en-US", {
+                        maximumFractionDigits: 0,
+                      })}
+                    </td>
+                    <td style={{ color: "#EA0EBA", fontWeight: "bold" }}>
+                      {ele.RESULT_STEP_FINAL?.toLocaleString("en-US", {
+                        maximumFractionDigits: 0,
+                      })}
+                    </td>
+                    <td style={{ color: "#F16E05", fontWeight: "bold" }}>
+                      {ele.RESULT_TO_NEXT_PROCESS?.toLocaleString("en-US", {
+                        maximumFractionDigits: 0,
+                      })}
+                    </td>
+                    <td style={{ color: "#F16E05", fontWeight: "bold" }}>
+                      {ele.RESULT_TO_INSPECTION?.toLocaleString("en-US", {
+                        maximumFractionDigits: 0,
+                      })}
+                    </td>
+                    <td style={{ color: "#009E4D", fontWeight: "bold" }}>
+                      {ele.INS_INPUT?.toLocaleString("en-US", {
+                        maximumFractionDigits: 0,
+                      })}
+                    </td>
+                    <td style={{ color: "#009E4D", fontWeight: "bold" }}>
+                      {ele.INSPECT_TOTAL_QTY?.toLocaleString("en-US", {
+                        maximumFractionDigits: 0,
+                      })}
+                    </td>
+                    <td style={{ color: "#1C9E00", fontWeight: "bold" }}>
+                      {ele.INSPECT_OK_QTY?.toLocaleString("en-US", {
+                        maximumFractionDigits: 0,
+                      })}
+                    </td>
+                    <td style={{ color: "red", fontWeight: "bold" }}>
+                      {ele.INSPECT_NG_QTY?.toLocaleString("en-US", {
+                        maximumFractionDigits: 0,
+                      })}
+                    </td>
+                    <td style={{ color: "#929E00", fontWeight: "bold" }}>
+                      {ele.INS_OUTPUT?.toLocaleString("en-US", {
+                        maximumFractionDigits: 0,
+                      })}
+                    </td>
+                    <td style={{ color: "#21C502", fontWeight: "bold" }}>
+                      {ele.ACHIVEMENT_RATE?.toLocaleString("en-US", {
+                        maximumFractionDigits: 1,
+                      })}
+                      %
+                    </td>
+                  </tr>
+                );
+              }
+            })}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+};
+export default PLANRESULT;

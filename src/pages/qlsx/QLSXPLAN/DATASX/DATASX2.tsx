@@ -65,6 +65,9 @@ interface SX_DATA {
   LOSS_SX_ST: number;
   LOSS_SX: number;
   INS_INPUT: number;
+  INSPECT_TOTAL_QTY: number;
+  INSPECT_OK_QTY: number;
+  INSPECT_NG_QTY: number;
   LOSS_SX_KT: number;
   INS_OUTPUT: number;
   LOSS_KT: number;
@@ -73,6 +76,7 @@ interface SX_DATA {
   MASS_END_TIME: string;
   RPM: number;
   EQ_NAME_TT: string;
+  MACHINE_NAME: string;
   SX_DATE: string;
   WORK_SHIFT: string;
   INS_EMPL: string;
@@ -560,6 +564,21 @@ const fields_datasx_chithi: any = [
     },
   },
   {
+    caption: "ESTIMATED_QTY_ST",
+    width: 80,
+    dataField: "ESTIMATED_QTY_ST",
+    allowSorting: true,
+    allowFiltering: true,
+    dataType: "number",
+    summaryType: "sum",
+    format: "fixedPoint",
+    headerFilter: {
+      allowSearch: true,
+      height: 500,
+      width: 300,
+    },
+  },
+  {
     caption: "KETQUASX",
     width: 80,
     dataField: "KETQUASX",
@@ -573,6 +592,7 @@ const fields_datasx_chithi: any = [
       height: 500,
       width: 300,
     },
+    area:'data'
   },
   {
     caption: "INS_INPUT",
@@ -588,6 +608,55 @@ const fields_datasx_chithi: any = [
       height: 500,
       width: 300,
     },
+    area:'data'
+  },
+  {
+    caption: "INSPECT_TOTAL_QTY",
+    width: 80,
+    dataField: "INSPECT_TOTAL_QTY",
+    allowSorting: true,
+    allowFiltering: true,
+    dataType: "number",
+    summaryType: "sum",
+    format: "fixedPoint",
+    headerFilter: {
+      allowSearch: true,
+      height: 500,
+      width: 300,
+    }, 
+    area:'data'
+  },
+  {
+    caption: "INSPECT_OK_QTY",
+    width: 80,
+    dataField: "INSPECT_OK_QTY",
+    allowSorting: true,
+    allowFiltering: true,
+    dataType: "number",
+    summaryType: "sum",
+    format: "fixedPoint",
+    headerFilter: {
+      allowSearch: true,
+      height: 500,
+      width: 300,
+    },
+    area:'data'
+  },
+  {
+    caption: "INSPECT_NG_QTY",
+    width: 80,
+    dataField: "INSPECT_NG_QTY",
+    allowSorting: true,
+    allowFiltering: true,
+    dataType: "number",
+    summaryType: "sum",
+    format: "fixedPoint",
+    headerFilter: {
+      allowSearch: true,
+      height: 500,
+      width: 300,
+    },
+    area:'data'
   },
   {
     caption: "INS_OUTPUT",
@@ -603,6 +672,7 @@ const fields_datasx_chithi: any = [
       height: 500,
       width: 300,
     },
+    area:'data'
   },
   {
     caption: "SETTING_START_TIME",
@@ -678,6 +748,22 @@ const fields_datasx_chithi: any = [
       height: 500,
       width: 300,
     },
+  },
+  {
+    caption: "MACHINE_NAME",
+    width: 80,
+    dataField: "MACHINE_NAME",
+    allowSorting: true,
+    allowFiltering: true,
+    dataType: "string",
+    summaryType: "count",
+    format: "fixedPoint",
+    headerFilter: {
+      allowSearch: true,
+      height: 500,
+      width: 300,
+    },
+    area: 'row'
   },
   {
     caption: "SX_DATE",
@@ -1310,6 +1396,7 @@ const fields_datasx_ycsx: any = [
       height: 500,
       width: 300,
     },
+    area: 'data'
   },
   {
     caption: "INSPECT_TOTAL_QTY",
@@ -1325,6 +1412,7 @@ const fields_datasx_ycsx: any = [
       height: 500,
       width: 300,
     },
+    area:'data'
   },
   {
     caption: "INSPECT_OK_QTY",
@@ -1340,6 +1428,7 @@ const fields_datasx_ycsx: any = [
       height: 500,
       width: 300,
     },
+    area:'data'
   },
   {
     caption: "INSPECT_LOSS_QTY",
@@ -1370,6 +1459,7 @@ const fields_datasx_ycsx: any = [
       height: 500,
       width: 300,
     },
+    area:'data'
   },
   {
     caption: "INSPECT_MATERIAL_NG",
@@ -1415,6 +1505,7 @@ const fields_datasx_ycsx: any = [
       height: 500,
       width: 300,
     },
+    area:'data'
   },
   {
     caption: "LOSS_SX1",
@@ -1756,6 +1847,33 @@ useState<PivotGridDataSource>(
                 </span>
               );
             }}></Column>
+          <Column dataField='INSPECT_TOTAL_QTY' caption='INSPECT_TOTAL_QTY' minWidth={100} dataType='number'
+            format={"decimal"}
+            cellRender={(e: any) => {
+              return (
+                <span style={{ color: "#DF6709", fontWeight: "bold" }}>
+                  {e.data.INSPECT_TOTAL_QTY?.toLocaleString("en-US")}
+                </span>
+              );
+            }}></Column>
+          <Column dataField='INSPECT_OK_QTY' caption='INSPECT_OK_QTY' minWidth={100} dataType='number'
+            format={"decimal"}
+            cellRender={(e: any) => {
+              return (
+                <span style={{ color: "#DF6709", fontWeight: "bold" }}>
+                  {e.data.INSPECT_OK_QTY?.toLocaleString("en-US")}
+                </span>
+              );
+            }}></Column>
+          <Column dataField='INSPECT_NG_QTY' caption='INSPECT_NG_QTY' minWidth={100} dataType='number'
+            format={"decimal"}
+            cellRender={(e: any) => {
+              return (
+                <span style={{ color: "#DF6709", fontWeight: "bold" }}>
+                  {e.data.INSPECT_NG_QTY?.toLocaleString("en-US")}
+                </span>
+              );
+            }}></Column>
           <Column dataField='LOSS_SX_KT' caption='LOSS_SX_KT' minWidth={100} dataType='number'
             format={"percent"}
             cellRender={(e: any) => {
@@ -1788,6 +1906,7 @@ useState<PivotGridDataSource>(
           <Column dataField='MASS_END_TIME' caption='MASS_END_TIME' width={150}></Column>
           <Column dataField='RPM' caption='RPM' minWidth={100}></Column>
           <Column dataField='EQ_NAME_TT' caption='EQ_NAME_TT' minWidth={100}></Column>
+          <Column dataField='MACHINE_NAME' caption='MACHINE_NAME' minWidth={100}></Column>
           <Column dataField='SX_DATE' caption='SX_DATE' minWidth={100}></Column>
           <Column dataField='WORK_SHIFT' caption='WORK_SHIFT' minWidth={100}></Column>
           <Column dataField='INS_EMPL' caption='INS_EMPL' minWidth={100}></Column>

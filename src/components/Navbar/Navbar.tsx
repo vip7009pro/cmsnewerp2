@@ -89,6 +89,7 @@ import useOutsideClick from "../../api/customHooks";
 import BulletinBoard from "../BulletinBoard/BulletinBoard";
 import { AiOutlineCloseCircle } from "react-icons/ai";
 import CAPA_MANAGER from "../../pages/qlsx/QLSXPLAN/CAPA/CAPA_MANAGER";
+import PLANRESULT from "../../pages/sx/PLANRESULT/PLANRESULT";
 /* 
 const KIEMTRA= lazy(()=> import('../../pages/qc/inspection/KIEMTRA'));
 const PQC= lazy(()=> import('../../pages/qc/pqc/PQC'));
@@ -474,6 +475,11 @@ export default function Navbar() {
       MENU_CODE: "SX11",
       MENU_NAME: getlang("quanlycapa", lang),
       MENU_ITEM: <CAPA_MANAGER />,
+    },
+    {
+      MENU_CODE: "SX12",
+      MENU_NAME: 'PLAN RESULT',
+      MENU_ITEM: <PLANRESULT />,
     },
     {
       MENU_CODE: "",

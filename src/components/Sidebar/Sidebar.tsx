@@ -7,7 +7,7 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import HomeIcon from '@mui/icons-material/Home';
 import { FaDonate, FaFileInvoiceDollar,FaCheckCircle, FaHistory, FaBomb, FaPaperPlane, FaWarehouse, FaScroll } from 'react-icons/fa';
-import { BiCart, BiSortAZ } from 'react-icons/bi';
+import { BiCart, BiSortAZ, BiTrendingUp } from 'react-icons/bi';
 import { FcPlanner, FcSettings,FcBullish, FcPortraitMode,FcManager,FcCheckmark,FcPieChart,FcRefresh } from 'react-icons/fc';
 import { MdBugReport, MdDesignServices, MdInput, MdOutlineAppRegistration, MdOutlineAspectRatio, MdOutlineProductionQuantityLimits, MdOutlineSignalWifiStatusbarNull, MdPrecisionManufacturing, MdPriceChange } from "react-icons/md";
 import { WiDayLightning } from "react-icons/wi";
@@ -422,6 +422,12 @@ const Sidebar = () => {
           path: 'sx/capamanager',
           icon: <FcCapacitor color='blue' size={25}/>,
           MENU_CODE: 'SX11'
+        },       
+        {
+          title: 'PLAN RESULT',
+          path: 'sx/planresult',
+          icon: <BiTrendingUp color='green' size={25}/>,
+          MENU_CODE: 'SX12'
         },       
            
       ]

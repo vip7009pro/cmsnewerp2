@@ -28,6 +28,7 @@ import "./App.css";
 import FallBackComponent from "./components/Fallback/FallBackComponent";
 import PivotChart from "./components/PivotChart/PivotChart";
 import CAPA_MANAGER from "./pages/qlsx/QLSXPLAN/CAPA/CAPA_MANAGER";
+import PLANRESULT from "./pages/sx/PLANRESULT/PLANRESULT";
 /* import DATASX2 from "./pages/qlsx/QLSXPLAN/DATASX/DATASX2";
 import Home from "./pages/home/Home";
 import DiemDanhNhom from "./pages/nhansu/DiemDanhNhom/DiemDanhNhom";
@@ -564,7 +565,7 @@ function App() {
                         path='kinhdoanh'
                         element={
                           <ProtectedRoute
-                            user={userData}
+                            user={globalUserData}
                             maindeptname='all'
                             jobname='Leader'
                           >
@@ -607,7 +608,7 @@ function App() {
                         path='rnd'
                         element={
                           <ProtectedRoute
-                            user={userData}
+                            user={globalUserData}
                             maindeptname='all'
                             jobname='Leader'
                           >
@@ -649,7 +650,7 @@ function App() {
                         path='qc'
                         element={
                           <ProtectedRoute
-                            user={userData}
+                            user={globalUserData}
                             maindeptname='all'
                             jobname='Leader'
                           >
@@ -662,7 +663,7 @@ function App() {
                           path='tracuuchung'
                           element={
                             <ProtectedRoute
-                              user={userData}
+                              user={globalUserData}
                               maindeptname='all'
                               jobname='Leader'
                             >
@@ -674,7 +675,7 @@ function App() {
                           path='codeinfo'
                           element={
                             <ProtectedRoute
-                              user={userData}
+                              user={globalUserData}
                               maindeptname='all'
                               jobname='Leader'
                             >
@@ -686,7 +687,7 @@ function App() {
                           path='iqc'
                           element={
                             <ProtectedRoute
-                              user={userData}
+                              user={globalUserData}
                               maindeptname='all'
                               jobname='Leader'
                             >
@@ -698,7 +699,7 @@ function App() {
                           path='pqc'
                           element={
                             <ProtectedRoute
-                              user={userData}
+                              user={globalUserData}
                               maindeptname='all'
                               jobname='Leader'
                             >
@@ -710,7 +711,7 @@ function App() {
                           path='oqc'
                           element={
                             <ProtectedRoute
-                              user={userData}
+                              user={globalUserData}
                               maindeptname='all'
                               jobname='Leader'
                             >
@@ -722,7 +723,7 @@ function App() {
                           path='inspection'
                           element={
                             <ProtectedRoute
-                              user={userData}
+                              user={globalUserData}
                               maindeptname='all'
                               jobname='Leader'
                             >
@@ -734,7 +735,7 @@ function App() {
                           path='cs'
                           element={
                             <ProtectedRoute
-                              user={userData}
+                              user={globalUserData}
                               maindeptname='all'
                               jobname='Leader'
                             >
@@ -746,7 +747,7 @@ function App() {
                           path='dtc'
                           element={
                             <ProtectedRoute
-                              user={userData}
+                              user={globalUserData}
                               maindeptname='all'
                               jobname='Leader'
                             >
@@ -758,7 +759,7 @@ function App() {
                           path='iso'
                           element={
                             <ProtectedRoute
-                              user={userData}
+                              user={globalUserData}
                               maindeptname='all'
                               jobname='Leader'
                             >
@@ -770,7 +771,7 @@ function App() {
                           path='qcreport'
                           element={
                             <ProtectedRoute
-                              user={userData}
+                              user={globalUserData}
                               maindeptname='all'
                               jobname='Leader'
                             >
@@ -782,7 +783,7 @@ function App() {
                           path='ycsxmanager'
                           element={
                             <ProtectedRoute
-                              user={userData}
+                              user={globalUserData}
                               maindeptname='all'
                               jobname='Leader'
                             >
@@ -795,7 +796,7 @@ function App() {
                         path='sx'
                         element={
                           <ProtectedRoute
-                            user={userData}
+                            user={globalUserData}
                             maindeptname='all'
                             jobname='Leader'
                           >
@@ -808,7 +809,7 @@ function App() {
                           path='tracuuchung'
                           element={
                             <ProtectedRoute
-                              user={userData}
+                              user={globalUserData}
                               maindeptname='all'
                               jobname='Leader'
                             >
@@ -820,7 +821,7 @@ function App() {
                           path='codeinfo'
                           element={
                             <ProtectedRoute
-                              user={userData}
+                              user={globalUserData}
                               maindeptname='all'
                               jobname='Leader'
                             >
@@ -832,7 +833,7 @@ function App() {
                           path='ycsxmanager'
                           element={
                             <ProtectedRoute
-                              user={userData}
+                              user={globalUserData}
                               maindeptname='all'
                               jobname='Leader'
                             >
@@ -844,7 +845,7 @@ function App() {
                           path='datasx'
                           element={
                             <ProtectedRoute
-                              user={userData}
+                              user={globalUserData}
                               maindeptname='all'
                               jobname='Leader'
                             >
@@ -856,7 +857,7 @@ function App() {
                           path='planstatus'
                           element={
                             <ProtectedRoute
-                              user={userData}
+                              user={globalUserData}
                               maindeptname='all'
                               jobname='Leader'
                             >
@@ -868,7 +869,7 @@ function App() {
                           path='eqstatus'
                           element={
                             <ProtectedRoute
-                              user={userData}
+                              user={globalUserData}
                               maindeptname='all'
                               jobname='Leader'
                             >
@@ -880,7 +881,7 @@ function App() {
                           path='lichsuxuatlieu'
                           element={
                             <ProtectedRoute
-                              user={userData}
+                              user={globalUserData}
                               maindeptname='all'
                               jobname='Leader'
                             >
@@ -892,7 +893,7 @@ function App() {
                           path='materiallotstatus'
                           element={
                             <ProtectedRoute
-                              user={userData}
+                              user={globalUserData}
                               maindeptname='all'
                               jobname='Leader'
                             >
@@ -904,7 +905,7 @@ function App() {
                           path='khoao'
                           element={
                             <ProtectedRoute
-                              user={userData}
+                              user={globalUserData}
                               maindeptname='all'
                               jobname='Leader'
                             >
@@ -916,7 +917,7 @@ function App() {
                           path='khothat'
                           element={
                             <ProtectedRoute
-                              user={userData}
+                              user={globalUserData}
                               maindeptname='all'
                               jobname='Leader'
                             >
@@ -928,7 +929,7 @@ function App() {
                           path='inspection'
                           element={
                             <ProtectedRoute
-                              user={userData}
+                              user={globalUserData}
                               maindeptname='all'
                               jobname='Leader'
                             >
@@ -940,11 +941,23 @@ function App() {
                           path='capamanager'
                           element={
                             <ProtectedRoute
-                              user={userData}
+                              user={globalUserData}
                               maindeptname='all'
                               jobname='Leader'
                             >
                               <CAPA_MANAGER />
+                            </ProtectedRoute>
+                          }
+                        />
+                        <Route
+                          path='planresult'
+                          element={
+                            <ProtectedRoute
+                              user={globalUserData}
+                              maindeptname='all'
+                              jobname='Leader'
+                            >
+                              <PLANRESULT />
                             </ProtectedRoute>
                           }
                         />

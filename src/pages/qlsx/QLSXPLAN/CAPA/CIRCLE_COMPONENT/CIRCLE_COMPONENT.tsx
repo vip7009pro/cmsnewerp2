@@ -1,7 +1,6 @@
 import React from 'react'
 import './CIRCLE_COMPONENT.scss'
 import { FcBusinessman } from 'react-icons/fc'
-import { MdOutlinePrecisionManufacturing } from 'react-icons/md'
 const CIRCLE_COMPONENT = ({type, value, title, color}:{type?: string, value?: string, title?: string, color?: string}) => {
     if(type==='workforce')
     {
@@ -28,6 +27,29 @@ const CIRCLE_COMPONENT = ({type, value, title, color}:{type?: string, value?: st
                 </div>
                 
                   
+            </div>
+          )
+    }
+    else if(type==='rate')
+    {
+        return (
+            <div className='machinecirclecomponent'>
+                 <div className="title" style={{color: color}}> 
+                    {value}              
+                </div>                
+            </div>
+          )
+    }
+    else if(type==='loss')
+    {
+        return (
+            <div className='losscirclecomponent'>
+                 <div className="title" style={{color: color}}> 
+                    {title}              
+                </div>                
+                 <div className="value" style={{color: color}}> 
+                    {value}              
+                </div>                
             </div>
           )
     }
