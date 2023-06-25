@@ -23,7 +23,7 @@ import "./INPUTPQC.scss";
 import { UserData } from "../../../redux/slices/globalSlice";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
-const axios = require("axios").default;
+import axios from 'axios';
 
 interface CodeListData {
   G_CODE: string;

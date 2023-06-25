@@ -4,7 +4,8 @@ import { store } from "../redux/store";
 import {changeUserData, login as loginSlice,logout as logoutSlice, update_socket } from "../redux/slices/globalSlice"
 
 
-const axios = require("axios").default;
+/* import axios from 'axios'; */
+import axios from 'axios';
 const cookies = new Cookies();
 axios.defaults.withCredentials = true;
 //const API_URL = "http://14.160.33.94:3007/api";

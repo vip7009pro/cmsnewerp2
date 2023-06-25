@@ -9,8 +9,8 @@ import { UserData } from "../../../../redux/slices/globalSlice";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../redux/store";
 
-var Barcode = require("react-barcode");
-
+/* import Barcode from 'react-barcode'; */
+import Barcode from 'react-barcode'
 interface POBALANCETDYCSX{ G_CODE: string; PO_BALANCE: number }
 interface TONKHOTDYCSX {
   G_CODE: string;

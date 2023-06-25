@@ -1,5 +1,5 @@
 import React from "react";
-var Barcode = require("react-barcode");
+import Barcode from 'react-barcode';
 
 interface COMPONENT_DATA {
   G_CODE_MAU: string,

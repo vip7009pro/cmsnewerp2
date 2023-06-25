@@ -45,7 +45,6 @@
     "react-qr-barcode-scanner": "^1.0.6",
     "react-redux": "^8.0.4",
     "react-router-dom": "^6.3.0",
-    "react-scripts": "5.0.1",
     "react-table": "^7.8.0",
     "react-to-print": "^2.14.7",
     "recharts": "^2.1.12",
@@ -60,8 +59,9 @@
     "xlsx": "^0.18.5"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "set \"GENERATE_SOURCEMAP=false\" && react-scripts build",
+    "start": "vite --port 3000",
+    "build": "set \"GENERATE_SOURCEMAP=false\"  && vite build",
+    "serve": "vite preview",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
@@ -86,6 +86,10 @@
   },
   "devDependencies": {
     "@types/node": "^18.11.9",
-    "devextreme-themebuilder": "^22.2.4"
+    "@vitejs/plugin-react": "^4.0.1",
+    "devextreme-themebuilder": "^22.2.4",
+    "vite": "^4.3.9",
+    "vite-plugin-svgr": "^3.2.0",
+    "vite-tsconfig-paths": "^4.2.0"
   }
 }

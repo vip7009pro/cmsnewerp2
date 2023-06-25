@@ -11,7 +11,7 @@ import {
   UserData,
 } from "../../../../redux/slices/globalSlice";
 import "./CHITHI_COMPONENT2.scss";
-var Barcode = require("react-barcode");
+import Barcode from 'react-barcode';
 interface YCSXTableData {
   DESCR?: string;
   PDBV_EMPL?: string;

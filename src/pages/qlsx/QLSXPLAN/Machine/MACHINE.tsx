@@ -61,6 +61,7 @@ import { useReactToPrint } from "react-to-print";
 import CHITHI_COMPONENT from "../CHITHI/CHITHI_COMPONENT";
 import { BiRefresh, BiReset } from "react-icons/bi";
 import YCKT from "../YCKT/YCKT";
+// @ts-ignore
 import { setInterval } from "timers/promises";
 import { GiCurvyKnife } from "react-icons/gi";
 import { useDispatch, useSelector } from "react-redux";
@@ -72,7 +73,7 @@ import {
 } from "../../../../redux/slices/globalSlice";
 import CHITHI_COMPONENT2 from "../CHITHI/CHITHI_COMPONENT2";
 import KHOAO from "../KHOAO/KHOAO";
-const axios = require("axios").default;
+import axios from 'axios';
 interface TONLIEUXUONG {
   id: number;
   FACTORY: string;

@@ -11,7 +11,7 @@ import {
   UserData,
 } from "../../../../redux/slices/globalSlice";
 import "./CHITHI_COMPONENT.scss";
-var Barcode = require("react-barcode");
+import Barcode from 'react-barcode';
 interface YCSXTableData {
   DESCR?: string;
   PDBV_EMPL?: string;
@@ -396,7 +396,7 @@ const CHITHI_COMPONENT = ({
           <div className='leftlogobarcode'>
             <img alt='logo' src='/logocmsvina.png' width={160} height={40} />
             <Barcode
-              value={PLAN_ID}
+              value={`${PLAN_ID}`}              
               format='CODE128'
               width={1}
               height={50}
@@ -607,7 +607,7 @@ const CHITHI_COMPONENT = ({
         </div> */}
         <div className='text1'>3. LOSS INFO__ {' '}{PLAN_ID} {':  '} (Phân loại: {request_codeinfo[0].CODE_50 ==='01'? 'GC': request_codeinfo[0].CODE_50 ==='02'? 'SK': request_codeinfo[0].CODE_50 ==='03'? 'KD' : request_codeinfo[0].CODE_50 ==='04'? 'VN' : request_codeinfo[0].CODE_50 ==='05' ? 'SAMPLE' : request_codeinfo[0].CODE_50 ==='06' ? 'Vai bac 4' :'ETC'})  
           <Barcode
-              value={PLAN_ID}
+              value={`${PLAN_ID}`} 
               format='CODE128'
               width={1.5}
               height={20}

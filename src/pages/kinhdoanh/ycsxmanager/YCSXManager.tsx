@@ -42,7 +42,7 @@ import TraAMZ from "./TraAMZ/TraAMZ";
 import { UserData } from "../../../redux/slices/globalSlice";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
-const axios = require("axios").default;
+import axios from 'axios';
 interface POBALANCETDYCSX {
   G_CODE: string;
   PO_BALANCE: number;

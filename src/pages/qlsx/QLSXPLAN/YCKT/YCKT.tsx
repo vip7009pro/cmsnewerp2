@@ -11,7 +11,7 @@ import {
   UserData,
 } from "../../../../redux/slices/globalSlice";
 import "./YCKT.scss";
-var Barcode = require("react-barcode");
+import Barcode from 'react-barcode';
 interface YCSXTableData {
   DESCR?: string;
   PDBV_EMPL?: string;
@@ -277,8 +277,8 @@ const YCKT = ({
         <div className='tieudeycsx'>
           <div className='leftlogobarcode'>
             <img alt='logo' src='/logocmsvina.png' width={160} height={40} />
-            <Barcode
-              value={PLAN_ID}
+            <Barcode              
+              value={`${PLAN_ID}`} 
               format='CODE128'
               width={1}
               height={50}

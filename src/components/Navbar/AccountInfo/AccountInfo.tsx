@@ -18,7 +18,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import { UserData, changeUserData } from "../../../redux/slices/globalSlice";
 
-const axios = require('axios').default;
+import axios from 'axios';
 
 export function LinearProgressWithLabel(
   props: LinearProgressProps & { value: number }
