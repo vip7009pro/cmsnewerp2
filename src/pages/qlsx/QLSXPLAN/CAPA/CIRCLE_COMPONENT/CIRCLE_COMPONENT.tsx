@@ -53,6 +53,32 @@ const CIRCLE_COMPONENT = ({type, value, title, color}:{type?: string, value?: st
             </div>
           )
     }
+    else if(type==='time')
+    {
+        return (
+            <div className='timeefficiency'>
+                 <div className="title" style={{color: color}}> 
+                    {title}              
+                </div>                
+                 <div className="value" style={{color: color}}> 
+                    {value}              
+                </div>                
+            </div>
+          )
+    }
+    else if(type==='timesummary')
+    {
+        return (
+            <div className='timeefficiencysummary'>
+                 <div className="title" style={{color: color}}> 
+                    {title}              
+                </div>                
+                 <div className="value" style={{color: color}}> 
+                    {value}              
+                </div>                
+            </div>
+          )
+    }
     else {
         return (
             <div className='circlecomponent'>

@@ -33,7 +33,11 @@ import { generalQuery } from "../../../api/Api";
 import CIRCLE_COMPONENT from "../../qlsx/QLSXPLAN/CAPA/CIRCLE_COMPONENT/CIRCLE_COMPONENT";
 import { ProgressBar } from "devextreme-react/progress-bar";
 import { CircularProgress, LinearProgress } from "@mui/material";
-
+interface MACHINE_COUNTING {
+  FACTORY: string;
+  EQ_NAME: string;
+  EQ_QTY: number;
+}
 interface DAILY_SX_DATA {
   MACHINE_NAME: string;
   SX_DATE: string;
@@ -56,24 +60,72 @@ interface ACHIVEMENT_DATA {
   ACHIVEMENT_RATE: number;
 }
 interface WEEKLY_SX_DATA {
-    SX_WEEK: number,    
-    SX_RESULT: number,
-    PLAN_QTY: number,
-    RATE: number,
+  SX_WEEK: number;
+  SX_RESULT: number;
+  PLAN_QTY: number;
+  RATE: number;
 }
 interface MONTHLY_SX_DATA {
-    SX_MONTH: number,    
-    SX_RESULT: number,
-    PLAN_QTY: number,
-    RATE: number,
+  SX_MONTH: number;
+  SX_RESULT: number;
+  PLAN_QTY: number;
+  RATE: number;
 }
-
+interface TOTAL_TIME {
+  T_FR: number;
+  T_SR: number;
+  T_DC: number;
+  T_ED: number;
+  T_TOTAL: number;
+}
+interface OPERATION_TIME_DATA {
+  PLAN_FACTORY: string;
+  MACHINE: string;
+  TOTAL_TIME: number;
+  RUN_TIME_SX: number;
+  SETTING_TIME: number;
+  LOSS_TIME: number;
+  HIEU_SUAT_TIME: number;
+  SETTING_TIME_RATE: number;
+  LOSS_TIME_RATE: number;
+}
 const PLANRESULT = () => {
-  const dailytime: number = 1260;
+  function getBusinessDatesCount(st: any, ed: any) {
+    const startDate = new Date(moment(st).format("YYYY-MM-DD"));
+    const endDate = new Date(moment(ed).format("YYYY-MM-DD"));
+    let count = 0;
+    const curDate = new Date(startDate.getTime());
+    while (curDate <= endDate) {
+      const dayOfWeek = curDate.getDay();
+      if (dayOfWeek !== 0) count++;
+      curDate.setDate(curDate.getDate() + 1);
+    }
+    return count;
+  }
+  const dailytime1: number = 1260;
+  const dailytime2: number = 1260;
+  const [T_TIME_NM1, setT_TIME_NM1] = useState<TOTAL_TIME>({
+    T_FR: 1,
+    T_SR: 1,
+    T_DC: 1,
+    T_ED: 1,
+    T_TOTAL: 1,
+  });
+  const [T_TIME_NM2, setT_TIME_NM2] = useState<TOTAL_TIME>({
+    T_FR: 1,
+    T_SR: 1,
+    T_DC: 1,
+    T_ED: 1,
+    T_TOTAL: 1,
+  });
+  const [machinecount, setMachineCount] = useState<MACHINE_COUNTING[]>([]);
   const [fromdate, setFromDate] = useState(
     moment().add(-30, "day").format("YYYY-MM-DD")
   );
   const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));
+  const [operation_time, setOperationTime] = useState<OPERATION_TIME_DATA[]>(
+    []
+  );
   const [machine, setMachine] = useState("ALL");
   const [factory, setFactory] = useState("ALL");
   const [daily_sx_data, setDailySXData] = useState<DAILY_SX_DATA[]>([]);
@@ -82,7 +134,142 @@ const PLANRESULT = () => {
   const [sxachivementdata, setSXAchivementData] = useState<ACHIVEMENT_DATA[]>(
     []
   );
-
+  const [dayrange, setDayRange] = useState(
+    getBusinessDatesCount(fromdate, todate)
+  );
+  const getMachineCounting = () => {
+    generalQuery("machinecounting2", {})
+      .then((response) => {
+        //console.log(response.data.data);
+        if (response.data.tk_status !== "NG") {
+          const loaded_data: MACHINE_COUNTING[] = response.data.data.map(
+            (element: MACHINE_COUNTING, index: number) => {
+              return {
+                ...element,
+                id: index,
+              };
+            }
+          );
+          let temp_TIME_NM1: TOTAL_TIME = {
+            T_FR:
+              (loaded_data.filter(
+                (ele: MACHINE_COUNTING, index: number) =>
+                  ele?.FACTORY === "NM1" && ele?.EQ_NAME === "FR"
+              )[0]?.EQ_QTY === undefined
+                ? 0
+                : loaded_data.filter(
+                    (ele: MACHINE_COUNTING, index: number) =>
+                      ele?.FACTORY === "NM1" && ele?.EQ_NAME === "FR"
+                  )[0]?.EQ_QTY) * dailytime1,
+            T_SR:
+              (loaded_data.filter(
+                (ele: MACHINE_COUNTING, index: number) =>
+                  ele?.FACTORY === "NM1" && ele?.EQ_NAME === "SR"
+              )[0]?.EQ_QTY === undefined
+                ? 0
+                : loaded_data.filter(
+                    (ele: MACHINE_COUNTING, index: number) =>
+                      ele?.FACTORY === "NM1" && ele?.EQ_NAME === "SR"
+                  )[0]?.EQ_QTY) * dailytime1,
+            T_DC:
+              (loaded_data.filter(
+                (ele: MACHINE_COUNTING, index: number) =>
+                  ele?.FACTORY === "NM1" && ele?.EQ_NAME === "DC"
+              )[0]?.EQ_QTY === undefined
+                ? 0
+                : loaded_data.filter(
+                    (ele: MACHINE_COUNTING, index: number) =>
+                      ele?.FACTORY === "NM1" && ele?.EQ_NAME === "DC"
+                  )[0]?.EQ_QTY) * dailytime1,
+            T_ED:
+              (loaded_data.filter(
+                (ele: MACHINE_COUNTING, index: number) =>
+                  ele?.FACTORY === "NM1" && ele?.EQ_NAME === "ED"
+              )[0]?.EQ_QTY === undefined
+                ? 0
+                : loaded_data.filter(
+                    (ele: MACHINE_COUNTING, index: number) =>
+                      ele?.FACTORY === "NM1" && ele?.EQ_NAME === "ED"
+                  )[0]?.EQ_QTY) * dailytime1,
+            T_TOTAL: 0,
+          };
+          let temp_TIME_NM2: TOTAL_TIME = {
+            T_FR:
+              (loaded_data.filter(
+                (ele: MACHINE_COUNTING, index: number) =>
+                  ele?.FACTORY === "NM2" && ele?.EQ_NAME === "FR"
+              )[0]?.EQ_QTY === undefined
+                ? 0
+                : loaded_data.filter(
+                    (ele: MACHINE_COUNTING, index: number) =>
+                      ele?.FACTORY === "NM2" && ele?.EQ_NAME === "FR"
+                  )[0]?.EQ_QTY) * dailytime2,
+            T_SR:
+              (loaded_data.filter(
+                (ele: MACHINE_COUNTING, index: number) =>
+                  ele?.FACTORY === "NM2" && ele?.EQ_NAME === "SR"
+              )[0]?.EQ_QTY === undefined
+                ? 0
+                : loaded_data.filter(
+                    (ele: MACHINE_COUNTING, index: number) =>
+                      ele?.FACTORY === "NM2" && ele?.EQ_NAME === "SR"
+                  )[0]?.EQ_QTY) * dailytime2,
+            T_DC:
+              (loaded_data.filter(
+                (ele: MACHINE_COUNTING, index: number) =>
+                  ele?.FACTORY === "NM2" && ele?.EQ_NAME === "DC"
+              )[0]?.EQ_QTY === undefined
+                ? 0
+                : loaded_data.filter(
+                    (ele: MACHINE_COUNTING, index: number) =>
+                      ele?.FACTORY === "NM2" && ele?.EQ_NAME === "DC"
+                  )[0]?.EQ_QTY) * dailytime2,
+            T_ED:
+              (loaded_data.filter(
+                (ele: MACHINE_COUNTING, index: number) =>
+                  ele?.FACTORY === "NM2" && ele?.EQ_NAME === "ED"
+              )[0]?.EQ_QTY === undefined
+                ? 0
+                : loaded_data.filter(
+                    (ele: MACHINE_COUNTING, index: number) =>
+                      ele?.FACTORY === "NM2" && ele?.EQ_NAME === "ED"
+                  )[0]?.EQ_QTY) * dailytime2,
+            T_TOTAL: 0,
+          };
+          let tt1: TOTAL_TIME = {
+            T_FR: temp_TIME_NM1.T_FR,
+            T_SR: temp_TIME_NM1.T_SR,
+            T_DC: temp_TIME_NM1.T_DC,
+            T_ED: temp_TIME_NM1.T_ED,
+            T_TOTAL:
+              temp_TIME_NM1.T_FR +
+              temp_TIME_NM1.T_SR +
+              temp_TIME_NM1.T_DC +
+              temp_TIME_NM1.T_ED,
+          };
+          let tt2: TOTAL_TIME = {
+            T_FR: temp_TIME_NM2.T_FR,
+            T_SR: temp_TIME_NM2.T_SR,
+            T_DC: temp_TIME_NM2.T_DC,
+            T_ED: temp_TIME_NM2.T_ED,
+            T_TOTAL:
+              temp_TIME_NM2.T_FR +
+              temp_TIME_NM2.T_SR +
+              temp_TIME_NM2.T_DC +
+              temp_TIME_NM2.T_ED,
+          };
+          setT_TIME_NM1(tt1);
+          setT_TIME_NM2(tt2);
+          console.log(loaded_data);
+          setMachineCount(loaded_data);
+        } else {
+          setMachineCount([]);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
   const getDailySXData = (mc: string, ft: string, fr: string, td: string) => {
     generalQuery("dailysxdata", {
       MACHINE: mc,
@@ -111,12 +298,12 @@ const PLANRESULT = () => {
         console.log(error);
       });
   };
-  const getWeeklySXData = (mc: string, ft: string,fr: string, td: string) => {
+  const getWeeklySXData = (mc: string, ft: string, fr: string, td: string) => {
     generalQuery("sxweeklytrenddata", {
-        MACHINE: mc,
-        FACTORY: ft,
-        FROM_DATE: fr,
-        TO_DATE: td
+      MACHINE: mc,
+      FACTORY: ft,
+      FROM_DATE: fr,
+      TO_DATE: td,
     })
       .then((response) => {
         //console.log(response.data.data);
@@ -124,7 +311,7 @@ const PLANRESULT = () => {
           const loaded_data: WEEKLY_SX_DATA[] = response.data.data.map(
             (element: WEEKLY_SX_DATA, index: number) => {
               return {
-                ...element,                
+                ...element,
                 RATE: (element.SX_RESULT / element.PLAN_QTY) * 100,
               };
             }
@@ -138,12 +325,12 @@ const PLANRESULT = () => {
         console.log(error);
       });
   };
-  const getMonthlySXData = (mc: string, ft: string,fr: string, td: string) => {
+  const getMonthlySXData = (mc: string, ft: string, fr: string, td: string) => {
     generalQuery("sxmonthlytrenddata", {
-        MACHINE: mc,
-        FACTORY: ft,
-        FROM_DATE: fr,
-        TO_DATE: td
+      MACHINE: mc,
+      FACTORY: ft,
+      FROM_DATE: fr,
+      TO_DATE: td,
     })
       .then((response) => {
         //console.log(response.data.data);
@@ -151,22 +338,70 @@ const PLANRESULT = () => {
           const loaded_data: MONTHLY_SX_DATA[] = response.data.data.map(
             (element: MONTHLY_SX_DATA, index: number) => {
               return {
-                ...element,                
+                ...element,
                 RATE: (element.SX_RESULT / element.PLAN_QTY) * 100,
               };
             }
           );
           setMonthlySXData(loaded_data);
         } else {
-            setMonthlySXData([]);
+          setMonthlySXData([]);
         }
       })
       .catch((error) => {
         console.log(error);
       });
   };
-  const getSXAchiveMentData = (fr: string, td: string) => {
+  const getMachineTimeEfficiency = (fr: string, td: string) => {
+    generalQuery("machineTimeEfficiency", {
+      FROM_DATE: fr,
+      TO_DATE: td,
+    })
+      .then((response) => {
+        //console.log(response.data.data);
+        if (response.data.tk_status !== "NG") {
+          let loaded_data: OPERATION_TIME_DATA[] = response.data.data.map(
+            (element: OPERATION_TIME_DATA, index: number) => {
+              return {
+                ...element,
+              };
+            }
+          );
+          let temp_time: OPERATION_TIME_DATA = {
+            PLAN_FACTORY: "TOTAL",
+            MACHINE: "TOTAL",
+            TOTAL_TIME: 0,
+            RUN_TIME_SX: 0,
+            SETTING_TIME: 0,
+            LOSS_TIME: 0,
+            HIEU_SUAT_TIME: 0,
+            SETTING_TIME_RATE: 0,
+            LOSS_TIME_RATE: 0,
+          };
+          for (let i = 0; i < loaded_data.length; i++) {
+            temp_time.TOTAL_TIME += loaded_data[i].TOTAL_TIME;
+            temp_time.RUN_TIME_SX += loaded_data[i].RUN_TIME_SX;
+            temp_time.SETTING_TIME += loaded_data[i].SETTING_TIME;
+            temp_time.LOSS_TIME += loaded_data[i].LOSS_TIME;
+          }
+          temp_time.HIEU_SUAT_TIME =
+            temp_time.RUN_TIME_SX / temp_time.TOTAL_TIME;
+          temp_time.SETTING_TIME_RATE =
+            temp_time.SETTING_TIME / temp_time.TOTAL_TIME;
+          temp_time.LOSS_TIME_RATE = temp_time.LOSS_TIME / temp_time.TOTAL_TIME;
+          loaded_data.push(temp_time);
+          setOperationTime(loaded_data);
+        } else {
+          setOperationTime([]);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+  const getSXAchiveMentData = (ft: string, fr: string, td: string) => {
     generalQuery("sxachivementdata", {
+      FACTORY: ft,
       FROM_DATE: fr,
       TO_DATE: td,
     })
@@ -262,12 +497,7 @@ const PLANRESULT = () => {
           subtitle={`[${fromdate} ~ ${todate}] [${machine}] -[${factory}]`}
         />
         <ArgumentAxis title='PRODUCTION DATE' />
-        <ValueAxis
-          name='quantity'
-          position='left'
-          title='QUANTITY (EA)'
-          
-        />
+        <ValueAxis name='quantity' position='left' title='QUANTITY (EA)' />
         <ValueAxis
           name='rate'
           position='right'
@@ -351,29 +581,21 @@ const PLANRESULT = () => {
           subtitle={`[${fromdate} ~ ${todate}]`}
         />
         <ArgumentAxis title='PRODUCTION WEEK' />
-        <ValueAxis
-          name='quantity'
-          position='left'
-          title='QUANTITY (EA)'
-         
-        />
+        <ValueAxis name='quantity' position='left' title='QUANTITY (EA)' />
         <ValueAxis
           name='rate'
           position='right'
           title='Achivement Rate (%)'
           maxValueMargin={0.05}
         />
-        <CommonSeriesSettings
-          argumentField='SX_WEEK'         
-          type="stackedBar"
-        >
+        <CommonSeriesSettings argumentField='SX_WEEK' type='stackedBar'>
           <Label visible={true}>
             <Format type='fixedPoint' precision={0} />
           </Label>
         </CommonSeriesSettings>
         <Series
-          axis='rate'        
-          argumentField='SX_WEEK' 
+          axis='rate'
+          argumentField='SX_WEEK'
           valueField='RATE'
           name='ACHIVEMENT RATE'
           color='#019623'
@@ -436,32 +658,24 @@ const PLANRESULT = () => {
       >
         <Title
           text={`MONTHLY PRODUCTION TRENDING`}
-          subtitle={`[${moment().format('YYYY')}]`}
+          subtitle={`[${moment().format("YYYY")}]`}
         />
         <ArgumentAxis title='PRODUCTION MONTH' />
-        <ValueAxis
-          name='quantity'
-          position='left'
-          title='QUANTITY (EA)'
-         
-        />
+        <ValueAxis name='quantity' position='left' title='QUANTITY (EA)' />
         <ValueAxis
           name='rate'
           position='right'
           title='Achivement Rate (%)'
           maxValueMargin={0.05}
         />
-        <CommonSeriesSettings
-          argumentField='SX_MONTH'         
-          type="stackedBar"
-        >
+        <CommonSeriesSettings argumentField='SX_MONTH' type='stackedBar'>
           <Label visible={true}>
             <Format type='fixedPoint' precision={0} />
           </Label>
         </CommonSeriesSettings>
         <Series
-          axis='rate'        
-          argumentField='SX_MONTH' 
+          axis='rate'
+          argumentField='SX_MONTH'
           valueField='RATE'
           name='ACHIVEMENT RATE'
           color='#019623'
@@ -513,13 +727,18 @@ const PLANRESULT = () => {
       </Chart>
     );
   }, [monthly_sx_data, fromdate, todate]);
-
   useEffect(() => {
-    getMonthlySXData(machine, factory,moment().format('YYYY')+'-01-01',moment().format('YYYY-MM-DD'));
-    getWeeklySXData(machine, factory,fromdate,todate);
+    getMonthlySXData(
+      machine,
+      factory,
+      moment().format("YYYY") + "-01-01",
+      moment().format("YYYY-MM-DD")
+    );
+    getWeeklySXData(machine, factory, fromdate, todate);
     getDailySXData(machine, factory, fromdate, todate);
-    getSXAchiveMentData(fromdate, todate);   
-
+    getSXAchiveMentData(factory, fromdate, todate);
+    getMachineCounting();
+    getMachineTimeEfficiency(fromdate, todate);
     let intervalID = window.setInterval(() => {}, 5000);
     return () => {
       window.clearInterval(intervalID);
@@ -539,43 +758,128 @@ const PLANRESULT = () => {
             <label>
               <b>Quick Select</b>
               <select
-                  name='phanloai'                  
-                  onChange={(e) => {
-                    console.log(e.target.value);
-                    if(e.target.value ==='0')
-                    {                      
-                        getMonthlySXData(machine, factory,moment().format('YYYY')+'-01-01',moment().format('YYYY-MM-DD'));
-                        getWeeklySXData(machine, factory,moment().add(-30, "day").format("YYYY-MM-DD"),moment().format('YYYY-MM-DD'));
-                        getDailySXData(machine, factory, moment().add(-30, "day").format("YYYY-MM-DD"),moment().format('YYYY-MM-DD'));
-                        getSXAchiveMentData( moment().add(-30, "day").format("YYYY-MM-DD"),moment().format('YYYY-MM-DD')); 
-                        setFromDate(moment().add(-30, "day").format("YYYY-MM-DD"));
-                        setToDate(moment().format('YYYY-MM-DD'));
-                    }
-                    else if(e.target.value ==='1')
-                    {                        
-                        getMonthlySXData(machine, factory,moment().format('YYYY')+'-01-01',moment().format('YYYY-MM-DD'));
-                        getWeeklySXData(machine, factory,moment().format('YYYY-MM-DD'),moment().format('YYYY-MM-DD'));
-                        getDailySXData(machine, factory, moment().format('YYYY-MM-DD'),moment().format('YYYY-MM-DD'));
-                        getSXAchiveMentData(moment().format('YYYY-MM-DD'),moment().format('YYYY-MM-DD'));   
-                        setFromDate(moment().format('YYYY-MM-DD'));
-                        setToDate(moment().format('YYYY-MM-DD'));
-                    }
-                    else if(e.target.value ==='2')
-                    {                       
-                        getMonthlySXData(machine, factory,moment().format('YYYY')+'-01-01',moment().add(0, "day").format("YYYY-MM-DD"));
-                        getWeeklySXData(machine, factory,moment().add(-1, "day").format("YYYY-MM-DD"),moment().add(-1, "day").format("YYYY-MM-DD"));
-                        getDailySXData(machine, factory, moment().add(-1, "day").format("YYYY-MM-DD"),moment().add(-1, "day").format("YYYY-MM-DD"));
-                        getSXAchiveMentData(moment().add(-1, "day").format("YYYY-MM-DD"),moment().add(-1, "day").format("YYYY-MM-DD"));
-                        setFromDate(moment().add(-1, "day").format("YYYY-MM-DD"));
-                        setToDate(moment().add(-1, "day").format("YYYY-MM-DD"));   
-                    }                                       
-                  }}
-                >
-                  <option value='0'>LAST 30 DAYS</option>
-                  <option value='1'>TODAY</option>
-                  <option value='2'>YESTERDAY</option>
-                </select>
-            </label>           
+                name='phanloai'
+                onChange={(e) => {
+                  console.log(e.target.value);
+                  if (e.target.value === "0") {
+                    getMonthlySXData(
+                      machine,
+                      factory,
+                      moment().format("YYYY") + "-01-01",
+                      moment().format("YYYY-MM-DD")
+                    );
+                    getWeeklySXData(
+                      machine,
+                      factory,
+                      moment().add(-30, "day").format("YYYY-MM-DD"),
+                      moment().format("YYYY-MM-DD")
+                    );
+                    getDailySXData(
+                      machine,
+                      factory,
+                      moment().add(-30, "day").format("YYYY-MM-DD"),
+                      moment().format("YYYY-MM-DD")
+                    );
+                    getSXAchiveMentData(
+                      factory,
+                      moment().add(-30, "day").format("YYYY-MM-DD"),
+                      moment().format("YYYY-MM-DD")
+                    );
+                    setFromDate(moment().add(-30, "day").format("YYYY-MM-DD"));
+                    getMachineTimeEfficiency(
+                      moment().add(-30, "day").format("YYYY-MM-DD"),
+                      moment().format("YYYY-MM-DD")
+                    );
+                    setToDate(moment().format("YYYY-MM-DD"));
+                    setDayRange(
+                      getBusinessDatesCount(
+                        moment().add(-30, "day").format("YYYY-MM-DD"),
+                        moment().format("YYYY-MM-DD")
+                      )
+                    );
+                    //setDayRange(Math.abs(moment().add(-30, "day").diff(moment(),'days')));
+                  } else if (e.target.value === "1") {
+                    getMonthlySXData(
+                      machine,
+                      factory,
+                      moment().format("YYYY") + "-01-01",
+                      moment().format("YYYY-MM-DD")
+                    );
+                    getWeeklySXData(
+                      machine,
+                      factory,
+                      moment().format("YYYY-MM-DD"),
+                      moment().format("YYYY-MM-DD")
+                    );
+                    getDailySXData(
+                      machine,
+                      factory,
+                      moment().format("YYYY-MM-DD"),
+                      moment().format("YYYY-MM-DD")
+                    );
+                    getSXAchiveMentData(
+                      factory,
+                      moment().format("YYYY-MM-DD"),
+                      moment().format("YYYY-MM-DD")
+                    );
+                    setFromDate(moment().format("YYYY-MM-DD"));
+                    setToDate(moment().format("YYYY-MM-DD"));
+                    getMachineTimeEfficiency(
+                      moment().add(0, "day").format("YYYY-MM-DD"),
+                      moment().format("YYYY-MM-DD")
+                    );
+                    setDayRange(
+                      getBusinessDatesCount(
+                        moment().format("YYYY-MM-DD"),
+                        moment().format("YYYY-MM-DD")
+                      )
+                    );
+                    //setDayRange(Math.abs(moment().diff(moment(),'days')));
+                  } else if (e.target.value === "2") {
+                    getMonthlySXData(
+                      machine,
+                      factory,
+                      moment().format("YYYY") + "-01-01",
+                      moment().add(0, "day").format("YYYY-MM-DD")
+                    );
+                    getWeeklySXData(
+                      machine,
+                      factory,
+                      moment().add(-1, "day").format("YYYY-MM-DD"),
+                      moment().add(-1, "day").format("YYYY-MM-DD")
+                    );
+                    getDailySXData(
+                      machine,
+                      factory,
+                      moment().add(-1, "day").format("YYYY-MM-DD"),
+                      moment().add(-1, "day").format("YYYY-MM-DD")
+                    );
+                    getSXAchiveMentData(
+                      factory,
+                      moment().add(-1, "day").format("YYYY-MM-DD"),
+                      moment().add(-1, "day").format("YYYY-MM-DD")
+                    );
+                    getMachineTimeEfficiency(
+                      moment().add(-1, "day").format("YYYY-MM-DD"),
+                      moment().add(-1, "day").format("YYYY-MM-DD")
+                    );
+                    setFromDate(moment().add(-1, "day").format("YYYY-MM-DD"));
+                    setToDate(moment().add(-1, "day").format("YYYY-MM-DD"));
+                    setDayRange(
+                      getBusinessDatesCount(
+                        moment().add(-1, "day").format("YYYY-MM-DD"),
+                        moment().add(-1, "day").format("YYYY-MM-DD")
+                      )
+                    );
+                    //setDayRange(Math.abs(moment().add(-1,'days').diff(moment(),'days')));
+                  }
+                }}
+              >
+                <option value='0'>LAST 30 DAYS</option>
+                <option value='1'>TODAY</option>
+                <option value='2'>YESTERDAY</option>
+              </select>
+            </label>
           </div>
           <div className='forminputcolumn'>
             <label>
@@ -587,8 +891,15 @@ const PLANRESULT = () => {
                   setFromDate(e.target.value);
                   console.log(e.target.value);
                   getDailySXData(machine, factory, e.target.value, todate);
-                  getSXAchiveMentData(e.target.value, todate);
-                  getWeeklySXData(machine, factory,e.target.value, todate);
+                  getSXAchiveMentData(factory, e.target.value, todate);
+                  getWeeklySXData(machine, factory, e.target.value, todate);
+                  getMachineTimeEfficiency(e.target.value, todate);
+                  setDayRange(
+                    getBusinessDatesCount(
+                      moment(e.target.value).format("YYYY-MM-DD"),
+                      moment(todate).format("YYYY-MM-DD")
+                    )
+                  );
                 }}
               ></input>
             </label>
@@ -601,8 +912,15 @@ const PLANRESULT = () => {
                   setToDate(e.target.value);
                   console.log(e.target.value);
                   getDailySXData(machine, factory, fromdate, e.target.value);
-                  getSXAchiveMentData(fromdate, e.target.value);
-                  getWeeklySXData(machine, factory,fromdate, e.target.value);
+                  getSXAchiveMentData(factory, fromdate, e.target.value);
+                  getWeeklySXData(machine, factory, fromdate, e.target.value);
+                  getMachineTimeEfficiency(fromdate, e.target.value);
+                  setDayRange(
+                    getBusinessDatesCount(
+                      moment(fromdate).format("YYYY-MM-DD"),
+                      moment(e.target.value).format("YYYY-MM-DD")
+                    )
+                  );
                 }}
               ></input>
             </label>
@@ -616,8 +934,14 @@ const PLANRESULT = () => {
                 onChange={(e) => {
                   setFactory(e.target.value);
                   getDailySXData(machine, e.target.value, fromdate, todate);
-                  getWeeklySXData(machine, e.target.value,fromdate,todate);
-                  getMonthlySXData(machine, e.target.value,moment().format('YYYY')+'-01-01',moment().format('YYYY-MM-DD'));
+                  getWeeklySXData(machine, e.target.value, fromdate, todate);
+                  getMonthlySXData(
+                    machine,
+                    e.target.value,
+                    moment().format("YYYY") + "-01-01",
+                    moment().format("YYYY-MM-DD")
+                  );
+                  getSXAchiveMentData(e.target.value, fromdate, todate);
                 }}
               >
                 <option value='ALL'>ALL</option>
@@ -633,8 +957,13 @@ const PLANRESULT = () => {
                 onChange={(e) => {
                   setMachine(e.target.value);
                   getDailySXData(e.target.value, factory, fromdate, todate);
-                  getWeeklySXData(e.target.value, factory,fromdate,todate);
-                  getMonthlySXData(e.target.value, factory,moment().format('YYYY')+'-01-01',moment().format('YYYY-MM-DD'));
+                  getWeeklySXData(e.target.value, factory, fromdate, todate);
+                  getMonthlySXData(
+                    e.target.value,
+                    factory,
+                    moment().format("YYYY") + "-01-01",
+                    moment().format("YYYY-MM-DD")
+                  );
                 }}
               >
                 <option value='ALL'>ALL</option>
@@ -647,236 +976,395 @@ const PLANRESULT = () => {
           </div>
         </div>
       </div>
-      
       <div className='progressdiv'>
         <div className='titleprogressdiv'>
-            1.PRODUCTION ACHIVEMENT RATE BY MACHINE (%)
-        </div>       
-        <div className="mainprogressdiv">
-        <div className='subprogressdiv'>
-          <div className='sectiondiv'>
-            <div className="totalachivementdiv">
-            {
-                `${sxachivementdata
-                    .filter(
-                      (ele: ACHIVEMENT_DATA, index: number) =>
-                        ele.MACHINE_NAME === "TOTAL"
-                    )[0]
-                    ?.ACHIVEMENT_RATE?.toLocaleString("en-US", {
-                      maximumFractionDigits: 1,
-                    })}%`
-              }
-            </div>         
-          </div>
+          1.PRODUCTION ACHIVEMENT RATE BY MACHINE (%)
         </div>
-        <div className='subprogressdiv'>
-          <div className='sectiondiv'>
-            FR:{" "}
-            {sxachivementdata
-              .filter(
-                (ele: ACHIVEMENT_DATA, index: number) =>
-                  ele.MACHINE_NAME === "FR"
-              )[0]
-              ?.ACHIVEMENT_RATE?.toLocaleString("en-US", {
-                maximumFractionDigits: 1,
-              })}{" "}
-            %
-            <LinearProgress
-              style={{ height: "10px" }}
-              variant='determinate'
-              color='primary'
-              aria-valuemin={0}
-              aria-valuemax={100}
-              value={
-                sxachivementdata.filter(
-                  (ele: ACHIVEMENT_DATA, index: number) =>
-                    ele.MACHINE_NAME === "FR"
-                )[0]?.ACHIVEMENT_RATE
-              }
-            />
-          </div>
-          <div className='sectiondiv'>
-            SR:{" "}
-            {sxachivementdata
-              .filter(
-                (ele: ACHIVEMENT_DATA, index: number) =>
-                  ele.MACHINE_NAME === "SR"
-              )[0]
-              ?.ACHIVEMENT_RATE?.toLocaleString("en-US", {
-                maximumFractionDigits: 1,
-              })}{" "}
-            %
-            <LinearProgress
-              style={{ height: "10px" }}
-              variant='determinate'
-              color='secondary'
-              aria-valuemin={0}
-              aria-valuemax={100}
-              value={
-                sxachivementdata.filter(
-                  (ele: ACHIVEMENT_DATA, index: number) =>
-                    ele.MACHINE_NAME === "SR"
-                )[0]?.ACHIVEMENT_RATE
-              }
-            />
-          </div>
-          <div className='sectiondiv'>
-            DC:{" "}
-            {sxachivementdata
-              .filter(
-                (ele: ACHIVEMENT_DATA, index: number) =>
-                  ele.MACHINE_NAME === "DC"
-              )[0]
-              ?.ACHIVEMENT_RATE?.toLocaleString("en-US", {
-                maximumFractionDigits: 1,
-              })}{" "}
-            %
-            <LinearProgress
-              style={{ height: "10px" }}
-              variant='determinate'
-              color='info'
-              aria-valuemin={0}
-              aria-valuemax={100}
-              value={
-                sxachivementdata.filter(
-                  (ele: ACHIVEMENT_DATA, index: number) =>
-                    ele.MACHINE_NAME === "DC"
-                )[0]?.ACHIVEMENT_RATE
-              }
-            />
-          </div>
-          <div className='sectiondiv'>
-            ED:{" "}
-            {sxachivementdata
-              .filter(
-                (ele: ACHIVEMENT_DATA, index: number) =>
-                  ele.MACHINE_NAME === "ED"
-              )[0]
-              ?.ACHIVEMENT_RATE?.toLocaleString("en-US", {
-                maximumFractionDigits: 1,
-              })}{" "}
-            %
-            <LinearProgress
-              style={{ height: "10px" }}
-              variant='determinate'
-              color='warning'
-              aria-valuemin={0}
-              aria-valuemax={100}
-              value={
-                sxachivementdata.filter(
-                  (ele: ACHIVEMENT_DATA, index: number) =>
-                    ele.MACHINE_NAME === "ED"
-                )[0]?.ACHIVEMENT_RATE
-              }
-            />
-          </div>
-        </div>
-        </div>
-      </div>
-
-      <div className='progressdiv'>
-        <div className='titleprogressdiv'>
-            2.PRODUCTION LOSS (%)
-        </div>       
-        <div className="mainprogressdiv">
-        <div className='subprogressdiv'>
-          <div className='sectiondiv'>    
-            <div className="lossdiv">
-            <CIRCLE_COMPONENT type="loss" value={`${nFormatter(sxachivementdata
-                    .filter(
-                      (ele: ACHIVEMENT_DATA, index: number) =>
-                        ele.MACHINE_NAME === "TOTAL"
-                    )[0]
-                    ?.PLAN_QTY)}`} title="PLAN QTY" color="blue"/>
-            <CIRCLE_COMPONENT type="loss" value={`${nFormatter(sxachivementdata
-                    .filter(
-                      (ele: ACHIVEMENT_DATA, index: number) =>
-                        ele.MACHINE_NAME === "TOTAL"
-                    )[0]
-                    ?.SX_RESULT_TOTAL)}`} title="RESULT_TOTAL" color="#02B93A"/>
-            <CIRCLE_COMPONENT type="loss" value={`${nFormatter(sxachivementdata
-                    .filter(
-                      (ele: ACHIVEMENT_DATA, index: number) =>
-                        ele.MACHINE_NAME === "TOTAL"
-                    )[0]
-                    ?.RESULT_TO_INSPECTION)}`} title="RESULT_INSP" color="#02B93A"/>
-            <CIRCLE_COMPONENT type="loss" value={`${nFormatter(sxachivementdata
-                    .filter(
-                      (ele: ACHIVEMENT_DATA, index: number) =>
-                        ele.MACHINE_NAME === "TOTAL"
-                    )[0]
-                    ?.INS_INPUT)}`} title="INSP INPUT" color="#CC26F9"/>           
-
-            <CIRCLE_COMPONENT type="loss" value={`${nFormatter(sxachivementdata
-            .filter(
-                (ele: ACHIVEMENT_DATA, index: number) =>
-                ele.MACHINE_NAME === "TOTAL"
-            )[0]
-            ?.INSPECT_TOTAL_QTY)}`} title="INSP TOTAL" color="blue"/>
-
-            <CIRCLE_COMPONENT type="loss" value={`${nFormatter(sxachivementdata
-                    .filter(
-                      (ele: ACHIVEMENT_DATA, index: number) =>
-                        ele.MACHINE_NAME === "TOTAL"
-                    )[0]
-                    ?.INSPECT_OK_QTY)}`} title="INSP OK" color="#00C50C"/>
-
-            <CIRCLE_COMPONENT type="loss" value={`${nFormatter(sxachivementdata
-                    .filter(
-                      (ele: ACHIVEMENT_DATA, index: number) =>
-                        ele.MACHINE_NAME === "TOTAL"
-                    )[0]
-                    ?.INSPECT_NG_QTY)}`} title="INSP NG" color="red"/>
-            <CIRCLE_COMPONENT type="loss" value={`${nFormatter(sxachivementdata
-                    .filter(
-                      (ele: ACHIVEMENT_DATA, index: number) =>
-                        ele.MACHINE_NAME === "TOTAL"
-                    )[0]
-                    ?.INS_OUTPUT)}`} title="INSP OUTPUT" color="#02D819"/>
-            
-
-
+        <div className='mainprogressdiv'>
+          <div className='subprogressdiv'>
+            <div className='sectiondiv'>
+              <div className='totalachivementdiv'>
+                {`${factory !== "ALL" ? factory + ":" : ""} ${sxachivementdata
+                  .filter(
+                    (ele: ACHIVEMENT_DATA, index: number) =>
+                      ele.MACHINE_NAME === "TOTAL"
+                  )[0]
+                  ?.ACHIVEMENT_RATE?.toLocaleString("en-US", {
+                    maximumFractionDigits: 1,
+                  })}%`}
+              </div>
             </div>
           </div>
-         
-          <div className="sectiondiv">
-          <div className="totallosstdiv">
-            {
-                `TOTAL: ${(sxachivementdata
-                    .filter(
-                      (ele: ACHIVEMENT_DATA, index: number) =>
-                        ele.MACHINE_NAME === "TOTAL"
-                    )[0]
-                    ?.INS_OUTPUT/ sxachivementdata
-                    .filter(
-                      (ele: ACHIVEMENT_DATA, index: number) =>
-                        ele.MACHINE_NAME === "TOTAL"
-                    )[0]
-                    ?.RESULT_TO_INSPECTION*100-100)?.toLocaleString("en-US", {
-                      maximumFractionDigits: 1,
-                    })}%`
-              }
-            </div> 
-
+          <div className='subprogressdiv'>
+            <div className='sectiondiv'>
+              FR:{" "}
+              {sxachivementdata
+                .filter(
+                  (ele: ACHIVEMENT_DATA, index: number) =>
+                    ele.MACHINE_NAME === "FR"
+                )[0]
+                ?.ACHIVEMENT_RATE?.toLocaleString("en-US", {
+                  maximumFractionDigits: 1,
+                })}{" "}
+              %
+              <LinearProgress
+                style={{ height: "10px" }}
+                variant='determinate'
+                color='primary'
+                aria-valuemin={0}
+                aria-valuemax={100}
+                value={
+                  sxachivementdata.filter(
+                    (ele: ACHIVEMENT_DATA, index: number) =>
+                      ele.MACHINE_NAME === "FR"
+                  )[0]?.ACHIVEMENT_RATE
+                }
+              />
+            </div>
+            <div className='sectiondiv'>
+              SR:{" "}
+              {sxachivementdata
+                .filter(
+                  (ele: ACHIVEMENT_DATA, index: number) =>
+                    ele.MACHINE_NAME === "SR"
+                )[0]
+                ?.ACHIVEMENT_RATE?.toLocaleString("en-US", {
+                  maximumFractionDigits: 1,
+                })}{" "}
+              %
+              <LinearProgress
+                style={{ height: "10px" }}
+                variant='determinate'
+                color='secondary'
+                aria-valuemin={0}
+                aria-valuemax={100}
+                value={
+                  sxachivementdata.filter(
+                    (ele: ACHIVEMENT_DATA, index: number) =>
+                      ele.MACHINE_NAME === "SR"
+                  )[0]?.ACHIVEMENT_RATE
+                }
+              />
+            </div>
+            <div className='sectiondiv'>
+              DC:{" "}
+              {sxachivementdata
+                .filter(
+                  (ele: ACHIVEMENT_DATA, index: number) =>
+                    ele.MACHINE_NAME === "DC"
+                )[0]
+                ?.ACHIVEMENT_RATE?.toLocaleString("en-US", {
+                  maximumFractionDigits: 1,
+                })}{" "}
+              %
+              <LinearProgress
+                style={{ height: "10px" }}
+                variant='determinate'
+                color='info'
+                aria-valuemin={0}
+                aria-valuemax={100}
+                value={
+                  sxachivementdata.filter(
+                    (ele: ACHIVEMENT_DATA, index: number) =>
+                      ele.MACHINE_NAME === "DC"
+                  )[0]?.ACHIVEMENT_RATE
+                }
+              />
+            </div>
+            <div className='sectiondiv'>
+              ED:{" "}
+              {sxachivementdata
+                .filter(
+                  (ele: ACHIVEMENT_DATA, index: number) =>
+                    ele.MACHINE_NAME === "ED"
+                )[0]
+                ?.ACHIVEMENT_RATE?.toLocaleString("en-US", {
+                  maximumFractionDigits: 1,
+                })}{" "}
+              %
+              <LinearProgress
+                style={{ height: "10px" }}
+                variant='determinate'
+                color='warning'
+                aria-valuemin={0}
+                aria-valuemax={100}
+                value={
+                  sxachivementdata.filter(
+                    (ele: ACHIVEMENT_DATA, index: number) =>
+                      ele.MACHINE_NAME === "ED"
+                  )[0]?.ACHIVEMENT_RATE
+                }
+              />
+            </div>
           </div>
         </div>
-       
+      </div>
+      <div className='progressdiv'>
+        <div className='titleprogressdiv'>2.PRODUCTION LOSS (%)</div>
+        <div className='mainprogressdiv'>
+          <div className='subprogressdiv'>
+            <div className='sectiondiv'>
+              <div className='lossdiv'>
+                <CIRCLE_COMPONENT
+                  type='loss'
+                  value={`${nFormatter(
+                    sxachivementdata.filter(
+                      (ele: ACHIVEMENT_DATA, index: number) =>
+                        ele.MACHINE_NAME === "TOTAL"
+                    )[0]?.PLAN_QTY
+                  )}`}
+                  title='PLAN QTY'
+                  color='blue'
+                />
+                <CIRCLE_COMPONENT
+                  type='loss'
+                  value={`${nFormatter(
+                    sxachivementdata.filter(
+                      (ele: ACHIVEMENT_DATA, index: number) =>
+                        ele.MACHINE_NAME === "TOTAL"
+                    )[0]?.SX_RESULT_TOTAL
+                  )}`}
+                  title='RESULT_TOTAL'
+                  color='#02B93A'
+                />
+                <CIRCLE_COMPONENT
+                  type='loss'
+                  value={`${nFormatter(
+                    sxachivementdata.filter(
+                      (ele: ACHIVEMENT_DATA, index: number) =>
+                        ele.MACHINE_NAME === "TOTAL"
+                    )[0]?.RESULT_TO_INSPECTION
+                  )}`}
+                  title='RESULT_INSP'
+                  color='#02B93A'
+                />
+                <CIRCLE_COMPONENT
+                  type='loss'
+                  value={`${nFormatter(
+                    sxachivementdata.filter(
+                      (ele: ACHIVEMENT_DATA, index: number) =>
+                        ele.MACHINE_NAME === "TOTAL"
+                    )[0]?.INS_INPUT
+                  )}`}
+                  title='INSP INPUT'
+                  color='#CC26F9'
+                />
+                <CIRCLE_COMPONENT
+                  type='loss'
+                  value={`${nFormatter(
+                    sxachivementdata.filter(
+                      (ele: ACHIVEMENT_DATA, index: number) =>
+                        ele.MACHINE_NAME === "TOTAL"
+                    )[0]?.INSPECT_TOTAL_QTY
+                  )}`}
+                  title='INSP TOTAL'
+                  color='blue'
+                />
+                <CIRCLE_COMPONENT
+                  type='loss'
+                  value={`${nFormatter(
+                    sxachivementdata.filter(
+                      (ele: ACHIVEMENT_DATA, index: number) =>
+                        ele.MACHINE_NAME === "TOTAL"
+                    )[0]?.INSPECT_OK_QTY
+                  )}`}
+                  title='INSP OK'
+                  color='#00C50C'
+                />
+                <CIRCLE_COMPONENT
+                  type='loss'
+                  value={`${nFormatter(
+                    sxachivementdata.filter(
+                      (ele: ACHIVEMENT_DATA, index: number) =>
+                        ele.MACHINE_NAME === "TOTAL"
+                    )[0]?.INSPECT_NG_QTY
+                  )}`}
+                  title='INSP NG'
+                  color='red'
+                />
+                <CIRCLE_COMPONENT
+                  type='loss'
+                  value={`${nFormatter(
+                    sxachivementdata.filter(
+                      (ele: ACHIVEMENT_DATA, index: number) =>
+                        ele.MACHINE_NAME === "TOTAL"
+                    )[0]?.INS_OUTPUT
+                  )}`}
+                  title='INSP OUTPUT'
+                  color='#02D819'
+                />
+              </div>
+            </div>
+            <div className='sectiondiv'>
+              <div className='totallosstdiv'>
+                {`LOSS: ${(
+                  (sxachivementdata.filter(
+                    (ele: ACHIVEMENT_DATA, index: number) =>
+                      ele.MACHINE_NAME === "TOTAL"
+                  )[0]?.INS_OUTPUT /
+                    sxachivementdata.filter(
+                      (ele: ACHIVEMENT_DATA, index: number) =>
+                        ele.MACHINE_NAME === "TOTAL"
+                    )[0]?.RESULT_TO_INSPECTION) *
+                    100 -
+                  100
+                )?.toLocaleString("en-US", {
+                  maximumFractionDigits: 1,
+                })}%`}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className='progressdiv'>
+        <div className='titleprogressdiv'>2.PRODUCTION EFFICIENCY (%)</div>
+        <div className='mainprogressdiv'>
+          <div className='subprogressdiv'>
+            <div className='sectiondiv'>
+              <div className='lossdiv'>
+                <CIRCLE_COMPONENT
+                  type='time'
+                  value={`${nFormatter(
+                    (T_TIME_NM1.T_TOTAL + T_TIME_NM2.T_TOTAL) * dayrange
+                  )} min`}
+                  title='AVAILABLE TIME'
+                  color='blue'
+                />
+                <CIRCLE_COMPONENT
+                  type='time'
+                  value={`${nFormatter(
+                    operation_time.filter(
+                      (ele: OPERATION_TIME_DATA, index: number) =>
+                        ele.PLAN_FACTORY === "TOTAL"
+                    )[0]?.TOTAL_TIME
+                  )} min`}
+                  title='TOTALPROD TIME'
+                  color='#742BFE'
+                />
+                <CIRCLE_COMPONENT
+                  type='time'
+                  value={`${nFormatter(
+                    operation_time.filter(
+                      (ele: OPERATION_TIME_DATA, index: number) =>
+                        ele.PLAN_FACTORY === "TOTAL"
+                    )[0]?.SETTING_TIME
+                  )} min`}
+                  title='SETTING TIME'
+                  color='#FE5E2B'
+                />
+                <CIRCLE_COMPONENT
+                  type='time'
+                  value={`${nFormatter(
+                    operation_time.filter(
+                      (ele: OPERATION_TIME_DATA, index: number) =>
+                        ele.PLAN_FACTORY === "TOTAL"
+                    )[0]?.RUN_TIME_SX-operation_time.filter(
+                      (ele: OPERATION_TIME_DATA, index: number) =>
+                        ele.PLAN_FACTORY === "TOTAL"
+                    )[0]?.LOSS_TIME
+                  )} min`}
+                  title='MASS RUN TIME'
+                  color='#21B800'
+                />
+                <CIRCLE_COMPONENT
+                  type='time'
+                  value={`${nFormatter(
+                    operation_time.filter(
+                      (ele: OPERATION_TIME_DATA, index: number) =>
+                        ele.PLAN_FACTORY === "TOTAL"
+                    )[0]?.LOSS_TIME
+                  )} min`}
+                  title='LOSS TIME'
+                  color='red'
+                />
+              </div>
+            </div>
+            <div className='sectiondiv'>
+              <div className='efficiencydiv'>
+              <CIRCLE_COMPONENT
+                  type='timesummary'
+                  value={`${nFormatter(
+                    operation_time.filter(
+                      (ele: OPERATION_TIME_DATA, index: number) =>
+                        ele.PLAN_FACTORY === "TOTAL"
+                    )[0]?.TOTAL_TIME /
+                      ((T_TIME_NM1.T_TOTAL + T_TIME_NM2.T_TOTAL) * dayrange)*100
+                  )?.toLocaleString("en-US", {
+                    maximumFractionDigits: 1,
+                  })
+                
+                } %`}
+                  title='OPERATION RATE'
+                  color='red'
+                />
+
+             
+              <CIRCLE_COMPONENT
+                  type='timesummary'
+                  value={`${nFormatter(
+                    (operation_time.filter(
+                      (ele: OPERATION_TIME_DATA, index: number) =>
+                        ele.PLAN_FACTORY === "TOTAL"
+                    )[0]?.RUN_TIME_SX-  operation_time.filter(
+                      (ele: OPERATION_TIME_DATA, index: number) =>
+                        ele.PLAN_FACTORY === "TOTAL"
+                    )[0]?.LOSS_TIME + operation_time.filter(
+                      (ele: OPERATION_TIME_DATA, index: number) =>
+                        ele.PLAN_FACTORY === "TOTAL"
+                    )[0]?.SETTING_TIME )/
+                    operation_time.filter(
+                      (ele: OPERATION_TIME_DATA, index: number) =>
+                        ele.PLAN_FACTORY === "TOTAL"
+                    )[0]?.TOTAL_TIME*100
+                  )?.toLocaleString("en-US", {
+                    maximumFractionDigits: 1,
+                  })
+                
+                } %`}
+                  title='PRODUCTION EFFICIENCY'
+                  color='#FE28A7'
+                />
+
+              <CIRCLE_COMPONENT
+                  type='timesummary'
+                  value={`${nFormatter(
+                    (operation_time.filter(
+                      (ele: OPERATION_TIME_DATA, index: number) =>
+                        ele.PLAN_FACTORY === "TOTAL"
+                    )[0]?.RUN_TIME_SX-  operation_time.filter(
+                      (ele: OPERATION_TIME_DATA, index: number) =>
+                        ele.PLAN_FACTORY === "TOTAL"
+                    )[0]?.LOSS_TIME)/
+                    operation_time.filter(
+                      (ele: OPERATION_TIME_DATA, index: number) =>
+                        ele.PLAN_FACTORY === "TOTAL"
+                    )[0]?.TOTAL_TIME*100
+                  )?.toLocaleString("en-US", {
+                    maximumFractionDigits: 1,
+                  })
+                
+                } %`}
+                  title='EQ EFFICIENCY'
+                  color='#00B215'
+                />
+               
+              </div>              
+            </div>
+          </div>
         </div>
       </div>
       <div className='workforcechart'>
         <div className='sectiondiv'>
-          <div className='titleplanresult'>2. PRODUCTION PERFOMANCE TRENDING</div>
+          <div className='titleplanresult'>
+            2. PRODUCTION PERFOMANCE TRENDING
+          </div>
           <div className='starndardworkforce'>{productionresultchartMM}</div>
         </div>
-      </div>   
-      <div className="chartdiv">
-        <div className="sectionchart">
-            {weeklySXchartMM}            
-        </div>
-        <div className="sectionchart">
-            {monthlySXchartMM}
-        </div>
-      </div> 
+      </div>
+      <div className='chartdiv'>
+        <div className='sectionchart'>{weeklySXchartMM}</div>
+        <div className='sectionchart'>{monthlySXchartMM}</div>
+      </div>
       <div className='ycsxbalancedatatable'>
         <table>
           <thead>
