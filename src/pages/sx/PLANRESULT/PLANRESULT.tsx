@@ -261,7 +261,7 @@ const PLANRESULT = () => {
           };
           setT_TIME_NM1(tt1);
           setT_TIME_NM2(tt2);
-          console.log(loaded_data);
+          //console.log(loaded_data);
           setMachineCount(loaded_data);
         } else {
           setMachineCount([]);
@@ -353,10 +353,13 @@ const PLANRESULT = () => {
         console.log(error);
       });
   };
-  const getMachineTimeEfficiency = (fr: string, td: string) => {
+  const getMachineTimeEfficiency = (mc: string, ft: string, fr: string, td: string) => {
     generalQuery("machineTimeEfficiency", {
+      MACHINE: mc,
+      FACTORY: ft,
       FROM_DATE: fr,
       TO_DATE: td,
+      
     })
       .then((response) => {
         //console.log(response.data.data);
@@ -741,7 +744,7 @@ const PLANRESULT = () => {
     getDailySXData(machine, factory, fromdate, todate);
     getSXAchiveMentData(factory, fromdate, todate);
     getMachineCounting();
-    getMachineTimeEfficiency(fromdate, todate);
+    getMachineTimeEfficiency(machine, factory, fromdate, todate);
     let intervalID = window.setInterval(() => {}, 5000);
     return () => {
       window.clearInterval(intervalID);
@@ -789,7 +792,7 @@ const PLANRESULT = () => {
                       moment().format("YYYY-MM-DD")
                     );
                     setFromDate(moment().add(-30, "day").format("YYYY-MM-DD"));
-                    getMachineTimeEfficiency(
+                    getMachineTimeEfficiency(machine, factory,
                       moment().add(-30, "day").format("YYYY-MM-DD"),
                       moment().format("YYYY-MM-DD")
                     );
@@ -828,6 +831,7 @@ const PLANRESULT = () => {
                     setFromDate(moment().format("YYYY-MM-DD"));
                     setToDate(moment().format("YYYY-MM-DD"));
                     getMachineTimeEfficiency(
+                      machine, factory,
                       moment().add(0, "day").format("YYYY-MM-DD"),
                       moment().format("YYYY-MM-DD")
                     );
@@ -863,6 +867,7 @@ const PLANRESULT = () => {
                       moment().add(-1, "day").format("YYYY-MM-DD")
                     );
                     getMachineTimeEfficiency(
+                      machine, factory,
                       moment().add(-1, "day").format("YYYY-MM-DD"),
                       moment().add(-1, "day").format("YYYY-MM-DD")
                     );
@@ -896,7 +901,7 @@ const PLANRESULT = () => {
                   getDailySXData(machine, factory, e.target.value, todate);
                   getSXAchiveMentData(factory, e.target.value, todate);
                   getWeeklySXData(machine, factory, e.target.value, todate);
-                  getMachineTimeEfficiency(e.target.value, todate);
+                  getMachineTimeEfficiency(machine, factory,e.target.value, todate);
                   setDayRange(
                     getBusinessDatesCount(
                       moment(e.target.value).format("YYYY-MM-DD"),
@@ -917,7 +922,7 @@ const PLANRESULT = () => {
                   getDailySXData(machine, factory, fromdate, e.target.value);
                   getSXAchiveMentData(factory, fromdate, e.target.value);
                   getWeeklySXData(machine, factory, fromdate, e.target.value);
-                  getMachineTimeEfficiency(fromdate, e.target.value);
+                  getMachineTimeEfficiency(machine, factory, fromdate, e.target.value);
                   setDayRange(
                     getBusinessDatesCount(
                       moment(fromdate).format("YYYY-MM-DD"),
@@ -945,6 +950,7 @@ const PLANRESULT = () => {
                     moment().format("YYYY-MM-DD")
                   );
                   getSXAchiveMentData(e.target.value, fromdate, todate);
+                  getMachineTimeEfficiency(machine, e.target.value, fromdate, todate);
                 }}
               >
                 <option value='ALL'>ALL</option>
@@ -967,6 +973,7 @@ const PLANRESULT = () => {
                     moment().format("YYYY") + "-01-01",
                     moment().format("YYYY-MM-DD")
                   );
+                  getMachineTimeEfficiency(e.target.value,factory, fromdate, todate);
                 }}
               >
                 <option value='ALL'>ALL</option>
@@ -1020,6 +1027,9 @@ const PLANRESULT = () => {
                   sxachivementdata.filter(
                     (ele: ACHIVEMENT_DATA, index: number) =>
                       ele.MACHINE_NAME === "FR"
+                  )[0]?.ACHIVEMENT_RATE ===undefined? 0:  sxachivementdata.filter(
+                    (ele: ACHIVEMENT_DATA, index: number) =>
+                      ele.MACHINE_NAME === "FR"
                   )[0]?.ACHIVEMENT_RATE
                 }
               />
@@ -1043,6 +1053,9 @@ const PLANRESULT = () => {
                 aria-valuemax={100}
                 value={
                   sxachivementdata.filter(
+                    (ele: ACHIVEMENT_DATA, index: number) =>
+                      ele.MACHINE_NAME === "SR"
+                  )[0]?.ACHIVEMENT_RATE=== undefined?0: sxachivementdata.filter(
                     (ele: ACHIVEMENT_DATA, index: number) =>
                       ele.MACHINE_NAME === "SR"
                   )[0]?.ACHIVEMENT_RATE
@@ -1070,6 +1083,9 @@ const PLANRESULT = () => {
                   sxachivementdata.filter(
                     (ele: ACHIVEMENT_DATA, index: number) =>
                       ele.MACHINE_NAME === "DC"
+                  )[0]?.ACHIVEMENT_RATE===undefined? 0: sxachivementdata.filter(
+                    (ele: ACHIVEMENT_DATA, index: number) =>
+                      ele.MACHINE_NAME === "DC"
                   )[0]?.ACHIVEMENT_RATE
                 }
               />
@@ -1093,6 +1109,9 @@ const PLANRESULT = () => {
                 aria-valuemax={100}
                 value={
                   sxachivementdata.filter(
+                    (ele: ACHIVEMENT_DATA, index: number) =>
+                      ele.MACHINE_NAME === "ED"
+                  )[0]?.ACHIVEMENT_RATE===undefined? 0:  sxachivementdata.filter(
                     (ele: ACHIVEMENT_DATA, index: number) =>
                       ele.MACHINE_NAME === "ED"
                   )[0]?.ACHIVEMENT_RATE
@@ -1239,7 +1258,7 @@ const PLANRESULT = () => {
                 <CIRCLE_COMPONENT
                   type='time'
                   value={`${nFormatter(
-                    (T_TIME_NM1.T_TOTAL + T_TIME_NM2.T_TOTAL) * dayrange
+                    (factory ==='ALL' ? T_TIME_NM1.T_TOTAL + T_TIME_NM2.T_TOTAL: factory ==='NM1'? T_TIME_NM1.T_TOTAL: T_TIME_NM2.T_TOTAL) * dayrange
                   )} min`}
                   title='AVAILABLE TIME'
                   color='blue'
