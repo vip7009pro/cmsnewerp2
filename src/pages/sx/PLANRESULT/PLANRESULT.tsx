@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState, useTransition } from "react";
 import Swal from "sweetalert2";
 import {
   EditingState,
@@ -91,6 +91,7 @@ interface OPERATION_TIME_DATA {
   LOSS_TIME_RATE: number;
 }
 const PLANRESULT = () => {
+  const [isPending, startTransition]=useTransition();
   function getBusinessDatesCount(st: any, ed: any) {
     const startDate = new Date(moment(st).format("YYYY-MM-DD"));
     const endDate = new Date(moment(ed).format("YYYY-MM-DD"));
@@ -733,6 +734,62 @@ const PLANRESULT = () => {
       </Chart>
     );
   }, [monthly_sx_data, fromdate, todate]);
+  const getAvailableTime =()=> {
+    let totalAvailableTime:number =0;
+    if(factory==='ALL')
+    {
+      if(machine=='ALL')
+      {
+        totalAvailableTime=T_TIME_NM1.T_TOTAL + T_TIME_NM2.T_TOTAL;
+      }
+      else
+      {
+        switch(machine)
+        {
+          case 'FR':
+            totalAvailableTime = T_TIME_NM1.T_FR + T_TIME_NM2.T_FR;
+          break;
+          case 'SR':
+            totalAvailableTime = T_TIME_NM1.T_SR + T_TIME_NM2.T_SR;
+          break;
+          case 'DC':
+            totalAvailableTime = T_TIME_NM1.T_DC + T_TIME_NM2.T_DC;
+          break;
+          case 'ED':
+            totalAvailableTime = T_TIME_NM1.T_ED + T_TIME_NM2.T_ED;
+          break;
+        }
+      }
+      
+    }
+    else
+    {
+      if(machine=='ALL')
+      {
+        totalAvailableTime = factory==='NM1'? T_TIME_NM1.T_TOTAL: T_TIME_NM2.T_TOTAL;      
+      }
+      else
+      {
+        switch(machine)
+        {
+          case 'FR':
+            totalAvailableTime = factory==='NM1'? T_TIME_NM1.T_FR : T_TIME_NM2.T_FR;
+          break;
+          case 'SR':
+            totalAvailableTime = factory==='NM1'? T_TIME_NM1.T_SR : T_TIME_NM2.T_SR;
+          break;
+          case 'DC':
+            totalAvailableTime = factory==='NM1'? T_TIME_NM1.T_DC : T_TIME_NM2.T_DC;
+          break;
+          case 'ED':
+            totalAvailableTime = factory==='NM1'? T_TIME_NM1.T_ED : T_TIME_NM2.T_ED;
+          break;
+        }
+      }
+      
+    }
+    return totalAvailableTime;
+  }
   useEffect(() => {
     getMonthlySXData(
       machine,
@@ -896,18 +953,22 @@ const PLANRESULT = () => {
                 type='date'
                 value={fromdate.slice(0, 10)}
                 onChange={(e) => {
-                  setFromDate(e.target.value);
-                  console.log(e.target.value);
-                  getDailySXData(machine, factory, e.target.value, todate);
-                  getSXAchiveMentData(factory, e.target.value, todate);
-                  getWeeklySXData(machine, factory, e.target.value, todate);
-                  getMachineTimeEfficiency(machine, factory,e.target.value, todate);
-                  setDayRange(
-                    getBusinessDatesCount(
-                      moment(e.target.value).format("YYYY-MM-DD"),
-                      moment(todate).format("YYYY-MM-DD")
-                    )
-                  );
+                  startTransition(() => {
+                    setFromDate(e.target.value);
+                    console.log(e.target.value);
+                    getDailySXData(machine, factory, e.target.value, todate);
+                    getSXAchiveMentData(factory, e.target.value, todate);
+                    getWeeklySXData(machine, factory, e.target.value, todate);
+                    getMachineTimeEfficiency(machine, factory,e.target.value, todate);
+                    setDayRange(
+                      getBusinessDatesCount(
+                        moment(e.target.value).format("YYYY-MM-DD"),
+                        moment(todate).format("YYYY-MM-DD")
+                      )
+                    );                    
+                  });
+
+                 
                 }}
               ></input>
             </label>
@@ -917,7 +978,8 @@ const PLANRESULT = () => {
                 type='date'
                 value={todate.slice(0, 10)}
                 onChange={(e) => {
-                  setToDate(e.target.value);
+                  startTransition(() => {
+                    setToDate(e.target.value);
                   console.log(e.target.value);
                   getDailySXData(machine, factory, fromdate, e.target.value);
                   getSXAchiveMentData(factory, fromdate, e.target.value);
@@ -929,6 +991,8 @@ const PLANRESULT = () => {
                       moment(e.target.value).format("YYYY-MM-DD")
                     )
                   );
+                  });
+                  
                 }}
               ></input>
             </label>
@@ -1258,7 +1322,7 @@ const PLANRESULT = () => {
                 <CIRCLE_COMPONENT
                   type='time'
                   value={`${nFormatter(
-                    (factory ==='ALL' ? T_TIME_NM1.T_TOTAL + T_TIME_NM2.T_TOTAL: factory ==='NM1'? T_TIME_NM1.T_TOTAL: T_TIME_NM2.T_TOTAL) * dayrange
+                    getAvailableTime() * dayrange
                   )} min`}
                   title='AVAILABLE TIME'
                   color='blue'
