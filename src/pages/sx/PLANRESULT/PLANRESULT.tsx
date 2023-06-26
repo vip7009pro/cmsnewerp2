@@ -48,6 +48,7 @@ interface DAILY_SX_DATA {
 interface ACHIVEMENT_DATA {
   MACHINE_NAME: string;
   PLAN_QTY: number;
+  WH_OUTPUT: number;
   SX_RESULT_TOTAL: number;
   RESULT_STEP_FINAL: number;
   RESULT_TO_NEXT_PROCESS: number;
@@ -420,6 +421,7 @@ const PLANRESULT = () => {
           let temp_TOTAL_ACHIVEMENT: ACHIVEMENT_DATA = {
             MACHINE_NAME: "TOTAL",
             PLAN_QTY: 0,
+            WH_OUTPUT:0,
             SX_RESULT_TOTAL: 0,
             RESULT_STEP_FINAL: 0,
             RESULT_TO_NEXT_PROCESS: 0,
@@ -433,6 +435,7 @@ const PLANRESULT = () => {
           };
           for (let i = 0; i < loaded_data.length; i++) {
             temp_TOTAL_ACHIVEMENT.PLAN_QTY += loaded_data[i].PLAN_QTY;
+            temp_TOTAL_ACHIVEMENT.WH_OUTPUT += loaded_data[i].WH_OUTPUT;
             temp_TOTAL_ACHIVEMENT.SX_RESULT_TOTAL +=
               loaded_data[i].SX_RESULT_TOTAL;
             temp_TOTAL_ACHIVEMENT.RESULT_STEP_FINAL +=
@@ -1122,6 +1125,17 @@ const PLANRESULT = () => {
                     sxachivementdata.filter(
                       (ele: ACHIVEMENT_DATA, index: number) =>
                         ele.MACHINE_NAME === "TOTAL"
+                    )[0]?.WH_OUTPUT
+                  )}`}
+                  title='WH OUTPUT'
+                  color='#CBAA00'
+                />
+                <CIRCLE_COMPONENT
+                  type='loss'
+                  value={`${nFormatter(
+                    sxachivementdata.filter(
+                      (ele: ACHIVEMENT_DATA, index: number) =>
+                        ele.MACHINE_NAME === "TOTAL"
                     )[0]?.SX_RESULT_TOTAL
                   )}`}
                   title='RESULT_TOTAL'
@@ -1205,7 +1219,7 @@ const PLANRESULT = () => {
                     sxachivementdata.filter(
                       (ele: ACHIVEMENT_DATA, index: number) =>
                         ele.MACHINE_NAME === "TOTAL"
-                    )[0]?.RESULT_TO_INSPECTION) *
+                    )[0]?.WH_OUTPUT) *
                     100 -
                   100
                 )?.toLocaleString("en-US", {
@@ -1373,6 +1387,7 @@ const PLANRESULT = () => {
                 MACHINE_NAME
               </th>
               <th style={{ color: "black", fontWeight: "normal" }}>PLAN_QTY</th>
+              <th style={{ color: "black", fontWeight: "normal" }}>WH_OUTPUT</th>
               <th style={{ color: "black", fontWeight: "normal" }}>
                 SX_RESULT_TOTAL
               </th>
@@ -1412,9 +1427,14 @@ const PLANRESULT = () => {
                   <tr key={index}>
                     <td style={{ color: "blue", fontWeight: "bold" }}>
                       {ele.MACHINE_NAME}
-                    </td>
+                    </td>                   
                     <td style={{ color: "#360EEA", fontWeight: "normal" }}>
                       {ele.PLAN_QTY?.toLocaleString("en-US", {
+                        maximumFractionDigits: 0,
+                      })}
+                    </td>
+                    <td style={{ color: "#360EEA", fontWeight: "normal" }}>
+                      {ele.WH_OUTPUT?.toLocaleString("en-US", {
                         maximumFractionDigits: 0,
                       })}
                     </td>
@@ -1479,6 +1499,11 @@ const PLANRESULT = () => {
                     </td>
                     <td style={{ color: "#360EEA", fontWeight: "bold" }}>
                       {ele.PLAN_QTY?.toLocaleString("en-US", {
+                        maximumFractionDigits: 0,
+                      })}
+                    </td>
+                    <td style={{ color: "#360EEA", fontWeight: "bold" }}>
+                      {ele.WH_OUTPUT?.toLocaleString("en-US", {
                         maximumFractionDigits: 0,
                       })}
                     </td>
