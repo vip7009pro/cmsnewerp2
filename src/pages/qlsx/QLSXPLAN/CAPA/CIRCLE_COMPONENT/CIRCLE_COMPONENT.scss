@@ -46,7 +46,7 @@
     }
     .title {
         font-size: 2rem;
-        align-self: center;        
+        align-self: center; 
 
     }
 
@@ -55,25 +55,26 @@
     display: flex;
     flex-direction: column;
     background-image: linear-gradient(0deg, #ebf2f2, #cad3da);
-    width: 150px;
-    height: 140px;
+    width: 130px;
+    height: 100px;
     border-radius: 15%;
     -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
     box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
     justify-content: center;
     align-content:space-between ;
     align-items: center;
-    gap: 50px;
+    gap: 20px;
     
     .value {
         display: flex;
-        font-size: 2rem;
+        font-size: 1.2rem;
         color:blue;
         align-items: center;
     }
     .title {
-        font-size: 1.3rem;
-        align-self: center;        
+        font-size: 1.2rem;
+        align-self: center;   
+        font-weight: bold;       
 
     }
 }
@@ -81,25 +82,26 @@
     display: flex;
     flex-direction: column;
     background-image: linear-gradient(0deg, #ebf2f2, #9fe9e1);
-    width: 180px;
-    height: 140px;
+    width: 150px;
+    height: 100px;
     border-radius: 15%;
     -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
     box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
-    justify-content: center;
+    justify-content: center;    
     align-content:space-between ;
     align-items: center;
-    gap: 50px;
+    gap: 20px;
     
     .value {
         display: flex;
-        font-size: 2rem;
+        font-size: 1.2rem;
         color:blue;
         align-items: center;
     }
     .title {
-        font-size: 1.3rem;
-        align-self: center;        
+        font-size: 1.2rem;
+        align-self: center;   
+        font-weight: bold;     
 
     }
 }
@@ -107,16 +109,16 @@
     display: flex;
     flex-direction: column;
     background-image: linear-gradient(0deg, #c6b9c6, #eeecef);
-    width: 180px;
-    height: 140px;
+    width: 125px;
+    height: 100px;
     border-radius: 15%;
     -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
     box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
     justify-content: center;
     align-content:space-between ;
     align-items: center;
-    gap: 50px;
-    
+    gap: 20px;
+        
     .value {
         display: flex;
         font-size: 2rem;
@@ -124,8 +126,9 @@
         align-items: center;
     }
     .title {
-        font-size: 1rem;
-        align-self: center;        
+        font-size: 0.92rem;
+        align-self: center;
+        font-weight: bold;
 
     }
 }

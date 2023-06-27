@@ -1,1 +1,0 @@
-import{j as o}from"./index-4ab6dde0.js";import{A as n}from"./AccountInfo-ec538197.js";import"./Typography-b6d023f3.js";const i=()=>o.jsx("div",{className:"landingpage",children:o.jsx("div",{className:"accountinfodiv",children:o.jsx(n,{})})});export{i as default};
