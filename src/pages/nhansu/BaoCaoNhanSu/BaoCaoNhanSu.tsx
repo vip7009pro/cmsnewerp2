@@ -388,7 +388,7 @@ const BaoCaoNhanSu = () => {
     {
       field: "ON_OFF",
       headerName: "ON_OFF",
-      width: 120,
+      width: 150,
       renderCell: (params: any) => {
         if (params.row.ON_OFF === 1) {
           return (
@@ -726,31 +726,7 @@ const BaoCaoNhanSu = () => {
         <Size width={700} />
       </PieChart>
     );
-  }, [ddmaindepttb]);
-  /*   const subdeptchartMM = useMemo(() => {    
-    return (
-      <PieChart
-      id='pie'
-      dataSource={diemdanhnhomtable.filter((ele:DiemDanhNhomData, index: number)=> ele.MAINDEPTNAME !=='GRAND_TOTAL')}
-      palette='Bright'
-      title='Nhân lực theo bộ phận (chi tiết)'
-      resolveLabelOverlapping='hide '
-    >
-      <Series argumentField='SUBDEPTNAME' valueField='TOTAL_ALL'>
-      <LB
-          visible={true}
-          customizeText={(e: any) => {
-            return `${e.argument}<br></br>${e.value} người
-            `;
-          }}
-        >
-          <Connector visible={true} width={2}/>
-          </LB>
-      </Series>
-      <Size width={700} />
-    </PieChart>
-    );
-  }, [ddmaindepttb]); */
+  }, [ddmaindepttb]);  
   const subdeptchartMM = useMemo(() => {
     return (
       <Chart
@@ -764,8 +740,9 @@ const BaoCaoNhanSu = () => {
         resolveLabelOverlapping='hide'
       >
         <Title text={`SUB DEPARTMENT`} subtitle={``} />
-        <ArgumentAxis title='SUBDEPTNAME' />
-        <ValueAxis name='quantity' position='left' title='Người' />
+        <ArgumentAxis title='SUBDEPTNAME' color={'white'}>
+        </ArgumentAxis>
+        <ValueAxis name='quantity' position='left' title='Người' color={'white'}/>
         <CommonSeriesSettings
           argumentField='TOTAL_ALL'
           hoverMode='allArgumentPoints'
@@ -780,7 +757,7 @@ const BaoCaoNhanSu = () => {
           argumentField='SUBDEPTNAME'
           valueField='TOTAL_ALL'
           name='Nhân lực'
-          color='#FB44DA'
+          color='#0c9c0c'
           type='bar'
         >
           <LB

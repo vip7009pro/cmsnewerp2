@@ -608,7 +608,7 @@ const PLANRESULT = () => {
           text={`WEEKLY PRODUCTION TRENDING`}
           subtitle={`[${fromdate} ~ ${todate}]`}
         />
-        <ArgumentAxis title='PRODUCTION WEEK' />
+        <ArgumentAxis title='PRODUCTION WEEK' allowDecimals={false}/>
         <ValueAxis name='quantity' position='left' title='QUANTITY (EA)' />
         <ValueAxis
           name='rate'
