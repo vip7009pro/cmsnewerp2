@@ -11,7 +11,7 @@ import {
   GridRowsProp,
   GridToolbarQuickFilter,
 } from "@mui/x-data-grid";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { generalQuery } from "../../../api/Api";
 import "./BaoCaoNhanSu.scss";
 import Swal from "sweetalert2";
@@ -19,6 +19,7 @@ import LinearProgress from "@mui/material/LinearProgress";
 import {
   CustomResponsiveContainer,
   SaveExcel,
+  weekdayarray,
 } from "../../../api/GlobalFunction";
 import moment from "moment";
 import { elementAcceptingRef } from "@mui/utils";
@@ -35,13 +36,29 @@ import {
   ResponsiveContainer,
   Label,
   LabelList,
-  PieChart,
   Pie,
   Cell,
-  /*   ResponsiveContainer, */
 } from "recharts";
+import PieChart, {
+  Series,
+  Label as LB,
+  Connector,
+  Size,
+  Export,
+} from "devextreme-react/pie-chart";
 import { Grid } from "@mui/material";
 import ChartDiemDanhMAINDEPT from "../../../components/Chart/ChartDiemDanhMAINDEPT";
+import { RootState } from "../../../redux/store";
+import { useSelector, useDispatch } from "react-redux";
+import { UserData } from "../../../redux/slices/globalSlice";
+import {
+  Chart,
+  ArgumentAxis,
+  CommonSeriesSettings,
+  Format,
+  Title,
+  ValueAxis,
+} from "devextreme-react/chart";
 interface DiemDanhNhomData {
   id: string;
   MAINDEPTNAME: string;
@@ -75,6 +92,8 @@ interface DiemDanhHistoryData {
   ON_RATE: number;
 }
 interface DiemDanhFullData {
+  DATE_COLUMN: string;
+  WEEKDAY: string;
   id: string;
   EMPL_NO: string;
   CMS_ID: string;
@@ -102,15 +121,18 @@ interface DiemDanhFullData {
   XACNHAN: string;
 }
 interface DIEMDANHMAINDEPT {
-  id: number, 
-  MAINDEPTNAME: string, 
-  COUNT_TOTAL: number,
-  COUT_ON: number,
-  COUT_OFF: number, 
-  COUNT_CDD: number,
-  ON_RATE: number
+  id: number;
+  MAINDEPTNAME: string;
+  COUNT_TOTAL: number;
+  COUT_ON: number;
+  COUT_OFF: number;
+  COUNT_CDD: number;
+  ON_RATE: number;
 }
 const BaoCaoNhanSu = () => {
+  const userData: UserData | undefined = useSelector(
+    (state: RootState) => state.totalSlice.userData
+  );
   const [isLoading, setisLoading] = useState(false);
   const [ddmaindepttb, setddmaindepttb] = useState<Array<DIEMDANHMAINDEPT>>([]);
   const [diemdanhnhomtable, setDiemDanhNhomTable] = useState<
@@ -131,65 +153,95 @@ const BaoCaoNhanSu = () => {
   const [diemdanhFullTable, setDiemDanhFullTable] = useState<
     Array<DiemDanhFullData>
   >([]);
-  const column_ddmaindepttb= [
-    { field: "MAINDEPTNAME", headerName: "BP Chính", width: 120, renderCell: (params: any) => {
-      return (        
-        <div className='onoffdiv'>
-          <span style={{ fontWeight: "bold", color: "black" }}>
-            {params.row.MAINDEPTNAME}
-          </span>
-        </div>
-      );
-    }},
-    { field: "COUNT_TOTAL", headerName: "Tổng", width: 120, renderCell: (params: any) => {
-      return (        
-        <div className='onoffdiv'>
-          <span style={{ fontWeight: "bold", color: "black" }}>
-            {params.row.COUNT_TOTAL}
-          </span>
-        </div>
-      );
-    }},
-    { field: "COUT_ON", headerName: "Đi làm", width: 120, renderCell: (params: any) => {
-      return (        
-        <div className='onoffdiv'>
-          <span style={{ fontWeight: "bold", color: "black" }}>
-            {params.row.COUT_ON}
-          </span>
-        </div>
-      );
-    }},
-    { field: "COUT_OFF", headerName: "Nghỉ làm", width: 120, renderCell: (params: any) => {
-      return (        
-        <div className='onoffdiv'>
-          <span style={{ fontWeight: "bold", color: "black" }}>
-            {params.row.COUT_OFF}
-          </span>
-        </div>
-      );
-    }},
-    { field: "COUNT_CDD", headerName: "Chưa điểm danh", width: 120, renderCell: (params: any) => {
-      return (        
-        <div className='onoffdiv'>
-          <span style={{ fontWeight: "bold", color: "black" }}>
-            {params.row.COUNT_CDD}
-          </span>
-        </div>
-      );
-    }},     
-    { field: "ON_RATE", headerName: "Tỉ lệ đi làm", width: 120, renderCell: (params: any) => {
-      return (
-        <div className='onoffdiv'>
-          <span style={{ fontWeight: "bold", color: "black" }}>
-            {
-              params.row.ON_RATE.toLocaleString("en-US", {
-              style: "decimal",
-              maximumFractionDigits: 2,})} %          
-            
-          </span>
-        </div>)
-    }},
-       
+  const column_ddmaindepttb = [
+    {
+      field: "MAINDEPTNAME",
+      headerName: "BP Chính",
+      width: 120,
+      renderCell: (params: any) => {
+        return (
+          <div className='onoffdiv'>
+            <span style={{ fontWeight: "bold", color: "black" }}>
+              {params.row.MAINDEPTNAME}
+            </span>
+          </div>
+        );
+      },
+    },
+    {
+      field: "COUNT_TOTAL",
+      headerName: "Tổng",
+      width: 120,
+      renderCell: (params: any) => {
+        return (
+          <div className='onoffdiv'>
+            <span style={{ fontWeight: "bold", color: "black" }}>
+              {params.row.COUNT_TOTAL}
+            </span>
+          </div>
+        );
+      },
+    },
+    {
+      field: "COUT_ON",
+      headerName: "Đi làm",
+      width: 120,
+      renderCell: (params: any) => {
+        return (
+          <div className='onoffdiv'>
+            <span style={{ fontWeight: "bold", color: "black" }}>
+              {params.row.COUT_ON}
+            </span>
+          </div>
+        );
+      },
+    },
+    {
+      field: "COUT_OFF",
+      headerName: "Nghỉ làm",
+      width: 120,
+      renderCell: (params: any) => {
+        return (
+          <div className='onoffdiv'>
+            <span style={{ fontWeight: "bold", color: "black" }}>
+              {params.row.COUT_OFF}
+            </span>
+          </div>
+        );
+      },
+    },
+    {
+      field: "COUNT_CDD",
+      headerName: "Chưa điểm danh",
+      width: 120,
+      renderCell: (params: any) => {
+        return (
+          <div className='onoffdiv'>
+            <span style={{ fontWeight: "bold", color: "black" }}>
+              {params.row.COUNT_CDD}
+            </span>
+          </div>
+        );
+      },
+    },
+    {
+      field: "ON_RATE",
+      headerName: "Tỉ lệ đi làm",
+      width: 120,
+      renderCell: (params: any) => {
+        return (
+          <div className='onoffdiv'>
+            <span style={{ fontWeight: "bold", color: "black" }}>
+              {params.row.ON_RATE.toLocaleString("en-US", {
+                style: "decimal",
+                maximumFractionDigits: 2,
+              })}{" "}
+              %
+            </span>
+          </div>
+        );
+      },
+    },
   ];
   const columns_diemdanhnhom = [
     {
@@ -300,11 +352,37 @@ const BaoCaoNhanSu = () => {
   ];
   const columns_diemdanhfull = [
     {
-      field: "APPLY_DATE",
-      headerName: "APPLY_DATE",
+      field: "DATE_COLUMN",
+      headerName: "DATE_COLUMN",
       width: 120,
       valueGetter: (params: any) => {
-        return params.row.APPLY_DATE ? params.row.APPLY_DATE.slice(0, 10) : "";
+        return params.row.DATE_COLUMN
+          ? params.row.DATE_COLUMN.slice(0, 10)
+          : "";
+      },
+    },
+    {
+      field: "WEEKDAY",
+      headerName: "WEEKDAY",
+      width: 120,
+      renderCell: (params: any) => {
+        if (params.row.WEEKDAY === "Sunday") {
+          return (
+            <div className='onoffdiv'>
+              <span style={{ fontWeight: "bold", color: "red" }}>
+                {params.row.WEEKDAY}
+              </span>
+            </div>
+          );
+        } else {
+          return (
+            <div className='onoffdiv'>
+              <span style={{ fontWeight: "bold", color: "#4268F4" }}>
+                {params.row.WEEKDAY}
+              </span>
+            </div>
+          );
+        }
       },
     },
     {
@@ -322,6 +400,14 @@ const BaoCaoNhanSu = () => {
           return (
             <div className='onoffdiv'>
               <span style={{ fontWeight: "bold", color: "red" }}>Nghỉ làm</span>
+            </div>
+          );
+        } else {
+          return (
+            <div className='onoffdiv'>
+              <span style={{ fontWeight: "bold", color: "#754EFA" }}>
+                Chưa điểm danh
+              </span>
             </div>
           );
         }
@@ -412,7 +498,6 @@ const BaoCaoNhanSu = () => {
       </GridToolbarContainer>
     );
   }
-
   const addTotal = (tabledata: Array<DiemDanhNhomData>) => {
     var TOTAL_ALL: number = 0;
     var TOTAL_OFF: number = 0;
@@ -461,7 +546,6 @@ const BaoCaoNhanSu = () => {
     tabledata.push(grandTotalOBJ);
     return tabledata;
   };
-  
   const handleSearch2 = () => {
     setisLoading(true);
     generalQuery("getmaindeptlist", { from_date: fromdate })
@@ -514,7 +598,23 @@ const BaoCaoNhanSu = () => {
       .then((response) => {
         //console.log(response.data.data);
         if (response.data.tk_status !== "NG") {
-          setDiemDanhFullTable(response.data.data);
+          const loaded_data: DiemDanhFullData[] = response.data.data.map(
+            (element: DiemDanhFullData, index: number) => {
+              return {
+                ...element,
+                DATE_COLUMN: moment(element.DATE_COLUMN)
+                  .utc()
+                  .format("YYYY-MM-DD"),
+                APPLY_DATE:
+                  element.APPLY_DATE === null
+                    ? ""
+                    : moment(element.APPLY_DATE).utc().format("YYYY-MM-DD"),
+                WEEKDAY: weekdayarray[new Date(element.DATE_COLUMN).getDay()],
+                id: index,
+              };
+            }
+          );
+          setDiemDanhFullTable(loaded_data);
           setisLoading(false);
           Swal.fire(
             "Thông báo",
@@ -534,36 +634,36 @@ const BaoCaoNhanSu = () => {
         if (response.data.tk_status !== "NG") {
           let temp_total: DIEMDANHMAINDEPT = {
             id: 1111,
-            MAINDEPTNAME: 'TOTAL',
-            COUNT_TOTAL:0,
-            COUT_ON:0,
-            COUT_OFF:0,
-            COUNT_CDD:0,
-            ON_RATE:0,            
+            MAINDEPTNAME: "TOTAL",
+            COUNT_TOTAL: 0,
+            COUT_ON: 0,
+            COUT_OFF: 0,
+            COUNT_CDD: 0,
+            ON_RATE: 0,
           };
-
-          let loadeddata = response.data.data.map((element: DIEMDANHMAINDEPT, index: number)=> {
-            temp_total = {
-              ...temp_total,              
-              COUNT_TOTAL: temp_total.COUNT_TOTAL + element.COUNT_TOTAL,
-              COUT_ON:temp_total.COUT_ON + element.COUT_ON,
-              COUT_OFF:temp_total.COUT_OFF + element.COUT_OFF,
-              COUNT_CDD:temp_total.COUNT_CDD + element.COUNT_CDD
-            };
-
-            return {
-              ...element, 
-              id: index
+          let loadeddata = response.data.data.map(
+            (element: DIEMDANHMAINDEPT, index: number) => {
+              temp_total = {
+                ...temp_total,
+                COUNT_TOTAL: temp_total.COUNT_TOTAL + element.COUNT_TOTAL,
+                COUT_ON: temp_total.COUT_ON + element.COUT_ON,
+                COUT_OFF: temp_total.COUT_OFF + element.COUT_OFF,
+                COUNT_CDD: temp_total.COUNT_CDD + element.COUNT_CDD,
+              };
+              return {
+                ...element,
+                id: index,
+              };
             }
-          })
+          );
           temp_total = {
             ...temp_total,
-            ON_RATE: temp_total.COUT_ON/temp_total.COUNT_TOTAL*100
-          }
-          loadeddata = [...loadeddata,temp_total];
+            ON_RATE: (temp_total.COUT_ON / temp_total.COUNT_TOTAL) * 100,
+          };
+          loadeddata = [...loadeddata, temp_total];
           //console.log(loadeddata);
           setddmaindepttb(loadeddata);
-          setisLoading(false);          
+          setisLoading(false);
         } else {
           Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
         }
@@ -601,7 +701,103 @@ const BaoCaoNhanSu = () => {
     "#ff668c",
     "#ff6666",
   ];
-  useEffect(() => {   
+  const maindeptchartMM = useMemo(() => {
+    return (
+      <PieChart
+        id='pie'
+        dataSource={ddmaindepttb.filter(
+          (ele: DIEMDANHMAINDEPT, index: number) => ele.MAINDEPTNAME !== "TOTAL"
+        )}
+        palette='Bright'
+        title='Nhân lực theo bộ phận'
+        resolveLabelOverlapping='shift'
+      >
+        <Series argumentField='MAINDEPTNAME' valueField='COUNT_TOTAL'>
+          <LB
+            visible={true}
+            customizeText={(e: any) => {
+              return `${e.argument}<br></br>${e.value} người
+              `;
+            }}
+          >
+            <Connector visible={true} width={0.5} />
+          </LB>
+        </Series>
+        <Size width={700} />
+      </PieChart>
+    );
+  }, [ddmaindepttb]);
+  /*   const subdeptchartMM = useMemo(() => {    
+    return (
+      <PieChart
+      id='pie'
+      dataSource={diemdanhnhomtable.filter((ele:DiemDanhNhomData, index: number)=> ele.MAINDEPTNAME !=='GRAND_TOTAL')}
+      palette='Bright'
+      title='Nhân lực theo bộ phận (chi tiết)'
+      resolveLabelOverlapping='hide '
+    >
+      <Series argumentField='SUBDEPTNAME' valueField='TOTAL_ALL'>
+      <LB
+          visible={true}
+          customizeText={(e: any) => {
+            return `${e.argument}<br></br>${e.value} người
+            `;
+          }}
+        >
+          <Connector visible={true} width={2}/>
+          </LB>
+      </Series>
+      <Size width={700} />
+    </PieChart>
+    );
+  }, [ddmaindepttb]); */
+  const subdeptchartMM = useMemo(() => {
+    return (
+      <Chart
+        id='workforcechart'
+        dataSource={diemdanhnhomtable.filter(
+          (ele: DiemDanhNhomData, index: number) =>
+            ele.MAINDEPTNAME !== "GRAND_TOTAL"
+        )}
+        height={450}
+        width={800}
+        resolveLabelOverlapping='hide'
+      >
+        <Title text={`SUB DEPARTMENT`} subtitle={``} />
+        <ArgumentAxis title='SUBDEPTNAME' />
+        <ValueAxis name='quantity' position='left' title='Người' />
+        <CommonSeriesSettings
+          argumentField='TOTAL_ALL'
+          hoverMode='allArgumentPoints'
+          selectionMode='allArgumentPoints'
+        >
+          <LB visible={true}>
+            <Format type='fixedPoint' precision={0} />
+          </LB>
+        </CommonSeriesSettings>
+        <Series
+          axis='quantity'
+          argumentField='SUBDEPTNAME'
+          valueField='TOTAL_ALL'
+          name='Nhân lực'
+          color='#FB44DA'
+          type='bar'
+        >
+          <LB
+            visible={true}
+            customizeText={(e: any) => {
+              return `${e.value}`;
+            }}
+          />
+        </Series>
+        <Legend
+          verticalAlignment='bottom'
+          horizontalAlignment='center'
+        ></Legend>
+      </Chart>
+    );
+  }, [ddmaindepttb]);
+  useEffect(() => {
     handleSearch2();
   }, []);
   return (
@@ -750,6 +946,7 @@ const BaoCaoNhanSu = () => {
         <div className='maindept_tableOK'>
           <div className='tiledilamtable'>
             <DataGrid
+              sx={{width:'100%'}}
               components={{
                 LoadingOverlay: LinearProgress,
               }}
@@ -757,14 +954,15 @@ const BaoCaoNhanSu = () => {
               loading={isLoading}
               rows={ddmaindepttb}
               rowHeight={30}
-              columns={column_ddmaindepttb}             
+              columns={column_ddmaindepttb}
               hideFooterPagination
               hideFooter
             />
           </div>
           <div className='titrongphongbangraph'>
             <CustomResponsiveContainer>
-             <ChartDiemDanhMAINDEPT/>
+              {/* <ChartDiemDanhMAINDEPT /> */}
+              {maindeptchartMM}
             </CustomResponsiveContainer>
           </div>
         </div>
@@ -785,7 +983,7 @@ const BaoCaoNhanSu = () => {
             />
           </div>
           <div className='titrongphongbangraph'>
-            <CustomResponsiveContainer>
+            {/* <CustomResponsiveContainer>
               <PieChart width={500} height={500}>
                 <Legend />
                 <Tooltip />
@@ -812,6 +1010,9 @@ const BaoCaoNhanSu = () => {
                   </Pie>
                 )}
               </PieChart>
+            </CustomResponsiveContainer> */}
+            <CustomResponsiveContainer>
+              {subdeptchartMM}
             </CustomResponsiveContainer>
           </div>
         </div>

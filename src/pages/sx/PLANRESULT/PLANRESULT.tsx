@@ -38,6 +38,7 @@ import { BiSearch } from "react-icons/bi";
 import useWindowDimensions from "../../../api/useWindowDimensions";
 import { RootState } from "../../../redux/store";
 import { useSelector, useDispatch } from "react-redux";
+import { ResponsiveContainer } from "recharts";
 interface MACHINE_COUNTING {
   FACTORY: string;
   EQ_NAME: string;
@@ -142,7 +143,7 @@ const PLANRESULT = () => {
   const [sxachivementdata, setSXAchivementData] = useState<ACHIVEMENT_DATA[]>(
     []
   );
-  const sidebarstatus: boolean| undefined = useSelector(
+  const sidebarstatus: boolean | undefined = useSelector(
     (state: RootState) => state.totalSlice.sidebarmenu
   );
   const [dayrange, setDayRange] = useState(
@@ -593,14 +594,14 @@ const PLANRESULT = () => {
         ></Legend>
       </Chart>
     );
-  }, [daily_sx_data, sidebarstatus]);
+  }, [daily_sx_data]);
   const weeklySXchartMM = useMemo(() => {
-    return (
+    return (     
       <Chart
         id='workforcechart'
         dataSource={weekly_sx_data}
         height={600}
-        width={(width-(sidebarstatus? 400:200))/2}
+        width={(width - (sidebarstatus ? 400 : 200)) / 2}
         resolveLabelOverlapping='hide'
       >
         <Title
@@ -672,15 +673,16 @@ const PLANRESULT = () => {
           horizontalAlignment='center'
         ></Legend>
       </Chart>
+     
     );
-  }, [weekly_sx_data, width, height, sidebarstatus]);
+  }, [weekly_sx_data, width, height]);
   const monthlySXchartMM = useMemo(() => {
-    return (
+    return (      
       <Chart
         id='workforcechart'
         dataSource={monthly_sx_data}
         height={600}
-        width={(width-(sidebarstatus? 400:200))/2}
+        width={(width - (sidebarstatus ? 400 : 200)) / 2}
         resolveLabelOverlapping='stack'
       >
         <Title
@@ -752,8 +754,9 @@ const PLANRESULT = () => {
           horizontalAlignment='center'
         ></Legend>
       </Chart>
+      
     );
-  }, [monthly_sx_data, width, height, sidebarstatus]);
+  }, [monthly_sx_data, width, height]);
   const getAvailableTime = () => {
     let totalAvailableTime: number = 0;
     if (factory === "ALL") {
@@ -1080,410 +1083,411 @@ const PLANRESULT = () => {
           </div>
         </div>
       </div>
-      <div className="prdiv">
-      <div className='progressdiv'>
-        <div className='titleprogressdiv'>
-          1.PRODUCTION ACHIVEMENT RATE BY MACHINE (%)
-        </div>
-        <div className='mainprogressdiv'>
-          <div className='subprogressdiv'>
-            <div className='sectiondiv'>
-              <div className='totalachivementdiv'>
-                {`${sxachivementdata
+      <div className='prdiv'>
+        <div className='progressdiv'>
+          <div className='titleprogressdiv'>
+            1.PRODUCTION ACHIVEMENT RATE BY MACHINE (%)
+          </div>
+          <div className='mainprogressdiv'>
+            <div className='subprogressdiv'>
+              <div className='sectiondiv'>
+                <div className='totalachivementdiv'>
+                  {`${sxachivementdata
+                    .filter(
+                      (ele: ACHIVEMENT_DATA, index: number) =>
+                        ele.MACHINE_NAME === "TOTAL"
+                    )[0]
+                    ?.ACHIVEMENT_RATE?.toLocaleString("en-US", {
+                      maximumFractionDigits: 1,
+                    })}%`}
+                </div>
+              </div>
+            </div>
+            <div className='subprogressdiv'>
+              <div className='sectiondiv'>
+                FR:{" "}
+                {sxachivementdata
                   .filter(
                     (ele: ACHIVEMENT_DATA, index: number) =>
-                      ele.MACHINE_NAME === "TOTAL"
+                      ele.MACHINE_NAME === "FR"
                   )[0]
                   ?.ACHIVEMENT_RATE?.toLocaleString("en-US", {
                     maximumFractionDigits: 1,
-                  })}%`}
+                  })}{" "}
+                %
+                <LinearProgress
+                  style={{ height: "10px" }}
+                  variant='determinate'
+                  color='primary'
+                  aria-valuemin={0}
+                  aria-valuemax={100}
+                  value={
+                    sxachivementdata.filter(
+                      (ele: ACHIVEMENT_DATA, index: number) =>
+                        ele.MACHINE_NAME === "FR"
+                    )[0]?.ACHIVEMENT_RATE === undefined
+                      ? 0
+                      : sxachivementdata.filter(
+                          (ele: ACHIVEMENT_DATA, index: number) =>
+                            ele.MACHINE_NAME === "FR"
+                        )[0]?.ACHIVEMENT_RATE
+                  }
+                />
               </div>
-            </div>
-          </div>
-          <div className='subprogressdiv'>
-            <div className='sectiondiv'>
-              FR:{" "}
-              {sxachivementdata
-                .filter(
-                  (ele: ACHIVEMENT_DATA, index: number) =>
-                    ele.MACHINE_NAME === "FR"
-                )[0]
-                ?.ACHIVEMENT_RATE?.toLocaleString("en-US", {
-                  maximumFractionDigits: 1,
-                })}{" "}
-              %
-              <LinearProgress
-                style={{ height: "10px" }}
-                variant='determinate'
-                color='primary'
-                aria-valuemin={0}
-                aria-valuemax={100}
-                value={
-                  sxachivementdata.filter(
-                    (ele: ACHIVEMENT_DATA, index: number) =>
-                      ele.MACHINE_NAME === "FR"
-                  )[0]?.ACHIVEMENT_RATE === undefined
-                    ? 0
-                    : sxachivementdata.filter(
-                        (ele: ACHIVEMENT_DATA, index: number) =>
-                          ele.MACHINE_NAME === "FR"
-                      )[0]?.ACHIVEMENT_RATE
-                }
-              />
-            </div>
-            <div className='sectiondiv'>
-              SR:{" "}
-              {sxachivementdata
-                .filter(
-                  (ele: ACHIVEMENT_DATA, index: number) =>
-                    ele.MACHINE_NAME === "SR"
-                )[0]
-                ?.ACHIVEMENT_RATE?.toLocaleString("en-US", {
-                  maximumFractionDigits: 1,
-                })}{" "}
-              %
-              <LinearProgress
-                style={{ height: "10px" }}
-                variant='determinate'
-                color='secondary'
-                aria-valuemin={0}
-                aria-valuemax={100}
-                value={
-                  sxachivementdata.filter(
+              <div className='sectiondiv'>
+                SR:{" "}
+                {sxachivementdata
+                  .filter(
                     (ele: ACHIVEMENT_DATA, index: number) =>
                       ele.MACHINE_NAME === "SR"
-                  )[0]?.ACHIVEMENT_RATE === undefined
-                    ? 0
-                    : sxachivementdata.filter(
-                        (ele: ACHIVEMENT_DATA, index: number) =>
-                          ele.MACHINE_NAME === "SR"
-                      )[0]?.ACHIVEMENT_RATE
-                }
-              />
-            </div>
-            <div className='sectiondiv'>
-              DC:{" "}
-              {sxachivementdata
-                .filter(
-                  (ele: ACHIVEMENT_DATA, index: number) =>
-                    ele.MACHINE_NAME === "DC"
-                )[0]
-                ?.ACHIVEMENT_RATE?.toLocaleString("en-US", {
-                  maximumFractionDigits: 1,
-                })}{" "}
-              %
-              <LinearProgress
-                style={{ height: "10px" }}
-                variant='determinate'
-                color='info'
-                aria-valuemin={0}
-                aria-valuemax={100}
-                value={
-                  sxachivementdata.filter(
+                  )[0]
+                  ?.ACHIVEMENT_RATE?.toLocaleString("en-US", {
+                    maximumFractionDigits: 1,
+                  })}{" "}
+                %
+                <LinearProgress
+                  style={{ height: "10px" }}
+                  variant='determinate'
+                  color='secondary'
+                  aria-valuemin={0}
+                  aria-valuemax={100}
+                  value={
+                    sxachivementdata.filter(
+                      (ele: ACHIVEMENT_DATA, index: number) =>
+                        ele.MACHINE_NAME === "SR"
+                    )[0]?.ACHIVEMENT_RATE === undefined
+                      ? 0
+                      : sxachivementdata.filter(
+                          (ele: ACHIVEMENT_DATA, index: number) =>
+                            ele.MACHINE_NAME === "SR"
+                        )[0]?.ACHIVEMENT_RATE
+                  }
+                />
+              </div>
+              <div className='sectiondiv'>
+                DC:{" "}
+                {sxachivementdata
+                  .filter(
                     (ele: ACHIVEMENT_DATA, index: number) =>
                       ele.MACHINE_NAME === "DC"
-                  )[0]?.ACHIVEMENT_RATE === undefined
-                    ? 0
-                    : sxachivementdata.filter(
-                        (ele: ACHIVEMENT_DATA, index: number) =>
-                          ele.MACHINE_NAME === "DC"
-                      )[0]?.ACHIVEMENT_RATE
-                }
-              />
-            </div>
-            <div className='sectiondiv'>
-              ED:{" "}
-              {sxachivementdata
-                .filter(
-                  (ele: ACHIVEMENT_DATA, index: number) =>
-                    ele.MACHINE_NAME === "ED"
-                )[0]
-                ?.ACHIVEMENT_RATE?.toLocaleString("en-US", {
-                  maximumFractionDigits: 1,
-                })}{" "}
-              %
-              <LinearProgress
-                style={{ height: "10px" }}
-                variant='determinate'
-                color='warning'
-                aria-valuemin={0}
-                aria-valuemax={100}
-                value={
-                  sxachivementdata.filter(
+                  )[0]
+                  ?.ACHIVEMENT_RATE?.toLocaleString("en-US", {
+                    maximumFractionDigits: 1,
+                  })}{" "}
+                %
+                <LinearProgress
+                  style={{ height: "10px" }}
+                  variant='determinate'
+                  color='info'
+                  aria-valuemin={0}
+                  aria-valuemax={100}
+                  value={
+                    sxachivementdata.filter(
+                      (ele: ACHIVEMENT_DATA, index: number) =>
+                        ele.MACHINE_NAME === "DC"
+                    )[0]?.ACHIVEMENT_RATE === undefined
+                      ? 0
+                      : sxachivementdata.filter(
+                          (ele: ACHIVEMENT_DATA, index: number) =>
+                            ele.MACHINE_NAME === "DC"
+                        )[0]?.ACHIVEMENT_RATE
+                  }
+                />
+              </div>
+              <div className='sectiondiv'>
+                ED:{" "}
+                {sxachivementdata
+                  .filter(
                     (ele: ACHIVEMENT_DATA, index: number) =>
                       ele.MACHINE_NAME === "ED"
-                  )[0]?.ACHIVEMENT_RATE === undefined
-                    ? 0
-                    : sxachivementdata.filter(
+                  )[0]
+                  ?.ACHIVEMENT_RATE?.toLocaleString("en-US", {
+                    maximumFractionDigits: 1,
+                  })}{" "}
+                %
+                <LinearProgress
+                  style={{ height: "10px" }}
+                  variant='determinate'
+                  color='warning'
+                  aria-valuemin={0}
+                  aria-valuemax={100}
+                  value={
+                    sxachivementdata.filter(
+                      (ele: ACHIVEMENT_DATA, index: number) =>
+                        ele.MACHINE_NAME === "ED"
+                    )[0]?.ACHIVEMENT_RATE === undefined
+                      ? 0
+                      : sxachivementdata.filter(
+                          (ele: ACHIVEMENT_DATA, index: number) =>
+                            ele.MACHINE_NAME === "ED"
+                        )[0]?.ACHIVEMENT_RATE
+                  }
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className='progressdiv'>
+          <div className='titleprogressdiv'>2.PRODUCTION LOSS (%)</div>
+          <div className='mainprogressdiv'>
+            <div className='subprogressdiv'>
+              <div className='sectiondiv'>
+                <div className='totallosstdiv'>
+                  {`${(
+                    (sxachivementdata.filter(
+                      (ele: ACHIVEMENT_DATA, index: number) =>
+                        ele.MACHINE_NAME === "TOTAL"
+                    )[0]?.INS_OUTPUT /
+                      sxachivementdata.filter(
                         (ele: ACHIVEMENT_DATA, index: number) =>
-                          ele.MACHINE_NAME === "ED"
-                      )[0]?.ACHIVEMENT_RATE
-                }
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className='progressdiv'>
-        <div className='titleprogressdiv'>2.PRODUCTION LOSS (%)</div>
-        <div className='mainprogressdiv'>
-          <div className='subprogressdiv'>
-          <div className='sectiondiv'>
-              <div className='totallosstdiv'>
-                {`${(
-                  (sxachivementdata.filter(
-                    (ele: ACHIVEMENT_DATA, index: number) =>
-                      ele.MACHINE_NAME === "TOTAL"
-                  )[0]?.INS_OUTPUT /
-                    sxachivementdata.filter(
-                      (ele: ACHIVEMENT_DATA, index: number) =>
-                        ele.MACHINE_NAME === "TOTAL"
-                    )[0]?.WH_OUTPUT) *
-                    100 -
-                  100
-                )?.toLocaleString("en-US", {
-                  maximumFractionDigits: 1,
-                })}%`}
+                          ele.MACHINE_NAME === "TOTAL"
+                      )[0]?.WH_OUTPUT) *
+                      100 -
+                    100
+                  )?.toLocaleString("en-US", {
+                    maximumFractionDigits: 1,
+                  })}%`}
+                </div>
               </div>
-            </div>
-            <div className='sectiondiv'>
-              <div className='lossdiv'>
-                <CIRCLE_COMPONENT
-                  type='loss'
-                  value={`${nFormatter(
-                    sxachivementdata.filter(
-                      (ele: ACHIVEMENT_DATA, index: number) =>
-                        ele.MACHINE_NAME === "TOTAL"
-                    )[0]?.PLAN_QTY
-                  )}`}
-                  title='PLAN QTY'
-                  color='blue'
-                />
-                <CIRCLE_COMPONENT
-                  type='loss'
-                  value={`${nFormatter(
-                    sxachivementdata.filter(
-                      (ele: ACHIVEMENT_DATA, index: number) =>
-                        ele.MACHINE_NAME === "TOTAL"
-                    )[0]?.WH_OUTPUT
-                  )}`}
-                  title='WH OUTPUT'
-                  color='#CBAA00'
-                />
-                <CIRCLE_COMPONENT
-                  type='loss'
-                  value={`${nFormatter(
-                    sxachivementdata.filter(
-                      (ele: ACHIVEMENT_DATA, index: number) =>
-                        ele.MACHINE_NAME === "TOTAL"
-                    )[0]?.SX_RESULT_TOTAL
-                  )}`}
-                  title='RESULT_TOTAL'
-                  color='#02B93A'
-                />
-                <CIRCLE_COMPONENT
-                  type='loss'
-                  value={`${nFormatter(
-                    sxachivementdata.filter(
-                      (ele: ACHIVEMENT_DATA, index: number) =>
-                        ele.MACHINE_NAME === "TOTAL"
-                    )[0]?.RESULT_TO_INSPECTION
-                  )}`}
-                  title='RESULT_INSP'
-                  color='#02B93A'
-                />
-                <CIRCLE_COMPONENT
-                  type='loss'
-                  value={`${nFormatter(
-                    sxachivementdata.filter(
-                      (ele: ACHIVEMENT_DATA, index: number) =>
-                        ele.MACHINE_NAME === "TOTAL"
-                    )[0]?.INS_INPUT
-                  )}`}
-                  title='INSP INPUT'
-                  color='#CC26F9'
-                />
-                <CIRCLE_COMPONENT
-                  type='loss'
-                  value={`${nFormatter(
-                    sxachivementdata.filter(
-                      (ele: ACHIVEMENT_DATA, index: number) =>
-                        ele.MACHINE_NAME === "TOTAL"
-                    )[0]?.INSPECT_TOTAL_QTY
-                  )}`}
-                  title='INSP TOTAL'
-                  color='blue'
-                />
-                <CIRCLE_COMPONENT
-                  type='loss'
-                  value={`${nFormatter(
-                    sxachivementdata.filter(
-                      (ele: ACHIVEMENT_DATA, index: number) =>
-                        ele.MACHINE_NAME === "TOTAL"
-                    )[0]?.INSPECT_OK_QTY
-                  )}`}
-                  title='INSP OK'
-                  color='#00C50C'
-                />
-                <CIRCLE_COMPONENT
-                  type='loss'
-                  value={`${nFormatter(
-                    sxachivementdata.filter(
-                      (ele: ACHIVEMENT_DATA, index: number) =>
-                        ele.MACHINE_NAME === "TOTAL"
-                    )[0]?.INSPECT_NG_QTY
-                  )}`}
-                  title='INSP NG'
-                  color='red'
-                />
-                <CIRCLE_COMPONENT
-                  type='loss'
-                  value={`${nFormatter(
-                    sxachivementdata.filter(
-                      (ele: ACHIVEMENT_DATA, index: number) =>
-                        ele.MACHINE_NAME === "TOTAL"
-                    )[0]?.INS_OUTPUT
-                  )}`}
-                  title='INSP OUTPUT'
-                  color='#02D819'
-                />
+              <div className='sectiondiv'>
+                <div className='lossdiv'>
+                  <CIRCLE_COMPONENT
+                    type='loss'
+                    value={`${nFormatter(
+                      sxachivementdata.filter(
+                        (ele: ACHIVEMENT_DATA, index: number) =>
+                          ele.MACHINE_NAME === "TOTAL"
+                      )[0]?.PLAN_QTY
+                    )}`}
+                    title='PLAN QTY'
+                    color='blue'
+                  />
+                  <CIRCLE_COMPONENT
+                    type='loss'
+                    value={`${nFormatter(
+                      sxachivementdata.filter(
+                        (ele: ACHIVEMENT_DATA, index: number) =>
+                          ele.MACHINE_NAME === "TOTAL"
+                      )[0]?.WH_OUTPUT
+                    )}`}
+                    title='WH OUTPUT'
+                    color='#CBAA00'
+                  />
+                  <CIRCLE_COMPONENT
+                    type='loss'
+                    value={`${nFormatter(
+                      sxachivementdata.filter(
+                        (ele: ACHIVEMENT_DATA, index: number) =>
+                          ele.MACHINE_NAME === "TOTAL"
+                      )[0]?.SX_RESULT_TOTAL
+                    )}`}
+                    title='RESULT_TOTAL'
+                    color='#02B93A'
+                  />
+                  <CIRCLE_COMPONENT
+                    type='loss'
+                    value={`${nFormatter(
+                      sxachivementdata.filter(
+                        (ele: ACHIVEMENT_DATA, index: number) =>
+                          ele.MACHINE_NAME === "TOTAL"
+                      )[0]?.RESULT_TO_INSPECTION
+                    )}`}
+                    title='RESULT_INSP'
+                    color='#02B93A'
+                  />
+                  <CIRCLE_COMPONENT
+                    type='loss'
+                    value={`${nFormatter(
+                      sxachivementdata.filter(
+                        (ele: ACHIVEMENT_DATA, index: number) =>
+                          ele.MACHINE_NAME === "TOTAL"
+                      )[0]?.INS_INPUT
+                    )}`}
+                    title='INSP INPUT'
+                    color='#CC26F9'
+                  />
+                  <CIRCLE_COMPONENT
+                    type='loss'
+                    value={`${nFormatter(
+                      sxachivementdata.filter(
+                        (ele: ACHIVEMENT_DATA, index: number) =>
+                          ele.MACHINE_NAME === "TOTAL"
+                      )[0]?.INSPECT_TOTAL_QTY
+                    )}`}
+                    title='INSP TOTAL'
+                    color='blue'
+                  />
+                  <CIRCLE_COMPONENT
+                    type='loss'
+                    value={`${nFormatter(
+                      sxachivementdata.filter(
+                        (ele: ACHIVEMENT_DATA, index: number) =>
+                          ele.MACHINE_NAME === "TOTAL"
+                      )[0]?.INSPECT_OK_QTY
+                    )}`}
+                    title='INSP OK'
+                    color='#00C50C'
+                  />
+                  <CIRCLE_COMPONENT
+                    type='loss'
+                    value={`${nFormatter(
+                      sxachivementdata.filter(
+                        (ele: ACHIVEMENT_DATA, index: number) =>
+                          ele.MACHINE_NAME === "TOTAL"
+                      )[0]?.INSPECT_NG_QTY
+                    )}`}
+                    title='INSP NG'
+                    color='red'
+                  />
+                  <CIRCLE_COMPONENT
+                    type='loss'
+                    value={`${nFormatter(
+                      sxachivementdata.filter(
+                        (ele: ACHIVEMENT_DATA, index: number) =>
+                          ele.MACHINE_NAME === "TOTAL"
+                      )[0]?.INS_OUTPUT
+                    )}`}
+                    title='INSP OUTPUT'
+                    color='#02D819'
+                  />
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-      <div className='progressdiv'>
-        <div className='titleprogressdiv'>3.PRODUCTION EFFICIENCY (%)</div>
-        <div className='mainprogressdiv'>
-          <div className='subprogressdiv'>
-          <div className='sectiondiv'>
-              <div className='efficiencydiv'>
-                <CIRCLE_COMPONENT
-                  type='timesummary'
-                  value={`${nFormatter(
-                    (operation_time.filter(
-                      (ele: OPERATION_TIME_DATA, index: number) =>
-                        ele.PLAN_FACTORY === "TOTAL"
-                    )[0]?.TOTAL_TIME /
-                      ((T_TIME_NM1.T_TOTAL + T_TIME_NM2.T_TOTAL) * dayrange)) *
-                      100
-                  )?.toLocaleString("en-US", {
-                    maximumFractionDigits: 1,
-                  })} %`}
-                  title='OPERATION RATE'
-                  color='red'
-                />
-                <CIRCLE_COMPONENT
-                  type='timesummary'
-                  value={`${nFormatter(
-                    ((operation_time.filter(
-                      (ele: OPERATION_TIME_DATA, index: number) =>
-                        ele.PLAN_FACTORY === "TOTAL"
-                    )[0]?.RUN_TIME_SX -
-                      operation_time.filter(
+        <div className='progressdiv'>
+          <div className='titleprogressdiv'>3.PRODUCTION EFFICIENCY (%)</div>
+          <div className='mainprogressdiv'>
+            <div className='subprogressdiv'>
+              <div className='sectiondiv'>
+                <div className='efficiencydiv'>
+                  <CIRCLE_COMPONENT
+                    type='timesummary'
+                    value={`${nFormatter(
+                      (operation_time.filter(
                         (ele: OPERATION_TIME_DATA, index: number) =>
                           ele.PLAN_FACTORY === "TOTAL"
-                      )[0]?.LOSS_TIME +
-                      operation_time.filter(
+                      )[0]?.TOTAL_TIME /
+                        ((T_TIME_NM1.T_TOTAL + T_TIME_NM2.T_TOTAL) *
+                          dayrange)) *
+                        100
+                    )?.toLocaleString("en-US", {
+                      maximumFractionDigits: 1,
+                    })} %`}
+                    title='OPERATION RATE'
+                    color='red'
+                  />
+                  <CIRCLE_COMPONENT
+                    type='timesummary'
+                    value={`${nFormatter(
+                      ((operation_time.filter(
                         (ele: OPERATION_TIME_DATA, index: number) =>
                           ele.PLAN_FACTORY === "TOTAL"
-                      )[0]?.SETTING_TIME) /
-                      operation_time.filter(
+                      )[0]?.RUN_TIME_SX -
+                        operation_time.filter(
+                          (ele: OPERATION_TIME_DATA, index: number) =>
+                            ele.PLAN_FACTORY === "TOTAL"
+                        )[0]?.LOSS_TIME +
+                        operation_time.filter(
+                          (ele: OPERATION_TIME_DATA, index: number) =>
+                            ele.PLAN_FACTORY === "TOTAL"
+                        )[0]?.SETTING_TIME) /
+                        operation_time.filter(
+                          (ele: OPERATION_TIME_DATA, index: number) =>
+                            ele.PLAN_FACTORY === "TOTAL"
+                        )[0]?.TOTAL_TIME) *
+                        100
+                    )?.toLocaleString("en-US", {
+                      maximumFractionDigits: 1,
+                    })} %`}
+                    title='PRODUCTION EFFICIENCY'
+                    color='#FE28A7'
+                  />
+                  <CIRCLE_COMPONENT
+                    type='timesummary'
+                    value={`${nFormatter(
+                      ((operation_time.filter(
                         (ele: OPERATION_TIME_DATA, index: number) =>
                           ele.PLAN_FACTORY === "TOTAL"
-                      )[0]?.TOTAL_TIME) *
-                      100
-                  )?.toLocaleString("en-US", {
-                    maximumFractionDigits: 1,
-                  })} %`}
-                  title='PRODUCTION EFFICIENCY'
-                  color='#FE28A7'
-                />
-                <CIRCLE_COMPONENT
-                  type='timesummary'
-                  value={`${nFormatter(
-                    ((operation_time.filter(
-                      (ele: OPERATION_TIME_DATA, index: number) =>
-                        ele.PLAN_FACTORY === "TOTAL"
-                    )[0]?.RUN_TIME_SX -
-                      operation_time.filter(
-                        (ele: OPERATION_TIME_DATA, index: number) =>
-                          ele.PLAN_FACTORY === "TOTAL"
-                      )[0]?.LOSS_TIME) /
-                      operation_time.filter(
-                        (ele: OPERATION_TIME_DATA, index: number) =>
-                          ele.PLAN_FACTORY === "TOTAL"
-                      )[0]?.TOTAL_TIME) *
-                      100
-                  )?.toLocaleString("en-US", {
-                    maximumFractionDigits: 1,
-                  })} %`}
-                  title='EQ EFFICIENCY'
-                  color='#00B215'
-                />
+                      )[0]?.RUN_TIME_SX -
+                        operation_time.filter(
+                          (ele: OPERATION_TIME_DATA, index: number) =>
+                            ele.PLAN_FACTORY === "TOTAL"
+                        )[0]?.LOSS_TIME) /
+                        operation_time.filter(
+                          (ele: OPERATION_TIME_DATA, index: number) =>
+                            ele.PLAN_FACTORY === "TOTAL"
+                        )[0]?.TOTAL_TIME) *
+                        100
+                    )?.toLocaleString("en-US", {
+                      maximumFractionDigits: 1,
+                    })} %`}
+                    title='EQ EFFICIENCY'
+                    color='#00B215'
+                  />
+                </div>
               </div>
-            </div>
-            <div className='sectiondiv'>
-              <div className='lossdiv'>
-                <CIRCLE_COMPONENT
-                  type='time'
-                  value={`${nFormatter(getAvailableTime() * dayrange)} min`}
-                  title='AVLB TIME'
-                  color='blue'
-                />
-                <CIRCLE_COMPONENT
-                  type='time'
-                  value={`${nFormatter(
-                    operation_time.filter(
-                      (ele: OPERATION_TIME_DATA, index: number) =>
-                        ele.PLAN_FACTORY === "TOTAL"
-                    )[0]?.TOTAL_TIME
-                  )} min`}
-                  title='TT PROD TIME'
-                  color='#742BFE'
-                />
-                <CIRCLE_COMPONENT
-                  type='time'
-                  value={`${nFormatter(
-                    operation_time.filter(
-                      (ele: OPERATION_TIME_DATA, index: number) =>
-                        ele.PLAN_FACTORY === "TOTAL"
-                    )[0]?.SETTING_TIME
-                  )} min`}
-                  title='SETTING TIME'
-                  color='#FE5E2B'
-                />
-                <CIRCLE_COMPONENT
-                  type='time'
-                  value={`${nFormatter(
-                    operation_time.filter(
-                      (ele: OPERATION_TIME_DATA, index: number) =>
-                        ele.PLAN_FACTORY === "TOTAL"
-                    )[0]?.RUN_TIME_SX -
+              <div className='sectiondiv'>
+                <div className='lossdiv'>
+                  <CIRCLE_COMPONENT
+                    type='time'
+                    value={`${nFormatter(getAvailableTime() * dayrange)} min`}
+                    title='AVLB TIME'
+                    color='blue'
+                  />
+                  <CIRCLE_COMPONENT
+                    type='time'
+                    value={`${nFormatter(
+                      operation_time.filter(
+                        (ele: OPERATION_TIME_DATA, index: number) =>
+                          ele.PLAN_FACTORY === "TOTAL"
+                      )[0]?.TOTAL_TIME
+                    )} min`}
+                    title='TT PROD TIME'
+                    color='#742BFE'
+                  />
+                  <CIRCLE_COMPONENT
+                    type='time'
+                    value={`${nFormatter(
+                      operation_time.filter(
+                        (ele: OPERATION_TIME_DATA, index: number) =>
+                          ele.PLAN_FACTORY === "TOTAL"
+                      )[0]?.SETTING_TIME
+                    )} min`}
+                    title='SETTING TIME'
+                    color='#FE5E2B'
+                  />
+                  <CIRCLE_COMPONENT
+                    type='time'
+                    value={`${nFormatter(
+                      operation_time.filter(
+                        (ele: OPERATION_TIME_DATA, index: number) =>
+                          ele.PLAN_FACTORY === "TOTAL"
+                      )[0]?.RUN_TIME_SX -
+                        operation_time.filter(
+                          (ele: OPERATION_TIME_DATA, index: number) =>
+                            ele.PLAN_FACTORY === "TOTAL"
+                        )[0]?.LOSS_TIME
+                    )} min`}
+                    title='RUN TIME'
+                    color='#21B800'
+                  />
+                  <CIRCLE_COMPONENT
+                    type='time'
+                    value={`${nFormatter(
                       operation_time.filter(
                         (ele: OPERATION_TIME_DATA, index: number) =>
                           ele.PLAN_FACTORY === "TOTAL"
                       )[0]?.LOSS_TIME
-                  )} min`}
-                  title='RUN TIME'
-                  color='#21B800'
-                />
-                <CIRCLE_COMPONENT
-                  type='time'
-                  value={`${nFormatter(
-                    operation_time.filter(
-                      (ele: OPERATION_TIME_DATA, index: number) =>
-                        ele.PLAN_FACTORY === "TOTAL"
-                    )[0]?.LOSS_TIME
-                  )} min`}
-                  title='LOSS TIME'
-                  color='red'
-                />
+                    )} min`}
+                    title='LOSS TIME'
+                    color='red'
+                  />
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div> 
       </div>
       <div className='workforcechart'>
         <div className='sectiondiv'>
