@@ -54,6 +54,7 @@ interface QLSXPLANDATA {
   PROCESS_NUMBER: number;
   KQ_SX_TAM: number;
   KETQUASX: number;
+  ACHIVEMENT_RATE: number;
   CD1: number;
   CD2: number;
   TON_CD1: number;
@@ -92,6 +93,56 @@ const PLAN_DATATB = () => {
   const [factory, setFactory] = useState("ALL");
   const [machine, setMachine] = useState("ALL");
   const [plandatatable, setPlanDataTable] = useState<QLSXPLANDATA[]>([]);
+  const [summarydata, setSummaryData]= useState<QLSXPLANDATA>({
+    id: -1,
+  PLAN_ID: '',
+  PLAN_DATE: '',
+  PROD_REQUEST_NO: '',
+  PLAN_QTY: 0,
+  PLAN_EQ: '',
+  PLAN_FACTORY: '',
+  PLAN_LEADTIME: 0,
+  INS_EMPL: '',
+  INS_DATE: '',
+  UPD_EMPL: '',
+  UPD_DATE: '',
+  G_CODE: '',
+  G_NAME: '',
+  G_NAME_KD: '',
+  PROD_REQUEST_DATE: '',
+  PROD_REQUEST_QTY: 0,
+  STEP: '',
+  PLAN_ORDER: '',
+  PROCESS_NUMBER: 0,
+  KQ_SX_TAM: 0,
+  KETQUASX: 0,
+  ACHIVEMENT_RATE: 0,
+  CD1: 0,
+  CD2: 0,
+  TON_CD1: 0,
+  TON_CD2: 0,
+  FACTORY: '',
+  EQ1: '',
+  EQ2: '',
+  Setting1: 0,
+  Setting2: 0,
+  UPH1: 0,
+  UPH2: 0,
+  Step1: 0,
+  Step2: 0,
+  LOSS_SX1: 0,
+  LOSS_SX2: 0,
+  LOSS_SETTING1: 0,
+  LOSS_SETTING2: 0,
+  NOTE: '',
+  XUATDAOFILM: '',
+  EQ_STATUS: '',
+  MAIN_MATERIAL: '',
+  INT_TEM: '',
+  CHOTBC: '',
+  DKXL: '',
+  NEXT_PLAN_ID: '',
+  });
   const [qlsxplandatafilter, setQlsxPlanDataFilter] = useState<
     Array<QLSXPLANDATA>
   >([]);
@@ -107,27 +158,14 @@ const PLAN_DATATB = () => {
       headerName: "PLAN_DATE",
       width: 110,
       editable: false,
-    },
-    {
-      field: "PROD_REQUEST_NO",
-      headerName: "YCSX NO",
-      width: 80,
-      editable: false,
-    },
-    {
-      field: "PROD_REQUEST_DATE",
-      headerName: "YCSX DATE",
-      width: 80,
-      editable: false,
-    },
+    },   
     {
       field: "PLAN_ID",
       headerName: "PLAN_ID",
       width: 90,
       editable: false,
       resizeable: true,
-    },
-    { field: "G_CODE", headerName: "G_CODE", width: 100, editable: false },
+    },   
     {
       field: "G_NAME_KD",
       headerName: "G_NAME_KD",
@@ -152,7 +190,118 @@ const PLAN_DATATB = () => {
           return <span style={{ color: "red" }}>{params.row.G_NAME_KD}</span>;
         return <span style={{ color: "green" }}>{params.row.G_NAME_KD}</span>;
       },
+    },    
+    {
+      field: "PLAN_QTY",
+      headerName: "PLAN_QTY",
+      width: 80,
+      renderCell: (params: any) => {
+        if (params.row.PLAN_QTY === 0) {
+          return <span style={{ color: "red", fontWeight:'bold' }}>NG</span>;
+        } else {
+          return (
+            <span style={{ color: "green",  fontWeight:'bold' }}>
+              {params.row.PLAN_QTY.toLocaleString("en", "US")}
+            </span>
+          );
+        }
+      },
+    },    
+    {
+      field: "KETQUASX",
+      headerName: "RESULT_QTY",
+      width: 110,
+      renderCell: (params: any) => {
+        if (params.row.KETQUASX !== null) {
+          return <span style={{color:'blue', fontWeight:'bold'}}>{params.row.KETQUASX.toLocaleString("en-US")}</span>;
+        } else {
+          return <span>0</span>;
+        }
+      },
     },
+    {
+      field: "ACHIVEMENT_RATE",
+      headerName: "ACHIVEMENT_RATE",
+      width: 150,
+      renderCell: (params: any) => {
+        if (params.row.ACHIVEMENT_RATE !== undefined) {
+          if(params.row.ACHIVEMENT_RATE === 100)
+          {
+            return <span style={{color:'green', fontWeight:'bold'}}>{params.row.ACHIVEMENT_RATE.toLocaleString("en-US",{ maximumFractionDigits: 0,})}%</span>;
+          }
+          else
+          {
+            return <span style={{color:'red', fontWeight:'bold'}}>{params.row.ACHIVEMENT_RATE.toLocaleString("en-US",{ maximumFractionDigits: 0,})}%</span>;
+          }
+        } else {
+          return <span>0</span>;
+        }
+      },
+    },
+    { field: "PLAN_EQ", headerName: "PLAN_EQ", width: 80 },
+    {
+      field: "EQ_STATUS",
+      headerName: "Trạng thái",
+      width: 100,
+      renderCell: (params: any) => {
+        if (params.row.EQ_STATUS === "KTST-KSX") {
+          return <span style={{ color: "green" }}>KTST-KSX</span>;
+        } else if (params.row.EQ_STATUS === "Đang setting") {
+          return <span style={{ color: "yellow" }}>Đang Setting</span>;
+        } else if (params.row.EQ_STATUS === "Đang Run") {
+          return <span style={{ color: "blue" }}>Đang Run</span>;
+        } else if (params.row.EQ_STATUS === "Chạy xong") {
+          return <span style={{ color: "green" }}>Chạy xong</span>;
+        } else {
+          return <span style={{ color: "red" }}>Chưa chạy</span>;
+        }
+      },
+    },
+    { field: "XUATDAOFILM", headerName: "Xuất Dao", width: 80 },
+    { field: "DKXL", headerName: "ĐK Xuất liệu", width: 80 },
+    { field: "MAIN_MATERIAL", headerName: "Xuất liệu", width: 80 },
+    { field: "CHOTBC", headerName: "Chốt báo cáo", width: 80 },
+    {
+      field: "INS_EMPL",
+      headerName: "INS_EMPL",
+      width: 120,
+      editable: false,
+      hide: false,
+    },
+    {
+      field: "INS_DATE",
+      headerName: "INS_DATE",
+      width: 120,
+      editable: false,
+      hide: true,
+    },
+    {
+      field: "UPD_EMPL",
+      headerName: "UPD_EMPL",
+      width: 120,
+      editable: false,
+      hide: true,
+    },
+    {
+      field: "UPD_DATE",
+      headerName: "UPD_DATE",
+      width: 120,
+      editable: false,
+      hide: true,
+    },
+    {
+      field: "PROD_REQUEST_NO",
+      headerName: "YCSX NO",
+      width: 80,
+      editable: false,
+    },
+    {
+      field: "PROD_REQUEST_DATE",
+      headerName: "YCSX DATE",
+      width: 80,
+      editable: false,
+    },
+    { field: "G_CODE", headerName: "G_CODE", width: 100, editable: false },
     {
       field: "PROD_REQUEST_QTY",
       headerName: "YCSX QTY",
@@ -221,22 +370,6 @@ const PLAN_DATATB = () => {
       },
     },
     {
-      field: "PLAN_QTY",
-      headerName: "PLAN_QTY",
-      width: 80,
-      renderCell: (params: any) => {
-        if (params.row.PLAN_QTY === 0) {
-          return <span style={{ color: "red" }}>NG</span>;
-        } else {
-          return (
-            <span style={{ color: "green" }}>
-              {params.row.PLAN_QTY.toLocaleString("en", "US")}
-            </span>
-          );
-        }
-      },
-    },
-    {
       field: "PROCESS_NUMBER",
       headerName: "PROCESS_NUMBER",
       width: 110,
@@ -255,81 +388,6 @@ const PLAN_DATATB = () => {
     },
     { field: "STEP", headerName: "STEP", width: 60 },
     { field: "PLAN_ORDER", headerName: "PLAN_ORDER", width: 110 },
-    {
-      field: "KETQUASX",
-      headerName: "KETQUASX",
-      width: 110,
-      renderCell: (params: any) => {
-        if (params.row.KETQUASX !== null) {
-          return <span>{params.row.KETQUASX.toLocaleString("en-US")}</span>;
-        } else {
-          return <span>0</span>;
-        }
-      },
-    },
-    {
-      field: "KQ_SX_TAM",
-      headerName: "KETQUASX_TAM",
-      width: 120,
-      renderCell: (params: any) => {
-        if (params.row.KQ_SX_TAM !== null) {
-          return <span>{params.row.KQ_SX_TAM.toLocaleString("en-US")}</span>;
-        } else {
-          return <span>0</span>;
-        }
-      },
-    },
-    { field: "PLAN_EQ", headerName: "PLAN_EQ", width: 80 },
-    {
-      field: "EQ_STATUS",
-      headerName: "Trạng thái",
-      width: 100,
-      renderCell: (params: any) => {
-        if (params.row.EQ_STATUS === "KTST-KSX") {
-          return <span style={{ color: "green" }}>KTST-KSX</span>;
-        } else if (params.row.EQ_STATUS === "Đang setting") {
-          return <span style={{ color: "yellow" }}>Đang Setting</span>;
-        } else if (params.row.EQ_STATUS === "Đang Run") {
-          return <span style={{ color: "blue" }}>Đang Run</span>;
-        } else if (params.row.EQ_STATUS === "Chạy xong") {
-          return <span style={{ color: "green" }}>Chạy xong</span>;
-        } else {
-          return <span style={{ color: "red" }}>Chưa chạy</span>;
-        }
-      },
-    },
-    { field: "XUATDAOFILM", headerName: "Xuất Dao", width: 80 },
-    { field: "DKXL", headerName: "ĐK Xuất liệu", width: 80 },
-    { field: "MAIN_MATERIAL", headerName: "Xuất liệu", width: 80 },
-    { field: "CHOTBC", headerName: "Chốt báo cáo", width: 80 },
-    {
-      field: "INS_EMPL",
-      headerName: "INS_EMPL",
-      width: 120,
-      editable: false,
-      hide: false,
-    },
-    {
-      field: "INS_DATE",
-      headerName: "INS_DATE",
-      width: 120,
-      editable: false,
-      hide: true,
-    },
-    {
-      field: "UPD_EMPL",
-      headerName: "UPD_EMPL",
-      width: 120,
-      editable: false,
-      hide: true,
-    },
-    {
-      field: "UPD_DATE",
-      headerName: "UPD_DATE",
-      width: 120,
-      editable: false,
-      hide: true,
-    },
   ];
   function CustomToolbarLICHSUINPUTSX() {
     return (
@@ -375,11 +433,70 @@ const PLAN_DATATB = () => {
                     : element.EQ_STATUS === "K"
                     ? "KTST-KSX"
                     : "Chưa chạy",
+                  ACHIVEMENT_RATE: element.KETQUASX/element.PLAN_QTY*100,
                 id: index,
               };
             }
           );
           //console.log(loadeddata);
+          let temp_plan_data: QLSXPLANDATA= {
+            id: -1,
+            PLAN_ID: '',
+            PLAN_DATE: '',
+            PROD_REQUEST_NO: '',
+            PLAN_QTY: 0,
+            PLAN_EQ: '',
+            PLAN_FACTORY: '',
+            PLAN_LEADTIME: 0,
+            INS_EMPL: '',
+            INS_DATE: '',
+            UPD_EMPL: '',
+            UPD_DATE: '',
+            G_CODE: '',
+            G_NAME: '',
+            G_NAME_KD: '',
+            PROD_REQUEST_DATE: '',
+            PROD_REQUEST_QTY: 0,
+            STEP: '',
+            PLAN_ORDER: '',
+            PROCESS_NUMBER: 0,
+            KQ_SX_TAM: 0,
+            KETQUASX: 0,
+            ACHIVEMENT_RATE: 0,
+            CD1: 0,
+            CD2: 0,
+            TON_CD1: 0,
+            TON_CD2: 0,
+            FACTORY: '',
+            EQ1: '',
+            EQ2: '',
+            Setting1: 0,
+            Setting2: 0,
+            UPH1: 0,
+            UPH2: 0,
+            Step1: 0,
+            Step2: 0,
+            LOSS_SX1: 0,
+            LOSS_SX2: 0,
+            LOSS_SETTING1: 0,
+            LOSS_SETTING2: 0,
+            NOTE: '',
+            XUATDAOFILM: '',
+            EQ_STATUS: '',
+            MAIN_MATERIAL: '',
+            INT_TEM: '',
+            CHOTBC: '',
+            DKXL: '',
+            NEXT_PLAN_ID: '',
+          }
+          for(let i=0;i<loadeddata.length;i++)
+          {
+            temp_plan_data.PLAN_QTY += loadeddata[i].PLAN_QTY;
+            temp_plan_data.KETQUASX += loadeddata[i].KETQUASX;
+            
+          }
+          temp_plan_data.ACHIVEMENT_RATE = temp_plan_data.KETQUASX/temp_plan_data.PLAN_QTY*100;
+          setSummaryData(temp_plan_data);          
           setPlanDataTable(loadeddata);
           setReadyRender(true);
           setisLoading(false);
@@ -560,7 +677,53 @@ const PLAN_DATATB = () => {
               </button>
             </div>
           </div>
-          <div className='formbutton'></div>
+          <div className='lossinfo'>
+          <table>
+          <thead>
+            <tr>
+              <th style={{ color: "black", fontWeight: "normal" }}>
+                FACTORY
+              </th>             
+              <th style={{ color: "black", fontWeight: "normal" }}>
+                MACHINE
+              </th>
+              <th style={{ color: "black", fontWeight: "normal" }}>
+                TOTAL PLAN
+              </th>
+              <th style={{ color: "black", fontWeight: "normal" }}>
+                TOTAL RESULT
+              </th>
+              <th style={{ color: "black", fontWeight: "normal" }}>
+                ACHIVEMENT RATE
+              </th>             
+            </tr>
+          </thead>
+          <tbody>
+            
+                  <tr>
+                    <td style={{ color: "blue", fontWeight: "bold" }}>
+                      {factory}
+                    </td>
+                    <td style={{ color: "#360EEA", fontWeight: "bold" }}>
+                      {machine}
+                    </td>
+                    <td style={{ color: "#360EEA", fontWeight: "bold" }}>
+                      {summarydata.PLAN_QTY?.toLocaleString('en-US',{maximumFractionDigits:0})}
+                    </td>
+                    <td style={{ color: "green", fontWeight: "bold" }}>
+                      {summarydata.KETQUASX?.toLocaleString('en-US',{maximumFractionDigits:0})}
+                    </td>
+                    <td style={{ color: "#EA0EBA", fontWeight: "bold" }}>
+                      {summarydata.ACHIVEMENT_RATE?.toLocaleString('en-US',{maximumFractionDigits:0})}%
+                    </td>
+                  </tr>
+               
+              
+            
+          </tbody>
+        </table>
+
+          </div>
         </div>
         <div className='tracuuYCSXTable'>
           {readyRender && (

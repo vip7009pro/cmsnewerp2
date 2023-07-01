@@ -80,7 +80,7 @@
                     width: 50%;                  
                     height: 100%;
                 }   
-        }
+            }
             .maindept_tableOK {
                 display: flex;
                 justify-content: space-between;
@@ -105,7 +105,28 @@
                     height: 100%;
                     
                 }   
-        }
+            }
+            .pivottable1 {                
+                display: flex;
+                align-items: flex-start;
+                flex-direction: column;
+                position: fixed;
+                top: 130vh;
+                left: 1%;
+                width:95%;
+                height: 85vh;
+                overflow: scroll;
+                padding: 10px;
+                border-radius: 5px;
+                background-image: linear-gradient(0deg, #afd3d1, #86cfff);
+                -webkit-box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27); 
+                box-shadow: 5px 5px 10px 5px rgba(0,0,0,0.27);
+                z-index: 100;
+                * {
+                    font-size: 0.7rem;
+                }
+            }
+            
         }
     }
      @media only screen and (max-width: 768px) {
@@ -216,7 +237,27 @@
                     height: 100%;
                     
                 }   
-        }
+            }
+            .pivottable1 {
+                display: flex;
+                align-items: flex-start;
+                flex-direction: column;
+                position: absolute;
+                top: 1vh;
+                left: 1%;
+                width:95%;
+                height: 85vh;
+                overflow: scroll;
+                padding: 10px;
+                border-radius: 5px;
+                background-image: linear-gradient(0deg, #afd3d1, #86cfff);
+                -webkit-box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27); 
+                box-shadow: 5px 5px 10px 5px rgba(0,0,0,0.27);
+                z-index: 100;
+                * {
+                    font-size: 0.7rem;
+                }
+            }
         }
     }
      @media only screen and (max-width: 320px) {

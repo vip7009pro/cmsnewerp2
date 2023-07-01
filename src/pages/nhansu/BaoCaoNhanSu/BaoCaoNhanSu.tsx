@@ -46,7 +46,7 @@ import PieChart, {
   Size,
   Export,
 } from "devextreme-react/pie-chart";
-import { Grid } from "@mui/material";
+import { Grid, IconButton } from "@mui/material";
 import ChartDiemDanhMAINDEPT from "../../../components/Chart/ChartDiemDanhMAINDEPT";
 import { RootState } from "../../../redux/store";
 import { useSelector, useDispatch } from "react-redux";
@@ -59,6 +59,10 @@ import {
   Title,
   ValueAxis,
 } from "devextreme-react/chart";
+import { MdOutlinePivotTableChart } from "react-icons/md";
+import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
+import { AiFillCloseCircle } from "react-icons/ai";
+import PivotTable from "../../../components/PivotChart/PivotChart";
 interface DiemDanhNhomData {
   id: string;
   MAINDEPTNAME: string;
@@ -487,6 +491,16 @@ const BaoCaoNhanSu = () => {
         <GridToolbarFilterButton />
         <GridToolbarDensitySelector />
         <GridToolbarQuickFilter />
+       
+        <IconButton
+          className='buttonIcon'
+          onClick={() => {
+            setShowHidePivotTable(true);
+          }}
+        >
+          <MdOutlinePivotTableChart color='#ff33bb' size={25} />
+          Pivot
+        </IconButton>
         <button
           className='saveexcelbutton'
           onClick={() => {
@@ -774,8 +788,405 @@ const BaoCaoNhanSu = () => {
       </Chart>
     );
   }, [ddmaindepttb]);
+  const [showhidePivotTable, setShowHidePivotTable] = useState(false);
+  const dataSource = new PivotGridDataSource({
+    fields: [
+      {
+        caption: "DATE_COLUMN",
+        width: 80,
+        dataField: "DATE_COLUMN",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "string",
+        summaryType: "count",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "EMPL_NO",
+        width: 80,
+        dataField: "EMPL_NO",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "string",
+        summaryType: "count",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "CMS_ID",
+        width: 80,
+        dataField: "CMS_ID",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "string",
+        summaryType: "count",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "MIDLAST_NAME",
+        width: 80,
+        dataField: "MIDLAST_NAME",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "string",
+        summaryType: "count",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "FIRST_NAME",
+        width: 80,
+        dataField: "FIRST_NAME",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "string",
+        summaryType: "count",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "PHONE_NUMBER",
+        width: 80,
+        dataField: "PHONE_NUMBER",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "string",
+        summaryType: "count",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "SEX_NAME",
+        width: 80,
+        dataField: "SEX_NAME",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "string",
+        summaryType: "count",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "WORK_STATUS_NAME",
+        width: 80,
+        dataField: "WORK_STATUS_NAME",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "string",
+        summaryType: "count",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "FACTORY_NAME",
+        width: 80,
+        dataField: "FACTORY_NAME",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "string",
+        summaryType: "count",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "JOB_NAME",
+        width: 80,
+        dataField: "JOB_NAME",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "string",
+        summaryType: "count",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "WORK_SHIF_NAME",
+        width: 80,
+        dataField: "WORK_SHIF_NAME",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "string",
+        summaryType: "count",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "WORK_POSITION_NAME",
+        width: 80,
+        dataField: "WORK_POSITION_NAME",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "string",
+        summaryType: "count",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "SUBDEPTNAME",
+        width: 80,
+        dataField: "SUBDEPTNAME",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "string",
+        summaryType: "count",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "MAINDEPTNAME",
+        width: 80,
+        dataField: "MAINDEPTNAME",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "string",
+        summaryType: "count",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "REQUEST_DATE",
+        width: 80,
+        dataField: "REQUEST_DATE",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "string",
+        summaryType: "count",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "APPLY_DATE",
+        width: 80,
+        dataField: "APPLY_DATE",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "string",
+        summaryType: "count",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "APPROVAL_STATUS",
+        width: 80,
+        dataField: "APPROVAL_STATUS",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "string",
+        summaryType: "count",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "OFF_ID",
+        width: 80,
+        dataField: "OFF_ID",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "string",
+        summaryType: "count",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "CA_NGHI",
+        width: 80,
+        dataField: "CA_NGHI",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "string",
+        summaryType: "count",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "ON_OFF",
+        width: 80,
+        dataField: "ON_OFF",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "number", 
+        summaryType: "sum",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "OVERTIME_INFO",
+        width: 80,
+        dataField: "OVERTIME_INFO",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "string",
+        summaryType: "count",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "OVERTIME",
+        width: 80,
+        dataField: "OVERTIME",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "string",
+        summaryType: "count",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "REASON_NAME",
+        width: 80,
+        dataField: "REASON_NAME",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "string",
+        summaryType: "count",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "REMARK",
+        width: 80,
+        dataField: "REMARK",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "string",
+        summaryType: "count",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "XACNHAN",
+        width: 80,
+        dataField: "XACNHAN",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "string",
+        summaryType: "count",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "WEEKDAY",
+        width: 80,
+        dataField: "WEEKDAY",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "string",
+        summaryType: "count",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+    ],
+    store: diemdanhFullTable,
+  });
+ 
   useEffect(() => {
-    handleSearch2();
+    handleSearch2(); 
   }, []);
   return (
     <div className='baocaonhansu'>
@@ -1010,6 +1421,20 @@ const BaoCaoNhanSu = () => {
             getRowHeight={() => "auto"}
           />
         </div>
+        {showhidePivotTable && (
+        <div className='pivottable1'>
+          <IconButton
+            className='buttonIcon'
+            onClick={() => {
+              setShowHidePivotTable(false);
+            }}
+          >
+            <AiFillCloseCircle color='blue' size={25} />
+            Close
+          </IconButton>
+          <PivotTable datasource={dataSource} tableID='invoicetablepivot' />
+        </div>
+      )}
       </div>
     </div>
   );

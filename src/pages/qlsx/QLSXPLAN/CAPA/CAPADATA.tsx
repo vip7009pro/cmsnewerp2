@@ -243,7 +243,7 @@ import { RootState } from "../../../../redux/store";
                 <IconButton
                   className='buttonIcon'
                   onClick={() => {
-                    SaveExcel(datasxtable, "MaterialStatus");
+                    SaveExcel(dataleadtimecapa, "MaterialStatus");
                   }}
                 >
                   <AiFillFileExcel color='green' size={25} />
@@ -496,7 +496,7 @@ import { RootState } from "../../../../redux/store";
           },
         },
       ],
-      store: datasxtable,
+      store: dataleadtimecapa,
     });
     const handleSaveQLSX = async () => {
         if (selectedG_Code !== "") {

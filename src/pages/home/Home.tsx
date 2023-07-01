@@ -14,7 +14,7 @@ import { RootState } from "../../redux/store";
 import { useSelector, useDispatch } from "react-redux";
 import { addTab, closeTab, settabIndex } from "../../redux/slices/globalSlice";
 import AccountInfo from "../../components/Navbar/AccountInfo/AccountInfo";
-export const current_ver: number = 161;
+export const current_ver: number = 162;
 interface ELE_ARRAY {
   REACT_ELE: ReactElement;
   ELE_NAME: string;
@@ -39,6 +39,19 @@ function Home() {
     to: { x: 0, y: 0 },
   });
   const [checkVerWeb, setCheckVerWeb] = useState(1);
+  const updatechamcongdiemdanh=()=> {
+    generalQuery("updatechamcongdiemdanhauto", {  })
+    .then((response) => {
+      //console.log(response.data.data);
+      if (response.data.tk_status !== "NG") {
+        
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  }
+
   useEffect(() => {
     console.log("local ver", current_ver);
     generalQuery("checkWebVer", {})
@@ -90,8 +103,15 @@ function Home() {
           console.log(error);
         });
     }, 30000);
+
+    let intervalID2 = window.setInterval(() => {
+      updatechamcongdiemdanh();      
+    }, 5000);
+
+
     return () => {
       window.clearInterval(intervalID);
+      window.clearInterval(intervalID2);
     };
   }, []);
   //console.log(tabs)
