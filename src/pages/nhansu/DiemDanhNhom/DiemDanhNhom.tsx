@@ -111,18 +111,34 @@ const DiemDanhNhom = () => {
 
                 }
 
-                const onClick = (type: number) => {                
+                const onClick = async (type: number) => {                
                     //Swal.fire("Thông báo", "Gia tri = " + params.row.EMPL_NO, "success");
                     //console.log(params.row.OFF_ID)
                     //console.log(type)
-                    if(type===1)
+                    let current_team_dayshift: number = -1;
+                    await generalQuery("checkcurrentDAYSHIFT",{})
+                    .then((response) => {
+                      //console.log(response.data.tk_status)
+                      if (response.data.tk_status === "OK") {
+                        current_team_dayshift = response.data.data[0].DAYSHIFT;                        
+                      } else {
+                       
+                      }
+                    })
+                    .catch((error) => {
+                      //console.log(error);
+                    });
+                    if(current_team_dayshift !== -1)
+                    {
+                      if(type===1)
                     {
                       if(params.row.OFF_ID  === null || params.row.REASON_NAME==='Nửa phép')
                       {
                         generalQuery("setdiemdanhnhom", {
                           diemdanhvalue: type,
                           EMPL_NO: params.row.EMPL_NO,  
-                          CURRENT_TEAM: (params.row.WORK_SHIF_NAME ==='Hành Chính' ? 0 : params.row.WORK_SHIF_NAME ==='TEAM 1' ? 1 : 2)                       
+                          CURRENT_TEAM: (params.row.WORK_SHIF_NAME ==='Hành Chính' ? 0 : params.row.WORK_SHIF_NAME ==='TEAM 1' ? 1 : 2),
+                          CURRENT_CA: params.row.WORK_SHIF_NAME ==='Hành Chính' ? 0 : current_team_dayshift===(params.row.WORK_SHIF_NAME ==='TEAM 1' ? 1 : 2)? 1:2,
                         })
                           .then((response) => {
                             //console.log(response.data);
@@ -159,7 +175,8 @@ const DiemDanhNhom = () => {
                       generalQuery("setdiemdanhnhom", {
                         diemdanhvalue: type,
                         EMPL_NO: params.row.EMPL_NO,
-                        CURRENT_TEAM: (params.row.WORK_SHIF_NAME ==='Hành Chính' ? 0 : params.row.WORK_SHIF_NAME ==='TEAM 1' ? 1 : 2)
+                        CURRENT_TEAM: (params.row.WORK_SHIF_NAME ==='Hành Chính' ? 0 : params.row.WORK_SHIF_NAME ==='TEAM 1' ? 1 : 2),
+                        CURRENT_CA: params.row.WORK_SHIF_NAME ==='Hành Chính' ? 0 : current_team_dayshift===(params.row.WORK_SHIF_NAME ==='TEAM 1' ? 1 : 2)? 1:2,
                       })
                         .then((response) => {
                           //console.log(response.data);
@@ -190,7 +207,8 @@ const DiemDanhNhom = () => {
                       generalQuery("setdiemdanhnhom", {
                         diemdanhvalue: 0,
                         EMPL_NO: params.row.EMPL_NO,
-                        CURRENT_TEAM: (params.row.WORK_SHIF_NAME ==='Hành Chính' ? 0 : params.row.WORK_SHIF_NAME ==='TEAM 1' ? 1 : 2)
+                        CURRENT_TEAM: (params.row.WORK_SHIF_NAME ==='Hành Chính' ? 0 : params.row.WORK_SHIF_NAME ==='TEAM 1' ? 1 : 2),
+                        CURRENT_CA: params.row.WORK_SHIF_NAME ==='Hành Chính' ? 0 : current_team_dayshift===(params.row.WORK_SHIF_NAME ==='TEAM 1' ? 1 : 2)? 1:2,
                       })
                         .then((response) => {
                           //console.log(response.data);
@@ -217,7 +235,15 @@ const DiemDanhNhom = () => {
                           //console.log(error);
                         }); 
 
-                    }                  
+                    }  
+
+                    }
+                    else
+                    {
+
+                    }
+
+                                    
                 }     
                 const onReset =() => {
                     if(params.row.REMARK ==='AUTO')

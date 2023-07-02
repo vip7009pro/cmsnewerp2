@@ -1,4 +1,23 @@
 import {
+  DataGrid as GridData, 
+  Column,
+  ColumnChooser,
+  Editing,
+  Export as GridExport,
+  FilterRow,
+  Item,
+  KeyboardNavigation,
+  Pager,
+  Paging,
+  Scrolling,
+  SearchPanel,
+  Selection,
+  Summary,
+  Toolbar,
+  TotalItem,
+} from "devextreme-react/data-grid";
+
+import {
   DataGrid,
   GridSelectionModel,
   GridToolbar,
@@ -61,8 +80,38 @@ import {
 } from "devextreme-react/chart";
 import { MdOutlinePivotTableChart } from "react-icons/md";
 import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
-import { AiFillCloseCircle } from "react-icons/ai";
+import { AiFillCloseCircle, AiFillFileExcel } from "react-icons/ai";
 import PivotTable from "../../../components/PivotChart/PivotChart";
+
+interface DIEMDANHFULLSUMMARY {
+  id: number,
+  MAINDEPTNAME: string,
+  COUNT_TOTAL: number,
+  COUNT_ON: number,
+  COUNT_OFF: number,
+  COUNT_CDD: number,
+  T1_TOTAL: number,
+  T1_ON: number,
+  T1_OFF: number,
+  T1_CDD: number,
+  T2_TOTAL: number,
+  T2_ON: number,
+  T2_OFF: number,
+  T2_CDD: number,
+  HC_TOTAL: number,
+  HC_ON: number,
+  HC_OFF: number,
+  HC_CDD: number,
+  ON_RATE: number,
+  TOTAL: number,
+  PHEP_NAM: number,
+  NUA_PHEP: number,
+  NGHI_VIEC_RIENG: number,
+  NGHI_OM: number,
+  CHE_DO: number,
+  KHONG_LY_DO: number,
+  
+}
 interface DiemDanhNhomData {
   id: string;
   MAINDEPTNAME: string;
@@ -141,6 +190,9 @@ const BaoCaoNhanSu = () => {
   const [ddmaindepttb, setddmaindepttb] = useState<Array<DIEMDANHMAINDEPT>>([]);
   const [diemdanhnhomtable, setDiemDanhNhomTable] = useState<
     Array<DiemDanhNhomData>
+  >([]);
+  const [diemdanhfullsummary, setDiemDanhFullSummary] = useState<
+    Array<DIEMDANHFULLSUMMARY>
   >([]);
   const [piechartdata, setPieChartData] = useState<Array<DiemDanhNhomData>>([]);
   const [fromdate, setFromDate] = useState(
@@ -484,6 +536,7 @@ const BaoCaoNhanSu = () => {
     },
     { field: "OFF_ID", headerName: "OFF_ID", width: 120 },
   ];
+  
   function CustomToolbar3() {
     return (
       <GridToolbarContainer>
@@ -642,7 +695,10 @@ const BaoCaoNhanSu = () => {
       .catch((error) => {
         console.log(error);
       });
-    generalQuery("getddmaindepttb", {})
+    generalQuery("getddmaindepttb", {
+      FROM_DATE: moment().format('YYYY-MM-DD'),
+      TO_DATE: moment().format('YYYY-MM-DD'),
+    })
       .then((response) => {
         //console.log(response.data.data);
         if (response.data.tk_status !== "NG") {
@@ -686,35 +742,37 @@ const BaoCaoNhanSu = () => {
         console.log(error);
       });
   };
+  
+  const loadDiemDanhFullSummaryTable =()=> {
+    generalQuery("loadDiemDanhFullSummaryTable", {
+      FROM_DATE: moment().format('YYYY-MM-DD'),
+      TO_DATE: moment().format('YYYY-MM-DD'),
+  })
+    .then((response) => {
+      //console.log(response.data.data);
+      if (response.data.tk_status !== "NG") {
+        const loaded_data: DIEMDANHFULLSUMMARY[] = response.data.data.map((element: DIEMDANHFULLSUMMARY, index: number)=> {
+          return {
+            ...element,           
+            id: index
+          }
+        })
+        setDiemDanhFullSummary(loaded_data);
+      
+       
+      } else {
+        Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  }
   const handleSearch = () => {
     handleSearch2();
+    loadDiemDanhFullSummaryTable();
   };
-  const COLORS = [
-    "#ff8c66",
-    "#ffb366",
-    "#ffd966",
-    "#ffff66",
-    "#d9ff66",
-    "#b3ff66",
-    "#8cff66",
-    "#66ff66",
-    "#66ff8c",
-    "#66ffb3",
-    "#66ffd9",
-    "#66ffff",
-    "#66d9ff",
-    "#66b3ff",
-    "#668cff",
-    "#6666ff",
-    "#8c66ff",
-    "#b366ff",
-    "#d966ff",
-    "#ff66ff",
-    "#ff66d9",
-    "#ff66b3",
-    "#ff668c",
-    "#ff6666",
-  ];
+  
   const maindeptchartMM = useMemo(() => {
     return (
       <PieChart
@@ -1184,9 +1242,94 @@ const BaoCaoNhanSu = () => {
     ],
     store: diemdanhFullTable,
   });
+
+  const mainDeptSummaryTable = React.useMemo(
+    () => (
+      <div className='datatb'>
+        <GridData
+          style={{fontSize:'0.7rem'}}
+          autoNavigateToFocusedRow={true}
+          allowColumnReordering={true}
+          allowColumnResizing={true}
+          columnAutoWidth={false}
+          cellHintEnabled={true}
+          columnResizingMode={"widget"}
+          showColumnLines={true}
+          dataSource={diemdanhfullsummary}
+          columnWidth='auto'
+          keyExpr='id'
+         
+          showBorders={true}
+          onSelectionChanged={(e) => {
+            //console.log(e.selectedRowsData);
+            //setSelectedRowsData(e.selectedRowsData);
+          }}
+          onRowClick={(e) => {
+            //console.log(e.data);
+          }}
+        >
+           <KeyboardNavigation
+            editOnKeyPress={true}
+            enterKeyAction={'moveFocus'}
+            enterKeyDirection={'column'} />
+          <Scrolling
+            useNative={true}
+            scrollByContent={true}
+            scrollByThumb={true}
+            showScrollbar='onHover'
+            mode='virtual'
+          />
+      {/*     <Selection mode='multiple' selectAllMode='allPages' /> */}
+          <Editing
+            allowUpdating={false}
+            allowAdding={false}
+            allowDeleting={false}
+            mode='cell'
+            confirmDelete={true}
+            onChangesChange={(e) => {}}
+          />
+          <Export enabled={true} />
+          <Toolbar disabled={false}>
+            <Item location='before'>
+              <IconButton
+                className='buttonIcon'
+                onClick={() => {
+                  SaveExcel(diemdanhfullsummary, "SPEC DTC");
+                }}
+              >
+                <AiFillFileExcel color='green' size={25} />
+                SAVE
+              </IconButton>              
+            </Item>
+            <Item name='searchPanel' />
+            <Item name='exportButton' />
+            <Item name='columnChooserButton' />
+            <Item name='addRowButton' />
+            <Item name='saveButton' />
+            <Item name='revertButton' />
+          </Toolbar>
+          <FilterRow visible={false} />
+          <SearchPanel visible={false} />
+          <ColumnChooser enabled={true} />
+          <Paging defaultPageSize={15} />
+          <Pager
+            showPageSizeSelector={true}
+            allowedPageSizes={[5, 10, 15, 20, 100, 1000, 10000, "all"]}
+            showNavigationButtons={true}
+            showInfo={true}
+            infoText='Page #{0}. Total: {1} ({2} items)'
+            displayMode='compact'
+          />
+        
+        </GridData>
+      </div>
+    ),
+    [diemdanhfullsummary]
+  );
  
   useEffect(() => {
     handleSearch2(); 
+    loadDiemDanhFullSummaryTable();
   }, []);
   return (
     <div className='baocaonhansu'>
@@ -1354,6 +1497,12 @@ const BaoCaoNhanSu = () => {
             </CustomResponsiveContainer>
           </div>
         </div>
+        <h3>Nhân lực điểm danh trong ngày theo bộ phận chính</h3>
+        <div className="maindeptsummarydiv">
+          {
+            mainDeptSummaryTable
+          }
+        </div>
         <h3>Nhân lực điểm danh trong ngày theo bộ phận phụ</h3>
         <div className='maindept_table'>
           <div className='tiledilamtable'>
@@ -1434,7 +1583,7 @@ const BaoCaoNhanSu = () => {
           </IconButton>
           <PivotTable datasource={dataSource} tableID='invoicetablepivot' />
         </div>
-      )}
+        )}
       </div>
     </div>
   );

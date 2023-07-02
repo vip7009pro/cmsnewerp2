@@ -111,55 +111,31 @@ const DiemDanhNhomBP = () => {
 
                 }
 
-                const onClick = (type: number) => {                
-                    //Swal.fire("Thông báo", "Gia tri = " + params.row.EMPL_NO, "success");
-                    //console.log(params.row.OFF_ID)
-                    //console.log(type)
-                    if(type===1)
-                    {
-                      if(params.row.OFF_ID  === null || params.row.REASON_NAME==='Nửa phép')
-                      {
-                        generalQuery("setdiemdanhnhom", {
-                          diemdanhvalue: type,
-                          EMPL_NO: params.row.EMPL_NO,  
-                          CURRENT_TEAM: (params.row.WORK_SHIF_NAME ==='Hành Chính' ? 0 : params.row.WORK_SHIF_NAME ==='TEAM 1' ? 1 : 2)                       
-                        })
-                          .then((response) => {
-                            //console.log(response.data);
-                            if (response.data.tk_status === "OK") {
-                              const newProjects = diemdanhnhomtable.map((p) =>
-                                p.EMPL_NO === params.row.EMPL_NO
-                                  ? { ...p, ON_OFF: type }
-                                  : p
-                              );
-                              setDiemDanhNhomTable(newProjects);                              
-                            } else {
-                              Swal.fire(
-                                "Có lỗi",
-                                "Nội dung: " + response.data.message,
-                                "error"
-                              );
-                            }  
-                          })
-                          .catch((error) => {
-                            //console.log(error);
-                          }); 
-                      }
-                      else
-                      {
-                        Swal.fire(
-                          "Có lỗi",
-                          "Đã đăng ký nghỉ rồi, không điểm danh được",
-                          "error"
-                        );
-                      }
+                const onClick = async (type: number) => {                
+                  let current_team_dayshift: number = -1;
+                  await generalQuery("checkcurrentDAYSHIFT",{})
+                  .then((response) => {
+                    //console.log(response.data.tk_status)
+                    if (response.data.tk_status === "OK") {
+                      current_team_dayshift = response.data.data[0].DAYSHIFT;                        
+                    } else {
+                     
                     }
-                    else if (type === 0)
+                  })
+                  .catch((error) => {
+                    //console.log(error);
+                  });
+                  if(current_team_dayshift !== -1)
+                  {
+                    if(type===1)
+                  {
+                    if(params.row.OFF_ID  === null || params.row.REASON_NAME==='Nửa phép')
                     {
                       generalQuery("setdiemdanhnhom", {
                         diemdanhvalue: type,
-                        EMPL_NO: params.row.EMPL_NO,
-                        CURRENT_TEAM: (params.row.WORK_SHIF_NAME ==='Hành Chính' ? 0 : params.row.WORK_SHIF_NAME ==='TEAM 1' ? 1 : 2)
+                        EMPL_NO: params.row.EMPL_NO,  
+                        CURRENT_TEAM: (params.row.WORK_SHIF_NAME ==='Hành Chính' ? 0 : params.row.WORK_SHIF_NAME ==='TEAM 1' ? 1 : 2),
+                        CURRENT_CA: params.row.WORK_SHIF_NAME ==='Hành Chính' ? 0 : current_team_dayshift===(params.row.WORK_SHIF_NAME ==='TEAM 1' ? 1 : 2)? 1:2,
                       })
                         .then((response) => {
                           //console.log(response.data);
@@ -169,11 +145,7 @@ const DiemDanhNhomBP = () => {
                                 ? { ...p, ON_OFF: type }
                                 : p
                             );
-                            if(params.row.OFF_ID === null)
-                            {
-                              dangkynghi_auto(3);
-                            }
-                            setDiemDanhNhomTable(newProjects);
+                            setDiemDanhNhomTable(newProjects);                              
                           } else {
                             Swal.fire(
                               "Có lỗi",
@@ -185,39 +157,89 @@ const DiemDanhNhomBP = () => {
                         .catch((error) => {
                           //console.log(error);
                         }); 
-                    } 
-                    else if (type === 2){
-                      generalQuery("setdiemdanhnhom", {
-                        diemdanhvalue: 0,
-                        EMPL_NO: params.row.EMPL_NO,
-                        CURRENT_TEAM: (params.row.WORK_SHIF_NAME ==='Hành Chính' ? 0 : params.row.WORK_SHIF_NAME ==='TEAM 1' ? 1 : 2)
+                    }
+                    else
+                    {
+                      Swal.fire(
+                        "Có lỗi",
+                        "Đã đăng ký nghỉ rồi, không điểm danh được",
+                        "error"
+                      );
+                    }
+                  }
+                  else if (type === 0)
+                  {
+                    generalQuery("setdiemdanhnhom", {
+                      diemdanhvalue: type,
+                      EMPL_NO: params.row.EMPL_NO,
+                      CURRENT_TEAM: (params.row.WORK_SHIF_NAME ==='Hành Chính' ? 0 : params.row.WORK_SHIF_NAME ==='TEAM 1' ? 1 : 2),
+                      CURRENT_CA: params.row.WORK_SHIF_NAME ==='Hành Chính' ? 0 : current_team_dayshift===(params.row.WORK_SHIF_NAME ==='TEAM 1' ? 1 : 2)? 1:2,
+                    })
+                      .then((response) => {
+                        //console.log(response.data);
+                        if (response.data.tk_status === "OK") {
+                          const newProjects = diemdanhnhomtable.map((p) =>
+                            p.EMPL_NO === params.row.EMPL_NO
+                              ? { ...p, ON_OFF: type }
+                              : p
+                          );
+                          if(params.row.OFF_ID === null)
+                          {
+                            dangkynghi_auto(3);
+                          }
+                          setDiemDanhNhomTable(newProjects);
+                        } else {
+                          Swal.fire(
+                            "Có lỗi",
+                            "Nội dung: " + response.data.message,
+                            "error"
+                          );
+                        }  
                       })
-                        .then((response) => {
-                          //console.log(response.data);
-                          if (response.data.tk_status === "OK") {
-                            const newProjects = diemdanhnhomtable.map((p) =>
-                              p.EMPL_NO === params.row.EMPL_NO
-                                ? { ...p, ON_OFF: 0 }
-                                : p
-                            );
-                            if(params.row.OFF_ID === null)
-                            {
-                              dangkynghi_auto(5);
-                            }
-                            setDiemDanhNhomTable(newProjects);
-                          } else {
-                            Swal.fire(
-                              "Có lỗi",
-                              "Nội dung: " + response.data.message,
-                              "error"
-                            );
-                          }  
-                        })
-                        .catch((error) => {
-                          //console.log(error);
-                        }); 
+                      .catch((error) => {
+                        //console.log(error);
+                      }); 
+                  } 
+                  else if (type === 2){
+                    generalQuery("setdiemdanhnhom", {
+                      diemdanhvalue: 0,
+                      EMPL_NO: params.row.EMPL_NO,
+                      CURRENT_TEAM: (params.row.WORK_SHIF_NAME ==='Hành Chính' ? 0 : params.row.WORK_SHIF_NAME ==='TEAM 1' ? 1 : 2),
+                      CURRENT_CA: params.row.WORK_SHIF_NAME ==='Hành Chính' ? 0 : current_team_dayshift===(params.row.WORK_SHIF_NAME ==='TEAM 1' ? 1 : 2)? 1:2,
+                    })
+                      .then((response) => {
+                        //console.log(response.data);
+                        if (response.data.tk_status === "OK") {
+                          const newProjects = diemdanhnhomtable.map((p) =>
+                            p.EMPL_NO === params.row.EMPL_NO
+                              ? { ...p, ON_OFF: 0 }
+                              : p
+                          );
+                          if(params.row.OFF_ID === null)
+                          {
+                            dangkynghi_auto(5);
+                          }
+                          setDiemDanhNhomTable(newProjects);
+                        } else {
+                          Swal.fire(
+                            "Có lỗi",
+                            "Nội dung: " + response.data.message,
+                            "error"
+                          );
+                        }  
+                      })
+                      .catch((error) => {
+                        //console.log(error);
+                      }); 
 
-                    }                  
+                  }  
+
+                  }
+                  else
+                  {
+
+                  }
+              
                 }     
                 const onReset =() => {
                     if(params.row.REMARK ==='AUTO')
