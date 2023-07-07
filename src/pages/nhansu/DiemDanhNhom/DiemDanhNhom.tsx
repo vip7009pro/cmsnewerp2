@@ -43,7 +43,7 @@ const DiemDanhNhom = () => {
       renderCell: (params: any) => {
        return <img width={70} height={90} src={'/Picture_NS/NS_'+ params.row.EMPL_NO+'.jpg'} alt={params.row.EMPL_NO}></img>
       } },   
-        { field: "DIEMDANH", headerName: "DIEMDANH", width: 170, 
+        { field: "DIEMDANH", headerName: "DIEMDANH", width: 200, 
             renderCell: (params:any) => { 
                 let typeclass:string =params.row.ON_OFF===1 ? "onbt": params.row.ON_OFF===0 ?"offbt" : "";
                 const dangkynghi_auto = (REASON_CODE: number) => {
@@ -111,12 +111,10 @@ const DiemDanhNhom = () => {
 
                 }
 
-                const onClick = async (type: number) => {                
-                    //Swal.fire("Thông báo", "Gia tri = " + params.row.EMPL_NO, "success");
-                    //console.log(params.row.OFF_ID)
-                    //console.log(type)
-                    let current_team_dayshift: number = -1;
-                    await generalQuery("checkcurrentDAYSHIFT",{})
+                const onClick = async (type: number, calv?: number) => {                
+                    
+                    let current_team_dayshift: number = -2;
+                   /*  await generalQuery("checkcurrentDAYSHIFT",{})
                     .then((response) => {
                       //console.log(response.data.tk_status)
                       if (response.data.tk_status === "OK") {
@@ -126,8 +124,8 @@ const DiemDanhNhom = () => {
                       }
                     })
                     .catch((error) => {
-                      //console.log(error);
-                    });
+                      
+                    }); */
                     if(current_team_dayshift !== -1)
                     {
                       if(type===1)
@@ -138,7 +136,7 @@ const DiemDanhNhom = () => {
                           diemdanhvalue: type,
                           EMPL_NO: params.row.EMPL_NO,  
                           CURRENT_TEAM: (params.row.WORK_SHIF_NAME ==='Hành Chính' ? 0 : params.row.WORK_SHIF_NAME ==='TEAM 1' ? 1 : 2),
-                          CURRENT_CA: params.row.WORK_SHIF_NAME ==='Hành Chính' ? 0 : current_team_dayshift===(params.row.WORK_SHIF_NAME ==='TEAM 1' ? 1 : 2)? 1:2,
+                          CURRENT_CA: params.row.WORK_SHIF_NAME ==='Hành Chính' ? 0 : calv
                         })
                           .then((response) => {
                             //console.log(response.data);
@@ -176,7 +174,7 @@ const DiemDanhNhom = () => {
                         diemdanhvalue: type,
                         EMPL_NO: params.row.EMPL_NO,
                         CURRENT_TEAM: (params.row.WORK_SHIF_NAME ==='Hành Chính' ? 0 : params.row.WORK_SHIF_NAME ==='TEAM 1' ? 1 : 2),
-                        CURRENT_CA: params.row.WORK_SHIF_NAME ==='Hành Chính' ? 0 : current_team_dayshift===(params.row.WORK_SHIF_NAME ==='TEAM 1' ? 1 : 2)? 1:2,
+                        CURRENT_CA: params.row.WORK_SHIF_NAME ==='Hành Chính' ? 0 : calv
                       })
                         .then((response) => {
                           //console.log(response.data);
@@ -208,7 +206,7 @@ const DiemDanhNhom = () => {
                         diemdanhvalue: 0,
                         EMPL_NO: params.row.EMPL_NO,
                         CURRENT_TEAM: (params.row.WORK_SHIF_NAME ==='Hành Chính' ? 0 : params.row.WORK_SHIF_NAME ==='TEAM 1' ? 1 : 2),
-                        CURRENT_CA: params.row.WORK_SHIF_NAME ==='Hành Chính' ? 0 : current_team_dayshift===(params.row.WORK_SHIF_NAME ==='TEAM 1' ? 1 : 2)? 1:2,
+                        CURRENT_CA: params.row.WORK_SHIF_NAME ==='Hành Chính' ? 0 : calv
                       })
                         .then((response) => {
                           //console.log(response.data);
@@ -274,8 +272,11 @@ const DiemDanhNhom = () => {
                 {
                     return (
                         <div className={`onoffdiv ${typeclass}`}>
-                          <button className='onbutton' onClick={()=>onClick(1)}>
-                            Làm
+                          <button className='onbutton' onClick={()=>onClick(1,1)}>
+                            Làm Ngày
+                          </button> <br></br>
+                          <button className='onbutton' onClick={()=>onClick(1,2)}>
+                            Làm Đêm
                           </button> <br></br>
                           <button className='offbutton' onClick={()=>onClick(0)}>
                             Nghỉ

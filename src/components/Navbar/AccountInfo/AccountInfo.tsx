@@ -17,9 +17,12 @@ import Swal from "sweetalert2";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import { UserData, changeUserData } from "../../../redux/slices/globalSlice";
-
 import axios from 'axios';
 
+interface  MYCHAMCONG {
+  MIN_TIME: string,
+  MAX_TIME: string,
+}
 export function LinearProgressWithLabel(
   props: LinearProgressProps & { value: number }
 ) {
@@ -38,10 +41,11 @@ export function LinearProgressWithLabel(
 }
 
 export default function AccountInfo() {
-const userdata: UserData | undefined = useSelector(
-  (state: RootState) => state.totalSlice.userData
-);
-const dispatch = useDispatch();
+  const userdata: UserData | undefined = useSelector(
+    (state: RootState) => state.totalSlice.userData
+  );
+  const dispatch = useDispatch();
+  const [mychamcong,setMyChamCong] = useState<MYCHAMCONG>();
   const [lang,setLang] = useContext(LangConText);
   const [workday, setWorkDay] = useState(0);
   const [overtimeday, setOverTimeDay] = useState(0);
@@ -117,6 +121,53 @@ const dispatch = useDispatch();
         console.log(error);
       });
   };
+  const getchamcong =()=> {
+    generalQuery("checkMYCHAMCONG", {})
+      .then((response) => {
+        //console.log(response.data.data);
+        if (response.data.tk_status !== "NG") {
+          console.log('data',response.data.data)
+          let loaded_data: MYCHAMCONG = response.data.data[0];
+          loaded_data.MIN_TIME = loaded_data.MIN_TIME.substring(11,19);
+          loaded_data.MAX_TIME = loaded_data.MAX_TIME.substring(11,19); 
+          let tempminhour: number = Number(loaded_data.MIN_TIME.substring(0,2));
+          let tempminminute: number = Number(loaded_data.MIN_TIME.substring(3,5));
+
+          let tempmaxhour: number = Number(loaded_data.MAX_TIME.substring(0,2));
+          let tempmaxminute: number = Number(loaded_data.MAX_TIME.substring(3,5));
+
+          /* console.log('tempminhour',tempminhour);
+          console.log('tempmaxhour',tempmaxhour);
+
+          console.log('tempminminute',tempminminute);
+          console.log('tempmaxminute',tempmaxminute);
+ */
+
+          if(tempminhour === tempmaxhour) {
+            if(tempmaxminute - tempminminute >=30)
+            {
+              
+            }
+            else
+            {
+              loaded_data.MAX_TIME='Chưa chấm';              
+            }
+          }
+          console.log('gio xu ly',loaded_data)
+          setMyChamCong(loaded_data);          
+        }
+        else {
+          setMyChamCong({
+            MIN_TIME:'Chưa chấm',
+            MAX_TIME:'Chưa chấm'
+          })
+        }        
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+   
+  }
   let file:any = null;
   const uploadFile2 = async(e:any)=> {
     uploadQuery(file,'NS_'+ userdata?.EMPL_NO+'.jpg','Picture_NS')
@@ -135,8 +186,7 @@ const dispatch = useDispatch();
               })
               .catch((error) => {
                 console.log(error);
-              });  
-                     
+              });   
             } else {
               Swal.fire('Thông báo','Upload file thất bại:' + response.data.message,'error'); 
             }
@@ -148,6 +198,7 @@ const dispatch = useDispatch();
 
   useEffect(() => {    
     getData();
+    getchamcong();
     return () => {};
   }, []);
 
@@ -161,13 +212,30 @@ const dispatch = useDispatch();
   return (
     <div className='accountinfo'>
       <h1 className="text-3xl">{/* Thông tin của bạn */}{getsentence(17,lang)}</h1>
+      
       <div className='panelhome'>
         <div className={`cot0 ${(userdata?.EMPL_IMAGE ==='Y')? 'on':'off'}`}>        
           {(userdata?.EMPL_IMAGE ==='Y') && <img width={240} height={340} src={'/Picture_NS/NS_'+ userdata?.EMPL_NO+'.jpg'} alt={userdata?.EMPL_NO}></img>}
         </div>
         <div className={`cot1 ${(userdata?.EMPL_IMAGE ==='Y')? 'on':'off'}`}>
+       
           <h5 className="text-3xl">{/* Thông tin nhân viên */}{getsentence(18,lang)}:</h5>
           <ul>
+           
+                <div className="diemdanhinfo">
+              <div className="chamcongtitle">
+                 Chấm công ngày: {moment().format('YYYY-MM-DD')}
+                </div>
+                <div className="chamconginfo">
+                  <div className="chamcongmin">
+                    {mychamcong?.MIN_TIME !== null? mychamcong?.MIN_TIME: 'Chưa chấm'}
+                  </div>
+                  <div className="chamcongmax">
+                    {mychamcong?.MAX_TIME !== null? mychamcong?.MAX_TIME: 'Chưa chấm'}
+                  </div>
+                </div>
+              </div>
+           
             <li className='emplInfoList'>
               {" "}
              {/*  Họ và tên */}{getsentence(19,lang)}: {userdata?.MIDLAST_NAME} {userdata?.FIRST_NAME}

@@ -6,10 +6,10 @@ import "./Sidebar.scss";
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import HomeIcon from '@mui/icons-material/Home';
-import { FaDonate, FaFileInvoiceDollar,FaCheckCircle, FaHistory, FaBomb, FaPaperPlane, FaWarehouse, FaScroll } from 'react-icons/fa';
+import { FaDonate, FaFileInvoiceDollar,FaCheckCircle, FaHistory, FaBomb, FaPaperPlane, FaWarehouse, FaScroll, FaPeopleArrows } from 'react-icons/fa';
 import { BiCart, BiSortAZ, BiTrendingUp } from 'react-icons/bi';
 import { FcPlanner, FcSettings,FcBullish, FcPortraitMode,FcManager,FcCheckmark,FcPieChart,FcRefresh } from 'react-icons/fc';
-import { MdBugReport, MdDesignServices, MdInput, MdOutlineAppRegistration, MdOutlineAspectRatio, MdOutlineProductionQuantityLimits, MdOutlineSignalWifiStatusbarNull, MdPrecisionManufacturing, MdPriceChange } from "react-icons/md";
+import { MdBugReport, MdDesignServices, MdInput, MdOutlineAppRegistration, MdOutlineAspectRatio, MdOutlineChecklistRtl, MdOutlineProductionQuantityLimits, MdOutlineSignalWifiStatusbarNull, MdPrecisionManufacturing, MdPriceChange } from "react-icons/md";
 import { WiDayLightning } from "react-icons/wi";
 import { SiStatuspal } from "react-icons/si";
 import getsentence from "../../components/String/String";
@@ -52,13 +52,7 @@ const Sidebar = () => {
       icon: <FcManager color='green' size={25}/>,
       iconClosed: <KeyboardArrowDownIcon />,
       iconOpened: <KeyboardArrowUpIcon />,
-      subNav: [
-        {
-          title: getlang('quanlyphongban',lang),
-          path: '/nhansu/quanlyphongbannhanvien',
-          icon: <FcPortraitMode color='blue' size={25}/>,
-          MENU_CODE: 'NS1',          
-        },
+      subNav: [       
         {
           title:  getlang('diemdanhnhom',lang),
           path: '/nhansu/diemdanhnhom',
@@ -95,7 +89,28 @@ const Sidebar = () => {
           title: getlang('baocaonhansu',lang),
           path: '/nhansu/baocaonhansu',
           icon: <FcPieChart color='#cc99ff' size={25}/>,
-          MENU_CODE: 'NS8',        },       
+          MENU_CODE: 'NS8', },       
+      ]
+    },
+    {
+      title: getlang('phonghanhchinhnhansu',lang), /*Nhân sự*/
+      path: '#',
+      icon: <FaPeopleArrows color='#7F60F3' size={25}/>,
+      iconClosed: <KeyboardArrowDownIcon />,
+      iconOpened: <KeyboardArrowUpIcon />,
+      subNav: [
+        {
+          title: getlang('quanlyphongban',lang),
+          path: '/nhansu/quanlyphongbannhanvien',
+          icon: <FcPortraitMode color='blue' size={25}/>,
+          MENU_CODE: 'NS1',          
+        },
+        {
+          title: getlang('listchamcong',lang),
+          path: '/nhansu/listchamcong',
+          icon: <MdOutlineChecklistRtl color='blue' size={25}/>,
+          MENU_CODE: 'NS9',          
+        },              
       ]
     },
     {

@@ -62,6 +62,7 @@ import { LangConText, UserContext } from "../../api/Context";
 import { getlang } from "../String/String";
 import CAPA_MANAGER from "../../pages/qlsx/QLSXPLAN/CAPA/CAPA_MANAGER";
 import PLANRESULT from "../../pages/sx/PLANRESULT/PLANRESULT";
+import BANGCHAMCONG from "../../pages/nhansu/BangChamCong/BangChamCong";
 
 interface MENU_LIST_DATA {
   MENU_CODE: string;
@@ -122,6 +123,11 @@ const SubMenu = ({ item }: { item: any }) => {
       MENU_CODE: "NS8",
       MENU_NAME: getlang("baocaonhansu", lang),
       MENU_ITEM: <BaoCaoNhanSu />,
+    },
+    {
+      MENU_CODE: "NS9",
+      MENU_NAME: getlang("listchamcong", lang),
+      MENU_ITEM: <BANGCHAMCONG />,
     },
     {
       MENU_CODE: "KD1",

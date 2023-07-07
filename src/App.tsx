@@ -29,6 +29,7 @@ import FallBackComponent from "./components/Fallback/FallBackComponent";
 import PivotChart from "./components/PivotChart/PivotChart";
 import CAPA_MANAGER from "./pages/qlsx/QLSXPLAN/CAPA/CAPA_MANAGER";
 import PLANRESULT from "./pages/sx/PLANRESULT/PLANRESULT";
+import BANGCHAMCONG from "./pages/nhansu/BangChamCong/BangChamCong";
 /* import DATASX2 from "./pages/qlsx/QLSXPLAN/DATASX/DATASX2";
 import Home from "./pages/home/Home";
 import DiemDanhNhom from "./pages/nhansu/DiemDanhNhom/DiemDanhNhom";
@@ -1046,6 +1047,18 @@ function App() {
                               jobname='leader'
                             >
                               <QuanLyCapCao />
+                            </ProtectedRoute>
+                          }
+                        />
+                        <Route
+                          path='listchamcong'
+                          element={
+                            <ProtectedRoute
+                              user={globalUserData}
+                              maindeptname='NS'
+                              jobname='leader'
+                            >
+                              <BANGCHAMCONG />
                             </ProtectedRoute>
                           }
                         />

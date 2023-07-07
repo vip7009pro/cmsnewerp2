@@ -3,7 +3,24 @@ import { ResponsiveContainer } from 'recharts';
 import Swal from 'sweetalert2';
 import * as XLSX from 'xlsx';
 import { generalQuery } from './Api';
-
+import AccountInfo from '../components/Navbar/AccountInfo/AccountInfo';
+import QuanLyPhongBanNhanSu from '../pages/nhansu/QuanLyPhongBanNhanSu/QuanLyPhongBanNhanSu';
+import { getlang } from '../components/String/String';
+import DiemDanhNhom from '../pages/nhansu/DiemDanhNhom/DiemDanhNhom';
+import DieuChuyenTeam from '../pages/nhansu/DieuChuyenTeam/DieuChuyenTeam';
+import TabDangKy from '../pages/nhansu/DangKy/TabDangKy';
+import PheDuyetNghi from '../pages/nhansu/PheDuyetNghi/PheDuyetNghi';
+import LichSu from '../pages/nhansu/LichSu/LichSu';
+import QuanLyCapCao from '../pages/nhansu/QuanLyCapCao/QuanLyCapCao';
+import BaoCaoNhanSu from '../pages/nhansu/BaoCaoNhanSu/BaoCaoNhanSu';
+import PoManager from '../pages/kinhdoanh/pomanager/PoManager';
+import InvoiceManager from '../pages/kinhdoanh/invoicemanager/InvoiceManager';
+import PlanManager from '../pages/kinhdoanh/planmanager/PlanManager';
+import ShortageKD from '../pages/kinhdoanh/shortageKD/ShortageKD';
+import FCSTManager from '../pages/kinhdoanh/fcstmanager/FCSTManager';
+import YCSXManager from '../pages/kinhdoanh/ycsxmanager/YCSXManager';
+import POandStockFull from '../pages/kinhdoanh/poandstockfull/POandStockFull';
+import CODE_MANAGER from '../pages/rnd/code_manager/CODE_MANAGER';
 
 export const SaveExcel = (data: any, title: string) => {
     const worksheet = XLSX.utils.json_to_sheet(data);
@@ -94,7 +111,7 @@ export function CustomResponsiveContainer(props:any) {
  export async function checkBP(input_EMPL_NO: string | undefined,input_maindept: string| undefined,permitted_main_dept: Array<string>, func:any) {
   if(input_EMPL_NO !== undefined && input_maindept !== undefined)
   {
-    if(permitted_main_dept.indexOf(input_maindept)>-1 || input_EMPL_NO==='NHU1903')
+    if(permitted_main_dept.indexOf(input_maindept)>-1 || input_EMPL_NO==='NHU1903' || input_EMPL_NO==='NVD1201')
     {
       await func();
     }

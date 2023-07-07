@@ -4,9 +4,15 @@ import { generalQuery } from '../../../api/Api';
 import "./QuanLyPhongBanNhanSu.scss"
 import Swal from "sweetalert2";
 import LinearProgress from '@mui/material/LinearProgress';
-import {SaveExcel} from '../../../api/GlobalFunction';
+import {SaveExcel, checkBP} from '../../../api/GlobalFunction';
 import moment from 'moment';
 import { UserContext } from '../../../api/Context';
+import { RootState } from "../../../redux/store";
+import { useSelector, useDispatch } from "react-redux";
+import { UserData } from "../../../redux/slices/globalSlice";
+import { IconButton } from '@mui/material';
+import { BiRefresh } from 'react-icons/bi';
+
 interface MainDeptTableData {
   id: number;
   CTR_CD: string;
@@ -37,6 +43,7 @@ interface EmployeeTableData {
     CMS_ID: string,
     FIRST_NAME: string,
     MIDLAST_NAME: string,
+    FULL_NAME: string,
     DOB: string,
     HOMETOWN: string,
     ADD_PROVINCE: string,
@@ -78,8 +85,12 @@ interface EmployeeTableData {
     MAINDEPTCODE: number,
     MAINDEPTNAME: string,
     MAINDEPTNAME_KR: string,
+    NV_CCID: number,
 }
 const QuanLyPhongBanNhanSu = () => {
+  const userData: UserData | undefined = useSelector(
+    (state: RootState) => state.totalSlice.userData
+  );
     const [isLoading, setisLoading] = useState(false);
     const [workpositionload, setWorkPositionLoad] = useState<Array<WorkPositionTableData>>([]);
     const [EMPL_NO,setEMPL_NO]= useState("");
@@ -95,6 +106,7 @@ const QuanLyPhongBanNhanSu = () => {
     const [ADD_VILLAGE,setADD_VILLAGE]= useState("");
     const [PHONE_NUMBER,setPHONE_NUMBER]= useState("");
     const [WORK_START_DATE,setWORK_START_DATE]= useState(moment().format('YYYY-MM-DD'));
+    const [RESIGN_DATE,setRESIGN_DATE]= useState(moment().format('YYYY-MM-DD'));
     const [PASSWORD,setPASSWORD]= useState("");
     const [EMAIL,setEMAIL]= useState("");
     const [WORK_POSITION_CODE,setWORK_POSITION_CODE]= useState(0);
@@ -118,6 +130,9 @@ const QuanLyPhongBanNhanSu = () => {
     const [att_group_code,setATT_GROUP_CODE] = useState(1);
     const [avatar, setAvatar] = useState('');
     const [enableEdit, setEnableEdit]= useState(false);
+    const [NV_CCID, setNV_CCID]= useState(0);
+
+    const [resigned_check, setResignedCheck]= useState(true);
 
     const handle_them_maindept = ()=> {   
         const insertData = {
@@ -435,7 +450,8 @@ const QuanLyPhongBanNhanSu = () => {
         })
     }
     const handle_them_employee = ()=> {   
-        const insertData = {            
+        const insertData = {    
+            NV_CCID: NV_CCID,        
             EMPL_NO: EMPL_NO,
             CMS_ID: CMS_ID,
             FIRST_NAME: FIRST_NAME,
@@ -486,7 +502,8 @@ const QuanLyPhongBanNhanSu = () => {
         });
     }
     const handle_sua_employee = ()=> {
-        const insertData = {            
+        const insertData = { 
+            NV_CCID: NV_CCID,           
             EMPL_NO: EMPL_NO,
             CMS_ID: CMS_ID,
             FIRST_NAME: FIRST_NAME,
@@ -549,6 +566,7 @@ const QuanLyPhongBanNhanSu = () => {
         setADD_VILLAGE("");
         setPHONE_NUMBER("");
         setWORK_START_DATE("");
+        setRESIGN_DATE("");
         setPASSWORD("");
         setEMAIL("");          
         setSEX_CODE(0);
@@ -589,8 +607,13 @@ const QuanLyPhongBanNhanSu = () => {
         { field: "ATT_GROUP_CODE", headerName: "ATT_GROUP_CODE", width: 170},        
     ];
     const columns_employee_table =[       
-        { field: "EMPL_NO", headerName: "EMPL_NO", width: 170},  
-        { field: "CMS_ID", headerName: "CMS_ID", width: 170},  
+      { field: "EMPL_NO", headerName: "EMPL_NO", width: 120},  
+      { field: "CMS_ID", headerName: "CMS_ID", width: 120},  
+      { field: "NV_CCID", headerName: "NV_CCID", width: 120, renderCell: (params:any)=> {
+        return (
+          <span>{zeroPad(params.row.NV_CCID,6)}</span>
+        )
+      }},  
         { field: "FIRST_NAME", headerName: "FIRST_NAME", width: 170},  
         { field: "MIDLAST_NAME", headerName: "MIDLAST_NAME", width: 170},  
         { field: "DOB", headerName: "DOB", width: 170, valueGetter: (params: any) => {return params.row.DOB.slice(0,10)}},  
@@ -730,6 +753,7 @@ const QuanLyPhongBanNhanSu = () => {
             setWORK_POSITION_CODE(datafilter[datafilter.length-1].WORK_POSITION_CODE);
             setATT_GROUP_CODE(datafilter[datafilter.length-1].ATT_GROUP_CODE);
             setAvatar(datafilter[datafilter.length-1].EMPL_NO);
+            setNV_CCID(datafilter[datafilter.length-1].NV_CCID);
         }       
         //console.log(datafilter);        
     }
@@ -743,10 +767,33 @@ const QuanLyPhongBanNhanSu = () => {
             <button className='saveexcelbutton' onClick={()=>{SaveExcel(employeeTable.map((element:EmployeeTableData, index: number)=>{
                 return {
                     ...element,
+                    NV_CCID_TEXT: zeroPad(element.NV_CCID,6),
                     PASSWORD:'xxx'
                 }
 
             }),"DanhSachNhanVien")}}>Save Excel</button>
+
+
+          <IconButton
+              className='buttonIcon'
+              onClick={() => {
+                loademployeefull();               
+               
+              }}
+            >
+              <BiRefresh color='green' size={25} />
+              Search
+            </IconButton>
+            <label>
+              <b>Trừ người đã nghỉ_</b>
+              <input
+                type='checkbox'
+                name='alltimecheckbox'
+                defaultChecked={resigned_check}
+                onChange={() => setResignedCheck(!resigned_check)}
+              ></input>
+            </label>
+
           </GridToolbarContainer>
         );
       }
@@ -770,6 +817,36 @@ const QuanLyPhongBanNhanSu = () => {
         {
           setSelection({...selection, tab1:false, tab2: false, tab3:true});
         }
+      }
+      const zeroPad = (num: number, places: number) =>
+    String(num).padStart(places, "0");
+
+      const loademployeefull=()=> {
+        generalQuery('getemployee_full',{})
+        .then(response => {
+            //console.log(response.data); 
+            if(response.data.tk_status !=='NG')
+            {
+              const loaded_data: EmployeeTableData[] = response.data.data.map(
+                (element: EmployeeTableData, index: number) => {
+                  return {
+                    ...element,
+                    FULL_NAME: element.MIDLAST_NAME + ' ' + element.FIRST_NAME, 
+
+                  }
+                });
+                setEmployeeTable(loaded_data);
+                setisLoading(false);
+                Swal.fire("Thông báo", "Đã load " + response.data.data.length + " dòng", "success");  
+            }
+            else
+            {
+              Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");  
+            }
+        })
+        .catch(error => {
+            console.log(error);
+        });
       }
     useEffect(()=> {
         setisLoading(true);
@@ -1036,6 +1113,15 @@ const QuanLyPhongBanNhanSu = () => {
                       ></input>
                     </label>
                     <label>
+                      Mã Chấm Công
+                      <input
+                        name='gioitinh'
+                        value={NV_CCID}
+                        onChange={(e) => setNV_CCID(Number(e.target.value))}
+                      >                        
+                      </input>
+                    </label>
+                    <label>
                       Tên:{" "}
                       <input
                         disabled ={enableEdit}
@@ -1079,7 +1165,8 @@ const QuanLyPhongBanNhanSu = () => {
                         <option value={0}>Nữ</option>
                         <option value={1}>Nam</option>
                       </select>
-                    </label>
+                    </label>                   
+                                      
                   </div>
                   <div className='maindeptinputbox'>
                     <label>
@@ -1131,6 +1218,15 @@ const QuanLyPhongBanNhanSu = () => {
                       ></input>
                     </label>
                     <label>
+                      Ngày nghỉ việc:{" "}
+                      <input
+                        disabled={WORK_STATUS_CODE !== 0}
+                        type='date'
+                        value={RESIGN_DATE.slice(0, 10)}
+                        onChange={(e) => setRESIGN_DATE(e.target.value)}
+                      ></input>
+                    </label>
+                    <label>
                       Password:{" "}
                       <input
                         type='password'
@@ -1165,7 +1261,7 @@ const QuanLyPhongBanNhanSu = () => {
                       </select>
                     </label>
                     <label>
-                      Ca làm việc:
+                      Team làm việc:
                       <select
                         name='calamviec'
                         value={WORK_SHIFT_CODE}
@@ -1174,17 +1270,19 @@ const QuanLyPhongBanNhanSu = () => {
                         }
                       >
                         <option value={0}>Hành chính</option>
-                        <option value={1}>TEAM 1</option>
+                        <option value={1}>TEAM 1</option> 
                         <option value={2}>TEAM 2</option>
+                        <option value={3}>TEAM 12T</option>
                       </select>
                     </label>
                     <label>
-                      Chức danh:
+                      Cấp bậc:
                       <select
                         name='chucdanh'
                         value={POSITION_CODE}
                         onChange={(e) => setPOSITION_CODE(Number(e.target.value))}
                       >
+                        <option value={0}>Manager</option>
                         <option value={1}>AM</option>
                         <option value={2}>Senior</option>
                         <option value={3}>Staff</option>
@@ -1194,11 +1292,10 @@ const QuanLyPhongBanNhanSu = () => {
                     <label>
                       Chức vụ:
                       <select
-                        name='chucvu'
+                        name='chucvu' 
                         value={JOB_CODE}
                         onChange={(e) => setJOB_CODE(Number(e.target.value))}
-                      >
-                        <option value={0}>ADMIN</option>
+                      >                        
                         <option value={1}>Dept Staff</option>
                         <option value={2}>Leader</option>
                         <option value={3}>Sub Leader</option>
@@ -1233,13 +1330,15 @@ const QuanLyPhongBanNhanSu = () => {
                   </div>
                 </div>
                 <div className='maindeptbutton'>
-                <button className='thembutton' onClick={handle_them_employee}>
+                <button className='thembutton' onClick={()=> {
+                  checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['NHANSU'], handle_them_employee);
+                }}>
                   Thêm
                 </button>
-                <button className='suabutton' onClick={handle_sua_employee}>
+                <button className='suabutton' onClick={()=>{checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['NHANSU'], handle_sua_employee);  }}>
                   Update
                 </button>
-                <button className='xoabutton' onClick={handle_xoa_employee}>
+                <button className='xoabutton' onClick={()=>{checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['NHANSU'], handle_xoa_employee);  }}>
                   Clear
                 </button>
               </div>
@@ -1255,7 +1354,7 @@ const QuanLyPhongBanNhanSu = () => {
                 }}
                 loading={isLoading}
                 rowHeight={35}
-                rows={employeeTable}
+                rows={resigned_check? employeeTable.filter((ele: EmployeeTableData, index: number)=> ele.WORK_STATUS_CODE !== 0): employeeTable}
                 columns={columns_employee_table}
                 rowsPerPageOptions={[5, 10, 50, 100, 500]}
                 editMode='row'

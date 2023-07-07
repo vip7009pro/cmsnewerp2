@@ -753,8 +753,7 @@ const PLANRESULT = () => {
           verticalAlignment='bottom'
           horizontalAlignment='center'
         ></Legend>
-      </Chart>
-      
+      </Chart>      
     );
   }, [monthly_sx_data, width, height]);
   const getAvailableTime = () => {
