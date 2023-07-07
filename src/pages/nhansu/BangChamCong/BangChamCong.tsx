@@ -1149,7 +1149,7 @@ import { UserData } from "../../../redux/slices/globalSlice";
                         CHECK52: element.CHECK52 !== null? moment.utc(element.CHECK52).format("HH:mm"): '',
                         CHECK62: element.CHECK62 !== null? moment.utc(element.CHECK62).format("HH:mm"): '',
                       }).OUT_TIME,
-                     /*  IN_TIME: tinhInOutTime({
+                      /* IN_TIME: tinhInOutTime({
                         CA_CODE:element.CA_CODE,
                         IN_START: element.IN_START !== null? moment.utc(element.IN_START).format("HH:mm"): '',
                         IN_END: element.IN_END !== null? moment.utc(element.IN_END).format("HH:mm"): '',
@@ -1287,8 +1287,6 @@ import { UserData } from "../../../redux/slices/globalSlice";
             {
                 
                 case 0:
-
-
                     result= {
                         IN_TIME: moment(minStartRange).isValid()?  moment(minStartRange).format('HH:mm'): check1_nozero.length>0? moment(minAllCheck1).format('HH:mm'): '',
                         OUT_TIME: moment(maxStartRange).isValid()?  moment(maxStartRange).format('HH:mm'):check1_nozero.length>0? moment(maxAllCheck1).format('HH:mm'): '',
@@ -1334,29 +1332,33 @@ import { UserData } from "../../../redux/slices/globalSlice";
         const tgv: string = 'Thiếu giờ vào';
         const tgr: string = 'Thiếu giờ ra';
 
+
+        const in_start1: number = moment(moment(cainfo[1].IN_START).format('HH:mm'),'HH:mm').valueOf();
+
+        
         const check0_array: number[] = [
-            IO_DATA.CHECK10 !=='' ? moment(IO_DATA.CHECK10,'HH:mm').valueOf():0,
-            IO_DATA.CHECK20 !=='' ? moment(IO_DATA.CHECK20,'HH:mm').valueOf():0,
-            IO_DATA.CHECK30 !=='' ? moment(IO_DATA.CHECK30,'HH:mm').valueOf():0,
-            IO_DATA.CHECK40 !=='' ? moment(IO_DATA.CHECK40,'HH:mm').valueOf():0,
-            IO_DATA.CHECK50 !=='' ? moment(IO_DATA.CHECK50,'HH:mm').valueOf():0,
-            IO_DATA.CHECK60 !=='' ? moment(IO_DATA.CHECK60,'HH:mm').valueOf():0,           
+            IO_DATA.CHECK10 !=='' ? moment.utc(IO_DATA.CHECK10,'HH:mm').valueOf():0,
+            IO_DATA.CHECK20 !=='' ? moment.utc(IO_DATA.CHECK20,'HH:mm').valueOf():0,
+            IO_DATA.CHECK30 !=='' ? moment.utc(IO_DATA.CHECK30,'HH:mm').valueOf():0,
+            IO_DATA.CHECK40 !=='' ? moment.utc(IO_DATA.CHECK40,'HH:mm').valueOf():0,
+            IO_DATA.CHECK50 !=='' ? moment.utc(IO_DATA.CHECK50,'HH:mm').valueOf():0,
+            IO_DATA.CHECK60 !=='' ? moment.utc(IO_DATA.CHECK60,'HH:mm').valueOf():0,           
         ]
         const check1_array: number[] = [
-            IO_DATA.CHECK1 !=='' ? moment(IO_DATA.CHECK1,'HH:mm').valueOf():0,
-            IO_DATA.CHECK2 !=='' ? moment(IO_DATA.CHECK2,'HH:mm').valueOf():0,
-            IO_DATA.CHECK3 !=='' ? moment(IO_DATA.CHECK3,'HH:mm').valueOf():0,
-            IO_DATA.CHECK4 !=='' ? moment(IO_DATA.CHECK4,'HH:mm').valueOf():0,
-            IO_DATA.CHECK5 !=='' ? moment(IO_DATA.CHECK5,'HH:mm').valueOf():0,
-            IO_DATA.CHECK6 !=='' ? moment(IO_DATA.CHECK6,'HH:mm').valueOf():0,           
+            IO_DATA.CHECK1 !=='' ? moment.utc(IO_DATA.CHECK1,'HH:mm').valueOf():0,
+            IO_DATA.CHECK2 !=='' ? moment.utc(IO_DATA.CHECK2,'HH:mm').valueOf():0,
+            IO_DATA.CHECK3 !=='' ? moment.utc(IO_DATA.CHECK3,'HH:mm').valueOf():0,
+            IO_DATA.CHECK4 !=='' ? moment.utc(IO_DATA.CHECK4,'HH:mm').valueOf():0,
+            IO_DATA.CHECK5 !=='' ? moment.utc(IO_DATA.CHECK5,'HH:mm').valueOf():0,
+            IO_DATA.CHECK6 !=='' ? moment.utc(IO_DATA.CHECK6,'HH:mm').valueOf():0,           
         ]
         const check2_array: number[] = [
-            IO_DATA.CHECK12 !=='' ? moment(IO_DATA.CHECK12,'HH:mm').valueOf():0,
-            IO_DATA.CHECK22 !=='' ? moment(IO_DATA.CHECK22,'HH:mm').valueOf():0,
-            IO_DATA.CHECK32 !=='' ? moment(IO_DATA.CHECK32,'HH:mm').valueOf():0,
-            IO_DATA.CHECK42 !=='' ? moment(IO_DATA.CHECK42,'HH:mm').valueOf():0,
-            IO_DATA.CHECK52 !=='' ? moment(IO_DATA.CHECK52,'HH:mm').valueOf():0,
-            IO_DATA.CHECK62 !=='' ? moment(IO_DATA.CHECK62,'HH:mm').valueOf():0,  
+            IO_DATA.CHECK12 !=='' ? moment.utc(IO_DATA.CHECK12,'HH:mm').valueOf():0,
+            IO_DATA.CHECK22 !=='' ? moment.utc(IO_DATA.CHECK22,'HH:mm').valueOf():0,
+            IO_DATA.CHECK32 !=='' ? moment.utc(IO_DATA.CHECK32,'HH:mm').valueOf():0,
+            IO_DATA.CHECK42 !=='' ? moment.utc(IO_DATA.CHECK42,'HH:mm').valueOf():0,
+            IO_DATA.CHECK52 !=='' ? moment.utc(IO_DATA.CHECK52,'HH:mm').valueOf():0,
+            IO_DATA.CHECK62 !=='' ? moment.utc(IO_DATA.CHECK62,'HH:mm').valueOf():0,  
         ]
         const check0_nozero: number[]= check0_array.filter((ele: number, index: number)=> ele!==0);
         const check1_nozero: number[]= check1_array.filter((ele: number, index: number)=> ele!==0);
@@ -1383,8 +1385,7 @@ import { UserData } from "../../../redux/slices/globalSlice";
             const out_start2: number = moment(moment(cainfo[2].OUT_START).format('HH:mm'),'HH:mm').valueOf();
             const out_end2: number = moment(moment(cainfo[2].OUT_END).format('HH:mm'),'HH:mm').valueOf();
 
-           /*  console.log('-----------------');
-            
+            console.log('-----------------');            
             console.log('mincheck1',mincheck1);
 
             console.log('in_start1',in_start1);
@@ -1398,7 +1399,7 @@ import { UserData } from "../../../redux/slices/globalSlice";
             console.log('in_end2',in_end2);
             console.log('out_start2',out_start2);
             console.log('out_end2',out_end2);
- */
+
 
 
 
@@ -1421,7 +1422,7 @@ import { UserData } from "../../../redux/slices/globalSlice";
             let check0check: string = 'NA';
             if(maxcheck0 >= out_start1 && maxcheck0 <= out_end1)
             {
-                check0check = 'CA1';
+                check0check = 'CA1'; 
             }
             else if(maxcheck0 >= out_start2 && maxcheck0 <= out_end2)
             {
@@ -1462,7 +1463,7 @@ import { UserData } from "../../../redux/slices/globalSlice";
 
 
             console.log('check1check', check1check);
-            console.log('check2check', check0check);
+            console.log('check0check', check0check);
             console.log('final ca', final_ca);
   
             const in_start: number = final_ca === 'CA1'? in_start1 : in_start2;

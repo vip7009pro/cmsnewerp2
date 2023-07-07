@@ -278,9 +278,9 @@ const DiemDanhNhomBP = () => {
                       <button className='onbutton' onClick={()=>onClick(1,2)}>
                         Làm Đêm
                       </button> <br></br>
-                      <button className='offbutton' onClick={()=>onClick(0)}>
+                      <button className='offbutton' onClick={()=>onClick(0,1)}>
                         Nghỉ
-                      </button>
+                      </button>                         
                       <button className='off50button' onClick={()=>onClick(2)}>
                         50%
                       </button>

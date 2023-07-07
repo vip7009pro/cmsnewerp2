@@ -126,7 +126,7 @@ export default function AccountInfo() {
       .then((response) => {
         //console.log(response.data.data);
         if (response.data.tk_status !== "NG") {
-          console.log('data',response.data.data)
+          //console.log('data',response.data.data)
           let loaded_data: MYCHAMCONG = response.data.data[0];
           loaded_data.MIN_TIME = loaded_data.MIN_TIME.substring(11,19);
           loaded_data.MAX_TIME = loaded_data.MAX_TIME.substring(11,19); 
@@ -153,7 +153,7 @@ export default function AccountInfo() {
               loaded_data.MAX_TIME='Chưa chấm';              
             }
           }
-          console.log('gio xu ly',loaded_data)
+          //console.log('gio xu ly',loaded_data)
           setMyChamCong(loaded_data);          
         }
         else {
@@ -199,7 +199,14 @@ export default function AccountInfo() {
   useEffect(() => {    
     getData();
     getchamcong();
-    return () => {};
+    let intervalID2 = window.setInterval(() => {
+      getchamcong();         
+    }, 3000);
+
+
+    return () => {
+      window.clearInterval(intervalID2);
+    };
   }, []);
 
   const DOB = () => {
