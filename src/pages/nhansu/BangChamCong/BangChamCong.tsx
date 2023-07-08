@@ -17,7 +17,7 @@ import {
     Toolbar,
     TotalItem,
   } from "devextreme-react/data-grid";
-  import moment from "moment";
+  import moment, { duration } from "moment";
   import React, { useContext, useEffect, useState, useTransition } from "react";
   import {
     AiFillCloseCircle,
@@ -1034,8 +1034,7 @@ import { UserData } from "../../../redux/slices/globalSlice";
       ),
       [bangchamcong]
     );
-    const loadBangChamCong = ()=> {
-        
+    const loadBangChamCong = ()=> {        
         Swal.fire({
             title: "Tra data chấm công",
             text: "Đang tải dữ liệu, hãy chờ chút",
@@ -1220,6 +1219,7 @@ import { UserData } from "../../../redux/slices/globalSlice";
               Swal.fire("Thông báo", " Có lỗi : " + error, "error");
             });
     }
+    
     const tinhInOutTime =(IO_DATA: IN_OUT_DATA)=> {
         
         const in_start: number = moment(IO_DATA.IN_START,'HH:mm').valueOf();
@@ -1322,6 +1322,7 @@ import { UserData } from "../../../redux/slices/globalSlice";
         
     }
     const tinhInOutTime2 =(IO_DATA: IN_OUT_DATA2)=> {
+        
         console.log(cainfo);
         let team = IO_DATA.SHIFT_NAME;        
         let result= {
@@ -1337,33 +1338,45 @@ import { UserData } from "../../../redux/slices/globalSlice";
 
         
         const check0_array: number[] = [
-            IO_DATA.CHECK10 !=='' ? moment.utc(IO_DATA.CHECK10,'HH:mm').valueOf():0,
-            IO_DATA.CHECK20 !=='' ? moment.utc(IO_DATA.CHECK20,'HH:mm').valueOf():0,
-            IO_DATA.CHECK30 !=='' ? moment.utc(IO_DATA.CHECK30,'HH:mm').valueOf():0,
-            IO_DATA.CHECK40 !=='' ? moment.utc(IO_DATA.CHECK40,'HH:mm').valueOf():0,
-            IO_DATA.CHECK50 !=='' ? moment.utc(IO_DATA.CHECK50,'HH:mm').valueOf():0,
-            IO_DATA.CHECK60 !=='' ? moment.utc(IO_DATA.CHECK60,'HH:mm').valueOf():0,           
+            IO_DATA.CHECK10 !=='' ? moment(IO_DATA.CHECK10,'HH:mm').valueOf():0,
+            IO_DATA.CHECK20 !=='' ? moment(IO_DATA.CHECK20,'HH:mm').valueOf():0,
+            IO_DATA.CHECK30 !=='' ? moment(IO_DATA.CHECK30,'HH:mm').valueOf():0,
+            IO_DATA.CHECK40 !=='' ? moment(IO_DATA.CHECK40,'HH:mm').valueOf():0,
+            IO_DATA.CHECK50 !=='' ? moment(IO_DATA.CHECK50,'HH:mm').valueOf():0,
+            IO_DATA.CHECK60 !=='' ? moment(IO_DATA.CHECK60,'HH:mm').valueOf():0,           
         ]
         const check1_array: number[] = [
-            IO_DATA.CHECK1 !=='' ? moment.utc(IO_DATA.CHECK1,'HH:mm').valueOf():0,
-            IO_DATA.CHECK2 !=='' ? moment.utc(IO_DATA.CHECK2,'HH:mm').valueOf():0,
-            IO_DATA.CHECK3 !=='' ? moment.utc(IO_DATA.CHECK3,'HH:mm').valueOf():0,
-            IO_DATA.CHECK4 !=='' ? moment.utc(IO_DATA.CHECK4,'HH:mm').valueOf():0,
-            IO_DATA.CHECK5 !=='' ? moment.utc(IO_DATA.CHECK5,'HH:mm').valueOf():0,
-            IO_DATA.CHECK6 !=='' ? moment.utc(IO_DATA.CHECK6,'HH:mm').valueOf():0,           
+            IO_DATA.CHECK1 !=='' ? moment(IO_DATA.CHECK1,'HH:mm').valueOf():0,
+            IO_DATA.CHECK2 !=='' ? moment(IO_DATA.CHECK2,'HH:mm').valueOf():0,
+            IO_DATA.CHECK3 !=='' ? moment(IO_DATA.CHECK3,'HH:mm').valueOf():0,
+            IO_DATA.CHECK4 !=='' ? moment(IO_DATA.CHECK4,'HH:mm').valueOf():0,
+            IO_DATA.CHECK5 !=='' ? moment(IO_DATA.CHECK5,'HH:mm').valueOf():0,
+            IO_DATA.CHECK6 !=='' ? moment(IO_DATA.CHECK6,'HH:mm').valueOf():0,           
         ]
         const check2_array: number[] = [
-            IO_DATA.CHECK12 !=='' ? moment.utc(IO_DATA.CHECK12,'HH:mm').valueOf():0,
-            IO_DATA.CHECK22 !=='' ? moment.utc(IO_DATA.CHECK22,'HH:mm').valueOf():0,
-            IO_DATA.CHECK32 !=='' ? moment.utc(IO_DATA.CHECK32,'HH:mm').valueOf():0,
-            IO_DATA.CHECK42 !=='' ? moment.utc(IO_DATA.CHECK42,'HH:mm').valueOf():0,
-            IO_DATA.CHECK52 !=='' ? moment.utc(IO_DATA.CHECK52,'HH:mm').valueOf():0,
-            IO_DATA.CHECK62 !=='' ? moment.utc(IO_DATA.CHECK62,'HH:mm').valueOf():0,  
+            IO_DATA.CHECK12 !=='' ? moment(IO_DATA.CHECK12,'HH:mm').valueOf():0,
+            IO_DATA.CHECK22 !=='' ? moment(IO_DATA.CHECK22,'HH:mm').valueOf():0,
+            IO_DATA.CHECK32 !=='' ? moment(IO_DATA.CHECK32,'HH:mm').valueOf():0,
+            IO_DATA.CHECK42 !=='' ? moment(IO_DATA.CHECK42,'HH:mm').valueOf():0,
+            IO_DATA.CHECK52 !=='' ? moment(IO_DATA.CHECK52,'HH:mm').valueOf():0,
+            IO_DATA.CHECK62 !=='' ? moment(IO_DATA.CHECK62,'HH:mm').valueOf():0,  
         ]
+
+       
+
         const check0_nozero: number[]= check0_array.filter((ele: number, index: number)=> ele!==0);
         const check1_nozero: number[]= check1_array.filter((ele: number, index: number)=> ele!==0);
         const check2_nozero: number[]= check2_array.filter((ele: number, index: number)=> ele!==0);
 
+
+        const check0_array_decode: string[]= check0_nozero.map((ele:number)=>  moment(ele).format('HH:mm'));
+        const check1_array_decode: string[]= check1_nozero.map((ele:number)=>  moment(ele).format('HH:mm'));
+        const check2_array_decode: string[]= check2_nozero.map((ele:number)=>  moment(ele).format('HH:mm'));
+
+        console.table(check0_array_decode);
+        console.table(check1_array_decode);
+        console.table(check2_array_decode);
+  
         const mincheck0:number = Math.min.apply(Math, check0_nozero);
         const maxcheck0:number = Math.max.apply(Math, check0_nozero);
 
@@ -1373,21 +1386,26 @@ import { UserData } from "../../../redux/slices/globalSlice";
         const mincheck2:number = Math.min.apply(Math, check2_nozero);
         const maxcheck2:number = Math.max.apply(Math, check2_nozero);
         
-        if(team ==='TEAM 1' || team==='TEAM 2')
+        if(team ==='TEAM 1' || team==='TEAM 2' || 'TEAM 12T')
         {
-            const in_start1: number = moment(moment(cainfo[1].IN_START).format('HH:mm'),'HH:mm').valueOf();
-            const in_end1: number = moment(moment(cainfo[1].IN_END).format('HH:mm'),'HH:mm').valueOf();
-            const out_start1: number = moment(moment(cainfo[1].OUT_START).format('HH:mm'),'HH:mm').valueOf();
-            const out_end1: number = moment(moment(cainfo[1].OUT_END).format('HH:mm'),'HH:mm').valueOf();
+            const in_start1: number = moment(cainfo[1].IN_START.substring(11,16),'HH:mm').valueOf();
+            const in_end1: number = moment(cainfo[1].IN_END.substring(11,16),'HH:mm').valueOf();
+            const out_start1: number = moment(cainfo[1].OUT_START.substring(11,16),'HH:mm').valueOf();
+            const out_end1: number = moment(cainfo[1].OUT_END.substring(11,16),'HH:mm').valueOf();
 
-            const in_start2: number = moment(moment(cainfo[2].IN_START).format('HH:mm'),'HH:mm').valueOf();
-            const in_end2: number = moment(moment(cainfo[2].IN_END).format('HH:mm'),'HH:mm').valueOf();
-            const out_start2: number = moment(moment(cainfo[2].OUT_START).format('HH:mm'),'HH:mm').valueOf();
-            const out_end2: number = moment(moment(cainfo[2].OUT_END).format('HH:mm'),'HH:mm').valueOf();
+            const in_start2: number = moment(cainfo[2].IN_START.substring(11,16),'HH:mm').valueOf();
+            const in_end2: number = moment(cainfo[2].IN_END.substring(11,16),'HH:mm').valueOf();
+            const out_start2: number = moment(cainfo[2].OUT_START.substring(11,16),'HH:mm').valueOf();
+            const out_end2: number = moment(cainfo[2].OUT_END.substring(11,16),'HH:mm').valueOf();
+
+            
+
+
+            console.log('-----decode------------'); 
+            
 
             console.log('-----------------');            
             console.log('mincheck1',mincheck1);
-
             console.log('in_start1',in_start1);
             console.log('in_end1',in_end1);
             console.log('out_start1',out_start1);
@@ -1398,74 +1416,142 @@ import { UserData } from "../../../redux/slices/globalSlice";
             console.log('in_start2',in_start2);
             console.log('in_end2',in_end2);
             console.log('out_start2',out_start2);
-            console.log('out_end2',out_end2);
+            console.log('out_end2',out_end2); 
 
 
 
-
-
-           /*  const in_start2: number = moment.utc(moment(cainfo[2].IN_START).format('HH:mm'),'HH:mm').valueOf();
-            const in_end2: number = moment.utc(moment(cainfo[2].IN_END).format('HH:mm'),'HH:mm').valueOf();
-            const out_start2: number = moment.utc(moment(cainfo[2].OUT_START).format('HH:mm'),'HH:mm').valueOf();
-            const out_end2: number = moment.utc(moment(cainfo[2].OUT_END).format('HH:mm'),'HH:mm').valueOf(); */
             
             let check1check: string = 'NA';
             if(mincheck1 >= in_start1 && mincheck1 <= in_end1)
             {
-                check1check = 'CA1';
+                check1check = 'VAOCA1';
             }
             else if(mincheck1 >= in_start2 && mincheck1 <= in_end2)
             {
-                check1check = 'CA2';
+                check1check = 'VAOCA2';
+            }
+            
+            if(mincheck1 >= out_start1 && mincheck1 <= out_end1)
+            {
+                check1check = 'RACA1';
+            }
+            else if(mincheck1 >= out_start2 && mincheck1 <= out_end2)
+            {
+                check1check = 'RACA2';
             }
             
             let check0check: string = 'NA';
             if(maxcheck0 >= out_start1 && maxcheck0 <= out_end1)
             {
-                check0check = 'CA1'; 
+                check0check = 'RACA1'; 
             }
             else if(maxcheck0 >= out_start2 && maxcheck0 <= out_end2)
             {
-                check0check = 'CA2';
+                check0check = 'RACA2';
+            }
+
+            if(maxcheck0 >= in_start1 && maxcheck0 <= in_end1)
+            {
+                check0check = 'VAOCA1'; 
+            }
+            else if(maxcheck0 >= in_start2 && maxcheck0 <= in_end2)
+            {
+                check0check = 'VAOCA2';
             }
 
             let final_ca: string = 'NA';
-            if(check1check ==='CA1' && check0check ==='CA1')
+            if(check1check ==='VAOCA1' && check0check ==='VAOCA1')
+            {
+                final_ca = 'CA1';//
+            }            
+            else if(check1check ==='VAOCA1' && check0check ==='VAOCA2')
+            {
+                final_ca = 'CA1';//
+            }
+            if(check1check ==='VAOCA1' && check0check ==='RACA1')
             {
                 final_ca = 'CA1';
+            }            
+            else if(check1check ==='VAOCA1' && check0check ==='RACA2')
+            {
+                final_ca = 'CA1';//---
             }
-            else if(check1check ==='CA2' && check0check ==='CA1')
+            else if(check1check ==='VAOCA2' && check0check ==='VAOCA1')
+            {
+                final_ca = 'CA2';///
+            }
+            else if(check1check ==='VAOCA2' && check0check ==='VAOCA2')
+            {
+                final_ca = 'CA2';///
+            }
+            else if(check1check ==='VAOCA2' && check0check ==='RACA1')
+            {
+                final_ca = 'CA2';///
+            }
+            else if(check1check ==='VAOCA2' && check0check ==='RACA2')
+            {
+                final_ca = 'CA2';///
+            }
+            else if(check1check ==='RACA1' && check0check ==='VAOCA1')
             {
                 final_ca = 'CA2';
-            }
+            }           
+            else if(check1check ==='RACA1' && check0check ==='VAOCA2')
+            {
+                final_ca = 'CA2';
+            }           
+            else if(check1check ==='RACA1' && check0check ==='RACA1')
+            {
+                final_ca = 'CA2';
+            }           
+            else if(check1check ==='RACA1' && check0check ==='RACA2')
+            {
+                final_ca = 'CA2';
+            }           
+            else if(check1check ==='RACA2' && check0check ==='VAOCA1')
+            {
+                final_ca = 'CA2';
+            }           
+            else if(check1check ==='RACA2' && check0check ==='VAOCA2')
+            {
+                final_ca = 'CA2';
+            }           
+            else if(check1check ==='RACA2' && check0check ==='RACA1')
+            {
+                final_ca = 'CA2';
+            }           
+            else if(check1check ==='RACA2' && check0check ==='RACA2')
+            {
+                final_ca = 'CA2';
+            }           
             else 
             {
                 final_ca ='NA'
             }
+
+            console.log('-----------------');          
             console.log('_IN_START',cainfo[1].IN_START);
             console.log('in_start1',in_start1);
 
-            console.log('in_start1',moment.utc(in_start1).format('HH:mm'));
-            console.log('in_end1',moment.utc(in_end1).format('HH:mm'));
-            console.log('mincheck1', moment.utc(mincheck1).format('HH:mm'));
+            console.log('in_start1',moment(in_start1).format('HH:mm'));
+            console.log('in_end1',moment(in_end1).format('HH:mm'));
+            console.log('mincheck1', moment(mincheck1).format('HH:mm'));
 
-            console.log('out_start1',moment.utc(out_start1).format('HH:mm'));
-            console.log('out_end1',moment.utc(out_end1).format('HH:mm'));
+            console.log('out_start1',moment(out_start1).format('HH:mm'));
+            console.log('out_end1',moment(out_end1).format('HH:mm'));
 
-            console.log('in_start2',moment.utc(in_start2).format('HH:mm'));
-            console.log('in_end2',moment.utc(in_end2).format('HH:mm'));
+            console.log('in_start2',moment(in_start2).format('HH:mm'));
+            console.log('in_end2',moment(in_end2).format('HH:mm'));
 
-            console.log('out_start2',moment.utc(out_start2).format('HH:mm'));
-            console.log('out_end2',moment.utc(out_end2).format('HH:mm'));
+            console.log('out_start2',moment(out_start2).format('HH:mm'));
+            console.log('out_end2',moment(out_end2).format('HH:mm'));
             
-            console.log('maxcheck0', moment.utc(maxcheck0).format('HH:mm'));
-
-
+            console.log('maxcheck0', moment(maxcheck0).format('HH:mm'));
 
             console.log('check1check', check1check);
             console.log('check0check', check0check);
             console.log('final ca', final_ca);
-  
+              
             const in_start: number = final_ca === 'CA1'? in_start1 : in_start2;
             const in_end: number = final_ca === 'CA1'? in_end1 : in_end2;
             const out_start: number = final_ca === 'CA1'? out_start1 : out_start2;
@@ -1498,8 +1584,7 @@ import { UserData } from "../../../redux/slices/globalSlice";
             const maxAllCheck1:number = Math.max.apply(Math,check1_nozero);
 
             //max all check2
-            const maxAllCheck2:number = Math.max.apply(Math,check2_nozero);       
-
+            const maxAllCheck2:number = Math.max.apply(Math,check2_nozero);
 
             switch(final_ca)
             { 
@@ -1516,9 +1601,11 @@ import { UserData } from "../../../redux/slices/globalSlice";
                     }
                 break;
                 default: 
+                    let  temp_intime = check1_nozero.length>0? moment(minAllCheck1).format('HH:mm'): tgv;
+                    let  temp_outtime = check1_nozero.length>0? moment(maxAllCheck1).format('HH:mm'): tgv;
                     result= {
-                        IN_TIME: tgv,
-                        OUT_TIME: tgr,
+                        IN_TIME: temp_intime===temp_outtime? temp_intime: tgv,
+                        OUT_TIME: temp_intime===temp_outtime? tgr: temp_outtime,
                     }
                 break;
             }
@@ -1568,17 +1655,13 @@ import { UserData } from "../../../redux/slices/globalSlice";
         }
 
         return result;
-    }
-  
+    }  
+    
     const testcomparetime=()=> {
-        const a:number = moment('19:47:42','HH:mm').valueOf();
-        const b:number = moment('19:47:42','HH:mm').valueOf();
-        const c:number = moment('00:00','HH:mm').valueOf();
-
+        const a:number = moment.utc('19:47:42','HH:mm:ss').valueOf();
+        const reverse_a: string = moment.utc(a).format('HH:mm:ss');
         console.log('a',a);
-        console.log('b',b);
-        console.log(a===b)
-
+        console.log('reverse_a',reverse_a);      
     }
     const loadCaInfo=()=> {
         generalQuery("loadCaInfo", {
@@ -1607,7 +1690,7 @@ import { UserData } from "../../../redux/slices/globalSlice";
     }
 
     useEffect(() => {
-      //testcomparetime();
+      testcomparetime();
       loadCaInfo();
     }, []);
     return (
