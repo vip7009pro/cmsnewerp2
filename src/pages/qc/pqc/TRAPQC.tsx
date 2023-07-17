@@ -48,6 +48,12 @@ interface PQC1_DATA {
   REMARK: string;
   INS_DATE: string;
   UPD_DATE: string;
+  PQC3_ID: string, 
+  OCCURR_TIME: string,
+  INSPECT_QTY: number,
+  DEFECT_QTY: number,
+  DEFECT_RATE: number,
+  DEFECT_PHENOMENON: number,
 }
 interface PQC3_DATA {
   YEAR_WEEK: string;
@@ -192,6 +198,18 @@ const TRAPQC = () => {
       },
     },
     { field: "REMARK", headerName: "REMARK", width: 80 },
+    { field: "PQC3_ID", headerName: "PQC3_ID", width: 80 },
+    { field: "OCCURR_TIME", headerName: "OCCURR_TIME", width: 150 },
+    { field: "INSPECT_QTY", headerName: "INSPECT_QTY", width: 120 },
+    { field: "DEFECT_QTY", headerName: "DEFECT_QTY", width: 120 },
+    { field: "DEFECT_RATE", headerName: "DEFECT_RATE", width: 120, renderCell: (params: any) => {
+      return (
+        <span style={{ color: "red" }}>
+          {params.row.DEFECT_RATE.toLocaleString('en-US',{ maximumFractionDigits: 0,})}%
+        </span>
+      );
+    },},
+    { field: "DEFECT_PHENOMENON", headerName: "DEFECT_PHENOMENON", width: 150 },
     {
       field: "INS_DATE",
       type: "date",
@@ -445,9 +463,13 @@ const TRAPQC = () => {
                 PROD_DATETIME: moment
                   .utc(element.INS_DATE)
                   .format("YYYY-MM-DD HH:mm:ss"),
+                OCCURR_TIME: element.OCCURR_TIME !== null ? moment
+                  .utc(element.OCCURR_TIME)
+                  .format("YYYY-MM-DD HH:mm:ss"):'',
                 INPUT_DATETIME: moment
                   .utc(element.UPD_DATE)
                   .format("YYYY-MM-DD HH:mm:ss"),
+                DEFECT_RATE: element.INSPECT_QTY !== null? (element.DEFECT_QTY !== null? element.DEFECT_QTY: 0)/(element.INSPECT_QTY)*100:'',
                 id: index,
               };
             }

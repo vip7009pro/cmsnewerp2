@@ -95,6 +95,48 @@ import { UserData } from "../../../redux/slices/globalSlice";
     IN_TIME: string,
     OUT_TIME: string,
   }
+  interface BANGCHAMCONG_DATA2 {
+    DATE_COLUMN: string,
+    WEEKDAY: string,
+    NV_CCID: string,
+    EMPL_NO: string,
+    CMS_ID: string,
+    MIDLAST_NAME: string,
+    FIRST_NAME: string,
+    FULL_NAME: string,
+    PHONE_NUMBER: string,
+    SEX_NAME: string,
+    WORK_STATUS_NAME: string,
+    FACTORY_NAME: string,
+    JOB_NAME: string,
+    WORK_SHIF_NAME: string,
+    WORK_POSITION_NAME: string,
+    SUBDEPTNAME: string,
+    MAINDEPTNAME: string,
+    REQUEST_DATE: string,
+    APPLY_DATE: string,
+    APPROVAL_STATUS: string,
+    OFF_ID: number,
+    CA_NGHI: number,
+    ON_OFF: number,
+    OVERTIME_INFO: string,
+    OVERTIME: number,
+    REASON_NAME: string,
+    REMARK: string,
+    XACNHAN: string,
+    CHECK1: string,
+    CHECK2: string,
+    CHECK3: string,
+    PREV_CHECK1: string,
+    PREV_CHECK2: string,
+    PREV_CHECK3: string,
+    NEXT_CHECK1: string,
+    NEXT_CHECK2: string,
+    NEXT_CHECK3: string,
+    IN_TIME: string,
+    OUT_TIME: string,
+    
+  }
   interface CA_INFO {
     CA_CODE: number,
     CA_NAME: string,
@@ -106,7 +148,6 @@ import { UserData } from "../../../redux/slices/globalSlice";
     LAUNCH_START: string,
     LAUNCH_END: string,
   }
-
   interface IN_OUT_DATA {
     CA_CODE: number;
     IN_START: string;
@@ -159,26 +200,29 @@ import { UserData } from "../../../redux/slices/globalSlice";
     CHECK52: string;
     CHECK62: string;
   }
+  interface IN_OUT_DATA22 {
+    SHIFT_NAME: string;
+    CHECK1: string,
+    CHECK2: string,
+    CHECK3: string,
+    PREV_CHECK1: string,
+    PREV_CHECK2: string,
+    PREV_CHECK3: string,
+    NEXT_CHECK1: string,
+    NEXT_CHECK2: string,
+    NEXT_CHECK3: string,
+  }
   const BANGCHAMCONG = () => {
     const userData: UserData | undefined = useSelector(
         (state: RootState) => state.totalSlice.userData
     );
     const [cainfo,setCaInfo]= useState<CA_INFO[]>([]);
     const [bangchamcong,setBangChamCong]= useState<BANGCHAMCONG_DATA[]>([]);
+    const [bangchamcong2,setBangChamCong2]= useState<BANGCHAMCONG_DATA2[]>([]);
     const [showhidePivotTable, setShowHidePivotTable] = useState(false);
     const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
     const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));
-    const [codeKD, setCodeKD] = useState("");
-    const [codeCMS, setCodeCMS] = useState("");
-    const [machine, setMachine] = useState("ALL");
-    const [factory, setFactory] = useState("ALL");
-    const [prodrequestno, setProdRequestNo] = useState("");
-    const [plan_id, setPlanID] = useState("");
-    const [alltime, setAllTime] = useState(false);
-    const [id, setID] = useState("");
-    const [datasxtable, setDataSXTable] = useState<Array<any>>([]);
-    const [m_name, setM_Name] = useState("");
-    const [m_code, setM_Code] = useState("");
+    const [alltime, setAllTime] = useState(false);  
 
   const fields_chamcong: any = [
     {
@@ -893,7 +937,7 @@ import { UserData } from "../../../redux/slices/globalSlice";
             cellHintEnabled={true}
             columnResizingMode={"widget"}
             showColumnLines={true}
-            dataSource={bangchamcong}
+            dataSource={bangchamcong2}
             columnWidth='auto'
             keyExpr='id'
             height={"70vh"}
@@ -963,64 +1007,46 @@ import { UserData } from "../../../redux/slices/globalSlice";
               infoText='Page #{0}. Total: {1} ({2} items)'
               displayMode='compact'
             />                        
-            <Column dataField='EMPL_NO' caption='EMPL_NO' width={100}></Column>
-            <Column dataField='CMS_ID' caption='CMS_ID' width={100}></Column>
-            <Column dataField='NV_CCID' caption='NV_CCID' width={100}></Column>
+            <Column dataField='DATE_COLUMN' caption='DATE_COLUMN' width={100} dataType='date'></Column>
+            <Column dataField='WEEKDAY' caption='WEEKDAY' width={80} dataType='date'></Column>
+            <Column dataField='NV_CCID' caption='NV_CCID' width={80}></Column>
+            <Column dataField='EMPL_NO' caption='EMPL_NO' width={80}></Column>
+            <Column dataField='CMS_ID' caption='CMS_ID' width={80}></Column>
            {/*  <Column dataField='MIDLAST_NAME' caption='MIDLAST_NAME' width={100}></Column>
             <Column dataField='FIRST_NAME' caption='FIRST_NAME' width={100}></Column> */}
             <Column dataField='FULL_NAME' caption='FULL_NAME' width={100}></Column>
            {/*  <Column dataField='PHONE_NUMBER' caption='PHONE_NUMBER' width={100}></Column>
-            <Column dataField='SEX_NAME' caption='SEX_NAME' width={100}></Column> */}
-            {/* <Column dataField='WORK_STATUS_NAME' caption='WORK_STATUS_NAME' width={100}></Column> */}
+            <Column dataField='SEX_NAME' caption='SEX_NAME' width={100}></Column>
+            <Column dataField='WORK_STATUS_NAME' caption='WORK_STATUS_NAME' width={100}></Column> */}
             <Column dataField='FACTORY_NAME' caption='FACTORY_NAME' width={100}></Column>
             {/* <Column dataField='JOB_NAME' caption='JOB_NAME' width={100}></Column> */}
             <Column dataField='WORK_SHIF_NAME' caption='WORK_SHIF_NAME' width={100}></Column>
-           {/*  <Column dataField='WORK_POSITION_NAME' caption='WORK_POSITION_NAME' width={100}></Column>
+            {/* <Column dataField='WORK_POSITION_NAME' caption='WORK_POSITION_NAME' width={100}></Column>
             <Column dataField='SUBDEPTNAME' caption='SUBDEPTNAME' width={100}></Column> */}
             <Column dataField='MAINDEPTNAME' caption='MAINDEPTNAME' width={100}></Column>
-           {/*  <Column dataField='REQUEST_DATE' caption='REQUEST_DATE' width={100}></Column>
+            {/* <Column dataField='REQUEST_DATE' caption='REQUEST_DATE' width={100}></Column>
             <Column dataField='APPLY_DATE' caption='APPLY_DATE' width={100}></Column>
-            <Column dataField='APPROVAL_STATUS' caption='APPROVAL_STATUS' width={100}></Column>
-            <Column dataField='OFF_ID' caption='OFF_ID' width={100}></Column>
+            <Column dataField='APPROVAL_STATUS' caption='APPROVAL_STATUS' width={100}></Column> */}
+           {/*  <Column dataField='OFF_ID' caption='OFF_ID' width={100}></Column>
             <Column dataField='CA_NGHI' caption='CA_NGHI' width={100}></Column>
             <Column dataField='ON_OFF' caption='ON_OFF' width={100}></Column>
             <Column dataField='OVERTIME_INFO' caption='OVERTIME_INFO' width={100}></Column>
             <Column dataField='OVERTIME' caption='OVERTIME' width={100}></Column> */}
-            
-           {/*  <Column dataField='REMARK' caption='REMARK' width={100}></Column>
-            <Column dataField='XACNHAN' caption='XACNHAN' width={100}></Column>
-            <Column dataField='CA_CODE' caption='CA_CODE' width={100}></Column> */}
-            <Column dataField='CA_NAME' caption='CA_NAME' width={100}></Column>
-           {/*  <Column dataField='IN_START' caption='IN_START' width={100}></Column>
-            <Column dataField='IN_END' caption='IN_END' width={100}></Column>
-            <Column dataField='OUT_START' caption='OUT_START' width={100}></Column>
-            <Column dataField='OUT_END' caption='OUT_END' width={100}></Column> */}
-            <Column dataField='DATE_COLUMN' caption='DATE_COLUMN' width={100} dataType='date'></Column>
-            <Column dataField='WEEKDAY' caption='WEEKDAY' width={100}></Column>
+            {/* <Column dataField='REMARK' caption='REMARK' width={100}></Column> */}
+            {/* <Column dataField='XACNHAN' caption='XACNHAN' width={100}></Column> */}
             <Column dataField='IN_TIME' caption='IN_TIME' width={100}></Column>
             <Column dataField='OUT_TIME' caption='OUT_TIME' width={100}></Column>
             <Column dataField='REASON_NAME' caption='REASON_NAME' width={100}></Column>
-            {/* <Column dataField='CHECK_DATE' caption='CHECK_DATE' width={100}></Column> */}
-            <Column dataField='CHECK10' caption='CHECK10' width={100}></Column>
-            <Column dataField='CHECK20' caption='CHECK20' width={100}></Column>
-            <Column dataField='CHECK30' caption='CHECK30' width={100}></Column>
-            <Column dataField='CHECK40' caption='CHECK40' width={100}></Column>
-            <Column dataField='CHECK50' caption='CHECK50' width={100}></Column>
-            <Column dataField='CHECK60' caption='CHECK60' width={100}></Column>
-
             <Column dataField='CHECK1' caption='CHECK1' width={100}></Column>
             <Column dataField='CHECK2' caption='CHECK2' width={100}></Column>
             <Column dataField='CHECK3' caption='CHECK3' width={100}></Column>
-            <Column dataField='CHECK4' caption='CHECK4' width={100}></Column>
-            <Column dataField='CHECK5' caption='CHECK5' width={100}></Column>
-            <Column dataField='CHECK6' caption='CHECK6' width={100}></Column>
-            {/* <Column dataField='CHECK_DATE2' caption='CHECK_DATE2' width={100}></Column> */}
-            <Column dataField='CHECK12' caption='CHECK12' width={100}></Column>
-            <Column dataField='CHECK22' caption='CHECK22' width={100}></Column>
-            <Column dataField='CHECK32' caption='CHECK32' width={100}></Column>
-            <Column dataField='CHECK42' caption='CHECK42' width={100}></Column>
-            <Column dataField='CHECK52' caption='CHECK52' width={100}></Column>
-            <Column dataField='CHECK62' caption='CHECK62' width={100}></Column>
+            <Column dataField='PREV_CHECK1' caption='PREV_CHECK1' width={100}></Column>
+            <Column dataField='PREV_CHECK2' caption='PREV_CHECK2' width={100}></Column>
+            <Column dataField='PREV_CHECK3' caption='PREV_CHECK3' width={100}></Column>
+            <Column dataField='NEXT_CHECK1' caption='NEXT_CHECK1' width={100}></Column>
+            <Column dataField='NEXT_CHECK2' caption='NEXT_CHECK2' width={100}></Column>
+            <Column dataField='NEXT_CHECK3' caption='NEXT_CHECK3' width={100}></Column>
+
             <Summary>
               <TotalItem
                 alignment='right'
@@ -1032,7 +1058,7 @@ import { UserData } from "../../../redux/slices/globalSlice";
           </DataGrid>
         </div>
       ),
-      [bangchamcong]
+      [bangchamcong2]
     );
     const loadBangChamCong = ()=> {        
         Swal.fire({
@@ -1047,15 +1073,7 @@ import { UserData } from "../../../redux/slices/globalSlice";
           generalQuery("loadC001", {
             ALLTIME: alltime,
             FROM_DATE: fromdate,
-            TO_DATE: todate,
-            PROD_REQUEST_NO: prodrequestno,
-            PLAN_ID: plan_id,
-            M_NAME: m_name,
-            M_CODE: m_code,
-            G_NAME: codeKD,
-            G_CODE: codeCMS,
-            FACTORY: factory,
-            PLAN_EQ: machine,
+            TO_DATE: todate,           
           })
             .then((response) => {
               //console.log(response.data.data);
@@ -1066,7 +1084,7 @@ import { UserData } from "../../../redux/slices/globalSlice";
                       ...element,
                       WEEKDAY: weekdayarray[new Date(element.DATE_COLUMN).getDay()],
                       FULL_NAME: element.MIDLAST_NAME + ' ' + element.FIRST_NAME,
-                      DATE_COLUMN: moment.utc(element.DATE_COLUMN).format("DD/MM/YYYY"),
+                      DATE_COLUMN: element.DATE_COLUMN.substring(0,10),
                       APPLY_DATE:  element.APPLY_DATE !== null? moment.utc(element.APPLY_DATE).format("DD/MM/YYYY"): '',
                       CHECK_DATE0:  element.CHECK_DATE0 !== null? moment.utc(element.CHECK_DATE0).format("DD/MM/YYYY"): '',
                       CHECK_DATE:  element.CHECK_DATE2 !== null? moment.utc(element.CHECK_DATE).format("DD/MM/YYYY"): '',
@@ -1098,7 +1116,7 @@ import { UserData } from "../../../redux/slices/globalSlice";
                       OUT_START: element.OUT_START !== null? moment.utc(element.OUT_START).format("HH:mm"): '',
                       OUT_END: element.OUT_END !== null? moment.utc(element.OUT_END).format("HH:mm"): '',
 
-                      IN_TIME: tinhInOutTime2({
+                     /*  IN_TIME: tinhInOutTime2({
                         SHIFT_NAME:element.WORK_SHIF_NAME,
                         IN_START: element.IN_START !== null? moment.utc(element.IN_START).format("HH:mm"): '',
                         IN_END: element.IN_END !== null? moment.utc(element.IN_END).format("HH:mm"): '',
@@ -1147,8 +1165,8 @@ import { UserData } from "../../../redux/slices/globalSlice";
                         CHECK42: element.CHECK42 !== null? moment.utc(element.CHECK42).format("HH:mm"): '',
                         CHECK52: element.CHECK52 !== null? moment.utc(element.CHECK52).format("HH:mm"): '',
                         CHECK62: element.CHECK62 !== null? moment.utc(element.CHECK62).format("HH:mm"): '',
-                      }).OUT_TIME,
-                      /* IN_TIME: tinhInOutTime({
+                      }).OUT_TIME, */
+                      IN_TIME: tinhInOutTime({
                         CA_CODE:element.CA_CODE,
                         IN_START: element.IN_START !== null? moment.utc(element.IN_START).format("HH:mm"): '',
                         IN_END: element.IN_END !== null? moment.utc(element.IN_END).format("HH:mm"): '',
@@ -1197,12 +1215,92 @@ import { UserData } from "../../../redux/slices/globalSlice";
                         CHECK42: element.CHECK42 !== null? moment.utc(element.CHECK42).format("HH:mm"): '',
                         CHECK52: element.CHECK52 !== null? moment.utc(element.CHECK52).format("HH:mm"): '',
                         CHECK62: element.CHECK62 !== null? moment.utc(element.CHECK62).format("HH:mm"): '',
-                      }).OUT_TIME, */
+                      }).OUT_TIME,
                       id: index,
                     };
                   }
                 );               
                 setBangChamCong(loaded_data);
+                setSelectedDataSource(
+                  new PivotGridDataSource({
+                    fields: fields_chamcong,
+                    store: loaded_data,
+                  })
+                );                
+                Swal.fire("Thông báo", " Đã tải: " + loaded_data.length +' dòng', "success");
+              } else {
+                Swal.fire("Thông báo", " Có lỗi : " + response.data.message, "error");
+              }
+            })
+            .catch((error) => {
+              console.log(error);
+              Swal.fire("Thông báo", " Có lỗi : " + error, "error");
+            });
+    }
+    const loadBangChamCong2 = ()=> {        
+        Swal.fire({
+            title: "Tra data chấm công",
+            text: "Đang tải dữ liệu, hãy chờ chút",
+            icon: "info",
+            showCancelButton: false,
+            allowOutsideClick: false,
+            confirmButtonText: "OK",
+            showConfirmButton: false,
+          });
+          generalQuery("loadC0012", {
+            ALLTIME: alltime,
+            FROM_DATE: fromdate,
+            TO_DATE: todate,           
+          })
+            .then((response) => {
+              //console.log(response.data.data);
+              if (response.data.tk_status !== "NG") {
+                const loaded_data: BANGCHAMCONG_DATA2[] = response.data.data.map(
+                  (element: BANGCHAMCONG_DATA2, index: number) => {
+                    return {
+                      ...element,
+                      WEEKDAY: weekdayarray[new Date(element.DATE_COLUMN).getDay()],
+                      FULL_NAME: element.MIDLAST_NAME + ' ' + element.FIRST_NAME,
+                      DATE_COLUMN: element.DATE_COLUMN.substring(0,10),
+                      APPLY_DATE:  element.APPLY_DATE !== null? moment.utc(element.APPLY_DATE).format("DD/MM/YYYY"): '',
+                      CHECK1: element.CHECK1 !== null? moment.utc(element.CHECK1).format("HH:mm:ss"): '',
+                      CHECK2: element.CHECK2 !== null? moment.utc(element.CHECK2).format("HH:mm:ss"): '',
+                      CHECK3: element.CHECK3 !== null? moment.utc(element.CHECK3).format("HH:mm:ss"): '',
+                      PREV_CHECK1: element.PREV_CHECK1 !== null? moment.utc(element.PREV_CHECK1).format("HH:mm:ss"): '',
+                      PREV_CHECK2: element.PREV_CHECK2 !== null? moment.utc(element.PREV_CHECK2).format("HH:mm:ss"): '',
+                      PREV_CHECK3: element.PREV_CHECK3 !== null? moment.utc(element.PREV_CHECK3).format("HH:mm:ss"): '',
+                      NEXT_CHECK1: element.NEXT_CHECK1 !== null? moment.utc(element.NEXT_CHECK1).format("HH:mm:ss"): '',
+                      NEXT_CHECK2: element.NEXT_CHECK2 !== null? moment.utc(element.NEXT_CHECK2).format("HH:mm:ss"): '',
+                      NEXT_CHECK3: element.NEXT_CHECK3 !== null? moment.utc(element.NEXT_CHECK3).format("HH:mm:ss"): '',
+                      IN_TIME:tinhInOutTime22({
+                        SHIFT_NAME: element.WORK_SHIF_NAME,
+                        CHECK1: element.CHECK1 !== null? moment.utc(element.CHECK1).format("HH:mm"): '',
+                        CHECK2: element.CHECK2 !== null? moment.utc(element.CHECK2).format("HH:mm"): '',
+                        CHECK3: element.CHECK3 !== null? moment.utc(element.CHECK3).format("HH:mm"): '',
+                        PREV_CHECK1: element.PREV_CHECK1 !== null? moment.utc(element.PREV_CHECK1).format("HH:mm"): '',
+                        PREV_CHECK2: element.PREV_CHECK2 !== null? moment.utc(element.PREV_CHECK2).format("HH:mm"): '',
+                        PREV_CHECK3: element.PREV_CHECK3 !== null? moment.utc(element.PREV_CHECK3).format("HH:mm"): '',
+                        NEXT_CHECK1: element.NEXT_CHECK1 !== null? moment.utc(element.NEXT_CHECK1).format("HH:mm"): '',
+                        NEXT_CHECK2: element.NEXT_CHECK2 !== null? moment.utc(element.NEXT_CHECK2).format("HH:mm"): '',
+                        NEXT_CHECK3: element.NEXT_CHECK3 !== null? moment.utc(element.NEXT_CHECK3).format("HH:mm"): '',
+                      }).IN_TIME,
+                      OUT_TIME: tinhInOutTime22({
+                        SHIFT_NAME: element.WORK_SHIF_NAME,
+                        CHECK1: element.CHECK1 !== null? moment.utc(element.CHECK1).format("HH:mm"): '',
+                        CHECK2: element.CHECK2 !== null? moment.utc(element.CHECK2).format("HH:mm"): '',
+                        CHECK3: element.CHECK3 !== null? moment.utc(element.CHECK3).format("HH:mm"): '',
+                        PREV_CHECK1: element.PREV_CHECK1 !== null? moment.utc(element.PREV_CHECK1).format("HH:mm"): '',
+                        PREV_CHECK2: element.PREV_CHECK2 !== null? moment.utc(element.PREV_CHECK2).format("HH:mm"): '',
+                        PREV_CHECK3: element.PREV_CHECK3 !== null? moment.utc(element.PREV_CHECK3).format("HH:mm"): '',
+                        NEXT_CHECK1: element.NEXT_CHECK1 !== null? moment.utc(element.NEXT_CHECK1).format("HH:mm"): '',
+                        NEXT_CHECK2: element.NEXT_CHECK2 !== null? moment.utc(element.NEXT_CHECK2).format("HH:mm"): '',
+                        NEXT_CHECK3: element.NEXT_CHECK3 !== null? moment.utc(element.NEXT_CHECK3).format("HH:mm"): '',
+                      }).OUT_TIME,
+                      id: index,
+                    };
+                  }
+                );               
+                setBangChamCong2(loaded_data);
                 setSelectedDataSource(
                   new PivotGridDataSource({
                     fields: fields_chamcong,
@@ -1318,8 +1416,7 @@ import { UserData } from "../../../redux/slices/globalSlice";
             }
         }
         //console.log(result);
-        return  result; 
-        
+        return  result;        
     }
     const tinhInOutTime2 =(IO_DATA: IN_OUT_DATA2)=> {
         
@@ -1368,15 +1465,9 @@ import { UserData } from "../../../redux/slices/globalSlice";
         const check1_nozero: number[]= check1_array.filter((ele: number, index: number)=> ele!==0);
         const check2_nozero: number[]= check2_array.filter((ele: number, index: number)=> ele!==0);
 
+       
 
-        const check0_array_decode: string[]= check0_nozero.map((ele:number)=>  moment(ele).format('HH:mm'));
-        const check1_array_decode: string[]= check1_nozero.map((ele:number)=>  moment(ele).format('HH:mm'));
-        const check2_array_decode: string[]= check2_nozero.map((ele:number)=>  moment(ele).format('HH:mm'));
-
-        console.table(check0_array_decode);
-        console.table(check1_array_decode);
-        console.table(check2_array_decode);
-  
+      
         const mincheck0:number = Math.min.apply(Math, check0_nozero);
         const maxcheck0:number = Math.max.apply(Math, check0_nozero);
 
@@ -1385,8 +1476,10 @@ import { UserData } from "../../../redux/slices/globalSlice";
 
         const mincheck2:number = Math.min.apply(Math, check2_nozero);
         const maxcheck2:number = Math.max.apply(Math, check2_nozero);
+
         
-        if(team ==='TEAM 1' || team==='TEAM 2' || 'TEAM 12T')
+        
+        if(team ==='TEAM 1' || team==='TEAM 2' || team==='TEAM 12T')
         {
             const in_start1: number = moment(cainfo[1].IN_START.substring(11,16),'HH:mm').valueOf();
             const in_end1: number = moment(cainfo[1].IN_END.substring(11,16),'HH:mm').valueOf();
@@ -1399,27 +1492,6 @@ import { UserData } from "../../../redux/slices/globalSlice";
             const out_end2: number = moment(cainfo[2].OUT_END.substring(11,16),'HH:mm').valueOf();
 
             
-
-
-            console.log('-----decode------------'); 
-            
-
-            console.log('-----------------');            
-            console.log('mincheck1',mincheck1);
-            console.log('in_start1',in_start1);
-            console.log('in_end1',in_end1);
-            console.log('out_start1',out_start1);
-            console.log('out_end1',out_end1);
-
-            console.log('maxcheck0',maxcheck0);
-
-            console.log('in_start2',in_start2);
-            console.log('in_end2',in_end2);
-            console.log('out_start2',out_start2);
-            console.log('out_end2',out_end2); 
-
-
-
             
             let check1check: string = 'NA';
             if(mincheck1 >= in_start1 && mincheck1 <= in_end1)
@@ -1438,6 +1510,25 @@ import { UserData } from "../../../redux/slices/globalSlice";
             else if(mincheck1 >= out_start2 && mincheck1 <= out_end2)
             {
                 check1check = 'RACA2';
+            }
+
+            let check1maxcheck: string = 'NA';
+            if(maxcheck1 >= in_start1 && maxcheck1 <= in_end1)
+            {
+                check1maxcheck = 'VAOCA1';
+            }
+            else if(maxcheck1 >= in_start2 && maxcheck1 <= in_end2)
+            {
+                check1maxcheck = 'VAOCA2';
+            }
+            
+            if(maxcheck1 >= out_start1 && maxcheck1 <= out_end1)
+            {
+                check1maxcheck = 'RACA1';
+            }
+            else if(maxcheck1 >= out_start2 && maxcheck1 <= out_end2)
+            {
+                check1maxcheck = 'RACA2';
             }
             
             let check0check: string = 'NA';
@@ -1459,95 +1550,21 @@ import { UserData } from "../../../redux/slices/globalSlice";
                 check0check = 'VAOCA2';
             }
 
+
             let final_ca: string = 'NA';
-            if(check1check ==='VAOCA1' && check0check ==='VAOCA1')
+            if(check1check ==='VAOCA1' && check1maxcheck ==='RACA1')
             {
                 final_ca = 'CA1';//
             }            
-            else if(check1check ==='VAOCA1' && check0check ==='VAOCA2')
+            else if(check1check ==='RACA2' && check1maxcheck ==='VAOCA2')
             {
-                final_ca = 'CA1';//
-            }
-            if(check1check ==='VAOCA1' && check0check ==='RACA1')
-            {
-                final_ca = 'CA1';
-            }            
-            else if(check1check ==='VAOCA1' && check0check ==='RACA2')
-            {
-                final_ca = 'CA1';//---
-            }
-            else if(check1check ==='VAOCA2' && check0check ==='VAOCA1')
-            {
-                final_ca = 'CA2';///
-            }
-            else if(check1check ==='VAOCA2' && check0check ==='VAOCA2')
-            {
-                final_ca = 'CA2';///
-            }
-            else if(check1check ==='VAOCA2' && check0check ==='RACA1')
-            {
-                final_ca = 'CA2';///
-            }
-            else if(check1check ==='VAOCA2' && check0check ==='RACA2')
-            {
-                final_ca = 'CA2';///
-            }
-            else if(check1check ==='RACA1' && check0check ==='VAOCA1')
-            {
-                final_ca = 'CA2';
-            }           
-            else if(check1check ==='RACA1' && check0check ==='VAOCA2')
-            {
-                final_ca = 'CA2';
-            }           
-            else if(check1check ==='RACA1' && check0check ==='RACA1')
-            {
-                final_ca = 'CA2';
-            }           
-            else if(check1check ==='RACA1' && check0check ==='RACA2')
-            {
-                final_ca = 'CA2';
-            }           
-            else if(check1check ==='RACA2' && check0check ==='VAOCA1')
-            {
-                final_ca = 'CA2';
-            }           
-            else if(check1check ==='RACA2' && check0check ==='VAOCA2')
-            {
-                final_ca = 'CA2';
-            }           
-            else if(check1check ==='RACA2' && check0check ==='RACA1')
-            {
-                final_ca = 'CA2';
-            }           
-            else if(check1check ==='RACA2' && check0check ==='RACA2')
-            {
-                final_ca = 'CA2';
-            }           
+                final_ca = 'CA2';//
+            } 
             else 
             {
                 final_ca ='NA'
             }
-
-            console.log('-----------------');          
-            console.log('_IN_START',cainfo[1].IN_START);
-            console.log('in_start1',in_start1);
-
-            console.log('in_start1',moment(in_start1).format('HH:mm'));
-            console.log('in_end1',moment(in_end1).format('HH:mm'));
-            console.log('mincheck1', moment(mincheck1).format('HH:mm'));
-
-            console.log('out_start1',moment(out_start1).format('HH:mm'));
-            console.log('out_end1',moment(out_end1).format('HH:mm'));
-
-            console.log('in_start2',moment(in_start2).format('HH:mm'));
-            console.log('in_end2',moment(in_end2).format('HH:mm'));
-
-            console.log('out_start2',moment(out_start2).format('HH:mm'));
-            console.log('out_end2',moment(out_end2).format('HH:mm'));
             
-            console.log('maxcheck0', moment(maxcheck0).format('HH:mm'));
-
             console.log('check1check', check1check);
             console.log('check0check', check0check);
             console.log('final ca', final_ca);
@@ -1589,10 +1606,35 @@ import { UserData } from "../../../redux/slices/globalSlice";
             switch(final_ca)
             { 
                 case 'CA1':
+                var temp1_intime = check1_nozero.length>0? moment(mincheck1).format('HH:mm'): tgv;
+                let temp1_outtime = check1_nozero.length>0? moment(maxcheck1).format('HH:mm'): tgv;
+                
+                let checkthieu: string ='NA';
+                if(mincheck1 >= in_start1 && mincheck1 <= in_end1)
+                {
+                    checkthieu = tgr;
+                }
+                if(mincheck1 === maxcheck1)
+                {
                     result= {
+                        IN_TIME: checkthieu === tgr? temp1_intime: tgv,
+                        OUT_TIME: checkthieu !== tgr? temp1_outtime: tgr,
+                    }
+                }
+                else
+                {
+                    result= {
+                        IN_TIME: temp1_intime,
+                        OUT_TIME: temp1_outtime,
+                    }
+    
+                }  
+
+
+                   /*  result= {
                         IN_TIME: moment(minStartRange).isValid()?  moment(minStartRange).format('HH:mm'): check1_nozero.length>0? moment(minAllCheck1).format('HH:mm'): tgv,
                         OUT_TIME: moment(maxStartRange).isValid()?  moment(maxStartRange).format('HH:mm'):check1_nozero.length>0? moment(maxAllCheck1).format('HH:mm'): tgr,
-                    }
+                    } */
                 break;
                 case 'CA2':
                     result= {
@@ -1612,10 +1654,238 @@ import { UserData } from "../../../redux/slices/globalSlice";
         }
         else
         {
-            const in_start: number = moment(cainfo[0].IN_START,'HH:mm').valueOf();
-            const in_end: number = moment(cainfo[0].IN_END,'HH:mm').valueOf();
-            const out_start: number = moment(cainfo[0].OUT_START,'HH:mm').valueOf();
-            const out_end: number = moment(cainfo[0].OUT_END,'HH:mm').valueOf();
+            const in_start: number = moment(cainfo[0].IN_START.substring(11,16),'HH:mm').valueOf();
+            const in_end: number = moment(cainfo[0].IN_END.substring(11,16),'HH:mm').valueOf();
+            const out_start: number = moment(cainfo[0].OUT_START.substring(11,16),'HH:mm').valueOf();
+            const out_end: number = moment(cainfo[0].OUT_END.substring(11,16),'HH:mm').valueOf();
+
+            let temp_intime = check1_nozero.length>0? moment(mincheck1).format('HH:mm'): tgv;
+            let temp_outtime = check1_nozero.length>0? moment(maxcheck1).format('HH:mm'): tgr;
+            let checkthieu: string ='NA';
+            if(mincheck1 >= in_start && mincheck1 <= in_end)
+            {
+                checkthieu = tgr;
+            }
+            if(mincheck1 === maxcheck1)
+            {
+                result= {
+                    IN_TIME: checkthieu === tgr? temp_intime: tgv,
+                    OUT_TIME: checkthieu !== tgr? temp_outtime: tgr,
+                }
+            }
+            else
+            {
+                result= {
+                    IN_TIME: temp_intime,
+                    OUT_TIME: temp_outtime,
+                }
+
+            }            
+        }
+
+        return result;
+    }  
+    const tinhInOutTime22 =(IO_DATA: IN_OUT_DATA22)=> {
+        
+        //console.log(cainfo);
+        let team = IO_DATA.SHIFT_NAME;        
+        let result= {
+            IN_TIME: '',
+            OUT_TIME: '',
+        }
+
+        const tgv: string = 'Thiếu giờ vào';
+        const tgr: string = 'Thiếu giờ ra';
+
+        const check0_array: number[] = [
+            IO_DATA.PREV_CHECK1 !=='' ? moment(IO_DATA.PREV_CHECK1,'HH:mm').valueOf():0,
+            IO_DATA.PREV_CHECK2 !=='' ? moment(IO_DATA.PREV_CHECK2,'HH:mm').valueOf():0,
+            IO_DATA.PREV_CHECK3 !=='' ? moment(IO_DATA.PREV_CHECK3,'HH:mm').valueOf():0,                         
+        ]
+        const check1_array: number[] = [
+            IO_DATA.CHECK1 !=='' ? moment(IO_DATA.CHECK1,'HH:mm').valueOf():0,
+            IO_DATA.CHECK2 !=='' ? moment(IO_DATA.CHECK2,'HH:mm').valueOf():0,
+            IO_DATA.CHECK3 !=='' ? moment(IO_DATA.CHECK3,'HH:mm').valueOf():0,            
+        ]
+        const check2_array: number[] = [
+            IO_DATA.NEXT_CHECK1 !=='' ? moment(IO_DATA.NEXT_CHECK1,'HH:mm').valueOf():0,
+            IO_DATA.NEXT_CHECK2 !=='' ? moment(IO_DATA.NEXT_CHECK2,'HH:mm').valueOf():0,
+            IO_DATA.NEXT_CHECK3 !=='' ? moment(IO_DATA.NEXT_CHECK3,'HH:mm').valueOf():0,           
+        ]      
+
+        const check0_nozero: number[]= check0_array.filter((ele: number, index: number)=> ele!==0);
+        const check1_nozero: number[]= check1_array.filter((ele: number, index: number)=> ele!==0);
+        const check2_nozero: number[]= check2_array.filter((ele: number, index: number)=> ele!==0);
+
+        console.log('check0_nozero', check0_nozero)
+        console.log('check1_nozero', check1_nozero)
+        console.log('check2_nozero', check2_nozero)      
+
+      
+        const mincheck0:number = Math.min.apply(Math, check0_nozero);
+        const maxcheck0:number = Math.max.apply(Math, check0_nozero);
+
+        const mincheck1:number = Math.min.apply(Math, check1_nozero);
+        const maxcheck1:number = Math.max.apply(Math, check1_nozero);
+
+        const mincheck2:number = Math.min.apply(Math, check2_nozero);
+        const maxcheck2:number = Math.max.apply(Math, check2_nozero);
+
+        
+        
+        if(team ==='TEAM 1' || team==='TEAM 2' || team==='TEAM 12T')
+        {
+           /*  const in_start1: number = moment(cainfo[1].IN_START.substring(11,16),'HH:mm').valueOf();
+            const in_end1: number = moment(cainfo[1].IN_END.substring(11,16),'HH:mm').valueOf();
+            const out_start1: number = moment(cainfo[1].OUT_START.substring(11,16),'HH:mm').valueOf();
+            const out_end1: number = moment(cainfo[1].OUT_END.substring(11,16),'HH:mm').valueOf();
+
+            const in_start2: number = moment(cainfo[2].IN_START.substring(11,16),'HH:mm').valueOf();
+            const in_end2: number = moment(cainfo[2].IN_END.substring(11,16),'HH:mm').valueOf();
+            const out_start2: number = moment(cainfo[2].OUT_START.substring(11,16),'HH:mm').valueOf();
+            const out_end2: number = moment(cainfo[2].OUT_END.substring(11,16),'HH:mm').valueOf();  */
+            
+            const in_start1: number = moment('05:30','HH:mm').valueOf();
+            const in_end1: number = moment('07:59','HH:mm').valueOf();
+            const out_start1: number = moment('20:00','HH:mm').valueOf();
+            const out_end1: number = moment('22:00','HH:mm').valueOf();
+
+            const in_start2: number = moment('17:30','HH:mm').valueOf();
+            const in_end2: number = moment('19:59','HH:mm').valueOf();
+            const out_start2: number = moment('08:00','HH:mm').valueOf();
+            const out_end2: number = moment('10:00','HH:mm').valueOf();
+
+            
+            
+            let check1check: string = 'NA';
+            if(mincheck1 >= in_start1 && mincheck1 <= in_end1)
+            {
+                check1check = 'VAOCA1';
+            }
+            else if(mincheck1 >= in_start2 && mincheck1 <= in_end2)
+            {
+                check1check = 'VAOCA2';
+            }
+            
+            if(mincheck1 >= out_start1 && mincheck1 <= out_end1)
+            {
+                check1check = 'RACA1';
+            }
+            else if(mincheck1 >= out_start2 && mincheck1 <= out_end2)
+            {
+                check1check = 'RACA2';
+            }
+
+            let check1maxcheck: string = 'NA';
+            if(maxcheck1 >= in_start1 && maxcheck1 <= in_end1)
+            {
+                check1maxcheck = 'VAOCA1';
+            }
+            else if(maxcheck1 >= in_start2 && maxcheck1 <= in_end2)
+            {
+                check1maxcheck = 'VAOCA2';
+            }
+            
+            if(maxcheck1 >= out_start1 && maxcheck1 <= out_end1)
+            {
+                check1maxcheck = 'RACA1';
+            }
+            else if(maxcheck1 >= out_start2 && maxcheck1 <= out_end2)
+            {
+                check1maxcheck = 'RACA2';
+            }
+            
+            let check0check: string = 'NA';
+            if(mincheck0 >= out_start1 && mincheck0 <= out_end1)
+            {
+                check0check = 'RACA1'; 
+            }
+            else if(mincheck0 >= out_start2 && mincheck0 <= out_end2)
+            {
+                check0check = 'RACA2';
+            }
+
+            if(mincheck0 >= in_start1 && mincheck0 <= in_end1)
+            {
+                check0check = 'VAOCA1'; 
+            }
+            else if(mincheck0 >= in_start2 && mincheck0 <= in_end2)
+            {
+                check0check = 'VAOCA2';
+            }
+
+            let check0maxcheck: string = 'NA';
+            if(maxcheck0 >= out_start1 && maxcheck0 <= out_end1)
+            {
+              check0maxcheck = 'RACA1'; 
+            }
+            else if(maxcheck0 >= out_start2 && maxcheck0 <= out_end2)
+            {
+              check0maxcheck = 'RACA2';
+            }
+
+            if(maxcheck0 >= in_start1 && maxcheck0 <= in_end1)
+            {
+              check0maxcheck = 'VAOCA1'; 
+            }
+            else if(maxcheck0 >= in_start2 && maxcheck0 <= in_end2)
+            {
+              check0maxcheck = 'VAOCA2';
+            }
+
+            let final_ca: string = 'NA';
+            if(check0check === 'NA')
+            {
+              if(check1check ==='VAOCA1')
+              {
+                final_ca = 'CA1';
+              }
+              else if(check1check ==='VAOCA2')
+              {
+                final_ca = 'CA2';
+              }
+            }
+            else
+            {
+              if(check1check ==='RACA2'&& check0check ==='RACA2')
+              {
+                final_ca = 'CA2';
+              }
+              else if(check0check === 'VAOCA1' && check1check ==='VAOCA2')
+              {
+                if(check0maxcheck ==='RACA2')
+                {
+                  final_ca ='CA2';
+                }
+                else if(check0maxcheck ==='RACA1')
+                {
+                  final_ca ='CA1';
+                }
+                else if(check0maxcheck ==='VAOCA1')
+                {
+                  final_ca ='CA2';
+                }
+              }
+              else if(check1check === 'RACA2' && check0maxcheck ==='VAOCA2')
+              {
+                final_ca = 'CA2';
+              }
+              else
+              {
+                final_ca ='CA1';
+              }
+
+            }
+            
+            console.log('check1check', check1check);
+            console.log('check0check', check0check);
+            console.log('check0maxcheck', check0maxcheck);
+            console.log('final ca', final_ca);
+              
+            const in_start: number = final_ca === 'CA1'? in_start1 : in_start2;
+            const in_end: number = final_ca === 'CA1'? in_end1 : in_end2;
+            const out_start: number = final_ca === 'CA1'? out_start1 : out_start2;
+            const out_end: number = final_ca === 'CA1'? out_end1 : out_end2;
 
             const check0_start_range: number[]= check0_nozero.filter((ele:number, index: number)=> ele >= in_start && ele <= in_end);
             const check0_end_range: number[]= check0_nozero.filter((ele:number, index: number)=> ele >= out_start && ele <= out_end);
@@ -1633,7 +1903,6 @@ import { UserData } from "../../../redux/slices/globalSlice";
             //ca ngay
             const maxStartRange:number = Math.max.apply(Math, check1_end_range);
 
-
             //min of all check0
             const minAllCheck0:number = Math.min.apply(Math,check0_nozero);
             //max of all check0
@@ -1645,18 +1914,90 @@ import { UserData } from "../../../redux/slices/globalSlice";
             const maxAllCheck1:number = Math.max.apply(Math,check1_nozero);
 
             //max all check2
+            const minAllCheck2:number = Math.min.apply(Math,check2_nozero);
             const maxAllCheck2:number = Math.max.apply(Math,check2_nozero);
 
-            result= {
-                IN_TIME: moment(minStartRange).isValid()?  moment(minStartRange).format('HH:mm'): check1_nozero.length>0? moment(minAllCheck1).format('HH:mm'): tgv,
-                OUT_TIME: moment(maxStartRange).isValid()?  moment(maxStartRange).format('HH:mm'):check1_nozero.length>0? moment(maxAllCheck1).format('HH:mm'): tgr,
-            } 
+            switch(final_ca)
+            { 
+                case 'CA1':
+                var temp1_intime = check1_nozero.length>0? moment(mincheck1).format('HH:mm'): tgv;
+                let temp1_outtime = check1_nozero.length>0? moment(maxcheck1).format('HH:mm'): tgv;
+                
+                let checkthieu: string ='NA';
+                if(mincheck1 >= in_start1 && mincheck1 <= in_end1)
+                {
+                    checkthieu = tgr;
+                }
+                if(mincheck1 === maxcheck1)
+                {
+                    result= {
+                        IN_TIME: checkthieu === tgr? temp1_intime: tgv,
+                        OUT_TIME: checkthieu !== tgr? temp1_outtime: tgr,
+                    }
+                }
+                else
+                {
+                    result= {
+                        IN_TIME: temp1_intime,
+                        OUT_TIME: temp1_outtime,
+                    }
+    
+                }
+                   /*  result= {
+                        IN_TIME: moment(minStartRange).isValid()?  moment(minStartRange).format('HH:mm'): check1_nozero.length>0? moment(minAllCheck1).format('HH:mm'): tgv,
+                        OUT_TIME: moment(maxStartRange).isValid()?  moment(maxStartRange).format('HH:mm'):check1_nozero.length>0? moment(maxAllCheck1).format('HH:mm'): tgr,
+                    } */
+                break;
+                case 'CA2':
+                  console.log('dang tinh inout ca 2')
+                    result= {
+                        IN_TIME:check1_nozero.length>0? moment(maxAllCheck1).format('HH:mm'): tgv,
+                        OUT_TIME: check2_nozero.length>0? moment(minAllCheck2).format('HH:mm'): tgr,
+                    }
+                break;
+                default: 
+                    let  temp_intime = check1_nozero.length>0? moment(minAllCheck1).format('HH:mm'): tgv;
+                    let  temp_outtime = check1_nozero.length>0? moment(maxAllCheck1).format('HH:mm'): tgv;
+                    result= {
+                        IN_TIME: temp_intime===temp_outtime? temp_intime: tgv,
+                        OUT_TIME: temp_intime===temp_outtime? tgr: temp_outtime,
+                    }
+                break;
+            }
+        }
+        else
+        {
+            const in_start: number = moment(cainfo[0].IN_START.substring(11,16),'HH:mm').valueOf();
+            const in_end: number = moment(cainfo[0].IN_END.substring(11,16),'HH:mm').valueOf();
+            const out_start: number = moment(cainfo[0].OUT_START.substring(11,16),'HH:mm').valueOf();
+            const out_end: number = moment(cainfo[0].OUT_END.substring(11,16),'HH:mm').valueOf();
 
+            let temp_intime = check1_nozero.length>0? moment(mincheck1).format('HH:mm'): tgv;
+            let temp_outtime = check1_nozero.length>0? moment(maxcheck1).format('HH:mm'): tgr;
+            let checkthieu: string ='NA';
+            if(mincheck1 >= in_start && mincheck1 <= in_end)
+            {
+                checkthieu = tgr;
+            }
+            if(mincheck1 === maxcheck1)
+            {
+                result= {
+                    IN_TIME: checkthieu === tgr? temp_intime: tgv,
+                    OUT_TIME: checkthieu !== tgr? temp_outtime: tgr,
+                }
+            }
+            else
+            {
+                result= {
+                    IN_TIME: temp_intime,
+                    OUT_TIME: temp_outtime,
+                }
+
+            }            
         }
 
         return result;
-    }  
-    
+    }
     const testcomparetime=()=> {
         const a:number = moment.utc('19:47:42','HH:mm:ss').valueOf();
         const reverse_a: string = moment.utc(a).format('HH:mm:ss');
@@ -1688,7 +2029,6 @@ import { UserData } from "../../../redux/slices/globalSlice";
               Swal.fire("Thông báo", " Có lỗi : " + error, "error");
             });        
     }
-
     useEffect(() => {
       testcomparetime();
       loadCaInfo();
@@ -1715,99 +2055,7 @@ import { UserData } from "../../../redux/slices/globalSlice";
                     onChange={(e) => setToDate(e.target.value)}
                   ></input>
                 </label>
-              </div>
-              <div className='forminputcolumn'>
-                <label>
-                  <b>Code KD:</b>{" "}
-                  <input
-                    type='text'
-                    placeholder='GH63-xxxxxx'
-                    value={codeKD}
-                    onChange={(e) => setCodeKD(e.target.value)}
-                  ></input>
-                </label>
-                <label>
-                  <b>Code CMS:</b>{" "}
-                  <input
-                    type='text'
-                    placeholder='7C123xxx'
-                    value={codeCMS}
-                    onChange={(e) => setCodeCMS(e.target.value)}
-                  ></input>
-                </label>
-              </div>
-              <div className='forminputcolumn'>
-                <label>
-                  <b>Tên Liệu:</b>{" "}
-                  <input
-                    type='text'
-                    placeholder='SJ-203020HC'
-                    value={m_name}
-                    onChange={(e) => setM_Name(e.target.value)}
-                  ></input>
-                </label>
-                <label>
-                  <b>Mã Liệu CMS:</b>{" "}
-                  <input
-                    type='text'
-                    placeholder='A123456'
-                    value={m_code}
-                    onChange={(e) => setM_Code(e.target.value)}
-                  ></input>
-                </label>
-              </div>
-              <div className='forminputcolumn'>
-                <label>
-                  <b>Số YCSX:</b>{" "}
-                  <input
-                    type='text'
-                    placeholder='1F80008'
-                    value={prodrequestno}
-                    onChange={(e) => setProdRequestNo(e.target.value)}
-                  ></input>
-                </label>
-                <label>
-                  <b>Số chỉ thị:</b>{" "}
-                  <input
-                    type='text'
-                    placeholder='A123456'
-                    value={plan_id}
-                    onChange={(e) => setPlanID(e.target.value)}
-                  ></input>
-                </label>
-              </div>
-              <div className='forminputcolumn'>
-                <label>
-                  <b>FACTORY:</b>
-                  <select
-                    name='phanloai'
-                    value={factory}
-                    onChange={(e) => {
-                      setFactory(e.target.value);
-                    }}
-                  >
-                    <option value='ALL'>ALL</option>
-                    <option value='NM1'>NM1</option>
-                    <option value='NM2'>NM2</option>
-                  </select>
-                </label>
-                <label>
-                  <b>MACHINE:</b>
-                  <select
-                    name='machine'
-                    value={machine}
-                    onChange={(e) => {
-                      setMachine(e.target.value);
-                    }}
-                  >
-                    <option value='ALL'>ALL</option>
-                    <option value='FR'>FR</option>
-                    <option value='SR'>SR</option>
-                    <option value='DC'>DC</option>
-                    <option value='ED'>ED</option>
-                  </select>
-                </label>
-              </div>
+              </div>  
             </div>
             <div className='formbutton'>
               <label>
@@ -1822,7 +2070,7 @@ import { UserData } from "../../../redux/slices/globalSlice";
               <button
                 className='tranhatky'
                 onClick={() => {
-                    checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['NHANSU'], loadBangChamCong);                    
+                    checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['NHANSU'], loadBangChamCong2);                    
                 }}
               >
                 Tra chấm công

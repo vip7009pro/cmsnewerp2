@@ -1331,14 +1331,21 @@ const QuanLyPhongBanNhanSu = () => {
                 </div>
                 <div className='maindeptbutton'>
                 <button className='thembutton' onClick={()=> {
-                  checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['NHANSU'], handle_them_employee);
+                  //checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['NHANSU'], handle_them_employee);
+                  handle_them_employee();
                 }}>
                   Thêm
                 </button>
-                <button className='suabutton' onClick={()=>{checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['NHANSU'], handle_sua_employee);  }}>
+                <button className='suabutton' onClick={()=>{
+                  //checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['NHANSU'], handle_sua_employee);  
+                  handle_sua_employee();
+                  }}>
                   Update
                 </button>
-                <button className='xoabutton' onClick={()=>{checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['NHANSU'], handle_xoa_employee);  }}>
+                <button className='xoabutton' onClick={()=>{
+                  //checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['NHANSU'], handle_xoa_employee);  
+                  handle_xoa_employee();
+                  }}>
                   Clear
                 </button>
               </div>

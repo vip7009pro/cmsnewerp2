@@ -1,17 +1,21 @@
 import { IconButton,  LinearProgress,} from '@mui/material';
-import { DataGrid, GridToolbarContainer,   GridToolbarQuickFilter } from '@mui/x-data-grid';
+import { DataGrid, GridCallbackDetails, GridCellEditCommitParams, GridSelectionModel, GridToolbarContainer,   GridToolbarQuickFilter, MuiBaseEvent, MuiEvent } from '@mui/x-data-grid';
 import moment from 'moment';
-import React, { useContext, useEffect, useState, } from 'react'
+import React, { useContext, useEffect, useMemo, useState, } from 'react'
 import {AiFillFileExcel } from "react-icons/ai";
 import Swal from 'sweetalert2';
 import { generalQuery } from '../../../api/Api';
 import { UserContext } from '../../../api/Context';
-import { SaveExcel } from '../../../api/GlobalFunction';
+import { SaveExcel, checkBP } from '../../../api/GlobalFunction';
+import { RootState } from "../../../redux/store";
+import { useSelector, useDispatch } from "react-redux";
+import { UserData } from "../../../redux/slices/globalSlice";
 import "./KHOLIEU.scss"
 
 
 interface NHAPLIEUDATA {
   M_LOT_NO: string,
+  LOTNCC: string,
   M_CODE: string, 
   M_NAME:  string,
   WIDTH_CD: number,
@@ -52,6 +56,9 @@ interface TONLIEUDATA {
 }
 
 const KHOLIEU = () => { 
+  const userData: UserData | undefined = useSelector(
+    (state: RootState) => state.totalSlice.userData
+);
   const [readyRender, setReadyRender] = useState(false);
   const [selection, setSelection] = useState<any>({
     trapo: true,
@@ -79,6 +86,9 @@ const KHOLIEU = () => {
   const [justbalancecode, setJustBalanceCode] = useState(true); 
   const [whdatatable, setWhDataTable] = useState<Array<any>>([]);
   const [sumaryWH, setSummaryWH] = useState('');
+  const [rollNo, setRollNo] = useState('');
+  const [lotncc, setLOTNCC] = useState('');
+  const [inputlieufilter, setInputLieuFilter]= useState<NHAPLIEUDATA[]>([]);
   const column_STOCK_LIEU = [
     { field: "M_CODE", headerName: "M_CODE", width: 90 },
     { field: "M_NAME", headerName: "M_NAME", width: 180 },
@@ -121,6 +131,7 @@ const KHOLIEU = () => {
   ];
   const column_NHAPLIEUDATA = [
     { field: "CUST_NAME_KD", headerName: "CUST_NAME_KD", width: 150 },    
+    { field: "LOTNCC", headerName: "LOTNCC", width: 120 },
     { field: "M_LOT_NO", headerName: "M_LOT_NO", width: 90 },
     { field: "M_CODE", headerName: "M_CODE", width: 100 },
     { field: "M_NAME", headerName: "M_NAME", width: 180 },
@@ -141,16 +152,60 @@ const KHOLIEU = () => {
         ><AiFillFileExcel color='green' size={25}/>SAVE</IconButton>
         <GridToolbarQuickFilter/>    
         <span style={{fontWeight:'bold', fontSize: 18, paddingLeft:20, color: 'blue'}}>{sumaryWH}</span>
-       </GridToolbarContainer>
+        
+       </GridToolbarContainer>  
+
+       
     );
   }
+  const bangdata = useMemo(()=> {
+    return (
+      <DataGrid
+              sx={{ fontSize: '0.7rem', flex: 1 }}
+              components={{
+                Toolbar: CustomToolbarPOTable,
+                LoadingOverlay: LinearProgress,
+              }}
+              loading={isLoading}
+              rowHeight={30}
+              rows={whdatatable}
+              columns={columnDefinition}
+              disableSelectionOnClick
+              checkboxSelection
+              editMode='cell'
+              rowsPerPageOptions={[
+                5, 10, 50, 100, 500, 1000, 5000, 10000, 500000,
+              ]}   
+              onSelectionModelChange={(ids) => {
+                handleInputLieuDataSelectionforUpdate(ids);
+              }}
+              onCellEditCommit={(
+                params: GridCellEditCommitParams,
+                event: MuiEvent<MuiBaseEvent>,
+                details: GridCallbackDetails
+              ) => {
+                const keyvar = params.field;
+                const newdata = whdatatable.map((p) =>
+                  p.id === params.id ? { ...p, [keyvar]: params.value } : p
+                );
+                //setPlanDataTable(newdata);
+                //console.log(plandatatable);
+              }}                    
+            />
+    )
+
+  },[whdatatable])
   const handletra_inputlieu = ()=> { 
     setSummaryWH('');
     setisLoading(true);
+    let roll_no_array = rollNo.trim().split("-");
+
     generalQuery('tranhaplieu',{  
       M_NAME: m_name,
       FROM_DATE: fromdate,
-      TO_DATE: todate,     
+      TO_DATE: todate,   
+      ROLL_NO_START: roll_no_array.length===2? roll_no_array[0]:'',
+      ROLL_NO_STOP: roll_no_array.length===2? roll_no_array[1]:'', 
     })
     .then(response => {
         //console.log(response.data.data);
@@ -251,6 +306,66 @@ const KHOLIEU = () => {
         console.log(error);
     });
   }
+  const updatelotNCC =()=> {
+    if(lotncc!=='')
+    {
+      if(inputlieufilter.length >0)
+      {
+        let err_code: string = '';
+        for(let i=0;i<inputlieufilter.length;i++)
+        {
+          generalQuery('updatelieuncc',{  
+            M_LOT_NO: inputlieufilter[i].M_LOT_NO,
+            LOTNCC: lotncc
+          })
+          .then(response => {
+              //console.log(response.data.data);
+              if(response.data.tk_status !=='NG')
+              {
+                
+              }
+              else
+              {
+               err_code+= ` Có lỗi: ${response.data.message} | `;
+              }        
+          })
+          .catch(error => {
+              console.log(error);
+          });
+        }
+        if(err_code ==='')
+        {
+          Swal.fire('Thông báo','Update lot NCC thành công','success');
+        }
+        else
+        {
+          Swal.fire('Thông báo','Update lot NCC thất bại: '+ err_code,'error');
+        }
+
+      }
+      else
+      {
+        Swal.fire('Thông báo','Xin hãy chọn ít nhất một dòng','warning');
+      }
+      
+    }
+    
+  }
+
+  const handleInputLieuDataSelectionforUpdate = (ids: GridSelectionModel) => {
+    const selectedID = new Set(ids);
+    let datafilter = whdatatable.filter((element: any) =>
+      selectedID.has(element.id)
+    );
+    //console.log(datafilter);
+    if (datafilter.length > 0) {      
+      setInputLieuFilter(datafilter);
+    } else {
+      setInputLieuFilter([]);
+      //console.log("xoa filter");
+    }
+  };
+
   useEffect(()=>{      
   },[]);
   return (
@@ -326,6 +441,15 @@ const KHOLIEU = () => {
                     onChange={(e) => setPlanID(e.target.value)}
                   ></input>
                 </label>               
+                <label>
+                  <b>STT Cuộn:</b>{" "}
+                  <input                    
+                    type='text'
+                    placeholder='1-120'
+                    value={rollNo}
+                    onChange={(e) => setRollNo(e.target.value)}
+                  ></input>
+                </label>               
               </div>        
               <div className='forminputcolumn'>
               <label>
@@ -373,24 +497,29 @@ const KHOLIEU = () => {
                 }}>
                   Tồn Liệu
               </button>
+              <button className='updatelotnccbutton'  onClick={() => {     
+                if(userData?.SUBDEPTNAME==='IQC')
+                {
+                  checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['QC','KHO'], updatelotNCC);            
+                }
+                else
+                {
+                  Swal.fire('Thông báo','Bạn không phải người IQC','error');
+                }
+                 //updatelotNCC();
+                }}>
+                  Update LOT NCC
+              </button>
+              LOT NCC: 
+              <input
+                type='text'
+                value={lotncc}
+                onChange={(e) => setLOTNCC(e.target.value)}
+              ></input>
             </div>
           </div>
           <div className='tracuuWHTable'>
-            {readyRender && <DataGrid
-              sx={{ fontSize: '0.7rem', flex: 1 }}
-              components={{
-                Toolbar: CustomToolbarPOTable,
-                LoadingOverlay: LinearProgress,
-              }}
-              loading={isLoading}
-              rowHeight={30}
-              rows={whdatatable}
-              columns={columnDefinition}
-              rowsPerPageOptions={[
-                5, 10, 50, 100, 500, 1000, 5000, 10000, 500000,
-              ]}
-              editMode='row'               
-            />}
+            {readyRender && bangdata}
           </div>
         </div>      
     </div>

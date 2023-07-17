@@ -52,7 +52,13 @@ const Sidebar = () => {
       icon: <FcManager color='green' size={25}/>,
       iconClosed: <KeyboardArrowDownIcon />,
       iconOpened: <KeyboardArrowUpIcon />,
-      subNav: [       
+      subNav: [   
+        {
+          title: getlang('quanlyphongban',lang),
+          path: '/nhansu/quanlyphongbannhanvien',
+          icon: <FcPortraitMode color='blue' size={25}/>,
+          MENU_CODE: 'NS1',          
+        },    
         {
           title:  getlang('diemdanhnhom',lang),
           path: '/nhansu/diemdanhnhom',

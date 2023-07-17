@@ -22,33 +22,36 @@ import { RootState } from "../../../redux/store";
 import { useSelector, useDispatch } from "react-redux";
 import { UserData } from "../../../redux/slices/globalSlice";
 interface DiemDanhNhomData {
-  DATE_COLUMN: string;
-  WEEKDAY: string;
-  id: string;
-  EMPL_NO: string;
-  CMS_ID: string;
-  MIDLAST_NAME: string;
-  FIRST_NAME: string;
-  PHONE_NUMBER: string;
-  SEX_NAME: string;
-  WORK_STATUS_NAME: string;
-  FACTORY_NAME: string;
-  JOB_NAME: string;
-  WORK_SHIF_NAME: string;
-  WORK_POSITION_NAME: string;
-  SUBDEPTNAME: string;
-  MAINDEPTNAME: string;
-  REQUEST_DATE: string;
-  APPLY_DATE: string;
-  APPROVAL_STATUS: number;
-  OFF_ID: number;
-  CA_NGHI: number;
-  ON_OFF: number;
-  OVERTIME_INFO: string;
-  OVERTIME: number;
-  REASON_NAME: string;
-  REMARK: string;
-  XACNHAN: string;
+  DATE_COLUMN: string,
+  WEEKDAY: string,
+  id: string,
+  EMPL_NO: string,
+  CMS_ID: string,
+  MIDLAST_NAME: string,
+  FIRST_NAME: string,
+  PHONE_NUMBER: string,
+  SEX_NAME: string,
+  WORK_STATUS_NAME: string,
+  FACTORY_NAME: string,
+  JOB_NAME: string,
+  WORK_SHIF_NAME: string,
+  WORK_POSITION_NAME: string,
+  SUBDEPTNAME: string,
+  MAINDEPTNAME: string,
+  REQUEST_DATE: string,
+  APPLY_DATE: string,
+  APPROVAL_STATUS: number,
+  OFF_ID: number,
+  CA_NGHI: number,
+  ON_OFF: number,
+  OVERTIME_INFO: string,
+  OVERTIME: number,
+  REASON_NAME: string,
+  REMARK: string,
+  XACNHAN: string,
+  CHECK1: string,
+  CHECK2: string,
+  CHECK3: string,
 }
 const LichSu = () => {
     const userData: UserData | undefined = useSelector(
@@ -116,6 +119,45 @@ const LichSu = () => {
             </div>
             );
         }
+      },
+    },
+    {
+      field: "CHECK1",
+      headerName: "CHECK1",
+      width: 120,
+      renderCell: (params: any) => {       
+          return (
+            <div className='onoffdiv'>
+              <span style={{ fontWeight: "bold", color: "black" }}>{params.row.CHECK1}</span>
+            </div>
+          );
+        
+      },
+    },
+    {
+      field: "CHECK2",
+      headerName: "CHECK2",
+      width: 120,
+      renderCell: (params: any) => {       
+          return (
+            <div className='onoffdiv'>
+              <span style={{ fontWeight: "bold", color: "black" }}>{params.row.CHECK2}</span>
+            </div>
+          );
+        
+      },
+    },
+    {
+      field: "CHECK3",
+      headerName: "CHECK3",
+      width: 120,
+      renderCell: (params: any) => {       
+          return (
+            <div className='onoffdiv'>
+              <span style={{ fontWeight: "bold", color: "black" }}>{params.row.CHECK3}</span>
+            </div>
+          );
+        
       },
     },
     {
@@ -202,12 +244,11 @@ const LichSu = () => {
         <GridToolbarQuickFilter />
       </GridToolbarContainer>
     );
-  }
- 
+  } 
   const handleSearch = () => {
     generalQuery("mydiemdanhnhom", { from_date: fromdate, to_date: todate })
       .then((response) => {
-        //console.log(response.data.data);
+        console.log(response.data.data);
         if (response.data.tk_status !== "NG") {
           const loaded_data: DiemDanhNhomData[] = response.data.data.map(
             (element: DiemDanhNhomData, index: number) => {
@@ -217,7 +258,10 @@ const LichSu = () => {
                 DATE_COLUMN: moment(element.DATE_COLUMN).utc().format('YYYY-MM-DD'),      
                 APPLY_DATE: element.APPLY_DATE===null?'' : moment(element.APPLY_DATE).utc().format('YYYY-MM-DD'),      
                 WEEKDAY: weekdayarray[new Date(element.DATE_COLUMN).getDay()],
-                id: index,
+                CHECK1: element.CHECK1 !== null? moment.utc(element.CHECK1).format('HH:mm:ss'):'',
+                CHECK2: element.CHECK2 !== null? moment.utc(element.CHECK2).format('HH:mm:ss'):'',
+                CHECK3: element.CHECK3 !== null? moment.utc(element.CHECK3).format('HH:mm:ss'):'',
+                id: index
               };
             }
           );
