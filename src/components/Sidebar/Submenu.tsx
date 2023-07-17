@@ -63,6 +63,7 @@ import { getlang } from "../String/String";
 import CAPA_MANAGER from "../../pages/qlsx/QLSXPLAN/CAPA/CAPA_MANAGER";
 import PLANRESULT from "../../pages/sx/PLANRESULT/PLANRESULT";
 import BANGCHAMCONG from "../../pages/nhansu/BangChamCong/BangChamCong";
+import QuotationManager from "../../pages/kinhdoanh/quotationmanager/QuotationManager";
 
 interface MENU_LIST_DATA {
   MENU_CODE: string;
@@ -193,6 +194,11 @@ const SubMenu = ({ item }: { item: any }) => {
       MENU_CODE: "KD13",
       MENU_NAME: getlang('baocao',lang),
       MENU_ITEM: <KinhDoanhReport />,
+    },
+    {
+      MENU_CODE: "KD14",
+      MENU_NAME: getlang('quanlygia',lang),
+      MENU_ITEM: <QuotationManager />,
     },
     {
       MENU_CODE: "QC1",
@@ -400,7 +406,6 @@ const SubMenu = ({ item }: { item: any }) => {
       MENU_ITEM: <AccountInfo />,
     },
   ]);
-
 
   const globalUserData: UserData | undefined = useSelector(
     (state: RootState) => state.totalSlice.userData

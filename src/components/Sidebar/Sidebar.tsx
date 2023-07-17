@@ -23,6 +23,7 @@ import { getlang } from '../../components/String/String';
 import { GrStatusUnknown } from "react-icons/gr";
 import { FcDataProtection } from "react-icons/fc";
 import useOutsideClick from "../../api/customHooks";
+import { GiPriceTag } from "react-icons/gi";
 
 interface SEARCH_LIST_DATA {
   MENU_CODE: string;
@@ -126,6 +127,11 @@ const Sidebar = () => {
       iconClosed: <KeyboardArrowDownIcon />,
       iconOpened: <KeyboardArrowUpIcon />,  
       subNav: [
+        {
+          title: getlang('quanlygia',lang), /*Quản lý PO*/
+          path: '/kinhdoanh/quotationmanager',
+          icon: <GiPriceTag color='#01C716' size={25}/>,
+          MENU_CODE: 'KD14',        },
         {
           title: getlang('quanlypo',lang), /*Quản lý PO*/
           path: '/kinhdoanh/pomanager',
