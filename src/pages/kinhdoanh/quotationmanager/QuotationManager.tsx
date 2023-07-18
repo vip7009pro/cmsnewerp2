@@ -35,6 +35,7 @@ import PivotTable from "../../../components/PivotChart/PivotChart";
 import { RootState } from "../../../redux/store";
 import { useSelector, useDispatch } from "react-redux";
 import { UserData } from "../../../redux/slices/globalSlice";
+import { BiCloudUpload } from "react-icons/bi";
 
 interface BANGGIA_DATA {
   CUST_NAME_KD: string,
@@ -83,94 +84,43 @@ interface BANGGIA_DATA {
   PRICE_DATE19: string,
   PRICE_DATE20: string,
 }
-interface BANGCHAMCONG_DATA {
-  DATE_COLUMN: string,
-  WEEKDAY: string,
-  NV_CCID: string,
-  EMPL_NO: string,
-  CMS_ID: string,
-  MIDLAST_NAME: string,
-  FIRST_NAME: string,
-  FULL_NAME: string,
-  PHONE_NUMBER: string,
-  SEX_NAME: string,
-  WORK_STATUS_NAME: string,
-  FACTORY_NAME: string,
-  JOB_NAME: string,
-  WORK_SHIF_NAME: string,
-  WORK_POSITION_NAME: string,
-  SUBDEPTNAME: string,
-  MAINDEPTNAME: string,
-  REQUEST_DATE: string,
-  APPLY_DATE: string,
-  APPROVAL_STATUS: string,
-  OFF_ID: number,
-  CA_NGHI: string,
-  ON_OFF: number,
-  OVERTIME_INFO: string,
-  OVERTIME: number,
-  REASON_NAME: string,
+interface BANGGIA_DATA2 {
+  CUST_NAME_KD: string,
+  CUST_CD: string,
+  G_CODE: string,
+  G_NAME: string,
+  PROD_MAIN_MATERIAL: string,
+  PRICE_DATE: string,
+  MOQ: number,
+  PROD_PRICE: number,
+  INS_DATE: string,
+  INS_EMPL: string,
+  UPD_DATE: string,
+  UPD_EMPL: string,
   REMARK: string,
-  XACNHAN: string,
-  CA_CODE: number,
-  CA_NAME: string,
-  IN_START: string,
-  IN_END: string,
-  OUT_START: string,
-  OUT_END: string,
-  CHECK_DATE0: string,
-  CHECK10: string,
-  CHECK20: string,
-  CHECK30: string,
-  CHECK40: string,
-  CHECK50: string,
-  CHECK60: string,
-  CHECK_DATE: string,
-  CHECK1: string,
-  CHECK2: string,
-  CHECK3: string,
-  CHECK4: string,
-  CHECK5: string,
-  CHECK6: string,
-  CHECK_DATE2: string,
-  CHECK12: string,
-  CHECK22: string,
-  CHECK32: string,
-  CHECK42: string,
-  CHECK52: string,
-  CHECK62: string,    
-  IN_TIME: string,
-  OUT_TIME: string,
+  FINAL: string,
 }
-interface CA_INFO {
-  CA_CODE: number,
-  CA_NAME: string,
-  CA_NAME_KR: string,
-  IN_START: string,
-  IN_END: string,
-  OUT_START: string,
-  OUT_END: string,
-  LAUNCH_START: string,
-  LAUNCH_END: string,
-}
+interface GIAMOINHAT {
 
+}
 const QuotationManager = () => {
   const userData: UserData | undefined = useSelector(
       (state: RootState) => state.totalSlice.userData
   );
-  const [cainfo,setCaInfo]= useState<CA_INFO[]>([]);
-  const [bangchamcong,setBangChamCong]= useState<BANGCHAMCONG_DATA[]>([]);
   const [banggia,setBangGia]= useState<BANGGIA_DATA[]>([]);
+  const [banggia2,setBangGia2]= useState<BANGGIA_DATA2[]>([]);
+  const [banggiachung, setBangGiaChung] = useState<Array<any>>([]);
   const [showhidePivotTable, setShowHidePivotTable] = useState(false);
   const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
   const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));
-  const [alltime, setAllTime] = useState(false);
+  const [alltime, setAllTime] = useState(true);
   const [cust_name, setCust_Name]= useState('');
   const [codeKD, setCodeKD] = useState("");
   const [codeCMS, setCodeCMS] = useState("");
   const [m_name, setM_Name] = useState("");
+  const [selectbutton, setSelectButton]= useState(true);
 
-  const fields_chamcong: any = [
+  const fields_banggia: any = [
     {
       caption: "CUST_NAME_KD",
       width: 80,
@@ -190,6 +140,21 @@ const QuotationManager = () => {
       caption: "G_NAME",
       width: 80,
       dataField: "G_NAME",
+      allowSorting: true,
+      allowFiltering: true,
+      dataType: "string",
+      summaryType: "count",
+      format: "fixedPoint",
+      headerFilter: {
+        allowSearch: true,
+        height: 500,
+        width: 300,
+      },
+    },
+    {
+      caption: "G_CODE",
+      width: 80,
+      dataField: "G_CODE",
       allowSorting: true,
       allowFiltering: true,
       dataType: "string",
@@ -847,15 +812,227 @@ const QuotationManager = () => {
       },
     },
   ];
+  const fields_banggia2: any = [
+    {
+      caption: "CUST_NAME_KD",
+      width: 80,
+      dataField: "CUST_NAME_KD",
+      allowSorting: true,
+      allowFiltering: true,
+      dataType: "string",
+      summaryType: "count",
+      format: "fixedPoint",
+      headerFilter: {
+        allowSearch: true,
+        height: 500,
+        width: 300,
+      },
+    },
+    {
+      caption: "PROD_MAIN_MATERIAL",
+      width: 80,
+      dataField: "PROD_MAIN_MATERIAL",
+      allowSorting: true,
+      allowFiltering: true,
+      dataType: "string",
+      summaryType: "count",
+      format: "fixedPoint",
+      headerFilter: {
+        allowSearch: true,
+        height: 500,
+        width: 300,
+      },
+    },
+    {
+      caption: "CUST_CD",
+      width: 80,
+      dataField: "CUST_CD",
+      allowSorting: true,
+      allowFiltering: true,
+      dataType: "string",
+      summaryType: "count",
+      format: "fixedPoint",
+      headerFilter: {
+        allowSearch: true,
+        height: 500,
+        width: 300,
+      },
+    },
+    {
+      caption: "G_CODE",
+      width: 80,
+      dataField: "G_CODE",
+      allowSorting: true,
+      allowFiltering: true,
+      dataType: "string",
+      summaryType: "count",
+      format: "fixedPoint",
+      headerFilter: {
+        allowSearch: true,
+        height: 500,
+        width: 300,
+      },
+    },
+    {
+      caption: "G_NAME",
+      width: 80,
+      dataField: "G_NAME",
+      allowSorting: true,
+      allowFiltering: true,
+      dataType: "string",
+      summaryType: "count",
+      format: "fixedPoint",
+      headerFilter: {
+        allowSearch: true,
+        height: 500,
+        width: 300,
+      },
+    },
+    {
+      caption: "PRICE_DATE",
+      width: 80,
+      dataField: "PRICE_DATE",
+      allowSorting: true,
+      allowFiltering: true,
+      dataType: "string",
+      summaryType: "count",
+      format: "fixedPoint",
+      headerFilter: {
+        allowSearch: true,
+        height: 500,
+        width: 300,
+      },
+    },
+    {
+      caption: "MOQ",
+      width: 80,
+      dataField: "MOQ",
+      allowSorting: true,
+      allowFiltering: true,
+      dataType: "number",
+      summaryType: "sum",
+      format: "fixedPoint",
+      headerFilter: {
+        allowSearch: true,
+        height: 500,
+        width: 300,
+      },
+    },
+    {
+      caption: "PROD_PRICE",
+      width: 80,
+      dataField: "PROD_PRICE",
+      allowSorting: true,
+      allowFiltering: true,
+      dataType: "number",
+      summaryType: "sum",
+      format: "fixedPoint",
+      headerFilter: {
+        allowSearch: true,
+        height: 500,
+        width: 300,
+      },
+    },
+    {
+      caption: "INS_DATE",
+      width: 80,
+      dataField: "INS_DATE",
+      allowSorting: true,
+      allowFiltering: true,
+      dataType: "string",
+      summaryType: "count",
+      format: "fixedPoint",
+      headerFilter: {
+        allowSearch: true,
+        height: 500,
+        width: 300,
+      },
+    },
+    {
+      caption: "INS_EMPL",
+      width: 80,
+      dataField: "INS_EMPL",
+      allowSorting: true,
+      allowFiltering: true,
+      dataType: "string",
+      summaryType: "count",
+      format: "fixedPoint",
+      headerFilter: {
+        allowSearch: true,
+        height: 500,
+        width: 300,
+      },
+    },
+    {
+      caption: "UPD_DATE",
+      width: 80,
+      dataField: "UPD_DATE",
+      allowSorting: true,
+      allowFiltering: true,
+      dataType: "string",
+      summaryType: "count",
+      format: "fixedPoint",
+      headerFilter: {
+        allowSearch: true,
+        height: 500,
+        width: 300,
+      },
+    },
+    {
+      caption: "UPD_EMPL",
+      width: 80,
+      dataField: "UPD_EMPL",
+      allowSorting: true,
+      allowFiltering: true,
+      dataType: "string",
+      summaryType: "count",
+      format: "fixedPoint",
+      headerFilter: {
+        allowSearch: true,
+        height: 500,
+        width: 300,
+      },
+    },
+    {
+      caption: "REMARK",
+      width: 80,
+      dataField: "REMARK",
+      allowSorting: true,
+      allowFiltering: true,
+      dataType: "string",
+      summaryType: "count",
+      format: "fixedPoint",
+      headerFilter: {
+        allowSearch: true,
+        height: 500,
+        width: 300,
+      },
+    },
+    {
+      caption: "FINAL",
+      width: 80,
+      dataField: "FINAL",
+      allowSorting: true,
+      allowFiltering: true,
+      dataType: "string",
+      summaryType: "count",
+      format: "fixedPoint",
+      headerFilter: {
+        allowSearch: true,
+        height: 500,
+        width: 300,
+      },
+    },
+  ];
+
   const [selectedDataSource, setSelectedDataSource] =
   useState<PivotGridDataSource>(
     new PivotGridDataSource({
-      fields: fields_chamcong,
+      fields: fields_banggia,
       store: banggia,
     })
   );
-
-  const chamcongTBMM = React.useMemo(
+  const banggiaMM = React.useMemo(
     () => (
       <div className='datatb'>
         <DataGrid
@@ -917,6 +1094,15 @@ const QuotationManager = () => {
                 <MdOutlinePivotTableChart color='#ff33bb' size={25} />
                 Pivot
               </IconButton>
+              <IconButton
+                className='buttonIcon'
+                onClick={() => {
+                  
+                }}
+              >
+                <BiCloudUpload color='#070EFA' size={25} />
+                Up Giá
+              </IconButton>
             </Item>
             <Item name='searchPanel' />
             <Item name='exportButton' />
@@ -938,7 +1124,8 @@ const QuotationManager = () => {
             displayMode='compact'
           />
           <Column dataField='CUST_NAME_KD' caption='CUST_NAME_KD' width={100}></Column>
-          <Column dataField='G_NAME' caption='G_NAME' width={100}></Column>
+          <Column dataField='G_CODE' caption='G_CODE' width={100}></Column>
+          <Column dataField='G_NAME' caption='G_NAME' width={250}></Column>
           <Column dataField='G_NAME_KD' caption='G_NAME_KD' width={100}></Column>
           <Column dataField='PROD_MAIN_MATERIAL' caption='PROD_MAIN_MATERIAL' width={100}></Column>
           <Column dataField='MOQ' caption='MOQ' width={100}></Column>
@@ -1202,7 +1389,6 @@ const QuotationManager = () => {
           <Column dataField='PRICE_DATE18' caption='PRICE_DATE18' width={100}></Column>
           <Column dataField='PRICE_DATE19' caption='PRICE_DATE19' width={100}></Column>
           <Column dataField='PRICE_DATE20' caption='PRICE_DATE20' width={100}></Column>
-
           <Summary>
             <TotalItem
               alignment='right'
@@ -1216,7 +1402,129 @@ const QuotationManager = () => {
     ),
     [banggia]
   );
+  const banggiaMM2 = React.useMemo(
+    () => (
+      <div className='datatb'>
+        <DataGrid
+          style={{ fontSize: "0.7rem" }}
+          autoNavigateToFocusedRow={true}
+          allowColumnReordering={true}
+          allowColumnResizing={true}
+          columnAutoWidth={false}
+          cellHintEnabled={true}
+          columnResizingMode={"widget"}
+          showColumnLines={true}
+          dataSource={banggia2}
+          columnWidth='auto'
+          keyExpr='id'
+          height={"70vh"}
+          showBorders={true}
+          onSelectionChanged={(e) => {
+            //console.log(e.selectedRowsData);
+           /*  setSelectedRowsDataYCSX(e.selectedRowsData); */
+          }}
+          onRowClick={(e) => {
+            //console.log(e.data);
+          }}
+        >
+          <Scrolling
+            useNative={true}
+            scrollByContent={true}
+            scrollByThumb={true}
+            showScrollbar='onHover'
+            mode='virtual'
+          />
+          <Selection mode='multiple' selectAllMode='allPages' />
+          <Editing
+            allowUpdating={false}
+            allowAdding={false}
+            allowDeleting={false}
+            mode='cell'
+            confirmDelete={false}
+            onChangesChange={(e) => {}}
+          />
+          <Export enabled={true} />
+          <Toolbar disabled={false}>
+            <Item location='before'>
+              <IconButton
+                className='buttonIcon'
+                onClick={() => {
+                  SaveExcel(banggia2, "PriceTable");
+                }}
+              >
+                <AiFillFileExcel color='green' size={25} />
+                SAVE
+              </IconButton>
+              <IconButton
+                className='buttonIcon'
+                onClick={() => {
+                  setShowHidePivotTable(!showhidePivotTable);
+                }}
+              >
+                <MdOutlinePivotTableChart color='#ff33bb' size={25} />
+                Pivot
+              </IconButton>
+            </Item>
+            <Item name='searchPanel' />
+            <Item name='exportButton' />
+            <Item name='columnChooserButton' />
+            <Item name='addRowButton' />
+            <Item name='saveButton' />
+            <Item name='revertButton' />
+          </Toolbar>
+          <FilterRow visible={true} />
+          <SearchPanel visible={true} />
+          <ColumnChooser enabled={true} />
+          <Paging defaultPageSize={15} />
+          <Pager
+            showPageSizeSelector={true}
+            allowedPageSizes={[5, 10, 15, 20, 100, 1000, 10000, "all"]}
+            showNavigationButtons={true}
+            showInfo={true}
+            infoText='Page #{0}. Total: {1} ({2} items)'
+            displayMode='compact'
+          />
+          <Column dataField='CUST_NAME_KD' caption='CUST_NAME_KD' width={100}></Column>
+          <Column dataField='G_CODE' caption='G_CODE' width={100}></Column>
+          <Column dataField='G_NAME' caption='G_NAME' width={250}></Column>
+          <Column dataField='G_NAME_KD' caption='G_NAME_KD' width={100}></Column>
+          <Column dataField='PROD_MAIN_MATERIAL' caption='PROD_MAIN_MATERIAL' width={200}></Column>
+          <Column dataField='MOQ' caption='MOQ' width={100}></Column>
+          <Column dataField='PROD_PRICE' caption='PROD_PRICE' width={100} dataType='number'
+            format={"decimal"}
+            cellRender={(e: any) => {
+              return (
+                <span style={{ color: "blue", fontWeight: "normal" }}>
+                  {e.data.PROD_PRICE?.toFixed(6).toLocaleString("en-US", {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 6,                    
+                  })}
+                </span>
+              );
+            }}></Column>
+            <Column dataField='PRICE_DATE' caption='PRICE_DATE' width={100} dataType='date' cellRender={(e:any)=> {
+              return (
+                <span style={{ color: "black", fontWeight: "normal" }}>
+                {moment.utc(e.data.PRICE_DATE).format('YYYY-MM-DD')}
+              </span>
 
+              )
+            }}></Column>
+            <Column dataField='FINAL' caption='FINAL' width={100}></Column>
+          
+          <Summary>
+            <TotalItem
+              alignment='right'
+              column='G_CODE'
+              summaryType='count'
+              valueFormat={"decimal"}
+          />              
+          </Summary>
+        </DataGrid>
+      </div>
+    ),
+    [banggia2]
+  );
   const loadBangGia = ()=> {
     generalQuery("loadbanggia", {
       ALLTIME: alltime,
@@ -1259,6 +1567,91 @@ const QuotationManager = () => {
             }
           );                
           setBangGia(loaded_data); 
+          setSelectedDataSource(
+            new PivotGridDataSource({
+              fields: fields_banggia,
+              store: loaded_data,
+            })
+          );
+
+        } else {
+          Swal.fire("Thông báo", " Có lỗi : " + response.data.message, "error");
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        Swal.fire("Thông báo", " Có lỗi : " + error, "error");
+      }); 
+
+  }
+  const loadBangGia2 = ()=> {
+    generalQuery("loadbanggia2", {
+      ALLTIME: alltime,
+      FROM_DATE: fromdate,
+      TO_DATE: todate,
+      M_NAME: m_name,
+      G_CODE: codeCMS,
+      G_NAME: codeKD,
+      CUST_NAME_KD: cust_name,      
+    })
+      .then((response) => {
+        //console.log(response.data.data);
+        if (response.data.tk_status !== "NG") {
+          const loaded_data: BANGGIA_DATA2[] = response.data.data.map(
+            (element: BANGGIA_DATA2, index: number) => {
+             return {
+              ...element,
+              PRICE_DATE: element.PRICE_DATE !== null? moment.utc(element.PRICE_DATE).format('YYYY-MM-DD'):'',              
+              id: index,
+             }
+            }
+          );                
+          setBangGia2(loaded_data); 
+          setSelectedDataSource(
+            new PivotGridDataSource({
+              fields: fields_banggia2,
+              store: loaded_data,
+            })
+          );
+        } else {
+          Swal.fire("Thông báo", " Có lỗi : " + response.data.message, "error");
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        Swal.fire("Thông báo", " Có lỗi : " + error, "error");
+      }); 
+
+  }
+  const loadBangGiaMoiNhat = ()=> {
+    generalQuery("loadbanggiamoinhat", {
+      ALLTIME: alltime,
+      FROM_DATE: fromdate,
+      TO_DATE: todate,
+      M_NAME: m_name,
+      G_CODE: codeCMS,
+      G_NAME: codeKD,
+      CUST_NAME_KD: cust_name,      
+    })
+      .then((response) => {
+        //console.log(response.data.data);
+        if (response.data.tk_status !== "NG") {
+          const loaded_data: BANGGIA_DATA2[] = response.data.data.map(
+            (element: BANGGIA_DATA2, index: number) => {
+             return {
+              ...element,
+              PRICE_DATE: element.PRICE_DATE !== null? moment.utc(element.PRICE_DATE).format('YYYY-MM-DD'):'',              
+              id: index,
+             }
+            }
+          );                
+          setBangGia2(loaded_data); 
+          setSelectedDataSource(
+            new PivotGridDataSource({
+              fields: fields_banggia2,
+              store: loaded_data,
+            })
+          );
         } else {
           Swal.fire("Thông báo", " Có lỗi : " + response.data.message, "error");
         }
@@ -1270,7 +1663,7 @@ const QuotationManager = () => {
 
   }
   useEffect(() => {    
-    loadBangGia();
+    //loadBangGia();
   }, []);
   return (
     <div className='datasx'>
@@ -1345,19 +1738,40 @@ const QuotationManager = () => {
                 defaultChecked={alltime}
                 onChange={() => setAllTime(!alltime)}
               ></input>
-            </label>             
+            </label>   
             <button
               className='tranhatky'
               onClick={() => {
+                  setSelectButton(false);
+                  checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['KD'], loadBangGiaMoiNhat);                    
+              }}
+            >
+              Giá mới nhất
+            </button>          
+            <button
+              className='tranhatky'
+              onClick={() => {
+                  setSelectButton(true);
                   checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['KD'], loadBangGia);                    
               }}
             >
-              Load Bảng Giá
+              LS Giá Ngang
             </button>
+            <button
+              className='tranhatky'
+              onClick={() => {
+                  setSelectButton(false);
+                  checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['KD'], loadBangGia2);                    
+              }}
+            >
+              LS Giá Dọc
+            </button>
+            
           </div>
         </div>      
         <div className='tracuuYCSXTable'>           
-          {chamcongTBMM}        
+          {selectbutton && banggiaMM}   
+          {!selectbutton && banggiaMM2}             
         </div>
         {showhidePivotTable && (
         <div className='pivottable1'>

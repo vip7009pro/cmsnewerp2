@@ -23,7 +23,7 @@ interface COMPONENT_DATA {
 
 const BARCODE = ({DATA}: {DATA: COMPONENT_DATA}) => {
   return (
-    <div className='amz_barcode' style={{ position: 'absolute', top: `${DATA.POS_Y}mm`, left: `${DATA.POS_X}mm`, width:`${DATA.SIZE_W}mm`, height:`${DATA.SIZE_H}mm`,}}>     
+    <div className='amz_barcode' style={{ position: 'absolute', top: `${DATA.POS_Y}mm`, left: `${DATA.POS_X}mm`, width:`${DATA.SIZE_W}mm`, height:`${DATA.SIZE_H}mm`, transform:`rotate(${DATA.ROTATE}deg)`, transformOrigin: `top left` }}>     
       <Barcode
       value={DATA.GIATRI}
       format='CODE128'

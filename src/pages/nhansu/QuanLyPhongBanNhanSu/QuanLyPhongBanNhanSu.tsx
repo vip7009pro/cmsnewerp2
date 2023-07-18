@@ -525,6 +525,7 @@ const QuanLyPhongBanNhanSu = () => {
             JOB_CODE: JOB_CODE,
             FACTORY_CODE: FACTORY_CODE,
             WORK_STATUS_CODE: WORK_STATUS_CODE,
+            RESIGN_DATE: RESIGN_DATE,
         }    
         generalQuery('updateemployee',insertData)
         .then(response => {

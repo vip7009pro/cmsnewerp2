@@ -92,6 +92,7 @@ import CAPA_MANAGER from "../../pages/qlsx/QLSXPLAN/CAPA/CAPA_MANAGER";
 import PLANRESULT from "../../pages/sx/PLANRESULT/PLANRESULT";
 import BANGCHAMCONG from "../../pages/nhansu/BangChamCong/BangChamCong";
 import QuotationManager from "../../pages/kinhdoanh/quotationmanager/QuotationManager";
+import QuotationTotal from "../../pages/kinhdoanh/quotationmanager/QuotationTotal";
 /* 
 const KIEMTRA= lazy(()=> import('../../pages/qc/inspection/KIEMTRA'));
 const PQC= lazy(()=> import('../../pages/qc/pqc/PQC'));
@@ -296,7 +297,7 @@ export default function Navbar() {
     {
       MENU_CODE: "KD14",
       MENU_NAME: getlang('quanlygia',lang),
-      MENU_ITEM: <QuotationManager />,
+      MENU_ITEM: <QuotationTotal />,
     },
     {
       MENU_CODE: "QC1",

@@ -30,6 +30,7 @@ import PivotChart from "./components/PivotChart/PivotChart";
 import CAPA_MANAGER from "./pages/qlsx/QLSXPLAN/CAPA/CAPA_MANAGER";
 import PLANRESULT from "./pages/sx/PLANRESULT/PLANRESULT";
 import BANGCHAMCONG from "./pages/nhansu/BangChamCong/BangChamCong";
+import QuotationTotal from "./pages/kinhdoanh/quotationmanager/QuotationTotal";
 /* import DATASX2 from "./pages/qlsx/QLSXPLAN/DATASX/DATASX2";
 import Home from "./pages/home/Home";
 import DiemDanhNhom from "./pages/nhansu/DiemDanhNhom/DiemDanhNhom";
@@ -599,7 +600,7 @@ function App() {
                         />
                         <Route
                           path='quotationmanager'
-                          element={<QuotationManager />}
+                          element={<QuotationTotal />}
                         />
                         <Route path='eqstatus' element={<EQ_STATUS />} />
                         <Route path='ins_status' element={<INSPECT_STATUS />} />

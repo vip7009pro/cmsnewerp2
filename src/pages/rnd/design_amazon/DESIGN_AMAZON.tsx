@@ -1071,6 +1071,30 @@ const DESIGN_AMAZON = () => {
                       }}
                     ></input>
                   </label>
+                  <b>ROTATE (degree)</b>
+                  <label lang='en-US'>
+                    <input
+                      type='number'
+                      step={0.01}
+                      lang='en-US'
+                      placeholder='10'
+                      value={
+                        componentList.filter(
+                          (ele: COMPONENT_DATA, index: number) =>
+                            currentComponent === index
+                        )[0].ROTATE
+                      }
+                      onChange={(e) => {
+                        const newComponentList = componentList.map(
+                          (p: COMPONENT_DATA, index: number) =>
+                            index === currentComponent
+                              ? { ...p, ROTATE: Number(e.target.value) }
+                              : p
+                        );
+                        setComponentList(newComponentList);
+                      }}
+                    ></input>
+                  </label>
                   <b>REMARK</b>
                   <label lang='en-US'>
                     <input
@@ -1153,14 +1177,7 @@ const DESIGN_AMAZON = () => {
               if(top1 !==undefined && top2 !==undefined && left1 !==undefined && left2 !==undefined)
               {
                 setY(top2-top1);
-                setX(left2-left1);
-               /*  const c = document.getElementById('cv1') as HTMLCanvasElement;                
-                var ctx = c.getContext("2d");                
-                ctx?.beginPath();
-                ctx?.moveTo(0, 0);
-                ctx?.lineTo(left2-left1,top2-top1);                
-                ctx?.stroke(); 
- */
+                setX(left2-left1);              
               }           
             }}
             onDragEnd={(e: any) => {

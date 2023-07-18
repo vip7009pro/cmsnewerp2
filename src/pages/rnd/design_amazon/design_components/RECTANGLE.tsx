@@ -21,7 +21,7 @@ interface COMPONENT_DATA {
 
 const RECTANGLE = ({DATA}: {DATA: COMPONENT_DATA}) => { 
   return (
-    <div className='amazon_rectange' style={{ backgroundColor:'white', width: `${DATA.SIZE_W}mm`, height: `${DATA.SIZE_H}mm`, top: `${DATA.POS_Y}mm`, left: `${DATA.POS_X}mm`, position: 'absolute'}}>      
+    <div className='amazon_rectange' style={{ backgroundColor:'white', width: `${DATA.SIZE_W}mm`, height: `${DATA.SIZE_H}mm`, top: `${DATA.POS_Y}mm`, left: `${DATA.POS_X}mm`, position: 'absolute', transform:`rotate(${DATA.ROTATE}deg)`, transformOrigin: `top left` }}>      
     </div>
   )
 }
