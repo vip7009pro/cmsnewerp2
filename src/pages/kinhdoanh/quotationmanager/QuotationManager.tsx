@@ -1,4 +1,4 @@
-import { IconButton } from "@mui/material";
+import { Autocomplete, IconButton, TextField, createFilterOptions } from "@mui/material";
 import DataGrid, {
   Column,
   ColumnChooser,
@@ -88,6 +88,7 @@ interface BANGGIA_DATA2 {
   CUST_CD: string;
   G_CODE: string;
   G_NAME: string;
+  G_NAME_KD: string;
   PROD_MAIN_MATERIAL: string;
   PRICE_DATE: string;
   MOQ: number;
@@ -99,10 +100,35 @@ interface BANGGIA_DATA2 {
   REMARK: string;
   FINAL: string;
 }
+interface CustomerListData {
+  CUST_CD: string;
+  CUST_NAME_KD: string;
+  CUST_NAME?: string;
+}
+interface CodeListData {
+  G_CODE: string,
+  G_NAME: string,
+  G_NAME_KD: string,
+  PROD_MAIN_MATERIAL: string,
+}
 const QuotationManager = () => {
   const userData: UserData | undefined = useSelector(
     (state: RootState) => state.totalSlice.userData
   );
+  const [customerList, setCustomerList] = useState<CustomerListData[]>([]);
+  const getcustomerlist = () => {
+    generalQuery("selectcustomerList", {})
+      .then((response) => {
+        if (response.data.tk_status !== "NG") {
+          setCustomerList(response.data.data);
+        } else {
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+  const [codelist, setCodeList] = useState<CodeListData[]>([]);
   const [banggia, setBangGia] = useState<BANGGIA_DATA[]>([]);
   const [banggia2, setBangGia2] = useState<BANGGIA_DATA2[]>([]);
   const [banggiachung, setBangGiaChung] = useState<Array<any>>([]);
@@ -117,6 +143,37 @@ const QuotationManager = () => {
   const [selectbutton, setSelectButton] = useState(true);
   const [showhideupprice, setShowHideUpPrice] = useState(false);
   const [uploadExcelJson, setUploadExcelJSon] = useState<Array<any>>([]);
+  const [selectedCust_CD, setSelectedCust_CD] =
+  useState<CustomerListData | null>();
+  const filterOptions1 = createFilterOptions({
+    matchFrom: "any",
+    limit: 100,
+  });
+  const loadCodeList =()=> {
+    generalQuery("loadM100UpGia", {
+     
+    })
+      .then((response) => {
+        //console.log(response.data.data);
+        if (response.data.tk_status !== "NG") {
+          const loaded_data: CodeListData[] = response.data.data.map(
+            (element: CodeListData, index: number) => {
+              return {
+                ...element,               
+                id: index,
+              };
+            }
+          );
+          setCodeList(loaded_data);         
+        } else {
+          Swal.fire("Thông báo", " Có lỗi : " + response.data.message, "error");
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        Swal.fire("Thông báo", " Có lỗi : " + error, "error");
+      });
+  }
   const fields_banggia: any = [
     {
       caption: "CUST_NAME_KD",
@@ -1093,6 +1150,14 @@ const QuotationManager = () => {
               <IconButton
                 className='buttonIcon'
                 onClick={() => {
+                  checkBP(
+                    userData?.EMPL_NO,
+                    userData?.MAINDEPTNAME,
+                    ["KD"],
+                    loadBangGia2
+                  );
+                  loadCodeList();
+                  getcustomerlist();
                   setShowHideUpPrice(true);
                 }}
               >
@@ -1655,6 +1720,14 @@ const QuotationManager = () => {
               <IconButton
                 className='buttonIcon'
                 onClick={() => {
+                  checkBP(
+                    userData?.EMPL_NO,
+                    userData?.MAINDEPTNAME,
+                    ["KD"],
+                    loadBangGia2
+                  );
+                  loadCodeList();
+                  getcustomerlist();
                   setShowHideUpPrice(true);
                 }}
               >
@@ -1867,6 +1940,11 @@ const QuotationManager = () => {
             }}
           ></Column>
           <Column dataField='FINAL' caption='FINAL' width={100}></Column>
+          <Column dataField='CHECKSTATUS' caption='CHECKSTATUS' width={100} cellRender={(e: any)=> {
+            return (
+              <span style={{backgroundColor: e.data.CHECKSTATUS ==='OK'? 'green': 'red', color: 'white',padding: '5px'}}>{e.data.CHECKSTATUS}</span>
+            )
+          }}></Column>
           <Summary>
             <TotalItem
               alignment='right'
@@ -1905,10 +1983,16 @@ const QuotationManager = () => {
         });
         setUploadExcelJSon(
           json.map((element: any, index: number) => {
+            let temp_fil: CodeListData =codelist.filter((ele:CodeListData, index: number)=> ele.G_CODE === element.G_CODE)[0];
+            let temp_filCUST: CustomerListData =customerList.filter((ele:CustomerListData, index: number)=> ele.CUST_CD === element.CUST_CD)[0];
             return {
               ...element,
               id: index,
-              CHECKSTATUS: "Waiting",
+              CUST_NAME_KD: temp_filCUST !== undefined? temp_filCUST.CUST_NAME_KD : 'NA',
+              G_NAME: temp_fil !== undefined? temp_fil.G_NAME : 'NA',
+              G_NAME_KD: temp_fil !== undefined? temp_fil.G_NAME_KD : 'NA',
+              PROD_MAIN_MATERIAL: temp_fil !== undefined? temp_fil.PROD_MAIN_MATERIAL : 'NA',
+              CHECKSTATUS: temp_fil !== undefined  && temp_filCUST !== undefined ? 'OK': 'NG',
               PRICE_DATE:
                 element.PRICE_DATE === null
                   ? moment.utc().format("YYYY-MM-DD")
@@ -2297,12 +2381,51 @@ const QuotationManager = () => {
               <IconButton
                 className='buttonIcon'
                 onClick={() => {
-                  setShowHideUpPrice(false);
+                  
                 }}
               >
                 <BiCloudUpload color='#FA0022' size={25} />
                 Up Giá
               </IconButton>
+             
+                    <div className="d">
+                    <Autocomplete
+                      size='small'
+                      disablePortal
+                      options={customerList}
+                      className='autocomplete'
+                      filterOptions={filterOptions1}
+                      isOptionEqualToValue={(option: any, value: any) =>
+                        option.CUST_CD === value.CUST_CD
+                      }
+                      getOptionLabel={(option: CustomerListData | any) =>
+                        `${option.CUST_CD}: ${option.CUST_NAME_KD}`
+                      }
+                      renderInput={(params) => (
+                        <TextField {...params} label='Select customer' />
+                      )}
+                      value={selectedCust_CD}
+                      onChange={(
+                        event: any,
+                        newValue: CustomerListData | any
+                      ) => {
+                        console.log(newValue);                        
+                        setSelectedCust_CD(newValue);
+                      }}
+                    />
+                     <IconButton
+                className='buttonIcon'
+                onClick={() => {
+                  
+                }}
+              >
+                <BiCloudUpload color='#FA0022' size={25} />
+                Up Giá
+              </IconButton>
+
+                    </div>
+                   
+                 
             </div>
             {upgiaMM2}
           </div>
