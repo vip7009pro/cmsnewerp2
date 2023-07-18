@@ -88,6 +88,22 @@ interface CustomerListData {
   CUST_NAME_KD: string;
   CUST_NAME?: string;
 }
+interface PRICEWITHMOQ {
+  CUST_NAME_KD: string,
+  CUST_CD: string,
+  G_CODE: string,
+  G_NAME: string,
+  PROD_MAIN_MATERIAL: string,
+  PRICE_DATE: string,
+  MOQ: number,
+  PROD_PRICE: number,
+  INS_DATE: string,
+  INS_EMPL: string,
+  UPD_DATE: string,
+  UPD_EMPL: string,
+  REMARK: string,
+  FINAL: string,
+}
 const PoManager = () => {
   const [isPending, startTransition] = useTransition();
   const [selection, setSelection] = useState<any>({
@@ -146,6 +162,43 @@ const PoManager = () => {
   >([]);
   const [selectedID, setSelectedID] = useState<number | null>();
   const [showhidePivotTable, setShowHidePivotTable] = useState(false);
+  const [newcodeprice, setNewCodePrice] = useState<PRICEWITHMOQ[]>([]);
+  const loadprice = (G_CODE?: string, CUST_NAME?: string)=>
+  {
+    if(G_CODE !== undefined && CUST_NAME !== undefined)
+    {
+      generalQuery("loadbanggiamoinhat", {
+        ALLTIME: true,
+        FROM_DATE: '',
+        TO_DATE: '',
+        M_NAME: '',
+        G_CODE: G_CODE,
+        G_NAME: '',      
+        CUST_NAME_KD: CUST_NAME,      
+      })
+        .then((response) => {
+          //console.log(response.data.data);
+          if (response.data.tk_status !== "NG") {
+            const loaded_data: PRICEWITHMOQ[] = response.data.data.map(
+              (element: PRICEWITHMOQ, index: number) => {
+               return {
+                ...element,
+                PRICE_DATE: element.PRICE_DATE !== null? moment.utc(element.PRICE_DATE).format('YYYY-MM-DD'):'',              
+                id: index,
+               }
+              }
+            );          
+            setNewCodePrice(loaded_data);
+          } else {
+            Swal.fire("Thông báo", " Có lỗi : " + response.data.message, "error");
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+          Swal.fire("Thông báo", " Có lỗi : " + error, "error");
+        });
+    }
+  }
   const handleSearchCodeKeyDown = (
     e: React.KeyboardEvent<HTMLInputElement>
   ) => {
@@ -2126,6 +2179,7 @@ const PoManager = () => {
                         newValue: CustomerListData | any
                       ) => {
                         console.log(newValue);
+                        loadprice(selectedCode?.G_CODE, newValue.CUST_NAME_KD);
                         setSelectedCust_CD(newValue);
                       }}
                     />
@@ -2148,12 +2202,8 @@ const PoManager = () => {
                         <TextField {...params} label='Select code' />
                       )}
                       onChange={(event: any, newValue: CodeListData | any) => {
-                        console.log(newValue);
-                        setNewPoPrice(
-                          newValue === null
-                            ? ""
-                            : newValue.PROD_LAST_PRICE.toString()
-                        );
+                        console.log(newValue);                        
+                        loadprice(newValue.G_CODE, selectedCust_CD?.CUST_NAME_KD);                        
                         setSelectedCode(newValue);
                       }}
                       value={selectedCode}
@@ -2204,8 +2254,14 @@ const PoManager = () => {
                     <b>PO QTY:</b>{" "}
                     <TextField
                       value={newpoqty}
-                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                        setNewPoQty(e.target.value)
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                        let tempQTY: number = Number(e.target.value);
+                        let tempprice: number = newcodeprice.filter((e:PRICEWITHMOQ, index: number)=> {
+                          return tempQTY >= e.MOQ
+                        })[0].PROD_PRICE;
+                        setNewPoPrice(tempprice.toString());
+                        setNewPoQty(e.target.value);
+                      }
                       }
                       size='small'
                       color='success'
@@ -2480,6 +2536,7 @@ const PoManager = () => {
           <PivotTable datasource={dataSource} tableID='potablepivot' />
         </div>
       )}
+    
     </div>
   );
 };

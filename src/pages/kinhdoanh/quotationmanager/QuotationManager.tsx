@@ -1,6 +1,4 @@
-import {
-  IconButton,
-} from "@mui/material";
+import { IconButton } from "@mui/material";
 import DataGrid, {
   Column,
   ColumnChooser,
@@ -22,6 +20,7 @@ import React, { useContext, useEffect, useState, useTransition } from "react";
 import {
   AiFillCloseCircle,
   AiFillFileExcel,
+  AiOutlineCheckSquare,
   AiOutlineCloudUpload,
   AiOutlinePrinter,
 } from "react-icons/ai";
@@ -36,90 +35,88 @@ import { RootState } from "../../../redux/store";
 import { useSelector, useDispatch } from "react-redux";
 import { UserData } from "../../../redux/slices/globalSlice";
 import { BiCloudUpload } from "react-icons/bi";
-
+import * as XLSX from "xlsx";
 interface BANGGIA_DATA {
-  CUST_NAME_KD: string,
-  G_NAME: string,
-  G_NAME_KD: string,
-  PROD_MAIN_MATERIAL: string,
-  MOQ: number,
-  PRICE1: number,
-  PRICE2: number,
-  PRICE3: number,
-  PRICE4: number,
-  PRICE5: number,
-  PRICE6: number,
-  PRICE7: number,
-  PRICE8: number,
-  PRICE9: number,
-  PRICE10: number,
-  PRICE11: number,
-  PRICE12: number,
-  PRICE13: number,
-  PRICE14: number,
-  PRICE15: number,
-  PRICE16: number,
-  PRICE17: number,
-  PRICE18: number,
-  PRICE19: number,
-  PRICE20: number,
-  PRICE_DATE1: string,
-  PRICE_DATE2: string,
-  PRICE_DATE3: string,
-  PRICE_DATE4: string,
-  PRICE_DATE5: string,
-  PRICE_DATE6: string,
-  PRICE_DATE7: string,
-  PRICE_DATE8: string,
-  PRICE_DATE9: string,
-  PRICE_DATE10: string,
-  PRICE_DATE11: string,
-  PRICE_DATE12: string,
-  PRICE_DATE13: string,
-  PRICE_DATE14: string,
-  PRICE_DATE15: string,
-  PRICE_DATE16: string,
-  PRICE_DATE17: string,
-  PRICE_DATE18: string,
-  PRICE_DATE19: string,
-  PRICE_DATE20: string,
+  CUST_NAME_KD: string;
+  G_NAME: string;
+  G_NAME_KD: string;
+  PROD_MAIN_MATERIAL: string;
+  MOQ: number;
+  PRICE1: number;
+  PRICE2: number;
+  PRICE3: number;
+  PRICE4: number;
+  PRICE5: number;
+  PRICE6: number;
+  PRICE7: number;
+  PRICE8: number;
+  PRICE9: number;
+  PRICE10: number;
+  PRICE11: number;
+  PRICE12: number;
+  PRICE13: number;
+  PRICE14: number;
+  PRICE15: number;
+  PRICE16: number;
+  PRICE17: number;
+  PRICE18: number;
+  PRICE19: number;
+  PRICE20: number;
+  PRICE_DATE1: string;
+  PRICE_DATE2: string;
+  PRICE_DATE3: string;
+  PRICE_DATE4: string;
+  PRICE_DATE5: string;
+  PRICE_DATE6: string;
+  PRICE_DATE7: string;
+  PRICE_DATE8: string;
+  PRICE_DATE9: string;
+  PRICE_DATE10: string;
+  PRICE_DATE11: string;
+  PRICE_DATE12: string;
+  PRICE_DATE13: string;
+  PRICE_DATE14: string;
+  PRICE_DATE15: string;
+  PRICE_DATE16: string;
+  PRICE_DATE17: string;
+  PRICE_DATE18: string;
+  PRICE_DATE19: string;
+  PRICE_DATE20: string;
 }
 interface BANGGIA_DATA2 {
-  CUST_NAME_KD: string,
-  CUST_CD: string,
-  G_CODE: string,
-  G_NAME: string,
-  PROD_MAIN_MATERIAL: string,
-  PRICE_DATE: string,
-  MOQ: number,
-  PROD_PRICE: number,
-  INS_DATE: string,
-  INS_EMPL: string,
-  UPD_DATE: string,
-  UPD_EMPL: string,
-  REMARK: string,
-  FINAL: string,
-}
-interface GIAMOINHAT {
-
+  CUST_NAME_KD: string;
+  CUST_CD: string;
+  G_CODE: string;
+  G_NAME: string;
+  PROD_MAIN_MATERIAL: string;
+  PRICE_DATE: string;
+  MOQ: number;
+  PROD_PRICE: number;
+  INS_DATE: string;
+  INS_EMPL: string;
+  UPD_DATE: string;
+  UPD_EMPL: string;
+  REMARK: string;
+  FINAL: string;
 }
 const QuotationManager = () => {
   const userData: UserData | undefined = useSelector(
-      (state: RootState) => state.totalSlice.userData
+    (state: RootState) => state.totalSlice.userData
   );
-  const [banggia,setBangGia]= useState<BANGGIA_DATA[]>([]);
-  const [banggia2,setBangGia2]= useState<BANGGIA_DATA2[]>([]);
+  const [banggia, setBangGia] = useState<BANGGIA_DATA[]>([]);
+  const [banggia2, setBangGia2] = useState<BANGGIA_DATA2[]>([]);
   const [banggiachung, setBangGiaChung] = useState<Array<any>>([]);
   const [showhidePivotTable, setShowHidePivotTable] = useState(false);
   const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
   const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));
   const [alltime, setAllTime] = useState(true);
-  const [cust_name, setCust_Name]= useState('');
+  const [cust_name, setCust_Name] = useState("");
   const [codeKD, setCodeKD] = useState("");
   const [codeCMS, setCodeCMS] = useState("");
   const [m_name, setM_Name] = useState("");
-  const [selectbutton, setSelectButton]= useState(true);
-
+  const [selectbutton, setSelectButton] = useState(true);
+  const [showhideupprice, setShowHideUpPrice] = useState(false);
+  const [uploadExcelJson, setUploadExcelJSon] = useState<Array<any>>([]);
   const fields_banggia: any = [
     {
       caption: "CUST_NAME_KD",
@@ -1024,14 +1021,13 @@ const QuotationManager = () => {
       },
     },
   ];
-
   const [selectedDataSource, setSelectedDataSource] =
-  useState<PivotGridDataSource>(
-    new PivotGridDataSource({
-      fields: fields_banggia,
-      store: banggia,
-    })
-  );
+    useState<PivotGridDataSource>(
+      new PivotGridDataSource({
+        fields: fields_banggia,
+        store: banggia,
+      })
+    );
   const banggiaMM = React.useMemo(
     () => (
       <div className='datatb'>
@@ -1051,7 +1047,7 @@ const QuotationManager = () => {
           showBorders={true}
           onSelectionChanged={(e) => {
             //console.log(e.selectedRowsData);
-           /*  setSelectedRowsDataYCSX(e.selectedRowsData); */
+            /*  setSelectedRowsDataYCSX(e.selectedRowsData); */
           }}
           onRowClick={(e) => {
             //console.log(e.data);
@@ -1097,7 +1093,7 @@ const QuotationManager = () => {
               <IconButton
                 className='buttonIcon'
                 onClick={() => {
-                  
+                  setShowHideUpPrice(true);
                 }}
               >
                 <BiCloudUpload color='#070EFA' size={25} />
@@ -1123,279 +1119,471 @@ const QuotationManager = () => {
             infoText='Page #{0}. Total: {1} ({2} items)'
             displayMode='compact'
           />
-          <Column dataField='CUST_NAME_KD' caption='CUST_NAME_KD' width={100}></Column>
+          <Column
+            dataField='CUST_NAME_KD'
+            caption='CUST_NAME_KD'
+            width={100}
+          ></Column>
           <Column dataField='G_CODE' caption='G_CODE' width={100}></Column>
           <Column dataField='G_NAME' caption='G_NAME' width={250}></Column>
-          <Column dataField='G_NAME_KD' caption='G_NAME_KD' width={100}></Column>
-          <Column dataField='PROD_MAIN_MATERIAL' caption='PROD_MAIN_MATERIAL' width={100}></Column>
+          <Column
+            dataField='G_NAME_KD'
+            caption='G_NAME_KD'
+            width={100}
+          ></Column>
+          <Column
+            dataField='PROD_MAIN_MATERIAL'
+            caption='PROD_MAIN_MATERIAL'
+            width={100}
+          ></Column>
           <Column dataField='MOQ' caption='MOQ' width={100}></Column>
-          <Column dataField='PRICE1' caption='PRICE1' width={100} dataType='number'
+          <Column
+            dataField='PRICE1'
+            caption='PRICE1'
+            width={100}
+            dataType='number'
             format={"decimal"}
             cellRender={(e: any) => {
               return (
                 <span style={{ color: "blue", fontWeight: "normal" }}>
                   {e.data.PRICE1?.toFixed(6).toLocaleString("en-US", {
                     minimumFractionDigits: 2,
-                    maximumFractionDigits: 6,                    
+                    maximumFractionDigits: 6,
                   })}
                 </span>
               );
-            }}></Column>
-          <Column dataField='PRICE2' caption='PRICE2' width={100} dataType='number'
+            }}
+          ></Column>
+          <Column
+            dataField='PRICE2'
+            caption='PRICE2'
+            width={100}
+            dataType='number'
             format={"decimal"}
             cellRender={(e: any) => {
               return (
                 <span style={{ color: "blue", fontWeight: "normal" }}>
                   {e.data.PRICE2?.toFixed(6).toLocaleString("en-US", {
                     minimumFractionDigits: 2,
-                    maximumFractionDigits: 6,                    
+                    maximumFractionDigits: 6,
                   })}
                 </span>
               );
-            }}></Column>
-          <Column dataField='PRICE3' caption='PRICE3' width={100} dataType='number'
+            }}
+          ></Column>
+          <Column
+            dataField='PRICE3'
+            caption='PRICE3'
+            width={100}
+            dataType='number'
             format={"decimal"}
             cellRender={(e: any) => {
               return (
                 <span style={{ color: "blue", fontWeight: "normal" }}>
                   {e.data.PRICE3?.toFixed(6).toLocaleString("en-US", {
                     minimumFractionDigits: 2,
-                    maximumFractionDigits: 6,                    
+                    maximumFractionDigits: 6,
                   })}
                 </span>
               );
-            }}></Column>
-          <Column dataField='PRICE4' caption='PRICE4' width={100} dataType='number'
+            }}
+          ></Column>
+          <Column
+            dataField='PRICE4'
+            caption='PRICE4'
+            width={100}
+            dataType='number'
             format={"decimal"}
             cellRender={(e: any) => {
               return (
                 <span style={{ color: "blue", fontWeight: "normal" }}>
                   {e.data.PRICE4?.toFixed(6).toLocaleString("en-US", {
                     minimumFractionDigits: 2,
-                    maximumFractionDigits: 6,                    
+                    maximumFractionDigits: 6,
                   })}
                 </span>
               );
-            }}></Column>
-          <Column dataField='PRICE5' caption='PRICE5' width={100} dataType='number'
+            }}
+          ></Column>
+          <Column
+            dataField='PRICE5'
+            caption='PRICE5'
+            width={100}
+            dataType='number'
             format={"decimal"}
             cellRender={(e: any) => {
               return (
                 <span style={{ color: "blue", fontWeight: "normal" }}>
                   {e.data.PRICE5?.toFixed(6).toLocaleString("en-US", {
                     minimumFractionDigits: 2,
-                    maximumFractionDigits: 6,                    
+                    maximumFractionDigits: 6,
                   })}
                 </span>
               );
-            }}></Column>
-          <Column dataField='PRICE6' caption='PRICE6' width={100} dataType='number'
+            }}
+          ></Column>
+          <Column
+            dataField='PRICE6'
+            caption='PRICE6'
+            width={100}
+            dataType='number'
             format={"decimal"}
             cellRender={(e: any) => {
               return (
                 <span style={{ color: "blue", fontWeight: "normal" }}>
                   {e.data.PRICE6?.toFixed(6).toLocaleString("en-US", {
                     minimumFractionDigits: 2,
-                    maximumFractionDigits: 6,                    
+                    maximumFractionDigits: 6,
                   })}
                 </span>
               );
-            }}></Column>
-          <Column dataField='PRICE7' caption='PRICE7' width={100} dataType='number'
+            }}
+          ></Column>
+          <Column
+            dataField='PRICE7'
+            caption='PRICE7'
+            width={100}
+            dataType='number'
             format={"decimal"}
             cellRender={(e: any) => {
               return (
                 <span style={{ color: "blue", fontWeight: "normal" }}>
                   {e.data.PRICE7?.toFixed(6).toLocaleString("en-US", {
                     minimumFractionDigits: 2,
-                    maximumFractionDigits: 6,                    
+                    maximumFractionDigits: 6,
                   })}
                 </span>
               );
-            }}></Column>
-          <Column dataField='PRICE8' caption='PRICE8' width={100} dataType='number'
+            }}
+          ></Column>
+          <Column
+            dataField='PRICE8'
+            caption='PRICE8'
+            width={100}
+            dataType='number'
             format={"decimal"}
             cellRender={(e: any) => {
               return (
                 <span style={{ color: "blue", fontWeight: "normal" }}>
                   {e.data.PRICE8?.toFixed(6).toLocaleString("en-US", {
                     minimumFractionDigits: 2,
-                    maximumFractionDigits: 6,                    
+                    maximumFractionDigits: 6,
                   })}
                 </span>
               );
-            }}></Column>
-          <Column dataField='PRICE9' caption='PRICE9' width={100} dataType='number'
+            }}
+          ></Column>
+          <Column
+            dataField='PRICE9'
+            caption='PRICE9'
+            width={100}
+            dataType='number'
             format={"decimal"}
             cellRender={(e: any) => {
               return (
                 <span style={{ color: "blue", fontWeight: "normal" }}>
                   {e.data.PRICE9?.toFixed(6).toLocaleString("en-US", {
                     minimumFractionDigits: 2,
-                    maximumFractionDigits: 6,                    
+                    maximumFractionDigits: 6,
                   })}
                 </span>
               );
-            }}></Column>
-          <Column dataField='PRICE10' caption='PRICE10' width={100} dataType='number'
+            }}
+          ></Column>
+          <Column
+            dataField='PRICE10'
+            caption='PRICE10'
+            width={100}
+            dataType='number'
             format={"decimal"}
             cellRender={(e: any) => {
               return (
                 <span style={{ color: "blue", fontWeight: "normal" }}>
                   {e.data.PRICE10?.toFixed(6).toLocaleString("en-US", {
                     minimumFractionDigits: 2,
-                    maximumFractionDigits: 6,                    
+                    maximumFractionDigits: 6,
                   })}
                 </span>
               );
-            }}></Column>
-          <Column dataField='PRICE11' caption='PRICE11' width={100} dataType='number'
+            }}
+          ></Column>
+          <Column
+            dataField='PRICE11'
+            caption='PRICE11'
+            width={100}
+            dataType='number'
             format={"decimal"}
             cellRender={(e: any) => {
               return (
                 <span style={{ color: "blue", fontWeight: "normal" }}>
                   {e.data.PRICE11?.toFixed(6).toLocaleString("en-US", {
                     minimumFractionDigits: 2,
-                    maximumFractionDigits: 6,                    
+                    maximumFractionDigits: 6,
                   })}
                 </span>
               );
-            }}></Column>
-          <Column dataField='PRICE12' caption='PRICE12' width={100} dataType='number'
+            }}
+          ></Column>
+          <Column
+            dataField='PRICE12'
+            caption='PRICE12'
+            width={100}
+            dataType='number'
             format={"decimal"}
             cellRender={(e: any) => {
               return (
                 <span style={{ color: "blue", fontWeight: "normal" }}>
                   {e.data.PRICE12?.toFixed(6).toLocaleString("en-US", {
                     minimumFractionDigits: 2,
-                    maximumFractionDigits: 6,                    
+                    maximumFractionDigits: 6,
                   })}
                 </span>
               );
-            }}></Column>
-          <Column dataField='PRICE13' caption='PRICE13' width={100} dataType='number'
+            }}
+          ></Column>
+          <Column
+            dataField='PRICE13'
+            caption='PRICE13'
+            width={100}
+            dataType='number'
             format={"decimal"}
             cellRender={(e: any) => {
               return (
                 <span style={{ color: "blue", fontWeight: "normal" }}>
                   {e.data.PRICE13?.toFixed(6).toLocaleString("en-US", {
                     minimumFractionDigits: 2,
-                    maximumFractionDigits: 6,                    
+                    maximumFractionDigits: 6,
                   })}
                 </span>
               );
-            }}></Column>
-          <Column dataField='PRICE14' caption='PRICE14' width={100} dataType='number'
+            }}
+          ></Column>
+          <Column
+            dataField='PRICE14'
+            caption='PRICE14'
+            width={100}
+            dataType='number'
             format={"decimal"}
             cellRender={(e: any) => {
               return (
                 <span style={{ color: "blue", fontWeight: "normal" }}>
                   {e.data.PRICE14?.toFixed(6).toLocaleString("en-US", {
                     minimumFractionDigits: 2,
-                    maximumFractionDigits: 6,                    
+                    maximumFractionDigits: 6,
                   })}
                 </span>
               );
-            }}></Column>
-          <Column dataField='PRICE15' caption='PRICE15' width={100} dataType='number'
+            }}
+          ></Column>
+          <Column
+            dataField='PRICE15'
+            caption='PRICE15'
+            width={100}
+            dataType='number'
             format={"decimal"}
             cellRender={(e: any) => {
               return (
                 <span style={{ color: "blue", fontWeight: "normal" }}>
                   {e.data.PRICE15?.toFixed(6).toLocaleString("en-US", {
                     minimumFractionDigits: 2,
-                    maximumFractionDigits: 6,                    
+                    maximumFractionDigits: 6,
                   })}
                 </span>
               );
-            }}></Column>
-          <Column dataField='PRICE16' caption='PRICE16' width={100} dataType='number'
+            }}
+          ></Column>
+          <Column
+            dataField='PRICE16'
+            caption='PRICE16'
+            width={100}
+            dataType='number'
             format={"decimal"}
             cellRender={(e: any) => {
               return (
                 <span style={{ color: "blue", fontWeight: "normal" }}>
                   {e.data.PRICE16?.toFixed(6).toLocaleString("en-US", {
                     minimumFractionDigits: 2,
-                    maximumFractionDigits: 6,                    
+                    maximumFractionDigits: 6,
                   })}
                 </span>
               );
-            }}></Column>
-          <Column dataField='PRICE17' caption='PRICE17' width={100} dataType='number'
+            }}
+          ></Column>
+          <Column
+            dataField='PRICE17'
+            caption='PRICE17'
+            width={100}
+            dataType='number'
             format={"decimal"}
             cellRender={(e: any) => {
               return (
                 <span style={{ color: "blue", fontWeight: "normal" }}>
                   {e.data.PRICE17?.toFixed(6).toLocaleString("en-US", {
                     minimumFractionDigits: 2,
-                    maximumFractionDigits: 6,                    
+                    maximumFractionDigits: 6,
                   })}
                 </span>
               );
-            }}></Column>
-          <Column dataField='PRICE18' caption='PRICE18' width={100} dataType='number'
+            }}
+          ></Column>
+          <Column
+            dataField='PRICE18'
+            caption='PRICE18'
+            width={100}
+            dataType='number'
             format={"decimal"}
             cellRender={(e: any) => {
               return (
                 <span style={{ color: "blue", fontWeight: "normal" }}>
                   {e.data.PRICE18?.toFixed(6).toLocaleString("en-US", {
                     minimumFractionDigits: 2,
-                    maximumFractionDigits: 6,                    
+                    maximumFractionDigits: 6,
                   })}
                 </span>
               );
-            }}></Column>
-          <Column dataField='PRICE19' caption='PRICE19' width={100} dataType='number'
+            }}
+          ></Column>
+          <Column
+            dataField='PRICE19'
+            caption='PRICE19'
+            width={100}
+            dataType='number'
             format={"decimal"}
             cellRender={(e: any) => {
               return (
                 <span style={{ color: "blue", fontWeight: "normal" }}>
                   {e.data.PRICE19?.toFixed(6).toLocaleString("en-US", {
                     minimumFractionDigits: 2,
-                    maximumFractionDigits: 6,                    
+                    maximumFractionDigits: 6,
                   })}
                 </span>
               );
-            }}></Column>
-          <Column dataField='PRICE20' caption='PRICE20' width={100} dataType='number'
+            }}
+          ></Column>
+          <Column
+            dataField='PRICE20'
+            caption='PRICE20'
+            width={100}
+            dataType='number'
             format={"decimal"}
             cellRender={(e: any) => {
               return (
                 <span style={{ color: "blue", fontWeight: "normal" }}>
                   {e.data.PRICE20?.toFixed(6).toLocaleString("en-US", {
                     minimumFractionDigits: 2,
-                    maximumFractionDigits: 6,                    
+                    maximumFractionDigits: 6,
                   })}
                 </span>
               );
-            }}></Column>
-          <Column dataField='PRICE_DATE1' caption='PRICE_DATE1' width={100}></Column>
-          <Column dataField='PRICE_DATE2' caption='PRICE_DATE2' width={100}></Column>
-          <Column dataField='PRICE_DATE3' caption='PRICE_DATE3' width={100}></Column>
-          <Column dataField='PRICE_DATE4' caption='PRICE_DATE4' width={100}></Column>
-          <Column dataField='PRICE_DATE5' caption='PRICE_DATE5' width={100}></Column>
-          <Column dataField='PRICE_DATE6' caption='PRICE_DATE6' width={100}></Column>
-          <Column dataField='PRICE_DATE7' caption='PRICE_DATE7' width={100}></Column>
-          <Column dataField='PRICE_DATE8' caption='PRICE_DATE8' width={100}></Column>
-          <Column dataField='PRICE_DATE9' caption='PRICE_DATE9' width={100}></Column>
-          <Column dataField='PRICE_DATE10' caption='PRICE_DATE10' width={100}></Column>
-          <Column dataField='PRICE_DATE11' caption='PRICE_DATE11' width={100}></Column>
-          <Column dataField='PRICE_DATE12' caption='PRICE_DATE12' width={100}></Column>
-          <Column dataField='PRICE_DATE13' caption='PRICE_DATE13' width={100}></Column>
-          <Column dataField='PRICE_DATE14' caption='PRICE_DATE14' width={100}></Column>
-          <Column dataField='PRICE_DATE15' caption='PRICE_DATE15' width={100}></Column>
-          <Column dataField='PRICE_DATE16' caption='PRICE_DATE16' width={100}></Column>
-          <Column dataField='PRICE_DATE17' caption='PRICE_DATE17' width={100}></Column>
-          <Column dataField='PRICE_DATE18' caption='PRICE_DATE18' width={100}></Column>
-          <Column dataField='PRICE_DATE19' caption='PRICE_DATE19' width={100}></Column>
-          <Column dataField='PRICE_DATE20' caption='PRICE_DATE20' width={100}></Column>
+            }}
+          ></Column>
+          <Column
+            dataField='PRICE_DATE1'
+            caption='PRICE_DATE1'
+            width={100}
+          ></Column>
+          <Column
+            dataField='PRICE_DATE2'
+            caption='PRICE_DATE2'
+            width={100}
+          ></Column>
+          <Column
+            dataField='PRICE_DATE3'
+            caption='PRICE_DATE3'
+            width={100}
+          ></Column>
+          <Column
+            dataField='PRICE_DATE4'
+            caption='PRICE_DATE4'
+            width={100}
+          ></Column>
+          <Column
+            dataField='PRICE_DATE5'
+            caption='PRICE_DATE5'
+            width={100}
+          ></Column>
+          <Column
+            dataField='PRICE_DATE6'
+            caption='PRICE_DATE6'
+            width={100}
+          ></Column>
+          <Column
+            dataField='PRICE_DATE7'
+            caption='PRICE_DATE7'
+            width={100}
+          ></Column>
+          <Column
+            dataField='PRICE_DATE8'
+            caption='PRICE_DATE8'
+            width={100}
+          ></Column>
+          <Column
+            dataField='PRICE_DATE9'
+            caption='PRICE_DATE9'
+            width={100}
+          ></Column>
+          <Column
+            dataField='PRICE_DATE10'
+            caption='PRICE_DATE10'
+            width={100}
+          ></Column>
+          <Column
+            dataField='PRICE_DATE11'
+            caption='PRICE_DATE11'
+            width={100}
+          ></Column>
+          <Column
+            dataField='PRICE_DATE12'
+            caption='PRICE_DATE12'
+            width={100}
+          ></Column>
+          <Column
+            dataField='PRICE_DATE13'
+            caption='PRICE_DATE13'
+            width={100}
+          ></Column>
+          <Column
+            dataField='PRICE_DATE14'
+            caption='PRICE_DATE14'
+            width={100}
+          ></Column>
+          <Column
+            dataField='PRICE_DATE15'
+            caption='PRICE_DATE15'
+            width={100}
+          ></Column>
+          <Column
+            dataField='PRICE_DATE16'
+            caption='PRICE_DATE16'
+            width={100}
+          ></Column>
+          <Column
+            dataField='PRICE_DATE17'
+            caption='PRICE_DATE17'
+            width={100}
+          ></Column>
+          <Column
+            dataField='PRICE_DATE18'
+            caption='PRICE_DATE18'
+            width={100}
+          ></Column>
+          <Column
+            dataField='PRICE_DATE19'
+            caption='PRICE_DATE19'
+            width={100}
+          ></Column>
+          <Column
+            dataField='PRICE_DATE20'
+            caption='PRICE_DATE20'
+            width={100}
+          ></Column>
           <Summary>
             <TotalItem
               alignment='right'
               column='G_CODE'
               summaryType='count'
               valueFormat={"decimal"}
-          />              
+            />
           </Summary>
         </DataGrid>
       </div>
@@ -1421,7 +1609,7 @@ const QuotationManager = () => {
           showBorders={true}
           onSelectionChanged={(e) => {
             //console.log(e.selectedRowsData);
-           /*  setSelectedRowsDataYCSX(e.selectedRowsData); */
+            /*  setSelectedRowsDataYCSX(e.selectedRowsData); */
           }}
           onRowClick={(e) => {
             //console.log(e.data);
@@ -1464,6 +1652,15 @@ const QuotationManager = () => {
                 <MdOutlinePivotTableChart color='#ff33bb' size={25} />
                 Pivot
               </IconButton>
+              <IconButton
+                className='buttonIcon'
+                onClick={() => {
+                  setShowHideUpPrice(true);
+                }}
+              >
+                <BiCloudUpload color='#070EFA' size={25} />
+                Up Giá
+              </IconButton>
             </Item>
             <Item name='searchPanel' />
             <Item name='exportButton' />
@@ -1484,48 +1681,246 @@ const QuotationManager = () => {
             infoText='Page #{0}. Total: {1} ({2} items)'
             displayMode='compact'
           />
-          <Column dataField='CUST_NAME_KD' caption='CUST_NAME_KD' width={100}></Column>
+          <Column
+            dataField='CUST_NAME_KD'
+            caption='CUST_NAME_KD'
+            width={100}
+          ></Column>
+          <Column dataField='CUST_CD' caption='CUST_CD' width={100}></Column>
           <Column dataField='G_CODE' caption='G_CODE' width={100}></Column>
           <Column dataField='G_NAME' caption='G_NAME' width={250}></Column>
-          <Column dataField='G_NAME_KD' caption='G_NAME_KD' width={100}></Column>
-          <Column dataField='PROD_MAIN_MATERIAL' caption='PROD_MAIN_MATERIAL' width={200}></Column>
+          <Column
+            dataField='G_NAME_KD'
+            caption='G_NAME_KD'
+            width={100}
+          ></Column>
+          <Column
+            dataField='PROD_MAIN_MATERIAL'
+            caption='PROD_MAIN_MATERIAL'
+            width={200}
+          ></Column>
           <Column dataField='MOQ' caption='MOQ' width={100}></Column>
-          <Column dataField='PROD_PRICE' caption='PROD_PRICE' width={100} dataType='number'
+          <Column
+            dataField='PROD_PRICE'
+            caption='PROD_PRICE'
+            width={100}
+            dataType='number'
             format={"decimal"}
             cellRender={(e: any) => {
               return (
                 <span style={{ color: "blue", fontWeight: "normal" }}>
                   {e.data.PROD_PRICE?.toFixed(6).toLocaleString("en-US", {
                     minimumFractionDigits: 2,
-                    maximumFractionDigits: 6,                    
+                    maximumFractionDigits: 6,
                   })}
                 </span>
               );
-            }}></Column>
-            <Column dataField='PRICE_DATE' caption='PRICE_DATE' width={100} dataType='date' cellRender={(e:any)=> {
+            }}
+          ></Column>
+          <Column
+            dataField='PRICE_DATE'
+            caption='PRICE_DATE'
+            width={100}
+            dataType='date'
+            cellRender={(e: any) => {
               return (
                 <span style={{ color: "black", fontWeight: "normal" }}>
-                {moment.utc(e.data.PRICE_DATE).format('YYYY-MM-DD')}
-              </span>
-
-              )
-            }}></Column>
-            <Column dataField='FINAL' caption='FINAL' width={100}></Column>
-          
+                  {moment.utc(e.data.PRICE_DATE).format("YYYY-MM-DD")}
+                </span>
+              );
+            }}
+          ></Column>
+          <Column dataField='FINAL' caption='FINAL' width={100}></Column>
           <Summary>
             <TotalItem
               alignment='right'
               column='G_CODE'
               summaryType='count'
               valueFormat={"decimal"}
-          />              
+            />
           </Summary>
         </DataGrid>
       </div>
     ),
     [banggia2]
   );
-  const loadBangGia = ()=> {
+  const upgiaMM2 = React.useMemo(
+    () => (
+      <div className='datatb'>
+        <DataGrid
+          style={{ fontSize: "0.7rem" }}
+          autoNavigateToFocusedRow={true}
+          allowColumnReordering={true}
+          allowColumnResizing={true}
+          columnAutoWidth={false}
+          cellHintEnabled={true}
+          columnResizingMode={"widget"}
+          showColumnLines={true}
+          dataSource={uploadExcelJson}
+          columnWidth='auto'
+          keyExpr='id'
+          height={"70vh"}
+          showBorders={true}
+          onSelectionChanged={(e) => {
+            //console.log(e.selectedRowsData);
+            /*  setSelectedRowsDataYCSX(e.selectedRowsData); */
+          }}
+          onRowClick={(e) => {
+            //console.log(e.data);
+          }}
+        >
+          <Scrolling
+            useNative={true}
+            scrollByContent={true}
+            scrollByThumb={true}
+            showScrollbar='onHover'
+            mode='virtual'
+          />
+          <Selection mode='multiple' selectAllMode='allPages' />
+          <Editing
+            allowUpdating={false}
+            allowAdding={false}
+            allowDeleting={false}
+            mode='cell'
+            confirmDelete={false}
+            onChangesChange={(e) => {}}
+          />
+          <Export enabled={true} />
+          <Toolbar disabled={false}>
+            <Item location='before'>
+              <IconButton
+                className='buttonIcon'
+                onClick={() => {
+                  SaveExcel(banggia2, "PriceTable");
+                }}
+              >
+                <AiFillFileExcel color='green' size={25} />
+                SAVE
+              </IconButton>
+            </Item>
+            <Item name='searchPanel' />
+            <Item name='exportButton' />
+            <Item name='columnChooserButton' />
+            <Item name='addRowButton' />
+            <Item name='saveButton' />
+            <Item name='revertButton' />
+          </Toolbar>
+          <FilterRow visible={true} />
+          <SearchPanel visible={true} />
+          <ColumnChooser enabled={true} />
+          <Paging defaultPageSize={15} />
+          <Pager
+            showPageSizeSelector={true}
+            allowedPageSizes={[5, 10, 15, 20, 100, 1000, 10000, "all"]}
+            showNavigationButtons={true}
+            showInfo={true}
+            infoText='Page #{0}. Total: {1} ({2} items)'
+            displayMode='compact'
+          />
+          <Column
+            dataField='CUST_NAME_KD'
+            caption='CUST_NAME_KD'
+            width={100}
+          ></Column>
+          <Column dataField='CUST_CD' caption='CUST_CD' width={100}></Column>
+          <Column dataField='G_CODE' caption='G_CODE' width={100}></Column>
+          <Column dataField='G_NAME' caption='G_NAME' width={250}></Column>
+          <Column
+            dataField='G_NAME_KD'
+            caption='G_NAME_KD'
+            width={100}
+          ></Column>
+          <Column
+            dataField='PROD_MAIN_MATERIAL'
+            caption='PROD_MAIN_MATERIAL'
+            width={200}
+          ></Column>
+          <Column dataField='MOQ' caption='MOQ' width={100}></Column>
+          <Column
+            dataField='PROD_PRICE'
+            caption='PROD_PRICE'
+            width={100}
+            dataType='number'
+            format={"decimal"}
+            cellRender={(e: any) => {
+              return (
+                <span style={{ color: "blue", fontWeight: "normal" }}>
+                  {e.data.PROD_PRICE?.toFixed(6).toLocaleString("en-US", {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 6,
+                  })}
+                </span>
+              );
+            }}
+          ></Column>
+          <Column
+            dataField='PRICE_DATE'
+            caption='PRICE_DATE'
+            width={100}
+            dataType='date'
+            cellRender={(e: any) => {
+              return (
+                <span style={{ color: "black", fontWeight: "normal" }}>
+                  {moment.utc(e.data.PRICE_DATE).format("YYYY-MM-DD")}
+                </span>
+              );
+            }}
+          ></Column>
+          <Column dataField='FINAL' caption='FINAL' width={100}></Column>
+          <Summary>
+            <TotalItem
+              alignment='right'
+              column='G_CODE'
+              summaryType='count'
+              valueFormat={"decimal"}
+            />
+          </Summary>
+        </DataGrid>
+      </div>
+    ),
+    [uploadExcelJson]
+  );
+  const readUploadFile = (e: any) => {
+    e.preventDefault();
+    if (e.target.files) {
+      const reader = new FileReader();
+      reader.onload = (e: any) => {
+        const data = e.target.result;
+        const workbook = XLSX.read(data, { type: "array" });
+        const sheetName = workbook.SheetNames[0];
+        const worksheet = workbook.Sheets[sheetName];
+        const json: any = XLSX.utils.sheet_to_json(worksheet);
+        const keys = Object.keys(json[0]);
+        let uploadexcelcolumn = keys.map((element, index) => {
+          return {
+            field: element,
+            headerName: element,
+            width: 150,
+          };
+        });
+        uploadexcelcolumn.push({
+          field: "CHECKSTATUS",
+          headerName: "CHECKSTATUS",
+          width: 350,
+        });
+        setUploadExcelJSon(
+          json.map((element: any, index: number) => {
+            return {
+              ...element,
+              id: index,
+              CHECKSTATUS: "Waiting",
+              PRICE_DATE:
+                element.PRICE_DATE === null
+                  ? moment.utc().format("YYYY-MM-DD")
+                  : element.PRICE_DATE,
+            };
+          })
+        );
+      };
+      reader.readAsArrayBuffer(e.target.files[0]);
+    }
+  };
+  const loadBangGia = () => {
     generalQuery("loadbanggia", {
       ALLTIME: alltime,
       FROM_DATE: fromdate,
@@ -1533,47 +1928,106 @@ const QuotationManager = () => {
       M_NAME: m_name,
       G_CODE: codeCMS,
       G_NAME: codeKD,
-      CUST_NAME_KD: cust_name,      
+      CUST_NAME_KD: cust_name,
     })
       .then((response) => {
         //console.log(response.data.data);
         if (response.data.tk_status !== "NG") {
           const loaded_data: BANGGIA_DATA[] = response.data.data.map(
             (element: BANGGIA_DATA, index: number) => {
-             return {
-              ...element,
-              PRICE_DATE1: element.PRICE_DATE1 !== null? moment.utc(element.PRICE_DATE1).format('YYYY-MM-DD'):'',
-              PRICE_DATE2: element.PRICE_DATE2 !== null? moment.utc(element.PRICE_DATE2).format('YYYY-MM-DD'):'',
-              PRICE_DATE3: element.PRICE_DATE3 !== null? moment.utc(element.PRICE_DATE3).format('YYYY-MM-DD'):'',
-              PRICE_DATE4: element.PRICE_DATE4 !== null? moment.utc(element.PRICE_DATE4).format('YYYY-MM-DD'):'',
-              PRICE_DATE5: element.PRICE_DATE5 !== null? moment.utc(element.PRICE_DATE5).format('YYYY-MM-DD'):'',
-              PRICE_DATE6: element.PRICE_DATE6 !== null? moment.utc(element.PRICE_DATE6).format('YYYY-MM-DD'):'',
-              PRICE_DATE7: element.PRICE_DATE7 !== null? moment.utc(element.PRICE_DATE7).format('YYYY-MM-DD'):'',
-              PRICE_DATE8: element.PRICE_DATE8 !== null? moment.utc(element.PRICE_DATE8).format('YYYY-MM-DD'):'',
-              PRICE_DATE9: element.PRICE_DATE9 !== null? moment.utc(element.PRICE_DATE9).format('YYYY-MM-DD'):'',
-              PRICE_DATE10: element.PRICE_DATE10 !== null? moment.utc(element.PRICE_DATE10).format('YYYY-MM-DD'):'',
-              PRICE_DATE11: element.PRICE_DATE11 !== null? moment.utc(element.PRICE_DATE11).format('YYYY-MM-DD'):'',
-              PRICE_DATE12: element.PRICE_DATE12 !== null? moment.utc(element.PRICE_DATE12).format('YYYY-MM-DD'):'',
-              PRICE_DATE13: element.PRICE_DATE13 !== null? moment.utc(element.PRICE_DATE13).format('YYYY-MM-DD'):'',
-              PRICE_DATE14: element.PRICE_DATE14 !== null? moment.utc(element.PRICE_DATE14).format('YYYY-MM-DD'):'',
-              PRICE_DATE15: element.PRICE_DATE15 !== null? moment.utc(element.PRICE_DATE15).format('YYYY-MM-DD'):'',
-              PRICE_DATE16: element.PRICE_DATE16 !== null? moment.utc(element.PRICE_DATE16).format('YYYY-MM-DD'):'',
-              PRICE_DATE17: element.PRICE_DATE17 !== null? moment.utc(element.PRICE_DATE17).format('YYYY-MM-DD'):'',
-              PRICE_DATE18: element.PRICE_DATE18 !== null? moment.utc(element.PRICE_DATE18).format('YYYY-MM-DD'):'',
-              PRICE_DATE19: element.PRICE_DATE19 !== null? moment.utc(element.PRICE_DATE19).format('YYYY-MM-DD'):'',
-              PRICE_DATE20: element.PRICE_DATE20 !== null? moment.utc(element.PRICE_DATE20).format('YYYY-MM-DD'):'',
-              id: index,
-             }
+              return {
+                ...element,
+                PRICE_DATE1:
+                  element.PRICE_DATE1 !== null
+                    ? moment.utc(element.PRICE_DATE1).format("YYYY-MM-DD")
+                    : "",
+                PRICE_DATE2:
+                  element.PRICE_DATE2 !== null
+                    ? moment.utc(element.PRICE_DATE2).format("YYYY-MM-DD")
+                    : "",
+                PRICE_DATE3:
+                  element.PRICE_DATE3 !== null
+                    ? moment.utc(element.PRICE_DATE3).format("YYYY-MM-DD")
+                    : "",
+                PRICE_DATE4:
+                  element.PRICE_DATE4 !== null
+                    ? moment.utc(element.PRICE_DATE4).format("YYYY-MM-DD")
+                    : "",
+                PRICE_DATE5:
+                  element.PRICE_DATE5 !== null
+                    ? moment.utc(element.PRICE_DATE5).format("YYYY-MM-DD")
+                    : "",
+                PRICE_DATE6:
+                  element.PRICE_DATE6 !== null
+                    ? moment.utc(element.PRICE_DATE6).format("YYYY-MM-DD")
+                    : "",
+                PRICE_DATE7:
+                  element.PRICE_DATE7 !== null
+                    ? moment.utc(element.PRICE_DATE7).format("YYYY-MM-DD")
+                    : "",
+                PRICE_DATE8:
+                  element.PRICE_DATE8 !== null
+                    ? moment.utc(element.PRICE_DATE8).format("YYYY-MM-DD")
+                    : "",
+                PRICE_DATE9:
+                  element.PRICE_DATE9 !== null
+                    ? moment.utc(element.PRICE_DATE9).format("YYYY-MM-DD")
+                    : "",
+                PRICE_DATE10:
+                  element.PRICE_DATE10 !== null
+                    ? moment.utc(element.PRICE_DATE10).format("YYYY-MM-DD")
+                    : "",
+                PRICE_DATE11:
+                  element.PRICE_DATE11 !== null
+                    ? moment.utc(element.PRICE_DATE11).format("YYYY-MM-DD")
+                    : "",
+                PRICE_DATE12:
+                  element.PRICE_DATE12 !== null
+                    ? moment.utc(element.PRICE_DATE12).format("YYYY-MM-DD")
+                    : "",
+                PRICE_DATE13:
+                  element.PRICE_DATE13 !== null
+                    ? moment.utc(element.PRICE_DATE13).format("YYYY-MM-DD")
+                    : "",
+                PRICE_DATE14:
+                  element.PRICE_DATE14 !== null
+                    ? moment.utc(element.PRICE_DATE14).format("YYYY-MM-DD")
+                    : "",
+                PRICE_DATE15:
+                  element.PRICE_DATE15 !== null
+                    ? moment.utc(element.PRICE_DATE15).format("YYYY-MM-DD")
+                    : "",
+                PRICE_DATE16:
+                  element.PRICE_DATE16 !== null
+                    ? moment.utc(element.PRICE_DATE16).format("YYYY-MM-DD")
+                    : "",
+                PRICE_DATE17:
+                  element.PRICE_DATE17 !== null
+                    ? moment.utc(element.PRICE_DATE17).format("YYYY-MM-DD")
+                    : "",
+                PRICE_DATE18:
+                  element.PRICE_DATE18 !== null
+                    ? moment.utc(element.PRICE_DATE18).format("YYYY-MM-DD")
+                    : "",
+                PRICE_DATE19:
+                  element.PRICE_DATE19 !== null
+                    ? moment.utc(element.PRICE_DATE19).format("YYYY-MM-DD")
+                    : "",
+                PRICE_DATE20:
+                  element.PRICE_DATE20 !== null
+                    ? moment.utc(element.PRICE_DATE20).format("YYYY-MM-DD")
+                    : "",
+                id: index,
+              };
             }
-          );                
-          setBangGia(loaded_data); 
+          );
+          setBangGia(loaded_data);
           setSelectedDataSource(
             new PivotGridDataSource({
               fields: fields_banggia,
               store: loaded_data,
             })
           );
-
         } else {
           Swal.fire("Thông báo", " Có lỗi : " + response.data.message, "error");
         }
@@ -1581,10 +2035,9 @@ const QuotationManager = () => {
       .catch((error) => {
         console.log(error);
         Swal.fire("Thông báo", " Có lỗi : " + error, "error");
-      }); 
-
-  }
-  const loadBangGia2 = ()=> {
+      });
+  };
+  const loadBangGia2 = () => {
     generalQuery("loadbanggia2", {
       ALLTIME: alltime,
       FROM_DATE: fromdate,
@@ -1592,21 +2045,24 @@ const QuotationManager = () => {
       M_NAME: m_name,
       G_CODE: codeCMS,
       G_NAME: codeKD,
-      CUST_NAME_KD: cust_name,      
+      CUST_NAME_KD: cust_name,
     })
       .then((response) => {
         //console.log(response.data.data);
         if (response.data.tk_status !== "NG") {
           const loaded_data: BANGGIA_DATA2[] = response.data.data.map(
             (element: BANGGIA_DATA2, index: number) => {
-             return {
-              ...element,
-              PRICE_DATE: element.PRICE_DATE !== null? moment.utc(element.PRICE_DATE).format('YYYY-MM-DD'):'',              
-              id: index,
-             }
+              return {
+                ...element,
+                PRICE_DATE:
+                  element.PRICE_DATE !== null
+                    ? moment.utc(element.PRICE_DATE).format("YYYY-MM-DD")
+                    : "",
+                id: index,
+              };
             }
-          );                
-          setBangGia2(loaded_data); 
+          );
+          setBangGia2(loaded_data);
           setSelectedDataSource(
             new PivotGridDataSource({
               fields: fields_banggia2,
@@ -1620,10 +2076,9 @@ const QuotationManager = () => {
       .catch((error) => {
         console.log(error);
         Swal.fire("Thông báo", " Có lỗi : " + error, "error");
-      }); 
-
-  }
-  const loadBangGiaMoiNhat = ()=> {
+      });
+  };
+  const loadBangGiaMoiNhat = () => {
     generalQuery("loadbanggiamoinhat", {
       ALLTIME: alltime,
       FROM_DATE: fromdate,
@@ -1631,21 +2086,24 @@ const QuotationManager = () => {
       M_NAME: m_name,
       G_CODE: codeCMS,
       G_NAME: codeKD,
-      CUST_NAME_KD: cust_name,      
+      CUST_NAME_KD: cust_name,
     })
       .then((response) => {
         //console.log(response.data.data);
         if (response.data.tk_status !== "NG") {
           const loaded_data: BANGGIA_DATA2[] = response.data.data.map(
             (element: BANGGIA_DATA2, index: number) => {
-             return {
-              ...element,
-              PRICE_DATE: element.PRICE_DATE !== null? moment.utc(element.PRICE_DATE).format('YYYY-MM-DD'):'',              
-              id: index,
-             }
+              return {
+                ...element,
+                PRICE_DATE:
+                  element.PRICE_DATE !== null
+                    ? moment.utc(element.PRICE_DATE).format("YYYY-MM-DD")
+                    : "",
+                id: index,
+              };
             }
-          );                
-          setBangGia2(loaded_data); 
+          );
+          setBangGia2(loaded_data);
           setSelectedDataSource(
             new PivotGridDataSource({
               fields: fields_banggia2,
@@ -1659,10 +2117,9 @@ const QuotationManager = () => {
       .catch((error) => {
         console.log(error);
         Swal.fire("Thông báo", " Có lỗi : " + error, "error");
-      }); 
-
-  }
-  useEffect(() => {    
+      });
+  };
+  useEffect(() => {
     //loadBangGia();
   }, []);
   return (
@@ -1687,7 +2144,7 @@ const QuotationManager = () => {
                   onChange={(e) => setToDate(e.target.value)}
                 ></input>
               </label>
-            </div>  
+            </div>
             <div className='forminputcolumn'>
               <label>
                 <b>Code KD:</b>{" "}
@@ -1738,21 +2195,31 @@ const QuotationManager = () => {
                 defaultChecked={alltime}
                 onChange={() => setAllTime(!alltime)}
               ></input>
-            </label>   
+            </label>
             <button
               className='tranhatky'
               onClick={() => {
-                  setSelectButton(false);
-                  checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['KD'], loadBangGiaMoiNhat);                    
+                setSelectButton(false);
+                checkBP(
+                  userData?.EMPL_NO,
+                  userData?.MAINDEPTNAME,
+                  ["KD"],
+                  loadBangGiaMoiNhat
+                );
               }}
             >
               Giá mới nhất
-            </button>          
+            </button>
             <button
               className='tranhatky'
               onClick={() => {
-                  setSelectButton(true);
-                  checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['KD'], loadBangGia);                    
+                setSelectButton(true);
+                checkBP(
+                  userData?.EMPL_NO,
+                  userData?.MAINDEPTNAME,
+                  ["KD"],
+                  loadBangGia
+                );
               }}
             >
               LS Giá Ngang
@@ -1760,33 +2227,86 @@ const QuotationManager = () => {
             <button
               className='tranhatky'
               onClick={() => {
-                  setSelectButton(false);
-                  checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['KD'], loadBangGia2);                    
+                setSelectButton(false);
+                checkBP(
+                  userData?.EMPL_NO,
+                  userData?.MAINDEPTNAME,
+                  ["KD"],
+                  loadBangGia2
+                );
               }}
             >
               LS Giá Dọc
             </button>
-            
           </div>
-        </div>      
-        <div className='tracuuYCSXTable'>           
-          {selectbutton && banggiaMM}   
-          {!selectbutton && banggiaMM2}             
+        </div>
+        <div className='tracuuYCSXTable'>
+          {selectbutton && banggiaMM}
+          {!selectbutton && banggiaMM2}
         </div>
         {showhidePivotTable && (
-        <div className='pivottable1'>
-          <IconButton
-            className='buttonIcon'    
-            onClick={() => {
-              setShowHidePivotTable(false);
-            }}
-          >
-            <AiFillCloseCircle color='blue' size={25} />
-            Close
-          </IconButton>
-          <PivotTable datasource={selectedDataSource} tableID='datasxtablepivot' />
-        </div>
-      )}
+          <div className='pivottable1'>
+            <IconButton
+              className='buttonIcon'
+              onClick={() => {
+                setShowHidePivotTable(false);
+              }}
+            >
+              <AiFillCloseCircle color='blue' size={25} />
+              Close
+            </IconButton>
+            <PivotTable
+              datasource={selectedDataSource}
+              tableID='datasxtablepivot'
+            />
+          </div>
+        )}
+        {showhideupprice && (
+          <div className='pivottable1'>
+            <div className='barbutton'>
+              <IconButton
+                className='buttonIcon'
+                onClick={() => {
+                  setShowHideUpPrice(false);
+                }}
+              >
+                <AiFillCloseCircle color='blue' size={25} />
+                Close
+              </IconButton>
+              <label htmlFor='upload'>
+                <b>Chọn file Excel: </b>
+                <input
+                  className='selectfilebutton'
+                  type='file'
+                  name='upload'
+                  id='upload'
+                  onChange={(e: any) => {
+                    readUploadFile(e);
+                  }}
+                />
+              </label>
+              <IconButton
+                className='buttonIcon'
+                onClick={() => {
+                  setShowHideUpPrice(false);
+                }}
+              >
+                <AiOutlineCheckSquare color='#EB2EFE' size={25} />
+                Check Giá
+              </IconButton>
+              <IconButton
+                className='buttonIcon'
+                onClick={() => {
+                  setShowHideUpPrice(false);
+                }}
+              >
+                <BiCloudUpload color='#FA0022' size={25} />
+                Up Giá
+              </IconButton>
+            </div>
+            {upgiaMM2}
+          </div>
+        )}
       </div>
     </div>
   );

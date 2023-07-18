@@ -509,7 +509,7 @@ const CHITHI_COMPONENT2 = ({PLAN_LIST}: PLAN_COMBO) => {
               </tr>
               <tr>
               <td>MIN QTY</td>
-                <td>Min CD1:{(request_codeinfo[0]?.UPH1/6).toLocaleString('en-US',{maximumFractionDigits:0})}  |  Min CD2: {request_codeinfo[0]?.UPH2/6}</td>
+                <td>Min CD1:{(request_codeinfo[0]?.UPH1/6).toLocaleString('en-US',{maximumFractionDigits:0})}  |  Min CD2: {(request_codeinfo[0]?.UPH2/6).toLocaleString('en-US',{maximumFractionDigits:0})}</td>
               </tr>
 
               <tr>

@@ -14,7 +14,7 @@ import { RootState } from "../../redux/store";
 import { useSelector, useDispatch } from "react-redux";
 import { addTab, closeTab, settabIndex } from "../../redux/slices/globalSlice";
 import AccountInfo from "../../components/Navbar/AccountInfo/AccountInfo";
-export const current_ver: number = 170;
+export const current_ver: number = 171;
 interface ELE_ARRAY {
   REACT_ELE: ReactElement;
   ELE_NAME: string;
