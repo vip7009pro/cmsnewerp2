@@ -211,9 +211,7 @@ const FAILING = () => {
           keyExpr='id'
           height={"70vh"}
           showBorders={true}
-          onSelectionChanged={(e) => {
-            //console.log(e.selectedRowsData);
-            //setselecterowfunction(e.selectedRowsData);
+          onSelectionChanged={(e) => {            
             setSelectedRowsData(e.selectedRowsData);
           }}
           onRowClick={(e) => {
@@ -251,8 +249,6 @@ const FAILING = () => {
                 <AiFillFileExcel color='green' size={25} />
                 SAVE
               </IconButton>
-                       
-             
             </Item>
             <Item name='searchPanel' />
             <Item name='exportButton' />

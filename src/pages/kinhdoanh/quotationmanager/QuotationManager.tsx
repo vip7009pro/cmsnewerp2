@@ -19,6 +19,8 @@ import moment, { duration } from "moment";
 import React, { useContext, useEffect, useState, useTransition } from "react";
 import {
   AiFillCloseCircle,
+  AiFillDelete,
+  AiFillFileAdd,
   AiFillFileExcel,
   AiOutlineCheckSquare,
   AiOutlineCloudUpload,
@@ -36,6 +38,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { UserData } from "../../../redux/slices/globalSlice";
 import { BiCloudUpload } from "react-icons/bi";
 import * as XLSX from "xlsx";
+import { FcApproval } from "react-icons/fc";
 interface BANGGIA_DATA {
   CUST_NAME_KD: string;
   G_NAME: string;
@@ -84,12 +87,13 @@ interface BANGGIA_DATA {
   PRICE_DATE20: string;
 }
 interface BANGGIA_DATA2 {
-  CUST_NAME_KD: string;
-  CUST_CD: string;
-  G_CODE: string;
-  G_NAME: string;
-  G_NAME_KD: string;
-  PROD_MAIN_MATERIAL: string;
+  id: number,
+  CUST_NAME_KD?: string;
+  CUST_CD?: string;
+  G_CODE?: string;
+  G_NAME?: string;
+  G_NAME_KD?: string;
+  PROD_MAIN_MATERIAL?: string;
   PRICE_DATE: string;
   MOQ: number;
   PROD_PRICE: number;
@@ -115,6 +119,10 @@ const QuotationManager = () => {
   const userData: UserData | undefined = useSelector(
     (state: RootState) => state.totalSlice.userData
   );
+  const [trigger, setTrigger]= useState(true);
+  const [selectedUploadExcelRow, setSelectedUploadExcelRow] = useState<BANGGIA_DATA2[]>([]);
+  const [selectedBangGiaDocRow, setselectedBangGiaDocRow] = useState<BANGGIA_DATA2[]>([]);
+  const [selectedCode, setSelectedCode] = useState<CodeListData | null>();
   const [customerList, setCustomerList] = useState<CustomerListData[]>([]);
   const getcustomerlist = () => {
     generalQuery("selectcustomerList", {})
@@ -128,6 +136,9 @@ const QuotationManager = () => {
         console.log(error);
       });
   };
+  const [moq, setMOQ] = useState(1);
+  const [newprice, setNewPrice] = useState('');
+  const [newpricedate, setNewPriceDate] = useState(moment.utc().format('YYYY-MM-DD'));
   const [codelist, setCodeList] = useState<CodeListData[]>([]);
   const [banggia, setBangGia] = useState<BANGGIA_DATA[]>([]);
   const [banggia2, setBangGia2] = useState<BANGGIA_DATA2[]>([]);
@@ -145,6 +156,65 @@ const QuotationManager = () => {
   const [uploadExcelJson, setUploadExcelJSon] = useState<Array<any>>([]);
   const [selectedCust_CD, setSelectedCust_CD] =
   useState<CustomerListData | null>();
+  const clearuploadrow = () => {
+    if(selectedUploadExcelRow.length > 0)
+    {      
+        let tempexceltable: BANGGIA_DATA2[] = uploadExcelJson;
+      
+        for (let j = 0; j < tempexceltable.length; j++) {
+          for (let i = 0; i < selectedUploadExcelRow.length; i++) {
+            if (selectedUploadExcelRow[i].id === tempexceltable[j].id) {              
+              
+              tempexceltable.splice(j, 1);            
+            }
+          }
+        }
+        console.log(tempexceltable);  
+                    
+        setUploadExcelJSon(tempexceltable);    
+        
+    }
+    else
+    {
+      Swal.fire('Thông báo','Chọn ít nhất 1 dòng để clear','error');
+    }
+  }
+  const uploadgia = async ()=> {
+    if(uploadExcelJson.length > 0)
+    {
+      let err_code: string = '';
+      for(let i=0;i<uploadExcelJson.length; i++)
+      {
+        await generalQuery("upgiasp", uploadExcelJson[i])
+        .then((response) => {
+          //console.log(response.data.data);
+          if (response.data.tk_status !== "NG") {
+            
+          } else {
+            err_code +=  `Lỗi : ${response.data.message} |`
+            //Swal.fire("Thông báo", " Có lỗi : " + response.data.message, "error");
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+          Swal.fire("Thông báo", " Có lỗi : " + error, "error");
+        });
+      }
+      if(err_code ==='')
+      {
+        Swal.fire("Thông báo", "Up giá thành công", "success");
+      }
+      else
+      {
+        Swal.fire("Thông báo", " Có lỗi : " + err_code, "error");
+      }
+    }
+    else
+    {
+      Swal.fire('Thông báo','Thêm dòng hoặc import excel file để up giá','error');
+    }
+
+  }
   const filterOptions1 = createFilterOptions({
     matchFrom: "any",
     limit: 100,
@@ -1672,9 +1742,9 @@ const QuotationManager = () => {
           keyExpr='id'
           height={"70vh"}
           showBorders={true}
-          onSelectionChanged={(e) => {
-            //console.log(e.selectedRowsData);
-            /*  setSelectedRowsDataYCSX(e.selectedRowsData); */
+          onSelectionChanged={(e) => {      
+            console.log(e.selectedRowsData);
+            setselectedBangGiaDocRow(e.selectedRowsData);
           }}
           onRowClick={(e) => {
             //console.log(e.data);
@@ -1734,6 +1804,7 @@ const QuotationManager = () => {
                 <BiCloudUpload color='#070EFA' size={25} />
                 Up Giá
               </IconButton>
+              
             </Item>
             <Item name='searchPanel' />
             <Item name='exportButton' />
@@ -1837,6 +1908,7 @@ const QuotationManager = () => {
           onSelectionChanged={(e) => {
             //console.log(e.selectedRowsData);
             /*  setSelectedRowsDataYCSX(e.selectedRowsData); */
+            setSelectedUploadExcelRow(e.selectedRowsData);
           }}
           onRowClick={(e) => {
             //console.log(e.data);
@@ -1853,7 +1925,7 @@ const QuotationManager = () => {
           <Editing
             allowUpdating={false}
             allowAdding={false}
-            allowDeleting={false}
+            allowDeleting={true}
             mode='cell'
             confirmDelete={false}
             onChangesChange={(e) => {}}
@@ -2207,7 +2279,7 @@ const QuotationManager = () => {
     //loadBangGia();
   }, []);
   return (
-    <div className='datasx'>
+    <div className='quotationmanager'>
       <div className='tracuuDataInspection'>
         <div className='tracuuDataInspectionform'>
           <div className='forminput'>
@@ -2322,6 +2394,21 @@ const QuotationManager = () => {
             >
               LS Giá Dọc
             </button>
+            <IconButton
+                className='buttonIcon'
+                onClick={() => {
+                  console.log(selectedBangGiaDocRow);
+                  /* checkBP(
+                    userData?.EMPL_NO,
+                    userData?.MAINDEPTNAME,
+                    ["KD"],
+                    loadBangGia2
+                  );   */                
+                }}
+              >
+                <FcApproval color='#070EFA' size={25} />
+                Phê Duyệt Giá
+              </IconButton>
           </div>
         </div>
         <div className='tracuuYCSXTable'>
@@ -2346,7 +2433,7 @@ const QuotationManager = () => {
           </div>
         )}
         {showhideupprice && (
-          <div className='pivottable1'>
+          <div className='upgia'>
             <div className='barbutton'>
               <IconButton
                 className='buttonIcon'
@@ -2378,56 +2465,133 @@ const QuotationManager = () => {
                 <AiOutlineCheckSquare color='#EB2EFE' size={25} />
                 Check Giá
               </IconButton>
+              <IconButton className='buttonIcon' onClick={() => {
+                 checkBP(
+                   userData?.EMPL_NO,
+                   userData?.MAINDEPTNAME,
+                   ["KD"],
+                   uploadgia
+                 ); 
+              }}>
+                <BiCloudUpload color='#FA0022' size={25} />
+                Up Giá
+              </IconButton>
+              <div className='upgiaform'>
+                <Autocomplete
+                  sx={{ fontSize: 10, width: "150px" }}
+                  size='small'
+                  disablePortal
+                  options={customerList}
+                  className='autocomplete'
+                  filterOptions={filterOptions1}
+                  isOptionEqualToValue={(option: any, value: any) =>
+                    option.CUST_CD === value.CUST_CD
+                  }
+                  getOptionLabel={(option: CustomerListData | any) =>
+                    `${option.CUST_CD}: ${option.CUST_NAME_KD}`
+                  }
+                  renderInput={(params) => (
+                    <TextField {...params} label='Select customer' />
+                  )}
+                  value={selectedCust_CD}
+                  onChange={(event: any, newValue: CustomerListData | any) => {
+                    console.log(newValue);
+                    setSelectedCust_CD(newValue);
+                  }}
+                />
+              </div>
+
+              <div className='upgiaform'>
+                <Autocomplete
+                  sx={{ fontSize: 10, width: "250px" }}
+                  size='small'
+                  disablePortal
+                  options={codelist}
+                  className='autocomplete'
+                  filterOptions={filterOptions1}
+                  isOptionEqualToValue={(option: any, value: any) =>
+                    option.G_CODE === value.G_CODE
+                  }
+                  getOptionLabel={(option: CodeListData | any) =>
+                    `${option.G_CODE}: ${option.G_NAME}`
+                  }
+                  renderInput={(params) => (
+                    <TextField {...params} label='Select code' />
+                  )}
+                  onChange={(event: any, newValue: CodeListData | any) => {
+                    console.log(newValue);
+                    setSelectedCode(newValue);
+                  }}
+                  value={selectedCode}
+                />
+              </div>
+              <div className='upgiaform'>
+                <TextField
+                  value={moq}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    setMOQ(Number(e.target.value))
+                  }
+                  size='small'
+                  color='success'
+                  className='autocomplete'
+                  id='outlined-basic'
+                  label='MOQ'
+                  variant='outlined'
+                />
+              </div>
+              <div className='upgiaform'>
+                <TextField
+                  value={newprice}                                 
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    setNewPrice(e.target.value)
+                  }
+                  size='small'
+                  color='success'
+                  className='autocomplete'
+                  id='outlined-basic'
+                  label='Price'
+                  variant='outlined'
+                />
+              </div>
+              <div className='upgiaform'>
+                <input
+                  className='inputdata'
+                  placeholder="PriceDate"
+                  type='date'
+                  value={newpricedate.slice(0, 10)}
+                  onChange={(e) => setNewPriceDate(e.target.value)}
+                ></input>
+              </div>
               <IconButton
                 className='buttonIcon'
-                onClick={() => {
-                  
-                }}
-              >
-                <BiCloudUpload color='#FA0022' size={25} />
-                Up Giá
-              </IconButton>
-             
-                    <div className="d">
-                    <Autocomplete
-                      size='small'
-                      disablePortal
-                      options={customerList}
-                      className='autocomplete'
-                      filterOptions={filterOptions1}
-                      isOptionEqualToValue={(option: any, value: any) =>
-                        option.CUST_CD === value.CUST_CD
-                      }
-                      getOptionLabel={(option: CustomerListData | any) =>
-                        `${option.CUST_CD}: ${option.CUST_NAME_KD}`
-                      }
-                      renderInput={(params) => (
-                        <TextField {...params} label='Select customer' />
-                      )}
-                      value={selectedCust_CD}
-                      onChange={(
-                        event: any,
-                        newValue: CustomerListData | any
-                      ) => {
-                        console.log(newValue);                        
-                        setSelectedCust_CD(newValue);
-                      }}
-                    />
-                     <IconButton
-                className='buttonIcon'
-                onClick={() => {
-                  
-                }}
-              >
-                <BiCloudUpload color='#FA0022' size={25} />
-                Up Giá
-              </IconButton>
+                onClick={() => { 
+                  let temp_row :  BANGGIA_DATA2 = {
+                    id: uploadExcelJson.length +1,
+                    CUST_CD: selectedCust_CD?.CUST_CD,
+                    CUST_NAME_KD: selectedCust_CD?.CUST_NAME_KD,
+                    FINAL:'',
+                    G_CODE: selectedCode?.G_CODE,
+                    G_NAME: selectedCode?.G_NAME,
+                    G_NAME_KD: selectedCode?.G_NAME_KD,
+                    INS_EMPL: '',
+                    INS_DATE: '',
+                    MOQ: moq,
+                    PRICE_DATE: newpricedate,
+                    PROD_PRICE: Number(newprice),
+                    PROD_MAIN_MATERIAL: selectedCode?.PROD_MAIN_MATERIAL,
+                    REMARK:'',
+                    UPD_EMPL:'',
+                    UPD_DATE:''
 
-                    </div>
-                   
-                 
+                  }
+                  setUploadExcelJSon([...uploadExcelJson, temp_row]);
+                }}
+              >
+                <AiFillFileAdd color='#F50354' size={25} />
+                Add
+              </IconButton>             
             </div>
-            {upgiaMM2}
+            <div className='upgiatable'>{upgiaMM2}</div>
           </div>
         )}
       </div>

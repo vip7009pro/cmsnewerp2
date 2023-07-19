@@ -187,7 +187,7 @@ const PoManager = () => {
                 id: index,
                }
               }
-            );          
+            ).filter((element: PRICEWITHMOQ, index: number)=> element.FINAL ==='Y');          
             setNewCodePrice(loaded_data);
           } else {
             Swal.fire("Thông báo", " Có lỗi : " + response.data.message, "error");
@@ -490,6 +490,7 @@ const PoManager = () => {
           className='buttonIcon'
           onClick={() => {
             checkBP(userData?.EMPL_NO, userData?.MAINDEPTNAME, ["KD"], showNewPO);
+
             clearPOform();
           }}
         >
@@ -2258,7 +2259,7 @@ const PoManager = () => {
                         let tempQTY: number = Number(e.target.value);
                         let tempprice: number = newcodeprice.filter((e:PRICEWITHMOQ, index: number)=> {
                           return tempQTY >= e.MOQ
-                        })[0].PROD_PRICE;
+                        })[0]?.PROD_PRICE;
                         setNewPoPrice(tempprice.toString());
                         setNewPoQty(e.target.value);
                       }
