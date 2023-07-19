@@ -7,15 +7,14 @@
     .tracuuDataInspection {
         .tracuuDataInspectionform {
             display: flex;
-            flex-direction: column;
-            align-items: center;
+            flex-direction: row;
+            align-items: center;            
             background-image: linear-gradient(0deg, #afd3d1, #86cfff);
             -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
             box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
             border-radius: 3px;
             padding: 5px;
-            font-size: 0.8rem;
-
+            font-size: 0.7rem;
             span {
                 padding: 10px;
                 font-size: 20px;
@@ -28,10 +27,9 @@
                 gap: 5px;
                 flex-wrap: wrap;
                 align-items: center;
-                justify-content: space-around;
-                padding: 2px;
-                width: 100%;
-                font-size: 0.7rem;
+                justify-content: flex-start;
+                padding: 2px;                
+                font-size: 0.6rem;
 
                 .forminputcolumn {
                     display: flex;
@@ -42,9 +40,9 @@
                     flex-wrap: wrap;
 
                     input {
-                        width: 150px;
-                        height: 20px;
-                        font-size: 0.7rem;
+                        width: 70px;
+                        height: 10px;
+                        font-size: 0.6rem;
                         outline: none;
                         border-radius: 5px;
                         border: none;
@@ -69,160 +67,20 @@
 
             .formbutton {
                 display: flex;
-                align-items: center;
-                justify-content: space-around;
-                gap: 20px;
-                font-size: 0.7rem;
-
-                .tranhapkiembutton {
-                    font-weight: bold;
-                    padding-left: 5px;
-                    padding-right: 5px;
-                    height: 30px;
-                    background-color: #99f86d;
-                    outline: none;
-                    border: none;
-                    border-radius: 5px;
-                    -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
-                    box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
-                    margin-bottom: 5px;
-                    margin-top: 5px;
-                    font-size: 0.7rem;
-
-                    &:hover {
-                        cursor: pointer;
-                        background-color: #67c73a;
-                    }
-                }
-
-                .traxuatkiembutton {
-                    font-weight: bold;
-                    padding-left: 5px;
-                    padding-right: 5px;
-                    height: 30px;
-                    background-color: #3ebdf8;
-                    outline: none;
-                    border: none;
-                    border-radius: 5px;
-                    -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
-                    box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
-                    margin-bottom: 5px;
-                    margin-top: 5px;
-                    font-size: 0.7rem;
-
-                    &:hover {
-                        cursor: pointer;
-                        background-color: #3f9eca;
-                    }
-                }
-
-                .tranhapxuatkiembutton {
-                    font-weight: bold;
-                    padding-left: 5px;
-                    padding-right: 5px;
-                    height: 30px;
-                    background-color: #f04dff;
-                    outline: none;
-                    border: none;
-                    border-radius: 5px;
-                    -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
-                    box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
-                    margin-bottom: 5px;
-                    margin-top: 5px;
-                    font-size: 0.7rem;
-
-                    &:hover {
-                        cursor: pointer;
-                        background-color: #bd4dc7;
-                    }
-                }
-
-                .tranhatky {
-                    font-weight: bold;
-                    padding-left: 5px;
-                    padding-right: 5px;
-                    height: 30px;
-                    background-color: #ccff14;
-                    outline: none;
-                    border: none;
-                    border-radius: 5px;
-                    -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
-                    box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
-                    margin-bottom: 5px;
-                    margin-top: 5px;
-                    font-size: 0.7rem;
-
-                    &:hover {
-                        cursor: pointer;
-                        background-color: #bd4dc7;
-                    }
-                }
-            }
-
-            .formsummary {
-                display: flex;
-                flex-direction: row;
-                background-image: linear-gradient(0deg, #ececec, #99f86d);
-                -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
-                box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
-                gap: 20px;
-                border-radius: 10px;
-                margin-top: 5px;
-
-
-                .summarygroup {
+                align-items: center; 
+                font-size: 0.6rem;
+                .buttoncolumn {
                     display: flex;
                     flex-direction: column;
-                    align-items: flex-start;
-                    justify-items: flex-start;
-                    gap: 10px;
 
-                    .summaryvalue {
-                        display: flex;
-                        font-size: 16px;
-                        justify-self: flex-end;
-                        align-self: flex-end;
-                        padding: 5px;
-                        color: rgb(83, 36, 255);
-                    }
                 }
 
+                
             }
-
+         
         }
 
-        .losstable {
-            display: flex;
-            flex-direction: row;
-            background-image: linear-gradient(0deg, #afd3d1, #86cfff);
-            -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
-            box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
-            gap: 20px;
-            border-radius: 5px;
-            margin-top: 5px;
-            padding: 10px;
-            font-size: 0.7rem;
-
-            table {
-                border: 2px solid gray;
-                width: 100%;
-                text-align: center;
-            }
-
-            table thead tr td {
-                font-weight: bold;
-                border: 1px solid gray;
-                padding-left: 10px;
-                padding-right: 10px;
-               
-            }
-
-            table tbody tr td {
-                border: 1px solid gray;                
-                text-align: center;
-            }
-        }
-
+       
         .tracuuYCSXTable {
             display: flex;
             flex-direction: row;

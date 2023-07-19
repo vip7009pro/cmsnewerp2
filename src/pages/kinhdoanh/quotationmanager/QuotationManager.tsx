@@ -24,12 +24,13 @@ import {
   AiFillFileExcel,
   AiOutlineCheckSquare,
   AiOutlineCloudUpload,
+  AiOutlineHistory,
   AiOutlinePrinter,
 } from "react-icons/ai";
 import Swal from "sweetalert2";
 import "./QuotationManager.scss";
 import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
-import { MdOutlinePivotTableChart } from "react-icons/md";
+import { MdOutlineManageHistory, MdOutlinePivotTableChart } from "react-icons/md";
 import { SaveExcel, checkBP, weekdayarray } from "../../../api/GlobalFunction";
 import { generalQuery } from "../../../api/Api";
 import PivotTable from "../../../components/PivotChart/PivotChart";
@@ -39,6 +40,7 @@ import { UserData } from "../../../redux/slices/globalSlice";
 import { BiCloudUpload } from "react-icons/bi";
 import * as XLSX from "xlsx";
 import { FcApproval } from "react-icons/fc";
+import { GrUpdate } from "react-icons/gr";
 interface BANGGIA_DATA {
   CUST_NAME_KD: string;
   G_NAME: string;
@@ -122,13 +124,40 @@ const QuotationManager = () => {
   const [trigger, setTrigger]= useState(true);
   const [selectedUploadExcelRow, setSelectedUploadExcelRow] = useState<BANGGIA_DATA2[]>([]);
   const [selectedBangGiaDocRow, setselectedBangGiaDocRow] = useState<BANGGIA_DATA2[]>([]);
-  const [selectedCode, setSelectedCode] = useState<CodeListData | null>();
-  const [customerList, setCustomerList] = useState<CustomerListData[]>([]);
+  const [selectedCode, setSelectedCode] = useState<CodeListData | null>(
+    {
+      G_CODE: '6A00001A',
+      G_NAME:'GT-I9500_SJ68-01284A',
+      G_NAME_KD:'SJ68-01284A',
+      PROD_MAIN_MATERIAL:'ST-5555HC'
+    }
+  );
+  const [selectedCust_CD, setSelectedCust_CD] =  useState<CustomerListData | null>( {
+    CUST_CD: "0003",
+    CUST_NAME_KD: "PHAN D&D HA NOI",
+    CUST_NAME: "PHAN D&D HA NOI",
+  });
+  const [customerList, setCustomerList] = useState<CustomerListData[]>([
+    {
+      CUST_CD: "0003",
+      CUST_NAME_KD: "PHAN D&D HA NOI",
+      CUST_NAME: "PHAN D&D HA NOI",
+    }
+   
+  ]);
+  const [codelist, setCodeList] = useState<CodeListData[]>([
+    {
+      G_CODE: '6A00001A',
+      G_NAME:'GT-I9500_SJ68-01284A',
+      G_NAME_KD:'SJ68-01284A',
+      PROD_MAIN_MATERIAL:'ST-5555HC'
+    }   
+  ]);
   const getcustomerlist = () => {
     generalQuery("selectcustomerList", {})
       .then((response) => {
         if (response.data.tk_status !== "NG") {
-          setCustomerList(response.data.data);
+          setCustomerList(response.data.data);         
         } else {
         }
       })
@@ -139,7 +168,7 @@ const QuotationManager = () => {
   const [moq, setMOQ] = useState(1);
   const [newprice, setNewPrice] = useState('');
   const [newpricedate, setNewPriceDate] = useState(moment.utc().format('YYYY-MM-DD'));
-  const [codelist, setCodeList] = useState<CodeListData[]>([]);
+
   const [banggia, setBangGia] = useState<BANGGIA_DATA[]>([]);
   const [banggia2, setBangGia2] = useState<BANGGIA_DATA2[]>([]);
   const [banggiachung, setBangGiaChung] = useState<Array<any>>([]);
@@ -154,8 +183,44 @@ const QuotationManager = () => {
   const [selectbutton, setSelectButton] = useState(true);
   const [showhideupprice, setShowHideUpPrice] = useState(false);
   const [uploadExcelJson, setUploadExcelJSon] = useState<Array<any>>([]);
-  const [selectedCust_CD, setSelectedCust_CD] =
-  useState<CustomerListData | null>();
+
+  const pheduyetgia = async ()=> {
+    if(selectedBangGiaDocRow.length >0)
+    {
+      let err_code: string ='';
+      for(let i=0;i< selectedBangGiaDocRow.length;i++) 
+      {
+        await generalQuery("pheduyetgia", selectedBangGiaDocRow[i])
+        .then((response) => {
+          //console.log(response.data.data);
+          if (response.data.tk_status !== "NG") {
+            
+          } else {
+            err_code +=  `Lỗi : ${response.data.message} |`
+            //Swal.fire("Thông báo", " Có lỗi : " + response.data.message, "error");
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+          Swal.fire("Thông báo", " Có lỗi : " + error, "error");
+        });
+      }
+      if(err_code ==='')
+      {
+        Swal.fire("Thông báo", "Phê duyệt giá thành công", "success");
+      }
+      else
+      {
+        Swal.fire("Thông báo", " Có lỗi : " + err_code, "error");
+      }
+        
+    }
+    else
+    {
+      Swal.fire('Thông báo','Chọn ít nhất 1 dòng để phê duyệt','error');
+    }
+  }
+
   const clearuploadrow = () => {
     if(selectedUploadExcelRow.length > 0)
     {      
@@ -234,7 +299,8 @@ const QuotationManager = () => {
               };
             }
           );
-          setCodeList(loaded_data);         
+          setCodeList(loaded_data);      
+         
         } else {
           Swal.fire("Thông báo", " Có lỗi : " + response.data.message, "error");
         }
@@ -2341,74 +2407,90 @@ const QuotationManager = () => {
                 ></input>
               </label>
             </div>
+            <div className='forminputcolumn'>
+              <label>
+                <b>All Time:</b>
+                <input
+                  type='checkbox'
+                  name='alltimecheckbox'
+                  defaultChecked={alltime}
+                  onChange={() => setAllTime(!alltime)}
+                ></input>
+              </label>            
+            </div>
+            <div className='forminputcolumn'>
+                       
+            </div>
           </div>
           <div className='formbutton'>
-            <label>
-              <b>All Time:</b>
-              <input
-                type='checkbox'
-                name='alltimecheckbox'
-                defaultChecked={alltime}
-                onChange={() => setAllTime(!alltime)}
-              ></input>
-            </label>
-            <button
-              className='tranhatky'
-              onClick={() => {
-                setSelectButton(false);
+            <div className="buttoncolumn">
+            <IconButton
+                className='buttonIcon'
+                onClick={() => {
+                  setSelectButton(false);
                 checkBP(
                   userData?.EMPL_NO,
                   userData?.MAINDEPTNAME,
                   ["KD"],
                   loadBangGiaMoiNhat
-                );
-              }}
-            >
-              Giá mới nhất
-            </button>
-            <button
-              className='tranhatky'
-              onClick={() => {
-                setSelectButton(true);
+                );                                             
+                }}
+              >
+                <GrUpdate color='#070EFA' size={10}/>
+                <span style={{fontSize:'0.6rem', padding: 0}}>Giá mới nhất</span>                
+              </IconButton>
+            <IconButton
+                className='buttonIcon'
+                onClick={() => {
+                  setSelectButton(true);
                 checkBP(
                   userData?.EMPL_NO,
                   userData?.MAINDEPTNAME,
                   ["KD"],
                   loadBangGia
-                );
-              }}
-            >
-              LS Giá Ngang
-            </button>
-            <button
-              className='tranhatky'
-              onClick={() => {
-                setSelectButton(false);
-                checkBP(
-                  userData?.EMPL_NO,
-                  userData?.MAINDEPTNAME,
-                  ["KD"],
-                  loadBangGia2
-                );
-              }}
-            >
-              LS Giá Dọc
-            </button>
+                );                                           
+                }}
+              >
+                <AiOutlineHistory color='#070EFA' size={10}/>
+                <span style={{fontSize:'0.6rem', padding: 0}}>Price History 1</span>                
+              </IconButton>
+            </div>
+            <div className="buttoncolumn">
             <IconButton
                 className='buttonIcon'
                 onClick={() => {
-                  console.log(selectedBangGiaDocRow);
-                  /* checkBP(
+                  setSelectButton(false);
+                  checkBP(
                     userData?.EMPL_NO,
                     userData?.MAINDEPTNAME,
                     ["KD"],
                     loadBangGia2
-                  );   */                
+                  );                             
                 }}
               >
-                <FcApproval color='#070EFA' size={25} />
-                Phê Duyệt Giá
+                <MdOutlineManageHistory color='#070EFA' size={10}/>
+                <span style={{fontSize:'0.6rem', padding: 0}}>Price History 2</span>                
               </IconButton>
+
+            <IconButton
+                className='buttonIcon'
+                onClick={() => {
+                  console.log(selectedBangGiaDocRow);
+                  checkBP(
+                    userData?.EMPL_NO,
+                    userData?.MAINDEPTNAME,
+                    ["KD"],
+                    pheduyetgia
+                  );                  
+                }}
+              >
+                <FcApproval color='#070EFA' size={10}/>
+                <span style={{fontSize:'0.6rem', padding: 0}}>Phê Duyệt Giá</span>                
+              </IconButton>
+
+            </div>
+            
+           
           </div>
         </div>
         <div className='tracuuYCSXTable'>

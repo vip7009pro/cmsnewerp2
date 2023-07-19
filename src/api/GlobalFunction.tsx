@@ -21,6 +21,7 @@ import FCSTManager from '../pages/kinhdoanh/fcstmanager/FCSTManager';
 import YCSXManager from '../pages/kinhdoanh/ycsxmanager/YCSXManager';
 import POandStockFull from '../pages/kinhdoanh/poandstockfull/POandStockFull';
 import CODE_MANAGER from '../pages/rnd/code_manager/CODE_MANAGER';
+import { UserData } from '../redux/slices/globalSlice';
 
 export const SaveExcel = (data: any, title: string) => {
     const worksheet = XLSX.utils.json_to_sheet(data);
@@ -108,13 +109,87 @@ export function CustomResponsiveContainer(props:any) {
 
  }
 
- export async function checkBP(input_EMPL_NO: string | undefined,input_maindept: string| undefined,permitted_main_dept: Array<string>, func:any) {
-  if(input_EMPL_NO !== undefined && input_maindept !== undefined)
+ export async function checkBP(userData: UserData, permitted_main_dept: string[], permitted_position: string[], permitted_empl: string[], func:any) {
+  if(userData.EMPL_NO !== undefined && userData.EMPL_NO !== undefined && userData.MAINDEPTNAME !== undefined)
   {
-    if(permitted_main_dept.indexOf(input_maindept)>-1 || input_EMPL_NO==='NHU1903' || input_EMPL_NO==='NVD1201')
-    {
+    if(userData.EMPL_NO==='NHU1903' || userData.EMPL_NO==='NVD1201' || userData.JOB_NAME==='ADMIN'){
       await func();
     }
+    else if(permitted_main_dept.indexOf('ALL')> -1)
+    {
+      if(permitted_position.indexOf('ALL')>-1)
+      {
+        if(permitted_empl.indexOf('ALL')>-1)
+        {
+          await func();
+        }
+        else if(permitted_empl.indexOf(userData.EMPL_NO)>-1)
+        {
+          await func();
+        }
+        else
+        {
+          Swal.fire('Thông báo', 'Không đủ quyền hạn','warning');
+        }
+      }
+      else if(permitted_position.indexOf(userData.POSITION_NAME===undefined? 'NA': userData.POSITION_NAME)>-1)
+      {
+        if(permitted_empl.indexOf('ALL')>-1)
+        {
+          await func();
+        }
+        else if(permitted_empl.indexOf(userData.EMPL_NO)>-1)
+        {
+          await func();
+        }
+        else
+        {
+          Swal.fire('Thông báo', 'Không đủ quyền hạn','warning');
+        }        
+      }
+      else
+      {
+        Swal.fire('Thông báo', 'Chức vụ không đủ quyền hạn','warning');
+      }
+      
+    }
+    else if(permitted_main_dept.indexOf(userData.MAINDEPTNAME)> -1)
+    {
+      if(permitted_position.indexOf('ALL')>-1)
+      {
+        if(permitted_empl.indexOf('ALL')>-1)
+        {
+          await func();
+        }
+        else if(permitted_empl.indexOf(userData.EMPL_NO)>-1)
+        {
+          await func();
+        }
+        else
+        {
+          Swal.fire('Thông báo', 'Không đủ quyền hạn','warning');
+        }
+      }
+      else if(permitted_position.indexOf(userData.POSITION_NAME===undefined? 'NA': userData.POSITION_NAME)>-1)
+      {
+        if(permitted_empl.indexOf('ALL')>-1)
+        {
+          await func();
+        }
+        else if(permitted_empl.indexOf(userData.EMPL_NO)>-1)
+        {
+          await func();
+        }
+        else
+        {
+          Swal.fire('Thông báo', 'Không đủ quyền hạn','warning');
+        }        
+      }
+      else
+      {
+        Swal.fire('Thông báo', 'Chức vụ không đủ quyền hạn','warning');
+      }
+    }        
     else
     {    
       Swal.fire('Thông báo', 'Bạn không phải người bộ phận '+ permitted_main_dept,'warning');    
