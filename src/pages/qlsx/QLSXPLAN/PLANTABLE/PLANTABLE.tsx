@@ -2815,7 +2815,8 @@ const PLANTABLE = () => {
         <IconButton
           className='buttonIcon'
           onClick={() => {
-            checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['QLSX'], handle_UpdatePlan);
+            /* checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['QLSX'], handle_UpdatePlan); */
+            checkBP(userData,['QLSX'],['ALL'],['ALL'],handle_UpdatePlan);
             //handle_UpdatePlan();
           }}
         >
@@ -2825,7 +2826,8 @@ const PLANTABLE = () => {
         <IconButton
           className='buttonIcon'
           onClick={() => {
-            checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['QLSX'], handleConfirmDeletePlan);
+           /*  checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['QLSX'], handleConfirmDeletePlan); */
+            checkBP(userData,['QLSX'],['ALL'],['ALL'],handleConfirmDeletePlan);
             //handleConfirmDeletePlan();
           }}
         >
@@ -2844,7 +2846,8 @@ const PLANTABLE = () => {
         <IconButton
           className='buttonIcon'
           onClick={() => {
-            checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['QLSX'], handleSaveQLSX);
+            /* checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['QLSX'], handleSaveQLSX); */
+            checkBP(userData,['QLSX'],['ALL'],['ALL'],handleSaveQLSX);
             //handleSaveQLSX();
           }}
         >
@@ -2883,7 +2886,8 @@ const PLANTABLE = () => {
                 confirmButtonText:'OK',
                 showConfirmButton: false,
               });
-              checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['QLSX'], hanlde_SaveChiThi);
+              /* checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['QLSX'], hanlde_SaveChiThi); */
+              checkBP(userData,['QLSX'],['ALL'],['ALL'],hanlde_SaveChiThi);
               //hanlde_SaveChiThi();
             } else {
               Swal.fire("Thông báo", "Không có liệu để chỉ thị", "error");
@@ -2896,7 +2900,9 @@ const PLANTABLE = () => {
         <IconButton
           className='buttonIcon'
           onClick={() => {
-            checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['QLSX'], handleConfirmDeleteLieu);
+           /*  checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['QLSX'], handleConfirmDeleteLieu); */
+            checkBP(userData,['QLSX'],['ALL'],['ALL'],handleConfirmDeleteLieu);
+
             //handleConfirmDeleteLieu();
           }}
         >
@@ -2906,7 +2912,8 @@ const PLANTABLE = () => {
         <IconButton
           className='buttonIcon'
           onClick={() => {
-            checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['QLSX'], handleConfirmRESETLIEU);
+           /*  checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['QLSX'], handleConfirmRESETLIEU); */
+            checkBP(userData,['QLSX'],['ALL'],['ALL'],handleConfirmRESETLIEU);
             //handleConfirmRESETLIEU();
           }}
         >
@@ -2916,7 +2923,7 @@ const PLANTABLE = () => {
         <IconButton
           className='buttonIcon'
           onClick={() => {
-            checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['QLSX'], ()=> {
+           /*  checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['QLSX'], ()=> {
               if (qlsxplandatafilter.length > 0) {
                 setShowKhoAo(!showkhoao);
                 handle_loadKhoAo();
@@ -2927,7 +2934,18 @@ const PLANTABLE = () => {
                 Swal.fire("Thông báo", "Hãy chọn một chỉ thị", "error");
               }
 
-            });
+            }); */
+            checkBP(userData,['QLSX'],['ALL'],['ALL'],()=> {
+              if (qlsxplandatafilter.length > 0) {
+                setShowKhoAo(!showkhoao);
+                handle_loadKhoAo();
+                handle_loadlichsuxuatkhoao();
+                handle_loadlichsunhapkhoao();
+                handle_loadlichsuinputlieu(qlsxplandatafilter[0].PLAN_ID);
+              } else {
+                Swal.fire("Thông báo", "Hãy chọn một chỉ thị", "error");
+              }
+            })
            
           }}
         >
@@ -2937,7 +2955,9 @@ const PLANTABLE = () => {
         <IconButton
           className='buttonIcon'
           onClick={() => {
-            checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['QLSX'], handleConfirmDKXL);
+            /* checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['QLSX'], handleConfirmDKXL); */
+            checkBP(userData,['QLSX'],['ALL'],['ALL'],handleConfirmDKXL);
+
             handleConfirmDKXL();
           }}
         >

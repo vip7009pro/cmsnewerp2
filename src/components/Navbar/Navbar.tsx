@@ -160,6 +160,12 @@ export default function Navbar() {
   const userData: UserData | undefined = useSelector(
     (state: RootState) => state.totalSlice.userData
   );
+  const company: string = useSelector(
+    (state: RootState) => state.totalSlice.company
+  );
+  const theme: any = useSelector(
+    (state: RootState) => state.totalSlice.theme
+  );
 
   useOutsideClick(
     refLang,
@@ -595,8 +601,7 @@ export default function Navbar() {
       <div
         className='wrapper'
         style={{
-          backgroundColor:
-            server_string === "http://14.160.33.94:5011/api" ? "" : "#EC40FA",
+          backgroundImage: `${company === "CMS" ?  theme.CMS.backgroundImage: theme.PVN.backgroundImage}`,
         }}
       >
         <div className='navleft'>
@@ -610,12 +615,18 @@ export default function Navbar() {
         <div className='navcenter'>
           <div className='cmslogo' style={{ cursor: "pointer" }}>
             <Link to='/' className='menulink'>
-              <img
+              {company === 'CMS' &&<img
                 alt='cmsvina logo'
                 src='/logocmsvina.png'
                 width={114.4}
                 height={27.13333}
-              />
+              />}
+              {company === 'PVN' &&<img
+                alt='cmsvina logo'
+                src='/logopvn_big.png'
+                width={114.4}
+                height={40}
+              />}
             </Link>
           </div>
           <div className='webver' style={{ fontSize: "8pt" }}>

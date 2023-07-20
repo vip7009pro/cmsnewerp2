@@ -1658,12 +1658,14 @@ const QUICKPLAN = () => {
         <IconButton
           className='buttonIcon'
           onClick={() => {
-            checkBP(
+            /* checkBP(
               userData?.EMPL_NO,
               userData?.MAINDEPTNAME,
               ["QLSX"],
               handleConfirmSavePlan
-            );
+            ); */
+            checkBP(userData,['QLSX'],['ALL'],['ALL'],handleConfirmSavePlan);
+
             //handleConfirmSavePlan();
           }}
         >
@@ -1691,12 +1693,14 @@ const QUICKPLAN = () => {
         <IconButton
           className='buttonIcon'
           onClick={() => {
-            checkBP(
+            /* checkBP(
               userData?.EMPL_NO,
               userData?.MAINDEPTNAME,
               ["QLSX"],
               handleSaveQLSX
-            );
+            ); */
+            checkBP(userData,['QLSX'],['ALL'],['ALL'],handleSaveQLSX);
+
             //handleSaveQLSX();
           }}
         >

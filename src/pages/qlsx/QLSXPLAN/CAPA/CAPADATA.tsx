@@ -807,12 +807,13 @@ import { RootState } from "../../../../redux/store";
               <button
                 className='tranhatky'
                 onClick={() => {                                          
-                    checkBP(
+                    /* checkBP(
                         userData?.EMPL_NO,
                         userData?.MAINDEPTNAME,
                         ["QLSX"],
                         handleSaveQLSX
-                      );
+                      ); */
+                      checkBP(userData,['QLSX'],['ALL'],['ALL'],handleSaveQLSX);
                 }}
               >
                 Update Data

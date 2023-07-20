@@ -561,12 +561,15 @@ const DESIGN_AMAZON = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         Swal.fire("Tiến hành Lưu DESIGN", "Đang lưu DESIGN", "success");
-        checkBP(
+       /*  checkBP(
           userData?.EMPL_NO,
           userData?.MAINDEPTNAME,
           ["RND"],
           saveDesignAmazon
-        );
+        ); */
+        checkBP(userData,['RND'],['ALL'],['ALL'],saveDesignAmazon);
+
+      
         //handleInsertBOMSX();
       }
     });

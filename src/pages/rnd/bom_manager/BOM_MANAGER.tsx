@@ -1109,12 +1109,13 @@ const BOM_MANAGER = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         Swal.fire("Tiến hành thêm", "Đang thêm Code mới", "success");
-        checkBP(
+        /* checkBP(
           userData?.EMPL_NO,
           userData?.MAINDEPTNAME,
           ["RND"],
           handleAddNewCode
-        );
+        ); */
+        checkBP(userData,['RND','QLSX'],['ALL'],['ALL'],handleAddNewCode);
         //handleAddNewCode();
       }
     });
@@ -1131,12 +1132,13 @@ const BOM_MANAGER = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         Swal.fire("Tiến hành thêm", "Đang thêm Ver mới", "success");
-        checkBP(
+      /*   checkBP(
           userData?.EMPL_NO,
           userData?.MAINDEPTNAME,
           ["RND"],
           handleAddNewVer
-        );
+        ); */
+        checkBP(userData,['RND','QLSX'],['ALL'],['ALL'],handleAddNewVer);
         //handleAddNewVer();
       }
     });
@@ -1153,12 +1155,13 @@ const BOM_MANAGER = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         Swal.fire("Tiến hành Update", "Đang update code", "success");
-        checkBP(
+        /* checkBP(
           userData?.EMPL_NO,
           userData?.MAINDEPTNAME,
           ["RND", "QLSX"],
           handleUpdateCode
-        );
+        ); */
+        checkBP(userData,['RND','QLSX'],['ALL'],['ALL'],handleUpdateCode);
         //handleUpdateCode();
       }
     });
@@ -1783,12 +1786,13 @@ const BOM_MANAGER = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         Swal.fire("Tiến hành Lưu BOM SX", "Đang lưu BOM", "success");
-        checkBP(
+       /*  checkBP(
           userData?.EMPL_NO,
           userData?.MAINDEPTNAME,
           ["RND", "QLSX"],
           handleInsertBOMSX
-        );
+        ); */
+        checkBP(userData,['RND','QLSX'],['ALL'],['ALL'],handleInsertBOMSX);
         //handleInsertBOMSX();
       }
     });
@@ -1805,12 +1809,13 @@ const BOM_MANAGER = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         Swal.fire("Tiến hành Lưu BOM GIÁ", "Đang lưu BOM", "success");
-        checkBP(
+        /* checkBP(
           userData?.EMPL_NO,
           userData?.MAINDEPTNAME,
           ["RND", "QLSX"],
           handleInsertBOMGIA
-        );
+        ); */
+        checkBP(userData,['RND','QLSX'],['ALL'],['ALL'],handleInsertBOMGIA);
         //handleInsertBOMGIA();
         //handleInsertBOMSX_WITH_GIA();
       }
@@ -1857,14 +1862,19 @@ const BOM_MANAGER = () => {
         <div
           className='mininavitem'
           onClick={() =>
-            checkBP(
+            /* checkBP(
               userData?.EMPL_NO,
               userData?.MAINDEPTNAME,
               ["KD", "RND"],
               () => {
                 setNav(2);
               }
-            )
+            ) */
+            checkBP(userData,['RND','KD'],['ALL'],['ALL'],()=> {
+              setNav(2);
+            })
+
+
           }
           style={{
             backgroundColor:

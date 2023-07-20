@@ -500,7 +500,8 @@ const KHOLIEU = () => {
               <button className='updatelotnccbutton'  onClick={() => {     
                 if(userData?.SUBDEPTNAME==='IQC')
                 {
-                  checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['QC','KHO'], updatelotNCC);            
+                  //checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['QC','KHO'], updatelotNCC);       
+                  checkBP(userData,['QC','KHO'],['ALL'],['ALL'],updatelotNCC);     
                 }
                 else
                 {

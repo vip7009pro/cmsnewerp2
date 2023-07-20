@@ -598,12 +598,13 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
           "Đang xóa hàng loạt",
           "success"
         );
-        checkBP(
+        /* checkBP(
           userData?.EMPL_NO,
           userData?.MAINDEPTNAME,
           ["SX"],
           handle_xoa_rac
-        );
+        ); */
+        checkBP(userData,['SX'],['ALL'],['ALL'],handle_xoa_rac);
       }
     });
   };
@@ -623,12 +624,13 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
           "Đang Ẩn hàng loạt",
           "success"
         );
-        checkBP(
+        /* checkBP(
           userData?.EMPL_NO,
           userData?.MAINDEPTNAME,
           ["SX"],
           handle_an_rac
-        );
+        ); */
+        checkBP(userData,['SX'],['ALL'],['ALL'],handle_an_rac);
       }
     });
   };
@@ -866,13 +868,13 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
                 onClick={() => {
                   if(nextPermission)
                   {
-                    checkBP(
+                   /*  checkBP(
                       userData?.EMPL_NO,
                       userData?.MAINDEPTNAME,
                       ["QLSX"],
                       handle_xuatKhoAo
-                    );
-
+                    ); */
+                    checkBP(userData,['QLSX'],['ALL'],['ALL'],handle_xuatKhoAo);
                   }
                   else
                   {

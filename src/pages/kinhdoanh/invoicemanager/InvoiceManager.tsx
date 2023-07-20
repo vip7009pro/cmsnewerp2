@@ -381,7 +381,18 @@ const InvoiceManager = () => {
         <IconButton
           className='buttonIcon'
           onClick={() => {
-            checkBP(userData?.EMPL_NO, userData?.MAINDEPTNAME, ["KD"], () => {
+           /*  checkBP(userData?.EMPL_NO, userData?.MAINDEPTNAME, ["KD"], () => {
+              setSelection({
+                ...selection,
+                trapo: true,
+                thempohangloat: false,
+                them1po: false,
+                them1invoice: true,
+              });
+              clearInvoiceform();
+            }); */
+
+            checkBP(userData,['KD'],['ALL'],['ALL'],()=> {
               setSelection({
                 ...selection,
                 trapo: true,
@@ -391,6 +402,7 @@ const InvoiceManager = () => {
               });
               clearInvoiceform();
             });
+
           }}
         >
           <AiFillFileAdd color='blue' size={25} />
@@ -399,12 +411,13 @@ const InvoiceManager = () => {
         <IconButton
           className='buttonIcon'
           onClick={() => {
-            checkBP(
+            /* checkBP(
               userData?.EMPL_NO,
               userData?.MAINDEPTNAME,
               ["KD"],
               handle_fillsuaformInvoice
-            );
+            ); */
+            checkBP(userData,['KD'],['ALL'],['ALL'],handle_fillsuaformInvoice);
             //handle_fillsuaformInvoice();
           }}
         >
@@ -414,12 +427,13 @@ const InvoiceManager = () => {
         <IconButton
           className='buttonIcon'
           onClick={() => {
-            checkBP(
+           /*  checkBP(
               userData?.EMPL_NO,
               userData?.MAINDEPTNAME,
               ["KD"],
               handleConfirmDeleteInvoice
-            );
+            ); */
+            checkBP(userData,['KD'],['ALL'],['ALL'],handleConfirmDeleteInvoice);
             //handleConfirmDeleteInvoice();
           }}
         >
@@ -1468,9 +1482,13 @@ const InvoiceManager = () => {
         <div
           className='mininavitem'
           onClick={() =>
-            checkBP(userData?.EMPL_NO, userData?.MAINDEPTNAME, ["KD"], () => {
+            /* checkBP(userData?.EMPL_NO, userData?.MAINDEPTNAME, ["KD"], () => {
+              setNav(2);
+            }) */
+            checkBP(userData,['KD'],['ALL'],['ALL'],()=> {
               setNav(2);
             })
+
           }
           style={{
             backgroundColor:

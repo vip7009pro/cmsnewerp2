@@ -237,7 +237,8 @@ const FCSTManager = () => {
         <GridToolbarDensitySelector /> 
         <IconButton className='buttonIcon'onClick={()=>{SaveExcel(fcstdatatable,"Fcst Table")}}><AiFillFileExcel color='green' size={25}/>SAVE</IconButton> 
         <IconButton className='buttonIcon'onClick={()=>{
-          checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['KD'], handleConfirmDeleteFcst);
+          //checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['KD'], handleConfirmDeleteFcst);
+          checkBP(userData,['KD'],['ALL'],['ALL'],handleConfirmDeleteFcst);
           //handleConfirmDeleteFcst();
           }}><MdOutlineDelete color='red' size={25}/>XÓA FCST</IconButton>        
         <GridToolbarQuickFilter/>
@@ -680,7 +681,8 @@ const FCSTManager = () => {
           'Đang Xóa FCST hàng loạt',
           'success'
         );
-        checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['KD'], deleteFcst);
+        //checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['KD'], deleteFcst);
+        checkBP(userData,['KD'],['ALL'],['ALL'],deleteFcst);
         //deleteFcst();
       }
     })
@@ -1557,9 +1559,13 @@ const FCSTManager = () => {
           </span>
         </div>  
         <div className='mininavitem'  onClick={() =>
-            checkBP(userData?.EMPL_NO, userData?.MAINDEPTNAME, ['KD'], () => {
+            /* checkBP(userData?.EMPL_NO, userData?.MAINDEPTNAME, ['KD'], () => {
+              setNav(2);
+            }) */
+            checkBP(userData,['KD'],['ALL'],['ALL'],()=> {
               setNav(2);
             })
+
           } style={{backgroundColor:selection.thempohangloat === true ? '#02c712':'#abc9ae', color: selection.thempohangloat === true ? 'yellow':'yellow'}}>
           <span className='mininavtext'>
           Thêm FCST

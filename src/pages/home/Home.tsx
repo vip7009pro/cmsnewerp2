@@ -21,6 +21,12 @@ interface ELE_ARRAY {
   ELE_CODE: string;
 }
 function Home() {
+  const company: string = useSelector(
+    (state: RootState) => state.totalSlice.company
+  );
+  const theme: any = useSelector(
+    (state: RootState) => state.totalSlice.theme
+  );
   const tabs: ELE_ARRAY[] = useSelector(
     (state: RootState) => state.totalSlice.tabs
   );
@@ -155,7 +161,7 @@ function Home() {
                     scrollButtons
                     allowScrollButtonsMobile
                     style={{
-                      backgroundImage: `linear-gradient(0deg, #afd3d1, #86cfff)`,
+                      backgroundImage: `${company === "CMS" ?  theme.CMS.backgroundImage: theme.PVN.backgroundImage}`,
                       marginRight: "5px",
                       border: "none",
                       minHeight: "2px",

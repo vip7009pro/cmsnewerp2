@@ -338,12 +338,14 @@ const MATERIAL_MANAGER = () => {
               <button
                 className='xuatnext'
                 onClick={() => {
-                  checkBP(
+                 /*  checkBP(
                     userData?.EMPL_NO,
                     userData?.MAINDEPTNAME,
                     ["KD", "RND"],
                     save_material_table
-                  );
+                  ); */
+                  checkBP(userData,['KD','RND'],['ALL'],['ALL'],save_material_table);
+
                   //save_material_table();
                 }}
               >

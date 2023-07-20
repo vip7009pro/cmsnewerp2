@@ -299,7 +299,8 @@ import { RootState } from "../../../redux/store";
           <IconButton
             className='buttonIcon'
             onClick={() => {
-              checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['RND'], confirmSaveBOMAMAZON);
+             /*  checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['RND'], confirmSaveBOMAMAZON); */
+              checkBP(userData,['RND'],['ALL'],['ALL'],confirmSaveBOMAMAZON);
               //confirmSaveBOMAMAZON();
             }}
           >
@@ -309,14 +310,24 @@ import { RootState } from "../../../redux/store";
           <IconButton
             className='buttonIcon'
             onClick={() => {
-              checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['RND'], ()=>{
+             /*  checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['RND'], ()=>{
                 setcolumn_bomgia(
                   column_bomgia.map((element, index: number) => {
                     return { ...element, editable: !element.editable };
                   })
                 );
                 Swal.fire("Thông báo", "Bật/Tắt chế độ sửa", "success");
-              });
+              }); */
+
+              checkBP(userData,['RND'],['ALL'],['ALL'],()=> {
+                setcolumn_bomgia(
+                  column_bomgia.map((element, index: number) => {
+                    return { ...element, editable: !element.editable };
+                  })
+                );
+                Swal.fire("Thông báo", "Bật/Tắt chế độ sửa", "success");
+              })
+              
              
             }}
           >

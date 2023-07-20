@@ -2070,7 +2070,8 @@ import { UserData } from "../../../redux/slices/globalSlice";
               <button
                 className='tranhatky'
                 onClick={() => {
-                    checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['NHANSU'], loadBangChamCong2);                    
+                    /* checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['NHANSU'], loadBangChamCong2);  */
+                    checkBP(userData,['KD'],['ALL'],['ALL'],loadBangChamCong2);                
                 }}
               >
                 Tra chấm công

@@ -36,6 +36,12 @@ const Sidebar = () => {
   const showSidebar = () => setSidebar(!sidebar);
   const [lang,setLang] = useContext(LangConText);
   const globalUserData: UserData|undefined = useSelector((state:RootState)=>state.totalSlice.userData);
+  const company: string = useSelector(
+    (state: RootState) => state.totalSlice.company
+  );
+  const theme: any = useSelector(
+    (state: RootState) => state.totalSlice.theme
+  );
   const dispatch = useDispatch();
   useOutsideClick(boxRef,()=> {
     //console.log('outsideclick');  
@@ -476,9 +482,12 @@ const Sidebar = () => {
           sidebarStatus === true ? "show-sidebar" : "hide-sidebar"
         }`}
       >
-        <div className='SidebarWrap'>
+        <div className='SidebarWrap' style={{
+        backgroundImage: `${company === "CMS" ?  theme.CMS.backgroundImage: theme.PVN.backgroundImage}`,
+      }} >
           <Link to='#' className='NavIcon'>
-            <img alt="logo" src="/logocmsvina.png" width={85.8} height={20.35}/>            
+            {company ==='CMS' && <img alt="logo" src="/logocmsvina.png" width={85.8} height={20.35}/>}            
+            {company ==='PVN' && <img alt="logo" src="/logopvn_big.png" width={85.8} height={40.35}/>}            
           </Link>
           {SidebarData.map((item, index) => {
             return <SubMenu item={item} key={index} />;

@@ -3008,12 +3008,13 @@ const MACHINE = () => {
         <IconButton
           className='buttonIcon'
           onClick={() => {
-            checkBP(
+            /* checkBP(
               userData?.EMPL_NO,
               userData?.MAINDEPTNAME,
               ["QLSX"],
               handle_UpdatePlan
-            );
+            ); */
+            checkBP(userData,['QLSX'],['ALL'],['ALL'],handle_UpdatePlan);
             //handle_UpdatePlan();
           }}
         >
@@ -3023,12 +3024,13 @@ const MACHINE = () => {
         <IconButton
           className='buttonIcon'
           onClick={() => {
-            checkBP(
+           /*  checkBP(
               userData?.EMPL_NO,
               userData?.MAINDEPTNAME,
               ["QLSX"],
               handleConfirmDeletePlan
-            );
+            ); */
+            checkBP(userData,['QLSX'],['ALL'],['ALL'],handleConfirmDeletePlan);
             //handleConfirmDeletePlan();
           }}
         >
@@ -3047,12 +3049,13 @@ const MACHINE = () => {
         <IconButton
           className='buttonIcon'
           onClick={() => {
-            checkBP(
+           /*  checkBP(
               userData?.EMPL_NO,
               userData?.MAINDEPTNAME,
               ["QLSX"],
               handleSaveQLSX
-            );
+            ); */
+            checkBP(userData,['QLSX'],['ALL'],['ALL'],handleSaveQLSX);
             //handleSaveQLSX();
           }}
         >
@@ -3134,12 +3137,13 @@ const MACHINE = () => {
         <IconButton
           className='buttonIcon'
           onClick={() => {
-            checkBP(
+          /*   checkBP(
               userData?.EMPL_NO,
               userData?.MAINDEPTNAME,
               ["QLSX"],
               handleConfirmDKXL
-            );
+            ); */
+            checkBP(userData,['QLSX'],['ALL'],['ALL'],handleConfirmDKXL);
           }}
         >
           <AiOutlineBarcode color='green' size={20} />
@@ -3148,12 +3152,13 @@ const MACHINE = () => {
         <IconButton
           className='buttonIcon'
           onClick={() => {
-            checkBP(
+            /* checkBP(
               userData?.EMPL_NO,
               userData?.MAINDEPTNAME,
               ["QLSX"],
               handleConfirmDeleteLieu
-            );
+            ); */
+            checkBP(userData,['QLSX'],['ALL'],['ALL'],handleConfirmDeleteLieu);
             //handleConfirmDeleteLieu();
           }}
         >
@@ -3163,12 +3168,13 @@ const MACHINE = () => {
         <IconButton
           className='buttonIcon'
           onClick={() => {
-            checkBP(
+            /* checkBP(
               userData?.EMPL_NO,
               userData?.MAINDEPTNAME,
               ["QLSX"],
               handleConfirmRESETLIEU
-            );
+            ); */
+            checkBP(userData,['QLSX'],['ALL'],['ALL'],handleConfirmRESETLIEU);
             //handleConfirmRESETLIEU();
           }}
         >
@@ -3179,7 +3185,7 @@ const MACHINE = () => {
           className='buttonIcon'
           onClick={() => {
             if (selectedPlan !== undefined) {
-              checkBP(userData?.EMPL_NO, userData?.MAINDEPTNAME, ["QLSX"], () => {
+             /*  checkBP(userData?.EMPL_NO, userData?.MAINDEPTNAME, ["QLSX"], () => {
                 setShowKhoAo(!showkhoao);
                 handle_loadKhoAo();
                 handle_loadlichsuxuatkhoao();
@@ -3189,7 +3195,18 @@ const MACHINE = () => {
                     ? "xxx"
                     : selectedPlan?.PLAN_ID
                 );
-              });
+              }); */
+              checkBP(userData,['KD'],['ALL'],['ALL'],()=> {
+                setShowKhoAo(!showkhoao);
+                handle_loadKhoAo();
+                handle_loadlichsuxuatkhoao();
+                handle_loadlichsunhapkhoao();
+                handle_loadlichsuinputlieu(
+                  selectedPlan?.PLAN_ID === undefined
+                    ? "xxx"
+                    : selectedPlan?.PLAN_ID
+                );
+              })
             } else {
               Swal.fire("Thông báo", "Hãy chọn một chỉ thị", "error");
             }
@@ -3219,12 +3236,13 @@ const MACHINE = () => {
         <IconButton
           className='buttonIcon'
           onClick={() => {
-            checkBP(
+            /* checkBP(
               userData?.EMPL_NO,
               userData?.MAINDEPTNAME,
               ["QLSX"],
               handle_xuatdao_sample
-            );
+            ); */
+            checkBP(userData,['QLSX'],['ALL'],['ALL'],handle_xuatdao_sample);
             //handle_xuatdao_sample();
           }}
         >
@@ -3234,12 +3252,13 @@ const MACHINE = () => {
         <IconButton
           className='buttonIcon'
           onClick={() => {
-            checkBP(
+           /*  checkBP(
               userData?.EMPL_NO,
               userData?.MAINDEPTNAME,
               ["QLSX"],
               handle_xuatlieu_sample
-            );
+            ); */
+            checkBP(userData,['QLSX'],['ALL'],['ALL'],handle_xuatlieu_sample);
             //handle_xuatlieu_sample();
           }}
         >

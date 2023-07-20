@@ -575,12 +575,13 @@ const PLAN_DATATB = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         Swal.fire("Tiến hành chuyển ngày PLAN", "Đang ngày plan", "success");
-        checkBP(
+       /*  checkBP(
           userData?.EMPL_NO,
           userData?.MAINDEPTNAME,
           ["QLSX"],
           handle_movePlan
-        );
+        ); */
+        checkBP(userData,['QLSX'],['ALL'],['ALL'],handle_movePlan);
         //handle_movePlan();
       }
     });

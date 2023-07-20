@@ -21,6 +21,13 @@ const Login = () => {
   const [server_string, setServer_String] = useState('http://14.160.33.94:5011/api')
   //console.log(lang);
 
+  const company: string = useSelector(
+    (state: RootState) => state.totalSlice.company
+  );
+  const theme: any = useSelector(
+    (state: RootState) => state.totalSlice.theme
+  );
+
   const handle_setUser = (e: React.ChangeEvent<HTMLInputElement>) => {
     setUser(e.target.value);
   };
@@ -58,8 +65,6 @@ const Login = () => {
     } else {      
       localStorage.setItem("server_ip", 'http://14.160.33.94:5011/api');
     }
-
-
     let saveLang: any = localStorage.getItem("lang")?.toString();
     if (saveLang !== undefined) {
       setLang(saveLang.toString());
@@ -68,74 +73,117 @@ const Login = () => {
       setLang("en");
     }   
   }, []);
+  console.log(company)
 
   //if (userData.EMPL_NO!=='none') return <Navigate to='/' replace />;
   return (
-    <div className='login-form'>
-      <div className='logo'>CMS VINA</div>
-      <span className='formname'>
-        {getlang("dangnhap", lang)}
-        {/*Sign In*/}
-      </span>
-      <div className='login-input'>
-        <input
-          id='login_input'
-          type='text'
-          placeholder='User name'
-          required
-          onKeyDown={(e) => {
-            handle_setUserKeyDown(e);
-          }}
-          onChange={(e) => {
-            handle_setUser(e);
-          }}
-        ></input>
-        <input
-          id='password_input'
-          type='password'
-          placeholder='Password'
-          ref={ref}
-          required
-          onKeyDown={(e) => {
-            handle_setPassWordKeyDown(e);
-          }}
-          onChange={(e) => setPass(e.target.value)}
-        ></input>
-        <label>
-          Chọn Server:
-          <select
-            name='select_server'
-            value={server_string}
-            onChange={(e) => {              
-              localStorage.setItem("server_ip", e.target.value);
-              setServer_String(e.target.value);
-            }}
-          >
-            <option value={'http://14.160.33.94:5011/api'}>MAIN_SERVER</option>
-            <option value={'http://14.160.33.94:3007/api'}>SUB_SERVER</option>
-            <option value={'http://localhost:3007/api'}>TEST_SERVER</option>
-            <option value={'http://10.138.187.250:3007/api'}>TEST_SERVER2</option>
-            <option value={'http://64.176.197.26/:3007/api'}>TEST_SERVER3</option>
-          </select>
-        </label>
-      </div>
-      <div className='submit'>
-        <button className='login_button' onClick={login_bt}>
+    <div className='loginscreen'>
+      <div
+        className='loginbackground'
+        style={{
+          position: "absolute",
+          backgroundImage: `url('${
+            company === "CMS" ? `/CMSVBackground.png` : `/PVNBackground.png`
+          }')`,
+          backgroundSize: "cover",
+          backgroundRepeat: "no-repeat",
+          backgroundPosition: "center",
+          opacity: 0.5,
+          height: "100vh",
+          width: "100vw",
+        }}
+      ></div>
+      <div className='login-form' style={{
+        backgroundImage: `${company === "CMS" ?  theme.CMS.backgroundImage: theme.PVN.backgroundImage}`,
+      }}>
+        <div className='logo'>
+          {company === "CMS" && (
+            <img
+              alt='cmsvina logo'
+              src='/logocmsvina.png'
+              width={190}
+              height={50}
+            />
+          )}
+          {company === "PVN" && (
+            <img
+              alt='cmsvina logo'
+              src='/logopvn_big.png'
+              width={190}
+              height={80}
+            />
+          )}
+        </div>
+        <span className='formname'>
           {getlang("dangnhap", lang)}
-          {/*Login*/}
-        </button>
-      </div>
-      <div className='bottom-text'>
-        <label htmlFor='checkbox' className='btmtext'>
-          <input type='checkbox' name='checkboxname' id='checkbox' />
-          {` `}
-          {getlang("nhothongtindangnhap", lang)}
-          {/*Remember Me*/}
-        </label>
-        <a href='/' className='forgot-link'>
-          {getlang("quenmatkhau", lang)}
-          {/*Forget password*/}
-        </a>
+          {/*Sign In*/}
+        </span>
+        <div className='login-input'>
+          <input
+            id='login_input'
+            type='text'
+            placeholder='User name'
+            required
+            onKeyDown={(e) => {
+              handle_setUserKeyDown(e);
+            }}
+            onChange={(e) => {
+              handle_setUser(e);
+            }}
+          ></input>
+          <input
+            id='password_input'
+            type='password'
+            placeholder='Password'
+            ref={ref}
+            required
+            onKeyDown={(e) => {
+              handle_setPassWordKeyDown(e);
+            }}
+            onChange={(e) => setPass(e.target.value)}
+          ></input>
+          <label>
+            Chọn Server:
+            <select
+              name='select_server'
+              value={server_string}
+              onChange={(e) => {
+                localStorage.setItem("server_ip", e.target.value);
+                setServer_String(e.target.value);
+              }}
+            >
+              <option value={"http://14.160.33.94:5011/api"}>
+                MAIN_SERVER
+              </option>
+              <option value={"http://14.160.33.94:3007/api"}>SUB_SERVER</option>
+              <option value={"http://localhost:3007/api"}>TEST_SERVER</option>
+              <option value={"http://10.138.187.250:3007/api"}>
+                TEST_SERVER2
+              </option>
+              <option value={"http://64.176.197.26/:3007/api"}>
+                TEST_SERVER3
+              </option>
+            </select>
+          </label>
+        </div>
+        <div className='submit'>
+          <button className='login_button' onClick={login_bt}>
+            {getlang("dangnhap", lang)}
+            {/*Login*/}
+          </button>
+        </div>
+        <div className='bottom-text'>
+          <label htmlFor='checkbox' className='btmtext'>
+            <input type='checkbox' name='checkboxname' id='checkbox' />
+            {` `}
+            {getlang("nhothongtindangnhap", lang)}
+            {/*Remember Me*/}
+          </label>
+          <a href='/' className='forgot-link'>
+            {getlang("quenmatkhau", lang)}
+            {/*Forget password*/}
+          </a>
+        </div>
       </div>
     </div>
   );

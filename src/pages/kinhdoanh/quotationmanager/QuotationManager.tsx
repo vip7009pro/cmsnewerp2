@@ -190,7 +190,7 @@ const QuotationManager = () => {
       let err_code: string ='';
       for(let i=0;i< selectedBangGiaDocRow.length;i++) 
       {
-        await generalQuery("pheduyetgia", selectedBangGiaDocRow[i])
+        await generalQuery("pheduyetgia", {...selectedBangGiaDocRow[i], FINAL: selectedBangGiaDocRow[i].FINAL==='Y'?'N':'Y'})
         .then((response) => {
           //console.log(response.data.data);
           if (response.data.tk_status !== "NG") {
@@ -1286,12 +1286,7 @@ const QuotationManager = () => {
               <IconButton
                 className='buttonIcon'
                 onClick={() => {
-                  checkBP(
-                    userData?.EMPL_NO,
-                    userData?.MAINDEPTNAME,
-                    ["KD"],
-                    loadBangGia2
-                  );
+                  checkBP(userData,['KD'],['ALL'],['ALL'],loadBangGia2);
                   loadCodeList();
                   getcustomerlist();
                   setShowHideUpPrice(true);
@@ -1856,12 +1851,13 @@ const QuotationManager = () => {
               <IconButton
                 className='buttonIcon'
                 onClick={() => {
-                  checkBP(
+                  /* checkBP(
                     userData?.EMPL_NO,
                     userData?.MAINDEPTNAME,
                     ["KD"],
                     loadBangGia2
-                  );
+                  ); */
+                  checkBP(userData,['KD'],['ALL'],['ALL'],loadBangGia2);
                   loadCodeList();
                   getcustomerlist();
                   setShowHideUpPrice(true);
@@ -2428,12 +2424,13 @@ const QuotationManager = () => {
                 className='buttonIcon'
                 onClick={() => {
                   setSelectButton(false);
-                checkBP(
+                /* checkBP(
                   userData?.EMPL_NO,
                   userData?.MAINDEPTNAME,
                   ["KD"],
                   loadBangGiaMoiNhat
-                );                                             
+                );    */
+                checkBP(userData,['KD'],['ALL'],['ALL'],loadBangGiaMoiNhat);                                         
                 }}
               >
                 <GrUpdate color='#070EFA' size={10}/>
@@ -2443,16 +2440,17 @@ const QuotationManager = () => {
                 className='buttonIcon'
                 onClick={() => {
                   setSelectButton(true);
-                checkBP(
+                /* checkBP(
                   userData?.EMPL_NO,
                   userData?.MAINDEPTNAME,
                   ["KD"],
                   loadBangGia
-                );                                           
+                );   */    
+                checkBP(userData,['KD'],['ALL'],['ALL'],loadBangGia);                                    
                 }}
               >
                 <AiOutlineHistory color='#070EFA' size={10}/>
-                <span style={{fontSize:'0.6rem', padding: 0}}>Price History 1</span>                
+                <span style={{fontSize:'0.6rem', padding: 0}}>Giá ngang</span>                
               </IconButton>
             </div>
             <div className="buttoncolumn">
@@ -2460,32 +2458,34 @@ const QuotationManager = () => {
                 className='buttonIcon'
                 onClick={() => {
                   setSelectButton(false);
-                  checkBP(
+                 /*  checkBP(
                     userData?.EMPL_NO,
                     userData?.MAINDEPTNAME,
                     ["KD"],
                     loadBangGia2
-                  );                             
+                  );  */       
+                  checkBP(userData,['KD'],['ALL'],['ALL'],loadBangGia2);                    
                 }}
               >
                 <MdOutlineManageHistory color='#070EFA' size={10}/>
-                <span style={{fontSize:'0.6rem', padding: 0}}>Price History 2</span>                
+                <span style={{fontSize:'0.6rem', padding: 0}}>Giá dọc</span>                
               </IconButton>
 
             <IconButton
                 className='buttonIcon'
                 onClick={() => {
                   console.log(selectedBangGiaDocRow);
-                  checkBP(
+                 /*  checkBP(
                     userData?.EMPL_NO,
                     userData?.MAINDEPTNAME,
                     ["KD"],
                     pheduyetgia
-                  );                  
+                  );  */       
+                  checkBP(userData,['KD'],['ALL'],['ALL'],pheduyetgia);       
                 }}
               >
                 <FcApproval color='#070EFA' size={10}/>
-                <span style={{fontSize:'0.6rem', padding: 0}}>Phê Duyệt Giá</span>                
+                <span style={{fontSize:'0.6rem', padding: 0}}>Duyệt/Hủy Duyệt Giá</span>                
               </IconButton>
 
             </div>
@@ -2548,12 +2548,13 @@ const QuotationManager = () => {
                 Check Giá
               </IconButton>
               <IconButton className='buttonIcon' onClick={() => {
-                 checkBP(
+                /*  checkBP(
                    userData?.EMPL_NO,
                    userData?.MAINDEPTNAME,
                    ["KD"],
                    uploadgia
-                 ); 
+                 );  */
+                 checkBP(userData,['KD'],['ALL'],['ALL'],uploadgia);
               }}>
                 <BiCloudUpload color='#FA0022' size={25} />
                 Up Giá

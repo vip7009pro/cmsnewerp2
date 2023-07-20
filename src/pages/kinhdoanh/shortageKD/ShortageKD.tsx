@@ -241,7 +241,8 @@ const ShortageKD = () => {
         <GridToolbarDensitySelector /> 
         <IconButton className='buttonIcon'onClick={()=>{SaveExcel(shortagedatatable,"Shortage Table")}}><AiFillFileExcel color='green' size={25}/>SAVE</IconButton> 
         <IconButton className='buttonIcon'onClick={()=>{
-           checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['KD'], handleConfirmDeletePlan);
+           /* checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['KD'], handleConfirmDeletePlan); */
+           checkBP(userData,['KD'],['ALL'],['ALL'],handleConfirmDeletePlan);
           //handleConfirmDeletePlan();
           }}><MdOutlineDelete color='red' size={25}/>XÓA PLAN</IconButton>        
         <GridToolbarQuickFilter/>
@@ -631,7 +632,8 @@ const ShortageKD = () => {
           'Đang Xóa Plan hàng loạt',
           'success'
         );
-        checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['KD'], deletePlan);
+        /* checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['KD'], deletePlan); */
+        checkBP(userData,['KD'],['ALL'],['ALL'],deletePlan);
         //deletePlan();
       }
     })
@@ -686,7 +688,10 @@ const ShortageKD = () => {
           </span>
         </div>  
         <div className='mininavitem'   onClick={() =>
-            checkBP(userData?.EMPL_NO, userData?.MAINDEPTNAME, ['KD'], () => {
+           /*  checkBP(userData?.EMPL_NO, userData?.MAINDEPTNAME, ['KD'], () => {
+              setNav(2);
+            }) */
+            checkBP(userData,['KD'],['ALL'],['ALL'],()=> {
               setNav(2);
             })
           } style={{backgroundColor:selection.thempohangloat === true ? '#02c712':'#abc9ae', color: selection.thempohangloat === true ? 'yellow':'yellow'}}>

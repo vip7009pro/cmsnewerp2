@@ -109,8 +109,10 @@ export function CustomResponsiveContainer(props:any) {
 
  }
 
- export async function checkBP(userData: UserData, permitted_main_dept: string[], permitted_position: string[], permitted_empl: string[], func:any) {
-  if(userData.EMPL_NO !== undefined && userData.EMPL_NO !== undefined && userData.MAINDEPTNAME !== undefined)
+ export async function checkBP(userData: UserData| undefined, permitted_main_dept: string[], permitted_position: string[], permitted_empl: string[], func:any) {
+  if(userData !== undefined)
+  {
+    if(userData.EMPL_NO !== undefined && userData.EMPL_NO !== undefined && userData.MAINDEPTNAME !== undefined)
   {
     if(userData.EMPL_NO==='NHU1903' || userData.EMPL_NO==='NVD1201' || userData.JOB_NAME==='ADMIN'){
       await func();
@@ -195,6 +197,9 @@ export function CustomResponsiveContainer(props:any) {
       Swal.fire('Thông báo', 'Bạn không phải người bộ phận '+ permitted_main_dept,'warning');    
     }
   }
+
+  }
+  
   
  }
 

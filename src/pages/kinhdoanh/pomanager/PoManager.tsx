@@ -190,7 +190,7 @@ const PoManager = () => {
             ).filter((element: PRICEWITHMOQ, index: number)=> element.FINAL ==='Y');          
             setNewCodePrice(loaded_data);
           } else {
-            Swal.fire("Thông báo", " Có lỗi : " + response.data.message, "error");
+            /* Swal.fire("Thông báo", " Có lỗi : " + response.data.message, "error"); */
           }
         })
         .catch((error) => {
@@ -489,8 +489,8 @@ const PoManager = () => {
         <IconButton
           className='buttonIcon'
           onClick={() => {
-            checkBP(userData?.EMPL_NO, userData?.MAINDEPTNAME, ["KD"], showNewPO);
-
+            /* checkBP(userData?.EMPL_NO, userData?.MAINDEPTNAME, ["KD"], showNewPO); */
+            checkBP(userData,['KD'],['ALL'],['ALL'],showNewPO);
             clearPOform();
           }}
         >
@@ -500,12 +500,13 @@ const PoManager = () => {
         <IconButton
           className='buttonIcon'
           onClick={() => {
-            checkBP(
+            /* checkBP(
               userData?.EMPL_NO,
               userData?.MAINDEPTNAME,
               ["KD"],
               handle_fillsuaformInvoice
-            );
+            ); */
+            checkBP(userData,['KD'],['ALL'],['ALL'],handle_fillsuaformInvoice);
             //handle_fillsuaformInvoice();
           }}
         >
@@ -515,12 +516,14 @@ const PoManager = () => {
         <IconButton
           className='buttonIcon'
           onClick={() => {
-            checkBP(
+           /*  checkBP(
               userData?.EMPL_NO,
               userData?.MAINDEPTNAME,
               ["KD"],
               handle_fillsuaform
-            );
+            ); */
+            checkBP(userData,['KD'],['ALL'],['ALL'],handle_fillsuaform);
+
             //handle_fillsuaform();
           }}
         >
@@ -530,12 +533,13 @@ const PoManager = () => {
         <IconButton
           className='buttonIcon'
           onClick={() => {
-            checkBP(
+           /*  checkBP(
               userData?.EMPL_NO,
               userData?.MAINDEPTNAME,
               ["KD"],
               handleConfirmDeletePO
-            );
+            ); */
+            checkBP(userData,['KD'],['ALL'],['ALL'],handleConfirmDeletePO);
             //handleConfirmDeletePO();
           }}
         >
@@ -1789,7 +1793,10 @@ const PoManager = () => {
         <div
           className='mininavitem'
           onClick={() =>
-            checkBP(userData?.EMPL_NO, userData?.MAINDEPTNAME, ["KD"], () => {
+           /*  checkBP(userData?.EMPL_NO, userData?.MAINDEPTNAME, ["KD"], () => {
+              setNav(2);
+            }) */
+            checkBP(userData,['KD'],['ALL'],['ALL'],()=> {
               setNav(2);
             })
           }
@@ -2260,6 +2267,7 @@ const PoManager = () => {
                         let tempprice: number = newcodeprice.filter((e:PRICEWITHMOQ, index: number)=> {
                           return tempQTY >= e.MOQ
                         })[0]?.PROD_PRICE;
+                        if(tempprice !== undefined)
                         setNewPoPrice(tempprice.toString());
                         setNewPoQty(e.target.value);
                       }

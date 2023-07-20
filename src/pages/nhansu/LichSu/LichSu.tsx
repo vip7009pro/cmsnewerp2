@@ -248,7 +248,7 @@ const LichSu = () => {
   const handleSearch = () => {
     generalQuery("mydiemdanhnhom", { from_date: fromdate, to_date: todate })
       .then((response) => {
-        console.log(response.data.data);
+        //console.log(response.data.data);
         if (response.data.tk_status !== "NG") {
           const loaded_data: DiemDanhNhomData[] = response.data.data.map(
             (element: DiemDanhNhomData, index: number) => {

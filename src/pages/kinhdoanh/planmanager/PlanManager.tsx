@@ -380,12 +380,13 @@ const PlanManager = () => {
         <IconButton
           className='buttonIcon'
           onClick={() => {
-            checkBP(
+           /*  checkBP(
               userData?.EMPL_NO,
               userData?.MAINDEPTNAME,
               ["KD"],
               handleConfirmDeletePlan
-            );
+            ); */
+            checkBP(userData,['KD'],['ALL'],['ALL'],handleConfirmDeletePlan);
             //handleConfirmDeletePlan();
           }}
         >
@@ -784,7 +785,8 @@ const PlanManager = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         Swal.fire("Tiến hành Xóa", "Đang Xóa Plan hàng loạt", "success");
-        checkBP(userData?.EMPL_NO, userData?.MAINDEPTNAME, ["KD"], deletePlan);
+       /*  checkBP(userData?.EMPL_NO, userData?.MAINDEPTNAME, ["KD"], deletePlan); */
+        checkBP(userData,['KD'],['ALL'],['ALL'],deletePlan);
         //deletePlan();
       }
     });
@@ -1126,7 +1128,10 @@ const PlanManager = () => {
         <div
           className='mininavitem'
           onClick={() =>
-            checkBP(userData?.EMPL_NO, userData?.MAINDEPTNAME, ["KD"], () => {
+            /* checkBP(userData?.EMPL_NO, userData?.MAINDEPTNAME, ["KD"], () => {
+              setNav(2);
+            }) */
+            checkBP(userData,['KD'],['ALL'],['ALL'],()=> {
               setNav(2);
             })
           }
