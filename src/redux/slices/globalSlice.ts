@@ -208,7 +208,6 @@ const initialState:GlobalInterface = {
     theme: {
       CMS: {
         backgroundImage: `linear-gradient(0deg, rgba(77, 175, 252,0.5), rgba(159, 212, 254,0.5))`,
-
       },
       PVN: {
         /* backgroundImage: `linear-gradient(90deg, rgba(254,255,23,1) 0%, rgba(235,242,144,0.9920343137254902) 47%, rgba(255,241,134,1) 100%)`, */
