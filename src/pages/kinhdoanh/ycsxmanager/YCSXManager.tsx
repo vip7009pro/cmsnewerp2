@@ -4,7 +4,7 @@ import {
   IconButton,
   LinearProgress,
   TextField,
-  createFilterOptions
+  createFilterOptions,
 } from "@mui/material";
 import {
   DataGrid,
@@ -13,7 +13,7 @@ import {
   GridToolbarContainer,
   GridToolbarDensitySelector,
   GridToolbarFilterButton,
-  GridToolbarQuickFilter,  
+  GridToolbarQuickFilter,
 } from "@mui/x-data-grid";
 import moment from "moment";
 import React, { useContext, useEffect, useState, useTransition } from "react";
@@ -42,7 +42,7 @@ import TraAMZ from "./TraAMZ/TraAMZ";
 import { UserData } from "../../../redux/slices/globalSlice";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
-import axios from 'axios';
+import axios from "axios";
 interface POBALANCETDYCSX {
   G_CODE: string;
   PO_BALANCE: number;
@@ -136,6 +136,12 @@ interface UploadAmazonData {
   INLAI_COUNT?: number;
   REMARK?: string;
 }
+interface PONOLIST {
+  G_CODE: string,
+  CUST_CD: string,
+  PO_NO: string,
+  PO_DATE: string,
+}
 const YCSXManager = () => {
   const [ycsxlistrender, setYCSXListRender] = useState<Array<ReactElement>>();
   const ycsxprintref = useRef(null);
@@ -198,6 +204,7 @@ const YCSXManager = () => {
   );
 
   const [uploadExcelJson, setUploadExcelJSon] = useState<Array<any>>([]);
+  const [ponolist, setPONOLIST] = useState<Array<PONOLIST>>([]);
   const [isLoading, setisLoading] = useState(false);
   const [column_excel, setColumn_Excel] = useState<Array<any>>([]);
   const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
@@ -220,9 +227,14 @@ const YCSXManager = () => {
       CUST_CD: "0000",
       CUST_NAME_KD: "SEOJIN",
     });
-  const [deliverydate, setNewDeliveryDate] = useState(
-    moment().format("YYYY-MM-DD")
-  );
+  const [selectedPoNo, setSelectedPoNo] = useState<PONOLIST | null>({
+    CUST_CD:'',
+    G_CODE:'',
+    PO_NO:'',
+    PO_DATE: '',
+  });
+  const [deliverydate, setNewDeliveryDate] = useState(moment().format("YYYY-MM-DD"));
+  const [pono, setPONO] = useState('');
   const [newycsxqty, setNewYcsxQty] = useState("");
   const [newycsxremark, setNewYcsxRemark] = useState("");
   const [customerList, setCustomerList] = useState<CustomerListData[]>([]);
@@ -608,50 +620,63 @@ const YCSXManager = () => {
       headerName: "BANVE",
       width: 250,
       renderCell: (params: any) => {
-        let file: any = null; 
-        const uploadFile2 = async (e:any) => {
-          console.log(file); 
-          if(userData?.MAINDEPTNAME==='KD')
-          {
-            uploadQuery(file,params.row.G_CODE +'.pdf','banve')
-            .then((response)=> {
-              if (response.data.tk_status !== "NG") {
-                  generalQuery("update_banve_value", { G_CODE: params.row.G_CODE, banvevalue: 'Y' })
-                  .then((response) => {        
-                    if (response.data.tk_status !== "NG") 
-                    {
-                      Swal.fire('Thông báo','Upload bản vẽ thành công','success');
-                      let tempycsxdatatable = ycsxdatatable.map(
-                        (element, index) => {
-                          return element.PROD_REQUEST_NO ===
-                            params.row.PROD_REQUEST_NO
-                            ? { ...element, BANVE: "Y" }
-                            : element;
-                        }
-                      );
-                      setYcsxDataTable(tempycsxdatatable);
-                    } 
-                    else {
-                      Swal.fire('Thông báo','Upload bản vẽ thất bại','error');
-                    }
+        let file: any = null;
+        const uploadFile2 = async (e: any) => {
+          console.log(file);
+          if (userData?.MAINDEPTNAME === "KD") {
+            uploadQuery(file, params.row.G_CODE + ".pdf", "banve")
+              .then((response) => {
+                if (response.data.tk_status !== "NG") {
+                  generalQuery("update_banve_value", {
+                    G_CODE: params.row.G_CODE,
+                    banvevalue: "Y",
                   })
-                  .catch((error) => {
-                    console.log(error);
-                  });       
-              } else {
-                Swal.fire('Thông báo','Upload file thất bại:' + response.data.message,'error'); 
-              }
-            })
-            .catch((error) => {
-              console.log(error);
-            });
-  
+                    .then((response) => {
+                      if (response.data.tk_status !== "NG") {
+                        Swal.fire(
+                          "Thông báo",
+                          "Upload bản vẽ thành công",
+                          "success"
+                        );
+                        let tempycsxdatatable = ycsxdatatable.map(
+                          (element, index) => {
+                            return element.PROD_REQUEST_NO ===
+                              params.row.PROD_REQUEST_NO
+                              ? { ...element, BANVE: "Y" }
+                              : element;
+                          }
+                        );
+                        setYcsxDataTable(tempycsxdatatable);
+                      } else {
+                        Swal.fire(
+                          "Thông báo",
+                          "Upload bản vẽ thất bại",
+                          "error"
+                        );
+                      }
+                    })
+                    .catch((error) => {
+                      console.log(error);
+                    });
+                } else {
+                  Swal.fire(
+                    "Thông báo",
+                    "Upload file thất bại:" + response.data.message,
+                    "error"
+                  );
+                }
+              })
+              .catch((error) => {
+                console.log(error);
+              });
+          } else {
+            Swal.fire(
+              "Thông báo",
+              "Chỉ bộ phận kinh doanh upload được bản vẽ",
+              "error"
+            );
           }
-          else
-          {
-            Swal.fire('Thông báo','Chỉ bộ phận kinh doanh upload được bản vẽ','error');
-          }
-        }
+        };
 
         let hreftlink = "/banve/" + params.row.G_CODE + ".pdf";
         if (params.row.BANVE === "Y")
@@ -781,25 +806,29 @@ const YCSXManager = () => {
       },
     },
   ];
-  const handle_AddPlan = async (PROD_REQUEST_NO: string, PROD_REQUEST_QTY: number, PLAN_EQ: string, G_CODE: string) => {
+  const handle_AddPlan = async (
+    PROD_REQUEST_NO: string,
+    PROD_REQUEST_QTY: number,
+    PLAN_EQ: string,
+    G_CODE: string
+  ) => {
     await generalQuery("addPlanQLSX", {
-      PLAN_ID: PROD_REQUEST_NO+'A',
-      PLAN_DATE: moment().format('YYYY-MM-DD'),
+      PLAN_ID: PROD_REQUEST_NO + "A",
+      PLAN_DATE: moment().format("YYYY-MM-DD"),
       PROD_REQUEST_NO: PROD_REQUEST_NO,
       PLAN_QTY: PROD_REQUEST_QTY,
       PLAN_EQ: PLAN_EQ,
-      PLAN_FACTORY: 'NM1',
+      PLAN_FACTORY: "NM1",
       PLAN_LEADTIME: 0,
       STEP: 0,
       PLAN_ORDER: 1,
-      PROCESS_NUMBER:1,
+      PROCESS_NUMBER: 1,
       G_CODE: G_CODE,
       NEXT_PLAN_ID: "X",
     })
       .then((response) => {
         console.log(response.data.tk_status);
         if (response.data.tk_status !== "NG") {
-          
         } else {
         }
       })
@@ -807,6 +836,35 @@ const YCSXManager = () => {
         console.log(error);
       });
   };
+  const loadPONO = (G_CODE?: string, CUST_CD?: string) => {
+    if(G_CODE !== undefined && CUST_CD !== undefined)
+    {
+       generalQuery("loadpono", {
+        G_CODE: G_CODE,
+        CUST_CD: CUST_CD
+       })
+        .then((response) => {
+          //console.log(response.data.data);
+          if (response.data.tk_status !== "NG") {
+            const loaded_data : PONOLIST[] = response.data.data.map((element: PONOLIST, index: number)=> {
+            return element;
+            })
+            //console.log(loaded_data);
+            setPONOLIST(loaded_data);            
+          } else { 
+            setPONOLIST([]);
+            console.log('Không có PO nào cho code này và khách này');           
+            //Swal.fire("Thông báo", " Có lỗi : " + response.data.message, "error");
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+          Swal.fire("Thông báo", " Có lỗi : " + error, "error");
+        });
+      
+    }
+
+  }
 
   function CustomToolbar() {
     return (
@@ -1210,23 +1268,18 @@ const YCSXManager = () => {
             "error"
           );
         } else {
-          Swal.fire(
-            "Thông báo",
-            "Không có dòng trùng",
-            "success"
-          );
+          Swal.fire("Thông báo", "Không có dòng trùng", "success");
         }
       })
       .catch((error) => {
         console.log(error);
       });
-      return isDuplicated;
+    return isDuplicated;
   };
   const upAmazonData = async () => {
     let isDuplicated: boolean = false;
     isDuplicated = await checkDuplicateAMZ();
-    if(!isDuplicated)
-    {
+    if (!isDuplicated) {
       let uploadAmazonData = handleAmazonData(
         uploadExcelJson,
         cavityAmazon,
@@ -1299,9 +1352,7 @@ const YCSXManager = () => {
           Swal.fire("Thông báo", "ID công việc đã tồn tại", "error");
         }
       }
-
-    }    
-    
+    }
   };
   const checkAmazonData = async (
     amazon_data: { id: number; DATA: string; CHECKSTATUS: string }[]
@@ -2458,7 +2509,7 @@ const YCSXManager = () => {
       if (
         selectedCode?.G_CODE === "" ||
         selectedCust_CD?.CUST_CD === "" ||
-        newycsxqty === ""        
+        newycsxqty === ""
       ) {
         err_code = 4;
       }
@@ -2647,8 +2698,8 @@ const YCSXManager = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         //Swal.fire("Thông báo", "Không thể xóa YCSX", "error");
-      Swal.fire("Tiến hành Xóa", "Đang Xóa YCSX hàng loạt", "success");
-      deleteYCSX();
+        Swal.fire("Tiến hành Xóa", "Đang Xóa YCSX hàng loạt", "success");
+        deleteYCSX();
       }
     });
   };
@@ -2783,9 +2834,10 @@ const YCSXManager = () => {
       });
   };
   const filterOptions1 = createFilterOptions({
-    matchFrom: 'any',
+    matchFrom: "any",
     limit: 100,
   });
+  
   //console.log(userData);
   useEffect(() => {
     getcustomerlist();
@@ -2798,7 +2850,7 @@ const YCSXManager = () => {
           className='mininavitem'
           onClick={() => setNav(1)}
           style={{
-            backgroundColor: selection.trapo === true ? '#02c712':'#abc9ae',
+            backgroundColor: selection.trapo === true ? "#02c712" : "#abc9ae",
             color: selection.trapo === true ? "yellow" : "yellow",
           }}
         >
@@ -2809,7 +2861,7 @@ const YCSXManager = () => {
           onClick={() => setNav(2)}
           style={{
             backgroundColor:
-              selection.thempohangloat === true ? '#02c712':'#abc9ae',
+              selection.thempohangloat === true ? "#02c712" : "#abc9ae",
             color: selection.thempohangloat === true ? "yellow" : "yellow",
           }}
         >
@@ -2820,7 +2872,7 @@ const YCSXManager = () => {
           onClick={() => setNav(3)}
           style={{
             backgroundColor:
-              selection.amazontab === true ? '#02c712':'#abc9ae',
+              selection.amazontab === true ? "#02c712" : "#abc9ae",
             color: selection.amazontab === true ? "yellow" : "yellow",
           }}
         >
@@ -2831,7 +2883,7 @@ const YCSXManager = () => {
           onClick={() => setNav(4)}
           style={{
             backgroundColor:
-              selection.traamazdata === true ? '#02c712':'#abc9ae',
+              selection.traamazdata === true ? "#02c712" : "#abc9ae",
             color: selection.traamazdata === true ? "yellow" : "yellow",
           }}
         >
@@ -2865,6 +2917,7 @@ const YCSXManager = () => {
                       ) => {
                         console.log(newValue);
                         setSelectedCust_CD(newValue);
+                        loadPONO(selectedCode?.G_CODE, newValue?.CUST_CD);
                       }}
                       isOptionEqualToValue={(option, value) =>
                         option.CUST_CD === value.CUST_CD
@@ -2888,6 +2941,7 @@ const YCSXManager = () => {
                       onChange={(event: any, newValue: CodeListData | any) => {
                         console.log(newValue);
                         setSelectedCode(newValue);
+                        loadPONO(newValue?.G_CODE,selectedCust_CD?.CUST_CD);
                       }}
                       value={selectedCode}
                       isOptionEqualToValue={(option: any, value: any) =>
@@ -2989,6 +3043,34 @@ const YCSXManager = () => {
                       variant='outlined'
                     />
                   </label>
+                </div>
+                <div className='dangkyinputbox'>
+                  <label>
+                    <b>PO NO</b>
+                    <Autocomplete
+                      size='small'
+                      disablePortal
+                      options={ponolist}
+                      className='autocomplete'
+                      getOptionLabel={(option: PONOLIST | any) => {
+                        return `${moment.utc(option.PO_DATE).format('YYYY-MM-DD')}| ${option.PO_NO}`;
+                      }}
+                      renderInput={(params) => (
+                        <TextField {...params} label='Select PO NO' />
+                      )}
+                      value={selectedPoNo}
+                      onChange={(
+                        event: any,
+                        newValue: PONOLIST | null
+                      ) => {
+                        console.log(newValue);
+                        setSelectedPoNo(newValue);
+                      }}
+                      isOptionEqualToValue={(option, value) =>
+                        option.PO_NO === value.PO_NO
+                      }
+                    />
+                  </label>                 
                 </div>
               </div>
               <div className='dangkybutton'>
@@ -3094,7 +3176,7 @@ const YCSXManager = () => {
             <div className='insertYCSXTable'>
               {true && (
                 <DataGrid
-                  sx={{fontSize:'0.7rem'}}
+                  sx={{ fontSize: "0.7rem" }}
                   components={{
                     Toolbar: CustomToolbar,
                     LoadingOverlay: LinearProgress,
@@ -3305,7 +3387,7 @@ const YCSXManager = () => {
           </div>
           <div className='tracuuYCSXTable'>
             <DataGrid
-              sx={{fontSize:'0.7rem'}}
+              sx={{ fontSize: "0.7rem" }}
               components={{
                 Toolbar: CustomToolbarPOTable,
                 LoadingOverlay: LinearProgress,
@@ -3464,7 +3546,7 @@ const YCSXManager = () => {
               <div className='insertYCSXTable'>
                 {true && (
                   <DataGrid
-                  sx={{fontSize:'0.7rem'}}
+                    sx={{ fontSize: "0.7rem" }}
                     components={{
                       Toolbar: CustomToolbarAmazon,
                       LoadingOverlay: LinearProgress,

@@ -208,6 +208,7 @@ const QuotationManager = () => {
       if(err_code ==='')
       {
         Swal.fire("Thông báo", "Phê duyệt giá thành công", "success");
+        checkBP(userData,['KD'],['ALL'],['ALL'],loadBangGia2);    
       }
       else
       {
@@ -310,6 +311,22 @@ const QuotationManager = () => {
         Swal.fire("Thông báo", " Có lỗi : " + error, "error");
       });
   }
+  const dongboGiaPO =()=> {
+    generalQuery("dongbogiasptupo", {
+     
+    })
+      .then((response) => {
+        //console.log(response.data.data);
+        if (response.data.tk_status !== "NG") {             
+         
+        } else {
+          //Swal.fire("Thông báo", " Có lỗi : " + response.data.message, "error");
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        Swal.fire("Thông báo", " Có lỗi : " + error, "error");
+      });  }
   const fields_banggia: any = [
     {
       caption: "CUST_NAME_KD",
@@ -2339,6 +2356,7 @@ const QuotationManager = () => {
   };
   useEffect(() => {
     //loadBangGia();
+    dongboGiaPO();
   }, []);
   return (
     <div className='quotationmanager'>

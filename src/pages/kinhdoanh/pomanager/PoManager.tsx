@@ -112,8 +112,12 @@ const PoManager = () => {
     them1po: false,
     them1invoice: false,
   });
+
   const userData: UserData | undefined = useSelector(
     (state: RootState) => state.totalSlice.userData
+  );
+  const company: string = useSelector(
+    (state: RootState) => state.totalSlice.company
   );
   const [uploadExcelJson, setUploadExcelJSon] = useState<Array<any>>([]);
   const [isLoading, setisLoading] = useState(false);
@@ -163,6 +167,23 @@ const PoManager = () => {
   const [selectedID, setSelectedID] = useState<number | null>();
   const [showhidePivotTable, setShowHidePivotTable] = useState(false);
   const [newcodeprice, setNewCodePrice] = useState<PRICEWITHMOQ[]>([]);
+  const dongboGiaPO =()=> {
+    generalQuery("dongbogiasptupo", {
+     
+    })
+      .then((response) => {
+        //console.log(response.data.data);
+        if (response.data.tk_status !== "NG") {             
+         
+        } else {
+          //Swal.fire("Thông báo", " Có lỗi : " + response.data.message, "error");
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        Swal.fire("Thông báo", " Có lỗi : " + error, "error");
+      });  }
+
   const loadprice = (G_CODE?: string, CUST_NAME?: string)=>
   {
     if(G_CODE !== undefined && CUST_NAME !== undefined)
@@ -179,7 +200,8 @@ const PoManager = () => {
         .then((response) => {
           //console.log(response.data.data);
           if (response.data.tk_status !== "NG") {
-            const loaded_data: PRICEWITHMOQ[] = response.data.data.map(
+            let loaded_data: PRICEWITHMOQ[] =[];
+             loaded_data = company ==='CMS' ? response.data.data.map(
               (element: PRICEWITHMOQ, index: number) => {
                return {
                 ...element,
@@ -187,7 +209,17 @@ const PoManager = () => {
                 id: index,
                }
               }
-            ).filter((element: PRICEWITHMOQ, index: number)=> element.FINAL ==='Y');          
+            ).filter((element: PRICEWITHMOQ, index: number)=> element.FINAL ==='Y'): 
+            response.data.data.map(
+              (element: PRICEWITHMOQ, index: number) => {
+               return {
+                ...element,
+                PRICE_DATE: element.PRICE_DATE !== null? moment.utc(element.PRICE_DATE).format('YYYY-MM-DD'):'',              
+                id: index,
+               }
+              }
+            )
+            ; 
             setNewCodePrice(loaded_data);
           } else {
             /* Swal.fire("Thông báo", " Có lỗi : " + response.data.message, "error"); */
@@ -1776,6 +1808,7 @@ const PoManager = () => {
   useEffect(() => {
     getcustomerlist();
     getcodelist("");
+    dongboGiaPO();
   }, []);
   return (
     <div className='pomanager'>

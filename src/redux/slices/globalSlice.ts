@@ -146,7 +146,6 @@ export interface GlobalInterface {
       PVN: any
     },
 }
-
 const initialState:GlobalInterface = {
     userData: {
         EMPL_IMAGE:'Y',
@@ -205,7 +204,7 @@ const initialState:GlobalInterface = {
     tabIndex: 0,
     tabModeSwap: true,
     loginState: false,
-    company: 'PVN',
+    company: 'CMS',
     theme: {
       CMS: {
         backgroundImage: `linear-gradient(0deg, rgba(77, 175, 252,0.5), rgba(159, 212, 254,0.5))`,
