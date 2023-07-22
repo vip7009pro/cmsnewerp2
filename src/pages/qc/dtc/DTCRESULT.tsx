@@ -36,6 +36,7 @@ import DataGrid, {
   Toolbar,
   TotalItem,
 } from "devextreme-react/data-grid";
+import { ResponsiveContainer } from "recharts";
 interface DTC_REG_DATA {
   DTC_ID: number;
   FACTORY: string;
@@ -118,6 +119,7 @@ const DTCRESULT = () => {
   const materialDataTable = React.useMemo(
     () => (
       <div className='datatb'>
+        <ResponsiveContainer>
         <DataGrid
           style={{fontSize:'0.7rem'}}
           autoNavigateToFocusedRow={true}
@@ -130,7 +132,7 @@ const DTCRESULT = () => {
           dataSource={inspectiondatatable}
           columnWidth='auto'
           keyExpr='id'
-          height={"71vh"}
+          height={"85vh"}
           showBorders={true}
           onSelectionChanged={(e) => {
             //console.log(e.selectedRowsData);
@@ -204,6 +206,9 @@ const DTCRESULT = () => {
         <Column dataField='RESULT' caption='RESULT' width={100}></Column>
         <Column dataField='REMARK' caption='REMARK' width={100}></Column>
         </DataGrid>
+
+        </ResponsiveContainer>
+        
       </div>
     ),
     [inspectiondatatable]

@@ -61,7 +61,7 @@ import YCSXManager from "../../pages/kinhdoanh/ycsxmanager/YCSXManager";
 import POandStockFull from "../../pages/kinhdoanh/poandstockfull/POandStockFull";
 import CODE_MANAGER from "../../pages/rnd/code_manager/CODE_MANAGER";
 import BOM_MANAGER from "../../pages/rnd/bom_manager/BOM_MANAGER";
-import CUST_MANAGER from "../../pages/kinhdoanh/custManager/CUST_MANAGER";
+import CUST_MANAGER from "../../pages/kinhdoanh/custManager/CUST_MANAGER0";
 import EQ_STATUS from "../../pages/qlsx/QLSXPLAN/EQ_STATUS/EQ_STATUS";
 import INSPECT_STATUS from "../../pages/qc/inspection/INSPECT_STATUS/INSPECT_STATUS";
 import KinhDoanhReport from "../../pages/kinhdoanh/kinhdoanhreport/KinhDoanhReport";

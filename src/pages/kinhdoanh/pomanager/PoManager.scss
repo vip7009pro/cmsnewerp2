@@ -9,7 +9,6 @@
         flex-direction: column;
         width: 100%;
         height: 500px;
-    
         .mininavbar {
             display: flex;
             flex-direction: row;
@@ -34,8 +33,7 @@
                 }            
             }
     
-        }
-    
+        }    
         .newpo {
             display: flex;
             flex-direction: column;             
@@ -118,17 +116,18 @@
                     
                 }
             }
-        }
-    
+        }    
         .tracuuPO{
             width: 100%; 
+            display: flex;
+            gap: 10px;
             .tracuuPOform {
                 display: flex;
-                width: 100%; 
+                width: 260px; 
+                height: 85vh;
                 flex-direction: column;
-                align-items: center;
-                font-size: 0.8rem;
-                
+                align-items: flex-end;
+                font-size: 0.8rem;                
                 background-image: linear-gradient(0deg, #afd3d1, #54ca45);
                 -webkit-box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27); 
                 box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27);
@@ -143,24 +142,26 @@
     
                 .forminput {
                     display: flex;
+                    flex-direction: column;
                     width: 100%;
                     gap: 5px;
                     flex-wrap: wrap;
-                    align-items: center;
+                    align-items: flex-end;
                     justify-content: space-around;
-                    padding: 2px;                        
+                    padding: 2px;  
+                    font-size: 0.6rem;                      
     
                     .forminputcolumn {
                         display: flex;
                         flex-direction: column;
                         gap: 10px;
                         align-items: flex-end;
-                        justify-content: center;
+                        justify-content: flex-end;
                         flex-wrap: wrap;
                         input {              
-                            width: 150px;         
-                            height: 20px;
-                            font-size: 0.7rem;
+                            width: 125px;         
+                            height: 15px;
+                            font-size: 0.6rem;
                             outline: none;
                             border-radius: 5px;
                             border: none;
@@ -172,9 +173,24 @@
                 }
                 .formbutton {
                     display: flex;
-                    align-items: center;
-                    justify-content: space-around;
-                    gap: 20px;
+                    flex-direction: column;
+                    font-size: 0.6rem;
+                    .checkboxdiv {
+                        display: flex;
+                        flex-direction: row;
+                        align-items: center;
+                        align-self: center;
+                        align-content: center;
+
+                        justify-content: center;                        
+                        justify-items: center;                        
+                        justify-self: center;  
+
+                        font-size: 0.6rem;
+                    }
+                    .searchbuttondiv {
+
+                    }
                 }
                 .formsummary {
                     display: flex;
@@ -186,7 +202,6 @@
                     border-radius: 10px;   
                     margin-top: 5px;
                     
-    
                     table {
                         border:3px solid gray;
                         width: 100%;
@@ -204,18 +219,53 @@
             }
             .tracuuPOTable {
                 display: flex;
-                width: 100%; 
-                margin-top: 10px;
-                height: 68vh;
+                flex-direction: column;
+                align-items: center;
+                width: 100%;
+                height: 85vh;
                 background-image: linear-gradient(0deg, #afd3d1, #6dd1f8);
-                -webkit-box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27); 
-                box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27);
-                border-radius: 8px;
-    
-            }
-    
-        }
-    
+                border-radius: 5px;
+                .formsummary {
+                    display: flex;
+                    flex: 1;
+                    flex-direction: row;
+                    background-image: linear-gradient(0deg, #ececec, #99f86d);       
+                    -webkit-box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27); 
+                    box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27);         
+                    gap: 20px;         
+                    border-radius: 10px;   
+                    margin-top: 5px;
+                    table {                        
+                        border:3px solid gray;
+                        width: fit-content;      
+                        align-items: center;                 
+                    }
+                    table thead tr td{
+                        font-weight: bold;
+                        border: 1px solid gray;
+                        padding-left: 10px;
+                        padding-right: 10px; 
+                        font-size: 0.8rem;   
+                        text-align: center;
+                    }
+                    table tbody tr td{                        
+                        border: 1px solid gray;       
+                        font-size: 0.8rem;   
+                        text-align: center;             
+                    }
+                }
+                .tablegrid { 
+                    display: flex;
+                    flex: 20;   
+                    height: 100%;
+                    width: 100%;
+                    background-image: linear-gradient(0deg, #afd3d1, #6dd1f8);
+                    -webkit-box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27); 
+                    box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27);
+                    border-radius: 5px;
+                }
+            }    
+        }    
         .them1po {
             display: flex;
             position: fixed;
@@ -407,8 +457,7 @@
     
                 
             }   
-        }    
-    
+        }
         .them1invoice {
             display: flex;
             position: fixed;
@@ -781,31 +830,7 @@
                     justify-content: space-around;
                     gap: 20px;
                 }
-                .formsummary {
-                    display: flex;
-                    flex-direction: row;
-                    background-image: linear-gradient(0deg, #ececec, #99f86d);       
-                    -webkit-box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27); 
-                    box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27);         
-                    gap: 20px;         
-                    border-radius: 10px;   
-                    margin-top: 5px;
-                    table {
-                        border:3px solid gray;
-                        width: 100%;                       
-                    }
-                    table thead tr td{
-                        font-weight: bold;
-                        border: 1px solid gray;
-                        padding-left: 10px;
-                        padding-right: 10px; 
-                        font-size: 8px;
-                    }
-                    table tbody tr td{                        
-                        border: 1px solid gray;       
-                        font-size: 8px;                
-                    }
-                }
+               
             }
             .tracuuPOTable {
                 display: flex;

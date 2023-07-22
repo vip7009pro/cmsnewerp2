@@ -118,7 +118,7 @@ interface CNDB_DATA {
   G_NAME: string;
 }
 const TRAPQC = () => {
-  const [readyRender, setReadyRender] = useState(false);
+  const [readyRender, setReadyRender] = useState(true);
   const [selection, setSelection] = useState<any>({
     trapo: true,
     thempohangloat: false,

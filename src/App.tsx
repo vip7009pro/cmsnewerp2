@@ -133,7 +133,7 @@ const CODE_MANAGER = lazy(
   () => import("./pages/rnd/code_manager/CODE_MANAGER")
 );
 const CUST_MANAGER = lazy(
-  () => import("./pages/kinhdoanh/custManager/CUST_MANAGER")
+  () => import("./pages/kinhdoanh/custManager/CUST_MANAGER0")
 );
 const QuanLyPhongBanNhanSu = lazy(
   () => import("./pages/nhansu/QuanLyPhongBanNhanSu/QuanLyPhongBanNhanSu")

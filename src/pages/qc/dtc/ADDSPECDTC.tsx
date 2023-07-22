@@ -27,6 +27,7 @@ import DataGrid, {
 import { UserData } from "../../../redux/slices/globalSlice";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
+import { ResponsiveContainer } from "recharts";
 /* import { Autocomplete } from 'devextreme-react'; */
 interface DTC_ADD_SPEC_DATA {
   CUST_NAME_KD: string;
@@ -139,6 +140,7 @@ const ADDSPECTDTC = () => {
   const materialDataTable = React.useMemo(
     () => (
       <div className='datatb'>
+        <ResponsiveContainer>
         <DataGrid
           style={{fontSize:'0.7rem'}}
           autoNavigateToFocusedRow={true}
@@ -151,7 +153,7 @@ const ADDSPECTDTC = () => {
           dataSource={inspectiondatatable}
           columnWidth='auto'
           keyExpr='id'
-          height={"71vh"}
+          height={"85vh"}
           showBorders={true}
           onSelectionChanged={(e) => {
             //console.log(e.selectedRowsData);
@@ -329,6 +331,9 @@ const ADDSPECTDTC = () => {
             />
           </Summary>
         </DataGrid>
+
+        </ResponsiveContainer>
+        
       </div>
     ),
     [inspectiondatatable]
@@ -695,7 +700,8 @@ const ADDSPECTDTC = () => {
                   onValueChanged={onValueChanged}
                   /> */}
                   
-                  <Autocomplete                    
+                  <Autocomplete   
+                    sx={{fontSize:'0.7rem', width:'240px', padding:0,}}                 
                     hidden={checkNVL}
                     disabled={checkNVL}
                     size='small'
@@ -725,6 +731,7 @@ const ADDSPECTDTC = () => {
               {checkNVL && (
                 <label>
                   <Autocomplete
+                    sx={{fontSize:'0.7rem', width:'240px', padding:0,}}
                     hidden={!checkNVL}
                     disabled={!checkNVL}
                     size='small'

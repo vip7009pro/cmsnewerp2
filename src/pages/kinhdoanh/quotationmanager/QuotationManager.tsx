@@ -41,6 +41,7 @@ import { BiCloudUpload } from "react-icons/bi";
 import * as XLSX from "xlsx";
 import { FcApproval } from "react-icons/fc";
 import { GrUpdate } from "react-icons/gr";
+import { ResponsiveContainer } from "recharts";
 interface BANGGIA_DATA {
   CUST_NAME_KD: string;
   G_NAME: string;
@@ -1241,6 +1242,7 @@ const QuotationManager = () => {
   const banggiaMM = React.useMemo(
     () => (
       <div className='datatb'>
+        <ResponsiveContainer>
         <DataGrid
           style={{ fontSize: "0.7rem" }}
           autoNavigateToFocusedRow={true}
@@ -1799,6 +1801,9 @@ const QuotationManager = () => {
             />
           </Summary>
         </DataGrid>
+
+        </ResponsiveContainer>
+        
       </div>
     ),
     [banggia]
@@ -1806,6 +1811,7 @@ const QuotationManager = () => {
   const banggiaMM2 = React.useMemo(
     () => (
       <div className='datatb'>
+        <ResponsiveContainer>
         <DataGrid
           style={{ fontSize: "0.7rem" }}
           autoNavigateToFocusedRow={true}
@@ -1963,13 +1969,16 @@ const QuotationManager = () => {
             />
           </Summary>
         </DataGrid>
+
+        </ResponsiveContainer>
+       
       </div>
     ),
     [banggia2]
   );
   const upgiaMM2 = React.useMemo(
     () => (
-      <div className='datatb'>
+      <div className='datatb'>        
         <DataGrid
           style={{ fontSize: "0.7rem" }}
           autoNavigateToFocusedRow={true}
@@ -1982,7 +1991,7 @@ const QuotationManager = () => {
           dataSource={uploadExcelJson}
           columnWidth='auto'
           keyExpr='id'
-          height={"70vh"}
+          height={"70vh"}         
           showBorders={true}
           onSelectionChanged={(e) => {
             //console.log(e.selectedRowsData);
@@ -2105,6 +2114,9 @@ const QuotationManager = () => {
             />
           </Summary>
         </DataGrid>
+
+       
+       
       </div>
     ),
     [uploadExcelJson]

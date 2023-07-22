@@ -122,7 +122,7 @@ const KQDTC = () => {
     return (
       <GridToolbarContainer>      
         <IconButton className='buttonIcon'onClick={()=>{SaveExcel(inspectiondatatable,"Inspection Data Table")}}
-        ><AiFillFileExcel color='green' size={25}/>SAVE</IconButton>
+        ><AiFillFileExcel color='green' size={15}/>SAVE</IconButton>
         <span style={{fontWeight:'bold', fontSize: 18, paddingLeft:20, color: 'blue'}}>{sumaryINSPECT}</span>
         <GridToolbarQuickFilter/>  
        </GridToolbarContainer>

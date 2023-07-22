@@ -22,6 +22,7 @@ import {
   AiFillEdit,
   AiFillFileAdd,
   AiFillFileExcel,
+  AiOutlineLogout,
 } from "react-icons/ai";
 import Swal from "sweetalert2";
 import * as XLSX from "xlsx";
@@ -36,6 +37,7 @@ import PivotTable from "../../../components/PivotChart/PivotChart";
 import { UserData } from "../../../redux/slices/globalSlice";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
+import { TbLogout } from "react-icons/tb";
 interface POTableData {
   PO_ID: number;
   CUST_NAME_KD: string;
@@ -119,6 +121,7 @@ const PoManager = () => {
   const company: string = useSelector(
     (state: RootState) => state.totalSlice.company
   );
+  const [showhidesearchdiv, setShowHideSearchDiv]= useState(true);
   const [uploadExcelJson, setUploadExcelJSon] = useState<Array<any>>([]);
   const [isLoading, setisLoading] = useState(false);
   const [column_excel, setColumn_Excel] = useState<Array<any>>([]);
@@ -505,17 +508,23 @@ const PoManager = () => {
   };
   function CustomToolbarPOTable() {
     return (
-      <GridToolbarContainer>
-        <GridToolbarColumnsButton />
-        <GridToolbarFilterButton />
-        <GridToolbarDensitySelector />
+      <GridToolbarContainer>       
+        <IconButton
+          className='buttonIcon'
+          onClick={() => {
+            setShowHideSearchDiv(!showhidesearchdiv);
+          }}
+        >
+          <TbLogout color='green' size={15} />
+          Show/Hide
+        </IconButton>
         <IconButton
           className='buttonIcon'
           onClick={() => {
             SaveExcel(podatatable, "PO Table");
           }}
         >
-          <AiFillFileExcel color='green' size={25} />
+          <AiFillFileExcel color='green' size={15} />
           SAVE
         </IconButton>
         <IconButton
@@ -526,7 +535,7 @@ const PoManager = () => {
             clearPOform();
           }}
         >
-          <AiFillFileAdd color='blue' size={25} />
+          <AiFillFileAdd color='blue' size={15} />
           NEW PO
         </IconButton>
         <IconButton
@@ -542,7 +551,7 @@ const PoManager = () => {
             //handle_fillsuaformInvoice();
           }}
         >
-          <FaFileInvoiceDollar color='lightgreen' size={25} />
+          <FaFileInvoiceDollar color='lightgreen' size={15} />
           NEW INV
         </IconButton>
         <IconButton
@@ -559,7 +568,7 @@ const PoManager = () => {
             //handle_fillsuaform();
           }}
         >
-          <AiFillEdit color='orange' size={25} />
+          <AiFillEdit color='orange' size={15} />
           SỬA PO
         </IconButton>
         <IconButton
@@ -575,7 +584,7 @@ const PoManager = () => {
             //handleConfirmDeletePO();
           }}
         >
-          <MdOutlineDelete color='red' size={25} />
+          <MdOutlineDelete color='red' size={15} />
           XÓA PO
         </IconButton>
         <GridToolbarQuickFilter />
@@ -585,7 +594,7 @@ const PoManager = () => {
             setShowHidePivotTable(!showhidePivotTable);
           }}
         >
-          <MdOutlinePivotTableChart color='#ff33bb' size={25} />
+          <MdOutlinePivotTableChart color='#ff33bb' size={15} />
           Pivot
         </IconButton>
       </GridToolbarContainer>
@@ -1907,7 +1916,7 @@ const PoManager = () => {
       )}
       {selection.trapo && (
         <div className='tracuuPO'>
-          <div className='tracuuPOform'>
+          {showhidesearchdiv && <div className='tracuuPOform'>
             <div className='forminput'>
               <div className='forminputcolumn'>
                 <label>
@@ -2065,6 +2074,7 @@ const PoManager = () => {
               </div>
             </div>
             <div className='formbutton'>
+              <div className="checkboxdiv">
               <label>
                 <b>All Time:</b>
                 <input
@@ -2089,6 +2099,9 @@ const PoManager = () => {
                   onChange={() => setJustPOBalance(!justpobalance)}
                 ></input>
               </label>
+
+              </div>
+              <div className="searchbuttondiv">
               <IconButton
                 className='buttonIcon'
                 onClick={() => {
@@ -2097,18 +2110,15 @@ const PoManager = () => {
               >
                 <FcSearch color='green' size={30} />
                 Search
-              </IconButton>
-              {/* <Button
-                variant='contained'
-                color='success'
-                onClick={() => {
-                  handletraPO();
-                }}
-              >
-                Search
-              </Button> */}
-            </div>
-            <div className='formsummary'>
+              </IconButton>  
+
+              </div>
+             
+                       
+            </div>            
+          </div>}
+          <div className='tracuuPOTable'>  
+          <div className='formsummary'>
               <table>
                 <thead>
                   <tr>
@@ -2164,8 +2174,7 @@ const PoManager = () => {
                 </tbody>
               </table>
             </div>
-          </div>
-          <div className='tracuuPOTable'>
+            <div className="tablegrid">
             <DataGrid
               sx={{ fontSize: "0.7rem", flex: 1 }}
               components={{
@@ -2187,6 +2196,9 @@ const PoManager = () => {
                 handlePOSelectionforUpdate(ids);
               }}
             />
+              
+            </div>
+           
           </div>
         </div>
       )}

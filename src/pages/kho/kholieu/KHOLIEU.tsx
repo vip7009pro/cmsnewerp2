@@ -497,7 +497,7 @@ const KHOLIEU = () => {
                 }}>
                   Tồn Liệu
               </button>
-              <button className='updatelotnccbutton'  onClick={() => {     
+              <button className='tranhatky'  onClick={() => {     
                 if(userData?.SUBDEPTNAME==='IQC')
                 {
                   //checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['QC','KHO'], updatelotNCC);       
@@ -509,7 +509,7 @@ const KHOLIEU = () => {
                 }
                  //updatelotNCC();
                 }}>
-                  Update LOT NCC
+                  UPD LOT NCC
               </button>
               LOT NCC: 
               <input

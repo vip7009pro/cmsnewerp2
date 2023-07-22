@@ -35,6 +35,7 @@ import DataGrid, {
 import { UserData } from "../../../redux/slices/globalSlice";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
+import { ResponsiveContainer } from "recharts";
 interface DTC_REG_DATA {
   DTC_ID: number;
   FACTORY: string;
@@ -113,6 +114,7 @@ const DKDTC = () => {
   const materialDataTable = React.useMemo(
     () => (
       <div className='datatb'>
+        <ResponsiveContainer>
         <DataGrid
           style={{fontSize:'0.7rem'}}
           autoNavigateToFocusedRow={true}
@@ -125,7 +127,7 @@ const DKDTC = () => {
           dataSource={inspectiondatatable}
           columnWidth='auto'
           keyExpr='id'
-          height={"71vh"}
+          height={"85vh"}
           showBorders={true}
           onSelectionChanged={(e) => {
             //console.log(e.selectedRowsData);
@@ -239,6 +241,9 @@ const DKDTC = () => {
           <Column dataField='REMARK' caption='REMARK' width={100}></Column>
           <Column dataField='LOTCMS' caption='LOTCMS' width={100}></Column>
         </DataGrid>
+
+        </ResponsiveContainer>
+        
       </div>
     ),
     [inspectiondatatable]

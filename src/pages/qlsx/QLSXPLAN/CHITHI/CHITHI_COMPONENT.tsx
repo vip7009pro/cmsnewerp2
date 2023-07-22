@@ -532,7 +532,7 @@ const CHITHI_COMPONENT = ({
               </tr>
             </tbody>
           </table>
-        </div>       
+        </div>
         {/* <div className='text1'>
           2. 생산 정보 Thông tin Sản xuất
           {' '}

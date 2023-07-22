@@ -613,7 +613,7 @@ const BOM_MANAGER = () => {
             SaveExcel(rows, "Code Info Table");
           }}
         >
-          <AiFillFileExcel color='green' size={25} />
+          <AiFillFileExcel color='green' size={15} />
           SAVE
         </IconButton>
         <IconButton
@@ -622,7 +622,7 @@ const BOM_MANAGER = () => {
             confirmResetBanVe();
           }}
         >
-          <BiReset color='green' size={25} />
+          <BiReset color='green' size={15} />
           RESET BẢN VẼ
         </IconButton>
         <IconButton
@@ -632,7 +632,7 @@ const BOM_MANAGER = () => {
             Swal.fire("Thông báo", "Bật/Tắt chế độ sửa", "success");
           }}
         >
-          <AiFillEdit color='yellow' size={25} />
+          <AiFillEdit color='yellow' size={15} />
           Bật tắt sửa
         </IconButton>
         <IconButton
@@ -642,7 +642,7 @@ const BOM_MANAGER = () => {
             Swal.fire("Thông báo", "Ghim/ bỏ ghim BOM thành công", "success");
           }}
         >
-          <AiOutlinePushpin color='red' size={25} />
+          <AiOutlinePushpin color='red' size={15} />
           Ghim BOM
         </IconButton>
         <GridToolbarQuickFilter />
@@ -1964,7 +1964,7 @@ const BOM_MANAGER = () => {
                       Toolbar: CustomToolbarPOTable,
                       LoadingOverlay: LinearProgress,
                     }}
-                    sx={{ fontSize: 12 }}
+                    sx={{ fontSize: '0.7rem' }}
                     loading={isLoading}
                     rowHeight={30}
                     rows={rows}

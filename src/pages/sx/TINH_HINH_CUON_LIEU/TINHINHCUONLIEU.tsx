@@ -34,6 +34,7 @@ import { SaveExcel } from "../../../api/GlobalFunction";
 import { MdOutlinePivotTableChart } from "react-icons/md";
 import PivotTable from "../../../components/PivotChart/PivotChart";
 import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
+import { ResponsiveContainer } from "recharts";
 
 interface MATERIAL_STATUS {
   INS_DATE: string;
@@ -197,9 +198,9 @@ const TINHHINHCUONLIEU = () => {
       });
   };
   const materialDataTable = React.useMemo(
-    () => (
-      <div className='datatb'>
-        <div className='losstable'>
+    () => ( 
+         <div className='datatb'>
+          <div className='losstable'>
           <table>
             <thead>
               <tr>
@@ -263,7 +264,9 @@ const TINHHINHCUONLIEU = () => {
               </tr>
             </tbody>
           </table>
-        </div>
+          </div>  
+        <ResponsiveContainer>
+             
         <DataGrid
           autoNavigateToFocusedRow={true}
           allowColumnReordering={true}
@@ -275,7 +278,7 @@ const TINHHINHCUONLIEU = () => {
           dataSource={datasxtable}
           columnWidth='auto'
           keyExpr='id'
-          height={"70vh"}
+          height={"75vh"}
           showBorders={true}
           onSelectionChanged={(e) => {
             setSelectedRows(e.selectedRowsData.length);
@@ -1058,7 +1061,13 @@ const TINHHINHCUONLIEU = () => {
             />
           </Summary>
         </DataGrid>
+        </ResponsiveContainer>   
       </div>
+     
+
+     
+            
+     
     ),
     [datasxtable]
   );

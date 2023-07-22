@@ -116,11 +116,15 @@
     }
 
     .tracuuInvoice{
+        display: flex;
+        width: 100%;
+        gap: 10px;
         .tracuuInvoiceform {
             display: flex;
             flex-direction: column;
+            width: 260px;            
             align-items: center;
-            
+            font-size: 0.7rem;
             background-image: linear-gradient(0deg, #afd3d1, #c663da);
             -webkit-box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27); 
             box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27);
@@ -138,31 +142,32 @@
 
             .forminput {
                 display: flex;
+                flex-direction: column;
+                width: 100%;
                 gap: 5px;
                 flex-wrap: wrap;
-                align-items: center;
+                align-items: flex-end;
                 justify-content: space-around;
-                padding: 2px;
-                width: 100%;     
-                font-size: 0.7rem;      
+                padding: 2px;  
+                font-size: 0.6rem;                      
 
                 .forminputcolumn {
                     display: flex;
                     flex-direction: column;
                     gap: 10px;
                     align-items: flex-end;
-                    justify-content: center;
+                    justify-content: flex-end;
                     flex-wrap: wrap;
-                    input {
-                        width: 150px;
-                        height: 20px;
-                        font-size: 0.7rem;
+                    input {              
+                        width: 125px;         
+                        height: 15px;
+                        font-size: 0.6rem;
                         outline: none;
                         border-radius: 5px;
                         border: none;
                         padding: 5px;
                         margin-left: 5px;
-                        background-image: linear-gradient(0deg, #ececec, #ffffff);
+                        background-image: linear-gradient(0deg, #ececec, #9dee95);
                     }
                 }
             }
@@ -192,18 +197,20 @@
                     border: 1px solid gray;
                     padding-left: 10px;
                     padding-right: 10px; 
+                    text-align: center;
                 }
                 table tbody tr td{                        
-                    border: 1px solid gray;                       
+                    border: 1px solid gray;  
+                    text-align: center;                     
                 }
 
             }
 
         }
         .tracuuInvoiceTable {
-            display: flex;
-            margin-top: 10px;
-            height: 68vh;
+            display: flex;            
+            height: 85vh;
+            width: 100%;
             background-image: linear-gradient(0deg, #afd3d1, #b99dee);
             -webkit-box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27); 
             box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27);

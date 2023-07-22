@@ -699,7 +699,7 @@ const KHOTP = () => {
                 handletraWHSTOCKCMS();
               }}
             >
-              Tồn Kho (CMS)
+              Tồn(CMS)
             </button>
             <button
               className='tranhapxuatkiembutton'
@@ -710,7 +710,7 @@ const KHOTP = () => {
                 handletraWHSTOCKKD();
               }}
             >
-              Tồn Kho (KD)
+              Tồn(KD)
             </button>
             <button
               className='tranhatky'
@@ -721,7 +721,7 @@ const KHOTP = () => {
                 handletraWHSTOCKTACH();
               }}
             >
-              Tồn Kho(Tách kho)
+              Tồn(Tách kho)
             </button>
           </div>
         </div>

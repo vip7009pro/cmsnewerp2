@@ -365,9 +365,9 @@ const PlanManager = () => {
   function CustomToolbarPOTable() {
     return (
       <GridToolbarContainer>
-        <GridToolbarColumnsButton />
+       {/*  <GridToolbarColumnsButton />
         <GridToolbarFilterButton />
-        <GridToolbarDensitySelector />
+        <GridToolbarDensitySelector /> */}
         <IconButton
           className='buttonIcon'
           onClick={() => {

@@ -480,13 +480,13 @@ const INSPECTION = () => {
             SaveExcel(inspectiondatatable, "Inspection Data Table");
           }}
         >
-          <AiFillFileExcel color='green' size={25} />
+          <AiFillFileExcel color='green' size={15} />
           SAVE
         </IconButton>
         <span
           style={{
             fontWeight: "bold",
-            fontSize: 18,
+            fontSize: '1rem',
             paddingLeft: 20,
             color: "blue",
           }}
@@ -500,7 +500,7 @@ const INSPECTION = () => {
             setShowHidePivotTable(!showhidePivotTable);
           }}
         >
-          <MdOutlinePivotTableChart color='#ff33bb' size={25} />
+          <MdOutlinePivotTableChart color='#ff33bb' size={15} />
           Pivot
         </IconButton>
       </GridToolbarContainer>
@@ -2660,7 +2660,7 @@ const INSPECTION = () => {
                 handletraInspectionInOut();
               }}
             >
-              Nhập-Xuất(YCSX)
+              Nhập-Xuất
             </button>
             <button
               className='tranhatky'
@@ -2678,7 +2678,7 @@ const INSPECTION = () => {
         <div className='tracuuYCSXTable'>
           {readyRender && (
             <DataGrid
-              sx={{ fontSize: 12, flex: 1 }}
+              sx={{ fontSize: '0.7rem', flex: 1 }}
               components={{
                 Toolbar: CustomToolbarPOTable,
                 LoadingOverlay: LinearProgress,

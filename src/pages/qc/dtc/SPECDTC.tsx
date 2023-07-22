@@ -8,6 +8,7 @@ import { UserContext } from '../../../api/Context';
 import { SaveExcel } from '../../../api/GlobalFunction';
 import "./SPECDTC.scss"
 import DataGrid, { Column, ColumnChooser, Editing, Export, FilterRow, Item, KeyboardNavigation, Pager, Paging, Scrolling, SearchPanel, Selection, Summary, Toolbar, TotalItem } from 'devextreme-react/data-grid';
+import { ResponsiveContainer } from 'recharts';
 interface DTC_SPEC_DATA {
   CUST_NAME_KD: string,
   G_CODE: string,
@@ -44,176 +45,222 @@ const SPECDTC = () => {
   const [selectedRows, setSelectedRows] = useState<number>(0);
   const materialDataTable = React.useMemo(
     () => (
-      <div className='datatb'>       
-        <DataGrid       
-          style={{fontSize:'0.8rem'}}   
-          width={'100%'}                  
-          autoNavigateToFocusedRow={true}
-          allowColumnReordering={true}
-          allowColumnResizing={true}
-          columnAutoWidth={false}
-          cellHintEnabled={true}
-          columnResizingMode={"widget"}
-          showColumnLines={true}
-          dataSource={inspectiondatatable}
-          columnWidth='auto'
-          keyExpr='id'
-          height={"100%"}
-          showBorders={true}
-          onSelectionChanged={(e) => {
-            setSelectedRows(e.selectedRowsData.length);
-          }}
-          onRowClick={(e) => {
-            //console.log(e.data);
-          }}
-        >
-           <KeyboardNavigation
-            editOnKeyPress={true}
-            enterKeyAction={'moveFocus'}
-            enterKeyDirection={'column'} />
-          <Scrolling
-            useNative={true}
-            scrollByContent={true}
-            scrollByThumb={true}
-            showScrollbar='onHover'
-            mode='virtual'
-          />
-          <Selection mode='multiple' selectAllMode='allPages' />
-          <Editing
-            allowUpdating={false}
-            allowAdding={true}
-            allowDeleting={false}
-            mode='batch'
-            confirmDelete={true}
-            onChangesChange={(e) => {}}
-          />
-          <Export enabled={true} />
-          <Toolbar disabled={false}>
-            <Item location='before'>
-              <IconButton
-                className='buttonIcon'
-                onClick={() => {
-                  SaveExcel(inspectiondatatable, "SPEC DTC");
-                }}
-              >
-                <AiFillFileExcel color='green' size={25} />
-                SAVE
-              </IconButton>
-            </Item>
-            <Item name='searchPanel' />
-            <Item name='exportButton' />
-            <Item name='columnChooser' />
-          </Toolbar>
-          <FilterRow visible={true} />
-          <SearchPanel visible={true} />        
-          <ColumnChooser enabled={true} />          
-          <Paging defaultPageSize={15} />
-          <Pager
-            showPageSizeSelector={true}
-            allowedPageSizes={[5, 10, 15, 20, 100, 1000, 10000, "all"]}
-            showNavigationButtons={true}
-            showInfo={true}
-            infoText='Page #{0}. Total: {1} ({2} items)'
-            displayMode='compact'
-          />   
-          <Column dataField='CUST_NAME_KD' caption='CUST_NAME_KD' width={100}></Column>
-          <Column dataField='G_CODE' caption='G_CODE' width={100}></Column>
-          <Column dataField='G_NAME' caption='G_NAME' width={150}></Column>
-          <Column dataField='TEST_NAME' caption='TEST_NAME' width={100}></Column>
-          <Column dataField='POINT_NAME' caption='POINT_NAME' width={100}></Column>
-          <Column dataField='PRI' caption='PRI' width={100}></Column>
-          <Column dataField='CENTER_VALUE' caption='CENTER_VALUE' width={120}></Column>
-          <Column dataField='UPPER_TOR' caption='UPPER_TOR' width={120}></Column>
-          <Column dataField='LOWER_TOR' caption='LOWER_TOR' width={120}></Column>
-          <Column dataField='MIN_SPEC' caption='MIN_SPEC' width={120}></Column>
-          <Column dataField='MAX_SPEC' caption='MAX_SPEC' width={120}></Column>
-          <Column dataField='BARCODE_CONTENT' caption='BARCODE_CONTENT' width={100}></Column>
-          <Column dataField='REMARK' caption='REMARK' width={100}></Column>
-          <Column dataField='M_NAME' caption='M_NAME' width={120}></Column>
-          <Column dataField='WIDTH_CD' caption='WIDTH_CD' width={100}></Column>
-          <Column dataField='M_CODE' caption='M_CODE' width={100}></Column>
-          <Column  caption='BANVE' width={150}  cellRender={(e: any) => {
-              if (e.data.M_CODE === "B0000035") {
-                let  link: string = `/banve/${e.data.G_CODE}.pdf`
-                if(e.data.BANVE ==='Y')
-                {
-                  return (
-                    <div
-                      style={{
-                        color: "white",
-                        fontWeight: "bold",
-                        height: "20px",
-                        width: "80px",
-                        backgroundColor: "#54e00d",
-                        textAlign: "center",
-                      }}
-                    >
-                      <a href={link} target='_blank' rel="noopener noreferrer">Bản Vẽ</a>
-                    </div>
-                  );
-
+      <div className='datatb'>
+        <ResponsiveContainer>
+          <DataGrid
+            style={{ fontSize: "0.7rem" }}
+            autoNavigateToFocusedRow={true}
+            allowColumnReordering={true}
+            allowColumnResizing={true}
+            columnAutoWidth={false}
+            cellHintEnabled={true}
+            columnResizingMode={"widget"}
+            showColumnLines={true}
+            dataSource={inspectiondatatable}
+            columnWidth='auto'
+            keyExpr='id'
+            width={"100%"}
+            height={"100%"}
+            showBorders={true}
+            onSelectionChanged={(e) => {
+              setSelectedRows(e.selectedRowsData.length);
+            }}
+            onRowClick={(e) => {
+              //console.log(e.data);
+            }}
+          >
+            <KeyboardNavigation
+              editOnKeyPress={true}
+              enterKeyAction={"moveFocus"}
+              enterKeyDirection={"column"}
+            />
+            <Scrolling
+              useNative={true}
+              scrollByContent={true}
+              scrollByThumb={true}
+              showScrollbar='onHover'
+              mode='virtual'
+            />
+            <Selection mode='multiple' selectAllMode='allPages' />
+            <Editing
+              allowUpdating={false}
+              allowAdding={true}
+              allowDeleting={false}
+              mode='batch'
+              confirmDelete={true}
+              onChangesChange={(e) => {}}
+            />
+            <Export enabled={true} />
+            <Toolbar disabled={false}>
+              <Item location='before'>
+                <IconButton
+                  className='buttonIcon'
+                  onClick={() => {
+                    SaveExcel(inspectiondatatable, "SPEC DTC");
+                  }}
+                >
+                  <AiFillFileExcel color='green' size={25} />
+                  SAVE
+                </IconButton>
+              </Item>
+              <Item name='searchPanel' />
+              <Item name='exportButton' />
+              <Item name='columnChooser' />
+            </Toolbar>
+            <FilterRow visible={true} />
+            <SearchPanel visible={true} />
+            <ColumnChooser enabled={true} />
+            <Paging defaultPageSize={15} />
+            <Pager
+              showPageSizeSelector={true}
+              allowedPageSizes={[5, 10, 15, 20, 100, 1000, 10000, "all"]}
+              showNavigationButtons={true}
+              showInfo={true}
+              infoText='Page #{0}. Total: {1} ({2} items)'
+              displayMode='compact'
+            />
+            <Column
+              dataField='CUST_NAME_KD'
+              caption='CUST_NAME_KD'
+              width={100}
+            ></Column>
+            <Column dataField='G_CODE' caption='G_CODE' width={100}></Column>
+            <Column dataField='G_NAME' caption='G_NAME' width={150}></Column>
+            <Column
+              dataField='TEST_NAME'
+              caption='TEST_NAME'
+              width={100}
+            ></Column>
+            <Column
+              dataField='POINT_NAME'
+              caption='POINT_NAME'
+              width={100}
+            ></Column>
+            <Column dataField='PRI' caption='PRI' width={100}></Column>
+            <Column
+              dataField='CENTER_VALUE'
+              caption='CENTER_VALUE'
+              width={120}
+            ></Column>
+            <Column
+              dataField='UPPER_TOR'
+              caption='UPPER_TOR'
+              width={120}
+            ></Column>
+            <Column
+              dataField='LOWER_TOR'
+              caption='LOWER_TOR'
+              width={120}
+            ></Column>
+            <Column
+              dataField='MIN_SPEC'
+              caption='MIN_SPEC'
+              width={120}
+            ></Column>
+            <Column
+              dataField='MAX_SPEC'
+              caption='MAX_SPEC'
+              width={120}
+            ></Column>
+            <Column
+              dataField='BARCODE_CONTENT'
+              caption='BARCODE_CONTENT'
+              width={100}
+            ></Column>
+            <Column dataField='REMARK' caption='REMARK' width={100}></Column>
+            <Column dataField='M_NAME' caption='M_NAME' width={120}></Column>
+            <Column
+              dataField='WIDTH_CD'
+              caption='WIDTH_CD'
+              width={100}
+            ></Column>
+            <Column dataField='M_CODE' caption='M_CODE' width={100}></Column>
+            <Column
+              caption='BANVE'
+              width={150}
+              cellRender={(e: any) => {
+                if (e.data.M_CODE === "B0000035") {
+                  let link: string = `/banve/${e.data.G_CODE}.pdf`;
+                  if (e.data.BANVE === "Y") {
+                    return (
+                      <div
+                        style={{
+                          color: "white",
+                          fontWeight: "bold",
+                          height: "20px",
+                          width: "80px",
+                          backgroundColor: "#54e00d",
+                          textAlign: "center",
+                        }}
+                      >
+                        <a
+                          href={link}
+                          target='_blank'
+                          rel='noopener noreferrer'
+                        >
+                          Bản Vẽ
+                        </a>
+                      </div>
+                    );
+                  } else {
+                    return (
+                      <div
+                        style={{
+                          color: "white",
+                          fontWeight: "bold",
+                          height: "20px",
+                          width: "80px",
+                          backgroundColor: "gray",
+                          textAlign: "center",
+                        }}
+                      >
+                        Chưa có bản vẽ
+                      </div>
+                    );
+                  }
+                } else {
+                  let link: string = `/tds/${e.data.M_CODE}.pdf`;
+                  if (e.data.TDS === "Y") {
+                    return (
+                      <div
+                        style={{
+                          color: "white",
+                          fontWeight: "bold",
+                          height: "20px",
+                          width: "80px",
+                          backgroundColor: "red",
+                          textAlign: "center",
+                        }}
+                      >
+                        <a
+                          href={link}
+                          target='_blank'
+                          rel='noopener noreferrer'
+                        >
+                          TDS
+                        </a>
+                      </div>
+                    );
+                  } else {
+                    return (
+                      <div
+                        style={{
+                          color: "white",
+                          fontWeight: "bold",
+                          height: "20px",
+                          width: "80px",
+                          backgroundColor: "gray",
+                          textAlign: "center",
+                        }}
+                      >
+                        Chưa có TDS
+                      </div>
+                    );
+                  }
                 }
-                else
-                {
-                  return (
-                    <div
-                      style={{
-                        color: "white",
-                        fontWeight: "bold",
-                        height: "20px",
-                        width: "80px",
-                        backgroundColor: "gray",
-                        textAlign: "center",
-                      }}
-                    >
-                      Chưa có bản vẽ
-                    </div>
-                  );
-                }
-                
-              } else {
-                let  link: string = `/tds/${e.data.M_CODE}.pdf`;
-                if(e.data.TDS ==='Y')
-                {
-                  return (
-                    <div
-                      style={{
-                        color: "white",
-                        fontWeight: "bold",
-                        height: "20px",
-                        width: "80px",
-                        backgroundColor: "red",
-                        textAlign: "center",
-                      }}
-                    >
-                      <a href={link} target='_blank' rel="noopener noreferrer">TDS</a>
-                    </div>
-                  );
-
-                }
-                else
-                {
-                  return (
-                    <div
-                      style={{
-                        color: "white",
-                        fontWeight: "bold",
-                        height: "20px",
-                        width: "80px",
-                        backgroundColor: "gray",
-                        textAlign: "center",
-                      }}
-                    >
-                      Chưa có TDS
-                    </div>
-                  );
-
-                }
-
-                
-              }
-            }}></Column>
-             <Summary>
+              }}
+            ></Column>
+            <Summary>
               <TotalItem
                 alignment='right'
                 column='G_CODE'
@@ -221,8 +268,8 @@ const SPECDTC = () => {
                 valueFormat={"decimal"}
               />
             </Summary>
-            
-        </DataGrid>
+          </DataGrid>
+        </ResponsiveContainer>
       </div>
     ),
     [inspectiondatatable]
