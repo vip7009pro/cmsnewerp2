@@ -43,6 +43,7 @@ import { UserData } from "../../../redux/slices/globalSlice";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import axios from "axios";
+import { TbLogout } from "react-icons/tb";
 interface POBALANCETDYCSX {
   G_CODE: string;
   PO_BALANCE: number;
@@ -143,6 +144,7 @@ interface PONOLIST {
   PO_DATE: string,
 }
 const YCSXManager = () => {
+  const [showhidesearchdiv, setShowHideSearchDiv]= useState(true);
   const [ycsxlistrender, setYCSXListRender] = useState<Array<ReactElement>>();
   const ycsxprintref = useRef(null);
   const handlePrint = useReactToPrint({
@@ -693,7 +695,7 @@ const YCSXManager = () => {
           return (
             <div className='uploadfile'>
               <IconButton className='buttonIcon' onClick={uploadFile2}>
-                <AiOutlineCloudUpload color='yellow' size={25} />
+                <AiOutlineCloudUpload color='yellow' size={15} />
                 Upload
               </IconButton>
               <input
@@ -865,7 +867,6 @@ const YCSXManager = () => {
     }
 
   }
-
   function CustomToolbar() {
     return (
       <GridToolbarContainer>
@@ -911,10 +912,19 @@ const YCSXManager = () => {
         <IconButton
           className='buttonIcon'
           onClick={() => {
+            setShowHideSearchDiv(!showhidesearchdiv);
+          }}
+        >
+          <TbLogout color='green' size={15} />
+          Show/Hide
+        </IconButton>
+        <IconButton
+          className='buttonIcon'
+          onClick={() => {
             SaveExcel(ycsxdatatable, "YCSX Table");
           }}
         >
-          <AiFillFileExcel color='green' size={25} />
+          <AiFillFileExcel color='green' size={15} />
           SAVE
         </IconButton>
         <IconButton
@@ -933,7 +943,7 @@ const YCSXManager = () => {
             clearYCSXform();
           }}
         >
-          <AiFillFileAdd color='blue' size={25} />
+          <AiFillFileAdd color='blue' size={15} />
           NEW YCSX
         </IconButton>
         <IconButton
@@ -942,7 +952,7 @@ const YCSXManager = () => {
             handle_fillsuaform();
           }}
         >
-          <AiFillEdit color='orange' size={25} />
+          <AiFillEdit color='orange' size={15} />
           SỬA YCSX
         </IconButton>
         <IconButton
@@ -951,7 +961,7 @@ const YCSXManager = () => {
             handleConfirmDeleteYCSX();
           }}
         >
-          <MdOutlineDelete color='red' size={25} />
+          <MdOutlineDelete color='red' size={15} />
           XÓA YCSX
         </IconButton>
         <GridToolbarQuickFilter />
@@ -961,7 +971,7 @@ const YCSXManager = () => {
             handleConfirmSetClosedYCSX();
           }}
         >
-          <FaArrowRight color='green' size={25} />
+          <FaArrowRight color='green' size={15} />
           SET CLOSED
         </IconButton>
         <IconButton
@@ -970,7 +980,7 @@ const YCSXManager = () => {
             handleConfirmSetPendingYCSX();
           }}
         >
-          <MdOutlinePendingActions color='red' size={25} />
+          <MdOutlinePendingActions color='red' size={15} />
           SET PENDING
         </IconButton>
         <IconButton
@@ -988,7 +998,7 @@ const YCSXManager = () => {
             }
           }}
         >
-          <AiOutlinePrinter color='#0066ff' size={25} />
+          <AiOutlinePrinter color='#0066ff' size={15} />
           Print YCSX
         </IconButton>
         <IconButton
@@ -1000,7 +1010,7 @@ const YCSXManager = () => {
             }
           }}
         >
-          <AiOutlinePrinter color='#00701a' size={25} />
+          <AiOutlinePrinter color='#00701a' size={15} />
           Check Bản Vẽ
         </IconButton>
         <IconButton
@@ -1017,7 +1027,7 @@ const YCSXManager = () => {
             }
           }}
         >
-          <AiOutlinePrinter color='#ff751a' size={25} />
+          <AiOutlinePrinter color='#ff751a' size={15} />
           Print Bản Vẽ
         </IconButton>
         <IconButton
@@ -1026,7 +1036,7 @@ const YCSXManager = () => {
             handleConfirmPDuyetYCSX();
           }}
         >
-          <FcApprove color='red' size={25} />
+          <FcApprove color='red' size={15} />
           Phê Duyệt
         </IconButton>
         <IconButton
@@ -1035,7 +1045,7 @@ const YCSXManager = () => {
             handleGoToAmazon();
           }}
         >
-          <AiFillAmazonCircle color='red' size={25} />
+          <AiFillAmazonCircle color='red' size={15} />
           Up Amazon
         </IconButton>
       </GridToolbarContainer>
@@ -3202,7 +3212,7 @@ const YCSXManager = () => {
       )}
       {selection.trapo && (
         <div className='tracuuYCSX'>
-          <div className='tracuuYCSXform'>
+          {showhidesearchdiv && <div className='tracuuYCSXform'>
             <div className='forminput'>
               <div className='forminputcolumn'>
                 <label>
@@ -3384,7 +3394,7 @@ const YCSXManager = () => {
                 Search
               </IconButton>
             </div>
-          </div>
+          </div>}
           <div className='tracuuYCSXTable'>
             <DataGrid
               sx={{ fontSize: "0.7rem" }}

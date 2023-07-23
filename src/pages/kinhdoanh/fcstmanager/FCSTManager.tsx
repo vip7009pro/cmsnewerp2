@@ -16,6 +16,7 @@ import PivotTable from '../../../components/PivotChart/PivotChart';
 import { UserData } from '../../../redux/slices/globalSlice';
 import { RootState } from '../../../redux/store';
 import { useSelector } from 'react-redux';
+import { TbLogout } from 'react-icons/tb';
 
 
 
@@ -81,6 +82,7 @@ interface FCSTTableData {
 
 const FCSTManager = () => {
 
+  const [showhidesearchdiv, setShowHideSearchDiv]= useState(true);
   const [selection, setSelection] = useState<any>({
     trapo: true,
     thempohangloat:false,
@@ -232,15 +234,21 @@ const FCSTManager = () => {
   function CustomToolbarPOTable() {
     return (
       <GridToolbarContainer>
-        <GridToolbarColumnsButton />
-        <GridToolbarFilterButton />
-        <GridToolbarDensitySelector /> 
+        <IconButton
+          className='buttonIcon'
+          onClick={() => {
+            setShowHideSearchDiv(!showhidesearchdiv);
+          }}
+        >
+          <TbLogout color='green' size={15} />
+          Show/Hide
+        </IconButton>
         <IconButton className='buttonIcon'onClick={()=>{SaveExcel(fcstdatatable,"Fcst Table")}}><AiFillFileExcel color='green' size={25}/>SAVE</IconButton> 
         <IconButton className='buttonIcon'onClick={()=>{
           //checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['KD'], handleConfirmDeleteFcst);
           checkBP(userData,['KD'],['ALL'],['ALL'],handleConfirmDeleteFcst);
           //handleConfirmDeleteFcst();
-          }}><MdOutlineDelete color='red' size={25}/>XÓA FCST</IconButton>        
+          }}><MdOutlineDelete color='red' size={15}/>XÓA FCST</IconButton>        
         <GridToolbarQuickFilter/>
         <IconButton
           className='buttonIcon'
@@ -248,7 +256,7 @@ const FCSTManager = () => {
             setShowHidePivotTable(!showhidePivotTable);
           }}
         >
-          <MdOutlinePivotTableChart color='#ff33bb' size={25} />
+          <MdOutlinePivotTableChart color='#ff33bb' size={15} />
           Pivot
         </IconButton>
       </GridToolbarContainer>
@@ -1632,7 +1640,7 @@ const FCSTManager = () => {
       )}
       {selection.trapo && (
         <div className='tracuuFcst'>
-          <div className='tracuuFcstform'>
+          {showhidesearchdiv && <div className='tracuuFcstform'>
             <div className='forminput'>
               <div className='forminputcolumn'>
                 <label>
@@ -1767,7 +1775,7 @@ const FCSTManager = () => {
                   handletraFcst();
                 }}><FcSearch color='green' size={30}/>Search</IconButton>              
             </div>           
-          </div>
+          </div>}
           <div className='tracuuFcstTable'>
             <DataGrid              
               components={{
@@ -1799,7 +1807,7 @@ const FCSTManager = () => {
               setShowHidePivotTable(false);
             }}
           >
-            <AiFillCloseCircle color='blue' size={25} />
+            <AiFillCloseCircle color='blue' size={15} />
             Close
           </IconButton>
           <PivotTable datasource={dataSource} tableID='invoicetablepivot' />

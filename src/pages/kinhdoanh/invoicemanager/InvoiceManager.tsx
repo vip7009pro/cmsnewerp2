@@ -36,6 +36,7 @@ import PivotTable from "../../../components/PivotChart/PivotChart";
 import { UserData } from "../../../redux/slices/globalSlice";
 import { RootState } from "../../../redux/store";
 import { useSelector } from "react-redux";
+import { TbLogout } from "react-icons/tb";
 interface InvoiceTableData {
   DELIVERY_ID: number;
   CUST_CD: string;
@@ -78,6 +79,7 @@ interface CustomerListData {
   CUST_NAME?: string;
 }
 const InvoiceManager = () => {
+  const [showhidesearchdiv, setShowHideSearchDiv]= useState(true);
   const [isPending, startTransition] = useTransition();
   const [selection, setSelection] = useState<any>({
     trapo: true,
@@ -366,16 +368,22 @@ const InvoiceManager = () => {
   function CustomToolbarPOTable() {
     return (
       <GridToolbarContainer>
-        <GridToolbarColumnsButton />
-        <GridToolbarFilterButton />
-        <GridToolbarDensitySelector />
+       <IconButton
+          className='buttonIcon'
+          onClick={() => {
+            setShowHideSearchDiv(!showhidesearchdiv);
+          }}
+        >
+          <TbLogout color='green' size={15} />
+          Show/Hide
+        </IconButton>
         <IconButton
           className='buttonIcon'
           onClick={() => {
             SaveExcel(invoicedatatable, "Invoice Table");
           }}
         >
-          <AiFillFileExcel color='green' size={25} />
+          <AiFillFileExcel color='green' size={15} />
           SAVE
         </IconButton>
         <IconButton
@@ -405,7 +413,7 @@ const InvoiceManager = () => {
 
           }}
         >
-          <AiFillFileAdd color='blue' size={25} />
+          <AiFillFileAdd color='blue' size={15} />
           NEW INV
         </IconButton>
         <IconButton
@@ -421,7 +429,7 @@ const InvoiceManager = () => {
             //handle_fillsuaformInvoice();
           }}
         >
-          <FaFileInvoiceDollar color='lightgreen' size={25} />
+          <FaFileInvoiceDollar color='lightgreen' size={15} />
           SỬA INV
         </IconButton>
         <IconButton
@@ -437,7 +445,7 @@ const InvoiceManager = () => {
             //handleConfirmDeleteInvoice();
           }}
         >
-          <MdOutlineDelete color='red' size={25} />
+          <MdOutlineDelete color='red' size={15} />
           XÓA INV
         </IconButton>
         <GridToolbarQuickFilter />
@@ -447,7 +455,7 @@ const InvoiceManager = () => {
             setShowHidePivotTable(!showhidePivotTable);
           }}
         >
-          <MdOutlinePivotTableChart color='#ff33bb' size={25} />
+          <MdOutlinePivotTableChart color='#ff33bb' size={15} />
           Pivot
         </IconButton>
       </GridToolbarContainer>
@@ -1562,7 +1570,7 @@ const InvoiceManager = () => {
       )}
       {selection.trapo && (
         <div className='tracuuInvoice'>
-          <div className='tracuuInvoiceform'>
+          {showhidesearchdiv && <div className='tracuuInvoiceform'>
             <div className='forminput'>
               <div className='forminputcolumn'>
                 <label>
@@ -1791,7 +1799,7 @@ const InvoiceManager = () => {
                 </div>
               </div>         */}
             </div>
-          </div>
+          </div>}
           <div className='tracuuInvoiceTable'>
             <DataGrid
               sx={{ fontSize: "0.7rem" }}

@@ -16,7 +16,7 @@ import DataGrid, {
   TotalItem,
 } from "devextreme-react/data-grid";
 import moment, { duration } from "moment";
-import React, { useContext, useEffect, useState, useTransition } from "react";
+import React, { useContext, useEffect, useRef, useState, useTransition } from "react";
 import {
   AiFillCloseCircle,
   AiFillDelete,
@@ -42,6 +42,7 @@ import * as XLSX from "xlsx";
 import { FcApproval } from "react-icons/fc";
 import { GrUpdate } from "react-icons/gr";
 import { ResponsiveContainer } from "recharts";
+import { TbLogout } from "react-icons/tb";
 interface BANGGIA_DATA {
   CUST_NAME_KD: string;
   G_NAME: string;
@@ -123,6 +124,8 @@ const QuotationManager = () => {
     (state: RootState) => state.totalSlice.userData
   );
   const [trigger, setTrigger]= useState(true);
+  const [sh,setSH ]= useState(true);
+  const showhidesearchdiv= useRef(false);
   const [selectedUploadExcelRow, setSelectedUploadExcelRow] = useState<BANGGIA_DATA2[]>([]);
   const [selectedBangGiaDocRow, setselectedBangGiaDocRow] = useState<BANGGIA_DATA2[]>([]);
   const [selectedCode, setSelectedCode] = useState<CodeListData | null>(
@@ -223,6 +226,11 @@ const QuotationManager = () => {
     }
   }
 
+  const handleShowHideSearchBar = ()=> {
+    console.log(showhidesearchdiv.current);
+    showhidesearchdiv.current = !showhidesearchdiv.current;
+    setSH(!showhidesearchdiv.current);
+  }
   const clearuploadrow = () => {
     if(selectedUploadExcelRow.length > 0)
     {      
@@ -1284,13 +1292,23 @@ const QuotationManager = () => {
           <Export enabled={true} />
           <Toolbar disabled={false}>
             <Item location='before'>
+            <IconButton
+          className='buttonIcon'
+          onClick={() => {            
+            showhidesearchdiv.current = !showhidesearchdiv.current;
+            setSH(!showhidesearchdiv.current);
+          }}
+        >
+          <TbLogout color='green' size={15} />
+          Show/Hide
+        </IconButton>
               <IconButton
                 className='buttonIcon'
                 onClick={() => {
                   SaveExcel(banggia, "PriceTable");
                 }}
               >
-                <AiFillFileExcel color='green' size={25} />
+                <AiFillFileExcel color='green' size={15} />
                 SAVE
               </IconButton>
               <IconButton
@@ -1299,7 +1317,7 @@ const QuotationManager = () => {
                   setShowHidePivotTable(!showhidePivotTable);
                 }}
               >
-                <MdOutlinePivotTableChart color='#ff33bb' size={25} />
+                <MdOutlinePivotTableChart color='#ff33bb' size={15} />
                 Pivot
               </IconButton>
               <IconButton
@@ -1311,7 +1329,7 @@ const QuotationManager = () => {
                   setShowHideUpPrice(true);
                 }}
               >
-                <BiCloudUpload color='#070EFA' size={25} />
+                <BiCloudUpload color='#070EFA' size={15} />
                 Up Giá
               </IconButton>
             </Item>
@@ -1806,7 +1824,7 @@ const QuotationManager = () => {
         
       </div>
     ),
-    [banggia]
+    [banggia,]
   );
   const banggiaMM2 = React.useMemo(
     () => (
@@ -1853,6 +1871,16 @@ const QuotationManager = () => {
           <Export enabled={true} />
           <Toolbar disabled={false}>
             <Item location='before'>
+            <IconButton
+          className='buttonIcon'
+          onClick={() => {            
+            showhidesearchdiv.current = !showhidesearchdiv.current;
+            setSH(!showhidesearchdiv.current);
+          }}
+        >
+          <TbLogout color='green' size={15} />
+          Show/Hide
+        </IconButton>
               <IconButton
                 className='buttonIcon'
                 onClick={() => {
@@ -2368,12 +2396,13 @@ const QuotationManager = () => {
   };
   useEffect(() => {
     //loadBangGia();
+    console.log('render lai');
     dongboGiaPO();
-  }, []);
+  }, [sh]);
   return (
     <div className='quotationmanager'>
       <div className='tracuuDataInspection'>
-        <div className='tracuuDataInspectionform'>
+        {showhidesearchdiv.current ==true && <div className='tracuuDataInspectionform'>
           <div className='forminput'>
             <div className='forminputcolumn'>
               <label>
@@ -2522,7 +2551,7 @@ const QuotationManager = () => {
             
            
           </div>
-        </div>
+        </div>}
         <div className='tracuuYCSXTable'>
           {selectbutton && banggiaMM}
           {!selectbutton && banggiaMM2}

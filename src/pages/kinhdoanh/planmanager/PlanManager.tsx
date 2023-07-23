@@ -24,6 +24,7 @@ import PivotTable from "../../../components/PivotChart/PivotChart";
 import { UserData } from "../../../redux/slices/globalSlice";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
+import { TbLogout } from "react-icons/tb";
 
 interface PlanTableData {
   PLAN_ID: string;
@@ -49,6 +50,7 @@ interface PlanTableData {
 }
 
 const PlanManager = () => {
+  const [showhidesearchdiv, setShowHideSearchDiv]= useState(true);
   const [selection, setSelection] = useState<any>({
     trapo: true,
     thempohangloat: false,
@@ -365,16 +367,22 @@ const PlanManager = () => {
   function CustomToolbarPOTable() {
     return (
       <GridToolbarContainer>
-       {/*  <GridToolbarColumnsButton />
-        <GridToolbarFilterButton />
-        <GridToolbarDensitySelector /> */}
+      <IconButton
+          className='buttonIcon'
+          onClick={() => {
+            setShowHideSearchDiv(!showhidesearchdiv);
+          }}
+        >
+          <TbLogout color='green' size={15} />
+          Show/Hide
+        </IconButton>
         <IconButton
           className='buttonIcon'
           onClick={() => {
             SaveExcel(plandatatable, "Plan Table");
           }}
         >
-          <AiFillFileExcel color='green' size={25} />
+          <AiFillFileExcel color='green' size={15} />
           SAVE
         </IconButton>
         <IconButton
@@ -390,7 +398,7 @@ const PlanManager = () => {
             //handleConfirmDeletePlan();
           }}
         >
-          <MdOutlineDelete color='red' size={25} />
+          <MdOutlineDelete color='red' size={15} />
           XÓA PLAN
         </IconButton>
         <GridToolbarQuickFilter />
@@ -400,7 +408,7 @@ const PlanManager = () => {
             setShowHidePivotTable(!showhidePivotTable);
           }}
         >
-          <MdOutlinePivotTableChart color='#ff33bb' size={25} />
+          <MdOutlinePivotTableChart color='#ff33bb' size={15} />
           Pivot
         </IconButton>
       </GridToolbarContainer>
@@ -1204,7 +1212,7 @@ const PlanManager = () => {
       )}
       {selection.trapo && (
         <div className='tracuuPlan'>
-          <div className='tracuuPlanform'>
+          {showhidesearchdiv && <div className='tracuuPlanform'>
             <div className='forminput'>
               <div className='forminputcolumn'>
                 <label>
@@ -1345,7 +1353,7 @@ const PlanManager = () => {
                 Search
               </IconButton>
             </div>
-          </div>
+          </div>}
           <div className='tracuuPlanTable'>
             <DataGrid
               sx={{ fontSize: "0.7rem" }}

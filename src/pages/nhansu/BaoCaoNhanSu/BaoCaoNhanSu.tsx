@@ -785,7 +785,7 @@ const BaoCaoNhanSu = () => {
         resolveLabelOverlapping='shift'
       >
         <Series argumentField='MAINDEPTNAME' valueField='COUNT_TOTAL'>
-          <LB
+          <LB            
             visible={true}
             customizeText={(e: any) => {
               return `${e.argument}<br></br>${e.value} người

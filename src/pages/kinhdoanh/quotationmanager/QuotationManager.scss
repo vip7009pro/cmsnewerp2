@@ -6,7 +6,8 @@
     .tracuuDataInspection {
         display: flex;
         flex-direction: row;  
-        height: 85vh;      
+        height: 85vh;   
+        gap: 5px;   
         .tracuuDataInspectionform {
             display: flex;         
             width: 250px;    
