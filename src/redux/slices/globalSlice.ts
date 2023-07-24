@@ -3,13 +3,11 @@ import type {PayloadAction} from '@reduxjs/toolkit'
 import { ReactElement } from 'react';
 import { io } from "socket.io-client";
 import Swal from 'sweetalert2';
-
 const socket =  io('http://14.160.33.94:3005')
 //const socket =  io('http://localhost:3005')
 socket.on("connect", () => {
   console.log(socket.id); // x8WIv7-mJelg7on_ALbx
 });
-
 socket.on("notification", (data) => {
     console.log(data); // x8WIv7-mJelg7on_ALbx
   });
@@ -24,7 +22,6 @@ socket.on("logout", (data) => {
 socket.on("disconnect", () => {
   console.log(socket.id); //undefined
 });
-
 export interface UserData  {
     EMPL_IMAGE?: string;
     ADD_COMMUNE?: string;
@@ -75,7 +72,6 @@ export interface UserData  {
 }
 interface QLSXPLANDATA {
   id: number;
-
   PLAN_ID: string;
   PLAN_DATE: string;
   PROD_REQUEST_NO: string;
@@ -204,7 +200,7 @@ const initialState:GlobalInterface = {
     tabIndex: 0,
     tabModeSwap: true,
     loginState: false,
-    company: 'PVN',
+    company: 'CMS',
     theme: {
       CMS: {
         backgroundImage: `linear-gradient(0deg, rgba(77, 175, 252,0.5), rgba(159, 212, 254,0.5))`,
@@ -238,25 +234,18 @@ export const glbSlice = createSlice({
               case 'login': 
                 console.log(data);
               break;  
-
               case 'logout': 
                 console.log(data + 'da dang xuat');
               break;             
-
               case 'connect':
                 console.log(socket.id);
               break;
-
               case 'disconnect':
                 console.log(data);
               break;
-
               case 'notification':
-
               break;
-
             }
-            
           })
         },
         toggleSidebar: (state,action: PayloadAction<any>)=> {         
@@ -266,14 +255,12 @@ export const glbSlice = createSlice({
           state.sidebarmenu = false;
         },
         addChithiArray: (state, action: PayloadAction<QLSXPLANDATA>)=> {
-
         let temp_plan_id_array: string[] = state.multiple_chithi_array.map((element: QLSXPLANDATA, index: number)=> {
           return element.PLAN_ID
         });
         let temp_plan_step_array: QLSXPLANDATA[] =  state.multiple_chithi_array.filter((element: QLSXPLANDATA, index: number)=> {
           return element.STEP === 0
         });        
-
         if(temp_plan_id_array.indexOf(action.payload.PLAN_ID) !== -1)
         {
           Swal.fire('Thông báo','PLAN ID đã được thêm rồi','error');            
@@ -302,9 +289,7 @@ export const glbSlice = createSlice({
               else{
                 Swal.fire('Thông báo','Chỉ thêm các chỉ thị của cùng 1 ycsx vào combo','error');     
               }
-
             }
-            
           }          
         }
         },        
@@ -317,15 +302,20 @@ export const glbSlice = createSlice({
           Swal.fire('Thông báo','Đã đổi server sang : ' + action.payload);
         },
         addTab:  (state,action: PayloadAction<ELE_ARRAY>)=> {     
-        
-          state.tabs=[...state.tabs, action.payload];
+          if(state.tabs.filter((e: ELE_ARRAY, index: number)=> e.ELE_CODE !=='-1').length <8)
+          {
+            state.tabs=[...state.tabs, action.payload];
             localStorage.setItem('tabs',JSON.stringify(state.tabs.map((ele:ELE_ARRAY, index:number)=> {
               return {              
                   MENU_CODE: ele.ELE_CODE,
                   MENU_NAME: ele.ELE_NAME              
               }
             })));
-          
+          }
+          else
+          {
+            Swal.fire('Thông báo','Chỉ mở cùng lúc tối đa 8 tab để đảm bảo trải nghiệm sử dụng, hãy tắt bớt tab không sử dụng','warning');
+          }
         },
         resetTab:  (state,action: PayloadAction<any>)=> {
           state.tabs=[];   
@@ -347,7 +337,6 @@ export const glbSlice = createSlice({
           {
             if(state.tabs[i].ELE_CODE!=='-1') checkallDeleted =false;            
           }
-
           if(!checkallDeleted)
           {
             state.tabs[state.tabIndex] = {
@@ -372,12 +361,8 @@ export const glbSlice = createSlice({
                 state.tabIndex++;
               }
             }
-            
             /* state.tabIndex = state.tabIndex-1>0? state.tabIndex-1: 0;  */
-
           }
-         
-         
         },
         settabIndex: (state, action: PayloadAction<number>)=> {
           state.tabIndex = action.payload;

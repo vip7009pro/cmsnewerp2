@@ -44,6 +44,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import axios from "axios";
 import { TbLogout } from "react-icons/tb";
+import Draggable from "devextreme-react/draggable";
 interface POBALANCETDYCSX {
   G_CODE: string;
   PO_BALANCE: number;
@@ -393,6 +394,7 @@ const YCSXManager = () => {
       },
     },
     { field: "REMARK", headerName: "REMARK", width: 120 },
+    { field: "PO_NO", headerName: "PO_NO", width: 120 },
     {
       field: "PO_TDYCSX",
       type: "number",
@@ -752,6 +754,7 @@ const YCSXManager = () => {
     { field: "EMPL_NO", headerName: "EMPL_NO", width: 120 },
     { field: "REMK", headerName: "REMK", width: 150 },
     { field: "DELIVERY_DT", headerName: "NGAY GH", width: 120 },
+    { field: "PO_NO", headerName: "PO_NO", width: 120 },
     { field: "PHANLOAI", headerName: "PHANLOAI", width: 80 },
     {
       field: "CHECKSTATUS",
@@ -1819,6 +1822,7 @@ const YCSXManager = () => {
               EMPL_NO: userData?.EMPL_NO,
               USE_YN: "Y",
               DELIVERY_DT: uploadExcelJson[i].DELIVERY_DT,
+              PO_NO: uploadExcelJson[i].PO_NO,
               INS_EMPL: userData?.EMPL_NO,
               UPD_EMPL: userData?.EMPL_NO,
               YCSX_PENDING: 1,
@@ -1879,6 +1883,7 @@ const YCSXManager = () => {
               EMPL_NO: userData?.EMPL_NO,
               USE_YN: "Y",
               DELIVERY_DT: uploadExcelJson[i].DELIVERY_DT,
+              PO_NO: uploadExcelJson[i].PO_NO,
               INS_EMPL: userData?.EMPL_NO,
               UPD_EMPL: userData?.EMPL_NO,
               YCSX_PENDING: 1,
@@ -2223,6 +2228,7 @@ const YCSXManager = () => {
           EMPL_NO: userData?.EMPL_NO,
           USE_YN: "Y",
           DELIVERY_DT: moment(deliverydate).format("YYYYMMDD"),
+          PO_NO: selectedPoNo?.PO_NO === undefined? '': selectedPoNo?.PO_NO,
           INS_EMPL: userData?.EMPL_NO,
           UPD_EMPL: userData?.EMPL_NO,
           YCSX_PENDING: 1,
@@ -2284,6 +2290,7 @@ const YCSXManager = () => {
           EMPL_NO: userData?.EMPL_NO,
           USE_YN: "Y",
           DELIVERY_DT: moment(deliverydate).format("YYYYMMDD"),
+          PO_NO: selectedPoNo?.PO_NO === undefined? '': selectedPoNo?.PO_NO,
           INS_EMPL: userData?.EMPL_NO,
           UPD_EMPL: userData?.EMPL_NO,
           YCSX_PENDING: 1,
@@ -2786,6 +2793,7 @@ const YCSXManager = () => {
       EMPL_NO: userData?.EMPL_NO,
       REMK: newycsxremark,
       DELIVERY_DT: moment(deliverydate).format("YYYYMMDD"),
+      PO_NO: selectedPoNo?.PO_NO,
       CHECKSTATUS: "Waiting",
       id: moment().format("YYYY-MM-DD HH:mm:ss.SSS"),
     };
@@ -2900,16 +2908,18 @@ const YCSXManager = () => {
           <span className='mininavtext'>TRA AMZ Data</span>
         </div>
       </div>
-      {selection.them1po && (
-        <div className='them1ycsx'>
+      {selection.them1po && (       
+           <div className='them1ycsx'>
           <div className='formnho'>
             <div className='dangkyform'>
-              <h3>Thêm YCSX mới</h3>
+              <h3>New Production Request</h3>
               <div className='dangkyinput'>
-                <div className='dangkyinputbox'>
-                  <label>
+                <div className="dangkyinputbox">
+                <label>
                     <b>Khách hàng:</b>{" "}
                     <Autocomplete
+                      sx={{fontSize:'0.6rem',}}
+                      ListboxProps={{ style: { fontSize:'0.7rem' } }}
                       size='small'
                       disablePortal
                       options={customerList}
@@ -2918,7 +2928,7 @@ const YCSXManager = () => {
                         return `${option.CUST_CD}: ${option.CUST_NAME_KD}`;
                       }}
                       renderInput={(params) => (
-                        <TextField {...params} label='Select customer' />
+                        <TextField {...params}  label='Select customer' />
                       )}
                       value={selectedCust_CD}
                       onChange={(
@@ -2937,6 +2947,8 @@ const YCSXManager = () => {
                   <label>
                     <b>Code hàng:</b>{" "}
                     <Autocomplete
+                      sx={{fontSize:'0.6rem',}}
+                      ListboxProps={{ style: { fontSize:'0.7rem' } }}
                       size='small'
                       disablePortal
                       options={codeList}
@@ -2959,6 +2971,10 @@ const YCSXManager = () => {
                       }
                     />
                   </label>
+
+                </div>
+                <div className='dangkyinputbox'>
+                  
                   <label>
                     <b>Delivery Date:</b>
                     <input
@@ -2989,8 +3005,8 @@ const YCSXManager = () => {
                     </select>
                   </label>
                 </div>
-                <div className='dangkyinputbox'>
-                  <label>
+                <div className="dangkyinputbox">
+                <label>
                     <b>Loại sản xuất</b>
                     <select
                       name='loasx'
@@ -3023,6 +3039,8 @@ const YCSXManager = () => {
                       <option value='07'>ETC</option>
                     </select>
                   </label>
+                </div>
+                <div className='dangkyinputbox'>                 
                   <label>
                     <b>YCSX QTY:</b>{" "}
                     <TextField
@@ -3063,7 +3081,7 @@ const YCSXManager = () => {
                       options={ponolist}
                       className='autocomplete'
                       getOptionLabel={(option: PONOLIST | any) => {
-                        return `${moment.utc(option.PO_DATE).format('YYYY-MM-DD')}| ${option.PO_NO}`;
+                        return `${moment.utc(option.PO_DATE).isValid()? moment.utc(option.PO_DATE).format('YYYY-MM-DD'): ''}| ${option.PO_NO}`;
                       }}
                       renderInput={(params) => (
                         <TextField {...params} label='Select PO NO' />
@@ -3091,7 +3109,7 @@ const YCSXManager = () => {
                       handle_add_1YCSX();
                     }}
                   >
-                    Thêm YCSX
+                    Add
                   </button>
                 )}
                 {selection.inserttableycsx && (
@@ -3101,7 +3119,7 @@ const YCSXManager = () => {
                       handle_InsertYCSXTable();
                     }}
                   >
-                    Insert YCSX
+                    Insert
                   </button>
                 )}
                 {selection.suaycsx && (
@@ -3111,7 +3129,7 @@ const YCSXManager = () => {
                       updateYCSX();
                     }}
                   >
-                    Sửa YCSX
+                    Update
                   </button>
                 )}
                 <button
@@ -3134,6 +3152,8 @@ const YCSXManager = () => {
             </div>
           </div>
         </div>
+       
+       
       )}
       {selection.thempohangloat && (
         <div className='newycsx'>

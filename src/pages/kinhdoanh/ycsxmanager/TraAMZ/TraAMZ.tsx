@@ -9,6 +9,7 @@ import { UserContext } from '../../../../api/Context';
 import { SaveExcel } from '../../../../api/GlobalFunction';
 
 import "./TraAMZ.scss"
+import { TbLogout } from 'react-icons/tb';
 
 
 interface AMAZON_DATA {
@@ -29,8 +30,9 @@ interface AMAZON_DATA {
 }
 
 const TraAMZ = () => { 
+  const [showhidesearchdiv, setShowHideSearchDiv]= useState(true);
  const [selectionModel_INPUTSX, setSelectionModel_INPUTSX] = useState<any>([]);
-  const [readyRender, setReadyRender] = useState(false);
+  const [readyRender, setReadyRender] = useState(true);
   const [selection, setSelection] = useState<any>({
     trapo: true,
     thempohangloat:false,
@@ -76,14 +78,23 @@ const TraAMZ = () => {
 
   function CustomToolbarLICHSUINPUTSX() {
     return (
-      <GridToolbarContainer>      
+      <GridToolbarContainer>    
+        <IconButton
+          className='buttonIcon'
+          onClick={() => {
+            setShowHideSearchDiv(!showhidesearchdiv);
+          }}
+        >
+          <TbLogout color='green' size={15} />
+          Show/Hide
+        </IconButton>  
         <IconButton
           className='buttonIcon'
           onClick={() => {
             SaveExcel(inspectiondatatable, "LICHSU DATA AMZ");
           }}
         >
-          <AiFillFileExcel color='green' size={25} />
+          <AiFillFileExcel color='green' size={15} />
           SAVE
         </IconButton>
         <GridToolbarQuickFilter />
@@ -113,12 +124,14 @@ const TraAMZ = () => {
           }
         })
         setInspectionDataTable(loaded_data); 
-        setReadyRender(true); 
-        setisLoading(false);      
+        setReadyRender(true);           
         Swal.fire('Thông báo','Đã load: ' + loaded_data.length + ' dòng','success');
       } else {     
           Swal.fire('Thông báo','Không có data','error');
+          
       }
+      setisLoading(false);
+      
     })
     .catch((error) => {
       console.log(error);
@@ -131,7 +144,7 @@ const TraAMZ = () => {
   return (
     <div className='traAMZ'>
       <div className='tracuuDataInspection'>
-        <div className='tracuuDataInspectionform'>
+        {showhidesearchdiv && <div className='tracuuDataInspectionform'>
           <div className='forminput'>
             <div className='forminputcolumn'>
               <label>
@@ -206,7 +219,7 @@ const TraAMZ = () => {
               className='tranhatky'
               onClick={() => {
                 setisLoading(true);
-                setReadyRender(false);
+                setReadyRender(true);
                 setColumnDefinition(column_lichsuinputlieusanxuat);
                 handle_loadlichsuinputlieu();
               }}
@@ -214,7 +227,7 @@ const TraAMZ = () => {
               Tra AMZ
             </button>
           </div>
-        </div>
+        </div>}
         <div className='tracuuYCSXTable'>
           {readyRender && (
             <DataGrid

@@ -12,7 +12,7 @@ import { AiFillFileExcel } from "react-icons/ai";
 import Swal from "sweetalert2";
 import { generalQuery } from "../../../api/Api";
 import { UserContext } from "../../../api/Context";
-import { SaveExcel } from "../../../api/GlobalFunction";
+import { SaveExcel, checkBP } from "../../../api/GlobalFunction";
 import "./CUST_MANAGER.scss";
 import { UserData } from "../../../redux/slices/globalSlice";
 import { RootState } from "../../../redux/store";
@@ -35,8 +35,6 @@ interface CUST_INFO {
   INS_EMPL: string,
   UPD_DATE: string,
   UPD_EMPL: string,
-
-
 }
 const CUST_MANAGER = () => {
   const [selection, setSelection] = useState<any>({
@@ -55,7 +53,6 @@ const CUST_MANAGER = () => {
   const [cust_name, setCustName] = useState("Seojin Vina");
   const [cust_name_kd, setCust_Name_KD] = useState("SEOJIN");
   const [edittable, setEditTable] = useState(true);
-
 
   const handleCUSTINFO = () => {
     setisLoading(true);
@@ -209,6 +206,8 @@ const CUST_MANAGER = () => {
                   <button
                     className='thembutton'
                     onClick={() => {
+                      checkBP(userData,['RND'],['ALL'],['ALL'],handle_addCustomer);
+
                       if(userData?.EMPL_NO==='LVT1906' || userData?.EMPL_NO==='NHU1903')
                       {
                         handle_addCustomer();

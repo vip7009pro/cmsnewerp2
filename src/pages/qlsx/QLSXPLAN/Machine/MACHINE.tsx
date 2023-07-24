@@ -74,6 +74,7 @@ import {
 import CHITHI_COMPONENT2 from "../CHITHI/CHITHI_COMPONENT2";
 import KHOAO from "../KHOAO/KHOAO";
 import axios from 'axios';
+import { TbLogout } from "react-icons/tb";
 interface TONLIEUXUONG {
   id: number;
   FACTORY: string;
@@ -2918,6 +2919,15 @@ const MACHINE = () => {
         {/*  <GridToolbarColumnsButton />
         <GridToolbarFilterButton />
         <GridToolbarDensitySelector />  */}
+         <IconButton
+          className='buttonIcon'
+          onClick={() => {
+            setShowYCSX(!showYCSX);
+          }}
+        >
+          <TbLogout color='red' size={20} />
+          Show/Hide YCSX
+        </IconButton>
         <IconButton
           className='buttonIcon'
           onClick={() => {
@@ -3105,16 +3115,7 @@ const MACHINE = () => {
         >
           <BiRefresh color='red' size={20} />
           Show Combo
-        </IconButton>
-        <IconButton
-          className='buttonIcon'
-          onClick={() => {
-            setShowYCSX(!showYCSX);
-          }}
-        >
-          <BiRefresh color='red' size={20} />
-          Show/Hide YCSX
-        </IconButton>
+        </IconButton>       
       </GridToolbarContainer>
     );
   }
@@ -3196,7 +3197,7 @@ const MACHINE = () => {
                     : selectedPlan?.PLAN_ID
                 );
               }); */
-              checkBP(userData,['KD'],['ALL'],['ALL'],()=> {
+              checkBP(userData,['QLSX'],['ALL'],['ALL'],()=> {
                 setShowKhoAo(!showkhoao);
                 handle_loadKhoAo();
                 handle_loadlichsuxuatkhoao();

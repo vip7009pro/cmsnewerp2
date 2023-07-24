@@ -18,7 +18,6 @@ import {
   Summary,
   TotalItem,
 } from "devextreme-react/data-grid";
-
 import moment from "moment";
 import React, { useContext, useEffect, useState } from "react";
 import {
@@ -26,7 +25,6 @@ import {
   AiFillFileExcel,
 } from "react-icons/ai";
 import Swal from "sweetalert2";
-
 import "./TINHHINHCUONLIEU.scss";
 import { UserContext } from "../../../api/Context";
 import { generalQuery } from "../../../api/Api";
@@ -35,7 +33,6 @@ import { MdOutlinePivotTableChart } from "react-icons/md";
 import PivotTable from "../../../components/PivotChart/PivotChart";
 import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
 import { ResponsiveContainer } from "recharts";
-
 interface MATERIAL_STATUS {
   INS_DATE: string;
   FACTORY: string;
@@ -80,7 +77,6 @@ interface MATERIAL_STATUS {
   INSPECT_OK_EA: number;
   INS_OUTPUT_EA: number;
 }
-
 interface LOSS_TABLE_DATA {
   XUATKHO_MET: number;
   INSPECTION_INPUT: number;
@@ -89,7 +85,6 @@ interface LOSS_TABLE_DATA {
   TOTAL_LOSS_KT: number;
   TOTAL_LOSS: number;
 }
-
 const TINHHINHCUONLIEU = () => {
   const [showhidePivotTable, setShowHidePivotTable] = useState(false);
   const [losstableinfo, setLossTableInfo] = useState<LOSS_TABLE_DATA>({
@@ -113,7 +108,6 @@ const TINHHINHCUONLIEU = () => {
   const [m_name, setM_Name] = useState("");
   const [m_code, setM_Code] = useState("");
   const [selectedRows, setSelectedRows] = useState<number>(0);
-
   const handleSearchCodeKeyDown = (
     e: React.KeyboardEvent<HTMLInputElement>
   ) => {
@@ -121,8 +115,6 @@ const TINHHINHCUONLIEU = () => {
       handle_loaddatasx();
     }
   };
-
-
   const handle_loaddatasx = () => {
     Swal.fire({
       title: "Tra cứu trạng thái cuộn liệu",
@@ -266,7 +258,6 @@ const TINHHINHCUONLIEU = () => {
           </table>
           </div>  
         <ResponsiveContainer>
-             
         <DataGrid
           autoNavigateToFocusedRow={true}
           allowColumnReordering={true}
@@ -325,26 +316,12 @@ const TINHHINHCUONLIEU = () => {
           Pivot
         </IconButton>
             </Item>
-
             <Item name='searchPanel' />
             <Item name='exportButton' />
             <Item name='columnChooser' />
           </Toolbar>
           <FilterRow visible={true} />
-          <SearchPanel visible={true} />
-          {/* <Column
-                dataField='YEAR_WEEK'
-                caption='YEAR_WEEK'
-                width={100}
-                cellRender={(e: any) => {
-                    return (
-                    <span style={{ color: "blue", fontWeight: "bold" }}>
-                        {e.data.YEAR_WEEK}
-                    </span>
-                    );
-                }}
-                /> */}
-
+          <SearchPanel visible={true} />         
           <ColumnChooser enabled={true} />
           <Column dataField='id' caption='ID' width={100}></Column>
           <Column dataField='FACTORY' caption='FACTORY' width={100}></Column>
@@ -352,7 +329,9 @@ const TINHHINHCUONLIEU = () => {
           <Column dataField='M_LOT_NO' caption='M_LOT_NO' width={100}></Column>
           <Column dataField='M_CODE' caption='M_CODE' width={100}></Column>
           <Column dataField='M_NAME' caption='M_NAME' width={100}></Column>
-          <Column dataField='WIDTH_CD' caption='WIDTH_CD' width={100}></Column>
+          <Column dataField='WIDTH_CD' caption='WIDTH_CD' width={70}></Column>
+          <Column dataField='EQ1' caption='EQ1' width={50}></Column>
+          <Column dataField='EQ2' caption='EQ2' width={50}></Column>
           <Column
             dataField='XUAT_KHO'
             caption='XUAT_KHO'
@@ -579,7 +558,6 @@ const TINHHINHCUONLIEU = () => {
                     R
                   </div>
                 );
-
               }
               else {
                 return (
@@ -907,7 +885,6 @@ const TINHHINHCUONLIEU = () => {
               );
             }}
           ></Column>
-
           <Column
             dataField='ROLL_LOSS_KT'
             caption='ROLL_LOSS_KT'
@@ -1063,15 +1040,9 @@ const TINHHINHCUONLIEU = () => {
         </DataGrid>
         </ResponsiveContainer>   
       </div>
-     
-
-     
-            
-     
     ),
     [datasxtable]
   );
-
   const dataSource = new PivotGridDataSource({
     fields: [
       {
