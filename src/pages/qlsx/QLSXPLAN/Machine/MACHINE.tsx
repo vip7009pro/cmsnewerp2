@@ -2942,6 +2942,7 @@ const MACHINE = () => {
           className='buttonIcon'
           onClick={() => {
             if (qlsxplandatafilter.length > 0) {
+              checkBP(userData,['QLSX'],['ALL'],['ALL'],handle_UpdatePlan);
               setShowChiThi(true);
               setChiThiListRender(renderChiThi(qlsxplandatafilter));
               //console.log(ycsxdatatablefilter);

@@ -107,6 +107,8 @@ interface CODE_FULL_INFO {
   PROCESS_TYPE?: string;
   EQ1?: string;
   EQ2?: string;
+  EQ3?: string;
+  EQ4?: string;
   PROD_DIECUT_STEP?: number;
   PROD_PRINT_TIMES?: number;
   REMK?: string;
@@ -180,6 +182,9 @@ interface MATERIAL_INFO {
   MASTER_WIDTH: number;
   ROLL_LENGTH: number;
 }
+interface MACHINE_LIST {
+  EQ_NAME: string,
+}
 const BOM_MANAGER = () => {
   const [codedatatablefilter, setCodeDataTableFilter] = useState<
     Array<CODE_INFO>
@@ -220,6 +225,8 @@ const BOM_MANAGER = () => {
     PROCESS_TYPE: "",
     EQ1: "NA",
     EQ2: "NA",
+    EQ3: "NA",
+    EQ4: "NA",
     PROD_DIECUT_STEP: 0,
     PROD_PRINT_TIMES: 0,
     REMK: "",
@@ -257,6 +264,7 @@ const BOM_MANAGER = () => {
   const userData: UserData | undefined = useSelector(
     (state: RootState) => state.totalSlice.userData
   );
+  const [machine_list, setMachine_List] = useState<MACHINE_LIST[]>([]);
   const [isLoading, setisLoading] = useState(false);
   const [codeCMS, setCodeCMS] = useState("");
   const [enableEdit, setEnableEdit] = useState(false);
@@ -1842,9 +1850,36 @@ const BOM_MANAGER = () => {
     limit: 100,
   });
 
+  const getMachineList = ()=> {
+    generalQuery("getmachinelist", {      
+    })
+      .then((response) => {
+        //console.log(response.data);
+        if (response.data.tk_status !== "NG") {
+          const loadeddata: MACHINE_LIST[] = response.data.data.map(
+            (element: MACHINE_LIST, index: number) => {
+              return {
+                ...element,
+              };
+            }
+          );
+          loadeddata.push({EQ_NAME:'NO'},{EQ_NAME:'NA'});
+          console.log(loadeddata)
+          setMachine_List(loadeddata);
+          
+        } else {
+          //Swal.fire("Thông báo", "Lỗi BOM SX: " + response.data.message, "error");
+          setMachine_List([]);         
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
   useEffect(() => {
     getmateriallist();
     getcustomerlist();
+    getMachineList();
   }, []);
   return (
     <div className='bom_manager'>
@@ -2462,12 +2497,13 @@ const BOM_MANAGER = () => {
                           handleSetCodeInfo("EQ1", e.target.value);
                         }}
                       >
-                        <option value='FR'>FR</option>
-                        <option value='SR'>SR</option>
-                        <option value='DC'>DC</option>
-                        <option value='ED'>ED</option>
-                        <option value='NO'>NO</option>
-                        <option value='NA'>NA</option>
+                        {
+                          machine_list.map((ele:MACHINE_LIST, index: number)=> {
+                            return (
+                              <option key={index} value={ele.EQ_NAME}>{ele.EQ_NAME}</option>
+                            )
+                          })
+                        }                        
                       </select>
                     </label>
                     <label>
@@ -2484,12 +2520,59 @@ const BOM_MANAGER = () => {
                           handleSetCodeInfo("EQ2", e.target.value);
                         }}
                       >
-                        <option value='FR'>FR</option>
-                        <option value='SR'>SR</option>
-                        <option value='DC'>DC</option>
-                        <option value='ED'>ED</option>
-                        <option value='NO'>NO</option>
-                        <option value='NA'>NA</option>
+                        {
+                          machine_list.map((ele:MACHINE_LIST, index: number)=> {
+                            return (
+                              <option key={index} value={ele.EQ_NAME}>{ele.EQ_NAME}</option>
+                            )
+                          })
+                        } 
+                      </select>
+                    </label>
+                    <label>
+                      Máy 3:
+                      <select
+                        disabled={enableform}
+                        name='may3'
+                        value={
+                          codefullinfo?.EQ3 === null || codefullinfo?.EQ3 === ""
+                            ? "NA"
+                            : codefullinfo?.EQ3
+                        }
+                        onChange={(e) => {
+                          handleSetCodeInfo("EQ3", e.target.value);
+                        }}
+                      >
+                        {
+                          machine_list.map((ele:MACHINE_LIST, index: number)=> {
+                            return (
+                              <option key={index} value={ele.EQ_NAME}>{ele.EQ_NAME}</option>
+                            )
+                          })
+                        } 
+                      </select>
+                    </label>
+                    <label>
+                      Máy 4:
+                      <select
+                        disabled={enableform}
+                        name='may4'
+                        value={
+                          codefullinfo?.EQ4 === null || codefullinfo?.EQ4 === ""
+                            ? "NA"
+                            : codefullinfo?.EQ4
+                        }
+                        onChange={(e) => {
+                          handleSetCodeInfo("EQ4", e.target.value);
+                        }}
+                      >
+                        {
+                          machine_list.map((ele:MACHINE_LIST, index: number)=> {
+                            return (
+                              <option key={index} value={ele.EQ_NAME}>{ele.EQ_NAME}</option>
+                            )
+                          })
+                        } 
                       </select>
                     </label>
                     <label>
