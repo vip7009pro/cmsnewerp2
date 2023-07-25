@@ -156,7 +156,7 @@ const CODE_MANAGER = () => {
       else
       {
         return <div className="uploadfile"> 
-       <IconButton className='buttonIcon'onClick={uploadFile2}><AiOutlineCloudUpload color='yellow' size={25}/>Upload</IconButton>
+       <IconButton className='buttonIcon'onClick={uploadFile2}><AiOutlineCloudUpload color='yellow' size={15}/>Upload</IconButton>
        <input  accept=".pdf" type="file" onChange={(e:any)=> {file = e.target.files[0]; console.log(file);}} />
       </div>
       }        
@@ -366,29 +366,26 @@ const CODE_MANAGER = () => {
   const [columnDefinition, setColumnDefinition] = useState<Array<any>>(column_codeinfo);
   function CustomToolbarPOTable() {
     return (
-      <GridToolbarContainer>
-        <GridToolbarColumnsButton />
-        <GridToolbarFilterButton />
-        <GridToolbarDensitySelector /> 
-        <IconButton className='buttonIcon'onClick={()=>{SaveExcel(rows,"Code Info Table")}}><AiFillFileExcel color='green' size={25}/>SAVE</IconButton> 
-        <IconButton className='buttonIcon'onClick={()=>{ setNgoaiQuan('N');}}><AiFillCheckCircle color='blue' size={25}/>SET NGOAI QUAN</IconButton> 
-        <IconButton className='buttonIcon'onClick={()=>{ setNgoaiQuan('Y');}}><FcCancel color='green' size={25}/>SET K NGOAI QUAN</IconButton> 
-        <IconButton className='buttonIcon'onClick={()=>{resetBanVe('N'); }}><BiReset color='green' size={25}/>RESET BẢN VẼ</IconButton> 
-        <IconButton className='buttonIcon'onClick={()=>{pdBanVe('Y'); }}><MdOutlineDraw color='red' size={25}/>PDUYET BẢN VẼ</IconButton> 
+      <GridToolbarContainer>        
+        <IconButton className='buttonIcon'onClick={()=>{SaveExcel(rows,"Code Info Table")}}><AiFillFileExcel color='green' size={15}/>SAVE</IconButton> 
+        <IconButton className='buttonIcon'onClick={()=>{ setNgoaiQuan('N');}}><AiFillCheckCircle color='blue' size={15}/>SET NGOAI QUAN</IconButton> 
+        <IconButton className='buttonIcon'onClick={()=>{ setNgoaiQuan('Y');}}><FcCancel color='green' size={15}/>SET K NGOAI QUAN</IconButton> 
+        <IconButton className='buttonIcon'onClick={()=>{resetBanVe('N'); }}><BiReset color='green' size={15}/>RESET BẢN VẼ</IconButton> 
+        <IconButton className='buttonIcon'onClick={()=>{pdBanVe('Y'); }}><MdOutlineDraw color='red' size={15}/>PDUYET BẢN VẼ</IconButton> 
         <IconButton className='buttonIcon'onClick={()=>{
           handleSaveQLSX();
-         }}><MdUpdate color='blue' size={25}/>Update TT QLSX</IconButton> 
+         }}><MdUpdate color='blue' size={15}/>Update TT QLSX</IconButton> 
         <IconButton className='buttonIcon'onClick={()=>{
           setColumns(columns.map((element, index:number)=> {
             return {...element, editable : !element.editable};
           }))
           Swal.fire("Thông báo","Bật/Tắt chế độ sửa","success");
         }}>
-          <AiFillEdit color='yellow' size={25}/>Bật tắt sửa</IconButton> 
+          <AiFillEdit color='yellow' size={15}/>Bật tắt sửa</IconButton> 
         <GridToolbarQuickFilter/>
         <IconButton className='buttonIcon'onClick={()=>{
           handleSaveLossSX();
-         }}><MdUpdate color='blue' size={25}/>Update LOSS SX</IconButton> 
+         }}><MdUpdate color='blue' size={15}/>Update LOSS SX</IconButton> 
       </GridToolbarContainer>
     );
   }  

@@ -4,7 +4,7 @@ import {
   IconButton,
   LinearProgress,
   TextField,
-  createFilterOptions,
+  createFilterOptions, 
 } from "@mui/material";
 import {
   DataGrid,
@@ -144,7 +144,7 @@ interface PONOLIST {
   PO_NO: string,
   PO_DATE: string,
 }
-const YCSXManager = () => {
+const YCSXManager = () => {  
   const [showhidesearchdiv, setShowHideSearchDiv]= useState(true);
   const [ycsxlistrender, setYCSXListRender] = useState<Array<ReactElement>>();
   const ycsxprintref = useRef(null);
@@ -2918,8 +2918,8 @@ const YCSXManager = () => {
                 <label>
                     <b>Khách hàng:</b>{" "}
                     <Autocomplete
-                      sx={{fontSize:'0.6rem',}}
-                      ListboxProps={{ style: { fontSize:'0.7rem' } }}
+                      sx={{fontSize:'0.6rem',}}                      
+                      ListboxProps={{ style: { fontSize:'0.7rem',} }}
                       size='small'
                       disablePortal
                       options={customerList}
@@ -2928,7 +2928,7 @@ const YCSXManager = () => {
                         return `${option.CUST_CD}: ${option.CUST_NAME_KD}`;
                       }}
                       renderInput={(params) => (
-                        <TextField {...params}  label='Select customer' />
+                        <TextField  {...params} fullWidth={true} label='Select customer' />
                       )}
                       value={selectedCust_CD}
                       onChange={(
@@ -3156,9 +3156,7 @@ const YCSXManager = () => {
        
       )}
       {selection.thempohangloat && (
-        <div className='newycsx'>
-          <h3>Thêm YCSX Hàng Loạt</h3>
-          <br></br>
+        <div className='newycsx'>         
           <div className='batchnewycsx'>
             <form className='formupload'>
               <label htmlFor='upload'>
@@ -3490,9 +3488,7 @@ const YCSXManager = () => {
       )}
       {selection.amazontab && (
         <div className='amazonetab'>
-          <div className='newamazon'>
-            <h3>Thêm Data Amazon</h3>
-            <br></br>
+          <div className='newamazon'>            
             <div className='amazonInputform'>
               <div className='forminput'>
                 <div className='forminputcolumn'>
@@ -3529,8 +3525,6 @@ const YCSXManager = () => {
                   </div>
                 </div>
               </div>
-            </div>
-            <div className='batchnewycsx'>
               <form className='formupload'>
                 <label htmlFor='upload'>
                   <b>Chọn file Excel: </b>
@@ -3551,7 +3545,7 @@ const YCSXManager = () => {
                     upAmazonData();
                   }}
                 >
-                  Up Data Amazon
+                  Up
                 </div>
                 <div
                   className='checkpobutton'
@@ -3560,7 +3554,7 @@ const YCSXManager = () => {
                     checkDuplicateAMZ();
                   }}
                 >
-                  Check Data All
+                  Check
                 </div>
                 <div
                   className='clearobutton'
@@ -3569,10 +3563,12 @@ const YCSXManager = () => {
                     setUploadExcelJSon([]);
                   }}
                 >
-                  Clear bảng
+                  Clear
                 </div>
                 {progressvalue}/{uploadExcelJson.length}
               </form>
+            </div>
+            <div className='batchnewycsx'>             
               <div className='insertYCSXTable'>
                 {true && (
                   <DataGrid

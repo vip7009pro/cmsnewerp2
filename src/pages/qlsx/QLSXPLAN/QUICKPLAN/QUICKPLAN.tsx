@@ -473,7 +473,7 @@ const QUICKPLAN = () => {
           return (
             <div className='uploadfile'>
               <IconButton className='buttonIcon' onClick={uploadFile}>
-                <AiOutlineCloudUpload color='yellow' size={25} />
+                <AiOutlineCloudUpload color='yellow' size={15} />
                 Upload
               </IconButton>
               <input
@@ -1553,7 +1553,7 @@ const QUICKPLAN = () => {
             SaveExcel(ycsxdatatable, "YCSX Table");
           }}
         >
-          <AiFillFileExcel color='green' size={25} />
+          <AiFillFileExcel color='green' size={15} />
           SAVE
         </IconButton>
         <GridToolbarQuickFilter />
@@ -1563,7 +1563,7 @@ const QUICKPLAN = () => {
             handleConfirmSetClosedYCSX();
           }}
         >
-          <FaArrowRight color='green' size={25} />
+          <FaArrowRight color='green' size={15} />
           SET CLOSED
         </IconButton>
         <IconButton
@@ -1572,7 +1572,7 @@ const QUICKPLAN = () => {
             handleConfirmSetPendingYCSX();
           }}
         >
-          <MdOutlinePendingActions color='red' size={25} />
+          <MdOutlinePendingActions color='red' size={15} />
           SET PENDING
         </IconButton>
         <IconButton
@@ -1590,7 +1590,7 @@ const QUICKPLAN = () => {
             }
           }}
         >
-          <AiOutlinePrinter color='#0066ff' size={25} />
+          <AiOutlinePrinter color='#0066ff' size={15} />
           Print YCSX
         </IconButton>
         <IconButton
@@ -1607,7 +1607,7 @@ const QUICKPLAN = () => {
             }
           }}
         >
-          <AiOutlinePrinter color='#ff751a' size={25} />
+          <AiOutlinePrinter color='#ff751a' size={15} />
           Print Bản Vẽ
         </IconButton>
         <IconButton
@@ -1624,7 +1624,7 @@ const QUICKPLAN = () => {
             }
           }}
         >
-          <AiFillFolderAdd color='#69f542' size={25} />
+          <AiFillFolderAdd color='#69f542' size={15} />
           Add to PLAN
         </IconButton>
       </GridToolbarContainer>
@@ -1636,10 +1636,19 @@ const QUICKPLAN = () => {
         <IconButton
           className='buttonIcon'
           onClick={() => {
+            setShowHideYCSXTable(!showhideycsxtable);
+          }}
+        >
+          <BiShow color='green' size={20} />
+          Ẩn /Hiện
+        </IconButton>
+        <IconButton
+          className='buttonIcon'
+          onClick={() => {
             SaveExcel(plandatatable, "Plan Table");
           }}
         >
-          <AiFillFileExcel color='green' size={25} />
+          <AiFillFileExcel color='green' size={15} />
           SAVE
         </IconButton>
         <GridToolbarQuickFilter />
@@ -1652,7 +1661,7 @@ const QUICKPLAN = () => {
             handle_AddBlankPlan();
           }}
         >
-          <AiFillFolderAdd color='#69f542' size={25} />
+          <AiFillFolderAdd color='#69f542' size={15} />
           Add Blank PLAN
         </IconButton>
         <IconButton
@@ -1681,15 +1690,7 @@ const QUICKPLAN = () => {
           <FcDeleteRow color='yellow' size={20} />
           XÓA PLAN NHÁP
         </IconButton>
-        <IconButton
-          className='buttonIcon'
-          onClick={() => {
-            setShowHideYCSXTable(!showhideycsxtable);
-          }}
-        >
-          <BiShow color='green' size={20} />
-          Ẩn /Hiện
-        </IconButton>
+        
         <IconButton
           className='buttonIcon'
           onClick={() => {
@@ -2233,7 +2234,7 @@ const QUICKPLAN = () => {
               </div>
               <div className='forminputcolumn'>
                 <label>
-                  <b>FACTORY:</b>
+                  <b>FACTORY_:</b>
                   <select
                     name='phanloai'
                     value={

@@ -8,12 +8,13 @@ import { generalQuery } from "../../api/Api";
 import Swal from "sweetalert2";
 import PrimarySearchAppBar from "../../components/AppBar/AppBarCustom";
 import CHAT from "../chat/CHAT";
-import { Box, IconButton, Tab, Tabs, Typography } from "@mui/material";
+import { Box, IconButton, Tab, TabProps, Tabs, Typography } from "@mui/material";
 import { AiOutlineCloseCircle } from "react-icons/ai";
 import { RootState } from "../../redux/store";
 import { useSelector, useDispatch } from "react-redux";
 import { addTab, closeTab, settabIndex } from "../../redux/slices/globalSlice";
 import AccountInfo from "../../components/Navbar/AccountInfo/AccountInfo";
+import styled from "@emotion/styled";
 export const current_ver: number = 172;
 interface ELE_ARRAY {
   REACT_ELE: ReactElement;
@@ -57,6 +58,17 @@ function Home() {
       console.log(error);
     });
   }
+  const CustomTab = styled((props: TabProps) => <Tab {...props} />)({
+    // Tùy chỉnh kiểu cho tab tại đây
+    color: 'gray', // Ví dụ: đặt màu chữ là màu xanh
+    fontWeight: 200, // Ví dụ: đặt độ đậm cho chữ
+    // Thêm các kiểu tùy chỉnh khác tại đây...
+  });
+
+  const CustomTabLabel = styled(Typography)({
+    fontWeight: 200, // Ví dụ: đặt độ đậm cho chữ
+    // Thêm các kiểu tùy chỉnh khác tại đây...
+  });
 
   useEffect(() => {
     console.log("local ver", current_ver);
@@ -173,17 +185,18 @@ function Home() {
                     {tabs.map((ele: ELE_ARRAY, index: number) => {
                       if (ele.ELE_CODE !== "-1") {
                         return (
-                          <Tab
+                          <CustomTab
                             key={index}
-                            label={index + 1 + "." + ele.ELE_NAME}
+                            /* label={index + 1 + "." + ele.ELE_NAME} */
+                            label={<CustomTabLabel style={{fontSize:'0.8rem'}}>{index+1}.{ele.ELE_NAME}</CustomTabLabel>}
                             value={index}
                             style={{
                               minHeight: "2px",
                               height: "5px",
                               boxSizing: "border-box",
                               borderRadius: "5px",
-                            }}
-                          ></Tab>
+                            }}                            
+                          ></CustomTab>
                         );
                       }
                     })}

@@ -481,10 +481,11 @@ const Sidebar = () => {
         className={`SidebarNav ${
           sidebarStatus === true ? "show-sidebar" : "hide-sidebar"
         }`}
+        style={{
+          backgroundImage: `${company === "CMS" ?  theme.CMS.backgroundImage: theme.PVN.backgroundImage}`,
+        }}
       >
-        <div className='SidebarWrap' style={{
-        backgroundImage: `${company === "CMS" ?  theme.CMS.backgroundImage: theme.PVN.backgroundImage}`,
-      }} >
+        <div className='SidebarWrap'  >
           <Link to='#' className='NavIcon'>
             {company ==='CMS' && <img alt="logo" src="/logocmsvina.png" width={85.8} height={20.35}/>}            
             {company ==='PVN' && <img alt="logo" src="/logopvn_big.png" width={85.8} height={40.35}/>}            
