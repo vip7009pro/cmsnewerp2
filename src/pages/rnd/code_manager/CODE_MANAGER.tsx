@@ -39,18 +39,32 @@ interface CODE_INFO {
     FACTORY: string,
     EQ1: string,
     EQ2: string, 
+    EQ3: string, 
+    EQ4: string, 
     Setting1: string,
     Setting2: string,
+    Setting3: string,
+    Setting4: string,
     UPH1: number,
     UPH2: number,
+    UPH3: number,
+    UPH4: number,
     Step1: number,
-    Step2: number,
+    Step2: number,    
+    Step3: number,    
+    Step4: number,    
     LOSS_SX1: number,
     LOSS_SX2: number,
+    LOSS_SX3: number,
+    LOSS_SX4: number,
     LOSS_SETTING1: number,
     LOSS_SETTING2: number,
+    LOSS_SETTING3: number,
+    LOSS_SETTING4: number,
     LOSS_ST_SX1: number,
     LOSS_ST_SX2: number,
+    LOSS_ST_SX3: number,
+    LOSS_ST_SX4: number,
     NOTE: string
 }
 const CODE_MANAGER = () => {
@@ -238,6 +252,26 @@ const CODE_MANAGER = () => {
         return <span style={{fontWeight:'bold'}}>{params.row.EQ2}</span>
       }   
     }},
+    { field: "EQ3", headerName: "EQ3", width: 80 ,renderCell: (params:any) => { 
+      if(params.row.EQ3 === null)
+      {
+        return <span style={{backgroundColor:'red', fontWeight:'bold'}}>NG</span>       
+      }    
+      else
+      {
+        return <span style={{fontWeight:'bold'}}>{params.row.EQ3}</span>
+      }   
+    }},
+    { field: "EQ4", headerName: "EQ4", width: 80 ,renderCell: (params:any) => { 
+      if(params.row.EQ4 === null)
+      {
+        return <span style={{backgroundColor:'red', fontWeight:'bold'}}>NG</span>       
+      }    
+      else
+      {
+        return <span style={{fontWeight:'bold'}}>{params.row.EQ4}</span>
+      }   
+    }},
     { field: "Setting1", headerName: "Setting1", width: 100 ,renderCell: (params:any) => { 
       if(params.row.Setting1 === null)
       {
@@ -258,6 +292,26 @@ const CODE_MANAGER = () => {
         return <span style={{fontWeight:'bold'}}>{params.row.Setting2}</span>       
       }   
     }}, 
+    { field: "Setting3", headerName: "Setting3", width: 100 ,renderCell: (params:any) => { 
+      if(params.row.Setting3 === null)
+      {
+        return <span style={{backgroundColor:'red', fontWeight:'bold'}}>NG</span>       
+      }    
+      else
+      {
+        return <span style={{fontWeight:'bold'}}>{params.row.Setting3}</span>       
+      }   
+    }}, 
+    { field: "Setting4", headerName: "Setting4", width: 100 ,renderCell: (params:any) => { 
+      if(params.row.Setting4 === null)
+      {
+        return <span style={{backgroundColor:'red', fontWeight:'bold'}}>NG</span>       
+      }    
+      else
+      {
+        return <span style={{fontWeight:'bold'}}>{params.row.Setting4}</span>       
+      }   
+    }}, 
     { field: "UPH1", headerName: "UPH1", width: 80 ,renderCell: (params:any) => { 
       if(params.row.UPH1 === null)
       {
@@ -276,6 +330,26 @@ const CODE_MANAGER = () => {
       else
       {
         return <span style={{fontWeight:'bold'}}>{params.row.UPH2}</span>       
+      }   
+    }},
+    { field: "UPH3", headerName: "UPH3", width: 80 ,renderCell: (params:any) => { 
+      if(params.row.UPH3 === null)
+      {
+        return <span style={{backgroundColor:'red', fontWeight:'bold'}}>NG</span>       
+      }    
+      else
+      {
+        return <span style={{fontWeight:'bold'}}>{params.row.UPH3}</span>       
+      }   
+    }},
+    { field: "UPH4", headerName: "UPH4", width: 80 ,renderCell: (params:any) => { 
+      if(params.row.UPH4 === null)
+      {
+        return <span style={{backgroundColor:'red', fontWeight:'bold'}}>NG</span>       
+      }    
+      else
+      {
+        return <span style={{fontWeight:'bold'}}>{params.row.UPH4}</span>       
       }   
     }},
     { field: "Step1", headerName: "Step1", width: 80 ,renderCell: (params:any) => { 
@@ -318,6 +392,26 @@ const CODE_MANAGER = () => {
         return <span style={{fontWeight:'bold'}}>{params.row.LOSS_SX2}</span>       
       }   
     }},
+    { field: "LOSS_SX3", headerName: "LOSS_SX3(%)", width: 100 ,renderCell: (params:any) => { 
+      if(params.row.LOSS_SX3 === null)
+      {
+        return <span style={{backgroundColor:'red', fontWeight:'bold'}}>NG</span>       
+      }    
+      else
+      {
+        return <span style={{fontWeight:'bold'}}>{params.row.LOSS_SX3}</span>       
+      }   
+    }},
+    { field: "LOSS_SX4", headerName: "LOSS_SX4(%)", width: 100 ,renderCell: (params:any) => { 
+      if(params.row.LOSS_SX4 === null)
+      {
+        return <span style={{backgroundColor:'red', fontWeight:'bold'}}>NG</span>       
+      }    
+      else
+      {
+        return <span style={{fontWeight:'bold'}}>{params.row.LOSS_SX4}</span>       
+      }   
+    }},
     { field: "LOSS_SETTING1", headerName: "LOSS_SETTING1(m)", width: 130 ,renderCell: (params:any) => { 
       if(params.row.LOSS_SETTING1 === null)
       {
@@ -338,6 +432,26 @@ const CODE_MANAGER = () => {
         return <span style={{fontWeight:'bold'}}>{params.row.LOSS_SETTING2}</span>       
       }   
     }},
+    { field: "LOSS_SETTING3", headerName: "LOSS_SETTING3(m)", width: 130 ,renderCell: (params:any) => { 
+      if(params.row.LOSS_SETTING3 === null)
+      {
+        return <span style={{backgroundColor:'red', fontWeight:'bold'}}>NG</span>       
+      }    
+      else
+      {
+        return <span style={{fontWeight:'bold'}}>{params.row.LOSS_SETTING3}</span>       
+      }   
+    }},
+    { field: "LOSS_SETTING4", headerName: "LOSS_SETTING4(m)", width: 130 ,renderCell: (params:any) => { 
+      if(params.row.LOSS_SETTING4 === null)
+      {
+        return <span style={{backgroundColor:'red', fontWeight:'bold'}}>NG</span>       
+      }    
+      else
+      {
+        return <span style={{fontWeight:'bold'}}>{params.row.LOSS_SETTING4}</span>       
+      }
+    }},
     { field: "LOSS_ST_SX1", headerName: "LOSS_SETTING_SX1(m)", width: 130 ,renderCell: (params:any) => { 
       if(params.row.LOSS_ST_SX1 === null)
       {
@@ -356,6 +470,26 @@ const CODE_MANAGER = () => {
       else
       {
         return <span style={{fontWeight:'bold'}}>{params.row.LOSS_ST_SX2}</span>       
+      }   
+    }},
+    { field: "LOSS_ST_SX3", headerName: "LOSS_SETTING_SX3(m)", width: 130 ,renderCell: (params:any) => { 
+      if(params.row.LOSS_ST_SX3 === null)
+      {
+        return <span style={{backgroundColor:'red', fontWeight:'bold'}}>NG</span>
+      }    
+      else
+      {
+        return <span style={{fontWeight:'bold'}}>{params.row.LOSS_ST_SX3}</span>       
+      }   
+    }},
+    { field: "LOSS_ST_SX4", headerName: "LOSS_SETTING_SX4(m)", width: 130 ,renderCell: (params:any) => { 
+      if(params.row.LOSS_ST_SX4 === null)
+      {
+        return <span style={{backgroundColor:'red', fontWeight:'bold'}}>NG</span>       
+      }    
+      else
+      {
+        return <span style={{fontWeight:'bold'}}>{params.row.LOSS_ST_SX4}</span>       
       }   
     }},
     { field: "NOTE", headerName: "NOTE", width: 150 ,},
@@ -566,16 +700,28 @@ const CODE_MANAGER = () => {
               FACTORY: codedatatablefilter[i].FACTORY,
               EQ1: codedatatablefilter[i].EQ1,
               EQ2: codedatatablefilter[i].EQ2,
+              EQ3: codedatatablefilter[i].EQ3,
+              EQ4: codedatatablefilter[i].EQ4,
               Setting1: codedatatablefilter[i].Setting1,
               Setting2: codedatatablefilter[i].Setting2,
+              Setting3: codedatatablefilter[i].Setting3,
+              Setting4: codedatatablefilter[i].Setting4,
               UPH1: codedatatablefilter[i].UPH1,
               UPH2: codedatatablefilter[i].UPH2,
+              UPH3: codedatatablefilter[i].UPH3,
+              UPH4: codedatatablefilter[i].UPH4,
               Step1: codedatatablefilter[i].Step1,
               Step2: codedatatablefilter[i].Step2,
+              Step3: codedatatablefilter[i].Step3,
+              Step4: codedatatablefilter[i].Step4,
               LOSS_SX1: codedatatablefilter[i].LOSS_SX1,
               LOSS_SX2: codedatatablefilter[i].LOSS_SX2,
+              LOSS_SX3: codedatatablefilter[i].LOSS_SX3,
+              LOSS_SX4: codedatatablefilter[i].LOSS_SX4,
               LOSS_SETTING1: codedatatablefilter[i].LOSS_SETTING1,
               LOSS_SETTING2: codedatatablefilter[i].LOSS_SETTING2,
+              LOSS_SETTING3: codedatatablefilter[i].LOSS_SETTING3,
+              LOSS_SETTING4: codedatatablefilter[i].LOSS_SETTING4,
               NOTE: codedatatablefilter[i].NOTE,             
             })
             .then((response) => {
@@ -622,6 +768,8 @@ const CODE_MANAGER = () => {
               G_CODE: codedatatablefilter[i].G_CODE,             
               LOSS_ST_SX1: codedatatablefilter[i].LOSS_ST_SX1,
               LOSS_ST_SX2: codedatatablefilter[i].LOSS_ST_SX2,                          
+              LOSS_ST_SX3: codedatatablefilter[i].LOSS_ST_SX3,                          
+              LOSS_ST_SX4: codedatatablefilter[i].LOSS_ST_SX4,                          
             })
             // eslint-disable-next-line no-loop-func
             .then((response) => {
@@ -656,7 +804,6 @@ const CODE_MANAGER = () => {
       Swal.fire("Thông báo", "Chọn ít nhất 1 G_CODE để SET !" , "error"); 
     }
   }
-
   const handleSearchCodeKeyDown = (
     e: React.KeyboardEvent<HTMLInputElement>
   ) => {

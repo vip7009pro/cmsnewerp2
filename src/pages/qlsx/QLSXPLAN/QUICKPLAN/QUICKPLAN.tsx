@@ -62,24 +62,39 @@ import { UserData } from "../../../../redux/slices/globalSlice";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../redux/store";
 import axios from 'axios';
+interface MACHINE_LIST {
+  EQ_NAME: string;
+}
 interface DINHMUC_QSLX {
   FACTORY: string;
   EQ1: string;
   EQ2: string;
+  EQ3: string;
+  EQ4: string;
   Setting1: number;
   Setting2: number;
+  Setting3: number;
+  Setting4: number;
   UPH1: number;
   UPH2: number;
+  UPH3: number;
+  UPH4: number;
   Step1: number;
   Step2: number;
+  Step3: number;
+  Step4: number;
   LOSS_SX1: number;
   LOSS_SX2: number;
+  LOSS_SX3: number;
+  LOSS_SX4: number;
   LOSS_SETTING1: number;
   LOSS_SETTING2: number;
+  LOSS_SETTING3: number;
+  LOSS_SETTING4: number;
   NOTE: string;
 }
 interface QLSXPLANDATA {
-  id: string;
+  id: number;
   PLAN_ID: string;
   PLAN_DATE: string;
   PROD_REQUEST_NO: string;
@@ -87,9 +102,9 @@ interface QLSXPLANDATA {
   PLAN_EQ: string;
   PLAN_FACTORY: string;
   PLAN_LEADTIME: number;
-  INS_EMPL?: string;
+  INS_EMPL: string;
   INS_DATE: string;
-  UPD_EMPL?: string;
+  UPD_EMPL: string;
   UPD_DATE: string;
   G_CODE: string;
   G_NAME: string;
@@ -99,27 +114,50 @@ interface QLSXPLANDATA {
   STEP: number;
   PLAN_ORDER: string;
   PROCESS_NUMBER: number;
-  KETQUASX: number;
   KQ_SX_TAM: number;
+  KETQUASX: number;
   CD1: number;
   CD2: number;
+  CD3: number;
+  CD4: number;
   TON_CD1: number;
   TON_CD2: number;
+  TON_CD3: number;
+  TON_CD4: number;
   FACTORY: string;
   EQ1: string;
   EQ2: string;
+  EQ3: string;
+  EQ4: string;
   Setting1: number;
   Setting2: number;
+  Setting3: number;
+  Setting4: number;
   UPH1: number;
   UPH2: number;
+  UPH3: number;
+  UPH4: number;
   Step1: number;
   Step2: number;
+  Step3: number;
+  Step4: number;
   LOSS_SX1: number;
   LOSS_SX2: number;
+  LOSS_SX3: number;
+  LOSS_SX4: number;
   LOSS_SETTING1: number;
   LOSS_SETTING2: number;
+  LOSS_SETTING3: number;
+  LOSS_SETTING4: number;
   NOTE: string;
-  NEXT_PLAN_ID: string;  
+  NEXT_PLAN_ID: string;
+  XUATDAOFILM?: string;
+  EQ_STATUS?: string;
+  MAIN_MATERIAL?: string;
+  INT_TEM?: string;
+  CHOTBC?: string;
+  DKXL?: string;
+  OLD_PLAN_QTY?: string;
 }
 interface YCSXTableData {
   DESCR?: string;
@@ -165,23 +203,39 @@ interface YCSXTableData {
   PO_BALANCE: number;
   EQ1: string;
   EQ2: string;
+  EQ3: string;
+  EQ4: string;
   CD1: number;
   CD2: number;
+  CD3: number;
+  CD4: number;
   CD_IN: number;
   CD_DIECUT: number;
   TON_CD1: number;
   TON_CD2: number;
+  TON_CD3: number;
+  TON_CD4: number;
   UPH1: number;
   UPH2: number;
+  UPH3: number;
+  UPH4: number;
   FACTORY: string;
   Setting1: number;
   Setting2: number;
+  Setting3: number;
+  Setting4: number;
   Step1: number;
   Step2: number;
+  Step3: number;
+  Step4: number;
   LOSS_SX1: number;
   LOSS_SX2: number;
+  LOSS_SX3: number;
+  LOSS_SX4: number;
   LOSS_SETTING1: number;
   LOSS_SETTING2: number;
+  LOSS_SETTING3: number;
+  LOSS_SETTING4: number;
   NOTE: string;
 }
 interface QLSXCHITHIDATA {
@@ -214,19 +268,31 @@ const QUICKPLAN = () => {
     tabbanve: false,
   });
   const [datadinhmuc, setDataDinhMuc] = useState<DINHMUC_QSLX>({
-    FACTORY: "NA",
-    EQ1: "NA",
-    EQ2: "NA",
+    FACTORY: "",
+    EQ1: "",
+    EQ2: "",
+    EQ3: "",
+    EQ4: "",
     Setting1: 0,
     Setting2: 0,
+    Setting3: 0,
+    Setting4: 0,
     UPH1: 0,
     UPH2: 0,
+    UPH3: 0,
+    UPH4: 0,
     Step1: 0,
     Step2: 0,
+    Step3: 0,
+    Step4: 0,
     LOSS_SX1: 0,
     LOSS_SX2: 0,
+    LOSS_SX3: 0,
+    LOSS_SX4: 0,
     LOSS_SETTING1: 0,
     LOSS_SETTING2: 0,
+    LOSS_SETTING3: 0,
+    LOSS_SETTING4: 0,
     NOTE: "",
   });
   const [plandatatable, setPlanDataTable] = useState<QLSXPLANDATA[]>([]);
@@ -274,6 +340,31 @@ const QUICKPLAN = () => {
   const [temp_id, setTemID] = useState(0);
   const [showhideycsxtable, setShowHideYCSXTable] = useState(false);
   const [showhidedinhmuc, setShowHideDinhMuc] = useState(true);
+  const [machine_list, setMachine_List] = useState<MACHINE_LIST[]>([]);
+  const getMachineList = () => {
+    generalQuery("getmachinelist", {})
+      .then((response) => {
+        //console.log(response.data);
+        if (response.data.tk_status !== "NG") {
+          const loadeddata: MACHINE_LIST[] = response.data.data.map(
+            (element: MACHINE_LIST, index: number) => {
+              return {
+                ...element,
+              };
+            }
+          );
+          loadeddata.push({ EQ_NAME: "NO" }, { EQ_NAME: "NA" });
+          console.log(loadeddata);
+          setMachine_List(loadeddata);
+        } else {
+          //Swal.fire("Thông báo", "Lỗi BOM SX: " + response.data.message, "error");
+          setMachine_List([]);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
   const ycsxprintref = useRef(null);
   const handlePrint = useReactToPrint({
     content: () => ycsxprintref.current,
@@ -1186,10 +1277,10 @@ const QUICKPLAN = () => {
               setTemID(0);
               localStorage.setItem("temp_plan_table_max_id", "0");
             } else {
-              setTemID(parseInt(datafilter[len].id));
+              setTemID(datafilter[len].id);
               localStorage.setItem(
                 "temp_plan_table_max_id",
-                datafilter[len].id
+                datafilter[len].id.toString()
               );
             }
             setPlanDataTable(datafilter);
@@ -1274,7 +1365,7 @@ const QUICKPLAN = () => {
     if (ycsxdatatablefilter.length >= 1) {
       for (let i = 0; i < ycsxdatatablefilter.length; i++) {
         let temp_add_plan: QLSXPLANDATA = {
-          id: temp_id + 1 + "",
+          id: temp_id + 1,
           PLAN_ID: "PL" + (temp_id + 1),
           PLAN_DATE: moment().format("YYYY-MM-DD"),
           PROD_REQUEST_NO: ycsxdatatablefilter[i].PROD_REQUEST_NO,
@@ -1282,9 +1373,9 @@ const QUICKPLAN = () => {
           PLAN_EQ: "",
           PLAN_FACTORY: userData?.FACTORY_CODE === 1 ? "NM1" : "NM2",
           PLAN_LEADTIME: 0,
-          INS_EMPL: userData?.EMPL_NO,
+          INS_EMPL: '',
           INS_DATE: moment().format("YYYY-MM-DD HH:mm:ss"),
-          UPD_EMPL: userData?.EMPL_NO,
+          UPD_EMPL: '',
           UPD_DATE: moment().format("YYYY-MM-DD HH:mm:ss"),
           G_CODE: ycsxdatatablefilter[i].G_CODE,
           G_NAME: ycsxdatatablefilter[i].G_NAME,
@@ -1315,6 +1406,22 @@ const QUICKPLAN = () => {
           LOSS_SETTING2: ycsxdatatablefilter[i].LOSS_SETTING2,
           NOTE: ycsxdatatablefilter[i].NOTE,
           NEXT_PLAN_ID: "X",
+          CD3: 0,
+          CD4: 0,
+          TON_CD3: 0,
+          TON_CD4: 0,
+          EQ3: "",
+          EQ4: "",
+          Setting3: 0,
+          Setting4: 0,
+          UPH3: 0,
+          UPH4: 0,
+          Step3: 0,
+          Step4: 0,
+          LOSS_SX3: 0,
+          LOSS_SX4: 0,
+          LOSS_SETTING3: 0,
+          LOSS_SETTING4: 0
         };
         setPlanDataTable([...plandatatable, temp_add_plan]);
         localStorage.setItem(
@@ -1332,7 +1439,7 @@ const QUICKPLAN = () => {
     setTemID(temp_);
     localStorage.setItem("temp_plan_table_max_id", temp_.toString());
     let temp_add_plan: QLSXPLANDATA = {
-      id: temp_id + 1 + "",
+      id: (temp_id + 1),
       PLAN_ID: "PL" + (temp_id + 1),
       PLAN_DATE: moment().format("YYYY-MM-DD"),
       PROD_REQUEST_NO: "",
@@ -1340,9 +1447,9 @@ const QUICKPLAN = () => {
       PLAN_EQ: "",
       PLAN_FACTORY: userData?.FACTORY_CODE === 1 ? "NM1" : "NM2",
       PLAN_LEADTIME: 0,
-      INS_EMPL: userData?.EMPL_NO,
+      INS_EMPL: '',
       INS_DATE: moment().format("YYYY-MM-DD HH:mm:ss"),
-      UPD_EMPL: userData?.EMPL_NO,
+      UPD_EMPL: '',
       UPD_DATE: moment().format("YYYY-MM-DD HH:mm:ss"),
       G_CODE: "",
       G_NAME: "",
@@ -1373,6 +1480,22 @@ const QUICKPLAN = () => {
       LOSS_SETTING2: 0,
       NOTE: "",
       NEXT_PLAN_ID: "X",
+      CD3: 0,
+      CD4: 0,
+      TON_CD3: 0,
+      TON_CD4: 0,
+      EQ3: "",
+      EQ4: "",
+      Setting3: 0,
+      Setting4: 0,
+      UPH3: 0,
+      UPH4: 0,
+      Step3: 0,
+      Step4: 0,
+      LOSS_SX3: 0,
+      LOSS_SX4: 0,
+      LOSS_SETTING3: 0,
+      LOSS_SETTING4: 0
     };
     setPlanDataTable([...plandatatable, temp_add_plan]);
     localStorage.setItem(
@@ -1479,7 +1602,7 @@ const QUICKPLAN = () => {
     if (selectedG_Code !== undefined) {
       if (userData?.EMPL_NO === "NHU1903" || userData?.MAINDEPTNAME === "QLSX") {
         let err_code: string = "0";
-        console.log(datadinhmuc);
+        //console.log(datadinhmuc);
         if (
           datadinhmuc.FACTORY === "NA" ||
           datadinhmuc.EQ1 === "NA" ||
@@ -1501,17 +1624,29 @@ const QUICKPLAN = () => {
             FACTORY: datadinhmuc.FACTORY,
             EQ1: datadinhmuc.EQ1,
             EQ2: datadinhmuc.EQ2,
+            EQ3: datadinhmuc.EQ3,
+            EQ4: datadinhmuc.EQ4,
             Setting1: datadinhmuc.Setting1,
             Setting2: datadinhmuc.Setting2,
+            Setting3: datadinhmuc.Setting3,
+            Setting4: datadinhmuc.Setting4,
             UPH1: datadinhmuc.UPH1,
             UPH2: datadinhmuc.UPH2,
+            UPH3: datadinhmuc.UPH3,
+            UPH4: datadinhmuc.UPH4,
             Step1: datadinhmuc.Step1,
             Step2: datadinhmuc.Step2,
+            Step3: datadinhmuc.Step3,
+            Step4: datadinhmuc.Step4,
             LOSS_SX1: datadinhmuc.LOSS_SX1,
             LOSS_SX2: datadinhmuc.LOSS_SX2,
+            LOSS_SX3: datadinhmuc.LOSS_SX3,
+            LOSS_SX4: datadinhmuc.LOSS_SX4,
             LOSS_SETTING1: datadinhmuc.LOSS_SETTING1,
             LOSS_SETTING2: datadinhmuc.LOSS_SETTING2,
-            NOTE: datadinhmuc.NOTE,
+            LOSS_SETTING3: datadinhmuc.LOSS_SETTING3,
+            LOSS_SETTING4: datadinhmuc.LOSS_SETTING4,
+            NOTE: datadinhmuc.NOTE,        
           })
             .then((response) => {
               console.log(response.data.tk_status);
@@ -1543,10 +1678,7 @@ const QUICKPLAN = () => {
   };
   function CustomToolbarPOTable() {
     return (
-      <GridToolbarContainer>
-        {/*  <GridToolbarColumnsButton />
-          <GridToolbarFilterButton />
-          <GridToolbarDensitySelector />  */}
+      <GridToolbarContainer>      
         <IconButton
           className='buttonIcon'
           onClick={() => {
@@ -1758,7 +1890,7 @@ const QUICKPLAN = () => {
       .then((response) => {
         //console.log(response.data.data);
         if (response.data.tk_status !== "NG") {
-          //console.log(response.data.data);
+          console.log(response.data.data);
           const loadeddata: YCSXTableData[] = response.data.data.map(
             (element: YCSXTableData, index: number) => {
               return {
@@ -1852,25 +1984,37 @@ const QUICKPLAN = () => {
     details // GridCallbackDetails
   ) => {
     let rowData: QLSXPLANDATA = params.row;
-    //console.log(rowData);
+    console.log(rowData);
     setSelectedCode("CODE: " + rowData.G_NAME_KD);
     setSelectedG_Code(rowData.G_CODE);
     setDataDinhMuc({
       ...datadinhmuc,
-      FACTORY: rowData.FACTORY===null? 'NA': rowData.FACTORY,
+      FACTORY: rowData.FACTORY === null ? "NA" : rowData.FACTORY,
       EQ1: rowData.EQ1 === "" ? "NA" : rowData.EQ1,
       EQ2: rowData.EQ2 === "" ? "NA" : rowData.EQ2,
-      Setting1: rowData.Setting1 === null? 0 : rowData.Setting1,
-      Setting2: rowData.Setting2 === null? 0 : rowData.Setting2,
-      UPH1: rowData.UPH1 ===  null? 0: rowData.UPH1,
-      UPH2: rowData.UPH2 ===  null? 0: rowData.UPH2,
-      Step1: rowData.Step1 ===  null? 0: rowData.Step1,
-      Step2: rowData.Step2 ===  null? 0: rowData.Step2,
-      LOSS_SX1: rowData.LOSS_SX1 ===  null? 0: rowData.LOSS_SX1,
-      LOSS_SX2: rowData.LOSS_SX2 ===  null? 0: rowData.LOSS_SX2,
-      LOSS_SETTING1: rowData.LOSS_SETTING1 ===  null? 0: rowData.LOSS_SETTING1,
-      LOSS_SETTING2: rowData.LOSS_SETTING2 ===  null? 0: rowData.LOSS_SETTING2,
-      NOTE: rowData.NOTE ===  null? '': rowData.NOTE,
+      EQ3: rowData.EQ3 === "" ? "NA" : rowData.EQ3,
+      EQ4: rowData.EQ4 === "" ? "NA" : rowData.EQ4,
+      Setting1: rowData.Setting1 === null ? 0 : rowData.Setting1,
+      Setting2: rowData.Setting2 === null ? 0 : rowData.Setting2,
+      Setting3: rowData.Setting3 === null ? 0 : rowData.Setting3,
+      Setting4: rowData.Setting4 === null ? 0 : rowData.Setting4,
+      UPH1: rowData.UPH1 === null ? 0 : rowData.UPH1,
+      UPH2: rowData.UPH2 === null ? 0 : rowData.UPH2,
+      UPH3: rowData.UPH3 === null ? 0 : rowData.UPH3,
+      UPH4: rowData.UPH4 === null ? 0 : rowData.UPH4,
+      Step1: rowData.Step1 === null ? 0 : rowData.Step1,
+      Step2: rowData.Step2 === null ? 0 : rowData.Step2,     
+      Step3: rowData.Step3 === null ? 0 : rowData.Step3,     
+      Step4: rowData.Step4 === null ? 0 : rowData.Step4,     
+      LOSS_SX1: rowData.LOSS_SX1 === null ? 0 : rowData.LOSS_SX1,
+      LOSS_SX2: rowData.LOSS_SX2 === null ? 0 : rowData.LOSS_SX2,
+      LOSS_SX3: rowData.LOSS_SX3 === null ? 0 : rowData.LOSS_SX3,
+      LOSS_SX4: rowData.LOSS_SX4 === null ? 0 : rowData.LOSS_SX4,
+      LOSS_SETTING1: rowData.LOSS_SETTING1 === null ? 0 : rowData.LOSS_SETTING1,
+      LOSS_SETTING2: rowData.LOSS_SETTING2 === null ? 0 : rowData.LOSS_SETTING2,
+      LOSS_SETTING3: rowData.LOSS_SETTING3 === null ? 0 : rowData.LOSS_SETTING3,
+      LOSS_SETTING4: rowData.LOSS_SETTING4 === null ? 0 : rowData.LOSS_SETTING4,
+      NOTE: rowData.NOTE === null ? "" : rowData.NOTE,
     });
     //console.log(params.row);
   };
@@ -1900,21 +2044,37 @@ const QUICKPLAN = () => {
                   PROD_REQUEST_QTY: temp_ycsx_data[0].PROD_REQUEST_QTY,
                   CD1: temp_ycsx_data[0].CD1,
                   CD2: temp_ycsx_data[0].CD2,
+                  CD3: temp_ycsx_data[0].CD3,
+                  CD4: temp_ycsx_data[0].CD4,
                   TON_CD1: temp_ycsx_data[0].TON_CD1,
                   TON_CD2: temp_ycsx_data[0].TON_CD2,
+                  TON_CD3: temp_ycsx_data[0].TON_CD3,
+                  TON_CD4: temp_ycsx_data[0].TON_CD4,
                   EQ1: temp_ycsx_data[0].EQ1,
                   EQ2: temp_ycsx_data[0].EQ2,
+                  EQ3: temp_ycsx_data[0].EQ3,
+                  EQ4: temp_ycsx_data[0].EQ4,
                   UPH1: temp_ycsx_data[0].UPH1,
                   UPH2: temp_ycsx_data[0].UPH2,
+                  UPH3: temp_ycsx_data[0].UPH3,
+                  UPH4: temp_ycsx_data[0].UPH4,
                   FACTORY: temp_ycsx_data[0].FACTORY,
                   Setting1: temp_ycsx_data[0].Setting1,
                   Setting2: temp_ycsx_data[0].Setting2,
+                  Setting3: temp_ycsx_data[0].Setting3,
+                  Setting4: temp_ycsx_data[0].Setting4,
                   Step1: temp_ycsx_data[0].Step1,
                   Step2: temp_ycsx_data[0].Step2,
+                  Step3: temp_ycsx_data[0].Step3,
+                  Step4: temp_ycsx_data[0].Step4,
                   LOSS_SX1: temp_ycsx_data[0].LOSS_SX1,
                   LOSS_SX2: temp_ycsx_data[0].LOSS_SX2,
+                  LOSS_SX3: temp_ycsx_data[0].LOSS_SX3,
+                  LOSS_SX4: temp_ycsx_data[0].LOSS_SX4,
                   LOSS_SETTING1: temp_ycsx_data[0].LOSS_SETTING1,
                   LOSS_SETTING2: temp_ycsx_data[0].LOSS_SETTING2,
+                  LOSS_SETTING3: temp_ycsx_data[0].LOSS_SETTING3,
+                  LOSS_SETTING4: temp_ycsx_data[0].LOSS_SETTING4,
                   NOTE: temp_ycsx_data[0].NOTE,
                 };
               } else {
@@ -2034,15 +2194,19 @@ const QUICKPLAN = () => {
       setPlanDataTable([]);
       setTemID(0);
     }
+    getMachineList();
   }, []);
   return (
     <div className='quickplan'>
       <div className='planwindow'>
-        <span style={{ fontSize: 25, color: "blue", marginLeft: 20 }}>
+      <span style={{ fontSize: 25, color: "blue", marginLeft: 20 }}>
           {selectedCode}
         </span>
+       
         <div className="dinhmucdiv">
+        
           {showhidedinhmuc && (
+            <div className="datadinhmucto">
             <div className='datadinhmuc'>
               <div className='forminputcolumn'>
                 <label>
@@ -2055,12 +2219,15 @@ const QUICKPLAN = () => {
                     }
                     style={{ width: 150, height: 22 }}
                   >
-                    <option value='FR'>FR</option>
-                    <option value='SR'>SR</option>
-                    <option value='DC'>DC</option>
-                    <option value='ED'>ED</option>
-                    <option value='NO'>NO</option>
-                    <option value='NA'>NA</option>
+                    {machine_list.map(
+                        (ele: MACHINE_LIST, index: number) => {
+                          return (
+                            <option key={index} value={ele.EQ_NAME}>
+                              {ele.EQ_NAME}
+                            </option>
+                          );
+                        }
+                      )}
                   </select>
                 </label>
                 <label>
@@ -2073,12 +2240,15 @@ const QUICKPLAN = () => {
                     }
                     style={{ width: 150, height: 22 }}
                   >
-                    <option value='FR'>FR</option>
-                    <option value='SR'>SR</option>
-                    <option value='DC'>DC</option>
-                    <option value='ED'>ED</option>
-                    <option value='NO'>NO</option>
-                    <option value='NA'>NA</option>
+                    {machine_list.map(
+                        (ele: MACHINE_LIST, index: number) => {
+                          return (
+                            <option key={index} value={ele.EQ_NAME}>
+                              {ele.EQ_NAME}
+                            </option>
+                          );
+                        }
+                      )}
                   </select>
                 </label>
               </div>
@@ -2234,11 +2404,13 @@ const QUICKPLAN = () => {
               </div>
               <div className='forminputcolumn'>
                 <label>
-                  <b>FACTORY_:</b>
+                  <b>FACTORY:</b>
                   <select
                     name='phanloai'
                     value={
-                      datadinhmuc.FACTORY === null ? "NA" : datadinhmuc.FACTORY
+                      datadinhmuc.FACTORY === null
+                        ? "NA"
+                        : datadinhmuc.FACTORY
                     }
                     onChange={(e) => {
                       setDataDinhMuc({
@@ -2266,10 +2438,242 @@ const QUICKPLAN = () => {
                 </label>
               </div>
             </div>
+            <div className='datadinhmuc'>
+              <div className='forminputcolumn'>
+                <label>
+                  <b>EQ3:</b>
+                  <select
+                    name='phanloai'
+                    value={datadinhmuc.EQ3}
+                    onChange={(e) =>
+                      setDataDinhMuc({ ...datadinhmuc, EQ3: e.target.value })
+                    }
+                    style={{ width: 150, height: 22 }}
+                  >
+                    {machine_list.map(
+                        (ele: MACHINE_LIST, index: number) => {
+                          return (
+                            <option key={index} value={ele.EQ_NAME}>
+                              {ele.EQ_NAME}
+                            </option>
+                          );
+                        }
+                      )}
+                  </select>
+                </label>
+                <label>
+                  <b>EQ4:</b>
+                  <select
+                    name='phanloai'
+                    value={datadinhmuc.EQ4}
+                    onChange={(e) =>
+                      setDataDinhMuc({ ...datadinhmuc, EQ4: e.target.value })
+                    }
+                    style={{ width: 150, height: 22 }}
+                  >
+                    {machine_list.map(
+                        (ele: MACHINE_LIST, index: number) => {
+                          return (
+                            <option key={index} value={ele.EQ_NAME}>
+                              {ele.EQ_NAME}
+                            </option>
+                          );
+                        }
+                      )}
+                  </select>
+                </label>
+              </div>
+              <div className='forminputcolumn'>
+                <label>
+                  <b>Setting3(min):</b>{" "}
+                  <input
+                    type='text'
+                    placeholder='Thời gian setting 3'
+                    value={datadinhmuc.Setting3}
+                    onChange={(e) =>
+                      setDataDinhMuc({
+                        ...datadinhmuc,
+                        Setting3: Number(e.target.value),
+                      })
+                    }
+                  ></input>
+                </label>
+                <label>
+                  <b>Setting4(min):</b>{" "}
+                  <input
+                    type='text'
+                    placeholder='Thời gian setting 4'
+                    value={datadinhmuc.Setting4}
+                    onChange={(e) =>
+                      setDataDinhMuc({
+                        ...datadinhmuc,
+                        Setting4: Number(e.target.value),
+                      })
+                    }
+                  ></input>
+                </label>
+              </div>
+              <div className='forminputcolumn'>
+                <label>
+                  <b>UPH3(EA/h):</b>{" "}
+                  <input
+                    type='text'
+                    placeholder='Tốc độ sx 1'
+                    value={datadinhmuc.UPH3}
+                    onChange={(e) =>
+                      setDataDinhMuc({
+                        ...datadinhmuc,
+                        UPH3: Number(e.target.value),
+                      })
+                    }
+                  ></input>
+                </label>
+                <label>
+                  <b>UPH4(EA/h):</b>{" "}
+                  <input
+                    type='text'
+                    placeholder='Tốc độ sx 2'
+                    value={datadinhmuc.UPH4}
+                    onChange={(e) =>
+                      setDataDinhMuc({
+                        ...datadinhmuc,
+                        UPH4: Number(e.target.value),
+                      })
+                    }
+                  ></input>
+                </label>
+              </div>
+              <div className='forminputcolumn'>
+                <label>
+                  <b>Step3:</b>{" "}
+                  <input
+                    type='text'
+                    placeholder='Số bước 3'
+                    value={datadinhmuc.Step3}
+                    onChange={(e) =>
+                      setDataDinhMuc({
+                        ...datadinhmuc,
+                        Step3: Number(e.target.value),
+                      })
+                    }
+                  ></input>
+                </label>
+                <label>
+                  <b>Step4:</b>{" "}
+                  <input
+                    type='text'
+                    placeholder='Số bước 4'
+                    value={datadinhmuc.Step4}
+                    onChange={(e) =>
+                      setDataDinhMuc({
+                        ...datadinhmuc,
+                        Step4: Number(e.target.value),
+                      })
+                    }
+                  ></input>
+                </label>
+              </div>
+              <div className='forminputcolumn'>
+                <label>
+                  <b>LOSS_SX3(%):</b>{" "}
+                  <input
+                    type='text'
+                    placeholder='% loss sx 3'
+                    value={datadinhmuc.LOSS_SX3}
+                    onChange={(e) =>
+                      setDataDinhMuc({
+                        ...datadinhmuc,
+                        LOSS_SX3: Number(e.target.value),
+                      })
+                    }
+                  ></input>
+                </label>
+                <label>
+                  <b>LOSS_SX4(%):</b>{" "}
+                  <input
+                    type='text'
+                    placeholder='% loss sx 4'
+                    value={datadinhmuc.LOSS_SX4}
+                    onChange={(e) =>
+                      setDataDinhMuc({
+                        ...datadinhmuc,
+                        LOSS_SX4: Number(e.target.value),
+                      })
+                    }
+                  ></input>
+                </label>
+              </div>
+              <div className='forminputcolumn'>
+                <label>
+                  <b>LOSS SETTING3 (m):</b>{" "}
+                  <input
+                    type='text'
+                    placeholder='met setting 3'
+                    value={datadinhmuc.LOSS_SETTING3}
+                    onChange={(e) =>
+                      setDataDinhMuc({
+                        ...datadinhmuc,
+                        LOSS_SETTING3: Number(e.target.value),
+                      })
+                    }
+                  ></input>
+                </label>
+                <label>
+                  <b>LOSS SETTING4 (m):</b>{" "}
+                  <input
+                    type='text'
+                    placeholder='met setting 4'
+                    value={datadinhmuc.LOSS_SETTING4}
+                    onChange={(e) =>
+                      setDataDinhMuc({
+                        ...datadinhmuc,
+                        LOSS_SETTING4: Number(e.target.value),
+                      })
+                    }
+                  ></input>
+                </label>
+              </div>
+              <div className='forminputcolumn'>
+                <label>
+                  <b>FACTORY:</b>
+                  <select
+                    name='phanloai'
+                    value={
+                      datadinhmuc.FACTORY === null
+                        ? "NA"
+                        : datadinhmuc.FACTORY
+                    }
+                    onChange={(e) => {
+                      setDataDinhMuc({
+                        ...datadinhmuc,
+                        FACTORY: e.target.value,
+                      });
+                    }}
+                    style={{ width: 162, height: 22 }}
+                  >
+                    <option value='NA'>NA</option>
+                    <option value='NM1'>NM1</option>
+                    <option value='NM2'>NM2</option>
+                  </select>
+                </label>
+                <label>
+                  <b>NOTE (QLSX):</b>{" "}
+                  <input
+                    type='text'
+                    placeholder='Chú ý'
+                    value={datadinhmuc.NOTE}
+                    onChange={(e) =>
+                      setDataDinhMuc({ ...datadinhmuc, NOTE: e.target.value })
+                    }
+                  ></input>
+                </label>
+              </div>
+            </div>
+
+            </div>
           )}
 
-        </div>
-        
+        </div>        
         <div className='content'>
           {showhideycsxtable && (
             <div className='ycsxlist'>

@@ -57,7 +57,7 @@ import MATERIAL_MANAGER from "../material_manager/MATERIAL_MANAGER";
 import { UserData } from "../../../redux/slices/globalSlice";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
-import axios from 'axios';
+import axios from "axios";
 interface CODE_INFO {
   id: number;
   G_CODE: string;
@@ -114,7 +114,7 @@ interface CODE_FULL_INFO {
   REMK?: string;
   USE_YN?: string;
   PO_TYPE?: string;
-  FSC: string,
+  FSC: string;
   G_CODE: string;
 }
 interface CustomerListData {
@@ -183,7 +183,7 @@ interface MATERIAL_INFO {
   ROLL_LENGTH: number;
 }
 interface MACHINE_LIST {
-  EQ_NAME: string,
+  EQ_NAME: string;
 }
 const BOM_MANAGER = () => {
   const [codedatatablefilter, setCodeDataTableFilter] = useState<
@@ -233,7 +233,7 @@ const BOM_MANAGER = () => {
     USE_YN: "N",
     G_CODE: "-------",
     PO_TYPE: "E1",
-    FSC: 'N',
+    FSC: "N",
   });
   const [bomsxtable, setBOMSXTable] = useState<BOM_SX[]>([]);
   const [bomgiatable, setBOMGIATable] = useState<BOM_GIA[]>([]);
@@ -260,7 +260,6 @@ const BOM_MANAGER = () => {
     them1invoice: false,
     testinvoicetable: false,
   });
-
   const userData: UserData | undefined = useSelector(
     (state: RootState) => state.totalSlice.userData
   );
@@ -1074,7 +1073,7 @@ const BOM_MANAGER = () => {
       REMK: "",
       USE_YN: "Y",
       G_CODE: "",
-      FSC:'N'
+      FSC: "N",
     });
   };
   const handleCheckCodeInfo = () => {
@@ -1104,7 +1103,6 @@ const BOM_MANAGER = () => {
     }
     return result;
   };
-
   const confirmAddNewCode = () => {
     Swal.fire({
       title: "Chắc chắn muốn thêm code mới ?",
@@ -1123,7 +1121,7 @@ const BOM_MANAGER = () => {
           ["RND"],
           handleAddNewCode
         ); */
-        checkBP(userData,['RND','QLSX'],['ALL'],['ALL'],handleAddNewCode);
+        checkBP(userData, ["RND", "QLSX"], ["ALL"], ["ALL"], handleAddNewCode);
         //handleAddNewCode();
       }
     });
@@ -1140,13 +1138,13 @@ const BOM_MANAGER = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         Swal.fire("Tiến hành thêm", "Đang thêm Ver mới", "success");
-      /*   checkBP(
+        /*   checkBP(
           userData?.EMPL_NO,
           userData?.MAINDEPTNAME,
           ["RND"],
           handleAddNewVer
         ); */
-        checkBP(userData,['RND','QLSX'],['ALL'],['ALL'],handleAddNewVer);
+        checkBP(userData, ["RND", "QLSX"], ["ALL"], ["ALL"], handleAddNewVer);
         //handleAddNewVer();
       }
     });
@@ -1169,7 +1167,7 @@ const BOM_MANAGER = () => {
           ["RND", "QLSX"],
           handleUpdateCode
         ); */
-        checkBP(userData,['RND','QLSX'],['ALL'],['ALL'],handleUpdateCode);
+        checkBP(userData, ["RND", "QLSX"], ["ALL"], ["ALL"], handleUpdateCode);
         //handleUpdateCode();
       }
     });
@@ -1605,7 +1603,6 @@ const BOM_MANAGER = () => {
         .catch((error) => {
           console.log(error);
         });
-
       let tempeditrows: BOM_GIA = {
         id: moment().format("YYYY-MM-DD HH:mm:ss.SSS"),
         BOM_ID: moment().format("YYYY-MM-DD HH:mm:ss.SSS"),
@@ -1794,13 +1791,13 @@ const BOM_MANAGER = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         Swal.fire("Tiến hành Lưu BOM SX", "Đang lưu BOM", "success");
-       /*  checkBP(
+        /*  checkBP(
           userData?.EMPL_NO,
           userData?.MAINDEPTNAME,
           ["RND", "QLSX"],
           handleInsertBOMSX
         ); */
-        checkBP(userData,['RND','QLSX'],['ALL'],['ALL'],handleInsertBOMSX);
+        checkBP(userData, ["RND", "QLSX"], ["ALL"], ["ALL"], handleInsertBOMSX);
         //handleInsertBOMSX();
       }
     });
@@ -1823,7 +1820,13 @@ const BOM_MANAGER = () => {
           ["RND", "QLSX"],
           handleInsertBOMGIA
         ); */
-        checkBP(userData,['RND','QLSX'],['ALL'],['ALL'],handleInsertBOMGIA);
+        checkBP(
+          userData,
+          ["RND", "QLSX"],
+          ["ALL"],
+          ["ALL"],
+          handleInsertBOMGIA
+        );
         //handleInsertBOMGIA();
         //handleInsertBOMSX_WITH_GIA();
       }
@@ -1846,13 +1849,11 @@ const BOM_MANAGER = () => {
     });
   };
   const filterOptions1 = createFilterOptions({
-    matchFrom: 'any',
+    matchFrom: "any",
     limit: 100,
   });
-
-  const getMachineList = ()=> {
-    generalQuery("getmachinelist", {      
-    })
+  const getMachineList = () => {
+    generalQuery("getmachinelist", {})
       .then((response) => {
         //console.log(response.data);
         if (response.data.tk_status !== "NG") {
@@ -1863,19 +1864,18 @@ const BOM_MANAGER = () => {
               };
             }
           );
-          loadeddata.push({EQ_NAME:'NO'},{EQ_NAME:'NA'});
-          console.log(loadeddata)
+          loadeddata.push({ EQ_NAME: "NO" }, { EQ_NAME: "NA" });
+          console.log(loadeddata);
           setMachine_List(loadeddata);
-          
         } else {
           //Swal.fire("Thông báo", "Lỗi BOM SX: " + response.data.message, "error");
-          setMachine_List([]);         
+          setMachine_List([]);
         }
       })
       .catch((error) => {
         console.log(error);
       });
-  }
+  };
   useEffect(() => {
     getmateriallist();
     getcustomerlist();
@@ -1888,7 +1888,7 @@ const BOM_MANAGER = () => {
           className='mininavitem'
           onClick={() => setNav(1)}
           style={{
-            backgroundColor: selection.trapo === true ? '#02c712':'#abc9ae',
+            backgroundColor: selection.trapo === true ? "#02c712" : "#abc9ae",
             color: selection.trapo === true ? "yellow" : "yellow",
           }}
         >
@@ -1905,15 +1905,13 @@ const BOM_MANAGER = () => {
                 setNav(2);
               }
             ) */
-            checkBP(userData,['RND','KD'],['ALL'],['ALL'],()=> {
+            checkBP(userData, ["RND", "KD"], ["ALL"], ["ALL"], () => {
               setNav(2);
             })
-
-
           }
           style={{
             backgroundColor:
-              selection.thempohangloat === true ? '#02c712':'#abc9ae',
+              selection.thempohangloat === true ? "#02c712" : "#abc9ae",
             color: selection.thempohangloat === true ? "yellow" : "yellow",
           }}
         >
@@ -1999,7 +1997,7 @@ const BOM_MANAGER = () => {
                       Toolbar: CustomToolbarPOTable,
                       LoadingOverlay: LinearProgress,
                     }}
-                    sx={{ fontSize: '0.7rem' }}
+                    sx={{ fontSize: "0.7rem" }}
                     loading={isLoading}
                     rowHeight={30}
                     rows={rows}
@@ -2191,7 +2189,6 @@ const BOM_MANAGER = () => {
                         }}
                       ></input>
                     </label>
-                    
                     <label>
                       Code RnD:{" "}
                       <input
@@ -2497,13 +2494,15 @@ const BOM_MANAGER = () => {
                           handleSetCodeInfo("EQ1", e.target.value);
                         }}
                       >
-                        {
-                          machine_list.map((ele:MACHINE_LIST, index: number)=> {
+                        {machine_list.map(
+                          (ele: MACHINE_LIST, index: number) => {
                             return (
-                              <option key={index} value={ele.EQ_NAME}>{ele.EQ_NAME}</option>
-                            )
-                          })
-                        }                        
+                              <option key={index} value={ele.EQ_NAME}>
+                                {ele.EQ_NAME}
+                              </option>
+                            );
+                          }
+                        )}
                       </select>
                     </label>
                     <label>
@@ -2520,13 +2519,15 @@ const BOM_MANAGER = () => {
                           handleSetCodeInfo("EQ2", e.target.value);
                         }}
                       >
-                        {
-                          machine_list.map((ele:MACHINE_LIST, index: number)=> {
+                        {machine_list.map(
+                          (ele: MACHINE_LIST, index: number) => {
                             return (
-                              <option key={index} value={ele.EQ_NAME}>{ele.EQ_NAME}</option>
-                            )
-                          })
-                        } 
+                              <option key={index} value={ele.EQ_NAME}>
+                                {ele.EQ_NAME}
+                              </option>
+                            );
+                          }
+                        )}
                       </select>
                     </label>
                     <label>
@@ -2543,13 +2544,15 @@ const BOM_MANAGER = () => {
                           handleSetCodeInfo("EQ3", e.target.value);
                         }}
                       >
-                        {
-                          machine_list.map((ele:MACHINE_LIST, index: number)=> {
+                        {machine_list.map(
+                          (ele: MACHINE_LIST, index: number) => {
                             return (
-                              <option key={index} value={ele.EQ_NAME}>{ele.EQ_NAME}</option>
-                            )
-                          })
-                        } 
+                              <option key={index} value={ele.EQ_NAME}>
+                                {ele.EQ_NAME}
+                              </option>
+                            );
+                          }
+                        )}
                       </select>
                     </label>
                     <label>
@@ -2566,13 +2569,15 @@ const BOM_MANAGER = () => {
                           handleSetCodeInfo("EQ4", e.target.value);
                         }}
                       >
-                        {
-                          machine_list.map((ele:MACHINE_LIST, index: number)=> {
+                        {machine_list.map(
+                          (ele: MACHINE_LIST, index: number) => {
                             return (
-                              <option key={index} value={ele.EQ_NAME}>{ele.EQ_NAME}</option>
-                            )
-                          })
-                        } 
+                              <option key={index} value={ele.EQ_NAME}>
+                                {ele.EQ_NAME}
+                              </option>
+                            );
+                          }
+                        )}
                       </select>
                     </label>
                     <label>
@@ -2630,8 +2635,7 @@ const BOM_MANAGER = () => {
                         disabled={enableform}
                         name='may1'
                         value={
-                          codefullinfo?.FSC === null ||
-                          codefullinfo?.FSC === ""
+                          codefullinfo?.FSC === null || codefullinfo?.FSC === ""
                             ? "NA"
                             : codefullinfo?.FSC
                         }
@@ -2656,8 +2660,6 @@ const BOM_MANAGER = () => {
                         }}
                       ></input>
                     </label>
-                    
-
                     <FormControlLabel
                       disabled={enableform}
                       label='Mở/Khóa'
@@ -2674,18 +2676,16 @@ const BOM_MANAGER = () => {
                         />
                       }
                     />
-                    <label>                      
+                    <label>
                       <Autocomplete
-                      sx={{height:10, margin: '1px', position: 'initial'}}
-                        disabled={
-                          enableform
-                        }
+                        sx={{ height: 10, margin: "1px", position: "initial" }}
+                        disabled={enableform}
                         size='small'
                         disablePortal
                         options={materialList}
                         className='autocomplete'
                         filterOptions={filterOptions1}
-                        isOptionEqualToValue={(option:any, value:any) =>
+                        isOptionEqualToValue={(option: any, value: any) =>
                           option.M_CODE === value.M_CODE
                         }
                         getOptionLabel={(option: MaterialListData | any) =>
@@ -2707,7 +2707,7 @@ const BOM_MANAGER = () => {
                           console.log(newValue);
                           handleSetCodeInfo(
                             "PROD_MAIN_MATERIAL",
-                            newValue === null? '': newValue.M_NAME
+                            newValue === null ? "" : newValue.M_NAME
                           );
                         }}
                       />
@@ -2734,7 +2734,7 @@ const BOM_MANAGER = () => {
                 options={materialList}
                 className='autocomplete'
                 filterOptions={filterOptions1}
-                isOptionEqualToValue={(option:any, value:any) =>
+                isOptionEqualToValue={(option: any, value: any) =>
                   option.M_CODE === value.M_CODE
                 }
                 getOptionLabel={(option: MaterialListData | any) =>

@@ -75,6 +75,9 @@ import CHITHI_COMPONENT2 from "../CHITHI/CHITHI_COMPONENT2";
 import KHOAO from "../KHOAO/KHOAO";
 import axios from 'axios';
 import { TbLogout } from "react-icons/tb";
+interface MACHINE_LIST {
+  EQ_NAME: string;
+}
 interface TONLIEUXUONG {
   id: number;
   FACTORY: string;
@@ -137,16 +140,28 @@ interface DINHMUC_QSLX {
   FACTORY: string;
   EQ1: string;
   EQ2: string;
+  EQ3: string;
+  EQ4: string;
   Setting1: number;
   Setting2: number;
+  Setting3: number;
+  Setting4: number;
   UPH1: number;
   UPH2: number;
+  UPH3: number;
+  UPH4: number;
   Step1: number;
   Step2: number;
+  Step3: number;
+  Step4: number;
   LOSS_SX1: number;
   LOSS_SX2: number;
+  LOSS_SX3: number;
+  LOSS_SX4: number;
   LOSS_SETTING1: number;
   LOSS_SETTING2: number;
+  LOSS_SETTING3: number;
+  LOSS_SETTING4: number;
   NOTE: string;
 }
 interface QLSXPLANDATA {
@@ -174,21 +189,37 @@ interface QLSXPLANDATA {
   KETQUASX: number;
   CD1: number;
   CD2: number;
+  CD3: number;
+  CD4: number;
   TON_CD1: number;
   TON_CD2: number;
+  TON_CD3: number;
+  TON_CD4: number;
   FACTORY: string;
   EQ1: string;
   EQ2: string;
+  EQ3: string;
+  EQ4: string;
   Setting1: number;
   Setting2: number;
+  Setting3: number;
+  Setting4: number;
   UPH1: number;
   UPH2: number;
+  UPH3: number;
+  UPH4: number;
   Step1: number;
   Step2: number;
+  Step3: number;
+  Step4: number;
   LOSS_SX1: number;
   LOSS_SX2: number;
+  LOSS_SX3: number;
+  LOSS_SX4: number;
   LOSS_SETTING1: number;
   LOSS_SETTING2: number;
+  LOSS_SETTING3: number;
+  LOSS_SETTING4: number;
   NOTE: string;
   NEXT_PLAN_ID: string;
   XUATDAOFILM?: string;
@@ -292,6 +323,7 @@ const MACHINE = () => {
   const dispatch = useDispatch();
   const [currentPlanPD, setCurrentPlanPD] = useState(0);
   const [currentPlanCAVITY, setCurrentPlanCAVITY] = useState(0);
+  const [machine_list, setMachine_List] = useState<MACHINE_LIST[]>([]);
   const [selection, setSelection] = useState<any>({
     tab1: true,
     tab2: false,
@@ -313,16 +345,28 @@ const MACHINE = () => {
     FACTORY: "",
     EQ1: "",
     EQ2: "",
+    EQ3: "",
+    EQ4: "",
     Setting1: 0,
     Setting2: 0,
+    Setting3: 0,
+    Setting4: 0,
     UPH1: 0,
     UPH2: 0,
+    UPH3: 0,
+    UPH4: 0,
     Step1: 0,
     Step2: 0,
+    Step3: 0,
+    Step4: 0,
     LOSS_SX1: 0,
     LOSS_SX2: 0,
+    LOSS_SX3: 0,
+    LOSS_SX4: 0,
     LOSS_SETTING1: 0,
     LOSS_SETTING2: 0,
+    LOSS_SETTING3: 0,
+    LOSS_SETTING4: 0,
     NOTE: "",
   });
   const [selectionModel, setSelectionModel] = useState<any>([]);
@@ -413,6 +457,30 @@ const MACHINE = () => {
     } else {
       localStorage.setItem("maxLieu", "12");
     }
+  };
+  const getMachineList = () => {
+    generalQuery("getmachinelist", {})
+      .then((response) => {
+        //console.log(response.data);
+        if (response.data.tk_status !== "NG") {
+          const loadeddata: MACHINE_LIST[] = response.data.data.map(
+            (element: MACHINE_LIST, index: number) => {
+              return {
+                ...element,
+              };
+            }
+          );
+          loadeddata.push({ EQ_NAME: "NO" }, { EQ_NAME: "NA" });
+          console.log(loadeddata);
+          setMachine_List(loadeddata);
+        } else {
+          //Swal.fire("Thông báo", "Lỗi BOM SX: " + response.data.message, "error");
+          setMachine_List([]);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
   const handlePrint = useReactToPrint({
     content: () => ycsxprintref.current,
@@ -1637,17 +1705,29 @@ const MACHINE = () => {
             FACTORY: datadinhmuc.FACTORY,
             EQ1: datadinhmuc.EQ1,
             EQ2: datadinhmuc.EQ2,
+            EQ3: datadinhmuc.EQ3,
+            EQ4: datadinhmuc.EQ4,
             Setting1: datadinhmuc.Setting1,
             Setting2: datadinhmuc.Setting2,
+            Setting3: datadinhmuc.Setting3,
+            Setting4: datadinhmuc.Setting4,
             UPH1: datadinhmuc.UPH1,
             UPH2: datadinhmuc.UPH2,
+            UPH3: datadinhmuc.UPH3,
+            UPH4: datadinhmuc.UPH4,
             Step1: datadinhmuc.Step1,
             Step2: datadinhmuc.Step2,
+            Step3: datadinhmuc.Step3,
+            Step4: datadinhmuc.Step4,
             LOSS_SX1: datadinhmuc.LOSS_SX1,
             LOSS_SX2: datadinhmuc.LOSS_SX2,
+            LOSS_SX3: datadinhmuc.LOSS_SX3,
+            LOSS_SX4: datadinhmuc.LOSS_SX4,
             LOSS_SETTING1: datadinhmuc.LOSS_SETTING1,
             LOSS_SETTING2: datadinhmuc.LOSS_SETTING2,
-            NOTE: datadinhmuc.NOTE,
+            LOSS_SETTING3: datadinhmuc.LOSS_SETTING3,
+            LOSS_SETTING4: datadinhmuc.LOSS_SETTING4,
+            NOTE: datadinhmuc.NOTE,             
           })
             .then((response) => {
               console.log(response.data.tk_status);
@@ -4016,16 +4096,28 @@ const MACHINE = () => {
       FACTORY: rowData.FACTORY === null ? "NA" : rowData.FACTORY,
       EQ1: rowData.EQ1 === "" ? "NA" : rowData.EQ1,
       EQ2: rowData.EQ2 === "" ? "NA" : rowData.EQ2,
+      EQ3: rowData.EQ3 === "" ? "NA" : rowData.EQ3,
+      EQ4: rowData.EQ4 === "" ? "NA" : rowData.EQ4,
       Setting1: rowData.Setting1 === null ? 0 : rowData.Setting1,
       Setting2: rowData.Setting2 === null ? 0 : rowData.Setting2,
+      Setting3: rowData.Setting3 === null ? 0 : rowData.Setting3,
+      Setting4: rowData.Setting4 === null ? 0 : rowData.Setting4,
       UPH1: rowData.UPH1 === null ? 0 : rowData.UPH1,
       UPH2: rowData.UPH2 === null ? 0 : rowData.UPH2,
+      UPH3: rowData.UPH3 === null ? 0 : rowData.UPH3,
+      UPH4: rowData.UPH4 === null ? 0 : rowData.UPH4,
       Step1: rowData.Step1 === null ? 0 : rowData.Step1,
-      Step2: rowData.Step2 === null ? 0 : rowData.Step2,
+      Step2: rowData.Step2 === null ? 0 : rowData.Step2,     
+      Step3: rowData.Step3 === null ? 0 : rowData.Step3,     
+      Step4: rowData.Step4 === null ? 0 : rowData.Step4,     
       LOSS_SX1: rowData.LOSS_SX1 === null ? 0 : rowData.LOSS_SX1,
       LOSS_SX2: rowData.LOSS_SX2 === null ? 0 : rowData.LOSS_SX2,
+      LOSS_SX3: rowData.LOSS_SX3 === null ? 0 : rowData.LOSS_SX3,
+      LOSS_SX4: rowData.LOSS_SX4 === null ? 0 : rowData.LOSS_SX4,
       LOSS_SETTING1: rowData.LOSS_SETTING1 === null ? 0 : rowData.LOSS_SETTING1,
       LOSS_SETTING2: rowData.LOSS_SETTING2 === null ? 0 : rowData.LOSS_SETTING2,
+      LOSS_SETTING3: rowData.LOSS_SETTING3 === null ? 0 : rowData.LOSS_SETTING3,
+      LOSS_SETTING4: rowData.LOSS_SETTING4 === null ? 0 : rowData.LOSS_SETTING4,
       NOTE: rowData.NOTE === null ? "" : rowData.NOTE,
     });
     handleGetChiThiTable(
@@ -4184,6 +4276,7 @@ const MACHINE = () => {
     checkMaxLieu();
     loadQLSXPlan(selectedPlanDate);
     handle_loadEQ_STATUS();
+    getMachineList();
     let intervalID = window.setInterval(() => {
       handle_loadEQ_STATUS();
     }, 3000);
@@ -4685,6 +4778,7 @@ const MACHINE = () => {
                   />
                 </div>
               </div>
+              <div className="datadinhmucto">
               <div className='datadinhmuc'>
                 <div className='forminputcolumn'>
                   <label>
@@ -4697,12 +4791,15 @@ const MACHINE = () => {
                       }
                       style={{ width: 150, height: 22 }}
                     >
-                      <option value='FR'>FR</option>
-                      <option value='SR'>SR</option>
-                      <option value='DC'>DC</option>
-                      <option value='ED'>ED</option>
-                      <option value='NO'>NO</option>
-                      <option value='NA'>NA</option>
+                      {machine_list.map(
+                          (ele: MACHINE_LIST, index: number) => {
+                            return (
+                              <option key={index} value={ele.EQ_NAME}>
+                                {ele.EQ_NAME}
+                              </option>
+                            );
+                          }
+                        )}
                     </select>
                   </label>
                   <label>
@@ -4715,12 +4812,15 @@ const MACHINE = () => {
                       }
                       style={{ width: 150, height: 22 }}
                     >
-                      <option value='FR'>FR</option>
-                      <option value='SR'>SR</option>
-                      <option value='DC'>DC</option>
-                      <option value='ED'>ED</option>
-                      <option value='NO'>NO</option>
-                      <option value='NA'>NA</option>
+                      {machine_list.map(
+                          (ele: MACHINE_LIST, index: number) => {
+                            return (
+                              <option key={index} value={ele.EQ_NAME}>
+                                {ele.EQ_NAME}
+                              </option>
+                            );
+                          }
+                        )}
                     </select>
                   </label>
                 </div>
@@ -4910,6 +5010,240 @@ const MACHINE = () => {
                   </label>
                 </div>
               </div>
+              <div className='datadinhmuc'>
+                <div className='forminputcolumn'>
+                  <label>
+                    <b>EQ3:</b>
+                    <select
+                      name='phanloai'
+                      value={datadinhmuc.EQ3}
+                      onChange={(e) =>
+                        setDataDinhMuc({ ...datadinhmuc, EQ3: e.target.value })
+                      }
+                      style={{ width: 150, height: 22 }}
+                    >
+                      {machine_list.map(
+                          (ele: MACHINE_LIST, index: number) => {
+                            return (
+                              <option key={index} value={ele.EQ_NAME}>
+                                {ele.EQ_NAME}
+                              </option>
+                            );
+                          }
+                        )}
+                    </select>
+                  </label>
+                  <label>
+                    <b>EQ4:</b>
+                    <select
+                      name='phanloai'
+                      value={datadinhmuc.EQ4}
+                      onChange={(e) =>
+                        setDataDinhMuc({ ...datadinhmuc, EQ4: e.target.value })
+                      }
+                      style={{ width: 150, height: 22 }}
+                    >
+                      {machine_list.map(
+                          (ele: MACHINE_LIST, index: number) => {
+                            return (
+                              <option key={index} value={ele.EQ_NAME}>
+                                {ele.EQ_NAME}
+                              </option>
+                            );
+                          }
+                        )}
+                    </select>
+                  </label>
+                </div>
+                <div className='forminputcolumn'>
+                  <label>
+                    <b>Setting3(min):</b>{" "}
+                    <input
+                      type='text'
+                      placeholder='Thời gian setting 3'
+                      value={datadinhmuc.Setting3}
+                      onChange={(e) =>
+                        setDataDinhMuc({
+                          ...datadinhmuc,
+                          Setting3: Number(e.target.value),
+                        })
+                      }
+                    ></input>
+                  </label>
+                  <label>
+                    <b>Setting4(min):</b>{" "}
+                    <input
+                      type='text'
+                      placeholder='Thời gian setting 4'
+                      value={datadinhmuc.Setting4}
+                      onChange={(e) =>
+                        setDataDinhMuc({
+                          ...datadinhmuc,
+                          Setting4: Number(e.target.value),
+                        })
+                      }
+                    ></input>
+                  </label>
+                </div>
+                <div className='forminputcolumn'>
+                  <label>
+                    <b>UPH3(EA/h):</b>{" "}
+                    <input
+                      type='text'
+                      placeholder='Tốc độ sx 1'
+                      value={datadinhmuc.UPH3}
+                      onChange={(e) =>
+                        setDataDinhMuc({
+                          ...datadinhmuc,
+                          UPH3: Number(e.target.value),
+                        })
+                      }
+                    ></input>
+                  </label>
+                  <label>
+                    <b>UPH4(EA/h):</b>{" "}
+                    <input
+                      type='text'
+                      placeholder='Tốc độ sx 2'
+                      value={datadinhmuc.UPH4}
+                      onChange={(e) =>
+                        setDataDinhMuc({
+                          ...datadinhmuc,
+                          UPH4: Number(e.target.value),
+                        })
+                      }
+                    ></input>
+                  </label>
+                </div>
+                <div className='forminputcolumn'>
+                  <label>
+                    <b>Step3:</b>{" "}
+                    <input
+                      type='text'
+                      placeholder='Số bước 3'
+                      value={datadinhmuc.Step3}
+                      onChange={(e) =>
+                        setDataDinhMuc({
+                          ...datadinhmuc,
+                          Step3: Number(e.target.value),
+                        })
+                      }
+                    ></input>
+                  </label>
+                  <label>
+                    <b>Step4:</b>{" "}
+                    <input
+                      type='text'
+                      placeholder='Số bước 4'
+                      value={datadinhmuc.Step4}
+                      onChange={(e) =>
+                        setDataDinhMuc({
+                          ...datadinhmuc,
+                          Step4: Number(e.target.value),
+                        })
+                      }
+                    ></input>
+                  </label>
+                </div>
+                <div className='forminputcolumn'>
+                  <label>
+                    <b>LOSS_SX3(%):</b>{" "}
+                    <input
+                      type='text'
+                      placeholder='% loss sx 3'
+                      value={datadinhmuc.LOSS_SX3}
+                      onChange={(e) =>
+                        setDataDinhMuc({
+                          ...datadinhmuc,
+                          LOSS_SX3: Number(e.target.value),
+                        })
+                      }
+                    ></input>
+                  </label>
+                  <label>
+                    <b>LOSS_SX4(%):</b>{" "}
+                    <input
+                      type='text'
+                      placeholder='% loss sx 4'
+                      value={datadinhmuc.LOSS_SX4}
+                      onChange={(e) =>
+                        setDataDinhMuc({
+                          ...datadinhmuc,
+                          LOSS_SX4: Number(e.target.value),
+                        })
+                      }
+                    ></input>
+                  </label>
+                </div>
+                <div className='forminputcolumn'>
+                  <label>
+                    <b>LOSS SETTING3 (m):</b>{" "}
+                    <input
+                      type='text'
+                      placeholder='met setting 3'
+                      value={datadinhmuc.LOSS_SETTING3}
+                      onChange={(e) =>
+                        setDataDinhMuc({
+                          ...datadinhmuc,
+                          LOSS_SETTING3: Number(e.target.value),
+                        })
+                      }
+                    ></input>
+                  </label>
+                  <label>
+                    <b>LOSS SETTING4 (m):</b>{" "}
+                    <input
+                      type='text'
+                      placeholder='met setting 4'
+                      value={datadinhmuc.LOSS_SETTING4}
+                      onChange={(e) =>
+                        setDataDinhMuc({
+                          ...datadinhmuc,
+                          LOSS_SETTING4: Number(e.target.value),
+                        })
+                      }
+                    ></input>
+                  </label>
+                </div>
+                <div className='forminputcolumn'>
+                  <label>
+                    <b>FACTORY:</b>
+                    <select
+                      name='phanloai'
+                      value={
+                        datadinhmuc.FACTORY === null
+                          ? "NA"
+                          : datadinhmuc.FACTORY
+                      }
+                      onChange={(e) => {
+                        setDataDinhMuc({
+                          ...datadinhmuc,
+                          FACTORY: e.target.value,
+                        });
+                      }}
+                      style={{ width: 162, height: 22 }}
+                    >
+                      <option value='NA'>NA</option>
+                      <option value='NM1'>NM1</option>
+                      <option value='NM2'>NM2</option>
+                    </select>
+                  </label>
+                  <label>
+                    <b>NOTE (QLSX):</b>{" "}
+                    <input
+                      type='text'
+                      placeholder='Chú ý'
+                      value={datadinhmuc.NOTE}
+                      onChange={(e) =>
+                        setDataDinhMuc({ ...datadinhmuc, NOTE: e.target.value })
+                      }
+                    ></input>
+                  </label>
+                </div>
+              </div>
+
+              </div>
+              
               <div className='listlieuchithi'>
                 <div className='chithitable'>
                   <DataGrid
