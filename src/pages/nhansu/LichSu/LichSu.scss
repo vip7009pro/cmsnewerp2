@@ -16,7 +16,7 @@
             justify-content: center;
             justify-self: center;
             align-self: center;
-            padding: 20px;
+            padding: 5px;
             width: 97%;
             border-radius: 10px;
             height: 4vh;
@@ -46,12 +46,12 @@
                 }
     
                 input {
-                    height: 30px;
-                    font-size: 20px;
+                    height: 20px;
+                    font-size: 1rem;
                 }
                 select {
-                    height: 30px;
-                    font-size: 20px;
+                    height: 20px;
+                    font-size: 1rem;
                 }
     
     
@@ -253,7 +253,7 @@
             justify-content: flex-end;
             justify-self: center;
             align-self: center;
-            padding: 20px;
+            padding: 5px;
             width: 97%;
             border-radius: 10px;
             height: fit-content;
@@ -263,6 +263,7 @@
             background-image: linear-gradient(0deg, #afd3d1, #a4ec51);
             
             .searchbutton {
+                display: flex;
                 background-color: #21a73e;
                 /* Green */
                 border: none;
@@ -271,7 +272,7 @@
                 text-align: center;
                 text-decoration: none;
                 display: inline-block;
-                font-size: 14px;
+                font-size: 0.8rem;
                 border-radius: 5px;
                 outline: none;
                 box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
@@ -283,12 +284,12 @@
                 }
     
                 input {
-                    height: 30px;
-                    font-size: 20px;
+                    height: 20px;
+                    font-size: 1rem;
                 }
                 select {
-                    height: 30px;
-                    font-size: 20px;
+                    height: 20px;
+                    font-size: 1rem;
                 }
     
     

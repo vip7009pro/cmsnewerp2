@@ -925,52 +925,78 @@ const MACHINE = () => {
     },
     {
       field: "CD1",
-      headerName: "KQ_CD1",
+      headerName: "CD1",
       width: 80,
       editable: false,
       renderCell: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            {params.row.CD1.toLocaleString("en", "US")}
+            {params.row.CD1?.toLocaleString("en", "US")}
           </span>
         );
       },
     },
     {
       field: "CD2",
-      headerName: "KQ_CD2",
+      headerName: "CD2",
       width: 80,
       editable: false,
       renderCell: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            {params.row.CD2.toLocaleString("en", "US")}
+            {params.row.CD2?.toLocaleString("en", "US")}
+          </span>
+        );
+      },
+    },
+    {
+      field: "CD3",
+      headerName: "CD3",
+      width: 80,
+      editable: false,
+      renderCell: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            {params.row.CD3?.toLocaleString("en", "US")}
+          </span>
+        );
+      },
+    },
+    {
+      field: "CD4",
+      headerName: "CD4",
+      width: 80,
+      editable: false,
+      renderCell: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            {params.row.CD4?.toLocaleString("en", "US")}
           </span>
         );
       },
     },
     {
       field: "TON_CD1",
-      headerName: "TONYCSX_CD1",
+      headerName: "TON_CD1",
       width: 120,
       editable: false,
       renderCell: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            {params.row.TON_CD1.toLocaleString("en", "US")}
+            {params.row.TON_CD1?.toLocaleString("en", "US")}
           </span>
         );
       },
     },
     {
       field: "TON_CD2",
-      headerName: "TONYCSX_CD2",
+      headerName: "TON_CD2",
       width: 120,
       editable: false,
       renderCell: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            {params.row.TON_CD2.toLocaleString("en", "US")}
+            {params.row.TON_CD2?.toLocaleString("en", "US")}
           </span>
         );
       },
@@ -4270,6 +4296,34 @@ const MACHINE = () => {
     } else if (event.key === "Escape") {
       setShowPlanWindow(false);
       setSelectedPlan(undefined);
+      setDataDinhMuc({
+        FACTORY: "",
+        EQ1: "",
+        EQ2: "",
+        EQ3: "",
+        EQ4: "",
+        Setting1: 0,
+        Setting2: 0,
+        Setting3: 0,
+        Setting4: 0,
+        UPH1: 0,
+        UPH2: 0,
+        UPH3: 0,
+        UPH4: 0,
+        Step1: 0,
+        Step2: 0,
+        Step3: 0,
+        Step4: 0,
+        LOSS_SX1: 0,
+        LOSS_SX2: 0,
+        LOSS_SX3: 0,
+        LOSS_SX4: 0,
+        LOSS_SETTING1: 0,
+        LOSS_SETTING2: 0,
+        LOSS_SETTING3: 0,
+        LOSS_SETTING4: 0,
+        NOTE: "",
+      });
     }
   };
   useEffect(() => {
@@ -4509,6 +4563,34 @@ const MACHINE = () => {
               onClick={() => {
                 setShowPlanWindow(false);
                 setSelectedPlan(undefined);
+                setDataDinhMuc({
+                  FACTORY: "",
+                  EQ1: "",
+                  EQ2: "",
+                  EQ3: "",
+                  EQ4: "",
+                  Setting1: 0,
+                  Setting2: 0,
+                  Setting3: 0,
+                  Setting4: 0,
+                  UPH1: 0,
+                  UPH2: 0,
+                  UPH3: 0,
+                  UPH4: 0,
+                  Step1: 0,
+                  Step2: 0,
+                  Step3: 0,
+                  Step4: 0,
+                  LOSS_SX1: 0,
+                  LOSS_SX2: 0,
+                  LOSS_SX3: 0,
+                  LOSS_SX4: 0,
+                  LOSS_SETTING1: 0,
+                  LOSS_SETTING2: 0,
+                  LOSS_SETTING3: 0,
+                  LOSS_SETTING4: 0,
+                  NOTE: "",
+                });
               }}
             >
               Close

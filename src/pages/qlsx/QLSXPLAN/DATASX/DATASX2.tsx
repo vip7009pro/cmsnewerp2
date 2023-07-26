@@ -106,6 +106,8 @@ interface YCSX_SX_DATA {
   FACTORY: string;
   EQ1: string;
   EQ2: string;
+  EQ3: string;
+  EQ4: string;
   PROD_REQUEST_DATE: string;
   PROD_REQUEST_QTY: number;
   M_NAME: string;
@@ -119,6 +121,8 @@ interface YCSX_SX_DATA {
   ESTIMATED_QTY: number;
   CD1: number;
   CD2: number;
+  CD3: number;
+  CD4: number;
   INS_INPUT: number;
   INSPECT_TOTAL_QTY: number;
   INSPECT_OK_QTY: number;
@@ -2139,6 +2143,8 @@ useState<PivotGridDataSource>(
           <Column dataField='FACTORY' caption='FACTORY' minWidth={100}></Column>
           <Column dataField='EQ1' caption='EQ1' minWidth={100}></Column>
           <Column dataField='EQ2' caption='EQ2' minWidth={100}></Column>
+          <Column dataField='EQ3' caption='EQ3' minWidth={100}></Column>
+          <Column dataField='EQ4' caption='EQ4' minWidth={100}></Column>
           <Column
             dataField='PROD_REQUEST_DATE'
             caption='PROD_REQUEST_DATE'
@@ -2274,6 +2280,34 @@ useState<PivotGridDataSource>(
             }}
           ></Column>
           <Column
+            dataField='CD3'
+            caption='CD3'
+            minWidth={100}
+            dataType='number'
+            format={"decimal"}
+            cellRender={(e: any) => {
+              return (
+                <span style={{ color: "#FF00D4", fontWeight: "bold" }}>
+                  {e.data.CD3?.toLocaleString("en-US")}
+                </span>
+              );
+            }}
+          ></Column>
+          <Column
+            dataField='CD4'
+            caption='CD4'
+            minWidth={100}
+            dataType='number'
+            format={"decimal"}
+            cellRender={(e: any) => {
+              return (
+                <span style={{ color: "#FF00D4", fontWeight: "bold" }}>
+                  {e.data.CD4?.toLocaleString("en-US")}
+                </span>
+              );
+            }}
+          ></Column>
+          <Column
             dataField='INS_INPUT'
             caption='INS_INPUT'
             minWidth={100}
@@ -2396,7 +2430,7 @@ useState<PivotGridDataSource>(
             cellRender={(e: any) => {
               return (
                 <span style={{ color: "#F58A02", fontWeight: "bold" }}>
-                  {100 * e.data.LOSS_SX1?.toLocaleString("en-US")} %
+                  {parseInt((e.data.LOSS_SX1*100).toString())?.toLocaleString("en-US",{maximumFractionDigits: 0,minimumFractionDigits: 0,})} %
                 </span>
               );
             }}
@@ -2410,7 +2444,7 @@ useState<PivotGridDataSource>(
             cellRender={(e: any) => {
               return (
                 <span style={{ color: "#F58A02", fontWeight: "bold" }}>
-                  {100 * e.data.LOSS_SX2?.toLocaleString("en-US")} %
+                   {parseInt((e.data.LOSS_SX2*100).toString())?.toLocaleString("en-US",{maximumFractionDigits: 0,minimumFractionDigits: 0,})} %
                 </span>
               );
             }}
@@ -2424,7 +2458,7 @@ useState<PivotGridDataSource>(
             cellRender={(e: any) => {
               return (
                 <span style={{ color: "#F58A02", fontWeight: "bold" }}>
-                  {100 * e.data.LOSS_SX3?.toLocaleString("en-US")} %
+                   {parseInt((e.data.LOSS_SX3*100).toString())?.toLocaleString("en-US",{maximumFractionDigits: 0,minimumFractionDigits: 0,})} %
                 </span>
               );
             }}
@@ -2438,7 +2472,7 @@ useState<PivotGridDataSource>(
             cellRender={(e: any) => {
               return (
                 <span style={{ color: "#F58A02", fontWeight: "bold" }}>
-                  {100 * e.data.LOSS_SX4?.toLocaleString("en-US")} %
+                   {parseInt((e.data.LOSS_SX4*100).toString())?.toLocaleString("en-US",{maximumFractionDigits: 0,minimumFractionDigits: 0,})} %
                 </span>
               );
             }}
@@ -2452,7 +2486,7 @@ useState<PivotGridDataSource>(
             cellRender={(e: any) => {
               return (
                 <span style={{ color: "#0027EA", fontWeight: "bold" }}>
-                  {100 * e.data.TOTAL_LOSS?.toLocaleString("en-US")} %
+                   {parseInt((e.data.TOTAL_LOSS*100).toString())?.toLocaleString("en-US",{maximumFractionDigits: 0,minimumFractionDigits: 0,})} %
                 </span>
               );
             }}
@@ -2466,7 +2500,7 @@ useState<PivotGridDataSource>(
             cellRender={(e: any) => {
               return (
                 <span style={{ color: "#0027EA", fontWeight: "bold" }}>
-                  {100 * e.data.TOTAL_LOSS2?.toLocaleString("en-US")} %
+                   {parseInt((e.data.TOTAL_LOSS2*100).toString())?.toLocaleString("en-US",{maximumFractionDigits: 0,minimumFractionDigits: 0,})} %
                 </span>
               );
             }}
