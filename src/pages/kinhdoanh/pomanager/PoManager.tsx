@@ -684,6 +684,7 @@ const PoManager = () => {
           setPoSummary(po_summary_temp);
           setPoDataTable(loadeddata);
           setisLoading(false);
+          setShowHideSearchDiv(false);
           Swal.fire(
             "Thông báo",
             "Đã load " + response.data.data.length + " dòng",

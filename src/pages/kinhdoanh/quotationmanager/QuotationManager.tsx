@@ -1887,7 +1887,7 @@ const QuotationManager = () => {
                   SaveExcel(banggia2, "PriceTable");
                 }}
               >
-                <AiFillFileExcel color='green' size={25} />
+                <AiFillFileExcel color='green' size={15} />
                 SAVE
               </IconButton>
               <IconButton
@@ -1896,7 +1896,7 @@ const QuotationManager = () => {
                   setShowHidePivotTable(!showhidePivotTable);
                 }}
               >
-                <MdOutlinePivotTableChart color='#ff33bb' size={25} />
+                <MdOutlinePivotTableChart color='#ff33bb' size={15} />
                 Pivot
               </IconButton>
               <IconButton
@@ -1914,7 +1914,7 @@ const QuotationManager = () => {
                   setShowHideUpPrice(true);
                 }}
               >
-                <BiCloudUpload color='#070EFA' size={25} />
+                <BiCloudUpload color='#070EFA' size={15} />
                 Up Giá
               </IconButton>
               
@@ -2055,7 +2055,7 @@ const QuotationManager = () => {
                   SaveExcel(banggia2, "PriceTable");
                 }}
               >
-                <AiFillFileExcel color='green' size={25} />
+                <AiFillFileExcel color='green' size={15} />
                 SAVE
               </IconButton>
             </Item>
@@ -2564,7 +2564,7 @@ const QuotationManager = () => {
                 setShowHidePivotTable(false);
               }}
             >
-              <AiFillCloseCircle color='blue' size={25} />
+              <AiFillCloseCircle color='blue' size={15} />
               Close
             </IconButton>
             <PivotTable
@@ -2582,7 +2582,7 @@ const QuotationManager = () => {
                   setShowHideUpPrice(false);
                 }}
               >
-                <AiFillCloseCircle color='blue' size={25} />
+                <AiFillCloseCircle color='blue' size={15} />
                 Close
               </IconButton>
               <label htmlFor='upload'>
@@ -2603,7 +2603,7 @@ const QuotationManager = () => {
                   setShowHideUpPrice(false);
                 }}
               >
-                <AiOutlineCheckSquare color='#EB2EFE' size={25} />
+                <AiOutlineCheckSquare color='#EB2EFE' size={15} />
                 Check Giá
               </IconButton>
               <IconButton className='buttonIcon' onClick={() => {
@@ -2615,7 +2615,7 @@ const QuotationManager = () => {
                  );  */
                  checkBP(userData,['KD'],['ALL'],['ALL'],uploadgia);
               }}>
-                <BiCloudUpload color='#FA0022' size={25} />
+                <BiCloudUpload color='#FA0022' size={15} />
                 Up Giá
               </IconButton>
               <div className='upgiaform'>
@@ -2729,7 +2729,7 @@ const QuotationManager = () => {
                   setUploadExcelJSon([...uploadExcelJson, temp_row]);
                 }}
               >
-                <AiFillFileAdd color='#F50354' size={25} />
+                <AiFillFileAdd color='#F50354' size={15} />
                 Add
               </IconButton>             
             </div>

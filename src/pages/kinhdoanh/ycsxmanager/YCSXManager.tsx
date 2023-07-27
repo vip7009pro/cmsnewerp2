@@ -1625,6 +1625,7 @@ const YCSXManager = () => {
             }
           );
           setYcsxDataTable(loadeddata);
+          setShowHideSearchDiv(false);
           setisLoading(false);
           Swal.fire(
             "Thông báo",
@@ -1822,7 +1823,7 @@ const YCSXManager = () => {
               EMPL_NO: userData?.EMPL_NO,
               USE_YN: "Y",
               DELIVERY_DT: uploadExcelJson[i].DELIVERY_DT,
-              PO_NO: uploadExcelJson[i].PO_NO,
+              PO_NO: uploadExcelJson[i].PO_NO === undefined? '': uploadExcelJson[i].PO_NO,
               INS_EMPL: userData?.EMPL_NO,
               UPD_EMPL: userData?.EMPL_NO,
               YCSX_PENDING: 1,
@@ -1883,7 +1884,7 @@ const YCSXManager = () => {
               EMPL_NO: userData?.EMPL_NO,
               USE_YN: "Y",
               DELIVERY_DT: uploadExcelJson[i].DELIVERY_DT,
-              PO_NO: uploadExcelJson[i].PO_NO,
+              PO_NO: uploadExcelJson[i].PO_NO === undefined?'':uploadExcelJson[i].PO_NO,
               INS_EMPL: userData?.EMPL_NO,
               UPD_EMPL: userData?.EMPL_NO,
               YCSX_PENDING: 1,
@@ -2911,8 +2912,7 @@ const YCSXManager = () => {
       {selection.them1po && (       
            <div className='them1ycsx'>
           <div className='formnho'>
-            <div className='dangkyform'>
-              <h3>New Production Request</h3>
+            <div className='dangkyform'>              
               <div className='dangkyinput'>
                 <div className="dangkyinputbox">
                 <label>
@@ -2923,7 +2923,7 @@ const YCSXManager = () => {
                       size='small'
                       disablePortal
                       options={customerList}
-                      className='autocomplete'
+                      className='autocomplete1'
                       getOptionLabel={(option: CustomerListData) => {
                         return `${option.CUST_CD}: ${option.CUST_NAME_KD}`;
                       }}
@@ -2952,7 +2952,7 @@ const YCSXManager = () => {
                       size='small'
                       disablePortal
                       options={codeList}
-                      className='autocomplete'
+                      className='autocomplete1'
                       filterOptions={filterOptions1}
                       getOptionLabel={(option: CodeListData | any) =>
                         `${option.G_CODE}: ${option.G_NAME}`

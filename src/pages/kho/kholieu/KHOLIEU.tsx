@@ -151,11 +151,8 @@ const KHOLIEU = () => {
         <IconButton className='buttonIcon'onClick={()=>{SaveExcel(whdatatable,"WareHouse Data Table")}}
         ><AiFillFileExcel color='green' size={25}/>SAVE</IconButton>
         <GridToolbarQuickFilter/>    
-        <span style={{fontWeight:'bold', fontSize: 18, paddingLeft:20, color: 'blue'}}>{sumaryWH}</span>
-        
-       </GridToolbarContainer>  
-
-       
+        <span style={{fontWeight:'bold', fontSize: 18, paddingLeft:20, color: 'blue'}}>{sumaryWH}</span>        
+       </GridToolbarContainer>
     );
   }
   const bangdata = useMemo(()=> {

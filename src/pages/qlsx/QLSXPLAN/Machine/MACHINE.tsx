@@ -776,6 +776,30 @@ const MACHINE = () => {
       },
     },
     {
+      field: "CD3",
+      headerName: "XUAT_CD3",
+      width: 100,
+      renderCell: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            <b>{params.row.CD3.toLocaleString("en", "US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "CD4",
+      headerName: "XUAT_CD4",
+      width: 100,
+      renderCell: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            <b>{params.row.CD4.toLocaleString("en", "US")}</b>
+          </span>
+        );
+      },
+    },
+    {
       field: "LOT_TOTAL_OUTPUT_QTY_EA",
       type: "number",
       headerName: "XUẤT KIỂM",
@@ -832,6 +856,30 @@ const MACHINE = () => {
         return (
           <span style={{ color: "red" }}>
             <b>{params.row.TON_CD2.toLocaleString("en", "US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "TON_CD3",
+      headerName: "TONYCSX_CD3",
+      width: 120,
+      renderCell: (params: any) => {
+        return (
+          <span style={{ color: "red" }}>
+            <b>{params.row.TON_CD3.toLocaleString("en", "US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "TON_CD4",
+      headerName: "TONYCSX_CD4",
+      width: 120,
+      renderCell: (params: any) => {
+        return (
+          <span style={{ color: "red" }}>
+            <b>{params.row.TON_CD4.toLocaleString("en", "US")}</b>
           </span>
         );
       },
@@ -997,6 +1045,32 @@ const MACHINE = () => {
         return (
           <span style={{ color: "blue" }}>
             {params.row.TON_CD2?.toLocaleString("en", "US")}
+          </span>
+        );
+      },
+    },
+    {
+      field: "TON_CD3",
+      headerName: "TON_CD3",
+      width: 120,
+      editable: false,
+      renderCell: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            {params.row.TON_CD3?.toLocaleString("en", "US")}
+          </span>
+        );
+      },
+    },
+    {
+      field: "TON_CD4",
+      headerName: "TON_CD4",
+      width: 120,
+      editable: false,
+      renderCell: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            {params.row.TON_CD4?.toLocaleString("en", "US")}
           </span>
         );
       },

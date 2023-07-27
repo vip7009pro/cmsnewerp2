@@ -662,7 +662,7 @@ const ShortageKD = () => {
             }
           })   
           setShortageDataTable(loadeddata);
-          setisLoading(false);
+          setisLoading(false);          
           Swal.fire("Thông báo", "Đã load " + response.data.data.length + " dòng", "success");  
         }
         else
