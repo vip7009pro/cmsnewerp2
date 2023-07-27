@@ -22,6 +22,7 @@ interface ELE_ARRAY {
   ELE_CODE: string;
 }
 function Home() {
+  //this is testbranch
   const company: string = useSelector(
     (state: RootState) => state.totalSlice.company
   );
