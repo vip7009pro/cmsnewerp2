@@ -14,7 +14,7 @@ import { WiDayLightning } from "react-icons/wi";
 import { SiStatuspal } from "react-icons/si";
 import getsentence from "../../components/String/String";
 import { LangConText } from "../../api/Context";
-import { AiFillAmazonCircle, AiFillAmazonSquare, AiFillMinusCircle, AiOutlineCalendar } from "react-icons/ai";
+import { AiFillAmazonCircle, AiFillAmazonSquare, AiFillMinusCircle, AiOutlineCalendar, AiOutlineShoppingCart } from "react-icons/ai";
 import RuleRoundedIcon from '@mui/icons-material/RuleRounded';
 import {RootState} from '../../redux/store'
 import {useSelector, useDispatch} from 'react-redux'
@@ -209,6 +209,21 @@ const Sidebar = () => {
           path: '/kinhdoanh/kinhdoanhreport',
           icon: <FcBullish  size={25}/>,
           MENU_CODE: 'KD13',        }
+      ]
+    },
+    {
+      title: getlang('phongmuahang',lang), /*Phòng Kinh Doanh*/
+      path: '#',
+      icon: <AiOutlineShoppingCart color='#B701CA' size={25}/>,
+      iconClosed: <KeyboardArrowDownIcon />,
+      iconOpened: <KeyboardArrowUpIcon />,  
+      subNav: [
+        {
+          title: getlang('quanlyvatlieu',lang), /*Quản lý VL*/
+          path: '/phongmuahang/quanlyvatlieu',
+          icon: <FaScroll color='#01C716' size={25}/>,
+          MENU_CODE: 'PU1',        
+        },        
       ]
     },
     {
