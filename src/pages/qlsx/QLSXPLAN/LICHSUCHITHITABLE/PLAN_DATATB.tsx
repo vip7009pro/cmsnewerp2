@@ -49,37 +49,54 @@ interface QLSXPLANDATA {
   G_NAME_KD: string;
   PROD_REQUEST_DATE: string;
   PROD_REQUEST_QTY: number;
-  STEP: string;
+  STEP: number;
   PLAN_ORDER: string;
   PROCESS_NUMBER: number;
   KQ_SX_TAM: number;
   KETQUASX: number;
-  ACHIVEMENT_RATE: number;
+  ACHIVEMENT_RATE: number,
   CD1: number;
   CD2: number;
+  CD3: number;
+  CD4: number;
   TON_CD1: number;
   TON_CD2: number;
+  TON_CD3: number;
+  TON_CD4: number;
   FACTORY: string;
   EQ1: string;
   EQ2: string;
+  EQ3: string;
+  EQ4: string;
   Setting1: number;
   Setting2: number;
+  Setting3: number;
+  Setting4: number;
   UPH1: number;
   UPH2: number;
+  UPH3: number;
+  UPH4: number;
   Step1: number;
   Step2: number;
+  Step3: number;
+  Step4: number;
   LOSS_SX1: number;
   LOSS_SX2: number;
+  LOSS_SX3: number;
+  LOSS_SX4: number;
   LOSS_SETTING1: number;
   LOSS_SETTING2: number;
+  LOSS_SETTING3: number;
+  LOSS_SETTING4: number;
   NOTE: string;
-  XUATDAOFILM: string;
-  EQ_STATUS: string;
-  MAIN_MATERIAL: string;
-  INT_TEM: string;
-  CHOTBC: string;
-  DKXL: string;
   NEXT_PLAN_ID: string;
+  XUATDAOFILM?: string;
+  EQ_STATUS?: string;
+  MAIN_MATERIAL?: string;
+  INT_TEM?: string;
+  CHOTBC?: string;
+  DKXL?: string;
+  OLD_PLAN_QTY?: number;
 }
 const PLAN_DATATB = () => {
   const [selectionModel_INPUTSX, setSelectionModel_INPUTSX] = useState<any>([]);
@@ -111,7 +128,7 @@ const PLAN_DATATB = () => {
   G_NAME_KD: '',
   PROD_REQUEST_DATE: '',
   PROD_REQUEST_QTY: 0,
-  STEP: '',
+  STEP: 0,
   PLAN_ORDER: '',
   PROCESS_NUMBER: 0,
   KQ_SX_TAM: 0,
@@ -142,6 +159,23 @@ const PLAN_DATATB = () => {
   CHOTBC: '',
   DKXL: '',
   NEXT_PLAN_ID: '',
+  CD3:0,
+  CD4:0,
+  EQ3:'',
+  EQ4:'',
+  LOSS_SETTING3:0,
+  LOSS_SETTING4:0,
+  LOSS_SX3:0,
+  LOSS_SX4:0,
+  Setting3:0,
+  Setting4:0,
+  Step3:0,
+  Step4:0,
+  TON_CD3:0,
+  TON_CD4:0,
+  UPH3:0,
+  UPH4:0,
+  OLD_PLAN_QTY:0,
   });
   const [qlsxplandatafilter, setQlsxPlanDataFilter] = useState<
     Array<QLSXPLANDATA>
@@ -457,7 +491,7 @@ const PLAN_DATATB = () => {
             G_NAME_KD: '',
             PROD_REQUEST_DATE: '',
             PROD_REQUEST_QTY: 0,
-            STEP: '',
+            STEP: 0,
             PLAN_ORDER: '',
             PROCESS_NUMBER: 0,
             KQ_SX_TAM: 0,
@@ -488,6 +522,23 @@ const PLAN_DATATB = () => {
             CHOTBC: '',
             DKXL: '',
             NEXT_PLAN_ID: '',
+            CD3:0,
+            CD4:0,
+            EQ3:'',
+            EQ4:'',
+            LOSS_SETTING3:0,
+            LOSS_SETTING4:0,
+            LOSS_SX3:0,
+            LOSS_SX4:0,
+            Setting3:0,
+            Setting4:0,
+            Step3:0,
+            Step4:0,
+            TON_CD3:0,
+            TON_CD4:0,
+            UPH3:0,
+            UPH4:0,
+            OLD_PLAN_QTY:0,
           }
           for(let i=0;i<loadeddata.length;i++)
           {
