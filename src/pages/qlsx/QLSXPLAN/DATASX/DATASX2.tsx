@@ -135,6 +135,7 @@ interface YCSX_SX_DATA {
   LOSS_SX2: number;
   LOSS_SX3: number;
   LOSS_SX4: number;
+  LOSS_INSPECT: number;
   TOTAL_LOSS: number;
   TOTAL_LOSS2: number;
 }
@@ -145,6 +146,8 @@ interface LOSS_TABLE_DATA {
   SCANNED_EA: number,
   PROCESS1_RESULT: number,
   PROCESS2_RESULT: number,
+  PROCESS3_RESULT: number,
+  PROCESS4_RESULT: number,
   SX_RESULT: number,
   INSPECTION_INPUT: number,
   INSPECTION_OUTPUT: number,
@@ -179,6 +182,8 @@ const DATASX2 = () => {
   SCANNED_EA: 0,
   PROCESS1_RESULT: 0,
   PROCESS2_RESULT: 0,
+  PROCESS3_RESULT: 0,
+  PROCESS4_RESULT: 0,
   SX_RESULT:0,
   INSPECTION_INPUT: 0,
   INSPECTION_OUTPUT: 0,
@@ -2478,6 +2483,20 @@ useState<PivotGridDataSource>(
             }}
           ></Column>
           <Column
+            dataField='LOSS_INSPECT'
+            caption='LOSS_INSPECT'
+            minWidth={100}
+            dataType='number'
+            format={"percent"}
+            cellRender={(e: any) => {
+              return (
+                <span style={{ color: "#F58A02", fontWeight: "bold" }}>
+                   {parseInt((e.data.LOSS_INSPECT*100).toString())?.toLocaleString("en-US",{maximumFractionDigits: 0,minimumFractionDigits: 0,})} %
+                </span>
+              );
+            }}
+          ></Column>
+          <Column
             dataField='TOTAL_LOSS'
             caption='TOTAL_LOSS'
             minWidth={100}
@@ -2859,6 +2878,8 @@ useState<PivotGridDataSource>(
             SCANNED_EA: 0,
             PROCESS1_RESULT: 0,
             PROCESS2_RESULT: 0,      
+            PROCESS3_RESULT: 0,      
+            PROCESS4_RESULT: 0,      
             SX_RESULT:0,      
             INSPECTION_INPUT: 0,
             INSPECTION_OUTPUT: 0,
@@ -2873,6 +2894,8 @@ useState<PivotGridDataSource>(
             temp_loss_info.SCANNED_EA += loaded_data[i].ESTIMATED_QTY;  
             temp_loss_info.PROCESS1_RESULT += (loaded_data[i].PROCESS_NUMBER===1 && loaded_data[i].STEP===0) ? loaded_data[i].KETQUASX :0;
             temp_loss_info.PROCESS2_RESULT += (loaded_data[i].PROCESS_NUMBER===2 && loaded_data[i].STEP===0) ? loaded_data[i].KETQUASX :0;      
+            temp_loss_info.PROCESS3_RESULT += (loaded_data[i].PROCESS_NUMBER===3 && loaded_data[i].STEP===0) ? loaded_data[i].KETQUASX :0;      
+            temp_loss_info.PROCESS4_RESULT += (loaded_data[i].PROCESS_NUMBER===4 && loaded_data[i].STEP===0) ? loaded_data[i].KETQUASX :0;      
             temp_loss_info.INSPECTION_INPUT += loaded_data[i].INS_INPUT;
             temp_loss_info.INSPECTION_OUTPUT += loaded_data[i].INS_OUTPUT; 
           };
@@ -2940,6 +2963,8 @@ useState<PivotGridDataSource>(
             SCANNED_EA: 0,
             PROCESS1_RESULT: 0,
             PROCESS2_RESULT: 0,
+            PROCESS3_RESULT: 0,
+            PROCESS4_RESULT: 0,
             SX_RESULT:0,
             INSPECTION_INPUT: 0,
             INSPECTION_OUTPUT: 0,
@@ -2954,6 +2979,8 @@ useState<PivotGridDataSource>(
             temp_loss_info.SCANNED_EA += loaded_data[i].ESTIMATED_QTY;
             temp_loss_info.PROCESS1_RESULT += loaded_data[i].CD1;
             temp_loss_info.PROCESS2_RESULT += loaded_data[i].CD2;
+            temp_loss_info.PROCESS3_RESULT += loaded_data[i].CD3;
+            temp_loss_info.PROCESS4_RESULT += loaded_data[i].CD4;
             temp_loss_info.SX_RESULT += (loaded_data[i].EQ2 === 'NO' || loaded_data[i].EQ2 === 'NA' || loaded_data[i].EQ2 === null) ? loaded_data[i].CD1 :  loaded_data[i].CD2;
             temp_loss_info.INSPECTION_INPUT += loaded_data[i].INS_INPUT;
             temp_loss_info.INSPECTION_OUTPUT += loaded_data[i].INS_OUTPUT;
@@ -2980,9 +3007,6 @@ useState<PivotGridDataSource>(
         Swal.fire("Thông báo", " Có lỗi : " + error, "error");
       });
   };
-
-
-
   useEffect(() => {
     //setColumnDefinition(column_inspect_output);
   }, []);
@@ -3138,13 +3162,15 @@ useState<PivotGridDataSource>(
               <th style={{color:'black', fontWeight:'bold'}}>2.XUAT KHO EA</th>
               <th style={{color:'black', fontWeight:'bold'}}>3.USED MET</th>
               <th style={{color:'black', fontWeight:'bold'}}>4.USED EA</th>
-              <th style={{color:'black', fontWeight:'bold'}}>5.PROCESS 1 RESULT</th>
-              <th style={{color:'black', fontWeight:'bold'}}>6.PROCESS 2 RESULT</th>
-              <th style={{color:'black', fontWeight:'bold'}}>6.SX RESULT</th>
-              <th style={{color:'black', fontWeight:'bold'}}>7.INSPECTION INPUT</th>
-              <th style={{color:'black', fontWeight:'bold'}}>8.INSPECTION OUTPUT</th>
-              <th style={{color:'black', fontWeight:'bold'}}>9.TOTAL_LOSS (8 vs 4) %</th>
-              <th style={{color:'black', fontWeight:'bold'}}>10.TOTAL_LOSS2 (8 vs2) %</th>
+              <th style={{color:'black', fontWeight:'bold'}}>5.CD1</th>
+              <th style={{color:'black', fontWeight:'bold'}}>6.CD2</th>
+              <th style={{color:'black', fontWeight:'bold'}}>7.CD3</th>
+              <th style={{color:'black', fontWeight:'bold'}}>8.CD4</th>
+              <th style={{color:'black', fontWeight:'bold'}}>9.SX RESULT</th>
+              <th style={{color:'black', fontWeight:'bold'}}>10.INSPECTION INPUT</th>
+              <th style={{color:'black', fontWeight:'bold'}}>11.INSPECTION OUTPUT</th>
+              <th style={{color:'black', fontWeight:'bold'}}>12.TOTAL_LOSS (11 vs 4) %</th>
+              <th style={{color:'black', fontWeight:'bold'}}>13.TOTAL_LOSS2 (11) vs2) %</th>
               </tr>
             </thead>
             <tbody>
@@ -3155,6 +3181,8 @@ useState<PivotGridDataSource>(
                 <td style={{color:'#fc2df6', fontWeight:'bold'}}>{losstableinfo.SCANNED_EA.toLocaleString("en-US")}</td>
                 <td style={{color:'green', fontWeight:'bold'}}>{losstableinfo.PROCESS1_RESULT.toLocaleString("en-US")}</td>
                 <td style={{color:'green', fontWeight:'bold'}}>{losstableinfo.PROCESS2_RESULT.toLocaleString("en-US")}</td>
+                <td style={{color:'green', fontWeight:'bold'}}>{losstableinfo.PROCESS3_RESULT.toLocaleString("en-US")}</td>
+                <td style={{color:'green', fontWeight:'bold'}}>{losstableinfo.PROCESS4_RESULT.toLocaleString("en-US")}</td>
                 <td style={{color:'green', fontWeight:'bold'}}>{losstableinfo.SX_RESULT.toLocaleString("en-US")}</td>
                 <td style={{color:'green', fontWeight:'bold'}}>{losstableinfo.INSPECTION_INPUT.toLocaleString("en-US")}</td>
                 <td style={{color:'green', fontWeight:'bold'}}>{losstableinfo.INSPECTION_OUTPUT.toLocaleString("en-US")}</td>
