@@ -3122,7 +3122,10 @@ const MACHINE = () => {
           className='buttonIcon'
           onClick={() => {
             if (qlsxplandatafilter.length > 0) {
-              checkBP(userData,['QLSX'],['ALL'],['ALL'],handle_UpdatePlan);
+              if(userData?.EMPL_NO !=='NHU1903')
+              {
+                checkBP(userData,['QLSX'],['ALL'],['ALL'],handle_UpdatePlan);
+              }
               setShowChiThi(true);
               setChiThiListRender(renderChiThi(qlsxplandatafilter));
               //console.log(ycsxdatatablefilter);
@@ -5152,18 +5155,7 @@ const MACHINE = () => {
                       <option value='NM1'>NM1</option>
                       <option value='NM2'>NM2</option>
                     </select>
-                  </label>
-                  <label>
-                    <b>NOTE (QLSX):</b>{" "}
-                    <input
-                      type='text'
-                      placeholder='Chú ý'
-                      value={datadinhmuc.NOTE}
-                      onChange={(e) =>
-                        setDataDinhMuc({ ...datadinhmuc, NOTE: e.target.value })
-                      }
-                    ></input>
-                  </label>
+                  </label>                 
                 </div>
               </div>
               <div className='datadinhmuc'>
@@ -5361,29 +5353,7 @@ const MACHINE = () => {
                     ></input>
                   </label>
                 </div>
-                <div className='forminputcolumn'>
-                  <label>
-                    <b>FACTORY:</b>
-                    <select
-                      name='phanloai'
-                      value={
-                        datadinhmuc.FACTORY === null
-                          ? "NA"
-                          : datadinhmuc.FACTORY
-                      }
-                      onChange={(e) => {
-                        setDataDinhMuc({
-                          ...datadinhmuc,
-                          FACTORY: e.target.value,
-                        });
-                      }}
-                      style={{ width: 162, height: 22 }}
-                    >
-                      <option value='NA'>NA</option>
-                      <option value='NM1'>NM1</option>
-                      <option value='NM2'>NM2</option>
-                    </select>
-                  </label>
+                <div className='forminputcolumn'>                  
                   <label>
                     <b>NOTE (QLSX):</b>{" "}
                     <input
@@ -5397,9 +5367,7 @@ const MACHINE = () => {
                   </label>
                 </div>
               </div>
-
-              </div>
-              
+              </div>              
               <div className='listlieuchithi'>
                 <div className='chithitable'>
                   <DataGrid
