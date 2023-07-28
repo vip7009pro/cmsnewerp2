@@ -132,6 +132,9 @@ const YCSXComponent = ({G_CODE,PROD_TYPE,PROD_MAIN_MATERIAL,G_NAME,EMPL_NAME,EMP
     const userData: UserData | undefined = useSelector(
       (state: RootState) => state.totalSlice.userData
     );
+    const company: string = useSelector(
+      (state: RootState) => state.totalSlice.company
+    );
     const [tvl_tdycsx,setTVL_TDYCSX] = useState<Array<TONVL>>([{
         M_CODE: 'string',
         M_NAME: 'string',
@@ -331,7 +334,8 @@ const YCSXComponent = ({G_CODE,PROD_TYPE,PROD_MAIN_MATERIAL,G_NAME,EMPL_NAME,EMP
         <img alt="qcpass" src="/fsc logo2.png" width={440-100-10} height={400-100}/>
       </div>}  
      { request_codeinfo[0].PDUYET &&  <div className='tieudeycsx'>
-     <img alt="logo" src="/logocmsvina.png" width={160} height={40}/>
+     {company ==='CMS' && <img alt="logo" src="/logocmsvina.png" width={160} height={40}/>}
+     {company ==='PVN' && <img alt="logo" src="/logopvn_big.png" width={160} height={80}/>}
         <div className='title'> 생산요청서 - Yêu cầu sản xuất<br></br><span style={{fontSize:12}}>Thời điểm in YCSX: {moment().format("YYYY-MM-DD HH:mm:ss")}</span><br></br> {(request_codeinfo[0].NO_INSPECTION ==='Y') && <span style={{fontSize:12}}>(Sản phẩm không kiểm tra ngoại quan)</span>}</div>
         <div className='soycsx'>
           <div className='ycsxno'>{request_codeinfo[0].PROD_REQUEST_DATE}-{request_codeinfo[0].PROD_REQUEST_NO} </div>
