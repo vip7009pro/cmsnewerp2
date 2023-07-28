@@ -33,61 +33,6 @@ import "./MATERIAL_MANAGER.scss";
 import { UserData } from "../../../redux/slices/globalSlice";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
-interface QLSXPLANDATA {
-  id: number;
-  PLAN_ID: string;
-  PLAN_DATE: string;
-  PROD_REQUEST_NO: string;
-  PLAN_QTY: number;
-  PLAN_EQ: string;
-  PLAN_FACTORY: string;
-  PLAN_LEADTIME: number;
-  INS_EMPL: string;
-  INS_DATE: string;
-  UPD_EMPL: string;
-  UPD_DATE: string;
-  G_CODE: string;
-  G_NAME: string;
-  G_NAME_KD: string;
-  PROD_REQUEST_DATE: string;
-  PROD_REQUEST_QTY: number;
-  STEP: string;
-  PLAN_ORDER: string;
-  PROCESS_NUMBER: number;
-  KQ_SX_TAM: number;
-  KETQUASX: number;
-  CD1: number;
-  CD2: number;
-  TON_CD1: number;
-  TON_CD2: number;
-  FACTORY: string;
-  EQ1: string;
-  EQ2: string;
-  Setting1: number;
-  Setting2: number;
-  UPH1: number;
-  UPH2: number;
-  Step1: number;
-  Step2: number;
-  LOSS_SX1: number;
-  LOSS_SX2: number;
-  LOSS_SETTING1: number;
-  LOSS_SETTING2: number;
-  NOTE: string;
-}
-interface TONLIEUXUONG {
-  id: number;
-  FACTORY: string;
-  PHANLOAI: string;
-  PLAN_ID_INPUT: string;
-  M_CODE: string;
-  M_NAME: string;
-  WIDTH_CD: number;
-  M_LOT_NO: string;
-  ROLL_QTY: number;
-  IN_QTY: number;
-  TOTAL_IN_QTY: number;
-}
 interface MATERIAL_TABLE_DATA {
   M_ID: number;
   M_NAME: string;
@@ -109,12 +54,9 @@ const MATERIAL_MANAGER = () => {
     (state: RootState) => state.totalSlice.userData
   );
   const [isLoading, setisLoading] = useState(false);
-  const [plandatatable, setPlanDataTable] = useState<QLSXPLANDATA[]>([]);
   const [datatable, setDataTable] = useState<any[]>([]);
   const [current_Column, setCurrent_Column] = useState<any[]>([]);
-  const [material_table_data_filter, set_material_table_data_filter] = useState<
-    Array<MATERIAL_TABLE_DATA>
-  >([]);
+  const [material_table_data_filter, set_material_table_data_filter] = useState<Array<MATERIAL_TABLE_DATA>>([]);
   const [nextPlan, setNextPlan] = useState("");
   const [tableTitle, setTableTitle] = useState("BẢNG VẬT LIỆU");
   const column_material_table = [
@@ -156,7 +98,7 @@ const MATERIAL_MANAGER = () => {
             SaveExcel(datatable, "Material Table");
           }}
         >
-          <AiFillFileExcel color='green' size={25} />
+          <AiFillFileExcel color='green' size={15} />
           SAVE
         </IconButton>
         <GridToolbarQuickFilter />
@@ -170,7 +112,7 @@ const MATERIAL_MANAGER = () => {
             Swal.fire("Thông báo", "Bật/Tắt Sửa thành công", "success");
           }}
         >
-          <BiEdit color='yellow' size={25} />
+          <BiEdit color='yellow' size={15} />
           Bật/Tắt sửa
         </IconButton>
         {editable === true ? "Bật Sửa" : "Tắt Sửa"}

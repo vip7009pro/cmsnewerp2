@@ -372,6 +372,26 @@ const CODE_MANAGER = () => {
         return <span style={{fontWeight:'bold'}}>{params.row.Step2}</span>       
       }   
     }},
+    { field: "Step3", headerName: "Step3", width: 80 ,renderCell: (params:any) => { 
+      if(params.row.Step3 === null)
+      {
+        return <span style={{backgroundColor:'red', fontWeight:'bold'}}>NG</span>       
+      }    
+      else
+      {
+        return <span style={{fontWeight:'bold'}}>{params.row.Step3}</span>       
+      }   
+    }},
+    { field: "Step4", headerName: "Step4", width: 80 ,renderCell: (params:any) => { 
+      if(params.row.Step4 === null)
+      {
+        return <span style={{backgroundColor:'red', fontWeight:'bold'}}>NG</span>       
+      }    
+      else
+      {
+        return <span style={{fontWeight:'bold'}}>{params.row.Step4}</span>       
+      }   
+    }},
     { field: "LOSS_SX1", headerName: "LOSS_SX1(%)", width: 100 ,renderCell: (params:any) => { 
       if(params.row.LOSS_SX1 === null)
       {

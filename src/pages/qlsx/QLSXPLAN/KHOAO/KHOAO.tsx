@@ -462,8 +462,7 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
           await generalQuery("checkM_CODE_CHITHI", {
             PLAN_ID_OUTPUT: nextPlan,
             M_CODE: tonkhoaodatafilter[i].M_CODE,
-          })
-            .then((response) => {
+          }).then((response) => {
               console.log(response.data.data);
               if (response.data.tk_status !== "NG") {
                 checklieuchithi = true;
@@ -474,9 +473,7 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
             .catch((error) => {
               console.log(error);
             });
-
-            let checkFSC:string = await checkNextPlanFSC(nextPlan);    
-          
+            let checkFSC:string = await checkNextPlanFSC(nextPlan);          
           if (checklieuchithi === true && nextPlan !== tonkhoaodatafilter[i].PLAN_ID_INPUT && (checkFSC ===tonkhoaodatafilter[i].FSC)) {
             await generalQuery("xuatkhoao", {
               FACTORY: tonkhoaodatafilter[i].FACTORY,

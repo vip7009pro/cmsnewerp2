@@ -1,0 +1,1009 @@
+import {
+    IconButton,
+  } from "@mui/material";
+  import {
+    Column,
+    Editing,
+    FilterRow,
+    Pager,
+    Scrolling,
+    SearchPanel,
+    Selection,
+    DataGrid,
+    Paging,
+    Toolbar,
+    Item,
+    Export,
+    ColumnChooser,
+    Summary,
+    TotalItem,
+  } from "devextreme-react/data-grid";
+  import moment from "moment";
+  import React, { useContext, useEffect, useState } from "react";
+  import {
+    AiFillCloseCircle,
+    AiFillFileExcel,
+  } from "react-icons/ai";
+  import Swal from "sweetalert2";
+  import "./QLVL.scss";
+  import { UserContext } from "../../../api/Context";
+  import { generalQuery } from "../../../api/Api";
+  import { SaveExcel } from "../../../api/GlobalFunction";
+  import { MdOutlinePivotTableChart } from "react-icons/md";
+  import PivotTable from "../../../components/PivotChart/PivotChart";
+  import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
+  import { ResponsiveContainer } from "recharts";
+  interface MATERIAL_STATUS {
+    INS_DATE: string;
+    FACTORY: string;
+    M_LOT_NO: string;
+    M_CODE: string;
+    M_NAME: string;
+    WIDTH_CD: number;
+    ROLL_QTY: number;
+    OUT_CFM_QTY: number;
+    TOTAL_OUT_QTY: number;
+    PROD_REQUEST_NO: string;
+    PLAN_ID: string;
+    PLAN_EQ: string;
+    G_CODE: string;
+    G_NAME: string;
+    XUAT_KHO: string;
+    VAO_FR: string;
+    VAO_SR: string;
+    VAO_DC: string;
+    VAO_ED: string;
+    CONFIRM_GIAONHAN: string;
+    VAO_KIEM: string;
+    NHATKY_KT: string;
+    RA_KIEM: string;
+    INSPECT_TOTAL_QTY: number;
+    INSPECT_OK_QTY: number;
+    INS_OUT: number;
+    ROLL_LOSS_KT: number;
+    ROLL_LOSS: number;
+    PD: number;
+    CAVITY: number;
+    FR_RESULT: number;
+    SR_RESULT: number;
+    DC_RESULT: number;
+    ED_RESULT: number;
+    TOTAL_OUT_EA: number;
+    FR_EA: number;
+    SR_EA: number;
+    DC_EA: number;
+    ED_EA: number;
+    INSPECT_TOTAL_EA: number;
+    INSPECT_OK_EA: number;
+    INS_OUTPUT_EA: number;
+  }
+  interface LOSS_TABLE_DATA {
+    XUATKHO_MET: number;
+    INSPECTION_INPUT: number;
+    INSPECTION_OK: number;
+    INSPECTION_OUTPUT: number;
+    TOTAL_LOSS_KT: number;
+    TOTAL_LOSS: number;
+  }  
+  interface CUST_INFO {
+    id: string;
+    CUST_CD: string,
+    CUST_NAME_KD: string,
+    CUST_NAME: string,
+    CUST_ADDR1: string,
+    TAX_NO: string,
+    CUST_NUMBER: string,
+    BOSS_NAME: string,
+    TEL_NO1: string,
+    FAX_NO: string,
+    CUST_POSTAL: string,
+    REMK: string,
+    INS_DATE: string,
+    INS_EMPL: string,
+    UPD_DATE: string,
+    UPD_EMPL: string,
+  }
+
+  interface MATERIAL_TABLE_DATA {
+    M_ID: number;
+    M_NAME: string;
+    DESCR: string,
+    CUST_CD: string;
+    CUST_NAME_KD: string;
+    SSPRICE: number;
+    CMSPRICE: number;
+    SLITTING_PRICE: number;
+    MASTER_WIDTH: number;
+    ROLL_LENGTH: number;
+  }
+
+  const QLVL = () => {
+    const [showhidePivotTable, setShowHidePivotTable] = useState(false);
+    const [material_table_data, set_material_table_data] = useState<Array<MATERIAL_TABLE_DATA>>([]);
+    const [custinfodatatable, seMaterialInfoDataTable] = useState<Array<any>>([]);
+    const [losstableinfo, setLossTableInfo] = useState<LOSS_TABLE_DATA>({
+      XUATKHO_MET: 0,
+      INSPECTION_INPUT: 0,
+      INSPECTION_OK: 0,
+      INSPECTION_OUTPUT: 0,
+      TOTAL_LOSS_KT: 0,
+      TOTAL_LOSS: 0,
+    });
+    const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
+    const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));
+    const [codeKD, setCodeKD] = useState("");
+    const [codeCMS, setCodeCMS] = useState("");
+    const [machine, setMachine] = useState("ALL");
+    const [factory, setFactory] = useState("ALL");
+    const [prodrequestno, setProdRequestNo] = useState("");
+    const [plan_id, setPlanID] = useState("");
+    const [alltime, setAllTime] = useState(true);
+    const [datasxtable, setDataSXTable] = useState<Array<any>>([]);
+    const [m_name, setM_Name] = useState("");
+    const [m_code, setM_Code] = useState("");
+    const [selectedRows, setSelectedRows] = useState<MATERIAL_TABLE_DATA>({
+        M_ID: 0,
+        M_NAME: '',
+        DESCR: '',
+        CUST_CD: '',
+        CUST_NAME_KD: '',
+        SSPRICE: 0,
+        CMSPRICE: 0,
+        SLITTING_PRICE: 0,
+        MASTER_WIDTH: 0,
+        ROLL_LENGTH: 0,     
+    });
+    const load_material_table = () => {
+        generalQuery("get_material_table", {
+            M_NAME: m_name,          
+        })
+            .then((response) => {
+            //console.log(response.data.data);
+            if (response.data.tk_status !== "NG") {
+                let loadeddata = response.data.data.map(
+                (element: MATERIAL_TABLE_DATA, index: number) => {
+                    return {
+                    ...element,
+                    id: index,
+                    };
+                }
+                );
+                //console.log(loadeddata);
+                set_material_table_data(loadeddata);
+                Swal.fire(
+                "Thông báo",
+                "Đã load: " + response.data.data.length + " dòng",
+                "success"
+                );
+            } else {
+                set_material_table_data([]);
+                Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
+            }
+            })
+            .catch((error) => {
+            console.log(error);
+            });
+        };
+    const seMaterialInfo = (keyname: string, value: any) => {
+      let tempCustInfo:MATERIAL_TABLE_DATA  = { ...selectedRows, [keyname]: value };
+      //console.log(tempcodefullinfo);
+      setSelectedRows(tempCustInfo);
+    };
+
+    const handleSearchCodeKeyDown = (
+      e: React.KeyboardEvent<HTMLInputElement>
+    ) => {
+      if (e.key === "Enter") {                      
+        load_material_table();
+      }
+    };    
+    const materialDataTable = React.useMemo(
+      () => ( 
+           <div className='datatb'>            
+          <ResponsiveContainer>
+          <DataGrid
+            autoNavigateToFocusedRow={true}
+            allowColumnReordering={true}
+            allowColumnResizing={true}
+            columnAutoWidth={false}
+            cellHintEnabled={true}
+            columnResizingMode={"widget"}
+            showColumnLines={true}
+            dataSource={material_table_data}
+            columnWidth='auto'
+            keyExpr='id'
+            height={"75vh"}
+            showBorders={true}
+            onSelectionChanged={(e) => {
+              setSelectedRows(e.selectedRowsData[0]);
+            }}          
+            onRowClick={(e) => {
+              //console.log(e.data);
+            }}
+          >
+            <Scrolling
+              useNative={true}
+              scrollByContent={true}
+              scrollByThumb={true}
+              showScrollbar='onHover'
+              mode='virtual'
+            />
+            <Selection mode='single' selectAllMode='allPages' />
+            <Editing
+              allowUpdating={false}
+              allowAdding={true}
+              allowDeleting={false}
+              mode='batch'
+              confirmDelete={true}
+              onChangesChange={(e) => {}}
+            />
+            <Export enabled={true} />
+            <Toolbar disabled={false}>
+              <Item location='before'>
+                <IconButton
+                  className='buttonIcon'
+                  onClick={() => {
+                    SaveExcel(datasxtable, "MaterialStatus");
+                  }}
+                >
+                  <AiFillFileExcel color='green' size={25} />
+                  SAVE
+                </IconButton>
+                <IconButton
+            className='buttonIcon'
+            onClick={() => {
+              setShowHidePivotTable(!showhidePivotTable);
+            }}
+          >
+            <MdOutlinePivotTableChart color='#ff33bb' size={25} />
+            Pivot
+          </IconButton>
+              </Item>
+              <Item name='searchPanel' />
+              <Item name='exportButton' />
+              <Item name='columnChooser' />
+            </Toolbar>
+            <FilterRow visible={true} />
+            <SearchPanel visible={true} /> 
+            <ColumnChooser enabled={true} />            
+            <Paging defaultPageSize={15} />
+            <Pager
+              showPageSizeSelector={true}
+              allowedPageSizes={[5, 10, 15, 20, 100, 1000, 10000, "all"]}
+              showNavigationButtons={true}
+              showInfo={true}
+              infoText='Page #{0}. Total: {1} ({2} items)'
+              displayMode='compact'
+            />
+            <Summary>
+              <TotalItem
+                alignment='right'
+                column='id'
+                summaryType='count'
+                valueFormat={"decimal"}
+              />              
+            </Summary>
+          </DataGrid>
+          </ResponsiveContainer>   
+        </div>
+      ),
+      [material_table_data]
+    );
+    const dataSource = new PivotGridDataSource({
+      fields: [
+        {
+          caption: "INS_DATE",
+          width: 80,
+          dataField: "INS_DATE",
+          allowSorting: true,
+          allowFiltering: true,
+          dataType: "date",
+          summaryType: "count",
+          format: "fixedPoint",
+          headerFilter: {
+            allowSearch: true,
+            height: 500,
+            width: 300,
+          },
+        },
+        {
+          caption: "M_LOT_NO",
+          width: 80,
+          dataField: "M_LOT_NO",
+          allowSorting: true,
+          allowFiltering: true,
+          dataType: "string",
+          summaryType: "count",
+          format: "fixedPoint",
+          headerFilter: {
+            allowSearch: true,
+            height: 500,
+            width: 300,
+          },
+        },
+        {
+          caption: "M_CODE",
+          width: 80,
+          dataField: "M_CODE",
+          allowSorting: true,
+          allowFiltering: true,
+          dataType: "string",
+          summaryType: "count",
+          format: "fixedPoint",
+          headerFilter: {
+            allowSearch: true,
+            height: 500,
+            width: 300,
+          },
+        },
+        {
+          caption: "M_NAME",
+          width: 80,
+          dataField: "M_NAME",
+          allowSorting: true,
+          allowFiltering: true,
+          dataType: "string",
+          summaryType: "count",
+          format: "fixedPoint",
+          headerFilter: {
+            allowSearch: true,
+            height: 500,
+            width: 300,
+          },
+        },
+        {
+          caption: "WIDTH_CD",
+          width: 80,
+          dataField: "WIDTH_CD",
+          allowSorting: true,
+          allowFiltering: true,
+          dataType: "string",
+          summaryType: "count",
+          format: "fixedPoint",
+          headerFilter: {
+            allowSearch: true,
+            height: 500,
+            width: 300,
+          },
+        },
+        {
+          caption: "XUAT_KHO",
+          width: 80,
+          dataField: "XUAT_KHO",
+          allowSorting: true,
+          allowFiltering: true,
+          dataType: "string",
+          summaryType: "count",
+          format: "fixedPoint",
+          headerFilter: {
+            allowSearch: true,
+            height: 500,
+            width: 300,
+          },
+        },
+        {
+          caption: "VAO_FR",
+          width: 80,
+          dataField: "VAO_FR",
+          allowSorting: true,
+          allowFiltering: true,
+          dataType: "string",
+          summaryType: "count",
+          format: "fixedPoint",
+          headerFilter: {
+            allowSearch: true,
+            height: 500,
+            width: 300,
+          },
+        },
+        {
+          caption: "VAO_SR",
+          width: 80,
+          dataField: "VAO_SR",
+          allowSorting: true,
+          allowFiltering: true,
+          dataType: "string",
+          summaryType: "count",
+          format: "fixedPoint",
+          headerFilter: {
+            allowSearch: true,
+            height: 500,
+            width: 300,
+          },
+        },
+        {
+          caption: "VAO_DC",
+          width: 80,
+          dataField: "VAO_DC",
+          allowSorting: true,
+          allowFiltering: true,
+          dataType: "string",
+          summaryType: "count",
+          format: "fixedPoint",
+          headerFilter: {
+            allowSearch: true,
+            height: 500,
+            width: 300,
+          },
+        },
+        {
+          caption: "VAO_ED",
+          width: 80,
+          dataField: "VAO_ED",
+          allowSorting: true,
+          allowFiltering: true,
+          dataType: "string",
+          summaryType: "count",
+          format: "fixedPoint",
+          headerFilter: {
+            allowSearch: true,
+            height: 500,
+            width: 300,
+          },
+        },
+        {
+          caption: "CONFIRM_GIAONHAN",
+          width: 80,
+          dataField: "CONFIRM_GIAONHAN",
+          allowSorting: true,
+          allowFiltering: true,
+          dataType: "string",
+          summaryType: "count",
+          format: "fixedPoint",
+          headerFilter: {
+            allowSearch: true,
+            height: 500,
+            width: 300,
+          },
+        },
+        {
+          caption: "VAO_KIEM",
+          width: 80,
+          dataField: "VAO_KIEM",
+          allowSorting: true,
+          allowFiltering: true,
+          dataType: "string",
+          summaryType: "count",
+          format: "fixedPoint",
+          headerFilter: {
+            allowSearch: true,
+            height: 500,
+            width: 300,
+          },
+        },
+        {
+          caption: "NHATKY_KT",
+          width: 80,
+          dataField: "NHATKY_KT",
+          allowSorting: true,
+          allowFiltering: true,
+          dataType: "string",
+          summaryType: "count",
+          format: "fixedPoint",
+          headerFilter: {
+            allowSearch: true,
+            height: 500,
+            width: 300,
+          },
+        },
+        {
+          caption: "RA_KIEM",
+          width: 80,
+          dataField: "RA_KIEM",
+          allowSorting: true,
+          allowFiltering: true,
+          dataType: "string",
+          summaryType: "count",
+          format: "fixedPoint",
+          headerFilter: {
+            allowSearch: true,
+            height: 500,
+            width: 300,
+          },
+        },
+        {
+          caption: "ROLL_QTY",
+          width: 80,
+          dataField: "ROLL_QTY",
+          allowSorting: true,
+          allowFiltering: true,
+          dataType: "number",
+          summaryType: "sum",
+          format: "fixedPoint",
+          headerFilter: {
+            allowSearch: true,
+            height: 500,
+            width: 300,
+          },
+        },
+        {
+          caption: "OUT_CFM_QTY",
+          width: 80,
+          dataField: "OUT_CFM_QTY",
+          allowSorting: true,
+          allowFiltering: true,
+          dataType: "number",
+          summaryType: "sum",
+          format: "fixedPoint",
+          headerFilter: {
+            allowSearch: true,
+            height: 500,
+            width: 300,
+          },
+        },
+        {
+          caption: "TOTAL_OUT_QTY",
+          width: 80,
+          dataField: "TOTAL_OUT_QTY",
+          allowSorting: true,
+          allowFiltering: true,
+          dataType: "number",
+          summaryType: "sum",
+          format: "fixedPoint",
+          headerFilter: {
+            allowSearch: true,
+            height: 500,
+            width: 300,
+          },
+        },
+        {
+          caption: "FR_RESULT",
+          width: 80,
+          dataField: "FR_RESULT",
+          allowSorting: true,
+          allowFiltering: true,
+          dataType: "number",
+          summaryType: "sum",
+          format: "fixedPoint",
+          headerFilter: {
+            allowSearch: true,
+            height: 500,
+            width: 300,
+          },
+        },
+        {
+          caption: "SR_RESULT",
+          width: 80,
+          dataField: "SR_RESULT",
+          allowSorting: true,
+          allowFiltering: true,
+          dataType: "number",
+          summaryType: "sum",
+          format: "fixedPoint",
+          headerFilter: {
+            allowSearch: true,
+            height: 500,
+            width: 300,
+          },
+        },
+        {
+          caption: "DC_RESULT",
+          width: 80,
+          dataField: "DC_RESULT",
+          allowSorting: true,
+          allowFiltering: true,
+          dataType: "number",
+          summaryType: "sum",
+          format: "fixedPoint",
+          headerFilter: {
+            allowSearch: true,
+            height: 500,
+            width: 300,
+          },
+        },
+        {
+          caption: "ED_RESULT",
+          width: 80,
+          dataField: "ED_RESULT",
+          allowSorting: true,
+          allowFiltering: true,
+          dataType: "number",
+          summaryType: "sum",
+          format: "fixedPoint",
+          headerFilter: {
+            allowSearch: true,
+            height: 500,
+            width: 300,
+          },
+        },
+        {
+          caption: "INSPECT_TOTAL_QTY",
+          width: 80,
+          dataField: "INSPECT_TOTAL_QTY",
+          allowSorting: true,
+          allowFiltering: true,
+          dataType: "number",
+          summaryType: "sum",
+          format: "fixedPoint",
+          headerFilter: {
+            allowSearch: true,
+            height: 500,
+            width: 300,
+          },
+        },
+        {
+          caption: "INSPECT_OK_QTY",
+          width: 80,
+          dataField: "INSPECT_OK_QTY",
+          allowSorting: true,
+          allowFiltering: true,
+          dataType: "number",
+          summaryType: "sum",
+          format: "fixedPoint",
+          headerFilter: {
+            allowSearch: true,
+            height: 500,
+            width: 300,
+          },
+        },
+        {
+          caption: "INS_OUT",
+          width: 80,
+          dataField: "INS_OUT",
+          allowSorting: true,
+          allowFiltering: true,
+          dataType: "number",
+          summaryType: "sum",
+          format: "fixedPoint",
+          headerFilter: {
+            allowSearch: true,
+            height: 500,
+            width: 300,
+          },
+        },
+        {
+          caption: "PD",
+          width: 80,
+          dataField: "PD",
+          allowSorting: true,
+          allowFiltering: true,
+          dataType: "number",
+          summaryType: "sum",
+          format: "fixedPoint",
+          headerFilter: {
+            allowSearch: true,
+            height: 500,
+            width: 300,
+          },
+        },
+        {
+          caption: "CAVITY",
+          width: 80,
+          dataField: "CAVITY",
+          allowSorting: true,
+          allowFiltering: true,
+          dataType: "number",
+          summaryType: "sum",
+          format: "fixedPoint",
+          headerFilter: {
+            allowSearch: true,
+            height: 500,
+            width: 300,
+          },
+        },
+        {
+          caption: "TOTAL_OUT_EA",
+          width: 80,
+          dataField: "TOTAL_OUT_EA",
+          allowSorting: true,
+          allowFiltering: true,
+          dataType: "number",
+          summaryType: "sum",
+          format: "fixedPoint",
+          headerFilter: {
+            allowSearch: true,
+            height: 500,
+            width: 300,
+          },
+        },
+        {
+          caption: "FR_EA",
+          width: 80,
+          dataField: "FR_EA",
+          allowSorting: true,
+          allowFiltering: true,
+          dataType: "number",
+          summaryType: "sum",
+          format: "fixedPoint",
+          headerFilter: {
+            allowSearch: true,
+            height: 500,
+            width: 300,
+          },
+        },
+        {
+          caption: "SR_EA",
+          width: 80,
+          dataField: "SR_EA",
+          allowSorting: true,
+          allowFiltering: true,
+          dataType: "number",
+          summaryType: "sum",
+          format: "fixedPoint",
+          headerFilter: {
+            allowSearch: true,
+            height: 500,
+            width: 300,
+          },
+        },
+        {
+          caption: "DC_EA",
+          width: 80,
+          dataField: "DC_EA",
+          allowSorting: true,
+          allowFiltering: true,
+          dataType: "number",
+          summaryType: "sum",
+          format: "fixedPoint",
+          headerFilter: {
+            allowSearch: true,
+            height: 500,
+            width: 300,
+          },
+        },
+        {
+          caption: "ED_EA",
+          width: 80,
+          dataField: "ED_EA",
+          allowSorting: true,
+          allowFiltering: true,
+          dataType: "number",
+          summaryType: "sum",
+          format: "fixedPoint",
+          headerFilter: {
+            allowSearch: true,
+            height: 500,
+            width: 300,
+          },
+        },
+        {
+          caption: "INSPECT_TOTAL_EA",
+          width: 80,
+          dataField: "INSPECT_TOTAL_EA",
+          allowSorting: true,
+          allowFiltering: true,
+          dataType: "number",
+          summaryType: "sum",
+          format: "fixedPoint",
+          headerFilter: {
+            allowSearch: true,
+            height: 500,
+            width: 300,
+          },
+        },
+        {
+          caption: "INSPECT_OK_EA",
+          width: 80,
+          dataField: "INSPECT_OK_EA",
+          allowSorting: true,
+          allowFiltering: true,
+          dataType: "number",
+          summaryType: "sum",
+          format: "fixedPoint",
+          headerFilter: {
+            allowSearch: true,
+            height: 500,
+            width: 300,
+          },
+        },
+        {
+          caption: "INS_OUTPUT_EA",
+          width: 80,
+          dataField: "INS_OUTPUT_EA",
+          allowSorting: true,
+          allowFiltering: true,
+          dataType: "number",
+          summaryType: "sum",
+          format: "fixedPoint",
+          headerFilter: {
+            allowSearch: true,
+            height: 500,
+            width: 300,
+          },
+        },
+        {
+          caption: "ROLL_LOSS_KT",
+          width: 80,
+          dataField: "ROLL_LOSS_KT",
+          allowSorting: true,
+          allowFiltering: true,
+          dataType: "number",
+          summaryType: "sum",
+          format: "fixedPoint",
+          headerFilter: {
+            allowSearch: true,
+            height: 500,
+            width: 300,
+          },
+        },
+        {
+          caption: "ROLL_LOSS",
+          width: 80,
+          dataField: "ROLL_LOSS",
+          allowSorting: true,
+          allowFiltering: true,
+          dataType: "number",
+          summaryType: "sum",
+          format: "fixedPoint",
+          headerFilter: {
+            allowSearch: true,
+            height: 500,
+            width: 300,
+          },
+        },
+        {
+          caption: "PROD_REQUEST_NO",
+          width: 80,
+          dataField: "PROD_REQUEST_NO",
+          allowSorting: true,
+          allowFiltering: true,
+          dataType: "string",
+          summaryType: "count",
+          format: "fixedPoint",
+          headerFilter: {
+            allowSearch: true,
+            height: 500,
+            width: 300,
+          },
+        },
+        {
+          caption: "PLAN_ID",
+          width: 80,
+          dataField: "PLAN_ID",
+          allowSorting: true,
+          allowFiltering: true,
+          dataType: "string",
+          summaryType: "count",
+          format: "fixedPoint",
+          headerFilter: {
+            allowSearch: true,
+            height: 500,
+            width: 300,
+          },
+        },
+        {
+          caption: "PLAN_EQ",
+          width: 80,
+          dataField: "PLAN_EQ",
+          allowSorting: true,
+          allowFiltering: true,
+          dataType: "string",
+          summaryType: "count",
+          format: "fixedPoint",
+          headerFilter: {
+            allowSearch: true,
+            height: 500,
+            width: 300,
+          },
+        },
+        {
+          caption: "G_CODE",
+          width: 80,
+          dataField: "G_CODE",
+          allowSorting: true,
+          allowFiltering: true,
+          dataType: "string",
+          summaryType: "count",
+          format: "fixedPoint",
+          headerFilter: {
+            allowSearch: true,
+            height: 500,
+            width: 300,
+          },
+        },
+        {
+          caption: "G_NAME",
+          width: 80,
+          dataField: "G_NAME",
+          allowSorting: true,
+          allowFiltering: true,
+          dataType: "string",
+          summaryType: "count",
+          format: "fixedPoint",
+          headerFilter: {
+            allowSearch: true,
+            height: 500,
+            width: 300,
+          },
+        },
+        {
+          caption: "FACTORY",
+          width: 80,
+          dataField: "FACTORY",
+          allowSorting: true,
+          allowFiltering: true,
+          dataType: "string",
+          summaryType: "count",
+          format: "fixedPoint",
+          headerFilter: {
+            allowSearch: true,
+            height: 500,
+            width: 300,
+          },
+        },
+      ],
+      store: datasxtable,
+    });
+    useEffect(() => {
+        load_material_table();
+      
+      //setColumnDefinition(column_inspect_output);
+    }, []);
+    return (
+      <div className='cust_manager2'>
+        <div className='tracuuDataInspection'>
+          <div className='tracuuDataInspectionform'>
+            <div className='forminput'>             
+              <div className='forminputcolumn'>               
+                <label>
+                  <b>Tên Vendor:</b>{" "}
+                  <input 
+                    type='text'
+                    placeholder='Tên Vendor'
+                    value={selectedRows?.CUST_NAME_KD}
+                    onChange={(e) => seMaterialInfo('CUST_NAME_KD',e.target.value)}
+                  ></input>
+                </label>
+                <label>
+                  <b>Mã Vật Liệu:</b>{" "}
+                  <input 
+                    type='text'
+                    placeholder='Mã Vật Liệu'
+                    value={selectedRows?.M_NAME}
+                    onChange={(e) => seMaterialInfo('M_NAME',e.target.value)}
+                  ></input>
+                </label>
+              </div> 
+              <div className='forminputcolumn'>
+                <label>
+                  <b>Mô tả:</b>{" "}
+                  <input 
+                    type='text'
+                    placeholder='Mô tả'
+                    value={selectedRows?.DESCR}
+                    onChange={(e) => seMaterialInfo('DESCR',e.target.value)}
+                  ></input>
+                </label>               
+              </div>                          
+            </div>
+            <div className='formbutton'>             
+              <button
+                className='tranhatky'
+                onClick={() => {   
+                                                    
+                }}
+              >
+                Add
+              </button>
+              <button
+                className='traxuatkiembutton'
+                onClick={() => {     
+                                                   
+                }}
+              >
+                Update
+              </button>
+            </div>
+          </div>
+          <div className='tracuuYCSXTable'>            
+            {materialDataTable}
+          </div>
+          {showhidePivotTable && (
+          <div className='pivottable1'>
+            <IconButton
+              className='buttonIcon'
+              onClick={() => {
+                setShowHidePivotTable(false);
+              }}
+            >
+              <AiFillCloseCircle color='blue' size={25} />
+              Close
+            </IconButton>
+            <PivotTable datasource={dataSource} tableID='invoicetablepivot' />
+          </div>
+        )}
+        </div>
+      </div>
+    );
+  };
+  export default QLVL;

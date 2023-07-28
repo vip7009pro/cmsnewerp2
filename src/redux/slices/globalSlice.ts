@@ -216,7 +216,7 @@ const initialState:GlobalInterface = {
     tabIndex: 0,
     tabModeSwap: true,
     loginState: false,
-    company: 'PVN',
+    company: 'CMS',
     theme: {
       CMS: {
         backgroundImage: `linear-gradient(0deg, rgba(77, 175, 252,0.8), rgba(159, 212, 254,0.8))`,
@@ -226,7 +226,7 @@ const initialState:GlobalInterface = {
         backgroundImage: `linear-gradient(0deg, rgba(214, 225, 132, 0.6), rgba(216, 255, 19, 0.6))`,
       }
     }
-}
+  }
 export const glbSlice = createSlice({
     name: 'totalSlice',
     initialState,
