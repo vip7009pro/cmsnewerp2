@@ -11,6 +11,8 @@ type english_sentences = {
   CONTENT: string;
 };
 export const vn_lang = {
+  quanlyvatlieu:"Quản Lý Vật Liệu",
+  phongmuahang:"Phòng Mua Hàng",
   quanlygia: "Quản Lý Giá",
   listchamcong: "Bảng Chấm Công",
   phonghanhchinhnhansu: "Phòng HC-NS",
@@ -83,6 +85,8 @@ export const vn_lang = {
   eqstatus: "Trạng Thái Máy",
 };
 export const en_lang = {
+  quanlyvatlieu:"Material Management",
+  phongmuahang:"Purchasing Department",
   quanlygia: "Quotation Manager",
   listchamcong: "Attendance list",
   phonghanhchinhnhansu: "HR",
@@ -156,6 +160,8 @@ export const en_lang = {
   datasanxuat: "Production DATA",
 };
 export const kr_lang = {
+  quanlyvatlieu:"자재 관리",
+  phongmuahang:"구매팀",
   quanlygia: "가격 관리",
   listchamcong: "출석 리스트",
   phonghanhchinhnhansu: "인사팀",
