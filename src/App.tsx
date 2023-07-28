@@ -31,6 +31,8 @@ import CAPA_MANAGER from "./pages/qlsx/QLSXPLAN/CAPA/CAPA_MANAGER";
 import PLANRESULT from "./pages/sx/PLANRESULT/PLANRESULT";
 import BANGCHAMCONG from "./pages/nhansu/BangChamCong/BangChamCong";
 import QuotationTotal from "./pages/kinhdoanh/quotationmanager/QuotationTotal";
+import MUAHANG from "./pages/muahang/MUAHANG";
+import QLVL from "./pages/muahang/quanlyvatlieu/QLVL";
 /* import DATASX2 from "./pages/qlsx/QLSXPLAN/DATASX/DATASX2";
 import Home from "./pages/home/Home";
 import DiemDanhNhom from "./pages/nhansu/DiemDanhNhom/DiemDanhNhom";
@@ -647,6 +649,22 @@ function App() {
                         <Route path='quanlycodebom' element={<BOM_MANAGER />} />
                         <Route path='capamanager' element={<CAPASX />} />
                         <Route path='qlsxmrp' element={<CAPASX />} />
+                      </Route>
+                      <Route
+                        path='phongmuahang'
+                        element={
+                          <ProtectedRoute
+                            user={globalUserData}
+                            maindeptname='all'
+                            jobname='Leader'
+                          >
+                            <MUAHANG />
+                          </ProtectedRoute>
+                        }
+                      >
+                        <Route index element={<MUAHANG />} />                        
+                        <Route path='quanlyvatlieu' element={<QLVL />} />                        
+                        <Route path='mrp' element={<QLVL />} />                        
                       </Route>
                       <Route
                         path='qc'
