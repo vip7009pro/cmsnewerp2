@@ -12,6 +12,7 @@ import {
 } from "../../../../redux/slices/globalSlice";
 import "./CHITHI_COMPONENT.scss";
 import Barcode from 'react-barcode';
+
 interface YCSXTableData {
   DESCR?: string;
   PDBV_EMPL?: string;
@@ -162,6 +163,9 @@ const CHITHI_COMPONENT = ({
   PLAN_ORDER,  
   PROCESS_NUMBER
 }: YCSXTableData) => {
+  const company: string = useSelector(
+    (state: RootState) => state.totalSlice.company
+  );
   const [checklieuchinh,setCheckLieuChinh] = useState(false);
   const userData: UserData | undefined = useSelector(
     (state: RootState) => state.totalSlice.userData
@@ -228,6 +232,7 @@ const CHITHI_COMPONENT = ({
   ]);
   const [chithidatatable, setChiThiDataTable] = useState<QLSXCHITHIDATA[]>([]);
   const [checklieuqlsx, setChecklieuqlsx] = useState(false);
+  const [po_balance, setPoBalance] = useState(0);
   const [maxLieu, setMaxLieu]=  useState(12);
   const handleGetChiThiTable = async () => {
     generalQuery("getchithidatatable", {
@@ -377,11 +382,27 @@ const CHITHI_COMPONENT = ({
       localStorage.setItem("maxLieu", '12');
     }
   }
+  const checkPOBalance = ()=> {
+     generalQuery("checkpobalance_tdycsx", {
+      G_CODE: G_CODE,
+    })
+      .then((response) => {
+        if (response.data.tk_status !== "NG") {
+          //console.log(response.data.data);
+          setPoBalance(response.data.data[0].PO_BALANCE);
+        } else {
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
   useEffect(() => {
     checkMaxLieu();
     check_lieuql_sx_m140();
     initCTSX();
     handleGetChiThiTable();
+    checkPOBalance();
   }, [PLAN_ID]);
   return (
     <div className='chithicomponent'>     
@@ -394,7 +415,8 @@ const CHITHI_COMPONENT = ({
       {
         <div className='tieudeycsx'>
           <div className='leftlogobarcode'>
-            <img alt='logo' src='/logocmsvina.png' width={160} height={40} />
+            {company === 'CMS' && <img alt='logo' src='/logocmsvina.png' width={160} height={40} />}
+            {company === 'PVN' && <img alt='logo' src='/logopvn_big.png' width={160} height={40} />}
             <Barcode
               value={`${PLAN_ID}`}              
               format='CODE128'
@@ -441,7 +463,7 @@ const CHITHI_COMPONENT = ({
       }
       {(check_dinh_muc() && checklieuqlsx && PLAN_QTY !==0 && PROCESS_NUMBER !==0) && <div className='thongtinycsx'>
         <div className='text1'>
-          1. 지시 정보 Thông tin chỉ thị ({request_codeinfo[0].G_NAME} ) __ PO_TYPE: {request_codeinfo[0].PO_TYPE} 
+          1. 지시 정보 Thông tin chỉ thị ({request_codeinfo[0].G_NAME} ) __ PO_TYPE: {request_codeinfo[0].PO_TYPE}
         </div>
         <div className='thongtinyeucau'>
           <table className='ttyc1'>
@@ -615,7 +637,7 @@ const CHITHI_COMPONENT = ({
               background='#fff'
               lineColor='black'
               margin={0}
-            />_{request_codeinfo[0]?.FSC ==='Y' ? '(FSC Mix Credit)':''}</div>
+            />_{request_codeinfo[0]?.FSC ==='Y' ? '(FSC Mix Credit)':''}  POBALANCE: {po_balance?.toLocaleString('en-US')} </div>
             
         <div className='thongtinyeucau'>
           <table className='ttyc1'>
