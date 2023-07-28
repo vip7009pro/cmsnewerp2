@@ -200,6 +200,9 @@ interface QLSXPLANDATA {
   }
 
 const CHITHI_COMPONENT2 = ({PLAN_LIST}: PLAN_COMBO) => {
+  const company: string = useSelector(
+    (state: RootState) => state.totalSlice.company
+  );
   const [checklieuchinh,setCheckLieuChinh] = useState(false);
     //console.log(PLAN_LIST);
     let main_plan: QLSXPLANDATA = PLAN_LIST.filter((element, index)=> element.STEP ===0)[0];    
@@ -266,6 +269,7 @@ const CHITHI_COMPONENT2 = ({PLAN_LIST}: PLAN_COMBO) => {
   ]);
   const [chithidatatable, setChiThiDataTable] = useState<QLSXCHITHIDATA[]>([]);
   const [maxLieu, setMaxLieu]=  useState(12);
+  const [po_balance, setPoBalance] = useState(0);
   const handleGetChiThiTable = async () => {
     generalQuery("getchithidatatable", {
       PLAN_ID: main_plan.PLAN_ID,
@@ -374,17 +378,35 @@ const CHITHI_COMPONENT2 = ({PLAN_LIST}: PLAN_COMBO) => {
       localStorage.setItem("maxLieu", '12');
     }
   }
+  const checkPOBalance = ()=> {
+    generalQuery("checkpobalance_tdycsx", {
+     G_CODE: main_plan.G_CODE,
+   })
+     .then((response) => {
+       if (response.data.tk_status !== "NG") {
+         //console.log(response.data.data);
+         setPoBalance(response.data.data[0].PO_BALANCE);
+       } else {
+       }
+     })
+     .catch((error) => {
+       console.log(error);
+     });
+ }
   useEffect(() => {
     checkMaxLieu();
     initCTSX();
     handleGetChiThiTable();
+    checkPOBalance();
   }, []);
   return (
     <div className='chithicomponent2'>
       {
         <div className='tieudeycsx'>
           <div className='leftlogobarcode'>
-            {(request_codeinfo[0].PDBV==='Y' && checklieuchinh ===true) && <img alt='logo' src='/logocmsvina.png' width={160} height={40} />}
+            {/* {(request_codeinfo[0].PDBV==='Y' && checklieuchinh ===true) && <img alt='logo' src='/logocmsvina.png' width={160} height={40} />} */}
+            {company === 'CMS' && <img alt='logo' src='/logocmsvina.png' width={160} height={40} />}
+            {company === 'PVN' && <img alt='logo' src='/logopvn_big.png' width={160} height={40} />}
             <Barcode
               value={main_plan.PLAN_ID}
               format='CODE128'
@@ -511,7 +533,6 @@ const CHITHI_COMPONENT2 = ({PLAN_LIST}: PLAN_COMBO) => {
               <td>MIN QTY</td>
                 <td>Min CD1:{(request_codeinfo[0]?.UPH1/6).toLocaleString('en-US',{maximumFractionDigits:0})}  |  Min CD2: {(request_codeinfo[0]?.UPH2/6).toLocaleString('en-US',{maximumFractionDigits:0})}</td>
               </tr>
-
               <tr>
                 <td>Chú ý (Kdoanh)</td>
                 <td>{request_codeinfo[0].REMK}</td>
@@ -613,7 +634,7 @@ const CHITHI_COMPONENT2 = ({PLAN_LIST}: PLAN_COMBO) => {
             </tbody>
           </table>
         </div> */}
-        <div className='text1'>2. Thông tin combo chỉ thị</div>
+        <div className='text1'>2. Thông tin combo chỉ thị_  POBALANCE: {po_balance?.toLocaleString('en-US')} </div>
         <div className='combochithi'>
           <table>
             <thead>
