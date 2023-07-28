@@ -109,17 +109,30 @@ export function login(user: string, pass: string) {
               })
             );            
           } else {
-            //console.log(data.data.data);            
-            store.dispatch(changeUserData(data.data.data));
-            //dispatch(update_socket(data.data.data.EMPL_NO + " da dangnhap"));
-            store.dispatch(
-              update_socket({
-                event: "login",
-                data: data.data.data.EMPL_NO,
-              })
-            );
-            /* setLoginState(true); */
-            store.dispatch(loginSlice(true));
+            //console.log(data.data.data);    
+            if(data.data.data.WORK_STATUS_CODE !== 0)
+            {
+              store.dispatch(changeUserData(data.data.data));
+              //dispatch(update_socket(data.data.data.EMPL_NO + " da dangnhap"));
+              store.dispatch(
+                update_socket({
+                  event: "login",
+                  data: data.data.data.EMPL_NO,
+                })
+              );
+              /* setLoginState(true); */
+              store.dispatch(loginSlice(true));
+              setTimeout(() => {
+                /*  window.location.href = "/"; */
+                 store.dispatch(loginSlice(true));          
+               }, 1000);
+
+            }     
+            else
+            {
+              Swal.fire("Thông báo","Nghỉ việc rồi không truy cập được!","error");
+            }   
+           
           }
         })
         .catch((err) => {
@@ -127,12 +140,9 @@ export function login(user: string, pass: string) {
         });
 
         
-        setTimeout(() => {
-         /*  window.location.href = "/"; */
-          store.dispatch(loginSlice(true));          
-        }, 1000);
-      } else {
-        Swal.fire("Tên đăng nhập hoặc mật khẩu sai");
+      
+      }  else {
+        Swal.fire("Thông báo","Tên đăng nhập hoặc mật khẩu sai!","error");
       }
     })
     .catch((error: any) => {
