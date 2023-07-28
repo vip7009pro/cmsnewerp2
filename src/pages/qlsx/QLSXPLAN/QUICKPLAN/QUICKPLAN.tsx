@@ -808,34 +808,60 @@ const QUICKPLAN = () => {
     },
     {
       field: "CD1",
-      headerName: "KQ_CD1",
-      width: 80,
+      headerName: "CD1",
+      width: 60,
       editable: false,
       renderCell: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            {params.row.CD1.toLocaleString("en", "US")}
+            {params.row.CD1?.toLocaleString("en", "US")}
           </span>
         );
       },
     },
     {
       field: "CD2",
-      headerName: "KQ_CD2",
-      width: 80,
+      headerName: "CD2",
+      width: 60,
       editable: false,
       renderCell: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            {params.row.CD2.toLocaleString("en", "US")}
+            {params.row.CD2?.toLocaleString("en", "US")}
+          </span>
+        );
+      },
+    },
+    {
+      field: "CD3",
+      headerName: "CD3",
+      width: 60,
+      editable: false,
+      renderCell: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            {params.row.CD3?.toLocaleString("en", "US")}
+          </span>
+        );
+      },
+    },
+    {
+      field: "CD4",
+      headerName: "CD4",
+      width: 60,
+      editable: false,
+      renderCell: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            {params.row.CD4?.toLocaleString("en", "US")}
           </span>
         );
       },
     },
     {
       field: "TON_CD1",
-      headerName: "TONYCSX_CD1",
-      width: 120,
+      headerName: "TON_CD1",
+      width: 80,
       editable: false,
       renderCell: (params: any) => {
         return (
@@ -847,13 +873,39 @@ const QUICKPLAN = () => {
     },
     {
       field: "TON_CD2",
-      headerName: "TONYCSX_CD2",
-      width: 120,
+      headerName: "TON_CD2",
+      width: 80,
       editable: false,
       renderCell: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
             {params.row.TON_CD2.toLocaleString("en", "US")}
+          </span>
+        );
+      },
+    },
+    {
+      field: "TON_CD3",
+      headerName: "TON_CD3",
+      width: 80,
+      editable: false,
+      renderCell: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            {params.row.TON_CD3.toLocaleString("en", "US")}
+          </span>
+        );
+      },
+    },
+    {
+      field: "TON_CD4",
+      headerName: "TON_CD4",
+      width: 80,
+      editable: false,
+      renderCell: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            {params.row.TON_CD4.toLocaleString("en", "US")}
           </span>
         );
       },
@@ -877,8 +929,8 @@ const QUICKPLAN = () => {
     },
     {
       field: "PROCESS_NUMBER",
-      headerName: "PROCESS_NUMBER",
-      width: 110,
+      headerName: "PROC_NUM",
+      width: 80,
       editable: editplan,
       renderCell: (params: any) => {
         if (
@@ -895,12 +947,14 @@ const QUICKPLAN = () => {
     },
     {
       field: "PLAN_ORDER",
-      headerName: "PLAN_ORDER",
-      width: 110,
+      headerName: "ORDER",
+      width: 60,
       editable: editplan,
     },
-    { field: "EQ1", headerName: "EQ1", width: 80, editable: editplan },
-    { field: "EQ2", headerName: "EQ2", width: 80, editable: editplan },
+    { field: "EQ1", headerName: "EQ1", width: 50, editable: editplan },
+    { field: "EQ2", headerName: "EQ2", width: 50, editable: editplan },
+    { field: "EQ3", headerName: "EQ3", width: 50, editable: editplan },
+    { field: "EQ4", headerName: "EQ4", width: 50, editable: editplan },
     {
       field: "PLAN_EQ",
       headerName: "PLAN_EQ",
@@ -914,11 +968,11 @@ const QUICKPLAN = () => {
         }
       },
     },
-    { field: "STEP", headerName: "STEP", width: 60, editable: editplan },
+    { field: "STEP", headerName: "STEP", width: 50, editable: editplan },
     {
       field: "PLAN_FACTORY",
-      headerName: "FACTORY",
-      width: 80,
+      headerName: "NM",
+      width: 50,
       editable: false,
     },
     {
@@ -1665,7 +1719,7 @@ const QUICKPLAN = () => {
               "error"
             );
           } else {
-            loadQLSXPlan(selectedPlanDate);
+            //loadQLSXPlan(selectedPlanDate);
             Swal.fire("Thông báo", "Lưu thành công", "success");
           }
         }
