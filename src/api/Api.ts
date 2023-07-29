@@ -17,17 +17,13 @@ export function getSever(): string {
 }
 
 let API_URL = "http://14.160.33.94:5011/api";
-
-
 let UPLOAD_URL = "http://14.160.33.94:5011/uploadfile";
-
 
 let server_ip_local: any = localStorage.getItem("server_ip")?.toString();
 if (server_ip_local !== undefined) {
   API_URL = server_ip_local;
 } else {
 }
-
 
 export function login(user: string, pass: string) {
   axios
@@ -137,9 +133,7 @@ export function login(user: string, pass: string) {
         })
         .catch((err) => {
           console.log(err + " ");
-        });
-
-        
+        });        
       
       }  else {
         Swal.fire("Thông báo","Tên đăng nhập hoặc mật khẩu sai!","error");

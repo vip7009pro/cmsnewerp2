@@ -315,7 +315,7 @@ export const glbSlice = createSlice({
         },
         changeServer: (state,action: PayloadAction<string>)=> {
           state.server_ip = action.payload;
-          Swal.fire('Thông báo','Đã đổi server sang : ' + action.payload);
+          //Swal.fire('Thông báo','Đã đổi server sang : ' + action.payload);
         },
         addTab:  (state,action: PayloadAction<ELE_ARRAY>)=> {     
           if(state.tabs.filter((e: ELE_ARRAY, index: number)=> e.ELE_CODE !=='-1').length <8)

@@ -167,7 +167,7 @@ const CAPASX = () => {
       ED2: EDNM2,
      } 
 
-     //console.log(eq_sttdata);
+     console.log(eq_sttdata);
      let FR_EMPL = {
       TNM1:0,
       TNM2:0,
@@ -213,7 +213,7 @@ const CAPASX = () => {
             }
           );
           setDataDiemDanh(loaded_data);
-          FR_EMPL = {
+          ED_EMPL = {
             TNM1: loaded_data.filter((ele: DATA_DIEM_DANH, index: number) => {
               return ele.WORK_POSITION_NAME === "SX_ED1";
             }).length,
@@ -255,7 +255,7 @@ const CAPASX = () => {
               return ele.WORK_POSITION_NAME === "SX_DC3" && ele.ON_OFF === 1;
             }).length,
           });
-          ED_EMPL = ({
+          FR_EMPL = ({
             TNM1: loaded_data.filter((ele: DATA_DIEM_DANH, index: number) => {
               return ele.WORK_POSITION_NAME === "SX_FR1";
             }).length,
@@ -955,7 +955,7 @@ const CAPASX = () => {
       <Chart
         id='workforcechart'
         title='PRODUCTION CAPA BY DELIVERY PLAN'        
-        dataSource={dlleadtime.filter((e:DELIVERY_PLAN_CAPA, index:number)=> e.EQ===selectedMachine && e.FACTORY===selectedFactory)}
+        dataSource={dlleadtime}
         width={1400}
         resolveLabelOverlapping="stack"
       >
@@ -1001,7 +1001,7 @@ const CAPASX = () => {
         ></Legend>
       </Chart>
     );
-  }, [dlleadtime,selectedMachine,selectedFactory,selectedPlanDate,datadiemdanh]);
+  }, [dlleadtime]);
   const leadtimechartMM = useMemo(() => {
     return (
       <Chart
@@ -1628,7 +1628,7 @@ const CAPASX = () => {
               {/* REAL WORKFORCE*/}
               <td style={{ color: "#F73A8A", fontWeight: "normal" }}>
                 {Math.min(
-                  ((ED_EMPL.TNM1 + ED_EMPL.TNM2) / 4) * dailytime,
+                  ((ED_EMPL.TNM1 + ED_EMPL.TNM2) / 2) * dailytime,
                   machinecount.filter(
                     (ele: MACHINE_COUNTING, index: number) =>
                       ele.EQ_NAME === "ED"
@@ -1638,7 +1638,7 @@ const CAPASX = () => {
               {/* EQ AVAILABLE CAPA*/}
               <td style={{ color: "#F73A8A", fontWeight: "normal" }}>
                 {Math.min(
-                  ((ED_EMPL.NM1 + ED_EMPL.NM2) / 4) * dailytime,
+                  ((ED_EMPL.NM1 + ED_EMPL.NM2) / 2) * dailytime,
                   machinecount.filter(
                     (ele: MACHINE_COUNTING, index: number) =>
                       ele.EQ_NAME === "ED"
@@ -1680,7 +1680,7 @@ const CAPASX = () => {
                       ele.EQ_NAME === "ED"
                   )[0]?.YCSX_BALANCE /
                   Math.min(
-                    ((ED_EMPL.TNM1 + ED_EMPL.TNM2) / 4) * dailytime,
+                    ((ED_EMPL.TNM1 + ED_EMPL.TNM2) / 2) * dailytime,
                     machinecount.filter(
                       (ele: MACHINE_COUNTING, index: number) =>
                         ele.EQ_NAME === "ED"
@@ -1696,7 +1696,7 @@ const CAPASX = () => {
                       ele.EQ_NAME === "ED"
                   )[0]?.YCSX_BALANCE /
                   Math.min(
-                    ((ED_EMPL.NM1 + ED_EMPL.NM2) / 4) * dailytime,
+                    ((ED_EMPL.NM1 + ED_EMPL.NM2) / 2) * dailytime,
                     machinecount.filter(
                       (ele: MACHINE_COUNTING, index: number) =>
                         ele.EQ_NAME === "ED"

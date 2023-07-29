@@ -62,8 +62,10 @@ const Login = () => {
     let server_ip_local: any = localStorage.getItem("server_ip")?.toString();
     if (server_ip_local !== undefined) {
       setServer_String(server_ip_local);
+      dispatch(changeServer(server_ip_local));
     } else {      
       localStorage.setItem("server_ip", 'http://14.160.33.94:5011/api');
+      dispatch(changeServer('http://14.160.33.94:5011/api'));
     }
     let saveLang: any = localStorage.getItem("lang")?.toString();
     if (saveLang !== undefined) {
@@ -150,11 +152,10 @@ const Login = () => {
               onChange={(e) => {
                 localStorage.setItem("server_ip", e.target.value);
                 setServer_String(e.target.value);
+                dispatch(changeServer(e.target.value));
               }}
             >
-              <option value={"http://14.160.33.94:5011/api"}>
-                MAIN_SERVER
-              </option>
+              <option value={"http://14.160.33.94:5011/api"}>MAIN_SERVER</option>
               <option value={"http://14.160.33.94:3007/api"}>SUB_SERVER</option>
               <option value={"http://localhost:3007/api"}>TEST_SERVER</option>             
             </select>
