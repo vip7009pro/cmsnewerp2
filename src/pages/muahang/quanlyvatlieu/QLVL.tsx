@@ -33,77 +33,12 @@ import {
   import PivotTable from "../../../components/PivotChart/PivotChart";
   import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
   import { ResponsiveContainer } from "recharts";
-  interface MATERIAL_STATUS {
-    INS_DATE: string;
-    FACTORY: string;
-    M_LOT_NO: string;
-    M_CODE: string;
-    M_NAME: string;
-    WIDTH_CD: number;
-    ROLL_QTY: number;
-    OUT_CFM_QTY: number;
-    TOTAL_OUT_QTY: number;
-    PROD_REQUEST_NO: string;
-    PLAN_ID: string;
-    PLAN_EQ: string;
-    G_CODE: string;
-    G_NAME: string;
-    XUAT_KHO: string;
-    VAO_FR: string;
-    VAO_SR: string;
-    VAO_DC: string;
-    VAO_ED: string;
-    CONFIRM_GIAONHAN: string;
-    VAO_KIEM: string;
-    NHATKY_KT: string;
-    RA_KIEM: string;
-    INSPECT_TOTAL_QTY: number;
-    INSPECT_OK_QTY: number;
-    INS_OUT: number;
-    ROLL_LOSS_KT: number;
-    ROLL_LOSS: number;
-    PD: number;
-    CAVITY: number;
-    FR_RESULT: number;
-    SR_RESULT: number;
-    DC_RESULT: number;
-    ED_RESULT: number;
-    TOTAL_OUT_EA: number;
-    FR_EA: number;
-    SR_EA: number;
-    DC_EA: number;
-    ED_EA: number;
-    INSPECT_TOTAL_EA: number;
-    INSPECT_OK_EA: number;
-    INS_OUTPUT_EA: number;
-  }
-  interface LOSS_TABLE_DATA {
-    XUATKHO_MET: number;
-    INSPECTION_INPUT: number;
-    INSPECTION_OK: number;
-    INSPECTION_OUTPUT: number;
-    TOTAL_LOSS_KT: number;
-    TOTAL_LOSS: number;
-  }  
-  interface CUST_INFO {
-    id: string;
-    CUST_CD: string,
-    CUST_NAME_KD: string,
-    CUST_NAME: string,
-    CUST_ADDR1: string,
-    TAX_NO: string,
-    CUST_NUMBER: string,
-    BOSS_NAME: string,
-    TEL_NO1: string,
-    FAX_NO: string,
-    CUST_POSTAL: string,
-    REMK: string,
-    INS_DATE: string,
-    INS_EMPL: string,
-    UPD_DATE: string,
-    UPD_EMPL: string,
-  }
 
+  interface CustomerListData {
+    CUST_CD: string;
+    CUST_NAME_KD: string;
+    CUST_NAME: string;
+  }
   interface MATERIAL_TABLE_DATA {
     M_ID: number;
     M_NAME: string;
@@ -115,20 +50,17 @@ import {
     SLITTING_PRICE: number;
     MASTER_WIDTH: number;
     ROLL_LENGTH: number;
+    INS_DATE: string,
+    INS_EMPL: string, 
+    UPD_DATE: string,
+    UPD_EMPL: string,
   }
 
   const QLVL = () => {
     const [showhidePivotTable, setShowHidePivotTable] = useState(false);
     const [material_table_data, set_material_table_data] = useState<Array<MATERIAL_TABLE_DATA>>([]);
     const [custinfodatatable, seMaterialInfoDataTable] = useState<Array<any>>([]);
-    const [losstableinfo, setLossTableInfo] = useState<LOSS_TABLE_DATA>({
-      XUATKHO_MET: 0,
-      INSPECTION_INPUT: 0,
-      INSPECTION_OK: 0,
-      INSPECTION_OUTPUT: 0,
-      TOTAL_LOSS_KT: 0,
-      TOTAL_LOSS: 0,
-    });
+
     const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
     const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));
     const [codeKD, setCodeKD] = useState("");
@@ -151,7 +83,11 @@ import {
         CMSPRICE: 0,
         SLITTING_PRICE: 0,
         MASTER_WIDTH: 0,
-        ROLL_LENGTH: 0,     
+        ROLL_LENGTH: 0,   
+        INS_DATE:'',
+        INS_EMPL: '',
+        UPD_DATE:'',
+        UPD_EMPL:''  
     });
     const load_material_table = () => {
         generalQuery("get_material_table", {
@@ -164,6 +100,14 @@ import {
                 (element: MATERIAL_TABLE_DATA, index: number) => {
                     return {
                     ...element,
+                    DESCR: element.DESCR === null? '': element.DESCR,
+                    SSPRICE: element.SSPRICE === null? 0: element.SSPRICE,
+                    CMSPRICE: element.CMSPRICE === null? 0: element.CMSPRICE,
+                    SLITTING_PRICE: element.SLITTING_PRICE === null? 0: element.SLITTING_PRICE,
+                    MASTER_WIDTH: element.MASTER_WIDTH === null? 0: element.MASTER_WIDTH,
+                    ROLL_LENGTH: element.ROLL_LENGTH === null? 0: element.ROLL_LENGTH,
+                    INS_DATE: moment.utc(element.INS_DATE).format('YYYY-MM-DD HH:mm:ss'),
+                    UPD_DATE: moment.utc(element.UPD_DATE).format('YYYY-MM-DD HH:mm:ss'),
                     id: index,
                     };
                 }
@@ -189,6 +133,63 @@ import {
       //console.log(tempcodefullinfo);
       setSelectedRows(tempCustInfo);
     };
+    const addMaterial = async ()=> {
+        let materialExist: boolean = false;
+        await generalQuery("checkMaterialExist", {
+            M_NAME: selectedRows.M_NAME,          
+        })
+        .then((response) => {
+        //console.log(response.data.data);
+        if (response.data.tk_status !== "NG") {   
+            materialExist = true;            
+            
+        } else { 
+            materialExist = false;
+        }
+        })
+        .catch((error) => {
+        console.log(error);
+        });
+
+        if(materialExist === false)
+        {
+            await generalQuery("addMaterial", selectedRows)
+            .then((response) => {
+            //console.log(response.data.data);
+            if (response.data.tk_status !== "NG") {   
+                Swal.fire('Thông báo','Thêm vật liệu thành công','success'); 
+            } else {
+               
+            }
+            })
+            .catch((error) => {
+            console.log(error);
+            });
+            
+        }
+        else
+        {
+            Swal.fire('Thông báo','Vật liệu đã tồn tại','error');
+        }  
+    }
+
+    const updateMaterial = async ()=> {
+
+             generalQuery("updateMaterial", selectedRows)
+            .then((response) => {
+            //console.log(response.data.data);
+            if (response.data.tk_status !== "NG") { 
+                Swal.fire('Thông báo','Update vật liệu thành công','success');
+            } else {
+               
+            }
+            })
+            .catch((error) => {
+            console.log(error);
+            });
+            
+        
+    }
 
     const handleSearchCodeKeyDown = (
       e: React.KeyboardEvent<HTMLInputElement>
@@ -275,6 +276,20 @@ import {
               infoText='Page #{0}. Total: {1} ({2} items)'
               displayMode='compact'
             />
+            <Column dataField='M_ID' caption='M_ID' width={100}></Column>
+            <Column dataField='M_NAME' caption='M_NAME' width={100}></Column>
+            <Column dataField='DESCR' caption='DESCR' width={100}></Column>
+            <Column dataField='CUST_CD' caption='CUST_CD' width={100}></Column>
+            <Column dataField='CUST_NAME_KD' caption='CUST_NAME_KD' width={100}></Column>
+            <Column dataField='SSPRICE' caption='OPEN_PRICE' width={100}></Column>
+            <Column dataField='CMSPRICE' caption='ORIGIN_PRICE' width={100}></Column>
+            <Column dataField='SLITTING_PRICE' caption='SLITTING_PRICE' width={100}></Column>
+            <Column dataField='MASTER_WIDTH' caption='MASTER_WIDTH' width={100}></Column>
+            <Column dataField='ROLL_LENGTH' caption='ROLL_LENGTH' width={100}></Column>
+            <Column dataField='INS_DATE' caption='INS_DATE' width={100}></Column>
+            <Column dataField='INS_EMPL' caption='INS_EMPL' width={100}></Column>
+            <Column dataField='UPD_DATE' caption='UPD_DATE' width={100}></Column>
+            <Column dataField='UPD_EMPL' caption='UPD_EMPL' width={100}></Column>
             <Summary>
               <TotalItem
                 alignment='right'
@@ -289,6 +304,19 @@ import {
       ),
       [material_table_data]
     );
+    const [customerList, setCustomerList] = useState<CustomerListData[]>([]);
+    const getcustomerlist = () => {
+        generalQuery("selectcustomerList", {})
+          .then((response) => {
+            if (response.data.tk_status !== "NG") {
+              setCustomerList(response.data.data);
+            } else {
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      };
     const dataSource = new PivotGridDataSource({
       fields: [
         {
@@ -926,24 +954,15 @@ import {
     });
     useEffect(() => {
         load_material_table();
-      
+        getcustomerlist();      
       //setColumnDefinition(column_inspect_output);
     }, []);
     return (
-      <div className='cust_manager2'>
+      <div className='qlvl'>
         <div className='tracuuDataInspection'>
           <div className='tracuuDataInspectionform'>
             <div className='forminput'>             
-              <div className='forminputcolumn'>               
-                <label>
-                  <b>Tên Vendor:</b>{" "}
-                  <input 
-                    type='text'
-                    placeholder='Tên Vendor'
-                    value={selectedRows?.CUST_NAME_KD}
-                    onChange={(e) => seMaterialInfo('CUST_NAME_KD',e.target.value)}
-                  ></input>
-                </label>
+              <div className='forminputcolumn'>
                 <label>
                   <b>Mã Vật Liệu:</b>{" "}
                   <input 
@@ -952,6 +971,22 @@ import {
                     value={selectedRows?.M_NAME}
                     onChange={(e) => seMaterialInfo('M_NAME',e.target.value)}
                   ></input>
+                </label>
+                <label>
+                <b>Vendor:</b>{" "}
+                      <select
+                        name='vendor'
+                        value={selectedRows?.CUST_CD}
+                        onChange={(e) => {
+                            seMaterialInfo("CUST_CD", e.target.value);
+                        }}
+                      >
+                        {customerList.map((element, index) => (
+                          <option key={index} value={element.CUST_CD}>
+                            {element.CUST_NAME_KD}
+                          </option>
+                        ))}
+                      </select>
                 </label>
               </div> 
               <div className='forminputcolumn'>
@@ -964,21 +999,79 @@ import {
                     onChange={(e) => seMaterialInfo('DESCR',e.target.value)}
                   ></input>
                 </label>               
+                <label>
+                  <b>Open Price:</b>{" "}
+                  <input 
+                    type='text'
+                    placeholder='Mô tả'
+                    value={selectedRows?.SSPRICE}
+                    onChange={(e) => seMaterialInfo('SSPRICE',e.target.value)}
+                  ></input>
+                </label>               
+              </div>                          
+              <div className='forminputcolumn'>
+                <label>
+                  <b>Origin Price:</b>{" "}
+                  <input 
+                    type='text'
+                    placeholder='Mô tả'
+                    value={selectedRows?.CMSPRICE}
+                    onChange={(e) => seMaterialInfo('CMSPRICE',e.target.value)}
+                  ></input>
+                </label>               
+                <label>
+                  <b>Slitting Price:</b>{" "}
+                  <input 
+                    type='text'
+                    placeholder='Mô tả'
+                    value={selectedRows?.SLITTING_PRICE}
+                    onChange={(e) => seMaterialInfo('SLITTING_PRICE',e.target.value)}
+                  ></input>
+                </label>               
+                           
+              </div>                          
+              <div className='forminputcolumn'>
+              <label>
+                  <b>Master Width:</b>{" "}
+                  <input 
+                    type='text'
+                    placeholder='Master width'
+                    value={selectedRows?.MASTER_WIDTH}
+                    onChange={(e) => seMaterialInfo('MASTER_WIDTH',e.target.value)}
+                  ></input>
+                </label>   
+                <label>
+                  <b>Roll Length:</b>{" "}
+                  <input 
+                    type='text'
+                    placeholder='Roll length'
+                    value={selectedRows?.ROLL_LENGTH}
+                    onChange={(e) => seMaterialInfo('ROLL_LENGTH',e.target.value)}
+                  ></input>
+                </label>  
               </div>                          
             </div>
             <div className='formbutton'>             
               <button
                 className='tranhatky'
-                onClick={() => {   
-                                                    
+                onClick={() => { 
+                    load_material_table();
+                }}
+              >
+                Refesh
+              </button>
+              <button
+                className='tranhatky'
+                onClick={() => { 
+                    addMaterial();
                 }}
               >
                 Add
               </button>
               <button
                 className='traxuatkiembutton'
-                onClick={() => {     
-                                                   
+                onClick={() => {  
+                    updateMaterial(); 
                 }}
               >
                 Update
