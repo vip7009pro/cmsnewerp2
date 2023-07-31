@@ -43,6 +43,7 @@ import { FcApproval } from "react-icons/fc";
 import { GrUpdate } from "react-icons/gr";
 import { ResponsiveContainer } from "recharts";
 import { TbLogout } from "react-icons/tb";
+import QuotationForm from "./QuotationForm/QuotationForm";
 interface BANGGIA_DATA {
   CUST_NAME_KD: string;
   G_NAME: string;
@@ -187,6 +188,7 @@ const QuotationManager = () => {
   const [selectbutton, setSelectButton] = useState(true);
   const [showhideupprice, setShowHideUpPrice] = useState(false);
   const [uploadExcelJson, setUploadExcelJSon] = useState<Array<any>>([]);
+  const [showhideQuotationForm, setShowHideQuotationForm]= useState(true);
 
   const pheduyetgia = async ()=> {
     if(selectedBangGiaDocRow.length >0)
@@ -2736,6 +2738,9 @@ const QuotationManager = () => {
             <div className='upgiatable'>{upgiaMM2}</div>
           </div>
         )}
+        {showhideQuotationForm && <div className="quotation_from">
+          <QuotationForm/>
+        </div>}
       </div>
     </div>
   );

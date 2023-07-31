@@ -43,6 +43,7 @@
     "react-icons": "^4.4.0",
     "react-metismenu": "^1.4.0",
     "react-qr-barcode-scanner": "^1.0.6",
+    "react-qr-code": "^2.0.11",
     "react-redux": "^8.0.4",
     "react-router-dom": "^6.3.0",
     "react-table": "^7.8.0",

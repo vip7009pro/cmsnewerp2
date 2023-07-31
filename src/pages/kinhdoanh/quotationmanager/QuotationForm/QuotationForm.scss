@@ -1,0 +1,117 @@
+.pvnquotationform {
+    display: flex;
+    flex-direction: column;
+    width: 210mm;
+    height: 297mm; 
+    background-color: #8583d4;    
+    .header {
+        display: flex;
+        background-color: #8cd483;    
+        height: 30mm;
+        .companyinfo {
+            display: flex;
+            flex-direction: column;
+            flex: 2.5;
+            background-color: #4a9ee2;    
+            .companyname {
+                display: flex;
+                justify-content: center;
+                font-weight: bold;
+                font-size: 1.3rem;
+            }
+            .diachi {
+                display: flex;
+                justify-content: center;
+            }
+            .email {
+                display: flex;
+                justify-content: center;
+            }
+            .mstsdt {
+                display: flex;
+                align-items: center;
+                justify-content: center;                
+                .mst {
+                    display: flex;
+                    justify-content: center;
+                    flex:1;
+                }
+                .sdt {
+                    display: flex;
+                    justify-content: center;
+                    flex:1;
+                }
+
+            }
+            .quotationno {
+                display: flex;
+                justify-content: center;
+                .qno {
+                    display: flex;
+                    justify-content: center;
+                    flex: 1;
+                }
+                .qdate {
+                    display: flex;
+                    justify-content: center;
+                    flex: 1;
+                }
+            }
+
+
+        }
+        .companylogo {
+            display: flex;
+            flex: 1;
+            background-color: #ed9e31;    
+
+        }
+    }
+    .title{
+        display: flex;
+        height: 25mm;
+        background-color: #4ae27a;
+        justify-content: center;
+        
+    }
+    .customer_info {
+        display: flex;
+        height: 30mm;
+        background-color: #e2df4a;
+    }
+    .quotation_info {
+        display: flex;
+        height: 90mm;
+        background-color: #5ac0f0;
+    }
+    
+    .remark {
+        display: flex;
+        height: 40mm;
+        background-color: #5af09b;
+    }
+    .loichuc{
+        display: flex;
+        height: 10mm;
+        background-color: #f0c85a;
+    }
+    .approval{
+        display: flex;
+        height: 40mm;
+        .kyduyet{
+            display: flex;
+            flex: 1.1;
+            background-color: #f05a98;
+
+        }
+        .phutrach{
+            display: flex;
+            flex: 1;
+            background-color: #f0825a;
+
+        }
+    }
+    
+
+
+}

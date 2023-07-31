@@ -266,5 +266,14 @@
                 font-size: 0.7rem;
             }
         }
+        .quotation_from {
+            position: absolute;
+            top: 10px;
+            left: 20%;
+            /* overflow: scroll; */
+            z-index: 99999;
+            width: fit-content;
+            height:200mm;
+        }
     }
 }
