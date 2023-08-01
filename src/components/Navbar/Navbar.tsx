@@ -628,7 +628,7 @@ export default function Navbar() {
                 height={27.13333}
               />}
               {company === 'PVN' &&<img
-                alt='cmsvina logo'
+                alt='pvn logo'
                 src='/logopvn_big.png'
                 width={114.4}
                 height={40}
