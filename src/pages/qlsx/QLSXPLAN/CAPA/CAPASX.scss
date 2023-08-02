@@ -64,7 +64,8 @@
         .sectiondiv {
             display: flex;
             flex-direction: column;
-            justify-content: space-around;            
+            justify-content: space-around;    
+            gap:20px;        
             .starndardworkforce {
                 background-image: linear-gradient(0deg, #ebf2f2, #cad3da);
                 -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);

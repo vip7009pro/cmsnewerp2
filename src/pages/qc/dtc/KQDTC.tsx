@@ -23,6 +23,7 @@ interface DTC_DATA {
   UPPER_TOR: number,
   LOWER_TOR: number,
   RESULT: number,
+  BARCODE_CONTENT: string,
   TEST_TYPE_NAME: string,
   WORK_POSITION_NAME: string,
   SAMPLE_NO: number,
@@ -101,6 +102,7 @@ const KQDTC = () => {
       return <span style={{color: 'green'}}><b>OK</b></span>
       return <span style={{color: 'red'}}><b>NG</b></span>
     }},    
+    { field: "BARCODE_CONTENT", headerName: "BARCODE_CONTENT", width: 120 },
     { field: "FACTORY", headerName: "FACTORY", width: 80 },
     { field: "TEST_FINISH_TIME", headerName: "TEST_FINISH_TIME", width: 145 },
     { field: "TEST_EMPL_NO", headerName: "NV TEST", width: 100 },

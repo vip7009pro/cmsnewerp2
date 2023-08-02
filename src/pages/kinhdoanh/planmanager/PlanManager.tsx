@@ -27,26 +27,33 @@ import { RootState } from "../../../redux/store";
 import { TbLogout } from "react-icons/tb";
 
 interface PlanTableData {
-  PLAN_ID: string;
-  EMPL_NAME: string;
-  EMPL_NO: string;
-  CUST_NAME_KD: string;
-  CUST_CD: string;
-  G_CODE: string;
-  G_NAME_KD: string;
-  G_NAME: string;
-  PROD_TYPE: string;
-  PROD_MAIN_MATERIAL: string;
-  PLAN_DATE: string;
-  D1: number;
-  D2: number;
-  D3: number;
-  D4: number;
-  D5: number;
-  D6: number;
-  D7: number;
-  D8: number;
-  REMARK: string;
+  PLAN_ID: string,
+  EMPL_NAME: string,
+  EMPL_NO: string,
+  CUST_NAME_KD: string,
+  CUST_CD: string,
+  G_CODE: string,
+  G_NAME_KD: string,
+  G_NAME: string,
+  PROD_TYPE: string,
+  PROD_MAIN_MATERIAL: string,
+  PLAN_DATE: string,
+  D1: number,
+  D2: number,
+  D3: number,
+  D4: number,
+  D5: number,
+  D6: number,
+  D7: number,
+  D8: number,
+  D9: number,
+  D10: number,
+  D11: number,
+  D12: number,
+  D13: number,
+  D14: number,
+  D15: number,
+  REMARK: string,
 }
 
 const PlanManager = () => {
@@ -214,6 +221,97 @@ const PlanManager = () => {
         );
       },
     },
+    {
+      field: "D9",
+      type: "number",
+      headerName: "D9",
+      width: 120,
+      renderCell: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            <b>{params.row.D9.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "D10",
+      type: "number",
+      headerName: "D10",
+      width: 120,
+      renderCell: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            <b>{params.row.D10.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "D11",
+      type: "number",
+      headerName: "D11",
+      width: 120,
+      renderCell: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            <b>{params.row.D11.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "D12",
+      type: "number",
+      headerName: "D12",
+      width: 120,
+      renderCell: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            <b>{params.row.D12.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "D13",
+      type: "number",
+      headerName: "D13",
+      width: 120,
+      renderCell: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            <b>{params.row.D13.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "D14",
+      type: "number",
+      headerName: "D14",
+      width: 120,
+      renderCell: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            <b>{params.row.D14.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "D15",
+      type: "number",
+      headerName: "D15",
+      width: 120,
+      renderCell: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            <b>{params.row.D15.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
     { field: "REMARK", headerName: "REMARK", width: 120 },
   ];
 
@@ -322,6 +420,97 @@ const PlanManager = () => {
         return (
           <span style={{ color: "blue" }}>
             <b>{params.row.D8.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "D9",
+      type: "number",
+      headerName: "D9",
+      width: 120,
+      renderCell: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            <b>{params.row.D9.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "D10",
+      type: "number",
+      headerName: "D10",
+      width: 120,
+      renderCell: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            <b>{params.row.D10.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "D11",
+      type: "number",
+      headerName: "D11",
+      width: 120,
+      renderCell: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            <b>{params.row.D11.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "D12",
+      type: "number",
+      headerName: "D12",
+      width: 120,
+      renderCell: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            <b>{params.row.D12.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "D13",
+      type: "number",
+      headerName: "D13",
+      width: 120,
+      renderCell: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            <b>{params.row.D13.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "D14",
+      type: "number",
+      headerName: "D14",
+      width: 120,
+      renderCell: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            <b>{params.row.D14.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "D15",
+      type: "number",
+      headerName: "D15",
+      width: 120,
+      renderCell: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            <b>{params.row.D15.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -449,17 +638,31 @@ const PlanManager = () => {
               D2:
                 element.D2 === undefined || element.D2 === "" ? 0 : element.D2,
               D3:
-                element.D3 === undefined || element.D2 === "" ? 0 : element.D3,
+                element.D3 === undefined || element.D3 === "" ? 0 : element.D3,
               D4:
-                element.D4 === undefined || element.D2 === "" ? 0 : element.D4,
+                element.D4 === undefined || element.D4 === "" ? 0 : element.D4,
               D5:
-                element.D5 === undefined || element.D2 === "" ? 0 : element.D5,
+                element.D5 === undefined || element.D5 === "" ? 0 : element.D5,
               D6:
-                element.D6 === undefined || element.D2 === "" ? 0 : element.D6,
+                element.D6 === undefined || element.D6 === "" ? 0 : element.D6,
               D7:
-                element.D7 === undefined || element.D2 === "" ? 0 : element.D7,
+                element.D7 === undefined || element.D7 === "" ? 0 : element.D7,
               D8:
-                element.D8 === undefined || element.D2 === "" ? 0 : element.D8,
+                element.D8 === undefined || element.D8 === "" ? 0 : element.D8,
+              D9:
+                element.D9 === undefined || element.D9 === "" ? 0 : element.D9,
+              D10:
+                element.D10 === undefined || element.D10 === "" ? 0 : element.D10,
+              D11:
+                element.D11 === undefined || element.D11 === "" ? 0 : element.D11,
+              D12:
+                element.D12 === undefined || element.D12 === "" ? 0 : element.D12,
+              D13:
+                element.D13 === undefined || element.D13 === "" ? 0 : element.D13,
+              D14:
+                element.D14 === undefined || element.D14 === "" ? 0 : element.D14,
+              D15:
+                element.D15 === undefined || element.D15 === "" ? 0 : element.D15,
             };
           })
         );
@@ -492,6 +695,21 @@ const PlanManager = () => {
               return {
                 ...element,
                 PLAN_DATE: element.PLAN_DATE.slice(0, 10),
+                D1:   element.D1 ===null  ? 0 : element.D1,
+                D2:   element.D2 ===null  ? 0 : element.D2,
+                D3:   element.D3 ===null  ? 0 : element.D3,
+                D4:   element.D4 ===null  ? 0 : element.D4,
+                D5:   element.D5 ===null  ? 0 : element.D5,
+                D6:   element.D6 === null ? 0 : element.D6,
+                D7:   element.D7 ===null  ? 0 : element.D7,
+                D8:   element.D8 ===null  ? 0 : element.D8,
+                D9:   element.D9 ===null  ? 0 : element.D9,
+                D10:  element.D10 === null ? 0 : element.D10,
+                D11:  element.D11 === null ? 0 : element.D11,
+                D12:  element.D12 === null ? 0 : element.D12,
+                D13:  element.D13 === null ? 0 : element.D13,
+                D14:  element.D14 === null ? 0 : element.D14,
+                D15:  element.D15 === null ? 0 : element.D15,
               };
             }
           );
@@ -641,19 +859,26 @@ const PlanManager = () => {
           D6: uploadExcelJson[i].D6,
           D7: uploadExcelJson[i].D7,
           D8: uploadExcelJson[i].D8,
+          D9: uploadExcelJson[i].D9,
+          D10: uploadExcelJson[i].D10,
+          D11: uploadExcelJson[i].D11,
+          D12: uploadExcelJson[i].D12,
+          D13: uploadExcelJson[i].D13,
+          D14: uploadExcelJson[i].D14,
+          D15: uploadExcelJson[i].D15,
         })
-          .then((response) => {
-            console.log(response.data.tk_status);
-            if (response.data.tk_status !== "NG") {
-              tempjson[i].CHECKSTATUS = "OK";
-            } else {
-              err_code = 5;
-              tempjson[i].CHECKSTATUS = "NG: Lỗi SQL: " + response.data.message;
-            }
-          })
-          .catch((error) => {
-            console.log(error);
-          });
+        .then((response) => {
+          console.log(response.data.tk_status);
+          if (response.data.tk_status !== "NG") {
+            tempjson[i].CHECKSTATUS = "OK";
+          } else {
+            err_code = 5;
+            tempjson[i].CHECKSTATUS = "NG: Lỗi SQL: " + response.data.message;
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
       } else if (err_code === 1) {
         tempjson[i].CHECKSTATUS = "NG:Plan đã tồn tại";
       } else if (err_code === 2) {

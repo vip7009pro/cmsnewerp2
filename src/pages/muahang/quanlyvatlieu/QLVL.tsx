@@ -40,16 +40,17 @@ import {
     CUST_NAME: string;
   }
   interface MATERIAL_TABLE_DATA {
-    M_ID: number;
-    M_NAME: string;
+    M_ID: number,
+    M_NAME: string,
     DESCR: string,
-    CUST_CD: string;
-    CUST_NAME_KD: string;
-    SSPRICE: number;
-    CMSPRICE: number;
-    SLITTING_PRICE: number;
-    MASTER_WIDTH: number;
-    ROLL_LENGTH: number;
+    CUST_CD: string,
+    CUST_NAME_KD: string,
+    SSPRICE: number,
+    CMSPRICE: number,
+    SLITTING_PRICE: number,
+    MASTER_WIDTH: number,
+    ROLL_LENGTH: number,
+    USE_YN: string,
     INS_DATE: string,
     INS_EMPL: string, 
     UPD_DATE: string,
@@ -84,6 +85,7 @@ import {
         SLITTING_PRICE: 0,
         MASTER_WIDTH: 0,
         ROLL_LENGTH: 0,   
+        USE_YN:'Y',
         INS_DATE:'',
         INS_EMPL: '',
         UPD_DATE:'',
@@ -129,6 +131,8 @@ import {
             });
         };
     const seMaterialInfo = (keyname: string, value: any) => {
+      console.log(keyname)
+      console.log(value)
       let tempCustInfo:MATERIAL_TABLE_DATA  = { ...selectedRows, [keyname]: value };
       //console.log(tempcodefullinfo);
       setSelectedRows(tempCustInfo);
@@ -286,6 +290,7 @@ import {
             <Column dataField='SLITTING_PRICE' caption='SLITTING_PRICE' width={100}></Column>
             <Column dataField='MASTER_WIDTH' caption='MASTER_WIDTH' width={100}></Column>
             <Column dataField='ROLL_LENGTH' caption='ROLL_LENGTH' width={100}></Column>
+            <Column dataField='USE_YN' caption='USE_YN' width={100}></Column>
             <Column dataField='INS_DATE' caption='INS_DATE' width={100}></Column>
             <Column dataField='INS_EMPL' caption='INS_EMPL' width={100}></Column>
             <Column dataField='UPD_DATE' caption='UPD_DATE' width={100}></Column>
@@ -1047,6 +1052,25 @@ import {
                     placeholder='Roll length'
                     value={selectedRows?.ROLL_LENGTH}
                     onChange={(e) => seMaterialInfo('ROLL_LENGTH',e.target.value)}
+                  ></input>
+                </label>  
+                <label>
+                  <b>Dùng/Không Dùng:</b>{" "}
+                  <input 
+                    type='checkbox'
+                    placeholder='Use YN'
+                    defaultChecked={(selectedRows?.USE_YN==='Y')? true: false}                    
+                    onChange={(e) => {
+                      if(selectedRows?.USE_YN==='Y')
+                      {
+                        seMaterialInfo('USE_YN','N')
+                      }
+                      else
+                      {
+                        seMaterialInfo('USE_YN','Y')
+                      }
+                      
+                    }}
                   ></input>
                 </label>  
               </div>                          

@@ -91,7 +91,8 @@ interface EQ_STT {
   STEP: number;
 }
 const CAPASX = () => {
-  const dailytime: number = 1260;
+  const dailytime: number = 1200;
+  const dailytime2: number = 900;
   const [trigger, setTrigger] = useState(true);
   const [selectedFactory,setSelectedFactory]= useState('NM1');
   const [selectedMachine,setSelectedMachine]= useState('FR');
@@ -167,7 +168,7 @@ const CAPASX = () => {
       ED2: EDNM2,
      } 
 
-     console.log(eq_sttdata);
+     //console.log(eq_sttdata);
      let FR_EMPL = {
       TNM1:0,
       TNM2:0,
@@ -282,7 +283,7 @@ const CAPASX = () => {
       DC: DC_EMPL, 
       ED: ED_EMPL
     };
-    console.log(empl_info);
+    //console.log(empl_info);
       
 
     await generalQuery("capabydeliveryplan", {
@@ -301,7 +302,8 @@ const CAPASX = () => {
                   .utc()
                   .format("YYYY-MM-DD"),
                 AVL_CAPA: STD_CAPA(element.FACTORY, element.EQ,eq_sttdata,empl_info),
-                REAL_CAPA:  REL_CAPA(element.FACTORY, element.EQ, eq_sttdata,empl_info),
+                REAL_CAPA:  STD_CAPA_8(element.FACTORY, element.EQ,eq_sttdata,empl_info),
+                /* REAL_CAPA:  REL_CAPA(element.FACTORY, element.EQ, eq_sttdata,empl_info), */
               };
             }
           );
@@ -823,6 +825,88 @@ const CAPASX = () => {
     }
 
   }
+  const STD_CAPA_8 =(FACTORY: string, EQ: string, EQ_STTDATA: any, EMPL_INFO: any)=> {
+    const FRNM1: number = EQ_STTDATA.FR1;
+    const SRNM1: number = EQ_STTDATA.SR1;
+    const DCNM1: number = EQ_STTDATA.DC1;
+    const EDNM1: number = EQ_STTDATA.ED1;
+
+    const FRNM2: number = EQ_STTDATA.FR2;
+    const SRNM2: number = EQ_STTDATA.SR2;
+    const DCNM2: number = EQ_STTDATA.DC2;
+    const EDNM2: number = EQ_STTDATA.ED2;
+
+    const FR_EMPL = EMPL_INFO.FR;
+    const SR_EMPL = EMPL_INFO.SR;
+    const DC_EMPL = EMPL_INFO.DC;
+    const ED_EMPL = EMPL_INFO.ED;
+    
+   
+
+    if(FACTORY==='NM1')
+    {
+      if(EQ==='FR')
+      {
+        return (
+          Math.min(
+            ((FR_EMPL.TNM1) / 4) * dailytime,FRNM1 * dailytime2)
+        )        
+      }
+      else if(EQ==='SR')
+      {
+        return (
+          Math.min(
+            ((SR_EMPL.TNM1) / 4) * dailytime2,SRNM1 * dailytime2)
+        )        
+      }
+      else if(EQ==='DC')
+      {
+        return (
+          Math.min(
+            ((DC_EMPL.TNM1) / 2) * dailytime2,DCNM1 * dailytime2)
+        )        
+      }
+      else if(EQ==='ED')
+      {
+        return (
+          Math.min(
+            ((ED_EMPL.TNM1) / 2) * dailytime2,EDNM1 * dailytime2)
+        )        
+      }
+    }
+    else if(FACTORY==='NM2')
+    {
+      if(EQ==='FR')
+      {
+        return (
+          Math.min(
+            ((FR_EMPL.TNM2) / 4) * dailytime2,FRNM2 * dailytime2)
+        )        
+      }
+      else if(EQ==='SR')
+      {
+        return (
+          Math.min(
+            ((SR_EMPL.TNM2) / 4) * dailytime2,SRNM2 * dailytime2)
+        )        
+      }
+      else if(EQ==='DC')
+      {
+        return (
+          Math.min(
+            ((DC_EMPL.TNM2) / 2) * dailytime2,DCNM2 * dailytime2)
+        )        
+      }
+      else if(EQ==='ED')
+      {
+        return (
+          Math.min(
+            ((ED_EMPL.TNM2) / 2) * dailytime2,EDNM2 * dailytime2)
+        )        
+      }
+    }
+
+  }
   const REL_CAPA =(FACTORY: string, EQ: string, EQ_STTDATA: any, EMPL_INFO: any)=> {
     const FRNM1: number = EQ_STTDATA.FR1;
     const SRNM1: number = EQ_STTDATA.SR1;
@@ -950,14 +1034,14 @@ const CAPASX = () => {
       </Chart>
     );
   }, [datadiemdanh]);
-  const DeliveryLeadTimeMM = useMemo(() => {
+  const DeliveryLeadTimeMMFR = useMemo(() => {
     return (
       <Chart
         id='workforcechart'
-        title='PRODUCTION CAPA BY DELIVERY PLAN'        
-        dataSource={dlleadtime}
+        title='PRODUCTION CAPA BY DELIVERY PLAN [FR]'        
+        dataSource={dlleadtime.filter((e:DELIVERY_PLAN_CAPA, index: number)=> e.EQ==='FR')}
         width={1400}
-        resolveLabelOverlapping="stack"
+        resolveLabelOverlapping="hide"
       >
         {/* <Title
           text='PRODUCTION CAPA BY DELIVERY PLAN'
@@ -984,17 +1068,173 @@ const CAPASX = () => {
         <Series
           argumentField='PL_DATE'
           valueField='AVL_CAPA'
-          name='Available Capa'
+          name='12H'
           color='#E80020'
           type='line'
         />   
-        {/* <Series
+        <Series
           argumentField='PL_DATE'
           valueField='REAL_CAPA'
-          name='Real Capa'
+          name='8H'
           color='#089ED6 '
           type='line'
-        /> */}   
+        />   
+        <Legend
+          verticalAlignment='bottom'
+          horizontalAlignment='center'
+        ></Legend>
+      </Chart>
+    );
+  }, [dlleadtime]);
+  const DeliveryLeadTimeMMSR = useMemo(() => {
+    return (
+      <Chart
+        id='workforcechart'
+        title='PRODUCTION CAPA BY DELIVERY PLAN [SR]'        
+        dataSource={dlleadtime.filter((e:DELIVERY_PLAN_CAPA, index: number)=> e.EQ==='SR')}
+        width={1400}
+        resolveLabelOverlapping="hide"
+      >
+        {/* <Title
+          text='PRODUCTION CAPA BY DELIVERY PLAN'
+          subtitle={`[DATE:${selectedPlanDate}] [FACTORY:${selectedFactory}] [MACHINE:${selectedMachine}]`}
+        /> */}
+        <ArgumentAxis title='PL_DATE' />
+        <ValueAxis title='LEADTIME' />
+        <CommonSeriesSettings
+          argumentField='PL_DATE'
+          type='bar'
+          hoverMode='allArgumentPoints'
+          selectionMode='allArgumentPoints'
+        >
+          <Label visible={true}>
+            <Format type='fixedPoint' precision={0} />
+          </Label>
+        </CommonSeriesSettings>
+        <Series
+          argumentField='PL_DATE'
+          valueField='LEADTIME'
+          name='Leadtime'
+          color='#28DF67'          
+        />   
+        <Series
+          argumentField='PL_DATE'
+          valueField='AVL_CAPA'
+          name='12H'
+          color='#E80020'
+          type='line'
+        />   
+        <Series
+          argumentField='PL_DATE'
+          valueField='REAL_CAPA'
+          name='8H'
+          color='#089ED6 '
+          type='line'
+        />   
+        <Legend
+          verticalAlignment='bottom'
+          horizontalAlignment='center'
+        ></Legend>
+      </Chart>
+    );
+  }, [dlleadtime]);
+  const DeliveryLeadTimeMMDC = useMemo(() => {
+    return (
+      <Chart
+        id='workforcechart'
+        title='PRODUCTION CAPA BY DELIVERY PLAN [DC]'        
+        dataSource={dlleadtime.filter((e:DELIVERY_PLAN_CAPA, index: number)=> e.EQ==='DC')}
+        width={1400}
+        resolveLabelOverlapping="hide"
+      >
+        {/* <Title
+          text='PRODUCTION CAPA BY DELIVERY PLAN'
+          subtitle={`[DATE:${selectedPlanDate}] [FACTORY:${selectedFactory}] [MACHINE:${selectedMachine}]`}
+        /> */}
+        <ArgumentAxis title='PL_DATE' />
+        <ValueAxis title='LEADTIME' />
+        <CommonSeriesSettings
+          argumentField='PL_DATE'
+          type='bar'
+          hoverMode='allArgumentPoints'
+          selectionMode='allArgumentPoints'
+        >
+          <Label visible={true}>
+            <Format type='fixedPoint' precision={0} />
+          </Label>
+        </CommonSeriesSettings>
+        <Series
+          argumentField='PL_DATE'
+          valueField='LEADTIME'
+          name='Leadtime'
+          color='#28DF67'          
+        />   
+        <Series
+          argumentField='PL_DATE'
+          valueField='AVL_CAPA'
+          name='12H'
+          color='#E80020'
+          type='line'
+        />   
+        <Series
+          argumentField='PL_DATE'
+          valueField='REAL_CAPA'
+          name='8H'
+          color='#089ED6 '
+          type='line'
+        />   
+        <Legend
+          verticalAlignment='bottom'
+          horizontalAlignment='center'
+        ></Legend>
+      </Chart>
+    );
+  }, [dlleadtime]);
+  const DeliveryLeadTimeMMED = useMemo(() => {
+    return (
+      <Chart
+        id='workforcechart'
+        title='PRODUCTION CAPA BY DELIVERY PLAN [ED]'        
+        dataSource={dlleadtime.filter((e:DELIVERY_PLAN_CAPA, index: number)=> e.EQ==='ED')}
+        width={1400}
+        resolveLabelOverlapping="hide"
+      >
+        {/* <Title
+          text='PRODUCTION CAPA BY DELIVERY PLAN'
+          subtitle={`[DATE:${selectedPlanDate}] [FACTORY:${selectedFactory}] [MACHINE:${selectedMachine}]`}
+        /> */}
+        <ArgumentAxis title='PL_DATE' />
+        <ValueAxis title='LEADTIME' />
+        <CommonSeriesSettings
+          argumentField='PL_DATE'
+          type='bar'
+          hoverMode='allArgumentPoints'
+          selectionMode='allArgumentPoints'
+        >
+          <Label visible={true}>
+            <Format type='fixedPoint' precision={0} />
+          </Label>
+        </CommonSeriesSettings>
+        <Series
+          argumentField='PL_DATE'
+          valueField='LEADTIME'
+          name='Leadtime'
+          color='#28DF67'          
+        />   
+        <Series
+          argumentField='PL_DATE'
+          valueField='AVL_CAPA'
+          name='12H'
+          color='#E80020'
+          type='line'
+        />   
+        <Series
+          argumentField='PL_DATE'
+          valueField='REAL_CAPA'
+          name='8H'
+          color='#089ED6 '
+          type='line'
+        />   
         <Legend
           verticalAlignment='bottom'
           horizontalAlignment='center'
@@ -1065,7 +1305,7 @@ const CAPASX = () => {
       /* getDeliveryLeadTime(selectedFactory,selectedMachine,selectedPlanDate); */
       getDiemDanhAllBP();
       getMachineCounting();      
-      getYCSXBALANCE();      
+      getYCSXBALANCE();
     }, 5000);
     return () => {
       window.clearInterval(intervalID);
@@ -1152,6 +1392,11 @@ const CAPASX = () => {
         </div>
       </div>
       <div className='workforcechart'>
+       
+        
+        <div className='sectiondiv'>
+          <div className='title'>3. PRODUCTION BY DELIVERY PLAN</div>
+          <div className="selectcontrol">
         Plan Date:
         <input type='date' value={selectedPlanDate} onChange={(e)=> {
           setSelectedPlanDate(e.target.value);
@@ -1169,7 +1414,7 @@ const CAPASX = () => {
           <option value='NM1'>NM1</option>
           <option value='NM2'>NM2</option>          
         </select>
-        Machine:
+       {/*  Machine:
         <select
           name='machine'
           value={selectedMachine}
@@ -1182,10 +1427,13 @@ const CAPASX = () => {
           <option value='SR'>SR</option>
           <option value='DC'>DC</option>
           <option value='ED'>ED</option>
-        </select>
-        <div className='sectiondiv'>
-          <div className='title'>3. PRODUCTION BY DELIVERY PLAN</div>
-          <div className='starndardworkforce'>{DeliveryLeadTimeMM}</div>
+        </select> */}
+
+        </div>
+          <div className='starndardworkforce'>{DeliveryLeadTimeMMFR}</div>
+          <div className='starndardworkforce'>{DeliveryLeadTimeMMED}</div>
+          {selectedFactory ==='NM1' &&<div className='starndardworkforce'>{DeliveryLeadTimeMMSR}</div>}
+          {selectedFactory ==='NM1' &&<div className='starndardworkforce'>{DeliveryLeadTimeMMDC}</div>}
         </div>
       </div>
 
