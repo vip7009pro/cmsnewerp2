@@ -135,13 +135,13 @@ export default function AccountInfo() {
         if (response.data.tk_status !== "NG") {
           //console.log('data',response.data.data)
           let loaded_data: MYCHAMCONG = response.data.data[0];
-          loaded_data.MIN_TIME = loaded_data.MIN_TIME.substring(11,19);
-          loaded_data.MAX_TIME = loaded_data.MAX_TIME.substring(11,19); 
-          let tempminhour: number = Number(loaded_data.MIN_TIME.substring(0,2));
-          let tempminminute: number = Number(loaded_data.MIN_TIME.substring(3,5));
+          loaded_data.MIN_TIME = loaded_data.MIN_TIME?.substring(11,19);
+          loaded_data.MAX_TIME = loaded_data.MAX_TIME?.substring(11,19); 
+          let tempminhour: number = Number(loaded_data.MIN_TIME?.substring(0,2));
+          let tempminminute: number = Number(loaded_data.MIN_TIME?.substring(3,5));
 
-          let tempmaxhour: number = Number(loaded_data.MAX_TIME.substring(0,2));
-          let tempmaxminute: number = Number(loaded_data.MAX_TIME.substring(3,5));
+          let tempmaxhour: number = Number(loaded_data.MAX_TIME?.substring(0,2));
+          let tempmaxminute: number = Number(loaded_data.MAX_TIME?.substring(3,5));
 
           /* console.log('tempminhour',tempminhour);
           console.log('tempmaxhour',tempmaxhour);

@@ -531,7 +531,7 @@ const CAPASX = () => {
           (ele: YCSX_BALANCE_CAPA_DATA, index: number) => ele.EQ_NAME === "ED"
         )[0]?.YCSX_BALANCE /
         Math.min(
-          ((ED_EMPL.NM1 + ED_EMPL.NM2) / 4) * dailytime,
+          ((ED_EMPL.NM1 + ED_EMPL.NM2) / 2) * dailytime,
           machinecount.filter(
             (ele: MACHINE_COUNTING, index: number) => ele.EQ_NAME === "ED"
           )[0]?.EQ_QTY * dailytime
@@ -541,7 +541,7 @@ const CAPASX = () => {
           (ele: YCSX_BALANCE_CAPA_DATA, index: number) => ele.EQ_NAME === "ED"
         )[0]?.YCSX_BALANCE /
         Math.min(
-          ((ED_EMPL.TNM1 + ED_EMPL.TNM2) / 4) * dailytime,
+          ((ED_EMPL.TNM1 + ED_EMPL.TNM2) / 2) * dailytime,
           machinecount.filter(
             (ele: MACHINE_COUNTING, index: number) => ele.EQ_NAME === "ED"
           )[0]?.EQ_QTY * dailytime
@@ -554,7 +554,7 @@ const CAPASX = () => {
           (ele: YCSX_BALANCE_CAPA_DATA, index: number) => ele.EQ_NAME === "DC"
         )[0]?.YCSX_BALANCE /
         Math.min(
-          ((DC_EMPL.NM1 + DC_EMPL.NM2) / 4) * dailytime,
+          ((DC_EMPL.NM1 + DC_EMPL.NM2) / 2) * dailytime,
           machinecount.filter(
             (ele: MACHINE_COUNTING, index: number) => ele.EQ_NAME === "DC"
           )[0]?.EQ_QTY * dailytime
@@ -564,7 +564,7 @@ const CAPASX = () => {
           (ele: YCSX_BALANCE_CAPA_DATA, index: number) => ele.EQ_NAME === "DC"
         )[0]?.YCSX_BALANCE /
         Math.min(
-          ((DC_EMPL.TNM1 + DC_EMPL.TNM2) / 4) * dailytime,
+          ((DC_EMPL.TNM1 + DC_EMPL.TNM2) / 2) * dailytime,
           machinecount.filter(
             (ele: MACHINE_COUNTING, index: number) => ele.EQ_NAME === "DC"
           )[0]?.EQ_QTY * dailytime
