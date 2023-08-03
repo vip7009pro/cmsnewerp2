@@ -6,8 +6,8 @@ import "./Sidebar.scss";
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import HomeIcon from '@mui/icons-material/Home';
-import { FaDonate, FaFileInvoiceDollar,FaCheckCircle, FaHistory, FaBomb, FaPaperPlane, FaWarehouse, FaScroll, FaPeopleArrows } from 'react-icons/fa';
-import { BiCart, BiSortAZ, BiTrendingUp } from 'react-icons/bi';
+import { FaDonate, FaFileInvoiceDollar,FaCheckCircle, FaHistory, FaBomb, FaPaperPlane, FaWarehouse, FaScroll, FaPeopleArrows, FaBarcode } from 'react-icons/fa';
+import { BiBarcode, BiCart, BiSortAZ, BiTrendingUp } from 'react-icons/bi';
 import { FcPlanner, FcSettings,FcBullish, FcPortraitMode,FcManager,FcCheckmark,FcPieChart,FcRefresh } from 'react-icons/fc';
 import { MdBugReport, MdDesignServices, MdInput, MdOutlineAppRegistration, MdOutlineAspectRatio, MdOutlineChecklistRtl, MdOutlineProductionQuantityLimits, MdOutlineSignalWifiStatusbarNull, MdPrecisionManufacturing, MdPriceChange } from "react-icons/md";
 import { WiDayLightning } from "react-icons/wi";
@@ -337,6 +337,12 @@ const Sidebar = () => {
           path: '/rnd/designamazon',
           icon: <AiFillAmazonCircle color='blue' size={25}/>,
           MENU_CODE: 'RD5'
+        },
+        {
+          title: getlang('productbarcodemanager',lang),
+          path: '/rnd/productbarcodemanager',
+          icon: <FaBarcode color='#098705' size={25}/>,
+          MENU_CODE: 'RD6'
         }
       ]
     },  

@@ -66,6 +66,7 @@ import BANGCHAMCONG from "../../pages/nhansu/BangChamCong/BangChamCong";
 import QuotationManager from "../../pages/kinhdoanh/quotationmanager/QuotationManager";
 import QuotationTotal from "../../pages/kinhdoanh/quotationmanager/QuotationTotal";
 import QLVL from "../../pages/muahang/quanlyvatlieu/QLVL";
+import PRODUCT_BARCODE_MANAGER from "../../pages/rnd/product_barcode_manager/PRODUCT_BARCODE_MANAGER";
 
 interface MENU_LIST_DATA {
   MENU_CODE: string;
@@ -281,6 +282,11 @@ const SubMenu = ({ item }: { item: any }) => {
       MENU_CODE: "RD5",
       MENU_NAME: getlang('thietkedesignamazon',lang),
       MENU_ITEM: <DESIGN_AMAZON />,
+    },
+    {
+      MENU_CODE: "RD6",
+      MENU_NAME: getlang('productbarcodemanager',lang),
+      MENU_ITEM: <PRODUCT_BARCODE_MANAGER />,
     },
     {
       MENU_CODE: "QL1",

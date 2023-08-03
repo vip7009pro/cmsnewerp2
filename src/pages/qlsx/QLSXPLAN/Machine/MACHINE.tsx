@@ -471,7 +471,7 @@ const MACHINE = () => {
             }
           );
           loadeddata.push({ EQ_NAME: "NO" }, { EQ_NAME: "NA" });
-          console.log(loadeddata);
+          //console.log(loadeddata);
           setMachine_List(loadeddata);
         } else {
           //Swal.fire("Thông báo", "Lỗi BOM SX: " + response.data.message, "error");

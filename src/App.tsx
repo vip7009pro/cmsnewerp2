@@ -33,6 +33,7 @@ import BANGCHAMCONG from "./pages/nhansu/BangChamCong/BangChamCong";
 import QuotationTotal from "./pages/kinhdoanh/quotationmanager/QuotationTotal";
 import MUAHANG from "./pages/muahang/MUAHANG";
 import QLVL from "./pages/muahang/quanlyvatlieu/QLVL";
+import PRODUCT_BARCODE_MANAGER from "./pages/rnd/product_barcode_manager/PRODUCT_BARCODE_MANAGER";
 /* import DATASX2 from "./pages/qlsx/QLSXPLAN/DATASX/DATASX2";
 import Home from "./pages/home/Home";
 import DiemDanhNhom from "./pages/nhansu/DiemDanhNhom/DiemDanhNhom";
@@ -625,10 +626,8 @@ function App() {
                         <Route path='ycsxmanager' element={<YCSXManager />} />
                         <Route path='dtc' element={<DTC />} />
                         <Route path='thembomamazon' element={<BOM_AMAZON />} />
-                        <Route
-                          path='designamazon'
-                          element={<DESIGN_AMAZON />}
-                        />
+                        <Route path='designamazon' element={<DESIGN_AMAZON />}/>
+                        <Route path='productbarcodemanager' element={<PRODUCT_BARCODE_MANAGER />}/>
                       </Route>
                       <Route
                         path='qlsx'

@@ -11,6 +11,7 @@ type english_sentences = {
   CONTENT: string;
 };
 export const vn_lang = {
+  productbarcodemanager: "Quản lý barcode sản phẩm",
   quanlyvatlieu:"Quản Lý Vật Liệu",
   phongmuahang:"Phòng Mua Hàng",
   quanlygia: "Quản Lý Giá",
@@ -85,6 +86,7 @@ export const vn_lang = {
   eqstatus: "Trạng Thái Máy",
 };
 export const en_lang = {
+  productbarcodemanager: "Product Barcode Manager",
   quanlyvatlieu:"Material Management",
   phongmuahang:"Purchasing Department",
   quanlygia: "Quotation Manager",
@@ -160,6 +162,7 @@ export const en_lang = {
   datasanxuat: "Production DATA",
 };
 export const kr_lang = {
+  productbarcodemanager: "제품 바코드 관리",
   quanlyvatlieu:"자재 관리",
   phongmuahang:"구매팀",
   quanlygia: "가격 관리",
