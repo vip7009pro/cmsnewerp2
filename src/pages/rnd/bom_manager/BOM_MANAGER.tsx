@@ -1086,14 +1086,24 @@ const BOM_MANAGER = () => {
         k !== "FACTORY" &&
         k !== "Setting1" &&
         k !== "Setting2" &&
+        k !== "Setting3" &&
+        k !== "Setting4" &&
         k !== "UPH1" &&
         k !== "UPH2" &&
+        k !== "UPH3" &&
+        k !== "UPH4" &&
         k !== "Step1" &&
         k !== "Step2" &&
+        k !== "Step3" &&
+        k !== "Step4" &&
         k !== "LOSS_SX1" &&
         k !== "LOSS_SX2" &&
+        k !== "LOSS_SX3" &&
+        k !== "LOSS_SX4" &&
         k !== "LOSS_SETTING1" &&
         k !== "LOSS_SETTING2" &&
+        k !== "LOSS_SETTING3" &&
+        k !== "LOSS_SETTING4" &&
         k !== "NOTE"
       ) {
         Swal.fire("Thông báo", "Không được để trống: " + k, "error");

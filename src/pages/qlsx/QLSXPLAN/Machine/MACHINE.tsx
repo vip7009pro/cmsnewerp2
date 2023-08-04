@@ -2007,7 +2007,26 @@ const MACHINE = () => {
             response.data.data[0].LOSS_SETTING2 === null
               ? 0
               : response.data.data[0].LOSS_SETTING2;
+
+          
           FINAL_LOSS_SX = PROCESS_NUMBER === 1 ? LOSS_SX1 : LOSS_SX2;
+          if(PROCESS_NUMBER === 1)
+          {
+            FINAL_LOSS_SX = response.data.data[0].LOSS_SX1 === null? 0: response.data.data[0].LOSS_SX1;
+          }
+          else if(PROCESS_NUMBER === 2)
+          {
+            FINAL_LOSS_SX = response.data.data[0].LOSS_SX2 === null? 0: response.data.data[0].LOSS_SX2;
+          }
+          else if(PROCESS_NUMBER === 3)
+          {
+            FINAL_LOSS_SX = response.data.data[0].LOSS_SX3 === null? 0: response.data.data[0].LOSS_SX3;
+          }
+          else if(PROCESS_NUMBER === 4)
+          {
+            FINAL_LOSS_SX = response.data.data[0].LOSS_SX4 === null? 0: response.data.data[0].LOSS_SX4;
+          }
+
           FINAL_LOSS_SETTING =
             PROCESS_NUMBER === 1
               ? calc_loss_setting
@@ -2016,6 +2035,34 @@ const MACHINE = () => {
               : calc_loss_setting
               ? LOSS_SETTING2
               : 0;
+
+
+              if(PROCESS_NUMBER === 1)
+              {
+                FINAL_LOSS_SETTING =  calc_loss_setting
+                ? response.data.data[0].LOSS_SETTING1 === null? 0: response.data.data[0].LOSS_SETTING1
+                : 0 
+              }
+              else if(PROCESS_NUMBER === 2)
+              {
+                FINAL_LOSS_SETTING =  calc_loss_setting
+                ? response.data.data[0].LOSS_SETTING2 === null? 0: response.data.data[0].LOSS_SETTING2
+                : 0
+              }
+              else if(PROCESS_NUMBER === 3)
+              {
+                FINAL_LOSS_SETTING =  calc_loss_setting
+                ? response.data.data[0].LOSS_SETTING3 === null? 0: response.data.data[0].LOSS_SETTING3
+                : 0
+              }
+              else if(PROCESS_NUMBER === 4)
+              {
+                FINAL_LOSS_SETTING =  calc_loss_setting
+                ? response.data.data[0].LOSS_SETTING4 === null? 0: response.data.data[0].LOSS_SETTING4
+                : 0
+              }
+
+
           //console.log(LOSS_SX1)
           //console.log(LOSS_SETTING1)
         } else {
@@ -2752,8 +2799,8 @@ const MACHINE = () => {
           console.log(error);
         });
       if (
-        (parseInt(selectedPlanTable[i].PROCESS_NUMBER.toString()) === 1 ||
-          parseInt(selectedPlanTable[i].PROCESS_NUMBER.toString()) === 2) &&
+        (parseInt(selectedPlanTable[i].PROCESS_NUMBER.toString()) >=1 &&
+          parseInt(selectedPlanTable[i].PROCESS_NUMBER.toString()) <= 4) &&
         selectedPlanTable[i].PLAN_QTY !== 0 &&
         selectedPlanTable[i].PLAN_QTY <=
           selectedPlanTable[i].PROD_REQUEST_QTY &&
@@ -2763,7 +2810,7 @@ const MACHINE = () => {
         parseInt(selectedPlanTable[i].STEP.toString()) >= 0 &&
         parseInt(selectedPlanTable[i].STEP.toString()) <= 9 &&
         parseInt(selectedPlanTable[i].PROCESS_NUMBER.toString()) >= 1 &&
-        parseInt(selectedPlanTable[i].PROCESS_NUMBER.toString()) <= 2 &&
+        parseInt(selectedPlanTable[i].PROCESS_NUMBER.toString()) <= 4 &&
         checkPlanIdP500 === false
       ) {
         await generalQuery("updatePlanQLSX", {
@@ -2798,8 +2845,8 @@ const MACHINE = () => {
         err_code += "_" + selectedPlanTable[i].G_NAME_KD + ":";
         if (
           !(
-            parseInt(selectedPlanTable[i].PROCESS_NUMBER.toString()) === 1 ||
-            parseInt(selectedPlanTable[i].PROCESS_NUMBER.toString()) === 2
+            parseInt(selectedPlanTable[i].PROCESS_NUMBER.toString()) >=1 &&
+            parseInt(selectedPlanTable[i].PROCESS_NUMBER.toString()) <=4
           )
         ) {
           err_code += "_: Process number chưa đúng";
@@ -2829,10 +2876,10 @@ const MACHINE = () => {
         } else if (
           !(
             parseInt(selectedPlanTable[i].PROCESS_NUMBER.toString()) >= 1 &&
-            parseInt(selectedPlanTable[i].PROCESS_NUMBER.toString()) <= 2
+            parseInt(selectedPlanTable[i].PROCESS_NUMBER.toString()) <= 4
           )
         ) {
-          err_code += "_: Hãy nhập PROCESS NUMBER từ 1 hoặc 2";
+          err_code += "_: Hãy nhập PROCESS NUMBER từ 1 đến 4";
         } else if (checkPlanIdP500) {
           err_code += "_: Đã bắn liệu vào sản xuất, không sửa chỉ thị được";
         }

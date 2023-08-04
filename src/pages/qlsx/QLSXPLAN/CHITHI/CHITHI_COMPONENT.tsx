@@ -782,7 +782,7 @@ const CHITHI_COMPONENT = ({
       {!check_dinh_muc() && <div>Chưa đủ thông tin định mức</div>}      
       {!checklieuqlsx && <div>Chưa chỉ định liệu chính, hãy lưu liệu chỉ thị để đồng bộ liệu chính lên BOM</div>}
       {(PLAN_QTY ===0) && <div>Số lượng chỉ thị không thể = 0</div>}
-      {(PROCESS_NUMBER ===0) && <div>PROCESS_NUMBER phải đặt 1 hoặc 2</div>}
+      {(PROCESS_NUMBER ===0) && <div>PROCESS_NUMBER phải đặt 1,2,3 hoặc 4</div>}
     </div>
   );
 };
