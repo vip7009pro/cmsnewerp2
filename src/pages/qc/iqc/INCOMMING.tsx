@@ -39,6 +39,7 @@ import {
 import { UserData } from "../../../redux/slices/globalSlice";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
+import { ResponsiveContainer } from "recharts";
 
   interface IQC_INCOMMING_DATA {
     id?: number,
@@ -304,6 +305,7 @@ import { RootState } from "../../../redux/store";
     };
     const materialDataTable = React.useMemo(
       () => (
+        <ResponsiveContainer>
         <div className='datatb'>
           <div className="menubar">
           <IconButton
@@ -462,7 +464,7 @@ import { RootState } from "../../../redux/store";
                 if(e.data.TOTAL_RESULT ==='OK')
                 {
                     return (
-                        <div style={{color:'white', fontWeight:'bold', backgroundColor:'green', textAlign:'center'}}>OK</div>
+                        <div style={{color:'white', fontWeight:'bold', backgroundColor:'#01E33F', textAlign:'center'}}>OK</div>
                     )
                 }
                 else if(e.data.TOTAL_RESULT === 'NG')
@@ -474,7 +476,7 @@ import { RootState } from "../../../redux/store";
                 else
                 {
                     return (
-                        <div style={{color:'white', fontWeight:'bold', backgroundColor:'gray', textAlign:'center'}}>N/A</div>
+                        <div style={{color:'white', fontWeight:'bold', backgroundColor: '#CCCFCC', textAlign:'center'}}>N/A</div>
                     )
                 }
 
@@ -483,7 +485,7 @@ import { RootState } from "../../../redux/store";
                 if(e.data.AUTO_JUDGEMENT ==='OK')
                 {
                     return (
-                        <div style={{color:'white', fontWeight:'bold', backgroundColor:'green', textAlign:'center'}}>OK</div>
+                        <div style={{color:'white', fontWeight:'bold', backgroundColor:'#01E33F', textAlign:'center'}}>OK</div>
                     )
                 }
                 else if(e.data.AUTO_JUDGEMENT === 'NG')
@@ -492,6 +494,13 @@ import { RootState } from "../../../redux/store";
                         <div style={{color:'white', fontWeight:'bold', backgroundColor:'red', textAlign:'center'}}>NG</div>
                     )
                 }
+                else if(e.data.AUTO_JUDGEMENT === 'PENDING')
+                {
+                    return (
+                        <div style={{color:'white', fontWeight:'bold', backgroundColor:'blue', textAlign:'center'}}>PENDING</div>
+                    )
+                }
+                
 
             }} allowEditing={false}></Column>
             <Column dataField='NGOAIQUAN' caption='NGOAIQUAN' width={100}  cellRender={(e: any) =>{
@@ -507,10 +516,16 @@ import { RootState } from "../../../redux/store";
                         <span style={{color:'red', fontWeight:'bold'}}>NG</span>
                     )
                 }
+                else if(e.data.NGOAIQUAN === 2)
+                {
+                    return (
+                        <span style={{color:'#1848FC', fontWeight:'bold'}}>PENDING</span>
+                    )
+                }
                 else
                 {
                     return (
-                        <span style={{color:'gray', fontWeight:'bold'}}>N/A</span>
+                        <span style={{color:'#C1C7C3', fontWeight:'bold'}}>N/A</span>
                     )
                 }
 
@@ -528,10 +543,16 @@ import { RootState } from "../../../redux/store";
                         <span style={{color:'red', fontWeight:'bold'}}>NG</span>
                     )
                 }
+                else if(e.data.KICHTHUOC === 2)
+                {
+                    return (
+                        <span style={{color:'#1848FC', fontWeight:'bold'}}>PENDING</span>
+                    )
+                }
                 else
                 {
                     return (
-                        <span style={{color:'gray', fontWeight:'bold'}}>N/A</span>
+                        <span style={{color:'#C1C7C3', fontWeight:'bold'}}>N/A</span>
                     )
                 }
 
@@ -548,11 +569,16 @@ import { RootState } from "../../../redux/store";
                     return (
                         <span style={{color:'red', fontWeight:'bold'}}>NG</span>
                     )
+                }else if(e.data.THICKNESS === 2)
+                {
+                    return (
+                        <span style={{color:'#1848FC', fontWeight:'bold'}}>PENDING</span>
+                    )
                 }
                 else
                 {
                     return (
-                        <span style={{color:'gray', fontWeight:'bold'}}>N/A</span>
+                        <span style={{color:'#C1C7C3', fontWeight:'bold'}}>N/A</span>
                     )
                 }
 
@@ -569,11 +595,16 @@ import { RootState } from "../../../redux/store";
                     return (
                         <span style={{color:'red', fontWeight:'bold'}}>NG</span>
                     )
+                }else if(e.data.DIENTRO === 2)
+                {
+                    return (
+                        <span style={{color:'#1848FC', fontWeight:'bold'}}>PENDING</span>
+                    )
                 }
                 else
                 {
                     return (
-                        <span style={{color:'gray', fontWeight:'bold'}}>N/A</span>
+                        <span style={{color:'#C1C7C3', fontWeight:'bold'}}>N/A</span>
                     )
                 }
 
@@ -590,11 +621,16 @@ import { RootState } from "../../../redux/store";
                     return (
                         <span style={{color:'red', fontWeight:'bold'}}>NG</span>
                     )
+                }else if(e.data.CANNANG === 2)
+                {
+                    return (
+                        <span style={{color:'#1848FC', fontWeight:'bold'}}>PENDING</span>
+                    )
                 }
                 else
                 {
                     return (
-                        <span style={{color:'gray', fontWeight:'bold'}}>N/A</span>
+                        <span style={{color:'#C1C7C3', fontWeight:'bold'}}>N/A</span>
                     )
                 }
 
@@ -611,11 +647,16 @@ import { RootState } from "../../../redux/store";
                     return (
                         <span style={{color:'red', fontWeight:'bold'}}>NG</span>
                     )
+                }else if(e.data.KEOKEO === 2)
+                {
+                    return (
+                        <span style={{color:'#1848FC', fontWeight:'bold'}}>PENDING</span>
+                    )
                 }
                 else
                 {
                     return (
-                        <span style={{color:'gray', fontWeight:'bold'}}>N/A</span>
+                        <span style={{color:'#C1C7C3', fontWeight:'bold'}}>N/A</span>
                     )
                 }
 
@@ -632,11 +673,16 @@ import { RootState } from "../../../redux/store";
                     return (
                         <span style={{color:'red', fontWeight:'bold'}}>NG</span>
                     )
+                }else if(e.data.KEOKEO2 === 2)
+                {
+                    return (
+                        <span style={{color:'#1848FC', fontWeight:'bold'}}>PENDING</span>
+                    )
                 }
                 else
                 {
                     return (
-                        <span style={{color:'gray', fontWeight:'bold'}}>N/A</span>
+                        <span style={{color:'#C1C7C3', fontWeight:'bold'}}>N/A</span>
                     )
                 }
 
@@ -653,11 +699,16 @@ import { RootState } from "../../../redux/store";
                     return (
                         <span style={{color:'red', fontWeight:'bold'}}>NG</span>
                     )
+                }else if(e.data.FTIR === 2)
+                {
+                    return (
+                        <span style={{color:'#1848FC', fontWeight:'bold'}}>PENDING</span>
+                    )
                 }
                 else
                 {
                     return (
-                        <span style={{color:'gray', fontWeight:'bold'}}>N/A</span>
+                        <span style={{color:'#C1C7C3', fontWeight:'bold'}}>N/A</span>
                     )
                 }
 
@@ -674,11 +725,16 @@ import { RootState } from "../../../redux/store";
                     return (
                         <span style={{color:'red', fontWeight:'bold'}}>NG</span>
                     )
+                }else if(e.data.MAIMON === 2)
+                {
+                    return (
+                        <span style={{color:'#1848FC', fontWeight:'bold'}}>PENDING</span>
+                    )
                 }
                 else
                 {
                     return (
-                        <span style={{color:'gray', fontWeight:'bold'}}>N/A</span>
+                        <span style={{color:'#C1C7C3', fontWeight:'bold'}}>N/A</span>
                     )
                 }
 
@@ -695,11 +751,16 @@ import { RootState } from "../../../redux/store";
                     return (
                         <span style={{color:'red', fontWeight:'bold'}}>NG</span>
                     )
+                }else if(e.data.XRF === 2)
+                {
+                    return (
+                        <span style={{color:'#1848FC', fontWeight:'bold'}}>PENDING</span>
+                    )
                 }
                 else
                 {
                     return (
-                        <span style={{color:'gray', fontWeight:'bold'}}>N/A</span>
+                        <span style={{color:'#C1C7C3', fontWeight:'bold'}}>N/A</span>
                     )
                 }
 
@@ -716,11 +777,16 @@ import { RootState } from "../../../redux/store";
                     return (
                         <span style={{color:'red', fontWeight:'bold'}}>NG</span>
                     )
+                }else if(e.data.SCANBARCODE === 2)
+                {
+                    return (
+                        <span style={{color:'#1848FC', fontWeight:'bold'}}>PENDING</span>
+                    )
                 }
                 else
                 {
                     return (
-                        <span style={{color:'gray', fontWeight:'bold'}}>N/A</span>
+                        <span style={{color:'#C1C7C3', fontWeight:'bold'}}>N/A</span>
                     )
                 }
 
@@ -737,11 +803,16 @@ import { RootState } from "../../../redux/store";
                     return (
                         <span style={{color:'red', fontWeight:'bold'}}>NG</span>
                     )
+                }else if(e.data.PHTHALATE === 2)
+                {
+                    return (
+                        <span style={{color:'#1848FC', fontWeight:'bold'}}>PENDING</span>
+                    )
                 }
                 else
                 {
                     return (
-                        <span style={{color:'gray', fontWeight:'bold'}}>N/A</span>
+                        <span style={{color:'#C1C7C3', fontWeight:'bold'}}>N/A</span>
                     )
                 }
 
@@ -758,11 +829,16 @@ import { RootState } from "../../../redux/store";
                     return (
                         <span style={{color:'red', fontWeight:'bold'}}>NG</span>
                     )
+                }else if(e.data.MAUSAC === 2)
+                {
+                    return (
+                        <span style={{color:'#1848FC', fontWeight:'bold'}}>PENDING</span>
+                    )
                 }
                 else
                 {
                     return (
-                        <span style={{color:'gray', fontWeight:'bold'}}>N/A</span>
+                        <span style={{color:'#C1C7C3', fontWeight:'bold'}}>N/A</span>
                     )
                 }
 
@@ -779,11 +855,16 @@ import { RootState } from "../../../redux/store";
                     return (
                         <span style={{color:'red', fontWeight:'bold'}}>NG</span>
                     )
+                }else if(e.data.SHOCKNHIET === 2)
+                {
+                    return (
+                        <span style={{color:'#1848FC', fontWeight:'bold'}}>PENDING</span>
+                    )
                 }
                 else
                 {
                     return (
-                        <span style={{color:'gray', fontWeight:'bold'}}>N/A</span>
+                        <span style={{color:'#C1C7C3', fontWeight:'bold'}}>N/A</span>
                     )
                 }
 
@@ -800,11 +881,16 @@ import { RootState } from "../../../redux/store";
                     return (
                         <span style={{color:'red', fontWeight:'bold'}}>NG</span>
                     )
+                }else if(e.data.TINHDIEN === 2)
+                {
+                    return (
+                        <span style={{color:'#1848FC', fontWeight:'bold'}}>PENDING</span>
+                    )
                 }
                 else
                 {
                     return (
-                        <span style={{color:'gray', fontWeight:'bold'}}>N/A</span>
+                        <span style={{color:'#C1C7C3', fontWeight:'bold'}}>N/A</span>
                     )
                 }
 
@@ -821,11 +907,16 @@ import { RootState } from "../../../redux/store";
                     return (
                         <span style={{color:'red', fontWeight:'bold'}}>NG</span>
                     )
+                }else if(e.data.NHIETAM === 2)
+                {
+                    return (
+                        <span style={{color:'#1848FC', fontWeight:'bold'}}>PENDING</span>
+                    )
                 }
                 else
                 {
                     return (
-                        <span style={{color:'gray', fontWeight:'bold'}}>N/A</span>
+                        <span style={{color:'#C1C7C3', fontWeight:'bold'}}>N/A</span>
                     )
                 }
 
@@ -842,11 +933,16 @@ import { RootState } from "../../../redux/store";
                     return (
                         <span style={{color:'red', fontWeight:'bold'}}>NG</span>
                     )
+                }else if(e.data.TVOC === 2)
+                {
+                    return (
+                        <span style={{color:'#1848FC', fontWeight:'bold'}}>PENDING</span>
+                    )
                 }
                 else
                 {
                     return (
-                        <span style={{color:'gray', fontWeight:'bold'}}>N/A</span>
+                        <span style={{color:'#C1C7C3', fontWeight:'bold'}}>N/A</span>
                     )
                 }
 
@@ -863,11 +959,16 @@ import { RootState } from "../../../redux/store";
                     return (
                         <span style={{color:'red', fontWeight:'bold'}}>NG</span>
                     )
+                }else if(e.data.DOBONG === 2)
+                {
+                    return (
+                        <span style={{color:'#1848FC', fontWeight:'bold'}}>PENDING</span>
+                    )
                 }
                 else
                 {
                     return (
-                        <span style={{color:'gray', fontWeight:'bold'}}>N/A</span>
+                        <span style={{color:'#C1C7C3', fontWeight:'bold'}}>N/A</span>
                     )
                 }
 
@@ -880,6 +981,7 @@ import { RootState } from "../../../redux/store";
 
           </DataGrid>
         </div>
+        </ResponsiveContainer>
       ),
       [inspectiondatatable]
     );
