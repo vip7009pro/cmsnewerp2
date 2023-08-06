@@ -602,9 +602,9 @@ const YCSXComponent = ({G_CODE,PROD_TYPE,PROD_MAIN_MATERIAL,G_NAME,EMPL_NAME,EMP
                         <td>{element.M_CODE}</td>
                         <td>{element.M_NAME}</td>
                         <td>{element.WIDTH_CD}</td>
-                        <td>{element.TONLIEU.toLocaleString("en-US")} M</td>
-                        <td>{element.HOLDING.toLocaleString("en-US")} M</td>
-                        <td>{element.TONG_TON_LIEU.toLocaleString("en-US")} M</td>
+                        <td>{element.TONLIEU?.toLocaleString("en-US")} M</td>
+                        <td>{element.HOLDING?.toLocaleString("en-US")} M</td>
+                        <td>{element.TONG_TON_LIEU?.toLocaleString("en-US")} M</td>
                         <td>{element.REMARK}</td>
                     </tr>)
                 }          
@@ -634,9 +634,9 @@ const YCSXComponent = ({G_CODE,PROD_TYPE,PROD_MAIN_MATERIAL,G_NAME,EMPL_NAME,EMP
                         <td>{element.M_CODE}</td>
                         <td>{element.M_NAME}</td>
                         <td>{element.WIDTH_CD}</td>
-                        <td>{element.TONLIEU.toLocaleString("en-US")} M</td>
-                        <td>{element.HOLDING.toLocaleString("en-US")} M</td>
-                        <td>{element.TONG_TON_LIEU.toLocaleString("en-US")} M</td>
+                        <td>{element.TONLIEU?.toLocaleString("en-US")} M</td>
+                        <td>{element.HOLDING?.toLocaleString("en-US")} M</td>
+                        <td>{element.TONG_TON_LIEU?.toLocaleString("en-US")} M</td>
                         <td>{element.REMARK}</td>
                     </tr>)
                 } 
@@ -667,9 +667,9 @@ const YCSXComponent = ({G_CODE,PROD_TYPE,PROD_MAIN_MATERIAL,G_NAME,EMPL_NAME,EMP
                         <td>{element.M_CODE}</td>
                         <td>{element.M_NAME}</td>
                         <td>{element.WIDTH_CD}</td>
-                        <td>{element.TONLIEU.toLocaleString("en-US")} M</td>
-                        <td>{element.HOLDING.toLocaleString("en-US")} M</td>
-                        <td>{element.TONG_TON_LIEU.toLocaleString("en-US")} M</td>
+                        <td>{element.TONLIEU?.toLocaleString("en-US")} M</td>
+                        <td>{element.HOLDING?.toLocaleString("en-US")} M</td>
+                        <td>{element.TONG_TON_LIEU?.toLocaleString("en-US")} M</td>
                         <td>{element.REMARK}</td>
                     </tr>)
                 } 

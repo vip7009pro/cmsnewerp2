@@ -93,12 +93,12 @@ const KHOLIEU = () => {
     { field: "M_CODE", headerName: "M_CODE", width: 90 },
     { field: "M_NAME", headerName: "M_NAME", width: 180 },
     { field: "WIDTH_CD", headerName: "WIDTH_CD", width: 90 },
-    { field: "TON_NM1", headerName: "TON_NM1", width: 120, renderCell: (params:any) => {return <span style={{color:'gray'}}><b>{params.row.TON_NM1.toLocaleString('en-US')}</b></span>} },
-    { field: "TON_NM2", headerName: "TON_NM2", width: 120 , renderCell: (params:any) => {return <span style={{color:'gray'}}><b>{params.row.TON_NM2.toLocaleString('en-US')}</b></span>}},
-    { field: "HOLDING_NM1", headerName: "HOLDING_NM1", width: 100 , renderCell: (params:any) => {return <span style={{color:'red'}}><b>{params.row.HOLDING_NM1.toLocaleString('en-US')}</b></span>}},
-    { field: "HOLDING_NM2", headerName: "HOLDING_NM2", width: 100 , renderCell: (params:any) => {return <span style={{color:'red'}}><b>{params.row.HOLDING_NM2.toLocaleString('en-US')}</b></span>}},
-    { field: "TOTAL_OK", headerName: "TOTAL_OK", width: 150, renderCell: (params:any) => {return <span style={{color:'green'}}><b>{params.row.TOTAL_OK.toLocaleString('en-US')}</b></span>} },    
-    { field: "TOTAL_HOLDING", headerName: "TOTAL_HOLDING", width: 150, renderCell: (params:any) => {return <span style={{color:'red'}}><b>{params.row.TOTAL_HOLDING.toLocaleString('en-US')}</b></span>} },    
+    { field: "TON_NM1", headerName: "TON_NM1", width: 120, renderCell: (params:any) => {return <span style={{color:'gray'}}><b>{params.row.TON_NM1?.toLocaleString('en-US')}</b></span>} },
+    { field: "TON_NM2", headerName: "TON_NM2", width: 120 , renderCell: (params:any) => {return <span style={{color:'gray'}}><b>{params.row.TON_NM2?.toLocaleString('en-US')}</b></span>}},
+    { field: "HOLDING_NM1", headerName: "HOLDING_NM1", width: 100 , renderCell: (params:any) => {return <span style={{color:'red'}}><b>{params.row.HOLDING_NM1?.toLocaleString('en-US')}</b></span>}},
+    { field: "HOLDING_NM2", headerName: "HOLDING_NM2", width: 100 , renderCell: (params:any) => {return <span style={{color:'red'}}><b>{params.row.HOLDING_NM2?.toLocaleString('en-US')}</b></span>}},
+    { field: "TOTAL_OK", headerName: "TOTAL_OK", width: 150, renderCell: (params:any) => {return <span style={{color:'green'}}><b>{params.row.TOTAL_OK?.toLocaleString('en-US')}</b></span>} },    
+    { field: "TOTAL_HOLDING", headerName: "TOTAL_HOLDING", width: 150, renderCell: (params:any) => {return <span style={{color:'red'}}><b>{params.row.TOTAL_HOLDING?.toLocaleString('en-US')}</b></span>} },    
     { field: "TDS", headerName: "TDS", width: 150, renderCell: (params:any) => {
       let hreftlink = '/tds/' + params.row.M_CODE + '.pdf';
       if (params.row.TDS === "Y") {
@@ -124,9 +124,9 @@ const KHOLIEU = () => {
     { field: "M_NAME", headerName: "M_NAME", width: 180 },
     { field: "WIDTH_CD", headerName: "WIDTH_CD", width: 90 },
     { field: "M_LOT_NO", headerName: "M_LOT_NO", width: 100 },
-    { field: "OUT_CFM_QTY", headerName: "UNIT_QTY", width: 120 , renderCell: (params:any) => {return <span style={{color:'green'}}><b>{params.row.OUT_CFM_QTY.toLocaleString('en-US')}</b></span>}},   
+    { field: "OUT_CFM_QTY", headerName: "UNIT_QTY", width: 120 , renderCell: (params:any) => {return <span style={{color:'green'}}><b>{params.row.OUT_CFM_QTY?.toLocaleString('en-US')}</b></span>}},   
     { field: "ROLL_QTY", headerName: "ROLL_QTY", width: 100 },
-    { field: "TOTAL_OUT_QTY", headerName: "OUTPUT QTY", width: 120 , renderCell: (params:any) => {return <span style={{color:'green'}}><b>{(params.row.TOTAL_OUT_QTY).toLocaleString('en-US')}</b></span>}},   
+    { field: "TOTAL_OUT_QTY", headerName: "OUTPUT QTY", width: 120 , renderCell: (params:any) => {return <span style={{color:'green'}}><b>{(params.row.TOTAL_OUT_QTY)?.toLocaleString('en-US')}</b></span>}},   
     { field: "INS_DATE", headerName: "INS_DATE", width: 180 }, 
   ];
   const column_NHAPLIEUDATA = [
@@ -136,9 +136,9 @@ const KHOLIEU = () => {
     { field: "M_CODE", headerName: "M_CODE", width: 100 },
     { field: "M_NAME", headerName: "M_NAME", width: 180 },
     { field: "WIDTH_CD", headerName: "WIDTH_CD", width: 150 },
-    { field: "IN_CFM_QTY", headerName: "UNIT QTY", width: 120 , renderCell: (params:any) => {return <span style={{color:'green'}}><b>{params.row.IN_CFM_QTY.toLocaleString('en-US')}</b></span>}},   
+    { field: "IN_CFM_QTY", headerName: "UNIT QTY", width: 120 , renderCell: (params:any) => {return <span style={{color:'green'}}><b>{params.row.IN_CFM_QTY?.toLocaleString('en-US')}</b></span>}},   
     { field: "ROLL_QTY", headerName: "ROLL_QTY", width: 100 },
-    { field: "TOTAL_IN_QTY", headerName: "INPUT QTY", width: 120 , renderCell: (params:any) => {return <span style={{color:'green'}}><b>{(params.row.TOTAL_IN_QTY).toLocaleString('en-US')}</b></span>}},   
+    { field: "TOTAL_IN_QTY", headerName: "INPUT QTY", width: 120 , renderCell: (params:any) => {return <span style={{color:'green'}}><b>{(params.row.TOTAL_IN_QTY)?.toLocaleString('en-US')}</b></span>}},   
     { field: "INS_DATE", headerName: "INS_DATE", width: 150 },
     { field: "QC_PASS", headerName: "QC_PASS", width: 180 },
     { field: "QC_PASS_EMPL", headerName: "QC_PASS_EMPL", width: 180 },

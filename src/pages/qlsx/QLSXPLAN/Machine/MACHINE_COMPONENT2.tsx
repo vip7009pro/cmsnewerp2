@@ -41,6 +41,7 @@ interface MachineInterface {
 }
 
 const MACHINE_COMPONENT2 = (machine_data: MachineInterface) => {
+  //console.log(machine_data)
   const runtopcolor: string = "#2fd5eb";
   const runbotcolor: string = "#8ce9f5";
   const stoptopcolor: string = "white";

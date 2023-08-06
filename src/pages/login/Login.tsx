@@ -153,11 +153,13 @@ const Login = () => {
                 localStorage.setItem("server_ip", e.target.value);
                 setServer_String(e.target.value);
                 dispatch(changeServer(e.target.value));
+                ///console.log(e.target.value);
               }}
             >
-              <option value={"http://14.160.33.94:5011/api"}>MAIN_SERVER</option>
-              <option value={"http://14.160.33.94:3007/api"}>SUB_SERVER</option>
-              <option value={"http://localhost:3007/api"}>TEST_SERVER</option>             
+              {company==='CMS' && <option value={"http://14.160.33.94:5011/api"}>MAIN_SERVER</option>}
+              {company==='CMS' && <option value={"http://14.160.33.94:3007/api"}>SUB_SERVER</option>}
+              {company === 'PVN' && <option value={"http://192.168.100.120:3007/api"}>LOCALPVN</option>}
+              <option value={"http://localhost:3007/api"}>TEST_SERVER</option>
             </select>
           </label>
         </div>

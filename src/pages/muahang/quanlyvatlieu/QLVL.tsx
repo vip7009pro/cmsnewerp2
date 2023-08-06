@@ -984,6 +984,7 @@ import {
                         value={selectedRows?.CUST_CD}
                         onChange={(e) => {
                             seMaterialInfo("CUST_CD", e.target.value);
+                            console.log(selectedRows);
                         }}
                       >
                         {customerList.map((element, index) => (
