@@ -79,7 +79,7 @@ const Login = () => {
       setLang("en");
     }   
   }, []);
-  console.log(company)
+  //console.log(company)
 
   //if (userData.EMPL_NO!=='none') return <Navigate to='/' replace />;
   return (

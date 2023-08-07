@@ -1563,8 +1563,8 @@ const QUICKPLAN = () => {
       let err_code: string = "0";
       for (let i = 0; i < qlsxplandatafilter.length; i++) {
         if (
-          (parseInt(qlsxplandatafilter[i].PROCESS_NUMBER.toString()) === 1 ||
-            parseInt(qlsxplandatafilter[i].PROCESS_NUMBER.toString()) === 2) &&
+          (parseInt(qlsxplandatafilter[i].PROCESS_NUMBER.toString()) >= 1 ||
+            parseInt(qlsxplandatafilter[i].PROCESS_NUMBER.toString()) <= 4) &&
           qlsxplandatafilter[i].PLAN_QTY !== 0 &&
           qlsxplandatafilter[i].PLAN_QTY <=
             qlsxplandatafilter[i].PROD_REQUEST_QTY &&
@@ -2161,8 +2161,9 @@ const QUICKPLAN = () => {
                 let plan_temp = params.value.substring(0, 2);
                 let UPH1: number = p.UPH1 === null ? 999999999 : p.UPH1;
                 let UPH2: number = p.UPH2 === null ? 999999999 : p.UPH2;
-                console.log("UPH1", UPH1);
-                console.log("UPH2", UPH2);
+                let UPH3: number = p.UPH3 === null ? 999999999 : p.UPH3;
+                let UPH4: number = p.UPH4 === null ? 999999999 : p.UPH4;
+                
                 if (plan_temp === p.EQ1) {
                   return {
                     ...p,
@@ -2170,8 +2171,12 @@ const QUICKPLAN = () => {
                     PROCESS_NUMBER: 1,
                     CD1: temp_ycsx_data[0].CD1,
                     CD2: temp_ycsx_data[0].CD2,
+                    CD3: temp_ycsx_data[0].CD3,
+                    CD4: temp_ycsx_data[0].CD4,
                     TON_CD1: temp_ycsx_data[0].TON_CD1,
                     TON_CD2: temp_ycsx_data[0].TON_CD2,
+                    TON_CD3: temp_ycsx_data[0].TON_CD3,
+                    TON_CD4: temp_ycsx_data[0].TON_CD4,
                     PLAN_QTY:
                       temp_ycsx_data[0].TON_CD1 <= 0
                         ? 0
@@ -2186,8 +2191,12 @@ const QUICKPLAN = () => {
                     PROCESS_NUMBER: 2,
                     CD1: temp_ycsx_data[0].CD1,
                     CD2: temp_ycsx_data[0].CD2,
+                    CD3: temp_ycsx_data[0].CD3,
+                    CD4: temp_ycsx_data[0].CD4,
                     TON_CD1: temp_ycsx_data[0].TON_CD1,
                     TON_CD2: temp_ycsx_data[0].TON_CD2,
+                    TON_CD3: temp_ycsx_data[0].TON_CD3,
+                    TON_CD4: temp_ycsx_data[0].TON_CD4,
                     PLAN_QTY:
                       temp_ycsx_data[0].TON_CD2 <= 0
                         ? 0
@@ -2195,7 +2204,50 @@ const QUICKPLAN = () => {
                         ? temp_ycsx_data[0].TON_CD2
                         : UPH2 * 10,
                   };
-                } else {
+                }
+                else if (plan_temp === p.EQ3) {
+                  return {
+                    ...p,
+                    [keyvar]: params.value,
+                    PROCESS_NUMBER: 3,
+                    CD1: temp_ycsx_data[0].CD1,
+                    CD2: temp_ycsx_data[0].CD2,
+                    CD3: temp_ycsx_data[0].CD3,
+                    CD4: temp_ycsx_data[0].CD4,
+                    TON_CD1: temp_ycsx_data[0].TON_CD1,
+                    TON_CD2: temp_ycsx_data[0].TON_CD2,
+                    TON_CD3: temp_ycsx_data[0].TON_CD3,
+                    TON_CD4: temp_ycsx_data[0].TON_CD4,
+                    PLAN_QTY:
+                      temp_ycsx_data[0].TON_CD3 <= 0
+                        ? 0
+                        : temp_ycsx_data[0].TON_CD3 < UPH3 * 10
+                        ? temp_ycsx_data[0].TON_CD3
+                        : UPH3 * 10,
+                  };
+                } 
+                else if (plan_temp === p.EQ4) {
+                  return {
+                    ...p,
+                    [keyvar]: params.value,
+                    PROCESS_NUMBER: 2,
+                    CD1: temp_ycsx_data[0].CD1,
+                    CD2: temp_ycsx_data[0].CD2,
+                    CD3: temp_ycsx_data[0].CD3,
+                    CD4: temp_ycsx_data[0].CD4,
+                    TON_CD1: temp_ycsx_data[0].TON_CD1,
+                    TON_CD2: temp_ycsx_data[0].TON_CD2,
+                    TON_CD3: temp_ycsx_data[0].TON_CD3,
+                    TON_CD4: temp_ycsx_data[0].TON_CD4,
+                    PLAN_QTY:
+                      temp_ycsx_data[0].TON_CD4 <= 0
+                        ? 0
+                        : temp_ycsx_data[0].TON_CD4 < UPH4 * 10
+                        ? temp_ycsx_data[0].TON_CD4
+                        : UPH4 * 10,
+                  };
+                }
+                else {
                   Swal.fire(
                     "Thông báo",
                     "Máy đã nhập ko giống trong BOM",
