@@ -1890,6 +1890,23 @@ const BOM_MANAGER = () => {
         console.log(error);
       });
   };
+  const sinhmaCODEKH =async (CUST_CD: string)=> {
+    await generalQuery("getlastestCODKH", {
+      CUST_CD: CUST_CD
+    })
+    .then((response) => {
+      //console.log(response.data);
+      if (response.data.tk_status !== "NG") {
+       
+      } else {
+        
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+    
+  }
   useEffect(() => {
     getmateriallist();
     getcustomerlist();
