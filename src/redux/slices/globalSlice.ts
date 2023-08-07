@@ -3,7 +3,11 @@ import type {PayloadAction} from '@reduxjs/toolkit'
 import { ReactElement } from 'react';
 import { io } from "socket.io-client";
 import Swal from 'sweetalert2';
-const socket =  io('http://14.160.33.94:3005')
+
+
+const startCPN: string = 'CMS';
+
+const socket =  io(startCPN === 'CMS'? 'http://14.160.33.94:3005': startCPN === 'PVN'?  'http://192.168.100.120:3005':'')
 //const socket =  io('http://localhost:3005')
 socket.on("connect", () => {
   console.log(socket.id); // x8WIv7-mJelg7on_ALbx
@@ -158,6 +162,19 @@ export interface GlobalInterface {
       PVN: any
     },
 }
+
+
+let server_ip_local: any = localStorage.getItem("server_ip")?.toString();
+
+if (server_ip_local !== undefined) {
+ 
+} else {
+  console.log('server_ip_local',server_ip_local)
+  localStorage.setItem('server_ip', startCPN === 'CMS'? 'http://14.160.33.94:5011': startCPN === 'PVN'?  'http://192.168.100.120:3007':'', )
+  
+}
+
+
 const initialState:GlobalInterface = {
     userData: {
         EMPL_IMAGE:'Y',
@@ -211,12 +228,13 @@ const initialState:GlobalInterface = {
     lang: 'vi',
     sidebarmenu: true,
     multiple_chithi_array: [],
-    server_ip: 'http://14.160.33.94:5011/api',         
+    company: startCPN,
+    server_ip: startCPN === 'CMS'? 'http://14.160.33.94:5011': startCPN === 'PVN'?  'http://192.168.100.120:3007':'',         
     tabs: [],
     tabIndex: 0,
     tabModeSwap: true,
     loginState: false,
-    company: 'CMS',
+   
     theme: {
       CMS: {
         backgroundImage: `linear-gradient(0deg, rgba(77, 175, 252,0.8), rgba(159, 212, 254,0.8))`,

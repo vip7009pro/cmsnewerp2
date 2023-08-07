@@ -12,20 +12,53 @@ axios.defaults.withCredentials = true;
 //const API_URL = "http://localhost:3007/api";
 export function getSever(): string {
   const state = store.getState();
-  console.log(state.totalSlice.server_ip);
+  //console.log(state.totalSlice.server_ip);
   return state.totalSlice.server_ip;
 }
+export function getCompany(): string {
+  const state = store.getState();
+  //console.log(state.totalSlice.server_ip);
+  return state.totalSlice.company;
+}
 
-let API_URL = "http://14.160.33.94:5011/api";
-let UPLOAD_URL = "http://14.160.33.94:5011/uploadfile";
+console.log('company', getCompany())
+
+
+/* let API_URL = getCompany() ==='CMS' ? 'http://14.160.33.94:5011/api': 'http://192.168.100.120:3007/api';
+let UPLOAD_URL = getCompany() ==='CMS' ? 'http://14.160.33.94:5011/uploadfile': 'http://192.168.100.120:3007/uploadfile'; */
+
+/* let API_URL = "http://192.168.100.120:3007/api";
+let UPLOAD_URL = "http://192.168.100.120:3007/uploadfile";
+ */
+/* let API_URL = "http://localhost:3007/api";
+let UPLOAD_URL = "http://localhost:3007/uploadfile"; */
+
+let API_URL = getSever() + '/api';
+let UPLOAD_URL = getSever() + '/uploadfile';
+
+console.log(API_URL);
+console.log(UPLOAD_URL);
 
 let server_ip_local: any = localStorage.getItem("server_ip")?.toString();
+
 if (server_ip_local !== undefined) {
-  API_URL = server_ip_local;
+  API_URL = server_ip_local+ '/api';
+  UPLOAD_URL = server_ip_local+ '/uploadfile';
 } else {
+  
 }
 
 export function login(user: string, pass: string) {
+  let API_URL = getSever() + '/api';
+  let UPLOAD_URL = getSever() + '/uploadfile';
+
+  /* if (server_ip_local !== undefined) {
+    API_URL = server_ip_local+ '/api';
+    UPLOAD_URL = server_ip_local+ '/uploadfile';
+  } else {
+    
+  } */
+  //console.log('login api url', API_URL);
   axios
     .post(API_URL, {
       command: "login",
@@ -152,6 +185,8 @@ export function logout() {
   }, 1000);
 }
 export async function checkLogin() {
+  let API_URL = getSever() + '/api';
+  let UPLOAD_URL = getSever() + '/uploadfile';
   let data = await axios.post(API_URL, {
     command: "checklogin",
     DATA: {token_string: cookies.get('token'),},

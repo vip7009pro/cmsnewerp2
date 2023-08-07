@@ -207,7 +207,7 @@ export function CustomResponsiveContainer(props:any) {
 
  export const weekdayarray =["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
 
- export function removeVietnameseTones(str: string) {
+/*  export function removeVietnameseTones(str: string) {
   str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g,"a"); 
   str = str.replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g,"e"); 
   str = str.replace(/ì|í|ị|ỉ|ĩ/g,"i"); 
@@ -234,4 +234,4 @@ export function CustomResponsiveContainer(props:any) {
   // Bỏ dấu câu, kí tự đặc biệt
   str = str.replace(/!|@|%|\^|\*|\(|\)|\+|\=|\<|\>|\?|\/|,|\.|\:|\;|\'|\"|\&|\#|\[|\]|~|\$|_|`|-|{|}|\||\\/g," ");
   return str;
-}
+} */

@@ -7,7 +7,7 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import HomeIcon from '@mui/icons-material/Home';
 import { FaDonate, FaFileInvoiceDollar,FaCheckCircle, FaHistory, FaBomb, FaPaperPlane, FaWarehouse, FaScroll, FaPeopleArrows, FaBarcode } from 'react-icons/fa';
-import { BiBarcode, BiCart, BiSortAZ, BiTrendingUp } from 'react-icons/bi';
+import { BiBarcode, BiCart, BiSortAZ, BiTransfer, BiTrendingUp } from 'react-icons/bi';
 import { FcPlanner, FcSettings,FcBullish, FcPortraitMode,FcManager,FcCheckmark,FcPieChart,FcRefresh } from 'react-icons/fc';
 import { MdBugReport, MdDesignServices, MdInput, MdOutlineAppRegistration, MdOutlineAspectRatio, MdOutlineChecklistRtl, MdOutlineProductionQuantityLimits, MdOutlineSignalWifiStatusbarNull, MdPrecisionManufacturing, MdPriceChange } from "react-icons/md";
 import { WiDayLightning } from "react-icons/wi";
@@ -145,7 +145,7 @@ const Sidebar = () => {
       iconOpened: <KeyboardArrowUpIcon />,
       subNav: [
         {
-          title: getlang("quanlygia", lang) /*Quản lý PO*/,
+          title: getlang("quanlygiasanpham", lang) /*Quản lý PO*/,
           path: "/kinhdoanh/quotationmanager",
           icon: <GiPriceTag color='#01C716' size={25} />,
           MENU_CODE: "KD14",
@@ -371,6 +371,12 @@ const Sidebar = () => {
           path: "/rnd/productbarcodemanager",
           icon: <FaBarcode color='#098705' size={25} />,
           MENU_CODE: "RD6",
+        },
+        {
+          title: getlang("quanlygiaonhan", lang),
+          path: "/rnd/quanlygiaonhan",
+          icon: <BiTransfer color='#3043FB' size={25} />,
+          MENU_CODE: "RD7",
         },
       ],
     },

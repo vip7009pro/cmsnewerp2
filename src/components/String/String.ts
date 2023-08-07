@@ -11,10 +11,11 @@ type english_sentences = {
   CONTENT: string;
 };
 export const vn_lang = {
+  quanlygiaonhan: "Quản lý giao nhận dao film",
   productbarcodemanager: "Quản lý barcode sản phẩm",
   quanlyvatlieu:"Quản Lý Vật Liệu",
   phongmuahang:"Phòng Mua Hàng",
-  quanlygia: "Quản Lý Giá",
+  quanlygiasanpham: "Quản Lý Giá",
   listchamcong: "Bảng Chấm Công",
   phonghanhchinhnhansu: "Phòng HC-NS",
   materiallotstatus: "Tình hình cuộn liệu",
@@ -86,10 +87,11 @@ export const vn_lang = {
   eqstatus: "Trạng Thái Máy",
 };
 export const en_lang = {
+  quanlygiaonhan: "Handover management",
   productbarcodemanager: "Product Barcode Manager",
   quanlyvatlieu:"Material Management",
   phongmuahang:"Purchasing Department",
-  quanlygia: "Quotation Manager",
+  quanlygiasanpham: "Quotation Manager",
   listchamcong: "Attendance list",
   phonghanhchinhnhansu: "HR",
   materiallotstatus: "Material Lot Status",
@@ -162,10 +164,11 @@ export const en_lang = {
   datasanxuat: "Production DATA",
 };
 export const kr_lang = {
+  quanlygiaonhan: "자료 인수인계 관리",
   productbarcodemanager: "제품 바코드 관리",
   quanlyvatlieu:"자재 관리",
   phongmuahang:"구매팀",
-  quanlygia: "가격 관리",
+  quanlygiasanpham: "가격 관리",
   listchamcong: "출석 리스트",
   phonghanhchinhnhansu: "인사팀",
   materiallotstatus: "원단 상태",

@@ -18,7 +18,8 @@ const Login = () => {
   const [lang, setLang] = useContext(LangConText);
   const [user, setUser] = useState("");
   const [pass, setPass] = useState("");
-  const [server_string, setServer_String] = useState('http://14.160.33.94:5011/api')
+  const [server_string, setServer_String] = useState('')
+  /* const [server_string, setServer_String] = useState('http://14.160.33.94:5011/api') */
   //console.log(lang);
 
   const company: string = useSelector(
@@ -28,6 +29,7 @@ const Login = () => {
     (state: RootState) => state.totalSlice.theme
   );
 
+  const defaultIP:string = company ==='CMS'? 'http://14.160.33.94:5011/api': 'http://192.168.100.120:3007/api'
   const handle_setUser = (e: React.ChangeEvent<HTMLInputElement>) => {
     setUser(e.target.value);
   };
@@ -64,8 +66,10 @@ const Login = () => {
       setServer_String(server_ip_local);
       dispatch(changeServer(server_ip_local));
     } else {      
-      localStorage.setItem("server_ip", 'http://14.160.33.94:5011/api');
-      dispatch(changeServer('http://14.160.33.94:5011/api'));
+      /* localStorage.setItem("server_ip", 'http://14.160.33.94:5011/api');
+      dispatch(changeServer('http://14.160.33.94:5011/api')); */
+      localStorage.setItem("server_ip", '');
+      dispatch(changeServer(''));
     }
     let saveLang: any = localStorage.getItem("lang")?.toString();
     if (saveLang !== undefined) {
@@ -156,10 +160,10 @@ const Login = () => {
                 ///console.log(e.target.value);
               }}
             >
-              {company==='CMS' && <option value={"http://14.160.33.94:5011/api"}>MAIN_SERVER</option>}
-              {company==='CMS' && <option value={"http://14.160.33.94:3007/api"}>SUB_SERVER</option>}
-              {company === 'PVN' && <option value={"http://192.168.100.120:3007/api"}>LOCALPVN</option>}
-              <option value={"http://localhost:3007/api"}>TEST_SERVER</option>
+              {company==='CMS' && <option value={"http://14.160.33.94:5011"}>MAIN_SERVER</option>}
+              {company==='CMS' && <option value={"http://14.160.33.94:3007"}>SUB_SERVER</option>}
+              {company === 'PVN' && <option value={"http://192.168.100.120:3007"}>LOCALPVN</option>}
+              <option value={"http://localhost:3007"}>TEST_SERVER</option>
             </select>
           </label>
         </div>

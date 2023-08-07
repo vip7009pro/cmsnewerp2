@@ -58,6 +58,7 @@ import { UserData } from "../../../redux/slices/globalSlice";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import axios from "axios";
+
 interface CODE_INFO {
   id: number;
   G_CODE: string;
@@ -186,6 +187,9 @@ interface MACHINE_LIST {
   EQ_NAME: string;
 }
 const BOM_MANAGER = () => {
+  const company: string = useSelector(
+    (state: RootState) => state.totalSlice.company
+  );
   const [codedatatablefilter, setCodeDataTableFilter] = useState<
     Array<CODE_INFO>
   >([]);
@@ -1131,7 +1135,7 @@ const BOM_MANAGER = () => {
           ["RND"],
           handleAddNewCode
         ); */
-        checkBP(userData, ["RND", "QLSX"], ["ALL"], ["ALL"], handleAddNewCode);
+        checkBP(userData, ["RND", "QLSX","KD"], ["ALL"], ["ALL"], handleAddNewCode);
         //handleAddNewCode();
       }
     });
@@ -1154,7 +1158,7 @@ const BOM_MANAGER = () => {
           ["RND"],
           handleAddNewVer
         ); */
-        checkBP(userData, ["RND", "QLSX"], ["ALL"], ["ALL"], handleAddNewVer);
+        checkBP(userData, ["RND", "QLSX","KD"], ["ALL"], ["ALL"], handleAddNewVer);
         //handleAddNewVer();
       }
     });
@@ -1174,10 +1178,10 @@ const BOM_MANAGER = () => {
         /* checkBP(
           userData?.EMPL_NO,
           userData?.MAINDEPTNAME,
-          ["RND", "QLSX"],
+          ["RND", "QLSX","KD"],
           handleUpdateCode
         ); */
-        checkBP(userData, ["RND", "QLSX"], ["ALL"], ["ALL"], handleUpdateCode);
+        checkBP(userData, ["RND", "QLSX","KD"], ["ALL"], ["ALL"], handleUpdateCode);
         //handleUpdateCode();
       }
     });
@@ -1804,10 +1808,10 @@ const BOM_MANAGER = () => {
         /*  checkBP(
           userData?.EMPL_NO,
           userData?.MAINDEPTNAME,
-          ["RND", "QLSX"],
+          ["RND", "QLSX","KD"],
           handleInsertBOMSX
         ); */
-        checkBP(userData, ["RND", "QLSX"], ["ALL"], ["ALL"], handleInsertBOMSX);
+        checkBP(userData, ["RND", "QLSX","KD"], ["ALL"], ["ALL"], handleInsertBOMSX);
         //handleInsertBOMSX();
       }
     });
@@ -1827,12 +1831,12 @@ const BOM_MANAGER = () => {
         /* checkBP(
           userData?.EMPL_NO,
           userData?.MAINDEPTNAME,
-          ["RND", "QLSX"],
+          ["RND", "QLSX","KD"],
           handleInsertBOMGIA
         ); */
         checkBP(
           userData,
-          ["RND", "QLSX"],
+          ["RND", "QLSX","KD"],
           ["ALL"],
           ["ALL"],
           handleInsertBOMGIA
@@ -2152,7 +2156,7 @@ const BOM_MANAGER = () => {
                       </select>
                     </label>
                     <label>
-                      Code KD:{" "}
+                     {company==='CMS'? 'Code KD': 'Code KT'}
                       <input
                         disabled={enableform}
                         type='text'
@@ -2200,7 +2204,7 @@ const BOM_MANAGER = () => {
                       ></input>
                     </label>
                     <label>
-                      Code RnD:{" "}
+                    {company==='CMS'? 'Code RnD:': 'Tên sản phẩm:'}
                       <input
                         disabled={enableform}
                         type='text'
