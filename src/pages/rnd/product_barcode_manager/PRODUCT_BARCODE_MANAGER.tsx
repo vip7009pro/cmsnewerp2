@@ -288,7 +288,7 @@ const PRODUCT_BARCODE_MANAGER = () => {
               displayMode='compact'
             />
             <Column dataField='G_CODE' caption='G_CODE' width={100}></Column>
-            <Column dataField='G_NAME' caption='G_NAME' width={100}></Column>
+            <Column dataField='G_NAME' caption='G_NAME' width={200}></Column>
             <Column
               dataField='BARCODE_STT'
               caption='BARCODE_STT'
@@ -1215,6 +1215,7 @@ const PRODUCT_BARCODE_MANAGER = () => {
               <label>
                 <b>BARCODE DTC:</b>{" "}
                 <input
+                  disabled={true}
                   type='text'
                   placeholder='BARCODE DTC'
                   value={selectedRows?.BARCODE_RELI}
@@ -1226,6 +1227,7 @@ const PRODUCT_BARCODE_MANAGER = () => {
               <label>
                 <b>BARCODE KT:</b>{" "}
                 <input
+                  disabled={true}
                   type='text'
                   placeholder='BARCODE KT'
                   value={selectedRows?.BARCODE_INSP}

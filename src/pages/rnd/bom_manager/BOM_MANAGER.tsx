@@ -2367,21 +2367,21 @@ const BOM_MANAGER = () => {
                   </div>
                   <div className='info11'>
                     <label>
-                      Hướng mở roll:
+                      Hướng cuộn:
                       <select
                         disabled={enableform}
                         name='huongmoroll'
                         value={
                           codefullinfo?.PACK_DRT === null
-                            ? ""
+                            ? "1"
                             : codefullinfo?.PACK_DRT
                         }
                         onChange={(e) => {
                           handleSetCodeInfo("PACK_DRT", e.target.value);
                         }}
                       >
-                        <option value='1'>FORWARD</option>
-                        <option value='0'>REVERSE</option>
+                        <option value='1'>Hàng ở mặt ngoài</option>
+                        <option value='0'>Hàng ở mặt trong</option>
                       </select>
                     </label>
                     <label>

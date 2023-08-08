@@ -68,6 +68,7 @@ import QuotationTotal from "../../pages/kinhdoanh/quotationmanager/QuotationTota
 import QLVL from "../../pages/muahang/quanlyvatlieu/QLVL";
 import PRODUCT_BARCODE_MANAGER from "../../pages/rnd/product_barcode_manager/PRODUCT_BARCODE_MANAGER";
 import QLGN from "../../pages/rnd/quanlygiaonhandaofilm/QLGN";
+import KHOTPNEW from "../../pages/kho/khotp_new/KHOTPNEW";
 
 interface MENU_LIST_DATA {
   MENU_CODE: string;
@@ -288,12 +289,7 @@ const SubMenu = ({ item }: { item: any }) => {
       MENU_CODE: "RD6",
       MENU_NAME: getlang('productbarcodemanager',lang),
       MENU_ITEM: <PRODUCT_BARCODE_MANAGER />,
-    },
-    {
-      MENU_CODE: "RD7",
-      MENU_NAME: getlang('quanlygiaonhan',lang),
-      MENU_ITEM: <QLGN />,
-    },
+    },   
     {
       MENU_CODE: "QL1",
       MENU_NAME: getlang('quanlyYCSX',lang),
@@ -413,6 +409,11 @@ const SubMenu = ({ item }: { item: any }) => {
       MENU_CODE: "SX12",
       MENU_NAME: 'PLAN RESULT',
       MENU_ITEM: <PLANRESULT />,
+    },
+    {
+      MENU_CODE: "KO1",
+      MENU_NAME: getlang('nhapxuatton',lang),
+      MENU_ITEM: <KHOTPNEW />,
     },
     {
       MENU_CODE: "",

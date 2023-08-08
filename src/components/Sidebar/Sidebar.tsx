@@ -6,7 +6,7 @@ import "./Sidebar.scss";
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import HomeIcon from '@mui/icons-material/Home';
-import { FaDonate, FaFileInvoiceDollar,FaCheckCircle, FaHistory, FaBomb, FaPaperPlane, FaWarehouse, FaScroll, FaPeopleArrows, FaBarcode } from 'react-icons/fa';
+import { FaDonate, FaFileInvoiceDollar,FaCheckCircle, FaHistory, FaBomb, FaPaperPlane, FaWarehouse, FaScroll, FaPeopleArrows, FaBarcode, FaLongArrowAltRight } from 'react-icons/fa';
 import { BiBarcode, BiCart, BiSortAZ, BiTransfer, BiTrendingUp } from 'react-icons/bi';
 import { FcPlanner, FcSettings,FcBullish, FcPortraitMode,FcManager,FcCheckmark,FcPieChart,FcRefresh } from 'react-icons/fc';
 import { MdBugReport, MdDesignServices, MdInput, MdOutlineAppRegistration, MdOutlineAspectRatio, MdOutlineChecklistRtl, MdOutlineProductionQuantityLimits, MdOutlineSignalWifiStatusbarNull, MdPrecisionManufacturing, MdPriceChange } from "react-icons/md";
@@ -372,12 +372,6 @@ const Sidebar = () => {
           icon: <FaBarcode color='#098705' size={25} />,
           MENU_CODE: "RD6",
         },
-        {
-          title: getlang("quanlygiaonhan", lang),
-          path: "/rnd/quanlygiaonhan",
-          icon: <BiTransfer color='#3043FB' size={25} />,
-          MENU_CODE: "RD7",
-        },
       ],
     },
     {
@@ -516,6 +510,22 @@ const Sidebar = () => {
           icon: <BiTrendingUp color='green' size={25} />,
           MENU_CODE: "SX12",
         },
+      ],
+    },
+    {
+      title: getlang("khothanhpham", lang),
+      path: "#",
+      icon: <FaWarehouse color='#7459FA' size={25} />,
+      iconClosed: <KeyboardArrowDownIcon />,
+      iconOpened: <KeyboardArrowUpIcon />,
+      subNav: [
+        {
+          title: getlang("nhapxuatton", lang),
+          path: "khothanhpham/nhapxuatton",
+          icon: <FaLongArrowAltRight color='#74CE00' size={25} />,
+          MENU_CODE: "KO1",
+          cName: "sub-nav",
+        },        
       ],
     },
   ];

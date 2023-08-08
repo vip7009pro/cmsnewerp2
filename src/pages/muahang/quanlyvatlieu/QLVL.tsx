@@ -1,4 +1,6 @@
 import {
+  Checkbox,
+  FormControlLabel,
     IconButton,
   } from "@mui/material";
   import {
@@ -1055,24 +1057,22 @@ import {
                     onChange={(e) => seMaterialInfo('ROLL_LENGTH',e.target.value)}
                   ></input>
                 </label>  
-                <label>
-                  <b>Dùng/Không Dùng:</b>{" "}
-                  <input 
-                    type='checkbox'
-                    placeholder='Use YN'
-                    defaultChecked={(selectedRows?.USE_YN==='Y')? true: false}                    
-                    onChange={(e) => {
-                      if(selectedRows?.USE_YN==='Y')
-                      {
-                        seMaterialInfo('USE_YN','N')
+                <label>   
+                  <FormControlLabel                      
+                      label='Mở/Khóa'
+                      control={
+                        <Checkbox
+                          checked={selectedRows?.USE_YN === "Y"}
+                          onChange={(e) => {
+                            seMaterialInfo(
+                              "USE_YN",
+                              e.target.checked === true ? "Y" : "N"
+                            );
+                          }}
+                          inputProps={{ "aria-label": "controlled" }}
+                        />
                       }
-                      else
-                      {
-                        seMaterialInfo('USE_YN','Y')
-                      }
-                      
-                    }}
-                  ></input>
+                    />
                 </label>  
               </div>                          
             </div>

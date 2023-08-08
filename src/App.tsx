@@ -35,6 +35,8 @@ import MUAHANG from "./pages/muahang/MUAHANG";
 import QLVL from "./pages/muahang/quanlyvatlieu/QLVL";
 import PRODUCT_BARCODE_MANAGER from "./pages/rnd/product_barcode_manager/PRODUCT_BARCODE_MANAGER";
 import QLGN from "./pages/rnd/quanlygiaonhandaofilm/QLGN";
+import KHOTPNEW from "./pages/kho/khotp_new/KHOTPNEW";
+import KHOTOTAL from "./pages/kho/KHOTOTAL";
 /* import DATASX2 from "./pages/qlsx/QLSXPLAN/DATASX/DATASX2";
 import Home from "./pages/home/Home";
 import DiemDanhNhom from "./pages/nhansu/DiemDanhNhom/DiemDanhNhom";
@@ -666,6 +668,22 @@ function App() {
                         <Route index element={<MUAHANG />} />                        
                         <Route path='quanlyvatlieu' element={<QLVL />} />                        
                         <Route path='mrp' element={<QLVL />} />                        
+                      </Route>
+                      <Route
+                        path='khothanhpham'
+                        element={
+                          <ProtectedRoute
+                            user={globalUserData}
+                            maindeptname='all'
+                            jobname='Leader'
+                          >
+                            <KHOTOTAL />
+                          </ProtectedRoute>
+                        }
+                      >
+                        <Route index element={<KHOTPNEW />} />                        
+                        <Route path='nhapxuatton' element={<KHOTPNEW />} />              
+                                          
                       </Route>
                       <Route
                         path='qc'

@@ -1428,7 +1428,6 @@ const CAPASX = () => {
           <option value='DC'>DC</option>
           <option value='ED'>ED</option>
         </select> */}
-
         </div>
           <div className='starndardworkforce'>{DeliveryLeadTimeMMFR}</div>
           <div className='starndardworkforce'>{DeliveryLeadTimeMMED}</div>
