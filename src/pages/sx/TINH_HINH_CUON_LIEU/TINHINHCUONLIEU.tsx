@@ -1716,7 +1716,7 @@ const TINHHINHCUONLIEU = () => {
                 ></input>
               </label>
               <label>
-                <b>Code CMS:</b>{" "}
+                <b>Code ERP:</b>{" "}
                 <input onKeyDown={(e)=> {handleSearchCodeKeyDown(e);} }
                   type='text'
                   placeholder='7C123xxx'

@@ -1660,7 +1660,7 @@ const YCSXManager = () => {
               err_code = 3;
             }
           } else {
-            //tempjson[i].CHECKSTATUS = "NG: Không có code CMS này";
+            //tempjson[i].CHECKSTATUS = "NG: Không có Code ERP này";
             err_code = 4;
           }
         })
@@ -1677,7 +1677,7 @@ const YCSXManager = () => {
       } else if (err_code === 3) {
         tempjson[i].CHECKSTATUS = "NG: Ver này đã bị khóa";
       } else if (err_code === 4) {
-        tempjson[i].CHECKSTATUS = "NG: Không có code CMS này";
+        tempjson[i].CHECKSTATUS = "NG: Không có Code ERP này";
       }
     }
     setisLoading(false);
@@ -1703,7 +1703,7 @@ const YCSXManager = () => {
               err_code = 3;
             }
           } else {
-            //tempjson[i].CHECKSTATUS = "NG: Không có code CMS này";
+            //tempjson[i].CHECKSTATUS = "NG: Không có Code ERP này";
             err_code = 4;
           }
         })
@@ -1996,7 +1996,7 @@ const YCSXManager = () => {
       } else if (err_code === 3) {
         tempjson[i].CHECKSTATUS = "NG: Ver này đã bị khóa";
       } else if (err_code === 4) {
-        tempjson[i].CHECKSTATUS = "NG: Không có code CMS này";
+        tempjson[i].CHECKSTATUS = "NG: Không có Code ERP này";
       }
     }
     setisLoading(false);
@@ -3270,7 +3270,7 @@ const YCSXManager = () => {
                   ></input>
                 </label>
                 <label>
-                  <b>Code CMS:</b>{" "}
+                  <b>Code ERP:</b>{" "}
                   <input
                     onKeyDown={(e) => {
                       handleSearchCodeKeyDown(e);
