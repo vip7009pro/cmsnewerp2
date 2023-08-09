@@ -23,16 +23,6 @@ export function getCompany(): string {
 
 console.log('company', getCompany())
 
-
-/* let API_URL = getCompany() ==='CMS' ? 'http://14.160.33.94:5011/api': 'http://192.168.100.120:3007/api';
-let UPLOAD_URL = getCompany() ==='CMS' ? 'http://14.160.33.94:5011/uploadfile': 'http://192.168.100.120:3007/uploadfile'; */
-
-/* let API_URL = "http://192.168.100.120:3007/api";
-let UPLOAD_URL = "http://192.168.100.120:3007/uploadfile";
- */
-/* let API_URL = "http://localhost:3007/api";
-let UPLOAD_URL = "http://localhost:3007/uploadfile"; */
-
 let API_URL = getSever() + '/api';
 let UPLOAD_URL = getSever() + '/uploadfile';
 
@@ -52,13 +42,6 @@ export function login(user: string, pass: string) {
   let API_URL = getSever() + '/api';
   let UPLOAD_URL = getSever() + '/uploadfile';
 
-  /* if (server_ip_local !== undefined) {
-    API_URL = server_ip_local+ '/api';
-    UPLOAD_URL = server_ip_local+ '/uploadfile';
-  } else {
-    
-  } */
-  //console.log('login api url', API_URL);
   axios
     .post(API_URL, {
       command: "login",
@@ -206,7 +189,7 @@ export async function uploadQuery(file: any, filename: string, uploadfoldername:
   formData.append("uploadedfile", file);
   formData.append("filename", filename);
   formData.append("uploadfoldername", uploadfoldername); 
-  formData.append("token_string", cookies.get('token'));
+  formData.append("token_string2", cookies.get('token'));
   if(filenamelist) formData.append('newfilenamelist',JSON.stringify(filenamelist));
   console.log('filenamelist',filenamelist);
   console.log('formData',formData);

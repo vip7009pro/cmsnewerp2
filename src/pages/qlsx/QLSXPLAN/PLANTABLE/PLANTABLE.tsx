@@ -9,7 +9,7 @@ import React, {
 import MACHINE_COMPONENT from "../Machine/MACHINE_COMPONENT";
 import "./PLANTABLE.scss";
 import Swal from "sweetalert2";
-import { generalQuery } from "../../../../api/Api";
+import { generalQuery, uploadQuery } from "../../../../api/Api";
 import moment from "moment";
 import { UserContext } from "../../../../api/Context";
 import {
@@ -483,97 +483,65 @@ const PLANTABLE = () => {
           );
       },
     },
-    {
-      field: "BANVE",
-      headerName: "BANVE",
-      width: 250,
-      renderCell: (params: any) => {
-        let file: any = null;
-        let upload_url = "http://14.160.33.94:5011/upload";
-        const uploadFile = async (e: any) => {
-          console.log(file);
-          const formData = new FormData();
-          formData.append("banve", file);
-          formData.append("filename", params.row.G_CODE);
-          if (userData?.MAINDEPTNAME === "KD") {
-            try {
-              const response = await axios.post(upload_url, formData);
-              //console.log("ket qua");
-              //console.log(response);
-              if (response.data.tk_status === "OK") {
-                //Swal.fire('Thông báo','Upload bản vẽ thành công','success');
-                generalQuery("update_banve_value", {
-                  G_CODE: params.row.G_CODE,
-                  banvevalue: "Y",
+    { field: "BANVE", headerName: "BANVE", width: 260 , renderCell: (params:any) => {
+      let file:any = null;
+      const uploadFile2 = async (e:any) => {
+        //console.log(file); 
+        if(userData?.MAINDEPTNAME==='KD')
+        {
+          uploadQuery(file,params.row.G_CODE +'.pdf','banve')
+          .then((response)=> {
+            if (response.data.tk_status !== "NG") {
+                generalQuery("update_banve_value", { G_CODE: params.row.G_CODE, banvevalue: 'Y' })
+                .then((response) => {        
+                  if (response.data.tk_status !== "NG") 
+                  {
+                    Swal.fire('Thông báo','Upload bản vẽ thành công','success');
+                    let tempcodeinfodatatable = ycsxdatatable.map((element: YCSXTableData, index)=> {                 
+                      return ( element.G_CODE === params.row.G_CODE ? {...element, BANVE: 'Y'}: element);
+                    });
+                    setYcsxDataTable(tempcodeinfodatatable);
+                  } 
+                  else {
+                    Swal.fire('Thông báo','Upload bản vẽ thất bại','error');
+                  }
                 })
-                  .then((response) => {
-                    if (response.data.tk_status !== "NG") {
-                      Swal.fire(
-                        "Thông báo",
-                        "Upload bản vẽ thành công",
-                        "success"
-                      );
-                      let tempycsxdatatable = ycsxdatatable.map(
-                        (element, index) => {
-                          return element.PROD_REQUEST_NO ===
-                            params.row.PROD_REQUEST_NO
-                            ? { ...element, BANVE: "Y" }
-                            : element;
-                        }
-                      );
-                      setYcsxDataTable(tempycsxdatatable);
-                    } else {
-                      Swal.fire("Thông báo", "Upload bản vẽ thất bại", "error");
-                    }
-                  })
-                  .catch((error) => {
-                    console.log(error);
-                  });
-              } else {
-                Swal.fire("Thông báo", response.data.message, "error");
-              }
-              //console.log(response.data);
-            } catch (ex) {
-              console.log(ex);
+                .catch((error) => {
+                  console.log(error);
+                });       
+            } else {
+              Swal.fire('Thông báo','Upload file thất bại:' + response.data.message,'error'); 
             }
-          } else {
-            Swal.fire(
-              "Thông báo",
-              "Chỉ bộ phận kinh doanh upload được bản vẽ",
-              "error"
-            );
-          }
-        };
-        let hreftlink = "/banve/" + params.row.G_CODE + ".pdf";
-        if (params.row.BANVE === "Y")
-          return (
-            <span style={{ color: "green" }}>
-              <b>
-                <a target='_blank' rel='noopener noreferrer' href={hreftlink}>
-                  LINK
-                </a>
-              </b>
-            </span>
-          );
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+
+        }
         else
-          return (
-            <div className='uploadfile'>
-              <IconButton className='buttonIcon' onClick={uploadFile}>
-                <AiOutlineCloudUpload color='yellow' size={25} />
-                Upload
-              </IconButton>
-              <input
-                accept='.pdf'
-                type='file'
-                onChange={(e: any) => {
-                  file = e.target.files[0];
-                  console.log(file);
-                }}
-              />
-            </div>
-          );
-      },
-    },
+        {
+          Swal.fire('Thông báo','Chỉ bộ phận kinh doanh upload được bản vẽ','error');
+        }
+      }
+      let hreftlink = '/banve/' + params.row.G_CODE + '.pdf';
+      if (params.row.BANVE !== "N" && params.row.BANVE !== null)
+      {
+        return (
+          <span style={{ color: "gray" }}>
+            <a target='_blank' rel='noopener noreferrer' href={hreftlink}>
+              LINK
+            </a>
+          </span>
+        )
+      }
+      else
+      {
+        return <div className="uploadfile"> 
+       <IconButton className='buttonIcon'onClick={uploadFile2}><AiOutlineCloudUpload color='yellow' size={15}/>Upload</IconButton>
+       <input  accept=".pdf" type="file" onChange={(e:any)=> {file = e.target.files[0]; console.log(file);}} />
+      </div>
+      }        
+    }},
     {
       field: "PDBV",
       headerName: "PD BANVE",

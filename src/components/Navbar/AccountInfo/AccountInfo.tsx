@@ -179,6 +179,7 @@ export default function AccountInfo() {
   const uploadFile2 = async(e:any)=> {
     uploadQuery(file,'NS_'+ userdata?.EMPL_NO+'.jpg','Picture_NS')
           .then((response)=> {
+            console.log('resopone upload:', response.data);
             if (response.data.tk_status !== "NG") {
               generalQuery("update_empl_image", { EMPL_NO: userdata?.EMPL_NO, EMPL_IMAGE: 'Y' })
               .then((response) => {        

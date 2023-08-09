@@ -118,7 +118,7 @@ const CODE_MANAGER = () => {
     { field: "M_NAME_FULLBOM", headerName: "FULLBOM",  flex: 1, minWidth: 150,  editable: enableEdit  },
     { field: "BANVE", headerName: "BANVE", width: 260 , renderCell: (params:any) => {
       let file:any = null;
-      const uploadFile2 = async (e:any) => {
+      const uploadFile2: any = async (e:any) => {
         //console.log(file); 
         if(userData?.MAINDEPTNAME==='KD')
         {
@@ -130,9 +130,13 @@ const CODE_MANAGER = () => {
                   if (response.data.tk_status !== "NG") 
                   {
                     Swal.fire('Thông báo','Upload bản vẽ thành công','success');
-                    let tempcodeinfodatatable = rows.map((element, index)=> {                 
+                    console.log('G_CODE AAAA',params.row.G_CODE);
+                    console.log('rows',rows);
+                    let tempcodeinfodatatable = rows.map((element:CODE_INFO, index: number)=> { 
+                      console.log('element G_CODE', element.G_CODE);                
                       return ( element.G_CODE === params.row.G_CODE ? {...element, BANVE: 'Y'}: element);
                     });
+                    console.log(tempcodeinfodatatable)
                     setRows(tempcodeinfodatatable);
                   } 
                   else {
@@ -170,7 +174,7 @@ const CODE_MANAGER = () => {
       else
       {
         return <div className="uploadfile"> 
-       <IconButton className='buttonIcon'onClick={uploadFile2}><AiOutlineCloudUpload color='yellow' size={15}/>Upload</IconButton>
+       <IconButton className='buttonIcon'onClick={(e)=> {uploadFile2(e);}}><AiOutlineCloudUpload color='yellow' size={15}/>Upload</IconButton>
        <input  accept=".pdf" type="file" onChange={(e:any)=> {file = e.target.files[0]; console.log(file);}} />
       </div>
       }        

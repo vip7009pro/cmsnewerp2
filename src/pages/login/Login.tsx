@@ -29,7 +29,7 @@ const Login = () => {
     (state: RootState) => state.totalSlice.theme
   );
 
-  const defaultIP:string = company ==='CMS'? 'http://14.160.33.94:5011/api': 'http://192.168.100.120:3007/api'
+  const defaultIP:string = company ==='CMS'? 'http://14.160.33.94:5011/api': 'http://222.252.1.63:3007/api'
   const handle_setUser = (e: React.ChangeEvent<HTMLInputElement>) => {
     setUser(e.target.value);
   };
@@ -162,7 +162,8 @@ const Login = () => {
             >
               {company==='CMS' && <option value={"http://14.160.33.94:5011"}>MAIN_SERVER</option>}
               {company==='CMS' && <option value={"http://14.160.33.94:3007"}>SUB_SERVER</option>}
-              {company === 'PVN' && <option value={"http://192.168.100.120:3007"}>LOCALPVN</option>}
+              {company === 'PVN' && <option value={"http://222.252.1.63:3007"}>PUBLIC_PVN</option>}
+              {company === 'PVN' && <option value={"http://192.168.100.120:3007"}>LOCAL_PVN</option>}
               <option value={"http://localhost:3007"}>TEST_SERVER</option>
             </select>
           </label>

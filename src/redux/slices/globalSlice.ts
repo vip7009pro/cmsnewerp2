@@ -5,9 +5,9 @@ import { io } from "socket.io-client";
 import Swal from 'sweetalert2';
 
 
-const startCPN: string = 'CMS';
+const startCPN: string = 'PVN';
 
-const socket =  io(startCPN === 'CMS'? 'http://14.160.33.94:3005': startCPN === 'PVN'?  'http://192.168.100.120:3005':'')
+const socket =  io(startCPN === 'CMS'? 'http://14.160.33.94:3005': startCPN === 'PVN'?  'http://222.252.1.63:3005':'')
 //const socket =  io('http://localhost:3005')
 socket.on("connect", () => {
   console.log(socket.id); // x8WIv7-mJelg7on_ALbx
@@ -170,7 +170,7 @@ if (server_ip_local !== undefined) {
  
 } else {
   console.log('server_ip_local',server_ip_local)
-  localStorage.setItem('server_ip', startCPN === 'CMS'? 'http://14.160.33.94:5011': startCPN === 'PVN'?  'http://192.168.100.120:3007':'', )
+  localStorage.setItem('server_ip', startCPN === 'CMS'? 'http://14.160.33.94:5011': startCPN === 'PVN'?  'http://222.252.1.63:3007':'', )
   
 }
 
@@ -229,7 +229,7 @@ const initialState:GlobalInterface = {
     sidebarmenu: true,
     multiple_chithi_array: [],
     company: startCPN,
-    server_ip: startCPN === 'CMS'? 'http://14.160.33.94:5011': startCPN === 'PVN'?  'http://192.168.100.120:3007':'',         
+    server_ip: startCPN === 'CMS'? 'http://14.160.33.94:5011': startCPN === 'PVN'?  'http://222.252.1.63:3007':'',         
     tabs: [],
     tabIndex: 0,
     tabModeSwap: true,
