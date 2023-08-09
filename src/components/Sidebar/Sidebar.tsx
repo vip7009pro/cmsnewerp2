@@ -513,15 +513,22 @@ const Sidebar = () => {
       ],
     },
     {
-      title: getlang("khothanhpham", lang),
+      title: getlang("bophankho", lang),
       path: "#",
       icon: <FaWarehouse color='#7459FA' size={25} />,
       iconClosed: <KeyboardArrowDownIcon />,
       iconOpened: <KeyboardArrowUpIcon />,
       subNav: [
         {
-          title: getlang("nhapxuatton", lang),
-          path: "khothanhpham/nhapxuatton",
+          title: getlang("nhapxuattonlieu", lang),
+          path: "bophankho/nhapxuattonlieu",
+          icon: <FaLongArrowAltRight color='#12CAB9' size={25} />,
+          MENU_CODE: "KO2",
+          cName: "sub-nav",
+        },        
+        {
+          title: getlang("nhapxuattontp", lang),
+          path: "bophankho/nhapxuattontp",
           icon: <FaLongArrowAltRight color='#74CE00' size={25} />,
           MENU_CODE: "KO1",
           cName: "sub-nav",

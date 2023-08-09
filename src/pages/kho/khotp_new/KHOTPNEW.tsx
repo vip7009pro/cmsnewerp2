@@ -34,39 +34,7 @@ import {
   import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
   import { ResponsiveContainer } from "recharts";
 
-  interface CodeListData {
-    G_CODE: string;
-    G_NAME: string;
-    PROD_LAST_PRICE?: number;
-    USE_YN: string;
-    PO_BALANCE?: number;
-  }
-  interface HANDOVER_DATA {
-    KNIFE_FILM_ID: string,
-    FACTORY_NAME: string,
-    NGAYBANGIAO: string,
-    G_CODE: string,
-    G_NAME: string,
-    PROD_TYPE: string,
-    CUST_NAME_KD: string,
-    LOAIBANGIAO_PDP: string,
-    LOAIPHATHANH: string,
-    SOLUONG: number,
-    SOLUONGOHP: number,
-    LYDOBANGIAO: string,
-    PQC_EMPL_NO: string,
-    RND_EMPL_NO: string,
-    SX_EMPL_NO: string,
-    REMARK: string,
-    CFM_GIAONHAN: string,
-    CFM_INS_EMPL: string,
-    CFM_DATE: string,
-    KNIFE_FILM_STATUS: string,
-    MA_DAO: string,
-    TOTAL_PRESS: number,
-    CUST_CD: string,
-    KNIFE_TYPE: string,
-  }
+
   
   interface KTP_IN {
     IN_DATE: string,
@@ -80,6 +48,7 @@ import {
     G_CODE: string,
     G_NAME: string,
     G_NAME_KD: string,
+    PROD_TYPE: string,
     PLAN_ID: string,
     IN_QTY: number,
     USE_YN: string,
@@ -103,6 +72,7 @@ import {
     G_CODE: string,
     G_NAME: string,
     G_NAME_KD: string,
+    PROD_TYPE: string,
     PLAN_ID: string,
     CUST_CD: string,
     OUT_QTY: number,
@@ -123,6 +93,7 @@ import {
     G_CODE: string,
     G_NAME: string,
     G_NAME_KD: string,
+    PROD_TYPE: string,
     STOCK: number,
     BLOCK_QTY: number,
     TOTAL_STOCK: number,
@@ -130,17 +101,24 @@ import {
 
   interface STOCK_G_NAME_KD {
     G_NAME_KD: string,
+    PROD_TYPE: string,
     STOCK: number,
     BLOCK_QTY: number,
     TOTAL_STOCK: number,
   }
 
   interface STOCK_PROD_REQUEST_NO {
+    CUST_NAME_KD: string,
     PROD_REQUEST_NO: string,
+    G_CODE: string,
+    G_NAME: string,
+    G_NAME_KD: string, 
+    PROD_TYPE: string,
     STOCK: number,
     BLOCK_QTY: string,
     TOTAL_STOCK: string,
   }
+
   const KHOTPNEW = () => {
     const [showhidePivotTable, setShowHidePivotTable] = useState(false);    
     const [khotpinputdatatable, setKhoTPInputDataTable] = useState<Array<KTP_IN>>([]);
@@ -156,23 +134,767 @@ import {
     const [machine, setMachine] = useState("ALL");
     const [factory, setFactory] = useState("ALL");
     const [prodrequestno, setProdRequestNo] = useState("");
+    const [custName, setCustName] = useState("");
     const [plan_id, setPlanID] = useState("");
-    const [alltime, setAllTime] = useState(true);
-    const [khotpdatatable, setkhotpdatatable] = useState<Array<any>>([]);
+    const [alltime, setAllTime] = useState(false);
     const [m_name, setM_Name] = useState("");
     const [m_code, setM_Code] = useState("");
-    const [plph, setPLPH] = useState("PH");
-    const [pltl, setPLTL] = useState("PH");
-    const [ldph, setLDPH] = useState("New Code");
+    const [plxk, setPLXK] = useState("ALL");   
     const [rndEmpl, setRNDEMPL] = useState("");
     const [qcEmpl, setQCEMPL] = useState("");
-    const [sxEmpl, setSXEMPL] = useState("");
+    const [kdEmpl, setKDEMPL] = useState("");
+    const [prod_type, setProdType] = useState("ALL");
     const [selectedRows, setSelectedRows] = useState<KTP_IN>();
     const [buttonselected, setbuttonselected]= useState('GR');
 
+    const ktp_in_fields: any = [
+      {
+        caption: "IN_DATE",
+        width: 80,
+        dataField: "IN_DATE",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "string",
+        summaryType: "count",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "FACTORY",
+        width: 80,
+        dataField: "FACTORY",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "string",
+        summaryType: "count",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "PROD_TYPE",
+        width: 80,
+        dataField: "PROD_TYPE",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "string",
+        summaryType: "count",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "AUTO_ID",
+        width: 80,
+        dataField: "AUTO_ID",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "string",
+        summaryType: "count",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "INSPECT_OUTPUT_ID",
+        width: 80,
+        dataField: "INSPECT_OUTPUT_ID",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "string",
+        summaryType: "count",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "PACK_ID",
+        width: 80,
+        dataField: "PACK_ID",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "string",
+        summaryType: "count",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "EMPL_NAME",
+        width: 80,
+        dataField: "EMPL_NAME",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "string",
+        summaryType: "count",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "PROD_REQUEST_NO",
+        width: 80,
+        dataField: "PROD_REQUEST_NO",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "string",
+        summaryType: "count",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "CUST_NAME_KD",
+        width: 80,
+        dataField: "CUST_NAME_KD",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "string",
+        summaryType: "count",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "G_CODE",
+        width: 80,
+        dataField: "G_CODE",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "string",
+        summaryType: "count",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "G_NAME",
+        width: 80,
+        dataField: "G_NAME",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "string",
+        summaryType: "count",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "G_NAME_KD",
+        width: 80,
+        dataField: "G_NAME_KD",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "string",
+        summaryType: "count",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "PLAN_ID",
+        width: 80,
+        dataField: "PLAN_ID",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "string",
+        summaryType: "count",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "IN_QTY",
+        width: 80,
+        dataField: "IN_QTY",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "number",
+        summaryType: "sum",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "USE_YN",
+        width: 80,
+        dataField: "USE_YN",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "string",
+        summaryType: "count",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "EMPL_GIAO",
+        width: 80,
+        dataField: "EMPL_GIAO",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "string",
+        summaryType: "count",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "EMPL_NHAN",
+        width: 80,
+        dataField: "EMPL_NHAN",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "string",
+        summaryType: "count",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "INS_DATE",
+        width: 80,
+        dataField: "INS_DATE",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "string",
+        summaryType: "count",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "INS_EMPL",
+        width: 80,
+        dataField: "INS_EMPL",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "string",
+        summaryType: "count",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "UPD_DATE",
+        width: 80,
+        dataField: "UPD_DATE",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "string",
+        summaryType: "count",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "UPD_EMPL",
+        width: 80,
+        dataField: "UPD_EMPL",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "string",
+        summaryType: "count",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "STATUS",
+        width: 80,
+        dataField: "STATUS",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "string",
+        summaryType: "count",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "REMARK",
+        width: 80,
+        dataField: "REMARK",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "string",
+        summaryType: "count",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+    ];
+    const ktp_out_fields: any = [
+      {
+        caption: "OUT_DATE",
+        width: 80,
+        dataField: "OUT_DATE",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "string",
+        summaryType: "count",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "PROD_TYPE",
+        width: 80,
+        dataField: "PROD_TYPE",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "string",
+        summaryType: "count",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "FACTORY",
+        width: 80,
+        dataField: "FACTORY",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "string",
+        summaryType: "count",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "AUTO_ID",
+        width: 80,
+        dataField: "AUTO_ID",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "string",
+        summaryType: "count",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "INSPECT_OUTPUT_ID",
+        width: 80,
+        dataField: "INSPECT_OUTPUT_ID",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "string",
+        summaryType: "count",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "PACK_ID",
+        width: 80,
+        dataField: "PACK_ID",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "string",
+        summaryType: "count",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "EMPL_NAME",
+        width: 80,
+        dataField: "EMPL_NAME",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "string",
+        summaryType: "count",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "PROD_REQUEST_NO",
+        width: 80,
+        dataField: "PROD_REQUEST_NO",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "string",
+        summaryType: "count",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "G_CODE",
+        width: 80,
+        dataField: "G_CODE",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "string",
+        summaryType: "count",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "G_NAME",
+        width: 80,
+        dataField: "G_NAME",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "string",
+        summaryType: "count",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "G_NAME_KD",
+        width: 80,
+        dataField: "G_NAME_KD",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "string",
+        summaryType: "count",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "PLAN_ID",
+        width: 80,
+        dataField: "PLAN_ID",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "string",
+        summaryType: "count",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "CUST_CD",
+        width: 80,
+        dataField: "CUST_CD",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "string",
+        summaryType: "count",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "OUT_QTY",
+        width: 80,
+        dataField: "OUT_QTY",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "number",
+        summaryType: "sum",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "CUST_NAME_KD",
+        width: 80,
+        dataField: "CUST_NAME_KD",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "string",
+        summaryType: "count",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "OUT_TYPE",
+        width: 80,
+        dataField: "OUT_TYPE",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "string",
+        summaryType: "count",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "USE_YN",
+        width: 80,
+        dataField: "USE_YN",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "string",
+        summaryType: "count",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "INS_DATE",
+        width: 80,
+        dataField: "INS_DATE",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "string",
+        summaryType: "count",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "INS_EMPL",
+        width: 80,
+        dataField: "INS_EMPL",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "string",
+        summaryType: "count",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "UPD_DATE",
+        width: 80,
+        dataField: "UPD_DATE",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "string",
+        summaryType: "count",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "UPD_EMPL",
+        width: 80,
+        dataField: "UPD_EMPL",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "string",
+        summaryType: "count",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "STATUS",
+        width: 80,
+        dataField: "STATUS",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "string",
+        summaryType: "count",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "REMARK",
+        width: 80,
+        dataField: "REMARK",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "string",
+        summaryType: "count",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "AUTO_ID_IN",
+        width: 80,
+        dataField: "AUTO_ID_IN",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "string",
+        summaryType: "count",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },
+      {
+        caption: "OUT_PRT_SEQ",
+        width: 80,
+        dataField: "OUT_PRT_SEQ",
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: "string",
+        summaryType: "count",
+        format: "fixedPoint",
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        },
+      },      
+    ];
+
+    const [selectedDataSource, setSelectedDataSource] =
+    useState<PivotGridDataSource>(
+      new PivotGridDataSource({
+        fields: ktp_in_fields,
+        store: khotpinputdatatable,
+      })
+    );
+
 
     const loadKTP_IN = () => {
-      generalQuery("loadKTP_IN", {})
+      generalQuery("loadKTP_IN", {   
+        ALLTIME: alltime,
+        FROM_DATE: fromdate,
+        TO_DATE: todate,
+        OUT_TYPE: plxk,
+        FACTORY: factory,
+        G_NAME: codeKD,
+        G_CODE: codeCMS,
+        PROD_TYPE: prod_type,
+        PROD_REQUEST_NO: prodrequestno,
+        KD_EMPL_NAME: kdEmpl,
+        CUST_NAME_KD: custName, 
+      })
         .then((response) => {
           //console.log(response.data.data);
           if (response.data.tk_status !== "NG") {
@@ -202,10 +924,21 @@ import {
         .catch((error) => {
           console.log(error);
         });
-    };
-    
+    };    
     const loadKTP_OUT = () => {
-      generalQuery("loadKTP_OUT", {})
+      generalQuery("loadKTP_OUT", {   
+        ALLTIME: alltime,
+        FROM_DATE: fromdate,
+        TO_DATE: todate,
+        OUT_TYPE: plxk,
+        FACTORY: factory,
+        G_NAME: codeKD,
+        G_CODE: codeCMS,
+        PROD_TYPE: prod_type,
+        PROD_REQUEST_NO: prodrequestno,
+        KD_EMPL_NAME: kdEmpl,
+        CUST_NAME_KD: custName, 
+      })
         .then((response) => {
           //console.log(response.data.data);
           if (response.data.tk_status !== "NG") {
@@ -237,7 +970,19 @@ import {
         });
     };
     const loadSTOCKFULL = () => {
-        generalQuery("loadKTP_IN", {})
+        generalQuery("loadStockFull", {   
+            ALLTIME: alltime,
+            FROM_DATE: fromdate,
+            TO_DATE: todate,
+            OUT_TYPE: plxk,
+            FACTORY: factory,
+            G_NAME: codeKD,
+            G_CODE: codeCMS,
+            PROD_TYPE: prod_type,
+            PROD_REQUEST_NO: prodrequestno,
+            KD_EMPL_NAME: kdEmpl,
+            CUST_NAME_KD: custName, 
+          })
         .then((response) => {
           //console.log(response.data.data);
           if (response.data.tk_status !== "NG") {
@@ -269,7 +1014,19 @@ import {
         });
     };
     const loadSTOCK_G_CODE = () => {
-        generalQuery("loadSTOCKG_CODE", {})
+        generalQuery("loadSTOCKG_CODE", {   
+            ALLTIME: alltime,
+            FROM_DATE: fromdate,
+            TO_DATE: todate,
+            OUT_TYPE: plxk,
+            FACTORY: factory,
+            G_NAME: codeKD,
+            G_CODE: codeCMS,
+            PROD_TYPE: prod_type,
+            PROD_REQUEST_NO: prodrequestno,
+            KD_EMPL_NAME: kdEmpl,
+            CUST_NAME_KD: custName, 
+          })
         .then((response) => {
           //console.log(response.data.data);
           if (response.data.tk_status !== "NG") {
@@ -290,6 +1047,88 @@ import {
             );
           } else {
             setTonKTPG_CODE([]);
+            Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    };    
+    const loadSTOCK_G_NAME_KD = () => {
+        generalQuery("loadSTOCKG_NAME_KD", {   
+            ALLTIME: alltime,
+            FROM_DATE: fromdate,
+            TO_DATE: todate,
+            OUT_TYPE: plxk,
+            FACTORY: factory,
+            G_NAME: codeKD,
+            G_CODE: codeCMS,
+            PROD_TYPE: prod_type,
+            PROD_REQUEST_NO: prodrequestno,
+            KD_EMPL_NAME: kdEmpl,
+            CUST_NAME_KD: custName, 
+          })
+        .then((response) => {
+          //console.log(response.data.data);
+          if (response.data.tk_status !== "NG") {
+            let loadeddata = response.data.data.map(
+              (element: STOCK_G_NAME_KD, index: number) => {
+                return {
+                  ...element,
+                  id: index,
+                };
+              }
+            );
+            //console.log(loadeddata);
+            setTonKTP_G_NAME_KD(loadeddata);
+            Swal.fire(
+              "Thông báo",
+              "Đã load: " + response.data.data.length + " dòng",
+              "success"
+            );
+          } else {
+            setTonKTP_G_NAME_KD([]);
+            Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    };    
+    const loadSTOCK_YCSX = () => {
+        generalQuery("loadSTOCK_YCSX", {   
+            ALLTIME: alltime,
+            FROM_DATE: fromdate,
+            TO_DATE: todate,
+            OUT_TYPE: plxk,
+            FACTORY: factory,
+            G_NAME: codeKD,
+            G_CODE: codeCMS,
+            PROD_TYPE: prod_type,
+            PROD_REQUEST_NO: prodrequestno,
+            KD_EMPL_NAME: kdEmpl,
+            CUST_NAME_KD: custName, 
+          })
+        .then((response) => {
+          //console.log(response.data.data);
+          if (response.data.tk_status !== "NG") {
+            let loadeddata = response.data.data.map(
+              (element: STOCK_PROD_REQUEST_NO, index: number) => {
+                return {
+                  ...element,
+                  id: index,
+                };
+              }
+            );
+            //console.log(loadeddata);
+            setTonKTP_PROD_REQUEST_NO(loadeddata);
+            Swal.fire(
+              "Thông báo",
+              "Đã load: " + response.data.data.length + " dòng",
+              "success"
+            );
+          } else {
+            setTonKTP_PROD_REQUEST_NO([]);
             Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
           }
         })
@@ -554,16 +1393,7 @@ import {
                   >
                     <AiFillFileExcel color='green' size={15} />
                     SAVE
-                  </IconButton>
-                  <IconButton
-                    className='buttonIcon'
-                    onClick={() => {
-                      setShowHidePivotTable(!showhidePivotTable);
-                    }}
-                  >
-                    <MdOutlinePivotTableChart color='#ff33bb' size={15} />
-                    Pivot
-                  </IconButton>
+                  </IconButton>                 
                 </Item>
                 <Item name='searchPanel' />
                 <Item name='exportButton' />
@@ -595,642 +1425,181 @@ import {
       ),
       [tonktp_gcode]
     );
+    const KHOTP_STOCKG_NAME_KD = React.useMemo(
+      () => (
+        <div className='datatb'>
+          <ResponsiveContainer>
+            <DataGrid
+              autoNavigateToFocusedRow={true}
+              allowColumnReordering={true}
+              allowColumnResizing={true}
+              columnAutoWidth={false}
+              cellHintEnabled={true}
+              columnResizingMode={"widget"}
+              showColumnLines={true}
+              dataSource={tonktp_gnamekd}
+              columnWidth='auto'
+              keyExpr='id'
+              height={"75vh"}
+              showBorders={true}
+              onRowPrepared={(e)=> {                             
+              }
+              }
+              onSelectionChanged={(e) => {
+                //setSelectedRows(e.selectedRowsData[0]);
+              }}
+              onRowClick={(e) => {
+                //setSelectedRows(e.data);
+                //console.log(e.data);
+              }}
+            >
+              <Scrolling
+                useNative={true}
+                scrollByContent={true}
+                scrollByThumb={true}
+                showScrollbar='onHover'
+                mode='virtual'
+              />
+              <Selection mode='single' selectAllMode='allPages' />
+              <Editing
+                allowUpdating={false}
+                allowAdding={true}
+                allowDeleting={false}
+                mode='batch'
+                confirmDelete={true}
+                onChangesChange={(e) => {}}
+              />
+              <Export enabled={true} />
+              <Toolbar disabled={false}>
+                <Item location='before'>
+                  <IconButton
+                    className='buttonIcon'
+                    onClick={() => {
+                      SaveExcel(khotpinputdatatable, "MaterialStatus");
+                    }}
+                  >
+                    <AiFillFileExcel color='green' size={15} />
+                    SAVE
+                  </IconButton>                
+                </Item>
+                <Item name='searchPanel' />
+                <Item name='exportButton' />
+                <Item name='columnChooser' />
+              </Toolbar>
+              <FilterRow visible={true} />
+              <SearchPanel visible={true} />
+              <ColumnChooser enabled={true} />
+              <Paging defaultPageSize={15} />
+              <Pager
+                showPageSizeSelector={true}
+                allowedPageSizes={[5, 10, 15, 20, 100, 1000, 10000, "all"]}
+                showNavigationButtons={true}
+                showInfo={true}
+                infoText='Page #{0}. Total: {1} ({2} items)'
+                displayMode='compact'
+              />              
+              <Summary>
+                <TotalItem
+                  alignment='right'
+                  column='id'
+                  summaryType='count'
+                  valueFormat={"decimal"}
+                />
+              </Summary>
+            </DataGrid>
+          </ResponsiveContainer>
+        </div>
+      ),
+      [tonktp_gnamekd]
+    ); 
+    const KHOTP_STOCK_YCSX = React.useMemo(
+      () => (
+        <div className='datatb'>
+          <ResponsiveContainer>
+            <DataGrid
+              autoNavigateToFocusedRow={true}
+              allowColumnReordering={true}
+              allowColumnResizing={true}
+              columnAutoWidth={false}
+              cellHintEnabled={true}
+              columnResizingMode={"widget"}
+              showColumnLines={true}
+              dataSource={tonktp_prod_request_no}
+              columnWidth='auto'
+              keyExpr='id'
+              height={"75vh"}
+              showBorders={true}
+              onRowPrepared={(e)=> {                             
+              }
+              }
+              onSelectionChanged={(e) => {
+                //setSelectedRows(e.selectedRowsData[0]);
+              }}
+              onRowClick={(e) => {
+                //setSelectedRows(e.data);
+                //console.log(e.data);
+              }}
+            >
+              <Scrolling
+                useNative={true}
+                scrollByContent={true}
+                scrollByThumb={true}
+                showScrollbar='onHover'
+                mode='virtual'
+              />
+              <Selection mode='single' selectAllMode='allPages' />
+              <Editing
+                allowUpdating={false}
+                allowAdding={true}
+                allowDeleting={false}
+                mode='batch'
+                confirmDelete={true}
+                onChangesChange={(e) => {}}
+              />
+              <Export enabled={true} />
+              <Toolbar disabled={false}>
+                <Item location='before'>
+                  <IconButton
+                    className='buttonIcon'
+                    onClick={() => {
+                      SaveExcel(khotpinputdatatable, "MaterialStatus");
+                    }}
+                  >
+                    <AiFillFileExcel color='green' size={15} />
+                    SAVE
+                  </IconButton>                  
+                </Item>
+                <Item name='searchPanel' />
+                <Item name='exportButton' />
+                <Item name='columnChooser' />
+              </Toolbar>
+              <FilterRow visible={true} />
+              <SearchPanel visible={true} />
+              <ColumnChooser enabled={true} />
+              <Paging defaultPageSize={15} />
+              <Pager
+                showPageSizeSelector={true}
+                allowedPageSizes={[5, 10, 15, 20, 100, 1000, 10000, "all"]}
+                showNavigationButtons={true}
+                showInfo={true}
+                infoText='Page #{0}. Total: {1} ({2} items)'
+                displayMode='compact'
+              />              
+              <Summary>
+                <TotalItem
+                  alignment='right'
+                  column='id'
+                  summaryType='count'
+                  valueFormat={"decimal"}
+                />
+              </Summary>
+            </DataGrid>
+          </ResponsiveContainer>
+        </div>
+      ),
+      [tonktp_prod_request_no]
+    );
 
-    const dataSource = new PivotGridDataSource({
-      fields: [
-        {
-          caption: "INS_DATE",
-          width: 80,
-          dataField: "INS_DATE",
-          allowSorting: true,
-          allowFiltering: true,
-          dataType: "date",
-          summaryType: "count",
-          format: "fixedPoint",
-          headerFilter: {
-            allowSearch: true,
-            height: 500,
-            width: 300,
-          },
-        },
-        {
-          caption: "M_LOT_NO",
-          width: 80,
-          dataField: "M_LOT_NO",
-          allowSorting: true,
-          allowFiltering: true,
-          dataType: "string",
-          summaryType: "count",
-          format: "fixedPoint",
-          headerFilter: {
-            allowSearch: true,
-            height: 500,
-            width: 300,
-          },
-        },
-        {
-          caption: "M_CODE",
-          width: 80,
-          dataField: "M_CODE",
-          allowSorting: true,
-          allowFiltering: true,
-          dataType: "string",
-          summaryType: "count",
-          format: "fixedPoint",
-          headerFilter: {
-            allowSearch: true,
-            height: 500,
-            width: 300,
-          },
-        },
-        {
-          caption: "M_NAME",
-          width: 80,
-          dataField: "M_NAME",
-          allowSorting: true,
-          allowFiltering: true,
-          dataType: "string",
-          summaryType: "count",
-          format: "fixedPoint",
-          headerFilter: {
-            allowSearch: true,
-            height: 500,
-            width: 300,
-          },
-        },
-        {
-          caption: "WIDTH_CD",
-          width: 80,
-          dataField: "WIDTH_CD",
-          allowSorting: true,
-          allowFiltering: true,
-          dataType: "string",
-          summaryType: "count",
-          format: "fixedPoint",
-          headerFilter: {
-            allowSearch: true,
-            height: 500,
-            width: 300,
-          },
-        },
-        {
-          caption: "XUAT_KHO",
-          width: 80,
-          dataField: "XUAT_KHO",
-          allowSorting: true,
-          allowFiltering: true,
-          dataType: "string",
-          summaryType: "count",
-          format: "fixedPoint",
-          headerFilter: {
-            allowSearch: true,
-            height: 500,
-            width: 300,
-          },
-        },
-        {
-          caption: "VAO_FR",
-          width: 80,
-          dataField: "VAO_FR",
-          allowSorting: true,
-          allowFiltering: true,
-          dataType: "string",
-          summaryType: "count",
-          format: "fixedPoint",
-          headerFilter: {
-            allowSearch: true,
-            height: 500,
-            width: 300,
-          },
-        },
-        {
-          caption: "VAO_SR",
-          width: 80,
-          dataField: "VAO_SR",
-          allowSorting: true,
-          allowFiltering: true,
-          dataType: "string",
-          summaryType: "count",
-          format: "fixedPoint",
-          headerFilter: {
-            allowSearch: true,
-            height: 500,
-            width: 300,
-          },
-        },
-        {
-          caption: "VAO_DC",
-          width: 80,
-          dataField: "VAO_DC",
-          allowSorting: true,
-          allowFiltering: true,
-          dataType: "string",
-          summaryType: "count",
-          format: "fixedPoint",
-          headerFilter: {
-            allowSearch: true,
-            height: 500,
-            width: 300,
-          },
-        },
-        {
-          caption: "VAO_ED",
-          width: 80,
-          dataField: "VAO_ED",
-          allowSorting: true,
-          allowFiltering: true,
-          dataType: "string",
-          summaryType: "count",
-          format: "fixedPoint",
-          headerFilter: {
-            allowSearch: true,
-            height: 500,
-            width: 300,
-          },
-        },
-        {
-          caption: "CONFIRM_GIAONHAN",
-          width: 80,
-          dataField: "CONFIRM_GIAONHAN",
-          allowSorting: true,
-          allowFiltering: true,
-          dataType: "string",
-          summaryType: "count",
-          format: "fixedPoint",
-          headerFilter: {
-            allowSearch: true,
-            height: 500,
-            width: 300,
-          },
-        },
-        {
-          caption: "VAO_KIEM",
-          width: 80,
-          dataField: "VAO_KIEM",
-          allowSorting: true,
-          allowFiltering: true,
-          dataType: "string",
-          summaryType: "count",
-          format: "fixedPoint",
-          headerFilter: {
-            allowSearch: true,
-            height: 500,
-            width: 300,
-          },
-        },
-        {
-          caption: "NHATKY_KT",
-          width: 80,
-          dataField: "NHATKY_KT",
-          allowSorting: true,
-          allowFiltering: true,
-          dataType: "string",
-          summaryType: "count",
-          format: "fixedPoint",
-          headerFilter: {
-            allowSearch: true,
-            height: 500,
-            width: 300,
-          },
-        },
-        {
-          caption: "RA_KIEM",
-          width: 80,
-          dataField: "RA_KIEM",
-          allowSorting: true,
-          allowFiltering: true,
-          dataType: "string",
-          summaryType: "count",
-          format: "fixedPoint",
-          headerFilter: {
-            allowSearch: true,
-            height: 500,
-            width: 300,
-          },
-        },
-        {
-          caption: "ROLL_QTY",
-          width: 80,
-          dataField: "ROLL_QTY",
-          allowSorting: true,
-          allowFiltering: true,
-          dataType: "number",
-          summaryType: "sum",
-          format: "fixedPoint",
-          headerFilter: {
-            allowSearch: true,
-            height: 500,
-            width: 300,
-          },
-        },
-        {
-          caption: "OUT_CFM_QTY",
-          width: 80,
-          dataField: "OUT_CFM_QTY",
-          allowSorting: true,
-          allowFiltering: true,
-          dataType: "number",
-          summaryType: "sum",
-          format: "fixedPoint",
-          headerFilter: {
-            allowSearch: true,
-            height: 500,
-            width: 300,
-          },
-        },
-        {
-          caption: "TOTAL_OUT_QTY",
-          width: 80,
-          dataField: "TOTAL_OUT_QTY",
-          allowSorting: true,
-          allowFiltering: true,
-          dataType: "number",
-          summaryType: "sum",
-          format: "fixedPoint",
-          headerFilter: {
-            allowSearch: true,
-            height: 500,
-            width: 300,
-          },
-        },
-        {
-          caption: "FR_RESULT",
-          width: 80,
-          dataField: "FR_RESULT",
-          allowSorting: true,
-          allowFiltering: true,
-          dataType: "number",
-          summaryType: "sum",
-          format: "fixedPoint",
-          headerFilter: {
-            allowSearch: true,
-            height: 500,
-            width: 300,
-          },
-        },
-        {
-          caption: "SR_RESULT",
-          width: 80,
-          dataField: "SR_RESULT",
-          allowSorting: true,
-          allowFiltering: true,
-          dataType: "number",
-          summaryType: "sum",
-          format: "fixedPoint",
-          headerFilter: {
-            allowSearch: true,
-            height: 500,
-            width: 300,
-          },
-        },
-        {
-          caption: "DC_RESULT",
-          width: 80,
-          dataField: "DC_RESULT",
-          allowSorting: true,
-          allowFiltering: true,
-          dataType: "number",
-          summaryType: "sum",
-          format: "fixedPoint",
-          headerFilter: {
-            allowSearch: true,
-            height: 500,
-            width: 300,
-          },
-        },
-        {
-          caption: "ED_RESULT",
-          width: 80,
-          dataField: "ED_RESULT",
-          allowSorting: true,
-          allowFiltering: true,
-          dataType: "number",
-          summaryType: "sum",
-          format: "fixedPoint",
-          headerFilter: {
-            allowSearch: true,
-            height: 500,
-            width: 300,
-          },
-        },
-        {
-          caption: "INSPECT_TOTAL_QTY",
-          width: 80,
-          dataField: "INSPECT_TOTAL_QTY",
-          allowSorting: true,
-          allowFiltering: true,
-          dataType: "number",
-          summaryType: "sum",
-          format: "fixedPoint",
-          headerFilter: {
-            allowSearch: true,
-            height: 500,
-            width: 300,
-          },
-        },
-        {
-          caption: "INSPECT_OK_QTY",
-          width: 80,
-          dataField: "INSPECT_OK_QTY",
-          allowSorting: true,
-          allowFiltering: true,
-          dataType: "number",
-          summaryType: "sum",
-          format: "fixedPoint",
-          headerFilter: {
-            allowSearch: true,
-            height: 500,
-            width: 300,
-          },
-        },
-        {
-          caption: "INS_OUT",
-          width: 80,
-          dataField: "INS_OUT",
-          allowSorting: true,
-          allowFiltering: true,
-          dataType: "number",
-          summaryType: "sum",
-          format: "fixedPoint",
-          headerFilter: {
-            allowSearch: true,
-            height: 500,
-            width: 300,
-          },
-        },
-        {
-          caption: "PD",
-          width: 80,
-          dataField: "PD",
-          allowSorting: true,
-          allowFiltering: true,
-          dataType: "number",
-          summaryType: "sum",
-          format: "fixedPoint",
-          headerFilter: {
-            allowSearch: true,
-            height: 500,
-            width: 300,
-          },
-        },
-        {
-          caption: "CAVITY",
-          width: 80,
-          dataField: "CAVITY",
-          allowSorting: true,
-          allowFiltering: true,
-          dataType: "number",
-          summaryType: "sum",
-          format: "fixedPoint",
-          headerFilter: {
-            allowSearch: true,
-            height: 500,
-            width: 300,
-          },
-        },
-        {
-          caption: "TOTAL_OUT_EA",
-          width: 80,
-          dataField: "TOTAL_OUT_EA",
-          allowSorting: true,
-          allowFiltering: true,
-          dataType: "number",
-          summaryType: "sum",
-          format: "fixedPoint",
-          headerFilter: {
-            allowSearch: true,
-            height: 500,
-            width: 300,
-          },
-        },
-        {
-          caption: "FR_EA",
-          width: 80,
-          dataField: "FR_EA",
-          allowSorting: true,
-          allowFiltering: true,
-          dataType: "number",
-          summaryType: "sum",
-          format: "fixedPoint",
-          headerFilter: {
-            allowSearch: true,
-            height: 500,
-            width: 300,
-          },
-        },
-        {
-          caption: "SR_EA",
-          width: 80,
-          dataField: "SR_EA",
-          allowSorting: true,
-          allowFiltering: true,
-          dataType: "number",
-          summaryType: "sum",
-          format: "fixedPoint",
-          headerFilter: {
-            allowSearch: true,
-            height: 500,
-            width: 300,
-          },
-        },
-        {
-          caption: "DC_EA",
-          width: 80,
-          dataField: "DC_EA",
-          allowSorting: true,
-          allowFiltering: true,
-          dataType: "number",
-          summaryType: "sum",
-          format: "fixedPoint",
-          headerFilter: {
-            allowSearch: true,
-            height: 500,
-            width: 300,
-          },
-        },
-        {
-          caption: "ED_EA",
-          width: 80,
-          dataField: "ED_EA",
-          allowSorting: true,
-          allowFiltering: true,
-          dataType: "number",
-          summaryType: "sum",
-          format: "fixedPoint",
-          headerFilter: {
-            allowSearch: true,
-            height: 500,
-            width: 300,
-          },
-        },
-        {
-          caption: "INSPECT_TOTAL_EA",
-          width: 80,
-          dataField: "INSPECT_TOTAL_EA",
-          allowSorting: true,
-          allowFiltering: true,
-          dataType: "number",
-          summaryType: "sum",
-          format: "fixedPoint",
-          headerFilter: {
-            allowSearch: true,
-            height: 500,
-            width: 300,
-          },
-        },
-        {
-          caption: "INSPECT_OK_EA",
-          width: 80,
-          dataField: "INSPECT_OK_EA",
-          allowSorting: true,
-          allowFiltering: true,
-          dataType: "number",
-          summaryType: "sum",
-          format: "fixedPoint",
-          headerFilter: {
-            allowSearch: true,
-            height: 500,
-            width: 300,
-          },
-        },
-        {
-          caption: "INS_OUTPUT_EA",
-          width: 80,
-          dataField: "INS_OUTPUT_EA",
-          allowSorting: true,
-          allowFiltering: true,
-          dataType: "number",
-          summaryType: "sum",
-          format: "fixedPoint",
-          headerFilter: {
-            allowSearch: true,
-            height: 500,
-            width: 300,
-          },
-        },
-        {
-          caption: "ROLL_LOSS_KT",
-          width: 80,
-          dataField: "ROLL_LOSS_KT",
-          allowSorting: true,
-          allowFiltering: true,
-          dataType: "number",
-          summaryType: "sum",
-          format: "fixedPoint",
-          headerFilter: {
-            allowSearch: true,
-            height: 500,
-            width: 300,
-          },
-        },
-        {
-          caption: "ROLL_LOSS",
-          width: 80,
-          dataField: "ROLL_LOSS",
-          allowSorting: true,
-          allowFiltering: true,
-          dataType: "number",
-          summaryType: "sum",
-          format: "fixedPoint",
-          headerFilter: {
-            allowSearch: true,
-            height: 500,
-            width: 300,
-          },
-        },
-        {
-          caption: "PROD_REQUEST_NO",
-          width: 80,
-          dataField: "PROD_REQUEST_NO",
-          allowSorting: true,
-          allowFiltering: true,
-          dataType: "string",
-          summaryType: "count",
-          format: "fixedPoint",
-          headerFilter: {
-            allowSearch: true,
-            height: 500,
-            width: 300,
-          },
-        },
-        {
-          caption: "PLAN_ID",
-          width: 80,
-          dataField: "PLAN_ID",
-          allowSorting: true,
-          allowFiltering: true,
-          dataType: "string",
-          summaryType: "count",
-          format: "fixedPoint",
-          headerFilter: {
-            allowSearch: true,
-            height: 500,
-            width: 300,
-          },
-        },
-        {
-          caption: "PLAN_EQ",
-          width: 80,
-          dataField: "PLAN_EQ",
-          allowSorting: true,
-          allowFiltering: true,
-          dataType: "string",
-          summaryType: "count",
-          format: "fixedPoint",
-          headerFilter: {
-            allowSearch: true,
-            height: 500,
-            width: 300,
-          },
-        },
-        {
-          caption: "G_CODE",
-          width: 80,
-          dataField: "G_CODE",
-          allowSorting: true,
-          allowFiltering: true,
-          dataType: "string",
-          summaryType: "count",
-          format: "fixedPoint",
-          headerFilter: {
-            allowSearch: true,
-            height: 500,
-            width: 300,
-          },
-        },
-        {
-          caption: "G_NAME",
-          width: 80,
-          dataField: "G_NAME",
-          allowSorting: true,
-          allowFiltering: true,
-          dataType: "string",
-          summaryType: "count",
-          format: "fixedPoint",
-          headerFilter: {
-            allowSearch: true,
-            height: 500,
-            width: 300,
-          },
-        },
-        {
-          caption: "FACTORY",
-          width: 80,
-          dataField: "FACTORY",
-          allowSorting: true,
-          allowFiltering: true,
-          dataType: "string",
-          summaryType: "count",
-          format: "fixedPoint",
-          headerFilter: {
-            allowSearch: true,
-            height: 500,
-            width: 300,
-          },
-        },
-      ],
-      store: khotpdatatable,
-    });
     const filterOptions1 = createFilterOptions({
       matchFrom: "any",
       limit: 100,
@@ -1238,7 +1607,7 @@ import {
     const [isPending, startTransition] = useTransition();
     
     useEffect(() => {    
-      loadKTP_IN();
+      //loadKTP_IN();
       //setColumnDefinition(column_inspect_output);
     }, []);
     return (
@@ -1248,163 +1617,213 @@ import {
             <div className='forminput'>
               <div className='forminputcolumn'> 
                 <label>
-                <b>Ngày bàn giao:</b>
+                <b>From date:</b>
                 <input onKeyDown={(e)=> {}}
                   type='date'
                   value={fromdate.slice(0, 10)}
                   onChange={(e) => setFromDate(e.target.value)}
                 ></input>
               </label>    
-
-              <label>
-                  <b>Phân loại phát hành:</b>{" "}
-                  <select
-                    name='vendor'
-                    value={plph}
-                    onChange={(e) => {
-                        setPLPH(e.target.value);                      
-                    }}
-                  >
-                    <option value='PH'>PHÁT HÀNH</option>
-                    <option value='TH'>THU HỒI</option>                    
-                  </select>
-                </label>  
-
-              </div>
-              <div className='forminputcolumn'>              
-              <label>
-                  <b>Phân loại tài liệu:</b>{" "}
-                  <select
-                    name='vendor'
-                    value={pltl}
-                    onChange={(e) => {
-                        setPLTL(e.target.value);                      
-                    }}
-                  >
-                    <option value='F'>FILM</option>
-                    <option value='D'>DAO</option>                    
-                    <option value='T'>TÀI LIỆU</option>                    
-                    <option value='M'>MẮT DAO</option>                    
-                  </select>
-                </label>  
-              </div>
-              <div className='forminputcolumn'>
-              <label>
-                  <b>Phân loại bàn giao:</b>{" "}
-                  <select
-                    name='vendor'
-                    value={ldph}
-                    onChange={(e) => {
-                        setLDPH(e.target.value);                      
-                    }}
-                  >
-                    <option value='New Code'>New Code</option>
-                    <option value='ECN'>ECN</option>                    
-                    <option value='Update'>Update</option>                    
-                    <option value='Amendment'>Amendment</option>                    
-                  </select>
-                </label>  
-
                 <label>
-                  <b>Mã nhân viên RND:</b>{" "}
+                <b>To date:</b>
+                <input onKeyDown={(e)=> {}}
+                  type='date'
+                  value={todate.slice(0, 10)}
+                  onChange={(e) => setToDate(e.target.value)}
+                ></input>
+              </label>    
+
+              <label>
+                  <b>PL xuất Kho:</b>{" "}
+                  <select
+                    name='vendor'
+                    value={plxk}
+                    onChange={(e) => {
+                        setPLXK(e.target.value);                      
+                    }}
+                  >
+                    <option value='ALL'>ALL</option>
+                    <option value='N'>NORMAL</option>
+                    <option value='F'>FREE</option>                    
+                    <option value='L'>THAY LOT</option>                    
+                    <option value='O'>KHÁC</option>                    
+                  </select>
+                </label>
+              </div>
+            
+              <div className='forminputcolumn'> 
+              <label>
+                  <b>Nhà máy:</b>{" "}
+                  <select
+                    name='vendor'
+                    value={factory}
+                    onChange={(e) => {
+                        setFactory(e.target.value);                      
+                    }}
+                  >
+                    <option value='ALL'>ALL</option>
+                    <option value='NM1'>NM1</option>
+                    <option value='NM2'>NM2</option>
+                  </select>
+                </label>
+                <label>
+                  <b>Tên sản phẩm:</b>{" "}
                   <input
                     type='text'
-                    placeholder='RND'
-                    value={rndEmpl}
+                    placeholder='Tên sản phẩm'
+                    value={codeKD}
                     onChange={(e) =>
-                      setRNDEMPL(e.target.value)
+                      setCodeKD(e.target.value)
                     }
                   ></input>
                 </label>
               </div>
               <div className='forminputcolumn'>
               <label>
-                  <b>Mã nhân viên QC:</b>{" "}
+                  <b>Code ERP:</b>{" "}
                   <input
                     type='text'
-                    placeholder='QC'
-                    value={qcEmpl}
+                    placeholder='Code ERP'
+                    value={codeCMS}
                     onChange={(e) =>
-                      setQCEMPL(e.target.value)
+                      setCodeCMS(e.target.value)
+                    }
+                  ></input>
+                </label>
+                <label>
+                <b>PL sản phẩm:</b>
+                      <select                        
+                        name='phanloaisanpham'
+                        value={prod_type}
+                        onChange={(e) => {
+                          setProdType(e.target.value);
+                        }}
+                      >
+                        <option value='ALL'>ALL</option>
+                        <option value='TSP'>TSP</option>
+                        <option value='OLED'>OLED</option>
+                        <option value='UV'>UV</option>
+                        <option value='TAPE'>TAPE</option>
+                        <option value='LABEL'>LABEL</option>
+                        <option value='RIBBON'>RIBBON</option>
+                        <option value='SPT'>SPT</option>
+                      </select>
+                    </label>
+              </div>
+              <div className='forminputcolumn'>
+              <label>
+                  <b>YCSX:</b>{" "}
+                  <input
+                    type='text'
+                    placeholder='YCSX'
+                    value={prodrequestno}
+                    onChange={(e) =>
+                      setProdRequestNo(e.target.value)
                     }
                   ></input>
                 </label>
               <label>
-                  <b>Mã nhân viên SX:</b>{" "}
+                  <b>Tên nhân viên KD:</b>{" "}
                   <input
                     type='text'
-                    placeholder='SX'
-                    value={sxEmpl}
+                    placeholder='Tên nhân viên kinh doanh'
+                    value={kdEmpl}
                     onChange={(e) =>
-                      setSXEMPL(e.target.value)
+                      setKDEMPL(e.target.value)
                     }
                   ></input>
                 </label>
+              </div>
+              <div className='forminputcolumn'>
+              <label>
+                  <b>Khách hàng:</b>{" "}
+                  <input
+                    type='text'
+                    placeholder='Khách hàng'
+                    value={custName}
+                    onChange={(e) =>
+                      setCustName(e.target.value)
+                    }
+                  ></input>
+                </label>    
+                <label>
+                <b>Nội dung tra cứu:</b>
+                      <select                        
+                        name='phanloaisanpham'
+                        value={buttonselected}
+                        onChange={(e) => {
+                            setbuttonselected(e.target.value);
+                        }}
+                      >
+                        <option value='GR'>Nhập Kho</option>
+                        <option value='GI'>Xuất Kho</option>
+                        <option value='STOCKFULL'>Tồn chi tiết</option>
+                        <option value='STOCKG_CODE'>Tồn theo G_CODE</option>
+                        <option value='STOCKG_NAME_KD'>Tồn theo Code KD</option>
+                        <option value='STOCK_YCSX'>Tồn theo YCSX</option>                        
+                      </select>
+                </label>         
               </div>
             </div>
-            <div className='formbutton'>
+            <div className='formbutton'>          
+            <label>
+              <b>All Time:</b>
+              <input
+                type='checkbox'
+                name='alltimecheckbox'
+                defaultChecked={alltime}
+                onChange={() => setAllTime(!alltime)}
+              ></input>
+            </label>
               <button
                 className='tranhatky'
                 onClick={() => {
-                    setbuttonselected('GR');
-                  loadKTP_IN();
+                    switch(buttonselected)
+                    {
+                        case 'GR':
+                            loadKTP_IN();
+                            setSelectedDataSource(new PivotGridDataSource({
+                                fields: ktp_in_fields,
+                                store: khotpinputdatatable,
+                              }));
+                        break;
+                        case 'GI':
+                            loadKTP_OUT();
+                            setSelectedDataSource(new PivotGridDataSource({
+                                fields: ktp_out_fields,
+                                store: khotpoutputdatatable,
+                              }));
+                        break;
+                        case 'STOCKFULL':
+                            loadSTOCKFULL();
+                            setSelectedDataSource(new PivotGridDataSource({
+                                fields: ktp_in_fields,
+                                store: khotpinputdatatable,
+                              }));
+                        break;
+                        case 'STOCKG_CODE':
+                            loadSTOCK_G_CODE();
+                        break;
+                        case 'STOCKG_NAME_KD':
+                            loadSTOCK_G_NAME_KD();
+                        break;
+                        case 'STOCK_YCSX':
+                            loadSTOCK_YCSX();
+                        break;
+                    }                  
                 }}
               >
-                GR History
+                Search
               </button>
-              <button
-                className='tranhatky'
-                onClick={() => {
-                    setbuttonselected('GI');
-                    loadKTP_OUT();                 
-                }}
-              >
-                GI History
-              </button>
-              <button
-                className='traxuatkiembutton'
-                onClick={() => {
-                    setbuttonselected('STOCKFULL');
-                    loadSTOCKFULL();
-                  
-                }}
-              >
-                STOCK FULL
-              </button>
-              <button
-                className='traxuatkiembutton'
-                onClick={() => {
-                    setbuttonselected('STOCKG_CODE');
-                    loadSTOCK_G_CODE();
-                  
-                }}
-              >
-                STOCK G_CODE
-              </button>
-              <button
-                className='traxuatkiembutton'
-                onClick={() => {
-                    setbuttonselected('STOCKG_NAME_KD');
-                  
-                }}
-              >
-                STOCK G_NAME_KD
-              </button>
-              <button
-                className='traxuatkiembutton'
-                onClick={() => {
-                    setbuttonselected('STOCK_YCSX');
-                  
-                }}
-              >
-                STOCK_YCSX
-              </button>
+             
             </div>
           </div>
           { buttonselected ==='GR' && <div className='tracuuYCSXTable'>{KHOTP_INPUT}</div>}
           { buttonselected ==='GI' && <div className='tracuuYCSXTable'>{KHOTP_OUTPUT}</div>}
           { buttonselected ==='STOCKFULL' && <div className='tracuuYCSXTable'>{KHOTP_INPUT}</div>}
           { buttonselected ==='STOCKG_CODE' && <div className='tracuuYCSXTable'>{KHOTP_STOCKG_CODE}</div>}
+          { buttonselected ==='STOCKG_NAME_KD' && <div className='tracuuYCSXTable'>{KHOTP_STOCKG_NAME_KD}</div>}
+          { buttonselected ==='STOCK_YCSX' && <div className='tracuuYCSXTable'>{KHOTP_STOCK_YCSX}</div>}
           {showhidePivotTable && (
             <div className='pivottable1'>
               <IconButton
@@ -1416,7 +1835,7 @@ import {
                 <AiFillCloseCircle color='blue' size={15} />
                 Close
               </IconButton>
-              <PivotTable datasource={dataSource} tableID='invoicetablepivot' />
+              <PivotTable datasource={selectedDataSource} tableID='invoicetablepivot' />
             </div>
           )}
         </div>

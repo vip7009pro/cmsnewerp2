@@ -46,7 +46,7 @@ import {
   AiOutlinePushpin,
 } from "react-icons/ai";
 import Swal from "sweetalert2";
-import { generalQuery } from "../../../api/Api";
+import { generalQuery, uploadQuery } from "../../../api/Api";
 import { UserContext } from "../../../api/Context";
 import { checkBP, SaveExcel } from "../../../api/GlobalFunction";
 import "./BOM_MANAGER.scss";
@@ -242,6 +242,7 @@ const BOM_MANAGER = () => {
   const [bomsxtable, setBOMSXTable] = useState<BOM_SX[]>([]);
   const [bomgiatable, setBOMGIATable] = useState<BOM_GIA[]>([]);
   const [customerList, setCustomerList] = useState<CustomerListData[]>([]);
+  const [uploadfile,setUploadFile] = useState<any>(null);
   const [selectedCust_CD, setSelectedCust_CD] =
     useState<CustomerListData | null>();
   const [materialList, setMaterialList] = useState<MaterialListData[]>([
@@ -355,7 +356,66 @@ const BOM_MANAGER = () => {
       minWidth: 150,
       editable: enableEdit,
     },
-    {
+    { field: "BANVE", headerName: "BANVE", width: 260 , renderCell: (params:any) => {
+      let file:any = null;
+      const uploadFile2 = async (e:any) => {
+        //console.log(file); 
+        if(userData?.MAINDEPTNAME==='KD')
+        {
+          uploadQuery(file,params.row.G_CODE +'.pdf','banve')
+          .then((response)=> {
+            if (response.data.tk_status !== "NG") {
+                generalQuery("update_banve_value", { G_CODE: params.row.G_CODE, banvevalue: 'Y' })
+                .then((response) => {        
+                  if (response.data.tk_status !== "NG") 
+                  {
+                    Swal.fire('Thông báo','Upload bản vẽ thành công','success');
+                    let tempcodeinfodatatable = rows.map((element, index)=> {                 
+                      return ( element.G_CODE === params.row.G_CODE ? {...element, BANVE: 'Y'}: element);
+                    });
+                    //setRows(tempcodeinfodatatable);
+                  } 
+                  else {
+                    Swal.fire('Thông báo','Upload bản vẽ thất bại','error');
+                  }
+                })
+                .catch((error) => {
+                  console.log(error);
+                });       
+            } else {
+              Swal.fire('Thông báo','Upload file thất bại:' + response.data.message,'error'); 
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+
+        }
+        else
+        {
+          Swal.fire('Thông báo','Chỉ bộ phận kinh doanh upload được bản vẽ','error');
+        }
+      }
+      let hreftlink = '/banve/' + params.row.G_CODE + '.pdf';
+      if (params.row.BANVE !== "N" && params.row.BANVE !== null)
+      {
+        return (
+          <span style={{ color: "gray" }}>
+            <a target='_blank' rel='noopener noreferrer' href={hreftlink}>
+              LINK
+            </a>
+          </span>
+        )
+      }
+      else
+      {
+        return <div className="uploadfile"> 
+       <IconButton className='buttonIcon'onClick={uploadFile2}><AiOutlineCloudUpload color='yellow' size={15}/>Upload</IconButton>
+       <input  accept=".pdf" type="file" onChange={(e:any)=> {file = e.target.files[0]; console.log(file);}} />
+      </div>
+      }        
+    },  editable: enableEdit },
+    /* {
       field: "BANVE",
       headerName: "BANVE",
       width: 260,
@@ -445,7 +505,7 @@ const BOM_MANAGER = () => {
         }
       },
       editable: enableEdit,
-    },
+    }, */
     {
       field: "NO_INSPECTION",
       headerName: "KT NGOAI QUAN",
@@ -1907,6 +1967,22 @@ const BOM_MANAGER = () => {
     });
     
   }
+
+  const handleUploadFile = (ulf: any,newfilename:string)=> {
+    console.log(ulf);
+    uploadQuery(uploadfile,newfilename,'banve')
+    .then((response)=> {
+      if (response.data.tk_status !== "NG") {
+        Swal.fire('Thông báo','Upload file thành công','success');             
+      } else {
+        Swal.fire('Thông báo','Upload file thất bại:' + response.data.message,'error'); 
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  }
+
   useEffect(() => {
     getmateriallist();
     getcustomerlist();

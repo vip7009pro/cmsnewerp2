@@ -11,7 +11,9 @@ type english_sentences = {
   CONTENT: string;
 };
 export const vn_lang = {
-  nhapxuatton:"Tra Nhập-Xuất-Tồn",
+  nhapxuattonlieu: "Nhập-Xuất-Tồn Liệu",
+  bophankho: "Bộ phận kho",
+  nhapxuattontp:"Tra Nhập-Xuất-Tồn TP",
   khothanhpham: "Kho Thành Phẩm",
   quanlygiaonhan: "Quản lý giao nhận dao film",
   productbarcodemanager: "Quản lý barcode sản phẩm",
@@ -89,7 +91,9 @@ export const vn_lang = {
   eqstatus: "Trạng Thái Máy",
 };
 export const en_lang = {
-  nhapxuatton:"GR-GI-STOCK Query",
+  nhapxuattonlieu: "Material In-Out-Stock",
+  bophankho: "Warehouse Department",
+  nhapxuattontp:"GR-GI-STOCK Query",
   khothanhpham: "Product Warehouse",
   quanlygiaonhan: "Handover management",
   productbarcodemanager: "Product Barcode Manager",
@@ -168,7 +172,9 @@ export const en_lang = {
   datasanxuat: "Production DATA",
 };
 export const kr_lang = {
-  nhapxuatton:"창고 입-출-재고",
+  nhapxuattonlieu:"원단 창고 입-출-재고",
+  bophankho: "창고팀",
+  nhapxuattontp:"완제품 창고 입-출-재고",
   khothanhpham: "완제품 창고",
   quanlygiaonhan: "자료 인수인계 관리",
   productbarcodemanager: "제품 바코드 관리",

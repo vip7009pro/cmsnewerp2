@@ -14,7 +14,7 @@ const DrawComponent = ({G_CODE, PDBV, PDBV_EMPL, PDBV_DATE, PROD_REQUEST_NO} : {
   );
     const [page, setPage] = useState(1);
     const canvasRef = useRef(null);
-    let draw_path = 'http://14.160.33.94/banve/';    
+    let draw_path = '/banve/';    
     console.log(draw_path + G_CODE +'.pdf');
     const { pdfDocument, pdfPage } = usePdf({
       file: draw_path + G_CODE + '.pdf',

@@ -69,6 +69,7 @@ import QLVL from "../../pages/muahang/quanlyvatlieu/QLVL";
 import PRODUCT_BARCODE_MANAGER from "../../pages/rnd/product_barcode_manager/PRODUCT_BARCODE_MANAGER";
 import QLGN from "../../pages/rnd/quanlygiaonhandaofilm/QLGN";
 import KHOTPNEW from "../../pages/kho/khotp_new/KHOTPNEW";
+import KHOTP from "../../pages/kho/khotp/KHOTP";
 
 interface MENU_LIST_DATA {
   MENU_CODE: string;
@@ -80,6 +81,9 @@ interface MENU_LIST_DATA {
 const SubMenu = ({ item }: { item: any }) => {
   const userData: UserData | undefined = useSelector(
     (state: RootState) => state.totalSlice.userData
+  );
+  const company: string = useSelector(
+    (state: RootState) => state.totalSlice.company
   );
   const [subnav, setSubnav] = useState(false);
   const [lang, setLang] = useContext(LangConText);
@@ -412,8 +416,13 @@ const SubMenu = ({ item }: { item: any }) => {
     },
     {
       MENU_CODE: "KO1",
-      MENU_NAME: getlang('nhapxuatton',lang),
-      MENU_ITEM: <KHOTPNEW />,
+      MENU_NAME: getlang('nhapxuattontp',lang),
+      MENU_ITEM: company ==='CMS'?  <KHOTP/>: <KHOTPNEW />,
+    },
+    {
+      MENU_CODE: "KO2",
+      MENU_NAME: getlang('nhapxuattonlieu',lang),
+      MENU_ITEM: <KHOLIEU />,
     },
     {
       MENU_CODE: "",

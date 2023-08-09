@@ -3517,7 +3517,7 @@ const YCSXManager = () => {
                 <div className='forminputcolumn'>
                   <div className='prod_request_info'>
                     <div style={{ color: "green" }}>Code KD: {codeKD}</div>
-                    <div style={{ color: "red" }}>Code CMS: {codeCMS}</div>
+                    <div style={{ color: "red" }}>Code ERP: {codeCMS}</div>
                     <div style={{ color: "blue" }}>
                       Cavity Amazon: {cavityAmazon}
                     </div>

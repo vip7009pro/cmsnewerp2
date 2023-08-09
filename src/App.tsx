@@ -670,7 +670,7 @@ function App() {
                         <Route path='mrp' element={<QLVL />} />                        
                       </Route>
                       <Route
-                        path='khothanhpham'
+                        path='bophankho'
                         element={
                           <ProtectedRoute
                             user={globalUserData}
@@ -682,9 +682,9 @@ function App() {
                         }
                       >
                         <Route index element={<KHOTPNEW />} />                        
-                        <Route path='nhapxuatton' element={<KHOTPNEW />} />              
-                                          
-                      </Route>
+                        <Route path='nhapxuattontp' element={<KHOTPNEW />} />  
+                        <Route path='nhapxuattonlieu' element={<KHOLIEU />} /> 
+                      </Route>                      
                       <Route
                         path='qc'
                         element={

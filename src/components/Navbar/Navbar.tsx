@@ -97,6 +97,7 @@ import QLVL from "../../pages/muahang/quanlyvatlieu/QLVL";
 import PRODUCT_BARCODE_MANAGER from "../../pages/rnd/product_barcode_manager/PRODUCT_BARCODE_MANAGER";
 import QLGN from "../../pages/rnd/quanlygiaonhandaofilm/QLGN";
 import KHOTPNEW from "../../pages/kho/khotp_new/KHOTPNEW";
+import KHOTP from "../../pages/kho/khotp/KHOTP";
 /* 
 const KIEMTRA= lazy(()=> import('../../pages/qc/inspection/KIEMTRA'));
 const PQC= lazy(()=> import('../../pages/qc/pqc/PQC'));
@@ -516,8 +517,13 @@ export default function Navbar() {
     },
     {
       MENU_CODE: "KO1",
-      MENU_NAME: getlang('nhapxuatton',lang),
+      MENU_NAME: getlang('nhapxuattontp',lang),
       MENU_ITEM: <KHOTPNEW />,
+    },
+    {
+      MENU_CODE: "KO2",
+      MENU_NAME: getlang('nhapxuattonlieu',lang),
+      MENU_ITEM: company ==='CMS'?  <KHOTP/>: <KHOTPNEW />,
     },
     {
       MENU_CODE: "",
