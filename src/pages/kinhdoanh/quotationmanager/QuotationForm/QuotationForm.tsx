@@ -349,9 +349,17 @@ const QuotationForm = ({QUOTATION_DATA}: {QUOTATION_DATA?: BANGGIA_DATA2[]}) => 
         CMS , Kính Chúc Quý Khách Sức Khỏe Và Thành Công !
       </div>
       <div className='approval'>
-        <div className='kyduyet'>KÝ DUYỆT</div>
+        <div className='kyduyet'>
+          KÝ DUYỆT
+          {company === 'PVN' && <img
+                alt='cmsvina logo'
+                src='/chukystamp.png'
+                width={200}
+                height={200}
+              />}        
+        </div>
         <div className='phutrach'>
-            <span className='nvpt'>NHÂN VIÊN PHỤ TRÁCH</span>
+            <span className='nvpt' style={{fontWeight:'bold'}}>NHÂN VIÊN PHỤ TRÁCH</span>
             <span className='nvname'>Ms Phương 0344173388</span>
         </div>
       </div>
