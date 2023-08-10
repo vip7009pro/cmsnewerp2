@@ -13,6 +13,8 @@ interface BANGGIA_DATA2 {
     G_CODE?: string,
     G_NAME?: string,
     G_NAME_KD?: string,
+    DESCR?: string,
+    PROD_DVT?: string,
     PROD_MAIN_MATERIAL?: string,
     PRICE_DATE: string,
     MOQ: number,
@@ -112,7 +114,7 @@ const QuotationForm = ({QUOTATION_DATA}: {QUOTATION_DATA?: BANGGIA_DATA2[]}) => 
           </div>
           <div className='mstsdt'>
             <div className='mst'>MST:{company==='PVN'? '1001007955':'1900100 có'}</div>
-            <div className='sdt'>Tel : 0123456789</div>
+            <div className='sdt'>Tel : {company==='PVN'? '0973898913/0985657186':'1900100 có'}</div>
           </div>
           <div className='email'>Email: {company==='PVN'? 'print.vietnam.ld@gmail.com':'cms4285@gmail.com'} </div>
           <div className='quotationno'>
@@ -162,174 +164,46 @@ const QuotationForm = ({QUOTATION_DATA}: {QUOTATION_DATA?: BANGGIA_DATA2[]}) => 
         <div className='qtable'>
           <table>
             <thead>
-              <tr>
-                <td>STT (NO)</td>
-                <td>MÔ TẢ SẢN PHẨM</td>
-                <td>KÍCH THƯỚC</td>
-                <td>VẬT LIỆU</td>
-                <td>CÔNG ĐOẠN</td>
-                <td>LOẠI HÀNG</td>
-                <td>ĐVT (UNIT)</td>
-                <td>MOQ (QTY)</td>
-                <td>ĐƠN GIÁ (PRICE)(VNĐ/ĐVT)</td>
-                <td>THÀNH TIỀN (TOTAL)</td>
+              <tr style={{backgroundColor:'#1E73F5', color: 'white'}}>
+                <td style={{width: '5%'}}>STT (NO)</td>
+                <td style={{width: '10%'}}>{company==='CMS'? 'CODE KH': 'MÃ PVN (PVN CODE)'}</td>
+                <td style={{width: '5%'}}>MÃ KH<br></br>(CUSTOMER CODE)</td>
+                <td style={{width: '20%'}}>MÔ TẢ SẢN PHẨM<br></br>(PRODUCT DESCRIPTION)</td>
+                <td style={{width: '10%'}}>VẬT LIỆU</td>
+                <td style={{width: '10%'}}>KÍCH THƯỚC<br></br>(SIZE)(mm)</td>
+                <td style={{width: '10%'}}>CÔNG ĐOẠN</td>                
+                <td style={{width: '5%'}}>ĐVT (UNIT)</td>
+                <td style={{width: '5%'}}>SỐ LƯỢNG (QTY)</td>
+                <td style={{width: '10%'}}>ĐƠN GIÁ<br></br>(PRICE)<br></br>(VNĐ/ĐVT)</td>
+                <td style={{width: '10%'}}>THÀNH TIỀN (TOTAL)</td>
               </tr>
             </thead>
             <tbody>
                 {QUOTATION_DATA?.map((ele: BANGGIA_DATA2, index: number)=> {
                     return (
-                        <tr key={index}>
+                        <tr key={index} style={{height: '9mm'}}>
                             <td>{index+1}</td>
-                            <td>{ele.G_NAME}</td>
-                            <td>{ele.G_LENGTH}*{ele.G_WIDTH}</td>
+                            <td>{ele.G_NAME_KD}</td>
+                            <td>{ele.CUST_CD}</td>
+                            <td>{ele.DESCR}</td>
                             <td>{ele.PROD_MAIN_MATERIAL}</td>
-                            <td>{ele.EQ1}-{ele.EQ2}-{ele.EQ3}-{ele.EQ4}</td>
-                            <td>Cuộn</td>                            
-                            <td>Bộ</td>
-                            <td>{ele.MOQ}</td>
-                            <td>{ele.PROD_PRICE}</td>
-                            <td>{ele.MOQ * ele.PROD_PRICE}</td>
+                            <td>{ele.G_LENGTH}*{ele.G_WIDTH}</td>
+                            <td>                              
+                              {ele.EQ1 !=='NA' && ele.EQ1 !=='NO' && ele.EQ1 !=='' && ele.EQ1 !==null ? ele.EQ1:''}
+                              {ele.EQ2 !=='NA' && ele.EQ2 !=='NO' && ele.EQ2 !=='' && ele.EQ2 !==null ? '-' + ele.EQ2:''}
+                              {ele.EQ3 !=='NA' && ele.EQ3 !=='NO' && ele.EQ3 !=='' && ele.EQ3 !==null ? '-' + ele.EQ3:''}
+                              {ele.EQ4 !=='NA' && ele.EQ4 !=='NO' && ele.EQ4 !=='' && ele.EQ4 !==null ? '-' + ele.EQ4:''}
+                              
+                            </td>
+                            <td>{ele.PROD_DVT}</td>
+                            <td>{(ele.MOQ)}</td>
+                            <td>{(ele.PROD_PRICE*23100).toLocaleString('en-US',{minimumFractionDigits:0, maximumFractionDigits:0})}</td>
+                            <td>{(ele.MOQ * ele.PROD_PRICE*23100).toLocaleString('en-US',{minimumFractionDigits:0, maximumFractionDigits:0})}</td>
                         </tr>
 
                     )
                 })}
               
-
-              {/*
-              <tr>
-                <td rowSpan={3}>1</td>
-                <td rowSpan={3}>
-                  TEM TINH BỘT NGHỆ Kích thước : Tem chính : 65x298mm, Tem nắp :
-                  F92mm Nvl : Decal PP Quy cách : In màu, cán màng mờ, bế thành
-                  phẩm, dạng cuộn.
-                </td>
-                <td rowSpan={3}>Bộ</td>
-                <td>5,000</td>
-                <td>1,100</td>
-                <td>5,500,000</td>
-              </tr>
-
-
-               <tr>
-                <td>5,000</td>
-                <td>1,100</td>
-                <td>5,500,000</td>
-              </tr>
-              <tr>
-                <td>5,000</td>
-                <td>1,100</td>
-                <td>5,500,000</td>
-              </tr>
-              <tr>
-                <td rowSpan={3}>1</td>
-                <td rowSpan={3}>
-                  TEM TINH BỘT NGHỆ Kích thước : Tem chính : 65x298mm, Tem nắp :
-                  F92mm Nvl : Decal PP Quy cách : In màu, cán màng mờ, bế thành
-                  phẩm, dạng cuộn.
-                </td>
-                <td rowSpan={3}>Bộ</td>
-                <td>5,000</td>
-                <td>1,100</td>
-                <td>5,500,000</td>
-              </tr>
-              <tr>
-                <td>5,000</td>
-                <td>1,100</td>
-                <td>5,500,000</td>
-              </tr>
-              <tr>
-                <td>5,000</td>
-                <td>1,100</td>
-                <td>5,500,000</td>
-              </tr>
-              <tr>
-                <td rowSpan={3}>1</td>
-                <td rowSpan={3}>
-                  TEM TINH BỘT NGHỆ Kích thước : Tem chính : 65x298mm, Tem nắp :
-                  F92mm Nvl : Decal PP Quy cách : In màu, cán màng mờ, bế thành
-                  phẩm, dạng cuộn.
-                </td>
-                <td rowSpan={3}>Bộ</td>
-                <td>5,000</td>
-                <td>1,100</td>
-                <td>5,500,000</td>
-              </tr>
-              <tr>
-                <td>5,000</td>
-                <td>1,100</td>
-                <td>5,500,000</td>
-              </tr>
-              <tr>
-                <td>5,000</td>
-                <td>1,100</td>
-                <td>5,500,000</td>
-              </tr>
-              <tr>
-                <td rowSpan={3}>1</td>
-                <td rowSpan={3}>
-                  TEM TINH BỘT NGHỆ Kích thước : Tem chính : 65x298mm, Tem nắp :
-                  F92mm Nvl : Decal PP Quy cách : In màu, cán màng mờ, bế thành
-                  phẩm, dạng cuộn.
-                </td>
-                <td rowSpan={3}>Bộ</td>
-                <td>5,000</td>
-                <td>1,100</td>
-                <td>5,500,000</td>
-              </tr>
-              <tr>
-                <td>5,000</td>
-                <td>1,100</td>
-                <td>5,500,000</td>
-              </tr>
-              <tr>
-                <td>5,000</td>
-                <td>1,100</td>
-                <td>5,500,000</td>
-              </tr>
-              <tr>
-                <td rowSpan={3}>1</td>
-                <td rowSpan={3}>
-                  TEM TINH BỘT NGHỆ Kích thước : Tem chính : 65x298mm, Tem nắp :
-                  F92mm Nvl : Decal PP Quy cách : In màu, cán màng mờ, bế thành
-                  phẩm, dạng cuộn.
-                </td>
-                <td rowSpan={3}>Bộ</td>
-                <td>5,000</td>
-                <td>1,100</td>
-                <td>5,500,000</td>
-              </tr>
-              <tr>
-                <td>5,000</td>
-                <td>1,100</td>
-                <td>5,500,000</td>
-              </tr>
-              <tr>
-                <td>5,000</td>
-                <td>1,100</td>
-                <td>5,500,000</td>
-              </tr>
-              <tr>
-                <td rowSpan={3}>1</td>
-                <td rowSpan={3}>
-                  TEM TINH BỘT NGHỆ Kích thước : Tem chính : 65x298mm, Tem nắp :
-                  F92mm Nvl : Decal PP Quy cách : In màu, cán màng mờ, bế thành
-                  phẩm, dạng cuộn.
-                </td>
-                <td rowSpan={3}>Bộ</td>
-                <td>5,000</td>
-                <td>1,100</td>
-                <td>5,500,000</td>
-              </tr>
-              <tr>
-                <td>5,000</td>
-                <td>1,100</td>
-                <td>5,500,000</td>
-              </tr>
-              <tr>
-                <td>5,000</td>
-                <td>1,100</td>
-                <td>5,500,000</td>
-              </tr> */}
             </tbody>
           </table>
         </div>
@@ -354,8 +228,8 @@ const QuotationForm = ({QUOTATION_DATA}: {QUOTATION_DATA?: BANGGIA_DATA2[]}) => 
           {company === 'PVN' && <img
                 alt='cmsvina logo'
                 src='/chukystamp.png'
-                width={200}
-                height={200}
+                width={220}
+                height={220}
               />}        
         </div>
         <div className='phutrach'>

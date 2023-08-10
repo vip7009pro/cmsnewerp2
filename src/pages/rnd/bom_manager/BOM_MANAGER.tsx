@@ -117,6 +117,7 @@ interface CODE_FULL_INFO {
   PO_TYPE?: string;
   FSC: string;
   G_CODE: string;
+  PROD_DVT: string,
 }
 interface CustomerListData {
   CUST_CD: string;
@@ -227,10 +228,10 @@ const BOM_MANAGER = () => {
     RPM: 0,
     PIN_DISTANCE: 0,
     PROCESS_TYPE: "",
-    EQ1: "NA",
-    EQ2: "NA",
-    EQ3: "NA",
-    EQ4: "NA",
+    EQ1: "NO",
+    EQ2: "NO",
+    EQ3: "NO",
+    EQ4: "NO",
     PROD_DIECUT_STEP: 0,
     PROD_PRINT_TIMES: 0,
     REMK: "",
@@ -238,6 +239,7 @@ const BOM_MANAGER = () => {
     G_CODE: "-------",
     PO_TYPE: "E1",
     FSC: "N",
+    PROD_DVT:'01'
   });
   const [bomsxtable, setBOMSXTable] = useState<BOM_SX[]>([]);
   const [bomgiatable, setBOMGIATable] = useState<BOM_GIA[]>([]);
@@ -1047,6 +1049,7 @@ const BOM_MANAGER = () => {
       USE_YN: "Y",
       G_CODE: "",
       FSC: "N",
+      PROD_DVT:'01',
     });
   };
   const handleCheckCodeInfo = () => {
@@ -1859,22 +1862,39 @@ const BOM_MANAGER = () => {
         console.log(error);
       });
   };
-  const sinhmaCODEKH =async (CUST_CD: string)=> {
-    await generalQuery("getlastestCODKH", {
-      CUST_CD: CUST_CD
+
+  const autogenerateCodeKH =  (cust_cd: string)=> {
+    let nextCodeKH: string = cust_cd + "-001";
+      generalQuery("getlastestCODKH", {
+      CUST_CD: cust_cd     
     })
-    .then((response) => {
-      //console.log(response.data);
-      if (response.data.tk_status !== "NG") {
+      .then((response) => {
+        console.log(response.data.data);
+        if (response.data.tk_status !== "NG") {
+          let arr = response.data.data[0].G_NAME_KD.split("-");
+          nextCodeKH =  cust_cd + "-" + zeroPad(parseInt(arr[1])+1,3);
+          console.log('nex codeKH', nextCodeKH);
+          handleSetCodeInfo("CUST_CD", cust_cd);  
+          
+
+        } else {
+          
+          
+
+          //Swal.fire("Thông báo", " Có lỗi : " + response.data.message, "error");
+        }        
+        let tempcodefullinfo = { ...codefullinfo, ['CUST_CD']: cust_cd, ['G_NAME_KD']: nextCodeKH };
+        setCodeFullInfo(tempcodefullinfo);
        
-      } else {
-        
-      }
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-    
+      })
+      .catch((error) => {
+        console.log(error);
+        Swal.fire("Thông báo", " Có lỗi : " + error, "error");
+      });  
+
+     
+
+      return nextCodeKH;
   }
 
   const handleUploadFile = (ulf: any,newfilename:string)=> {
@@ -2073,8 +2093,16 @@ const BOM_MANAGER = () => {
                             ? ""
                             : codefullinfo?.CUST_CD
                         }
-                        onChange={(e) => {
-                          handleSetCodeInfo("CUST_CD", e.target.value);
+                        onChange={(e) => { 
+                          //handleSetCodeInfo("CUST_CD", e.target.value);
+                          if(company==='PVN')
+                          {
+                            autogenerateCodeKH(e.target.value);
+                          }
+                          else
+                          {
+                            handleSetCodeInfo("CUST_CD", e.target.value);
+                          }
                         }}
                       >
                         {customerList.map((element, index) => (
@@ -2161,6 +2189,7 @@ const BOM_MANAGER = () => {
                      {company==='CMS'? 'Code KD': 'Code KT'}
                       <input
                         disabled={enableform}
+                        placeholder={company==='CMS'? 'GH63-18084A': 'KH001-xxx'}
                         type='text'
                         value={
                           codefullinfo?.G_NAME_KD === null
@@ -2425,7 +2454,7 @@ const BOM_MANAGER = () => {
                         name='packingtype'
                         value={
                           codefullinfo?.CODE_33 === null
-                            ? ""
+                            ? "03"
                             : codefullinfo?.CODE_33
                         }
                         onChange={(e) => {
@@ -2434,6 +2463,29 @@ const BOM_MANAGER = () => {
                       >
                         <option value='02'>ROLL</option>
                         <option value='03'>SHEET</option>
+                      </select>
+                    </label>
+                    <label>
+                      Đơn vị:
+                      <select
+                        disabled={enableform}
+                        name='dvt'
+                        value={
+                          codefullinfo?.PROD_DVT === null
+                            ? "01"
+                            : codefullinfo?.PROD_DVT
+                        }
+                        onChange={(e) => {
+                          handleSetCodeInfo("PROD_DVT", e.target.value);
+                        }}
+                      >
+                        <option value='01'>EA</option>
+                        <option value='02'>Met</option>
+                        <option value='03'>Cuộn</option>
+                        <option value='04'>Bộ</option>
+                        <option value='05'>Gói</option>
+                        <option value='06'>Kg</option>
+                        <option value='99'>X</option>
                       </select>
                     </label>
                     <label>

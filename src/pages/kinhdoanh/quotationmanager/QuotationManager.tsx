@@ -114,6 +114,8 @@ interface BANGGIA_DATA2 {
   G_CODE?: string,
   G_NAME?: string,
   G_NAME_KD?: string,
+  DESCR?: string,
+  PROD_DVT?: string,
   PROD_MAIN_MATERIAL?: string,
   PRICE_DATE: string,
   MOQ: number,

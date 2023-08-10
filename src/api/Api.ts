@@ -26,9 +26,6 @@ console.log('company', getCompany())
 let API_URL = getSever() + '/api';
 let UPLOAD_URL = getSever() + '/uploadfile';
 
-console.log(API_URL);
-console.log(UPLOAD_URL);
-
 let server_ip_local: any = localStorage.getItem("server_ip")?.toString();
 
 if (server_ip_local !== undefined) {
