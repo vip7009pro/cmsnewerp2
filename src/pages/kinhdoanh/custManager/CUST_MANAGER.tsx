@@ -28,7 +28,7 @@ import {
   import "./CUST_MANAGER2.scss";
   import { UserContext } from "../../../api/Context";
   import { generalQuery } from "../../../api/Api";
-  import { SaveExcel } from "../../../api/GlobalFunction";
+  import { SaveExcel, zeroPad } from "../../../api/GlobalFunction";
   import { MdOutlinePivotTableChart } from "react-icons/md";
   import PivotTable from "../../../components/PivotChart/PivotChart";
   import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
@@ -86,7 +86,8 @@ import {
     TOTAL_LOSS: number;
   }  
   interface CUST_INFO {
-    id: string;
+    id: string,
+    CUST_TYPE: string,
     CUST_CD: string,
     CUST_NAME_KD: string,
     CUST_NAME: string,
@@ -128,6 +129,7 @@ import {
     const [m_code, setM_Code] = useState("");
     const [selectedRows, setSelectedRows] = useState<CUST_INFO>({
       id: '1',
+      CUST_TYPE:'KH',
       CUST_CD: '',
       CUST_NAME_KD: '',
       CUST_NAME: '',
@@ -149,6 +151,52 @@ import {
       //console.log(tempcodefullinfo);
       setSelectedRows(tempCustInfo);
     };
+
+    const autogenerateCUST_CD= async (company_type: string)=> {    
+      let next_cust_cd: string =  company_type+"001";
+       await generalQuery("checkcustcd", {
+        COMPANY_TYPE: company_type          
+      })
+        .then((response) => {
+          console.log(response.data.data);
+          if (response.data.tk_status !== "NG") {
+            let stt = company_type ==='KH'? response.data.data[0].CUST_CD.substring(2,5): response.data.data[0].CUST_CD.substring(3,6);
+            next_cust_cd =   company_type + zeroPad(parseInt(stt)+1,3);
+            console.log('nex cust_cd', next_cust_cd);
+          } else {  
+            //Swal.fire("Thông báo", " Có lỗi : " + response.data.message, "error");
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+          Swal.fire("Thông báo", " Có lỗi : " + error, "error");
+        });  
+        return next_cust_cd;
+    }
+
+    const createNewCustomer = async (company_type: string)=> {
+      let next_cust_cd =await autogenerateCUST_CD(company_type);
+      setSelectedRows({
+        id:'0',
+        CUST_TYPE:company_type,
+        BOSS_NAME:'',
+        CUST_ADDR1:'',
+        CUST_CD: next_cust_cd,
+        CUST_NAME:'',
+        CUST_NAME_KD:'',
+        CUST_NUMBER:'',
+        CUST_POSTAL:'',
+        FAX_NO:'',
+        INS_DATE:'',
+        INS_EMPL:'',
+        REMK:'',
+        TAX_NO:'',
+        TEL_NO1:'',
+        UPD_DATE:'',
+        UPD_EMPL:''
+      })
+    }
+
     const handleCUSTINFO = () => {
       generalQuery("get_listcustomer", {})
         .then((response) => {
@@ -1152,8 +1200,32 @@ import {
                   ></input>
                 </label>
               </div>             
+              <div className='forminputcolumn'>
+              <label>
+                <b>Phân loại:</b>{" "}
+                      <select
+                        name='plvendor'
+                        value={selectedRows?.CUST_TYPE}
+                        onChange={(e) => {
+                          setCustInfo("CUST_TYPE", e.target.value);                            
+                        }}
+                      >
+                          <option value='KH'>Khách Hàng</option>
+                          <option value='NCC'>Nhà Cung Cấp</option>
+                      </select>
+                </label> 
+              </div>  
+                       
             </div>
             <div className='formbutton'>             
+              <button
+                className='tranhatky'
+                onClick={() => {
+                  createNewCustomer(selectedRows.CUST_TYPE);                                  
+                }}
+              >
+                New
+              </button>
               <button
                 className='tranhatky'
                 onClick={() => {   

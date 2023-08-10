@@ -135,9 +135,19 @@ const PoManager = () => {
   const [id, setID] = useState("");
   const [alltime, setAllTime] = useState(true);
   const [justpobalance, setJustPOBalance] = useState(true);
-  const [selectedCode, setSelectedCode] = useState<CodeListData | null>();
+  const [selectedCode, setSelectedCode] = useState<CodeListData | null>({
+    G_CODE:'7A00001A',
+    G_NAME:'SELECT CODE',
+    PROD_LAST_PRICE:0,
+    USE_YN:'Y',
+    PO_BALANCE:0
+  });
   const [selectedCust_CD, setSelectedCust_CD] =
-    useState<CustomerListData | null>();
+    useState<CustomerListData | null>({
+      CUST_CD:'0000',
+      CUST_NAME_KD:'SELECT_CUSTOMER',
+      CUST_NAME:'SELECT_CUSTOMER VINA'
+    });
   const [newpodate, setNewPoDate] = useState(moment().format("YYYY-MM-DD"));
   const [newrddate, setNewRdDate] = useState(moment().format("YYYY-MM-DD"));
   const [newpono, setNewPoNo] = useState("");
@@ -170,6 +180,34 @@ const PoManager = () => {
   const [selectedID, setSelectedID] = useState<number | null>();
   const [showhidePivotTable, setShowHidePivotTable] = useState(false);
   const [newcodeprice, setNewCodePrice] = useState<PRICEWITHMOQ[]>([]);
+
+  const zeroPad = (num: number, places: number) =>
+  String(num).padStart(places, "0");
+
+
+  const autogeneratePO_NO = async (cust_cd: string)=> {
+    let po_no_to_check: string =cust_cd + "_"+ moment.utc().format('YYMMDD');
+    let next_po_no: string = po_no_to_check + "_001";
+     await generalQuery("checkcustomerpono", {
+      CHECK_PO_NO: po_no_to_check     
+    })
+      .then((response) => {
+        console.log(response.data.data);
+        if (response.data.tk_status !== "NG") {
+          let arr = response.data.data[0].PO_NO.split("_");
+          next_po_no =  po_no_to_check + "_" + zeroPad(parseInt(arr[2])+1,3);
+          console.log('next_PO_NO', next_po_no);
+        } else {
+
+          //Swal.fire("Thông báo", " Có lỗi : " + response.data.message, "error");
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        Swal.fire("Thông báo", " Có lỗi : " + error, "error");
+      });  
+      return next_po_no;
+  }
   const dongboGiaPO =()=> {
     generalQuery("dongbogiasptupo", {
      
@@ -185,7 +223,8 @@ const PoManager = () => {
       .catch((error) => {
         console.log(error);
         Swal.fire("Thông báo", " Có lỗi : " + error, "error");
-      });  }
+      });  
+    }
 
   const loadprice = (G_CODE?: string, CUST_NAME?: string)=>
   {
@@ -504,6 +543,18 @@ const PoManager = () => {
       thempohangloat: false,
       them1po: !selection.them1po,
       them1invoice: false,
+    });
+    setSelectedCode({
+      G_CODE:'7A00001A',
+      G_NAME:'SELECT CODE',
+      PROD_LAST_PRICE:0,
+      USE_YN:'Y',
+      PO_BALANCE:0
+    });
+    setSelectedCust_CD({
+      CUST_CD:'0000',
+      CUST_NAME_KD:'SELECT_CUSTOMER',
+      CUST_NAME:'SELECT_CUSTOMER VINA'
     });
   };
   function CustomToolbarPOTable() {
@@ -2232,6 +2283,14 @@ const PoManager = () => {
                         event: any,
                         newValue: CustomerListData | any
                       ) => {
+                        (async ()=> {
+                          if(company==='PVN')
+                          {
+                            setNewPoNo(await autogeneratePO_NO(newValue.CUST_CD));
+                          }
+                          //console.log(await autogeneratePO_NO(newValue.CUST_CD));
+                        })();
+                        
                         console.log(newValue);
                         loadprice(selectedCode?.G_CODE, newValue.CUST_NAME_KD);
                         setSelectedCust_CD(newValue);

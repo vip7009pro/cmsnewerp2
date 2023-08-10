@@ -23,6 +23,9 @@ import POandStockFull from '../pages/kinhdoanh/poandstockfull/POandStockFull';
 import CODE_MANAGER from '../pages/rnd/code_manager/CODE_MANAGER';
 import { UserData } from '../redux/slices/globalSlice';
 
+export  const zeroPad = (num: number, places: number) =>
+String(num).padStart(places, "0");
+
 export const SaveExcel = (data: any, title: string) => {
     const worksheet = XLSX.utils.json_to_sheet(data);
     const workbook = XLSX.utils.book_new();
