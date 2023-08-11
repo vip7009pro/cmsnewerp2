@@ -114,16 +114,28 @@ interface FullBOM {
   FACTORY: string,
   EQ1: string,
   EQ2: string, 
+  EQ3: string, 
+  EQ4: string, 
   Setting1: number,
   Setting2: number,
+  Setting3: number,
+  Setting4: number,
   UPH1: number,
   UPH2: number,
+  UPH3: number,
+  UPH4: number,
   Step1: number,
   Step2: number,
+  Step3: number,
+  Step4: number,
   LOSS_SX1: number,
   LOSS_SX2: number,
+  LOSS_SX3: number,
+  LOSS_SX4: number,
   LOSS_SETTING1 : number,
   LOSS_SETTING2 : number,
+  LOSS_SETTING3 : number,
+  LOSS_SETTING4 : number,
   NOTE:string,
   PO_TYPE: string,
   FSC: string,
@@ -213,16 +225,28 @@ const CHITHI_COMPONENT = ({
       FACTORY: '',
       EQ1: '',
       EQ2: '', 
+      EQ3: '', 
+      EQ4: '', 
       Setting1: 0,
       Setting2: 0,
+      Setting3: 0,
+      Setting4: 0,
       UPH1: 0,
       UPH2: 0,
+      UPH3: 0,
+      UPH4: 0,
       Step1: 0,
       Step2: 0,
+      Step3: 0,
+      Step4: 0,
       LOSS_SX1: 0,
       LOSS_SX2: 0,
+      LOSS_SX3: 0,
+      LOSS_SX4: 0,
       LOSS_SETTING1 : 0,
       LOSS_SETTING2 : 0,
+      LOSS_SETTING3 : 0,
+      LOSS_SETTING4 : 0,
       NOTE:'',
       PO_TYPE:'E1',
       PROD_MAIN_MATERIAL: '',
@@ -311,16 +335,28 @@ const CHITHI_COMPONENT = ({
               FACTORY: '',
               EQ1: '',
               EQ2: '', 
+              EQ3: '', 
+              EQ4: '', 
               Setting1: 0,
               Setting2: 0,
+              Setting3: 0,
+              Setting4: 0,
               UPH1: 0,
               UPH2: 0,
+              UPH3: 0,
+              UPH4: 0,
               Step1: 0,
               Step2: 0,
+              Step3: 0,
+              Step4: 0,
               LOSS_SX1: 0,
               LOSS_SX2: 0,
+              LOSS_SX3: 0,
+              LOSS_SX4: 0,
               LOSS_SETTING1 : 0,
               LOSS_SETTING2 : 0,
+              LOSS_SETTING3 : 0,
+              LOSS_SETTING4 : 0,
               NOTE:'',
               PO_TYPE:'E1',
               FSC:'N'
@@ -555,11 +591,11 @@ const CHITHI_COMPONENT = ({
             </tbody>
           </table>
         </div>
-        {/* <div className='text1'>
+        <div className='text1'>
           2. 생산 정보 Thông tin Sản xuất
           {' '}
           <Barcode
-              value={PLAN_ID}
+              value={`${PLAN_ID}`}
               format='CODE128'
               width={1.5}
               height={20}
@@ -570,7 +606,28 @@ const CHITHI_COMPONENT = ({
             />
              ({PLAN_ID})
         </div>
-        <div className='thongtinyeucau'>
+         <div className='thongtinyeucau'>
+          <table className='ttyc1'>
+            <thead>
+              <tr>
+                <th>Hạng mục/항목</th>
+                <th>Thông tin/정보</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Thời gian setting  {PROCESS_NUMBER===1? request_codeinfo[0]?.EQ1 : PROCESS_NUMBER===2? request_codeinfo[0]?.EQ2 : PROCESS_NUMBER===3? request_codeinfo[0]?.EQ3: PROCESS_NUMBER===4? request_codeinfo[0]?.EQ4:''}</td>
+                <td>{PROCESS_NUMBER===1? request_codeinfo[0]?.Setting1 : PROCESS_NUMBER===2? request_codeinfo[0]?.Setting2 : PROCESS_NUMBER===3? request_codeinfo[0]?.Setting3: PROCESS_NUMBER===4? request_codeinfo[0]?.Setting4:''} minutes</td>
+              </tr>  
+              <tr>
+                <td>UPH (EA/h) - {PROCESS_NUMBER===1? request_codeinfo[0]?.EQ1 : PROCESS_NUMBER===2? request_codeinfo[0]?.EQ2 : PROCESS_NUMBER===3? request_codeinfo[0]?.EQ3: PROCESS_NUMBER===4? request_codeinfo[0]?.EQ4:''}</td>
+                <td>{(PROCESS_NUMBER===1? request_codeinfo[0]?.UPH1 : PROCESS_NUMBER===2? request_codeinfo[0]?.UPH2 : PROCESS_NUMBER===3? request_codeinfo[0]?.UPH3: PROCESS_NUMBER===4? request_codeinfo[0]?.UPH4:0)}EA/h - {PLAN_QTY/(PROCESS_NUMBER===1? request_codeinfo[0]?.UPH1 : PROCESS_NUMBER===2? request_codeinfo[0]?.UPH2 : PROCESS_NUMBER===3? request_codeinfo[0]?.UPH3: PROCESS_NUMBER===4? request_codeinfo[0]?.UPH4:0)*60} minutes</td>
+              </tr>             
+                      
+            </tbody>
+          </table>                 
+        </div>
+         {/*<div className='thongtinyeucau'>
           <table className='ttyc1'>
             <thead>
               <tr>
