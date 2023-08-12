@@ -38,7 +38,7 @@ const DiemDanhNhomBP = () => {
     const [diemdanhnhomtable,setDiemDanhNhomTable ] = useState<Array<DiemDanhNhomData>>([]);
     const columns_diemdanhnhom =[  
       { field: "EMPL_NO", headerName: "EMPL_NO", width: 170 },
-      { field: "CMS_ID", headerName: "CMS_ID", width: 100 },    
+      { field: "CMS_ID", headerName: "NS_ID", width: 100 },    
       { field: "AVATAR", headerName: "AVATAR", width: 70,
       renderCell: (params: any) => {
        return <img width={70} height={90} src={'/Picture_NS/NS_'+ params.row.EMPL_NO+'.jpg'} alt={params.row.EMPL_NO}></img>

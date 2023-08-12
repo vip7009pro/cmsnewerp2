@@ -609,7 +609,7 @@ const QuanLyPhongBanNhanSu = () => {
     ];
     const columns_employee_table =[       
       { field: "EMPL_NO", headerName: "EMPL_NO", width: 120},  
-      { field: "CMS_ID", headerName: "CMS_ID", width: 120},  
+      { field: "CMS_ID", headerName: "NS_ID", width: 120},  
       { field: "NV_CCID", headerName: "NV_CCID", width: 120, renderCell: (params:any)=> {
         return (
           <span>{zeroPad(params.row.NV_CCID,6)}</span>

@@ -265,7 +265,7 @@ const PheDuyetNghi = () => {
             }    
         },      
         { field: "EMPL_NO", headerName: "EMPL_NO", width: 120 },
-        { field: "CMS_ID", headerName: "CMS_ID", width: 120 },
+        { field: "CMS_ID", headerName: "NS_ID", width: 120 },
         { field: "MIDLAST_NAME", headerName: "MIDLAST_NAME", width: 170 },
         { field: "FIRST_NAME", headerName: "FIRST_NAME", width: 100 },
         { field: "REQUEST_DATE", headerName: "REQUEST_DATE", width: 110 ,valueGetter: (params: any) => {return params.row.REQUEST_DATE.slice(0,10)}},

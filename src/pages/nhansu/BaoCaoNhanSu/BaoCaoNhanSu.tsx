@@ -502,7 +502,7 @@ const BaoCaoNhanSu = () => {
       },
     },
     { field: "EMPL_NO", headerName: "EMPL_NO", width: 120 },
-    { field: "CMS_ID", headerName: "CMS_ID", width: 120 },
+    { field: "CMS_ID", headerName: "NS_ID", width: 120 },
     { field: "MIDLAST_NAME", headerName: "MIDLAST_NAME", width: 170 },
     { field: "FIRST_NAME", headerName: "FIRST_NAME", width: 120 },
     { field: "CA_NGHI", headerName: "CA_NGHI", width: 100 },
@@ -880,7 +880,7 @@ const BaoCaoNhanSu = () => {
         },
       },
       {
-        caption: "CMS_ID",
+        caption: "NS_ID",
         width: 80,
         dataField: "CMS_ID",
         allowSorting: true,

@@ -271,7 +271,7 @@ import { UserData } from "../../../redux/slices/globalSlice";
       },
     },
     {
-      caption: "CMS_ID",
+      caption: "NS_ID",
       width: 80,
       dataField: "CMS_ID",
       allowSorting: true,
@@ -1011,7 +1011,7 @@ import { UserData } from "../../../redux/slices/globalSlice";
             <Column dataField='WEEKDAY' caption='WEEKDAY' width={80} dataType='date'></Column>
             <Column dataField='NV_CCID' caption='NV_CCID' width={80}></Column>
             <Column dataField='EMPL_NO' caption='EMPL_NO' width={80}></Column>
-            <Column dataField='CMS_ID' caption='CMS_ID' width={80}></Column>
+            <Column dataField='CMS_ID' caption='NS_ID' width={80}></Column>
            {/*  <Column dataField='MIDLAST_NAME' caption='MIDLAST_NAME' width={100}></Column>
             <Column dataField='FIRST_NAME' caption='FIRST_NAME' width={100}></Column> */}
             <Column dataField='FULL_NAME' caption='FULL_NAME' width={100}></Column>

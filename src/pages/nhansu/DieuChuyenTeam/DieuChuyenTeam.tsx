@@ -285,7 +285,7 @@ const DieuChuyenTeam = () => {
             }    
         },      
         { field: "EMPL_NO", headerName: "EMPL_NO", width: 170 },
-        { field: "CMS_ID", headerName: "CMS_ID", width: 100 },
+        { field: "CMS_ID", headerName: "NS_ID", width: 100 },
         { field: "MIDLAST_NAME", headerName: "MIDLAST_NAME", width: 130 },
         { field: "FIRST_NAME", headerName: "FIRST_NAME", width: 130 },
         { field: "SUBDEPTNAME", headerName: "SUBDEPTNAME", width: 130 },
