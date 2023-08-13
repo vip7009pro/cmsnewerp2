@@ -1231,8 +1231,14 @@ import {
               <Summary>
                 <TotalItem
                   alignment='right'
-                  column='id'
+                  column='INSPECT_OUTPUT_ID'
                   summaryType='count'
+                  valueFormat={"decimal"}
+                />
+                <TotalItem
+                  alignment='right'
+                  column='IN_QTY'
+                  summaryType='sum'
                   valueFormat={"decimal"}
                 />
               </Summary>
@@ -1325,10 +1331,16 @@ import {
                 displayMode='compact'
               />              
               <Summary>
+              <TotalItem
+                  alignment='right'
+                  column='INSPECT_OUTPUT_ID'
+                  summaryType='count'
+                  valueFormat={"decimal"}
+                />
                 <TotalItem
                   alignment='right'
-                  column='id'
-                  summaryType='count'
+                  column='OUT_QTY'
+                  summaryType='sum'
                   valueFormat={"decimal"}
                 />
               </Summary>
