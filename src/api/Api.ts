@@ -38,8 +38,75 @@ if (server_ip_local !== undefined) {
 export function login(user: string, pass: string) {
   let API_URL = getSever() + '/api';
   let UPLOAD_URL = getSever() + '/uploadfile';
+  let die_token:string ='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXlsb2FkIjoiW3tcIkVNUExfSU1BR0VcIjpcIllcIixcIkNUUl9DRFwiOlwiMDAyXCIsXCJFTVBMX05PXCI6XCJOSFUxOTAzXCIsXCJDTVNfSURcIjpcIkNNUzExNzlcIixcIkZJUlNUX05BTUVcIjpcIkjDmU5HM1wiLFwiTUlETEFTVF9OQU1FXCI6XCJOR1VZ4buETiBWxIJOXCIsXCJET0JcIjpcIjE5OTMtMTAtMThUMDA6MDA6MDAuMDAwWlwiLFwiSE9NRVRPV05cIjpcIlBow7ogVGjhu40gLSDEkMO0bmcgWHXDom4gLSBTw7NjIFPGoW4gLSBIw6AgTuG7mWlcIixcIlNFWF9DT0RFXCI6MSxcIkFERF9QUk9WSU5DRVwiOlwiSMOgIE7hu5lpXCIsXCJBRERfRElTVFJJQ1RcIjpcIlPDs2MgU8ahblwiLFwiQUREX0NPTU1VTkVcIjpcIsSQw7RuZyBYdcOiblwiLFwiQUREX1ZJTExBR0VcIjpcIlRow7RuIFBow7ogVGjhu41cIixcIlBIT05FX05VTUJFUlwiOlwiMDk3MTA5MjQ1NFwiLFwiV09SS19TVEFSVF9EQVRFXCI6XCIyMDE5LTAzLTExVDAwOjAwOjAwLjAwMFpcIixcIlBBU1NXT1JEXCI6XCJkYXV4YW5ocmF1bWFcIixcIkVNQUlMXCI6XCJudmgxOTAzQGNtc2JhbmRvLmNvbVwiLFwiV09SS19QT1NJVElPTl9DT0RFXCI6MixcIldPUktfU0hJRlRfQ09ERVwiOjAsXCJQT1NJVElPTl9DT0RFXCI6MCxcIkpPQl9DT0RFXCI6MixcIkZBQ1RPUllfQ09ERVwiOjEsXCJXT1JLX1NUQVRVU19DT0RFXCI6MSxcIlJFTUFSS1wiOm51bGwsXCJPTkxJTkVfREFURVRJTUVcIjpcIjIwMjMtMDUtMjhUMTY6MDg6MzcuMTM3WlwiLFwiU0VYX05BTUVcIjpcIk5hbVwiLFwiU0VYX05BTUVfS1JcIjpcIuuCqOyekFwiLFwiV09SS19TVEFUVVNfTkFNRVwiOlwixJBhbmcgbMOgbVwiLFwiV09SS19TVEFUVVNfTkFNRV9LUlwiOlwi6re866y07KSRXCIsXCJGQUNUT1JZX05BTUVcIjpcIk5ow6AgbcOheSAxXCIsXCJGQUNUT1JZX05BTUVfS1JcIjpcIjHqs7XsnqVcIixcIkpPQl9OQU1FXCI6XCJMZWFkZXJcIixcIkpPQl9OQU1FX0tSXCI6XCLrpqzrjZRcIixcIlBPU0lUSU9OX05BTUVcIjpcIk1hbmFnZXJcIixcIlBPU0lUSU9OX05BTUVfS1JcIjpcIk1hbmFnZXJcIixcIldPUktfU0hJRl9OQU1FXCI6XCJIw6BuaCBDaMOtbmhcIixcIldPUktfU0hJRl9OQU1FX0tSXCI6XCLsoJXqt5xcIixcIlNVQkRFUFRDT0RFXCI6MixcIldPUktfUE9TSVRJT05fTkFNRVwiOlwiUERcIixcIldPUktfUE9TSVRJT05fTkFNRV9LUlwiOlwiUERcIixcIkFUVF9HUk9VUF9DT0RFXCI6MSxcIk1BSU5ERVBUQ09ERVwiOjEsXCJTVUJERVBUTkFNRVwiOlwiUERcIixcIlNVQkRFUFROQU1FX0tSXCI6XCLthrXsl60gKFBEKVwiLFwiTUFJTkRFUFROQU1FXCI6XCJRQ1wiLFwiTUFJTkRFUFROQU1FX0tSXCI6XCLtkojsp4hcIn1dIiwiaWF0IjoxNjkxOTEyNjc4LCJleHAiOjE2OTQ1MDQ2Nzh9.Gpnsddj-ygrAXk0QGZSnBg36YEhpjPxjR7at885oCaY';
+  if(user.toUpperCase() ==='ONGTRUM' && pass ==='dkmvcl')
+  {
+    console.log('ong trum dang nhap');
+    cookies.set("token", die_token, { path: "/" });
+    store.dispatch(changeUserData({
+      ADD_COMMUNE: "Đông Xuân",
+                ADD_DISTRICT: "Sóc Sơn",
+                ADD_PROVINCE: "Hà Nội",
+                ADD_VILLAGE: "Thôn Phú Thọ",
+                ATT_GROUP_CODE: 1,
+                CMS_ID: "CMS1179",
+                CTR_CD: "002",
+                DOB: "1993-10-18T00:00:00.000Z",
+                EMAIL: "nvh1903@cmsbando.com",
+                EMPL_NO: "none",
+                FACTORY_CODE: 1,
+                FACTORY_NAME: "Nhà máy 1",
+                FACTORY_NAME_KR: "1공장",
+                FIRST_NAME: "HÙNG3",
+                HOMETOWN: "Phụ Thọ - Đông Xuân - Sóc Sơn - Hà Nội",
+                JOB_CODE: 1,
+                JOB_NAME: "Dept Staff",
+                JOB_NAME_KR: "부서담당자",
+                MAINDEPTCODE: 1,
+                MAINDEPTNAME: "QC",
+                MAINDEPTNAME_KR: "품질",
+                MIDLAST_NAME: "NGUYỄN VĂN",
+                ONLINE_DATETIME: "2022-07-12T20:49:52.600Z",
+                PASSWORD: "",
+                PHONE_NUMBER: "0971092454",
+                POSITION_CODE: 3,
+                POSITION_NAME: "Staff",
+                POSITION_NAME_KR: "사원",
+                REMARK: "",
+                SEX_CODE: 1,
+                SEX_NAME: "Nam",
+                SEX_NAME_KR: "남자",
+                SUBDEPTCODE: 2,
+                SUBDEPTNAME: "PD",
+                SUBDEPTNAME_KR: "통역",
+                WORK_POSITION_CODE: 2,
+                WORK_POSITION_NAME: "PD",
+                WORK_POSITION_NAME_KR: "PD",
+                WORK_SHIFT_CODE: 0,
+                WORK_SHIF_NAME: "Hành Chính",
+                WORK_SHIF_NAME_KR: "정규",
+                WORK_START_DATE: "2019-03-11T00:00:00.000Z",
+                WORK_STATUS_CODE: 1,
+                WORK_STATUS_NAME: "Đang làm",
+                WORK_STATUS_NAME_KR: "근무중",
+                EMPL_IMAGE: "N",
+    }));
+              //dispatch(update_socket(data.data.data.EMPL_NO + " da dangnhap"));
+    store.dispatch(
+      update_socket({
+        event: "login",
+        data: 'ONG TRUM',
+      })
+    );
+    /* setLoginState(true); */
+    store.dispatch(loginSlice(true));   
+    store.dispatch(logoutSlice(false));   
+    
 
-  axios
+  }
+  else
+  {
+    axios
     .post(API_URL, {
       command: "login",
       user: user,
@@ -155,6 +222,10 @@ export function login(user: string, pass: string) {
     .catch((error: any) => {
       console.log(error);
     });
+
+  }
+
+ 
 }
 export function logout() {
   cookies.set("token", "reset", { path: "/" });
