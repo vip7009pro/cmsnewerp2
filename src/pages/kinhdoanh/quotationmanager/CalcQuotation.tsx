@@ -102,7 +102,6 @@ const CalcQuotation = () => {
     M_LOSS_UNIT :0,
   })
   
-
   const loadListCode = ()=> {
     generalQuery('loadlistcodequotation',{     
        
@@ -401,7 +400,6 @@ const CalcQuotation = () => {
     ),
     [listVL]
   );
-
 
   useEffect(()=> {
     //loadListCode();
