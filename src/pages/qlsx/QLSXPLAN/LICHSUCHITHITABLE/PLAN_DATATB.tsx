@@ -201,6 +201,13 @@ const PLAN_DATATB = () => {
       resizeable: true,
     },   
     {
+      field: "G_NAME",
+      headerName: "G_NAME",
+      width: 200,
+      editable: false,
+      resizeable: true,
+    },   
+    {
       field: "G_NAME_KD",
       headerName: "G_NAME_KD",
       width: 180,

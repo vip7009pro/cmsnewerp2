@@ -171,6 +171,7 @@ interface YCSXTableData {
   CUST_CD: string;
   G_CODE: string;
   G_NAME: string;
+  G_NAME_KD: string;
   EMPL_NAME: string;
   CUST_NAME_KD: string;
   PROD_REQUEST_NO: string;
@@ -736,6 +737,7 @@ const QUICKPLAN = () => {
       editable: true,
     },
     { field: "G_CODE", headerName: "G_CODE", width: 80, editable: false },
+    { field: "G_NAME", headerName: "G_NAME", width: 180, editable: false },
     {
       field: "G_NAME_KD",
       headerName: "G_NAME_KD",
@@ -2062,7 +2064,8 @@ const QUICKPLAN = () => {
                   ...p,
                   [keyvar]: params.value,
                   G_CODE: temp_ycsx_data[0].G_CODE,
-                  G_NAME_KD: temp_ycsx_data[0].G_NAME,
+                  G_NAME: temp_ycsx_data[0].G_NAME,
+                  G_NAME_KD: temp_ycsx_data[0].G_NAME_KD,
                   PROD_REQUEST_QTY: temp_ycsx_data[0].PROD_REQUEST_QTY,
                   CD1: temp_ycsx_data[0].CD1,
                   CD2: temp_ycsx_data[0].CD2,

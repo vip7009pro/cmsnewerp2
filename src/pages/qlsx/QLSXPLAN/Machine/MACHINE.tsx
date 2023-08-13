@@ -901,10 +901,11 @@ const MACHINE = () => {
       },
     },
     { field: "G_CODE", headerName: "G_CODE", width: 100, editable: false },
+    { field: "G_NAME", headerName: "G_NAME", width: 180, editable: false },
     {
       field: "G_NAME_KD",
       headerName: "G_NAME_KD",
-      width: 180,
+      width: 100,
       editable: false,
       renderCell: (params: any) => {
         if (

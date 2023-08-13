@@ -78,6 +78,7 @@ interface FullBOM {
   PROD_REQUEST_NO: string;
   PROD_REQUEST_DATE: string;
   G_CODE: string;
+  G_NAME_KD: string,
   DELIVERY_DT: string;
   CODE_55: string;
   CODE_50: string;
@@ -189,6 +190,7 @@ const CHITHI_COMPONENT = ({
       PROD_REQUEST_NO: "2FH0078",
       PROD_REQUEST_DATE: "20220617",
       G_CODE: "7A07975A",
+      G_NAME_KD:'',
       DELIVERY_DT: "20220620",
       CODE_55: "03",
       CODE_50: "02",
@@ -298,6 +300,7 @@ const CHITHI_COMPONENT = ({
               PROD_REQUEST_NO: "",
               PROD_REQUEST_DATE: "",
               G_CODE: "",
+              G_NAME_KD:"",
               DELIVERY_DT: "",
               CODE_55: "03",
               CODE_50: "02",
@@ -520,7 +523,7 @@ const CHITHI_COMPONENT = ({
               </tr>
               <tr>
                 <td>Mã sản phẩm/제품코드</td>
-                <td>{request_codeinfo[0]?.G_CODE}</td>
+                <td>{request_codeinfo[0]?.G_CODE}{company==='PVN'? '/' + request_codeinfo[0]?.G_NAME_KD:''} </td>
               </tr>
               <tr>
                 <td>Tên sản phẩm/제품명</td>

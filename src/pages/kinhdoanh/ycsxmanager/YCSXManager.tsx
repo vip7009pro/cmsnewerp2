@@ -143,6 +143,8 @@ interface PONOLIST {
   CUST_CD: string,
   PO_NO: string,
   PO_DATE: string,
+  RD_DATE: string,
+  PO_QTY: number,
 }
 const YCSXManager = () => {  
   const [showhidesearchdiv, setShowHideSearchDiv]= useState(true);
@@ -235,6 +237,8 @@ const YCSXManager = () => {
     G_CODE:'',
     PO_NO:'',
     PO_DATE: '',
+    RD_DATE:'',
+    PO_QTY:0
   });
   const [deliverydate, setNewDeliveryDate] = useState(moment().format("YYYY-MM-DD"));
   const [pono, setPONO] = useState('');
@@ -858,7 +862,7 @@ const YCSXManager = () => {
             setPONOLIST(loaded_data);            
           } else { 
             setPONOLIST([]);
-            console.log('Không có PO nào cho code này và khách này');           
+            //console.log('Không có PO nào cho code này và khách này');           
             //Swal.fire("Thông báo", " Có lỗi : " + response.data.message, "error");
           }
         })
@@ -3079,7 +3083,7 @@ const YCSXManager = () => {
                       size='small'
                       disablePortal
                       options={ponolist}
-                      className='autocomplete'
+                      className='pono_autocomplete'
                       getOptionLabel={(option: PONOLIST | any) => {
                         return `${moment.utc(option.PO_DATE).isValid()? moment.utc(option.PO_DATE).format('YYYY-MM-DD'): ''}| ${option.PO_NO}`;
                       }}
@@ -3093,6 +3097,10 @@ const YCSXManager = () => {
                       ) => {
                         console.log(newValue);
                         setSelectedPoNo(newValue);
+                        setNewDeliveryDate(newValue?.RD_DATE===undefined? moment.utc().format('YYYY-MM-DD'): newValue?.RD_DATE);
+                        setNewYcsxQty(newValue?.PO_QTY === undefined? '' : newValue?.PO_QTY.toString());
+
+                        
                       }}
                       isOptionEqualToValue={(option, value) =>
                         option.PO_NO === value.PO_NO

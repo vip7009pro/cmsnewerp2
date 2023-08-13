@@ -469,6 +469,14 @@
                                 }
                                 margin-left: 20px;
                             }
+                            .pono_autocomplete {             
+                                width: 250px; 
+                                * {
+                                    font-size: 0.7rem;
+                                    padding: 10;
+                                }
+                                margin-left: 20px;
+                            } 
                             
                             select {
                                 width: 135px;
@@ -1399,7 +1407,16 @@
                                     padding: 10;
                                 }
                                 margin-left: 20px;
-                            }                            
+                            }  
+                            .pono_autocomplete {             
+                                width: 200px; 
+                                * {
+                                    font-size: 0.7rem;
+                                    padding: 10;
+                                }
+                                margin-left: 20px;
+                            }  
+                                                   
                             select {
                                 width: 135px;
                                 height: 30px;

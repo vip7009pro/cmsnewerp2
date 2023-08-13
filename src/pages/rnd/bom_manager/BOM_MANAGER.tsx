@@ -1872,7 +1872,7 @@ const BOM_MANAGER = () => {
         console.log(response.data.data);
         if (response.data.tk_status !== "NG") {
           let arr = response.data.data[0].G_NAME_KD.split("-");
-          nextCodeKH =  cust_cd + "-" + zeroPad(parseInt(arr[1])+1,3);
+          nextCodeKH =  cust_cd + "-" + zeroPad(parseInt(arr[1])+1,4);
           console.log('nex codeKH', nextCodeKH);
           handleSetCodeInfo("CUST_CD", cust_cd);  
           
@@ -2189,7 +2189,7 @@ const BOM_MANAGER = () => {
                      {company==='CMS'? 'Code KD': 'Code KT'}
                       <input
                         disabled={enableform}
-                        placeholder={company==='CMS'? 'GH63-18084A': 'KH001-xxx'}
+                        placeholder={company==='CMS'? 'GH63-18084A': 'KH001-xxxx'}
                         type='text'
                         value={
                           codefullinfo?.G_NAME_KD === null

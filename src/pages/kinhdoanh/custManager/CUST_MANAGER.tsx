@@ -92,6 +92,9 @@ import {
     CUST_NAME_KD: string,
     CUST_NAME: string,
     CUST_ADDR1: string,
+    CUST_ADDR2: string,
+    CUST_ADDR3: string,
+    EMAIL: string,
     TAX_NO: string,
     CUST_NUMBER: string,
     BOSS_NAME: string,
@@ -134,6 +137,9 @@ import {
       CUST_NAME_KD: '',
       CUST_NAME: '',
       CUST_ADDR1: '',
+      CUST_ADDR2: '',
+      CUST_ADDR3: '',
+      EMAIL: '',
       TAX_NO: '',
       CUST_NUMBER: '',
       BOSS_NAME: '',
@@ -181,6 +187,9 @@ import {
         CUST_TYPE:company_type,
         BOSS_NAME:'',
         CUST_ADDR1:'',
+        CUST_ADDR2: '',
+        CUST_ADDR3: '',
+        EMAIL: '',
         CUST_CD: next_cust_cd,
         CUST_NAME:'',
         CUST_NAME_KD:'',
@@ -209,6 +218,9 @@ import {
                   CUST_NAME: element.CUST_NAME !== null ? element.CUST_NAME: '',
                   CUST_NAME_KD: element.CUST_NAME_KD !== null ? element.CUST_NAME_KD: '',
                   CUST_ADDR1: element.CUST_ADDR1 !== null ? element.CUST_ADDR1: '',
+                  CUST_ADDR2: element.CUST_ADDR2 !== null ? element.CUST_ADDR2: '',
+                  CUST_ADDR3: element.CUST_ADDR3 !== null ? element.CUST_ADDR3: '',
+                  EMAIL: element.EMAIL !== null ? element.EMAIL: '',
                   TAX_NO: element.TAX_NO !== null ? element.TAX_NO: '',
                   CUST_NUMBER: element.CUST_NUMBER !== null ? element.CUST_NUMBER: '',
                   BOSS_NAME: element.BOSS_NAME !== null ? element.BOSS_NAME: '',
@@ -229,6 +241,7 @@ import {
               "success"
             );
           } else {
+            setCUSTINFODataTable([]);
             Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
           }
         })
@@ -1122,12 +1135,33 @@ import {
               </div> 
               <div className='forminputcolumn'>
                 <label>
-                  <b>Địa chỉ:</b>{" "}
+                  <b>Địa chỉ chính:</b>{" "}
                   <input 
                     type='text'
                     placeholder='Địa chỉ'
                     value={selectedRows?.CUST_ADDR1}
                     onChange={(e) => setCustInfo('CUST_ADDR1',e.target.value)}
+                  ></input>
+                </label>
+                <label>
+                  <b>Địa chỉ 2:</b>{" "}
+                  <input 
+                    type='text'
+                    placeholder='Địa chỉ'
+                    value={selectedRows?.CUST_ADDR2}
+                    onChange={(e) => setCustInfo('CUST_ADDR2',e.target.value)}
+                  ></input>
+                </label>
+                
+              </div>
+              <div className='forminputcolumn'>
+                <label>
+                  <b>Địa chỉ 3:</b>{" "}
+                  <input 
+                    type='text'
+                    placeholder='Địa chỉ'
+                    value={selectedRows?.CUST_ADDR3}
+                    onChange={(e) => setCustInfo('CUST_ADDR3',e.target.value)}
                   ></input>
                 </label>
                 <label>
@@ -1201,6 +1235,15 @@ import {
                 </label>
               </div>             
               <div className='forminputcolumn'>
+              <label>
+                  <b>Email:</b>{" "}
+                  <input 
+                    type='text'
+                    placeholder='Email'
+                    value={selectedRows?.EMAIL}
+                    onChange={(e) => setCustInfo('REMK',e.target.value)}
+                  ></input>
+                </label>
               <label>
                 <b>Phân loại:</b>{" "}
                       <select
