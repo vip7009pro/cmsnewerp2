@@ -186,7 +186,7 @@ export async function uploadQuery(file: any, filename: string, uploadfoldername:
   formData.append("uploadedfile", file);
   formData.append("filename", filename);
   formData.append("uploadfoldername", uploadfoldername); 
-  formData.append("token_string2", cookies.get('token'));
+  formData.append("token_string", cookies.get('token'));
   if(filenamelist) formData.append('newfilenamelist',JSON.stringify(filenamelist));
   console.log('filenamelist',filenamelist);
   console.log('formData',formData);
