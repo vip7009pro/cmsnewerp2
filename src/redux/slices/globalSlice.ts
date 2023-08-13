@@ -5,7 +5,7 @@ import { io } from "socket.io-client";
 import Swal from 'sweetalert2';
 
 
-const startCPN: string = 'PVN';
+const startCPN: string = 'CMS';
 
 const socket =  io(startCPN === 'CMS'? 'http://14.160.33.94:3005': startCPN === 'PVN'?  'http://222.252.1.63:3005':'')
 //const socket =  io('http://localhost:3005')

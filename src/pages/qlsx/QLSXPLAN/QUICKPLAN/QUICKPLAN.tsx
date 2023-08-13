@@ -737,11 +737,11 @@ const QUICKPLAN = () => {
       editable: true,
     },
     { field: "G_CODE", headerName: "G_CODE", width: 80, editable: false },
-    { field: "G_NAME", headerName: "G_NAME", width: 180, editable: false },
+    { field: "G_NAME", headerName: "G_NAME", width: 130, editable: false },
     {
       field: "G_NAME_KD",
       headerName: "G_NAME_KD",
-      width: 200,
+      width: 100,
       editable: false,
       renderCell: (params: any) => {
         if (
@@ -830,8 +830,8 @@ const QUICKPLAN = () => {
     },
     {
       field: "TON_CD1",
-      headerName: "TON_CD1",
-      width: 80,
+      headerName: "TCD1",
+      width: 70,
       editable: false,
       renderCell: (params: any) => {
         return (
@@ -843,8 +843,8 @@ const QUICKPLAN = () => {
     },
     {
       field: "TON_CD2",
-      headerName: "TON_CD2",
-      width: 80,
+      headerName: "TCD2",
+      width: 70,
       editable: false,
       renderCell: (params: any) => {
         return (
@@ -856,8 +856,8 @@ const QUICKPLAN = () => {
     },
     {
       field: "TON_CD3",
-      headerName: "TON_CD3",
-      width: 80,
+      headerName: "TCD3",
+      width: 70,
       editable: false,
       renderCell: (params: any) => {
         return (
@@ -869,8 +869,8 @@ const QUICKPLAN = () => {
     },
     {
       field: "TON_CD4",
-      headerName: "TON_CD4",
-      width: 80,
+      headerName: "TCD4",
+      width: 70,
       editable: false,
       renderCell: (params: any) => {
         return (

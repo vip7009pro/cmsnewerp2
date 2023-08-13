@@ -954,7 +954,42 @@ const BOM_MANAGER = () => {
             (element: CODE_FULL_INFO, index: number) => {
               return {
                 ...element,
-                PROD_TYPE: element.PROD_TYPE.trim(),
+                CUST_CD: element.CUST_CD === null || element.CUST_CD === ''? '0000':element.CUST_CD,
+                PROD_PROJECT: element.PROD_PROJECT === null || element.PROD_PROJECT ===''? '':element.PROD_PROJECT,
+                PROD_MODEL: element.PROD_MODEL === null || element.PROD_MODEL ===''? '':element.PROD_MODEL,
+                CODE_12: element.CODE_12 === null || element.CODE_12 ===''? '7':element.CODE_12,
+                PROD_TYPE: element.PROD_TYPE === null || element.PROD_TYPE ===''? 'TSP':element.PROD_TYPE.trim(),
+                G_NAME_KD: element.G_NAME_KD === null || element.G_NAME_KD ===''? '7':element.G_NAME_KD,
+                DESCR: element.DESCR === null || element.DESCR ===''? '':element.DESCR,
+                PROD_MAIN_MATERIAL: element.PROD_MAIN_MATERIAL === null || element.PROD_MAIN_MATERIAL ===''? '':element.PROD_MAIN_MATERIAL,
+                G_NAME: element.G_NAME === null || element.G_NAME ===''? '':element.G_NAME,
+                G_LENGTH: element.G_LENGTH === null ? 0:element.G_LENGTH,
+                G_WIDTH: element.G_WIDTH === null ? 0:element.G_WIDTH,
+                PD: element.PD === null ? 0:element.PD,
+                G_C_R: element.G_C_R === null ? 0:element.G_C_R,
+                G_C: element.G_C === null ? 0:element.G_C,
+                G_LG: element.G_LG === null ? 0:element.G_LG,
+                G_CG: element.G_CG === null ? 0:element.G_CG,
+                G_SG_L: element.G_SG_L === null ? 0:element.G_SG_L,
+                G_SG_R: element.G_SG_R === null ? 0:element.G_SG_R,
+                PACK_DRT: element.PACK_DRT === null || element.PACK_DRT ===''? '1':element.PACK_DRT,
+                KNIFE_TYPE: element.KNIFE_TYPE === null ? 0:element.KNIFE_TYPE,
+                KNIFE_LIFECYCLE: element.KNIFE_LIFECYCLE === null ? 0:element.KNIFE_LIFECYCLE,
+                KNIFE_PRICE: element.KNIFE_PRICE === null ? 0:element.KNIFE_PRICE,
+                CODE_33: element.CODE_33 === null ? '03':element.CODE_33,
+                PROD_DVT: element.PROD_DVT === null ? '01':element.PROD_DVT,
+                ROLE_EA_QTY: element.ROLE_EA_QTY === null ? 0:element.ROLE_EA_QTY,
+                RPM: element.RPM === null ? 0:element.RPM,
+                PIN_DISTANCE: element.PIN_DISTANCE === null ? 0:element.PIN_DISTANCE,
+                PROCESS_TYPE: element.PROCESS_TYPE === null ? '':element.PROCESS_TYPE,
+                EQ1: element.EQ1 === null || element.EQ1 ===''? 'NA':element.EQ1,
+                EQ2: element.EQ2 === null || element.EQ2 ===''? 'NA':element.EQ2,
+                EQ3: element.EQ3 === null || element.EQ3 ===''? 'NA':element.EQ3,
+                EQ4: element.EQ4 === null || element.EQ4 ===''? 'NA':element.EQ4,
+                PROD_DIECUT_STEP: element.PROD_DIECUT_STEP === null ? '':element.PROD_DIECUT_STEP,
+                PROD_PRINT_TIMES: element.PROD_PRINT_TIMES === null ? '':element.PROD_PRINT_TIMES,
+                PO_TYPE: element.PO_TYPE === null ? 'E1':element.PO_TYPE,
+                FSC: element.FSC === null ? 'N':element.FSC,                
                 id: index,
               };
             }
@@ -1235,6 +1270,24 @@ const BOM_MANAGER = () => {
         .catch((error) => {
           console.log(error);
         });
+
+     /*  await generalQuery("insertM100BangTinhGia", {
+        G_CODE: nextcode,
+        CODE_27: CODE_27,
+        NEXT_SEQ_NO: nextgseqno,
+        CODE_FULL_INFO: codefullinfo,
+      })
+        .then((response) => {
+          //console.log(response.data);
+          if (response.data.tk_status !== "NG") {
+            Swal.fire("Thông báo", "Code mới: " + nextcode, "success");
+          } else {
+            Swal.fire("Thông báo", "Lỗi: " + response.data.message, "error");
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        }); */
     }
   };
   const handleAddNewVer = async () => {
@@ -2090,7 +2143,7 @@ const BOM_MANAGER = () => {
                         name='khachhang'
                         value={
                           codefullinfo?.CUST_CD === null
-                            ? ""
+                            ? "0000"
                             : codefullinfo?.CUST_CD
                         }
                         onChange={(e) => { 
@@ -2149,17 +2202,17 @@ const BOM_MANAGER = () => {
                         name='dactinhsanpham'
                         value={
                           codefullinfo?.CODE_12 === null
-                            ? ""
+                            ? '7'
                             : codefullinfo?.CODE_12
                         }
                         onChange={(e) => {
                           handleSetCodeInfo("CODE_12", e.target.value);
                         }}
                       >
-                        <option value={6}>Bán Thành Phẩm</option>
-                        <option value={7}>Thành Phẩm</option>
-                        <option value={8}>Nguyên Chiếc Không Ribbon</option>
-                        <option value={9}>Nguyên Chiếc Ribbon</option>
+                        <option value={'6'}>Bán Thành Phẩm</option>
+                        <option value={'7'}>Thành Phẩm</option>
+                        <option value={'8'}>Nguyên Chiếc Không Ribbon</option>
+                        <option value={'9'}>Nguyên Chiếc Ribbon</option>
                       </select>
                     </label>
                     <label>
@@ -2169,7 +2222,7 @@ const BOM_MANAGER = () => {
                         name='phanloaisanpham'
                         value={
                           codefullinfo?.PROD_TYPE === null
-                            ? "C"
+                            ? "TSP"
                             : codefullinfo?.PROD_TYPE
                         }
                         onChange={(e) => {
@@ -2258,7 +2311,7 @@ const BOM_MANAGER = () => {
                         type='text'
                         value={
                           codefullinfo?.G_LENGTH === null
-                            ? ""
+                            ? 0
                             : codefullinfo?.G_LENGTH
                         }
                         onChange={(e) => {
@@ -2273,7 +2326,7 @@ const BOM_MANAGER = () => {
                         type='text'
                         value={
                           codefullinfo?.G_WIDTH === null
-                            ? ""
+                            ? 0
                             : codefullinfo?.G_WIDTH
                         }
                         onChange={(e) => {
@@ -2287,7 +2340,7 @@ const BOM_MANAGER = () => {
                         disabled={enableform}
                         type='text'
                         value={
-                          codefullinfo?.PD === null ? "" : codefullinfo?.PD
+                          codefullinfo?.PD === null ? 0 : codefullinfo?.PD
                         }
                         onChange={(e) => {
                           handleSetCodeInfo("PD", e.target.value);
@@ -2301,7 +2354,7 @@ const BOM_MANAGER = () => {
                         type='text'
                         value={
                           codefullinfo?.G_C_R === null
-                            ? ""
+                            ? 0
                             : codefullinfo?.G_C_R
                         }
                         onChange={(e) => {
@@ -2315,7 +2368,7 @@ const BOM_MANAGER = () => {
                         disabled={enableform}
                         type='text'
                         value={
-                          codefullinfo?.G_C === null ? "" : codefullinfo?.G_C
+                          codefullinfo?.G_C === null ? 0 : codefullinfo?.G_C
                         }
                         onChange={(e) => {
                           handleSetCodeInfo("G_C", e.target.value);
@@ -2328,7 +2381,7 @@ const BOM_MANAGER = () => {
                         disabled={enableform}
                         type='text'
                         value={
-                          codefullinfo?.G_LG === null ? "" : codefullinfo?.G_LG
+                          codefullinfo?.G_LG === null ? 0 : codefullinfo?.G_LG
                         }
                         onChange={(e) => {
                           handleSetCodeInfo("G_LG", e.target.value);
@@ -2341,7 +2394,7 @@ const BOM_MANAGER = () => {
                         disabled={enableform}
                         type='text'
                         value={
-                          codefullinfo?.G_CG === null ? "" : codefullinfo?.G_CG
+                          codefullinfo?.G_CG === null ? 0 : codefullinfo?.G_CG
                         }
                         onChange={(e) => {
                           handleSetCodeInfo("G_CG", e.target.value);
@@ -2355,7 +2408,7 @@ const BOM_MANAGER = () => {
                         type='text'
                         value={
                           codefullinfo?.G_SG_L === null
-                            ? ""
+                            ? 0
                             : codefullinfo?.G_SG_L
                         }
                         onChange={(e) => {
@@ -2370,7 +2423,7 @@ const BOM_MANAGER = () => {
                         type='text'
                         value={
                           codefullinfo?.G_SG_R === null
-                            ? ""
+                            ? 0
                             : codefullinfo?.G_SG_R
                         }
                         onChange={(e) => {
@@ -2405,7 +2458,7 @@ const BOM_MANAGER = () => {
                         name='loaidao'
                         value={
                           codefullinfo?.KNIFE_TYPE === null
-                            ? ""
+                            ? 0
                             : codefullinfo?.KNIFE_TYPE
                         }
                         onChange={(e) => {
@@ -2424,7 +2477,7 @@ const BOM_MANAGER = () => {
                         type='text'
                         value={
                           codefullinfo?.KNIFE_LIFECYCLE === null
-                            ? ""
+                            ? 0
                             : codefullinfo?.KNIFE_LIFECYCLE
                         }
                         onChange={(e) => {
@@ -2439,7 +2492,7 @@ const BOM_MANAGER = () => {
                         type='text'
                         value={
                           codefullinfo?.KNIFE_PRICE === null
-                            ? ""
+                            ? 0
                             : codefullinfo?.KNIFE_PRICE
                         }
                         onChange={(e) => {
@@ -2495,7 +2548,7 @@ const BOM_MANAGER = () => {
                         type='text'
                         value={
                           codefullinfo?.ROLE_EA_QTY === null
-                            ? ""
+                            ? 0
                             : codefullinfo?.ROLE_EA_QTY
                         }
                         onChange={(e) => {
@@ -2509,7 +2562,7 @@ const BOM_MANAGER = () => {
                         disabled={enableform}
                         type='text'
                         value={
-                          codefullinfo?.RPM === null ? "" : codefullinfo?.RPM
+                          codefullinfo?.RPM === null ? 0 : codefullinfo?.RPM
                         }
                         onChange={(e) => {
                           handleSetCodeInfo("RPM", e.target.value);
@@ -2523,7 +2576,7 @@ const BOM_MANAGER = () => {
                         type='text'
                         value={
                           codefullinfo?.PIN_DISTANCE === null
-                            ? ""
+                            ? 0
                             : codefullinfo?.PIN_DISTANCE
                         }
                         onChange={(e) => {
@@ -2655,7 +2708,7 @@ const BOM_MANAGER = () => {
                         type='text'
                         value={
                           codefullinfo?.PROD_DIECUT_STEP === null
-                            ? ""
+                            ? 0
                             : codefullinfo?.PROD_DIECUT_STEP
                         }
                         onChange={(e) => {
@@ -2670,7 +2723,7 @@ const BOM_MANAGER = () => {
                         type='text'
                         value={
                           codefullinfo?.PROD_PRINT_TIMES === null
-                            ? ""
+                            ? 0
                             : codefullinfo?.PROD_PRINT_TIMES
                         }
                         onChange={(e) => {
@@ -2686,7 +2739,7 @@ const BOM_MANAGER = () => {
                         value={
                           codefullinfo?.PO_TYPE === null ||
                           codefullinfo?.PO_TYPE === ""
-                            ? "NA"
+                            ? "E1"
                             : codefullinfo?.PO_TYPE
                         }
                         onChange={(e) => {
@@ -2704,7 +2757,7 @@ const BOM_MANAGER = () => {
                         name='may1'
                         value={
                           codefullinfo?.FSC === null || codefullinfo?.FSC === ""
-                            ? "NA"
+                            ? "N"
                             : codefullinfo?.FSC
                         }
                         onChange={(e) => {
