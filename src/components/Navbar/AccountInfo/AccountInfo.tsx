@@ -175,7 +175,8 @@ export default function AccountInfo() {
       });
    
   }
-  let file:any = null;
+  const [file, setFile] = useState<any>(null);
+  //let file:any = null;
   const uploadFile2 = async(e:any)=> {
     uploadQuery(file,'NS_'+ userdata?.EMPL_NO+'.jpg','Picture_NS')
           .then((response)=> {
@@ -362,8 +363,8 @@ export default function AccountInfo() {
                     accept='.jpg'
                     type='file'
                     onChange={(e: any) => {
-                      file = e.target.files[0];
-                      console.log(file);
+                      setFile(e.target.files[0]);
+                      console.log(e.target.files[0]);
                     }}
                   />
                 </div>
