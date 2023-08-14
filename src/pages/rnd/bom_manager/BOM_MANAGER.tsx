@@ -119,6 +119,19 @@ interface CODE_FULL_INFO {
   G_CODE: string;
   PROD_DVT: string,
 }
+interface DEFAULT_DM {
+  id: number,
+  WIDTH_OFFSET :number,
+	LENGTH_OFFSET :number,
+	KNIFE_UNIT :number,
+	FILM_UNIT :number,
+	INK_UNIT :number,
+	LABOR_UNIT :number,
+	DELIVERY_UNIT :number,
+	DEPRECATION_UNIT :number,
+	GMANAGEMENT_UNIT :number,
+	M_LOSS_UNIT :number,
+}
 interface CustomerListData {
   CUST_CD: string;
   CUST_NAME_KD: string;
@@ -200,6 +213,56 @@ const BOM_MANAGER = () => {
   const [bomgiadatatablefilter, setBomGiaDataTableFilter] = useState<
     Array<BOM_GIA>
   >([]);
+  const [defaultDM, setDefaultDM]= useState<DEFAULT_DM>({
+    id:0,
+    WIDTH_OFFSET :0,
+    LENGTH_OFFSET :0,
+    KNIFE_UNIT :0,
+    FILM_UNIT :0,
+    INK_UNIT :0,
+    LABOR_UNIT :0,
+    DELIVERY_UNIT :0,
+    DEPRECATION_UNIT :0,
+    GMANAGEMENT_UNIT :0,
+    M_LOSS_UNIT :0,
+  });
+  const loadDefaultDM = ()=> {
+    generalQuery('loadDefaultDM',{     
+       
+    })
+    .then(response => {
+        console.log(response.data);
+        if(response.data.tk_status !=='NG')
+        {
+          const loadeddata: DEFAULT_DM[] =  response.data.data.map((element:DEFAULT_DM,index: number)=> {
+            return {
+              ...element,   id:  index
+            }
+          })
+          setDefaultDM(loadeddata[0]);
+        }
+        else
+        {
+          setDefaultDM({
+            id:0,
+            WIDTH_OFFSET :0,
+            LENGTH_OFFSET :0,
+            KNIFE_UNIT :0,
+            FILM_UNIT :0,
+            INK_UNIT :0,
+            LABOR_UNIT :0,
+            DELIVERY_UNIT :0,
+            DEPRECATION_UNIT :0,
+            GMANAGEMENT_UNIT :0,
+            M_LOSS_UNIT :0,
+          });         
+        }        
+    })
+    .catch(error => {
+        console.log(error);
+    });
+  }
+
   const [codefullinfo, setCodeFullInfo] = useState<CODE_FULL_INFO>({
     CUST_CD: "0000",
     PROD_PROJECT: "",
@@ -1229,8 +1292,46 @@ const BOM_MANAGER = () => {
       });
     return { NEXT_G_CODE: CODE_12 + CODE_27 + nextseq, NEXT_SEQ_NO: nextseqno };
   };
+
+  const handleinsertCodeTBG =()=> {
+     generalQuery("insertM100BangTinhGia", {     
+      DEFAULT_DM: defaultDM,
+      CODE_FULL_INFO: codefullinfo,
+    })
+      .then((response) => {
+        //console.log(response.data);
+        if (response.data.tk_status !== "NG") {
+          //Swal.fire("Thông báo", "Code mới: " + nextcode, "success");
+        } else {
+          Swal.fire("Thông báo", "Lỗi: " + response.data.message, "error");
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+  const handleupdateCodeTBG =()=> {
+
+    generalQuery("updateM100BangTinhGia", codefullinfo)
+        .then((response) => {
+          //console.log(response.data);
+          if (response.data.tk_status !== "NG") {
+            Swal.fire(
+              "Thông báo",
+              "Update thành công: " + codefullinfo.G_CODE,
+              "success"
+            );
+          } else {
+            Swal.fire("Thông báo", "Lỗi: " + response.data.message, "error");
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+
+  }
   const handleAddNewCode = async () => {
-    console.log(handleCheckCodeInfo());
+    //console.log(handleCheckCodeInfo());
     if (handleCheckCodeInfo()) {
       let CODE_27 = "C";
       if (
@@ -1270,24 +1371,9 @@ const BOM_MANAGER = () => {
         .catch((error) => {
           console.log(error);
         });
-
-     /*  await generalQuery("insertM100BangTinhGia", {
-        G_CODE: nextcode,
-        CODE_27: CODE_27,
-        NEXT_SEQ_NO: nextgseqno,
-        CODE_FULL_INFO: codefullinfo,
-      })
-        .then((response) => {
-          //console.log(response.data);
-          if (response.data.tk_status !== "NG") {
-            Swal.fire("Thông báo", "Code mới: " + nextcode, "success");
-          } else {
-            Swal.fire("Thông báo", "Lỗi: " + response.data.message, "error");
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        }); */
+        handleinsertCodeTBG();
+    
+     
     }
   };
   const handleAddNewVer = async () => {
@@ -1339,9 +1425,11 @@ const BOM_MANAGER = () => {
         })
         .catch((error) => {
           console.log(error);
-        });
+        }); 
+        handleinsertCodeTBG();      
     }
   };
+ 
   const handleUpdateCode = async () => {
     if (handleCheckCodeInfo()) {
       await generalQuery("updateM100", codefullinfo)
@@ -1360,6 +1448,10 @@ const BOM_MANAGER = () => {
         .catch((error) => {
           console.log(error);
         });
+
+        confirmUpdateM100TBG();
+
+       
     }
   };
   const handleSearchCodeKeyDown = (
@@ -1717,15 +1809,15 @@ const BOM_MANAGER = () => {
         await generalQuery("deleteBOM2", {
           G_CODE: codefullinfo.G_CODE,
         })
-          .then((response) => {
-            if (response.data.tk_status !== "NG") {
-              //console.log(response.data.data);
-            } else {
-            }
-          })
-          .catch((error) => {
-            console.log(error);
-          });
+        .then((response) => {
+          if (response.data.tk_status !== "NG") {
+            //console.log(response.data.data);
+          } else {
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
         for (let i = 0; i < bomgiatable.length; i++) {
           await generalQuery("insertBOM2", {
             G_CODE: codefullinfo.G_CODE,
@@ -1754,6 +1846,8 @@ const BOM_MANAGER = () => {
             });
         }
         handleInsertBOMSX_WITH_GIA();
+        confirmUpdateBOMTBG();
+
       } else {
         Swal.fire("Thông báo", err_code, "error");
       }
@@ -1887,6 +1981,59 @@ const BOM_MANAGER = () => {
       }
     });
   };
+  const confirmUpdateM100TBG = () => {
+    Swal.fire({
+      title: "Bạn có muốn update luôn thông tin sản phẩm trong báo giá ?",
+      text: "Update thông tin báo giá",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Vẫn Update!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        Swal.fire("Tiến hành Update Thông tin", "Đang Update Thông tin", "success");
+          
+      let checkTBGExist: number = 0;
+
+       generalQuery("checkTBGExist", {
+        G_CODE: codefullinfo.G_CODE,        
+      })
+        .then((response) => {
+          //console.log(response.data);
+          if (response.data.tk_status !== "NG") {
+            checkTBGExist = 1;
+            handleupdateCodeTBG();        
+          } else {
+            checkTBGExist = 0;
+            handleinsertCodeTBG();
+          }
+        })
+        .catch((error) => {          
+          console.log(error);
+        });        
+      }
+    });
+  };
+  const confirmUpdateBOMTBG =  () => {
+    Swal.fire({
+      title: "Bạn có muốn update bom sản phẩm trong tính báo giá ?",
+      text: "Update thông tin báo giá",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Vẫn Update!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+       
+        Swal.fire("Tiến hành Update Thông tin", "Đang Update bom tính báo giá", "success");
+          
+         
+      }
+    });
+  };
+
   const filterOptions1 = createFilterOptions({
     matchFrom: "any",
     limit: 100,
@@ -1950,25 +2097,11 @@ const BOM_MANAGER = () => {
       return nextCodeKH;
   }
 
-  const handleUploadFile = (ulf: any,newfilename:string)=> {
-    console.log(ulf);
-    uploadQuery(uploadfile,newfilename,'banve')
-    .then((response)=> {
-      if (response.data.tk_status !== "NG") {
-        Swal.fire('Thông báo','Upload file thành công','success');             
-      } else {
-        Swal.fire('Thông báo','Upload file thất bại:' + response.data.message,'error'); 
-      }
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-  }
-
   useEffect(() => {
     getmateriallist();
     getcustomerlist();
     getMachineList();
+    loadDefaultDM();
   }, []);
   return (
     <div className='bom_manager'>

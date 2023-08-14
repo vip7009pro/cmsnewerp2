@@ -23,8 +23,9 @@ import { IconButton } from '@mui/material';
 import { SaveExcel } from '../../../api/GlobalFunction';
 import { AiFillFileExcel } from 'react-icons/ai';
 import './CalcQuotation.scss'
+import CodeVisualLize from './CodeVisualize/CodeVisualLize';
 
-interface CODEDATA {
+export interface CODEDATA {
   id: number,
   Q_ID: string,
   G_CODE: string,
@@ -72,6 +73,35 @@ interface BOMVLDATA {
   ORIGINAL_PRICE: number,
 }
 
+interface BOM_GIA {
+  id: string;
+  BOM_ID?: string;
+  G_CODE?: string;
+  RIV_NO?: string;
+  G_SEQ?: string;
+  CATEGORY?: number;
+  M_CODE?: string;
+  M_NAME?: string;
+  CUST_CD?: string;
+  IMPORT_CAT?: string;
+  M_CMS_PRICE?: number;
+  M_SS_PRICE?: number;
+  M_SLITTING_PRICE?: number;
+  USAGE?: string;
+  MAIN_M: string;
+  MAT_MASTER_WIDTH?: number;
+  MAT_CUTWIDTH?: number;
+  MAT_ROLL_LENGTH?: number;
+  MAT_THICKNESS?: number;
+  M_QTY?: number;
+  REMARK?: string;
+  PROCESS_ORDER?: number;
+  INS_EMPL?: string;
+  UPD_EMPL?: string;
+  INS_DATE?: string;
+  UPD_DATE?: string;
+}
+
 interface DEFAULT_DM {
   id: number,
   WIDTH_OFFSET :number,
@@ -87,7 +117,7 @@ interface DEFAULT_DM {
 }
 const CalcQuotation = () => {
   const [listcode, setListCode] = useState<Array<CODEDATA>>([]);
-  const [listVL, setListVL] = useState<Array<BOMVLDATA>>([]);
+  const [listVL, setListVL] = useState<Array<BOM_GIA>>([]);
   const [defaultDM, setDefaultDM]= useState<DEFAULT_DM>({
     id:0,
     WIDTH_OFFSET :0,
@@ -100,8 +130,8 @@ const CalcQuotation = () => {
     DEPRECATION_UNIT :0,
     GMANAGEMENT_UNIT :0,
     M_LOSS_UNIT :0,
-  })
-  
+  });
+
   const loadListCode = ()=> {
     generalQuery('loadlistcodequotation',{     
        
@@ -115,9 +145,7 @@ const CalcQuotation = () => {
               ...element,   id:  index
             }
           })
-          setListCode(loadeddata);
-         
-          
+          setListCode(loadeddata);  
           Swal.fire("Thông báo", "Đã load " + response.data.data.length + " dòng", "success");  
         }
         else
@@ -130,23 +158,20 @@ const CalcQuotation = () => {
         console.log(error);
     });
   }
-  const loadbomNVLQuotation = ()=> {
-    generalQuery('loadquotationBOMNVL',{     
-       
+  const loadbomNVLQuotation = (g_code: string)=> {
+    generalQuery('getbomgia',{ 
+      G_CODE: g_code       
     })
     .then(response => {
         //console.log(response.data);
         if(response.data.tk_status !=='NG')
         {
-          const loadeddata: BOMVLDATA[] =  response.data.data.map((element:BOMVLDATA,index: number)=> {
+          const loadeddata: BOM_GIA[] =  response.data.data.map((element:BOM_GIA,index: number)=> {
             return {
               ...element,   id:  index
             }
           })
-          setListVL(loadeddata);
-         
-          
-          Swal.fire("Thông báo", "Đã load " + response.data.data.length + " dòng", "success");  
+          setListVL(loadeddata);         
         }
         else
         {
@@ -252,10 +277,12 @@ const CalcQuotation = () => {
           height={"75vh"}
           showBorders={true}
           onSelectionChanged={(e) => {
-            setSelectedRows(e.selectedRowsData[0]);
+            //setSelectedRows(e.selectedRowsData[0]);
           }}          
           onRowClick={(e) => {
-            //console.log(e.data);
+            //console.log(e.data);    
+            setSelectedRows(e.data);        
+            loadbomNVLQuotation(e.data.G_CODE);
           }}
         >
           <Scrolling
@@ -385,7 +412,17 @@ const CalcQuotation = () => {
             showInfo={true}
             infoText='Page #{0}. Total: {1} ({2} items)'
             displayMode='compact'
-          />         
+          />
+          <Column dataField='G_CODE' caption='G_CODE' width={70}></Column>         
+          <Column dataField='G_SEQ' caption='G_SEQ' width={50}></Column>         
+          <Column dataField='M_CODE' caption='M_CODE' width={70}></Column>
+          <Column dataField='M_NAME' caption='M_NAME' width={70}></Column>
+          <Column dataField='MAT_CUTWIDTH' caption='SIZE' width={70}></Column>
+          <Column dataField='M_CMS_PRICE' caption='OPEN PR' width={70}></Column>
+          <Column dataField='M_SS_PRICE' caption='ORG PR' width={70}></Column>          
+          <Column dataField='USAGE' caption='USAGE' width={70}></Column>
+          <Column dataField='MAT_MASTER_WIDTH' caption='MST_WIDTH' width={70}></Column>          
+          <Column dataField='M_QTY' caption='M_QTY' width={70}></Column>          
           <Summary>
             <TotalItem
               alignment='right'
@@ -400,10 +437,20 @@ const CalcQuotation = () => {
     ),
     [listVL]
   );
+  const handlesetDefaultDM = (keyname: string, value: any) => {
+    let tempDM = { ...defaultDM, [keyname]: value };
+    //console.log(tempcodefullinfo);
+    setDefaultDM(tempDM);
+  };
+  const handlesetCodeInfo = (keyname: string, value: any) => {
+    let tempCodeInfo = { ...selectedRows, [keyname]: value };
+    //console.log(tempcodefullinfo);
+    setSelectedRows(tempCodeInfo);
+  };
 
   useEffect(()=> {
-    //loadListCode();
-    //loadDefaultDM();
+    loadListCode();
+    loadDefaultDM();
   },[])
 
   
@@ -432,21 +479,343 @@ const CalcQuotation = () => {
             {listBOMVLTable}
           </div>
           <div className="product_visualize">
+            <CodeVisualLize DATA={selectedRows}/>
 
           </div>
-          <div className="openlink">
+          <div className="openlink">        
 
           </div>
 
           </div>
           <div className="middle">
-            <div className="defaultunit">
+          <div className="openlink">
+          <div className="defaultunit">            
+            <label>
+            W_OFFSET:<br></br>
+            <input              
+              type='text'
+              value={
+                defaultDM.WIDTH_OFFSET === null
+                  ? 0
+                  : defaultDM.WIDTH_OFFSET
+              }
+              onChange={(e) => {
+                handlesetDefaultDM("WIDTH_OFFSET", e.target.value);
+              }}
+            ></input>
+          </label>
+          <label>
+            L_OFFSET:<br></br>
+            <input              
+              type='text'
+              value={
+                defaultDM.LENGTH_OFFSET === null
+                  ? 0
+                  : defaultDM.LENGTH_OFFSET
+              }
+              onChange={(e) => {
+                handlesetDefaultDM("LENGTH_OFFSET", e.target.value);
+              }}
+            ></input>
+          </label>
+          <label>
+            KNIFE_UNIT:<br></br>
+            <input              
+              type='text'
+              value={
+                defaultDM.KNIFE_UNIT === null
+                  ? 0
+                  : defaultDM.KNIFE_UNIT
+              }
+              onChange={(e) => {
+                handlesetDefaultDM("KNIFE_UNIT", e.target.value);
+              }}
+            ></input>
+          </label>
+          <label>
+            FILM_UNIT:<br></br>
+            <input              
+              type='text'
+              value={
+                defaultDM.FILM_UNIT === null
+                  ? 0
+                  : defaultDM.FILM_UNIT
+              }
+              onChange={(e) => {
+                handlesetDefaultDM("FILM_UNIT", e.target.value);
+              }}
+            ></input>
+          </label>
+          <label>
+            INK_UNIT:<br></br>
+            <input              
+              type='text'
+              value={
+                defaultDM.INK_UNIT === null
+                  ? 0
+                  : defaultDM.INK_UNIT
+              }
+              onChange={(e) => {
+                handlesetDefaultDM("INK_UNIT", e.target.value);
+              }}
+            ></input>
+          </label>
+          <label>
+            LABOR_UNIT:<br></br>
+            <input              
+              type='text'
+              value={
+                defaultDM.LABOR_UNIT === null
+                  ? 0
+                  : defaultDM.LABOR_UNIT
+              }
+              onChange={(e) => {
+                handlesetDefaultDM("LABOR_UNIT", e.target.value);
+              }}
+            ></input>
+          </label>
+          
 
-            </div>
-            <div className="currentunit">
+            
+            
+            
+            <label>
+            DELIVERY_UNIT:<br></br>
+            <input              
+              type='text'
+              value={
+                defaultDM.DELIVERY_UNIT === null
+                  ? 0
+                  : defaultDM.DELIVERY_UNIT
+              }
+              onChange={(e) => {
+                handlesetDefaultDM("DELIVERY_UNIT", e.target.value);
+              }}
+            ></input>
+          </label>
+          <label>
+            DELIVERY_UNIT:<br></br>
+            <input              
+              type='text'
+              value={
+                defaultDM.DELIVERY_UNIT === null
+                  ? 0
+                  : defaultDM.DELIVERY_UNIT
+              }
+              onChange={(e) => {
+                handlesetDefaultDM("DELIVERY_UNIT", e.target.value);
+              }}
+            ></input>
+          </label>
+          <label>
+            DEPRECATION_UNIT:<br></br>
+            <input              
+              type='text'
+              value={
+                defaultDM.DEPRECATION_UNIT === null
+                  ? 0
+                  : defaultDM.DEPRECATION_UNIT
+              }
+              onChange={(e) => {
+                handlesetDefaultDM("DEPRECATION_UNIT", e.target.value);
+              }}
+            ></input>
+          </label>
+          <label>
+            GMANAGEMENT_UNIT:<br></br>
+            <input              
+              type='text'
+              value={
+                defaultDM.GMANAGEMENT_UNIT === null
+                  ? 0
+                  : defaultDM.GMANAGEMENT_UNIT
+              }
+              onChange={(e) => {
+                handlesetDefaultDM("GMANAGEMENT_UNIT", e.target.value);
+              }}
+            ></input>
+          </label>
+          <label>
+            M_LOSS_UNIT:<br></br>
+            <input              
+              type='text'
+              value={
+                defaultDM.M_LOSS_UNIT === null
+                  ? 0
+                  : defaultDM.M_LOSS_UNIT
+              }
+              onChange={(e) => {
+                handlesetDefaultDM("M_LOSS_UNIT", e.target.value);
+              }}
+            ></input>
+          </label>
 
-            </div>
+          </div>
+          <div className="currentunit">            
+            <label>
+            W_OFFSET:<br></br>
+            <input              
+              type='text'
+              value={
+                selectedRows.WIDTH_OFFSET === null
+                  ? 0
+                  : selectedRows.WIDTH_OFFSET
+              }
+              onChange={(e) => {
+                handlesetCodeInfo("WIDTH_OFFSET", e.target.value);
+              }}
+            ></input>
+          </label>
+          <label>
+            L_OFFSET:<br></br>
+            <input              
+              type='text'
+              value={
+                selectedRows.LENGTH_OFFSET === null
+                  ? 0
+                  : selectedRows.LENGTH_OFFSET
+              }
+              onChange={(e) => {
+                handlesetCodeInfo("LENGTH_OFFSET", e.target.value);
+              }}
+            ></input>
+          </label>
+          <label>
+            KNIFE_UNIT:<br></br>
+            <input              
+              type='text'
+              value={
+                selectedRows.KNIFE_UNIT === null
+                  ? 0
+                  : selectedRows.KNIFE_UNIT
+              }
+              onChange={(e) => {
+                handlesetCodeInfo("KNIFE_UNIT", e.target.value);
+              }}
+            ></input>
+          </label>
+          <label>
+            FILM_UNIT:<br></br>
+            <input              
+              type='text'
+              value={
+                selectedRows.FILM_UNIT === null
+                  ? 0
+                  : selectedRows.FILM_UNIT
+              }
+              onChange={(e) => {
+                handlesetCodeInfo("FILM_UNIT", e.target.value);
+              }}
+            ></input>
+          </label>
+          <label>
+            INK_UNIT:<br></br>
+            <input              
+              type='text'
+              value={
+                selectedRows.INK_UNIT === null
+                  ? 0
+                  : selectedRows.INK_UNIT
+              }
+              onChange={(e) => {
+                handlesetCodeInfo("INK_UNIT", e.target.value);
+              }}
+            ></input>
+          </label>
+          <label>
+            LABOR_UNIT:<br></br>
+            <input              
+              type='text'
+              value={
+                selectedRows.LABOR_UNIT === null
+                  ? 0
+                  : selectedRows.LABOR_UNIT
+              }
+              onChange={(e) => {
+                handlesetCodeInfo("LABOR_UNIT", e.target.value);
+              }}
+            ></input>
+          </label>
+          
 
+            
+            
+            
+            <label>
+            DELIVERY_UNIT:<br></br>
+            <input              
+              type='text'
+              value={
+                selectedRows.DELIVERY_UNIT === null
+                  ? 0
+                  : selectedRows.DELIVERY_UNIT
+              }
+              onChange={(e) => {
+                handlesetCodeInfo("DELIVERY_UNIT", e.target.value);
+              }}
+            ></input>
+          </label>
+          <label>
+            DELIVERY_UNIT:<br></br>
+            <input              
+              type='text'
+              value={
+                selectedRows.DELIVERY_UNIT === null
+                  ? 0
+                  : selectedRows.DELIVERY_UNIT
+              }
+              onChange={(e) => {
+                handlesetCodeInfo("DELIVERY_UNIT", e.target.value);
+              }}
+            ></input>
+          </label>
+          <label>
+            DEPRECATION_UNIT:<br></br>
+            <input              
+              type='text'
+              value={
+                selectedRows.DEPRECATION_UNIT === null
+                  ? 0
+                  : selectedRows.DEPRECATION_UNIT
+              }
+              onChange={(e) => {
+                handlesetCodeInfo("DEPRECATION_UNIT", e.target.value);
+              }}
+            ></input>
+          </label>
+          <label>
+            GMANAGEMENT_UNIT:<br></br>
+            <input              
+              type='text'
+              value={
+                selectedRows.GMANAGEMENT_UNIT === null
+                  ? 0
+                  : selectedRows.GMANAGEMENT_UNIT
+              }
+              onChange={(e) => {
+                handlesetCodeInfo("GMANAGEMENT_UNIT", e.target.value);
+              }}
+            ></input>
+          </label>
+          <label>
+            M_LOSS_UNIT:<br></br>
+            <input              
+              type='text'
+              value={
+                selectedRows.M_LOSS_UNIT === null
+                  ? 0
+                  : selectedRows.M_LOSS_UNIT
+              }
+              onChange={(e) => {
+                handlesetCodeInfo("M_LOSS_UNIT", e.target.value);
+              }}
+            ></input>
+          </label>
+
+          </div>
+           </div>
+
+            
           </div>
           <div className="down">
           <div className="chiphinvl">

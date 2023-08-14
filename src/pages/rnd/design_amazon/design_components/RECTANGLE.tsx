@@ -1,6 +1,6 @@
 import React from 'react'
 
-interface COMPONENT_DATA {
+export interface COMPONENT_DATA {
   G_CODE_MAU: string,
   DOITUONG_NO: number,
   DOITUONG_NAME: string,

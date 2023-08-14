@@ -162,12 +162,15 @@ const PRODUCT_BARCODE_MANAGER = () => {
       .catch((error) => {
         console.log(error);
       });
+      console.log('barcodeExist',barcodeExist);
+
     if (barcodeExist === false) {
       await generalQuery("addBarcode", selectedRows)
         .then((response) => {
           //console.log(response.data.data);
           if (response.data.tk_status !== "NG") {
-            Swal.fire("Thông báo", "Thêm vật liệu thành công", "success");
+            Swal.fire("Thông báo", "Thêm barcode thành công", "success");
+            load_barcode_table();
           } else {
           }
         })
@@ -175,7 +178,7 @@ const PRODUCT_BARCODE_MANAGER = () => {
           console.log(error);
         });
     } else {
-      Swal.fire("Thông báo", "Vật liệu đã tồn tại", "error");
+      Swal.fire("Thông báo", "Barcode đã tồn tại", "error");
     }
   };
   const updateBarcode = async () => {
@@ -183,7 +186,8 @@ const PRODUCT_BARCODE_MANAGER = () => {
       .then((response) => {
         //console.log(response.data.data);
         if (response.data.tk_status !== "NG") {
-          Swal.fire("Thông báo", "Update vật liệu thành công", "success");
+          Swal.fire("Thông báo", "Update barcode thành công", "success");
+          load_barcode_table();
         } else {
         }
       })
@@ -350,7 +354,7 @@ const PRODUCT_BARCODE_MANAGER = () => {
             ></Column>
             <Column
               dataField='BARCODE_RND'
-              caption='BARCODE_RND'
+              caption='CODE VISUALIZE'
               width={100}              
               cellRender={(e: any) => {
                 if (e.data.BARCODE_TYPE === "QR") {
@@ -415,7 +419,7 @@ const PRODUCT_BARCODE_MANAGER = () => {
                       }/>
                     </div>
                   );
-                } else if (e.data.BARCODE_TYPE === "2D") {
+                } else if (e.data.BARCODE_TYPE === "MATRIX") {
                   return (
                     <div
                       style={{
@@ -1195,7 +1199,7 @@ const PRODUCT_BARCODE_MANAGER = () => {
                   }}
                 >
                   <option value='1D'>1D BARCODE</option>
-                  <option value='2D'>2D MATRIX</option>
+                  <option value='MATRIX'>2D MATRIX</option>
                   <option value='QR'>QR CODE</option>
                 </select>
               </label>
