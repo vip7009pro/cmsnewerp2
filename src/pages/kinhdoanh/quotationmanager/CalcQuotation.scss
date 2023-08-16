@@ -7,14 +7,12 @@
        font-weight: bold;
     }
     .calc_wrap {
-        display: flex;
-        background-color: aquamarine;
+        display: flex;        
         .left{
             display: flex;
             flex-direction: column;
-            flex:2;  
-
-            background-color: aquamarine;
+            background-image: linear-gradient(0deg, #b8f3aa, #fc42e3);
+            flex:2;            
             .listcode {
                 display: flex;
                 height: 72vh;
@@ -124,13 +122,13 @@
         .right{
             display: flex;
             flex-direction: column;
-            flex:7;
-            background-color: rgb(214, 185, 209);
+            flex:7; 
             align-content: center;
             justify-contalign-content: center;
             .up {
                 display: flex;  
-                height: 33vh;             
+                height: 33vh;        
+                background-image: linear-gradient(0deg, #ac62fb, #1b78eb);     
                 .bomnvl {
                     display: flex;   
                     width: 33%;              
@@ -233,8 +231,8 @@
                 .product_visualize {
                     display: flex;
                     width: 33%;
-                    background-color: rgb(189, 108, 173);
-    
+                    background-color: rgb(116, 117, 118);
+                    overflow: scroll;
                 }
                 .openlink {
                     display: flex;
@@ -273,12 +271,13 @@
                 display: flex;
                 flex-direction: column;
                 width: 100%;
-                height: 10%;
-                background-color: rgb(129, 171, 250);
+                height: 15%;                
                 justify-items: center; 
                 font-size: 0.7rem;
                 align-content: center;
                 justify-content: center;
+                background-image: linear-gradient(0deg, #afd3d1, #86cfff);
+                border-radius: 5px;
                 .openlink {
                     display: flex;
                     flex-direction: column;
@@ -290,15 +289,13 @@
                     
                     .defaultunit {
                         display: flex;
-                        flex-direction: row;  
-                        background-color: rgb(17, 111, 243); 
+                        flex-direction: row;
                         padding: 2px;
                         gap: 5px;
                     }
                     .currentunit {
                         display: flex;
-                        flex-direction: row;                          
-                        background-color: rgb(209, 253, 114);     
+                        flex-direction: row;
                         padding: 2px;
                         gap: 5px;
                     }
@@ -306,25 +303,33 @@
             }
             .down {
                 display: flex;
-                height: 40vh;       
-                .chiphinvl{
-                    display: flex;
-                    flex-direction: column;
-                    flex: 1;
-                    background-color: rgb(234, 241, 138);
-                }
-                .chiphidaofilm{
-                    display: flex;
-                    flex: 1;
-                }
-                .chiphikhac{
-                     display: flex;
-                    flex: 1;
-                    background-color: rgb(234, 241, 138);
-                }
+                height: 40vh;               
                 .tongchiphi{
-                     display: flex;
-                    flex: 1;
+                     display: flex;                    
+                     justify-items: center;
+                     flex: 0.5;
+                     background-image: linear-gradient(0deg, #b8f3aa, #5affcb);  
+                     font-size: 0.8rem;
+                     table {
+                        border:3px solid gray;
+                        width: 100%;
+                    }
+                    table thead tr td{
+                        font-weight: bold;
+                        border: 1px solid gray;
+                        padding-left: 10px;
+                        padding-right: 10px; 
+                        text-align: center; 
+                    }
+                    table tbody tr td{                        
+                        border: 1px solid gray;     
+                        text-align: center;                  
+                    }
+                }
+                .moqdiv {
+                    display: flex;
+                    flex: 0.2;
+                    background-color: rgb(232, 234, 241);
                 }
                 .savebutton{
                      display: flex;

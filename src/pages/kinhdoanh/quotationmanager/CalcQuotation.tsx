@@ -24,6 +24,9 @@ import { SaveExcel } from "../../../api/GlobalFunction";
 import { AiFillFileExcel } from "react-icons/ai";
 import "./CalcQuotation.scss";
 import CodeVisualLize from "./CodeVisualize/CodeVisualLize";
+import { UserData } from "../../../redux/slices/globalSlice";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../redux/store";
 
 export interface CODEDATA {
   id: number;
@@ -121,10 +124,23 @@ interface GIANVL {
   mArea: number;
   giaVLSS: number;
   giaVLCMS: number;
+  knife_cost: number;
+  film_cost: number;
+  ink_cost: number;
+  labor_cost: number;
+  delivery_cost: number;
+  deprecation_cost: number;
+  gmanagement_cost: number;
+  totalcostCMS: number;
+  totalcostSS: number;
 }
 const CalcQuotation = () => {
+  const company: string = useSelector(
+    (state: RootState) => state.totalSlice.company
+  );
   const [listcode, setListCode] = useState<Array<CODEDATA>>([]);
   const [listVL, setListVL] = useState<Array<BOM_GIA>>([]);
+  const [tempQTY, setTempQty] = useState(1);
   const [defaultDM, setDefaultDM] = useState<DEFAULT_DM>({
     id: 0,
     WIDTH_OFFSET: 0,
@@ -144,6 +160,15 @@ const CalcQuotation = () => {
     mArea: 0,
     giaVLSS: 0,
     giaVLCMS: 0,
+    knife_cost: 0,
+    film_cost: 0,
+    ink_cost: 0,
+    labor_cost: 0,
+    delivery_cost: 0,
+    deprecation_cost: 0,
+    gmanagement_cost: 0,
+    totalcostCMS: 0,
+    totalcostSS: 0,
   });
 
   const loadListCode = () => {
@@ -189,7 +214,7 @@ const CalcQuotation = () => {
               };
             }
           );
-          console.log(tinhgia(CODEINFO, loadeddata));
+          console.log(tinhgia(CODEINFO, loadeddata, tempQTY));
           setListVL(loadeddata);
         } else {
           setListVL([]);
@@ -388,10 +413,10 @@ const CalcQuotation = () => {
             />
             <Selection mode='single' selectAllMode='allPages' />
             <Editing
-              allowUpdating={false}
-              allowAdding={true}
+              allowUpdating={true}
+              allowAdding={false}
               allowDeleting={false}
-              mode='batch'
+              mode='cell'
               confirmDelete={true}
               onChangesChange={(e) => {}}
             />
@@ -467,14 +492,14 @@ const CalcQuotation = () => {
     //console.log(tempcodefullinfo);
     setSelectedRows(tempCodeInfo);
   };
-  const tinhgia = (CODEINFO: CODEDATA, BOMNVL: BOM_GIA[]) => {
+  const tinhgia = (CODEINFO: CODEDATA, BOMNVL: BOM_GIA[], TEMP_QTY: number) => {
     const materialCutWidth: number =
       CODEINFO.G_SG_L +
       (CODEINFO.G_CG + CODEINFO.G_WIDTH) * (CODEINFO.G_C - 1) +
       CODEINFO.G_WIDTH +
       CODEINFO.G_SG_R;
     const materialLength: number =
-      ((CODEINFO.G_LENGTH + CODEINFO.G_LG) / CODEINFO.G_C_R) * 1.0;
+      ((CODEINFO.G_LENGTH + CODEINFO.G_LG) / CODEINFO.G_C) * 1.0 * TEMP_QTY;
     const materialArea =
       (materialLength * materialCutWidth * (1 + CODEINFO.M_LOSS_UNIT / 100)) /
       1000000;
@@ -487,6 +512,41 @@ const CalcQuotation = () => {
       materialAmountSS += BOMNVL[i].M_SS_PRICE * materialArea;
     }
     //KNIFE
+    const knife_cost =
+      (CODEINFO.KNIFE_UNIT *
+        (CODEINFO.G_WIDTH * CODEINFO.G_C * 2 +
+          CODEINFO.G_LENGTH * CODEINFO.G_C_R * 2)) /
+      TEMP_QTY;
+    const film_cost =
+      (CODEINFO.FILM_UNIT *
+        ((CODEINFO.G_WIDTH + CODEINFO.WIDTH_OFFSET) *
+          (CODEINFO.G_LENGTH + CODEINFO.LENGTH_OFFSET) *
+          CODEINFO.G_C *
+          CODEINFO.PROD_PRINT_TIMES)) /
+      TEMP_QTY;
+    const ink_cost = CODEINFO.INK_UNIT * materialArea;
+    const labor_cost = CODEINFO.LABOR_UNIT * materialArea;
+    const delivery_cost = CODEINFO.DELIVERY_UNIT;
+    const deprecation_cost = CODEINFO.DEPRECATION_UNIT * materialArea;
+    const gmanagement_cost = CODEINFO.GMANAGEMENT_UNIT * materialArea;
+    const total_costCMS =
+      materialAmountCMS +
+      knife_cost +
+      film_cost +
+      ink_cost +
+      labor_cost +
+      delivery_cost +
+      deprecation_cost +
+      gmanagement_cost;
+    const total_costSS =
+      materialAmountSS +
+      knife_cost +
+      film_cost +
+      ink_cost +
+      labor_cost +
+      delivery_cost +
+      deprecation_cost +
+      gmanagement_cost;
 
     setGiaNvl({
       mCutWidth: materialCutWidth,
@@ -494,6 +554,15 @@ const CalcQuotation = () => {
       mArea: materialArea,
       giaVLSS: materialAmountSS,
       giaVLCMS: materialAmountCMS,
+      knife_cost: knife_cost,
+      film_cost: film_cost,
+      ink_cost: ink_cost,
+      labor_cost: labor_cost,
+      delivery_cost: delivery_cost,
+      deprecation_cost: deprecation_cost,
+      gmanagement_cost: gmanagement_cost,
+      totalcostCMS: total_costCMS,
+      totalcostSS: total_costSS,
     });
     return {
       mCutWidth: materialCutWidth,
@@ -501,6 +570,15 @@ const CalcQuotation = () => {
       mArea: materialArea,
       giaVLSS: materialAmountSS,
       giaVLCMS: materialAmountCMS,
+      knife_cost: knife_cost,
+      film_cost: film_cost,
+      ink_cost: ink_cost,
+      labor_cost: labor_cost,
+      delivery_cost: delivery_cost,
+      deprecation_cost: deprecation_cost,
+      gmanagement_cost: gmanagement_cost,
+      total_costCMS: total_costCMS,
+      total_costSS: total_costSS,
     };
   };
 
@@ -605,20 +683,6 @@ const CalcQuotation = () => {
                   ></input>
                 </label>
 
-                <label>
-                  DELIVERY_UNIT:<br></br>
-                  <input
-                    type='text'
-                    value={
-                      defaultDM.DELIVERY_UNIT === null
-                        ? 0
-                        : defaultDM.DELIVERY_UNIT
-                    }
-                    onChange={(e) => {
-                      handlesetDefaultDM("DELIVERY_UNIT", e.target.value);
-                    }}
-                  ></input>
-                </label>
                 <label>
                   DELIVERY_UNIT:<br></br>
                   <input
@@ -773,20 +837,6 @@ const CalcQuotation = () => {
                   ></input>
                 </label>
                 <label>
-                  DELIVERY_UNIT:<br></br>
-                  <input
-                    type='text'
-                    value={
-                      selectedRows.DELIVERY_UNIT === null
-                        ? 0
-                        : selectedRows.DELIVERY_UNIT
-                    }
-                    onChange={(e) => {
-                      handlesetCodeInfo("DELIVERY_UNIT", e.target.value);
-                    }}
-                  ></input>
-                </label>
-                <label>
                   DEPRECATION_UNIT:<br></br>
                   <input
                     type='text'
@@ -832,26 +882,158 @@ const CalcQuotation = () => {
             </div>
           </div>
           <div className='down'>
-            <div className='chiphinvl'>
-              <div className='costsection'>
-                Khổ liệu sử dụng: {gianvl.mCutWidth}(mm)
-              </div>
-              <div className='costsection'>
-                Chiều dài liệu mỗi con hàng: {gianvl.mLength}(mm)
-              </div>
-              <div className='costsection'>
-                Diện tích mỗi con hàng: {gianvl.mArea}(m2)
-              </div>
-              <div className='costsection'>
-                Giá VL (Org): {gianvl.giaVLCMS} $
-              </div>
-              <div className='costsection'>
-                Giá VL (Open): {gianvl.giaVLSS} $
-              </div>
+            <div className='tongchiphi'>
+              <table>
+                <thead>
+                  <tr>
+                    <td width={"50%"}>HẠNG MỤC</td>
+                    <td width={"40%"}>GIÁ TRỊ</td>
+                    <td width={"10%"}>UNIT</td>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Khổ liệu sử dụng</td>
+                    <td>
+                      {gianvl.mCutWidth.toLocaleString("en-US", {
+                        maximumFractionDigits: 2,
+                      })}
+                    </td>
+                    <td>mm</td>
+                  </tr>
+                  <tr>
+                    <td>Chiều dài liệu mỗi con hàng</td>
+                    <td>
+                      {gianvl.mLength.toLocaleString("en-US", {
+                        maximumFractionDigits: 2,
+                      })}
+                    </td>
+                    <td>mm</td>
+                  </tr>
+                  <tr>
+                    <td>Diện tích liệu mỗi con hàng</td>
+                    <td>
+                      {gianvl.mArea.toLocaleString("en-US", {
+                        maximumFractionDigits: 2,
+                      })}
+                    </td>
+                    <td>m2</td>
+                  </tr>
+                  <tr>
+                    <td>Tiền VL Nội Bộ</td>
+                    <td>
+                      {gianvl.giaVLCMS.toLocaleString("en-US", {
+                        maximumFractionDigits: 2,
+                      })}
+                    </td>
+                    <td>{company === "PVN" ? "VND" : "USD"}</td>
+                  </tr>
+                  <tr>
+                    <td>Tiền VL Open</td>
+                    <td>
+                      {gianvl.giaVLSS.toLocaleString("en-US", {
+                        maximumFractionDigits: 2,
+                      })}
+                    </td>
+                    <td>{company === "PVN" ? "VND" : "USD"}</td>
+                  </tr>
+                  <tr>
+                    <td>Tiền Dao</td>
+                    <td>
+                      {gianvl.knife_cost.toLocaleString("en-US", {
+                        maximumFractionDigits: 2,
+                      })}
+                    </td>
+                    <td>{company === "PVN" ? "VND" : "USD"}</td>
+                  </tr>
+                  <tr>
+                    <td>Tiền film bản</td>
+                    <td>
+                      {gianvl.film_cost.toLocaleString("en-US", {
+                        maximumFractionDigits: 2,
+                      })}
+                    </td>
+                    <td>{company === "PVN" ? "VND" : "USD"}</td>
+                  </tr>
+                  <tr>
+                    <td>Tiền mực</td>
+                    <td>
+                      {gianvl.ink_cost.toLocaleString("en-US", {
+                        maximumFractionDigits: 2,
+                      })}
+                    </td>
+                    <td>{company === "PVN" ? "VND" : "USD"}</td>
+                  </tr>
+                  <tr>
+                    <td>Tiền nhân công</td>
+                    <td>
+                      {gianvl.labor_cost.toLocaleString("en-US", {
+                        maximumFractionDigits: 2,
+                      })}
+                    </td>
+                    <td>{company === "PVN" ? "VND" : "USD"}</td>
+                  </tr>
+                  <tr>
+                    <td>Phí vận chuyển</td>
+                    <td>
+                      {gianvl.delivery_cost.toLocaleString("en-US", {
+                        maximumFractionDigits: 2,
+                      })}
+                    </td>
+                    <td>{company === "PVN" ? "VND" : "USD"}</td>
+                  </tr>
+                  <tr>
+                    <td>Khấu hao máy</td>
+                    <td>
+                      {gianvl.deprecation_cost.toLocaleString("en-US", {
+                        maximumFractionDigits: 2,
+                      })}
+                    </td>
+                    <td>{company === "PVN" ? "VND" : "USD"}</td>
+                  </tr>
+                  <tr>
+                    <td>Phí quản lý chung</td>
+                    <td>
+                      {gianvl.gmanagement_cost.toLocaleString("en-US", {
+                        maximumFractionDigits: 2,
+                      })}
+                    </td>
+                    <td>{company === "PVN" ? "VND" : "USD"}</td>
+                  </tr>
+                  <tr>
+                    <td>Tổng chi phí NB</td>
+                    <td>
+                      {gianvl.totalcostCMS.toLocaleString("en-US", {
+                        maximumFractionDigits: 2,
+                      })}
+                    </td>
+                    <td>{company === "PVN" ? "VND" : "USD"}</td>
+                  </tr>
+                  <tr>
+                    <td>Tổng chi phí OPEN</td>
+                    <td>
+                      {gianvl.totalcostSS.toLocaleString("en-US", {
+                        maximumFractionDigits: 2,
+                      })}
+                    </td>
+                    <td>{company === "PVN" ? "VND" : "USD"}</td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
-            <div className='chiphidaofilm'></div>
-            <div className='chiphikhac'></div>
-            <div className='tongchiphi'></div>
+            <div className='moqdiv'>
+              <label>
+                MOQ:<br></br>
+                <input
+                  type='text'
+                  value={tempQTY}
+                  onChange={(e) => {
+                    setTempQty(Number(e.target.value));
+                    tinhgia(selectedRows, listVL, Number(e.target.value));
+                  }}
+                ></input>
+              </label>
+            </div>
             <div className='savebutton'></div>
           </div>
         </div>
