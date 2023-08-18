@@ -108,31 +108,31 @@ interface BANGGIA_DATA {
   PRICE_DATE20: string;
 }
 interface BANGGIA_DATA2 {
-  id: number,
-  CUST_NAME_KD?: string,
-  CUST_CD?: string,
-  G_CODE?: string,
-  G_NAME?: string,
-  G_NAME_KD?: string,
-  DESCR?: string,
-  PROD_DVT?: string,
-  PROD_MAIN_MATERIAL?: string,
-  PRICE_DATE: string,
-  MOQ: number,
-  PROD_PRICE: number,
-  INS_DATE: string,
-  INS_EMPL: string,
-  UPD_DATE: string,
-  UPD_EMPL: string,
-  REMARK: string,
-  FINAL: string,
-  G_WIDTH: number,
-  G_LENGTH: number,
-  G_NAME_KT: string,
-  EQ1: string,
-  EQ2: string,
-  EQ3: string,
-  EQ4: string,
+  id: number;
+  CUST_NAME_KD?: string;
+  CUST_CD?: string;
+  G_CODE?: string;
+  G_NAME?: string;
+  G_NAME_KD?: string;
+  DESCR?: string;
+  PROD_DVT?: string;
+  PROD_MAIN_MATERIAL?: string;
+  PRICE_DATE: string;
+  MOQ: number;
+  PROD_PRICE: number;
+  INS_DATE: string;
+  INS_EMPL: string;
+  UPD_DATE: string;
+  UPD_EMPL: string;
+  REMARK: string;
+  FINAL: string;
+  G_WIDTH: number;
+  G_LENGTH: number;
+  G_NAME_KT: string;
+  EQ1: string;
+  EQ2: string;
+  EQ3: string;
+  EQ4: string;
 }
 interface CustomerListData {
   CUST_CD: string;
@@ -1340,7 +1340,7 @@ const QuotationManager = () => {
                 >
                   <BiCloudUpload color='#070EFA' size={15} />
                   Up Giá
-                </IconButton>                
+                </IconButton>
               </Item>
               <Item name='searchPanel' />
               <Item name='exportButton' />
@@ -2002,22 +2002,40 @@ const QuotationManager = () => {
                 );
               }}
             ></Column>
-            <Column dataField='FINAL' caption='APPROVAL' width={100}
-            cellRender={(e: any)=> {
-              if(e.data.FINAL==='Y')
-              {
-                return (
-                  <div style={{color: 'white', backgroundColor:'#13DC0C', width:'80px', textAlign:'center'}}>Y</div>                
-                  )
-              }
-              else
-              {
-                return (
-                  <div style={{color: 'white', backgroundColor:'red', width:'80px', textAlign:'center'}}>Not Approved</div>      
-                  )
-              }
-              
-            }}></Column>
+            <Column
+              dataField='FINAL'
+              caption='APPROVAL'
+              width={100}
+              cellRender={(e: any) => {
+                if (e.data.FINAL === "Y") {
+                  return (
+                    <div
+                      style={{
+                        color: "white",
+                        backgroundColor: "#13DC0C",
+                        width: "80px",
+                        textAlign: "center",
+                      }}
+                    >
+                      Y
+                    </div>
+                  );
+                } else {
+                  return (
+                    <div
+                      style={{
+                        color: "white",
+                        backgroundColor: "red",
+                        width: "80px",
+                        textAlign: "center",
+                      }}
+                    >
+                      Not Approved
+                    </div>
+                  );
+                }
+              }}
+            ></Column>
             <Summary>
               <TotalItem
                 alignment='right'
@@ -2378,7 +2396,7 @@ const QuotationManager = () => {
           const loaded_data: BANGGIA_DATA2[] = response.data.data.map(
             (element: BANGGIA_DATA2, index: number) => {
               return {
-                ...element,                
+                ...element,
                 PRICE_DATE:
                   element.PRICE_DATE !== null
                     ? moment.utc(element.PRICE_DATE).format("YYYY-MM-DD")
@@ -2605,7 +2623,7 @@ const QuotationManager = () => {
                     ["KD"],
                     pheduyetgia
                   );  */
-                    checkBP(userData, ["KD"], ["ALL"], ["ALL"], pheduyetgia);
+                    checkBP(userData, ["KD"], ["Leader"], ["ALL"], pheduyetgia);
                   }}
                 >
                   <FcApproval color='#070EFA' size={10} />
@@ -2662,12 +2680,7 @@ const QuotationManager = () => {
                   }}
                 />
               </label>
-              <IconButton
-                className='buttonIcon'
-                onClick={() => {
-                  
-                }}
-              >
+              <IconButton className='buttonIcon' onClick={() => {}}>
                 <AiOutlineCheckSquare color='#EB2EFE' size={15} />
                 Check Giá
               </IconButton>
@@ -2798,7 +2811,7 @@ const QuotationManager = () => {
                     EQ1: "",
                     EQ2: "",
                     EQ3: "",
-                    EQ4: ""
+                    EQ4: "",
                   };
                   setUploadExcelJSon([...uploadExcelJson, temp_row]);
                 }}
@@ -2824,7 +2837,7 @@ const QuotationManager = () => {
               </Button>
             </div>
             <div className='printpagediv' ref={quotationprintref}>
-              <QuotationForm QUOTATION_DATA={selectedBangGiaDocRow}/>
+              <QuotationForm QUOTATION_DATA={selectedBangGiaDocRow} />
             </div>
           </div>
         )}

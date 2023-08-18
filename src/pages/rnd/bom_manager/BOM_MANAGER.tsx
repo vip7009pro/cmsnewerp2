@@ -117,20 +117,20 @@ interface CODE_FULL_INFO {
   PO_TYPE?: string;
   FSC: string;
   G_CODE: string;
-  PROD_DVT: string,
+  PROD_DVT: string;
 }
 interface DEFAULT_DM {
-  id: number,
-  WIDTH_OFFSET :number,
-	LENGTH_OFFSET :number,
-	KNIFE_UNIT :number,
-	FILM_UNIT :number,
-	INK_UNIT :number,
-	LABOR_UNIT :number,
-	DELIVERY_UNIT :number,
-	DEPRECATION_UNIT :number,
-	GMANAGEMENT_UNIT :number,
-	M_LOSS_UNIT :number,
+  id: number;
+  WIDTH_OFFSET: number;
+  LENGTH_OFFSET: number;
+  KNIFE_UNIT: number;
+  FILM_UNIT: number;
+  INK_UNIT: number;
+  LABOR_UNIT: number;
+  DELIVERY_UNIT: number;
+  DEPRECATION_UNIT: number;
+  GMANAGEMENT_UNIT: number;
+  M_LOSS_UNIT: number;
 }
 interface CustomerListData {
   CUST_CD: string;
@@ -213,55 +213,53 @@ const BOM_MANAGER = () => {
   const [bomgiadatatablefilter, setBomGiaDataTableFilter] = useState<
     Array<BOM_GIA>
   >([]);
-  const [defaultDM, setDefaultDM]= useState<DEFAULT_DM>({
-    id:0,
-    WIDTH_OFFSET :0,
-    LENGTH_OFFSET :0,
-    KNIFE_UNIT :0,
-    FILM_UNIT :0,
-    INK_UNIT :0,
-    LABOR_UNIT :0,
-    DELIVERY_UNIT :0,
-    DEPRECATION_UNIT :0,
-    GMANAGEMENT_UNIT :0,
-    M_LOSS_UNIT :0,
+  const [defaultDM, setDefaultDM] = useState<DEFAULT_DM>({
+    id: 0,
+    WIDTH_OFFSET: 0,
+    LENGTH_OFFSET: 0,
+    KNIFE_UNIT: 0,
+    FILM_UNIT: 0,
+    INK_UNIT: 0,
+    LABOR_UNIT: 0,
+    DELIVERY_UNIT: 0,
+    DEPRECATION_UNIT: 0,
+    GMANAGEMENT_UNIT: 0,
+    M_LOSS_UNIT: 0,
   });
-  const loadDefaultDM = ()=> {
-    generalQuery('loadDefaultDM',{     
-       
-    })
-    .then(response => {
+  const loadDefaultDM = () => {
+    generalQuery("loadDefaultDM", {})
+      .then((response) => {
         console.log(response.data);
-        if(response.data.tk_status !=='NG')
-        {
-          const loadeddata: DEFAULT_DM[] =  response.data.data.map((element:DEFAULT_DM,index: number)=> {
-            return {
-              ...element,   id:  index
+        if (response.data.tk_status !== "NG") {
+          const loadeddata: DEFAULT_DM[] = response.data.data.map(
+            (element: DEFAULT_DM, index: number) => {
+              return {
+                ...element,
+                id: index,
+              };
             }
-          })
+          );
           setDefaultDM(loadeddata[0]);
-        }
-        else
-        {
+        } else {
           setDefaultDM({
-            id:0,
-            WIDTH_OFFSET :0,
-            LENGTH_OFFSET :0,
-            KNIFE_UNIT :0,
-            FILM_UNIT :0,
-            INK_UNIT :0,
-            LABOR_UNIT :0,
-            DELIVERY_UNIT :0,
-            DEPRECATION_UNIT :0,
-            GMANAGEMENT_UNIT :0,
-            M_LOSS_UNIT :0,
-          });         
-        }        
-    })
-    .catch(error => {
+            id: 0,
+            WIDTH_OFFSET: 0,
+            LENGTH_OFFSET: 0,
+            KNIFE_UNIT: 0,
+            FILM_UNIT: 0,
+            INK_UNIT: 0,
+            LABOR_UNIT: 0,
+            DELIVERY_UNIT: 0,
+            DEPRECATION_UNIT: 0,
+            GMANAGEMENT_UNIT: 0,
+            M_LOSS_UNIT: 0,
+          });
+        }
+      })
+      .catch((error) => {
         console.log(error);
-    });
-  }
+      });
+  };
 
   const [codefullinfo, setCodeFullInfo] = useState<CODE_FULL_INFO>({
     CUST_CD: "0000",
@@ -302,12 +300,12 @@ const BOM_MANAGER = () => {
     G_CODE: "-------",
     PO_TYPE: "E1",
     FSC: "N",
-    PROD_DVT:'01'
+    PROD_DVT: "01",
   });
   const [bomsxtable, setBOMSXTable] = useState<BOM_SX[]>([]);
   const [bomgiatable, setBOMGIATable] = useState<BOM_GIA[]>([]);
   const [customerList, setCustomerList] = useState<CustomerListData[]>([]);
-  const [uploadfile,setUploadFile] = useState<any>(null);
+  const [uploadfile, setUploadFile] = useState<any>(null);
   const [selectedCust_CD, setSelectedCust_CD] =
     useState<CustomerListData | null>();
   const [materialList, setMaterialList] = useState<MaterialListData[]>([
@@ -317,6 +315,9 @@ const BOM_MANAGER = () => {
       WIDTH_CD: 1200,
     },
   ]);
+  const [masterMaterialList, setMasterMaterialList] = useState<string[]>([]);
+  const [selectedMasterMaterial, setSelectedMasterMaterial] =
+    useState<string>("");
   const [selectedMaterial, setSelectedMaterial] =
     useState<MaterialListData | null>({
       M_CODE: "A0000001",
@@ -421,65 +422,97 @@ const BOM_MANAGER = () => {
       minWidth: 150,
       editable: enableEdit,
     },
-    { field: "BANVE", headerName: "BANVE", width: 260 , renderCell: (params:any) => {
-      let file:any = null;
-      const uploadFile2 = async (e:any) => {
-        //console.log(file); 
-        if(userData?.MAINDEPTNAME==='KD')
-        {
-          uploadQuery(file,params.row.G_CODE +'.pdf','banve')
-          .then((response)=> {
-            if (response.data.tk_status !== "NG") {
-                generalQuery("update_banve_value", { G_CODE: params.row.G_CODE, banvevalue: 'Y' })
-                .then((response) => {        
-                  if (response.data.tk_status !== "NG") 
-                  {
-                    Swal.fire('Thông báo','Upload bản vẽ thành công','success');
-                    let tempcodeinfodatatable = rows.map((element, index)=> {                 
-                      return ( element.G_CODE === params.row.G_CODE ? {...element, BANVE: 'Y'}: element);
+    {
+      field: "BANVE",
+      headerName: "BANVE",
+      width: 260,
+      renderCell: (params: any) => {
+        let file: any = null;
+        const uploadFile2 = async (e: any) => {
+          //console.log(file);
+          if (userData?.MAINDEPTNAME === "KD") {
+            uploadQuery(file, params.row.G_CODE + ".pdf", "banve")
+              .then((response) => {
+                if (response.data.tk_status !== "NG") {
+                  generalQuery("update_banve_value", {
+                    G_CODE: params.row.G_CODE,
+                    banvevalue: "Y",
+                  })
+                    .then((response) => {
+                      if (response.data.tk_status !== "NG") {
+                        Swal.fire(
+                          "Thông báo",
+                          "Upload bản vẽ thành công",
+                          "success"
+                        );
+                        let tempcodeinfodatatable = rows.map(
+                          (element, index) => {
+                            return element.G_CODE === params.row.G_CODE
+                              ? { ...element, BANVE: "Y" }
+                              : element;
+                          }
+                        );
+                        //setRows(tempcodeinfodatatable);
+                      } else {
+                        Swal.fire(
+                          "Thông báo",
+                          "Upload bản vẽ thất bại",
+                          "error"
+                        );
+                      }
+                    })
+                    .catch((error) => {
+                      console.log(error);
                     });
-                    //setRows(tempcodeinfodatatable);
-                  } 
-                  else {
-                    Swal.fire('Thông báo','Upload bản vẽ thất bại','error');
-                  }
-                })
-                .catch((error) => {
-                  console.log(error);
-                });       
-            } else {
-              Swal.fire('Thông báo','Upload file thất bại:' + response.data.message,'error'); 
-            }
-          })
-          .catch((error) => {
-            console.log(error);
-          });
-
+                } else {
+                  Swal.fire(
+                    "Thông báo",
+                    "Upload file thất bại:" + response.data.message,
+                    "error"
+                  );
+                }
+              })
+              .catch((error) => {
+                console.log(error);
+              });
+          } else {
+            Swal.fire(
+              "Thông báo",
+              "Chỉ bộ phận kinh doanh upload được bản vẽ",
+              "error"
+            );
+          }
+        };
+        let hreftlink = "/banve/" + params.row.G_CODE + ".pdf";
+        if (params.row.BANVE !== "N" && params.row.BANVE !== null) {
+          return (
+            <span style={{ color: "gray" }}>
+              <a target='_blank' rel='noopener noreferrer' href={hreftlink}>
+                LINK
+              </a>
+            </span>
+          );
+        } else {
+          return (
+            <div className='uploadfile'>
+              <IconButton className='buttonIcon' onClick={uploadFile2}>
+                <AiOutlineCloudUpload color='yellow' size={15} />
+                Upload
+              </IconButton>
+              <input
+                accept='.pdf'
+                type='file'
+                onChange={(e: any) => {
+                  file = e.target.files[0];
+                  console.log(file);
+                }}
+              />
+            </div>
+          );
         }
-        else
-        {
-          Swal.fire('Thông báo','Chỉ bộ phận kinh doanh upload được bản vẽ','error');
-        }
-      }
-      let hreftlink = '/banve/' + params.row.G_CODE + '.pdf';
-      if (params.row.BANVE !== "N" && params.row.BANVE !== null)
-      {
-        return (
-          <span style={{ color: "gray" }}>
-            <a target='_blank' rel='noopener noreferrer' href={hreftlink}>
-              LINK
-            </a>
-          </span>
-        )
-      }
-      else
-      {
-        return <div className="uploadfile"> 
-       <IconButton className='buttonIcon'onClick={uploadFile2}><AiOutlineCloudUpload color='yellow' size={15}/>Upload</IconButton>
-       <input  accept=".pdf" type="file" onChange={(e:any)=> {file = e.target.files[0]; console.log(file);}} />
-      </div>
-      }        
-    },  editable: enableEdit },    
+      },
+      editable: enableEdit,
+    },
     {
       field: "NO_INSPECTION",
       headerName: "KT NGOAI QUAN",
@@ -817,6 +850,19 @@ const BOM_MANAGER = () => {
       </GridToolbarContainer>
     );
   }
+  const loadMasterMaterialList = () => {
+    generalQuery("getMasterMaterialList", {})
+      .then((response) => {
+        if (response.data.tk_status !== "NG") {
+          //console.log(response.data.data);
+          setMasterMaterialList(response.data.data);
+        } else {
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
   const resetBanVe = async (value: string) => {
     if (codedatatablefilter.length >= 1) {
       if (
@@ -1017,42 +1063,99 @@ const BOM_MANAGER = () => {
             (element: CODE_FULL_INFO, index: number) => {
               return {
                 ...element,
-                CUST_CD: element.CUST_CD === null || element.CUST_CD === ''? '0000':element.CUST_CD,
-                PROD_PROJECT: element.PROD_PROJECT === null || element.PROD_PROJECT ===''? '':element.PROD_PROJECT,
-                PROD_MODEL: element.PROD_MODEL === null || element.PROD_MODEL ===''? '':element.PROD_MODEL,
-                CODE_12: element.CODE_12 === null || element.CODE_12 ===''? '7':element.CODE_12,
-                PROD_TYPE: element.PROD_TYPE === null || element.PROD_TYPE ===''? 'TSP':element.PROD_TYPE.trim(),
-                G_NAME_KD: element.G_NAME_KD === null || element.G_NAME_KD ===''? '7':element.G_NAME_KD,
-                DESCR: element.DESCR === null || element.DESCR ===''? '':element.DESCR,
-                PROD_MAIN_MATERIAL: element.PROD_MAIN_MATERIAL === null || element.PROD_MAIN_MATERIAL ===''? '':element.PROD_MAIN_MATERIAL,
-                G_NAME: element.G_NAME === null || element.G_NAME ===''? '':element.G_NAME,
-                G_LENGTH: element.G_LENGTH === null ? 0:element.G_LENGTH,
-                G_WIDTH: element.G_WIDTH === null ? 0:element.G_WIDTH,
-                PD: element.PD === null ? 0:element.PD,
-                G_C_R: element.G_C_R === null ? 0:element.G_C_R,
-                G_C: element.G_C === null ? 0:element.G_C,
-                G_LG: element.G_LG === null ? 0:element.G_LG,
-                G_CG: element.G_CG === null ? 0:element.G_CG,
-                G_SG_L: element.G_SG_L === null ? 0:element.G_SG_L,
-                G_SG_R: element.G_SG_R === null ? 0:element.G_SG_R,
-                PACK_DRT: element.PACK_DRT === null || element.PACK_DRT ===''? '1':element.PACK_DRT,
-                KNIFE_TYPE: element.KNIFE_TYPE === null ? 0:element.KNIFE_TYPE,
-                KNIFE_LIFECYCLE: element.KNIFE_LIFECYCLE === null ? 0:element.KNIFE_LIFECYCLE,
-                KNIFE_PRICE: element.KNIFE_PRICE === null ? 0:element.KNIFE_PRICE,
-                CODE_33: element.CODE_33 === null ? '03':element.CODE_33,
-                PROD_DVT: element.PROD_DVT === null ? '01':element.PROD_DVT,
-                ROLE_EA_QTY: element.ROLE_EA_QTY === null ? 0:element.ROLE_EA_QTY,
-                RPM: element.RPM === null ? 0:element.RPM,
-                PIN_DISTANCE: element.PIN_DISTANCE === null ? 0:element.PIN_DISTANCE,
-                PROCESS_TYPE: element.PROCESS_TYPE === null ? '':element.PROCESS_TYPE,
-                EQ1: element.EQ1 === null || element.EQ1 ===''? 'NA':element.EQ1,
-                EQ2: element.EQ2 === null || element.EQ2 ===''? 'NA':element.EQ2,
-                EQ3: element.EQ3 === null || element.EQ3 ===''? 'NA':element.EQ3,
-                EQ4: element.EQ4 === null || element.EQ4 ===''? 'NA':element.EQ4,
-                PROD_DIECUT_STEP: element.PROD_DIECUT_STEP === null ? '':element.PROD_DIECUT_STEP,
-                PROD_PRINT_TIMES: element.PROD_PRINT_TIMES === null ? '':element.PROD_PRINT_TIMES,
-                PO_TYPE: element.PO_TYPE === null ? 'E1':element.PO_TYPE,
-                FSC: element.FSC === null ? 'N':element.FSC,                
+                CUST_CD:
+                  element.CUST_CD === null || element.CUST_CD === ""
+                    ? "0000"
+                    : element.CUST_CD,
+                PROD_PROJECT:
+                  element.PROD_PROJECT === null || element.PROD_PROJECT === ""
+                    ? ""
+                    : element.PROD_PROJECT,
+                PROD_MODEL:
+                  element.PROD_MODEL === null || element.PROD_MODEL === ""
+                    ? ""
+                    : element.PROD_MODEL,
+                CODE_12:
+                  element.CODE_12 === null || element.CODE_12 === ""
+                    ? "7"
+                    : element.CODE_12,
+                PROD_TYPE:
+                  element.PROD_TYPE === null || element.PROD_TYPE === ""
+                    ? "TSP"
+                    : element.PROD_TYPE.trim(),
+                G_NAME_KD:
+                  element.G_NAME_KD === null || element.G_NAME_KD === ""
+                    ? "7"
+                    : element.G_NAME_KD,
+                DESCR:
+                  element.DESCR === null || element.DESCR === ""
+                    ? ""
+                    : element.DESCR,
+                PROD_MAIN_MATERIAL:
+                  element.PROD_MAIN_MATERIAL === null ||
+                  element.PROD_MAIN_MATERIAL === ""
+                    ? ""
+                    : element.PROD_MAIN_MATERIAL,
+                G_NAME:
+                  element.G_NAME === null || element.G_NAME === ""
+                    ? ""
+                    : element.G_NAME,
+                G_LENGTH: element.G_LENGTH === null ? 0 : element.G_LENGTH,
+                G_WIDTH: element.G_WIDTH === null ? 0 : element.G_WIDTH,
+                PD: element.PD === null ? 0 : element.PD,
+                G_C_R: element.G_C_R === null ? 0 : element.G_C_R,
+                G_C: element.G_C === null ? 0 : element.G_C,
+                G_LG: element.G_LG === null ? 0 : element.G_LG,
+                G_CG: element.G_CG === null ? 0 : element.G_CG,
+                G_SG_L: element.G_SG_L === null ? 0 : element.G_SG_L,
+                G_SG_R: element.G_SG_R === null ? 0 : element.G_SG_R,
+                PACK_DRT:
+                  element.PACK_DRT === null || element.PACK_DRT === ""
+                    ? "1"
+                    : element.PACK_DRT,
+                KNIFE_TYPE:
+                  element.KNIFE_TYPE === null ? 0 : element.KNIFE_TYPE,
+                KNIFE_LIFECYCLE:
+                  element.KNIFE_LIFECYCLE === null
+                    ? 0
+                    : element.KNIFE_LIFECYCLE,
+                KNIFE_PRICE:
+                  element.KNIFE_PRICE === null ? 0 : element.KNIFE_PRICE,
+                CODE_33: element.CODE_33 === null ? "03" : element.CODE_33,
+                PROD_DVT: element.PROD_DVT === null ? "01" : element.PROD_DVT,
+                ROLE_EA_QTY:
+                  element.ROLE_EA_QTY === null ? 0 : element.ROLE_EA_QTY,
+                RPM: element.RPM === null ? 0 : element.RPM,
+                PIN_DISTANCE:
+                  element.PIN_DISTANCE === null ? 0 : element.PIN_DISTANCE,
+                PROCESS_TYPE:
+                  element.PROCESS_TYPE === null ? "" : element.PROCESS_TYPE,
+                EQ1:
+                  element.EQ1 === null || element.EQ1 === ""
+                    ? "NA"
+                    : element.EQ1,
+                EQ2:
+                  element.EQ2 === null || element.EQ2 === ""
+                    ? "NA"
+                    : element.EQ2,
+                EQ3:
+                  element.EQ3 === null || element.EQ3 === ""
+                    ? "NA"
+                    : element.EQ3,
+                EQ4:
+                  element.EQ4 === null || element.EQ4 === ""
+                    ? "NA"
+                    : element.EQ4,
+                PROD_DIECUT_STEP:
+                  element.PROD_DIECUT_STEP === null
+                    ? ""
+                    : element.PROD_DIECUT_STEP,
+                PROD_PRINT_TIMES:
+                  element.PROD_PRINT_TIMES === null
+                    ? ""
+                    : element.PROD_PRINT_TIMES,
+                PO_TYPE: element.PO_TYPE === null ? "E1" : element.PO_TYPE,
+                FSC: element.FSC === null ? "N" : element.FSC,
                 id: index,
               };
             }
@@ -1147,7 +1250,7 @@ const BOM_MANAGER = () => {
       USE_YN: "Y",
       G_CODE: "",
       FSC: "N",
-      PROD_DVT:'01',
+      PROD_DVT: "01",
     });
   };
   const handleCheckCodeInfo = () => {
@@ -1205,7 +1308,13 @@ const BOM_MANAGER = () => {
           ["RND"],
           handleAddNewCode
         ); */
-        checkBP(userData, ["RND", "QLSX","KD"], ["ALL"], ["ALL"], handleAddNewCode);
+        checkBP(
+          userData,
+          ["RND", "QLSX", "KD"],
+          ["ALL"],
+          ["ALL"],
+          handleAddNewCode
+        );
         //handleAddNewCode();
       }
     });
@@ -1228,7 +1337,13 @@ const BOM_MANAGER = () => {
           ["RND"],
           handleAddNewVer
         ); */
-        checkBP(userData, ["RND", "QLSX","KD"], ["ALL"], ["ALL"], handleAddNewVer);
+        checkBP(
+          userData,
+          ["RND", "QLSX", "KD"],
+          ["ALL"],
+          ["ALL"],
+          handleAddNewVer
+        );
         //handleAddNewVer();
       }
     });
@@ -1251,7 +1366,13 @@ const BOM_MANAGER = () => {
           ["RND", "QLSX","KD"],
           handleUpdateCode
         ); */
-        checkBP(userData, ["RND", "QLSX","KD"], ["ALL"], ["ALL"], handleUpdateCode);
+        checkBP(
+          userData,
+          ["RND", "QLSX", "KD"],
+          ["ALL"],
+          ["ALL"],
+          handleUpdateCode
+        );
         //handleUpdateCode();
       }
     });
@@ -1293,8 +1414,8 @@ const BOM_MANAGER = () => {
     return { NEXT_G_CODE: CODE_12 + CODE_27 + nextseq, NEXT_SEQ_NO: nextseqno };
   };
 
-  const handleinsertCodeTBG =()=> {
-     generalQuery("insertM100BangTinhGia", {     
+  const handleinsertCodeTBG = () => {
+    generalQuery("insertM100BangTinhGia", {
       DEFAULT_DM: defaultDM,
       CODE_FULL_INFO: codefullinfo,
     })
@@ -1309,27 +1430,25 @@ const BOM_MANAGER = () => {
       .catch((error) => {
         console.log(error);
       });
-  }
-  const handleupdateCodeTBG =()=> {
-
+  };
+  const handleupdateCodeTBG = () => {
     generalQuery("updateM100BangTinhGia", codefullinfo)
-        .then((response) => {
-          //console.log(response.data);
-          if (response.data.tk_status !== "NG") {
-            Swal.fire(
-              "Thông báo",
-              "Update thành công: " + codefullinfo.G_CODE,
-              "success"
-            );
-          } else {
-            Swal.fire("Thông báo", "Lỗi: " + response.data.message, "error");
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-
-  }
+      .then((response) => {
+        //console.log(response.data);
+        if (response.data.tk_status !== "NG") {
+          Swal.fire(
+            "Thông báo",
+            "Update thành công: " + codefullinfo.G_CODE,
+            "success"
+          );
+        } else {
+          Swal.fire("Thông báo", "Lỗi: " + response.data.message, "error");
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
   const handleAddNewCode = async () => {
     //console.log(handleCheckCodeInfo());
     if (handleCheckCodeInfo()) {
@@ -1371,9 +1490,7 @@ const BOM_MANAGER = () => {
         .catch((error) => {
           console.log(error);
         });
-        handleinsertCodeTBG();
-    
-     
+      handleinsertCodeTBG();
     }
   };
   const handleAddNewVer = async () => {
@@ -1425,11 +1542,11 @@ const BOM_MANAGER = () => {
         })
         .catch((error) => {
           console.log(error);
-        }); 
-        handleinsertCodeTBG();      
+        });
+      handleinsertCodeTBG();
     }
   };
- 
+
   const handleUpdateCode = async () => {
     if (handleCheckCodeInfo()) {
       await generalQuery("updateM100", codefullinfo)
@@ -1449,9 +1566,7 @@ const BOM_MANAGER = () => {
           console.log(error);
         });
 
-        confirmUpdateM100TBG();
-
-       
+      confirmUpdateM100TBG();
     }
   };
   const handleSearchCodeKeyDown = (
@@ -1745,9 +1860,18 @@ const BOM_MANAGER = () => {
         M_NAME: selectedMaterial?.M_NAME,
         CUST_CD: selected_Material_Info.CUST_CD,
         IMPORT_CAT: "",
-        M_CMS_PRICE: selected_Material_Info.CMSPRICE === null? 0:selected_Material_Info.CMSPRICE ,
-        M_SS_PRICE: selected_Material_Info.SSPRICE===null? 0: selected_Material_Info.SSPRICE,
-        M_SLITTING_PRICE: selected_Material_Info.SLITTING_PRICE===null? 0: selected_Material_Info.SLITTING_PRICE,
+        M_CMS_PRICE:
+          selected_Material_Info.CMSPRICE === null
+            ? 0
+            : selected_Material_Info.CMSPRICE,
+        M_SS_PRICE:
+          selected_Material_Info.SSPRICE === null
+            ? 0
+            : selected_Material_Info.SSPRICE,
+        M_SLITTING_PRICE:
+          selected_Material_Info.SLITTING_PRICE === null
+            ? 0
+            : selected_Material_Info.SLITTING_PRICE,
         USAGE: "",
         MAIN_M: "0",
         MAT_MASTER_WIDTH: selected_Material_Info.MASTER_WIDTH,
@@ -1809,15 +1933,15 @@ const BOM_MANAGER = () => {
         await generalQuery("deleteBOM2", {
           G_CODE: codefullinfo.G_CODE,
         })
-        .then((response) => {
-          if (response.data.tk_status !== "NG") {
-            //console.log(response.data.data);
-          } else {
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+          .then((response) => {
+            if (response.data.tk_status !== "NG") {
+              //console.log(response.data.data);
+            } else {
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
         for (let i = 0; i < bomgiatable.length; i++) {
           await generalQuery("insertBOM2", {
             G_CODE: codefullinfo.G_CODE,
@@ -1850,7 +1974,6 @@ const BOM_MANAGER = () => {
         }
         handleInsertBOMSX_WITH_GIA();
         confirmUpdateBOMTBG();
-
       } else {
         Swal.fire("Thông báo", err_code, "error");
       }
@@ -1933,7 +2056,13 @@ const BOM_MANAGER = () => {
           ["RND", "QLSX","KD"],
           handleInsertBOMSX
         ); */
-        checkBP(userData, ["RND", "QLSX","KD"], ["ALL"], ["ALL"], handleInsertBOMSX);
+        checkBP(
+          userData,
+          ["RND", "QLSX", "KD"],
+          ["ALL"],
+          ["ALL"],
+          handleInsertBOMSX
+        );
         //handleInsertBOMSX();
       }
     });
@@ -1958,7 +2087,7 @@ const BOM_MANAGER = () => {
         ); */
         checkBP(
           userData,
-          ["RND", "QLSX","KD"],
+          ["RND", "QLSX", "KD"],
           ["ALL"],
           ["ALL"],
           handleInsertBOMGIA
@@ -1995,30 +2124,34 @@ const BOM_MANAGER = () => {
       confirmButtonText: "Vẫn Update!",
     }).then((result) => {
       if (result.isConfirmed) {
-        Swal.fire("Tiến hành Update Thông tin", "Đang Update Thông tin", "success");
-          
-      let checkTBGExist: number = 0;
+        Swal.fire(
+          "Tiến hành Update Thông tin",
+          "Đang Update Thông tin",
+          "success"
+        );
 
-       generalQuery("checkTBGExist", {
-        G_CODE: codefullinfo.G_CODE,        
-      })
-        .then((response) => {
-          //console.log(response.data);
-          if (response.data.tk_status !== "NG") {
-            checkTBGExist = 1;
-            handleupdateCodeTBG();        
-          } else {
-            checkTBGExist = 0;
-            handleinsertCodeTBG();
-          }
+        let checkTBGExist: number = 0;
+
+        generalQuery("checkTBGExist", {
+          G_CODE: codefullinfo.G_CODE,
         })
-        .catch((error) => {          
-          console.log(error);
-        });        
+          .then((response) => {
+            //console.log(response.data);
+            if (response.data.tk_status !== "NG") {
+              checkTBGExist = 1;
+              handleupdateCodeTBG();
+            } else {
+              checkTBGExist = 0;
+              handleinsertCodeTBG();
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
       }
     });
   };
-  const confirmUpdateBOMTBG =  () => {
+  const confirmUpdateBOMTBG = () => {
     Swal.fire({
       title: "Bạn có muốn update bom sản phẩm trong tính báo giá ?",
       text: "Update thông tin báo giá",
@@ -2029,10 +2162,11 @@ const BOM_MANAGER = () => {
       confirmButtonText: "Vẫn Update!",
     }).then((result) => {
       if (result.isConfirmed) {
-       
-        Swal.fire("Tiến hành Update Thông tin", "Đang Update bom tính báo giá", "success");
-          
-         
+        Swal.fire(
+          "Tiến hành Update Thông tin",
+          "Đang Update bom tính báo giá",
+          "success"
+        );
       }
     });
   };
@@ -2066,45 +2200,42 @@ const BOM_MANAGER = () => {
       });
   };
 
-  const autogenerateCodeKH =  (cust_cd: string)=> {
+  const autogenerateCodeKH = (cust_cd: string) => {
     let nextCodeKH: string = cust_cd + "-001";
-      generalQuery("getlastestCODKH", {
-      CUST_CD: cust_cd     
+    generalQuery("getlastestCODKH", {
+      CUST_CD: cust_cd,
     })
       .then((response) => {
         console.log(response.data.data);
         if (response.data.tk_status !== "NG") {
           let arr = response.data.data[0].G_NAME_KD.split("-");
-          nextCodeKH =  cust_cd + "-" + zeroPad(parseInt(arr[1])+1,4);
-          console.log('nex codeKH', nextCodeKH);
-          handleSetCodeInfo("CUST_CD", cust_cd);  
-          
-
+          nextCodeKH = cust_cd + "-" + zeroPad(parseInt(arr[1]) + 1, 4);
+          console.log("nex codeKH", nextCodeKH);
+          handleSetCodeInfo("CUST_CD", cust_cd);
         } else {
-          
-          
-
           //Swal.fire("Thông báo", " Có lỗi : " + response.data.message, "error");
-        }        
-        let tempcodefullinfo = { ...codefullinfo, ['CUST_CD']: cust_cd, ['G_NAME_KD']: nextCodeKH };
+        }
+        let tempcodefullinfo = {
+          ...codefullinfo,
+          ["CUST_CD"]: cust_cd,
+          ["G_NAME_KD"]: nextCodeKH,
+        };
         setCodeFullInfo(tempcodefullinfo);
-       
       })
       .catch((error) => {
         console.log(error);
         Swal.fire("Thông báo", " Có lỗi : " + error, "error");
-      });  
+      });
 
-     
-
-      return nextCodeKH;
-  }
+    return nextCodeKH;
+  };
 
   useEffect(() => {
     getmateriallist();
     getcustomerlist();
     getMachineList();
     loadDefaultDM();
+    loadMasterMaterialList();
   }, []);
   return (
     <div className='bom_manager'>
@@ -2282,14 +2413,11 @@ const BOM_MANAGER = () => {
                             ? "0000"
                             : codefullinfo?.CUST_CD
                         }
-                        onChange={(e) => { 
+                        onChange={(e) => {
                           //handleSetCodeInfo("CUST_CD", e.target.value);
-                          if(company==='PVN')
-                          {
+                          if (company === "PVN") {
                             autogenerateCodeKH(e.target.value);
-                          }
-                          else
-                          {
+                          } else {
                             handleSetCodeInfo("CUST_CD", e.target.value);
                           }
                         }}
@@ -2338,17 +2466,17 @@ const BOM_MANAGER = () => {
                         name='dactinhsanpham'
                         value={
                           codefullinfo?.CODE_12 === null
-                            ? '7'
+                            ? "7"
                             : codefullinfo?.CODE_12
                         }
                         onChange={(e) => {
                           handleSetCodeInfo("CODE_12", e.target.value);
                         }}
                       >
-                        <option value={'6'}>Bán Thành Phẩm</option>
-                        <option value={'7'}>Thành Phẩm</option>
-                        <option value={'8'}>Nguyên Chiếc Không Ribbon</option>
-                        <option value={'9'}>Nguyên Chiếc Ribbon</option>
+                        <option value={"6"}>Bán Thành Phẩm</option>
+                        <option value={"7"}>Thành Phẩm</option>
+                        <option value={"8"}>Nguyên Chiếc Không Ribbon</option>
+                        <option value={"9"}>Nguyên Chiếc Ribbon</option>
                       </select>
                     </label>
                     <label>
@@ -2375,10 +2503,12 @@ const BOM_MANAGER = () => {
                       </select>
                     </label>
                     <label>
-                     {company==='CMS'? 'Code KD': 'Code KT'}
+                      {company === "CMS" ? "Code KD" : "Code KT"}
                       <input
                         disabled={enableform}
-                        placeholder={company==='CMS'? 'GH63-18084A': 'KH001-xxxx'}
+                        placeholder={
+                          company === "CMS" ? "GH63-18084A" : "KH001-xxxx"
+                        }
                         type='text'
                         value={
                           codefullinfo?.G_NAME_KD === null
@@ -2424,7 +2554,7 @@ const BOM_MANAGER = () => {
                       ></input>
                     </label>
                     <label>
-                    {company==='CMS'? 'Code RnD:': 'Tên sản phẩm:'}
+                      {company === "CMS" ? "Code RnD:" : "Tên sản phẩm:"}
                       <input
                         disabled={enableform}
                         type='text'
@@ -2475,9 +2605,7 @@ const BOM_MANAGER = () => {
                       <input
                         disabled={enableform}
                         type='text'
-                        value={
-                          codefullinfo?.PD === null ? 0 : codefullinfo?.PD
-                        }
+                        value={codefullinfo?.PD === null ? 0 : codefullinfo?.PD}
                         onChange={(e) => {
                           handleSetCodeInfo("PD", e.target.value);
                         }}
@@ -2489,9 +2617,7 @@ const BOM_MANAGER = () => {
                         disabled={enableform}
                         type='text'
                         value={
-                          codefullinfo?.G_C_R === null
-                            ? 0
-                            : codefullinfo?.G_C_R
+                          codefullinfo?.G_C_R === null ? 0 : codefullinfo?.G_C_R
                         }
                         onChange={(e) => {
                           handleSetCodeInfo("G_C_R", e.target.value);
@@ -2720,6 +2846,8 @@ const BOM_MANAGER = () => {
                         }}
                       ></input>
                     </label>
+                  </div>
+                  <div className='info22'>
                     <label>
                       PROCESS TYPE:{" "}
                       <input
@@ -2735,8 +2863,6 @@ const BOM_MANAGER = () => {
                         }}
                       ></input>
                     </label>
-                  </div>
-                  <div className='info22'>
                     <label>
                       Máy 1:
                       <select
@@ -2904,6 +3030,8 @@ const BOM_MANAGER = () => {
                         <option value='N'>NO</option>
                       </select>
                     </label>
+                  </div>
+                  <div className='info33'>
                     <label>
                       Remark:{" "}
                       <input
@@ -2920,6 +3048,7 @@ const BOM_MANAGER = () => {
                     <FormControlLabel
                       disabled={enableform}
                       label='Mở/Khóa'
+                      className='useynbt'
                       control={
                         <Checkbox
                           checked={codefullinfo?.USE_YN === "Y"}
@@ -2935,32 +3064,30 @@ const BOM_MANAGER = () => {
                     />
                     <label>
                       <Autocomplete
-                        sx={{ height: 10, margin: "1px", position: "initial" }}
+                        sx={{
+                          height: 10,
+                          margin: "1px",
+                          position: "initial",
+                          fontSize: "0.7rem",
+                        }}
                         disabled={enableform}
                         size='small'
                         disablePortal
-                        options={materialList}
+                        options={masterMaterialList}
                         className='autocomplete'
                         filterOptions={filterOptions1}
                         isOptionEqualToValue={(option: any, value: any) =>
-                          option.M_CODE === value.M_CODE
+                          option.M_NAME === value.M_NAME
                         }
-                        getOptionLabel={(option: MaterialListData | any) =>
-                          `${option.M_NAME}|${option.WIDTH_CD}|${option.M_CODE}`
-                        }
+                        getOptionLabel={(option: any) => `${option.M_NAME}`}
                         renderInput={(params) => (
                           <TextField {...params} label='Select Main Material' />
                         )}
                         defaultValue={{
-                          M_CODE: "A0007770",
-                          M_NAME: "SJ-203020HC",
-                          WIDTH_CD: 208,
+                          M_NAME: "",
                         }}
-                        value={selectedMaterial}
-                        onChange={(
-                          event: any,
-                          newValue: MaterialListData | any
-                        ) => {
+                        value={selectedMasterMaterial}
+                        onChange={(event: any, newValue: any) => {
                           console.log(newValue);
                           handleSetCodeInfo(
                             "PROD_MAIN_MATERIAL",
@@ -2969,12 +3096,6 @@ const BOM_MANAGER = () => {
                         }}
                       />
                     </label>
-                    {/*  <input
-                      type='checkbox'
-                      name='alltimecheckbox'                      
-                      defaultChecked={(codefullinfo?.USE_YN ==='Y')}
-                      onChange={(e)=> {handleSetCodeInfo('USE_YN',(Boolean(e.target.value)===true?'Y':'N'))}}
-                    ></input> */}
                   </div>
                 </div>
                 <div className='info34'>

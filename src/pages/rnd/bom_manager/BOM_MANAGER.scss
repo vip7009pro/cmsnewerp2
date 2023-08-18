@@ -334,7 +334,7 @@
                                   
                         .info1 {
                             display: flex;                            
-                            flex: 1;                           
+                            width: fit-content;                          
                             flex-direction: column;
                             align-items: flex-end;
                             gap: 2px;
@@ -358,7 +358,7 @@
                         }
                         .info2 {
                             display: flex;                            
-                            flex: 1;                           
+                            width: fit-content;                            
                             flex-direction: column;
                             align-items: flex-end;
                             gap: 2px;
@@ -382,7 +382,7 @@
                         }
                         .info11 {
                             display: flex;                            
-                            flex: 1;                           
+                            width: fit-content;                           
                             flex-direction: column;
                             align-items: flex-end;
                             gap: 2px;
@@ -406,7 +406,7 @@
                         }
                         .info22 {
                             display: flex;                            
-                            flex: 1;                           
+                            width: fit-content;                         
                             flex-direction: column;
                             align-items: flex-end;
                             gap: 2px;
@@ -427,6 +427,57 @@
                                 align-items: flex-end;
                                 
                             }
+                            .useynbt {
+                                * {
+                                    font-size: 0.7rem;
+                                }
+                            }
+                            .autocomplete {
+                                * {
+                                    font-size: 0.7rem;
+                                }
+                            }
+                            
+                        }
+                        .info33 {
+                            display: flex;                            
+                            width: fit-content;                         
+                            flex-direction: column;
+                            align-items: flex-end;
+                            gap: 2px;
+                            margin-left: 10px;
+                            margin-right: 10px;
+                            select {
+                                width: 150px;
+                                height: 20px;
+                            }
+                            input {
+                                padding-left: 5px;
+                                margin-left: 2px;
+                                width: 140px;
+                            }
+                            label {
+                                display: flex;
+                                flex-direction: row;
+                                align-items: flex-end;
+                                
+                            }
+                            .useynbt {
+                                display: flex;
+                                align-items: center;
+                                justify-items: center;
+
+                                * {
+                                    display: flex;                                    
+                                    font-size: 0.8rem;
+                                }
+                            }
+                            .autocomplete {
+                                * {
+                                    font-size: 0.8rem;
+                                }
+                            }
+
                         }
                         
 

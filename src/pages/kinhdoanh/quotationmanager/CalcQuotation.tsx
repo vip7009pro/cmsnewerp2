@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { generalQuery } from "../../../api/Api";
 import Swal from "sweetalert2";
 import { ResponsiveContainer } from "recharts";
@@ -31,6 +31,8 @@ import moment from "moment";
 import DrawComponent from "../ycsxmanager/DrawComponent/DrawComponent";
 import DrawComponentTBG from "../ycsxmanager/DrawComponent/DrawComponentTBG";
 import { BiSave } from "react-icons/bi";
+import { GrUpdate } from "react-icons/gr";
+import { TbLogout } from "react-icons/tb";
 
 interface BANGGIA_DATA {
   id: number;
@@ -83,6 +85,7 @@ export interface CODEDATA {
   G_NAME: string;
   G_NAME_KD: string;
   CUST_NAME_KD: string;
+  CUST_CD: string;
 }
 interface BOM_GIA {
   id: string;
@@ -148,6 +151,8 @@ const CalcQuotation = () => {
   const userData: UserData | undefined = useSelector(
     (state: RootState) => state.totalSlice.userData
   );
+  const [sh, setSH] = useState(true);
+  const showhidesearchdiv = useRef(false);
   const [banggia, setBangGia] = useState<Array<BANGGIA_DATA>>([]);
   const [listcode, setListCode] = useState<Array<CODEDATA>>([]);
   const [listVL, setListVL] = useState<Array<BOM_GIA>>([]);
@@ -184,6 +189,44 @@ const CalcQuotation = () => {
     totalcostCMS: 0,
     totalcostSS: 0,
   });
+
+  const loadbanggia = (CUST_CD: string, G_CODE: string) => {
+    generalQuery("loadbanggiamoinhat", {
+      ALLTIME: true,
+      FROM_DATE: "",
+      TO_DATE: "",
+      M_NAME: "",
+      G_CODE: G_CODE,
+      G_NAME: "",
+      CUST_NAME_KD: "",
+      CUST_CD: CUST_CD,
+    })
+      .then((response) => {
+        //console.log(response.data.data);
+        if (response.data.tk_status !== "NG") {
+          const loaded_data: BANGGIA_DATA[] = response.data.data.map(
+            (element: BANGGIA_DATA, index: number) => {
+              return {
+                ...element,
+                PRICE_DATE:
+                  element.PRICE_DATE !== null
+                    ? moment.utc(element.PRICE_DATE).format("YYYY-MM-DD")
+                    : "",
+                id: index,
+              };
+            }
+          );
+          setBangGia(loaded_data);
+        } else {
+          setBangGia([]);
+          /* Swal.fire("Thông báo", " Có lỗi : " + response.data.message, "error"); */
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        Swal.fire("Thông báo", " Có lỗi : " + error, "error");
+      });
+  };
   const loadListCode = () => {
     generalQuery("loadlistcodequotation", {})
       .then((response) => {
@@ -198,11 +241,11 @@ const CalcQuotation = () => {
             }
           );
           setListCode(loadeddata);
-          Swal.fire(
+          /* Swal.fire(
             "Thông báo",
             "Đã load " + response.data.data.length + " dòng",
             "success"
-          );
+          ); */
         } else {
           setListCode([]);
           Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
@@ -309,7 +352,55 @@ const CalcQuotation = () => {
     G_NAME: "",
     G_NAME_KD: "",
     CUST_NAME_KD: "",
+    CUST_CD: "",
   });
+  const uploadgia = async () => {
+    if (banggia.length > 0) {
+      let err_code: string = "";
+      for (let i = 0; i < banggia.length; i++) {
+        if (banggia[i].PRICE_DATE === moment.utc().format("YYYY-MM-DD")) {
+          console.log("price date", banggia[i].PRICE_DATE);
+          await generalQuery("upgiasp", banggia[i])
+            .then((response) => {
+              //console.log(response.data.data);
+              if (response.data.tk_status !== "NG") {
+              } else {
+                err_code += `Lỗi : ${response.data.message} |`;
+                //Swal.fire("Thông báo", " Có lỗi : " + response.data.message, "error");
+              }
+            })
+            .catch((error) => {
+              console.log(error);
+              Swal.fire("Thông báo", " Có lỗi : " + error, "error");
+            });
+        }
+      }
+      if (err_code === "") {
+        Swal.fire("Thông báo", "Up giá thành công", "success");
+      } else {
+        Swal.fire("Thông báo", " Có lỗi : " + err_code, "error");
+      }
+    } else {
+      Swal.fire(
+        "Thông báo",
+        "Thêm dòng hoặc import excel file để up giá",
+        "error"
+      );
+    }
+  };
+
+  const updateCurrentUnit = () => {
+    generalQuery("updateCurrentUnit", selectedRows)
+      .then((response) => {
+        if (response.data.tk_status !== "NG") {
+        } else {
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        Swal.fire("Thông báo", " Có lỗi : " + error, "error");
+      });
+  };
   const listcodeTable = React.useMemo(
     () => (
       <div className='datatb'>
@@ -331,9 +422,10 @@ const CalcQuotation = () => {
               //setSelectedRows(e.selectedRowsData[0]);
             }}
             onRowClick={(e) => {
-              //console.log(e.data);
+              console.log(e.data.CUST_CD);
               setSelectedRows(e.data);
               loadbomNVLQuotation(e.data);
+              loadbanggia(e.data.CUST_CD, e.data.G_CODE);
             }}
           >
             <Scrolling
@@ -364,6 +456,16 @@ const CalcQuotation = () => {
                   <AiFillFileExcel color='green' size={15} />
                   Excel
                 </IconButton>
+                <IconButton
+                  className='buttonIcon'
+                  onClick={() => {
+                    showhidesearchdiv.current = !showhidesearchdiv.current;
+                    setSH(!showhidesearchdiv.current);
+                  }}
+                >
+                  <TbLogout color='green' size={15} />
+                  Show/Hide
+                </IconButton>
               </Item>
               <Item name='searchPanel' />
               <Item name='exportButton' />
@@ -381,6 +483,133 @@ const CalcQuotation = () => {
               infoText='Page #{0}. Total: {1} ({2} items)'
               displayMode='compact'
             />
+            <Column
+              dataField='CUST_NAME_KD'
+              caption='KHÁCH HÀNG'
+              width={100}
+            ></Column>
+            <Column dataField='G_CODE' caption='G_CODE' width={100}></Column>
+            <Column dataField='G_NAME' caption='G_NAME' width={100}></Column>
+            <Column
+              dataField='G_NAME_KD'
+              caption='G_NAME_KD'
+              width={100}
+            ></Column>
+            {/*  <Column
+              dataField='MATERIAL_COST'
+              caption='Tiền Liệu'
+              width={100}
+            ></Column>
+            <Column
+              dataField='KNIFE_COST'
+              caption='Tiền Dao'
+              width={100}
+            ></Column>
+            <Column
+              dataField='FILM_COST'
+              caption='Tiền Film'
+              width={100}
+            ></Column>
+            <Column
+              dataField='INK_COST'
+              caption='Tiền mực'
+              width={100}
+            ></Column>
+            <Column
+              dataField='LABOR_COST'
+              caption='Nhân công'
+              width={100}
+            ></Column>
+            <Column
+              dataField='DELIVERY_COST'
+              caption='Vận chuyển'
+              width={100}
+            ></Column>
+            <Column
+              dataField='DEPRECATION_COST'
+              caption='Khấu hao'
+              width={100}
+            ></Column>
+            <Column
+              dataField='GMANAGEMENT_COST'
+              caption='Quản lý'
+              width={100}
+            ></Column>
+            <Column
+              dataField='TOTAL_COST'
+              caption='Tổng Chi Phí'
+              width={100}
+            ></Column>  
+            <Column
+              dataField='SALE_PRICE'
+              caption='Giá Bán'
+              width={100}
+            ></Column>
+            <Column dataField='PROFIT' caption='Lãi' width={100}></Column> */}
+
+            <Column
+              dataField='WIDTH_OFFSET'
+              caption='OFFSET RỘNG'
+              width={100}
+            ></Column>
+            <Column
+              dataField='LENGTH_OFFSET'
+              caption='OFFSET DÀI'
+              width={100}
+            ></Column>
+            <Column
+              dataField='KNIFE_UNIT'
+              caption='DAO ĐƠN VỊ'
+              width={100}
+            ></Column>
+            <Column
+              dataField='FILM_UNIT'
+              caption='FILM ĐƠN VỊ'
+              width={100}
+            ></Column>
+            <Column
+              dataField='INK_UNIT'
+              caption='MỰC ĐƠN VỊ'
+              width={100}
+            ></Column>
+            <Column
+              dataField='LABOR_UNIT'
+              caption='NHÂN CÔNG ĐV'
+              width={100}
+            ></Column>
+            <Column
+              dataField='DELIVERY_UNIT'
+              caption='VẬN CHUYỂN ĐV'
+              width={100}
+            ></Column>
+            <Column
+              dataField='DEPRECATION_UNIT'
+              caption='KHẤU HAO ĐV'
+              width={100}
+            ></Column>
+            <Column
+              dataField='GMANAGEMENT_UNIT'
+              caption='QUẢN LÝ ĐV'
+              width={100}
+            ></Column>
+            <Column
+              dataField='M_LOSS_UNIT'
+              caption='HAO HỤT ĐV'
+              width={100}
+            ></Column>
+            <Column dataField='G_WIDTH' caption='RỘNG' width={100}></Column>
+            <Column dataField='G_LENGTH' caption='DÀI' width={100}></Column>
+            <Column dataField='G_C' caption='SỐ CỘT' width={100}></Column>
+            <Column dataField='G_C_R' caption='SỐ HÀNG' width={100}></Column>
+            <Column dataField='G_LG' caption='K/C HÀNG' width={100}></Column>
+            <Column dataField='G_CG' caption='K/C CỘT' width={100}></Column>
+            <Column dataField='G_SG_L' caption='MÉP TRÁI' width={100}></Column>
+            <Column dataField='G_SG_R' caption='MÉP PHẢI' width={100}></Column>
+            <Column
+              dataField='PROD_PRINT_TIMES'
+              caption='SỐ MÀU'
+              width={100}
+            ></Column>
             <Summary>
               <TotalItem
                 alignment='right'
@@ -451,7 +680,7 @@ const CalcQuotation = () => {
                     updateGIAVLBOM2();
                   }}
                 >
-                  <AiFillFileExcel color='green' size={15} />
+                  <GrUpdate color='green' size={15} />
                   Update Giá Liệu
                 </IconButton>
               </Item>
@@ -472,27 +701,31 @@ const CalcQuotation = () => {
               displayMode='compact'
             />
             <Column dataField='G_CODE' caption='G_CODE' width={70}></Column>
-            <Column dataField='G_SEQ' caption='G_SEQ' width={50}></Column>
-            <Column dataField='M_CODE' caption='M_CODE' width={70}></Column>
-            <Column dataField='M_NAME' caption='M_NAME' width={70}></Column>
+            <Column dataField='G_SEQ' caption='STT' width={50}></Column>
+            <Column dataField='M_CODE' caption='MÃ LIỆU' width={70}></Column>
+            <Column dataField='M_NAME' caption='TÊN LIỆU' width={120}></Column>
             <Column dataField='MAT_CUTWIDTH' caption='SIZE' width={70}></Column>
             <Column
               dataField='M_CMS_PRICE'
-              caption='ORG PR'
-              width={70}
+              caption='GIÁ NỘI BỘ'
+              width={80}
             ></Column>
             <Column
               dataField='M_SS_PRICE'
-              caption='OPEN PR'
+              caption='GIÁ OPEN'
               width={70}
             ></Column>
-            <Column dataField='USAGE' caption='USAGE' width={70}></Column>
+            <Column dataField='USAGE' caption='VAI TRÒ' width={70}></Column>
             <Column
               dataField='MAT_MASTER_WIDTH'
-              caption='MST_WIDTH'
+              caption='KHỔ CÂY'
               width={70}
             ></Column>
-            <Column dataField='M_QTY' caption='M_QTY' width={70}></Column>
+            <Column
+              dataField='M_QTY'
+              caption='SỐ LƯỢNG LIỆU'
+              width={70}
+            ></Column>
             <Summary>
               <TotalItem
                 alignment='right'
@@ -527,6 +760,17 @@ const CalcQuotation = () => {
             onSelectionChanged={(e) => {}}
             onRowClick={(e) => {
               //console.log(e.data);
+              setTempQty(e.data.MOQ);
+              setTempQty(e.data.MOQ);
+              setSalePriceNB(
+                tinhgia(selectedRows, listVL, e.data.MOQ).total_costCMS *
+                  (1 + profit / 100)
+              );
+              setSalePriceOP(
+                tinhgia(selectedRows, listVL, e.data.MOQ).total_costSS *
+                  (1 + profit / 100)
+              );
+              tinhgia(selectedRows, listVL, e.data.MOQ);
             }}
           >
             <Scrolling
@@ -538,7 +782,7 @@ const CalcQuotation = () => {
             />
             <Selection mode='single' selectAllMode='allPages' />
             <Editing
-              allowUpdating={true}
+              allowUpdating={false}
               allowAdding={false}
               allowDeleting={true}
               mode='cell'
@@ -574,6 +818,53 @@ const CalcQuotation = () => {
               infoText='Page #{0}. Total: {1} ({2} items)'
               displayMode='compact'
             />
+            <Column dataField='CUST_CD' caption='MÃ KH' width={100}></Column>
+            <Column dataField='G_CODE' caption='G_CODE' width={100}></Column>
+            <Column
+              dataField='PRICE_DATE'
+              caption='NGÀY LÀM GIÁ'
+              width={100}
+            ></Column>
+            <Column dataField='MOQ' caption='MOQ' width={100}></Column>
+            <Column
+              dataField='PROD_PRICE'
+              caption='GIÁ SP'
+              width={100}
+            ></Column>
+            <Column
+              dataField='FINAL'
+              caption='PHÊ DUYỆT'
+              width={100}
+              cellRender={(e: any) => {
+                if (e.data.FINAL === "Y") {
+                  return (
+                    <div
+                      style={{
+                        color: "white",
+                        backgroundColor: "#13DC0C",
+                        width: "80px",
+                        textAlign: "center",
+                      }}
+                    >
+                      Y
+                    </div>
+                  );
+                } else {
+                  return (
+                    <div
+                      style={{
+                        color: "white",
+                        backgroundColor: "red",
+                        width: "80px",
+                        textAlign: "center",
+                      }}
+                    >
+                      Not Approved
+                    </div>
+                  );
+                }
+              }}
+            ></Column>
             <Summary>
               <TotalItem
                 alignment='right'
@@ -591,12 +882,12 @@ const CalcQuotation = () => {
 
   const addRowBG = () => {
     const addBangGiaRow: BANGGIA_DATA = {
-      CUST_CD: listVL[0].CUST_CD === undefined ? "" : listVL[0].CUST_CD,
+      CUST_CD: selectedRows.CUST_CD,
       G_CODE: selectedRows.G_CODE,
       PRICE_DATE: moment.utc().format("YYYY-MM-DD"),
       MOQ: tempQTY,
       FINAL: "N",
-      PROD_PRICE: salePriceOP.toFixed(0),
+      PROD_PRICE: Number((salePriceOP / tempQTY).toFixed(0)),
       id: banggia.length + 1,
       INS_DATE: moment.utc().format("YYYY-MM-DD HH:mm:ss"),
       INS_EMPL: userData?.EMPL_NO === undefined ? "" : userData?.EMPL_NO,
@@ -614,6 +905,12 @@ const CalcQuotation = () => {
   const handlesetCodeInfo = (keyname: string, value: any) => {
     let tempCodeInfo = { ...selectedRows, [keyname]: value };
     //console.log(tempcodefullinfo);
+    setSalePriceNB(
+      tinhgia(tempCodeInfo, listVL, tempQTY).total_costCMS * (1 + profit / 100)
+    );
+    setSalePriceOP(
+      tinhgia(tempCodeInfo, listVL, tempQTY).total_costSS * (1 + profit / 100)
+    );
     tinhgia(tempCodeInfo, listVL, tempQTY);
     setSelectedRows(tempCodeInfo);
   };
@@ -638,17 +935,15 @@ const CalcQuotation = () => {
     }
     //KNIFE
     const knife_cost =
-      (CODEINFO.KNIFE_UNIT *
-        (CODEINFO.G_WIDTH * CODEINFO.G_C * 2 +
-          CODEINFO.G_LENGTH * CODEINFO.G_C_R * 2)) /
-      TEMP_QTY;
+      CODEINFO.KNIFE_UNIT *
+      (CODEINFO.G_WIDTH * CODEINFO.G_C * 2 +
+        CODEINFO.G_LENGTH * CODEINFO.G_C_R * 2);
     const film_cost =
-      (CODEINFO.FILM_UNIT *
-        ((CODEINFO.G_WIDTH + CODEINFO.WIDTH_OFFSET) *
-          (CODEINFO.G_LENGTH + CODEINFO.LENGTH_OFFSET) *
-          CODEINFO.G_C *
-          CODEINFO.PROD_PRINT_TIMES)) /
-      TEMP_QTY;
+      CODEINFO.FILM_UNIT *
+      ((CODEINFO.G_WIDTH + CODEINFO.WIDTH_OFFSET) *
+        (CODEINFO.G_LENGTH + CODEINFO.LENGTH_OFFSET) *
+        CODEINFO.G_C *
+        CODEINFO.PROD_PRINT_TIMES);
     const ink_cost = CODEINFO.INK_UNIT * materialArea;
     const labor_cost = CODEINFO.LABOR_UNIT * materialArea;
     const delivery_cost = CODEINFO.DELIVERY_UNIT;
@@ -744,548 +1039,581 @@ const CalcQuotation = () => {
     <div className='calc_quotation'>
       <div className='calc_title'>BẢNG TÍNH GIÁ</div>
       <div className='calc_wrap'>
-        <div className='left'>
+        <div className='left' style={{ width: sh ? "20%" : "100%" }}>
           <div className='listcode'>{listcodeTable}</div>
           <div className='moqlist'></div>
           <div className='insert_button'></div>
         </div>
-        <div className='right'>
-          <div className='up'>
-            <div className='bomnvl'>{listBOMVLTable}</div>
-            <div className='product_visualize'>
-              <CodeVisualLize DATA={selectedRows} />
-              <div className='banve'>
-                <span style={{ color: "green" }}>
-                  <b>
-                    <a
-                      target='_blank'
-                      rel='noopener noreferrer'
-                      href={`/banve/${selectedRows.G_CODE}.pdf`}
-                    >
-                      LINK
-                    </a>
-                  </b>
-                </span>
+        {sh && (
+          <div className='right'>
+            <div className='up'>
+              <div className='bomnvl'>{listBOMVLTable}</div>
+              <div className='product_visualize'>
+                <CodeVisualLize DATA={selectedRows} />
+                <div className='banve'>
+                  <span style={{ color: "green" }}>
+                    <b>
+                      <a
+                        target='_blank'
+                        rel='noopener noreferrer'
+                        href={`/banve/${selectedRows.G_CODE}.pdf`}
+                      >
+                        LINK
+                      </a>
+                    </b>
+                  </span>
+                </div>
               </div>
             </div>
-          </div>
-          <div className='middle'>
-            <div className='openlink'>
-              <div className='defaultunit'>
-                <span>T/C mặc định</span>
-                <label>
-                  WIDTH_OFFSET:<br></br>
-                  <input
-                    type='text'
-                    value={
-                      defaultDM.WIDTH_OFFSET === null
-                        ? 0
-                        : defaultDM.WIDTH_OFFSET
-                    }
-                    onChange={(e) => {
-                      handlesetDefaultDM("WIDTH_OFFSET", e.target.value);
-                    }}
-                  ></input>
-                </label>
-                <label>
-                  LENGTH_OFFSET:<br></br>
-                  <input
-                    type='text'
-                    value={
-                      defaultDM.LENGTH_OFFSET === null
-                        ? 0
-                        : defaultDM.LENGTH_OFFSET
-                    }
-                    onChange={(e) => {
-                      handlesetDefaultDM("LENGTH_OFFSET", e.target.value);
-                    }}
-                  ></input>
-                </label>
-                <label>
-                  CP dao T/C:<br></br>
-                  <input
-                    type='text'
-                    value={
-                      defaultDM.KNIFE_UNIT === null ? 0 : defaultDM.KNIFE_UNIT
-                    }
-                    onChange={(e) => {
-                      handlesetDefaultDM("KNIFE_UNIT", e.target.value);
-                    }}
-                  ></input>
-                </label>
-                <label>
-                  CP film bản T/C:<br></br>
-                  <input
-                    type='text'
-                    value={
-                      defaultDM.FILM_UNIT === null ? 0 : defaultDM.FILM_UNIT
-                    }
-                    onChange={(e) => {
-                      handlesetDefaultDM("FILM_UNIT", e.target.value);
-                    }}
-                  ></input>
-                </label>
-                <label>
-                  CP mực T/C:<br></br>
-                  <input
-                    type='text'
-                    value={defaultDM.INK_UNIT === null ? 0 : defaultDM.INK_UNIT}
-                    onChange={(e) => {
-                      handlesetDefaultDM("INK_UNIT", e.target.value);
-                    }}
-                  ></input>
-                </label>
-                <label>
-                  CP nhân công T/C:<br></br>
-                  <input
-                    type='text'
-                    value={
-                      defaultDM.LABOR_UNIT === null ? 0 : defaultDM.LABOR_UNIT
-                    }
-                    onChange={(e) => {
-                      handlesetDefaultDM("LABOR_UNIT", e.target.value);
-                    }}
-                  ></input>
-                </label>
+            <div className='middle'>
+              <div className='openlink'>
+                <div className='defaultunit'>
+                  <span>T/C mặc định</span>
+                  <label>
+                    WIDTH_OFFSET:<br></br>
+                    <input
+                      type='text'
+                      value={
+                        defaultDM.WIDTH_OFFSET === null
+                          ? 0
+                          : defaultDM.WIDTH_OFFSET
+                      }
+                      onChange={(e) => {
+                        handlesetDefaultDM("WIDTH_OFFSET", e.target.value);
+                      }}
+                    ></input>
+                  </label>
+                  <label>
+                    LENGTH_OFFSET:<br></br>
+                    <input
+                      type='text'
+                      value={
+                        defaultDM.LENGTH_OFFSET === null
+                          ? 0
+                          : defaultDM.LENGTH_OFFSET
+                      }
+                      onChange={(e) => {
+                        handlesetDefaultDM("LENGTH_OFFSET", e.target.value);
+                      }}
+                    ></input>
+                  </label>
+                  <label>
+                    CP dao T/C:<br></br>
+                    <input
+                      type='text'
+                      value={
+                        defaultDM.KNIFE_UNIT === null ? 0 : defaultDM.KNIFE_UNIT
+                      }
+                      onChange={(e) => {
+                        handlesetDefaultDM("KNIFE_UNIT", e.target.value);
+                      }}
+                    ></input>
+                  </label>
+                  <label>
+                    CP film bản T/C:<br></br>
+                    <input
+                      type='text'
+                      value={
+                        defaultDM.FILM_UNIT === null ? 0 : defaultDM.FILM_UNIT
+                      }
+                      onChange={(e) => {
+                        handlesetDefaultDM("FILM_UNIT", e.target.value);
+                      }}
+                    ></input>
+                  </label>
+                  <label>
+                    CP mực T/C:<br></br>
+                    <input
+                      type='text'
+                      value={
+                        defaultDM.INK_UNIT === null ? 0 : defaultDM.INK_UNIT
+                      }
+                      onChange={(e) => {
+                        handlesetDefaultDM("INK_UNIT", e.target.value);
+                      }}
+                    ></input>
+                  </label>
+                  <label>
+                    CP nhân công T/C:<br></br>
+                    <input
+                      type='text'
+                      value={
+                        defaultDM.LABOR_UNIT === null ? 0 : defaultDM.LABOR_UNIT
+                      }
+                      onChange={(e) => {
+                        handlesetDefaultDM("LABOR_UNIT", e.target.value);
+                      }}
+                    ></input>
+                  </label>
 
-                <label>
-                  CP giao hàng T/C:<br></br>
-                  <input
-                    type='text'
-                    value={
-                      defaultDM.DELIVERY_UNIT === null
-                        ? 0
-                        : defaultDM.DELIVERY_UNIT
-                    }
-                    onChange={(e) => {
-                      handlesetDefaultDM("DELIVERY_UNIT", e.target.value);
-                    }}
-                  ></input>
-                </label>
-                <label>
-                  CP khấu hao T/C:<br></br>
-                  <input
-                    type='text'
-                    value={
-                      defaultDM.DEPRECATION_UNIT === null
-                        ? 0
-                        : defaultDM.DEPRECATION_UNIT
-                    }
-                    onChange={(e) => {
-                      handlesetDefaultDM("DEPRECATION_UNIT", e.target.value);
-                    }}
-                  ></input>
-                </label>
-                <label>
-                  CP quản lý chung T/C:<br></br>
-                  <input
-                    type='text'
-                    value={
-                      defaultDM.GMANAGEMENT_UNIT === null
-                        ? 0
-                        : defaultDM.GMANAGEMENT_UNIT
-                    }
-                    onChange={(e) => {
-                      handlesetDefaultDM("GMANAGEMENT_UNIT", e.target.value);
-                    }}
-                  ></input>
-                </label>
-                <label>
-                  Hao hụt T/C:<br></br>
-                  <input
-                    type='text'
-                    value={
-                      defaultDM.M_LOSS_UNIT === null ? 0 : defaultDM.M_LOSS_UNIT
-                    }
-                    onChange={(e) => {
-                      handlesetDefaultDM("M_LOSS_UNIT", e.target.value);
-                    }}
-                  ></input>
-                </label>
-              </div>
-              <div className='currentunit'>
-                <span>T/C hiện tại__</span>
-                <label>
-                  WIDTH_OFFSET:<br></br>
-                  <input
-                    type='text'
-                    value={
-                      selectedRows.WIDTH_OFFSET === null
-                        ? 0
-                        : selectedRows.WIDTH_OFFSET
-                    }
-                    onChange={(e) => {
-                      handlesetCodeInfo("WIDTH_OFFSET", e.target.value);
-                    }}
-                  ></input>
-                </label>
-                <label>
-                  LENGTH_OFFSET:<br></br>
-                  <input
-                    type='text'
-                    value={
-                      selectedRows.LENGTH_OFFSET === null
-                        ? 0
-                        : selectedRows.LENGTH_OFFSET
-                    }
-                    onChange={(e) => {
-                      handlesetCodeInfo("LENGTH_OFFSET", e.target.value);
-                    }}
-                  ></input>
-                </label>
-                <label>
-                  CP dao T/C:<br></br>
-                  <input
-                    type='text'
-                    value={
-                      selectedRows.KNIFE_UNIT === null
-                        ? 0
-                        : selectedRows.KNIFE_UNIT
-                    }
-                    onChange={(e) => {
-                      handlesetCodeInfo("KNIFE_UNIT", e.target.value);
-                    }}
-                  ></input>
-                </label>
-                <label>
-                  CP film bản T/C:<br></br>
-                  <input
-                    type='text'
-                    value={
-                      selectedRows.FILM_UNIT === null
-                        ? 0
-                        : selectedRows.FILM_UNIT
-                    }
-                    onChange={(e) => {
-                      handlesetCodeInfo("FILM_UNIT", e.target.value);
-                    }}
-                  ></input>
-                </label>
-                <label>
-                  CP mực T/C:<br></br>
-                  <input
-                    type='text'
-                    value={
-                      selectedRows.INK_UNIT === null ? 0 : selectedRows.INK_UNIT
-                    }
-                    onChange={(e) => {
-                      handlesetCodeInfo("INK_UNIT", e.target.value);
-                    }}
-                  ></input>
-                </label>
-                <label>
-                  CP nhân công T/C:<br></br>
-                  <input
-                    type='text'
-                    value={
-                      selectedRows.LABOR_UNIT === null
-                        ? 0
-                        : selectedRows.LABOR_UNIT
-                    }
-                    onChange={(e) => {
-                      handlesetCodeInfo("LABOR_UNIT", e.target.value);
-                    }}
-                  ></input>
-                </label>
+                  <label>
+                    CP giao hàng T/C:<br></br>
+                    <input
+                      type='text'
+                      value={
+                        defaultDM.DELIVERY_UNIT === null
+                          ? 0
+                          : defaultDM.DELIVERY_UNIT
+                      }
+                      onChange={(e) => {
+                        handlesetDefaultDM("DELIVERY_UNIT", e.target.value);
+                      }}
+                    ></input>
+                  </label>
+                  <label>
+                    CP khấu hao T/C:<br></br>
+                    <input
+                      type='text'
+                      value={
+                        defaultDM.DEPRECATION_UNIT === null
+                          ? 0
+                          : defaultDM.DEPRECATION_UNIT
+                      }
+                      onChange={(e) => {
+                        handlesetDefaultDM("DEPRECATION_UNIT", e.target.value);
+                      }}
+                    ></input>
+                  </label>
+                  <label>
+                    CP quản lý chung T/C:<br></br>
+                    <input
+                      type='text'
+                      value={
+                        defaultDM.GMANAGEMENT_UNIT === null
+                          ? 0
+                          : defaultDM.GMANAGEMENT_UNIT
+                      }
+                      onChange={(e) => {
+                        handlesetDefaultDM("GMANAGEMENT_UNIT", e.target.value);
+                      }}
+                    ></input>
+                  </label>
+                  <label>
+                    Hao hụt T/C:<br></br>
+                    <input
+                      type='text'
+                      value={
+                        defaultDM.M_LOSS_UNIT === null
+                          ? 0
+                          : defaultDM.M_LOSS_UNIT
+                      }
+                      onChange={(e) => {
+                        handlesetDefaultDM("M_LOSS_UNIT", e.target.value);
+                      }}
+                    ></input>
+                  </label>
+                </div>
+                <div className='currentunit'>
+                  <span>T/C hiện tại__</span>
+                  <label>
+                    WIDTH_OFFSET:<br></br>
+                    <input
+                      type='text'
+                      value={
+                        selectedRows.WIDTH_OFFSET === null
+                          ? 0
+                          : selectedRows.WIDTH_OFFSET
+                      }
+                      onChange={(e) => {
+                        handlesetCodeInfo(
+                          "WIDTH_OFFSET",
+                          Number(e.target.value)
+                        );
+                      }}
+                    ></input>
+                  </label>
+                  <label>
+                    LENGTH_OFFSET:<br></br>
+                    <input
+                      type='text'
+                      value={
+                        selectedRows.LENGTH_OFFSET === null
+                          ? 0
+                          : selectedRows.LENGTH_OFFSET
+                      }
+                      onChange={(e) => {
+                        handlesetCodeInfo(
+                          "LENGTH_OFFSET",
+                          Number(e.target.value)
+                        );
+                      }}
+                    ></input>
+                  </label>
+                  <label>
+                    CP dao T/C:<br></br>
+                    <input
+                      type='text'
+                      value={
+                        selectedRows.KNIFE_UNIT === null
+                          ? 0
+                          : selectedRows.KNIFE_UNIT
+                      }
+                      onChange={(e) => {
+                        handlesetCodeInfo("KNIFE_UNIT", Number(e.target.value));
+                      }}
+                    ></input>
+                  </label>
+                  <label>
+                    CP film bản T/C:<br></br>
+                    <input
+                      type='text'
+                      value={
+                        selectedRows.FILM_UNIT === null
+                          ? 0
+                          : selectedRows.FILM_UNIT
+                      }
+                      onChange={(e) => {
+                        handlesetCodeInfo("FILM_UNIT", Number(e.target.value));
+                      }}
+                    ></input>
+                  </label>
+                  <label>
+                    CP mực T/C:<br></br>
+                    <input
+                      type='text'
+                      value={
+                        selectedRows.INK_UNIT === null
+                          ? 0
+                          : selectedRows.INK_UNIT
+                      }
+                      onChange={(e) => {
+                        handlesetCodeInfo("INK_UNIT", Number(e.target.value));
+                      }}
+                    ></input>
+                  </label>
+                  <label>
+                    CP nhân công T/C:<br></br>
+                    <input
+                      type='text'
+                      value={
+                        selectedRows.LABOR_UNIT === null
+                          ? 0
+                          : selectedRows.LABOR_UNIT
+                      }
+                      onChange={(e) => {
+                        handlesetCodeInfo("LABOR_UNIT", Number(e.target.value));
+                      }}
+                    ></input>
+                  </label>
 
-                <label>
-                  CP giao hàng T/C:<br></br>
-                  <input
-                    type='text'
-                    value={
-                      selectedRows.DELIVERY_UNIT === null
-                        ? 0
-                        : selectedRows.DELIVERY_UNIT
-                    }
-                    onChange={(e) => {
-                      handlesetCodeInfo("DELIVERY_UNIT", e.target.value);
-                    }}
-                  ></input>
-                </label>
-                <label>
-                  CP khấu hao T/C:<br></br>
-                  <input
-                    type='text'
-                    value={
-                      selectedRows.DEPRECATION_UNIT === null
-                        ? 0
-                        : selectedRows.DEPRECATION_UNIT
-                    }
-                    onChange={(e) => {
-                      handlesetCodeInfo("DEPRECATION_UNIT", e.target.value);
-                    }}
-                  ></input>
-                </label>
-                <label>
-                  CP quản lý chung T/C:<br></br>
-                  <input
-                    type='text'
-                    value={
-                      selectedRows.GMANAGEMENT_UNIT === null
-                        ? 0
-                        : selectedRows.GMANAGEMENT_UNIT
-                    }
-                    onChange={(e) => {
-                      handlesetCodeInfo("GMANAGEMENT_UNIT", e.target.value);
-                    }}
-                  ></input>
-                </label>
-                <label>
-                  Hao hụt T/C:<br></br>
-                  <input
-                    type='text'
-                    value={
-                      selectedRows.M_LOSS_UNIT === null
-                        ? 0
-                        : selectedRows.M_LOSS_UNIT
-                    }
-                    onChange={(e) => {
-                      handlesetCodeInfo("M_LOSS_UNIT", e.target.value);
-                    }}
-                  ></input>
-                </label>
+                  <label>
+                    CP giao hàng T/C:<br></br>
+                    <input
+                      type='text'
+                      value={
+                        selectedRows.DELIVERY_UNIT === null
+                          ? 0
+                          : selectedRows.DELIVERY_UNIT
+                      }
+                      onChange={(e) => {
+                        handlesetCodeInfo(
+                          "DELIVERY_UNIT",
+                          Number(e.target.value)
+                        );
+                      }}
+                    ></input>
+                  </label>
+                  <label>
+                    CP khấu hao T/C:<br></br>
+                    <input
+                      type='text'
+                      value={
+                        selectedRows.DEPRECATION_UNIT === null
+                          ? 0
+                          : selectedRows.DEPRECATION_UNIT
+                      }
+                      onChange={(e) => {
+                        handlesetCodeInfo(
+                          "DEPRECATION_UNIT",
+                          Number(e.target.value)
+                        );
+                      }}
+                    ></input>
+                  </label>
+                  <label>
+                    CP quản lý chung T/C:<br></br>
+                    <input
+                      type='text'
+                      value={
+                        selectedRows.GMANAGEMENT_UNIT === null
+                          ? 0
+                          : selectedRows.GMANAGEMENT_UNIT
+                      }
+                      onChange={(e) => {
+                        handlesetCodeInfo(
+                          "GMANAGEMENT_UNIT",
+                          Number(e.target.value)
+                        );
+                      }}
+                    ></input>
+                  </label>
+                  <label>
+                    Hao hụt T/C:<br></br>
+                    <input
+                      type='text'
+                      value={
+                        selectedRows.M_LOSS_UNIT === null
+                          ? 0
+                          : selectedRows.M_LOSS_UNIT
+                      }
+                      onChange={(e) => {
+                        handlesetCodeInfo(
+                          "M_LOSS_UNIT",
+                          Number(e.target.value)
+                        );
+                      }}
+                    ></input>
+                  </label>
+                </div>
               </div>
             </div>
-          </div>
-          <div className='down'>
-            <div className='tongchiphi'>
-              <table>
-                <thead>
-                  <tr>
-                    <td width={"50%"}>HẠNG MỤC</td>
-                    <td width={"40%"}>GIÁ TRỊ</td>
-                    <td width={"10%"}>UNIT</td>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>Khổ liệu sử dụng</td>
-                    <td>
-                      {gianvl.mCutWidth.toLocaleString("en-US", {
-                        maximumFractionDigits: 2,
-                      })}
-                    </td>
-                    <td>mm</td>
-                  </tr>
-                  <tr>
-                    <td>Chiều dài liệu cần</td>
-                    <td>
-                      {gianvl.mLength.toLocaleString("en-US", {
-                        maximumFractionDigits: 2,
-                      })}
-                    </td>
-                    <td>mm</td>
-                  </tr>
-                  <tr>
-                    <td>Diện tích liệu cần</td>
-                    <td>
-                      {(gianvl.mArea * 1000000).toLocaleString("en-US", {
-                        maximumFractionDigits: 2,
-                      })}
-                    </td>
-                    <td>mm2</td>
-                  </tr>
-                  <tr>
-                    <td>Tiền VL Nội Bộ</td>
-                    <td>
-                      {gianvl.giaVLCMS.toLocaleString("en-US", {
-                        maximumFractionDigits: 2,
-                      })}
-                    </td>
-                    <td>VND</td>
-                  </tr>
-                  <tr>
-                    <td>Tiền VL Open</td>
-                    <td>
-                      {gianvl.giaVLSS.toLocaleString("en-US", {
-                        maximumFractionDigits: 2,
-                      })}
-                    </td>
-                    <td>VND</td>
-                  </tr>
-                  <tr>
-                    <td>Tiền Dao</td>
-                    <td>
-                      {gianvl.knife_cost.toLocaleString("en-US", {
-                        maximumFractionDigits: 2,
-                      })}
-                    </td>
-                    <td>VND</td>
-                  </tr>
-                  <tr>
-                    <td>Tiền film bản</td>
-                    <td>
-                      {gianvl.film_cost.toLocaleString("en-US", {
-                        maximumFractionDigits: 2,
-                      })}
-                    </td>
-                    <td>VND</td>
-                  </tr>
-                  <tr>
-                    <td>Tiền mực</td>
-                    <td>
-                      {gianvl.ink_cost.toLocaleString("en-US", {
-                        maximumFractionDigits: 2,
-                      })}
-                    </td>
-                    <td>VND</td>
-                  </tr>
-                  <tr>
-                    <td>Tiền nhân công</td>
-                    <td>
-                      {gianvl.labor_cost.toLocaleString("en-US", {
-                        maximumFractionDigits: 2,
-                      })}
-                    </td>
-                    <td>VND</td>
-                  </tr>
-                  <tr>
-                    <td>Phí vận chuyển</td>
-                    <td>
-                      {gianvl.delivery_cost.toLocaleString("en-US", {
-                        maximumFractionDigits: 2,
-                      })}
-                    </td>
-                    <td>VND</td>
-                  </tr>
-                  <tr>
-                    <td>Khấu hao máy</td>
-                    <td>
-                      {gianvl.deprecation_cost.toLocaleString("en-US", {
-                        maximumFractionDigits: 2,
-                      })}
-                    </td>
-                    <td>VND</td>
-                  </tr>
-                  <tr>
-                    <td>Phí quản lý chung</td>
-                    <td>
-                      {gianvl.gmanagement_cost.toLocaleString("en-US", {
-                        maximumFractionDigits: 2,
-                      })}
-                    </td>
-                    <td>VND</td>
-                  </tr>
-                  <tr>
-                    <td>Tổng chi phí NB</td>
-                    <td>
-                      {gianvl.totalcostCMS.toLocaleString("en-US", {
-                        maximumFractionDigits: 2,
-                      })}
-                    </td>
-                    <td>VND</td>
-                  </tr>
-                  <tr>
-                    <td>Tổng chi phí OPEN</td>
-                    <td>
-                      {gianvl.totalcostSS.toLocaleString("en-US", {
-                        maximumFractionDigits: 2,
-                      })}
-                    </td>
-                    <td>VND</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-            <div className='moqdiv'>
-              <label>
-                MOQ (EA):<br></br>
-                <input
-                  type='text'
-                  value={tempQTY}
-                  onChange={(e) => {
-                    setTempQty(Number(e.target.value));
-                    setSalePriceNB(
-                      tinhgia(selectedRows, listVL, Number(e.target.value))
-                        .total_costCMS *
-                        (1 + profit / 100)
-                    );
-                    setSalePriceOP(
-                      tinhgia(selectedRows, listVL, Number(e.target.value))
-                        .total_costSS *
-                        (1 + profit / 100)
-                    );
-                    tinhgia(selectedRows, listVL, Number(e.target.value));
-                  }}
-                ></input>
-              </label>
-              <label>
-                Lợi nhuận mong muốn (%):<br></br>
-                <input
-                  type='text'
-                  value={profit}
-                  onChange={(e) => {
-                    setProfit(Number(e.target.value));
-                    setSalePriceNB(
-                      tinhgia(selectedRows, listVL, tempQTY).total_costCMS *
-                        (1 + Number(e.target.value) / 100)
-                    );
-                    setSalePriceOP(
-                      tinhgia(selectedRows, listVL, tempQTY).total_costSS *
-                        (1 + Number(e.target.value) / 100)
-                    );
-                  }}
-                ></input>
-              </label>
-              <label>
-                Giá bán NB (MOA NB):<br></br>
-                <input
-                  type='text'
-                  value={salePriceNB.toFixed(0)}
-                  onChange={(e) => {
-                    setSalePriceNB(Number(e.target.value));
-                  }}
-                ></input>
-              </label>
-              <label>
-                Giá bán Open (MOA Open):<br></br>
-                <input
-                  type='text'
-                  value={salePriceOP.toFixed(0)}
-                  onChange={(e) => {
-                    setSalePriceOP(Number(e.target.value));
-                  }}
-                ></input>
-              </label>
-              <label>
-                Giá bán 1EA: <br></br>
-                {(salePriceOP / tempQTY).toFixed(0)}
-              </label>
-              <IconButton
-                className='buttonIcon'
-                onClick={() => {
-                  if (selectedRows.G_CODE !== "") {
-                    if (listVL.length === 0) {
-                      Swal.fire(
-                        "Thông báo",
-                        "Chú ý, code này chưa có vật liệu",
-                        "warning"
+            <div className='down'>
+              <div className='tongchiphi'>
+                <table>
+                  <thead>
+                    <tr>
+                      <td width={"50%"}>HẠNG MỤC</td>
+                      <td width={"40%"}>GIÁ TRỊ</td>
+                      <td width={"10%"}>UNIT</td>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>Khổ liệu sử dụng</td>
+                      <td>
+                        {gianvl.mCutWidth.toLocaleString("en-US", {
+                          maximumFractionDigits: 2,
+                        })}
+                      </td>
+                      <td>mm</td>
+                    </tr>
+                    <tr>
+                      <td>Chiều dài liệu cần</td>
+                      <td>
+                        {gianvl.mLength.toLocaleString("en-US", {
+                          maximumFractionDigits: 2,
+                        })}
+                      </td>
+                      <td>mm</td>
+                    </tr>
+                    <tr>
+                      <td>Diện tích liệu cần</td>
+                      <td>
+                        {(gianvl.mArea * 1000000).toLocaleString("en-US", {
+                          maximumFractionDigits: 2,
+                        })}
+                      </td>
+                      <td>mm2</td>
+                    </tr>
+                    <tr>
+                      <td>Tiền VL Nội Bộ</td>
+                      <td>
+                        {gianvl.giaVLCMS.toLocaleString("en-US", {
+                          maximumFractionDigits: 2,
+                        })}
+                      </td>
+                      <td>VND</td>
+                    </tr>
+                    <tr>
+                      <td>Tiền VL Open</td>
+                      <td>
+                        {gianvl.giaVLSS.toLocaleString("en-US", {
+                          maximumFractionDigits: 2,
+                        })}
+                      </td>
+                      <td>VND</td>
+                    </tr>
+                    <tr>
+                      <td>Tiền Dao</td>
+                      <td>
+                        {gianvl.knife_cost.toLocaleString("en-US", {
+                          maximumFractionDigits: 2,
+                        })}
+                      </td>
+                      <td>VND</td>
+                    </tr>
+                    <tr>
+                      <td>Tiền film bản</td>
+                      <td>
+                        {gianvl.film_cost.toLocaleString("en-US", {
+                          maximumFractionDigits: 2,
+                        })}
+                      </td>
+                      <td>VND</td>
+                    </tr>
+                    <tr>
+                      <td>Tiền mực</td>
+                      <td>
+                        {gianvl.ink_cost.toLocaleString("en-US", {
+                          maximumFractionDigits: 2,
+                        })}
+                      </td>
+                      <td>VND</td>
+                    </tr>
+                    <tr>
+                      <td>Tiền nhân công</td>
+                      <td>
+                        {gianvl.labor_cost.toLocaleString("en-US", {
+                          maximumFractionDigits: 2,
+                        })}
+                      </td>
+                      <td>VND</td>
+                    </tr>
+                    <tr>
+                      <td>Phí vận chuyển</td>
+                      <td>
+                        {gianvl.delivery_cost.toLocaleString("en-US", {
+                          maximumFractionDigits: 2,
+                        })}
+                      </td>
+                      <td>VND</td>
+                    </tr>
+                    <tr>
+                      <td>Khấu hao máy</td>
+                      <td>
+                        {gianvl.deprecation_cost.toLocaleString("en-US", {
+                          maximumFractionDigits: 2,
+                        })}
+                      </td>
+                      <td>VND</td>
+                    </tr>
+                    <tr>
+                      <td>Phí quản lý chung</td>
+                      <td>
+                        {gianvl.gmanagement_cost.toLocaleString("en-US", {
+                          maximumFractionDigits: 2,
+                        })}
+                      </td>
+                      <td>VND</td>
+                    </tr>
+                    <tr>
+                      <td>Tổng chi phí Nội Bộ</td>
+                      <td>
+                        {gianvl.totalcostCMS.toLocaleString("en-US", {
+                          maximumFractionDigits: 0,
+                        })}
+                      </td>
+                      <td>VND</td>
+                    </tr>
+                    <tr>
+                      <td>Tổng chi phí OPEN</td>
+                      <td>
+                        {gianvl.totalcostSS.toLocaleString("en-US", {
+                          maximumFractionDigits: 0,
+                        })}
+                      </td>
+                      <td>VND</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div className='moqdiv'>
+                <label>
+                  MOQ (EA):<br></br>
+                  <input
+                    type='text'
+                    value={tempQTY}
+                    onChange={(e) => {
+                      setTempQty(Number(e.target.value));
+                      setSalePriceNB(
+                        tinhgia(selectedRows, listVL, Number(e.target.value))
+                          .total_costCMS *
+                          (1 + profit / 100)
                       );
-                    } else {
-                      addRowBG();
-                    }
+                      setSalePriceOP(
+                        tinhgia(selectedRows, listVL, Number(e.target.value))
+                          .total_costSS *
+                          (1 + profit / 100)
+                      );
+                      tinhgia(selectedRows, listVL, Number(e.target.value));
+                    }}
+                  ></input>
+                </label>
+                <label>
+                  Lợi nhuận mong muốn (%):<br></br>
+                  <input
+                    type='text'
+                    value={profit}
+                    onChange={(e) => {
+                      setProfit(Number(e.target.value));
+                      setSalePriceNB(
+                        tinhgia(selectedRows, listVL, tempQTY).total_costCMS *
+                          (1 + Number(e.target.value) / 100)
+                      );
+                      setSalePriceOP(
+                        tinhgia(selectedRows, listVL, tempQTY).total_costSS *
+                          (1 + Number(e.target.value) / 100)
+                      );
+                    }}
+                  ></input>
+                </label>
+                <label>
+                  Giá bán Nội Bộ (MOA Nội Bộ):<br></br>
+                  <input
+                    type='text'
+                    value={salePriceNB.toFixed(0)}
+                    onChange={(e) => {
+                      setSalePriceNB(Number(e.target.value));
+                    }}
+                  ></input>
+                </label>
+                <label>
+                  Giá bán Open (MOA Open):<br></br>
+                  <input
+                    type='text'
+                    value={salePriceOP.toFixed(0)}
+                    onChange={(e) => {
+                      setSalePriceOP(Number(e.target.value));
+                    }}
+                  ></input>
+                </label>
+                <label>
+                  Giá bán 1EA: <br></br>
+                  {(salePriceOP / tempQTY).toFixed(0)}
+                </label>
+                <IconButton
+                  className='buttonIcon'
+                  onClick={() => {
+                    if (selectedRows.G_CODE !== "") {
+                      if (listVL.length === 0) {
+                        Swal.fire(
+                          "Thông báo",
+                          "Chú ý, code này chưa có vật liệu",
+                          "warning"
+                        );
+                      } else {
+                        addRowBG();
+                      }
 
-                    //console.log(banggia);
-                  } else {
-                    Swal.fire("Thông báo", "Chọn code bất kỳ !", "error");
-                  }
-                }}
-              >
-                <AiFillFolderAdd color='#69f542' size={25} />
-                Add to List
-              </IconButton>
-            </div>
-            <div className='listbaogia'>{banggiamoinhat}</div>
-            <div className='buttondiv'>
-              <div className='buttonsection'>
-                <IconButton className='buttonIcon' onClick={() => {}}>
-                  <BiSave color='#059B00' size={25} />
-                  Lưu Giá
+                      //console.log(banggia);
+                    } else {
+                      Swal.fire("Thông báo", "Chọn code bất kỳ !", "error");
+                    }
+                  }}
+                >
+                  <AiFillFolderAdd color='#69f542' size={25} />
+                  Add to List
                 </IconButton>
               </div>
+              <div className='listbaogia'>{banggiamoinhat}</div>
+              <div className='buttondiv'>
+                <div className='buttonsection'>
+                  <IconButton
+                    className='buttonIcon'
+                    onClick={() => {
+                      uploadgia();
+                      updateCurrentUnit();
+                      loadListCode();
+                    }}
+                  >
+                    <BiSave color='#059B00' size={25} />
+                    Lưu Giá
+                  </IconButton>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );
