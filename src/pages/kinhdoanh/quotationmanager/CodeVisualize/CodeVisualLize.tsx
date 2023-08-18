@@ -11,10 +11,12 @@ const CodeVisualLize = ({ DATA }: { DATA: CODEDATA }) => {
       (standard_rect * 1.0) /
       (DATA.G_LENGTH * DATA.G_C_R + DATA.G_LG * DATA.G_C_R);
   }
+
   const [productArray, setProductArrray] = useState<Array<ReactElement>>([]);
   const renderProduct = () => {
     let tempProductArray: ReactElement[] = [
       <RECTANGLE
+        key={9999}
         DATA={{
           SIZE_W:
             (DATA.G_SG_L +
@@ -41,13 +43,15 @@ const CodeVisualLize = ({ DATA }: { DATA: CODEDATA }) => {
         }}
       />,
     ];
+    let keydata: number = 0;
     for (let i = 0; i < DATA.G_C; i++) {
       for (let j = 0; j < DATA.G_C_R; j++) {
         //console.log(DATA.G_WIDTH*i+DATA.G_CG);
         //console.log(DATA.G_LENGTH*j+ DATA.G_LG);
-
+        keydata++;
         tempProductArray.push(
           <RECTANGLE
+            key={keydata}
             DATA={{
               SIZE_W: DATA.G_WIDTH * factor * 1.0,
               SIZE_H: DATA.G_LENGTH * factor * 1.0,

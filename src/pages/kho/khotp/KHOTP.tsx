@@ -36,6 +36,8 @@ interface TONKIEMGOP_CMS {
   TONG_TON_KIEM: number;
   BTP: number;
   TON_TP: number;
+  PENDINGXK: number;
+  TON_TPTT: number;
   BLOCK_QTY: number;
   GRAND_TOTAL_STOCK: number;
 }
@@ -231,6 +233,30 @@ const KHOTP = () => {
       },
     },
     {
+      field: "PENDINGXK",
+      headerName: "PENDINGXK",
+      width: 100,
+      renderCell: (params: any) => {
+        return (
+          <span style={{ color: "#9031FA" }}>
+            <b>{params.row.PENDINGXK.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "TON_TPTT",
+      headerName: "TON_TPTT",
+      width: 100,
+      renderCell: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            <b>{params.row.TON_TPTT.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
       field: "BLOCK_QTY",
       headerName: "BLOCK_QTY",
       width: 100,
@@ -330,6 +356,30 @@ const KHOTP = () => {
       },
     },
     {
+      field: "PENDINGXK",
+      headerName: "PENDINGXK",
+      width: 100,
+      renderCell: (params: any) => {
+        return (
+          <span style={{ color: "#9031FA" }}>
+            <b>{params.row.PENDINGXK.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "TON_TPTT",
+      headerName: "TON_TPTT",
+      width: 100,
+      renderCell: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            <b>{params.row.TON_TPTT.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
       field: "BLOCK_QTY",
       headerName: "BLOCK_QTY",
       width: 100,
@@ -368,6 +418,26 @@ const KHOTP = () => {
     { field: "INPUT_DATETIME", headerName: "IN_OUT_TIME", width: 150 },
     { field: "IO_Shift", headerName: "IO_Shift", width: 80 },
     { field: "IO_Type", headerName: "IO_Type", width: 80 },
+    {
+      field: "IO_Status",
+      headerName: "IO_Status",
+      width: 80,
+      renderCell: (params: any) => {
+        if (params.row.IO_Status === "Pending") {
+          return (
+            <span style={{ color: "red" }}>
+              <b>Pending</b>
+            </span>
+          );
+        } else {
+          return (
+            <span style={{ color: "green" }}>
+              <b>Closed</b>
+            </span>
+          );
+        }
+      },
+    },
     {
       field: "IO_Qty",
       headerName: "IO_Qty",
@@ -699,7 +769,7 @@ const KHOTP = () => {
                 handletraWHSTOCKCMS();
               }}
             >
-              Tồn(CMS)
+              Tồn(G_CODE)
             </button>
             <button
               className='tranhapxuatkiembutton'
@@ -727,7 +797,7 @@ const KHOTP = () => {
         </div>
         <div className='tracuuWHTable'>
           {readyRender && (
-            <DataGrid            
+            <DataGrid
               sx={{ fontSize: 12, flex: 1 }}
               components={{
                 Toolbar: CustomToolbarPOTable,

@@ -21,13 +21,31 @@ import {
 } from "devextreme-react/data-grid";
 import { IconButton } from "@mui/material";
 import { SaveExcel } from "../../../api/GlobalFunction";
-import { AiFillFileExcel } from "react-icons/ai";
+import { AiFillFileExcel, AiFillFolderAdd } from "react-icons/ai";
 import "./CalcQuotation.scss";
 import CodeVisualLize from "./CodeVisualize/CodeVisualLize";
 import { UserData } from "../../../redux/slices/globalSlice";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
+import moment from "moment";
+import DrawComponent from "../ycsxmanager/DrawComponent/DrawComponent";
+import DrawComponentTBG from "../ycsxmanager/DrawComponent/DrawComponentTBG";
+import { BiSave } from "react-icons/bi";
 
+interface BANGGIA_DATA {
+  id: number;
+  CUST_CD: string;
+  G_CODE: string;
+  PRICE_DATE: string;
+  MOQ: number;
+  PROD_PRICE: number;
+  INS_DATE: string;
+  INS_EMPL: string;
+  UPD_DATE: string;
+  UPD_EMPL: string;
+  REMARK: string;
+  FINAL: string;
+}
 export interface CODEDATA {
   id: number;
   Q_ID: string;
@@ -66,16 +84,6 @@ export interface CODEDATA {
   G_NAME_KD: string;
   CUST_NAME_KD: string;
 }
-interface BOMVLDATA {
-  id: number;
-  Q_ID: string;
-  G_CODE: string;
-  M_CODE: string;
-  M_NAME: string;
-  OPEN_PRICE: number;
-  ORIGINAL_PRICE: number;
-}
-
 interface BOM_GIA {
   id: string;
   BOM_ID?: string;
@@ -104,7 +112,6 @@ interface BOM_GIA {
   INS_DATE?: string;
   UPD_DATE?: string;
 }
-
 interface DEFAULT_DM {
   id: number;
   WIDTH_OFFSET: number;
@@ -138,9 +145,16 @@ const CalcQuotation = () => {
   const company: string = useSelector(
     (state: RootState) => state.totalSlice.company
   );
+  const userData: UserData | undefined = useSelector(
+    (state: RootState) => state.totalSlice.userData
+  );
+  const [banggia, setBangGia] = useState<Array<BANGGIA_DATA>>([]);
   const [listcode, setListCode] = useState<Array<CODEDATA>>([]);
   const [listVL, setListVL] = useState<Array<BOM_GIA>>([]);
   const [tempQTY, setTempQty] = useState(1);
+  const [profit, setProfit] = useState(10);
+  const [salePriceNB, setSalePriceNB] = useState(0);
+  const [salePriceOP, setSalePriceOP] = useState(0);
   const [defaultDM, setDefaultDM] = useState<DEFAULT_DM>({
     id: 0,
     WIDTH_OFFSET: 0,
@@ -170,7 +184,6 @@ const CalcQuotation = () => {
     totalcostCMS: 0,
     totalcostSS: 0,
   });
-
   const loadListCode = () => {
     generalQuery("loadlistcodequotation", {})
       .then((response) => {
@@ -349,7 +362,7 @@ const CalcQuotation = () => {
                   }}
                 >
                   <AiFillFileExcel color='green' size={15} />
-                  SAVE
+                  Excel
                 </IconButton>
               </Item>
               <Item name='searchPanel' />
@@ -430,7 +443,16 @@ const CalcQuotation = () => {
                   }}
                 >
                   <AiFillFileExcel color='green' size={15} />
-                  SAVE
+                  Excel
+                </IconButton>
+                <IconButton
+                  className='buttonIcon'
+                  onClick={() => {
+                    updateGIAVLBOM2();
+                  }}
+                >
+                  <AiFillFileExcel color='green' size={15} />
+                  Update Giá Liệu
                 </IconButton>
               </Item>
               <Item name='searchPanel' />
@@ -456,10 +478,14 @@ const CalcQuotation = () => {
             <Column dataField='MAT_CUTWIDTH' caption='SIZE' width={70}></Column>
             <Column
               dataField='M_CMS_PRICE'
+              caption='ORG PR'
+              width={70}
+            ></Column>
+            <Column
+              dataField='M_SS_PRICE'
               caption='OPEN PR'
               width={70}
             ></Column>
-            <Column dataField='M_SS_PRICE' caption='ORG PR' width={70}></Column>
             <Column dataField='USAGE' caption='USAGE' width={70}></Column>
             <Column
               dataField='MAT_MASTER_WIDTH'
@@ -481,7 +507,105 @@ const CalcQuotation = () => {
     ),
     [listVL]
   );
+  const banggiamoinhat = React.useMemo(
+    () => (
+      <div className='datatb'>
+        <ResponsiveContainer>
+          <DataGrid
+            autoNavigateToFocusedRow={true}
+            allowColumnReordering={true}
+            allowColumnResizing={true}
+            columnAutoWidth={false}
+            cellHintEnabled={true}
+            columnResizingMode={"widget"}
+            showColumnLines={true}
+            dataSource={banggia}
+            columnWidth='auto'
+            keyExpr='id'
+            height={"40vh"}
+            showBorders={true}
+            onSelectionChanged={(e) => {}}
+            onRowClick={(e) => {
+              //console.log(e.data);
+            }}
+          >
+            <Scrolling
+              useNative={true}
+              scrollByContent={true}
+              scrollByThumb={true}
+              showScrollbar='onHover'
+              mode='virtual'
+            />
+            <Selection mode='single' selectAllMode='allPages' />
+            <Editing
+              allowUpdating={true}
+              allowAdding={false}
+              allowDeleting={true}
+              mode='cell'
+              confirmDelete={true}
+              onChangesChange={(e) => {}}
+            />
+            <Export enabled={true} />
+            <Toolbar disabled={false}>
+              <Item location='before'>
+                <IconButton
+                  className='buttonIcon'
+                  onClick={() => {
+                    SaveExcel(banggia, "BangGia");
+                  }}
+                >
+                  <AiFillFileExcel color='green' size={15} />
+                  Excel
+                </IconButton>
+              </Item>
+              <Item name='searchPanel' />
+              <Item name='exportButton' />
+              <Item name='columnChooser' />
+            </Toolbar>
+            <FilterRow visible={true} />
+            <SearchPanel visible={true} />
+            <ColumnChooser enabled={true} />
+            <Paging defaultPageSize={15} />
+            <Pager
+              showPageSizeSelector={true}
+              allowedPageSizes={[5, 10, 15, 20, 100, 1000, 10000, "all"]}
+              showNavigationButtons={true}
+              showInfo={true}
+              infoText='Page #{0}. Total: {1} ({2} items)'
+              displayMode='compact'
+            />
+            <Summary>
+              <TotalItem
+                alignment='right'
+                column='id'
+                summaryType='count'
+                valueFormat={"decimal"}
+              />
+            </Summary>
+          </DataGrid>
+        </ResponsiveContainer>
+      </div>
+    ),
+    [banggia]
+  );
 
+  const addRowBG = () => {
+    const addBangGiaRow: BANGGIA_DATA = {
+      CUST_CD: listVL[0].CUST_CD === undefined ? "" : listVL[0].CUST_CD,
+      G_CODE: selectedRows.G_CODE,
+      PRICE_DATE: moment.utc().format("YYYY-MM-DD"),
+      MOQ: tempQTY,
+      FINAL: "N",
+      PROD_PRICE: salePriceOP.toFixed(0),
+      id: banggia.length + 1,
+      INS_DATE: moment.utc().format("YYYY-MM-DD HH:mm:ss"),
+      INS_EMPL: userData?.EMPL_NO === undefined ? "" : userData?.EMPL_NO,
+      UPD_DATE: moment.utc().format("YYYY-MM-DD HH:mm:ss"),
+      UPD_EMPL: userData?.EMPL_NO === undefined ? "" : userData?.EMPL_NO,
+      REMARK: "",
+    };
+    setBangGia([...banggia, addBangGiaRow]);
+  };
   const handlesetDefaultDM = (keyname: string, value: any) => {
     let tempDM = { ...defaultDM, [keyname]: value };
     //console.log(tempcodefullinfo);
@@ -490,6 +614,7 @@ const CalcQuotation = () => {
   const handlesetCodeInfo = (keyname: string, value: any) => {
     let tempCodeInfo = { ...selectedRows, [keyname]: value };
     //console.log(tempcodefullinfo);
+    tinhgia(tempCodeInfo, listVL, tempQTY);
     setSelectedRows(tempCodeInfo);
   };
   const tinhgia = (CODEINFO: CODEDATA, BOMNVL: BOM_GIA[], TEMP_QTY: number) => {
@@ -581,7 +706,35 @@ const CalcQuotation = () => {
       total_costSS: total_costSS,
     };
   };
-
+  const updateGIAVLBOM2 = async () => {
+    if (listVL.length > 0) {
+      for (let i = 0; i < listVL.length; i++) {
+        await generalQuery("updateGiaVLBOM2", {
+          G_CODE: listVL[i].G_CODE,
+          M_CODE: listVL[i].M_CODE,
+          M_CMS_PRICE: listVL[i].M_CMS_PRICE,
+          M_SS_PRICE: listVL[i].M_SS_PRICE,
+        })
+          .then((response) => {
+            //console.log(response.data);
+            if (response.data.tk_status !== "NG") {
+              Swal.fire("Thông báo", "Lưu giá liệu thành công", "success");
+            } else {
+              Swal.fire(
+                "Thông báo",
+                "Nội dung: " + response.data.message,
+                "error"
+              );
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }
+    } else {
+      Swal.fire("Thông báo", "Code này chưa có bom liệu", "error");
+    }
+  };
   useEffect(() => {
     loadListCode();
     loadDefaultDM();
@@ -593,7 +746,6 @@ const CalcQuotation = () => {
       <div className='calc_wrap'>
         <div className='left'>
           <div className='listcode'>{listcodeTable}</div>
-
           <div className='moqlist'></div>
           <div className='insert_button'></div>
         </div>
@@ -602,14 +754,27 @@ const CalcQuotation = () => {
             <div className='bomnvl'>{listBOMVLTable}</div>
             <div className='product_visualize'>
               <CodeVisualLize DATA={selectedRows} />
+              <div className='banve'>
+                <span style={{ color: "green" }}>
+                  <b>
+                    <a
+                      target='_blank'
+                      rel='noopener noreferrer'
+                      href={`/banve/${selectedRows.G_CODE}.pdf`}
+                    >
+                      LINK
+                    </a>
+                  </b>
+                </span>
+              </div>
             </div>
-            <div className='openlink'></div>
           </div>
           <div className='middle'>
             <div className='openlink'>
               <div className='defaultunit'>
+                <span>T/C mặc định</span>
                 <label>
-                  W_OFFSET:<br></br>
+                  WIDTH_OFFSET:<br></br>
                   <input
                     type='text'
                     value={
@@ -623,7 +788,7 @@ const CalcQuotation = () => {
                   ></input>
                 </label>
                 <label>
-                  L_OFFSET:<br></br>
+                  LENGTH_OFFSET:<br></br>
                   <input
                     type='text'
                     value={
@@ -637,7 +802,7 @@ const CalcQuotation = () => {
                   ></input>
                 </label>
                 <label>
-                  KNIFE_UNIT:<br></br>
+                  CP dao T/C:<br></br>
                   <input
                     type='text'
                     value={
@@ -649,7 +814,7 @@ const CalcQuotation = () => {
                   ></input>
                 </label>
                 <label>
-                  FILM_UNIT:<br></br>
+                  CP film bản T/C:<br></br>
                   <input
                     type='text'
                     value={
@@ -661,7 +826,7 @@ const CalcQuotation = () => {
                   ></input>
                 </label>
                 <label>
-                  INK_UNIT:<br></br>
+                  CP mực T/C:<br></br>
                   <input
                     type='text'
                     value={defaultDM.INK_UNIT === null ? 0 : defaultDM.INK_UNIT}
@@ -671,7 +836,7 @@ const CalcQuotation = () => {
                   ></input>
                 </label>
                 <label>
-                  LABOR_UNIT:<br></br>
+                  CP nhân công T/C:<br></br>
                   <input
                     type='text'
                     value={
@@ -684,7 +849,7 @@ const CalcQuotation = () => {
                 </label>
 
                 <label>
-                  DELIVERY_UNIT:<br></br>
+                  CP giao hàng T/C:<br></br>
                   <input
                     type='text'
                     value={
@@ -698,7 +863,7 @@ const CalcQuotation = () => {
                   ></input>
                 </label>
                 <label>
-                  DEPRECATION_UNIT:<br></br>
+                  CP khấu hao T/C:<br></br>
                   <input
                     type='text'
                     value={
@@ -712,7 +877,7 @@ const CalcQuotation = () => {
                   ></input>
                 </label>
                 <label>
-                  GMANAGEMENT_UNIT:<br></br>
+                  CP quản lý chung T/C:<br></br>
                   <input
                     type='text'
                     value={
@@ -726,7 +891,7 @@ const CalcQuotation = () => {
                   ></input>
                 </label>
                 <label>
-                  M_LOSS_UNIT:<br></br>
+                  Hao hụt T/C:<br></br>
                   <input
                     type='text'
                     value={
@@ -739,8 +904,9 @@ const CalcQuotation = () => {
                 </label>
               </div>
               <div className='currentunit'>
+                <span>T/C hiện tại__</span>
                 <label>
-                  W_OFFSET:<br></br>
+                  WIDTH_OFFSET:<br></br>
                   <input
                     type='text'
                     value={
@@ -754,7 +920,7 @@ const CalcQuotation = () => {
                   ></input>
                 </label>
                 <label>
-                  L_OFFSET:<br></br>
+                  LENGTH_OFFSET:<br></br>
                   <input
                     type='text'
                     value={
@@ -768,7 +934,7 @@ const CalcQuotation = () => {
                   ></input>
                 </label>
                 <label>
-                  KNIFE_UNIT:<br></br>
+                  CP dao T/C:<br></br>
                   <input
                     type='text'
                     value={
@@ -782,7 +948,7 @@ const CalcQuotation = () => {
                   ></input>
                 </label>
                 <label>
-                  FILM_UNIT:<br></br>
+                  CP film bản T/C:<br></br>
                   <input
                     type='text'
                     value={
@@ -796,7 +962,7 @@ const CalcQuotation = () => {
                   ></input>
                 </label>
                 <label>
-                  INK_UNIT:<br></br>
+                  CP mực T/C:<br></br>
                   <input
                     type='text'
                     value={
@@ -808,7 +974,7 @@ const CalcQuotation = () => {
                   ></input>
                 </label>
                 <label>
-                  LABOR_UNIT:<br></br>
+                  CP nhân công T/C:<br></br>
                   <input
                     type='text'
                     value={
@@ -823,7 +989,7 @@ const CalcQuotation = () => {
                 </label>
 
                 <label>
-                  DELIVERY_UNIT:<br></br>
+                  CP giao hàng T/C:<br></br>
                   <input
                     type='text'
                     value={
@@ -837,7 +1003,7 @@ const CalcQuotation = () => {
                   ></input>
                 </label>
                 <label>
-                  DEPRECATION_UNIT:<br></br>
+                  CP khấu hao T/C:<br></br>
                   <input
                     type='text'
                     value={
@@ -851,7 +1017,7 @@ const CalcQuotation = () => {
                   ></input>
                 </label>
                 <label>
-                  GMANAGEMENT_UNIT:<br></br>
+                  CP quản lý chung T/C:<br></br>
                   <input
                     type='text'
                     value={
@@ -865,7 +1031,7 @@ const CalcQuotation = () => {
                   ></input>
                 </label>
                 <label>
-                  M_LOSS_UNIT:<br></br>
+                  Hao hụt T/C:<br></br>
                   <input
                     type='text'
                     value={
@@ -902,7 +1068,7 @@ const CalcQuotation = () => {
                     <td>mm</td>
                   </tr>
                   <tr>
-                    <td>Chiều dài liệu mỗi con hàng</td>
+                    <td>Chiều dài liệu cần</td>
                     <td>
                       {gianvl.mLength.toLocaleString("en-US", {
                         maximumFractionDigits: 2,
@@ -911,13 +1077,13 @@ const CalcQuotation = () => {
                     <td>mm</td>
                   </tr>
                   <tr>
-                    <td>Diện tích liệu mỗi con hàng</td>
+                    <td>Diện tích liệu cần</td>
                     <td>
-                      {gianvl.mArea.toLocaleString("en-US", {
+                      {(gianvl.mArea * 1000000).toLocaleString("en-US", {
                         maximumFractionDigits: 2,
                       })}
                     </td>
-                    <td>m2</td>
+                    <td>mm2</td>
                   </tr>
                   <tr>
                     <td>Tiền VL Nội Bộ</td>
@@ -926,7 +1092,7 @@ const CalcQuotation = () => {
                         maximumFractionDigits: 2,
                       })}
                     </td>
-                    <td>{company === "PVN" ? "VND" : "USD"}</td>
+                    <td>VND</td>
                   </tr>
                   <tr>
                     <td>Tiền VL Open</td>
@@ -935,7 +1101,7 @@ const CalcQuotation = () => {
                         maximumFractionDigits: 2,
                       })}
                     </td>
-                    <td>{company === "PVN" ? "VND" : "USD"}</td>
+                    <td>VND</td>
                   </tr>
                   <tr>
                     <td>Tiền Dao</td>
@@ -944,7 +1110,7 @@ const CalcQuotation = () => {
                         maximumFractionDigits: 2,
                       })}
                     </td>
-                    <td>{company === "PVN" ? "VND" : "USD"}</td>
+                    <td>VND</td>
                   </tr>
                   <tr>
                     <td>Tiền film bản</td>
@@ -953,7 +1119,7 @@ const CalcQuotation = () => {
                         maximumFractionDigits: 2,
                       })}
                     </td>
-                    <td>{company === "PVN" ? "VND" : "USD"}</td>
+                    <td>VND</td>
                   </tr>
                   <tr>
                     <td>Tiền mực</td>
@@ -962,7 +1128,7 @@ const CalcQuotation = () => {
                         maximumFractionDigits: 2,
                       })}
                     </td>
-                    <td>{company === "PVN" ? "VND" : "USD"}</td>
+                    <td>VND</td>
                   </tr>
                   <tr>
                     <td>Tiền nhân công</td>
@@ -971,7 +1137,7 @@ const CalcQuotation = () => {
                         maximumFractionDigits: 2,
                       })}
                     </td>
-                    <td>{company === "PVN" ? "VND" : "USD"}</td>
+                    <td>VND</td>
                   </tr>
                   <tr>
                     <td>Phí vận chuyển</td>
@@ -980,7 +1146,7 @@ const CalcQuotation = () => {
                         maximumFractionDigits: 2,
                       })}
                     </td>
-                    <td>{company === "PVN" ? "VND" : "USD"}</td>
+                    <td>VND</td>
                   </tr>
                   <tr>
                     <td>Khấu hao máy</td>
@@ -989,7 +1155,7 @@ const CalcQuotation = () => {
                         maximumFractionDigits: 2,
                       })}
                     </td>
-                    <td>{company === "PVN" ? "VND" : "USD"}</td>
+                    <td>VND</td>
                   </tr>
                   <tr>
                     <td>Phí quản lý chung</td>
@@ -998,7 +1164,7 @@ const CalcQuotation = () => {
                         maximumFractionDigits: 2,
                       })}
                     </td>
-                    <td>{company === "PVN" ? "VND" : "USD"}</td>
+                    <td>VND</td>
                   </tr>
                   <tr>
                     <td>Tổng chi phí NB</td>
@@ -1007,7 +1173,7 @@ const CalcQuotation = () => {
                         maximumFractionDigits: 2,
                       })}
                     </td>
-                    <td>{company === "PVN" ? "VND" : "USD"}</td>
+                    <td>VND</td>
                   </tr>
                   <tr>
                     <td>Tổng chi phí OPEN</td>
@@ -1016,25 +1182,108 @@ const CalcQuotation = () => {
                         maximumFractionDigits: 2,
                       })}
                     </td>
-                    <td>{company === "PVN" ? "VND" : "USD"}</td>
+                    <td>VND</td>
                   </tr>
                 </tbody>
               </table>
             </div>
             <div className='moqdiv'>
               <label>
-                MOQ:<br></br>
+                MOQ (EA):<br></br>
                 <input
                   type='text'
                   value={tempQTY}
                   onChange={(e) => {
                     setTempQty(Number(e.target.value));
+                    setSalePriceNB(
+                      tinhgia(selectedRows, listVL, Number(e.target.value))
+                        .total_costCMS *
+                        (1 + profit / 100)
+                    );
+                    setSalePriceOP(
+                      tinhgia(selectedRows, listVL, Number(e.target.value))
+                        .total_costSS *
+                        (1 + profit / 100)
+                    );
                     tinhgia(selectedRows, listVL, Number(e.target.value));
                   }}
                 ></input>
               </label>
+              <label>
+                Lợi nhuận mong muốn (%):<br></br>
+                <input
+                  type='text'
+                  value={profit}
+                  onChange={(e) => {
+                    setProfit(Number(e.target.value));
+                    setSalePriceNB(
+                      tinhgia(selectedRows, listVL, tempQTY).total_costCMS *
+                        (1 + Number(e.target.value) / 100)
+                    );
+                    setSalePriceOP(
+                      tinhgia(selectedRows, listVL, tempQTY).total_costSS *
+                        (1 + Number(e.target.value) / 100)
+                    );
+                  }}
+                ></input>
+              </label>
+              <label>
+                Giá bán NB (MOA NB):<br></br>
+                <input
+                  type='text'
+                  value={salePriceNB.toFixed(0)}
+                  onChange={(e) => {
+                    setSalePriceNB(Number(e.target.value));
+                  }}
+                ></input>
+              </label>
+              <label>
+                Giá bán Open (MOA Open):<br></br>
+                <input
+                  type='text'
+                  value={salePriceOP.toFixed(0)}
+                  onChange={(e) => {
+                    setSalePriceOP(Number(e.target.value));
+                  }}
+                ></input>
+              </label>
+              <label>
+                Giá bán 1EA: <br></br>
+                {(salePriceOP / tempQTY).toFixed(0)}
+              </label>
+              <IconButton
+                className='buttonIcon'
+                onClick={() => {
+                  if (selectedRows.G_CODE !== "") {
+                    if (listVL.length === 0) {
+                      Swal.fire(
+                        "Thông báo",
+                        "Chú ý, code này chưa có vật liệu",
+                        "warning"
+                      );
+                    } else {
+                      addRowBG();
+                    }
+
+                    //console.log(banggia);
+                  } else {
+                    Swal.fire("Thông báo", "Chọn code bất kỳ !", "error");
+                  }
+                }}
+              >
+                <AiFillFolderAdd color='#69f542' size={25} />
+                Add to List
+              </IconButton>
             </div>
-            <div className='savebutton'></div>
+            <div className='listbaogia'>{banggiamoinhat}</div>
+            <div className='buttondiv'>
+              <div className='buttonsection'>
+                <IconButton className='buttonIcon' onClick={() => {}}>
+                  <BiSave color='#059B00' size={25} />
+                  Lưu Giá
+                </IconButton>
+              </div>
+            </div>
           </div>
         </div>
       </div>
