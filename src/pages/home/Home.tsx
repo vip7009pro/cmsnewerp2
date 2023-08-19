@@ -8,14 +8,21 @@ import { generalQuery } from "../../api/Api";
 import Swal from "sweetalert2";
 import PrimarySearchAppBar from "../../components/AppBar/AppBarCustom";
 import CHAT from "../chat/CHAT";
-import { Box, IconButton, Tab, TabProps, Tabs, Typography } from "@mui/material";
+import {
+  Box,
+  IconButton,
+  Tab,
+  TabProps,
+  Tabs,
+  Typography,
+} from "@mui/material";
 import { AiOutlineCloseCircle } from "react-icons/ai";
 import { RootState } from "../../redux/store";
 import { useSelector, useDispatch } from "react-redux";
 import { addTab, closeTab, settabIndex } from "../../redux/slices/globalSlice";
 import AccountInfo from "../../components/Navbar/AccountInfo/AccountInfo";
 import styled from "@emotion/styled";
-export const current_ver: number = 188;
+export const current_ver: number = 192;
 interface ELE_ARRAY {
   REACT_ELE: ReactElement;
   ELE_NAME: string;
@@ -25,9 +32,7 @@ function Home() {
   const company: string = useSelector(
     (state: RootState) => state.totalSlice.company
   );
-  const theme: any = useSelector(
-    (state: RootState) => state.totalSlice.theme
-  );
+  const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const tabs: ELE_ARRAY[] = useSelector(
     (state: RootState) => state.totalSlice.tabs
   );
@@ -46,21 +51,20 @@ function Home() {
     to: { x: 0, y: 0 },
   });
   const [checkVerWeb, setCheckVerWeb] = useState(1);
-  const updatechamcongdiemdanh=()=> {
-    generalQuery("updatechamcongdiemdanhauto", {  })
-    .then((response) => {
-      //console.log(response.data.data);
-      if (response.data.tk_status !== "NG") {
-        
-      }
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-  }
+  const updatechamcongdiemdanh = () => {
+    generalQuery("updatechamcongdiemdanhauto", {})
+      .then((response) => {
+        //console.log(response.data.data);
+        if (response.data.tk_status !== "NG") {
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
   const CustomTab = styled((props: TabProps) => <Tab {...props} />)({
     // Tùy chỉnh kiểu cho tab tại đây
-    color: 'gray', // Ví dụ: đặt màu chữ là màu xanh
+    color: "gray", // Ví dụ: đặt màu chữ là màu xanh
     fontWeight: 200, // Ví dụ: đặt độ đậm cho chữ
     // Thêm các kiểu tùy chỉnh khác tại đây...
   });
@@ -123,9 +127,8 @@ function Home() {
     }, 30000);
 
     let intervalID2 = window.setInterval(() => {
-      updatechamcongdiemdanh();      
+      updatechamcongdiemdanh();
     }, 5000);
-
 
     return () => {
       window.clearInterval(intervalID);
@@ -173,7 +176,11 @@ function Home() {
                     scrollButtons
                     allowScrollButtonsMobile
                     style={{
-                      backgroundImage: `${company === "CMS" ?  theme.CMS.backgroundImage: theme.PVN.backgroundImage}`,
+                      backgroundImage: `${
+                        company === "CMS"
+                          ? theme.CMS.backgroundImage
+                          : theme.PVN.backgroundImage
+                      }`,
                       marginRight: "5px",
                       border: "none",
                       minHeight: "2px",
@@ -188,14 +195,18 @@ function Home() {
                           <CustomTab
                             key={index}
                             /* label={index + 1 + "." + ele.ELE_NAME} */
-                            label={<CustomTabLabel style={{fontSize:'0.8rem'}}>{index+1}.{ele.ELE_NAME}</CustomTabLabel>}
+                            label={
+                              <CustomTabLabel style={{ fontSize: "0.8rem" }}>
+                                {index + 1}.{ele.ELE_NAME}
+                              </CustomTabLabel>
+                            }
                             value={index}
                             style={{
                               minHeight: "2px",
                               height: "5px",
                               boxSizing: "border-box",
                               borderRadius: "5px",
-                            }}                            
+                            }}
                           ></CustomTab>
                         );
                       }
@@ -211,8 +222,8 @@ function Home() {
                       key={index}
                       className='component_element'
                       style={{
-                        visibility: index === tabIndex ? "visible" : "hidden",     
-                        width: sidebarStatus ? "85%" : "100%",                  
+                        visibility: index === tabIndex ? "visible" : "hidden",
+                        width: sidebarStatus ? "85%" : "100%",
                       }}
                     >
                       {ele.REACT_ELE}

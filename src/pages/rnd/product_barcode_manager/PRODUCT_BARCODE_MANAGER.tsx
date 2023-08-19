@@ -22,7 +22,13 @@ import {
   TotalItem,
 } from "devextreme-react/data-grid";
 import moment from "moment";
-import React, { startTransition, useContext, useEffect, useState, useTransition } from "react";
+import React, {
+  startTransition,
+  useContext,
+  useEffect,
+  useState,
+  useTransition,
+} from "react";
 import { AiFillCloseCircle, AiFillFileExcel } from "react-icons/ai";
 import Swal from "sweetalert2";
 import "./PRODUCT_BARCODE_MANAGER.scss";
@@ -102,7 +108,7 @@ const PRODUCT_BARCODE_MANAGER = () => {
     BARCODE_RELI: "",
     BARCODE_RND: "",
     BARCODE_STT: "",
-    BARCODE_TYPE: "",
+    BARCODE_TYPE: "1D",
     G_NAME: "",
     STATUS: "",
   });
@@ -162,7 +168,7 @@ const PRODUCT_BARCODE_MANAGER = () => {
       .catch((error) => {
         console.log(error);
       });
-      console.log('barcodeExist',barcodeExist);
+    console.log("barcodeExist", barcodeExist);
 
     if (barcodeExist === false) {
       await generalQuery("addBarcode", selectedRows)
@@ -219,16 +225,15 @@ const PRODUCT_BARCODE_MANAGER = () => {
             keyExpr='id'
             height={"75vh"}
             showBorders={true}
-            onRowPrepared={(e)=> {
+            onRowPrepared={(e) => {
               e.rowElement.style.height = "15mm";
-              e.rowElement.style.alignSelf ='center';
-              e.rowElement.style.alignContent ='center';
-              e.rowElement.style.alignItems ='center';
-              e.rowElement.style.justifyContent ='center';
-              e.rowElement.style.justifyItems ='center';
-              e.rowElement.style.justifySelf ='center';              
-            }
-            }
+              e.rowElement.style.alignSelf = "center";
+              e.rowElement.style.alignContent = "center";
+              e.rowElement.style.alignItems = "center";
+              e.rowElement.style.justifyContent = "center";
+              e.rowElement.style.justifyItems = "center";
+              e.rowElement.style.justifySelf = "center";
+            }}
             onSelectionChanged={(e) => {
               //setSelectedRows(e.selectedRowsData[0]);
             }}
@@ -329,7 +334,7 @@ const PRODUCT_BARCODE_MANAGER = () => {
                       style={{
                         color: "white",
                         backgroundColor: "#13DC0C",
-                        width: "80px",                        
+                        width: "80px",
                         textAlign: "center",
                       }}
                     >
@@ -355,7 +360,7 @@ const PRODUCT_BARCODE_MANAGER = () => {
             <Column
               dataField='BARCODE_RND'
               caption='CODE VISUALIZE'
-              width={100}              
+              width={100}
               cellRender={(e: any) => {
                 if (e.data.BARCODE_TYPE === "QR") {
                   return (
@@ -365,27 +370,29 @@ const PRODUCT_BARCODE_MANAGER = () => {
                         backgroundColor: "#13DC0C",
                         width: "80px",
                         textAlign: "center",
-                        position: 'relative'
+                        position: "relative",
                       }}
                     >
-                      <QRCODE DATA={{CAVITY_PRINT:2,
-                        DOITUONG_NAME:'bc',
-                        DOITUONG_NO:1,
-                        DOITUONG_STT:'0',
-                        FONT_NAME:'Arial',
-                        FONT_SIZE:6,
-                        FONT_STYLE:'normal',
-                        G_CODE_MAU:'',
-                        GIATRI:e.data.BARCODE_RND,
-                        PHANLOAI_DT:'QR CODE',
-                        POS_X:0,
-                        POS_Y:0,
-                        SIZE_W:10,
-                        SIZE_H:10,
-                        REMARK:'',
-                        ROTATE:0,
-                      }
-                      }/>
+                      <QRCODE
+                        DATA={{
+                          CAVITY_PRINT: 2,
+                          DOITUONG_NAME: "bc",
+                          DOITUONG_NO: 1,
+                          DOITUONG_STT: "0",
+                          FONT_NAME: "Arial",
+                          FONT_SIZE: 6,
+                          FONT_STYLE: "normal",
+                          G_CODE_MAU: "",
+                          GIATRI: e.data.BARCODE_RND,
+                          PHANLOAI_DT: "QR CODE",
+                          POS_X: 0,
+                          POS_Y: 0,
+                          SIZE_W: 10,
+                          SIZE_H: 10,
+                          REMARK: "",
+                          ROTATE: 0,
+                        }}
+                      />
                     </div>
                   );
                 } else if (e.data.BARCODE_TYPE === "1D") {
@@ -396,27 +403,29 @@ const PRODUCT_BARCODE_MANAGER = () => {
                         backgroundColor: "#13DC0C",
                         width: "80px",
                         textAlign: "center",
-                        position: 'relative'
+                        position: "relative",
                       }}
                     >
-                      <BARCODE DATA={{CAVITY_PRINT:2,
-                        DOITUONG_NAME:'bc',
-                        DOITUONG_NO:1,
-                        DOITUONG_STT:'0',
-                        FONT_NAME:'Arial',
-                        FONT_SIZE:6,
-                        FONT_STYLE:'normal',
-                        G_CODE_MAU:'',
-                        GIATRI:e.data.BARCODE_RND,
-                        PHANLOAI_DT:'QR CODE',
-                        POS_X:0,
-                        POS_Y:0,
-                        SIZE_W:60,
-                        SIZE_H:10,
-                        REMARK:'',
-                        ROTATE:0,
-                      }
-                      }/>
+                      <BARCODE
+                        DATA={{
+                          CAVITY_PRINT: 2,
+                          DOITUONG_NAME: "bc",
+                          DOITUONG_NO: 1,
+                          DOITUONG_STT: "0",
+                          FONT_NAME: "Arial",
+                          FONT_SIZE: 6,
+                          FONT_STYLE: "normal",
+                          G_CODE_MAU: "",
+                          GIATRI: e.data.BARCODE_RND,
+                          PHANLOAI_DT: "QR CODE",
+                          POS_X: 0,
+                          POS_Y: 0,
+                          SIZE_W: 60,
+                          SIZE_H: 10,
+                          REMARK: "",
+                          ROTATE: 0,
+                        }}
+                      />
                     </div>
                   );
                 } else if (e.data.BARCODE_TYPE === "MATRIX") {
@@ -427,27 +436,29 @@ const PRODUCT_BARCODE_MANAGER = () => {
                         backgroundColor: "#13DC0C",
                         width: "80px",
                         textAlign: "center",
-                        position: 'relative'
+                        position: "relative",
                       }}
                     >
-                      <DATAMATRIX DATA={{CAVITY_PRINT:2,
-                        DOITUONG_NAME:'bc',
-                        DOITUONG_NO:1,
-                        DOITUONG_STT:'0',
-                        FONT_NAME:'Arial',
-                        FONT_SIZE:6,
-                        FONT_STYLE:'normal',
-                        G_CODE_MAU:'',
-                        GIATRI:e.data.BARCODE_RND,
-                        PHANLOAI_DT:'QR CODE',
-                        POS_X:0,
-                        POS_Y:0,
-                        SIZE_W:10,
-                        SIZE_H:10,
-                        REMARK:'',
-                        ROTATE:0,
-                      }
-                      }/>
+                      <DATAMATRIX
+                        DATA={{
+                          CAVITY_PRINT: 2,
+                          DOITUONG_NAME: "bc",
+                          DOITUONG_NO: 1,
+                          DOITUONG_STT: "0",
+                          FONT_NAME: "Arial",
+                          FONT_SIZE: 6,
+                          FONT_STYLE: "normal",
+                          G_CODE_MAU: "",
+                          GIATRI: e.data.BARCODE_RND,
+                          PHANLOAI_DT: "QR CODE",
+                          POS_X: 0,
+                          POS_Y: 0,
+                          SIZE_W: 10,
+                          SIZE_H: 10,
+                          REMARK: "",
+                          ROTATE: 0,
+                        }}
+                      />
                     </div>
                   );
                 }
@@ -1148,7 +1159,7 @@ const PRODUCT_BARCODE_MANAGER = () => {
         <div className='tracuuDataInspectionform'>
           <div className='forminput'>
             <div className='forminputcolumn'>
-              <label>                
+              <label>
                 <Autocomplete
                   sx={{ fontSize: "0.6rem" }}
                   ListboxProps={{ style: { fontSize: "0.7rem" } }}
@@ -1166,16 +1177,21 @@ const PRODUCT_BARCODE_MANAGER = () => {
                   onChange={(event: any, newValue: CodeListData | any) => {
                     console.log(newValue);
                     setSelectedCode(newValue);
-                    setBarCodeInfo("G_CODE", newValue.G_CODE)
+                    setBarCodeInfo("G_CODE", newValue.G_CODE);
                   }}
-                  value={codeList.filter((e:CodeListData, index: number)=> e.G_CODE === selectedRows.G_CODE)[0]}
+                  value={
+                    codeList.filter(
+                      (e: CodeListData, index: number) =>
+                        e.G_CODE === selectedRows.G_CODE
+                    )[0]
+                  }
                   isOptionEqualToValue={(option: any, value: any) =>
                     option.G_CODE === value.G_CODE
                   }
                 />
-              </label>             
+              </label>
             </div>
-            <div className='forminputcolumn'>              
+            <div className='forminputcolumn'>
               <label>
                 <b>STT BARCODE:</b>{" "}
                 <input

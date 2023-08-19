@@ -37,6 +37,7 @@ import PRODUCT_BARCODE_MANAGER from "./pages/rnd/product_barcode_manager/PRODUCT
 import QLGN from "./pages/rnd/quanlygiaonhandaofilm/QLGN";
 import KHOTPNEW from "./pages/kho/khotp_new/KHOTPNEW";
 import KHOTOTAL from "./pages/kho/KHOTOTAL";
+import { Button } from "@mui/material";
 /* import DATASX2 from "./pages/qlsx/QLSXPLAN/DATASX/DATASX2";
 import Home from "./pages/home/Home";
 import DiemDanhNhom from "./pages/nhansu/DiemDanhNhom/DiemDanhNhom";
@@ -490,7 +491,7 @@ function App() {
               event: "login",
               data: data.data.data.EMPL_NO,
             })
-          );
+          );         
           /* setLoginState(true); */
           dispatch(login(true));
         }
@@ -524,6 +525,7 @@ function App() {
   }, []);
   return (
     <>
+    
       {globalLoginState && (
         <div className='App'>
           <Suspense fallback={<FallBackComponent />}>
@@ -629,9 +631,15 @@ function App() {
                         <Route path='ycsxmanager' element={<YCSXManager />} />
                         <Route path='dtc' element={<DTC />} />
                         <Route path='thembomamazon' element={<BOM_AMAZON />} />
-                        <Route path='designamazon' element={<DESIGN_AMAZON />}/>
-                        <Route path='productbarcodemanager' element={<PRODUCT_BARCODE_MANAGER />}/>
-                        <Route path='quanlygiaonhan' element={<QLGN />}/>
+                        <Route
+                          path='designamazon'
+                          element={<DESIGN_AMAZON />}
+                        />
+                        <Route
+                          path='productbarcodemanager'
+                          element={<PRODUCT_BARCODE_MANAGER />}
+                        />
+                        <Route path='quanlygiaonhan' element={<QLGN />} />
                       </Route>
                       <Route
                         path='qlsx'
@@ -665,9 +673,9 @@ function App() {
                           </ProtectedRoute>
                         }
                       >
-                        <Route index element={<MUAHANG />} />                        
-                        <Route path='quanlyvatlieu' element={<QLVL />} />                        
-                        <Route path='mrp' element={<QLVL />} />                        
+                        <Route index element={<MUAHANG />} />
+                        <Route path='quanlyvatlieu' element={<QLVL />} />
+                        <Route path='mrp' element={<QLVL />} />
                       </Route>
                       <Route
                         path='bophankho'
@@ -681,10 +689,10 @@ function App() {
                           </ProtectedRoute>
                         }
                       >
-                        <Route index element={<KHOTPNEW />} />                        
-                        <Route path='nhapxuattontp' element={<KHOTPNEW />} />  
-                        <Route path='nhapxuattonlieu' element={<KHOLIEU />} /> 
-                      </Route>                      
+                        <Route index element={<KHOTPNEW />} />
+                        <Route path='nhapxuattontp' element={<KHOTPNEW />} />
+                        <Route path='nhapxuattonlieu' element={<KHOLIEU />} />
+                      </Route>
                       <Route
                         path='qc'
                         element={

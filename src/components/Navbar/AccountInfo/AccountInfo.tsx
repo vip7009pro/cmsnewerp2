@@ -4,24 +4,27 @@ import { generalQuery, uploadQuery } from "../../../api/Api";
 import { UserContext, LangConText } from "../../../api/Context";
 import "./AccountInfo.scss";
 
-
 import LinearProgress, {
   LinearProgressProps,
 } from "@mui/material/LinearProgress";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import getsentence from "../../String/String";
-import { IconButton } from "@mui/material";
+import { Button, IconButton } from "@mui/material";
 import { AiOutlineCloudUpload } from "react-icons/ai";
 import Swal from "sweetalert2";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
-import { UserData, changeUserData } from "../../../redux/slices/globalSlice";
-import axios from 'axios';
+import {
+  UserData,
+  changeUserData,
+  update_socket,
+} from "../../../redux/slices/globalSlice";
+import axios from "axios";
 
-interface  MYCHAMCONG {
-  MIN_TIME: string,
-  MAX_TIME: string,
+interface MYCHAMCONG {
+  MIN_TIME: string;
+  MAX_TIME: string;
 }
 export function LinearProgressWithLabel(
   props: LinearProgressProps & { value: number }
@@ -47,13 +50,12 @@ export default function AccountInfo() {
   const company: string = useSelector(
     (state: RootState) => state.totalSlice.company
   );
-  const theme: any = useSelector(
-    (state: RootState) => state.totalSlice.theme
-  );
+  const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
 
   const dispatch = useDispatch();
-  const [mychamcong,setMyChamCong] = useState<MYCHAMCONG>();
-  const [lang,setLang] = useContext(LangConText);
+  const [logoutID, setLogOutID] = useState("");
+  const [mychamcong, setMyChamCong] = useState<MYCHAMCONG>();
+  const [lang, setLang] = useContext(LangConText);
   const [workday, setWorkDay] = useState(0);
   const [overtimeday, setOverTimeDay] = useState(0);
   const [nghiday, setNghiDay] = useState(0);
@@ -118,7 +120,7 @@ export default function AccountInfo() {
       });
 
     generalQuery("countthuongphat", insertData)
-      .then((response) => {        
+      .then((response) => {
         setThuongPhat({
           count_thuong: response.data.data.count_thuong[0].THUONG,
           count_phat: response.data.data.count_phat[0]?.PHAT,
@@ -128,20 +130,28 @@ export default function AccountInfo() {
         console.log(error);
       });
   };
-  const getchamcong =()=> {
+  const getchamcong = () => {
     generalQuery("checkMYCHAMCONG", {})
       .then((response) => {
         //console.log(response.data.data);
         if (response.data.tk_status !== "NG") {
           //console.log('data',response.data.data)
           let loaded_data: MYCHAMCONG = response.data.data[0];
-          loaded_data.MIN_TIME = loaded_data.MIN_TIME?.substring(11,19);
-          loaded_data.MAX_TIME = loaded_data.MAX_TIME?.substring(11,19); 
-          let tempminhour: number = Number(loaded_data.MIN_TIME?.substring(0,2));
-          let tempminminute: number = Number(loaded_data.MIN_TIME?.substring(3,5));
+          loaded_data.MIN_TIME = loaded_data.MIN_TIME?.substring(11, 19);
+          loaded_data.MAX_TIME = loaded_data.MAX_TIME?.substring(11, 19);
+          let tempminhour: number = Number(
+            loaded_data.MIN_TIME?.substring(0, 2)
+          );
+          let tempminminute: number = Number(
+            loaded_data.MIN_TIME?.substring(3, 5)
+          );
 
-          let tempmaxhour: number = Number(loaded_data.MAX_TIME?.substring(0,2));
-          let tempmaxminute: number = Number(loaded_data.MAX_TIME?.substring(3,5));
+          let tempmaxhour: number = Number(
+            loaded_data.MAX_TIME?.substring(0, 2)
+          );
+          let tempmaxminute: number = Number(
+            loaded_data.MAX_TIME?.substring(3, 5)
+          );
 
           /* console.log('tempminhour',tempminhour);
           console.log('tempmaxhour',tempmaxhour);
@@ -150,68 +160,66 @@ export default function AccountInfo() {
           console.log('tempmaxminute',tempmaxminute);
  */
 
-          if(tempminhour === tempmaxhour) {
-            if(tempmaxminute - tempminminute >=30)
-            {
-              
-            }
-            else
-            {
-              loaded_data.MAX_TIME='Chưa chấm';              
+          if (tempminhour === tempmaxhour) {
+            if (tempmaxminute - tempminminute >= 30) {
+            } else {
+              loaded_data.MAX_TIME = "Chưa chấm";
             }
           }
           //console.log('gio xu ly',loaded_data)
-          setMyChamCong(loaded_data);          
-        }
-        else {
+          setMyChamCong(loaded_data);
+        } else {
           setMyChamCong({
-            MIN_TIME:'Chưa chấm',
-            MAX_TIME:'Chưa chấm'
-          })
-        }        
+            MIN_TIME: "Chưa chấm",
+            MAX_TIME: "Chưa chấm",
+          });
+        }
       })
       .catch((error) => {
         console.log(error);
       });
-   
-  }
+  };
   const [file, setFile] = useState<any>(null);
   //let file:any = null;
-  const uploadFile2 = async(e:any)=> {
-    uploadQuery(file,'NS_'+ userdata?.EMPL_NO+'.jpg','Picture_NS')
-          .then((response)=> {
-            console.log('resopone upload:', response.data);
-            if (response.data.tk_status !== "NG") {
-              generalQuery("update_empl_image", { EMPL_NO: userdata?.EMPL_NO, EMPL_IMAGE: 'Y' })
-              .then((response) => {        
-                if (response.data.tk_status !== "NG") 
-                {                 
-                  dispatch(changeUserData({...userdata, EMPL_IMAGE:'Y'}));
-                  Swal.fire('Thông báo','Upload avatar thành công','success');
-                } 
-                else {
-                  Swal.fire('Thông báo','Upload avatar thất bại','error');
-                }
-              })
-              .catch((error) => {
-                console.log(error);
-              });   
-            } else {
-              Swal.fire('Thông báo','Upload file thất bại:' + response.data.message,'error'); 
-            }
+  const uploadFile2 = async (e: any) => {
+    uploadQuery(file, "NS_" + userdata?.EMPL_NO + ".jpg", "Picture_NS")
+      .then((response) => {
+        console.log("resopone upload:", response.data);
+        if (response.data.tk_status !== "NG") {
+          generalQuery("update_empl_image", {
+            EMPL_NO: userdata?.EMPL_NO,
+            EMPL_IMAGE: "Y",
           })
-          .catch((error) => {
-            console.log(error);
-          });
-  }
+            .then((response) => {
+              if (response.data.tk_status !== "NG") {
+                dispatch(changeUserData({ ...userdata, EMPL_IMAGE: "Y" }));
+                Swal.fire("Thông báo", "Upload avatar thành công", "success");
+              } else {
+                Swal.fire("Thông báo", "Upload avatar thất bại", "error");
+              }
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+        } else {
+          Swal.fire(
+            "Thông báo",
+            "Upload file thất bại:" + response.data.message,
+            "error"
+          );
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 
-  useEffect(() => {    
+  useEffect(() => {
     getData();
     getchamcong();
     let intervalID2 = window.setInterval(() => {
-      getchamcong();         
+      getchamcong();
     }, 3000);
-
 
     return () => {
       window.clearInterval(intervalID2);
@@ -277,13 +285,16 @@ export default function AccountInfo() {
                     ? mychamcong?.MIN_TIME
                     : "Chưa chấm"}
                 </div>
-                <div className='chamcongmax'  style={{
+                <div
+                  className='chamcongmax'
+                  style={{
                     backgroundImage: `${
                       company === "CMS"
                         ? theme.CMS.backgroundImage
                         : theme.PVN.backgroundImage
                     }`,
-                  }}>
+                  }}
+                >
                   {mychamcong?.MAX_TIME !== null
                     ? mychamcong?.MAX_TIME
                     : "Chưa chấm"}
@@ -425,6 +436,34 @@ export default function AccountInfo() {
             {/*Khen thuong*/}
             {getsentence(37, lang)} {thuongphat.count_thuong} , {/* Kỷ luật */}
             {getsentence(38, lang)}: {thuongphat.count_phat}
+          </h3>{" "}
+          <h3 className='h3h3' style={{ color: "black" }}>
+            {userdata?.EMPL_NO === "NHU1903" && (
+              <input
+                type='text'
+                value={logoutID}
+                onChange={(e) => {
+                  setLogOutID(e.target.value);
+                }}
+              ></input>
+            )}
+            {userdata?.EMPL_NO === "NHU1903" && (
+              <Button
+                onClick={() => {
+                  dispatch(
+                    update_socket({
+                      event: "notification",
+                      data: {
+                        command: "logout",
+                        EMPL_NO: logoutID,
+                      },
+                    })
+                  );
+                }}
+              >
+                X
+              </Button>
+            )}
           </h3>{" "}
           <br></br>
         </div>

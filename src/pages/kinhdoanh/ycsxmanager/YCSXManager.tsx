@@ -4,7 +4,7 @@ import {
   IconButton,
   LinearProgress,
   TextField,
-  createFilterOptions, 
+  createFilterOptions,
 } from "@mui/material";
 import {
   DataGrid,
@@ -28,7 +28,7 @@ import {
 } from "react-icons/ai";
 import Swal from "sweetalert2";
 import * as XLSX from "xlsx";
-import { generalQuery, uploadQuery } from "../../../api/Api";
+import { generalQuery, getCompany, uploadQuery } from "../../../api/Api";
 import { UserContext } from "../../../api/Context";
 import { SaveExcel } from "../../../api/GlobalFunction";
 import { MdOutlineDelete, MdOutlinePendingActions } from "react-icons/md";
@@ -139,15 +139,15 @@ interface UploadAmazonData {
   REMARK?: string;
 }
 interface PONOLIST {
-  G_CODE: string,
-  CUST_CD: string,
-  PO_NO: string,
-  PO_DATE: string,
-  RD_DATE: string,
-  PO_QTY: number,
+  G_CODE: string;
+  CUST_CD: string;
+  PO_NO: string;
+  PO_DATE: string;
+  RD_DATE: string;
+  PO_QTY: number;
 }
-const YCSXManager = () => {  
-  const [showhidesearchdiv, setShowHideSearchDiv]= useState(true);
+const YCSXManager = () => {
+  const [showhidesearchdiv, setShowHideSearchDiv] = useState(true);
   const [ycsxlistrender, setYCSXListRender] = useState<Array<ReactElement>>();
   const ycsxprintref = useRef(null);
   const handlePrint = useReactToPrint({
@@ -233,15 +233,17 @@ const YCSXManager = () => {
       CUST_NAME_KD: "SEOJIN",
     });
   const [selectedPoNo, setSelectedPoNo] = useState<PONOLIST | null>({
-    CUST_CD:'',
-    G_CODE:'',
-    PO_NO:'',
-    PO_DATE: '',
-    RD_DATE:'',
-    PO_QTY:0
+    CUST_CD: "",
+    G_CODE: "",
+    PO_NO: "",
+    PO_DATE: "",
+    RD_DATE: "",
+    PO_QTY: 0,
   });
-  const [deliverydate, setNewDeliveryDate] = useState(moment().format("YYYY-MM-DD"));
-  const [pono, setPONO] = useState('');
+  const [deliverydate, setNewDeliveryDate] = useState(
+    moment().format("YYYY-MM-DD")
+  );
+  const [pono, setPONO] = useState("");
   const [newycsxqty, setNewYcsxQty] = useState("");
   const [newycsxremark, setNewYcsxRemark] = useState("");
   const [customerList, setCustomerList] = useState<CustomerListData[]>([]);
@@ -735,6 +737,281 @@ const YCSXManager = () => {
       },
     },
   ];
+  const column_ycsxtable_pvn = [
+    { field: "G_CODE", headerName: "G_CODE", width: 80 },
+    {
+      field: "G_NAME",
+      headerName: "G_NAME",
+      width: 250,
+      renderCell: (params: any) => {
+        if (params.row.PDBV === "P" || params.row.PDBV === null)
+          return <span style={{ color: "red" }}>{params.row.G_NAME}</span>;
+        return <span style={{ color: "green" }}>{params.row.G_NAME}</span>;
+      },
+    },
+    { field: "EMPL_NAME", headerName: "PIC KD", width: 150 },
+    { field: "CUST_NAME_KD", headerName: "KHÁCH", width: 120 },
+    { field: "PROD_REQUEST_NO", headerName: "SỐ YCSX", width: 80 },
+    { field: "PROD_REQUEST_DATE", headerName: "NGÀY YCSX", width: 80 },
+    {
+      field: "PROD_REQUEST_QTY",
+      type: "number",
+      headerName: "SL YCSX",
+      width: 80,
+      renderCell: (params: any) => {
+        return (
+          <span style={{ color: "#009933" }}>
+            <b>{params.row.PROD_REQUEST_QTY.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "LOT_TOTAL_INPUT_QTY_EA",
+      type: "number",
+      headerName: "NHẬP KIỂM",
+      width: 80,
+      renderCell: (params: any) => {
+        return (
+          <span style={{ color: "#cc0099" }}>
+            <b>{params.row.LOT_TOTAL_INPUT_QTY_EA.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "LOT_TOTAL_OUTPUT_QTY_EA",
+      type: "number",
+      headerName: "XUẤT KIỂM",
+      width: 80,
+      renderCell: (params: any) => {
+        return (
+          <span style={{ color: "#cc0099" }}>
+            <b>{params.row.LOT_TOTAL_OUTPUT_QTY_EA.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "INSPECT_BALANCE",
+      type: "number",
+      headerName: "TỒN KIỂM",
+      width: 80,
+      renderCell: (params: any) => {
+        return (
+          <span style={{ color: "#cc0099" }}>
+            <b>{params.row.INSPECT_BALANCE.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "SHORTAGE_YCSX",
+      type: "number",
+      headerName: "TỒN YCSX",
+      width: 80,
+      renderCell: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            <b>{params.row.SHORTAGE_YCSX.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "YCSX_PENDING",
+      headerName: "YCSX_PENDING",
+      width: 80,
+      renderCell: (params: any) => {
+        if (params.row.YCSX_PENDING === 1)
+          return (
+            <span style={{ color: "red" }}>
+              <b>PENDING</b>
+            </span>
+          );
+        else
+          return (
+            <span style={{ color: "green" }}>
+              <b>CLOSED</b>
+            </span>
+          );
+      },
+    },
+    {
+      field: "PHAN_LOAI",
+      headerName: "PHAN_LOAI",
+      width: 80,
+      renderCell: (params: any) => {
+        if (params.row.PHAN_LOAI === "01")
+          return (
+            <span style={{ color: "black" }}>
+              <b>Thông thường</b>
+            </span>
+          );
+        else if (params.row.PHAN_LOAI === "02")
+          return (
+            <span style={{ color: "black" }}>
+              <b>SDI</b>
+            </span>
+          );
+        else if (params.row.PHAN_LOAI === "03")
+          return (
+            <span style={{ color: "black" }}>
+              <b>GC</b>
+            </span>
+          );
+        else if (params.row.PHAN_LOAI === "04")
+          return (
+            <span style={{ color: "black" }}>
+              <b>SAMPLE</b>
+            </span>
+          );
+      },
+    },
+    { field: "REMARK", headerName: "REMARK", width: 120 },
+    { field: "PO_NO", headerName: "PO_NO", width: 120 },
+    {
+      field: "PDUYET",
+      headerName: "PDUYET",
+      width: 80,
+      renderCell: (params: any) => {
+        if (params.row.PDUYET === 1)
+          return (
+            <span style={{ color: "green" }}>
+              <b>Đã Duyệt</b>
+            </span>
+          );
+        else
+          return (
+            <span style={{ color: "red" }}>
+              <b>Không Duyệt</b>
+            </span>
+          );
+      },
+    },
+    {
+      field: "",
+      headerName: "G_NAME",
+      width: 250,
+      renderCell: (params: any) => {
+        if (params.row.PDBV === "P" || params.row.PDBV === null)
+          return <span style={{ color: "red" }}>{params.row.G_NAME}</span>;
+        return <span style={{ color: "green" }}>{params.row.G_NAME}</span>;
+      },
+    },
+    {
+      field: "BANVE",
+      headerName: "BANVE",
+      width: 250,
+      renderCell: (params: any) => {
+        let file: any = null;
+        const uploadFile2 = async (e: any) => {
+          console.log(file);
+          if (userData?.MAINDEPTNAME === "KD") {
+            uploadQuery(file, params.row.G_CODE + ".pdf", "banve")
+              .then((response) => {
+                if (response.data.tk_status !== "NG") {
+                  generalQuery("update_banve_value", {
+                    G_CODE: params.row.G_CODE,
+                    banvevalue: "Y",
+                  })
+                    .then((response) => {
+                      if (response.data.tk_status !== "NG") {
+                        Swal.fire(
+                          "Thông báo",
+                          "Upload bản vẽ thành công",
+                          "success"
+                        );
+                        let tempycsxdatatable = ycsxdatatable.map(
+                          (element, index) => {
+                            return element.PROD_REQUEST_NO ===
+                              params.row.PROD_REQUEST_NO
+                              ? { ...element, BANVE: "Y" }
+                              : element;
+                          }
+                        );
+                        setYcsxDataTable(tempycsxdatatable);
+                      } else {
+                        Swal.fire(
+                          "Thông báo",
+                          "Upload bản vẽ thất bại",
+                          "error"
+                        );
+                      }
+                    })
+                    .catch((error) => {
+                      console.log(error);
+                    });
+                } else {
+                  Swal.fire(
+                    "Thông báo",
+                    "Upload file thất bại:" + response.data.message,
+                    "error"
+                  );
+                }
+              })
+              .catch((error) => {
+                console.log(error);
+              });
+          } else {
+            Swal.fire(
+              "Thông báo",
+              "Chỉ bộ phận kinh doanh upload được bản vẽ",
+              "error"
+            );
+          }
+        };
+
+        let hreftlink = "/banve/" + params.row.G_CODE + ".pdf";
+        if (params.row.BANVE === "Y")
+          return (
+            <span style={{ color: "green" }}>
+              <b>
+                <a target='_blank' rel='noopener noreferrer' href={hreftlink}>
+                  LINK
+                </a>
+              </b>
+            </span>
+          );
+        else
+          return (
+            <div className='uploadfile'>
+              <IconButton className='buttonIcon' onClick={uploadFile2}>
+                <AiOutlineCloudUpload color='yellow' size={15} />
+                Upload
+              </IconButton>
+              <input
+                accept='.pdf'
+                type='file'
+                onChange={(e: any) => {
+                  file = e.target.files[0];
+                  console.log(file);
+                }}
+              />
+            </div>
+          );
+      },
+    },
+    {
+      field: "PDBV",
+      headerName: "PD BANVE",
+      width: 80,
+      renderCell: (params: any) => {
+        if (params.row.PDBV === "P" || params.row.PDBV === null)
+          return (
+            <span style={{ color: "red" }}>
+              <b>PENDING</b>
+            </span>
+          );
+        return (
+          <span style={{ color: "green" }}>
+            <b>APPROVED</b>
+          </span>
+        );
+      },
+    },
+  ];
+
   const column_excel2 = [
     { field: "id", headerName: "id", width: 180 },
     { field: "PROD_REQUEST_DATE", headerName: "NGAY YC", width: 120 },
@@ -846,23 +1123,24 @@ const YCSXManager = () => {
       });
   };
   const loadPONO = (G_CODE?: string, CUST_CD?: string) => {
-    if(G_CODE !== undefined && CUST_CD !== undefined)
-    {
-       generalQuery("loadpono", {
+    if (G_CODE !== undefined && CUST_CD !== undefined) {
+      generalQuery("loadpono", {
         G_CODE: G_CODE,
-        CUST_CD: CUST_CD
-       })
+        CUST_CD: CUST_CD,
+      })
         .then((response) => {
           //console.log(response.data.data);
           if (response.data.tk_status !== "NG") {
-            const loaded_data : PONOLIST[] = response.data.data.map((element: PONOLIST, index: number)=> {
-            return element;
-            })
+            const loaded_data: PONOLIST[] = response.data.data.map(
+              (element: PONOLIST, index: number) => {
+                return element;
+              }
+            );
             //console.log(loaded_data);
-            setPONOLIST(loaded_data);            
-          } else { 
+            setPONOLIST(loaded_data);
+          } else {
             setPONOLIST([]);
-            //console.log('Không có PO nào cho code này và khách này');           
+            //console.log('Không có PO nào cho code này và khách này');
             //Swal.fire("Thông báo", " Có lỗi : " + response.data.message, "error");
           }
         })
@@ -870,10 +1148,8 @@ const YCSXManager = () => {
           console.log(error);
           Swal.fire("Thông báo", " Có lỗi : " + error, "error");
         });
-      
     }
-
-  }
+  };
   function CustomToolbar() {
     return (
       <GridToolbarContainer>
@@ -1827,7 +2103,10 @@ const YCSXManager = () => {
               EMPL_NO: userData?.EMPL_NO,
               USE_YN: "Y",
               DELIVERY_DT: uploadExcelJson[i].DELIVERY_DT,
-              PO_NO: uploadExcelJson[i].PO_NO === undefined? '': uploadExcelJson[i].PO_NO,
+              PO_NO:
+                uploadExcelJson[i].PO_NO === undefined
+                  ? ""
+                  : uploadExcelJson[i].PO_NO,
               INS_EMPL: userData?.EMPL_NO,
               UPD_EMPL: userData?.EMPL_NO,
               YCSX_PENDING: 1,
@@ -1888,7 +2167,10 @@ const YCSXManager = () => {
               EMPL_NO: userData?.EMPL_NO,
               USE_YN: "Y",
               DELIVERY_DT: uploadExcelJson[i].DELIVERY_DT,
-              PO_NO: uploadExcelJson[i].PO_NO === undefined?'':uploadExcelJson[i].PO_NO,
+              PO_NO:
+                uploadExcelJson[i].PO_NO === undefined
+                  ? ""
+                  : uploadExcelJson[i].PO_NO,
               INS_EMPL: userData?.EMPL_NO,
               UPD_EMPL: userData?.EMPL_NO,
               YCSX_PENDING: 1,
@@ -2233,7 +2515,7 @@ const YCSXManager = () => {
           EMPL_NO: userData?.EMPL_NO,
           USE_YN: "Y",
           DELIVERY_DT: moment(deliverydate).format("YYYYMMDD"),
-          PO_NO: selectedPoNo?.PO_NO === undefined? '': selectedPoNo?.PO_NO,
+          PO_NO: selectedPoNo?.PO_NO === undefined ? "" : selectedPoNo?.PO_NO,
           INS_EMPL: userData?.EMPL_NO,
           UPD_EMPL: userData?.EMPL_NO,
           YCSX_PENDING: 1,
@@ -2295,7 +2577,7 @@ const YCSXManager = () => {
           EMPL_NO: userData?.EMPL_NO,
           USE_YN: "Y",
           DELIVERY_DT: moment(deliverydate).format("YYYYMMDD"),
-          PO_NO: selectedPoNo?.PO_NO === undefined? '': selectedPoNo?.PO_NO,
+          PO_NO: selectedPoNo?.PO_NO === undefined ? "" : selectedPoNo?.PO_NO,
           INS_EMPL: userData?.EMPL_NO,
           UPD_EMPL: userData?.EMPL_NO,
           YCSX_PENDING: 1,
@@ -2860,7 +3142,7 @@ const YCSXManager = () => {
     matchFrom: "any",
     limit: 100,
   });
-  
+
   //console.log(userData);
   useEffect(() => {
     getcustomerlist();
@@ -2913,17 +3195,17 @@ const YCSXManager = () => {
           <span className='mininavtext'>TRA AMZ Data</span>
         </div>
       </div>
-      {selection.them1po && (       
-           <div className='them1ycsx'>
+      {selection.them1po && (
+        <div className='them1ycsx'>
           <div className='formnho'>
-            <div className='dangkyform'>              
+            <div className='dangkyform'>
               <div className='dangkyinput'>
-                <div className="dangkyinputbox">
-                <label>
+                <div className='dangkyinputbox'>
+                  <label>
                     <b>Khách hàng:</b>{" "}
                     <Autocomplete
-                      sx={{fontSize:'0.6rem',}}                      
-                      ListboxProps={{ style: { fontSize:'0.7rem',} }}
+                      sx={{ fontSize: "0.6rem" }}
+                      ListboxProps={{ style: { fontSize: "0.7rem" } }}
                       size='small'
                       disablePortal
                       options={customerList}
@@ -2932,7 +3214,11 @@ const YCSXManager = () => {
                         return `${option.CUST_CD}: ${option.CUST_NAME_KD}`;
                       }}
                       renderInput={(params) => (
-                        <TextField  {...params} fullWidth={true} label='Select customer' />
+                        <TextField
+                          {...params}
+                          fullWidth={true}
+                          label='Select customer'
+                        />
                       )}
                       value={selectedCust_CD}
                       onChange={(
@@ -2951,8 +3237,8 @@ const YCSXManager = () => {
                   <label>
                     <b>Code hàng:</b>{" "}
                     <Autocomplete
-                      sx={{fontSize:'0.6rem',}}
-                      ListboxProps={{ style: { fontSize:'0.7rem' } }}
+                      sx={{ fontSize: "0.6rem" }}
+                      ListboxProps={{ style: { fontSize: "0.7rem" } }}
                       size='small'
                       disablePortal
                       options={codeList}
@@ -2967,7 +3253,7 @@ const YCSXManager = () => {
                       onChange={(event: any, newValue: CodeListData | any) => {
                         console.log(newValue);
                         setSelectedCode(newValue);
-                        loadPONO(newValue?.G_CODE,selectedCust_CD?.CUST_CD);
+                        loadPONO(newValue?.G_CODE, selectedCust_CD?.CUST_CD);
                       }}
                       value={selectedCode}
                       isOptionEqualToValue={(option: any, value: any) =>
@@ -2975,10 +3261,8 @@ const YCSXManager = () => {
                       }
                     />
                   </label>
-
                 </div>
                 <div className='dangkyinputbox'>
-                  
                   <label>
                     <b>Delivery Date:</b>
                     <input
@@ -3009,8 +3293,8 @@ const YCSXManager = () => {
                     </select>
                   </label>
                 </div>
-                <div className="dangkyinputbox">
-                <label>
+                <div className='dangkyinputbox'>
+                  <label>
                     <b>Loại sản xuất</b>
                     <select
                       name='loasx'
@@ -3044,7 +3328,7 @@ const YCSXManager = () => {
                     </select>
                   </label>
                 </div>
-                <div className='dangkyinputbox'>                 
+                <div className='dangkyinputbox'>
                   <label>
                     <b>YCSX QTY:</b>{" "}
                     <TextField
@@ -3085,28 +3369,35 @@ const YCSXManager = () => {
                       options={ponolist}
                       className='pono_autocomplete'
                       getOptionLabel={(option: PONOLIST | any) => {
-                        return `${moment.utc(option.PO_DATE).isValid()? moment.utc(option.PO_DATE).format('YYYY-MM-DD'): ''}| ${option.PO_NO}`;
+                        return `${
+                          moment.utc(option.PO_DATE).isValid()
+                            ? moment.utc(option.PO_DATE).format("YYYY-MM-DD")
+                            : ""
+                        }| ${option.PO_NO}`;
                       }}
                       renderInput={(params) => (
                         <TextField {...params} label='Select PO NO' />
                       )}
                       value={selectedPoNo}
-                      onChange={(
-                        event: any,
-                        newValue: PONOLIST | null
-                      ) => {
+                      onChange={(event: any, newValue: PONOLIST | null) => {
                         console.log(newValue);
                         setSelectedPoNo(newValue);
-                        setNewDeliveryDate(newValue?.RD_DATE===undefined? moment.utc().format('YYYY-MM-DD'): newValue?.RD_DATE);
-                        setNewYcsxQty(newValue?.PO_QTY === undefined? '' : newValue?.PO_QTY.toString());
-
-                        
+                        setNewDeliveryDate(
+                          newValue?.RD_DATE === undefined
+                            ? moment.utc().format("YYYY-MM-DD")
+                            : newValue?.RD_DATE
+                        );
+                        setNewYcsxQty(
+                          newValue?.PO_QTY === undefined
+                            ? ""
+                            : newValue?.PO_QTY.toString()
+                        );
                       }}
                       isOptionEqualToValue={(option, value) =>
                         option.PO_NO === value.PO_NO
                       }
                     />
-                  </label>                 
+                  </label>
                 </div>
               </div>
               <div className='dangkybutton'>
@@ -3160,11 +3451,9 @@ const YCSXManager = () => {
             </div>
           </div>
         </div>
-       
-       
       )}
       {selection.thempohangloat && (
-        <div className='newycsx'>         
+        <div className='newycsx'>
           <div className='batchnewycsx'>
             <form className='formupload'>
               <label htmlFor='upload'>
@@ -3238,189 +3527,191 @@ const YCSXManager = () => {
       )}
       {selection.trapo && (
         <div className='tracuuYCSX'>
-          {showhidesearchdiv && <div className='tracuuYCSXform'>
-            <div className='forminput'>
-              <div className='forminputcolumn'>
-                <label>
-                  <b>Từ ngày:</b>
-                  <input
-                    onKeyDown={(e) => {
-                      handleSearchCodeKeyDown(e);
-                    }}
-                    type='date'
-                    value={fromdate.slice(0, 10)}
-                    onChange={(e) => setFromDate(e.target.value)}
-                  ></input>
-                </label>
-                <label>
-                  <b>Tới ngày:</b>{" "}
-                  <input
-                    onKeyDown={(e) => {
-                      handleSearchCodeKeyDown(e);
-                    }}
-                    type='date'
-                    value={todate.slice(0, 10)}
-                    onChange={(e) => setToDate(e.target.value)}
-                  ></input>
-                </label>
+          {showhidesearchdiv && (
+            <div className='tracuuYCSXform'>
+              <div className='forminput'>
+                <div className='forminputcolumn'>
+                  <label>
+                    <b>Từ ngày:</b>
+                    <input
+                      onKeyDown={(e) => {
+                        handleSearchCodeKeyDown(e);
+                      }}
+                      type='date'
+                      value={fromdate.slice(0, 10)}
+                      onChange={(e) => setFromDate(e.target.value)}
+                    ></input>
+                  </label>
+                  <label>
+                    <b>Tới ngày:</b>{" "}
+                    <input
+                      onKeyDown={(e) => {
+                        handleSearchCodeKeyDown(e);
+                      }}
+                      type='date'
+                      value={todate.slice(0, 10)}
+                      onChange={(e) => setToDate(e.target.value)}
+                    ></input>
+                  </label>
+                </div>
+                <div className='forminputcolumn'>
+                  <label>
+                    <b>Code KD:</b>{" "}
+                    <input
+                      onKeyDown={(e) => {
+                        handleSearchCodeKeyDown(e);
+                      }}
+                      type='text'
+                      placeholder='GH63-xxxxxx'
+                      value={codeKD}
+                      onChange={(e) => setCodeKD(e.target.value)}
+                    ></input>
+                  </label>
+                  <label>
+                    <b>Code ERP:</b>{" "}
+                    <input
+                      onKeyDown={(e) => {
+                        handleSearchCodeKeyDown(e);
+                      }}
+                      type='text'
+                      placeholder='7C123xxx'
+                      value={codeCMS}
+                      onChange={(e) => setCodeCMS(e.target.value)}
+                    ></input>
+                  </label>
+                </div>
+                <div className='forminputcolumn'>
+                  <label>
+                    <b>Tên nhân viên:</b>{" "}
+                    <input
+                      onKeyDown={(e) => {
+                        handleSearchCodeKeyDown(e);
+                      }}
+                      type='text'
+                      placeholder='Trang'
+                      value={empl_name}
+                      onChange={(e) => setEmpl_Name(e.target.value)}
+                    ></input>
+                  </label>
+                  <label>
+                    <b>Khách:</b>{" "}
+                    <input
+                      onKeyDown={(e) => {
+                        handleSearchCodeKeyDown(e);
+                      }}
+                      type='text'
+                      placeholder='SEVT'
+                      value={cust_name}
+                      onChange={(e) => setCust_Name(e.target.value)}
+                    ></input>
+                  </label>
+                </div>
+                <div className='forminputcolumn'>
+                  <label>
+                    <b>Loại sản phẩm:</b>{" "}
+                    <input
+                      onKeyDown={(e) => {
+                        handleSearchCodeKeyDown(e);
+                      }}
+                      type='text'
+                      placeholder='TSP'
+                      value={prod_type}
+                      onChange={(e) => setProdType(e.target.value)}
+                    ></input>
+                  </label>
+                  <label>
+                    <b>Số YCSX:</b>{" "}
+                    <input
+                      onKeyDown={(e) => {
+                        handleSearchCodeKeyDown(e);
+                      }}
+                      type='text'
+                      placeholder='12345'
+                      value={prodrequestno}
+                      onChange={(e) => setProdRequestNo(e.target.value)}
+                    ></input>
+                  </label>
+                </div>
+                <div className='forminputcolumn'>
+                  <label>
+                    <b>Phân loại:</b>
+                    <select
+                      name='phanloai'
+                      value={phanloai}
+                      onChange={(e) => {
+                        setPhanLoai(e.target.value);
+                      }}
+                    >
+                      <option value='00'>ALL</option>
+                      <option value='01'>Thông thường</option>
+                      <option value='02'>SDI</option>
+                      <option value='03'>GC</option>
+                      <option value='04'>SAMPLE</option>
+                      <option value='22'>NOT SAMPLE</option>
+                    </select>
+                  </label>
+                  <label>
+                    <b>Vật liệu:</b>{" "}
+                    <input
+                      onKeyDown={(e) => {
+                        handleSearchCodeKeyDown(e);
+                      }}
+                      type='text'
+                      placeholder='SJ-203020HC'
+                      value={material}
+                      onChange={(e) => setMaterial(e.target.value)}
+                    ></input>
+                  </label>
+                </div>
+                <div className='forminputcolumn'>
+                  <label>
+                    <b>YCSX Pending:</b>
+                    <input
+                      onKeyDown={(e) => {
+                        handleSearchCodeKeyDown(e);
+                      }}
+                      type='checkbox'
+                      name='alltimecheckbox'
+                      defaultChecked={ycsxpendingcheck}
+                      onChange={() => setYCSXPendingCheck(!ycsxpendingcheck)}
+                    ></input>
+                  </label>
+                  <label>
+                    <b>Vào kiểm:</b>
+                    <input
+                      onKeyDown={(e) => {
+                        handleSearchCodeKeyDown(e);
+                      }}
+                      type='checkbox'
+                      name='alltimecheckbox'
+                      defaultChecked={inspectInputcheck}
+                      onChange={() => setInspectInputCheck(!inspectInputcheck)}
+                    ></input>
+                  </label>
+                </div>
               </div>
-              <div className='forminputcolumn'>
+              <div className='formbutton'>
                 <label>
-                  <b>Code KD:</b>{" "}
+                  <b>All Time:</b>
                   <input
-                    onKeyDown={(e) => {
-                      handleSearchCodeKeyDown(e);
-                    }}
-                    type='text'
-                    placeholder='GH63-xxxxxx'
-                    value={codeKD}
-                    onChange={(e) => setCodeKD(e.target.value)}
-                  ></input>
-                </label>
-                <label>
-                  <b>Code ERP:</b>{" "}
-                  <input
-                    onKeyDown={(e) => {
-                      handleSearchCodeKeyDown(e);
-                    }}
-                    type='text'
-                    placeholder='7C123xxx'
-                    value={codeCMS}
-                    onChange={(e) => setCodeCMS(e.target.value)}
-                  ></input>
-                </label>
-              </div>
-              <div className='forminputcolumn'>
-                <label>
-                  <b>Tên nhân viên:</b>{" "}
-                  <input
-                    onKeyDown={(e) => {
-                      handleSearchCodeKeyDown(e);
-                    }}
-                    type='text'
-                    placeholder='Trang'
-                    value={empl_name}
-                    onChange={(e) => setEmpl_Name(e.target.value)}
-                  ></input>
-                </label>
-                <label>
-                  <b>Khách:</b>{" "}
-                  <input
-                    onKeyDown={(e) => {
-                      handleSearchCodeKeyDown(e);
-                    }}
-                    type='text'
-                    placeholder='SEVT'
-                    value={cust_name}
-                    onChange={(e) => setCust_Name(e.target.value)}
-                  ></input>
-                </label>
-              </div>
-              <div className='forminputcolumn'>
-                <label>
-                  <b>Loại sản phẩm:</b>{" "}
-                  <input
-                    onKeyDown={(e) => {
-                      handleSearchCodeKeyDown(e);
-                    }}
-                    type='text'
-                    placeholder='TSP'
-                    value={prod_type}
-                    onChange={(e) => setProdType(e.target.value)}
-                  ></input>
-                </label>
-                <label>
-                  <b>Số YCSX:</b>{" "}
-                  <input
-                    onKeyDown={(e) => {
-                      handleSearchCodeKeyDown(e);
-                    }}
-                    type='text'
-                    placeholder='12345'
-                    value={prodrequestno}
-                    onChange={(e) => setProdRequestNo(e.target.value)}
-                  ></input>
-                </label>
-              </div>
-              <div className='forminputcolumn'>
-                <label>
-                  <b>Phân loại:</b>
-                  <select
-                    name='phanloai'
-                    value={phanloai}
-                    onChange={(e) => {
-                      setPhanLoai(e.target.value);
-                    }}
-                  >
-                    <option value='00'>ALL</option>
-                    <option value='01'>Thông thường</option>
-                    <option value='02'>SDI</option>
-                    <option value='03'>GC</option>
-                    <option value='04'>SAMPLE</option>
-                    <option value='22'>NOT SAMPLE</option>
-                  </select>
-                </label>
-                <label>
-                  <b>Vật liệu:</b>{" "}
-                  <input
-                    onKeyDown={(e) => {
-                      handleSearchCodeKeyDown(e);
-                    }}
-                    type='text'
-                    placeholder='SJ-203020HC'
-                    value={material}
-                    onChange={(e) => setMaterial(e.target.value)}
-                  ></input>
-                </label>
-              </div>
-              <div className='forminputcolumn'>
-                <label>
-                  <b>YCSX Pending:</b>
-                  <input
-                    onKeyDown={(e) => {
-                      handleSearchCodeKeyDown(e);
-                    }}
                     type='checkbox'
                     name='alltimecheckbox'
-                    defaultChecked={ycsxpendingcheck}
-                    onChange={() => setYCSXPendingCheck(!ycsxpendingcheck)}
+                    defaultChecked={alltime}
+                    onChange={() => setAllTime(!alltime)}
                   ></input>
                 </label>
-                <label>
-                  <b>Vào kiểm:</b>
-                  <input
-                    onKeyDown={(e) => {
-                      handleSearchCodeKeyDown(e);
-                    }}
-                    type='checkbox'
-                    name='alltimecheckbox'
-                    defaultChecked={inspectInputcheck}
-                    onChange={() => setInspectInputCheck(!inspectInputcheck)}
-                  ></input>
-                </label>
+                <IconButton
+                  className='buttonIcon'
+                  onClick={() => {
+                    handletraYCSX();
+                  }}
+                >
+                  <FcSearch color='green' size={30} />
+                  Search
+                </IconButton>
               </div>
             </div>
-            <div className='formbutton'>
-              <label>
-                <b>All Time:</b>
-                <input
-                  type='checkbox'
-                  name='alltimecheckbox'
-                  defaultChecked={alltime}
-                  onChange={() => setAllTime(!alltime)}
-                ></input>
-              </label>
-              <IconButton
-                className='buttonIcon'
-                onClick={() => {
-                  handletraYCSX();
-                }}
-              >
-                <FcSearch color='green' size={30} />
-                Search
-              </IconButton>
-            </div>
-          </div>}
+          )}
           <div className='tracuuYCSXTable'>
             <DataGrid
               sx={{ fontSize: "0.7rem" }}
@@ -3431,7 +3722,9 @@ const YCSXManager = () => {
               loading={isLoading}
               rowHeight={30}
               rows={ycsxdatatable}
-              columns={column_ycsxtable}
+              columns={
+                getCompany() === "CMS" ? column_ycsxtable : column_ycsxtable_pvn
+              }
               rowsPerPageOptions={[
                 5, 10, 50, 100, 500, 1000, 5000, 10000, 500000,
               ]}
@@ -3496,7 +3789,7 @@ const YCSXManager = () => {
       )}
       {selection.amazontab && (
         <div className='amazonetab'>
-          <div className='newamazon'>            
+          <div className='newamazon'>
             <div className='amazonInputform'>
               <div className='forminput'>
                 <div className='forminputcolumn'>
@@ -3576,7 +3869,7 @@ const YCSXManager = () => {
                 {progressvalue}/{uploadExcelJson.length}
               </form>
             </div>
-            <div className='batchnewycsx'>             
+            <div className='batchnewycsx'>
               <div className='insertYCSXTable'>
                 {true && (
                   <DataGrid

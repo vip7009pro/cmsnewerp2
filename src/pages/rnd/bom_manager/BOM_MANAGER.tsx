@@ -1256,36 +1256,41 @@ const BOM_MANAGER = () => {
   const handleCheckCodeInfo = () => {
     let abc: CODE_FULL_INFO = codefullinfo;
     let result: boolean = true;
-    for (const [k, v] of Object.entries(abc)) {
-      if (
-        (v === null || v === "") &&
-        k !== "REMK" &&
-        k !== "FACTORY" &&
-        k !== "Setting1" &&
-        k !== "Setting2" &&
-        k !== "Setting3" &&
-        k !== "Setting4" &&
-        k !== "UPH1" &&
-        k !== "UPH2" &&
-        k !== "UPH3" &&
-        k !== "UPH4" &&
-        k !== "Step1" &&
-        k !== "Step2" &&
-        k !== "Step3" &&
-        k !== "Step4" &&
-        k !== "LOSS_SX1" &&
-        k !== "LOSS_SX2" &&
-        k !== "LOSS_SX3" &&
-        k !== "LOSS_SX4" &&
-        k !== "LOSS_SETTING1" &&
-        k !== "LOSS_SETTING2" &&
-        k !== "LOSS_SETTING3" &&
-        k !== "LOSS_SETTING4" &&
-        k !== "NOTE"
-      ) {
-        Swal.fire("Thông báo", "Không được để trống: " + k, "error");
-        result = false;
-        break;
+
+    if (company === "PVN" && userData?.MAINDEPTNAME === "KD") {
+      result = true;
+    } else {
+      for (const [k, v] of Object.entries(abc)) {
+        if (
+          (v === null || v === "") &&
+          k !== "REMK" &&
+          k !== "FACTORY" &&
+          k !== "Setting1" &&
+          k !== "Setting2" &&
+          k !== "Setting3" &&
+          k !== "Setting4" &&
+          k !== "UPH1" &&
+          k !== "UPH2" &&
+          k !== "UPH3" &&
+          k !== "UPH4" &&
+          k !== "Step1" &&
+          k !== "Step2" &&
+          k !== "Step3" &&
+          k !== "Step4" &&
+          k !== "LOSS_SX1" &&
+          k !== "LOSS_SX2" &&
+          k !== "LOSS_SX3" &&
+          k !== "LOSS_SX4" &&
+          k !== "LOSS_SETTING1" &&
+          k !== "LOSS_SETTING2" &&
+          k !== "LOSS_SETTING3" &&
+          k !== "LOSS_SETTING4" &&
+          k !== "NOTE"
+        ) {
+          Swal.fire("Thông báo", "Không được để trống: " + k, "error");
+          result = false;
+          break;
+        }
       }
     }
     return result;
@@ -1414,8 +1419,9 @@ const BOM_MANAGER = () => {
     return { NEXT_G_CODE: CODE_12 + CODE_27 + nextseq, NEXT_SEQ_NO: nextseqno };
   };
 
-  const handleinsertCodeTBG = () => {
+  const handleinsertCodeTBG = (NEWG_CODE: string) => {
     generalQuery("insertM100BangTinhGia", {
+      G_CODE: NEWG_CODE,
       DEFAULT_DM: defaultDM,
       CODE_FULL_INFO: codefullinfo,
     })
@@ -1490,7 +1496,7 @@ const BOM_MANAGER = () => {
         .catch((error) => {
           console.log(error);
         });
-      handleinsertCodeTBG();
+      handleinsertCodeTBG(nextcode);
     }
   };
   const handleAddNewVer = async () => {
@@ -1543,7 +1549,7 @@ const BOM_MANAGER = () => {
         .catch((error) => {
           console.log(error);
         });
-      handleinsertCodeTBG();
+      handleinsertCodeTBG(newGCODE);
     }
   };
 
@@ -2142,7 +2148,7 @@ const BOM_MANAGER = () => {
               handleupdateCodeTBG();
             } else {
               checkTBGExist = 0;
-              handleinsertCodeTBG();
+              handleinsertCodeTBG(codefullinfo.G_CODE);
             }
           })
           .catch((error) => {

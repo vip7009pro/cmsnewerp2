@@ -95,6 +95,10 @@ interface POFullCMS {
   BLOCK_QTY: number;
   GRAND_TOTAL_STOCK: number;
   THUA_THIEU: number;
+  YCSX_BALANCE: number;
+  YCSX_QTY: number;
+  KETQUASX: number;
+  NHAPKHO: number;
 }
 interface POFullKD {
   G_NAME_KD: string;
@@ -298,6 +302,58 @@ const POandStockFull = () => {
         return (
           <span style={{ color: "black" }}>
             <b>{params.row.THUA_THIEU.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "YCSX_BALANCE",
+      type: "number",
+      headerName: "YCSX_BALANCE",
+      width: 120,
+      renderCell: (params: any) => {
+        return (
+          <span style={{ color: "red" }}>
+            <b>{params.row.YCSX_BALANCE?.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "YCSX_QTY",
+      type: "number",
+      headerName: "YCSX_QTY",
+      width: 120,
+      renderCell: (params: any) => {
+        return (
+          <span style={{ color: "#767676" }}>
+            <b>{params.row.YCSX_QTY?.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "KETQUASX",
+      type: "number",
+      headerName: "KETQUASX",
+      width: 120,
+      renderCell: (params: any) => {
+        return (
+          <span style={{ color: "#767676" }}>
+            <b>{params.row.KETQUASX?.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "NHAPKHO",
+      type: "number",
+      headerName: "NHAPKHO",
+      width: 120,
+      renderCell: (params: any) => {
+        return (
+          <span style={{ color: "#767676" }}>
+            <b>{params.row.NHAPKHO?.toLocaleString("en-US")}</b>
           </span>
         );
       },
