@@ -200,6 +200,9 @@ interface MATERIAL_INFO {
 interface MACHINE_LIST {
   EQ_NAME: string;
 }
+interface M_NAME_LIST {
+  M_NAME: string;
+}
 const BOM_MANAGER = () => {
   const company: string = useSelector(
     (state: RootState) => state.totalSlice.company
@@ -262,7 +265,7 @@ const BOM_MANAGER = () => {
   };
 
   const [codefullinfo, setCodeFullInfo] = useState<CODE_FULL_INFO>({
-    CUST_CD: "0000",
+    CUST_CD: company==='CMS'?  "0000": 'KH000',
     PROD_PROJECT: "",
     PROD_MODEL: "",
     CODE_12: "7",
@@ -317,7 +320,9 @@ const BOM_MANAGER = () => {
   ]);
   const [masterMaterialList, setMasterMaterialList] = useState<string[]>([]);
   const [selectedMasterMaterial, setSelectedMasterMaterial] =
-    useState<string>("");
+    useState<M_NAME_LIST>({
+      M_NAME:''
+    });
   const [selectedMaterial, setSelectedMaterial] =
     useState<MaterialListData | null>({
       M_CODE: "A0000001",
@@ -2409,7 +2414,51 @@ const BOM_MANAGER = () => {
               <div className='codeinfo'>
                 <div className='info12'>
                   <div className='info1'>
-                    <label>
+                  <label>
+                    Khách hàng:
+                      <Autocomplete
+                        sx={{
+                          height: 10,
+                          width: '150px',
+                          margin: "1px",                          
+                          fontSize: "0.7rem",      
+                          marginBottom:'20px',
+                          backgroundColor:'white'           
+                        }}
+                        disabled={enableform}
+                        size='small'
+                        disablePortal
+                        options={customerList}
+                        className='autocomplete'
+                        filterOptions={filterOptions1}
+                        isOptionEqualToValue={(option: any, value: any) =>
+                          option.CUST_CD === value.CUST_CD
+                        }
+                        getOptionLabel={(option: any) => `${option.CUST_NAME_KD}${option.CUST_CD}`}
+                        renderInput={(params) => (
+                          <TextField {...params} style={{height:'10px'}}/>
+                        )}
+                        defaultValue={{
+                          CUST_CD: company==='CMS'?  "0000": 'KH000',
+                          CUST_NAME:company==='CMS'?  "SEOJIN": 'PVN',
+                          CUST_NAME_KD:company==='CMS'?  "SEOJIN": 'PVN',                        
+                        }}
+                        value={{
+                          CUST_CD: codefullinfo.CUST_CD,
+                          CUST_NAME:customerList.filter((e: CustomerListData, index: number)=> e.CUST_CD ===codefullinfo.CUST_CD)[0]?.CUST_NAME,
+                          CUST_NAME_KD: customerList.filter((e: CustomerListData, index: number)=> e.CUST_CD ===codefullinfo.CUST_CD)[0]?.CUST_NAME_KD === undefined? '': customerList.filter((e: CustomerListData, index: number)=> e.CUST_CD ===codefullinfo.CUST_CD)[0]?.CUST_NAME_KD ,
+                        }}
+                        onChange={(event: any, newValue: any) => {
+                          console.log(newValue);                          
+                          handleSetCodeInfo(
+                            "CUST_CD",
+                            newValue === null ? "" : newValue.CUST_CD
+                          );
+                        }}
+                      />                   
+                      
+                    </label>
+                    {/* <label>
                       Khách hàng:
                       <select
                         disabled={enableform}
@@ -2434,7 +2483,7 @@ const BOM_MANAGER = () => {
                           </option>
                         ))}
                       </select>
-                    </label>
+                    </label> */}
                     <label>
                       Dự án/Project:{" "}
                       <input
@@ -2542,6 +2591,44 @@ const BOM_MANAGER = () => {
                       ></input>
                     </label>
                     <label>
+                    VL Chính: <Autocomplete
+                        sx={{
+                          height: 10,
+                          width: '150px',
+                          margin: "1px",                          
+                          fontSize: "0.7rem",      
+                          marginBottom:'20px',
+                          backgroundColor:'white'           
+                        }}
+                        disabled={enableform}
+                        size='small'
+                        disablePortal
+                        options={masterMaterialList}
+                        className='autocomplete'
+                        filterOptions={filterOptions1}
+                        isOptionEqualToValue={(option: any, value: any) =>
+                          option.M_NAME === value.M_NAME
+                        }
+                        getOptionLabel={(option: any) => `${option.M_NAME}`}
+                        renderInput={(params) => (
+                          <TextField {...params} style={{height:'10px'}}/>
+                        )}
+                        defaultValue={{
+                          M_NAME: "SJ-203020HC",
+                        }}
+                        value={{
+                          M_NAME: codefullinfo.PROD_MAIN_MATERIAL
+                        }}
+                        onChange={(event: any, newValue: any) => {
+                          console.log(newValue);                          
+                          handleSetCodeInfo(
+                            "PROD_MAIN_MATERIAL",
+                            newValue === null ? "" : newValue.M_NAME
+                          );
+                        }}
+                      />   
+                    </label>  
+                   {/*  <label>
                       VL Chính:{" "}
                       <input
                         disabled={true}
@@ -2558,7 +2645,7 @@ const BOM_MANAGER = () => {
                           );
                         }}
                       ></input>
-                    </label>
+                    </label> */}
                     <label>
                       {company === "CMS" ? "Code RnD:" : "Tên sản phẩm:"}
                       <input
@@ -3068,7 +3155,7 @@ const BOM_MANAGER = () => {
                         />
                       }
                     />
-                    <label>
+                    {/* <label>
                       <Autocomplete
                         sx={{
                           height: 10,
@@ -3101,7 +3188,7 @@ const BOM_MANAGER = () => {
                           );
                         }}
                       />
-                    </label>
+                    </label> */}
                   </div>
                 </div>
                 <div className='info34'>

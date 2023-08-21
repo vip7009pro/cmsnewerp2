@@ -355,6 +355,21 @@
                                 align-items: flex-end;
                                 
                             }
+                            .autocomplete {
+                                background-color: rgba(255, 255, 255, 0);
+                                position: relative;                                
+                                * {
+                                    font-size: 0.8rem;
+                                    background-color: rgba(255, 255, 255, 0);
+                                    margin: 0;
+                                    padding:1.5px;
+                                }
+                                input {                                    
+                                    background-color: white;z-index: 10; 
+                                    
+                                }         
+                                                     
+                            }
                         }
                         .info2 {
                             display: flex;                            
@@ -403,6 +418,7 @@
                                 align-items: flex-end;
                                 
                             }
+                           
                         }
                         .info22 {
                             display: flex;                            
