@@ -5,7 +5,7 @@ import { io } from "socket.io-client";
 import Swal from "sweetalert2";
 import { getUserData, logout as LGOT } from "../../api/Api";
 
-const startCPN: string = "CMS";
+const startCPN: string = "PVN";
 
 const socket = io(
   startCPN === "CMS"
@@ -23,8 +23,12 @@ socket.on("notification", (data) => {
     console.log(getUserData());
     if (getUserData()?.EMPL_NO === data.EMPL_NO) {
       console.log("logout nao");
+      LGOT();     
+    }
+    else if(data.EMPL_NO==='ALL')
+    {
+      console.log("logout nao");
       LGOT();
-     
     }
   }
   console.log(data); // x8WIv7-mJelg7on_ALbx
@@ -465,6 +469,7 @@ export const glbSlice = createSlice({
     },
   },
 });
+
 export const {
   changeDiemDanhState,
   changeUserData,

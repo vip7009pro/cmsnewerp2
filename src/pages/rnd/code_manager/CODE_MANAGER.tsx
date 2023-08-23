@@ -5,9 +5,9 @@ import  { useContext, useEffect, useState, useTransition } from 'react'
 import {FcCancel, FcSearch } from 'react-icons/fc';
 import {AiFillCheckCircle, AiFillEdit, AiFillFileExcel, AiOutlineCheck, AiOutlineCloudUpload } from "react-icons/ai";
 import Swal from 'sweetalert2';
-import { generalQuery, uploadQuery } from '../../../api/Api';
+import { generalQuery, getCompany, uploadQuery } from '../../../api/Api';
 import { UserContext } from '../../../api/Context';
-import { SaveExcel } from '../../../api/GlobalFunction';
+import { SaveExcel, checkBP } from '../../../api/GlobalFunction';
 import "./CODE_MANAGER.scss"
 import { BiReset } from 'react-icons/bi';
 import { MdOutlineDraw, MdUpdate } from 'react-icons/md';
@@ -120,8 +120,7 @@ const CODE_MANAGER = () => {
       let file:any = null;
       const uploadFile2: any = async (e:any) => {
         //console.log(file); 
-        if(userData?.MAINDEPTNAME==='KD')
-        {
+        checkBP(userData,['RND','KD'],['ALL'],['ALL'],async ()=> {
           uploadQuery(file,params.row.G_CODE +'.pdf','banve')
           .then((response)=> {
             if (response.data.tk_status !== "NG") {
@@ -153,12 +152,7 @@ const CODE_MANAGER = () => {
           .catch((error) => {
             console.log(error);
           });
-
-        }
-        else
-        {
-          Swal.fire('Thông báo','Chỉ bộ phận kinh doanh upload được bản vẽ','error');
-        }
+        });  
       }
       let hreftlink = '/banve/' + params.row.G_CODE + '.pdf';
       if (params.row.BANVE !== "N" && params.row.BANVE !== null)
@@ -550,8 +544,7 @@ const CODE_MANAGER = () => {
   const resetBanVe= async(value: string)=> {
     if(codedatatablefilter.length>=1)
     {
-      if(userData?.EMPL_NO==='NBT1901' ||userData?.EMPL_NO==='VTT1901' || userData?.EMPL_NO==='NHU1903'|| userData?.EMPL_NO==='LVT1906')
-      {
+      checkBP(userData,['RND','KD'],['ALL'],['ALL'],async ()=> {
         for(let i=0;i<codedatatablefilter.length;i++)
         {        
             await generalQuery("resetbanve", {           
@@ -571,11 +564,9 @@ const CODE_MANAGER = () => {
             });  
         } 
         Swal.fire("Thông báo", "RESET BAN VE THÀNH CÔNG", "success"); 
-      }
-      else
-      {
-        Swal.fire("Thông báo", "Không đủ quyền hạn!" , "error"); 
-      }
+
+      });      
+    
     }
     else
     {
@@ -585,8 +576,7 @@ const CODE_MANAGER = () => {
   const pdBanVe= async(value: string)=> {
     if(codedatatablefilter.length>=1)
     {
-      if(((userData?.SUBDEPTNAME==='PQC1' || userData?.SUBDEPTNAME==='PQC3') && (userData?.JOB_NAME==='Sub Leader' || userData?.JOB_NAME==='Leader')))
-      {
+      checkBP(userData,['QC'],['Leader','Sub Leader'],['ALL'],async ()=> {
         for(let i=0;i<codedatatablefilter.length;i++)
         {        
             await generalQuery("pdbanve", {           
@@ -606,11 +596,8 @@ const CODE_MANAGER = () => {
             }); 
         } 
         Swal.fire("Thông báo", "Phê duyệt Bản Vẽ THÀNH CÔNG", "success"); 
-      }
-      else
-      {
-        Swal.fire("Thông báo", "Không đủ quyền hạn!" , "error"); 
-      }  
+      })      
+      
     }
     else
     {
@@ -676,9 +663,8 @@ const CODE_MANAGER = () => {
   }
   const setNgoaiQuan= async(value: string)=> {
     if(codedatatablefilter.length>=1)
-    {
-      if(userData?.EMPL_NO==='VTT1901' || userData?.EMPL_NO==='NHU1903'|| userData?.EMPL_NO==='LVT1906')
-      {
+    { 
+      checkBP(userData,['RND','KD'],['ALL'],['ALL'],async ()=> {
         for(let i=0;i<codedatatablefilter.length;i++)
         {        
             await generalQuery("setngoaiquan", {           
@@ -698,11 +684,9 @@ const CODE_MANAGER = () => {
             });  
         } 
         Swal.fire("Thông báo", "SET TRẠNG KIỂM TRA NGOẠI QUAN THÀNH CÔNG", "success"); 
-      }
-      else
-      {
-        Swal.fire("Thông báo", "Không đủ quyền hạn!" , "error"); 
-      }
+
+      });      
+     
     }
     else
     {
@@ -712,8 +696,7 @@ const CODE_MANAGER = () => {
   const handleSaveQLSX= async()=> {
     if(codedatatablefilter.length>=1)
     {
-      if(userData?.EMPL_NO==='NHU1903' || userData?.MAINDEPTNAME==='QLSX')
-      {
+      checkBP(userData,['QLSX','KD','RND'],['ALL'],['ALL'],async ()=> {
         let err_code: string ='0';
         for(let i=0;i<codedatatablefilter.length;i++)
         {        
@@ -769,11 +752,8 @@ const CODE_MANAGER = () => {
           Swal.fire("Thông báo", "Lưu thành công", "success"); 
           setCodeDataTableFilter([]);
         }
-      }
-      else
-      {
-        Swal.fire("Thông báo", "Không đủ quyền hạn!" , "error"); 
-      }
+      })      
+     
     }
     else
     {
@@ -783,8 +763,7 @@ const CODE_MANAGER = () => {
   const handleSaveLossSX= async()=> {
     if(codedatatablefilter.length>=1)
     {
-      if(userData?.EMPL_NO==='NHU1903'||  userData?.EMPL_NO==='DTL1906'|| userData?.EMPL_NO==='LVQ0103')
-      {
+      checkBP(userData,['SX'],['ALL'],['ALL'],async ()=> {
         let err_code: string ='0';
         for(let i=0;i<codedatatablefilter.length;i++)
         {        
@@ -817,11 +796,8 @@ const CODE_MANAGER = () => {
           Swal.fire("Thông báo", "Lưu thành công", "success"); 
           setCodeDataTableFilter([]);
         }
-      }
-      else
-      {
-        Swal.fire("Thông báo", "Không đủ quyền hạn!" , "error"); 
-      }
+      })      
+     
     }
     else
     {

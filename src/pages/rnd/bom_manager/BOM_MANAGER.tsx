@@ -305,6 +305,7 @@ const BOM_MANAGER = () => {
     FSC: "N",
     PROD_DVT: "01",
   });
+  const [file, setFile] = useState<any>(null);
   const [bomsxtable, setBOMSXTable] = useState<BOM_SX[]>([]);
   const [bomgiatable, setBOMGIATable] = useState<BOM_GIA[]>([]);
   const [customerList, setCustomerList] = useState<CustomerListData[]>([]);
@@ -435,58 +436,53 @@ const BOM_MANAGER = () => {
         let file: any = null;
         const uploadFile2 = async (e: any) => {
           //console.log(file);
-          if (userData?.MAINDEPTNAME === "KD") {
+          checkBP(userData,['RND','KD'],['ALL'],['ALL'],async ()=> {            
             uploadQuery(file, params.row.G_CODE + ".pdf", "banve")
-              .then((response) => {
-                if (response.data.tk_status !== "NG") {
-                  generalQuery("update_banve_value", {
-                    G_CODE: params.row.G_CODE,
-                    banvevalue: "Y",
+            .then((response) => {
+              if (response.data.tk_status !== "NG") {
+                generalQuery("update_banve_value", {
+                  G_CODE: params.row.G_CODE,
+                  banvevalue: "Y",
+                })
+                  .then((response) => {
+                    if (response.data.tk_status !== "NG") {
+                      Swal.fire(
+                        "Thông báo",
+                        "Upload bản vẽ thành công",
+                        "success"
+                      );
+                      let tempcodeinfodatatable = rows.map(
+                        (element, index) => {
+                          return element.G_CODE === params.row.G_CODE
+                            ? { ...element, BANVE: "Y" }
+                            : element;
+                        }
+                      );
+                      //setRows(tempcodeinfodatatable);
+                    } else {
+                      Swal.fire(
+                        "Thông báo",
+                        "Upload bản vẽ thất bại",
+                        "error"
+                      );
+                    }
                   })
-                    .then((response) => {
-                      if (response.data.tk_status !== "NG") {
-                        Swal.fire(
-                          "Thông báo",
-                          "Upload bản vẽ thành công",
-                          "success"
-                        );
-                        let tempcodeinfodatatable = rows.map(
-                          (element, index) => {
-                            return element.G_CODE === params.row.G_CODE
-                              ? { ...element, BANVE: "Y" }
-                              : element;
-                          }
-                        );
-                        //setRows(tempcodeinfodatatable);
-                      } else {
-                        Swal.fire(
-                          "Thông báo",
-                          "Upload bản vẽ thất bại",
-                          "error"
-                        );
-                      }
-                    })
-                    .catch((error) => {
-                      console.log(error);
-                    });
-                } else {
-                  Swal.fire(
-                    "Thông báo",
-                    "Upload file thất bại:" + response.data.message,
-                    "error"
-                  );
-                }
-              })
-              .catch((error) => {
-                console.log(error);
-              });
-          } else {
-            Swal.fire(
-              "Thông báo",
-              "Chỉ bộ phận kinh doanh upload được bản vẽ",
-              "error"
-            );
-          }
+                  .catch((error) => {
+                    console.log(error);
+                  });
+              } else {
+                Swal.fire(
+                  "Thông báo",
+                  "Upload file thất bại:" + response.data.message,
+                  "error"
+                );
+              }
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+          });          
+          
         };
         let hreftlink = "/banve/" + params.row.G_CODE + ".pdf";
         if (params.row.BANVE !== "N" && params.row.BANVE !== null) {
@@ -900,6 +896,105 @@ const BOM_MANAGER = () => {
       Swal.fire("Thông báo", "Chọn ít nhất 1 G_CODE để SET !", "error");
     }
   };
+
+
+  const uploadFilebanVe = async (e: any) => {
+    
+    checkBP(userData,['RND','KD'],['ALL'],['ALL'],async ()=> {    
+      if(file !== null && file !== undefined)       
+      {
+        if(codefullinfo.G_CODE !=='-------')
+        {
+          uploadQuery(file, codefullinfo.G_CODE + ".pdf", "banve")
+        .then((response) => {
+          if (response.data.tk_status !== "NG") {
+            generalQuery("update_banve_value", {
+              G_CODE: codefullinfo.G_CODE,
+              banvevalue: "Y",
+            })
+              .then((response) => {
+                if (response.data.tk_status !== "NG") {
+                  generalQuery("resetbanve", {           
+                    G_CODE: codefullinfo.G_CODE,
+                    VALUE: 'N'
+                  })
+                  .then((response) => {
+                    console.log(response.data.tk_status);
+                    if (response.data.tk_status !== "NG") {
+                      //Swal.fire("Thông báo", "Delete Po thành công", "success");  
+                    } else {     
+                      //Swal.fire("Thông báo", "Update PO thất bại: " +response.data.message , "error");              
+                    }
+                  })
+                  .catch((error) => {
+                    console.log(error);
+                  }); 
+                  
+                  Swal.fire(
+                    "Thông báo",
+                    "Upload bản vẽ thành công",
+                    "success"
+                  );
+                  let tempcodeinfodatatable = rows.map(
+                    (element, index) => {
+                      return element.G_CODE === codefullinfo.G_CODE
+                        ? { ...element, BANVE: "Y" }
+                        : element;
+                    }
+                  );
+                  //setRows(tempcodeinfodatatable);
+                } else {
+                  Swal.fire(
+                    "Thông báo",
+                    "Upload bản vẽ thất bại",
+                    "error"
+                  );
+                }
+              })
+              .catch((error) => {
+                console.log(error);
+              });
+          } else {
+            Swal.fire(
+              "Thông báo",
+              "Upload file thất bại:" + response.data.message,
+              "error"
+            );
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+
+        }
+        else
+        {
+          Swal.fire(
+            "Thông báo",
+            "Chọn code trước khi up bản vẽ",
+            "error"
+          );
+        }
+
+        
+
+      } 
+      else 
+      {
+        Swal.fire(
+          "Thông báo",
+          "Hãy chọn file",
+          "error"
+        );
+      }
+
+     
+    });     
+  };
+
+
+
+
   const handleGETBOMSX = (G_CODE: string) => {
     setisLoading(true);
     generalQuery("getbomsx", {
@@ -2410,7 +2505,7 @@ const BOM_MANAGER = () => {
               </div>
               <div className='biginfokd'> {codedatatablefilter[0]?.G_NAME}</div>
             </div>
-            <div className='down'>
+            <div className='down' style={{backgroundImage: codefullinfo.USE_YN ==='Y'?  `linear-gradient(0deg, #afd3d1,#72cf34)`: `linear-gradient(0deg, #6C6B6B,#EFE5E5)`}}>
               <div className='codeinfo'>
                 <div className='info12'>
                   <div className='info1'>
@@ -3137,6 +3232,35 @@ const BOM_MANAGER = () => {
                           handleSetCodeInfo("REMK", e.target.value);
                         }}
                       ></input>
+                    </label>
+                   {/*  <label>
+                      <span style={{fontSize:'1.2rem', color: codefullinfo.USE_YN ==='Y'? 'blue':'red', backgroundColor:codefullinfo.USE_YN ==='Y'? 'white': 'white'}}   >{codefullinfo.USE_YN ==='Y'? 'MỞ':'KHÓA'}</span>
+                    </label> */}
+                    <label>                      
+                    <span style={{ color: "gray" }}>
+                      <a target='_blank' rel='noopener noreferrer' href={`/banve/${codefullinfo.G_CODE}.pdf`}>
+                        LINK
+                      </a>
+                    </span>
+                    
+                    </label>
+                    <label>
+                    <div className='uploadfile'>                                  
+                        <IconButton  disabled={enableform} className='buttonIcon' onClick={uploadFilebanVe}>
+                          <AiOutlineCloudUpload color='yellow' size={15} />
+                          Upload
+                        </IconButton>
+                        <input
+                          disabled={enableform}
+                          accept='.pdf'
+                          type='file'
+                          onChange={(e: any) => {
+                           setFile(e.target.files[0]);
+                           console.log(e.target.files[0]);
+                          }}
+                        />
+                      </div>
+
                     </label>
                     <FormControlLabel
                       disabled={enableform}

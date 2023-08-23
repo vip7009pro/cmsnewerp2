@@ -20,7 +20,7 @@ import {
   changeUserData,
   update_socket,
 } from "../../../redux/slices/globalSlice";
-import axios from "axios";
+import Cookies from "universal-cookie";
 
 interface MYCHAMCONG {
   MIN_TIME: string;
@@ -44,6 +44,7 @@ export function LinearProgressWithLabel(
 }
 
 export default function AccountInfo() {
+  const cookies = new Cookies();
   const userdata: UserData | undefined = useSelector(
     (state: RootState) => state.totalSlice.userData
   );
@@ -133,9 +134,13 @@ export default function AccountInfo() {
   const getchamcong = () => {
     generalQuery("checkMYCHAMCONG", {})
       .then((response) => {
-        //console.log(response.data.data);
+        //console.log(response.data);
         if (response.data.tk_status !== "NG") {
           //console.log('data',response.data.data)
+          //console.log('data',response.data.REFRESH_TOKEN);          
+          let rfr_token: string = response.data.REFRESH_TOKEN;
+          cookies.set("token", rfr_token, { path: "/" });
+
           let loaded_data: MYCHAMCONG = response.data.data[0];
           loaded_data.MIN_TIME = loaded_data.MIN_TIME?.substring(11, 19);
           loaded_data.MAX_TIME = loaded_data.MAX_TIME?.substring(11, 19);

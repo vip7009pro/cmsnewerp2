@@ -8,7 +8,7 @@ import React, {
 } from "react";
 import "./EQ_STATUS.scss";
 import Swal from "sweetalert2";
-import { generalQuery } from "../../../../api/Api";
+import { generalQuery, getCompany } from "../../../../api/Api";
 import moment from "moment";
 import { UserContext } from "../../../../api/Context";
 import MACHINE_COMPONENT2 from "../Machine/MACHINE_COMPONENT2";
@@ -203,7 +203,7 @@ const EQ_STATUS = () => {
           </div>
         </div>
       </div>
-      <div className='eqinfo'>
+      {getCompany()==='CMS' && <div className='eqinfo'>
         <div className='NM2'>
           <span className='machine_title'>NM2</span>          
           <EQ_SUMMARY
@@ -265,7 +265,7 @@ const EQ_STATUS = () => {
           </div>
           
         </div>
-      </div>
+      </div>}
 
       </div>
       
