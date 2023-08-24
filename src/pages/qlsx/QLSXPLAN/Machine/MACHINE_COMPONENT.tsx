@@ -51,8 +51,7 @@ const MACHINE_COMPONENT = (machine_data: MachineInterface) => {
           machine_data.run_stop === 1 ? runtopcolor : stoptopcolor
         }, ${machine_data.run_stop === 1 ? runbotcolor : stopbotcolor})`,
       }}
-      onDoubleClick={machine_data.onClick}
-      
+      onDoubleClick={machine_data.onClick}      
     >
       <div className='tieude' style={{backgroundColor:`${machine_data.eq_status ==='STOP'? 'red':machine_data.eq_status ==='SETTING'? 'yellow' : `#50f73e` }`}}>
         <div className="eqname"  style={{color:`${machine_data.eq_status ==='STOP'? 'white':machine_data.eq_status ==='SETTING'? 'black' : `black` }`}}>

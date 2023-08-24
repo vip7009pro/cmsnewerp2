@@ -24,6 +24,7 @@ import { generalQuery } from "../../../../api/Api";
 import { UserContext } from "../../../../api/Context";
 import { SaveExcel } from "../../../../api/GlobalFunction";
 import "./DATASX.scss";
+import { MACHINE_LIST } from "../QUICKPLAN/QUICKPLAN";
 interface SX_DATA {
   G_CODE: string;
   PHAN_LOAI: string;
@@ -129,6 +130,31 @@ interface LOSS_TABLE_DATA {
 }
 const DATASX = () => {
   const [showloss,setShowLoss]  = useState(false);
+    const [machine_list, setMachine_List] = useState<MACHINE_LIST[]>([]);  
+   const getMachineList = () => {
+    generalQuery("getmachinelist", {})
+      .then((response) => {
+        //console.log(response.data);
+        if (response.data.tk_status !== "NG") {
+          const loadeddata: MACHINE_LIST[] = response.data.data.map(
+            (element: MACHINE_LIST, index: number) => {
+              return {
+                ...element,
+              };
+            }
+          );
+          loadeddata.push({ EQ_NAME: "ALL" },{ EQ_NAME: "NO" }, { EQ_NAME: "NA" });
+          console.log(loadeddata);
+          setMachine_List(loadeddata);
+        } else {
+          //Swal.fire("Thông báo", "Lỗi BOM SX: " + response.data.message, "error");
+          setMachine_List([]);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
   const [losstableinfo,setLossTableInfo] = useState<LOSS_TABLE_DATA>({
     XUATKHO_MET: 0,
   XUATKHO_EA: 0,
@@ -997,6 +1023,7 @@ const DATASX = () => {
       });
   };
   useEffect(() => {
+    getMachineList();
     //setColumnDefinition(column_inspect_output);
   }, []);
   return (
@@ -1097,22 +1124,29 @@ const DATASX = () => {
                   <option value='NM2'>NM2</option>
                 </select>
               </label>
+
               <label>
-                <b>MACHINE:</b>
-                <select
-                  name='machine'
-                  value={machine}
-                  onChange={(e) => {
-                    setMachine(e.target.value);
-                  }}
-                >
-                  <option value='ALL'>ALL</option>
-                  <option value='FR'>FR</option>
-                  <option value='SR'>SR</option>
-                  <option value='DC'>DC</option>
-                  <option value='ED'>ED</option>
-                </select>
-              </label>
+                  <b>MACHINE:</b>
+                  <select
+                    name='machine2'
+                    value={machine}
+                    onChange={(e) =>{
+                      setMachine(e.target.value);
+                    }                      
+                    }
+                    style={{ width: 150, height: 22 }}
+                  >
+                    {machine_list.map(
+                        (ele: MACHINE_LIST, index: number) => {
+                          return (
+                            <option key={index} value={ele.EQ_NAME}>
+                              {ele.EQ_NAME}
+                            </option>
+                          );
+                        }
+                      )}
+                  </select>
+                </label>
             </div>
           </div>
           <div className='formbutton'>

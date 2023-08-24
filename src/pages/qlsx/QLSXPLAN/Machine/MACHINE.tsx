@@ -242,6 +242,7 @@ interface YCSXTableData {
   CUST_CD: string;
   G_CODE: string;
   G_NAME: string;
+  G_NAME_KD: string;
   EMPL_NAME: string;
   CUST_NAME_KD: string;
   PROD_REQUEST_NO: string;
@@ -303,6 +304,7 @@ interface QLSXCHITHIDATA {
 interface EQ_STATUS {
   FACTORY: string;
   EQ_NAME: string;
+  EQ_SERIES: string;
   EQ_ACTIVE: string;
   REMARK: string;
   EQ_STATUS: string;
@@ -316,7 +318,7 @@ interface EQ_STATUS {
   G_NAME: string;
 }
 const MACHINE = () => {
-  const [isPending, startTransition] = useTransition();
+  const [isPending, startTransition] = useTransition();  
   const chithiarray: QLSXPLANDATA[] | undefined = useSelector(
     (state: RootState) => state.totalSlice.multiple_chithi_array
   );
@@ -342,7 +344,7 @@ const MACHINE = () => {
   };
   const [eq_status, setEQ_STATUS] = useState<EQ_STATUS[]>([]);
   const [datadinhmuc, setDataDinhMuc] = useState<DINHMUC_QSLX>({
-    FACTORY: "",
+    FACTORY: 'NM1',
     EQ1: "",
     EQ2: "",
     EQ3: "",
@@ -449,6 +451,7 @@ const MACHINE = () => {
   const [editchithi, seteditchithi] = useState(true);
   const ycsxprintref = useRef(null);
   const [maxLieu, setMaxLieu] = useState(12);
+  const [eq_series, setEQ_SERIES] = useState<string[]>([]);
   const checkMaxLieu = () => {
     let temp_maxLieu: any = localStorage.getItem("maxLieu")?.toString();
     if (temp_maxLieu !== undefined) {
@@ -472,7 +475,7 @@ const MACHINE = () => {
           );
           loadeddata.push({ EQ_NAME: "NO" }, { EQ_NAME: "NA" });
           //console.log(loadeddata);
-          setMachine_List(loadeddata);
+          setMachine_List(loadeddata);          
         } else {
           //Swal.fire("Thông báo", "Lỗi BOM SX: " + response.data.message, "error");
           setMachine_List([]);
@@ -487,6 +490,16 @@ const MACHINE = () => {
   });
   const column_ycsxtable = [
     { field: "G_CODE", headerName: "G_CODE", width: 80 },
+    {
+      field: "G_NAME_KD",
+      headerName: "G_NAME_KD",
+      width: 100,
+      renderCell: (params: any) => {
+        if (params.row.PDBV === "P" || params.row.PDBV === null)
+          return <span style={{ color: "red" }}>{params.row.G_NAME_KD}</span>;
+        return <span style={{ color: "green" }}>{params.row.G_NAME_KD}</span>;
+      },
+    },
     {
       field: "G_NAME",
       headerName: "G_NAME",
@@ -1415,9 +1428,13 @@ const MACHINE = () => {
               };
             }
           );
+          setEQ_SERIES([...new Set(loaded_data.map((e:EQ_STATUS, index: number)=> {
+            return e.EQ_SERIES
+          }))]);
           setEQ_STATUS(loaded_data);
         } else {
           setEQ_STATUS([]);
+          setEQ_SERIES([]);
         }
       })
       .catch((error) => {
@@ -4466,7 +4483,49 @@ const MACHINE = () => {
       </div>
       {selection.tab1 && (
         <div className='NM1'>
-          <span className='machine_title'>FR-NM1</span>
+          {
+            eq_series.map((ele_series: string, index:number)=> {
+              return (
+                <>
+                <span className='machine_title'>{ele_series}-NM1</span>
+                <div className='FRlist'>
+                  
+            {eq_status
+              .filter(
+                (element: EQ_STATUS, index: number) =>
+                  element.FACTORY === "NM1" &&
+                  element.EQ_NAME.substring(0, 2) === ele_series
+              )
+              .map((element: EQ_STATUS, index: number) => {
+                return (
+                  <MACHINE_COMPONENT
+                    key={index}
+                    factory={element.FACTORY}
+                    machine_name={element.EQ_NAME}
+                    eq_status={element.EQ_STATUS}
+                    current_g_name={element.G_NAME}
+                    current_plan_id={element.CURR_PLAN_ID}
+                    run_stop={element.EQ_ACTIVE === "OK" ? 1 : 0}
+                    machine_data={plandatatable}
+                    onClick={() => {
+                      setShowPlanWindow(true);
+                      setSelectedFactory(element.FACTORY);
+                      setSelectedMachine(element.EQ_NAME);
+                      setSelectedPlan(undefined);
+                      setChiThiDataTable([]);
+                    }}
+                  />
+                );
+              })}
+
+            </div>
+            </>
+
+              ) 
+            })
+
+          }
+          {/* <span className='machine_title'>FR-NM1</span>
           <div className='FRlist'>
             {eq_status
               .filter(
@@ -4582,12 +4641,55 @@ const MACHINE = () => {
                   />
                 );
               })}
-          </div>
+          </div> */}
         </div>
       )}
       {selection.tab2 && (
         <div className='NM2'>
-          <span className='machine_title'>FR-NM2</span>
+          {
+            eq_series.map((ele_series: string, index:number)=> {
+              return (
+                <>
+                <span className='machine_title'>{ele_series}-NM2</span>
+                <div className='FRlist'>
+                  
+            {eq_status
+              .filter(
+                (element: EQ_STATUS, index: number) =>
+                  element.FACTORY === "NM2" &&
+                  element.EQ_NAME.substring(0, 2) === ele_series
+              )
+              .map((element: EQ_STATUS, index: number) => {
+                return (
+                  <MACHINE_COMPONENT
+                    key={index}
+                    factory={element.FACTORY}
+                    machine_name={element.EQ_NAME}
+                    eq_status={element.EQ_STATUS}
+                    current_g_name={element.G_NAME}
+                    current_plan_id={element.CURR_PLAN_ID}
+                    run_stop={element.EQ_ACTIVE === "OK" ? 1 : 0}
+                    machine_data={plandatatable}
+                    onClick={() => {
+                      setShowPlanWindow(true);
+                      setSelectedFactory(element.FACTORY);
+                      setSelectedMachine(element.EQ_NAME);
+                      setSelectedPlan(undefined);
+                      setChiThiDataTable([]);
+                    }}
+                  />
+                );
+              })}
+
+            </div>
+            </>
+
+              ) 
+            })
+
+          }
+
+          {/* <span className='machine_title'>FR-NM2</span>
           <div className='FRlist'>
             {eq_status
               .filter(
@@ -4644,7 +4746,7 @@ const MACHINE = () => {
                   />
                 );
               })}
-          </div>
+          </div> */}
         </div>
       )}
       {selection.tab3 && <div className='allinone'>ALL IN ONE</div>}

@@ -62,7 +62,7 @@ import { UserData } from "../../../../redux/slices/globalSlice";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../redux/store";
 import axios from 'axios';
-interface MACHINE_LIST {
+export interface MACHINE_LIST {
   EQ_NAME: string;
 }
 interface DINHMUC_QSLX {

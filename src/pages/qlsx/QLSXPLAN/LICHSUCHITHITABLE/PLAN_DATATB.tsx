@@ -31,6 +31,7 @@ import "./PLAN_DATATB.scss";
 import { UserData } from "../../../../redux/slices/globalSlice";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../redux/store";
+import { MACHINE_LIST } from "../QUICKPLAN/QUICKPLAN";
 interface QLSXPLANDATA {
   id: number;
   PLAN_ID: string;
@@ -99,6 +100,33 @@ interface QLSXPLANDATA {
   OLD_PLAN_QTY?: number;
 }
 const PLAN_DATATB = () => {
+  const [machine_list, setMachine_List] = useState<MACHINE_LIST[]>([]);
+  
+  const getMachineList = () => {
+   generalQuery("getmachinelist", {})
+     .then((response) => {
+       //console.log(response.data);
+       if (response.data.tk_status !== "NG") {
+         const loadeddata: MACHINE_LIST[] = response.data.data.map(
+           (element: MACHINE_LIST, index: number) => {
+             return {
+               ...element,
+             };
+           }
+         );
+         loadeddata.push({ EQ_NAME: "ALL" },{ EQ_NAME: "NO" }, { EQ_NAME: "NA" });
+         console.log(loadeddata);
+         setMachine_List(loadeddata);
+       } else {
+         //Swal.fire("Thông báo", "Lỗi BOM SX: " + response.data.message, "error");
+         setMachine_List([]);
+       }
+     })
+     .catch((error) => {
+       console.log(error);
+     });
+ };
+
   const [selectionModel_INPUTSX, setSelectionModel_INPUTSX] = useState<any>([]);
   const [readyRender, setReadyRender] = useState(false);
   const userData: UserData | undefined = useSelector(
@@ -658,6 +686,7 @@ const PLAN_DATATB = () => {
     }
   };
   useEffect(() => {
+     getMachineList();
     //setColumnDefinition(column_inspect_output);
   }, []);
   return (
@@ -691,21 +720,29 @@ const PLAN_DATATB = () => {
             </div>
             <div className='forminputcolumn'>
               <label>
-                <b>MACHINE:</b>
-                <select
-                  name='machine'
-                  value={machine}
-                  onChange={(e) => {
-                    setMachine(e.target.value);
-                  }}
-                >
-                  <option value='ALL'>ALL</option>
-                  <option value='FR'>FR</option>
-                  <option value='SR'>SR</option>
-                  <option value='DC'>DC</option>
-                  <option value='ED'>ED</option>
-                </select>
-              </label>
+                  <b>MACHINEA:</b>
+                  <select
+                    name='machine2'
+                    value={machine}
+                    onChange={(e) =>{
+                      setMachine(e.target.value);
+                    }                      
+                    }
+                    style={{ width: 150, height: 22 }}
+                  >
+                    {machine_list.map(
+                        (ele: MACHINE_LIST, index: number) => {
+                          return (
+                            <option key={index} value={ele.EQ_NAME}>
+                              {ele.EQ_NAME}
+                            </option>
+                          );
+                        }
+                      )}
+                  </select>
+                </label>
+
+              
               <label>
                 <b>MOVE TO DATE</b>
                 <input

@@ -39,6 +39,7 @@ import useWindowDimensions from "../../../api/useWindowDimensions";
 import { RootState } from "../../../redux/store";
 import { useSelector, useDispatch } from "react-redux";
 import { ResponsiveContainer } from "recharts";
+import { MACHINE_LIST } from "../../qlsx/QLSXPLAN/QUICKPLAN/QUICKPLAN";
 interface MACHINE_COUNTING {
   FACTORY: string;
   EQ_NAME: string;
@@ -98,7 +99,34 @@ interface OPERATION_TIME_DATA {
   LOSS_TIME_RATE: number;
 }
 const PLANRESULT = () => {
+
   const { height, width } = useWindowDimensions();
+  const [machine_list, setMachine_List] = useState<MACHINE_LIST[]>([]);
+  
+  const getMachineList = () => {
+   generalQuery("getmachinelist", {})
+     .then((response) => {
+       //console.log(response.data);
+       if (response.data.tk_status !== "NG") {
+         const loadeddata: MACHINE_LIST[] = response.data.data.map(
+           (element: MACHINE_LIST, index: number) => {
+             return {
+               ...element,
+             };
+           }
+         );
+         loadeddata.push({ EQ_NAME: "ALL" },{ EQ_NAME: "NO" }, { EQ_NAME: "NA" });
+         console.log(loadeddata);
+         setMachine_List(loadeddata);
+       } else {
+         //Swal.fire("Thông báo", "Lỗi BOM SX: " + response.data.message, "error");
+         setMachine_List([]);
+       }
+     })
+     .catch((error) => {
+       console.log(error);
+     });
+ };
   function getBusinessDatesCount(st: any, ed: any) {
     const startDate = new Date(moment(st).format("YYYY-MM-DD"));
     const endDate = new Date(moment(ed).format("YYYY-MM-DD"));
@@ -805,6 +833,7 @@ const PLANRESULT = () => {
     return totalAvailableTime;
   };
   useEffect(() => {
+    getMachineList();
     getMonthlySXData(
       machine,
       factory,
@@ -1034,31 +1063,30 @@ const PLANRESULT = () => {
                 <option value='NM2'>NM2</option>
               </select>
             </label>
+
             <label>
-              <b>MACHINE:</b>
-              <select
-                name='machine'
-                value={machine}
-                onChange={(e) => {
-                  setMachine(e.target.value);
-                  /* getDailySXData(e.target.value, factory, fromdate, todate);
-                  getWeeklySXData(e.target.value, factory, fromdate, todate);
-                  getMonthlySXData(
-                    e.target.value,
-                    factory,
-                    moment().format("YYYY") + "-01-01",
-                    moment().format("YYYY-MM-DD")
-                  );
-                  getMachineTimeEfficiency(e.target.value,factory, fromdate, todate); */
-                }}
-              >
-                <option value='ALL'>ALL</option>
-                <option value='FR'>FR</option>
-                <option value='SR'>SR</option>
-                <option value='DC'>DC</option>
-                <option value='ED'>ED</option>
-              </select>
-            </label>
+                  <b>MACHINE:</b>
+                  <select
+                    name='machine2'
+                    value={machine}
+                    onChange={(e) =>{
+                      setMachine(e.target.value);
+                    }                      
+                    }
+                    style={{ width: 150, height: 22 }}
+                  >
+                    {machine_list.map(
+                        (ele: MACHINE_LIST, index: number) => {
+                          return (
+                            <option key={index} value={ele.EQ_NAME}>
+                              {ele.EQ_NAME}
+                            </option>
+                          );
+                        }
+                      )}
+                  </select>
+                </label>
+            
           </div>
           <div className='forminputcolumn'>
             <IconButton

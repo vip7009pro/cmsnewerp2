@@ -83,6 +83,7 @@ interface YCSXTableData {
   CUST_CD: string;
   G_CODE: string;
   G_NAME: string;
+  G_NAME_KD: string;
   EMPL_NAME: string;
   CUST_NAME_KD: string;
   PROD_REQUEST_NO: string;
@@ -270,6 +271,16 @@ const YCSXManager = () => {
   const [AMZ_check_flag, setAMZ_Check_Flag] = useState(false);
   const column_ycsxtable = [
     { field: "G_CODE", headerName: "G_CODE", width: 80 },
+    {
+      field: "G_NAME_KD",
+      headerName: "G_NAME_KD",
+      width: 100,
+      renderCell: (params: any) => {
+        if (params.row.PDBV === "P" || params.row.PDBV === null)
+          return <span style={{ color: "red" }}>{params.row.G_NAME_KD}</span>;
+        return <span style={{ color: "green" }}>{params.row.G_NAME_KD}</span>;
+      },
+    },
     {
       field: "G_NAME",
       headerName: "G_NAME",

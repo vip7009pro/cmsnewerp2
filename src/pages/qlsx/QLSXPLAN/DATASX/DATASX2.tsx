@@ -33,6 +33,7 @@ import "./DATASX.scss";
 import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
 import { MdOutlinePivotTableChart } from "react-icons/md";
 import PivotTable from "../../../../components/PivotChart/PivotChart";
+import { MACHINE_LIST } from "../QUICKPLAN/QUICKPLAN";
 interface SX_DATA {
   G_CODE: string;
   PHAN_LOAI: string;
@@ -172,6 +173,32 @@ interface LICHSUINPUTLIEU_DATA {
   PROD_REQUEST_NO: string,
 }
 const DATASX2 = () => {
+    const [machine_list, setMachine_List] = useState<MACHINE_LIST[]>([]);
+  
+   const getMachineList = () => {
+    generalQuery("getmachinelist", {})
+      .then((response) => {
+        //console.log(response.data);
+        if (response.data.tk_status !== "NG") {
+          const loadeddata: MACHINE_LIST[] = response.data.data.map(
+            (element: MACHINE_LIST, index: number) => {
+              return {
+                ...element,
+              };
+            }
+          );
+          loadeddata.push({ EQ_NAME: "ALL" }, { EQ_NAME: "NO" }, { EQ_NAME: "NA" });
+          console.log(loadeddata);
+          setMachine_List(loadeddata);
+        } else {
+          //Swal.fire("Thông báo", "Lỗi BOM SX: " + response.data.message, "error");
+          setMachine_List([]);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
   const [showhidePivotTable, setShowHidePivotTable] = useState(false);
   const [inputlieudatatable,setInputLieuDataTable]= useState<LICHSUINPUTLIEU_DATA[]>([]);
   const [showloss,setShowLoss]  = useState(false);
@@ -3008,6 +3035,7 @@ useState<PivotGridDataSource>(
       });
   };
   useEffect(() => {
+    getMachineList();
     //setColumnDefinition(column_inspect_output);
   }, []);
   return (
@@ -3109,21 +3137,27 @@ useState<PivotGridDataSource>(
                 </select>
               </label>
               <label>
-                <b>MACHINE:</b>
-                <select
-                  name='machine'
-                  value={machine}
-                  onChange={(e) => {
-                    setMachine(e.target.value);
-                  }}
-                >
-                  <option value='ALL'>ALL</option>
-                  <option value='FR'>FR</option>
-                  <option value='SR'>SR</option>
-                  <option value='DC'>DC</option>
-                  <option value='ED'>ED</option>
-                </select>
-              </label>
+                  <b>MACHINE:</b>
+                  <select
+                    name='machine2'
+                    value={machine}
+                    onChange={(e) =>{
+                      setMachine(e.target.value);
+                    }                      
+                    }
+                    style={{ width: 150, height: 22 }}
+                  >
+                    {machine_list.map(
+                        (ele: MACHINE_LIST, index: number) => {
+                          return (
+                            <option key={index} value={ele.EQ_NAME}>
+                              {ele.EQ_NAME}
+                            </option>
+                          );
+                        }
+                      )}
+                  </select>
+                </label>             
             </div>
           </div>
           <div className='formbutton'>

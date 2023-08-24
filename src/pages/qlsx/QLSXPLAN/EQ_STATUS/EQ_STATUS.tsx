@@ -17,6 +17,7 @@ import { TextField } from "@mui/material";
 interface EQ_STT {
   FACTORY: string;
   EQ_NAME: string;
+  EQ_SERIES: string;
   EQ_ACTIVE: string;
   REMARK: string;
   EQ_STATUS: string;
@@ -49,6 +50,7 @@ const EQ_STATUS = () => {
     }
   };
   const [eq_status, setEQ_STATUS] = useState<EQ_STT[]>([]);
+  const [eq_series, setEQ_SERIES] = useState<string[]>([]);
   const handle_loadEQ_STATUS = () => {
     generalQuery("checkEQ_STATUS", {})
       .then((response) => {
@@ -64,8 +66,15 @@ const EQ_STATUS = () => {
           );
           //console.log(loaded_data);
           setEQ_STATUS(loaded_data);
+          console.log([...new Set(loaded_data.map((e:EQ_STT, index: number)=> {
+            return e.EQ_SERIES
+          }))]);
+          setEQ_SERIES([...new Set(loaded_data.map((e:EQ_STT, index: number)=> {
+            return e.EQ_SERIES
+          }))]);
         } else {
           setEQ_STATUS([]);
+          setEQ_SERIES([]);
         }
       })
       .catch((error) => {
@@ -95,7 +104,42 @@ const EQ_STATUS = () => {
               (element: EQ_STT, index: number) => element.FACTORY === "NM1"
             )}
           />
-          <div className='FRlist'>
+          {
+            eq_series.map((ele_series: string, index:number)=> {
+              return (
+                <div className='FRlist'>
+            {eq_status
+              .filter(
+                (element: EQ_STT, index: number) =>
+                  element.FACTORY === "NM1" &&
+                  element.EQ_NAME.substring(0, 2) === ele_series
+              )
+              .map((element: EQ_STT, index: number) => {
+                return (
+                  <MACHINE_COMPONENT2
+                    search_string={searchString}                    
+                    key={index}
+                    factory={element.FACTORY}
+                    machine_name={element.EQ_NAME}
+                    eq_status={element.EQ_STATUS}
+                    current_g_name={element.G_NAME_KD}
+                    current_plan_id={element.CURR_PLAN_ID}
+                    current_step = {element.STEP}
+                    run_stop={element.EQ_ACTIVE === "OK" ? 1 : 0}
+                    upd_time ={element.UPD_DATE}
+                    upd_empl ={element.UPD_EMPL}                    
+                    onClick={() => {}}
+                    onMouseEnter={()=>{}}
+                    onMouseLeave={()=>{}}
+                  />
+                );
+              })}
+          </div>
+              )
+            })
+          }
+
+         {/*  <div className='FRlist'>
             {eq_status
               .filter(
                 (element: EQ_STT, index: number) =>
@@ -200,7 +244,7 @@ const EQ_STATUS = () => {
                   />
                 );
               })}
-          </div>
+          </div> */}
         </div>
       </div>
       {getCompany()==='CMS' && <div className='eqinfo'>
@@ -211,7 +255,42 @@ const EQ_STATUS = () => {
               (element: EQ_STT, index: number) => element.FACTORY === "NM2"
             )}
           />
-          <div className='FRlist'>
+          {
+            eq_series.map((ele_series: string, index:number)=> {
+              return (
+                <div className='FRlist'>
+            {eq_status
+              .filter(
+                (element: EQ_STT, index: number) =>
+                  element.FACTORY === "NM2" &&
+                  element.EQ_NAME.substring(0, 2) === ele_series
+              )
+              .map((element: EQ_STT, index: number) => {
+                return (
+                  <MACHINE_COMPONENT2
+                    search_string={searchString}                    
+                    key={index}
+                    factory={element.FACTORY}
+                    machine_name={element.EQ_NAME}
+                    eq_status={element.EQ_STATUS}
+                    current_g_name={element.G_NAME_KD}
+                    current_plan_id={element.CURR_PLAN_ID}
+                    current_step = {element.STEP}
+                    run_stop={element.EQ_ACTIVE === "OK" ? 1 : 0}
+                    upd_time ={element.UPD_DATE}
+                    upd_empl ={element.UPD_EMPL}                    
+                    onClick={() => {}}
+                    onMouseEnter={()=>{}}
+                    onMouseLeave={()=>{}}
+                  />
+                );
+              })}
+          </div>
+              )
+            })
+          }
+
+         {/*  <div className='FRlist'>
             {eq_status
               .filter(
                 (element: EQ_STT, index: number) =>
@@ -262,7 +341,7 @@ const EQ_STATUS = () => {
                   />
                 );
               })}
-          </div>
+          </div> */}
           
         </div>
       </div>}

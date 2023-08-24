@@ -37,6 +37,7 @@ import { BiSearch } from "react-icons/bi";
 import { UserData } from "../../../../redux/slices/globalSlice";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../redux/store";
+import { MACHINE_LIST } from "../QUICKPLAN/QUICKPLAN";
 
   
   interface CAPA_LEADTIME_DATA {
@@ -73,6 +74,33 @@ import { RootState } from "../../../../redux/store";
   }
 
   const CAPADATA = () => {
+    const [machine_list, setMachine_List] = useState<MACHINE_LIST[]>([]);
+  
+    const getMachineList = () => {
+     generalQuery("getmachinelist", {})
+       .then((response) => {
+         //console.log(response.data);
+         if (response.data.tk_status !== "NG") {
+           const loadeddata: MACHINE_LIST[] = response.data.data.map(
+             (element: MACHINE_LIST, index: number) => {
+               return {
+                 ...element,
+               };
+             }
+           );
+           loadeddata.push({ EQ_NAME: "ALL" },{ EQ_NAME: "NO" }, { EQ_NAME: "NA" });
+           console.log(loadeddata);
+           setMachine_List(loadeddata);
+         } else {
+           //Swal.fire("Thông báo", "Lỗi BOM SX: " + response.data.message, "error");
+           setMachine_List([]);
+         }
+       })
+       .catch((error) => {
+         console.log(error);
+       });
+   };
+
     const [showhidePivotTable, setShowHidePivotTable] = useState(false);
     const userData: UserData | undefined = useSelector(
       (state: RootState) => state.totalSlice.userData
@@ -566,6 +594,7 @@ import { RootState } from "../../../../redux/store";
 
     useEffect(() => {
       //setColumnDefinition(column_inspect_output);
+      getMachineList();
       handle_loaddatasx();
     }, []);
     return (
@@ -573,46 +602,51 @@ import { RootState } from "../../../../redux/store";
         <div className='tracuuDataInspection'>
           <div className='tracuuDataInspectionform'>  
           <div className="forminput">
-         
-          
-           
               <div className='forminputcolumn'>
-                <label>
+              <label>
                   <b>EQ1:</b>
                   <select
-                    name='phanloai'
+                    name='machine'
                     value={datadinhmuc.EQ1}
-                    onChange={(e) =>
+                    onChange={(e) =>{
                       setDataDinhMuc({ ...datadinhmuc, EQ1: e.target.value })
-                    }
+                    }}
                     style={{ width: 150, height: 22 }}
                   >
-                    <option value='FR'>FR</option>
-                    <option value='SR'>SR</option>
-                    <option value='DC'>DC</option>
-                    <option value='ED'>ED</option>
-                    <option value='NO'>NO</option>
-                    <option value='NA'>NA</option>
+                    {machine_list.map(
+                        (ele: MACHINE_LIST, index: number) => {
+                          return (
+                            <option key={index} value={ele.EQ_NAME}>
+                              {ele.EQ_NAME}
+                            </option>
+                          );
+                        }
+                      )}
                   </select>
                 </label>
+               
                 <label>
                   <b>EQ2:</b>
                   <select
-                    name='phanloai'
+                    name='machine'
                     value={datadinhmuc.EQ2}
-                    onChange={(e) =>
+                    onChange={(e) =>{
                       setDataDinhMuc({ ...datadinhmuc, EQ2: e.target.value })
-                    }
+                    }}
                     style={{ width: 150, height: 22 }}
                   >
-                    <option value='FR'>FR</option>
-                    <option value='SR'>SR</option>
-                    <option value='DC'>DC</option>
-                    <option value='ED'>ED</option>
-                    <option value='NO'>NO</option>
-                    <option value='NA'>NA</option>
+                    {machine_list.map(
+                        (ele: MACHINE_LIST, index: number) => {
+                          return (
+                            <option key={index} value={ele.EQ_NAME}>
+                              {ele.EQ_NAME}
+                            </option>
+                          );
+                        }
+                      )}
                   </select>
                 </label>
+                
               </div>
               <div className='forminputcolumn'>
                 <label>

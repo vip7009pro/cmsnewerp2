@@ -9,6 +9,7 @@ import { UserContext } from '../../../../api/Context';
 import { SaveExcel } from '../../../../api/GlobalFunction';
 import "./PLAN_STATUS.scss"
 import PLAN_STATUS_COMPONENTS from './PLAN_STATUS_COMPONENTS';
+import { MACHINE_LIST } from '../QUICKPLAN/QUICKPLAN';
 
 interface SX_DATA {
     id: number,
@@ -32,6 +33,34 @@ interface SX_DATA {
     WORK_SHIFT: string,
 }
 const PLAN_STATUS = () => { 
+  const [machine_list, setMachine_List] = useState<MACHINE_LIST[]>([]);
+  
+  const getMachineList = () => {
+   generalQuery("getmachinelist", {})
+     .then((response) => {
+       //console.log(response.data);
+       if (response.data.tk_status !== "NG") {
+         const loadeddata: MACHINE_LIST[] = response.data.data.map(
+           (element: MACHINE_LIST, index: number) => {
+             return {
+               ...element,
+             };
+           }
+         );
+         loadeddata.push({ EQ_NAME: "ALL" },{ EQ_NAME: "NO" }, { EQ_NAME: "NA" });
+         console.log(loadeddata);
+         setMachine_List(loadeddata);
+       } else {
+         //Swal.fire("Thông báo", "Lỗi BOM SX: " + response.data.message, "error");
+         setMachine_List([]);
+       }
+     })
+     .catch((error) => {
+       console.log(error);
+     });
+ };
+ 
+
   const [readyRender, setReadyRender] = useState(false);
   const [isLoading, setisLoading] = useState(false);  
   const [isPending, startTransition]=useTransition();
@@ -88,7 +117,8 @@ const PLAN_STATUS = () => {
   }
 
   useEffect(()=>{
-    handle_loadplanStatus();    
+    getMachineList();
+    handle_loadplanStatus();
     let intervalID = window.setInterval(()=> { 
         handle_loadplanStatus();      
       },3000);
@@ -175,23 +205,28 @@ const PLAN_STATUS = () => {
                 <option value='NM1'>NM1</option>
                 <option value='NM2'>NM2</option>           
             </select>
-            </label>       
+            </label>
             <label>
-            <b>MACHINE:</b>
-            <select
-                name='machine'
-                value={machine}
-                onChange={(e) => {
-                setMachine(e.target.value);
-                }}
-            >
-                <option value='ALL'>ALL</option>
-                <option value='FR'>FR</option>
-                <option value='SR'>SR</option>
-                <option value='DC'>DC</option>
-                <option value='ED'>ED</option>           
-            </select>
-            </label>     
+                  <b>MACHINE:</b>
+                  <select
+                    name='machine'
+                    value={machine}
+                    onChange={(e) => {
+                      setMachine(e.target.value);                      
+                    }}
+                    style={{ width: 150, height: 22 }}
+                  >
+                    {machine_list.map(
+                        (ele: MACHINE_LIST, index: number) => {
+                          return (
+                            <option key={index} value={ele.EQ_NAME}>
+                              {ele.EQ_NAME}
+                            </option>
+                          );
+                        }
+                      )}
+                  </select>
+                </label> 
             </div>
           </div>
           <div className='formbutton'>
