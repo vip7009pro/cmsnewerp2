@@ -209,9 +209,7 @@ interface YCSXTableData {
   CD1: number;
   CD2: number;
   CD3: number;
-  CD4: number;
-  CD_IN: number;
-  CD_DIECUT: number;
+  CD4: number; 
   TON_CD1: number;
   TON_CD2: number;
   TON_CD3: number;
@@ -339,7 +337,7 @@ const QUICKPLAN = () => {
   const [showYCKT, setShowYCKT] = useState(false);
   const [editplan, seteditplan] = useState(true);
   const [temp_id, setTemID] = useState(0);
-  const [showhideycsxtable, setShowHideYCSXTable] = useState(false);
+  const [showhideycsxtable, setShowHideYCSXTable] = useState(1);
   const [showhidedinhmuc, setShowHideDinhMuc] = useState(true);
   const [machine_list, setMachine_List] = useState<MACHINE_LIST[]>([]);
   const getMachineList = () => {
@@ -373,6 +371,16 @@ const QUICKPLAN = () => {
   const column_ycsxtable = [
     { field: "G_CODE", headerName: "G_CODE", width: 80 },
     {
+      field: "G_NAME_KD",
+      headerName: "G_NAME_KD",
+      width: 100,
+      renderCell: (params: any) => {
+        if (params.row.PDBV === "P" || params.row.PDBV === null)
+          return <span style={{ color: "red" }}>{params.row.G_NAME_KD}</span>;
+        return <span style={{ color: "green" }}>{params.row.G_NAME_KD}</span>;
+      },
+    },
+    {
       field: "G_NAME",
       headerName: "G_NAME",
       width: 250,
@@ -387,6 +395,18 @@ const QUICKPLAN = () => {
     { field: "PROD_REQUEST_NO", headerName: "SỐ YCSX", width: 80 },
     { field: "PROD_REQUEST_DATE", headerName: "NGÀY YCSX", width: 80 },
     {
+      field: "PO_BALANCE",
+      headerName: "PO_BALANCE",
+      width: 110,
+      renderCell: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            <b>{params.row.PO_BALANCE.toLocaleString("en", "US")}</b>
+          </span>
+        );
+      },
+    },    
+    {
       field: "PROD_REQUEST_QTY",
       type: "number",
       headerName: "SL YCSX",
@@ -398,11 +418,59 @@ const QUICKPLAN = () => {
           </span>
         );
       },
+    },    
+    {
+      field: "CD1",
+      headerName: "CD1",
+      width: 80,
+      renderCell: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            <b>{params.row.CD1.toLocaleString("en", "US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "CD2",
+      headerName: "CD2",
+      width: 80,
+      renderCell: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            <b>{params.row.CD2.toLocaleString("en", "US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "CD3",
+      headerName: "CD3",
+      width: 80,
+      renderCell: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            <b>{params.row.CD3.toLocaleString("en", "US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "CD4",
+      headerName: "CD4",
+      width: 80,
+      renderCell: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            <b>{params.row.CD4.toLocaleString("en", "US")}</b>
+          </span>
+        );
+      },
     },
     {
       field: "LOT_TOTAL_INPUT_QTY_EA",
       type: "number",
-      headerName: "NHẬP KIỂM",
+      headerName: "NK",
       width: 80,
       renderCell: (params: any) => {
         return (
@@ -415,7 +483,7 @@ const QUICKPLAN = () => {
     {
       field: "LOT_TOTAL_OUTPUT_QTY_EA",
       type: "number",
-      headerName: "XUẤT KIỂM",
+      headerName: "XK",
       width: 80,
       renderCell: (params: any) => {
         return (
@@ -425,6 +493,99 @@ const QUICKPLAN = () => {
         );
       },
     },
+    {
+      field: "TON_CD1",
+      headerName: "TCD1",
+      width: 80,
+      renderCell: (params: any) => {
+        return (
+          <span style={{ color: "red" }}>
+            <b>{params.row.TON_CD1.toLocaleString("en", "US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "TON_CD2",
+      headerName: "TCD2",
+      width: 80,
+      renderCell: (params: any) => {
+        return (
+          <span style={{ color: "red" }}>
+            <b>{params.row.TON_CD2.toLocaleString("en", "US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "TON_CD3",
+      headerName: "TCD3",
+      width: 80,
+      renderCell: (params: any) => {
+        return (
+          <span style={{ color: "red" }}>
+            <b>{params.row.TON_CD3.toLocaleString("en", "US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "TON_CD4",
+      headerName: "TCD4",
+      width: 80,
+      renderCell: (params: any) => {
+        return (
+          <span style={{ color: "red" }}>
+            <b>{params.row.TON_CD4.toLocaleString("en", "US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "INSPECT_BALANCE",
+      type: "number",
+      headerName: "TỒN KIỂM",
+      width: 80,
+      renderCell: (params: any) => {
+        return (
+          <span style={{ color: "#cc0099" }}>
+            <b>{params.row.INSPECT_BALANCE.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "EQ1",
+      headerName: "EQ1",
+      width: 80,
+      renderCell: (params: any) => {
+        return <span style={{ color: "black" }}>{params.row.EQ1}</span>;
+      },
+    },
+    {
+      field: "EQ2",
+      headerName: "EQ2",
+      width: 80,
+      renderCell: (params: any) => {
+        return <span style={{ color: "black" }}>{params.row.EQ2}</span>;
+      },
+    },
+    {
+      field: "EQ3",
+      headerName: "EQ3",
+      width: 80,
+      renderCell: (params: any) => {
+        return <span style={{ color: "black" }}>{params.row.EQ3}</span>;
+      },
+    },
+    {
+      field: "EQ4",
+      headerName: "EQ4",
+      width: 80,
+      renderCell: (params: any) => {
+        return <span style={{ color: "black" }}>{params.row.EQ4}</span>;
+      },
+    },  
     {
       field: "SHORTAGE_YCSX",
       type: "number",
@@ -575,133 +736,8 @@ const QUICKPLAN = () => {
           return <span style={{ color: "red" }}>{params.row.G_NAME}</span>;
         return <span style={{ color: "green" }}>{params.row.G_NAME}</span>;
       },
-    },
-    {
-      field: "PO_BALANCE",
-      headerName: "PO_BALANCE",
-      width: 110,
-      renderCell: (params: any) => {
-        return (
-          <span style={{ color: "blue" }}>
-            <b>{params.row.PO_BALANCE.toLocaleString("en", "US")}</b>
-          </span>
-        );
-      },
-    },
-    {
-      field: "EQ1",
-      headerName: "EQ1",
-      width: 80,
-      renderCell: (params: any) => {
-        return <span style={{ color: "black" }}>{params.row.EQ1}</span>;
-      },
-    },
-    {
-      field: "EQ2",
-      headerName: "EQ2",
-      width: 80,
-      renderCell: (params: any) => {
-        return <span style={{ color: "black" }}>{params.row.EQ2}</span>;
-      },
-    },
-    {
-      field: "CD1",
-      headerName: "XUAT_CD1",
-      width: 100,
-      renderCell: (params: any) => {
-        return (
-          <span style={{ color: "blue" }}>
-            <b>{params.row.CD1.toLocaleString("en", "US")}</b>
-          </span>
-        );
-      },
-    },
-    {
-      field: "CD2",
-      headerName: "XUAT_CD2",
-      width: 100,
-      renderCell: (params: any) => {
-        return (
-          <span style={{ color: "blue" }}>
-            <b>{params.row.CD2.toLocaleString("en", "US")}</b>
-          </span>
-        );
-      },
-    },
-    {
-      field: "LOT_TOTAL_OUTPUT_QTY_EA",
-      type: "number",
-      headerName: "XUẤT KIỂM",
-      width: 100,
-      renderCell: (params: any) => {
-        return (
-          <span style={{ color: "#cc0099" }}>
-            <b>{params.row.LOT_TOTAL_OUTPUT_QTY_EA.toLocaleString("en-US")}</b>
-          </span>
-        );
-      },
-    },
-    {
-      field: "CD_IN",
-      headerName: "CD_IN",
-      width: 80,
-      renderCell: (params: any) => {
-        return (
-          <span style={{ color: "gray" }}>
-            <b>{params.row.CD_IN.toLocaleString("en", "US")}</b>
-          </span>
-        );
-      },
-    },
-    {
-      field: "CD_DIECUT",
-      headerName: "CD_DIECUT",
-      width: 80,
-      renderCell: (params: any) => {
-        return (
-          <span style={{ color: "gray" }}>
-            <b>{params.row.CD_DIECUT.toLocaleString("en", "US")}</b>
-          </span>
-        );
-      },
-    },
-    {
-      field: "TON_CD1",
-      headerName: "TONYCSX_CD1",
-      width: 120,
-      renderCell: (params: any) => {
-        return (
-          <span style={{ color: "red" }}>
-            <b>{params.row.TON_CD1.toLocaleString("en", "US")}</b>
-          </span>
-        );
-      },
-    },
-    {
-      field: "TON_CD2",
-      headerName: "TONYCSX_CD2",
-      width: 120,
-      renderCell: (params: any) => {
-        return (
-          <span style={{ color: "red" }}>
-            <b>{params.row.TON_CD2.toLocaleString("en", "US")}</b>
-          </span>
-        );
-      },
-    },
-    {
-      field: "INSPECT_BALANCE",
-      type: "number",
-      headerName: "TỒN KIỂM",
-      width: 80,
-      renderCell: (params: any) => {
-        return (
-          <span style={{ color: "#cc0099" }}>
-            <b>{params.row.INSPECT_BALANCE.toLocaleString("en-US")}</b>
-          </span>
-        );
-      },
-    },
+    },        
+    
     {
       field: "YCSX_PENDING",
       headerName: "YCSX_PENDING",
@@ -1702,7 +1738,16 @@ const QUICKPLAN = () => {
   };
   function CustomToolbarPOTable() {
     return (
-      <GridToolbarContainer>      
+      <GridToolbarContainer>     
+        <IconButton
+          className='buttonIcon'
+          onClick={() => {         
+            setShowHideYCSXTable(showhideycsxtable===3? 1: showhideycsxtable +1);
+          }}
+        >
+          <BiShow color='green' size={20} />
+          Switch Tab
+        </IconButton> 
         <IconButton
           className='buttonIcon'
           onClick={() => {
@@ -1791,12 +1836,12 @@ const QUICKPLAN = () => {
       <GridToolbarContainer>
         <IconButton
           className='buttonIcon'
-          onClick={() => {
-            setShowHideYCSXTable(!showhideycsxtable);
+          onClick={() => {         
+            setShowHideYCSXTable(showhideycsxtable===3? 1: showhideycsxtable +1);
           }}
         >
           <BiShow color='green' size={20} />
-          Ẩn /Hiện
+          Switch Tab
         </IconButton>
         <IconButton
           className='buttonIcon'
@@ -2280,9 +2325,8 @@ const QUICKPLAN = () => {
           {selectedCode}
         </span>
        
-        <div className="dinhmucdiv">
-        
-          {showhidedinhmuc && (
+        <div className="dinhmucdiv">        
+          {(showhideycsxtable ===1 || showhideycsxtable ===3 ) && (
             <div className="datadinhmucto">
             <div className='datadinhmuc'>
               <div className='forminputcolumn'>
@@ -2752,7 +2796,7 @@ const QUICKPLAN = () => {
 
         </div>        
         <div className='content'>
-          {showhideycsxtable && (
+          {(showhideycsxtable===2 ||showhideycsxtable===3)  && (
             <div className='ycsxlist'>
               <div className='tracuuYCSX'>
                 <div className='tracuuYCSXform'>
@@ -3062,7 +3106,7 @@ const QUICKPLAN = () => {
               </div>
             </div>
           )}
-          <div className='chithidiv'>
+          {(showhideycsxtable===1 ||showhideycsxtable===3)  && <div className='chithidiv'>
             <div className='planlist'>
               <DataGrid
                 sx={{ fontSize: 12, flex: 1 }}
@@ -3088,7 +3132,7 @@ const QUICKPLAN = () => {
                 onRowClick={handleEvent}
               />
             </div>
-          </div>
+          </div>}
         </div>
       </div>
     </div>

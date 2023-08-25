@@ -277,8 +277,6 @@ interface YCSXTableData {
   EQ2: string;
   CD1: number;
   CD2: number;
-  CD_IN: number;
-  CD_DIECUT: number;
   TON_CD1: number;
   TON_CD2: number;
 }
@@ -515,6 +513,18 @@ const MACHINE = () => {
     { field: "PROD_REQUEST_NO", headerName: "SỐ YCSX", width: 80 },
     { field: "PROD_REQUEST_DATE", headerName: "NGÀY YCSX", width: 80 },
     {
+      field: "PO_BALANCE",
+      headerName: "PO_BALANCE",
+      width: 110,
+      renderCell: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            <b>{params.row.PO_BALANCE.toLocaleString("en", "US")}</b>
+          </span>
+        );
+      },
+    },    
+    {
       field: "PROD_REQUEST_QTY",
       type: "number",
       headerName: "SL YCSX",
@@ -526,11 +536,59 @@ const MACHINE = () => {
           </span>
         );
       },
+    },    
+    {
+      field: "CD1",
+      headerName: "CD1",
+      width: 80,
+      renderCell: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            <b>{params.row.CD1.toLocaleString("en", "US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "CD2",
+      headerName: "CD2",
+      width: 80,
+      renderCell: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            <b>{params.row.CD2.toLocaleString("en", "US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "CD3",
+      headerName: "CD3",
+      width: 80,
+      renderCell: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            <b>{params.row.CD3.toLocaleString("en", "US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "CD4",
+      headerName: "CD4",
+      width: 80,
+      renderCell: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            <b>{params.row.CD4.toLocaleString("en", "US")}</b>
+          </span>
+        );
+      },
     },
     {
       field: "LOT_TOTAL_INPUT_QTY_EA",
       type: "number",
-      headerName: "NHẬP KIỂM",
+      headerName: "NK",
       width: 80,
       renderCell: (params: any) => {
         return (
@@ -543,7 +601,7 @@ const MACHINE = () => {
     {
       field: "LOT_TOTAL_OUTPUT_QTY_EA",
       type: "number",
-      headerName: "XUẤT KIỂM",
+      headerName: "XK",
       width: 80,
       renderCell: (params: any) => {
         return (
@@ -553,6 +611,99 @@ const MACHINE = () => {
         );
       },
     },
+    {
+      field: "TON_CD1",
+      headerName: "TCD1",
+      width: 80,
+      renderCell: (params: any) => {
+        return (
+          <span style={{ color: "red" }}>
+            <b>{params.row.TON_CD1.toLocaleString("en", "US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "TON_CD2",
+      headerName: "TCD2",
+      width: 80,
+      renderCell: (params: any) => {
+        return (
+          <span style={{ color: "red" }}>
+            <b>{params.row.TON_CD2.toLocaleString("en", "US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "TON_CD3",
+      headerName: "TCD3",
+      width: 80,
+      renderCell: (params: any) => {
+        return (
+          <span style={{ color: "red" }}>
+            <b>{params.row.TON_CD3.toLocaleString("en", "US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "TON_CD4",
+      headerName: "TCD4",
+      width: 80,
+      renderCell: (params: any) => {
+        return (
+          <span style={{ color: "red" }}>
+            <b>{params.row.TON_CD4.toLocaleString("en", "US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "INSPECT_BALANCE",
+      type: "number",
+      headerName: "TỒN KIỂM",
+      width: 80,
+      renderCell: (params: any) => {
+        return (
+          <span style={{ color: "#cc0099" }}>
+            <b>{params.row.INSPECT_BALANCE.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "EQ1",
+      headerName: "EQ1",
+      width: 80,
+      renderCell: (params: any) => {
+        return <span style={{ color: "black" }}>{params.row.EQ1}</span>;
+      },
+    },
+    {
+      field: "EQ2",
+      headerName: "EQ2",
+      width: 80,
+      renderCell: (params: any) => {
+        return <span style={{ color: "black" }}>{params.row.EQ2}</span>;
+      },
+    },
+    {
+      field: "EQ3",
+      headerName: "EQ3",
+      width: 80,
+      renderCell: (params: any) => {
+        return <span style={{ color: "black" }}>{params.row.EQ3}</span>;
+      },
+    },
+    {
+      field: "EQ4",
+      headerName: "EQ4",
+      width: 80,
+      renderCell: (params: any) => {
+        return <span style={{ color: "black" }}>{params.row.EQ4}</span>;
+      },
+    },  
     {
       field: "SHORTAGE_YCSX",
       type: "number",
@@ -703,181 +854,8 @@ const MACHINE = () => {
           return <span style={{ color: "red" }}>{params.row.G_NAME}</span>;
         return <span style={{ color: "green" }}>{params.row.G_NAME}</span>;
       },
-    },
-    {
-      field: "PO_BALANCE",
-      headerName: "PO_BALANCE",
-      width: 110,
-      renderCell: (params: any) => {
-        return (
-          <span style={{ color: "blue" }}>
-            <b>{params.row.PO_BALANCE.toLocaleString("en", "US")}</b>
-          </span>
-        );
-      },
-    },
-    {
-      field: "EQ1",
-      headerName: "EQ1",
-      width: 80,
-      renderCell: (params: any) => {
-        return <span style={{ color: "black" }}>{params.row.EQ1}</span>;
-      },
-    },
-    {
-      field: "EQ2",
-      headerName: "EQ2",
-      width: 80,
-      renderCell: (params: any) => {
-        return <span style={{ color: "black" }}>{params.row.EQ2}</span>;
-      },
-    },
-    {
-      field: "CD1",
-      headerName: "XUAT_CD1",
-      width: 100,
-      renderCell: (params: any) => {
-        return (
-          <span style={{ color: "blue" }}>
-            <b>{params.row.CD1.toLocaleString("en", "US")}</b>
-          </span>
-        );
-      },
-    },
-    {
-      field: "CD2",
-      headerName: "XUAT_CD2",
-      width: 100,
-      renderCell: (params: any) => {
-        return (
-          <span style={{ color: "blue" }}>
-            <b>{params.row.CD2.toLocaleString("en", "US")}</b>
-          </span>
-        );
-      },
-    },
-    {
-      field: "CD3",
-      headerName: "XUAT_CD3",
-      width: 100,
-      renderCell: (params: any) => {
-        return (
-          <span style={{ color: "blue" }}>
-            <b>{params.row.CD3.toLocaleString("en", "US")}</b>
-          </span>
-        );
-      },
-    },
-    {
-      field: "CD4",
-      headerName: "XUAT_CD4",
-      width: 100,
-      renderCell: (params: any) => {
-        return (
-          <span style={{ color: "blue" }}>
-            <b>{params.row.CD4.toLocaleString("en", "US")}</b>
-          </span>
-        );
-      },
-    },
-    {
-      field: "LOT_TOTAL_OUTPUT_QTY_EA",
-      type: "number",
-      headerName: "XUẤT KIỂM",
-      width: 100,
-      renderCell: (params: any) => {
-        return (
-          <span style={{ color: "#cc0099" }}>
-            <b>{params.row.LOT_TOTAL_OUTPUT_QTY_EA.toLocaleString("en-US")}</b>
-          </span>
-        );
-      },
-    },
-    {
-      field: "CD_IN",
-      headerName: "CD_IN",
-      width: 80,
-      renderCell: (params: any) => {
-        return (
-          <span style={{ color: "gray" }}>
-            <b>{params.row.CD_IN.toLocaleString("en", "US")}</b>
-          </span>
-        );
-      },
-    },
-    {
-      field: "CD_DIECUT",
-      headerName: "CD_DIECUT",
-      width: 80,
-      renderCell: (params: any) => {
-        return (
-          <span style={{ color: "gray" }}>
-            <b>{params.row.CD_DIECUT.toLocaleString("en", "US")}</b>
-          </span>
-        );
-      },
-    },
-    {
-      field: "TON_CD1",
-      headerName: "TONYCSX_CD1",
-      width: 120,
-      renderCell: (params: any) => {
-        return (
-          <span style={{ color: "red" }}>
-            <b>{params.row.TON_CD1.toLocaleString("en", "US")}</b>
-          </span>
-        );
-      },
-    },
-    {
-      field: "TON_CD2",
-      headerName: "TONYCSX_CD2",
-      width: 120,
-      renderCell: (params: any) => {
-        return (
-          <span style={{ color: "red" }}>
-            <b>{params.row.TON_CD2.toLocaleString("en", "US")}</b>
-          </span>
-        );
-      },
-    },
-    {
-      field: "TON_CD3",
-      headerName: "TONYCSX_CD3",
-      width: 120,
-      renderCell: (params: any) => {
-        return (
-          <span style={{ color: "red" }}>
-            <b>{params.row.TON_CD3.toLocaleString("en", "US")}</b>
-          </span>
-        );
-      },
-    },
-    {
-      field: "TON_CD4",
-      headerName: "TONYCSX_CD4",
-      width: 120,
-      renderCell: (params: any) => {
-        return (
-          <span style={{ color: "red" }}>
-            <b>{params.row.TON_CD4.toLocaleString("en", "US")}</b>
-          </span>
-        );
-      },
-    },
-    {
-      field: "INSPECT_BALANCE",
-      type: "number",
-      headerName: "TỒN KIỂM",
-      width: 80,
-      renderCell: (params: any) => {
-        return (
-          <span style={{ color: "#cc0099" }}>
-            <b>{params.row.INSPECT_BALANCE.toLocaleString("en-US")}</b>
-          </span>
-        );
-      },
-    },
+    },        
+    
     {
       field: "YCSX_PENDING",
       headerName: "YCSX_PENDING",
@@ -4486,7 +4464,7 @@ const MACHINE = () => {
           {
             eq_series.map((ele_series: string, index:number)=> {
               return (
-                <>
+                <div key={index}>
                 <span className='machine_title'>{ele_series}-NM1</span>
                 <div className='FRlist'>
                   
@@ -4519,7 +4497,7 @@ const MACHINE = () => {
               })}
 
             </div>
-            </>
+            </div>
 
               ) 
             })
@@ -5066,7 +5044,7 @@ const MACHINE = () => {
                       onChange={(e) =>
                         setDataDinhMuc({ ...datadinhmuc, EQ1: e.target.value })
                       }
-                      style={{ width: 150, height: 22 }}
+                      style={{ width: 150, height: 30 }}
                     >
                       {machine_list.map(
                           (ele: MACHINE_LIST, index: number) => {
@@ -5087,7 +5065,7 @@ const MACHINE = () => {
                       onChange={(e) =>
                         setDataDinhMuc({ ...datadinhmuc, EQ2: e.target.value })
                       }
-                      style={{ width: 150, height: 22 }}
+                      style={{ width: 150, height: 30 }}
                     >
                       {machine_list.map(
                           (ele: MACHINE_LIST, index: number) => {
@@ -5286,7 +5264,7 @@ const MACHINE = () => {
                       onChange={(e) =>
                         setDataDinhMuc({ ...datadinhmuc, EQ3: e.target.value })
                       }
-                      style={{ width: 150, height: 22 }}
+                      style={{ width: 150, height: 30 }}
                     >
                       {machine_list.map(
                           (ele: MACHINE_LIST, index: number) => {
@@ -5307,7 +5285,7 @@ const MACHINE = () => {
                       onChange={(e) =>
                         setDataDinhMuc({ ...datadinhmuc, EQ4: e.target.value })
                       }
-                      style={{ width: 150, height: 22 }}
+                      style={{ width: 150, height: 30 }}
                     >
                       {machine_list.map(
                           (ele: MACHINE_LIST, index: number) => {

@@ -2243,7 +2243,7 @@ const KHCT = () => {
                   onChange={(e) =>
                     setDataDinhMuc({ ...datadinhmuc, EQ1: e.target.value })
                   }
-                  style={{ width: 150, height: 22 }}
+                  style={{ width: 150, height: 30 }}
                 >
                   <option value='FR'>FR</option>
                   <option value='SR'>SR</option>
@@ -2261,7 +2261,7 @@ const KHCT = () => {
                   onChange={(e) =>
                     setDataDinhMuc({ ...datadinhmuc, EQ2: e.target.value })
                   }
-                  style={{ width: 150, height: 22 }}
+                  style={{ width: 150, height: 30 }}
                 >
                   <option value='FR'>FR</option>
                   <option value='SR'>SR</option>

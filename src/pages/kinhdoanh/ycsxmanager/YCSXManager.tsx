@@ -72,6 +72,8 @@ interface FCSTTDYCSX {
   W8: number;
 }
 interface YCSXTableData {
+  DAUPAMZ: string,
+  DACHITHI: string,
   DESCR?: string;
   PDBV_EMPL?: string;
   PDBV_DATE?: string;
@@ -270,7 +272,6 @@ const YCSXManager = () => {
   const [prod_model, setProd_Model] = useState("");
   const [AMZ_check_flag, setAMZ_Check_Flag] = useState(false);
   const column_ycsxtable = [
-    { field: "G_CODE", headerName: "G_CODE", width: 80 },
     {
       field: "G_NAME_KD",
       headerName: "G_NAME_KD",
@@ -281,6 +282,7 @@ const YCSXManager = () => {
         return <span style={{ color: "green" }}>{params.row.G_NAME_KD}</span>;
       },
     },
+    { field: "G_CODE", headerName: "G_CODE", width: 80 },
     {
       field: "G_NAME",
       headerName: "G_NAME",
@@ -293,20 +295,51 @@ const YCSXManager = () => {
     },
     { field: "EMPL_NAME", headerName: "PIC KD", width: 150 },
     { field: "CUST_NAME_KD", headerName: "KHÁCH", width: 120 },
-    { field: "PROD_REQUEST_NO", headerName: "SỐ YCSX", width: 80 },
-    { field: "PROD_REQUEST_DATE", headerName: "NGÀY YCSX", width: 80 },
+    { field: "PROD_REQUEST_NO", headerName: "SỐ YCSX", width: 80 ,renderCell: (params: any) => {      
+      if(params.row.DACHITHI === null)
+      {
+        return (        
+          <span style={{ color: "black" }}>
+            {params.row.PROD_REQUEST_NO.toLocaleString("en-US")}
+          </span>
+        );
+      }
+      else
+      {
+        return (
+        <span style={{ color: "green" }}>
+          <b>{params.row.PROD_REQUEST_NO.toLocaleString("en-US")}</b>
+        </span>
+        )
+      }
+      
+    },},
+    { field: "PROD_REQUEST_DATE", headerName: "NGÀY YCSX", width: 80, renderCell: (params: any) => {
+      
+      if(params.row.DAUPAMZ === null)
+      {
+        return (
+          <span style={{ color: "black" }}>
+            <b>{params.row.PROD_REQUEST_DATE.toLocaleString("en-US")}</b>
+          </span>
+        );
+      }
+      else
+      {
+        return (
+          <span style={{ color: "green" }}>
+            <b>{params.row.PROD_REQUEST_DATE.toLocaleString("en-US")}</b>
+          </span>
+        );
+
+      }
+      
+    }, },
     {
       field: "PROD_REQUEST_QTY",
       type: "number",
       headerName: "SL YCSX",
-      width: 80,
-      renderCell: (params: any) => {
-        return (
-          <span style={{ color: "#009933" }}>
-            <b>{params.row.PROD_REQUEST_QTY.toLocaleString("en-US")}</b>
-          </span>
-        );
-      },
+      width: 80,      
     },
     {
       field: "LOT_TOTAL_INPUT_QTY_EA",

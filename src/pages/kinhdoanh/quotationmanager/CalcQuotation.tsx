@@ -151,6 +151,11 @@ const CalcQuotation = () => {
   const userData: UserData | undefined = useSelector(
     (state: RootState) => state.totalSlice.userData
   );
+  const [cust_nhancong, setCust_NhanCong]= useState(0);
+  const [cust_vanchuyen, setCust_VanChuyen]= useState(0);
+  const [cust_khauhao, setCust_KhauHao]= useState(0);
+  const [cust_quanlychung, setCust_QuanLyChung]= useState(0);
+
   const [sh, setSH] = useState(true);
   const showhidesearchdiv = useRef(false);
   const [banggia, setBangGia] = useState<Array<BANGGIA_DATA>>([]);
@@ -919,7 +924,7 @@ const CalcQuotation = () => {
       CODEINFO.G_SG_L +
       (CODEINFO.G_CG + CODEINFO.G_WIDTH) * (CODEINFO.G_C - 1) +
       CODEINFO.G_WIDTH +
-      CODEINFO.G_SG_R;
+      CODEINFO.G_SG_R + CODEINFO.WIDTH_OFFSET;
     const materialLength: number =
       ((CODEINFO.G_LENGTH + CODEINFO.G_LG) / CODEINFO.G_C) * 1.0 * TEMP_QTY;
     const materialArea =
@@ -927,7 +932,6 @@ const CalcQuotation = () => {
       1000000;
     let materialAmountCMS: number = 0;
     let materialAmountSS: number = 0;
-
     //Material Cost
     for (let i = 0; i < BOMNVL.length; i++) {
       materialAmountCMS += BOMNVL[i].M_CMS_PRICE * materialArea;
@@ -940,7 +944,7 @@ const CalcQuotation = () => {
         CODEINFO.G_LENGTH * CODEINFO.G_C_R * 2);
     const film_cost =
       CODEINFO.FILM_UNIT *
-      ((CODEINFO.G_WIDTH + CODEINFO.WIDTH_OFFSET) *
+      ((CODEINFO.G_WIDTH) *
         (CODEINFO.G_LENGTH + CODEINFO.LENGTH_OFFSET) *
         CODEINFO.G_C *
         CODEINFO.PROD_PRINT_TIMES);
@@ -967,6 +971,11 @@ const CalcQuotation = () => {
       delivery_cost +
       deprecation_cost +
       gmanagement_cost;
+
+      //setCust_NhanCong(labor_cost);
+      //setCust_VanChuyen(delivery_cost);
+      //setCust_KhauHao(deprecation_cost);
+      //setCust_QuanLyChung(gmanagement_cost);
 
     setGiaNvl({
       mCutWidth: materialCutWidth,
@@ -1372,8 +1381,9 @@ const CalcQuotation = () => {
                 <table>
                   <thead>
                     <tr>
-                      <td width={"50%"}>HẠNG MỤC</td>
+                      <td width={"40%"}>HẠNG MỤC</td>
                       <td width={"40%"}>GIÁ TRỊ</td>
+                      <td width={"0%"}>TÙY BIẾN</td>
                       <td width={"10%"}>UNIT</td>
                     </tr>
                   </thead>
@@ -1385,6 +1395,20 @@ const CalcQuotation = () => {
                           maximumFractionDigits: 2,
                         })}
                       </td>
+                      <td><input
+                      type='text'
+                      value={
+                        selectedRows.WIDTH_OFFSET === null
+                          ? 0
+                          : selectedRows.WIDTH_OFFSET
+                      }
+                      onChange={(e) => {
+                        handlesetCodeInfo(
+                          "WIDTH_OFFSET",
+                          Number(e.target.value)
+                        );
+                      }}
+                    ></input></td>
                       <td>mm</td>
                     </tr>
                     <tr>
@@ -1394,6 +1418,7 @@ const CalcQuotation = () => {
                           maximumFractionDigits: 2,
                         })}
                       </td>
+                      <td></td>
                       <td>mm</td>
                     </tr>
                     <tr>
@@ -1403,6 +1428,7 @@ const CalcQuotation = () => {
                           maximumFractionDigits: 2,
                         })}
                       </td>
+                      <td></td>
                       <td>mm2</td>
                     </tr>
                     <tr>
@@ -1412,6 +1438,7 @@ const CalcQuotation = () => {
                           maximumFractionDigits: 2,
                         })}
                       </td>
+                      <td></td>
                       <td>VND</td>
                     </tr>
                     <tr>
@@ -1421,6 +1448,7 @@ const CalcQuotation = () => {
                           maximumFractionDigits: 2,
                         })}
                       </td>
+                      <td></td>
                       <td>VND</td>
                     </tr>
                     <tr>
@@ -1430,6 +1458,7 @@ const CalcQuotation = () => {
                           maximumFractionDigits: 2,
                         })}
                       </td>
+                      <td></td>
                       <td>VND</td>
                     </tr>
                     <tr>
@@ -1439,6 +1468,7 @@ const CalcQuotation = () => {
                           maximumFractionDigits: 2,
                         })}
                       </td>
+                      <td></td>
                       <td>VND</td>
                     </tr>
                     <tr>
@@ -1448,6 +1478,7 @@ const CalcQuotation = () => {
                           maximumFractionDigits: 2,
                         })}
                       </td>
+                      <td></td>
                       <td>VND</td>
                     </tr>
                     <tr>
@@ -1457,6 +1488,14 @@ const CalcQuotation = () => {
                           maximumFractionDigits: 2,
                         })}
                       </td>
+                      <td><input
+                      type='text'
+                      value={cust_nhancong}
+                      onChange={(e) => {
+                        setCust_NhanCong(Number(e.target.value));
+                        handlesetCodeInfo("LABOR_UNIT", Number(e.target.value)/gianvl.mArea*1.0);
+                      }}
+                    ></input></td>
                       <td>VND</td>
                     </tr>
                     <tr>
@@ -1466,6 +1505,14 @@ const CalcQuotation = () => {
                           maximumFractionDigits: 2,
                         })}
                       </td>
+                      <td><input
+                      type='text'
+                      value={cust_vanchuyen}
+                      onChange={(e) => {
+                        setCust_VanChuyen(Number(e.target.value));
+                        handlesetCodeInfo("DELIVERY_UNIT", Number(e.target.value));
+                      }}
+                    ></input></td>
                       <td>VND</td>
                     </tr>
                     <tr>
@@ -1475,6 +1522,7 @@ const CalcQuotation = () => {
                           maximumFractionDigits: 2,
                         })}
                       </td>
+                      <td></td>
                       <td>VND</td>
                     </tr>
                     <tr>
@@ -1484,6 +1532,7 @@ const CalcQuotation = () => {
                           maximumFractionDigits: 2,
                         })}
                       </td>
+                      <td></td>
                       <td>VND</td>
                     </tr>
                     <tr>
@@ -1493,6 +1542,7 @@ const CalcQuotation = () => {
                           maximumFractionDigits: 0,
                         })}
                       </td>
+                      <td></td>
                       <td>VND</td>
                     </tr>
                     <tr>
@@ -1502,6 +1552,7 @@ const CalcQuotation = () => {
                           maximumFractionDigits: 0,
                         })}
                       </td>
+                      <td></td>
                       <td>VND</td>
                     </tr>
                   </tbody>

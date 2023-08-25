@@ -2,7 +2,7 @@ import { useContext } from 'react';
 import { ResponsiveContainer } from 'recharts';
 import Swal from 'sweetalert2';
 import * as XLSX from 'xlsx';
-import { generalQuery } from './Api';
+import { generalQuery, getCompany } from './Api';
 import AccountInfo from '../components/Navbar/AccountInfo/AccountInfo';
 import QuanLyPhongBanNhanSu from '../pages/nhansu/QuanLyPhongBanNhanSu/QuanLyPhongBanNhanSu';
 import { getlang } from '../components/String/String';
@@ -117,7 +117,7 @@ export function CustomResponsiveContainer(props:any) {
   {
     if(userData.EMPL_NO !== undefined && userData.EMPL_NO !== undefined && userData.MAINDEPTNAME !== undefined)
   {
-    if(userData.EMPL_NO==='NHU1903' || userData.EMPL_NO==='NVD1201' || userData.JOB_NAME==='ADMIN'){
+    if(userData.EMPL_NO==='NHU1903' || userData.EMPL_NO==='NVD1201' || (getCompany()==='PVN' && (userData.EMPL_NO==='DSL1986' || userData.EMPL_NO==='NTD1983' || userData.EMPL_NO==='LTH1992'))){
       await func();
     }
     else if(permitted_main_dept.indexOf('ALL')> -1)

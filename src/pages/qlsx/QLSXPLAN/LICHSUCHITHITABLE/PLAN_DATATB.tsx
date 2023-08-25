@@ -720,7 +720,7 @@ const PLAN_DATATB = () => {
             </div>
             <div className='forminputcolumn'>
               <label>
-                  <b>MACHINEA:</b>
+                  <b>MACHINE:</b>
                   <select
                     name='machine2'
                     value={machine}
@@ -728,7 +728,7 @@ const PLAN_DATATB = () => {
                       setMachine(e.target.value);
                     }                      
                     }
-                    style={{ width: 150, height: 22 }}
+                    style={{ width: 150, height: 30 }}
                   >
                     {machine_list.map(
                         (ele: MACHINE_LIST, index: number) => {

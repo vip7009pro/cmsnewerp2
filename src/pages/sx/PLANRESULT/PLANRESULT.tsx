@@ -1073,7 +1073,7 @@ const PLANRESULT = () => {
                       setMachine(e.target.value);
                     }                      
                     }
-                    style={{ width: 150, height: 22 }}
+                    style={{ width: 150, height: 30 }}
                   >
                     {machine_list.map(
                         (ele: MACHINE_LIST, index: number) => {

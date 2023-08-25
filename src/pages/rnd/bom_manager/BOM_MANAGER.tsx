@@ -362,7 +362,13 @@ const BOM_MANAGER = () => {
   };
   const [pinBOM, setPINBOM] = useState(false);
   const [column_codeinfo, setcolumn_codeinfo] = useState<Array<any>>([
-    { field: "id", headerName: "ID", width: 70, editable: enableEdit },
+    { field: "id", headerName: "ID", width: 50, editable: enableEdit },
+    {
+      field: "G_NAME_KD",
+      headerName: "G_NAME_KD",
+      width: 100,
+      editable: enableEdit,
+    },
     { field: "G_CODE", headerName: "G_CODE", width: 80, editable: enableEdit },
     {
       field: "G_NAME",
@@ -370,13 +376,7 @@ const BOM_MANAGER = () => {
       flex: 1,
       minWidth: 250,
       editable: enableEdit,
-    },
-    {
-      field: "G_NAME_KD",
-      headerName: "G_NAME_KD",
-      width: 120,
-      editable: enableEdit,
-    },
+    },    
     {
       field: "PROD_TYPE",
       headerName: "PROD_TYPE",
