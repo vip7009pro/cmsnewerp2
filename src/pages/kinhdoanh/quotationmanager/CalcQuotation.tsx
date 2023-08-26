@@ -151,10 +151,10 @@ const CalcQuotation = () => {
   const userData: UserData | undefined = useSelector(
     (state: RootState) => state.totalSlice.userData
   );
-  const [cust_nhancong, setCust_NhanCong]= useState(0);
-  const [cust_vanchuyen, setCust_VanChuyen]= useState(0);
-  const [cust_khauhao, setCust_KhauHao]= useState(0);
-  const [cust_quanlychung, setCust_QuanLyChung]= useState(0);
+  const [cust_nhancong, setCust_NhanCong]= useState('0');
+  const [cust_vanchuyen, setCust_VanChuyen]= useState('0');
+  const [cust_khauhao, setCust_KhauHao]= useState('0');
+  const [cust_quanlychung, setCust_QuanLyChung]= useState('0');
 
   const [sh, setSH] = useState(true);
   const showhidesearchdiv = useRef(false);
@@ -431,6 +431,10 @@ const CalcQuotation = () => {
               setSelectedRows(e.data);
               loadbomNVLQuotation(e.data);
               loadbanggia(e.data.CUST_CD, e.data.G_CODE);
+              setCust_KhauHao('0');
+              setCust_NhanCong('0');
+              setCust_QuanLyChung('0');
+              setCust_VanChuyen('0');
             }}
           >
             <Scrolling
@@ -1492,7 +1496,7 @@ const CalcQuotation = () => {
                       type='text'
                       value={cust_nhancong}
                       onChange={(e) => {
-                        setCust_NhanCong(Number(e.target.value));
+                        setCust_NhanCong(e.target.value);
                         handlesetCodeInfo("LABOR_UNIT", Number(e.target.value)/gianvl.mArea*1.0);
                       }}
                     ></input></td>
@@ -1509,7 +1513,7 @@ const CalcQuotation = () => {
                       type='text'
                       value={cust_vanchuyen}
                       onChange={(e) => {
-                        setCust_VanChuyen(Number(e.target.value));
+                        setCust_VanChuyen(e.target.value);
                         handlesetCodeInfo("DELIVERY_UNIT", Number(e.target.value));
                       }}
                     ></input></td>
@@ -1522,7 +1526,14 @@ const CalcQuotation = () => {
                           maximumFractionDigits: 2,
                         })}
                       </td>
-                      <td></td>
+                      <td><input
+                      type='text'
+                      value={cust_khauhao}
+                      onChange={(e) => {
+                        setCust_KhauHao(e.target.value);
+                        handlesetCodeInfo("DEPRECATION_UNIT", Number(e.target.value)/gianvl.mArea*1.0);
+                      }}
+                    ></input></td>
                       <td>VND</td>
                     </tr>
                     <tr>
@@ -1532,7 +1543,14 @@ const CalcQuotation = () => {
                           maximumFractionDigits: 2,
                         })}
                       </td>
-                      <td></td>
+                      <td><input
+                      type='text'
+                      value={cust_quanlychung}
+                      onChange={(e) => {
+                        setCust_QuanLyChung(e.target.value);
+                        handlesetCodeInfo("GMANAGEMENT_UNIT", Number(e.target.value)/gianvl.mArea*1.0);
+                      }}
+                    ></input></td>
                       <td>VND</td>
                     </tr>
                     <tr>
