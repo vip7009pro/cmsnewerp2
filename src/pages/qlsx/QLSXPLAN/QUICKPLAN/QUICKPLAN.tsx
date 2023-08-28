@@ -369,6 +369,25 @@ const QUICKPLAN = () => {
     content: () => ycsxprintref.current,
   });
   const column_ycsxtable = [
+    {
+      field: "YCSX_PENDING",
+      headerName: "YCSX_PENDING",
+      width: 80,
+      renderCell: (params: any) => {
+        if (params.row.YCSX_PENDING === 1)
+          return (
+            <span style={{ color: "red" }}>
+              <b>PENDING</b>
+            </span>
+          );
+        else
+          return (
+            <span style={{ color: "green" }}>
+              <b>CLOSED</b>
+            </span>
+          );
+      },
+    },
     { field: "G_CODE", headerName: "G_CODE", width: 80 },
     {
       field: "G_NAME_KD",
@@ -422,7 +441,7 @@ const QUICKPLAN = () => {
     {
       field: "CD1",
       headerName: "CD1",
-      width: 80,
+      width: 50,
       renderCell: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
@@ -434,7 +453,7 @@ const QUICKPLAN = () => {
     {
       field: "CD2",
       headerName: "CD2",
-      width: 80,
+      width: 50,
       renderCell: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
@@ -446,7 +465,7 @@ const QUICKPLAN = () => {
     {
       field: "CD3",
       headerName: "CD3",
-      width: 80,
+      width: 50,
       renderCell: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
@@ -458,7 +477,7 @@ const QUICKPLAN = () => {
     {
       field: "CD4",
       headerName: "CD4",
-      width: 80,
+      width: 50,
       renderCell: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
@@ -471,7 +490,7 @@ const QUICKPLAN = () => {
       field: "LOT_TOTAL_INPUT_QTY_EA",
       type: "number",
       headerName: "NK",
-      width: 80,
+      width: 50,
       renderCell: (params: any) => {
         return (
           <span style={{ color: "#cc0099" }}>
@@ -484,7 +503,7 @@ const QUICKPLAN = () => {
       field: "LOT_TOTAL_OUTPUT_QTY_EA",
       type: "number",
       headerName: "XK",
-      width: 80,
+      width: 50,
       renderCell: (params: any) => {
         return (
           <span style={{ color: "#cc0099" }}>
@@ -496,7 +515,7 @@ const QUICKPLAN = () => {
     {
       field: "TON_CD1",
       headerName: "TCD1",
-      width: 80,
+      width: 50,
       renderCell: (params: any) => {
         return (
           <span style={{ color: "red" }}>
@@ -508,7 +527,7 @@ const QUICKPLAN = () => {
     {
       field: "TON_CD2",
       headerName: "TCD2",
-      width: 80,
+      width: 50,
       renderCell: (params: any) => {
         return (
           <span style={{ color: "red" }}>
@@ -520,7 +539,7 @@ const QUICKPLAN = () => {
     {
       field: "TON_CD3",
       headerName: "TCD3",
-      width: 80,
+      width: 50,
       renderCell: (params: any) => {
         return (
           <span style={{ color: "red" }}>
@@ -532,7 +551,7 @@ const QUICKPLAN = () => {
     {
       field: "TON_CD4",
       headerName: "TCD4",
-      width: 80,
+      width: 50,
       renderCell: (params: any) => {
         return (
           <span style={{ color: "red" }}>
@@ -544,8 +563,8 @@ const QUICKPLAN = () => {
     {
       field: "INSPECT_BALANCE",
       type: "number",
-      headerName: "TỒN KIỂM",
-      width: 80,
+      headerName: "TKIEM",
+      width: 50,
       renderCell: (params: any) => {
         return (
           <span style={{ color: "#cc0099" }}>
@@ -557,7 +576,7 @@ const QUICKPLAN = () => {
     {
       field: "EQ1",
       headerName: "EQ1",
-      width: 80,
+      width: 50,
       renderCell: (params: any) => {
         return <span style={{ color: "black" }}>{params.row.EQ1}</span>;
       },
@@ -565,7 +584,7 @@ const QUICKPLAN = () => {
     {
       field: "EQ2",
       headerName: "EQ2",
-      width: 80,
+      width: 50,
       renderCell: (params: any) => {
         return <span style={{ color: "black" }}>{params.row.EQ2}</span>;
       },
@@ -573,7 +592,7 @@ const QUICKPLAN = () => {
     {
       field: "EQ3",
       headerName: "EQ3",
-      width: 80,
+      width: 50,
       renderCell: (params: any) => {
         return <span style={{ color: "black" }}>{params.row.EQ3}</span>;
       },
@@ -581,7 +600,7 @@ const QUICKPLAN = () => {
     {
       field: "EQ4",
       headerName: "EQ4",
-      width: 80,
+      width: 50,
       renderCell: (params: any) => {
         return <span style={{ color: "black" }}>{params.row.EQ4}</span>;
       },
@@ -736,27 +755,7 @@ const QUICKPLAN = () => {
           return <span style={{ color: "red" }}>{params.row.G_NAME}</span>;
         return <span style={{ color: "green" }}>{params.row.G_NAME}</span>;
       },
-    },        
-    
-    {
-      field: "YCSX_PENDING",
-      headerName: "YCSX_PENDING",
-      width: 80,
-      renderCell: (params: any) => {
-        if (params.row.YCSX_PENDING === 1)
-          return (
-            <span style={{ color: "red" }}>
-              <b>PENDING</b>
-            </span>
-          );
-        else
-          return (
-            <span style={{ color: "green" }}>
-              <b>CLOSED</b>
-            </span>
-          );
-      },
-    },
+    },    
   ];
   const column_plandatatable = [
     {
@@ -1449,39 +1448,39 @@ const QUICKPLAN = () => {
           KQ_SX_TAM: 0,
           CD1: ycsxdatatablefilter[i].CD1,
           CD2: ycsxdatatablefilter[i].CD2,
+          CD3: ycsxdatatablefilter[i].CD3,
+          CD4: ycsxdatatablefilter[i].CD4,
           TON_CD1: ycsxdatatablefilter[i].TON_CD1,
           TON_CD2: ycsxdatatablefilter[i].TON_CD2,
-          FACTORY: "",
+          TON_CD3: ycsxdatatablefilter[i].TON_CD3,
+          TON_CD4: ycsxdatatablefilter[i].TON_CD4,
+          FACTORY: userData?.FACTORY_CODE === 1 ? 'NM1' :'NM2',
           EQ1: ycsxdatatablefilter[i].EQ1,
           EQ2: ycsxdatatablefilter[i].EQ2,
+          EQ3: ycsxdatatablefilter[i].EQ3,
+          EQ4: ycsxdatatablefilter[i].EQ4,
           Setting1: ycsxdatatablefilter[i].Setting1,
           Setting2: ycsxdatatablefilter[i].Setting2,
+          Setting3: ycsxdatatablefilter[i].Setting3,
+          Setting4: ycsxdatatablefilter[i].Setting4,
           UPH1: ycsxdatatablefilter[i].UPH1,
           UPH2: ycsxdatatablefilter[i].UPH2,
+          UPH3: ycsxdatatablefilter[i].UPH3,
+          UPH4: ycsxdatatablefilter[i].UPH4,
           Step1: ycsxdatatablefilter[i].Step1,
           Step2: ycsxdatatablefilter[i].Step2,
+          Step3: ycsxdatatablefilter[i].Step3,
+          Step4: ycsxdatatablefilter[i].Step4,
           LOSS_SX1: ycsxdatatablefilter[i].LOSS_SX1,
           LOSS_SX2: ycsxdatatablefilter[i].LOSS_SX2,
+          LOSS_SX3: ycsxdatatablefilter[i].LOSS_SX3,
+          LOSS_SX4: ycsxdatatablefilter[i].LOSS_SX4,
           LOSS_SETTING1: ycsxdatatablefilter[i].LOSS_SETTING1,
           LOSS_SETTING2: ycsxdatatablefilter[i].LOSS_SETTING2,
+          LOSS_SETTING3: ycsxdatatablefilter[i].LOSS_SETTING3,
+          LOSS_SETTING4: ycsxdatatablefilter[i].LOSS_SETTING4,
           NOTE: ycsxdatatablefilter[i].NOTE,
-          NEXT_PLAN_ID: "X",
-          CD3: 0,
-          CD4: 0,
-          TON_CD3: 0,
-          TON_CD4: 0,
-          EQ3: "",
-          EQ4: "",
-          Setting3: 0,
-          Setting4: 0,
-          UPH3: 0,
-          UPH4: 0,
-          Step3: 0,
-          Step4: 0,
-          LOSS_SX3: 0,
-          LOSS_SX4: 0,
-          LOSS_SETTING3: 0,
-          LOSS_SETTING4: 0
+          NEXT_PLAN_ID: "X",          
         };
         setPlanDataTable([...plandatatable, temp_add_plan]);
         localStorage.setItem(
