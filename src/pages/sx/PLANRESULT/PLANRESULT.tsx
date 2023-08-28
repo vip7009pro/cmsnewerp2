@@ -102,7 +102,7 @@ const PLANRESULT = () => {
 
   const { height, width } = useWindowDimensions();
   const [machine_list, setMachine_List] = useState<MACHINE_LIST[]>([]);
-  
+
   const getMachineList = () => {
    generalQuery("getmachinelist", {})
      .then((response) => {
@@ -114,7 +114,8 @@ const PLANRESULT = () => {
                ...element,
              };
            }
-         );
+         );        
+
          loadeddata.push({ EQ_NAME: "ALL" },{ EQ_NAME: "NO" }, { EQ_NAME: "NA" });
          console.log(loadeddata);
          setMachine_List(loadeddata);
@@ -178,7 +179,10 @@ const PLANRESULT = () => {
     getBusinessDatesCount(fromdate, todate)
   );
   const getMachineCounting = () => {
-    generalQuery("machinecounting2", {})
+    generalQuery("machinecounting2", {
+      FACTORY: factory,
+      EQ_NAME: machine
+    })
       .then((response) => {
         //console.log(response.data.data);
         if (response.data.tk_status !== "NG") {
@@ -190,6 +194,8 @@ const PLANRESULT = () => {
               };
             }
           );
+
+
           let temp_TIME_NM1: TOTAL_TIME = {
             T_FR:
               (loaded_data.filter(
@@ -829,7 +835,16 @@ const PLANRESULT = () => {
             break;
         }
       }
+    }    
+    totalAvailableTime = machinecount.filter((e:MACHINE_COUNTING, index: number)=> e.EQ_NAME ===machine).length *dailytime1;
+    if(machine ==='ALL') 
+    {
+      for(let i=0;i<machinecount.length;i++)
+      {
+        totalAvailableTime += machinecount[i].EQ_QTY*dailytime1;
+      }
     }
+    
     return totalAvailableTime;
   };
   useEffect(() => {
@@ -1065,28 +1080,24 @@ const PLANRESULT = () => {
             </label>
 
             <label>
-                  <b>MACHINE:</b>
-                  <select
-                    name='machine2'
-                    value={machine}
-                    onChange={(e) =>{
-                      setMachine(e.target.value);
-                    }                      
-                    }
-                    style={{ width: 150, height: 30 }}
-                  >
-                    {machine_list.map(
-                        (ele: MACHINE_LIST, index: number) => {
-                          return (
-                            <option key={index} value={ele.EQ_NAME}>
-                              {ele.EQ_NAME}
-                            </option>
-                          );
-                        }
-                      )}
-                  </select>
-                </label>
-            
+              <b>MACHINE:</b>
+              <select
+                name='machine2'
+                value={machine}
+                onChange={(e) => {
+                  setMachine(e.target.value);
+                }}
+                style={{ width: 150, height: 30 }}
+              >
+                {machine_list.map((ele: MACHINE_LIST, index: number) => {
+                  return (
+                    <option key={index} value={ele.EQ_NAME}>
+                      {ele.EQ_NAME}
+                    </option>
+                  );
+                })}
+              </select>
+            </label>
           </div>
           <div className='forminputcolumn'>
             <IconButton
@@ -1096,6 +1107,7 @@ const PLANRESULT = () => {
                 getSXAchiveMentData(factory, fromdate, todate);
                 getWeeklySXData(machine, factory, fromdate, todate);
                 getMachineTimeEfficiency(machine, factory, fromdate, todate);
+                getMachineCounting();
                 setDayRange(
                   getBusinessDatesCount(
                     moment(fromdate).format("YYYY-MM-DD"),
@@ -1130,128 +1142,49 @@ const PLANRESULT = () => {
                 </div>
               </div>
             </div>
-            <div className='subprogressdiv'>
-              <div className='sectiondiv'>
-                FR:{" "}
-                {sxachivementdata
-                  .filter(
-                    (ele: ACHIVEMENT_DATA, index: number) =>
-                      ele.MACHINE_NAME === "FR"
-                  )[0]
-                  ?.ACHIVEMENT_RATE?.toLocaleString("en-US", {
-                    maximumFractionDigits: 1,
-                  })}{" "}
-                %
-                <LinearProgress
-                  style={{ height: "10px" }}
-                  variant='determinate'
-                  color='primary'
-                  aria-valuemin={0}
-                  aria-valuemax={100}
-                  value={
-                    sxachivementdata.filter(
-                      (ele: ACHIVEMENT_DATA, index: number) =>
-                        ele.MACHINE_NAME === "FR"
-                    )[0]?.ACHIVEMENT_RATE === undefined
-                      ? 0
-                      : sxachivementdata.filter(
+            {machine_list
+              .filter(
+                (ee: MACHINE_LIST, index: number) =>
+                  ee.EQ_NAME !== "NO" &&
+                  ee.EQ_NAME !== "NA" &&
+                  ee.EQ_NAME !== "ALL"
+              )
+              .map((element: MACHINE_LIST, index: number) => {
+                return (
+                  <div key={index} className='subprogressdiv'>
+                    <div className='sectiondiv'>
+                      {element.EQ_NAME}:{" "}
+                      {sxachivementdata
+                        .filter(
                           (ele: ACHIVEMENT_DATA, index: number) =>
-                            ele.MACHINE_NAME === "FR"
-                        )[0]?.ACHIVEMENT_RATE
-                  }
-                />
-              </div>
-              <div className='sectiondiv'>
-                SR:{" "}
-                {sxachivementdata
-                  .filter(
-                    (ele: ACHIVEMENT_DATA, index: number) =>
-                      ele.MACHINE_NAME === "SR"
-                  )[0]
-                  ?.ACHIVEMENT_RATE?.toLocaleString("en-US", {
-                    maximumFractionDigits: 1,
-                  })}{" "}
-                %
-                <LinearProgress
-                  style={{ height: "10px" }}
-                  variant='determinate'
-                  color='secondary'
-                  aria-valuemin={0}
-                  aria-valuemax={100}
-                  value={
-                    sxachivementdata.filter(
-                      (ele: ACHIVEMENT_DATA, index: number) =>
-                        ele.MACHINE_NAME === "SR"
-                    )[0]?.ACHIVEMENT_RATE === undefined
-                      ? 0
-                      : sxachivementdata.filter(
-                          (ele: ACHIVEMENT_DATA, index: number) =>
-                            ele.MACHINE_NAME === "SR"
-                        )[0]?.ACHIVEMENT_RATE
-                  }
-                />
-              </div>
-              <div className='sectiondiv'>
-                DC:{" "}
-                {sxachivementdata
-                  .filter(
-                    (ele: ACHIVEMENT_DATA, index: number) =>
-                      ele.MACHINE_NAME === "DC"
-                  )[0]
-                  ?.ACHIVEMENT_RATE?.toLocaleString("en-US", {
-                    maximumFractionDigits: 1,
-                  })}{" "}
-                %
-                <LinearProgress
-                  style={{ height: "10px" }}
-                  variant='determinate'
-                  color='info'
-                  aria-valuemin={0}
-                  aria-valuemax={100}
-                  value={
-                    sxachivementdata.filter(
-                      (ele: ACHIVEMENT_DATA, index: number) =>
-                        ele.MACHINE_NAME === "DC"
-                    )[0]?.ACHIVEMENT_RATE === undefined
-                      ? 0
-                      : sxachivementdata.filter(
-                          (ele: ACHIVEMENT_DATA, index: number) =>
-                            ele.MACHINE_NAME === "DC"
-                        )[0]?.ACHIVEMENT_RATE
-                  }
-                />
-              </div>
-              <div className='sectiondiv'>
-                ED:{" "}
-                {sxachivementdata
-                  .filter(
-                    (ele: ACHIVEMENT_DATA, index: number) =>
-                      ele.MACHINE_NAME === "ED"
-                  )[0]
-                  ?.ACHIVEMENT_RATE?.toLocaleString("en-US", {
-                    maximumFractionDigits: 1,
-                  })}{" "}
-                %
-                <LinearProgress
-                  style={{ height: "10px" }}
-                  variant='determinate'
-                  color='warning'
-                  aria-valuemin={0}
-                  aria-valuemax={100}
-                  value={
-                    sxachivementdata.filter(
-                      (ele: ACHIVEMENT_DATA, index: number) =>
-                        ele.MACHINE_NAME === "ED"
-                    )[0]?.ACHIVEMENT_RATE === undefined
-                      ? 0
-                      : sxachivementdata.filter(
-                          (ele: ACHIVEMENT_DATA, index: number) =>
-                            ele.MACHINE_NAME === "ED"
-                        )[0]?.ACHIVEMENT_RATE
-                  }
-                />
-              </div>
-            </div>
+                            ele.MACHINE_NAME === element.EQ_NAME
+                        )[0]
+                        ?.ACHIVEMENT_RATE?.toLocaleString("en-US", {
+                          maximumFractionDigits: 1,
+                        })}{" "}
+                      %
+                      <LinearProgress
+                        style={{ height: "10px" }}
+                        variant='determinate'
+                        color='primary'
+                        aria-valuemin={0}
+                        aria-valuemax={100}
+                        value={
+                          sxachivementdata.filter(
+                            (ele: ACHIVEMENT_DATA, index: number) =>
+                              ele.MACHINE_NAME === element.EQ_NAME
+                          )[0]?.ACHIVEMENT_RATE === undefined
+                            ? 0
+                            : sxachivementdata.filter(
+                                (ele: ACHIVEMENT_DATA, index: number) =>
+                                  ele.MACHINE_NAME === element.EQ_NAME
+                              )[0]?.ACHIVEMENT_RATE
+                        }
+                      />
+                    </div>
+                  </div>
+                );
+              })}
           </div>
         </div>
         <div className='progressdiv'>
