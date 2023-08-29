@@ -1,7 +1,10 @@
 import {
+  Autocomplete,
   Checkbox,
   FormControlLabel,
     IconButton,
+    TextField,
+    createFilterOptions,
   } from "@mui/material";
   import {
     Column,
@@ -29,7 +32,7 @@ import {
   import Swal from "sweetalert2";
   import "./QLVL.scss";
   import { UserContext } from "../../../api/Context";
-  import { generalQuery } from "../../../api/Api";
+  import { generalQuery, getCompany } from "../../../api/Api";
   import { SaveExcel } from "../../../api/GlobalFunction";
   import { MdOutlinePivotTableChart } from "react-icons/md";
   import PivotTable from "../../../components/PivotChart/PivotChart";
@@ -312,8 +315,12 @@ import {
       [material_table_data]
     );
     const [customerList, setCustomerList] = useState<CustomerListData[]>([]);
+    const filterOptions1 = createFilterOptions({
+      matchFrom: "any",
+      limit: 100,
+    });
     const getcustomerlist = () => {
-        generalQuery("selectcustomerList", {})
+        generalQuery("selectVendorList", {})
           .then((response) => {
             if (response.data.tk_status !== "NG") {
               setCustomerList(response.data.data);
@@ -959,6 +966,8 @@ import {
       ],
       store: datasxtable,
     });
+ 
+   
     useEffect(() => {
         load_material_table();
         getcustomerlist();      
@@ -979,7 +988,50 @@ import {
                     onChange={(e) => seMaterialInfo('M_NAME',e.target.value)}
                   ></input>
                 </label>
-                <label>
+                <label style={{display:'flex',alignItems:'center'}}>
+                <b>Vendor:</b>{" "}
+                      <Autocomplete
+                        sx={{
+                          height: 10,
+                          width: '160px',
+                          margin: "1px",                          
+                          fontSize: "0.7rem",      
+                          marginBottom:'20px',
+                          backgroundColor:'white'           
+                        }}
+                        size='small'
+                        disablePortal
+                        options={customerList}
+                        className='autocomplete'
+                        filterOptions={filterOptions1}
+                        isOptionEqualToValue={(option: any, value: any) =>
+                          option.CUST_CD === value.CUST_CD
+                        }
+                        getOptionLabel={(option: any) => `${option.CUST_CD !==null? option.CUST_NAME_KD:''}${option.CUST_CD !==null? option.CUST_CD:''}`}
+                        renderInput={(params) => (
+                          <TextField {...params} style={{height:'10px'}}/>
+                        )}
+                        defaultValue={{
+                          CUST_CD: getCompany()==='CMS'?  "0000": 'KH000',
+                          CUST_NAME:getCompany()==='CMS'?  "SEOJIN": 'PVN',
+                          CUST_NAME_KD:getCompany()==='CMS'?  "SEOJIN": 'PVN',                        
+                        }}
+                        value={{
+                          CUST_CD: selectedRows.CUST_CD,
+                          CUST_NAME:customerList.filter((e: CustomerListData, index: number)=> e.CUST_CD ===selectedRows.CUST_CD)[0]?.CUST_NAME,
+                          CUST_NAME_KD: customerList.filter((e: CustomerListData, index: number)=> e.CUST_CD ===selectedRows.CUST_CD)[0]?.CUST_NAME_KD === undefined? '': customerList.filter((e: CustomerListData, index: number)=> e.CUST_CD ===selectedRows.CUST_CD)[0]?.CUST_NAME_KD ,
+                        }}
+                        onChange={(event: any, newValue: any) => {
+                          console.log(newValue);                          
+                          seMaterialInfo(
+                            "CUST_CD",
+                            newValue === null ? "" : newValue.CUST_CD
+                          );
+                        }}
+                      />     
+                      </label>
+
+                {/* <label>
                 <b>Vendor:</b>{" "}
                       <select
                         name='vendor'
@@ -995,7 +1047,7 @@ import {
                           </option>
                         ))}
                       </select>
-                </label>
+                </label> */}
               </div> 
               <div className='forminputcolumn'>
                 <label>

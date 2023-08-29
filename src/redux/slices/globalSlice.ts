@@ -5,7 +5,7 @@ import { io } from "socket.io-client";
 import Swal from "sweetalert2";
 import { getUserData, logout as LGOT } from "../../api/Api";
 
-const startCPN: string = "PVN";
+const startCPN: string = "CMS";
 
 const socket = io(
   startCPN === "CMS"

@@ -1,6 +1,6 @@
 import { DataGrid, GridSelectionModel,  GridToolbarContainer, GridToolbarColumnsButton, GridToolbarFilterButton, GridToolbarDensitySelector, GridToolbarQuickFilter } from '@mui/x-data-grid';
 import  { useContext, useEffect, useState } from 'react'
-import { generalQuery } from '../../../api/Api';
+import { generalQuery, getCompany } from '../../../api/Api';
 import "./QuanLyPhongBanNhanSu.scss"
 import Swal from "sweetalert2";
 import LinearProgress from '@mui/material/LinearProgress';
@@ -889,25 +889,35 @@ const QuanLyPhongBanNhanSu = () => {
     },[]);
   return (
     <div className='quanlyphongbannhansu'>
-      <div className='mininavbar'>         
-        <div className='mininavitem'  onClick={() => setNav(1)} style={{backgroundColor:selection.tab1 === true ? '#02c712':'#abc9ae', color: selection.tab1 === true ? 'yellow':'yellow'}}>
-          <span className='mininavtext'>
-          Quản lý Nhân Sự
-          </span>
-        </div>  
-        <div className='mininavitem'  onClick={() => setNav(2)} style={{backgroundColor:selection.tab2 === true ? '#02c712':'#abc9ae', color: selection.tab2 === true ? 'yellow':'yellow'}}>
-          <span className='mininavtext'>
-          Quản Lý Phòng Ban
-          </span>
-        </div>      
+      <div className='mininavbar'>
+        <div
+          className='mininavitem'
+          onClick={() => setNav(1)}
+          style={{
+            backgroundColor: selection.tab1 === true ? "#02c712" : "#abc9ae",
+            color: selection.tab1 === true ? "yellow" : "yellow",
+          }}
+        >
+          <span className='mininavtext'>Quản lý Nhân Sự</span>
+        </div>
+        <div
+          className='mininavitem'
+          onClick={() => setNav(2)}
+          style={{
+            backgroundColor: selection.tab2 === true ? "#02c712" : "#abc9ae",
+            color: selection.tab2 === true ? "yellow" : "yellow",
+          }}
+        >
+          <span className='mininavtext'>Quản Lý Phòng Ban</span>
+        </div>
       </div>
 
-      <div className='quanlyphongban'>        
+      <div className='quanlyphongban'>
         {selection.tab2 && (
           <div className='maindept'>
             <div className='maindept_table'>
               <DataGrid
-                sx={{fontSize:'0.7rem'}}
+                sx={{ fontSize: "0.7rem" }}
                 rowHeight={25}
                 rows={maindeptTable}
                 columns={columns_maindept}
@@ -946,13 +956,58 @@ const QuanLyPhongBanNhanSu = () => {
                 </div>
               </div>
               <div className='maindeptbutton'>
-                <button className='thembutton' onClick={handle_them_maindept}>
+                <button
+                  className='thembutton'
+                  onClick={() => {
+                    if (getCompany() === "PVN") {
+                      checkBP(
+                        userData,
+                        ["NHANSU"],
+                        ["ALL"],
+                        ["ALL"],
+                        handle_them_maindept
+                      );
+                    } else {
+                      handle_them_maindept();
+                    }
+                  }}
+                >
                   Thêm
                 </button>
-                <button className='suabutton' onClick={handle_sua_maindept}>
+                <button
+                  className='suabutton'
+                  onClick={() => {
+                    if (getCompany() === "PVN") {
+                      checkBP(
+                        userData,
+                        ["NHANSU"],
+                        ["ALL"],
+                        ["ALL"],
+                        handle_sua_maindept
+                      );
+                    } else {
+                      handle_sua_maindept();
+                    }
+                  }}
+                >
                   Sửa
                 </button>
-                <button className='xoabutton' onClick={handle_xoa_maindept}>
+                <button
+                  className='xoabutton'
+                  onClick={() => {
+                    if (getCompany() === "PVN") {
+                      checkBP(
+                        userData,
+                        ["NHANSU"],
+                        ["ALL"],
+                        ["ALL"],
+                        handle_xoa_maindept
+                      );
+                    } else {
+                      handle_xoa_maindept();
+                    }
+                  }}
+                >
                   Xoá
                 </button>
               </div>
@@ -963,7 +1018,7 @@ const QuanLyPhongBanNhanSu = () => {
           <div className='subdept'>
             <div className='subdept_table'>
               <DataGrid
-                sx={{fontSize:'0.7rem'}}
+                sx={{ fontSize: "0.7rem" }}
                 rowHeight={25}
                 rows={subdeptTable}
                 columns={columns_subdept}
@@ -1002,13 +1057,58 @@ const QuanLyPhongBanNhanSu = () => {
                 </div>
               </div>
               <div className='subdeptbutton'>
-                <button className='thembutton' onClick={handle_them_subdept}>
+                <button
+                  className='thembutton'
+                  onClick={() => {
+                    if (getCompany() === "PVN") {
+                      checkBP(
+                        userData,
+                        ["NHANSU"],
+                        ["ALL"],
+                        ["ALL"],
+                        handle_them_subdept
+                      );
+                    } else {
+                      handle_them_subdept();
+                    }
+                  }}
+                >
                   Thêm
                 </button>
-                <button className='suabutton' onClick={handle_sua_subdept}>
+                <button
+                  className='suabutton'
+                  onClick={() => {
+                    if (getCompany() === "PVN") {
+                      checkBP(
+                        userData,
+                        ["NHANSU"],
+                        ["ALL"],
+                        ["ALL"],
+                        handle_sua_subdept
+                      );
+                    } else {
+                      handle_sua_subdept();
+                    }
+                  }}
+                >
                   Sửa
                 </button>
-                <button className='xoabutton' onClick={handle_xoa_subdept}>
+                <button
+                  className='xoabutton'
+                  onClick={() => {
+                    if (getCompany() === "PVN") {
+                      checkBP(
+                        userData,
+                        ["NHANSU"],
+                        ["ALL"],
+                        ["ALL"],
+                        handle_xoa_subdept
+                      );
+                    } else {
+                      handle_xoa_subdept();
+                    }
+                  }}
+                >
                   Xoá
                 </button>
               </div>
@@ -1019,7 +1119,7 @@ const QuanLyPhongBanNhanSu = () => {
           <div className='workposition'>
             <div className='workposition_table'>
               <DataGrid
-                sx={{fontSize:'0.7rem'}}
+                sx={{ fontSize: "0.7rem" }}
                 rowHeight={25}
                 rows={workpositionTable}
                 columns={columns_work_position}
@@ -1069,14 +1169,56 @@ const QuanLyPhongBanNhanSu = () => {
               <div className='workpositionbutton'>
                 <button
                   className='thembutton'
-                  onClick={handle_them_workposition}
+                  onClick={() => {                    
+                    if (getCompany() === "PVN") {
+                      checkBP(
+                        userData,
+                        ["NHANSU"],
+                        ["ALL"],
+                        ["ALL"],
+                        handle_them_workposition
+                      );
+                    } else {
+                      handle_them_workposition();
+                    }
+                  }}
                 >
                   Thêm
                 </button>
-                <button className='suabutton' onClick={handle_sua_workposition}>
+                <button
+                  className='suabutton'
+                  onClick={() => {                    
+                    if (getCompany() === "PVN") {
+                      checkBP(
+                        userData,
+                        ["NHANSU"],
+                        ["ALL"],
+                        ["ALL"],
+                        handle_sua_workposition
+                      );
+                    } else {
+                      handle_sua_workposition();
+                    }
+                  }}
+                >
                   Sửa
                 </button>
-                <button className='xoabutton' onClick={handle_xoa_workposition}>
+                <button
+                  className='xoabutton'
+                  onClick={() => {                    
+                    if (getCompany() === "PVN") {
+                      checkBP(
+                        userData,
+                        ["NHANSU"],
+                        ["ALL"],
+                        ["ALL"],
+                        handle_xoa_workposition
+                      );
+                    } else {
+                      handle_xoa_workposition();
+                    }
+                  }}
+                >
                   Xoá
                 </button>
               </div>
@@ -1084,21 +1226,28 @@ const QuanLyPhongBanNhanSu = () => {
           </div>
         )}
       </div>
-      <div className='quanlynhansu'>       
+      <div className='quanlynhansu'>
         {selection.tab1 && (
           <div className='maindept'>
             <h3>Thông tin nhân lực</h3>
             <div className='maindeptform'>
-              <div className="inputform">
-                <div className="emplpicture">
-                  {<img width={220} height={300} src={'/Picture_NS/NS_'+ avatar+'.jpg'} alt={avatar}></img>}
+              <div className='inputform'>
+                <div className='emplpicture'>
+                  {
+                    <img
+                      width={220}
+                      height={300}
+                      src={"/Picture_NS/NS_" + avatar + ".jpg"}
+                      alt={avatar}
+                    ></img>
+                  }
                 </div>
                 <div className='maindeptinput'>
                   <div className='maindeptinputbox'>
                     <label>
                       Mã ERP:{" "}
                       <input
-                        disabled ={enableEdit}
+                        disabled={enableEdit}
                         type='text'
                         value={EMPL_NO}
                         onChange={(e) => setEMPL_NO(e.target.value)}
@@ -1107,7 +1256,7 @@ const QuanLyPhongBanNhanSu = () => {
                     <label>
                       Mã nhân sự:{" "}
                       <input
-                      disabled ={enableEdit}
+                        disabled={enableEdit}
                         type='text'
                         value={CMS_ID}
                         onChange={(e) => setCMS_ID(e.target.value)}
@@ -1119,13 +1268,12 @@ const QuanLyPhongBanNhanSu = () => {
                         name='gioitinh'
                         value={NV_CCID}
                         onChange={(e) => setNV_CCID(Number(e.target.value))}
-                      >                        
-                      </input>
+                      ></input>
                     </label>
                     <label>
                       Tên:{" "}
                       <input
-                        disabled ={enableEdit}
+                        disabled={enableEdit}
                         type='text'
                         value={FIRST_NAME}
                         onChange={(e) => setFIRST_NAME(e.target.value)}
@@ -1134,7 +1282,7 @@ const QuanLyPhongBanNhanSu = () => {
                     <label>
                       Họ và Đệm:{" "}
                       <input
-                        disabled ={enableEdit}
+                        disabled={enableEdit}
                         type='text'
                         value={MIDLAST_NAME}
                         onChange={(e) => setMIDLAST_NAME(e.target.value)}
@@ -1166,8 +1314,7 @@ const QuanLyPhongBanNhanSu = () => {
                         <option value={0}>Nữ</option>
                         <option value={1}>Nam</option>
                       </select>
-                    </label>                   
-                                      
+                    </label>
                   </div>
                   <div className='maindeptinputbox'>
                     <label>
@@ -1255,7 +1402,10 @@ const QuanLyPhongBanNhanSu = () => {
                         }}
                       >
                         {workpositionload.map((element, index) => (
-                          <option key={index} value={element.WORK_POSITION_CODE}>
+                          <option
+                            key={index}
+                            value={element.WORK_POSITION_CODE}
+                          >
                             {element.WORK_POSITION_NAME}
                           </option>
                         ))}
@@ -1271,7 +1421,7 @@ const QuanLyPhongBanNhanSu = () => {
                         }
                       >
                         <option value={0}>Hành chính</option>
-                        <option value={1}>TEAM 1</option> 
+                        <option value={1}>TEAM 1</option>
                         <option value={2}>TEAM 2</option>
                         <option value={3}>TEAM 12T</option>
                       </select>
@@ -1281,7 +1431,9 @@ const QuanLyPhongBanNhanSu = () => {
                       <select
                         name='chucdanh'
                         value={POSITION_CODE}
-                        onChange={(e) => setPOSITION_CODE(Number(e.target.value))}
+                        onChange={(e) =>
+                          setPOSITION_CODE(Number(e.target.value))
+                        }
                       >
                         <option value={0}>Manager</option>
                         <option value={1}>AM</option>
@@ -1293,10 +1445,10 @@ const QuanLyPhongBanNhanSu = () => {
                     <label>
                       Chức vụ:
                       <select
-                        name='chucvu' 
+                        name='chucvu'
                         value={JOB_CODE}
                         onChange={(e) => setJOB_CODE(Number(e.target.value))}
-                      >                        
+                      >
                         <option value={1}>Dept Staff</option>
                         <option value={2}>Leader</option>
                         <option value={3}>Sub Leader</option>
@@ -1308,7 +1460,9 @@ const QuanLyPhongBanNhanSu = () => {
                       <select
                         name='nhamay'
                         value={FACTORY_CODE}
-                        onChange={(e) => setFACTORY_CODE(Number(e.target.value))}
+                        onChange={(e) =>
+                          setFACTORY_CODE(Number(e.target.value))
+                        }
                       >
                         <option value={1}>Nhà máy 1</option>
                         <option value={2}>Nhà máy 2</option>
@@ -1331,35 +1485,80 @@ const QuanLyPhongBanNhanSu = () => {
                   </div>
                 </div>
                 <div className='maindeptbutton'>
-                <button className='thembutton' onClick={()=> {                  
-                  handle_them_employee();
-                }}>
-                  Thêm
-                </button>
-                <button className='suabutton' onClick={()=>{                  
-                  handle_sua_employee();
-                  }}>
-                  Update
-                </button>
-                <button className='xoabutton' onClick={()=>{                   
-                  handle_xoa_employee();
-                  }}>
-                  Clear
-                </button>
+                  <button
+                    className='thembutton'
+                    onClick={() => {
+                      if (getCompany() === "PVN") {
+                        checkBP(
+                          userData,
+                          ["NHANSU"],
+                          ["ALL"],
+                          ["ALL"],
+                          handle_them_employee
+                        );
+                      } else {
+                        handle_them_employee();
+                      }
+                    }}
+                  >
+                    Thêm
+                  </button>
+                  <button
+                    className='suabutton'
+                    onClick={() => {
+                      if (getCompany() === "PVN") {
+                        checkBP(
+                          userData,
+                          ["NHANSU"],
+                          ["ALL"],
+                          ["ALL"],
+                          handle_sua_employee
+                        );
+                      } else {
+                        handle_sua_employee();
+                      }
+                    }}
+                  >
+                    Update
+                  </button>
+                  <button
+                    className='xoabutton'
+                    onClick={() => {
+                      if (getCompany() === "PVN") {
+                        checkBP(
+                          userData,
+                          ["NHANSU"],
+                          ["ALL"],
+                          ["ALL"],
+                          handle_xoa_employee
+                        );
+                      } else {
+                        handle_xoa_employee();
+                      }
+                    }}
+                  >
+                    Clear
+                  </button>
+                </div>
               </div>
-              </div>              
-              
             </div>
             <div className='maindept_table'>
               <DataGrid
-              sx={{fontSize:'0.8rem'}}
+                sx={{ fontSize: "0.8rem" }}
                 components={{
                   Toolbar: CustomToolbar,
                   LoadingOverlay: LinearProgress,
                 }}
                 loading={isLoading}
                 rowHeight={35}
-                rows={resigned_check? employeeTable.filter((ele: EmployeeTableData, index: number)=> ele.WORK_STATUS_CODE !== 0): employeeTable}
+                rows={
+                  resigned_check
+                    ? employeeTable.filter(
+                        (ele: EmployeeTableData, index: number) =>
+                          ele.WORK_STATUS_CODE !== 0
+                      )
+                    : employeeTable
+                }
                 columns={columns_employee_table}
                 rowsPerPageOptions={[5, 10, 50, 100, 500]}
                 editMode='row'
@@ -1368,7 +1567,6 @@ const QuanLyPhongBanNhanSu = () => {
                 }}
               />
             </div>
-           
           </div>
         )}
       </div>

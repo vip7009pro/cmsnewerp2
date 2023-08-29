@@ -13,13 +13,14 @@ import { useContext, useEffect, useState, useTransition } from "react";
 import { FcSearch } from "react-icons/fc";
 import { AiFillFileExcel } from "react-icons/ai";
 import Swal from "sweetalert2";
-import { generalQuery } from "../../../api/Api";
+import { generalQuery, getCompany } from "../../../api/Api";
 import { UserContext } from "../../../api/Context";
 import { SaveExcel } from "../../../api/GlobalFunction";
 import "./POandStockFull.scss";
 import INSPECTION from "../../qc/inspection/INSPECTION";
 import KHOTP from "../../kho/khotp/KHOTP";
 import KHOLIEU from "../../kho/kholieu/KHOLIEU";
+import KHOTPNEW from "../../kho/khotp_new/KHOTPNEW";
 interface FCSTTableData {
   EMPL_NO?: string;
   FCST_ID: number;
@@ -543,7 +544,7 @@ const POandStockFull = () => {
   const handletraPOFullCMS = () => {
     setisLoading(true);
     setColumnDefinition(column_codeCMS);
-    generalQuery("traPOFullCMS", {
+    generalQuery(getCompany()==='CMS'? "traPOFullCMS" : "traPOFullCMS2", {
       allcode: alltime,
       codeSearch: codeCMS,
     })
@@ -595,7 +596,7 @@ const POandStockFull = () => {
   const handletraPOFullKD = () => {
     setisLoading(true);
     setColumnDefinition(column_codeKD);
-    generalQuery("traPOFullKD", {
+    generalQuery(getCompany()==='CMS'? "traPOFullKD" : "traPOFullKD2", {
       allcode: alltime,
       codeSearch: codeCMS,
     })
@@ -824,7 +825,8 @@ const POandStockFull = () => {
       )}
       {selection.testinvoicetable && (
         <div className='inspection'>
-          <KHOTP />
+          {getCompany()==='CMS' && <KHOTP />}
+          {getCompany()==='PVN' && <KHOTPNEW />}          
         </div>
       )}
       {selection.kholieu && (

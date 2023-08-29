@@ -535,8 +535,7 @@ const BaoCaoNhanSu = () => {
       },
     },
     { field: "OFF_ID", headerName: "OFF_ID", width: 120 },
-  ];
-  
+  ];  
   function CustomToolbar3() {
     return (
       <GridToolbarContainer>
@@ -741,8 +740,7 @@ const BaoCaoNhanSu = () => {
       .catch((error) => {
         console.log(error);
       });
-  };
-  
+  };  
   const loadDiemDanhFullSummaryTable =()=> {
     generalQuery("loadDiemDanhFullSummaryTable", {
       FROM_DATE: moment().format('YYYY-MM-DD'),
@@ -771,8 +769,7 @@ const BaoCaoNhanSu = () => {
   const handleSearch = () => {
     handleSearch2();
     loadDiemDanhFullSummaryTable();
-  };
-  
+  };  
   const maindeptchartMM = useMemo(() => {
     return (
       <PieChart
@@ -825,7 +822,7 @@ const BaoCaoNhanSu = () => {
           </LB>
         </CommonSeriesSettings>
         <Series
-          axis='quantity'
+          axis={'quantity'}
           argumentField='SUBDEPTNAME'
           valueField='TOTAL_ALL'
           name='Nhân lực'
@@ -840,7 +837,7 @@ const BaoCaoNhanSu = () => {
           />
         </Series>
         <Legend
-          verticalAlignment='bottom'
+          verticalAlignment={'bottom'}
           horizontalAlignment='center'
         ></Legend>
       </Chart>
@@ -1242,7 +1239,6 @@ const BaoCaoNhanSu = () => {
     ],
     store: diemdanhFullTable,
   });
-
   const mainDeptSummaryTable = React.useMemo(
     () => (
       <div className='datatb'>
@@ -1325,8 +1321,7 @@ const BaoCaoNhanSu = () => {
       </div>
     ),
     [diemdanhfullsummary]
-  );
- 
+  ); 
   useEffect(() => {
     handleSearch2(); 
     loadDiemDanhFullSummaryTable();

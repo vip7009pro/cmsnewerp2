@@ -1034,8 +1034,39 @@ import { UserData } from "../../../redux/slices/globalSlice";
             <Column dataField='OVERTIME' caption='OVERTIME' width={100}></Column> */}
             {/* <Column dataField='REMARK' caption='REMARK' width={100}></Column> */}
             {/* <Column dataField='XACNHAN' caption='XACNHAN' width={100}></Column> */}
-            <Column dataField='IN_TIME' caption='IN_TIME' width={100}></Column>
-            <Column dataField='OUT_TIME' caption='OUT_TIME' width={100}></Column>
+            <Column dataField='IN_TIME' caption='IN_TIME' width={100} cellRender={(e:any)=>{
+              if(e.data.IN_TIME !=='Thiếu giờ vào')
+              {
+                return (
+                  <span style={{color:'blue', fontWeight:'bold'}}>{e.data.IN_TIME}</span>
+                )
+              }
+              else
+              {
+                return (
+                  <span style={{color:'red', fontWeight:'bold'}}>{e.data.IN_TIME}</span>
+                )
+              }
+
+              
+
+            }}></Column>
+            <Column dataField='OUT_TIME' caption='OUT_TIME' width={100} cellRender={(e:any)=>{
+              if(e.data.OUT_TIME !=='Thiếu giờ ra')
+              {
+                return (
+                  <span style={{color:'blue', fontWeight:'bold'}}>{e.data.OUT_TIME}</span>
+                )
+              }
+              else
+              {
+                return (
+                  <span style={{color:'red', fontWeight:'bold'}}>{e.data.OUT_TIME}</span>
+                )
+              }
+
+
+            }}></Column>
             <Column dataField='REASON_NAME' caption='REASON_NAME' width={100}></Column>
             <Column dataField='CHECK1' caption='CHECK1' width={100}></Column>
             <Column dataField='CHECK2' caption='CHECK2' width={100}></Column>
@@ -2071,7 +2102,7 @@ import { UserData } from "../../../redux/slices/globalSlice";
                 className='tranhatky'
                 onClick={() => {
                     /* checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['NHANSU'], loadBangChamCong2);  */
-                    checkBP(userData,['KD'],['ALL'],['ALL'],loadBangChamCong2);                
+                    checkBP(userData,['NHANSU'],['ALL'],['ALL'],loadBangChamCong2);                
                 }}
               >
                 Tra chấm công

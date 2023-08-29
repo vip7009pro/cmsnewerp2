@@ -1735,7 +1735,7 @@ import {
                   ></input>
                 </label>
               <label>
-                  <b>Tên nhân viên KD:</b>{" "}
+                  <b>NV KD:</b>{" "}
                   <input
                     type='text'
                     placeholder='Tên nhân viên kinh doanh'
@@ -1759,7 +1759,7 @@ import {
                   ></input>
                 </label>    
                 <label>
-                <b>Nội dung tra cứu:</b>
+                <b>CHỌN:</b>
                       <select                        
                         name='phanloaisanpham'
                         value={buttonselected}

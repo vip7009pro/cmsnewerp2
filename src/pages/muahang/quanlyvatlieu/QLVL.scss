@@ -64,6 +64,23 @@
                         margin-left: 5px;
                         background-image: linear-gradient(0deg, #ececec, #9dee95);
                     }
+                    .autocomplete {
+                        background-color: rgba(255, 255, 255, 0);
+                        position: relative;                                
+                        * {
+                            font-size: 0.8rem;
+                            background-color: rgba(255, 255, 255, 0);
+                            margin: 0;
+                            padding:1.5px;
+                        }
+                        input {                                    
+                            background-color: white;z-index: 10; 
+                            height: 23px;
+                            width: 150px;
+                            
+                        }         
+                                             
+                    }
                 }
             }
 

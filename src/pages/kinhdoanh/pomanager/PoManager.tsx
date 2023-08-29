@@ -399,7 +399,7 @@ const PoManager = () => {
         );
       },
     },
-    {
+    /* {
       field: "TON_KIEM",
       type: "number",
       headerName: "TON_KIEM",
@@ -447,7 +447,7 @@ const PoManager = () => {
           </span>
         );
       },
-    },
+    }, */
     { field: "EMPL_NAME", headerName: "EMPL_NAME", width: 150 },
     { field: "PROD_TYPE", headerName: "PROD_TYPE", width: 90 },
     { field: "M_NAME_FULLBOM", headerName: "M_NAME_FULLBOM", width: 110 },
