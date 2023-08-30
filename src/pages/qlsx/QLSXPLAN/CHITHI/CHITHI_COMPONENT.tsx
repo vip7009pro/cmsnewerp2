@@ -67,7 +67,7 @@ interface YCSXTableData {
   STEP?: number;
   PLAN_ORDER?: string;
   OLD_PLAN_QTY?: string,
-  PROCESS_NUMBER?: number,
+  PROCESS_NUMBER: number,
 }
 interface FullBOM {
   PDBV?: string;
@@ -260,6 +260,7 @@ const CHITHI_COMPONENT = ({
   const [checklieuqlsx, setChecklieuqlsx] = useState(false);
   const [po_balance, setPoBalance] = useState(0);
   const [maxLieu, setMaxLieu]=  useState(12);
+  const [eq_process_check, setEQ_Process_check]= useState(false);
   const handleGetChiThiTable = async () => {
     generalQuery("getchithidatatable", {
       PLAN_ID: PLAN_ID,
@@ -292,6 +293,9 @@ const CHITHI_COMPONENT = ({
             }
           }
           setRequest_CodeInfo(response.data.data);
+          let checkpr: number = checkEQvsPROCESS(response.data.data[0].EQ1,response.data.data[0].EQ2,response.data.data[0].EQ3,response.data.data[0].EQ4);          
+          console.log('max',checkpr);
+          setEQ_Process_check(PROCESS_NUMBER > checkpr? false: true);
         } else {
           setRequest_CodeInfo([
             {
@@ -396,6 +400,18 @@ const CHITHI_COMPONENT = ({
       return true;
     }
   }
+  const checkEQvsPROCESS = (EQ1: string, EQ2: string, EQ3: string, EQ4: string)=> {    
+    console.log(EQ1);
+    console.log(EQ2);
+    console.log(EQ3);
+    console.log(EQ4);
+    let maxprocess: number =0;
+    if(['NA','NO','',null].indexOf(EQ1)===-1) maxprocess ++;
+    if(['NA','NO','',null].indexOf(EQ2)===-1) maxprocess ++;
+    if(['NA','NO','',null].indexOf(EQ3)===-1) maxprocess ++;
+    if(['NA','NO','',null].indexOf(EQ4)===-1) maxprocess ++;
+    return maxprocess;
+  }
   const check_lieuql_sx_m140 =  ()=> {
      generalQuery("check_lieuql_sx_m140", {
       G_CODE: G_CODE,
@@ -442,6 +458,7 @@ const CHITHI_COMPONENT = ({
     initCTSX();
     handleGetChiThiTable();
     checkPOBalance();
+    
   }, [PLAN_ID]);
   return (
     <div className='chithicomponent'>     
@@ -500,7 +517,7 @@ const CHITHI_COMPONENT = ({
           </div>
         </div>
       }
-      {(check_dinh_muc() && checklieuqlsx && PLAN_QTY !==0 && PROCESS_NUMBER !==0) && <div className='thongtinycsx'>
+      {(check_dinh_muc() && checklieuqlsx && PLAN_QTY !==0 && PROCESS_NUMBER !==0 && eq_process_check) && <div className='thongtinycsx'>
         <div className='text1'>
           1. 지시 정보 Thông tin chỉ thị ({request_codeinfo[0].G_NAME} ) __ PO_TYPE: {request_codeinfo[0].PO_TYPE}
         </div>
@@ -843,6 +860,7 @@ const CHITHI_COMPONENT = ({
       {!checklieuqlsx && <div>Chưa chỉ định liệu chính, hãy lưu liệu chỉ thị để đồng bộ liệu chính lên BOM</div>}
       {(PLAN_QTY ===0) && <div>Số lượng chỉ thị không thể = 0</div>}
       {(PROCESS_NUMBER ===0) && <div>PROCESS_NUMBER phải đặt 1,2,3 hoặc 4</div>}
+      {(eq_process_check === false) && <div>PROCESS_NUMBER sai</div>}
     </div>
   );
 };

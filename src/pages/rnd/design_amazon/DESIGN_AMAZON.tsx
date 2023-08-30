@@ -63,7 +63,6 @@ interface COMPONENT_DATA {
   INS_EMPL?: string;
   UPD_DATE?: string;
   UPD_EMPL?: string;
-
 }
 interface CODE_INFO {
   id: number;
@@ -771,7 +770,7 @@ const DESIGN_AMAZON = () => {
                         componentList.filter(
                           (ele: COMPONENT_DATA, index: number) =>
                             currentComponent === index
-                        )[0].PHANLOAI_DT
+                        )[0]?.PHANLOAI_DT
                       }
                       onChange={(e) => {
                         const newComponentList = componentList.map(
@@ -800,7 +799,7 @@ const DESIGN_AMAZON = () => {
                         componentList.filter(
                           (ele: COMPONENT_DATA, index: number) =>
                             currentComponent === index
-                        )[0].DOITUONG_NAME
+                        )[0]?.DOITUONG_NAME
                       }
                       onChange={(e) => {
                         const newComponentList = componentList.map(
@@ -822,7 +821,7 @@ const DESIGN_AMAZON = () => {
                         componentList.filter(
                           (ele: COMPONENT_DATA, index: number) =>
                             currentComponent === index
-                        )[0].DOITUONG_STT
+                        )[0]?.DOITUONG_STT
                       }
                       onChange={(e) => {
                         const newComponentList = componentList.map(
@@ -844,7 +843,7 @@ const DESIGN_AMAZON = () => {
                         componentList.filter(
                           (ele: COMPONENT_DATA, index: number) =>
                             currentComponent === index
-                        )[0].CAVITY_PRINT
+                        )[0]?.CAVITY_PRINT
                       }
                       onChange={(e) => {
                         const newComponentList = componentList.map(
@@ -866,7 +865,7 @@ const DESIGN_AMAZON = () => {
                         componentList.filter(
                           (ele: COMPONENT_DATA, index: number) =>
                             currentComponent === index
-                        )[0].GIATRI
+                        )[0]?.GIATRI
                       }
                       onChange={(e) => {
                         const newComponentList = componentList.map(
@@ -888,7 +887,7 @@ const DESIGN_AMAZON = () => {
                         componentList.filter(
                           (ele: COMPONENT_DATA, index: number) =>
                             currentComponent === index
-                        )[0].FONT_NAME
+                        )[0]?.FONT_NAME
                       }
                       onChange={(e) => {
                         const newComponentList = componentList.map(
@@ -910,7 +909,7 @@ const DESIGN_AMAZON = () => {
                         componentList.filter(
                           (ele: COMPONENT_DATA, index: number) =>
                             currentComponent === index
-                        )[0].DOITUONG_NO
+                        )[0]?.DOITUONG_NO
                       }
                       onChange={(e) => {
                         const newComponentList = componentList.map(
@@ -938,7 +937,7 @@ const DESIGN_AMAZON = () => {
                         componentList.filter(
                           (ele: COMPONENT_DATA, index: number) =>
                             currentComponent === index
-                        )[0].FONT_SIZE
+                        )[0]?.FONT_SIZE
                       }
                       onChange={(e) => {
                         const newComponentList = componentList.map(
@@ -959,7 +958,7 @@ const DESIGN_AMAZON = () => {
                         componentList.filter(
                           (ele: COMPONENT_DATA, index: number) =>
                             currentComponent === index
-                        )[0].FONT_STYLE
+                        )[0]?.FONT_STYLE
                       }
                       onChange={(e) => {
                         const newComponentList = componentList.map(
@@ -988,7 +987,7 @@ const DESIGN_AMAZON = () => {
                         componentList.filter(
                           (ele: COMPONENT_DATA, index: number) =>
                             currentComponent === index
-                        )[0].POS_X
+                        )[0]?.POS_X
                       }
                       onChange={(e) => {
                         const newComponentList = componentList.map(
@@ -1012,7 +1011,7 @@ const DESIGN_AMAZON = () => {
                         componentList.filter(
                           (ele: COMPONENT_DATA, index: number) =>
                             currentComponent === index
-                        )[0].POS_Y
+                        )[0]?.POS_Y
                       }
                       onChange={(e) => {
                         const newComponentList = componentList.map(
@@ -1036,7 +1035,7 @@ const DESIGN_AMAZON = () => {
                         componentList.filter(
                           (ele: COMPONENT_DATA, index: number) =>
                             currentComponent === index
-                        )[0].SIZE_W
+                        )[0]?.SIZE_W
                       }
                       onChange={(e) => {
                         const vl = e.target.value;
@@ -1061,7 +1060,7 @@ const DESIGN_AMAZON = () => {
                         componentList.filter(
                           (ele: COMPONENT_DATA, index: number) =>
                             currentComponent === index
-                        )[0].SIZE_H
+                        )[0]?.SIZE_H
                       }
                       onChange={(e) => {
                         const newComponentList = componentList.map(
@@ -1085,7 +1084,7 @@ const DESIGN_AMAZON = () => {
                         componentList.filter(
                           (ele: COMPONENT_DATA, index: number) =>
                             currentComponent === index
-                        )[0].ROTATE
+                        )[0]?.ROTATE
                       }
                       onChange={(e) => {
                         const newComponentList = componentList.map(
@@ -1108,7 +1107,7 @@ const DESIGN_AMAZON = () => {
                         componentList.filter(
                           (ele: COMPONENT_DATA, index: number) =>
                             currentComponent === index
-                        )[0].REMARK
+                        )[0]?.REMARK
                       }
                       onChange={(e) => {
                         const newComponentList = componentList.map(

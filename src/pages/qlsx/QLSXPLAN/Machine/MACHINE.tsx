@@ -1393,6 +1393,19 @@ const MACHINE = () => {
     { field: "EQUIPMENT_CD", headerName: "MAY", width: 40 },
     { field: "INS_DATE", headerName: "INS_DATE", width: 150 },
   ];
+  const checkEQvsPROCESS = (EQ1: string, EQ2: string, EQ3: string, EQ4: string)=> {    
+    console.log(EQ1);
+    console.log(EQ2);
+    console.log(EQ3);
+    console.log(EQ4);
+    let maxprocess: number =0;
+    if(['NA','NO','',null].indexOf(EQ1)===-1) maxprocess ++;
+    if(['NA','NO','',null].indexOf(EQ2)===-1) maxprocess ++;
+    if(['NA','NO','',null].indexOf(EQ3)===-1) maxprocess ++;
+    if(['NA','NO','',null].indexOf(EQ4)===-1) maxprocess ++;
+    return maxprocess;
+  }
+
   const handle_loadEQ_STATUS = () => {
     generalQuery("checkEQ_STATUS", {})
       .then((response) => {
@@ -2772,11 +2785,9 @@ const MACHINE = () => {
         selectedPlanTable[i].CHOTBC !== "V" &&
         check_NEXT_PLAN_ID &&
         parseInt(selectedPlanTable[i].STEP.toString()) >= 0 &&
-        parseInt(selectedPlanTable[i].STEP.toString()) <= 9 &&
-        parseInt(selectedPlanTable[i].PROCESS_NUMBER.toString()) >= 1 &&
-        parseInt(selectedPlanTable[i].PROCESS_NUMBER.toString()) <= 4 &&
-        checkPlanIdP500 === false
-      ) {
+        parseInt(selectedPlanTable[i].STEP.toString()) <= 9 &&        
+        checkEQvsPROCESS(selectedPlanTable[i].EQ1,selectedPlanTable[i].EQ2,selectedPlanTable[i].EQ3,selectedPlanTable[i].EQ4) >= selectedPlanTable[i].PROCESS_NUMBER &&
+        checkPlanIdP500 === false) {
         await generalQuery("updatePlanQLSX", {
           PLAN_ID: selectedPlanTable[i].PLAN_ID,
           STEP: selectedPlanTable[i].STEP,
@@ -4434,7 +4445,7 @@ const MACHINE = () => {
         </div>
         <div className='mininavitem' onClick={() => setNav(2)}>
           <span className='mininavtext'>NM2</span>
-        </div>
+        </div> 
       </div>
       <div className='plandateselect'>
         <label>Plan Date</label>
@@ -5026,7 +5037,9 @@ const MACHINE = () => {
                           ? { ...p, [keyvar]: params.value }
                           : p
                       );
+                      
                       setPlanDataTable(newdata);
+                      setQlsxPlanDataFilter([]);
                       //console.log(plandatatable);
                     }}
                     onRowClick={handleEvent}

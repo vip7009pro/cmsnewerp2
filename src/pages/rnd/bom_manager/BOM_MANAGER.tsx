@@ -58,6 +58,7 @@ import { UserData } from "../../../redux/slices/globalSlice";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import axios from "axios";
+import CodeVisualLize from "../../kinhdoanh/quotationmanager/CodeVisualize/CodeVisualLize";
 
 interface CODE_INFO {
   id: number;
@@ -896,8 +897,6 @@ const BOM_MANAGER = () => {
       Swal.fire("Thông báo", "Chọn ít nhất 1 G_CODE để SET !", "error");
     }
   };
-
-
   const uploadFilebanVe = async (e: any) => {
     
     checkBP(userData,['RND','KD'],['ALL'],['ALL'],async ()=> {    
@@ -991,10 +990,6 @@ const BOM_MANAGER = () => {
      
     });     
   };
-
-
-
-
   const handleGETBOMSX = (G_CODE: string) => {
     setisLoading(true);
     generalQuery("getbomsx", {
@@ -1518,7 +1513,6 @@ const BOM_MANAGER = () => {
       });
     return { NEXT_G_CODE: CODE_12 + CODE_27 + nextseq, NEXT_SEQ_NO: nextseqno };
   };
-
   const handleinsertCodeTBG = (NEWG_CODE: string) => {
     generalQuery("insertM100BangTinhGia", {
       G_CODE: NEWG_CODE,
@@ -1652,7 +1646,6 @@ const BOM_MANAGER = () => {
       handleinsertCodeTBG(newGCODE);
     }
   };
-
   const handleUpdateCode = async () => {
     if (handleCheckCodeInfo()) {
       await generalQuery("updateM100", codefullinfo)
@@ -2276,7 +2269,6 @@ const BOM_MANAGER = () => {
       }
     });
   };
-
   const filterOptions1 = createFilterOptions({
     matchFrom: "any",
     limit: 100,
@@ -2305,7 +2297,6 @@ const BOM_MANAGER = () => {
         console.log(error);
       });
   };
-
   const autogenerateCodeKH = (cust_cd: string) => {
     let nextCodeKH: string = cust_cd + "-001";
     generalQuery("getlastestCODKH", {
@@ -2496,6 +2487,59 @@ const BOM_MANAGER = () => {
                 </div>
               </div>
             </div>
+            <div className='product_visualize'>
+                <CodeVisualLize DATA={                  
+                    {id: 0,
+                    Q_ID: "",
+                    G_CODE: "",
+                    WIDTH_OFFSET: 0,
+                    LENGTH_OFFSET: 0,
+                    KNIFE_UNIT: 0,
+                    FILM_UNIT: 0,
+                    INK_UNIT: 0,
+                    LABOR_UNIT: 0,
+                    DELIVERY_UNIT: 0,
+                    DEPRECATION_UNIT: 0,
+                    GMANAGEMENT_UNIT: 0,
+                    M_LOSS_UNIT: 0,
+                    G_WIDTH: codefullinfo?.G_WIDTH !== undefined ?codefullinfo.G_WIDTH :0 ,
+                    G_LENGTH: codefullinfo?.G_LENGTH !== undefined ?codefullinfo.G_LENGTH :0,
+                    G_C: codefullinfo?.G_C !== undefined ?codefullinfo.G_C :0,
+                    G_C_R: codefullinfo?.G_C_R !== undefined ?codefullinfo.G_C_R :0,
+                    G_LG: codefullinfo?.G_LG !== undefined ?codefullinfo.G_LG :0,
+                    G_CG: codefullinfo?.G_CG !== undefined ?codefullinfo.G_CG :0,
+                    G_SG_L: codefullinfo?.G_SG_L !== undefined ?codefullinfo.G_SG_L :0,
+                    G_SG_R: codefullinfo?.G_SG_R !== undefined ?codefullinfo.G_SG_R :0,
+                    PROD_PRINT_TIMES: 0,
+                    KNIFE_COST: 0,
+                    FILM_COST: 0,
+                    INK_COST: 0,
+                    LABOR_COST: 0,
+                    DELIVERY_COST: 0,
+                    DEPRECATION_COST: 0,
+                    GMANAGEMENT_COST: 0,
+                    MATERIAL_COST: 0,
+                    TOTAL_COST: 0,
+                    SALE_PRICE: 0,
+                    PROFIT: 0,
+                    G_NAME: "",
+                    G_NAME_KD: "",
+                    CUST_NAME_KD: "",
+                    CUST_CD: "",}} />
+                <div className='banve'>
+                  <span style={{ color: "green" }}>
+                    <b>
+                      <a
+                        target='_blank'
+                        rel='noopener noreferrer'
+                        href={`/banve/${codefullinfo.G_CODE}.pdf`}
+                      >
+                        LINK
+                      </a>
+                    </b>
+                  </span>
+                </div>
+              </div>
           </div>
           <div className='right'>
             <div className='codeinfobig'>

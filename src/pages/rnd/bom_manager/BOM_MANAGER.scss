@@ -38,7 +38,7 @@
                     height: fit-content;
                     display: flex;
                     flex-direction: column;
-                    flex: 8;
+                    flex: 4;
                     .tracuuFcst{
                         .tracuuFcstform {
                             display: flex;
@@ -154,7 +154,7 @@
                         .codeinfotable {
                             display: flex;
                             margin-top: 5px;
-                            height: 74vh;
+                            height: 40vh;
                             background-image: linear-gradient(0deg, #75ddac, #81c981);                   
                             -webkit-box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27); 
                             box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27);
@@ -185,6 +185,18 @@
                         gap: 5px; 
                         
 
+                    }
+                }
+                .product_visualize {
+                    display: flex;
+                    flex: 4;
+                    background-color: rgb(116, 117, 118);
+                    overflow: scroll;
+                    .banve {
+                        display: flex;
+                        flex-direction: row;
+                        align-items: flex-end;
+                        justify-self: flex-end;
                     }
                 }
 
@@ -514,9 +526,7 @@
 
                 }
             }
-        }
-    
-     
+        } 
     }
 }
  @media only screen and (max-width: 768px) {
