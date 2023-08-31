@@ -441,7 +441,7 @@ const QUICKPLAN = () => {
     {
       field: "CD1",
       headerName: "CD1",
-      width: 50,
+      width: 60,
       renderCell: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
@@ -453,7 +453,7 @@ const QUICKPLAN = () => {
     {
       field: "CD2",
       headerName: "CD2",
-      width: 50,
+      width: 60,
       renderCell: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
@@ -465,7 +465,7 @@ const QUICKPLAN = () => {
     {
       field: "CD3",
       headerName: "CD3",
-      width: 50,
+      width: 60,
       renderCell: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
@@ -477,7 +477,7 @@ const QUICKPLAN = () => {
     {
       field: "CD4",
       headerName: "CD4",
-      width: 50,
+      width: 60,
       renderCell: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
@@ -490,7 +490,7 @@ const QUICKPLAN = () => {
       field: "LOT_TOTAL_INPUT_QTY_EA",
       type: "number",
       headerName: "NK",
-      width: 50,
+      width: 60,
       renderCell: (params: any) => {
         return (
           <span style={{ color: "#cc0099" }}>
@@ -503,7 +503,7 @@ const QUICKPLAN = () => {
       field: "LOT_TOTAL_OUTPUT_QTY_EA",
       type: "number",
       headerName: "XK",
-      width: 50,
+      width: 60,
       renderCell: (params: any) => {
         return (
           <span style={{ color: "#cc0099" }}>
@@ -515,7 +515,7 @@ const QUICKPLAN = () => {
     {
       field: "TON_CD1",
       headerName: "TCD1",
-      width: 50,
+      width: 60,
       renderCell: (params: any) => {
         return (
           <span style={{ color: "red" }}>
@@ -527,7 +527,7 @@ const QUICKPLAN = () => {
     {
       field: "TON_CD2",
       headerName: "TCD2",
-      width: 50,
+      width: 60,
       renderCell: (params: any) => {
         return (
           <span style={{ color: "red" }}>
@@ -539,7 +539,7 @@ const QUICKPLAN = () => {
     {
       field: "TON_CD3",
       headerName: "TCD3",
-      width: 50,
+      width: 60,
       renderCell: (params: any) => {
         return (
           <span style={{ color: "red" }}>
@@ -551,7 +551,7 @@ const QUICKPLAN = () => {
     {
       field: "TON_CD4",
       headerName: "TCD4",
-      width: 50,
+      width: 60,
       renderCell: (params: any) => {
         return (
           <span style={{ color: "red" }}>
@@ -564,7 +564,7 @@ const QUICKPLAN = () => {
       field: "INSPECT_BALANCE",
       type: "number",
       headerName: "TKIEM",
-      width: 50,
+      width: 60,
       renderCell: (params: any) => {
         return (
           <span style={{ color: "#cc0099" }}>
@@ -1031,7 +1031,8 @@ const QUICKPLAN = () => {
         PROD_REQUEST_DATE={element.PROD_REQUEST_DATE}
         PROD_REQUEST_QTY={element.PROD_REQUEST_QTY}
         STEP={element.STEP}
-        PLAN_ORDER={element.PLAN_ORDER}        
+        PLAN_ORDER={element.PLAN_ORDER}  
+        PROCESS_NUMBER={element.PROCESS_NUMBER}
       />
     ));
   };
@@ -1120,6 +1121,20 @@ const QUICKPLAN = () => {
           //console.log(response.data.data);
           const loadeddata: YCSXTableData[] = response.data.data.map(
             (element: YCSXTableData, index: number) => {
+              let temp_TCD1: number = element.TON_CD1 === null ? 0: element.TON_CD1;
+              let temp_TCD2: number = element.TON_CD2 === null ? 0: element.TON_CD2;
+              let temp_TCD3: number = element.TON_CD3 === null ? 0: element.TON_CD3;
+              let temp_TCD4: number = element.TON_CD4 === null ? 0: element.TON_CD4;
+              if(temp_TCD1 <0){
+                temp_TCD2 = temp_TCD2 - temp_TCD1;
+              }
+              if(temp_TCD2 <0){
+                temp_TCD3 = temp_TCD3 - temp_TCD2;
+              }
+              if(temp_TCD3 <0){
+                temp_TCD4 = temp_TCD4 - temp_TCD3;
+              }
+
               return {
                 ...element,
                 PO_TDYCSX:
@@ -1192,6 +1207,14 @@ const QUICKPLAN = () => {
                   element.PROD_REQUEST_QTY === null
                     ? 0
                     : element.PROD_REQUEST_QTY,
+                CD1: element.CD1 === null ? 0 : element.CD1,
+                CD2: element.CD2 === null ? 0 : element.CD2,
+                CD3: element.CD3 === null ? 0 : element.CD3,
+                CD4: element.CD4 === null ? 0 : element.CD4,
+                TON_CD1: temp_TCD1,
+                TON_CD2: temp_TCD2,
+                TON_CD3: temp_TCD3,
+                TON_CD4: temp_TCD4,
               };
             }
           );

@@ -386,54 +386,108 @@ const PLAN_DATATB = () => {
     },
     { field: "EQ1", headerName: "EQ1", width: 30, editable: false },
     { field: "EQ2", headerName: "EQ2", width: 30, editable: false },
+    { field: "EQ3", headerName: "EQ3", width: 30, editable: false },
+    { field: "EQ4", headerName: "EQ4", width: 30, editable: false },
     {
       field: "CD1",
-      headerName: "KQ_CD1",
-      width: 80,
+      headerName: "CD1",
+      width: 60,
       editable: false,
       renderCell: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            {params.row.CD1.toLocaleString("en", "US")}
+            {params.row?.CD1.toLocaleString("en", "US")}
           </span>
         );
       },
     },
     {
       field: "CD2",
-      headerName: "KQ_CD2",
-      width: 80,
+      headerName: "CD2",
+      width: 60,
       editable: false,
       renderCell: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            {params.row.CD2.toLocaleString("en", "US")}
+            {params.row?.CD2.toLocaleString("en", "US")}
+          </span>
+        );
+      },
+    },
+    {
+      field: "CD3",
+      headerName: "CD3",
+      width: 60,
+      editable: false,
+      renderCell: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            {params.row?.CD3.toLocaleString("en", "US")}
+          </span>
+        );
+      },
+    },
+    {
+      field: "CD4",
+      headerName: "CD4",
+      width: 60,
+      editable: false,
+      renderCell: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            {params.row?.CD4.toLocaleString("en", "US")}
           </span>
         );
       },
     },
     {
       field: "TON_CD1",
-      headerName: "TONYCSX_CD1",
-      width: 120,
+      headerName: "TCD1",
+      width: 60,
       editable: false,
       renderCell: (params: any) => {
         return (
-          <span style={{ color: "blue" }}>
-            {params.row.TON_CD1.toLocaleString("en", "US")}
+          <span style={{ color: "red" }}>
+            {params.row?.TON_CD1.toLocaleString("en", "US")}
           </span>
         );
       },
     },
     {
       field: "TON_CD2",
-      headerName: "TONYCSX_CD2",
-      width: 120,
+      headerName: "TCD2",
+      width: 60,
       editable: false,
       renderCell: (params: any) => {
         return (
-          <span style={{ color: "blue" }}>
-            {params.row.TON_CD2.toLocaleString("en", "US")}
+          <span style={{ color: "red" }}>
+            {params.row?.TON_CD2.toLocaleString("en", "US")}
+          </span>
+        );
+      },
+    },
+    {
+      field: "TON_CD3",
+      headerName: "TCD3",
+      width: 60,
+      editable: false,
+      renderCell: (params: any) => {
+        return (
+          <span style={{ color: "red" }}>
+            {params.row?.TON_CD3.toLocaleString("en", "US")}
+          </span>
+        );
+      },
+    },
+    {
+      field: "TON_CD4",
+      headerName: "TCD4",
+      width: 60,
+      editable: false,
+      renderCell: (params: any) => {
+        return (
+          <span style={{ color: "red" }}>
+            {params.row?.TON_CD4.toLocaleString("en", "US")}
           </span>
         );
       },
@@ -489,6 +543,20 @@ const PLAN_DATATB = () => {
         if (response.data.tk_status !== "NG") {
           let loadeddata = response.data.data.map(
             (element: QLSXPLANDATA, index: number) => {
+              let temp_TCD1: number = element.TON_CD1 === null ? 0: element.TON_CD1;
+              let temp_TCD2: number = element.TON_CD2 === null ? 0: element.TON_CD2;
+              let temp_TCD3: number = element.TON_CD3 === null ? 0: element.TON_CD3;
+              let temp_TCD4: number = element.TON_CD4 === null ? 0: element.TON_CD4;
+              if(temp_TCD1 <0){
+                temp_TCD2 = temp_TCD2 - temp_TCD1;
+              }
+              if(temp_TCD2 <0){
+                temp_TCD3 = temp_TCD3 - temp_TCD2;
+              }
+              if(temp_TCD3 <0){
+                temp_TCD4 = temp_TCD4 - temp_TCD3;
+              }
+              
               return {
                 ...element,
                 PLAN_DATE: moment.utc(element.PLAN_DATE).format("YYYY-MM-DD"),
@@ -503,6 +571,18 @@ const PLAN_DATATB = () => {
                     ? "KTST-KSX"
                     : "Chưa chạy",
                   ACHIVEMENT_RATE: element.KETQUASX/element.PLAN_QTY*100,
+                  CD1: element.CD1 === null ? 0: element.CD1,
+                  CD2: element.CD2 === null ? 0: element.CD2,
+                  CD3: element.CD3 === null ? 0: element.CD3,
+                  CD4: element.CD4 === null ? 0: element.CD4,
+                  TON_CD1: temp_TCD1,
+                  TON_CD2: temp_TCD2,
+                  TON_CD3: temp_TCD3,
+                  TON_CD4: temp_TCD4,
+                  /* TON_CD1: element.TON_CD1 === null ? 0: element.TON_CD1,
+                  TON_CD2: element.TON_CD2 === null ? 0: element.TON_CD2,
+                  TON_CD3: element.TON_CD3 === null ? 0: element.TON_CD3,
+                  TON_CD4: element.TON_CD4 === null ? 0: element.TON_CD4, */
                 id: index,
               };
             }
@@ -728,7 +808,7 @@ const PLAN_DATATB = () => {
                       setMachine(e.target.value);
                     }                      
                     }
-                    style={{ width: 150, height: 30 }}
+                    style={{ width: 160, height: 30 }}
                   >
                     {machine_list.map(
                         (ele: MACHINE_LIST, index: number) => {
@@ -773,7 +853,10 @@ const PLAN_DATATB = () => {
               </button>
             </div>
           </div>
-          <div className='lossinfo'>
+         
+        </div>
+        <div className='tracuuYCSXTable'>
+        <div className='lossinfo'>
           <table>
           <thead>
             <tr>
@@ -820,8 +903,6 @@ const PLAN_DATATB = () => {
         </table>
 
           </div>
-        </div>
-        <div className='tracuuYCSXTable'>
           {readyRender && (
             <DataGrid
               sx={{ fontSize: 12, flex: 1 }}

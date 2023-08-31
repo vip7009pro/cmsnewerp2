@@ -27,16 +27,7 @@ import { useSpring, animated } from "@react-spring/web";
 import "./App.css";
 import FallBackComponent from "./components/Fallback/FallBackComponent";
 import PivotChart from "./components/PivotChart/PivotChart";
-import CAPA_MANAGER from "./pages/qlsx/QLSXPLAN/CAPA/CAPA_MANAGER";
-import PLANRESULT from "./pages/sx/PLANRESULT/PLANRESULT";
-import BANGCHAMCONG from "./pages/nhansu/BangChamCong/BangChamCong";
-import QuotationTotal from "./pages/kinhdoanh/quotationmanager/QuotationTotal";
-import MUAHANG from "./pages/muahang/MUAHANG";
-import QLVL from "./pages/muahang/quanlyvatlieu/QLVL";
-import PRODUCT_BARCODE_MANAGER from "./pages/rnd/product_barcode_manager/PRODUCT_BARCODE_MANAGER";
-import QLGN from "./pages/rnd/quanlygiaonhandaofilm/QLGN";
-import KHOTPNEW from "./pages/kho/khotp_new/KHOTPNEW";
-import KHOTOTAL from "./pages/kho/KHOTOTAL";
+
 import { Button } from "@mui/material";
 /* import DATASX2 from "./pages/qlsx/QLSXPLAN/DATASX/DATASX2";
 import Home from "./pages/home/Home";
@@ -83,7 +74,28 @@ import TabDangKy from "./pages/nhansu/DangKy/TabDangKy";
 import PheDuyetNghi from "./pages/nhansu/PheDuyetNghi/PheDuyetNghi";
 import LichSu from "./pages/nhansu/LichSu/LichSu";
 import BaoCaoNhanSu from "./pages/nhansu/BaoCaoNhanSu/BaoCaoNhanSu";
-import QuanLyCapCao from "./pages/nhansu/QuanLyCapCao/QuanLyCapCao"; */
+import QuanLyCapCao from "./pages/nhansu/QuanLyCapCao/QuanLyCapCao"; 
+import CAPA_MANAGER from "./pages/qlsx/QLSXPLAN/CAPA/CAPA_MANAGER";
+import PLANRESULT from "./pages/sx/PLANRESULT/PLANRESULT";
+import BANGCHAMCONG from "./pages/nhansu/BangChamCong/BangChamCong";
+import QuotationTotal from "./pages/kinhdoanh/quotationmanager/QuotationTotal";
+import MUAHANG from "./pages/muahang/MUAHANG";
+import QLVL from "./pages/muahang/quanlyvatlieu/QLVL";
+import PRODUCT_BARCODE_MANAGER from "./pages/rnd/product_barcode_manager/PRODUCT_BARCODE_MANAGER";
+import QLGN from "./pages/rnd/quanlygiaonhandaofilm/QLGN";
+import KHOTPNEW from "./pages/kho/khotp_new/KHOTPNEW";
+import KHOTOTAL from "./pages/kho/KHOTOTAL";*/
+const CAPA_MANAGER = lazy(() => import("./pages/qlsx/QLSXPLAN/CAPA/CAPA_MANAGER"));
+const PLANRESULT = lazy(() => import("./pages/sx/PLANRESULT/PLANRESULT"));
+const BANGCHAMCONG = lazy(() => import("./pages/nhansu/BangChamCong/BangChamCong"));
+const QuotationTotal = lazy(() => import("./pages/kinhdoanh/quotationmanager/QuotationTotal"));
+const MUAHANG = lazy(() => import("./pages/muahang/MUAHANG"));
+const QLVL = lazy(() => import("./pages/muahang/quanlyvatlieu/QLVL"));
+const PRODUCT_BARCODE_MANAGER = lazy(() => import("./pages/rnd/product_barcode_manager/PRODUCT_BARCODE_MANAGER"));
+const QLGN = lazy(() => import("./pages/rnd/quanlygiaonhandaofilm/QLGN"));
+const KHOTPNEW = lazy(() => import("./pages/kho/khotp_new/KHOTPNEW"));
+const KHOTOTAL = lazy(() => import("./pages/kho/KHOTOTAL"));
+
 const Home = lazy(() => import("./pages/home/Home"));
 const KIEMTRA = lazy(() => import("./pages/qc/inspection/KIEMTRA"));
 const PQC = lazy(() => import("./pages/qc/pqc/PQC"));
@@ -491,7 +503,7 @@ function App() {
               event: "login",
               data: data.data.data.EMPL_NO,
             })
-          );         
+          );
           /* setLoginState(true); */
           dispatch(login(true));
         }
@@ -525,7 +537,6 @@ function App() {
   }, []);
   return (
     <>
-    
       {globalLoginState && (
         <div className='App'>
           <Suspense fallback={<FallBackComponent />}>

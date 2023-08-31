@@ -5,8 +5,11 @@
     flex-direction: column;
     
     .tracuuDataInspection{
+        display: flex;
+        gap: 5px;
         .tracuuDataInspectionform {
             display: flex;
+            flex: 1;
             flex-direction: column;
             align-items: center;            
             background-image: linear-gradient(0deg, #afd3d1, #86cfff);
@@ -20,8 +23,6 @@
                 font-size: 20px;
                 margin: auto;
             }
-
-
             .forminput {
                 display: flex;
                 gap: 5px;
@@ -46,6 +47,7 @@
                     margin-bottom: 5px;     
                     margin-top: 5px;  
                     width: 100px;
+                    
                     &:hover {
                         cursor: pointer;
                         background-color: #bd4dc7;
@@ -59,6 +61,7 @@
                     align-items: flex-end;
                     justify-content: center;
                     flex-wrap: wrap;
+                    font-size: 0.8rem;
                    
 
                     input {
@@ -70,6 +73,7 @@
                         padding: 5px;
                         margin-left: 5px;
                         background-image: linear-gradient(0deg, #ececec, #9dee95);
+                        font-size: 0.8rem;
                     }
                     select {
                         width: 160px;
@@ -80,6 +84,7 @@
                         padding: 5px;
                         margin-left: 5px;
                         background-image: linear-gradient(0deg, #ececec, #9dee95);
+                        font-size: 0.8rem;
                     }
                 }
             }
@@ -175,21 +180,35 @@
                 }
 
             }
+            
+        }
+        .tracuuYCSXTable {
+            display: flex;
+            flex-direction: column;
+            flex: 9;            
+            height: 88vh;
+            background-image: linear-gradient(0deg, #afd3d1, #86cfff);
+            -webkit-box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27); 
+            box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27);
+            border-radius: 3px;
+            
+            justify-items: center;
             .lossinfo {
                 display: flex;
-                flex-direction: row;
+                align-self: center;
+                flex-direction: row;                
                 background-image: linear-gradient(0deg, #bbe2f5, #e9f1ed);
                 -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
                 box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
                 gap: 20px;
                 border-radius: 5px;
                 margin-top: 5px;
-                padding: 15px;
-                font-size: 1rem;
+                padding: 5px;
+                font-size: 0.8rem;
                 overflow: hidden;
                 table {
                     border: 2px solid gray;
-                    width: 100%;
+                    width: fit-content;
                     text-align: center;
                 }
                 table thead tr td {
@@ -204,15 +223,6 @@
                 }
             }
 
-        }
-        .tracuuYCSXTable {
-            display: flex;
-            margin-top: 10px;
-            height: 68vh;
-            background-image: linear-gradient(0deg, #afd3d1, #86cfff);
-            -webkit-box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27); 
-            box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27);
-            border-radius: 3px;
         }
     }
 }
