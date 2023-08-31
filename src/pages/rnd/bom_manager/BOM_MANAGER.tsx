@@ -1,5 +1,6 @@
 import {
   Autocomplete,
+  Button,
   Checkbox,
   createFilterOptions,
   FormControlLabel,
@@ -30,6 +31,7 @@ import {
   useContext,
   useEffect,
   useReducer,
+  useRef,
   useState,
   useTransition,
 } from "react";
@@ -59,6 +61,8 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import axios from "axios";
 import CodeVisualLize from "../../kinhdoanh/quotationmanager/CodeVisualize/CodeVisualLize";
+import { COMPONENT_DATA, renderElement } from "../design_amazon/DESIGN_AMAZON";
+import { useReactToPrint } from "react-to-print";
 
 interface CODE_INFO {
   id: number;
@@ -80,6 +84,7 @@ interface CODE_INFO {
   USE_YN: string;
 }
 interface CODE_FULL_INFO {
+  CUST_NAME?: string,
   CUST_CD?: string;
   PROD_PROJECT?: string;
   PROD_MODEL?: string;
@@ -205,6 +210,11 @@ interface M_NAME_LIST {
   M_NAME: string;
 }
 const BOM_MANAGER = () => {
+  const labelprintref = useRef(null);
+  const handlePrint = useReactToPrint({
+    content: () => labelprintref.current,
+  });
+
   const company: string = useSelector(
     (state: RootState) => state.totalSlice.company
   );
@@ -230,6 +240,7 @@ const BOM_MANAGER = () => {
     GMANAGEMENT_UNIT: 0,
     M_LOSS_UNIT: 0,
   });
+  const [showhidetemlot, setShowHideTemLot] = useState(false);
   const loadDefaultDM = () => {
     generalQuery("loadDefaultDM", {})
       .then((response) => {
@@ -1257,6 +1268,78 @@ const BOM_MANAGER = () => {
           );
           //console.log(loaded_data[0]);
           setCodeFullInfo(loaded_data[0]);
+          setComponentList(componentList.map((e:COMPONENT_DATA, index: number)=> {
+            let value: string = e.GIATRI;
+            if(e.DOITUONG_NAME==='CUSTOMER')
+            {
+              value = loaded_data[0]?.CUST_NAME === undefined?'': loaded_data[0]?.CUST_NAME;
+            }
+            else if(e.DOITUONG_NAME==='LONGBARCODE')
+            {
+              value = (loaded_data[0]?.G_NAME === undefined?'': loaded_data[0]?.G_NAME.substring(0,11)) +'DTA3'+ (loaded_data[0]?.PO_TYPE === undefined?'': loaded_data[0]?.PO_TYPE) + moment.utc().format('YYMMDD') + '-001' + zeroPad((loaded_data[0]?.ROLE_EA_QTY === undefined? 0: loaded_data[0]?.ROLE_EA_QTY),6) ;
+            }
+            else if(e.DOITUONG_NAME==='PARTNO VALUE')
+            {
+              value = (loaded_data[0]?.G_NAME === undefined?'': loaded_data[0]?.G_NAME);
+            }
+            else if(e.DOITUONG_NAME==='SPECIFICATION')
+            {
+              value = 'Specification:' + (loaded_data[0]?.DESCR === undefined?'': loaded_data[0]?.DESCR);
+            }
+            else if(e.DOITUONG_NAME==='PO TYPE')
+            {
+              value = 'PO Type:' + (loaded_data[0]?.PO_TYPE === undefined?'': loaded_data[0]?.PO_TYPE);
+            }
+            else if(e.DOITUONG_NAME==='LOTNO')
+            {
+              value = 'Lot No:' + moment.utc().format('YYMMDD') + '-001|' + userData?.EMPL_NO;
+            }
+            else if(e.DOITUONG_NAME==='QTY BIG')
+            {
+              value = (loaded_data[0]?.ROLE_EA_QTY === undefined?'': loaded_data[0]?.ROLE_EA_QTY).toString();
+            }
+            else if(e.DOITUONG_NAME==='VENDOR PN')
+            {
+              value = 'Vendor P/N:' + (loaded_data[0]?.G_CODE === undefined?'': loaded_data[0]?.G_CODE);
+            }
+            else if(e.DOITUONG_NAME==='SIZE')
+            {
+              value = 'Size:' + (loaded_data[0]?.G_WIDTH === undefined?'': loaded_data[0]?.G_WIDTH).toString() + '*' + (loaded_data[0]?.G_LENGTH === undefined?'': loaded_data[0]?.G_LENGTH).toString() ;
+            }
+            else if(e.DOITUONG_NAME==='MFT')
+            {
+              value = 'MFT:' + moment.utc().format('YYYY-MM-DD') ;
+            }
+            else if(e.DOITUONG_NAME==='EXP')
+            {
+              value = 'MFT:' + moment.utc().add(360,'day').format('YYYY-MM-DD') ;
+            }
+            else if(e.DOITUONG_NAME==='REQUESTINFO')
+            {
+              value = 'CMSvina/NM1/3HU0020/' + (loaded_data[0]?.ROLE_EA_QTY === undefined?'': loaded_data[0]?.ROLE_EA_QTY).toString() +'EA';
+            }
+            else if(e.DOITUONG_NAME==='PARTNO2')
+            {
+              value =  (loaded_data[0]?.G_NAME === undefined?'': loaded_data[0]?.G_NAME).toString();
+            }
+            else if(e.DOITUONG_NAME==='MFTEXP')
+            {
+              value =  `MFT: ${moment.utc().format('YYYY-MM-DD')} EXP: ${moment.utc().add(360,'day').format('YYYY-MM-DD')}`; 
+            }
+            else if(e.DOITUONG_NAME==='LOTINFO')
+            {
+              value =  `${userData?.EMPL_NO}/SP3HU001/SAMPLEWEB`;
+            }
+
+            return (
+              {
+                ...e,
+                GIATRI: value                
+              }
+            )
+          }))
+         
+          
         } else {
           Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
           setisLoading(false);
@@ -1280,6 +1363,7 @@ const BOM_MANAGER = () => {
       }
       //console.log(datafilter[0]);
       handlecodefullinfo(datafilter[0].G_CODE);
+      
     } else {
       setCodeDataTableFilter([]);
     }
@@ -2327,12 +2411,169 @@ const BOM_MANAGER = () => {
     return nextCodeKH;
   };
 
+  const [componentList, setComponentList] = useState<COMPONENT_DATA[]>([
+    {
+      G_CODE_MAU: "123456",
+      DOITUONG_NO: 5,
+      DOITUONG_NAME: "Rectangle",
+      PHANLOAI_DT: "CONTAINER",
+      DOITUONG_STT: "A6",
+      CAVITY_PRINT: 2,
+      GIATRI: "AZ:4Z99ADOEBRABHKDMAG5UZUWF5Y",
+      FONT_NAME: "Arial",
+      FONT_SIZE: 6,
+      FONT_STYLE: "B",
+      POS_X: 0,
+      POS_Y: 0,
+      SIZE_W: 23,
+      SIZE_H: 28.6,
+      ROTATE: 0,
+      REMARK: "remark",
+    },
+    {
+      G_CODE_MAU: "123456",
+      DOITUONG_NO: 0,
+      DOITUONG_NAME: "Code name",
+      PHANLOAI_DT: "TEXT",
+      DOITUONG_STT: "A0",
+      CAVITY_PRINT: 2,
+      GIATRI: "GH68-54619A",
+      FONT_NAME: "Arial",
+      FONT_SIZE: 6,
+      FONT_STYLE: "B",
+      POS_X: 2.26,
+      POS_Y: 20.53,
+      SIZE_W: 2.08,
+      SIZE_H: 2.08,
+      ROTATE: 0,
+      REMARK: "remark",
+    },
+    {
+      G_CODE_MAU: "123456",
+      DOITUONG_NO: 1,
+      DOITUONG_NAME: "Model",
+      PHANLOAI_DT: "TEXT",
+      DOITUONG_STT: "A1",
+      CAVITY_PRINT: 2,
+      GIATRI: "SM-R910NZAAXJP",
+      FONT_NAME: "Arial",
+      FONT_SIZE: 6,
+      FONT_STYLE: "B",
+      POS_X: 2.26,
+      POS_Y: 15.36,
+      SIZE_W: 2.08,
+      SIZE_H: 2.08,
+      ROTATE: 0,
+      REMARK: "remark",
+    },
+    {
+      G_CODE_MAU: "123456",
+      DOITUONG_NO: 1,
+      DOITUONG_NAME: "EAN No 1",
+      PHANLOAI_DT: "TEXT",
+      DOITUONG_STT: "A2",
+      CAVITY_PRINT: 2,
+      GIATRI: "4986773220257",
+      FONT_NAME: "Arial",
+      FONT_SIZE: 6,
+      FONT_STYLE: "B",
+      POS_X: 2.26,
+      POS_Y: 17.97,
+      SIZE_W: 2.08,
+      SIZE_H: 2.08,
+      ROTATE: 0,
+      REMARK: "remark",
+    },
+    {
+      G_CODE_MAU: "123456",
+      DOITUONG_NO: 4,
+      DOITUONG_NAME: "Logo AMZ 1",
+      PHANLOAI_DT: "IMAGE",
+      DOITUONG_STT: "A3",
+      CAVITY_PRINT: 2,
+      GIATRI: "http://14.160.33.94/images/logoAMAZON.png",
+      FONT_NAME: "Arial",
+      FONT_SIZE: 6,
+      FONT_STYLE: "B",
+      POS_X: 2.28,
+      POS_Y: 2.58,
+      SIZE_W: 7.11,
+      SIZE_H: 7,
+      ROTATE: 0,
+      REMARK: "remark",
+    },
+    {
+      G_CODE_MAU: "123456",
+      DOITUONG_NO: 5,
+      DOITUONG_NAME: "Barcode 1",
+      PHANLOAI_DT: "1D BARCODE",
+      DOITUONG_STT: "A4",
+      CAVITY_PRINT: 2,
+      GIATRI: "GH68-55104A",
+      FONT_NAME: "Arial",
+      FONT_SIZE: 6,
+      FONT_STYLE: "B",
+      POS_X: 1.97,
+      POS_Y: 23.57,
+      SIZE_W: 19.05,
+      SIZE_H: 3.55,
+      ROTATE: 0,
+      REMARK: "remark",
+    },
+    {
+      G_CODE_MAU: "123456",
+      DOITUONG_NO: 5,
+      DOITUONG_NAME: "Matrix 1",
+      PHANLOAI_DT: "2D MATRIX",
+      DOITUONG_STT: "A5",
+      CAVITY_PRINT: 2,
+      GIATRI: "AZ:4Z99ADOEBRABHKDMAG5UZUWF5Y",
+      FONT_NAME: "Arial",
+      FONT_SIZE: 6,
+      FONT_STYLE: "B",
+      POS_X: 12,
+      POS_Y: 2,
+      SIZE_W: 9,
+      SIZE_H: 9,
+      ROTATE: 0,
+      REMARK: "remark",
+    },
+  ]);
+
+  const handleGETBOMAMAZON = (G_CODE: string) => {    
+    generalQuery("getAMAZON_DESIGN", {
+      G_CODE: G_CODE,
+    })
+      .then((response) => {
+        //console.log(response.data);
+        if (response.data.tk_status !== "NG") {
+          const loadeddata: COMPONENT_DATA[] = response.data.data.map(
+            (element: COMPONENT_DATA, index: number) => {
+              return {
+                ...element,
+                id: index,
+              };
+            }
+          );
+          //console.log(loadeddata);
+          setComponentList(loadeddata);         
+        } else {
+          //Swal.fire("Thông báo", "Lỗi BOM SX: " + response.data.message, "error");
+          setComponentList([]);          
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
   useEffect(() => {
     getmateriallist();
     getcustomerlist();
     getMachineList();
     loadDefaultDM();
     loadMasterMaterialList();
+    handleGETBOMAMAZON('6E00004A');
   }, []);
   return (
     <div className='bom_manager'>
@@ -2488,58 +2729,76 @@ const BOM_MANAGER = () => {
               </div>
             </div>
             <div className='product_visualize'>
-                <CodeVisualLize DATA={                  
-                    {id: 0,
-                    Q_ID: "",
-                    G_CODE: "",
-                    WIDTH_OFFSET: 0,
-                    LENGTH_OFFSET: 0,
-                    KNIFE_UNIT: 0,
-                    FILM_UNIT: 0,
-                    INK_UNIT: 0,
-                    LABOR_UNIT: 0,
-                    DELIVERY_UNIT: 0,
-                    DEPRECATION_UNIT: 0,
-                    GMANAGEMENT_UNIT: 0,
-                    M_LOSS_UNIT: 0,
-                    G_WIDTH: codefullinfo?.G_WIDTH !== undefined ?codefullinfo.G_WIDTH :0 ,
-                    G_LENGTH: codefullinfo?.G_LENGTH !== undefined ?codefullinfo.G_LENGTH :0,
-                    G_C: codefullinfo?.G_C !== undefined ?codefullinfo.G_C :0,
-                    G_C_R: codefullinfo?.G_C_R !== undefined ?codefullinfo.G_C_R :0,
-                    G_LG: codefullinfo?.G_LG !== undefined ?codefullinfo.G_LG :0,
-                    G_CG: codefullinfo?.G_CG !== undefined ?codefullinfo.G_CG :0,
-                    G_SG_L: codefullinfo?.G_SG_L !== undefined ?codefullinfo.G_SG_L :0,
-                    G_SG_R: codefullinfo?.G_SG_R !== undefined ?codefullinfo.G_SG_R :0,
-                    PROD_PRINT_TIMES: 0,
-                    KNIFE_COST: 0,
-                    FILM_COST: 0,
-                    INK_COST: 0,
-                    LABOR_COST: 0,
-                    DELIVERY_COST: 0,
-                    DEPRECATION_COST: 0,
-                    GMANAGEMENT_COST: 0,
-                    MATERIAL_COST: 0,
-                    TOTAL_COST: 0,
-                    SALE_PRICE: 0,
-                    PROFIT: 0,
-                    G_NAME: "",
-                    G_NAME_KD: "",
-                    CUST_NAME_KD: "",
-                    CUST_CD: "",}} />
-                <div className='banve'>
-                  <span style={{ color: "green" }}>
-                    <b>
-                      <a
-                        target='_blank'
-                        rel='noopener noreferrer'
-                        href={`/banve/${codefullinfo.G_CODE}.pdf`}
-                      >
-                        LINK
-                      </a>
-                    </b>
-                  </span>
-                </div>
+              <CodeVisualLize
+                DATA={{
+                  id: 0,
+                  Q_ID: "",
+                  G_CODE: "",
+                  WIDTH_OFFSET: 0,
+                  LENGTH_OFFSET: 0,
+                  KNIFE_UNIT: 0,
+                  FILM_UNIT: 0,
+                  INK_UNIT: 0,
+                  LABOR_UNIT: 0,
+                  DELIVERY_UNIT: 0,
+                  DEPRECATION_UNIT: 0,
+                  GMANAGEMENT_UNIT: 0,
+                  M_LOSS_UNIT: 0,
+                  G_WIDTH:
+                    codefullinfo?.G_WIDTH !== undefined
+                      ? codefullinfo.G_WIDTH
+                      : 0,
+                  G_LENGTH:
+                    codefullinfo?.G_LENGTH !== undefined
+                      ? codefullinfo.G_LENGTH
+                      : 0,
+                  G_C: codefullinfo?.G_C !== undefined ? codefullinfo.G_C : 0,
+                  G_C_R:
+                    codefullinfo?.G_C_R !== undefined ? codefullinfo.G_C_R : 0,
+                  G_LG:
+                    codefullinfo?.G_LG !== undefined ? codefullinfo.G_LG : 0,
+                  G_CG:
+                    codefullinfo?.G_CG !== undefined ? codefullinfo.G_CG : 0,
+                  G_SG_L:
+                    codefullinfo?.G_SG_L !== undefined
+                      ? codefullinfo.G_SG_L
+                      : 0,
+                  G_SG_R:
+                    codefullinfo?.G_SG_R !== undefined
+                      ? codefullinfo.G_SG_R
+                      : 0,
+                  PROD_PRINT_TIMES: 0,
+                  KNIFE_COST: 0,
+                  FILM_COST: 0,
+                  INK_COST: 0,
+                  LABOR_COST: 0,
+                  DELIVERY_COST: 0,
+                  DEPRECATION_COST: 0,
+                  GMANAGEMENT_COST: 0,
+                  MATERIAL_COST: 0,
+                  TOTAL_COST: 0,
+                  SALE_PRICE: 0,
+                  PROFIT: 0,
+                  G_NAME: "",
+                  G_NAME_KD: "",
+                  CUST_NAME_KD: "",
+                  CUST_CD: "",
+                }}
+              />
+              <div className='banve'>
+                <span style={{ color: "green" }}>
+                  <b>
+                    <a
+                      target='_blank'
+                      rel='noopener noreferrer'
+                      href={`/banve/${codefullinfo.G_CODE}.pdf`}
+                    >
+                      LINK
+                    </a>
+                  </b>
+                </span>
               </div>
+            </div>
           </div>
           <div className='right'>
             <div className='codeinfobig'>
@@ -2549,20 +2808,28 @@ const BOM_MANAGER = () => {
               </div>
               <div className='biginfokd'> {codedatatablefilter[0]?.G_NAME}</div>
             </div>
-            <div className='down' style={{backgroundImage: codefullinfo.USE_YN ==='Y'?  `linear-gradient(0deg, #afd3d1,#72cf34)`: `linear-gradient(0deg, #6C6B6B,#EFE5E5)`}}>
+            <div
+              className='down'
+              style={{
+                backgroundImage:
+                  codefullinfo.USE_YN === "Y"
+                    ? `linear-gradient(0deg, #afd3d1,#72cf34)`
+                    : `linear-gradient(0deg, #6C6B6B,#EFE5E5)`,
+              }}
+            >
               <div className='codeinfo'>
                 <div className='info12'>
                   <div className='info1'>
-                  <label>
-                    Khách hàng:
+                    <label>
+                      Khách hàng:
                       <Autocomplete
                         sx={{
                           height: 10,
-                          width: '150px',
-                          margin: "1px",                          
-                          fontSize: "0.7rem",      
-                          marginBottom:'20px',
-                          backgroundColor:'white'           
+                          width: "150px",
+                          margin: "1px",
+                          fontSize: "0.7rem",
+                          marginBottom: "20px",
+                          backgroundColor: "white",
                         }}
                         disabled={enableform}
                         size='small'
@@ -2573,29 +2840,42 @@ const BOM_MANAGER = () => {
                         isOptionEqualToValue={(option: any, value: any) =>
                           option.CUST_CD === value.CUST_CD
                         }
-                        getOptionLabel={(option: any) => `${option.CUST_NAME_KD}${option.CUST_CD}`}
+                        getOptionLabel={(option: any) =>
+                          `${option.CUST_NAME_KD}${option.CUST_CD}`
+                        }
                         renderInput={(params) => (
-                          <TextField {...params} style={{height:'10px'}}/>
+                          <TextField {...params} style={{ height: "10px" }} />
                         )}
                         defaultValue={{
-                          CUST_CD: company==='CMS'?  "0000": 'KH000',
-                          CUST_NAME:company==='CMS'?  "SEOJIN": 'PVN',
-                          CUST_NAME_KD:company==='CMS'?  "SEOJIN": 'PVN',                        
+                          CUST_CD: company === "CMS" ? "0000" : "KH000",
+                          CUST_NAME: company === "CMS" ? "SEOJIN" : "PVN",
+                          CUST_NAME_KD: company === "CMS" ? "SEOJIN" : "PVN",
                         }}
                         value={{
                           CUST_CD: codefullinfo.CUST_CD,
-                          CUST_NAME:customerList.filter((e: CustomerListData, index: number)=> e.CUST_CD ===codefullinfo.CUST_CD)[0]?.CUST_NAME,
-                          CUST_NAME_KD: customerList.filter((e: CustomerListData, index: number)=> e.CUST_CD ===codefullinfo.CUST_CD)[0]?.CUST_NAME_KD === undefined? '': customerList.filter((e: CustomerListData, index: number)=> e.CUST_CD ===codefullinfo.CUST_CD)[0]?.CUST_NAME_KD ,
+                          CUST_NAME: customerList.filter(
+                            (e: CustomerListData, index: number) =>
+                              e.CUST_CD === codefullinfo.CUST_CD
+                          )[0]?.CUST_NAME,
+                          CUST_NAME_KD:
+                            customerList.filter(
+                              (e: CustomerListData, index: number) =>
+                                e.CUST_CD === codefullinfo.CUST_CD
+                            )[0]?.CUST_NAME_KD === undefined
+                              ? ""
+                              : customerList.filter(
+                                  (e: CustomerListData, index: number) =>
+                                    e.CUST_CD === codefullinfo.CUST_CD
+                                )[0]?.CUST_NAME_KD,
                         }}
                         onChange={(event: any, newValue: any) => {
-                          console.log(newValue);                          
+                          console.log(newValue);
                           handleSetCodeInfo(
                             "CUST_CD",
                             newValue === null ? "" : newValue.CUST_CD
                           );
                         }}
-                      />                   
-                      
+                      />
                     </label>
                     {/* <label>
                       Khách hàng:
@@ -2730,14 +3010,15 @@ const BOM_MANAGER = () => {
                       ></input>
                     </label>
                     <label>
-                    VL Chính: <Autocomplete
+                      VL Chính:{" "}
+                      <Autocomplete
                         sx={{
                           height: 10,
-                          width: '150px',
-                          margin: "1px",                          
-                          fontSize: "0.7rem",      
-                          marginBottom:'20px',
-                          backgroundColor:'white'           
+                          width: "150px",
+                          margin: "1px",
+                          fontSize: "0.7rem",
+                          marginBottom: "20px",
+                          backgroundColor: "white",
                         }}
                         disabled={enableform}
                         size='small'
@@ -2750,24 +3031,24 @@ const BOM_MANAGER = () => {
                         }
                         getOptionLabel={(option: any) => `${option.M_NAME}`}
                         renderInput={(params) => (
-                          <TextField {...params} style={{height:'10px'}}/>
+                          <TextField {...params} style={{ height: "10px" }} />
                         )}
                         defaultValue={{
                           M_NAME: "SJ-203020HC",
                         }}
                         value={{
-                          M_NAME: codefullinfo.PROD_MAIN_MATERIAL
+                          M_NAME: codefullinfo.PROD_MAIN_MATERIAL,
                         }}
                         onChange={(event: any, newValue: any) => {
-                          console.log(newValue);                          
+                          console.log(newValue);
                           handleSetCodeInfo(
                             "PROD_MAIN_MATERIAL",
                             newValue === null ? "" : newValue.M_NAME
                           );
                         }}
-                      />   
-                    </label>  
-                   {/*  <label>
+                      />
+                    </label>
+                    {/*  <label>
                       VL Chính:{" "}
                       <input
                         disabled={true}
@@ -3277,20 +3558,27 @@ const BOM_MANAGER = () => {
                         }}
                       ></input>
                     </label>
-                   {/*  <label>
+                    {/*  <label>
                       <span style={{fontSize:'1.2rem', color: codefullinfo.USE_YN ==='Y'? 'blue':'red', backgroundColor:codefullinfo.USE_YN ==='Y'? 'white': 'white'}}   >{codefullinfo.USE_YN ==='Y'? 'MỞ':'KHÓA'}</span>
                     </label> */}
-                    <label>                      
-                    <span style={{ color: "gray" }}>
-                      <a target='_blank' rel='noopener noreferrer' href={`/banve/${codefullinfo.G_CODE}.pdf`}>
-                        LINK
-                      </a>
-                    </span>
-                    
+                    <label>
+                      <span style={{ color: "gray" }}>
+                        <a
+                          target='_blank'
+                          rel='noopener noreferrer'
+                          href={`/banve/${codefullinfo.G_CODE}.pdf`}
+                        >
+                          LINK
+                        </a>
+                      </span>
                     </label>
                     <label>
-                    <div className='uploadfile'>                                  
-                        <IconButton  disabled={enableform} className='buttonIcon' onClick={uploadFilebanVe}>
+                      <div className='uploadfile'>
+                        <IconButton
+                          disabled={enableform}
+                          className='buttonIcon'
+                          onClick={uploadFilebanVe}
+                        >
                           <AiOutlineCloudUpload color='yellow' size={15} />
                           Upload
                         </IconButton>
@@ -3299,12 +3587,11 @@ const BOM_MANAGER = () => {
                           accept='.pdf'
                           type='file'
                           onChange={(e: any) => {
-                           setFile(e.target.files[0]);
-                           console.log(e.target.files[0]);
+                            setFile(e.target.files[0]);
+                            console.log(e.target.files[0]);
                           }}
                         />
                       </div>
-
                     </label>
                     <FormControlLabel
                       disabled={enableform}
@@ -3357,6 +3644,34 @@ const BOM_MANAGER = () => {
                         }}
                       />
                     </label> */}
+                      {company === "CMS" && (<Button
+                      onClick={() => {
+                        setShowHideTemLot(!showhidetemlot);
+                      }}
+                    >
+                      Show/Hide Tem LOT
+                    </Button>)}
+
+                    {company === "CMS" && showhidetemlot && (
+                          <div className='lotlabelbackground'>
+                            <Button
+                            color="success"
+                      onClick={() => {
+                        handlePrint();
+                      }}
+                    >
+                      Print LOT
+                    </Button>
+                          </div>
+                        )}
+                    {company === "CMS" && showhidetemlot && (
+                      <div className='lotlabel'>
+                       
+                        <div className='lotelement' ref={labelprintref}>
+                          {renderElement(componentList)}
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </div>
                 <div className='info34'>

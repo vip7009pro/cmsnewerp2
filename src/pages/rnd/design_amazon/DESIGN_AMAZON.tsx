@@ -42,7 +42,7 @@ import { UserContext } from "../../../api/Context";
 import { UserData } from "../../../redux/slices/globalSlice";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
-interface COMPONENT_DATA {
+export interface COMPONENT_DATA {
   G_CODE_MAU: string;
   DOITUONG_NO: number;
   DOITUONG_NAME: string;
@@ -100,7 +100,25 @@ interface  POINT_DATA {
   x: number,
   y: number
 }
+export const renderElement = (elementList: Array<COMPONENT_DATA>) => {
+  return elementList.map((ele: COMPONENT_DATA, index: number) => {
+    if (ele.PHANLOAI_DT === "TEXT") {
+      return <TEXT key={index} DATA={ele} />;
+    } else if (ele.PHANLOAI_DT === "CONTAINER") {
+      return <RECTANGLE key={index} DATA={ele} />;
+    } else if (ele.PHANLOAI_DT === "2D MATRIX") {
+      return <DATAMATRIX key={index} DATA={ele} />;
+    } else if (ele.PHANLOAI_DT === "1D BARCODE") {
+      return <BARCODE key={index} DATA={ele} />;
+    } else if (ele.PHANLOAI_DT === "IMAGE") {
+      return <IMAGE key={index} DATA={ele} />;
+    } else if (ele.PHANLOAI_DT === "QRCODE") {
+      return <QRCODE key={index} DATA={ele} />;
+    }
+  });
+};
 const DESIGN_AMAZON = () => {
+  
   const userData: UserData | undefined = useSelector(
     (state: RootState) => state.totalSlice.userData
   );
@@ -341,23 +359,7 @@ const DESIGN_AMAZON = () => {
       setCodeDataTableFilter([]);
     }
   };
-  const renderElement = (elementList: Array<COMPONENT_DATA>) => {
-    return componentList.map((ele: COMPONENT_DATA, index: number) => {
-      if (ele.PHANLOAI_DT === "TEXT") {
-        return <TEXT key={index} DATA={ele} />;
-      } else if (ele.PHANLOAI_DT === "CONTAINER") {
-        return <RECTANGLE key={index} DATA={ele} />;
-      } else if (ele.PHANLOAI_DT === "2D MATRIX") {
-        return <DATAMATRIX key={index} DATA={ele} />;
-      } else if (ele.PHANLOAI_DT === "1D BARCODE") {
-        return <BARCODE key={index} DATA={ele} />;
-      } else if (ele.PHANLOAI_DT === "IMAGE") {
-        return <IMAGE key={index} DATA={ele} />;
-      } else if (ele.PHANLOAI_DT === "QRCODE") {
-        return <QRCODE key={index} DATA={ele} />;
-      }
-    });
-  };
+  
   const addComponent = () => {
     if (codedatatablefilter.length > 0) {
       let max_dt_no: number = 0;
