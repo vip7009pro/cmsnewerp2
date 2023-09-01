@@ -1,5 +1,5 @@
 import {
-  DataGrid as GridData, 
+  DataGrid as GridData,
   Column,
   ColumnChooser,
   Editing,
@@ -81,12 +81,19 @@ import { MdOutlinePivotTableChart } from "react-icons/md";
 import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
 import { AiFillCloseCircle, AiFillFileExcel } from "react-icons/ai";
 import PivotTable from "../../../components/PivotChart/PivotChart";
-import { DIEMDANHFULLSUMMARY, DIEMDANHMAINDEPT, DiemDanhFullData, DiemDanhHistoryData, DiemDanhNhomData, MainDeptData, UserData } from "../../../api/GlobalInterface";
-
+import {
+  DIEMDANHFULLSUMMARY,
+  DIEMDANHMAINDEPT,
+  DiemDanhFullData,
+  DiemDanhHistoryData,
+  DiemDanhNhomData,
+  MainDeptData,
+  UserData,
+} from "../../../api/GlobalInterface";
 
 const BaoCaoNhanSu = () => {
   const userData: UserData | undefined = useSelector(
-    (state: RootState) => state.totalSlice.userData
+    (state: RootState) => state.totalSlice.userData,
   );
   const [isLoading, setisLoading] = useState(false);
   const [ddmaindepttb, setddmaindepttb] = useState<Array<DIEMDANHMAINDEPT>>([]);
@@ -98,7 +105,7 @@ const BaoCaoNhanSu = () => {
   >([]);
   const [piechartdata, setPieChartData] = useState<Array<DiemDanhNhomData>>([]);
   const [fromdate, setFromDate] = useState(
-    moment().add(-8, "day").format("YYYY-MM-DD")
+    moment().add(-8, "day").format("YYYY-MM-DD"),
   );
   const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));
   const [ca, setCa] = useState(6);
@@ -118,7 +125,7 @@ const BaoCaoNhanSu = () => {
       width: 120,
       renderCell: (params: any) => {
         return (
-          <div className='onoffdiv'>
+          <div className="onoffdiv">
             <span style={{ fontWeight: "bold", color: "black" }}>
               {params.row.MAINDEPTNAME}
             </span>
@@ -132,7 +139,7 @@ const BaoCaoNhanSu = () => {
       width: 120,
       renderCell: (params: any) => {
         return (
-          <div className='onoffdiv'>
+          <div className="onoffdiv">
             <span style={{ fontWeight: "bold", color: "black" }}>
               {params.row.COUNT_TOTAL}
             </span>
@@ -146,7 +153,7 @@ const BaoCaoNhanSu = () => {
       width: 120,
       renderCell: (params: any) => {
         return (
-          <div className='onoffdiv'>
+          <div className="onoffdiv">
             <span style={{ fontWeight: "bold", color: "black" }}>
               {params.row.COUT_ON}
             </span>
@@ -160,7 +167,7 @@ const BaoCaoNhanSu = () => {
       width: 120,
       renderCell: (params: any) => {
         return (
-          <div className='onoffdiv'>
+          <div className="onoffdiv">
             <span style={{ fontWeight: "bold", color: "black" }}>
               {params.row.COUT_OFF}
             </span>
@@ -174,7 +181,7 @@ const BaoCaoNhanSu = () => {
       width: 120,
       renderCell: (params: any) => {
         return (
-          <div className='onoffdiv'>
+          <div className="onoffdiv">
             <span style={{ fontWeight: "bold", color: "black" }}>
               {params.row.COUNT_CDD}
             </span>
@@ -188,7 +195,7 @@ const BaoCaoNhanSu = () => {
       width: 120,
       renderCell: (params: any) => {
         return (
-          <div className='onoffdiv'>
+          <div className="onoffdiv">
             <span style={{ fontWeight: "bold", color: "black" }}>
               {params.row.ON_RATE.toLocaleString("en-US", {
                 style: "decimal",
@@ -208,7 +215,7 @@ const BaoCaoNhanSu = () => {
       width: 120,
       renderCell: (params: any) => {
         return (
-          <div className='onoffdiv'>
+          <div className="onoffdiv">
             <span style={{ fontWeight: "bold", color: "black" }}>
               {params.row.MAINDEPTNAME}
             </span>
@@ -222,7 +229,7 @@ const BaoCaoNhanSu = () => {
       width: 120,
       renderCell: (params: any) => {
         return (
-          <div className='onoffdiv'>
+          <div className="onoffdiv">
             <span style={{ fontWeight: "bold", color: "black" }}>
               {params.row.SUBDEPTNAME}
             </span>
@@ -236,7 +243,7 @@ const BaoCaoNhanSu = () => {
       width: 90,
       renderCell: (params: any) => {
         return (
-          <div className='onoffdiv'>
+          <div className="onoffdiv">
             <span style={{ fontWeight: "bold", color: "blue" }}>
               {params.row.TOTAL_ALL}
             </span>
@@ -250,7 +257,7 @@ const BaoCaoNhanSu = () => {
       width: 90,
       renderCell: (params: any) => {
         return (
-          <div className='onoffdiv'>
+          <div className="onoffdiv">
             <span style={{ fontWeight: "bold", color: "green" }}>
               {params.row.TOTAL_ON}
             </span>
@@ -264,7 +271,7 @@ const BaoCaoNhanSu = () => {
       width: 90,
       renderCell: (params: any) => {
         return (
-          <div className='onoffdiv'>
+          <div className="onoffdiv">
             <span style={{ fontWeight: "bold", color: "red" }}>
               {params.row.TOTAL_OFF}
             </span>
@@ -278,7 +285,7 @@ const BaoCaoNhanSu = () => {
       width: 90,
       renderCell: (params: any) => {
         return (
-          <div className='onoffdiv'>
+          <div className="onoffdiv">
             <span style={{ fontWeight: "bold", color: "black" }}>
               {params.row.TOTAL_CDD}
             </span>
@@ -292,7 +299,7 @@ const BaoCaoNhanSu = () => {
       width: 120,
       renderCell: (params: any) => {
         return (
-          <div className='onoffdiv'>
+          <div className="onoffdiv">
             <span style={{ fontWeight: "bold", color: "black" }}>
               {(
                 (params.row.TOTAL_ON / params.row.TOTAL_ALL) *
@@ -326,7 +333,7 @@ const BaoCaoNhanSu = () => {
       renderCell: (params: any) => {
         if (params.row.WEEKDAY === "Sunday") {
           return (
-            <div className='onoffdiv'>
+            <div className="onoffdiv">
               <span style={{ fontWeight: "bold", color: "red" }}>
                 {params.row.WEEKDAY}
               </span>
@@ -334,7 +341,7 @@ const BaoCaoNhanSu = () => {
           );
         } else {
           return (
-            <div className='onoffdiv'>
+            <div className="onoffdiv">
               <span style={{ fontWeight: "bold", color: "#4268F4" }}>
                 {params.row.WEEKDAY}
               </span>
@@ -350,19 +357,19 @@ const BaoCaoNhanSu = () => {
       renderCell: (params: any) => {
         if (params.row.ON_OFF === 1) {
           return (
-            <div className='onoffdiv'>
+            <div className="onoffdiv">
               <span style={{ fontWeight: "bold", color: "green" }}>Đi làm</span>
             </div>
           );
         } else if (params.row.ON_OFF === 0) {
           return (
-            <div className='onoffdiv'>
+            <div className="onoffdiv">
               <span style={{ fontWeight: "bold", color: "red" }}>Nghỉ làm</span>
             </div>
           );
         } else {
           return (
-            <div className='onoffdiv'>
+            <div className="onoffdiv">
               <span style={{ fontWeight: "bold", color: "#754EFA" }}>
                 Chưa điểm danh
               </span>
@@ -378,13 +385,13 @@ const BaoCaoNhanSu = () => {
       renderCell: (params: any) => {
         if (params.row.APPROVAL_STATUS === 0) {
           return (
-            <div className='onoffdiv'>
+            <div className="onoffdiv">
               <span style={{ fontWeight: "bold", color: "red" }}>Từ chối</span>
             </div>
           );
         } else if (params.row.APPROVAL_STATUS === 1) {
           return (
-            <div className='onoffdiv'>
+            <div className="onoffdiv">
               <span style={{ fontWeight: "bold", color: "green" }}>
                 Phê duyệt
               </span>
@@ -392,14 +399,14 @@ const BaoCaoNhanSu = () => {
           );
         } else if (params.row.APPROVAL_STATUS === 2) {
           return (
-            <div className='onoffdiv'>
+            <div className="onoffdiv">
               <span style={{ fontWeight: "bold", color: "white" }}>
                 Chờ duyệt
               </span>
             </div>
           );
         } else {
-          return <div className='onoffdiv'></div>;
+          return <div className="onoffdiv"></div>;
         }
       },
     },
@@ -437,7 +444,7 @@ const BaoCaoNhanSu = () => {
       },
     },
     { field: "OFF_ID", headerName: "OFF_ID", width: 120 },
-  ];  
+  ];
   function CustomToolbar3() {
     return (
       <GridToolbarContainer>
@@ -445,18 +452,18 @@ const BaoCaoNhanSu = () => {
         <GridToolbarFilterButton />
         <GridToolbarDensitySelector />
         <GridToolbarQuickFilter />
-       
+
         <IconButton
-          className='buttonIcon'
+          className="buttonIcon"
           onClick={() => {
             setShowHidePivotTable(true);
           }}
         >
-          <MdOutlinePivotTableChart color='#ff33bb' size={25} />
+          <MdOutlinePivotTableChart color="#ff33bb" size={25} />
           Pivot
         </IconButton>
         <button
-          className='saveexcelbutton'
+          className="saveexcelbutton"
           onClick={() => {
             SaveExcel(diemdanhFullTable, "DiemdanhHistoryFull");
           }}
@@ -580,14 +587,14 @@ const BaoCaoNhanSu = () => {
                 WEEKDAY: weekdayarray[new Date(element.DATE_COLUMN).getDay()],
                 id: index,
               };
-            }
+            },
           );
           setDiemDanhFullTable(loaded_data);
           setisLoading(false);
           Swal.fire(
             "Thông báo",
             "Đã load " + response.data.data.length + " dòng",
-            "success"
+            "success",
           );
         } else {
           Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
@@ -597,8 +604,8 @@ const BaoCaoNhanSu = () => {
         console.log(error);
       });
     generalQuery("getddmaindepttb", {
-      FROM_DATE: moment().format('YYYY-MM-DD'),
-      TO_DATE: moment().format('YYYY-MM-DD'),
+      FROM_DATE: moment().format("YYYY-MM-DD"),
+      TO_DATE: moment().format("YYYY-MM-DD"),
     })
       .then((response) => {
         //console.log(response.data.data);
@@ -625,7 +632,7 @@ const BaoCaoNhanSu = () => {
                 ...element,
                 id: index,
               };
-            }
+            },
           );
           temp_total = {
             ...temp_total,
@@ -642,49 +649,50 @@ const BaoCaoNhanSu = () => {
       .catch((error) => {
         console.log(error);
       });
-  };  
-  const loadDiemDanhFullSummaryTable =()=> {
+  };
+  const loadDiemDanhFullSummaryTable = () => {
     generalQuery("loadDiemDanhFullSummaryTable", {
-      FROM_DATE: moment().format('YYYY-MM-DD'),
-      TO_DATE: moment().format('YYYY-MM-DD'),
-  })
-    .then((response) => {
-      //console.log(response.data.data);
-      if (response.data.tk_status !== "NG") {
-        const loaded_data: DIEMDANHFULLSUMMARY[] = response.data.data.map((element: DIEMDANHFULLSUMMARY, index: number)=> {
-          return {
-            ...element,           
-            id: index
-          }
-        })
-        setDiemDanhFullSummary(loaded_data);
-      
-       
-      } else {
-        Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
-      }
+      FROM_DATE: moment().format("YYYY-MM-DD"),
+      TO_DATE: moment().format("YYYY-MM-DD"),
     })
-    .catch((error) => {
-      console.log(error);
-    });
-  }
+      .then((response) => {
+        //console.log(response.data.data);
+        if (response.data.tk_status !== "NG") {
+          const loaded_data: DIEMDANHFULLSUMMARY[] = response.data.data.map(
+            (element: DIEMDANHFULLSUMMARY, index: number) => {
+              return {
+                ...element,
+                id: index,
+              };
+            },
+          );
+          setDiemDanhFullSummary(loaded_data);
+        } else {
+          Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
   const handleSearch = () => {
     handleSearch2();
     loadDiemDanhFullSummaryTable();
-  };  
+  };
   const maindeptchartMM = useMemo(() => {
     return (
       <PieChart
-        id='pie'
+        id="pie"
         dataSource={ddmaindepttb.filter(
-          (ele: DIEMDANHMAINDEPT, index: number) => ele.MAINDEPTNAME !== "TOTAL"
+          (ele: DIEMDANHMAINDEPT, index: number) =>
+            ele.MAINDEPTNAME !== "TOTAL",
         )}
-        palette='Bright'
-        title='Nhân lực theo bộ phận'
-        resolveLabelOverlapping='shift'
+        palette="Bright"
+        title="Nhân lực theo bộ phận"
+        resolveLabelOverlapping="shift"
       >
-        <Series argumentField='MAINDEPTNAME' valueField='COUNT_TOTAL'>
-          <LB            
+        <Series argumentField="MAINDEPTNAME" valueField="COUNT_TOTAL">
+          <LB
             visible={true}
             customizeText={(e: any) => {
               return `${e.argument}<br></br>${e.value} người
@@ -697,39 +705,43 @@ const BaoCaoNhanSu = () => {
         <Size width={700} />
       </PieChart>
     );
-  }, [ddmaindepttb]);  
+  }, [ddmaindepttb]);
   const subdeptchartMM = useMemo(() => {
     return (
       <Chart
-        id='workforcechart'
+        id="workforcechart"
         dataSource={diemdanhnhomtable.filter(
           (ele: DiemDanhNhomData, index: number) =>
-            ele.MAINDEPTNAME !== "GRAND_TOTAL"
+            ele.MAINDEPTNAME !== "GRAND_TOTAL",
         )}
         height={450}
         width={800}
-        resolveLabelOverlapping='hide'
+        resolveLabelOverlapping="hide"
       >
         <Title text={`SUB DEPARTMENT`} subtitle={``} />
-        <ArgumentAxis title='SUBDEPTNAME' color={'white'}>
-        </ArgumentAxis>
-        <ValueAxis name='quantity' position='left' title='Người' color={'white'}/>
+        <ArgumentAxis title="SUBDEPTNAME" color={"white"}></ArgumentAxis>
+        <ValueAxis
+          name="quantity"
+          position="left"
+          title="Người"
+          color={"white"}
+        />
         <CommonSeriesSettings
-          argumentField='TOTAL_ALL'
-          hoverMode='allArgumentPoints'
-          selectionMode='allArgumentPoints'
+          argumentField="TOTAL_ALL"
+          hoverMode="allArgumentPoints"
+          selectionMode="allArgumentPoints"
         >
           <LB visible={true}>
-            <Format type='fixedPoint' precision={0} />
+            <Format type="fixedPoint" precision={0} />
           </LB>
         </CommonSeriesSettings>
         <Series
-          axis={'quantity'}
-          argumentField='SUBDEPTNAME'
-          valueField='TOTAL_ALL'
-          name='Nhân lực'
-          color='#0c9c0c'
-          type='bar'
+          axis={"quantity"}
+          argumentField="SUBDEPTNAME"
+          valueField="TOTAL_ALL"
+          name="Nhân lực"
+          color="#0c9c0c"
+          type="bar"
         >
           <LB
             visible={true}
@@ -739,8 +751,8 @@ const BaoCaoNhanSu = () => {
           />
         </Series>
         <Legend
-          verticalAlignment={'bottom'}
-          horizontalAlignment='center'
+          verticalAlignment={"bottom"}
+          horizontalAlignment="center"
         ></Legend>
       </Chart>
     );
@@ -1039,7 +1051,7 @@ const BaoCaoNhanSu = () => {
         dataField: "ON_OFF",
         allowSorting: true,
         allowFiltering: true,
-        dataType: "number", 
+        dataType: "number",
         summaryType: "sum",
         format: "fixedPoint",
         headerFilter: {
@@ -1143,9 +1155,9 @@ const BaoCaoNhanSu = () => {
   });
   const mainDeptSummaryTable = React.useMemo(
     () => (
-      <div className='datatb'>
+      <div className="datatb">
         <GridData
-          style={{fontSize:'0.7rem'}}
+          style={{ fontSize: "0.7rem" }}
           autoNavigateToFocusedRow={true}
           allowColumnReordering={true}
           allowColumnResizing={true}
@@ -1154,9 +1166,8 @@ const BaoCaoNhanSu = () => {
           columnResizingMode={"widget"}
           showColumnLines={true}
           dataSource={diemdanhfullsummary}
-          columnWidth='auto'
-          keyExpr='id'
-         
+          columnWidth="auto"
+          keyExpr="id"
           showBorders={true}
           onSelectionChanged={(e) => {
             //console.log(e.selectedRowsData);
@@ -1166,45 +1177,46 @@ const BaoCaoNhanSu = () => {
             //console.log(e.data);
           }}
         >
-           <KeyboardNavigation
+          <KeyboardNavigation
             editOnKeyPress={true}
-            enterKeyAction={'moveFocus'}
-            enterKeyDirection={'column'} />
+            enterKeyAction={"moveFocus"}
+            enterKeyDirection={"column"}
+          />
           <Scrolling
             useNative={true}
             scrollByContent={true}
             scrollByThumb={true}
-            showScrollbar='onHover'
-            mode='virtual'
+            showScrollbar="onHover"
+            mode="virtual"
           />
-      {/*     <Selection mode='multiple' selectAllMode='allPages' /> */}
+          {/*     <Selection mode='multiple' selectAllMode='allPages' /> */}
           <Editing
             allowUpdating={false}
             allowAdding={false}
             allowDeleting={false}
-            mode='cell'
+            mode="cell"
             confirmDelete={true}
             onChangesChange={(e) => {}}
           />
           <Export enabled={true} />
           <Toolbar disabled={false}>
-            <Item location='before'>
+            <Item location="before">
               <IconButton
-                className='buttonIcon'
+                className="buttonIcon"
                 onClick={() => {
                   SaveExcel(diemdanhfullsummary, "SPEC DTC");
                 }}
               >
-                <AiFillFileExcel color='green' size={25} />
+                <AiFillFileExcel color="green" size={25} />
                 SAVE
-              </IconButton>              
+              </IconButton>
             </Item>
-            <Item name='searchPanel' />
-            <Item name='exportButton' />
-            <Item name='columnChooserButton' />
-            <Item name='addRowButton' />
-            <Item name='saveButton' />
-            <Item name='revertButton' />
+            <Item name="searchPanel" />
+            <Item name="exportButton" />
+            <Item name="columnChooserButton" />
+            <Item name="addRowButton" />
+            <Item name="saveButton" />
+            <Item name="revertButton" />
           </Toolbar>
           <FilterRow visible={false} />
           <SearchPanel visible={false} />
@@ -1215,28 +1227,27 @@ const BaoCaoNhanSu = () => {
             allowedPageSizes={[5, 10, 15, 20, 100, 1000, 10000, "all"]}
             showNavigationButtons={true}
             showInfo={true}
-            infoText='Page #{0}. Total: {1} ({2} items)'
-            displayMode='compact'
+            infoText="Page #{0}. Total: {1} ({2} items)"
+            displayMode="compact"
           />
-        
         </GridData>
       </div>
     ),
-    [diemdanhfullsummary]
-  ); 
+    [diemdanhfullsummary],
+  );
   useEffect(() => {
-    handleSearch2(); 
+    handleSearch2();
     loadDiemDanhFullSummaryTable();
   }, []);
   return (
-    <div className='baocaonhansu'>
-      <div className='baocao1'>
+    <div className="baocaonhansu">
+      <div className="baocao1">
         <h3>Báo cáo nhân sự</h3>
-        <div className='filterform'>
+        <div className="filterform">
           <label>
             <b>Chọn bộ phận:</b>
             <select
-              name='bophan'
+              name="bophan"
               value={maindeptcode}
               onChange={(e) => {
                 setmaindeptcode(Number(e.target.value));
@@ -1253,7 +1264,7 @@ const BaoCaoNhanSu = () => {
           <label>
             <b>Chọn nhà máy:</b>
             <select
-              name='nhamay'
+              name="nhamay"
               value={nhamay}
               onChange={(e) => {
                 setNhaMay(Number(e.target.value));
@@ -1267,7 +1278,7 @@ const BaoCaoNhanSu = () => {
           <label>
             <b>Chọn ca:</b>
             <select
-              name='ca'
+              name="ca"
               value={ca}
               onChange={(e) => {
                 setCa(Number(e.target.value));
@@ -1284,7 +1295,7 @@ const BaoCaoNhanSu = () => {
           <label>
             <b>From:</b>
             <input
-              type='date'
+              type="date"
               value={fromdate.slice(0, 10)}
               onChange={(e) => setFromDate(e.target.value)}
             ></input>
@@ -1292,13 +1303,13 @@ const BaoCaoNhanSu = () => {
           <label>
             <b>To:</b>
             <input
-              type='date'
+              type="date"
               value={todate.slice(0, 10)}
               onChange={(e) => setToDate(e.target.value)}
             ></input>
           </label>
           <button
-            className='searchbutton'
+            className="searchbutton"
             onClick={() => {
               handleSearch();
             }}
@@ -1307,7 +1318,7 @@ const BaoCaoNhanSu = () => {
           </button>
         </div>
         <h3>Biểu đồ trending tình hình đi làm</h3>
-        <div className='diemdanhhistorychart'>
+        <div className="diemdanhhistorychart">
           <CustomResponsiveContainer>
             <ComposedChart
               width={500}
@@ -1320,13 +1331,13 @@ const BaoCaoNhanSu = () => {
                 bottom: 5,
               }}
             >
-              <CartesianGrid strokeDasharray='3 3' className='chartGrid' />
-              <XAxis dataKey='APPLY_DATE'>
+              <CartesianGrid strokeDasharray="3 3" className="chartGrid" />
+              <XAxis dataKey="APPLY_DATE">
                 {" "}
-                <Label value='Ngày tháng' offset={0} position='insideBottom' />
+                <Label value="Ngày tháng" offset={0} position="insideBottom" />
               </XAxis>
               <YAxis
-                yAxisId='left-axis'
+                yAxisId="left-axis"
                 label={{
                   value: "Số lượng đi làm",
                   angle: -90,
@@ -1334,8 +1345,8 @@ const BaoCaoNhanSu = () => {
                 }}
               />
               <YAxis
-                orientation='right'
-                yAxisId='right-axis'
+                orientation="right"
+                yAxisId="right-axis"
                 label={{
                   value: "Tỉ lệ đi làm",
                   angle: -90,
@@ -1345,36 +1356,36 @@ const BaoCaoNhanSu = () => {
               <Tooltip />
               <Legend />
               <Bar
-                yAxisId='left-axis'
-                dataKey='TOTAL_ON'
-                stackId='a'
-                fill='#8884d8'
+                yAxisId="left-axis"
+                dataKey="TOTAL_ON"
+                stackId="a"
+                fill="#8884d8"
               >
-                <LabelList dataKey='TOTAL_ON' position='inside' />
+                <LabelList dataKey="TOTAL_ON" position="inside" />
               </Bar>
               <Bar
-                yAxisId='left-axis'
-                dataKey='TOTAL_OFF'
-                stackId='a'
-                fill='#82ca9d'
+                yAxisId="left-axis"
+                dataKey="TOTAL_OFF"
+                stackId="a"
+                fill="#82ca9d"
               >
-                <LabelList dataKey='TOTAL_OFF' position='inside' />
+                <LabelList dataKey="TOTAL_OFF" position="inside" />
               </Bar>
               <Line
-                yAxisId='right-axis'
-                type='monotone'
-                dataKey='ON_RATE'
-                stroke='#FF0000'
+                yAxisId="right-axis"
+                type="monotone"
+                dataKey="ON_RATE"
+                stroke="#FF0000"
                 activeDot={{ r: 8 }}
               ></Line>
             </ComposedChart>
           </CustomResponsiveContainer>
         </div>
         <h3>Nhân lực điểm danh trong ngày theo bộ phận chính</h3>
-        <div className='maindept_tableOK'>
-          <div className='tiledilamtable'>
+        <div className="maindept_tableOK">
+          <div className="tiledilamtable">
             <DataGrid
-              sx={{width:'100%'}}
+              sx={{ width: "100%" }}
               components={{
                 LoadingOverlay: LinearProgress,
               }}
@@ -1387,7 +1398,7 @@ const BaoCaoNhanSu = () => {
               hideFooter
             />
           </div>
-          <div className='titrongphongbangraph'>
+          <div className="titrongphongbangraph">
             <CustomResponsiveContainer>
               {/* <ChartDiemDanhMAINDEPT /> */}
               {maindeptchartMM}
@@ -1395,14 +1406,10 @@ const BaoCaoNhanSu = () => {
           </div>
         </div>
         <h3>Nhân lực điểm danh trong ngày theo bộ phận chính</h3>
-        <div className="maindeptsummarydiv">
-          {
-            mainDeptSummaryTable
-          }
-        </div>
+        <div className="maindeptsummarydiv">{mainDeptSummaryTable}</div>
         <h3>Nhân lực điểm danh trong ngày theo bộ phận phụ</h3>
-        <div className='maindept_table'>
-          <div className='tiledilamtable'>
+        <div className="maindept_table">
+          <div className="tiledilamtable">
             <DataGrid
               components={{
                 LoadingOverlay: LinearProgress,
@@ -1416,7 +1423,7 @@ const BaoCaoNhanSu = () => {
               hideFooter
             />
           </div>
-          <div className='titrongphongbangraph'>
+          <div className="titrongphongbangraph">
             {/* <CustomResponsiveContainer>
               <PieChart width={500} height={500}>
                 <Legend />
@@ -1451,7 +1458,7 @@ const BaoCaoNhanSu = () => {
           </div>
         </div>
         <h3>Lịch sử đi làm full info</h3>
-        <div className='maindept_table'>
+        <div className="maindept_table">
           <DataGrid
             components={{
               Toolbar: CustomToolbar3,
@@ -1463,23 +1470,23 @@ const BaoCaoNhanSu = () => {
             rows={diemdanhFullTable}
             columns={columns_diemdanhfull}
             rowsPerPageOptions={[5, 10, 30, 50, 100, 500, 1000, 5000, 10000]}
-            editMode='row'
+            editMode="row"
             getRowHeight={() => "auto"}
           />
         </div>
         {showhidePivotTable && (
-        <div className='pivottable1'>
-          <IconButton
-            className='buttonIcon'
-            onClick={() => {
-              setShowHidePivotTable(false);
-            }}
-          >
-            <AiFillCloseCircle color='blue' size={25} />
-            Close
-          </IconButton>
-          <PivotTable datasource={dataSource} tableID='invoicetablepivot' />
-        </div>
+          <div className="pivottable1">
+            <IconButton
+              className="buttonIcon"
+              onClick={() => {
+                setShowHidePivotTable(false);
+              }}
+            >
+              <AiFillCloseCircle color="blue" size={25} />
+              Close
+            </IconButton>
+            <PivotTable datasource={dataSource} tableID="invoicetablepivot" />
+          </div>
         )}
       </div>
     </div>

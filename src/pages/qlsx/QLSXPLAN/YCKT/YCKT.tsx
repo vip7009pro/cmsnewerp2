@@ -10,12 +10,17 @@ import {
   changeUserData,
 } from "../../../../redux/slices/globalSlice";
 import "./YCKT.scss";
-import Barcode from 'react-barcode';
-import { FullBOM, QLSXCHITHIDATA, QLSXPLANDATA, UserData } from "../../../../api/GlobalInterface";
+import Barcode from "react-barcode";
+import {
+  FullBOM,
+  QLSXCHITHIDATA,
+  QLSXPLANDATA,
+  UserData,
+} from "../../../../api/GlobalInterface";
 
 const YCKT = ({ DATA }: { DATA: QLSXPLANDATA }) => {
   const userData: UserData | undefined = useSelector(
-    (state: RootState) => state.totalSlice.userData
+    (state: RootState) => state.totalSlice.userData,
   );
   const [request_codeinfo, setRequest_CodeInfo] = useState<Array<FullBOM>>([
     {
@@ -120,74 +125,74 @@ const YCKT = ({ DATA }: { DATA: QLSXPLANDATA }) => {
           setRequest_CodeInfo([
             {
               REMK: "20220617",
-      PROD_REQUEST_QTY: 18000,
-      PROD_REQUEST_NO: "2FH0078",
-      PROD_REQUEST_DATE: "20220617",
-      G_CODE: "7A07975A",
-      G_NAME_KD: "",
-      DELIVERY_DT: "20220620",
-      CODE_55: "03",
-      CODE_50: "02",
-      RIV_NO: "A",
-      M_QTY: 1,
-      M_CODE: "A0009027",
-      CUST_NAME: "",
-      ROLE_EA_QTY: 2000,
-      PACK_DRT: "",
-      PROD_PRINT_TIMES: 1,
-      G_WIDTH: 28.6,
-      G_SG_R: 2,
-      G_SG_L: 2,
-      G_R: 0,
-      G_NAME: "",
-      G_LG: 3,
-      G_LENGTH: 23,
-      G_CODE_C: "",
-      G_CG: 4,
-      G_C: 1,
-      G_C_R: 4,
-      PD: 31.6,
-      CODE_33: "02",
-      M_NAME: "",
-      WIDTH_CD: 110,
-      EMPL_NO: "",
-      EMPL_NAME: "",
-      CODE_03: "01",
-      REMARK: "",
-      TONLIEU: 0,
-      HOLDING: 0,
-      TONG_TON_LIEU: 0,
-      PROD_DIECUT_STEP: 0,
-      FACTORY: "",
-      EQ1: "",
-      EQ2: "",
-      EQ3: "",
-      EQ4: "",
-      Setting1: 0,
-      Setting2: 0,
-      Setting3: 0,
-      Setting4: 0,
-      UPH1: 0,
-      UPH2: 0,
-      UPH3: 0,
-      UPH4: 0,
-      Step1: 0,
-      Step2: 0,
-      Step3: 0,
-      Step4: 0,
-      LOSS_SX1: 0,
-      LOSS_SX2: 0,
-      LOSS_SX3: 0,
-      LOSS_SX4: 0,
-      LOSS_SETTING1: 0,
-      LOSS_SETTING2: 0,
-      LOSS_SETTING3: 0,
-      LOSS_SETTING4: 0,
-      NOTE: "",
-      PO_TYPE: "E1",
-      PROD_MAIN_MATERIAL: "",
-      LIEUQL_SX: 0,
-      FSC: "N",
+              PROD_REQUEST_QTY: 18000,
+              PROD_REQUEST_NO: "2FH0078",
+              PROD_REQUEST_DATE: "20220617",
+              G_CODE: "7A07975A",
+              G_NAME_KD: "",
+              DELIVERY_DT: "20220620",
+              CODE_55: "03",
+              CODE_50: "02",
+              RIV_NO: "A",
+              M_QTY: 1,
+              M_CODE: "A0009027",
+              CUST_NAME: "",
+              ROLE_EA_QTY: 2000,
+              PACK_DRT: "",
+              PROD_PRINT_TIMES: 1,
+              G_WIDTH: 28.6,
+              G_SG_R: 2,
+              G_SG_L: 2,
+              G_R: 0,
+              G_NAME: "",
+              G_LG: 3,
+              G_LENGTH: 23,
+              G_CODE_C: "",
+              G_CG: 4,
+              G_C: 1,
+              G_C_R: 4,
+              PD: 31.6,
+              CODE_33: "02",
+              M_NAME: "",
+              WIDTH_CD: 110,
+              EMPL_NO: "",
+              EMPL_NAME: "",
+              CODE_03: "01",
+              REMARK: "",
+              TONLIEU: 0,
+              HOLDING: 0,
+              TONG_TON_LIEU: 0,
+              PROD_DIECUT_STEP: 0,
+              FACTORY: "",
+              EQ1: "",
+              EQ2: "",
+              EQ3: "",
+              EQ4: "",
+              Setting1: 0,
+              Setting2: 0,
+              Setting3: 0,
+              Setting4: 0,
+              UPH1: 0,
+              UPH2: 0,
+              UPH3: 0,
+              UPH4: 0,
+              Step1: 0,
+              Step2: 0,
+              Step3: 0,
+              Step4: 0,
+              LOSS_SX1: 0,
+              LOSS_SX2: 0,
+              LOSS_SX3: 0,
+              LOSS_SX4: 0,
+              LOSS_SETTING1: 0,
+              LOSS_SETTING2: 0,
+              LOSS_SETTING3: 0,
+              LOSS_SETTING4: 0,
+              NOTE: "",
+              PO_TYPE: "E1",
+              PROD_MAIN_MATERIAL: "",
+              LIEUQL_SX: 0,
+              FSC: "N",
             },
           ]);
           //Swal.fire("Thông báo","Số yêu cầu " + PROD_REQUEST_NO + "không tồn tại","error");
@@ -202,35 +207,36 @@ const YCKT = ({ DATA }: { DATA: QLSXPLANDATA }) => {
     handleGetChiThiTable();
   }, [DATA.PLAN_ID]);
   return (
-    <div className='ycktcomponent'>
+    <div className="ycktcomponent">
       {DATA.PDBV === "Y" && (
-        <div className='qcpass'>
+        <div className="qcpass">
           <img
-            alt='qcpass'
-            src='/QC PASS20.png'
+            alt="qcpass"
+            src="/QC PASS20.png"
             width={440 - 100 - 10}
             height={400 - 100}
           />
         </div>
       )}
       {
-        <div className='tieudeycsx'>
-          <div className='leftlogobarcode'>
-            <img alt='logo' src='/logocmsvina.png' width={160} height={40} />
+        <div className="tieudeycsx">
+          <div className="leftlogobarcode">
+            <img alt="logo" src="/logocmsvina.png" width={160} height={40} />
             <Barcode
               value={`${DATA.PLAN_ID}`}
-              format='CODE128'
+              format="CODE128"
               width={1}
               height={50}
               displayValue={false}
-              background='#fff'
-              lineColor='black'
+              background="#fff"
+              lineColor="black"
               margin={0}
             />
             {DATA.PLAN_ID}
           </div>
-          <div className='headertitle'>
-            검사 요청서 - Yêu cầu kiểm tra({DATA.PLAN_EQ}- B{DATA.STEP})<br></br>
+          <div className="headertitle">
+            검사 요청서 - Yêu cầu kiểm tra({DATA.PLAN_EQ}- B{DATA.STEP})
+            <br></br>
             <span style={{ fontSize: 12 }}>
               Thời điểm in YCKT: {moment().format("YYYY-MM-DD HH:mm:ss")}
             </span>
@@ -241,19 +247,19 @@ const YCKT = ({ DATA }: { DATA: QLSXPLANDATA }) => {
               </span>
             )}
           </div>
-          <div className='soycsx'>
-            <div className='ycsxbarcode'>
+          <div className="soycsx">
+            <div className="ycsxbarcode">
               <Barcode
                 value={request_codeinfo[0]?.PROD_REQUEST_NO}
-                format='CODE128'
+                format="CODE128"
                 width={1}
                 height={50}
                 displayValue={false}
-                background='#fff'
-                lineColor='black'
+                background="#fff"
+                lineColor="black"
                 margin={0}
               />
-              <div className='ycsxno'>
+              <div className="ycsxno">
                 {request_codeinfo[0].PROD_REQUEST_DATE}-
                 {request_codeinfo[0].PROD_REQUEST_NO}{" "}
               </div>
@@ -261,12 +267,12 @@ const YCKT = ({ DATA }: { DATA: QLSXPLANDATA }) => {
           </div>
         </div>
       }
-      <div className='thongtinycsx'>
-        <div className='text1'>
+      <div className="thongtinycsx">
+        <div className="text1">
           1. 지시 정보 Thông tin yêu cầu({request_codeinfo[0].G_NAME} )
         </div>
-        <div className='thongtinyeucau'>
-          <table className='ttyc1'>
+        <div className="thongtinyeucau">
+          <table className="ttyc1">
             <thead>
               <tr>
                 <th>Hạng mục/항목</th>
@@ -292,7 +298,7 @@ const YCKT = ({ DATA }: { DATA: QLSXPLANDATA }) => {
               </tr>
             </tbody>
           </table>
-          <table className='ttyc2'>
+          <table className="ttyc2">
             <thead>
               <tr>
                 <th>Hạng mục/항목</th>
@@ -304,7 +310,7 @@ const YCKT = ({ DATA }: { DATA: QLSXPLANDATA }) => {
                 <td>Số lượng yêu cầu/요청 수량</td>
                 <td>
                   {request_codeinfo[0]?.PROD_REQUEST_QTY.toLocaleString(
-                    "en-US"
+                    "en-US",
                   )}{" "}
                   EA
                 </td>
@@ -326,7 +332,7 @@ const YCKT = ({ DATA }: { DATA: QLSXPLANDATA }) => {
               </tr>
             </tbody>
           </table>
-          <table className='ttyc2'>
+          <table className="ttyc2">
             <thead>
               <tr>
                 <th>Hạng mục/항목</th>
@@ -354,9 +360,9 @@ const YCKT = ({ DATA }: { DATA: QLSXPLANDATA }) => {
             </tbody>
           </table>
         </div>
-        <div className='text1'>2. 입고 정보 Thông tin nhập hàng</div>
-        <div className='thongtinvatlieu'>
-          <div className='vatlieugiua'>
+        <div className="text1">2. 입고 정보 Thông tin nhập hàng</div>
+        <div className="thongtinvatlieu">
+          <div className="vatlieugiua">
             <table>
               <thead>
                 <tr>

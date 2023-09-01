@@ -1,4 +1,3 @@
-
 @media only screen and (max-width: 3000px) {
   .Nav {
     background: white;
@@ -8,7 +7,7 @@
     align-items: center;
     background-color: rgba(255, 255, 255, 0);
     overflow-y: scroll;
-  
+
     .NavIcon {
       position: fixed;
       top: 8px;
@@ -21,11 +20,15 @@
       z-index: 99999;
     }
   }
-  
+
   .SidebarNav {
     position: sticky;
     /*  background: rgb(255, 255, 255); */
-    background-image: linear-gradient(310deg, rgba(86, 199, 252, 1), rgba(200, 229, 240, 1));
+    background-image: linear-gradient(
+      310deg,
+      rgba(86, 199, 252, 1),
+      rgba(200, 229, 240, 1)
+    );
     min-width: 250px;
     margin-bottom: 0;
     display: flex;
@@ -33,68 +36,67 @@
     top: 45px;
     z-index: 10;
     margin-bottom: -5000px; /* any large number will do */
-    padding-bottom: 5000px; 
+    padding-bottom: 5000px;
     -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.1);
     box-shadow: 5px 5px 15px 5px rgba(2, 2, 2, 0.1);
     margin-top: 2px;
     border-radius: 5px;
-    margin-left: 1px;  
-    overflow-y: scroll; 
-    
+    margin-left: 1px;
+    overflow-y: scroll;
+
     &.show-sidebar {
       display: flex;
       width: 15%;
       animation: inAnimation 250ms ease-in;
     }
-  
+
     &.hide-sidebar {
       display: none;
       width: 0%;
       animation: outAnimation 270ms ease-out;
     }
-  
+
     @keyframes inAnimation {
       0% {
         opacity: 0;
         visibility: hidden;
         left: -100;
       }
-  
+
       100% {
         opacity: 1;
         visibility: visible;
         left: 0;
       }
     }
-  
+
     @keyframes outAnimation {
       0% {
         opacity: 1;
         left: 0;
       }
-  
+
       100% {
         opacity: 0;
         visibility: hidden;
         left: -100;
       }
     }
-  
   }
-  
+
   ::-webkit-scrollbar {
     width: 8px;
     height: 8px;
     /* background-image: linear-gradient(0deg, #ffffff, #ffffff); */
   }
-  
+
   /* Optional: show position indicator in red */
   ::-webkit-scrollbar-thumb {
     border-radius: 2px;
-    background-color: #FFF;
+    background-color: #fff;
     background-image: linear-gradient(0deg, #7bf8a4, #02c722);
   }
-  
+
   .SidebarWrap {
     width: 100%;
     .cmslogo {
@@ -102,7 +104,7 @@
       padding: 10px;
       font-size: 20px;
     }
-  
+
     .NavIcon {
       margin-left: 15px;
       font-size: 2rem;
@@ -111,14 +113,12 @@
       justify-content: flex-start;
       align-items: center;
       text-decoration: none;
-      color: blue
+      color: blue;
     }
   }
-  
-
 }
 
-@media only screen and (max-width: 768px){
+@media only screen and (max-width: 768px) {
   .Nav {
     background: white;
     height: fit-content;
@@ -127,7 +127,7 @@
     align-items: center;
     background-color: rgba(255, 255, 255, 0);
     overflow-y: scroll;
-  
+
     .NavIcon {
       position: fixed;
       top: 8px;
@@ -140,11 +140,15 @@
       z-index: 99999;
     }
   }
-  
+
   .SidebarNav {
     position: fixed;
     /*  background: rgb(255, 255, 255); */
-    background-image: linear-gradient(310deg, rgba(86, 199, 252, 1), rgba(200, 229, 240, 1));
+    background-image: linear-gradient(
+      310deg,
+      rgba(86, 199, 252, 1),
+      rgba(200, 229, 240, 1)
+    );
     min-width: 250px;
     height: 87vh;
     display: flex;
@@ -158,63 +162,61 @@
     margin-left: 1px;
     margin-right: 2px;
     padding-right: 5px;
-    overflow-y: scroll;  
-  
-  
+    overflow-y: scroll;
+
     &.show-sidebar {
       display: flex;
       width: 15%;
       animation: inAnimation 250ms ease-in;
     }
-  
+
     &.hide-sidebar {
       display: none;
       width: 0%;
       animation: outAnimation 270ms ease-out;
     }
-  
+
     @keyframes inAnimation {
       0% {
         opacity: 0;
         visibility: hidden;
         left: -100;
       }
-  
+
       100% {
         opacity: 1;
         visibility: visible;
         left: 0;
       }
     }
-  
+
     @keyframes outAnimation {
       0% {
         opacity: 1;
         left: 0;
       }
-  
+
       100% {
         opacity: 0;
         visibility: hidden;
         left: -100;
       }
     }
-  
   }
-  
+
   ::-webkit-scrollbar {
     width: 8px;
     height: 8px;
     /* background-image: linear-gradient(0deg, #ffffff, #ffffff); */
   }
-  
+
   /* Optional: show position indicator in red */
   ::-webkit-scrollbar-thumb {
     border-radius: 2px;
-    background-color: #FFF;
+    background-color: #fff;
     background-image: linear-gradient(0deg, #7bf8a4, #02c722);
   }
-  
+
   .SidebarWrap {
     width: 100%;
     .cmslogo {
@@ -222,7 +224,7 @@
       padding: 10px;
       font-size: 20px;
     }
-  
+
     .NavIcon {
       margin-left: 15px;
       font-size: 2rem;
@@ -231,9 +233,7 @@
       justify-content: flex-start;
       align-items: center;
       text-decoration: none;
-      color: blue
+      color: blue;
     }
   }
-  
-
 }

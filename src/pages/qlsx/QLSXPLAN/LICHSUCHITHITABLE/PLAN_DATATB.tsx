@@ -30,40 +30,48 @@ import { checkBP, SaveExcel } from "../../../../api/GlobalFunction";
 import "./PLAN_DATATB.scss";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../redux/store";
-import { MACHINE_LIST, QLSXPLANDATA, UserData } from "../../../../api/GlobalInterface";
+import {
+  MACHINE_LIST,
+  QLSXPLANDATA,
+  UserData,
+} from "../../../../api/GlobalInterface";
 
 const PLAN_DATATB = () => {
   const [machine_list, setMachine_List] = useState<MACHINE_LIST[]>([]);
-  
+
   const getMachineList = () => {
-   generalQuery("getmachinelist", {})
-     .then((response) => {
-       //console.log(response.data);
-       if (response.data.tk_status !== "NG") {
-         const loadeddata: MACHINE_LIST[] = response.data.data.map(
-           (element: MACHINE_LIST, index: number) => {
-             return {
-               ...element,
-             };
-           }
-         );
-         loadeddata.push({ EQ_NAME: "ALL" },{ EQ_NAME: "NO" }, { EQ_NAME: "NA" });
-         console.log(loadeddata);
-         setMachine_List(loadeddata);
-       } else {
-         //Swal.fire("Thông báo", "Lỗi BOM SX: " + response.data.message, "error");
-         setMachine_List([]);
-       }
-     })
-     .catch((error) => {
-       console.log(error);
-     });
- };
+    generalQuery("getmachinelist", {})
+      .then((response) => {
+        //console.log(response.data);
+        if (response.data.tk_status !== "NG") {
+          const loadeddata: MACHINE_LIST[] = response.data.data.map(
+            (element: MACHINE_LIST, index: number) => {
+              return {
+                ...element,
+              };
+            },
+          );
+          loadeddata.push(
+            { EQ_NAME: "ALL" },
+            { EQ_NAME: "NO" },
+            { EQ_NAME: "NA" },
+          );
+          console.log(loadeddata);
+          setMachine_List(loadeddata);
+        } else {
+          //Swal.fire("Thông báo", "Lỗi BOM SX: " + response.data.message, "error");
+          setMachine_List([]);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 
   const [selectionModel_INPUTSX, setSelectionModel_INPUTSX] = useState<any>([]);
   const [readyRender, setReadyRender] = useState(false);
   const userData: UserData | undefined = useSelector(
-    (state: RootState) => state.totalSlice.userData
+    (state: RootState) => state.totalSlice.userData,
   );
   const [isLoading, setisLoading] = useState(false);
   const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
@@ -71,72 +79,72 @@ const PLAN_DATATB = () => {
   const [factory, setFactory] = useState("ALL");
   const [machine, setMachine] = useState("ALL");
   const [plandatatable, setPlanDataTable] = useState<QLSXPLANDATA[]>([]);
-  const [summarydata, setSummaryData]= useState<QLSXPLANDATA>({
+  const [summarydata, setSummaryData] = useState<QLSXPLANDATA>({
     id: -1,
-  PLAN_ID: '',
-  PLAN_DATE: '',
-  PROD_REQUEST_NO: '',
-  PLAN_QTY: 0,
-  PLAN_EQ: '',
-  PLAN_FACTORY: '',
-  PLAN_LEADTIME: 0,
-  INS_EMPL: '',
-  INS_DATE: '',
-  UPD_EMPL: '',
-  UPD_DATE: '',
-  G_CODE: '',
-  G_NAME: '',
-  G_NAME_KD: '',
-  PROD_REQUEST_DATE: '',
-  PROD_REQUEST_QTY: 0,
-  STEP: 0,
-  PLAN_ORDER: '',
-  PROCESS_NUMBER: 0,
-  KQ_SX_TAM: 0,
-  KETQUASX: 0,
-  ACHIVEMENT_RATE: 0,
-  CD1: 0,
-  CD2: 0,
-  TON_CD1: 0,
-  TON_CD2: 0,
-  FACTORY: '',
-  EQ1: '',
-  EQ2: '',
-  Setting1: 0,
-  Setting2: 0,
-  UPH1: 0,
-  UPH2: 0,
-  Step1: 0,
-  Step2: 0,
-  LOSS_SX1: 0,
-  LOSS_SX2: 0,
-  LOSS_SETTING1: 0,
-  LOSS_SETTING2: 0,
-  NOTE: '',
-  XUATDAOFILM: '',
-  EQ_STATUS: '',
-  MAIN_MATERIAL: '',
-  INT_TEM: '',
-  CHOTBC: '',
-  DKXL: '',
-  NEXT_PLAN_ID: '',
-  CD3:0,
-  CD4:0,
-  EQ3:'',
-  EQ4:'',
-  LOSS_SETTING3:0,
-  LOSS_SETTING4:0,
-  LOSS_SX3:0,
-  LOSS_SX4:0,
-  Setting3:0,
-  Setting4:0,
-  Step3:0,
-  Step4:0,
-  TON_CD3:0,
-  TON_CD4:0,
-  UPH3:0,
-  UPH4:0,
-  OLD_PLAN_QTY:0,
+    PLAN_ID: "",
+    PLAN_DATE: "",
+    PROD_REQUEST_NO: "",
+    PLAN_QTY: 0,
+    PLAN_EQ: "",
+    PLAN_FACTORY: "",
+    PLAN_LEADTIME: 0,
+    INS_EMPL: "",
+    INS_DATE: "",
+    UPD_EMPL: "",
+    UPD_DATE: "",
+    G_CODE: "",
+    G_NAME: "",
+    G_NAME_KD: "",
+    PROD_REQUEST_DATE: "",
+    PROD_REQUEST_QTY: 0,
+    STEP: 0,
+    PLAN_ORDER: "",
+    PROCESS_NUMBER: 0,
+    KQ_SX_TAM: 0,
+    KETQUASX: 0,
+    ACHIVEMENT_RATE: 0,
+    CD1: 0,
+    CD2: 0,
+    TON_CD1: 0,
+    TON_CD2: 0,
+    FACTORY: "",
+    EQ1: "",
+    EQ2: "",
+    Setting1: 0,
+    Setting2: 0,
+    UPH1: 0,
+    UPH2: 0,
+    Step1: 0,
+    Step2: 0,
+    LOSS_SX1: 0,
+    LOSS_SX2: 0,
+    LOSS_SETTING1: 0,
+    LOSS_SETTING2: 0,
+    NOTE: "",
+    XUATDAOFILM: "",
+    EQ_STATUS: "",
+    MAIN_MATERIAL: "",
+    INT_TEM: "",
+    CHOTBC: "",
+    DKXL: "",
+    NEXT_PLAN_ID: "",
+    CD3: 0,
+    CD4: 0,
+    EQ3: "",
+    EQ4: "",
+    LOSS_SETTING3: 0,
+    LOSS_SETTING4: 0,
+    LOSS_SX3: 0,
+    LOSS_SX4: 0,
+    Setting3: 0,
+    Setting4: 0,
+    Step3: 0,
+    Step4: 0,
+    TON_CD3: 0,
+    TON_CD4: 0,
+    UPH3: 0,
+    UPH4: 0,
+    OLD_PLAN_QTY: 0,
   });
   const [qlsxplandatafilter, setQlsxPlanDataFilter] = useState<
     Array<QLSXPLANDATA>
@@ -153,21 +161,21 @@ const PLAN_DATATB = () => {
       headerName: "PLAN_DATE",
       width: 110,
       editable: false,
-    },   
+    },
     {
       field: "PLAN_ID",
       headerName: "PLAN_ID",
       width: 90,
       editable: false,
       resizeable: true,
-    },   
+    },
     {
       field: "G_NAME",
       headerName: "G_NAME",
       width: 200,
       editable: false,
       resizeable: true,
-    },   
+    },
     {
       field: "G_NAME_KD",
       headerName: "G_NAME_KD",
@@ -192,30 +200,34 @@ const PLAN_DATATB = () => {
           return <span style={{ color: "red" }}>{params.row.G_NAME_KD}</span>;
         return <span style={{ color: "green" }}>{params.row.G_NAME_KD}</span>;
       },
-    },    
+    },
     {
       field: "PLAN_QTY",
       headerName: "PLAN_QTY",
       width: 80,
       renderCell: (params: any) => {
         if (params.row.PLAN_QTY === 0) {
-          return <span style={{ color: "red", fontWeight:'bold' }}>NG</span>;
+          return <span style={{ color: "red", fontWeight: "bold" }}>NG</span>;
         } else {
           return (
-            <span style={{ color: "green",  fontWeight:'bold' }}>
+            <span style={{ color: "green", fontWeight: "bold" }}>
               {params.row.PLAN_QTY.toLocaleString("en", "US")}
             </span>
           );
         }
       },
-    },    
+    },
     {
       field: "KETQUASX",
       headerName: "RESULT_QTY",
       width: 110,
       renderCell: (params: any) => {
         if (params.row.KETQUASX !== null) {
-          return <span style={{color:'blue', fontWeight:'bold'}}>{params.row.KETQUASX.toLocaleString("en-US")}</span>;
+          return (
+            <span style={{ color: "blue", fontWeight: "bold" }}>
+              {params.row.KETQUASX.toLocaleString("en-US")}
+            </span>
+          );
         } else {
           return <span>0</span>;
         }
@@ -227,13 +239,24 @@ const PLAN_DATATB = () => {
       width: 150,
       renderCell: (params: any) => {
         if (params.row.ACHIVEMENT_RATE !== undefined) {
-          if(params.row.ACHIVEMENT_RATE === 100)
-          {
-            return <span style={{color:'green', fontWeight:'bold'}}>{params.row.ACHIVEMENT_RATE.toLocaleString("en-US",{ maximumFractionDigits: 0,})}%</span>;
-          }
-          else
-          {
-            return <span style={{color:'red', fontWeight:'bold'}}>{params.row.ACHIVEMENT_RATE.toLocaleString("en-US",{ maximumFractionDigits: 0,})}%</span>;
+          if (params.row.ACHIVEMENT_RATE === 100) {
+            return (
+              <span style={{ color: "green", fontWeight: "bold" }}>
+                {params.row.ACHIVEMENT_RATE.toLocaleString("en-US", {
+                  maximumFractionDigits: 0,
+                })}
+                %
+              </span>
+            );
+          } else {
+            return (
+              <span style={{ color: "red", fontWeight: "bold" }}>
+                {params.row.ACHIVEMENT_RATE.toLocaleString("en-US", {
+                  maximumFractionDigits: 0,
+                })}
+                %
+              </span>
+            );
           }
         } else {
           return <span>0</span>;
@@ -449,16 +472,16 @@ const PLAN_DATATB = () => {
     return (
       <GridToolbarContainer>
         <IconButton
-          className='buttonIcon'
+          className="buttonIcon"
           onClick={() => {
             SaveExcel(plandatatable, "PLAN Table");
           }}
         >
-          <AiFillFileExcel color='green' size={25} />
+          <AiFillFileExcel color="green" size={25} />
           SAVE
         </IconButton>
         <GridToolbarQuickFilter />
-        <div className='div' style={{ fontSize: 20, fontWeight: "bold" }}>
+        <div className="div" style={{ fontSize: 20, fontWeight: "bold" }}>
           BẢNG PLAN THEO NGÀY
         </div>
       </GridToolbarContainer>
@@ -476,20 +499,24 @@ const PLAN_DATATB = () => {
         if (response.data.tk_status !== "NG") {
           let loadeddata = response.data.data.map(
             (element: QLSXPLANDATA, index: number) => {
-              let temp_TCD1: number = element.TON_CD1 === null ? 0: element.TON_CD1;
-              let temp_TCD2: number = element.TON_CD2 === null ? 0: element.TON_CD2;
-              let temp_TCD3: number = element.TON_CD3 === null ? 0: element.TON_CD3;
-              let temp_TCD4: number = element.TON_CD4 === null ? 0: element.TON_CD4;
-              if(temp_TCD1 <0){
+              let temp_TCD1: number =
+                element.TON_CD1 === null ? 0 : element.TON_CD1;
+              let temp_TCD2: number =
+                element.TON_CD2 === null ? 0 : element.TON_CD2;
+              let temp_TCD3: number =
+                element.TON_CD3 === null ? 0 : element.TON_CD3;
+              let temp_TCD4: number =
+                element.TON_CD4 === null ? 0 : element.TON_CD4;
+              if (temp_TCD1 < 0) {
                 temp_TCD2 = temp_TCD2 - temp_TCD1;
               }
-              if(temp_TCD2 <0){
+              if (temp_TCD2 < 0) {
                 temp_TCD3 = temp_TCD3 - temp_TCD2;
               }
-              if(temp_TCD3 <0){
+              if (temp_TCD3 < 0) {
                 temp_TCD4 = temp_TCD4 - temp_TCD3;
               }
-              
+
               return {
                 ...element,
                 PLAN_DATE: moment.utc(element.PLAN_DATE).format("YYYY-MM-DD"),
@@ -503,44 +530,44 @@ const PLAN_DATATB = () => {
                     : element.EQ_STATUS === "K"
                     ? "KTST-KSX"
                     : "Chưa chạy",
-                  ACHIVEMENT_RATE: element.KETQUASX/element.PLAN_QTY*100,
-                  CD1: element.CD1 === null ? 0: element.CD1,
-                  CD2: element.CD2 === null ? 0: element.CD2,
-                  CD3: element.CD3 === null ? 0: element.CD3,
-                  CD4: element.CD4 === null ? 0: element.CD4,
-                  TON_CD1: temp_TCD1,
-                  TON_CD2: temp_TCD2,
-                  TON_CD3: temp_TCD3,
-                  TON_CD4: temp_TCD4,
-                  /* TON_CD1: element.TON_CD1 === null ? 0: element.TON_CD1,
+                ACHIVEMENT_RATE: (element.KETQUASX / element.PLAN_QTY) * 100,
+                CD1: element.CD1 === null ? 0 : element.CD1,
+                CD2: element.CD2 === null ? 0 : element.CD2,
+                CD3: element.CD3 === null ? 0 : element.CD3,
+                CD4: element.CD4 === null ? 0 : element.CD4,
+                TON_CD1: temp_TCD1,
+                TON_CD2: temp_TCD2,
+                TON_CD3: temp_TCD3,
+                TON_CD4: temp_TCD4,
+                /* TON_CD1: element.TON_CD1 === null ? 0: element.TON_CD1,
                   TON_CD2: element.TON_CD2 === null ? 0: element.TON_CD2,
                   TON_CD3: element.TON_CD3 === null ? 0: element.TON_CD3,
                   TON_CD4: element.TON_CD4 === null ? 0: element.TON_CD4, */
                 id: index,
               };
-            }
+            },
           );
           //console.log(loadeddata);
-          let temp_plan_data: QLSXPLANDATA= {
+          let temp_plan_data: QLSXPLANDATA = {
             id: -1,
-            PLAN_ID: '',
-            PLAN_DATE: '',
-            PROD_REQUEST_NO: '',
+            PLAN_ID: "",
+            PLAN_DATE: "",
+            PROD_REQUEST_NO: "",
             PLAN_QTY: 0,
-            PLAN_EQ: '',
-            PLAN_FACTORY: '',
+            PLAN_EQ: "",
+            PLAN_FACTORY: "",
             PLAN_LEADTIME: 0,
-            INS_EMPL: '',
-            INS_DATE: '',
-            UPD_EMPL: '',
-            UPD_DATE: '',
-            G_CODE: '',
-            G_NAME: '',
-            G_NAME_KD: '',
-            PROD_REQUEST_DATE: '',
+            INS_EMPL: "",
+            INS_DATE: "",
+            UPD_EMPL: "",
+            UPD_DATE: "",
+            G_CODE: "",
+            G_NAME: "",
+            G_NAME_KD: "",
+            PROD_REQUEST_DATE: "",
             PROD_REQUEST_QTY: 0,
             STEP: 0,
-            PLAN_ORDER: '',
+            PLAN_ORDER: "",
             PROCESS_NUMBER: 0,
             KQ_SX_TAM: 0,
             KETQUASX: 0,
@@ -549,9 +576,9 @@ const PLAN_DATATB = () => {
             CD2: 0,
             TON_CD1: 0,
             TON_CD2: 0,
-            FACTORY: '',
-            EQ1: '',
-            EQ2: '',
+            FACTORY: "",
+            EQ1: "",
+            EQ2: "",
             Setting1: 0,
             Setting2: 0,
             UPH1: 0,
@@ -562,47 +589,46 @@ const PLAN_DATATB = () => {
             LOSS_SX2: 0,
             LOSS_SETTING1: 0,
             LOSS_SETTING2: 0,
-            NOTE: '',
-            XUATDAOFILM: '',
-            EQ_STATUS: '',
-            MAIN_MATERIAL: '',
-            INT_TEM: '',
-            CHOTBC: '',
-            DKXL: '',
-            NEXT_PLAN_ID: '',
-            CD3:0,
-            CD4:0,
-            EQ3:'',
-            EQ4:'',
-            LOSS_SETTING3:0,
-            LOSS_SETTING4:0,
-            LOSS_SX3:0,
-            LOSS_SX4:0,
-            Setting3:0,
-            Setting4:0,
-            Step3:0,
-            Step4:0,
-            TON_CD3:0,
-            TON_CD4:0,
-            UPH3:0,
-            UPH4:0,
-            OLD_PLAN_QTY:0,
-          }
-          for(let i=0;i<loadeddata.length;i++)
-          {
+            NOTE: "",
+            XUATDAOFILM: "",
+            EQ_STATUS: "",
+            MAIN_MATERIAL: "",
+            INT_TEM: "",
+            CHOTBC: "",
+            DKXL: "",
+            NEXT_PLAN_ID: "",
+            CD3: 0,
+            CD4: 0,
+            EQ3: "",
+            EQ4: "",
+            LOSS_SETTING3: 0,
+            LOSS_SETTING4: 0,
+            LOSS_SX3: 0,
+            LOSS_SX4: 0,
+            Setting3: 0,
+            Setting4: 0,
+            Step3: 0,
+            Step4: 0,
+            TON_CD3: 0,
+            TON_CD4: 0,
+            UPH3: 0,
+            UPH4: 0,
+            OLD_PLAN_QTY: 0,
+          };
+          for (let i = 0; i < loadeddata.length; i++) {
             temp_plan_data.PLAN_QTY += loadeddata[i].PLAN_QTY;
             temp_plan_data.KETQUASX += loadeddata[i].KETQUASX;
-            
           }
-          temp_plan_data.ACHIVEMENT_RATE = temp_plan_data.KETQUASX/temp_plan_data.PLAN_QTY*100;
-          setSummaryData(temp_plan_data);          
+          temp_plan_data.ACHIVEMENT_RATE =
+            (temp_plan_data.KETQUASX / temp_plan_data.PLAN_QTY) * 100;
+          setSummaryData(temp_plan_data);
           setPlanDataTable(loadeddata);
           setReadyRender(true);
           setisLoading(false);
           Swal.fire(
             "Thông báo",
             "Đã load: " + response.data.data.length + " dòng",
-            "success"
+            "success",
           );
         } else {
           setPlanDataTable([]);
@@ -674,13 +700,13 @@ const PLAN_DATATB = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         Swal.fire("Tiến hành chuyển ngày PLAN", "Đang ngày plan", "success");
-       /*  checkBP(
+        /*  checkBP(
           userData?.EMPL_NO,
           userData?.MAINDEPTNAME,
           ["QLSX"],
           handle_movePlan
         ); */
-        checkBP(userData,['QLSX'],['ALL'],['ALL'],handle_movePlan);
+        checkBP(userData, ["QLSX"], ["ALL"], ["ALL"], handle_movePlan);
         //handle_movePlan();
       }
     });
@@ -688,7 +714,7 @@ const PLAN_DATATB = () => {
   const handleQLSXPlanDataSelectionforUpdate = (ids: GridSelectionModel) => {
     const selectedID = new Set(ids);
     let datafilter = plandatatable.filter((element: any) =>
-      selectedID.has(element.PLAN_ID)
+      selectedID.has(element.PLAN_ID),
     );
     //console.log(datafilter);
     if (datafilter.length > 0) {
@@ -699,19 +725,19 @@ const PLAN_DATATB = () => {
     }
   };
   useEffect(() => {
-     getMachineList();
+    getMachineList();
     //setColumnDefinition(column_inspect_output);
   }, []);
   return (
-    <div className='lichsuplanTable'>
-      <div className='tracuuDataInspection'>
-        <div className='tracuuDataInspectionform'>
-          <div className='forminput'>
-            <div className='forminputcolumn'>
+    <div className="lichsuplanTable">
+      <div className="tracuuDataInspection">
+        <div className="tracuuDataInspectionform">
+          <div className="forminput">
+            <div className="forminputcolumn">
               <label>
                 <b>PLAN DATE</b>
                 <input
-                  type='date'
+                  type="date"
                   value={fromdate.slice(0, 10)}
                   onChange={(e) => setFromDate(e.target.value)}
                 ></input>
@@ -719,55 +745,51 @@ const PLAN_DATATB = () => {
               <label>
                 <b>FACTORY:</b>
                 <select
-                  name='phanloai'
+                  name="phanloai"
                   value={factory}
                   onChange={(e) => {
                     setFactory(e.target.value);
                   }}
                 >
-                  <option value='ALL'>ALL</option>
-                  <option value='NM1'>NM1</option>
-                  <option value='NM2'>NM2</option>
+                  <option value="ALL">ALL</option>
+                  <option value="NM1">NM1</option>
+                  <option value="NM2">NM2</option>
                 </select>
               </label>
             </div>
-            <div className='forminputcolumn'>
+            <div className="forminputcolumn">
               <label>
-                  <b>MACHINE:</b>
-                  <select
-                    name='machine2'
-                    value={machine}
-                    onChange={(e) =>{
-                      setMachine(e.target.value);
-                    }                      
-                    }
-                    style={{ width: 160, height: 30 }}
-                  >
-                    {machine_list.map(
-                        (ele: MACHINE_LIST, index: number) => {
-                          return (
-                            <option key={index} value={ele.EQ_NAME}>
-                              {ele.EQ_NAME}
-                            </option>
-                          );
-                        }
-                      )}
-                  </select>
-                </label>
+                <b>MACHINE:</b>
+                <select
+                  name="machine2"
+                  value={machine}
+                  onChange={(e) => {
+                    setMachine(e.target.value);
+                  }}
+                  style={{ width: 160, height: 30 }}
+                >
+                  {machine_list.map((ele: MACHINE_LIST, index: number) => {
+                    return (
+                      <option key={index} value={ele.EQ_NAME}>
+                        {ele.EQ_NAME}
+                      </option>
+                    );
+                  })}
+                </select>
+              </label>
 
-              
               <label>
                 <b>MOVE TO DATE</b>
                 <input
-                  type='date'
+                  type="date"
                   value={todate.slice(0, 10)}
                   onChange={(e) => setToDate(e.target.value)}
                 ></input>
               </label>
             </div>
-            <div className='forminputcolumn'>
+            <div className="forminputcolumn">
               <button
-                className='tranhatky'
+                className="tranhatky"
                 onClick={() => {
                   handleConfirmMovePlan();
                 }}
@@ -775,7 +797,7 @@ const PLAN_DATATB = () => {
                 MOVE PLAN
               </button>
               <button
-                className='tranhatky'
+                className="tranhatky"
                 onClick={() => {
                   setisLoading(true);
                   setReadyRender(false);
@@ -786,55 +808,56 @@ const PLAN_DATATB = () => {
               </button>
             </div>
           </div>
-         
         </div>
-        <div className='tracuuYCSXTable'>
-        <div className='lossinfo'>
-          <table>
-          <thead>
-            <tr>
-              <th style={{ color: "black", fontWeight: "normal" }}>
-                FACTORY
-              </th>             
-              <th style={{ color: "black", fontWeight: "normal" }}>
-                MACHINE
-              </th>
-              <th style={{ color: "black", fontWeight: "normal" }}>
-                TOTAL PLAN
-              </th>
-              <th style={{ color: "black", fontWeight: "normal" }}>
-                TOTAL RESULT
-              </th>
-              <th style={{ color: "black", fontWeight: "normal" }}>
-                ACHIVEMENT RATE
-              </th>             
-            </tr>
-          </thead>
-          <tbody>
-            
-                  <tr>
-                    <td style={{ color: "blue", fontWeight: "bold" }}>
-                      {factory}
-                    </td>
-                    <td style={{ color: "#360EEA", fontWeight: "bold" }}>
-                      {machine}
-                    </td>
-                    <td style={{ color: "#360EEA", fontWeight: "bold" }}>
-                      {summarydata.PLAN_QTY?.toLocaleString('en-US',{maximumFractionDigits:0})}
-                    </td>
-                    <td style={{ color: "green", fontWeight: "bold" }}>
-                      {summarydata.KETQUASX?.toLocaleString('en-US',{maximumFractionDigits:0})}
-                    </td>
-                    <td style={{ color: "#EA0EBA", fontWeight: "bold" }}>
-                      {summarydata.ACHIVEMENT_RATE?.toLocaleString('en-US',{maximumFractionDigits:0})}%
-                    </td>
-                  </tr>
-               
-              
-            
-          </tbody>
-        </table>
-
+        <div className="tracuuYCSXTable">
+          <div className="lossinfo">
+            <table>
+              <thead>
+                <tr>
+                  <th style={{ color: "black", fontWeight: "normal" }}>
+                    FACTORY
+                  </th>
+                  <th style={{ color: "black", fontWeight: "normal" }}>
+                    MACHINE
+                  </th>
+                  <th style={{ color: "black", fontWeight: "normal" }}>
+                    TOTAL PLAN
+                  </th>
+                  <th style={{ color: "black", fontWeight: "normal" }}>
+                    TOTAL RESULT
+                  </th>
+                  <th style={{ color: "black", fontWeight: "normal" }}>
+                    ACHIVEMENT RATE
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style={{ color: "blue", fontWeight: "bold" }}>
+                    {factory}
+                  </td>
+                  <td style={{ color: "#360EEA", fontWeight: "bold" }}>
+                    {machine}
+                  </td>
+                  <td style={{ color: "#360EEA", fontWeight: "bold" }}>
+                    {summarydata.PLAN_QTY?.toLocaleString("en-US", {
+                      maximumFractionDigits: 0,
+                    })}
+                  </td>
+                  <td style={{ color: "green", fontWeight: "bold" }}>
+                    {summarydata.KETQUASX?.toLocaleString("en-US", {
+                      maximumFractionDigits: 0,
+                    })}
+                  </td>
+                  <td style={{ color: "#EA0EBA", fontWeight: "bold" }}>
+                    {summarydata.ACHIVEMENT_RATE?.toLocaleString("en-US", {
+                      maximumFractionDigits: 0,
+                    })}
+                    %
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
           {readyRender && (
             <DataGrid
@@ -852,7 +875,7 @@ const PLAN_DATATB = () => {
               ]}
               disableSelectionOnClick
               checkboxSelection
-              editMode='cell'
+              editMode="cell"
               getRowId={(row) => row.PLAN_ID}
               onSelectionModelChange={(ids) => {
                 handleQLSXPlanDataSelectionforUpdate(ids);
@@ -860,11 +883,11 @@ const PLAN_DATATB = () => {
               onCellEditCommit={(
                 params: GridCellEditCommitParams,
                 event: MuiEvent<MuiBaseEvent>,
-                details: GridCallbackDetails
+                details: GridCallbackDetails,
               ) => {
                 const keyvar = params.field;
                 const newdata = plandatatable.map((p) =>
-                  p.id === params.id ? { ...p, [keyvar]: params.value } : p
+                  p.id === params.id ? { ...p, [keyvar]: params.value } : p,
                 );
                 setPlanDataTable(newdata);
                 //console.log(plandatatable);

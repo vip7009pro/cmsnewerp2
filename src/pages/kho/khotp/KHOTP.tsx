@@ -12,7 +12,12 @@ import { generalQuery } from "../../../api/Api";
 import { UserContext } from "../../../api/Context";
 import { SaveExcel } from "../../../api/GlobalFunction";
 import "./KHOTP.scss";
-import { TONKIEMGOP_CMS, TONKIEMGOP_KD, TONKIEMTACH, WH_IN_OUT } from "../../../api/GlobalInterface";
+import {
+  TONKIEMGOP_CMS,
+  TONKIEMGOP_KD,
+  TONKIEMTACH,
+  WH_IN_OUT,
+} from "../../../api/GlobalInterface";
 
 const KHOTP = () => {
   const [readyRender, setReadyRender] = useState(false);
@@ -409,12 +414,12 @@ const KHOTP = () => {
     return (
       <GridToolbarContainer>
         <IconButton
-          className='buttonIcon'
+          className="buttonIcon"
           onClick={() => {
             SaveExcel(whdatatable, "WareHouse Data Table");
           }}
         >
-          <AiFillFileExcel color='green' size={25} />
+          <AiFillFileExcel color="green" size={25} />
           SAVE
         </IconButton>
         <GridToolbarQuickFilter />
@@ -460,18 +465,18 @@ const KHOTP = () => {
                   .utc(element.INPUT_DATETIME)
                   .format("YYYY-MM-DD HH:mm:ss"),
               };
-            }
+            },
           );
           setWhDataTable(loadeddata);
           setReadyRender(true);
           setisLoading(false);
           setSummaryWH(
-            "TOTAL QTY: " + inout_qty.toLocaleString("en-US") + "EA"
+            "TOTAL QTY: " + inout_qty.toLocaleString("en-US") + "EA",
           );
           Swal.fire(
             "Thông báo",
             "Đã load " + response.data.data.length + " dòng",
-            "success"
+            "success",
           );
         } else {
           Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
@@ -503,7 +508,7 @@ const KHOTP = () => {
                 ...element,
                 id: index,
               };
-            }
+            },
           );
           setWhDataTable(loadeddata);
           setReadyRender(true);
@@ -511,7 +516,7 @@ const KHOTP = () => {
           Swal.fire(
             "Thông báo",
             "Đã load " + response.data.data.length + " dòng",
-            "success"
+            "success",
           );
         } else {
           Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
@@ -543,7 +548,7 @@ const KHOTP = () => {
                 ...element,
                 id: index,
               };
-            }
+            },
           );
           setWhDataTable(loadeddata);
           setReadyRender(true);
@@ -551,7 +556,7 @@ const KHOTP = () => {
           Swal.fire(
             "Thông báo",
             "Đã load " + response.data.data.length + " dòng",
-            "success"
+            "success",
           );
         } else {
           Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
@@ -583,7 +588,7 @@ const KHOTP = () => {
                 ...element,
                 id: index,
               };
-            }
+            },
           );
           setWhDataTable(loadeddata);
           setReadyRender(true);
@@ -591,7 +596,7 @@ const KHOTP = () => {
           Swal.fire(
             "Thông báo",
             "Đã load " + response.data.data.length + " dòng",
-            "success"
+            "success",
           );
         } else {
           Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
@@ -604,15 +609,15 @@ const KHOTP = () => {
   };
   useEffect(() => {}, []);
   return (
-    <div className='khotp'>
-      <div className='tracuuDataWH'>
-        <div className='tracuuDataWHform'>
-          <div className='forminput'>
-            <div className='forminputcolumn'>
+    <div className="khotp">
+      <div className="tracuuDataWH">
+        <div className="tracuuDataWHform">
+          <div className="forminput">
+            <div className="forminputcolumn">
               <label>
                 <b>Từ ngày:</b>
                 <input
-                  type='date'
+                  type="date"
                   value={fromdate.slice(0, 10)}
                   onChange={(e) => setFromDate(e.target.value)}
                 ></input>
@@ -620,18 +625,18 @@ const KHOTP = () => {
               <label>
                 <b>Tới ngày:</b>{" "}
                 <input
-                  type='date'
+                  type="date"
                   value={todate.slice(0, 10)}
                   onChange={(e) => setToDate(e.target.value)}
                 ></input>
               </label>
             </div>
-            <div className='forminputcolumn'>
+            <div className="forminputcolumn">
               <label>
                 <b>Code KD:</b>{" "}
                 <input
-                  type='text'
-                  placeholder='GH63-xxxxxx'
+                  type="text"
+                  placeholder="GH63-xxxxxx"
                   value={codeKD}
                   onChange={(e) => setCodeKD(e.target.value)}
                 ></input>
@@ -639,19 +644,19 @@ const KHOTP = () => {
               <label>
                 <b>Code ERP:</b>{" "}
                 <input
-                  type='text'
-                  placeholder='7C123xxx'
+                  type="text"
+                  placeholder="7C123xxx"
                   value={codeCMS}
                   onChange={(e) => setCodeCMS(e.target.value)}
                 ></input>
               </label>
             </div>
-            <div className='forminputcolumn'>
+            <div className="forminputcolumn">
               <label>
                 <b>Khách:</b>{" "}
                 <input
-                  type='text'
-                  placeholder='SEVT'
+                  type="text"
+                  placeholder="SEVT"
                   value={cust_name}
                   onChange={(e) => setCustName(e.target.value)}
                 ></input>
@@ -659,19 +664,19 @@ const KHOTP = () => {
               <label>
                 <b>All Time:</b>
                 <input
-                  type='checkbox'
-                  name='alltimecheckbox'
+                  type="checkbox"
+                  name="alltimecheckbox"
                   defaultChecked={alltime}
                   onChange={() => setAllTime(!alltime)}
                 ></input>
               </label>
             </div>
-            <div className='forminputcolumn'>
+            <div className="forminputcolumn">
               <label>
                 <b>Tính cả xuất cấp bù:</b>
                 <input
-                  type='checkbox'
-                  name='alltimecheckbox'
+                  type="checkbox"
+                  name="alltimecheckbox"
                   defaultChecked={capbu}
                   onChange={() => setCapBu(!capbu)}
                 ></input>
@@ -679,17 +684,17 @@ const KHOTP = () => {
               <label>
                 <b>Chỉ code có tồn:</b>
                 <input
-                  type='checkbox'
-                  name='alltimecheckbox'
+                  type="checkbox"
+                  name="alltimecheckbox"
                   defaultChecked={justbalancecode}
                   onChange={() => setJustBalanceCode(!justbalancecode)}
                 ></input>
               </label>
             </div>
           </div>
-          <div className='formbutton'>
+          <div className="formbutton">
             <button
-              className='tranhapkiembutton'
+              className="tranhapkiembutton"
               onClick={() => {
                 setisLoading(true);
                 setReadyRender(false);
@@ -700,7 +705,7 @@ const KHOTP = () => {
               Nhập Kho
             </button>
             <button
-              className='tranhapkiembutton'
+              className="tranhapkiembutton"
               onClick={() => {
                 setisLoading(true);
                 setReadyRender(false);
@@ -711,7 +716,7 @@ const KHOTP = () => {
               Xuất Kho
             </button>
             <button
-              className='traxuatkiembutton'
+              className="traxuatkiembutton"
               onClick={() => {
                 setisLoading(true);
                 setReadyRender(false);
@@ -722,7 +727,7 @@ const KHOTP = () => {
               Tồn(G_CODE)
             </button>
             <button
-              className='tranhapxuatkiembutton'
+              className="tranhapxuatkiembutton"
               onClick={() => {
                 setisLoading(true);
                 setReadyRender(false);
@@ -733,7 +738,7 @@ const KHOTP = () => {
               Tồn(KD)
             </button>
             <button
-              className='tranhatky'
+              className="tranhatky"
               onClick={() => {
                 setisLoading(true);
                 setReadyRender(false);
@@ -745,7 +750,7 @@ const KHOTP = () => {
             </button>
           </div>
         </div>
-        <div className='tracuuWHTable'>
+        <div className="tracuuWHTable">
           {readyRender && (
             <DataGrid
               sx={{ fontSize: 12, flex: 1 }}
@@ -760,7 +765,7 @@ const KHOTP = () => {
               rowsPerPageOptions={[
                 5, 10, 50, 100, 500, 1000, 5000, 10000, 500000,
               ]}
-              editMode='row'
+              editMode="row"
             />
           )}
         </div>

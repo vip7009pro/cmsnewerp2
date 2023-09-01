@@ -69,11 +69,11 @@ const DTCRESULT = () => {
     { TEST_CODE: "1005", TEST_NAME: "Độ dày", CHECKADDED: false },
   ]);
   const [inspectiondatatable, setInspectionDataTable] = useState<Array<any>>(
-    []
+    [],
   );
   const [testname, setTestName] = useState("1003");
   const [selectedRowsData, setSelectedRowsData] = useState<Array<DTC_REG_DATA>>(
-    []
+    [],
   );
   const [empl_name, setEmplName] = useState("");
   const [reqDeptCode, setReqDeptCode] = useState("");
@@ -85,7 +85,7 @@ const DTCRESULT = () => {
   const [prodreqdate, setProdReqDate] = useState("");
   const materialDataTable = React.useMemo(
     () => (
-      <div className='datatb'>
+      <div className="datatb">
         <ResponsiveContainer>
           <DataGrid
             style={{ fontSize: "0.7rem" }}
@@ -97,8 +97,8 @@ const DTCRESULT = () => {
             columnResizingMode={"widget"}
             showColumnLines={true}
             dataSource={inspectiondatatable}
-            columnWidth='auto'
-            keyExpr='id'
+            columnWidth="auto"
+            keyExpr="id"
             height={"85vh"}
             showBorders={true}
             onSelectionChanged={(e) => {
@@ -118,40 +118,40 @@ const DTCRESULT = () => {
               useNative={true}
               scrollByContent={true}
               scrollByThumb={true}
-              showScrollbar='onHover'
-              mode='virtual'
+              showScrollbar="onHover"
+              mode="virtual"
             />
             {/*     <Selection mode='multiple' selectAllMode='allPages' /> */}
             <Editing
               allowUpdating={true}
               allowAdding={false}
               allowDeleting={false}
-              mode='cell'
+              mode="cell"
               confirmDelete={true}
               onChangesChange={(e) => {}}
             />
             <Export enabled={true} />
             <Toolbar disabled={false}>
-              <Item location='before'>
+              <Item location="before">
                 <IconButton
-                  className='buttonIcon'
+                  className="buttonIcon"
                   onClick={() => {
                     SaveExcel(inspectiondatatable, "SPEC DTC");
                   }}
                 >
-                  <AiFillFileExcel color='green' size={25} />
+                  <AiFillFileExcel color="green" size={25} />
                   SAVE
                 </IconButton>
                 <span style={{ fontSize: 20, fontWeight: "bold" }}>
                   Bảng nhập kết quả độ tin cậy
                 </span>
               </Item>
-              <Item name='searchPanel' />
-              <Item name='exportButton' />
-              <Item name='columnChooserButton' />
-              <Item name='addRowButton' />
-              <Item name='saveButton' />
-              <Item name='revertButton' />
+              <Item name="searchPanel" />
+              <Item name="exportButton" />
+              <Item name="columnChooserButton" />
+              <Item name="addRowButton" />
+              <Item name="saveButton" />
+              <Item name="revertButton" />
             </Toolbar>
             <FilterRow visible={true} />
             <SearchPanel visible={true} />
@@ -162,42 +162,42 @@ const DTCRESULT = () => {
               allowedPageSizes={[5, 10, 15, 20, 100, 1000, 10000, "all"]}
               showNavigationButtons={true}
               showInfo={true}
-              infoText='Page #{0}. Total: {1} ({2} items)'
-              displayMode='compact'
+              infoText="Page #{0}. Total: {1} ({2} items)"
+              displayMode="compact"
             />
-            <Column dataField='DTC_ID' caption='DTC_ID' width={100}></Column>
+            <Column dataField="DTC_ID" caption="DTC_ID" width={100}></Column>
             <Column
-              dataField='TEST_NAME'
-              caption='TEST_NAME'
+              dataField="TEST_NAME"
+              caption="TEST_NAME"
               width={100}
             ></Column>
             <Column
-              dataField='POINT_NAME'
-              caption='POINT_NAME'
+              dataField="POINT_NAME"
+              caption="POINT_NAME"
               width={100}
             ></Column>
             <Column
-              dataField='CENTER_VALUE'
-              caption='CENTER_VALUE'
+              dataField="CENTER_VALUE"
+              caption="CENTER_VALUE"
               width={100}
             ></Column>
             <Column
-              dataField='UPPER_TOR'
-              caption='UPPER_TOR'
+              dataField="UPPER_TOR"
+              caption="UPPER_TOR"
               width={100}
             ></Column>
             <Column
-              dataField='LOWER_TOR'
-              caption='LOWER_TOR'
+              dataField="LOWER_TOR"
+              caption="LOWER_TOR"
               width={100}
             ></Column>
-            <Column dataField='RESULT' caption='RESULT' width={100}></Column>
-            <Column dataField='REMARK' caption='REMARK' width={100}></Column>
+            <Column dataField="RESULT" caption="RESULT" width={100}></Column>
+            <Column dataField="REMARK" caption="REMARK" width={100}></Column>
           </DataGrid>
         </ResponsiveContainer>
       </div>
     ),
-    [inspectiondatatable]
+    [inspectiondatatable],
   );
   const handletraDTCData = (dtc_id: string, test_code: string) => {
     generalQuery("getinputdtcspec", {
@@ -213,7 +213,7 @@ const DTCRESULT = () => {
                 ...element,
                 id: index,
               };
-            }
+            },
           );
           setInspectionDataTable(loadeddata);
         } else {
@@ -253,7 +253,7 @@ const DTCRESULT = () => {
                 ...element,
                 CHECKADDED: element.CHECKADDED === null ? false : true,
               };
-            }
+            },
           );
           //console.log(temp_loaded);
           setTestList(temp_loaded);
@@ -293,7 +293,7 @@ const DTCRESULT = () => {
       if (err_code === "") {
         updateDTCTESEMPL(
           inspectiondatatable[0].DTC_ID,
-          inspectiondatatable[0].TEST_CODE
+          inspectiondatatable[0].TEST_CODE,
         );
         Swal.fire("Thông báo", "Up kết quả thành công", "success");
       } else {
@@ -317,17 +317,17 @@ const DTCRESULT = () => {
   };
   useEffect(() => {}, []);
   return (
-    <div className='dtcresult'>
-      <div className='tracuuDataInspection'>
-        <div className='maintable'>
-          <div className='tracuuDataInspectionform'>
+    <div className="dtcresult">
+      <div className="tracuuDataInspection">
+        <div className="maintable">
+          <div className="tracuuDataInspectionform">
             <b style={{ color: "blue" }}>NHẬP KẾT QUẢ ĐỘ TIN CẬY</b>
-            <div className='forminput'>
-              <div className='forminputcolumn'>
+            <div className="forminput">
+              <div className="forminputcolumn">
                 <label>
                   <b>ID Test Độ Tin Cậy</b>
                   <input
-                    type='text'
+                    type="text"
                     placeholder={"123456"}
                     value={dtc_id}
                     onChange={(e) => {
@@ -342,13 +342,13 @@ const DTCRESULT = () => {
                   </span>
                 </label>
               </div>
-              <div className='forminputcolumn'>
+              <div className="forminputcolumn">
                 <label>
                   <b>Hạng mục test</b>
-                  <div className='checkboxarray' style={{ display: "flex" }}>
+                  <div className="checkboxarray" style={{ display: "flex" }}>
                     <RadioGroup
-                      aria-labelledby='demo-controlled-radio-buttons-group'
-                      name='controlled-radio-buttons-group'
+                      aria-labelledby="demo-controlled-radio-buttons-group"
+                      name="controlled-radio-buttons-group"
                       value={testname}
                       onChange={(e) => {
                         console.log(e.target.value);
@@ -359,7 +359,7 @@ const DTCRESULT = () => {
                       style={{ display: "flex" }}
                     >
                       <div
-                        className='radiogroup'
+                        className="radiogroup"
                         style={{ display: "flex", flexWrap: "wrap" }}
                       >
                         {testList.map(
@@ -367,7 +367,7 @@ const DTCRESULT = () => {
                             return (
                               <div
                                 key={index}
-                                className='radioelement'
+                                className="radioelement"
                                 style={{
                                   display: "flex",
                                   margin: 0,
@@ -398,18 +398,18 @@ const DTCRESULT = () => {
                                 />
                               </div>
                             );
-                          }
+                          },
                         )}
                       </div>
                     </RadioGroup>
                   </div>
                 </label>
               </div>
-              <div className='forminputcolumn'>
+              <div className="forminputcolumn">
                 <label>
                   <b>Remark</b>
                   <input
-                    type='text'
+                    type="text"
                     placeholder={"Ghi chú"}
                     value={remark}
                     onChange={(e) => {
@@ -419,9 +419,9 @@ const DTCRESULT = () => {
                 </label>
               </div>
             </div>
-            <div className='formbutton'>
+            <div className="formbutton">
               <button
-                className='tranhatky'
+                className="tranhatky"
                 onClick={() => {
                   if (checkInput()) {
                     insertDTCResult();
@@ -429,7 +429,7 @@ const DTCRESULT = () => {
                     Swal.fire(
                       "Thông báo",
                       "Hãy nhập đủ thông tin trước khi đăng ký",
-                      "error"
+                      "error",
                     );
                   }
                 }}
@@ -438,11 +438,11 @@ const DTCRESULT = () => {
               </button>
             </div>
             <div
-              className='formbutton'
+              className="formbutton"
               style={{ marginTop: "20px", display: "flex", flexWrap: "wrap" }}
             ></div>
           </div>
-          <div className='tracuuYCSXTable'>{materialDataTable}</div>
+          <div className="tracuuYCSXTable">{materialDataTable}</div>
         </div>
       </div>
     </div>

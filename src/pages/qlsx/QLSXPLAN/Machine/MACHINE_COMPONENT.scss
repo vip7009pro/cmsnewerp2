@@ -1,44 +1,43 @@
 .machine_component {
+  display: flex;
+  flex-direction: column;
+  width: 300px;
+  height: 200px;
+  background-image: linear-gradient(0deg, #cbeea3, #ffffff);
+  border-radius: 10px;
+  box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
+  -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
+  .tieude {
     display: flex;
     flex-direction: column;
-    width: 300px;
-    height: 200px;
-    background-image: linear-gradient(0deg,  #cbeea3,#ffffff);
-    border-radius: 10px;
-    box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
-    -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
-    .tieude {
-        display: flex;
-        flex-direction: column;
-        flex: 1;        
-        background-color: bisque;
-        width: 100%;
-        align-self: center;
-        justify-content: center;        
-        font-weight: bold;
-        font-size: 0.8rem;
-        align-items: center;
-    }
-    .machineplan {
-        display: flex;
-        flex: 10;
-        width: 100%;
-        align-items: flex-start;
-        overflow-y: scroll;
-        scrollbar-width: none;
+    flex: 1;
+    background-color: bisque;
+    width: 100%;
+    align-self: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 0.8rem;
+    align-items: center;
+  }
+  .machineplan {
+    display: flex;
+    flex: 10;
+    width: 100%;
+    align-items: flex-start;
+    overflow-y: scroll;
+    scrollbar-width: none;
 
-        ul {
-            list-style-type: decimal-leading-zero;
-            margin-block-start: 0;
-            margin-block-end: 0;
-            margin-inline-start: 0px;
-            margin-inline-end: 0px;
-            padding-inline-start: 15px;            
-            li {
-                font-size: 0.8rem;
-                margin-bottom: 10px;
-            }
-        }
-        
+    ul {
+      list-style-type: decimal-leading-zero;
+      margin-block-start: 0;
+      margin-block-end: 0;
+      margin-inline-start: 0px;
+      margin-inline-end: 0px;
+      padding-inline-start: 15px;
+      li {
+        font-size: 0.8rem;
+        margin-bottom: 10px;
+      }
     }
+  }
 }

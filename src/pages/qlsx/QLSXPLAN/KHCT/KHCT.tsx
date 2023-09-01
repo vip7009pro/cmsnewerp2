@@ -59,11 +59,17 @@ import { BiRefresh, BiReset, BiShow } from "react-icons/bi";
 import YCKT from "../YCKT/YCKT";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../redux/store";
-import axios from 'axios';
-import { DINHMUC_QSLX, QLSXCHITHIDATA, QLSXPLANDATA, UserData, YCSXTableData } from "../../../../api/GlobalInterface";
+import axios from "axios";
+import {
+  DINHMUC_QSLX,
+  QLSXCHITHIDATA,
+  QLSXPLANDATA,
+  UserData,
+  YCSXTableData,
+} from "../../../../api/GlobalInterface";
 
 interface KHCTDATA {
-  id: number,
+  id: number;
   KH_ID: number;
   KH_FACTORY: string;
   KH_DATE: string;
@@ -155,7 +161,7 @@ const KHCT = () => {
   const [showplanwindow, setShowPlanWindow] = useState(false);
   const [showkhoao, setShowKhoAo] = useState(false);
   const userData: UserData | undefined = useSelector(
-    (state: RootState) => state.totalSlice.userData
+    (state: RootState) => state.totalSlice.userData,
   );
   const [isLoading, setisLoading] = useState(false);
   const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
@@ -187,7 +193,7 @@ const KHCT = () => {
   const [selectedMachine, setSelectedMachine] = useState("FR01");
   const [selectedFactory, setSelectedFactory] = useState("NM1");
   const [selectedPlanDate, setSelectedPlanDate] = useState(
-    moment().format("YYYY-MM-DD")
+    moment().format("YYYY-MM-DD"),
   );
   const [showChiThi, setShowChiThi] = useState(false);
   const [showYCKT, setShowYCKT] = useState(false);
@@ -197,7 +203,7 @@ const KHCT = () => {
   const [showhideplanlisttable, setshowhideplanlisttable] = useState(false);
   const [showhidedinhmuc, setShowHideDinhMuc] = useState(true);
   const [factory, setFactory] = useState(
-    userData?.FACTORY_CODE === 1 ? "NM1" : "NM2"
+    userData?.FACTORY_CODE === 1 ? "NM1" : "NM2",
   );
   const [machine, setMachine] = useState("ALL");
   const ycsxprintref = useRef(null);
@@ -360,65 +366,96 @@ const KHCT = () => {
           );
       },
     },
-    { field: "BANVE", headerName: "BANVE", width: 260 , renderCell: (params:any) => {
-      let file:any = null;
-      const uploadFile2 = async (e:any) => {
-        //console.log(file); 
-        if(userData?.MAINDEPTNAME==='KD')
-        {
-          uploadQuery(file,params.row.G_CODE +'.pdf','banve')
-          .then((response)=> {
-            if (response.data.tk_status !== "NG") {
-                generalQuery("update_banve_value", { G_CODE: params.row.G_CODE, banvevalue: 'Y' })
-                .then((response) => {        
-                  if (response.data.tk_status !== "NG") 
-                  {
-                    Swal.fire('Thông báo','Upload bản vẽ thành công','success');
-                    let tempcodeinfodatatable = ycsxdatatable.map((element: YCSXTableData, index)=> {                 
-                      return ( element.G_CODE === params.row.G_CODE ? {...element, BANVE: 'Y'}: element);
+    {
+      field: "BANVE",
+      headerName: "BANVE",
+      width: 260,
+      renderCell: (params: any) => {
+        let file: any = null;
+        const uploadFile2 = async (e: any) => {
+          //console.log(file);
+          if (userData?.MAINDEPTNAME === "KD") {
+            uploadQuery(file, params.row.G_CODE + ".pdf", "banve")
+              .then((response) => {
+                if (response.data.tk_status !== "NG") {
+                  generalQuery("update_banve_value", {
+                    G_CODE: params.row.G_CODE,
+                    banvevalue: "Y",
+                  })
+                    .then((response) => {
+                      if (response.data.tk_status !== "NG") {
+                        Swal.fire(
+                          "Thông báo",
+                          "Upload bản vẽ thành công",
+                          "success",
+                        );
+                        let tempcodeinfodatatable = ycsxdatatable.map(
+                          (element: YCSXTableData, index) => {
+                            return element.G_CODE === params.row.G_CODE
+                              ? { ...element, BANVE: "Y" }
+                              : element;
+                          },
+                        );
+                        setYcsxDataTable(tempcodeinfodatatable);
+                      } else {
+                        Swal.fire(
+                          "Thông báo",
+                          "Upload bản vẽ thất bại",
+                          "error",
+                        );
+                      }
+                    })
+                    .catch((error) => {
+                      console.log(error);
                     });
-                    setYcsxDataTable(tempcodeinfodatatable);
-                  } 
-                  else {
-                    Swal.fire('Thông báo','Upload bản vẽ thất bại','error');
-                  }
-                })
-                .catch((error) => {
-                  console.log(error);
-                });       
-            } else {
-              Swal.fire('Thông báo','Upload file thất bại:' + response.data.message,'error'); 
-            }
-          })
-          .catch((error) => {
-            console.log(error);
-          });
-
+                } else {
+                  Swal.fire(
+                    "Thông báo",
+                    "Upload file thất bại:" + response.data.message,
+                    "error",
+                  );
+                }
+              })
+              .catch((error) => {
+                console.log(error);
+              });
+          } else {
+            Swal.fire(
+              "Thông báo",
+              "Chỉ bộ phận kinh doanh upload được bản vẽ",
+              "error",
+            );
+          }
+        };
+        let hreftlink = "/banve/" + params.row.G_CODE + ".pdf";
+        if (params.row.BANVE !== "N" && params.row.BANVE !== null) {
+          return (
+            <span style={{ color: "gray" }}>
+              <a target="_blank" rel="noopener noreferrer" href={hreftlink}>
+                LINK
+              </a>
+            </span>
+          );
+        } else {
+          return (
+            <div className="uploadfile">
+              <IconButton className="buttonIcon" onClick={uploadFile2}>
+                <AiOutlineCloudUpload color="yellow" size={15} />
+                Upload
+              </IconButton>
+              <input
+                accept=".pdf"
+                type="file"
+                onChange={(e: any) => {
+                  file = e.target.files[0];
+                  console.log(file);
+                }}
+              />
+            </div>
+          );
         }
-        else
-        {
-          Swal.fire('Thông báo','Chỉ bộ phận kinh doanh upload được bản vẽ','error');
-        }
-      }
-      let hreftlink = '/banve/' + params.row.G_CODE + '.pdf';
-      if (params.row.BANVE !== "N" && params.row.BANVE !== null)
-      {
-        return (
-          <span style={{ color: "gray" }}>
-            <a target='_blank' rel='noopener noreferrer' href={hreftlink}>
-              LINK
-            </a>
-          </span>
-        )
-      }
-      else
-      {
-        return <div className="uploadfile"> 
-       <IconButton className='buttonIcon'onClick={uploadFile2}><AiOutlineCloudUpload color='yellow' size={15}/>Upload</IconButton>
-       <input  accept=".pdf" type="file" onChange={(e:any)=> {file = e.target.files[0]; console.log(file);}} />
-      </div>
-      }        
-    }},
+      },
+    },
     {
       field: "PDBV",
       headerName: "PD BANVE",
@@ -776,26 +813,17 @@ const KHCT = () => {
   ];
   const renderYCKT = (planlist: QLSXPLANDATA[]) => {
     return planlist.map((element, index) => (
-      <YCKT
-        key={index}
-        DATA={element}
-      />
+      <YCKT key={index} DATA={element} />
     ));
   };
   const renderChiThi = (planlist: QLSXPLANDATA[]) => {
     return planlist.map((element, index) => (
-      <CHITHI_COMPONENT
-        key={index}
-        DATA={element}
-      />
+      <CHITHI_COMPONENT key={index} DATA={element} />
     ));
   };
   const renderYCSX = (ycsxlist: YCSXTableData[]) => {
     return ycsxlist.map((element, index) => (
-      <YCSXComponent
-        key={index}
-        DATA={element}
-      />
+      <YCSXComponent key={index} DATA={element} />
     ));
   };
   const renderBanVe = (ycsxlist: YCSXTableData[]) => {
@@ -811,7 +839,7 @@ const KHCT = () => {
         />
       ) : (
         <div>Code: {element.G_NAME} : Không có bản vẽ</div>
-      )
+      ),
     );
   };
   const loadQLSXPlan = (PROD_REQUEST_NO: string) => {
@@ -827,7 +855,7 @@ const KHCT = () => {
                 PLAN_DATE: moment.utc(element.PLAN_DATE).format("YYYY-MM-DD"),
                 id: index,
               };
-            }
+            },
           );
           //console.log(loadeddata);
           setPlanDataTable(loadeddata);
@@ -853,7 +881,7 @@ const KHCT = () => {
                 KH_DATE: moment.utc(element.KH_DATE).format("YYYY-MM-DD"),
                 id: index,
               };
-            }
+            },
           );
           //console.log(loadeddata);
           setKHCTTable(loadeddata);
@@ -962,14 +990,14 @@ const KHCT = () => {
                     ? 0
                     : element.PROD_REQUEST_QTY,
               };
-            }
+            },
           );
           setYcsxDataTable(loadeddata);
           setisLoading(false);
           Swal.fire(
             "Thông báo",
             "Đã load " + response.data.data.length + " dòng",
-            "success"
+            "success",
           );
         } else {
           Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
@@ -981,7 +1009,7 @@ const KHCT = () => {
       });
   };
   const handleSearchCodeKeyDown = (
-    e: React.KeyboardEvent<HTMLInputElement>
+    e: React.KeyboardEvent<HTMLInputElement>,
   ) => {
     if (e.key === "Enter") {
       handletraYCSX();
@@ -1010,7 +1038,7 @@ const KHCT = () => {
         Swal.fire(
           "Thông báo",
           "SET YCSX thành công (chỉ PO của người đăng nhập)!",
-          "success"
+          "success",
         );
       } else {
         Swal.fire("Thông báo", "Có lỗi SQL: ", "error");
@@ -1033,7 +1061,7 @@ const KHCT = () => {
         Swal.fire(
           "Tiến hành SET PENDING",
           "Đang SET PENDING YCSX hàng loạt",
-          "success"
+          "success",
         );
         setPendingYCSX(1);
       }
@@ -1053,7 +1081,7 @@ const KHCT = () => {
         Swal.fire(
           "Tiến hành SET CLOSED",
           "Đang SET CLOSED YCSX hàng loạt",
-          "success"
+          "success",
         );
         setPendingYCSX(0);
       }
@@ -1108,7 +1136,7 @@ const KHCT = () => {
               setTemID(datafilter[len].id);
               localStorage.setItem(
                 "temp_plan_table_max_id",
-                datafilter[len].id.toString()
+                datafilter[len].id.toString(),
               );
             }
             setPlanDataTable(datafilter);
@@ -1122,7 +1150,7 @@ const KHCT = () => {
   };
   const getNextPLAN_ID = async (
     PROD_REQUEST_NO: string,
-    plan_row: QLSXPLANDATA
+    plan_row: QLSXPLANDATA,
   ) => {
     let next_plan_id: string = PROD_REQUEST_NO;
     let next_plan_order: number = 1;
@@ -1201,9 +1229,9 @@ const KHCT = () => {
           PLAN_EQ: "",
           PLAN_FACTORY: userData?.FACTORY_CODE === 1 ? "NM1" : "NM2",
           PLAN_LEADTIME: 0,
-          INS_EMPL: userData?.EMPL_NO === undefined ? '' : userData?.EMPL_NO,
+          INS_EMPL: userData?.EMPL_NO === undefined ? "" : userData?.EMPL_NO,
           INS_DATE: moment().format("YYYY-MM-DD HH:mm:ss"),
-          UPD_EMPL: userData?.EMPL_NO === undefined ? '' : userData?.EMPL_NO,
+          UPD_EMPL: userData?.EMPL_NO === undefined ? "" : userData?.EMPL_NO,
           UPD_DATE: moment().format("YYYY-MM-DD HH:mm:ss"),
           G_CODE: ycsxdatatablefilter[i].G_CODE,
           G_NAME: ycsxdatatablefilter[i].G_NAME,
@@ -1249,12 +1277,12 @@ const KHCT = () => {
           LOSS_SX3: 0,
           LOSS_SX4: 0,
           LOSS_SETTING3: 0,
-          LOSS_SETTING4: 0
+          LOSS_SETTING4: 0,
         };
         setPlanDataTable([...plandatatable, temp_add_plan]);
         localStorage.setItem(
           "temp_plan_table",
-          JSON.stringify([...plandatatable, temp_add_plan])
+          JSON.stringify([...plandatatable, temp_add_plan]),
         );
       }
     } else {
@@ -1275,9 +1303,9 @@ const KHCT = () => {
       PLAN_EQ: "",
       PLAN_FACTORY: userData?.FACTORY_CODE === 1 ? "NM1" : "NM2",
       PLAN_LEADTIME: 0,
-      INS_EMPL: userData?.EMPL_NO === undefined ? '' : userData?.EMPL_NO,
+      INS_EMPL: userData?.EMPL_NO === undefined ? "" : userData?.EMPL_NO,
       INS_DATE: moment().format("YYYY-MM-DD HH:mm:ss"),
-      UPD_EMPL: userData?.EMPL_NO === undefined ? '' : userData?.EMPL_NO,
+      UPD_EMPL: userData?.EMPL_NO === undefined ? "" : userData?.EMPL_NO,
       UPD_DATE: moment().format("YYYY-MM-DD HH:mm:ss"),
       G_CODE: "",
       G_NAME: "",
@@ -1323,12 +1351,12 @@ const KHCT = () => {
       LOSS_SX3: 0,
       LOSS_SX4: 0,
       LOSS_SETTING3: 0,
-      LOSS_SETTING4: 0
+      LOSS_SETTING4: 0,
     };
     setPlanDataTable([...plandatatable, temp_add_plan]);
     localStorage.setItem(
       "temp_plan_table",
-      JSON.stringify([...plandatatable, temp_add_plan])
+      JSON.stringify([...plandatatable, temp_add_plan]),
     );
   };
   const handle_SavePlan = async () => {
@@ -1372,7 +1400,7 @@ const KHCT = () => {
           //check_ycsx_hethongcu = false;
           let nextPlan = await getNextPLAN_ID(
             qlsxplandatafilter[i].PROD_REQUEST_NO,
-            qlsxplandatafilter[i]
+            qlsxplandatafilter[i],
           );
           let NextPlanID = nextPlan.NEXT_PLAN_ID;
           let NextPlanOrder = nextPlan.NEXT_PLAN_ORDER;
@@ -1428,7 +1456,10 @@ const KHCT = () => {
   };
   const handleSaveQLSX = async () => {
     if (selectedG_Code !== undefined) {
-      if (userData?.EMPL_NO === "NHU1903" || userData?.MAINDEPTNAME === "QLSX") {
+      if (
+        userData?.EMPL_NO === "NHU1903" ||
+        userData?.MAINDEPTNAME === "QLSX"
+      ) {
         let err_code: string = "0";
         console.log(datadinhmuc);
         if (
@@ -1444,7 +1475,7 @@ const KHCT = () => {
           Swal.fire(
             "Thông báo",
             "Lưu thất bại, hãy nhập đủ thông tin",
-            "error"
+            "error",
           );
         } else {
           generalQuery("saveQLSX", {
@@ -1478,7 +1509,7 @@ const KHCT = () => {
             Swal.fire(
               "Thông báo",
               "Lưu thất bại, không được để trống ô cần thiết",
-              "error"
+              "error",
             );
           } else {
             loadQLSXPlan(selectedPlanDate);
@@ -1499,35 +1530,35 @@ const KHCT = () => {
           <GridToolbarFilterButton />
           <GridToolbarDensitySelector />  */}
         <IconButton
-          className='buttonIcon'
+          className="buttonIcon"
           onClick={() => {
             SaveExcel(ycsxdatatable, "YCSX Table");
           }}
         >
-          <AiFillFileExcel color='green' size={25} />
+          <AiFillFileExcel color="green" size={25} />
           SAVE
         </IconButton>
         <GridToolbarQuickFilter />
         <IconButton
-          className='buttonIcon'
+          className="buttonIcon"
           onClick={() => {
             handleConfirmSetClosedYCSX();
           }}
         >
-          <FaArrowRight color='green' size={25} />
+          <FaArrowRight color="green" size={25} />
           SET CLOSED
         </IconButton>
         <IconButton
-          className='buttonIcon'
+          className="buttonIcon"
           onClick={() => {
             handleConfirmSetPendingYCSX();
           }}
         >
-          <MdOutlinePendingActions color='red' size={25} />
+          <MdOutlinePendingActions color="red" size={25} />
           SET PENDING
         </IconButton>
         <IconButton
-          className='buttonIcon'
+          className="buttonIcon"
           onClick={() => {
             if (ycsxdatatablefilter.length > 0) {
               setSelection({
@@ -1541,11 +1572,11 @@ const KHCT = () => {
             }
           }}
         >
-          <AiOutlinePrinter color='#0066ff' size={25} />
+          <AiOutlinePrinter color="#0066ff" size={25} />
           Print YCSX
         </IconButton>
         <IconButton
-          className='buttonIcon'
+          className="buttonIcon"
           onClick={() => {
             if (ycsxdatatablefilter.length > 0) {
               setSelection({
@@ -1558,11 +1589,11 @@ const KHCT = () => {
             }
           }}
         >
-          <AiOutlinePrinter color='#ff751a' size={25} />
+          <AiOutlinePrinter color="#ff751a" size={25} />
           Print Bản Vẽ
         </IconButton>
         <IconButton
-          className='buttonIcon'
+          className="buttonIcon"
           onClick={() => {
             if (ycsxdatatablefilter.length > 0) {
               handle_AddPlan();
@@ -1570,12 +1601,12 @@ const KHCT = () => {
               Swal.fire(
                 "Thông báo",
                 "Chọn ít nhất 1 YCSX để thêm PLAN",
-                "error"
+                "error",
               );
             }
           }}
         >
-          <AiFillFolderAdd color='#69f542' size={25} />
+          <AiFillFolderAdd color="#69f542" size={25} />
           Add to PLAN
         </IconButton>
       </GridToolbarContainer>
@@ -1585,12 +1616,12 @@ const KHCT = () => {
     return (
       <GridToolbarContainer>
         <IconButton
-          className='buttonIcon'
+          className="buttonIcon"
           onClick={() => {
             SaveExcel(plandatatable, "Plan Table");
           }}
         >
-          <AiFillFileExcel color='green' size={25} />
+          <AiFillFileExcel color="green" size={25} />
           SAVE
         </IconButton>
         <GridToolbarQuickFilter />
@@ -1598,59 +1629,65 @@ const KHCT = () => {
           BẢNG KẾ HOẠCH CHỈ THỊ
         </span>
         <IconButton
-          className='buttonIcon'
+          className="buttonIcon"
           onClick={() => {
             handle_AddBlankPlan();
           }}
         >
-          <AiFillFolderAdd color='#69f542' size={25} />
+          <AiFillFolderAdd color="#69f542" size={25} />
           Add Blank PLAN
         </IconButton>
         <IconButton
-          className='buttonIcon'
+          className="buttonIcon"
           onClick={() => {
-          /*   checkBP(
+            /*   checkBP(
               userData?.EMPL_NO,
               userData?.MAINDEPTNAME,
               ["QLSX"],
               handleConfirmSavePlan
             ); */
-            checkBP(userData,['QLSX'],['ALL'],['ALL'],handleConfirmSavePlan);
+            checkBP(
+              userData,
+              ["QLSX"],
+              ["ALL"],
+              ["ALL"],
+              handleConfirmSavePlan,
+            );
             //handleConfirmSavePlan();
           }}
         >
-          <AiFillSave color='blue' size={20} />
+          <AiFillSave color="blue" size={20} />
           LƯU PLAN
         </IconButton>
         <IconButton
-          className='buttonIcon'
+          className="buttonIcon"
           onClick={() => {
             handleConfirmDeletePlan();
           }}
         >
-          <FcDeleteRow color='yellow' size={20} />
+          <FcDeleteRow color="yellow" size={20} />
           XÓA PLAN NHÁP
         </IconButton>
         <IconButton
-          className='buttonIcon'
+          className="buttonIcon"
           onClick={() => {
             setShowHideYCSXTable(!showhideycsxtable);
           }}
         >
-          <BiShow color='green' size={20} />
+          <BiShow color="green" size={20} />
           Ẩn /Hiện YCSX
         </IconButton>
         <IconButton
-          className='buttonIcon'
+          className="buttonIcon"
           onClick={() => {
             setshowhideplanlisttable(!showhideplanlisttable);
           }}
         >
-          <BiShow color='green' size={20} />
+          <BiShow color="green" size={20} />
           Ẩn /Hiện LIST CT
         </IconButton>
         <IconButton
-          className='buttonIcon'
+          className="buttonIcon"
           onClick={() => {
             /* checkBP(
               userData?.EMPL_NO,
@@ -1658,11 +1695,11 @@ const KHCT = () => {
               ["QLSX"],
               handleSaveQLSX
             ); */
-            checkBP(userData,['QLSX'],['ALL'],['ALL'],handleSaveQLSX);
+            checkBP(userData, ["QLSX"], ["ALL"], ["ALL"], handleSaveQLSX);
             //handleSaveQLSX();
           }}
         >
-          <AiFillSave color='lightgreen' size={20} />
+          <AiFillSave color="lightgreen" size={20} />
           Lưu Data Định Mức
         </IconButton>
       </GridToolbarContainer>
@@ -1672,12 +1709,12 @@ const KHCT = () => {
     return (
       <GridToolbarContainer>
         <IconButton
-          className='buttonIcon'
+          className="buttonIcon"
           onClick={() => {
             SaveExcel(plandatatable, "Plan Table");
           }}
         >
-          <AiFillFileExcel color='green' size={25} />
+          <AiFillFileExcel color="green" size={25} />
           SAVE
         </IconButton>
         <GridToolbarQuickFilter />
@@ -1685,12 +1722,12 @@ const KHCT = () => {
           Lịch sử chỉ thị
         </span>
         <IconButton
-          className='buttonIcon'
+          className="buttonIcon"
           onClick={() => {
             handle_AddBlankPlan();
           }}
         >
-          <AiFillFolderAdd color='#69f542' size={25} />
+          <AiFillFolderAdd color="#69f542" size={25} />
           Add Blank PLAN
         </IconButton>
       </GridToolbarContainer>
@@ -1699,7 +1736,7 @@ const KHCT = () => {
   const handleYCSXSelectionforUpdate = (ids: GridSelectionModel) => {
     const selectedID = new Set(ids);
     let datafilter = ycsxdatatable.filter((element: any) =>
-      selectedID.has(element.PROD_REQUEST_NO)
+      selectedID.has(element.PROD_REQUEST_NO),
     );
     if (datafilter.length > 0) {
       setYcsxDataTableFilter(datafilter);
@@ -1711,7 +1748,7 @@ const KHCT = () => {
   const handleQLSXPlanDataSelectionforUpdate = (ids: GridSelectionModel) => {
     const selectedID = new Set(ids);
     let datafilter = plandatatable.filter((element: any) =>
-      selectedID.has(element.PLAN_ID)
+      selectedID.has(element.PLAN_ID),
     );
     //console.log(datafilter);
     if (datafilter.length > 0) {
@@ -1819,7 +1856,7 @@ const KHCT = () => {
                     ? 0
                     : element.PROD_REQUEST_QTY,
               };
-            }
+            },
           );
           temp_data = loadeddata;
         } else {
@@ -1834,7 +1871,7 @@ const KHCT = () => {
   const handleEvent: GridEventListener<"rowClick"> = (
     params, // GridRowParams
     event, // MuiEvent<React.MouseEvent<HTMLElement>>
-    details // GridCallbackDetails
+    details, // GridCallbackDetails
   ) => {
     let rowData: QLSXPLANDATA = params.row;
     //console.log(rowData);
@@ -1864,7 +1901,7 @@ const KHCT = () => {
   const cellEditHandler = (
     params: GridCellEditCommitParams,
     event: MuiEvent<MuiBaseEvent>,
-    details: GridCallbackDetails
+    details: GridCallbackDetails,
   ) => {
     (async () => {
       const keyvar = params.field;
@@ -1922,7 +1959,7 @@ const KHCT = () => {
         setPlanDataTable(newdata);
       } else if (keyvar === "PLAN_EQ") {
         let current_PROD_REQUEST_NO: string | undefined = plandatatable.find(
-          (element) => element.PLAN_ID === params.id
+          (element) => element.PLAN_ID === params.id,
         )?.PROD_REQUEST_NO;
         if (current_PROD_REQUEST_NO !== undefined) {
           temp_ycsx_data = await get1YCSXDATA(current_PROD_REQUEST_NO);
@@ -1972,7 +2009,7 @@ const KHCT = () => {
                   Swal.fire(
                     "Thông báo",
                     "Máy đã nhập ko giống trong BOM",
-                    "warning"
+                    "warning",
                   );
                   return { ...p, [keyvar]: params.value };
                 }
@@ -2021,21 +2058,21 @@ const KHCT = () => {
       setPlanDataTable([]);
       setTemID(0);
     }
-    load_KHCT('2023-01-07');
+    load_KHCT("2023-01-07");
   }, []);
   return (
-    <div className='khct'>
-      <div className='planwindow'>
+    <div className="khct">
+      <div className="planwindow">
         <span style={{ fontSize: 25, color: "blue", marginLeft: 20 }}>
           {selectedCode}
         </span>
-        <div className='tracuuDataInspectionform'>
-          <div className='forminput'>
-            <div className='forminputcolumn'>
+        <div className="tracuuDataInspectionform">
+          <div className="forminput">
+            <div className="forminputcolumn">
               <label>
                 <b>KH DATE</b>
                 <input
-                  type='date'
+                  type="date"
                   value={fromdate.slice(0, 10)}
                   onChange={(e) => setFromDate(e.target.value)}
                 ></input>
@@ -2043,50 +2080,50 @@ const KHCT = () => {
               <label>
                 <b>FACTORY:</b>
                 <select
-                  name='phanloai'
+                  name="phanloai"
                   value={factory}
                   onChange={(e) => {
                     setFactory(e.target.value);
                   }}
                 >
-                  <option value='ALL'>ALL</option>
-                  <option value='NM1'>NM1</option>
-                  <option value='NM2'>NM2</option>
+                  <option value="ALL">ALL</option>
+                  <option value="NM1">NM1</option>
+                  <option value="NM2">NM2</option>
                 </select>
               </label>
             </div>
-            <div className='forminputcolumn'>
+            <div className="forminputcolumn">
               <label>
                 <b>MACHINE:</b>
                 <select
-                  name='machine'
+                  name="machine"
                   value={machine}
                   onChange={(e) => {
                     setMachine(e.target.value);
                   }}
                 >
-                  <option value='ALL'>ALL</option>
-                  <option value='FR'>FR</option>
-                  <option value='SR'>SR</option>
-                  <option value='DC'>DC</option>
-                  <option value='ED'>ED</option>
+                  <option value="ALL">ALL</option>
+                  <option value="FR">FR</option>
+                  <option value="SR">SR</option>
+                  <option value="DC">DC</option>
+                  <option value="ED">ED</option>
                 </select>
               </label>
               <label>
                 <b>MOVE TO DATE</b>
                 <input
-                  type='date'
+                  type="date"
                   value={todate.slice(0, 10)}
                   onChange={(e) => setToDate(e.target.value)}
                 ></input>
               </label>
             </div>
-            <div className='forminputcolumn'>
-              <button className='tranhatky' onClick={() => {}}>
+            <div className="forminputcolumn">
+              <button className="tranhatky" onClick={() => {}}>
                 MOVE KH
               </button>
               <button
-                className='tranhatky'
+                className="tranhatky"
                 onClick={() => {
                   setisLoading(true);
                   loadQLSXPlan(fromdate);
@@ -2096,54 +2133,54 @@ const KHCT = () => {
               </button>
             </div>
           </div>
-          <div className='formbutton'></div>
+          <div className="formbutton"></div>
         </div>
         {showhidedinhmuc && (
-          <div className='datadinhmuc'>
-            <div className='forminputcolumn'>
+          <div className="datadinhmuc">
+            <div className="forminputcolumn">
               <label>
                 <b>EQ1:</b>
                 <select
-                  name='phanloai'
+                  name="phanloai"
                   value={datadinhmuc.EQ1}
                   onChange={(e) =>
                     setDataDinhMuc({ ...datadinhmuc, EQ1: e.target.value })
                   }
                   style={{ width: 150, height: 30 }}
                 >
-                  <option value='FR'>FR</option>
-                  <option value='SR'>SR</option>
-                  <option value='DC'>DC</option>
-                  <option value='ED'>ED</option>
-                  <option value='NO'>NO</option>
-                  <option value='NA'>NA</option>
+                  <option value="FR">FR</option>
+                  <option value="SR">SR</option>
+                  <option value="DC">DC</option>
+                  <option value="ED">ED</option>
+                  <option value="NO">NO</option>
+                  <option value="NA">NA</option>
                 </select>
               </label>
               <label>
                 <b>EQ2:</b>
                 <select
-                  name='phanloai'
+                  name="phanloai"
                   value={datadinhmuc.EQ2}
                   onChange={(e) =>
                     setDataDinhMuc({ ...datadinhmuc, EQ2: e.target.value })
                   }
                   style={{ width: 150, height: 30 }}
                 >
-                  <option value='FR'>FR</option>
-                  <option value='SR'>SR</option>
-                  <option value='DC'>DC</option>
-                  <option value='ED'>ED</option>
-                  <option value='NO'>NO</option>
-                  <option value='NA'>NA</option>
+                  <option value="FR">FR</option>
+                  <option value="SR">SR</option>
+                  <option value="DC">DC</option>
+                  <option value="ED">ED</option>
+                  <option value="NO">NO</option>
+                  <option value="NA">NA</option>
                 </select>
               </label>
             </div>
-            <div className='forminputcolumn'>
+            <div className="forminputcolumn">
               <label>
                 <b>Setting1(min):</b>{" "}
                 <input
-                  type='text'
-                  placeholder='Thời gian setting 1'
+                  type="text"
+                  placeholder="Thời gian setting 1"
                   value={datadinhmuc.Setting1}
                   onChange={(e) =>
                     setDataDinhMuc({
@@ -2156,8 +2193,8 @@ const KHCT = () => {
               <label>
                 <b>Setting2(min):</b>{" "}
                 <input
-                  type='text'
-                  placeholder='Thời gian setting 2'
+                  type="text"
+                  placeholder="Thời gian setting 2"
                   value={datadinhmuc.Setting2}
                   onChange={(e) =>
                     setDataDinhMuc({
@@ -2168,12 +2205,12 @@ const KHCT = () => {
                 ></input>
               </label>
             </div>
-            <div className='forminputcolumn'>
+            <div className="forminputcolumn">
               <label>
                 <b>UPH1(EA/h):</b>{" "}
                 <input
-                  type='text'
-                  placeholder='Tốc độ sx 1'
+                  type="text"
+                  placeholder="Tốc độ sx 1"
                   value={datadinhmuc.UPH1}
                   onChange={(e) =>
                     setDataDinhMuc({
@@ -2186,8 +2223,8 @@ const KHCT = () => {
               <label>
                 <b>UPH2(EA/h):</b>{" "}
                 <input
-                  type='text'
-                  placeholder='Tốc độ sx 2'
+                  type="text"
+                  placeholder="Tốc độ sx 2"
                   value={datadinhmuc.UPH2}
                   onChange={(e) =>
                     setDataDinhMuc({
@@ -2198,12 +2235,12 @@ const KHCT = () => {
                 ></input>
               </label>
             </div>
-            <div className='forminputcolumn'>
+            <div className="forminputcolumn">
               <label>
                 <b>Step1:</b>{" "}
                 <input
-                  type='text'
-                  placeholder='Số bước 1'
+                  type="text"
+                  placeholder="Số bước 1"
                   value={datadinhmuc.Step1}
                   onChange={(e) =>
                     setDataDinhMuc({
@@ -2216,8 +2253,8 @@ const KHCT = () => {
               <label>
                 <b>Step2:</b>{" "}
                 <input
-                  type='text'
-                  placeholder='Số bước 2'
+                  type="text"
+                  placeholder="Số bước 2"
                   value={datadinhmuc.Step2}
                   onChange={(e) =>
                     setDataDinhMuc({
@@ -2228,12 +2265,12 @@ const KHCT = () => {
                 ></input>
               </label>
             </div>
-            <div className='forminputcolumn'>
+            <div className="forminputcolumn">
               <label>
                 <b>LOSS_SX1(%):</b>{" "}
                 <input
-                  type='text'
-                  placeholder='% loss sx 1'
+                  type="text"
+                  placeholder="% loss sx 1"
                   value={datadinhmuc.LOSS_SX1}
                   onChange={(e) =>
                     setDataDinhMuc({
@@ -2246,8 +2283,8 @@ const KHCT = () => {
               <label>
                 <b>LOSS_SX2(%):</b>{" "}
                 <input
-                  type='text'
-                  placeholder='% loss sx 2'
+                  type="text"
+                  placeholder="% loss sx 2"
                   value={datadinhmuc.LOSS_SX2}
                   onChange={(e) =>
                     setDataDinhMuc({
@@ -2258,12 +2295,12 @@ const KHCT = () => {
                 ></input>
               </label>
             </div>
-            <div className='forminputcolumn'>
+            <div className="forminputcolumn">
               <label>
                 <b>LOSS SETTING1 (m):</b>{" "}
                 <input
-                  type='text'
-                  placeholder='met setting 1'
+                  type="text"
+                  placeholder="met setting 1"
                   value={datadinhmuc.LOSS_SETTING1}
                   onChange={(e) =>
                     setDataDinhMuc({
@@ -2276,8 +2313,8 @@ const KHCT = () => {
               <label>
                 <b>LOSS SETTING2 (m):</b>{" "}
                 <input
-                  type='text'
-                  placeholder='met setting 2'
+                  type="text"
+                  placeholder="met setting 2"
                   value={datadinhmuc.LOSS_SETTING2}
                   onChange={(e) =>
                     setDataDinhMuc({
@@ -2288,11 +2325,11 @@ const KHCT = () => {
                 ></input>
               </label>
             </div>
-            <div className='forminputcolumn'>
+            <div className="forminputcolumn">
               <label>
                 <b>FACTORY:</b>
                 <select
-                  name='phanloai'
+                  name="phanloai"
                   value={
                     datadinhmuc.FACTORY === null ? "NA" : datadinhmuc.FACTORY
                   }
@@ -2304,16 +2341,16 @@ const KHCT = () => {
                   }}
                   style={{ width: 162, height: 22 }}
                 >
-                  <option value='NA'>NA</option>
-                  <option value='NM1'>NM1</option>
-                  <option value='NM2'>NM2</option>
+                  <option value="NA">NA</option>
+                  <option value="NM1">NM1</option>
+                  <option value="NM2">NM2</option>
                 </select>
               </label>
               <label>
                 <b>NOTE (QLSX):</b>{" "}
                 <input
-                  type='text'
-                  placeholder='Chú ý'
+                  type="text"
+                  placeholder="Chú ý"
                   value={datadinhmuc.NOTE}
                   onChange={(e) =>
                     setDataDinhMuc({ ...datadinhmuc, NOTE: e.target.value })
@@ -2323,20 +2360,20 @@ const KHCT = () => {
             </div>
           </div>
         )}
-        <div className='content'>
+        <div className="content">
           {showhideycsxtable && (
-            <div className='ycsxlist'>
-              <div className='tracuuYCSX'>
-                <div className='tracuuYCSXform'>
-                  <div className='forminput'>
-                    <div className='forminputcolumn'>
+            <div className="ycsxlist">
+              <div className="tracuuYCSX">
+                <div className="tracuuYCSXform">
+                  <div className="forminput">
+                    <div className="forminputcolumn">
                       <label>
                         <b>Từ ngày:</b>
                         <input
                           onKeyDown={(e) => {
                             handleSearchCodeKeyDown(e);
                           }}
-                          type='date'
+                          type="date"
                           value={fromdate.slice(0, 10)}
                           onChange={(e) => setFromDate(e.target.value)}
                         ></input>
@@ -2347,21 +2384,21 @@ const KHCT = () => {
                           onKeyDown={(e) => {
                             handleSearchCodeKeyDown(e);
                           }}
-                          type='date'
+                          type="date"
                           value={todate.slice(0, 10)}
                           onChange={(e) => setToDate(e.target.value)}
                         ></input>
                       </label>
                     </div>
-                    <div className='forminputcolumn'>
+                    <div className="forminputcolumn">
                       <label>
                         <b>Code KD:</b>{" "}
                         <input
                           onKeyDown={(e) => {
                             handleSearchCodeKeyDown(e);
                           }}
-                          type='text'
-                          placeholder='GH63-xxxxxx'
+                          type="text"
+                          placeholder="GH63-xxxxxx"
                           value={codeKD}
                           onChange={(e) => setCodeKD(e.target.value)}
                         ></input>
@@ -2372,22 +2409,22 @@ const KHCT = () => {
                           onKeyDown={(e) => {
                             handleSearchCodeKeyDown(e);
                           }}
-                          type='text'
-                          placeholder='7C123xxx'
+                          type="text"
+                          placeholder="7C123xxx"
                           value={codeCMS}
                           onChange={(e) => setCodeCMS(e.target.value)}
                         ></input>
                       </label>
                     </div>
-                    <div className='forminputcolumn'>
+                    <div className="forminputcolumn">
                       <label>
                         <b>Tên nhân viên:</b>{" "}
                         <input
                           onKeyDown={(e) => {
                             handleSearchCodeKeyDown(e);
                           }}
-                          type='text'
-                          placeholder='Trang'
+                          type="text"
+                          placeholder="Trang"
                           value={empl_name}
                           onChange={(e) => setEmpl_Name(e.target.value)}
                         ></input>
@@ -2398,22 +2435,22 @@ const KHCT = () => {
                           onKeyDown={(e) => {
                             handleSearchCodeKeyDown(e);
                           }}
-                          type='text'
-                          placeholder='SEVT'
+                          type="text"
+                          placeholder="SEVT"
                           value={cust_name}
                           onChange={(e) => setCust_Name(e.target.value)}
                         ></input>
                       </label>
                     </div>
-                    <div className='forminputcolumn'>
+                    <div className="forminputcolumn">
                       <label>
                         <b>Loại sản phẩm:</b>{" "}
                         <input
                           onKeyDown={(e) => {
                             handleSearchCodeKeyDown(e);
                           }}
-                          type='text'
-                          placeholder='TSP'
+                          type="text"
+                          placeholder="TSP"
                           value={prod_type}
                           onChange={(e) => setProdType(e.target.value)}
                         ></input>
@@ -2424,29 +2461,29 @@ const KHCT = () => {
                           onKeyDown={(e) => {
                             handleSearchCodeKeyDown(e);
                           }}
-                          type='text'
-                          placeholder='12345'
+                          type="text"
+                          placeholder="12345"
                           value={prodrequestno}
                           onChange={(e) => setProdRequestNo(e.target.value)}
                         ></input>
                       </label>
                     </div>
-                    <div className='forminputcolumn'>
+                    <div className="forminputcolumn">
                       <label>
                         <b>Phân loại:</b>
                         <select
-                          name='phanloai'
+                          name="phanloai"
                           value={phanloai}
                           onChange={(e) => {
                             setPhanLoai(e.target.value);
                           }}
                         >
-                          <option value='00'>ALL</option>
-                          <option value='01'>Thông thường</option>
-                          <option value='02'>SDI</option>
-                          <option value='03'>GC</option>
-                          <option value='04'>SAMPLE</option>
-                          <option value='22'>NOT SAMPLE</option>
+                          <option value="00">ALL</option>
+                          <option value="01">Thông thường</option>
+                          <option value="02">SDI</option>
+                          <option value="03">GC</option>
+                          <option value="04">SAMPLE</option>
+                          <option value="22">NOT SAMPLE</option>
                         </select>
                       </label>
                       <label>
@@ -2455,22 +2492,22 @@ const KHCT = () => {
                           onKeyDown={(e) => {
                             handleSearchCodeKeyDown(e);
                           }}
-                          type='text'
-                          placeholder='SJ-203020HC'
+                          type="text"
+                          placeholder="SJ-203020HC"
                           value={material}
                           onChange={(e) => setMaterial(e.target.value)}
                         ></input>
                       </label>
                     </div>
-                    <div className='forminputcolumn'>
+                    <div className="forminputcolumn">
                       <label>
                         <b>YCSX Pending:</b>
                         <input
                           onKeyDown={(e) => {
                             handleSearchCodeKeyDown(e);
                           }}
-                          type='checkbox'
-                          name='alltimecheckbox'
+                          type="checkbox"
+                          name="alltimecheckbox"
                           defaultChecked={ycsxpendingcheck}
                           onChange={() =>
                             setYCSXPendingCheck(!ycsxpendingcheck)
@@ -2483,8 +2520,8 @@ const KHCT = () => {
                           onKeyDown={(e) => {
                             handleSearchCodeKeyDown(e);
                           }}
-                          type='checkbox'
-                          name='alltimecheckbox'
+                          type="checkbox"
+                          name="alltimecheckbox"
                           defaultChecked={inspectInputcheck}
                           onChange={() =>
                             setInspectInputCheck(!inspectInputcheck)
@@ -2493,28 +2530,28 @@ const KHCT = () => {
                       </label>
                     </div>
                   </div>
-                  <div className='formbutton'>
+                  <div className="formbutton">
                     <label>
                       <b>All Time:</b>
                       <input
-                        type='checkbox'
-                        name='alltimecheckbox'
+                        type="checkbox"
+                        name="alltimecheckbox"
                         defaultChecked={alltime}
                         onChange={() => setAllTime(!alltime)}
                       ></input>
                     </label>
                     <IconButton
-                      className='buttonIcon'
+                      className="buttonIcon"
                       onClick={() => {
                         handletraYCSX();
                       }}
                     >
-                      <FcSearch color='green' size={30} />
+                      <FcSearch color="green" size={30} />
                       Search
                     </IconButton>
                   </div>
                 </div>
-                <div className='tracuuYCSXTable'>
+                <div className="tracuuYCSXTable">
                   <DataGrid
                     sx={{ fontSize: 12, flex: 1 }}
                     components={{
@@ -2528,7 +2565,7 @@ const KHCT = () => {
                     rowsPerPageOptions={[
                       5, 10, 50, 100, 500, 1000, 5000, 10000, 500000,
                     ]}
-                    editMode='row'
+                    editMode="row"
                     getRowId={(row) => row.PROD_REQUEST_NO}
                     onSelectionModelChange={(ids) => {
                       handleYCSXSelectionforUpdate(ids);
@@ -2536,8 +2573,8 @@ const KHCT = () => {
                   />
                 </div>
                 {selection.tabycsx && (
-                  <div className='printycsxpage'>
-                    <div className='buttongroup'>
+                  <div className="printycsxpage">
+                    <div className="buttongroup">
                       <Button
                         onClick={() => {
                           setYCSXListRender(renderYCSX(ycsxdatatablefilter));
@@ -2554,14 +2591,14 @@ const KHCT = () => {
                         Close
                       </Button>
                     </div>
-                    <div className='ycsxrender' ref={ycsxprintref}>
+                    <div className="ycsxrender" ref={ycsxprintref}>
                       {ycsxlistrender}
                     </div>
                   </div>
                 )}
                 {selection.tabbanve && (
-                  <div className='printycsxpage'>
-                    <div className='buttongroup'>
+                  <div className="printycsxpage">
+                    <div className="buttongroup">
                       <Button
                         onClick={() => {
                           setYCSXListRender(renderBanVe(ycsxdatatablefilter));
@@ -2578,14 +2615,14 @@ const KHCT = () => {
                         Close
                       </Button>
                     </div>
-                    <div className='ycsxrender' ref={ycsxprintref}>
+                    <div className="ycsxrender" ref={ycsxprintref}>
                       {ycsxlistrender}
                     </div>
                   </div>
                 )}
                 {showChiThi && (
-                  <div className='printycsxpage'>
-                    <div className='buttongroup'>
+                  <div className="printycsxpage">
+                    <div className="buttongroup">
                       <button
                         onClick={() => {
                           setChiThiListRender(renderChiThi(qlsxplandatafilter));
@@ -2602,14 +2639,14 @@ const KHCT = () => {
                         Close
                       </button>
                     </div>
-                    <div className='ycsxrender' ref={ycsxprintref}>
+                    <div className="ycsxrender" ref={ycsxprintref}>
                       {chithilistrender}
                     </div>
                   </div>
                 )}
                 {showYCKT && (
-                  <div className='printycsxpage'>
-                    <div className='buttongroup'>
+                  <div className="printycsxpage">
+                    <div className="buttongroup">
                       <button
                         onClick={() => {
                           setYCKTListRender(renderYCKT(qlsxplandatafilter));
@@ -2626,7 +2663,7 @@ const KHCT = () => {
                         Close
                       </button>
                     </div>
-                    <div className='ycsxrender' ref={ycsxprintref}>
+                    <div className="ycsxrender" ref={ycsxprintref}>
                       {ycktlistrender}
                     </div>
                   </div>
@@ -2634,8 +2671,8 @@ const KHCT = () => {
               </div>
             </div>
           )}
-          <div className='chithidiv'>
-            <div className='planlist'>
+          <div className="chithidiv">
+            <div className="planlist">
               <DataGrid
                 sx={{ fontSize: 12, flex: 1 }}
                 components={{
@@ -2651,7 +2688,7 @@ const KHCT = () => {
                 ]}
                 disableSelectionOnClick
                 checkboxSelection
-                editMode='cell'
+                editMode="cell"
                 getRowId={(row) => row.PLAN_ID}
                 onSelectionModelChange={(ids) => {
                   handleQLSXPlanDataSelectionforUpdate(ids);
@@ -2662,7 +2699,7 @@ const KHCT = () => {
             </div>
           </div>
           {showhideplanlisttable && (
-            <div className='planlist'>
+            <div className="planlist">
               <DataGrid
                 sx={{ fontSize: 12, flex: 1 }}
                 components={{
@@ -2676,7 +2713,7 @@ const KHCT = () => {
                 rowsPerPageOptions={[
                   5, 10, 50, 100, 500, 1000, 5000, 10000, 500000,
                 ]}
-                editMode='cell'
+                editMode="cell"
                 getRowId={(row) => row.id}
                 onSelectionModelChange={(ids) => {
                   handleQLSXPlanDataSelectionforUpdate(ids);

@@ -27,7 +27,7 @@ const TabDangKy = () => {
   const [confirm_worktime, setConfirm_WorkTime] = useState("");
   const [confirm_type, setConfirm_Type] = useState("GD");
   const [confirm_date, setConfirm_Date] = useState(
-    moment().format("YYYY-MM-DD")
+    moment().format("YYYY-MM-DD"),
   );
   const handleclearxacnhan = () => {
     setConfirm_WorkTime("");
@@ -55,13 +55,13 @@ const TabDangKy = () => {
           Swal.fire(
             "Thông báo",
             "Chúc mừng bạn, Xác nhận chấm công thành công !",
-            "success"
+            "success",
           );
         } else {
           Swal.fire(
             "Lỗi",
             "Xác nhận thất bại ! " + response.data.message,
-            "error"
+            "error",
           );
         }
       })
@@ -84,13 +84,13 @@ const TabDangKy = () => {
           Swal.fire(
             "Thông báo",
             "Chúc mừng bạn, đăng ký nghỉ thành công !",
-            "success"
+            "success",
           );
         } else {
           Swal.fire(
             "Lỗi",
             "Đăng ký nghỉ thất bại thất bại ! " + response.data.message,
-            "error"
+            "error",
           );
         }
       })
@@ -110,13 +110,13 @@ const TabDangKy = () => {
           Swal.fire(
             "Thông báo",
             "Chúc mừng bạn, đăng ký tăng ca thành công !",
-            "success"
+            "success",
           );
         } else {
           Swal.fire(
             "Thông báo",
             "Đăngkys tăng ca thất bại ! " + response.data.message,
-            "error"
+            "error",
           );
         }
       })
@@ -126,18 +126,18 @@ const TabDangKy = () => {
   };
   useEffect(() => {}, []);
   return (
-    <div className='tabdangky'>    
-      <div className='formdangkys'>
+    <div className="tabdangky">
+      <div className="formdangkys">
         {quanlynhansuShow && (
-          <div className='formnho'>
+          <div className="formnho">
             <h3>Đăng ký nghỉ</h3>
-            <div className='dangkyform'>
-              <div className='dangkyinput'>
-                <div className='dangkyinputbox'>
+            <div className="dangkyform">
+              <div className="dangkyinput">
+                <div className="dangkyinputbox">
                   <label>
                     <b>Ca nghỉ:</b>
                     <select
-                      name='canghi'
+                      name="canghi"
                       value={canghi}
                       onChange={(e) => setCanNghi(Number(e.target.value))}
                     >
@@ -148,7 +148,7 @@ const TabDangKy = () => {
                   <label>
                     <b>Nghỉ từ ngày:</b>
                     <input
-                      type='date'
+                      type="date"
                       value={fromdate.slice(0, 10)}
                       onChange={(e) => setFromDate(e.target.value)}
                     ></input>
@@ -156,7 +156,7 @@ const TabDangKy = () => {
                   <label>
                     <b>Nghỉ tới ngày ngày:</b>{" "}
                     <input
-                      type='date'
+                      type="date"
                       value={todate.slice(0, 10)}
                       onChange={(e) => setToDate(e.target.value)}
                     ></input>
@@ -164,7 +164,7 @@ const TabDangKy = () => {
                   <label>
                     <b>Kiểu nghỉ:</b>
                     <select
-                      name='nghitype'
+                      name="nghitype"
                       value={nghitype}
                       onChange={(e) => setNghiType(Number(e.target.value))}
                     >
@@ -179,19 +179,19 @@ const TabDangKy = () => {
                   <label>
                     <b>Lý do cụ thể:</b>{" "}
                     <input
-                      type='text'
-                      placeholder='Viết ngắn gọn lý do vào đây'
+                      type="text"
+                      placeholder="Viết ngắn gọn lý do vào đây"
                       value={reason}
                       onChange={(e) => setReason(e.target.value)}
                     ></input>
                   </label>
                 </div>
               </div>
-              <div className='dangkybutton'>
-                <button className='thembutton' onClick={hanlde_dangkynghi}>
+              <div className="dangkybutton">
+                <button className="thembutton" onClick={hanlde_dangkynghi}>
                   Đăng ký
                 </button>
-                <button className='xoabutton' onClick={handlecleardangkynghi}>
+                <button className="xoabutton" onClick={handlecleardangkynghi}>
                   Clear
                 </button>
               </div>
@@ -199,16 +199,16 @@ const TabDangKy = () => {
           </div>
         )}
         {quanlynhansuShow && (
-          <div className='formnho'>
+          <div className="formnho">
             <h3>Đăng ký tăng ca</h3>
-            <div className='dangkyform'>
-              <div className='dangkyinput'>
-                <div className='dangkyinputbox'>
+            <div className="dangkyform">
+              <div className="dangkyinput">
+                <div className="dangkyinputbox">
                   <label>
                     <b>Thời gian bắt đầu:</b>{" "}
                     <input
-                      type='text'
-                      placeholder='1700'
+                      type="text"
+                      placeholder="1700"
                       value={starttime}
                       onChange={(e) => setStartTime(e.target.value)}
                     ></input>
@@ -216,19 +216,19 @@ const TabDangKy = () => {
                   <label>
                     <b>Thời gian kết thúc:</b>{" "}
                     <input
-                      type='text'
-                      placeholder='2000'
+                      type="text"
+                      placeholder="2000"
                       value={finishtime}
                       onChange={(e) => setFinishTime(e.target.value)}
                     ></input>
                   </label>
                 </div>
               </div>
-              <div className='dangkybutton'>
-                <button className='thembutton' onClick={hanlde_dangkytangca}>
+              <div className="dangkybutton">
+                <button className="thembutton" onClick={hanlde_dangkytangca}>
                   Đăng ký
                 </button>
-                <button className='xoabutton' onClick={handlecleartangca}>
+                <button className="xoabutton" onClick={handlecleartangca}>
                   Clear
                 </button>
               </div>
@@ -236,27 +236,27 @@ const TabDangKy = () => {
           </div>
         )}
         {quanlynhansuShow && (
-          <div className='formnho'>
+          <div className="formnho">
             <h3>Xác nhận chấm công (Quên chấm công)</h3>
-            <div className='dangkyform'>
-              <div className='dangkyinput'>
-                <div className='dangkyinputbox'>
+            <div className="dangkyform">
+              <div className="dangkyinput">
+                <div className="dangkyinputbox">
                   <label>
                     <b>Kiểu nghỉ:</b>
                     <select
-                      name='nghitype'
+                      name="nghitype"
                       value={confirm_type}
                       onChange={(e) => setConfirm_Type(e.target.value)}
                     >
-                      <option value='GD'>Quên giờ vào</option>
-                      <option value='GS'>Quên giờ về</option>
-                      <option value='CA'>Quên cả giờ vào - giờ về</option>
+                      <option value="GD">Quên giờ vào</option>
+                      <option value="GS">Quên giờ về</option>
+                      <option value="CA">Quên cả giờ vào - giờ về</option>
                     </select>
                   </label>
                   <label>
                     <b>Ngày quên:</b>
                     <input
-                      type='date'
+                      type="date"
                       value={confirm_date}
                       onChange={(e) => setConfirm_Date(e.target.value)}
                     ></input>
@@ -264,19 +264,19 @@ const TabDangKy = () => {
                   <label>
                     <b>Giờ vào-về:</b>{" "}
                     <input
-                      type='text'
-                      placeholder='0800-1700'
+                      type="text"
+                      placeholder="0800-1700"
                       value={confirm_worktime}
                       onChange={(e) => setConfirm_WorkTime(e.target.value)}
                     ></input>
                   </label>
                 </div>
               </div>
-              <div className='dangkybutton'>
-                <button className='thembutton' onClick={handle_xacnhan}>
+              <div className="dangkybutton">
+                <button className="thembutton" onClick={handle_xacnhan}>
                   Xác nhận
                 </button>
-                <button className='xoabutton' onClick={handleclearxacnhan}>
+                <button className="xoabutton" onClick={handleclearxacnhan}>
                   Clear
                 </button>
               </div>

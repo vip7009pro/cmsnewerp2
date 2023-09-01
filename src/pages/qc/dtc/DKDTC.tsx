@@ -35,17 +35,21 @@ import DataGrid, {
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import { ResponsiveContainer } from "recharts";
-import { CheckAddedSPECDATA, DTC_REG_DATA, TestListTable, UserData } from "../../../api/GlobalInterface";
+import {
+  CheckAddedSPECDATA,
+  DTC_REG_DATA,
+  TestListTable,
+  UserData,
+} from "../../../api/GlobalInterface";
 
 const DKDTC = () => {
-
   const userData: UserData | undefined = useSelector(
-    (state: RootState) => state.totalSlice.userData
+    (state: RootState) => state.totalSlice.userData,
   );
   const [testtype, setTestType] = useState("3");
   const [inputno, setInputNo] = useState("");
   const [checkNVL, setCheckNVL] = useState(
-    userData?.SUBDEPTNAME === "IQC" ? true : false
+    userData?.SUBDEPTNAME === "IQC" ? true : false,
   );
   const [request_empl, setrequest_empl] = useState("");
   const [remark, setReMark] = useState("");
@@ -70,10 +74,10 @@ const DKDTC = () => {
     { TEST_CODE: "1005", TEST_NAME: "Độ dày", SELECTED: false },
   ]);
   const [inspectiondatatable, setInspectionDataTable] = useState<Array<any>>(
-    []
+    [],
   );
   const [selectedRowsData, setSelectedRowsData] = useState<Array<DTC_REG_DATA>>(
-    []
+    [],
   );
   const [empl_name, setEmplName] = useState("");
   const [reqDeptCode, setReqDeptCode] = useState("");
@@ -86,140 +90,139 @@ const DKDTC = () => {
   const [addedSpec, setAddedSpec] = useState<CheckAddedSPECDATA[]>([]);
   const materialDataTable = React.useMemo(
     () => (
-      <div className='datatb'>
+      <div className="datatb">
         <ResponsiveContainer>
-        <DataGrid
-          style={{fontSize:'0.7rem'}}
-          autoNavigateToFocusedRow={true}
-          allowColumnReordering={true}
-          allowColumnResizing={true}
-          columnAutoWidth={false}
-          cellHintEnabled={true}
-          columnResizingMode={"widget"}
-          showColumnLines={true}
-          dataSource={inspectiondatatable}
-          columnWidth='auto'
-          keyExpr='id'
-          height={"85vh"}
-          showBorders={true}
-          onSelectionChanged={(e) => {
-            //console.log(e.selectedRowsData);
-            //setSelectedRowsData(e.selectedRowsData);
-          }}
-          onRowClick={(e) => {
-            //console.log(e.data);
-          }}
-        >
-           <KeyboardNavigation
-            editOnKeyPress={true}
-            enterKeyAction={'moveFocus'}
-            enterKeyDirection={'column'} />
-          <Scrolling
-            useNative={true}
-            scrollByContent={true}
-            scrollByThumb={true}
-            showScrollbar='onHover'
-            mode='virtual'
-          />
-          <Selection mode='multiple' selectAllMode='allPages' />
-          <Editing
-            allowUpdating={false}
-            allowAdding={false}
-            allowDeleting={false}
-            mode='batch'
-            confirmDelete={true}
-            onChangesChange={(e) => {}}
-          />
-          <Export enabled={true} />
-          <Toolbar disabled={false}>
-            <Item location='before'>
-              <IconButton
-                className='buttonIcon'
-                onClick={() => {
-                  SaveExcel(inspectiondatatable, "SPEC DTC");
-                }}
-              >
-                <AiFillFileExcel color='green' size={25} />
-                SAVE
-              </IconButton>
-              <span style={{ fontSize: 20, fontWeight: "bold" }}>
-                200 đăng ký test gần đây
-              </span>
-            </Item>
-            <Item name='searchPanel' />
-            <Item name='exportButton' />
-            <Item name='columnChooserButton' />
-            <Item name='addRowButton' />
-            <Item name='saveButton' />
-            <Item name='revertButton' />
-          </Toolbar>
-          <FilterRow visible={true} />
-          <SearchPanel visible={true} />
-          <ColumnChooser enabled={true} />
-          <Paging defaultPageSize={15} />
-          <Pager
-            showPageSizeSelector={true}
-            allowedPageSizes={[5, 10, 15, 20, 100, 1000, 10000, "all"]}
-            showNavigationButtons={true}
-            showInfo={true}
-            infoText='Page #{0}. Total: {1} ({2} items)'
-            displayMode='compact'
-          />
-          <Column dataField='DTC_ID' caption='DTC_ID' width={100}></Column>
-          <Column
-            dataField='REQUEST_DATETIME'
-            caption='REQUEST_DATETIME'
-            width={100}
-          ></Column>
-          <Column
-            dataField='REQUEST_EMPL_NO'
-            caption='REQUEST_EMPL_NO'
-            width={100}
-          ></Column>
-          <Column dataField='FACTORY' caption='FACTORY' width={100}></Column>
-          <Column
-            dataField='TEST_FINISH_TIME'
-            caption='TEST_FINISH_TIME'
-            width={100}
-          ></Column>
-          <Column
-            dataField='TEST_EMPL_NO'
-            caption='TEST_EMPL_NO'
-            width={100}
-          ></Column>
-          <Column dataField='G_CODE' caption='G_CODE' width={100}></Column>
-          <Column
-            dataField='PROD_REQUEST_NO'
-            caption='PROD_REQUEST_NO'
-            width={100}
-          ></Column>
-          <Column dataField='G_NAME' caption='G_NAME' width={100}></Column>
-          <Column
-            dataField='TEST_NAME'
-            caption='TEST_NAME'
-            width={100}
-          ></Column>
-          <Column
-            dataField='TEST_TYPE_NAME'
-            caption='TEST_TYPE_NAME'
-            width={100}
-          ></Column>
-          <Column
-            dataField='WORK_POSITION_NAME'
-            caption='WORK_POSITION_NAME'
-            width={100}
-          ></Column>
-          <Column dataField='M_NAME' caption='M_NAME' width={100}></Column>
-          <Column dataField='SIZE' caption='SIZE' width={100}></Column>
-          <Column dataField='REMARK' caption='REMARK' width={100}></Column>
-          <Column dataField='LOTCMS' caption='LOTCMS' width={100}></Column>
-        </DataGrid>
-
+          <DataGrid
+            style={{ fontSize: "0.7rem" }}
+            autoNavigateToFocusedRow={true}
+            allowColumnReordering={true}
+            allowColumnResizing={true}
+            columnAutoWidth={false}
+            cellHintEnabled={true}
+            columnResizingMode={"widget"}
+            showColumnLines={true}
+            dataSource={inspectiondatatable}
+            columnWidth="auto"
+            keyExpr="id"
+            height={"85vh"}
+            showBorders={true}
+            onSelectionChanged={(e) => {
+              //console.log(e.selectedRowsData);
+              //setSelectedRowsData(e.selectedRowsData);
+            }}
+            onRowClick={(e) => {
+              //console.log(e.data);
+            }}
+          >
+            <KeyboardNavigation
+              editOnKeyPress={true}
+              enterKeyAction={"moveFocus"}
+              enterKeyDirection={"column"}
+            />
+            <Scrolling
+              useNative={true}
+              scrollByContent={true}
+              scrollByThumb={true}
+              showScrollbar="onHover"
+              mode="virtual"
+            />
+            <Selection mode="multiple" selectAllMode="allPages" />
+            <Editing
+              allowUpdating={false}
+              allowAdding={false}
+              allowDeleting={false}
+              mode="batch"
+              confirmDelete={true}
+              onChangesChange={(e) => {}}
+            />
+            <Export enabled={true} />
+            <Toolbar disabled={false}>
+              <Item location="before">
+                <IconButton
+                  className="buttonIcon"
+                  onClick={() => {
+                    SaveExcel(inspectiondatatable, "SPEC DTC");
+                  }}
+                >
+                  <AiFillFileExcel color="green" size={25} />
+                  SAVE
+                </IconButton>
+                <span style={{ fontSize: 20, fontWeight: "bold" }}>
+                  200 đăng ký test gần đây
+                </span>
+              </Item>
+              <Item name="searchPanel" />
+              <Item name="exportButton" />
+              <Item name="columnChooserButton" />
+              <Item name="addRowButton" />
+              <Item name="saveButton" />
+              <Item name="revertButton" />
+            </Toolbar>
+            <FilterRow visible={true} />
+            <SearchPanel visible={true} />
+            <ColumnChooser enabled={true} />
+            <Paging defaultPageSize={15} />
+            <Pager
+              showPageSizeSelector={true}
+              allowedPageSizes={[5, 10, 15, 20, 100, 1000, 10000, "all"]}
+              showNavigationButtons={true}
+              showInfo={true}
+              infoText="Page #{0}. Total: {1} ({2} items)"
+              displayMode="compact"
+            />
+            <Column dataField="DTC_ID" caption="DTC_ID" width={100}></Column>
+            <Column
+              dataField="REQUEST_DATETIME"
+              caption="REQUEST_DATETIME"
+              width={100}
+            ></Column>
+            <Column
+              dataField="REQUEST_EMPL_NO"
+              caption="REQUEST_EMPL_NO"
+              width={100}
+            ></Column>
+            <Column dataField="FACTORY" caption="FACTORY" width={100}></Column>
+            <Column
+              dataField="TEST_FINISH_TIME"
+              caption="TEST_FINISH_TIME"
+              width={100}
+            ></Column>
+            <Column
+              dataField="TEST_EMPL_NO"
+              caption="TEST_EMPL_NO"
+              width={100}
+            ></Column>
+            <Column dataField="G_CODE" caption="G_CODE" width={100}></Column>
+            <Column
+              dataField="PROD_REQUEST_NO"
+              caption="PROD_REQUEST_NO"
+              width={100}
+            ></Column>
+            <Column dataField="G_NAME" caption="G_NAME" width={100}></Column>
+            <Column
+              dataField="TEST_NAME"
+              caption="TEST_NAME"
+              width={100}
+            ></Column>
+            <Column
+              dataField="TEST_TYPE_NAME"
+              caption="TEST_TYPE_NAME"
+              width={100}
+            ></Column>
+            <Column
+              dataField="WORK_POSITION_NAME"
+              caption="WORK_POSITION_NAME"
+              width={100}
+            ></Column>
+            <Column dataField="M_NAME" caption="M_NAME" width={100}></Column>
+            <Column dataField="SIZE" caption="SIZE" width={100}></Column>
+            <Column dataField="REMARK" caption="REMARK" width={100}></Column>
+            <Column dataField="LOTCMS" caption="LOTCMS" width={100}></Column>
+          </DataGrid>
         </ResponsiveContainer>
-        
       </div>
     ),
-    [inspectiondatatable]
+    [inspectiondatatable],
   );
   const handletraDTCData = () => {
     generalQuery("loadrecentRegisteredDTCData", {})
@@ -246,7 +249,7 @@ const DKDTC = () => {
                         .format("YYYY-MM-DD HH:mm:ss"),
                 id: index,
               };
-            }
+            },
           );
           setInspectionDataTable(loadeddata);
         } else {
@@ -264,7 +267,7 @@ const DKDTC = () => {
           setEmplName(
             response.data.data[0].MIDLAST_NAME +
               " " +
-              response.data.data[0].FIRST_NAME
+              response.data.data[0].FIRST_NAME,
           );
           setReqDeptCode(response.data.data[0].WORK_POSITION_CODE);
         } else {
@@ -305,7 +308,7 @@ const DKDTC = () => {
           setM_Name(
             response.data.data[0].M_NAME +
               " | " +
-              response.data.data[0].WIDTH_CD
+              response.data.data[0].WIDTH_CD,
           );
           setM_Code(response.data.data[0].M_CODE);
           checkAddedSpec(response.data.data[0].M_CODE, "");
@@ -390,7 +393,7 @@ const DKDTC = () => {
       Swal.fire(
         "Thông báo",
         "Đăng ký ĐTC thành công, ID test là: " + nextDTC_ID,
-        "success"
+        "success",
       );
       setGCode("");
       setGName("");
@@ -409,7 +412,7 @@ const DKDTC = () => {
   };
   const checkAddedSpec = (
     m_code: string | undefined,
-    g_code: string | undefined
+    g_code: string | undefined,
   ) => {
     generalQuery("checkAddedSpec", {
       M_CODE: checkNVL ? m_code : "B0000035",
@@ -430,36 +433,36 @@ const DKDTC = () => {
     handletraDTCData();
   }, []);
   return (
-    <div className='dkdtc'>
-      <div className='tracuuDataInspection'>
-        <div className='maintable'>
-          <div className='tracuuDataInspectionform'>
+    <div className="dkdtc">
+      <div className="tracuuDataInspection">
+        <div className="maintable">
+          <div className="tracuuDataInspectionform">
             <b style={{ color: "blue" }}>
               {checkNVL
                 ? "ĐĂNG KÝ TEST LIỆU (IQC)"
                 : "ĐĂNG KÝ TEST SẢN PHẨM (PQC/OQC)"}
             </b>
-            <div className='forminput'>
-              <div className='forminputcolumn'>
+            <div className="forminput">
+              <div className="forminputcolumn">
                 <b>Phân loại test</b>
                 <label>
                   <select
-                    name='phanloaihang'
+                    name="phanloaihang"
                     value={testtype}
                     onChange={(e) => {
                       setTestType(e.target.value);
                     }}
                   >
-                    <option value='1'>FIRST_LOT</option>
-                    <option value='2'>ECN</option>
-                    <option value='3'>MASS PRODUCTION</option>
-                    <option value='4'>SAMPLE</option>
+                    <option value="1">FIRST_LOT</option>
+                    <option value="2">ECN</option>
+                    <option value="3">MASS PRODUCTION</option>
+                    <option value="4">SAMPLE</option>
                   </select>
                 </label>
                 <b>{checkNVL ? "LOT NVL CMS" : "YCSX/LABEL_ID"}</b>{" "}
                 <label>
                   <input
-                    type='text'
+                    type="text"
                     placeholder={checkNVL ? "202304190123" : "1F80008/13AB19S5"}
                     value={inputno}
                     onChange={(e) => {
@@ -474,9 +477,7 @@ const DKDTC = () => {
                             checkLabelID(e.target.value);
                           }
                         }
-                      }
-                      else
-                      {
+                      } else {
                         setAddedSpec([]);
                       }
 
@@ -492,7 +493,7 @@ const DKDTC = () => {
                 <b>Mã nhân viên yêu cầu test</b>
                 <label>
                   <input
-                    type='text'
+                    type="text"
                     placeholder={"NVD1201"}
                     value={request_empl}
                     onChange={(e) => {
@@ -509,17 +510,26 @@ const DKDTC = () => {
                   {empl_name}
                 </span>
               </div>
-              <div className='forminputcolumn'>
+              <div className="forminputcolumn">
                 <b>Hạng mục test</b>
                 <label>
-                  <div className='checkboxarray'>
+                  <div className="checkboxarray">
                     {testList.map((element: TestListTable, index: number) => {
                       return (
                         <FormControlLabel
                           key={index}
                           style={{ fontSize: 5 }}
                           label={
-                            <Typography style={{ fontSize: 13, color: addedSpec[index]?.CHECKADDED === null || addedSpec[index]?.CHECKADDED === undefined? 'black':'blue' }}>
+                            <Typography
+                              style={{
+                                fontSize: 13,
+                                color:
+                                  addedSpec[index]?.CHECKADDED === null ||
+                                  addedSpec[index]?.CHECKADDED === undefined
+                                    ? "black"
+                                    : "blue",
+                              }}
+                            >
                               {element.TEST_NAME}
                             </Typography>
                           }
@@ -531,21 +541,32 @@ const DKDTC = () => {
                               key={element.TEST_CODE}
                               checked={element.SELECTED}
                               onChange={(
-                                event: React.ChangeEvent<HTMLInputElement>
-                              ) => { 
-                                let selected_test:CheckAddedSPECDATA[] = addedSpec.filter((element:CheckAddedSPECDATA, index:number)=> {
-                                  return element.TEST_CODE.toString() === event.target.name;
-                                });
+                                event: React.ChangeEvent<HTMLInputElement>,
+                              ) => {
+                                let selected_test: CheckAddedSPECDATA[] =
+                                  addedSpec.filter(
+                                    (
+                                      element: CheckAddedSPECDATA,
+                                      index: number,
+                                    ) => {
+                                      return (
+                                        element.TEST_CODE.toString() ===
+                                        event.target.name
+                                      );
+                                    },
+                                  );
 
-                                if(selected_test[0].CHECKADDED === null)
-                                {
-                                  Swal.fire('Thông báo','Hạng mục '+ element.TEST_NAME + ' chưa add spec ko thể đăng ký test được, hãy add spec trước','error');
-
-                                }
-                                else
-                                {
+                                if (selected_test[0].CHECKADDED === null) {
+                                  Swal.fire(
+                                    "Thông báo",
+                                    "Hạng mục " +
+                                      element.TEST_NAME +
+                                      " chưa add spec ko thể đăng ký test được, hãy add spec trước",
+                                    "error",
+                                  );
+                                } else {
                                   let temp_testList = testList.map(
-                                    (element: TestListTable, index: number) => {                                   
+                                    (element: TestListTable, index: number) => {
                                       if (
                                         element.TEST_CODE === event.target.name
                                       ) {
@@ -558,12 +579,10 @@ const DKDTC = () => {
                                           ...element,
                                         };
                                       }
-                                    }
+                                    },
                                   );
                                   setTestList(temp_testList);
-
                                 }
-                               
                               }}
                             />
                           }
@@ -573,11 +592,11 @@ const DKDTC = () => {
                   </div>
                 </label>
               </div>
-              <div className='forminputcolumn'>
+              <div className="forminputcolumn">
                 <label>
                   <b>Remark</b>
                   <input
-                    type='text'
+                    type="text"
                     placeholder={"Ghi chú"}
                     value={remark}
                     onChange={(e) => {
@@ -587,12 +606,12 @@ const DKDTC = () => {
                 </label>
               </div>
             </div>
-            <div className='formbutton'>
+            <div className="formbutton">
               <label>
                 <b>{checkNVL === true ? "Swap" : "Swap"}:</b>
                 <input
-                  type='checkbox'
-                  name='alltimecheckbox'
+                  type="checkbox"
+                  name="alltimecheckbox"
                   defaultChecked={checkNVL}
                   onChange={() => {
                     setCheckNVL(!checkNVL);
@@ -600,7 +619,7 @@ const DKDTC = () => {
                 ></input>
               </label>
               <button
-                className='tranhatky'
+                className="tranhatky"
                 onClick={() => {
                   setTestList((tl) =>
                     tl.map((e) => {
@@ -608,14 +627,14 @@ const DKDTC = () => {
                         ...e,
                         SELECTED: false,
                       };
-                    })
+                    }),
                   );
                 }}
               >
                 Reset hạng mục
               </button>
               <button
-                className='tranhatky'
+                className="tranhatky"
                 onClick={() => {
                   if (checkInput()) {
                     registerDTC();
@@ -623,7 +642,7 @@ const DKDTC = () => {
                     Swal.fire(
                       "Thông báo",
                       "Hãy nhập đủ thông tin trước khi đăng ký",
-                      "error"
+                      "error",
                     );
                   }
                 }}
@@ -632,11 +651,11 @@ const DKDTC = () => {
               </button>
             </div>
             <div
-              className='formbutton'
+              className="formbutton"
               style={{ marginTop: "20px", display: "flex", flexWrap: "wrap" }}
             ></div>
           </div>
-          <div className='tracuuYCSXTable'>{materialDataTable}</div>
+          <div className="tracuuYCSXTable">{materialDataTable}</div>
         </div>
       </div>
     </div>

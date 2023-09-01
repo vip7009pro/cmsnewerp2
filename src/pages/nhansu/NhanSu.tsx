@@ -1,14 +1,13 @@
-import React from 'react'
-import { Outlet } from 'react-router-dom'
-import "./Nhansu.scss"
+import React from "react";
+import { Outlet } from "react-router-dom";
+import "./Nhansu.scss";
 
 const NhanSu = () => {
   return (
     <div>
-        <Outlet/>
+      <Outlet />
     </div>
-    
-  )
-}
+  );
+};
 
-export default NhanSu
+export default NhanSu;

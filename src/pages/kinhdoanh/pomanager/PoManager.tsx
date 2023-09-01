@@ -37,7 +37,14 @@ import PivotTable from "../../../components/PivotChart/PivotChart";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import { TbLogout } from "react-icons/tb";
-import { CodeListData, CustomerListData, POSummaryData, POTableData, PRICEWITHMOQ, UserData } from "../../../api/GlobalInterface";
+import {
+  CodeListData,
+  CustomerListData,
+  POSummaryData,
+  POTableData,
+  PRICEWITHMOQ,
+  UserData,
+} from "../../../api/GlobalInterface";
 
 const PoManager = () => {
   const [isPending, startTransition] = useTransition();
@@ -49,12 +56,12 @@ const PoManager = () => {
   });
 
   const userData: UserData | undefined = useSelector(
-    (state: RootState) => state.totalSlice.userData
+    (state: RootState) => state.totalSlice.userData,
   );
   const company: string = useSelector(
-    (state: RootState) => state.totalSlice.company
+    (state: RootState) => state.totalSlice.company,
   );
-  const [showhidesearchdiv, setShowHideSearchDiv]= useState(true);
+  const [showhidesearchdiv, setShowHideSearchDiv] = useState(true);
   const [uploadExcelJson, setUploadExcelJSon] = useState<Array<any>>([]);
   const [isLoading, setisLoading] = useState(false);
   const [column_excel, setColumn_Excel] = useState<Array<any>>([]);
@@ -69,17 +76,17 @@ const PoManager = () => {
   const [alltime, setAllTime] = useState(true);
   const [justpobalance, setJustPOBalance] = useState(true);
   const [selectedCode, setSelectedCode] = useState<CodeListData | null>({
-    G_CODE:'7A00001A',
-    G_NAME:'SELECT CODE',
-    PROD_LAST_PRICE:0,
-    USE_YN:'Y',
-    PO_BALANCE:0
+    G_CODE: "7A00001A",
+    G_NAME: "SELECT CODE",
+    PROD_LAST_PRICE: 0,
+    USE_YN: "Y",
+    PO_BALANCE: 0,
   });
   const [selectedCust_CD, setSelectedCust_CD] =
     useState<CustomerListData | null>({
-      CUST_CD:'0000',
-      CUST_NAME_KD:'SELECT_CUSTOMER',
-      CUST_NAME:'SELECT_CUSTOMER VINA'
+      CUST_CD: "0000",
+      CUST_NAME_KD: "SELECT_CUSTOMER",
+      CUST_NAME: "SELECT_CUSTOMER VINA",
     });
   const [newpodate, setNewPoDate] = useState(moment().format("YYYY-MM-DD"));
   const [newrddate, setNewRdDate] = useState(moment().format("YYYY-MM-DD"));
@@ -89,7 +96,7 @@ const PoManager = () => {
   const [newporemark, setNewPoRemark] = useState("");
   const [newinvoiceQTY, setNewInvoiceQty] = useState<number>(0);
   const [newinvoicedate, setNewInvoiceDate] = useState(
-    moment().format("YYYY-MM-DD")
+    moment().format("YYYY-MM-DD"),
   );
   const [newinvoiceRemark, setNewInvoiceRemark] = useState("");
   const [poSummary, setPoSummary] = useState<POSummaryData>({
@@ -115,40 +122,35 @@ const PoManager = () => {
   const [newcodeprice, setNewCodePrice] = useState<PRICEWITHMOQ[]>([]);
 
   const zeroPad = (num: number, places: number) =>
-  String(num).padStart(places, "0");
+    String(num).padStart(places, "0");
 
-
-  const autogeneratePO_NO = async (cust_cd: string)=> {
-    let po_no_to_check: string =cust_cd + "_"+ moment.utc().format('YYMMDD');
+  const autogeneratePO_NO = async (cust_cd: string) => {
+    let po_no_to_check: string = cust_cd + "_" + moment.utc().format("YYMMDD");
     let next_po_no: string = po_no_to_check + "_001";
-     await generalQuery("checkcustomerpono", {
-      CHECK_PO_NO: po_no_to_check     
+    await generalQuery("checkcustomerpono", {
+      CHECK_PO_NO: po_no_to_check,
     })
       .then((response) => {
         console.log(response.data.data);
         if (response.data.tk_status !== "NG") {
           let arr = response.data.data[0].PO_NO.split("_");
-          next_po_no =  po_no_to_check + "_" + zeroPad(parseInt(arr[2])+1,3);
-          console.log('next_PO_NO', next_po_no);
+          next_po_no = po_no_to_check + "_" + zeroPad(parseInt(arr[2]) + 1, 3);
+          console.log("next_PO_NO", next_po_no);
         } else {
-
           //Swal.fire("Thông báo", " Có lỗi : " + response.data.message, "error");
         }
       })
       .catch((error) => {
         console.log(error);
         Swal.fire("Thông báo", " Có lỗi : " + error, "error");
-      });  
-      return next_po_no;
-  }
-  const dongboGiaPO =()=> {
-    generalQuery("dongbogiasptupo", {
-     
-    })
+      });
+    return next_po_no;
+  };
+  const dongboGiaPO = () => {
+    generalQuery("dongbogiasptupo", {})
       .then((response) => {
         //console.log(response.data.data);
-        if (response.data.tk_status !== "NG") {             
-         
+        if (response.data.tk_status !== "NG") {
         } else {
           //Swal.fire("Thông báo", " Có lỗi : " + response.data.message, "error");
         }
@@ -156,45 +158,57 @@ const PoManager = () => {
       .catch((error) => {
         console.log(error);
         Swal.fire("Thông báo", " Có lỗi : " + error, "error");
-      });  
-    }
+      });
+  };
 
-  const loadprice = (G_CODE?: string, CUST_NAME?: string)=>
-  {
-    if(G_CODE !== undefined && CUST_NAME !== undefined)
-    {
+  const loadprice = (G_CODE?: string, CUST_NAME?: string) => {
+    if (G_CODE !== undefined && CUST_NAME !== undefined) {
       generalQuery("loadbanggiamoinhat", {
         ALLTIME: true,
-        FROM_DATE: '',
-        TO_DATE: '',
-        M_NAME: '',
+        FROM_DATE: "",
+        TO_DATE: "",
+        M_NAME: "",
         G_CODE: G_CODE,
-        G_NAME: '',      
-        CUST_NAME_KD: CUST_NAME,      
+        G_NAME: "",
+        CUST_NAME_KD: CUST_NAME,
       })
         .then((response) => {
           //console.log(response.data.data);
           if (response.data.tk_status !== "NG") {
-            let loaded_data: PRICEWITHMOQ[] =[];
-             loaded_data = company ==='CMS' ? response.data.data.map(
-              (element: PRICEWITHMOQ, index: number) => {
-               return {
-                ...element,
-                PRICE_DATE: element.PRICE_DATE !== null? moment.utc(element.PRICE_DATE).format('YYYY-MM-DD'):'',              
-                id: index,
-               }
-              }
-            ).filter((element: PRICEWITHMOQ, index: number)=> element.FINAL ==='Y'): 
-            response.data.data.map(
-              (element: PRICEWITHMOQ, index: number) => {
-               return {
-                ...element,
-                PRICE_DATE: element.PRICE_DATE !== null? moment.utc(element.PRICE_DATE).format('YYYY-MM-DD'):'',              
-                id: index,
-               }
-              }
-            )
-            ; 
+            let loaded_data: PRICEWITHMOQ[] = [];
+            loaded_data =
+              company === "CMS"
+                ? response.data.data
+                    .map((element: PRICEWITHMOQ, index: number) => {
+                      return {
+                        ...element,
+                        PRICE_DATE:
+                          element.PRICE_DATE !== null
+                            ? moment
+                                .utc(element.PRICE_DATE)
+                                .format("YYYY-MM-DD")
+                            : "",
+                        id: index,
+                      };
+                    })
+                    .filter(
+                      (element: PRICEWITHMOQ, index: number) =>
+                        element.FINAL === "Y",
+                    )
+                : response.data.data.map(
+                    (element: PRICEWITHMOQ, index: number) => {
+                      return {
+                        ...element,
+                        PRICE_DATE:
+                          element.PRICE_DATE !== null
+                            ? moment
+                                .utc(element.PRICE_DATE)
+                                .format("YYYY-MM-DD")
+                            : "",
+                        id: index,
+                      };
+                    },
+                  );
             setNewCodePrice(loaded_data);
           } else {
             /* Swal.fire("Thông báo", " Có lỗi : " + response.data.message, "error"); */
@@ -205,9 +219,9 @@ const PoManager = () => {
           Swal.fire("Thông báo", " Có lỗi : " + error, "error");
         });
     }
-  }
+  };
   const handleSearchCodeKeyDown = (
-    e: React.KeyboardEvent<HTMLInputElement>
+    e: React.KeyboardEvent<HTMLInputElement>,
   ) => {
     if (e.key === "Enter") {
       handletraPO();
@@ -458,7 +472,7 @@ const PoManager = () => {
         <GridToolbarFilterButton />
         <GridToolbarDensitySelector />
         <button
-          className='saveexcelbutton'
+          className="saveexcelbutton"
           onClick={() => {
             SaveExcel(uploadExcelJson, "Uploaded PO");
           }}
@@ -478,52 +492,52 @@ const PoManager = () => {
       them1invoice: false,
     });
     setSelectedCode({
-      G_CODE:'7A00001A',
-      G_NAME:'SELECT CODE',
-      PROD_LAST_PRICE:0,
-      USE_YN:'Y',
-      PO_BALANCE:0
+      G_CODE: "7A00001A",
+      G_NAME: "SELECT CODE",
+      PROD_LAST_PRICE: 0,
+      USE_YN: "Y",
+      PO_BALANCE: 0,
     });
     setSelectedCust_CD({
-      CUST_CD:'0000',
-      CUST_NAME_KD:'SELECT_CUSTOMER',
-      CUST_NAME:'SELECT_CUSTOMER VINA'
+      CUST_CD: "0000",
+      CUST_NAME_KD: "SELECT_CUSTOMER",
+      CUST_NAME: "SELECT_CUSTOMER VINA",
     });
   };
   function CustomToolbarPOTable() {
     return (
-      <GridToolbarContainer>       
+      <GridToolbarContainer>
         <IconButton
-          className='buttonIcon'
+          className="buttonIcon"
           onClick={() => {
             setShowHideSearchDiv(!showhidesearchdiv);
           }}
         >
-          <TbLogout color='green' size={15} />
+          <TbLogout color="green" size={15} />
           Show/Hide
         </IconButton>
         <IconButton
-          className='buttonIcon'
+          className="buttonIcon"
           onClick={() => {
             SaveExcel(podatatable, "PO Table");
           }}
         >
-          <AiFillFileExcel color='green' size={15} />
+          <AiFillFileExcel color="green" size={15} />
           SAVE
         </IconButton>
         <IconButton
-          className='buttonIcon'
+          className="buttonIcon"
           onClick={() => {
             /* checkBP(userData?.EMPL_NO, userData?.MAINDEPTNAME, ["KD"], showNewPO); */
-            checkBP(userData,['KD'],['ALL'],['ALL'],showNewPO);
+            checkBP(userData, ["KD"], ["ALL"], ["ALL"], showNewPO);
             clearPOform();
           }}
         >
-          <AiFillFileAdd color='blue' size={15} />
+          <AiFillFileAdd color="blue" size={15} />
           NEW PO
         </IconButton>
         <IconButton
-          className='buttonIcon'
+          className="buttonIcon"
           onClick={() => {
             /* checkBP(
               userData?.EMPL_NO,
@@ -531,54 +545,60 @@ const PoManager = () => {
               ["KD"],
               handle_fillsuaformInvoice
             ); */
-            checkBP(userData,['KD'],['ALL'],['ALL'],handle_fillsuaformInvoice);
+            checkBP(
+              userData,
+              ["KD"],
+              ["ALL"],
+              ["ALL"],
+              handle_fillsuaformInvoice,
+            );
             //handle_fillsuaformInvoice();
           }}
         >
-          <FaFileInvoiceDollar color='lightgreen' size={15} />
+          <FaFileInvoiceDollar color="lightgreen" size={15} />
           NEW INV
         </IconButton>
         <IconButton
-          className='buttonIcon'
+          className="buttonIcon"
           onClick={() => {
-           /*  checkBP(
+            /*  checkBP(
               userData?.EMPL_NO,
               userData?.MAINDEPTNAME,
               ["KD"],
               handle_fillsuaform
             ); */
-            checkBP(userData,['KD'],['ALL'],['ALL'],handle_fillsuaform);
+            checkBP(userData, ["KD"], ["ALL"], ["ALL"], handle_fillsuaform);
 
             //handle_fillsuaform();
           }}
         >
-          <AiFillEdit color='orange' size={15} />
+          <AiFillEdit color="orange" size={15} />
           SỬA PO
         </IconButton>
         <IconButton
-          className='buttonIcon'
+          className="buttonIcon"
           onClick={() => {
-           /*  checkBP(
+            /*  checkBP(
               userData?.EMPL_NO,
               userData?.MAINDEPTNAME,
               ["KD"],
               handleConfirmDeletePO
             ); */
-            checkBP(userData,['KD'],['ALL'],['ALL'],handleConfirmDeletePO);
+            checkBP(userData, ["KD"], ["ALL"], ["ALL"], handleConfirmDeletePO);
             //handleConfirmDeletePO();
           }}
         >
-          <MdOutlineDelete color='red' size={15} />
+          <MdOutlineDelete color="red" size={15} />
           XÓA PO
         </IconButton>
         <GridToolbarQuickFilter />
         <IconButton
-          className='buttonIcon'
+          className="buttonIcon"
           onClick={() => {
             setShowHidePivotTable(!showhidePivotTable);
           }}
         >
-          <MdOutlinePivotTableChart color='#ff33bb' size={15} />
+          <MdOutlinePivotTableChart color="#ff33bb" size={15} />
           Pivot
         </IconButton>
       </GridToolbarContainer>
@@ -611,7 +631,7 @@ const PoManager = () => {
         setUploadExcelJSon(
           json.map((element: any, index: number) => {
             return { ...element, id: index, CHECKSTATUS: "Waiting" };
-          })
+          }),
         );
       };
       reader.readAsArrayBuffer(e.target.files[0]);
@@ -644,7 +664,7 @@ const PoManager = () => {
                 PO_DATE: element.PO_DATE.slice(0, 10),
                 RD_DATE: element.RD_DATE.slice(0, 10),
               };
-            }
+            },
           );
           let po_summary_temp: POSummaryData = {
             total_po_qty: 0,
@@ -672,7 +692,7 @@ const PoManager = () => {
           Swal.fire(
             "Thông báo",
             "Đã load " + response.data.data.length + " dòng",
-            "success"
+            "success",
           );
         } else {
           Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
@@ -980,7 +1000,7 @@ const PoManager = () => {
             Swal.fire(
               "Thông báo",
               "Thêm PO mới thất bại: " + response.data.message,
-              "error"
+              "error",
             );
           }
         })
@@ -993,7 +1013,7 @@ const PoManager = () => {
       Swal.fire(
         "Thông báo",
         "NG: Ngày PO không được trước ngày hôm nay",
-        "error"
+        "error",
       );
     } else if (err_code === 3) {
       Swal.fire("Thông báo", "NG: Ver này đã bị khóa", "error");
@@ -1043,7 +1063,7 @@ const PoManager = () => {
       Swal.fire(
         "Thông báo",
         "PO BALANCE: " + selectedCode?.PO_BALANCE,
-        "success"
+        "success",
       );
       if (selectedCode?.PO_BALANCE < newinvoiceQTY) {
         err_code = 5; //invoice nhieu hon po balance
@@ -1069,7 +1089,7 @@ const PoManager = () => {
             Swal.fire(
               "Thông báo",
               "Thêm Invoice mới thất bại: " + response.data.message,
-              "error"
+              "error",
             );
           }
         })
@@ -1082,7 +1102,7 @@ const PoManager = () => {
       Swal.fire(
         "Thông báo",
         "NG: Ngày Invoice không được trước ngày hôm nay",
-        "error"
+        "error",
       );
     } else if (err_code === 3) {
       Swal.fire("Thông báo", "NG: Ver này đã bị khóa", "error");
@@ -1111,7 +1131,7 @@ const PoManager = () => {
   const handlePOSelectionforUpdate = (ids: GridSelectionModel) => {
     const selectedID = new Set(ids);
     let datafilter = podatatable.filter((element: any) =>
-      selectedID.has(element.PO_ID)
+      selectedID.has(element.PO_ID),
     );
     if (datafilter.length > 0) {
       setPoDataTableFilter(datafilter);
@@ -1131,11 +1151,11 @@ const PoManager = () => {
         G_CODE: podatatablefilter[podatatablefilter.length - 1].G_CODE,
         G_NAME: podatatablefilter[podatatablefilter.length - 1].G_NAME,
         PROD_LAST_PRICE: Number(
-          podatatablefilter[podatatablefilter.length - 1].PROD_PRICE
+          podatatablefilter[podatatablefilter.length - 1].PROD_PRICE,
         ),
         USE_YN: "Y",
         PO_BALANCE: Number(
-          podatatablefilter[podatatablefilter.length - 1].PO_BALANCE
+          podatatablefilter[podatatablefilter.length - 1].PO_BALANCE,
         ),
       };
       const selectedCustomerFilter: CustomerListData = {
@@ -1148,7 +1168,7 @@ const PoManager = () => {
       setNewPoDate(podatatablefilter[podatatablefilter.length - 1].PO_DATE);
       setNewRdDate(podatatablefilter[podatatablefilter.length - 1].RD_DATE);
       setNewPoQty(
-        podatatablefilter[podatatablefilter.length - 1].PO_QTY.toString()
+        podatatablefilter[podatatablefilter.length - 1].PO_QTY.toString(),
       );
       setNewPoNo(podatatablefilter[podatatablefilter.length - 1].PO_NO);
       setNewPoPrice(podatatablefilter[podatatablefilter.length - 1].PROD_PRICE);
@@ -1174,11 +1194,11 @@ const PoManager = () => {
         G_CODE: podatatablefilter[podatatablefilter.length - 1].G_CODE,
         G_NAME: podatatablefilter[podatatablefilter.length - 1].G_NAME,
         PROD_LAST_PRICE: Number(
-          podatatablefilter[podatatablefilter.length - 1].PROD_PRICE
+          podatatablefilter[podatatablefilter.length - 1].PROD_PRICE,
         ),
         USE_YN: "Y",
         PO_BALANCE: Number(
-          podatatablefilter[podatatablefilter.length - 1].PO_BALANCE
+          podatatablefilter[podatatablefilter.length - 1].PO_BALANCE,
         ),
       };
       const selectedCustomerFilter: CustomerListData = {
@@ -1261,7 +1281,7 @@ const PoManager = () => {
             Swal.fire(
               "Thông báo",
               "Update PO thất bại: " + response.data.message,
-              "error"
+              "error",
             );
           }
         })
@@ -1274,7 +1294,7 @@ const PoManager = () => {
       Swal.fire(
         "Thông báo",
         "NG: Ngày PO không được trước ngày hôm nay",
-        "error"
+        "error",
       );
     } else if (err_code === 3) {
       Swal.fire("Thông báo", "NG: Ver này đã bị khóa", "error");
@@ -1310,13 +1330,13 @@ const PoManager = () => {
         Swal.fire(
           "Thông báo",
           "Xóa PO thành công (chỉ PO của người đăng nhập)!",
-          "success"
+          "success",
         );
       } else {
         Swal.fire(
           "Thông báo",
           "Có lỗi, khả năng xóa phải PO đã có phát sinh giao hàng!",
-          "error"
+          "error",
         );
       }
     } else {
@@ -1369,7 +1389,7 @@ const PoManager = () => {
         allowFiltering: true,
         dataType: "string",
         summaryType: "count",
-        format: "fixedPoint",        
+        format: "fixedPoint",
         headerFilter: {
           allowSearch: true,
           height: 500,
@@ -1489,7 +1509,7 @@ const PoManager = () => {
         allowFiltering: true,
         dataType: "number",
         summaryType: "sum",
-        format: "fixedPoint",        
+        format: "fixedPoint",
         headerFilter: {
           allowSearch: true,
           height: 500,
@@ -1504,7 +1524,7 @@ const PoManager = () => {
         allowFiltering: true,
         dataType: "number",
         summaryType: "sum",
-        format: "fixedPoint",       
+        format: "fixedPoint",
         headerFilter: {
           allowSearch: true,
           height: 500,
@@ -1519,7 +1539,7 @@ const PoManager = () => {
         allowFiltering: true,
         dataType: "number",
         summaryType: "sum",
-        format: "fixedPoint",        
+        format: "fixedPoint",
         headerFilter: {
           allowSearch: true,
           height: 500,
@@ -1533,7 +1553,7 @@ const PoManager = () => {
         allowSorting: true,
         allowFiltering: true,
         dataType: "number",
-        summaryType: "sum",        
+        summaryType: "sum",
         format: "currency",
         headerFilter: {
           allowSearch: true,
@@ -1548,7 +1568,7 @@ const PoManager = () => {
         allowSorting: true,
         allowFiltering: true,
         dataType: "number",
-        summaryType: "sum",        
+        summaryType: "sum",
         format: "currency",
         headerFilter: {
           allowSearch: true,
@@ -1563,7 +1583,7 @@ const PoManager = () => {
         allowSorting: true,
         allowFiltering: true,
         dataType: "number",
-        summaryType: "sum",        
+        summaryType: "sum",
         format: "currency",
         headerFilter: {
           allowSearch: true,
@@ -1805,25 +1825,25 @@ const PoManager = () => {
     dongboGiaPO();
   }, []);
   return (
-    <div className='pomanager'>
-      <div className='mininavbar'>
+    <div className="pomanager">
+      <div className="mininavbar">
         <div
-          className='mininavitem'
+          className="mininavitem"
           onClick={() => setNav(1)}
           style={{
             backgroundColor: selection.trapo === true ? "#02c712" : "#abc9ae",
             color: selection.trapo === true ? "yellow" : "yellow",
           }}
         >
-          <span className='mininavtext'>Tra PO</span>
+          <span className="mininavtext">Tra PO</span>
         </div>
         <div
-          className='mininavitem'
+          className="mininavitem"
           onClick={() =>
-           /*  checkBP(userData?.EMPL_NO, userData?.MAINDEPTNAME, ["KD"], () => {
+            /*  checkBP(userData?.EMPL_NO, userData?.MAINDEPTNAME, ["KD"], () => {
               setNav(2);
             }) */
-            checkBP(userData,['KD'],['ALL'],['ALL'],()=> {
+            checkBP(userData, ["KD"], ["ALL"], ["ALL"], () => {
               setNav(2);
             })
           }
@@ -1833,31 +1853,31 @@ const PoManager = () => {
             color: selection.thempohangloat === true ? "yellow" : "yellow",
           }}
         >
-          <span className='mininavtext'>Thêm PO</span>
+          <span className="mininavtext">Thêm PO</span>
         </div>
       </div>
       {selection.thempohangloat && (
-        <div className='newpo'> 
-          <div className='batchnewpo'>
+        <div className="newpo">
+          <div className="batchnewpo">
             <h3>Thêm PO Hàng Loạt</h3>
-            <div className='formupload'>
-              <label htmlFor='upload'>
+            <div className="formupload">
+              <label htmlFor="upload">
                 <b>Chọn file Excel: </b>
                 <input
                   onKeyDown={(e) => {
                     handleSearchCodeKeyDown(e);
                   }}
-                  className='selectfilebutton'
-                  type='file'
-                  name='upload'
-                  id='upload'
+                  className="selectfilebutton"
+                  type="file"
+                  name="upload"
+                  id="upload"
                   onChange={(e: any) => {
                     readUploadFile(e);
                   }}
                 />
               </label>
               <div
-                className='checkpobutton'
+                className="checkpobutton"
                 onClick={(e) => {
                   e.preventDefault();
                   confirmCheckPoHangLoat();
@@ -1866,7 +1886,7 @@ const PoManager = () => {
                 Check PO
               </div>
               <div
-                className='uppobutton'
+                className="uppobutton"
                 onClick={(e) => {
                   e.preventDefault();
                   confirmUpPoHangLoat();
@@ -1875,7 +1895,7 @@ const PoManager = () => {
                 Up PO
               </div>
             </div>
-            <div className='insertPOTable'>
+            <div className="insertPOTable">
               {true && (
                 <DataGrid
                   sx={{ fontSize: "0.6rem" }}
@@ -1890,220 +1910,218 @@ const PoManager = () => {
                   rowsPerPageOptions={[
                     5, 10, 50, 100, 500, 1000, 5000, 10000, 100000,
                   ]}
-                  editMode='row'
+                  editMode="row"
                   getRowHeight={() => "auto"}
                 />
               )}
             </div>
           </div>
-          <div className='singlenewpo'></div>
+          <div className="singlenewpo"></div>
         </div>
       )}
       {selection.trapo && (
-        <div className='tracuuPO'>
-          {showhidesearchdiv && <div className='tracuuPOform'>
-            <div className='forminput'>
-              <div className='forminputcolumn'>
-                <label>
-                  <b>Từ ngày:</b>
-                  <input
-                    onKeyDown={(e) => {
-                      handleSearchCodeKeyDown(e);
-                    }}
-                    type='date'
-                    value={fromdate.slice(0, 10)}
-                    onChange={(e) => setFromDate(e.target.value)}
-                  ></input>
-                </label>
-                <label>
-                  <b>Tới ngày:</b>{" "}
-                  <input
-                    onKeyDown={(e) => {
-                      handleSearchCodeKeyDown(e);
-                    }}
-                    type='date'
-                    value={todate.slice(0, 10)}
-                    onChange={(e) => setToDate(e.target.value)}
-                  ></input>
-                </label>
+        <div className="tracuuPO">
+          {showhidesearchdiv && (
+            <div className="tracuuPOform">
+              <div className="forminput">
+                <div className="forminputcolumn">
+                  <label>
+                    <b>Từ ngày:</b>
+                    <input
+                      onKeyDown={(e) => {
+                        handleSearchCodeKeyDown(e);
+                      }}
+                      type="date"
+                      value={fromdate.slice(0, 10)}
+                      onChange={(e) => setFromDate(e.target.value)}
+                    ></input>
+                  </label>
+                  <label>
+                    <b>Tới ngày:</b>{" "}
+                    <input
+                      onKeyDown={(e) => {
+                        handleSearchCodeKeyDown(e);
+                      }}
+                      type="date"
+                      value={todate.slice(0, 10)}
+                      onChange={(e) => setToDate(e.target.value)}
+                    ></input>
+                  </label>
+                </div>
+                <div className="forminputcolumn">
+                  <label>
+                    <b>Code KD:</b>{" "}
+                    <input
+                      onKeyDown={(e) => {
+                        handleSearchCodeKeyDown(e);
+                      }}
+                      type="text"
+                      placeholder="GH63-xxxxxx"
+                      value={codeKD}
+                      onChange={(e) => setCodeKD(e.target.value)}
+                    ></input>
+                  </label>
+                  <label>
+                    <b>Code ERP:</b>{" "}
+                    <input
+                      onKeyDown={(e) => {
+                        handleSearchCodeKeyDown(e);
+                      }}
+                      type="text"
+                      placeholder="7C123xxx"
+                      value={codeCMS}
+                      onChange={(e) => setCodeCMS(e.target.value)}
+                    ></input>
+                  </label>
+                </div>
+                <div className="forminputcolumn">
+                  <label>
+                    <b>Tên nhân viên:</b>{" "}
+                    <input
+                      onKeyDown={(e) => {
+                        handleSearchCodeKeyDown(e);
+                      }}
+                      type="text"
+                      placeholder="Trang"
+                      value={empl_name}
+                      onChange={(e) => setEmpl_Name(e.target.value)}
+                    ></input>
+                  </label>
+                  <label>
+                    <b>Khách:</b>{" "}
+                    <input
+                      onKeyDown={(e) => {
+                        handleSearchCodeKeyDown(e);
+                      }}
+                      type="text"
+                      placeholder="SEVT"
+                      value={cust_name}
+                      onChange={(e) => setCust_Name(e.target.value)}
+                    ></input>
+                  </label>
+                </div>
+                <div className="forminputcolumn">
+                  <label>
+                    <b>Loại sản phẩm:</b>{" "}
+                    <input
+                      onKeyDown={(e) => {
+                        handleSearchCodeKeyDown(e);
+                      }}
+                      type="text"
+                      placeholder="TSP"
+                      value={prod_type}
+                      onChange={(e) => setProdType(e.target.value)}
+                    ></input>
+                  </label>
+                  <label>
+                    <b>ID:</b>{" "}
+                    <input
+                      onKeyDown={(e) => {
+                        handleSearchCodeKeyDown(e);
+                      }}
+                      type="text"
+                      placeholder="12345"
+                      value={id}
+                      onChange={(e) => setID(e.target.value)}
+                    ></input>
+                  </label>
+                </div>
+                <div className="forminputcolumn">
+                  <label>
+                    <b>PO NO:</b>{" "}
+                    <input
+                      onKeyDown={(e) => {
+                        handleSearchCodeKeyDown(e);
+                      }}
+                      type="text"
+                      placeholder="123abc"
+                      value={po_no}
+                      onChange={(e) => setPo_No(e.target.value)}
+                    ></input>
+                  </label>
+                  <label>
+                    <b>Vật liệu:</b>{" "}
+                    <input
+                      onKeyDown={(e) => {
+                        handleSearchCodeKeyDown(e);
+                      }}
+                      type="text"
+                      placeholder="SJ-203020HC"
+                      value={material}
+                      onChange={(e) => setMaterial(e.target.value)}
+                    ></input>
+                  </label>
+                </div>
+                <div className="forminputcolumn">
+                  <label>
+                    <b>Over/OK:</b>{" "}
+                    <input
+                      onKeyDown={(e) => {
+                        handleSearchCodeKeyDown(e);
+                      }}
+                      type="text"
+                      placeholder="OVER"
+                      value={over}
+                      onChange={(e) => setOver(e.target.value)}
+                    ></input>
+                  </label>
+                  <label>
+                    <b>Invoice No:</b>{" "}
+                    <input
+                      onKeyDown={(e) => {
+                        handleSearchCodeKeyDown(e);
+                      }}
+                      type="text"
+                      placeholder="số invoice"
+                      value={invoice_no}
+                      onChange={(e) => setInvoice_No(e.target.value)}
+                    ></input>
+                  </label>
+                </div>
               </div>
-              <div className='forminputcolumn'>
-                <label>
-                  <b>Code KD:</b>{" "}
-                  <input
-                    onKeyDown={(e) => {
-                      handleSearchCodeKeyDown(e);
+              <div className="formbutton">
+                <div className="checkboxdiv">
+                  <label>
+                    <b>All Time:</b>
+                    <input
+                      onKeyDown={(e) => {
+                        handleSearchCodeKeyDown(e);
+                      }}
+                      type="checkbox"
+                      name="alltimecheckbox"
+                      defaultChecked={alltime}
+                      onChange={() => setAllTime(!alltime)}
+                    ></input>
+                  </label>
+                  <label>
+                    <b>Chỉ PO Tồn:</b>
+                    <input
+                      onKeyDown={(e) => {
+                        handleSearchCodeKeyDown(e);
+                      }}
+                      type="checkbox"
+                      name="pobalancecheckbox"
+                      defaultChecked={justpobalance}
+                      onChange={() => setJustPOBalance(!justpobalance)}
+                    ></input>
+                  </label>
+                </div>
+                <div className="searchbuttondiv">
+                  <IconButton
+                    className="buttonIcon"
+                    onClick={() => {
+                      handletraPO();
                     }}
-                    type='text'
-                    placeholder='GH63-xxxxxx'
-                    value={codeKD}
-                    onChange={(e) => setCodeKD(e.target.value)}
-                  ></input>
-                </label>
-                <label>
-                  <b>Code ERP:</b>{" "}
-                  <input
-                    onKeyDown={(e) => {
-                      handleSearchCodeKeyDown(e);
-                    }}
-                    type='text'
-                    placeholder='7C123xxx'
-                    value={codeCMS}
-                    onChange={(e) => setCodeCMS(e.target.value)}
-                  ></input>
-                </label>
-              </div>
-              <div className='forminputcolumn'>
-                <label>
-                  <b>Tên nhân viên:</b>{" "}
-                  <input
-                    onKeyDown={(e) => {
-                      handleSearchCodeKeyDown(e);
-                    }}
-                    type='text'
-                    placeholder='Trang'
-                    value={empl_name}
-                    onChange={(e) => setEmpl_Name(e.target.value)}
-                  ></input>
-                </label>
-                <label>
-                  <b>Khách:</b>{" "}
-                  <input
-                    onKeyDown={(e) => {
-                      handleSearchCodeKeyDown(e);
-                    }}
-                    type='text'
-                    placeholder='SEVT'
-                    value={cust_name}
-                    onChange={(e) => setCust_Name(e.target.value)}
-                  ></input>
-                </label>
-              </div>
-              <div className='forminputcolumn'>
-                <label>
-                  <b>Loại sản phẩm:</b>{" "}
-                  <input
-                    onKeyDown={(e) => {
-                      handleSearchCodeKeyDown(e);
-                    }}
-                    type='text'
-                    placeholder='TSP'
-                    value={prod_type}
-                    onChange={(e) => setProdType(e.target.value)}
-                  ></input>
-                </label>
-                <label>
-                  <b>ID:</b>{" "}
-                  <input
-                    onKeyDown={(e) => {
-                      handleSearchCodeKeyDown(e);
-                    }}
-                    type='text'
-                    placeholder='12345'
-                    value={id}
-                    onChange={(e) => setID(e.target.value)}
-                  ></input>
-                </label>
-              </div>
-              <div className='forminputcolumn'>
-                <label>
-                  <b>PO NO:</b>{" "}
-                  <input
-                    onKeyDown={(e) => {
-                      handleSearchCodeKeyDown(e);
-                    }}
-                    type='text'
-                    placeholder='123abc'
-                    value={po_no}
-                    onChange={(e) => setPo_No(e.target.value)}
-                  ></input>
-                </label>
-                <label>
-                  <b>Vật liệu:</b>{" "}
-                  <input
-                    onKeyDown={(e) => {
-                      handleSearchCodeKeyDown(e);
-                    }}
-                    type='text'
-                    placeholder='SJ-203020HC'
-                    value={material}
-                    onChange={(e) => setMaterial(e.target.value)}
-                  ></input>
-                </label>
-              </div>
-              <div className='forminputcolumn'>
-                <label>
-                  <b>Over/OK:</b>{" "}
-                  <input
-                    onKeyDown={(e) => {
-                      handleSearchCodeKeyDown(e);
-                    }}
-                    type='text'
-                    placeholder='OVER'
-                    value={over}
-                    onChange={(e) => setOver(e.target.value)}
-                  ></input>
-                </label>
-                <label>
-                  <b>Invoice No:</b>{" "}
-                  <input
-                    onKeyDown={(e) => {
-                      handleSearchCodeKeyDown(e);
-                    }}
-                    type='text'
-                    placeholder='số invoice'
-                    value={invoice_no}
-                    onChange={(e) => setInvoice_No(e.target.value)}
-                  ></input>
-                </label>
+                  >
+                    <FcSearch color="green" size={30} />
+                    Search
+                  </IconButton>
+                </div>
               </div>
             </div>
-            <div className='formbutton'>
-              <div className="checkboxdiv">
-              <label>
-                <b>All Time:</b>
-                <input
-                  onKeyDown={(e) => {
-                    handleSearchCodeKeyDown(e);
-                  }}
-                  type='checkbox'
-                  name='alltimecheckbox'
-                  defaultChecked={alltime}
-                  onChange={() => setAllTime(!alltime)}
-                ></input>
-              </label>
-              <label>
-                <b>Chỉ PO Tồn:</b>
-                <input
-                  onKeyDown={(e) => {
-                    handleSearchCodeKeyDown(e);
-                  }}
-                  type='checkbox'
-                  name='pobalancecheckbox'
-                  defaultChecked={justpobalance}
-                  onChange={() => setJustPOBalance(!justpobalance)}
-                ></input>
-              </label>
-
-              </div>
-              <div className="searchbuttondiv">
-              <IconButton
-                className='buttonIcon'
-                onClick={() => {
-                  handletraPO();
-                }}
-              >
-                <FcSearch color='green' size={30} />
-                Search
-              </IconButton>  
-
-              </div>
-             
-                       
-            </div>            
-          </div>}
-          <div className='tracuuPOTable'>  
-          <div className='formsummary'>
+          )}
+          <div className="tracuuPOTable">
+            <div className="formsummary">
               <table>
                 <thead>
                   <tr>
@@ -2142,7 +2160,7 @@ const PoManager = () => {
                         {
                           style: "currency",
                           currency: "USD",
-                        }
+                        },
                       )}
                     </td>
                     <td style={{ color: "blue", fontWeight: "bold" }}>
@@ -2152,7 +2170,7 @@ const PoManager = () => {
                         {
                           style: "currency",
                           currency: "USD",
-                        }
+                        },
                       )}
                     </td>
                   </tr>
@@ -2160,47 +2178,45 @@ const PoManager = () => {
               </table>
             </div>
             <div className="tablegrid">
-            <DataGrid
-              sx={{ fontSize: "0.7rem", flex: 1 }}
-              components={{
-                Toolbar: CustomToolbarPOTable,
-                LoadingOverlay: LinearProgress,
-              }}
-              loading={isLoading}
-              rowHeight={30}
-              rows={podatatable}
-              columns={column_potable}
-              rowsPerPageOptions={[
-                5, 10, 50, 100, 500, 1000, 5000, 10000, 100000,
-              ]}
-              editMode='row'
-              getRowId={(row) => row.PO_ID}
-              checkboxSelection
-              disableSelectionOnClick
-              onSelectionModelChange={(ids) => {
-                handlePOSelectionforUpdate(ids);
-              }}
-            />
-              
+              <DataGrid
+                sx={{ fontSize: "0.7rem", flex: 1 }}
+                components={{
+                  Toolbar: CustomToolbarPOTable,
+                  LoadingOverlay: LinearProgress,
+                }}
+                loading={isLoading}
+                rowHeight={30}
+                rows={podatatable}
+                columns={column_potable}
+                rowsPerPageOptions={[
+                  5, 10, 50, 100, 500, 1000, 5000, 10000, 100000,
+                ]}
+                editMode="row"
+                getRowId={(row) => row.PO_ID}
+                checkboxSelection
+                disableSelectionOnClick
+                onSelectionModelChange={(ids) => {
+                  handlePOSelectionforUpdate(ids);
+                }}
+              />
             </div>
-           
           </div>
         </div>
       )}
       {selection.them1po && (
-        <div className='them1po'>
-          <div className='formnho'>
-            <div className='dangkyform'>
+        <div className="them1po">
+          <div className="formnho">
+            <div className="dangkyform">
               <h3>Thêm PO mới</h3>
-              <div className='dangkyinput'>
-                <div className='dangkyinputbox'>
+              <div className="dangkyinput">
+                <div className="dangkyinputbox">
                   <label>
                     <b>Khách hàng:</b>{" "}
                     <Autocomplete
-                      size='small'
+                      size="small"
                       disablePortal
                       options={customerList}
-                      className='autocomplete'
+                      className="autocomplete"
                       filterOptions={filterOptions1}
                       isOptionEqualToValue={(option: any, value: any) =>
                         option.CUST_CD === value.CUST_CD
@@ -2209,21 +2225,22 @@ const PoManager = () => {
                         `${option.CUST_CD}: ${option.CUST_NAME_KD}`
                       }
                       renderInput={(params) => (
-                        <TextField {...params} label='Select customer' />
+                        <TextField {...params} label="Select customer" />
                       )}
                       value={selectedCust_CD}
                       onChange={(
                         event: any,
-                        newValue: CustomerListData | any
+                        newValue: CustomerListData | any,
                       ) => {
-                        (async ()=> {
-                          if(company==='PVN')
-                          {
-                            setNewPoNo(await autogeneratePO_NO(newValue.CUST_CD));
+                        (async () => {
+                          if (company === "PVN") {
+                            setNewPoNo(
+                              await autogeneratePO_NO(newValue.CUST_CD),
+                            );
                           }
                           //console.log(await autogeneratePO_NO(newValue.CUST_CD));
                         })();
-                        
+
                         console.log(newValue);
                         loadprice(selectedCode?.G_CODE, newValue.CUST_NAME_KD);
                         setSelectedCust_CD(newValue);
@@ -2233,10 +2250,10 @@ const PoManager = () => {
                   <label>
                     <b>Code hàng:</b>{" "}
                     <Autocomplete
-                      size='small'
+                      size="small"
                       disablePortal
                       options={codeList}
-                      className='autocomplete'
+                      className="autocomplete"
                       filterOptions={filterOptions1}
                       isOptionEqualToValue={(option: any, value: any) =>
                         option.G_CODE === value.G_CODE
@@ -2245,11 +2262,14 @@ const PoManager = () => {
                         `${option.G_CODE}: ${option.G_NAME}`
                       }
                       renderInput={(params) => (
-                        <TextField {...params} label='Select code' />
+                        <TextField {...params} label="Select code" />
                       )}
                       onChange={(event: any, newValue: CodeListData | any) => {
-                        console.log(newValue);                        
-                        loadprice(newValue.G_CODE, selectedCust_CD?.CUST_NAME_KD);                        
+                        console.log(newValue);
+                        loadprice(
+                          newValue.G_CODE,
+                          selectedCust_CD?.CUST_NAME_KD,
+                        );
                         setSelectedCode(newValue);
                       }}
                       value={selectedCode}
@@ -2261,8 +2281,8 @@ const PoManager = () => {
                       onKeyDown={(e) => {
                         handleSearchCodeKeyDown(e);
                       }}
-                      className='inputdata'
-                      type='date'
+                      className="inputdata"
+                      type="date"
                       value={newpodate.slice(0, 10)}
                       onChange={(e) => setNewPoDate(e.target.value)}
                     ></input>
@@ -2273,14 +2293,14 @@ const PoManager = () => {
                       onKeyDown={(e) => {
                         handleSearchCodeKeyDown(e);
                       }}
-                      className='inputdata'
-                      type='date'
+                      className="inputdata"
+                      type="date"
                       value={newrddate.slice(0, 10)}
                       onChange={(e) => setNewRdDate(e.target.value)}
                     ></input>
                   </label>
                 </div>
-                <div className='dangkyinputbox'>
+                <div className="dangkyinputbox">
                   <label>
                     <b>PO NO:</b>{" "}
                     <TextField
@@ -2288,12 +2308,12 @@ const PoManager = () => {
                       onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                         setNewPoNo(e.target.value)
                       }
-                      size='small'
-                      color='success'
-                      className='autocomplete'
-                      id='outlined-basic'
-                      label='Số PO'
-                      variant='outlined'
+                      size="small"
+                      color="success"
+                      className="autocomplete"
+                      id="outlined-basic"
+                      label="Số PO"
+                      variant="outlined"
                     />
                   </label>
                   <label>
@@ -2302,20 +2322,21 @@ const PoManager = () => {
                       value={newpoqty}
                       onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                         let tempQTY: number = Number(e.target.value);
-                        let tempprice: number = newcodeprice.filter((e:PRICEWITHMOQ, index: number)=> {
-                          return tempQTY >= e.MOQ
-                        })[0]?.PROD_PRICE;
-                        if(tempprice !== undefined)
-                        setNewPoPrice(tempprice.toString());
+                        let tempprice: number = newcodeprice.filter(
+                          (e: PRICEWITHMOQ, index: number) => {
+                            return tempQTY >= e.MOQ;
+                          },
+                        )[0]?.PROD_PRICE;
+                        if (tempprice !== undefined)
+                          setNewPoPrice(tempprice.toString());
                         setNewPoQty(e.target.value);
-                      }
-                      }
-                      size='small'
-                      color='success'
-                      className='autocomplete'
-                      id='outlined-basic'
-                      label='PO QTY'
-                      variant='outlined'
+                      }}
+                      size="small"
+                      color="success"
+                      className="autocomplete"
+                      id="outlined-basic"
+                      label="PO QTY"
+                      variant="outlined"
                     />
                   </label>
                   <label>
@@ -2325,12 +2346,12 @@ const PoManager = () => {
                       onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                         setNewPoPrice(e.target.value)
                       }
-                      size='small'
-                      color='success'
-                      className='autocomplete'
-                      id='outlined-basic'
-                      label='Price'
-                      variant='outlined'
+                      size="small"
+                      color="success"
+                      className="autocomplete"
+                      id="outlined-basic"
+                      label="Price"
+                      variant="outlined"
                     />
                   </label>
                   <label>
@@ -2340,19 +2361,19 @@ const PoManager = () => {
                       onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                         setNewPoRemark(e.target.value)
                       }
-                      size='small'
-                      color='success'
-                      className='autocomplete'
-                      id='outlined-basic'
-                      label='Remark'
-                      variant='outlined'
+                      size="small"
+                      color="success"
+                      className="autocomplete"
+                      id="outlined-basic"
+                      label="Remark"
+                      variant="outlined"
                     />
                   </label>
                 </div>
               </div>
-              <div className='dangkybutton'>
+              <div className="dangkybutton">
                 <button
-                  className='thembutton'
+                  className="thembutton"
                   onClick={() => {
                     handle_add_1PO();
                   }}
@@ -2360,7 +2381,7 @@ const PoManager = () => {
                   Thêm PO
                 </button>
                 <button
-                  className='suabutton'
+                  className="suabutton"
                   onClick={() => {
                     updatePO();
                   }}
@@ -2368,7 +2389,7 @@ const PoManager = () => {
                   Sửa PO
                 </button>
                 <button
-                  className='xoabutton'
+                  className="xoabutton"
                   onClick={() => {
                     clearPOform();
                   }}
@@ -2376,7 +2397,7 @@ const PoManager = () => {
                   Clear
                 </button>
                 <button
-                  className='closebutton'
+                  className="closebutton"
                   onClick={() => {
                     setSelection({
                       ...selection,
@@ -2394,29 +2415,29 @@ const PoManager = () => {
         </div>
       )}
       {selection.them1invoice && (
-        <div className='them1invoice'>
-          <div className='formnho'>
-            <div className='dangkyform'>
+        <div className="them1invoice">
+          <div className="formnho">
+            <div className="dangkyform">
               <h3>Thêm Invoice mới</h3>
-              <div className='dangkyinput'>
-                <div className='dangkyinputbox'>
+              <div className="dangkyinput">
+                <div className="dangkyinputbox">
                   <label>
                     <b>Khách hàng:</b>{" "}
                     <Autocomplete
-                      size='small'
+                      size="small"
                       disablePortal
                       options={customerList}
-                      className='autocomplete'
+                      className="autocomplete"
                       getOptionLabel={(option: CustomerListData) =>
                         `${option.CUST_CD}: ${option.CUST_NAME_KD}`
                       }
                       renderInput={(params) => (
-                        <TextField {...params} label='Select customer' />
+                        <TextField {...params} label="Select customer" />
                       )}
                       value={selectedCust_CD}
                       onChange={(
                         event: any,
-                        newValue: CustomerListData | null
+                        newValue: CustomerListData | null,
                       ) => {
                         console.log(newValue);
                         setSelectedCust_CD(newValue);
@@ -2426,23 +2447,23 @@ const PoManager = () => {
                   <label>
                     <b>Code hàng:</b>{" "}
                     <Autocomplete
-                      size='small'
+                      size="small"
                       disablePortal
                       options={codeList}
-                      className='autocomplete'
+                      className="autocomplete"
                       filterOptions={filterOptions1}
                       getOptionLabel={(option: CodeListData | any) =>
                         `${option.G_CODE}: ${option.G_NAME}`
                       }
                       renderInput={(params) => (
-                        <TextField {...params} label='Select code' />
+                        <TextField {...params} label="Select code" />
                       )}
                       onChange={(event: any, newValue: CodeListData | any) => {
                         console.log(newValue);
                         setNewPoPrice(
                           newValue === null
                             ? ""
-                            : newValue.PROD_LAST_PRICE.toString()
+                            : newValue.PROD_LAST_PRICE.toString(),
                         );
                         setSelectedCode(newValue);
                       }}
@@ -2455,8 +2476,8 @@ const PoManager = () => {
                       onKeyDown={(e) => {
                         handleSearchCodeKeyDown(e);
                       }}
-                      className='inputdata'
-                      type='date'
+                      className="inputdata"
+                      type="date"
                       value={newpodate.slice(0, 10)}
                       onChange={(e) => setNewPoDate(e.target.value)}
                     ></input>
@@ -2467,14 +2488,14 @@ const PoManager = () => {
                       onKeyDown={(e) => {
                         handleSearchCodeKeyDown(e);
                       }}
-                      className='inputdata'
-                      type='date'
+                      className="inputdata"
+                      type="date"
                       value={newrddate.slice(0, 10)}
                       onChange={(e) => setNewRdDate(e.target.value)}
                     ></input>
                   </label>
                 </div>
-                <div className='dangkyinputbox'>
+                <div className="dangkyinputbox">
                   <label>
                     <b>PO NO:</b>{" "}
                     <TextField
@@ -2482,12 +2503,12 @@ const PoManager = () => {
                       onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                         setNewPoNo(e.target.value)
                       }
-                      size='small'
-                      color='success'
-                      className='autocomplete'
-                      id='outlined-basic'
-                      label='Số PO'
-                      variant='outlined'
+                      size="small"
+                      color="success"
+                      className="autocomplete"
+                      id="outlined-basic"
+                      label="Số PO"
+                      variant="outlined"
                     />
                   </label>
                   <label>
@@ -2497,12 +2518,12 @@ const PoManager = () => {
                       onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                         setNewInvoiceQty(Number(e.target.value))
                       }
-                      size='small'
-                      color='success'
-                      className='autocomplete'
-                      id='outlined-basic'
-                      label='INVOICE QTY'
-                      variant='outlined'
+                      size="small"
+                      color="success"
+                      className="autocomplete"
+                      id="outlined-basic"
+                      label="INVOICE QTY"
+                      variant="outlined"
                     />
                   </label>
                   <label>
@@ -2511,8 +2532,8 @@ const PoManager = () => {
                       onKeyDown={(e) => {
                         handleSearchCodeKeyDown(e);
                       }}
-                      className='inputdata'
-                      type='date'
+                      className="inputdata"
+                      type="date"
                       value={newinvoicedate.slice(0, 10)}
                       onChange={(e) => setNewInvoiceDate(e.target.value)}
                     ></input>
@@ -2524,18 +2545,18 @@ const PoManager = () => {
                       onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                         setNewInvoiceRemark(e.target.value)
                       }
-                      size='small'
-                      className='autocomplete'
-                      id='outlined-basic'
-                      label='Remark'
-                      variant='outlined'
+                      size="small"
+                      className="autocomplete"
+                      id="outlined-basic"
+                      label="Remark"
+                      variant="outlined"
                     />
                   </label>
                 </div>
               </div>
-              <div className='dangkybutton'>
+              <div className="dangkybutton">
                 <button
-                  className='thembutton'
+                  className="thembutton"
                   onClick={() => {
                     handle_add_1Invoice();
                   }}
@@ -2543,7 +2564,7 @@ const PoManager = () => {
                   Thêm Invoice
                 </button>
                 <button
-                  className='suabutton'
+                  className="suabutton"
                   onClick={() => {
                     clearInvoiceform();
                   }}
@@ -2551,7 +2572,7 @@ const PoManager = () => {
                   Clear
                 </button>
                 <button
-                  className='closebutton'
+                  className="closebutton"
                   onClick={() => {
                     setSelection({
                       ...selection,
@@ -2570,20 +2591,19 @@ const PoManager = () => {
         </div>
       )}
       {showhidePivotTable && (
-        <div className='pivottable1'>
+        <div className="pivottable1">
           <IconButton
-            className='buttonIcon'
+            className="buttonIcon"
             onClick={() => {
               setShowHidePivotTable(false);
             }}
           >
-            <AiFillCloseCircle color='blue' size={25} />
+            <AiFillCloseCircle color="blue" size={25} />
             Close
           </IconButton>
-          <PivotTable datasource={dataSource} tableID='potablepivot' />
+          <PivotTable datasource={dataSource} tableID="potablepivot" />
         </div>
       )}
-    
     </div>
   );
 };

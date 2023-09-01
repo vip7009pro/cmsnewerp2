@@ -19,11 +19,11 @@ import {
 } from "../../../../api/GlobalInterface";
 const CHITHI_COMPONENT = ({ DATA }: { DATA: QLSXPLANDATA }) => {
   const company: string = useSelector(
-    (state: RootState) => state.totalSlice.company
+    (state: RootState) => state.totalSlice.company,
   );
   const [checklieuchinh, setCheckLieuChinh] = useState(false);
   const userData: UserData | undefined = useSelector(
-    (state: RootState) => state.totalSlice.userData
+    (state: RootState) => state.totalSlice.userData,
   );
   const [request_codeinfo, setRequest_CodeInfo] = useState<Array<FullBOM>>([
     {
@@ -141,7 +141,7 @@ const CHITHI_COMPONENT = ({ DATA }: { DATA: QLSXPLANDATA }) => {
             response.data.data[0].EQ1,
             response.data.data[0].EQ2,
             response.data.data[0].EQ3,
-            response.data.data[0].EQ4
+            response.data.data[0].EQ4,
           );
           console.log("max", checkpr);
           setEQ_Process_check(DATA.PROCESS_NUMBER > checkpr ? false : true);
@@ -252,7 +252,7 @@ const CHITHI_COMPONENT = ({ DATA }: { DATA: QLSXPLANDATA }) => {
     EQ1: string,
     EQ2: string,
     EQ3: string,
-    EQ4: string
+    EQ4: string,
   ) => {
     console.log(EQ1);
     console.log(EQ2);
@@ -313,49 +313,49 @@ const CHITHI_COMPONENT = ({ DATA }: { DATA: QLSXPLANDATA }) => {
     checkPOBalance();
   }, [DATA.PLAN_ID]);
   return (
-    <div className='chithicomponent'>
-      <div className='qcpass'>
+    <div className="chithicomponent">
+      <div className="qcpass">
         {request_codeinfo[0].PDBV === "Y" && checklieuchinh === true && (
           <img
-            alt='qcpass'
-            src='/QC PASS20.png'
+            alt="qcpass"
+            src="/QC PASS20.png"
             width={440 - 100 - 10}
             height={400 - 100}
           />
         )}
       </div>
       {request_codeinfo[0]?.FSC === "Y" && (
-        <div className='fsc'>
+        <div className="fsc">
           <img
-            alt='qcpass'
-            src='/fsc logo2.png'
+            alt="qcpass"
+            src="/fsc logo2.png"
             width={440 - 100 - 10}
             height={400 - 100}
           />
         </div>
       )}
       {
-        <div className='tieudeycsx'>
-          <div className='leftlogobarcode'>
+        <div className="tieudeycsx">
+          <div className="leftlogobarcode">
             {company === "CMS" && (
-              <img alt='logo' src='/logocmsvina.png' width={160} height={40} />
+              <img alt="logo" src="/logocmsvina.png" width={160} height={40} />
             )}
             {company === "PVN" && (
-              <img alt='logo' src='/logopvn_big.png' width={160} height={40} />
+              <img alt="logo" src="/logopvn_big.png" width={160} height={40} />
             )}
             <Barcode
               value={`${DATA.PLAN_ID}`}
-              format='CODE128'
+              format="CODE128"
               width={1}
               height={50}
               displayValue={false}
-              background='#fff'
-              lineColor='black'
+              background="#fff"
+              lineColor="black"
               margin={0}
             />
             {DATA.PLAN_ID}
           </div>
-          <div className='headertitle'>
+          <div className="headertitle">
             <span style={{ fontSize: 16 }}>
               생산 지시서 - Chỉ thị Sản Xuất({DATA.PLAN_EQ}- CĐ
               {DATA.PROCESS_NUMBER}- B{DATA.STEP})
@@ -371,19 +371,19 @@ const CHITHI_COMPONENT = ({ DATA }: { DATA: QLSXPLANDATA }) => {
               </span>
             )}
           </div>
-          <div className='soycsx'>
-            <div className='ycsxbarcode'>
+          <div className="soycsx">
+            <div className="ycsxbarcode">
               <Barcode
                 value={request_codeinfo[0]?.PROD_REQUEST_NO}
-                format='CODE128'
+                format="CODE128"
                 width={1}
                 height={50}
                 displayValue={false}
-                background='#fff'
-                lineColor='black'
+                background="#fff"
+                lineColor="black"
                 margin={0}
               />
-              <div className='ycsxno'>
+              <div className="ycsxno">
                 {request_codeinfo[0].PROD_REQUEST_DATE}-
                 {request_codeinfo[0].PROD_REQUEST_NO}{" "}
               </div>
@@ -396,13 +396,13 @@ const CHITHI_COMPONENT = ({ DATA }: { DATA: QLSXPLANDATA }) => {
         DATA.PLAN_QTY !== 0 &&
         DATA.PROCESS_NUMBER !== 0 &&
         eq_process_check && (
-          <div className='thongtinycsx'>
-            <div className='text1'>
+          <div className="thongtinycsx">
+            <div className="text1">
               1. 지시 정보 Thông tin chỉ thị ({request_codeinfo[0].G_NAME} ) __
               PO_TYPE: {request_codeinfo[0].PO_TYPE}
             </div>
-            <div className='thongtinyeucau'>
-              <table className='ttyc1'>
+            <div className="thongtinyeucau">
+              <table className="ttyc1">
                 <thead>
                   <tr>
                     <th>Hạng mục/항목</th>
@@ -433,7 +433,7 @@ const CHITHI_COMPONENT = ({ DATA }: { DATA: QLSXPLANDATA }) => {
                   </tr>
                 </tbody>
               </table>
-              <table className='ttyc2'>
+              <table className="ttyc2">
                 <thead>
                   <tr>
                     <th>Hạng mục/항목</th>
@@ -445,7 +445,7 @@ const CHITHI_COMPONENT = ({ DATA }: { DATA: QLSXPLANDATA }) => {
                     <td>Số lượng yêu cầu/요청 수량</td>
                     <td>
                       {request_codeinfo[0]?.PROD_REQUEST_QTY.toLocaleString(
-                        "en-US"
+                        "en-US",
                       )}{" "}
                       EA
                     </td>
@@ -467,7 +467,7 @@ const CHITHI_COMPONENT = ({ DATA }: { DATA: QLSXPLANDATA }) => {
                   </tr>
                 </tbody>
               </table>
-              <table className='ttyc2'>
+              <table className="ttyc2">
                 <thead>
                   <tr>
                     <th>Hạng mục/항목</th>
@@ -503,22 +503,22 @@ const CHITHI_COMPONENT = ({ DATA }: { DATA: QLSXPLANDATA }) => {
                 </tbody>
               </table>
             </div>
-            <div className='text1'>
+            <div className="text1">
               2. 생산 정보 Thông tin Sản xuất{" "}
               <Barcode
                 value={`${DATA.PLAN_ID}`}
-                format='CODE128'
+                format="CODE128"
                 width={1.5}
                 height={20}
                 displayValue={false}
-                background='#fff'
-                lineColor='black'
+                background="#fff"
+                lineColor="black"
                 margin={0}
               />
               ({DATA.PLAN_ID})
             </div>
-            <div className='thongtinyeucau'>
-              <table className='ttyc1'>
+            <div className="thongtinyeucau">
+              <table className="ttyc1">
                 <thead>
                   <tr>
                     <th>Hạng mục/항목</th>
@@ -650,7 +650,7 @@ const CHITHI_COMPONENT = ({ DATA }: { DATA: QLSXPLANDATA }) => {
             </tbody>
           </table>         
         </div> */}
-            <div className='text1'>
+            <div className="text1">
               3. LOSS INFO__ {DATA.PLAN_ID} {":  "} (Phân loại:{" "}
               {request_codeinfo[0].CODE_50 === "01"
                 ? "GC"
@@ -668,19 +668,19 @@ const CHITHI_COMPONENT = ({ DATA }: { DATA: QLSXPLANDATA }) => {
               )
               <Barcode
                 value={`${DATA.PLAN_ID}`}
-                format='CODE128'
+                format="CODE128"
                 width={1.5}
                 height={20}
                 displayValue={false}
-                background='#fff'
-                lineColor='black'
+                background="#fff"
+                lineColor="black"
                 margin={0}
               />
               _{request_codeinfo[0]?.FSC === "Y" ? "(FSC Mix Credit)" : ""}{" "}
               POBALANCE: {po_balance?.toLocaleString("en-US")}{" "}
             </div>
-            <div className='thongtinyeucau'>
-              <table className='ttyc1'>
+            <div className="thongtinyeucau">
+              <table className="ttyc1">
                 <thead>
                   <tr>
                     <th>Bóc kiểm (EA)/파괴검사</th>
@@ -707,14 +707,14 @@ const CHITHI_COMPONENT = ({ DATA }: { DATA: QLSXPLANDATA }) => {
                 </tbody>
               </table>
             </div>
-            <div className='text1'>
+            <div className="text1">
               4. 제품 정보 Thông tin vật liệu | Liệu chính{" "}
               {request_codeinfo[0].PROD_MAIN_MATERIAL} |{" "}
               {checklieuchinh === true ? "Đã SET" : "Chưa SET"}
             </div>
-            <div className='thongtinvatlieu'>
+            <div className="thongtinvatlieu">
               {chithidatatable.length <= maxLieu && (
-                <div className='vatlieugiua'>
+                <div className="vatlieugiua">
                   <table>
                     <thead>
                       <tr>
@@ -749,7 +749,7 @@ const CHITHI_COMPONENT = ({ DATA }: { DATA: QLSXPLANDATA }) => {
                           <td>{element.WIDTH_CD}</td>
                           <td>
                             {(element.M_MET_QTY * element.M_QTY).toLocaleString(
-                              "en-US"
+                              "en-US",
                             )}{" "}
                             M
                           </td>
@@ -763,7 +763,7 @@ const CHITHI_COMPONENT = ({ DATA }: { DATA: QLSXPLANDATA }) => {
                 </div>
               )}
               {chithidatatable.length > maxLieu && (
-                <div className='vatlieutrai'>
+                <div className="vatlieutrai">
                   <table>
                     <thead>
                       <tr>
@@ -808,14 +808,14 @@ const CHITHI_COMPONENT = ({ DATA }: { DATA: QLSXPLANDATA }) => {
                               <td></td>
                               <td>{element.LIEUQL_SX}</td>
                             </tr>
-                          )
+                          ),
                       )}
                     </tbody>
                   </table>
                 </div>
               )}
               {chithidatatable.length > maxLieu && (
-                <div className='vatlieuphai'>
+                <div className="vatlieuphai">
                   <table>
                     <thead>
                       <tr>
@@ -860,7 +860,7 @@ const CHITHI_COMPONENT = ({ DATA }: { DATA: QLSXPLANDATA }) => {
                               <td></td>
                               <td>{element.LIEUQL_SX}</td>
                             </tr>
-                          )
+                          ),
                       )}
                     </tbody>
                   </table>

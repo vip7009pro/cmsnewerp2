@@ -1,10 +1,10 @@
 .buttonIcon {
-    font-size: 13px !important;
-    color: rgb(59, 45, 182) !important;
+  font-size: 13px !important;
+  color: rgb(59, 45, 182) !important;
 }
 .App {
-    margin-left: 10px;
-    margin-right: 10px;    
+  margin-left: 10px;
+  margin-right: 10px;
 }
 /* * {
     font-size: 0.9rem;

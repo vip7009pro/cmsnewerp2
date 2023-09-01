@@ -146,13 +146,13 @@ const CUST_MANAGER = () => {
                     : "",
                 id: index,
               };
-            }
+            },
           );
           setCUSTINFODataTable(loadeddata);
           Swal.fire(
             "Thông báo",
             "Đã load " + response.data.data.length + " dòng",
-            "success"
+            "success",
           );
         } else {
           setCUSTINFODataTable([]);
@@ -174,7 +174,7 @@ const CUST_MANAGER = () => {
           Swal.fire(
             "Thông báo",
             "Thêm khách thất bại: " + response.data.message,
-            "error"
+            "error",
           );
         }
       })
@@ -193,7 +193,7 @@ const CUST_MANAGER = () => {
           Swal.fire(
             "Thông báo",
             "Sửa khách thất bại: " + response.data.message,
-            "error"
+            "error",
           );
         }
       })
@@ -203,7 +203,7 @@ const CUST_MANAGER = () => {
   };
   const materialDataTable = React.useMemo(
     () => (
-      <div className='datatb'>
+      <div className="datatb">
         <ResponsiveContainer>
           <DataGrid
             autoNavigateToFocusedRow={true}
@@ -214,8 +214,8 @@ const CUST_MANAGER = () => {
             columnResizingMode={"widget"}
             showColumnLines={true}
             dataSource={custinfodatatable}
-            columnWidth='auto'
-            keyExpr='id'
+            columnWidth="auto"
+            keyExpr="id"
             height={"75vh"}
             showBorders={true}
             onSelectionChanged={(e) => {
@@ -229,43 +229,43 @@ const CUST_MANAGER = () => {
               useNative={true}
               scrollByContent={true}
               scrollByThumb={true}
-              showScrollbar='onHover'
-              mode='virtual'
+              showScrollbar="onHover"
+              mode="virtual"
             />
-            <Selection mode='single' selectAllMode='allPages' />
+            <Selection mode="single" selectAllMode="allPages" />
             <Editing
               allowUpdating={false}
               allowAdding={true}
               allowDeleting={false}
-              mode='batch'
+              mode="batch"
               confirmDelete={true}
               onChangesChange={(e) => {}}
             />
             <Export enabled={true} />
             <Toolbar disabled={false}>
-              <Item location='before'>
+              <Item location="before">
                 <IconButton
-                  className='buttonIcon'
+                  className="buttonIcon"
                   onClick={() => {
                     SaveExcel(custinfodatatable, "Customer Table");
                   }}
                 >
-                  <AiFillFileExcel color='green' size={25} />
+                  <AiFillFileExcel color="green" size={25} />
                   SAVE
                 </IconButton>
                 <IconButton
-                  className='buttonIcon'
+                  className="buttonIcon"
                   onClick={() => {
                     setShowHidePivotTable(!showhidePivotTable);
                   }}
                 >
-                  <MdOutlinePivotTableChart color='#ff33bb' size={25} />
+                  <MdOutlinePivotTableChart color="#ff33bb" size={25} />
                   Pivot
                 </IconButton>
               </Item>
-              <Item name='searchPanel' />
-              <Item name='exportButton' />
-              <Item name='columnChooser' />
+              <Item name="searchPanel" />
+              <Item name="exportButton" />
+              <Item name="columnChooser" />
             </Toolbar>
             <FilterRow visible={true} />
             <SearchPanel visible={true} />
@@ -276,14 +276,14 @@ const CUST_MANAGER = () => {
               allowedPageSizes={[5, 10, 15, 20, 100, 1000, 10000, "all"]}
               showNavigationButtons={true}
               showInfo={true}
-              infoText='Page #{0}. Total: {1} ({2} items)'
-              displayMode='compact'
+              infoText="Page #{0}. Total: {1} ({2} items)"
+              displayMode="compact"
             />
             <Summary>
               <TotalItem
-                alignment='right'
-                column='id'
-                summaryType='count'
+                alignment="right"
+                column="id"
+                summaryType="count"
                 valueFormat={"decimal"}
               />
             </Summary>
@@ -291,7 +291,7 @@ const CUST_MANAGER = () => {
         </ResponsiveContainer>
       </div>
     ),
-    [custinfodatatable]
+    [custinfodatatable],
   );
   const dataSource = new PivotGridDataSource({
     fields: [
@@ -933,16 +933,16 @@ const CUST_MANAGER = () => {
     //setColumnDefinition(column_inspect_output);
   }, []);
   return (
-    <div className='cust_manager2'>
-      <div className='tracuuDataInspection'>
-        <div className='tracuuDataInspectionform'>
-          <div className='forminput'>
-            <div className='forminputcolumn'>
+    <div className="cust_manager2">
+      <div className="tracuuDataInspection">
+        <div className="tracuuDataInspectionform">
+          <div className="forminput">
+            <div className="forminputcolumn">
               <label>
                 <b>Mã KH:</b>{" "}
                 <input
-                  type='text'
-                  placeholder='Mã khách hàng'
+                  type="text"
+                  placeholder="Mã khách hàng"
                   value={selectedRows?.CUST_CD}
                   onChange={(e) => setCustInfo("CUST_CD", e.target.value)}
                 ></input>
@@ -950,8 +950,8 @@ const CUST_MANAGER = () => {
               <label>
                 <b>Tên KH(KD):</b>{" "}
                 <input
-                  type='text'
-                  placeholder='Tên khách hàng'
+                  type="text"
+                  placeholder="Tên khách hàng"
                   value={selectedRows?.CUST_NAME_KD}
                   onChange={(e) => setCustInfo("CUST_NAME_KD", e.target.value)}
                 ></input>
@@ -959,19 +959,19 @@ const CUST_MANAGER = () => {
               <label>
                 <b>Tên KH(FULL):</b>{" "}
                 <input
-                  type='text'
-                  placeholder='Tên khách hàng'
+                  type="text"
+                  placeholder="Tên khách hàng"
                   value={selectedRows?.CUST_NAME}
                   onChange={(e) => setCustInfo("CUST_NAME", e.target.value)}
                 ></input>
               </label>
             </div>
-            <div className='forminputcolumn'>
+            <div className="forminputcolumn">
               <label>
                 <b>Địa chỉ chính:</b>{" "}
                 <input
-                  type='text'
-                  placeholder='Địa chỉ'
+                  type="text"
+                  placeholder="Địa chỉ"
                   value={selectedRows?.CUST_ADDR1}
                   onChange={(e) => setCustInfo("CUST_ADDR1", e.target.value)}
                 ></input>
@@ -979,19 +979,19 @@ const CUST_MANAGER = () => {
               <label>
                 <b>Địa chỉ 2:</b>{" "}
                 <input
-                  type='text'
-                  placeholder='Địa chỉ'
+                  type="text"
+                  placeholder="Địa chỉ"
                   value={selectedRows?.CUST_ADDR2}
                   onChange={(e) => setCustInfo("CUST_ADDR2", e.target.value)}
                 ></input>
               </label>
             </div>
-            <div className='forminputcolumn'>
+            <div className="forminputcolumn">
               <label>
                 <b>Địa chỉ 3:</b>{" "}
                 <input
-                  type='text'
-                  placeholder='Địa chỉ'
+                  type="text"
+                  placeholder="Địa chỉ"
                   value={selectedRows?.CUST_ADDR3}
                   onChange={(e) => setCustInfo("CUST_ADDR3", e.target.value)}
                 ></input>
@@ -999,19 +999,19 @@ const CUST_MANAGER = () => {
               <label>
                 <b>MST</b>{" "}
                 <input
-                  type='text'
-                  placeholder='Mã số thuế'
+                  type="text"
+                  placeholder="Mã số thuế"
                   value={selectedRows?.TAX_NO}
                   onChange={(e) => setCustInfo("TAX_NO", e.target.value)}
                 ></input>
               </label>
             </div>
-            <div className='forminputcolumn'>
+            <div className="forminputcolumn">
               <label>
                 <b>Số ĐT:</b>{" "}
                 <input
-                  type='text'
-                  placeholder='Số điện thoại'
+                  type="text"
+                  placeholder="Số điện thoại"
                   value={selectedRows?.CUST_NUMBER}
                   onChange={(e) => setCustInfo("CUST_NUMBER", e.target.value)}
                 ></input>
@@ -1019,19 +1019,19 @@ const CUST_MANAGER = () => {
               <label>
                 <b>Tên chủ:</b>{" "}
                 <input
-                  type='text'
-                  placeholder='Tên chủ'
+                  type="text"
+                  placeholder="Tên chủ"
                   value={selectedRows?.BOSS_NAME}
                   onChange={(e) => setCustInfo("BOSS_NAME", e.target.value)}
                 ></input>
               </label>
             </div>
-            <div className='forminputcolumn'>
+            <div className="forminputcolumn">
               <label>
                 <b>Số phone:</b>{" "}
                 <input
-                  type='text'
-                  placeholder='Số phone'
+                  type="text"
+                  placeholder="Số phone"
                   value={selectedRows?.TEL_NO1}
                   onChange={(e) => setCustInfo("TEL_NO1", e.target.value)}
                 ></input>
@@ -1039,19 +1039,19 @@ const CUST_MANAGER = () => {
               <label>
                 <b>Fax:</b>{" "}
                 <input
-                  type='text'
-                  placeholder='FAX'
+                  type="text"
+                  placeholder="FAX"
                   value={selectedRows?.FAX_NO}
                   onChange={(e) => setCustInfo("FAX_NO", e.target.value)}
                 ></input>
               </label>
             </div>
-            <div className='forminputcolumn'>
+            <div className="forminputcolumn">
               <label>
                 <b>Mã bưu điện:</b>{" "}
                 <input
-                  type='text'
-                  placeholder='Mã bưu điện'
+                  type="text"
+                  placeholder="Mã bưu điện"
                   value={selectedRows?.CUST_POSTAL}
                   onChange={(e) => setCustInfo("CUST_POSTAL", e.target.value)}
                 ></input>
@@ -1059,19 +1059,19 @@ const CUST_MANAGER = () => {
               <label>
                 <b>Remark:</b>{" "}
                 <input
-                  type='text'
-                  placeholder='Ghi chú'
+                  type="text"
+                  placeholder="Ghi chú"
                   value={selectedRows?.REMK}
                   onChange={(e) => setCustInfo("REMK", e.target.value)}
                 ></input>
               </label>
             </div>
-            <div className='forminputcolumn'>
+            <div className="forminputcolumn">
               <label>
                 <b>Email:</b>{" "}
                 <input
-                  type='text'
-                  placeholder='Email'
+                  type="text"
+                  placeholder="Email"
                   value={selectedRows?.EMAIL}
                   onChange={(e) => setCustInfo("REMK", e.target.value)}
                 ></input>
@@ -1079,21 +1079,21 @@ const CUST_MANAGER = () => {
               <label>
                 <b>Phân loại:</b>{" "}
                 <select
-                  name='plvendor'
+                  name="plvendor"
                   value={selectedRows?.CUST_TYPE}
                   onChange={(e) => {
                     setCustInfo("CUST_TYPE", e.target.value);
                   }}
                 >
-                  <option value='KH'>Khách Hàng</option>
-                  <option value='NCC'>Nhà Cung Cấp</option>
+                  <option value="KH">Khách Hàng</option>
+                  <option value="NCC">Nhà Cung Cấp</option>
                 </select>
               </label>
             </div>
           </div>
-          <div className='formbutton'>
+          <div className="formbutton">
             <button
-              className='tranhatky'
+              className="tranhatky"
               onClick={() => {
                 createNewCustomer(selectedRows.CUST_TYPE);
               }}
@@ -1101,7 +1101,7 @@ const CUST_MANAGER = () => {
               New
             </button>
             <button
-              className='tranhatky'
+              className="tranhatky"
               onClick={() => {
                 handle_addCustomer();
               }}
@@ -1109,7 +1109,7 @@ const CUST_MANAGER = () => {
               Add
             </button>
             <button
-              className='traxuatkiembutton'
+              className="traxuatkiembutton"
               onClick={() => {
                 handle_editCustomer();
               }}
@@ -1118,19 +1118,19 @@ const CUST_MANAGER = () => {
             </button>
           </div>
         </div>
-        <div className='tracuuYCSXTable'>{materialDataTable}</div>
+        <div className="tracuuYCSXTable">{materialDataTable}</div>
         {showhidePivotTable && (
-          <div className='pivottable1'>
+          <div className="pivottable1">
             <IconButton
-              className='buttonIcon'
+              className="buttonIcon"
               onClick={() => {
                 setShowHidePivotTable(false);
               }}
             >
-              <AiFillCloseCircle color='blue' size={25} />
+              <AiFillCloseCircle color="blue" size={25} />
               Close
             </IconButton>
-            <PivotTable datasource={dataSource} tableID='invoicetablepivot' />
+            <PivotTable datasource={dataSource} tableID="invoicetablepivot" />
           </div>
         )}
       </div>

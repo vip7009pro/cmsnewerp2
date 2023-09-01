@@ -36,10 +36,16 @@ import PivotTable from "../../../components/PivotChart/PivotChart";
 import { RootState } from "../../../redux/store";
 import { useSelector } from "react-redux";
 import { TbLogout } from "react-icons/tb";
-import { CodeListData, CustomerListData, InvoiceSummaryData, InvoiceTableData, UserData } from "../../../api/GlobalInterface";
+import {
+  CodeListData,
+  CustomerListData,
+  InvoiceSummaryData,
+  InvoiceTableData,
+  UserData,
+} from "../../../api/GlobalInterface";
 
 const InvoiceManager = () => {
-  const [showhidesearchdiv, setShowHideSearchDiv]= useState(true);
+  const [showhidesearchdiv, setShowHideSearchDiv] = useState(true);
   const [isPending, startTransition] = useTransition();
   const [selection, setSelection] = useState<any>({
     trapo: true,
@@ -49,7 +55,7 @@ const InvoiceManager = () => {
     testinvoicetable: false,
   });
   const userData: UserData | undefined = useSelector(
-    (state: RootState) => state.totalSlice.userData
+    (state: RootState) => state.totalSlice.userData,
   );
   const [uploadExcelJson, setUploadExcelJSon] = useState<Array<any>>([]);
   const [isLoading, setisLoading] = useState(false);
@@ -75,7 +81,7 @@ const InvoiceManager = () => {
   const [newporemark, setNewPoRemark] = useState("");
   const [newinvoiceQTY, setNewInvoiceQty] = useState<number>(0);
   const [newinvoicedate, setNewInvoiceDate] = useState(
-    moment().format("YYYY-MM-DD")
+    moment().format("YYYY-MM-DD"),
   );
   const [newinvoiceRemark, setNewInvoiceRemark] = useState("");
   const [invoiceSummary, setInvoiceSummary] = useState<InvoiceSummaryData>({
@@ -300,7 +306,7 @@ const InvoiceManager = () => {
   ];
 
   const handleSearchCodeKeyDown = (
-    e: React.KeyboardEvent<HTMLInputElement>
+    e: React.KeyboardEvent<HTMLInputElement>,
   ) => {
     if (e.key === "Enter") {
       handletraInvoice();
@@ -314,7 +320,7 @@ const InvoiceManager = () => {
         <GridToolbarFilterButton />
         <GridToolbarDensitySelector />
         <button
-          className='saveexcelbutton'
+          className="saveexcelbutton"
           onClick={() => {
             SaveExcel(uploadExcelJson, "Uploaded PO");
           }}
@@ -328,28 +334,28 @@ const InvoiceManager = () => {
   function CustomToolbarPOTable() {
     return (
       <GridToolbarContainer>
-       <IconButton
-          className='buttonIcon'
+        <IconButton
+          className="buttonIcon"
           onClick={() => {
             setShowHideSearchDiv(!showhidesearchdiv);
           }}
         >
-          <TbLogout color='green' size={15} />
+          <TbLogout color="green" size={15} />
           Show/Hide
         </IconButton>
         <IconButton
-          className='buttonIcon'
+          className="buttonIcon"
           onClick={() => {
             SaveExcel(invoicedatatable, "Invoice Table");
           }}
         >
-          <AiFillFileExcel color='green' size={15} />
+          <AiFillFileExcel color="green" size={15} />
           SAVE
         </IconButton>
         <IconButton
-          className='buttonIcon'
+          className="buttonIcon"
           onClick={() => {
-           /*  checkBP(userData?.EMPL_NO, userData?.MAINDEPTNAME, ["KD"], () => {
+            /*  checkBP(userData?.EMPL_NO, userData?.MAINDEPTNAME, ["KD"], () => {
               setSelection({
                 ...selection,
                 trapo: true,
@@ -360,7 +366,7 @@ const InvoiceManager = () => {
               clearInvoiceform();
             }); */
 
-            checkBP(userData,['KD'],['ALL'],['ALL'],()=> {
+            checkBP(userData, ["KD"], ["ALL"], ["ALL"], () => {
               setSelection({
                 ...selection,
                 trapo: true,
@@ -370,14 +376,13 @@ const InvoiceManager = () => {
               });
               clearInvoiceform();
             });
-
           }}
         >
-          <AiFillFileAdd color='blue' size={15} />
+          <AiFillFileAdd color="blue" size={15} />
           NEW INV
         </IconButton>
         <IconButton
-          className='buttonIcon'
+          className="buttonIcon"
           onClick={() => {
             /* checkBP(
               userData?.EMPL_NO,
@@ -385,37 +390,49 @@ const InvoiceManager = () => {
               ["KD"],
               handle_fillsuaformInvoice
             ); */
-            checkBP(userData,['KD'],['ALL'],['ALL'],handle_fillsuaformInvoice);
+            checkBP(
+              userData,
+              ["KD"],
+              ["ALL"],
+              ["ALL"],
+              handle_fillsuaformInvoice,
+            );
             //handle_fillsuaformInvoice();
           }}
         >
-          <FaFileInvoiceDollar color='lightgreen' size={15} />
+          <FaFileInvoiceDollar color="lightgreen" size={15} />
           SỬA INV
         </IconButton>
         <IconButton
-          className='buttonIcon'
+          className="buttonIcon"
           onClick={() => {
-           /*  checkBP(
+            /*  checkBP(
               userData?.EMPL_NO,
               userData?.MAINDEPTNAME,
               ["KD"],
               handleConfirmDeleteInvoice
             ); */
-            checkBP(userData,['KD'],['ALL'],['ALL'],handleConfirmDeleteInvoice);
+            checkBP(
+              userData,
+              ["KD"],
+              ["ALL"],
+              ["ALL"],
+              handleConfirmDeleteInvoice,
+            );
             //handleConfirmDeleteInvoice();
           }}
         >
-          <MdOutlineDelete color='red' size={15} />
+          <MdOutlineDelete color="red" size={15} />
           XÓA INV
         </IconButton>
         <GridToolbarQuickFilter />
         <IconButton
-          className='buttonIcon'
+          className="buttonIcon"
           onClick={() => {
             setShowHidePivotTable(!showhidePivotTable);
           }}
         >
-          <MdOutlinePivotTableChart color='#ff33bb' size={15} />
+          <MdOutlinePivotTableChart color="#ff33bb" size={15} />
           Pivot
         </IconButton>
       </GridToolbarContainer>
@@ -448,7 +465,7 @@ const InvoiceManager = () => {
         setUploadExcelJSon(
           json.map((element: any, index: number) => {
             return { ...element, id: index, CHECKSTATUS: "Waiting" };
-          })
+          }),
         );
       };
       reader.readAsArrayBuffer(e.target.files[0]);
@@ -480,7 +497,7 @@ const InvoiceManager = () => {
                 ...element,
                 DELIVERY_DATE: element.DELIVERY_DATE.slice(0, 10),
               };
-            }
+            },
           );
           let invoice_summary_temp: InvoiceSummaryData = {
             total_po_qty: 0,
@@ -503,7 +520,7 @@ const InvoiceManager = () => {
           Swal.fire(
             "Thông báo",
             "Đã load " + response.data.data.length + " dòng",
-            "success"
+            "success",
           );
         } else {
           Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
@@ -882,7 +899,7 @@ const InvoiceManager = () => {
             Swal.fire(
               "Thông báo",
               "Thêm Invoice mới thất bại: " + response.data.message,
-              "error"
+              "error",
             );
           }
         })
@@ -895,7 +912,7 @@ const InvoiceManager = () => {
       Swal.fire(
         "Thông báo",
         "NG: Ngày Invoice không được trước ngày hôm nay",
-        "error"
+        "error",
       );
     } else if (err_code === 3) {
       Swal.fire("Thông báo", "NG: Ver này đã bị khóa", "error");
@@ -905,7 +922,7 @@ const InvoiceManager = () => {
       Swal.fire(
         "Thông báo",
         "NG: Số lượng giao hàng nhiều hơn PO BALANCE",
-        "error"
+        "error",
       );
     }
   };
@@ -920,7 +937,7 @@ const InvoiceManager = () => {
   const handleInvoiceSelectionforUpdate = (ids: GridSelectionModel) => {
     const selectedID = new Set(ids);
     let datafilter = invoicedatatable.filter((element: any) =>
-      selectedID.has(element.DELIVERY_ID)
+      selectedID.has(element.DELIVERY_ID),
     );
     if (datafilter.length > 0) {
       setInvoiceDataTableFilter(datafilter);
@@ -943,7 +960,7 @@ const InvoiceManager = () => {
         G_NAME:
           invoicedatatablefilter[invoicedatatablefilter.length - 1].G_NAME,
         PROD_LAST_PRICE: Number(
-          invoicedatatablefilter[invoicedatatablefilter.length - 1].PROD_PRICE
+          invoicedatatablefilter[invoicedatatablefilter.length - 1].PROD_PRICE,
         ),
         USE_YN: "Y",
       };
@@ -957,17 +974,17 @@ const InvoiceManager = () => {
       setSelectedCode(selectedCodeFilter);
       setSelectedCust_CD(selectedCustomerFilter);
       setNewInvoiceQty(
-        invoicedatatablefilter[invoicedatatablefilter.length - 1].DELIVERY_QTY
+        invoicedatatablefilter[invoicedatatablefilter.length - 1].DELIVERY_QTY,
       );
       setNewPoNo(
-        invoicedatatablefilter[invoicedatatablefilter.length - 1].PO_NO
+        invoicedatatablefilter[invoicedatatablefilter.length - 1].PO_NO,
       );
       setNewInvoiceDate(moment().format("YYYY-MM-DD"));
       setNewInvoiceRemark(
-        invoicedatatablefilter[invoicedatatablefilter.length - 1].REMARK
+        invoicedatatablefilter[invoicedatatablefilter.length - 1].REMARK,
       );
       setSelectedID(
-        invoicedatatablefilter[invoicedatatablefilter.length - 1].DELIVERY_ID
+        invoicedatatablefilter[invoicedatatablefilter.length - 1].DELIVERY_ID,
       );
     } else if (invoicedatatablefilter.length === 0) {
       clearInvoiceform();
@@ -1033,7 +1050,7 @@ const InvoiceManager = () => {
             Swal.fire(
               "Thông báo",
               "Update Invoice thất bại: " + response.data.message,
-              "error"
+              "error",
             );
           }
         })
@@ -1046,7 +1063,7 @@ const InvoiceManager = () => {
       Swal.fire(
         "Thông báo",
         "NG: Ngày Giao Hàng không được trước ngày hôm nay",
-        "error"
+        "error",
       );
     } else if (err_code === 3) {
       Swal.fire("Thông báo", "NG: Ver này đã bị khóa", "error");
@@ -1082,7 +1099,7 @@ const InvoiceManager = () => {
         Swal.fire(
           "Thông báo",
           "Xóa Invoice thành công (chỉ Invoice của người đăng nhập)!",
-          "success"
+          "success",
         );
       } else {
         Swal.fire("Thông báo", "Có lỗi SQL!", "error");
@@ -1436,28 +1453,27 @@ const InvoiceManager = () => {
     getcodelist("");
   }, []);
   return (
-    <div className='invoicemanager'>
-      <div className='mininavbar'>
+    <div className="invoicemanager">
+      <div className="mininavbar">
         <div
-          className='mininavitem'
+          className="mininavitem"
           onClick={() => setNav(1)}
           style={{
             backgroundColor: selection.trapo === true ? "#02c712" : "#abc9ae",
             color: selection.trapo === true ? "yellow" : "yellow",
           }}
         >
-          <span className='mininavtext'>Tra Invoice</span>
+          <span className="mininavtext">Tra Invoice</span>
         </div>
         <div
-          className='mininavitem'
+          className="mininavitem"
           onClick={() =>
             /* checkBP(userData?.EMPL_NO, userData?.MAINDEPTNAME, ["KD"], () => {
               setNav(2);
             }) */
-            checkBP(userData,['KD'],['ALL'],['ALL'],()=> {
+            checkBP(userData, ["KD"], ["ALL"], ["ALL"], () => {
               setNav(2);
             })
-
           }
           style={{
             backgroundColor:
@@ -1465,31 +1481,31 @@ const InvoiceManager = () => {
             color: selection.thempohangloat === true ? "yellow" : "yellow",
           }}
         >
-          <span className='mininavtext'>Thêm Invoice</span>
+          <span className="mininavtext">Thêm Invoice</span>
         </div>
       </div>
       {selection.thempohangloat && (
-        <div className='newinvoice'>
-          <div className='batchnewinvoice'>
-          <h3>Thêm Invoice Hàng Loạt</h3>
-            <form className='formupload'>
-              <label htmlFor='upload'>
+        <div className="newinvoice">
+          <div className="batchnewinvoice">
+            <h3>Thêm Invoice Hàng Loạt</h3>
+            <form className="formupload">
+              <label htmlFor="upload">
                 <b>Chọn file Excel: </b>
                 <input
                   onKeyDown={(e) => {
                     handleSearchCodeKeyDown(e);
                   }}
-                  className='selectfilebutton'
-                  type='file'
-                  name='upload'
-                  id='upload'
+                  className="selectfilebutton"
+                  type="file"
+                  name="upload"
+                  id="upload"
                   onChange={(e: any) => {
                     readUploadFile(e);
                   }}
                 />
               </label>
               <div
-                className='checkpobutton'
+                className="checkpobutton"
                 onClick={(e) => {
                   e.preventDefault();
                   confirmCheckInvoiceHangLoat();
@@ -1498,7 +1514,7 @@ const InvoiceManager = () => {
                 Check Invoice
               </div>
               <div
-                className='uppobutton'
+                className="uppobutton"
                 onClick={(e) => {
                   e.preventDefault();
                   confirmUpInvoiceHangLoat();
@@ -1507,7 +1523,7 @@ const InvoiceManager = () => {
                 Up Invoice
               </div>
             </form>
-            <div className='insertInvoiceTable'>
+            <div className="insertInvoiceTable">
               {true && (
                 <DataGrid
                   sx={{ fontSize: "0.7rem", flex: 1 }}
@@ -1522,7 +1538,7 @@ const InvoiceManager = () => {
                   rowsPerPageOptions={[
                     5, 10, 50, 100, 500, 1000, 5000, 10000, 100000,
                   ]}
-                  editMode='row'
+                  editMode="row"
                 />
               )}
             </div>
@@ -1530,219 +1546,220 @@ const InvoiceManager = () => {
         </div>
       )}
       {selection.trapo && (
-        <div className='tracuuInvoice'>
-          {showhidesearchdiv && <div className='tracuuInvoiceform'>
-            <div className='forminput'>
-              <div className='forminputcolumn'>
-                <label>
-                  <b>Từ ngày:</b>
-                  <input
-                    onKeyDown={(e) => {
-                      handleSearchCodeKeyDown(e);
-                    }}
-                    type='date'
-                    value={fromdate.slice(0, 10)}
-                    onChange={(e) => setFromDate(e.target.value)}
-                  ></input>
-                </label>
-                <label>
-                  <b>Tới ngày:</b>{" "}
-                  <input
-                    onKeyDown={(e) => {
-                      handleSearchCodeKeyDown(e);
-                    }}
-                    type='date'
-                    value={todate.slice(0, 10)}
-                    onChange={(e) => setToDate(e.target.value)}
-                  ></input>
-                </label>
+        <div className="tracuuInvoice">
+          {showhidesearchdiv && (
+            <div className="tracuuInvoiceform">
+              <div className="forminput">
+                <div className="forminputcolumn">
+                  <label>
+                    <b>Từ ngày:</b>
+                    <input
+                      onKeyDown={(e) => {
+                        handleSearchCodeKeyDown(e);
+                      }}
+                      type="date"
+                      value={fromdate.slice(0, 10)}
+                      onChange={(e) => setFromDate(e.target.value)}
+                    ></input>
+                  </label>
+                  <label>
+                    <b>Tới ngày:</b>{" "}
+                    <input
+                      onKeyDown={(e) => {
+                        handleSearchCodeKeyDown(e);
+                      }}
+                      type="date"
+                      value={todate.slice(0, 10)}
+                      onChange={(e) => setToDate(e.target.value)}
+                    ></input>
+                  </label>
+                </div>
+                <div className="forminputcolumn">
+                  <label>
+                    <b>Code KD:</b>{" "}
+                    <input
+                      onKeyDown={(e) => {
+                        handleSearchCodeKeyDown(e);
+                      }}
+                      type="text"
+                      placeholder="GH63-xxxxxx"
+                      value={codeKD}
+                      onChange={(e) => setCodeKD(e.target.value)}
+                    ></input>
+                  </label>
+                  <label>
+                    <b>Code ERP:</b>{" "}
+                    <input
+                      onKeyDown={(e) => {
+                        handleSearchCodeKeyDown(e);
+                      }}
+                      type="text"
+                      placeholder="7C123xxx"
+                      value={codeCMS}
+                      onChange={(e) => setCodeCMS(e.target.value)}
+                    ></input>
+                  </label>
+                </div>
+                <div className="forminputcolumn">
+                  <label>
+                    <b>Tên nhân viên:</b>{" "}
+                    <input
+                      onKeyDown={(e) => {
+                        handleSearchCodeKeyDown(e);
+                      }}
+                      type="text"
+                      placeholder="Trang"
+                      value={empl_name}
+                      onChange={(e) => setEmpl_Name(e.target.value)}
+                    ></input>
+                  </label>
+                  <label>
+                    <b>Khách:</b>{" "}
+                    <input
+                      onKeyDown={(e) => {
+                        handleSearchCodeKeyDown(e);
+                      }}
+                      type="text"
+                      placeholder="SEVT"
+                      value={cust_name}
+                      onChange={(e) => setCust_Name(e.target.value)}
+                    ></input>
+                  </label>
+                </div>
+                <div className="forminputcolumn">
+                  <label>
+                    <b>Loại sản phẩm:</b>{" "}
+                    <input
+                      onKeyDown={(e) => {
+                        handleSearchCodeKeyDown(e);
+                      }}
+                      type="text"
+                      placeholder="TSP"
+                      value={prod_type}
+                      onChange={(e) => setProdType(e.target.value)}
+                    ></input>
+                  </label>
+                  <label>
+                    <b>ID:</b>{" "}
+                    <input
+                      onKeyDown={(e) => {
+                        handleSearchCodeKeyDown(e);
+                      }}
+                      type="text"
+                      placeholder="12345"
+                      value={id}
+                      onChange={(e) => setID(e.target.value)}
+                    ></input>
+                  </label>
+                </div>
+                <div className="forminputcolumn">
+                  <label>
+                    <b>PO NO:</b>{" "}
+                    <input
+                      onKeyDown={(e) => {
+                        handleSearchCodeKeyDown(e);
+                      }}
+                      type="text"
+                      placeholder="123abc"
+                      value={po_no}
+                      onChange={(e) => setPo_No(e.target.value)}
+                    ></input>
+                  </label>
+                  <label>
+                    <b>Vật liệu:</b>{" "}
+                    <input
+                      onKeyDown={(e) => {
+                        handleSearchCodeKeyDown(e);
+                      }}
+                      type="text"
+                      placeholder="SJ-203020HC"
+                      value={material}
+                      onChange={(e) => setMaterial(e.target.value)}
+                    ></input>
+                  </label>
+                </div>
+                <div className="forminputcolumn">
+                  <label>
+                    <b>Over/OK:</b>{" "}
+                    <input
+                      onKeyDown={(e) => {
+                        handleSearchCodeKeyDown(e);
+                      }}
+                      type="text"
+                      placeholder="OVER"
+                      value={over}
+                      onChange={(e) => setOver(e.target.value)}
+                    ></input>
+                  </label>
+                  <label>
+                    <b>Invoice No:</b>{" "}
+                    <input
+                      onKeyDown={(e) => {
+                        handleSearchCodeKeyDown(e);
+                      }}
+                      type="text"
+                      placeholder="số invoice"
+                      value={invoice_no}
+                      onChange={(e) => setInvoice_No(e.target.value)}
+                    ></input>
+                  </label>
+                </div>
               </div>
-              <div className='forminputcolumn'>
+              <div className="formbutton">
                 <label>
-                  <b>Code KD:</b>{" "}
+                  <b>All Time:</b>
                   <input
                     onKeyDown={(e) => {
                       handleSearchCodeKeyDown(e);
                     }}
-                    type='text'
-                    placeholder='GH63-xxxxxx'
-                    value={codeKD}
-                    onChange={(e) => setCodeKD(e.target.value)}
+                    type="checkbox"
+                    name="alltimecheckbox"
+                    defaultChecked={alltime}
+                    onChange={() => setAllTime(!alltime)}
                   ></input>
                 </label>
-                <label>
-                  <b>Code ERP:</b>{" "}
-                  <input
-                    onKeyDown={(e) => {
-                      handleSearchCodeKeyDown(e);
-                    }}
-                    type='text'
-                    placeholder='7C123xxx'
-                    value={codeCMS}
-                    onChange={(e) => setCodeCMS(e.target.value)}
-                  ></input>
-                </label>
-              </div>
-              <div className='forminputcolumn'>
-                <label>
-                  <b>Tên nhân viên:</b>{" "}
-                  <input
-                    onKeyDown={(e) => {
-                      handleSearchCodeKeyDown(e);
-                    }}
-                    type='text'
-                    placeholder='Trang'
-                    value={empl_name}
-                    onChange={(e) => setEmpl_Name(e.target.value)}
-                  ></input>
-                </label>
-                <label>
-                  <b>Khách:</b>{" "}
-                  <input
-                    onKeyDown={(e) => {
-                      handleSearchCodeKeyDown(e);
-                    }}
-                    type='text'
-                    placeholder='SEVT'
-                    value={cust_name}
-                    onChange={(e) => setCust_Name(e.target.value)}
-                  ></input>
-                </label>
-              </div>
-              <div className='forminputcolumn'>
-                <label>
-                  <b>Loại sản phẩm:</b>{" "}
-                  <input
-                    onKeyDown={(e) => {
-                      handleSearchCodeKeyDown(e);
-                    }}
-                    type='text'
-                    placeholder='TSP'
-                    value={prod_type}
-                    onChange={(e) => setProdType(e.target.value)}
-                  ></input>
-                </label>
-                <label>
-                  <b>ID:</b>{" "}
-                  <input
-                    onKeyDown={(e) => {
-                      handleSearchCodeKeyDown(e);
-                    }}
-                    type='text'
-                    placeholder='12345'
-                    value={id}
-                    onChange={(e) => setID(e.target.value)}
-                  ></input>
-                </label>
-              </div>
-              <div className='forminputcolumn'>
-                <label>
-                  <b>PO NO:</b>{" "}
-                  <input
-                    onKeyDown={(e) => {
-                      handleSearchCodeKeyDown(e);
-                    }}
-                    type='text'
-                    placeholder='123abc'
-                    value={po_no}
-                    onChange={(e) => setPo_No(e.target.value)}
-                  ></input>
-                </label>
-                <label>
-                  <b>Vật liệu:</b>{" "}
-                  <input
-                    onKeyDown={(e) => {
-                      handleSearchCodeKeyDown(e);
-                    }}
-                    type='text'
-                    placeholder='SJ-203020HC'
-                    value={material}
-                    onChange={(e) => setMaterial(e.target.value)}
-                  ></input>
-                </label>
-              </div>
-              <div className='forminputcolumn'>
-                <label>
-                  <b>Over/OK:</b>{" "}
-                  <input
-                    onKeyDown={(e) => {
-                      handleSearchCodeKeyDown(e);
-                    }}
-                    type='text'
-                    placeholder='OVER'
-                    value={over}
-                    onChange={(e) => setOver(e.target.value)}
-                  ></input>
-                </label>
-                <label>
-                  <b>Invoice No:</b>{" "}
-                  <input
-                    onKeyDown={(e) => {
-                      handleSearchCodeKeyDown(e);
-                    }}
-                    type='text'
-                    placeholder='số invoice'
-                    value={invoice_no}
-                    onChange={(e) => setInvoice_No(e.target.value)}
-                  ></input>
-                </label>
-              </div>
-            </div>
-            <div className='formbutton'>
-              <label>
-                <b>All Time:</b>
-                <input
-                  onKeyDown={(e) => {
-                    handleSearchCodeKeyDown(e);
+                <IconButton
+                  className="buttonIcon"
+                  onClick={() => {
+                    handletraInvoice();
                   }}
-                  type='checkbox'
-                  name='alltimecheckbox'
-                  defaultChecked={alltime}
-                  onChange={() => setAllTime(!alltime)}
-                ></input>
-              </label>
-              <IconButton
-                className='buttonIcon'
-                onClick={() => {
-                  handletraInvoice();
-                }}
-              >
-                <FcSearch color='green' size={30} />
-                Search
-              </IconButton>
-            </div>
-            <div className='formsummary'>
-              <table>
-                <thead>
-                  <tr>
-                    <td>DELIVERED QTY</td>
-                    <td>DELIVERED AMOUNT</td>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td style={{ color: "purple", fontWeight: "bold" }}>
-                      {" "}
-                      {invoiceSummary.total_delivered_qty.toLocaleString(
-                        "en-US"
-                      )}{" "}
-                      EA
-                    </td>
-                    <td style={{ color: "purple", fontWeight: "bold" }}>
-                      {" "}
-                      {invoiceSummary.total_delivered_amount.toLocaleString(
-                        "en-US",
-                        {
-                          style: "currency",
-                          currency: "USD",
-                        }
-                      )}{" "}
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+                >
+                  <FcSearch color="green" size={30} />
+                  Search
+                </IconButton>
+              </div>
+              <div className="formsummary">
+                <table>
+                  <thead>
+                    <tr>
+                      <td>DELIVERED QTY</td>
+                      <td>DELIVERED AMOUNT</td>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td style={{ color: "purple", fontWeight: "bold" }}>
+                        {" "}
+                        {invoiceSummary.total_delivered_qty.toLocaleString(
+                          "en-US",
+                        )}{" "}
+                        EA
+                      </td>
+                      <td style={{ color: "purple", fontWeight: "bold" }}>
+                        {" "}
+                        {invoiceSummary.total_delivered_amount.toLocaleString(
+                          "en-US",
+                          {
+                            style: "currency",
+                            currency: "USD",
+                          },
+                        )}{" "}
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
 
-              {/*  <div className='summarygroup'>
+                {/*  <div className='summarygroup'>
                 <div className='summaryvalue'>
                   <b>
                     DELIVERED QTY:{" "}
@@ -1759,9 +1776,10 @@ const InvoiceManager = () => {
                   </b>
                 </div>
               </div>         */}
+              </div>
             </div>
-          </div>}
-          <div className='tracuuInvoiceTable'>
+          )}
+          <div className="tracuuInvoiceTable">
             <DataGrid
               sx={{ fontSize: "0.7rem" }}
               components={{
@@ -1775,7 +1793,7 @@ const InvoiceManager = () => {
               rowsPerPageOptions={[
                 5, 10, 50, 100, 500, 1000, 5000, 10000, 100000,
               ]}
-              editMode='row'
+              editMode="row"
               getRowId={(row) => row.DELIVERY_ID}
               checkboxSelection
               disableSelectionOnClick
@@ -1787,29 +1805,29 @@ const InvoiceManager = () => {
         </div>
       )}
       {selection.them1invoice && (
-        <div className='them1invoice'>
-          <div className='formnho'>
-            <div className='dangkyform'>
+        <div className="them1invoice">
+          <div className="formnho">
+            <div className="dangkyform">
               <h3>Thêm Invoice mới</h3>
-              <div className='dangkyinput'>
-                <div className='dangkyinputbox'>
+              <div className="dangkyinput">
+                <div className="dangkyinputbox">
                   <label>
                     <b>Khách hàng:</b>{" "}
                     <Autocomplete
-                      size='small'
+                      size="small"
                       disablePortal
                       options={customerList}
-                      className='autocomplete'
+                      className="autocomplete"
                       getOptionLabel={(option: CustomerListData) =>
                         `${option.CUST_CD}: ${option.CUST_NAME_KD}`
                       }
                       renderInput={(params) => (
-                        <TextField {...params} label='Select customer' />
+                        <TextField {...params} label="Select customer" />
                       )}
                       value={selectedCust_CD}
                       onChange={(
                         event: any,
-                        newValue: CustomerListData | null
+                        newValue: CustomerListData | null,
                       ) => {
                         console.log(newValue);
                         setSelectedCust_CD(newValue);
@@ -1819,23 +1837,23 @@ const InvoiceManager = () => {
                   <label>
                     <b>Code hàng:</b>{" "}
                     <Autocomplete
-                      size='small'
+                      size="small"
                       disablePortal
                       options={codeList}
-                      className='autocomplete'
+                      className="autocomplete"
                       filterOptions={filterOptions1}
                       getOptionLabel={(option: CodeListData | any) =>
                         `${option.G_CODE}: ${option.G_NAME}`
                       }
                       renderInput={(params) => (
-                        <TextField {...params} label='Select code' />
+                        <TextField {...params} label="Select code" />
                       )}
                       onChange={(event: any, newValue: CodeListData | any) => {
                         console.log(newValue);
                         setNewPoPrice(
                           newValue === null
                             ? ""
-                            : newValue.PROD_LAST_PRICE.toString()
+                            : newValue.PROD_LAST_PRICE.toString(),
                         );
                         setSelectedCode(newValue);
                       }}
@@ -1849,16 +1867,16 @@ const InvoiceManager = () => {
                       onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                         setNewPoNo(e.target.value)
                       }
-                      size='small'
-                      color='success'
-                      className='autocomplete'
-                      id='outlined-basic'
-                      label='Số PO'
-                      variant='outlined'
+                      size="small"
+                      color="success"
+                      className="autocomplete"
+                      id="outlined-basic"
+                      label="Số PO"
+                      variant="outlined"
                     />
                   </label>
                 </div>
-                <div className='dangkyinputbox'>
+                <div className="dangkyinputbox">
                   <label>
                     <b>Invoice QTY:</b>{" "}
                     <TextField
@@ -1866,12 +1884,12 @@ const InvoiceManager = () => {
                       onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                         setNewInvoiceQty(Number(e.target.value))
                       }
-                      size='small'
-                      color='success'
-                      className='autocomplete'
-                      id='outlined-basic'
-                      label='INVOICE QTY'
-                      variant='outlined'
+                      size="small"
+                      color="success"
+                      className="autocomplete"
+                      id="outlined-basic"
+                      label="INVOICE QTY"
+                      variant="outlined"
                     />
                   </label>
                   <label>
@@ -1880,8 +1898,8 @@ const InvoiceManager = () => {
                       onKeyDown={(e) => {
                         handleSearchCodeKeyDown(e);
                       }}
-                      className='inputdata'
-                      type='date'
+                      className="inputdata"
+                      type="date"
                       value={newinvoicedate.slice(0, 10)}
                       onChange={(e) => setNewInvoiceDate(e.target.value)}
                     ></input>
@@ -1893,18 +1911,18 @@ const InvoiceManager = () => {
                       onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                         setNewInvoiceRemark(e.target.value)
                       }
-                      size='small'
-                      className='autocomplete'
-                      id='outlined-basic'
-                      label='Remark'
-                      variant='outlined'
+                      size="small"
+                      className="autocomplete"
+                      id="outlined-basic"
+                      label="Remark"
+                      variant="outlined"
                     />
                   </label>
                 </div>
               </div>
-              <div className='dangkybutton'>
+              <div className="dangkybutton">
                 <button
-                  className='thembutton'
+                  className="thembutton"
                   onClick={() => {
                     handle_add_1Invoice();
                   }}
@@ -1912,7 +1930,7 @@ const InvoiceManager = () => {
                   Thêm Invoice
                 </button>
                 <button
-                  className='closebutton'
+                  className="closebutton"
                   onClick={() => {
                     updateInvoice();
                   }}
@@ -1920,7 +1938,7 @@ const InvoiceManager = () => {
                   Sửa Invoice
                 </button>
                 <button
-                  className='suabutton'
+                  className="suabutton"
                   onClick={() => {
                     clearInvoiceform();
                   }}
@@ -1928,7 +1946,7 @@ const InvoiceManager = () => {
                   Clear
                 </button>
                 <button
-                  className='closebutton'
+                  className="closebutton"
                   onClick={() => {
                     setSelection({
                       ...selection,
@@ -1947,17 +1965,17 @@ const InvoiceManager = () => {
         </div>
       )}
       {showhidePivotTable && (
-        <div className='pivottable1'>
+        <div className="pivottable1">
           <IconButton
-            className='buttonIcon'
+            className="buttonIcon"
             onClick={() => {
               setShowHidePivotTable(false);
             }}
           >
-            <AiFillCloseCircle color='blue' size={25} />
+            <AiFillCloseCircle color="blue" size={25} />
             Close
           </IconButton>
-          <PivotTable datasource={dataSource} tableID='invoicetablepivot' />
+          <PivotTable datasource={dataSource} tableID="invoicetablepivot" />
         </div>
       )}
     </div>

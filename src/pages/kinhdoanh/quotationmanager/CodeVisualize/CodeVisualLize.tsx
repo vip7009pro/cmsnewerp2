@@ -74,7 +74,7 @@ const CodeVisualLize = ({ DATA }: { DATA: CODEDATA }) => {
               ROTATE: 0,
               COLOR: "#35B0D1",
             }}
-          />
+          />,
         );
       }
     }
@@ -86,7 +86,7 @@ const CodeVisualLize = ({ DATA }: { DATA: CODEDATA }) => {
   }, [DATA]);
 
   return (
-    <div className='codevisualizecomponent' style={{ display: "flex" }}>
+    <div className="codevisualizecomponent" style={{ display: "flex" }}>
       {productArray}
     </div>
   );

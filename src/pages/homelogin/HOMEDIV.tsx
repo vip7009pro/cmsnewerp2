@@ -1,9 +1,7 @@
-import React from 'react'
+import React from "react";
 
 const HOMEDIV = () => {
-  return (
-    <div>HOMEDIV</div>
-  )
-}
+  return <div>HOMEDIV</div>;
+};
 
-export default HOMEDIV
+export default HOMEDIV;

@@ -21,7 +21,7 @@ const DrawComponentTBG = ({
   PROD_REQUEST_NO?: string;
 }) => {
   const userData: UserData | undefined = useSelector(
-    (state: RootState) => state.totalSlice.userData
+    (state: RootState) => state.totalSlice.userData,
   );
   const [page, setPage] = useState(1);
   const canvasRef = useRef(null);
@@ -35,24 +35,24 @@ const DrawComponentTBG = ({
   });
 
   return (
-    <div className='drawcomponenttbg'>
+    <div className="drawcomponenttbg">
       {PDBV === "Y" && (
-        <div className='qcpass'>
-          <img alt='qcpass' src='/QC PASS20.png' width={220} height={200} />
+        <div className="qcpass">
+          <img alt="qcpass" src="/QC PASS20.png" width={220} height={200} />
         </div>
       )}
-      <span className='approval_info2'>TKIN: {userData?.EMPL_NO}</span>
+      <span className="approval_info2">TKIN: {userData?.EMPL_NO}</span>
       {PDBV === "Y" && (
-        <span className='approval_info'>
+        <span className="approval_info">
           | TTPD: {PDBV_EMPL}_
           {moment.utc(PDBV_DATE).format("YYYY-MM-DD HH:mm:ss")} | YCSX:{" "}
           {PROD_REQUEST_NO}
         </span>
       )}
-      <canvas className='draw' ref={canvasRef} />
+      <canvas className="draw" ref={canvasRef} />
       {PDBV === "Y" && (
-        <div className='qcpass2'>
-          <img alt='qcpass2' src='/QC PASS20.png' width={220} height={200} />
+        <div className="qcpass2">
+          <img alt="qcpass2" src="/QC PASS20.png" width={220} height={200} />
         </div>
       )}
     </div>

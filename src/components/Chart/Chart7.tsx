@@ -2,7 +2,6 @@ import React from "react";
 import { Chart } from "react-google-charts";
 
 const Chart7 = () => {
-  
   const data = [
     ["Task", "Hours per Day"],
     ["Work", 11],
@@ -21,7 +20,7 @@ const Chart7 = () => {
   return (
     <div>
       <Chart
-        chartType='PieChart'
+        chartType="PieChart"
         data={data}
         options={options}
         width={"100%"}

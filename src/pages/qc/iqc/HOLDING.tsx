@@ -29,129 +29,108 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import { HOLDING_DATA, UserData } from "../../../api/GlobalInterface";
 
-
 const HOLDING = () => {
-const [selectedRowsData, setSelectedRowsData] = useState<
-    Array<HOLDING_DATA>
-  >([]);
+  const [selectedRowsData, setSelectedRowsData] = useState<Array<HOLDING_DATA>>(
+    [],
+  );
   const userData: UserData | undefined = useSelector(
-    (state: RootState) => state.totalSlice.userData
+    (state: RootState) => state.totalSlice.userData,
   );
   const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
   const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));
-  const [codeKD, setCodeKD] = useState("");  
+  const [codeKD, setCodeKD] = useState("");
   const [alltime, setAllTime] = useState(true);
   const [id, setID] = useState("");
-  const [holdingdatatable, setHoldingDataTable] = useState<Array<any>>(
-    []
-  );
+  const [holdingdatatable, setHoldingDataTable] = useState<Array<any>>([]);
   const [m_name, setM_Name] = useState("");
   const [m_code, setM_Code] = useState("");
   const [mLotNo, setMLotNo] = useState("");
   const [mStatus, setMStatus] = useState("ALL");
 
-  const setQCPASS = async (value: string) => {    
+  const setQCPASS = async (value: string) => {
     //console.log(selectedRowsData);
-    if(selectedRowsData.length>0)
-    {
-        Swal.fire({
-            title: "SET/REST PASS",
-            text: "Đang SET/RESET PASS liệu",
-            icon: "info",
-            showCancelButton: false,
-            allowOutsideClick: false,
-            confirmButtonText: "OK",
-            showConfirmButton: false,
-        });
-        let err_code: string ='';
-        for(let i=0;i<selectedRowsData.length;i++)
-        {
-        await generalQuery("updateQCPASS_HOLDING", {            
-            M_LOT_NO: selectedRowsData[i].M_LOT_NO,     
-            ID: selectedRowsData[i].ID,
-            VALUE: value
-            })
-            // eslint-disable-next-line no-loop-func
-            .then((response) => {
+    if (selectedRowsData.length > 0) {
+      Swal.fire({
+        title: "SET/REST PASS",
+        text: "Đang SET/RESET PASS liệu",
+        icon: "info",
+        showCancelButton: false,
+        allowOutsideClick: false,
+        confirmButtonText: "OK",
+        showConfirmButton: false,
+      });
+      let err_code: string = "";
+      for (let i = 0; i < selectedRowsData.length; i++) {
+        await generalQuery("updateQCPASS_HOLDING", {
+          M_LOT_NO: selectedRowsData[i].M_LOT_NO,
+          ID: selectedRowsData[i].ID,
+          VALUE: value,
+        })
+          // eslint-disable-next-line no-loop-func
+          .then((response) => {
             //console.log(response.data.data);
             if (response.data.tk_status !== "NG") {
-            
             } else {
-                err_code += ` Lỗi: ${response.data.message}`; 
+              err_code += ` Lỗi: ${response.data.message}`;
             }
-            })
-            .catch((error) => {
+          })
+          .catch((error) => {
             console.log(error);
-            });
-        }
-        if(err_code ==='')
-        {
-            Swal.fire('Thông báo','SET thành công','success');
-        }
-        else
-        {
-            Swal.fire('Thông báo','Lỗi: '+ err_code,'error');
-        }
+          });
+      }
+      if (err_code === "") {
+        Swal.fire("Thông báo", "SET thành công", "success");
+      } else {
+        Swal.fire("Thông báo", "Lỗi: " + err_code, "error");
+      }
+    } else {
+      Swal.fire("Thông báo", "Chọn ít nhất 1 dòng để thực hiện", "error");
     }
-    else
-    {
-        Swal.fire('Thông báo','Chọn ít nhất 1 dòng để thực hiện','error');
-    }
-
-  }
-  const updateReason = async ()=> {
+  };
+  const updateReason = async () => {
     console.log(selectedRowsData);
-    if(selectedRowsData.length>0)
-    {
-        Swal.fire({
-            title: "Update hiện tượng lỗi",
-            text: "Đang update thông tin lỗi",
-            icon: "info",
-            showCancelButton: false,
-            allowOutsideClick: false,
-            confirmButtonText: "OK",
-            showConfirmButton: false,
-        });
-        let err_code: string ='';
-        for(let i=0;i<selectedRowsData.length;i++)
-        {
+    if (selectedRowsData.length > 0) {
+      Swal.fire({
+        title: "Update hiện tượng lỗi",
+        text: "Đang update thông tin lỗi",
+        icon: "info",
+        showCancelButton: false,
+        allowOutsideClick: false,
+        confirmButtonText: "OK",
+        showConfirmButton: false,
+      });
+      let err_code: string = "";
+      for (let i = 0; i < selectedRowsData.length; i++) {
         await generalQuery("updateMaterialHoldingReason", {
-              HOLD_ID: selectedRowsData[i].HOLD_ID,
-              REASON: selectedRowsData[i].REASON           
-            })
-            // eslint-disable-next-line no-loop-func
-            .then((response) => {
+          HOLD_ID: selectedRowsData[i].HOLD_ID,
+          REASON: selectedRowsData[i].REASON,
+        })
+          // eslint-disable-next-line no-loop-func
+          .then((response) => {
             //console.log(response.data.data);
             if (response.data.tk_status !== "NG") {
-            
             } else {
-                err_code += ` Lỗi: ${response.data.message}`; 
+              err_code += ` Lỗi: ${response.data.message}`;
             }
-            })
-            .catch((error) => {
+          })
+          .catch((error) => {
             console.log(error);
-            });
-        }
-        if(err_code ==='')
-        {
-            Swal.fire('Thông báo','Update thành công','success');
-        }
-        else
-        {
-            Swal.fire('Thông báo','Lỗi: '+ err_code,'error');
-        }
+          });
+      }
+      if (err_code === "") {
+        Swal.fire("Thông báo", "Update thành công", "success");
+      } else {
+        Swal.fire("Thông báo", "Lỗi: " + err_code, "error");
+      }
+    } else {
+      Swal.fire("Thông báo", "Chọn ít nhất 1 dòng để thực hiện", "error");
     }
-    else
-    {
-        Swal.fire('Thông báo','Chọn ít nhất 1 dòng để thực hiện','error');
-    }
-
-  }
+  };
   const materialDataTable = React.useMemo(
     () => (
-      <div className='datatb'>
+      <div className="datatb">
         <DataGrid
-          style={{fontSize:'0.7rem'}}
+          style={{ fontSize: "0.7rem" }}
           autoNavigateToFocusedRow={true}
           allowColumnReordering={true}
           allowColumnResizing={true}
@@ -160,8 +139,8 @@ const [selectedRowsData, setSelectedRowsData] = useState<
           columnResizingMode={"widget"}
           showColumnLines={true}
           dataSource={holdingdatatable}
-          columnWidth='auto'
-          keyExpr='id'
+          columnWidth="auto"
+          keyExpr="id"
           height={"70vh"}
           showBorders={true}
           onSelectionChanged={(e) => {
@@ -177,35 +156,34 @@ const [selectedRowsData, setSelectedRowsData] = useState<
             useNative={true}
             scrollByContent={true}
             scrollByThumb={true}
-            showScrollbar='onHover'
-            mode='virtual'
+            showScrollbar="onHover"
+            mode="virtual"
           />
-          <Selection mode='multiple' selectAllMode='allPages' />
+          <Selection mode="multiple" selectAllMode="allPages" />
           <Editing
             allowUpdating={true}
             allowAdding={false}
             allowDeleting={false}
-            mode='cell'
+            mode="cell"
             confirmDelete={true}
             onChangesChange={(e) => {}}
           />
           <Export enabled={true} />
           <Toolbar disabled={false}>
-            <Item location='before'>
+            <Item location="before">
               <IconButton
-                className='buttonIcon'
+                className="buttonIcon"
                 onClick={() => {
                   SaveExcel(holdingdatatable, "SPEC DTC");
                 }}
               >
-                <AiFillFileExcel color='green' size={25} />
+                <AiFillFileExcel color="green" size={25} />
                 SAVE
               </IconButton>
-              
             </Item>
-            <Item name='searchPanel' />
-            <Item name='exportButton' />
-            <Item name='columnChooser' />
+            <Item name="searchPanel" />
+            <Item name="exportButton" />
+            <Item name="columnChooser" />
           </Toolbar>
           <FilterRow visible={true} />
           <SearchPanel visible={true} />
@@ -216,68 +194,193 @@ const [selectedRowsData, setSelectedRowsData] = useState<
             allowedPageSizes={[5, 10, 15, 20, 100, 1000, 10000, "all"]}
             showNavigationButtons={true}
             showInfo={true}
-            infoText='Page #{0}. Total: {1} ({2} items)'
-            displayMode='compact'
+            infoText="Page #{0}. Total: {1} ({2} items)"
+            displayMode="compact"
           />
-            <Column dataField='HOLD_ID' caption='HOLD_ID' width={100} allowEditing={false}></Column>
-            <Column dataField='ID' caption='ID' width={100} allowEditing={false}></Column>
-            <Column dataField='HOLDING_MONTH' caption='HOLDING_MONTH' width={100} allowEditing={false}></Column>
-            <Column dataField='FACTORY' caption='FACTORY' width={100} allowEditing={false}></Column>
-            <Column dataField='WAHS_CD' caption='WAHS_CD' width={100} allowEditing={false}></Column>
-            <Column dataField='LOC_CD' caption='LOC_CD' width={100} allowEditing={false}></Column>
-            <Column dataField='M_LOT_NO' caption='M_LOT_NO' width={100} allowEditing={false}></Column>
-            <Column dataField='M_CODE' caption='M_CODE' width={100} allowEditing={false}></Column>
-            <Column dataField='M_NAME' caption='M_NAME' width={150} allowEditing={false}></Column>
-            <Column dataField='WIDTH_CD' caption='WIDTH_CD' width={100} allowEditing={false}></Column>
-            <Column dataField='HOLDING_ROLL_QTY' caption='HOLDING_ROLL_QTY' width={100} allowEditing={false}></Column>
-            <Column dataField='HOLDING_QTY' caption='HOLDING_QTY' width={100} allowEditing={false}></Column>
-            <Column dataField='HOLDING_TOTAL_QTY' caption='HOLDING_TOTAL_QTY' width={100} allowEditing={false}></Column>
-            <Column dataField='REASON' caption='REASON' width={150} allowEditing={true}></Column>
-            <Column dataField='HOLDING_IN_DATE' caption='HOLDING_IN_DATE' width={100} allowEditing={false}></Column>
-            <Column dataField='HOLDING_OUT_DATE' caption='HOLDING_OUT_DATE' width={100} allowEditing={false}></Column>
-            <Column dataField='VENDOR_LOT' caption='VENDOR_LOT' width={100} allowEditing={false}></Column>
-            <Column dataField='USE_YN' caption='USE_YN' width={100} allowEditing={false}></Column>
-            <Column dataField='INS_DATE' caption='INS_DATE' width={150} allowEditing={false}></Column>
-            <Column dataField='INS_EMPL' caption='INS_EMPL' width={100} allowEditing={false}></Column>
-            <Column dataField='UPD_DATE' caption='UPD_DATE' width={150} allowEditing={false}></Column>
-            <Column dataField='UPD_EMPL' caption='UPD_EMPL' width={100} allowEditing={false}></Column>
-            <Column dataField='QC_PASS' caption='QC_PASS' width={100} allowEditing={false}></Column>
-            <Column dataField='QC_PASS_DATE' caption='QC_PASS_DATE' width={150} allowEditing={false}></Column>
-            <Column dataField='QC_PASS_EMPL' caption='QC_PASS_EMPL' width={100} allowEditing={false}></Column>
+          <Column
+            dataField="HOLD_ID"
+            caption="HOLD_ID"
+            width={100}
+            allowEditing={false}
+          ></Column>
+          <Column
+            dataField="ID"
+            caption="ID"
+            width={100}
+            allowEditing={false}
+          ></Column>
+          <Column
+            dataField="HOLDING_MONTH"
+            caption="HOLDING_MONTH"
+            width={100}
+            allowEditing={false}
+          ></Column>
+          <Column
+            dataField="FACTORY"
+            caption="FACTORY"
+            width={100}
+            allowEditing={false}
+          ></Column>
+          <Column
+            dataField="WAHS_CD"
+            caption="WAHS_CD"
+            width={100}
+            allowEditing={false}
+          ></Column>
+          <Column
+            dataField="LOC_CD"
+            caption="LOC_CD"
+            width={100}
+            allowEditing={false}
+          ></Column>
+          <Column
+            dataField="M_LOT_NO"
+            caption="M_LOT_NO"
+            width={100}
+            allowEditing={false}
+          ></Column>
+          <Column
+            dataField="M_CODE"
+            caption="M_CODE"
+            width={100}
+            allowEditing={false}
+          ></Column>
+          <Column
+            dataField="M_NAME"
+            caption="M_NAME"
+            width={150}
+            allowEditing={false}
+          ></Column>
+          <Column
+            dataField="WIDTH_CD"
+            caption="WIDTH_CD"
+            width={100}
+            allowEditing={false}
+          ></Column>
+          <Column
+            dataField="HOLDING_ROLL_QTY"
+            caption="HOLDING_ROLL_QTY"
+            width={100}
+            allowEditing={false}
+          ></Column>
+          <Column
+            dataField="HOLDING_QTY"
+            caption="HOLDING_QTY"
+            width={100}
+            allowEditing={false}
+          ></Column>
+          <Column
+            dataField="HOLDING_TOTAL_QTY"
+            caption="HOLDING_TOTAL_QTY"
+            width={100}
+            allowEditing={false}
+          ></Column>
+          <Column
+            dataField="REASON"
+            caption="REASON"
+            width={150}
+            allowEditing={true}
+          ></Column>
+          <Column
+            dataField="HOLDING_IN_DATE"
+            caption="HOLDING_IN_DATE"
+            width={100}
+            allowEditing={false}
+          ></Column>
+          <Column
+            dataField="HOLDING_OUT_DATE"
+            caption="HOLDING_OUT_DATE"
+            width={100}
+            allowEditing={false}
+          ></Column>
+          <Column
+            dataField="VENDOR_LOT"
+            caption="VENDOR_LOT"
+            width={100}
+            allowEditing={false}
+          ></Column>
+          <Column
+            dataField="USE_YN"
+            caption="USE_YN"
+            width={100}
+            allowEditing={false}
+          ></Column>
+          <Column
+            dataField="INS_DATE"
+            caption="INS_DATE"
+            width={150}
+            allowEditing={false}
+          ></Column>
+          <Column
+            dataField="INS_EMPL"
+            caption="INS_EMPL"
+            width={100}
+            allowEditing={false}
+          ></Column>
+          <Column
+            dataField="UPD_DATE"
+            caption="UPD_DATE"
+            width={150}
+            allowEditing={false}
+          ></Column>
+          <Column
+            dataField="UPD_EMPL"
+            caption="UPD_EMPL"
+            width={100}
+            allowEditing={false}
+          ></Column>
+          <Column
+            dataField="QC_PASS"
+            caption="QC_PASS"
+            width={100}
+            allowEditing={false}
+          ></Column>
+          <Column
+            dataField="QC_PASS_DATE"
+            caption="QC_PASS_DATE"
+            width={150}
+            allowEditing={false}
+          ></Column>
+          <Column
+            dataField="QC_PASS_EMPL"
+            caption="QC_PASS_EMPL"
+            width={100}
+            allowEditing={false}
+          ></Column>
 
           <Summary>
             <TotalItem
-              alignment='right'
-              column='M_CODE'
-              summaryType='count'
+              alignment="right"
+              column="M_CODE"
+              summaryType="count"
               valueFormat={"decimal"}
             />
             <TotalItem
-              alignment='right'
-              column='HOLDING_ROLL_QTY'
-              summaryType='sum'
+              alignment="right"
+              column="HOLDING_ROLL_QTY"
+              summaryType="sum"
               valueFormat={"decimal"}
             />
             <TotalItem
-              alignment='right'
-              column='HOLDING_QTY'
-              summaryType='sum'
+              alignment="right"
+              column="HOLDING_QTY"
+              summaryType="sum"
               valueFormat={"decimal"}
             />
             <TotalItem
-              alignment='right'
-              column='HOLDING_TOTAL_QTY'
-              summaryType='sum'
+              alignment="right"
+              column="HOLDING_TOTAL_QTY"
+              summaryType="sum"
               valueFormat={"decimal"}
             />
           </Summary>
         </DataGrid>
       </div>
     ),
-    [holdingdatatable,]
+    [holdingdatatable],
   );
   const handleSearchCodeKeyDown = (
-    e: React.KeyboardEvent<HTMLInputElement>
+    e: React.KeyboardEvent<HTMLInputElement>,
   ) => {
     if (e.key === "Enter") {
       handletraHoldingData();
@@ -296,77 +399,94 @@ const [selectedRowsData, setSelectedRowsData] = useState<
     generalQuery("traholdingmaterial", {
       ALLTIME: alltime,
       FROM_DATE: fromdate,
-      TO_DATE: todate,     
+      TO_DATE: todate,
       M_NAME: m_name,
-      M_CODE: m_code,  
+      M_CODE: m_code,
       M_LOT_NO: mLotNo,
       M_STATUS: mStatus,
       ID: id,
     })
-    .then((response) => {
-    //console.log(response.data.data);
-    if (response.data.tk_status !== "NG") {
-        const loadeddata: HOLDING_DATA[] = response.data.data.map(
-        (element: HOLDING_DATA, index: number) => {
-            return {
-            ...element,
-            INS_DATE: element.INS_DATE !== null ? moment.utc(element.INS_DATE).format('YYYY-MM-DD HH:mm:ss'):'',
-            UPD_DATE: element.UPD_DATE !== null ? moment.utc(element.UPD_DATE).format('YYYY-MM-DD HH:mm:ss'):'',
-            QC_PASS_DATE: element.QC_PASS_DATE !== null ? moment.utc(element.QC_PASS_DATE).format('YYYY-MM-DD HH:mm:ss'):'',
-            id: index,
-            };
+      .then((response) => {
+        //console.log(response.data.data);
+        if (response.data.tk_status !== "NG") {
+          const loadeddata: HOLDING_DATA[] = response.data.data.map(
+            (element: HOLDING_DATA, index: number) => {
+              return {
+                ...element,
+                INS_DATE:
+                  element.INS_DATE !== null
+                    ? moment.utc(element.INS_DATE).format("YYYY-MM-DD HH:mm:ss")
+                    : "",
+                UPD_DATE:
+                  element.UPD_DATE !== null
+                    ? moment.utc(element.UPD_DATE).format("YYYY-MM-DD HH:mm:ss")
+                    : "",
+                QC_PASS_DATE:
+                  element.QC_PASS_DATE !== null
+                    ? moment
+                        .utc(element.QC_PASS_DATE)
+                        .format("YYYY-MM-DD HH:mm:ss")
+                    : "",
+                id: index,
+              };
+            },
+          );
+          setHoldingDataTable(loadeddata);
+          Swal.fire(
+            "Thông báo",
+            "Đã load " + response.data.data.length + " dòng",
+            "success",
+          );
+        } else {
+          Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
         }
-        );
-        setHoldingDataTable(loadeddata);
-        Swal.fire(
-        "Thông báo",
-        "Đã load " + response.data.data.length + " dòng",
-        "success"
-        );
-    } else {
-        Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
-    }
-    })
-    .catch((error) => {
-    console.log(error);
-    });
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   useEffect(() => {
     //setColumnDefinition(column_inspect_output);
   }, []);
   return (
-    <div className='holding'>
-      <div className='tracuuDataInspection'>
-        <div className='tracuuDataInspectionform'>
-          <div className='forminput'>
-            <div className='forminputcolumn'>
+    <div className="holding">
+      <div className="tracuuDataInspection">
+        <div className="tracuuDataInspectionform">
+          <div className="forminput">
+            <div className="forminputcolumn">
               <label>
                 <b>Từ ngày:</b>
-                <input onKeyDown={(e)=> {handleSearchCodeKeyDown(e);} }
-                  type='date'
+                <input
+                  onKeyDown={(e) => {
+                    handleSearchCodeKeyDown(e);
+                  }}
+                  type="date"
                   value={fromdate.slice(0, 10)}
                   onChange={(e) => setFromDate(e.target.value)}
                 ></input>
               </label>
               <label>
                 <b>Tới ngày:</b>{" "}
-                <input onKeyDown={(e)=> {handleSearchCodeKeyDown(e);} }
-                  type='date'
+                <input
+                  onKeyDown={(e) => {
+                    handleSearchCodeKeyDown(e);
+                  }}
+                  type="date"
                   value={todate.slice(0, 10)}
                   onChange={(e) => setToDate(e.target.value)}
                 ></input>
               </label>
-            </div>        
-            <div className='forminputcolumn'>
+            </div>
+            <div className="forminputcolumn">
               <label>
                 <b>Tên Liệu:</b>{" "}
                 <input
                   onKeyDown={(e) => {
                     handleSearchCodeKeyDown(e);
                   }}
-                  type='text'
-                  placeholder='SJ-203020HC'
+                  type="text"
+                  placeholder="SJ-203020HC"
                   value={m_name}
                   onChange={(e) => setM_Name(e.target.value)}
                 ></input>
@@ -377,22 +497,22 @@ const [selectedRowsData, setSelectedRowsData] = useState<
                   onKeyDown={(e) => {
                     handleSearchCodeKeyDown(e);
                   }}
-                  type='text'
-                  placeholder='A123456'
+                  type="text"
+                  placeholder="A123456"
                   value={m_code}
                   onChange={(e) => setM_Code(e.target.value)}
                 ></input>
               </label>
-            </div>         
-            <div className='forminputcolumn'>
+            </div>
+            <div className="forminputcolumn">
               <label>
                 <b>LOT CMS:</b>{" "}
                 <input
                   onKeyDown={(e) => {
                     handleSearchCodeKeyDown(e);
                   }}
-                  type='text'
-                  placeholder='2204280689'
+                  type="text"
+                  placeholder="2204280689"
                   value={mLotNo}
                   onChange={(e) => setMLotNo(e.target.value)}
                 ></input>
@@ -400,90 +520,91 @@ const [selectedRowsData, setSelectedRowsData] = useState<
               <label>
                 <b>Trạng Thái</b>
                 <select
-                  name='hangmuctest'
+                  name="hangmuctest"
                   value={mStatus}
                   onChange={(e) => {
                     setMStatus(e.target.value);
                   }}
                 >
-                  <option value='ALL'>ALL</option>
-                  <option value='Y'>ĐÃ PASS</option>
-                  <option value='N'>CHƯA PASS</option>                  
+                  <option value="ALL">ALL</option>
+                  <option value="Y">ĐÃ PASS</option>
+                  <option value="N">CHƯA PASS</option>
                 </select>
               </label>
-            </div>   
-            
+            </div>
           </div>
-          <div className='formbutton'>
+          <div className="formbutton">
             <label>
               <b>All Time:</b>
               <input
                 onKeyDown={(e) => {
                   handleSearchCodeKeyDown(e);
                 }}
-                type='checkbox'
-                name='alltimecheckbox'
+                type="checkbox"
+                name="alltimecheckbox"
                 defaultChecked={alltime}
                 onChange={() => setAllTime(!alltime)}
               ></input>
             </label>
             <button
-              className='tranhatky'
+              className="tranhatky"
               onClick={() => {
                 handletraHoldingData();
               }}
             >
-             Tra Holding
+              Tra Holding
             </button>
             <button
-              className='tranhatky'
+              className="tranhatky"
               onClick={() => {
                 updateReason();
               }}
             >
-             Update Reason
+              Update Reason
             </button>
             <IconButton
-                className='buttonIcon'
-                onClick={() => {
-                    if(userData?.SUBDEPTNAME === 'IQC')
-                    {
-                        setQCPASS('Y');                          
-                    }
-                    else
-                    {
-                        Swal.fire('Thông báo','Bạn không phải người bộ phận IQC','error');
-                    }
-                    //checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['QC'], ()=>{setQCPASS('Y');});
-                    //checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['QLSX'], setQCPASS('Y'));
-                    //setQCPASS('Y');                  
-                }}
-              >
-                <GrStatusGood color='green' size={25} />
-                SET PASS
-              </IconButton>
-              <IconButton
-                className='buttonIcon'
-                onClick={() => {
-                    if(userData?.SUBDEPTNAME === 'IQC')
-                    {
-                        setQCPASS('N');                          
-                    }
-                    else
-                    {
-                        Swal.fire('Thông báo','Bạn không phải người bộ phận IQC','error');
-                    }
-                    //checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['QC'], ()=>{setQCPASS('Y');});
-                    //checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['QLSX'], setQCPASS('N'));
-                    //setQCPASS('N');     
-                }}
-              >
-                <FcCancel color='red' size={25} />
-                RESET PASS
-              </IconButton>
+              className="buttonIcon"
+              onClick={() => {
+                if (userData?.SUBDEPTNAME === "IQC") {
+                  setQCPASS("Y");
+                } else {
+                  Swal.fire(
+                    "Thông báo",
+                    "Bạn không phải người bộ phận IQC",
+                    "error",
+                  );
+                }
+                //checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['QC'], ()=>{setQCPASS('Y');});
+                //checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['QLSX'], setQCPASS('Y'));
+                //setQCPASS('Y');
+              }}
+            >
+              <GrStatusGood color="green" size={25} />
+              SET PASS
+            </IconButton>
+            <IconButton
+              className="buttonIcon"
+              onClick={() => {
+                if (userData?.SUBDEPTNAME === "IQC") {
+                  setQCPASS("N");
+                } else {
+                  Swal.fire(
+                    "Thông báo",
+                    "Bạn không phải người bộ phận IQC",
+                    "error",
+                  );
+                }
+                //checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['QC'], ()=>{setQCPASS('Y');});
+                //checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['QLSX'], setQCPASS('N'));
+                //setQCPASS('N');
+              }}
+            >
+              <FcCancel color="red" size={25} />
+              RESET PASS
+            </IconButton>
           </div>
         </div>
-        <div className='tracuuYCSXTable'>{materialDataTable}</div>
+        <div className="tracuuYCSXTable">{materialDataTable}</div>
       </div>
     </div>
   );

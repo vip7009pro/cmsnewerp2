@@ -48,12 +48,12 @@ const CAPADATA = () => {
               return {
                 ...element,
               };
-            }
+            },
           );
           loadeddata.push(
             { EQ_NAME: "ALL" },
             { EQ_NAME: "NO" },
-            { EQ_NAME: "NA" }
+            { EQ_NAME: "NA" },
           );
           console.log(loadeddata);
           setMachine_List(loadeddata);
@@ -68,7 +68,7 @@ const CAPADATA = () => {
   };
   const [showhidePivotTable, setShowHidePivotTable] = useState(false);
   const userData: UserData | undefined = useSelector(
-    (state: RootState) => state.totalSlice.userData
+    (state: RootState) => state.totalSlice.userData,
   );
   const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
   const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));
@@ -185,13 +185,13 @@ const CAPADATA = () => {
                 ...element,
                 id: index,
               };
-            }
+            },
           );
           //setShowLoss(false);
           Swal.fire(
             "Thông báo",
             "Đã load : " + loaded_data.length + " dòng",
-            "success"
+            "success",
           );
           setDataLeadTimeCapa(loaded_data);
         } else {
@@ -204,7 +204,7 @@ const CAPADATA = () => {
   };
   const materialDataTable = React.useMemo(
     () => (
-      <div className='datatb'>
+      <div className="datatb">
         <DataGrid
           autoNavigateToFocusedRow={true}
           allowColumnReordering={true}
@@ -214,8 +214,8 @@ const CAPADATA = () => {
           columnResizingMode={"widget"}
           showColumnLines={true}
           dataSource={dataleadtimecapa}
-          columnWidth='auto'
-          keyExpr='id'
+          columnWidth="auto"
+          keyExpr="id"
           height={"70vh"}
           showBorders={true}
           onSelectionChanged={(e) => {
@@ -232,52 +232,52 @@ const CAPADATA = () => {
             useNative={true}
             scrollByContent={true}
             scrollByThumb={true}
-            showScrollbar='onHover'
-            mode='virtual'
+            showScrollbar="onHover"
+            mode="virtual"
           />
-          <Selection mode='single' />
+          <Selection mode="single" />
           <Editing
             allowUpdating={false}
             allowAdding={true}
             allowDeleting={false}
-            mode='batch'
+            mode="batch"
             confirmDelete={true}
             onChangesChange={(e) => {}}
           />
           <Export enabled={true} />
           <Toolbar disabled={false}>
-            <Item location='before'>
+            <Item location="before">
               <IconButton
-                className='buttonIcon'
+                className="buttonIcon"
                 onClick={() => {
                   SaveExcel(dataleadtimecapa, "MaterialStatus");
                 }}
               >
-                <AiFillFileExcel color='green' size={25} />
+                <AiFillFileExcel color="green" size={25} />
                 SAVE
               </IconButton>
               <IconButton
-                className='buttonIcon'
+                className="buttonIcon"
                 onClick={() => {
                   setShowHidePivotTable(!showhidePivotTable);
                 }}
               >
-                <MdOutlinePivotTableChart color='#ff33bb' size={25} />
+                <MdOutlinePivotTableChart color="#ff33bb" size={25} />
                 Pivot
               </IconButton>
               <IconButton
-                className='buttonIcon'
+                className="buttonIcon"
                 onClick={() => {
                   handle_loaddatasx();
                 }}
               >
-                <BiSearch color='blue' size={25} />
+                <BiSearch color="blue" size={25} />
                 Search
               </IconButton>
             </Item>
-            <Item name='searchPanel' />
-            <Item name='exportButton' />
-            <Item name='columnChooser' />
+            <Item name="searchPanel" />
+            <Item name="exportButton" />
+            <Item name="columnChooser" />
           </Toolbar>
           <FilterRow visible={true} />
           <SearchPanel visible={true} />
@@ -285,7 +285,7 @@ const CAPADATA = () => {
         </DataGrid>
       </div>
     ),
-    [dataleadtimecapa]
+    [dataleadtimecapa],
   );
   const dataSource = new PivotGridDataSource({
     fields: [
@@ -523,7 +523,7 @@ const CAPADATA = () => {
           Swal.fire(
             "Thông báo",
             "Lưu thất bại, hãy nhập đủ thông tin",
-            "error"
+            "error",
           );
         } else {
           generalQuery("saveQLSX", {
@@ -557,7 +557,7 @@ const CAPADATA = () => {
             Swal.fire(
               "Thông báo",
               "Lưu thất bại, không được để trống ô cần thiết",
-              "error"
+              "error",
             );
           } else {
             Swal.fire("Thông báo", "Lưu thành công", "success");
@@ -576,15 +576,15 @@ const CAPADATA = () => {
     handle_loaddatasx();
   }, []);
   return (
-    <div className='tinhinhcuonlieu'>
-      <div className='tracuuDataInspection'>
-        <div className='tracuuDataInspectionform'>
-          <div className='forminput'>
-            <div className='forminputcolumn'>
+    <div className="tinhinhcuonlieu">
+      <div className="tracuuDataInspection">
+        <div className="tracuuDataInspectionform">
+          <div className="forminput">
+            <div className="forminputcolumn">
               <label>
                 <b>EQ1:</b>
                 <select
-                  name='machine'
+                  name="machine"
                   value={datadinhmuc.EQ1}
                   onChange={(e) => {
                     setDataDinhMuc({ ...datadinhmuc, EQ1: e.target.value });
@@ -603,7 +603,7 @@ const CAPADATA = () => {
               <label>
                 <b>EQ2:</b>
                 <select
-                  name='machine'
+                  name="machine"
                   value={datadinhmuc.EQ2}
                   onChange={(e) => {
                     setDataDinhMuc({ ...datadinhmuc, EQ2: e.target.value });
@@ -620,12 +620,12 @@ const CAPADATA = () => {
                 </select>
               </label>
             </div>
-            <div className='forminputcolumn'>
+            <div className="forminputcolumn">
               <label>
                 <b>Setting1(min):</b>{" "}
                 <input
-                  type='text'
-                  placeholder='Thời gian setting 1'
+                  type="text"
+                  placeholder="Thời gian setting 1"
                   value={datadinhmuc.Setting1}
                   onChange={(e) =>
                     setDataDinhMuc({
@@ -638,8 +638,8 @@ const CAPADATA = () => {
               <label>
                 <b>Setting2(min):</b>{" "}
                 <input
-                  type='text'
-                  placeholder='Thời gian setting 2'
+                  type="text"
+                  placeholder="Thời gian setting 2"
                   value={datadinhmuc.Setting2}
                   onChange={(e) =>
                     setDataDinhMuc({
@@ -650,12 +650,12 @@ const CAPADATA = () => {
                 ></input>
               </label>
             </div>
-            <div className='forminputcolumn'>
+            <div className="forminputcolumn">
               <label>
                 <b>UPH1(EA/h):</b>{" "}
                 <input
-                  type='text'
-                  placeholder='Tốc độ sx 1'
+                  type="text"
+                  placeholder="Tốc độ sx 1"
                   value={datadinhmuc.UPH1}
                   onChange={(e) =>
                     setDataDinhMuc({
@@ -668,8 +668,8 @@ const CAPADATA = () => {
               <label>
                 <b>UPH2(EA/h):</b>{" "}
                 <input
-                  type='text'
-                  placeholder='Tốc độ sx 2'
+                  type="text"
+                  placeholder="Tốc độ sx 2"
                   value={datadinhmuc.UPH2}
                   onChange={(e) =>
                     setDataDinhMuc({
@@ -680,12 +680,12 @@ const CAPADATA = () => {
                 ></input>
               </label>
             </div>
-            <div className='forminputcolumn'>
+            <div className="forminputcolumn">
               <label>
                 <b>Step1:</b>{" "}
                 <input
-                  type='text'
-                  placeholder='Số bước 1'
+                  type="text"
+                  placeholder="Số bước 1"
                   value={datadinhmuc.Step1}
                   onChange={(e) =>
                     setDataDinhMuc({
@@ -698,8 +698,8 @@ const CAPADATA = () => {
               <label>
                 <b>Step2:</b>{" "}
                 <input
-                  type='text'
-                  placeholder='Số bước 2'
+                  type="text"
+                  placeholder="Số bước 2"
                   value={datadinhmuc.Step2}
                   onChange={(e) =>
                     setDataDinhMuc({
@@ -710,12 +710,12 @@ const CAPADATA = () => {
                 ></input>
               </label>
             </div>
-            <div className='forminputcolumn'>
+            <div className="forminputcolumn">
               <label>
                 <b>LOSS_SX1(%):</b>{" "}
                 <input
-                  type='text'
-                  placeholder='% loss sx 1'
+                  type="text"
+                  placeholder="% loss sx 1"
                   value={datadinhmuc.LOSS_SX1}
                   onChange={(e) =>
                     setDataDinhMuc({
@@ -728,8 +728,8 @@ const CAPADATA = () => {
               <label>
                 <b>LOSS_SX2(%):</b>{" "}
                 <input
-                  type='text'
-                  placeholder='% loss sx 2'
+                  type="text"
+                  placeholder="% loss sx 2"
                   value={datadinhmuc.LOSS_SX2}
                   onChange={(e) =>
                     setDataDinhMuc({
@@ -740,12 +740,12 @@ const CAPADATA = () => {
                 ></input>
               </label>
             </div>
-            <div className='forminputcolumn'>
+            <div className="forminputcolumn">
               <label>
                 <b>LOSS SETTING1 (m):</b>{" "}
                 <input
-                  type='text'
-                  placeholder='met setting 1'
+                  type="text"
+                  placeholder="met setting 1"
                   value={datadinhmuc.LOSS_SETTING1}
                   onChange={(e) =>
                     setDataDinhMuc({
@@ -758,8 +758,8 @@ const CAPADATA = () => {
               <label>
                 <b>LOSS SETTING2 (m):</b>{" "}
                 <input
-                  type='text'
-                  placeholder='met setting 2'
+                  type="text"
+                  placeholder="met setting 2"
                   value={datadinhmuc.LOSS_SETTING2}
                   onChange={(e) =>
                     setDataDinhMuc({
@@ -770,11 +770,11 @@ const CAPADATA = () => {
                 ></input>
               </label>
             </div>
-            <div className='forminputcolumn'>
+            <div className="forminputcolumn">
               <label>
                 <b>FACTORY:</b>
                 <select
-                  name='phanloai'
+                  name="phanloai"
                   value={
                     datadinhmuc.FACTORY === null ? "NA" : datadinhmuc.FACTORY
                   }
@@ -786,16 +786,16 @@ const CAPADATA = () => {
                   }}
                   style={{ width: 162, height: 22 }}
                 >
-                  <option value='NA'>NA</option>
-                  <option value='NM1'>NM1</option>
-                  <option value='NM2'>NM2</option>
+                  <option value="NA">NA</option>
+                  <option value="NM1">NM1</option>
+                  <option value="NM2">NM2</option>
                 </select>
               </label>
               <label>
                 <b>NOTE (QLSX):</b>{" "}
                 <input
-                  type='text'
-                  placeholder='Chú ý'
+                  type="text"
+                  placeholder="Chú ý"
                   value={datadinhmuc.NOTE}
                   onChange={(e) =>
                     setDataDinhMuc({ ...datadinhmuc, NOTE: e.target.value })
@@ -804,9 +804,9 @@ const CAPADATA = () => {
               </label>
             </div>
           </div>
-          <div className='formbutton'>
+          <div className="formbutton">
             <button
-              className='tranhatky'
+              className="tranhatky"
               onClick={() => {
                 /* checkBP(
                         userData?.EMPL_NO,
@@ -821,7 +821,7 @@ const CAPADATA = () => {
             </button>
           </div>
         </div>
-        <div className='tracuuYCSXTable'>
+        <div className="tracuuYCSXTable">
           <span
             style={{
               fontSize: 20,
@@ -837,17 +837,17 @@ const CAPADATA = () => {
           {materialDataTable}
         </div>
         {showhidePivotTable && (
-          <div className='pivottable1'>
+          <div className="pivottable1">
             <IconButton
-              className='buttonIcon'
+              className="buttonIcon"
               onClick={() => {
                 setShowHidePivotTable(false);
               }}
             >
-              <AiFillCloseCircle color='blue' size={25} />
+              <AiFillCloseCircle color="blue" size={25} />
               Close
             </IconButton>
-            <PivotTable datasource={dataSource} tableID='invoicetablepivot' />
+            <PivotTable datasource={dataSource} tableID="invoicetablepivot" />
           </div>
         )}
       </div>

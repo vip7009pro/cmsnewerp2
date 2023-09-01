@@ -1,321 +1,296 @@
 .ycsxcomponent {
+  display: flex;
+  flex-direction: column;
+  width: 210mm;
+  height: 297mm;
+  /* padding: 10px;  */
+  margin-bottom: 28px;
+  border: 0.01px solid black;
+  position: relative;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  outline: 0;
+  pointer-events: none;
+
+  .qcpass {
+    position: absolute;
+    top: 65mm;
+    left: 60mm;
+  }
+  .fsc {
+    position: absolute;
+    bottom: 5mm;
+    left: 60mm;
+    opacity: 0.1;
+  }
+
+  .tieudeycsx {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding-left: 15px;
+    padding-right: 10px;
+    padding-top: 15px;
+
+    background-color: rgb(121, 226, 177);
+    color: rgb(0, 0, 0);
+    .title {
+      display: flex;
+      flex-direction: column;
+      font-weight: bold;
+      font-size: 25px;
+      align-items: center;
+      padding-top: 15px;
+      margin-left: 25px;
+    }
+    .soycsx {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      align-items: center;
+      padding-top: 10px;
+    }
+  }
+  .thongtinycsx {
     display: flex;
     flex-direction: column;
-    width: 210mm;
-    height: 297mm; 
-    /* padding: 10px;  */ 
-    margin-bottom: 28px; 
-    border: 0.01px solid black;
-    position: relative;
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-    -khtml-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-    outline: 0;
-    pointer-events: none;
-
-    .qcpass {
-        position: absolute;
-        top: 65mm;
-        left: 60mm;        
+    margin-top: 5px;
+    .text1 {
+      font-weight: bold;
+      font-size: 18px;
+      margin-left: 15px;
+      .approval_info {
+        font-size: 10px;
+      }
     }
-    .fsc {
-        position: absolute;
-        bottom: 5mm;
-        left: 60mm;      
-        opacity: 0.1;  
-    }
+    .thongtinyeucau {
+      display: flex;
+      flex-direction: row;
+      gap: 5px;
+      padding-left: 5px;
+      padding-right: 5px;
+      margin-left: 10px;
+      .ttyc1 {
+        flex: 10;
+      }
+      .ttyc2 {
+        flex: 6;
+      }
+      .ttyc3 {
+        flex: 4;
+      }
+      table {
+        font-size: 10px;
+        font-family: arial, sans-serif;
+        border-collapse: collapse;
+        width: 100%;
+      }
 
-    .tieudeycsx {
+      tbody td {
+        border: 1px solid #dddddd;
+        text-align: left;
+        padding: 8px;
+        width: fit-content;
+        font-size: 9px;
+      }
+      thead tr th {
+        border: 1px solid #dddddd;
+        text-align: left;
+        padding: 8px;
+        font-weight: bold;
+        font-size: 10px;
+        background-color: rgb(219, 206, 206);
+      }
+    }
+    .thongtinsanpham {
+      display: flex;
+      flex-direction: column;
+      margin-left: 10px;
+
+      .ttsp {
         display: flex;
         flex-direction: row;
-        justify-content: space-between;
-        padding-left: 15px;
-        padding-right: 10px;
-        padding-top: 15px;        
-       
-        background-color: rgb(121, 226, 177);
-        color:rgb(0, 0, 0);
-        .title{
-            display: flex;
-            flex-direction: column;
-            font-weight: bold;
-            font-size: 25px;
-            align-items: center;
-            padding-top: 15px;   
-            margin-left: 25px;              
-        }
-        .soycsx {
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-            align-items: center;
-            padding-top: 10px;   
+        gap: 5px;
+        padding-left: 5px;
+        padding-right: 5px;
+        table {
+          font-size: 10px;
+          font-family: arial, sans-serif;
+          border-collapse: collapse;
+          width: 100%;
         }
 
-    }
-    .thongtinycsx {
+        tbody td {
+          border: 1px solid #dddddd;
+          text-align: left;
+          padding: 8px;
+          width: fit-content;
+          font-size: 9px;
+        }
+        thead tr th {
+          border: 1px solid #dddddd;
+          text-align: left;
+          padding: 8px;
+          font-weight: bold;
+          font-size: 10px;
+          background-color: rgb(219, 206, 206);
+        }
+      }
+      .title {
         display: flex;
-        flex-direction: column;
-        margin-top: 5px;
-        .text1 {
-            font-weight: bold;
-            font-size: 18px;
-            margin-left: 15px;
-            .approval_info {
-                font-size: 10px;
-            }
-           
+        font-weight: bold;
+        font-size: 15px;
+        align-items: center;
+        margin-left: 15px;
+        .approval_info {
+          font-size: 10px;
         }
-        .thongtinyeucau {
-            display: flex;
-            flex-direction: row;
-            gap: 5px;
-            padding-left: 5px;
-            padding-right: 5px;
-            margin-left: 10px;
-            .ttyc1 {
-                flex:10
-            }
-            .ttyc2 {
-                flex:6
-            }
-            .ttyc3 {
-                flex:4                
-            }
-            table {
-                font-size: 10px;
-                font-family: arial, sans-serif;
-                border-collapse: collapse;
-                width: 100%;
-            }
-            
-            tbody td {
-                border: 1px solid #dddddd;
-                text-align: left;
-                padding: 8px;    
-                width: fit-content;    
-                font-size: 9px;        
-            }
-            thead tr th {
-                border: 1px solid #dddddd;
-                text-align: left;
-                padding: 8px;
-                font-weight: bold;
-                font-size: 10px;
-                background-color: rgb(219, 206, 206);
-                
-            }
-          
+      }
+
+      .toncacloai {
+        display: flex;
+        flex-direction: row;
+        gap: 5px;
+        padding-left: 5px;
+        padding-right: 5px;
+        table {
+          font-size: 10px;
+          font-family: arial, sans-serif;
+          border-collapse: collapse;
+          width: 100%;
         }
-        .thongtinsanpham {
-            display: flex;
-            flex-direction: column;
-            margin-left: 10px;
-            
-            .ttsp {
-                display: flex;
-                flex-direction: row;
-                gap: 5px;
-                padding-left: 5px;
-                padding-right: 5px;
-                table {
-                    font-size: 10px;
-                    font-family: arial, sans-serif;
-                    border-collapse: collapse;
-                    width: 100%;
-                }
-                
-                tbody td {
-                    border: 1px solid #dddddd;
-                    text-align: left;
-                    padding: 8px;    
-                    width: fit-content;    
-                    font-size: 9px;        
-                }
-                thead tr th {
-                    border: 1px solid #dddddd;
-                    text-align: left;
-                    padding: 8px;
-                    font-weight: bold;
-                    font-size: 10px;
-                    background-color: rgb(219, 206, 206);
-                    
-                }
 
-            }
-            .title{
-                display: flex;
-                font-weight: bold;
-                font-size: 15px;
-                align-items: center;
-                margin-left: 15px;
-                .approval_info {
-                    font-size: 10px;
-                }
-    
-            }
-
-            .toncacloai {
-                display: flex;
-                flex-direction: row;
-                gap: 5px;
-                padding-left: 5px;
-                padding-right: 5px;
-                table {
-                    font-size: 10px;
-                    font-family: arial, sans-serif;
-                    border-collapse: collapse;
-                    width: 100%;
-                }
-                
-                tbody td {
-                    border: 1px solid #dddddd;
-                    text-align: left;
-                    padding: 8px;    
-                    width: fit-content;    
-                    font-size: 9px;        
-                }
-                thead tr th {
-                    border: 1px solid #dddddd;
-                    text-align: left;
-                    padding: 8px;
-                    font-weight: bold;
-                    font-size: 10px;
-                    background-color: rgb(219, 206, 206);
-                    
-                }
-
-            }
-
-           
-          
+        tbody td {
+          border: 1px solid #dddddd;
+          text-align: left;
+          padding: 8px;
+          width: fit-content;
+          font-size: 9px;
         }
-        .thongtindaofilm {
-            display: flex;
-            flex-direction: row;
-            gap: 5px;
-            padding-left: 5px;
-            padding-right: 5px;
-            margin-left: 10px;
-            table {
-                font-size: 10px;
-                font-family: arial, sans-serif;
-                border-collapse: collapse;
-                width: 100%;                
-            }
-            
-            tbody td {
-                border: 1px solid #dddddd;
-                text-align: left;
-                padding: 8px;    
-                width: fit-content;    
-                font-size: 9px;    
-                  
-            }
-            thead tr th {
-                border: 1px solid #dddddd;
-                text-align: left;
-                padding: 8px;
-                font-weight: bold;
-                font-size: 10px;
-                background-color: rgb(219, 206, 206); 
-                
-            }
-            .hangmuc {
-                width:20%;
-            } 
-          
+        thead tr th {
+          border: 1px solid #dddddd;
+          text-align: left;
+          padding: 8px;
+          font-weight: bold;
+          font-size: 10px;
+          background-color: rgb(219, 206, 206);
         }
-        .thongtinvatlieu {
-            display: flex;
-            flex-direction: row;
-            gap: 5px;
-            padding-left: 5px;
-            padding-right: 5px;
-            margin-left: 10px;
-            .vatlieugiua {
-                table {               
-                    font-family: arial, sans-serif;
-                    border-collapse: collapse;
-                    width: 100%;
-                }
-                
-                tbody td {
-                    border: 1px solid #dddddd;
-                    text-align: left;
-                    padding: 8px;    
-                    width: fit-content;    
-                    font-size: 9px;        
-                }
-                thead tr th {
-                    border: 1px solid #dddddd;
-                    text-align: left;
-                    padding: 8px;
-                    font-weight: bold;
-                    font-size: 12px;
-                    background-color: rgb(219, 206, 206);
-                    
-                }
-            }
-            .vatlieutrai {
-                table {               
-                    font-family: arial, sans-serif;
-                    border-collapse: collapse;
-                    width: 100%;
-                }
-                
-                tbody td {
-                    border: 1px solid #dddddd;
-                    text-align: left;
-                    padding: 8px;    
-                    width: fit-content;    
-                    font-size: 6px;        
-                }
-                thead tr th {
-                    border: 1px solid #dddddd;
-                    text-align: left;
-                    padding: 8px;
-                    font-weight: bold;
-                    font-size: 7px;
-                    background-color: rgb(219, 206, 206);                    
-                }
-
-            }
-
-            .vatlieuphai {
-                table {               
-                    font-family: arial, sans-serif;
-                    border-collapse: collapse;
-                    width: 100%;
-                }
-
-                tbody td {
-                    border: 1px solid #dddddd;
-                    text-align: left;
-                    padding: 8px;    
-                    width: fit-content;    
-                    font-size: 6px;        
-                }
-                thead tr th {
-                    border: 1px solid #dddddd;
-                    text-align: left;
-                    padding: 8px;
-                    font-weight: bold;
-                    font-size: 7px;
-                    background-color: rgb(219, 206, 206);
-                    
-                }
-
-            }
-
-            
-          
-        }
+      }
     }
+    .thongtindaofilm {
+      display: flex;
+      flex-direction: row;
+      gap: 5px;
+      padding-left: 5px;
+      padding-right: 5px;
+      margin-left: 10px;
+      table {
+        font-size: 10px;
+        font-family: arial, sans-serif;
+        border-collapse: collapse;
+        width: 100%;
+      }
 
+      tbody td {
+        border: 1px solid #dddddd;
+        text-align: left;
+        padding: 8px;
+        width: fit-content;
+        font-size: 9px;
+      }
+      thead tr th {
+        border: 1px solid #dddddd;
+        text-align: left;
+        padding: 8px;
+        font-weight: bold;
+        font-size: 10px;
+        background-color: rgb(219, 206, 206);
+      }
+      .hangmuc {
+        width: 20%;
+      }
+    }
+    .thongtinvatlieu {
+      display: flex;
+      flex-direction: row;
+      gap: 5px;
+      padding-left: 5px;
+      padding-right: 5px;
+      margin-left: 10px;
+      .vatlieugiua {
+        table {
+          font-family: arial, sans-serif;
+          border-collapse: collapse;
+          width: 100%;
+        }
 
-   
+        tbody td {
+          border: 1px solid #dddddd;
+          text-align: left;
+          padding: 8px;
+          width: fit-content;
+          font-size: 9px;
+        }
+        thead tr th {
+          border: 1px solid #dddddd;
+          text-align: left;
+          padding: 8px;
+          font-weight: bold;
+          font-size: 12px;
+          background-color: rgb(219, 206, 206);
+        }
+      }
+      .vatlieutrai {
+        table {
+          font-family: arial, sans-serif;
+          border-collapse: collapse;
+          width: 100%;
+        }
+
+        tbody td {
+          border: 1px solid #dddddd;
+          text-align: left;
+          padding: 8px;
+          width: fit-content;
+          font-size: 6px;
+        }
+        thead tr th {
+          border: 1px solid #dddddd;
+          text-align: left;
+          padding: 8px;
+          font-weight: bold;
+          font-size: 7px;
+          background-color: rgb(219, 206, 206);
+        }
+      }
+
+      .vatlieuphai {
+        table {
+          font-family: arial, sans-serif;
+          border-collapse: collapse;
+          width: 100%;
+        }
+
+        tbody td {
+          border: 1px solid #dddddd;
+          text-align: left;
+          padding: 8px;
+          width: fit-content;
+          font-size: 6px;
+        }
+        thead tr th {
+          border: 1px solid #dddddd;
+          text-align: left;
+          padding: 8px;
+          font-weight: bold;
+          font-size: 7px;
+          background-color: rgb(219, 206, 206);
+        }
+      }
+    }
+  }
 }

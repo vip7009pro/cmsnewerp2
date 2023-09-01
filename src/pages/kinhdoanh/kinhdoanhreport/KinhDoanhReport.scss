@@ -1,215 +1,210 @@
-
 @media only screen and (max-width: 3000px) {
-    .kinhdoanhreport {
+  .kinhdoanhreport {
+    display: flex;
+    flex-direction: column;
+    .doanhthureport {
+      display: flex;
+      flex-direction: column;
+      .section_title {
+        font-size: 20px;
+        font-weight: bold;
+        margin-top: 10px;
+        margin-bottom: 10px;
+        color: blue;
+        font-style: italic;
+      }
+      .revenuewidget {
         display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: space-around;
+        gap: 5%;
+        margin-top: 5px;
+        .revenuwdg {
+          display: flex;
+          flex: 1;
+        }
+      }
+      .graph {
+        display: flex;
+        width: 100%;
         flex-direction: column;
-        .doanhthureport {
+        .dailygraphtotal {
+          display: flex;
+          width: 100%;
+          height: 100%;
+          flex: 1;
+          margin-bottom: 20px;
+          .dailygraph {
             display: flex;
             flex-direction: column;
-            .section_title {
-                font-size: 20px;
-                font-weight: bold;
-                margin-top: 10px;
-                margin-bottom: 10px;
-                color: blue;
-                font-style: italic;
+            width: 100%;
+            height: 450px;
+            flex: 1;
+            .subsection {
+              font-weight: bold;
+              padding-left: 90px;
             }
-            .revenuewidget {
-                display: flex;
-                flex-direction: row;
-                flex-wrap: wrap;
-                justify-content: space-around;
-                gap: 5%;
-                margin-top: 5px;
-                .revenuwdg {
-                    display: flex;
-                    flex: 1;
-                }
-            }
-            .graph {
-                display: flex;
-                width: 100%;
-                flex-direction: column;
-                .dailygraphtotal {
-                    display: flex;
-                    width: 100%;
-                    height: 100%;
-                    flex: 1;
-                    margin-bottom: 20px;
-                    .dailygraph {
-                        display: flex;
-                        flex-direction: column;
-                        width: 100%;
-                        height: 450px;
-                        flex: 1;
-                        .subsection {
-                            font-weight: bold;
-                            padding-left: 90px;
-                        }
-                    }
-                }
-                .pobalancesummary {
-                    display: flex;      
-                    flex-direction: column;              
-                    align-self: center;
-                    width: 30%;
-                    margin-bottom: 10px;
-                    .subsection {
-                        font-weight: bold;
-                        
-                    }
-                }
-                .fcstsummary {
-                    display: flex;      
-                    flex-direction: column;              
-                    align-self: center;                    
-                    margin-bottom: 10px;
-                    .subsection {
-                        font-weight: bold;
-                        
-                    }
-                    .fcstwidget {
-                        display: flex;    
-                        align-items: center;                        
-                        gap: 50px;                        
-                    }
-                }
-                .monthlyweeklygraph {
-                    display: flex;
-                    width: 100%;
-                    flex: 1;
-                    height: fit-content;
-                    .dailygraph {
-                        display: flex;
-                        flex-direction: column;
-                        width: 100%;
-                        height: 450px;
-                        flex: 1;
-                        .subsection {
-                            font-weight: bold;
-                            padding-left: 90px;
-                        }
-                    }
-                }
-                .datatable {
-                    display: flex;
-                    width: 100%;
-                    flex: 1;
-                    height: fit-content;
-                    .dailygraph {
-                        display: flex;
-                        flex-direction: column;
-                        width: 100%;
-                        height: 1060px;
-                        
-                        .subsection {
-                            font-weight: bold;
-                            padding-left: 90px;
-                        }
-                    }
-                }
-            }
+          }
         }
-    }
-}
- @media only screen and (max-width: 768px) {
-    .kinhdoanhreport {
-        display: flex;
-        flex-direction: column;
-        .doanhthureport {
+        .pobalancesummary {
+          display: flex;
+          flex-direction: column;
+          align-self: center;
+          width: 30%;
+          margin-bottom: 10px;
+          .subsection {
+            font-weight: bold;
+          }
+        }
+        .fcstsummary {
+          display: flex;
+          flex-direction: column;
+          align-self: center;
+          margin-bottom: 10px;
+          .subsection {
+            font-weight: bold;
+          }
+          .fcstwidget {
+            display: flex;
+            align-items: center;
+            gap: 50px;
+          }
+        }
+        .monthlyweeklygraph {
+          display: flex;
+          width: 100%;
+          flex: 1;
+          height: fit-content;
+          .dailygraph {
             display: flex;
             flex-direction: column;
-            .section_title {
-                font-size: 20px;
-                font-weight: bold;
-                margin-top: 10px;
-                margin-bottom: 10px;
-                color: blue;
-                font-style: italic;
+            width: 100%;
+            height: 450px;
+            flex: 1;
+            .subsection {
+              font-weight: bold;
+              padding-left: 90px;
             }
-            .revenuewidget {
-                display: flex;
-                flex-direction: column;
-                flex-wrap: wrap;
-                justify-content: space-around;
-                gap: 5%;
-                margin-top: 5px;
-                .revenuwdg {
-                    display: flex;
-                    flex: 1;
-                }
-            }
-            .graph {
-                display: flex;
-                width: 100%;
-                height: 4500px;
-                flex-direction: column;
-                .dailygraphtotal {
-                    display: flex; 
-                    flex-direction: column;
-                    width: 100%;
-                    height:600px;                    
-                    margin-bottom: 20px;
-                    .dailygraph {
-                        display: flex;
-                        flex-direction: column;
-                        width: 100%;
-                        height: 650px;
-                        flex: 1;
-                        .subsection {
-                            font-weight: bold;
-                            padding-left: 90px;
-                        }
-                    }
-                }
-                .pobalancesummary {
-                    display: flex;      
-                    flex-direction: column;              
-                    align-self: center;
-                    width: 100%;
-                    margin-bottom: 10px;
-                    .subsection {
-                        font-weight: bold;
-                        
-                    }
-                }
-                .fcstsummary {
-                    display: flex;      
-                    flex-direction: column;              
-                    align-self: center;                    
-                    margin-bottom: 10px;
-                    .subsection {
-                        font-weight: bold;
-                        
-                    }
-                    .fcstwidget {
-                        display: flex;    
-                        flex-direction: column;
-                        align-items: center;                        
-                        gap: 10px;                        
-                    }
-                }
-                .monthlyweeklygraph {
-                    display: flex;
-                    flex-direction: column;
-                    width: 100%;
-                    flex: 1;
-                    height: 650px;
-                    .dailygraph {
-                        display: flex;
-                        flex-direction: column;
-                        width: 100%;
-                        height: 650px;
-                        flex: 1;
-                        .subsection {
-                            font-weight: bold;
-                            padding-left: 90px;
-                        }
-                    }
-                }
-            }
+          }
         }
+        .datatable {
+          display: flex;
+          width: 100%;
+          flex: 1;
+          height: fit-content;
+          .dailygraph {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            height: 1060px;
+
+            .subsection {
+              font-weight: bold;
+              padding-left: 90px;
+            }
+          }
+        }
+      }
     }
+  }
 }
- @media only screen and (max-width: 320px) {
+@media only screen and (max-width: 768px) {
+  .kinhdoanhreport {
+    display: flex;
+    flex-direction: column;
+    .doanhthureport {
+      display: flex;
+      flex-direction: column;
+      .section_title {
+        font-size: 20px;
+        font-weight: bold;
+        margin-top: 10px;
+        margin-bottom: 10px;
+        color: blue;
+        font-style: italic;
+      }
+      .revenuewidget {
+        display: flex;
+        flex-direction: column;
+        flex-wrap: wrap;
+        justify-content: space-around;
+        gap: 5%;
+        margin-top: 5px;
+        .revenuwdg {
+          display: flex;
+          flex: 1;
+        }
+      }
+      .graph {
+        display: flex;
+        width: 100%;
+        height: 4500px;
+        flex-direction: column;
+        .dailygraphtotal {
+          display: flex;
+          flex-direction: column;
+          width: 100%;
+          height: 600px;
+          margin-bottom: 20px;
+          .dailygraph {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            height: 650px;
+            flex: 1;
+            .subsection {
+              font-weight: bold;
+              padding-left: 90px;
+            }
+          }
+        }
+        .pobalancesummary {
+          display: flex;
+          flex-direction: column;
+          align-self: center;
+          width: 100%;
+          margin-bottom: 10px;
+          .subsection {
+            font-weight: bold;
+          }
+        }
+        .fcstsummary {
+          display: flex;
+          flex-direction: column;
+          align-self: center;
+          margin-bottom: 10px;
+          .subsection {
+            font-weight: bold;
+          }
+          .fcstwidget {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+          }
+        }
+        .monthlyweeklygraph {
+          display: flex;
+          flex-direction: column;
+          width: 100%;
+          flex: 1;
+          height: 650px;
+          .dailygraph {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            height: 650px;
+            flex: 1;
+            .subsection {
+              font-weight: bold;
+              padding-left: 90px;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+@media only screen and (max-width: 320px) {
 }

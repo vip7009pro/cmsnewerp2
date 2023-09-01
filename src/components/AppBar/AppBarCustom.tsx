@@ -19,7 +19,7 @@ import LanguageIcon from "@mui/icons-material/Language";
 import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
 import { useSelector, useDispatch } from "react-redux";
-import { toggleSidebar} from "../../redux/slices/globalSlice";
+import { toggleSidebar } from "../../redux/slices/globalSlice";
 import { RootState } from "../../redux/store";
 import { logout } from "../../api/Api";
 import { UserData } from "../../api/GlobalInterface";
@@ -112,8 +112,8 @@ export default function PrimarySearchAppBar() {
         }}
       >
         <Link
-          to='/accountinfo'
-          className='menulink'
+          to="/accountinfo"
+          className="menulink"
           style={{ textDecoration: "none", color: "black" }}
         >
           Profile
@@ -152,8 +152,8 @@ export default function PrimarySearchAppBar() {
         }}
       >
         <Link
-          to='/accountinfo'
-          className='menulink'
+          to="/accountinfo"
+          className="menulink"
           style={{ textDecoration: "none", color: "black" }}
         >
           Language
@@ -165,8 +165,8 @@ export default function PrimarySearchAppBar() {
         }}
       >
         <Link
-          to='/accountinfo'
-          className='menulink'
+          to="/accountinfo"
+          className="menulink"
           style={{ textDecoration: "none", color: "black" }}
         >
           Profile
@@ -183,21 +183,21 @@ export default function PrimarySearchAppBar() {
     </Menu>
   );
   const globalUserData: UserData | undefined = useSelector(
-    (state: RootState) => state.totalSlice.userData
+    (state: RootState) => state.totalSlice.userData,
   );
   const dispatch = useDispatch();
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar
-        position='static'
+        position="static"
         sx={{ backgroundColor: "white", color: "black", borderRadius: "5px" }}
       >
         <Toolbar>
           <IconButton
-            size='large'
-            edge='start'
-            color='inherit'
-            aria-label='open drawer'
+            size="large"
+            edge="start"
+            color="inherit"
+            aria-label="open drawer"
             sx={{ mr: 2 }}
             onClick={() => {
               dispatch(toggleSidebar("2"));
@@ -206,18 +206,18 @@ export default function PrimarySearchAppBar() {
             <MenuIcon />
           </IconButton>
           <Box sx={{ flexGrow: 1 }} />
-          <Link to='/' className='menulink'>
+          <Link to="/" className="menulink">
             <img
-              alt='cmsvina logo'
-              src='/logocmsvina.png'
+              alt="cmsvina logo"
+              src="/logocmsvina.png"
               width={171.6}
               height={40.7}
             />
           </Link>
           <Typography
-            variant='h6'
+            variant="h6"
             noWrap
-            component='div'
+            component="div"
             sx={{ display: { xs: "none", sm: "block", fontSize: "10px" } }}
             onClick={() => {}}
           >
@@ -226,21 +226,21 @@ export default function PrimarySearchAppBar() {
           <Box sx={{ flexGrow: 1 }} />
           <Box sx={{ display: { xs: "none", md: "flex" } }}>
             <IconButton
-              size='large'
-              aria-label='show 4 new mails'
-              color='inherit'
+              size="large"
+              aria-label="show 4 new mails"
+              color="inherit"
               onClick={() => {}}
             >
               <LanguageIcon />
             </IconButton>
             <IconButton
-              size='large'
-              edge='end'
-              aria-label='account of current user'
+              size="large"
+              edge="end"
+              aria-label="account of current user"
               aria-controls={menuId}
-              aria-haspopup='true'
+              aria-haspopup="true"
               onClick={handleProfileMenuOpen}
-              color='inherit'
+              color="inherit"
             >
               {/* <AccountCircle /> */}
               <img
@@ -254,12 +254,12 @@ export default function PrimarySearchAppBar() {
           </Box>
           <Box sx={{ display: { xs: "flex", md: "none" } }}>
             <IconButton
-              size='large'
-              aria-label='show more'
+              size="large"
+              aria-label="show more"
               aria-controls={mobileMenuId}
-              aria-haspopup='true'
+              aria-haspopup="true"
               onClick={handleMobileMenuOpen}
-              color='inherit'
+              color="inherit"
             >
               <MoreIcon />
             </IconButton>

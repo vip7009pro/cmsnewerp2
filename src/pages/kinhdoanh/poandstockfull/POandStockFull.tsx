@@ -22,8 +22,6 @@ import KHOTP from "../../kho/khotp/KHOTP";
 import KHOLIEU from "../../kho/kholieu/KHOLIEU";
 import KHOTPNEW from "../../kho/khotp_new/KHOTPNEW";
 import { POFullCMS, POFullSummary } from "../../../api/GlobalInterface";
-
-
 const POandStockFull = () => {
   const [pofullSummary, setPOFullSummary] = useState<POFullSummary>({
     PO_BALANCE: 0,
@@ -428,12 +426,12 @@ const POandStockFull = () => {
         <GridToolbarFilterButton />
         <GridToolbarDensitySelector />
         <IconButton
-          className='buttonIcon'
+          className="buttonIcon"
           onClick={() => {
             SaveExcel(pofulldatatable, "Ton kho full Table");
           }}
         >
-          <AiFillFileExcel color='green' size={25} />
+          <AiFillFileExcel color="green" size={25} />
           SAVE
         </IconButton>
         <GridToolbarQuickFilter />
@@ -443,7 +441,7 @@ const POandStockFull = () => {
   const handletraPOFullCMS = () => {
     setisLoading(true);
     setColumnDefinition(column_codeCMS);
-    generalQuery(getCompany()==='CMS'? "traPOFullCMS" : "traPOFullCMS2", {
+    generalQuery(getCompany() === "CMS" ? "traPOFullCMS" : "traPOFullCMS2", {
       allcode: alltime,
       codeSearch: codeCMS,
     })
@@ -473,7 +471,7 @@ const POandStockFull = () => {
                 ...element,
                 id: index,
               };
-            }
+            },
           );
           setPOFullSummary(temp_summary);
           setPOFULLDataTable(loadeddata);
@@ -481,7 +479,7 @@ const POandStockFull = () => {
           Swal.fire(
             "Thông báo",
             "Đã load " + response.data.data.length + " dòng",
-            "success"
+            "success",
           );
         } else {
           Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
@@ -495,7 +493,7 @@ const POandStockFull = () => {
   const handletraPOFullKD = () => {
     setisLoading(true);
     setColumnDefinition(column_codeKD);
-    generalQuery(getCompany()==='CMS'? "traPOFullKD" : "traPOFullKD2", {
+    generalQuery(getCompany() === "CMS" ? "traPOFullKD" : "traPOFullKD2", {
       allcode: alltime,
       codeSearch: codeCMS,
     })
@@ -508,14 +506,14 @@ const POandStockFull = () => {
                 ...element,
                 id: index,
               };
-            }
+            },
           );
           setPOFULLDataTable(loadeddata);
           setisLoading(false);
           Swal.fire(
             "Thông báo",
             "Đã load " + response.data.data.length + " dòng",
-            "success"
+            "success",
           );
         } else {
           Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
@@ -571,20 +569,20 @@ const POandStockFull = () => {
   };
   useEffect(() => {}, []);
   return (
-    <div className='poandstockfull'>
-      <div className='mininavbar'>
+    <div className="poandstockfull">
+      <div className="mininavbar">
         <div
-          className='mininavitem'
+          className="mininavitem"
           onClick={() => setNav(1)}
           style={{
             backgroundColor: selection.trapo === true ? "#02c712" : "#abc9ae",
             color: selection.trapo === true ? "yellow" : "yellow",
           }}
         >
-          <span className='mininavtext'>PO+TK FULL</span>
+          <span className="mininavtext">PO+TK FULL</span>
         </div>
         <div
-          className='mininavitem'
+          className="mininavitem"
           onClick={() => setNav(2)}
           style={{
             backgroundColor:
@@ -592,10 +590,10 @@ const POandStockFull = () => {
             color: selection.thempohangloat === true ? "yellow" : "yellow",
           }}
         >
-          <span className='mininavtext'>Phòng Kiểm Tra</span>
+          <span className="mininavtext">Phòng Kiểm Tra</span>
         </div>
         <div
-          className='mininavitem'
+          className="mininavitem"
           onClick={() => setNav(3)}
           style={{
             backgroundColor:
@@ -603,29 +601,29 @@ const POandStockFull = () => {
             color: selection.testinvoicetable === true ? "yellow" : "yellow",
           }}
         >
-          <span className='mininavtext'>Kho Thành Phẩm</span>
+          <span className="mininavtext">Kho Thành Phẩm</span>
         </div>
         <div
-          className='mininavitem'
+          className="mininavitem"
           onClick={() => setNav(4)}
           style={{
             backgroundColor: selection.kholieu === true ? "#02c712" : "#abc9ae",
             color: selection.kholieu === true ? "yellow" : "yellow",
           }}
         >
-          <span className='mininavtext'>Kho Liệu</span>
+          <span className="mininavtext">Kho Liệu</span>
         </div>
       </div>
       {selection.trapo && (
-        <div className='tracuuFcst'>
-          <div className='tracuuFcstform'>
-            <div className='forminput'>
-              <div className='forminputcolumn'>
+        <div className="tracuuFcst">
+          <div className="tracuuFcstform">
+            <div className="forminput">
+              <div className="forminputcolumn">
                 <label>
                   <b>Code:</b>{" "}
                   <input
-                    type='text'
-                    placeholder='Nhập code vào đây'
+                    type="text"
+                    placeholder="Nhập code vào đây"
                     value={codeCMS}
                     onChange={(e) => setCodeCMS(e.target.value)}
                   ></input>
@@ -633,14 +631,14 @@ const POandStockFull = () => {
                 <label>
                   <b>Chỉ code tồn PO</b>
                   <input
-                    type='checkbox'
-                    name='alltimecheckbox'
+                    type="checkbox"
+                    name="alltimecheckbox"
                     defaultChecked={alltime}
                     onChange={() => setAllTime(!alltime)}
                   ></input>
                 </label>
                 <button
-                  className='tranhapkiembutton'
+                  className="tranhapkiembutton"
                   onClick={() => {
                     handletraPOFullCMS();
                   }}
@@ -648,7 +646,7 @@ const POandStockFull = () => {
                   Search(G_CODE)
                 </button>
                 <button
-                  className='traxuatkiembutton'
+                  className="traxuatkiembutton"
                   onClick={() => {
                     handletraPOFullKD();
                   }}
@@ -656,7 +654,7 @@ const POandStockFull = () => {
                   Search(KD)
                 </button>
               </div>
-              <div className='forminputcolumn'>
+              <div className="forminputcolumn">
                 <table>
                   <thead>
                     <tr>
@@ -698,7 +696,7 @@ const POandStockFull = () => {
               </div>
             </div>
           </div>
-          <div className='tracuuFcstTable'>
+          <div className="tracuuFcstTable">
             <DataGrid
               components={{
                 Toolbar: CustomToolbarPOTable,
@@ -712,24 +710,24 @@ const POandStockFull = () => {
               rowsPerPageOptions={[
                 5, 10, 50, 100, 500, 1000, 5000, 10000, 100000,
               ]}
-              editMode='row'
+              editMode="row"
             />
           </div>
         </div>
       )}
       {selection.thempohangloat && (
-        <div className='inspection'>
+        <div className="inspection">
           <INSPECTION />
         </div>
       )}
       {selection.testinvoicetable && (
-        <div className='inspection'>
-          {getCompany()==='CMS' && <KHOTP />}
-          {getCompany()==='PVN' && <KHOTPNEW />}          
+        <div className="inspection">
+          {getCompany() === "CMS" && <KHOTP />}
+          {getCompany() === "PVN" && <KHOTPNEW />}
         </div>
       )}
       {selection.kholieu && (
-        <div className='inspection'>
+        <div className="inspection">
           <KHOLIEU />
         </div>
       )}

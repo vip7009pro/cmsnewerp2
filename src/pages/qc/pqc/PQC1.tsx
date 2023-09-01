@@ -43,13 +43,17 @@ import { GrStatusGood } from "react-icons/gr";
 import { FcCancel } from "react-icons/fc";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
-import { CustomerListData, PQC1_DATA, SX_DATA, UserData } from "../../../api/GlobalInterface";
-
+import {
+  CustomerListData,
+  PQC1_DATA,
+  SX_DATA,
+  UserData,
+} from "../../../api/GlobalInterface";
 
 const PQC1 = () => {
   const [customerList, setCustomerList] = useState<CustomerListData[]>([]);
   const userData: UserData | undefined = useSelector(
-    (state: RootState) => state.totalSlice.userData
+    (state: RootState) => state.totalSlice.userData,
   );
   const [testtype, setTestType] = useState("NVL");
   const [inputno, setInputNo] = useState("");
@@ -57,10 +61,10 @@ const PQC1 = () => {
   const [prod_leader_empl, setprod_leader_empl] = useState("");
   const [remark, setReMark] = useState("");
   const [inspectiondatatable, setInspectionDataTable] = useState<Array<any>>(
-    []
+    [],
   );
   const [selectedRowsDataA, setSelectedRowsData] = useState<Array<PQC1_DATA>>(
-    []
+    [],
   );
   const [empl_name, setEmplName] = useState("");
   const [empl_name2, setEmplName2] = useState("");
@@ -83,48 +87,43 @@ const PQC1 = () => {
   const [showhideinput, setShowHideInput] = useState(true);
   const [cust_cd, setCust_Cd] = useState("6969");
   const [factory, setFactory] = useState(
-    userData?.FACTORY_CODE === 1 ? "NM1" : "NM2"
+    userData?.FACTORY_CODE === 1 ? "NM1" : "NM2",
   );
   const [pqc1datatable, setPqc1DataTable] = useState<Array<PQC1_DATA>>([]);
-  const [sx_data, setSXData] = useState<SX_DATA[]>([])
-  const [ktdtc,setKTDTC] = useState('CKT');
-  
-  const checkKTDTC = (PROCESS_LOT_NO: string) =>  {
-    generalQuery("checkktdtc", { PROCESS_LOT_NO: PROCESS_LOT_NO })
-    .then((response) => {
-      if (response.data.tk_status !== "NG") {
-        //console.log(response.data.data);
-        if(response.data.data[0].TRANGTHAI !== null)
-        {
-          setKTDTC('DKT');
-        }
-        else
-        {
-          setKTDTC('CKT');
-        }
-       
-      } else {
-        setKTDTC('CKT');       
-      }
-    })
-    .catch((error) => {
-      console.log(error);
-    });
+  const [sx_data, setSXData] = useState<SX_DATA[]>([]);
+  const [ktdtc, setKTDTC] = useState("CKT");
 
-  }
-  const checkDataSX = (PLAN_ID: string)=> {    
+  const checkKTDTC = (PROCESS_LOT_NO: string) => {
+    generalQuery("checkktdtc", { PROCESS_LOT_NO: PROCESS_LOT_NO })
+      .then((response) => {
+        if (response.data.tk_status !== "NG") {
+          //console.log(response.data.data);
+          if (response.data.data[0].TRANGTHAI !== null) {
+            setKTDTC("DKT");
+          } else {
+            setKTDTC("CKT");
+          }
+        } else {
+          setKTDTC("CKT");
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+  const checkDataSX = (PLAN_ID: string) => {
     generalQuery("loadDataSX", {
       ALLTIME: true,
-      FROM_DATE: '',
-      TO_DATE: '',
-      PROD_REQUEST_NO: '',
+      FROM_DATE: "",
+      TO_DATE: "",
+      PROD_REQUEST_NO: "",
       PLAN_ID: PLAN_ID,
-      M_NAME: '',
-      M_CODE: '',
-      G_NAME: '',
-      G_CODE: '',
-      FACTORY: 'ALL',
-      PLAN_EQ: 'ALL',
+      M_NAME: "",
+      M_CODE: "",
+      G_NAME: "",
+      G_CODE: "",
+      FACTORY: "ALL",
+      PLAN_EQ: "ALL",
     })
       .then((response) => {
         //console.log(response.data.data);
@@ -155,15 +154,14 @@ const PQC1 = () => {
                 SX_DATE:
                   element.SX_DATE === null
                     ? ""
-                    : moment.utc(element.SX_DATE).format("YYYY-MM-DD"),        
+                    : moment.utc(element.SX_DATE).format("YYYY-MM-DD"),
                 id: index,
               };
-            }
+            },
           );
           //console.log(loaded_data);
-          setSXData(loaded_data);    
-          checkPlanIDP501(loaded_data);      
-           
+          setSXData(loaded_data);
+          checkPlanIDP501(loaded_data);
         } else {
           Swal.fire("Thông báo", " Có lỗi : " + response.data.message, "error");
         }
@@ -171,7 +169,7 @@ const PQC1 = () => {
       .catch((error) => {
         console.log(error);
       });
-  }
+  };
   const setQCPASS = async (value: string) => {
     console.log(selectedRowsDataA);
     if (selectedRowsDataA.length > 0) {
@@ -212,34 +210,34 @@ const PQC1 = () => {
   };
   const pqc1DataTable = React.useMemo(
     () => (
-      <div className='datatb'>
-        <div className='menubar'>
+      <div className="datatb">
+        <div className="menubar">
           <IconButton
-            className='buttonIcon'
+            className="buttonIcon"
             onClick={() => {
               setShowHideInput((pre) => !pre);
               setInspectionDataTable([]);
             }}
           >
-            <BiShow color='blue' size={25} />
+            <BiShow color="blue" size={25} />
             Show/Hide Input
           </IconButton>
           <span style={{ fontSize: 20, fontWeight: "bold" }}>
             BẢNG NHẬP THÔNG TIN SETTING PQC
           </span>
           <IconButton
-            className='buttonIcon'
+            className="buttonIcon"
             onClick={() => {
-              traPQC1Data();              
+              traPQC1Data();
               setShowHideInput(false);
             }}
           >
-            <AiOutlineSearch color='red' size={25} />
+            <AiOutlineSearch color="red" size={25} />
             Tra Data
           </IconButton>
         </div>
         <DataGrid
-          style={{fontSize:'0.7rem'}}
+          style={{ fontSize: "0.7rem" }}
           autoNavigateToFocusedRow={true}
           allowColumnReordering={true}
           allowColumnResizing={true}
@@ -248,8 +246,8 @@ const PQC1 = () => {
           columnResizingMode={"widget"}
           showColumnLines={true}
           dataSource={pqc1datatable}
-          columnWidth='auto'
-          keyExpr='id'
+          columnWidth="auto"
+          keyExpr="id"
           height={"70vh"}
           showBorders={true}
           onSelectionChanged={(e) => {
@@ -273,37 +271,37 @@ const PQC1 = () => {
             useNative={false}
             scrollByContent={true}
             scrollByThumb={true}
-            showScrollbar='onHover'
-            mode='virtual'
+            showScrollbar="onHover"
+            mode="virtual"
           />
-          <Selection mode='multiple' selectAllMode='allPages' />
+          <Selection mode="multiple" selectAllMode="allPages" />
           <Editing
             allowUpdating={true}
             allowAdding={true}
             allowDeleting={false}
-            mode='cell'
+            mode="cell"
             confirmDelete={true}
             onChangesChange={(e) => {}}
           />
           <Export enabled={true} />
           <Toolbar disabled={false}>
-            <Item location='before'>
+            <Item location="before">
               <IconButton
-                className='buttonIcon'
+                className="buttonIcon"
                 onClick={() => {
                   SaveExcel(inspectiondatatable, "SPEC DTC");
                 }}
               >
-                <AiFillFileExcel color='green' size={25} />
+                <AiFillFileExcel color="green" size={25} />
                 SAVE
               </IconButton>
             </Item>
-            <Item name='searchPanel' />
-            <Item name='exportButton' />
-            <Item name='columnChooserButton' />
-            <Item name='addRowButton' />
-            <Item name='saveButton' />
-            <Item name='revertButton' />
+            <Item name="searchPanel" />
+            <Item name="exportButton" />
+            <Item name="columnChooserButton" />
+            <Item name="addRowButton" />
+            <Item name="saveButton" />
+            <Item name="revertButton" />
           </Toolbar>
           <FilterRow visible={true} />
           <SearchPanel visible={true} />
@@ -314,21 +312,21 @@ const PQC1 = () => {
             allowedPageSizes={[5, 10, 15, 20, 100, 1000, 10000, "all"]}
             showNavigationButtons={true}
             showInfo={true}
-            infoText='Page #{0}. Total: {1} ({2} items)'
-            displayMode='compact'
+            infoText="Page #{0}. Total: {1} ({2} items)"
+            displayMode="compact"
           />
           <Summary>
             <TotalItem
-              alignment='right'
-              column='PQC1_ID'
-              summaryType='count'
+              alignment="right"
+              column="PQC1_ID"
+              summaryType="count"
               valueFormat={"decimal"}
             />
           </Summary>
         </DataGrid>
       </div>
     ),
-    [pqc1datatable]
+    [pqc1datatable],
   );
 
   const traPQC1Data = () => {
@@ -365,7 +363,7 @@ const PQC1 = () => {
                   .format("YYYY-MM-DD HH:mm:ss"),
                 id: index,
               };
-            }
+            },
           );
           //setSummaryInspect('Tổng Nhập: ' +  summaryInput.toLocaleString('en-US') + 'EA');
           setPqc1DataTable(loadeddata);
@@ -386,13 +384,13 @@ const PQC1 = () => {
             setEmplName(
               response.data.data[0].MIDLAST_NAME +
                 " " +
-                response.data.data[0].FIRST_NAME
+                response.data.data[0].FIRST_NAME,
             );
           } else {
             setEmplName2(
               response.data.data[0].MIDLAST_NAME +
                 " " +
-                response.data.data[0].FIRST_NAME
+                response.data.data[0].FIRST_NAME,
             );
           }
         } else {
@@ -440,48 +438,45 @@ const PQC1 = () => {
         console.log(error);
       });
   };
-  const checkPlanIDP501 = (SXDATA: SX_DATA[]) =>  {
+  const checkPlanIDP501 = (SXDATA: SX_DATA[]) => {
     generalQuery("checkPlanIdP501", { PLAN_ID: SXDATA[0].PLAN_ID })
-    .then((response) => {
-      if (response.data.tk_status !== "NG") {
-        //console.log(response.data.data);
-        setInputNo(response.data.data[0].M_LOT_NO);
-        checkLotNVL(response.data.data[0].M_LOT_NO);
-        setProcessLotNo(response.data.data[0].PROCESS_LOT_NO);   
-        checkKTDTC(response.data.data[0].PROCESS_LOT_NO);
-      } else {        
-        if(SXDATA[0].PROCESS_NUMBER===0)
-        {
-          setInputNo('');
-          setProcessLotNo('');
+      .then((response) => {
+        if (response.data.tk_status !== "NG") {
+          //console.log(response.data.data);
+          setInputNo(response.data.data[0].M_LOT_NO);
+          checkLotNVL(response.data.data[0].M_LOT_NO);
+          setProcessLotNo(response.data.data[0].PROCESS_LOT_NO);
+          checkKTDTC(response.data.data[0].PROCESS_LOT_NO);
+        } else {
+          if (SXDATA[0].PROCESS_NUMBER === 0) {
+            setInputNo("");
+            setProcessLotNo("");
+          } else {
+            generalQuery("checkProcessLotNo_Prod_Req_No", {
+              PROD_REQUEST_NO: SXDATA[0].PROD_REQUEST_NO,
+            })
+              .then((response) => {
+                if (response.data.tk_status !== "NG") {
+                  //console.log(response.data.data);
+                  setInputNo(response.data.data[0].M_LOT_NO);
+                  checkLotNVL(response.data.data[0].M_LOT_NO);
+                  setProcessLotNo(response.data.data[0].PROCESS_LOT_NO);
+                  checkKTDTC(response.data.data[0].PROCESS_LOT_NO);
+                } else {
+                  setInputNo("");
+                  setProcessLotNo("");
+                }
+              })
+              .catch((error) => {
+                console.log(error);
+              });
+          }
         }
-        else
-        {
-          generalQuery("checkProcessLotNo_Prod_Req_No", { PROD_REQUEST_NO: SXDATA[0].PROD_REQUEST_NO })
-          .then((response) => {
-            if (response.data.tk_status !== "NG") {
-              //console.log(response.data.data);
-              setInputNo(response.data.data[0].M_LOT_NO);
-              checkLotNVL(response.data.data[0].M_LOT_NO);
-              setProcessLotNo(response.data.data[0].PROCESS_LOT_NO);   
-              checkKTDTC(response.data.data[0].PROCESS_LOT_NO);
-            } else {
-              setInputNo('');
-              setProcessLotNo('');
-            }
-          })
-          .catch((error) => {
-            console.log(error);
-          });
-        }
-        
-      }
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-
-  }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
   const checkLotNVL = (M_LOT_NO: string) => {
     generalQuery("checkMNAMEfromLot", { M_LOT_NO: M_LOT_NO })
       .then((response) => {
@@ -490,7 +485,7 @@ const PQC1 = () => {
           setM_Name(
             response.data.data[0].M_NAME +
               " | " +
-              response.data.data[0].WIDTH_CD
+              response.data.data[0].WIDTH_CD,
           );
           setM_Code(response.data.data[0].M_CODE);
           setWidthCD(response.data.data[0].WIDTH_CD);
@@ -499,7 +494,7 @@ const PQC1 = () => {
           setLieuQL_SX(
             response.data.data[0].LIEUQL_SX === null
               ? "0"
-              : response.data.data[0].LIEUQL_SX
+              : response.data.data[0].LIEUQL_SX,
           );
           setOut_Date(response.data.data[0].OUT_DATE);
         } else {
@@ -521,8 +516,8 @@ const PQC1 = () => {
     generalQuery("insert_pqc1", {
       PROCESS_LOT_NO: process_lot_no,
       LINEQC_PIC: lineqc_empl.toUpperCase(),
-      PROD_PIC:  sx_data[0].INS_EMPL,
-      PROD_LEADER:  prod_leader_empl.toUpperCase(),
+      PROD_PIC: sx_data[0].INS_EMPL,
+      PROD_LEADER: prod_leader_empl.toUpperCase(),
       STEPS: sx_data[0].STEP,
       CAVITY: sx_data[0].CAVITY,
       SETTING_OK_TIME: sx_data[0].MASS_START_TIME,
@@ -533,27 +528,27 @@ const PQC1 = () => {
       PLAN_ID: sx_data[0].PLAN_ID,
       PROCESS_NUMBER: sx_data[0].PROCESS_NUMBER,
       LINE_NO: sx_data[0].EQ_NAME_TT,
-      REMARK2: remark
-     })
-    .then((response) => {
-      if (response.data.tk_status !== "NG") {
-        //console.log(response.data.data);
-        traPQC1Data();       
-      } else {
-         Swal.fire('Cảnh báo','Có lỗi: ' + response.data.message,'error');
-      }
+      REMARK2: remark,
     })
-    .catch((error) => {
-      console.log(error);
-    });
-  }
+      .then((response) => {
+        if (response.data.tk_status !== "NG") {
+          //console.log(response.data.data);
+          traPQC1Data();
+        } else {
+          Swal.fire("Cảnh báo", "Có lỗi: " + response.data.message, "error");
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
   const checkInput = (): boolean => {
     if (
       inputno !== "" &&
-      planId !== "" &&     
-      lineqc_empl !== "" && 
+      planId !== "" &&
+      lineqc_empl !== "" &&
       sx_data.length !== 0 &&
-      process_lot_no !== '' 
+      process_lot_no !== ""
     ) {
       return true;
     } else {
@@ -561,59 +556,56 @@ const PQC1 = () => {
     }
   };
 
-
   useEffect(() => {
     traPQC1Data();
     ///handletraFailingData();
   }, []);
   return (
-    <div className='pqc1'>
-      <div className='tracuuDataInspection'>
-        <div className='maintable'>
+    <div className="pqc1">
+      <div className="tracuuDataInspection">
+        <div className="maintable">
           {showhideinput && (
-            <div className='tracuuDataInspectionform'>
+            <div className="tracuuDataInspectionform">
               <b style={{ color: "blue" }}>NHẬP THÔNG TIN SETTING</b>
-              <div className='forminput'>
-                <div className='forminputcolumn'>
+              <div className="forminput">
+                <div className="forminputcolumn">
                   <b>FACTORY</b>
-                  <label>                   
+                  <label>
                     <select
                       disabled={userData?.EMPL_NO === "NHU1903"}
-                      name='factory'
+                      name="factory"
                       value={factory}
                       onChange={(e) => {
                         setFactory(e.target.value);
                       }}
                     >
-                      <option value='NM1'>NM1</option>
-                      <option value='NM2'>NM2</option>
+                      <option value="NM1">NM1</option>
+                      <option value="NM2">NM2</option>
                     </select>
                   </label>
                   <b>Số chỉ thị sản xuất</b>
                   <label>
                     <input
-                      type='text'
-                      placeholder='1F80008A'
+                      type="text"
+                      placeholder="1F80008A"
                       value={planId}
                       onChange={(e) => {
                         if (e.target.value.length >= 8) {
-                         
-                          checkPlanID(e.target.value);                          
+                          checkPlanID(e.target.value);
                           checkDataSX(e.target.value);
-                        }
-                        else{
+                        } else {
                           setSXData([]);
-                          setInputNo('');
-                          setProcessLotNo('');
+                          setInputNo("");
+                          setProcessLotNo("");
                         }
                         setPlanId(e.target.value);
                       }}
                     ></input>
-                  </label>                  
+                  </label>
                   <b>Mã LINEQC</b>
                   <label>
                     <input
-                      type='text'
+                      type="text"
                       placeholder={"NVD1201"}
                       value={lineqc_empl}
                       onChange={(e) => {
@@ -638,7 +630,7 @@ const PQC1 = () => {
                   <b>Mã Leader SX</b>
                   <label>
                     <input
-                      type='text'
+                      type="text"
                       placeholder={"NVD1201"}
                       value={prod_leader_empl}
                       onChange={(e) => {
@@ -662,10 +654,10 @@ const PQC1 = () => {
                   )}
                 </div>
                 <b>Remark</b>
-                <div className='forminputcolumn'>
+                <div className="forminputcolumn">
                   <label>
                     <input
-                      type='text'
+                      type="text"
                       placeholder={"Ghi chú"}
                       value={remark}
                       onChange={(e) => {
@@ -673,11 +665,11 @@ const PQC1 = () => {
                       }}
                     ></input>
                   </label>
-                </div>               
+                </div>
               </div>
-              <div className='formbutton'>
+              <div className="formbutton">
                 <button
-                  className='tranhatky'
+                  className="tranhatky"
                   onClick={() => {
                     if (checkInput()) {
                       inputDataPqc1();
@@ -685,30 +677,30 @@ const PQC1 = () => {
                       Swal.fire(
                         "Thông báo",
                         "Hãy nhập đủ thông tin trước khi input",
-                        "error"
+                        "error",
                       );
                     }
                   }}
                 >
                   Input Data
-                </button>               
+                </button>
               </div>
               <div
-                className='formbutton'
+                className="formbutton"
                 style={{ marginTop: "20px", display: "flex", flexWrap: "wrap" }}
               ></div>
             </div>
           )}
           {showhideinput && (
-            <div className='tracuuDataInspectionform2'>
+            <div className="tracuuDataInspectionform2">
               <b style={{ color: "blue" }}>THÔNG TIN CHỈ THỊ</b>
-              <div className='forminput'>
-                <div className='forminputcolumn'>                  
-                  <b style={{color:'gray'}}>LOT sản xuất</b>
+              <div className="forminput">
+                <div className="forminputcolumn">
+                  <b style={{ color: "gray" }}>LOT sản xuất</b>
                   <label>
                     <input
                       disabled={true}
-                      type='text'                      
+                      type="text"
                       value={process_lot_no}
                       onChange={(e) => {
                         if (e.target.value.length >= 7) {
@@ -729,11 +721,11 @@ const PQC1 = () => {
                       {g_name}
                     </span>
                   )}
-                  <b style={{color:'gray'}}>LOT NVL CMS</b>
+                  <b style={{ color: "gray" }}>LOT NVL CMS</b>
                   <label>
                     <input
                       disabled={true}
-                      type='text'                      
+                      type="text"
                       value={inputno}
                       onChange={(e) => {
                         //console.log(e.target.value.length);
@@ -744,7 +736,7 @@ const PQC1 = () => {
                         setInputNo(e.target.value);
                       }}
                     ></input>
-                  </label>                 
+                  </label>
                   {m_name && (
                     <span
                       style={{
@@ -755,100 +747,102 @@ const PQC1 = () => {
                     >
                       {m_name}
                     </span>
-                  )} 
-                   <b style={{color:'gray'}}>LINE NO</b>
+                  )}
+                  <b style={{ color: "gray" }}>LINE NO</b>
                   <label>
                     <input
                       disabled={true}
-                      type='text'                      
-                      value={sx_data[0] !== undefined?  sx_data[0]?.EQ_NAME_TT : ''}
-                      onChange={(e) => {
-                       
-                      }}
+                      type="text"
+                      value={
+                        sx_data[0] !== undefined ? sx_data[0]?.EQ_NAME_TT : ""
+                      }
+                      onChange={(e) => {}}
                     ></input>
                   </label>
 
-                  <b style={{color:'gray'}}>PROCESS_NUMBER (Công đoạn)</b>
+                  <b style={{ color: "gray" }}>PROCESS_NUMBER (Công đoạn)</b>
                   <label>
                     <input
                       disabled={true}
-                      type='text'                     
-                      value={sx_data[0] !== undefined? sx_data[0]?.PROCESS_NUMBER : ''}
-                      onChange={(e) => {
-                       
-                      }}
+                      type="text"
+                      value={
+                        sx_data[0] !== undefined
+                          ? sx_data[0]?.PROCESS_NUMBER
+                          : ""
+                      }
+                      onChange={(e) => {}}
                     ></input>
                   </label>
 
-                  <b style={{color:'gray'}}>STEP</b>
+                  <b style={{ color: "gray" }}>STEP</b>
                   <label>
                     <input
                       disabled={true}
-                      type='text'                      
-                      value={sx_data[0] !== undefined? sx_data[0]?.STEP : ''}
-                      onChange={(e) => {
-                       
-                      }}
+                      type="text"
+                      value={sx_data[0] !== undefined ? sx_data[0]?.STEP : ""}
+                      onChange={(e) => {}}
                     ></input>
                   </label>
 
-                  <b style={{color:'gray'}}>PD</b>
+                  <b style={{ color: "gray" }}>PD</b>
                   <label>
                     <input
                       disabled={true}
-                      type='text'                      
-                      value={sx_data[0] !== undefined? sx_data[0]?.PD : ''}
-                      onChange={(e) => {
-                       
-                      }}
+                      type="text"
+                      value={sx_data[0] !== undefined ? sx_data[0]?.PD : ""}
+                      onChange={(e) => {}}
                     ></input>
                   </label>
 
-                  <b style={{color:'gray'}}>CAVITY</b>
+                  <b style={{ color: "gray" }}>CAVITY</b>
                   <label>
                     <input
                       disabled={true}
-                      type='text'                      
-                      value={sx_data[0] !== undefined? sx_data[0]?.CAVITY : ''}
-                      onChange={(e) => {
-                       
-                      }}
+                      type="text"
+                      value={sx_data[0] !== undefined ? sx_data[0]?.CAVITY : ""}
+                      onChange={(e) => {}}
                     ></input>
                   </label>
 
-                  <b style={{color:'gray'}}>SETTING_OK_TIME</b>
+                  <b style={{ color: "gray" }}>SETTING_OK_TIME</b>
                   <label>
                     <input
                       disabled={true}
-                      type='text'                      
-                      value={sx_data[0] !== undefined? sx_data[0]?.MASS_START_TIME : ''}
-                      onChange={(e) => {
-                       
-                      }}
+                      type="text"
+                      value={
+                        sx_data[0] !== undefined
+                          ? sx_data[0]?.MASS_START_TIME
+                          : ""
+                      }
+                      onChange={(e) => {}}
                     ></input>
                   </label>
 
-                  <b style={{color:'gray'}}>Mã CNSX</b>
+                  <b style={{ color: "gray" }}>Mã CNSX</b>
                   <label>
                     <input
                       disabled={true}
-                      type='text'                      
-                      value={sx_data[0] !== undefined? sx_data[0]?.INS_EMPL : ''}
-                      onChange={(e) => {
-                       
-                      }}
+                      type="text"
+                      value={
+                        sx_data[0] !== undefined ? sx_data[0]?.INS_EMPL : ""
+                      }
+                      onChange={(e) => {}}
                     ></input>
                   </label>
-                 
-                </div>                          
-              </div>            
+                </div>
+              </div>
               <div
-                className='formbutton'
+                className="formbutton"
                 style={{ marginTop: "20px", display: "flex", flexWrap: "wrap" }}
               ></div>
             </div>
           )}
-          <div className='tracuuYCSXTable' style={{width: showhideinput? '65vw': '99vw'}}>{pqc1DataTable}</div>
+          <div
+            className="tracuuYCSXTable"
+            style={{ width: showhideinput ? "65vw" : "99vw" }}
+          >
+            {pqc1DataTable}
+          </div>
         </div>
       </div>
     </div>

@@ -11,22 +11,27 @@ import {
 } from "../../../../redux/slices/globalSlice";
 import "./CHITHI_COMPONENT2.scss";
 import Barcode from "react-barcode";
-import { FullBOM, QLSXCHITHIDATA, QLSXPLANDATA, UserData } from "../../../../api/GlobalInterface";
+import {
+  FullBOM,
+  QLSXCHITHIDATA,
+  QLSXPLANDATA,
+  UserData,
+} from "../../../../api/GlobalInterface";
 
 interface PLAN_COMBO {
   PLAN_LIST: QLSXPLANDATA[];
 }
 const CHITHI_COMPONENT2 = ({ PLAN_LIST }: PLAN_COMBO) => {
   const company: string = useSelector(
-    (state: RootState) => state.totalSlice.company
+    (state: RootState) => state.totalSlice.company,
   );
   const [checklieuchinh, setCheckLieuChinh] = useState(false);
   //console.log(PLAN_LIST);
   let main_plan: QLSXPLANDATA = PLAN_LIST.filter(
-    (element, index) => element.STEP === 0
+    (element, index) => element.STEP === 0,
   )[0];
   const userData: UserData | undefined = useSelector(
-    (state: RootState) => state.totalSlice.userData
+    (state: RootState) => state.totalSlice.userData,
   );
   const [request_codeinfo, setRequest_CodeInfo] = useState<Array<FullBOM>>([
     {
@@ -250,30 +255,30 @@ const CHITHI_COMPONENT2 = ({ PLAN_LIST }: PLAN_COMBO) => {
     checkPOBalance();
   }, []);
   return (
-    <div className='chithicomponent2'>
+    <div className="chithicomponent2">
       {
-        <div className='tieudeycsx'>
-          <div className='leftlogobarcode'>
+        <div className="tieudeycsx">
+          <div className="leftlogobarcode">
             {/* {(request_codeinfo[0].PDBV==='Y' && checklieuchinh ===true) && <img alt='logo' src='/logocmsvina.png' width={160} height={40} />} */}
             {company === "CMS" && (
-              <img alt='logo' src='/logocmsvina.png' width={160} height={40} />
+              <img alt="logo" src="/logocmsvina.png" width={160} height={40} />
             )}
             {company === "PVN" && (
-              <img alt='logo' src='/logopvn_big.png' width={160} height={40} />
+              <img alt="logo" src="/logopvn_big.png" width={160} height={40} />
             )}
             <Barcode
               value={main_plan.PLAN_ID}
-              format='CODE128'
+              format="CODE128"
               width={1}
               height={50}
               displayValue={false}
-              background='#fff'
-              lineColor='black'
+              background="#fff"
+              lineColor="black"
               margin={0}
             />
             {main_plan.PLAN_ID}
           </div>
-          <div className='headertitle'>
+          <div className="headertitle">
             생산 지시서 - Chỉ thị Sản Xuất({main_plan.PLAN_EQ}- B
             {main_plan.STEP})<br></br>
             <span style={{ fontSize: 12 }}>
@@ -286,19 +291,19 @@ const CHITHI_COMPONENT2 = ({ PLAN_LIST }: PLAN_COMBO) => {
               </span>
             )}
           </div>
-          <div className='soycsx'>
-            <div className='ycsxbarcode'>
+          <div className="soycsx">
+            <div className="ycsxbarcode">
               <Barcode
                 value={request_codeinfo[0]?.PROD_REQUEST_NO}
-                format='CODE128'
+                format="CODE128"
                 width={1}
                 height={50}
                 displayValue={false}
-                background='#fff'
-                lineColor='black'
+                background="#fff"
+                lineColor="black"
                 margin={0}
               />
-              <div className='ycsxno'>
+              <div className="ycsxno">
                 {request_codeinfo[0].PROD_REQUEST_DATE}-
                 {request_codeinfo[0].PROD_REQUEST_NO}{" "}
               </div>
@@ -306,13 +311,13 @@ const CHITHI_COMPONENT2 = ({ PLAN_LIST }: PLAN_COMBO) => {
           </div>
         </div>
       }
-      <div className='thongtinycsx'>
-        <div className='text1'>
+      <div className="thongtinycsx">
+        <div className="text1">
           1. 지시 정보 Thông tin chỉ thị ({request_codeinfo[0].G_NAME} ) __
           PO_TYPE: {request_codeinfo[0].PO_TYPE}
         </div>
-        <div className='thongtinyeucau'>
-          <table className='ttyc1'>
+        <div className="thongtinyeucau">
+          <table className="ttyc1">
             <thead>
               <tr>
                 <th>Hạng mục/항목</th>
@@ -343,7 +348,7 @@ const CHITHI_COMPONENT2 = ({ PLAN_LIST }: PLAN_COMBO) => {
               </tr>
             </tbody>
           </table>
-          <table className='ttyc2'>
+          <table className="ttyc2">
             <thead>
               <tr>
                 <th>Hạng mục/항목</th>
@@ -355,7 +360,7 @@ const CHITHI_COMPONENT2 = ({ PLAN_LIST }: PLAN_COMBO) => {
                 <td>Số lượng yêu cầu/요청 수량</td>
                 <td>
                   {request_codeinfo[0]?.PROD_REQUEST_QTY.toLocaleString(
-                    "en-US"
+                    "en-US",
                   )}{" "}
                   EA
                 </td>
@@ -377,7 +382,7 @@ const CHITHI_COMPONENT2 = ({ PLAN_LIST }: PLAN_COMBO) => {
               </tr>
             </tbody>
           </table>
-          <table className='ttyc2'>
+          <table className="ttyc2">
             <thead>
               <tr>
                 <th>Hạng mục/항목</th>
@@ -503,11 +508,11 @@ const CHITHI_COMPONENT2 = ({ PLAN_LIST }: PLAN_COMBO) => {
             </tbody>
           </table>
         </div> */}
-        <div className='text1'>
+        <div className="text1">
           2. Thông tin combo chỉ thị_ POBALANCE:{" "}
           {po_balance?.toLocaleString("en-US")}{" "}
         </div>
-        <div className='combochithi'>
+        <div className="combochithi">
           <table>
             <thead>
               <tr>
@@ -539,12 +544,12 @@ const CHITHI_COMPONENT2 = ({ PLAN_LIST }: PLAN_COMBO) => {
                   <td>
                     <Barcode
                       value={element.PLAN_ID}
-                      format='CODE128'
+                      format="CODE128"
                       width={1.5}
                       height={25}
                       displayValue={false}
-                      background='#fff'
-                      lineColor='black'
+                      background="#fff"
+                      lineColor="black"
                       margin={0}
                     />
                   </td>
@@ -556,7 +561,7 @@ const CHITHI_COMPONENT2 = ({ PLAN_LIST }: PLAN_COMBO) => {
             </tbody>
           </table>
         </div>
-        <div className='text1'>
+        <div className="text1">
           3. LOSS INFO (Phân loại:{" "}
           {request_codeinfo[0].CODE_50 === "01"
             ? "GC"
@@ -573,8 +578,8 @@ const CHITHI_COMPONENT2 = ({ PLAN_LIST }: PLAN_COMBO) => {
             : "ETC"}
           ) _{request_codeinfo[0]?.FSC === "Y" ? "(FSC Mix Credit)" : ""}{" "}
         </div>
-        <div className='thongtinyeucau'>
-          <table className='ttyc1'>
+        <div className="thongtinyeucau">
+          <table className="ttyc1">
             <thead>
               <tr>
                 <th>PLAN_ID</th>
@@ -609,14 +614,14 @@ const CHITHI_COMPONENT2 = ({ PLAN_LIST }: PLAN_COMBO) => {
             </tbody>
           </table>
         </div>
-        <div className='text1'>
+        <div className="text1">
           5. 제품 정보 Thông tin vật liệu | Liệu chính{" "}
           {request_codeinfo[0].PROD_MAIN_MATERIAL} |{" "}
           {checklieuchinh === true ? "Đã SET" : "Chưa SET"}
         </div>
-        <div className='thongtinvatlieu'>
+        <div className="thongtinvatlieu">
           {chithidatatable.length <= maxLieu && (
-            <div className='vatlieugiua'>
+            <div className="vatlieugiua">
               <table>
                 <thead>
                   <tr>
@@ -651,7 +656,7 @@ const CHITHI_COMPONENT2 = ({ PLAN_LIST }: PLAN_COMBO) => {
                       <td>{element.WIDTH_CD}</td>
                       <td>
                         {(element.M_MET_QTY * element.M_QTY).toLocaleString(
-                          "en-US"
+                          "en-US",
                         )}{" "}
                         M
                       </td>
@@ -665,7 +670,7 @@ const CHITHI_COMPONENT2 = ({ PLAN_LIST }: PLAN_COMBO) => {
             </div>
           )}
           {chithidatatable.length > maxLieu && (
-            <div className='vatlieutrai'>
+            <div className="vatlieutrai">
               <table>
                 <thead>
                   <tr>
@@ -702,7 +707,7 @@ const CHITHI_COMPONENT2 = ({ PLAN_LIST }: PLAN_COMBO) => {
                           <td>{element.WIDTH_CD}</td>
                           <td>
                             {(element.M_MET_QTY * element.M_QTY).toLocaleString(
-                              "en-US"
+                              "en-US",
                             )}{" "}
                             M
                           </td>
@@ -710,14 +715,14 @@ const CHITHI_COMPONENT2 = ({ PLAN_LIST }: PLAN_COMBO) => {
                           <td></td>
                           <td>{element.LIEUQL_SX}</td>
                         </tr>
-                      )
+                      ),
                   )}
                 </tbody>
               </table>
             </div>
           )}
           {chithidatatable.length > maxLieu && (
-            <div className='vatlieuphai'>
+            <div className="vatlieuphai">
               <table>
                 <thead>
                   <tr>
@@ -754,7 +759,7 @@ const CHITHI_COMPONENT2 = ({ PLAN_LIST }: PLAN_COMBO) => {
                           <td>{element.WIDTH_CD}</td>
                           <td>
                             {(element.M_MET_QTY * element.M_QTY).toLocaleString(
-                              "en-US"
+                              "en-US",
                             )}{" "}
                             M
                           </td>
@@ -762,7 +767,7 @@ const CHITHI_COMPONENT2 = ({ PLAN_LIST }: PLAN_COMBO) => {
                           <td></td>
                           <td>{element.LIEUQL_SX}</td>
                         </tr>
-                      )
+                      ),
                   )}
                 </tbody>
               </table>

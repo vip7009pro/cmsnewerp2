@@ -45,18 +45,22 @@ import { FcCancel } from "react-icons/fc";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import { ResponsiveContainer } from "recharts";
-import { DTC_DATA, IQC_INCOMMING_DATA, UserData } from "../../../api/GlobalInterface";
+import {
+  DTC_DATA,
+  IQC_INCOMMING_DATA,
+  UserData,
+} from "../../../api/GlobalInterface";
 const INCOMMING = () => {
   function CustomToolbarPOTable() {
     return (
       <GridToolbarContainer>
         <IconButton
-          className='buttonIcon'
+          className="buttonIcon"
           onClick={() => {
             SaveExcel(inspectiondatatable, "Inspection Data Table");
           }}
         >
-          <AiFillFileExcel color='green' size={25} />
+          <AiFillFileExcel color="green" size={25} />
           SAVE
         </IconButton>
         <GridToolbarQuickFilter />
@@ -210,7 +214,7 @@ const INCOMMING = () => {
                   .format("YYYY-MM-DD HH:mm:ss"),
                 id: index,
               };
-            }
+            },
           );
           setDtcDataTable(loadeddata);
         } else {
@@ -222,12 +226,12 @@ const INCOMMING = () => {
       });
   };
   const userData: UserData | undefined = useSelector(
-    (state: RootState) => state.totalSlice.userData
+    (state: RootState) => state.totalSlice.userData,
   );
   const [testtype, setTestType] = useState("NVL");
   const [inputno, setInputNo] = useState("");
   const [checkNVL, setCheckNVL] = useState(
-    userData?.SUBDEPTNAME === "IQC" ? true : false
+    userData?.SUBDEPTNAME === "IQC" ? true : false,
   );
   const [request_empl, setrequest_empl] = useState("");
   const [remark, setReMark] = useState("");
@@ -316,34 +320,34 @@ const INCOMMING = () => {
   const materialDataTable = React.useMemo(
     () => (
       <ResponsiveContainer>
-        <div className='datatb'>
-          <div className='menubar'>
+        <div className="datatb">
+          <div className="menubar">
             <IconButton
-              className='buttonIcon'
+              className="buttonIcon"
               onClick={() => {
                 setShowHideInput((pre) => !pre);
                 setInspectionDataTable([]);
                 setDtcDataTable([]);
               }}
             >
-              <BiShow color='blue' size={25} />
+              <BiShow color="blue" size={25} />
               Show/Hide Input
             </IconButton>
             <span style={{ fontSize: 20, fontWeight: "bold" }}>
               BẢNG NHẬP THÔNG TIN LIỆU INCOMMING
             </span>
             <IconButton
-              className='buttonIcon'
+              className="buttonIcon"
               onClick={() => {
                 handletraIQC1Data();
                 setShowHideInput(false);
               }}
             >
-              <AiOutlineSearch color='red' size={25} />
+              <AiOutlineSearch color="red" size={25} />
               Tra Data
             </IconButton>
             <IconButton
-              className='buttonIcon'
+              className="buttonIcon"
               onClick={() => {
                 if (userData?.SUBDEPTNAME === "IQC") {
                   setQCPASS("Y");
@@ -351,7 +355,7 @@ const INCOMMING = () => {
                   Swal.fire(
                     "Thông báo",
                     "Bạn không phải người bộ phận IQC",
-                    "error"
+                    "error",
                   );
                 }
                 //checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['QC'], ()=>{setQCPASS('Y');});
@@ -359,11 +363,11 @@ const INCOMMING = () => {
                 //setQCPASS('Y');
               }}
             >
-              <GrStatusGood color='green' size={25} />
+              <GrStatusGood color="green" size={25} />
               SET PASS
             </IconButton>
             <IconButton
-              className='buttonIcon'
+              className="buttonIcon"
               onClick={() => {
                 if (userData?.SUBDEPTNAME === "IQC") {
                   setQCPASS("N");
@@ -371,7 +375,7 @@ const INCOMMING = () => {
                   Swal.fire(
                     "Thông báo",
                     "Bạn không phải người bộ phận IQC",
-                    "error"
+                    "error",
                   );
                 }
                 //checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['QC'], ()=>{setQCPASS('Y');});
@@ -379,7 +383,7 @@ const INCOMMING = () => {
                 //setQCPASS('N');
               }}
             >
-              <FcCancel color='red' size={25} />
+              <FcCancel color="red" size={25} />
               RESET PASS
             </IconButton>
           </div>
@@ -393,8 +397,8 @@ const INCOMMING = () => {
             columnResizingMode={"widget"}
             showColumnLines={true}
             dataSource={inspectiondatatable}
-            columnWidth='auto'
-            keyExpr='id'
+            columnWidth="auto"
+            keyExpr="id"
             height={"70vh"}
             showBorders={false}
             onSelectionChanged={(e) => {
@@ -411,37 +415,37 @@ const INCOMMING = () => {
               useNative={true}
               scrollByContent={true}
               scrollByThumb={true}
-              showScrollbar='onHover'
-              mode='virtual'
+              showScrollbar="onHover"
+              mode="virtual"
             />
-            <Selection mode='multiple' selectAllMode='allPages' />
+            <Selection mode="multiple" selectAllMode="allPages" />
             <Editing
               allowUpdating={true}
               allowAdding={false}
               allowDeleting={false}
-              mode='cell'
+              mode="cell"
               confirmDelete={true}
               onChangesChange={(e) => {}}
             />
             <Export enabled={true} />
             <Toolbar disabled={false}>
-              <Item location='before'>
+              <Item location="before">
                 <IconButton
-                  className='buttonIcon'
+                  className="buttonIcon"
                   onClick={() => {
                     SaveExcel(inspectiondatatable, "SPEC DTC");
                   }}
                 >
-                  <AiFillFileExcel color='green' size={25} />
+                  <AiFillFileExcel color="green" size={25} />
                   SAVE
                 </IconButton>
               </Item>
-              <Item name='searchPanel' />
-              <Item name='exportButton' />
-              <Item name='columnChooserButton' />
-              <Item name='addRowButton' />
-              <Item name='saveButton' />
-              <Item name='revertButton' />
+              <Item name="searchPanel" />
+              <Item name="exportButton" />
+              <Item name="columnChooserButton" />
+              <Item name="addRowButton" />
+              <Item name="saveButton" />
+              <Item name="revertButton" />
             </Toolbar>
             <FilterRow visible={true} />
             <SearchPanel visible={true} />
@@ -452,88 +456,88 @@ const INCOMMING = () => {
               allowedPageSizes={[5, 10, 15, 20, 100, 1000, 10000, "all"]}
               showNavigationButtons={true}
               showInfo={true}
-              infoText='Page #{0}. Total: {1} ({2} items)'
-              displayMode='compact'
+              infoText="Page #{0}. Total: {1} ({2} items)"
+              displayMode="compact"
             />
             <Column
-              dataField='IQC1_ID'
-              caption='IQC1_ID'
+              dataField="IQC1_ID"
+              caption="IQC1_ID"
               width={100}
               allowEditing={false}
             ></Column>
             <Column
-              dataField='M_CODE'
-              caption='M_CODE'
+              dataField="M_CODE"
+              caption="M_CODE"
               width={100}
               allowEditing={false}
             ></Column>
             <Column
-              dataField='M_LOT_NO'
-              caption='M_LOT_NO'
+              dataField="M_LOT_NO"
+              caption="M_LOT_NO"
               width={100}
               allowEditing={false}
             ></Column>
             <Column
-              dataField='LOT_CMS'
-              caption='LOT_CMS'
+              dataField="LOT_CMS"
+              caption="LOT_CMS"
               width={100}
               allowEditing={false}
             ></Column>
             <Column
-              dataField='LOT_VENDOR'
-              caption='LOT_VENDOR'
+              dataField="LOT_VENDOR"
+              caption="LOT_VENDOR"
               width={100}
             ></Column>
             <Column
-              dataField='CUST_CD'
-              caption='CUST_CD'
+              dataField="CUST_CD"
+              caption="CUST_CD"
               width={100}
               allowEditing={false}
             ></Column>
             <Column
-              dataField='CUST_NAME_KD'
-              caption='VENDOR NAME'
+              dataField="CUST_NAME_KD"
+              caption="VENDOR NAME"
               width={120}
               allowEditing={false}
             ></Column>
             <Column
-              dataField='EXP_DATE'
-              caption='EXP_DATE'
+              dataField="EXP_DATE"
+              caption="EXP_DATE"
               width={150}
             ></Column>
             <Column
-              dataField='INPUT_LENGTH'
-              caption='INPUT_LENGTH'
+              dataField="INPUT_LENGTH"
+              caption="INPUT_LENGTH"
               width={100}
               allowEditing={false}
             ></Column>
             <Column
-              dataField='TOTAL_ROLL'
-              caption='TOTAL_ROLL'
+              dataField="TOTAL_ROLL"
+              caption="TOTAL_ROLL"
               width={100}
               allowEditing={false}
             ></Column>
             <Column
-              dataField='NQ_CHECK_ROLL'
-              caption='NQ_CHECK_ROLL'
+              dataField="NQ_CHECK_ROLL"
+              caption="NQ_CHECK_ROLL"
               width={100}
               allowEditing={false}
             ></Column>
             <Column
-              dataField='DTC_ID'
-              caption='DTC_ID'
+              dataField="DTC_ID"
+              caption="DTC_ID"
               width={100}
               allowEditing={false}
             ></Column>
             <Column
-              dataField='TEST_EMPL'
-              caption='TEST_EMPL'
+              dataField="TEST_EMPL"
+              caption="TEST_EMPL"
               width={100}
               allowEditing={false}
             ></Column>
             <Column
-              dataField='TOTAL_RESULT'
-              caption='TOTAL_RESULT'
+              dataField="TOTAL_RESULT"
+              caption="TOTAL_RESULT"
               width={100}
               cellRender={(e: any) => {
                 if (e.data.TOTAL_RESULT === "OK") {
@@ -580,8 +584,8 @@ const INCOMMING = () => {
               allowEditing={false}
             ></Column>
             <Column
-              dataField='AUTO_JUDGEMENT'
-              caption='AUTO_JUDGEMENT'
+              dataField="AUTO_JUDGEMENT"
+              caption="AUTO_JUDGEMENT"
               width={100}
               cellRender={(e: any) => {
                 if (e.data.AUTO_JUDGEMENT === "OK") {
@@ -628,8 +632,8 @@ const INCOMMING = () => {
               allowEditing={false}
             ></Column>
             <Column
-              dataField='NGOAIQUAN'
-              caption='NGOAIQUAN'
+              dataField="NGOAIQUAN"
+              caption="NGOAIQUAN"
               width={100}
               cellRender={(e: any) => {
                 if (e.data.NGOAIQUAN === 1) {
@@ -659,8 +663,8 @@ const INCOMMING = () => {
               allowEditing={false}
             ></Column>
             <Column
-              dataField='KICHTHUOC'
-              caption='KICHTHUOC'
+              dataField="KICHTHUOC"
+              caption="KICHTHUOC"
               width={100}
               cellRender={(e: any) => {
                 if (e.data.KICHTHUOC === 1) {
@@ -690,8 +694,8 @@ const INCOMMING = () => {
               allowEditing={false}
             ></Column>
             <Column
-              dataField='THICKNESS'
-              caption='THICKNESS'
+              dataField="THICKNESS"
+              caption="THICKNESS"
               width={100}
               cellRender={(e: any) => {
                 if (e.data.THICKNESS === 1) {
@@ -721,8 +725,8 @@ const INCOMMING = () => {
               allowEditing={false}
             ></Column>
             <Column
-              dataField='DIENTRO'
-              caption='DIENTRO'
+              dataField="DIENTRO"
+              caption="DIENTRO"
               width={100}
               cellRender={(e: any) => {
                 if (e.data.DIENTRO === 1) {
@@ -752,8 +756,8 @@ const INCOMMING = () => {
               allowEditing={false}
             ></Column>
             <Column
-              dataField='CANNANG'
-              caption='CANNANG'
+              dataField="CANNANG"
+              caption="CANNANG"
               width={100}
               cellRender={(e: any) => {
                 if (e.data.CANNANG === 1) {
@@ -783,8 +787,8 @@ const INCOMMING = () => {
               allowEditing={false}
             ></Column>
             <Column
-              dataField='KEOKEO'
-              caption='KEOKEO'
+              dataField="KEOKEO"
+              caption="KEOKEO"
               width={100}
               cellRender={(e: any) => {
                 if (e.data.KEOKEO === 1) {
@@ -814,8 +818,8 @@ const INCOMMING = () => {
               allowEditing={false}
             ></Column>
             <Column
-              dataField='KEOKEO2'
-              caption='KEOKEO2'
+              dataField="KEOKEO2"
+              caption="KEOKEO2"
               width={100}
               cellRender={(e: any) => {
                 if (e.data.KEOKEO2 === 1) {
@@ -845,8 +849,8 @@ const INCOMMING = () => {
               allowEditing={false}
             ></Column>
             <Column
-              dataField='FTIR'
-              caption='FTIR'
+              dataField="FTIR"
+              caption="FTIR"
               width={100}
               cellRender={(e: any) => {
                 if (e.data.FTIR === 1) {
@@ -876,8 +880,8 @@ const INCOMMING = () => {
               allowEditing={false}
             ></Column>
             <Column
-              dataField='MAIMON'
-              caption='MAIMON'
+              dataField="MAIMON"
+              caption="MAIMON"
               width={100}
               cellRender={(e: any) => {
                 if (e.data.MAIMON === 1) {
@@ -907,8 +911,8 @@ const INCOMMING = () => {
               allowEditing={false}
             ></Column>
             <Column
-              dataField='XRF'
-              caption='XRF'
+              dataField="XRF"
+              caption="XRF"
               width={100}
               cellRender={(e: any) => {
                 if (e.data.XRF === 1) {
@@ -938,8 +942,8 @@ const INCOMMING = () => {
               allowEditing={false}
             ></Column>
             <Column
-              dataField='SCANBARCODE'
-              caption='SCANBARCODE'
+              dataField="SCANBARCODE"
+              caption="SCANBARCODE"
               width={100}
               cellRender={(e: any) => {
                 if (e.data.SCANBARCODE === 1) {
@@ -969,8 +973,8 @@ const INCOMMING = () => {
               allowEditing={false}
             ></Column>
             <Column
-              dataField='PHTHALATE'
-              caption='PHTHALATE'
+              dataField="PHTHALATE"
+              caption="PHTHALATE"
               width={100}
               cellRender={(e: any) => {
                 if (e.data.PHTHALATE === 1) {
@@ -1000,8 +1004,8 @@ const INCOMMING = () => {
               allowEditing={false}
             ></Column>
             <Column
-              dataField='MAUSAC'
-              caption='MAUSAC'
+              dataField="MAUSAC"
+              caption="MAUSAC"
               width={100}
               cellRender={(e: any) => {
                 if (e.data.MAUSAC === 1) {
@@ -1031,8 +1035,8 @@ const INCOMMING = () => {
               allowEditing={false}
             ></Column>
             <Column
-              dataField='SHOCKNHIET'
-              caption='SHOCKNHIET'
+              dataField="SHOCKNHIET"
+              caption="SHOCKNHIET"
               width={100}
               cellRender={(e: any) => {
                 if (e.data.SHOCKNHIET === 1) {
@@ -1062,8 +1066,8 @@ const INCOMMING = () => {
               allowEditing={false}
             ></Column>
             <Column
-              dataField='TINHDIEN'
-              caption='TINHDIEN'
+              dataField="TINHDIEN"
+              caption="TINHDIEN"
               width={100}
               cellRender={(e: any) => {
                 if (e.data.TINHDIEN === 1) {
@@ -1093,8 +1097,8 @@ const INCOMMING = () => {
               allowEditing={false}
             ></Column>
             <Column
-              dataField='NHIETAM'
-              caption='NHIETAM'
+              dataField="NHIETAM"
+              caption="NHIETAM"
               width={100}
               cellRender={(e: any) => {
                 if (e.data.NHIETAM === 1) {
@@ -1124,8 +1128,8 @@ const INCOMMING = () => {
               allowEditing={false}
             ></Column>
             <Column
-              dataField='TVOC'
-              caption='TVOC'
+              dataField="TVOC"
+              caption="TVOC"
               width={100}
               cellRender={(e: any) => {
                 if (e.data.TVOC === 1) {
@@ -1155,8 +1159,8 @@ const INCOMMING = () => {
               allowEditing={false}
             ></Column>
             <Column
-              dataField='DOBONG'
-              caption='DOBONG'
+              dataField="DOBONG"
+              caption="DOBONG"
               width={100}
               cellRender={(e: any) => {
                 if (e.data.DOBONG === 1) {
@@ -1186,32 +1190,32 @@ const INCOMMING = () => {
               allowEditing={false}
             ></Column>
             <Column
-              dataField='INS_DATE'
-              caption='INS_DATE'
+              dataField="INS_DATE"
+              caption="INS_DATE"
               width={100}
               allowEditing={false}
             ></Column>
             <Column
-              dataField='INS_EMPL'
-              caption='INS_EMPL'
+              dataField="INS_EMPL"
+              caption="INS_EMPL"
               width={100}
               allowEditing={false}
             ></Column>
             <Column
-              dataField='UPD_DATE'
-              caption='UPD_DATE'
+              dataField="UPD_DATE"
+              caption="UPD_DATE"
               width={100}
               allowEditing={false}
             ></Column>
             <Column
-              dataField='UPD_EMPL'
-              caption='UPD_EMPL'
+              dataField="UPD_EMPL"
+              caption="UPD_EMPL"
               width={100}
               allowEditing={false}
             ></Column>
             <Column
-              dataField='REMARK'
-              caption='REMARK'
+              dataField="REMARK"
+              caption="REMARK"
               width={150}
               allowEditing={true}
             ></Column>
@@ -1219,7 +1223,7 @@ const INCOMMING = () => {
         </div>
       </ResponsiveContainer>
     ),
-    [inspectiondatatable]
+    [inspectiondatatable],
   );
   const handletraIQC1Data = () => {
     generalQuery("loadIQC1table", {})
@@ -1250,13 +1254,13 @@ const INCOMMING = () => {
                         .format("YYYY-MM-DD HH:mm:ss"),
                 id: index,
               };
-            }
+            },
           );
           setInspectionDataTable(loadeddata);
           Swal.fire(
             "Thông báo",
             "Đã load :" + loadeddata.length + " dòng",
-            "success"
+            "success",
           );
         } else {
         }
@@ -1273,7 +1277,7 @@ const INCOMMING = () => {
           setEmplName(
             response.data.data[0].MIDLAST_NAME +
               " " +
-              response.data.data[0].FIRST_NAME
+              response.data.data[0].FIRST_NAME,
           );
           setReqDeptCode(response.data.data[0].WORK_POSITION_CODE);
         } else {
@@ -1293,7 +1297,7 @@ const INCOMMING = () => {
           setM_Name(
             response.data.data[0].M_NAME +
               " | " +
-              response.data.data[0].WIDTH_CD
+              response.data.data[0].WIDTH_CD,
           );
           setM_Code(response.data.data[0].M_CODE);
           setWidthCD(response.data.data[0].WIDTH_CD);
@@ -1422,19 +1426,19 @@ const INCOMMING = () => {
     //handletraIQC1Data();
   }, []);
   return (
-    <div className='incomming'>
-      <div className='tracuuDataInspection'>
-        <div className='maintable'>
+    <div className="incomming">
+      <div className="tracuuDataInspection">
+        <div className="maintable">
           {showhideinput && (
-            <div className='tracuuDataInspectionform'>
+            <div className="tracuuDataInspectionform">
               <b style={{ color: "blue" }}>INPUT DATA KIỂM TRA INCOMMING</b>
-              <div className='forminput'>
-                <div className='forminputcolumn'>
+              <div className="forminput">
+                <div className="forminputcolumn">
                   <b>LOT NVL CMS</b>
                   <label>
                     <input
-                      type='text'
-                      placeholder='202304190123'
+                      type="text"
+                      placeholder="202304190123"
                       value={inputno}
                       onChange={(e) => {
                         if (e.target.value.length >= 7) {
@@ -1458,7 +1462,7 @@ const INCOMMING = () => {
                   <b>VENDOR LOT</b>
                   <label>
                     <input
-                      type='text'
+                      type="text"
                       placeholder={"NVD1201"}
                       value={vendorLot}
                       onChange={(e) => {
@@ -1469,7 +1473,7 @@ const INCOMMING = () => {
                   <b>Hạn sử dụng</b>
                   <label>
                     <input
-                      type='date'
+                      type="date"
                       value={exp_date}
                       onChange={(e) => {
                         setEXP_DATE(e.target.value);
@@ -1479,7 +1483,7 @@ const INCOMMING = () => {
                   <b>Số Roll check ngoại quan</b>
                   <label>
                     <input
-                      type='text'
+                      type="text"
                       value={nq_qty}
                       onChange={(e) => {
                         setNQ_QTY(Number(e.target.value));
@@ -1489,7 +1493,7 @@ const INCOMMING = () => {
                   <b>ID Test ngoại quan- độ tin cậy</b>
                   <label>
                     <input
-                      type='text'
+                      type="text"
                       value={dtc_id}
                       onChange={(e) => {
                         setDtc_ID(Number(e.target.value));
@@ -1499,7 +1503,7 @@ const INCOMMING = () => {
                   <b>Mã nhân viên test IQC</b>
                   <label>
                     <input
-                      type='text'
+                      type="text"
                       placeholder={"NVD1201"}
                       value={request_empl}
                       onChange={(e) => {
@@ -1523,10 +1527,10 @@ const INCOMMING = () => {
                   )}
                 </div>
                 <b>Remark</b>
-                <div className='forminputcolumn'>
+                <div className="forminputcolumn">
                   <label>
                     <input
-                      type='text'
+                      type="text"
                       placeholder={"Ghi chú"}
                       value={remark}
                       onChange={(e) => {
@@ -1536,9 +1540,9 @@ const INCOMMING = () => {
                   </label>
                 </div>
               </div>
-              <div className='formbutton'>
+              <div className="formbutton">
                 <button
-                  className='tranhatky'
+                  className="tranhatky"
                   onClick={() => {
                     if (checkInput()) {
                       addRow();
@@ -1546,7 +1550,7 @@ const INCOMMING = () => {
                       Swal.fire(
                         "Thông báo",
                         "Hãy nhập đủ thông tin trước khi đăng ký",
-                        "error"
+                        "error",
                       );
                     }
                   }}
@@ -1554,7 +1558,7 @@ const INCOMMING = () => {
                   Add
                 </button>
                 <button
-                  className='tranhatky'
+                  className="tranhatky"
                   onClick={() => {
                     insertIQC1Table();
                   }}
@@ -1563,14 +1567,14 @@ const INCOMMING = () => {
                 </button>
               </div>
               <div
-                className='formbutton'
+                className="formbutton"
                 style={{ marginTop: "20px", display: "flex", flexWrap: "wrap" }}
               ></div>
             </div>
           )}
-          <div className='tracuuYCSXTable'>{materialDataTable}</div>
+          <div className="tracuuYCSXTable">{materialDataTable}</div>
           {!showhideinput && (
-            <div className='tracuuDataInspectionform2'>
+            <div className="tracuuDataInspectionform2">
               <b style={{ color: "blue" }}>Kết quả ĐTC</b>
               <Datagrid2
                 sx={{ fontSize: "0.7rem", flex: 1 }}
@@ -1583,7 +1587,7 @@ const INCOMMING = () => {
                 rowsPerPageOptions={[
                   5, 10, 50, 100, 500, 1000, 5000, 10000, 500000,
                 ]}
-                editMode='row'
+                editMode="row"
               />
             </div>
           )}

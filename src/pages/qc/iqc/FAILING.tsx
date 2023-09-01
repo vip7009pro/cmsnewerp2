@@ -42,14 +42,18 @@ import { GrStatusGood } from "react-icons/gr";
 import { FcCancel } from "react-icons/fc";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
-import { CustomerListData, QC_FAIL_DATA, UserData } from "../../../api/GlobalInterface";
+import {
+  CustomerListData,
+  QC_FAIL_DATA,
+  UserData,
+} from "../../../api/GlobalInterface";
 
 const FAILING = () => {
   const [cmsvcheck, setCMSVCheck] = useState(true);
   const [customerList, setCustomerList] = useState<CustomerListData[]>([]);
 
   const userData: UserData | undefined = useSelector(
-    (state: RootState) => state.totalSlice.userData
+    (state: RootState) => state.totalSlice.userData,
   );
   const [testtype, setTestType] = useState("NVL");
   const [inputno, setInputNo] = useState("");
@@ -57,7 +61,7 @@ const FAILING = () => {
   const [request_empl2, setrequest_empl2] = useState("");
   const [remark, setReMark] = useState("");
   const [inspectiondatatable, setInspectionDataTable] = useState<Array<any>>(
-    []
+    [],
   );
   const [selectedRowsDataA, setSelectedRowsData] = useState<
     Array<QC_FAIL_DATA>
@@ -127,35 +131,34 @@ const FAILING = () => {
   };
   const materialDataTable = React.useMemo(
     () => (
-      <div className='datatb'>
+      <div className="datatb">
         <div className="menubar">
-        <IconButton
-                className='buttonIcon'
-                onClick={() => {
-                  setShowHideInput((pre) => !pre);
-                  setInspectionDataTable([]);
-                }}
-              >
-                <BiShow color='blue' size={25} />
-                Show/Hide Input
-              </IconButton>
-              <span style={{ fontSize: 20, fontWeight: "bold" }}>
-                BẢNG NHẬP THÔNG TIN CUỘN LIỆU- BTP QC FAIL
-              </span>
-              <IconButton
-                className='buttonIcon'
-                onClick={() => {
-                  handletraFailingData();
-                  setShowHideInput(false);
-                }}
-              >
-                <AiOutlineSearch color='red' size={25} />
-                Tra Data
-              </IconButton>    
-
+          <IconButton
+            className="buttonIcon"
+            onClick={() => {
+              setShowHideInput((pre) => !pre);
+              setInspectionDataTable([]);
+            }}
+          >
+            <BiShow color="blue" size={25} />
+            Show/Hide Input
+          </IconButton>
+          <span style={{ fontSize: 20, fontWeight: "bold" }}>
+            BẢNG NHẬP THÔNG TIN CUỘN LIỆU- BTP QC FAIL
+          </span>
+          <IconButton
+            className="buttonIcon"
+            onClick={() => {
+              handletraFailingData();
+              setShowHideInput(false);
+            }}
+          >
+            <AiOutlineSearch color="red" size={25} />
+            Tra Data
+          </IconButton>
         </div>
         <DataGrid
-          style={{fontSize:'0.7rem'}}
+          style={{ fontSize: "0.7rem" }}
           autoNavigateToFocusedRow={true}
           allowColumnReordering={true}
           allowColumnResizing={true}
@@ -164,11 +167,11 @@ const FAILING = () => {
           columnResizingMode={"widget"}
           showColumnLines={true}
           dataSource={inspectiondatatable}
-          columnWidth='auto'
-          keyExpr='id'
+          columnWidth="auto"
+          keyExpr="id"
           height={"70vh"}
           showBorders={true}
-          onSelectionChanged={(e) => {            
+          onSelectionChanged={(e) => {
             setSelectedRowsData(e.selectedRowsData);
           }}
           onRowClick={(e) => {
@@ -182,37 +185,37 @@ const FAILING = () => {
             useNative={false}
             scrollByContent={true}
             scrollByThumb={true}
-            showScrollbar='onHover'
-            mode='virtual'
+            showScrollbar="onHover"
+            mode="virtual"
           />
-          <Selection mode='multiple' selectAllMode='allPages' />
+          <Selection mode="multiple" selectAllMode="allPages" />
           <Editing
             allowUpdating={true}
             allowAdding={false}
             allowDeleting={false}
-            mode='cell'
+            mode="cell"
             confirmDelete={true}
             onChangesChange={(e) => {}}
           />
           <Export enabled={true} />
           <Toolbar disabled={false}>
-            <Item location='before'>
+            <Item location="before">
               <IconButton
-                className='buttonIcon'
+                className="buttonIcon"
                 onClick={() => {
                   SaveExcel(inspectiondatatable, "SPEC DTC");
                 }}
               >
-                <AiFillFileExcel color='green' size={25} />
+                <AiFillFileExcel color="green" size={25} />
                 SAVE
               </IconButton>
             </Item>
-            <Item name='searchPanel' />
-            <Item name='exportButton' />
-            <Item name='columnChooserButton' />
-            <Item name='addRowButton' />
-            <Item name='saveButton' />
-            <Item name='revertButton' />
+            <Item name="searchPanel" />
+            <Item name="exportButton" />
+            <Item name="columnChooserButton" />
+            <Item name="addRowButton" />
+            <Item name="saveButton" />
+            <Item name="revertButton" />
           </Toolbar>
           <FilterRow visible={true} />
           <SearchPanel visible={true} />
@@ -223,244 +226,244 @@ const FAILING = () => {
             allowedPageSizes={[5, 10, 15, 20, 100, 1000, 10000, "all"]}
             showNavigationButtons={true}
             showInfo={true}
-            infoText='Page #{0}. Total: {1} ({2} items)'
-            displayMode='compact'
+            infoText="Page #{0}. Total: {1} ({2} items)"
+            displayMode="compact"
           />
           <Column
-            dataField='FAIL_ID'
-            caption='FAIL_ID'
+            dataField="FAIL_ID"
+            caption="FAIL_ID"
             width={100}
             allowEditing={false}
           ></Column>
           <Column
-            dataField='FACTORY'
-            caption='FACTORY'
+            dataField="FACTORY"
+            caption="FACTORY"
             width={100}
             allowEditing={false}
           ></Column>
           <Column
-            dataField='PLAN_ID_SUDUNG'
-            caption='PLAN_ID_SUDUNG'
+            dataField="PLAN_ID_SUDUNG"
+            caption="PLAN_ID_SUDUNG"
             width={100}
             allowEditing={false}
           ></Column>
           <Column
-            dataField='G_NAME'
-            caption='G_NAME'
+            dataField="G_NAME"
+            caption="G_NAME"
             width={100}
             allowEditing={false}
           ></Column>
           <Column
-            dataField='LIEUQL_SX'
-            caption='LIEUQL_SX'
+            dataField="LIEUQL_SX"
+            caption="LIEUQL_SX"
             width={100}
             allowEditing={false}
           ></Column>
           <Column
-            dataField='M_CODE'
-            caption='M_CODE'
+            dataField="M_CODE"
+            caption="M_CODE"
             width={100}
             allowEditing={false}
           ></Column>
           <Column
-            dataField='M_LOT_NO'
-            caption='M_LOT_NO'
+            dataField="M_LOT_NO"
+            caption="M_LOT_NO"
             width={100}
             allowEditing={true}
           ></Column>
           <Column
-            dataField='VENDOR_LOT'
-            caption='VENDOR_LOT'
+            dataField="VENDOR_LOT"
+            caption="VENDOR_LOT"
             width={100}
             allowEditing={false}
           ></Column>
           <Column
-            dataField='M_NAME'
-            caption='M_NAME'
+            dataField="M_NAME"
+            caption="M_NAME"
             width={100}
             allowEditing={false}
           ></Column>
           <Column
-            dataField='WIDTH_CD'
-            caption='WIDTH_CD'
+            dataField="WIDTH_CD"
+            caption="WIDTH_CD"
             width={100}
             allowEditing={false}
           ></Column>
-          <Column dataField='ROLL_QTY' caption='ROLL_QTY' width={100}></Column>
-          <Column dataField='IN_QTY' caption='IN_QTY' width={100}></Column>
+          <Column dataField="ROLL_QTY" caption="ROLL_QTY" width={100}></Column>
+          <Column dataField="IN_QTY" caption="IN_QTY" width={100}></Column>
           <Column
-            dataField='TOTAL_IN_QTY'
-            caption='TOTAL_IN_QTY'
+            dataField="TOTAL_IN_QTY"
+            caption="TOTAL_IN_QTY"
             width={100}
           ></Column>
           <Column
-            dataField='USE_YN'
-            caption='USE_YN'
-            width={100}
-            allowEditing={false}
-          ></Column>
-          <Column
-            dataField='PQC3_ID'
-            caption='PQC3_ID'
+            dataField="USE_YN"
+            caption="USE_YN"
             width={100}
             allowEditing={false}
           ></Column>
           <Column
-            dataField='DEFECT_PHENOMENON'
-            caption='DEFECT_PHENOMENON'
+            dataField="PQC3_ID"
+            caption="PQC3_ID"
             width={100}
             allowEditing={false}
           ></Column>
           <Column
-            dataField='OUT_DATE'
-            caption='OUT_DATE'
+            dataField="DEFECT_PHENOMENON"
+            caption="DEFECT_PHENOMENON"
             width={100}
             allowEditing={false}
           ></Column>
           <Column
-            dataField='INS_EMPL'
-            caption='INS_EMPL'
+            dataField="OUT_DATE"
+            caption="OUT_DATE"
             width={100}
             allowEditing={false}
           ></Column>
           <Column
-            dataField='INS_DATE'
-            caption='INS_DATE'
+            dataField="INS_EMPL"
+            caption="INS_EMPL"
             width={100}
             allowEditing={false}
           ></Column>
           <Column
-            dataField='UPD_EMPL'
-            caption='UPD_EMPL'
+            dataField="INS_DATE"
+            caption="INS_DATE"
             width={100}
             allowEditing={false}
           ></Column>
           <Column
-            dataField='UPD_DATE'
-            caption='UPD_DATE'
+            dataField="UPD_EMPL"
+            caption="UPD_EMPL"
             width={100}
             allowEditing={false}
           ></Column>
           <Column
-            dataField='PHANLOAI'
-            caption='PHANLOAI'
+            dataField="UPD_DATE"
+            caption="UPD_DATE"
             width={100}
             allowEditing={false}
           ></Column>
           <Column
-            dataField='QC_PASS'
-            caption='QC_PASS'
+            dataField="PHANLOAI"
+            caption="PHANLOAI"
             width={100}
             allowEditing={false}
           ></Column>
           <Column
-            dataField='QC_PASS_DATE'
-            caption='QC_PASS_DATE'
+            dataField="QC_PASS"
+            caption="QC_PASS"
             width={100}
             allowEditing={false}
           ></Column>
           <Column
-            dataField='QC_PASS_EMPL'
-            caption='QC_PASS_EMPL'
+            dataField="QC_PASS_DATE"
+            caption="QC_PASS_DATE"
             width={100}
             allowEditing={false}
           ></Column>
           <Column
-            dataField='REMARK'
-            caption='REMARK'
+            dataField="QC_PASS_EMPL"
+            caption="QC_PASS_EMPL"
             width={100}
             allowEditing={false}
           ></Column>
           <Column
-            dataField='IN1_EMPL'
-            caption='IN1_EMPL'
+            dataField="REMARK"
+            caption="REMARK"
             width={100}
             allowEditing={false}
           ></Column>
           <Column
-            dataField='IN2_EMPL'
-            caption='IN2_EMPL'
+            dataField="IN1_EMPL"
+            caption="IN1_EMPL"
             width={100}
             allowEditing={false}
           ></Column>
           <Column
-            dataField='OUT1_EMPL'
-            caption='OUT1_EMPL'
+            dataField="IN2_EMPL"
+            caption="IN2_EMPL"
             width={100}
             allowEditing={false}
           ></Column>
           <Column
-            dataField='OUT2_EMPL'
-            caption='OUT2_EMPL'
+            dataField="OUT1_EMPL"
+            caption="OUT1_EMPL"
             width={100}
             allowEditing={false}
           ></Column>
           <Column
-            dataField='IN_CUST_CD'
-            caption='IN_CUST_CD'
+            dataField="OUT2_EMPL"
+            caption="OUT2_EMPL"
             width={100}
             allowEditing={false}
           ></Column>
           <Column
-            dataField='OUT_CUST_CD'
-            caption='OUT_CUST_CD'
+            dataField="IN_CUST_CD"
+            caption="IN_CUST_CD"
             width={100}
             allowEditing={false}
           ></Column>
           <Column
-            dataField='IN_CUST_NAME'
-            caption='IN_CUST_NAME'
+            dataField="OUT_CUST_CD"
+            caption="OUT_CUST_CD"
             width={100}
             allowEditing={false}
           ></Column>
           <Column
-            dataField='OUT_CUST_NAME'
-            caption='OUT_CUST_NAME'
+            dataField="IN_CUST_NAME"
+            caption="IN_CUST_NAME"
             width={100}
             allowEditing={false}
           ></Column>
           <Column
-            dataField='OUT_PLAN_ID'
-            caption='OUT_PLAN_ID'
+            dataField="OUT_CUST_NAME"
+            caption="OUT_CUST_NAME"
             width={100}
             allowEditing={false}
           ></Column>
           <Column
-            dataField='REMARK_OUT'
-            caption='REMARK_OUT'
+            dataField="OUT_PLAN_ID"
+            caption="OUT_PLAN_ID"
+            width={100}
+            allowEditing={false}
+          ></Column>
+          <Column
+            dataField="REMARK_OUT"
+            caption="REMARK_OUT"
             width={100}
             allowEditing={false}
           ></Column>
           <Summary>
             <TotalItem
-              alignment='right'
-              column='M_CODE'
-              summaryType='count'
+              alignment="right"
+              column="M_CODE"
+              summaryType="count"
               valueFormat={"decimal"}
             />
             <TotalItem
-              alignment='right'
-              column='ROLL_QTY'
-              summaryType='sum'
+              alignment="right"
+              column="ROLL_QTY"
+              summaryType="sum"
               valueFormat={"decimal"}
             />
             <TotalItem
-              alignment='right'
-              column='IN_QTY'
-              summaryType='sum'
+              alignment="right"
+              column="IN_QTY"
+              summaryType="sum"
               valueFormat={"decimal"}
             />
             <TotalItem
-              alignment='right'
-              column='TOTAL_IN_QTY'
-              summaryType='sum'
+              alignment="right"
+              column="TOTAL_IN_QTY"
+              summaryType="sum"
               valueFormat={"decimal"}
             />
           </Summary>
         </DataGrid>
       </div>
     ),
-    [inspectiondatatable]
+    [inspectiondatatable],
   );
   const handletraFailingData = () => {
     generalQuery("loadQCFailData", {})
@@ -491,13 +494,13 @@ const FAILING = () => {
                         .format("YYYY-MM-DD HH:mm:ss"),
                 id: index,
               };
-            }
+            },
           );
           setInspectionDataTable(loadeddata);
           Swal.fire(
             "Thông báo",
             "Đã load :" + loadeddata.length + " dòng",
-            "success"
+            "success",
           );
         } else {
         }
@@ -515,13 +518,13 @@ const FAILING = () => {
             setEmplName(
               response.data.data[0].MIDLAST_NAME +
                 " " +
-                response.data.data[0].FIRST_NAME
+                response.data.data[0].FIRST_NAME,
             );
           } else {
             setEmplName2(
               response.data.data[0].MIDLAST_NAME +
                 " " +
-                response.data.data[0].FIRST_NAME
+                response.data.data[0].FIRST_NAME,
             );
           }
         } else {
@@ -577,7 +580,7 @@ const FAILING = () => {
           setM_Name(
             response.data.data[0].M_NAME +
               " | " +
-              response.data.data[0].WIDTH_CD
+              response.data.data[0].WIDTH_CD,
           );
           setM_Code(response.data.data[0].M_CODE);
           setWidthCD(response.data.data[0].WIDTH_CD);
@@ -586,7 +589,7 @@ const FAILING = () => {
           setLieuQL_SX(
             response.data.data[0].LIEUQL_SX === null
               ? "0"
-              : response.data.data[0].LIEUQL_SX
+              : response.data.data[0].LIEUQL_SX,
           );
           setOut_Date(response.data.data[0].OUT_DATE);
         } else {
@@ -762,19 +765,19 @@ const FAILING = () => {
     ///handletraFailingData();
   }, []);
   return (
-    <div className='failing'>
-      <div className='tracuuDataInspection'>
-        <div className='maintable'>         
+    <div className="failing">
+      <div className="tracuuDataInspection">
+        <div className="maintable">
           {showhideinput && (
-            <div className='tracuuDataInspectionform'>
+            <div className="tracuuDataInspectionform">
               <b style={{ color: "blue" }}>INPUT LIỆU QC FAIL</b>
-              <div className='forminput'>
-                <div className='forminputcolumn'>
+              <div className="forminput">
+                <div className="forminputcolumn">
                   <label>
                     Vendor:
                     <select
                       disabled={cmsvcheck}
-                      name='khachhang'
+                      name="khachhang"
                       value={cust_cd}
                       onChange={(e) => {
                         setCust_Cd(e.target.value);
@@ -790,8 +793,8 @@ const FAILING = () => {
                   <label>
                     CMSV
                     <input
-                      type='checkbox'
-                      name='alltimecheckbox'
+                      type="checkbox"
+                      name="alltimecheckbox"
                       defaultChecked={cmsvcheck}
                       onChange={(e) => {
                         if (cmsvcheck === false) setCust_Cd("6969");
@@ -802,21 +805,21 @@ const FAILING = () => {
                   <b>Phân loại hàng</b>
                   <label>
                     <select
-                      name='phanloaihang'
+                      name="phanloaihang"
                       value={testtype}
                       onChange={(e) => {
                         setTestType(e.target.value);
                       }}
                     >
-                      <option value='NVL'>Vật Liệu</option>
-                      <option value='BTP'>Bán Thành Phẩm</option>
+                      <option value="NVL">Vật Liệu</option>
+                      <option value="BTP">Bán Thành Phẩm</option>
                     </select>
                   </label>
                   <b>Số chỉ thị sản xuất</b>
                   <label>
                     <input
-                      type='text'
-                      placeholder='1F80008A'
+                      type="text"
+                      placeholder="1F80008A"
                       value={planId}
                       onChange={(e) => {
                         if (e.target.value.length >= 7) {
@@ -841,8 +844,8 @@ const FAILING = () => {
                   <b>LOT NVL CMS</b>
                   <label>
                     <input
-                      type='text'
-                      placeholder='202304190123'
+                      type="text"
+                      placeholder="202304190123"
                       value={inputno}
                       onChange={(e) => {
                         //console.log(e.target.value.length);
@@ -868,7 +871,7 @@ const FAILING = () => {
                   <b>VENDOR LOT</b>
                   <label>
                     <input
-                      type='text'
+                      type="text"
                       placeholder={"54951949844984"}
                       value={vendorLot}
                       onChange={(e) => {
@@ -879,7 +882,7 @@ const FAILING = () => {
                   <b>Mã nhân viên giao</b>
                   <label>
                     <input
-                      type='text'
+                      type="text"
                       placeholder={"NVD1201"}
                       value={request_empl}
                       onChange={(e) => {
@@ -904,7 +907,7 @@ const FAILING = () => {
                   <b>Mã nhân viên nhận</b>
                   <label>
                     <input
-                      type='text'
+                      type="text"
                       placeholder={"NVD1201"}
                       value={request_empl2}
                       onChange={(e) => {
@@ -928,10 +931,10 @@ const FAILING = () => {
                   )}
                 </div>
                 <b>Remark</b>
-                <div className='forminputcolumn'>
+                <div className="forminputcolumn">
                   <label>
                     <input
-                      type='text'
+                      type="text"
                       placeholder={"Ghi chú"}
                       value={remark}
                       onChange={(e) => {
@@ -941,15 +944,15 @@ const FAILING = () => {
                   </label>
                 </div>
               </div>
-              <div className='formbutton'>
+              <div className="formbutton">
                 <button
-                  className='tranhatky'
+                  className="tranhatky"
                   onClick={() => {
                     if (checkInput()) {
                       let lotArray = inspectiondatatable.map(
                         (element: QC_FAIL_DATA, index: number) => {
                           return element.M_LOT_NO;
-                        }
+                        },
                       );
                       if (pqc3Id !== 0) {
                         if (lotArray.indexOf(inputno) < 0) {
@@ -958,21 +961,21 @@ const FAILING = () => {
                           Swal.fire(
                             "Thông tin",
                             "Đã thêm cuộn này rồi",
-                            "error"
+                            "error",
                           );
                         }
                       } else {
                         Swal.fire(
                           "Thông tin",
                           "Số chỉ thị này PQC chưa lập lỗi, không thêm được",
-                          "error"
+                          "error",
                         );
                       }
                     } else {
                       Swal.fire(
                         "Thông báo",
                         "Hãy nhập đủ thông tin trước khi đăng ký",
-                        "error"
+                        "error",
                       );
                     }
                   }}
@@ -980,7 +983,7 @@ const FAILING = () => {
                   Add
                 </button>
                 <button
-                  className='tranhatky'
+                  className="tranhatky"
                   onClick={() => {
                     saveFailingData();
                   }}
@@ -989,22 +992,22 @@ const FAILING = () => {
                 </button>
               </div>
               <div
-                className='formbutton'
+                className="formbutton"
                 style={{ marginTop: "20px", display: "flex", flexWrap: "wrap" }}
               ></div>
             </div>
           )}
-          <div className='tracuuYCSXTable'>{materialDataTable}</div>
+          <div className="tracuuYCSXTable">{materialDataTable}</div>
           {!showhideinput && (
-            <div className='tracuuDataInspectionform'>
+            <div className="tracuuDataInspectionform">
               <b style={{ color: "blue" }}>OUTPUT LIỆU QC FAIL</b>
-              <div className='forminput'>
-                <div className='forminputcolumn'>
+              <div className="forminput">
+                <div className="forminputcolumn">
                   <label>
                     Vendor:
                     <select
                       disabled={cmsvcheck}
-                      name='khachhang'
+                      name="khachhang"
                       value={cust_cd}
                       onChange={(e) => {
                         setCust_Cd(e.target.value);
@@ -1020,8 +1023,8 @@ const FAILING = () => {
                   <label>
                     CMSV
                     <input
-                      type='checkbox'
-                      name='alltimecheckbox'
+                      type="checkbox"
+                      name="alltimecheckbox"
                       defaultChecked={cmsvcheck}
                       onChange={(e) => {
                         if (cmsvcheck === false) setCust_Cd("6969");
@@ -1032,8 +1035,8 @@ const FAILING = () => {
                   <b>Số chỉ thị xuất ra</b>
                   <label>
                     <input
-                      type='text'
-                      placeholder='1F80008A'
+                      type="text"
+                      placeholder="1F80008A"
                       value={planId}
                       onChange={(e) => {
                         if (e.target.value.length >= 7) {
@@ -1057,7 +1060,7 @@ const FAILING = () => {
                   <b>Mã nhân viên giao</b>
                   <label>
                     <input
-                      type='text'
+                      type="text"
                       placeholder={"NVD1201"}
                       value={request_empl}
                       onChange={(e) => {
@@ -1082,7 +1085,7 @@ const FAILING = () => {
                   <b>Mã nhân viên nhận</b>
                   <label>
                     <input
-                      type='text'
+                      type="text"
                       placeholder={"NVD1201"}
                       value={request_empl2}
                       onChange={(e) => {
@@ -1106,10 +1109,10 @@ const FAILING = () => {
                   )}
                 </div>
                 <b>Remark</b>
-                <div className='forminputcolumn'>
+                <div className="forminputcolumn">
                   <label>
                     <input
-                      type='text'
+                      type="text"
                       placeholder={"Ghi chú"}
                       value={remark}
                       onChange={(e) => {
@@ -1119,60 +1122,58 @@ const FAILING = () => {
                   </label>
                 </div>
               </div>
-              <div className='formbutton'>
+              <div className="formbutton">
                 <button
-                  className='tranhatky'
+                  className="tranhatky"
                   onClick={() => {
                     updateQCFailTable();
                   }}
                 >
                   Xuất
-                </button>               
-              
+                </button>
               </div>
-              <div className='formbutton'>               
+              <div className="formbutton">
                 <IconButton
-                className='buttonIcon'
-                onClick={() => {
-                  if (userData?.SUBDEPTNAME === "IQC") {
-                    //console.log(selectedRowsDataA);
-                    setQCPASS("Y");
-                  } else {
-                    Swal.fire(
-                      "Thông báo",
-                      "Bạn không phải người bộ phận IQC",
-                      "error"
-                    );
-                  }                  
-                }}
-              >
-                <GrStatusGood color='green' size={25} />
-                SET PASS
-              </IconButton>
-              <IconButton
-                className='buttonIcon'
-                onClick={() => {
-                  if (userData?.SUBDEPTNAME === "IQC") {
-                    setQCPASS("N");
-                  } else {
-                    Swal.fire(
-                      "Thông báo",
-                      "Bạn không phải người bộ phận IQC",
-                      "error"
-                    );
-                  }
-                  //checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['QC'], ()=>{setQCPASS('Y');});
-                  //checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['QLSX'], setQCPASS('N'));
-                  //setQCPASS('N');
-                }}
-              >
-                <FcCancel color='red' size={25} />
-                RESET PASS
-              </IconButton>
-
+                  className="buttonIcon"
+                  onClick={() => {
+                    if (userData?.SUBDEPTNAME === "IQC") {
+                      //console.log(selectedRowsDataA);
+                      setQCPASS("Y");
+                    } else {
+                      Swal.fire(
+                        "Thông báo",
+                        "Bạn không phải người bộ phận IQC",
+                        "error",
+                      );
+                    }
+                  }}
+                >
+                  <GrStatusGood color="green" size={25} />
+                  SET PASS
+                </IconButton>
+                <IconButton
+                  className="buttonIcon"
+                  onClick={() => {
+                    if (userData?.SUBDEPTNAME === "IQC") {
+                      setQCPASS("N");
+                    } else {
+                      Swal.fire(
+                        "Thông báo",
+                        "Bạn không phải người bộ phận IQC",
+                        "error",
+                      );
+                    }
+                    //checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['QC'], ()=>{setQCPASS('Y');});
+                    //checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['QLSX'], setQCPASS('N'));
+                    //setQCPASS('N');
+                  }}
+                >
+                  <FcCancel color="red" size={25} />
+                  RESET PASS
+                </IconButton>
               </div>
               <div
-                className='formbutton'
+                className="formbutton"
                 style={{ marginTop: "20px", display: "flex", flexWrap: "wrap" }}
               ></div>
             </div>

@@ -35,7 +35,7 @@ const MACHINE_COMPONENT2 = (machine_data: MachineInterface2) => {
   }
   return (
     <div
-      className='mc2'
+      className="mc2"
       style={{
         WebkitFilter:
           machine_data.current_g_name === null
@@ -46,25 +46,25 @@ const MACHINE_COMPONENT2 = (machine_data: MachineInterface2) => {
       }}
     >
       {machine_data.eq_status === "STOP" && machine_data.upd_empl !== "" && (
-        <div className='downtime' style={{ fontSize: 11 }}>
+        <div className="downtime" style={{ fontSize: 11 }}>
           {" "}
           Stop: {diff} min
         </div>
       )}
       {machine_data.eq_status === "SETTING" && machine_data.upd_empl !== "" && (
-        <div className='downtime' style={{ fontSize: 11 }}>
+        <div className="downtime" style={{ fontSize: 11 }}>
           {" "}
           Setting: {diff} min
         </div>
       )}
       {machine_data.eq_status === "MASS" && machine_data.upd_empl !== "" && (
-        <div className='downtime' style={{ fontSize: 11 }}>
+        <div className="downtime" style={{ fontSize: 11 }}>
           {" "}
           Run: {diff} min
         </div>
       )}
       <div
-        className='machine_component2'
+        className="machine_component2"
         style={{
           backgroundImage: `linear-gradient(to right, ${
             machine_data.run_stop === 1 ? runtopcolor : stoptopcolor
@@ -89,7 +89,7 @@ const MACHINE_COMPONENT2 = (machine_data: MachineInterface2) => {
         }}
       >
         <div
-          className='tieude'
+          className="tieude"
           style={{
             backgroundColor: `${
               checkSearch
@@ -103,7 +103,7 @@ const MACHINE_COMPONENT2 = (machine_data: MachineInterface2) => {
           }}
         >
           <div
-            className='eqname'
+            className="eqname"
             style={{
               color: `${
                 machine_data.eq_status === "STOP"
@@ -119,23 +119,23 @@ const MACHINE_COMPONENT2 = (machine_data: MachineInterface2) => {
               ? "ED36(SP01)"
               : machine_data.machine_name}
             {checkSearch && machine_data.eq_status === "MASS" && (
-              <img alt='running' src='/blink.gif' width={40} height={20}></img>
+              <img alt="running" src="/blink.gif" width={40} height={20}></img>
             )}
             {checkSearch && machine_data.eq_status === "SETTING" && (
               <img
-                alt='running'
-                src='/setting3.gif'
+                alt="running"
+                src="/setting3.gif"
                 width={30}
                 height={30}
               ></img>
             )}
           </div>
         </div>
-        <div className='machineplan'>
+        <div className="machineplan">
           {machine_data.current_g_name} STEP: B{machine_data.current_step}
         </div>
       </div>
-      {showhideDetail && <div className='chitiet'></div>}
+      {showhideDetail && <div className="chitiet"></div>}
     </div>
   );
 };

@@ -130,37 +130,37 @@ const TRANGTHAICHITHI = () => {
   };
   useEffect(() => {}, []);
   return (
-    <div className='trangthaichithisx'>
-      <div className='mininavbar'>
+    <div className="trangthaichithisx">
+      <div className="mininavbar">
         <div
-          className='mininavitem'
+          className="mininavitem"
           onClick={() => setNav(2)}
           style={{
             backgroundColor: selection.tab2 === true ? "#9933ff" : "#d9b3ff",
             color: selection.tab2 === true ? "yellow" : "yellow",
           }}
         >
-          <span className='mininavtext'>TÌNH HÌNH CHỐT</span>
+          <span className="mininavtext">TÌNH HÌNH CHỐT</span>
         </div>
 
         <div
-          className='mininavitem'
+          className="mininavitem"
           onClick={() => setNav(1)}
           style={{
             backgroundColor: selection.tab1 === true ? "#9933ff" : "#d9b3ff",
             color: selection.tab1 === true ? "yellow" : "yellow",
           }}
         >
-          <span className='mininavtext'>PLAN STATUS</span>
+          <span className="mininavtext">PLAN STATUS</span>
         </div>
       </div>
       {selection.tab1 && (
-        <div className='traiqc'>
+        <div className="traiqc">
           <PLAN_STATUS />
         </div>
       )}
       {selection.tab2 && (
-        <div className='datadtc'>
+        <div className="datadtc">
           <TINH_HINH_CHOT />
         </div>
       )}

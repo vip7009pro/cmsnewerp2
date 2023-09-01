@@ -60,11 +60,22 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import axios from "axios";
 import CodeVisualLize from "../../kinhdoanh/quotationmanager/CodeVisualize/CodeVisualLize";
-import {renderElement } from "../design_amazon/DESIGN_AMAZON";
+import { renderElement } from "../design_amazon/DESIGN_AMAZON";
 import { useReactToPrint } from "react-to-print";
-import { BOM_GIA, BOM_SX, CODE_FULL_INFO, CODE_INFO, COMPONENT_DATA, CustomerListData, DEFAULT_DM, M_NAME_LIST, MACHINE_LIST, MATERIAL_INFO, MaterialListData, UserData } from "../../../api/GlobalInterface";
-
-
+import {
+  BOM_GIA,
+  BOM_SX,
+  CODE_FULL_INFO,
+  CODE_INFO,
+  COMPONENT_DATA,
+  CustomerListData,
+  DEFAULT_DM,
+  M_NAME_LIST,
+  MACHINE_LIST,
+  MATERIAL_INFO,
+  MaterialListData,
+  UserData,
+} from "../../../api/GlobalInterface";
 
 const BOM_MANAGER = () => {
   const labelprintref = useRef(null);
@@ -73,7 +84,7 @@ const BOM_MANAGER = () => {
   });
 
   const company: string = useSelector(
-    (state: RootState) => state.totalSlice.company
+    (state: RootState) => state.totalSlice.company,
   );
   const [codedatatablefilter, setCodeDataTableFilter] = useState<
     Array<CODE_INFO>
@@ -109,7 +120,7 @@ const BOM_MANAGER = () => {
                 ...element,
                 id: index,
               };
-            }
+            },
           );
           setDefaultDM(loadeddata[0]);
         } else {
@@ -134,7 +145,7 @@ const BOM_MANAGER = () => {
   };
 
   const [codefullinfo, setCodeFullInfo] = useState<CODE_FULL_INFO>({
-    CUST_CD: company==='CMS'?  "0000": 'KH000',
+    CUST_CD: company === "CMS" ? "0000" : "KH000",
     PROD_PROJECT: "",
     PROD_MODEL: "",
     CODE_12: "7",
@@ -173,7 +184,6 @@ const BOM_MANAGER = () => {
     PO_TYPE: "E1",
     FSC: "N",
     PROD_DVT: "01",
-
   });
   const [file, setFile] = useState<any>(null);
   const [bomsxtable, setBOMSXTable] = useState<BOM_SX[]>([]);
@@ -192,7 +202,7 @@ const BOM_MANAGER = () => {
   const [masterMaterialList, setMasterMaterialList] = useState<string[]>([]);
   const [selectedMasterMaterial, setSelectedMasterMaterial] =
     useState<M_NAME_LIST>({
-      M_NAME:''
+      M_NAME: "",
     });
   const [selectedMaterial, setSelectedMaterial] =
     useState<MaterialListData | null>({
@@ -208,7 +218,7 @@ const BOM_MANAGER = () => {
     testinvoicetable: false,
   });
   const userData: UserData | undefined = useSelector(
-    (state: RootState) => state.totalSlice.userData
+    (state: RootState) => state.totalSlice.userData,
   );
   const [machine_list, setMachine_List] = useState<MACHINE_LIST[]>([]);
   const [isLoading, setisLoading] = useState(false);
@@ -217,7 +227,7 @@ const BOM_MANAGER = () => {
   const [enableform, setEnableForm] = useState(true);
   const [rows, setRows] = useState<CODE_INFO[]>([]);
   const [editedRows, setEditedRows] = useState<Array<GridCellEditCommitParams>>(
-    []
+    [],
   );
   const [editedBOMSXRows, setEditedBOMSXRows] = useState<
     Array<GridCellEditCommitParams>
@@ -246,7 +256,7 @@ const BOM_MANAGER = () => {
       flex: 1,
       minWidth: 250,
       editable: enableEdit,
-    },    
+    },
     {
       field: "PROD_TYPE",
       headerName: "PROD_TYPE",
@@ -306,73 +316,72 @@ const BOM_MANAGER = () => {
         let file: any = null;
         const uploadFile2 = async (e: any) => {
           //console.log(file);
-          checkBP(userData,['RND','KD'],['ALL'],['ALL'],async ()=> {            
+          checkBP(userData, ["RND", "KD"], ["ALL"], ["ALL"], async () => {
             uploadQuery(file, params.row.G_CODE + ".pdf", "banve")
-            .then((response) => {
-              if (response.data.tk_status !== "NG") {
-                generalQuery("update_banve_value", {
-                  G_CODE: params.row.G_CODE,
-                  banvevalue: "Y",
-                })
-                  .then((response) => {
-                    if (response.data.tk_status !== "NG") {
-                      Swal.fire(
-                        "Thông báo",
-                        "Upload bản vẽ thành công",
-                        "success"
-                      );
-                      let tempcodeinfodatatable = rows.map(
-                        (element, index) => {
-                          return element.G_CODE === params.row.G_CODE
-                            ? { ...element, BANVE: "Y" }
-                            : element;
-                        }
-                      );
-                      //setRows(tempcodeinfodatatable);
-                    } else {
-                      Swal.fire(
-                        "Thông báo",
-                        "Upload bản vẽ thất bại",
-                        "error"
-                      );
-                    }
+              .then((response) => {
+                if (response.data.tk_status !== "NG") {
+                  generalQuery("update_banve_value", {
+                    G_CODE: params.row.G_CODE,
+                    banvevalue: "Y",
                   })
-                  .catch((error) => {
-                    console.log(error);
-                  });
-              } else {
-                Swal.fire(
-                  "Thông báo",
-                  "Upload file thất bại:" + response.data.message,
-                  "error"
-                );
-              }
-            })
-            .catch((error) => {
-              console.log(error);
-            });
-          });          
-          
+                    .then((response) => {
+                      if (response.data.tk_status !== "NG") {
+                        Swal.fire(
+                          "Thông báo",
+                          "Upload bản vẽ thành công",
+                          "success",
+                        );
+                        let tempcodeinfodatatable = rows.map(
+                          (element, index) => {
+                            return element.G_CODE === params.row.G_CODE
+                              ? { ...element, BANVE: "Y" }
+                              : element;
+                          },
+                        );
+                        //setRows(tempcodeinfodatatable);
+                      } else {
+                        Swal.fire(
+                          "Thông báo",
+                          "Upload bản vẽ thất bại",
+                          "error",
+                        );
+                      }
+                    })
+                    .catch((error) => {
+                      console.log(error);
+                    });
+                } else {
+                  Swal.fire(
+                    "Thông báo",
+                    "Upload file thất bại:" + response.data.message,
+                    "error",
+                  );
+                }
+              })
+              .catch((error) => {
+                console.log(error);
+              });
+          });
         };
         let hreftlink = "/banve/" + params.row.G_CODE + ".pdf";
         if (params.row.BANVE !== "N" && params.row.BANVE !== null) {
           return (
             <span style={{ color: "gray" }}>
-              <a target='_blank' rel='noopener noreferrer' href={hreftlink}>
+              <a target="_blank" rel="noopener noreferrer" href={hreftlink}>
                 LINK
               </a>
             </span>
           );
         } else {
           return (
-            <div className='uploadfile'>
-              <IconButton className='buttonIcon' onClick={uploadFile2}>
-                <AiOutlineCloudUpload color='yellow' size={15} />
+            <div className="uploadfile">
+              <IconButton className="buttonIcon" onClick={uploadFile2}>
+                <AiOutlineCloudUpload color="yellow" size={15} />
                 Upload
               </IconButton>
               <input
-                accept='.pdf'
-                type='file'
+                accept=".pdf"
+                type="file"
                 onChange={(e: any) => {
                   file = e.target.files[0];
                   console.log(file);
@@ -557,41 +566,41 @@ const BOM_MANAGER = () => {
     return (
       <GridToolbarContainer>
         <IconButton
-          className='buttonIcon'
+          className="buttonIcon"
           onClick={() => {
             SaveExcel(rows, "Code Info Table");
           }}
         >
-          <AiFillFileExcel color='green' size={15} />
+          <AiFillFileExcel color="green" size={15} />
           SAVE
         </IconButton>
         <IconButton
-          className='buttonIcon'
+          className="buttonIcon"
           onClick={() => {
             confirmResetBanVe();
           }}
         >
-          <BiReset color='green' size={15} />
+          <BiReset color="green" size={15} />
           RESET BẢN VẼ
         </IconButton>
         <IconButton
-          className='buttonIcon'
+          className="buttonIcon"
           onClick={() => {
             setEnableForm(!enableform);
             Swal.fire("Thông báo", "Bật/Tắt chế độ sửa", "success");
           }}
         >
-          <AiFillEdit color='yellow' size={15} />
+          <AiFillEdit color="yellow" size={15} />
           Bật tắt sửa
         </IconButton>
         <IconButton
-          className='buttonIcon'
+          className="buttonIcon"
           onClick={() => {
             setPINBOM(!pinBOM);
             Swal.fire("Thông báo", "Ghim/ bỏ ghim BOM thành công", "success");
           }}
         >
-          <AiOutlinePushpin color='red' size={15} />
+          <AiOutlinePushpin color="red" size={15} />
           Ghim BOM
         </IconButton>
         <GridToolbarQuickFilter />
@@ -602,53 +611,53 @@ const BOM_MANAGER = () => {
     return (
       <GridToolbarContainer>
         <IconButton
-          className='buttonIcon'
+          className="buttonIcon"
           onClick={() => {
             SaveExcel(rows, "Code Info Table");
           }}
         >
-          <AiFillFileExcel color='green' size={20} />
+          <AiFillFileExcel color="green" size={20} />
           EXCEL
         </IconButton>
         <IconButton
-          className='buttonIcon'
+          className="buttonIcon"
           onClick={() => {
             confirmSaveBOMSX();
           }}
         >
-          <AiFillSave color='blue' size={20} />
+          <AiFillSave color="blue" size={20} />
           Lưu BOM
         </IconButton>
         <IconButton
-          className='buttonIcon'
+          className="buttonIcon"
           onClick={() => {
             handleAddNewLineBOMSX();
           }}
         >
-          <BiAddToQueue color='yellow' size={20} />
+          <BiAddToQueue color="yellow" size={20} />
           Thêm dòng
         </IconButton>
         <IconButton
-          className='buttonIcon'
+          className="buttonIcon"
           onClick={() => {
             handle_DeleteLineBOMSX();
           }}
         >
-          <FcDeleteRow color='yellow' size={20} />
+          <FcDeleteRow color="yellow" size={20} />
           Xóa dòng
         </IconButton>
         <IconButton
-          className='buttonIcon'
+          className="buttonIcon"
           onClick={() => {
             setcolumn_bomsx(
               column_bomsx.map((element, index: number) => {
                 return { ...element, editable: !element.editable };
-              })
+              }),
             );
             Swal.fire("Thông báo", "Bật/Tắt chế độ sửa", "success");
           }}
         >
-          <AiFillEdit color='yellow' size={20} />
+          <AiFillEdit color="yellow" size={20} />
           Bật tắt sửa
         </IconButton>
         <GridToolbarQuickFilter />
@@ -659,62 +668,62 @@ const BOM_MANAGER = () => {
     return (
       <GridToolbarContainer>
         <IconButton
-          className='buttonIcon'
+          className="buttonIcon"
           onClick={() => {
             SaveExcel(rows, "Code Info Table");
           }}
         >
-          <AiFillFileExcel color='green' size={20} />
+          <AiFillFileExcel color="green" size={20} />
           EXCEL
         </IconButton>
         <IconButton
-          className='buttonIcon'
+          className="buttonIcon"
           onClick={() => {
             confirmSaveBOMGIA();
           }}
         >
-          <AiFillSave color='blue' size={20} />
+          <AiFillSave color="blue" size={20} />
           Lưu BOM
         </IconButton>
         <IconButton
-          className='buttonIcon'
+          className="buttonIcon"
           onClick={() => {
             handleAddNewLineBOMGIA();
           }}
         >
-          <BiAddToQueue color='yellow' size={20} />
+          <BiAddToQueue color="yellow" size={20} />
           Thêm dòng
         </IconButton>
         <IconButton
-          className='buttonIcon'
+          className="buttonIcon"
           onClick={() => {
             handle_DeleteLineBOMGIA();
           }}
         >
-          <FcDeleteRow color='yellow' size={20} />
+          <FcDeleteRow color="yellow" size={20} />
           Xóa dòng
         </IconButton>
         <IconButton
-          className='buttonIcon'
+          className="buttonIcon"
           onClick={() => {
             setcolumn_bomgia(
               column_bomgia.map((element, index: number) => {
                 return { ...element, editable: !element.editable };
-              })
+              }),
             );
             Swal.fire("Thông báo", "Bật/Tắt chế độ sửa", "success");
           }}
         >
-          <AiFillEdit color='yellow' size={25} />
+          <AiFillEdit color="yellow" size={25} />
           Bật tắt sửa
         </IconButton>
         <IconButton
-          className='buttonIcon'
+          className="buttonIcon"
           onClick={() => {
             confirmCloneBOMSX();
           }}
         >
-          <FaRegClone color='red' size={20} />
+          <FaRegClone color="red" size={20} />
           Clone BOMSX
         </IconButton>
         <GridToolbarQuickFilter />
@@ -767,97 +776,70 @@ const BOM_MANAGER = () => {
     }
   };
   const uploadFilebanVe = async (e: any) => {
-    
-    checkBP(userData,['RND','KD'],['ALL'],['ALL'],async ()=> {    
-      if(file !== null && file !== undefined)       
-      {
-        if(codefullinfo.G_CODE !=='-------')
-        {
+    checkBP(userData, ["RND", "KD"], ["ALL"], ["ALL"], async () => {
+      if (file !== null && file !== undefined) {
+        if (codefullinfo.G_CODE !== "-------") {
           uploadQuery(file, codefullinfo.G_CODE + ".pdf", "banve")
-        .then((response) => {
-          if (response.data.tk_status !== "NG") {
-            generalQuery("update_banve_value", {
-              G_CODE: codefullinfo.G_CODE,
-              banvevalue: "Y",
-            })
-              .then((response) => {
-                if (response.data.tk_status !== "NG") {
-                  generalQuery("resetbanve", {           
-                    G_CODE: codefullinfo.G_CODE,
-                    VALUE: 'N'
-                  })
+            .then((response) => {
+              if (response.data.tk_status !== "NG") {
+                generalQuery("update_banve_value", {
+                  G_CODE: codefullinfo.G_CODE,
+                  banvevalue: "Y",
+                })
                   .then((response) => {
-                    console.log(response.data.tk_status);
                     if (response.data.tk_status !== "NG") {
-                      //Swal.fire("Thông báo", "Delete Po thành công", "success");  
-                    } else {     
-                      //Swal.fire("Thông báo", "Update PO thất bại: " +response.data.message , "error");              
+                      generalQuery("resetbanve", {
+                        G_CODE: codefullinfo.G_CODE,
+                        VALUE: "N",
+                      })
+                        .then((response) => {
+                          console.log(response.data.tk_status);
+                          if (response.data.tk_status !== "NG") {
+                            //Swal.fire("Thông báo", "Delete Po thành công", "success");
+                          } else {
+                            //Swal.fire("Thông báo", "Update PO thất bại: " +response.data.message , "error");
+                          }
+                        })
+                        .catch((error) => {
+                          console.log(error);
+                        });
+
+                      Swal.fire(
+                        "Thông báo",
+                        "Upload bản vẽ thành công",
+                        "success",
+                      );
+                      let tempcodeinfodatatable = rows.map((element, index) => {
+                        return element.G_CODE === codefullinfo.G_CODE
+                          ? { ...element, BANVE: "Y" }
+                          : element;
+                      });
+                      //setRows(tempcodeinfodatatable);
+                    } else {
+                      Swal.fire("Thông báo", "Upload bản vẽ thất bại", "error");
                     }
                   })
                   .catch((error) => {
                     console.log(error);
-                  }); 
-                  
-                  Swal.fire(
-                    "Thông báo",
-                    "Upload bản vẽ thành công",
-                    "success"
-                  );
-                  let tempcodeinfodatatable = rows.map(
-                    (element, index) => {
-                      return element.G_CODE === codefullinfo.G_CODE
-                        ? { ...element, BANVE: "Y" }
-                        : element;
-                    }
-                  );
-                  //setRows(tempcodeinfodatatable);
-                } else {
-                  Swal.fire(
-                    "Thông báo",
-                    "Upload bản vẽ thất bại",
-                    "error"
-                  );
-                }
-              })
-              .catch((error) => {
-                console.log(error);
-              });
-          } else {
-            Swal.fire(
-              "Thông báo",
-              "Upload file thất bại:" + response.data.message,
-              "error"
-            );
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-
+                  });
+              } else {
+                Swal.fire(
+                  "Thông báo",
+                  "Upload file thất bại:" + response.data.message,
+                  "error",
+                );
+              }
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+        } else {
+          Swal.fire("Thông báo", "Chọn code trước khi up bản vẽ", "error");
         }
-        else
-        {
-          Swal.fire(
-            "Thông báo",
-            "Chọn code trước khi up bản vẽ",
-            "error"
-          );
-        }
-
-        
-
-      } 
-      else 
-      {
-        Swal.fire(
-          "Thông báo",
-          "Hãy chọn file",
-          "error"
-        );
+      } else {
+        Swal.fire("Thông báo", "Hãy chọn file", "error");
       }
-
-     
-    });     
+    });
   };
   const handleGETBOMSX = (G_CODE: string) => {
     setisLoading(true);
@@ -879,7 +861,7 @@ const BOM_MANAGER = () => {
                   .format("YYYY-MM-DD HH:mm:ss"),
                 id: index,
               };
-            }
+            },
           );
           setBOMSXTable(loadeddata);
           setisLoading(false);
@@ -913,7 +895,7 @@ const BOM_MANAGER = () => {
                   .format("YYYY-MM-DD HH:mm:ss"),
                 id: index,
               };
-            }
+            },
           );
           setBOMGIATable(loadeddata);
           setisLoading(false);
@@ -941,7 +923,7 @@ const BOM_MANAGER = () => {
                 ...element,
                 id: index,
               };
-            }
+            },
           );
           setRows(loadeddata);
           //setCODEINFODataTable(loadeddata);
@@ -949,7 +931,7 @@ const BOM_MANAGER = () => {
           Swal.fire(
             "Thông báo",
             "Đã load " + response.data.data.length + " dòng",
-            "success"
+            "success",
           );
         } else {
           Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
@@ -1122,82 +1104,116 @@ const BOM_MANAGER = () => {
                 FSC: element.FSC === null ? "N" : element.FSC,
                 id: index,
               };
-            }
+            },
           );
           //console.log(loaded_data[0]);
           setCodeFullInfo(loaded_data[0]);
-          setComponentList(componentList.map((e:COMPONENT_DATA, index: number)=> {
-            let value: string = e.GIATRI;
-            if(e.DOITUONG_NAME==='CUSTOMER')
-            {
-              value = loaded_data[0]?.CUST_NAME === undefined?'': loaded_data[0]?.CUST_NAME;
-            }
-            else if(e.DOITUONG_NAME==='LONGBARCODE')
-            {
-              value = (loaded_data[0]?.G_NAME === undefined?'': loaded_data[0]?.G_NAME.substring(0,11)) +'DTA3'+ (loaded_data[0]?.PO_TYPE === undefined?'': loaded_data[0]?.PO_TYPE) + moment.utc().format('YYMMDD') + '-001' + zeroPad((loaded_data[0]?.ROLE_EA_QTY === undefined? 0: loaded_data[0]?.ROLE_EA_QTY),6) ;
-            }
-            else if(e.DOITUONG_NAME==='PARTNO VALUE')
-            {
-              value = (loaded_data[0]?.G_NAME === undefined?'': loaded_data[0]?.G_NAME);
-            }
-            else if(e.DOITUONG_NAME==='SPECIFICATION')
-            {
-              value = 'Specification:' + (loaded_data[0]?.DESCR === undefined?'': loaded_data[0]?.DESCR);
-            }
-            else if(e.DOITUONG_NAME==='PO TYPE')
-            {
-              value = 'PO Type:' + (loaded_data[0]?.PO_TYPE === undefined?'': loaded_data[0]?.PO_TYPE);
-            }
-            else if(e.DOITUONG_NAME==='LOTNO')
-            {
-              value = 'Lot No:' + moment.utc().format('YYMMDD') + '-001|' + userData?.EMPL_NO;
-            }
-            else if(e.DOITUONG_NAME==='QTY BIG')
-            {
-              value = (loaded_data[0]?.ROLE_EA_QTY === undefined?'': loaded_data[0]?.ROLE_EA_QTY).toString();
-            }
-            else if(e.DOITUONG_NAME==='VENDOR PN')
-            {
-              value = 'Vendor P/N:' + (loaded_data[0]?.G_CODE === undefined?'': loaded_data[0]?.G_CODE);
-            }
-            else if(e.DOITUONG_NAME==='SIZE')
-            {
-              value = 'Size:' + (loaded_data[0]?.G_WIDTH === undefined?'': loaded_data[0]?.G_WIDTH).toString() + '*' + (loaded_data[0]?.G_LENGTH === undefined?'': loaded_data[0]?.G_LENGTH).toString() ;
-            }
-            else if(e.DOITUONG_NAME==='MFT')
-            {
-              value = 'MFT:' + moment.utc().format('YYYY-MM-DD') ;
-            }
-            else if(e.DOITUONG_NAME==='EXP')
-            {
-              value = 'MFT:' + moment.utc().add(360,'day').format('YYYY-MM-DD') ;
-            }
-            else if(e.DOITUONG_NAME==='REQUESTINFO')
-            {
-              value = 'CMSvina/NM1/3HU0020/' + (loaded_data[0]?.ROLE_EA_QTY === undefined?'': loaded_data[0]?.ROLE_EA_QTY).toString() +'EA';
-            }
-            else if(e.DOITUONG_NAME==='PARTNO2')
-            {
-              value =  (loaded_data[0]?.G_NAME === undefined?'': loaded_data[0]?.G_NAME).toString();
-            }
-            else if(e.DOITUONG_NAME==='MFTEXP')
-            {
-              value =  `MFT: ${moment.utc().format('YYYY-MM-DD')} EXP: ${moment.utc().add(360,'day').format('YYYY-MM-DD')}`; 
-            }
-            else if(e.DOITUONG_NAME==='LOTINFO')
-            {
-              value =  `${userData?.EMPL_NO}/SP3HU001/SAMPLEWEB`;
-            }
-
-            return (
-              {
-                ...e,
-                GIATRI: value                
+          setComponentList(
+            componentList.map((e: COMPONENT_DATA, index: number) => {
+              let value: string = e.GIATRI;
+              if (e.DOITUONG_NAME === "CUSTOMER") {
+                value =
+                  loaded_data[0]?.CUST_NAME === undefined
+                    ? ""
+                    : loaded_data[0]?.CUST_NAME;
+              } else if (e.DOITUONG_NAME === "LONGBARCODE") {
+                value =
+                  (loaded_data[0]?.G_NAME === undefined
+                    ? ""
+                    : loaded_data[0]?.G_NAME.substring(0, 11)) +
+                  "DTA3" +
+                  (loaded_data[0]?.PO_TYPE === undefined
+                    ? ""
+                    : loaded_data[0]?.PO_TYPE) +
+                  moment.utc().format("YYMMDD") +
+                  "-001" +
+                  zeroPad(
+                    loaded_data[0]?.ROLE_EA_QTY === undefined
+                      ? 0
+                      : loaded_data[0]?.ROLE_EA_QTY,
+                    6,
+                  );
+              } else if (e.DOITUONG_NAME === "PARTNO VALUE") {
+                value =
+                  loaded_data[0]?.G_NAME === undefined
+                    ? ""
+                    : loaded_data[0]?.G_NAME;
+              } else if (e.DOITUONG_NAME === "SPECIFICATION") {
+                value =
+                  "Specification:" +
+                  (loaded_data[0]?.DESCR === undefined
+                    ? ""
+                    : loaded_data[0]?.DESCR);
+              } else if (e.DOITUONG_NAME === "PO TYPE") {
+                value =
+                  "PO Type:" +
+                  (loaded_data[0]?.PO_TYPE === undefined
+                    ? ""
+                    : loaded_data[0]?.PO_TYPE);
+              } else if (e.DOITUONG_NAME === "LOTNO") {
+                value =
+                  "Lot No:" +
+                  moment.utc().format("YYMMDD") +
+                  "-001|" +
+                  userData?.EMPL_NO;
+              } else if (e.DOITUONG_NAME === "QTY BIG") {
+                value = (
+                  loaded_data[0]?.ROLE_EA_QTY === undefined
+                    ? ""
+                    : loaded_data[0]?.ROLE_EA_QTY
+                ).toString();
+              } else if (e.DOITUONG_NAME === "VENDOR PN") {
+                value =
+                  "Vendor P/N:" +
+                  (loaded_data[0]?.G_CODE === undefined
+                    ? ""
+                    : loaded_data[0]?.G_CODE);
+              } else if (e.DOITUONG_NAME === "SIZE") {
+                value =
+                  "Size:" +
+                  (loaded_data[0]?.G_WIDTH === undefined
+                    ? ""
+                    : loaded_data[0]?.G_WIDTH
+                  ).toString() +
+                  "*" +
+                  (loaded_data[0]?.G_LENGTH === undefined
+                    ? ""
+                    : loaded_data[0]?.G_LENGTH
+                  ).toString();
+              } else if (e.DOITUONG_NAME === "MFT") {
+                value = "MFT:" + moment.utc().format("YYYY-MM-DD");
+              } else if (e.DOITUONG_NAME === "EXP") {
+                value =
+                  "MFT:" + moment.utc().add(360, "day").format("YYYY-MM-DD");
+              } else if (e.DOITUONG_NAME === "REQUESTINFO") {
+                value =
+                  "CMSvina/NM1/3HU0020/" +
+                  (loaded_data[0]?.ROLE_EA_QTY === undefined
+                    ? ""
+                    : loaded_data[0]?.ROLE_EA_QTY
+                  ).toString() +
+                  "EA";
+              } else if (e.DOITUONG_NAME === "PARTNO2") {
+                value = (
+                  loaded_data[0]?.G_NAME === undefined
+                    ? ""
+                    : loaded_data[0]?.G_NAME
+                ).toString();
+              } else if (e.DOITUONG_NAME === "MFTEXP") {
+                value = `MFT: ${moment.utc().format("YYYY-MM-DD")} EXP: ${moment
+                  .utc()
+                  .add(360, "day")
+                  .format("YYYY-MM-DD")}`;
+              } else if (e.DOITUONG_NAME === "LOTINFO") {
+                value = `${userData?.EMPL_NO}/SP3HU001/SAMPLEWEB`;
               }
-            )
-          }))
-         
-          
+
+              return {
+                ...e,
+                GIATRI: value,
+              };
+            }),
+          );
         } else {
           Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
           setisLoading(false);
@@ -1210,7 +1226,7 @@ const BOM_MANAGER = () => {
   const handleCODESelectionforUpdate = (ids: GridSelectionModel) => {
     const selectedID = new Set(ids);
     let datafilter = rows.filter((element: CODE_INFO) =>
-      selectedID.has(element.id)
+      selectedID.has(element.id),
     );
     if (datafilter.length > 0) {
       //console.log(datafilter);
@@ -1221,7 +1237,6 @@ const BOM_MANAGER = () => {
       }
       //console.log(datafilter[0]);
       handlecodefullinfo(datafilter[0].G_CODE);
-      
     } else {
       setCodeDataTableFilter([]);
     }
@@ -1229,7 +1244,7 @@ const BOM_MANAGER = () => {
   const handleBOMSXSelectionforUpdate = (ids: GridSelectionModel) => {
     const selectedID = new Set(ids);
     let datafilter = bomsxtable.filter((element: BOM_SX) =>
-      selectedID.has(element.id)
+      selectedID.has(element.id),
     );
     if (datafilter.length > 0) {
       //console.log(datafilter);
@@ -1241,7 +1256,7 @@ const BOM_MANAGER = () => {
   const handleBOMGIASelectionforUpdate = (ids: GridSelectionModel) => {
     const selectedID = new Set(ids);
     let datafilter = bomgiatable.filter((element: BOM_GIA) =>
-      selectedID.has(element.id)
+      selectedID.has(element.id),
     );
     if (datafilter.length > 0) {
       //console.log(datafilter);
@@ -1287,7 +1302,7 @@ const BOM_MANAGER = () => {
       USE_YN: "Y",
       G_CODE: "",
       FSC: "N",
-      PROD_DVT: "01",      
+      PROD_DVT: "01",
     });
   };
   const handleCheckCodeInfo = () => {
@@ -1355,7 +1370,7 @@ const BOM_MANAGER = () => {
           ["RND", "QLSX", "KD"],
           ["ALL"],
           ["ALL"],
-          handleAddNewCode
+          handleAddNewCode,
         );
         //handleAddNewCode();
       }
@@ -1384,7 +1399,7 @@ const BOM_MANAGER = () => {
           ["RND", "QLSX", "KD"],
           ["ALL"],
           ["ALL"],
-          handleAddNewVer
+          handleAddNewVer,
         );
         //handleAddNewVer();
       }
@@ -1413,7 +1428,7 @@ const BOM_MANAGER = () => {
           ["RND", "QLSX", "KD"],
           ["ALL"],
           ["ALL"],
-          handleUpdateCode
+          handleUpdateCode,
         );
         //handleUpdateCode();
       }
@@ -1481,7 +1496,7 @@ const BOM_MANAGER = () => {
           Swal.fire(
             "Thông báo",
             "Update thành công: " + codefullinfo.G_CODE,
-            "success"
+            "success",
           );
         } else {
           Swal.fire("Thông báo", "Lỗi: " + response.data.message, "error");
@@ -1510,7 +1525,7 @@ const BOM_MANAGER = () => {
       }
       let nextcodeinfo = await await getNextG_CODE(
         codefullinfo.CODE_12,
-        CODE_27
+        CODE_27,
       );
       let nextcode = nextcodeinfo.NEXT_G_CODE;
       let nextgseqno = nextcodeinfo.NEXT_SEQ_NO;
@@ -1597,7 +1612,7 @@ const BOM_MANAGER = () => {
             Swal.fire(
               "Thông báo",
               "Update thành công: " + codefullinfo.G_CODE,
-              "success"
+              "success",
             );
           } else {
             Swal.fire("Thông báo", "Lỗi: " + response.data.message, "error");
@@ -1611,7 +1626,7 @@ const BOM_MANAGER = () => {
     }
   };
   const handleSearchCodeKeyDown = (
-    e: React.KeyboardEvent<HTMLInputElement>
+    e: React.KeyboardEvent<HTMLInputElement>,
   ) => {
     if (e.key === "Enter") {
       handleCODEINFO();
@@ -1816,7 +1831,7 @@ const BOM_MANAGER = () => {
       Swal.fire(
         "Thông báo",
         "Code chưa có BOM giá, phải thêm BOM giá trước",
-        "warning"
+        "warning",
       );
     }
   };
@@ -1861,7 +1876,7 @@ const BOM_MANAGER = () => {
       Swal.fire(
         "Thông báo",
         "Code đã có BOM SX, Sẽ chỉ lưu lại bom giá mà ko lưu thêm BOM SX nữa",
-        "warning"
+        "warning",
       );
     }
   };
@@ -2102,7 +2117,7 @@ const BOM_MANAGER = () => {
           ["RND", "QLSX", "KD"],
           ["ALL"],
           ["ALL"],
-          handleInsertBOMSX
+          handleInsertBOMSX,
         );
         //handleInsertBOMSX();
       }
@@ -2131,7 +2146,7 @@ const BOM_MANAGER = () => {
           ["RND", "QLSX", "KD"],
           ["ALL"],
           ["ALL"],
-          handleInsertBOMGIA
+          handleInsertBOMGIA,
         );
         //handleInsertBOMGIA();
         //handleInsertBOMSX_WITH_GIA();
@@ -2168,7 +2183,7 @@ const BOM_MANAGER = () => {
         Swal.fire(
           "Tiến hành Update Thông tin",
           "Đang Update Thông tin",
-          "success"
+          "success",
         );
 
         let checkTBGExist: number = 0;
@@ -2206,7 +2221,7 @@ const BOM_MANAGER = () => {
         Swal.fire(
           "Tiến hành Update Thông tin",
           "Đang Update bom tính báo giá",
-          "success"
+          "success",
         );
       }
     });
@@ -2225,7 +2240,7 @@ const BOM_MANAGER = () => {
               return {
                 ...element,
               };
-            }
+            },
           );
           loadeddata.push({ EQ_NAME: "NO" }, { EQ_NAME: "NA" });
           console.log(loadeddata);
@@ -2398,7 +2413,7 @@ const BOM_MANAGER = () => {
     },
   ]);
 
-  const handleGETBOMAMAZON = (G_CODE: string) => {    
+  const handleGETBOMAMAZON = (G_CODE: string) => {
     generalQuery("getAMAZON_DESIGN", {
       G_CODE: G_CODE,
     })
@@ -2411,13 +2426,13 @@ const BOM_MANAGER = () => {
                 ...element,
                 id: index,
               };
-            }
+            },
           );
           //console.log(loadeddata);
-          setComponentList(loadeddata);         
+          setComponentList(loadeddata);
         } else {
           //Swal.fire("Thông báo", "Lỗi BOM SX: " + response.data.message, "error");
-          setComponentList([]);          
+          setComponentList([]);
         }
       })
       .catch((error) => {
@@ -2431,23 +2446,23 @@ const BOM_MANAGER = () => {
     getMachineList();
     loadDefaultDM();
     loadMasterMaterialList();
-    handleGETBOMAMAZON('6E00004A');
+    handleGETBOMAMAZON("6E00004A");
   }, []);
   return (
-    <div className='bom_manager'>
-      <div className='mininavbar'>
+    <div className="bom_manager">
+      <div className="mininavbar">
         <div
-          className='mininavitem'
+          className="mininavitem"
           onClick={() => setNav(1)}
           style={{
             backgroundColor: selection.trapo === true ? "#02c712" : "#abc9ae",
             color: selection.trapo === true ? "yellow" : "yellow",
           }}
         >
-          <span className='mininavtext'>Thông tin code</span>
+          <span className="mininavtext">Thông tin code</span>
         </div>
         <div
-          className='mininavitem'
+          className="mininavitem"
           onClick={() =>
             /* checkBP(
               userData?.EMPL_NO,
@@ -2467,64 +2482,64 @@ const BOM_MANAGER = () => {
             color: selection.thempohangloat === true ? "yellow" : "yellow",
           }}
         >
-          <span className='mininavtext'>Quản lý Liệu</span>
+          <span className="mininavtext">Quản lý Liệu</span>
         </div>
       </div>
       {selection.trapo && (
-        <div className='bom_manager_wrapper'>
-          <div className='left'>
-            <div className='bom_manager_button'>
-              <div className='buttonrow1'>
+        <div className="bom_manager_wrapper">
+          <div className="left">
+            <div className="bom_manager_button">
+              <div className="buttonrow1">
                 <IconButton
-                  className='buttonIcon'
+                  className="buttonIcon"
                   onClick={() => {
                     confirmAddNewCode();
                   }}
                 >
-                  <AiFillFileAdd color='#3366ff' size={25} />
+                  <AiFillFileAdd color="#3366ff" size={25} />
                   ADD
                 </IconButton>
                 <IconButton
-                  className='buttonIcon'
+                  className="buttonIcon"
                   onClick={() => {
                     confirmUpdateCode();
                   }}
                 >
-                  <MdOutlineUpdate color='#ffff00' size={25} />
+                  <MdOutlineUpdate color="#ffff00" size={25} />
                   UPDATE
                 </IconButton>
               </div>
-              <div className='buttonrow2'>
+              <div className="buttonrow2">
                 <IconButton
-                  className='buttonIcon'
+                  className="buttonIcon"
                   onClick={() => {
                     confirmAddNewVer();
                   }}
                 >
-                  <MdUpgrade color='#cc33ff' size={25} />
+                  <MdUpgrade color="#cc33ff" size={25} />
                   ADD VER
                 </IconButton>
                 <IconButton
-                  className='buttonIcon'
+                  className="buttonIcon"
                   onClick={() => {
                     handleClearInfo();
                   }}
                 >
-                  <AiFillDelete color='red' size={25} />
+                  <AiFillDelete color="red" size={25} />
                   Clear
                 </IconButton>
               </div>
             </div>
-            <div className='codemanager'>
-              <div className='tracuuFcst'>
-                <div className='tracuuFcstform'>
-                  <div className='forminput'>
-                    <div className='forminputcolumn'>
+            <div className="codemanager">
+              <div className="tracuuFcst">
+                <div className="tracuuFcstform">
+                  <div className="forminput">
+                    <div className="forminputcolumn">
                       <label>
                         <b>Code:</b>{" "}
                         <input
-                          type='text'
-                          placeholder='Nhập code vào đây'
+                          type="text"
+                          placeholder="Nhập code vào đây"
                           value={codeCMS}
                           onChange={(e) => setCodeCMS(e.target.value)}
                           onKeyDown={(e) => {
@@ -2533,7 +2548,7 @@ const BOM_MANAGER = () => {
                         ></input>
                       </label>
                       <button
-                        className='traxuatkiembutton'
+                        className="traxuatkiembutton"
                         onClick={() => {
                           handleCODEINFO();
                         }}
@@ -2543,7 +2558,7 @@ const BOM_MANAGER = () => {
                     </div>
                   </div>
                 </div>
-                <div className='codeinfotable'>
+                <div className="codeinfotable">
                   <DataGrid
                     components={{
                       Toolbar: CustomToolbarPOTable,
@@ -2562,12 +2577,12 @@ const BOM_MANAGER = () => {
                     rowsPerPageOptions={[
                       5, 10, 50, 100, 500, 1000, 5000, 10000, 100000,
                     ]}
-                    editMode='cell'
+                    editMode="cell"
                     /* experimentalFeatures={{ newEditingApi: true }}  */
                     onCellEditCommit={(
                       params: GridCellEditCommitParams,
                       event: MuiEvent<MuiBaseEvent>,
-                      details: GridCallbackDetails
+                      details: GridCallbackDetails,
                     ) => {
                       //console.log(params);
                       let tempeditrows = editedRows;
@@ -2578,7 +2593,7 @@ const BOM_MANAGER = () => {
                       const newdata = rows.map((p) =>
                         p.id === params.id
                           ? { ...p, [keyvar]: params.value }
-                          : p
+                          : p,
                       );
                       setRows(newdata);
                     }}
@@ -2586,7 +2601,7 @@ const BOM_MANAGER = () => {
                 </div>
               </div>
             </div>
-            <div className='product_visualize'>
+            <div className="product_visualize">
               <CodeVisualLize
                 DATA={{
                   id: 0,
@@ -2643,12 +2658,12 @@ const BOM_MANAGER = () => {
                   CUST_CD: "",
                 }}
               />
-              <div className='banve'>
+              <div className="banve">
                 <span style={{ color: "green" }}>
                   <b>
                     <a
-                      target='_blank'
-                      rel='noopener noreferrer'
+                      target="_blank"
+                      rel="noopener noreferrer"
                       href={`/banve/${codefullinfo.G_CODE}.pdf`}
                     >
                       LINK
@@ -2658,16 +2673,16 @@ const BOM_MANAGER = () => {
               </div>
             </div>
           </div>
-          <div className='right'>
-            <div className='codeinfobig'>
-              <div className='biginfocms'>
+          <div className="right">
+            <div className="codeinfobig">
+              <div className="biginfocms">
                 {" "}
                 {codedatatablefilter[0]?.G_CODE}:{" "}
               </div>
-              <div className='biginfokd'> {codedatatablefilter[0]?.G_NAME}</div>
+              <div className="biginfokd"> {codedatatablefilter[0]?.G_NAME}</div>
             </div>
             <div
-              className='down'
+              className="down"
               style={{
                 backgroundImage:
                   codefullinfo.USE_YN === "Y"
@@ -2675,9 +2690,9 @@ const BOM_MANAGER = () => {
                     : `linear-gradient(0deg, #6C6B6B,#EFE5E5)`,
               }}
             >
-              <div className='codeinfo'>
-                <div className='info12'>
-                  <div className='info1'>
+              <div className="codeinfo">
+                <div className="info12">
+                  <div className="info1">
                     <label>
                       Khách hàng:
                       <Autocomplete
@@ -2690,10 +2705,10 @@ const BOM_MANAGER = () => {
                           backgroundColor: "white",
                         }}
                         disabled={enableform}
-                        size='small'
+                        size="small"
                         disablePortal
                         options={customerList}
-                        className='autocomplete'
+                        className="autocomplete"
                         filterOptions={filterOptions1}
                         isOptionEqualToValue={(option: any, value: any) =>
                           option.CUST_CD === value.CUST_CD
@@ -2713,24 +2728,24 @@ const BOM_MANAGER = () => {
                           CUST_CD: codefullinfo.CUST_CD,
                           CUST_NAME: customerList.filter(
                             (e: CustomerListData, index: number) =>
-                              e.CUST_CD === codefullinfo.CUST_CD
+                              e.CUST_CD === codefullinfo.CUST_CD,
                           )[0]?.CUST_NAME,
                           CUST_NAME_KD:
                             customerList.filter(
                               (e: CustomerListData, index: number) =>
-                                e.CUST_CD === codefullinfo.CUST_CD
+                                e.CUST_CD === codefullinfo.CUST_CD,
                             )[0]?.CUST_NAME_KD === undefined
                               ? ""
                               : customerList.filter(
                                   (e: CustomerListData, index: number) =>
-                                    e.CUST_CD === codefullinfo.CUST_CD
+                                    e.CUST_CD === codefullinfo.CUST_CD,
                                 )[0]?.CUST_NAME_KD,
                         }}
                         onChange={(event: any, newValue: any) => {
                           console.log(newValue);
                           handleSetCodeInfo(
                             "CUST_CD",
-                            newValue === null ? "" : newValue.CUST_CD
+                            newValue === null ? "" : newValue.CUST_CD,
                           );
                         }}
                       />
@@ -2765,7 +2780,7 @@ const BOM_MANAGER = () => {
                       Dự án/Project:{" "}
                       <input
                         disabled={enableform}
-                        type='text'
+                        type="text"
                         value={
                           codefullinfo?.PROD_PROJECT === null
                             ? ""
@@ -2780,7 +2795,7 @@ const BOM_MANAGER = () => {
                       Model:{" "}
                       <input
                         disabled={enableform}
-                        type='text'
+                        type="text"
                         value={
                           codefullinfo?.PROD_MODEL === null
                             ? ""
@@ -2795,7 +2810,7 @@ const BOM_MANAGER = () => {
                       Đặc tính sản phẩm:
                       <select
                         disabled={enableform}
-                        name='dactinhsanpham'
+                        name="dactinhsanpham"
                         value={
                           codefullinfo?.CODE_12 === null
                             ? "7"
@@ -2815,7 +2830,7 @@ const BOM_MANAGER = () => {
                       Phân loại sản phẩm:
                       <select
                         disabled={enableform}
-                        name='phanloaisanpham'
+                        name="phanloaisanpham"
                         value={
                           codefullinfo?.PROD_TYPE === null
                             ? "TSP"
@@ -2825,13 +2840,13 @@ const BOM_MANAGER = () => {
                           handleSetCodeInfo("PROD_TYPE", e.target.value);
                         }}
                       >
-                        <option value='TSP'>TSP</option>
-                        <option value='OLED'>OLED</option>
-                        <option value='UV'>UV</option>
-                        <option value='TAPE'>TAPE</option>
-                        <option value='LABEL'>LABEL</option>
-                        <option value='RIBBON'>RIBBON</option>
-                        <option value='SPT'>SPT</option>
+                        <option value="TSP">TSP</option>
+                        <option value="OLED">OLED</option>
+                        <option value="UV">UV</option>
+                        <option value="TAPE">TAPE</option>
+                        <option value="LABEL">LABEL</option>
+                        <option value="RIBBON">RIBBON</option>
+                        <option value="SPT">SPT</option>
                       </select>
                     </label>
                     <label>
@@ -2841,7 +2856,7 @@ const BOM_MANAGER = () => {
                         placeholder={
                           company === "CMS" ? "GH63-18084A" : "KH001-xxxx"
                         }
-                        type='text'
+                        type="text"
                         value={
                           codefullinfo?.G_NAME_KD === null
                             ? ""
@@ -2856,7 +2871,7 @@ const BOM_MANAGER = () => {
                       Mô tả/Spec:{" "}
                       <input
                         disabled={enableform}
-                        type='text'
+                        type="text"
                         value={
                           codefullinfo?.DESCR === null
                             ? ""
@@ -2879,10 +2894,10 @@ const BOM_MANAGER = () => {
                           backgroundColor: "white",
                         }}
                         disabled={enableform}
-                        size='small'
+                        size="small"
                         disablePortal
                         options={masterMaterialList}
-                        className='autocomplete'
+                        className="autocomplete"
                         filterOptions={filterOptions1}
                         isOptionEqualToValue={(option: any, value: any) =>
                           option.M_NAME === value.M_NAME
@@ -2901,7 +2916,7 @@ const BOM_MANAGER = () => {
                           console.log(newValue);
                           handleSetCodeInfo(
                             "PROD_MAIN_MATERIAL",
-                            newValue === null ? "" : newValue.M_NAME
+                            newValue === null ? "" : newValue.M_NAME,
                           );
                         }}
                       />
@@ -2928,7 +2943,7 @@ const BOM_MANAGER = () => {
                       {company === "CMS" ? "Code RnD:" : "Tên sản phẩm:"}
                       <input
                         disabled={enableform}
-                        type='text'
+                        type="text"
                         value={
                           codefullinfo?.G_NAME === null
                             ? ""
@@ -2940,12 +2955,12 @@ const BOM_MANAGER = () => {
                       ></input>
                     </label>
                   </div>
-                  <div className='info2'>
+                  <div className="info2">
                     <label>
                       Chiều dài sp(Length):{" "}
                       <input
                         disabled={enableform}
-                        type='text'
+                        type="text"
                         value={
                           codefullinfo?.G_LENGTH === null
                             ? 0
@@ -2960,7 +2975,7 @@ const BOM_MANAGER = () => {
                       Chiều rộng sp(Width):{" "}
                       <input
                         disabled={enableform}
-                        type='text'
+                        type="text"
                         value={
                           codefullinfo?.G_WIDTH === null
                             ? 0
@@ -2975,7 +2990,7 @@ const BOM_MANAGER = () => {
                       P/D:{" "}
                       <input
                         disabled={enableform}
-                        type='text'
+                        type="text"
                         value={codefullinfo?.PD === null ? 0 : codefullinfo?.PD}
                         onChange={(e) => {
                           handleSetCodeInfo("PD", e.target.value);
@@ -2986,7 +3001,7 @@ const BOM_MANAGER = () => {
                       Cavity hàng:{" "}
                       <input
                         disabled={enableform}
-                        type='text'
+                        type="text"
                         value={
                           codefullinfo?.G_C_R === null ? 0 : codefullinfo?.G_C_R
                         }
@@ -2999,7 +3014,7 @@ const BOM_MANAGER = () => {
                       Cavity cột:{" "}
                       <input
                         disabled={enableform}
-                        type='text'
+                        type="text"
                         value={
                           codefullinfo?.G_C === null ? 0 : codefullinfo?.G_C
                         }
@@ -3012,7 +3027,7 @@ const BOM_MANAGER = () => {
                       K/c hàng:{" "}
                       <input
                         disabled={enableform}
-                        type='text'
+                        type="text"
                         value={
                           codefullinfo?.G_LG === null ? 0 : codefullinfo?.G_LG
                         }
@@ -3025,7 +3040,7 @@ const BOM_MANAGER = () => {
                       K/c cột:{" "}
                       <input
                         disabled={enableform}
-                        type='text'
+                        type="text"
                         value={
                           codefullinfo?.G_CG === null ? 0 : codefullinfo?.G_CG
                         }
@@ -3038,7 +3053,7 @@ const BOM_MANAGER = () => {
                       K/c tới liner trái:{" "}
                       <input
                         disabled={enableform}
-                        type='text'
+                        type="text"
                         value={
                           codefullinfo?.G_SG_L === null
                             ? 0
@@ -3053,7 +3068,7 @@ const BOM_MANAGER = () => {
                       K/c tới liner phải:{" "}
                       <input
                         disabled={enableform}
-                        type='text'
+                        type="text"
                         value={
                           codefullinfo?.G_SG_R === null
                             ? 0
@@ -3065,12 +3080,12 @@ const BOM_MANAGER = () => {
                       ></input>
                     </label>
                   </div>
-                  <div className='info11'>
+                  <div className="info11">
                     <label>
                       Hướng cuộn:
                       <select
                         disabled={enableform}
-                        name='huongmoroll'
+                        name="huongmoroll"
                         value={
                           codefullinfo?.PACK_DRT === null
                             ? "1"
@@ -3080,15 +3095,15 @@ const BOM_MANAGER = () => {
                           handleSetCodeInfo("PACK_DRT", e.target.value);
                         }}
                       >
-                        <option value='1'>Hàng ở mặt ngoài</option>
-                        <option value='0'>Hàng ở mặt trong</option>
+                        <option value="1">Hàng ở mặt ngoài</option>
+                        <option value="0">Hàng ở mặt trong</option>
                       </select>
                     </label>
                     <label>
                       Loại dao:
                       <select
                         disabled={enableform}
-                        name='loaidao'
+                        name="loaidao"
                         value={
                           codefullinfo?.KNIFE_TYPE === null
                             ? 0
@@ -3107,7 +3122,7 @@ const BOM_MANAGER = () => {
                       Tuổi dao (Số dập):{" "}
                       <input
                         disabled={enableform}
-                        type='text'
+                        type="text"
                         value={
                           codefullinfo?.KNIFE_LIFECYCLE === null
                             ? 0
@@ -3122,7 +3137,7 @@ const BOM_MANAGER = () => {
                       Đơn giá dao:{" "}
                       <input
                         disabled={enableform}
-                        type='text'
+                        type="text"
                         value={
                           codefullinfo?.KNIFE_PRICE === null
                             ? 0
@@ -3137,7 +3152,7 @@ const BOM_MANAGER = () => {
                       Packing Type:
                       <select
                         disabled={enableform}
-                        name='packingtype'
+                        name="packingtype"
                         value={
                           codefullinfo?.CODE_33 === null
                             ? "03"
@@ -3147,15 +3162,15 @@ const BOM_MANAGER = () => {
                           handleSetCodeInfo("CODE_33", e.target.value);
                         }}
                       >
-                        <option value='02'>ROLL</option>
-                        <option value='03'>SHEET</option>
+                        <option value="02">ROLL</option>
+                        <option value="03">SHEET</option>
                       </select>
                     </label>
                     <label>
                       Đơn vị:
                       <select
                         disabled={enableform}
-                        name='dvt'
+                        name="dvt"
                         value={
                           codefullinfo?.PROD_DVT === null
                             ? "01"
@@ -3165,20 +3180,20 @@ const BOM_MANAGER = () => {
                           handleSetCodeInfo("PROD_DVT", e.target.value);
                         }}
                       >
-                        <option value='01'>EA</option>
-                        <option value='02'>Met</option>
-                        <option value='03'>Cuộn</option>
-                        <option value='04'>Bộ</option>
-                        <option value='05'>Gói</option>
-                        <option value='06'>Kg</option>
-                        <option value='99'>X</option>
+                        <option value="01">EA</option>
+                        <option value="02">Met</option>
+                        <option value="03">Cuộn</option>
+                        <option value="04">Bộ</option>
+                        <option value="05">Gói</option>
+                        <option value="06">Kg</option>
+                        <option value="99">X</option>
                       </select>
                     </label>
                     <label>
                       Packing QTY:{" "}
                       <input
                         disabled={enableform}
-                        type='text'
+                        type="text"
                         value={
                           codefullinfo?.ROLE_EA_QTY === null
                             ? 0
@@ -3193,7 +3208,7 @@ const BOM_MANAGER = () => {
                       RPM:{" "}
                       <input
                         disabled={enableform}
-                        type='text'
+                        type="text"
                         value={
                           codefullinfo?.RPM === null ? 0 : codefullinfo?.RPM
                         }
@@ -3206,7 +3221,7 @@ const BOM_MANAGER = () => {
                       PIN DISTANCE:{" "}
                       <input
                         disabled={enableform}
-                        type='text'
+                        type="text"
                         value={
                           codefullinfo?.PIN_DISTANCE === null
                             ? 0
@@ -3218,12 +3233,12 @@ const BOM_MANAGER = () => {
                       ></input>
                     </label>
                   </div>
-                  <div className='info22'>
+                  <div className="info22">
                     <label>
                       PROCESS TYPE:{" "}
                       <input
                         disabled={enableform}
-                        type='text'
+                        type="text"
                         value={
                           codefullinfo?.PROCESS_TYPE === null
                             ? ""
@@ -3238,7 +3253,7 @@ const BOM_MANAGER = () => {
                       Máy 1:
                       <select
                         disabled={enableform}
-                        name='may1'
+                        name="may1"
                         value={
                           codefullinfo?.EQ1 === null || codefullinfo?.EQ1 === ""
                             ? "NA"
@@ -3255,7 +3270,7 @@ const BOM_MANAGER = () => {
                                 {ele.EQ_NAME}
                               </option>
                             );
-                          }
+                          },
                         )}
                       </select>
                     </label>
@@ -3263,7 +3278,7 @@ const BOM_MANAGER = () => {
                       Máy 2:
                       <select
                         disabled={enableform}
-                        name='may2'
+                        name="may2"
                         value={
                           codefullinfo?.EQ2 === null || codefullinfo?.EQ2 === ""
                             ? "NA"
@@ -3280,7 +3295,7 @@ const BOM_MANAGER = () => {
                                 {ele.EQ_NAME}
                               </option>
                             );
-                          }
+                          },
                         )}
                       </select>
                     </label>
@@ -3288,7 +3303,7 @@ const BOM_MANAGER = () => {
                       Máy 3:
                       <select
                         disabled={enableform}
-                        name='may3'
+                        name="may3"
                         value={
                           codefullinfo?.EQ3 === null || codefullinfo?.EQ3 === ""
                             ? "NA"
@@ -3305,7 +3320,7 @@ const BOM_MANAGER = () => {
                                 {ele.EQ_NAME}
                               </option>
                             );
-                          }
+                          },
                         )}
                       </select>
                     </label>
@@ -3313,7 +3328,7 @@ const BOM_MANAGER = () => {
                       Máy 4:
                       <select
                         disabled={enableform}
-                        name='may4'
+                        name="may4"
                         value={
                           codefullinfo?.EQ4 === null || codefullinfo?.EQ4 === ""
                             ? "NA"
@@ -3330,7 +3345,7 @@ const BOM_MANAGER = () => {
                                 {ele.EQ_NAME}
                               </option>
                             );
-                          }
+                          },
                         )}
                       </select>
                     </label>
@@ -3338,7 +3353,7 @@ const BOM_MANAGER = () => {
                       Số bước (dao):{" "}
                       <input
                         disabled={enableform}
-                        type='text'
+                        type="text"
                         value={
                           codefullinfo?.PROD_DIECUT_STEP === null
                             ? 0
@@ -3353,7 +3368,7 @@ const BOM_MANAGER = () => {
                       Số lần in:{" "}
                       <input
                         disabled={enableform}
-                        type='text'
+                        type="text"
                         value={
                           codefullinfo?.PROD_PRINT_TIMES === null
                             ? 0
@@ -3368,7 +3383,7 @@ const BOM_MANAGER = () => {
                       PO TYPE:
                       <select
                         disabled={enableform}
-                        name='may1'
+                        name="may1"
                         value={
                           codefullinfo?.PO_TYPE === null ||
                           codefullinfo?.PO_TYPE === ""
@@ -3379,15 +3394,15 @@ const BOM_MANAGER = () => {
                           handleSetCodeInfo("PO_TYPE", e.target.value);
                         }}
                       >
-                        <option value='E1'>E1</option>
-                        <option value='E2'>E2</option>
+                        <option value="E1">E1</option>
+                        <option value="E2">E2</option>
                       </select>
                     </label>
                     <label>
                       FSC:
                       <select
                         disabled={enableform}
-                        name='may1'
+                        name="may1"
                         value={
                           codefullinfo?.FSC === null || codefullinfo?.FSC === ""
                             ? "N"
@@ -3397,17 +3412,17 @@ const BOM_MANAGER = () => {
                           handleSetCodeInfo("FSC", e.target.value);
                         }}
                       >
-                        <option value='Y'>YES</option>
-                        <option value='N'>NO</option>
+                        <option value="Y">YES</option>
+                        <option value="N">NO</option>
                       </select>
                     </label>
                   </div>
-                  <div className='info33'>
+                  <div className="info33">
                     <label>
                       Remark:{" "}
                       <input
                         disabled={enableform}
-                        type='text'
+                        type="text"
                         value={
                           codefullinfo?.REMK === null ? "" : codefullinfo?.REMK
                         }
@@ -3422,8 +3437,8 @@ const BOM_MANAGER = () => {
                     <label>
                       <span style={{ color: "gray" }}>
                         <a
-                          target='_blank'
-                          rel='noopener noreferrer'
+                          target="_blank"
+                          rel="noopener noreferrer"
                           href={`/banve/${codefullinfo.G_CODE}.pdf`}
                         >
                           LINK
@@ -3431,19 +3446,19 @@ const BOM_MANAGER = () => {
                       </span>
                     </label>
                     <label>
-                      <div className='uploadfile'>
+                      <div className="uploadfile">
                         <IconButton
                           disabled={enableform}
-                          className='buttonIcon'
+                          className="buttonIcon"
                           onClick={uploadFilebanVe}
                         >
-                          <AiOutlineCloudUpload color='yellow' size={15} />
+                          <AiOutlineCloudUpload color="yellow" size={15} />
                           Upload
                         </IconButton>
                         <input
                           disabled={enableform}
-                          accept='.pdf'
-                          type='file'
+                          accept=".pdf"
+                          type="file"
                           onChange={(e: any) => {
                             setFile(e.target.files[0]);
                             console.log(e.target.files[0]);
@@ -3453,15 +3468,15 @@ const BOM_MANAGER = () => {
                     </label>
                     <FormControlLabel
                       disabled={enableform}
-                      label='Mở/Khóa'
-                      className='useynbt'
+                      label="Mở/Khóa"
+                      className="useynbt"
                       control={
                         <Checkbox
                           checked={codefullinfo?.USE_YN === "Y"}
                           onChange={(e) => {
                             handleSetCodeInfo(
                               "USE_YN",
-                              e.target.checked === true ? "Y" : "N"
+                              e.target.checked === true ? "Y" : "N",
                             );
                           }}
                           inputProps={{ "aria-label": "controlled" }}
@@ -3502,49 +3517,50 @@ const BOM_MANAGER = () => {
                         }}
                       />
                     </label> */}
-                      {company === "CMS" && (<Button
-                      onClick={() => {
-                        setShowHideTemLot(!showhidetemlot);
-                      }}
-                    >
-                      Show/Hide Tem LOT
-                    </Button>)}
+                    {company === "CMS" && (
+                      <Button
+                        onClick={() => {
+                          setShowHideTemLot(!showhidetemlot);
+                        }}
+                      >
+                        Show/Hide Tem LOT
+                      </Button>
+                    )}
 
                     {company === "CMS" && showhidetemlot && (
-                          <div className='lotlabelbackground'>
-                            <Button
-                            color="success"
-                      onClick={() => {
-                        handlePrint();
-                      }}
-                    >
-                      Print LOT
-                    </Button>
-                          </div>
-                        )}
+                      <div className="lotlabelbackground">
+                        <Button
+                          color="success"
+                          onClick={() => {
+                            handlePrint();
+                          }}
+                        >
+                          Print LOT
+                        </Button>
+                      </div>
+                    )}
                     {company === "CMS" && showhidetemlot && (
-                      <div className='lotlabel'>
-                       
-                        <div className='lotelement' ref={labelprintref}>
+                      <div className="lotlabel">
+                        <div className="lotelement" ref={labelprintref}>
                           {renderElement(componentList)}
                         </div>
                       </div>
                     )}
                   </div>
                 </div>
-                <div className='info34'>
-                  <div className='info3'></div>
-                  <div className='info4'></div>
+                <div className="info34">
+                  <div className="info3"></div>
+                  <div className="info4"></div>
                 </div>
               </div>
             </div>
-            <div className='materiallist'>
+            <div className="materiallist">
               <Autocomplete
                 disabled={column_bomsx[0].editable || column_bomgia[0].editable}
-                size='small'
+                size="small"
                 disablePortal
                 options={materialList}
-                className='autocomplete'
+                className="autocomplete"
                 filterOptions={filterOptions1}
                 isOptionEqualToValue={(option: any, value: any) =>
                   option.M_CODE === value.M_CODE
@@ -3553,7 +3569,7 @@ const BOM_MANAGER = () => {
                   `${option.M_NAME}|${option.WIDTH_CD}|${option.M_CODE}`
                 }
                 renderInput={(params) => (
-                  <TextField {...params} label='Select material' />
+                  <TextField {...params} label="Select material" />
                 )}
                 defaultValue={{
                   M_CODE: "A0007770",
@@ -3567,9 +3583,9 @@ const BOM_MANAGER = () => {
                 }}
               />
             </div>
-            <div className='up'>
-              <div className='bomsx'>
-                <div className='bomsxtable'>
+            <div className="up">
+              <div className="bomsx">
+                <div className="bomsxtable">
                   <span
                     style={{ fontSize: 16, fontWeight: "bold", marginLeft: 10 }}
                   >
@@ -3596,12 +3612,12 @@ const BOM_MANAGER = () => {
                     rowsPerPageOptions={[
                       5, 10, 50, 100, 500, 1000, 5000, 10000, 100000,
                     ]}
-                    editMode='cell'
+                    editMode="cell"
                     /* experimentalFeatures={{ newEditingApi: true }}  */
                     onCellEditCommit={(
                       params: GridCellEditCommitParams,
                       event: MuiEvent<MuiBaseEvent>,
-                      details: GridCallbackDetails
+                      details: GridCallbackDetails,
                     ) => {
                       //console.log(params);
                       let tempeditrows = editedRows;
@@ -3612,15 +3628,15 @@ const BOM_MANAGER = () => {
                       const newdata = bomsxtable.map((p) =>
                         p.id === params.id
                           ? { ...p, [keyvar]: params.value }
-                          : p
+                          : p,
                       );
                       setBOMSXTable(newdata);
                     }}
                   />
                 </div>
               </div>
-              <div className='bomgia'>
-                <div className='bomgiatable'>
+              <div className="bomgia">
+                <div className="bomgiatable">
                   <span
                     style={{ fontSize: 16, fontWeight: "bold", marginLeft: 10 }}
                   >
@@ -3646,12 +3662,12 @@ const BOM_MANAGER = () => {
                     rowsPerPageOptions={[
                       5, 10, 50, 100, 500, 1000, 5000, 10000, 100000,
                     ]}
-                    editMode='cell'
+                    editMode="cell"
                     /* experimentalFeatures={{ newEditingApi: true }}  */
                     onCellEditCommit={(
                       params: GridCellEditCommitParams,
                       event: MuiEvent<MuiBaseEvent>,
-                      details: GridCallbackDetails
+                      details: GridCallbackDetails,
                     ) => {
                       //console.log(params);
                       let tempeditrows = editedRows;
@@ -3662,7 +3678,7 @@ const BOM_MANAGER = () => {
                       const newdata = bomgiatable.map((p) =>
                         p.id === params.id
                           ? { ...p, [keyvar]: params.value }
-                          : p
+                          : p,
                       );
                       setBOMGIATable(newdata);
                     }}
@@ -3670,12 +3686,12 @@ const BOM_MANAGER = () => {
                 </div>
               </div>
             </div>
-            <div className='bottom'></div>
+            <div className="bottom"></div>
           </div>
         </div>
       )}
       {selection.thempohangloat && (
-        <div className='quanlylieu'>
+        <div className="quanlylieu">
           <MATERIAL_MANAGER />
         </div>
       )}

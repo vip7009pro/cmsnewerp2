@@ -1,9 +1,7 @@
-import React from 'react'
+import React from "react";
 
 const PRICE_MANAGER = () => {
-  return (
-    <div>PRICE_MANAGER</div>
-  )
-}
+  return <div>PRICE_MANAGER</div>;
+};
 
-export default PRICE_MANAGER
+export default PRICE_MANAGER;

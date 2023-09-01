@@ -96,8 +96,8 @@ const INSPECT_REPORT = () => {
   const [weeklyppm2, setWeeklyPPM2] = useState<WeeklyPPMData[]>([]);
   const [monthlyppm2, setMonthlyPPM2] = useState<MonthlyPPMData[]>([]);
   const [yearlyppm2, setYearlyPPM2] = useState<YearlyPPMData[]>([]);
-  const [fromdate, setFromDate] = useState(moment().format('YYYY-MM-DD'));
-  const [todate, setToDate] = useState(moment().format('YYYY-MM-DD'));
+  const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
+  const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));
 
   const [widgetdata_pobalancesummary, setWidgetData_PoBalanceSummary] =
     useState<WidgetData_POBalanceSummary>({
@@ -129,7 +129,7 @@ const INSPECT_REPORT = () => {
                   .utc(element.INSPECT_DATE)
                   .format("YYYY-MM-DD"),
               };
-            }
+            },
           );
           //console.log(loadeddata);
           if (FACTORY === "NM1") {
@@ -156,7 +156,7 @@ const INSPECT_REPORT = () => {
               return {
                 ...element,
               };
-            }
+            },
           );
           if (FACTORY === "NM1") {
             setWeeklyPPM1(loadeddata);
@@ -182,7 +182,7 @@ const INSPECT_REPORT = () => {
               return {
                 ...element,
               };
-            }
+            },
           );
           if (FACTORY === "NM1") {
             setMonthlyPPM1(loadeddata);
@@ -208,7 +208,7 @@ const INSPECT_REPORT = () => {
               return {
                 ...element,
               };
-            }
+            },
           );
           if (FACTORY === "NM1") {
             setYearlyPPM1(loadeddata);
@@ -235,7 +235,7 @@ const INSPECT_REPORT = () => {
               return {
                 ...element,
               };
-            }
+            },
           );
           setWidgetData_FcstAmount(loadeddata[0]);
         } else {
@@ -251,7 +251,7 @@ const INSPECT_REPORT = () => {
                     return {
                       ...element,
                     };
-                  }
+                  },
                 );
                 setWidgetData_FcstAmount(loadeddata[0]);
               } else {
@@ -277,7 +277,7 @@ const INSPECT_REPORT = () => {
               return {
                 ...element,
               };
-            }
+            },
           );
           setWidgetData_PoBalanceSummary({
             po_balance_qty: loadeddata[0].PO_BALANCE,
@@ -310,97 +310,97 @@ const INSPECT_REPORT = () => {
     handleGetFCSTAmount();
   }, []);
   return (
-    <div className='inspectionreport'>
-      <div className='doanhthureport'>
-        <span className='section_title'>1. Defect Summary</span>
-        <span className='subsection_title'>a. FACTORY 1</span>
-        <div className='revenuewidget'>
-          <div className='revenuwdg'>
+    <div className="inspectionreport">
+      <div className="doanhthureport">
+        <span className="section_title">1. Defect Summary</span>
+        <span className="subsection_title">a. FACTORY 1</span>
+        <div className="revenuewidget">
+          <div className="revenuwdg">
             <WidgetInspection
-              widgettype='revenue'
-              label='Yesterday NG'
-              topColor='#b3c6ff'
-              botColor='#b3ecff'
+              widgettype="revenue"
+              label="Yesterday NG"
+              topColor="#b3c6ff"
+              botColor="#b3ecff"
               material_ppm={dailyppm1[0]?.MATERIAL_PPM}
               process_ppm={dailyppm1[0]?.PROCESS_PPM}
               total_ppm={dailyppm1[0]?.TOTAL_PPM}
             />
           </div>
-          <div className='revenuwdg'>
+          <div className="revenuwdg">
             <WidgetInspection
-              widgettype='revenue'
-              label='This Week NG'
-              topColor='#b3c6ff'
-              botColor='#b3ecff'
+              widgettype="revenue"
+              label="This Week NG"
+              topColor="#b3c6ff"
+              botColor="#b3ecff"
               material_ppm={weeklyppm1[0]?.MATERIAL_PPM}
               process_ppm={weeklyppm1[0]?.PROCESS_PPM}
               total_ppm={weeklyppm1[0]?.TOTAL_PPM}
             />
           </div>
-          <div className='revenuwdg'>
+          <div className="revenuwdg">
             <WidgetInspection
-              widgettype='revenue'
-              label='This month NG'
-              topColor='#b3c6ff'
-              botColor='#b3ecff'
+              widgettype="revenue"
+              label="This month NG"
+              topColor="#b3c6ff"
+              botColor="#b3ecff"
               material_ppm={monthlyppm1[0]?.MATERIAL_PPM}
               process_ppm={monthlyppm1[0]?.PROCESS_PPM}
               total_ppm={monthlyppm1[0]?.TOTAL_PPM}
             />
           </div>
-          <div className='revenuwdg'>
+          <div className="revenuwdg">
             <WidgetInspection
-              widgettype='revenue'
-              label='This year NG'
-              topColor='#b3c6ff'
-              botColor='#b3ecff'
+              widgettype="revenue"
+              label="This year NG"
+              topColor="#b3c6ff"
+              botColor="#b3ecff"
               material_ppm={yearlyppm1[0]?.MATERIAL_PPM}
               process_ppm={yearlyppm1[0]?.PROCESS_PPM}
               total_ppm={yearlyppm1[0]?.TOTAL_PPM}
             />
           </div>
         </div>
-        <span className='subsection_title'>b. FACTORY 2</span>
-        <div className='revenuewidget'>
-          <div className='revenuwdg'>
+        <span className="subsection_title">b. FACTORY 2</span>
+        <div className="revenuewidget">
+          <div className="revenuwdg">
             <WidgetInspection
-              widgettype='revenue'
-              label='Yesterday NG'
-              topColor='#80ff80'
-              botColor='#e6ffe6'
+              widgettype="revenue"
+              label="Yesterday NG"
+              topColor="#80ff80"
+              botColor="#e6ffe6"
               material_ppm={dailyppm2[0]?.MATERIAL_PPM}
               process_ppm={dailyppm2[0]?.PROCESS_PPM}
               total_ppm={dailyppm2[0]?.TOTAL_PPM}
             />
           </div>
-          <div className='revenuwdg'>
+          <div className="revenuwdg">
             <WidgetInspection
-              widgettype='revenue'
-              label='This Week NG'
-              topColor='#80ff80'
-              botColor='#e6ffe6'
+              widgettype="revenue"
+              label="This Week NG"
+              topColor="#80ff80"
+              botColor="#e6ffe6"
               material_ppm={weeklyppm2[0]?.MATERIAL_PPM}
               process_ppm={weeklyppm2[0]?.PROCESS_PPM}
               total_ppm={weeklyppm2[0]?.TOTAL_PPM}
             />
           </div>
-          <div className='revenuwdg'>
+          <div className="revenuwdg">
             <WidgetInspection
-              widgettype='revenue'
-              label='This month NG'
-              topColor='#80ff80'
-              botColor='#e6ffe6'
+              widgettype="revenue"
+              label="This month NG"
+              topColor="#80ff80"
+              botColor="#e6ffe6"
               material_ppm={monthlyppm2[0]?.MATERIAL_PPM}
               process_ppm={monthlyppm2[0]?.PROCESS_PPM}
               total_ppm={monthlyppm2[0]?.TOTAL_PPM}
             />
           </div>
-          <div className='revenuwdg'>
+          <div className="revenuwdg">
             <WidgetInspection
-              widgettype='revenue'
-              label='This year NG'
-              topColor='#80ff80'
-              botColor='#e6ffe6'
+              widgettype="revenue"
+              label="This year NG"
+              topColor="#80ff80"
+              botColor="#e6ffe6"
               material_ppm={yearlyppm2[0]?.MATERIAL_PPM}
               process_ppm={yearlyppm2[0]?.PROCESS_PPM}
               total_ppm={yearlyppm2[0]?.TOTAL_PPM}
@@ -409,92 +409,124 @@ const INSPECT_REPORT = () => {
         </div>
         <br></br>
         <hr></hr>
-        <div className='graph'>
-          <span className='section_title'>2. NG Trending</span>
-          <span className='subsection_title'>a. FACTORY 1 NG Trending</span>
-          <div className='dailygraphtotal'>
-            <div className='dailygraph'>
-              <span className='subsection'>Daily NG Rate</span>
-              <InspectionDailyPPM dldata={dailyppm1} processColor='#eb4034' materialColor='#34eb92'/>
+        <div className="graph">
+          <span className="section_title">2. NG Trending</span>
+          <span className="subsection_title">a. FACTORY 1 NG Trending</span>
+          <div className="dailygraphtotal">
+            <div className="dailygraph">
+              <span className="subsection">Daily NG Rate</span>
+              <InspectionDailyPPM
+                dldata={dailyppm1}
+                processColor="#eb4034"
+                materialColor="#34eb92"
+              />
             </div>
-            <div className='dailygraph'>
-              <span className='subsection'>Weekly NG Rate</span>
-              <InspectionWeeklyPPM dldata={weeklyppm1}  processColor='#eb4034' materialColor='#34eb92' />
-            </div>
-          </div>
-          <div className='monthlyweeklygraph'>
-            <div className='dailygraph'>
-              <span className='subsection'>Monthly NG Rate</span>
-              <InspectionMonthlyPPM dldata={monthlyppm1}  processColor='#eb4034' materialColor='#34eb92'/>
-            </div>
-            <div className='dailygraph'>
-              <span className='subsection'>Yearly NG Rate</span>
-              <InspectionYearlyPPM dldata={yearlyppm1}  processColor='#eb4034' materialColor='#34eb92'/>
+            <div className="dailygraph">
+              <span className="subsection">Weekly NG Rate</span>
+              <InspectionWeeklyPPM
+                dldata={weeklyppm1}
+                processColor="#eb4034"
+                materialColor="#34eb92"
+              />
             </div>
           </div>
-          <span className='subsection_title'>b. FACTORY 2 NG Trending</span>
-          <div className='dailygraphtotal'>
-            <div className='dailygraph'>
-              <span className='subsection'>Daily NG Rate</span>
-              <InspectionDailyPPM dldata={dailyppm2}  processColor='#eb5c34' materialColor='#53eb34'/>
+          <div className="monthlyweeklygraph">
+            <div className="dailygraph">
+              <span className="subsection">Monthly NG Rate</span>
+              <InspectionMonthlyPPM
+                dldata={monthlyppm1}
+                processColor="#eb4034"
+                materialColor="#34eb92"
+              />
             </div>
-            <div className='dailygraph'>
-              <span className='subsection'>Weekly NG Rate</span>
-              <InspectionWeeklyPPM dldata={weeklyppm2}   processColor='#eb5c34' materialColor='#53eb34'/>
+            <div className="dailygraph">
+              <span className="subsection">Yearly NG Rate</span>
+              <InspectionYearlyPPM
+                dldata={yearlyppm1}
+                processColor="#eb4034"
+                materialColor="#34eb92"
+              />
             </div>
           </div>
-          <div className='monthlyweeklygraph'>
-            <div className='dailygraph'>
-              <span className='subsection'>Monthly NG Rate</span>
-              <InspectionMonthlyPPM dldata={monthlyppm2}   processColor='#eb5c34' materialColor='#53eb34'/>
+          <span className="subsection_title">b. FACTORY 2 NG Trending</span>
+          <div className="dailygraphtotal">
+            <div className="dailygraph">
+              <span className="subsection">Daily NG Rate</span>
+              <InspectionDailyPPM
+                dldata={dailyppm2}
+                processColor="#eb5c34"
+                materialColor="#53eb34"
+              />
             </div>
-            <div className='dailygraph'>
-              <span className='subsection'>Yearly NG Rate</span>
-              <InspectionYearlyPPM dldata={yearlyppm2}   processColor='#eb5c34' materialColor='#53eb34'/>
+            <div className="dailygraph">
+              <span className="subsection">Weekly NG Rate</span>
+              <InspectionWeeklyPPM
+                dldata={weeklyppm2}
+                processColor="#eb5c34"
+                materialColor="#53eb34"
+              />
             </div>
-          </div>         
+          </div>
+          <div className="monthlyweeklygraph">
+            <div className="dailygraph">
+              <span className="subsection">Monthly NG Rate</span>
+              <InspectionMonthlyPPM
+                dldata={monthlyppm2}
+                processColor="#eb5c34"
+                materialColor="#53eb34"
+              />
+            </div>
+            <div className="dailygraph">
+              <span className="subsection">Yearly NG Rate</span>
+              <InspectionYearlyPPM
+                dldata={yearlyppm2}
+                processColor="#eb5c34"
+                materialColor="#53eb34"
+              />
+            </div>
+          </div>
           <br></br>
           <hr></hr>
-          <span className='section_title'>3. WORST</span>
+          <span className="section_title">3. WORST</span>
           <br></br>
-          <div className='pobalancesummary'>
-            <span className='subsection'>Select Data Range: </span>
+          <div className="pobalancesummary">
+            <span className="subsection">Select Data Range: </span>
             <label>
-                  <b>Từ ngày:</b>
-                  <input                   
-                    type='date'
-                    value={fromdate.slice(0, 10)}
-                    onChange={(e) => setFromDate(e.target.value)}
-                  ></input>
-                </label>
-                <label>
-                  <b>Tới ngày:</b>{" "}
-                  <input                    
-                    type='date'
-                    value={todate.slice(0, 10)}
-                    onChange={(e) => setToDate(e.target.value)}
-                  ></input>
-              </label>            
+              <b>Từ ngày:</b>
+              <input
+                type="date"
+                value={fromdate.slice(0, 10)}
+                onChange={(e) => setFromDate(e.target.value)}
+              ></input>
+            </label>
+            <label>
+              <b>Tới ngày:</b>{" "}
+              <input
+                type="date"
+                value={todate.slice(0, 10)}
+                onChange={(e) => setToDate(e.target.value)}
+              ></input>
+            </label>
           </div>
-          <div className='monthlyweeklygraph'>
-            <div className='dailygraph'>
-              <span className='subsection'>NG NM1</span>
+          <div className="monthlyweeklygraph">
+            <div className="dailygraph">
+              <span className="subsection">NG NM1</span>
               <ChartWeeklyPO />
             </div>
-            <div className='dailygraph'>
-              <span className='subsection'>NG NM2</span>
+            <div className="dailygraph">
+              <span className="subsection">NG NM2</span>
               <ChartWeekLyDelivery />
             </div>
           </div>
-          <div className='monthlyweeklygraph'>
-            <div className='dailygraph'>
-              <span className='subsection'>PO Balance Trending (By Week)</span>
+          <div className="monthlyweeklygraph">
+            <div className="dailygraph">
+              <span className="subsection">PO Balance Trending (By Week)</span>
               <Chart4 />
             </div>
           </div>
-          <div className='datatable'>
-            <div className='dailygraph'>
-              <span className='subsection'>
+          <div className="datatable">
+            <div className="dailygraph">
+              <span className="subsection">
                 Customer PO Balance By Product Type
               </span>
               <CustomerPOBalanceByType />
@@ -502,30 +534,30 @@ const INSPECT_REPORT = () => {
           </div>
           <br></br>
           <hr></hr>
-          <span className='section_title'>4. Forecast</span>
+          <span className="section_title">4. Forecast</span>
           <br></br>
-          <div className='fcstsummary'>
-            <span className='subsection'>
+          <div className="fcstsummary">
+            <span className="subsection">
               FCST Amount (FCST W{widgetdata_fcstAmount.FCSTWEEKNO})
             </span>
-            <div className='fcstwidget'>
-              <div className='fcstwidget1'>
+            <div className="fcstwidget">
+              <div className="fcstwidget1">
                 <Widget
-                  widgettype='revenue'
-                  label='FCST AMOUNT(4 WEEK)'
-                  topColor='#eb99ff'
-                  botColor='#99ccff'
+                  widgettype="revenue"
+                  label="FCST AMOUNT(4 WEEK)"
+                  topColor="#eb99ff"
+                  botColor="#99ccff"
                   qty={widgetdata_fcstAmount.FCST4W_QTY * 1}
                   amount={widgetdata_fcstAmount.FCST4W_AMOUNT}
                   percentage={20}
                 />
               </div>
-              <div className='fcstwidget1'>
+              <div className="fcstwidget1">
                 <Widget
-                  widgettype='revenue'
-                  label='FCST AMOUNT(8 WEEK)'
-                  topColor='#e6e600'
-                  botColor='#ff99c2'
+                  widgettype="revenue"
+                  label="FCST AMOUNT(8 WEEK)"
+                  topColor="#e6e600"
+                  botColor="#ff99c2"
                   qty={widgetdata_fcstAmount.FCST8W_QTY * 1}
                   amount={widgetdata_fcstAmount.FCST8W_AMOUNT}
                   percentage={20}
@@ -533,9 +565,9 @@ const INSPECT_REPORT = () => {
               </div>
             </div>
           </div>
-          <div className='monthlyweeklygraph'>
-            <div className='dailygraph'>
-              <span className='subsection'>
+          <div className="monthlyweeklygraph">
+            <div className="dailygraph">
+              <span className="subsection">
                 SamSung ForeCast (So sánh FCST 2 tuần liền kề)
               </span>
               <ChartFCSTSamSung />
@@ -543,7 +575,7 @@ const INSPECT_REPORT = () => {
           </div>
         </div>
       </div>
-      <div className='poreport'></div>
+      <div className="poreport"></div>
     </div>
   );
 };

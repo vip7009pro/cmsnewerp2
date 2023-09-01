@@ -1,201 +1,201 @@
-.quickplan { 
-    padding: 1px;
-    .planwindow {
+.quickplan {
+  padding: 1px;
+  .planwindow {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    justify-self: center;
+    align-self: center;
+    box-sizing: border-box;
+
+    .dinhmucdiv {
+      display: flex;
+      flex-direction: column;
+      padding: 5px;
+      background-image: linear-gradient(0deg, #afd3d1, #86cfff);
+      box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
+      -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
+      align-self: center;
+      .datadinhmuc {
         display: flex;
-        flex-direction: column;       
-        width: 100%;        
-        justify-self: center;
-        align-self: center;
+        flex: 1;
+        gap: 2px;
+        border-radius: 5px;
+        height: fit-content;
         box-sizing: border-box;
-       
-        .dinhmucdiv {
+        width: 100%;
+        height: 100%;
+        align-self: center;
+        justify-content: space-around;
+        .forminputcolumn {
+          display: flex;
+          flex-direction: column;
+          align-items: flex-end;
+          justify-content: center;
+        }
+        align-items: center;
+      }
+    }
+    .content {
+      display: flex;
+      width: 100%;
+      height: 100%;
+      flex: 15;
+      align-self: center;
+      .ycsxlist {
+        display: flex;
+        flex-direction: column;
+        flex: 2;
+        height: 100%;
+        padding: 10px;
+        .tracuuYCSX {
+          .tracuuYCSXform {
             display: flex;
             flex-direction: column;
+            align-items: center;
+            flex: 1;
+            font-size: 12px;
+            background-image: linear-gradient(0deg, #afd3d1, #d4f167);
+            -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+            box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+            border-radius: 8px;
             padding: 5px;
-            background-image: linear-gradient(0deg, #afd3d1, #86cfff);
-            box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
-            -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
-            align-self: center;
-            .datadinhmuc {
-                display: flex;
-                flex: 1; 
-                gap: 2px;
-                border-radius: 5px;                
-                height: fit-content;            
-                box-sizing: border-box;
-                width: 100%;
-                height: 100%;
-                align-self: center;
-                justify-content: space-around;
-                .forminputcolumn {
-                    display: flex;
-                    flex-direction: column;
-                    align-items: flex-end;
-                    justify-content: center;
-                }
-                align-items: center;
+            &:hover {
+              background-image: linear-gradient(0deg, #afd3d1, #486ac9);
             }
-        }
-        .content {
-            display: flex;
-            width: 100%;
-            height: 100%;
-            flex: 15;
-            align-self: center;
-            .ycsxlist {
+            span {
+              padding: 10px;
+              font-size: 12px;
+              margin: auto;
+            }
+            .forminput {
+              display: flex;
+              gap: 5px;
+              flex-wrap: wrap;
+              align-items: center;
+              justify-content: space-around;
+              padding: 2px;
+              width: 100%;
+              .forminputcolumn {
                 display: flex;
                 flex-direction: column;
-                flex: 2;
-                height: 100%;
-                padding: 10px;
-                .tracuuYCSX {
-                    .tracuuYCSXform {
-                        display: flex;
-                        flex-direction: column;
-                        align-items: center;
-                        flex: 1;
-                        font-size: 12px;
-                        background-image: linear-gradient(0deg, #afd3d1, #d4f167);
-                        -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
-                        box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
-                        border-radius: 8px;
-                        padding: 5px;
-                        &:hover {
-                            background-image: linear-gradient(0deg, #afd3d1, #486ac9);
-                        }
-                        span {
-                            padding: 10px;
-                            font-size: 12px;
-                            margin: auto;
-                        }
-                        .forminput {
-                            display: flex;
-                            gap: 5px;
-                            flex-wrap: wrap;
-                            align-items: center;
-                            justify-content: space-around;
-                            padding: 2px;
-                            width: 100%;
-                            .forminputcolumn {
-                                display: flex;
-                                flex-direction: column;
-                                gap: 10px;
-                                align-items: flex-end;
-                                justify-content: center;
-                                flex-wrap: wrap;
-                                input {
-                                    width: 150px;
-                                    height: 20px;
-                                    outline: none;
-                                    border-radius: 5px;
-                                    border: none;
-                                    padding: 5px;
-                                    margin-left: 5px;
-                                    background-image: linear-gradient(0deg, #ececec, #9dee95);
-                                }
-                                select {
-                                    width: 160px;
-                                    height: 30px;
-                                    outline: none;
-                                    border-radius: 5px;
-                                    border: none;
-                                    padding: 5px;
-                                    margin-left: 5px;
-                                    background-image: linear-gradient(0deg, #ececec, #9dee95);
-                                }
-                            }
-                        }
-                        .formbutton {
-                            display: flex;
-                            align-items: center;
-                            justify-content: space-around;
-                            gap: 20px;
-                        }
-                        .formsummary {
-                            display: flex;
-                            flex-direction: row;
-                            background-image: linear-gradient(0deg, #ececec, #99f86d);
-                            -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
-                            box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
-                            gap: 20px;
-                            border-radius: 10px;
-                            margin-top: 5px;
-                            .summarygroup {
-                                display: flex;
-                                flex-direction: column;
-                                align-items: flex-start;
-                                justify-items: flex-start;
-                                gap: 10px;
-                                .summaryvalue {
-                                    display: flex;
-                                    font-size: 16px;
-                                    justify-self: flex-end;
-                                    align-self: flex-end;
-                                    padding: 5px;
-                                    color: rgb(83, 36, 255);
-                                }
-                            }
-                        }
-                    }
-                    .tracuuYCSXTable {
-                        display: flex;
-                        margin-top: 10px;
-                        height: 59vh;
-                        background-image: linear-gradient(0deg, #afd3d1, #f7f7f7);
-                        -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
-                        box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
-                        border-radius: 8px;
-                    }
-                    .printycsxpage {
-                        position: fixed;
-                        display: flex;
-                        flex-direction: column;
-                        justify-content: space-between;
-                        z-index: 3;
-                        width: fit-content;
-                        height: 200mm;
-                        align-items: center;
-                        padding: 10px;
-                        gap: 20px;
-                        border-radius: 10px;
-                        -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
-                        box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
-                        //background-color: rgba(233, 222, 222, 0.664);
-                        background-color: white;
-                        top: 50px;
-                        left: 30%;
-                        .buttongroup {
-                            display: flex;
-                            flex-direction: row;
-                            align-items: flex-start;
-                            gap: 5px;
-                        }
-                        .ycsxrender {
-                            overflow: scroll;
-                            border: 1px solid black;
-                            background-color: white;
-                        }
-                    }
-                }
-            }
-            .chithidiv {
-                display: flex;
-                flex-direction: column;
-                flex: 4;
-                padding: 10px;
                 gap: 10px;
-                margin-bottom: 150px;
-                height: 90vh;
-                .planlist {
-                    display: flex;
-                    height: 100%;
-                    background-image: linear-gradient(0deg, #afd3d1, #86cfff);
-                    flex: 1;
-                    border-radius: 5px;
-                    box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
-                    -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
+                align-items: flex-end;
+                justify-content: center;
+                flex-wrap: wrap;
+                input {
+                  width: 150px;
+                  height: 20px;
+                  outline: none;
+                  border-radius: 5px;
+                  border: none;
+                  padding: 5px;
+                  margin-left: 5px;
+                  background-image: linear-gradient(0deg, #ececec, #9dee95);
                 }
+                select {
+                  width: 160px;
+                  height: 30px;
+                  outline: none;
+                  border-radius: 5px;
+                  border: none;
+                  padding: 5px;
+                  margin-left: 5px;
+                  background-image: linear-gradient(0deg, #ececec, #9dee95);
+                }
+              }
             }
+            .formbutton {
+              display: flex;
+              align-items: center;
+              justify-content: space-around;
+              gap: 20px;
+            }
+            .formsummary {
+              display: flex;
+              flex-direction: row;
+              background-image: linear-gradient(0deg, #ececec, #99f86d);
+              -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+              box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+              gap: 20px;
+              border-radius: 10px;
+              margin-top: 5px;
+              .summarygroup {
+                display: flex;
+                flex-direction: column;
+                align-items: flex-start;
+                justify-items: flex-start;
+                gap: 10px;
+                .summaryvalue {
+                  display: flex;
+                  font-size: 16px;
+                  justify-self: flex-end;
+                  align-self: flex-end;
+                  padding: 5px;
+                  color: rgb(83, 36, 255);
+                }
+              }
+            }
+          }
+          .tracuuYCSXTable {
+            display: flex;
+            margin-top: 10px;
+            height: 59vh;
+            background-image: linear-gradient(0deg, #afd3d1, #f7f7f7);
+            -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+            box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+            border-radius: 8px;
+          }
+          .printycsxpage {
+            position: fixed;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            z-index: 3;
+            width: fit-content;
+            height: 200mm;
+            align-items: center;
+            padding: 10px;
+            gap: 20px;
+            border-radius: 10px;
+            -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+            box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+            //background-color: rgba(233, 222, 222, 0.664);
+            background-color: white;
+            top: 50px;
+            left: 30%;
+            .buttongroup {
+              display: flex;
+              flex-direction: row;
+              align-items: flex-start;
+              gap: 5px;
+            }
+            .ycsxrender {
+              overflow: scroll;
+              border: 1px solid black;
+              background-color: white;
+            }
+          }
         }
+      }
+      .chithidiv {
+        display: flex;
+        flex-direction: column;
+        flex: 4;
+        padding: 10px;
+        gap: 10px;
+        margin-bottom: 150px;
+        height: 90vh;
+        .planlist {
+          display: flex;
+          height: 100%;
+          background-image: linear-gradient(0deg, #afd3d1, #86cfff);
+          flex: 1;
+          border-radius: 5px;
+          box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
+          -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
+        }
+      }
     }
+  }
 }

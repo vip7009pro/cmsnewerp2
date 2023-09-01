@@ -30,20 +30,20 @@ interface ELE_ARRAY {
 }
 function Home() {
   const company: string = useSelector(
-    (state: RootState) => state.totalSlice.company
+    (state: RootState) => state.totalSlice.company,
   );
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const tabs: ELE_ARRAY[] = useSelector(
-    (state: RootState) => state.totalSlice.tabs
+    (state: RootState) => state.totalSlice.tabs,
   );
   const tabIndex: number = useSelector(
-    (state: RootState) => state.totalSlice.tabIndex
+    (state: RootState) => state.totalSlice.tabIndex,
   );
   const tabModeSwap: boolean = useSelector(
-    (state: RootState) => state.totalSlice.tabModeSwap
+    (state: RootState) => state.totalSlice.tabModeSwap,
   );
   const sidebarStatus: boolean | undefined = useSelector(
-    (state: RootState) => state.totalSlice.sidebarmenu
+    (state: RootState) => state.totalSlice.sidebarmenu,
   );
   const dispatch = useDispatch();
   const springs = useSpring({
@@ -113,7 +113,7 @@ function Home() {
                   Swal.fire(
                     "Notification",
                     "Press Ctrl + F5 to update the Web",
-                    "info"
+                    "info",
                   );
                 }
               });
@@ -137,18 +137,18 @@ function Home() {
   }, []);
   //console.log(tabs)
   return (
-    <div className='home'>
-      <div className='navdiv'>
+    <div className="home">
+      <div className="navdiv">
         <Navbar />
         {/* <PrimarySearchAppBar/>  */}
       </div>
-      <div className='homeContainer'>
-        <div className='sidebardiv'>
+      <div className="homeContainer">
+        <div className="sidebardiv">
           <Sidebar />
         </div>
-        <div className='outletdiv'>
+        <div className="outletdiv">
           <animated.div
-            className='animated_div'
+            className="animated_div"
             style={{
               width: "100%",
               height: "100%",
@@ -159,20 +159,20 @@ function Home() {
             {tabModeSwap &&
               tabs.filter(
                 (ele: ELE_ARRAY, index: number) =>
-                  ele.ELE_CODE !== "-1" && ele.ELE_CODE !== "NS0"
+                  ele.ELE_CODE !== "-1" && ele.ELE_CODE !== "NS0",
               ).length > 0 && (
                 <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
                   <Tabs
                     value={tabIndex}
                     onChange={(
                       event: React.SyntheticEvent,
-                      newValue: number
+                      newValue: number,
                     ) => {
                       //console.log(newValue);
                       dispatch(settabIndex(newValue));
                     }}
-                    variant='scrollable'
-                    aria-label='ERP TABS'
+                    variant="scrollable"
+                    aria-label="ERP TABS"
                     scrollButtons
                     allowScrollButtonsMobile
                     style={{
@@ -220,7 +220,7 @@ function Home() {
                   return (
                     <div
                       key={index}
-                      className='component_element'
+                      className="component_element"
                       style={{
                         visibility: index === tabIndex ? "visible" : "hidden",
                         width: sidebarStatus ? "85%" : "100%",

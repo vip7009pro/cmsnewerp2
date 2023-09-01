@@ -4,28 +4,31 @@ import { ReactElement } from "react";
 import { io } from "socket.io-client";
 import Swal from "sweetalert2";
 import { getUserData, logout as LGOT } from "../../api/Api";
-import { ELE_ARRAY, GlobalInterface, QLSXPLANDATA, UserData } from "../../api/GlobalInterface";
+import {
+  ELE_ARRAY,
+  GlobalInterface,
+  QLSXPLANDATA,
+  UserData,
+} from "../../api/GlobalInterface";
 const startCPN: string = "CMS";
 const socket = io(
   startCPN === "CMS"
     ? "http://14.160.33.94:3005"
     : startCPN === "PVN"
     ? "http://222.252.1.63:3005"
-    : ""
+    : "",
 );
 //const socket =  io('http://localhost:3005')
 socket.on("connect", () => {
   console.log(socket.id); // x8WIv7-mJelg7on_ALbx
 });
 socket.on("notification", (data) => {
-  if (data.command === "logout") {   
+  if (data.command === "logout") {
     console.log(getUserData());
     if (getUserData()?.EMPL_NO === data.EMPL_NO) {
       console.log("logout nao");
-      LGOT();     
-    }
-    else if(data.EMPL_NO==='ALL')
-    {
+      LGOT();
+    } else if (data.EMPL_NO === "ALL") {
       console.log("logout nao");
       LGOT();
     }
@@ -53,7 +56,7 @@ if (server_ip_local !== undefined) {
       ? "http://14.160.33.94:5011"
       : startCPN === "PVN"
       ? "http://222.252.1.63:3007"
-      : ""
+      : "",
   );
 }
 const initialState: GlobalInterface = {
@@ -175,13 +178,13 @@ export const glbSlice = createSlice({
       let temp_plan_id_array: string[] = state.multiple_chithi_array.map(
         (element: QLSXPLANDATA, index: number) => {
           return element.PLAN_ID;
-        }
+        },
       );
       let temp_plan_step_array: QLSXPLANDATA[] =
         state.multiple_chithi_array.filter(
           (element: QLSXPLANDATA, index: number) => {
             return element.STEP === 0;
-          }
+          },
         );
       if (temp_plan_id_array.indexOf(action.payload.PLAN_ID) !== -1) {
         Swal.fire("Thông báo", "PLAN ID đã được thêm rồi", "error");
@@ -190,7 +193,7 @@ export const glbSlice = createSlice({
           Swal.fire(
             "Thông báo",
             "Chỉ thêm 1 chỉ thị Bước 0 vào combo",
-            "error"
+            "error",
           );
         } else {
           if (state.multiple_chithi_array.length === 0) {
@@ -215,7 +218,7 @@ export const glbSlice = createSlice({
               Swal.fire(
                 "Thông báo",
                 "Chỉ thêm các chỉ thị của cùng 1 ycsx vào combo",
-                "error"
+                "error",
               );
             }
           }
@@ -244,14 +247,14 @@ export const glbSlice = createSlice({
                 MENU_CODE: ele.ELE_CODE,
                 MENU_NAME: ele.ELE_NAME,
               };
-            })
-          )
+            }),
+          ),
         );
       } else {
         Swal.fire(
           "Thông báo",
           "Chỉ mở cùng lúc tối đa 8 tab để đảm bảo trải nghiệm sử dụng, hãy tắt bớt tab không sử dụng",
-          "warning"
+          "warning",
         );
       }
     },
@@ -265,8 +268,8 @@ export const glbSlice = createSlice({
               MENU_CODE: ele.ELE_CODE,
               MENU_NAME: ele.ELE_NAME,
             };
-          })
-        )
+          }),
+        ),
       );
     },
     closeTab: (state, action: PayloadAction<number>) => {
@@ -293,8 +296,8 @@ export const glbSlice = createSlice({
                 MENU_CODE: ele.ELE_CODE,
                 MENU_NAME: ele.ELE_NAME,
               };
-            })
-          )
+            }),
+          ),
         );
         //let i=state.tabIndex;
         while (

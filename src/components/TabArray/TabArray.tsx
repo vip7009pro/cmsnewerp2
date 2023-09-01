@@ -1,12 +1,10 @@
-import React from 'react'
-import './TabArray.scss'
+import React from "react";
+import "./TabArray.scss";
 interface TabArrayData {
-    onClick?:  (ev: any) => void;
+  onClick?: (ev: any) => void;
 }
 const TabArray = () => {
-  return (
-    <div>TabArray</div>
-  )
-}
+  return <div>TabArray</div>;
+};
 
-export default TabArray
+export default TabArray;

@@ -28,7 +28,12 @@ import "./INSPECTION.scss";
 import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
 import { MdOutlinePivotTableChart } from "react-icons/md";
 import PivotTable from "../../../components/PivotChart/PivotChart";
-import { INSPECT_INOUT_YCSX, INSPECT_INPUT_DATA, INSPECT_NG_DATA, INSPECT_OUTPUT_DATA } from "../../../api/GlobalInterface";
+import {
+  INSPECT_INOUT_YCSX,
+  INSPECT_INPUT_DATA,
+  INSPECT_NG_DATA,
+  INSPECT_OUTPUT_DATA,
+} from "../../../api/GlobalInterface";
 
 const INSPECTION = () => {
   const [showhidePivotTable, setShowHidePivotTable] = useState(false);
@@ -58,7 +63,7 @@ const INSPECTION = () => {
   const [alltime, setAllTime] = useState(false);
   const [id, setID] = useState("");
   const [inspectiondatatable, setInspectionDataTable] = useState<Array<any>>(
-    []
+    [],
   );
   const [sumaryINSPECT, setSummaryInspect] = useState("");
   const column_inspect_input = [
@@ -354,18 +359,18 @@ const INSPECTION = () => {
     return (
       <GridToolbarContainer>
         <IconButton
-          className='buttonIcon'
+          className="buttonIcon"
           onClick={() => {
             SaveExcel(inspectiondatatable, "Inspection Data Table");
           }}
         >
-          <AiFillFileExcel color='green' size={15} />
+          <AiFillFileExcel color="green" size={15} />
           SAVE
         </IconButton>
         <span
           style={{
             fontWeight: "bold",
-            fontSize: '1rem',
+            fontSize: "1rem",
             paddingLeft: 20,
             color: "blue",
           }}
@@ -374,12 +379,12 @@ const INSPECTION = () => {
         </span>
         <GridToolbarQuickFilter />
         <IconButton
-          className='buttonIcon'
+          className="buttonIcon"
           onClick={() => {
             setShowHidePivotTable(!showhidePivotTable);
           }}
         >
-          <MdOutlinePivotTableChart color='#ff33bb' size={15} />
+          <MdOutlinePivotTableChart color="#ff33bb" size={15} />
           Pivot
         </IconButton>
       </GridToolbarContainer>
@@ -417,17 +422,17 @@ const INSPECTION = () => {
                   .format("YYYY-MM-DD HH:mm:ss"),
                 id: index,
               };
-            }
+            },
           );
           setSummaryInspect(
-            "Tổng Nhập: " + summaryInput.toLocaleString("en-US") + "EA"
+            "Tổng Nhập: " + summaryInput.toLocaleString("en-US") + "EA",
           );
           setInspectionDataTable(loadeddata);
           setSelectedDataSource(
             new PivotGridDataSource({
               fields: fieldsinputkiem,
               store: loadeddata,
-            })
+            }),
           );
 
           setReadyRender(true);
@@ -435,7 +440,7 @@ const INSPECTION = () => {
           Swal.fire(
             "Thông báo",
             "Đã load " + response.data.data.length + " dòng",
-            "success"
+            "success",
           );
         } else {
           Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
@@ -479,24 +484,24 @@ const INSPECTION = () => {
                 NGAY_LAM_VIEC: element.NGAY_LAM_VIEC.slice(0, 10),
                 id: index,
               };
-            }
+            },
           );
           setSummaryInspect(
-            "Tổng Xuất: " + summaryOutput.toLocaleString("en-US") + "EA"
+            "Tổng Xuất: " + summaryOutput.toLocaleString("en-US") + "EA",
           );
           setInspectionDataTable(loadeddata);
           setSelectedDataSource(
             new PivotGridDataSource({
               fields: fieldsoutputkiem,
               store: loadeddata,
-            })
+            }),
           );
           setReadyRender(true);
           setisLoading(false);
           Swal.fire(
             "Thông báo",
             "Đã load " + response.data.data.length + " dòng",
-            "success"
+            "success",
           );
         } else {
           Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
@@ -531,31 +536,31 @@ const INSPECTION = () => {
               return {
                 ...element,
                 INSPECT_DATETIME: moment(element.INSPECT_DATETIME).format(
-                  "YYYY-MM-DD HH:mm:ss"
+                  "YYYY-MM-DD HH:mm:ss",
                 ),
                 INSPECT_START_TIME: moment(element.INSPECT_START_TIME).format(
-                  "YYYY-MM-DD HH:mm:ss"
+                  "YYYY-MM-DD HH:mm:ss",
                 ),
                 INSPECT_FINISH_TIME: moment(element.INSPECT_FINISH_TIME).format(
-                  "YYYY-MM-DD HH:mm:ss"
+                  "YYYY-MM-DD HH:mm:ss",
                 ),
                 id: index,
               };
-            }
+            },
           );
           setInspectionDataTable(loadeddata);
           setSelectedDataSource(
             new PivotGridDataSource({
               fields: fieldsnhatkykiem,
               store: loadeddata,
-            })
+            }),
           );
           setReadyRender(true);
           setisLoading(false);
           Swal.fire(
             "Thông báo",
             "Đã load " + response.data.data.length + " dòng",
-            "success"
+            "success",
           );
         } else {
           Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
@@ -591,21 +596,21 @@ const INSPECTION = () => {
                 ...element,
                 id: index,
               };
-            }
+            },
           );
           setInspectionDataTable(loadeddata);
           setSelectedDataSource(
             new PivotGridDataSource({
               fields: fieldsinoutputkiem,
               store: loadeddata,
-            })
+            }),
           );
           setReadyRender(true);
           setisLoading(false);
           Swal.fire(
             "Thông báo",
             "Đã load " + response.data.data.length + " dòng",
-            "success"
+            "success",
           );
         } else {
           Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
@@ -2389,40 +2394,40 @@ const INSPECTION = () => {
       new PivotGridDataSource({
         fields: fieldsinputkiem,
         store: inspectiondatatable,
-      })
+      }),
     );
   useEffect(() => {
     //setColumnDefinition(column_inspect_output);
   }, []);
   return (
-    <div className='inspection'>
-      <div className='tracuuDataInspection'>
-        <div className='tracuuDataInspectionform'>
-          <div className='forminput'>
-            <div className='forminputcolumn'>
+    <div className="inspection">
+      <div className="tracuuDataInspection">
+        <div className="tracuuDataInspectionform">
+          <div className="forminput">
+            <div className="forminputcolumn">
               <label>
                 <b>Từ ngày:</b>
                 <input
-                  type='date'
+                  type="date"
                   value={fromdate.slice(0, 10)}
-                  onChange={(e) => setFromDate(e.target.value)} 
+                  onChange={(e) => setFromDate(e.target.value)}
                 ></input>
               </label>
               <label>
                 <b>Tới ngày:</b>{" "}
                 <input
-                  type='date'
+                  type="date"
                   value={todate.slice(0, 10)}
                   onChange={(e) => setToDate(e.target.value)}
                 ></input>
               </label>
             </div>
-            <div className='forminputcolumn'>
+            <div className="forminputcolumn">
               <label>
                 <b>Code KD:</b>{" "}
                 <input
-                  type='text'
-                  placeholder='GH63-xxxxxx'
+                  type="text"
+                  placeholder="GH63-xxxxxx"
                   value={codeKD}
                   onChange={(e) => setCodeKD(e.target.value)}
                 ></input>
@@ -2430,19 +2435,19 @@ const INSPECTION = () => {
               <label>
                 <b>Code ERP:</b>{" "}
                 <input
-                  type='text'
-                  placeholder='7C123xxx'
+                  type="text"
+                  placeholder="7C123xxx"
                   value={codeCMS}
                   onChange={(e) => setCodeCMS(e.target.value)}
                 ></input>
               </label>
             </div>
-            <div className='forminputcolumn'>
+            <div className="forminputcolumn">
               <label>
                 <b>Tên nhân viên:</b>{" "}
                 <input
-                  type='text'
-                  placeholder='Trang'
+                  type="text"
+                  placeholder="Trang"
                   value={empl_name}
                   onChange={(e) => setEmpl_Name(e.target.value)}
                 ></input>
@@ -2450,19 +2455,19 @@ const INSPECTION = () => {
               <label>
                 <b>Khách:</b>{" "}
                 <input
-                  type='text'
-                  placeholder='SEVT'
+                  type="text"
+                  placeholder="SEVT"
                   value={cust_name}
                   onChange={(e) => setCustName(e.target.value)}
                 ></input>
               </label>
             </div>
-            <div className='forminputcolumn'>
+            <div className="forminputcolumn">
               <label>
                 <b>Loại sản phẩm:</b>{" "}
                 <input
-                  type='text'
-                  placeholder='TSP'
+                  type="text"
+                  placeholder="TSP"
                   value={prod_type}
                   onChange={(e) => setProdType(e.target.value)}
                 ></input>
@@ -2470,19 +2475,19 @@ const INSPECTION = () => {
               <label>
                 <b>Số YCSX:</b>{" "}
                 <input
-                  type='text'
-                  placeholder='1H23456'
+                  type="text"
+                  placeholder="1H23456"
                   value={prodrequestno}
                   onChange={(e) => setProdRequestNo(e.target.value)}
                 ></input>
               </label>
             </div>
-            <div className='forminputcolumn'>
+            <div className="forminputcolumn">
               <label>
                 <b>LOT SX:</b>{" "}
                 <input
-                  type='text'
-                  placeholder='ED2H3076'
+                  type="text"
+                  placeholder="ED2H3076"
                   value={process_lot_no}
                   onChange={(e) => setProcess_Lot_No(e.target.value)}
                 ></input>
@@ -2490,26 +2495,26 @@ const INSPECTION = () => {
               <label>
                 <b>ID:</b>{" "}
                 <input
-                  type='text'
-                  placeholder='12345'
+                  type="text"
+                  placeholder="12345"
                   value={id}
                   onChange={(e) => setID(e.target.value)}
                 ></input>
               </label>
             </div>
           </div>
-          <div className='formbutton'>
+          <div className="formbutton">
             <label>
               <b>All Time:</b>
               <input
-                type='checkbox'
-                name='alltimecheckbox'
+                type="checkbox"
+                name="alltimecheckbox"
                 defaultChecked={alltime}
                 onChange={() => setAllTime(!alltime)}
               ></input>
             </label>
             <button
-              className='tranhapkiembutton'
+              className="tranhapkiembutton"
               onClick={() => {
                 setisLoading(true);
                 setReadyRender(false);
@@ -2520,7 +2525,7 @@ const INSPECTION = () => {
               Nhập Kiểm
             </button>
             <button
-              className='traxuatkiembutton'
+              className="traxuatkiembutton"
               onClick={() => {
                 setisLoading(true);
                 setReadyRender(false);
@@ -2531,18 +2536,18 @@ const INSPECTION = () => {
               Xuất Kiểm
             </button>
             <button
-              className='tranhapxuatkiembutton'
+              className="tranhapxuatkiembutton"
               onClick={() => {
                 setisLoading(true);
                 setReadyRender(false);
-                setColumnDefinition(column_inspect_inoutycsx); 
+                setColumnDefinition(column_inspect_inoutycsx);
                 handletraInspectionInOut();
               }}
             >
               Nhập-Xuất
             </button>
             <button
-              className='tranhatky'
+              className="tranhatky"
               onClick={() => {
                 setisLoading(true);
                 setReadyRender(false);
@@ -2554,10 +2559,10 @@ const INSPECTION = () => {
             </button>
           </div>
         </div>
-        <div className='tracuuYCSXTable'>
+        <div className="tracuuYCSXTable">
           {readyRender && (
             <DataGrid
-              sx={{ fontSize: '0.7rem', flex: 1 }}
+              sx={{ fontSize: "0.7rem", flex: 1 }}
               components={{
                 Toolbar: CustomToolbarPOTable,
                 LoadingOverlay: LinearProgress,
@@ -2570,24 +2575,24 @@ const INSPECTION = () => {
               rowsPerPageOptions={[
                 5, 10, 50, 100, 500, 1000, 5000, 10000, 500000,
               ]}
-              editMode='row'
+              editMode="row"
             />
           )}
         </div>
         {showhidePivotTable && (
-          <div className='pivottable1'>
+          <div className="pivottable1">
             <IconButton
-              className='buttonIcon'
+              className="buttonIcon"
               onClick={() => {
                 setShowHidePivotTable(false);
               }}
             >
-              <AiFillCloseCircle color='blue' size={25} />
+              <AiFillCloseCircle color="blue" size={25} />
               Close
             </IconButton>
             <PivotTable
               datasource={selectedDataSource}
-              tableID='inspectiontablepivot'
+              tableID="inspectiontablepivot"
             />
           </div>
         )}

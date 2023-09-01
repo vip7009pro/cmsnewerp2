@@ -42,10 +42,12 @@ import { ResponsiveContainer } from "recharts";
 import QRCODE from "../design_amazon/design_components/QRCODE";
 import BARCODE from "../design_amazon/design_components/BARCODE";
 import DATAMATRIX from "../design_amazon/design_components/DATAMATRIX";
-import { BARCODE_DATA, CodeListData, CustomerListData, MATERIAL_TABLE_DATA } from "../../../api/GlobalInterface";
-
-
-
+import {
+  BARCODE_DATA,
+  CodeListData,
+  CustomerListData,
+  MATERIAL_TABLE_DATA,
+} from "../../../api/GlobalInterface";
 
 const PRODUCT_BARCODE_MANAGER = () => {
   const [showhidePivotTable, setShowHidePivotTable] = useState(false);
@@ -53,7 +55,7 @@ const PRODUCT_BARCODE_MANAGER = () => {
     Array<MATERIAL_TABLE_DATA>
   >([]);
   const [barcodedatatable, setBarCodeDataTable] = useState<Array<BARCODE_DATA>>(
-    []
+    [],
   );
   const [custinfodatatable, setBarCodeInfoDataTable] = useState<Array<any>>([]);
   const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
@@ -96,14 +98,14 @@ const PRODUCT_BARCODE_MANAGER = () => {
                 ...element,
                 id: index,
               };
-            }
+            },
           );
           //console.log(loadeddata);
           setBarCodeDataTable(loadeddata);
           Swal.fire(
             "Thông báo",
             "Đã load: " + response.data.data.length + " dòng",
-            "success"
+            "success",
           );
         } else {
           setBarCodeDataTable([]);
@@ -168,7 +170,7 @@ const PRODUCT_BARCODE_MANAGER = () => {
       });
   };
   const handleSearchCodeKeyDown = (
-    e: React.KeyboardEvent<HTMLInputElement>
+    e: React.KeyboardEvent<HTMLInputElement>,
   ) => {
     if (e.key === "Enter") {
       load_barcode_table();
@@ -176,7 +178,7 @@ const PRODUCT_BARCODE_MANAGER = () => {
   };
   const BarcodeDataTable = React.useMemo(
     () => (
-      <div className='datatb'>
+      <div className="datatb">
         <ResponsiveContainer>
           <DataGrid
             autoNavigateToFocusedRow={true}
@@ -187,8 +189,8 @@ const PRODUCT_BARCODE_MANAGER = () => {
             columnResizingMode={"widget"}
             showColumnLines={true}
             dataSource={barcodedatatable}
-            columnWidth='auto'
-            keyExpr='id'
+            columnWidth="auto"
+            keyExpr="id"
             height={"75vh"}
             showBorders={true}
             onRowPrepared={(e) => {
@@ -212,43 +214,43 @@ const PRODUCT_BARCODE_MANAGER = () => {
               useNative={true}
               scrollByContent={true}
               scrollByThumb={true}
-              showScrollbar='onHover'
-              mode='virtual'
+              showScrollbar="onHover"
+              mode="virtual"
             />
-            <Selection mode='single' selectAllMode='allPages' />
+            <Selection mode="single" selectAllMode="allPages" />
             <Editing
               allowUpdating={false}
               allowAdding={true}
               allowDeleting={false}
-              mode='batch'
+              mode="batch"
               confirmDelete={true}
               onChangesChange={(e) => {}}
             />
             <Export enabled={true} />
             <Toolbar disabled={false}>
-              <Item location='before'>
+              <Item location="before">
                 <IconButton
-                  className='buttonIcon'
+                  className="buttonIcon"
                   onClick={() => {
                     SaveExcel(datasxtable, "MaterialStatus");
                   }}
                 >
-                  <AiFillFileExcel color='green' size={15} />
+                  <AiFillFileExcel color="green" size={15} />
                   SAVE
                 </IconButton>
                 <IconButton
-                  className='buttonIcon'
+                  className="buttonIcon"
                   onClick={() => {
                     setShowHidePivotTable(!showhidePivotTable);
                   }}
                 >
-                  <MdOutlinePivotTableChart color='#ff33bb' size={15} />
+                  <MdOutlinePivotTableChart color="#ff33bb" size={15} />
                   Pivot
                 </IconButton>
               </Item>
-              <Item name='searchPanel' />
-              <Item name='exportButton' />
-              <Item name='columnChooser' />
+              <Item name="searchPanel" />
+              <Item name="exportButton" />
+              <Item name="columnChooser" />
             </Toolbar>
             <FilterRow visible={true} />
             <SearchPanel visible={true} />
@@ -259,39 +261,39 @@ const PRODUCT_BARCODE_MANAGER = () => {
               allowedPageSizes={[5, 10, 15, 20, 100, 1000, 10000, "all"]}
               showNavigationButtons={true}
               showInfo={true}
-              infoText='Page #{0}. Total: {1} ({2} items)'
-              displayMode='compact'
+              infoText="Page #{0}. Total: {1} ({2} items)"
+              displayMode="compact"
             />
-            <Column dataField='G_CODE' caption='G_CODE' width={100}></Column>
-            <Column dataField='G_NAME' caption='G_NAME' width={200}></Column>
+            <Column dataField="G_CODE" caption="G_CODE" width={100}></Column>
+            <Column dataField="G_NAME" caption="G_NAME" width={200}></Column>
             <Column
-              dataField='BARCODE_STT'
-              caption='BARCODE_STT'
+              dataField="BARCODE_STT"
+              caption="BARCODE_STT"
               width={100}
             ></Column>
             <Column
-              dataField='BARCODE_TYPE'
-              caption='BARCODE_TYPE'
+              dataField="BARCODE_TYPE"
+              caption="BARCODE_TYPE"
               width={100}
             ></Column>
             <Column
-              dataField='BARCODE_RND'
-              caption='BARCODE_RND'
+              dataField="BARCODE_RND"
+              caption="BARCODE_RND"
               width={100}
             ></Column>
             <Column
-              dataField='BARCODE_INSP'
-              caption='BARCODE_INSP'
+              dataField="BARCODE_INSP"
+              caption="BARCODE_INSP"
               width={100}
             ></Column>
             <Column
-              dataField='BARCODE_RELI'
-              caption='BARCODE_RELI'
+              dataField="BARCODE_RELI"
+              caption="BARCODE_RELI"
               width={100}
             ></Column>
             <Column
-              dataField='STATUS'
-              caption='STATUS'
+              dataField="STATUS"
+              caption="STATUS"
               width={100}
               cellRender={(e: any) => {
                 if (e.data.STATUS === "OK") {
@@ -324,8 +326,8 @@ const PRODUCT_BARCODE_MANAGER = () => {
               }}
             ></Column>
             <Column
-              dataField='BARCODE_RND'
-              caption='CODE VISUALIZE'
+              dataField="BARCODE_RND"
+              caption="CODE VISUALIZE"
               width={100}
               cellRender={(e: any) => {
                 if (e.data.BARCODE_TYPE === "QR") {
@@ -432,9 +434,9 @@ const PRODUCT_BARCODE_MANAGER = () => {
             ></Column>
             <Summary>
               <TotalItem
-                alignment='right'
-                column='id'
-                summaryType='count'
+                alignment="right"
+                column="id"
+                summaryType="count"
                 valueFormat={"decimal"}
               />
             </Summary>
@@ -442,7 +444,7 @@ const PRODUCT_BARCODE_MANAGER = () => {
         </ResponsiveContainer>
       </div>
     ),
-    [barcodedatatable]
+    [barcodedatatable],
   );
   const [customerList, setCustomerList] = useState<CustomerListData[]>([]);
   const getcustomerlist = () => {
@@ -1120,25 +1122,25 @@ const PRODUCT_BARCODE_MANAGER = () => {
     //setColumnDefinition(column_inspect_output);
   }, []);
   return (
-    <div className='qlvl'>
-      <div className='tracuuDataInspection'>
-        <div className='tracuuDataInspectionform'>
-          <div className='forminput'>
-            <div className='forminputcolumn'>
+    <div className="qlvl">
+      <div className="tracuuDataInspection">
+        <div className="tracuuDataInspectionform">
+          <div className="forminput">
+            <div className="forminputcolumn">
               <label>
                 <Autocomplete
                   sx={{ fontSize: "0.6rem" }}
                   ListboxProps={{ style: { fontSize: "0.7rem" } }}
-                  size='small'
+                  size="small"
                   disablePortal
                   options={codeList}
-                  className='autocomplete1'
+                  className="autocomplete1"
                   filterOptions={filterOptions1}
                   getOptionLabel={(option: CodeListData | any) =>
                     `${option.G_CODE}: ${option.G_NAME}`
                   }
                   renderInput={(params) => (
-                    <TextField {...params} label='Select code' />
+                    <TextField {...params} label="Select code" />
                   )}
                   onChange={(event: any, newValue: CodeListData | any) => {
                     console.log(newValue);
@@ -1148,7 +1150,7 @@ const PRODUCT_BARCODE_MANAGER = () => {
                   value={
                     codeList.filter(
                       (e: CodeListData, index: number) =>
-                        e.G_CODE === selectedRows.G_CODE
+                        e.G_CODE === selectedRows.G_CODE,
                     )[0]
                   }
                   isOptionEqualToValue={(option: any, value: any) =>
@@ -1157,12 +1159,12 @@ const PRODUCT_BARCODE_MANAGER = () => {
                 />
               </label>
             </div>
-            <div className='forminputcolumn'>
+            <div className="forminputcolumn">
               <label>
                 <b>STT BARCODE:</b>{" "}
                 <input
-                  type='text'
-                  placeholder='Số thứ tự barcode'
+                  type="text"
+                  placeholder="Số thứ tự barcode"
                   value={selectedRows?.BARCODE_STT}
                   onChange={(e) =>
                     setBarCodeInfo("BARCODE_STT", e.target.value)
@@ -1170,26 +1172,26 @@ const PRODUCT_BARCODE_MANAGER = () => {
                 ></input>
               </label>
             </div>
-            <div className='forminputcolumn'>
+            <div className="forminputcolumn">
               <label>
                 <b>Barcode Type:</b>{" "}
                 <select
-                  name='vendor'
+                  name="vendor"
                   value={selectedRows?.BARCODE_TYPE}
                   onChange={(e) => {
                     setBarCodeInfo("BARCODE_TYPE", e.target.value);
                   }}
                 >
-                  <option value='1D'>1D BARCODE</option>
-                  <option value='MATRIX'>2D MATRIX</option>
-                  <option value='QR'>QR CODE</option>
+                  <option value="1D">1D BARCODE</option>
+                  <option value="MATRIX">2D MATRIX</option>
+                  <option value="QR">QR CODE</option>
                 </select>
               </label>
               <label>
                 <b>BARCODE RND:</b>{" "}
                 <input
-                  type='text'
-                  placeholder='BARCODE RND'
+                  type="text"
+                  placeholder="BARCODE RND"
                   value={selectedRows?.BARCODE_RND}
                   onChange={(e) =>
                     setBarCodeInfo("BARCODE_RND", e.target.value)
@@ -1197,13 +1199,13 @@ const PRODUCT_BARCODE_MANAGER = () => {
                 ></input>
               </label>
             </div>
-            <div className='forminputcolumn'>
+            <div className="forminputcolumn">
               <label>
                 <b>BARCODE DTC:</b>{" "}
                 <input
                   disabled={true}
-                  type='text'
-                  placeholder='BARCODE DTC'
+                  type="text"
+                  placeholder="BARCODE DTC"
                   value={selectedRows?.BARCODE_RELI}
                   onChange={(e) =>
                     setBarCodeInfo("BARCODE_RELI", e.target.value)
@@ -1214,8 +1216,8 @@ const PRODUCT_BARCODE_MANAGER = () => {
                 <b>BARCODE KT:</b>{" "}
                 <input
                   disabled={true}
-                  type='text'
-                  placeholder='BARCODE KT'
+                  type="text"
+                  placeholder="BARCODE KT"
                   value={selectedRows?.BARCODE_INSP}
                   onChange={(e) =>
                     setBarCodeInfo("BARCODE_INSP", e.target.value)
@@ -1224,9 +1226,9 @@ const PRODUCT_BARCODE_MANAGER = () => {
               </label>
             </div>
           </div>
-          <div className='formbutton'>
+          <div className="formbutton">
             <button
-              className='tranhatky'
+              className="tranhatky"
               onClick={() => {
                 load_barcode_table();
               }}
@@ -1234,7 +1236,7 @@ const PRODUCT_BARCODE_MANAGER = () => {
               Refesh
             </button>
             <button
-              className='tranhatky'
+              className="tranhatky"
               onClick={() => {
                 addBarcode();
               }}
@@ -1242,7 +1244,7 @@ const PRODUCT_BARCODE_MANAGER = () => {
               Add
             </button>
             <button
-              className='traxuatkiembutton'
+              className="traxuatkiembutton"
               onClick={() => {
                 updateBarcode();
               }}
@@ -1251,19 +1253,19 @@ const PRODUCT_BARCODE_MANAGER = () => {
             </button>
           </div>
         </div>
-        <div className='tracuuYCSXTable'>{BarcodeDataTable}</div>
+        <div className="tracuuYCSXTable">{BarcodeDataTable}</div>
         {showhidePivotTable && (
-          <div className='pivottable1'>
+          <div className="pivottable1">
             <IconButton
-              className='buttonIcon'
+              className="buttonIcon"
               onClick={() => {
                 setShowHidePivotTable(false);
               }}
             >
-              <AiFillCloseCircle color='blue' size={15} />
+              <AiFillCloseCircle color="blue" size={15} />
               Close
             </IconButton>
-            <PivotTable datasource={dataSource} tableID='invoicetablepivot' />
+            <PivotTable datasource={dataSource} tableID="invoicetablepivot" />
           </div>
         )}
       </div>

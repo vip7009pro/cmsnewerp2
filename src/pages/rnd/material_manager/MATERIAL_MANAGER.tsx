@@ -46,17 +46,19 @@ interface MATERIAL_TABLE_DATA {
 const MATERIAL_MANAGER = () => {
   const [alltime, setAllTime] = useState(false);
   const [editedRows, setEditedRows] = useState<Array<GridCellEditCommitParams>>(
-    []
+    [],
   );
   const [editable, setEditTable] = useState(false);
   const [readyRender, setReadyRender] = useState(false);
   const userData: UserData | undefined = useSelector(
-    (state: RootState) => state.totalSlice.userData
+    (state: RootState) => state.totalSlice.userData,
   );
   const [isLoading, setisLoading] = useState(false);
   const [datatable, setDataTable] = useState<any[]>([]);
   const [current_Column, setCurrent_Column] = useState<any[]>([]);
-  const [material_table_data_filter, set_material_table_data_filter] = useState<Array<MATERIAL_TABLE_DATA>>([]);
+  const [material_table_data_filter, set_material_table_data_filter] = useState<
+    Array<MATERIAL_TABLE_DATA>
+  >([]);
   const [nextPlan, setNextPlan] = useState("");
   const [tableTitle, setTableTitle] = useState("BẢNG VẬT LIỆU");
   const column_material_table = [
@@ -93,26 +95,26 @@ const MATERIAL_MANAGER = () => {
     return (
       <GridToolbarContainer>
         <IconButton
-          className='buttonIcon'
+          className="buttonIcon"
           onClick={() => {
             SaveExcel(datatable, "Material Table");
           }}
         >
-          <AiFillFileExcel color='green' size={15} />
+          <AiFillFileExcel color="green" size={15} />
           SAVE
         </IconButton>
         <GridToolbarQuickFilter />
-        <div className='div' style={{ fontSize: 20, fontWeight: "bold" }}>
+        <div className="div" style={{ fontSize: 20, fontWeight: "bold" }}>
           {tableTitle}
         </div>
         <IconButton
-          className='buttonIcon'
+          className="buttonIcon"
           onClick={() => {
             setEditTable(!editable);
             Swal.fire("Thông báo", "Bật/Tắt Sửa thành công", "success");
           }}
         >
-          <BiEdit color='yellow' size={15} />
+          <BiEdit color="yellow" size={15} />
           Bật/Tắt sửa
         </IconButton>
         {editable === true ? "Bật Sửa" : "Tắt Sửa"}
@@ -133,7 +135,7 @@ const MATERIAL_MANAGER = () => {
                 ...element,
                 id: index,
               };
-            }
+            },
           );
           //console.log(loadeddata);
           setDataTable(loadeddata);
@@ -143,7 +145,7 @@ const MATERIAL_MANAGER = () => {
           Swal.fire(
             "Thông báo",
             "Đã load: " + response.data.data.length + " dòng",
-            "success"
+            "success",
           );
         } else {
           setDataTable([]);
@@ -190,7 +192,7 @@ const MATERIAL_MANAGER = () => {
                 Swal.fire(
                   "Thông báo",
                   "Nội dung: " + response.data.message,
-                  "error"
+                  "error",
                 );
               }
             })
@@ -211,7 +213,7 @@ const MATERIAL_MANAGER = () => {
   const handleMaterialDataSelectionforUpdate = (ids: GridSelectionModel) => {
     const selectedID = new Set(ids);
     let datafilter = datatable.filter((element: any) =>
-      selectedID.has(element.M_ID)
+      selectedID.has(element.M_ID),
     );
     //console.log(datafilter);
     if (datafilter.length > 0) {
@@ -221,7 +223,7 @@ const MATERIAL_MANAGER = () => {
     }
   };
   const handleSearchCodeKeyDown = (
-    e: React.KeyboardEvent<HTMLInputElement>
+    e: React.KeyboardEvent<HTMLInputElement>,
   ) => {
     if (e.key === "Enter") {
       setisLoading(true);
@@ -235,15 +237,15 @@ const MATERIAL_MANAGER = () => {
     setReadyRender(true);
   }, []);
   return (
-    <div className='material_manager'>
-      <div className='tracuuDataInspection'>
-        <div className='tracuuDataInspectionform'>
-          <div className='forminput'>
-            <div className='forminputcolumn'>
+    <div className="material_manager">
+      <div className="tracuuDataInspection">
+        <div className="tracuuDataInspectionform">
+          <div className="forminput">
+            <div className="forminputcolumn">
               <label>
                 <b>Tên Liệu</b>
                 <input
-                  type='text'
+                  type="text"
                   value={nextPlan}
                   onChange={(e) => setNextPlan(e.target.value)}
                   onKeyDown={(e) => {
@@ -252,20 +254,20 @@ const MATERIAL_MANAGER = () => {
                 ></input>
               </label>
             </div>
-            <div className='forminputcolumn'>
+            <div className="forminputcolumn">
               <label>
                 <b>Chỉ liệu thiếu thông tin:</b>
                 <input
-                  type='checkbox'
-                  name='alltimecheckbox'
+                  type="checkbox"
+                  name="alltimecheckbox"
                   defaultChecked={alltime}
                   onChange={() => setAllTime(!alltime)}
                 ></input>
               </label>
             </div>
-            <div className='forminputcolumn'>
+            <div className="forminputcolumn">
               <button
-                className='tranhatky'
+                className="tranhatky"
                 onClick={() => {
                   setisLoading(true);
                   setReadyRender(false);
@@ -276,17 +278,23 @@ const MATERIAL_MANAGER = () => {
                 TRA LIỆU
               </button>
             </div>
-            <div className='forminputcolumn'>
+            <div className="forminputcolumn">
               <button
-                className='xuatnext'
+                className="xuatnext"
                 onClick={() => {
-                 /*  checkBP(
+                  /*  checkBP(
                     userData?.EMPL_NO,
                     userData?.MAINDEPTNAME,
                     ["KD", "RND"],
                     save_material_table
                   ); */
-                  checkBP(userData,['KD','RND'],['ALL'],['ALL'],save_material_table);
+                  checkBP(
+                    userData,
+                    ["KD", "RND"],
+                    ["ALL"],
+                    ["ALL"],
+                    save_material_table,
+                  );
 
                   //save_material_table();
                 }}
@@ -295,9 +303,9 @@ const MATERIAL_MANAGER = () => {
               </button>
             </div>
           </div>
-          <div className='formbutton'></div>
+          <div className="formbutton"></div>
         </div>
-        <div className='tracuuYCSXTable'>
+        <div className="tracuuYCSXTable">
           {readyRender && (
             <DataGrid
               sx={{ fontSize: 12, flex: 1 }}
@@ -314,7 +322,7 @@ const MATERIAL_MANAGER = () => {
               ]}
               checkboxSelection
               disableSelectionOnClick
-              editMode='cell'
+              editMode="cell"
               getRowId={(row) => row.M_ID}
               onSelectionModelChange={(ids) => {
                 handleMaterialDataSelectionforUpdate(ids);
@@ -322,7 +330,7 @@ const MATERIAL_MANAGER = () => {
               onCellEditCommit={(
                 params: GridCellEditCommitParams,
                 event: MuiEvent<MuiBaseEvent>,
-                details: GridCallbackDetails
+                details: GridCallbackDetails,
               ) => {
                 //console.log(params);
                 let tempeditrows = editedRows;
@@ -331,7 +339,7 @@ const MATERIAL_MANAGER = () => {
                 //console.log(editedRows);
                 const keyvar = params.field;
                 const newdata = datatable.map((p) =>
-                  p.M_ID === params.id ? { ...p, [keyvar]: params.value } : p
+                  p.M_ID === params.id ? { ...p, [keyvar]: params.value } : p,
                 );
                 setDataTable(newdata);
               }}

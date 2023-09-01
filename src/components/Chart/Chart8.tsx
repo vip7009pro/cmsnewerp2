@@ -32,24 +32,23 @@ const Chart8 = () => {
     if (n >= 1e3) return +(n / 1e3).toFixed(1) + "K$";
   };
   const labelFormatter = (value: number) => {
-    return ( new Intl.NumberFormat("en", {
+    return new Intl.NumberFormat("en", {
       notation: "compact",
       compactDisplay: "short",
-    }).format(value));
+    }).format(value);
   };
-  
+
   const handleGetDailyClosing = () => {
     generalQuery("kd_runningpobalance", { YEAR: moment().format("YYYY") })
       .then((response) => {
         if (response.data.tk_status !== "NG") {
           const loadeddata: RunningPOData[] = response.data.data.map(
             (element: RunningPOData, index: number) => {
-             
               return {
                 ...element,
               };
-            }
-          );         
+            },
+          );
           setRunningPOData(loadeddata);
           console.log(loadeddata);
         } else {
@@ -64,48 +63,50 @@ const Chart8 = () => {
     handleGetDailyClosing();
   }, []);
   return (
-      <CustomResponsiveContainer>
-        <ComposedChart
-          width={500}
-          height={300}
-          data={runningPOData}
-          margin={{
-            top: 5,
-            right: 30,
-            left: 20,
-            bottom: 5,
+    <CustomResponsiveContainer>
+      <ComposedChart
+        width={500}
+        height={300}
+        data={runningPOData}
+        margin={{
+          top: 5,
+          right: 30,
+          left: 20,
+          bottom: 5,
+        }}
+      >
+        {" "}
+        <CartesianGrid strokeDasharray="3 3" className="chartGrid" />
+        <XAxis dataKey="YEAR_WEEK">
+          {" "}
+          <Label value="Tuần" offset={0} position="insideBottom" />
+        </XAxis>
+        <YAxis
+          yAxisId="left-axis"
+          label={{
+            value: "Số lượng",
+            angle: -90,
+            position: "insideLeft",
           }}
-        >          <CartesianGrid strokeDasharray='3 3' className='chartGrid' />
-          <XAxis dataKey='YEAR_WEEK'>
-            {" "}
-            <Label value='Tuần' offset={0} position='insideBottom' />
-          </XAxis>
-          <YAxis
-            yAxisId='left-axis'
-            label={{
-              value: "Số lượng",
-              angle: -90,
-              position: "insideLeft",
-            }}
-            tickFormatter={(value) =>
-              new Intl.NumberFormat("en", {
-                notation: "compact",
-                compactDisplay: "short",
-              }).format(value)
-            }
-          />        
-          <Tooltip />
-          <Legend />
-          <Bar
-            yAxisId='left-axis'
-            type='monotone'
-            dataKey='RUNNING_PO_BALANCE'
-            stroke='white'
-            fill='#cc66ff'
-            label={{ position: "top", formatter: labelFormatter }}
-          ></Bar>
-        </ComposedChart>
-        </CustomResponsiveContainer>
+          tickFormatter={(value) =>
+            new Intl.NumberFormat("en", {
+              notation: "compact",
+              compactDisplay: "short",
+            }).format(value)
+          }
+        />
+        <Tooltip />
+        <Legend />
+        <Bar
+          yAxisId="left-axis"
+          type="monotone"
+          dataKey="RUNNING_PO_BALANCE"
+          stroke="white"
+          fill="#cc66ff"
+          label={{ position: "top", formatter: labelFormatter }}
+        ></Bar>
+      </ComposedChart>
+    </CustomResponsiveContainer>
   );
 };
 export default Chart8;

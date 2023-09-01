@@ -18,18 +18,17 @@ import {
   Pie,
 } from "recharts";
 
-
 import Swal from "sweetalert2";
 import { generalQuery } from "../../api/Api";
 import { CustomResponsiveContainer } from "../../api/GlobalFunction";
 interface DiemDanhMainDeptData {
-    id: number, 
-    MAINDEPTNAME: string, 
-    COUNT_TOTAL: number,
-    COUT_ON: number,
-    COUT_OFF: number, 
-    COUNT_CDD: number,
-    ON_RATE: number
+  id: number;
+  MAINDEPTNAME: string;
+  COUNT_TOTAL: number;
+  COUT_ON: number;
+  COUT_OFF: number;
+  COUNT_CDD: number;
+  ON_RATE: number;
 }
 const ChartDiemDanhMAINDEPT = () => {
   const [diemdanhMainDeptData, setDiemDanhMainDeptData] = useState<
@@ -46,59 +45,84 @@ const ChartDiemDanhMAINDEPT = () => {
     }).format(value);
   };
 
-  const CustomTooltip = ({ active, payload, label } : {active?:any, payload?:any, label?: any}) => {
+  const CustomTooltip = ({
+    active,
+    payload,
+    label,
+  }: {
+    active?: any;
+    payload?: any;
+    label?: any;
+  }) => {
     if (active && payload && payload.length) {
       return (
         <div className="custom-tooltip">
-          <p className="label">{`${payload[0].value.toLocaleString("en-US")} người`}</p>   
+          <p className="label">{`${payload[0].value.toLocaleString(
+            "en-US",
+          )} người`}</p>
         </div>
       );
     }
     return null;
-}
-
-const CustomLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, value, index }:{ cx?:any, cy?:any, midAngle?:any, innerRadius?:any, outerRadius?:any, value?:any, index?:any }) => {  
-    const RADIAN = Math.PI / 180;          
-          const radius = 105 + innerRadius + (outerRadius - innerRadius);          
-          const x = cx + radius * Math.cos(-midAngle * RADIAN);          
-          const y = cy + radius * Math.sin(-midAngle * RADIAN);
-          return (
-            <text
-              x={x}
-              y={y}
-              fill="#8884d8"
-              textAnchor={x > cx ? "start" : "end"}
-              dominantBaseline="central"
-              style={{color: 'white'}}
-            >              
-              {diemdanhMainDeptData[index].MAINDEPTNAME} : ({value.toLocaleString("en-US")} người)
-              
-            </text>
-          );
   };
 
+  const CustomLabel = ({
+    cx,
+    cy,
+    midAngle,
+    innerRadius,
+    outerRadius,
+    value,
+    index,
+  }: {
+    cx?: any;
+    cy?: any;
+    midAngle?: any;
+    innerRadius?: any;
+    outerRadius?: any;
+    value?: any;
+    index?: any;
+  }) => {
+    const RADIAN = Math.PI / 180;
+    const radius = 105 + innerRadius + (outerRadius - innerRadius);
+    const x = cx + radius * Math.cos(-midAngle * RADIAN);
+    const y = cy + radius * Math.sin(-midAngle * RADIAN);
+    return (
+      <text
+        x={x}
+        y={y}
+        fill="#8884d8"
+        textAnchor={x > cx ? "start" : "end"}
+        dominantBaseline="central"
+        style={{ color: "white" }}
+      >
+        {diemdanhMainDeptData[index].MAINDEPTNAME} : (
+        {value.toLocaleString("en-US")} người)
+      </text>
+    );
+  };
 
-  const handleGetCustomerRevenue = () => {    
+  const handleGetCustomerRevenue = () => {
     generalQuery("getddmaindepttb", {})
-    .then((response) => {
-      //console.log(response.data.data);
-      if (response.data.tk_status !== "NG") {
-       
-
-        let loadeddata = response.data.data.map((element: DiemDanhMainDeptData, index: number)=> {         
-          return {
-            ...element, 
-            id: index
-          }
-        }) 
-        setDiemDanhMainDeptData(loadeddata);               
-      } else {
-        Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
-      }
-    })
-    .catch((error) => {
-      console.log(error);
-    });
+      .then((response) => {
+        //console.log(response.data.data);
+        if (response.data.tk_status !== "NG") {
+          let loadeddata = response.data.data.map(
+            (element: DiemDanhMainDeptData, index: number) => {
+              return {
+                ...element,
+                id: index,
+              };
+            },
+          );
+          setDiemDanhMainDeptData(loadeddata);
+        } else {
+          Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
   useEffect(() => {
     handleGetCustomerRevenue();
@@ -133,23 +157,25 @@ const CustomLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, value, index 
   return (
     <CustomResponsiveContainer>
       <PieChart width={500} height={400}>
-        <Tooltip content={<CustomTooltip/>} />        
+        <Tooltip content={<CustomTooltip />} />
         <Pie
-          dataKey='COUNT_TOTAL'
-          nameKey='MAINDEPTNAME'
+          dataKey="COUNT_TOTAL"
+          nameKey="MAINDEPTNAME"
           isAnimationActive={false}
           data={diemdanhMainDeptData}
-          cx='50%'
-          cy='50%'
+          cx="50%"
+          cy="50%"
           outerRadius={80}
-          fill='#8884d8'
+          fill="#8884d8"
           label={CustomLabel}
         >
           {diemdanhMainDeptData.map((entry, index) => (
-            <Cell key={`cell-${index}`} fill={COLORS[(2+index)*3 % COLORS.length]} />
+            <Cell
+              key={`cell-${index}`}
+              fill={COLORS[((2 + index) * 3) % COLORS.length]}
+            />
           ))}
         </Pie>
-        
       </PieChart>
     </CustomResponsiveContainer>
   );

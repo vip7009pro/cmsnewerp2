@@ -100,14 +100,14 @@ export function login(user: string, pass: string) {
         WORK_STATUS_NAME: "Đang làm",
         WORK_STATUS_NAME_KR: "근무중",
         EMPL_IMAGE: "N",
-      })
+      }),
     );
     //dispatch(update_socket(data.data.data.EMPL_NO + " da dangnhap"));
     store.dispatch(
       update_socket({
         event: "login",
         data: "ONG TRUM",
-      })
+      }),
     );
     /* setLoginState(true); */
     store.dispatch(loginSlice(true));
@@ -130,7 +130,7 @@ export function login(user: string, pass: string) {
           Swal.fire(
             "Thông báo",
             "Chúc mừng bạn, đăng nhập thành công !",
-            "success"
+            "success",
           );
           //alert("Đăng nhập thành công");
           cookies.set("token", Jresult.token_content, { path: "/" });
@@ -189,7 +189,7 @@ export function login(user: string, pass: string) {
                     WORK_STATUS_NAME: "Đang làm",
                     WORK_STATUS_NAME_KR: "근무중",
                     EMPL_IMAGE: "N",
-                  })
+                  }),
                 );
               } else {
                 //console.log(data.data.data);
@@ -200,7 +200,7 @@ export function login(user: string, pass: string) {
                     update_socket({
                       event: "login",
                       data: data.data.data.EMPL_NO,
-                    })
+                    }),
                   );
                   /* setLoginState(true); */
                   store.dispatch(loginSlice(true));
@@ -212,7 +212,7 @@ export function login(user: string, pass: string) {
                   Swal.fire(
                     "Thông báo",
                     "Nghỉ việc rồi không truy cập được!",
-                    "error"
+                    "error",
                   );
                 }
               }
@@ -258,7 +258,7 @@ export async function uploadQuery(
   file: any,
   filename: string,
   uploadfoldername: string,
-  filenamelist?: string[]
+  filenamelist?: string[],
 ) {
   const formData = new FormData();
   formData.append("uploadedfile", file);

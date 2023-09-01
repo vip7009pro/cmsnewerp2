@@ -59,11 +59,17 @@ import { ResponsiveContainer } from "recharts";
 import { TbLogout } from "react-icons/tb";
 import QuotationForm from "./QuotationForm/QuotationForm";
 import { useReactToPrint } from "react-to-print";
-import { BANGGIA_DATA, BANGGIA_DATA2, CodeListDataUpGia, CustomerListData, UserData } from "../../../api/GlobalInterface";
+import {
+  BANGGIA_DATA,
+  BANGGIA_DATA2,
+  CodeListDataUpGia,
+  CustomerListData,
+  UserData,
+} from "../../../api/GlobalInterface";
 
 const QuotationManager = () => {
   const userData: UserData | undefined = useSelector(
-    (state: RootState) => state.totalSlice.userData
+    (state: RootState) => state.totalSlice.userData,
   );
   const [trigger, setTrigger] = useState(true);
   const [sh, setSH] = useState(false);
@@ -116,7 +122,7 @@ const QuotationManager = () => {
   const [moq, setMOQ] = useState(1);
   const [newprice, setNewPrice] = useState("");
   const [newpricedate, setNewPriceDate] = useState(
-    moment.utc().format("YYYY-MM-DD")
+    moment.utc().format("YYYY-MM-DD"),
   );
   const [banggia, setBangGia] = useState<BANGGIA_DATA[]>([]);
   const [banggia2, setBangGia2] = useState<BANGGIA_DATA2[]>([]);
@@ -216,7 +222,7 @@ const QuotationManager = () => {
       Swal.fire(
         "Thông báo",
         "Thêm dòng hoặc import excel file để up giá",
-        "error"
+        "error",
       );
     }
   };
@@ -235,7 +241,7 @@ const QuotationManager = () => {
                 ...element,
                 id: index,
               };
-            }
+            },
           );
           setCodeList(loaded_data);
         } else {
@@ -1170,11 +1176,11 @@ const QuotationManager = () => {
       new PivotGridDataSource({
         fields: fields_banggia,
         store: banggia,
-      })
+      }),
     );
   const banggiaMM = React.useMemo(
     () => (
-      <div className='datatb'>
+      <div className="datatb">
         <ResponsiveContainer>
           <DataGrid
             style={{ fontSize: "0.7rem" }}
@@ -1186,8 +1192,8 @@ const QuotationManager = () => {
             columnResizingMode={"widget"}
             showColumnLines={true}
             dataSource={banggia}
-            columnWidth='auto'
-            keyExpr='id'
+            columnWidth="auto"
+            keyExpr="id"
             height={"70vh"}
             showBorders={true}
             onSelectionChanged={(e) => {
@@ -1202,51 +1208,51 @@ const QuotationManager = () => {
               useNative={true}
               scrollByContent={true}
               scrollByThumb={true}
-              showScrollbar='onHover'
-              mode='virtual'
+              showScrollbar="onHover"
+              mode="virtual"
             />
-            <Selection mode='multiple' selectAllMode='allPages' />
+            <Selection mode="multiple" selectAllMode="allPages" />
             <Editing
               allowUpdating={false}
               allowAdding={false}
               allowDeleting={false}
-              mode='cell'
+              mode="cell"
               confirmDelete={false}
               onChangesChange={(e) => {}}
             />
             <Export enabled={true} />
             <Toolbar disabled={false}>
-              <Item location='before'>
+              <Item location="before">
                 <IconButton
-                  className='buttonIcon'
+                  className="buttonIcon"
                   onClick={() => {
                     showhidesearchdiv.current = !showhidesearchdiv.current;
                     setSH(!showhidesearchdiv.current);
                   }}
                 >
-                  <TbLogout color='green' size={15} />
+                  <TbLogout color="green" size={15} />
                   Show/Hide
                 </IconButton>
                 <IconButton
-                  className='buttonIcon'
+                  className="buttonIcon"
                   onClick={() => {
                     SaveExcel(banggia, "PriceTable");
                   }}
                 >
-                  <AiFillFileExcel color='green' size={15} />
+                  <AiFillFileExcel color="green" size={15} />
                   SAVE
                 </IconButton>
                 <IconButton
-                  className='buttonIcon'
+                  className="buttonIcon"
                   onClick={() => {
                     setShowHidePivotTable(!showhidePivotTable);
                   }}
                 >
-                  <MdOutlinePivotTableChart color='#ff33bb' size={15} />
+                  <MdOutlinePivotTableChart color="#ff33bb" size={15} />
                   Pivot
                 </IconButton>
                 <IconButton
-                  className='buttonIcon'
+                  className="buttonIcon"
                   onClick={() => {
                     checkBP(userData, ["KD"], ["ALL"], ["ALL"], loadBangGia2);
                     loadCodeList();
@@ -1254,16 +1260,16 @@ const QuotationManager = () => {
                     setShowHideUpPrice(true);
                   }}
                 >
-                  <BiCloudUpload color='#070EFA' size={15} />
+                  <BiCloudUpload color="#070EFA" size={15} />
                   Up Giá
                 </IconButton>
               </Item>
-              <Item name='searchPanel' />
-              <Item name='exportButton' />
-              <Item name='columnChooserButton' />
-              <Item name='addRowButton' />
-              <Item name='saveButton' />
-              <Item name='revertButton' />
+              <Item name="searchPanel" />
+              <Item name="exportButton" />
+              <Item name="columnChooserButton" />
+              <Item name="addRowButton" />
+              <Item name="saveButton" />
+              <Item name="revertButton" />
             </Toolbar>
             <FilterRow visible={true} />
             <SearchPanel visible={true} />
@@ -1274,32 +1280,32 @@ const QuotationManager = () => {
               allowedPageSizes={[5, 10, 15, 20, 100, 1000, 10000, "all"]}
               showNavigationButtons={true}
               showInfo={true}
-              infoText='Page #{0}. Total: {1} ({2} items)'
-              displayMode='compact'
+              infoText="Page #{0}. Total: {1} ({2} items)"
+              displayMode="compact"
             />
             <Column
-              dataField='CUST_NAME_KD'
-              caption='CUST_NAME_KD'
+              dataField="CUST_NAME_KD"
+              caption="CUST_NAME_KD"
               width={100}
             ></Column>
-            <Column dataField='G_CODE' caption='G_CODE' width={100}></Column>
-            <Column dataField='G_NAME' caption='G_NAME' width={250}></Column>
+            <Column dataField="G_CODE" caption="G_CODE" width={100}></Column>
+            <Column dataField="G_NAME" caption="G_NAME" width={250}></Column>
             <Column
-              dataField='G_NAME_KD'
-              caption='G_NAME_KD'
+              dataField="G_NAME_KD"
+              caption="G_NAME_KD"
               width={100}
             ></Column>
             <Column
-              dataField='PROD_MAIN_MATERIAL'
-              caption='PROD_MAIN_MATERIAL'
+              dataField="PROD_MAIN_MATERIAL"
+              caption="PROD_MAIN_MATERIAL"
               width={100}
             ></Column>
-            <Column dataField='MOQ' caption='MOQ' width={100}></Column>
+            <Column dataField="MOQ" caption="MOQ" width={100}></Column>
             <Column
-              dataField='PRICE1'
-              caption='PRICE1'
+              dataField="PRICE1"
+              caption="PRICE1"
               width={100}
-              dataType='number'
+              dataType="number"
               format={"decimal"}
               cellRender={(e: any) => {
                 return (
@@ -1313,10 +1319,10 @@ const QuotationManager = () => {
               }}
             ></Column>
             <Column
-              dataField='PRICE2'
-              caption='PRICE2'
+              dataField="PRICE2"
+              caption="PRICE2"
               width={100}
-              dataType='number'
+              dataType="number"
               format={"decimal"}
               cellRender={(e: any) => {
                 return (
@@ -1330,10 +1336,10 @@ const QuotationManager = () => {
               }}
             ></Column>
             <Column
-              dataField='PRICE3'
-              caption='PRICE3'
+              dataField="PRICE3"
+              caption="PRICE3"
               width={100}
-              dataType='number'
+              dataType="number"
               format={"decimal"}
               cellRender={(e: any) => {
                 return (
@@ -1347,10 +1353,10 @@ const QuotationManager = () => {
               }}
             ></Column>
             <Column
-              dataField='PRICE4'
-              caption='PRICE4'
+              dataField="PRICE4"
+              caption="PRICE4"
               width={100}
-              dataType='number'
+              dataType="number"
               format={"decimal"}
               cellRender={(e: any) => {
                 return (
@@ -1364,10 +1370,10 @@ const QuotationManager = () => {
               }}
             ></Column>
             <Column
-              dataField='PRICE5'
-              caption='PRICE5'
+              dataField="PRICE5"
+              caption="PRICE5"
               width={100}
-              dataType='number'
+              dataType="number"
               format={"decimal"}
               cellRender={(e: any) => {
                 return (
@@ -1381,10 +1387,10 @@ const QuotationManager = () => {
               }}
             ></Column>
             <Column
-              dataField='PRICE6'
-              caption='PRICE6'
+              dataField="PRICE6"
+              caption="PRICE6"
               width={100}
-              dataType='number'
+              dataType="number"
               format={"decimal"}
               cellRender={(e: any) => {
                 return (
@@ -1398,10 +1404,10 @@ const QuotationManager = () => {
               }}
             ></Column>
             <Column
-              dataField='PRICE7'
-              caption='PRICE7'
+              dataField="PRICE7"
+              caption="PRICE7"
               width={100}
-              dataType='number'
+              dataType="number"
               format={"decimal"}
               cellRender={(e: any) => {
                 return (
@@ -1415,10 +1421,10 @@ const QuotationManager = () => {
               }}
             ></Column>
             <Column
-              dataField='PRICE8'
-              caption='PRICE8'
+              dataField="PRICE8"
+              caption="PRICE8"
               width={100}
-              dataType='number'
+              dataType="number"
               format={"decimal"}
               cellRender={(e: any) => {
                 return (
@@ -1432,10 +1438,10 @@ const QuotationManager = () => {
               }}
             ></Column>
             <Column
-              dataField='PRICE9'
-              caption='PRICE9'
+              dataField="PRICE9"
+              caption="PRICE9"
               width={100}
-              dataType='number'
+              dataType="number"
               format={"decimal"}
               cellRender={(e: any) => {
                 return (
@@ -1449,10 +1455,10 @@ const QuotationManager = () => {
               }}
             ></Column>
             <Column
-              dataField='PRICE10'
-              caption='PRICE10'
+              dataField="PRICE10"
+              caption="PRICE10"
               width={100}
-              dataType='number'
+              dataType="number"
               format={"decimal"}
               cellRender={(e: any) => {
                 return (
@@ -1466,10 +1472,10 @@ const QuotationManager = () => {
               }}
             ></Column>
             <Column
-              dataField='PRICE11'
-              caption='PRICE11'
+              dataField="PRICE11"
+              caption="PRICE11"
               width={100}
-              dataType='number'
+              dataType="number"
               format={"decimal"}
               cellRender={(e: any) => {
                 return (
@@ -1483,10 +1489,10 @@ const QuotationManager = () => {
               }}
             ></Column>
             <Column
-              dataField='PRICE12'
-              caption='PRICE12'
+              dataField="PRICE12"
+              caption="PRICE12"
               width={100}
-              dataType='number'
+              dataType="number"
               format={"decimal"}
               cellRender={(e: any) => {
                 return (
@@ -1500,10 +1506,10 @@ const QuotationManager = () => {
               }}
             ></Column>
             <Column
-              dataField='PRICE13'
-              caption='PRICE13'
+              dataField="PRICE13"
+              caption="PRICE13"
               width={100}
-              dataType='number'
+              dataType="number"
               format={"decimal"}
               cellRender={(e: any) => {
                 return (
@@ -1517,10 +1523,10 @@ const QuotationManager = () => {
               }}
             ></Column>
             <Column
-              dataField='PRICE14'
-              caption='PRICE14'
+              dataField="PRICE14"
+              caption="PRICE14"
               width={100}
-              dataType='number'
+              dataType="number"
               format={"decimal"}
               cellRender={(e: any) => {
                 return (
@@ -1534,10 +1540,10 @@ const QuotationManager = () => {
               }}
             ></Column>
             <Column
-              dataField='PRICE15'
-              caption='PRICE15'
+              dataField="PRICE15"
+              caption="PRICE15"
               width={100}
-              dataType='number'
+              dataType="number"
               format={"decimal"}
               cellRender={(e: any) => {
                 return (
@@ -1551,10 +1557,10 @@ const QuotationManager = () => {
               }}
             ></Column>
             <Column
-              dataField='PRICE16'
-              caption='PRICE16'
+              dataField="PRICE16"
+              caption="PRICE16"
               width={100}
-              dataType='number'
+              dataType="number"
               format={"decimal"}
               cellRender={(e: any) => {
                 return (
@@ -1568,10 +1574,10 @@ const QuotationManager = () => {
               }}
             ></Column>
             <Column
-              dataField='PRICE17'
-              caption='PRICE17'
+              dataField="PRICE17"
+              caption="PRICE17"
               width={100}
-              dataType='number'
+              dataType="number"
               format={"decimal"}
               cellRender={(e: any) => {
                 return (
@@ -1585,10 +1591,10 @@ const QuotationManager = () => {
               }}
             ></Column>
             <Column
-              dataField='PRICE18'
-              caption='PRICE18'
+              dataField="PRICE18"
+              caption="PRICE18"
               width={100}
-              dataType='number'
+              dataType="number"
               format={"decimal"}
               cellRender={(e: any) => {
                 return (
@@ -1602,10 +1608,10 @@ const QuotationManager = () => {
               }}
             ></Column>
             <Column
-              dataField='PRICE19'
-              caption='PRICE19'
+              dataField="PRICE19"
+              caption="PRICE19"
               width={100}
-              dataType='number'
+              dataType="number"
               format={"decimal"}
               cellRender={(e: any) => {
                 return (
@@ -1619,10 +1625,10 @@ const QuotationManager = () => {
               }}
             ></Column>
             <Column
-              dataField='PRICE20'
-              caption='PRICE20'
+              dataField="PRICE20"
+              caption="PRICE20"
               width={100}
-              dataType='number'
+              dataType="number"
               format={"decimal"}
               cellRender={(e: any) => {
                 return (
@@ -1636,110 +1642,110 @@ const QuotationManager = () => {
               }}
             ></Column>
             <Column
-              dataField='PRICE_DATE1'
-              caption='PRICE_DATE1'
+              dataField="PRICE_DATE1"
+              caption="PRICE_DATE1"
               width={100}
             ></Column>
             <Column
-              dataField='PRICE_DATE2'
-              caption='PRICE_DATE2'
+              dataField="PRICE_DATE2"
+              caption="PRICE_DATE2"
               width={100}
             ></Column>
             <Column
-              dataField='PRICE_DATE3'
-              caption='PRICE_DATE3'
+              dataField="PRICE_DATE3"
+              caption="PRICE_DATE3"
               width={100}
             ></Column>
             <Column
-              dataField='PRICE_DATE4'
-              caption='PRICE_DATE4'
+              dataField="PRICE_DATE4"
+              caption="PRICE_DATE4"
               width={100}
             ></Column>
             <Column
-              dataField='PRICE_DATE5'
-              caption='PRICE_DATE5'
+              dataField="PRICE_DATE5"
+              caption="PRICE_DATE5"
               width={100}
             ></Column>
             <Column
-              dataField='PRICE_DATE6'
-              caption='PRICE_DATE6'
+              dataField="PRICE_DATE6"
+              caption="PRICE_DATE6"
               width={100}
             ></Column>
             <Column
-              dataField='PRICE_DATE7'
-              caption='PRICE_DATE7'
+              dataField="PRICE_DATE7"
+              caption="PRICE_DATE7"
               width={100}
             ></Column>
             <Column
-              dataField='PRICE_DATE8'
-              caption='PRICE_DATE8'
+              dataField="PRICE_DATE8"
+              caption="PRICE_DATE8"
               width={100}
             ></Column>
             <Column
-              dataField='PRICE_DATE9'
-              caption='PRICE_DATE9'
+              dataField="PRICE_DATE9"
+              caption="PRICE_DATE9"
               width={100}
             ></Column>
             <Column
-              dataField='PRICE_DATE10'
-              caption='PRICE_DATE10'
+              dataField="PRICE_DATE10"
+              caption="PRICE_DATE10"
               width={100}
             ></Column>
             <Column
-              dataField='PRICE_DATE11'
-              caption='PRICE_DATE11'
+              dataField="PRICE_DATE11"
+              caption="PRICE_DATE11"
               width={100}
             ></Column>
             <Column
-              dataField='PRICE_DATE12'
-              caption='PRICE_DATE12'
+              dataField="PRICE_DATE12"
+              caption="PRICE_DATE12"
               width={100}
             ></Column>
             <Column
-              dataField='PRICE_DATE13'
-              caption='PRICE_DATE13'
+              dataField="PRICE_DATE13"
+              caption="PRICE_DATE13"
               width={100}
             ></Column>
             <Column
-              dataField='PRICE_DATE14'
-              caption='PRICE_DATE14'
+              dataField="PRICE_DATE14"
+              caption="PRICE_DATE14"
               width={100}
             ></Column>
             <Column
-              dataField='PRICE_DATE15'
-              caption='PRICE_DATE15'
+              dataField="PRICE_DATE15"
+              caption="PRICE_DATE15"
               width={100}
             ></Column>
             <Column
-              dataField='PRICE_DATE16'
-              caption='PRICE_DATE16'
+              dataField="PRICE_DATE16"
+              caption="PRICE_DATE16"
               width={100}
             ></Column>
             <Column
-              dataField='PRICE_DATE17'
-              caption='PRICE_DATE17'
+              dataField="PRICE_DATE17"
+              caption="PRICE_DATE17"
               width={100}
             ></Column>
             <Column
-              dataField='PRICE_DATE18'
-              caption='PRICE_DATE18'
+              dataField="PRICE_DATE18"
+              caption="PRICE_DATE18"
               width={100}
             ></Column>
             <Column
-              dataField='PRICE_DATE19'
-              caption='PRICE_DATE19'
+              dataField="PRICE_DATE19"
+              caption="PRICE_DATE19"
               width={100}
             ></Column>
             <Column
-              dataField='PRICE_DATE20'
-              caption='PRICE_DATE20'
+              dataField="PRICE_DATE20"
+              caption="PRICE_DATE20"
               width={100}
             ></Column>
             <Summary>
               <TotalItem
-                alignment='right'
-                column='G_CODE'
-                summaryType='count'
+                alignment="right"
+                column="G_CODE"
+                summaryType="count"
                 valueFormat={"decimal"}
               />
             </Summary>
@@ -1747,11 +1753,11 @@ const QuotationManager = () => {
         </ResponsiveContainer>
       </div>
     ),
-    [banggia]
+    [banggia],
   );
   const banggiaMM2 = React.useMemo(
     () => (
-      <div className='datatb'>
+      <div className="datatb">
         <ResponsiveContainer>
           <DataGrid
             style={{ fontSize: "0.7rem" }}
@@ -1763,8 +1769,8 @@ const QuotationManager = () => {
             columnResizingMode={"widget"}
             showColumnLines={true}
             dataSource={banggia2}
-            columnWidth='auto'
-            keyExpr='id'
+            columnWidth="auto"
+            keyExpr="id"
             height={"70vh"}
             showBorders={true}
             onSelectionChanged={(e) => {
@@ -1779,51 +1785,51 @@ const QuotationManager = () => {
               useNative={true}
               scrollByContent={true}
               scrollByThumb={true}
-              showScrollbar='onHover'
-              mode='virtual'
+              showScrollbar="onHover"
+              mode="virtual"
             />
-            <Selection mode='multiple' selectAllMode='allPages' />
+            <Selection mode="multiple" selectAllMode="allPages" />
             <Editing
               allowUpdating={false}
               allowAdding={false}
               allowDeleting={false}
-              mode='cell'
+              mode="cell"
               confirmDelete={false}
               onChangesChange={(e) => {}}
             />
             <Export enabled={true} />
             <Toolbar disabled={false}>
-              <Item location='before'>
+              <Item location="before">
                 <IconButton
-                  className='buttonIcon'
+                  className="buttonIcon"
                   onClick={() => {
                     showhidesearchdiv.current = !showhidesearchdiv.current;
                     setSH(!showhidesearchdiv.current);
                   }}
                 >
-                  <TbLogout color='green' size={15} />
+                  <TbLogout color="green" size={15} />
                   Show/Hide
                 </IconButton>
                 <IconButton
-                  className='buttonIcon'
+                  className="buttonIcon"
                   onClick={() => {
                     SaveExcel(banggia2, "PriceTable");
                   }}
                 >
-                  <AiFillFileExcel color='green' size={15} />
+                  <AiFillFileExcel color="green" size={15} />
                   SAVE
                 </IconButton>
                 <IconButton
-                  className='buttonIcon'
+                  className="buttonIcon"
                   onClick={() => {
                     setShowHidePivotTable(!showhidePivotTable);
                   }}
                 >
-                  <MdOutlinePivotTableChart color='#ff33bb' size={15} />
+                  <MdOutlinePivotTableChart color="#ff33bb" size={15} />
                   Pivot
                 </IconButton>
                 <IconButton
-                  className='buttonIcon'
+                  className="buttonIcon"
                   onClick={() => {
                     /* checkBP(
                     userData?.EMPL_NO,
@@ -1837,25 +1843,25 @@ const QuotationManager = () => {
                     setShowHideUpPrice(true);
                   }}
                 >
-                  <BiCloudUpload color='#070EFA' size={15} />
+                  <BiCloudUpload color="#070EFA" size={15} />
                   Up Giá
                 </IconButton>
                 <IconButton
-                  className='buttonIcon'
+                  className="buttonIcon"
                   onClick={() => {
                     setShowHideQuotationForm(true);
                   }}
                 >
-                  <AiOutlinePrinter color='#F900C8' size={15} />
+                  <AiOutlinePrinter color="#F900C8" size={15} />
                   In báo giá
                 </IconButton>
               </Item>
-              <Item name='searchPanel' />
-              <Item name='exportButton' />
-              <Item name='columnChooserButton' />
-              <Item name='addRowButton' />
-              <Item name='saveButton' />
-              <Item name='revertButton' />
+              <Item name="searchPanel" />
+              <Item name="exportButton" />
+              <Item name="columnChooserButton" />
+              <Item name="addRowButton" />
+              <Item name="saveButton" />
+              <Item name="revertButton" />
             </Toolbar>
             <FilterRow visible={true} />
             <SearchPanel visible={true} />
@@ -1866,33 +1872,33 @@ const QuotationManager = () => {
               allowedPageSizes={[5, 10, 15, 20, 100, 1000, 10000, "all"]}
               showNavigationButtons={true}
               showInfo={true}
-              infoText='Page #{0}. Total: {1} ({2} items)'
-              displayMode='compact'
+              infoText="Page #{0}. Total: {1} ({2} items)"
+              displayMode="compact"
             />
             <Column
-              dataField='CUST_NAME_KD'
-              caption='CUST_NAME_KD'
+              dataField="CUST_NAME_KD"
+              caption="CUST_NAME_KD"
               width={100}
             ></Column>
-            <Column dataField='CUST_CD' caption='CUST_CD' width={100}></Column>
-            <Column dataField='G_CODE' caption='G_CODE' width={100}></Column>
-            <Column dataField='G_NAME' caption='G_NAME' width={250}></Column>
+            <Column dataField="CUST_CD" caption="CUST_CD" width={100}></Column>
+            <Column dataField="G_CODE" caption="G_CODE" width={100}></Column>
+            <Column dataField="G_NAME" caption="G_NAME" width={250}></Column>
             <Column
-              dataField='G_NAME_KD'
-              caption='G_NAME_KD'
+              dataField="G_NAME_KD"
+              caption="G_NAME_KD"
               width={100}
             ></Column>
             <Column
-              dataField='PROD_MAIN_MATERIAL'
-              caption='PROD_MAIN_MATERIAL'
+              dataField="PROD_MAIN_MATERIAL"
+              caption="PROD_MAIN_MATERIAL"
               width={200}
             ></Column>
-            <Column dataField='MOQ' caption='MOQ' width={100}></Column>
+            <Column dataField="MOQ" caption="MOQ" width={100}></Column>
             <Column
-              dataField='PROD_PRICE'
-              caption='PROD_PRICE'
+              dataField="PROD_PRICE"
+              caption="PROD_PRICE"
               width={100}
-              dataType='number'
+              dataType="number"
               format={"decimal"}
               cellRender={(e: any) => {
                 return (
@@ -1906,10 +1912,10 @@ const QuotationManager = () => {
               }}
             ></Column>
             <Column
-              dataField='PRICE_DATE'
-              caption='PRICE_DATE'
+              dataField="PRICE_DATE"
+              caption="PRICE_DATE"
               width={100}
-              dataType='date'
+              dataType="date"
               cellRender={(e: any) => {
                 return (
                   <span style={{ color: "black", fontWeight: "normal" }}>
@@ -1919,8 +1925,8 @@ const QuotationManager = () => {
               }}
             ></Column>
             <Column
-              dataField='FINAL'
-              caption='APPROVAL'
+              dataField="FINAL"
+              caption="APPROVAL"
               width={100}
               cellRender={(e: any) => {
                 if (e.data.FINAL === "Y") {
@@ -1954,9 +1960,9 @@ const QuotationManager = () => {
             ></Column>
             <Summary>
               <TotalItem
-                alignment='right'
-                column='G_CODE'
-                summaryType='count'
+                alignment="right"
+                column="G_CODE"
+                summaryType="count"
                 valueFormat={"decimal"}
               />
             </Summary>
@@ -1964,11 +1970,11 @@ const QuotationManager = () => {
         </ResponsiveContainer>
       </div>
     ),
-    [banggia2]
+    [banggia2],
   );
   const upgiaMM2 = React.useMemo(
     () => (
-      <div className='datatb'>
+      <div className="datatb">
         <DataGrid
           style={{ fontSize: "0.7rem" }}
           autoNavigateToFocusedRow={true}
@@ -1979,8 +1985,8 @@ const QuotationManager = () => {
           columnResizingMode={"widget"}
           showColumnLines={true}
           dataSource={uploadExcelJson}
-          columnWidth='auto'
-          keyExpr='id'
+          columnWidth="auto"
+          keyExpr="id"
           height={"70vh"}
           showBorders={true}
           onSelectionChanged={(e) => {
@@ -1996,37 +2002,37 @@ const QuotationManager = () => {
             useNative={true}
             scrollByContent={true}
             scrollByThumb={true}
-            showScrollbar='onHover'
-            mode='virtual'
+            showScrollbar="onHover"
+            mode="virtual"
           />
-          <Selection mode='multiple' selectAllMode='allPages' />
+          <Selection mode="multiple" selectAllMode="allPages" />
           <Editing
             allowUpdating={false}
             allowAdding={false}
             allowDeleting={true}
-            mode='cell'
+            mode="cell"
             confirmDelete={false}
             onChangesChange={(e) => {}}
           />
           <Export enabled={true} />
           <Toolbar disabled={false}>
-            <Item location='before'>
+            <Item location="before">
               <IconButton
-                className='buttonIcon'
+                className="buttonIcon"
                 onClick={() => {
                   SaveExcel(banggia2, "PriceTable");
                 }}
               >
-                <AiFillFileExcel color='green' size={15} />
+                <AiFillFileExcel color="green" size={15} />
                 SAVE
               </IconButton>
             </Item>
-            <Item name='searchPanel' />
-            <Item name='exportButton' />
-            <Item name='columnChooserButton' />
-            <Item name='addRowButton' />
-            <Item name='saveButton' />
-            <Item name='revertButton' />
+            <Item name="searchPanel" />
+            <Item name="exportButton" />
+            <Item name="columnChooserButton" />
+            <Item name="addRowButton" />
+            <Item name="saveButton" />
+            <Item name="revertButton" />
           </Toolbar>
           <FilterRow visible={true} />
           <SearchPanel visible={true} />
@@ -2037,33 +2043,33 @@ const QuotationManager = () => {
             allowedPageSizes={[5, 10, 15, 20, 100, 1000, 10000, "all"]}
             showNavigationButtons={true}
             showInfo={true}
-            infoText='Page #{0}. Total: {1} ({2} items)'
-            displayMode='compact'
+            infoText="Page #{0}. Total: {1} ({2} items)"
+            displayMode="compact"
           />
           <Column
-            dataField='CUST_NAME_KD'
-            caption='CUST_NAME_KD'
+            dataField="CUST_NAME_KD"
+            caption="CUST_NAME_KD"
             width={100}
           ></Column>
-          <Column dataField='CUST_CD' caption='CUST_CD' width={100}></Column>
-          <Column dataField='G_CODE' caption='G_CODE' width={100}></Column>
-          <Column dataField='G_NAME' caption='G_NAME' width={250}></Column>
+          <Column dataField="CUST_CD" caption="CUST_CD" width={100}></Column>
+          <Column dataField="G_CODE" caption="G_CODE" width={100}></Column>
+          <Column dataField="G_NAME" caption="G_NAME" width={250}></Column>
           <Column
-            dataField='G_NAME_KD'
-            caption='G_NAME_KD'
+            dataField="G_NAME_KD"
+            caption="G_NAME_KD"
             width={100}
           ></Column>
           <Column
-            dataField='PROD_MAIN_MATERIAL'
-            caption='PROD_MAIN_MATERIAL'
+            dataField="PROD_MAIN_MATERIAL"
+            caption="PROD_MAIN_MATERIAL"
             width={200}
           ></Column>
-          <Column dataField='MOQ' caption='MOQ' width={100}></Column>
+          <Column dataField="MOQ" caption="MOQ" width={100}></Column>
           <Column
-            dataField='PROD_PRICE'
-            caption='PROD_PRICE'
+            dataField="PROD_PRICE"
+            caption="PROD_PRICE"
             width={100}
-            dataType='number'
+            dataType="number"
             format={"decimal"}
             cellRender={(e: any) => {
               return (
@@ -2077,10 +2083,10 @@ const QuotationManager = () => {
             }}
           ></Column>
           <Column
-            dataField='PRICE_DATE'
-            caption='PRICE_DATE'
+            dataField="PRICE_DATE"
+            caption="PRICE_DATE"
             width={100}
-            dataType='date'
+            dataType="date"
             cellRender={(e: any) => {
               return (
                 <span style={{ color: "black", fontWeight: "normal" }}>
@@ -2089,10 +2095,10 @@ const QuotationManager = () => {
               );
             }}
           ></Column>
-          <Column dataField='FINAL' caption='APPROVAL' width={100}></Column>
+          <Column dataField="FINAL" caption="APPROVAL" width={100}></Column>
           <Column
-            dataField='CHECKSTATUS'
-            caption='CHECKSTATUS'
+            dataField="CHECKSTATUS"
+            caption="CHECKSTATUS"
             width={100}
             cellRender={(e: any) => {
               return (
@@ -2111,16 +2117,16 @@ const QuotationManager = () => {
           ></Column>
           <Summary>
             <TotalItem
-              alignment='right'
-              column='G_CODE'
-              summaryType='count'
+              alignment="right"
+              column="G_CODE"
+              summaryType="count"
               valueFormat={"decimal"}
             />
           </Summary>
         </DataGrid>
       </div>
     ),
-    [uploadExcelJson]
+    [uploadExcelJson],
   );
   const readUploadFile = (e: any) => {
     e.preventDefault();
@@ -2149,11 +2155,11 @@ const QuotationManager = () => {
           json.map((element: any, index: number) => {
             let temp_fil: CodeListDataUpGia = codelist.filter(
               (ele: CodeListDataUpGia, index: number) =>
-                ele.G_CODE === element.G_CODE
+                ele.G_CODE === element.G_CODE,
             )[0];
             let temp_filCUST: CustomerListData = customerList.filter(
               (ele: CustomerListData, index: number) =>
-                ele.CUST_CD === element.CUST_CD
+                ele.CUST_CD === element.CUST_CD,
             )[0];
             return {
               ...element,
@@ -2173,7 +2179,7 @@ const QuotationManager = () => {
                   ? moment.utc().format("YYYY-MM-DD")
                   : element.PRICE_DATE,
             };
-          })
+          }),
         );
       };
       reader.readAsArrayBuffer(e.target.files[0]);
@@ -2278,14 +2284,14 @@ const QuotationManager = () => {
                     : "",
                 id: index,
               };
-            }
+            },
           );
           setBangGia(loaded_data);
           setSelectedDataSource(
             new PivotGridDataSource({
               fields: fields_banggia,
               store: loaded_data,
-            })
+            }),
           );
         } else {
           Swal.fire("Thông báo", " Có lỗi : " + response.data.message, "error");
@@ -2319,14 +2325,14 @@ const QuotationManager = () => {
                     : "",
                 id: index,
               };
-            }
+            },
           );
           setBangGia2(loaded_data);
           setSelectedDataSource(
             new PivotGridDataSource({
               fields: fields_banggia2,
               store: loaded_data,
-            })
+            }),
           );
         } else {
           Swal.fire("Thông báo", " Có lỗi : " + response.data.message, "error");
@@ -2360,14 +2366,14 @@ const QuotationManager = () => {
                     : "",
                 id: index,
               };
-            }
+            },
           );
           setBangGia2(loaded_data);
           setSelectedDataSource(
             new PivotGridDataSource({
               fields: fields_banggia2,
               store: loaded_data,
-            })
+            }),
           );
         } else {
           Swal.fire("Thông báo", " Có lỗi : " + response.data.message, "error");
@@ -2388,16 +2394,16 @@ const QuotationManager = () => {
     dongboGiaPO();
   }, [sh]);
   return (
-    <div className='quotationmanager'>
-      <div className='tracuuDataInspection'>
+    <div className="quotationmanager">
+      <div className="tracuuDataInspection">
         {showhidesearchdiv.current == true && (
-          <div className='tracuuDataInspectionform'>
-            <div className='forminput'>
-              <div className='forminputcolumn'>
+          <div className="tracuuDataInspectionform">
+            <div className="forminput">
+              <div className="forminputcolumn">
                 <label>
                   <b>Từ ngày:</b>
                   <input
-                    type='date'
+                    type="date"
                     value={fromdate.slice(0, 10)}
                     onChange={(e) => setFromDate(e.target.value)}
                   ></input>
@@ -2405,18 +2411,18 @@ const QuotationManager = () => {
                 <label>
                   <b>Tới ngày:</b>{" "}
                   <input
-                    type='date'
+                    type="date"
                     value={todate.slice(0, 10)}
                     onChange={(e) => setToDate(e.target.value)}
                   ></input>
                 </label>
               </div>
-              <div className='forminputcolumn'>
+              <div className="forminputcolumn">
                 <label>
                   <b>Code KD:</b>{" "}
                   <input
-                    type='text'
-                    placeholder='GH63-xxxxxx'
+                    type="text"
+                    placeholder="GH63-xxxxxx"
                     value={codeKD}
                     onChange={(e) => setCodeKD(e.target.value)}
                   ></input>
@@ -2424,19 +2430,19 @@ const QuotationManager = () => {
                 <label>
                   <b>Code ERP:</b>{" "}
                   <input
-                    type='text'
-                    placeholder='7C123xxx'
+                    type="text"
+                    placeholder="7C123xxx"
                     value={codeCMS}
                     onChange={(e) => setCodeCMS(e.target.value)}
                   ></input>
                 </label>
               </div>
-              <div className='forminputcolumn'>
+              <div className="forminputcolumn">
                 <label>
                   <b>Tên Liệu:</b>{" "}
                   <input
-                    type='text'
-                    placeholder='SJ-203020HC'
+                    type="text"
+                    placeholder="SJ-203020HC"
                     value={m_name}
                     onChange={(e) => setM_Name(e.target.value)}
                   ></input>
@@ -2444,30 +2450,30 @@ const QuotationManager = () => {
                 <label>
                   <b>Tên khách hàng:</b>{" "}
                   <input
-                    type='text'
-                    placeholder='SEVT'
+                    type="text"
+                    placeholder="SEVT"
                     value={cust_name}
                     onChange={(e) => setCust_Name(e.target.value)}
                   ></input>
                 </label>
               </div>
-              <div className='forminputcolumn'>
+              <div className="forminputcolumn">
                 <label>
                   <b>All Time:</b>
                   <input
-                    type='checkbox'
-                    name='alltimecheckbox'
+                    type="checkbox"
+                    name="alltimecheckbox"
                     defaultChecked={alltime}
                     onChange={() => setAllTime(!alltime)}
                   ></input>
                 </label>
               </div>
-              <div className='forminputcolumn'></div>
+              <div className="forminputcolumn"></div>
             </div>
-            <div className='formbutton'>
-              <div className='buttoncolumn'>
+            <div className="formbutton">
+              <div className="buttoncolumn">
                 <IconButton
-                  className='buttonIcon'
+                  className="buttonIcon"
                   onClick={() => {
                     setSelectButton(false);
                     /* checkBP(
@@ -2481,17 +2487,17 @@ const QuotationManager = () => {
                       ["KD"],
                       ["ALL"],
                       ["ALL"],
-                      loadBangGiaMoiNhat
+                      loadBangGiaMoiNhat,
                     );
                   }}
                 >
-                  <GrUpdate color='#070EFA' size={10} />
+                  <GrUpdate color="#070EFA" size={10} />
                   <span style={{ fontSize: "0.6rem", padding: 0 }}>
                     Giá mới nhất
                   </span>
                 </IconButton>
                 <IconButton
-                  className='buttonIcon'
+                  className="buttonIcon"
                   onClick={() => {
                     setSelectButton(true);
                     /* checkBP(
@@ -2503,15 +2509,15 @@ const QuotationManager = () => {
                     checkBP(userData, ["KD"], ["ALL"], ["ALL"], loadBangGia);
                   }}
                 >
-                  <AiOutlineHistory color='#070EFA' size={10} />
+                  <AiOutlineHistory color="#070EFA" size={10} />
                   <span style={{ fontSize: "0.6rem", padding: 0 }}>
                     Giá ngang
                   </span>
                 </IconButton>
               </div>
-              <div className='buttoncolumn'>
+              <div className="buttoncolumn">
                 <IconButton
-                  className='buttonIcon'
+                  className="buttonIcon"
                   onClick={() => {
                     setSelectButton(false);
                     /*  checkBP(
@@ -2523,14 +2529,14 @@ const QuotationManager = () => {
                     checkBP(userData, ["KD"], ["ALL"], ["ALL"], loadBangGia2);
                   }}
                 >
-                  <MdOutlineManageHistory color='#070EFA' size={10} />
+                  <MdOutlineManageHistory color="#070EFA" size={10} />
                   <span style={{ fontSize: "0.6rem", padding: 0 }}>
                     Giá dọc
                   </span>
                 </IconButton>
 
                 <IconButton
-                  className='buttonIcon'
+                  className="buttonIcon"
                   onClick={() => {
                     console.log(selectedBangGiaDocRow);
                     /*  checkBP(
@@ -2542,7 +2548,7 @@ const QuotationManager = () => {
                     checkBP(userData, ["KD"], ["Leader"], ["ALL"], pheduyetgia);
                   }}
                 >
-                  <FcApproval color='#070EFA' size={10} />
+                  <FcApproval color="#070EFA" size={10} />
                   <span style={{ fontSize: "0.6rem", padding: 0 }}>
                     Duyệt/Hủy Duyệt Giá
                   </span>
@@ -2551,57 +2557,57 @@ const QuotationManager = () => {
             </div>
           </div>
         )}
-        <div className='tracuuYCSXTable'>
+        <div className="tracuuYCSXTable">
           {selectbutton && banggiaMM}
           {!selectbutton && banggiaMM2}
         </div>
         {showhidePivotTable && (
-          <div className='pivottable1'>
+          <div className="pivottable1">
             <IconButton
-              className='buttonIcon'
+              className="buttonIcon"
               onClick={() => {
                 setShowHidePivotTable(false);
               }}
             >
-              <AiFillCloseCircle color='blue' size={15} />
+              <AiFillCloseCircle color="blue" size={15} />
               Close
             </IconButton>
             <PivotTable
               datasource={selectedDataSource}
-              tableID='datasxtablepivot'
+              tableID="datasxtablepivot"
             />
           </div>
         )}
         {showhideupprice && (
-          <div className='upgia'>
-            <div className='barbutton'>
+          <div className="upgia">
+            <div className="barbutton">
               <IconButton
-                className='buttonIcon'
+                className="buttonIcon"
                 onClick={() => {
                   setShowHideUpPrice(false);
                 }}
               >
-                <AiFillCloseCircle color='blue' size={15} />
+                <AiFillCloseCircle color="blue" size={15} />
                 Close
               </IconButton>
-              <label htmlFor='upload'>
+              <label htmlFor="upload">
                 <b>Chọn file Excel: </b>
                 <input
-                  className='selectfilebutton'
-                  type='file'
-                  name='upload'
-                  id='upload'
+                  className="selectfilebutton"
+                  type="file"
+                  name="upload"
+                  id="upload"
                   onChange={(e: any) => {
                     readUploadFile(e);
                   }}
                 />
               </label>
-              <IconButton className='buttonIcon' onClick={() => {}}>
-                <AiOutlineCheckSquare color='#EB2EFE' size={15} />
+              <IconButton className="buttonIcon" onClick={() => {}}>
+                <AiOutlineCheckSquare color="#EB2EFE" size={15} />
                 Check Giá
               </IconButton>
               <IconButton
-                className='buttonIcon'
+                className="buttonIcon"
                 onClick={() => {
                   /*  checkBP(
                    userData?.EMPL_NO,
@@ -2612,16 +2618,16 @@ const QuotationManager = () => {
                   checkBP(userData, ["KD"], ["ALL"], ["ALL"], uploadgia);
                 }}
               >
-                <BiCloudUpload color='#FA0022' size={15} />
+                <BiCloudUpload color="#FA0022" size={15} />
                 Up Giá
               </IconButton>
-              <div className='upgiaform'>
+              <div className="upgiaform">
                 <Autocomplete
                   sx={{ fontSize: 10, width: "150px" }}
-                  size='small'
+                  size="small"
                   disablePortal
                   options={customerList}
-                  className='autocomplete1'
+                  className="autocomplete1"
                   filterOptions={filterOptions1}
                   isOptionEqualToValue={(option: any, value: any) =>
                     option.CUST_CD === value.CUST_CD
@@ -2630,7 +2636,7 @@ const QuotationManager = () => {
                     `${option.CUST_CD}: ${option.CUST_NAME_KD}`
                   }
                   renderInput={(params) => (
-                    <TextField {...params} label='Select customer' />
+                    <TextField {...params} label="Select customer" />
                   )}
                   value={selectedCust_CD}
                   onChange={(event: any, newValue: CustomerListData | any) => {
@@ -2640,13 +2646,13 @@ const QuotationManager = () => {
                 />
               </div>
 
-              <div className='upgiaform'>
+              <div className="upgiaform">
                 <Autocomplete
                   sx={{ fontSize: 10, width: "250px" }}
-                  size='small'
+                  size="small"
                   disablePortal
                   options={codelist}
-                  className='autocomplete1'
+                  className="autocomplete1"
                   filterOptions={filterOptions1}
                   isOptionEqualToValue={(option: any, value: any) =>
                     option.G_CODE === value.G_CODE
@@ -2655,7 +2661,7 @@ const QuotationManager = () => {
                     `${option.G_CODE}: ${option.G_NAME}`
                   }
                   renderInput={(params) => (
-                    <TextField {...params} label='Select code' />
+                    <TextField {...params} label="Select code" />
                   )}
                   onChange={(event: any, newValue: CodeListDataUpGia | any) => {
                     console.log(newValue);
@@ -2664,45 +2670,45 @@ const QuotationManager = () => {
                   value={selectedCode}
                 />
               </div>
-              <div className='upgiaform'>
+              <div className="upgiaform">
                 <TextField
                   value={moq}
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                     setMOQ(Number(e.target.value))
                   }
-                  size='small'
-                  color='success'
-                  className='autocomplete'
-                  id='outlined-basic'
-                  label='MOQ'
-                  variant='outlined'
+                  size="small"
+                  color="success"
+                  className="autocomplete"
+                  id="outlined-basic"
+                  label="MOQ"
+                  variant="outlined"
                 />
               </div>
-              <div className='upgiaform'>
+              <div className="upgiaform">
                 <TextField
                   value={newprice}
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                     setNewPrice(e.target.value)
                   }
-                  size='small'
-                  color='success'
-                  className='autocomplete'
-                  id='outlined-basic'
-                  label='Price'
-                  variant='outlined'
+                  size="small"
+                  color="success"
+                  className="autocomplete"
+                  id="outlined-basic"
+                  label="Price"
+                  variant="outlined"
                 />
               </div>
-              <div className='upgiaform'>
+              <div className="upgiaform">
                 <input
-                  className='inputdata'
-                  placeholder='PriceDate'
-                  type='date'
+                  className="inputdata"
+                  placeholder="PriceDate"
+                  type="date"
                   value={newpricedate.slice(0, 10)}
                   onChange={(e) => setNewPriceDate(e.target.value)}
                 ></input>
               </div>
               <IconButton
-                className='buttonIcon'
+                className="buttonIcon"
                 onClick={() => {
                   let temp_row: BANGGIA_DATA2 = {
                     id: uploadExcelJson.length + 1,
@@ -2732,17 +2738,17 @@ const QuotationManager = () => {
                   setUploadExcelJSon([...uploadExcelJson, temp_row]);
                 }}
               >
-                <AiFillFileAdd color='#F50354' size={15} />
+                <AiFillFileAdd color="#F50354" size={15} />
                 Add
               </IconButton>
             </div>
-            <div className='upgiatable'>{upgiaMM2}</div>
+            <div className="upgiatable">{upgiaMM2}</div>
           </div>
         )}
         {showhideQuotationForm && (
-          <div className='quotation_from'>
+          <div className="quotation_from">
             {" "}
-            <div className='buttondiv'>
+            <div className="buttondiv">
               <Button onClick={handlePrint}>Print Quotation</Button>
               <Button
                 onClick={() => {
@@ -2752,7 +2758,7 @@ const QuotationManager = () => {
                 Close
               </Button>
             </div>
-            <div className='printpagediv' ref={quotationprintref}>
+            <div className="printpagediv" ref={quotationprintref}>
               <QuotationForm QUOTATION_DATA={selectedBangGiaDocRow} />
             </div>
           </div>

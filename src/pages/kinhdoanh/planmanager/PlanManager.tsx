@@ -26,10 +26,8 @@ import { RootState } from "../../../redux/store";
 import { TbLogout } from "react-icons/tb";
 import { PlanTableData, UserData } from "../../../api/GlobalInterface";
 
-
-
 const PlanManager = () => {
-  const [showhidesearchdiv, setShowHideSearchDiv]= useState(true);
+  const [showhidesearchdiv, setShowHideSearchDiv] = useState(true);
   const [selection, setSelection] = useState<any>({
     trapo: true,
     thempohangloat: false,
@@ -38,7 +36,7 @@ const PlanManager = () => {
     testinvoicetable: false,
   });
   const userData: UserData | undefined = useSelector(
-    (state: RootState) => state.totalSlice.userData
+    (state: RootState) => state.totalSlice.userData,
   );
   const [uploadExcelJson, setUploadExcelJSon] = useState<Array<any>>([]);
   const [isLoading, setisLoading] = useState(false);
@@ -514,7 +512,7 @@ const PlanManager = () => {
         <GridToolbarFilterButton />
         <GridToolbarDensitySelector />
         <button
-          className='saveexcelbutton'
+          className="saveexcelbutton"
           onClick={() => {
             SaveExcel(uploadExcelJson, "Uploaded Plan");
           }}
@@ -528,48 +526,54 @@ const PlanManager = () => {
   function CustomToolbarPOTable() {
     return (
       <GridToolbarContainer>
-      <IconButton
-          className='buttonIcon'
+        <IconButton
+          className="buttonIcon"
           onClick={() => {
             setShowHideSearchDiv(!showhidesearchdiv);
           }}
         >
-          <TbLogout color='green' size={15} />
+          <TbLogout color="green" size={15} />
           Show/Hide
         </IconButton>
         <IconButton
-          className='buttonIcon'
+          className="buttonIcon"
           onClick={() => {
             SaveExcel(plandatatable, "Plan Table");
           }}
         >
-          <AiFillFileExcel color='green' size={15} />
+          <AiFillFileExcel color="green" size={15} />
           SAVE
         </IconButton>
         <IconButton
-          className='buttonIcon'
+          className="buttonIcon"
           onClick={() => {
-           /*  checkBP(
+            /*  checkBP(
               userData?.EMPL_NO,
               userData?.MAINDEPTNAME,
               ["KD"],
               handleConfirmDeletePlan
             ); */
-            checkBP(userData,['KD'],['ALL'],['ALL'],handleConfirmDeletePlan);
+            checkBP(
+              userData,
+              ["KD"],
+              ["ALL"],
+              ["ALL"],
+              handleConfirmDeletePlan,
+            );
             //handleConfirmDeletePlan();
           }}
         >
-          <MdOutlineDelete color='red' size={15} />
+          <MdOutlineDelete color="red" size={15} />
           XÓA PLAN
         </IconButton>
         <GridToolbarQuickFilter />
         <IconButton
-          className='buttonIcon'
+          className="buttonIcon"
           onClick={() => {
             setShowHidePivotTable(!showhidePivotTable);
           }}
         >
-          <MdOutlinePivotTableChart color='#ff33bb' size={15} />
+          <MdOutlinePivotTableChart color="#ff33bb" size={15} />
           Pivot
         </IconButton>
       </GridToolbarContainer>
@@ -624,19 +628,31 @@ const PlanManager = () => {
               D9:
                 element.D9 === undefined || element.D9 === "" ? 0 : element.D9,
               D10:
-                element.D10 === undefined || element.D10 === "" ? 0 : element.D10,
+                element.D10 === undefined || element.D10 === ""
+                  ? 0
+                  : element.D10,
               D11:
-                element.D11 === undefined || element.D11 === "" ? 0 : element.D11,
+                element.D11 === undefined || element.D11 === ""
+                  ? 0
+                  : element.D11,
               D12:
-                element.D12 === undefined || element.D12 === "" ? 0 : element.D12,
+                element.D12 === undefined || element.D12 === ""
+                  ? 0
+                  : element.D12,
               D13:
-                element.D13 === undefined || element.D13 === "" ? 0 : element.D13,
+                element.D13 === undefined || element.D13 === ""
+                  ? 0
+                  : element.D13,
               D14:
-                element.D14 === undefined || element.D14 === "" ? 0 : element.D14,
+                element.D14 === undefined || element.D14 === ""
+                  ? 0
+                  : element.D14,
               D15:
-                element.D15 === undefined || element.D15 === "" ? 0 : element.D15,
+                element.D15 === undefined || element.D15 === ""
+                  ? 0
+                  : element.D15,
             };
-          })
+          }),
         );
       };
       reader.readAsArrayBuffer(e.target.files[0]);
@@ -667,23 +683,23 @@ const PlanManager = () => {
               return {
                 ...element,
                 PLAN_DATE: element.PLAN_DATE.slice(0, 10),
-                D1:   element.D1 ===null  ? 0 : element.D1,
-                D2:   element.D2 ===null  ? 0 : element.D2,
-                D3:   element.D3 ===null  ? 0 : element.D3,
-                D4:   element.D4 ===null  ? 0 : element.D4,
-                D5:   element.D5 ===null  ? 0 : element.D5,
-                D6:   element.D6 === null ? 0 : element.D6,
-                D7:   element.D7 ===null  ? 0 : element.D7,
-                D8:   element.D8 ===null  ? 0 : element.D8,
-                D9:   element.D9 ===null  ? 0 : element.D9,
-                D10:  element.D10 === null ? 0 : element.D10,
-                D11:  element.D11 === null ? 0 : element.D11,
-                D12:  element.D12 === null ? 0 : element.D12,
-                D13:  element.D13 === null ? 0 : element.D13,
-                D14:  element.D14 === null ? 0 : element.D14,
-                D15:  element.D15 === null ? 0 : element.D15,
+                D1: element.D1 === null ? 0 : element.D1,
+                D2: element.D2 === null ? 0 : element.D2,
+                D3: element.D3 === null ? 0 : element.D3,
+                D4: element.D4 === null ? 0 : element.D4,
+                D5: element.D5 === null ? 0 : element.D5,
+                D6: element.D6 === null ? 0 : element.D6,
+                D7: element.D7 === null ? 0 : element.D7,
+                D8: element.D8 === null ? 0 : element.D8,
+                D9: element.D9 === null ? 0 : element.D9,
+                D10: element.D10 === null ? 0 : element.D10,
+                D11: element.D11 === null ? 0 : element.D11,
+                D12: element.D12 === null ? 0 : element.D12,
+                D13: element.D13 === null ? 0 : element.D13,
+                D14: element.D14 === null ? 0 : element.D14,
+                D15: element.D15 === null ? 0 : element.D15,
               };
-            }
+            },
           );
           setPlanDataTable(loadeddata);
           setisLoading(false);
@@ -691,7 +707,7 @@ const PlanManager = () => {
           Swal.fire(
             "Thông báo",
             "Đã load " + response.data.data.length + " dòng",
-            "success"
+            "success",
           );
         } else {
           Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
@@ -839,18 +855,18 @@ const PlanManager = () => {
           D14: uploadExcelJson[i].D14,
           D15: uploadExcelJson[i].D15,
         })
-        .then((response) => {
-          console.log(response.data.tk_status);
-          if (response.data.tk_status !== "NG") {
-            tempjson[i].CHECKSTATUS = "OK";
-          } else {
-            err_code = 5;
-            tempjson[i].CHECKSTATUS = "NG: Lỗi SQL: " + response.data.message;
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+          .then((response) => {
+            console.log(response.data.tk_status);
+            if (response.data.tk_status !== "NG") {
+              tempjson[i].CHECKSTATUS = "OK";
+            } else {
+              err_code = 5;
+              tempjson[i].CHECKSTATUS = "NG: Lỗi SQL: " + response.data.message;
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
       } else if (err_code === 1) {
         tempjson[i].CHECKSTATUS = "NG:Plan đã tồn tại";
       } else if (err_code === 2) {
@@ -935,7 +951,7 @@ const PlanManager = () => {
   const handlePlanSelectionforUpdate = (ids: GridSelectionModel) => {
     const selectedID = new Set(ids);
     let datafilter = plandatatable.filter((element: any) =>
-      selectedID.has(element.PLAN_ID)
+      selectedID.has(element.PLAN_ID),
     );
     if (datafilter.length > 0) {
       setPlanDataTableFilter(datafilter);
@@ -970,7 +986,7 @@ const PlanManager = () => {
         Swal.fire(
           "Thông báo",
           "Xóa Plan thành công (chỉ Plan của người đăng nhập)!",
-          "success"
+          "success",
         );
       } else {
         Swal.fire("Thông báo", "Có lỗi SQL!", "error");
@@ -991,8 +1007,8 @@ const PlanManager = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         Swal.fire("Tiến hành Xóa", "Đang Xóa Plan hàng loạt", "success");
-       /*  checkBP(userData?.EMPL_NO, userData?.MAINDEPTNAME, ["KD"], deletePlan); */
-        checkBP(userData,['KD'],['ALL'],['ALL'],deletePlan);
+        /*  checkBP(userData?.EMPL_NO, userData?.MAINDEPTNAME, ["KD"], deletePlan); */
+        checkBP(userData, ["KD"], ["ALL"], ["ALL"], deletePlan);
         //deletePlan();
       }
     });
@@ -1319,25 +1335,25 @@ const PlanManager = () => {
   });
   useEffect(() => {}, []);
   return (
-    <div className='planmanager'>
-      <div className='mininavbar'>
+    <div className="planmanager">
+      <div className="mininavbar">
         <div
-          className='mininavitem'
+          className="mininavitem"
           onClick={() => setNav(1)}
           style={{
             backgroundColor: selection.trapo === true ? "#02c712" : "#abc9ae",
             color: selection.trapo === true ? "yellow" : "yellow",
           }}
         >
-          <span className='mininavtext'>Tra PLAN</span>
+          <span className="mininavtext">Tra PLAN</span>
         </div>
         <div
-          className='mininavitem'
+          className="mininavitem"
           onClick={() =>
             /* checkBP(userData?.EMPL_NO, userData?.MAINDEPTNAME, ["KD"], () => {
               setNav(2);
             }) */
-            checkBP(userData,['KD'],['ALL'],['ALL'],()=> {
+            checkBP(userData, ["KD"], ["ALL"], ["ALL"], () => {
               setNav(2);
             })
           }
@@ -1347,28 +1363,28 @@ const PlanManager = () => {
             color: selection.thempohangloat === true ? "yellow" : "yellow",
           }}
         >
-          <span className='mininavtext'>Thêm PLAN</span>
+          <span className="mininavtext">Thêm PLAN</span>
         </div>
       </div>
       {selection.thempohangloat && (
-        <div className='newplan'>          
-          <div className='batchnewplan'>
-          <h3>Thêm Plan Hàng Loạt</h3>         
-            <form className='formupload'>
-              <label htmlFor='upload'>
+        <div className="newplan">
+          <div className="batchnewplan">
+            <h3>Thêm Plan Hàng Loạt</h3>
+            <form className="formupload">
+              <label htmlFor="upload">
                 <b>Chọn file Excel: </b>
                 <input
-                  className='selectfilebutton'
-                  type='file'
-                  name='upload'
-                  id='upload'
+                  className="selectfilebutton"
+                  type="file"
+                  name="upload"
+                  id="upload"
                   onChange={(e: any) => {
                     readUploadFile(e);
                   }}
                 />
               </label>
               <div
-                className='checkpobutton'
+                className="checkpobutton"
                 onClick={(e) => {
                   e.preventDefault();
                   confirmCheckPlanHangLoat();
@@ -1377,7 +1393,7 @@ const PlanManager = () => {
                 Check Plan
               </div>
               <div
-                className='uppobutton'
+                className="uppobutton"
                 onClick={(e) => {
                   e.preventDefault();
                   confirmUpPlanHangLoat();
@@ -1386,7 +1402,7 @@ const PlanManager = () => {
                 Up Plan
               </div>
             </form>
-            <div className='insertPlanTable'>
+            <div className="insertPlanTable">
               {true && (
                 <DataGrid
                   sx={{ fontSize: "0.7rem" }}
@@ -1401,7 +1417,7 @@ const PlanManager = () => {
                   rowsPerPageOptions={[
                     5, 10, 50, 100, 500, 1000, 5000, 10000, 100000,
                   ]}
-                  editMode='row'
+                  editMode="row"
                 />
               )}
             </div>
@@ -1409,150 +1425,152 @@ const PlanManager = () => {
         </div>
       )}
       {selection.trapo && (
-        <div className='tracuuPlan'>
-          {showhidesearchdiv && <div className='tracuuPlanform'>
-            <div className='forminput'>
-              <div className='forminputcolumn'>
-                <label>
-                  <b>Từ ngày:</b>
-                  <input
-                    type='date'
-                    value={fromdate.slice(0, 10)}
-                    onChange={(e) => setFromDate(e.target.value)}
-                  ></input>
-                </label>
-                <label>
-                  <b>Tới ngày:</b>{" "}
-                  <input
-                    type='date'
-                    value={todate.slice(0, 10)}
-                    onChange={(e) => setToDate(e.target.value)}
-                  ></input>
-                </label>
+        <div className="tracuuPlan">
+          {showhidesearchdiv && (
+            <div className="tracuuPlanform">
+              <div className="forminput">
+                <div className="forminputcolumn">
+                  <label>
+                    <b>Từ ngày:</b>
+                    <input
+                      type="date"
+                      value={fromdate.slice(0, 10)}
+                      onChange={(e) => setFromDate(e.target.value)}
+                    ></input>
+                  </label>
+                  <label>
+                    <b>Tới ngày:</b>{" "}
+                    <input
+                      type="date"
+                      value={todate.slice(0, 10)}
+                      onChange={(e) => setToDate(e.target.value)}
+                    ></input>
+                  </label>
+                </div>
+                <div className="forminputcolumn">
+                  <label>
+                    <b>Code KD:</b>{" "}
+                    <input
+                      type="text"
+                      placeholder="GH63-xxxxxx"
+                      value={codeKD}
+                      onChange={(e) => setCodeKD(e.target.value)}
+                    ></input>
+                  </label>
+                  <label>
+                    <b>Code ERP:</b>{" "}
+                    <input
+                      type="text"
+                      placeholder="7C123xxx"
+                      value={codeCMS}
+                      onChange={(e) => setCodeCMS(e.target.value)}
+                    ></input>
+                  </label>
+                </div>
+                <div className="forminputcolumn">
+                  <label>
+                    <b>Tên nhân viên:</b>{" "}
+                    <input
+                      type="text"
+                      placeholder="Trang"
+                      value={empl_name}
+                      onChange={(e) => setEmpl_Name(e.target.value)}
+                    ></input>
+                  </label>
+                  <label>
+                    <b>Khách:</b>{" "}
+                    <input
+                      type="text"
+                      placeholder="SEVT"
+                      value={cust_name}
+                      onChange={(e) => setCust_Name(e.target.value)}
+                    ></input>
+                  </label>
+                </div>
+                <div className="forminputcolumn">
+                  <label>
+                    <b>Loại sản phẩm:</b>{" "}
+                    <input
+                      type="text"
+                      placeholder="TSP"
+                      value={prod_type}
+                      onChange={(e) => setProdType(e.target.value)}
+                    ></input>
+                  </label>
+                  <label>
+                    <b>ID:</b>{" "}
+                    <input
+                      type="text"
+                      placeholder="12345"
+                      value={id}
+                      onChange={(e) => setID(e.target.value)}
+                    ></input>
+                  </label>
+                </div>
+                <div className="forminputcolumn">
+                  <label>
+                    <b>PO NO:</b>{" "}
+                    <input
+                      type="text"
+                      placeholder="123abc"
+                      value={po_no}
+                      onChange={(e) => setPo_No(e.target.value)}
+                    ></input>
+                  </label>
+                  <label>
+                    <b>Vật liệu:</b>{" "}
+                    <input
+                      type="text"
+                      placeholder="SJ-203020HC"
+                      value={material}
+                      onChange={(e) => setMaterial(e.target.value)}
+                    ></input>
+                  </label>
+                </div>
+                <div className="forminputcolumn">
+                  <label>
+                    <b>Over/OK:</b>{" "}
+                    <input
+                      type="text"
+                      placeholder="OVER"
+                      value={over}
+                      onChange={(e) => setOver(e.target.value)}
+                    ></input>
+                  </label>
+                  <label>
+                    <b>Invoice No:</b>{" "}
+                    <input
+                      type="text"
+                      placeholder="số invoice"
+                      value={invoice_no}
+                      onChange={(e) => setInvoice_No(e.target.value)}
+                    ></input>
+                  </label>
+                </div>
               </div>
-              <div className='forminputcolumn'>
+              <div className="formbutton">
                 <label>
-                  <b>Code KD:</b>{" "}
+                  <b>All Time:</b>
                   <input
-                    type='text'
-                    placeholder='GH63-xxxxxx'
-                    value={codeKD}
-                    onChange={(e) => setCodeKD(e.target.value)}
+                    type="checkbox"
+                    name="alltimecheckbox"
+                    defaultChecked={alltime}
+                    onChange={() => setAllTime(!alltime)}
                   ></input>
                 </label>
-                <label>
-                  <b>Code ERP:</b>{" "}
-                  <input
-                    type='text'
-                    placeholder='7C123xxx'
-                    value={codeCMS}
-                    onChange={(e) => setCodeCMS(e.target.value)}
-                  ></input>
-                </label>
-              </div>
-              <div className='forminputcolumn'>
-                <label>
-                  <b>Tên nhân viên:</b>{" "}
-                  <input
-                    type='text'
-                    placeholder='Trang'
-                    value={empl_name}
-                    onChange={(e) => setEmpl_Name(e.target.value)}
-                  ></input>
-                </label>
-                <label>
-                  <b>Khách:</b>{" "}
-                  <input
-                    type='text'
-                    placeholder='SEVT'
-                    value={cust_name}
-                    onChange={(e) => setCust_Name(e.target.value)}
-                  ></input>
-                </label>
-              </div>
-              <div className='forminputcolumn'>
-                <label>
-                  <b>Loại sản phẩm:</b>{" "}
-                  <input
-                    type='text'
-                    placeholder='TSP'
-                    value={prod_type}
-                    onChange={(e) => setProdType(e.target.value)}
-                  ></input>
-                </label>
-                <label>
-                  <b>ID:</b>{" "}
-                  <input
-                    type='text'
-                    placeholder='12345'
-                    value={id}
-                    onChange={(e) => setID(e.target.value)}
-                  ></input>
-                </label>
-              </div>
-              <div className='forminputcolumn'>
-                <label>
-                  <b>PO NO:</b>{" "}
-                  <input
-                    type='text'
-                    placeholder='123abc'
-                    value={po_no}
-                    onChange={(e) => setPo_No(e.target.value)}
-                  ></input>
-                </label>
-                <label>
-                  <b>Vật liệu:</b>{" "}
-                  <input
-                    type='text'
-                    placeholder='SJ-203020HC'
-                    value={material}
-                    onChange={(e) => setMaterial(e.target.value)}
-                  ></input>
-                </label>
-              </div>
-              <div className='forminputcolumn'>
-                <label>
-                  <b>Over/OK:</b>{" "}
-                  <input
-                    type='text'
-                    placeholder='OVER'
-                    value={over}
-                    onChange={(e) => setOver(e.target.value)}
-                  ></input>
-                </label>
-                <label>
-                  <b>Invoice No:</b>{" "}
-                  <input
-                    type='text'
-                    placeholder='số invoice'
-                    value={invoice_no}
-                    onChange={(e) => setInvoice_No(e.target.value)}
-                  ></input>
-                </label>
+                <IconButton
+                  className="buttonIcon"
+                  onClick={() => {
+                    handletraPlan();
+                  }}
+                >
+                  <FcSearch color="green" size={30} />
+                  Search
+                </IconButton>
               </div>
             </div>
-            <div className='formbutton'>
-              <label>
-                <b>All Time:</b>
-                <input
-                  type='checkbox'
-                  name='alltimecheckbox'
-                  defaultChecked={alltime}
-                  onChange={() => setAllTime(!alltime)}
-                ></input>
-              </label>
-              <IconButton
-                className='buttonIcon'
-                onClick={() => {
-                  handletraPlan();
-                }}
-              >
-                <FcSearch color='green' size={30} />
-                Search
-              </IconButton>
-            </div>
-          </div>}
-          <div className='tracuuPlanTable'>
+          )}
+          <div className="tracuuPlanTable">
             <DataGrid
               sx={{ fontSize: "0.7rem" }}
               components={{
@@ -1566,7 +1584,7 @@ const PlanManager = () => {
               rowsPerPageOptions={[
                 5, 10, 50, 100, 500, 1000, 5000, 10000, 100000,
               ]}
-              editMode='row'
+              editMode="row"
               getRowId={(row) => row.PLAN_ID}
               checkboxSelection
               disableSelectionOnClick
@@ -1578,17 +1596,17 @@ const PlanManager = () => {
         </div>
       )}
       {showhidePivotTable && (
-        <div className='pivottable1'>
+        <div className="pivottable1">
           <IconButton
-            className='buttonIcon'
+            className="buttonIcon"
             onClick={() => {
               setShowHidePivotTable(false);
             }}
           >
-            <AiFillCloseCircle color='blue' size={25} />
+            <AiFillCloseCircle color="blue" size={25} />
             Close
           </IconButton>
-          <PivotTable datasource={dataSource} tableID='invoicetablepivot' />
+          <PivotTable datasource={dataSource} tableID="invoicetablepivot" />
         </div>
       )}
     </div>

@@ -32,20 +32,26 @@ import DrawComponentTBG from "../ycsxmanager/DrawComponent/DrawComponentTBG";
 import { BiSave } from "react-icons/bi";
 import { GrUpdate } from "react-icons/gr";
 import { TbLogout } from "react-icons/tb";
-import { BANGGIA_DATA_CALC, BOM_GIA, CODEDATA, DEFAULT_DM, GIANVL, UserData } from "../../../api/GlobalInterface";
-
+import {
+  BANGGIA_DATA_CALC,
+  BOM_GIA,
+  CODEDATA,
+  DEFAULT_DM,
+  GIANVL,
+  UserData,
+} from "../../../api/GlobalInterface";
 
 const CalcQuotation = () => {
   const company: string = useSelector(
-    (state: RootState) => state.totalSlice.company
+    (state: RootState) => state.totalSlice.company,
   );
   const userData: UserData | undefined = useSelector(
-    (state: RootState) => state.totalSlice.userData
+    (state: RootState) => state.totalSlice.userData,
   );
-  const [cust_nhancong, setCust_NhanCong]= useState('0');
-  const [cust_vanchuyen, setCust_VanChuyen]= useState('0');
-  const [cust_khauhao, setCust_KhauHao]= useState('0');
-  const [cust_quanlychung, setCust_QuanLyChung]= useState('0');
+  const [cust_nhancong, setCust_NhanCong] = useState("0");
+  const [cust_vanchuyen, setCust_VanChuyen] = useState("0");
+  const [cust_khauhao, setCust_KhauHao] = useState("0");
+  const [cust_quanlychung, setCust_QuanLyChung] = useState("0");
 
   const [sh, setSH] = useState(true);
   const showhidesearchdiv = useRef(false);
@@ -110,7 +116,7 @@ const CalcQuotation = () => {
                     : "",
                 id: index,
               };
-            }
+            },
           );
           setBangGia(loaded_data);
         } else {
@@ -134,7 +140,7 @@ const CalcQuotation = () => {
                 ...element,
                 id: index,
               };
-            }
+            },
           );
           setListCode(loadeddata);
           /* Swal.fire(
@@ -164,7 +170,7 @@ const CalcQuotation = () => {
                 ...element,
                 id: index,
               };
-            }
+            },
           );
           console.log(tinhgia(CODEINFO, loadeddata, tempQTY));
           setListVL(loadeddata);
@@ -188,7 +194,7 @@ const CalcQuotation = () => {
                 ...element,
                 id: index,
               };
-            }
+            },
           );
           setDefaultDM(loadeddata[0]);
         } else {
@@ -280,7 +286,7 @@ const CalcQuotation = () => {
       Swal.fire(
         "Thông báo",
         "Thêm dòng hoặc import excel file để up giá",
-        "error"
+        "error",
       );
     }
   };
@@ -299,7 +305,7 @@ const CalcQuotation = () => {
   };
   const listcodeTable = React.useMemo(
     () => (
-      <div className='datatb'>
+      <div className="datatb">
         <ResponsiveContainer>
           <DataGrid
             autoNavigateToFocusedRow={true}
@@ -310,8 +316,8 @@ const CalcQuotation = () => {
             columnResizingMode={"widget"}
             showColumnLines={true}
             dataSource={listcode}
-            columnWidth='auto'
-            keyExpr='id'
+            columnWidth="auto"
+            keyExpr="id"
             height={"75vh"}
             showBorders={true}
             onSelectionChanged={(e) => {
@@ -322,54 +328,54 @@ const CalcQuotation = () => {
               setSelectedRows(e.data);
               loadbomNVLQuotation(e.data);
               loadbanggia(e.data.CUST_CD, e.data.G_CODE);
-              setCust_KhauHao('0');
-              setCust_NhanCong('0');
-              setCust_QuanLyChung('0');
-              setCust_VanChuyen('0');
+              setCust_KhauHao("0");
+              setCust_NhanCong("0");
+              setCust_QuanLyChung("0");
+              setCust_VanChuyen("0");
             }}
           >
             <Scrolling
               useNative={true}
               scrollByContent={true}
               scrollByThumb={true}
-              showScrollbar='onHover'
-              mode='virtual'
+              showScrollbar="onHover"
+              mode="virtual"
             />
-            <Selection mode='single' selectAllMode='allPages' />
+            <Selection mode="single" selectAllMode="allPages" />
             <Editing
               allowUpdating={false}
               allowAdding={true}
               allowDeleting={false}
-              mode='batch'
+              mode="batch"
               confirmDelete={true}
               onChangesChange={(e) => {}}
             />
             <Export enabled={true} />
             <Toolbar disabled={false}>
-              <Item location='before'>
+              <Item location="before">
                 <IconButton
-                  className='buttonIcon'
+                  className="buttonIcon"
                   onClick={() => {
                     SaveExcel(listcode, "ListCode");
                   }}
                 >
-                  <AiFillFileExcel color='green' size={15} />
+                  <AiFillFileExcel color="green" size={15} />
                   Excel
                 </IconButton>
                 <IconButton
-                  className='buttonIcon'
+                  className="buttonIcon"
                   onClick={() => {
                     showhidesearchdiv.current = !showhidesearchdiv.current;
                     setSH(!showhidesearchdiv.current);
                   }}
                 >
-                  <TbLogout color='green' size={15} />
+                  <TbLogout color="green" size={15} />
                   Show/Hide
                 </IconButton>
               </Item>
-              <Item name='searchPanel' />
-              <Item name='exportButton' />
-              <Item name='columnChooser' />
+              <Item name="searchPanel" />
+              <Item name="exportButton" />
+              <Item name="columnChooser" />
             </Toolbar>
             <FilterRow visible={true} />
             <SearchPanel visible={true} />
@@ -380,19 +386,19 @@ const CalcQuotation = () => {
               allowedPageSizes={[5, 10, 15, 20, 100, 1000, 10000, "all"]}
               showNavigationButtons={true}
               showInfo={true}
-              infoText='Page #{0}. Total: {1} ({2} items)'
-              displayMode='compact'
+              infoText="Page #{0}. Total: {1} ({2} items)"
+              displayMode="compact"
             />
             <Column
-              dataField='CUST_NAME_KD'
-              caption='KHÁCH HÀNG'
+              dataField="CUST_NAME_KD"
+              caption="KHÁCH HÀNG"
               width={100}
             ></Column>
-            <Column dataField='G_CODE' caption='G_CODE' width={100}></Column>
-            <Column dataField='G_NAME' caption='G_NAME' width={100}></Column>
+            <Column dataField="G_CODE" caption="G_CODE" width={100}></Column>
+            <Column dataField="G_NAME" caption="G_NAME" width={100}></Column>
             <Column
-              dataField='G_NAME_KD'
-              caption='G_NAME_KD'
+              dataField="G_NAME_KD"
+              caption="G_NAME_KD"
               width={100}
             ></Column>
             {/*  <Column
@@ -448,73 +454,73 @@ const CalcQuotation = () => {
             <Column dataField='PROFIT' caption='Lãi' width={100}></Column> */}
 
             <Column
-              dataField='WIDTH_OFFSET'
-              caption='OFFSET RỘNG'
+              dataField="WIDTH_OFFSET"
+              caption="OFFSET RỘNG"
               width={100}
             ></Column>
             <Column
-              dataField='LENGTH_OFFSET'
-              caption='OFFSET DÀI'
+              dataField="LENGTH_OFFSET"
+              caption="OFFSET DÀI"
               width={100}
             ></Column>
             <Column
-              dataField='KNIFE_UNIT'
-              caption='DAO ĐƠN VỊ'
+              dataField="KNIFE_UNIT"
+              caption="DAO ĐƠN VỊ"
               width={100}
             ></Column>
             <Column
-              dataField='FILM_UNIT'
-              caption='FILM ĐƠN VỊ'
+              dataField="FILM_UNIT"
+              caption="FILM ĐƠN VỊ"
               width={100}
             ></Column>
             <Column
-              dataField='INK_UNIT'
-              caption='MỰC ĐƠN VỊ'
+              dataField="INK_UNIT"
+              caption="MỰC ĐƠN VỊ"
               width={100}
             ></Column>
             <Column
-              dataField='LABOR_UNIT'
-              caption='NHÂN CÔNG ĐV'
+              dataField="LABOR_UNIT"
+              caption="NHÂN CÔNG ĐV"
               width={100}
             ></Column>
             <Column
-              dataField='DELIVERY_UNIT'
-              caption='VẬN CHUYỂN ĐV'
+              dataField="DELIVERY_UNIT"
+              caption="VẬN CHUYỂN ĐV"
               width={100}
             ></Column>
             <Column
-              dataField='DEPRECATION_UNIT'
-              caption='KHẤU HAO ĐV'
+              dataField="DEPRECATION_UNIT"
+              caption="KHẤU HAO ĐV"
               width={100}
             ></Column>
             <Column
-              dataField='GMANAGEMENT_UNIT'
-              caption='QUẢN LÝ ĐV'
+              dataField="GMANAGEMENT_UNIT"
+              caption="QUẢN LÝ ĐV"
               width={100}
             ></Column>
             <Column
-              dataField='M_LOSS_UNIT'
-              caption='HAO HỤT ĐV'
+              dataField="M_LOSS_UNIT"
+              caption="HAO HỤT ĐV"
               width={100}
             ></Column>
-            <Column dataField='G_WIDTH' caption='RỘNG' width={100}></Column>
-            <Column dataField='G_LENGTH' caption='DÀI' width={100}></Column>
-            <Column dataField='G_C' caption='SỐ CỘT' width={100}></Column>
-            <Column dataField='G_C_R' caption='SỐ HÀNG' width={100}></Column>
-            <Column dataField='G_LG' caption='K/C HÀNG' width={100}></Column>
-            <Column dataField='G_CG' caption='K/C CỘT' width={100}></Column>
-            <Column dataField='G_SG_L' caption='MÉP TRÁI' width={100}></Column>
-            <Column dataField='G_SG_R' caption='MÉP PHẢI' width={100}></Column>
+            <Column dataField="G_WIDTH" caption="RỘNG" width={100}></Column>
+            <Column dataField="G_LENGTH" caption="DÀI" width={100}></Column>
+            <Column dataField="G_C" caption="SỐ CỘT" width={100}></Column>
+            <Column dataField="G_C_R" caption="SỐ HÀNG" width={100}></Column>
+            <Column dataField="G_LG" caption="K/C HÀNG" width={100}></Column>
+            <Column dataField="G_CG" caption="K/C CỘT" width={100}></Column>
+            <Column dataField="G_SG_L" caption="MÉP TRÁI" width={100}></Column>
+            <Column dataField="G_SG_R" caption="MÉP PHẢI" width={100}></Column>
             <Column
-              dataField='PROD_PRINT_TIMES'
-              caption='SỐ MÀU'
+              dataField="PROD_PRINT_TIMES"
+              caption="SỐ MÀU"
               width={100}
             ></Column>
             <Summary>
               <TotalItem
-                alignment='right'
-                column='id'
-                summaryType='count'
+                alignment="right"
+                column="id"
+                summaryType="count"
                 valueFormat={"decimal"}
               />
             </Summary>
@@ -522,11 +528,11 @@ const CalcQuotation = () => {
         </ResponsiveContainer>
       </div>
     ),
-    [listcode]
+    [listcode],
   );
   const listBOMVLTable = React.useMemo(
     () => (
-      <div className='datatb'>
+      <div className="datatb">
         <ResponsiveContainer>
           <DataGrid
             autoNavigateToFocusedRow={true}
@@ -537,8 +543,8 @@ const CalcQuotation = () => {
             columnResizingMode={"widget"}
             showColumnLines={true}
             dataSource={listVL}
-            columnWidth='auto'
-            keyExpr='id'
+            columnWidth="auto"
+            keyExpr="id"
             height={"30vh"}
             showBorders={true}
             onSelectionChanged={(e) => {}}
@@ -550,43 +556,43 @@ const CalcQuotation = () => {
               useNative={true}
               scrollByContent={true}
               scrollByThumb={true}
-              showScrollbar='onHover'
-              mode='virtual'
+              showScrollbar="onHover"
+              mode="virtual"
             />
-            <Selection mode='single' selectAllMode='allPages' />
+            <Selection mode="single" selectAllMode="allPages" />
             <Editing
               allowUpdating={true}
               allowAdding={false}
               allowDeleting={false}
-              mode='cell'
+              mode="cell"
               confirmDelete={true}
               onChangesChange={(e) => {}}
             />
             <Export enabled={true} />
             <Toolbar disabled={false}>
-              <Item location='before'>
+              <Item location="before">
                 <IconButton
-                  className='buttonIcon'
+                  className="buttonIcon"
                   onClick={() => {
                     SaveExcel(listVL, "ListVL");
                   }}
                 >
-                  <AiFillFileExcel color='green' size={15} />
+                  <AiFillFileExcel color="green" size={15} />
                   Excel
                 </IconButton>
                 <IconButton
-                  className='buttonIcon'
+                  className="buttonIcon"
                   onClick={() => {
                     updateGIAVLBOM2();
                   }}
                 >
-                  <GrUpdate color='green' size={15} />
+                  <GrUpdate color="green" size={15} />
                   Update Giá Liệu
                 </IconButton>
               </Item>
-              <Item name='searchPanel' />
-              <Item name='exportButton' />
-              <Item name='columnChooser' />
+              <Item name="searchPanel" />
+              <Item name="exportButton" />
+              <Item name="columnChooser" />
             </Toolbar>
             <FilterRow visible={true} />
             <SearchPanel visible={true} />
@@ -597,40 +603,40 @@ const CalcQuotation = () => {
               allowedPageSizes={[5, 10, 15, 20, 100, 1000, 10000, "all"]}
               showNavigationButtons={true}
               showInfo={true}
-              infoText='Page #{0}. Total: {1} ({2} items)'
-              displayMode='compact'
+              infoText="Page #{0}. Total: {1} ({2} items)"
+              displayMode="compact"
             />
-            <Column dataField='G_CODE' caption='G_CODE' width={70}></Column>
-            <Column dataField='G_SEQ' caption='STT' width={50}></Column>
-            <Column dataField='M_CODE' caption='MÃ LIỆU' width={70}></Column>
-            <Column dataField='M_NAME' caption='TÊN LIỆU' width={120}></Column>
-            <Column dataField='MAT_CUTWIDTH' caption='SIZE' width={70}></Column>
+            <Column dataField="G_CODE" caption="G_CODE" width={70}></Column>
+            <Column dataField="G_SEQ" caption="STT" width={50}></Column>
+            <Column dataField="M_CODE" caption="MÃ LIỆU" width={70}></Column>
+            <Column dataField="M_NAME" caption="TÊN LIỆU" width={120}></Column>
+            <Column dataField="MAT_CUTWIDTH" caption="SIZE" width={70}></Column>
             <Column
-              dataField='M_CMS_PRICE'
-              caption='GIÁ NỘI BỘ'
+              dataField="M_CMS_PRICE"
+              caption="GIÁ NỘI BỘ"
               width={80}
             ></Column>
             <Column
-              dataField='M_SS_PRICE'
-              caption='GIÁ OPEN'
+              dataField="M_SS_PRICE"
+              caption="GIÁ OPEN"
               width={70}
             ></Column>
-            <Column dataField='USAGE' caption='VAI TRÒ' width={70}></Column>
+            <Column dataField="USAGE" caption="VAI TRÒ" width={70}></Column>
             <Column
-              dataField='MAT_MASTER_WIDTH'
-              caption='KHỔ CÂY'
+              dataField="MAT_MASTER_WIDTH"
+              caption="KHỔ CÂY"
               width={70}
             ></Column>
             <Column
-              dataField='M_QTY'
-              caption='SỐ LƯỢNG LIỆU'
+              dataField="M_QTY"
+              caption="SỐ LƯỢNG LIỆU"
               width={70}
             ></Column>
             <Summary>
               <TotalItem
-                alignment='right'
-                column='id'
-                summaryType='count'
+                alignment="right"
+                column="id"
+                summaryType="count"
                 valueFormat={"decimal"}
               />
             </Summary>
@@ -638,11 +644,11 @@ const CalcQuotation = () => {
         </ResponsiveContainer>
       </div>
     ),
-    [listVL]
+    [listVL],
   );
   const banggiamoinhat = React.useMemo(
     () => (
-      <div className='datatb'>
+      <div className="datatb">
         <ResponsiveContainer>
           <DataGrid
             autoNavigateToFocusedRow={true}
@@ -653,8 +659,8 @@ const CalcQuotation = () => {
             columnResizingMode={"widget"}
             showColumnLines={true}
             dataSource={banggia}
-            columnWidth='auto'
-            keyExpr='id'
+            columnWidth="auto"
+            keyExpr="id"
             height={"40vh"}
             showBorders={true}
             onSelectionChanged={(e) => {}}
@@ -664,11 +670,11 @@ const CalcQuotation = () => {
               setTempQty(e.data.MOQ);
               setSalePriceNB(
                 tinhgia(selectedRows, listVL, e.data.MOQ).total_costCMS *
-                  (1 + profit / 100)
+                  (1 + profit / 100),
               );
               setSalePriceOP(
                 tinhgia(selectedRows, listVL, e.data.MOQ).total_costSS *
-                  (1 + profit / 100)
+                  (1 + profit / 100),
               );
               tinhgia(selectedRows, listVL, e.data.MOQ);
             }}
@@ -677,34 +683,34 @@ const CalcQuotation = () => {
               useNative={true}
               scrollByContent={true}
               scrollByThumb={true}
-              showScrollbar='onHover'
-              mode='virtual'
+              showScrollbar="onHover"
+              mode="virtual"
             />
-            <Selection mode='single' selectAllMode='allPages' />
+            <Selection mode="single" selectAllMode="allPages" />
             <Editing
               allowUpdating={false}
               allowAdding={false}
               allowDeleting={true}
-              mode='cell'
+              mode="cell"
               confirmDelete={true}
               onChangesChange={(e) => {}}
             />
             <Export enabled={true} />
             <Toolbar disabled={false}>
-              <Item location='before'>
+              <Item location="before">
                 <IconButton
-                  className='buttonIcon'
+                  className="buttonIcon"
                   onClick={() => {
                     SaveExcel(banggia, "BangGia");
                   }}
                 >
-                  <AiFillFileExcel color='green' size={15} />
+                  <AiFillFileExcel color="green" size={15} />
                   Excel
                 </IconButton>
               </Item>
-              <Item name='searchPanel' />
-              <Item name='exportButton' />
-              <Item name='columnChooser' />
+              <Item name="searchPanel" />
+              <Item name="exportButton" />
+              <Item name="columnChooser" />
             </Toolbar>
             <FilterRow visible={true} />
             <SearchPanel visible={true} />
@@ -715,25 +721,25 @@ const CalcQuotation = () => {
               allowedPageSizes={[5, 10, 15, 20, 100, 1000, 10000, "all"]}
               showNavigationButtons={true}
               showInfo={true}
-              infoText='Page #{0}. Total: {1} ({2} items)'
-              displayMode='compact'
+              infoText="Page #{0}. Total: {1} ({2} items)"
+              displayMode="compact"
             />
-            <Column dataField='CUST_CD' caption='MÃ KH' width={100}></Column>
-            <Column dataField='G_CODE' caption='G_CODE' width={100}></Column>
+            <Column dataField="CUST_CD" caption="MÃ KH" width={100}></Column>
+            <Column dataField="G_CODE" caption="G_CODE" width={100}></Column>
             <Column
-              dataField='PRICE_DATE'
-              caption='NGÀY LÀM GIÁ'
+              dataField="PRICE_DATE"
+              caption="NGÀY LÀM GIÁ"
               width={100}
             ></Column>
-            <Column dataField='MOQ' caption='MOQ' width={100}></Column>
+            <Column dataField="MOQ" caption="MOQ" width={100}></Column>
             <Column
-              dataField='PROD_PRICE'
-              caption='GIÁ SP'
+              dataField="PROD_PRICE"
+              caption="GIÁ SP"
               width={100}
             ></Column>
             <Column
-              dataField='FINAL'
-              caption='PHÊ DUYỆT'
+              dataField="FINAL"
+              caption="PHÊ DUYỆT"
               width={100}
               cellRender={(e: any) => {
                 if (e.data.FINAL === "Y") {
@@ -767,9 +773,9 @@ const CalcQuotation = () => {
             ></Column>
             <Summary>
               <TotalItem
-                alignment='right'
-                column='id'
-                summaryType='count'
+                alignment="right"
+                column="id"
+                summaryType="count"
                 valueFormat={"decimal"}
               />
             </Summary>
@@ -777,7 +783,7 @@ const CalcQuotation = () => {
         </ResponsiveContainer>
       </div>
     ),
-    [banggia]
+    [banggia],
   );
 
   const addRowBG = () => {
@@ -806,10 +812,10 @@ const CalcQuotation = () => {
     let tempCodeInfo = { ...selectedRows, [keyname]: value };
     //console.log(tempcodefullinfo);
     setSalePriceNB(
-      tinhgia(tempCodeInfo, listVL, tempQTY).total_costCMS * (1 + profit / 100)
+      tinhgia(tempCodeInfo, listVL, tempQTY).total_costCMS * (1 + profit / 100),
     );
     setSalePriceOP(
-      tinhgia(tempCodeInfo, listVL, tempQTY).total_costSS * (1 + profit / 100)
+      tinhgia(tempCodeInfo, listVL, tempQTY).total_costSS * (1 + profit / 100),
     );
     tinhgia(tempCodeInfo, listVL, tempQTY);
     setSelectedRows(tempCodeInfo);
@@ -819,7 +825,8 @@ const CalcQuotation = () => {
       CODEINFO.G_SG_L +
       (CODEINFO.G_CG + CODEINFO.G_WIDTH) * (CODEINFO.G_C - 1) +
       CODEINFO.G_WIDTH +
-      CODEINFO.G_SG_R + CODEINFO.WIDTH_OFFSET;
+      CODEINFO.G_SG_R +
+      CODEINFO.WIDTH_OFFSET;
     const materialLength: number =
       ((CODEINFO.G_LENGTH + CODEINFO.G_LG) / CODEINFO.G_C) * 1.0 * TEMP_QTY;
     const materialArea =
@@ -839,7 +846,7 @@ const CalcQuotation = () => {
         CODEINFO.G_LENGTH * CODEINFO.G_C_R * 2);
     const film_cost =
       CODEINFO.FILM_UNIT *
-      ((CODEINFO.G_WIDTH) *
+      (CODEINFO.G_WIDTH *
         (CODEINFO.G_LENGTH + CODEINFO.LENGTH_OFFSET) *
         CODEINFO.G_C *
         CODEINFO.PROD_PRINT_TIMES);
@@ -867,10 +874,10 @@ const CalcQuotation = () => {
       deprecation_cost +
       gmanagement_cost;
 
-      //setCust_NhanCong(labor_cost);
-      //setCust_VanChuyen(delivery_cost);
-      //setCust_KhauHao(deprecation_cost);
-      //setCust_QuanLyChung(gmanagement_cost);
+    //setCust_NhanCong(labor_cost);
+    //setCust_VanChuyen(delivery_cost);
+    //setCust_KhauHao(deprecation_cost);
+    //setCust_QuanLyChung(gmanagement_cost);
 
     setGiaNvl({
       mCutWidth: materialCutWidth,
@@ -922,7 +929,7 @@ const CalcQuotation = () => {
               Swal.fire(
                 "Thông báo",
                 "Nội dung: " + response.data.message,
-                "error"
+                "error",
               );
             }
           })
@@ -940,26 +947,26 @@ const CalcQuotation = () => {
   }, []);
 
   return (
-    <div className='calc_quotation'>
-      <div className='calc_title'>BẢNG TÍNH GIÁ</div>
-      <div className='calc_wrap'>
-        <div className='left' style={{ width: sh ? "20%" : "100%" }}>
-          <div className='listcode'>{listcodeTable}</div>
-          <div className='moqlist'></div>
-          <div className='insert_button'></div>
+    <div className="calc_quotation">
+      <div className="calc_title">BẢNG TÍNH GIÁ</div>
+      <div className="calc_wrap">
+        <div className="left" style={{ width: sh ? "20%" : "100%" }}>
+          <div className="listcode">{listcodeTable}</div>
+          <div className="moqlist"></div>
+          <div className="insert_button"></div>
         </div>
         {sh && (
-          <div className='right'>
-            <div className='up'>
-              <div className='bomnvl'>{listBOMVLTable}</div>
-              <div className='product_visualize'>
+          <div className="right">
+            <div className="up">
+              <div className="bomnvl">{listBOMVLTable}</div>
+              <div className="product_visualize">
                 <CodeVisualLize DATA={selectedRows} />
-                <div className='banve'>
+                <div className="banve">
                   <span style={{ color: "green" }}>
                     <b>
                       <a
-                        target='_blank'
-                        rel='noopener noreferrer'
+                        target="_blank"
+                        rel="noopener noreferrer"
                         href={`/banve/${selectedRows.G_CODE}.pdf`}
                       >
                         LINK
@@ -969,14 +976,14 @@ const CalcQuotation = () => {
                 </div>
               </div>
             </div>
-            <div className='middle'>
-              <div className='openlink'>
-                <div className='defaultunit'>
+            <div className="middle">
+              <div className="openlink">
+                <div className="defaultunit">
                   <span>T/C mặc định</span>
                   <label>
                     WIDTH_OFFSET:<br></br>
                     <input
-                      type='text'
+                      type="text"
                       value={
                         defaultDM.WIDTH_OFFSET === null
                           ? 0
@@ -990,7 +997,7 @@ const CalcQuotation = () => {
                   <label>
                     LENGTH_OFFSET:<br></br>
                     <input
-                      type='text'
+                      type="text"
                       value={
                         defaultDM.LENGTH_OFFSET === null
                           ? 0
@@ -1004,7 +1011,7 @@ const CalcQuotation = () => {
                   <label>
                     CP dao T/C:<br></br>
                     <input
-                      type='text'
+                      type="text"
                       value={
                         defaultDM.KNIFE_UNIT === null ? 0 : defaultDM.KNIFE_UNIT
                       }
@@ -1016,7 +1023,7 @@ const CalcQuotation = () => {
                   <label>
                     CP film bản T/C:<br></br>
                     <input
-                      type='text'
+                      type="text"
                       value={
                         defaultDM.FILM_UNIT === null ? 0 : defaultDM.FILM_UNIT
                       }
@@ -1028,7 +1035,7 @@ const CalcQuotation = () => {
                   <label>
                     CP mực T/C:<br></br>
                     <input
-                      type='text'
+                      type="text"
                       value={
                         defaultDM.INK_UNIT === null ? 0 : defaultDM.INK_UNIT
                       }
@@ -1040,7 +1047,7 @@ const CalcQuotation = () => {
                   <label>
                     CP nhân công T/C:<br></br>
                     <input
-                      type='text'
+                      type="text"
                       value={
                         defaultDM.LABOR_UNIT === null ? 0 : defaultDM.LABOR_UNIT
                       }
@@ -1053,7 +1060,7 @@ const CalcQuotation = () => {
                   <label>
                     CP giao hàng T/C:<br></br>
                     <input
-                      type='text'
+                      type="text"
                       value={
                         defaultDM.DELIVERY_UNIT === null
                           ? 0
@@ -1067,7 +1074,7 @@ const CalcQuotation = () => {
                   <label>
                     CP khấu hao T/C:<br></br>
                     <input
-                      type='text'
+                      type="text"
                       value={
                         defaultDM.DEPRECATION_UNIT === null
                           ? 0
@@ -1081,7 +1088,7 @@ const CalcQuotation = () => {
                   <label>
                     CP quản lý chung T/C:<br></br>
                     <input
-                      type='text'
+                      type="text"
                       value={
                         defaultDM.GMANAGEMENT_UNIT === null
                           ? 0
@@ -1095,7 +1102,7 @@ const CalcQuotation = () => {
                   <label>
                     Hao hụt T/C:<br></br>
                     <input
-                      type='text'
+                      type="text"
                       value={
                         defaultDM.M_LOSS_UNIT === null
                           ? 0
@@ -1107,12 +1114,12 @@ const CalcQuotation = () => {
                     ></input>
                   </label>
                 </div>
-                <div className='currentunit'>
+                <div className="currentunit">
                   <span>T/C hiện tại__</span>
                   <label>
                     WIDTH_OFFSET:<br></br>
                     <input
-                      type='text'
+                      type="text"
                       value={
                         selectedRows.WIDTH_OFFSET === null
                           ? 0
@@ -1121,7 +1128,7 @@ const CalcQuotation = () => {
                       onChange={(e) => {
                         handlesetCodeInfo(
                           "WIDTH_OFFSET",
-                          Number(e.target.value)
+                          Number(e.target.value),
                         );
                       }}
                     ></input>
@@ -1129,7 +1136,7 @@ const CalcQuotation = () => {
                   <label>
                     LENGTH_OFFSET:<br></br>
                     <input
-                      type='text'
+                      type="text"
                       value={
                         selectedRows.LENGTH_OFFSET === null
                           ? 0
@@ -1138,7 +1145,7 @@ const CalcQuotation = () => {
                       onChange={(e) => {
                         handlesetCodeInfo(
                           "LENGTH_OFFSET",
-                          Number(e.target.value)
+                          Number(e.target.value),
                         );
                       }}
                     ></input>
@@ -1146,7 +1153,7 @@ const CalcQuotation = () => {
                   <label>
                     CP dao T/C:<br></br>
                     <input
-                      type='text'
+                      type="text"
                       value={
                         selectedRows.KNIFE_UNIT === null
                           ? 0
@@ -1160,7 +1167,7 @@ const CalcQuotation = () => {
                   <label>
                     CP film bản T/C:<br></br>
                     <input
-                      type='text'
+                      type="text"
                       value={
                         selectedRows.FILM_UNIT === null
                           ? 0
@@ -1174,7 +1181,7 @@ const CalcQuotation = () => {
                   <label>
                     CP mực T/C:<br></br>
                     <input
-                      type='text'
+                      type="text"
                       value={
                         selectedRows.INK_UNIT === null
                           ? 0
@@ -1188,7 +1195,7 @@ const CalcQuotation = () => {
                   <label>
                     CP nhân công T/C:<br></br>
                     <input
-                      type='text'
+                      type="text"
                       value={
                         selectedRows.LABOR_UNIT === null
                           ? 0
@@ -1203,7 +1210,7 @@ const CalcQuotation = () => {
                   <label>
                     CP giao hàng T/C:<br></br>
                     <input
-                      type='text'
+                      type="text"
                       value={
                         selectedRows.DELIVERY_UNIT === null
                           ? 0
@@ -1212,7 +1219,7 @@ const CalcQuotation = () => {
                       onChange={(e) => {
                         handlesetCodeInfo(
                           "DELIVERY_UNIT",
-                          Number(e.target.value)
+                          Number(e.target.value),
                         );
                       }}
                     ></input>
@@ -1220,7 +1227,7 @@ const CalcQuotation = () => {
                   <label>
                     CP khấu hao T/C:<br></br>
                     <input
-                      type='text'
+                      type="text"
                       value={
                         selectedRows.DEPRECATION_UNIT === null
                           ? 0
@@ -1229,7 +1236,7 @@ const CalcQuotation = () => {
                       onChange={(e) => {
                         handlesetCodeInfo(
                           "DEPRECATION_UNIT",
-                          Number(e.target.value)
+                          Number(e.target.value),
                         );
                       }}
                     ></input>
@@ -1237,7 +1244,7 @@ const CalcQuotation = () => {
                   <label>
                     CP quản lý chung T/C:<br></br>
                     <input
-                      type='text'
+                      type="text"
                       value={
                         selectedRows.GMANAGEMENT_UNIT === null
                           ? 0
@@ -1246,7 +1253,7 @@ const CalcQuotation = () => {
                       onChange={(e) => {
                         handlesetCodeInfo(
                           "GMANAGEMENT_UNIT",
-                          Number(e.target.value)
+                          Number(e.target.value),
                         );
                       }}
                     ></input>
@@ -1254,7 +1261,7 @@ const CalcQuotation = () => {
                   <label>
                     Hao hụt T/C:<br></br>
                     <input
-                      type='text'
+                      type="text"
                       value={
                         selectedRows.M_LOSS_UNIT === null
                           ? 0
@@ -1263,7 +1270,7 @@ const CalcQuotation = () => {
                       onChange={(e) => {
                         handlesetCodeInfo(
                           "M_LOSS_UNIT",
-                          Number(e.target.value)
+                          Number(e.target.value),
                         );
                       }}
                     ></input>
@@ -1271,8 +1278,8 @@ const CalcQuotation = () => {
                 </div>
               </div>
             </div>
-            <div className='down'>
-              <div className='tongchiphi'>
+            <div className="down">
+              <div className="tongchiphi">
                 <table>
                   <thead>
                     <tr>
@@ -1290,20 +1297,22 @@ const CalcQuotation = () => {
                           maximumFractionDigits: 2,
                         })}
                       </td>
-                      <td><input
-                      type='text'
-                      value={
-                        selectedRows.WIDTH_OFFSET === null
-                          ? 0
-                          : selectedRows.WIDTH_OFFSET
-                      }
-                      onChange={(e) => {
-                        handlesetCodeInfo(
-                          "WIDTH_OFFSET",
-                          Number(e.target.value)
-                        );
-                      }}
-                    ></input></td>
+                      <td>
+                        <input
+                          type="text"
+                          value={
+                            selectedRows.WIDTH_OFFSET === null
+                              ? 0
+                              : selectedRows.WIDTH_OFFSET
+                          }
+                          onChange={(e) => {
+                            handlesetCodeInfo(
+                              "WIDTH_OFFSET",
+                              Number(e.target.value),
+                            );
+                          }}
+                        ></input>
+                      </td>
                       <td>mm</td>
                     </tr>
                     <tr>
@@ -1383,14 +1392,19 @@ const CalcQuotation = () => {
                           maximumFractionDigits: 2,
                         })}
                       </td>
-                      <td><input
-                      type='text'
-                      value={cust_nhancong}
-                      onChange={(e) => {
-                        setCust_NhanCong(e.target.value);
-                        handlesetCodeInfo("LABOR_UNIT", Number(e.target.value)/gianvl.mArea*1.0);
-                      }}
-                    ></input></td>
+                      <td>
+                        <input
+                          type="text"
+                          value={cust_nhancong}
+                          onChange={(e) => {
+                            setCust_NhanCong(e.target.value);
+                            handlesetCodeInfo(
+                              "LABOR_UNIT",
+                              (Number(e.target.value) / gianvl.mArea) * 1.0,
+                            );
+                          }}
+                        ></input>
+                      </td>
                       <td>VND</td>
                     </tr>
                     <tr>
@@ -1400,14 +1414,19 @@ const CalcQuotation = () => {
                           maximumFractionDigits: 2,
                         })}
                       </td>
-                      <td><input
-                      type='text'
-                      value={cust_vanchuyen}
-                      onChange={(e) => {
-                        setCust_VanChuyen(e.target.value);
-                        handlesetCodeInfo("DELIVERY_UNIT", Number(e.target.value));
-                      }}
-                    ></input></td>
+                      <td>
+                        <input
+                          type="text"
+                          value={cust_vanchuyen}
+                          onChange={(e) => {
+                            setCust_VanChuyen(e.target.value);
+                            handlesetCodeInfo(
+                              "DELIVERY_UNIT",
+                              Number(e.target.value),
+                            );
+                          }}
+                        ></input>
+                      </td>
                       <td>VND</td>
                     </tr>
                     <tr>
@@ -1417,14 +1436,19 @@ const CalcQuotation = () => {
                           maximumFractionDigits: 2,
                         })}
                       </td>
-                      <td><input
-                      type='text'
-                      value={cust_khauhao}
-                      onChange={(e) => {
-                        setCust_KhauHao(e.target.value);
-                        handlesetCodeInfo("DEPRECATION_UNIT", Number(e.target.value)/gianvl.mArea*1.0);
-                      }}
-                    ></input></td>
+                      <td>
+                        <input
+                          type="text"
+                          value={cust_khauhao}
+                          onChange={(e) => {
+                            setCust_KhauHao(e.target.value);
+                            handlesetCodeInfo(
+                              "DEPRECATION_UNIT",
+                              (Number(e.target.value) / gianvl.mArea) * 1.0,
+                            );
+                          }}
+                        ></input>
+                      </td>
                       <td>VND</td>
                     </tr>
                     <tr>
@@ -1434,14 +1458,19 @@ const CalcQuotation = () => {
                           maximumFractionDigits: 2,
                         })}
                       </td>
-                      <td><input
-                      type='text'
-                      value={cust_quanlychung}
-                      onChange={(e) => {
-                        setCust_QuanLyChung(e.target.value);
-                        handlesetCodeInfo("GMANAGEMENT_UNIT", Number(e.target.value)/gianvl.mArea*1.0);
-                      }}
-                    ></input></td>
+                      <td>
+                        <input
+                          type="text"
+                          value={cust_quanlychung}
+                          onChange={(e) => {
+                            setCust_QuanLyChung(e.target.value);
+                            handlesetCodeInfo(
+                              "GMANAGEMENT_UNIT",
+                              (Number(e.target.value) / gianvl.mArea) * 1.0,
+                            );
+                          }}
+                        ></input>
+                      </td>
                       <td>VND</td>
                     </tr>
                     <tr>
@@ -1467,23 +1496,23 @@ const CalcQuotation = () => {
                   </tbody>
                 </table>
               </div>
-              <div className='moqdiv'>
+              <div className="moqdiv">
                 <label>
                   MOQ (EA):<br></br>
                   <input
-                    type='text'
+                    type="text"
                     value={tempQTY}
                     onChange={(e) => {
                       setTempQty(Number(e.target.value));
                       setSalePriceNB(
                         tinhgia(selectedRows, listVL, Number(e.target.value))
                           .total_costCMS *
-                          (1 + profit / 100)
+                          (1 + profit / 100),
                       );
                       setSalePriceOP(
                         tinhgia(selectedRows, listVL, Number(e.target.value))
                           .total_costSS *
-                          (1 + profit / 100)
+                          (1 + profit / 100),
                       );
                       tinhgia(selectedRows, listVL, Number(e.target.value));
                     }}
@@ -1492,17 +1521,17 @@ const CalcQuotation = () => {
                 <label>
                   Lợi nhuận mong muốn (%):<br></br>
                   <input
-                    type='text'
+                    type="text"
                     value={profit}
                     onChange={(e) => {
                       setProfit(Number(e.target.value));
                       setSalePriceNB(
                         tinhgia(selectedRows, listVL, tempQTY).total_costCMS *
-                          (1 + Number(e.target.value) / 100)
+                          (1 + Number(e.target.value) / 100),
                       );
                       setSalePriceOP(
                         tinhgia(selectedRows, listVL, tempQTY).total_costSS *
-                          (1 + Number(e.target.value) / 100)
+                          (1 + Number(e.target.value) / 100),
                       );
                     }}
                   ></input>
@@ -1510,7 +1539,7 @@ const CalcQuotation = () => {
                 <label>
                   Giá bán Nội Bộ (MOA Nội Bộ):<br></br>
                   <input
-                    type='text'
+                    type="text"
                     value={salePriceNB.toFixed(0)}
                     onChange={(e) => {
                       setSalePriceNB(Number(e.target.value));
@@ -1520,7 +1549,7 @@ const CalcQuotation = () => {
                 <label>
                   Giá bán Open (MOA Open):<br></br>
                   <input
-                    type='text'
+                    type="text"
                     value={salePriceOP.toFixed(0)}
                     onChange={(e) => {
                       setSalePriceOP(Number(e.target.value));
@@ -1532,14 +1561,14 @@ const CalcQuotation = () => {
                   {(salePriceOP / tempQTY).toFixed(0)}
                 </label>
                 <IconButton
-                  className='buttonIcon'
+                  className="buttonIcon"
                   onClick={() => {
                     if (selectedRows.G_CODE !== "") {
                       if (listVL.length === 0) {
                         Swal.fire(
                           "Thông báo",
                           "Chú ý, code này chưa có vật liệu",
-                          "warning"
+                          "warning",
                         );
                       } else {
                         addRowBG();
@@ -1551,22 +1580,22 @@ const CalcQuotation = () => {
                     }
                   }}
                 >
-                  <AiFillFolderAdd color='#69f542' size={25} />
+                  <AiFillFolderAdd color="#69f542" size={25} />
                   Add to List
                 </IconButton>
               </div>
-              <div className='listbaogia'>{banggiamoinhat}</div>
-              <div className='buttondiv'>
-                <div className='buttonsection'>
+              <div className="listbaogia">{banggiamoinhat}</div>
+              <div className="buttondiv">
+                <div className="buttonsection">
                   <IconButton
-                    className='buttonIcon'
+                    className="buttonIcon"
                     onClick={() => {
                       uploadgia();
                       updateCurrentUnit();
                       loadListCode();
                     }}
                   >
-                    <BiSave color='#059B00' size={25} />
+                    <BiSave color="#059B00" size={25} />
                     Lưu Giá
                   </IconButton>
                 </div>

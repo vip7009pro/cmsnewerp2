@@ -23,10 +23,10 @@ import { useSelector, useDispatch } from "react-redux";
 import { DiemDanhLichSuData, UserData } from "../../../api/GlobalInterface";
 
 const LichSu = () => {
-    const userData: UserData | undefined = useSelector(
-        (state: RootState) => state.totalSlice.userData
-        );
-    
+  const userData: UserData | undefined = useSelector(
+    (state: RootState) => state.totalSlice.userData,
+  );
+
   const [isLoading, setisLoading] = useState(false);
   const [diemdanhnhomtable, setDiemDanhNhomTable] = useState<
     Array<DiemDanhLichSuData>
@@ -39,28 +39,34 @@ const LichSu = () => {
       headerName: "DATE_COLUMN",
       width: 120,
       valueGetter: (params: any) => {
-        return params.row.DATE_COLUMN ? params.row.DATE_COLUMN.slice(0, 10) : "";
+        return params.row.DATE_COLUMN
+          ? params.row.DATE_COLUMN.slice(0, 10)
+          : "";
       },
     },
     {
       field: "WEEKDAY",
-      headerName: "WEEKDAY", 
+      headerName: "WEEKDAY",
       width: 120,
       renderCell: (params: any) => {
-        if (params.row.WEEKDAY === 'Sunday') {
-            return (
-              <div className='onoffdiv'>
-                <span style={{ fontWeight: "bold", color: "red" }}>{params.row.WEEKDAY}</span>
-              </div>
-            );
-          } else {
-            return (
-              <div className='onoffdiv'>
-                <span style={{ fontWeight: "bold", color: "#4268F4" }}>{params.row.WEEKDAY}</span>
-              </div>
-            );
+        if (params.row.WEEKDAY === "Sunday") {
+          return (
+            <div className="onoffdiv">
+              <span style={{ fontWeight: "bold", color: "red" }}>
+                {params.row.WEEKDAY}
+              </span>
+            </div>
+          );
+        } else {
+          return (
+            <div className="onoffdiv">
+              <span style={{ fontWeight: "bold", color: "#4268F4" }}>
+                {params.row.WEEKDAY}
+              </span>
+            </div>
+          );
         }
-      }
+      },
     },
     {
       field: "ON_OFF",
@@ -69,24 +75,24 @@ const LichSu = () => {
       renderCell: (params: any) => {
         if (params.row.ON_OFF === 1) {
           return (
-            <div className='onoffdiv'>
+            <div className="onoffdiv">
               <span style={{ fontWeight: "bold", color: "green" }}>Đi làm</span>
             </div>
           );
         } else if (params.row.ON_OFF === 0) {
           return (
-            <div className='onoffdiv'>
+            <div className="onoffdiv">
               <span style={{ fontWeight: "bold", color: "red" }}>Nghỉ làm</span>
             </div>
           );
-        }
-        else 
-        {
-            return (
-            <div className='onoffdiv'>
-                <span style={{ fontWeight: "bold", color: "#754EFA" }}>Chưa điểm danh</span>
+        } else {
+          return (
+            <div className="onoffdiv">
+              <span style={{ fontWeight: "bold", color: "#754EFA" }}>
+                Chưa điểm danh
+              </span>
             </div>
-            );
+          );
         }
       },
     },
@@ -94,39 +100,42 @@ const LichSu = () => {
       field: "CHECK1",
       headerName: "CHECK1",
       width: 120,
-      renderCell: (params: any) => {       
-          return (
-            <div className='onoffdiv'>
-              <span style={{ fontWeight: "bold", color: "black" }}>{params.row.CHECK1}</span>
-            </div>
-          );
-        
+      renderCell: (params: any) => {
+        return (
+          <div className="onoffdiv">
+            <span style={{ fontWeight: "bold", color: "black" }}>
+              {params.row.CHECK1}
+            </span>
+          </div>
+        );
       },
     },
     {
       field: "CHECK2",
       headerName: "CHECK2",
       width: 120,
-      renderCell: (params: any) => {       
-          return (
-            <div className='onoffdiv'>
-              <span style={{ fontWeight: "bold", color: "black" }}>{params.row.CHECK2}</span>
-            </div>
-          );
-        
+      renderCell: (params: any) => {
+        return (
+          <div className="onoffdiv">
+            <span style={{ fontWeight: "bold", color: "black" }}>
+              {params.row.CHECK2}
+            </span>
+          </div>
+        );
       },
     },
     {
       field: "CHECK3",
       headerName: "CHECK3",
       width: 120,
-      renderCell: (params: any) => {       
-          return (
-            <div className='onoffdiv'>
-              <span style={{ fontWeight: "bold", color: "black" }}>{params.row.CHECK3}</span>
-            </div>
-          );
-        
+      renderCell: (params: any) => {
+        return (
+          <div className="onoffdiv">
+            <span style={{ fontWeight: "bold", color: "black" }}>
+              {params.row.CHECK3}
+            </span>
+          </div>
+        );
       },
     },
     {
@@ -136,13 +145,13 @@ const LichSu = () => {
       renderCell: (params: any) => {
         if (params.row.APPROVAL_STATUS === 0) {
           return (
-            <div className='onoffdiv'>
+            <div className="onoffdiv">
               <span style={{ fontWeight: "bold", color: "red" }}>Từ chối</span>
             </div>
           );
         } else if (params.row.APPROVAL_STATUS === 1) {
           return (
-            <div className='onoffdiv'>
+            <div className="onoffdiv">
               <span style={{ fontWeight: "bold", color: "green" }}>
                 Phê duyệt
               </span>
@@ -150,14 +159,14 @@ const LichSu = () => {
           );
         } else if (params.row.APPROVAL_STATUS === 2) {
           return (
-            <div className='onoffdiv'>
+            <div className="onoffdiv">
               <span style={{ fontWeight: "bold", color: "white" }}>
                 Chờ duyệt
               </span>
             </div>
           );
         } else {
-          return <div className='onoffdiv'></div>;
+          return <div className="onoffdiv"></div>;
         }
       },
     },
@@ -203,7 +212,7 @@ const LichSu = () => {
         <GridToolbarFilterButton />
         <GridToolbarDensitySelector />
         <button
-          className='saveexcelbutton'
+          className="saveexcelbutton"
           onClick={() => {
             SaveExcel(diemdanhnhomtable, "LichSuLamViec");
           }}
@@ -213,7 +222,7 @@ const LichSu = () => {
         <GridToolbarQuickFilter />
       </GridToolbarContainer>
     );
-  } 
+  }
   const handleSearch = () => {
     generalQuery("mydiemdanhnhom", { from_date: fromdate, to_date: todate })
       .then((response) => {
@@ -223,16 +232,30 @@ const LichSu = () => {
             (element: DiemDanhLichSuData, index: number) => {
               return {
                 ...element,
-                EMPL_NO: userData?.EMPL_NO,          
-                DATE_COLUMN: moment(element.DATE_COLUMN).utc().format('YYYY-MM-DD'),      
-                APPLY_DATE: element.APPLY_DATE===null?'' : moment(element.APPLY_DATE).utc().format('YYYY-MM-DD'),      
+                EMPL_NO: userData?.EMPL_NO,
+                DATE_COLUMN: moment(element.DATE_COLUMN)
+                  .utc()
+                  .format("YYYY-MM-DD"),
+                APPLY_DATE:
+                  element.APPLY_DATE === null
+                    ? ""
+                    : moment(element.APPLY_DATE).utc().format("YYYY-MM-DD"),
                 WEEKDAY: weekdayarray[new Date(element.DATE_COLUMN).getDay()],
-                CHECK1: element.CHECK1 !== null? moment.utc(element.CHECK1).format('HH:mm:ss'):'',
-                CHECK2: element.CHECK2 !== null? moment.utc(element.CHECK2).format('HH:mm:ss'):'',
-                CHECK3: element.CHECK3 !== null? moment.utc(element.CHECK3).format('HH:mm:ss'):'',
-                id: index
+                CHECK1:
+                  element.CHECK1 !== null
+                    ? moment.utc(element.CHECK1).format("HH:mm:ss")
+                    : "",
+                CHECK2:
+                  element.CHECK2 !== null
+                    ? moment.utc(element.CHECK2).format("HH:mm:ss")
+                    : "",
+                CHECK3:
+                  element.CHECK3 !== null
+                    ? moment.utc(element.CHECK3).format("HH:mm:ss")
+                    : "",
+                id: index,
               };
-            }
+            },
           );
           //console.log(loaded_data )
           setDiemDanhNhomTable(loaded_data);
@@ -240,7 +263,7 @@ const LichSu = () => {
           Swal.fire(
             "Thông báo",
             "Đã load " + response.data.data.length + " dòng",
-            "success"
+            "success",
           );
         } else {
           Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
@@ -250,19 +273,19 @@ const LichSu = () => {
         console.log(error);
       });
   };
-  
+
   useEffect(() => {
     setisLoading(true);
     handleSearch();
   }, []);
   return (
-    <div className='lichsu'>
+    <div className="lichsu">
       <h3>Lịch Sử Làm Việc Của Tôi</h3>
-      <div className='filterform'>
+      <div className="filterform">
         <label>
           <b>Từ ngày:</b>
           <input
-            type='date'
+            type="date"
             value={fromdate.slice(0, 10)}
             onChange={(e) => setFromDate(e.target.value)}
           ></input>
@@ -270,13 +293,13 @@ const LichSu = () => {
         <label>
           <b>Tới ngày:</b>{" "}
           <input
-            type='date'
+            type="date"
             value={todate.slice(0, 10)}
             onChange={(e) => setToDate(e.target.value)}
           ></input>
         </label>
         <button
-          className='searchbutton'
+          className="searchbutton"
           onClick={() => {
             handleSearch();
           }}
@@ -284,7 +307,7 @@ const LichSu = () => {
           Search
         </button>
       </div>
-      <div className='maindept_table'>
+      <div className="maindept_table">
         <DataGrid
           sx={{ fontSize: "0.8rem" }}
           components={{
@@ -296,7 +319,7 @@ const LichSu = () => {
           rows={diemdanhnhomtable}
           columns={columns_diemdanhnhom}
           rowsPerPageOptions={[5, 10, 50, 100, 500]}
-          editMode='row'
+          editMode="row"
           getRowHeight={() => "auto"}
         />
       </div>

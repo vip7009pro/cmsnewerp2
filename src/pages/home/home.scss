@@ -1,113 +1,94 @@
 .home {
- display: flex;
- flex-direction: column;
+  display: flex;
+  flex-direction: column;
 
-
- @media only screen and (max-width: 3000px) {
-  .homeContainer {      
-    display: flex;
-    position: relative;
-    flex-direction: row;    
-    width: 100%;   
-    height: fit-content; 
-    .sidebardiv {
-      z-index: 99999;
-    }
-    .outletdiv {  
+  @media only screen and (max-width: 3000px) {
+    .homeContainer {
       display: flex;
-      flex-direction: column;   
-      flex: 10;
-      box-sizing: border-box;
-      .animated_div {
-        display: flex;
-        flex-direction: column;  
-        .component_element {
-          position: absolute;
-          top: 25px;         
-        }
-       
-      }
-    }
-    .navdiv {
-      z-index: 999999;
-    }
-    .chatroom {
-      display: flex;
-      position: fixed;
-      right: 2%;
-      top: 90vh;       
-      
-    }
-    
-  }
-}
-
-@media only screen and (max-width: 768px) {   
-  .homeContainer {      
-    display: flex;
-    flex-direction: column;    
-    width: 100%;   
-    height: fit-content; 
-    .sidebardiv {
-      width: fit-content;
-      position: fixed;     
-      left: 10;
-      z-index: 99999;
-    } 
-    .outletdiv {      
+      position: relative;
+      flex-direction: row;
       width: 100%;
-      .animated_div {
+      height: fit-content;
+      .sidebardiv {
+        z-index: 99999;
+      }
+      .outletdiv {
         display: flex;
-        flex-direction: column;  
-        margin-top: 100px;
-        .component_element {
-          position: absolute;
-          top: 125px;         
+        flex-direction: column;
+        flex: 10;
+        box-sizing: border-box;
+        .animated_div {
+          display: flex;
+          flex-direction: column;
+          .component_element {
+            position: absolute;
+            top: 25px;
+          }
         }
-
-
-       
+      }
+      .navdiv {
+        z-index: 999999;
+      }
+      .chatroom {
+        display: flex;
+        position: fixed;
+        right: 2%;
+        top: 90vh;
       }
     }
   }
-}
 
-  @media only screen and (max-width: 320px) {
-   
-    .homeContainer {      
+  @media only screen and (max-width: 768px) {
+    .homeContainer {
       display: flex;
-      flex-direction: column;    
-      width: 100%;   
-      height: fit-content; 
+      flex-direction: column;
+      width: 100%;
+      height: fit-content;
       .sidebardiv {
         width: fit-content;
-        position: fixed;     
+        position: fixed;
         left: 10;
         z-index: 99999;
-      } 
-      .outletdiv {      
+      }
+      .outletdiv {
         width: 100%;
         .animated_div {
           display: flex;
-          flex-direction: column;  
+          flex-direction: column;
+          margin-top: 100px;
+          .component_element {
+            position: absolute;
+            top: 125px;
+          }
+        }
+      }
+    }
+  }
+
+  @media only screen and (max-width: 320px) {
+    .homeContainer {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      height: fit-content;
+      .sidebardiv {
+        width: fit-content;
+        position: fixed;
+        left: 10;
+        z-index: 99999;
+      }
+      .outletdiv {
+        width: 100%;
+        .animated_div {
+          display: flex;
+          flex-direction: column;
           margin-top: 100px;
           .component_element {
             position: absolute;
             top: "25px";
-           
           }
-  
-  
-         
         }
       }
     }
   }
-
-  
-
-
-
-
 }
-

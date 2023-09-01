@@ -29,7 +29,11 @@ import PivotTable from "../../../components/PivotChart/PivotChart";
 import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
 import { ResponsiveContainer } from "recharts";
 import { esES } from "@mui/x-data-grid";
-import { LOSS_TABLE_DATA_ROLL, MACHINE_LIST, MATERIAL_STATUS } from "../../../api/GlobalInterface";
+import {
+  LOSS_TABLE_DATA_ROLL,
+  MACHINE_LIST,
+  MATERIAL_STATUS,
+} from "../../../api/GlobalInterface";
 
 const TINHHINHCUONLIEU = () => {
   const [machine_list, setMachine_List] = useState<MACHINE_LIST[]>([]);
@@ -44,12 +48,12 @@ const TINHHINHCUONLIEU = () => {
               return {
                 ...element,
               };
-            }
+            },
           );
           loadeddata.push(
             { EQ_NAME: "ALL" },
             { EQ_NAME: "NO" },
-            { EQ_NAME: "NA" }
+            { EQ_NAME: "NA" },
           );
           //console.log(loadeddata);
           setMachine_List(loadeddata);
@@ -87,7 +91,7 @@ const TINHHINHCUONLIEU = () => {
   const [selectedRows, setSelectedRows] = useState<number>(0);
   const [columns, setColumns] = useState<Array<any>>([]);
   const handleSearchCodeKeyDown = (
-    e: React.KeyboardEvent<HTMLInputElement>
+    e: React.KeyboardEvent<HTMLInputElement>,
   ) => {
     if (e.key === "Enter") {
       handle_loaddatasx();
@@ -130,15 +134,14 @@ const TINHHINHCUONLIEU = () => {
                     : moment
                         .utc(element.INS_DATE)
                         .format("YYYY-MM-DD HH:mm:ss"),
-                
               };
-            }
+            },
           );
           //setShowLoss(false);
           Swal.fire(
             "Thông báo",
             "Đã load : " + loaded_data.length + " dòng",
-            "success"
+            "success",
           );
           let temp_loss_info: LOSS_TABLE_DATA_ROLL = {
             XUATKHO_MET: 0,
@@ -159,17 +162,21 @@ const TINHHINHCUONLIEU = () => {
           temp_loss_info.TOTAL_LOSS =
             1 - temp_loss_info.INSPECTION_OUTPUT / temp_loss_info.XUATKHO_MET;
           let keysArray = Object.getOwnPropertyNames(loaded_data[0]);
-          let column_map = keysArray.map((e, index)=> {
+          let column_map = keysArray.map((e, index) => {
             return {
               dataField: e,
               caption: e,
               width: 100,
-              cellRender: (ele:any)=> {
+              cellRender: (ele: any) => {
                 //console.log(ele);
-                if(e.substring(0,4)==='VAO_' || e==='XUAT_KHO' || e === 'CONFIRM_GIAONHAN' || e==='NHATKY_KT' || e==='RA_KIEM')
-                {
-                  if(ele.data[e]==='Y')
-                  {
+                if (
+                  e.substring(0, 4) === "VAO_" ||
+                  e === "XUAT_KHO" ||
+                  e === "CONFIRM_GIAONHAN" ||
+                  e === "NHATKY_KT" ||
+                  e === "RA_KIEM"
+                ) {
+                  if (ele.data[e] === "Y") {
                     return (
                       <div
                         style={{
@@ -184,9 +191,7 @@ const TINHHINHCUONLIEU = () => {
                         Y
                       </div>
                     );
-                  }
-                  else if(ele.data[e]==='R')
-                  {
+                  } else if (ele.data[e] === "R") {
                     return (
                       <div
                         style={{
@@ -201,9 +206,7 @@ const TINHHINHCUONLIEU = () => {
                         Y
                       </div>
                     );
-                  }
-                  else
-                  {
+                  } else {
                     return (
                       <div
                         style={{
@@ -219,26 +222,35 @@ const TINHHINHCUONLIEU = () => {
                       </div>
                     );
                   }
-                }
-                else if(['TOTAL_OUT_QTY','INSPECT_TOTAL_QTY','INSPECT_OK_QTY','INS_OUT'].indexOf(e) >-1 || e.indexOf('RESULT')>-1)
-                {
+                } else if (
+                  [
+                    "TOTAL_OUT_QTY",
+                    "INSPECT_TOTAL_QTY",
+                    "INSPECT_OK_QTY",
+                    "INS_OUT",
+                  ].indexOf(e) > -1 ||
+                  e.indexOf("RESULT") > -1
+                ) {
                   return (
                     <span style={{ color: "blue", fontWeight: "bold" }}>
                       {ele.data[e]?.toLocaleString("en-US")}
                     </span>
                   );
-
-                }
-                else if(['TOTAL_OUT_EA','INSPECT_TOTAL_EA','INSPECT_OK_EA','INS_OUTPUT_EA'].indexOf(e) >-1 || e.indexOf('_EA')>-1)
-                {
+                } else if (
+                  [
+                    "TOTAL_OUT_EA",
+                    "INSPECT_TOTAL_EA",
+                    "INSPECT_OK_EA",
+                    "INS_OUTPUT_EA",
+                  ].indexOf(e) > -1 ||
+                  e.indexOf("_EA") > -1
+                ) {
                   return (
                     <span style={{ color: "green", fontWeight: "bold" }}>
                       {ele.data[e]?.toLocaleString("en-US")}
                     </span>
                   );
-                }
-                else if(e.indexOf('_LOSS')>-1)
-                {
+                } else if (e.indexOf("_LOSS") > -1) {
                   return (
                     <span style={{ color: "green", fontWeight: "bold" }}>
                       {100 *
@@ -249,20 +261,16 @@ const TINHHINHCUONLIEU = () => {
                       %
                     </span>
                   );
-                }
-                else
-                {    
+                } else {
                   return <span>{ele.data[e]}</span>;
                 }
-              }
-            }
-          });        
+              },
+            };
+          });
 
           setColumns(column_map);
           setLossTableInfo(temp_loss_info);
           setDataSXTable(loaded_data);
-          
-          
         } else {
           Swal.fire("Thông báo", " Có lỗi : " + response.data.message, "error");
         }
@@ -272,11 +280,10 @@ const TINHHINHCUONLIEU = () => {
       });
   };
 
-
   const materialDataTable = React.useMemo(
     () => (
-      <div className='datatb'>
-        <div className='losstable'>
+      <div className="datatb">
+        <div className="losstable">
           <table>
             <thead>
               <tr>
@@ -351,8 +358,8 @@ const TINHHINHCUONLIEU = () => {
             columnResizingMode={"widget"}
             showColumnLines={true}
             dataSource={datasxtable}
-            columnWidth='auto'
-            keyExpr='ID'
+            columnWidth="auto"
+            keyExpr="ID"
             height={"75vh"}
             showBorders={true}
             onSelectionChanged={(e) => {
@@ -366,43 +373,43 @@ const TINHHINHCUONLIEU = () => {
               useNative={true}
               scrollByContent={true}
               scrollByThumb={true}
-              showScrollbar='onHover'
-              mode='virtual'
+              showScrollbar="onHover"
+              mode="virtual"
             />
-            <Selection mode='multiple' selectAllMode='allPages' />
+            <Selection mode="multiple" selectAllMode="allPages" />
             <Editing
               allowUpdating={false}
               allowAdding={true}
               allowDeleting={false}
-              mode='batch'
+              mode="batch"
               confirmDelete={true}
               onChangesChange={(e) => {}}
             />
             <Export enabled={true} />
             <Toolbar disabled={false}>
-              <Item location='before'>
+              <Item location="before">
                 <IconButton
-                  className='buttonIcon'
+                  className="buttonIcon"
                   onClick={() => {
                     SaveExcel(datasxtable, "MaterialStatus");
                   }}
                 >
-                  <AiFillFileExcel color='green' size={15} />
+                  <AiFillFileExcel color="green" size={15} />
                   SAVE
                 </IconButton>
                 <IconButton
-                  className='buttonIcon'
+                  className="buttonIcon"
                   onClick={() => {
                     setShowHidePivotTable(!showhidePivotTable);
                   }}
                 >
-                  <MdOutlinePivotTableChart color='#ff33bb' size={15} />
+                  <MdOutlinePivotTableChart color="#ff33bb" size={15} />
                   Pivot
                 </IconButton>
               </Item>
-              <Item name='searchPanel' />
-              <Item name='exportButton' />
-              <Item name='columnChooser' />
+              <Item name="searchPanel" />
+              <Item name="exportButton" />
+              <Item name="columnChooser" />
             </Toolbar>
             <FilterRow visible={true} />
             <SearchPanel visible={true} />
@@ -417,110 +424,110 @@ const TINHHINHCUONLIEU = () => {
               allowedPageSizes={[5, 10, 15, 20, 100, 1000, 10000, "all"]}
               showNavigationButtons={true}
               showInfo={true}
-              infoText='Page #{0}. Total: {1} ({2} items)'
-              displayMode='compact'
+              infoText="Page #{0}. Total: {1} ({2} items)"
+              displayMode="compact"
             />
             <Summary>
               <TotalItem
-                alignment='right'
-                column='ID'
-                summaryType='count'
+                alignment="right"
+                column="ID"
+                summaryType="count"
                 valueFormat={"decimal"}
               />
               <TotalItem
-                alignment='right'
-                column='TOTAL_OUT_QTY'
-                summaryType='sum'
+                alignment="right"
+                column="TOTAL_OUT_QTY"
+                summaryType="sum"
                 valueFormat={"thousands"}
               />
               <TotalItem
-                alignment='right'
-                column='TOTAL_OUT_EA'
-                summaryType='sum'
+                alignment="right"
+                column="TOTAL_OUT_EA"
+                summaryType="sum"
                 valueFormat={"thousands"}
               />
               <TotalItem
-                alignment='right'
-                column='FR_RESULT'
-                summaryType='sum'
+                alignment="right"
+                column="FR_RESULT"
+                summaryType="sum"
                 valueFormat={"thousands"}
               />
               <TotalItem
-                alignment='right'
-                column='SR_RESULT'
-                summaryType='sum'
+                alignment="right"
+                column="SR_RESULT"
+                summaryType="sum"
                 valueFormat={"thousands"}
               />
               <TotalItem
-                alignment='right'
-                column='DC_RESULT'
-                summaryType='sum'
+                alignment="right"
+                column="DC_RESULT"
+                summaryType="sum"
                 valueFormat={"thousands"}
               />
               <TotalItem
-                alignment='right'
-                column='ED_RESULT'
-                summaryType='sum'
+                alignment="right"
+                column="ED_RESULT"
+                summaryType="sum"
                 valueFormat={"thousands"}
               />
               <TotalItem
-                alignment='right'
-                column='FR_EA'
-                summaryType='sum'
+                alignment="right"
+                column="FR_EA"
+                summaryType="sum"
                 valueFormat={"thousands"}
               />
               <TotalItem
-                alignment='right'
-                column='SR_EA'
-                summaryType='sum'
+                alignment="right"
+                column="SR_EA"
+                summaryType="sum"
                 valueFormat={"thousands"}
               />
               <TotalItem
-                alignment='right'
-                column='DC_EA'
-                summaryType='sum'
+                alignment="right"
+                column="DC_EA"
+                summaryType="sum"
                 valueFormat={"thousands"}
               />
               <TotalItem
-                alignment='right'
-                column='ED_EA'
-                summaryType='sum'
+                alignment="right"
+                column="ED_EA"
+                summaryType="sum"
                 valueFormat={"thousands"}
               />
               <TotalItem
-                alignment='right'
-                column='INSPECT_TOTAL_QTY'
-                summaryType='sum'
+                alignment="right"
+                column="INSPECT_TOTAL_QTY"
+                summaryType="sum"
                 valueFormat={"thousands"}
               />
               <TotalItem
-                alignment='right'
-                column='INSPECT_OK_QTY'
-                summaryType='sum'
+                alignment="right"
+                column="INSPECT_OK_QTY"
+                summaryType="sum"
                 valueFormat={"thousands"}
               />
               <TotalItem
-                alignment='right'
-                column='INS_OUT'
-                summaryType='sum'
+                alignment="right"
+                column="INS_OUT"
+                summaryType="sum"
                 valueFormat={"thousands"}
               />
               <TotalItem
-                alignment='right'
-                column='INSPECT_TOTAL_EA'
-                summaryType='sum'
+                alignment="right"
+                column="INSPECT_TOTAL_EA"
+                summaryType="sum"
                 valueFormat={"thousands"}
               />
               <TotalItem
-                alignment='right'
-                column='INSPECT_OK_EA'
-                summaryType='sum'
+                alignment="right"
+                column="INSPECT_OK_EA"
+                summaryType="sum"
                 valueFormat={"thousands"}
               />
               <TotalItem
-                alignment='right'
-                column='INS_OUTPUT_EA'
-                summaryType='sum'
+                alignment="right"
+                column="INS_OUTPUT_EA"
+                summaryType="sum"
                 valueFormat={"thousands"}
               />
             </Summary>
@@ -528,7 +535,7 @@ const TINHHINHCUONLIEU = () => {
         </ResponsiveContainer>
       </div>
     ),
-    [datasxtable, columns]
+    [datasxtable, columns],
   );
   const dataSource = new PivotGridDataSource({
     fields: [
@@ -1170,18 +1177,18 @@ const TINHHINHCUONLIEU = () => {
     //setColumnDefinition(column_inspect_output);
   }, []);
   return (
-    <div className='tinhinhcuonlieu'>
-      <div className='tracuuDataInspection'>
-        <div className='tracuuDataInspectionform'>
-          <div className='forminput'>
-            <div className='forminputcolumn'>
+    <div className="tinhinhcuonlieu">
+      <div className="tracuuDataInspection">
+        <div className="tracuuDataInspectionform">
+          <div className="forminput">
+            <div className="forminputcolumn">
               <label>
                 <b>Từ ngày:</b>
                 <input
                   onKeyDown={(e) => {
                     handleSearchCodeKeyDown(e);
                   }}
-                  type='date'
+                  type="date"
                   value={fromdate.slice(0, 10)}
                   onChange={(e) => setFromDate(e.target.value)}
                 ></input>
@@ -1192,21 +1199,21 @@ const TINHHINHCUONLIEU = () => {
                   onKeyDown={(e) => {
                     handleSearchCodeKeyDown(e);
                   }}
-                  type='date'
+                  type="date"
                   value={todate.slice(0, 10)}
                   onChange={(e) => setToDate(e.target.value)}
                 ></input>
               </label>
             </div>
-            <div className='forminputcolumn'>
+            <div className="forminputcolumn">
               <label>
                 <b>Code KD:</b>{" "}
                 <input
                   onKeyDown={(e) => {
                     handleSearchCodeKeyDown(e);
                   }}
-                  type='text'
-                  placeholder='GH63-xxxxxx'
+                  type="text"
+                  placeholder="GH63-xxxxxx"
                   value={codeKD}
                   onChange={(e) => setCodeKD(e.target.value)}
                 ></input>
@@ -1217,22 +1224,22 @@ const TINHHINHCUONLIEU = () => {
                   onKeyDown={(e) => {
                     handleSearchCodeKeyDown(e);
                   }}
-                  type='text'
-                  placeholder='7C123xxx'
+                  type="text"
+                  placeholder="7C123xxx"
                   value={codeCMS}
                   onChange={(e) => setCodeCMS(e.target.value)}
                 ></input>
               </label>
             </div>
-            <div className='forminputcolumn'>
+            <div className="forminputcolumn">
               <label>
                 <b>Tên Liệu:</b>{" "}
                 <input
                   onKeyDown={(e) => {
                     handleSearchCodeKeyDown(e);
                   }}
-                  type='text'
-                  placeholder='SJ-203020HC'
+                  type="text"
+                  placeholder="SJ-203020HC"
                   value={m_name}
                   onChange={(e) => setM_Name(e.target.value)}
                 ></input>
@@ -1243,22 +1250,22 @@ const TINHHINHCUONLIEU = () => {
                   onKeyDown={(e) => {
                     handleSearchCodeKeyDown(e);
                   }}
-                  type='text'
-                  placeholder='A123456'
+                  type="text"
+                  placeholder="A123456"
                   value={m_code}
                   onChange={(e) => setM_Code(e.target.value)}
                 ></input>
               </label>
             </div>
-            <div className='forminputcolumn'>
+            <div className="forminputcolumn">
               <label>
                 <b>Số YCSX:</b>{" "}
                 <input
                   onKeyDown={(e) => {
                     handleSearchCodeKeyDown(e);
                   }}
-                  type='text'
-                  placeholder='1F80008'
+                  type="text"
+                  placeholder="1F80008"
                   value={prodrequestno}
                   onChange={(e) => setProdRequestNo(e.target.value)}
                 ></input>
@@ -1269,32 +1276,32 @@ const TINHHINHCUONLIEU = () => {
                   onKeyDown={(e) => {
                     handleSearchCodeKeyDown(e);
                   }}
-                  type='text'
-                  placeholder='A123456'
+                  type="text"
+                  placeholder="A123456"
                   value={plan_id}
                   onChange={(e) => setPlanID(e.target.value)}
                 ></input>
               </label>
             </div>
-            <div className='forminputcolumn'>
+            <div className="forminputcolumn">
               <label>
                 <b>FACTORY:</b>
                 <select
-                  name='phanloai'
+                  name="phanloai"
                   value={factory}
                   onChange={(e) => {
                     setFactory(e.target.value);
                   }}
                 >
-                  <option value='ALL'>ALL</option>
-                  <option value='NM1'>NM1</option>
-                  <option value='NM2'>NM2</option>
+                  <option value="ALL">ALL</option>
+                  <option value="NM1">NM1</option>
+                  <option value="NM2">NM2</option>
                 </select>
               </label>
               <label>
                 <b>MACHINE:</b>
                 <select
-                  name='machine2'
+                  name="machine2"
                   value={machine}
                   onChange={(e) => {
                     setMachine(e.target.value);
@@ -1312,21 +1319,21 @@ const TINHHINHCUONLIEU = () => {
               </label>
             </div>
           </div>
-          <div className='formbutton'>
+          <div className="formbutton">
             <label>
               <b>All Time:</b>
               <input
                 onKeyDown={(e) => {
                   handleSearchCodeKeyDown(e);
                 }}
-                type='checkbox'
-                name='alltimecheckbox'
+                type="checkbox"
+                name="alltimecheckbox"
                 defaultChecked={alltime}
                 onChange={() => setAllTime(!alltime)}
               ></input>
             </label>
             <button
-              className='tranhatky'
+              className="tranhatky"
               onClick={() => {
                 handle_loaddatasx();
               }}
@@ -1335,24 +1342,24 @@ const TINHHINHCUONLIEU = () => {
             </button>
           </div>
         </div>
-        <div className='tracuuYCSXTable'>
+        <div className="tracuuYCSXTable">
           <span style={{ fontSize: 10 }}>
             Số dòng đã chọn: {selectedRows} / {datasxtable.length}
           </span>
           {materialDataTable}
         </div>
         {showhidePivotTable && (
-          <div className='pivottable1'>
+          <div className="pivottable1">
             <IconButton
-              className='buttonIcon'
+              className="buttonIcon"
               onClick={() => {
                 setShowHidePivotTable(false);
               }}
             >
-              <AiFillCloseCircle color='blue' size={15} />
+              <AiFillCloseCircle color="blue" size={15} />
               Close
             </IconButton>
-            <PivotTable datasource={dataSource} tableID='invoicetablepivot' />
+            <PivotTable datasource={dataSource} tableID="invoicetablepivot" />
           </div>
         )}
       </div>

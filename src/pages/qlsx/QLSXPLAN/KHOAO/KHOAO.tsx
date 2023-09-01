@@ -31,14 +31,20 @@ import { checkBP, SaveExcel } from "../../../../api/GlobalFunction";
 import "./KHOAO.scss";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../redux/store";
-import { LICHSUNHAPKHOAO, LICHSUXUATKHOAO, QLSXPLANDATA, TONLIEUXUONG, UserData } from "../../../../api/GlobalInterface";
+import {
+  LICHSUNHAPKHOAO,
+  LICHSUXUATKHOAO,
+  QLSXPLANDATA,
+  TONLIEUXUONG,
+  UserData,
+} from "../../../../api/GlobalInterface";
 
 const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
-  const [nextPermission, setNextPermission]= useState(true);
+  const [nextPermission, setNextPermission] = useState(true);
   const [selectionModel_INPUTSX, setSelectionModel_INPUTSX] = useState<any>([]);
   const [readyRender, setReadyRender] = useState(false);
   const userData: UserData | undefined = useSelector(
-    (state: RootState) => state.totalSlice.userData
+    (state: RootState) => state.totalSlice.userData,
   );
   const [isLoading, setisLoading] = useState(false);
   const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
@@ -54,7 +60,9 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
   const [tonkhoaodatafilter, setTonKhoAoDataFilter] = useState<
     Array<TONLIEUXUONG>
   >([]);
-  const [nextPlan, setNextPlan] = useState(NEXT_PLAN===undefined ? '':NEXT_PLAN);
+  const [nextPlan, setNextPlan] = useState(
+    NEXT_PLAN === undefined ? "" : NEXT_PLAN,
+  );
   const [tonkhoaotable, setTonKhoAoTable] = useState<Array<TONLIEUXUONG>>([]);
   const [lichsunhapkhoao, setLichSuNhapKhoAo] = useState<
     Array<LICHSUNHAPKHOAO>
@@ -196,16 +204,10 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
       renderCell: (params: any) => {
         if (params.row.PHANLOAI === "Y") {
           return (
-            <span style={{ color: "green", fontWeight: "bold" }}>
-              YES
-            </span>
+            <span style={{ color: "green", fontWeight: "bold" }}>YES</span>
           );
         } else {
-          return (
-            <span style={{ color: "red", fontWeight: "bold" }}>
-             NO
-            </span>
-          );
+          return <span style={{ color: "red", fontWeight: "bold" }}>NO</span>;
         }
       },
     },
@@ -214,19 +216,19 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
     return (
       <GridToolbarContainer>
         <IconButton
-          className='buttonIcon'
+          className="buttonIcon"
           onClick={() => {
             SaveExcel(datatable, "Kho AO DATA Table");
           }}
         >
-          <AiFillFileExcel color='green' size={25} />
+          <AiFillFileExcel color="green" size={25} />
           SAVE
         </IconButton>
         <GridToolbarQuickFilter />
-        <div className='div' style={{ fontSize: '1rem', fontWeight: "bold" }}>
+        <div className="div" style={{ fontSize: "1rem", fontWeight: "bold" }}>
           {tableTitle}
         </div>
-        <div className='div' style={{ fontSize: '1rem', fontWeight: "bold" }}>
+        <div className="div" style={{ fontSize: "1rem", fontWeight: "bold" }}>
           _|_Liệu xuất next sẽ vào chỉ thị: {nextPlan}
         </div>
       </GridToolbarContainer>
@@ -250,7 +252,7 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
                   .format("YYYY-MM-DD HH:mm:ss"),
                 id: index,
               };
-            }
+            },
           );
           //console.log(loadeddata);
           setDataTable(loadeddata);
@@ -261,7 +263,7 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
           Swal.fire(
             "Thông báo",
             "Đã load: " + response.data.data.length + " dòng",
-            "success"
+            "success",
           );
         } else {
           setDataTable([]);
@@ -290,7 +292,7 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
                   .format("YYYY-MM-DD HH:mm:ss"),
                 id: index,
               };
-            }
+            },
           );
           //console.log(loadeddata);
           setDataTable(loadeddata);
@@ -300,7 +302,7 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
           Swal.fire(
             "Thông báo",
             "Đã load: " + response.data.data.length + " dòng",
-            "success"
+            "success",
           );
         } else {
           setDataTable([]);
@@ -324,7 +326,7 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
                 ...element,
                 id: index,
               };
-            }
+            },
           );
           setDataTable(loadeddata);
           setCurrent_Column(column_tonkhoaotable);
@@ -334,7 +336,7 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
           Swal.fire(
             "Thông báo",
             "Đã load: " + response.data.data.length + " dòng",
-            "success"
+            "success",
           );
         } else {
           setDataTable([]);
@@ -344,24 +346,23 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
         console.log(error);
       });
   };
-  const checkNextPlanFSC = async (NEXT_PLAN:string)=> {
-    let checkFSC:string = 'N';
+  const checkNextPlanFSC = async (NEXT_PLAN: string) => {
+    let checkFSC: string = "N";
     await generalQuery("checkFSC_PLAN_ID", {
-      PLAN_ID: NEXT_PLAN,      
+      PLAN_ID: NEXT_PLAN,
     })
       .then((response) => {
         console.log(response.data.data);
         if (response.data.tk_status !== "NG") {
           checkFSC = response.data.data[0].FSC;
         } else {
-         
         }
       })
       .catch((error) => {
         console.log(error);
       });
     return checkFSC;
-  }
+  };
   const handle_xuatKhoAo = async () => {
     //console.log(nextPlan);
     if (nextPlan !== "" && nextPlan !== undefined) {
@@ -372,7 +373,8 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
           await generalQuery("checkM_CODE_CHITHI", {
             PLAN_ID_OUTPUT: nextPlan,
             M_CODE: tonkhoaodatafilter[i].M_CODE,
-          }).then((response) => {
+          })
+            .then((response) => {
               console.log(response.data.data);
               if (response.data.tk_status !== "NG") {
                 checklieuchithi = true;
@@ -383,8 +385,12 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
             .catch((error) => {
               console.log(error);
             });
-            let checkFSC:string = await checkNextPlanFSC(nextPlan);          
-          if (checklieuchithi === true && nextPlan !== tonkhoaodatafilter[i].PLAN_ID_INPUT && (checkFSC ===tonkhoaodatafilter[i].FSC)) {
+          let checkFSC: string = await checkNextPlanFSC(nextPlan);
+          if (
+            checklieuchithi === true &&
+            nextPlan !== tonkhoaodatafilter[i].PLAN_ID_INPUT &&
+            checkFSC === tonkhoaodatafilter[i].FSC
+          ) {
             await generalQuery("xuatkhoao", {
               FACTORY: tonkhoaodatafilter[i].FACTORY,
               PHANLOAI: "N",
@@ -409,7 +415,7 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
                     M_LOT_NO: tonkhoaodatafilter[i].M_LOT_NO,
                     TOTAL_IN_QTY: tonkhoaodatafilter[i].TOTAL_IN_QTY,
                     USE_YN: "O",
-                    IN_KHO_ID:  tonkhoaodatafilter[i].IN_KHO_ID,
+                    IN_KHO_ID: tonkhoaodatafilter[i].IN_KHO_ID,
                   })
                     .then((response) => {
                       console.log(response.data);
@@ -437,13 +443,10 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
         }
         if (err_code !== "0") {
           Swal.fire("Thông báo", "Có lỗi: " + err_code, "error");
-        }
-        else
-        {
+        } else {
           setTonKhoAoDataFilter([]);
           handle_loadKhoAo();
         }
-        
       } else {
         Swal.fire("Thông báo", "Chọn ít nhất 1 liệu để xuất kho", "error");
       }
@@ -453,41 +456,53 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
   };
 
   const handle_nhappassword_xoarac = async () => {
-    const {value: pass1} = await Swal.fire({
-      title: 'Xác nhận xóa rác',
-      input:'password',
-      inputLabel: 'Nhập mật mã',
-      inputValue: '',
-      inputPlaceholder:'Mật mã',
-      showCancelButton: true,       
-    })      
-    if(pass1 === 'quantrisanxuat2023' && (userData?.EMPL_NO==='DTL1906' || userData?.EMPL_NO==='THU1402' || userData?.EMPL_NO==='NHU1903'))
-    {
-       handleConfirmXoaRac();     
+    const { value: pass1 } = await Swal.fire({
+      title: "Xác nhận xóa rác",
+      input: "password",
+      inputLabel: "Nhập mật mã",
+      inputValue: "",
+      inputPlaceholder: "Mật mã",
+      showCancelButton: true,
+    });
+    if (
+      pass1 === "quantrisanxuat2023" &&
+      (userData?.EMPL_NO === "DTL1906" ||
+        userData?.EMPL_NO === "THU1402" ||
+        userData?.EMPL_NO === "NHU1903")
+    ) {
+      handleConfirmXoaRac();
+    } else {
+      Swal.fire(
+        "Thông báo",
+        "Đã nhập sai mật mã hoặc tài khoản ko đủ quyền hạn!",
+        "error",
+      );
     }
-    else
-    {
-      Swal.fire('Thông báo','Đã nhập sai mật mã hoặc tài khoản ko đủ quyền hạn!','error');
-    }
-  }
+  };
   const handle_nhappassword_anrac = async () => {
-    const {value: pass1} = await Swal.fire({
-      title: 'Xác nhận ẩn rác',
-      input:'password',
-      inputLabel: 'Nhập mật mã',
-      inputValue: '',
-      inputPlaceholder:'Mật mã',
-      showCancelButton: true,       
-    })      
-    if(pass1 === 'quantrisanxuat2023' && (userData?.EMPL_NO==='DTL1906' || userData?.EMPL_NO==='THU1402' || userData?.EMPL_NO==='NHU1903'))
-    {
-       handleConfirmAnRac();     
+    const { value: pass1 } = await Swal.fire({
+      title: "Xác nhận ẩn rác",
+      input: "password",
+      inputLabel: "Nhập mật mã",
+      inputValue: "",
+      inputPlaceholder: "Mật mã",
+      showCancelButton: true,
+    });
+    if (
+      pass1 === "quantrisanxuat2023" &&
+      (userData?.EMPL_NO === "DTL1906" ||
+        userData?.EMPL_NO === "THU1402" ||
+        userData?.EMPL_NO === "NHU1903")
+    ) {
+      handleConfirmAnRac();
+    } else {
+      Swal.fire(
+        "Thông báo",
+        "Đã nhập sai mật mã hoặc tài khoản ko đủ quyền hạn!",
+        "error",
+      );
     }
-    else
-    {
-      Swal.fire('Thông báo','Đã nhập sai mật mã hoặc tài khoản ko đủ quyền hạn!','error');
-    }
-  }
+  };
 
   const handleConfirmXoaRac = () => {
     Swal.fire({
@@ -500,18 +515,14 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
       confirmButtonText: "Vẫn Xóa!",
     }).then((result) => {
       if (result.isConfirmed) {
-        Swal.fire(
-          "Tiến hành Xóa",
-          "Đang xóa hàng loạt",
-          "success"
-        );
+        Swal.fire("Tiến hành Xóa", "Đang xóa hàng loạt", "success");
         /* checkBP(
           userData?.EMPL_NO,
           userData?.MAINDEPTNAME,
           ["SX"],
           handle_xoa_rac
         ); */
-        checkBP(userData,['SX'],['ALL'],['ALL'],handle_xoa_rac);
+        checkBP(userData, ["SX"], ["ALL"], ["ALL"], handle_xoa_rac);
       }
     });
   };
@@ -526,41 +537,33 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
       confirmButtonText: "Vẫn Ẩn!",
     }).then((result) => {
       if (result.isConfirmed) {
-        Swal.fire(
-          "Tiến hành Ẩn",
-          "Đang Ẩn hàng loạt",
-          "success"
-        );
+        Swal.fire("Tiến hành Ẩn", "Đang Ẩn hàng loạt", "success");
         /* checkBP(
           userData?.EMPL_NO,
           userData?.MAINDEPTNAME,
           ["SX"],
           handle_an_rac
         ); */
-        checkBP(userData,['SX'],['ALL'],['ALL'],handle_an_rac);
+        checkBP(userData, ["SX"], ["ALL"], ["ALL"], handle_an_rac);
       }
     });
   };
-  const handle_xoa_rac = async ()=> {   
+  const handle_xoa_rac = async () => {
     if (tonkhoaodatafilter.length > 0) {
       let err_code: string = "0";
       for (let i = 0; i < tonkhoaodatafilter.length; i++) {
         let check_2_m_code_in_kho_ao: boolean = false;
         let check_m_lot_exist_p500: boolean = false;
         await generalQuery("check_2_m_code_in_kho_ao", {
-          PLAN_ID_INPUT: tonkhoaodatafilter[i].PLAN_ID_INPUT,   
+          PLAN_ID_INPUT: tonkhoaodatafilter[i].PLAN_ID_INPUT,
         })
           .then((response) => {
             //console.log(response.data.data);
             if (response.data.tk_status !== "NG") {
-              if(response.data.data[0].COUNT_M_CODE>1)
-              {
+              if (response.data.data[0].COUNT_M_CODE > 1) {
                 check_2_m_code_in_kho_ao = true;
+              } else {
               }
-              else
-              {
-
-              }                
             } else {
             }
           })
@@ -568,77 +571,66 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
             console.log(error);
           });
         await generalQuery("check_m_lot_exist_p500", {
-          PLAN_ID_INPUT: tonkhoaodatafilter[i].PLAN_ID_INPUT,   
-          M_LOT_NO: tonkhoaodatafilter[i].M_LOT_NO
+          PLAN_ID_INPUT: tonkhoaodatafilter[i].PLAN_ID_INPUT,
+          M_LOT_NO: tonkhoaodatafilter[i].M_LOT_NO,
         })
           .then((response) => {
             //console.log(response.data.data);
             if (response.data.tk_status !== "NG") {
-              if(response.data.data.length >0)
-              {                
+              if (response.data.data.length > 0) {
                 check_m_lot_exist_p500 = true;
-              }    
-              else
-              {
-              }            
+              } else {
+              }
             } else {
             }
           })
           .catch((error) => {
             console.log(error);
           });
-          if(check_2_m_code_in_kho_ao && !check_m_lot_exist_p500) 
-          {
-            console.log('check_2_m_code_in_kho_ao',check_2_m_code_in_kho_ao);
-            console.log('check_m_lot_exist_p500',check_m_lot_exist_p500);
-            Swal.fire('Thông báo','Xóa kho ảo thành công','success');
-            await generalQuery("delete_in_kho_ao", {
-              IN_KHO_ID: tonkhoaodatafilter[i].IN_KHO_ID, 
-            })
-              .then((response) => {
-                //console.log(response.data.data);
-                if (response.data.tk_status !== "NG") {
-                  if(response.data.data.length >0)
-                  {
-                    check_m_lot_exist_p500 = true;
-                  }                
-                } else {
+        if (check_2_m_code_in_kho_ao && !check_m_lot_exist_p500) {
+          console.log("check_2_m_code_in_kho_ao", check_2_m_code_in_kho_ao);
+          console.log("check_m_lot_exist_p500", check_m_lot_exist_p500);
+          Swal.fire("Thông báo", "Xóa kho ảo thành công", "success");
+          await generalQuery("delete_in_kho_ao", {
+            IN_KHO_ID: tonkhoaodatafilter[i].IN_KHO_ID,
+          })
+            .then((response) => {
+              //console.log(response.data.data);
+              if (response.data.tk_status !== "NG") {
+                if (response.data.data.length > 0) {
+                  check_m_lot_exist_p500 = true;
                 }
-              })
-              .catch((error) => {
-                console.log(error);
-              });
-            await generalQuery("delete_out_kho_ao", {
-              PLAN_ID_INPUT: tonkhoaodatafilter[i].PLAN_ID_INPUT, 
-              M_LOT_NO: tonkhoaodatafilter[i].M_LOT_NO, 
+              } else {
+              }
             })
-              .then((response) => {
-                //console.log(response.data.data);
-                if (response.data.tk_status !== "NG") {
-                  if(response.data.data.length >0)
-                  {
-                    check_m_lot_exist_p500 = true;
-                  }                
-                } else {
+            .catch((error) => {
+              console.log(error);
+            });
+          await generalQuery("delete_out_kho_ao", {
+            PLAN_ID_INPUT: tonkhoaodatafilter[i].PLAN_ID_INPUT,
+            M_LOT_NO: tonkhoaodatafilter[i].M_LOT_NO,
+          })
+            .then((response) => {
+              //console.log(response.data.data);
+              if (response.data.tk_status !== "NG") {
+                if (response.data.data.length > 0) {
+                  check_m_lot_exist_p500 = true;
                 }
-              })
-              .catch((error) => {
-                console.log(error);
-              });
+              } else {
+              }
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+        } else {
+          //console.log('check_2_m_code_in_kho_ao',check_2_m_code_in_kho_ao);
+          //console.log('check_m_lot_exist_p500',check_m_lot_exist_p500);
+          if (!check_2_m_code_in_kho_ao) {
+            err_code += ` | ${tonkhoaodatafilter[i].M_LOT_NO}: Liệu chỉ có 1 liệu chính ko xóa được`;
+          } else if (check_m_lot_exist_p500) {
+            err_code += ` | ${tonkhoaodatafilter[i].M_LOT_NO}: Liệu đã input sx ko xóa được`;
           }
-          else
-          {
-            //console.log('check_2_m_code_in_kho_ao',check_2_m_code_in_kho_ao);
-            //console.log('check_m_lot_exist_p500',check_m_lot_exist_p500);
-            if(!check_2_m_code_in_kho_ao)
-            {
-              err_code +=  ` | ${tonkhoaodatafilter[i].M_LOT_NO}: Liệu chỉ có 1 liệu chính ko xóa được`;
-            }
-            else if(check_m_lot_exist_p500)
-            {
-              err_code +=  ` | ${tonkhoaodatafilter[i].M_LOT_NO}: Liệu đã input sx ko xóa được`;
-            }           
-          }      
+        }
       }
       if (err_code !== "0") {
         Swal.fire("Thông báo", "Có lỗi: " + err_code, "error");
@@ -648,23 +640,23 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
     } else {
       Swal.fire("Thông báo", "Chọn ít nhất 1 liệu để xóa", "error");
     }
-  }
-  const handle_an_rac = async ()=> { 
+  };
+  const handle_an_rac = async () => {
     if (tonkhoaodatafilter.length > 0) {
       let err_code: string = "0";
-      for (let i = 0; i < tonkhoaodatafilter.length; i++) { 
-           await generalQuery("an_lieu_kho_ao", {
-              IN_KHO_ID: tonkhoaodatafilter[i].IN_KHO_ID, 
-            })
-              .then((response) => {
-                //console.log(response.data.data);
-                if (response.data.tk_status !== "NG") {
-                } else {
-                }
-              })
-              .catch((error) => {
-                console.log(error);
-              });
+      for (let i = 0; i < tonkhoaodatafilter.length; i++) {
+        await generalQuery("an_lieu_kho_ao", {
+          IN_KHO_ID: tonkhoaodatafilter[i].IN_KHO_ID,
+        })
+          .then((response) => {
+            //console.log(response.data.data);
+            if (response.data.tk_status !== "NG") {
+            } else {
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
       }
       if (err_code !== "0") {
         Swal.fire("Thông báo", "Có lỗi: " + err_code, "error");
@@ -674,11 +666,11 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
     } else {
       Swal.fire("Thông báo", "Chọn ít nhất 1 liệu để ẩn", "error");
     }
-  }
+  };
   const handleTonKhoAoDataSelectionforUpdate = (ids: GridSelectionModel) => {
     const selectedID = new Set(ids);
     let datafilter = datatable.filter((element: any) =>
-      selectedID.has(element.id)
+      selectedID.has(element.id),
     );
     console.log(datafilter);
     if (datafilter.length > 0) {
@@ -688,8 +680,8 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
       //console.log("xoa filter");
     }
   };
-  useEffect(() => {   
-    if(NEXT_PLAN === undefined) setNextPlan('');
+  useEffect(() => {
+    if (NEXT_PLAN === undefined) setNextPlan("");
     setisLoading(true);
     setReadyRender(false);
     setCurrent_Column(column_tonkhoaotable);
@@ -697,15 +689,15 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
     //setColumnDefinition(column_inspect_output);
   }, []);
   return (
-    <div className='khoao'>
-      <div className='tracuuDataInspection'>
-        <div className='tracuuDataInspectionform'>
-          <div className='forminput'>
-            <div className='forminputcolumn'>
+    <div className="khoao">
+      <div className="tracuuDataInspection">
+        <div className="tracuuDataInspectionform">
+          <div className="forminput">
+            <div className="forminputcolumn">
               <label>
                 <b>FROM DATE</b>
                 <input
-                  type='date'
+                  type="date"
                   value={fromdate.slice(0, 10)}
                   onChange={(e) => setFromDate(e.target.value)}
                 ></input>
@@ -713,39 +705,39 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
               <label>
                 <b>TO DATE</b>
                 <input
-                  type='date'
+                  type="date"
                   value={todate.slice(0, 10)}
                   onChange={(e) => setToDate(e.target.value)}
                 ></input>
               </label>
             </div>
-            <div className='forminputcolumn'>
+            <div className="forminputcolumn">
               <label>
                 <b>FACTORY:</b>
                 <select
-                  name='phanloai'
+                  name="phanloai"
                   value={factory}
                   onChange={(e) => {
                     setFactory(e.target.value);
                   }}
                 >
-                  <option value='ALL'>ALL</option>
-                  <option value='NM1'>NM1</option>
-                  <option value='NM2'>NM2</option>
+                  <option value="ALL">ALL</option>
+                  <option value="NM1">NM1</option>
+                  <option value="NM2">NM2</option>
                 </select>
               </label>
               <label>
                 <b>NEXT PLAN</b>
                 <input
-                  type='text'
+                  type="text"
                   value={nextPlan}
                   onChange={(e) => setNextPlan(e.target.value)}
                 ></input>
               </label>
             </div>
-            <div className='forminputcolumn'>
+            <div className="forminputcolumn">
               <button
-                className='tranhatky'
+                className="tranhatky"
                 onClick={() => {
                   setisLoading(true);
                   setReadyRender(false);
@@ -757,7 +749,7 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
                 TỒN KHO ẢO
               </button>
               <button
-                className='tranhatky'
+                className="tranhatky"
                 onClick={() => {
                   setisLoading(true);
                   setReadyRender(false);
@@ -769,32 +761,39 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
                 LS IN
               </button>
             </div>
-            <div className='forminputcolumn'>
+            <div className="forminputcolumn">
               <button
-                className='xuatnext'
+                className="xuatnext"
                 onClick={() => {
-                  if(nextPermission)
-                  {
-                   /*  checkBP(
+                  if (nextPermission) {
+                    /*  checkBP(
                       userData?.EMPL_NO,
                       userData?.MAINDEPTNAME,
                       ["QLSX"],
                       handle_xuatKhoAo
                     ); */
-                    checkBP(userData,['QLSX'],['ALL'],['ALL'],handle_xuatKhoAo);
+                    checkBP(
+                      userData,
+                      ["QLSX"],
+                      ["ALL"],
+                      ["ALL"],
+                      handle_xuatKhoAo,
+                    );
+                  } else {
+                    Swal.fire(
+                      "Thông báo",
+                      "Đang không ở tab tồn kho ảo",
+                      "error",
+                    );
                   }
-                  else
-                  {
-                    Swal.fire('Thông báo', 'Đang không ở tab tồn kho ảo','error');
-                  }
-                 
+
                   //handle_xuatKhoAo();
                 }}
               >
                 XUẤT NEXT
               </button>
               <button
-                className='tranhatky'
+                className="tranhatky"
                 onClick={() => {
                   setisLoading(true);
                   setReadyRender(false);
@@ -806,9 +805,9 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
                 LS OUT
               </button>
             </div>
-            <div className='forminputcolumn'>
+            <div className="forminputcolumn">
               <button
-                className='xoakhoao'
+                className="xoakhoao"
                 onClick={() => {
                   handle_nhappassword_xoarac();
                   //handle_xuatKhoAo();
@@ -817,7 +816,7 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
                 Xóa rác
               </button>
               <button
-                className='xoakhoao'
+                className="xoakhoao"
                 onClick={() => {
                   handle_nhappassword_anrac();
                 }}
@@ -826,12 +825,12 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
               </button>
             </div>
           </div>
-          <div className='formbutton'></div>
+          <div className="formbutton"></div>
         </div>
-        <div className='tracuuYCSXTable'>
+        <div className="tracuuYCSXTable">
           {readyRender && (
             <DataGrid
-              sx={{ fontSize: '0.7rem', flex: 1 }}
+              sx={{ fontSize: "0.7rem", flex: 1 }}
               components={{
                 Toolbar: CustomToolbarLICHSUINPUTSX,
                 LoadingOverlay: LinearProgress,
@@ -845,7 +844,7 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
               ]}
               checkboxSelection
               disableSelectionOnClick
-              editMode='cell'
+              editMode="cell"
               getRowId={(row) => row.id}
               onSelectionModelChange={(ids) => {
                 handleTonKhoAoDataSelectionforUpdate(ids);
