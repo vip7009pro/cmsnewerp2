@@ -25,37 +25,11 @@ import DataGrid, {
 } from "devextreme-react/data-grid";
 import { GrStatusGood } from "react-icons/gr";
 import { FcCancel } from "react-icons/fc";
-import { UserData } from "../../../redux/slices/globalSlice";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
+import { HOLDING_DATA, UserData } from "../../../api/GlobalInterface";
 
-interface HOLDING_DATA {
-  HOLD_ID: number,
-  ID: number;
-  HOLDING_MONTH: string;
-  FACTORY: string;
-  WAHS_CD: string;
-  LOC_CD: string;
-  M_LOT_NO: string;
-  M_CODE: string;
-  M_NAME: string;
-  WIDTH_CD: number;
-  HOLDING_ROLL_QTY: number;
-  HOLDING_QTY: number;
-  HOLDING_TOTAL_QTY: number;
-  HOLDING_IN_DATE: string;
-  HOLDING_OUT_DATE: string;
-  VENDOR_LOT: string;
-  USE_YN: string;
-  INS_DATE: string;
-  INS_EMPL: string;
-  UPD_DATE: string;
-  UPD_EMPL: string;
-  QC_PASS: string;
-  QC_PASS_DATE: string;
-  QC_PASS_EMPL: string;
-  REASON: string,
-}
+
 const HOLDING = () => {
 const [selectedRowsData, setSelectedRowsData] = useState<
     Array<HOLDING_DATA>

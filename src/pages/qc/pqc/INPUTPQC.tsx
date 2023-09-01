@@ -20,23 +20,10 @@ import { generalQuery } from "../../../api/Api";
 import { UserContext } from "../../../api/Context";
 import { SaveExcel } from "../../../api/GlobalFunction";
 import "./INPUTPQC.scss";
-import { UserData } from "../../../redux/slices/globalSlice";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import axios from 'axios';
-
-interface CodeListData {
-  G_CODE: string;
-  G_NAME: string;
-  PROD_LAST_PRICE?: number;
-  USE_YN: string;
-  PO_BALANCE?: number;
-}
-interface CustomerListData {
-  CUST_CD: string;
-  CUST_NAME_KD: string;
-  CUST_NAME?: string;
-}
+import { CodeListData, CustomerListData, UserData } from "../../../api/GlobalInterface";
 
 const INPUTPQC = () => {  
   const [file, setFile] = useState<any>();

@@ -1,24 +1,5 @@
 import React from 'react'
-
-export interface COMPONENT_DATA {
-  G_CODE_MAU: string,
-  DOITUONG_NO: number,
-  DOITUONG_NAME: string,
-  PHANLOAI_DT: string,
-  DOITUONG_STT: string,
-  CAVITY_PRINT: number,
-  GIATRI: string,
-  FONT_NAME: string,
-  FONT_SIZE: number,
-  FONT_STYLE: string,
-  POS_X: number,
-  POS_Y: number,
-  SIZE_W: number,
-  SIZE_H: number,
-  ROTATE: number,
-  REMARK: string,
-  COLOR?: string,
-}
+import { COMPONENT_DATA } from '../../../../api/GlobalInterface'
 
 const RECTANGLE = ({DATA}: {DATA: COMPONENT_DATA}) => { 
   return (

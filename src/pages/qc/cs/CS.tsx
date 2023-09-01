@@ -31,37 +31,9 @@ import { generalQuery } from "../../../api/Api";
 import { UserContext } from "../../../api/Context";
 import { SaveExcel } from "../../../api/GlobalFunction";
 import "./CS.scss";
+import { CSCONFIRM_DATA } from "../../../api/GlobalInterface";
 
-interface CSCONFIRM_DATA {
-  YEAR_WEEK: number;
-  CONFIRM_ID: number;
-  CONFIRM_DATE: string;
-  CONTACT_ID: number;
-  CS_EMPL_NO: string;
-  EMPL_NAME: string;
-  G_CODE: string;
-  G_NAME: string;
-  G_NAME_KD: string;
-  PROD_REQUEST_NO: string;
-  CUST_CD: string;
-  CUST_NAME_KD: string;
-  CONTENT: string;
-  INSPECT_QTY: number;
-  NG_QTY: number;
-  REPLACE_RATE: number;
-  REDUCE_QTY: number;
-  FACTOR: number;
-  RESULT: string;
-  CONFIRM_STATUS: string;
-  REMARK: string;
-  INS_DATETIME: string;
-  PHANLOAI: string;
-  LINK: string;
-  PROD_TYPE: string;
-  PROD_MODEL: string;
-  PROD_PROJECT: string;
-  PROD_LAST_PRICE: number;
-}
+
 const CS = () => {
   const [searchSelection, setSearchSelection] = useState(1);
   const [selectedRows,setSelectedRows]= useState<number>(0);

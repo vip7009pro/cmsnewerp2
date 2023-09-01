@@ -23,9 +23,9 @@ import { FcList } from "react-icons/fc";
 import {
   toggleSidebar,
   setTabModeSwap,
-  ELE_ARRAY,
+  
   closeTab,
-  UserData,
+  
 } from "../../redux/slices/globalSlice";
 import { RootState } from "../../redux/store";
 import { useSelector, useDispatch } from "react-redux";
@@ -98,6 +98,7 @@ import PRODUCT_BARCODE_MANAGER from "../../pages/rnd/product_barcode_manager/PRO
 import QLGN from "../../pages/rnd/quanlygiaonhandaofilm/QLGN";
 import KHOTPNEW from "../../pages/kho/khotp_new/KHOTPNEW";
 import KHOTP from "../../pages/kho/khotp/KHOTP";
+import { ELE_ARRAY, UserData } from "../../api/GlobalInterface";
 /* 
 const KIEMTRA= lazy(()=> import('../../pages/qc/inspection/KIEMTRA'));
 const PQC= lazy(()=> import('../../pages/qc/pqc/PQC'));

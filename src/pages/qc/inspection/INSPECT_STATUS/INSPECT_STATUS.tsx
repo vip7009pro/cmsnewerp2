@@ -6,35 +6,14 @@ import INSPECT_COMPONENT from "./INSPECT_COMPONENT";
 import "./INSPECT_STATUS.scss";
 import INS_SUMMARY from "./INS_SUMMARY";
 import INS_SUMMARY2 from "./INS_SUMMARY2";
-interface INS_STATUS {
-  KHUVUC: string;
-  FACTORY: string;
-  EQ_NAME: string;
-  EMPL_COUNT: number;
-  EQ_STATUS: string;
-  CURR_PLAN_ID: string;
-  CURR_G_CODE: string;
-  REMARK: string;
-  INS_EMPL: string;
-  INS_DATE: string;
-  UPD_EMPL: string;
-  UPD_DATE: string;
-  G_NAME_KD: string;
-  G_NAME: string;
-}
-interface SummaryData {
-  totalSheetA:  number,
-    totalRollB:  number,
-    totalNormal:  number,
-    totalOLED:  number,
-    totalUV:  number,
-}
+import { INS_STATUS, InSpectionSummaryData } from "../../../../api/GlobalInterface";
+
 
 const INSPECT_STATUS = () => {
   const [searchString, setSearchString]= useState('');
   const [selectedFactory, setSelectedFactory] = useState(0);
   const [ins_status_data, setIns_Status_Data] = useState<INS_STATUS[]>([]);
-  const [inspectionsummary,setInspectionSummary] = useState<SummaryData>({
+  const [inspectionsummary,setInspectionSummary] = useState<InSpectionSummaryData>({
     totalSheetA:  0,
     totalRollB:  0,
     totalNormal:  0,
@@ -62,7 +41,7 @@ const INSPECT_STATUS = () => {
             }
           );
           //console.log(loaded_data);
-          let tem_summary_data : SummaryData= {
+          let tem_summary_data : InSpectionSummaryData= {
             totalSheetA:  0,
             totalRollB:  0,
             totalNormal:  0,
@@ -146,7 +125,7 @@ const INSPECT_STATUS = () => {
                       INS_DATE: element.INS_DATE,
                       UPD_EMPL: element.UPD_EMPL,
                       UPD_DATE: element.UPD_DATE,
-                      
+                      KHUVUC: element.KHUVUC
                     }}
                   />
                 );
@@ -181,6 +160,7 @@ const INSPECT_STATUS = () => {
                       INS_DATE: element.INS_DATE,
                       UPD_EMPL: element.UPD_EMPL,
                       UPD_DATE: element.UPD_DATE,
+                      KHUVUC: element.KHUVUC
                     }}
                   />
                 );
@@ -220,6 +200,7 @@ const INSPECT_STATUS = () => {
                       INS_DATE: element.INS_DATE,
                       UPD_EMPL: element.UPD_EMPL,
                       UPD_DATE: element.UPD_DATE,
+                      KHUVUC: element.KHUVUC
                     }}
                   />
                 );
@@ -254,6 +235,7 @@ const INSPECT_STATUS = () => {
                       INS_DATE: element.INS_DATE,
                       UPD_EMPL: element.UPD_EMPL,
                       UPD_DATE: element.UPD_DATE,
+                      KHUVUC: element.KHUVUC
                     }}
                   />
                 );
@@ -289,6 +271,7 @@ const INSPECT_STATUS = () => {
                       INS_DATE: element.INS_DATE,
                       UPD_EMPL: element.UPD_EMPL,
                       UPD_DATE: element.UPD_DATE,
+                      KHUVUC: element.KHUVUC
                     }}
                   />
                 );

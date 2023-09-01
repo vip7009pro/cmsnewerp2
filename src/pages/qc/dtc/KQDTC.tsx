@@ -8,36 +8,9 @@ import { generalQuery } from '../../../api/Api';
 import { UserContext } from '../../../api/Context';
 import { SaveExcel } from '../../../api/GlobalFunction';
 import "./KQDTC.scss"
+import { DTC_DATA } from '../../../api/GlobalInterface';
 
-interface DTC_DATA {
-  DTC_ID: number,
-  FACTORY: string,
-  TEST_FINISH_TIME: string,
-  TEST_EMPL_NO: string,
-  G_CODE: string,
-  PROD_REQUEST_NO: string,
-  G_NAME: string,
-  TEST_NAME: string,
-  POINT_CODE: number,
-  CENTER_VALUE: number,
-  UPPER_TOR: number,
-  LOWER_TOR: number,
-  RESULT: number,
-  BARCODE_CONTENT: string,
-  TEST_TYPE_NAME: string,
-  WORK_POSITION_NAME: string,
-  SAMPLE_NO: number,
-  REQUEST_DATETIME: string,
-  REQUEST_EMPL_NO: string,
-  M_CODE: string,
-  M_NAME: string,
-  SIZE: string,
-  LOTCMS: string,
-  TEST_CODE: number,
-  TDS: string,
-  TDS_EMPL: string,
-  TDS_UPD_DATE: string, 
-}
+
 
 const KQDTC = () => { 
   const [readyRender, setReadyRender] = useState(false);

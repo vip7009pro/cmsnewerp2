@@ -6,14 +6,8 @@ import { AiFillFileExcel } from "react-icons/ai";
 import { generalQuery } from "../../../api/Api";
 import { SaveExcel } from "../../../api/GlobalFunction";
 import './TINH_HINH_CHOT.scss'
-interface TINH_HINH_CHOT_BC {
-  SX_DATE: string;
-  TOTAL: number;
-  DA_CHOT: number;
-  CHUA_CHOT: number;
-  DA_NHAP_HIEUSUAT: number;
-  CHUA_NHAP_HIEUSUAT: number;
-}
+import { TINH_HINH_CHOT_BC } from "../../../api/GlobalInterface";
+
 const TINH_HINH_CHOT = () => {
   const [isPending, startTransition] = useTransition();
   const [tinh_hinh_chot_NM1, setTinh_Hinh_Chot_NM1] = useState<

@@ -1,38 +1,6 @@
 import React, { useState } from "react";
 import "./INS_SUMMARY.scss";
-
-interface EQ_STT {
-  FACTORY?: string;
-  EQ_NAME?: string;
-  EQ_ACTIVE?: string;
-  REMARK?: string;
-  EQ_STATUS?: string;
-  CURR_PLAN_ID?: string;
-  CURR_G_CODE?: string;
-  INS_EMPL?: string;
-  INS_DATE?: string;
-  UPD_EMPL?: string;
-  UPD_DATE?: string;
-  EQ_CODE?: string;
-  G_NAME_KD?: string;
-}
-interface INS_STATUS {
-  KHUVUC: string;
-  FACTORY: string;
-  EQ_NAME: string;
-  EMPL_COUNT: number;
-  EQ_STATUS: string;
-  CURR_PLAN_ID: string;
-  CURR_G_CODE: string;
-  REMARK: string;
-  INS_EMPL: string;
-  INS_DATE: string;
-  UPD_EMPL: string;
-  UPD_DATE: string;
-  G_NAME_KD: string;
-  G_NAME: string;
-}
-
+import { EQ_STT, INS_STATUS } from "../../../../api/GlobalInterface";
 
 interface EQ_STT_DATA {
   EQ_DATA: EQ_STT[];

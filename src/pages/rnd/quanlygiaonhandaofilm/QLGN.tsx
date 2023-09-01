@@ -33,40 +33,10 @@ import {
   import PivotTable from "../../../components/PivotChart/PivotChart";
   import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
   import { ResponsiveContainer } from "recharts";
+import { CodeListData, HANDOVER_DATA } from "../../../api/GlobalInterface";
 
-  interface CodeListData {
-    G_CODE: string;
-    G_NAME: string;
-    PROD_LAST_PRICE?: number;
-    USE_YN: string;
-    PO_BALANCE?: number;
-  }
-  interface HANDOVER_DATA {
-    KNIFE_FILM_ID: string,
-    FACTORY_NAME: string,
-    NGAYBANGIAO: string,
-    G_CODE: string,
-    G_NAME: string,
-    PROD_TYPE: string,
-    CUST_NAME_KD: string,
-    LOAIBANGIAO_PDP: string,
-    LOAIPHATHANH: string,
-    SOLUONG: number,
-    SOLUONGOHP: number,
-    LYDOBANGIAO: string,
-    PQC_EMPL_NO: string,
-    RND_EMPL_NO: string,
-    SX_EMPL_NO: string,
-    REMARK: string,
-    CFM_GIAONHAN: string,
-    CFM_INS_EMPL: string,
-    CFM_DATE: string,
-    KNIFE_FILM_STATUS: string,
-    MA_DAO: string,
-    TOTAL_PRESS: number,
-    CUST_CD: string,
-    KNIFE_TYPE: string,
-  }
+
+
   const QLGN = () => {
     const [showhidePivotTable, setShowHidePivotTable] = useState(false);
     const [handoverdatatable, setHandoverDataTable] = useState<Array<HANDOVER_DATA>>([]);

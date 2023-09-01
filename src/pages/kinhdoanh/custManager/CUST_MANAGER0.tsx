@@ -14,9 +14,9 @@ import { generalQuery } from "../../../api/Api";
 import { UserContext } from "../../../api/Context";
 import { SaveExcel, checkBP } from "../../../api/GlobalFunction";
 import "./CUST_MANAGER.scss";
-import { UserData } from "../../../redux/slices/globalSlice";
 import { RootState } from "../../../redux/store";
 import { useSelector } from "react-redux";
+import { UserData } from "../../../api/GlobalInterface";
 
 interface CUST_INFO {
   id: string;

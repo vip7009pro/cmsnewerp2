@@ -28,103 +28,10 @@ import { MdOutlinePivotTableChart } from "react-icons/md";
 import PivotTable from "../../../components/PivotChart/PivotChart";
 import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
 import { ResponsiveContainer } from "recharts";
-interface MATERIAL_STATUS {
-  INS_DATE: string;
-  FACTORY: string;
-  M_LOT_NO: string;
-  M_CODE: string;
-  M_NAME: string;
-  WIDTH_CD: number;
-  ROLL_QTY: number;
-  OUT_CFM_QTY: number;
-  TOTAL_OUT_QTY: number;
-  PROD_REQUEST_NO: string;
-  PLAN_ID: string;
-  PLAN_EQ: string;
-  G_CODE: string;
-  G_NAME: string;
-  XUAT_KHO: string;
-  VAO_FR: string;
-  VAO_SR: string;
-  VAO_DC: string;
-  VAO_ED: string;
-  CONFIRM_GIAONHAN: string;
-  VAO_KIEM: string;
-  NHATKY_KT: string;
-  RA_KIEM: string;
-  INSPECT_TOTAL_QTY: number;
-  INSPECT_OK_QTY: number;
-  INS_OUT: number;
-  ROLL_LOSS_KT: number;
-  ROLL_LOSS: number;
-  PD: number;
-  CAVITY: number;
-  FR_RESULT: number;
-  SR_RESULT: number;
-  DC_RESULT: number;
-  ED_RESULT: number;
-  TOTAL_OUT_EA: number;
-  FR_EA: number;
-  SR_EA: number;
-  DC_EA: number;
-  ED_EA: number;
-  INSPECT_TOTAL_EA: number;
-  INSPECT_OK_EA: number;
-  INS_OUTPUT_EA: number;
-}
-interface LOSS_TABLE_DATA {
-  XUATKHO_MET: number;
-  INSPECTION_INPUT: number;
-  INSPECTION_OK: number;
-  INSPECTION_OUTPUT: number;
-  TOTAL_LOSS_KT: number;
-  TOTAL_LOSS: number;
-}
-interface CUST_INFO {
-  id: string;
-  CUST_TYPE: string;
-  CUST_CD: string;
-  CUST_NAME_KD: string;
-  CUST_NAME: string;
-  CUST_ADDR1: string;
-  CUST_ADDR2: string;
-  CUST_ADDR3: string;
-  EMAIL: string;
-  TAX_NO: string;
-  CUST_NUMBER: string;
-  BOSS_NAME: string;
-  TEL_NO1: string;
-  FAX_NO: string;
-  CUST_POSTAL: string;
-  REMK: string;
-  INS_DATE: string;
-  INS_EMPL: string;
-  UPD_DATE: string;
-  UPD_EMPL: string;
-}
+import { CUST_INFO } from "../../../api/GlobalInterface";
 const CUST_MANAGER = () => {
   const [showhidePivotTable, setShowHidePivotTable] = useState(false);
   const [custinfodatatable, setCUSTINFODataTable] = useState<Array<any>>([]);
-  const [losstableinfo, setLossTableInfo] = useState<LOSS_TABLE_DATA>({
-    XUATKHO_MET: 0,
-    INSPECTION_INPUT: 0,
-    INSPECTION_OK: 0,
-    INSPECTION_OUTPUT: 0,
-    TOTAL_LOSS_KT: 0,
-    TOTAL_LOSS: 0,
-  });
-  const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
-  const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));
-  const [codeKD, setCodeKD] = useState("");
-  const [codeCMS, setCodeCMS] = useState("");
-  const [machine, setMachine] = useState("ALL");
-  const [factory, setFactory] = useState("ALL");
-  const [prodrequestno, setProdRequestNo] = useState("");
-  const [plan_id, setPlanID] = useState("");
-  const [alltime, setAllTime] = useState(true);
-  const [datasxtable, setDataSXTable] = useState<Array<any>>([]);
-  const [m_name, setM_Name] = useState("");
-  const [m_code, setM_Code] = useState("");
   const [selectedRows, setSelectedRows] = useState<CUST_INFO>({
     id: "1",
     CUST_TYPE: "KH",
@@ -152,7 +59,6 @@ const CUST_MANAGER = () => {
     //console.log(tempcodefullinfo);
     setSelectedRows(tempCustInfo);
   };
-
   const autogenerateCUST_CD = async (company_type: string) => {
     let next_cust_cd: string = company_type + "001";
     await generalQuery("checkcustcd", {
@@ -177,7 +83,6 @@ const CUST_MANAGER = () => {
       });
     return next_cust_cd;
   };
-
   const createNewCustomer = async (company_type: string) => {
     let next_cust_cd = await autogenerateCUST_CD(company_type);
     setSelectedRows({
@@ -203,7 +108,6 @@ const CUST_MANAGER = () => {
       UPD_EMPL: "",
     });
   };
-
   const handleCUSTINFO = () => {
     generalQuery("get_listcustomer", {})
       .then((response) => {
@@ -297,87 +201,6 @@ const CUST_MANAGER = () => {
         console.log(error);
       });
   };
-  const handleSearchCodeKeyDown = (
-    e: React.KeyboardEvent<HTMLInputElement>
-  ) => {
-    if (e.key === "Enter") {
-      handle_loaddatasx();
-    }
-  };
-  const handle_loaddatasx = () => {
-    Swal.fire({
-      title: "Tra cứu trạng thái cuộn liệu",
-      text: "Đang tải dữ liệu, hãy chờ chút",
-      icon: "info",
-      showCancelButton: false,
-      allowOutsideClick: false,
-      confirmButtonText: "OK",
-      showConfirmButton: false,
-    });
-    generalQuery("materialLotStatus", {
-      ALLTIME: alltime,
-      FROM_DATE: fromdate,
-      TO_DATE: todate,
-      PROD_REQUEST_NO: prodrequestno,
-      PLAN_ID: plan_id,
-      M_NAME: m_name,
-      M_CODE: m_code,
-      G_NAME: codeKD,
-      G_CODE: codeCMS,
-      FACTORY: factory,
-      PLAN_EQ: machine,
-    })
-      .then((response) => {
-        //console.log(response.data.data);
-        if (response.data.tk_status !== "NG") {
-          const loaded_data: MATERIAL_STATUS[] = response.data.data.map(
-            (element: MATERIAL_STATUS, index: number) => {
-              return {
-                ...element,
-                INS_DATE:
-                  element.INS_DATE === null
-                    ? ""
-                    : moment
-                        .utc(element.INS_DATE)
-                        .format("YYYY-MM-DD HH:mm:ss"),
-                id: index,
-              };
-            }
-          );
-          //setShowLoss(false);
-          Swal.fire(
-            "Thông báo",
-            "Đã load : " + loaded_data.length + " dòng",
-            "success"
-          );
-          let temp_loss_info: LOSS_TABLE_DATA = {
-            XUATKHO_MET: 0,
-            INSPECTION_INPUT: 0,
-            INSPECTION_OK: 0,
-            INSPECTION_OUTPUT: 0,
-            TOTAL_LOSS_KT: 0,
-            TOTAL_LOSS: 0,
-          };
-          for (let i = 0; i < loaded_data.length; i++) {
-            temp_loss_info.XUATKHO_MET += loaded_data[i].TOTAL_OUT_QTY;
-            temp_loss_info.INSPECTION_INPUT += loaded_data[i].INSPECT_TOTAL_QTY;
-            temp_loss_info.INSPECTION_OK += loaded_data[i].INSPECT_OK_QTY;
-            temp_loss_info.INSPECTION_OUTPUT += loaded_data[i].INS_OUT;
-          }
-          temp_loss_info.TOTAL_LOSS_KT =
-            1 - temp_loss_info.INSPECTION_OK / temp_loss_info.XUATKHO_MET;
-          temp_loss_info.TOTAL_LOSS =
-            1 - temp_loss_info.INSPECTION_OUTPUT / temp_loss_info.XUATKHO_MET;
-          setLossTableInfo(temp_loss_info);
-          setDataSXTable(loaded_data);
-        } else {
-          Swal.fire("Thông báo", " Có lỗi : " + response.data.message, "error");
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
   const materialDataTable = React.useMemo(
     () => (
       <div className='datatb'>
@@ -424,7 +247,7 @@ const CUST_MANAGER = () => {
                 <IconButton
                   className='buttonIcon'
                   onClick={() => {
-                    SaveExcel(datasxtable, "MaterialStatus");
+                    SaveExcel(custinfodatatable, "Customer Table");
                   }}
                 >
                   <AiFillFileExcel color='green' size={25} />
@@ -1103,7 +926,7 @@ const CUST_MANAGER = () => {
         },
       },
     ],
-    store: datasxtable,
+    store: custinfodatatable,
   });
   useEffect(() => {
     handleCUSTINFO();

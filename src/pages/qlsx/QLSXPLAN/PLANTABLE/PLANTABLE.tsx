@@ -54,203 +54,11 @@ import { useReactToPrint } from "react-to-print";
 import CHITHI_COMPONENT from "../CHITHI/CHITHI_COMPONENT";
 import { BiRefresh, BiReset } from "react-icons/bi";
 import YCKT from "../YCKT/YCKT";
-import { UserData } from "../../../../redux/slices/globalSlice";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../redux/store";
 import axios from 'axios';
-interface TONLIEUXUONG {
-  id: number;
-  FACTORY: string;
-  PHANLOAI: string;
-  PLAN_ID_INPUT: string;
-  M_CODE: string;
-  M_NAME: string;
-  WIDTH_CD: number;
-  M_LOT_NO: string;
-  ROLL_QTY: number;
-  IN_QTY: number;
-  TOTAL_IN_QTY: number;
-}
-interface LICHSUNHAPKHOAO {
-  id: string;
-  FACTORY: string;
-  PHANLOAI: string;
-  M_CODE: string;
-  M_NAME: string;
-  WIDTH_CD: number;
-  M_LOT_NO: string;
-  PLAN_ID_INPUT: string;
-  ROLL_QTY: number;
-  IN_QTY: number;
-  TOTAL_IN_QTY: number;
-  INS_DATE: string;
-}
-interface LICHSUXUATKHOAO {
-  id: string;
-  FACTORY: string;
-  PHANLOAI: string;
-  M_CODE: string;
-  M_NAME: string;
-  WIDTH_CD: number;
-  M_LOT_NO: string;
-  PLAN_ID_INPUT: string;
-  PLAN_ID_OUTPUT: string;
-  ROLL_QTY: number;
-  OUT_QTY: number;
-  TOTAL_OUT_QTY: number;
-  INS_DATE: string;
-}
-interface LICHSUINPUTLIEUSX {
-  id: string;
-  PLAN_ID: string;
-  G_NAME: string;
-  G_NAME_KD: string;
-  M_CODE: string;
-  M_NAME: string;
-  M_LOT_NO: string;
-  WIDTH_CD: number;
-  INPUT_QTY: number;
-  USED_QTY: number;
-  REMAIN_QTY: number;
-  EMPL_NO: string;
-  EQUIPMENT_CD: string;
-  INS_DATE: string;
-}
-interface DINHMUC_QSLX {
-  FACTORY: string;
-  EQ1: string;
-  EQ2: string;
-  Setting1: number;
-  Setting2: number;
-  UPH1: number;
-  UPH2: number;
-  Step1: number;
-  Step2: number;
-  LOSS_SX1: number;
-  LOSS_SX2: number;
-  LOSS_SETTING1: number;
-  LOSS_SETTING2: number;
-  NOTE: string;
-}
-interface QLSXPLANDATA {
-  id: string;
-  PLAN_ID: string;
-  PLAN_DATE: string;
-  PROD_REQUEST_NO: string;
-  PLAN_QTY: number;
-  PLAN_EQ: string;
-  PLAN_FACTORY: string;
-  PLAN_LEADTIME: number;
-  INS_EMPL: string;
-  INS_DATE: string;
-  UPD_EMPL: string;
-  UPD_DATE: string;
-  G_CODE: string;
-  G_NAME: string;
-  G_NAME_KD: string;
-  PROD_REQUEST_DATE: string;
-  PROD_REQUEST_QTY: number;
-  STEP: number;
-  PLAN_ORDER: string;
-  PROCESS_NUMBER: number;
-  KETQUASX: number;
-  KQ_SX_TAM: number;
-  CD1: number;
-  CD2: number;
-  TON_CD1: number;
-  TON_CD2: number;
-  FACTORY: string;
-  EQ1: string;
-  EQ2: string;
-  Setting1: number;
-  Setting2: number;
-  UPH1: number;
-  UPH2: number;
-  Step1: number;
-  Step2: number;
-  LOSS_SX1: number;
-  LOSS_SX2: number;
-  LOSS_SETTING1: number;
-  LOSS_SETTING2: number;
-  NOTE: string;
-  NEXT_PLAN_ID: string;
-  XUATDAOFILM?: string;
-  EQ_STATUS?: string;
-  MAIN_MATERIAL?: string;
-  INT_TEM?: string;
-  CHOTBC?: string;
-  DKXL?: string;
-}
-interface YCSXTableData {
-  DESCR?: string;
-  PDBV_EMPL?: string;
-  PDBV_DATE?: string;
-  PDBV?: string;
-  BANVE?: string;
-  PROD_MAIN_MATERIAL?: string;
-  PROD_TYPE?: string;
-  EMPL_NO: string;
-  CUST_CD: string;
-  G_CODE: string;
-  G_NAME: string;
-  EMPL_NAME: string;
-  CUST_NAME_KD: string;
-  PROD_REQUEST_NO: string;
-  PROD_REQUEST_DATE: string;
-  PROD_REQUEST_QTY: number;
-  LOT_TOTAL_INPUT_QTY_EA: number;
-  LOT_TOTAL_OUTPUT_QTY_EA: number;
-  INSPECT_BALANCE: number;
-  SHORTAGE_YCSX: number;
-  YCSX_PENDING: number;
-  PHAN_LOAI: string;
-  REMARK: string;
-  PO_TDYCSX: number;
-  TOTAL_TKHO_TDYCSX: number;
-  TKHO_TDYCSX: number;
-  BTP_TDYCSX: number;
-  CK_TDYCSX: number;
-  BLOCK_TDYCSX: number;
-  FCST_TDYCSX: number;
-  W1: number;
-  W2: number;
-  W3: number;
-  W4: number;
-  W5: number;
-  W6: number;
-  W7: number;
-  W8: number;
-  PDUYET: number;
-  LOAIXH: string;
-  PO_BALANCE: number;
-  EQ1: string;
-  EQ2: string;
-  CD1: number;
-  CD2: number;
-  CD_IN: number;
-  CD_DIECUT: number;
-  TON_CD1: number;
-  TON_CD2: number;
-}
-interface QLSXCHITHIDATA {
-  id: string;
-  CHITHI_ID: number;
-  PLAN_ID: string;
-  M_CODE: string;
-  M_NAME: string;
-  WIDTH_CD: number;
-  M_ROLL_QTY: number;
-  M_MET_QTY: number;
-  M_QTY: number;
-  LIEUQL_SX: number;
-  MAIN_M: number;
-  OUT_KHO_SX: number;
-  OUT_CFM_QTY: number;
-  INS_EMPL: string;
-  INS_DATE: string;
-  UPD_EMPL: string;
-  UPD_DATE: string;
-}
+import { DINHMUC_QSLX, LICHSUINPUTLIEUSX, LICHSUNHAPKHOAO, LICHSUXUATKHOAO, QLSXCHITHIDATA, QLSXPLANDATA, TONLIEUXUONG, UserData, YCSXTableData } from "../../../../api/GlobalInterface";
+
 const PLANTABLE = () => {
   const [currentPlanPD, setCurrentPlanPD] = useState(0);
   const [currentPlanCAVITY, setCurrentPlanCAVITY] = useState(0);
@@ -271,19 +79,31 @@ const PLANTABLE = () => {
     }
   };
   const [datadinhmuc, setDataDinhMuc] = useState<DINHMUC_QSLX>({
-    FACTORY: "",
+    FACTORY: "NM1",
     EQ1: "",
     EQ2: "",
+    EQ3: "",
+    EQ4: "",
     Setting1: 0,
     Setting2: 0,
+    Setting3: 0,
+    Setting4: 0,
     UPH1: 0,
     UPH2: 0,
+    UPH3: 0,
+    UPH4: 0,
     Step1: 0,
     Step2: 0,
+    Step3: 0,
+    Step4: 0,
     LOSS_SX1: 0,
     LOSS_SX2: 0,
+    LOSS_SX3: 0,
+    LOSS_SX4: 0,
     LOSS_SETTING1: 0,
     LOSS_SETTING2: 0,
+    LOSS_SETTING3: 0,
+    LOSS_SETTING4: 0,
     NOTE: "",
   });
   const [selectionModel, setSelectionModel] = useState<any>([]);
@@ -1572,20 +1392,7 @@ const PLANTABLE = () => {
     return planlist.map((element, index) => (
       <YCKT
         key={index}
-        PLAN_ID={element.PLAN_ID}
-        PLAN_DATE={element.PLAN_DATE}
-        PROD_REQUEST_NO={element.PROD_REQUEST_NO}
-        PLAN_QTY={element.PLAN_QTY}
-        PLAN_EQ={element.PLAN_EQ}
-        PLAN_FACTORY={element.PLAN_FACTORY}
-        PLAN_LEADTIME={element.PLAN_LEADTIME}
-        G_CODE={element.G_CODE}
-        G_NAME={element.G_NAME}
-        G_NAME_KD={element.G_NAME_KD}
-        PROD_REQUEST_DATE={element.PROD_REQUEST_DATE}
-        PROD_REQUEST_QTY={element.PROD_REQUEST_QTY}
-        STEP={element.STEP}
-        PLAN_ORDER={element.PLAN_ORDER}
+        DATA={element}
       />
     ));
   };
@@ -1593,20 +1400,7 @@ const PLANTABLE = () => {
     return planlist.map((element, index) => (
       <CHITHI_COMPONENT
         key={index}
-        PLAN_ID={element.PLAN_ID}
-        PLAN_DATE={element.PLAN_DATE}
-        PROD_REQUEST_NO={element.PROD_REQUEST_NO}
-        PLAN_QTY={element.PLAN_QTY}
-        PLAN_EQ={element.PLAN_EQ}
-        PLAN_FACTORY={element.PLAN_FACTORY}
-        PLAN_LEADTIME={element.PLAN_LEADTIME}
-        G_CODE={element.G_CODE}
-        G_NAME={element.G_NAME}
-        G_NAME_KD={element.G_NAME_KD}
-        PROD_REQUEST_DATE={element.PROD_REQUEST_DATE}
-        PROD_REQUEST_QTY={element.PROD_REQUEST_QTY}
-        STEP={element.STEP}
-        PLAN_ORDER={element.PLAN_ORDER}
+        DATA={element}
       />
     ));
   };
@@ -1614,19 +1408,7 @@ const PLANTABLE = () => {
     return ycsxlist.map((element, index) => (
       <YCSXComponent
         key={index}
-        PROD_REQUEST_NO={element.PROD_REQUEST_NO}
-        G_CODE={element.G_CODE}
-        PO_TDYCSX={element.PO_TDYCSX}
-        TOTAL_TKHO_TDYCSX={element.TOTAL_TKHO_TDYCSX}
-        TKHO_TDYCSX={element.TKHO_TDYCSX}
-        BTP_TDYCSX={element.BTP_TDYCSX}
-        CK_TDYCSX={element.CK_TDYCSX}
-        BLOCK_TDYCSX={element.BLOCK_TDYCSX}
-        FCST_TDYCSX={element.FCST_TDYCSX}
-        PDBV={element.PDBV}
-        PDBV_EMPL={element.PDBV_EMPL}
-        PDBV_DATE={element.PDBV_DATE}
-        DESCR={element.DESCR}
+        DATA={element}
       />
     ));
   };

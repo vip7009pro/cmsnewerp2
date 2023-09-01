@@ -30,9 +30,9 @@ import { generalQuery } from "../../../api/Api";
 import { UserContext } from "../../../api/Context";
 import { checkBP, SaveExcel } from "../../../api/GlobalFunction";
 import "./MATERIAL_MANAGER.scss";
-import { UserData } from "../../../redux/slices/globalSlice";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
+import { UserData } from "../../../api/GlobalInterface";
 interface MATERIAL_TABLE_DATA {
   M_ID: number;
   M_NAME: string;

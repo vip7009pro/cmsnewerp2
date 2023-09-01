@@ -12,58 +12,8 @@ import { generalQuery } from "../../../api/Api";
 import { UserContext } from "../../../api/Context";
 import { SaveExcel } from "../../../api/GlobalFunction";
 import "./KHOTP.scss";
-interface WH_IN_OUT {
-  Product_MaVach: string;
-  G_NAME: string;
-  G_NAME_KD: string;
-  Customer_ShortName: string;
-  IO_Date: string;
-  INPUT_DATETIME: string;
-  IO_Shift: string;
-  IO_Type: string;
-  IO_Qty: number;
-  CUST_NAME_KD: string;
-  IO_Note: string;
-  IO_Number: string;
-}
-interface TONKIEMGOP_CMS {
-  G_CODE: string;
-  G_NAME: string;
-  G_NAME_KD: string;
-  CHO_KIEM: number;
-  CHO_CS_CHECK: number;
-  CHO_KIEM_RMA: number;
-  TONG_TON_KIEM: number;
-  BTP: number;
-  TON_TP: number;
-  PENDINGXK: number;
-  TON_TPTT: number;
-  BLOCK_QTY: number;
-  GRAND_TOTAL_STOCK: number;
-}
-interface TONKIEMGOP_KD {
-  G_NAME_KD: string;
-  CHO_KIEM: number;
-  CHO_CS_CHECK: number;
-  CHO_KIEM_RMA: number;
-  TONG_TON_KIEM: number;
-  BTP: number;
-  TON_TP: number;
-  BLOCK_QTY: number;
-  GRAND_TOTAL_STOCK: number;
-}
-interface TONKIEMTACH {
-  KHONAME: string;
-  LC_NAME: string;
-  G_CODE: string;
-  G_NAME: string;
-  G_NAME_KD: string;
-  NHAPKHO: number;
-  XUATKHO: number;
-  TONKHO: number;
-  BLOCK_QTY: number;
-  GRAND_TOTAL_TP: number;
-}
+import { TONKIEMGOP_CMS, TONKIEMGOP_KD, TONKIEMTACH, WH_IN_OUT } from "../../../api/GlobalInterface";
+
 const KHOTP = () => {
   const [readyRender, setReadyRender] = useState(false);
   const [selection, setSelection] = useState<any>({

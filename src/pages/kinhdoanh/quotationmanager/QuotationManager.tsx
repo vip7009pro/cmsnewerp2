@@ -51,7 +51,6 @@ import { generalQuery } from "../../../api/Api";
 import PivotTable from "../../../components/PivotChart/PivotChart";
 import { RootState } from "../../../redux/store";
 import { useSelector, useDispatch } from "react-redux";
-import { UserData } from "../../../redux/slices/globalSlice";
 import { BiCloudUpload } from "react-icons/bi";
 import * as XLSX from "xlsx";
 import { FcApproval } from "react-icons/fc";
@@ -60,91 +59,8 @@ import { ResponsiveContainer } from "recharts";
 import { TbLogout } from "react-icons/tb";
 import QuotationForm from "./QuotationForm/QuotationForm";
 import { useReactToPrint } from "react-to-print";
-interface BANGGIA_DATA {
-  CUST_NAME_KD: string;
-  G_NAME: string;
-  G_NAME_KD: string;
-  PROD_MAIN_MATERIAL: string;
-  MOQ: number;
-  PRICE1: number;
-  PRICE2: number;
-  PRICE3: number;
-  PRICE4: number;
-  PRICE5: number;
-  PRICE6: number;
-  PRICE7: number;
-  PRICE8: number;
-  PRICE9: number;
-  PRICE10: number;
-  PRICE11: number;
-  PRICE12: number;
-  PRICE13: number;
-  PRICE14: number;
-  PRICE15: number;
-  PRICE16: number;
-  PRICE17: number;
-  PRICE18: number;
-  PRICE19: number;
-  PRICE20: number;
-  PRICE_DATE1: string;
-  PRICE_DATE2: string;
-  PRICE_DATE3: string;
-  PRICE_DATE4: string;
-  PRICE_DATE5: string;
-  PRICE_DATE6: string;
-  PRICE_DATE7: string;
-  PRICE_DATE8: string;
-  PRICE_DATE9: string;
-  PRICE_DATE10: string;
-  PRICE_DATE11: string;
-  PRICE_DATE12: string;
-  PRICE_DATE13: string;
-  PRICE_DATE14: string;
-  PRICE_DATE15: string;
-  PRICE_DATE16: string;
-  PRICE_DATE17: string;
-  PRICE_DATE18: string;
-  PRICE_DATE19: string;
-  PRICE_DATE20: string;
-}
-interface BANGGIA_DATA2 {
-  id: number;
-  CUST_NAME_KD?: string;
-  CUST_CD?: string;
-  G_CODE?: string;
-  G_NAME?: string;
-  G_NAME_KD?: string;
-  DESCR?: string;
-  PROD_DVT?: string;
-  PROD_MAIN_MATERIAL?: string;
-  PRICE_DATE: string;
-  MOQ: number;
-  PROD_PRICE: number;
-  INS_DATE: string;
-  INS_EMPL: string;
-  UPD_DATE: string;
-  UPD_EMPL: string;
-  REMARK: string;
-  FINAL: string;
-  G_WIDTH: number;
-  G_LENGTH: number;
-  G_NAME_KT: string;
-  EQ1: string;
-  EQ2: string;
-  EQ3: string;
-  EQ4: string;
-}
-interface CustomerListData {
-  CUST_CD: string;
-  CUST_NAME_KD: string;
-  CUST_NAME?: string;
-}
-interface CodeListData {
-  G_CODE: string;
-  G_NAME: string;
-  G_NAME_KD: string;
-  PROD_MAIN_MATERIAL: string;
-}
+import { BANGGIA_DATA, BANGGIA_DATA2, CodeListDataUpGia, CustomerListData, UserData } from "../../../api/GlobalInterface";
+
 const QuotationManager = () => {
   const userData: UserData | undefined = useSelector(
     (state: RootState) => state.totalSlice.userData
@@ -158,7 +74,7 @@ const QuotationManager = () => {
   const [selectedBangGiaDocRow, setselectedBangGiaDocRow] = useState<
     BANGGIA_DATA2[]
   >([]);
-  const [selectedCode, setSelectedCode] = useState<CodeListData | null>({
+  const [selectedCode, setSelectedCode] = useState<CodeListDataUpGia | null>({
     G_CODE: "6A00001A",
     G_NAME: "GT-I9500_SJ68-01284A",
     G_NAME_KD: "SJ68-01284A",
@@ -177,7 +93,7 @@ const QuotationManager = () => {
       CUST_NAME: "PHAN D&D HA NOI",
     },
   ]);
-  const [codelist, setCodeList] = useState<CodeListData[]>([
+  const [codelist, setCodeList] = useState<CodeListDataUpGia[]>([
     {
       G_CODE: "6A00001A",
       G_NAME: "GT-I9500_SJ68-01284A",
@@ -313,8 +229,8 @@ const QuotationManager = () => {
       .then((response) => {
         //console.log(response.data.data);
         if (response.data.tk_status !== "NG") {
-          const loaded_data: CodeListData[] = response.data.data.map(
-            (element: CodeListData, index: number) => {
+          const loaded_data: CodeListDataUpGia[] = response.data.data.map(
+            (element: CodeListDataUpGia, index: number) => {
               return {
                 ...element,
                 id: index,
@@ -2231,8 +2147,8 @@ const QuotationManager = () => {
         });
         setUploadExcelJSon(
           json.map((element: any, index: number) => {
-            let temp_fil: CodeListData = codelist.filter(
-              (ele: CodeListData, index: number) =>
+            let temp_fil: CodeListDataUpGia = codelist.filter(
+              (ele: CodeListDataUpGia, index: number) =>
                 ele.G_CODE === element.G_CODE
             )[0];
             let temp_filCUST: CustomerListData = customerList.filter(
@@ -2735,13 +2651,13 @@ const QuotationManager = () => {
                   isOptionEqualToValue={(option: any, value: any) =>
                     option.G_CODE === value.G_CODE
                   }
-                  getOptionLabel={(option: CodeListData | any) =>
+                  getOptionLabel={(option: CodeListDataUpGia | any) =>
                     `${option.G_CODE}: ${option.G_NAME}`
                   }
                   renderInput={(params) => (
                     <TextField {...params} label='Select code' />
                   )}
-                  onChange={(event: any, newValue: CodeListData | any) => {
+                  onChange={(event: any, newValue: CodeListDataUpGia | any) => {
                     console.log(newValue);
                     setSelectedCode(newValue);
                   }}

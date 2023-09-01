@@ -39,116 +39,13 @@ import { useReactToPrint } from "react-to-print";
 import YCSXComponent from "./YCSXComponent/YCSXComponent";
 import DrawComponent from "./DrawComponent/DrawComponent";
 import TraAMZ from "./TraAMZ/TraAMZ";
-import { UserData } from "../../../redux/slices/globalSlice";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import axios from "axios";
 import { TbLogout } from "react-icons/tb";
 import Draggable from "devextreme-react/draggable";
-interface POBALANCETDYCSX {
-  G_CODE: string;
-  PO_BALANCE: number;
-}
-interface TONKHOTDYCSX {
-  G_CODE: string;
-  CHO_KIEM: number;
-  CHO_CS_CHECK: number;
-  CHO_KIEM_RMA: number;
-  TONG_TON_KIEM: number;
-  BTP: number;
-  TON_TP: number;
-  BLOCK_QTY: number;
-  GRAND_TOTAL_STOCK: number;
-}
-interface FCSTTDYCSX {
-  G_CODE: string;
-  W1: number;
-  W2: number;
-  W3: number;
-  W4: number;
-  W5: number;
-  W6: number;
-  W7: number;
-  W8: number;
-}
-interface YCSXTableData {
-  DAUPAMZ: string,
-  DACHITHI: string,
-  DESCR?: string;
-  PDBV_EMPL?: string;
-  PDBV_DATE?: string;
-  PDBV?: string;
-  BANVE?: string;
-  PROD_MAIN_MATERIAL?: string;
-  PROD_TYPE?: string;
-  EMPL_NO: string;
-  CUST_CD: string;
-  G_CODE: string;
-  G_NAME: string;
-  G_NAME_KD: string;
-  EMPL_NAME: string;
-  CUST_NAME_KD: string;
-  PROD_REQUEST_NO: string;
-  PROD_REQUEST_DATE: string;
-  PROD_REQUEST_QTY: number;
-  LOT_TOTAL_INPUT_QTY_EA: number;
-  LOT_TOTAL_OUTPUT_QTY_EA: number;
-  INSPECT_BALANCE: number;
-  SHORTAGE_YCSX: number;
-  YCSX_PENDING: number;
-  PHAN_LOAI: string;
-  REMARK: string;
-  PO_TDYCSX: number;
-  TOTAL_TKHO_TDYCSX: number;
-  TKHO_TDYCSX: number;
-  BTP_TDYCSX: number;
-  CK_TDYCSX: number;
-  BLOCK_TDYCSX: number;
-  FCST_TDYCSX: number;
-  W1: number;
-  W2: number;
-  W3: number;
-  W4: number;
-  W5: number;
-  W6: number;
-  W7: number;
-  W8: number;
-  PDUYET: number;
-  LOAIXH: string;
-}
-interface CodeListData {
-  G_CODE: string;
-  G_NAME: string;
-  PROD_LAST_PRICE?: number;
-  USE_YN: string;
-  PO_BALANCE?: number;
-}
-interface CustomerListData {
-  CUST_CD: string;
-  CUST_NAME_KD: string;
-  CUST_NAME?: string;
-}
-interface UploadAmazonData {
-  G_CODE?: string;
-  PROD_REQUEST_NO?: string;
-  NO_IN?: string;
-  ROW_NO?: number;
-  DATA1?: string;
-  DATA2?: string;
-  DATA3?: string;
-  DATA4?: string;
-  STATUS?: string;
-  INLAI_COUNT?: number;
-  REMARK?: string;
-}
-interface PONOLIST {
-  G_CODE: string;
-  CUST_CD: string;
-  PO_NO: string;
-  PO_DATE: string;
-  RD_DATE: string;
-  PO_QTY: number;
-}
+import { CodeListData, CustomerListData, FCSTTDYCSX, POBALANCETDYCSX, PONOLIST, TONKHOTDYCSX, UploadAmazonData, UserData, YCSXTableData } from "../../../api/GlobalInterface";
+
 const YCSXManager = () => {
   const [showhidesearchdiv, setShowHideSearchDiv] = useState(true);
   const [ycsxlistrender, setYCSXListRender] = useState<Array<ReactElement>>();
@@ -160,19 +57,7 @@ const YCSXManager = () => {
     return ycsxlist.map((element, index) => (
       <YCSXComponent
         key={index}
-        PROD_REQUEST_NO={element.PROD_REQUEST_NO}
-        G_CODE={element.G_CODE}
-        PO_TDYCSX={element.PO_TDYCSX}
-        TOTAL_TKHO_TDYCSX={element.TOTAL_TKHO_TDYCSX}
-        TKHO_TDYCSX={element.TKHO_TDYCSX}
-        BTP_TDYCSX={element.BTP_TDYCSX}
-        CK_TDYCSX={element.CK_TDYCSX}
-        BLOCK_TDYCSX={element.BLOCK_TDYCSX}
-        FCST_TDYCSX={element.FCST_TDYCSX}
-        PDBV={element.PDBV}
-        PDBV_EMPL={element.PDBV_EMPL}
-        PDBV_DATE={element.PDBV_DATE}
-        DESCR={element.DESCR}
+        DATA={element} 
       />
     ));
   };
@@ -2785,6 +2670,7 @@ const YCSXManager = () => {
       const selectedCodeFilter: CodeListData = {
         G_CODE: ycsxdatatablefilter[ycsxdatatablefilter.length - 1].G_CODE,
         G_NAME: ycsxdatatablefilter[ycsxdatatablefilter.length - 1].G_NAME,
+        PROD_LAST_PRICE: 0,
         USE_YN: "Y",
       };
       const selectedCustomerFilter: CustomerListData = {

@@ -39,67 +39,10 @@ import { AiFillFileExcel } from "react-icons/ai";
 import { BiPrinter, BiSave, BiShow } from "react-icons/bi";
 import { useReactToPrint } from "react-to-print";
 import { UserContext } from "../../../api/Context";
-import { UserData } from "../../../redux/slices/globalSlice";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
-export interface COMPONENT_DATA {
-  G_CODE_MAU: string;
-  DOITUONG_NO: number;
-  DOITUONG_NAME: string;
-  PHANLOAI_DT: string;
-  DOITUONG_STT: string;
-  CAVITY_PRINT: number;
-  GIATRI: string;
-  FONT_NAME: string;
-  FONT_SIZE: number;
-  FONT_STYLE: string;
-  POS_X: number;
-  POS_Y: number;
-  SIZE_W: number;
-  SIZE_H: number;
-  ROTATE: number;
-  REMARK: string;
-  INS_DATE?: string;
-  INS_EMPL?: string;
-  UPD_DATE?: string;
-  UPD_EMPL?: string;
-}
-interface CODE_INFO {
-  id: number;
-  G_CODE: string;
-  G_NAME: string;
-  G_NAME_KD: string;
-  PROD_TYPE: string;
-  PROD_LAST_PRICE: number;
-  PD: number;
-  CAVITY: number;
-  PACKING_QTY: number;
-  G_WIDTH: number;
-  G_LENGTH: number;
-  PROD_PROJECT: string;
-  PROD_MODEL: string;
-  M_NAME_FULLBOM: string;
-  BANVE: string;
-  NO_INSPECTION: string;
-  USE_YN: string;
-}
-interface BOM_AMAZON {
-  id: string;
-  G_CODE?: string;
-  G_NAME?: string;
-  G_CODE_MAU?: string;
-  TEN_MAU?: string;
-  DOITUONG_NO?: string;
-  DOITUONG_NAME?: string;
-  GIATRI?: string;
-  REMARK?: string;
-  AMZ_COUNTRY?: string;
-  AMZ_PROD_NAME?: string;
-}
-interface  POINT_DATA {
-  x: number,
-  y: number
-}
+import { BOM_AMAZON, CODE_INFO, COMPONENT_DATA, POINT_DATA, UserData } from "../../../api/GlobalInterface";
+
 export const renderElement = (elementList: Array<COMPONENT_DATA>) => {
   return elementList.map((ele: COMPONENT_DATA, index: number) => {
     if (ele.PHANLOAI_DT === "TEXT") {

@@ -1,0 +1,2728 @@
+//PO kinh doanh
+export interface POTableData {
+  PO_ID: number;
+  CUST_NAME_KD: string;
+  PO_NO: string;
+  G_NAME: string;
+  G_NAME_KD: string;
+  G_CODE: string;
+  PO_DATE: string;
+  RD_DATE: string;
+  PROD_PRICE: string;
+  PO_QTY: number;
+  TOTAL_DELIVERED: number;
+  PO_BALANCE: number;
+  PO_AMOUNT: number;
+  DELIVERED_AMOUNT: number;
+  BALANCE_AMOUNT: number;
+  TON_KIEM: number;
+  BTP: number;
+  TP: number;
+  BLOCK_QTY: number;
+  GRAND_TOTAL_STOCK: number;
+  EMPL_NAME: string;
+  PROD_TYPE: string;
+  M_NAME_FULLBOM: string;
+  PROD_MAIN_MATERIAL: string;
+  CUST_CD: string;
+  EMPL_NO: string;
+  POMONTH: string;
+  POWEEKNUM: string;
+  OVERDUE: string;
+  REMARK: string;
+}
+export interface POSummaryData {
+  total_po_qty: number;
+  total_delivered_qty: number;
+  total_pobalance_qty: number;
+  total_po_amount: number;
+  total_delivered_amount: number;
+  total_pobalance_amount: number;
+}
+export interface CodeListData {
+  G_CODE: string;
+  G_NAME: string;
+  PROD_LAST_PRICE: number;
+  USE_YN: string;
+  PO_BALANCE?: number;
+}
+export interface CodeListDataUpGia {
+  G_CODE: string;
+  G_NAME: string;
+  G_NAME_KD: string;
+  PROD_MAIN_MATERIAL: string;
+}
+export interface CustomerListData {
+  CUST_CD: string;
+  CUST_NAME_KD: string;
+  CUST_NAME?: string;
+}
+export interface PRICEWITHMOQ {
+  CUST_NAME_KD: string;
+  CUST_CD: string;
+  G_CODE: string;
+  G_NAME: string;
+  PROD_MAIN_MATERIAL: string;
+  PRICE_DATE: string;
+  MOQ: number;
+  PROD_PRICE: number;
+  INS_DATE: string;
+  INS_EMPL: string;
+  UPD_DATE: string;
+  UPD_EMPL: string;
+  REMARK: string;
+  FINAL: string;
+}
+//Invoice kinh doanh
+export interface InvoiceTableData {
+  DELIVERY_ID: number;
+  CUST_CD: string;
+  CUST_NAME_KD: string;
+  EMPL_NO: string;
+  EMPL_NAME: string;
+  G_CODE: string;
+  G_NAME: string;
+  G_NAME_KD: string;
+  PO_NO: string;
+  DELIVERY_DATE: string;
+  DELIVERY_QTY: number;
+  PROD_PRICE: string;
+  DELIVERED_AMOUNT: number;
+  REMARK: string;
+  INVOICE_NO: string;
+  PROD_TYPE: string;
+  PROD_MODEL: string;
+  PROD_PROJECT: string;
+  YEARNUM: number;
+  WEEKNUM: number;
+}
+export interface InvoiceSummaryData {
+  total_po_qty: number;
+  total_delivered_qty: number;
+  total_pobalance_qty: number;
+  total_po_amount: number;
+  total_delivered_amount: number;
+  total_pobalance_amount: number;
+}
+//Plan kinh doanh
+export interface PlanTableData {
+  PLAN_ID: string;
+  EMPL_NAME: string;
+  EMPL_NO: string;
+  CUST_NAME_KD: string;
+  CUST_CD: string;
+  G_CODE: string;
+  G_NAME_KD: string;
+  G_NAME: string;
+  PROD_TYPE: string;
+  PROD_MAIN_MATERIAL: string;
+  PLAN_DATE: string;
+  D1: number;
+  D2: number;
+  D3: number;
+  D4: number;
+  D5: number;
+  D6: number;
+  D7: number;
+  D8: number;
+  D9: number;
+  D10: number;
+  D11: number;
+  D12: number;
+  D13: number;
+  D14: number;
+  D15: number;
+  REMARK: string;
+}
+//FCST kinh doanh
+export interface FCSTTableData {
+  EMPL_NO?: string;
+  FCST_ID: number;
+  FCSTYEAR: number;
+  FCSTWEEKNO: number;
+  G_CODE: string;
+  G_NAME_KD: string;
+  G_NAME: string;
+  EMPL_NAME: string;
+  CUST_NAME_KD: string;
+  PROD_PROJECT: string;
+  PROD_MODEL: string;
+  PROD_MAIN_MATERIAL: string;
+  PROD_PRICE: number;
+  W1: number;
+  W2: number;
+  W3: number;
+  W4: number;
+  W5: number;
+  W6: number;
+  W7: number;
+  W8: number;
+  W9: number;
+  W10: number;
+  W11: number;
+  W12: number;
+  W13: number;
+  W14: number;
+  W15: number;
+  W16: number;
+  W17: number;
+  W18: number;
+  W19: number;
+  W20: number;
+  W21: number;
+  W22: number;
+  W1A: number;
+  W2A: number;
+  W3A: number;
+  W4A: number;
+  W5A: number;
+  W6A: number;
+  W7A: number;
+  W8A: number;
+  W9A: number;
+  W10A: number;
+  W11A: number;
+  W12A: number;
+  W13A: number;
+  W14A: number;
+  W15A: number;
+  W16A: number;
+  W17A: number;
+  W18A: number;
+  W19A: number;
+  W20A: number;
+  W21A: number;
+  W22A: number;
+}
+//Shortage kinh doanh
+export interface ShortageData {
+  ST_ID: number;
+  PLAN_DATE: string;
+  CUST_NAME_KD: string;
+  PO_BALANCE: number;
+  TON_TP: number;
+  BTP: number;
+  G_NAME: string;
+  TONG_TON_KIEM: number;
+  D1_9H: number;
+  D1_13H: number;
+  D1_19H: number;
+  D1_21H: number;
+  D1_23H: number;
+  D2_9H: number;
+  D2_13H: number;
+  D2_21H: number;
+  D3_SANG: number;
+  D3_CHIEU: number;
+  D4_SANG: number;
+  D4_CHIEU: number;
+  TODAY_TOTAL: number;
+  TODAY_THIEU: number;
+  UPH: number;
+  PRIORITY: number;
+}
+//po stock full
+export interface POFullCMS {
+  G_CODE: string;
+  G_NAME: string;
+  G_NAME_KD: string;
+  PO_QTY: number;
+  TOTAL_DELIVERED: number;
+  PO_BALANCE: number;
+  CHO_KIEM: number;
+  CHO_CS_CHECK: number;
+  CHO_KIEM_RMA: number;
+  TONG_TON_KIEM: number;
+  BTP: number;
+  TON_TP: number;
+  BLOCK_QTY: number;
+  GRAND_TOTAL_STOCK: number;
+  THUA_THIEU: number;
+  YCSX_BALANCE: number;
+  YCSX_QTY: number;
+  KETQUASX: number;
+  NHAPKHO: number;
+}
+export interface POFullSummary {
+  PO_BALANCE: number;
+  TP: number;
+  BTP: number;
+  CK: number;
+  BLOCK: number;
+  TONG_TON: number;
+  THUATHIEU: number;
+}
+// quan ly khach hang
+export interface CUST_INFO {
+  id: string;
+  CUST_TYPE: string;
+  CUST_CD: string;
+  CUST_NAME_KD: string;
+  CUST_NAME: string;
+  CUST_ADDR1: string;
+  CUST_ADDR2: string;
+  CUST_ADDR3: string;
+  EMAIL: string;
+  TAX_NO: string;
+  CUST_NUMBER: string;
+  BOSS_NAME: string;
+  TEL_NO1: string;
+  FAX_NO: string;
+  CUST_POSTAL: string;
+  REMK: string;
+  INS_DATE: string;
+  INS_EMPL: string;
+  UPD_DATE: string;
+  UPD_EMPL: string;
+}
+//ycsx manager
+export interface POBALANCETDYCSX {
+  G_CODE: string;
+  PO_BALANCE: number;
+}
+export interface TONKHOTDYCSX {
+  G_CODE: string;
+  CHO_KIEM: number;
+  CHO_CS_CHECK: number;
+  CHO_KIEM_RMA: number;
+  TONG_TON_KIEM: number;
+  BTP: number;
+  TON_TP: number;
+  BLOCK_QTY: number;
+  GRAND_TOTAL_STOCK: number;
+}
+export interface FCSTTDYCSX {
+  G_CODE: string;
+  W1: number;
+  W2: number;
+  W3: number;
+  W4: number;
+  W5: number;
+  W6: number;
+  W7: number;
+  W8: number;
+}
+export interface YCSXTableData {
+  DAUPAMZ: string;
+  DACHITHI: string;
+  DESCR?: string;
+  PDBV_EMPL?: string;
+  PDBV_DATE?: string;
+  PDBV?: string;
+  BANVE?: string;
+  PROD_MAIN_MATERIAL?: string;
+  PROD_TYPE?: string;
+  EMPL_NO: string;
+  CUST_CD: string;
+  G_CODE: string;
+  G_NAME: string;
+  G_NAME_KD: string;
+  EMPL_NAME: string;
+  CUST_NAME_KD: string;
+  PROD_REQUEST_NO: string;
+  PROD_REQUEST_DATE: string;
+  PROD_REQUEST_QTY: number;
+  LOT_TOTAL_INPUT_QTY_EA: number;
+  LOT_TOTAL_OUTPUT_QTY_EA: number;
+  INSPECT_BALANCE: number;
+  SHORTAGE_YCSX: number;
+  YCSX_PENDING: number;
+  PHAN_LOAI: string;
+  REMARK: string;
+  PO_TDYCSX: number;
+  TOTAL_TKHO_TDYCSX: number;
+  TKHO_TDYCSX: number;
+  BTP_TDYCSX: number;
+  CK_TDYCSX: number;
+  BLOCK_TDYCSX: number;
+  FCST_TDYCSX: number;
+  W1: number;
+  W2: number;
+  W3: number;
+  W4: number;
+  W5: number;
+  W6: number;
+  W7: number;
+  W8: number;
+  PDUYET: number;
+  LOAIXH: string;
+  PO_BALANCE?: number;
+  EQ1: string;
+  EQ2: string;
+  CD1: number;
+  CD2: number;
+  TON_CD1: number;
+  TON_CD2: number;
+  EQ3: string;
+  EQ4: string;
+  CD3: number;
+  CD4: number;
+  TON_CD3: number;
+  TON_CD4: number;
+  UPH1: number;
+  UPH2: number;
+  UPH3: number;
+  UPH4: number;
+  FACTORY: string;
+  Setting1: number;
+  Setting2: number;
+  Setting3: number;
+  Setting4: number;
+  Step1: number;
+  Step2: number;
+  Step3: number;
+  Step4: number;
+  LOSS_SX1: number;
+  LOSS_SX2: number;
+  LOSS_SX3: number;
+  LOSS_SX4: number;
+  LOSS_SETTING1: number;
+  LOSS_SETTING2: number;
+  LOSS_SETTING3: number;
+  LOSS_SETTING4: number;
+  NOTE: string;
+}
+export interface UploadAmazonData {
+  G_CODE?: string;
+  PROD_REQUEST_NO?: string;
+  NO_IN?: string;
+  ROW_NO?: number;
+  DATA1?: string;
+  DATA2?: string;
+  DATA3?: string;
+  DATA4?: string;
+  STATUS?: string;
+  INLAI_COUNT?: number;
+  REMARK?: string;
+}
+export interface PONOLIST {
+  G_CODE: string;
+  CUST_CD: string;
+  PO_NO: string;
+  PO_DATE: string;
+  RD_DATE: string;
+  PO_QTY: number;
+}
+//Amazon data
+export interface AMAZON_DATA {
+  G_NAME: string;
+  G_CODE: string;
+  PROD_REQUEST_NO: string;
+  NO_IN: string;
+  ROW_NO: number;
+  DATA_1: string;
+  DATA_2: string;
+  DATA_3: string;
+  DATA_4: string;
+  PRINT_STATUS: string;
+  INLAI_COUNT: number;
+  REMARK: string;
+  INS_DATE: string;
+  INS_EMPL: string;
+}
+//ycsx component
+export interface YCSX {
+  PROD_REQUEST_NO: string;
+  G_CODE: string;
+}
+export interface TONVL {
+  M_CODE: string;
+  M_NAME: string;
+  WIDTH_CD: number;
+  TON_DAU: number;
+  INPUT: number;
+  OUTPUT: number;
+  RETURN_IN: number;
+  HOLDING: number;
+  GRAND_TOTAL: number;
+}
+export interface FullBOM {
+  PDBV?: string;
+  NO_INSPECTION?: string;
+  PDUYET?: number;
+  REMK: string;
+  PROD_REQUEST_QTY: number;
+  PROD_REQUEST_NO: string;
+  PROD_REQUEST_DATE: string;
+  G_CODE: string;
+  DELIVERY_DT: string;
+  CODE_55: string;
+  CODE_50: string;
+  RIV_NO: string;
+  M_QTY: number;
+  M_CODE: string;
+  CUST_NAME: string;
+  ROLE_EA_QTY: number;
+  PACK_DRT: string;
+  PROD_PRINT_TIMES: number;
+  G_WIDTH: number;
+  G_SG_R: number;
+  G_SG_L: number;
+  G_R: number;
+  G_NAME: string;
+  G_LG: number;
+  G_LENGTH: number;
+  G_CODE_C: string;
+  G_CG: number;
+  G_C: number;
+  G_C_R: number;
+  PD: number;
+  CODE_33: string;
+  M_NAME: string;
+  WIDTH_CD: number;
+  EMPL_NO: string;
+  EMPL_NAME: string;
+  CODE_03: string;
+  REMARK: string;
+  TONLIEU: number;
+  HOLDING: number;
+  TONG_TON_LIEU: number;
+  PO_TYPE?: string;
+  FSC: string;
+  PROD_MAIN_MATERIAL?: string;
+  LIEUQL_SX?: number;
+  G_NAME_KD: string;
+  PROD_DIECUT_STEP: number;
+  FACTORY: string;
+  EQ1: string;
+  EQ2: string;
+  EQ3: string;
+  EQ4: string;
+  Setting1: number;
+  Setting2: number;
+  Setting3: number;
+  Setting4: number;
+  UPH1: number;
+  UPH2: number;
+  UPH3: number;
+  UPH4: number;
+  Step1: number;
+  Step2: number;
+  Step3: number;
+  Step4: number;
+  LOSS_SX1: number;
+  LOSS_SX2: number;
+  LOSS_SX3: number;
+  LOSS_SX4: number;
+  LOSS_SETTING1: number;
+  LOSS_SETTING2: number;
+  LOSS_SETTING3: number;
+  LOSS_SETTING4: number;
+  NOTE: string;
+}
+//quan ly vat lieu
+export interface MATERIAL_TABLE_DATA {
+  M_ID: number;
+  M_NAME: string;
+  DESCR: string;
+  CUST_CD: string;
+  CUST_NAME_KD: string;
+  SSPRICE: number;
+  CMSPRICE: number;
+  SLITTING_PRICE: number;
+  MASTER_WIDTH: number;
+  ROLL_LENGTH: number;
+  USE_YN: string;
+  INS_DATE: string;
+  INS_EMPL: string;
+  UPD_DATE: string;
+  UPD_EMPL: string;
+}
+//bang chang cong
+export interface BANGCHAMCONG_DATA {
+  DATE_COLUMN: string;
+  WEEKDAY: string;
+  NV_CCID: string;
+  EMPL_NO: string;
+  CMS_ID: string;
+  MIDLAST_NAME: string;
+  FIRST_NAME: string;
+  FULL_NAME: string;
+  PHONE_NUMBER: string;
+  SEX_NAME: string;
+  WORK_STATUS_NAME: string;
+  FACTORY_NAME: string;
+  JOB_NAME: string;
+  WORK_SHIF_NAME: string;
+  WORK_POSITION_NAME: string;
+  SUBDEPTNAME: string;
+  MAINDEPTNAME: string;
+  REQUEST_DATE: string;
+  APPLY_DATE: string;
+  APPROVAL_STATUS: string;
+  OFF_ID: number;
+  CA_NGHI: string;
+  ON_OFF: number;
+  OVERTIME_INFO: string;
+  OVERTIME: number;
+  REASON_NAME: string;
+  REMARK: string;
+  XACNHAN: string;
+  CA_CODE: number;
+  CA_NAME: string;
+  IN_START: string;
+  IN_END: string;
+  OUT_START: string;
+  OUT_END: string;
+  CHECK_DATE0: string;
+  CHECK10: string;
+  CHECK20: string;
+  CHECK30: string;
+  CHECK40: string;
+  CHECK50: string;
+  CHECK60: string;
+  CHECK_DATE: string;
+  CHECK1: string;
+  CHECK2: string;
+  CHECK3: string;
+  CHECK4: string;
+  CHECK5: string;
+  CHECK6: string;
+  CHECK_DATE2: string;
+  CHECK12: string;
+  CHECK22: string;
+  CHECK32: string;
+  CHECK42: string;
+  CHECK52: string;
+  CHECK62: string;
+  IN_TIME: string;
+  OUT_TIME: string;
+}
+export interface BANGCHAMCONG_DATA2 {
+  DATE_COLUMN: string;
+  WEEKDAY: string;
+  NV_CCID: string;
+  EMPL_NO: string;
+  CMS_ID: string;
+  MIDLAST_NAME: string;
+  FIRST_NAME: string;
+  FULL_NAME: string;
+  PHONE_NUMBER: string;
+  SEX_NAME: string;
+  WORK_STATUS_NAME: string;
+  FACTORY_NAME: string;
+  JOB_NAME: string;
+  WORK_SHIF_NAME: string;
+  WORK_POSITION_NAME: string;
+  SUBDEPTNAME: string;
+  MAINDEPTNAME: string;
+  REQUEST_DATE: string;
+  APPLY_DATE: string;
+  APPROVAL_STATUS: string;
+  OFF_ID: number;
+  CA_NGHI: number;
+  ON_OFF: number;
+  OVERTIME_INFO: string;
+  OVERTIME: number;
+  REASON_NAME: string;
+  REMARK: string;
+  XACNHAN: string;
+  CHECK1: string;
+  CHECK2: string;
+  CHECK3: string;
+  PREV_CHECK1: string;
+  PREV_CHECK2: string;
+  PREV_CHECK3: string;
+  NEXT_CHECK1: string;
+  NEXT_CHECK2: string;
+  NEXT_CHECK3: string;
+  IN_TIME: string;
+  OUT_TIME: string;
+}
+export interface CA_INFO {
+  CA_CODE: number;
+  CA_NAME: string;
+  CA_NAME_KR: string;
+  IN_START: string;
+  IN_END: string;
+  OUT_START: string;
+  OUT_END: string;
+  LAUNCH_START: string;
+  LAUNCH_END: string;
+}
+export interface IN_OUT_DATA {
+  CA_CODE: number;
+  IN_START: string;
+  IN_END: string;
+  OUT_START: string;
+  OUT_END: string;
+  CHECK10: string;
+  CHECK20: string;
+  CHECK30: string;
+  CHECK40: string;
+  CHECK50: string;
+  CHECK60: string;
+  CHECK1: string;
+  CHECK2: string;
+  CHECK3: string;
+  CHECK4: string;
+  CHECK5: string;
+  CHECK6: string;
+  CHECK12: string;
+  CHECK22: string;
+  CHECK32: string;
+  CHECK42: string;
+  CHECK52: string;
+  CHECK62: string;
+}
+export interface IN_OUT_DATA2 {
+  SHIFT_NAME: string;
+  IN_START: string;
+  IN_END: string;
+  OUT_START: string;
+  OUT_END: string;
+  CHECK10: string;
+  CHECK20: string;
+  CHECK30: string;
+  CHECK40: string;
+  CHECK50: string;
+  CHECK60: string;
+  CHECK1: string;
+  CHECK2: string;
+  CHECK3: string;
+  CHECK4: string;
+  CHECK5: string;
+  CHECK6: string;
+  CHECK12: string;
+  CHECK22: string;
+  CHECK32: string;
+  CHECK42: string;
+  CHECK52: string;
+  CHECK62: string;
+}
+export interface IN_OUT_DATA22 {
+  SHIFT_NAME: string;
+  CHECK1: string;
+  CHECK2: string;
+  CHECK3: string;
+  PREV_CHECK1: string;
+  PREV_CHECK2: string;
+  PREV_CHECK3: string;
+  NEXT_CHECK1: string;
+  NEXT_CHECK2: string;
+  NEXT_CHECK3: string;
+}
+//bao cao nhan su
+export interface DIEMDANHFULLSUMMARY {
+  id: number;
+  MAINDEPTNAME: string;
+  COUNT_TOTAL: number;
+  COUNT_ON: number;
+  COUNT_OFF: number;
+  COUNT_CDD: number;
+  T1_TOTAL: number;
+  T1_ON: number;
+  T1_OFF: number;
+  T1_CDD: number;
+  T2_TOTAL: number;
+  T2_ON: number;
+  T2_OFF: number;
+  T2_CDD: number;
+  HC_TOTAL: number;
+  HC_ON: number;
+  HC_OFF: number;
+  HC_CDD: number;
+  ON_RATE: number;
+  TOTAL: number;
+  PHEP_NAM: number;
+  NUA_PHEP: number;
+  NGHI_VIEC_RIENG: number;
+  NGHI_OM: number;
+  CHE_DO: number;
+  KHONG_LY_DO: number;
+}
+export interface DiemDanhNhomData {
+  id: string;
+  MAINDEPTNAME: string;
+  SUBDEPTNAME: string;
+  TOTAL_ALL: number;
+  TOTAL_ON: number;
+  TOTAL_OFF: number;
+  TOTAL_CDD: number;
+  TOTAL_NM1: number;
+  TOTAL_NM2: number;
+  ON_NM1: number;
+  ON_NM2: number;
+  OFF_NM1: number;
+  OFF_NM2: number;
+  CDD_NM1: number;
+  CDD_NM2: number;
+}
+export interface MainDeptData {
+  id: number;
+  MAINDEPTCODE: number;
+  MAINDEPTNAME: string;
+  MAINDEPTNAME_KR: string;
+}
+export interface DiemDanhHistoryData {
+  id: string;
+  APPLY_DATE: string;
+  MAINDEPTNAME: string;
+  TOTAL: number;
+  TOTAL_ON: number;
+  TOTAL_OFF: number;
+  ON_RATE: number;
+}
+export interface DiemDanhFullData {
+  DATE_COLUMN: string;
+  WEEKDAY: string;
+  id: string;
+  EMPL_NO: string;
+  CMS_ID: string;
+  MIDLAST_NAME: string;
+  FIRST_NAME: string;
+  PHONE_NUMBER: string;
+  SEX_NAME: string;
+  WORK_STATUS_NAME: string;
+  FACTORY_NAME: string;
+  JOB_NAME: string;
+  WORK_SHIF_NAME: string;
+  WORK_POSITION_NAME: string;
+  SUBDEPTNAME: string;
+  MAINDEPTNAME: string;
+  REQUEST_DATE: string;
+  APPLY_DATE: string;
+  APPROVAL_STATUS: number;
+  OFF_ID: number;
+  CA_NGHI: number;
+  ON_OFF: number;
+  OVERTIME_INFO: string;
+  OVERTIME: number;
+  REASON_NAME: string;
+  REMARK: string;
+  XACNHAN: string;
+}
+export interface DIEMDANHMAINDEPT {
+  id: number;
+  MAINDEPTNAME: string;
+  COUNT_TOTAL: number;
+  COUT_ON: number;
+  COUT_OFF: number;
+  COUNT_CDD: number;
+  ON_RATE: number;
+}
+//diem danh nhom
+export interface DiemDanhNhomData {
+  id: string;
+  APPLY_DATE: string;
+  APPROVAL_STATUS: number;
+  CA_NGHI: number;
+  CMS_ID: string;
+  EMPL_NO: string;
+  FACTORY_NAME: string;
+  FIRST_NAME: string;
+  JOB_NAME: string;
+  MAINDEPTNAME: string;
+  MIDLAST_NAME: string;
+  OFF_ID: any;
+  ON_OFF: any;
+  OVERTIME: any;
+  OVERTIME_INFO: any;
+  PHONE_NUMBER: string;
+  REASON_NAME: any;
+  REQUEST_DATE: string;
+  SEX_NAME: string;
+  SUBDEPTNAME: string;
+  WORK_POSITION_NAME: string;
+  WORK_SHIF_NAME: string;
+  WORK_STATUS_NAME: string;
+  REMARK?: string;
+}
+export interface WorkPositionTableData {
+  id: number;
+  CTR_CD: string;
+  SUBDEPTCODE: number;
+  WORK_POSITION_CODE: number;
+  WORK_POSITION_NAME: string;
+  WORK_POSITION_NAME_KR: string;
+  ATT_GROUP_CODE: number;
+}
+export interface DiemDanhLichSuData {
+  DATE_COLUMN: string;
+  WEEKDAY: string;
+  id: string;
+  EMPL_NO: string;
+  CMS_ID: string;
+  MIDLAST_NAME: string;
+  FIRST_NAME: string;
+  PHONE_NUMBER: string;
+  SEX_NAME: string;
+  WORK_STATUS_NAME: string;
+  FACTORY_NAME: string;
+  JOB_NAME: string;
+  WORK_SHIF_NAME: string;
+  WORK_POSITION_NAME: string;
+  SUBDEPTNAME: string;
+  MAINDEPTNAME: string;
+  REQUEST_DATE: string;
+  APPLY_DATE: string;
+  APPROVAL_STATUS: number;
+  OFF_ID: number;
+  CA_NGHI: number;
+  ON_OFF: number;
+  OVERTIME_INFO: string;
+  OVERTIME: number;
+  REASON_NAME: string;
+  REMARK: string;
+  XACNHAN: string;
+  CHECK1: string;
+  CHECK2: string;
+  CHECK3: string;
+}
+export interface PheDuyetNghiData {
+  id: string;
+  EMPL_NO: string;
+  REQUEST_DATE: string;
+  APPLY_DATE: string;
+  REASON_CODE: number;
+  REMARK: string;
+  APPROVAL_STATUS: number;
+  OFF_ID: number;
+  CA_NGHI: number;
+  CMS_ID: string;
+  FIRST_NAME: string;
+  MIDLAST_NAME: string;
+  DOB: string;
+  HOMETOWN: string;
+  SEX_CODE: number;
+  ADD_PROVINCE: string;
+  ADD_DISTRICT: string;
+  ADD_COMMUNE: string;
+  ADD_VILLAGE: string;
+  PHONE_NUMBER: string;
+  WORK_START_DATE: string;
+  PASSWORD: string;
+  EMAIL: string;
+  WORK_POSITION_CODE: number;
+  WORK_SHIFT_CODE: number;
+  POSITION_CODE: number;
+  JOB_CODE: number;
+  FACTORY_CODE: number;
+  WORK_STATUS_CODE: number;
+  ONLINE_DATETIME: string;
+  SEX_NAME: string;
+  SEX_NAME_KR: string;
+  WORK_STATUS_NAME: string;
+  WORK_STATUS_NAME_KR: string;
+  FACTORY_NAME: string;
+  FACTORY_NAME_KR: string;
+  JOB_NAME: string;
+  JOB_NAME_KR: string;
+  POSITION_NAME: string;
+  POSITION_NAME_KR: string;
+  WORK_SHIF_NAME: string;
+  WORK_SHIF_NAME_KR: string;
+  SUBDEPTCODE: number;
+  WORK_POSITION_NAME: string;
+  WORK_POSITION_NAME_KR: string;
+  ATT_GROUP_CODE: number;
+  MAINDEPTCODE: number;
+  SUBDEPTNAME: string;
+  SUBDEPTNAME_KR: string;
+  MAINDEPTNAME: string;
+  MAINDEPTNAME_KR: string;
+  REASON_NAME: string;
+  REASON_NAME_KR: string;
+  ON_OFF: string;
+  OVERTIME_INFO: string;
+  OVERTIME: string;
+}
+//quan ly phong ban nhan su
+export interface MainDeptTableData {
+  id: number;
+  CTR_CD: string;
+  MAINDEPTCODE: number;
+  MAINDEPTNAME: string;
+  MAINDEPTNAME_KR: string;
+}
+export interface SubDeptTableData {
+  id: number;
+  CTR_CD: string;
+  MAINDEPTCODE: number;
+  SUBDEPTCODE: number;
+  SUBDEPTNAME: string;
+  SUBDEPTNAME_KR: string;
+}
+export interface EmployeeTableData {
+  id: string;
+  EMPL_NO: string;
+  CMS_ID: string;
+  FIRST_NAME: string;
+  MIDLAST_NAME: string;
+  FULL_NAME: string;
+  DOB: string;
+  HOMETOWN: string;
+  ADD_PROVINCE: string;
+  ADD_DISTRICT: string;
+  ADD_COMMUNE: string;
+  ADD_VILLAGE: string;
+  PHONE_NUMBER: string;
+  WORK_START_DATE: string;
+  PASSWORD: string;
+  EMAIL: string;
+  REMARK: string;
+  ONLINE_DATETIME: string;
+  CTR_CD: string;
+  SEX_CODE: number;
+  SEX_NAME: string;
+  SEX_NAME_KR: string;
+  WORK_STATUS_CODE: number;
+  WORK_STATUS_NAME: string;
+  WORK_STATUS_NAME_KR: string;
+  FACTORY_CODE: number;
+  FACTORY_NAME: string;
+  FACTORY_NAME_KR: string;
+  JOB_CODE: number;
+  JOB_NAME: string;
+  JOB_NAME_KR: string;
+  POSITION_CODE: number;
+  POSITION_NAME: string;
+  POSITION_NAME_KR: string;
+  WORK_SHIFT_CODE: number;
+  WORK_SHIF_NAME: string;
+  WORK_SHIF_NAME_KR: string;
+  WORK_POSITION_CODE: number;
+  WORK_POSITION_NAME: string;
+  WORK_POSITION_NAME_KR: string;
+  ATT_GROUP_CODE: number;
+  SUBDEPTCODE: number;
+  SUBDEPTNAME: string;
+  SUBDEPTNAME_KR: string;
+  MAINDEPTCODE: number;
+  MAINDEPTNAME: string;
+  MAINDEPTNAME_KR: string;
+  NV_CCID: number;
+}
+//CS data
+export interface CSCONFIRM_DATA {
+  YEAR_WEEK: number;
+  CONFIRM_ID: number;
+  CONFIRM_DATE: string;
+  CONTACT_ID: number;
+  CS_EMPL_NO: string;
+  EMPL_NAME: string;
+  G_CODE: string;
+  G_NAME: string;
+  G_NAME_KD: string;
+  PROD_REQUEST_NO: string;
+  CUST_CD: string;
+  CUST_NAME_KD: string;
+  CONTENT: string;
+  INSPECT_QTY: number;
+  NG_QTY: number;
+  REPLACE_RATE: number;
+  REDUCE_QTY: number;
+  FACTOR: number;
+  RESULT: string;
+  CONFIRM_STATUS: string;
+  REMARK: string;
+  INS_DATETIME: string;
+  PHANLOAI: string;
+  LINK: string;
+  PROD_TYPE: string;
+  PROD_MODEL: string;
+  PROD_PROJECT: string;
+  PROD_LAST_PRICE: number;
+}
+//DTC data
+export interface DTC_ADD_SPEC_DATA {
+  CUST_NAME_KD: string;
+  G_CODE: string;
+  G_NAME: string;
+  TEST_CODE: number;
+  POINT_CODE: number;
+  TEST_NAME: string;
+  POINT_NAME: string;
+  PRI: number;
+  CENTER_VALUE: number;
+  UPPER_TOR: number;
+  LOWER_TOR: number;
+  BARCODE_CONTENT: string;
+  REMARK: string;
+  M_NAME: string;
+  WIDTH_CD: number;
+  M_CODE: string;
+  TDS: string;
+  BANVE: string;
+}
+export interface MaterialListData {
+  M_CODE: string;
+  M_NAME: string;
+  WIDTH_CD: number;
+}
+export interface CheckAddedSPECDATA {
+  TEST_CODE: number;
+  TEST_NAME: string;
+  CHECKADDED: number;
+}
+export interface DTC_REG_DATA {
+  DTC_ID: number;
+  FACTORY: string;
+  TEST_FINISH_TIME: string;
+  TEST_EMPL_NO: string;
+  G_CODE: string;
+  PROD_REQUEST_NO: number;
+  G_NAME: number;
+  TEST_NAME: number;
+  TEST_TYPE_NAME: number;
+  WORK_POSITION_NAME: number;
+  REQUEST_DATETIME: string;
+  REQUEST_EMPL_NO: string;
+  M_NAME: string;
+  SIZE: number;
+  REMARK: string;
+  LOTCMS: string;
+}
+export interface TestListTable {
+  TEST_CODE: string;
+  TEST_NAME: string;
+  SELECTED?: boolean;
+  CHECKADDED?: boolean;
+}
+export interface DTC_RESULT_INPUT {
+  DTC_ID: number;
+  G_CODE: string;
+  M_CODE: string;
+  TEST_NAME: string;
+  TEST_CODE: number;
+  POINT_NAME: string;
+  POINT_CODE: number;
+  CENTER_VALUE: number;
+  UPPER_TOR: number;
+  LOWER_TOR: number;
+  RESULT: number;
+  REMARK: number;
+}
+export interface DTC_DATA {
+  DTC_ID: number;
+  FACTORY: string;
+  TEST_FINISH_TIME: string;
+  TEST_EMPL_NO: string;
+  G_CODE: string;
+  PROD_REQUEST_NO: string;
+  G_NAME: string;
+  TEST_NAME: string;
+  POINT_CODE: number;
+  CENTER_VALUE: number;
+  UPPER_TOR: number;
+  LOWER_TOR: number;
+  RESULT: number;
+  BARCODE_CONTENT: string;
+  TEST_TYPE_NAME: string;
+  WORK_POSITION_NAME: string;
+  SAMPLE_NO: number;
+  REQUEST_DATETIME: string;
+  REQUEST_EMPL_NO: string;
+  M_CODE: string;
+  M_NAME: string;
+  SIZE: string;
+  LOTCMS: string;
+  TEST_CODE: number;
+  TDS: string;
+  TDS_EMPL: string;
+  TDS_UPD_DATE: string;
+}
+export interface DTC_SPEC_DATA {
+  CUST_NAME_KD: string;
+  G_CODE: string;
+  G_NAME: string;
+  TEST_NAME: string;
+  POINT_NAME: string;
+  PRI: number;
+  CENTER_VALUE: number;
+  UPPER_TOR: number;
+  LOWER_TOR: number;
+  MIN_SPEC: number;
+  MAX_SPEC: number;
+  BARCODE_CONTENT: string;
+  REMARK: string;
+  M_NAME: string;
+  WIDTH_CD: number;
+  M_CODE: string;
+  TDS: string;
+  BANVE: string;
+}
+//inspection
+export interface INSPECT_OUTPUT_DATA {
+  INSPECT_OUTPUT_ID: string;
+  CUST_NAME_KD: string;
+  EMPL_NAME: string;
+  G_CODE: string;
+  G_NAME: string;
+  PROD_TYPE: string;
+  G_NAME_KD: string;
+  PROD_REQUEST_NO: string;
+  PROD_REQUEST_DATE: string;
+  PROD_REQUEST_QTY: number;
+  PROCESS_LOT_NO: string;
+  PROD_DATETIME: string;
+  OUTPUT_DATETIME: string;
+  OUTPUT_QTY_EA: number;
+  REMARK: string;
+  PIC_KD: string;
+  CA_LAM_VIEC: string;
+  NGAY_LAM_VIEC: string;
+  STATUS: string;
+}
+export interface INSPECT_INPUT_DATA {
+  INSPECT_INPUT_ID: string;
+  CUST_NAME_KD: string;
+  EMPL_NAME: string;
+  G_CODE: string;
+  G_NAME: string;
+  PROD_TYPE: string;
+  G_NAME_KD: string;
+  PROD_REQUEST_NO: string;
+  PROD_REQUEST_DATE: string;
+  PROD_REQUEST_QTY: number;
+  PROCESS_LOT_NO: string;
+  PROD_DATETIME: string;
+  INPUT_DATETIME: string;
+  INPUT_QTY_EA: number;
+  INPUT_QTY_KG: number;
+  REMARK: string;
+  CNDB_ENCODES: string;
+  PIC_KD: string;
+}
+export interface INSPECT_INOUT_YCSX {
+  PIC_KD: string;
+  CUST_NAME_KD: string;
+  G_CODE: string;
+  G_NAME: string;
+  G_NAME_KD: string;
+  PROD_REQUEST_NO: string;
+  PROD_REQUEST_DATE: string;
+  PROD_REQUEST_QTY: number;
+  LOT_TOTAL_INPUT_QTY_EA: number;
+  LOT_TOTAL_OUTPUT_QTY_EA: number;
+  DA_KIEM_TRA: number;
+  OK_QTY: number;
+  LOSS_NG_QTY: number;
+  INSPECT_BALANCE: number;
+}
+export interface INSPECT_NG_DATA {
+  INSPECT_ID: number;
+  YEAR_WEEK: string;
+  CUST_NAME_KD: string;
+  PROD_REQUEST_NO: string;
+  G_NAME_KD: string;
+  G_NAME: string;
+  G_CODE: string;
+  PROD_TYPE: string;
+  M_LOT_NO: string;
+  M_NAME: string;
+  WIDTH_CD: number;
+  INSPECTOR: string;
+  LINEQC: string;
+  PROD_PIC: string;
+  UNIT: string;
+  PROCESS_LOT_NO: string;
+  PROCESS_IN_DATE: string;
+  INSPECT_DATETIME: string;
+  INSPECT_START_TIME: string;
+  INSPECT_FINISH_TIME: string;
+  FACTORY: string;
+  LINEQC_PIC: string;
+  MACHINE_NO: number;
+  INSPECT_TOTAL_QTY: number;
+  INSPECT_OK_QTY: number;
+  INSPECT_SPEED: number;
+  INSPECT_TOTAL_LOSS_QTY: number;
+  INSPECT_TOTAL_NG_QTY: number;
+  MATERIAL_NG_QTY: number;
+  PROCESS_NG_QTY: number;
+  PROD_PRICE: number;
+  ERR1: number;
+  ERR2: number;
+  ERR3: number;
+  ERR4: number;
+  ERR5: number;
+  ERR6: number;
+  ERR7: number;
+  ERR8: number;
+  ERR9: number;
+  ERR10: number;
+  ERR11: number;
+  ERR12: number;
+  ERR13: number;
+  ERR14: number;
+  ERR15: number;
+  ERR16: number;
+  ERR17: number;
+  ERR18: number;
+  ERR19: number;
+  ERR20: number;
+  ERR21: number;
+  ERR22: number;
+  ERR23: number;
+  ERR24: number;
+  ERR25: number;
+  ERR26: number;
+  ERR27: number;
+  ERR28: number;
+  ERR29: number;
+  ERR30: number;
+  ERR31: number;
+  ERR32: number;
+  CNDB_ENCODES: string;
+}
+export interface INS_STATUS {
+  KHUVUC: string;
+  FACTORY: string;
+  EQ_NAME: string;
+  EMPL_COUNT: number;
+  EQ_STATUS: string;
+  CURR_PLAN_ID: string;
+  CURR_G_CODE: string;
+  REMARK: string;
+  INS_EMPL: string;
+  INS_DATE: string;
+  UPD_EMPL: string;
+  UPD_DATE: string;
+  G_NAME_KD: string;
+  G_NAME: string;
+  SEARCH_STRING?: string;
+}
+export interface InSpectionSummaryData {
+  totalSheetA: number;
+  totalRollB: number;
+  totalNormal: number;
+  totalOLED: number;
+  totalUV: number;
+}
+export interface EQ_STT {
+  FACTORY?: string;
+  EQ_NAME?: string;
+  EQ_SERIES?: string;
+  EQ_ACTIVE?: string;
+  REMARK?: string;
+  EQ_STATUS?: string;
+  CURR_PLAN_ID?: string;
+  CURR_G_CODE?: string;
+  INS_EMPL?: string;
+  INS_DATE?: string;
+  UPD_EMPL?: string;
+  UPD_DATE?: string;
+  EQ_CODE?: string;
+  G_NAME_KD?: string;
+  STEP?: number;
+}
+//iqc data
+export interface IQC_INCOMMING_DATA {
+  id?: number;
+  IQC1_ID: number;
+  M_CODE: string;
+  M_LOT_NO: string;
+  LOT_CMS: string;
+  LOT_VENDOR: string;
+  CUST_CD: string;
+  CUST_NAME_KD: string;
+  EXP_DATE: string;
+  INPUT_LENGTH: number;
+  TOTAL_ROLL: number;
+  NQ_CHECK_ROLL: number;
+  DTC_ID: number;
+  TEST_EMPL: string;
+  TOTAL_RESULT: string;
+  AUTO_JUDGEMENT: string;
+  NGOAIQUAN: string;
+  KICHTHUOC: string;
+  THICKNESS: string;
+  DIENTRO: string;
+  CANNANG: string;
+  KEOKEO: string;
+  KEOKEO2: string;
+  FTIR: string;
+  MAIMON: string;
+  XRF: string;
+  SCANBARCODE: string;
+  PHTHALATE: string;
+  MAUSAC: string;
+  SHOCKNHIET: string;
+  TINHDIEN: string;
+  NHIETAM: string;
+  TVOC: string;
+  DOBONG: string;
+  INS_DATE: string;
+  INS_EMPL: string;
+  UPD_DATE: string;
+  UPD_EMPL: string;
+  REMARK: string;
+}
+export interface HOLDING_DATA {
+  HOLD_ID: number;
+  ID: number;
+  HOLDING_MONTH: string;
+  FACTORY: string;
+  WAHS_CD: string;
+  LOC_CD: string;
+  M_LOT_NO: string;
+  M_CODE: string;
+  M_NAME: string;
+  WIDTH_CD: number;
+  HOLDING_ROLL_QTY: number;
+  HOLDING_QTY: number;
+  HOLDING_TOTAL_QTY: number;
+  HOLDING_IN_DATE: string;
+  HOLDING_OUT_DATE: string;
+  VENDOR_LOT: string;
+  USE_YN: string;
+  INS_DATE: string;
+  INS_EMPL: string;
+  UPD_DATE: string;
+  UPD_EMPL: string;
+  QC_PASS: string;
+  QC_PASS_DATE: string;
+  QC_PASS_EMPL: string;
+  REASON: string;
+}
+export interface QC_FAIL_DATA {
+  id?: number;
+  FACTORY: string;
+  PLAN_ID_SUDUNG: string;
+  G_NAME: string;
+  LIEUQL_SX: number;
+  M_CODE: string;
+  M_LOT_NO: string;
+  VENDOR_LOT: string;
+  M_NAME: string;
+  WIDTH_CD: number;
+  ROLL_QTY: number;
+  IN_QTY: number;
+  TOTAL_IN_QTY: number;
+  USE_YN: string;
+  PQC3_ID: number;
+  DEFECT_PHENOMENON: string;
+  OUT_DATE: string;
+  INS_EMPL?: string;
+  INS_DATE: string;
+  UPD_EMPL: string;
+  UPD_DATE: string;
+  PHANLOAI: string;
+  QC_PASS: string;
+  QC_PASS_DATE: string;
+  QC_PASS_EMPL: string;
+  REMARK: string;
+  IN1_EMPL: string;
+  IN2_EMPL: string;
+  OUT1_EMPL: string;
+  OUT2_EMPL: string;
+  OUT_PLAN_ID: string;
+  IN_CUST_CD: string;
+  OUT_CUST_CD: string;
+  IN_CUST_NAME: string;
+  OUT_CUST_NAME: string;
+  REMARK_OUT: string;
+  FAIL_ID: number;
+}
+//pqc data
+export interface PQC1_DATA {
+  PQC1_ID: string;
+  YEAR_WEEK: string;
+  PROD_REQUEST_NO: string;
+  PROD_REQUEST_QTY: number;
+  PROD_REQUEST_DATE: string;
+  PLAN_ID: string;
+  PROCESS_LOT_NO: string;
+  G_NAME: string;
+  G_NAME_KD: string;
+  LINEQC_PIC: string;
+  PROD_PIC: string;
+  PROD_LEADER: string;
+  LINE_NO: number;
+  STEPS: string;
+  CAVITY: number;
+  SETTING_OK_TIME: string;
+  FACTORY: string;
+  INSPECT_SAMPLE_QTY: number;
+  PROD_LAST_PRICE: number;
+  SAMPLE_AMOUNT: number;
+  REMARK: string;
+  INS_DATE: string;
+  UPD_DATE: string;
+}
+export interface SX_DATA {
+  G_CODE: string;
+  PHAN_LOAI: string;
+  PLAN_ID: string;
+  PLAN_DATE: string;
+  PROD_REQUEST_NO: string;
+  G_NAME: string;
+  G_NAME_KD: string;
+  PLAN_QTY: number;
+  EQ1: string;
+  EQ2: string;
+  PLAN_EQ: string;
+  PLAN_FACTORY: string;
+  PROCESS_NUMBER: number;
+  STEP: number;
+  M_NAME: string;
+  WAREHOUSE_OUTPUT_QTY: number;
+  TOTAL_OUT_QTY: number;
+  USED_QTY: number;
+  REMAIN_QTY: number;
+  PD: number;
+  CAVITY: number;
+  SETTING_MET_TC: number;
+  SETTING_DM_SX: number;
+  SETTING_MET: number;
+  WAREHOUSE_ESTIMATED_QTY: number;
+  ESTIMATED_QTY_ST: number;
+  ESTIMATED_QTY: number;
+  KETQUASX: number;
+  LOSS_SX_ST: number;
+  LOSS_SX: number;
+  INS_INPUT: number;
+  LOSS_SX_KT: number;
+  INS_OUTPUT: number;
+  LOSS_KT: number;
+  SETTING_START_TIME: string;
+  MASS_START_TIME: string;
+  MASS_END_TIME: string;
+  RPM: number;
+  EQ_NAME_TT: string;
+  SX_DATE: string;
+  WORK_SHIFT: string;
+  INS_EMPL: string;
+  FACTORY: string;
+  BOC_KIEM: number;
+  LAY_DO: number;
+  MAY_HONG: number;
+  DAO_NG: number;
+  CHO_LIEU: number;
+  CHO_BTP: number;
+  HET_LIEU: number;
+  LIEU_NG: number;
+  CAN_HANG: number;
+  HOP_FL: number;
+  CHO_QC: number;
+  CHOT_BAOCAO: number;
+  CHUYEN_CODE: number;
+  KHAC: number;
+  REMARK: string;
+  INSPECT_TOTAL_QTY: number;
+  INSPECT_OK_QTY: number;
+  INSPECT_NG_QTY: number;
+  MACHINE_NAME: string;
+  KQ_SX_TAM: number;
+  id: number;
+  XUATDAO: string;
+  DKXL: string;
+  XUATLIEU: string;
+  CHOTBC: number;
+}
+export interface TRA_PQC1_DATA {
+  PQC1_ID: string;
+  YEAR_WEEK: string;
+  PROD_REQUEST_NO: string;
+  PROD_REQUEST_QTY: number;
+  PROD_REQUEST_DATE: string;
+  PLAN_ID: string;
+  PROCESS_LOT_NO: string;
+  G_NAME: string;
+  G_NAME_KD: string;
+  LINEQC_PIC: string;
+  PROD_PIC: string;
+  PROD_LEADER: string;
+  LINE_NO: number;
+  STEPS: string;
+  CAVITY: number;
+  SETTING_OK_TIME: string;
+  FACTORY: string;
+  INSPECT_SAMPLE_QTY: number;
+  PROD_LAST_PRICE: number;
+  SAMPLE_AMOUNT: number;
+  REMARK: string;
+  INS_DATE: string;
+  UPD_DATE: string;
+  PQC3_ID: string;
+  OCCURR_TIME: string;
+  INSPECT_QTY: number;
+  DEFECT_QTY: number;
+  DEFECT_RATE: number;
+  DEFECT_PHENOMENON: number;
+}
+export interface PQC3_DATA {
+  YEAR_WEEK: string;
+  PQC3_ID: number;
+  PQC1_ID: number;
+  CUST_NAME_KD: string;
+  FACTORY: string;
+  PROD_REQUEST_NO: string;
+  PROD_REQUEST_DATE: string;
+  PROCESS_LOT_NO: string;
+  G_CODE: string;
+  G_NAME: string;
+  G_NAME_KD: string;
+  PROD_LAST_PRICE: number;
+  LINEQC_PIC: string;
+  PROD_PIC: string;
+  PROD_LEADER: string;
+  LINE_NO: number;
+  OCCURR_TIME: string;
+  INSPECT_QTY: number;
+  DEFECT_QTY: number;
+  DEFECT_AMOUNT: number;
+  DEFECT_PHENOMENON: string;
+  DEFECT_IMAGE_LINK: string;
+  REMARK: string;
+  WORST5: string;
+  WORST5_MONTH: string;
+  ERR_CODE: string;
+}
+export interface DAO_FILM_DATA {
+  KNIFE_FILM_ID: string;
+  FACTORY_NAME: number;
+  NGAYBANGIAO: number;
+  G_CODE: string;
+  G_NAME: string;
+  LOAIBANGIAO_PDP: string;
+  LOAIPHATHANH: string;
+  SOLUONG: string;
+  SOLUONGOHP: string;
+  LYDOBANGIAO: string;
+  PQC_EMPL_NO: number;
+  RND_EMPL_NO: string;
+  SX_EMPL_NO: string;
+  MA_DAO: string;
+  REMARK: number;
+}
+export interface CNDB_DATA {
+  CNDB_DATE: string;
+  CNDB_NO: string;
+  CNDB_ENCODE: string;
+  M_NAME: string;
+  DEFECT_NAME: string;
+  DEFECT_CONTENT: string;
+  REG_EMPL_NO: string;
+  REMARK: string;
+  M_NAME2: string;
+  INS_DATE: string;
+  APPROVAL_STATUS: string;
+  APPROVAL_EMPL: string;
+  APPROVAL_DATE: string;
+  G_CODE: string;
+  G_NAME: string;
+}
+//machine qlsx
+export interface MACHINE_LIST {
+  EQ_NAME: string;
+}
+export interface TONLIEUXUONG {
+  id: number;
+  FACTORY: string;
+  PHANLOAI: string;
+  PLAN_ID_INPUT: string;
+  M_CODE: string;
+  M_NAME: string;
+  WIDTH_CD: number;
+  M_LOT_NO: string;
+  ROLL_QTY: number;
+  IN_QTY: number;
+  TOTAL_IN_QTY: number;
+  FSC: string;
+  IN_KHO_ID: number;
+}
+export interface LICHSUNHAPKHOAO {
+  id: string;
+  FACTORY: string;
+  PHANLOAI: string;
+  M_CODE: string;
+  M_NAME: string;
+  WIDTH_CD: number;
+  M_LOT_NO: string;
+  PLAN_ID_INPUT: string;
+  ROLL_QTY: number;
+  IN_QTY: number;
+  TOTAL_IN_QTY: number;
+  INS_DATE: string;
+}
+export interface LICHSUXUATKHOAO {
+  id: string;
+  FACTORY: string;
+  PHANLOAI: string;
+  M_CODE: string;
+  M_NAME: string;
+  WIDTH_CD: number;
+  M_LOT_NO: string;
+  PLAN_ID_INPUT: string;
+  PLAN_ID_OUTPUT: string;
+  ROLL_QTY: number;
+  OUT_QTY: number;
+  TOTAL_OUT_QTY: number;
+  INS_DATE: string;
+}
+export interface LICHSUINPUTLIEUSX {
+  id: string;
+  PLAN_ID: string;
+  G_NAME: string;
+  G_NAME_KD: string;
+  M_CODE: string;
+  M_NAME: string;
+  M_LOT_NO: string;
+  WIDTH_CD: number;
+  INPUT_QTY: number;
+  USED_QTY: number;
+  REMAIN_QTY: number;
+  EMPL_NO: string;
+  EQUIPMENT_CD: string;
+  INS_DATE: string;
+}
+export interface DINHMUC_QSLX {
+  FACTORY: string;
+  EQ1: string;
+  EQ2: string;
+  EQ3: string;
+  EQ4: string;
+  Setting1: number;
+  Setting2: number;
+  Setting3: number;
+  Setting4: number;
+  UPH1: number;
+  UPH2: number;
+  UPH3: number;
+  UPH4: number;
+  Step1: number;
+  Step2: number;
+  Step3: number;
+  Step4: number;
+  LOSS_SX1: number;
+  LOSS_SX2: number;
+  LOSS_SX3: number;
+  LOSS_SX4: number;
+  LOSS_SETTING1: number;
+  LOSS_SETTING2: number;
+  LOSS_SETTING3: number;
+  LOSS_SETTING4: number;
+  NOTE: string;
+}
+export interface QLSXPLANDATA {
+  id: number;
+  PLAN_ID: string;
+  PLAN_DATE: string;
+  PROD_REQUEST_NO: string;
+  PLAN_QTY: number;
+  PLAN_EQ: string;
+  PLAN_FACTORY: string;
+  PLAN_LEADTIME: number;
+  INS_EMPL: string;
+  INS_DATE: string;
+  UPD_EMPL: string;
+  UPD_DATE: string;
+  G_CODE: string;
+  G_NAME: string;
+  G_NAME_KD: string;
+  PROD_REQUEST_DATE: string;
+  PROD_REQUEST_QTY: number;
+  STEP: number;
+  PLAN_ORDER: string;
+  PROCESS_NUMBER: number;
+  KQ_SX_TAM: number;
+  KETQUASX: number;
+  CD1: number;
+  CD2: number;
+  CD3: number;
+  CD4: number;
+  TON_CD1: number;
+  TON_CD2: number;
+  TON_CD3: number;
+  TON_CD4: number;
+  FACTORY: string;
+  EQ1: string;
+  EQ2: string;
+  EQ3: string;
+  EQ4: string;
+  Setting1: number;
+  Setting2: number;
+  Setting3: number;
+  Setting4: number;
+  UPH1: number;
+  UPH2: number;
+  UPH3: number;
+  UPH4: number;
+  Step1: number;
+  Step2: number;
+  Step3: number;
+  Step4: number;
+  LOSS_SX1: number;
+  LOSS_SX2: number;
+  LOSS_SX3: number;
+  LOSS_SX4: number;
+  LOSS_SETTING1: number;
+  LOSS_SETTING2: number;
+  LOSS_SETTING3: number;
+  LOSS_SETTING4: number;
+  NOTE: string;
+  NEXT_PLAN_ID: string;
+  XUATDAOFILM?: string;
+  EQ_STATUS?: string;
+  MAIN_MATERIAL?: string;
+  INT_TEM?: string;
+  CHOTBC?: string;
+  DKXL?: string;
+  OLD_PLAN_QTY?: number;
+  ACHIVEMENT_RATE?: number;
+  PDBV?: string;
+}
+export interface QLSXCHITHIDATA {
+  id: string;
+  CHITHI_ID: number;
+  PLAN_ID: string;
+  M_CODE: string;
+  M_NAME: string;
+  WIDTH_CD: number;
+  M_ROLL_QTY: number;
+  M_MET_QTY: number;
+  M_QTY: number;
+  LIEUQL_SX: number;
+  MAIN_M: number;
+  OUT_KHO_SX: number;
+  OUT_CFM_QTY: number;
+  INS_EMPL: string;
+  INS_DATE: string;
+  UPD_EMPL: string;
+  UPD_DATE: string;
+}
+export interface EQ_STATUS {
+  FACTORY: string;
+  EQ_NAME: string;
+  EQ_SERIES: string;
+  EQ_ACTIVE: string;
+  REMARK: string;
+  EQ_STATUS: string;
+  CURR_PLAN_ID: string;
+  CURR_G_CODE: string;
+  INS_EMPL: string;
+  INS_DATE: string;
+  UPD_EMPL: string;
+  UPD_DATE: string;
+  EQ_CODE: string;
+  G_NAME: string;
+}
+//machine component
+export interface MachineInterface {
+  machine_name?: string;
+  factory?: string;
+  run_stop?: number;
+  machine_data?: QLSXPLANDATA[];
+  current_plan_id?: string;
+  current_g_name?: string;
+  eq_status?: string;
+  onClick?: (ev: any) => void;
+}
+export interface MachineInterface2 {
+  machine_name?: string;
+  factory?: string;
+  run_stop?: number;
+  machine_data?: QLSXPLANDATA[];
+  current_plan_id?: string;
+  current_step?: number;
+  current_g_name?: string;
+  search_string?: string;
+  eq_status?: string;
+  upd_time?: string;
+  upd_empl?: string;
+  onClick?: (ev: any) => void;
+  onMouseEnter?: (ev: any) => void;
+  onMouseLeave?: (ev: any) => void;
+}
+//capa sx
+export interface DATA_DIEM_DANH {
+  id: string;
+  EMPL_NO: string;
+  CMS_ID: string;
+  MIDLAST_NAME: string;
+  FIRST_NAME: string;
+  PHONE_NUMBER: string;
+  SEX_NAME: string;
+  WORK_STATUS_NAME: string;
+  FACTORY_NAME: string;
+  JOB_NAME: string;
+  WORK_SHIF_NAME: string;
+  WORK_POSITION_CODE: number;
+  WORK_POSITION_NAME: string;
+  SUBDEPTNAME: string;
+  MAINDEPTNAME: string;
+  REQUEST_DATE: string;
+  APPLY_DATE: string;
+  APPROVAL_STATUS: string;
+  OFF_ID: number;
+  CA_NGHI: number;
+  ON_OFF: number;
+  OVERTIME_INFO: string;
+  OVERTIME: number;
+  REASON_NAME: string;
+  REMARK: string;
+}
+export interface DELIVERY_PLAN_CAPA {
+  FACTORY: string;
+  EQ: string;
+  PL_DATE: string;
+  LEADTIME: number;
+  AVL_CAPA: number;
+  REAL_CAPA: number;
+}
+export interface MACHINE_COUNTING {
+  FACTORY?: string;
+  EQ_NAME: string;
+  EQ_QTY: number;
+}
+export interface YCSX_BALANCE_CAPA_DATA {
+  EQ_NAME: string;
+  YCSX_BALANCE: number;
+}
+export interface CAPA_LEADTIME_DATA {
+  PROD_REQUEST_NO: string;
+  PROD_REQUEST_QTY: number;
+  G_CODE: string;
+  G_NAME: string;
+  Setting1: number;
+  Setting2: number;
+  UPH1: number;
+  UPH2: number;
+  TON_CD1: number;
+  TON_CD2: number;
+  EQ1: string;
+  EQ2: string;
+  LEATIME1: number;
+  LEATIME2: number;
+}
+//data sx
+export interface YCSX_SX_DATA {
+  YCSX_PENDING: string;
+  PHAN_LOAI: string;
+  PROD_REQUEST_NO: string;
+  G_NAME: string;
+  G_NAME_KD: string;
+  FACTORY: string;
+  EQ1: string;
+  EQ2: string;
+  EQ3: string;
+  EQ4: string;
+  PROD_REQUEST_DATE: string;
+  PROD_REQUEST_QTY: number;
+  M_NAME: string;
+  M_OUTPUT: number;
+  SCANNED_QTY: number;
+  REMAIN_QTY: number;
+  USED_QTY: number;
+  PD: number;
+  CAVITY: number;
+  WAREHOUSE_ESTIMATED_QTY: number;
+  ESTIMATED_QTY: number;
+  CD1: number;
+  CD2: number;
+  CD3: number;
+  CD4: number;
+  INS_INPUT: number;
+  INSPECT_TOTAL_QTY: number;
+  INSPECT_OK_QTY: number;
+  INSPECT_LOSS_QTY: number;
+  INSPECT_TOTAL_NG: number;
+  INSPECT_MATERIAL_NG: number;
+  INSPECT_PROCESS_NG: number;
+  INS_OUTPUT: number;
+  LOSS_SX1: number;
+  LOSS_SX2: number;
+  LOSS_SX3: number;
+  LOSS_SX4: number;
+  LOSS_INSPECT: number;
+  TOTAL_LOSS: number;
+  TOTAL_LOSS2: number;
+}
+export interface LOSS_TABLE_DATA {
+  XUATKHO_MET: number;
+  XUATKHO_EA: number;
+  SCANNED_MET: number;
+  SCANNED_EA: number;
+  PROCESS1_RESULT: number;
+  PROCESS2_RESULT: number;
+  PROCESS3_RESULT: number;
+  PROCESS4_RESULT: number;
+  SX_RESULT: number;
+  INSPECTION_INPUT: number;
+  INSPECTION_OUTPUT: number;
+  LOSS_INS_OUT_VS_SCANNED_EA: number;
+  LOSS_INS_OUT_VS_XUATKHO_EA: number;
+}
+export interface LICHSUINPUTLIEU_DATA {
+  id: string;
+  PLAN_ID: string;
+  G_NAME: string;
+  G_NAME_KD: string;
+  M_CODE: string;
+  M_NAME: string;
+  M_LOT_NO: string;
+  WIDTH_CD: number;
+  INPUT_QTY: number;
+  USED_QTY: number;
+  REMAIN_QTY: number;
+  EMPL_NO: string;
+  EQUIPMENT_CD: string;
+  INS_DATE: string;
+  PROD_REQUEST_NO: string;
+}
+// kho lieu
+export interface NHAPLIEUDATA {
+  M_LOT_NO: string;
+  LOTNCC: string;
+  M_CODE: string;
+  M_NAME: string;
+  WIDTH_CD: number;
+  IN_CFM_QTY: number;
+  ROLL_QTY: number;
+  TOTAL_IN_QTY: number;
+  INS_DATE: string;
+  CUST_NAME_KD: string;
+  QC_PASS: string;
+  QC_PASS_EMPL: string;
+  QC_PASS_DATE: string;
+}
+export interface XUATLIEUDATA {
+  G_CODE: string;
+  G_NAME: string;
+  PROD_REQUEST_NO: string;
+  PLAN_ID: string;
+  M_CODE: string;
+  M_NAME: string;
+  WIDTH_CD: number;
+  M_LOT_NO: string;
+  OUT_CFM_QTY: number;
+  ROLL_QTY: number;
+  TOTAL_OUT_QTY: number;
+  INS_DATE: string;
+}
+export interface TONLIEUDATA {
+  M_CODE: string;
+  M_NAME: string;
+  WIDTH_CD: number;
+  TON_NM1: number;
+  TON_NM2: number;
+  HOLDING_NM1: number;
+  HOLDING_NM2: number;
+  TOTAL_OK: number;
+  TOTAL_HOLDING: number;
+  TDS: string;
+}
+//kho tp
+export interface WH_IN_OUT {
+  Product_MaVach: string;
+  G_NAME: string;
+  G_NAME_KD: string;
+  Customer_ShortName: string;
+  IO_Date: string;
+  INPUT_DATETIME: string;
+  IO_Shift: string;
+  IO_Type: string;
+  IO_Qty: number;
+  CUST_NAME_KD: string;
+  IO_Note: string;
+  IO_Number: string;
+}
+export interface TONKIEMGOP_CMS {
+  G_CODE: string;
+  G_NAME: string;
+  G_NAME_KD: string;
+  CHO_KIEM: number;
+  CHO_CS_CHECK: number;
+  CHO_KIEM_RMA: number;
+  TONG_TON_KIEM: number;
+  BTP: number;
+  TON_TP: number;
+  PENDINGXK: number;
+  TON_TPTT: number;
+  BLOCK_QTY: number;
+  GRAND_TOTAL_STOCK: number;
+}
+export interface TONKIEMGOP_KD {
+  G_NAME_KD: string;
+  CHO_KIEM: number;
+  CHO_CS_CHECK: number;
+  CHO_KIEM_RMA: number;
+  TONG_TON_KIEM: number;
+  BTP: number;
+  TON_TP: number;
+  BLOCK_QTY: number;
+  GRAND_TOTAL_STOCK: number;
+}
+export interface TONKIEMTACH {
+  KHONAME: string;
+  LC_NAME: string;
+  G_CODE: string;
+  G_NAME: string;
+  G_NAME_KD: string;
+  NHAPKHO: number;
+  XUATKHO: number;
+  TONKHO: number;
+  BLOCK_QTY: number;
+  GRAND_TOTAL_TP: number;
+}
+//kho tp new
+export interface KTP_IN {
+  IN_DATE: string;
+  FACTORY: string;
+  AUTO_ID: string;
+  INSPECT_OUTPUT_ID: string;
+  PACK_ID: string;
+  EMPL_NAME: string;
+  PROD_REQUEST_NO: string;
+  CUST_NAME_KD: string;
+  G_CODE: string;
+  G_NAME: string;
+  G_NAME_KD: string;
+  PROD_TYPE: string;
+  PLAN_ID: string;
+  IN_QTY: number;
+  USE_YN: string;
+  EMPL_GIAO: string;
+  EMPL_NHAN: string;
+  INS_DATE: string;
+  INS_EMPL: string;
+  UPD_DATE: string;
+  UPD_EMPL: string;
+  STATUS: string;
+  REMARK: string;
+}
+export interface KTP_OUT {
+  OUT_DATE: string;
+  FACTORY: string;
+  AUTO_ID: string;
+  INSPECT_OUTPUT_ID: string;
+  PACK_ID: string;
+  EMPL_NAME: string;
+  PROD_REQUEST_NO: string;
+  G_CODE: string;
+  G_NAME: string;
+  G_NAME_KD: string;
+  PROD_TYPE: string;
+  PLAN_ID: string;
+  CUST_CD: string;
+  OUT_QTY: number;
+  CUST_NAME_KD: string;
+  OUT_TYPE: string;
+  USE_YN: string;
+  INS_DATE: string;
+  INS_EMPL: string;
+  UPD_DATE: string;
+  UPD_EMPL: string;
+  STATUS: string;
+  REMARK: string;
+  AUTO_ID_IN: string;
+  OUT_PRT_SEQ: string;
+}
+export interface STOCK_G_CODE {
+  G_CODE: string;
+  G_NAME: string;
+  G_NAME_KD: string;
+  PROD_TYPE: string;
+  STOCK: number;
+  BLOCK_QTY: number;
+  TOTAL_STOCK: number;
+}
+export interface STOCK_G_NAME_KD {
+  G_NAME_KD: string;
+  PROD_TYPE: string;
+  STOCK: number;
+  BLOCK_QTY: number;
+  TOTAL_STOCK: number;
+}
+export interface STOCK_PROD_REQUEST_NO {
+  CUST_NAME_KD: string;
+  PROD_REQUEST_NO: string;
+  G_CODE: string;
+  G_NAME: string;
+  G_NAME_KD: string;
+  PROD_TYPE: string;
+  STOCK: number;
+  BLOCK_QTY: string;
+  TOTAL_STOCK: string;
+}
+//rnd bom amazon
+export interface CODE_INFO {
+  id: number;
+  G_CODE: string;
+  G_NAME: string;
+  G_NAME_KD: string;
+  PROD_TYPE: string;
+  PROD_LAST_PRICE: number;
+  PD: number;
+  CAVITY: number;
+  PACKING_QTY: number;
+  G_WIDTH: number;
+  G_LENGTH: number;
+  PROD_PROJECT: string;
+  PROD_MODEL: string;
+  M_NAME_FULLBOM: string;
+  BANVE: string;
+  NO_INSPECTION: string;
+  USE_YN: string;
+}
+export interface CODE_FULL_INFO {
+  CUST_CD?: string;
+  PROD_PROJECT?: string;
+  PROD_MODEL?: string;
+  CODE_12: string;
+  PROD_TYPE: string;
+  G_NAME_KD?: string;
+  DESCR?: string;
+  PROD_MAIN_MATERIAL?: string;
+  G_NAME?: string;
+  G_LENGTH?: number;
+  G_WIDTH?: number;
+  PD?: number;
+  G_C?: number;
+  G_C_R?: number;
+  G_CG?: number;
+  G_LG?: number;
+  G_SG_L?: number;
+  G_SG_R?: number;
+  PACK_DRT?: string;
+  KNIFE_TYPE?: number;
+  KNIFE_LIFECYCLE?: number;
+  KNIFE_PRICE?: number;
+  CODE_33?: string;
+  ROLE_EA_QTY?: number;
+  RPM?: number;
+  PIN_DISTANCE?: number;
+  PROCESS_TYPE?: string;
+  EQ1?: string;
+  EQ2?: string;
+  PROD_DIECUT_STEP?: number;
+  PROD_PRINT_TIMES?: number;
+  REMK?: string;
+  USE_YN?: string;
+  G_CODE: string;
+  CUST_NAME?: string;
+  EQ3?: string;
+  EQ4?: string;
+  PO_TYPE?: string;
+  FSC?: string;
+  PROD_DVT?: string;
+  id?: number;
+  PROD_LAST_PRICE?: number;
+  CAVITY?: number;
+  PACKING_QTY?: number;
+  M_NAME_FULLBOM?: string;
+  BANVE?: string;
+  NO_INSPECTION?: string;
+  PDBV?: string;
+  FACTORY?: string;
+  Setting1?: string;
+  Setting2?: string;
+  Setting3?: string;
+  Setting4?: string;
+  UPH1?: number;
+  UPH2?: number;
+  UPH3?: number;
+  UPH4?: number;
+  Step1?: number;
+  Step2?: number;
+  Step3?: number;
+  Step4?: number;
+  LOSS_SX1?: number;
+  LOSS_SX2?: number;
+  LOSS_SX3?: number;
+  LOSS_SX4?: number;
+  LOSS_SETTING1?: number;
+  LOSS_SETTING2?: number;
+  LOSS_SETTING3?: number;
+  LOSS_SETTING4?: number;
+  LOSS_ST_SX1?: number;
+  LOSS_ST_SX2?: number;
+  LOSS_ST_SX3?: number;
+  LOSS_ST_SX4?: number;
+  NOTE?: string;
+}
+export interface LIST_BOM_AMAZON {
+  id: string;
+  G_CODE: string;
+  G_NAME?: string;
+  G_NAME_KD?: string;
+}
+export interface BOM_AMAZON {
+  id: string;
+  G_CODE?: string;
+  G_NAME?: string;
+  G_CODE_MAU?: string;
+  TEN_MAU?: string;
+  DOITUONG_NO?: string;
+  DOITUONG_NAME?: string;
+  GIATRI?: string;
+  REMARK?: string;
+  AMZ_COUNTRY?: string;
+  AMZ_PROD_NAME?: string;
+}
+export interface CODEPHOI {
+  G_CODE_MAU: string;
+  G_NAME: string;
+}
+//rnd bom manager
+export interface DEFAULT_DM {
+  id: number;
+  WIDTH_OFFSET: number;
+  LENGTH_OFFSET: number;
+  KNIFE_UNIT: number;
+  FILM_UNIT: number;
+  INK_UNIT: number;
+  LABOR_UNIT: number;
+  DELIVERY_UNIT: number;
+  DEPRECATION_UNIT: number;
+  GMANAGEMENT_UNIT: number;
+  M_LOSS_UNIT: number;
+}
+export interface BOM_SX {
+  id: string;
+  G_CODE?: string;
+  G_NAME?: string;
+  G_NAME_KD?: string;
+  RIV_NO?: string;
+  M_CODE?: string;
+  M_NAME?: string;
+  WIDTH_CD?: number;
+  M_QTY?: number;
+  MAIN_M: string;
+  LIEUQL_SX: number;
+  INS_EMPL?: string;
+  INS_DATE?: string;
+  UPD_EMPL?: string;
+  UPD_DATE?: string;
+}
+export interface BOM_GIA {
+  id: string;
+  BOM_ID?: string;
+  G_CODE?: string;
+  RIV_NO?: string;
+  G_SEQ?: string;
+  CATEGORY?: number;
+  M_CODE?: string;
+  M_NAME?: string;
+  CUST_CD?: string;
+  IMPORT_CAT?: string;
+  M_CMS_PRICE: number;
+  M_SS_PRICE: number;
+  M_SLITTING_PRICE?: number;
+  USAGE?: string;
+  MAIN_M: string;
+  MAT_MASTER_WIDTH?: number;
+  MAT_CUTWIDTH?: number;
+  MAT_ROLL_LENGTH?: number;
+  MAT_THICKNESS?: number;
+  M_QTY?: number;
+  REMARK?: string;
+  PROCESS_ORDER?: number;
+  INS_EMPL?: string;
+  UPD_EMPL?: string;
+  INS_DATE?: string;
+  UPD_DATE?: string;
+}
+export interface MATERIAL_INFO {
+  M_ID: number;
+  M_NAME: string;
+  CUST_CD: string;
+  SSPRICE: number;
+  CMSPRICE: number;
+  SLITTING_PRICE: number;
+  MASTER_WIDTH: number;
+  ROLL_LENGTH: number;
+}
+export interface M_NAME_LIST {
+  M_NAME: string;
+}
+export interface COMPONENT_DATA {
+  G_CODE_MAU: string;
+  DOITUONG_NO: number;
+  DOITUONG_NAME: string;
+  PHANLOAI_DT: string;
+  DOITUONG_STT: string;
+  CAVITY_PRINT: number;
+  GIATRI: string;
+  FONT_NAME: string;
+  FONT_SIZE: number;
+  FONT_STYLE: string;
+  POS_X: number;
+  POS_Y: number;
+  SIZE_W: number;
+  SIZE_H: number;
+  ROTATE: number;
+  REMARK: string;
+  COLOR?: string;
+  INS_DATE?: string;
+  INS_EMPL?: string;
+  UPD_DATE?: string;
+  UPD_EMPL?: string;
+}
+export interface POINT_DATA {
+  x: number;
+  y: number;
+}
+export interface BARCODE_DATA {
+  G_CODE: string;
+  G_NAME: string;
+  BARCODE_STT: string;
+  BARCODE_TYPE: string;
+  BARCODE_RND: string;
+  BARCODE_INSP: string;
+  BARCODE_RELI: string;
+  STATUS: string;
+}
+//quan ly giao nhan film data
+export interface HANDOVER_DATA {
+  KNIFE_FILM_ID: string;
+  FACTORY_NAME: string;
+  NGAYBANGIAO: string;
+  G_CODE: string;
+  G_NAME: string;
+  PROD_TYPE: string;
+  CUST_NAME_KD: string;
+  LOAIBANGIAO_PDP: string;
+  LOAIPHATHANH: string;
+  SOLUONG: number;
+  SOLUONGOHP: number;
+  LYDOBANGIAO: string;
+  PQC_EMPL_NO: string;
+  RND_EMPL_NO: string;
+  SX_EMPL_NO: string;
+  REMARK: string;
+  CFM_GIAONHAN: string;
+  CFM_INS_EMPL: string;
+  CFM_DATE: string;
+  KNIFE_FILM_STATUS: string;
+  MA_DAO: string;
+  TOTAL_PRESS: number;
+  CUST_CD: string;
+  KNIFE_TYPE: string;
+}
+//plan result
+export interface DAILY_SX_DATA {
+  MACHINE_NAME: string;
+  SX_DATE: string;
+  SX_RESULT: number;
+  PLAN_QTY: number;
+  RATE: number;
+}
+export interface ACHIVEMENT_DATA {
+  MACHINE_NAME: string;
+  PLAN_QTY: number;
+  WH_OUTPUT: number;
+  SX_RESULT_TOTAL: number;
+  RESULT_STEP_FINAL: number;
+  RESULT_TO_NEXT_PROCESS: number;
+  RESULT_TO_INSPECTION: number;
+  INS_INPUT: number;
+  INSPECT_TOTAL_QTY: number;
+  INSPECT_OK_QTY: number;
+  INSPECT_NG_QTY: number;
+  INS_OUTPUT: number;
+  TOTAL_LOSS: number;
+  ACHIVEMENT_RATE: number;
+}
+export interface WEEKLY_SX_DATA {
+  SX_WEEK: number;
+  SX_RESULT: number;
+  PLAN_QTY: number;
+  RATE: number;
+}
+export interface MONTHLY_SX_DATA {
+  SX_MONTH: number;
+  SX_RESULT: number;
+  PLAN_QTY: number;
+  RATE: number;
+}
+export interface TOTAL_TIME {
+  T_FR: number;
+  T_SR: number;
+  T_DC: number;
+  T_ED: number;
+  T_TOTAL: number;
+}
+export interface OPERATION_TIME_DATA {
+  PLAN_FACTORY: string;
+  MACHINE: string;
+  TOTAL_TIME: number;
+  RUN_TIME_SX: number;
+  SETTING_TIME: number;
+  LOSS_TIME: number;
+  HIEU_SUAT_TIME: number;
+  SETTING_TIME_RATE: number;
+  LOSS_TIME_RATE: number;
+}
+//redux interface
+export interface UserData {
+  EMPL_IMAGE?: string;
+  ADD_COMMUNE?: string;
+  ADD_DISTRICT?: string;
+  ADD_PROVINCE?: string;
+  ADD_VILLAGE?: string;
+  ATT_GROUP_CODE?: number;
+  CMS_ID?: string;
+  CTR_CD?: string;
+  DOB?: string;
+  EMAIL?: string;
+  EMPL_NO?: string;
+  FACTORY_CODE?: number;
+  FACTORY_NAME?: string;
+  FACTORY_NAME_KR?: string;
+  FIRST_NAME?: string;
+  HOMETOWN?: string;
+  JOB_CODE?: number;
+  JOB_NAME?: string;
+  JOB_NAME_KR?: string;
+  MAINDEPTCODE?: number;
+  MAINDEPTNAME?: string;
+  MAINDEPTNAME_KR?: string;
+  MIDLAST_NAME?: string;
+  ONLINE_DATETIME?: string;
+  PASSWORD?: string;
+  PHONE_NUMBER?: string;
+  POSITION_CODE?: number;
+  POSITION_NAME?: string;
+  POSITION_NAME_KR?: string;
+  REMARK?: string;
+  SEX_CODE?: number;
+  SEX_NAME?: string;
+  SEX_NAME_KR?: string;
+  SUBDEPTCODE?: number;
+  SUBDEPTNAME?: string;
+  SUBDEPTNAME_KR?: string;
+  WORK_POSITION_CODE?: number;
+  WORK_POSITION_NAME?: string;
+  WORK_POSITION_NAME_KR?: string;
+  WORK_SHIFT_CODE?: number;
+  WORK_SHIF_NAME?: string;
+  WORK_SHIF_NAME_KR?: string;
+  WORK_START_DATE?: string;
+  WORK_STATUS_CODE?: number;
+  WORK_STATUS_NAME?: string;
+  WORK_STATUS_NAME_KR?: string;
+}
+export interface ELE_ARRAY {
+  REACT_ELE: any;
+  ELE_NAME: string;
+  ELE_CODE: string;
+}
+export interface GlobalInterface {
+  userData?: UserData;
+  diemdanhstate?: boolean;
+  lang?: string;
+  sidebarmenu?: boolean;
+  multiple_chithi_array: QLSXPLANDATA[];
+  server_ip: string;
+  tabs: ELE_ARRAY[];
+  tabIndex: number;
+  tabModeSwap: boolean;
+  loginState: boolean;
+  company: string;
+  theme: {
+    CMS: any;
+    PVN: any;
+  };
+}
+//calc tinh gia
+export interface BANGGIA_DATA_CALC {
+  id: number;
+  CUST_CD: string;
+  G_CODE: string;
+  PRICE_DATE: string;
+  MOQ: number;
+  PROD_PRICE: number;
+  INS_DATE: string;
+  INS_EMPL: string;
+  UPD_DATE: string;
+  UPD_EMPL: string;
+  REMARK: string;
+  FINAL: string;
+}
+export interface CODEDATA {
+  id: number;
+  Q_ID: string;
+  G_CODE: string;
+  WIDTH_OFFSET: number;
+  LENGTH_OFFSET: number;
+  KNIFE_UNIT: number;
+  FILM_UNIT: number;
+  INK_UNIT: number;
+  LABOR_UNIT: number;
+  DELIVERY_UNIT: number;
+  DEPRECATION_UNIT: number;
+  GMANAGEMENT_UNIT: number;
+  M_LOSS_UNIT: number;
+  G_WIDTH: number;
+  G_LENGTH: number;
+  G_C: number;
+  G_C_R: number;
+  G_LG: number;
+  G_CG: number;
+  G_SG_L: number;
+  G_SG_R: number;
+  PROD_PRINT_TIMES: number;
+  KNIFE_COST: number;
+  FILM_COST: number;
+  INK_COST: number;
+  LABOR_COST: number;
+  DELIVERY_COST: number;
+  DEPRECATION_COST: number;
+  GMANAGEMENT_COST: number;
+  MATERIAL_COST: number;
+  TOTAL_COST: number;
+  SALE_PRICE: number;
+  PROFIT: number;
+  G_NAME: string;
+  G_NAME_KD: string;
+  CUST_NAME_KD: string;
+  CUST_CD: string;
+}
+export interface GIANVL {
+  mCutWidth: number;
+  mLength: number;
+  mArea: number;
+  giaVLSS: number;
+  giaVLCMS: number;
+  knife_cost: number;
+  film_cost: number;
+  ink_cost: number;
+  labor_cost: number;
+  delivery_cost: number;
+  deprecation_cost: number;
+  gmanagement_cost: number;
+  totalcostCMS: number;
+  totalcostSS: number;
+}
+//price manager
+export interface BANGGIA_DATA {
+  CUST_NAME_KD: string;
+  G_NAME: string;
+  G_NAME_KD: string;
+  PROD_MAIN_MATERIAL: string;
+  MOQ: number;
+  PRICE1: number;
+  PRICE2: number;
+  PRICE3: number;
+  PRICE4: number;
+  PRICE5: number;
+  PRICE6: number;
+  PRICE7: number;
+  PRICE8: number;
+  PRICE9: number;
+  PRICE10: number;
+  PRICE11: number;
+  PRICE12: number;
+  PRICE13: number;
+  PRICE14: number;
+  PRICE15: number;
+  PRICE16: number;
+  PRICE17: number;
+  PRICE18: number;
+  PRICE19: number;
+  PRICE20: number;
+  PRICE_DATE1: string;
+  PRICE_DATE2: string;
+  PRICE_DATE3: string;
+  PRICE_DATE4: string;
+  PRICE_DATE5: string;
+  PRICE_DATE6: string;
+  PRICE_DATE7: string;
+  PRICE_DATE8: string;
+  PRICE_DATE9: string;
+  PRICE_DATE10: string;
+  PRICE_DATE11: string;
+  PRICE_DATE12: string;
+  PRICE_DATE13: string;
+  PRICE_DATE14: string;
+  PRICE_DATE15: string;
+  PRICE_DATE16: string;
+  PRICE_DATE17: string;
+  PRICE_DATE18: string;
+  PRICE_DATE19: string;
+  PRICE_DATE20: string;
+}
+export interface BANGGIA_DATA2 {
+  id: number;
+  CUST_NAME_KD?: string;
+  CUST_CD?: string;
+  G_CODE?: string;
+  G_NAME?: string;
+  G_NAME_KD?: string;
+  DESCR?: string;
+  PROD_DVT?: string;
+  PROD_MAIN_MATERIAL?: string;
+  PRICE_DATE: string;
+  MOQ: number;
+  PROD_PRICE: number;
+  INS_DATE: string;
+  INS_EMPL: string;
+  UPD_DATE: string;
+  UPD_EMPL: string;
+  REMARK: string;
+  FINAL: string;
+  G_WIDTH: number;
+  G_LENGTH: number;
+  G_NAME_KT: string;
+  EQ1: string;
+  EQ2: string;
+  EQ3: string;
+  EQ4: string;
+}
+
+//tinh hinh chot bao cao
+export interface TINH_HINH_CHOT_BC {
+  SX_DATE: string;
+  TOTAL: number;
+  DA_CHOT: number;
+  CHUA_CHOT: number;
+  DA_NHAP_HIEUSUAT: number;
+  CHUA_NHAP_HIEUSUAT: number;
+}
+
+//tinh hinh cuon lieu
+export interface MATERIAL_STATUS {
+  INS_DATE: string;
+  FACTORY: string;
+  M_LOT_NO: string;
+  M_CODE: string;
+  M_NAME: string;
+  WIDTH_CD: number;
+  ROLL_QTY: number;
+  OUT_CFM_QTY: number;
+  TOTAL_OUT_QTY: number;
+  PROD_REQUEST_NO: string;
+  PLAN_ID: string;
+  PLAN_EQ: string;
+  G_CODE: string;
+  G_NAME: string;
+  XUAT_KHO: string;
+  VAO_FR: string;
+  VAO_SR: string;
+  VAO_DC: string;
+  VAO_ED: string;
+  CONFIRM_GIAONHAN: string;
+  VAO_KIEM: string;
+  NHATKY_KT: string;
+  RA_KIEM: string;
+  INSPECT_TOTAL_QTY: number;
+  INSPECT_OK_QTY: number;
+  INS_OUT: number;
+  ROLL_LOSS_KT: number;
+  ROLL_LOSS: number;
+  PD: number;
+  CAVITY: number;
+  FR_RESULT: number;
+  SR_RESULT: number;
+  DC_RESULT: number;
+  ED_RESULT: number;
+  TOTAL_OUT_EA: number;
+  FR_EA: number;
+  SR_EA: number;
+  DC_EA: number;
+  ED_EA: number;
+  INSPECT_TOTAL_EA: number;
+  INSPECT_OK_EA: number;
+  INS_OUTPUT_EA: number;
+}
+export interface LOSS_TABLE_DATA_ROLL {
+  XUATKHO_MET: number;
+  INSPECTION_INPUT: number;
+  INSPECTION_OK: number;
+  INSPECTION_OUTPUT: number;
+  TOTAL_LOSS_KT: number;
+  TOTAL_LOSS: number;
+}

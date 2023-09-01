@@ -20,39 +20,8 @@ import { SaveExcel, weekdayarray } from "../../../api/GlobalFunction";
 import moment from "moment";
 import { RootState } from "../../../redux/store";
 import { useSelector, useDispatch } from "react-redux";
-import { UserData } from "../../../redux/slices/globalSlice";
-interface DiemDanhNhomData {
-  DATE_COLUMN: string,
-  WEEKDAY: string,
-  id: string,
-  EMPL_NO: string,
-  CMS_ID: string,
-  MIDLAST_NAME: string,
-  FIRST_NAME: string,
-  PHONE_NUMBER: string,
-  SEX_NAME: string,
-  WORK_STATUS_NAME: string,
-  FACTORY_NAME: string,
-  JOB_NAME: string,
-  WORK_SHIF_NAME: string,
-  WORK_POSITION_NAME: string,
-  SUBDEPTNAME: string,
-  MAINDEPTNAME: string,
-  REQUEST_DATE: string,
-  APPLY_DATE: string,
-  APPROVAL_STATUS: number,
-  OFF_ID: number,
-  CA_NGHI: number,
-  ON_OFF: number,
-  OVERTIME_INFO: string,
-  OVERTIME: number,
-  REASON_NAME: string,
-  REMARK: string,
-  XACNHAN: string,
-  CHECK1: string,
-  CHECK2: string,
-  CHECK3: string,
-}
+import { DiemDanhLichSuData, UserData } from "../../../api/GlobalInterface";
+
 const LichSu = () => {
     const userData: UserData | undefined = useSelector(
         (state: RootState) => state.totalSlice.userData
@@ -60,7 +29,7 @@ const LichSu = () => {
     
   const [isLoading, setisLoading] = useState(false);
   const [diemdanhnhomtable, setDiemDanhNhomTable] = useState<
-    Array<DiemDanhNhomData>
+    Array<DiemDanhLichSuData>
   >([]);
   const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-01"));
   const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));
@@ -250,8 +219,8 @@ const LichSu = () => {
       .then((response) => {
         //console.log(response.data.data);
         if (response.data.tk_status !== "NG") {
-          const loaded_data: DiemDanhNhomData[] = response.data.data.map(
-            (element: DiemDanhNhomData, index: number) => {
+          const loaded_data: DiemDanhLichSuData[] = response.data.data.map(
+            (element: DiemDanhLichSuData, index: number) => {
               return {
                 ...element,
                 EMPL_NO: userData?.EMPL_NO,          

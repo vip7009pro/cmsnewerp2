@@ -33,51 +33,11 @@ import "./InvoiceManager.scss";
 import { FaFileInvoiceDollar } from "react-icons/fa";
 import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
 import PivotTable from "../../../components/PivotChart/PivotChart";
-import { UserData } from "../../../redux/slices/globalSlice";
 import { RootState } from "../../../redux/store";
 import { useSelector } from "react-redux";
 import { TbLogout } from "react-icons/tb";
-interface InvoiceTableData {
-  DELIVERY_ID: number;
-  CUST_CD: string;
-  CUST_NAME_KD: string;
-  EMPL_NO: string;
-  EMPL_NAME: string;
-  G_CODE: string;
-  G_NAME: string;
-  G_NAME_KD: string;
-  PO_NO: string;
-  DELIVERY_DATE: string;
-  DELIVERY_QTY: number;
-  PROD_PRICE: string;
-  DELIVERED_AMOUNT: number;
-  REMARK: string;
-  INVOICE_NO: string;
-  PROD_TYPE: string;
-  PROD_MODEL: string;
-  PROD_PROJECT: string;
-  YEARNUM: number;
-  WEEKNUM: number;
-}
-interface InvoiceSummaryData {
-  total_po_qty: number;
-  total_delivered_qty: number;
-  total_pobalance_qty: number;
-  total_po_amount: number;
-  total_delivered_amount: number;
-  total_pobalance_amount: number;
-}
-interface CodeListData {
-  G_CODE: string;
-  G_NAME: string;
-  PROD_LAST_PRICE: number;
-  USE_YN: string;
-}
-interface CustomerListData {
-  CUST_CD: string;
-  CUST_NAME_KD: string;
-  CUST_NAME?: string;
-}
+import { CodeListData, CustomerListData, InvoiceSummaryData, InvoiceTableData, UserData } from "../../../api/GlobalInterface";
+
 const InvoiceManager = () => {
   const [showhidesearchdiv, setShowHideSearchDiv]= useState(true);
   const [isPending, startTransition] = useTransition();

@@ -41,101 +41,11 @@ import DataGrid, {
 import { BiShow } from "react-icons/bi";
 import { GrStatusGood } from "react-icons/gr";
 import { FcCancel } from "react-icons/fc";
-import internal from "stream";
-import { UserData } from "../../../redux/slices/globalSlice";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
+import { CustomerListData, PQC1_DATA, SX_DATA, UserData } from "../../../api/GlobalInterface";
 
-interface PQC1_DATA {
-  PQC1_ID: string;
-  YEAR_WEEK: string;
-  PROD_REQUEST_NO: string;
-  PROD_REQUEST_QTY: number;
-  PROD_REQUEST_DATE: string;
-  PLAN_ID: string;
-  PROCESS_LOT_NO: string;
-  G_NAME: string;
-  G_NAME_KD: string;
-  LINEQC_PIC: string;
-  PROD_PIC: string;
-  PROD_LEADER: string;
-  LINE_NO: number;
-  STEPS: string;
-  CAVITY: number;
-  SETTING_OK_TIME: string;
-  FACTORY: string;
-  INSPECT_SAMPLE_QTY: number;
-  PROD_LAST_PRICE: number;
-  SAMPLE_AMOUNT: number;
-  REMARK: string;
-  INS_DATE: string;
-  UPD_DATE: string;
-}
-interface CustomerListData {
-  CUST_CD: string;
-  CUST_NAME_KD: string;
-  CUST_NAME: string;
-}
-interface SX_DATA {
-  G_CODE: string;
-  PHAN_LOAI: string;
-  PLAN_ID: string;
-  PLAN_DATE: string;
-  PROD_REQUEST_NO: string;
-  G_NAME: string;
-  G_NAME_KD: string;
-  PLAN_QTY: number;
-  EQ1: string, 
-  EQ2: string,
-  PLAN_EQ: string;
-  PLAN_FACTORY: string;
-  PROCESS_NUMBER: number;
-  STEP: number;
-  M_NAME: string;
-  WAREHOUSE_OUTPUT_QTY: number;
-  TOTAL_OUT_QTY: number;
-  USED_QTY: number;
-  REMAIN_QTY: number;
-  PD: number;
-  CAVITY: number;
-  SETTING_MET_TC: number;
-  SETTING_DM_SX: number;
-  SETTING_MET: number;
-  WAREHOUSE_ESTIMATED_QTY: number;
-  ESTIMATED_QTY_ST: number;
-  ESTIMATED_QTY: number;
-  KETQUASX: number;
-  LOSS_SX_ST: number;
-  LOSS_SX: number;
-  INS_INPUT: number;
-  LOSS_SX_KT: number;
-  INS_OUTPUT: number;
-  LOSS_KT: number;
-  SETTING_START_TIME: string;
-  MASS_START_TIME: string;
-  MASS_END_TIME: string;
-  RPM: number;
-  EQ_NAME_TT: string;
-  SX_DATE: string;
-  WORK_SHIFT: string;
-  INS_EMPL: string;
-  FACTORY: string;
-  BOC_KIEM: number;
-  LAY_DO: number;
-  MAY_HONG: number;
-  DAO_NG: number;
-  CHO_LIEU: number;
-  CHO_BTP: number;
-  HET_LIEU: number;
-  LIEU_NG: number;
-  CAN_HANG: number;
-  HOP_FL: number;
-  CHO_QC: number;
-  CHOT_BAOCAO: number;
-  CHUYEN_CODE: number;
-  KHAC: number;
-  REMARK: string;
-}
+
 const PQC1 = () => {
   const [customerList, setCustomerList] = useState<CustomerListData[]>([]);
   const userData: UserData | undefined = useSelector(

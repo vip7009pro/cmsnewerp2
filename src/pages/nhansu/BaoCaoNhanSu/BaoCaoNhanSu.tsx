@@ -69,7 +69,6 @@ import { Grid, IconButton } from "@mui/material";
 import ChartDiemDanhMAINDEPT from "../../../components/Chart/ChartDiemDanhMAINDEPT";
 import { RootState } from "../../../redux/store";
 import { useSelector, useDispatch } from "react-redux";
-import { UserData } from "../../../redux/slices/globalSlice";
 import {
   Chart,
   ArgumentAxis,
@@ -82,106 +81,9 @@ import { MdOutlinePivotTableChart } from "react-icons/md";
 import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
 import { AiFillCloseCircle, AiFillFileExcel } from "react-icons/ai";
 import PivotTable from "../../../components/PivotChart/PivotChart";
+import { DIEMDANHFULLSUMMARY, DIEMDANHMAINDEPT, DiemDanhFullData, DiemDanhHistoryData, DiemDanhNhomData, MainDeptData, UserData } from "../../../api/GlobalInterface";
 
-interface DIEMDANHFULLSUMMARY {
-  id: number,
-  MAINDEPTNAME: string,
-  COUNT_TOTAL: number,
-  COUNT_ON: number,
-  COUNT_OFF: number,
-  COUNT_CDD: number,
-  T1_TOTAL: number,
-  T1_ON: number,
-  T1_OFF: number,
-  T1_CDD: number,
-  T2_TOTAL: number,
-  T2_ON: number,
-  T2_OFF: number,
-  T2_CDD: number,
-  HC_TOTAL: number,
-  HC_ON: number,
-  HC_OFF: number,
-  HC_CDD: number,
-  ON_RATE: number,
-  TOTAL: number,
-  PHEP_NAM: number,
-  NUA_PHEP: number,
-  NGHI_VIEC_RIENG: number,
-  NGHI_OM: number,
-  CHE_DO: number,
-  KHONG_LY_DO: number,
-  
-}
-interface DiemDanhNhomData {
-  id: string;
-  MAINDEPTNAME: string;
-  SUBDEPTNAME: string;
-  TOTAL_ALL: number;
-  TOTAL_ON: number;
-  TOTAL_OFF: number;
-  TOTAL_CDD: number;
-  TOTAL_NM1: number;
-  TOTAL_NM2: number;
-  ON_NM1: number;
-  ON_NM2: number;
-  OFF_NM1: number;
-  OFF_NM2: number;
-  CDD_NM1: number;
-  CDD_NM2: number;
-}
-interface MainDeptData {
-  id: number;
-  MAINDEPTCODE: number;
-  MAINDEPTNAME: string;
-  MAINDEPTNAME_KR: string;
-}
-interface DiemDanhHistoryData {
-  id: string;
-  APPLY_DATE: string;
-  MAINDEPTNAME: string;
-  TOTAL: number;
-  TOTAL_ON: number;
-  TOTAL_OFF: number;
-  ON_RATE: number;
-}
-interface DiemDanhFullData {
-  DATE_COLUMN: string;
-  WEEKDAY: string;
-  id: string;
-  EMPL_NO: string;
-  CMS_ID: string;
-  MIDLAST_NAME: string;
-  FIRST_NAME: string;
-  PHONE_NUMBER: string;
-  SEX_NAME: string;
-  WORK_STATUS_NAME: string;
-  FACTORY_NAME: string;
-  JOB_NAME: string;
-  WORK_SHIF_NAME: string;
-  WORK_POSITION_NAME: string;
-  SUBDEPTNAME: string;
-  MAINDEPTNAME: string;
-  REQUEST_DATE: string;
-  APPLY_DATE: string;
-  APPROVAL_STATUS: number;
-  OFF_ID: number;
-  CA_NGHI: number;
-  ON_OFF: number;
-  OVERTIME_INFO: string;
-  OVERTIME: number;
-  REASON_NAME: string;
-  REMARK: string;
-  XACNHAN: string;
-}
-interface DIEMDANHMAINDEPT {
-  id: number;
-  MAINDEPTNAME: string;
-  COUNT_TOTAL: number;
-  COUT_ON: number;
-  COUT_OFF: number;
-  COUNT_CDD: number;
-  ON_RATE: number;
-}
+
 const BaoCaoNhanSu = () => {
   const userData: UserData | undefined = useSelector(
     (state: RootState) => state.totalSlice.userData

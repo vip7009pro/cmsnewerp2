@@ -24,7 +24,6 @@ import { SaveExcel } from "../../../api/GlobalFunction";
 import { AiFillFileExcel, AiFillFolderAdd } from "react-icons/ai";
 import "./CalcQuotation.scss";
 import CodeVisualLize from "./CodeVisualize/CodeVisualLize";
-import { UserData } from "../../../redux/slices/globalSlice";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import moment from "moment";
@@ -33,117 +32,9 @@ import DrawComponentTBG from "../ycsxmanager/DrawComponent/DrawComponentTBG";
 import { BiSave } from "react-icons/bi";
 import { GrUpdate } from "react-icons/gr";
 import { TbLogout } from "react-icons/tb";
+import { BANGGIA_DATA_CALC, BOM_GIA, CODEDATA, DEFAULT_DM, GIANVL, UserData } from "../../../api/GlobalInterface";
 
-interface BANGGIA_DATA {
-  id: number;
-  CUST_CD: string;
-  G_CODE: string;
-  PRICE_DATE: string;
-  MOQ: number;
-  PROD_PRICE: number;
-  INS_DATE: string;
-  INS_EMPL: string;
-  UPD_DATE: string;
-  UPD_EMPL: string;
-  REMARK: string;
-  FINAL: string;
-}
-export interface CODEDATA {
-  id: number;
-  Q_ID: string;
-  G_CODE: string;
-  WIDTH_OFFSET: number;
-  LENGTH_OFFSET: number;
-  KNIFE_UNIT: number;
-  FILM_UNIT: number;
-  INK_UNIT: number;
-  LABOR_UNIT: number;
-  DELIVERY_UNIT: number;
-  DEPRECATION_UNIT: number;
-  GMANAGEMENT_UNIT: number;
-  M_LOSS_UNIT: number;
-  G_WIDTH: number;
-  G_LENGTH: number;
-  G_C: number;
-  G_C_R: number;
-  G_LG: number;
-  G_CG: number;
-  G_SG_L: number;
-  G_SG_R: number;
-  PROD_PRINT_TIMES: number;
-  KNIFE_COST: number;
-  FILM_COST: number;
-  INK_COST: number;
-  LABOR_COST: number;
-  DELIVERY_COST: number;
-  DEPRECATION_COST: number;
-  GMANAGEMENT_COST: number;
-  MATERIAL_COST: number;
-  TOTAL_COST: number;
-  SALE_PRICE: number;
-  PROFIT: number;
-  G_NAME: string;
-  G_NAME_KD: string;
-  CUST_NAME_KD: string;
-  CUST_CD: string;
-}
-interface BOM_GIA {
-  id: string;
-  BOM_ID?: string;
-  G_CODE?: string;
-  RIV_NO?: string;
-  G_SEQ?: string;
-  CATEGORY?: number;
-  M_CODE?: string;
-  M_NAME?: string;
-  CUST_CD?: string;
-  IMPORT_CAT?: string;
-  M_CMS_PRICE: number;
-  M_SS_PRICE: number;
-  M_SLITTING_PRICE: number;
-  USAGE?: string;
-  MAIN_M: string;
-  MAT_MASTER_WIDTH?: number;
-  MAT_CUTWIDTH?: number;
-  MAT_ROLL_LENGTH?: number;
-  MAT_THICKNESS?: number;
-  M_QTY?: number;
-  REMARK?: string;
-  PROCESS_ORDER?: number;
-  INS_EMPL?: string;
-  UPD_EMPL?: string;
-  INS_DATE?: string;
-  UPD_DATE?: string;
-}
-interface DEFAULT_DM {
-  id: number;
-  WIDTH_OFFSET: number;
-  LENGTH_OFFSET: number;
-  KNIFE_UNIT: number;
-  FILM_UNIT: number;
-  INK_UNIT: number;
-  LABOR_UNIT: number;
-  DELIVERY_UNIT: number;
-  DEPRECATION_UNIT: number;
-  GMANAGEMENT_UNIT: number;
-  M_LOSS_UNIT: number;
-}
-interface GIANVL {
-  mCutWidth: number;
-  mLength: number;
-  mArea: number;
-  giaVLSS: number;
-  giaVLCMS: number;
-  knife_cost: number;
-  film_cost: number;
-  ink_cost: number;
-  labor_cost: number;
-  delivery_cost: number;
-  deprecation_cost: number;
-  gmanagement_cost: number;
-  totalcostCMS: number;
-  totalcostSS: number;
-}
+
 const CalcQuotation = () => {
   const company: string = useSelector(
     (state: RootState) => state.totalSlice.company
@@ -158,7 +49,7 @@ const CalcQuotation = () => {
 
   const [sh, setSH] = useState(true);
   const showhidesearchdiv = useRef(false);
-  const [banggia, setBangGia] = useState<Array<BANGGIA_DATA>>([]);
+  const [banggia, setBangGia] = useState<Array<BANGGIA_DATA_CALC>>([]);
   const [listcode, setListCode] = useState<Array<CODEDATA>>([]);
   const [listVL, setListVL] = useState<Array<BOM_GIA>>([]);
   const [tempQTY, setTempQty] = useState(1);
@@ -209,8 +100,8 @@ const CalcQuotation = () => {
       .then((response) => {
         //console.log(response.data.data);
         if (response.data.tk_status !== "NG") {
-          const loaded_data: BANGGIA_DATA[] = response.data.data.map(
-            (element: BANGGIA_DATA, index: number) => {
+          const loaded_data: BANGGIA_DATA_CALC[] = response.data.data.map(
+            (element: BANGGIA_DATA_CALC, index: number) => {
               return {
                 ...element,
                 PRICE_DATE:
@@ -890,7 +781,7 @@ const CalcQuotation = () => {
   );
 
   const addRowBG = () => {
-    const addBangGiaRow: BANGGIA_DATA = {
+    const addBangGiaRow: BANGGIA_DATA_CALC = {
       CUST_CD: selectedRows.CUST_CD,
       G_CODE: selectedRows.G_CODE,
       PRICE_DATE: moment.utc().format("YYYY-MM-DD"),

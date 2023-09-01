@@ -3,9 +3,9 @@ import "./DrawComponentTBG.scss";
 import Pdf, { usePdf } from "@mikecousins/react-pdf";
 import moment from "moment";
 import { UserContext } from "../../../../api/Context";
-import { UserData } from "../../../../redux/slices/globalSlice";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../redux/store";
+import { UserData } from "../../../../api/GlobalInterface";
 
 const DrawComponentTBG = ({
   G_CODE,

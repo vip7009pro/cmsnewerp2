@@ -28,60 +28,9 @@ import { MdOutlinePivotTableChart } from "react-icons/md";
 import PivotTable from "../../../components/PivotChart/PivotChart";
 import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
 import { ResponsiveContainer } from "recharts";
-import { MACHINE_LIST } from "../../qlsx/QLSXPLAN/QUICKPLAN/QUICKPLAN";
 import { esES } from "@mui/x-data-grid";
-interface MATERIAL_STATUS {
-  INS_DATE: string;
-  FACTORY: string;
-  M_LOT_NO: string;
-  M_CODE: string;
-  M_NAME: string;
-  WIDTH_CD: number;
-  ROLL_QTY: number;
-  OUT_CFM_QTY: number;
-  TOTAL_OUT_QTY: number;
-  PROD_REQUEST_NO: string;
-  PLAN_ID: string;
-  PLAN_EQ: string;
-  G_CODE: string;
-  G_NAME: string;
-  XUAT_KHO: string;
-  VAO_FR: string;
-  VAO_SR: string;
-  VAO_DC: string;
-  VAO_ED: string;
-  CONFIRM_GIAONHAN: string;
-  VAO_KIEM: string;
-  NHATKY_KT: string;
-  RA_KIEM: string;
-  INSPECT_TOTAL_QTY: number;
-  INSPECT_OK_QTY: number;
-  INS_OUT: number;
-  ROLL_LOSS_KT: number;
-  ROLL_LOSS: number;
-  PD: number;
-  CAVITY: number;
-  FR_RESULT: number;
-  SR_RESULT: number;
-  DC_RESULT: number;
-  ED_RESULT: number;
-  TOTAL_OUT_EA: number;
-  FR_EA: number;
-  SR_EA: number;
-  DC_EA: number;
-  ED_EA: number;
-  INSPECT_TOTAL_EA: number;
-  INSPECT_OK_EA: number;
-  INS_OUTPUT_EA: number;
-}
-interface LOSS_TABLE_DATA {
-  XUATKHO_MET: number;
-  INSPECTION_INPUT: number;
-  INSPECTION_OK: number;
-  INSPECTION_OUTPUT: number;
-  TOTAL_LOSS_KT: number;
-  TOTAL_LOSS: number;
-}
+import { LOSS_TABLE_DATA_ROLL, MACHINE_LIST, MATERIAL_STATUS } from "../../../api/GlobalInterface";
+
 const TINHHINHCUONLIEU = () => {
   const [machine_list, setMachine_List] = useState<MACHINE_LIST[]>([]);
 
@@ -115,7 +64,7 @@ const TINHHINHCUONLIEU = () => {
   };
 
   const [showhidePivotTable, setShowHidePivotTable] = useState(false);
-  const [losstableinfo, setLossTableInfo] = useState<LOSS_TABLE_DATA>({
+  const [losstableinfo, setLossTableInfo] = useState<LOSS_TABLE_DATA_ROLL>({
     XUATKHO_MET: 0,
     INSPECTION_INPUT: 0,
     INSPECTION_OK: 0,
@@ -191,7 +140,7 @@ const TINHHINHCUONLIEU = () => {
             "Đã load : " + loaded_data.length + " dòng",
             "success"
           );
-          let temp_loss_info: LOSS_TABLE_DATA = {
+          let temp_loss_info: LOSS_TABLE_DATA_ROLL = {
             XUATKHO_MET: 0,
             INSPECTION_INPUT: 0,
             INSPECTION_OK: 0,

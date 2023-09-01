@@ -33,91 +33,11 @@ import {
   import PivotTable from "../../../components/PivotChart/PivotChart";
   import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
   import { ResponsiveContainer } from "recharts";
+import { KTP_IN, KTP_OUT, STOCK_G_CODE, STOCK_G_NAME_KD, STOCK_PROD_REQUEST_NO } from "../../../api/GlobalInterface";
 
 
   
-  interface KTP_IN {
-    IN_DATE: string,
-    FACTORY: string,
-    AUTO_ID: string,
-    INSPECT_OUTPUT_ID: string,
-    PACK_ID: string,
-    EMPL_NAME: string,
-    PROD_REQUEST_NO: string,
-    CUST_NAME_KD: string,
-    G_CODE: string,
-    G_NAME: string,
-    G_NAME_KD: string,
-    PROD_TYPE: string,
-    PLAN_ID: string,
-    IN_QTY: number,
-    USE_YN: string,
-    EMPL_GIAO: string,
-    EMPL_NHAN: string,
-    INS_DATE: string,
-    INS_EMPL: string,
-    UPD_DATE: string,
-    UPD_EMPL: string,
-    STATUS: string,
-    REMARK: string,
-  }
-  interface KTP_OUT {
-    OUT_DATE: string,
-    FACTORY: string,
-    AUTO_ID: string,
-    INSPECT_OUTPUT_ID: string,
-    PACK_ID: string,
-    EMPL_NAME: string,
-    PROD_REQUEST_NO: string,
-    G_CODE: string,
-    G_NAME: string,
-    G_NAME_KD: string,
-    PROD_TYPE: string,
-    PLAN_ID: string,
-    CUST_CD: string,
-    OUT_QTY: number,
-    CUST_NAME_KD: string,
-    OUT_TYPE: string,
-    USE_YN: string,
-    INS_DATE: string,
-    INS_EMPL: string,
-    UPD_DATE: string,
-    UPD_EMPL: string,
-    STATUS: string,
-    REMARK: string,
-    AUTO_ID_IN: string,
-    OUT_PRT_SEQ: string,
-  }
-
-  interface STOCK_G_CODE {
-    G_CODE: string,
-    G_NAME: string,
-    G_NAME_KD: string,
-    PROD_TYPE: string,
-    STOCK: number,
-    BLOCK_QTY: number,
-    TOTAL_STOCK: number,
-  }
-
-  interface STOCK_G_NAME_KD {
-    G_NAME_KD: string,
-    PROD_TYPE: string,
-    STOCK: number,
-    BLOCK_QTY: number,
-    TOTAL_STOCK: number,
-  }
-
-  interface STOCK_PROD_REQUEST_NO {
-    CUST_NAME_KD: string,
-    PROD_REQUEST_NO: string,
-    G_CODE: string,
-    G_NAME: string,
-    G_NAME_KD: string, 
-    PROD_TYPE: string,
-    STOCK: number,
-    BLOCK_QTY: string,
-    TOTAL_STOCK: string,
-  }
+  
 
   const KHOTPNEW = () => {
     const [showhidePivotTable, setShowHidePivotTable] = useState(false);    

@@ -24,99 +24,8 @@ import { generalQuery } from "../../../api/Api";
 import { UserContext } from "../../../api/Context";
 import { SaveExcel } from "../../../api/GlobalFunction";
 import "./TRAPQC.scss";
-interface PQC1_DATA {
-  PQC1_ID: string;
-  YEAR_WEEK: string;
-  PROD_REQUEST_NO: string;
-  PROD_REQUEST_QTY: number;
-  PROD_REQUEST_DATE: string;
-  PLAN_ID: string;
-  PROCESS_LOT_NO: string;
-  G_NAME: string;
-  G_NAME_KD: string;
-  LINEQC_PIC: string;
-  PROD_PIC: string;
-  PROD_LEADER: string;
-  LINE_NO: number;
-  STEPS: string;
-  CAVITY: number;
-  SETTING_OK_TIME: string;
-  FACTORY: string;
-  INSPECT_SAMPLE_QTY: number;
-  PROD_LAST_PRICE: number;
-  SAMPLE_AMOUNT: number;
-  REMARK: string;
-  INS_DATE: string;
-  UPD_DATE: string;
-  PQC3_ID: string, 
-  OCCURR_TIME: string,
-  INSPECT_QTY: number,
-  DEFECT_QTY: number,
-  DEFECT_RATE: number,
-  DEFECT_PHENOMENON: number,
-}
-interface PQC3_DATA {
-  YEAR_WEEK: string;
-  PQC3_ID: number;
-  PQC1_ID: number;
-  CUST_NAME_KD: string;
-  FACTORY: string;
-  PROD_REQUEST_NO: string;
-  PROD_REQUEST_DATE: string;
-  PROCESS_LOT_NO: string;
-  G_CODE: string;
-  G_NAME: string;
-  G_NAME_KD: string;
-  PROD_LAST_PRICE: number;
-  LINEQC_PIC: string;
-  PROD_PIC: string;
-  PROD_LEADER: string;
-  LINE_NO: number;
-  OCCURR_TIME: string;
-  INSPECT_QTY: number;
-  DEFECT_QTY: number;
-  DEFECT_AMOUNT: number;
-  DEFECT_PHENOMENON: string;
-  DEFECT_IMAGE_LINK: string;
-  REMARK: string;
-  WORST5: string;
-  WORST5_MONTH: string;
-  ERR_CODE: string;
-}
-interface DAO_FILM_DATA {
-  KNIFE_FILM_ID: string;
-  FACTORY_NAME: number;
-  NGAYBANGIAO: number;
-  G_CODE: string;
-  G_NAME: string;
-  LOAIBANGIAO_PDP: string;
-  LOAIPHATHANH: string;
-  SOLUONG: string;
-  SOLUONGOHP: string;
-  LYDOBANGIAO: string;
-  PQC_EMPL_NO: number;
-  RND_EMPL_NO: string;
-  SX_EMPL_NO: string;
-  MA_DAO: string;
-  REMARK: number;
-}
-interface CNDB_DATA {
-  CNDB_DATE: string;
-  CNDB_NO: string;
-  CNDB_ENCODE: string;
-  M_NAME: string;
-  DEFECT_NAME: string;
-  DEFECT_CONTENT: string;
-  REG_EMPL_NO: string;
-  REMARK: string;
-  M_NAME2: string;
-  INS_DATE: string;
-  APPROVAL_STATUS: string;
-  APPROVAL_EMPL: string;
-  APPROVAL_DATE: string;
-  G_CODE: string;
-  G_NAME: string;
-}
+import { CNDB_DATA, DAO_FILM_DATA, PQC3_DATA, TRA_PQC1_DATA } from "../../../api/GlobalInterface";
+
 const TRAPQC = () => {
   const [readyRender, setReadyRender] = useState(true);
   const [selection, setSelection] = useState<any>({
@@ -146,7 +55,7 @@ const TRAPQC = () => {
   const [factory, setFactory] = useState("All");
   const [pqcdatatable, setPqcDataTable] = useState<Array<any>>([]);
   const [sumaryINSPECT, setSummaryInspect] = useState("");
-  const column_pqc1_data = [
+  const column_TRA_PQC1_DATA = [
     { field: "PQC1_ID", headerName: "PQC1_ID", width: 80 },
     { field: "YEAR_WEEK", headerName: "YEAR_WEEK", width: 80 },
     { field: "PROD_REQUEST_NO", headerName: "PROD_REQUEST_NO", width: 80 },
@@ -408,7 +317,7 @@ const TRAPQC = () => {
     { field: "G_NAME", headerName: "G_NAME", width: 250 },
   ];
   const [columnDefinition, setColumnDefinition] =
-    useState<Array<any>>(column_pqc1_data);
+    useState<Array<any>>(column_TRA_PQC1_DATA);
   function CustomToolbarPOTable() {
     return (
       <GridToolbarContainer>
@@ -455,8 +364,8 @@ const TRAPQC = () => {
       .then((response) => {
         //console.log(response.data.data);
         if (response.data.tk_status !== "NG") {
-          const loadeddata: PQC1_DATA[] = response.data.data.map(
-            (element: PQC1_DATA, index: number) => {
+          const loadeddata: TRA_PQC1_DATA[] = response.data.data.map(
+            (element: TRA_PQC1_DATA, index: number) => {
               //summaryInput += element.INPUT_QTY_EA;
               return {
                 ...element,
@@ -752,7 +661,7 @@ const TRAPQC = () => {
               onClick={() => {
                 setisLoading(true);
                 setReadyRender(false);
-                setColumnDefinition(column_pqc1_data);
+                setColumnDefinition(column_TRA_PQC1_DATA);
                 handletraInspectionInput();
               }}
             >

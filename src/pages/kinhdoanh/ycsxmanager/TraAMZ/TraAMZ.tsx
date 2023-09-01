@@ -10,24 +10,10 @@ import { SaveExcel } from '../../../../api/GlobalFunction';
 
 import "./TraAMZ.scss"
 import { TbLogout } from 'react-icons/tb';
+import { AMAZON_DATA } from '../../../../api/GlobalInterface';
 
 
-interface AMAZON_DATA {
-  G_NAME: string,
-  G_CODE: string,
-  PROD_REQUEST_NO: string,
-  NO_IN: string,
-  ROW_NO: number,
-  DATA_1: string,
-  DATA_2: string,
-  DATA_3: string,
-  DATA_4: string,
-  PRINT_STATUS: string,
-  INLAI_COUNT: number,
-  REMARK: string,
-  INS_DATE: string,
-  INS_EMPL: string,  
-}
+
 
 const TraAMZ = () => { 
   const [showhidesearchdiv, setShowHideSearchDiv]= useState(true);

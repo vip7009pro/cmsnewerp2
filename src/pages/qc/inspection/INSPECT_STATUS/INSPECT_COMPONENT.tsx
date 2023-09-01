@@ -1,22 +1,8 @@
 import React from "react";
 import { BiUser } from "react-icons/bi";
 import "./INSPECT_COMPONENT.scss";
-interface INS_STATUS {
-  SEARCH_STRING?: string;
-  FACTORY?: string;
-  EQ_NAME?: string;
-  EMPL_COUNT?: number;
-  EQ_STATUS?: string;
-  CURR_PLAN_ID?: string;
-  CURR_G_CODE?: string;
-  G_NAME?: string;
-  G_NAME_KD?: string;
-  REMARK?: string;
-  INS_EMPL?: string;
-  INS_DATE?: string;
-  UPD_EMPL?: string;
-  UPD_DATE?: string;
-}
+import { INS_STATUS } from "../../../../api/GlobalInterface";
+
 const INSPECT_COMPONENT = ({ INS_DATA }: { INS_DATA?: INS_STATUS }) => {
   const runtopcolor: string = "#2fd5eb";
   const runbotcolor: string = "#8ce9f5";

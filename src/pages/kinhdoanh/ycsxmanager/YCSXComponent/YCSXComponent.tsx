@@ -5,130 +5,14 @@ import { generalQuery } from "../../../../api/Api";
 import { UserContext } from "../../../../api/Context";
 
 import "./YCSXComponent.scss";
-import { UserData } from "../../../../redux/slices/globalSlice";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../redux/store";
 
 /* import Barcode from 'react-barcode'; */
 import Barcode from 'react-barcode'
+import { FullBOM, TONKHOTDYCSX, TONVL, UserData, YCSXTableData } from "../../../../api/GlobalInterface";
 interface POBALANCETDYCSX{ G_CODE: string; PO_BALANCE: number }
-interface TONKHOTDYCSX {
-  G_CODE: string;
-  CHO_KIEM: number;
-  CHO_CS_CHECK: number;
-  CHO_KIEM_RMA: number;
-  TONG_TON_KIEM: number;
-  BTP: number;
-  TON_TP: number;
-  BLOCK_QTY: number;
-  GRAND_TOTAL_STOCK: number;
-}
-
-interface YCSXTableData {
-    DESCR?: string,
-    PDBV_EMPL?: string,
-    PDBV_DATE?: string,
-    PDBV?: string,
-    PROD_MAIN_MATERIAL?: string,
-    PROD_TYPE?: string,
-    EMPL_NO?: string,
-    CUST_CD?: string,
-    G_CODE?: string,
-    G_NAME?: string,
-    EMPL_NAME?: string,
-    CUST_NAME_KD?: string,
-    PROD_REQUEST_NO?: string,
-    PROD_REQUEST_DATE?: string,
-    PROD_REQUEST_QTY?: number,
-    LOT_TOTAL_INPUT_QTY_EA?: number,
-    LOT_TOTAL_OUTPUT_QTY_EA?: number,
-    INSPECT_BALANCE?: number,
-    SHORTAGE_YCSX?: number,
-    YCSX_PENDING?: number,
-    PHAN_LOAI?: string,
-    REMARK?: string,
-    PO_TDYCSX?: number,
-    TOTAL_TKHO_TDYCSX?: number,
-    TKHO_TDYCSX?: number,
-    BTP_TDYCSX?: number,
-    CK_TDYCSX?: number,
-    BLOCK_TDYCSX?: number,
-    FCST_TDYCSX?: number,
-    W1?: number,
-    W2?: number,
-    W3?: number,
-    W4?: number,
-    W5?: number,
-    W6?: number,
-    W7?: number,
-    W8?: number,
-    PDUYET?: number,  
-    LOAIXH?: string
-  }
-
-interface YCSX {
-    PROD_REQUEST_NO: string,
-    G_CODE: string
-}
-interface TONVL {
-    M_CODE: string,
-    M_NAME: string,
-    WIDTH_CD: number,
-    TON_DAU: number,
-    INPUT: number,
-    OUTPUT: number,
-    RETURN_IN: number,
-    HOLDING: number,
-    GRAND_TOTAL: number,
-}
-
-interface FullBOM {
-    PDBV?: string,
-    NO_INSPECTION?: string,
-    PDUYET?: number,
-    REMK: string,
-    PROD_REQUEST_QTY: number,
-    PROD_REQUEST_NO: string,
-    PROD_REQUEST_DATE: string,
-    G_CODE: string,
-    DELIVERY_DT: string,
-    CODE_55: string,
-    CODE_50: string,
-    RIV_NO: string,
-    M_QTY: number,
-    M_CODE: string,
-    CUST_NAME: string,
-    ROLE_EA_QTY: number,
-    PACK_DRT: string,
-    PROD_PRINT_TIMES: number,
-    G_WIDTH: number,
-    G_SG_R: number,
-    G_SG_L: number,
-    G_R: number,
-    G_NAME: string,
-    G_LG: number,
-    G_LENGTH: number,
-    G_CODE_C: string,
-    G_CG: number,
-    G_C: number,
-    G_C_R: number,
-    PD: number,
-    CODE_33: string,
-    M_NAME: string,
-    WIDTH_CD: number,
-    EMPL_NO: string,
-    EMPL_NAME: string,
-    CODE_03: string,
-    REMARK: string,
-    TONLIEU: number,
-    HOLDING: number,
-    TONG_TON_LIEU: number,
-    PO_TYPE?: string,
-    FSC: string,
-    PROD_MAIN_MATERIAL?: string,
-    LIEUQL_SX?: number,
-}
-const YCSXComponent = ({G_CODE,PROD_TYPE,PROD_MAIN_MATERIAL,G_NAME,EMPL_NAME,EMPL_NO,CUST_NAME_KD,CUST_CD,PROD_REQUEST_NO,PROD_REQUEST_DATE,PROD_REQUEST_QTY,LOT_TOTAL_INPUT_QTY_EA,LOT_TOTAL_OUTPUT_QTY_EA,INSPECT_BALANCE,SHORTAGE_YCSX,YCSX_PENDING,PHAN_LOAI,REMARK,PO_TDYCSX,TOTAL_TKHO_TDYCSX,TKHO_TDYCSX,BTP_TDYCSX,CK_TDYCSX,BLOCK_TDYCSX,FCST_TDYCSX,W1,W2,W3,W4,W5,W6,W7,W8,PDUYET,LOAIXH, PDBV, PDBV_EMPL, PDBV_DATE, DESCR}:YCSXTableData) => {
+const YCSXComponent = ({DATA}:{DATA:YCSXTableData}) => {
     const userData: UserData | undefined = useSelector(
       (state: RootState) => state.totalSlice.userData
     );
@@ -162,47 +46,75 @@ const YCSXComponent = ({G_CODE,PROD_TYPE,PROD_MAIN_MATERIAL,G_NAME,EMPL_NAME,EMP
         PO_BALANCE: 0,
     })
     const [request_codeinfo,setRequest_CodeInfo] = useState<Array<FullBOM>>([{
-        REMK: '20220617',
-        PROD_REQUEST_QTY: 18000,
-        PROD_REQUEST_NO: '2FH0078',
-        PROD_REQUEST_DATE: '20220617',
-        G_CODE: '7A07975A',
-        DELIVERY_DT: '20220620',
-        CODE_55: '03',
-        CODE_50: '02',
-        RIV_NO: 'A',
-        M_QTY: 1,
-        M_CODE: 'A0009027',
-        CUST_NAME: '',
-        ROLE_EA_QTY: 2000,
-        PACK_DRT: '',
-        PROD_PRINT_TIMES: 1,
-        G_WIDTH: 28.6,
-        G_SG_R: 2,
-        G_SG_L: 2,
-        G_R: 0,
-        G_NAME: '',
-        G_LG: 3,
-        G_LENGTH: 23,
-        G_CODE_C: '',
-        G_CG: 4,
-        G_C: 1,
-        G_C_R: 4,
-        PD: 31.6,
-        CODE_33: '02',
-        M_NAME: '',
-        WIDTH_CD: 110,
-        EMPL_NO: '',
-        EMPL_NAME: '',
-        CODE_03: '01',
-        REMARK: '',
-        TONLIEU:0,
-        HOLDING: 0,
-        TONG_TON_LIEU:0,
-        PO_TYPE:'E1',
-        PROD_MAIN_MATERIAL:'',
-        LIEUQL_SX: 0,        
-        FSC: 'N'
+      REMK: "20220617",
+      PROD_REQUEST_QTY: 18000,
+      PROD_REQUEST_NO: "2FH0078",
+      PROD_REQUEST_DATE: "20220617",
+      G_CODE: "7A07975A",
+      G_NAME_KD: "",
+      DELIVERY_DT: "20220620",
+      CODE_55: "03",
+      CODE_50: "02",
+      RIV_NO: "A",
+      M_QTY: 1,
+      M_CODE: "A0009027",
+      CUST_NAME: "",
+      ROLE_EA_QTY: 2000,
+      PACK_DRT: "",
+      PROD_PRINT_TIMES: 1,
+      G_WIDTH: 28.6,
+      G_SG_R: 2,
+      G_SG_L: 2,
+      G_R: 0,
+      G_NAME: "",
+      G_LG: 3,
+      G_LENGTH: 23,
+      G_CODE_C: "",
+      G_CG: 4,
+      G_C: 1,
+      G_C_R: 4,
+      PD: 31.6,
+      CODE_33: "02",
+      M_NAME: "",
+      WIDTH_CD: 110,
+      EMPL_NO: "",
+      EMPL_NAME: "",
+      CODE_03: "01",
+      REMARK: "",
+      TONLIEU: 0,
+      HOLDING: 0,
+      TONG_TON_LIEU: 0,
+      PROD_DIECUT_STEP: 0,
+      FACTORY: "",
+      EQ1: "",
+      EQ2: "",
+      EQ3: "",
+      EQ4: "",
+      Setting1: 0,
+      Setting2: 0,
+      Setting3: 0,
+      Setting4: 0,
+      UPH1: 0,
+      UPH2: 0,
+      UPH3: 0,
+      UPH4: 0,
+      Step1: 0,
+      Step2: 0,
+      Step3: 0,
+      Step4: 0,
+      LOSS_SX1: 0,
+      LOSS_SX2: 0,
+      LOSS_SX3: 0,
+      LOSS_SX4: 0,
+      LOSS_SETTING1: 0,
+      LOSS_SETTING2: 0,
+      LOSS_SETTING3: 0,
+      LOSS_SETTING4: 0,
+      NOTE: "",
+      PO_TYPE: "E1",
+      PROD_MAIN_MATERIAL: "",
+      LIEUQL_SX: 0,
+      FSC: "N",
     }]);   
 
     const [checklieuchinh,setCheckLieuChinh] = useState(false);
@@ -210,7 +122,7 @@ const YCSXComponent = ({G_CODE,PROD_TYPE,PROD_MAIN_MATERIAL,G_NAME,EMPL_NAME,EMP
     const initYCSX = async() => {
         let inventorydate:string= '202207';
         await generalQuery("check_inventorydate", { 
-            G_CODE: G_CODE
+            G_CODE: DATA.G_CODE
           })
         .then((response) => {
           if (response.data.tk_status !== "NG") {                   
@@ -223,7 +135,7 @@ const YCSXComponent = ({G_CODE,PROD_TYPE,PROD_MAIN_MATERIAL,G_NAME,EMPL_NAME,EMP
         });
 
           generalQuery("ycsx_fullinfo", {
-        PROD_REQUEST_NO: PROD_REQUEST_NO,  
+        PROD_REQUEST_NO: DATA.PROD_REQUEST_NO,  
         TRADATE: moment(inventorydate).format("YYYY-MM-DD 08:00:00"),
         INVENTORY: inventorydate
         })
@@ -243,47 +155,75 @@ const YCSXComponent = ({G_CODE,PROD_TYPE,PROD_MAIN_MATERIAL,G_NAME,EMPL_NAME,EMP
 
             } else {   
               setRequest_CodeInfo([{
-                REMK: '',
-                PROD_REQUEST_QTY: 0,
-                PROD_REQUEST_NO: '',
-                PROD_REQUEST_DATE: '',
-                G_CODE: '',
-                DELIVERY_DT: '',
-                CODE_55: '03',
-                CODE_50: '02',
-                RIV_NO: '',
-                M_QTY: 1,
-                M_CODE: '',
-                CUST_NAME: '',
-                ROLE_EA_QTY: 0,
-                PACK_DRT: '',
-                PROD_PRINT_TIMES: 0,
-                G_WIDTH: 0,
-                G_SG_R: 0,
-                G_SG_L: 0,
-                G_R: 0,
-                G_NAME: '',
-                G_LG: 0,
-                G_LENGTH: 0,
-                G_CODE_C: '',
-                G_CG: 0,
-                G_C: 0,
-                G_C_R: 0,
-                PD: 0,
-                CODE_33: '02',
-                M_NAME: '',
-                WIDTH_CD: 0,
-                EMPL_NO: '',
-                EMPL_NAME: '',
-                CODE_03: '01',
-                REMARK: '',
-                TONLIEU:0,
-                HOLDING:0,
-                TONG_TON_LIEU: 0,
-                NO_INSPECTION:'N',
-                PROD_MAIN_MATERIAL:'',
-                LIEUQL_SX: 0,
-                FSC:'N'
+                REMK: "20220617",
+      PROD_REQUEST_QTY: 18000,
+      PROD_REQUEST_NO: "2FH0078",
+      PROD_REQUEST_DATE: "20220617",
+      G_CODE: "7A07975A",
+      G_NAME_KD: "",
+      DELIVERY_DT: "20220620",
+      CODE_55: "03",
+      CODE_50: "02",
+      RIV_NO: "A",
+      M_QTY: 1,
+      M_CODE: "A0009027",
+      CUST_NAME: "",
+      ROLE_EA_QTY: 2000,
+      PACK_DRT: "",
+      PROD_PRINT_TIMES: 1,
+      G_WIDTH: 28.6,
+      G_SG_R: 2,
+      G_SG_L: 2,
+      G_R: 0,
+      G_NAME: "",
+      G_LG: 3,
+      G_LENGTH: 23,
+      G_CODE_C: "",
+      G_CG: 4,
+      G_C: 1,
+      G_C_R: 4,
+      PD: 31.6,
+      CODE_33: "02",
+      M_NAME: "",
+      WIDTH_CD: 110,
+      EMPL_NO: "",
+      EMPL_NAME: "",
+      CODE_03: "01",
+      REMARK: "",
+      TONLIEU: 0,
+      HOLDING: 0,
+      TONG_TON_LIEU: 0,
+      PROD_DIECUT_STEP: 0,
+      FACTORY: "",
+      EQ1: "",
+      EQ2: "",
+      EQ3: "",
+      EQ4: "",
+      Setting1: 0,
+      Setting2: 0,
+      Setting3: 0,
+      Setting4: 0,
+      UPH1: 0,
+      UPH2: 0,
+      UPH3: 0,
+      UPH4: 0,
+      Step1: 0,
+      Step2: 0,
+      Step3: 0,
+      Step4: 0,
+      LOSS_SX1: 0,
+      LOSS_SX2: 0,
+      LOSS_SX3: 0,
+      LOSS_SX4: 0,
+      LOSS_SETTING1: 0,
+      LOSS_SETTING2: 0,
+      LOSS_SETTING3: 0,
+      LOSS_SETTING4: 0,
+      NOTE: "",
+      PO_TYPE: "E1",
+      PROD_MAIN_MATERIAL: "",
+      LIEUQL_SX: 0,
+      FSC: "N",
             }])  
             //Swal.fire("Thông báo","Số yêu cầu " + PROD_REQUEST_NO + "không tồn tại","error");                
             }
@@ -293,7 +233,7 @@ const YCSXComponent = ({G_CODE,PROD_TYPE,PROD_MAIN_MATERIAL,G_NAME,EMPL_NAME,EMP
         });
 
              generalQuery("checkpobalance_tdycsx", { 
-            G_CODE: G_CODE
+            G_CODE: DATA.G_CODE
           })
             .then((response) => {
               if (response.data.tk_status !== "NG") {                   
@@ -305,7 +245,7 @@ const YCSXComponent = ({G_CODE,PROD_TYPE,PROD_MAIN_MATERIAL,G_NAME,EMPL_NAME,EMP
               console.log(error);
             });
         generalQuery("checktonkho_tdycsx", { 
-          G_CODE:G_CODE
+          G_CODE:DATA.G_CODE
         })
           .then((response) => {                  
             if (response.data.tk_status !== "NG") {                   
@@ -320,14 +260,11 @@ const YCSXComponent = ({G_CODE,PROD_TYPE,PROD_MAIN_MATERIAL,G_NAME,EMPL_NAME,EMP
     }
     useEffect(()=> {
             initYCSX();  
-    },[PROD_REQUEST_NO]);
-
-    console.log(PDBV_EMPL);
-    console.log(PDBV);
+    },[DATA.PROD_REQUEST_NO]);
 
   return (
     <div className='ycsxcomponent'>
-      {(PDBV==='Y' && checklieuchinh ===true) &&  <div className="qcpass">
+      {(DATA.PDBV==='Y' && checklieuchinh ===true) &&  <div className="qcpass">
         <img alt="qcpass" src="/QC PASS20.png" width={440-100-10} height={400-100}/>
       </div>  }  
       {(request_codeinfo[0]?.FSC ==='Y') && <div className="fsc">
@@ -428,7 +365,7 @@ const YCSXComponent = ({G_CODE,PROD_TYPE,PROD_MAIN_MATERIAL,G_NAME,EMPL_NAME,EMP
             </tbody>
           </table>
         </div>
-        <div className='text1'>2. 제품 정보 Thông tin sản phẩm  _{request_codeinfo[0]?.FSC ==='Y' ? '(FSC Mix Credit)':''} <span className="approval_info">(Specification: {DESCR}) </span></div>
+        <div className='text1'>2. 제품 정보 Thông tin sản phẩm  _{request_codeinfo[0]?.FSC ==='Y' ? '(FSC Mix Credit)':''} <span className="approval_info">(Specification: {DATA.DESCR}) </span></div>
         <div className='thongtinsanpham'>
           <div className='ttsp'>
             <table>
@@ -524,7 +461,7 @@ const YCSXComponent = ({G_CODE,PROD_TYPE,PROD_MAIN_MATERIAL,G_NAME,EMPL_NAME,EMP
               </tbody>
             </table>
           </div>
-          <div className='title'>Tồn các loại tại thời điểm IN YCSX<span className="approval_info"> &nbsp;&nbsp;&nbsp; TK IN: {userData?.EMPL_NO}</span>  {(PDBV==='Y') && <span className="approval_info"> | (TTPD_YCSX_BV: {PDBV_EMPL} | {moment.utc( PDBV_DATE).format("YYYY-MM-DD HH:mm:ss")})</span>}</div>
+          <div className='title'>Tồn các loại tại thời điểm IN YCSX<span className="approval_info"> &nbsp;&nbsp;&nbsp; TK IN: {userData?.EMPL_NO}</span>  {(DATA.PDBV==='Y') && <span className="approval_info"> | (TTPD_YCSX_BV: {DATA.PDBV_EMPL} | {moment.utc( DATA.PDBV_DATE).format("YYYY-MM-DD HH:mm:ss")})</span>}</div>
           <div className='toncacloai'>
             <table>
               <thead>

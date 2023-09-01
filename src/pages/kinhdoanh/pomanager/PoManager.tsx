@@ -34,78 +34,11 @@ import "./PoManager.scss";
 import { FaFileInvoiceDollar } from "react-icons/fa";
 import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
 import PivotTable from "../../../components/PivotChart/PivotChart";
-import { UserData } from "../../../redux/slices/globalSlice";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import { TbLogout } from "react-icons/tb";
-interface POTableData {
-  PO_ID: number;
-  CUST_NAME_KD: string;
-  PO_NO: string;
-  G_NAME: string;
-  G_NAME_KD: string;
-  G_CODE: string;
-  PO_DATE: string;
-  RD_DATE: string;
-  PROD_PRICE: string;
-  PO_QTY: number;
-  TOTAL_DELIVERED: number;
-  PO_BALANCE: number;
-  PO_AMOUNT: number;
-  DELIVERED_AMOUNT: number;
-  BALANCE_AMOUNT: number;
-  TON_KIEM: number;
-  BTP: number;
-  TP: number;
-  BLOCK_QTY: number;
-  GRAND_TOTAL_STOCK: number;
-  EMPL_NAME: string;
-  PROD_TYPE: string;
-  M_NAME_FULLBOM: string;
-  PROD_MAIN_MATERIAL: string;
-  CUST_CD: string;
-  EMPL_NO: string;
-  POMONTH: string;
-  POWEEKNUM: string;
-  OVERDUE: string;
-  REMARK: string;
-}
-interface POSummaryData {
-  total_po_qty: number;
-  total_delivered_qty: number;
-  total_pobalance_qty: number;
-  total_po_amount: number;
-  total_delivered_amount: number;
-  total_pobalance_amount: number;
-}
-interface CodeListData {
-  G_CODE: string;
-  G_NAME: string;
-  PROD_LAST_PRICE: number;
-  USE_YN: string;
-  PO_BALANCE?: number;
-}
-interface CustomerListData {
-  CUST_CD: string;
-  CUST_NAME_KD: string;
-  CUST_NAME?: string;
-}
-interface PRICEWITHMOQ {
-  CUST_NAME_KD: string,
-  CUST_CD: string,
-  G_CODE: string,
-  G_NAME: string,
-  PROD_MAIN_MATERIAL: string,
-  PRICE_DATE: string,
-  MOQ: number,
-  PROD_PRICE: number,
-  INS_DATE: string,
-  INS_EMPL: string,
-  UPD_DATE: string,
-  UPD_EMPL: string,
-  REMARK: string,
-  FINAL: string,
-}
+import { CodeListData, CustomerListData, POSummaryData, POTableData, PRICEWITHMOQ, UserData } from "../../../api/GlobalInterface";
+
 const PoManager = () => {
   const [isPending, startTransition] = useTransition();
   const [selection, setSelection] = useState<any>({

@@ -17,8 +17,7 @@ import { RootState } from "./redux/store";
 import { useSelector, useDispatch } from "react-redux";
 import {
   changeDiemDanhState,
-  changeUserData,
-  UserData,
+  changeUserData,  
   update_socket,
   logout,
   login,
@@ -29,6 +28,7 @@ import FallBackComponent from "./components/Fallback/FallBackComponent";
 import PivotChart from "./components/PivotChart/PivotChart";
 
 import { Button } from "@mui/material";
+import { UserData } from "./api/GlobalInterface";
 /* import DATASX2 from "./pages/qlsx/QLSXPLAN/DATASX/DATASX2";
 import Home from "./pages/home/Home";
 import DiemDanhNhom from "./pages/nhansu/DiemDanhNhom/DiemDanhNhom";

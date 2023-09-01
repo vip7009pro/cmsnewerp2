@@ -18,12 +18,13 @@ import { AiFillAmazonCircle, AiFillAmazonSquare, AiFillMinusCircle, AiOutlineCal
 import RuleRoundedIcon from '@mui/icons-material/RuleRounded';
 import {RootState} from '../../redux/store'
 import {useSelector, useDispatch} from 'react-redux'
-import { changeDiemDanhState, changeUserData, UserData, toggleSidebar, hideSidebar } from "../../redux/slices/globalSlice";
+import { changeDiemDanhState, changeUserData, toggleSidebar, hideSidebar } from "../../redux/slices/globalSlice";
 import { getlang } from '../../components/String/String';
 import { GrStatusUnknown } from "react-icons/gr";
 import { FcDataProtection } from "react-icons/fc";
 import useOutsideClick from "../../api/customHooks";
 import { GiPriceTag } from "react-icons/gi";
+import { UserData } from "../../api/GlobalInterface";
 
 interface SEARCH_LIST_DATA {
   MENU_CODE: string;

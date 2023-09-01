@@ -56,159 +56,16 @@ import { BiAddToQueue, BiReset } from "react-icons/bi";
 import { MdOutlineDraw, MdOutlineUpdate, MdUpgrade } from "react-icons/md";
 import { FaRegClone } from "react-icons/fa";
 import MATERIAL_MANAGER from "../material_manager/MATERIAL_MANAGER";
-import { UserData } from "../../../redux/slices/globalSlice";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import axios from "axios";
 import CodeVisualLize from "../../kinhdoanh/quotationmanager/CodeVisualize/CodeVisualLize";
-import { COMPONENT_DATA, renderElement } from "../design_amazon/DESIGN_AMAZON";
+import {renderElement } from "../design_amazon/DESIGN_AMAZON";
 import { useReactToPrint } from "react-to-print";
+import { BOM_GIA, BOM_SX, CODE_FULL_INFO, CODE_INFO, COMPONENT_DATA, CustomerListData, DEFAULT_DM, M_NAME_LIST, MACHINE_LIST, MATERIAL_INFO, MaterialListData, UserData } from "../../../api/GlobalInterface";
 
-interface CODE_INFO {
-  id: number;
-  G_CODE: string;
-  G_NAME: string;
-  G_NAME_KD: string;
-  PROD_TYPE: string;
-  PROD_LAST_PRICE: number;
-  PD: number;
-  CAVITY: number;
-  PACKING_QTY: number;
-  G_WIDTH: number;
-  G_LENGTH: number;
-  PROD_PROJECT: string;
-  PROD_MODEL: string;
-  M_NAME_FULLBOM: string;
-  BANVE: string;
-  NO_INSPECTION: string;
-  USE_YN: string;
-}
-interface CODE_FULL_INFO {
-  CUST_NAME?: string,
-  CUST_CD?: string;
-  PROD_PROJECT?: string;
-  PROD_MODEL?: string;
-  CODE_12: string;
-  PROD_TYPE: string;
-  G_NAME_KD?: string;
-  DESCR?: string;
-  PROD_MAIN_MATERIAL?: string;
-  G_NAME?: string;
-  G_LENGTH?: number;
-  G_WIDTH?: number;
-  PD?: number;
-  G_C?: number;
-  G_C_R?: number;
-  G_CG?: number;
-  G_LG?: number;
-  G_SG_L?: number;
-  G_SG_R?: number;
-  PACK_DRT?: string;
-  KNIFE_TYPE?: number;
-  KNIFE_LIFECYCLE?: number;
-  KNIFE_PRICE?: number;
-  CODE_33?: string;
-  ROLE_EA_QTY?: number;
-  RPM?: number;
-  PIN_DISTANCE?: number;
-  PROCESS_TYPE?: string;
-  EQ1?: string;
-  EQ2?: string;
-  EQ3?: string;
-  EQ4?: string;
-  PROD_DIECUT_STEP?: number;
-  PROD_PRINT_TIMES?: number;
-  REMK?: string;
-  USE_YN?: string;
-  PO_TYPE?: string;
-  FSC: string;
-  G_CODE: string;
-  PROD_DVT: string;
-}
-interface DEFAULT_DM {
-  id: number;
-  WIDTH_OFFSET: number;
-  LENGTH_OFFSET: number;
-  KNIFE_UNIT: number;
-  FILM_UNIT: number;
-  INK_UNIT: number;
-  LABOR_UNIT: number;
-  DELIVERY_UNIT: number;
-  DEPRECATION_UNIT: number;
-  GMANAGEMENT_UNIT: number;
-  M_LOSS_UNIT: number;
-}
-interface CustomerListData {
-  CUST_CD: string;
-  CUST_NAME_KD: string;
-  CUST_NAME: string;
-}
-interface BOM_SX {
-  id: string;
-  G_CODE?: string;
-  G_NAME?: string;
-  G_NAME_KD?: string;
-  RIV_NO?: string;
-  M_CODE?: string;
-  M_NAME?: string;
-  WIDTH_CD?: number;
-  M_QTY?: number;
-  MAIN_M: string;
-  LIEUQL_SX: number;
-  INS_EMPL?: string;
-  INS_DATE?: string;
-  UPD_EMPL?: string;
-  UPD_DATE?: string;
-}
-interface BOM_GIA {
-  id: string;
-  BOM_ID?: string;
-  G_CODE?: string;
-  RIV_NO?: string;
-  G_SEQ?: string;
-  CATEGORY?: number;
-  M_CODE?: string;
-  M_NAME?: string;
-  CUST_CD?: string;
-  IMPORT_CAT?: string;
-  M_CMS_PRICE?: number;
-  M_SS_PRICE?: number;
-  M_SLITTING_PRICE?: number;
-  USAGE?: string;
-  MAIN_M: string;
-  MAT_MASTER_WIDTH?: number;
-  MAT_CUTWIDTH?: number;
-  MAT_ROLL_LENGTH?: number;
-  MAT_THICKNESS?: number;
-  M_QTY?: number;
-  REMARK?: string;
-  PROCESS_ORDER?: number;
-  INS_EMPL?: string;
-  UPD_EMPL?: string;
-  INS_DATE?: string;
-  UPD_DATE?: string;
-}
-interface MaterialListData {
-  M_CODE: string;
-  M_NAME: string;
-  WIDTH_CD: number;
-}
-interface MATERIAL_INFO {
-  M_ID: number;
-  M_NAME: string;
-  CUST_CD: string;
-  SSPRICE: number;
-  CMSPRICE: number;
-  SLITTING_PRICE: number;
-  MASTER_WIDTH: number;
-  ROLL_LENGTH: number;
-}
-interface MACHINE_LIST {
-  EQ_NAME: string;
-}
-interface M_NAME_LIST {
-  M_NAME: string;
-}
+
+
 const BOM_MANAGER = () => {
   const labelprintref = useRef(null);
   const handlePrint = useReactToPrint({
@@ -316,6 +173,7 @@ const BOM_MANAGER = () => {
     PO_TYPE: "E1",
     FSC: "N",
     PROD_DVT: "01",
+
   });
   const [file, setFile] = useState<any>(null);
   const [bomsxtable, setBOMSXTable] = useState<BOM_SX[]>([]);
@@ -1429,7 +1287,7 @@ const BOM_MANAGER = () => {
       USE_YN: "Y",
       G_CODE: "",
       FSC: "N",
-      PROD_DVT: "01",
+      PROD_DVT: "01",      
     });
   };
   const handleCheckCodeInfo = () => {

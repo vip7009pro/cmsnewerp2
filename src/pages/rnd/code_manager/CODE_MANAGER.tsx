@@ -11,65 +11,15 @@ import { SaveExcel, checkBP } from '../../../api/GlobalFunction';
 import "./CODE_MANAGER.scss"
 import { BiReset } from 'react-icons/bi';
 import { MdOutlineDraw, MdUpdate } from 'react-icons/md';
-import { UserData } from '../../../redux/slices/globalSlice';
+import { UserData } from "../../../api/GlobalInterface";
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../redux/store';
 import axios from 'axios';
-interface CODE_INFO {
-    id: number,
-    G_CODE: string,
-    G_NAME: string,
-    G_NAME_KD: string,
-    PROD_TYPE: string,
-    PROD_LAST_PRICE: number,
-    PD: number,
-    CAVITY: number,
-    PACKING_QTY: number,
-    G_WIDTH: number,
-    G_LENGTH: number,
-    PROD_PROJECT: string,
-    PROD_MODEL: string,
-    M_NAME_FULLBOM: string,
-    BANVE: string,
-    NO_INSPECTION: string,
-    USE_YN: string,
-    PDBV: string,
-    PROD_DIECUT_STEP: number,
-    PROD_PRINT_TIMES: number,
-    FACTORY: string,
-    EQ1: string,
-    EQ2: string, 
-    EQ3: string, 
-    EQ4: string, 
-    Setting1: string,
-    Setting2: string,
-    Setting3: string,
-    Setting4: string,
-    UPH1: number,
-    UPH2: number,
-    UPH3: number,
-    UPH4: number,
-    Step1: number,
-    Step2: number,    
-    Step3: number,    
-    Step4: number,    
-    LOSS_SX1: number,
-    LOSS_SX2: number,
-    LOSS_SX3: number,
-    LOSS_SX4: number,
-    LOSS_SETTING1: number,
-    LOSS_SETTING2: number,
-    LOSS_SETTING3: number,
-    LOSS_SETTING4: number,
-    LOSS_ST_SX1: number,
-    LOSS_ST_SX2: number,
-    LOSS_ST_SX3: number,
-    LOSS_ST_SX4: number,
-    NOTE: string
-}
+import { CODE_FULL_INFO } from '../../../api/GlobalInterface';
+
 const CODE_MANAGER = () => {
   const [uploadfile,setUploadFile] = useState<any>(null);
-  const [codedatatablefilter, setCodeDataTableFilter] = useState<Array<CODE_INFO>>([]);
+  const [codedatatablefilter, setCodeDataTableFilter] = useState<Array<CODE_FULL_INFO>>([]);
   const [selection, setSelection] = useState<any>({
     trapo: true,
     thempohangloat:false,
@@ -131,7 +81,7 @@ const CODE_MANAGER = () => {
                     Swal.fire('Thông báo','Upload bản vẽ thành công','success');
                     console.log('G_CODE AAAA',params.row.G_CODE);
                     console.log('rows',rows);
-                    let tempcodeinfodatatable = rows.map((element:CODE_INFO, index: number)=> { 
+                    let tempcodeinfodatatable = rows.map((element:CODE_FULL_INFO, index: number)=> { 
                       console.log('element G_CODE', element.G_CODE);                
                       return ( element.G_CODE === params.row.G_CODE ? {...element, BANVE: 'Y'}: element);
                     });
@@ -512,7 +462,7 @@ const CODE_MANAGER = () => {
     }},
     { field: "NOTE", headerName: "NOTE", width: 150 ,},
   ];
-  const [rows, setRows] = useState<CODE_INFO[]>([]);
+  const [rows, setRows] = useState<CODE_FULL_INFO[]>([]);
   const [columns, setColumns] = useState<GridColumns>(column_codeinfo);
   const [editedRows, setEditedRows] = useState<Array<GridCellEditCommitParams>>([]);
   const [columnDefinition, setColumnDefinition] = useState<Array<any>>(column_codeinfo);
@@ -614,7 +564,7 @@ const CODE_MANAGER = () => {
         //console.log(response.data);
         if(response.data.tk_status !=='NG')
         {
-          const loadeddata: CODE_INFO[] =  response.data.data.map((element:CODE_INFO,index: number)=> {
+          const loadeddata: CODE_FULL_INFO[] =  response.data.data.map((element:CODE_FULL_INFO,index: number)=> {
             return {
               ...element,   id:  index
             }
@@ -650,7 +600,7 @@ const CODE_MANAGER = () => {
   }
   const handleCODESelectionforUpdate =(ids: GridSelectionModel) => {   
     const selectedID = new Set(ids);    
-    let datafilter = rows.filter((element: CODE_INFO) => selectedID.has(element.id));    
+    let datafilter = rows.filter((element: CODE_FULL_INFO) => selectedID.has(element.id === undefined?0:element.id));    
     //console.log(datafilter);
     if(datafilter.length>0)
     {

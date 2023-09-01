@@ -13,72 +13,11 @@ import { MdOutlineDelete, MdOutlinePivotTableChart } from 'react-icons/md';
 import "./FCSTManager.scss"
 import PivotGridDataSource from 'devextreme/ui/pivot_grid/data_source';
 import PivotTable from '../../../components/PivotChart/PivotChart';
-import { UserData } from '../../../redux/slices/globalSlice';
+import { UserData } from "../../../api/GlobalInterface";
 import { RootState } from '../../../redux/store';
 import { useSelector } from 'react-redux';
 import { TbLogout } from 'react-icons/tb';
-
-
-
-interface FCSTTableData {
-  EMPL_NO?: string,
-  FCST_ID: number;
-  FCSTYEAR: number;
-  FCSTWEEKNO: number;
-  G_CODE: string;
-  G_NAME_KD: string;
-  G_NAME: string;
-  EMPL_NAME: string;
-  CUST_NAME_KD: string;
-  PROD_PROJECT: string;
-  PROD_MODEL: string;
-  PROD_MAIN_MATERIAL: string;
-  PROD_PRICE: number;
-  W1: number;
-  W2: number;
-  W3: number;
-  W4: number;
-  W5: number;
-  W6: number;
-  W7: number;
-  W8: number;
-  W9: number;
-  W10: number;
-  W11: number;
-  W12: number;
-  W13: number;
-  W14: number;
-  W15: number;
-  W16: number;
-  W17: number;
-  W18: number;
-  W19: number;
-  W20: number;
-  W21: number;
-  W22: number;
-  W1A: number;
-  W2A: number;
-  W3A: number;
-  W4A: number;
-  W5A: number;
-  W6A: number;
-  W7A: number;
-  W8A: number;
-  W9A: number;
-  W10A: number;
-  W11A: number;
-  W12A: number;
-  W13A: number;
-  W14A: number;
-  W15A: number;
-  W16A: number;
-  W17A: number;
-  W18A: number;
-  W19A: number;
-  W20A: number;
-  W21A: number;
-  W22A: number;
-}
+import { FCSTTableData } from '../../../api/GlobalInterface';
 
 const FCSTManager = () => {
 

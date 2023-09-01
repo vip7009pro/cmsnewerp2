@@ -9,84 +9,11 @@ import moment from 'moment';
 import { UserContext } from '../../../api/Context';
 import { RootState } from "../../../redux/store";
 import { useSelector, useDispatch } from "react-redux";
-import { UserData } from "../../../redux/slices/globalSlice";
 import { IconButton } from '@mui/material';
 import { BiRefresh } from 'react-icons/bi';
+import { EmployeeTableData, MainDeptTableData, SubDeptTableData, UserData, WorkPositionTableData } from '../../../api/GlobalInterface';
 
-interface MainDeptTableData {
-  id: number;
-  CTR_CD: string;
-  MAINDEPTCODE: number;
-  MAINDEPTNAME: string;
-  MAINDEPTNAME_KR: string;
-}
-interface SubDeptTableData {
-  id: number;
-  CTR_CD: string;
-  MAINDEPTCODE: number;
-  SUBDEPTCODE: number;
-  SUBDEPTNAME: string;
-  SUBDEPTNAME_KR: string;
-}
-interface WorkPositionTableData {
-  id: number;
-  CTR_CD: string; 
-  SUBDEPTCODE: number;
-  WORK_POSITION_CODE: number;
-  WORK_POSITION_NAME: string;
-  WORK_POSITION_NAME_KR: string;
-  ATT_GROUP_CODE: number;
-}
-interface EmployeeTableData {
-    id: string,   
-    EMPL_NO: string,
-    CMS_ID: string,
-    FIRST_NAME: string,
-    MIDLAST_NAME: string,
-    FULL_NAME: string,
-    DOB: string,
-    HOMETOWN: string,
-    ADD_PROVINCE: string,
-    ADD_DISTRICT: string,
-    ADD_COMMUNE: string,
-    ADD_VILLAGE: string,
-    PHONE_NUMBER: string,
-    WORK_START_DATE: string,
-    PASSWORD: string,
-    EMAIL: string,
-    REMARK: string,
-    ONLINE_DATETIME: string,
-    CTR_CD: string,
-    SEX_CODE: number,
-    SEX_NAME: string,
-    SEX_NAME_KR: string,
-    WORK_STATUS_CODE: number,
-    WORK_STATUS_NAME: string,
-    WORK_STATUS_NAME_KR: string,
-    FACTORY_CODE: number,
-    FACTORY_NAME: string,
-    FACTORY_NAME_KR: string,
-    JOB_CODE: number,
-    JOB_NAME: string,
-    JOB_NAME_KR: string,
-    POSITION_CODE: number,
-    POSITION_NAME: string,
-    POSITION_NAME_KR: string,
-    WORK_SHIFT_CODE: number,
-    WORK_SHIF_NAME: string,
-    WORK_SHIF_NAME_KR: string,
-    WORK_POSITION_CODE: number,
-    WORK_POSITION_NAME: string,
-    WORK_POSITION_NAME_KR: string,
-    ATT_GROUP_CODE: number,
-    SUBDEPTCODE: number,
-    SUBDEPTNAME: string,
-    SUBDEPTNAME_KR: string,
-    MAINDEPTCODE: number,
-    MAINDEPTNAME: string,
-    MAINDEPTNAME_KR: string,
-    NV_CCID: number,
-}
+
 const QuanLyPhongBanNhanSu = () => {
   const userData: UserData | undefined = useSelector(
     (state: RootState) => state.totalSlice.userData

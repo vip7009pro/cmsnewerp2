@@ -9,7 +9,6 @@ import { RootState } from "../../redux/store";
 import {
   changeDiemDanhState,
   changeUserData,
-  UserData,
   update_socket,
   changeServer,
 } from "../../redux/slices/globalSlice";
@@ -60,7 +59,6 @@ const Login = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-
     let server_ip_local: any = localStorage.getItem("server_ip")?.toString();
     if (server_ip_local !== undefined) {
       setServer_String(server_ip_local);

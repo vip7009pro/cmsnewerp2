@@ -3,9 +3,9 @@ import './DrawComponent.scss'
 import Pdf, { usePdf } from '@mikecousins/react-pdf';
 import moment from 'moment';
 import { UserContext } from "../../../../api/Context";
-import { UserData } from '../../../../redux/slices/globalSlice';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../../redux/store';
+import { UserData } from '../../../../api/GlobalInterface';
 
 const DrawComponent = ({G_CODE, PDBV, PDBV_EMPL, PDBV_DATE, PROD_REQUEST_NO} : {G_CODE:string, PDBV_EMPL?: string,PDBV_DATE?: string, PDBV?: string,  PROD_REQUEST_NO?: string}) => {
 

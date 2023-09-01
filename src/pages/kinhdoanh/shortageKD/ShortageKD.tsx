@@ -11,61 +11,11 @@ import { UserContext } from '../../../api/Context';
 import { checkBP, SaveExcel } from '../../../api/GlobalFunction';
 import { MdOutlineDelete } from 'react-icons/md';
 import "./ShortageKD.scss"
-import { UserData } from '../../../redux/slices/globalSlice';
+import { UserData } from "../../../api/GlobalInterface";
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../redux/store';
-
-interface ShortageData {
-  ST_ID: number,
-  PLAN_DATE: string,
-  CUST_NAME_KD: string,
-  PO_BALANCE: number,
-  TON_TP: number,
-  BTP: number,
-  G_NAME: string,
-  TONG_TON_KIEM: number,
-  D1_9H: number,
-  D1_13H: number,
-  D1_19H: number,
-  D1_21H: number,
-  D1_23H: number,
-  D2_9H: number,
-  D2_13H: number,
-  D2_21H: number,
-  D3_SANG: number,
-  D3_CHIEU: number,
-  D4_SANG: number,
-  D4_CHIEU: number,
-  TODAY_TOTAL: number,
-  TODAY_THIEU: number,
-  UPH: number,
-  PRIORITY: number,
-}
-interface PlanTableData {
-  PLAN_ID: string,
-  EMPL_NAME: string,
-  EMPL_NO: string,
-  CUST_NAME_KD: string,
-  CUST_CD: string,
-  G_CODE: string,
-  G_NAME_KD: string,
-  G_NAME: string,
-  PROD_TYPE: string,
-  PROD_MAIN_MATERIAL: string,
-  PLAN_DATE: string,
-  D1: number,
-  D2: number,
-  D3: number,
-  D4: number,
-  D5: number,
-  D6: number,
-  D7: number,
-  D8: number,
-  REMARK: string,  
-}
-
+import { ShortageData } from '../../../api/GlobalInterface';
 const ShortageKD = () => {
-
   const [selection, setSelection] = useState<any>({
     trapo: true,
     thempohangloat:false,
@@ -88,20 +38,12 @@ const ShortageKD = () => {
   const [prod_type,setProdType] =useState('');
   const [id,setID] =useState('');
   const [alltime, setAllTime] = useState(true); 
-  const [justpobalance, setJustPOBalance] = useState(true); 
-
-
-
   const [po_no,setPo_No] =useState('');
   const [material,setMaterial] =useState('');
   const [over,setOver] =useState('');
-  const [invoice_no,setInvoice_No] =useState('');
-  const [plandatatable, setPlanDataTable] = useState<Array<PlanTableData>>([]);
+  const [invoice_no,setInvoice_No] =useState(''); 
   const [shortagedatatable, setShortageDataTable] = useState<Array<ShortageData>>([]);
-  const [plandatatablefilter, setPlanDataTableFilter] = useState<Array<PlanTableData>>([]);
   const [shortagedatatablefilter, setShortageDataTableFilter] = useState<Array<ShortageData>>([]);
- 
-
   const column_shortage = [
     { field: "ST_ID", headerName: "ST_ID", width: 50 },
     { field: "PLAN_DATE", headerName: "PLAN_DATE", width: 100 },
@@ -200,7 +142,6 @@ const ShortageKD = () => {
     } },    
     { field: "PRIORITY", headerName: "PRIORITY", width: 100 },   
   ]
-
   const column_excel_shortage = [      
     { field: "G_CODE", headerName: "G_CODE", width: 100 },
     { field: "CUST_CD", headerName: "CUST_CD", width: 100 },
@@ -221,7 +162,6 @@ const ShortageKD = () => {
     { field: "PRIORITY", headerName: "PRIORITY", width: 100 }, 
     { field: "CHECKSTATUS", headerName: "CHECKSTATUS", width: 100 }, 
   ]
- 
   function CustomToolbar() {
     return (
       <GridToolbarContainer>
@@ -304,7 +244,6 @@ const ShortageKD = () => {
           if (response.data.tk_status !== "NG") {          
             err_code = 1; //tempjson[i].CHECKSTATUS = "NG: Đã tồn tại PLAN";
           } else {           
-           
           }
         })
         .catch((error) => {
@@ -344,7 +283,6 @@ const ShortageKD = () => {
         .catch((error) => {
           console.log(error);
         });
-
           if(err_code === 0)
           {
             tempjson[i].CHECKSTATUS = "OK";
@@ -375,8 +313,6 @@ const ShortageKD = () => {
     console.log(tempjson);
     setUploadExcelJSon(tempjson);
   };
-
-
   const handle_upShortageHangLoat = async () => {
     setisLoading(true);
     let tempjson = uploadExcelJson;
@@ -391,7 +327,6 @@ const ShortageKD = () => {
           if (response.data.tk_status !== "NG") {          
             err_code = 1; //tempjson[i].CHECKSTATUS = "NG: Đã tồn tại PLAN";
           } else {           
-           
           }
         })
         .catch((error) => {
@@ -494,8 +429,6 @@ const ShortageKD = () => {
     Swal.fire("Thông báo", "Đã hoàn thành check Plan hàng loạt", "success");  
     setUploadExcelJSon(tempjson);
   };  
-
-
   const confirmUpShortageHangLoat = () => {
     Swal.fire({
       title: 'Chắc chắn muốn thêm Plan hàng loạt ?',
@@ -516,7 +449,6 @@ const ShortageKD = () => {
       }
     })
   }
- 
   const confirmCheckShortageHangLoat = () => {
     Swal.fire({
       title: 'Chắc chắn muốn check Plan hàng loạt ?',
@@ -537,7 +469,6 @@ const ShortageKD = () => {
       }
     })
   }
-
   const setNav = (choose: number) => {
     if(choose ===1 )
     {
@@ -552,19 +483,6 @@ const ShortageKD = () => {
       setSelection({...selection, trapo: false, thempohangloat:false, them1po:false,them1invoice:false,testinvoicetable: true});
     }
   }
-
-  const handlePlanSelectionforUpdate =(ids: GridSelectionModel) => {   
-    const selectedID = new Set(ids);
-    let datafilter = plandatatable.filter((element: any) => selectedID.has(element.PLAN_ID));
-    if(datafilter.length>0)
-    {
-      setPlanDataTableFilter(datafilter);      
-    }
-    else
-    {
-      setPlanDataTableFilter([]);  
-    }
-  }
   const handleShortageSelectionforUpdate =(ids: GridSelectionModel) => {   
     const selectedID = new Set(ids);
     let datafilter = shortagedatatable.filter((element: any) => selectedID.has(element.ST_ID));
@@ -577,7 +495,6 @@ const ShortageKD = () => {
       setShortageDataTableFilter([]);  
     }
   }
-
   const deletePlan= async()=> {
     if(shortagedatatablefilter.length>=1)
     {
@@ -599,7 +516,6 @@ const ShortageKD = () => {
           .catch((error) => {
             console.log(error);
           });  
-        
       }      
       if(!err_code)
       {
@@ -638,7 +554,6 @@ const ShortageKD = () => {
       }
     })
   }
-
   const handletraShortage =() => {
     generalQuery('traShortageKD',{
       ALLTIME: alltime,      
@@ -674,10 +589,8 @@ const ShortageKD = () => {
     .catch(error => {
         console.log(error);
     });
-
   }
   useEffect(()=>{
-        
   },[]);
   return (
     <div className='shortage'>

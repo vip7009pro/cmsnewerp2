@@ -6,10 +6,10 @@ import { useSelector, useDispatch } from "react-redux";
 import {
   changeDiemDanhState,
   changeUserData,
-  UserData,
+  
   toggleSidebar,
   setTabModeSwap,
-  ELE_ARRAY
+  
 } from "../../redux/slices/globalSlice";
 import { addTab, settabIndex, resetTab } from "../../redux/slices/globalSlice";
 
@@ -70,6 +70,7 @@ import PRODUCT_BARCODE_MANAGER from "../../pages/rnd/product_barcode_manager/PRO
 import QLGN from "../../pages/rnd/quanlygiaonhandaofilm/QLGN";
 import KHOTPNEW from "../../pages/kho/khotp_new/KHOTPNEW";
 import KHOTP from "../../pages/kho/khotp/KHOTP";
+import { ELE_ARRAY, UserData } from "../../api/GlobalInterface";
 
 interface MENU_LIST_DATA {
   MENU_CODE: string;

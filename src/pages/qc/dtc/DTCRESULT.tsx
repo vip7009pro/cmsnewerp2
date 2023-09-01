@@ -37,44 +37,11 @@ import DataGrid, {
   TotalItem,
 } from "devextreme-react/data-grid";
 import { ResponsiveContainer } from "recharts";
-interface DTC_REG_DATA {
-  DTC_ID: number;
-  FACTORY: string;
-  TEST_FINISH_TIME: string;
-  TEST_EMPL_NO: string;
-  G_CODE: string;
-  PROD_REQUEST_NO: number;
-  G_NAME: number;
-  TEST_NAME: number;
-  TEST_TYPE_NAME: number;
-  WORK_POSITION_NAME: number;
-  REQUEST_DATETIME: string;
-  REQUEST_EMPL_NO: string;
-  M_NAME: string;
-  SIZE: number;
-  REMARK: string;
-  LOTCMS: string;
-}
-interface TestListTable {
-  TEST_CODE: string;
-  TEST_NAME: string;
-  CHECKADDED: boolean;
-}
-interface DTC_RESULT_INPUT {
-  DTC_ID: number,
-  G_CODE: string,
-  M_CODE: string,
-  TEST_NAME: string,
-  TEST_CODE: number,
-  POINT_NAME: string,
-  POINT_CODE: number,
-  CENTER_VALUE: number,
-  UPPER_TOR: number,
-  LOWER_TOR: number,
-  RESULT: number,
-  REMARK: number,
-
-}
+import {
+  DTC_REG_DATA,
+  DTC_RESULT_INPUT,
+  TestListTable,
+} from "../../../api/GlobalInterface";
 const DTCRESULT = () => {
   const [testtype, setTestType] = useState("3");
   const [inputno, setInputNo] = useState("");
@@ -120,95 +87,114 @@ const DTCRESULT = () => {
     () => (
       <div className='datatb'>
         <ResponsiveContainer>
-        <DataGrid
-          style={{fontSize:'0.7rem'}}
-          autoNavigateToFocusedRow={true}
-          allowColumnReordering={true}
-          allowColumnResizing={true}
-          columnAutoWidth={false}
-          cellHintEnabled={true}
-          columnResizingMode={"widget"}
-          showColumnLines={true}
-          dataSource={inspectiondatatable}
-          columnWidth='auto'
-          keyExpr='id'
-          height={"85vh"}
-          showBorders={true}
-          onSelectionChanged={(e) => {
-            //console.log(e.selectedRowsData);
-            //setSelectedRowsData(e.selectedRowsData);
-          }}
-          onRowClick={(e) => {
-            //console.log(e.data);
-          }}
-        >
-           <KeyboardNavigation
-            editOnKeyPress={true}
-            enterKeyAction={'moveFocus'}
-            enterKeyDirection={'column'} />
-          <Scrolling
-            useNative={true}
-            scrollByContent={true}
-            scrollByThumb={true}
-            showScrollbar='onHover'
-            mode='virtual'
-          />
-      {/*     <Selection mode='multiple' selectAllMode='allPages' /> */}
-          <Editing
-            allowUpdating={true}
-            allowAdding={false}
-            allowDeleting={false}
-            mode='cell'
-            confirmDelete={true}
-            onChangesChange={(e) => {}}
-          />
-          <Export enabled={true} />
-          <Toolbar disabled={false}>
-            <Item location='before'>
-              <IconButton
-                className='buttonIcon'
-                onClick={() => {
-                  SaveExcel(inspectiondatatable, "SPEC DTC");
-                }}
-              >
-                <AiFillFileExcel color='green' size={25} />
-                SAVE
-              </IconButton>
-              <span style={{ fontSize: 20, fontWeight: "bold" }}>
-                Bảng nhập kết quả độ tin cậy
-              </span>
-            </Item>
-            <Item name='searchPanel' />
-            <Item name='exportButton' />
-            <Item name='columnChooserButton' />
-            <Item name='addRowButton' />
-            <Item name='saveButton' />
-            <Item name='revertButton' />
-          </Toolbar>
-          <FilterRow visible={true} />
-          <SearchPanel visible={true} />
-          <ColumnChooser enabled={true} />
-          <Paging defaultPageSize={15} />
-          <Pager
-            showPageSizeSelector={true}
-            allowedPageSizes={[5, 10, 15, 20, 100, 1000, 10000, "all"]}
-            showNavigationButtons={true}
-            showInfo={true}
-            infoText='Page #{0}. Total: {1} ({2} items)'
-            displayMode='compact'
-          />
-        <Column dataField='DTC_ID' caption='DTC_ID' width={100}></Column>        
-        <Column dataField='TEST_NAME' caption='TEST_NAME' width={100}></Column>       
-        <Column dataField='POINT_NAME' caption='POINT_NAME' width={100}></Column>        
-        <Column dataField='CENTER_VALUE' caption='CENTER_VALUE' width={100}></Column>
-        <Column dataField='UPPER_TOR' caption='UPPER_TOR' width={100}></Column>
-        <Column dataField='LOWER_TOR' caption='LOWER_TOR' width={100}></Column>
-        <Column dataField='RESULT' caption='RESULT' width={100}></Column>
-        <Column dataField='REMARK' caption='REMARK' width={100}></Column>
-        </DataGrid>
-
+          <DataGrid
+            style={{ fontSize: "0.7rem" }}
+            autoNavigateToFocusedRow={true}
+            allowColumnReordering={true}
+            allowColumnResizing={true}
+            columnAutoWidth={false}
+            cellHintEnabled={true}
+            columnResizingMode={"widget"}
+            showColumnLines={true}
+            dataSource={inspectiondatatable}
+            columnWidth='auto'
+            keyExpr='id'
+            height={"85vh"}
+            showBorders={true}
+            onSelectionChanged={(e) => {
+              //console.log(e.selectedRowsData);
+              //setSelectedRowsData(e.selectedRowsData);
+            }}
+            onRowClick={(e) => {
+              //console.log(e.data);
+            }}
+          >
+            <KeyboardNavigation
+              editOnKeyPress={true}
+              enterKeyAction={"moveFocus"}
+              enterKeyDirection={"column"}
+            />
+            <Scrolling
+              useNative={true}
+              scrollByContent={true}
+              scrollByThumb={true}
+              showScrollbar='onHover'
+              mode='virtual'
+            />
+            {/*     <Selection mode='multiple' selectAllMode='allPages' /> */}
+            <Editing
+              allowUpdating={true}
+              allowAdding={false}
+              allowDeleting={false}
+              mode='cell'
+              confirmDelete={true}
+              onChangesChange={(e) => {}}
+            />
+            <Export enabled={true} />
+            <Toolbar disabled={false}>
+              <Item location='before'>
+                <IconButton
+                  className='buttonIcon'
+                  onClick={() => {
+                    SaveExcel(inspectiondatatable, "SPEC DTC");
+                  }}
+                >
+                  <AiFillFileExcel color='green' size={25} />
+                  SAVE
+                </IconButton>
+                <span style={{ fontSize: 20, fontWeight: "bold" }}>
+                  Bảng nhập kết quả độ tin cậy
+                </span>
+              </Item>
+              <Item name='searchPanel' />
+              <Item name='exportButton' />
+              <Item name='columnChooserButton' />
+              <Item name='addRowButton' />
+              <Item name='saveButton' />
+              <Item name='revertButton' />
+            </Toolbar>
+            <FilterRow visible={true} />
+            <SearchPanel visible={true} />
+            <ColumnChooser enabled={true} />
+            <Paging defaultPageSize={15} />
+            <Pager
+              showPageSizeSelector={true}
+              allowedPageSizes={[5, 10, 15, 20, 100, 1000, 10000, "all"]}
+              showNavigationButtons={true}
+              showInfo={true}
+              infoText='Page #{0}. Total: {1} ({2} items)'
+              displayMode='compact'
+            />
+            <Column dataField='DTC_ID' caption='DTC_ID' width={100}></Column>
+            <Column
+              dataField='TEST_NAME'
+              caption='TEST_NAME'
+              width={100}
+            ></Column>
+            <Column
+              dataField='POINT_NAME'
+              caption='POINT_NAME'
+              width={100}
+            ></Column>
+            <Column
+              dataField='CENTER_VALUE'
+              caption='CENTER_VALUE'
+              width={100}
+            ></Column>
+            <Column
+              dataField='UPPER_TOR'
+              caption='UPPER_TOR'
+              width={100}
+            ></Column>
+            <Column
+              dataField='LOWER_TOR'
+              caption='LOWER_TOR'
+              width={100}
+            ></Column>
+            <Column dataField='RESULT' caption='RESULT' width={100}></Column>
+            <Column dataField='REMARK' caption='REMARK' width={100}></Column>
+          </DataGrid>
         </ResponsiveContainer>
-        
       </div>
     ),
     [inspectiondatatable]
@@ -216,7 +202,7 @@ const DTCRESULT = () => {
   const handletraDTCData = (dtc_id: string, test_code: string) => {
     generalQuery("getinputdtcspec", {
       DTC_ID: dtc_id,
-      TEST_CODE: test_code
+      TEST_CODE: test_code,
     })
       .then((response) => {
         //console.log(response.data.data);
@@ -224,7 +210,7 @@ const DTCRESULT = () => {
           const loadeddata: DTC_RESULT_INPUT[] = response.data.data.map(
             (element: DTC_RESULT_INPUT, index: number) => {
               return {
-                ...element,               
+                ...element,
                 id: index,
               };
             }
@@ -240,11 +226,12 @@ const DTCRESULT = () => {
   };
   const checkInput = (): boolean => {
     let checkresult: boolean = true;
-    for(let i=0;i<inspectiondatatable.length;i++)
-    {
-      if(inspectiondatatable[i].RESULT ==='' || inspectiondatatable[i].RESULT === null)
-      {
-        checkresult =false;
+    for (let i = 0; i < inspectiondatatable.length; i++) {
+      if (
+        inspectiondatatable[i].RESULT === "" ||
+        inspectiondatatable[i].RESULT === null
+      ) {
+        checkresult = false;
       }
     }
     if (dtc_id !== "" && checkresult === true) {
@@ -277,12 +264,10 @@ const DTCRESULT = () => {
         console.log(error);
       });
   };
-  const insertDTCResult = async ()=> {
-    if(inspectiondatatable.length >0)
-    {
-      let err_code:string = '';
-      for(let i=0;i<inspectiondatatable.length;i++)
-      {
+  const insertDTCResult = async () => {
+    if (inspectiondatatable.length > 0) {
+      let err_code: string = "";
+      for (let i = 0; i < inspectiondatatable.length; i++) {
         await generalQuery("insert_dtc_result", {
           DTC_ID: dtc_id,
           G_CODE: inspectiondatatable[i].G_CODE,
@@ -291,53 +276,46 @@ const DTCRESULT = () => {
           POINT_CODE: inspectiondatatable[i].POINT_CODE,
           SAMPLE_NO: 1,
           RESULT: inspectiondatatable[i].RESULT,
-          REMARK: remark
+          REMARK: remark,
         })
           // eslint-disable-next-line no-loop-func
           .then((response) => {
             if (response.data.tk_status !== "NG") {
               //console.log(response.data.data);
-             
             } else {
               err_code += `Lỗi : ` + response.data.message;
             }
-           
           })
           .catch((error) => {
             console.log(error);
           });
-
       }
-      if(err_code === '')
-      {
-        updateDTCTESEMPL(inspectiondatatable[0].DTC_ID,inspectiondatatable[0].TEST_CODE);
-        Swal.fire('Thông báo','Up kết quả thành công','success');
+      if (err_code === "") {
+        updateDTCTESEMPL(
+          inspectiondatatable[0].DTC_ID,
+          inspectiondatatable[0].TEST_CODE
+        );
+        Swal.fire("Thông báo", "Up kết quả thành công", "success");
+      } else {
+        Swal.fire("Thông báo", "Lỗi: " + err_code, "error");
       }
-      else
-      {
-        Swal.fire('Thông báo','Lỗi: ' + err_code,'error');
-      }
-
     }
-  }
-  const updateDTCTESEMPL =(dtc_id: string, test_code: string)=> {
+  };
+  const updateDTCTESEMPL = (dtc_id: string, test_code: string) => {
     generalQuery("updateDTC_TEST_EMPL", {
       DTC_ID: dtc_id,
-      TEST_CODE: test_code
+      TEST_CODE: test_code,
     })
       .then((response) => {
         if (response.data.tk_status !== "NG") {
-          
         } else {
         }
       })
       .catch((error) => {
         console.log(error);
       });
-  }  
-  useEffect(() => {
-    
-  }, []);
+  };
+  useEffect(() => {}, []);
   return (
     <div className='dtcresult'>
       <div className='tracuuDataInspection'>
@@ -375,8 +353,8 @@ const DTCRESULT = () => {
                       onChange={(e) => {
                         console.log(e.target.value);
                         setTestName(e.target.value);
-                        if(dtc_id !=='')
-                        handletraDTCData(dtc_id, e.target.value);
+                        if (dtc_id !== "")
+                          handletraDTCData(dtc_id, e.target.value);
                       }}
                       style={{ display: "flex" }}
                     >
@@ -387,15 +365,23 @@ const DTCRESULT = () => {
                         {testList.map(
                           (element: TestListTable, index: number) => {
                             return (
-                              <div key={index} className='radioelement' style={{display:'flex', margin: 0, padding: 0}}>
-                                <FormControlLabel                                  
+                              <div
+                                key={index}
+                                className='radioelement'
+                                style={{
+                                  display: "flex",
+                                  margin: 0,
+                                  padding: 0,
+                                }}
+                              >
+                                <FormControlLabel
                                   value={element.TEST_CODE.toString()}
                                   key={index}
                                   style={{ fontSize: 5 }}
                                   label={
                                     <Typography
                                       style={{
-                                        fontSize: 12  ,
+                                        fontSize: 12,
                                         fontWeight: element.CHECKADDED
                                           ? "bold"
                                           : "normal",

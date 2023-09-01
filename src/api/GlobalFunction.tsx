@@ -21,7 +21,7 @@ import FCSTManager from '../pages/kinhdoanh/fcstmanager/FCSTManager';
 import YCSXManager from '../pages/kinhdoanh/ycsxmanager/YCSXManager';
 import POandStockFull from '../pages/kinhdoanh/poandstockfull/POandStockFull';
 import CODE_MANAGER from '../pages/rnd/code_manager/CODE_MANAGER';
-import { UserData } from '../redux/slices/globalSlice';
+import { UserData } from './GlobalInterface';
 
 export  const zeroPad = (num: number, places: number) =>
 String(num).padStart(places, "0");
@@ -67,7 +67,7 @@ export function CustomResponsiveContainer(props:any) {
     );
   }
 
-  export function nFormatter(num: number, digits:number) {
+export function nFormatter(num: number, digits:number) {
     const lookup = [
       { value: 1, symbol: "" },
       { value: 1e3, symbol: "K" },
@@ -210,7 +210,7 @@ export function CustomResponsiveContainer(props:any) {
 
  export const weekdayarray =["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
 
-/*  export function removeVietnameseTones(str: string) {
+ export function removeVietnameseTones(str: string) {
   str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g,"a"); 
   str = str.replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g,"e"); 
   str = str.replace(/ì|í|ị|ỉ|ĩ/g,"i"); 
@@ -237,4 +237,4 @@ export function CustomResponsiveContainer(props:any) {
   // Bỏ dấu câu, kí tự đặc biệt
   str = str.replace(/!|@|%|\^|\*|\(|\)|\+|\=|\<|\>|\?|\/|,|\.|\:|\;|\'|\"|\&|\#|\[|\]|~|\$|_|`|-|{|}|\||\\/g," ");
   return str;
-} */
+}

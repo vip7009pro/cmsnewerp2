@@ -9,51 +9,12 @@ import { UserContext } from '../../../api/Context';
 import { SaveExcel, checkBP } from '../../../api/GlobalFunction';
 import { RootState } from "../../../redux/store";
 import { useSelector, useDispatch } from "react-redux";
-import { UserData } from "../../../redux/slices/globalSlice";
+
 import "./KHOLIEU.scss"
+import { NHAPLIEUDATA, TONLIEUDATA, UserData, XUATLIEUDATA } from '../../../api/GlobalInterface';
 
 
-interface NHAPLIEUDATA {
-  M_LOT_NO: string,
-  LOTNCC: string,
-  M_CODE: string, 
-  M_NAME:  string,
-  WIDTH_CD: number,
-  IN_CFM_QTY: number,
-  ROLL_QTY: number,
-  TOTAL_IN_QTY: number,
-  INS_DATE: string,
-  CUST_NAME_KD: string,
-  QC_PASS: string,
-  QC_PASS_EMPL: string, 
-  QC_PASS_DATE: string,
-}
-interface XUATLIEUDATA {
-  G_CODE: string, 
-  G_NAME: string,
-  PROD_REQUEST_NO: string,
-  PLAN_ID: string,
-  M_CODE: string,
-  M_NAME: string, 
-  WIDTH_CD: number,
-  M_LOT_NO: string,
-  OUT_CFM_QTY: number,
-  ROLL_QTY: number,
-  TOTAL_OUT_QTY: number,
-  INS_DATE: string
-}
-interface TONLIEUDATA {
-  M_CODE: string,
-  M_NAME: string,
-  WIDTH_CD: number,
-  TON_NM1: number,
-  TON_NM2: number,
-  HOLDING_NM1: number,
-  HOLDING_NM2: number,
-  TOTAL_OK: number,
-  TOTAL_HOLDING: number,
-  TDS: string,
-}
+
 
 const KHOLIEU = () => { 
   const userData: UserData | undefined = useSelector(

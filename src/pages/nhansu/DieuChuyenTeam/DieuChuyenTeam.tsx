@@ -5,41 +5,10 @@ import "./DieuChuyenTeam.scss"
 import Swal from "sweetalert2";
 import LinearProgress from '@mui/material/LinearProgress';
 import {SaveExcel} from '../../../api/GlobalFunction';
+import { DiemDanhNhomData, WorkPositionTableData } from '../../../api/GlobalInterface';
 
-interface WorkPositionTableData {
-  id: number;
-  CTR_CD: string; 
-  SUBDEPTCODE: number;
-  WORK_POSITION_CODE: number;
-  WORK_POSITION_NAME: string;
-  WORK_POSITION_NAME_KR: string;
-  ATT_GROUP_CODE: number;
-}
-interface DiemDanhNhomData {  
-    id: string,
-    APPLY_DATE: string
-    APPROVAL_STATUS: number
-    CA_NGHI: number
-    CMS_ID: string
-    EMPL_NO: string
-    FACTORY_NAME: string
-    FIRST_NAME: string
-    JOB_NAME: string
-    MAINDEPTNAME: string
-    MIDLAST_NAME: string
-    OFF_ID: number
-    ON_OFF: any
-    OVERTIME: any
-    OVERTIME_INFO: any
-    PHONE_NUMBER: string
-    REASON_NAME: string
-    REQUEST_DATE: string
-    SEX_NAME: string
-    SUBDEPTNAME: string
-    WORK_POSITION_NAME: string
-    WORK_SHIF_NAME: string
-    WORK_STATUS_NAME: string
-}
+
+
 
 const DieuChuyenTeam = () => {
     const [isLoading, setisLoading] = useState(false);   

@@ -2,37 +2,9 @@ import { Button } from "@mui/material";
 import React from "react";
 import Swal from "sweetalert2";
 import "./MACHINE_COMPONENT.scss";
+import { MachineInterface, QLSXPLANDATA } from "../../../../api/GlobalInterface";
 
-interface QLSXPLANDATA {
-  PLAN_ID: string;
-  PLAN_DATE: string;
-  PROD_REQUEST_NO: string;
-  PLAN_QTY: number;
-  PLAN_EQ: string;
-  PLAN_FACTORY: string;
-  PLAN_LEADTIME: number;
-  INS_EMPL: string;
-  INS_DATE: string;
-  UPD_EMPL: string;
-  UPD_DATE: string;
-  G_NAME: string;
-  G_NAME_KD: string;
-  PROD_REQUEST_DATE: string;
-  PROD_REQUEST_QTY: number;
-  STEP: number
-}
 
-interface MachineInterface {
-  machine_name?: string;
-  factory?: string;
-  run_stop?: number;
-  machine_data?: QLSXPLANDATA[];
-  current_plan_id?: string;
-  current_g_name?: string;
-  eq_status?: string;  
-  onClick?:  (ev: any) => void;
-
-}
 
 const MACHINE_COMPONENT = (machine_data: MachineInterface) => {
   const runtopcolor: string = "#2fd5eb";

@@ -32,38 +32,11 @@ import DataGrid, {
   Toolbar,
   TotalItem,
 } from "devextreme-react/data-grid";
-import { UserData } from "../../../redux/slices/globalSlice";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import { ResponsiveContainer } from "recharts";
-interface DTC_REG_DATA {
-  DTC_ID: number;
-  FACTORY: string;
-  TEST_FINISH_TIME: string;
-  TEST_EMPL_NO: string;
-  G_CODE: string;
-  PROD_REQUEST_NO: number;
-  G_NAME: number;
-  TEST_NAME: number;
-  TEST_TYPE_NAME: number;
-  WORK_POSITION_NAME: number;
-  REQUEST_DATETIME: string;
-  REQUEST_EMPL_NO: string;
-  M_NAME: string;
-  SIZE: number;
-  REMARK: string;
-  LOTCMS: string;
-}
-interface TestListTable {
-  TEST_CODE: string;
-  TEST_NAME: string;
-  SELECTED: boolean;
-}
-interface CheckAddedSPECDATA {
-  TEST_CODE: number;
-  TEST_NAME: string;
-  CHECKADDED: number;
-}
+import { CheckAddedSPECDATA, DTC_REG_DATA, TestListTable, UserData } from "../../../api/GlobalInterface";
+
 const DKDTC = () => {
 
   const userData: UserData | undefined = useSelector(

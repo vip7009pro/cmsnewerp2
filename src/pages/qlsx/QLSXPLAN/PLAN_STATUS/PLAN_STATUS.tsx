@@ -10,28 +10,8 @@ import { SaveExcel } from '../../../../api/GlobalFunction';
 import "./PLAN_STATUS.scss"
 import PLAN_STATUS_COMPONENTS from './PLAN_STATUS_COMPONENTS';
 import { MACHINE_LIST } from '../QUICKPLAN/QUICKPLAN';
+import { SX_DATA } from '../../../../api/GlobalInterface';
 
-interface SX_DATA {
-    id: number,
-    STEP: number,
-    PLAN_FACTORY: string,
-    PLAN_ID: string,
-    PLAN_DATE: string,
-    PLAN_EQ: string,
-    G_NAME: string,
-    G_NAME_KD: string,
-    XUATDAO: string,
-    SETTING_START_TIME: string,
-    MASS_START_TIME: string,
-    MASS_END_TIME: string,
-    DKXL: string,
-    XUATLIEU: string,
-    CHOTBC: number,    
-    KQ_SX_TAM: number,
-    KETQUASX: number,
-    PLAN_QTY: number,
-    WORK_SHIFT: string,
-}
 const PLAN_STATUS = () => { 
   const [machine_list, setMachine_List] = useState<MACHINE_LIST[]>([]);
   
@@ -255,7 +235,7 @@ const PLAN_STATUS = () => {
           {readyRender && (
             datasxtable.map((element: SX_DATA, index: number) => {
                 return (
-                    <PLAN_STATUS_COMPONENTS key={index} PLAN_QTY={element.PLAN_QTY} KETQUASX={element.KETQUASX} KQ_SX_TAM ={element.KQ_SX_TAM} PLAN_FACTORY={element.PLAN_FACTORY} STEP={element.STEP} id={element.id} PLAN_ID={element.PLAN_ID} PLAN_DATE={element.PLAN_DATE} PLAN_EQ={element.PLAN_EQ} G_NAME={element.G_NAME} G_NAME_KD={element.G_NAME_KD}   XUATDAO={element.XUATDAO} SETTING_START_TIME={element.SETTING_START_TIME} MASS_START_TIME={element.MASS_START_TIME} MASS_END_TIME={element.MASS_END_TIME} DKXL={element.DKXL} XUATLIEU={element.XUATLIEU} CHOTBC={element.CHOTBC} WORK_SHIFT={element.WORK_SHIFT} />
+                    <PLAN_STATUS_COMPONENTS key={index} DATA={element} />
                 )
             })
             

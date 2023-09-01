@@ -19,9 +19,10 @@ import LanguageIcon from "@mui/icons-material/Language";
 import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
 import { useSelector, useDispatch } from "react-redux";
-import { toggleSidebar, UserData } from "../../redux/slices/globalSlice";
+import { toggleSidebar} from "../../redux/slices/globalSlice";
 import { RootState } from "../../redux/store";
 import { logout } from "../../api/Api";
+import { UserData } from "../../api/GlobalInterface";
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",

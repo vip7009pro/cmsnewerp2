@@ -40,53 +40,10 @@ import DataGrid, {
 import { BiShow } from "react-icons/bi";
 import { GrStatusGood } from "react-icons/gr";
 import { FcCancel } from "react-icons/fc";
-import { UserData } from "../../../redux/slices/globalSlice";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
-interface QC_FAIL_DATA {
-  id?: number;
-  FACTORY: string;
-  PLAN_ID_SUDUNG: string;
-  G_NAME: string;
-  LIEUQL_SX: number;
-  M_CODE: string;
-  M_LOT_NO: string;
-  VENDOR_LOT: string;
-  M_NAME: string;
-  WIDTH_CD: number;
-  ROLL_QTY: number;
-  IN_QTY: number;
-  TOTAL_IN_QTY: number;
-  USE_YN: string;
-  PQC3_ID: number;
-  DEFECT_PHENOMENON: string;
-  OUT_DATE: string;
-  INS_EMPL?: string;
-  INS_DATE: string;
-  UPD_EMPL: string;
-  UPD_DATE: string;
-  PHANLOAI: string;
-  QC_PASS: string;
-  QC_PASS_DATE: string;
-  QC_PASS_EMPL: string;
-  REMARK: string;
-  IN1_EMPL: string;
-  IN2_EMPL: string;
-  OUT1_EMPL: string;
-  OUT2_EMPL: string;
-  OUT_PLAN_ID: string;
-  IN_CUST_CD: string;
-  OUT_CUST_CD: string;
-  IN_CUST_NAME: string;
-  OUT_CUST_NAME: string;
-  REMARK_OUT: string;
-  FAIL_ID: number;
-}
-interface CustomerListData {
-  CUST_CD: string;
-  CUST_NAME_KD: string;
-  CUST_NAME: string;
-}
+import { CustomerListData, QC_FAIL_DATA, UserData } from "../../../api/GlobalInterface";
+
 const FAILING = () => {
   const [cmsvcheck, setCMSVCheck] = useState(true);
   const [customerList, setCustomerList] = useState<CustomerListData[]>([]);

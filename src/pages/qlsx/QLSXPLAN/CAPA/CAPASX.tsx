@@ -31,65 +31,8 @@ import {
 import PieChart, { Export, Font } from "devextreme-react/pie-chart";
 import "./CAPASX.scss";
 import CIRCLE_COMPONENT from "./CIRCLE_COMPONENT/CIRCLE_COMPONENT";
-interface DATA_DIEM_DANH {
-  id: string;
-  EMPL_NO: string;
-  CMS_ID: string;
-  MIDLAST_NAME: string;
-  FIRST_NAME: string;
-  PHONE_NUMBER: string;
-  SEX_NAME: string;
-  WORK_STATUS_NAME: string;
-  FACTORY_NAME: string;
-  JOB_NAME: string;
-  WORK_SHIF_NAME: string;
-  WORK_POSITION_CODE: number;
-  WORK_POSITION_NAME: string;
-  SUBDEPTNAME: string;
-  MAINDEPTNAME: string;
-  REQUEST_DATE: string;
-  APPLY_DATE: string;
-  APPROVAL_STATUS: string;
-  OFF_ID: number;
-  CA_NGHI: number;
-  ON_OFF: number;
-  OVERTIME_INFO: string;
-  OVERTIME: number;
-  REASON_NAME: string;
-  REMARK: string;
-}
-interface DELIVERY_PLAN_CAPA {
-  FACTORY: string,
-  EQ: string, 
-  PL_DATE: string,
-  LEADTIME: number,
-  AVL_CAPA: number,
-  REAL_CAPA: number,
-}
-interface MACHINE_COUNTING {
-  EQ_NAME: string;
-  EQ_QTY: number;
-}
-interface YCSX_BALANCE_CAPA_DATA {
-  EQ_NAME: string;
-  YCSX_BALANCE: number;
-}
-interface EQ_STT {
-  FACTORY: string;
-  EQ_NAME: string;
-  EQ_ACTIVE: string;
-  REMARK: string;
-  EQ_STATUS: string;
-  CURR_PLAN_ID: string;
-  CURR_G_CODE: string;
-  INS_EMPL: string;
-  INS_DATE: string;
-  UPD_EMPL: string;
-  UPD_DATE: string;
-  EQ_CODE: string;
-  G_NAME_KD: string;
-  STEP: number;
-}
+import { DATA_DIEM_DANH, DELIVERY_PLAN_CAPA, EQ_STT, MACHINE_COUNTING, YCSX_BALANCE_CAPA_DATA } from "../../../../api/GlobalInterface";
+
 const CAPASX = () => {
   const dailytime: number = 1200;
   const dailytime2: number = 900;
@@ -148,15 +91,15 @@ const CAPASX = () => {
        console.log(error);
      });
      //console.log(eq_data);
-     const FRNM1: number = eq_data.filter((e:EQ_STT, index:number)=> e.EQ_NAME.substring(0,2)==='FR' && e.FACTORY==='NM1' && e.EQ_ACTIVE==='OK').length;
-     const SRNM1: number = eq_data.filter((e:EQ_STT, index:number)=> e.EQ_NAME.substring(0,2)==='SR' && e.FACTORY==='NM1' && e.EQ_ACTIVE==='OK').length;
-     const DCNM1: number = eq_data.filter((e:EQ_STT, index:number)=> e.EQ_NAME.substring(0,2)==='DC' && e.FACTORY==='NM1' && e.EQ_ACTIVE==='OK').length;
-     const EDNM1: number = eq_data.filter((e:EQ_STT, index:number)=> e.EQ_NAME.substring(0,2)==='ED' && e.FACTORY==='NM1' && e.EQ_ACTIVE==='OK').length;
+     const FRNM1: number = eq_data.filter((e:EQ_STT, index:number)=> e?.EQ_NAME?.substring(0,2)==='FR' && e.FACTORY==='NM1' && e.EQ_ACTIVE==='OK').length;
+     const SRNM1: number = eq_data.filter((e:EQ_STT, index:number)=> e?.EQ_NAME?.substring(0,2)==='SR' && e.FACTORY==='NM1' && e.EQ_ACTIVE==='OK').length;
+     const DCNM1: number = eq_data.filter((e:EQ_STT, index:number)=> e?.EQ_NAME?.substring(0,2)==='DC' && e.FACTORY==='NM1' && e.EQ_ACTIVE==='OK').length;
+     const EDNM1: number = eq_data.filter((e:EQ_STT, index:number)=> e?.EQ_NAME?.substring(0,2)==='ED' && e.FACTORY==='NM1' && e.EQ_ACTIVE==='OK').length;
 
-     const FRNM2: number = eq_data.filter((e:EQ_STT, index:number)=> e.EQ_NAME.substring(0,2)==='FR' && e.FACTORY==='NM2' && e.EQ_ACTIVE==='OK').length;
-     const SRNM2: number = eq_data.filter((e:EQ_STT, index:number)=> e.EQ_NAME.substring(0,2)==='SR' && e.FACTORY==='NM2' && e.EQ_ACTIVE==='OK').length;
-     const DCNM2: number = eq_data.filter((e:EQ_STT, index:number)=> e.EQ_NAME.substring(0,2)==='DC' && e.FACTORY==='NM2' && e.EQ_ACTIVE==='OK').length;
-     const EDNM2: number = eq_data.filter((e:EQ_STT, index:number)=> e.EQ_NAME.substring(0,2)==='ED' && e.FACTORY==='NM2' && e.EQ_ACTIVE==='OK').length;   
+     const FRNM2: number = eq_data.filter((e:EQ_STT, index:number)=> e?.EQ_NAME?.substring(0,2)==='FR' && e.FACTORY==='NM2' && e.EQ_ACTIVE==='OK').length;
+     const SRNM2: number = eq_data.filter((e:EQ_STT, index:number)=> e?.EQ_NAME?.substring(0,2)==='SR' && e.FACTORY==='NM2' && e.EQ_ACTIVE==='OK').length;
+     const DCNM2: number = eq_data.filter((e:EQ_STT, index:number)=> e?.EQ_NAME?.substring(0,2)==='DC' && e.FACTORY==='NM2' && e.EQ_ACTIVE==='OK').length;
+     const EDNM2: number = eq_data.filter((e:EQ_STT, index:number)=> e?.EQ_NAME?.substring(0,2)==='ED' && e.FACTORY==='NM2' && e.EQ_ACTIVE==='OK').length;   
      const eq_sttdata = {
       FR1: FRNM1,
       SR1: SRNM1,
@@ -719,28 +662,28 @@ const CAPASX = () => {
   const getrunningFR = () => {
     return eq_status.filter(
       (element: EQ_STT, index: number) =>
-        element.EQ_NAME.substring(0, 2) === "FR" &&
+        element?.EQ_NAME?.substring(0, 2) === "FR" &&
         (element.EQ_STATUS === "MASS" || element.EQ_STATUS === "SETTING")
     ).length;
   };
   const getrunningSR = () => {
     return eq_status.filter(
       (element: EQ_STT, index: number) =>
-        element.EQ_NAME.substring(0, 2) === "SR" &&
+        element?.EQ_NAME?.substring(0, 2) === "SR" &&
         (element.EQ_STATUS === "MASS" || element.EQ_STATUS === "SETTING")
     ).length;
   };
   const getrunningDC = () => {
     return eq_status.filter(
       (element: EQ_STT, index: number) =>
-        element.EQ_NAME.substring(0, 2) === "DC" &&
+        element?.EQ_NAME?.substring(0, 2) === "DC" &&
         (element.EQ_STATUS === "MASS" || element.EQ_STATUS === "SETTING")
     ).length;
   };
   const getrunningED = () => {
     return eq_status.filter(
       (element: EQ_STT, index: number) =>
-        element.EQ_NAME.substring(0, 2) === "ED" && element.EQ_STATUS === "MASS"
+        element?.EQ_NAME?.substring(0, 2) === "ED" && element.EQ_STATUS === "MASS"
     ).length;
   };
   const STD_CAPA =(FACTORY: string, EQ: string, EQ_STTDATA: any, EMPL_INFO: any)=> {

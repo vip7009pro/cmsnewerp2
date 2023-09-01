@@ -2,7 +2,6 @@ import Cookies from "universal-cookie";
 import Swal from "sweetalert2";
 import { store } from "../redux/store";
 import {
-  UserData,
   changeUserData,
   login as loginSlice,
   logout as logoutSlice,
@@ -11,6 +10,7 @@ import {
 
 /* import axios from 'axios'; */
 import axios from "axios";
+import { UserData } from "./GlobalInterface";
 const cookies = new Cookies();
 axios.defaults.withCredentials = true;
 //const API_URL = "http://14.160.33.94:3007/api";

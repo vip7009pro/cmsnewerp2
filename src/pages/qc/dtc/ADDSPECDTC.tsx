@@ -24,47 +24,12 @@ import DataGrid, {
   Toolbar,
   TotalItem,
 } from "devextreme-react/data-grid";
-import { UserData } from "../../../redux/slices/globalSlice";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import { ResponsiveContainer } from "recharts";
+import { CheckAddedSPECDATA, CodeListData, DTC_ADD_SPEC_DATA, MaterialListData, UserData } from "../../../api/GlobalInterface";
 /* import { Autocomplete } from 'devextreme-react'; */
-interface DTC_ADD_SPEC_DATA {
-  CUST_NAME_KD: string;
-  G_CODE: string;
-  G_NAME: string;
-  TEST_CODE: number;
-  POINT_CODE: number;
-  TEST_NAME: string;
-  POINT_NAME: string;
-  PRI: number;
-  CENTER_VALUE: number;
-  UPPER_TOR: number;
-  LOWER_TOR: number;
-  BARCODE_CONTENT: string;
-  REMARK: string;
-  M_NAME: string;
-  WIDTH_CD: number;
-  M_CODE: string;
-  TDS: string;
-  BANVE: string;
-}
-interface CodeListData {
-  G_CODE: string;
-  G_NAME: string;
-  PROD_LAST_PRICE: number;
-  USE_YN: string;
-}
-interface MaterialListData {
-  M_CODE: string;
-  M_NAME: string;
-  WIDTH_CD: number;
-}
-interface CheckAddedSPECDATA {
-  TEST_CODE: number;
-  TEST_NAME: string;
-  CHECKADDED: number;
-}
+
 const ADDSPECTDTC = () => {
   const [addedSpec, setAddedSpec] = useState<CheckAddedSPECDATA[]>([]);
   const [materialList, setMaterialList] = useState<MaterialListData[]>([

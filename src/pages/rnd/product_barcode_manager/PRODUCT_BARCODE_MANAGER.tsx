@@ -42,45 +42,11 @@ import { ResponsiveContainer } from "recharts";
 import QRCODE from "../design_amazon/design_components/QRCODE";
 import BARCODE from "../design_amazon/design_components/BARCODE";
 import DATAMATRIX from "../design_amazon/design_components/DATAMATRIX";
-interface CustomerListData {
-  CUST_CD: string;
-  CUST_NAME_KD: string;
-  CUST_NAME: string;
-}
-interface MATERIAL_TABLE_DATA {
-  M_ID: number;
-  M_NAME: string;
-  DESCR: string;
-  CUST_CD: string;
-  CUST_NAME_KD: string;
-  SSPRICE: number;
-  CMSPRICE: number;
-  SLITTING_PRICE: number;
-  MASTER_WIDTH: number;
-  ROLL_LENGTH: number;
-  USE_YN: string;
-  INS_DATE: string;
-  INS_EMPL: string;
-  UPD_DATE: string;
-  UPD_EMPL: string;
-}
-interface BARCODE_DATA {
-  G_CODE: string;
-  G_NAME: string;
-  BARCODE_STT: string;
-  BARCODE_TYPE: string;
-  BARCODE_RND: string;
-  BARCODE_INSP: string;
-  BARCODE_RELI: string;
-  STATUS: string;
-}
-interface CodeListData {
-  G_CODE: string;
-  G_NAME: string;
-  PROD_LAST_PRICE?: number;
-  USE_YN: string;
-  PO_BALANCE?: number;
-}
+import { BARCODE_DATA, CodeListData, CustomerListData, MATERIAL_TABLE_DATA } from "../../../api/GlobalInterface";
+
+
+
+
 const PRODUCT_BARCODE_MANAGER = () => {
   const [showhidePivotTable, setShowHidePivotTable] = useState(false);
   const [material_table_data, set_material_table_data] = useState<

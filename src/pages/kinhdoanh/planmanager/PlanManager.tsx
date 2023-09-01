@@ -21,40 +21,12 @@ import { MdOutlineDelete, MdOutlinePivotTableChart } from "react-icons/md";
 import "./PlanManager.scss";
 import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
 import PivotTable from "../../../components/PivotChart/PivotChart";
-import { UserData } from "../../../redux/slices/globalSlice";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import { TbLogout } from "react-icons/tb";
+import { PlanTableData, UserData } from "../../../api/GlobalInterface";
 
-interface PlanTableData {
-  PLAN_ID: string,
-  EMPL_NAME: string,
-  EMPL_NO: string,
-  CUST_NAME_KD: string,
-  CUST_CD: string,
-  G_CODE: string,
-  G_NAME_KD: string,
-  G_NAME: string,
-  PROD_TYPE: string,
-  PROD_MAIN_MATERIAL: string,
-  PLAN_DATE: string,
-  D1: number,
-  D2: number,
-  D3: number,
-  D4: number,
-  D5: number,
-  D6: number,
-  D7: number,
-  D8: number,
-  D9: number,
-  D10: number,
-  D11: number,
-  D12: number,
-  D13: number,
-  D14: number,
-  D15: number,
-  REMARK: string,
-}
+
 
 const PlanManager = () => {
   const [showhidesearchdiv, setShowHideSearchDiv]= useState(true);

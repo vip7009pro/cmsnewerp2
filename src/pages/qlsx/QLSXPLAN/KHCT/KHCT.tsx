@@ -57,151 +57,11 @@ import { useReactToPrint } from "react-to-print";
 import CHITHI_COMPONENT from "../CHITHI/CHITHI_COMPONENT";
 import { BiRefresh, BiReset, BiShow } from "react-icons/bi";
 import YCKT from "../YCKT/YCKT";
-import { UserData } from "../../../../redux/slices/globalSlice";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../redux/store";
 import axios from 'axios';
-interface DINHMUC_QSLX {
-  FACTORY: string;
-  EQ1: string;
-  EQ2: string;
-  Setting1: number;
-  Setting2: number;
-  UPH1: number;
-  UPH2: number;
-  Step1: number;
-  Step2: number;
-  LOSS_SX1: number;
-  LOSS_SX2: number;
-  LOSS_SETTING1: number;
-  LOSS_SETTING2: number;
-  NOTE: string;
-}
-interface QLSXPLANDATA {
-  id: string;
-  PLAN_ID: string;
-  PLAN_DATE: string;
-  PROD_REQUEST_NO: string;
-  PLAN_QTY: number;
-  PLAN_EQ: string;
-  PLAN_FACTORY: string;
-  PLAN_LEADTIME: number;
-  INS_EMPL?: string;
-  INS_DATE: string;
-  UPD_EMPL?: string;
-  UPD_DATE: string;
-  G_CODE: string;
-  G_NAME: string;
-  G_NAME_KD: string;
-  PROD_REQUEST_DATE: string;
-  PROD_REQUEST_QTY: number;
-  STEP: number;
-  PLAN_ORDER: string;
-  PROCESS_NUMBER: number;
-  KETQUASX: number;
-  KQ_SX_TAM: number;
-  CD1: number;
-  CD2: number;
-  TON_CD1: number;
-  TON_CD2: number;
-  FACTORY: string;
-  EQ1: string;
-  EQ2: string;
-  Setting1: number;
-  Setting2: number;
-  UPH1: number;
-  UPH2: number;
-  Step1: number;
-  Step2: number;
-  LOSS_SX1: number;
-  LOSS_SX2: number;
-  LOSS_SETTING1: number;
-  LOSS_SETTING2: number;
-  NOTE: string;
-  NEXT_PLAN_ID: string;
-}
-interface YCSXTableData {
-  DESCR?: string;
-  PDBV_EMPL?: string;
-  PDBV_DATE?: string;
-  PDBV?: string;
-  BANVE?: string;
-  PROD_MAIN_MATERIAL?: string;
-  PROD_TYPE?: string;
-  EMPL_NO: string;
-  CUST_CD: string;
-  G_CODE: string;
-  G_NAME: string;
-  EMPL_NAME: string;
-  CUST_NAME_KD: string;
-  PROD_REQUEST_NO: string;
-  PROD_REQUEST_DATE: string;
-  PROD_REQUEST_QTY: number;
-  LOT_TOTAL_INPUT_QTY_EA: number;
-  LOT_TOTAL_OUTPUT_QTY_EA: number;
-  INSPECT_BALANCE: number;
-  SHORTAGE_YCSX: number;
-  YCSX_PENDING: number;
-  PHAN_LOAI: string;
-  REMARK: string;
-  PO_TDYCSX: number;
-  TOTAL_TKHO_TDYCSX: number;
-  TKHO_TDYCSX: number;
-  BTP_TDYCSX: number;
-  CK_TDYCSX: number;
-  BLOCK_TDYCSX: number;
-  FCST_TDYCSX: number;
-  W1: number;
-  W2: number;
-  W3: number;
-  W4: number;
-  W5: number;
-  W6: number;
-  W7: number;
-  W8: number;
-  PDUYET: number;
-  LOAIXH: string;
-  PO_BALANCE: number;
-  EQ1: string;
-  EQ2: string;
-  CD1: number;
-  CD2: number;
-  CD_IN: number;
-  CD_DIECUT: number;
-  TON_CD1: number;
-  TON_CD2: number;
-  UPH1: number;
-  UPH2: number;
-  FACTORY: string;
-  Setting1: number;
-  Setting2: number;
-  Step1: number;
-  Step2: number;
-  LOSS_SX1: number;
-  LOSS_SX2: number;
-  LOSS_SETTING1: number;
-  LOSS_SETTING2: number;
-  NOTE: string;
-}
-interface QLSXCHITHIDATA {
-  id: string;
-  CHITHI_ID: number;
-  PLAN_ID: string;
-  M_CODE: string;
-  M_NAME: string;
-  WIDTH_CD: number;
-  M_ROLL_QTY: number;
-  M_MET_QTY: number;
-  M_QTY: number;
-  LIEUQL_SX: number;
-  MAIN_M: number;
-  OUT_KHO_SX: number;
-  OUT_CFM_QTY: number;
-  INS_EMPL: string;
-  INS_DATE: string;
-  UPD_EMPL: string;
-  UPD_DATE: string;
-}
+import { DINHMUC_QSLX, QLSXCHITHIDATA, QLSXPLANDATA, UserData, YCSXTableData } from "../../../../api/GlobalInterface";
+
 interface KHCTDATA {
   id: number,
   KH_ID: number;
@@ -262,19 +122,31 @@ const KHCT = () => {
     tabbanve: false,
   });
   const [datadinhmuc, setDataDinhMuc] = useState<DINHMUC_QSLX>({
-    FACTORY: "NA",
-    EQ1: "NA",
-    EQ2: "NA",
+    FACTORY: "NM1",
+    EQ1: "",
+    EQ2: "",
+    EQ3: "",
+    EQ4: "",
     Setting1: 0,
     Setting2: 0,
+    Setting3: 0,
+    Setting4: 0,
     UPH1: 0,
     UPH2: 0,
+    UPH3: 0,
+    UPH4: 0,
     Step1: 0,
     Step2: 0,
+    Step3: 0,
+    Step4: 0,
     LOSS_SX1: 0,
     LOSS_SX2: 0,
+    LOSS_SX3: 0,
+    LOSS_SX4: 0,
     LOSS_SETTING1: 0,
     LOSS_SETTING2: 0,
+    LOSS_SETTING3: 0,
+    LOSS_SETTING4: 0,
     NOTE: "",
   });
   const [plandatatable, setPlanDataTable] = useState<QLSXPLANDATA[]>([]);
@@ -906,20 +778,7 @@ const KHCT = () => {
     return planlist.map((element, index) => (
       <YCKT
         key={index}
-        PLAN_ID={element.PLAN_ID}
-        PLAN_DATE={element.PLAN_DATE}
-        PROD_REQUEST_NO={element.PROD_REQUEST_NO}
-        PLAN_QTY={element.PLAN_QTY}
-        PLAN_EQ={element.PLAN_EQ}
-        PLAN_FACTORY={element.PLAN_FACTORY}
-        PLAN_LEADTIME={element.PLAN_LEADTIME}
-        G_CODE={element.G_CODE}
-        G_NAME={element.G_NAME}
-        G_NAME_KD={element.G_NAME_KD}
-        PROD_REQUEST_DATE={element.PROD_REQUEST_DATE}
-        PROD_REQUEST_QTY={element.PROD_REQUEST_QTY}
-        STEP={element.STEP}
-        PLAN_ORDER={element.PLAN_ORDER}
+        DATA={element}
       />
     ));
   };
@@ -927,20 +786,7 @@ const KHCT = () => {
     return planlist.map((element, index) => (
       <CHITHI_COMPONENT
         key={index}
-        PLAN_ID={element.PLAN_ID}
-        PLAN_DATE={element.PLAN_DATE}
-        PROD_REQUEST_NO={element.PROD_REQUEST_NO}
-        PLAN_QTY={element.PLAN_QTY}
-        PLAN_EQ={element.PLAN_EQ}
-        PLAN_FACTORY={element.PLAN_FACTORY}
-        PLAN_LEADTIME={element.PLAN_LEADTIME}
-        G_CODE={element.G_CODE}
-        G_NAME={element.G_NAME}
-        G_NAME_KD={element.G_NAME_KD}
-        PROD_REQUEST_DATE={element.PROD_REQUEST_DATE}
-        PROD_REQUEST_QTY={element.PROD_REQUEST_QTY}
-        STEP={element.STEP}
-        PLAN_ORDER={element.PLAN_ORDER}
+        DATA={element}
       />
     ));
   };
@@ -948,19 +794,7 @@ const KHCT = () => {
     return ycsxlist.map((element, index) => (
       <YCSXComponent
         key={index}
-        PROD_REQUEST_NO={element.PROD_REQUEST_NO}
-        G_CODE={element.G_CODE}
-        PO_TDYCSX={element.PO_TDYCSX}
-        TOTAL_TKHO_TDYCSX={element.TOTAL_TKHO_TDYCSX}
-        TKHO_TDYCSX={element.TKHO_TDYCSX}
-        BTP_TDYCSX={element.BTP_TDYCSX}
-        CK_TDYCSX={element.CK_TDYCSX}
-        BLOCK_TDYCSX={element.BLOCK_TDYCSX}
-        FCST_TDYCSX={element.FCST_TDYCSX}
-        PDBV={element.PDBV}
-        PDBV_EMPL={element.PDBV_EMPL}
-        PDBV_DATE={element.PDBV_DATE}
-        DESCR={element.DESCR}
+        DATA={element}
       />
     ));
   };
@@ -1271,10 +1105,10 @@ const KHCT = () => {
               setTemID(0);
               localStorage.setItem("temp_plan_table_max_id", "0");
             } else {
-              setTemID(parseInt(datafilter[len].id));
+              setTemID(datafilter[len].id);
               localStorage.setItem(
                 "temp_plan_table_max_id",
-                datafilter[len].id
+                datafilter[len].id.toString()
               );
             }
             setPlanDataTable(datafilter);
@@ -1359,7 +1193,7 @@ const KHCT = () => {
     if (ycsxdatatablefilter.length >= 1) {
       for (let i = 0; i < ycsxdatatablefilter.length; i++) {
         let temp_add_plan: QLSXPLANDATA = {
-          id: temp_id + 1 + "",
+          id: temp_id + 1,
           PLAN_ID: "PL" + (temp_id + 1),
           PLAN_DATE: moment().format("YYYY-MM-DD"),
           PROD_REQUEST_NO: ycsxdatatablefilter[i].PROD_REQUEST_NO,
@@ -1367,9 +1201,9 @@ const KHCT = () => {
           PLAN_EQ: "",
           PLAN_FACTORY: userData?.FACTORY_CODE === 1 ? "NM1" : "NM2",
           PLAN_LEADTIME: 0,
-          INS_EMPL: userData?.EMPL_NO,
+          INS_EMPL: userData?.EMPL_NO === undefined ? '' : userData?.EMPL_NO,
           INS_DATE: moment().format("YYYY-MM-DD HH:mm:ss"),
-          UPD_EMPL: userData?.EMPL_NO,
+          UPD_EMPL: userData?.EMPL_NO === undefined ? '' : userData?.EMPL_NO,
           UPD_DATE: moment().format("YYYY-MM-DD HH:mm:ss"),
           G_CODE: ycsxdatatablefilter[i].G_CODE,
           G_NAME: ycsxdatatablefilter[i].G_NAME,
@@ -1400,6 +1234,22 @@ const KHCT = () => {
           LOSS_SETTING2: ycsxdatatablefilter[i].LOSS_SETTING2,
           NOTE: ycsxdatatablefilter[i].NOTE,
           NEXT_PLAN_ID: "X",
+          CD3: 0,
+          CD4: 0,
+          TON_CD3: 0,
+          TON_CD4: 0,
+          EQ3: "",
+          EQ4: "",
+          Setting3: 0,
+          Setting4: 0,
+          UPH3: 0,
+          UPH4: 0,
+          Step3: 0,
+          Step4: 0,
+          LOSS_SX3: 0,
+          LOSS_SX4: 0,
+          LOSS_SETTING3: 0,
+          LOSS_SETTING4: 0
         };
         setPlanDataTable([...plandatatable, temp_add_plan]);
         localStorage.setItem(
@@ -1417,7 +1267,7 @@ const KHCT = () => {
     setTemID(temp_);
     localStorage.setItem("temp_plan_table_max_id", temp_.toString());
     let temp_add_plan: QLSXPLANDATA = {
-      id: temp_id + 1 + "",
+      id: temp_id + 1,
       PLAN_ID: "PL" + (temp_id + 1),
       PLAN_DATE: moment().format("YYYY-MM-DD"),
       PROD_REQUEST_NO: "",
@@ -1425,9 +1275,9 @@ const KHCT = () => {
       PLAN_EQ: "",
       PLAN_FACTORY: userData?.FACTORY_CODE === 1 ? "NM1" : "NM2",
       PLAN_LEADTIME: 0,
-      INS_EMPL: userData?.EMPL_NO,
+      INS_EMPL: userData?.EMPL_NO === undefined ? '' : userData?.EMPL_NO,
       INS_DATE: moment().format("YYYY-MM-DD HH:mm:ss"),
-      UPD_EMPL: userData?.EMPL_NO,
+      UPD_EMPL: userData?.EMPL_NO === undefined ? '' : userData?.EMPL_NO,
       UPD_DATE: moment().format("YYYY-MM-DD HH:mm:ss"),
       G_CODE: "",
       G_NAME: "",
@@ -1458,6 +1308,22 @@ const KHCT = () => {
       LOSS_SETTING2: 0,
       NOTE: "",
       NEXT_PLAN_ID: "X",
+      CD3: 0,
+      CD4: 0,
+      TON_CD3: 0,
+      TON_CD4: 0,
+      EQ3: "",
+      EQ4: "",
+      Setting3: 0,
+      Setting4: 0,
+      UPH3: 0,
+      UPH4: 0,
+      Step3: 0,
+      Step4: 0,
+      LOSS_SX3: 0,
+      LOSS_SX4: 0,
+      LOSS_SETTING3: 0,
+      LOSS_SETTING4: 0
     };
     setPlanDataTable([...plandatatable, temp_add_plan]);
     localStorage.setItem(

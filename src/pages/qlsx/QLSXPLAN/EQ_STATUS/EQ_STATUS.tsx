@@ -14,23 +14,8 @@ import { UserContext } from "../../../../api/Context";
 import MACHINE_COMPONENT2 from "../Machine/MACHINE_COMPONENT2";
 import EQ_SUMMARY from "./EQ_SUMMARY";
 import { TextField } from "@mui/material";
-interface EQ_STT {
-  FACTORY: string;
-  EQ_NAME: string;
-  EQ_SERIES: string;
-  EQ_ACTIVE: string;
-  REMARK: string;
-  EQ_STATUS: string;
-  CURR_PLAN_ID: string;
-  CURR_G_CODE: string;
-  INS_EMPL: string;
-  INS_DATE: string;
-  UPD_EMPL: string;
-  UPD_DATE: string;
-  EQ_CODE: string;
-  G_NAME_KD: string;
-  STEP: number;
-}
+import { EQ_STT } from "../../../../api/GlobalInterface";
+
 const EQ_STATUS = () => {
   const [searchString, setSearchString]= useState('');
   const [selection, setSelection] = useState<any>({
@@ -65,12 +50,9 @@ const EQ_STATUS = () => {
             }
           );
           //console.log(loaded_data);
-          setEQ_STATUS(loaded_data);
-          console.log([...new Set(loaded_data.map((e:EQ_STT, index: number)=> {
-            return e.EQ_SERIES
-          }))]);
+          setEQ_STATUS(loaded_data);         
           setEQ_SERIES([...new Set(loaded_data.map((e:EQ_STT, index: number)=> {
-            return e.EQ_SERIES
+            return e.EQ_SERIES === undefined? '': e.EQ_SERIES
           }))]);
         } else {
           setEQ_STATUS([]);
@@ -112,7 +94,7 @@ const EQ_STATUS = () => {
               .filter(
                 (element: EQ_STT, index: number) =>
                   element.FACTORY === "NM1" &&
-                  element.EQ_NAME.substring(0, 2) === ele_series
+                  element?.EQ_NAME?.substring(0, 2) === ele_series
               )
               .map((element: EQ_STT, index: number) => {
                 return (
@@ -263,7 +245,7 @@ const EQ_STATUS = () => {
               .filter(
                 (element: EQ_STT, index: number) =>
                   element.FACTORY === "NM2" &&
-                  element.EQ_NAME.substring(0, 2) === ele_series
+                  element?.EQ_NAME?.substring(0, 2) === ele_series
               )
               .map((element: EQ_STT, index: number) => {
                 return (

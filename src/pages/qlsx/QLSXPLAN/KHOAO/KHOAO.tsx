@@ -29,100 +29,10 @@ import { generalQuery } from "../../../../api/Api";
 import { UserContext } from "../../../../api/Context";
 import { checkBP, SaveExcel } from "../../../../api/GlobalFunction";
 import "./KHOAO.scss";
-import { UserData } from "../../../../redux/slices/globalSlice";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../redux/store";
-interface QLSXPLANDATA {
-  id: number;
-  PLAN_ID: string;
-  PLAN_DATE: string;
-  PROD_REQUEST_NO: string;
-  PLAN_QTY: number;
-  PLAN_EQ: string;
-  PLAN_FACTORY: string;
-  PLAN_LEADTIME: number;
-  INS_EMPL: string;
-  INS_DATE: string;
-  UPD_EMPL: string;
-  UPD_DATE: string;
-  G_CODE: string;
-  G_NAME: string;
-  G_NAME_KD: string;
-  PROD_REQUEST_DATE: string;
-  PROD_REQUEST_QTY: number;
-  STEP: string;
-  PLAN_ORDER: string;
-  PROCESS_NUMBER: number;
-  KQ_SX_TAM: number;
-  KETQUASX: number;
-  CD1: number;
-  CD2: number;
-  TON_CD1: number;
-  TON_CD2: number;
-  FACTORY: string;
-  EQ1: string;
-  EQ2: string;
-  Setting1: number;
-  Setting2: number;
-  UPH1: number;
-  UPH2: number;
-  Step1: number;
-  Step2: number;
-  LOSS_SX1: number;
-  LOSS_SX2: number;
-  LOSS_SETTING1: number;
-  LOSS_SETTING2: number;
-  NOTE: string;
-}
-interface TONLIEUXUONG {
-  id: number;
-  IN_KHO_ID: number,
-  FACTORY: string;
-  PHANLOAI: string;
-  PLAN_ID_INPUT: string;
-  M_CODE: string;
-  M_NAME: string;
-  WIDTH_CD: number;
-  M_LOT_NO: string;
-  ROLL_QTY: number;
-  IN_QTY: number;
-  TOTAL_IN_QTY: number;
-  FSC: string;
-}
-interface LICHSUNHAPKHOAO {
-  id: string;
-  IN_KHO_ID: number,
-  FACTORY: string;
-  PHANLOAI: string;
-  M_CODE: string;
-  M_NAME: string;
-  WIDTH_CD: number;
-  M_LOT_NO: string;
-  PLAN_ID_INPUT: string;
-  ROLL_QTY: number;
-  IN_QTY: number;
-  TOTAL_IN_QTY: number;
-  INS_DATE: string;
-  REMARK: string, 
-  USE_YN: string, 
-  PLAN_ID_SUDUNG: string,
-}
-interface LICHSUXUATKHOAO {
-  id: string;
-  OUT_KHO_ID: number,
-  FACTORY: string;
-  PHANLOAI: string;
-  M_CODE: string;
-  M_NAME: string;
-  WIDTH_CD: number;
-  M_LOT_NO: string;
-  PLAN_ID_INPUT: string;
-  PLAN_ID_OUTPUT: string;
-  ROLL_QTY: number;
-  OUT_QTY: number;
-  TOTAL_OUT_QTY: number;
-  INS_DATE: string;
-}
+import { LICHSUNHAPKHOAO, LICHSUXUATKHOAO, QLSXPLANDATA, TONLIEUXUONG, UserData } from "../../../../api/GlobalInterface";
+
 const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
   const [nextPermission, setNextPermission]= useState(true);
   const [selectionModel_INPUTSX, setSelectionModel_INPUTSX] = useState<any>([]);

@@ -4,9 +4,8 @@ import { ReactElement } from "react";
 import { io } from "socket.io-client";
 import Swal from "sweetalert2";
 import { getUserData, logout as LGOT } from "../../api/Api";
-
+import { ELE_ARRAY, GlobalInterface, QLSXPLANDATA, UserData } from "../../api/GlobalInterface";
 const startCPN: string = "CMS";
-
 const socket = io(
   startCPN === "CMS"
     ? "http://14.160.33.94:3005"
@@ -44,145 +43,7 @@ socket.on("logout", (data) => {
 socket.on("disconnect", () => {
   console.log(socket.id); //undefined
 });
-export interface UserData {
-  EMPL_IMAGE?: string;
-  ADD_COMMUNE?: string;
-  ADD_DISTRICT?: string;
-  ADD_PROVINCE?: string;
-  ADD_VILLAGE?: string;
-  ATT_GROUP_CODE?: number;
-  CMS_ID?: string;
-  CTR_CD?: string;
-  DOB?: string;
-  EMAIL?: string;
-  EMPL_NO?: string;
-  FACTORY_CODE?: number;
-  FACTORY_NAME?: string;
-  FACTORY_NAME_KR?: string;
-  FIRST_NAME?: string;
-  HOMETOWN?: string;
-  JOB_CODE?: number;
-  JOB_NAME?: string;
-  JOB_NAME_KR?: string;
-  MAINDEPTCODE?: number;
-  MAINDEPTNAME?: string;
-  MAINDEPTNAME_KR?: string;
-  MIDLAST_NAME?: string;
-  ONLINE_DATETIME?: string;
-  PASSWORD?: string;
-  PHONE_NUMBER?: string;
-  POSITION_CODE?: number;
-  POSITION_NAME?: string;
-  POSITION_NAME_KR?: string;
-  REMARK?: string;
-  SEX_CODE?: number;
-  SEX_NAME?: string;
-  SEX_NAME_KR?: string;
-  SUBDEPTCODE?: number;
-  SUBDEPTNAME?: string;
-  SUBDEPTNAME_KR?: string;
-  WORK_POSITION_CODE?: number;
-  WORK_POSITION_NAME?: string;
-  WORK_POSITION_NAME_KR?: string;
-  WORK_SHIFT_CODE?: number;
-  WORK_SHIF_NAME?: string;
-  WORK_SHIF_NAME_KR?: string;
-  WORK_START_DATE?: string;
-  WORK_STATUS_CODE?: number;
-  WORK_STATUS_NAME?: string;
-  WORK_STATUS_NAME_KR?: string;
-}
-interface QLSXPLANDATA {
-  id: number;
-  PLAN_ID: string;
-  PLAN_DATE: string;
-  PROD_REQUEST_NO: string;
-  PLAN_QTY: number;
-  PLAN_EQ: string;
-  PLAN_FACTORY: string;
-  PLAN_LEADTIME: number;
-  INS_EMPL: string;
-  INS_DATE: string;
-  UPD_EMPL: string;
-  UPD_DATE: string;
-  G_CODE: string;
-  G_NAME: string;
-  G_NAME_KD: string;
-  PROD_REQUEST_DATE: string;
-  PROD_REQUEST_QTY: number;
-  STEP: number;
-  PLAN_ORDER: string;
-  PROCESS_NUMBER: number;
-  KQ_SX_TAM: number;
-  KETQUASX: number;
-  CD1: number;
-  CD2: number;
-  CD3: number;
-  CD4: number;
-  TON_CD1: number;
-  TON_CD2: number;
-  TON_CD3: number;
-  TON_CD4: number;
-  FACTORY: string;
-  EQ1: string;
-  EQ2: string;
-  EQ3: string;
-  EQ4: string;
-  Setting1: number;
-  Setting2: number;
-  Setting3: number;
-  Setting4: number;
-  UPH1: number;
-  UPH2: number;
-  UPH3: number;
-  UPH4: number;
-  Step1: number;
-  Step2: number;
-  Step3: number;
-  Step4: number;
-  LOSS_SX1: number;
-  LOSS_SX2: number;
-  LOSS_SX3: number;
-  LOSS_SX4: number;
-  LOSS_SETTING1: number;
-  LOSS_SETTING2: number;
-  LOSS_SETTING3: number;
-  LOSS_SETTING4: number;
-  NOTE: string;
-  NEXT_PLAN_ID: string;
-  XUATDAOFILM?: string;
-  EQ_STATUS?: string;
-  MAIN_MATERIAL?: string;
-  INT_TEM?: string;
-  CHOTBC?: string;
-  DKXL?: string;
-  OLD_PLAN_QTY?: string;
-}
-export interface ELE_ARRAY {
-  REACT_ELE: any;
-  ELE_NAME: string;
-  ELE_CODE: string;
-}
-export interface GlobalInterface {
-  userData?: UserData;
-  diemdanhstate?: boolean;
-  lang?: string;
-  sidebarmenu?: boolean;
-  multiple_chithi_array: QLSXPLANDATA[];
-  server_ip: string;
-  tabs: ELE_ARRAY[];
-  tabIndex: number;
-  tabModeSwap: boolean;
-  loginState: boolean;
-  company: string;
-  theme: {
-    CMS: any;
-    PVN: any;
-  };
-}
-
 let server_ip_local: any = localStorage.getItem("server_ip")?.toString();
-
 if (server_ip_local !== undefined) {
 } else {
   console.log("server_ip_local", server_ip_local);
@@ -195,7 +56,6 @@ if (server_ip_local !== undefined) {
       : ""
   );
 }
-
 const initialState: GlobalInterface = {
   userData: {
     EMPL_IMAGE: "Y",
@@ -260,7 +120,6 @@ const initialState: GlobalInterface = {
   tabIndex: 0,
   tabModeSwap: true,
   loginState: false,
-
   theme: {
     CMS: {
       backgroundImage: `linear-gradient(0deg, rgba(77, 175, 252,0.8), rgba(159, 212, 254,0.8))`,
@@ -469,7 +328,6 @@ export const glbSlice = createSlice({
     },
   },
 });
-
 export const {
   changeDiemDanhState,
   changeUserData,

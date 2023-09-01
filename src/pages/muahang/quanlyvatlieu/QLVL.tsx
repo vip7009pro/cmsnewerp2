@@ -38,29 +38,9 @@ import {
   import PivotTable from "../../../components/PivotChart/PivotChart";
   import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
   import { ResponsiveContainer } from "recharts";
+import { CustomerListData, MATERIAL_TABLE_DATA } from "../../../api/GlobalInterface";
 
-  interface CustomerListData {
-    CUST_CD: string;
-    CUST_NAME_KD: string;
-    CUST_NAME: string;
-  }
-  interface MATERIAL_TABLE_DATA {
-    M_ID: number,
-    M_NAME: string,
-    DESCR: string,
-    CUST_CD: string,
-    CUST_NAME_KD: string,
-    SSPRICE: number,
-    CMSPRICE: number,
-    SLITTING_PRICE: number,
-    MASTER_WIDTH: number,
-    ROLL_LENGTH: number,
-    USE_YN: string,
-    INS_DATE: string,
-    INS_EMPL: string, 
-    UPD_DATE: string,
-    UPD_EMPL: string,
-  }
+  
 
   const QLVL = () => {
     const [showhidePivotTable, setShowHidePivotTable] = useState(false);

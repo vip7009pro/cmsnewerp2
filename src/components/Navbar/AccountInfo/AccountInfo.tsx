@@ -16,11 +16,12 @@ import Swal from "sweetalert2";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import {
-  UserData,
+
   changeUserData,
   update_socket,
 } from "../../../redux/slices/globalSlice";
 import Cookies from "universal-cookie";
+import { UserData } from "../../../api/GlobalInterface";
 
 interface MYCHAMCONG {
   MIN_TIME: string;

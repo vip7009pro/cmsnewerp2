@@ -39,65 +39,10 @@ import useWindowDimensions from "../../../api/useWindowDimensions";
 import { RootState } from "../../../redux/store";
 import { useSelector, useDispatch } from "react-redux";
 import { ResponsiveContainer } from "recharts";
-import { MACHINE_LIST } from "../../qlsx/QLSXPLAN/QUICKPLAN/QUICKPLAN";
-interface MACHINE_COUNTING {
-  FACTORY: string;
-  EQ_NAME: string;
-  EQ_QTY: number;
-}
-interface DAILY_SX_DATA {
-  MACHINE_NAME: string;
-  SX_DATE: string;
-  SX_RESULT: number;
-  PLAN_QTY: number;
-  RATE: number;
-}
-interface ACHIVEMENT_DATA {
-  MACHINE_NAME: string;
-  PLAN_QTY: number;
-  WH_OUTPUT: number;
-  SX_RESULT_TOTAL: number;
-  RESULT_STEP_FINAL: number;
-  RESULT_TO_NEXT_PROCESS: number;
-  RESULT_TO_INSPECTION: number;
-  INS_INPUT: number;
-  INSPECT_TOTAL_QTY: number;
-  INSPECT_OK_QTY: number;
-  INSPECT_NG_QTY: number;
-  INS_OUTPUT: number;
-  TOTAL_LOSS: number;
-  ACHIVEMENT_RATE: number;
-}
-interface WEEKLY_SX_DATA {
-  SX_WEEK: number;
-  SX_RESULT: number;
-  PLAN_QTY: number;
-  RATE: number;
-}
-interface MONTHLY_SX_DATA {
-  SX_MONTH: number;
-  SX_RESULT: number;
-  PLAN_QTY: number;
-  RATE: number;
-}
-interface TOTAL_TIME {
-  T_FR: number;
-  T_SR: number;
-  T_DC: number;
-  T_ED: number;
-  T_TOTAL: number;
-}
-interface OPERATION_TIME_DATA {
-  PLAN_FACTORY: string;
-  MACHINE: string;
-  TOTAL_TIME: number;
-  RUN_TIME_SX: number;
-  SETTING_TIME: number;
-  LOSS_TIME: number;
-  HIEU_SUAT_TIME: number;
-  SETTING_TIME_RATE: number;
-  LOSS_TIME_RATE: number;
-}
+import { ACHIVEMENT_DATA, DAILY_SX_DATA, MACHINE_COUNTING, MACHINE_LIST, MONTHLY_SX_DATA, OPERATION_TIME_DATA, TOTAL_TIME, WEEKLY_SX_DATA } from "../../../api/GlobalInterface";
+
+
+
 const PLANRESULT = () => {
 
   const { height, width } = useWindowDimensions();

@@ -7,27 +7,8 @@ import Swal from 'sweetalert2';
 import { generalQuery } from '../../../../api/Api';
 import { UserContext } from '../../../../api/Context';
 import { SaveExcel } from '../../../../api/GlobalFunction';
-
 import "./LICHSUINPUTLIEU.scss"
-
-
-interface LICHSUINPUTLIEU_DATA {
-    id: string,
-    PLAN_ID: string,
-    G_NAME: string,
-    G_NAME_KD: string,
-    M_CODE: string,
-    M_NAME: string,
-    M_LOT_NO: string,
-    WIDTH_CD: number,
-    INPUT_QTY: number,
-    USED_QTY: number,
-    REMAIN_QTY: number,
-    EMPL_NO: string,
-    EQUIPMENT_CD: string,
-    INS_DATE: string,
-    PROD_REQUEST_NO: string,
-}
+import { LICHSUINPUTLIEU_DATA } from '../../../../api/GlobalInterface';
 
 const LICHSUINPUTLIEU = () => { 
  const [selectionModel_INPUTSX, setSelectionModel_INPUTSX] = useState<any>([]);

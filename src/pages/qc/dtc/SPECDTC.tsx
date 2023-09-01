@@ -9,26 +9,8 @@ import { SaveExcel } from '../../../api/GlobalFunction';
 import "./SPECDTC.scss"
 import DataGrid, { Column, ColumnChooser, Editing, Export, FilterRow, Item, KeyboardNavigation, Pager, Paging, Scrolling, SearchPanel, Selection, Summary, Toolbar, TotalItem } from 'devextreme-react/data-grid';
 import { ResponsiveContainer } from 'recharts';
-interface DTC_SPEC_DATA {
-  CUST_NAME_KD: string,
-  G_CODE: string,
-  G_NAME: string,
-  TEST_NAME: string,
-  POINT_NAME: string,
-  PRI: number,
-  CENTER_VALUE: number,
-  UPPER_TOR: number,
-  LOWER_TOR: number,
-  MIN_SPEC: number,
-  MAX_SPEC: number,
-  BARCODE_CONTENT: string,
-  REMARK: string,
-  M_NAME: string,
-  WIDTH_CD: number,
-  M_CODE: string,  
-  TDS: string,
-  BANVE: string
-}
+import { DTC_SPEC_DATA } from '../../../api/GlobalInterface';
+
 const SPECDTC = () => { 
   const [fromdate, setFromDate] = useState(moment().format('YYYY-MM-DD'));
   const [todate, setToDate] = useState(moment().format('YYYY-MM-DD'));
