@@ -17,14 +17,8 @@ import {
 import Swal from "sweetalert2";
 import { generalQuery } from "../../api/Api";
 import { CustomResponsiveContainer } from "../../api/GlobalFunction";
-interface RunningPOData {
-  PO_YEAR: number;
-  PO_WEEK: number;
-  YEAR_WEEK: string;
-  RUNNING_PO_QTY: number;
-  RUNNING_DEL_QTY: number;
-  RUNNING_PO_BALANCE: number;
-}
+import { RunningPOData } from "../../api/GlobalInterface";
+
 const Chart4 = () => {
   const [runningPOData, setRunningPOData] = useState<Array<RunningPOData>>([]);
   const formatCash = (n: number) => {
@@ -49,7 +43,7 @@ const Chart4 = () => {
     if (active && payload && payload.length) {
       return (
         <div
-          className="custom-tooltip"
+          className='custom-tooltip'
           style={{
             backgroundImage: "linear-gradient(to right, #ccffff, #00cccc)",
             padding: 20,
@@ -57,7 +51,7 @@ const Chart4 = () => {
           }}
         >
           <p>{label}:</p>
-          <p className="label">
+          <p className='label'>
             QTY: {`${payload[0].value.toLocaleString("en-US")}`} EA
           </p>
         </div>
@@ -81,7 +75,7 @@ const Chart4 = () => {
                 RUNNING_DEL_QTY: temp_data,
                 RUNNING_PO_BALANCE: element.RUNNING_PO_QTY - temp_data,
               };
-            },
+            }
           );
           setRunningPOData(loadeddata);
           //console.log(loadeddata);
@@ -110,13 +104,13 @@ const Chart4 = () => {
         }}
       >
         {" "}
-        <CartesianGrid strokeDasharray="3 3" className="chartGrid" />
-        <XAxis dataKey="YEAR_WEEK">
+        <CartesianGrid strokeDasharray='3 3' className='chartGrid' />
+        <XAxis dataKey='YEAR_WEEK'>
           {" "}
-          <Label value="Tuần" offset={0} position="insideBottom" />
+          <Label value='Tuần' offset={0} position='insideBottom' />
         </XAxis>
         <YAxis
-          yAxisId="left-axis"
+          yAxisId='left-axis'
           label={{
             value: "Số lượng",
             angle: -90,
@@ -132,11 +126,11 @@ const Chart4 = () => {
         <Tooltip content={<CustomTooltip />} />
         <Legend />
         <Bar
-          yAxisId="left-axis"
-          type="monotone"
-          dataKey="RUNNING_PO_BALANCE"
-          stroke="white"
-          fill="#00b3b3"
+          yAxisId='left-axis'
+          type='monotone'
+          dataKey='RUNNING_PO_BALANCE'
+          stroke='white'
+          fill='#00b3b3'
           label={{ position: "top", formatter: labelFormatter }}
         ></Bar>
       </ComposedChart>

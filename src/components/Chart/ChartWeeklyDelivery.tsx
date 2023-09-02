@@ -18,11 +18,8 @@ import {
 import Swal from "sweetalert2";
 import { generalQuery } from "../../api/Api";
 import { CustomResponsiveContainer } from "../../api/GlobalFunction";
-interface WeeklyClosingData {
-  DEL_WEEK: string;
-  DELIVERY_QTY: number;
-  DELIVERED_AMOUNT: number;
-}
+import { WeeklyClosingData } from "../../api/GlobalInterface";
+
 const ChartWeekLyDelivery = () => {
   const [weeklyClosingData, setWeeklyClosingData] = useState<
     Array<WeeklyClosingData>
@@ -49,7 +46,7 @@ const ChartWeekLyDelivery = () => {
     if (active && payload && payload.length) {
       return (
         <div
-          className="custom-tooltip"
+          className='custom-tooltip'
           style={{
             backgroundImage: "linear-gradient(to right, #ccffff, #00cccc)",
             padding: 20,
@@ -57,7 +54,7 @@ const ChartWeekLyDelivery = () => {
           }}
         >
           <p>W{label}:</p>
-          <p className="label">
+          <p className='label'>
             BALANCE QTY: {`${payload[0].value.toLocaleString("en-US")}`} EA
           </p>
         </div>
@@ -74,7 +71,7 @@ const ChartWeekLyDelivery = () => {
               return {
                 ...element,
               };
-            },
+            }
           );
           setWeeklyClosingData(loadeddata);
           //console.log(loadeddata);
@@ -107,12 +104,12 @@ const ChartWeekLyDelivery = () => {
           bottom: 5,
         }}
       >
-        <CartesianGrid strokeDasharray="3 3" className="chartGrid" />
-        <XAxis dataKey="DEL_WEEK">
-          <Label value="Tuần" offset={0} position="insideBottom" />
+        <CartesianGrid strokeDasharray='3 3' className='chartGrid' />
+        <XAxis dataKey='DEL_WEEK'>
+          <Label value='Tuần' offset={0} position='insideBottom' />
         </XAxis>
         <YAxis
-          yAxisId="left-axis"
+          yAxisId='left-axis'
           label={{
             value: "Số lượng",
             angle: -90,
@@ -129,11 +126,11 @@ const ChartWeekLyDelivery = () => {
         <Tooltip content={<CustomTooltip />} />
         <Legend />
         <Bar
-          yAxisId="left-axis"
-          type="monotone"
-          dataKey="DELIVERY_QTY"
-          stroke="#804d00"
-          fill="#77b300"
+          yAxisId='left-axis'
+          type='monotone'
+          dataKey='DELIVERY_QTY'
+          stroke='#804d00'
+          fill='#77b300'
           label={{ position: "top", formatter: labelFormatter }}
         ></Bar>
       </ComposedChart>

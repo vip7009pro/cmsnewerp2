@@ -21,10 +21,8 @@ import {
 import Swal from "sweetalert2";
 import { generalQuery } from "../../api/Api";
 import { CustomResponsiveContainer } from "../../api/GlobalFunction";
-interface WeeklyClosingData {
-  EMPL_NAME: string;
-  DELIVERY_AMOUNT: number;
-}
+import { WeeklyClosingData } from "../../api/GlobalInterface";
+
 const ChartPICRevenue = () => {
   const [weeklyClosingData, setWeeklyClosingData] = useState<
     Array<WeeklyClosingData>
@@ -51,8 +49,8 @@ const ChartPICRevenue = () => {
   }) => {
     if (active && payload && payload.length) {
       return (
-        <div className="custom-tooltip">
-          <p className="label">{`${payload[0].value.toLocaleString("en-US", {
+        <div className='custom-tooltip'>
+          <p className='label'>{`${payload[0].value.toLocaleString("en-US", {
             style: "currency",
             currency: "USD",
           })}`}</p>
@@ -87,9 +85,9 @@ const ChartPICRevenue = () => {
       <text
         x={x}
         y={y}
-        fill="#8884d8"
+        fill='#8884d8'
         textAnchor={x > cx ? "start" : "end"}
-        dominantBaseline="central"
+        dominantBaseline='central'
       >
         {weeklyClosingData[index].EMPL_NAME} : (
         {value.toLocaleString("en-US", {
@@ -113,7 +111,7 @@ const ChartPICRevenue = () => {
               return {
                 ...element,
               };
-            },
+            }
           );
 
           setWeeklyClosingData(loadeddata);
@@ -139,7 +137,7 @@ const ChartPICRevenue = () => {
                     return {
                       ...element,
                     };
-                  },
+                  }
                 );
 
                 setWeeklyClosingData(loadeddata);
@@ -192,14 +190,14 @@ const ChartPICRevenue = () => {
         <Tooltip content={<CustomTooltip />} />
         <Legend />
         <Pie
-          dataKey="DELIVERY_AMOUNT"
-          nameKey="EMPL_NAME"
+          dataKey='DELIVERY_AMOUNT'
+          nameKey='EMPL_NAME'
           isAnimationActive={false}
           data={weeklyClosingData}
-          cx="50%"
-          cy="50%"
+          cx='50%'
+          cy='50%'
           outerRadius={80}
-          fill="#8884d8"
+          fill='#8884d8'
           label={CustomLabel}
         >
           {weeklyClosingData.map((entry, index) => (

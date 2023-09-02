@@ -17,20 +17,11 @@ import {
 import Swal from "sweetalert2";
 import { generalQuery } from "../../api/Api";
 import { CustomResponsiveContainer } from "../../api/GlobalFunction";
-interface SamSungFCSTData {
-  WEEKNO: string;
-  SEVT1: number;
-  SEV1: number;
-  SAMSUNG_ASIA1: number;
-  TT_SS1: number;
-  SEVT2: number;
-  SEV2: number;
-  SAMSUNG_ASIA2: number;
-  TT_SS2: number;
-}
+import { SamSungFCSTData } from "../../api/GlobalInterface";
+
 const ChartFCSTSamSung = () => {
   const [runningPOData, setSamSungFCSTData] = useState<Array<SamSungFCSTData>>(
-    [],
+    []
   );
   const formatCash = (n: number) => {
     if (n < 1e3) return n;
@@ -54,7 +45,7 @@ const ChartFCSTSamSung = () => {
     if (active && payload && payload.length) {
       return (
         <div
-          className="custom-tooltip"
+          className='custom-tooltip'
           style={{
             backgroundImage: "linear-gradient(to right, #ccffff, #00cccc)",
             padding: 20,
@@ -62,7 +53,7 @@ const ChartFCSTSamSung = () => {
           }}
         >
           <p>{label}:</p>
-          <p className="label">
+          <p className='label'>
             QTY Tuần Trước:{" "}
             {`${(
               payload[0]?.value +
@@ -71,7 +62,7 @@ const ChartFCSTSamSung = () => {
             ).toLocaleString("en-US")}`}{" "}
             EA
           </p>
-          <p className="label">
+          <p className='label'>
             QTY Tuần Này:{" "}
             {`${(
               payload[3]?.value +
@@ -149,7 +140,7 @@ const ChartFCSTSamSung = () => {
                       "_W" +
                       (fcstweek2 + index),
               };
-            },
+            }
           );
           if (loadeddata[0].TT_SS1 !== null && loadeddata[0].TT_SS2 !== null) {
             setSamSungFCSTData(loadeddata.splice(0, 15));
@@ -179,7 +170,7 @@ const ChartFCSTSamSung = () => {
                               "_W" +
                               (fcstweek2 + index),
                       };
-                    },
+                    }
                   );
                   setSamSungFCSTData(loadeddata.splice(0, 15));
                   //console.log(loadeddata);
@@ -187,7 +178,7 @@ const ChartFCSTSamSung = () => {
                   Swal.fire(
                     "Thông báo",
                     "Nội dung: " + response.data.message,
-                    "error",
+                    "error"
                   );
                 }
               })
@@ -221,13 +212,13 @@ const ChartFCSTSamSung = () => {
         }}
       >
         {" "}
-        <CartesianGrid strokeDasharray="3 3" className="chartGrid" />
-        <XAxis dataKey="WEEKNO">
+        <CartesianGrid strokeDasharray='3 3' className='chartGrid' />
+        <XAxis dataKey='WEEKNO'>
           {" "}
-          <Label value="Tuần" offset={0} position="insideBottom" />
+          <Label value='Tuần' offset={0} position='insideBottom' />
         </XAxis>
         <YAxis
-          yAxisId="left-axis"
+          yAxisId='left-axis'
           label={{
             value: "Số lượng",
             angle: -90,
@@ -244,53 +235,53 @@ const ChartFCSTSamSung = () => {
         <Tooltip content={<CustomTooltip />} />
         <Legend />
         <Bar
-          yAxisId="left-axis"
-          type="monotone"
-          dataKey="SEVT1"
-          stroke="white"
-          fill="#44cc00"
-          stackId="ss1"
+          yAxisId='left-axis'
+          type='monotone'
+          dataKey='SEVT1'
+          stroke='white'
+          fill='#44cc00'
+          stackId='ss1'
         ></Bar>
         <Bar
-          yAxisId="left-axis"
-          type="monotone"
-          dataKey="SEV1"
-          stroke="white"
-          fill="#ff80ff"
-          stackId="ss1"
+          yAxisId='left-axis'
+          type='monotone'
+          dataKey='SEV1'
+          stroke='white'
+          fill='#ff80ff'
+          stackId='ss1'
         ></Bar>
         <Bar
-          yAxisId="left-axis"
-          type="monotone"
-          dataKey="SAMSUNG_ASIA1"
-          stroke="white"
-          fill="#4d94ff"
-          stackId="ss1"
+          yAxisId='left-axis'
+          type='monotone'
+          dataKey='SAMSUNG_ASIA1'
+          stroke='white'
+          fill='#4d94ff'
+          stackId='ss1'
           label={{ position: "top", formatter: labelFormatter }}
         ></Bar>
         <Bar
-          yAxisId="left-axis"
-          type="monotone"
-          dataKey="SEVT2"
-          stroke="white"
-          fill="#44cc00"
-          stackId="ss2"
+          yAxisId='left-axis'
+          type='monotone'
+          dataKey='SEVT2'
+          stroke='white'
+          fill='#44cc00'
+          stackId='ss2'
         ></Bar>
         <Bar
-          yAxisId="left-axis"
-          type="monotone"
-          dataKey="SEV2"
-          stroke="white"
-          fill="#ff80ff"
-          stackId="ss2"
+          yAxisId='left-axis'
+          type='monotone'
+          dataKey='SEV2'
+          stroke='white'
+          fill='#ff80ff'
+          stackId='ss2'
         ></Bar>
         <Bar
-          yAxisId="left-axis"
-          type="monotone"
-          dataKey="SAMSUNG_ASIA2"
-          stroke="white"
-          fill="#4d94ff"
-          stackId="ss2"
+          yAxisId='left-axis'
+          type='monotone'
+          dataKey='SAMSUNG_ASIA2'
+          stroke='white'
+          fill='#4d94ff'
+          stackId='ss2'
           label={{ position: "top", formatter: labelFormatter }}
         ></Bar>
       </ComposedChart>

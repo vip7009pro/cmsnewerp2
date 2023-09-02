@@ -17,14 +17,8 @@ import {
 import Swal from "sweetalert2";
 import { generalQuery } from "../../api/Api";
 import { CustomResponsiveContainer } from "../../api/GlobalFunction";
-interface RunningPOData {
-  PO_YEAR: number;
-  PO_WEEK: number;
-  YEAR_WEEK: string;
-  RUNNING_PO_QTY: number;
-  RUNNING_DEL_QTY: number;
-  RUNNING_PO_BALANCE: number;
-}
+import { RunningPOData } from "../../api/GlobalInterface";
+
 const Chart8 = () => {
   const [runningPOData, setRunningPOData] = useState<Array<RunningPOData>>([]);
   const formatCash = (n: number) => {
@@ -47,7 +41,7 @@ const Chart8 = () => {
               return {
                 ...element,
               };
-            },
+            }
           );
           setRunningPOData(loadeddata);
           console.log(loadeddata);
@@ -76,13 +70,13 @@ const Chart8 = () => {
         }}
       >
         {" "}
-        <CartesianGrid strokeDasharray="3 3" className="chartGrid" />
-        <XAxis dataKey="YEAR_WEEK">
+        <CartesianGrid strokeDasharray='3 3' className='chartGrid' />
+        <XAxis dataKey='YEAR_WEEK'>
           {" "}
-          <Label value="Tuần" offset={0} position="insideBottom" />
+          <Label value='Tuần' offset={0} position='insideBottom' />
         </XAxis>
         <YAxis
-          yAxisId="left-axis"
+          yAxisId='left-axis'
           label={{
             value: "Số lượng",
             angle: -90,
@@ -98,11 +92,11 @@ const Chart8 = () => {
         <Tooltip />
         <Legend />
         <Bar
-          yAxisId="left-axis"
-          type="monotone"
-          dataKey="RUNNING_PO_BALANCE"
-          stroke="white"
-          fill="#cc66ff"
+          yAxisId='left-axis'
+          type='monotone'
+          dataKey='RUNNING_PO_BALANCE'
+          stroke='white'
+          fill='#cc66ff'
           label={{ position: "top", formatter: labelFormatter }}
         ></Bar>
       </ComposedChart>

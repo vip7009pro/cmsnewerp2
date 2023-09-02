@@ -21,23 +21,8 @@ import {
   CustomResponsiveContainer,
   nFormatter,
 } from "../../api/GlobalFunction";
+import { YearlyData } from "../../api/GlobalInterface";
 
-interface YearlyPPMData {
-  YEAR_NUM?: number;
-  INSPECT_TOTAL_QTY?: number;
-  MATERIAL_NG?: number;
-  PROCESS_NG?: number;
-  TOTAL_NG?: number;
-  TOTAL_PPM?: number;
-  MATERIAL_PPM?: number;
-  PROCESS_PPM?: number;
-}
-
-interface YearlyData {
-  dldata?: YearlyPPMData[];
-  processColor?: string;
-  materialColor?: string;
-}
 const InspectionYearlyPPM = ({
   dldata,
   processColor,
@@ -64,7 +49,7 @@ const InspectionYearlyPPM = ({
       console.log(payload);
       return (
         <div
-          className="custom-tooltip"
+          className='custom-tooltip'
           style={{
             backgroundImage: "linear-gradient(to right, #ccffff, #00cccc)",
             padding: 20,
@@ -72,13 +57,13 @@ const InspectionYearlyPPM = ({
           }}
         >
           <p>Ngày {label}:</p>
-          <p className="label">
+          <p className='label'>
             PROCESS_NG: {`${payload[1].value.toLocaleString("en-US")}`} ppm
           </p>
-          <p className="label">
+          <p className='label'>
             MATERIAL_NG: {`${payload[2].value.toLocaleString("en-US")}`} ppm
           </p>
-          <p className="label">
+          <p className='label'>
             TOTAL_NG: {`${payload[0].value.toLocaleString("en-US")}`} ppm
           </p>
         </div>
@@ -101,13 +86,13 @@ const InspectionYearlyPPM = ({
           bottom: 5,
         }}
       >
-        <CartesianGrid strokeDasharray="3 3" className="chartGrid" />
-        <XAxis dataKey="YEAR_NUM">
+        <CartesianGrid strokeDasharray='3 3' className='chartGrid' />
+        <XAxis dataKey='YEAR_NUM'>
           {" "}
-          <Label value="Năm" offset={0} position="insideBottom" />
+          <Label value='Năm' offset={0} position='insideBottom' />
         </XAxis>
         <YAxis
-          yAxisId="left-axis"
+          yAxisId='left-axis'
           label={{
             value: "NG Rate",
             angle: -90,
@@ -124,26 +109,26 @@ const InspectionYearlyPPM = ({
         <Tooltip content={<CustomTooltip />} />
         <Legend />
         <Line
-          yAxisId="left-axis"
-          type="monotone"
-          dataKey="TOTAL_PPM"
-          stroke="green"
+          yAxisId='left-axis'
+          type='monotone'
+          dataKey='TOTAL_PPM'
+          stroke='green'
         />
         <Bar
-          stackId="a"
-          yAxisId="left-axis"
-          type="monotone"
-          dataKey="PROCESS_PPM"
-          stroke="white"
+          stackId='a'
+          yAxisId='left-axis'
+          type='monotone'
+          dataKey='PROCESS_PPM'
+          stroke='white'
           fill={processColor}
           label={{ position: "insideTop", formatter: labelFormatter }}
         ></Bar>
         <Bar
-          stackId="a"
-          yAxisId="left-axis"
-          type="monotone"
-          dataKey="MATERIAL_PPM"
-          stroke="white"
+          stackId='a'
+          yAxisId='left-axis'
+          type='monotone'
+          dataKey='MATERIAL_PPM'
+          stroke='white'
           fill={materialColor}
           label={{ position: "insideTop", formatter: labelFormatter }}
         ></Bar>

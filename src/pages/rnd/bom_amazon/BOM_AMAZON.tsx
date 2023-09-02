@@ -111,19 +111,19 @@ const BOM_AMAZON = () => {
     G_CODE: "-------",
   });
   const [listamazontable, setListBomAmazonTable] = useState<LIST_BOM_AMAZON[]>(
-    [],
+    []
   );
   const [bomamazontable, setBOMAMAZONTable] = useState<BOM_AMAZON_DATA[]>([]);
   const [G_CODE_MAU, setG_CODE_MAU] = useState("7A07994A");
   const userData: UserData | undefined = useSelector(
-    (state: RootState) => state.totalSlice.userData,
+    (state: RootState) => state.totalSlice.userData
   );
   const [isLoading, setisLoading] = useState(false);
   const [codeCMS, setCodeCMS] = useState("");
   const [enableEdit, setEnableEdit] = useState(false);
   const [rows, setRows] = useState<CODE_INFO[]>([]);
   const [editedRows, setEditedRows] = useState<Array<GridCellEditCommitParams>>(
-    [],
+    []
   );
   const [editedBOMSXRows, setEditedBOMSXRows] = useState<
     Array<GridCellEditCommitParams>
@@ -208,12 +208,12 @@ const BOM_AMAZON = () => {
     return (
       <GridToolbarContainer>
         <IconButton
-          className="buttonIcon"
+          className='buttonIcon'
           onClick={() => {
             SaveExcel(rows, "Code Info Table");
           }}
         >
-          <AiFillFileExcel color="green" size={25} />
+          <AiFillFileExcel color='green' size={25} />
           SAVE
         </IconButton>
         <GridToolbarQuickFilter />
@@ -224,12 +224,12 @@ const BOM_AMAZON = () => {
     return (
       <GridToolbarContainer>
         <IconButton
-          className="buttonIcon"
+          className='buttonIcon'
           onClick={() => {
             SaveExcel(rows, "Code Info Table");
           }}
         >
-          <AiFillFileExcel color="green" size={20} />
+          <AiFillFileExcel color='green' size={20} />
           EXCEL
         </IconButton>
         <GridToolbarQuickFilter />
@@ -240,27 +240,27 @@ const BOM_AMAZON = () => {
     return (
       <GridToolbarContainer>
         <IconButton
-          className="buttonIcon"
+          className='buttonIcon'
           onClick={() => {
             SaveExcel(rows, "Code Info Table");
           }}
         >
-          <AiFillFileExcel color="green" size={20} />
+          <AiFillFileExcel color='green' size={20} />
           EXCEL
         </IconButton>
         <IconButton
-          className="buttonIcon"
+          className='buttonIcon'
           onClick={() => {
             /*  checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['RND'], confirmSaveBOMAMAZON); */
             checkBP(userData, ["RND"], ["ALL"], ["ALL"], confirmSaveBOMAMAZON);
             //confirmSaveBOMAMAZON();
           }}
         >
-          <AiFillSave color="blue" size={20} />
+          <AiFillSave color='blue' size={20} />
           Lưu BOM
         </IconButton>
         <IconButton
-          className="buttonIcon"
+          className='buttonIcon'
           onClick={() => {
             /*  checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['RND'], ()=>{
                 setcolumn_bomgia(
@@ -274,13 +274,13 @@ const BOM_AMAZON = () => {
               setcolumn_bomgia(
                 column_bomgia.map((element, index: number) => {
                   return { ...element, editable: !element.editable };
-                }),
+                })
               );
               Swal.fire("Thông báo", "Bật/Tắt chế độ sửa", "success");
             });
           }}
         >
-          <AiFillEdit color="yellow" size={25} />
+          <AiFillEdit color='yellow' size={25} />
           Bật tắt sửa
         </IconButton>
         <GridToolbarQuickFilter />
@@ -311,7 +311,7 @@ const BOM_AMAZON = () => {
               Swal.fire(
                 "Thông báo",
                 "Update data thất bại: " + response.data.message,
-                "error",
+                "error"
               );
             }
           })
@@ -339,7 +339,7 @@ const BOM_AMAZON = () => {
                 ...element,
                 id: index,
               };
-            },
+            }
           );
           setListBomAmazonTable(loadeddata);
           setisLoading(false);
@@ -367,7 +367,7 @@ const BOM_AMAZON = () => {
                 ...element,
                 id: index,
               };
-            },
+            }
           );
           setAMZ_COUNTRY(loadeddata[0].AMZ_COUNTRY);
           setAMZ_PROD_NAME(loadeddata[0].AMZ_PROD_NAME);
@@ -386,7 +386,7 @@ const BOM_AMAZON = () => {
   const handleGETBOMAMAZONEMPTY = (
     G_CODE: string,
     G_NAME: string,
-    G_CODE_MAU: string,
+    G_CODE_MAU: string
   ) => {
     setisLoading(true);
     //console.log(G_CODE_MAU);
@@ -406,7 +406,7 @@ const BOM_AMAZON = () => {
                 REMARK: "",
                 id: index,
               };
-            },
+            }
           );
           setBOMAMAZONTable(loadeddata);
           setisLoading(false);
@@ -434,7 +434,7 @@ const BOM_AMAZON = () => {
                 ...element,
                 id: index,
               };
-            },
+            }
           );
           setRows(loadeddata);
           //setCODEINFODataTable(loadeddata);
@@ -442,7 +442,7 @@ const BOM_AMAZON = () => {
           Swal.fire(
             "Thông báo",
             "Đã load " + response.data.data.length + " dòng",
-            "success",
+            "success"
           );
         } else {
           Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
@@ -456,7 +456,7 @@ const BOM_AMAZON = () => {
   const handleCODESelectionforUpdate = (ids: GridSelectionModel) => {
     const selectedID = new Set(ids);
     let datafilter = rows.filter((element: CODE_INFO) =>
-      selectedID.has(element.id),
+      selectedID.has(element.id)
     );
     if (datafilter.length > 0) {
       setCodeDataTableFilter(datafilter);
@@ -465,7 +465,7 @@ const BOM_AMAZON = () => {
       handleGETBOMAMAZONEMPTY(
         datafilter[0].G_CODE,
         datafilter[0].G_NAME,
-        G_CODE_MAU,
+        G_CODE_MAU
       );
       //handlecodefullinfo(datafilter[0].G_CODE);
     } else {
@@ -475,7 +475,7 @@ const BOM_AMAZON = () => {
   const handleLISTBOMAMAZONSelectionforUpdate = (ids: GridSelectionModel) => {
     const selectedID = new Set(ids);
     let datafilter = listamazontable.filter((element: LIST_BOM_AMAZON) =>
-      selectedID.has(element.id),
+      selectedID.has(element.id)
     );
     if (datafilter.length > 0) {
       //console.log(datafilter);
@@ -490,7 +490,7 @@ const BOM_AMAZON = () => {
   const handleBOMAMAZONSelectionforUpdate = (ids: GridSelectionModel) => {
     const selectedID = new Set(ids);
     let datafilter = bomamazontable.filter((element: BOM_AMAZON_DATA) =>
-      selectedID.has(element.id),
+      selectedID.has(element.id)
     );
     if (datafilter.length > 0) {
       //console.log(datafilter);
@@ -502,7 +502,7 @@ const BOM_AMAZON = () => {
   const zeroPad = (num: number, places: number) =>
     String(num).padStart(places, "0");
   const handleSearchCodeKeyDown = (
-    e: React.KeyboardEvent<HTMLInputElement>,
+    e: React.KeyboardEvent<HTMLInputElement>
   ) => {
     if (e.key === "Enter") {
       handleCODEINFO();
@@ -536,9 +536,10 @@ const BOM_AMAZON = () => {
                 ...element,
                 id: index,
               };
-            },
+            }
           );
           setCodePhoiList(loadeddata);
+          setG_CODE_MAU(loadeddata[0].G_CODE_MAU);
         } else {
           Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
           setisLoading(false);
@@ -626,16 +627,16 @@ const BOM_AMAZON = () => {
     loadCodePhoi();
   }, []);
   return (
-    <div className="bom_amazon">
-      <div className="bom_manager_wrapper">
-        <div className="left">
-          <div className="bom_manager_button">
-            <div className="selectcodephoi">
+    <div className='bom_amazon'>
+      <div className='bom_manager_wrapper'>
+        <div className='left'>
+          <div className='bom_manager_button'>
+            <div className='selectcodephoi'>
               <label>
                 Code phôi:
                 <select
-                  className="codephoiselection"
-                  name="codephoi"
+                  className='codephoiselection'
+                  name='codephoi'
                   value={G_CODE_MAU}
                   onChange={(e) => {
                     setG_CODE_MAU(e.target.value);
@@ -650,16 +651,16 @@ const BOM_AMAZON = () => {
               </label>
             </div>
           </div>
-          <div className="codemanager">
-            <div className="tracuuFcst">
-              <div className="tracuuFcstform">
-                <div className="forminput">
-                  <div className="forminputcolumn">
+          <div className='codemanager'>
+            <div className='tracuuFcst'>
+              <div className='tracuuFcstform'>
+                <div className='forminput'>
+                  <div className='forminputcolumn'>
                     <label>
                       <b> All Code:</b>{" "}
                       <input
-                        type="text"
-                        placeholder="Nhập code vào đây"
+                        type='text'
+                        placeholder='Nhập code vào đây'
                         value={codeCMS}
                         onChange={(e) => setCodeCMS(e.target.value)}
                         onKeyDown={(e) => {
@@ -668,7 +669,7 @@ const BOM_AMAZON = () => {
                       ></input>
                     </label>
                     <button
-                      className="traxuatkiembutton"
+                      className='traxuatkiembutton'
                       onClick={() => {
                         handleCODEINFO();
                       }}
@@ -678,7 +679,7 @@ const BOM_AMAZON = () => {
                   </div>
                 </div>
               </div>
-              <div className="codeinfotable">
+              <div className='codeinfotable'>
                 <DataGrid
                   components={{
                     Toolbar: CustomToolbarCODETable,
@@ -697,12 +698,12 @@ const BOM_AMAZON = () => {
                   rowsPerPageOptions={[
                     5, 10, 50, 100, 500, 1000, 5000, 10000, 100000,
                   ]}
-                  editMode="cell"
+                  editMode='cell'
                   /* experimentalFeatures={{ newEditingApi: true }}  */
                   onCellEditCommit={(
                     params: GridCellEditCommitParams,
                     event: MuiEvent<MuiBaseEvent>,
-                    details: GridCallbackDetails,
+                    details: GridCallbackDetails
                   ) => {
                     //console.log(params);
                     let tempeditrows = editedRows;
@@ -711,7 +712,7 @@ const BOM_AMAZON = () => {
                     //console.log(editedRows);
                     const keyvar = params.field;
                     const newdata = rows.map((p) =>
-                      p.id === params.id ? { ...p, [keyvar]: params.value } : p,
+                      p.id === params.id ? { ...p, [keyvar]: params.value } : p
                     );
                     setRows(newdata);
                   }}
@@ -720,14 +721,14 @@ const BOM_AMAZON = () => {
             </div>
           </div>
         </div>
-        <div className="right">
-          <div className="codeinfobig">
-            <div className="biginfocms"> {codeinfoCMS}: </div>
-            <div className="biginfokd"> {codeinfoKD}</div>
+        <div className='right'>
+          <div className='codeinfobig'>
+            <div className='biginfocms'> {codeinfoCMS}: </div>
+            <div className='biginfokd'> {codeinfoKD}</div>
           </div>
-          <div className="up">
-            <div className="bomsx">
-              <div className="listamazontable">
+          <div className='up'>
+            <div className='bomsx'>
+              <div className='listamazontable'>
                 <span
                   style={{
                     fontSize: "1rem",
@@ -757,12 +758,12 @@ const BOM_AMAZON = () => {
                   rowsPerPageOptions={[
                     5, 10, 50, 100, 500, 1000, 5000, 10000, 100000,
                   ]}
-                  editMode="cell"
+                  editMode='cell'
                   /* experimentalFeatures={{ newEditingApi: true }}  */
                   onCellEditCommit={(
                     params: GridCellEditCommitParams,
                     event: MuiEvent<MuiBaseEvent>,
-                    details: GridCallbackDetails,
+                    details: GridCallbackDetails
                   ) => {
                     //console.log(params);
                     let tempeditrows = editedRows;
@@ -771,15 +772,15 @@ const BOM_AMAZON = () => {
                     //console.log(editedRows);
                     const keyvar = params.field;
                     const newdata = listamazontable.map((p) =>
-                      p.id === params.id ? { ...p, [keyvar]: params.value } : p,
+                      p.id === params.id ? { ...p, [keyvar]: params.value } : p
                     );
                     setListBomAmazonTable(newdata);
                   }}
                 />
               </div>
             </div>
-            <div className="bomgia">
-              <div className="bomamazontable">
+            <div className='bomgia'>
+              <div className='bomamazontable'>
                 <span
                   style={{
                     fontSize: "1rem",
@@ -810,12 +811,12 @@ const BOM_AMAZON = () => {
                   rowsPerPageOptions={[
                     5, 10, 50, 100, 500, 1000, 5000, 10000, 100000,
                   ]}
-                  editMode="cell"
+                  editMode='cell'
                   /* experimentalFeatures={{ newEditingApi: true }}  */
                   onCellEditCommit={(
                     params: GridCellEditCommitParams,
                     event: MuiEvent<MuiBaseEvent>,
-                    details: GridCallbackDetails,
+                    details: GridCallbackDetails
                   ) => {
                     //console.log(params);
                     let tempeditrows = editedRows;
@@ -824,15 +825,15 @@ const BOM_AMAZON = () => {
                     //console.log(editedRows);
                     const keyvar = params.field;
                     const newdata = bomamazontable.map((p) =>
-                      p.id === params.id ? { ...p, [keyvar]: params.value } : p,
+                      p.id === params.id ? { ...p, [keyvar]: params.value } : p
                     );
                     setBOMAMAZONTable(newdata);
                   }}
                 />
               </div>
             </div>
-            <div className="product_infor">
-              <div className="bomamazontable">
+            <div className='product_infor'>
+              <div className='bomamazontable'>
                 <span
                   style={{
                     fontSize: "1.5rem",
@@ -846,10 +847,10 @@ const BOM_AMAZON = () => {
                 >
                   Thông tin sản phẩm
                 </span>
-                <div className="section_title">
+                <div className='section_title'>
                   1. Ảnh sản phẩm <br></br>{" "}
                 </div>
-                <div className="product_image">
+                <div className='product_image'>
                   <img
                     width={"350px"}
                     height={"350px"}
@@ -857,10 +858,10 @@ const BOM_AMAZON = () => {
                     alt={"AMZ_" + codeinfoCMS + ".jpg"}
                   ></img>
                 </div>
-                <div className="section_title">
+                <div className='section_title'>
                   2. Tên sản phẩm thực tế <br></br>{" "}
                 </div>
-                <div className="amz_prod_name">
+                <div className='amz_prod_name'>
                   <textarea
                     value={
                       amz_prod_name === null
@@ -872,13 +873,13 @@ const BOM_AMAZON = () => {
                     }}
                   ></textarea>
                 </div>
-                <div className="section_title">
+                <div className='section_title'>
                   3. Thị trường <br></br>{" "}
                 </div>
-                <div className="amz_country">
-                  <div className="country">
+                <div className='amz_country'>
+                  <div className='country'>
                     <input
-                      type="text"
+                      type='text'
                       value={
                         amz_country === null
                           ? "Chưa nhập thông tin"
@@ -890,10 +891,10 @@ const BOM_AMAZON = () => {
                     ></input>
                   </div>
                 </div>
-                <div className="update_prod_info">
+                <div className='update_prod_info'>
                   <Button
-                    variant="contained"
-                    color="success"
+                    variant='contained'
+                    color='success'
                     onClick={() => {
                       handle_saveAMAZONCODEINFO();
                     }}
@@ -904,7 +905,7 @@ const BOM_AMAZON = () => {
               </div>
             </div>
           </div>
-          <div className="bottom"></div>
+          <div className='bottom'></div>
         </div>
       </div>
     </div>

@@ -21,15 +21,8 @@ import {
 import Swal from "sweetalert2";
 import { generalQuery } from "../../api/Api";
 import { CustomResponsiveContainer } from "../../api/GlobalFunction";
-interface DiemDanhMainDeptData {
-  id: number;
-  MAINDEPTNAME: string;
-  COUNT_TOTAL: number;
-  COUT_ON: number;
-  COUT_OFF: number;
-  COUNT_CDD: number;
-  ON_RATE: number;
-}
+import { DiemDanhMainDeptData } from "../../api/GlobalInterface";
+
 const ChartDiemDanhMAINDEPT = () => {
   const [diemdanhMainDeptData, setDiemDanhMainDeptData] = useState<
     Array<DiemDanhMainDeptData>
@@ -56,9 +49,9 @@ const ChartDiemDanhMAINDEPT = () => {
   }) => {
     if (active && payload && payload.length) {
       return (
-        <div className="custom-tooltip">
-          <p className="label">{`${payload[0].value.toLocaleString(
-            "en-US",
+        <div className='custom-tooltip'>
+          <p className='label'>{`${payload[0].value.toLocaleString(
+            "en-US"
           )} người`}</p>
         </div>
       );
@@ -91,9 +84,9 @@ const ChartDiemDanhMAINDEPT = () => {
       <text
         x={x}
         y={y}
-        fill="#8884d8"
+        fill='#8884d8'
         textAnchor={x > cx ? "start" : "end"}
-        dominantBaseline="central"
+        dominantBaseline='central'
         style={{ color: "white" }}
       >
         {diemdanhMainDeptData[index].MAINDEPTNAME} : (
@@ -113,7 +106,7 @@ const ChartDiemDanhMAINDEPT = () => {
                 ...element,
                 id: index,
               };
-            },
+            }
           );
           setDiemDanhMainDeptData(loadeddata);
         } else {
@@ -159,14 +152,14 @@ const ChartDiemDanhMAINDEPT = () => {
       <PieChart width={500} height={400}>
         <Tooltip content={<CustomTooltip />} />
         <Pie
-          dataKey="COUNT_TOTAL"
-          nameKey="MAINDEPTNAME"
+          dataKey='COUNT_TOTAL'
+          nameKey='MAINDEPTNAME'
           isAnimationActive={false}
           data={diemdanhMainDeptData}
-          cx="50%"
-          cy="50%"
+          cx='50%'
+          cy='50%'
           outerRadius={80}
-          fill="#8884d8"
+          fill='#8884d8'
           label={CustomLabel}
         >
           {diemdanhMainDeptData.map((entry, index) => (

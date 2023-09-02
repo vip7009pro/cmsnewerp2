@@ -81,7 +81,7 @@ const YCSXManager = () => {
         />
       ) : (
         <div>Code: {element.G_NAME} : Không có bản vẽ</div>
-      ),
+      )
     );
   };
   const [file, setFile] = useState<any>();
@@ -100,7 +100,7 @@ const YCSXManager = () => {
   });
 
   const userData: UserData | undefined = useSelector(
-    (state: RootState) => state.totalSlice.userData,
+    (state: RootState) => state.totalSlice.userData
   );
 
   const [uploadExcelJson, setUploadExcelJSon] = useState<Array<any>>([]);
@@ -136,7 +136,7 @@ const YCSXManager = () => {
     PO_QTY: 0,
   });
   const [deliverydate, setNewDeliveryDate] = useState(
-    moment().format("YYYY-MM-DD"),
+    moment().format("YYYY-MM-DD")
   );
   const [pono, setPONO] = useState("");
   const [newycsxqty, setNewYcsxQty] = useState("");
@@ -582,7 +582,7 @@ const YCSXManager = () => {
                         Swal.fire(
                           "Thông báo",
                           "Upload bản vẽ thành công",
-                          "success",
+                          "success"
                         );
                         let tempycsxdatatable = ycsxdatatable.map(
                           (element, index) => {
@@ -590,14 +590,14 @@ const YCSXManager = () => {
                               params.row.PROD_REQUEST_NO
                               ? { ...element, BANVE: "Y" }
                               : element;
-                          },
+                          }
                         );
                         setYcsxDataTable(tempycsxdatatable);
                       } else {
                         Swal.fire(
                           "Thông báo",
                           "Upload bản vẽ thất bại",
-                          "error",
+                          "error"
                         );
                       }
                     })
@@ -608,7 +608,7 @@ const YCSXManager = () => {
                   Swal.fire(
                     "Thông báo",
                     "Upload file thất bại:" + response.data.message,
-                    "error",
+                    "error"
                   );
                 }
               })
@@ -619,7 +619,7 @@ const YCSXManager = () => {
             Swal.fire(
               "Thông báo",
               "Chỉ bộ phận kinh doanh upload được bản vẽ",
-              "error",
+              "error"
             );
           }
         };
@@ -629,7 +629,7 @@ const YCSXManager = () => {
           return (
             <span style={{ color: "green" }}>
               <b>
-                <a target="_blank" rel="noopener noreferrer" href={hreftlink}>
+                <a target='_blank' rel='noopener noreferrer' href={hreftlink}>
                   LINK
                 </a>
               </b>
@@ -637,14 +637,14 @@ const YCSXManager = () => {
           );
         else
           return (
-            <div className="uploadfile">
-              <IconButton className="buttonIcon" onClick={uploadFile2}>
-                <AiOutlineCloudUpload color="yellow" size={15} />
+            <div className='uploadfile'>
+              <IconButton className='buttonIcon' onClick={uploadFile2}>
+                <AiOutlineCloudUpload color='yellow' size={15} />
                 Upload
               </IconButton>
               <input
-                accept=".pdf"
-                type="file"
+                accept='.pdf'
+                type='file'
                 onChange={(e: any) => {
                   file = e.target.files[0];
                   console.log(file);
@@ -856,7 +856,7 @@ const YCSXManager = () => {
                         Swal.fire(
                           "Thông báo",
                           "Upload bản vẽ thành công",
-                          "success",
+                          "success"
                         );
                         let tempycsxdatatable = ycsxdatatable.map(
                           (element, index) => {
@@ -864,14 +864,14 @@ const YCSXManager = () => {
                               params.row.PROD_REQUEST_NO
                               ? { ...element, BANVE: "Y" }
                               : element;
-                          },
+                          }
                         );
                         setYcsxDataTable(tempycsxdatatable);
                       } else {
                         Swal.fire(
                           "Thông báo",
                           "Upload bản vẽ thất bại",
-                          "error",
+                          "error"
                         );
                       }
                     })
@@ -882,7 +882,7 @@ const YCSXManager = () => {
                   Swal.fire(
                     "Thông báo",
                     "Upload file thất bại:" + response.data.message,
-                    "error",
+                    "error"
                   );
                 }
               })
@@ -893,7 +893,7 @@ const YCSXManager = () => {
             Swal.fire(
               "Thông báo",
               "Chỉ bộ phận kinh doanh upload được bản vẽ",
-              "error",
+              "error"
             );
           }
         };
@@ -903,7 +903,7 @@ const YCSXManager = () => {
           return (
             <span style={{ color: "green" }}>
               <b>
-                <a target="_blank" rel="noopener noreferrer" href={hreftlink}>
+                <a target='_blank' rel='noopener noreferrer' href={hreftlink}>
                   LINK
                 </a>
               </b>
@@ -911,14 +911,14 @@ const YCSXManager = () => {
           );
         else
           return (
-            <div className="uploadfile">
-              <IconButton className="buttonIcon" onClick={uploadFile2}>
-                <AiOutlineCloudUpload color="yellow" size={15} />
+            <div className='uploadfile'>
+              <IconButton className='buttonIcon' onClick={uploadFile2}>
+                <AiOutlineCloudUpload color='yellow' size={15} />
                 Upload
               </IconButton>
               <input
-                accept=".pdf"
-                type="file"
+                accept='.pdf'
+                type='file'
                 onChange={(e: any) => {
                   file = e.target.files[0];
                   console.log(file);
@@ -1032,7 +1032,7 @@ const YCSXManager = () => {
     PROD_REQUEST_NO: string,
     PROD_REQUEST_QTY: number,
     PLAN_EQ: string,
-    G_CODE: string,
+    G_CODE: string
   ) => {
     await generalQuery("addPlanQLSX", {
       PLAN_ID: PROD_REQUEST_NO + "A",
@@ -1070,7 +1070,7 @@ const YCSXManager = () => {
             const loaded_data: PONOLIST[] = response.data.data.map(
               (element: PONOLIST, index: number) => {
                 return element;
-              },
+              }
             );
             //console.log(loaded_data);
             setPONOLIST(loaded_data);
@@ -1093,7 +1093,7 @@ const YCSXManager = () => {
         <GridToolbarFilterButton />
         <GridToolbarDensitySelector />
         <button
-          className="saveexcelbutton"
+          className='saveexcelbutton'
           onClick={() => {
             SaveExcel(uploadExcelJson, "Uploaded PO");
           }}
@@ -1111,7 +1111,7 @@ const YCSXManager = () => {
         <GridToolbarFilterButton />
         <GridToolbarDensitySelector />
         <button
-          className="saveexcelbutton"
+          className='saveexcelbutton'
           onClick={() => {
             SaveExcel(uploadExcelJson, "Uploaded Amazon");
           }}
@@ -1129,25 +1129,25 @@ const YCSXManager = () => {
         <GridToolbarFilterButton />
         <GridToolbarDensitySelector />  */}
         <IconButton
-          className="buttonIcon"
+          className='buttonIcon'
           onClick={() => {
             setShowHideSearchDiv(!showhidesearchdiv);
           }}
         >
-          <TbLogout color="green" size={15} />
+          <TbLogout color='green' size={15} />
           Show/Hide
         </IconButton>
         <IconButton
-          className="buttonIcon"
+          className='buttonIcon'
           onClick={() => {
             SaveExcel(ycsxdatatable, "YCSX Table");
           }}
         >
-          <AiFillFileExcel color="green" size={15} />
+          <AiFillFileExcel color='green' size={15} />
           SAVE
         </IconButton>
         <IconButton
-          className="buttonIcon"
+          className='buttonIcon'
           onClick={() => {
             setSelection({
               ...selection,
@@ -1162,48 +1162,48 @@ const YCSXManager = () => {
             clearYCSXform();
           }}
         >
-          <AiFillFileAdd color="blue" size={15} />
+          <AiFillFileAdd color='blue' size={15} />
           NEW YCSX
         </IconButton>
         <IconButton
-          className="buttonIcon"
+          className='buttonIcon'
           onClick={() => {
             handle_fillsuaform();
           }}
         >
-          <AiFillEdit color="orange" size={15} />
+          <AiFillEdit color='orange' size={15} />
           SỬA YCSX
         </IconButton>
         <IconButton
-          className="buttonIcon"
+          className='buttonIcon'
           onClick={() => {
             handleConfirmDeleteYCSX();
           }}
         >
-          <MdOutlineDelete color="red" size={15} />
+          <MdOutlineDelete color='red' size={15} />
           XÓA YCSX
         </IconButton>
         <GridToolbarQuickFilter />
         <IconButton
-          className="buttonIcon"
+          className='buttonIcon'
           onClick={() => {
             handleConfirmSetClosedYCSX();
           }}
         >
-          <FaArrowRight color="green" size={15} />
+          <FaArrowRight color='green' size={15} />
           SET CLOSED
         </IconButton>
         <IconButton
-          className="buttonIcon"
+          className='buttonIcon'
           onClick={() => {
             handleConfirmSetPendingYCSX();
           }}
         >
-          <MdOutlinePendingActions color="red" size={15} />
+          <MdOutlinePendingActions color='red' size={15} />
           SET PENDING
         </IconButton>
         <IconButton
-          className="buttonIcon"
+          className='buttonIcon'
           onClick={() => {
             if (ycsxdatatablefilter.length > 0) {
               setSelection({
@@ -1217,11 +1217,11 @@ const YCSXManager = () => {
             }
           }}
         >
-          <AiOutlinePrinter color="#0066ff" size={15} />
+          <AiOutlinePrinter color='#0066ff' size={15} />
           Print YCSX
         </IconButton>
         <IconButton
-          className="buttonIcon"
+          className='buttonIcon'
           onClick={() => {
             if (ycsxdatatablefilter.length > 0) {
             } else {
@@ -1229,11 +1229,11 @@ const YCSXManager = () => {
             }
           }}
         >
-          <AiOutlinePrinter color="#00701a" size={15} />
+          <AiOutlinePrinter color='#00701a' size={15} />
           Check Bản Vẽ
         </IconButton>
         <IconButton
-          className="buttonIcon"
+          className='buttonIcon'
           onClick={() => {
             if (ycsxdatatablefilter.length > 0) {
               setSelection({
@@ -1246,25 +1246,25 @@ const YCSXManager = () => {
             }
           }}
         >
-          <AiOutlinePrinter color="#ff751a" size={15} />
+          <AiOutlinePrinter color='#ff751a' size={15} />
           Print Bản Vẽ
         </IconButton>
         <IconButton
-          className="buttonIcon"
+          className='buttonIcon'
           onClick={() => {
             handleConfirmPDuyetYCSX();
           }}
         >
-          <FcApprove color="red" size={15} />
+          <FcApprove color='red' size={15} />
           Phê Duyệt
         </IconButton>
         <IconButton
-          className="buttonIcon"
+          className='buttonIcon'
           onClick={() => {
             handleGoToAmazon();
           }}
         >
-          <AiFillAmazonCircle color="red" size={15} />
+          <AiFillAmazonCircle color='red' size={15} />
           Up Amazon
         </IconButton>
       </GridToolbarContainer>
@@ -1274,10 +1274,10 @@ const YCSXManager = () => {
     console.log(ycsxdatatablefilter.length);
     if (ycsxdatatablefilter.length === 1) {
       setProdRequestNo(
-        ycsxdatatablefilter[ycsxdatatablefilter.length - 1].PROD_REQUEST_NO,
+        ycsxdatatablefilter[ycsxdatatablefilter.length - 1].PROD_REQUEST_NO
       );
       handle_findAmazonCodeInfo(
-        ycsxdatatablefilter[ycsxdatatablefilter.length - 1].PROD_REQUEST_NO,
+        ycsxdatatablefilter[ycsxdatatablefilter.length - 1].PROD_REQUEST_NO
       );
       setNav(3);
     } else if (ycsxdatatablefilter.length > 1) {
@@ -1287,7 +1287,7 @@ const YCSXManager = () => {
     }
   };
   const handleSearchCodeKeyDown = (
-    e: React.KeyboardEvent<HTMLInputElement>,
+    e: React.KeyboardEvent<HTMLInputElement>
   ) => {
     if (e.key === "Enter") {
       handletraYCSX();
@@ -1352,7 +1352,7 @@ const YCSXManager = () => {
           Swal.fire(
             "Thông báo",
             "Không lấy được giờ hệ thống: " + response.data.message,
-            "error",
+            "error"
           );
         }
       })
@@ -1381,7 +1381,7 @@ const YCSXManager = () => {
           console.log(response.data.data);
           NEXT_PROCESS_LOT_NO += zeroPad(
             Number(response.data.data[0].SEQ_NO) + 1,
-            3,
+            3
           );
         } else {
           NEXT_PROCESS_LOT_NO += "001";
@@ -1425,18 +1425,18 @@ const YCSXManager = () => {
               CHECKSTATUS: "Waiting",
               PHANLOAI: "TT",
             };
-          }),
+          })
         );
       };
       reader.readAsArrayBuffer(e.target.files[0]);
     }
   };
-  const handleAmazonData = (
+  const handleAmazonData = async (
     amazon_data: { id: number; DATA: string; CHECKSTATUS: string }[],
     cavity: number,
     G_CODE: string,
     PROD_REQUEST_NO: string,
-    NO_IN: string,
+    NO_IN: string
   ) => {
     let handled_Amazon_Table: UploadAmazonData[] = [];
     if (amazon_data.length % cavity !== 0) {
@@ -1466,10 +1466,9 @@ const YCSXManager = () => {
         temp_amazon_row.INLAI_COUNT = 0;
         temp_amazon_row.REMARK = "";
         handled_Amazon_Table.push(temp_amazon_row);
-        //console.log(temp_amazon_row);
       }
     }
-    //console.log(handled_Amazon_Table);
+    //console.log("handled_Amazon_Table", handled_Amazon_Table);
     return handled_Amazon_Table;
   };
   const checkDuplicateAMZ = async () => {
@@ -1494,7 +1493,7 @@ const YCSXManager = () => {
               response.data.data[0].PROD_REQUEST_NO +
               "______ ID công việc của data trùng: " +
               response.data.data[0].NO_IN,
-            "error",
+            "error"
           );
         } else {
           Swal.fire("Thông báo", "Không có dòng trùng", "success");
@@ -1509,12 +1508,12 @@ const YCSXManager = () => {
     let isDuplicated: boolean = false;
     isDuplicated = await checkDuplicateAMZ();
     if (!isDuplicated) {
-      let uploadAmazonData = handleAmazonData(
+      let uploadAmazonData = await handleAmazonData(
         uploadExcelJson,
         cavityAmazon,
         codeCMS,
         prodrequestno,
-        id_congviec,
+        id_congviec
       );
       //console.log(uploadAmazonData);
       let checkIDcongViecTonTai: boolean = false;
@@ -1583,8 +1582,93 @@ const YCSXManager = () => {
       }
     }
   };
+  const upAmazonDataSuperFast = async () => {
+    let isDuplicated: boolean = false;
+    isDuplicated = await checkDuplicateAMZ();
+    if (!isDuplicated) {
+      let uploadAmazonData = await handleAmazonData(
+        uploadExcelJson,
+        cavityAmazon,
+        codeCMS,
+        prodrequestno,
+        id_congviec
+      );
+      //console.log(uploadAmazonData);
+      let checkIDcongViecTonTai: boolean = false;
+      await generalQuery("checkIDCongViecAMZ", {
+        NO_IN: id_congviec,
+      })
+        .then((response) => {
+          console.log(response.data.tk_status);
+          if (response.data.tk_status !== "NG") {
+            checkIDcongViecTonTai = true;
+          } else {
+            checkIDcongViecTonTai = false;
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+      //if (!AMZ_check_flag) {
+      if (false) {
+        Swal.fire("Thông báo", "Hãy check data trước khi up", "error");
+      } else {
+        if (!checkIDcongViecTonTai) {
+          let songuyen: number = Math.trunc(uploadAmazonData.length / 1000);
+          let sodu: number = uploadAmazonData.length % 1000;
+          for (let i = 1; i <= songuyen; i++) {
+            await generalQuery("insertData_Amazon_SuperFast", {
+              AMZDATA: uploadAmazonData.filter(
+                (e: UploadAmazonData, index: number) => {
+                  let rowno: number = e.ROW_NO === undefined ? 0 : e.ROW_NO;
+                  return rowno >= i * 1000 - 1000 && rowno <= i * 1000 - 1;
+                }
+              ),
+            })
+              .then((response) => {
+                if (response.data.tk_status !== "NG") {
+                  setProgressValue(i * 2 * 1000);
+                } else {
+                  console.log(response.data.message);
+                }
+              })
+              .catch((error) => {
+                console.log(error);
+              });
+          }
+
+          await generalQuery("insertData_Amazon_SuperFast", {
+            AMZDATA: uploadAmazonData.filter(
+              (e: UploadAmazonData, index: number) => {
+                let rowno: number = e.ROW_NO === undefined ? 0 : e.ROW_NO;
+                return (
+                  rowno >= songuyen * 1000 && rowno <= uploadAmazonData.length
+                );
+              }
+            ),
+          })
+            .then((response) => {
+              console.log(response.data.tk_status);
+              if (response.data.tk_status !== "NG") {
+                setProgressValue(uploadAmazonData.length * 2);
+              } else {
+                console.log(response.data.message);
+              }
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+
+          checkDuplicateAMZ();
+          //Swal.fire("Thông báo", "Upload data Amazon Hoàn thành", "success");
+        } else {
+          Swal.fire("Thông báo", "ID công việc đã tồn tại", "error");
+        }
+      }
+    }
+  };
   const checkAmazonData = async (
-    amazon_data: { id: number; DATA: string; CHECKSTATUS: string }[],
+    amazon_data: { id: number; DATA: string; CHECKSTATUS: string }[]
   ) => {
     //Swal.fire("Thông báo","Bắt đầu check Amazon Data","success");
     let err_code: string = "0";
@@ -1623,7 +1707,7 @@ const YCSXManager = () => {
     }
   };
   const checkAmazonData2 = async (
-    amazon_data: { id: number; DATA: string; CHECKSTATUS: string }[],
+    amazon_data: { id: number; DATA: string; CHECKSTATUS: string }[]
   ) => {
     //Swal.fire("Thông báo","Bắt đầu check Amazon Data","success");
     let segment: number = 100;
@@ -1838,7 +1922,7 @@ const YCSXManager = () => {
                     ? 0
                     : element.PROD_REQUEST_QTY,
               };
-            },
+            }
           );
           setYcsxDataTable(loadeddata);
           setShowHideSearchDiv(false);
@@ -1846,7 +1930,7 @@ const YCSXManager = () => {
           Swal.fire(
             "Thông báo",
             "Đã load " + response.data.data.length + " dòng",
-            "success",
+            "success"
           );
         } else {
           Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
@@ -2157,7 +2241,7 @@ const YCSXManager = () => {
                   console.log(response.data.data);
                   next_p500_in_no = zeroPad(
                     Number(response.data.data[0].PROCESS_IN_NO) + 1,
-                    3,
+                    3
                   );
                 } else {
                   next_p500_in_no = "001";
@@ -2488,7 +2572,7 @@ const YCSXManager = () => {
               Swal.fire(
                 "Thông báo",
                 "Thêm YCSX mới thất bại: " + response.data.message,
-                "error",
+                "error"
               );
             }
           })
@@ -2496,8 +2580,9 @@ const YCSXManager = () => {
             console.log(error);
           });
       } else {
-        let next_process_lot_no_p501: string =
-          await process_lot_no_generate(newphanloai);
+        let next_process_lot_no_p501: string = await process_lot_no_generate(
+          newphanloai
+        );
         await generalQuery("insert_ycsx", {
           G_CODE: selectedCode?.G_CODE,
           CUST_CD: selectedCust_CD?.CUST_CD,
@@ -2549,7 +2634,7 @@ const YCSXManager = () => {
               Swal.fire(
                 "Thông báo",
                 "Thêm YCSX mới thất bại: " + response.data.message,
-                "error",
+                "error"
               );
             }
           })
@@ -2564,7 +2649,7 @@ const YCSXManager = () => {
               console.log(response.data.data);
               next_p500_in_no = zeroPad(
                 Number(response.data.data[0].PROCESS_IN_NO) + 1,
-                3,
+                3
               );
             } else {
               next_p500_in_no = "001";
@@ -2622,7 +2707,7 @@ const YCSXManager = () => {
       Swal.fire(
         "Thông báo",
         "NG: Ngày PO không được trước ngày hôm nay",
-        "error",
+        "error"
       );
     } else if (err_code === 3) {
       Swal.fire("Thông báo", "NG: Ver này đã bị khóa", "error");
@@ -2641,7 +2726,7 @@ const YCSXManager = () => {
   const handleYCSXSelectionforUpdate = (ids: GridSelectionModel) => {
     const selectedID = new Set(ids);
     let datafilter = ycsxdatatable.filter((element: any) =>
-      selectedID.has(element.PROD_REQUEST_NO),
+      selectedID.has(element.PROD_REQUEST_NO)
     );
     if (datafilter.length > 0) {
       setYcsxDataTableFilter(datafilter);
@@ -2653,7 +2738,7 @@ const YCSXManager = () => {
   const handleYCSXSelectionforUpdateExcel = (ids: GridSelectionModel) => {
     const selectedID = new Set(ids);
     let datafilter = uploadExcelJson.filter((element: any) =>
-      selectedID.has(element.id),
+      selectedID.has(element.id)
     );
     //console.log(datafilter);
     if (datafilter.length > 0) {
@@ -2689,22 +2774,22 @@ const YCSXManager = () => {
       setNewYcsxQty(
         ycsxdatatablefilter[
           ycsxdatatablefilter.length - 1
-        ].PROD_REQUEST_QTY.toString(),
+        ].PROD_REQUEST_QTY.toString()
       );
       setNewYcsxRemark(
-        ycsxdatatablefilter[ycsxdatatablefilter.length - 1].REMARK,
+        ycsxdatatablefilter[ycsxdatatablefilter.length - 1].REMARK
       );
       setSelectedID(
-        ycsxdatatablefilter[ycsxdatatablefilter.length - 1].PROD_REQUEST_NO,
+        ycsxdatatablefilter[ycsxdatatablefilter.length - 1].PROD_REQUEST_NO
       );
       if (
         ycsxdatatablefilter[ycsxdatatablefilter.length - 1].REMARK.substring(
           0,
-          2,
+          2
         ) !== "RB" &&
         ycsxdatatablefilter[ycsxdatatablefilter.length - 1].REMARK.substring(
           0,
-          2,
+          2
         ) !== "HQ"
       ) {
         setNewPhanLoai("TT");
@@ -2712,8 +2797,8 @@ const YCSXManager = () => {
       setNewPhanLoai(
         ycsxdatatablefilter[ycsxdatatablefilter.length - 1].REMARK.substring(
           0,
-          2,
-        ),
+          2
+        )
       );
       setLoaiSX(ycsxdatatablefilter[ycsxdatatablefilter.length - 1].PHAN_LOAI);
       setLoaiXH(ycsxdatatablefilter[ycsxdatatablefilter.length - 1].LOAIXH);
@@ -2773,7 +2858,7 @@ const YCSXManager = () => {
               Swal.fire(
                 "Thông báo",
                 "Update YCSX thất bại: " + response.data.message,
-                "error",
+                "error"
               );
             }
           })
@@ -2786,7 +2871,7 @@ const YCSXManager = () => {
         Swal.fire(
           "Thông báo",
           "NG: Không để trống thông tin bắt buộc",
-          "error",
+          "error"
         );
       }
     } else {
@@ -2820,7 +2905,7 @@ const YCSXManager = () => {
             Swal.fire(
               "Thông báo",
               "Xóa YCSX thất bại, ycsx đã được xuất liệu: ",
-              "error",
+              "error"
             );
           } else {
             await generalQuery("delete_ycsx", {
@@ -2845,13 +2930,13 @@ const YCSXManager = () => {
         Swal.fire(
           "Thông báo",
           "Xóa YCSX thành công (chỉ PO của người đăng nhập)!",
-          "success",
+          "success"
         );
       } else {
         Swal.fire(
           "Thông báo",
           "Có lỗi: Có thể ycsx này đã được đăng ký xuất liệu",
-          "error",
+          "error"
         );
       }
     } else {
@@ -2917,7 +3002,7 @@ const YCSXManager = () => {
         Swal.fire(
           "Thông báo",
           "SET YCSX thành công (chỉ PO của người đăng nhập)!",
-          "success",
+          "success"
         );
       } else {
         Swal.fire("Thông báo", "Có lỗi SQL: ", "error");
@@ -2957,7 +3042,7 @@ const YCSXManager = () => {
         Swal.fire(
           "Tiến hành SET PENDING",
           "Đang SET PENDING YCSX hàng loạt",
-          "success",
+          "success"
         );
         setPendingYCSX(1);
       }
@@ -2977,7 +3062,7 @@ const YCSXManager = () => {
         Swal.fire(
           "Tiến hành SET CLOSED",
           "Đang SET CLOSED YCSX hàng loạt",
-          "success",
+          "success"
         );
         setPendingYCSX(0);
       }
@@ -2997,7 +3082,7 @@ const YCSXManager = () => {
         Swal.fire(
           "Tiến hành SET Phê duyệt",
           "Đang SET Phê duyệt YCSX hàng loạt",
-          "success",
+          "success"
         );
         setPDuyetYCSX(1);
       }
@@ -3024,7 +3109,7 @@ const YCSXManager = () => {
       Swal.fire(
         "Thông báo",
         "Không được để trống thông tin cần thiết",
-        "error",
+        "error"
       );
     } else {
       setUploadExcelJSon([...uploadExcelJson, newycsx_row]);
@@ -3050,7 +3135,7 @@ const YCSXManager = () => {
     await generalQuery("get_ycsxInfo2", { ycsxno: prod_request_no })
       .then((response) => {
         if (response.data.tk_status !== "NG") {
-          console.log(response.data.data);
+          console.log("ket qua", response.data.data);
           setCodeKD(response.data.data[0].G_NAME);
           setCodeCMS(response.data.data[0].G_CODE);
           setProd_Model(response.data.data[0].PROD_MODEL);
@@ -3059,9 +3144,10 @@ const YCSXManager = () => {
           })
             .then((response) => {
               if (response.data.tk_status !== "NG") {
-                console.log(response.data.data);
+                console.log("cavity amz", response.data.data);
                 setCavityAmazon(response.data.data[0].CAVITY_PRINT);
               } else {
+                console.log("cavity amz NG", response.data.data);
               }
             })
             .catch((error) => {
@@ -3085,20 +3171,20 @@ const YCSXManager = () => {
     getcodelist("");
   }, []);
   return (
-    <div className="ycsxmanager">
-      <div className="mininavbar">
+    <div className='ycsxmanager'>
+      <div className='mininavbar'>
         <div
-          className="mininavitem"
+          className='mininavitem'
           onClick={() => setNav(1)}
           style={{
             backgroundColor: selection.trapo === true ? "#02c712" : "#abc9ae",
             color: selection.trapo === true ? "yellow" : "yellow",
           }}
         >
-          <span className="mininavtext">Tra YCSX</span>
+          <span className='mininavtext'>Tra YCSX</span>
         </div>
         <div
-          className="mininavitem"
+          className='mininavitem'
           onClick={() => setNav(2)}
           style={{
             backgroundColor:
@@ -3106,10 +3192,10 @@ const YCSXManager = () => {
             color: selection.thempohangloat === true ? "yellow" : "yellow",
           }}
         >
-          <span className="mininavtext">ADD YCSX</span>
+          <span className='mininavtext'>ADD YCSX</span>
         </div>
         <div
-          className="mininavitem"
+          className='mininavitem'
           onClick={() => setNav(3)}
           style={{
             backgroundColor:
@@ -3117,10 +3203,10 @@ const YCSXManager = () => {
             color: selection.amazontab === true ? "yellow" : "yellow",
           }}
         >
-          <span className="mininavtext">Add AMZ Data</span>
+          <span className='mininavtext'>Add AMZ Data</span>
         </div>
         <div
-          className="mininavitem"
+          className='mininavitem'
           onClick={() => setNav(4)}
           style={{
             backgroundColor:
@@ -3128,24 +3214,24 @@ const YCSXManager = () => {
             color: selection.traamazdata === true ? "yellow" : "yellow",
           }}
         >
-          <span className="mininavtext">TRA AMZ Data</span>
+          <span className='mininavtext'>TRA AMZ Data</span>
         </div>
       </div>
       {selection.them1po && (
-        <div className="them1ycsx">
-          <div className="formnho">
-            <div className="dangkyform">
-              <div className="dangkyinput">
-                <div className="dangkyinputbox">
+        <div className='them1ycsx'>
+          <div className='formnho'>
+            <div className='dangkyform'>
+              <div className='dangkyinput'>
+                <div className='dangkyinputbox'>
                   <label>
                     <b>Khách hàng:</b>{" "}
                     <Autocomplete
                       sx={{ fontSize: "0.6rem" }}
                       ListboxProps={{ style: { fontSize: "0.7rem" } }}
-                      size="small"
+                      size='small'
                       disablePortal
                       options={customerList}
-                      className="autocomplete1"
+                      className='autocomplete1'
                       getOptionLabel={(option: CustomerListData) => {
                         return `${option.CUST_CD}: ${option.CUST_NAME_KD}`;
                       }}
@@ -3153,13 +3239,13 @@ const YCSXManager = () => {
                         <TextField
                           {...params}
                           fullWidth={true}
-                          label="Select customer"
+                          label='Select customer'
                         />
                       )}
                       value={selectedCust_CD}
                       onChange={(
                         event: any,
-                        newValue: CustomerListData | null,
+                        newValue: CustomerListData | null
                       ) => {
                         console.log(newValue);
                         setSelectedCust_CD(newValue);
@@ -3175,16 +3261,16 @@ const YCSXManager = () => {
                     <Autocomplete
                       sx={{ fontSize: "0.6rem" }}
                       ListboxProps={{ style: { fontSize: "0.7rem" } }}
-                      size="small"
+                      size='small'
                       disablePortal
                       options={codeList}
-                      className="autocomplete1"
+                      className='autocomplete1'
                       filterOptions={filterOptions1}
                       getOptionLabel={(option: CodeListData | any) =>
                         `${option.G_CODE}: ${option.G_NAME}`
                       }
                       renderInput={(params) => (
-                        <TextField {...params} label="Select code" />
+                        <TextField {...params} label='Select code' />
                       )}
                       onChange={(event: any, newValue: CodeListData | any) => {
                         console.log(newValue);
@@ -3198,12 +3284,12 @@ const YCSXManager = () => {
                     />
                   </label>
                 </div>
-                <div className="dangkyinputbox">
+                <div className='dangkyinputbox'>
                   <label>
                     <b>Delivery Date:</b>
                     <input
-                      className="inputdata"
-                      type="date"
+                      className='inputdata'
+                      type='date'
                       value={deliverydate.slice(0, 10)}
                       onChange={(e) => setNewDeliveryDate(e.target.value)}
                     ></input>
@@ -3211,60 +3297,60 @@ const YCSXManager = () => {
                   <label>
                     <b>Loại hàng</b>
                     <select
-                      name="phanloaihang"
+                      name='phanloaihang'
                       value={newphanloai}
                       onChange={(e) => {
                         setNewPhanLoai(e.target.value);
                       }}
                     >
-                      <option value="TT">Hàng Thường (TT)</option>
-                      <option value="SP">Sample sang FL (SP)</option>
-                      <option value="RB">Ribbon (RB)</option>
-                      <option value="HQ">Hàn Quốc (HQ)</option>
-                      <option value="VN">Việt Nam (VN)</option>
-                      <option value="AM">Amazon (AM)</option>
-                      <option value="DL">Đổi LOT (DL)</option>
-                      <option value="M4">NM4 (M4)</option>
+                      <option value='TT'>Hàng Thường (TT)</option>
+                      <option value='SP'>Sample sang FL (SP)</option>
+                      <option value='RB'>Ribbon (RB)</option>
+                      <option value='HQ'>Hàn Quốc (HQ)</option>
+                      <option value='VN'>Việt Nam (VN)</option>
+                      <option value='AM'>Amazon (AM)</option>
+                      <option value='DL'>Đổi LOT (DL)</option>
+                      <option value='M4'>NM4 (M4)</option>
                       {/* <option value='SL'>Slitting (SL)</option> */}
                     </select>
                   </label>
                 </div>
-                <div className="dangkyinputbox">
+                <div className='dangkyinputbox'>
                   <label>
                     <b>Loại sản xuất</b>
                     <select
-                      name="loasx"
+                      name='loasx'
                       value={loaisx}
                       onChange={(e) => {
                         setLoaiSX(e.target.value);
                       }}
                     >
-                      <option value="01">Thông Thường</option>
-                      <option value="02">SDI</option>
-                      <option value="03">ETC</option>
-                      <option value="04">SAMPLE</option>
+                      <option value='01'>Thông Thường</option>
+                      <option value='02'>SDI</option>
+                      <option value='03'>ETC</option>
+                      <option value='04'>SAMPLE</option>
                     </select>
                   </label>
                   <label>
                     <b>Loại xuất hàng</b>
                     <select
-                      name="loaixh"
+                      name='loaixh'
                       value={loaixh}
                       onChange={(e) => {
                         setLoaiXH(e.target.value);
                       }}
                     >
-                      <option value="01">GC</option>
-                      <option value="02">SK</option>
-                      <option value="03">KD</option>
-                      <option value="04">VN</option>
-                      <option value="05">SAMPLE</option>
-                      <option value="06">Vai bac 4</option>
-                      <option value="07">ETC</option>
+                      <option value='01'>GC</option>
+                      <option value='02'>SK</option>
+                      <option value='03'>KD</option>
+                      <option value='04'>VN</option>
+                      <option value='05'>SAMPLE</option>
+                      <option value='06'>Vai bac 4</option>
+                      <option value='07'>ETC</option>
                     </select>
                   </label>
                 </div>
-                <div className="dangkyinputbox">
+                <div className='dangkyinputbox'>
                   <label>
                     <b>YCSX QTY:</b>{" "}
                     <TextField
@@ -3272,12 +3358,12 @@ const YCSXManager = () => {
                       onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                         setNewYcsxQty(e.target.value)
                       }
-                      size="small"
-                      color="success"
-                      className="autocomplete"
-                      id="outlined-basic"
-                      label="YCSX QTY"
-                      variant="outlined"
+                      size='small'
+                      color='success'
+                      className='autocomplete'
+                      id='outlined-basic'
+                      label='YCSX QTY'
+                      variant='outlined'
                     />
                   </label>
                   <label>
@@ -3287,23 +3373,23 @@ const YCSXManager = () => {
                       onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                         setNewYcsxRemark(e.target.value)
                       }
-                      size="small"
-                      color="success"
-                      className="autocomplete"
-                      id="outlined-basic"
-                      label="Remark"
-                      variant="outlined"
+                      size='small'
+                      color='success'
+                      className='autocomplete'
+                      id='outlined-basic'
+                      label='Remark'
+                      variant='outlined'
                     />
                   </label>
                 </div>
-                <div className="dangkyinputbox">
+                <div className='dangkyinputbox'>
                   <label>
                     <b>PO NO</b>
                     <Autocomplete
-                      size="small"
+                      size='small'
                       disablePortal
                       options={ponolist}
-                      className="pono_autocomplete"
+                      className='pono_autocomplete'
                       getOptionLabel={(option: PONOLIST | any) => {
                         return `${
                           moment.utc(option.PO_DATE).isValid()
@@ -3312,7 +3398,7 @@ const YCSXManager = () => {
                         }| ${option.PO_NO}`;
                       }}
                       renderInput={(params) => (
-                        <TextField {...params} label="Select PO NO" />
+                        <TextField {...params} label='Select PO NO' />
                       )}
                       value={selectedPoNo}
                       onChange={(event: any, newValue: PONOLIST | null) => {
@@ -3321,12 +3407,12 @@ const YCSXManager = () => {
                         setNewDeliveryDate(
                           newValue?.RD_DATE === undefined
                             ? moment.utc().format("YYYY-MM-DD")
-                            : newValue?.RD_DATE,
+                            : newValue?.RD_DATE
                         );
                         setNewYcsxQty(
                           newValue?.PO_QTY === undefined
                             ? ""
-                            : newValue?.PO_QTY.toString(),
+                            : newValue?.PO_QTY.toString()
                         );
                       }}
                       isOptionEqualToValue={(option, value) =>
@@ -3336,10 +3422,10 @@ const YCSXManager = () => {
                   </label>
                 </div>
               </div>
-              <div className="dangkybutton">
+              <div className='dangkybutton'>
                 {selection.themycsx && (
                   <button
-                    className="thembutton"
+                    className='thembutton'
                     onClick={() => {
                       handle_add_1YCSX();
                     }}
@@ -3349,7 +3435,7 @@ const YCSXManager = () => {
                 )}
                 {selection.inserttableycsx && (
                   <button
-                    className="thembutton"
+                    className='thembutton'
                     onClick={() => {
                       handle_InsertYCSXTable();
                     }}
@@ -3359,7 +3445,7 @@ const YCSXManager = () => {
                 )}
                 {selection.suaycsx && (
                   <button
-                    className="suabutton"
+                    className='suabutton'
                     onClick={() => {
                       updateYCSX();
                     }}
@@ -3368,7 +3454,7 @@ const YCSXManager = () => {
                   </button>
                 )}
                 <button
-                  className="xoabutton"
+                  className='xoabutton'
                   onClick={() => {
                     clearYCSXform();
                   }}
@@ -3376,7 +3462,7 @@ const YCSXManager = () => {
                   Clear
                 </button>
                 <button
-                  className="closebutton"
+                  className='closebutton'
                   onClick={() => {
                     setSelection({ ...selection, them1po: false });
                   }}
@@ -3389,24 +3475,24 @@ const YCSXManager = () => {
         </div>
       )}
       {selection.thempohangloat && (
-        <div className="newycsx">
-          <div className="batchnewycsx">
-            <form className="formupload">
-              <label htmlFor="upload">
+        <div className='newycsx'>
+          <div className='batchnewycsx'>
+            <form className='formupload'>
+              <label htmlFor='upload'>
                 <b>Chọn file Excel: </b>
                 <input
-                  className="selectfilebutton"
-                  type="file"
-                  name="upload"
-                  id="upload"
+                  className='selectfilebutton'
+                  type='file'
+                  name='upload'
+                  id='upload'
                   onChange={(e: any) => {
                     readUploadFile(e);
                   }}
                 />
               </label>
-              <div className="ycsxbutton">
+              <div className='ycsxbutton'>
                 <div
-                  className="checkpobutton"
+                  className='checkpobutton'
                   onClick={(e) => {
                     e.preventDefault();
                     confirmCheckYcsxHangLoat();
@@ -3415,7 +3501,7 @@ const YCSXManager = () => {
                   Check YCSX
                 </div>
                 <div
-                  className="uppobutton"
+                  className='uppobutton'
                   onClick={(e) => {
                     e.preventDefault();
                     confirmUpYcsxHangLoat();
@@ -3424,7 +3510,7 @@ const YCSXManager = () => {
                   Up YCSX
                 </div>
                 <div
-                  className="clearobutton"
+                  className='clearobutton'
                   onClick={(e) => {
                     e.preventDefault();
                     handle_DeleteYCSX_Excel();
@@ -3434,7 +3520,7 @@ const YCSXManager = () => {
                 </div>
               </div>
             </form>
-            <div className="insertYCSXTable">
+            <div className='insertYCSXTable'>
               {true && (
                 <DataGrid
                   sx={{ fontSize: "0.7rem" }}
@@ -3449,7 +3535,7 @@ const YCSXManager = () => {
                   rowsPerPageOptions={[
                     5, 10, 50, 100, 500, 1000, 5000, 10000, 100000,
                   ]}
-                  editMode="row"
+                  editMode='row'
                   getRowHeight={() => "auto"}
                   checkboxSelection
                   onSelectionModelChange={(ids) => {
@@ -3462,18 +3548,18 @@ const YCSXManager = () => {
         </div>
       )}
       {selection.trapo && (
-        <div className="tracuuYCSX">
+        <div className='tracuuYCSX'>
           {showhidesearchdiv && (
-            <div className="tracuuYCSXform">
-              <div className="forminput">
-                <div className="forminputcolumn">
+            <div className='tracuuYCSXform'>
+              <div className='forminput'>
+                <div className='forminputcolumn'>
                   <label>
                     <b>Từ ngày:</b>
                     <input
                       onKeyDown={(e) => {
                         handleSearchCodeKeyDown(e);
                       }}
-                      type="date"
+                      type='date'
                       value={fromdate.slice(0, 10)}
                       onChange={(e) => setFromDate(e.target.value)}
                     ></input>
@@ -3484,21 +3570,21 @@ const YCSXManager = () => {
                       onKeyDown={(e) => {
                         handleSearchCodeKeyDown(e);
                       }}
-                      type="date"
+                      type='date'
                       value={todate.slice(0, 10)}
                       onChange={(e) => setToDate(e.target.value)}
                     ></input>
                   </label>
                 </div>
-                <div className="forminputcolumn">
+                <div className='forminputcolumn'>
                   <label>
                     <b>Code KD:</b>{" "}
                     <input
                       onKeyDown={(e) => {
                         handleSearchCodeKeyDown(e);
                       }}
-                      type="text"
-                      placeholder="GH63-xxxxxx"
+                      type='text'
+                      placeholder='GH63-xxxxxx'
                       value={codeKD}
                       onChange={(e) => setCodeKD(e.target.value)}
                     ></input>
@@ -3509,22 +3595,22 @@ const YCSXManager = () => {
                       onKeyDown={(e) => {
                         handleSearchCodeKeyDown(e);
                       }}
-                      type="text"
-                      placeholder="7C123xxx"
+                      type='text'
+                      placeholder='7C123xxx'
                       value={codeCMS}
                       onChange={(e) => setCodeCMS(e.target.value)}
                     ></input>
                   </label>
                 </div>
-                <div className="forminputcolumn">
+                <div className='forminputcolumn'>
                   <label>
                     <b>Tên nhân viên:</b>{" "}
                     <input
                       onKeyDown={(e) => {
                         handleSearchCodeKeyDown(e);
                       }}
-                      type="text"
-                      placeholder="Trang"
+                      type='text'
+                      placeholder='Trang'
                       value={empl_name}
                       onChange={(e) => setEmpl_Name(e.target.value)}
                     ></input>
@@ -3535,22 +3621,22 @@ const YCSXManager = () => {
                       onKeyDown={(e) => {
                         handleSearchCodeKeyDown(e);
                       }}
-                      type="text"
-                      placeholder="SEVT"
+                      type='text'
+                      placeholder='SEVT'
                       value={cust_name}
                       onChange={(e) => setCust_Name(e.target.value)}
                     ></input>
                   </label>
                 </div>
-                <div className="forminputcolumn">
+                <div className='forminputcolumn'>
                   <label>
                     <b>Loại sản phẩm:</b>{" "}
                     <input
                       onKeyDown={(e) => {
                         handleSearchCodeKeyDown(e);
                       }}
-                      type="text"
-                      placeholder="TSP"
+                      type='text'
+                      placeholder='TSP'
                       value={prod_type}
                       onChange={(e) => setProdType(e.target.value)}
                     ></input>
@@ -3561,29 +3647,29 @@ const YCSXManager = () => {
                       onKeyDown={(e) => {
                         handleSearchCodeKeyDown(e);
                       }}
-                      type="text"
-                      placeholder="12345"
+                      type='text'
+                      placeholder='12345'
                       value={prodrequestno}
                       onChange={(e) => setProdRequestNo(e.target.value)}
                     ></input>
                   </label>
                 </div>
-                <div className="forminputcolumn">
+                <div className='forminputcolumn'>
                   <label>
                     <b>Phân loại:</b>
                     <select
-                      name="phanloai"
+                      name='phanloai'
                       value={phanloai}
                       onChange={(e) => {
                         setPhanLoai(e.target.value);
                       }}
                     >
-                      <option value="00">ALL</option>
-                      <option value="01">Thông thường</option>
-                      <option value="02">SDI</option>
-                      <option value="03">GC</option>
-                      <option value="04">SAMPLE</option>
-                      <option value="22">NOT SAMPLE</option>
+                      <option value='00'>ALL</option>
+                      <option value='01'>Thông thường</option>
+                      <option value='02'>SDI</option>
+                      <option value='03'>GC</option>
+                      <option value='04'>SAMPLE</option>
+                      <option value='22'>NOT SAMPLE</option>
                     </select>
                   </label>
                   <label>
@@ -3592,22 +3678,22 @@ const YCSXManager = () => {
                       onKeyDown={(e) => {
                         handleSearchCodeKeyDown(e);
                       }}
-                      type="text"
-                      placeholder="SJ-203020HC"
+                      type='text'
+                      placeholder='SJ-203020HC'
                       value={material}
                       onChange={(e) => setMaterial(e.target.value)}
                     ></input>
                   </label>
                 </div>
-                <div className="forminputcolumn">
+                <div className='forminputcolumn'>
                   <label>
                     <b>YCSX Pending:</b>
                     <input
                       onKeyDown={(e) => {
                         handleSearchCodeKeyDown(e);
                       }}
-                      type="checkbox"
-                      name="alltimecheckbox"
+                      type='checkbox'
+                      name='alltimecheckbox'
                       defaultChecked={ycsxpendingcheck}
                       onChange={() => setYCSXPendingCheck(!ycsxpendingcheck)}
                     ></input>
@@ -3618,37 +3704,37 @@ const YCSXManager = () => {
                       onKeyDown={(e) => {
                         handleSearchCodeKeyDown(e);
                       }}
-                      type="checkbox"
-                      name="alltimecheckbox"
+                      type='checkbox'
+                      name='alltimecheckbox'
                       defaultChecked={inspectInputcheck}
                       onChange={() => setInspectInputCheck(!inspectInputcheck)}
                     ></input>
                   </label>
                 </div>
               </div>
-              <div className="formbutton">
+              <div className='formbutton'>
                 <label>
                   <b>All Time:</b>
                   <input
-                    type="checkbox"
-                    name="alltimecheckbox"
+                    type='checkbox'
+                    name='alltimecheckbox'
                     defaultChecked={alltime}
                     onChange={() => setAllTime(!alltime)}
                   ></input>
                 </label>
                 <IconButton
-                  className="buttonIcon"
+                  className='buttonIcon'
                   onClick={() => {
                     handletraYCSX();
                   }}
                 >
-                  <FcSearch color="green" size={30} />
+                  <FcSearch color='green' size={30} />
                   Search
                 </IconButton>
               </div>
             </div>
           )}
-          <div className="tracuuYCSXTable">
+          <div className='tracuuYCSXTable'>
             <DataGrid
               sx={{ fontSize: "0.7rem" }}
               components={{
@@ -3664,7 +3750,7 @@ const YCSXManager = () => {
               rowsPerPageOptions={[
                 5, 10, 50, 100, 500, 1000, 5000, 10000, 500000,
               ]}
-              editMode="row"
+              editMode='row'
               getRowId={(row) => row.PROD_REQUEST_NO}
               checkboxSelection
               disableSelectionOnClick
@@ -3676,8 +3762,8 @@ const YCSXManager = () => {
         </div>
       )}
       {selection.renderycsx && (
-        <div className="printycsxpage">
-          <div className="buttongroup">
+        <div className='printycsxpage'>
+          <div className='buttongroup'>
             <Button
               onClick={() => {
                 setYCSXListRender(renderYCSX(ycsxdatatablefilter));
@@ -3694,14 +3780,14 @@ const YCSXManager = () => {
               Close
             </Button>
           </div>
-          <div className="ycsxrender" ref={ycsxprintref}>
+          <div className='ycsxrender' ref={ycsxprintref}>
             {ycsxlistrender}
           </div>
         </div>
       )}
       {selection.renderbanve && (
-        <div className="printycsxpage">
-          <div className="buttongroup">
+        <div className='printycsxpage'>
+          <div className='buttongroup'>
             <button
               onClick={() => {
                 setYCSXListRender(renderBanVe(ycsxdatatablefilter));
@@ -3718,22 +3804,22 @@ const YCSXManager = () => {
               Close
             </button>
           </div>
-          <div className="ycsxrender" ref={ycsxprintref}>
+          <div className='ycsxrender' ref={ycsxprintref}>
             {ycsxlistrender}
           </div>
         </div>
       )}
       {selection.amazontab && (
-        <div className="amazonetab">
-          <div className="newamazon">
-            <div className="amazonInputform">
-              <div className="forminput">
-                <div className="forminputcolumn">
+        <div className='amazonetab'>
+          <div className='newamazon'>
+            <div className='amazonInputform'>
+              <div className='forminput'>
+                <div className='forminputcolumn'>
                   <label>
                     <b>Số YCSX:</b>{" "}
                     <input
-                      type="text"
-                      placeholder="1F80008"
+                      type='text'
+                      placeholder='1F80008'
                       value={prodrequestno}
                       onChange={(e) => {
                         setProdRequestNo(e.target.value);
@@ -3744,15 +3830,15 @@ const YCSXManager = () => {
                   <label>
                     <b>ID Công việc:</b>{" "}
                     <input
-                      type="text"
-                      placeholder="CG7607845474986040938"
+                      type='text'
+                      placeholder='CG7607845474986040938'
                       value={id_congviec}
                       onChange={(e) => setID_CongViec(e.target.value)}
                     ></input>
                   </label>
                 </div>
-                <div className="forminputcolumn">
-                  <div className="prod_request_info">
+                <div className='forminputcolumn'>
+                  <div className='prod_request_info'>
                     <div style={{ color: "green" }}>Code KD: {codeKD}</div>
                     <div style={{ color: "red" }}>Code ERP: {codeCMS}</div>
                     <div style={{ color: "blue" }}>
@@ -3762,21 +3848,21 @@ const YCSXManager = () => {
                   </div>
                 </div>
               </div>
-              <form className="formupload">
-                <label htmlFor="upload">
+              <form className='formupload'>
+                <label htmlFor='upload'>
                   <b>Chọn file Excel: </b>
                   <input
-                    className="selectfilebutton"
-                    type="file"
-                    name="upload"
-                    id="upload"
+                    className='selectfilebutton'
+                    type='file'
+                    name='upload'
+                    id='upload'
                     onChange={(e: any) => {
                       readUploadFileAmazon(e);
                     }}
                   />
                 </label>
                 <div
-                  className="uppobutton"
+                  className='uppobutton'
                   onClick={(e) => {
                     e.preventDefault();
                     upAmazonData();
@@ -3785,7 +3871,16 @@ const YCSXManager = () => {
                   Up
                 </div>
                 <div
-                  className="checkpobutton"
+                  className='uppobutton'
+                  onClick={(e) => {
+                    e.preventDefault();
+                    upAmazonDataSuperFast();
+                  }}
+                >
+                  Up Super Fast
+                </div>
+                <div
+                  className='checkpobutton'
                   onClick={(e) => {
                     e.preventDefault();
                     checkDuplicateAMZ();
@@ -3794,7 +3889,7 @@ const YCSXManager = () => {
                   Check
                 </div>
                 <div
-                  className="clearobutton"
+                  className='clearobutton'
                   onClick={(e) => {
                     e.preventDefault();
                     setUploadExcelJSon([]);
@@ -3805,8 +3900,8 @@ const YCSXManager = () => {
                 {progressvalue}/{uploadExcelJson.length}
               </form>
             </div>
-            <div className="batchnewycsx">
-              <div className="insertYCSXTable">
+            <div className='batchnewycsx'>
+              <div className='insertYCSXTable'>
                 {true && (
                   <DataGrid
                     sx={{ fontSize: "0.7rem" }}
@@ -3821,7 +3916,7 @@ const YCSXManager = () => {
                     rowsPerPageOptions={[
                       5, 10, 50, 100, 500, 1000, 5000, 10000, 100000,
                     ]}
-                    editMode="row"
+                    editMode='row'
                     getRowHeight={() => "auto"}
                   />
                 )}
@@ -3831,7 +3926,7 @@ const YCSXManager = () => {
         </div>
       )}
       {selection.traamazdata && (
-        <div className="traamazdata">
+        <div className='traamazdata'>
           <TraAMZ />
         </div>
       )}

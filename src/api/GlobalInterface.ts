@@ -2662,7 +2662,6 @@ export interface BANGGIA_DATA2 {
   EQ3: string;
   EQ4: string;
 }
-
 //tinh hinh chot bao cao
 export interface TINH_HINH_CHOT_BC {
   SX_DATE: string;
@@ -2672,7 +2671,6 @@ export interface TINH_HINH_CHOT_BC {
   DA_NHAP_HIEUSUAT: number;
   CHUA_NHAP_HIEUSUAT: number;
 }
-
 //tinh hinh cuon lieu
 export interface MATERIAL_STATUS {
   INS_DATE: string;
@@ -2725,4 +2723,134 @@ export interface LOSS_TABLE_DATA_ROLL {
   INSPECTION_OUTPUT: number;
   TOTAL_LOSS_KT: number;
   TOTAL_LOSS: number;
+}
+//chart
+export interface WeeklyClosingData {
+  DEL_WEEK: string;
+  DELIVERY_QTY: number;
+  DELIVERED_AMOUNT: number;
+}
+export interface DailyClosingData {
+  DELIVERY_DATE: string;
+  DELIVERY_QTY: number;
+  DELIVERED_AMOUNT: number;
+}
+export interface RunningPOData {
+  PO_YEAR: number;
+  PO_WEEK: number;
+  YEAR_WEEK: string;
+  RUNNING_PO_QTY: number;
+  RUNNING_DEL_QTY: number;
+  RUNNING_PO_BALANCE: number;
+}
+export interface MonthlyClosingData {
+  MONTH_NUM: string;
+  DELIVERY_QTY: number;
+  DELIVERED_AMOUNT: number;
+}
+export interface YearlyClosingData {
+  YEAR_NUM: string;
+  DELIVERY_QTY: number;
+  DELIVERED_AMOUNT: number;
+}
+export interface WeeklyClosingData {
+  CUST_NAME_KD: string;
+  DELIVERY_AMOUNT: number;
+}
+export interface DiemDanhMainDeptData {
+  id: number;
+  MAINDEPTNAME: string;
+  COUNT_TOTAL: number;
+  COUT_ON: number;
+  COUT_OFF: number;
+  COUNT_CDD: number;
+  ON_RATE: number;
+}
+export interface SamSungFCSTData {
+  WEEKNO: string;
+  SEVT1: number;
+  SEV1: number;
+  SAMSUNG_ASIA1: number;
+  TT_SS1: number;
+  SEVT2: number;
+  SEV2: number;
+  SAMSUNG_ASIA2: number;
+  TT_SS2: number;
+}
+export interface WeeklyClosingData {
+  EMPL_NAME: string;
+  DELIVERY_AMOUNT: number;
+}
+export interface WeeklyClosingData {
+  DEL_WEEK: string;
+  DELIVERY_QTY: number;
+  DELIVERED_AMOUNT: number;
+}
+export interface WeekLyPOData {
+  PO_YEAR: number;
+  PO_WEEK: number;
+  YEAR_WEEK: string;
+  WEEKLY_PO_QTY: number;
+}
+export interface DailyPPMData {
+  INSPECT_DATE?: string;
+  INSPECT_TOTAL_QTY?: number;
+  MATERIAL_NG?: number;
+  PROCESS_NG?: number;
+  TOTAL_NG?: number;
+  TOTAL_PPM?: number;
+  MATERIAL_PPM?: number;
+  PROCESS_PPM?: number;
+}
+export interface DailyData {
+  dldata?: DailyPPMData[];
+  processColor?: string;
+  materialColor?: string;
+}
+export interface MonthlyPPMData {
+  YEAR_NUM?: number;
+  MONTH_NUM?: number;
+  INSPECT_TOTAL_QTY?: number;
+  MATERIAL_NG?: number;
+  PROCESS_NG?: number;
+  TOTAL_NG?: number;
+  TOTAL_PPM?: number;
+  MATERIAL_PPM?: number;
+  PROCESS_PPM?: number;
+}
+export interface MonthlyData {
+  dldata?: MonthlyPPMData[];
+  processColor?: string;
+  materialColor?: string;
+}
+export interface WeeklyPPMData {
+  YEAR_NUM?: number;
+  WEEK_NUM?: number;
+  INSPECT_TOTAL_QTY?: number;
+  MATERIAL_NG?: number;
+  PROCESS_NG?: number;
+  TOTAL_NG?: number;
+  TOTAL_PPM?: number;
+  MATERIAL_PPM?: number;
+  PROCESS_PPM?: number;
+}
+export interface WeeklyData {
+  dldata?: WeeklyPPMData[];
+  processColor?: string;
+  materialColor?: string;
+}
+export interface YearlyPPMData {
+  YEAR_NUM?: number;
+  INSPECT_TOTAL_QTY?: number;
+  MATERIAL_NG?: number;
+  PROCESS_NG?: number;
+  TOTAL_NG?: number;
+  TOTAL_PPM?: number;
+  MATERIAL_PPM?: number;
+  PROCESS_PPM?: number;
+}
+export interface YearlyData {
+  dldata?: YearlyPPMData[];
+  processColor?: string;
+  materialColor?: string;
 }

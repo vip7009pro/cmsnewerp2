@@ -21,12 +21,7 @@ import {
   CustomResponsiveContainer,
   nFormatter,
 } from "../../api/GlobalFunction";
-
-interface DailyClosingData {
-  DELIVERY_DATE: string;
-  DELIVERY_QTY: number;
-  DELIVERED_AMOUNT: number;
-}
+import { DailyClosingData } from "../../api/GlobalInterface";
 
 const Chart2 = () => {
   const [dailyClosingData, setDailyClosingData] = useState<
@@ -58,7 +53,7 @@ const Chart2 = () => {
     if (active && payload && payload.length) {
       return (
         <div
-          className="custom-tooltip"
+          className='custom-tooltip'
           style={{
             backgroundImage: "linear-gradient(to right, #ccffff, #00cccc)",
             padding: 20,
@@ -66,10 +61,10 @@ const Chart2 = () => {
           }}
         >
           <p>Ngày {label}:</p>
-          <p className="label">
+          <p className='label'>
             QTY: {`${payload[0].value.toLocaleString("en-US")}`} EA
           </p>
-          <p className="label">
+          <p className='label'>
             AMOUNT:{" "}
             {`${payload[1].value.toLocaleString("en-US", {
               style: "currency",
@@ -95,7 +90,7 @@ const Chart2 = () => {
                 ...element,
                 DELIVERY_DATE: element.DELIVERY_DATE.slice(0, 10),
               };
-            },
+            }
           );
 
           setDailyClosingData(loadeddata);
@@ -130,13 +125,13 @@ const Chart2 = () => {
           bottom: 5,
         }}
       >
-        <CartesianGrid strokeDasharray="3 3" className="chartGrid" />
-        <XAxis dataKey="DELIVERY_DATE">
+        <CartesianGrid strokeDasharray='3 3' className='chartGrid' />
+        <XAxis dataKey='DELIVERY_DATE'>
           {" "}
-          <Label value="Ngày tháng" offset={0} position="insideBottom" />
+          <Label value='Ngày tháng' offset={0} position='insideBottom' />
         </XAxis>
         <YAxis
-          yAxisId="left-axis"
+          yAxisId='left-axis'
           label={{
             value: "Số lượng",
             angle: -90,
@@ -151,8 +146,8 @@ const Chart2 = () => {
           tickCount={6}
         />
         <YAxis
-          yAxisId="right-axis"
-          orientation="right"
+          yAxisId='right-axis'
+          orientation='right'
           label={{
             value: "Số tiền",
             angle: -90,
@@ -164,17 +159,17 @@ const Chart2 = () => {
         <Tooltip content={<CustomTooltip />} />
         <Legend />
         <Line
-          yAxisId="left-axis"
-          type="monotone"
-          dataKey="DELIVERY_QTY"
-          stroke="green"
+          yAxisId='left-axis'
+          type='monotone'
+          dataKey='DELIVERY_QTY'
+          stroke='green'
         />
         <Bar
-          yAxisId="right-axis"
-          type="monotone"
-          dataKey="DELIVERED_AMOUNT"
-          stroke="white"
-          fill="#cc66ff"
+          yAxisId='right-axis'
+          type='monotone'
+          dataKey='DELIVERED_AMOUNT'
+          stroke='white'
+          fill='#cc66ff'
           label={{ position: "top", formatter: labelFormatter }}
         ></Bar>
       </ComposedChart>

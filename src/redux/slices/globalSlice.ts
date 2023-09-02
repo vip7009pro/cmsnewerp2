@@ -10,13 +10,13 @@ import {
   QLSXPLANDATA,
   UserData,
 } from "../../api/GlobalInterface";
-const startCPN: string = "CMS";
+const startCPN: string = "PVN";
 const socket = io(
   startCPN === "CMS"
     ? "http://14.160.33.94:3005"
     : startCPN === "PVN"
     ? "http://222.252.1.63:3005"
-    : "",
+    : ""
 );
 //const socket =  io('http://localhost:3005')
 socket.on("connect", () => {
@@ -46,6 +46,9 @@ socket.on("logout", (data) => {
 socket.on("disconnect", () => {
   console.log(socket.id); //undefined
 });
+socket.on("connect_error", (e) => {
+  console.log("Lỗi kết nối: ", e);
+});
 let server_ip_local: any = localStorage.getItem("server_ip")?.toString();
 if (server_ip_local !== undefined) {
 } else {
@@ -56,7 +59,7 @@ if (server_ip_local !== undefined) {
       ? "http://14.160.33.94:5011"
       : startCPN === "PVN"
       ? "http://222.252.1.63:3007"
-      : "",
+      : ""
   );
 }
 const initialState: GlobalInterface = {
@@ -178,13 +181,13 @@ export const glbSlice = createSlice({
       let temp_plan_id_array: string[] = state.multiple_chithi_array.map(
         (element: QLSXPLANDATA, index: number) => {
           return element.PLAN_ID;
-        },
+        }
       );
       let temp_plan_step_array: QLSXPLANDATA[] =
         state.multiple_chithi_array.filter(
           (element: QLSXPLANDATA, index: number) => {
             return element.STEP === 0;
-          },
+          }
         );
       if (temp_plan_id_array.indexOf(action.payload.PLAN_ID) !== -1) {
         Swal.fire("Thông báo", "PLAN ID đã được thêm rồi", "error");
@@ -193,7 +196,7 @@ export const glbSlice = createSlice({
           Swal.fire(
             "Thông báo",
             "Chỉ thêm 1 chỉ thị Bước 0 vào combo",
-            "error",
+            "error"
           );
         } else {
           if (state.multiple_chithi_array.length === 0) {
@@ -218,7 +221,7 @@ export const glbSlice = createSlice({
               Swal.fire(
                 "Thông báo",
                 "Chỉ thêm các chỉ thị của cùng 1 ycsx vào combo",
-                "error",
+                "error"
               );
             }
           }
@@ -247,14 +250,14 @@ export const glbSlice = createSlice({
                 MENU_CODE: ele.ELE_CODE,
                 MENU_NAME: ele.ELE_NAME,
               };
-            }),
-          ),
+            })
+          )
         );
       } else {
         Swal.fire(
           "Thông báo",
           "Chỉ mở cùng lúc tối đa 8 tab để đảm bảo trải nghiệm sử dụng, hãy tắt bớt tab không sử dụng",
-          "warning",
+          "warning"
         );
       }
     },
@@ -268,8 +271,8 @@ export const glbSlice = createSlice({
               MENU_CODE: ele.ELE_CODE,
               MENU_NAME: ele.ELE_NAME,
             };
-          }),
-        ),
+          })
+        )
       );
     },
     closeTab: (state, action: PayloadAction<number>) => {
@@ -296,8 +299,8 @@ export const glbSlice = createSlice({
                 MENU_CODE: ele.ELE_CODE,
                 MENU_NAME: ele.ELE_NAME,
               };
-            }),
-          ),
+            })
+          )
         );
         //let i=state.tabIndex;
         while (

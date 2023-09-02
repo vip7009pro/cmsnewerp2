@@ -86,19 +86,19 @@ import QLGN from "./pages/rnd/quanlygiaonhandaofilm/QLGN";
 import KHOTPNEW from "./pages/kho/khotp_new/KHOTPNEW";
 import KHOTOTAL from "./pages/kho/KHOTOTAL";*/
 const CAPA_MANAGER = lazy(
-  () => import("./pages/qlsx/QLSXPLAN/CAPA/CAPA_MANAGER"),
+  () => import("./pages/qlsx/QLSXPLAN/CAPA/CAPA_MANAGER")
 );
 const PLANRESULT = lazy(() => import("./pages/sx/PLANRESULT/PLANRESULT"));
 const BANGCHAMCONG = lazy(
-  () => import("./pages/nhansu/BangChamCong/BangChamCong"),
+  () => import("./pages/nhansu/BangChamCong/BangChamCong")
 );
 const QuotationTotal = lazy(
-  () => import("./pages/kinhdoanh/quotationmanager/QuotationTotal"),
+  () => import("./pages/kinhdoanh/quotationmanager/QuotationTotal")
 );
 const MUAHANG = lazy(() => import("./pages/muahang/MUAHANG"));
 const QLVL = lazy(() => import("./pages/muahang/quanlyvatlieu/QLVL"));
 const PRODUCT_BARCODE_MANAGER = lazy(
-  () => import("./pages/rnd/product_barcode_manager/PRODUCT_BARCODE_MANAGER"),
+  () => import("./pages/rnd/product_barcode_manager/PRODUCT_BARCODE_MANAGER")
 );
 const QLGN = lazy(() => import("./pages/rnd/quanlygiaonhandaofilm/QLGN"));
 const KHOTPNEW = lazy(() => import("./pages/kho/khotp_new/KHOTPNEW"));
@@ -113,93 +113,93 @@ const ISO = lazy(() => import("./pages/qc/iso/ISO"));
 const OQC = lazy(() => import("./pages/qc/oqc/OQC"));
 const CSTOTAL = lazy(() => import("./pages/qc/cs/CSTOTAL"));
 const QuotationManager = lazy(
-  () => import("./pages/kinhdoanh/quotationmanager/QuotationManager"),
+  () => import("./pages/kinhdoanh/quotationmanager/QuotationManager")
 );
 const BulletinBoard = lazy(
-  () => import("./components/BulletinBoard/BulletinBoard"),
+  () => import("./components/BulletinBoard/BulletinBoard")
 );
 const QLSX = lazy(() => import("./pages/qlsx/QLSX"));
 const QC = lazy(() => import("./pages/qc/QC"));
 const NhanSu = lazy(() => import("./pages/nhansu/NhanSu"));
 const KinhDoanh = lazy(() => import("./pages/kinhdoanh/KinhDoanh"));
 const AccountInfo = lazy(
-  () => import("./components/Navbar/AccountInfo/AccountInfo"),
+  () => import("./components/Navbar/AccountInfo/AccountInfo")
 );
 const QuanLyCapCao = lazy(
-  () => import("./pages/nhansu/QuanLyCapCao/QuanLyCapCao"),
+  () => import("./pages/nhansu/QuanLyCapCao/QuanLyCapCao")
 );
 const DESIGN_AMAZON = lazy(
-  () => import("./pages/rnd/design_amazon/DESIGN_AMAZON"),
+  () => import("./pages/rnd/design_amazon/DESIGN_AMAZON")
 );
 const KHOLIEU = lazy(() => import("./pages/kho/kholieu/KHOLIEU"));
 const DATASX = lazy(() => import("./pages/qlsx/QLSXPLAN/DATASX/DATASX"));
 const EQ_STATUS = lazy(
-  () => import("./pages/qlsx/QLSXPLAN/EQ_STATUS/EQ_STATUS"),
+  () => import("./pages/qlsx/QLSXPLAN/EQ_STATUS/EQ_STATUS")
 );
 const LICHSUINPUTLIEU = lazy(
-  () => import("./pages/qlsx/QLSXPLAN/LICHSUINPUTLIEU/LICHSUINPUTLIEU"),
+  () => import("./pages/qlsx/QLSXPLAN/LICHSUINPUTLIEU/LICHSUINPUTLIEU")
 );
 const INSPECT_STATUS = lazy(
-  () => import("./pages/qc/inspection/INSPECT_STATUS/INSPECT_STATUS"),
+  () => import("./pages/qc/inspection/INSPECT_STATUS/INSPECT_STATUS")
 );
 const ShortageKD = lazy(
-  () => import("./pages/kinhdoanh/shortageKD/ShortageKD"),
+  () => import("./pages/kinhdoanh/shortageKD/ShortageKD")
 );
 const TRANGTHAICHITHI = lazy(
-  () => import("./pages/sx/TRANGTHAICHITHI/TRANGTHAICHITHI"),
+  () => import("./pages/sx/TRANGTHAICHITHI/TRANGTHAICHITHI")
 );
 const CAPASX = lazy(() => import("./pages/qlsx/QLSXPLAN/CAPA/CAPASX"));
 const KHOAO = lazy(() => import("./pages/qlsx/QLSXPLAN/KHOAO/KHOAO"));
 const TINHINHCUONLIEU = lazy(
-  () => import("./pages/sx/TINH_HINH_CUON_LIEU/TINHINHCUONLIEU"),
+  () => import("./pages/sx/TINH_HINH_CUON_LIEU/TINHINHCUONLIEU")
 );
 const QLSXPLAN = lazy(() => import("./pages/qlsx/QLSXPLAN/QLSXPLAN"));
 const BOM_MANAGER = lazy(() => import("./pages/rnd/bom_manager/BOM_MANAGER"));
 const BOM_AMAZON = lazy(() => import("./pages/rnd/bom_amazon/BOM_AMAZON"));
 const CODE_MANAGER = lazy(
-  () => import("./pages/rnd/code_manager/CODE_MANAGER"),
+  () => import("./pages/rnd/code_manager/CODE_MANAGER")
 );
 const CUST_MANAGER = lazy(
-  () => import("./pages/kinhdoanh/custManager/CUST_MANAGER0"),
+  () => import("./pages/kinhdoanh/custManager/CUST_MANAGER0")
 );
 const QuanLyPhongBanNhanSu = lazy(
-  () => import("./pages/nhansu/QuanLyPhongBanNhanSu/QuanLyPhongBanNhanSu"),
+  () => import("./pages/nhansu/QuanLyPhongBanNhanSu/QuanLyPhongBanNhanSu")
 );
 const DiemDanhNhom = lazy(
-  () => import("./pages/nhansu/DiemDanhNhom/DiemDanhNhom"),
+  () => import("./pages/nhansu/DiemDanhNhom/DiemDanhNhom")
 );
 const DieuChuyenTeam = lazy(
-  () => import("./pages/nhansu/DieuChuyenTeam/DieuChuyenTeam"),
+  () => import("./pages/nhansu/DieuChuyenTeam/DieuChuyenTeam")
 );
 const TabDangKy = lazy(() => import("./pages/nhansu/DangKy/TabDangKy"));
 const PheDuyetNghi = lazy(
-  () => import("./pages/nhansu/PheDuyetNghi/PheDuyetNghi"),
+  () => import("./pages/nhansu/PheDuyetNghi/PheDuyetNghi")
 );
 const LichSu = lazy(() => import("./pages/nhansu/LichSu/LichSu"));
 const BaoCaoNhanSu = lazy(
-  () => import("./pages/nhansu/BaoCaoNhanSu/BaoCaoNhanSu"),
+  () => import("./pages/nhansu/BaoCaoNhanSu/BaoCaoNhanSu")
 );
 const PoManager = lazy(() => import("./pages/kinhdoanh/pomanager/PoManager"));
 const KinhDoanhReport = lazy(
-  () => import("./pages/kinhdoanh/kinhdoanhreport/KinhDoanhReport"),
+  () => import("./pages/kinhdoanh/kinhdoanhreport/KinhDoanhReport")
 );
 const InvoiceManager = lazy(
-  () => import("./pages/kinhdoanh/invoicemanager/InvoiceManager"),
+  () => import("./pages/kinhdoanh/invoicemanager/InvoiceManager")
 );
 const PlanManager = lazy(
-  () => import("./pages/kinhdoanh/planmanager/PlanManager"),
+  () => import("./pages/kinhdoanh/planmanager/PlanManager")
 );
 const FCSTManager = lazy(
-  () => import("./pages/kinhdoanh/fcstmanager/FCSTManager"),
+  () => import("./pages/kinhdoanh/fcstmanager/FCSTManager")
 );
 const YCSXManager = lazy(
-  () => import("./pages/kinhdoanh/ycsxmanager/YCSXManager"),
+  () => import("./pages/kinhdoanh/ycsxmanager/YCSXManager")
 );
 const POandStockFull = lazy(
-  () => import("./pages/kinhdoanh/poandstockfull/POandStockFull"),
+  () => import("./pages/kinhdoanh/poandstockfull/POandStockFull")
 );
 const TINHHINHCUONLIEU = lazy(
-  () => import("./pages/sx/TINH_HINH_CUON_LIEU/TINHINHCUONLIEU"),
+  () => import("./pages/sx/TINH_HINH_CUON_LIEU/TINHINHCUONLIEU")
 );
 const DATASX2 = lazy(() => import("./pages/qlsx/QLSXPLAN/DATASX/DATASX2"));
 interface userDataInterface {
@@ -288,7 +288,7 @@ const ProtectedRoute: any = ({
           Swal.fire(
             "Thông báo",
             "Nội dung: Bạn không có quyền truy cập: ",
-            "error",
+            "error"
           );
         } else {
           return children;
@@ -299,7 +299,7 @@ const ProtectedRoute: any = ({
         Swal.fire(
           "Thông báo",
           "Nội dung: Bạn không phải người của bộ phận: " + maindeptname,
-          "error",
+          "error"
         );
       } else {
         if (
@@ -319,7 +319,7 @@ const ProtectedRoute: any = ({
             Swal.fire(
               "Thông báo",
               "Nội dung: Bạn không có quyền truy cập: ",
-              "error",
+              "error"
             );
           } else {
             return children;
@@ -384,13 +384,13 @@ function App() {
   });
   const [loginState, setLoginState] = useState(false);
   const trangthaidiemdanh: boolean | undefined = useSelector(
-    (state: RootState) => state.totalSlice.diemdanhstate,
+    (state: RootState) => state.totalSlice.diemdanhstate
   );
   const globalLoginState: boolean | undefined = useSelector(
-    (state: RootState) => state.totalSlice.loginState,
+    (state: RootState) => state.totalSlice.loginState
   );
   const globalUserData: UserData | undefined = useSelector(
-    (state: RootState) => state.totalSlice.userData,
+    (state: RootState) => state.totalSlice.userData
   );
   const dispatch = useDispatch();
   //console.log(userData.JOB_NAME);
@@ -451,7 +451,7 @@ function App() {
               WORK_STATUS_NAME: "Đang làm",
               WORK_STATUS_NAME_KR: "근무중",
               EMPL_IMAGE: "N",
-            }),
+            })
           );
           setUserData({
             ADD_COMMUNE: "Đông Xuân",
@@ -510,7 +510,7 @@ function App() {
             update_socket({
               event: "login",
               data: data.data.data.EMPL_NO,
-            }),
+            })
           );
           /* setLoginState(true); */
           dispatch(login(true));
@@ -546,19 +546,19 @@ function App() {
   return (
     <>
       {globalLoginState && (
-        <div className="App">
+        <div className='App'>
           <Suspense fallback={<FallBackComponent />}>
             <LangConText.Provider value={[lang, setLang]}>
               <UserContext.Provider value={[userData, setUserData]}>
                 <BrowserRouter>
                   <Routes>
                     <Route
-                      path="/"
+                      path='/'
                       element={
                         <ProtectedRoute
                           user={globalUserData}
-                          maindeptname="all"
-                          jobname="all"
+                          maindeptname='all'
+                          jobname='all'
                         >
                           <animated.div
                             style={{
@@ -587,138 +587,138 @@ function App() {
                         }
                       />
                       <Route
-                        path="accountinfo"
+                        path='accountinfo'
                         element={<AccountInfo />}
                       ></Route>
                       <Route
-                        path="kinhdoanh"
+                        path='kinhdoanh'
                         element={
                           <ProtectedRoute
                             user={globalUserData}
-                            maindeptname="all"
-                            jobname="Leader"
+                            maindeptname='all'
+                            jobname='Leader'
                           >
                             <KinhDoanh />
                           </ProtectedRoute>
                         }
                       >
                         <Route index element={<KinhDoanhReport />} />
-                        <Route path="pomanager" element={<PoManager />} />
+                        <Route path='pomanager' element={<PoManager />} />
                         <Route
-                          path="invoicemanager"
+                          path='invoicemanager'
                           element={<InvoiceManager />}
                         />
-                        <Route path="planmanager" element={<PlanManager />} />
-                        <Route path="fcstmanager" element={<FCSTManager />} />
-                        <Route path="ycsxmanager" element={<YCSXManager />} />
-                        <Route path="quanlycodebom" element={<BOM_MANAGER />} />
+                        <Route path='planmanager' element={<PlanManager />} />
+                        <Route path='fcstmanager' element={<FCSTManager />} />
+                        <Route path='ycsxmanager' element={<YCSXManager />} />
+                        <Route path='quanlycodebom' element={<BOM_MANAGER />} />
                         <Route
-                          path="poandstockfull"
+                          path='poandstockfull'
                           element={<POandStockFull />}
                         />
                         <Route
-                          path="kinhdoanhreport"
+                          path='kinhdoanhreport'
                           element={<KinhDoanhReport />}
                         />
-                        <Route path="codeinfo" element={<CODE_MANAGER />} />
+                        <Route path='codeinfo' element={<CODE_MANAGER />} />
                         <Route
-                          path="customermanager"
+                          path='customermanager'
                           element={<CUST_MANAGER />}
                         />
                         <Route
-                          path="quotationmanager"
+                          path='quotationmanager'
                           element={<QuotationTotal />}
                         />
-                        <Route path="eqstatus" element={<EQ_STATUS />} />
-                        <Route path="ins_status" element={<INSPECT_STATUS />} />
-                        <Route path="shortage" element={<ShortageKD />} />
+                        <Route path='eqstatus' element={<EQ_STATUS />} />
+                        <Route path='ins_status' element={<INSPECT_STATUS />} />
+                        <Route path='shortage' element={<ShortageKD />} />
                       </Route>
                       <Route
-                        path="rnd"
+                        path='rnd'
                         element={
                           <ProtectedRoute
                             user={globalUserData}
-                            maindeptname="all"
-                            jobname="Leader"
+                            maindeptname='all'
+                            jobname='Leader'
                           >
                             <KinhDoanh />
                           </ProtectedRoute>
                         }
                       >
                         <Route index element={<KinhDoanhReport />} />
-                        <Route path="quanlycodebom" element={<BOM_MANAGER />} />
-                        <Route path="ycsxmanager" element={<YCSXManager />} />
-                        <Route path="dtc" element={<DTC />} />
-                        <Route path="thembomamazon" element={<BOM_AMAZON />} />
+                        <Route path='quanlycodebom' element={<BOM_MANAGER />} />
+                        <Route path='ycsxmanager' element={<YCSXManager />} />
+                        <Route path='dtc' element={<DTC />} />
+                        <Route path='thembomamazon' element={<BOM_AMAZON />} />
                         <Route
-                          path="designamazon"
+                          path='designamazon'
                           element={<DESIGN_AMAZON />}
                         />
                         <Route
-                          path="productbarcodemanager"
+                          path='productbarcodemanager'
                           element={<PRODUCT_BARCODE_MANAGER />}
                         />
-                        <Route path="quanlygiaonhan" element={<QLGN />} />
+                        <Route path='quanlygiaonhan' element={<QLGN />} />
                       </Route>
                       <Route
-                        path="qlsx"
+                        path='qlsx'
                         element={
                           <ProtectedRoute
                             user={globalUserData}
-                            maindeptname="all"
-                            jobname="Leader"
+                            maindeptname='all'
+                            jobname='Leader'
                           >
                             <QLSX />
                           </ProtectedRoute>
                         }
                       >
                         <Route index element={<QLSX />} />
-                        <Route path="ycsxmanager" element={<YCSXManager />} />
-                        <Route path="codeinfo" element={<CODE_MANAGER />} />
-                        <Route path="qlsxplan" element={<QLSXPLAN />} />
-                        <Route path="quanlycodebom" element={<BOM_MANAGER />} />
-                        <Route path="capamanager" element={<CAPASX />} />
-                        <Route path="qlsxmrp" element={<CAPASX />} />
+                        <Route path='ycsxmanager' element={<YCSXManager />} />
+                        <Route path='codeinfo' element={<CODE_MANAGER />} />
+                        <Route path='qlsxplan' element={<QLSXPLAN />} />
+                        <Route path='quanlycodebom' element={<BOM_MANAGER />} />
+                        <Route path='capamanager' element={<CAPASX />} />
+                        <Route path='qlsxmrp' element={<CAPASX />} />
                       </Route>
                       <Route
-                        path="phongmuahang"
+                        path='phongmuahang'
                         element={
                           <ProtectedRoute
                             user={globalUserData}
-                            maindeptname="all"
-                            jobname="Leader"
+                            maindeptname='all'
+                            jobname='Leader'
                           >
                             <MUAHANG />
                           </ProtectedRoute>
                         }
                       >
                         <Route index element={<MUAHANG />} />
-                        <Route path="quanlyvatlieu" element={<QLVL />} />
-                        <Route path="mrp" element={<QLVL />} />
+                        <Route path='quanlyvatlieu' element={<QLVL />} />
+                        <Route path='mrp' element={<QLVL />} />
                       </Route>
                       <Route
-                        path="bophankho"
+                        path='bophankho'
                         element={
                           <ProtectedRoute
                             user={globalUserData}
-                            maindeptname="all"
-                            jobname="Leader"
+                            maindeptname='all'
+                            jobname='Leader'
                           >
                             <KHOTOTAL />
                           </ProtectedRoute>
                         }
                       >
                         <Route index element={<KHOTPNEW />} />
-                        <Route path="nhapxuattontp" element={<KHOTPNEW />} />
-                        <Route path="nhapxuattonlieu" element={<KHOLIEU />} />
+                        <Route path='nhapxuattontp' element={<KHOTPNEW />} />
+                        <Route path='nhapxuattonlieu' element={<KHOLIEU />} />
                       </Route>
                       <Route
-                        path="qc"
+                        path='qc'
                         element={
                           <ProtectedRoute
                             user={globalUserData}
-                            maindeptname="all"
-                            jobname="Leader"
+                            maindeptname='all'
+                            jobname='Leader'
                           >
                             <QC />
                           </ProtectedRoute>
@@ -726,132 +726,132 @@ function App() {
                       >
                         <Route index element={<AccountInfo />} />
                         <Route
-                          path="tracuuchung"
+                          path='tracuuchung'
                           element={
                             <ProtectedRoute
                               user={globalUserData}
-                              maindeptname="all"
-                              jobname="Leader"
+                              maindeptname='all'
+                              jobname='Leader'
                             >
                               <IQC />
                             </ProtectedRoute>
                           }
                         />
                         <Route
-                          path="codeinfo"
+                          path='codeinfo'
                           element={
                             <ProtectedRoute
                               user={globalUserData}
-                              maindeptname="all"
-                              jobname="Leader"
+                              maindeptname='all'
+                              jobname='Leader'
                             >
                               <CODE_MANAGER />
                             </ProtectedRoute>
                           }
                         />
                         <Route
-                          path="iqc"
+                          path='iqc'
                           element={
                             <ProtectedRoute
                               user={globalUserData}
-                              maindeptname="all"
-                              jobname="Leader"
+                              maindeptname='all'
+                              jobname='Leader'
                             >
                               <IQC />
                             </ProtectedRoute>
                           }
                         />
                         <Route
-                          path="pqc"
+                          path='pqc'
                           element={
                             <ProtectedRoute
                               user={globalUserData}
-                              maindeptname="all"
-                              jobname="Leader"
+                              maindeptname='all'
+                              jobname='Leader'
                             >
                               <PQC />
                             </ProtectedRoute>
                           }
                         />
                         <Route
-                          path="oqc"
+                          path='oqc'
                           element={
                             <ProtectedRoute
                               user={globalUserData}
-                              maindeptname="all"
-                              jobname="Leader"
+                              maindeptname='all'
+                              jobname='Leader'
                             >
                               <OQC />
                             </ProtectedRoute>
                           }
                         />
                         <Route
-                          path="inspection"
+                          path='inspection'
                           element={
                             <ProtectedRoute
                               user={globalUserData}
-                              maindeptname="all"
-                              jobname="Leader"
+                              maindeptname='all'
+                              jobname='Leader'
                             >
                               <KIEMTRA />
                             </ProtectedRoute>
                           }
                         />
                         <Route
-                          path="cs"
+                          path='cs'
                           element={
                             <ProtectedRoute
                               user={globalUserData}
-                              maindeptname="all"
-                              jobname="Leader"
+                              maindeptname='all'
+                              jobname='Leader'
                             >
                               <CSTOTAL />
                             </ProtectedRoute>
                           }
                         />
                         <Route
-                          path="dtc"
+                          path='dtc'
                           element={
                             <ProtectedRoute
                               user={globalUserData}
-                              maindeptname="all"
-                              jobname="Leader"
+                              maindeptname='all'
+                              jobname='Leader'
                             >
                               <DTC />
                             </ProtectedRoute>
                           }
                         />
                         <Route
-                          path="iso"
+                          path='iso'
                           element={
                             <ProtectedRoute
                               user={globalUserData}
-                              maindeptname="all"
-                              jobname="Leader"
+                              maindeptname='all'
+                              jobname='Leader'
                             >
                               <ISO />
                             </ProtectedRoute>
                           }
                         />
                         <Route
-                          path="qcreport"
+                          path='qcreport'
                           element={
                             <ProtectedRoute
                               user={globalUserData}
-                              maindeptname="all"
-                              jobname="Leader"
+                              maindeptname='all'
+                              jobname='Leader'
                             >
                               <QC />
                             </ProtectedRoute>
                           }
                         />
                         <Route
-                          path="ycsxmanager"
+                          path='ycsxmanager'
                           element={
                             <ProtectedRoute
                               user={globalUserData}
-                              maindeptname="all"
-                              jobname="Leader"
+                              maindeptname='all'
+                              jobname='Leader'
                             >
                               <YCSXManager />
                             </ProtectedRoute>
@@ -859,12 +859,12 @@ function App() {
                         />
                       </Route>
                       <Route
-                        path="sx"
+                        path='sx'
                         element={
                           <ProtectedRoute
                             user={globalUserData}
-                            maindeptname="all"
-                            jobname="Leader"
+                            maindeptname='all'
+                            jobname='Leader'
                           >
                             <QC />
                           </ProtectedRoute>
@@ -872,156 +872,156 @@ function App() {
                       >
                         <Route index element={<AccountInfo />} />
                         <Route
-                          path="tracuuchung"
+                          path='tracuuchung'
                           element={
                             <ProtectedRoute
                               user={globalUserData}
-                              maindeptname="all"
-                              jobname="Leader"
+                              maindeptname='all'
+                              jobname='Leader'
                             >
                               <IQC />
                             </ProtectedRoute>
                           }
                         />
                         <Route
-                          path="codeinfo"
+                          path='codeinfo'
                           element={
                             <ProtectedRoute
                               user={globalUserData}
-                              maindeptname="all"
-                              jobname="Leader"
+                              maindeptname='all'
+                              jobname='Leader'
                             >
                               <CODE_MANAGER />
                             </ProtectedRoute>
                           }
                         />
                         <Route
-                          path="ycsxmanager"
+                          path='ycsxmanager'
                           element={
                             <ProtectedRoute
                               user={globalUserData}
-                              maindeptname="all"
-                              jobname="Leader"
+                              maindeptname='all'
+                              jobname='Leader'
                             >
                               <YCSXManager />
                             </ProtectedRoute>
                           }
                         />
                         <Route
-                          path="datasx"
+                          path='datasx'
                           element={
                             <ProtectedRoute
                               user={globalUserData}
-                              maindeptname="all"
-                              jobname="Leader"
+                              maindeptname='all'
+                              jobname='Leader'
                             >
                               <DATASX2 />
                             </ProtectedRoute>
                           }
                         />
                         <Route
-                          path="planstatus"
+                          path='planstatus'
                           element={
                             <ProtectedRoute
                               user={globalUserData}
-                              maindeptname="all"
-                              jobname="Leader"
+                              maindeptname='all'
+                              jobname='Leader'
                             >
                               <TRANGTHAICHITHI />
                             </ProtectedRoute>
                           }
                         />
                         <Route
-                          path="eqstatus"
+                          path='eqstatus'
                           element={
                             <ProtectedRoute
                               user={globalUserData}
-                              maindeptname="all"
-                              jobname="Leader"
+                              maindeptname='all'
+                              jobname='Leader'
                             >
                               <EQ_STATUS />
                             </ProtectedRoute>
                           }
                         />
                         <Route
-                          path="lichsuxuatlieu"
+                          path='lichsuxuatlieu'
                           element={
                             <ProtectedRoute
                               user={globalUserData}
-                              maindeptname="all"
-                              jobname="Leader"
+                              maindeptname='all'
+                              jobname='Leader'
                             >
                               <LICHSUINPUTLIEU />
                             </ProtectedRoute>
                           }
                         />
                         <Route
-                          path="materiallotstatus"
+                          path='materiallotstatus'
                           element={
                             <ProtectedRoute
                               user={globalUserData}
-                              maindeptname="all"
-                              jobname="Leader"
+                              maindeptname='all'
+                              jobname='Leader'
                             >
                               <TINHHINHCUONLIEU />
                             </ProtectedRoute>
                           }
                         />
                         <Route
-                          path="khoao"
+                          path='khoao'
                           element={
                             <ProtectedRoute
                               user={globalUserData}
-                              maindeptname="all"
-                              jobname="Leader"
+                              maindeptname='all'
+                              jobname='Leader'
                             >
                               <KHOAO />
                             </ProtectedRoute>
                           }
                         />
                         <Route
-                          path="khothat"
+                          path='khothat'
                           element={
                             <ProtectedRoute
                               user={globalUserData}
-                              maindeptname="all"
-                              jobname="Leader"
+                              maindeptname='all'
+                              jobname='Leader'
                             >
                               <KHOLIEU />
                             </ProtectedRoute>
                           }
                         />
                         <Route
-                          path="inspection"
+                          path='inspection'
                           element={
                             <ProtectedRoute
                               user={globalUserData}
-                              maindeptname="all"
-                              jobname="Leader"
+                              maindeptname='all'
+                              jobname='Leader'
                             >
                               <KIEMTRA />
                             </ProtectedRoute>
                           }
                         />
                         <Route
-                          path="capamanager"
+                          path='capamanager'
                           element={
                             <ProtectedRoute
                               user={globalUserData}
-                              maindeptname="all"
-                              jobname="Leader"
+                              maindeptname='all'
+                              jobname='Leader'
                             >
                               <CAPA_MANAGER />
                             </ProtectedRoute>
                           }
                         />
                         <Route
-                          path="planresult"
+                          path='planresult'
                           element={
                             <ProtectedRoute
                               user={globalUserData}
-                              maindeptname="all"
-                              jobname="Leader"
+                              maindeptname='all'
+                              jobname='Leader'
                             >
                               <PLANRESULT />
                             </ProtectedRoute>
@@ -1029,12 +1029,12 @@ function App() {
                         />
                       </Route>
                       <Route
-                        path="nhansu"
+                        path='nhansu'
                         element={
                           <ProtectedRoute
                             user={globalUserData}
-                            maindeptname="all"
-                            jobname="all"
+                            maindeptname='all'
+                            jobname='all'
                           >
                             <NhanSu />
                           </ProtectedRoute>
@@ -1042,86 +1042,86 @@ function App() {
                       >
                         <Route index element={<AccountInfo />} />
                         <Route
-                          path="quanlyphongbannhanvien"
+                          path='quanlyphongbannhanvien'
                           element={
                             <ProtectedRoute
                               user={globalUserData}
-                              maindeptname="all"
-                              jobname="leader"
+                              maindeptname='all'
+                              jobname='leader'
                             >
                               <QuanLyPhongBanNhanSu />
                             </ProtectedRoute>
                           }
                         />
                         <Route
-                          path="diemdanhnhom"
+                          path='diemdanhnhom'
                           element={
                             <ProtectedRoute
                               user={globalUserData}
-                              maindeptname="all"
-                              jobname="leader"
+                              maindeptname='all'
+                              jobname='leader'
                             >
                               <DiemDanhNhom />
                             </ProtectedRoute>
                           }
                         />
                         <Route
-                          path="dieuchuyenteam"
+                          path='dieuchuyenteam'
                           element={
                             <ProtectedRoute
                               user={globalUserData}
-                              maindeptname="all"
-                              jobname="leader"
+                              maindeptname='all'
+                              jobname='leader'
                             >
                               <DieuChuyenTeam />
                             </ProtectedRoute>
                           }
                         />
-                        <Route path="dangky" element={<TabDangKy />} />
+                        <Route path='dangky' element={<TabDangKy />} />
                         <Route
-                          path="pheduyetnghi"
+                          path='pheduyetnghi'
                           element={
                             <ProtectedRoute
                               user={globalUserData}
-                              maindeptname="all"
-                              jobname="leader"
+                              maindeptname='all'
+                              jobname='leader'
                             >
                               <PheDuyetNghi />
                             </ProtectedRoute>
                           }
                         />
-                        <Route path="lichsu" element={<LichSu />} />
+                        <Route path='lichsu' element={<LichSu />} />
                         <Route
-                          path="baocaonhansu"
+                          path='baocaonhansu'
                           element={
                             <ProtectedRoute
                               user={globalUserData}
-                              maindeptname="all"
-                              jobname="leader"
+                              maindeptname='all'
+                              jobname='leader'
                             >
                               <BaoCaoNhanSu />
                             </ProtectedRoute>
                           }
                         />
                         <Route
-                          path="quanlycapcao"
+                          path='quanlycapcao'
                           element={
                             <ProtectedRoute
                               user={globalUserData}
-                              maindeptname="all"
-                              jobname="leader"
+                              maindeptname='all'
+                              jobname='leader'
                             >
                               <QuanLyCapCao />
                             </ProtectedRoute>
                           }
                         />
                         <Route
-                          path="listchamcong"
+                          path='listchamcong'
                           element={
                             <ProtectedRoute
                               user={globalUserData}
-                              maindeptname="NS"
-                              jobname="leader"
+                              maindeptname='NS'
+                              jobname='leader'
                             >
                               <BANGCHAMCONG />
                             </ProtectedRoute>

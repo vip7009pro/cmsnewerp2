@@ -21,12 +21,7 @@ import {
   CustomResponsiveContainer,
   nFormatter,
 } from "../../api/GlobalFunction";
-
-interface MonthlyClosingData {
-  MONTH_NUM: string;
-  DELIVERY_QTY: number;
-  DELIVERED_AMOUNT: number;
-}
+import { MonthlyClosingData } from "../../api/GlobalInterface";
 
 const ChartMonthLy = () => {
   const [monthlyClosingData, setMonthlyClosingData] = useState<
@@ -47,7 +42,7 @@ const ChartMonthLy = () => {
     if (active && payload && payload.length) {
       return (
         <div
-          className="custom-tooltip"
+          className='custom-tooltip'
           style={{
             backgroundImage: "linear-gradient(to right, #ccffff, #00cccc)",
             padding: 20,
@@ -55,10 +50,10 @@ const ChartMonthLy = () => {
           }}
         >
           <p>Tháng {label}:</p>
-          <p className="label">
+          <p className='label'>
             QTY: {`${payload[0].value.toLocaleString("en-US")}`} EA
           </p>
-          <p className="label">
+          <p className='label'>
             AMOUNT:{" "}
             {`${payload[1].value.toLocaleString("en-US", {
               style: "currency",
@@ -84,7 +79,7 @@ const ChartMonthLy = () => {
               return {
                 ...element,
               };
-            },
+            }
           );
           setMonthlyClosingData(loadeddata);
           //console.log(loadeddata);
@@ -118,12 +113,12 @@ const ChartMonthLy = () => {
           bottom: 5,
         }}
       >
-        <CartesianGrid strokeDasharray="3 3" className="chartGrid" />
-        <XAxis dataKey="MONTH_NUM">
-          <Label value="Tháng" offset={0} position="insideBottom" />
+        <CartesianGrid strokeDasharray='3 3' className='chartGrid' />
+        <XAxis dataKey='MONTH_NUM'>
+          <Label value='Tháng' offset={0} position='insideBottom' />
         </XAxis>
         <YAxis
-          yAxisId="left-axis"
+          yAxisId='left-axis'
           label={{
             value: "Số lượng",
             angle: -90,
@@ -137,8 +132,8 @@ const ChartMonthLy = () => {
           }
         />
         <YAxis
-          yAxisId="right-axis"
-          orientation="right"
+          yAxisId='right-axis'
+          orientation='right'
           label={{
             value: "Số tiền",
             angle: -90,
@@ -149,17 +144,17 @@ const ChartMonthLy = () => {
         <Tooltip content={<CustomTooltip />} />
         <Legend />
         <Line
-          yAxisId="left-axis"
-          type="monotone"
-          dataKey="DELIVERY_QTY"
-          stroke="blue"
+          yAxisId='left-axis'
+          type='monotone'
+          dataKey='DELIVERY_QTY'
+          stroke='blue'
         />
         <Bar
-          yAxisId="right-axis"
-          type="monotone"
-          dataKey="DELIVERED_AMOUNT"
-          stroke="#196619"
-          fill="#33cc33"
+          yAxisId='right-axis'
+          type='monotone'
+          dataKey='DELIVERED_AMOUNT'
+          stroke='#196619'
+          fill='#33cc33'
           label={{ position: "top", formatter: labelFormatter }}
         ></Bar>
       </ComposedChart>

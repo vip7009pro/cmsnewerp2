@@ -21,10 +21,8 @@ import {
 import Swal from "sweetalert2";
 import { generalQuery } from "../../api/Api";
 import { CustomResponsiveContainer } from "../../api/GlobalFunction";
-interface WeeklyClosingData {
-  CUST_NAME_KD: string;
-  DELIVERY_AMOUNT: number;
-}
+import { WeeklyClosingData } from "../../api/GlobalInterface";
+
 const ChartCustomerRevenue = () => {
   const [weeklyClosingData, setWeeklyClosingData] = useState<
     Array<WeeklyClosingData>
@@ -51,8 +49,8 @@ const ChartCustomerRevenue = () => {
   }) => {
     if (active && payload && payload.length) {
       return (
-        <div className="custom-tooltip">
-          <p className="label">{`${payload[0].value.toLocaleString("en-US", {
+        <div className='custom-tooltip'>
+          <p className='label'>{`${payload[0].value.toLocaleString("en-US", {
             style: "currency",
             currency: "USD",
           })}`}</p>
@@ -87,9 +85,9 @@ const ChartCustomerRevenue = () => {
       <text
         x={x}
         y={y}
-        fill="#8884d8"
+        fill='#8884d8'
         textAnchor={x > cx ? "start" : "end"}
-        dominantBaseline="central"
+        dominantBaseline='central'
       >
         {weeklyClosingData[index].CUST_NAME_KD} : (
         {value.toLocaleString("en-US", {
@@ -113,7 +111,7 @@ const ChartCustomerRevenue = () => {
               return {
                 ...element,
               };
-            },
+            }
           );
 
           loadeddata = loadeddata.splice(0, 5);
@@ -143,7 +141,7 @@ const ChartCustomerRevenue = () => {
                     return {
                       ...element,
                     };
-                  },
+                  }
                 );
 
                 loadeddata = loadeddata.splice(0, 5);
@@ -198,14 +196,14 @@ const ChartCustomerRevenue = () => {
         <Tooltip content={<CustomTooltip />} />
         <Legend />
         <Pie
-          dataKey="DELIVERY_AMOUNT"
-          nameKey="CUST_NAME_KD"
+          dataKey='DELIVERY_AMOUNT'
+          nameKey='CUST_NAME_KD'
           isAnimationActive={false}
           data={weeklyClosingData}
-          cx="50%"
-          cy="50%"
+          cx='50%'
+          cy='50%'
           outerRadius={80}
-          fill="#8884d8"
+          fill='#8884d8'
           label={CustomLabel}
         >
           {weeklyClosingData.map((entry, index) => (

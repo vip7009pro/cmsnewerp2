@@ -21,12 +21,7 @@ import {
   CustomResponsiveContainer,
   nFormatter,
 } from "../../api/GlobalFunction";
-
-interface WeeklyClosingData {
-  DEL_WEEK: string;
-  DELIVERY_QTY: number;
-  DELIVERED_AMOUNT: number;
-}
+import { WeeklyClosingData } from "../../api/GlobalInterface";
 
 const ChartWeekLy = () => {
   const [weeklyClosingData, setWeeklyClosingData] = useState<
@@ -53,7 +48,7 @@ const ChartWeekLy = () => {
     if (active && payload && payload.length) {
       return (
         <div
-          className="custom-tooltip"
+          className='custom-tooltip'
           style={{
             backgroundImage: "linear-gradient(to right, #ccffff, #00cccc)",
             padding: 20,
@@ -61,10 +56,10 @@ const ChartWeekLy = () => {
           }}
         >
           <p>Tuần {label}:</p>
-          <p className="label">
+          <p className='label'>
             QTY: {`${payload[0].value.toLocaleString("en-US")}`} EA
           </p>
-          <p className="label">
+          <p className='label'>
             AMOUNT:{" "}
             {`${payload[1].value.toLocaleString("en-US", {
               style: "currency",
@@ -86,7 +81,7 @@ const ChartWeekLy = () => {
               return {
                 ...element,
               };
-            },
+            }
           );
           setWeeklyClosingData(loadeddata);
           //console.log(loadeddata);
@@ -120,12 +115,12 @@ const ChartWeekLy = () => {
           bottom: 5,
         }}
       >
-        <CartesianGrid strokeDasharray="3 3" className="chartGrid" />
-        <XAxis dataKey="DEL_WEEK">
-          <Label value="Tuần" offset={0} position="insideBottom" />
+        <CartesianGrid strokeDasharray='3 3' className='chartGrid' />
+        <XAxis dataKey='DEL_WEEK'>
+          <Label value='Tuần' offset={0} position='insideBottom' />
         </XAxis>
         <YAxis
-          yAxisId="left-axis"
+          yAxisId='left-axis'
           label={{
             value: "Số lượng",
             angle: -90,
@@ -140,8 +135,8 @@ const ChartWeekLy = () => {
           tickCount={7}
         />
         <YAxis
-          yAxisId="right-axis"
-          orientation="right"
+          yAxisId='right-axis'
+          orientation='right'
           label={{
             value: "Số tiền",
             angle: -90,
@@ -153,17 +148,17 @@ const ChartWeekLy = () => {
         <Tooltip content={<CustomTooltip />} />
         <Legend />
         <Line
-          yAxisId="left-axis"
-          type="monotone"
-          dataKey="DELIVERY_QTY"
-          stroke="green"
+          yAxisId='left-axis'
+          type='monotone'
+          dataKey='DELIVERY_QTY'
+          stroke='green'
         />
         <Bar
-          yAxisId="right-axis"
-          type="monotone"
-          dataKey="DELIVERED_AMOUNT"
-          stroke="#804d00"
-          fill="#ff9900"
+          yAxisId='right-axis'
+          type='monotone'
+          dataKey='DELIVERED_AMOUNT'
+          stroke='#804d00'
+          fill='#ff9900'
           label={{ position: "top", formatter: labelFormatter }}
         ></Bar>
       </ComposedChart>
