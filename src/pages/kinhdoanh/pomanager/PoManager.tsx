@@ -33,7 +33,13 @@ import {
 } from "devextreme-react/data-grid";
 
 import moment from "moment";
-import React, { useContext, useEffect, useRef, useState, useTransition } from "react";
+import React, {
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+  useTransition,
+} from "react";
 import { FcSearch } from "react-icons/fc";
 import {
   AiFillCloseCircle,
@@ -142,9 +148,11 @@ const PoManager = () => {
   const [podatatablefilter, setPoDataTableFilter] = useState<
     Array<POTableData>
   >([]);
+  const clickedRow = useRef<any>(null);
   const [selectedID, setSelectedID] = useState<number | null>();
   const [showhidePivotTable, setShowHidePivotTable] = useState(false);
   const [newcodeprice, setNewCodePrice] = useState<PRICEWITHMOQ[]>([]);
+  const [columns, setColumns] = useState<Array<any>>([]);
 
   const autogeneratePO_NO = async (cust_cd: string) => {
     let po_no_to_check: string = cust_cd + "_" + moment.utc().format("YYMMDD");
@@ -708,10 +716,61 @@ const PoManager = () => {
             po_summary_temp.total_pobalance_amount +=
               loadeddata[i].BALANCE_AMOUNT;
           }
+          let keysArray = Object.getOwnPropertyNames(loadeddata[0]);
+          let column_map = keysArray.map((e, index) => {
+            return {
+              dataField: e,
+              caption: e,
+              width: 100,
+              cellRender: (ele: any) => {
+                //console.log(ele);
+                if (e === "PROD_PRICE") {
+                  return (
+                    <span style={{ color: "#ED15FF", fontWeight: "normal" }}>
+                      {ele.data[e]?.toFixed(6).toLocaleString("en-US", {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 6,
+                      })}
+                    </span>
+                  );
+                } else if (
+                  ["PO_QTY", "TOTAL_DELIVERED", "PO_BALANCE"].indexOf(e) > -1 ||
+                  e.indexOf("RESULT") > -1
+                ) {
+                  return (
+                    <span style={{ color: "blue", fontWeight: "bold" }}>
+                      {ele.data[e]?.toLocaleString("en-US")}
+                    </span>
+                  );
+                } else if (
+                  ["PO_AMOUNT", "DELIVERED_AMOUNT", "BALANCE_AMOUNT"].indexOf(
+                    e
+                  ) > -1 ||
+                  e.indexOf("_EA") > -1
+                ) {
+                  return (
+                    <span style={{ color: "green", fontWeight: "bold" }}>
+                      {ele.data[e]?.toLocaleString("en-US", {
+                        style: "currency",
+                        currency: "USD",
+                      })}
+                    </span>
+                  );
+                } else {
+                  return <span>{ele.data[e]}</span>;
+                }
+              },
+            };
+          });
+
+          setColumns(column_map);
           setPoSummary(po_summary_temp);
           setPoDataTable(loadeddata);
           setisLoading(false);
-          setSH(false);
+          //setSH(false);
+          showhidesearchdiv.current = !showhidesearchdiv.current;
+          setSH(!showhidesearchdiv.current);
+
           Swal.fire(
             "Thông báo",
             "Đã load " + response.data.data.length + " dòng",
@@ -1163,6 +1222,73 @@ const PoManager = () => {
     }
   };
   const handle_fillsuaform = () => {
+    if (clickedRow.current !== null) {
+      setSelection({
+        ...selection,
+        trapo: true,
+        thempohangloat: false,
+        them1po: !selection.them1po,
+      });
+      const selectedCodeFilter: CodeListData = {
+        G_CODE:
+          clickedRow.current?.G_CODE === undefined
+            ? ""
+            : clickedRow.current?.G_CODE,
+        G_NAME:
+          clickedRow.current?.G_NAME === undefined
+            ? ""
+            : clickedRow.current?.G_NAME,
+        PROD_LAST_PRICE: Number(clickedRow.current?.PROD_PRICE),
+        USE_YN: "Y",
+        PO_BALANCE: Number(clickedRow.current?.PO_BALANCE),
+      };
+      const selectedCustomerFilter: CustomerListData = {
+        CUST_CD:
+          clickedRow.current?.CUST_CD === undefined
+            ? ""
+            : clickedRow.current?.CUST_CD,
+        CUST_NAME_KD:
+          clickedRow.current?.CUST_NAME_KD === undefined
+            ? ""
+            : clickedRow.current?.CUST_NAME_KD,
+      };
+      setSelectedCode(selectedCodeFilter);
+      setSelectedCust_CD(selectedCustomerFilter);
+      setNewPoDate(
+        clickedRow.current?.PO_DATE === undefined
+          ? ""
+          : clickedRow.current?.PO_DATE
+      );
+      setNewRdDate(
+        clickedRow.current?.RD_DATE === undefined
+          ? ""
+          : clickedRow.current?.RD_DATE
+      );
+      setNewPoQty(
+        clickedRow.current?.PO_QTY === undefined
+          ? "0"
+          : clickedRow.current?.PO_QTY
+      );
+      setNewPoNo(
+        clickedRow.current?.PO_NO === undefined ? "" : clickedRow.current?.PO_NO
+      );
+      setNewPoPrice(
+        clickedRow.current?.PROD_PRICE === undefined
+          ? "0"
+          : clickedRow.current?.PROD_PRICE
+      );
+      setNewPoRemark(
+        clickedRow.current?.REMARK === undefined
+          ? ""
+          : clickedRow.current?.REMARK
+      );
+      setSelectedID(clickedRow.current?.PO_ID);
+    } else {
+      clearPOform();
+      Swal.fire("Thông báo", "Lỗi: Chọn ít nhất 1 PO để sửa", "error");
+    }
+  };
+  const handle_fillsuaform2 = () => {
     if (podatatablefilter.length === 1) {
       setSelection({
         ...selection,
@@ -1204,7 +1330,7 @@ const PoManager = () => {
       Swal.fire("Thông báo", "Lỗi: Chỉ tích chọn 1 dòng để sửa thôi", "error");
     }
   };
-  const handle_fillsuaformInvoice = () => {
+  const handle_fillsuaformInvoice2 = () => {
     if (podatatablefilter.length === 1) {
       setSelection({
         ...selection,
@@ -1243,6 +1369,63 @@ const PoManager = () => {
       Swal.fire("Thông báo", "Lỗi: Chọn ít nhất 1 PO để thêm invoice", "error");
     } else {
       Swal.fire("Thông báo", "Lỗi: Chỉ tích chọn 1 dòng thêm thôi", "error");
+    }
+  };
+  const handle_fillsuaformInvoice = () => {
+    if (clickedRow.current !== null) {
+      setSelection({
+        ...selection,
+        trapo: true,
+        thempohangloat: false,
+        them1po: false,
+        them1invoice: true,
+      });
+      const selectedCodeFilter: CodeListData = {
+        G_CODE:
+          clickedRow.current?.G_CODE === undefined
+            ? ""
+            : clickedRow.current?.G_CODE,
+        G_NAME:
+          clickedRow.current?.G_NAME === undefined
+            ? ""
+            : clickedRow.current?.G_NAME,
+        PROD_LAST_PRICE: Number(clickedRow.current?.PROD_PRICE),
+        USE_YN: "Y",
+        PO_BALANCE: Number(clickedRow.current?.PO_BALANCE),
+      };
+
+      const selectedCustomerFilter: CustomerListData = {
+        CUST_CD:
+          clickedRow.current?.CUST_CD === undefined
+            ? ""
+            : clickedRow.current?.CUST_CD,
+        CUST_NAME_KD:
+          clickedRow.current?.CUST_NAME_KD === undefined
+            ? ""
+            : clickedRow.current?.CUST_NAME_KD,
+      };
+      setSelectedCode(selectedCodeFilter);
+      setSelectedCust_CD(selectedCustomerFilter);
+      setNewPoDate(
+        clickedRow.current?.PO_DATE === undefined
+          ? ""
+          : clickedRow.current?.PO_DATE
+      );
+      setNewRdDate(
+        clickedRow.current?.RD_DATE === undefined
+          ? ""
+          : clickedRow.current?.RD_DATE
+      );
+      setNewInvoiceQty(0);
+      setNewPoNo(
+        clickedRow.current?.PO_NO === undefined ? "" : clickedRow.current?.PO_NO
+      );
+      setNewInvoiceDate(moment().add(-1, "day").format("YYYY-MM-DD"));
+      setNewInvoiceRemark("");
+      setSelectedID(clickedRow.current?.PO_ID);
+    } else {
+      clearPOform();
+      Swal.fire("Thông báo", "Lỗi: Chọn ít nhất 1 PO để thêm invoice", "error");
     }
   };
   const updatePO = async () => {
@@ -1860,9 +2043,13 @@ const PoManager = () => {
             keyExpr='PO_ID'
             height={"75vh"}
             showBorders={true}
-            onSelectionChanged={(e) => {}}
+            onSelectionChanged={(e) => {
+              console.log(e.selectedRowsData);
+              setPoDataTableFilter(e.selectedRowsData);
+            }}
             onRowClick={(e) => {
-              //console.log(e.data);
+              console.log(e.data);
+              clickedRow.current = e.data;
             }}
           >
             <Scrolling
@@ -1872,7 +2059,7 @@ const PoManager = () => {
               showScrollbar='onHover'
               mode='virtual'
             />
-            <Selection mode='single' selectAllMode='allPages' />
+            <Selection mode='multiple' selectAllMode='allPages' />
             <Editing
               allowUpdating={false}
               allowAdding={true}
@@ -1884,110 +2071,113 @@ const PoManager = () => {
             <Export enabled={true} />
             <Toolbar disabled={false}>
               <Item location='before'>
-              <IconButton
-          className='buttonIcon'
-          onClick={() => {
-            showhidesearchdiv.current = !showhidesearchdiv.current;
-            setSH(!showhidesearchdiv.current);
-          }}
-        >
-          <TbLogout color='green' size={15} />
-          Show/Hide
-        </IconButton>
+                <IconButton
+                  className='buttonIcon'
+                  onClick={() => {
+                    showhidesearchdiv.current = !showhidesearchdiv.current;
+                    setSH(!showhidesearchdiv.current);
+                  }}
+                >
+                  <TbLogout color='green' size={15} />
+                  Show/Hide
+                </IconButton>
 
-        <IconButton
-          className='buttonIcon'
-          onClick={() => {
-            SaveExcel(podatatable, "PO Table");
-          }}
-        >
-          <AiFillFileExcel color='green' size={15} />
-          SAVE
-        </IconButton>
-        <IconButton
-          className='buttonIcon'
-          onClick={() => {
-            /* checkBP(userData?.EMPL_NO, userData?.MAINDEPTNAME, ["KD"], showNewPO); */
-            checkBP(userData, ["KD"], ["ALL"], ["ALL"], showNewPO);
-            clearPOform();
-          }}
-        >
-          <AiFillFileAdd color='blue' size={15} />
-          NEW PO
-        </IconButton>
+                <IconButton
+                  className='buttonIcon'
+                  onClick={() => {
+                    SaveExcel(podatatable, "PO Table");
+                  }}
+                >
+                  <AiFillFileExcel color='green' size={15} />
+                  SAVE
+                </IconButton>
+                <IconButton
+                  className='buttonIcon'
+                  onClick={() => {
+                    /* checkBP(userData?.EMPL_NO, userData?.MAINDEPTNAME, ["KD"], showNewPO); */
+                    checkBP(userData, ["KD"], ["ALL"], ["ALL"], showNewPO);
+                    clearPOform();
+                  }}
+                >
+                  <AiFillFileAdd color='blue' size={15} />
+                  NEW PO
+                </IconButton>
 
-        <IconButton
-          className='buttonIcon'
-          onClick={() => {
-            /* checkBP(
+                <IconButton
+                  className='buttonIcon'
+                  onClick={() => {
+                    /* checkBP(
               userData?.EMPL_NO,
               userData?.MAINDEPTNAME,
               ["KD"],
               handle_fillsuaformInvoice
             ); */
-            checkBP(
-              userData,
-              ["KD"],
-              ["ALL"],
-              ["ALL"],
-              handle_fillsuaformInvoice
-            );
-            //handle_fillsuaformInvoice();
-          }}
-        >
-          <FaFileInvoiceDollar color='lightgreen' size={15} />
-          NEW INV
-        </IconButton>
-        <IconButton
-          className='buttonIcon'
-          onClick={() => {
-            /*  checkBP(
+                    checkBP(
+                      userData,
+                      ["KD"],
+                      ["ALL"],
+                      ["ALL"],
+                      handle_fillsuaformInvoice
+                    );
+                    //handle_fillsuaformInvoice();
+                  }}
+                >
+                  <FaFileInvoiceDollar color='lightgreen' size={15} />
+                  NEW INV
+                </IconButton>
+                <IconButton
+                  className='buttonIcon'
+                  onClick={() => {
+                    /*  checkBP(
               userData?.EMPL_NO,
               userData?.MAINDEPTNAME,
               ["KD"],
               handle_fillsuaform
             ); */
-            checkBP(userData, ["KD"], ["ALL"], ["ALL"], handle_fillsuaform);
+                    checkBP(
+                      userData,
+                      ["KD"],
+                      ["ALL"],
+                      ["ALL"],
+                      handle_fillsuaform
+                    );
 
-            //handle_fillsuaform();
-          }}
-        >
-          <AiFillEdit color='orange' size={15} />
-          SỬA PO
-        </IconButton>
-        <IconButton
-          className='buttonIcon'
-          onClick={() => {
-            /*  checkBP(
+                    //handle_fillsuaform();
+                  }}
+                >
+                  <AiFillEdit color='orange' size={15} />
+                  SỬA PO
+                </IconButton>
+                <IconButton
+                  className='buttonIcon'
+                  onClick={() => {
+                    /*  checkBP(
               userData?.EMPL_NO,
               userData?.MAINDEPTNAME,
               ["KD"],
               handleConfirmDeletePO
             ); */
-            checkBP(userData, ["KD"], ["ALL"], ["ALL"], handleConfirmDeletePO);
-            //handleConfirmDeletePO();
-          }}
-        >
-          <MdOutlineDelete color='red' size={15} />
-          XÓA PO
-        </IconButton>
-
-                <IconButton
-                  className='buttonIcon'
-                  onClick={() => {
-                    SaveExcel(podatatable, "MaterialStatus");
+                    checkBP(
+                      userData,
+                      ["KD"],
+                      ["ALL"],
+                      ["ALL"],
+                      handleConfirmDeletePO
+                    );
+                    //handleConfirmDeletePO();
                   }}
                 >
-                  <AiFillFileExcel color='green' size={25} />
-                  SAVE
+                  <MdOutlineDelete color='red' size={15} />
+                  XÓA PO
                 </IconButton>
+
                 <IconButton
                   className='buttonIcon'
                   onClick={() => {
                     setShowHidePivotTable(!showhidePivotTable);
                   }}
                 >
-                  <MdOutlinePivotTableChart color='#ff33bb' size={25} />
+                  <MdOutlinePivotTableChart color='#ff33bb' size={15} />
                   Pivot
                 </IconButton>
               </Item>
@@ -2007,13 +2197,52 @@ const PoManager = () => {
               infoText='Page #{0}. Total: {1} ({2} items)'
               displayMode='compact'
             />
-
+            {columns.map((column, index) => {
+              //console.log(column);
+              return <Column key={index} {...column}></Column>;
+            })}
             <Summary>
               <TotalItem
                 alignment='right'
                 column='PO_ID'
                 summaryType='count'
                 valueFormat={"decimal"}
+              />
+              <TotalItem
+                alignment='right'
+                column='PO_QTY'
+                summaryType='sum'
+                valueFormat={"thousands"}
+              />
+              <TotalItem
+                alignment='right'
+                column='TOTAL_DELIVERED'
+                summaryType='sum'
+                valueFormat={"thousands"}
+              />
+              <TotalItem
+                alignment='right'
+                column='PO_BALANCE'
+                summaryType='sum'
+                valueFormat={"thousands"}
+              />
+              <TotalItem
+                alignment='right'
+                column='PO_AMOUNT'
+                summaryType='sum'
+                valueFormat={"currency"}
+              />
+              <TotalItem
+                alignment='right'
+                column='DELIVERED_AMOUNT'
+                summaryType='sum'
+                valueFormat={"currency"}
+              />
+              <TotalItem
+                alignment='right'
+                column='BALANCE_AMOUNT'
+                summaryType='sum'
+                valueFormat={"currency"}
               />
             </Summary>
           </DataGrid>
