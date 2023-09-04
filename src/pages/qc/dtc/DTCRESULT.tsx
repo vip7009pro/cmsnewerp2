@@ -17,7 +17,7 @@ import { AiFillFileExcel } from "react-icons/ai";
 import Swal from "sweetalert2";
 import { generalQuery } from "../../../api/Api";
 import { UserContext } from "../../../api/Context";
-import { SaveExcel } from "../../../api/GlobalFunction";
+import { CustomResponsiveContainer, SaveExcel } from "../../../api/GlobalFunction";
 import "./DTCRESULT.scss";
 import DataGrid, {
   Column,
@@ -36,7 +36,6 @@ import DataGrid, {
   Toolbar,
   TotalItem,
 } from "devextreme-react/data-grid";
-import { ResponsiveContainer } from "recharts";
 import {
   DTC_REG_DATA,
   DTC_RESULT_INPUT,
@@ -86,7 +85,7 @@ const DTCRESULT = () => {
   const materialDataTable = React.useMemo(
     () => (
       <div className="datatb">
-        <ResponsiveContainer>
+        <CustomResponsiveContainer>
           <DataGrid
             style={{ fontSize: "0.7rem" }}
             autoNavigateToFocusedRow={true}
@@ -194,7 +193,7 @@ const DTCRESULT = () => {
             <Column dataField="RESULT" caption="RESULT" width={100}></Column>
             <Column dataField="REMARK" caption="REMARK" width={100}></Column>
           </DataGrid>
-        </ResponsiveContainer>
+        </CustomResponsiveContainer>
       </div>
     ),
     [inspectiondatatable],

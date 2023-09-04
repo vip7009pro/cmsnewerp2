@@ -21,7 +21,7 @@ import { AiFillFileExcel, AiOutlineSearch } from "react-icons/ai";
 import Swal from "sweetalert2";
 import { generalQuery } from "../../../api/Api";
 import { UserContext } from "../../../api/Context";
-import { SaveExcel } from "../../../api/GlobalFunction";
+import { CustomResponsiveContainer, SaveExcel } from "../../../api/GlobalFunction";
 import "./INCOMMING.scss";
 import DataGrid, {
   Column,
@@ -44,7 +44,6 @@ import { GrStatusGood } from "react-icons/gr";
 import { FcCancel } from "react-icons/fc";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
-import { ResponsiveContainer } from "recharts";
 import {
   DTC_DATA,
   IQC_INCOMMING_DATA,
@@ -319,7 +318,7 @@ const INCOMMING = () => {
   };
   const materialDataTable = React.useMemo(
     () => (
-      <ResponsiveContainer>
+      <CustomResponsiveContainer>
         <div className="datatb">
           <div className="menubar">
             <IconButton
@@ -1221,7 +1220,7 @@ const INCOMMING = () => {
             ></Column>
           </DataGrid>
         </div>
-      </ResponsiveContainer>
+      </CustomResponsiveContainer>
     ),
     [inspectiondatatable],
   );

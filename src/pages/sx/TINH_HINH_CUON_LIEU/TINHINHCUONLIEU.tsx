@@ -23,11 +23,10 @@ import Swal from "sweetalert2";
 import "./TINHHINHCUONLIEU.scss";
 import { UserContext } from "../../../api/Context";
 import { generalQuery } from "../../../api/Api";
-import { SaveExcel } from "../../../api/GlobalFunction";
+import { CustomResponsiveContainer, SaveExcel } from "../../../api/GlobalFunction";
 import { MdOutlinePivotTableChart } from "react-icons/md";
 import PivotTable from "../../../components/PivotChart/PivotChart";
 import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
-import { ResponsiveContainer } from "recharts";
 import { esES } from "@mui/x-data-grid";
 import {
   LOSS_TABLE_DATA_ROLL,
@@ -348,7 +347,7 @@ const TINHHINHCUONLIEU = () => {
             </tbody>
           </table>
         </div>
-        <ResponsiveContainer>
+        <CustomResponsiveContainer>
           <DataGrid
             autoNavigateToFocusedRow={true}
             allowColumnReordering={true}
@@ -532,7 +531,7 @@ const TINHHINHCUONLIEU = () => {
               />
             </Summary>
           </DataGrid>
-        </ResponsiveContainer>
+        </CustomResponsiveContainer>
       </div>
     ),
     [datasxtable, columns],

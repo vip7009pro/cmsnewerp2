@@ -11,7 +11,6 @@ import {
   Tooltip,
   Legend,
   Scatter,
-  ResponsiveContainer,
   Label,
 } from "recharts";
 import Swal from "sweetalert2";

@@ -46,7 +46,7 @@ import {
   MdOutlineManageHistory,
   MdOutlinePivotTableChart,
 } from "react-icons/md";
-import { SaveExcel, checkBP, weekdayarray } from "../../../api/GlobalFunction";
+import { CustomResponsiveContainer, SaveExcel, checkBP, weekdayarray } from "../../../api/GlobalFunction";
 import { generalQuery } from "../../../api/Api";
 import PivotTable from "../../../components/PivotChart/PivotChart";
 import { RootState } from "../../../redux/store";
@@ -55,7 +55,6 @@ import { BiCloudUpload } from "react-icons/bi";
 import * as XLSX from "xlsx";
 import { FcApproval } from "react-icons/fc";
 import { GrUpdate } from "react-icons/gr";
-import { ResponsiveContainer } from "recharts";
 import { TbLogout } from "react-icons/tb";
 import QuotationForm from "./QuotationForm/QuotationForm";
 import { useReactToPrint } from "react-to-print";
@@ -1181,7 +1180,7 @@ const QuotationManager = () => {
   const banggiaMM = React.useMemo(
     () => (
       <div className="datatb">
-        <ResponsiveContainer>
+        <CustomResponsiveContainer>
           <DataGrid
             style={{ fontSize: "0.7rem" }}
             autoNavigateToFocusedRow={true}
@@ -1750,7 +1749,7 @@ const QuotationManager = () => {
               />
             </Summary>
           </DataGrid>
-        </ResponsiveContainer>
+        </CustomResponsiveContainer>
       </div>
     ),
     [banggia],
@@ -1758,7 +1757,7 @@ const QuotationManager = () => {
   const banggiaMM2 = React.useMemo(
     () => (
       <div className="datatb">
-        <ResponsiveContainer>
+        <CustomResponsiveContainer>
           <DataGrid
             style={{ fontSize: "0.7rem" }}
             autoNavigateToFocusedRow={true}
@@ -1967,7 +1966,7 @@ const QuotationManager = () => {
               />
             </Summary>
           </DataGrid>
-        </ResponsiveContainer>
+        </CustomResponsiveContainer>
       </div>
     ),
     [banggia2],

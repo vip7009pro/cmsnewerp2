@@ -38,7 +38,7 @@ import { BiSearch } from "react-icons/bi";
 import useWindowDimensions from "../../../api/useWindowDimensions";
 import { RootState } from "../../../redux/store";
 import { useSelector, useDispatch } from "react-redux";
-import { ResponsiveContainer } from "recharts";
+
 import {
   ACHIVEMENT_DATA,
   DAILY_SX_DATA,

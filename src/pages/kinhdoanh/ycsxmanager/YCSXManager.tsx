@@ -55,7 +55,6 @@ import {
   UserData,
   YCSXTableData,
 } from "../../../api/GlobalInterface";
-
 const YCSXManager = () => {
   const [showhidesearchdiv, setShowHideSearchDiv] = useState(true);
   const [ycsxlistrender, setYCSXListRender] = useState<Array<ReactElement>>();
@@ -98,11 +97,9 @@ const YCSXManager = () => {
     renderbanve: false,
     amazontab: false,
   });
-
   const userData: UserData | undefined = useSelector(
     (state: RootState) => state.totalSlice.userData
   );
-
   const [uploadExcelJson, setUploadExcelJSon] = useState<Array<any>>([]);
   const [ponolist, setPONOLIST] = useState<Array<PONOLIST>>([]);
   const [isLoading, setisLoading] = useState(false);
@@ -623,7 +620,6 @@ const YCSXManager = () => {
             );
           }
         };
-
         let hreftlink = "/banve/" + params.row.G_CODE + ".pdf";
         if (params.row.BANVE === "Y")
           return (
@@ -897,7 +893,6 @@ const YCSXManager = () => {
             );
           }
         };
-
         let hreftlink = "/banve/" + params.row.G_CODE + ".pdf";
         if (params.row.BANVE === "Y")
           return (
@@ -947,7 +942,6 @@ const YCSXManager = () => {
       },
     },
   ];
-
   const column_excel2 = [
     { field: "id", headerName: "id", width: 180 },
     { field: "PROD_REQUEST_DATE", headerName: "NGAY YC", width: 120 },
@@ -1636,7 +1630,6 @@ const YCSXManager = () => {
                 console.log(error);
               });
           }
-
           await generalQuery("insertData_Amazon_SuperFast", {
             AMZDATA: uploadAmazonData.filter(
               (e: UploadAmazonData, index: number) => {
@@ -1658,7 +1651,6 @@ const YCSXManager = () => {
             .catch((error) => {
               console.log(error);
             });
-
           checkDuplicateAMZ();
           //Swal.fire("Thông báo", "Upload data Amazon Hoàn thành", "success");
         } else {
@@ -3164,7 +3156,6 @@ const YCSXManager = () => {
     matchFrom: "any",
     limit: 100,
   });
-
   //console.log(userData);
   useEffect(() => {
     getcustomerlist();

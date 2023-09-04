@@ -6,6 +6,7 @@ import {
   createFilterOptions,
 } from "@mui/material";
 import {
+  DataGrid,
   GridSelectionModel,
   GridToolbarColumnsButton,
   GridToolbarContainer,
@@ -14,26 +15,8 @@ import {
   GridToolbarQuickFilter,
 } from "@mui/x-data-grid";
 
-import {
-  Column,
-  Editing,
-  FilterRow,
-  Pager,
-  Scrolling,
-  SearchPanel,
-  Selection,
-  DataGrid,
-  Paging,
-  Toolbar,
-  Item,
-  Export,
-  ColumnChooser,
-  Summary,
-  TotalItem,
-} from "devextreme-react/data-grid";
-
 import moment from "moment";
-import React, { useContext, useEffect, useRef, useState, useTransition } from "react";
+import React, { useContext, useEffect, useState, useTransition } from "react";
 import { FcSearch } from "react-icons/fc";
 import {
   AiFillCloseCircle,
@@ -46,12 +29,7 @@ import Swal from "sweetalert2";
 import * as XLSX from "xlsx";
 import { generalQuery } from "../../../api/Api";
 import { UserContext } from "../../../api/Context";
-import {
-  checkBP,
-  CustomResponsiveContainer,
-  SaveExcel,
-  zeroPad,
-} from "../../../api/GlobalFunction";
+import { checkBP, CustomResponsiveContainer, SaveExcel, zeroPad } from "../../../api/GlobalFunction";
 import { MdOutlineDelete, MdOutlinePivotTableChart } from "react-icons/md";
 import "./PoManager.scss";
 import { FaFileInvoiceDollar } from "react-icons/fa";
@@ -69,8 +47,7 @@ import {
   UserData,
 } from "../../../api/GlobalInterface";
 
-const PoManager = () => {
-  const showhidesearchdiv = useRef(false);
+const PoManager2 = () => {
   const [isPending, startTransition] = useTransition();
   const [selection, setSelection] = useState<any>({
     trapo: true,
@@ -80,13 +57,12 @@ const PoManager = () => {
   });
 
   const userData: UserData | undefined = useSelector(
-    (state: RootState) => state.totalSlice.userData
+    (state: RootState) => state.totalSlice.userData,
   );
   const company: string = useSelector(
-    (state: RootState) => state.totalSlice.company
+    (state: RootState) => state.totalSlice.company,
   );
-
-  const [sh, setSH] = useState(true);
+  const [showhidesearchdiv, setShowHideSearchDiv] = useState(true);
   const [uploadExcelJson, setUploadExcelJSon] = useState<Array<any>>([]);
   const [isLoading, setisLoading] = useState(false);
   const [column_excel, setColumn_Excel] = useState<Array<any>>([]);
@@ -121,7 +97,7 @@ const PoManager = () => {
   const [newporemark, setNewPoRemark] = useState("");
   const [newinvoiceQTY, setNewInvoiceQty] = useState<number>(0);
   const [newinvoicedate, setNewInvoiceDate] = useState(
-    moment().format("YYYY-MM-DD")
+    moment().format("YYYY-MM-DD"),
   );
   const [newinvoiceRemark, setNewInvoiceRemark] = useState("");
   const [poSummary, setPoSummary] = useState<POSummaryData>({
@@ -215,7 +191,7 @@ const PoManager = () => {
                     })
                     .filter(
                       (element: PRICEWITHMOQ, index: number) =>
-                        element.FINAL === "Y"
+                        element.FINAL === "Y",
                     )
                 : response.data.data.map(
                     (element: PRICEWITHMOQ, index: number) => {
@@ -229,7 +205,7 @@ const PoManager = () => {
                             : "",
                         id: index,
                       };
-                    }
+                    },
                   );
             setNewCodePrice(loaded_data);
           } else {
@@ -243,7 +219,7 @@ const PoManager = () => {
     }
   };
   const handleSearchCodeKeyDown = (
-    e: React.KeyboardEvent<HTMLInputElement>
+    e: React.KeyboardEvent<HTMLInputElement>,
   ) => {
     if (e.key === "Enter") {
       handletraPO();
@@ -494,7 +470,7 @@ const PoManager = () => {
         <GridToolbarFilterButton />
         <GridToolbarDensitySelector />
         <button
-          className='saveexcelbutton'
+          className="saveexcelbutton"
           onClick={() => {
             SaveExcel(uploadExcelJson, "Uploaded PO");
           }}
@@ -530,37 +506,36 @@ const PoManager = () => {
     return (
       <GridToolbarContainer>
         <IconButton
-          className='buttonIcon'
+          className="buttonIcon"
           onClick={() => {
-            showhidesearchdiv.current = !showhidesearchdiv.current;
-            setSH(!showhidesearchdiv.current);
+            setShowHideSearchDiv(!showhidesearchdiv);
           }}
         >
-          <TbLogout color='green' size={15} />
+          <TbLogout color="green" size={15} />
           Show/Hide
         </IconButton>
         <IconButton
-          className='buttonIcon'
+          className="buttonIcon"
           onClick={() => {
             SaveExcel(podatatable, "PO Table");
           }}
         >
-          <AiFillFileExcel color='green' size={15} />
+          <AiFillFileExcel color="green" size={15} />
           SAVE
         </IconButton>
         <IconButton
-          className='buttonIcon'
+          className="buttonIcon"
           onClick={() => {
             /* checkBP(userData?.EMPL_NO, userData?.MAINDEPTNAME, ["KD"], showNewPO); */
             checkBP(userData, ["KD"], ["ALL"], ["ALL"], showNewPO);
             clearPOform();
           }}
         >
-          <AiFillFileAdd color='blue' size={15} />
+          <AiFillFileAdd color="blue" size={15} />
           NEW PO
         </IconButton>
         <IconButton
-          className='buttonIcon'
+          className="buttonIcon"
           onClick={() => {
             /* checkBP(
               userData?.EMPL_NO,
@@ -573,16 +548,16 @@ const PoManager = () => {
               ["KD"],
               ["ALL"],
               ["ALL"],
-              handle_fillsuaformInvoice
+              handle_fillsuaformInvoice,
             );
             //handle_fillsuaformInvoice();
           }}
         >
-          <FaFileInvoiceDollar color='lightgreen' size={15} />
+          <FaFileInvoiceDollar color="lightgreen" size={15} />
           NEW INV
         </IconButton>
         <IconButton
-          className='buttonIcon'
+          className="buttonIcon"
           onClick={() => {
             /*  checkBP(
               userData?.EMPL_NO,
@@ -595,11 +570,11 @@ const PoManager = () => {
             //handle_fillsuaform();
           }}
         >
-          <AiFillEdit color='orange' size={15} />
+          <AiFillEdit color="orange" size={15} />
           SỬA PO
         </IconButton>
         <IconButton
-          className='buttonIcon'
+          className="buttonIcon"
           onClick={() => {
             /*  checkBP(
               userData?.EMPL_NO,
@@ -611,17 +586,17 @@ const PoManager = () => {
             //handleConfirmDeletePO();
           }}
         >
-          <MdOutlineDelete color='red' size={15} />
+          <MdOutlineDelete color="red" size={15} />
           XÓA PO
         </IconButton>
         <GridToolbarQuickFilter />
         <IconButton
-          className='buttonIcon'
+          className="buttonIcon"
           onClick={() => {
             setShowHidePivotTable(!showhidePivotTable);
           }}
         >
-          <MdOutlinePivotTableChart color='#ff33bb' size={15} />
+          <MdOutlinePivotTableChart color="#ff33bb" size={15} />
           Pivot
         </IconButton>
       </GridToolbarContainer>
@@ -654,7 +629,7 @@ const PoManager = () => {
         setUploadExcelJSon(
           json.map((element: any, index: number) => {
             return { ...element, id: index, CHECKSTATUS: "Waiting" };
-          })
+          }),
         );
       };
       reader.readAsArrayBuffer(e.target.files[0]);
@@ -687,7 +662,7 @@ const PoManager = () => {
                 PO_DATE: element.PO_DATE.slice(0, 10),
                 RD_DATE: element.RD_DATE.slice(0, 10),
               };
-            }
+            },
           );
           let po_summary_temp: POSummaryData = {
             total_po_qty: 0,
@@ -711,11 +686,11 @@ const PoManager = () => {
           setPoSummary(po_summary_temp);
           setPoDataTable(loadeddata);
           setisLoading(false);
-          setSH(false);
+          setShowHideSearchDiv(false);
           Swal.fire(
             "Thông báo",
             "Đã load " + response.data.data.length + " dòng",
-            "success"
+            "success",
           );
         } else {
           Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
@@ -1023,7 +998,7 @@ const PoManager = () => {
             Swal.fire(
               "Thông báo",
               "Thêm PO mới thất bại: " + response.data.message,
-              "error"
+              "error",
             );
           }
         })
@@ -1036,7 +1011,7 @@ const PoManager = () => {
       Swal.fire(
         "Thông báo",
         "NG: Ngày PO không được trước ngày hôm nay",
-        "error"
+        "error",
       );
     } else if (err_code === 3) {
       Swal.fire("Thông báo", "NG: Ver này đã bị khóa", "error");
@@ -1086,7 +1061,7 @@ const PoManager = () => {
       Swal.fire(
         "Thông báo",
         "PO BALANCE: " + selectedCode?.PO_BALANCE,
-        "success"
+        "success",
       );
       if (selectedCode?.PO_BALANCE < newinvoiceQTY) {
         err_code = 5; //invoice nhieu hon po balance
@@ -1112,7 +1087,7 @@ const PoManager = () => {
             Swal.fire(
               "Thông báo",
               "Thêm Invoice mới thất bại: " + response.data.message,
-              "error"
+              "error",
             );
           }
         })
@@ -1125,7 +1100,7 @@ const PoManager = () => {
       Swal.fire(
         "Thông báo",
         "NG: Ngày Invoice không được trước ngày hôm nay",
-        "error"
+        "error",
       );
     } else if (err_code === 3) {
       Swal.fire("Thông báo", "NG: Ver này đã bị khóa", "error");
@@ -1154,7 +1129,7 @@ const PoManager = () => {
   const handlePOSelectionforUpdate = (ids: GridSelectionModel) => {
     const selectedID = new Set(ids);
     let datafilter = podatatable.filter((element: any) =>
-      selectedID.has(element.PO_ID)
+      selectedID.has(element.PO_ID),
     );
     if (datafilter.length > 0) {
       setPoDataTableFilter(datafilter);
@@ -1174,11 +1149,11 @@ const PoManager = () => {
         G_CODE: podatatablefilter[podatatablefilter.length - 1].G_CODE,
         G_NAME: podatatablefilter[podatatablefilter.length - 1].G_NAME,
         PROD_LAST_PRICE: Number(
-          podatatablefilter[podatatablefilter.length - 1].PROD_PRICE
+          podatatablefilter[podatatablefilter.length - 1].PROD_PRICE,
         ),
         USE_YN: "Y",
         PO_BALANCE: Number(
-          podatatablefilter[podatatablefilter.length - 1].PO_BALANCE
+          podatatablefilter[podatatablefilter.length - 1].PO_BALANCE,
         ),
       };
       const selectedCustomerFilter: CustomerListData = {
@@ -1191,7 +1166,7 @@ const PoManager = () => {
       setNewPoDate(podatatablefilter[podatatablefilter.length - 1].PO_DATE);
       setNewRdDate(podatatablefilter[podatatablefilter.length - 1].RD_DATE);
       setNewPoQty(
-        podatatablefilter[podatatablefilter.length - 1].PO_QTY.toString()
+        podatatablefilter[podatatablefilter.length - 1].PO_QTY.toString(),
       );
       setNewPoNo(podatatablefilter[podatatablefilter.length - 1].PO_NO);
       setNewPoPrice(podatatablefilter[podatatablefilter.length - 1].PROD_PRICE);
@@ -1217,11 +1192,11 @@ const PoManager = () => {
         G_CODE: podatatablefilter[podatatablefilter.length - 1].G_CODE,
         G_NAME: podatatablefilter[podatatablefilter.length - 1].G_NAME,
         PROD_LAST_PRICE: Number(
-          podatatablefilter[podatatablefilter.length - 1].PROD_PRICE
+          podatatablefilter[podatatablefilter.length - 1].PROD_PRICE,
         ),
         USE_YN: "Y",
         PO_BALANCE: Number(
-          podatatablefilter[podatatablefilter.length - 1].PO_BALANCE
+          podatatablefilter[podatatablefilter.length - 1].PO_BALANCE,
         ),
       };
       const selectedCustomerFilter: CustomerListData = {
@@ -1304,7 +1279,7 @@ const PoManager = () => {
             Swal.fire(
               "Thông báo",
               "Update PO thất bại: " + response.data.message,
-              "error"
+              "error",
             );
           }
         })
@@ -1317,7 +1292,7 @@ const PoManager = () => {
       Swal.fire(
         "Thông báo",
         "NG: Ngày PO không được trước ngày hôm nay",
-        "error"
+        "error",
       );
     } else if (err_code === 3) {
       Swal.fire("Thông báo", "NG: Ver này đã bị khóa", "error");
@@ -1353,13 +1328,13 @@ const PoManager = () => {
         Swal.fire(
           "Thông báo",
           "Xóa PO thành công (chỉ PO của người đăng nhập)!",
-          "success"
+          "success",
         );
       } else {
         Swal.fire(
           "Thông báo",
           "Có lỗi, khả năng xóa phải PO đã có phát sinh giao hàng!",
-          "error"
+          "error",
         );
       }
     } else {
@@ -1842,297 +1817,26 @@ const PoManager = () => {
     ],
     store: podatatable,
   });
-
-  const poDataTable = React.useMemo(
-    () => (
-      <div className='datatb'>
-        <CustomResponsiveContainer>
-          <DataGrid
-            autoNavigateToFocusedRow={true}
-            allowColumnReordering={true}
-            allowColumnResizing={true}
-            columnAutoWidth={false}
-            cellHintEnabled={true}
-            columnResizingMode={"widget"}
-            showColumnLines={true}
-            dataSource={podatatable}
-            columnWidth='auto'
-            keyExpr='id'
-            height={"75vh"}
-            showBorders={true}
-            onSelectionChanged={(e) => {}}
-            onRowClick={(e) => {
-              //console.log(e.data);
-            }}
-          >
-            <Scrolling
-              useNative={true}
-              scrollByContent={true}
-              scrollByThumb={true}
-              showScrollbar='onHover'
-              mode='virtual'
-            />
-            <Selection mode='single' selectAllMode='allPages' />
-            <Editing
-              allowUpdating={false}
-              allowAdding={true}
-              allowDeleting={false}
-              mode='batch'
-              confirmDelete={true}
-              onChangesChange={(e) => {}}
-            />
-            <Export enabled={true} />
-            <Toolbar disabled={false}>
-              <Item location='before'>
-              <IconButton
-          className='buttonIcon'
-          onClick={() => {
-            showhidesearchdiv.current = !showhidesearchdiv.current;
-            setSH(!showhidesearchdiv.current);
-          }}
-        >
-          <TbLogout color='green' size={15} />
-          Show/Hide
-        </IconButton>
-
-        <IconButton
-          className='buttonIcon'
-          onClick={() => {
-            SaveExcel(podatatable, "PO Table");
-          }}
-        >
-          <AiFillFileExcel color='green' size={15} />
-          SAVE
-        </IconButton>
-        <IconButton
-          className='buttonIcon'
-          onClick={() => {
-            /* checkBP(userData?.EMPL_NO, userData?.MAINDEPTNAME, ["KD"], showNewPO); */
-            checkBP(userData, ["KD"], ["ALL"], ["ALL"], showNewPO);
-            clearPOform();
-          }}
-        >
-          <AiFillFileAdd color='blue' size={15} />
-          NEW PO
-        </IconButton>
-
-        <IconButton
-          className='buttonIcon'
-          onClick={() => {
-            /* checkBP(
-              userData?.EMPL_NO,
-              userData?.MAINDEPTNAME,
-              ["KD"],
-              handle_fillsuaformInvoice
-            ); */
-            checkBP(
-              userData,
-              ["KD"],
-              ["ALL"],
-              ["ALL"],
-              handle_fillsuaformInvoice
-            );
-            //handle_fillsuaformInvoice();
-          }}
-        >
-          <FaFileInvoiceDollar color='lightgreen' size={15} />
-          NEW INV
-        </IconButton>
-        <IconButton
-          className='buttonIcon'
-          onClick={() => {
-            /*  checkBP(
-              userData?.EMPL_NO,
-              userData?.MAINDEPTNAME,
-              ["KD"],
-              handle_fillsuaform
-            ); */
-            checkBP(userData, ["KD"], ["ALL"], ["ALL"], handle_fillsuaform);
-
-            //handle_fillsuaform();
-          }}
-        >
-          <AiFillEdit color='orange' size={15} />
-          SỬA PO
-        </IconButton>
-        <IconButton
-          className='buttonIcon'
-          onClick={() => {
-            /*  checkBP(
-              userData?.EMPL_NO,
-              userData?.MAINDEPTNAME,
-              ["KD"],
-              handleConfirmDeletePO
-            ); */
-            checkBP(userData, ["KD"], ["ALL"], ["ALL"], handleConfirmDeletePO);
-            //handleConfirmDeletePO();
-          }}
-        >
-          <MdOutlineDelete color='red' size={15} />
-          XÓA PO
-        </IconButton>
-
-                <IconButton
-                  className='buttonIcon'
-                  onClick={() => {
-                    SaveExcel(podatatable, "MaterialStatus");
-                  }}
-                >
-                  <AiFillFileExcel color='green' size={25} />
-                  SAVE
-                </IconButton>
-                <IconButton
-                  className='buttonIcon'
-                  onClick={() => {
-                    setShowHidePivotTable(!showhidePivotTable);
-                  }}
-                >
-                  <MdOutlinePivotTableChart color='#ff33bb' size={25} />
-                  Pivot
-                </IconButton>
-              </Item>
-              <Item name='searchPanel' />
-              <Item name='exportButton' />
-              <Item name='columnChooser' />
-            </Toolbar>
-            <FilterRow visible={true} />
-            <SearchPanel visible={true} />
-            <ColumnChooser enabled={true} />
-            <Paging defaultPageSize={15} />
-            <Pager
-              showPageSizeSelector={true}
-              allowedPageSizes={[5, 10, 15, 20, 100, 1000, 10000, "all"]}
-              showNavigationButtons={true}
-              showInfo={true}
-              infoText='Page #{0}. Total: {1} ({2} items)'
-              displayMode='compact'
-            />
-
-            <Summary>
-              <TotalItem
-                alignment='right'
-                column='id'
-                summaryType='count'
-                valueFormat={"decimal"}
-              />
-            </Summary>
-          </DataGrid>
-        </CustomResponsiveContainer>
-      </div>
-    ),
-    [podatatable]
-  );
-  const excelDataTable = React.useMemo(
-    () => (
-      <div className='datatb'>
-        <CustomResponsiveContainer>
-          <DataGrid
-            autoNavigateToFocusedRow={true}
-            allowColumnReordering={true}
-            allowColumnResizing={true}
-            columnAutoWidth={false}
-            cellHintEnabled={true}
-            columnResizingMode={"widget"}
-            showColumnLines={true}
-            dataSource={uploadExcelJson}
-            columnWidth='auto'
-            keyExpr='id'
-            height={"75vh"}
-            showBorders={true}
-            onSelectionChanged={(e) => {}}
-            onRowClick={(e) => {
-              //console.log(e.data);
-            }}
-          >
-            <Scrolling
-              useNative={true}
-              scrollByContent={true}
-              scrollByThumb={true}
-              showScrollbar='onHover'
-              mode='virtual'
-            />
-            <Selection mode='single' selectAllMode='allPages' />
-            <Editing
-              allowUpdating={false}
-              allowAdding={true}
-              allowDeleting={false}
-              mode='batch'
-              confirmDelete={true}
-              onChangesChange={(e) => {}}
-            />
-            <Export enabled={true} />
-            <Toolbar disabled={false}>
-              <Item location='before'>
-                <IconButton
-                  className='buttonIcon'
-                  onClick={() => {
-                    SaveExcel(uploadExcelJson, "MaterialStatus");
-                  }}
-                >
-                  <AiFillFileExcel color='green' size={25} />
-                  SAVE
-                </IconButton>
-                <IconButton
-                  className='buttonIcon'
-                  onClick={() => {
-                    setShowHidePivotTable(!showhidePivotTable);
-                  }}
-                >
-                  <MdOutlinePivotTableChart color='#ff33bb' size={25} />
-                  Pivot
-                </IconButton>
-              </Item>
-              <Item name='searchPanel' />
-              <Item name='exportButton' />
-              <Item name='columnChooser' />
-            </Toolbar>
-            <FilterRow visible={true} />
-            <SearchPanel visible={true} />
-            <ColumnChooser enabled={true} />
-            <Paging defaultPageSize={15} />
-            <Pager
-              showPageSizeSelector={true}
-              allowedPageSizes={[5, 10, 15, 20, 100, 1000, 10000, "all"]}
-              showNavigationButtons={true}
-              showInfo={true}
-              infoText='Page #{0}. Total: {1} ({2} items)'
-              displayMode='compact'
-            />
-            <Summary>
-              <TotalItem
-                alignment='right'
-                column='id'
-                summaryType='count'
-                valueFormat={"decimal"}
-              />
-            </Summary>
-          </DataGrid>
-        </CustomResponsiveContainer>
-      </div>
-    ),
-    [uploadExcelJson]
-  );
-
   useEffect(() => {
     getcustomerlist();
     getcodelist("");
     dongboGiaPO();
   }, []);
   return (
-    <div className='pomanager'>
-      <div className='mininavbar'>
+    <div className="pomanager">
+      <div className="mininavbar">
         <div
-          className='mininavitem'
+          className="mininavitem"
           onClick={() => setNav(1)}
           style={{
             backgroundColor: selection.trapo === true ? "#02c712" : "#abc9ae",
             color: selection.trapo === true ? "yellow" : "yellow",
           }}
         >
-          <span className='mininavtext'>Tra PO</span>
+          <span className="mininavtext">Tra PO</span>
         </div>
         <div
-          className='mininavitem'
+          className="mininavitem"
           onClick={() =>
             /*  checkBP(userData?.EMPL_NO, userData?.MAINDEPTNAME, ["KD"], () => {
               setNav(2);
@@ -2147,31 +1851,31 @@ const PoManager = () => {
             color: selection.thempohangloat === true ? "yellow" : "yellow",
           }}
         >
-          <span className='mininavtext'>Thêm PO</span>
+          <span className="mininavtext">Thêm PO</span>
         </div>
       </div>
       {selection.thempohangloat && (
-        <div className='newpo'>
-          <div className='batchnewpo'>
+        <div className="newpo">
+          <div className="batchnewpo">
             <h3>Thêm PO Hàng Loạt</h3>
-            <div className='formupload'>
-              <label htmlFor='upload'>
+            <div className="formupload">
+              <label htmlFor="upload">
                 <b>Chọn file Excel: </b>
                 <input
                   onKeyDown={(e) => {
                     handleSearchCodeKeyDown(e);
                   }}
-                  className='selectfilebutton'
-                  type='file'
-                  name='upload'
-                  id='upload'
+                  className="selectfilebutton"
+                  type="file"
+                  name="upload"
+                  id="upload"
                   onChange={(e: any) => {
                     readUploadFile(e);
                   }}
                 />
               </label>
               <div
-                className='checkpobutton'
+                className="checkpobutton"
                 onClick={(e) => {
                   e.preventDefault();
                   confirmCheckPoHangLoat();
@@ -2180,7 +1884,7 @@ const PoManager = () => {
                 Check PO
               </div>
               <div
-                className='uppobutton'
+                className="uppobutton"
                 onClick={(e) => {
                   e.preventDefault();
                   confirmUpPoHangLoat();
@@ -2189,9 +1893,9 @@ const PoManager = () => {
                 Up PO
               </div>
             </div>
-            <div className='insertPOTable'>
-              {excelDataTable}
-              {/* <DataGrid
+            <div className="insertPOTable">
+              {true && (
+                <DataGrid
                   sx={{ fontSize: "0.6rem" }}
                   components={{
                     Toolbar: CustomToolbar,
@@ -2206,25 +1910,26 @@ const PoManager = () => {
                   ]}
                   editMode="row"
                   getRowHeight={() => "auto"}
-                /> */}
+                />
+              )}
             </div>
           </div>
-          <div className='singlenewpo'></div>
+          <div className="singlenewpo"></div>
         </div>
       )}
       {selection.trapo && (
-        <div className='tracuuPO'>
-          {sh && (
-            <div className='tracuuPOform'>
-              <div className='forminput'>
-                <div className='forminputcolumn'>
+        <div className="tracuuPO">
+          {showhidesearchdiv && (
+            <div className="tracuuPOform">
+              <div className="forminput">
+                <div className="forminputcolumn">
                   <label>
                     <b>Từ ngày:</b>
                     <input
                       onKeyDown={(e) => {
                         handleSearchCodeKeyDown(e);
                       }}
-                      type='date'
+                      type="date"
                       value={fromdate.slice(0, 10)}
                       onChange={(e) => setFromDate(e.target.value)}
                     ></input>
@@ -2235,21 +1940,21 @@ const PoManager = () => {
                       onKeyDown={(e) => {
                         handleSearchCodeKeyDown(e);
                       }}
-                      type='date'
+                      type="date"
                       value={todate.slice(0, 10)}
                       onChange={(e) => setToDate(e.target.value)}
                     ></input>
                   </label>
                 </div>
-                <div className='forminputcolumn'>
+                <div className="forminputcolumn">
                   <label>
                     <b>Code KD:</b>{" "}
                     <input
                       onKeyDown={(e) => {
                         handleSearchCodeKeyDown(e);
                       }}
-                      type='text'
-                      placeholder='GH63-xxxxxx'
+                      type="text"
+                      placeholder="GH63-xxxxxx"
                       value={codeKD}
                       onChange={(e) => setCodeKD(e.target.value)}
                     ></input>
@@ -2260,22 +1965,22 @@ const PoManager = () => {
                       onKeyDown={(e) => {
                         handleSearchCodeKeyDown(e);
                       }}
-                      type='text'
-                      placeholder='7C123xxx'
+                      type="text"
+                      placeholder="7C123xxx"
                       value={codeCMS}
                       onChange={(e) => setCodeCMS(e.target.value)}
                     ></input>
                   </label>
                 </div>
-                <div className='forminputcolumn'>
+                <div className="forminputcolumn">
                   <label>
                     <b>Tên nhân viên:</b>{" "}
                     <input
                       onKeyDown={(e) => {
                         handleSearchCodeKeyDown(e);
                       }}
-                      type='text'
-                      placeholder='Trang'
+                      type="text"
+                      placeholder="Trang"
                       value={empl_name}
                       onChange={(e) => setEmpl_Name(e.target.value)}
                     ></input>
@@ -2286,22 +1991,22 @@ const PoManager = () => {
                       onKeyDown={(e) => {
                         handleSearchCodeKeyDown(e);
                       }}
-                      type='text'
-                      placeholder='SEVT'
+                      type="text"
+                      placeholder="SEVT"
                       value={cust_name}
                       onChange={(e) => setCust_Name(e.target.value)}
                     ></input>
                   </label>
                 </div>
-                <div className='forminputcolumn'>
+                <div className="forminputcolumn">
                   <label>
                     <b>Loại sản phẩm:</b>{" "}
                     <input
                       onKeyDown={(e) => {
                         handleSearchCodeKeyDown(e);
                       }}
-                      type='text'
-                      placeholder='TSP'
+                      type="text"
+                      placeholder="TSP"
                       value={prod_type}
                       onChange={(e) => setProdType(e.target.value)}
                     ></input>
@@ -2312,22 +2017,22 @@ const PoManager = () => {
                       onKeyDown={(e) => {
                         handleSearchCodeKeyDown(e);
                       }}
-                      type='text'
-                      placeholder='12345'
+                      type="text"
+                      placeholder="12345"
                       value={id}
                       onChange={(e) => setID(e.target.value)}
                     ></input>
                   </label>
                 </div>
-                <div className='forminputcolumn'>
+                <div className="forminputcolumn">
                   <label>
                     <b>PO NO:</b>{" "}
                     <input
                       onKeyDown={(e) => {
                         handleSearchCodeKeyDown(e);
                       }}
-                      type='text'
-                      placeholder='123abc'
+                      type="text"
+                      placeholder="123abc"
                       value={po_no}
                       onChange={(e) => setPo_No(e.target.value)}
                     ></input>
@@ -2338,22 +2043,22 @@ const PoManager = () => {
                       onKeyDown={(e) => {
                         handleSearchCodeKeyDown(e);
                       }}
-                      type='text'
-                      placeholder='SJ-203020HC'
+                      type="text"
+                      placeholder="SJ-203020HC"
                       value={material}
                       onChange={(e) => setMaterial(e.target.value)}
                     ></input>
                   </label>
                 </div>
-                <div className='forminputcolumn'>
+                <div className="forminputcolumn">
                   <label>
                     <b>Over/OK:</b>{" "}
                     <input
                       onKeyDown={(e) => {
                         handleSearchCodeKeyDown(e);
                       }}
-                      type='text'
-                      placeholder='OVER'
+                      type="text"
+                      placeholder="OVER"
                       value={over}
                       onChange={(e) => setOver(e.target.value)}
                     ></input>
@@ -2364,24 +2069,24 @@ const PoManager = () => {
                       onKeyDown={(e) => {
                         handleSearchCodeKeyDown(e);
                       }}
-                      type='text'
-                      placeholder='số invoice'
+                      type="text"
+                      placeholder="số invoice"
                       value={invoice_no}
                       onChange={(e) => setInvoice_No(e.target.value)}
                     ></input>
                   </label>
                 </div>
               </div>
-              <div className='formbutton'>
-                <div className='checkboxdiv'>
+              <div className="formbutton">
+                <div className="checkboxdiv">
                   <label>
                     <b>All Time:</b>
                     <input
                       onKeyDown={(e) => {
                         handleSearchCodeKeyDown(e);
                       }}
-                      type='checkbox'
-                      name='alltimecheckbox'
+                      type="checkbox"
+                      name="alltimecheckbox"
                       defaultChecked={alltime}
                       onChange={() => setAllTime(!alltime)}
                     ></input>
@@ -2392,29 +2097,29 @@ const PoManager = () => {
                       onKeyDown={(e) => {
                         handleSearchCodeKeyDown(e);
                       }}
-                      type='checkbox'
-                      name='pobalancecheckbox'
+                      type="checkbox"
+                      name="pobalancecheckbox"
                       defaultChecked={justpobalance}
                       onChange={() => setJustPOBalance(!justpobalance)}
                     ></input>
                   </label>
                 </div>
-                <div className='searchbuttondiv'>
+                <div className="searchbuttondiv">
                   <IconButton
-                    className='buttonIcon'
+                    className="buttonIcon"
                     onClick={() => {
                       handletraPO();
                     }}
                   >
-                    <FcSearch color='green' size={30} />
+                    <FcSearch color="green" size={30} />
                     Search
                   </IconButton>
                 </div>
               </div>
             </div>
           )}
-          <div className='tracuuPOTable'>
-            <div className='formsummary'>
+          <div className="tracuuPOTable">
+            <div className="formsummary">
               <table>
                 <thead>
                   <tr>
@@ -2453,7 +2158,7 @@ const PoManager = () => {
                         {
                           style: "currency",
                           currency: "USD",
-                        }
+                        },
                       )}
                     </td>
                     <td style={{ color: "blue", fontWeight: "bold" }}>
@@ -2463,17 +2168,15 @@ const PoManager = () => {
                         {
                           style: "currency",
                           currency: "USD",
-                        }
+                        },
                       )}
                     </td>
                   </tr>
                 </tbody>
               </table>
             </div>
-            <div className='tablegrid'>
-              {poDataTable}
-
-              {/* <DataGrid
+            <div className="tablegrid">
+              <DataGrid
                 sx={{ fontSize: "0.7rem", flex: 1 }}
                 components={{
                   Toolbar: CustomToolbarPOTable,
@@ -2493,25 +2196,25 @@ const PoManager = () => {
                 onSelectionModelChange={(ids) => {
                   handlePOSelectionforUpdate(ids);
                 }}
-              /> */}
+              />
             </div>
           </div>
         </div>
       )}
       {selection.them1po && (
-        <div className='them1po'>
-          <div className='formnho'>
-            <div className='dangkyform'>
+        <div className="them1po">
+          <div className="formnho">
+            <div className="dangkyform">
               <h3>Thêm PO mới</h3>
-              <div className='dangkyinput'>
-                <div className='dangkyinputbox'>
+              <div className="dangkyinput">
+                <div className="dangkyinputbox">
                   <label>
                     <b>Khách hàng:</b>{" "}
                     <Autocomplete
-                      size='small'
+                      size="small"
                       disablePortal
                       options={customerList}
-                      className='autocomplete'
+                      className="autocomplete"
                       filterOptions={filterOptions1}
                       isOptionEqualToValue={(option: any, value: any) =>
                         option.CUST_CD === value.CUST_CD
@@ -2520,17 +2223,17 @@ const PoManager = () => {
                         `${option.CUST_CD}: ${option.CUST_NAME_KD}`
                       }
                       renderInput={(params) => (
-                        <TextField {...params} label='Select customer' />
+                        <TextField {...params} label="Select customer" />
                       )}
                       value={selectedCust_CD}
                       onChange={(
                         event: any,
-                        newValue: CustomerListData | any
+                        newValue: CustomerListData | any,
                       ) => {
                         (async () => {
                           if (company === "PVN") {
                             setNewPoNo(
-                              await autogeneratePO_NO(newValue.CUST_CD)
+                              await autogeneratePO_NO(newValue.CUST_CD),
                             );
                           }
                           //console.log(await autogeneratePO_NO(newValue.CUST_CD));
@@ -2545,10 +2248,10 @@ const PoManager = () => {
                   <label>
                     <b>Code hàng:</b>{" "}
                     <Autocomplete
-                      size='small'
+                      size="small"
                       disablePortal
                       options={codeList}
-                      className='autocomplete'
+                      className="autocomplete"
                       filterOptions={filterOptions1}
                       isOptionEqualToValue={(option: any, value: any) =>
                         option.G_CODE === value.G_CODE
@@ -2557,13 +2260,13 @@ const PoManager = () => {
                         `${option.G_CODE}: ${option.G_NAME}`
                       }
                       renderInput={(params) => (
-                        <TextField {...params} label='Select code' />
+                        <TextField {...params} label="Select code" />
                       )}
                       onChange={(event: any, newValue: CodeListData | any) => {
                         console.log(newValue);
                         loadprice(
                           newValue.G_CODE,
-                          selectedCust_CD?.CUST_NAME_KD
+                          selectedCust_CD?.CUST_NAME_KD,
                         );
                         setSelectedCode(newValue);
                       }}
@@ -2576,8 +2279,8 @@ const PoManager = () => {
                       onKeyDown={(e) => {
                         handleSearchCodeKeyDown(e);
                       }}
-                      className='inputdata'
-                      type='date'
+                      className="inputdata"
+                      type="date"
                       value={newpodate.slice(0, 10)}
                       onChange={(e) => setNewPoDate(e.target.value)}
                     ></input>
@@ -2588,14 +2291,14 @@ const PoManager = () => {
                       onKeyDown={(e) => {
                         handleSearchCodeKeyDown(e);
                       }}
-                      className='inputdata'
-                      type='date'
+                      className="inputdata"
+                      type="date"
                       value={newrddate.slice(0, 10)}
                       onChange={(e) => setNewRdDate(e.target.value)}
                     ></input>
                   </label>
                 </div>
-                <div className='dangkyinputbox'>
+                <div className="dangkyinputbox">
                   <label>
                     <b>PO NO:</b>{" "}
                     <TextField
@@ -2603,12 +2306,12 @@ const PoManager = () => {
                       onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                         setNewPoNo(e.target.value)
                       }
-                      size='small'
-                      color='success'
-                      className='autocomplete'
-                      id='outlined-basic'
-                      label='Số PO'
-                      variant='outlined'
+                      size="small"
+                      color="success"
+                      className="autocomplete"
+                      id="outlined-basic"
+                      label="Số PO"
+                      variant="outlined"
                     />
                   </label>
                   <label>
@@ -2620,18 +2323,18 @@ const PoManager = () => {
                         let tempprice: number = newcodeprice.filter(
                           (e: PRICEWITHMOQ, index: number) => {
                             return tempQTY >= e.MOQ;
-                          }
+                          },
                         )[0]?.PROD_PRICE;
                         if (tempprice !== undefined)
                           setNewPoPrice(tempprice.toString());
                         setNewPoQty(e.target.value);
                       }}
-                      size='small'
-                      color='success'
-                      className='autocomplete'
-                      id='outlined-basic'
-                      label='PO QTY'
-                      variant='outlined'
+                      size="small"
+                      color="success"
+                      className="autocomplete"
+                      id="outlined-basic"
+                      label="PO QTY"
+                      variant="outlined"
                     />
                   </label>
                   <label>
@@ -2641,12 +2344,12 @@ const PoManager = () => {
                       onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                         setNewPoPrice(e.target.value)
                       }
-                      size='small'
-                      color='success'
-                      className='autocomplete'
-                      id='outlined-basic'
-                      label='Price'
-                      variant='outlined'
+                      size="small"
+                      color="success"
+                      className="autocomplete"
+                      id="outlined-basic"
+                      label="Price"
+                      variant="outlined"
                     />
                   </label>
                   <label>
@@ -2656,19 +2359,19 @@ const PoManager = () => {
                       onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                         setNewPoRemark(e.target.value)
                       }
-                      size='small'
-                      color='success'
-                      className='autocomplete'
-                      id='outlined-basic'
-                      label='Remark'
-                      variant='outlined'
+                      size="small"
+                      color="success"
+                      className="autocomplete"
+                      id="outlined-basic"
+                      label="Remark"
+                      variant="outlined"
                     />
                   </label>
                 </div>
               </div>
-              <div className='dangkybutton'>
+              <div className="dangkybutton">
                 <button
-                  className='thembutton'
+                  className="thembutton"
                   onClick={() => {
                     handle_add_1PO();
                   }}
@@ -2676,7 +2379,7 @@ const PoManager = () => {
                   Thêm PO
                 </button>
                 <button
-                  className='suabutton'
+                  className="suabutton"
                   onClick={() => {
                     updatePO();
                   }}
@@ -2684,7 +2387,7 @@ const PoManager = () => {
                   Sửa PO
                 </button>
                 <button
-                  className='xoabutton'
+                  className="xoabutton"
                   onClick={() => {
                     clearPOform();
                   }}
@@ -2692,7 +2395,7 @@ const PoManager = () => {
                   Clear
                 </button>
                 <button
-                  className='closebutton'
+                  className="closebutton"
                   onClick={() => {
                     setSelection({
                       ...selection,
@@ -2710,29 +2413,29 @@ const PoManager = () => {
         </div>
       )}
       {selection.them1invoice && (
-        <div className='them1invoice'>
-          <div className='formnho'>
-            <div className='dangkyform'>
+        <div className="them1invoice">
+          <div className="formnho">
+            <div className="dangkyform">
               <h3>Thêm Invoice mới</h3>
-              <div className='dangkyinput'>
-                <div className='dangkyinputbox'>
+              <div className="dangkyinput">
+                <div className="dangkyinputbox">
                   <label>
                     <b>Khách hàng:</b>{" "}
                     <Autocomplete
-                      size='small'
+                      size="small"
                       disablePortal
                       options={customerList}
-                      className='autocomplete'
+                      className="autocomplete"
                       getOptionLabel={(option: CustomerListData) =>
                         `${option.CUST_CD}: ${option.CUST_NAME_KD}`
                       }
                       renderInput={(params) => (
-                        <TextField {...params} label='Select customer' />
+                        <TextField {...params} label="Select customer" />
                       )}
                       value={selectedCust_CD}
                       onChange={(
                         event: any,
-                        newValue: CustomerListData | null
+                        newValue: CustomerListData | null,
                       ) => {
                         console.log(newValue);
                         setSelectedCust_CD(newValue);
@@ -2742,23 +2445,23 @@ const PoManager = () => {
                   <label>
                     <b>Code hàng:</b>{" "}
                     <Autocomplete
-                      size='small'
+                      size="small"
                       disablePortal
                       options={codeList}
-                      className='autocomplete'
+                      className="autocomplete"
                       filterOptions={filterOptions1}
                       getOptionLabel={(option: CodeListData | any) =>
                         `${option.G_CODE}: ${option.G_NAME}`
                       }
                       renderInput={(params) => (
-                        <TextField {...params} label='Select code' />
+                        <TextField {...params} label="Select code" />
                       )}
                       onChange={(event: any, newValue: CodeListData | any) => {
                         console.log(newValue);
                         setNewPoPrice(
                           newValue === null
                             ? ""
-                            : newValue.PROD_LAST_PRICE.toString()
+                            : newValue.PROD_LAST_PRICE.toString(),
                         );
                         setSelectedCode(newValue);
                       }}
@@ -2771,8 +2474,8 @@ const PoManager = () => {
                       onKeyDown={(e) => {
                         handleSearchCodeKeyDown(e);
                       }}
-                      className='inputdata'
-                      type='date'
+                      className="inputdata"
+                      type="date"
                       value={newpodate.slice(0, 10)}
                       onChange={(e) => setNewPoDate(e.target.value)}
                     ></input>
@@ -2783,14 +2486,14 @@ const PoManager = () => {
                       onKeyDown={(e) => {
                         handleSearchCodeKeyDown(e);
                       }}
-                      className='inputdata'
-                      type='date'
+                      className="inputdata"
+                      type="date"
                       value={newrddate.slice(0, 10)}
                       onChange={(e) => setNewRdDate(e.target.value)}
                     ></input>
                   </label>
                 </div>
-                <div className='dangkyinputbox'>
+                <div className="dangkyinputbox">
                   <label>
                     <b>PO NO:</b>{" "}
                     <TextField
@@ -2798,12 +2501,12 @@ const PoManager = () => {
                       onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                         setNewPoNo(e.target.value)
                       }
-                      size='small'
-                      color='success'
-                      className='autocomplete'
-                      id='outlined-basic'
-                      label='Số PO'
-                      variant='outlined'
+                      size="small"
+                      color="success"
+                      className="autocomplete"
+                      id="outlined-basic"
+                      label="Số PO"
+                      variant="outlined"
                     />
                   </label>
                   <label>
@@ -2813,12 +2516,12 @@ const PoManager = () => {
                       onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                         setNewInvoiceQty(Number(e.target.value))
                       }
-                      size='small'
-                      color='success'
-                      className='autocomplete'
-                      id='outlined-basic'
-                      label='INVOICE QTY'
-                      variant='outlined'
+                      size="small"
+                      color="success"
+                      className="autocomplete"
+                      id="outlined-basic"
+                      label="INVOICE QTY"
+                      variant="outlined"
                     />
                   </label>
                   <label>
@@ -2827,8 +2530,8 @@ const PoManager = () => {
                       onKeyDown={(e) => {
                         handleSearchCodeKeyDown(e);
                       }}
-                      className='inputdata'
-                      type='date'
+                      className="inputdata"
+                      type="date"
                       value={newinvoicedate.slice(0, 10)}
                       onChange={(e) => setNewInvoiceDate(e.target.value)}
                     ></input>
@@ -2840,18 +2543,18 @@ const PoManager = () => {
                       onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                         setNewInvoiceRemark(e.target.value)
                       }
-                      size='small'
-                      className='autocomplete'
-                      id='outlined-basic'
-                      label='Remark'
-                      variant='outlined'
+                      size="small"
+                      className="autocomplete"
+                      id="outlined-basic"
+                      label="Remark"
+                      variant="outlined"
                     />
                   </label>
                 </div>
               </div>
-              <div className='dangkybutton'>
+              <div className="dangkybutton">
                 <button
-                  className='thembutton'
+                  className="thembutton"
                   onClick={() => {
                     handle_add_1Invoice();
                   }}
@@ -2859,7 +2562,7 @@ const PoManager = () => {
                   Thêm Invoice
                 </button>
                 <button
-                  className='suabutton'
+                  className="suabutton"
                   onClick={() => {
                     clearInvoiceform();
                   }}
@@ -2867,7 +2570,7 @@ const PoManager = () => {
                   Clear
                 </button>
                 <button
-                  className='closebutton'
+                  className="closebutton"
                   onClick={() => {
                     setSelection({
                       ...selection,
@@ -2886,20 +2589,20 @@ const PoManager = () => {
         </div>
       )}
       {showhidePivotTable && (
-        <div className='pivottable1'>
+        <div className="pivottable1">
           <IconButton
-            className='buttonIcon'
+            className="buttonIcon"
             onClick={() => {
               setShowHidePivotTable(false);
             }}
           >
-            <AiFillCloseCircle color='blue' size={25} />
+            <AiFillCloseCircle color="blue" size={25} />
             Close
           </IconButton>
-          <PivotTable datasource={dataSource} tableID='potablepivot' />
+          <PivotTable datasource={dataSource} tableID="potablepivot" />
         </div>
       )}
     </div>
   );
 };
-export default PoManager;
+export default PoManager2;

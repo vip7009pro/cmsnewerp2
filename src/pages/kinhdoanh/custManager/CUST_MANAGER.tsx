@@ -23,11 +23,10 @@ import Swal from "sweetalert2";
 import "./CUST_MANAGER2.scss";
 import { UserContext } from "../../../api/Context";
 import { generalQuery } from "../../../api/Api";
-import { SaveExcel, zeroPad } from "../../../api/GlobalFunction";
+import { CustomResponsiveContainer, SaveExcel, zeroPad } from "../../../api/GlobalFunction";
 import { MdOutlinePivotTableChart } from "react-icons/md";
 import PivotTable from "../../../components/PivotChart/PivotChart";
 import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
-import { ResponsiveContainer } from "recharts";
 import { CUST_INFO } from "../../../api/GlobalInterface";
 const CUST_MANAGER = () => {
   const [showhidePivotTable, setShowHidePivotTable] = useState(false);
@@ -204,7 +203,7 @@ const CUST_MANAGER = () => {
   const materialDataTable = React.useMemo(
     () => (
       <div className="datatb">
-        <ResponsiveContainer>
+        <CustomResponsiveContainer>
           <DataGrid
             autoNavigateToFocusedRow={true}
             allowColumnReordering={true}
@@ -288,7 +287,7 @@ const CUST_MANAGER = () => {
               />
             </Summary>
           </DataGrid>
-        </ResponsiveContainer>
+        </CustomResponsiveContainer>
       </div>
     ),
     [custinfodatatable],

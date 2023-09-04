@@ -30,11 +30,10 @@ import Swal from "sweetalert2";
 import "./QLVL.scss";
 import { UserContext } from "../../../api/Context";
 import { generalQuery, getCompany } from "../../../api/Api";
-import { SaveExcel } from "../../../api/GlobalFunction";
+import { CustomResponsiveContainer, SaveExcel } from "../../../api/GlobalFunction";
 import { MdOutlinePivotTableChart } from "react-icons/md";
 import PivotTable from "../../../components/PivotChart/PivotChart";
 import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
-import { ResponsiveContainer } from "recharts";
 import {
   CustomerListData,
   MATERIAL_TABLE_DATA,
@@ -45,20 +44,8 @@ const QLVL = () => {
   const [material_table_data, set_material_table_data] = useState<
     Array<MATERIAL_TABLE_DATA>
   >([]);
-  const [custinfodatatable, seMaterialInfoDataTable] = useState<Array<any>>([]);
-
-  const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
-  const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));
-  const [codeKD, setCodeKD] = useState("");
-  const [codeCMS, setCodeCMS] = useState("");
-  const [machine, setMachine] = useState("ALL");
-  const [factory, setFactory] = useState("ALL");
-  const [prodrequestno, setProdRequestNo] = useState("");
-  const [plan_id, setPlanID] = useState("");
-  const [alltime, setAllTime] = useState(true);
   const [datasxtable, setDataSXTable] = useState<Array<any>>([]);
   const [m_name, setM_Name] = useState("");
-  const [m_code, setM_Code] = useState("");
   const [selectedRows, setSelectedRows] = useState<MATERIAL_TABLE_DATA>({
     M_ID: 0,
     M_NAME: "",
@@ -190,7 +177,7 @@ const QLVL = () => {
   const materialDataTable = React.useMemo(
     () => (
       <div className="datatb">
-        <ResponsiveContainer>
+        <CustomResponsiveContainer>
           <DataGrid
             autoNavigateToFocusedRow={true}
             allowColumnReordering={true}
@@ -329,7 +316,7 @@ const QLVL = () => {
               />
             </Summary>
           </DataGrid>
-        </ResponsiveContainer>
+        </CustomResponsiveContainer>
       </div>
     ),
     [material_table_data],

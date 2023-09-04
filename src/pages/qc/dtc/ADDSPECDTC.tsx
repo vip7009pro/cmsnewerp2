@@ -16,7 +16,7 @@ import { AiFillFileExcel } from "react-icons/ai";
 import Swal from "sweetalert2";
 import { generalQuery } from "../../../api/Api";
 import { UserContext } from "../../../api/Context";
-import { SaveExcel } from "../../../api/GlobalFunction";
+import { CustomResponsiveContainer, SaveExcel } from "../../../api/GlobalFunction";
 import "./ADDSPECTDTC.scss";
 import DataGrid, {
   Column,
@@ -37,7 +37,6 @@ import DataGrid, {
 } from "devextreme-react/data-grid";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
-import { ResponsiveContainer } from "recharts";
 import {
   CheckAddedSPECDATA,
   CodeListData,
@@ -124,7 +123,7 @@ const ADDSPECTDTC = () => {
   const materialDataTable = React.useMemo(
     () => (
       <div className="datatb">
-        <ResponsiveContainer>
+        <CustomResponsiveContainer>
           <DataGrid
             style={{ fontSize: "0.7rem" }}
             autoNavigateToFocusedRow={true}
@@ -324,7 +323,7 @@ const ADDSPECTDTC = () => {
               />
             </Summary>
           </DataGrid>
-        </ResponsiveContainer>
+        </CustomResponsiveContainer>
       </div>
     ),
     [inspectiondatatable],

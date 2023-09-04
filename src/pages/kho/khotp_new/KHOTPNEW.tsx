@@ -34,7 +34,7 @@ import Swal from "sweetalert2";
 import "./KHOTPNEW.scss";
 import { UserContext } from "../../../api/Context";
 import { generalQuery } from "../../../api/Api";
-import { SaveExcel } from "../../../api/GlobalFunction";
+import { CustomResponsiveContainer, SaveExcel } from "../../../api/GlobalFunction";
 import { MdOutlinePivotTableChart } from "react-icons/md";
 import PivotTable from "../../../components/PivotChart/PivotChart";
 import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
@@ -1092,7 +1092,7 @@ const KHOTPNEW = () => {
   const KHOTP_INPUT = React.useMemo(
     () => (
       <div className="datatb">
-        <ResponsiveContainer>
+        <CustomResponsiveContainer>
           <DataGrid
             autoNavigateToFocusedRow={true}
             allowColumnReordering={true}
@@ -1184,7 +1184,7 @@ const KHOTPNEW = () => {
               />
             </Summary>
           </DataGrid>
-        </ResponsiveContainer>
+        </CustomResponsiveContainer>
       </div>
     ),
     [khotpinputdatatable],
@@ -1192,7 +1192,7 @@ const KHOTPNEW = () => {
   const KHOTP_OUTPUT = React.useMemo(
     () => (
       <div className="datatb">
-        <ResponsiveContainer>
+        <CustomResponsiveContainer>
           <DataGrid
             autoNavigateToFocusedRow={true}
             allowColumnReordering={true}
@@ -1284,7 +1284,7 @@ const KHOTPNEW = () => {
               />
             </Summary>
           </DataGrid>
-        </ResponsiveContainer>
+        </CustomResponsiveContainer>
       </div>
     ),
     [khotpoutputdatatable],
@@ -1292,7 +1292,7 @@ const KHOTPNEW = () => {
   const KHOTP_STOCKG_CODE = React.useMemo(
     () => (
       <div className="datatb">
-        <ResponsiveContainer>
+        <CustomResponsiveContainer>
           <DataGrid
             autoNavigateToFocusedRow={true}
             allowColumnReordering={true}
@@ -1369,7 +1369,7 @@ const KHOTPNEW = () => {
               />
             </Summary>
           </DataGrid>
-        </ResponsiveContainer>
+        </CustomResponsiveContainer>
       </div>
     ),
     [tonktp_gcode],
@@ -1377,7 +1377,7 @@ const KHOTPNEW = () => {
   const KHOTP_STOCKG_NAME_KD = React.useMemo(
     () => (
       <div className="datatb">
-        <ResponsiveContainer>
+        <CustomResponsiveContainer>
           <DataGrid
             autoNavigateToFocusedRow={true}
             allowColumnReordering={true}
@@ -1454,7 +1454,7 @@ const KHOTPNEW = () => {
               />
             </Summary>
           </DataGrid>
-        </ResponsiveContainer>
+        </CustomResponsiveContainer>
       </div>
     ),
     [tonktp_gnamekd],
@@ -1462,7 +1462,7 @@ const KHOTPNEW = () => {
   const KHOTP_STOCK_YCSX = React.useMemo(
     () => (
       <div className="datatb">
-        <ResponsiveContainer>
+        <CustomResponsiveContainer>
           <DataGrid
             autoNavigateToFocusedRow={true}
             allowColumnReordering={true}
@@ -1539,7 +1539,7 @@ const KHOTPNEW = () => {
               />
             </Summary>
           </DataGrid>
-        </ResponsiveContainer>
+        </CustomResponsiveContainer>
       </div>
     ),
     [tonktp_prod_request_no],

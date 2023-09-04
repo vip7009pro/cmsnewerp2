@@ -52,7 +52,6 @@ import {
   Legend,
   Bar,
   ComposedChart,
-  ResponsiveContainer,
   Label,
   LabelList,
   Pie,

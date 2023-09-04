@@ -34,11 +34,10 @@ import Swal from "sweetalert2";
 import "./PRODUCT_BARCODE_MANAGER.scss";
 import { UserContext } from "../../../api/Context";
 import { generalQuery } from "../../../api/Api";
-import { SaveExcel } from "../../../api/GlobalFunction";
+import { CustomResponsiveContainer, SaveExcel } from "../../../api/GlobalFunction";
 import { MdOutlinePivotTableChart } from "react-icons/md";
 import PivotTable from "../../../components/PivotChart/PivotChart";
 import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
-import { ResponsiveContainer } from "recharts";
 import QRCODE from "../design_amazon/design_components/QRCODE";
 import BARCODE from "../design_amazon/design_components/BARCODE";
 import DATAMATRIX from "../design_amazon/design_components/DATAMATRIX";
@@ -179,7 +178,7 @@ const PRODUCT_BARCODE_MANAGER = () => {
   const BarcodeDataTable = React.useMemo(
     () => (
       <div className="datatb">
-        <ResponsiveContainer>
+        <CustomResponsiveContainer>
           <DataGrid
             autoNavigateToFocusedRow={true}
             allowColumnReordering={true}
@@ -441,7 +440,7 @@ const PRODUCT_BARCODE_MANAGER = () => {
               />
             </Summary>
           </DataGrid>
-        </ResponsiveContainer>
+        </CustomResponsiveContainer>
       </div>
     ),
     [barcodedatatable],

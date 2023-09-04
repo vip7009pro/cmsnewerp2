@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { generalQuery } from "../../../api/Api";
 import Swal from "sweetalert2";
-import { ResponsiveContainer } from "recharts";
 import {
   Column,
   Editing,
@@ -20,7 +19,7 @@ import {
   TotalItem,
 } from "devextreme-react/data-grid";
 import { IconButton } from "@mui/material";
-import { SaveExcel } from "../../../api/GlobalFunction";
+import { CustomResponsiveContainer, SaveExcel } from "../../../api/GlobalFunction";
 import { AiFillFileExcel, AiFillFolderAdd } from "react-icons/ai";
 import "./CalcQuotation.scss";
 import CodeVisualLize from "./CodeVisualize/CodeVisualLize";
@@ -306,7 +305,7 @@ const CalcQuotation = () => {
   const listcodeTable = React.useMemo(
     () => (
       <div className="datatb">
-        <ResponsiveContainer>
+        <CustomResponsiveContainer>
           <DataGrid
             autoNavigateToFocusedRow={true}
             allowColumnReordering={true}
@@ -525,7 +524,7 @@ const CalcQuotation = () => {
               />
             </Summary>
           </DataGrid>
-        </ResponsiveContainer>
+        </CustomResponsiveContainer>
       </div>
     ),
     [listcode],
@@ -533,7 +532,7 @@ const CalcQuotation = () => {
   const listBOMVLTable = React.useMemo(
     () => (
       <div className="datatb">
-        <ResponsiveContainer>
+        <CustomResponsiveContainer>
           <DataGrid
             autoNavigateToFocusedRow={true}
             allowColumnReordering={true}
@@ -641,7 +640,7 @@ const CalcQuotation = () => {
               />
             </Summary>
           </DataGrid>
-        </ResponsiveContainer>
+        </CustomResponsiveContainer>
       </div>
     ),
     [listVL],
@@ -649,7 +648,7 @@ const CalcQuotation = () => {
   const banggiamoinhat = React.useMemo(
     () => (
       <div className="datatb">
-        <ResponsiveContainer>
+        <CustomResponsiveContainer>
           <DataGrid
             autoNavigateToFocusedRow={true}
             allowColumnReordering={true}
@@ -780,7 +779,7 @@ const CalcQuotation = () => {
               />
             </Summary>
           </DataGrid>
-        </ResponsiveContainer>
+        </CustomResponsiveContainer>
       </div>
     ),
     [banggia],
