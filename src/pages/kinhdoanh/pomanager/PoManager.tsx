@@ -1857,7 +1857,7 @@ const PoManager = () => {
             showColumnLines={true}
             dataSource={podatatable}
             columnWidth='auto'
-            keyExpr='id'
+            keyExpr='PO_ID'
             height={"75vh"}
             showBorders={true}
             onSelectionChanged={(e) => {}}
@@ -2011,7 +2011,7 @@ const PoManager = () => {
             <Summary>
               <TotalItem
                 alignment='right'
-                column='id'
+                column='PO_ID'
                 summaryType='count'
                 valueFormat={"decimal"}
               />
@@ -2036,7 +2036,7 @@ const PoManager = () => {
             showColumnLines={true}
             dataSource={uploadExcelJson}
             columnWidth='auto'
-            keyExpr='id'
+            keyExpr='PO_ID'
             height={"75vh"}
             showBorders={true}
             onSelectionChanged={(e) => {}}
@@ -2101,7 +2101,7 @@ const PoManager = () => {
             <Summary>
               <TotalItem
                 alignment='right'
-                column='id'
+                column='PO_ID'
                 summaryType='count'
                 valueFormat={"decimal"}
               />
