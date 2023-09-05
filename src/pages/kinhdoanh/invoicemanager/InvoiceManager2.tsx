@@ -6,6 +6,7 @@ import {
   createFilterOptions,
 } from "@mui/material";
 import {
+  DataGrid,
   GridSelectionModel,
   GridToolbarColumnsButton,
   GridToolbarContainer,
@@ -14,7 +15,7 @@ import {
   GridToolbarQuickFilter,
 } from "@mui/x-data-grid";
 import moment from "moment";
-import React, { useContext, useEffect, useRef, useState, useTransition } from "react";
+import React, { useContext, useEffect, useState, useTransition } from "react";
 import { FcSearch } from "react-icons/fc";
 import {
   AiFillCloseCircle,
@@ -26,7 +27,7 @@ import Swal from "sweetalert2";
 import * as XLSX from "xlsx";
 import { generalQuery } from "../../../api/Api";
 import { UserContext } from "../../../api/Context";
-import { checkBP, CustomResponsiveContainer, SaveExcel } from "../../../api/GlobalFunction";
+import { checkBP, SaveExcel } from "../../../api/GlobalFunction";
 import { MdOutlineDelete, MdOutlinePivotTableChart } from "react-icons/md";
 import "./InvoiceManager.scss";
 import { FaFileInvoiceDollar } from "react-icons/fa";
@@ -42,26 +43,9 @@ import {
   InvoiceTableData,
   UserData,
 } from "../../../api/GlobalInterface";
-import {
-  Column,
-  Editing,
-  FilterRow,
-  Pager,
-  Scrolling,
-  SearchPanel,
-  Selection,
-  DataGrid,
-  Paging,
-  Toolbar,
-  Item,
-  Export,
-  ColumnChooser,
-  Summary,
-  TotalItem,
-} from "devextreme-react/data-grid";
-const InvoiceManager = () => {
-  const showhidesearchdiv = useRef(false);
-  const [sh, setSH] = useState(true);
+
+const InvoiceManager2 = () => {
+  const [showhidesearchdiv, setShowHideSearchDiv] = useState(true);
   const [isPending, startTransition] = useTransition();
   const [selection, setSelection] = useState<any>({
     trapo: true,
@@ -73,8 +57,6 @@ const InvoiceManager = () => {
   const userData: UserData | undefined = useSelector(
     (state: RootState) => state.totalSlice.userData,
   );
-  const [columns, setColumns] = useState<Array<any>>([]);
-  const [columnsExcel, setColumnsExcel] = useState<Array<any>>([]);
   const [uploadExcelJson, setUploadExcelJSon] = useState<Array<any>>([]);
   const [isLoading, setisLoading] = useState(false);
   const [column_excel, setColumn_Excel] = useState<Array<any>>([]);
@@ -119,13 +101,12 @@ const InvoiceManager = () => {
   const [invoicedatatable, setInvoiceDataTable] = useState<
     Array<InvoiceTableData>
   >([]);
-/*   const [invoicedatatablefilter, setInvoiceDataTableFilter] = useState<
+  const [invoicedatatablefilter, setInvoiceDataTableFilter] = useState<
     Array<InvoiceTableData>
-  >([]); */
-  const invoicedatatablefilter = useRef<InvoiceTableData[]>([]);
-  const clickedRow = useRef<any>(null);
+  >([]);
   const [selectedID, setSelectedID] = useState<number | null>();
   const [showhidePivotTable, setShowHidePivotTable] = useState(false);
+
   const column_invoicetable = [
     { field: "CUST_NAME_KD", headerName: "CUST_NAME_KD", width: 110 },
     { field: "EMPL_NAME", headerName: "EMPL_NAME", width: 130 },
@@ -323,6 +304,7 @@ const InvoiceManager = () => {
       },
     },
   ];
+
   const handleSearchCodeKeyDown = (
     e: React.KeyboardEvent<HTMLInputElement>,
   ) => {
@@ -330,6 +312,7 @@ const InvoiceManager = () => {
       handletraInvoice();
     }
   };
+
   function CustomToolbar() {
     return (
       <GridToolbarContainer>
@@ -354,8 +337,7 @@ const InvoiceManager = () => {
         <IconButton
           className="buttonIcon"
           onClick={() => {
-            showhidesearchdiv.current = !showhidesearchdiv.current;
-            setSH(!showhidesearchdiv.current);
+            setShowHideSearchDiv(!showhidesearchdiv);
           }}
         >
           <TbLogout color="green" size={15} />
@@ -383,6 +365,7 @@ const InvoiceManager = () => {
               });
               clearInvoiceform();
             }); */
+
             checkBP(userData, ["KD"], ["ALL"], ["ALL"], () => {
               setSelection({
                 ...selection,
@@ -443,7 +426,15 @@ const InvoiceManager = () => {
           XÓA INV
         </IconButton>
         <GridToolbarQuickFilter />
-        
+        <IconButton
+          className="buttonIcon"
+          onClick={() => {
+            setShowHidePivotTable(!showhidePivotTable);
+          }}
+        >
+          <MdOutlinePivotTableChart color="#ff33bb" size={15} />
+          Pivot
+        </IconButton>
       </GridToolbarContainer>
     );
   }
@@ -522,60 +513,10 @@ const InvoiceManager = () => {
             invoice_summary_temp.total_delivered_amount +=
               loadeddata[i].DELIVERED_AMOUNT;
           }
-
-          let keysArray = Object.getOwnPropertyNames(loadeddata[0]);
-          let column_map = keysArray.map((e, index) => {
-            return {
-              dataField: e,
-              caption: e,
-              width: 100,
-              cellRender: (ele: any) => {
-                //console.log(ele);
-                if (e === "PROD_PRICE") {
-                  return (
-                    <span style={{ color: "#ED15FF", fontWeight: "normal" }}>
-                      {ele.data[e]?.toFixed(6).toLocaleString("en-US", {
-                        minimumFractionDigits: 2,
-                        maximumFractionDigits: 6,
-                      })}
-                    </span>
-                  );
-                } else if (
-                  ["PO_QTY", "DELIVERY_QTY", "PO_BALANCE"].indexOf(e) > -1 ||
-                  e.indexOf("RESULT") > -1
-                ) {
-                  return (
-                    <span style={{ color: "blue", fontWeight: "bold" }}>
-                      {ele.data[e]?.toLocaleString("en-US")}
-                    </span>
-                  );
-                } else if (
-                  ["PO_AMOUNT", "DELIVERED_AMOUNT", "BALANCE_AMOUNT"].indexOf(
-                    e
-                  ) > -1 ||
-                  e.indexOf("_EA") > -1
-                ) {
-                  return (
-                    <span style={{ color: "green", fontWeight: "bold" }}>
-                      {ele.data[e]?.toLocaleString("en-US", {
-                        style: "currency",
-                        currency: "USD",
-                      })}
-                    </span>
-                  );
-                } else {
-                  return <span>{ele.data[e]}</span>;
-                }
-              },
-            };
-          });
-          setColumns(column_map);
           setInvoiceSummary(invoice_summary_temp);
           setInvoiceDataTable(loadeddata);
           setisLoading(false);
-
-          showhidesearchdiv.current = !showhidesearchdiv.current;
-          setSH(!showhidesearchdiv.current);
+          setShowHideSearchDiv(false);
           Swal.fire(
             "Thông báo",
             "Đã load " + response.data.data.length + " dòng",
@@ -591,42 +532,6 @@ const InvoiceManager = () => {
       });
   };
   const handle_checkInvoiceHangLoat = async () => {
-    let keysArray = Object.getOwnPropertyNames(uploadExcelJson[0]);
-    let column_map = keysArray.map((e, index) => {
-      return {
-        dataField: e,
-        caption: e,
-        width: 100,
-        cellRender: (ele: any) => {
-          //console.log(ele);
-          if (e === "CHECKSTATUS") {
-            if (ele.data[e] === "Waiting") {
-              return (
-                <span style={{ color: "blue", fontWeight: "bold" }}>
-                  {ele.data[e]}
-                </span>
-              );
-            } else if (ele.data[e] === "OK") {
-              return (
-                <span style={{ color: "green", fontWeight: "bold" }}>
-                  {ele.data[e]}
-                </span>
-              );
-            } else {
-              return (
-                <span style={{ color: "red", fontWeight: "bold" }}>
-                  {ele.data[e]}
-                </span>
-              );
-            }
-          } else {
-            return <span>{ele.data[e]}</span>;
-          }
-        },
-      };
-    });
-    setColumnsExcel(column_map);
-
     setisLoading(true);
     let tempjson = uploadExcelJson;
     for (let i = 0; i < uploadExcelJson.length; i++) {
@@ -680,6 +585,7 @@ const InvoiceManager = () => {
         .catch((error) => {
           console.log(error);
         });
+
       await generalQuery("checkcustcodeponoPOBALANCE", {
         G_CODE: selectedCode?.G_CODE,
         CUST_CD: selectedCust_CD?.CUST_CD,
@@ -696,6 +602,7 @@ const InvoiceManager = () => {
         .catch((error) => {
           console.log(error);
         });
+
       if (err_code === 0) {
         tempjson[i].CHECKSTATUS = "OK";
       } else if (err_code === 1) {
@@ -716,41 +623,6 @@ const InvoiceManager = () => {
     setUploadExcelJSon(tempjson);
   };
   const handle_upInvoiceHangLoat = async () => {
-    let keysArray = Object.getOwnPropertyNames(uploadExcelJson[0]);
-    let column_map = keysArray.map((e, index) => {
-      return {
-        dataField: e,
-        caption: e,
-        width: 100,
-        cellRender: (ele: any) => {
-          //console.log(ele);
-          if (e === "CHECKSTATUS") {
-            if (ele.data[e] === "Waiting") {
-              return (
-                <span style={{ color: "blue", fontWeight: "bold" }}>
-                  {ele.data[e]}
-                </span>
-              );
-            } else if (ele.data[e] === "OK") {
-              return (
-                <span style={{ color: "green", fontWeight: "bold" }}>
-                  {ele.data[e]}
-                </span>
-              );
-            } else {
-              return (
-                <span style={{ color: "red", fontWeight: "bold" }}>
-                  {ele.data[e]}
-                </span>
-              );
-            }
-          } else {
-            return <span>{ele.data[e]}</span>;
-          }
-        },
-      };
-    });
-    setColumnsExcel(column_map);
     let tempjson = uploadExcelJson;
     for (let i = 0; i < uploadExcelJson.length; i++) {
       let err_code: number = 0;
@@ -804,6 +676,7 @@ const InvoiceManager = () => {
         .catch((error) => {
           console.log(error);
         });
+
       await generalQuery("checkcustcodeponoPOBALANCE", {
         G_CODE: selectedCode?.G_CODE,
         CUST_CD: selectedCust_CD?.CUST_CD,
@@ -820,6 +693,7 @@ const InvoiceManager = () => {
         .catch((error) => {
           console.log(error);
         });
+
       if (err_code === 0) {
         await generalQuery("insert_invoice", {
           DELIVERY_QTY: uploadExcelJson[i].DELIVERY_QTY,
@@ -988,6 +862,7 @@ const InvoiceManager = () => {
     ) {
       err_code = 4;
     }
+
     await generalQuery("checkcustcodeponoPOBALANCE", {
       G_CODE: selectedCode?.G_CODE,
       CUST_CD: selectedCust_CD?.CUST_CD,
@@ -1004,6 +879,7 @@ const InvoiceManager = () => {
       .catch((error) => {
         console.log(error);
       });
+
     if (err_code === 0) {
       await generalQuery("insert_invoice", {
         G_CODE: selectedCode?.G_CODE,
@@ -1058,9 +934,19 @@ const InvoiceManager = () => {
     setNewInvoiceDate(moment().format("YYYY-MM-DD"));
     setNewInvoiceRemark("");
   };
-
+  const handleInvoiceSelectionforUpdate = (ids: GridSelectionModel) => {
+    const selectedID = new Set(ids);
+    let datafilter = invoicedatatable.filter((element: any) =>
+      selectedID.has(element.DELIVERY_ID),
+    );
+    if (datafilter.length > 0) {
+      setInvoiceDataTableFilter(datafilter);
+    } else {
+      setInvoiceDataTableFilter([]);
+    }
+  };
   const handle_fillsuaformInvoice = () => {
-    if (invoicedatatablefilter.current.length === 1) {
+    if (invoicedatatablefilter.length === 1) {
       setSelection({
         ...selection,
         trapo: true,
@@ -1070,56 +956,43 @@ const InvoiceManager = () => {
       });
       const selectedCodeFilter: CodeListData = {
         G_CODE:
-        clickedRow.current?.G_CODE === undefined
-          ? ""
-          : clickedRow.current?.G_CODE,
-      G_NAME:
-        clickedRow.current?.G_NAME === undefined
-          ? ""
-          : clickedRow.current?.G_NAME,
-      G_NAME_KD:
-        clickedRow.current?.G_NAME_KD === undefined
-          ? ""
-          : clickedRow.current?.G_NAME_KD,
-      PROD_LAST_PRICE: Number(clickedRow.current?.PROD_PRICE),
-      USE_YN: "Y",     
+          invoicedatatablefilter[invoicedatatablefilter.length - 1].G_CODE,
+        G_NAME:
+          invoicedatatablefilter[invoicedatatablefilter.length - 1].G_NAME,
+        G_NAME_KD:
+          invoicedatatablefilter[invoicedatatablefilter.length - 1].G_NAME_KD,
+        PROD_LAST_PRICE: Number(
+          invoicedatatablefilter[invoicedatatablefilter.length - 1].PROD_PRICE,
+        ),
+        USE_YN: "Y",
       };
       const selectedCustomerFilter: CustomerListData = {
         CUST_CD:
-          clickedRow.current?.CUST_CD === undefined
-            ? ""
-            : clickedRow.current?.CUST_CD,
+          invoicedatatablefilter[invoicedatatablefilter.length - 1].CUST_CD,
         CUST_NAME_KD:
-          clickedRow.current?.CUST_NAME_KD === undefined
-            ? ""
-            : clickedRow.current?.CUST_NAME_KD,
+          invoicedatatablefilter[invoicedatatablefilter.length - 1]
+            .CUST_NAME_KD,
       };
       setSelectedCode(selectedCodeFilter);
       setSelectedCust_CD(selectedCustomerFilter);
       setNewInvoiceQty(
-        clickedRow.current?.DELIVERY_QTY === undefined
-          ? 0
-          : clickedRow.current?.DELIVERY_QTY
+        invoicedatatablefilter[invoicedatatablefilter.length - 1].DELIVERY_QTY,
       );
       setNewPoNo(
-        clickedRow.current?.PO_NO === undefined
-          ? ""
-          : clickedRow.current?.PO_NO
+        invoicedatatablefilter[invoicedatatablefilter.length - 1].PO_NO,
       );
       setNewInvoiceDate(moment().format("YYYY-MM-DD"));
       setNewInvoiceRemark(
-        clickedRow.current?.REMARK === undefined
-          ? ""
-          : clickedRow.current?.REMARK
+        invoicedatatablefilter[invoicedatatablefilter.length - 1].REMARK,
       );
       setSelectedID(
-        clickedRow.current?.DELIVERY_ID === undefined
-          ? ""
-          : clickedRow.current?.DELIVERY_ID
+        invoicedatatablefilter[invoicedatatablefilter.length - 1].DELIVERY_ID,
       );
-    } else {
+    } else if (invoicedatatablefilter.length === 0) {
       clearInvoiceform();
       Swal.fire("Thông báo", "Lỗi: Chọn ít nhất 1 Invoice để sửa", "error");
+    } else {
+      Swal.fire("Thông báo", "Lỗi: Chỉ tích chọn 1 dòng thêm thôi", "error");
     }
   };
   const updateInvoice = async () => {
@@ -1159,6 +1032,7 @@ const InvoiceManager = () => {
     ) {
       err_code = 4;
     }
+
     if (err_code === 0) {
       await generalQuery("update_invoice", {
         G_CODE: selectedCode?.G_CODE,
@@ -1202,12 +1076,12 @@ const InvoiceManager = () => {
     }
   };
   const deleteInvoice = async () => {
-    if (invoicedatatablefilter.current.length >= 1) {
+    if (invoicedatatablefilter.length >= 1) {
       let err_code: boolean = false;
-      for (let i = 0; i < invoicedatatablefilter.current.length; i++) {
-        if (invoicedatatablefilter.current[i].EMPL_NO === userData?.EMPL_NO) {
+      for (let i = 0; i < invoicedatatablefilter.length; i++) {
+        if (invoicedatatablefilter[i].EMPL_NO === userData?.EMPL_NO) {
           await generalQuery("delete_invoice", {
-            DELIVERY_ID: invoicedatatablefilter.current[i].DELIVERY_ID,
+            DELIVERY_ID: invoicedatatablefilter[i].DELIVERY_ID,
           })
             .then((response) => {
               console.log(response.data.tk_status);
@@ -1576,315 +1450,6 @@ const InvoiceManager = () => {
     ],
     store: invoicedatatable,
   });
-  const invoiceDataTable = React.useMemo(
-    () => (
-      <div className='datatb'>
-        <CustomResponsiveContainer>
-          <DataGrid
-            autoNavigateToFocusedRow={true}
-            allowColumnReordering={true}
-            allowColumnResizing={true}
-            columnAutoWidth={false}
-            cellHintEnabled={true}
-            columnResizingMode={"widget"}
-            showColumnLines={true}
-            dataSource={invoicedatatable}
-            columnWidth='auto'
-            keyExpr='DELIVERY_ID'
-            height={"75vh"}
-            showBorders={true}
-            onSelectionChanged={(e) => {
-              invoicedatatablefilter.current = e.selectedRowsData;
-            }}
-            onRowClick={(e) => {
-              console.log(e.data);
-              clickedRow.current = e.data;
-            }}
-          >
-            <Scrolling
-              useNative={true}
-              scrollByContent={true}
-              scrollByThumb={true}
-              showScrollbar='onHover'
-              mode='virtual'
-            />
-            <Selection mode='multiple' selectAllMode='allPages' />
-            <Editing
-              allowUpdating={false}
-              allowAdding={true}
-              allowDeleting={false}
-              mode='batch'
-              confirmDelete={true}
-              onChangesChange={(e) => {}}
-            />
-            <Export enabled={true} />
-            <Toolbar disabled={false}>
-              <Item location='before'>
-              <IconButton
-          className="buttonIcon"
-          onClick={() => {
-            showhidesearchdiv.current = !showhidesearchdiv.current;
-            setSH(!showhidesearchdiv.current);
-          }}
-        >
-          <TbLogout color="green" size={15} />
-          Show/Hide
-        </IconButton>
-        <IconButton
-          className="buttonIcon"
-          onClick={() => {
-            SaveExcel(invoicedatatable, "Invoice Table");
-          }}
-        >
-          <AiFillFileExcel color="green" size={15} />
-          SAVE
-        </IconButton>
-        <IconButton
-          className="buttonIcon"
-          onClick={() => {
-            /*  checkBP(userData?.EMPL_NO, userData?.MAINDEPTNAME, ["KD"], () => {
-              setSelection({
-                ...selection,
-                trapo: true,
-                thempohangloat: false,
-                them1po: false,
-                them1invoice: true,
-              });
-              clearInvoiceform();
-            }); */
-            checkBP(userData, ["KD"], ["ALL"], ["ALL"], () => {
-              setSelection({
-                ...selection,
-                trapo: true,
-                thempohangloat: false,
-                them1po: false,
-                them1invoice: true,
-              });
-              clearInvoiceform();
-            });
-          }}
-        >
-          <AiFillFileAdd color="blue" size={15} />
-          NEW INV
-        </IconButton>
-        <IconButton
-          className="buttonIcon"
-          onClick={() => {
-            /* checkBP(
-              userData?.EMPL_NO,
-              userData?.MAINDEPTNAME,
-              ["KD"],
-              handle_fillsuaformInvoice
-            ); */
-            checkBP(
-              userData,
-              ["KD"],
-              ["ALL"],
-              ["ALL"],
-              handle_fillsuaformInvoice,
-            );
-            //handle_fillsuaformInvoice();
-          }}
-        >
-          <FaFileInvoiceDollar color="lightgreen" size={15} />
-          SỬA INV
-        </IconButton>
-        <IconButton
-          className="buttonIcon"
-          onClick={() => {
-            /*  checkBP(
-              userData?.EMPL_NO,
-              userData?.MAINDEPTNAME,
-              ["KD"],
-              handleConfirmDeleteInvoice
-            ); */
-            checkBP(
-              userData,
-              ["KD"],
-              ["ALL"],
-              ["ALL"],
-              handleConfirmDeleteInvoice,
-            );
-            //handleConfirmDeleteInvoice();
-          }}
-        >
-          <MdOutlineDelete color="red" size={15} />
-          XÓA INV
-        </IconButton>
-        <IconButton
-          className="buttonIcon"
-          onClick={() => {
-            setShowHidePivotTable(!showhidePivotTable);
-          }}
-        >
-          <MdOutlinePivotTableChart color="#ff33bb" size={15} />
-          Pivot
-        </IconButton>
-              </Item>
-              <Item name='searchPanel' />
-              <Item name='exportButton' />
-              <Item name='columnChooser' />
-            </Toolbar>
-            <FilterRow visible={true} />
-            <SearchPanel visible={true} />
-            <ColumnChooser enabled={true} />
-            <Paging defaultPageSize={15} />
-            <Pager
-              showPageSizeSelector={true}
-              allowedPageSizes={[5, 10, 15, 20, 100, 1000, 10000, "all"]}
-              showNavigationButtons={true}
-              showInfo={true}
-              infoText='Page #{0}. Total: {1} ({2} items)'
-              displayMode='compact'
-            />
-            {columns.map((column, index) => {
-              //console.log(column);
-              return <Column key={index} {...column}></Column>;
-            })}
-            <Summary>
-              <TotalItem
-                alignment='right'
-                column='PO_ID'
-                summaryType='count'
-                valueFormat={"decimal"}
-              />
-              <TotalItem
-                alignment='right'
-                column='PO_QTY'
-                summaryType='sum'
-                valueFormat={"thousands"}
-              />
-              <TotalItem
-                alignment='right'
-                column='TOTAL_DELIVERED'
-                summaryType='sum'
-                valueFormat={"thousands"}
-              />
-              <TotalItem
-                alignment='right'
-                column='PO_BALANCE'
-                summaryType='sum'
-                valueFormat={"thousands"}
-              />
-              <TotalItem
-                alignment='right'
-                column='PO_AMOUNT'
-                summaryType='sum'
-                valueFormat={"currency"}
-              />
-              <TotalItem
-                alignment='right'
-                column='DELIVERED_AMOUNT'
-                summaryType='sum'
-                valueFormat={"currency"}
-              />
-              <TotalItem
-                alignment='right'
-                column='BALANCE_AMOUNT'
-                summaryType='sum'
-                valueFormat={"currency"}
-              />
-            </Summary>
-          </DataGrid>
-        </CustomResponsiveContainer>
-      </div>
-    ),
-    [invoicedatatable]
-  );
-  const excelDataTable = React.useMemo(
-    () => (
-      <div className='datatb'>
-        <CustomResponsiveContainer>
-          <DataGrid
-            autoNavigateToFocusedRow={true}
-            allowColumnReordering={true}
-            allowColumnResizing={true}
-            columnAutoWidth={false}
-            cellHintEnabled={true}
-            columnResizingMode={"widget"}
-            showColumnLines={true}
-            dataSource={uploadExcelJson}
-            columnWidth='auto'
-            keyExpr='id'
-            height={"75vh"}
-            showBorders={true}
-            onSelectionChanged={(e) => {}}
-            onRowClick={(e) => {
-              //console.log(e.data);
-            }}
-          >
-            <Scrolling
-              useNative={true}
-              scrollByContent={true}
-              scrollByThumb={true}
-              showScrollbar='onHover'
-              mode='virtual'
-            />
-            <Selection mode='single' selectAllMode='allPages' />
-            <Editing
-              allowUpdating={false}
-              allowAdding={true}
-              allowDeleting={false}
-              mode='batch'
-              confirmDelete={true}
-              onChangesChange={(e) => {}}
-            />
-            <Export enabled={true} />
-            <Toolbar disabled={false}>
-              <Item location='before'>
-                <IconButton
-                  className='buttonIcon'
-                  onClick={() => {
-                    SaveExcel(uploadExcelJson, "MaterialStatus");
-                  }}
-                >
-                  <AiFillFileExcel color='green' size={25} />
-                  SAVE
-                </IconButton>
-                <IconButton
-                  className='buttonIcon'
-                  onClick={() => {
-                    setShowHidePivotTable(!showhidePivotTable);
-                  }}
-                >
-                  <MdOutlinePivotTableChart color='#ff33bb' size={25} />
-                  Pivot
-                </IconButton>
-              </Item>
-              <Item name='searchPanel' />
-              <Item name='exportButton' />
-              <Item name='columnChooser' />
-            </Toolbar>
-            <FilterRow visible={true} />
-            <SearchPanel visible={true} />
-            <ColumnChooser enabled={true} />
-            <Paging defaultPageSize={15} />
-            <Pager
-              showPageSizeSelector={true}
-              allowedPageSizes={[5, 10, 15, 20, 100, 1000, 10000, "all"]}
-              showNavigationButtons={true}
-              showInfo={true}
-              infoText='Page #{0}. Total: {1} ({2} items)'
-              displayMode='compact'
-            />
-            {columnsExcel.map((column, index) => {
-              //console.log(column);
-              return <Column key={index} {...column}></Column>;
-            })}
-            <Summary>
-              <TotalItem
-                alignment='right'
-                column='PO_ID'
-                summaryType='count'
-                valueFormat={"decimal"}
-              />
-            </Summary>
-          </DataGrid>
-        </CustomResponsiveContainer>
-      </div>
-    ),
-    [uploadExcelJson, columnsExcel]
-  );
   useEffect(() => {
     getcustomerlist();
     getcodelist("");
@@ -1961,9 +1526,8 @@ const InvoiceManager = () => {
               </div>
             </form>
             <div className="insertInvoiceTable">
-              {excelDataTable}
-              
-                {/* <DataGrid
+              {true && (
+                <DataGrid
                   sx={{ fontSize: "0.7rem", flex: 1 }}
                   components={{
                     Toolbar: CustomToolbar,
@@ -1977,15 +1541,15 @@ const InvoiceManager = () => {
                     5, 10, 50, 100, 500, 1000, 5000, 10000, 100000,
                   ]}
                   editMode="row"
-                /> */}
-              
+                />
+              )}
             </div>
           </div>
         </div>
       )}
       {selection.trapo && (
         <div className="tracuuInvoice">
-          {sh && (
+          {showhidesearchdiv && (
             <div className="tracuuInvoiceform">
               <div className="forminput">
                 <div className="forminputcolumn">
@@ -2196,6 +1760,7 @@ const InvoiceManager = () => {
                     </tr>
                   </tbody>
                 </table>
+
                 {/*  <div className='summarygroup'>
                 <div className='summaryvalue'>
                   <b>
@@ -2217,10 +1782,7 @@ const InvoiceManager = () => {
             </div>
           )}
           <div className="tracuuInvoiceTable">
-            {
-              invoiceDataTable
-            }
-            {/* <DataGrid
+            <DataGrid
               sx={{ fontSize: "0.7rem" }}
               components={{
                 Toolbar: CustomToolbarPOTable,
@@ -2240,7 +1802,7 @@ const InvoiceManager = () => {
               onSelectionModelChange={(ids) => {
                 handleInvoiceSelectionforUpdate(ids);
               }}
-            /> */}
+            />
           </div>
         </div>
       )}
@@ -2421,4 +1983,4 @@ const InvoiceManager = () => {
     </div>
   );
 };
-export default InvoiceManager;
+export default InvoiceManager2;

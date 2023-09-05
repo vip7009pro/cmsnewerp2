@@ -116,6 +116,7 @@ const YCSXManager = () => {
   const [selectedCode, setSelectedCode] = useState<CodeListData | null>({
     G_CODE: "6A00001B",
     G_NAME: "GT-I9500_SJ68-01284A",
+    G_NAME_KD: "GT-I9500_SJ68-01284A",
     PROD_LAST_PRICE: 0,
     USE_YN: "N",
   });
@@ -3258,7 +3259,7 @@ const YCSXManager = () => {
                       className='autocomplete1'
                       filterOptions={filterOptions1}
                       getOptionLabel={(option: CodeListData | any) =>
-                        `${option.G_CODE}: ${option.G_NAME}`
+                        `${option.G_CODE}: ${option.G_NAME_KD}:${option.G_NAME}`
                       }
                       renderInput={(params) => (
                         <TextField {...params} label='Select code' />

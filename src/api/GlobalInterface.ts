@@ -42,6 +42,7 @@ export interface POSummaryData {
 export interface CodeListData {
   G_CODE: string;
   G_NAME: string;
+  G_NAME_KD?: string,
   PROD_LAST_PRICE: number;
   USE_YN: string;
   PO_BALANCE?: number;
