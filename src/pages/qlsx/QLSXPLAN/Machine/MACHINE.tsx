@@ -91,7 +91,7 @@ import {
 const MACHINE = () => {
   const [isPending, startTransition] = useTransition();
   const chithiarray: QLSXPLANDATA[] | undefined = useSelector(
-    (state: RootState) => state.totalSlice.multiple_chithi_array,
+    (state: RootState) => state.totalSlice.multiple_chithi_array
   );
   const dispatch = useDispatch();
   const [currentPlanPD, setCurrentPlanPD] = useState(0);
@@ -144,7 +144,7 @@ const MACHINE = () => {
   });
   const [selectionModel, setSelectionModel] = useState<any>([]);
   const [selectionModel_XUATKHOAO, setSelectionModel_XUATKHOAO] = useState<any>(
-    [],
+    []
   );
   const [selectionModel_INPUTSX, setSelectionModel_INPUTSX] = useState<any>([]);
   const [lichsunhapkhoaotable, setLichSuNhapKhoAoTable] = useState<
@@ -171,7 +171,7 @@ const MACHINE = () => {
   const [showplanwindow, setShowPlanWindow] = useState(false);
   const [showkhoao, setShowKhoAo] = useState(false);
   const userData: UserData | undefined = useSelector(
-    (state: RootState) => state.totalSlice.userData,
+    (state: RootState) => state.totalSlice.userData
   );
   const [isLoading, setisLoading] = useState(false);
   const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
@@ -212,7 +212,7 @@ const MACHINE = () => {
   const [selectedMachine, setSelectedMachine] = useState("FR1");
   const [selectedFactory, setSelectedFactory] = useState("NM1");
   const [selectedPlanDate, setSelectedPlanDate] = useState(
-    moment().format("YYYY-MM-DD"),
+    moment().format("YYYY-MM-DD")
   );
   const [selectedPlan, setSelectedPlan] = useState<QLSXPLANDATA>();
   const [showChiThi, setShowChiThi] = useState(false);
@@ -242,7 +242,7 @@ const MACHINE = () => {
               return {
                 ...element,
               };
-            },
+            }
           );
           loadeddata.push({ EQ_NAME: "NO" }, { EQ_NAME: "NA" });
           //console.log(loadeddata);
@@ -562,21 +562,21 @@ const MACHINE = () => {
                         Swal.fire(
                           "Thông báo",
                           "Upload bản vẽ thành công",
-                          "success",
+                          "success"
                         );
                         let tempcodeinfodatatable = ycsxdatatable.map(
                           (element: YCSXTableData, index) => {
                             return element.G_CODE === params.row.G_CODE
                               ? { ...element, BANVE: "Y" }
                               : element;
-                          },
+                          }
                         );
                         setYcsxDataTable(tempcodeinfodatatable);
                       } else {
                         Swal.fire(
                           "Thông báo",
                           "Upload bản vẽ thất bại",
-                          "error",
+                          "error"
                         );
                       }
                     })
@@ -587,7 +587,7 @@ const MACHINE = () => {
                   Swal.fire(
                     "Thông báo",
                     "Upload file thất bại:" + response.data.message,
-                    "error",
+                    "error"
                   );
                 }
               })
@@ -598,7 +598,7 @@ const MACHINE = () => {
             Swal.fire(
               "Thông báo",
               "Chỉ bộ phận kinh doanh upload được bản vẽ",
-              "error",
+              "error"
             );
           }
         };
@@ -606,21 +606,21 @@ const MACHINE = () => {
         if (params.row.BANVE !== "N" && params.row.BANVE !== null) {
           return (
             <span style={{ color: "gray" }}>
-              <a target="_blank" rel="noopener noreferrer" href={hreftlink}>
+              <a target='_blank' rel='noopener noreferrer' href={hreftlink}>
                 LINK
               </a>
             </span>
           );
         } else {
           return (
-            <div className="uploadfile">
-              <IconButton className="buttonIcon" onClick={uploadFile2}>
-                <AiOutlineCloudUpload color="yellow" size={15} />
+            <div className='uploadfile'>
+              <IconButton className='buttonIcon' onClick={uploadFile2}>
+                <AiOutlineCloudUpload color='yellow' size={15} />
                 Upload
               </IconButton>
               <input
-                accept=".pdf"
-                type="file"
+                accept='.pdf'
+                type='file'
                 onChange={(e: any) => {
                   file = e.target.files[0];
                   console.log(file);
@@ -696,7 +696,7 @@ const MACHINE = () => {
       },
     },
     { field: "G_CODE", headerName: "G_CODE", width: 100, editable: false },
-    { field: "G_NAME", headerName: "G_NAME", width: 180, editable: false },
+    { field: "G_NAME", headerName: "G_NAME", width: 150, editable: false },
     {
       field: "G_NAME_KD",
       headerName: "G_NAME_KD",
@@ -738,7 +738,7 @@ const MACHINE = () => {
     {
       field: "CD1",
       headerName: "CD1",
-      width: 80,
+      width: 60,
       editable: false,
       renderCell: (params: any) => {
         return (
@@ -751,7 +751,7 @@ const MACHINE = () => {
     {
       field: "CD2",
       headerName: "CD2",
-      width: 80,
+      width: 60,
       editable: false,
       renderCell: (params: any) => {
         return (
@@ -764,7 +764,7 @@ const MACHINE = () => {
     {
       field: "CD3",
       headerName: "CD3",
-      width: 80,
+      width: 60,
       editable: false,
       renderCell: (params: any) => {
         return (
@@ -777,7 +777,7 @@ const MACHINE = () => {
     {
       field: "CD4",
       headerName: "CD4",
-      width: 80,
+      width: 60,
       editable: false,
       renderCell: (params: any) => {
         return (
@@ -789,8 +789,8 @@ const MACHINE = () => {
     },
     {
       field: "TON_CD1",
-      headerName: "TON_CD1",
-      width: 120,
+      headerName: "TCD1",
+      width: 60,
       editable: false,
       renderCell: (params: any) => {
         return (
@@ -802,8 +802,8 @@ const MACHINE = () => {
     },
     {
       field: "TON_CD2",
-      headerName: "TON_CD2",
-      width: 120,
+      headerName: "TCD2",
+      width: 60,
       editable: false,
       renderCell: (params: any) => {
         return (
@@ -815,8 +815,8 @@ const MACHINE = () => {
     },
     {
       field: "TON_CD3",
-      headerName: "TON_CD3",
-      width: 120,
+      headerName: "TCD3",
+      width: 60,
       editable: false,
       renderCell: (params: any) => {
         return (
@@ -828,8 +828,8 @@ const MACHINE = () => {
     },
     {
       field: "TON_CD4",
-      headerName: "TON_CD4",
-      width: 120,
+      headerName: "TCD4",
+      width: 60,
       editable: false,
       renderCell: (params: any) => {
         return (
@@ -1201,7 +1201,7 @@ const MACHINE = () => {
     EQ1: string,
     EQ2: string,
     EQ3: string,
-    EQ4: string,
+    EQ4: string
   ) => {
     console.log(EQ1);
     console.log(EQ2);
@@ -1226,13 +1226,13 @@ const MACHINE = () => {
                 ...element,
                 id: index,
               };
-            },
+            }
           );
           setEQ_SERIES([
             ...new Set(
               loaded_data.map((e: EQ_STATUS, index: number) => {
                 return e.EQ_SERIES;
-              }),
+              })
             ),
           ]);
           setEQ_STATUS(loaded_data);
@@ -1343,7 +1343,7 @@ const MACHINE = () => {
                   .format("YYYY-MM-DD HH:mm:ss"),
                 id: index,
               };
-            },
+            }
           );
           setLichSuInputLieuTable(loaded_data);
         } else {
@@ -1405,7 +1405,7 @@ const MACHINE = () => {
       handle_loadlichsunhapkhoao();
       handle_loadlichsuxuatkhoao();
       handle_loadlichsuinputlieu(
-        selectedPlan?.PLAN_ID === undefined ? "xxx" : selectedPlan?.PLAN_ID,
+        selectedPlan?.PLAN_ID === undefined ? "xxx" : selectedPlan?.PLAN_ID
       );
       setSelectionModel_XUATKHOAO([]);
     }
@@ -1424,7 +1424,7 @@ const MACHINE = () => {
                   .format("YYYY-MM-DD HH:mm:ss"),
                 id: index,
               };
-            },
+            }
           );
           setLichSuNhapKhoAoTable(loaded_data);
         } else {
@@ -1449,7 +1449,7 @@ const MACHINE = () => {
                   .format("YYYY-MM-DD HH:mm:ss"),
                 id: index,
               };
-            },
+            }
           );
           setLichSuXuatKhoAoTable(loaded_data);
         } else {
@@ -1539,7 +1539,7 @@ const MACHINE = () => {
         handle_loadKhoAo();
         handle_loadlichsuxuatkhoao();
         handle_loadlichsuinputlieu(
-          selectedPlan?.PLAN_ID === undefined ? "xxx" : selectedPlan?.PLAN_ID,
+          selectedPlan?.PLAN_ID === undefined ? "xxx" : selectedPlan?.PLAN_ID
         );
         setSelectionModel([]);
       } else {
@@ -1558,7 +1558,7 @@ const MACHINE = () => {
                 ...element,
                 id: index,
               };
-            },
+            }
           );
           setTonLieuXuongDataTable(loaded_data);
         } else {
@@ -1590,7 +1590,7 @@ const MACHINE = () => {
           Swal.fire(
             "Thông báo",
             "Lưu thất bại, hãy nhập đủ thông tin",
-            "error",
+            "error"
           );
         } else {
           generalQuery("saveQLSX", {
@@ -1636,7 +1636,7 @@ const MACHINE = () => {
             Swal.fire(
               "Thông báo",
               "Lưu thất bại, không được để trống ô cần thiết",
-              "error",
+              "error"
             );
           } else {
             loadQLSXPlan(selectedPlanDate);
@@ -1682,7 +1682,7 @@ const MACHINE = () => {
         />
       ) : (
         <div>Code: {element.G_NAME} : Không có bản vẽ</div>
-      ),
+      )
     );
   };
   const loadQLSXPlan = (plan_date: string) => {
@@ -1698,7 +1698,7 @@ const MACHINE = () => {
                 PLAN_DATE: moment.utc(element.PLAN_DATE).format("YYYY-MM-DD"),
                 id: index,
               };
-            },
+            }
           );
           //console.log(loadeddata);
           setPlanDataTable(loadeddata);
@@ -1715,7 +1715,7 @@ const MACHINE = () => {
     PLAN_ID: string,
     G_CODE: string,
     PLAN_QTY: number,
-    PROCESS_NUMBER: number,
+    PROCESS_NUMBER: number
   ) => {
     let PD: number = 0,
       CAVITY_NGANG: number = 0,
@@ -1830,7 +1830,7 @@ const MACHINE = () => {
           setChiThiDataTable(response.data.data);
         } else {
           M_MET_NEEDED = parseInt(
-            ((PLAN_QTY * PD) / (CAVITY_DOC * CAVITY_NGANG) / 1000).toString(),
+            ((PLAN_QTY * PD) / (CAVITY_DOC * CAVITY_NGANG) / 1000).toString()
           );
           /*  console.log('M_MET_NEEDED', M_MET_NEEDED);
           console.log('FINAL_LOSS_SX', FINAL_LOSS_SX);
@@ -1854,7 +1854,7 @@ const MACHINE = () => {
                         "" +
                           (M_MET_NEEDED +
                             (M_MET_NEEDED * FINAL_LOSS_SX) / 100 +
-                            FINAL_LOSS_SETTING),
+                            FINAL_LOSS_SETTING)
                       ),
                       M_QTY: element.M_QTY,
                       LIEUQL_SX: element.LIEUQL_SX,
@@ -1867,7 +1867,7 @@ const MACHINE = () => {
                       UPD_DATE: "",
                       id: index,
                     };
-                  },
+                  }
                 );
                 setChiThiDataTable(loaded_data);
               } else {
@@ -1946,7 +1946,7 @@ const MACHINE = () => {
       setCurrentPlanPD(PD);
       setCurrentPlanCAVITY(CAVITY_NGANG * CAVITY_DOC);
       M_MET_NEEDED = parseInt(
-        ((PLAN_QTY * PD) / (CAVITY_DOC * CAVITY_NGANG) / 1000).toString(),
+        ((PLAN_QTY * PD) / (CAVITY_DOC * CAVITY_NGANG) / 1000).toString()
       );
       //console.log(M_MET_NEEDED);
       await generalQuery("getbomsx", {
@@ -1968,7 +1968,7 @@ const MACHINE = () => {
                     "" +
                       (M_MET_NEEDED +
                         (M_MET_NEEDED * FINAL_LOSS_SX) / 100 +
-                        FINAL_LOSS_SETTING),
+                        FINAL_LOSS_SETTING)
                   ),
                   M_QTY: element.M_QTY,
                   LIEUQL_SX: element.LIEUQL_SX,
@@ -1981,7 +1981,7 @@ const MACHINE = () => {
                   UPD_DATE: "",
                   id: index,
                 };
-              },
+              }
             );
             setChiThiDataTable(loaded_data);
           } else {
@@ -2091,14 +2091,14 @@ const MACHINE = () => {
                     ? 0
                     : element.PROD_REQUEST_QTY,
               };
-            },
+            }
           );
           setYcsxDataTable(loadeddata);
           setisLoading(false);
           Swal.fire(
             "Thông báo",
             "Đã load " + response.data.data.length + " dòng",
-            "success",
+            "success"
           );
         } else {
           Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
@@ -2110,7 +2110,7 @@ const MACHINE = () => {
       });
   };
   const handleSearchCodeKeyDown = (
-    e: React.KeyboardEvent<HTMLInputElement>,
+    e: React.KeyboardEvent<HTMLInputElement>
   ) => {
     if (e.key === "Enter") {
       handletraYCSX();
@@ -2139,7 +2139,7 @@ const MACHINE = () => {
         Swal.fire(
           "Thông báo",
           "SET YCSX thành công (chỉ PO của người đăng nhập)!",
-          "success",
+          "success"
         );
       } else {
         Swal.fire("Thông báo", "Có lỗi SQL: ", "error");
@@ -2162,7 +2162,7 @@ const MACHINE = () => {
         Swal.fire(
           "Tiến hành SET PENDING",
           "Đang SET PENDING YCSX hàng loạt",
-          "success",
+          "success"
         );
         setPendingYCSX(1);
       }
@@ -2182,7 +2182,7 @@ const MACHINE = () => {
         Swal.fire(
           "Tiến hành SET CLOSED",
           "Đang SET CLOSED YCSX hàng loạt",
-          "success",
+          "success"
         );
         setPendingYCSX(0);
       }
@@ -2254,13 +2254,13 @@ const MACHINE = () => {
               : selectedPlan?.PROD_REQUEST_NO,
             selectedPlan?.PROD_REQUEST_DATE === undefined
               ? "xxx"
-              : selectedPlan?.PROD_REQUEST_DATE,
+              : selectedPlan?.PROD_REQUEST_DATE
           );
         } else {
           Swal.fire(
             "Thông báo",
             "Chọn ít nhất 1 chỉ thị để đăng ký xuất liệu",
-            "error",
+            "error"
           );
         }
       }
@@ -2305,7 +2305,7 @@ const MACHINE = () => {
                           Swal.fire(
                             "Thông báo",
                             "Nội dung: " + response.data.message,
-                            "error",
+                            "error"
                           );
                         } else {
                           datafilter.splice(j, 1);
@@ -2321,7 +2321,7 @@ const MACHINE = () => {
                       "Chỉ thị + " +
                         qlsxplandatafilter[i].PLAN_ID +
                         ":  +đã chốt báo cáo, ko xóa được chỉ thị",
-                      "error",
+                      "error"
                     );
                   }
                 }
@@ -2453,7 +2453,7 @@ const MACHINE = () => {
           });
         //check_ycsx_hethongcu = false;
         let nextPlan = await getNextPLAN_ID(
-          ycsxdatatablefilter[i].PROD_REQUEST_NO,
+          ycsxdatatablefilter[i].PROD_REQUEST_NO
         );
         let NextPlanID = nextPlan.NEXT_PLAN_ID;
         let NextPlanOrder = nextPlan.NEXT_PLAN_ORDER;
@@ -2492,7 +2492,7 @@ const MACHINE = () => {
           Swal.fire(
             "Thông báo",
             "Yêu cầu sản xuất này đã chạy từ hệ thống cũ, không chạy được lẫn lộn cũ mới, hãy chạy hết bằng hệ thống cũ với yc này",
-            "error",
+            "error"
           );
         }
       }
@@ -2516,7 +2516,7 @@ const MACHINE = () => {
           element.PLAN_EQ === selectedMachine &&
           element.PLAN_FACTORY === selectedFactory
         );
-      },
+      }
     );
     //console.log(selectedPlanTable);
     let err_code: string = "0";
@@ -2561,7 +2561,7 @@ const MACHINE = () => {
           selectedPlanTable[i].EQ1,
           selectedPlanTable[i].EQ2,
           selectedPlanTable[i].EQ3,
-          selectedPlanTable[i].EQ4,
+          selectedPlanTable[i].EQ4
         ) >= selectedPlanTable[i].PROCESS_NUMBER &&
         checkPlanIdP500 === false
       ) {
@@ -2791,7 +2791,7 @@ const MACHINE = () => {
       Swal.fire(
         "Thông báo",
         "Phải chỉ định liệu quản lý, k để sót size nào, và chỉ chọn 1 loại liệu làm liệu chính, và nhập liệu quản lý chỉ 1 hoặc 0",
-        "error",
+        "error"
       );
     }
     handleGetChiThiTable(
@@ -2800,7 +2800,7 @@ const MACHINE = () => {
       selectedPlan?.PLAN_QTY === undefined ? 0 : selectedPlan?.PLAN_QTY,
       selectedPlan?.PROCESS_NUMBER === undefined
         ? 1
-        : selectedPlan?.PROCESS_NUMBER,
+        : selectedPlan?.PROCESS_NUMBER
     );
   };
   function CustomToolbarPOTable() {
@@ -2810,35 +2810,35 @@ const MACHINE = () => {
         <GridToolbarFilterButton />
         <GridToolbarDensitySelector />  */}
         <IconButton
-          className="buttonIcon"
+          className='buttonIcon'
           onClick={() => {
             SaveExcel(ycsxdatatable, "YCSX Table");
           }}
         >
-          <AiFillFileExcel color="green" size={25} />
+          <AiFillFileExcel color='green' size={25} />
           SAVE
         </IconButton>
         <GridToolbarQuickFilter />
         <IconButton
-          className="buttonIcon"
+          className='buttonIcon'
           onClick={() => {
             handleConfirmSetClosedYCSX();
           }}
         >
-          <FaArrowRight color="green" size={25} />
+          <FaArrowRight color='green' size={25} />
           SET CLOSED
         </IconButton>
         <IconButton
-          className="buttonIcon"
+          className='buttonIcon'
           onClick={() => {
             handleConfirmSetPendingYCSX();
           }}
         >
-          <MdOutlinePendingActions color="red" size={25} />
+          <MdOutlinePendingActions color='red' size={25} />
           SET PENDING
         </IconButton>
         <IconButton
-          className="buttonIcon"
+          className='buttonIcon'
           onClick={() => {
             if (ycsxdatatablefilter.length > 0) {
               setSelection({
@@ -2852,11 +2852,11 @@ const MACHINE = () => {
             }
           }}
         >
-          <AiOutlinePrinter color="#0066ff" size={25} />
+          <AiOutlinePrinter color='#0066ff' size={25} />
           Print YCSX
         </IconButton>
         <IconButton
-          className="buttonIcon"
+          className='buttonIcon'
           onClick={() => {
             if (ycsxdatatablefilter.length > 0) {
               setSelection({
@@ -2869,11 +2869,11 @@ const MACHINE = () => {
             }
           }}
         >
-          <AiOutlinePrinter color="#ff751a" size={25} />
+          <AiOutlinePrinter color='#ff751a' size={25} />
           Print Bản Vẽ
         </IconButton>
         <IconButton
-          className="buttonIcon"
+          className='buttonIcon'
           onClick={() => {
             if (ycsxdatatablefilter.length > 0) {
               handle_AddPlan();
@@ -2881,12 +2881,12 @@ const MACHINE = () => {
               Swal.fire(
                 "Thông báo",
                 "Chọn ít nhất 1 YCSX để thêm PLAN",
-                "error",
+                "error"
               );
             }
           }}
         >
-          <AiFillFolderAdd color="#69f542" size={25} />
+          <AiFillFolderAdd color='#69f542' size={25} />
           Add to PLAN
         </IconButton>
       </GridToolbarContainer>
@@ -2899,26 +2899,26 @@ const MACHINE = () => {
         <GridToolbarFilterButton />
         <GridToolbarDensitySelector />  */}
         <IconButton
-          className="buttonIcon"
+          className='buttonIcon'
           onClick={() => {
             setShowYCSX(!showYCSX);
           }}
         >
-          <TbLogout color="red" size={20} />
+          <TbLogout color='red' size={20} />
           Show/Hide YCSX
         </IconButton>
         <IconButton
-          className="buttonIcon"
+          className='buttonIcon'
           onClick={() => {
             SaveExcel(plandatatable, "Plan Table");
           }}
         >
-          <AiFillFileExcel color="green" size={25} />
+          <AiFillFileExcel color='green' size={25} />
           SAVE
         </IconButton>
         <GridToolbarQuickFilter />
         <IconButton
-          className="buttonIcon"
+          className='buttonIcon'
           onClick={() => {
             if (qlsxplandatafilter.length > 0) {
               if (userData?.EMPL_NO !== "NHU1903") {
@@ -2927,7 +2927,7 @@ const MACHINE = () => {
                   ["QLSX"],
                   ["ALL"],
                   ["ALL"],
-                  handle_UpdatePlan,
+                  handle_UpdatePlan
                 );
               }
               setShowChiThi(true);
@@ -2939,11 +2939,11 @@ const MACHINE = () => {
             }
           }}
         >
-          <AiOutlinePrinter color="#0066ff" size={25} />
+          <AiOutlinePrinter color='#0066ff' size={25} />
           Print Chỉ Thị
         </IconButton>
         <IconButton
-          className="buttonIcon"
+          className='buttonIcon'
           onClick={() => {
             if (chithiarray !== undefined && chithiarray.length > 0) {
               if (
@@ -2964,11 +2964,11 @@ const MACHINE = () => {
                 Swal.fire(
                   "Thông báo",
                   "Nhập data định mức trước khi chỉ thị",
-                  "error",
+                  "error"
                 );
               } else {
                 let chithimain: QLSXPLANDATA[] = chithiarray.filter(
-                  (element: QLSXPLANDATA, index: number) => element.STEP === 0,
+                  (element: QLSXPLANDATA, index: number) => element.STEP === 0
                 );
                 if (chithimain.length > 0) {
                   setShowChiThi2(true);
@@ -2984,11 +2984,11 @@ const MACHINE = () => {
             }
           }}
         >
-          <AiOutlinePrinter color="#0066ff" size={25} />
+          <AiOutlinePrinter color='#0066ff' size={25} />
           Print Chỉ Thị Combo
         </IconButton>
         <IconButton
-          className="buttonIcon"
+          className='buttonIcon'
           onClick={() => {
             if (qlsxplandatafilter.length > 0) {
               setShowYCKT(true);
@@ -3000,11 +3000,11 @@ const MACHINE = () => {
             }
           }}
         >
-          <AiOutlinePrinter color="#9066ff" size={25} />
+          <AiOutlinePrinter color='#9066ff' size={25} />
           Print YCKT
         </IconButton>
         <IconButton
-          className="buttonIcon"
+          className='buttonIcon'
           onClick={() => {
             /* checkBP(
               userData?.EMPL_NO,
@@ -3016,11 +3016,11 @@ const MACHINE = () => {
             //handle_UpdatePlan();
           }}
         >
-          <AiFillSave color="blue" size={20} />
+          <AiFillSave color='blue' size={20} />
           Lưu PLAN
         </IconButton>
         <IconButton
-          className="buttonIcon"
+          className='buttonIcon'
           onClick={() => {
             /*  checkBP(
               userData?.EMPL_NO,
@@ -3033,25 +3033,25 @@ const MACHINE = () => {
               ["QLSX"],
               ["ALL"],
               ["ALL"],
-              handleConfirmDeletePlan,
+              handleConfirmDeletePlan
             );
             //handleConfirmDeletePlan();
           }}
         >
-          <FcDeleteRow color="yellow" size={20} />
+          <FcDeleteRow color='yellow' size={20} />
           Xóa PLAN
         </IconButton>
         <IconButton
-          className="buttonIcon"
+          className='buttonIcon'
           onClick={() => {
             loadQLSXPlan(selectedPlanDate);
           }}
         >
-          <BiRefresh color="yellow" size={20} />
+          <BiRefresh color='yellow' size={20} />
           Refresh PLAN
         </IconButton>
         <IconButton
-          className="buttonIcon"
+          className='buttonIcon'
           onClick={() => {
             /*  checkBP(
               userData?.EMPL_NO,
@@ -3063,29 +3063,29 @@ const MACHINE = () => {
             //handleSaveQLSX();
           }}
         >
-          <AiFillSave color="lightgreen" size={20} />
+          <AiFillSave color='lightgreen' size={20} />
           Lưu Data Định Mức
         </IconButton>
         <IconButton
-          className="buttonIcon"
+          className='buttonIcon'
           onClick={() => {
             dispatch(addChithiArray(qlsxplandatafilter[0]));
           }}
         >
-          <AiFillFolderAdd color="#69f542" size={20} />
+          <AiFillFolderAdd color='#69f542' size={20} />
           Add to Print Combo
         </IconButton>
         <IconButton
-          className="buttonIcon"
+          className='buttonIcon'
           onClick={() => {
             dispatch(resetChithiArray(""));
           }}
         >
-          <BiRefresh color="red" size={20} />
+          <BiRefresh color='red' size={20} />
           Reset Print Combo
         </IconButton>
         <IconButton
-          className="buttonIcon"
+          className='buttonIcon'
           onClick={() => {
             let temp_combo: string = "";
             if (chithiarray !== undefined) {
@@ -3107,7 +3107,7 @@ const MACHINE = () => {
             }
           }}
         >
-          <BiRefresh color="red" size={20} />
+          <BiRefresh color='red' size={20} />
           Show Combo
         </IconButton>
       </GridToolbarContainer>
@@ -3120,17 +3120,17 @@ const MACHINE = () => {
         <GridToolbarFilterButton />
         <GridToolbarDensitySelector />  */}
         <IconButton
-          className="buttonIcon"
+          className='buttonIcon'
           onClick={() => {
             SaveExcel(ycsxdatatable, "YCSX Table");
           }}
         >
-          <AiFillFileExcel color="green" size={25} />
+          <AiFillFileExcel color='green' size={25} />
           SAVE
         </IconButton>
         <GridToolbarQuickFilter />
         <IconButton
-          className="buttonIcon"
+          className='buttonIcon'
           onClick={() => {
             /*   checkBP(
               userData?.EMPL_NO,
@@ -3141,11 +3141,11 @@ const MACHINE = () => {
             checkBP(userData, ["QLSX"], ["ALL"], ["ALL"], handleConfirmDKXL);
           }}
         >
-          <AiOutlineBarcode color="green" size={20} />
+          <AiOutlineBarcode color='green' size={20} />
           Lưu CT + ĐKXK
         </IconButton>
         <IconButton
-          className="buttonIcon"
+          className='buttonIcon'
           onClick={() => {
             /* checkBP(
               userData?.EMPL_NO,
@@ -3158,16 +3158,16 @@ const MACHINE = () => {
               ["QLSX"],
               ["ALL"],
               ["ALL"],
-              handleConfirmDeleteLieu,
+              handleConfirmDeleteLieu
             );
             //handleConfirmDeleteLieu();
           }}
         >
-          <FcDeleteRow color="yellow" size={20} />
+          <FcDeleteRow color='yellow' size={20} />
           Xóa Liệu
         </IconButton>
         <IconButton
-          className="buttonIcon"
+          className='buttonIcon'
           onClick={() => {
             /* checkBP(
               userData?.EMPL_NO,
@@ -3180,16 +3180,16 @@ const MACHINE = () => {
               ["QLSX"],
               ["ALL"],
               ["ALL"],
-              handleConfirmRESETLIEU,
+              handleConfirmRESETLIEU
             );
             //handleConfirmRESETLIEU();
           }}
         >
-          <BiReset color="red" size={20} />
+          <BiReset color='red' size={20} />
           RESET Liệu
         </IconButton>
         <IconButton
-          className="buttonIcon"
+          className='buttonIcon'
           onClick={() => {
             if (selectedPlan !== undefined) {
               /*  checkBP(userData?.EMPL_NO, userData?.MAINDEPTNAME, ["QLSX"], () => {
@@ -3211,7 +3211,7 @@ const MACHINE = () => {
                 handle_loadlichsuinputlieu(
                   selectedPlan?.PLAN_ID === undefined
                     ? "xxx"
-                    : selectedPlan?.PLAN_ID,
+                    : selectedPlan?.PLAN_ID
                 );
               });
             } else {
@@ -3219,11 +3219,11 @@ const MACHINE = () => {
             }
           }}
         >
-          <FaWarehouse color="blue" size={20} />
+          <FaWarehouse color='blue' size={20} />
           KHO ẢO
         </IconButton>
         <IconButton
-          className="buttonIcon"
+          className='buttonIcon'
           onClick={() => {
             handleGetChiThiTable(
               selectedPlan?.PLAN_ID === undefined
@@ -3233,15 +3233,15 @@ const MACHINE = () => {
               selectedPlan?.PLAN_QTY === undefined ? 0 : selectedPlan?.PLAN_QTY,
               selectedPlan?.PROCESS_NUMBER === undefined
                 ? 0
-                : selectedPlan?.PROCESS_NUMBER,
+                : selectedPlan?.PROCESS_NUMBER
             );
           }}
         >
-          <BiRefresh color="yellow" size={20} />
+          <BiRefresh color='yellow' size={20} />
           Refresh chỉ thị
         </IconButton>
         <IconButton
-          className="buttonIcon"
+          className='buttonIcon'
           onClick={() => {
             /* checkBP(
               userData?.EMPL_NO,
@@ -3254,16 +3254,16 @@ const MACHINE = () => {
               ["QLSX"],
               ["ALL"],
               ["ALL"],
-              handle_xuatdao_sample,
+              handle_xuatdao_sample
             );
             //handle_xuatdao_sample();
           }}
         >
-          <GiCurvyKnife color="red" size={20} />
+          <GiCurvyKnife color='red' size={20} />
           Xuất dao sample
         </IconButton>
         <IconButton
-          className="buttonIcon"
+          className='buttonIcon'
           onClick={() => {
             /*  checkBP(
               userData?.EMPL_NO,
@@ -3276,12 +3276,12 @@ const MACHINE = () => {
               ["QLSX"],
               ["ALL"],
               ["ALL"],
-              handle_xuatlieu_sample,
+              handle_xuatlieu_sample
             );
             //handle_xuatlieu_sample();
           }}
         >
-          <AiOutlineArrowRight color="blue" size={20} />
+          <AiOutlineArrowRight color='blue' size={20} />
           Xuất liệu sample
         </IconButton>
         <span style={{ fontSize: 20, fontWeight: "bold", color: "red" }}>
@@ -3305,8 +3305,8 @@ const MACHINE = () => {
         </span>
         Có setting hay không?
         <input
-          type="checkbox"
-          name="alltimecheckbox"
+          type='checkbox'
+          name='alltimecheckbox'
           defaultChecked={calc_loss_setting}
           onChange={() => setCalc_Loss_Setting(!calc_loss_setting)}
         ></input>
@@ -3341,7 +3341,7 @@ const MACHINE = () => {
                   ...element,
                   id: index,
                 };
-              },
+              }
             );
             if (loadeddata[0].CODE_55 === "04") {
               check_ycsx_sample = true;
@@ -3418,7 +3418,7 @@ const MACHINE = () => {
                 updateXUATLIEUCHINHPLAN(
                   selectedPlan?.PLAN_ID === undefined
                     ? "xxx"
-                    : selectedPlan?.PLAN_ID,
+                    : selectedPlan?.PLAN_ID
                 );
               } else {
               }
@@ -3429,7 +3429,7 @@ const MACHINE = () => {
           Swal.fire("Thông báo", "Đã xuất liệu ảo thành công", "info");
         } else {
           updateXUATLIEUCHINHPLAN(
-            selectedPlan?.PLAN_ID === undefined ? "xxx" : selectedPlan?.PLAN_ID,
+            selectedPlan?.PLAN_ID === undefined ? "xxx" : selectedPlan?.PLAN_ID
           );
           Swal.fire("Thông báo", "Đã xuất liệu chính rồi", "info");
         }
@@ -3459,7 +3459,7 @@ const MACHINE = () => {
                   ...element,
                   id: index,
                 };
-              },
+              }
             );
             if (loadeddata[0].CODE_55 === "04") {
               check_ycsx_sample = true;
@@ -3507,7 +3507,7 @@ const MACHINE = () => {
                 updateXUAT_DAO_FILM_PLAN(
                   selectedPlan?.PLAN_ID === undefined
                     ? "xxx"
-                    : selectedPlan?.PLAN_ID,
+                    : selectedPlan?.PLAN_ID
                 );
                 //console.log(response.data.data);
               } else {
@@ -3534,25 +3534,25 @@ const MACHINE = () => {
         <GridToolbarFilterButton />
         <GridToolbarDensitySelector />  */}
         <IconButton
-          className="buttonIcon"
+          className='buttonIcon'
           onClick={() => {
             SaveExcel(tonlieuxuongdatatable, "Ton kho ao Table");
           }}
         >
-          <AiFillFileExcel color="green" size={25} />
+          <AiFillFileExcel color='green' size={25} />
           SAVE
         </IconButton>
         <GridToolbarQuickFilter />
-        <div className="div" style={{ fontSize: 20, fontWeight: "bold" }}>
+        <div className='div' style={{ fontSize: 20, fontWeight: "bold" }}>
           Tồn kho ảo
         </div>
         <IconButton
-          className="buttonIcon"
+          className='buttonIcon'
           onClick={() => {
             handle_xuatKhoAo();
           }}
         >
-          <AiOutlineCaretRight color="blue" size={20} />
+          <AiOutlineCaretRight color='blue' size={20} />
           Xuất kho
         </IconButton>
       </GridToolbarContainer>
@@ -3565,35 +3565,35 @@ const MACHINE = () => {
         <GridToolbarFilterButton />
         <GridToolbarDensitySelector />  */}
         <IconButton
-          className="buttonIcon"
+          className='buttonIcon'
           onClick={() => {
             SaveExcel(lichsuinputlieutable, "Lich Su Input Lieu Table");
           }}
         >
-          <AiFillFileExcel color="green" size={25} />
+          <AiFillFileExcel color='green' size={25} />
           SAVE
         </IconButton>
         <GridToolbarQuickFilter />
-        <div className="div" style={{ fontSize: 20, fontWeight: "bold" }}>
+        <div className='div' style={{ fontSize: 20, fontWeight: "bold" }}>
           Lịch sử input liệu sản xuất
         </div>
         <IconButton
-          className="buttonIcon"
+          className='buttonIcon'
           onClick={() => {
             Swal.fire("Thông báo", "Bên sản xuất sẽ confirm", "info");
             //handle_saveConfirmLieuTon();
           }}
         >
-          <AiFillSave color="yellow" size={20} />
+          <AiFillSave color='yellow' size={20} />
           Lưu tồn liệu
         </IconButton>
         <IconButton
-          className="buttonIcon"
+          className='buttonIcon'
           onClick={() => {
             Swal.fire("Thông báo", "Bên sản xuất sẽ confirm", "info");
           }}
         >
-          <AiOutlineRollback color="yellow" size={20} />
+          <AiOutlineRollback color='yellow' size={20} />
           Nhập lại vào kho ảo
         </IconButton>
       </GridToolbarContainer>
@@ -3606,16 +3606,16 @@ const MACHINE = () => {
         <GridToolbarFilterButton />
         <GridToolbarDensitySelector />  */}
         <IconButton
-          className="buttonIcon"
+          className='buttonIcon'
           onClick={() => {
             SaveExcel(lichsunhapkhoaotable, "Lich Su Nhap Kho Ao Table");
           }}
         >
-          <AiFillFileExcel color="green" size={25} />
+          <AiFillFileExcel color='green' size={25} />
           SAVE
         </IconButton>
         <GridToolbarQuickFilter />
-        <div className="div" style={{ fontSize: 20, fontWeight: "bold" }}>
+        <div className='div' style={{ fontSize: 20, fontWeight: "bold" }}>
           Lịch sử nhập kho ảo
         </div>
       </GridToolbarContainer>
@@ -3628,26 +3628,26 @@ const MACHINE = () => {
         <GridToolbarFilterButton />
         <GridToolbarDensitySelector />  */}
         <IconButton
-          className="buttonIcon"
+          className='buttonIcon'
           onClick={() => {
             SaveExcel(lichsuxuatkhoaotable, "Xuat kho ao Table");
           }}
         >
-          <AiFillFileExcel color="green" size={25} />
+          <AiFillFileExcel color='green' size={25} />
           SAVE
         </IconButton>
         <GridToolbarQuickFilter />
-        <div className="div" style={{ fontSize: 20, fontWeight: "bold" }}>
+        <div className='div' style={{ fontSize: 20, fontWeight: "bold" }}>
           Lịch sử xuất kho ảo
         </div>
         <IconButton
-          className="buttonIcon"
+          className='buttonIcon'
           onClick={() => {
             Swal.fire("Thông báo", "Không được phép", "error");
             //handle_huyxuatkhoao();
           }}
         >
-          <FcCancel color="white" size={20} />
+          <FcCancel color='white' size={20} />
           Hủy Xuất
         </IconButton>
       </GridToolbarContainer>
@@ -3656,7 +3656,7 @@ const MACHINE = () => {
   const handleYCSXSelectionforUpdate = (ids: GridSelectionModel) => {
     const selectedID = new Set(ids);
     let datafilter = ycsxdatatable.filter((element: any) =>
-      selectedID.has(element.PROD_REQUEST_NO),
+      selectedID.has(element.PROD_REQUEST_NO)
     );
     if (datafilter.length > 0) {
       setYcsxDataTableFilter(datafilter);
@@ -3668,7 +3668,7 @@ const MACHINE = () => {
   const handleQLSXPlanDataSelectionforUpdate = (ids: GridSelectionModel) => {
     const selectedID = new Set(ids);
     let datafilter = plandatatable.filter((element: any) =>
-      selectedID.has(element.PLAN_ID),
+      selectedID.has(element.PLAN_ID)
     );
     //console.log(datafilter);
     if (datafilter.length > 0) {
@@ -3721,7 +3721,7 @@ const MACHINE = () => {
   const handleQLSXCHITHIDataSelectionforUpdate = (ids: GridSelectionModel) => {
     const selectedID = new Set(ids);
     let datafilter = chithidatatable.filter((element: any) =>
-      selectedID.has(element.CHITHI_ID),
+      selectedID.has(element.CHITHI_ID)
     );
     //console.log(datafilter);
     if (datafilter.length > 0) {
@@ -3732,11 +3732,11 @@ const MACHINE = () => {
     }
   };
   const handleTonLieuXuongDataSelectionforUpdate = (
-    ids: GridSelectionModel,
+    ids: GridSelectionModel
   ) => {
     const selectedID = new Set(ids);
     let datafilter = tonlieuxuongdatatable.filter((element: any) =>
-      selectedID.has(element.id),
+      selectedID.has(element.id)
     );
     //console.log(datafilter);
     if (datafilter.length > 0) {
@@ -3747,11 +3747,11 @@ const MACHINE = () => {
     }
   };
   const handleLichSuXuatKhoAoDataSelectionforUpdate = (
-    ids: GridSelectionModel,
+    ids: GridSelectionModel
   ) => {
     const selectedID = new Set(ids);
     let datafilter = lichsuxuatkhoaotable.filter((element: any) =>
-      selectedID.has(element.id),
+      selectedID.has(element.id)
     );
     //console.log(datafilter);
     if (datafilter.length > 0) {
@@ -3762,11 +3762,11 @@ const MACHINE = () => {
     }
   };
   const handleLichSuInputSXDataSelectionforUpdate = (
-    ids: GridSelectionModel,
+    ids: GridSelectionModel
   ) => {
     const selectedID = new Set(ids);
     let datafilter = lichsuinputlieutable.filter((element: any) =>
-      selectedID.has(element.id),
+      selectedID.has(element.id)
     );
     //console.log(datafilter);
     if (datafilter.length > 0) {
@@ -3817,7 +3817,7 @@ const MACHINE = () => {
   const handleDangKyXuatLieu = async (
     PLAN_ID: string,
     PROD_REQUEST_NO: string,
-    PROD_REQUEST_DATE: string,
+    PROD_REQUEST_DATE: string
   ) => {
     let checkPlanIdO300: boolean = true;
     let NEXT_OUT_NO: string = "001";
@@ -3861,7 +3861,7 @@ const MACHINE = () => {
           if (response.data.tk_status !== "NG") {
             NEXT_OUT_NO = zeroPad(
               parseInt(response.data.data[0].OUT_NO) + 1,
-              3,
+              3
             );
             console.log("nextoutno_o300", NEXT_OUT_NO);
           } else {
@@ -4023,7 +4023,7 @@ const MACHINE = () => {
   const handleEvent: GridEventListener<"rowClick"> = (
     params, // GridRowParams
     event, // MuiEvent<React.MouseEvent<HTMLElement>>
-    details, // GridCallbackDetails
+    details // GridCallbackDetails
   ) => {
     let rowData: QLSXPLANDATA = params.row;
     //console.log(rowData);
@@ -4061,7 +4061,7 @@ const MACHINE = () => {
       rowData.PLAN_ID,
       rowData.G_CODE,
       rowData.PLAN_QTY,
-      rowData.PROCESS_NUMBER,
+      rowData.PROCESS_NUMBER
     );
     //console.log(params.row);
   };
@@ -4195,7 +4195,7 @@ const MACHINE = () => {
         setShowPlanWindow(true);
         setSelectedFactory(selection.tab1 === true ? "NM1" : "NM2");
         setSelectedMachine(
-          machine_array2[machine_array.indexOf(temp_key.toUpperCase())],
+          machine_array2[machine_array.indexOf(temp_key.toUpperCase())]
         );
         setChiThiDataTable([]);
       }
@@ -4250,20 +4250,20 @@ const MACHINE = () => {
     };
   }, []);
   return (
-    <div className="machineplan" tabIndex={0} onKeyDown={handleKeyDown}>
-      <div className="mininavbar">
-        <div className="mininavitem" onClick={() => setNav(1)}>
-          <span className="mininavtext">NM1</span>
+    <div className='machineplan' tabIndex={0} onKeyDown={handleKeyDown}>
+      <div className='mininavbar'>
+        <div className='mininavitem' onClick={() => setNav(1)}>
+          <span className='mininavtext'>NM1</span>
         </div>
-        <div className="mininavitem" onClick={() => setNav(2)}>
-          <span className="mininavtext">NM2</span>
+        <div className='mininavitem' onClick={() => setNav(2)}>
+          <span className='mininavtext'>NM2</span>
         </div>
       </div>
-      <div className="plandateselect">
+      <div className='plandateselect'>
         <label>Plan Date</label>
         <input
-          className="inputdata"
-          type="date"
+          className='inputdata'
+          type='date'
           value={selectedPlanDate}
           onChange={(e) => {
             setSelectedPlanDate(e.target.value.toString());
@@ -4272,28 +4272,28 @@ const MACHINE = () => {
           }}
         ></input>
         <IconButton
-          className="buttonIcon"
+          className='buttonIcon'
           onClick={() => {
             loadQLSXPlan(selectedPlanDate);
             dispatch(resetChithiArray(""));
           }}
         >
-          <BiRefresh color="blue" size={20} />
+          <BiRefresh color='blue' size={20} />
           Refresh PLAN
         </IconButton>
       </div>
       {selection.tab1 && (
-        <div className="NM1">
+        <div className='NM1'>
           {eq_series.map((ele_series: string, index: number) => {
             return (
               <div key={index}>
-                <span className="machine_title">{ele_series}-NM1</span>
-                <div className="FRlist">
+                <span className='machine_title'>{ele_series}-NM1</span>
+                <div className='FRlist'>
                   {eq_status
                     .filter(
                       (element: EQ_STATUS, index: number) =>
                         element.FACTORY === "NM1" &&
-                        element.EQ_NAME.substring(0, 2) === ele_series,
+                        element.EQ_NAME.substring(0, 2) === ele_series
                     )
                     .map((element: EQ_STATUS, index: number) => {
                       return (
@@ -4440,17 +4440,17 @@ const MACHINE = () => {
         </div>
       )}
       {selection.tab2 && (
-        <div className="NM2">
+        <div className='NM2'>
           {eq_series.map((ele_series: string, index: number) => {
             return (
               <>
-                <span className="machine_title">{ele_series}-NM2</span>
-                <div className="FRlist">
+                <span className='machine_title'>{ele_series}-NM2</span>
+                <div className='FRlist'>
                   {eq_status
                     .filter(
                       (element: EQ_STATUS, index: number) =>
                         element.FACTORY === "NM2" &&
-                        element.EQ_NAME.substring(0, 2) === ele_series,
+                        element.EQ_NAME.substring(0, 2) === ele_series
                     )
                     .map((element: EQ_STATUS, index: number) => {
                       return (
@@ -4538,10 +4538,10 @@ const MACHINE = () => {
           </div> */}
         </div>
       )}
-      {selection.tab3 && <div className="allinone">ALL IN ONE</div>}
+      {selection.tab3 && <div className='allinone'>ALL IN ONE</div>}
       {showplanwindow && (
-        <div className="planwindow">
-          <div className="title">
+        <div className='planwindow'>
+          <div className='title'>
             {selectedMachine}: {selectedFactory}
             <Button
               onClick={() => {
@@ -4581,20 +4581,20 @@ const MACHINE = () => {
             </Button>
             Plan hiện tại trên máy {selectedMachine}
           </div>
-          <div className="content">
+          <div className='content'>
             {showYCSX && (
-              <div className="ycsxlist">
-                <div className="tracuuYCSX">
-                  <div className="tracuuYCSXform">
-                    <div className="forminput">
-                      <div className="forminputcolumn">
+              <div className='ycsxlist'>
+                <div className='tracuuYCSX'>
+                  <div className='tracuuYCSXform'>
+                    <div className='forminput'>
+                      <div className='forminputcolumn'>
                         <label>
                           <b>Từ ngày:</b>
                           <input
                             onKeyDown={(e) => {
                               handleSearchCodeKeyDown(e);
                             }}
-                            type="date"
+                            type='date'
                             value={fromdate.slice(0, 10)}
                             onChange={(e) => setFromDate(e.target.value)}
                           ></input>
@@ -4605,21 +4605,21 @@ const MACHINE = () => {
                             onKeyDown={(e) => {
                               handleSearchCodeKeyDown(e);
                             }}
-                            type="date"
+                            type='date'
                             value={todate.slice(0, 10)}
                             onChange={(e) => setToDate(e.target.value)}
                           ></input>
                         </label>
                       </div>
-                      <div className="forminputcolumn">
+                      <div className='forminputcolumn'>
                         <label>
                           <b>Code KD:</b>{" "}
                           <input
                             onKeyDown={(e) => {
                               handleSearchCodeKeyDown(e);
                             }}
-                            type="text"
-                            placeholder="GH63-xxxxxx"
+                            type='text'
+                            placeholder='GH63-xxxxxx'
                             value={codeKD}
                             onChange={(e) => setCodeKD(e.target.value)}
                           ></input>
@@ -4630,22 +4630,22 @@ const MACHINE = () => {
                             onKeyDown={(e) => {
                               handleSearchCodeKeyDown(e);
                             }}
-                            type="text"
-                            placeholder="7C123xxx"
+                            type='text'
+                            placeholder='7C123xxx'
                             value={codeCMS}
                             onChange={(e) => setCodeCMS(e.target.value)}
                           ></input>
                         </label>
                       </div>
-                      <div className="forminputcolumn">
+                      <div className='forminputcolumn'>
                         <label>
                           <b>Tên nhân viên:</b>{" "}
                           <input
                             onKeyDown={(e) => {
                               handleSearchCodeKeyDown(e);
                             }}
-                            type="text"
-                            placeholder="Trang"
+                            type='text'
+                            placeholder='Trang'
                             value={empl_name}
                             onChange={(e) => setEmpl_Name(e.target.value)}
                           ></input>
@@ -4656,22 +4656,22 @@ const MACHINE = () => {
                             onKeyDown={(e) => {
                               handleSearchCodeKeyDown(e);
                             }}
-                            type="text"
-                            placeholder="SEVT"
+                            type='text'
+                            placeholder='SEVT'
                             value={cust_name}
                             onChange={(e) => setCust_Name(e.target.value)}
                           ></input>
                         </label>
                       </div>
-                      <div className="forminputcolumn">
+                      <div className='forminputcolumn'>
                         <label>
                           <b>Loại sản phẩm:</b>{" "}
                           <input
                             onKeyDown={(e) => {
                               handleSearchCodeKeyDown(e);
                             }}
-                            type="text"
-                            placeholder="TSP"
+                            type='text'
+                            placeholder='TSP'
                             value={prod_type}
                             onChange={(e) => setProdType(e.target.value)}
                           ></input>
@@ -4682,29 +4682,29 @@ const MACHINE = () => {
                             onKeyDown={(e) => {
                               handleSearchCodeKeyDown(e);
                             }}
-                            type="text"
-                            placeholder="12345"
+                            type='text'
+                            placeholder='12345'
                             value={prodrequestno}
                             onChange={(e) => setProdRequestNo(e.target.value)}
                           ></input>
                         </label>
                       </div>
-                      <div className="forminputcolumn">
+                      <div className='forminputcolumn'>
                         <label>
                           <b>Phân loại:</b>
                           <select
-                            name="phanloai"
+                            name='phanloai'
                             value={phanloai}
                             onChange={(e) => {
                               setPhanLoai(e.target.value);
                             }}
                           >
-                            <option value="00">ALL</option>
-                            <option value="01">Thông thường</option>
-                            <option value="02">SDI</option>
-                            <option value="03">GC</option>
-                            <option value="04">SAMPLE</option>
-                            <option value="22">NOT SAMPLE</option>
+                            <option value='00'>ALL</option>
+                            <option value='01'>Thông thường</option>
+                            <option value='02'>SDI</option>
+                            <option value='03'>GC</option>
+                            <option value='04'>SAMPLE</option>
+                            <option value='22'>NOT SAMPLE</option>
                           </select>
                         </label>
                         <label>
@@ -4713,22 +4713,22 @@ const MACHINE = () => {
                             onKeyDown={(e) => {
                               handleSearchCodeKeyDown(e);
                             }}
-                            type="text"
-                            placeholder="SJ-203020HC"
+                            type='text'
+                            placeholder='SJ-203020HC'
                             value={material}
                             onChange={(e) => setMaterial(e.target.value)}
                           ></input>
                         </label>
                       </div>
-                      <div className="forminputcolumn">
+                      <div className='forminputcolumn'>
                         <label>
                           <b>YCSX Pending:</b>
                           <input
                             onKeyDown={(e) => {
                               handleSearchCodeKeyDown(e);
                             }}
-                            type="checkbox"
-                            name="alltimecheckbox"
+                            type='checkbox'
+                            name='alltimecheckbox'
                             defaultChecked={ycsxpendingcheck}
                             onChange={() =>
                               setYCSXPendingCheck(!ycsxpendingcheck)
@@ -4741,8 +4741,8 @@ const MACHINE = () => {
                             onKeyDown={(e) => {
                               handleSearchCodeKeyDown(e);
                             }}
-                            type="checkbox"
-                            name="alltimecheckbox"
+                            type='checkbox'
+                            name='alltimecheckbox'
                             defaultChecked={inspectInputcheck}
                             onChange={() =>
                               setInspectInputCheck(!inspectInputcheck)
@@ -4751,28 +4751,28 @@ const MACHINE = () => {
                         </label>
                       </div>
                     </div>
-                    <div className="formbutton">
+                    <div className='formbutton'>
                       <label>
                         <b>All Time:</b>
                         <input
-                          type="checkbox"
-                          name="alltimecheckbox"
+                          type='checkbox'
+                          name='alltimecheckbox'
                           defaultChecked={alltime}
                           onChange={() => setAllTime(!alltime)}
                         ></input>
                       </label>
                       <IconButton
-                        className="buttonIcon"
+                        className='buttonIcon'
                         onClick={() => {
                           handletraYCSX();
                         }}
                       >
-                        <FcSearch color="green" size={30} />
+                        <FcSearch color='green' size={30} />
                         Search
                       </IconButton>
                     </div>
                   </div>
-                  <div className="tracuuYCSXTable">
+                  <div className='tracuuYCSXTable'>
                     <DataGrid
                       sx={{ fontSize: 12, flex: 1 }}
                       components={{
@@ -4786,7 +4786,7 @@ const MACHINE = () => {
                       rowsPerPageOptions={[
                         5, 10, 50, 100, 500, 1000, 5000, 10000, 500000,
                       ]}
-                      editMode="row"
+                      editMode='row'
                       getRowId={(row) => row.PROD_REQUEST_NO}
                       onSelectionModelChange={(ids) => {
                         handleYCSXSelectionforUpdate(ids);
@@ -4796,9 +4796,9 @@ const MACHINE = () => {
                 </div>
               </div>
             )}
-            <div className="chithidiv">
-              <div className="listchithi">
-                <div className="planlist">
+            <div className='chithidiv'>
+              <div className='listchithi'>
+                <div className='planlist'>
                   <DataGrid
                     sx={{ fontSize: 12, flex: 1 }}
                     components={{
@@ -4813,13 +4813,13 @@ const MACHINE = () => {
                           element.PLAN_EQ === selectedMachine &&
                           element.PLAN_FACTORY === selectedFactory
                         );
-                      },
+                      }
                     )}
                     columns={column_plandatatable}
                     rowsPerPageOptions={[
                       5, 10, 50, 100, 500, 1000, 5000, 10000, 500000,
                     ]}
-                    editMode="cell"
+                    editMode='cell'
                     getRowId={(row) => row.PLAN_ID}
                     checkboxSelection
                     onSelectionModelChange={(ids) => {
@@ -4829,13 +4829,13 @@ const MACHINE = () => {
                     onCellEditCommit={(
                       params: GridCellEditCommitParams,
                       event: MuiEvent<MuiBaseEvent>,
-                      details: GridCallbackDetails,
+                      details: GridCallbackDetails
                     ) => {
                       const keyvar = params.field;
                       const newdata = plandatatable.map((p) =>
                         p.PLAN_ID === params.id
                           ? { ...p, [keyvar]: params.value }
-                          : p,
+                          : p
                       );
 
                       setPlanDataTable(newdata);
@@ -4846,13 +4846,13 @@ const MACHINE = () => {
                   />
                 </div>
               </div>
-              <div className="datadinhmucto">
-                <div className="datadinhmuc">
-                  <div className="forminputcolumn">
+              <div className='datadinhmucto'>
+                <div className='datadinhmuc'>
+                  <div className='forminputcolumn'>
                     <label>
                       <b>EQ1:</b>
                       <select
-                        name="phanloai"
+                        name='phanloai'
                         value={datadinhmuc.EQ1}
                         onChange={(e) =>
                           setDataDinhMuc({
@@ -4869,14 +4869,14 @@ const MACHINE = () => {
                                 {ele.EQ_NAME}
                               </option>
                             );
-                          },
+                          }
                         )}
                       </select>
                     </label>
                     <label>
                       <b>EQ2:</b>
                       <select
-                        name="phanloai"
+                        name='phanloai'
                         value={datadinhmuc.EQ2}
                         onChange={(e) =>
                           setDataDinhMuc({
@@ -4893,17 +4893,17 @@ const MACHINE = () => {
                                 {ele.EQ_NAME}
                               </option>
                             );
-                          },
+                          }
                         )}
                       </select>
                     </label>
                   </div>
-                  <div className="forminputcolumn">
+                  <div className='forminputcolumn'>
                     <label>
                       <b>Setting1(min):</b>{" "}
                       <input
-                        type="text"
-                        placeholder="Thời gian setting 1"
+                        type='text'
+                        placeholder='Thời gian setting 1'
                         value={datadinhmuc.Setting1}
                         onChange={(e) =>
                           setDataDinhMuc({
@@ -4916,8 +4916,8 @@ const MACHINE = () => {
                     <label>
                       <b>Setting2(min):</b>{" "}
                       <input
-                        type="text"
-                        placeholder="Thời gian setting 2"
+                        type='text'
+                        placeholder='Thời gian setting 2'
                         value={datadinhmuc.Setting2}
                         onChange={(e) =>
                           setDataDinhMuc({
@@ -4928,12 +4928,12 @@ const MACHINE = () => {
                       ></input>
                     </label>
                   </div>
-                  <div className="forminputcolumn">
+                  <div className='forminputcolumn'>
                     <label>
                       <b>UPH1(EA/h):</b>{" "}
                       <input
-                        type="text"
-                        placeholder="Tốc độ sx 1"
+                        type='text'
+                        placeholder='Tốc độ sx 1'
                         value={datadinhmuc.UPH1}
                         onChange={(e) =>
                           setDataDinhMuc({
@@ -4946,8 +4946,8 @@ const MACHINE = () => {
                     <label>
                       <b>UPH2(EA/h):</b>{" "}
                       <input
-                        type="text"
-                        placeholder="Tốc độ sx 2"
+                        type='text'
+                        placeholder='Tốc độ sx 2'
                         value={datadinhmuc.UPH2}
                         onChange={(e) =>
                           setDataDinhMuc({
@@ -4958,12 +4958,12 @@ const MACHINE = () => {
                       ></input>
                     </label>
                   </div>
-                  <div className="forminputcolumn">
+                  <div className='forminputcolumn'>
                     <label>
                       <b>Step1:</b>{" "}
                       <input
-                        type="text"
-                        placeholder="Số bước 1"
+                        type='text'
+                        placeholder='Số bước 1'
                         value={datadinhmuc.Step1}
                         onChange={(e) =>
                           setDataDinhMuc({
@@ -4976,8 +4976,8 @@ const MACHINE = () => {
                     <label>
                       <b>Step2:</b>{" "}
                       <input
-                        type="text"
-                        placeholder="Số bước 2"
+                        type='text'
+                        placeholder='Số bước 2'
                         value={datadinhmuc.Step2}
                         onChange={(e) =>
                           setDataDinhMuc({
@@ -4988,12 +4988,12 @@ const MACHINE = () => {
                       ></input>
                     </label>
                   </div>
-                  <div className="forminputcolumn">
+                  <div className='forminputcolumn'>
                     <label>
                       <b>LOSS_SX1(%):</b>{" "}
                       <input
-                        type="text"
-                        placeholder="% loss sx 1"
+                        type='text'
+                        placeholder='% loss sx 1'
                         value={datadinhmuc.LOSS_SX1}
                         onChange={(e) =>
                           setDataDinhMuc({
@@ -5006,8 +5006,8 @@ const MACHINE = () => {
                     <label>
                       <b>LOSS_SX2(%):</b>{" "}
                       <input
-                        type="text"
-                        placeholder="% loss sx 2"
+                        type='text'
+                        placeholder='% loss sx 2'
                         value={datadinhmuc.LOSS_SX2}
                         onChange={(e) =>
                           setDataDinhMuc({
@@ -5018,12 +5018,12 @@ const MACHINE = () => {
                       ></input>
                     </label>
                   </div>
-                  <div className="forminputcolumn">
+                  <div className='forminputcolumn'>
                     <label>
                       <b>LOSS SETTING1 (m):</b>{" "}
                       <input
-                        type="text"
-                        placeholder="met setting 1"
+                        type='text'
+                        placeholder='met setting 1'
                         value={datadinhmuc.LOSS_SETTING1}
                         onChange={(e) =>
                           setDataDinhMuc({
@@ -5036,8 +5036,8 @@ const MACHINE = () => {
                     <label>
                       <b>LOSS SETTING2 (m):</b>{" "}
                       <input
-                        type="text"
-                        placeholder="met setting 2"
+                        type='text'
+                        placeholder='met setting 2'
                         value={datadinhmuc.LOSS_SETTING2}
                         onChange={(e) =>
                           setDataDinhMuc({
@@ -5048,11 +5048,11 @@ const MACHINE = () => {
                       ></input>
                     </label>
                   </div>
-                  <div className="forminputcolumn">
+                  <div className='forminputcolumn'>
                     <label>
                       <b>FACTORY:</b>
                       <select
-                        name="phanloai"
+                        name='phanloai'
                         value={
                           datadinhmuc.FACTORY === null
                             ? "NA"
@@ -5066,19 +5066,19 @@ const MACHINE = () => {
                         }}
                         style={{ width: 162, height: 22 }}
                       >
-                        <option value="NA">NA</option>
-                        <option value="NM1">NM1</option>
-                        <option value="NM2">NM2</option>
+                        <option value='NA'>NA</option>
+                        <option value='NM1'>NM1</option>
+                        <option value='NM2'>NM2</option>
                       </select>
                     </label>
                   </div>
                 </div>
-                <div className="datadinhmuc">
-                  <div className="forminputcolumn">
+                <div className='datadinhmuc'>
+                  <div className='forminputcolumn'>
                     <label>
                       <b>EQ3:</b>
                       <select
-                        name="phanloai"
+                        name='phanloai'
                         value={datadinhmuc.EQ3}
                         onChange={(e) =>
                           setDataDinhMuc({
@@ -5095,14 +5095,14 @@ const MACHINE = () => {
                                 {ele.EQ_NAME}
                               </option>
                             );
-                          },
+                          }
                         )}
                       </select>
                     </label>
                     <label>
                       <b>EQ4:</b>
                       <select
-                        name="phanloai"
+                        name='phanloai'
                         value={datadinhmuc.EQ4}
                         onChange={(e) =>
                           setDataDinhMuc({
@@ -5119,17 +5119,17 @@ const MACHINE = () => {
                                 {ele.EQ_NAME}
                               </option>
                             );
-                          },
+                          }
                         )}
                       </select>
                     </label>
                   </div>
-                  <div className="forminputcolumn">
+                  <div className='forminputcolumn'>
                     <label>
                       <b>Setting3(min):</b>{" "}
                       <input
-                        type="text"
-                        placeholder="Thời gian setting 3"
+                        type='text'
+                        placeholder='Thời gian setting 3'
                         value={datadinhmuc.Setting3}
                         onChange={(e) =>
                           setDataDinhMuc({
@@ -5142,8 +5142,8 @@ const MACHINE = () => {
                     <label>
                       <b>Setting4(min):</b>{" "}
                       <input
-                        type="text"
-                        placeholder="Thời gian setting 4"
+                        type='text'
+                        placeholder='Thời gian setting 4'
                         value={datadinhmuc.Setting4}
                         onChange={(e) =>
                           setDataDinhMuc({
@@ -5154,12 +5154,12 @@ const MACHINE = () => {
                       ></input>
                     </label>
                   </div>
-                  <div className="forminputcolumn">
+                  <div className='forminputcolumn'>
                     <label>
                       <b>UPH3(EA/h):</b>{" "}
                       <input
-                        type="text"
-                        placeholder="Tốc độ sx 1"
+                        type='text'
+                        placeholder='Tốc độ sx 1'
                         value={datadinhmuc.UPH3}
                         onChange={(e) =>
                           setDataDinhMuc({
@@ -5172,8 +5172,8 @@ const MACHINE = () => {
                     <label>
                       <b>UPH4(EA/h):</b>{" "}
                       <input
-                        type="text"
-                        placeholder="Tốc độ sx 2"
+                        type='text'
+                        placeholder='Tốc độ sx 2'
                         value={datadinhmuc.UPH4}
                         onChange={(e) =>
                           setDataDinhMuc({
@@ -5184,12 +5184,12 @@ const MACHINE = () => {
                       ></input>
                     </label>
                   </div>
-                  <div className="forminputcolumn">
+                  <div className='forminputcolumn'>
                     <label>
                       <b>Step3:</b>{" "}
                       <input
-                        type="text"
-                        placeholder="Số bước 3"
+                        type='text'
+                        placeholder='Số bước 3'
                         value={datadinhmuc.Step3}
                         onChange={(e) =>
                           setDataDinhMuc({
@@ -5202,8 +5202,8 @@ const MACHINE = () => {
                     <label>
                       <b>Step4:</b>{" "}
                       <input
-                        type="text"
-                        placeholder="Số bước 4"
+                        type='text'
+                        placeholder='Số bước 4'
                         value={datadinhmuc.Step4}
                         onChange={(e) =>
                           setDataDinhMuc({
@@ -5214,12 +5214,12 @@ const MACHINE = () => {
                       ></input>
                     </label>
                   </div>
-                  <div className="forminputcolumn">
+                  <div className='forminputcolumn'>
                     <label>
                       <b>LOSS_SX3(%):</b>{" "}
                       <input
-                        type="text"
-                        placeholder="% loss sx 3"
+                        type='text'
+                        placeholder='% loss sx 3'
                         value={datadinhmuc.LOSS_SX3}
                         onChange={(e) =>
                           setDataDinhMuc({
@@ -5232,8 +5232,8 @@ const MACHINE = () => {
                     <label>
                       <b>LOSS_SX4(%):</b>{" "}
                       <input
-                        type="text"
-                        placeholder="% loss sx 4"
+                        type='text'
+                        placeholder='% loss sx 4'
                         value={datadinhmuc.LOSS_SX4}
                         onChange={(e) =>
                           setDataDinhMuc({
@@ -5244,12 +5244,12 @@ const MACHINE = () => {
                       ></input>
                     </label>
                   </div>
-                  <div className="forminputcolumn">
+                  <div className='forminputcolumn'>
                     <label>
                       <b>LOSS SETTING3 (m):</b>{" "}
                       <input
-                        type="text"
-                        placeholder="met setting 3"
+                        type='text'
+                        placeholder='met setting 3'
                         value={datadinhmuc.LOSS_SETTING3}
                         onChange={(e) =>
                           setDataDinhMuc({
@@ -5262,8 +5262,8 @@ const MACHINE = () => {
                     <label>
                       <b>LOSS SETTING4 (m):</b>{" "}
                       <input
-                        type="text"
-                        placeholder="met setting 4"
+                        type='text'
+                        placeholder='met setting 4'
                         value={datadinhmuc.LOSS_SETTING4}
                         onChange={(e) =>
                           setDataDinhMuc({
@@ -5274,12 +5274,12 @@ const MACHINE = () => {
                       ></input>
                     </label>
                   </div>
-                  <div className="forminputcolumn">
+                  <div className='forminputcolumn'>
                     <label>
                       <b>NOTE (QLSX):</b>{" "}
                       <input
-                        type="text"
-                        placeholder="Chú ý"
+                        type='text'
+                        placeholder='Chú ý'
                         value={datadinhmuc.NOTE}
                         onChange={(e) =>
                           setDataDinhMuc({
@@ -5292,8 +5292,8 @@ const MACHINE = () => {
                   </div>
                 </div>
               </div>
-              <div className="listlieuchithi">
-                <div className="chithitable">
+              <div className='listlieuchithi'>
+                <div className='chithitable'>
                   <DataGrid
                     sx={{ fontSize: 12, flex: 1 }}
                     components={{
@@ -5308,7 +5308,7 @@ const MACHINE = () => {
                     rowsPerPageOptions={[
                       5, 10, 50, 100, 500, 1000, 5000, 10000, 500000,
                     ]}
-                    editMode="cell"
+                    editMode='cell'
                     checkboxSelection
                     onSelectionModelChange={(ids) => {
                       handleQLSXCHITHIDataSelectionforUpdate(ids);
@@ -5316,13 +5316,13 @@ const MACHINE = () => {
                     onCellEditCommit={(
                       params: GridCellEditCommitParams,
                       event: MuiEvent<MuiBaseEvent>,
-                      details: GridCallbackDetails,
+                      details: GridCallbackDetails
                     ) => {
                       const keyvar = params.field;
                       const newdata = chithidatatable.map((p) =>
                         p.CHITHI_ID === params.id
                           ? { ...p, [keyvar]: params.value }
-                          : p,
+                          : p
                       );
                       //console.log(newdata);
                       setChiThiDataTable(newdata);
@@ -5331,8 +5331,8 @@ const MACHINE = () => {
                 </div>
               </div>
               {selection.tabycsx && (
-                <div className="printycsxpage">
-                  <div className="buttongroup">
+                <div className='printycsxpage'>
+                  <div className='buttongroup'>
                     <Button
                       onClick={() => {
                         setYCSXListRender(renderYCSX(ycsxdatatablefilter));
@@ -5349,14 +5349,14 @@ const MACHINE = () => {
                       Close
                     </Button>
                   </div>
-                  <div className="ycsxrender" ref={ycsxprintref}>
+                  <div className='ycsxrender' ref={ycsxprintref}>
                     {ycsxlistrender}
                   </div>
                 </div>
               )}
               {selection.tabbanve && (
-                <div className="printycsxpage">
-                  <div className="buttongroup">
+                <div className='printycsxpage'>
+                  <div className='buttongroup'>
                     <Button
                       onClick={() => {
                         setYCSXListRender(renderBanVe(ycsxdatatablefilter));
@@ -5373,13 +5373,13 @@ const MACHINE = () => {
                       Close
                     </Button>
                   </div>
-                  <div className="ycsxrender" ref={ycsxprintref}>
+                  <div className='ycsxrender' ref={ycsxprintref}>
                     {ycsxlistrender}
                   </div>
                 </div>
               )}
               {showkhoao && (
-                <div className="khoaodiv">
+                <div className='khoaodiv'>
                   <Button
                     onClick={() => {
                       setShowKhoAo(!showkhoao);
@@ -5391,9 +5391,9 @@ const MACHINE = () => {
                 </div>
               )}
               {false && (
-                <div className="khoaodiv">
+                <div className='khoaodiv'>
                   <div
-                    className="khoaotieude"
+                    className='khoaotieude'
                     style={{ fontSize: 25, fontWeight: "bold" }}
                   >
                     KHO ẢO
@@ -5412,19 +5412,19 @@ const MACHINE = () => {
                         handle_loadlichsuinputlieu(
                           selectedPlan?.PLAN_ID === undefined
                             ? "xxx"
-                            : selectedPlan?.PLAN_ID,
+                            : selectedPlan?.PLAN_ID
                         );
                       }}
                     >
                       Refresh
                     </Button>
                   </div>
-                  <div className="khoaodivtable">
+                  <div className='khoaodivtable'>
                     <div
-                      className="tablekhoao"
+                      className='tablekhoao'
                       style={{ height: "100%", width: "50%" }}
                     >
-                      <div className="tabletonkhoao">
+                      <div className='tabletonkhoao'>
                         <DataGrid
                           sx={{ fontSize: 12, flex: 1 }}
                           components={{
@@ -5448,20 +5448,20 @@ const MACHINE = () => {
                           onCellEditCommit={(
                             params: GridCellEditCommitParams,
                             event: MuiEvent<MuiBaseEvent>,
-                            details: GridCallbackDetails,
+                            details: GridCallbackDetails
                           ) => {
                             const keyvar = params.field;
                             const newdata = tonlieuxuongdatatable.map((p) =>
                               p.id === params.id
                                 ? { ...p, [keyvar]: params.value }
-                                : p,
+                                : p
                             );
                             setTonLieuXuongDataFilter(newdata);
                             //console.log(chithidatatable);
                           }}
                         />
                       </div>
-                      <div className="lichsuinputsanxuat">
+                      <div className='lichsuinputsanxuat'>
                         <DataGrid
                           sx={{ fontSize: 12, flex: 1 }}
                           components={{
@@ -5485,13 +5485,13 @@ const MACHINE = () => {
                           onCellEditCommit={(
                             params: GridCellEditCommitParams,
                             event: MuiEvent<MuiBaseEvent>,
-                            details: GridCallbackDetails,
+                            details: GridCallbackDetails
                           ) => {
                             const keyvar = params.field;
                             const newdata = lichsuinputlieutable.map((p) =>
                               p.id === params.id
                                 ? { ...p, [keyvar]: params.value }
-                                : p,
+                                : p
                             );
                             setLichSuInputLieuTable(newdata);
                             //console.log(chithidatatable);
@@ -5500,11 +5500,11 @@ const MACHINE = () => {
                       </div>
                     </div>
                     <div
-                      className="nhapxuatkhoao"
+                      className='nhapxuatkhoao'
                       style={{ height: "100%", width: "50%" }}
                     >
                       <div
-                        className="nhapkhoao"
+                        className='nhapkhoao'
                         style={{ height: "100%", width: "100%" }}
                       >
                         <DataGrid
@@ -5528,13 +5528,13 @@ const MACHINE = () => {
                           onCellEditCommit={(
                             params: GridCellEditCommitParams,
                             event: MuiEvent<MuiBaseEvent>,
-                            details: GridCallbackDetails,
+                            details: GridCallbackDetails
                           ) => {
                             const keyvar = params.field;
                             const newdata = lichsunhapkhoaotable.map((p) =>
                               p.id === params.id
                                 ? { ...p, [keyvar]: params.value }
-                                : p,
+                                : p
                             );
                             setLichSuNhapKhoAoTable(newdata);
                             //console.log(chithidatatable);
@@ -5542,7 +5542,7 @@ const MACHINE = () => {
                         />
                       </div>
                       <div
-                        className="xuatkhoao"
+                        className='xuatkhoao'
                         style={{ height: "100%", width: "100%" }}
                       >
                         <DataGrid
@@ -5568,13 +5568,13 @@ const MACHINE = () => {
                           onCellEditCommit={(
                             params: GridCellEditCommitParams,
                             event: MuiEvent<MuiBaseEvent>,
-                            details: GridCallbackDetails,
+                            details: GridCallbackDetails
                           ) => {
                             const keyvar = params.field;
                             const newdata = lichsuxuatkhoaotable.map((p) =>
                               p.id === params.id
                                 ? { ...p, [keyvar]: params.value }
-                                : p,
+                                : p
                             );
                             setLichSuXuatKhoAoTable(newdata);
                             //console.log(chithidatatable);
@@ -5586,10 +5586,10 @@ const MACHINE = () => {
                 </div>
               )}
               {showChiThi && (
-                <div className="printycsxpage">
-                  <div className="buttongroup">
+                <div className='printycsxpage'>
+                  <div className='buttongroup'>
                     <input
-                      type="text"
+                      type='text'
                       value={maxLieu}
                       onChange={(e) => {
                         setMaxLieu(Number(e.target.value));
@@ -5601,7 +5601,7 @@ const MACHINE = () => {
                         Swal.fire(
                           "Thông báo",
                           "Đã set lại max dòng",
-                          "success",
+                          "success"
                         );
                       }}
                     >
@@ -5623,16 +5623,16 @@ const MACHINE = () => {
                       Close
                     </button>
                   </div>
-                  <div className="ycsxrender" ref={ycsxprintref}>
+                  <div className='ycsxrender' ref={ycsxprintref}>
                     {chithilistrender}
                   </div>
                 </div>
               )}
               {showChiThi2 && (
-                <div className="printycsxpage">
-                  <div className="buttongroup">
+                <div className='printycsxpage'>
+                  <div className='buttongroup'>
                     <input
-                      type="text"
+                      type='text'
                       value={maxLieu}
                       onChange={(e) => {
                         setMaxLieu(Number(e.target.value));
@@ -5644,7 +5644,7 @@ const MACHINE = () => {
                         Swal.fire(
                           "Thông báo",
                           "Đã set lại max dòng",
-                          "success",
+                          "success"
                         );
                       }}
                     >
@@ -5666,14 +5666,14 @@ const MACHINE = () => {
                       Close
                     </button>
                   </div>
-                  <div className="ycsxrender" ref={ycsxprintref}>
+                  <div className='ycsxrender' ref={ycsxprintref}>
                     {chithilistrender2}
                   </div>
                 </div>
               )}
               {showYCKT && (
-                <div className="printycsxpage">
-                  <div className="buttongroup">
+                <div className='printycsxpage'>
+                  <div className='buttongroup'>
                     <button
                       onClick={() => {
                         setYCKTListRender(renderYCKT(qlsxplandatafilter));
@@ -5690,7 +5690,7 @@ const MACHINE = () => {
                       Close
                     </button>
                   </div>
-                  <div className="ycsxrender" ref={ycsxprintref}>
+                  <div className='ycsxrender' ref={ycsxprintref}>
                     {ycktlistrender}
                   </div>
                 </div>
