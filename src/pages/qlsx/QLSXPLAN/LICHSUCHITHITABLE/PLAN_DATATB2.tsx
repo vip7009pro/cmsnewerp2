@@ -4,26 +4,20 @@ import {
   LinearProgress,
   TextField,
 } from "@mui/material";
-
 import {
-  Column,
-  Editing,
-  FilterRow,
-  Pager,
-  Scrolling,
-  SearchPanel,
-  Selection,
   DataGrid,
-  Paging,
-  Toolbar,
-  Item,
-  Export,
-  ColumnChooser,
-  Summary,
-  TotalItem,
-} from "devextreme-react/data-grid";
+  GridCallbackDetails,
+  GridCellEditCommitParams,
+  GridSelectionModel,
+  GridToolbarContainer,
+  GridToolbarDensitySelector,
+  GridToolbarFilterButton,
+  GridToolbarQuickFilter,
+  MuiBaseEvent,
+  MuiEvent,
+} from "@mui/x-data-grid";
 import moment from "moment";
-import React, { useContext, useEffect, useRef, useState, useTransition } from "react";
+import React, { useContext, useEffect, useState, useTransition } from "react";
 import {
   AiFillFileExcel,
   AiOutlineCloudUpload,
@@ -32,7 +26,7 @@ import {
 import Swal from "sweetalert2";
 import { generalQuery } from "../../../../api/Api";
 import { UserContext } from "../../../../api/Context";
-import { checkBP, CustomResponsiveContainer, SaveExcel } from "../../../../api/GlobalFunction";
+import { checkBP, SaveExcel } from "../../../../api/GlobalFunction";
 import "./PLAN_DATATB.scss";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../redux/store";
@@ -42,9 +36,8 @@ import {
   UserData,
 } from "../../../../api/GlobalInterface";
 
-const PLAN_DATATB = () => {
+const PLAN_DATATB2 = () => {
   const [machine_list, setMachine_List] = useState<MACHINE_LIST[]>([]);
-  const clickedRow = useRef<any>(null);
 
   const getMachineList = () => {
     generalQuery("getmachinelist", {})
@@ -75,7 +68,6 @@ const PLAN_DATATB = () => {
       });
   };
 
-  const [columns, setColumns] = useState<Array<any>>([]);
   const [selectionModel_INPUTSX, setSelectionModel_INPUTSX] = useState<any>([]);
   const [readyRender, setReadyRender] = useState(false);
   const userData: UserData | undefined = useSelector(
@@ -154,10 +146,9 @@ const PLAN_DATATB = () => {
     UPH4: 0,
     OLD_PLAN_QTY: 0,
   });
-/*   const [qlsxplandatafilter, setQlsxPlanDataFilter] = useState<
+  const [qlsxplandatafilter, setQlsxPlanDataFilter] = useState<
     Array<QLSXPLANDATA>
-  >([]); */
-  const qlsxplandatafilter = useRef<QLSXPLANDATA[]>([]);
+  >([]);
   const column_plandatatable = [
     {
       field: "PLAN_FACTORY",
@@ -477,7 +468,25 @@ const PLAN_DATATB = () => {
     { field: "STEP", headerName: "STEP", width: 60 },
     { field: "PLAN_ORDER", headerName: "PLAN_ORDER", width: 110 },
   ];
-
+  function CustomToolbarLICHSUINPUTSX() {
+    return (
+      <GridToolbarContainer>
+        <IconButton
+          className="buttonIcon"
+          onClick={() => {
+            SaveExcel(plandatatable, "PLAN Table");
+          }}
+        >
+          <AiFillFileExcel color="green" size={25} />
+          SAVE
+        </IconButton>
+        <GridToolbarQuickFilter />
+        <div className="div" style={{ fontSize: 20, fontWeight: "bold" }}>
+          BẢNG PLAN THEO NGÀY
+        </div>
+      </GridToolbarContainer>
+    );
+  }
   const loadQLSXPlan = (plan_date: string) => {
     //console.log(selectedPlanDate);
     generalQuery("getqlsxplan2", {
@@ -631,12 +640,12 @@ const PLAN_DATATB = () => {
       });
   };
   const handle_movePlan = async () => {
-    if (qlsxplandatafilter.current.length > 0) {
+    if (qlsxplandatafilter.length > 0) {
       let err_code: string = "0";
-      for (let i = 0; i < qlsxplandatafilter.current.length; i++) {
+      for (let i = 0; i < qlsxplandatafilter.length; i++) {
         let checkplansetting: boolean = false;
         await generalQuery("checkplansetting", {
-          PLAN_ID: qlsxplandatafilter.current.[i].PLAN_ID,
+          PLAN_ID: qlsxplandatafilter[i].PLAN_ID,
         })
           .then((response) => {
             //console.log(response.data);
@@ -651,7 +660,7 @@ const PLAN_DATATB = () => {
           });
         if (!checkplansetting) {
           generalQuery("move_plan", {
-            PLAN_ID: qlsxplandatafilter.current[i].PLAN_ID,
+            PLAN_ID: qlsxplandatafilter[i].PLAN_ID,
             PLAN_DATE: todate,
           })
             .then((response) => {
@@ -667,7 +676,7 @@ const PLAN_DATATB = () => {
         } else {
           err_code +=
             "Lỗi: PLAN_ID " +
-            qlsxplandatafilter.current[i].PLAN_ID +
+            qlsxplandatafilter[i].PLAN_ID +
             " đã setting nên không di chuyển được sang ngày khác, phải chốt";
         }
       }
@@ -702,127 +711,19 @@ const PLAN_DATATB = () => {
       }
     });
   };
-
-
-  const planDataTable = React.useMemo(
-    () => (
-      <div className='datatb'>
-        <CustomResponsiveContainer>
-          <DataGrid
-            autoNavigateToFocusedRow={true}
-            allowColumnReordering={true}
-            allowColumnResizing={true}
-            columnAutoWidth={false}
-            cellHintEnabled={true}
-            columnResizingMode={"widget"}
-            showColumnLines={true}
-            dataSource={plandatatable}
-            columnWidth='auto'
-            keyExpr='PO_ID'
-            height={"75vh"}
-            showBorders={true}
-            onSelectionChanged={(e) => {
-              qlsxplandatafilter.current = e.selectedRowsData;
-            }}
-            onRowClick={(e) => {
-              console.log(e.data);
-              clickedRow.current = e.data;
-            }}
-          >
-            <Scrolling
-              useNative={true}
-              scrollByContent={true}
-              scrollByThumb={true}
-              showScrollbar='onHover'
-              mode='virtual'
-            />
-            <Selection mode='multiple' selectAllMode='allPages' />
-            <Editing
-              allowUpdating={false}
-              allowAdding={true}
-              allowDeleting={false}
-              mode='batch'
-              confirmDelete={true}
-              onChangesChange={(e) => {}}
-            />
-            <Export enabled={true} />
-            <Toolbar disabled={false}>
-              <Item location='before'>
-               
-
-              </Item>
-              <Item name='searchPanel' />
-              <Item name='exportButton' />
-              <Item name='columnChooser' />
-            </Toolbar>
-            <FilterRow visible={true} />
-            <SearchPanel visible={true} />
-            <ColumnChooser enabled={true} />
-            <Paging defaultPageSize={15} />
-            <Pager
-              showPageSizeSelector={true}
-              allowedPageSizes={[5, 10, 15, 20, 100, 1000, 10000, "all"]}
-              showNavigationButtons={true}
-              showInfo={true}
-              infoText='Page #{0}. Total: {1} ({2} items)'
-              displayMode='compact'
-            />
-            {columns.map((column, index) => {
-              //console.log(column);
-              return <Column key={index} {...column}></Column>;
-            })}
-            <Summary>
-              <TotalItem
-                alignment='right'
-                column='PO_ID'
-                summaryType='count'
-                valueFormat={"decimal"}
-              />
-              <TotalItem
-                alignment='right'
-                column='PO_QTY'
-                summaryType='sum'
-                valueFormat={"thousands"}
-              />
-              <TotalItem
-                alignment='right'
-                column='TOTAL_DELIVERED'
-                summaryType='sum'
-                valueFormat={"thousands"}
-              />
-              <TotalItem
-                alignment='right'
-                column='PO_BALANCE'
-                summaryType='sum'
-                valueFormat={"thousands"}
-              />
-              <TotalItem
-                alignment='right'
-                column='PO_AMOUNT'
-                summaryType='sum'
-                valueFormat={"currency"}
-              />
-              <TotalItem
-                alignment='right'
-                column='DELIVERED_AMOUNT'
-                summaryType='sum'
-                valueFormat={"currency"}
-              />
-              <TotalItem
-                alignment='right'
-                column='BALANCE_AMOUNT'
-                summaryType='sum'
-                valueFormat={"currency"}
-              />
-            </Summary>
-          </DataGrid>
-        </CustomResponsiveContainer>
-      </div>
-    ),
-    [plandatatable, columns]
-  );
-
-
+  const handleQLSXPlanDataSelectionforUpdate = (ids: GridSelectionModel) => {
+    const selectedID = new Set(ids);
+    let datafilter = plandatatable.filter((element: any) =>
+      selectedID.has(element.PLAN_ID),
+    );
+    //console.log(datafilter);
+    if (datafilter.length > 0) {
+      setQlsxPlanDataFilter(datafilter);
+    } else {
+      setQlsxPlanDataFilter([]);
+      //console.log("xoa filter");
+    }
+  };
   useEffect(() => {
     getMachineList();
     //setColumnDefinition(column_inspect_output);
@@ -958,10 +859,44 @@ const PLAN_DATATB = () => {
               </tbody>
             </table>
           </div>
-          {planDataTable}
+          {readyRender && (
+            <DataGrid
+              sx={{ fontSize: 12, flex: 1 }}
+              components={{
+                Toolbar: CustomToolbarLICHSUINPUTSX,
+                LoadingOverlay: LinearProgress,
+              }}
+              loading={isLoading}
+              rowHeight={30}
+              rows={plandatatable}
+              columns={column_plandatatable}
+              rowsPerPageOptions={[
+                5, 10, 50, 100, 500, 1000, 5000, 10000, 500000,
+              ]}
+              disableSelectionOnClick
+              checkboxSelection
+              editMode="cell"
+              getRowId={(row) => row.PLAN_ID}
+              onSelectionModelChange={(ids) => {
+                handleQLSXPlanDataSelectionforUpdate(ids);
+              }}
+              onCellEditCommit={(
+                params: GridCellEditCommitParams,
+                event: MuiEvent<MuiBaseEvent>,
+                details: GridCallbackDetails,
+              ) => {
+                const keyvar = params.field;
+                const newdata = plandatatable.map((p) =>
+                  p.id === params.id ? { ...p, [keyvar]: params.value } : p,
+                );
+                setPlanDataTable(newdata);
+                //console.log(plandatatable);
+              }}
+            />
+          )}
         </div>
       </div>
     </div>
   );
 };
-export default PLAN_DATATB;
+export default PLAN_DATATB2;
