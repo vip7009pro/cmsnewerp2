@@ -34,6 +34,7 @@ import React, {
 } from "react";
 import {
   AiFillFileExcel,
+  AiFillSave,
   AiOutlineArrowRight,
   AiOutlineBarcode,
   AiOutlineCloudUpload,
@@ -1943,6 +1944,28 @@ const PLAN_DATATB = () => {
             <Export enabled={true} />
             <Toolbar disabled={false}>
               <Item location='before'>
+                <IconButton
+                  className='buttonIcon'
+                  onClick={() => {
+                    /* checkBP(
+              userData?.EMPL_NO,
+              userData?.MAINDEPTNAME,
+              ["QLSX"],
+              handle_UpdatePlan
+            ); */
+                    checkBP(
+                      userData,
+                      ["QLSX"],
+                      ["ALL"],
+                      ["ALL"],
+                      handle_UpdatePlan
+                    );
+                    //handle_UpdatePlan();
+                  }}
+                >
+                  <AiFillSave color='blue' size={20} />
+                  Lưu PLAN
+                </IconButton>
                 <IconButton
                   className='buttonIcon'
                   onClick={() => {
