@@ -1766,7 +1766,7 @@ const PLAN_DATATB = () => {
     let err_code: string = "0";
     for (let i = 0; i < qlsxplandatafilter.current.length; i++) {
       let check_NEXT_PLAN_ID: boolean = true;
-      
+
       let checkPlanIdP500: boolean = false;
       await generalQuery("checkP500PlanID_mobile", {
         PLAN_ID: qlsxplandatafilter.current[i].PLAN_ID,
@@ -1783,12 +1783,15 @@ const PLAN_DATATB = () => {
           console.log(error);
         });
       if (
-        parseInt(qlsxplandatafilter.current[i].PROCESS_NUMBER.toString()) >= 1 &&
-        parseInt(qlsxplandatafilter.current[i].PROCESS_NUMBER.toString()) <= 4 &&
+        parseInt(qlsxplandatafilter.current[i].PROCESS_NUMBER.toString()) >=
+          1 &&
+        parseInt(qlsxplandatafilter.current[i].PROCESS_NUMBER.toString()) <=
+          4 &&
         qlsxplandatafilter.current[i].PLAN_QTY !== 0 &&
         qlsxplandatafilter.current[i].PLAN_QTY <=
           qlsxplandatafilter.current[i].PROD_REQUEST_QTY &&
-        qlsxplandatafilter.current[i].PLAN_ID !== qlsxplandatafilter.current[i].NEXT_PLAN_ID &&
+        qlsxplandatafilter.current[i].PLAN_ID !==
+          qlsxplandatafilter.current[i].NEXT_PLAN_ID &&
         qlsxplandatafilter.current[i].CHOTBC !== "V" &&
         check_NEXT_PLAN_ID &&
         parseInt(qlsxplandatafilter.current[i].STEP.toString()) >= 0 &&
@@ -1833,19 +1836,23 @@ const PLAN_DATATB = () => {
         err_code += "_" + qlsxplandatafilter.current[i].G_NAME_KD + ":";
         if (
           !(
-            parseInt(qlsxplandatafilter.current[i].PROCESS_NUMBER.toString()) >= 1 &&
-            parseInt(qlsxplandatafilter.current[i].PROCESS_NUMBER.toString()) <= 4
+            parseInt(qlsxplandatafilter.current[i].PROCESS_NUMBER.toString()) >=
+              1 &&
+            parseInt(qlsxplandatafilter.current[i].PROCESS_NUMBER.toString()) <=
+              4
           )
         ) {
           err_code += "_: Process number chưa đúng";
         } else if (qlsxplandatafilter.current[i].PLAN_QTY === 0) {
           err_code += "_: Số lượng chỉ thị =0";
         } else if (
-          qlsxplandatafilter.current[i].PLAN_QTY > qlsxplandatafilter.current[i].PROD_REQUEST_QTY
+          qlsxplandatafilter.current[i].PLAN_QTY >
+          qlsxplandatafilter.current[i].PROD_REQUEST_QTY
         ) {
           err_code += "_: Số lượng chỉ thị lớn hơn số lượng yêu cầu sx";
         } else if (
-          qlsxplandatafilter.current[i].PLAN_ID === qlsxplandatafilter.current[i].NEXT_PLAN_ID
+          qlsxplandatafilter.current[i].PLAN_ID ===
+          qlsxplandatafilter.current[i].NEXT_PLAN_ID
         ) {
           err_code += "_: NEXT_PLAN_ID không được giống PLAN_ID hiện tại";
         } else if (!check_NEXT_PLAN_ID) {
@@ -1863,8 +1870,10 @@ const PLAN_DATATB = () => {
           err_code += "_: Hãy nhập STEP từ 0 -> 9";
         } else if (
           !(
-            parseInt(qlsxplandatafilter.current[i].PROCESS_NUMBER.toString()) >= 1 &&
-            parseInt(qlsxplandatafilter.current[i].PROCESS_NUMBER.toString()) <= 4
+            parseInt(qlsxplandatafilter.current[i].PROCESS_NUMBER.toString()) >=
+              1 &&
+            parseInt(qlsxplandatafilter.current[i].PROCESS_NUMBER.toString()) <=
+              4
           )
         ) {
           err_code += "_: Hãy nhập PROCESS NUMBER từ 1 đến 4";
@@ -2178,6 +2187,18 @@ const PLAN_DATATB = () => {
                 );
               }}
               allowEditing={false}
+            ></Column>
+            <Column
+              dataField='PROCESS_NUMBER'
+              caption='PROC_NUMBER'
+              width={100}
+              allowEditing={true}
+            ></Column>
+            <Column
+              dataField='STEP'
+              caption='STEP'
+              width={50}
+              allowEditing={true}
             ></Column>
             <Column
               dataField='PLAN_QTY'
@@ -2515,18 +2536,7 @@ const PLAN_DATATB = () => {
               }}
               allowEditing={false}
             ></Column>
-            <Column
-              dataField='PROCESS_NUMBER'
-              caption='PROC_NUMBER'
-              width={100}
-              allowEditing={true}
-            ></Column>
-            <Column
-              dataField='STEP'
-              caption='STEP'
-              width={50}
-              allowEditing={true}
-            ></Column>
+
             <Column
               dataField='PROD_REQUEST_NO'
               caption='YCSX NO'
