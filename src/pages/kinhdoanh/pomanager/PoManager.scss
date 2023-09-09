@@ -113,7 +113,16 @@
             width: 99%;
             height: 100%;
             padding: 5px;
+            .dx-datagrid-rowsview .dx-selection.dx-row:not(.dx-row-focused):not(.dx-row-removed) > td {
+              background-color: orange;
+              color: unset;
+          }
           
+          
+            .dx-datagrid-rowsview .dx-selection.dx-row:not(.dx-row-focused):not(.dx-row-removed) > td {
+              background-color: orange;
+              color: unset;
+          }
             .dx-datagrid-borders > .dx-datagrid-header-panel {
               border-bottom: 0;
               background-color: #b5f398;
@@ -330,6 +339,11 @@
             width: 99%;
             height: 100%;
             padding: 5px;
+            .dx-datagrid-rowsview .dx-selection.dx-row:not(.dx-row-focused):not(.dx-row-removed) > td {
+              background-color: orange;
+              color: unset;
+          }
+          
           
             .dx-datagrid-borders > .dx-datagrid-header-panel {
               border-bottom: 0;
@@ -872,6 +886,10 @@
             width: 99%;
             height: 100%;
             padding: 5px;
+            .dx-datagrid-rowsview .dx-selection.dx-row:not(.dx-row-focused):not(.dx-row-removed) > td {
+              background-color: orange;
+              color: unset;
+          }
           
             .dx-datagrid-borders > .dx-datagrid-header-panel {
               border-bottom: 0;

@@ -597,7 +597,7 @@ const CHITHI_COMPONENT2 = ({ PLAN_LIST }: PLAN_COMBO) => {
             <tbody>
               {PLAN_LIST.map((element: QLSXPLANDATA, index: number) => {
                 return (
-                  <tr>
+                  <tr key={index}>
                     <td style={{ height: "20px" }}>{element.PLAN_ID}</td>
                     <td style={{ height: "20px" }}>{element.STEP}</td>
                     <td></td>

@@ -21,6 +21,7 @@
           width: 99%;
           height: 83vh;
           padding: 5px;
+          
 
           .losstable {
             display: flex;
@@ -51,6 +52,10 @@
               text-align: center;
             }
           }
+          .dx-datagrid-rowsview .dx-selection.dx-row:not(.dx-row-focused):not(.dx-row-removed) > td {
+            background-color: orange;
+            color: unset;
+        }
 
           .dx-datagrid-borders > .dx-datagrid-header-panel {
             border-bottom: 0;
@@ -172,6 +177,10 @@
               }
             }
 
+            .dx-datagrid-rowsview .dx-selection.dx-row:not(.dx-row-focused):not(.dx-row-removed) > td {
+              background-color: orange;
+              color: unset;
+          }
             .dx-datagrid-borders > .dx-datagrid-header-panel {
               border-bottom: 0;
               background-color: #b5f398;
@@ -359,6 +368,10 @@
               }
             }
 
+            .dx-datagrid-rowsview .dx-selection.dx-row:not(.dx-row-focused):not(.dx-row-removed) > td {
+              background-color: orange;
+              color: unset;
+          }
             .dx-datagrid-borders > .dx-datagrid-header-panel {
               border-bottom: 0;
               background-color: #b5f398;

@@ -1764,6 +1764,8 @@ export interface QLSXPLANDATA {
   OLD_PLAN_QTY?: number;
   ACHIVEMENT_RATE?: number;
   PDBV?: string;
+  PD?: number;
+  CAVITY?: number;
 }
 export interface QLSXCHITHIDATA {
   id: string;

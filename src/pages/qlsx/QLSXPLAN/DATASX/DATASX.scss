@@ -233,6 +233,11 @@
         flex: 1;
         padding: 5px;
         height: fit-content;
+        .dx-datagrid-rowsview .dx-selection.dx-row:not(.dx-row-focused):not(.dx-row-removed) > td {
+          background-color: orange;
+          color: unset;
+      }
+      
         .dx-datagrid-borders > .dx-datagrid-header-panel {
           border-bottom: 0;
           background-color: #b5f398;

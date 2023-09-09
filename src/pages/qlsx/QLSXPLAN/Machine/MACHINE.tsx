@@ -88,6 +88,59 @@ import {
   YCSXTableData,
 } from "../../../../api/GlobalInterface";
 
+export const checkEQvsPROCESS = (
+  EQ1: string,
+  EQ2: string,
+  EQ3: string,
+  EQ4: string
+) => {
+  console.log(EQ1);
+  console.log(EQ2);
+  console.log(EQ3);
+  console.log(EQ4);
+  let maxprocess: number = 0;
+  if (["NA", "NO", "", null].indexOf(EQ1) === -1) maxprocess++;
+  if (["NA", "NO", "", null].indexOf(EQ2) === -1) maxprocess++;
+  if (["NA", "NO", "", null].indexOf(EQ3) === -1) maxprocess++;
+  if (["NA", "NO", "", null].indexOf(EQ4) === -1) maxprocess++;
+  return maxprocess;
+};
+
+
+export const renderChiThi = (planlist: QLSXPLANDATA[]) => {
+  return planlist.map((element, index) => (
+    <CHITHI_COMPONENT key={index} DATA={element} />
+  ));
+};
+
+
+export const renderChiThi2 = (planlist: QLSXPLANDATA[]) => {
+  //console.log(planlist);
+  return <CHITHI_COMPONENT2 PLAN_LIST={planlist} />;
+};
+export const renderYCSX = (ycsxlist: YCSXTableData[]) => {
+  return ycsxlist.map((element, index) => (
+    <YCSXComponent key={index} DATA={element} />
+  ));
+};
+export const renderBanVe = (ycsxlist: YCSXTableData[]) => {
+  return ycsxlist.map((element, index) =>
+    element.BANVE === "Y" ? (
+      <DrawComponent
+        key={index}
+        G_CODE={element.G_CODE}
+        PDBV={element.PDBV}
+        PROD_REQUEST_NO={element.PROD_REQUEST_NO}
+        PDBV_EMPL={element.PDBV_EMPL}
+        PDBV_DATE={element.PDBV_DATE}
+      />
+    ) : (
+      <div>Code: {element.G_NAME} : Không có bản vẽ</div>
+    )
+  );
+};
+
+
 const MACHINE = () => {
   const [isPending, startTransition] = useTransition();
   const chithiarray: QLSXPLANDATA[] | undefined = useSelector(
@@ -221,6 +274,9 @@ const MACHINE = () => {
   const [editplan, seteditplan] = useState(true);
   const [editchithi, seteditchithi] = useState(true);
   const ycsxprintref = useRef(null);
+  const handlePrint = useReactToPrint({
+    content: () => ycsxprintref.current,
+  });
   const [maxLieu, setMaxLieu] = useState(12);
   const [eq_series, setEQ_SERIES] = useState<string[]>([]);
   const checkMaxLieu = () => {
@@ -256,9 +312,7 @@ const MACHINE = () => {
         console.log(error);
       });
   };
-  const handlePrint = useReactToPrint({
-    content: () => ycsxprintref.current,
-  });
+
   const column_ycsxtable = [
     { field: "G_CODE", headerName: "G_CODE", width: 80 },
     {
@@ -659,7 +713,6 @@ const MACHINE = () => {
         return <span style={{ color: "green" }}>{params.row.G_NAME}</span>;
       },
     },
-
     {
       field: "YCSX_PENDING",
       headerName: "YCSX_PENDING",
@@ -1197,23 +1250,6 @@ const MACHINE = () => {
     { field: "EQUIPMENT_CD", headerName: "MAY", width: 40 },
     { field: "INS_DATE", headerName: "INS_DATE", width: 150 },
   ];
-  const checkEQvsPROCESS = (
-    EQ1: string,
-    EQ2: string,
-    EQ3: string,
-    EQ4: string
-  ) => {
-    console.log(EQ1);
-    console.log(EQ2);
-    console.log(EQ3);
-    console.log(EQ4);
-    let maxprocess: number = 0;
-    if (["NA", "NO", "", null].indexOf(EQ1) === -1) maxprocess++;
-    if (["NA", "NO", "", null].indexOf(EQ2) === -1) maxprocess++;
-    if (["NA", "NO", "", null].indexOf(EQ3) === -1) maxprocess++;
-    if (["NA", "NO", "", null].indexOf(EQ4) === -1) maxprocess++;
-    return maxprocess;
-  };
 
   const handle_loadEQ_STATUS = () => {
     generalQuery("checkEQ_STATUS", {})
@@ -1655,36 +1691,8 @@ const MACHINE = () => {
       <YCKT key={index} DATA={element} />
     ));
   };
-  const renderChiThi = (planlist: QLSXPLANDATA[]) => {
-    return planlist.map((element, index) => (
-      <CHITHI_COMPONENT key={index} DATA={element} />
-    ));
-  };
-  const renderChiThi2 = (planlist: QLSXPLANDATA[]) => {
-    //console.log(planlist);
-    return <CHITHI_COMPONENT2 PLAN_LIST={planlist} />;
-  };
-  const renderYCSX = (ycsxlist: YCSXTableData[]) => {
-    return ycsxlist.map((element, index) => (
-      <YCSXComponent key={index} DATA={element} />
-    ));
-  };
-  const renderBanVe = (ycsxlist: YCSXTableData[]) => {
-    return ycsxlist.map((element, index) =>
-      element.BANVE === "Y" ? (
-        <DrawComponent
-          key={index}
-          G_CODE={element.G_CODE}
-          PDBV={element.PDBV}
-          PROD_REQUEST_NO={element.PROD_REQUEST_NO}
-          PDBV_EMPL={element.PDBV_EMPL}
-          PDBV_DATE={element.PDBV_DATE}
-        />
-      ) : (
-        <div>Code: {element.G_NAME} : Không có bản vẽ</div>
-      )
-    );
-  };
+
+
   const loadQLSXPlan = (plan_date: string) => {
     //console.log(selectedPlanDate);
     generalQuery("getqlsxplan", { PLAN_DATE: plan_date })
@@ -1752,7 +1760,6 @@ const MACHINE = () => {
             response.data.data[0].LOSS_SETTING2 === null
               ? 0
               : response.data.data[0].LOSS_SETTING2;
-
           FINAL_LOSS_SX = PROCESS_NUMBER === 1 ? LOSS_SX1 : LOSS_SX2;
           if (PROCESS_NUMBER === 1) {
             FINAL_LOSS_SX =
@@ -1775,7 +1782,6 @@ const MACHINE = () => {
                 ? 0
                 : response.data.data[0].LOSS_SX4;
           }
-
           FINAL_LOSS_SETTING =
             PROCESS_NUMBER === 1
               ? calc_loss_setting
@@ -1784,7 +1790,6 @@ const MACHINE = () => {
               : calc_loss_setting
               ? LOSS_SETTING2
               : 0;
-
           if (PROCESS_NUMBER === 1) {
             FINAL_LOSS_SETTING = calc_loss_setting
               ? response.data.data[0].LOSS_SETTING1 === null
@@ -1810,7 +1815,6 @@ const MACHINE = () => {
                 : response.data.data[0].LOSS_SETTING4
               : 0;
           }
-
           //console.log(LOSS_SX1)
           //console.log(LOSS_SETTING1)
         } else {
@@ -3122,7 +3126,7 @@ const MACHINE = () => {
         <IconButton
           className='buttonIcon'
           onClick={() => {
-            SaveExcel(ycsxdatatable, "YCSX Table");
+            
           }}
         >
           <AiFillFileExcel color='green' size={25} />
@@ -4477,7 +4481,6 @@ const MACHINE = () => {
               </>
             );
           })}
-
           {/* <span className='machine_title'>FR-NM2</span>
           <div className='FRlist'>
             {eq_status
@@ -4837,7 +4840,6 @@ const MACHINE = () => {
                           ? { ...p, [keyvar]: params.value }
                           : p
                       );
-
                       setPlanDataTable(newdata);
                       setQlsxPlanDataFilter([]);
                       //console.log(plandatatable);
