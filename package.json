@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@emotion/react": "^11.9.3",
+    "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.9.3",
     "@mikecousins/react-pdf": "^5.5.1",
     "@mui/icons-material": "^5.8.4",
@@ -11,8 +11,6 @@
     "@mui/x-data-grid": "^5.17.10",
     "@react-spring/web": "^9.5.5",
     "@reduxjs/toolkit": "^1.8.6",
-    "@tanstack/react-table": "^8.5.10",
-    "@trendmicro/react-sidenav": "^0.5.0",
     "@types/jest": "^27.5.2",
     "@types/react": "^18.0.15",
     "@types/react-dom": "^18.0.6",
