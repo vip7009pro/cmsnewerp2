@@ -6,7 +6,6 @@ import {
 } from "@mui/material";
 import {
   DataGrid,
-  GridSelectionModel,
   GridToolbarContainer,
   GridToolbarDensitySelector,
   GridToolbarFilterButton,
@@ -52,7 +51,7 @@ const KQDTC = () => {
   const [alltime, setAllTime] = useState(false);
   const [id, setID] = useState("");
   const [inspectiondatatable, setInspectionDataTable] = useState<Array<any>>(
-    [],
+    []
   );
   const [sumaryINSPECT, setSummaryInspect] = useState("");
   const [m_name, setM_Name] = useState("");
@@ -184,12 +183,12 @@ const KQDTC = () => {
     return (
       <GridToolbarContainer>
         <IconButton
-          className="buttonIcon"
+          className='buttonIcon'
           onClick={() => {
             SaveExcel(inspectiondatatable, "Inspection Data Table");
           }}
         >
-          <AiFillFileExcel color="green" size={15} />
+          <AiFillFileExcel color='green' size={15} />
           SAVE
         </IconButton>
         <span
@@ -207,7 +206,7 @@ const KQDTC = () => {
     );
   }
   const handleSearchCodeKeyDown = (
-    e: React.KeyboardEvent<HTMLInputElement>,
+    e: React.KeyboardEvent<HTMLInputElement>
   ) => {
     if (e.key === "Enter") {
       handletraDTCData();
@@ -245,7 +244,7 @@ const KQDTC = () => {
                   .format("YYYY-MM-DD HH:mm:ss"),
                 id: index,
               };
-            },
+            }
           );
           setInspectionDataTable(loadeddata);
           setReadyRender(true);
@@ -253,7 +252,7 @@ const KQDTC = () => {
           Swal.fire(
             "Thông báo",
             "Đã load " + response.data.data.length + " dòng",
-            "success",
+            "success"
           );
         } else {
           Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
@@ -268,18 +267,18 @@ const KQDTC = () => {
     //setColumnDefinition(column_inspect_output);
   }, []);
   return (
-    <div className="kqdtc">
-      <div className="tracuuDataInspection">
-        <div className="tracuuDataInspectionform">
-          <div className="forminput">
-            <div className="forminputcolumn">
+    <div className='kqdtc'>
+      <div className='tracuuDataInspection'>
+        <div className='tracuuDataInspectionform'>
+          <div className='forminput'>
+            <div className='forminputcolumn'>
               <label>
                 <b>Từ ngày:</b>
                 <input
                   onKeyDown={(e) => {
                     handleSearchCodeKeyDown(e);
                   }}
-                  type="date"
+                  type='date'
                   value={fromdate.slice(0, 10)}
                   onChange={(e) => setFromDate(e.target.value)}
                 ></input>
@@ -290,21 +289,21 @@ const KQDTC = () => {
                   onKeyDown={(e) => {
                     handleSearchCodeKeyDown(e);
                   }}
-                  type="date"
+                  type='date'
                   value={todate.slice(0, 10)}
                   onChange={(e) => setToDate(e.target.value)}
                 ></input>
               </label>
             </div>
-            <div className="forminputcolumn">
+            <div className='forminputcolumn'>
               <label>
                 <b>Code KD:</b>{" "}
                 <input
                   onKeyDown={(e) => {
                     handleSearchCodeKeyDown(e);
                   }}
-                  type="text"
-                  placeholder="GH63-xxxxxx"
+                  type='text'
+                  placeholder='GH63-xxxxxx'
                   value={codeKD}
                   onChange={(e) => setCodeKD(e.target.value)}
                 ></input>
@@ -315,22 +314,22 @@ const KQDTC = () => {
                   onKeyDown={(e) => {
                     handleSearchCodeKeyDown(e);
                   }}
-                  type="text"
-                  placeholder="7C123xxx"
+                  type='text'
+                  placeholder='7C123xxx'
                   value={codeCMS}
                   onChange={(e) => setCodeCMS(e.target.value)}
                 ></input>
               </label>
             </div>
-            <div className="forminputcolumn">
+            <div className='forminputcolumn'>
               <label>
                 <b>Tên Liệu:</b>{" "}
                 <input
                   onKeyDown={(e) => {
                     handleSearchCodeKeyDown(e);
                   }}
-                  type="text"
-                  placeholder="SJ-203020HC"
+                  type='text'
+                  placeholder='SJ-203020HC'
                   value={m_name}
                   onChange={(e) => setM_Name(e.target.value)}
                 ></input>
@@ -341,42 +340,42 @@ const KQDTC = () => {
                   onKeyDown={(e) => {
                     handleSearchCodeKeyDown(e);
                   }}
-                  type="text"
-                  placeholder="A123456"
+                  type='text'
+                  placeholder='A123456'
                   value={m_code}
                   onChange={(e) => setM_Code(e.target.value)}
                 ></input>
               </label>
             </div>
-            <div className="forminputcolumn">
+            <div className='forminputcolumn'>
               <label>
                 <b>Hạng mục test</b>
                 <select
-                  name="hangmuctest"
+                  name='hangmuctest'
                   value={testname}
                   onChange={(e) => {
                     setTestName(e.target.value);
                   }}
                 >
-                  <option value="0">ALL</option>
-                  <option value="1">Kích thước</option>
-                  <option value="2">Kéo keo</option>
-                  <option value="3">XRF</option>
-                  <option value="4">Điện trở</option>
-                  <option value="5">Tĩnh điện</option>
-                  <option value="6">Độ bóng</option>
-                  <option value="7">Phtalate</option>
-                  <option value="8">FTIR</option>
-                  <option value="9">Mài mòn</option>
-                  <option value="10">Màu sắc</option>
-                  <option value="11">TVOC</option>
-                  <option value="12">Cân nặng</option>
-                  <option value="13">Scanbarcode</option>
-                  <option value="14">Nhiệt cao Ẩm cao</option>
-                  <option value="15">Shock nhiệt</option>
-                  <option value="1002">Kéo keo 2</option>
-                  <option value="1003">Ngoại quan</option>
-                  <option value="1005">Độ dày</option>
+                  <option value='0'>ALL</option>
+                  <option value='1'>Kích thước</option>
+                  <option value='2'>Kéo keo</option>
+                  <option value='3'>XRF</option>
+                  <option value='4'>Điện trở</option>
+                  <option value='5'>Tĩnh điện</option>
+                  <option value='6'>Độ bóng</option>
+                  <option value='7'>Phtalate</option>
+                  <option value='8'>FTIR</option>
+                  <option value='9'>Mài mòn</option>
+                  <option value='10'>Màu sắc</option>
+                  <option value='11'>TVOC</option>
+                  <option value='12'>Cân nặng</option>
+                  <option value='13'>Scanbarcode</option>
+                  <option value='14'>Nhiệt cao Ẩm cao</option>
+                  <option value='15'>Shock nhiệt</option>
+                  <option value='1002'>Kéo keo 2</option>
+                  <option value='1003'>Ngoại quan</option>
+                  <option value='1005'>Độ dày</option>
                 </select>
               </label>
               <label>
@@ -385,28 +384,28 @@ const KQDTC = () => {
                   onKeyDown={(e) => {
                     handleSearchCodeKeyDown(e);
                   }}
-                  type="text"
-                  placeholder="1H23456"
+                  type='text'
+                  placeholder='1H23456'
                   value={prodrequestno}
                   onChange={(e) => setProdRequestNo(e.target.value)}
                 ></input>
               </label>
             </div>
-            <div className="forminputcolumn">
+            <div className='forminputcolumn'>
               <label>
                 <b>Phân loại test</b>
                 <select
-                  name="phanloaihang"
+                  name='phanloaihang'
                   value={testtype}
                   onChange={(e) => {
                     setTestType(e.target.value);
                   }}
                 >
-                  <option value="0">ALL</option>
-                  <option value="1">FIRST_LOT</option>
-                  <option value="2">ECN</option>
-                  <option value="3">MASS PRODUCTION</option>
-                  <option value="4">SAMPLE</option>
+                  <option value='0'>ALL</option>
+                  <option value='1'>FIRST_LOT</option>
+                  <option value='2'>ECN</option>
+                  <option value='3'>MASS PRODUCTION</option>
+                  <option value='4'>SAMPLE</option>
                 </select>
               </label>
               <label>
@@ -415,29 +414,29 @@ const KQDTC = () => {
                   onKeyDown={(e) => {
                     handleSearchCodeKeyDown(e);
                   }}
-                  type="text"
-                  placeholder="12345"
+                  type='text'
+                  placeholder='12345'
                   value={id}
                   onChange={(e) => setID(e.target.value)}
                 ></input>
               </label>
             </div>
           </div>
-          <div className="formbutton">
+          <div className='formbutton'>
             <label>
               <b>All Time:</b>
               <input
                 onKeyDown={(e) => {
                   handleSearchCodeKeyDown(e);
                 }}
-                type="checkbox"
-                name="alltimecheckbox"
+                type='checkbox'
+                name='alltimecheckbox'
                 defaultChecked={alltime}
                 onChange={() => setAllTime(!alltime)}
               ></input>
             </label>
             <button
-              className="tranhatky"
+              className='tranhatky'
               onClick={() => {
                 setisLoading(true);
                 setReadyRender(false);
@@ -449,7 +448,7 @@ const KQDTC = () => {
             </button>
           </div>
         </div>
-        <div className="tracuuYCSXTable">
+        <div className='tracuuYCSXTable'>
           {readyRender && (
             <DataGrid
               sx={{ fontSize: "0.7rem", flex: 1 }}
@@ -464,7 +463,7 @@ const KQDTC = () => {
               rowsPerPageOptions={[
                 5, 10, 50, 100, 500, 1000, 5000, 10000, 500000,
               ]}
-              editMode="row"
+              editMode='row'
             />
           )}
         </div>

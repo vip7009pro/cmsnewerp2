@@ -1,18 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import Swal from "sweetalert2";
-import {
-  EditingState,
-  FilteringState,
-  IntegratedFiltering,
-  IntegratedPaging,
-  IntegratedSelection,
-  IntegratedSorting,
-  PagingState,
-  SearchState,
-  SelectionState,
-  SortingState,
-  TableRowDetail,
-} from "@devexpress/dx-react-grid";
+
 import { generalQuery } from "../../../../api/Api";
 import moment from "moment";
 import {
@@ -46,7 +34,7 @@ const CAPASX = () => {
   const [selectedFactory, setSelectedFactory] = useState("NM1");
   const [selectedMachine, setSelectedMachine] = useState("FR");
   const [selectedPlanDate, setSelectedPlanDate] = useState(
-    moment.utc().format("YYYY-MM-DD"),
+    moment.utc().format("YYYY-MM-DD")
   );
   const [eq_status, setEQ_STATUS] = useState<EQ_STT[]>([]);
   const [datadiemdanh, setDataDiemDanh] = useState<DATA_DIEM_DANH[]>([]);
@@ -89,7 +77,7 @@ const CAPASX = () => {
   const getDeliveryLeadTime = async (
     factory: string,
     eq: string,
-    plan_date: string,
+    plan_date: string
   ) => {
     let eq_data: EQ_STT[] = [];
     await generalQuery("checkEQ_STATUS", {})
@@ -108,50 +96,50 @@ const CAPASX = () => {
       (e: EQ_STT, index: number) =>
         e?.EQ_NAME?.substring(0, 2) === "FR" &&
         e.FACTORY === "NM1" &&
-        e.EQ_ACTIVE === "OK",
+        e.EQ_ACTIVE === "OK"
     ).length;
     const SRNM1: number = eq_data.filter(
       (e: EQ_STT, index: number) =>
         e?.EQ_NAME?.substring(0, 2) === "SR" &&
         e.FACTORY === "NM1" &&
-        e.EQ_ACTIVE === "OK",
+        e.EQ_ACTIVE === "OK"
     ).length;
     const DCNM1: number = eq_data.filter(
       (e: EQ_STT, index: number) =>
         e?.EQ_NAME?.substring(0, 2) === "DC" &&
         e.FACTORY === "NM1" &&
-        e.EQ_ACTIVE === "OK",
+        e.EQ_ACTIVE === "OK"
     ).length;
     const EDNM1: number = eq_data.filter(
       (e: EQ_STT, index: number) =>
         e?.EQ_NAME?.substring(0, 2) === "ED" &&
         e.FACTORY === "NM1" &&
-        e.EQ_ACTIVE === "OK",
+        e.EQ_ACTIVE === "OK"
     ).length;
 
     const FRNM2: number = eq_data.filter(
       (e: EQ_STT, index: number) =>
         e?.EQ_NAME?.substring(0, 2) === "FR" &&
         e.FACTORY === "NM2" &&
-        e.EQ_ACTIVE === "OK",
+        e.EQ_ACTIVE === "OK"
     ).length;
     const SRNM2: number = eq_data.filter(
       (e: EQ_STT, index: number) =>
         e?.EQ_NAME?.substring(0, 2) === "SR" &&
         e.FACTORY === "NM2" &&
-        e.EQ_ACTIVE === "OK",
+        e.EQ_ACTIVE === "OK"
     ).length;
     const DCNM2: number = eq_data.filter(
       (e: EQ_STT, index: number) =>
         e?.EQ_NAME?.substring(0, 2) === "DC" &&
         e.FACTORY === "NM2" &&
-        e.EQ_ACTIVE === "OK",
+        e.EQ_ACTIVE === "OK"
     ).length;
     const EDNM2: number = eq_data.filter(
       (e: EQ_STT, index: number) =>
         e?.EQ_NAME?.substring(0, 2) === "ED" &&
         e.FACTORY === "NM2" &&
-        e.EQ_ACTIVE === "OK",
+        e.EQ_ACTIVE === "OK"
     ).length;
     const eq_sttdata = {
       FR1: FRNM1,
@@ -207,7 +195,7 @@ const CAPASX = () => {
                   .utc()
                   .format("YYYY-MM-DD"),
               };
-            },
+            }
           );
           setDataDiemDanh(loaded_data);
           ED_EMPL = {
@@ -297,17 +285,17 @@ const CAPASX = () => {
                   element.FACTORY,
                   element.EQ,
                   eq_sttdata,
-                  empl_info,
+                  empl_info
                 ),
                 REAL_CAPA: STD_CAPA_8(
                   element.FACTORY,
                   element.EQ,
                   eq_sttdata,
-                  empl_info,
+                  empl_info
                 ),
                 /* REAL_CAPA:  REL_CAPA(element.FACTORY, element.EQ, eq_sttdata,empl_info), */
               };
-            },
+            }
           );
           //console.log(loaded_data);
           setDlLeadTime(loaded_data);
@@ -337,7 +325,7 @@ const CAPASX = () => {
                   .utc()
                   .format("YYYY-MM-DD"),
               };
-            },
+            }
           );
           setDataDiemDanh(loaded_data);
           setED_EMPL({
@@ -439,7 +427,7 @@ const CAPASX = () => {
                 ...element,
                 id: index,
               };
-            },
+            }
           );
           setMachineCount(loaded_data);
         } else {
@@ -461,7 +449,7 @@ const CAPASX = () => {
                 ...element,
                 id: index,
               };
-            },
+            }
           );
           setYCSXBALANCE(loaded_data);
         } else {
@@ -475,7 +463,7 @@ const CAPASX = () => {
   function customizeTooltip(pointInfo: any) {
     return {
       text: `${pointInfo.argumentText}<br/>${Number(
-        pointInfo.valueText,
+        pointInfo.valueText
       ).toLocaleString("en-US", { maximumFractionDigits: 1 })} days`,
     };
   }
@@ -484,7 +472,7 @@ const CAPASX = () => {
       EQ_NAME: "FR",
       WF_FOR_FULL_CAPA:
         machinecount.filter(
-          (ele: MACHINE_COUNTING, index: number) => ele.EQ_NAME === "FR",
+          (ele: MACHINE_COUNTING, index: number) => ele.EQ_NAME === "FR"
         )[0]?.EQ_QTY *
         2 *
         2,
@@ -495,7 +483,7 @@ const CAPASX = () => {
       EQ_NAME: "SR",
       WF_FOR_FULL_CAPA:
         machinecount.filter(
-          (ele: MACHINE_COUNTING, index: number) => ele.EQ_NAME === "SR",
+          (ele: MACHINE_COUNTING, index: number) => ele.EQ_NAME === "SR"
         )[0]?.EQ_QTY *
         2 *
         2,
@@ -506,7 +494,7 @@ const CAPASX = () => {
       EQ_NAME: "DC",
       WF_FOR_FULL_CAPA:
         machinecount.filter(
-          (ele: MACHINE_COUNTING, index: number) => ele.EQ_NAME === "DC",
+          (ele: MACHINE_COUNTING, index: number) => ele.EQ_NAME === "DC"
         )[0]?.EQ_QTY *
         2 *
         1,
@@ -517,7 +505,7 @@ const CAPASX = () => {
       EQ_NAME: "ED",
       WF_FOR_FULL_CAPA:
         machinecount.filter(
-          (ele: MACHINE_COUNTING, index: number) => ele.EQ_NAME === "ED",
+          (ele: MACHINE_COUNTING, index: number) => ele.EQ_NAME === "ED"
         )[0]?.EQ_QTY *
         2 *
         1,
@@ -530,114 +518,114 @@ const CAPASX = () => {
       EQ_NAME: "ED",
       EQ_LEADTIME:
         ycsxbalance.filter(
-          (ele: YCSX_BALANCE_CAPA_DATA, index: number) => ele.EQ_NAME === "ED",
+          (ele: YCSX_BALANCE_CAPA_DATA, index: number) => ele.EQ_NAME === "ED"
         )[0]?.YCSX_BALANCE /
         Math.min(
           ((ED_EMPL.NM1 + ED_EMPL.NM2) / 2) * dailytime,
           machinecount.filter(
-            (ele: MACHINE_COUNTING, index: number) => ele.EQ_NAME === "ED",
-          )[0]?.EQ_QTY * dailytime,
+            (ele: MACHINE_COUNTING, index: number) => ele.EQ_NAME === "ED"
+          )[0]?.EQ_QTY * dailytime
         ),
       EQ_AVL_LEADTIME:
         ycsxbalance.filter(
-          (ele: YCSX_BALANCE_CAPA_DATA, index: number) => ele.EQ_NAME === "ED",
+          (ele: YCSX_BALANCE_CAPA_DATA, index: number) => ele.EQ_NAME === "ED"
         )[0]?.YCSX_BALANCE /
         Math.min(
           ((ED_EMPL.TNM1 + ED_EMPL.TNM2) / 2) * dailytime,
           machinecount.filter(
-            (ele: MACHINE_COUNTING, index: number) => ele.EQ_NAME === "ED",
-          )[0]?.EQ_QTY * dailytime,
+            (ele: MACHINE_COUNTING, index: number) => ele.EQ_NAME === "ED"
+          )[0]?.EQ_QTY * dailytime
         ),
     },
     {
       EQ_NAME: "DC",
       EQ_LEADTIME:
         ycsxbalance.filter(
-          (ele: YCSX_BALANCE_CAPA_DATA, index: number) => ele.EQ_NAME === "DC",
+          (ele: YCSX_BALANCE_CAPA_DATA, index: number) => ele.EQ_NAME === "DC"
         )[0]?.YCSX_BALANCE /
         Math.min(
           ((DC_EMPL.NM1 + DC_EMPL.NM2) / 2) * dailytime,
           machinecount.filter(
-            (ele: MACHINE_COUNTING, index: number) => ele.EQ_NAME === "DC",
-          )[0]?.EQ_QTY * dailytime,
+            (ele: MACHINE_COUNTING, index: number) => ele.EQ_NAME === "DC"
+          )[0]?.EQ_QTY * dailytime
         ),
       EQ_AVL_LEADTIME:
         ycsxbalance.filter(
-          (ele: YCSX_BALANCE_CAPA_DATA, index: number) => ele.EQ_NAME === "DC",
+          (ele: YCSX_BALANCE_CAPA_DATA, index: number) => ele.EQ_NAME === "DC"
         )[0]?.YCSX_BALANCE /
         Math.min(
           ((DC_EMPL.TNM1 + DC_EMPL.TNM2) / 2) * dailytime,
           machinecount.filter(
-            (ele: MACHINE_COUNTING, index: number) => ele.EQ_NAME === "DC",
-          )[0]?.EQ_QTY * dailytime,
+            (ele: MACHINE_COUNTING, index: number) => ele.EQ_NAME === "DC"
+          )[0]?.EQ_QTY * dailytime
         ),
     },
     {
       EQ_NAME: "SR",
       EQ_LEADTIME:
         ycsxbalance.filter(
-          (ele: YCSX_BALANCE_CAPA_DATA, index: number) => ele.EQ_NAME === "SR",
+          (ele: YCSX_BALANCE_CAPA_DATA, index: number) => ele.EQ_NAME === "SR"
         )[0]?.YCSX_BALANCE /
         Math.min(
           ((SR_EMPL.NM1 + SR_EMPL.NM2) / 4) * dailytime,
           machinecount.filter(
-            (ele: MACHINE_COUNTING, index: number) => ele.EQ_NAME === "SR",
-          )[0]?.EQ_QTY * dailytime,
+            (ele: MACHINE_COUNTING, index: number) => ele.EQ_NAME === "SR"
+          )[0]?.EQ_QTY * dailytime
         ),
       EQ_AVL_LEADTIME:
         ycsxbalance.filter(
-          (ele: YCSX_BALANCE_CAPA_DATA, index: number) => ele.EQ_NAME === "SR",
+          (ele: YCSX_BALANCE_CAPA_DATA, index: number) => ele.EQ_NAME === "SR"
         )[0]?.YCSX_BALANCE /
         Math.min(
           ((SR_EMPL.TNM1 + SR_EMPL.TNM2) / 4) * dailytime,
           machinecount.filter(
-            (ele: MACHINE_COUNTING, index: number) => ele.EQ_NAME === "SR",
-          )[0]?.EQ_QTY * dailytime,
+            (ele: MACHINE_COUNTING, index: number) => ele.EQ_NAME === "SR"
+          )[0]?.EQ_QTY * dailytime
         ),
     },
     {
       EQ_NAME: "FR",
       EQ_LEADTIME:
         ycsxbalance.filter(
-          (ele: YCSX_BALANCE_CAPA_DATA, index: number) => ele.EQ_NAME === "FR",
+          (ele: YCSX_BALANCE_CAPA_DATA, index: number) => ele.EQ_NAME === "FR"
         )[0]?.YCSX_BALANCE /
         Math.min(
           ((FR_EMPL.NM1 + FR_EMPL.NM2) / 4) * dailytime,
           machinecount.filter(
-            (ele: MACHINE_COUNTING, index: number) => ele.EQ_NAME === "FR",
-          )[0]?.EQ_QTY * dailytime,
+            (ele: MACHINE_COUNTING, index: number) => ele.EQ_NAME === "FR"
+          )[0]?.EQ_QTY * dailytime
         ),
       EQ_AVL_LEADTIME:
         ycsxbalance.filter(
-          (ele: YCSX_BALANCE_CAPA_DATA, index: number) => ele.EQ_NAME === "FR",
+          (ele: YCSX_BALANCE_CAPA_DATA, index: number) => ele.EQ_NAME === "FR"
         )[0]?.YCSX_BALANCE /
         Math.min(
           ((FR_EMPL.TNM1 + FR_EMPL.TNM2) / 4) * dailytime,
           machinecount.filter(
-            (ele: MACHINE_COUNTING, index: number) => ele.EQ_NAME === "FR",
-          )[0]?.EQ_QTY * dailytime,
+            (ele: MACHINE_COUNTING, index: number) => ele.EQ_NAME === "FR"
+          )[0]?.EQ_QTY * dailytime
         ),
     },
   ];
   const getTotalEMPL = () => {
     return (
       machinecount.filter(
-        (ele: MACHINE_COUNTING, index: number) => ele.EQ_NAME === "FR",
+        (ele: MACHINE_COUNTING, index: number) => ele.EQ_NAME === "FR"
       )[0]?.EQ_QTY *
         2 *
         2 +
       machinecount.filter(
-        (ele: MACHINE_COUNTING, index: number) => ele.EQ_NAME === "SR",
+        (ele: MACHINE_COUNTING, index: number) => ele.EQ_NAME === "SR"
       )[0]?.EQ_QTY *
         2 *
         2 +
       machinecount.filter(
-        (ele: MACHINE_COUNTING, index: number) => ele.EQ_NAME === "DC",
+        (ele: MACHINE_COUNTING, index: number) => ele.EQ_NAME === "DC"
       )[0]?.EQ_QTY *
         2 *
         1 +
       machinecount.filter(
-        (ele: MACHINE_COUNTING, index: number) => ele.EQ_NAME === "ED",
+        (ele: MACHINE_COUNTING, index: number) => ele.EQ_NAME === "ED"
       )[0]?.EQ_QTY *
         2 *
         1
@@ -651,7 +639,7 @@ const CAPASX = () => {
         e.WORK_POSITION_NAME === "SX_ED1" ||
         e.WORK_POSITION_NAME === "SX_FR1" ||
         e.WORK_POSITION_NAME === "SX_ED3" ||
-        e.WORK_POSITION_NAME === "SX_FR3",
+        e.WORK_POSITION_NAME === "SX_FR3"
     ).length;
   };
   const getRealTimeEMPL = () => {
@@ -663,27 +651,27 @@ const CAPASX = () => {
           e.WORK_POSITION_NAME === "SX_FR1" ||
           e.WORK_POSITION_NAME === "SX_ED3" ||
           e.WORK_POSITION_NAME === "SX_FR3") &&
-        e.ON_OFF === 1,
+        e.ON_OFF === 1
     ).length;
   };
   const getFRTotal = () => {
     return machinecount.filter(
-      (ele: MACHINE_COUNTING, index: number) => ele.EQ_NAME === "FR",
+      (ele: MACHINE_COUNTING, index: number) => ele.EQ_NAME === "FR"
     )[0]?.EQ_QTY;
   };
   const getSRTotal = () => {
     return machinecount.filter(
-      (ele: MACHINE_COUNTING, index: number) => ele.EQ_NAME === "SR",
+      (ele: MACHINE_COUNTING, index: number) => ele.EQ_NAME === "SR"
     )[0]?.EQ_QTY;
   };
   const getDCTotal = () => {
     return machinecount.filter(
-      (ele: MACHINE_COUNTING, index: number) => ele.EQ_NAME === "DC",
+      (ele: MACHINE_COUNTING, index: number) => ele.EQ_NAME === "DC"
     )[0]?.EQ_QTY;
   };
   const getEDTotal = () => {
     return machinecount.filter(
-      (ele: MACHINE_COUNTING, index: number) => ele.EQ_NAME === "ED",
+      (ele: MACHINE_COUNTING, index: number) => ele.EQ_NAME === "ED"
     )[0]?.EQ_QTY;
   };
   const handle_loadEQ_STATUS = () => {
@@ -697,7 +685,7 @@ const CAPASX = () => {
                 ...element,
                 id: index,
               };
-            },
+            }
           );
           //console.log(loaded_data);
           setEQ_STATUS(loaded_data);
@@ -721,35 +709,35 @@ const CAPASX = () => {
     return eq_status.filter(
       (element: EQ_STT, index: number) =>
         element?.EQ_NAME?.substring(0, 2) === "FR" &&
-        (element.EQ_STATUS === "MASS" || element.EQ_STATUS === "SETTING"),
+        (element.EQ_STATUS === "MASS" || element.EQ_STATUS === "SETTING")
     ).length;
   };
   const getrunningSR = () => {
     return eq_status.filter(
       (element: EQ_STT, index: number) =>
         element?.EQ_NAME?.substring(0, 2) === "SR" &&
-        (element.EQ_STATUS === "MASS" || element.EQ_STATUS === "SETTING"),
+        (element.EQ_STATUS === "MASS" || element.EQ_STATUS === "SETTING")
     ).length;
   };
   const getrunningDC = () => {
     return eq_status.filter(
       (element: EQ_STT, index: number) =>
         element?.EQ_NAME?.substring(0, 2) === "DC" &&
-        (element.EQ_STATUS === "MASS" || element.EQ_STATUS === "SETTING"),
+        (element.EQ_STATUS === "MASS" || element.EQ_STATUS === "SETTING")
     ).length;
   };
   const getrunningED = () => {
     return eq_status.filter(
       (element: EQ_STT, index: number) =>
         element?.EQ_NAME?.substring(0, 2) === "ED" &&
-        element.EQ_STATUS === "MASS",
+        element.EQ_STATUS === "MASS"
     ).length;
   };
   const STD_CAPA = (
     FACTORY: string,
     EQ: string,
     EQ_STTDATA: any,
-    EMPL_INFO: any,
+    EMPL_INFO: any
   ) => {
     const FRNM1: number = EQ_STTDATA.FR1;
     const SRNM1: number = EQ_STTDATA.SR1;
@@ -792,7 +780,7 @@ const CAPASX = () => {
     FACTORY: string,
     EQ: string,
     EQ_STTDATA: any,
-    EMPL_INFO: any,
+    EMPL_INFO: any
   ) => {
     const FRNM1: number = EQ_STTDATA.FR1;
     const SRNM1: number = EQ_STTDATA.SR1;
@@ -835,7 +823,7 @@ const CAPASX = () => {
     FACTORY: string,
     EQ: string,
     EQ_STTDATA: any,
-    EMPL_INFO: any,
+    EMPL_INFO: any
   ) => {
     const FRNM1: number = EQ_STTDATA.FR1;
     const SRNM1: number = EQ_STTDATA.SR1;
@@ -877,44 +865,44 @@ const CAPASX = () => {
   const workforcechartMM = useMemo(() => {
     return (
       <Chart
-        id="workforcechart"
-        title="WORKFORCE STATUS"
+        id='workforcechart'
+        title='WORKFORCE STATUS'
         dataSource={dataSource_eq}
         width={700}
       >
-        <ArgumentAxis title="MACHINE NAME" />
-        <ValueAxis title="Workforce (人)" />
+        <ArgumentAxis title='MACHINE NAME' />
+        <ValueAxis title='Workforce (人)' />
         <CommonSeriesSettings
-          argumentField="EQ_NAME"
-          type="bar"
-          hoverMode="allArgumentPoints"
-          selectionMode="allArgumentPoints"
+          argumentField='EQ_NAME'
+          type='bar'
+          hoverMode='allArgumentPoints'
+          selectionMode='allArgumentPoints'
         >
           <Label visible={true}>
-            <Format type="fixedPoint" precision={0} />
+            <Format type='fixedPoint' precision={0} />
           </Label>
         </CommonSeriesSettings>
         <Series
-          argumentField="EQ_NAME"
-          valueField="WF_FOR_FULL_CAPA"
-          name="WF_FOR_FULL_CAPA"
-          color="#DE14FE"
+          argumentField='EQ_NAME'
+          valueField='WF_FOR_FULL_CAPA'
+          name='WF_FOR_FULL_CAPA'
+          color='#DE14FE'
         />
         <Series
-          argumentField="EQ_NAME"
-          valueField="RETAIN_WF"
-          name="RETAIN_WF"
-          color="blue"
+          argumentField='EQ_NAME'
+          valueField='RETAIN_WF'
+          name='RETAIN_WF'
+          color='blue'
         />
         <Series
-          argumentField="EQ_NAME"
-          valueField="REALTIME_WF"
-          name="REALTIME_WF"
-          color="#01D201"
+          argumentField='EQ_NAME'
+          valueField='REALTIME_WF'
+          name='REALTIME_WF'
+          color='#01D201'
         />
         <Legend
-          verticalAlignment="bottom"
-          horizontalAlignment="center"
+          verticalAlignment='bottom'
+          horizontalAlignment='center'
         ></Legend>
       </Chart>
     );
@@ -922,53 +910,53 @@ const CAPASX = () => {
   const DeliveryLeadTimeMMFR = useMemo(() => {
     return (
       <Chart
-        id="workforcechart"
-        title="PRODUCTION CAPA BY DELIVERY PLAN [FR]"
+        id='workforcechart'
+        title='PRODUCTION CAPA BY DELIVERY PLAN [FR]'
         dataSource={dlleadtime.filter(
-          (e: DELIVERY_PLAN_CAPA, index: number) => e.EQ === "FR",
+          (e: DELIVERY_PLAN_CAPA, index: number) => e.EQ === "FR"
         )}
         width={1400}
-        resolveLabelOverlapping="hide"
+        resolveLabelOverlapping='hide'
       >
         {/* <Title
           text='PRODUCTION CAPA BY DELIVERY PLAN'
           subtitle={`[DATE:${selectedPlanDate}] [FACTORY:${selectedFactory}] [MACHINE:${selectedMachine}]`}
         /> */}
-        <ArgumentAxis title="PL_DATE" />
-        <ValueAxis title="LEADTIME" />
+        <ArgumentAxis title='PL_DATE' />
+        <ValueAxis title='LEADTIME' />
         <CommonSeriesSettings
-          argumentField="PL_DATE"
-          type="bar"
-          hoverMode="allArgumentPoints"
-          selectionMode="allArgumentPoints"
+          argumentField='PL_DATE'
+          type='bar'
+          hoverMode='allArgumentPoints'
+          selectionMode='allArgumentPoints'
         >
           <Label visible={true}>
-            <Format type="fixedPoint" precision={0} />
+            <Format type='fixedPoint' precision={0} />
           </Label>
         </CommonSeriesSettings>
         <Series
-          argumentField="PL_DATE"
-          valueField="LEADTIME"
-          name="Leadtime"
-          color="#28DF67"
+          argumentField='PL_DATE'
+          valueField='LEADTIME'
+          name='Leadtime'
+          color='#28DF67'
         />
         <Series
-          argumentField="PL_DATE"
-          valueField="AVL_CAPA"
-          name="12H"
-          color="#E80020"
-          type="line"
+          argumentField='PL_DATE'
+          valueField='AVL_CAPA'
+          name='12H'
+          color='#E80020'
+          type='line'
         />
         <Series
-          argumentField="PL_DATE"
-          valueField="REAL_CAPA"
-          name="8H"
-          color="#089ED6 "
-          type="line"
+          argumentField='PL_DATE'
+          valueField='REAL_CAPA'
+          name='8H'
+          color='#089ED6 '
+          type='line'
         />
         <Legend
-          verticalAlignment="bottom"
-          horizontalAlignment="center"
+          verticalAlignment='bottom'
+          horizontalAlignment='center'
         ></Legend>
       </Chart>
     );
@@ -976,53 +964,53 @@ const CAPASX = () => {
   const DeliveryLeadTimeMMSR = useMemo(() => {
     return (
       <Chart
-        id="workforcechart"
-        title="PRODUCTION CAPA BY DELIVERY PLAN [SR]"
+        id='workforcechart'
+        title='PRODUCTION CAPA BY DELIVERY PLAN [SR]'
         dataSource={dlleadtime.filter(
-          (e: DELIVERY_PLAN_CAPA, index: number) => e.EQ === "SR",
+          (e: DELIVERY_PLAN_CAPA, index: number) => e.EQ === "SR"
         )}
         width={1400}
-        resolveLabelOverlapping="hide"
+        resolveLabelOverlapping='hide'
       >
         {/* <Title
           text='PRODUCTION CAPA BY DELIVERY PLAN'
           subtitle={`[DATE:${selectedPlanDate}] [FACTORY:${selectedFactory}] [MACHINE:${selectedMachine}]`}
         /> */}
-        <ArgumentAxis title="PL_DATE" />
-        <ValueAxis title="LEADTIME" />
+        <ArgumentAxis title='PL_DATE' />
+        <ValueAxis title='LEADTIME' />
         <CommonSeriesSettings
-          argumentField="PL_DATE"
-          type="bar"
-          hoverMode="allArgumentPoints"
-          selectionMode="allArgumentPoints"
+          argumentField='PL_DATE'
+          type='bar'
+          hoverMode='allArgumentPoints'
+          selectionMode='allArgumentPoints'
         >
           <Label visible={true}>
-            <Format type="fixedPoint" precision={0} />
+            <Format type='fixedPoint' precision={0} />
           </Label>
         </CommonSeriesSettings>
         <Series
-          argumentField="PL_DATE"
-          valueField="LEADTIME"
-          name="Leadtime"
-          color="#28DF67"
+          argumentField='PL_DATE'
+          valueField='LEADTIME'
+          name='Leadtime'
+          color='#28DF67'
         />
         <Series
-          argumentField="PL_DATE"
-          valueField="AVL_CAPA"
-          name="12H"
-          color="#E80020"
-          type="line"
+          argumentField='PL_DATE'
+          valueField='AVL_CAPA'
+          name='12H'
+          color='#E80020'
+          type='line'
         />
         <Series
-          argumentField="PL_DATE"
-          valueField="REAL_CAPA"
-          name="8H"
-          color="#089ED6 "
-          type="line"
+          argumentField='PL_DATE'
+          valueField='REAL_CAPA'
+          name='8H'
+          color='#089ED6 '
+          type='line'
         />
         <Legend
-          verticalAlignment="bottom"
-          horizontalAlignment="center"
+          verticalAlignment='bottom'
+          horizontalAlignment='center'
         ></Legend>
       </Chart>
     );
@@ -1030,53 +1018,53 @@ const CAPASX = () => {
   const DeliveryLeadTimeMMDC = useMemo(() => {
     return (
       <Chart
-        id="workforcechart"
-        title="PRODUCTION CAPA BY DELIVERY PLAN [DC]"
+        id='workforcechart'
+        title='PRODUCTION CAPA BY DELIVERY PLAN [DC]'
         dataSource={dlleadtime.filter(
-          (e: DELIVERY_PLAN_CAPA, index: number) => e.EQ === "DC",
+          (e: DELIVERY_PLAN_CAPA, index: number) => e.EQ === "DC"
         )}
         width={1400}
-        resolveLabelOverlapping="hide"
+        resolveLabelOverlapping='hide'
       >
         {/* <Title
           text='PRODUCTION CAPA BY DELIVERY PLAN'
           subtitle={`[DATE:${selectedPlanDate}] [FACTORY:${selectedFactory}] [MACHINE:${selectedMachine}]`}
         /> */}
-        <ArgumentAxis title="PL_DATE" />
-        <ValueAxis title="LEADTIME" />
+        <ArgumentAxis title='PL_DATE' />
+        <ValueAxis title='LEADTIME' />
         <CommonSeriesSettings
-          argumentField="PL_DATE"
-          type="bar"
-          hoverMode="allArgumentPoints"
-          selectionMode="allArgumentPoints"
+          argumentField='PL_DATE'
+          type='bar'
+          hoverMode='allArgumentPoints'
+          selectionMode='allArgumentPoints'
         >
           <Label visible={true}>
-            <Format type="fixedPoint" precision={0} />
+            <Format type='fixedPoint' precision={0} />
           </Label>
         </CommonSeriesSettings>
         <Series
-          argumentField="PL_DATE"
-          valueField="LEADTIME"
-          name="Leadtime"
-          color="#28DF67"
+          argumentField='PL_DATE'
+          valueField='LEADTIME'
+          name='Leadtime'
+          color='#28DF67'
         />
         <Series
-          argumentField="PL_DATE"
-          valueField="AVL_CAPA"
-          name="12H"
-          color="#E80020"
-          type="line"
+          argumentField='PL_DATE'
+          valueField='AVL_CAPA'
+          name='12H'
+          color='#E80020'
+          type='line'
         />
         <Series
-          argumentField="PL_DATE"
-          valueField="REAL_CAPA"
-          name="8H"
-          color="#089ED6 "
-          type="line"
+          argumentField='PL_DATE'
+          valueField='REAL_CAPA'
+          name='8H'
+          color='#089ED6 '
+          type='line'
         />
         <Legend
-          verticalAlignment="bottom"
-          horizontalAlignment="center"
+          verticalAlignment='bottom'
+          horizontalAlignment='center'
         ></Legend>
       </Chart>
     );
@@ -1084,53 +1072,53 @@ const CAPASX = () => {
   const DeliveryLeadTimeMMED = useMemo(() => {
     return (
       <Chart
-        id="workforcechart"
-        title="PRODUCTION CAPA BY DELIVERY PLAN [ED]"
+        id='workforcechart'
+        title='PRODUCTION CAPA BY DELIVERY PLAN [ED]'
         dataSource={dlleadtime.filter(
-          (e: DELIVERY_PLAN_CAPA, index: number) => e.EQ === "ED",
+          (e: DELIVERY_PLAN_CAPA, index: number) => e.EQ === "ED"
         )}
         width={1400}
-        resolveLabelOverlapping="hide"
+        resolveLabelOverlapping='hide'
       >
         {/* <Title
           text='PRODUCTION CAPA BY DELIVERY PLAN'
           subtitle={`[DATE:${selectedPlanDate}] [FACTORY:${selectedFactory}] [MACHINE:${selectedMachine}]`}
         /> */}
-        <ArgumentAxis title="PL_DATE" />
-        <ValueAxis title="LEADTIME" />
+        <ArgumentAxis title='PL_DATE' />
+        <ValueAxis title='LEADTIME' />
         <CommonSeriesSettings
-          argumentField="PL_DATE"
-          type="bar"
-          hoverMode="allArgumentPoints"
-          selectionMode="allArgumentPoints"
+          argumentField='PL_DATE'
+          type='bar'
+          hoverMode='allArgumentPoints'
+          selectionMode='allArgumentPoints'
         >
           <Label visible={true}>
-            <Format type="fixedPoint" precision={0} />
+            <Format type='fixedPoint' precision={0} />
           </Label>
         </CommonSeriesSettings>
         <Series
-          argumentField="PL_DATE"
-          valueField="LEADTIME"
-          name="Leadtime"
-          color="#28DF67"
+          argumentField='PL_DATE'
+          valueField='LEADTIME'
+          name='Leadtime'
+          color='#28DF67'
         />
         <Series
-          argumentField="PL_DATE"
-          valueField="AVL_CAPA"
-          name="12H"
-          color="#E80020"
-          type="line"
+          argumentField='PL_DATE'
+          valueField='AVL_CAPA'
+          name='12H'
+          color='#E80020'
+          type='line'
         />
         <Series
-          argumentField="PL_DATE"
-          valueField="REAL_CAPA"
-          name="8H"
-          color="#089ED6 "
-          type="line"
+          argumentField='PL_DATE'
+          valueField='REAL_CAPA'
+          name='8H'
+          color='#089ED6 '
+          type='line'
         />
         <Legend
-          verticalAlignment="bottom"
-          horizontalAlignment="center"
+          verticalAlignment='bottom'
+          horizontalAlignment='center'
         ></Legend>
       </Chart>
     );
@@ -1138,23 +1126,23 @@ const CAPASX = () => {
   const leadtimechartMM = useMemo(() => {
     return (
       <Chart
-        id="chartcapa"
+        id='chartcapa'
         rotated={true}
         dataSource={dataSource_capa}
         width={700}
       >
-        <ArgumentAxis title="MACHINE NAME" />
-        <ValueAxis title="LeadTime (days)" />
+        <ArgumentAxis title='MACHINE NAME' />
+        <ValueAxis title='LeadTime (days)' />
         <Title
-          text="PRODUCTION LEADTIME BY EQUIPMENT"
-          subtitle="YCSX BALANCE STANDARD"
+          text='PRODUCTION LEADTIME BY EQUIPMENT'
+          subtitle='YCSX BALANCE STANDARD'
         />
         <Series
-          valueField="EQ_LEADTIME"
-          argumentField="EQ_NAME"
-          name="REAL LEADTIME"
-          type="bar"
-          color="red"
+          valueField='EQ_LEADTIME'
+          argumentField='EQ_NAME'
+          name='REAL LEADTIME'
+          type='bar'
+          color='red'
         >
           <Label
             visible={true}
@@ -1166,11 +1154,11 @@ const CAPASX = () => {
           />
         </Series>
         <Series
-          valueField="EQ_AVL_LEADTIME"
-          argumentField="EQ_NAME"
-          name="AVAILABLE LEADTIME"
-          type="bar"
-          color="#3DC23D"
+          valueField='EQ_AVL_LEADTIME'
+          argumentField='EQ_NAME'
+          name='AVAILABLE LEADTIME'
+          type='bar'
+          color='#3DC23D'
         >
           <Label
             visible={true}
@@ -1205,117 +1193,117 @@ const CAPASX = () => {
     };
   }, []);
   return (
-    <div className="capaqlsx">
+    <div className='capaqlsx'>
       <div
-        className="maintitle"
+        className='maintitle'
         style={{ fontSize: "2rem", alignSelf: "center" }}
       >
         PRODUCTION CAPA MANAGEMENT
       </div>
-      <div className="wfandeqstatus">
-        <div className="sectiondiv">
-          <div className="title">1. WORKFORCE STATUS (Workers Only)</div>
-          <div className="totalwfdiv">
+      <div className='wfandeqstatus'>
+        <div className='sectiondiv'>
+          <div className='title'>1. WORKFORCE STATUS (Workers Only)</div>
+          <div className='totalwfdiv'>
             <CIRCLE_COMPONENT
-              type="workforce"
+              type='workforce'
               value={getTotalEMPL()?.toString()}
-              title="WORKFORCE FOR FULL CAPA"
-              color="#DE14FE"
+              title='WORKFORCE FOR FULL CAPA'
+              color='#DE14FE'
             />
             <CIRCLE_COMPONENT
-              type="workforce"
+              type='workforce'
               value={getRetainEMPL()?.toString()}
-              title="RETAIN WORKFORCE"
-              color="blue"
+              title='RETAIN WORKFORCE'
+              color='blue'
             />
             <CIRCLE_COMPONENT
-              type="workforce"
+              type='workforce'
               value={getRealTimeEMPL()?.toString()}
-              title="REAL TIME WORKFORCE"
-              color="#01D201"
+              title='REAL TIME WORKFORCE'
+              color='#01D201'
             />
           </div>
         </div>
-        <div className="sectiondiv">
-          <div className="title">2. EQUIPMENT STATUS (Running/Total)</div>
-          <div className="totalwfdiv">
+        <div className='sectiondiv'>
+          <div className='title'>2. EQUIPMENT STATUS (Running/Total)</div>
+          <div className='totalwfdiv'>
             <CIRCLE_COMPONENT
-              type="machine"
+              type='machine'
               value={
                 getrunningFR()?.toString() + "/" + getFRTotal()?.toString()
               }
-              title="FR"
-              color="blue"
+              title='FR'
+              color='blue'
             />
             <CIRCLE_COMPONENT
-              type="machine"
+              type='machine'
               value={
                 getrunningSR()?.toString() + "/" + getSRTotal()?.toString()
               }
-              title="SR"
-              color="red"
+              title='SR'
+              color='red'
             />
             <CIRCLE_COMPONENT
-              type="machine"
+              type='machine'
               value={
                 getrunningDC()?.toString() + "/" + getDCTotal()?.toString()
               }
-              title="DC"
-              color="#DE14FE"
+              title='DC'
+              color='#DE14FE'
             />
             <CIRCLE_COMPONENT
-              type="machine"
+              type='machine'
               value={
                 getrunningED()?.toString() + "/" + getEDTotal()?.toString()
               }
-              title="ED"
-              color="#376DD4"
+              title='ED'
+              color='#376DD4'
             />
           </div>
         </div>
       </div>
-      <div className="workforcechart">
-        <div className="sectiondiv">
-          <div className="title">3. WORKFORCE STATUS BY EQUIPMENT</div>
-          <div className="starndardworkforce">{workforcechartMM}</div>
+      <div className='workforcechart'>
+        <div className='sectiondiv'>
+          <div className='title'>3. WORKFORCE STATUS BY EQUIPMENT</div>
+          <div className='starndardworkforce'>{workforcechartMM}</div>
         </div>
-        <div className="sectiondiv">
-          <div className="title">4. PRODUCTION LEADTIME</div>
-          <div className="capachart">{leadtimechartMM}</div>
+        <div className='sectiondiv'>
+          <div className='title'>4. PRODUCTION LEADTIME</div>
+          <div className='capachart'>{leadtimechartMM}</div>
         </div>
       </div>
-      <div className="workforcechart">
-        <div className="sectiondiv">
-          <div className="title">3. PRODUCTION BY DELIVERY PLAN</div>
-          <div className="selectcontrol">
+      <div className='workforcechart'>
+        <div className='sectiondiv'>
+          <div className='title'>3. PRODUCTION BY DELIVERY PLAN</div>
+          <div className='selectcontrol'>
             Plan Date:
             <input
-              type="date"
+              type='date'
               value={selectedPlanDate}
               onChange={(e) => {
                 setSelectedPlanDate(e.target.value);
                 getDeliveryLeadTime(
                   selectedFactory,
                   selectedMachine,
-                  e.target.value,
+                  e.target.value
                 );
               }}
             ></input>
             Factory:
             <select
-              name="factory"
+              name='factory'
               value={selectedFactory}
               onChange={(e) => {
                 setSelectedFactory(e.target.value);
                 getDeliveryLeadTime(
                   e.target.value,
                   selectedMachine,
-                  selectedPlanDate,
+                  selectedPlanDate
                 );
               }}
             >
-              <option value="NM1">NM1</option>
-              <option value="NM2">NM2</option>
+              <option value='NM1'>NM1</option>
+              <option value='NM2'>NM2</option>
             </select>
             {/*  Machine:
         <select
@@ -1332,18 +1320,18 @@ const CAPASX = () => {
           <option value='ED'>ED</option>
         </select> */}
           </div>
-          <div className="starndardworkforce">{DeliveryLeadTimeMMFR}</div>
-          <div className="starndardworkforce">{DeliveryLeadTimeMMED}</div>
+          <div className='starndardworkforce'>{DeliveryLeadTimeMMFR}</div>
+          <div className='starndardworkforce'>{DeliveryLeadTimeMMED}</div>
           {selectedFactory === "NM1" && (
-            <div className="starndardworkforce">{DeliveryLeadTimeMMSR}</div>
+            <div className='starndardworkforce'>{DeliveryLeadTimeMMSR}</div>
           )}
           {selectedFactory === "NM1" && (
-            <div className="starndardworkforce">{DeliveryLeadTimeMMDC}</div>
+            <div className='starndardworkforce'>{DeliveryLeadTimeMMDC}</div>
           )}
         </div>
       </div>
 
-      <div className="ycsxbalancedatatable">
+      <div className='ycsxbalancedatatable'>
         <table>
           <thead>
             <tr>
@@ -1394,7 +1382,7 @@ const CAPASX = () => {
                 {
                   machinecount.filter(
                     (ele: MACHINE_COUNTING, index: number) =>
-                      ele.EQ_NAME === "FR",
+                      ele.EQ_NAME === "FR"
                   )[0]?.EQ_QTY
                 }
               </td>
@@ -1405,15 +1393,14 @@ const CAPASX = () => {
                 {(
                   machinecount.filter(
                     (ele: MACHINE_COUNTING, index: number) =>
-                      ele.EQ_NAME === "FR",
+                      ele.EQ_NAME === "FR"
                   )[0]?.EQ_QTY * dailytime
                 )?.toLocaleString("en-US", { maximumFractionDigits: 0 })}
               </td>
               {/* MAX CAPA*/}
               <td style={{ color: "green", fontWeight: "normal" }}>
                 {machinecount.filter(
-                  (ele: MACHINE_COUNTING, index: number) =>
-                    ele.EQ_NAME === "FR",
+                  (ele: MACHINE_COUNTING, index: number) => ele.EQ_NAME === "FR"
                 )[0]?.EQ_QTY *
                   2 *
                   2}
@@ -1432,8 +1419,8 @@ const CAPASX = () => {
                   ((FR_EMPL.TNM1 + FR_EMPL.TNM2) / 4) * dailytime,
                   machinecount.filter(
                     (ele: MACHINE_COUNTING, index: number) =>
-                      ele.EQ_NAME === "FR",
-                  )[0]?.EQ_QTY * dailytime,
+                      ele.EQ_NAME === "FR"
+                  )[0]?.EQ_QTY * dailytime
                 )?.toLocaleString("en-US", { maximumFractionDigits: 0 })}
               </td>
               {/* EQ AVAILABLE CAPA*/}
@@ -1442,8 +1429,8 @@ const CAPASX = () => {
                   ((FR_EMPL.NM1 + FR_EMPL.NM2) / 4) * dailytime,
                   machinecount.filter(
                     (ele: MACHINE_COUNTING, index: number) =>
-                      ele.EQ_NAME === "FR",
-                  )[0]?.EQ_QTY * dailytime,
+                      ele.EQ_NAME === "FR"
+                  )[0]?.EQ_QTY * dailytime
                 )?.toLocaleString("en-US", { maximumFractionDigits: 0 })}
               </td>
               {/* EQ REAL CAPA*/}
@@ -1467,7 +1454,7 @@ const CAPASX = () => {
                 {ycsxbalance
                   .filter(
                     (ele: YCSX_BALANCE_CAPA_DATA, index: number) =>
-                      ele.EQ_NAME === "FR",
+                      ele.EQ_NAME === "FR"
                   )[0]
                   ?.YCSX_BALANCE?.toLocaleString("en-US", {
                     maximumFractionDigits: 0,
@@ -1478,14 +1465,14 @@ const CAPASX = () => {
                 {(
                   ycsxbalance.filter(
                     (ele: YCSX_BALANCE_CAPA_DATA, index: number) =>
-                      ele.EQ_NAME === "FR",
+                      ele.EQ_NAME === "FR"
                   )[0]?.YCSX_BALANCE /
                   Math.min(
                     ((FR_EMPL.TNM1 + FR_EMPL.TNM2) / 4) * dailytime,
                     machinecount.filter(
                       (ele: MACHINE_COUNTING, index: number) =>
-                        ele.EQ_NAME === "FR",
-                    )[0]?.EQ_QTY * dailytime,
+                        ele.EQ_NAME === "FR"
+                    )[0]?.EQ_QTY * dailytime
                   )
                 ).toLocaleString("en-US", { maximumFractionDigits: 1 })}
               </td>
@@ -1494,14 +1481,14 @@ const CAPASX = () => {
                 {(
                   ycsxbalance.filter(
                     (ele: YCSX_BALANCE_CAPA_DATA, index: number) =>
-                      ele.EQ_NAME === "FR",
+                      ele.EQ_NAME === "FR"
                   )[0]?.YCSX_BALANCE /
                   Math.min(
                     ((FR_EMPL.NM1 + FR_EMPL.NM2) / 4) * dailytime,
                     machinecount.filter(
                       (ele: MACHINE_COUNTING, index: number) =>
-                        ele.EQ_NAME === "FR",
-                    )[0]?.EQ_QTY * dailytime,
+                        ele.EQ_NAME === "FR"
+                    )[0]?.EQ_QTY * dailytime
                   )
                 ).toLocaleString("en-US", { maximumFractionDigits: 1 })}
               </td>
@@ -1513,7 +1500,7 @@ const CAPASX = () => {
                 {
                   machinecount.filter(
                     (ele: MACHINE_COUNTING, index: number) =>
-                      ele.EQ_NAME === "SR",
+                      ele.EQ_NAME === "SR"
                   )[0]?.EQ_QTY
                 }
               </td>
@@ -1524,15 +1511,14 @@ const CAPASX = () => {
                 {(
                   machinecount.filter(
                     (ele: MACHINE_COUNTING, index: number) =>
-                      ele.EQ_NAME === "SR",
+                      ele.EQ_NAME === "SR"
                   )[0]?.EQ_QTY * dailytime
                 )?.toLocaleString("en-US", { maximumFractionDigits: 0 })}
               </td>
               {/* MAX CAPA*/}
               <td style={{ color: "green", fontWeight: "normal" }}>
                 {machinecount.filter(
-                  (ele: MACHINE_COUNTING, index: number) =>
-                    ele.EQ_NAME === "SR",
+                  (ele: MACHINE_COUNTING, index: number) => ele.EQ_NAME === "SR"
                 )[0]?.EQ_QTY *
                   2 *
                   2}
@@ -1551,8 +1537,8 @@ const CAPASX = () => {
                   ((SR_EMPL.TNM1 + SR_EMPL.TNM2) / 4) * dailytime,
                   machinecount.filter(
                     (ele: MACHINE_COUNTING, index: number) =>
-                      ele.EQ_NAME === "SR",
-                  )[0]?.EQ_QTY * dailytime,
+                      ele.EQ_NAME === "SR"
+                  )[0]?.EQ_QTY * dailytime
                 )?.toLocaleString("en-US", { maximumFractionDigits: 0 })}
               </td>
               {/* EQ AVAILABLE CAPA*/}
@@ -1561,8 +1547,8 @@ const CAPASX = () => {
                   ((SR_EMPL.NM1 + SR_EMPL.NM2) / 4) * dailytime,
                   machinecount.filter(
                     (ele: MACHINE_COUNTING, index: number) =>
-                      ele.EQ_NAME === "SR",
-                  )[0]?.EQ_QTY * dailytime,
+                      ele.EQ_NAME === "SR"
+                  )[0]?.EQ_QTY * dailytime
                 )?.toLocaleString("en-US", { maximumFractionDigits: 0 })}
               </td>
               {/* EQ REAL CAPA*/}
@@ -1586,7 +1572,7 @@ const CAPASX = () => {
                 {ycsxbalance
                   .filter(
                     (ele: YCSX_BALANCE_CAPA_DATA, index: number) =>
-                      ele.EQ_NAME === "SR",
+                      ele.EQ_NAME === "SR"
                   )[0]
                   ?.YCSX_BALANCE?.toLocaleString("en-US", {
                     maximumFractionDigits: 0,
@@ -1597,14 +1583,14 @@ const CAPASX = () => {
                 {(
                   ycsxbalance.filter(
                     (ele: YCSX_BALANCE_CAPA_DATA, index: number) =>
-                      ele.EQ_NAME === "SR",
+                      ele.EQ_NAME === "SR"
                   )[0]?.YCSX_BALANCE /
                   Math.min(
                     ((SR_EMPL.TNM1 + SR_EMPL.TNM2) / 4) * dailytime,
                     machinecount.filter(
                       (ele: MACHINE_COUNTING, index: number) =>
-                        ele.EQ_NAME === "SR",
-                    )[0]?.EQ_QTY * dailytime,
+                        ele.EQ_NAME === "SR"
+                    )[0]?.EQ_QTY * dailytime
                   )
                 ).toLocaleString("en-US", { maximumFractionDigits: 1 })}
               </td>
@@ -1613,14 +1599,14 @@ const CAPASX = () => {
                 {(
                   ycsxbalance.filter(
                     (ele: YCSX_BALANCE_CAPA_DATA, index: number) =>
-                      ele.EQ_NAME === "SR",
+                      ele.EQ_NAME === "SR"
                   )[0]?.YCSX_BALANCE /
                   Math.min(
                     ((SR_EMPL.NM1 + SR_EMPL.NM2) / 4) * dailytime,
                     machinecount.filter(
                       (ele: MACHINE_COUNTING, index: number) =>
-                        ele.EQ_NAME === "SR",
-                    )[0]?.EQ_QTY * dailytime,
+                        ele.EQ_NAME === "SR"
+                    )[0]?.EQ_QTY * dailytime
                   )
                 ).toLocaleString("en-US", { maximumFractionDigits: 1 })}
               </td>
@@ -1632,7 +1618,7 @@ const CAPASX = () => {
                 {
                   machinecount.filter(
                     (ele: MACHINE_COUNTING, index: number) =>
-                      ele.EQ_NAME === "DC",
+                      ele.EQ_NAME === "DC"
                   )[0]?.EQ_QTY
                 }
               </td>
@@ -1643,15 +1629,14 @@ const CAPASX = () => {
                 {(
                   machinecount.filter(
                     (ele: MACHINE_COUNTING, index: number) =>
-                      ele.EQ_NAME === "DC",
+                      ele.EQ_NAME === "DC"
                   )[0]?.EQ_QTY * dailytime
                 )?.toLocaleString("en-US", { maximumFractionDigits: 0 })}
               </td>
               {/* MAX CAPA*/}
               <td style={{ color: "green", fontWeight: "normal" }}>
                 {machinecount.filter(
-                  (ele: MACHINE_COUNTING, index: number) =>
-                    ele.EQ_NAME === "DC",
+                  (ele: MACHINE_COUNTING, index: number) => ele.EQ_NAME === "DC"
                 )[0]?.EQ_QTY *
                   2 *
                   1}
@@ -1670,8 +1655,8 @@ const CAPASX = () => {
                   ((DC_EMPL.TNM1 + DC_EMPL.TNM2) / 2) * dailytime,
                   machinecount.filter(
                     (ele: MACHINE_COUNTING, index: number) =>
-                      ele.EQ_NAME === "DC",
-                  )[0]?.EQ_QTY * dailytime,
+                      ele.EQ_NAME === "DC"
+                  )[0]?.EQ_QTY * dailytime
                 )?.toLocaleString("en-US", { maximumFractionDigits: 0 })}
               </td>
               {/* EQ AVAILABLE CAPA*/}
@@ -1680,8 +1665,8 @@ const CAPASX = () => {
                   ((DC_EMPL.NM1 + DC_EMPL.NM2) / 2) * dailytime,
                   machinecount.filter(
                     (ele: MACHINE_COUNTING, index: number) =>
-                      ele.EQ_NAME === "DC",
-                  )[0]?.EQ_QTY * dailytime,
+                      ele.EQ_NAME === "DC"
+                  )[0]?.EQ_QTY * dailytime
                 )?.toLocaleString("en-US", { maximumFractionDigits: 0 })}
               </td>
               {/* EQ REAL CAPA*/}
@@ -1705,7 +1690,7 @@ const CAPASX = () => {
                 {ycsxbalance
                   .filter(
                     (ele: YCSX_BALANCE_CAPA_DATA, index: number) =>
-                      ele.EQ_NAME === "DC",
+                      ele.EQ_NAME === "DC"
                   )[0]
                   ?.YCSX_BALANCE?.toLocaleString("en-US", {
                     maximumFractionDigits: 0,
@@ -1716,14 +1701,14 @@ const CAPASX = () => {
                 {(
                   ycsxbalance.filter(
                     (ele: YCSX_BALANCE_CAPA_DATA, index: number) =>
-                      ele.EQ_NAME === "DC",
+                      ele.EQ_NAME === "DC"
                   )[0]?.YCSX_BALANCE /
                   Math.min(
                     ((DC_EMPL.TNM1 + DC_EMPL.TNM2) / 2) * dailytime,
                     machinecount.filter(
                       (ele: MACHINE_COUNTING, index: number) =>
-                        ele.EQ_NAME === "DC",
-                    )[0]?.EQ_QTY * dailytime,
+                        ele.EQ_NAME === "DC"
+                    )[0]?.EQ_QTY * dailytime
                   )
                 ).toLocaleString("en-US", { maximumFractionDigits: 1 })}
               </td>
@@ -1732,14 +1717,14 @@ const CAPASX = () => {
                 {(
                   ycsxbalance.filter(
                     (ele: YCSX_BALANCE_CAPA_DATA, index: number) =>
-                      ele.EQ_NAME === "DC",
+                      ele.EQ_NAME === "DC"
                   )[0]?.YCSX_BALANCE /
                   Math.min(
                     ((DC_EMPL.NM1 + DC_EMPL.NM2) / 2) * dailytime,
                     machinecount.filter(
                       (ele: MACHINE_COUNTING, index: number) =>
-                        ele.EQ_NAME === "DC",
-                    )[0]?.EQ_QTY * dailytime,
+                        ele.EQ_NAME === "DC"
+                    )[0]?.EQ_QTY * dailytime
                   )
                 ).toLocaleString("en-US", { maximumFractionDigits: 1 })}
               </td>
@@ -1751,7 +1736,7 @@ const CAPASX = () => {
                 {
                   machinecount.filter(
                     (ele: MACHINE_COUNTING, index: number) =>
-                      ele.EQ_NAME === "ED",
+                      ele.EQ_NAME === "ED"
                   )[0]?.EQ_QTY
                 }
               </td>
@@ -1762,15 +1747,14 @@ const CAPASX = () => {
                 {(
                   machinecount.filter(
                     (ele: MACHINE_COUNTING, index: number) =>
-                      ele.EQ_NAME === "ED",
+                      ele.EQ_NAME === "ED"
                   )[0]?.EQ_QTY * dailytime
                 )?.toLocaleString("en-US", { maximumFractionDigits: 0 })}
               </td>
               {/* MAX CAPA*/}
               <td style={{ color: "green", fontWeight: "normal" }}>
                 {machinecount.filter(
-                  (ele: MACHINE_COUNTING, index: number) =>
-                    ele.EQ_NAME === "ED",
+                  (ele: MACHINE_COUNTING, index: number) => ele.EQ_NAME === "ED"
                 )[0]?.EQ_QTY *
                   2 *
                   1}
@@ -1789,8 +1773,8 @@ const CAPASX = () => {
                   ((ED_EMPL.TNM1 + ED_EMPL.TNM2) / 2) * dailytime,
                   machinecount.filter(
                     (ele: MACHINE_COUNTING, index: number) =>
-                      ele.EQ_NAME === "ED",
-                  )[0]?.EQ_QTY * dailytime,
+                      ele.EQ_NAME === "ED"
+                  )[0]?.EQ_QTY * dailytime
                 )?.toLocaleString("en-US", { maximumFractionDigits: 0 })}
               </td>
               {/* EQ AVAILABLE CAPA*/}
@@ -1799,8 +1783,8 @@ const CAPASX = () => {
                   ((ED_EMPL.NM1 + ED_EMPL.NM2) / 2) * dailytime,
                   machinecount.filter(
                     (ele: MACHINE_COUNTING, index: number) =>
-                      ele.EQ_NAME === "ED",
-                  )[0]?.EQ_QTY * dailytime,
+                      ele.EQ_NAME === "ED"
+                  )[0]?.EQ_QTY * dailytime
                 )?.toLocaleString("en-US", { maximumFractionDigits: 0 })}
               </td>
               {/* EQ REAL CAPA*/}
@@ -1824,7 +1808,7 @@ const CAPASX = () => {
                 {ycsxbalance
                   .filter(
                     (ele: YCSX_BALANCE_CAPA_DATA, index: number) =>
-                      ele.EQ_NAME === "ED",
+                      ele.EQ_NAME === "ED"
                   )[0]
                   ?.YCSX_BALANCE?.toLocaleString("en-US", {
                     maximumFractionDigits: 0,
@@ -1835,14 +1819,14 @@ const CAPASX = () => {
                 {(
                   ycsxbalance.filter(
                     (ele: YCSX_BALANCE_CAPA_DATA, index: number) =>
-                      ele.EQ_NAME === "ED",
+                      ele.EQ_NAME === "ED"
                   )[0]?.YCSX_BALANCE /
                   Math.min(
                     ((ED_EMPL.TNM1 + ED_EMPL.TNM2) / 2) * dailytime,
                     machinecount.filter(
                       (ele: MACHINE_COUNTING, index: number) =>
-                        ele.EQ_NAME === "ED",
-                    )[0]?.EQ_QTY * dailytime,
+                        ele.EQ_NAME === "ED"
+                    )[0]?.EQ_QTY * dailytime
                   )
                 )?.toLocaleString("en-US", { maximumFractionDigits: 1 })}
               </td>
@@ -1851,14 +1835,14 @@ const CAPASX = () => {
                 {(
                   ycsxbalance.filter(
                     (ele: YCSX_BALANCE_CAPA_DATA, index: number) =>
-                      ele.EQ_NAME === "ED",
+                      ele.EQ_NAME === "ED"
                   )[0]?.YCSX_BALANCE /
                   Math.min(
                     ((ED_EMPL.NM1 + ED_EMPL.NM2) / 2) * dailytime,
                     machinecount.filter(
                       (ele: MACHINE_COUNTING, index: number) =>
-                        ele.EQ_NAME === "ED",
-                    )[0]?.EQ_QTY * dailytime,
+                        ele.EQ_NAME === "ED"
+                    )[0]?.EQ_QTY * dailytime
                   )
                 )?.toLocaleString("en-US", { maximumFractionDigits: 1 })}
               </td>
