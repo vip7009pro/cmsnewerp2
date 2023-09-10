@@ -1946,7 +1946,7 @@ const PLAN_DATATB = () => {
               allowUpdating={true}
               allowAdding={true}
               allowDeleting={false}
-              mode='batch'
+              mode='cell'
               confirmDelete={true}
               onChangesChange={(e) => {}}
             />
