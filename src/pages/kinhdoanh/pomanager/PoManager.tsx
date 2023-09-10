@@ -64,7 +64,10 @@ import {
   PRICEWITHMOQ,
   UserData,
 } from "../../../api/GlobalInterface";
-import { POManagerDiv } from "../../../components/StyledComponents/ComponentLib";
+import {
+  POManagerDiv,
+  TotalPOManagerDiv,
+} from "../../../components/StyledComponents/ComponentLib";
 const PoManager = () => {
   const showhidesearchdiv = useRef(false);
   const [isPending, startTransition] = useTransition();
@@ -1958,7 +1961,7 @@ const PoManager = () => {
     dongboGiaPO();
   }, []);
   return (
-    <div className='pomanager'>
+    <TotalPOManagerDiv>
       <div className='mininavbar'>
         <div
           className='mininavitem'
@@ -2736,7 +2739,7 @@ const PoManager = () => {
           <PivotTable datasource={dataSource} tableID='potablepivot' />
         </div>
       )}
-    </div>
+    </TotalPOManagerDiv>
   );
 };
 export default PoManager;
