@@ -92,7 +92,6 @@ const PLAN_DATATB = () => {
   const handlePrint = useReactToPrint({
     content: () => ycsxprintref.current,
   });
-
   const renderBanVe2 = (ycsxlist: QLSXPLANDATA[]) => {
     return ycsxlist.map((element, index) => (
       <DrawComponent
@@ -105,7 +104,6 @@ const PLAN_DATATB = () => {
       />
     ));
   };
-
   const getMachineList = () => {
     generalQuery("getmachinelist", {})
       .then((response) => {
@@ -558,7 +556,6 @@ const PLAN_DATATB = () => {
     { field: "STEP", headerName: "STEP", width: 60 },
     { field: "PLAN_ORDER", headerName: "PLAN_ORDER", width: 110 },
   ];
-
   const hanlde_SaveChiThi = async () => {
     let err_code: string = "0";
     let total_lieuql_sx: number = 0;
@@ -718,7 +715,6 @@ const PLAN_DATATB = () => {
         : selectedPlan?.PROCESS_NUMBER
     );
   };
-
   const updateDKXLPLAN = (PLAN_ID: string) => {
     generalQuery("updateDKXLPLAN", { PLAN_ID: PLAN_ID })
       .then((response) => {
@@ -731,7 +727,6 @@ const PLAN_DATATB = () => {
         console.log(error);
       });
   };
-
   const handleDangKyXuatLieu = async (
     PLAN_ID: string,
     PROD_REQUEST_NO: string,
@@ -938,7 +933,6 @@ const PLAN_DATATB = () => {
       Swal.fire("Thông báo", "Cần đăng ký ít nhất 1 met lòng");
     }
   };
-
   const handleConfirmDKXL = () => {
     Swal.fire({
       title: "Chắc chắn muốn Đăng ký xuất liệu ?",
@@ -985,7 +979,6 @@ const PLAN_DATATB = () => {
       }
     });
   };
-
   const loadQLSXPlan = (plan_date: string) => {
     //console.log(todate);
     generalQuery("getqlsxplan2", {
@@ -1766,7 +1759,6 @@ const PLAN_DATATB = () => {
     let err_code: string = "0";
     for (let i = 0; i < qlsxplandatafilter.current.length; i++) {
       let check_NEXT_PLAN_ID: boolean = true;
-
       let checkPlanIdP500: boolean = false;
       await generalQuery("checkP500PlanID_mobile", {
         PLAN_ID: qlsxplandatafilter.current[i].PLAN_ID,
@@ -1889,7 +1881,6 @@ const PLAN_DATATB = () => {
       loadQLSXPlan(fromdate);
     }
   };
-
   const planDataTable = React.useMemo(
     () => (
       <div className='datatb'>
@@ -1933,7 +1924,6 @@ const PLAN_DATATB = () => {
               enterKeyAction={"moveFocus"}
               enterKeyDirection={"column"}
             />
-
             <Scrolling
               useNative={true}
               scrollByContent={true}
@@ -2072,7 +2062,6 @@ const PLAN_DATATB = () => {
                   <AiOutlinePrinter color='#0066ff' size={25} />
                   Print Chỉ Thị Combo
                 </IconButton>
-
                 <IconButton
                   className='buttonIcon'
                   onClick={() => {
@@ -2536,7 +2525,6 @@ const PLAN_DATATB = () => {
               }}
               allowEditing={false}
             ></Column>
-
             <Column
               dataField='PROD_REQUEST_NO'
               caption='YCSX NO'
@@ -2559,7 +2547,6 @@ const PLAN_DATATB = () => {
             ></Column> 
           <Column dataField='PROD_REQUEST_DATE' caption='PROD_REQUEST_DATE' width={80} allowEditing={false}  
             ></Column>*/}
-
             <Column
               dataField='PROD_REQUEST_QTY'
               caption='YCSX QTY'
@@ -2677,7 +2664,6 @@ const PLAN_DATATB = () => {
               }}
               allowEditing={false}
             ></Column>
-
             <Column
               dataField='FACTORY'
               caption='NM'
@@ -2834,7 +2820,6 @@ const PLAN_DATATB = () => {
               enterKeyAction={"moveFocus"}
               enterKeyDirection={"column"}
             />
-
             <Scrolling
               useNative={true}
               scrollByContent={true}
@@ -3140,7 +3125,6 @@ const PLAN_DATATB = () => {
               }}
               allowEditing={false}
             ></Column>
-
             <Summary>
               <TotalItem
                 alignment='right'
@@ -3366,11 +3350,9 @@ const PLAN_DATATB = () => {
               onChange={() => setCalc_Loss_Setting(!calc_loss_setting)}
             ></input>
           </div>
-
           {planMaterialTable}
         </div>
       )}
-
       {showkhoao && (
         <div className='khoaodiv'>
           <Button
@@ -3383,7 +3365,6 @@ const PLAN_DATATB = () => {
           <KHOAO NEXT_PLAN={selectedPlan?.PLAN_ID} />
         </div>
       )}
-
       {showChiThi && (
         <div className='printycsxpage'>
           <div className='buttongroup'>
@@ -3462,7 +3443,6 @@ const PLAN_DATATB = () => {
           </div>
         </div>
       )}
-
       {showBV && (
         <div className='printycsxpage'>
           <div className='buttongroup'>
