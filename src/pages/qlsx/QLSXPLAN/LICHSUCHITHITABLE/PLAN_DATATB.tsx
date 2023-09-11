@@ -80,7 +80,7 @@ const PLAN_DATATB = () => {
   const [selectedPlan, setSelectedPlan] = useState<QLSXPLANDATA>();
   const [currentPlanPD, setCurrentPlanPD] = useState(0);
   const [currentPlanCAVITY, setCurrentPlanCAVITY] = useState(0);
-  const [calc_loss_setting, setCalc_Loss_Setting] = useState(false);
+  const [calc_loss_setting, setCalc_Loss_Setting] = useState(true);
   const [showhideM, setShowHideM] = useState(false);
   const [machine_list, setMachine_List] = useState<MACHINE_LIST[]>([]);
   const clickedRow = useRef<any>(null);
@@ -1914,10 +1914,11 @@ const PLAN_DATATB = () => {
             }}
             onRowPrepared={(e: any) => {
               if (parseInt(e.data?.PLAN_EQ.substring(2, 4)) % 2 === 0)
-                e.rowElement.style.background = "#BEC7C0";
-              //rowElement.css('background', 'green');
-              //console.log(rowElement.data?.PLAN_EQ);
-            }}
+                e.rowElement.style.background = "#BEC7C0";              
+            }}         
+            onRowDblClick={(e: any)=> {
+              
+            }}    
           >
             <KeyboardNavigation
               editOnKeyPress={true}

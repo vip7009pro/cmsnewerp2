@@ -72,7 +72,6 @@ import {
 } from "../../../../redux/slices/globalSlice";
 import CHITHI_COMPONENT2 from "../CHITHI/CHITHI_COMPONENT2";
 import KHOAO from "../KHOAO/KHOAO";
-import axios from "axios";
 import { TbLogout } from "react-icons/tb";
 import {
   DINHMUC_QSLX,
@@ -5654,7 +5653,7 @@ const MACHINE = () => {
                     </button>
                     <button
                       onClick={() => {
-                        setChiThiListRender2(renderChiThi2(chithiarray));
+                        setChiThiListRender2(renderChiThi2(chithiarray!== undefined ? chithiarray: []));
                       }}
                     >
                       Render Chỉ Thị 2
