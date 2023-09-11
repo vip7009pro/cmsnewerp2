@@ -1914,13 +1914,12 @@ const PLAN_DATATB = () => {
             }}
             onRowPrepared={(e: any) => {
               if (parseInt(e.data?.PLAN_EQ.substring(2, 4)) % 2 === 0)
-                e.rowElement.style.background = "#BEC7C0";              
-            }}         
-            onRowDblClick={(params: any)=> {
+                e.rowElement.style.background = "#BEC7C0";
+            }}
+            onRowDblClick={(params: any) => {
               //console.log(params.data);
               setShowHideM(true);
-
-            }}    
+            }}
           >
             <KeyboardNavigation
               editOnKeyPress={true}
