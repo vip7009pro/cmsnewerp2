@@ -86,8 +86,9 @@ const PLAN_DATATB = () => {
   const clickedRow = useRef<any>(null);
   const [showChiThi, setShowChiThi] = useState(false);
   const [showChiThi2, setShowChiThi2] = useState(false);
-  const [showYCSX, setShowYCSX] = useState(false);
   const [showBV, setShowBV] = useState(false);
+  const [trigger, setTrigger] = useState(false);
+  const [selectedRowKeys, setSelectedRowKeys] = useState<any>([]);
   const ycsxprintref = useRef(null);
   const handlePrint = useReactToPrint({
     content: () => ycsxprintref.current,
@@ -1900,7 +1901,10 @@ const PLAN_DATATB = () => {
             showBorders={true}
             onSelectionChanged={(e) => {
               qlsxplandatafilter.current = e.selectedRowsData;
+              //console.log(e.selectedRowKeys);
+              setSelectedRowKeys(e.selectedRowKeys);
             }}
+            /* selectedRowKeys={selectedRowKeys} */
             onRowClick={(e) => {
               //console.log(e.data);
               clickedRow.current = e.data;
@@ -2786,7 +2790,7 @@ const PLAN_DATATB = () => {
         </CustomResponsiveContainer>
       </div>
     ),
-    [plandatatable, columns]
+    [plandatatable, columns, trigger]
   );
   const planMaterialTable = React.useMemo(
     () => (
@@ -3177,6 +3181,7 @@ const PLAN_DATATB = () => {
     ),
     [chithidatatable]
   );
+  console.log("render lai");
   useEffect(() => {
     getMachineList();
     //setColumnDefinition(column_inspect_output);
@@ -3306,6 +3311,15 @@ const PLAN_DATATB = () => {
                   }}
                 >
                   MOVE PLAN
+                </button>
+                <button
+                  className='tranhatky'
+                  onClick={() => {
+                    console.log(" da xoa");
+                    setSelectedRowKeys([]);
+                  }}
+                >
+                  Reset selection
                 </button>
               </div>
             </div>
