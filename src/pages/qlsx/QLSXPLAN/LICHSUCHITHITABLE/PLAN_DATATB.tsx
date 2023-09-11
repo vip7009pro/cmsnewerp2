@@ -1916,8 +1916,10 @@ const PLAN_DATATB = () => {
               if (parseInt(e.data?.PLAN_EQ.substring(2, 4)) % 2 === 0)
                 e.rowElement.style.background = "#BEC7C0";              
             }}         
-            onRowDblClick={(e: any)=> {
-              
+            onRowDblClick={(params: any)=> {
+              //console.log(params.data);
+              setShowHideM(true);
+
             }}    
           >
             <KeyboardNavigation
@@ -2176,7 +2178,7 @@ const PLAN_DATATB = () => {
                   </span>
                 );
               }}
-              allowEditing={false}
+              allowEditing={true}
             ></Column>
             <Column
               dataField='PROCESS_NUMBER'
