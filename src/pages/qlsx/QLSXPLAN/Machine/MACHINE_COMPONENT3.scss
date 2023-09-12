@@ -14,8 +14,8 @@
   .machine_component2 {
     display: flex;
     flex-direction: column;
-    width: 300px;
-    height: 250px;
+    width: 100px;
+    height: 50px;
     background-image: linear-gradient(0deg, #cbeea3, #ffffff);
     border-radius: 10px;
     box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
@@ -24,7 +24,7 @@
     .tieude {
       display: flex;
       flex-direction: column;
-      flex: 0.2;
+      flex: 1;
       background-color: bisque;
       width: 100%;
       align-self: center;
@@ -33,50 +33,10 @@
       font-size: 0.8rem;
       align-items: center;
     }
-    .noidung {
-      display: flex;
-      flex-direction: column;
-      flex: 25;
-      background-color: rgb(252, 255, 69);
-      .up {
-        display: flex;
-        .emplpicture {
-          display: flex;
-          flex-direction: column;
-          flex:0.8;
-        }
-        .target {
-          display: flex;
-          flex-direction: column;
-          flex:1;
-          .title {
-            display: flex;
-            background-color: rgb(120, 238, 84);
-            flex: 1;
-            align-content: center;
-            justify-items: center;
-            
-          }
-          .content {
-            display: flex;
-            flex:10;
-
-          }
-        }
-        .result {
-          display: flex;
-          flex:1;
-
-        }
-      }
-      .down {
-        display: flex;
-      }
-    }
     .machineplan {
       font-size: 0.5rem;
       overflow-x: inherit;
-      flex: 2;
+      flex: 0;
     }
   }
   .chitiet {

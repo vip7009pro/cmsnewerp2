@@ -10,7 +10,7 @@ import {
   QLSXPLANDATA,
   UserData,
 } from "../../api/GlobalInterface";
-const startCPN: string = "CMS";
+const startCPN: string = "PVN";
 const socket = io(
   startCPN === "CMS"
     ? "http://14.160.33.94:3005"

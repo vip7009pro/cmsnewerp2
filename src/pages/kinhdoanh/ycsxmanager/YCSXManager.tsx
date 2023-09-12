@@ -3303,6 +3303,7 @@ const YCSXManager = () => {
                       <option value='AM'>Amazon (AM)</option>
                       <option value='DL'>Đổi LOT (DL)</option>
                       <option value='M4'>NM4 (M4)</option>
+                      <option value='IN'>Hàng In Nhanh (IN)</option>
                       {/* <option value='SL'>Slitting (SL)</option> */}
                     </select>
                   </label>

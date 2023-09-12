@@ -1766,6 +1766,9 @@ export interface QLSXPLANDATA {
   PDBV?: string;
   PD?: number;
   CAVITY?: number;
+  SETTING_START_TIME?: string;
+  MASS_START_TIME?: string;
+  MASS_END_TIME?: string;
 }
 export interface QLSXCHITHIDATA {
   id: string;
