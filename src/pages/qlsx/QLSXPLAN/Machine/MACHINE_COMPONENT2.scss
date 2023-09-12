@@ -15,7 +15,7 @@
     display: flex;
     flex-direction: column;
     width: 300px;
-    height: 250px;
+    height: 220px;
     background-image: linear-gradient(0deg, #cbeea3, #ffffff);
     border-radius: 10px;
     box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
@@ -37,46 +37,130 @@
       display: flex;
       flex-direction: column;
       flex: 25;
-      background-color: rgb(252, 255, 69);
+      font-size: 0.8rem;
       .up {
         display: flex;
+        border: #ffffff solid 1px;
         .emplpicture {
           display: flex;
           flex-direction: column;
-          flex:0.8;
+          flex: 0.8;
+          font-size: 1rem;
+          background-color: rgb(240, 229, 238);
         }
         .target {
           display: flex;
           flex-direction: column;
-          flex:1;
+          flex: 1;
+          justify-items: center;
+          justify-content: center;
+          background-color: rgb(120, 238, 84);
           .title {
             display: flex;
-            background-color: rgb(120, 238, 84);
             flex: 1;
-            align-content: center;
-            justify-items: center;
-            
+            justify-content: center;
+            font-size: 1rem;
+            font-weight: bold;
           }
           .content {
             display: flex;
-            flex:10;
-
+            flex: 10;
+            flex-direction: column;
+            justify-content: space-around;
+            align-items: flex-start;
           }
         }
         .result {
           display: flex;
-          flex:1;
-
+          flex-direction: column;
+          flex: 1;
+          justify-items: center;
+          justify-content: center;
+          background-color: rgb(120, 238, 84);
+          .title {
+            display: flex;
+            flex: 1;
+            justify-content: center;
+            font-size: 1rem;
+            font-weight: bold;
+          }
+          .content {
+            display: flex;
+            flex: 10;
+            flex-direction: column;
+            justify-content: space-around;
+            align-items: flex-start;
+          }
         }
       }
       .down {
         display: flex;
+        .planqty {
+          display: flex;
+          flex: 1;
+          flex-direction: column;
+          .title {
+            display: flex;
+            justify-content: center;
+            font-weight: bold;
+            color: rgb(223, 0, 0);
+          }
+          .value {
+            display: flex;
+            justify-content: center;
+            font-weight: bold;
+            margin-top: 2px;
+            font-size: 1.5rem;
+            color: rgb(207, 58, 245);
+          }
+        }
+        .result {
+          display: flex;
+          flex: 1;
+          flex-direction: column;
+          .title {
+            display: flex;
+            justify-content: center;
+            font-weight: bold;
+            color: rgb(218, 0, 0);
+          }
+          .value {
+            display: flex;
+            justify-content: center;
+            font-weight: bold;
+            margin-top: 2px;
+            font-size: 1.5rem;
+            color: rgb(218, 0, 0);
+          }
+        }
+        .rate {
+          display: flex;
+          flex: 1;
+          flex-direction: column;
+          .title {
+            display: flex;
+            justify-content: center;
+            font-weight: bold;
+            color: rgb(13, 0, 199);
+          }
+          .value {
+            display: flex;
+            justify-content: center;
+            font-weight: bold;
+            margin-top: 2px;
+            font-size: 1.5rem;
+            color: rgb(13, 0, 199);
+          }
+        }
       }
     }
     .machineplan {
-      font-size: 0.5rem;
+      display: flex;
+      flex-direction: row;
+      font-size: 0.8rem;
       overflow-x: inherit;
       flex: 2;
+      background-color: #cbeea3;
     }
   }
   .chitiet {

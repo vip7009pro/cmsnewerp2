@@ -19,7 +19,7 @@ const socket = io(
     : ""
 );
 //const socket =  io('http://localhost:3005')
-socket.on("connect", () => {  
+socket.on("connect", () => {
   console.log(socket.id); // x8WIv7-mJelg7on_ALbx
 });
 socket.on("notification", (data) => {
