@@ -17,6 +17,9 @@ import { TextField } from "@mui/material";
 import { EQ_STT } from "../../../../api/GlobalInterface";
 
 const EQ_STATUS = () => {
+  const scrollDistance = 50;
+  const [factory, setFactory] = useState('NM1');
+  const [machine, setMachine] = useState('ED');
   const [searchString, setSearchString] = useState("");
   const [selection, setSelection] = useState<any>({
     tab1: true,
@@ -25,7 +28,10 @@ const EQ_STATUS = () => {
     tabycsx: false,
     tabbanve: false,
   });
-  const setNav = (choose: number) => {
+  const divRef = useRef(null);
+  const bottomRef = useRef(null);
+
+   const setNav = (choose: number) => {
     if (choose === 1) {
       setSelection({ ...selection, tab1: true, tab2: false, tab3: false });
     } else if (choose === 2) {
@@ -34,6 +40,7 @@ const EQ_STATUS = () => {
       setSelection({ ...selection, tab1: false, tab2: false, tab3: true });
     }
   };
+  const [eq_status_FULL, setEQ_STATUS_FULL] = useState<EQ_STT[]>([]);
   const [eq_status, setEQ_STATUS] = useState<EQ_STT[]>([]);
   const [eq_series, setEQ_SERIES] = useState<string[]>([]);
   const handle_loadEQ_STATUS = () => {
@@ -50,7 +57,8 @@ const EQ_STATUS = () => {
             },
           );
           //console.log(loaded_data);
-          setEQ_STATUS(loaded_data);
+          
+          setEQ_STATUS(loaded_data);          
           setEQ_SERIES([
             ...new Set(
               loaded_data.map((e: EQ_STT, index: number) => {
@@ -60,50 +68,121 @@ const EQ_STATUS = () => {
           ]);
         } else {
           setEQ_STATUS([]);
-          setEQ_SERIES([]);
+          setEQ_SERIES([]);         
         }
       })
       .catch((error) => {
         console.log(error);
       });
   };
+
+
+
+  const autoScroll = () => {
+    if (divRef.current) {
+      const currentScrollTop = divRef.current.scrollTop;
+      const targetScrollTop = currentScrollTop + scrollDistance;
+
+      const animateScroll = () => {
+        if (divRef.current.scrollTop < targetScrollTop) {
+          divRef.current.scrollTop += 5; // Adjust the scroll speed as needed
+          requestAnimationFrame(animateScroll);
+        }
+      };
+
+      animateScroll();
+    }
+  };
+
+  const scrollToPosition = (position: number) => {
+    if (divRef.current) {
+      divRef.current.scrollTop = position;
+    }
+  };
+
+
   useEffect(() => {
     handle_loadEQ_STATUS();
     let intervalID = window.setInterval(() => {
       handle_loadEQ_STATUS();
     }, 3000);
+   
     return () => {
       window.clearInterval(intervalID);
     };
   }, []);
   return (
-    <div className="eq_status">
-      <div className="searchcode">
+    <div className='eq_status'>
+      <div className='searchcode'>
         <TextField
-          placeholder="Search Code"
+          placeholder='Search Code'
           value={searchString}
           onChange={(e) => {
             setSearchString(e.target.value);
           }}
         />
-      </div>
-      <div className="machinelist">
-        <div className="eqlist">
-          <div className="NM1">
-            <span className="machine_title">NM1</span>
-            <EQ_SUMMARY
-              EQ_DATA={eq_status.filter(
-                (element: EQ_STT, index: number) => element.FACTORY === "NM1",
-              )}
-            />
-            {eq_series.map((ele_series: string, index: number) => {
+        <label>
+          <b>FACTORY:</b>
+          <select
+            name='phanloai'
+            value={factory}
+            onChange={(e) => {
+              setFactory(e.target.value);
+              console.log(e.target.value)
+            }}
+            style={{ width: 160, height: 30 }}
+          >
+            <option value='NM1'>NM1</option>
+            <option value='NM2'>NM2</option>
+          </select>
+        </label>
+
+        <label>
+          <b>MACHINE:</b>
+          <select
+            name='machine2'
+            value={machine}
+            onChange={(e) => {
+              setMachine(e.target.value);
+              console.log(e.target.value)
+            }}
+            style={{ width: 160, height: 30 }}
+          >
+            {eq_series.map((ele: string, index: number) => {
               return (
-                <div className="FRlist">
+                <option key={index} value={ele}>
+                  {ele}
+                </option>
+              );
+            })}
+          </select>
+        </label>
+        <button onClick={()=> {
+          //autoScroll();
+          bottomRef.current?.scrollIntoView({behavior: 'smooth', block: 'end'});
+          console.log(bottomRef.current);
+          //scrollToPosition(3000);
+        }}>Auto Scroll</button>
+      </div>
+      <div className='machinelist'>
+        <div className='eqlist'>
+          <div className='NM1'>
+            <span className='machine_title'>NM1</span>
+            {/* <EQ_SUMMARY
+              EQ_DATA={eq_status.filter(
+                (element: EQ_STT, index: number) => element.FACTORY === factory && element.EQ_NAME=== machine
+              )}
+            /> */}
+            {eq_series.filter(
+                (element: string, index: number) =>  element === machine
+              ).map((ele_series: string, index: number) => {
+              return (
+                <div className='FRlist' key={index} ref={divRef}>                 
                   {eq_status
                     .filter(
                       (element: EQ_STT, index: number) =>
-                        element.FACTORY === "NM1" &&
-                        element?.EQ_NAME?.substring(0, 2) === ele_series,
+                        element.FACTORY === factory &&
+                        element?.EQ_NAME?.substring(0, 2) === machine
                     )
                     .map((element: EQ_STT, index: number) => {
                       return (
@@ -119,221 +198,19 @@ const EQ_STATUS = () => {
                           run_stop={element.EQ_ACTIVE === "OK" ? 1 : 0}
                           upd_time={element.UPD_DATE}
                           upd_empl={element.UPD_EMPL}
+                          machine_data={element}
                           onClick={() => {}}
                           onMouseEnter={() => {}}
                           onMouseLeave={() => {}}
                         />
                       );
                     })}
+                    <div ref={bottomRef} />
                 </div>
               );
             })}
-
-            {/*  <div className='FRlist'>
-            {eq_status
-              .filter(
-                (element: EQ_STT, index: number) =>
-                  element.FACTORY === "NM1" &&
-                  element.EQ_NAME.substring(0, 2) === "FR"
-              )
-              .map((element: EQ_STT, index: number) => {
-                return (
-                  <MACHINE_COMPONENT2
-                    search_string={searchString}                    
-                    key={index}
-                    factory={element.FACTORY}
-                    machine_name={element.EQ_NAME}
-                    eq_status={element.EQ_STATUS}
-                    current_g_name={element.G_NAME_KD}
-                    current_plan_id={element.CURR_PLAN_ID}
-                    current_step = {element.STEP}
-                    run_stop={element.EQ_ACTIVE === "OK" ? 1 : 0}
-                    upd_time ={element.UPD_DATE}
-                    upd_empl ={element.UPD_EMPL}                    
-                    onClick={() => {}}
-                    onMouseEnter={()=>{}}
-                    onMouseLeave={()=>{}}
-                  />
-                );
-              })}
           </div>
-          <div className='FRlist'>
-            {eq_status
-              .filter(
-                (element: EQ_STT, index: number) =>
-                  element.FACTORY === "NM1" &&
-                  element.EQ_NAME.substring(0, 2) === "SR"
-              )
-              .map((element: EQ_STT, index: number) => {
-                return (
-                  <MACHINE_COMPONENT2
-                    search_string={searchString}
-                    key={index}
-                    factory={element.FACTORY}
-                    machine_name={element.EQ_NAME}
-                    eq_status={element.EQ_STATUS}
-                    current_g_name={element.G_NAME_KD}
-                    current_step = {element.STEP}
-                    current_plan_id={element.CURR_PLAN_ID}
-                    run_stop={element.EQ_ACTIVE === "OK" ? 1 : 0}
-                    upd_time ={element.UPD_DATE}
-                    upd_empl ={element.UPD_EMPL}
-                    onClick={() => {}}
-                  />
-                );
-              })}
-          </div>
-          <div className='FRlist'>
-            {eq_status
-              .filter(
-                (element: EQ_STT, index: number) =>
-                  element.FACTORY === "NM1" &&
-                  element.EQ_NAME.substring(0, 2) === "DC"
-              )
-              .map((element: EQ_STT, index: number) => {
-                return (
-                  <MACHINE_COMPONENT2
-                    search_string={searchString}
-                    key={index}
-                    factory={element.FACTORY}
-                    machine_name={element.EQ_NAME}
-                    eq_status={element.EQ_STATUS}
-                    current_g_name={element.G_NAME_KD}
-                    current_step = {element.STEP}
-                    current_plan_id={element.CURR_PLAN_ID}
-                    run_stop={element.EQ_ACTIVE === "OK" ? 1 : 0}
-                    upd_time ={element.UPD_DATE}
-                    upd_empl ={element.UPD_EMPL}
-                    onClick={() => {}}
-                  />
-                );
-              })}
-          </div>
-          <div className='FRlist'>
-            {eq_status
-              .filter(
-                (element: EQ_STT, index: number) =>
-                  element.FACTORY === "NM1" &&
-                  element.EQ_NAME.substring(0, 2) === "ED"
-              )
-              .map((element: EQ_STT, index: number) => {
-                return (
-                  <MACHINE_COMPONENT2
-                    search_string={searchString}
-                    key={index}
-                    factory={element.FACTORY}
-                    machine_name={element.EQ_NAME}
-                    eq_status={element.EQ_STATUS}
-                    current_g_name={element.G_NAME_KD}
-                    current_step = {element.STEP}
-                    current_plan_id={element.CURR_PLAN_ID}
-                    run_stop={element.EQ_ACTIVE === "OK" ? 1 : 0}
-                    upd_time ={element.UPD_DATE}
-                    upd_empl ={element.UPD_EMPL}
-                    onClick={() => {}}
-                  />
-                );
-              })}
-          </div> */}
-          </div>
-        </div>
-        {getCompany() === "CMS" && (
-          <div className="eqinfo">
-            <div className="NM2">
-              <span className="machine_title">NM2</span>
-              <EQ_SUMMARY
-                EQ_DATA={eq_status.filter(
-                  (element: EQ_STT, index: number) => element.FACTORY === "NM2",
-                )}
-              />
-              {eq_series.map((ele_series: string, index: number) => {
-                return (
-                  <div className="FRlist">
-                    {eq_status
-                      .filter(
-                        (element: EQ_STT, index: number) =>
-                          element.FACTORY === "NM2" &&
-                          element?.EQ_NAME?.substring(0, 2) === ele_series,
-                      )
-                      .map((element: EQ_STT, index: number) => {
-                        return (
-                          <MACHINE_COMPONENT2
-                            search_string={searchString}
-                            key={index}
-                            factory={element.FACTORY}
-                            machine_name={element.EQ_NAME}
-                            eq_status={element.EQ_STATUS}
-                            current_g_name={element.G_NAME_KD}
-                            current_plan_id={element.CURR_PLAN_ID}
-                            current_step={element.STEP}
-                            run_stop={element.EQ_ACTIVE === "OK" ? 1 : 0}
-                            upd_time={element.UPD_DATE}
-                            upd_empl={element.UPD_EMPL}
-                            onClick={() => {}}
-                            onMouseEnter={() => {}}
-                            onMouseLeave={() => {}}
-                          />
-                        );
-                      })}
-                  </div>
-                );
-              })}
-
-              {/*  <div className='FRlist'>
-            {eq_status
-              .filter(
-                (element: EQ_STT, index: number) =>
-                  element.FACTORY === "NM2" &&
-                  element.EQ_NAME.substring(0, 2) === "FR"
-              )
-              .map((element: EQ_STT, index: number) => {
-                return (
-                  <MACHINE_COMPONENT2
-                    search_string={searchString}
-                    key={index}
-                    factory={element.FACTORY}
-                    machine_name={element.EQ_NAME}
-                    eq_status={element.EQ_STATUS}
-                    current_g_name={element.G_NAME_KD}
-                    current_plan_id={element.CURR_PLAN_ID}
-                    current_step = {element.STEP}
-                    run_stop={element.EQ_ACTIVE === "OK" ? 1 : 0}
-                    upd_time ={element.UPD_DATE}
-                    upd_empl ={element.UPD_EMPL}
-                    onClick={() => {}}
-                  />
-                );
-              })}
-          </div>
-          <div className='FRlist'>
-            {eq_status
-              .filter(
-                (element: EQ_STT, index: number) =>
-                  element.FACTORY === "NM2" &&
-                  element.EQ_NAME.substring(0, 2) === "ED"
-              )
-              .map((element: EQ_STT, index: number) => {
-                return (
-                  <MACHINE_COMPONENT2
-                    search_string={searchString}
-                    key={index}
-                    factory={element.FACTORY}
-                    machine_name={element.EQ_NAME}
-                    eq_status={element.EQ_STATUS}
-                    current_g_name={element.G_NAME_KD}
-                    current_step = {element.STEP}
-                    current_plan_id={element.CURR_PLAN_ID}
-                    run_stop={element.EQ_ACTIVE === "OK" ? 1 : 0}
-                    upd_time ={element.UPD_DATE}
-                    upd_empl ={element.UPD_EMPL}
-                    onClick={() => {}}
-                  />
-                );
-              })}
-          </div> */}
-            </div>
-          </div>
-        )}
+        </div>   
       </div>
     </div>
   );
