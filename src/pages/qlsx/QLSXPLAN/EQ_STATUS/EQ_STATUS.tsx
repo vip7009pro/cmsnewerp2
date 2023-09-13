@@ -13,34 +13,17 @@ import moment from "moment";
 import { UserContext } from "../../../../api/Context";
 import MACHINE_COMPONENT2 from "../Machine/MACHINE_COMPONENT2";
 import EQ_SUMMARY from "./EQ_SUMMARY";
-import { TextField } from "@mui/material";
+import { Checkbox, TextField } from "@mui/material";
 import { EQ_STT } from "../../../../api/GlobalInterface";
 
 const EQ_STATUS = () => {
-  const scrollDistance = 50;
-  const [factory, setFactory] = useState('NM1');
-  const [machine, setMachine] = useState('ED');
+  const [factory, setFactory] = useState("NM1");
+  const [machine, setMachine] = useState("ED");
   const [searchString, setSearchString] = useState("");
-  const [selection, setSelection] = useState<any>({
-    tab1: true,
-    tab2: false,
-    tab3: false,
-    tabycsx: false,
-    tabbanve: false,
-  });
-  const divRef = useRef(null);
-  const bottomRef = useRef(null);
-
-   const setNav = (choose: number) => {
-    if (choose === 1) {
-      setSelection({ ...selection, tab1: true, tab2: false, tab3: false });
-    } else if (choose === 2) {
-      setSelection({ ...selection, tab1: false, tab2: true, tab3: false });
-    } else if (choose === 3) {
-      setSelection({ ...selection, tab1: false, tab2: false, tab3: true });
-    }
-  };
-  const [eq_status_FULL, setEQ_STATUS_FULL] = useState<EQ_STT[]>([]);
+  const [onlyRunning, setOnlyRunning] = useState(false);
+  const [machine_number, setMachine_Number] = useState(12);
+  const [pagenum, setPageNum] = useState(1);
+  const page = useRef(1);
   const [eq_status, setEQ_STATUS] = useState<EQ_STT[]>([]);
   const [eq_series, setEQ_SERIES] = useState<string[]>([]);
   const handle_loadEQ_STATUS = () => {
@@ -54,21 +37,21 @@ const EQ_STATUS = () => {
                 ...element,
                 id: index,
               };
-            },
+            }
           );
           //console.log(loaded_data);
-          
-          setEQ_STATUS(loaded_data);          
+
+          setEQ_STATUS(loaded_data);
           setEQ_SERIES([
             ...new Set(
               loaded_data.map((e: EQ_STT, index: number) => {
                 return e.EQ_SERIES === undefined ? "" : e.EQ_SERIES;
-              }),
+              })
             ),
           ]);
         } else {
           setEQ_STATUS([]);
-          setEQ_SERIES([]);         
+          setEQ_SERIES([]);
         }
       })
       .catch((error) => {
@@ -76,41 +59,26 @@ const EQ_STATUS = () => {
       });
   };
 
-
-
-  const autoScroll = () => {
-    if (divRef.current) {
-      const currentScrollTop = divRef.current.scrollTop;
-      const targetScrollTop = currentScrollTop + scrollDistance;
-
-      const animateScroll = () => {
-        if (divRef.current.scrollTop < targetScrollTop) {
-          divRef.current.scrollTop += 5; // Adjust the scroll speed as needed
-          requestAnimationFrame(animateScroll);
-        }
-      };
-
-      animateScroll();
-    }
-  };
-
-  const scrollToPosition = (position: number) => {
-    if (divRef.current) {
-      divRef.current.scrollTop = position;
-    }
-  };
-
-
   useEffect(() => {
     handle_loadEQ_STATUS();
     let intervalID = window.setInterval(() => {
       handle_loadEQ_STATUS();
     }, 3000);
-   
+
+    let intervalID2 = window.setInterval(() => {
+      if (page.current >= 3) {
+        page.current = 1;
+      } else {
+        page.current += 1;
+      }
+      setPageNum(page.current);
+    }, 5000);
+
     return () => {
       window.clearInterval(intervalID);
+      window.clearInterval(intervalID2);
     };
-  }, []);
+  }, [page.current]);
   return (
     <div className='eq_status'>
       <div className='searchcode'>
@@ -128,7 +96,7 @@ const EQ_STATUS = () => {
             value={factory}
             onChange={(e) => {
               setFactory(e.target.value);
-              console.log(e.target.value)
+              console.log(e.target.value);
             }}
             style={{ width: 160, height: 30 }}
           >
@@ -136,7 +104,6 @@ const EQ_STATUS = () => {
             <option value='NM2'>NM2</option>
           </select>
         </label>
-
         <label>
           <b>MACHINE:</b>
           <select
@@ -144,7 +111,7 @@ const EQ_STATUS = () => {
             value={machine}
             onChange={(e) => {
               setMachine(e.target.value);
-              console.log(e.target.value)
+              console.log(e.target.value);
             }}
             style={{ width: 160, height: 30 }}
           >
@@ -157,12 +124,18 @@ const EQ_STATUS = () => {
             })}
           </select>
         </label>
-        <button onClick={()=> {
-          //autoScroll();
-          bottomRef.current?.scrollIntoView({behavior: 'smooth', block: 'end'});
-          console.log(bottomRef.current);
-          //scrollToPosition(3000);
-        }}>Auto Scroll</button>
+        <button style={{ height: "30px" }} onClick={() => {}}>
+          Auto Scroll
+        </button>
+        <Checkbox
+          checked={onlyRunning}
+          onChange={(e) => {
+            //console.log(onlyRunning);
+            setOnlyRunning(!onlyRunning);
+          }}
+          inputProps={{ "aria-label": "controlled" }}
+        />
+        Only Running
       </div>
       <div className='machinelist'>
         <div className='eqlist'>
@@ -173,44 +146,75 @@ const EQ_STATUS = () => {
                 (element: EQ_STT, index: number) => element.FACTORY === factory && element.EQ_NAME=== machine
               )}
             /> */}
-            {eq_series.filter(
-                (element: string, index: number) =>  element === machine
-              ).map((ele_series: string, index: number) => {
-              return (
-                <div className='FRlist' key={index} ref={divRef}>                 
-                  {eq_status
-                    .filter(
-                      (element: EQ_STT, index: number) =>
-                        element.FACTORY === factory &&
-                        element?.EQ_NAME?.substring(0, 2) === machine
-                    )
-                    .map((element: EQ_STT, index: number) => {
-                      return (
-                        <MACHINE_COMPONENT2
-                          search_string={searchString}
-                          key={index}
-                          factory={element.FACTORY}
-                          machine_name={element.EQ_NAME}
-                          eq_status={element.EQ_STATUS}
-                          current_g_name={element.G_NAME_KD}
-                          current_plan_id={element.CURR_PLAN_ID}
-                          current_step={element.STEP}
-                          run_stop={element.EQ_ACTIVE === "OK" ? 1 : 0}
-                          upd_time={element.UPD_DATE}
-                          upd_empl={element.UPD_EMPL}
-                          machine_data={element}
-                          onClick={() => {}}
-                          onMouseEnter={() => {}}
-                          onMouseLeave={() => {}}
-                        />
-                      );
-                    })}
-                    <div ref={bottomRef} />
-                </div>
-              );
-            })}
+            {eq_series
+              .filter((element: string, index: number) => element === machine)
+              .map((ele_series: string, index: number) => {
+                return (
+                  <div id='machinediv' className='FRlist' key={index}>
+                    {eq_status
+                      .filter(
+                        (element: EQ_STT, index: number) =>
+                          element.FACTORY === factory &&
+                          element?.EQ_NAME?.substring(0, 2) === machine &&
+                          ((onlyRunning === true &&
+                            element?.EQ_STATUS === "MASS") ||
+                            element?.EQ_STATUS === "SETTING" ||
+                            onlyRunning == false)
+                      )
+                      .map((element: EQ_STT, index: number) => {
+                        if (element.EQ_SERIES === "ED") {
+                          if (
+                            index >= machine_number * (page.current - 1) &&
+                            index < machine_number * page.current
+                          ) {
+                            return (
+                              <MACHINE_COMPONENT2
+                                search_string={searchString}
+                                key={index}
+                                factory={element.FACTORY}
+                                machine_name={element.EQ_NAME}
+                                eq_status={element.EQ_STATUS}
+                                current_g_name={element.G_NAME_KD}
+                                current_plan_id={element.CURR_PLAN_ID}
+                                current_step={element.STEP}
+                                run_stop={element.EQ_ACTIVE === "OK" ? 1 : 0}
+                                upd_time={element.UPD_DATE}
+                                upd_empl={element.UPD_EMPL}
+                                machine_data={element}
+                                onClick={() => {}}
+                                onMouseEnter={() => {}}
+                                onMouseLeave={() => {}}
+                              />
+                            );
+                          } else {
+                          }
+                        } else {
+                          return (
+                            <MACHINE_COMPONENT2
+                              search_string={searchString}
+                              key={index}
+                              factory={element.FACTORY}
+                              machine_name={element.EQ_NAME}
+                              eq_status={element.EQ_STATUS}
+                              current_g_name={element.G_NAME_KD}
+                              current_plan_id={element.CURR_PLAN_ID}
+                              current_step={element.STEP}
+                              run_stop={element.EQ_ACTIVE === "OK" ? 1 : 0}
+                              upd_time={element.UPD_DATE}
+                              upd_empl={element.UPD_EMPL}
+                              machine_data={element}
+                              onClick={() => {}}
+                              onMouseEnter={() => {}}
+                              onMouseLeave={() => {}}
+                            />
+                          );
+                        }
+                      })}
+                  </div>
+                );
+              })}
           </div>
-        </div>   
+        </div>
       </div>
     </div>
   );
