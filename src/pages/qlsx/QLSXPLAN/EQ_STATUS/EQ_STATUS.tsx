@@ -113,7 +113,7 @@ const EQ_STATUS = () => {
               setFactory(e.target.value);
               console.log(e.target.value);
             }}
-            style={{ width: 160, height: 30 }}
+            style={{ width: 160, height: 20 }}
           >
             <option value='NM1'>NM1</option>
             <option value='NM2'>NM2</option>
@@ -128,7 +128,7 @@ const EQ_STATUS = () => {
               setMachine(e.target.value);
               console.log(e.target.value);
             }}
-            style={{ width: 160, height: 30 }}
+            style={{ width: 160, height: 20 }}
           >
             {eq_series.map((ele: string, index: number) => {
               return (
@@ -140,8 +140,9 @@ const EQ_STATUS = () => {
           </select>
         </label>
         Machine Show:
-        <TextField
-          placeholder='Number of machine shown'
+        <input
+          type='text'
+          placeholder='Number machine'
           value={machine_number}
           onChange={(e) => {
             setMachine_Number(Number(e.target.value));
@@ -193,8 +194,9 @@ const EQ_STATUS = () => {
           inputProps={{ "aria-label": "controlled" }}
         />
         Only Running
-        <TextField
-          placeholder='Search Code'
+        <input
+          type='text'
+          placeholder='Search code'
           value={searchString}
           onChange={(e) => {
             setSearchString(e.target.value);
