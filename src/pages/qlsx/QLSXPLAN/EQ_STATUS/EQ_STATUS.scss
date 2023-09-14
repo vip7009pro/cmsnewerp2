@@ -15,6 +15,10 @@
 
     .searchcode {
       display: flex;
+      align-items: center;      
+      justify-content: center;
+      width: 100%;
+      background-color: rgb(218, 255, 169);
       .css-1t8l2tu-MuiInputBase-input-MuiOutlinedInput-input {
         padding: 5px;
       }

@@ -253,11 +253,7 @@ const CHITHI_COMPONENT = ({ DATA }: { DATA: QLSXPLANDATA }) => {
     EQ2: string,
     EQ3: string,
     EQ4: string,
-  ) => {
-    console.log(EQ1);
-    console.log(EQ2);
-    console.log(EQ3);
-    console.log(EQ4);
+  ) => {   
     let maxprocess: number = 0;
     if (["NA", "NO", "", null].indexOf(EQ1) === -1) maxprocess++;
     if (["NA", "NO", "", null].indexOf(EQ2) === -1) maxprocess++;

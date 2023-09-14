@@ -6,7 +6,7 @@ import React, {
   useRef,
   useState,
 } from "react";
-import "./EQ_STATUS2.scss";
+
 import Swal from "sweetalert2";
 import { generalQuery, getCompany } from "../../../../api/Api";
 import moment from "moment";
@@ -15,8 +15,9 @@ import MACHINE_COMPONENT3 from "../Machine/MACHINE_COMPONENT3";
 import EQ_SUMMARY from "./EQ_SUMMARY";
 import { TextField } from "@mui/material";
 import { EQ_STT } from "../../../../api/GlobalInterface";
+import "./EQ_STATUS2.scss";
 
-const EQ_STATUS = () => {
+const EQ_STATUS2 = () => {
   const [searchString, setSearchString] = useState("");
   const [selection, setSelection] = useState<any>({
     tab1: true,
@@ -77,7 +78,7 @@ const EQ_STATUS = () => {
     };
   }, []);
   return (
-    <div className="eq_status">
+    <div className="eq_status2">
       <div className="searchcode">
         <TextField
           placeholder="Search Code"
@@ -339,4 +340,4 @@ const EQ_STATUS = () => {
     </div>
   );
 };
-export default EQ_STATUS;
+export default EQ_STATUS2;

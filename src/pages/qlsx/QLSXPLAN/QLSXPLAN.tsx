@@ -9,6 +9,7 @@ import PLAN_DATATB from "./LICHSUCHITHITABLE/PLAN_DATATB";
 import PLAN_STATUS from "./PLAN_STATUS/PLAN_STATUS";
 import EQ_STATUS from "./EQ_STATUS/EQ_STATUS";
 import KHOAO from "./KHOAO/KHOAO";
+import EQ_STATUS2 from "./EQ_STATUS/EQ_STATUS2";
 
 /* const EQ_STATUS= lazy(()=> import('./EQ_STATUS/EQ_STATUS'));
 const KHOAO= lazy(()=> import('./KHOAO/KHOAO'));
@@ -253,6 +254,16 @@ const QLSXPLAN = () => {
               color: selection.tab8 === true ? "yellow" : "yellow",
             }}
           >
+            <span className="mininavtext">TV SHOW</span>
+          </div>
+          <div
+            className="mininavitem"
+            onClick={() => setNav(9)}
+            style={{
+              backgroundColor: selection.tab9 === true ? "#02c712" : "#abc9ae",
+              color: selection.tab9 === true ? "yellow" : "yellow",
+            }}
+          >
             <span className="mininavtext">EQ STATUS</span>
           </div>
           <div
@@ -306,11 +317,11 @@ const QLSXPLAN = () => {
             <EQ_STATUS />
           </div>
         )}
-        {/* {selection.tab9 && (
-        <div className='datadtc'>
-          <KHCT/>                               
-        </div>
-      )} */}
+        {selection.tab9 && (
+          <div className="datadtc">
+            <EQ_STATUS2 />
+          </div>
+        )}       
         {selection.tab10 && (
           <div className="datadtc">
             <KHOAO />

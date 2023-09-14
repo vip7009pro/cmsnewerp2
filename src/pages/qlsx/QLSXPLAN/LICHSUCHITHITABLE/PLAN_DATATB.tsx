@@ -97,6 +97,7 @@ const PLAN_DATATB = () => {
   const clearSelection = () => {
     if (dataGridRef.current) {      
       dataGridRef.current.instance.clearSelection();
+      qlsxplandatafilter.current = [];
       console.log(dataGridRef.current);
     }
   };
@@ -139,7 +140,7 @@ const PLAN_DATATB = () => {
             { EQ_NAME: "NO" },
             { EQ_NAME: "NA" }
           );
-          console.log(loadeddata);
+          //console.log(loadeddata);
           setMachine_List(loadeddata);
         } else {
           //Swal.fire("Thông báo", "Lỗi BOM SX: " + response.data.message, "error");
@@ -1908,7 +1909,7 @@ const PLAN_DATATB = () => {
     () => (
       <div className='datatb'>
         <CustomResponsiveContainer>
-          <DataGrid            
+          <DataGrid
             autoNavigateToFocusedRow={true}
             allowColumnReordering={true}
             allowColumnResizing={true}
@@ -2026,7 +2027,20 @@ const PLAN_DATATB = () => {
                 </IconButton>
                 <IconButton
                   className='buttonIcon'
-                  onClick={() => {
+                  onClick={() => {                    
+
+                    let ycsx_number: number = [
+                      ...new Set(
+                        qlsxplandatafilter.current.map(
+                          (e: QLSXPLANDATA, index: number) => {
+                            return e.PROD_REQUEST_NO;
+                          }
+                        )
+                      ),
+                    ].length;
+
+                    console.log("ycsx_number", ycsx_number);
+
                     if (
                       qlsxplandatafilter.current !== undefined &&
                       qlsxplandatafilter.current.length > 0
@@ -2052,26 +2066,34 @@ const PLAN_DATATB = () => {
                           "error"
                         );
                       } else {
-                        let chithimain: QLSXPLANDATA[] =
-                          qlsxplandatafilter.current.filter(
-                            (element: QLSXPLANDATA, index: number) =>
-                              element.STEP === 0
-                          );
-                        if (chithimain.length === 1) {
-                          setShowChiThi2(true);
-                          setChiThiListRender2(
-                            renderChiThi2(qlsxplandatafilter.current)
-                          );
-                        } else if (chithimain.length === 0) {
-                          Swal.fire(
-                            "Thông báo",
-                            "Chưa có chỉ thị chính (B0)",
-                            "error"
-                          );
+                        if (ycsx_number === 1) {
+                          let chithimain: QLSXPLANDATA[] =
+                            qlsxplandatafilter.current.filter(
+                              (element: QLSXPLANDATA, index: number) =>
+                                element.STEP === 0
+                            );
+                          if (chithimain.length === 1) {
+                            setShowChiThi2(true);
+                            setChiThiListRender2(
+                              renderChiThi2(qlsxplandatafilter.current)
+                            );
+                          } else if (chithimain.length === 0) {
+                            Swal.fire(
+                              "Thông báo",
+                              "Chưa có chỉ thị chính (B0)",
+                              "error"
+                            );
+                          } else {
+                            Swal.fire(
+                              "Thông báo",
+                              "Chỉ được chọn 1 chỉ thị B0",
+                              "error"
+                            );
+                          }
                         } else {
                           Swal.fire(
                             "Thông báo",
-                            "Chỉ được chọn 1 chỉ thị B0",
+                            "Chỉ được chọn các chỉ thị của 1 YCSX",
                             "error"
                           );
                         }
@@ -2126,19 +2148,19 @@ const PLAN_DATATB = () => {
               showInfo={true}
               infoText='Page #{0}. Total: {1} ({2} items)'
               displayMode='compact'
-            />      
+            />
             <Column
               dataField='id'
               caption='ID'
               width={80}
               allowEditing={false}
-            ></Column>      
+            ></Column>
             <Column
               dataField='PROD_REQUEST_NO'
               caption='YCSX NO'
               width={80}
               allowEditing={false}
-            ></Column>      
+            ></Column>
             <Column
               dataField='PLAN_ID'
               caption='PLAN_ID'
@@ -2192,7 +2214,7 @@ const PLAN_DATATB = () => {
                 );
               }}
               allowEditing={true}
-            ></Column>            
+            ></Column>
             <Column
               dataField='PLAN_QTY'
               caption='PLAN_QTY'
@@ -2293,7 +2315,7 @@ const PLAN_DATATB = () => {
               }}
               allowEditing={false}
             ></Column>
-             <Column
+            <Column
               dataField='SETTING_START_TIME'
               caption='SETTING_START'
               width={100}
@@ -2306,7 +2328,7 @@ const PLAN_DATATB = () => {
               }}
               allowEditing={false}
             ></Column>
-             <Column
+            <Column
               dataField='MASS_START_TIME'
               caption='MASS_START'
               width={90}
@@ -2319,7 +2341,7 @@ const PLAN_DATATB = () => {
               }}
               allowEditing={false}
             ></Column>
-             <Column
+            <Column
               dataField='MASS_END_TIME'
               caption='MASS_END'
               width={80}
@@ -2332,7 +2354,7 @@ const PLAN_DATATB = () => {
               }}
               allowEditing={false}
             ></Column>
-            
+
             <Column
               dataField='XUATDAOFILM'
               caption='Xuất Dao'
@@ -2569,8 +2591,7 @@ const PLAN_DATATB = () => {
               }}
               allowEditing={false}
             ></Column>
-            
-            
+
             <Summary>
               <TotalItem
                 alignment='right'
@@ -2744,7 +2765,20 @@ const PLAN_DATATB = () => {
                 </IconButton>
                 <IconButton
                   className='buttonIcon'
-                  onClick={() => {
+                  onClick={() => {                    
+
+                    let ycsx_number: number = [
+                      ...new Set(
+                        qlsxplandatafilter.current.map(
+                          (e: QLSXPLANDATA, index: number) => {
+                            return e.PROD_REQUEST_NO;
+                          }
+                        )
+                      ),
+                    ].length;
+
+                    console.log("ycsx_number", ycsx_number);
+
                     if (
                       qlsxplandatafilter.current !== undefined &&
                       qlsxplandatafilter.current.length > 0
@@ -2770,26 +2804,34 @@ const PLAN_DATATB = () => {
                           "error"
                         );
                       } else {
-                        let chithimain: QLSXPLANDATA[] =
-                          qlsxplandatafilter.current.filter(
-                            (element: QLSXPLANDATA, index: number) =>
-                              element.STEP === 0
-                          );
-                        if (chithimain.length === 1) {
-                          setShowChiThi2(true);
-                          setChiThiListRender2(
-                            renderChiThi2(qlsxplandatafilter.current)
-                          );
-                        } else if (chithimain.length === 0) {
-                          Swal.fire(
-                            "Thông báo",
-                            "Chưa có chỉ thị chính (B0)",
-                            "error"
-                          );
+                        if (ycsx_number === 1) {
+                          let chithimain: QLSXPLANDATA[] =
+                            qlsxplandatafilter.current.filter(
+                              (element: QLSXPLANDATA, index: number) =>
+                                element.STEP === 0
+                            );
+                          if (chithimain.length === 1) {
+                            setShowChiThi2(true);
+                            setChiThiListRender2(
+                              renderChiThi2(qlsxplandatafilter.current)
+                            );
+                          } else if (chithimain.length === 0) {
+                            Swal.fire(
+                              "Thông báo",
+                              "Chưa có chỉ thị chính (B0)",
+                              "error"
+                            );
+                          } else {
+                            Swal.fire(
+                              "Thông báo",
+                              "Chỉ được chọn 1 chỉ thị B0",
+                              "error"
+                            );
+                          }
                         } else {
                           Swal.fire(
                             "Thông báo",
-                            "Chỉ được chọn 1 chỉ thị B0",
+                            "Chỉ được chọn các chỉ thị của 1 YCSX",
                             "error"
                           );
                         }
@@ -3961,8 +4003,6 @@ const PLAN_DATATB = () => {
     ),
     [chithidatatable]
   );
-  console.log("render lai");
-
  
   useEffect(() => {
     getMachineList();
@@ -4107,7 +4147,7 @@ const PLAN_DATATB = () => {
                 >
                   MOVE PLAN
                 </button>
-                <button
+                {/* <button
                   className='tranhatky'
                   onClick={() => {
                     console.log(" da xoa");
@@ -4117,7 +4157,7 @@ const PLAN_DATATB = () => {
                   }}
                 >
                   Reset selection
-                </button>
+                </button> */}
               </div>
             </div>
           </div>

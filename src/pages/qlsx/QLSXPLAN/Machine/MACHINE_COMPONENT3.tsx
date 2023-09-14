@@ -35,7 +35,7 @@ const MACHINE_COMPONENT2 = (machine_data: MachineInterface2) => {
   }
   return (
     <div
-      className="mc2"
+      className="mc3"
       style={{
         WebkitFilter:
           machine_data.current_g_name === null
