@@ -140,7 +140,7 @@ const EQ_STATUS = () => {
       <div className='machinelist'>
         <div className='eqlist'>
           <div className='NM1'>
-            <span className='machine_title'>NM1</span>
+            <span className='machine_title'>{factory}</span>
             {/* <EQ_SUMMARY
               EQ_DATA={eq_status.filter(
                 (element: EQ_STT, index: number) => element.FACTORY === factory && element.EQ_NAME=== machine

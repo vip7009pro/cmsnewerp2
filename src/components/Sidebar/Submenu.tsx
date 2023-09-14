@@ -69,6 +69,7 @@ import QLGN from "../../pages/rnd/quanlygiaonhandaofilm/QLGN";
 import KHOTPNEW from "../../pages/kho/khotp_new/KHOTPNEW";
 import KHOTP from "../../pages/kho/khotp/KHOTP";
 import { ELE_ARRAY, UserData } from "../../api/GlobalInterface";
+import EQ_STATUS2 from "../../pages/qlsx/QLSXPLAN/EQ_STATUS/EQ_STATUS2";
 
 interface MENU_LIST_DATA {
   MENU_CODE: string;
@@ -190,7 +191,7 @@ const SubMenu = ({ item }: { item: any }) => {
     {
       MENU_CODE: "KD11",
       MENU_NAME: getlang("eqstatus", lang),
-      MENU_ITEM: <EQ_STATUS />,
+      MENU_ITEM: <EQ_STATUS2 />,
     },
     {
       MENU_CODE: "KD12",

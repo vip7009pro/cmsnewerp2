@@ -235,8 +235,8 @@ const MACHINE_COMPONENT2 = (machine_data: MachineInterface2) => {
               <img
                 width={88}
                 height={100}
-                src={"/Picture_NS/NS_" + "NHU1903" + ".jpg"}
-                /* src={"/Picture_NS/NS_" + machine_data.upd_empl + ".jpg"} */
+                /* src={"/Picture_NS/NS_" + "NHU1903" + ".jpg"} */
+                src={"/Picture_NS/NS_" + machine_data.upd_empl + ".jpg"}
                 alt={"congnhan"}
               ></img>
             </div>
