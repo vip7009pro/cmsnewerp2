@@ -27,16 +27,16 @@ interface MYCHAMCONG {
   MAX_TIME: string;
 }
 export function LinearProgressWithLabel(
-  props: LinearProgressProps & { value: number },
+  props: LinearProgressProps & { value: number }
 ) {
   return (
     <Box sx={{ display: "flex", alignItems: "center" }}>
       <Box sx={{ width: "100%", mr: 1 }}>
-        <LinearProgress variant="determinate" {...props} />
+        <LinearProgress variant='determinate' {...props} />
       </Box>
       <Box sx={{ minWidth: 35 }}>
-        <Typography variant="body2" color="text.secondary">{`${Math.round(
-          props.value,
+        <Typography variant='body2' color='text.secondary'>{`${Math.round(
+          props.value
         )}%`}</Typography>
       </Box>
     </Box>
@@ -46,13 +46,14 @@ export function LinearProgressWithLabel(
 export default function AccountInfo() {
   const cookies = new Cookies();
   const userdata: UserData | undefined = useSelector(
-    (state: RootState) => state.totalSlice.userData,
+    (state: RootState) => state.totalSlice.userData
   );
   const company: string = useSelector(
-    (state: RootState) => state.totalSlice.company,
+    (state: RootState) => state.totalSlice.company
   );
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
 
+  const [webver, setwebver] = useState(0);
   const dispatch = useDispatch();
   const [logoutID, setLogOutID] = useState("");
   const [mychamcong, setMyChamCong] = useState<MYCHAMCONG>();
@@ -84,6 +85,25 @@ export default function AccountInfo() {
     return count;
   }
   days = getBusinessDatesCount(new Date(startOfYear), new Date());
+  const setWebVer = (web_ver: number) => {
+    generalQuery("setWebVer", {
+      WEB_VER: web_ver,
+    })
+      .then((response) => {
+        if (response.data.tk_status !== "NG") {
+          Swal.fire("Thông báo", "Set web ver thành công", "success");
+        } else {
+          Swal.fire(
+            "Thông báo",
+            "Set web ver thất bại: " + response.data.message,
+            "error"
+          );
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
   const getData = () => {
     let insertData = {};
     generalQuery("workdaycheck", insertData)
@@ -145,17 +165,17 @@ export default function AccountInfo() {
           loaded_data.MIN_TIME = loaded_data.MIN_TIME?.substring(11, 19);
           loaded_data.MAX_TIME = loaded_data.MAX_TIME?.substring(11, 19);
           let tempminhour: number = Number(
-            loaded_data.MIN_TIME?.substring(0, 2),
+            loaded_data.MIN_TIME?.substring(0, 2)
           );
           let tempminminute: number = Number(
-            loaded_data.MIN_TIME?.substring(3, 5),
+            loaded_data.MIN_TIME?.substring(3, 5)
           );
 
           let tempmaxhour: number = Number(
-            loaded_data.MAX_TIME?.substring(0, 2),
+            loaded_data.MAX_TIME?.substring(0, 2)
           );
           let tempmaxminute: number = Number(
-            loaded_data.MAX_TIME?.substring(3, 5),
+            loaded_data.MAX_TIME?.substring(3, 5)
           );
 
           /* console.log('tempminhour',tempminhour);
@@ -210,7 +230,7 @@ export default function AccountInfo() {
           Swal.fire(
             "Thông báo",
             "Upload file thất bại:" + response.data.message,
-            "error",
+            "error"
           );
         }
       })
@@ -240,7 +260,7 @@ export default function AccountInfo() {
   };
   return (
     <div
-      className="accountinfo"
+      className='accountinfo'
       style={{
         backgroundImage: `${
           company === "CMS"
@@ -249,12 +269,12 @@ export default function AccountInfo() {
         }`,
       }}
     >
-      <h1 className="text-3xl">
+      <h1 className='text-3xl'>
         {/* Thông tin của bạn */}
         {getsentence(17, lang)}
       </h1>
 
-      <div className="panelhome">
+      <div className='panelhome'>
         <div className={`cot0 ${userdata?.EMPL_IMAGE === "Y" ? "on" : "off"}`}>
           {userdata?.EMPL_IMAGE === "Y" && (
             <img
@@ -266,18 +286,18 @@ export default function AccountInfo() {
           )}
         </div>
         <div className={`cot1 ${userdata?.EMPL_IMAGE === "Y" ? "on" : "off"}`}>
-          <h5 className="text-3xl">
+          <h5 className='text-3xl'>
             {/* Thông tin nhân viên */}
             {getsentence(18, lang)}:
           </h5>
           <ul>
-            <div className="diemdanhinfo">
-              <div className="chamcongtitle">
+            <div className='diemdanhinfo'>
+              <div className='chamcongtitle'>
                 Chấm công ngày: {moment().format("YYYY-MM-DD")}
               </div>
-              <div className="chamconginfo">
+              <div className='chamconginfo'>
                 <div
-                  className="chamcongmin"
+                  className='chamcongmin'
                   style={{
                     backgroundImage: `${
                       company === "CMS"
@@ -291,7 +311,7 @@ export default function AccountInfo() {
                     : "Chưa chấm"}
                 </div>
                 <div
-                  className="chamcongmax"
+                  className='chamcongmax'
                   style={{
                     backgroundImage: `${
                       company === "CMS"
@@ -307,77 +327,77 @@ export default function AccountInfo() {
               </div>
             </div>
 
-            <li className="emplInfoList">
+            <li className='emplInfoList'>
               {" "}
               {/*  Họ và tên */}
               {getsentence(19, lang)}: {userdata?.MIDLAST_NAME}{" "}
               {userdata?.FIRST_NAME}
             </li>
-            <li className="emplInfoList">
+            <li className='emplInfoList'>
               {" "}
               {/* Mã nhân sự */}
               {getsentence(20, lang)}: {userdata?.CMS_ID}
             </li>
-            <li className="emplInfoList">
+            <li className='emplInfoList'>
               {" "}
               {/* Mã ERP */}
               {getsentence(21, lang)}: {userdata?.EMPL_NO}
             </li>
-            <li className="emplInfoList">
+            <li className='emplInfoList'>
               {" "}
               {/* Ngày tháng năm sinh */}
               {getsentence(22, lang)}: {DOB().slice(0, 10)}
             </li>
-            <li className="emplInfoList">
+            <li className='emplInfoList'>
               {" "}
               {/* Quê quán */}
               {getsentence(23, lang)}: {userdata?.HOMETOWN}
             </li>
-            <li className="emplInfoList">
+            <li className='emplInfoList'>
               {" "}
               {/* Địa chỉ */}
               {getsentence(24, lang)}: {userdata?.ADD_VILLAGE}-
               {userdata?.ADD_COMMUNE}-{userdata?.ADD_DISTRICT}-
               {userdata?.ADD_PROVINCE}
             </li>
-            <li className="emplInfoList">
+            <li className='emplInfoList'>
               {" "}
               {/* Bộ phận chính */}
               {getsentence(25, lang)}: {userdata?.MAINDEPTNAME}
             </li>
-            <li className="emplInfoList">
+            <li className='emplInfoList'>
               {" "}
               {/* Bộ phận phụ */}
               {getsentence(26, lang)}: {userdata?.SUBDEPTNAME}
             </li>
-            <li className="emplInfoList">
+            <li className='emplInfoList'>
               {" "}
               {/*  Vị trí làm việc */}
               {getsentence(27, lang)}: {userdata?.WORK_POSITION_NAME}
             </li>
-            <li className="emplInfoList">
+            <li className='emplInfoList'>
               {" "}
               {/* Nhóm điểm danh */}
               {getsentence(28, lang)}: {userdata?.ATT_GROUP_CODE}
             </li>
-            <li className="emplInfoList">
+            <li className='emplInfoList'>
               {" "}
               {/* Chức vụ */}
               {getsentence(29, lang)}: {userdata?.JOB_NAME}
             </li>
             {userdata?.EMPL_IMAGE !== "Y" && (
-              <li className="emplInfoList">
+              <li className='emplInfoList'>
                 {" "}
-                <div className="uploadfile">
+                <div className='uploadfile'>
                   {" "}
                   Avatar:
-                  <IconButton className="buttonIcon" onClick={uploadFile2}>
-                    <AiOutlineCloudUpload color="yellow" size={25} />
+                  <IconButton className='buttonIcon' onClick={uploadFile2}>
+                    <AiOutlineCloudUpload color='yellow' size={25} />
                     Upload
                   </IconButton>
                   <input
-                    accept=".jpg"
-                    type="file"
+                    accept='.jpg'
+                    type='file'
                     onChange={(e: any) => {
                       setFile(e.target.files[0]);
                       console.log(e.target.files[0]);
@@ -389,7 +409,7 @@ export default function AccountInfo() {
           </ul>
         </div>
         <div className={`cot2 ${userdata?.EMPL_IMAGE === "Y" ? "on" : "off"}`}>
-          <h3 className="h3h3" style={{ color: "#cc33ff" }}>
+          <h3 className='h3h3' style={{ color: "#cc33ff" }}>
             1. {/* Từ đầu năm đến giờ có */}
             {getsentence(30, lang)} : {Math.floor(days)} {/* ngày */}{" "}
             {getsentence(31, lang)}
@@ -401,7 +421,7 @@ export default function AccountInfo() {
               value={(workday / Math.floor(days)) * 100}
             />
           </Box>
-          <h3 className="h3h3" style={{ color: "purple" }}>
+          <h3 className='h3h3' style={{ color: "purple" }}>
             2. {/* Số ngày bạn đi làm */} {getsentence(32, lang)}: {workday}{" "}
             {/* ngày */}
             {getsentence(31, lang)}
@@ -413,7 +433,7 @@ export default function AccountInfo() {
               value={Math.floor((overtimeday / workday) * 100)}
             />
           </Box>
-          <h3 className="h3h3" style={{ color: "blue" }}>
+          <h3 className='h3h3' style={{ color: "blue" }}>
             3. {/*Số ngày bạn tăng ca*/}
             {getsentence(33, lang)} : {overtimeday} {/* ngày */}
             {getsentence(31, lang)}
@@ -424,28 +444,28 @@ export default function AccountInfo() {
               value={Math.floor((countxacnhan / workday) * 100)}
             />
           </Box>
-          <h3 className="h3h3" style={{ color: "rgb(121 38 222)" }}>
+          <h3 className='h3h3' style={{ color: "rgb(121 38 222)" }}>
             4. {/*Số ngày quên chấm công */}
             {getsentence(34, lang)} : {countxacnhan} {/* ngày */}
             {getsentence(31, lang)}
           </h3>{" "}
           <br></br>
-          <h3 className="h3h3" style={{ color: "red" }}>
+          <h3 className='h3h3' style={{ color: "red" }}>
             5. {/* Số ngày bạn đăng ký nghỉ (ko tính chủ nhật và nửa phép) */}
             {getsentence(35, lang)}: {nghiday} {/* ngày */}{" "}
             {getsentence(31, lang)}
           </h3>{" "}
           <br></br>
-          <h3 className="h3h3" style={{ color: "black" }}>
+          <h3 className='h3h3' style={{ color: "black" }}>
             6. {/* Thưởng phạt: Khen thưởng */} {getsentence(36, lang)}:{" "}
             {/*Khen thuong*/}
             {getsentence(37, lang)} {thuongphat.count_thuong} , {/* Kỷ luật */}
             {getsentence(38, lang)}: {thuongphat.count_phat}
           </h3>{" "}
-          <h3 className="h3h3" style={{ color: "black" }}>
+          <h3 className='h3h3' style={{ color: "black" }}>
             {userdata?.EMPL_NO === "NHU1903" && (
               <input
-                type="text"
+                type='text'
                 value={logoutID}
                 onChange={(e) => {
                   setLogOutID(e.target.value);
@@ -462,11 +482,33 @@ export default function AccountInfo() {
                         command: "logout",
                         EMPL_NO: logoutID,
                       },
-                    }),
+                    })
                   );
                 }}
               >
                 X
+              </Button>
+            )}
+            {userdata?.EMPL_NO === "NHU1903" && (
+              <input
+                type='text'
+                value={webver}
+                onChange={(e) => {
+                  setwebver(Number(e.target.value));
+                }}
+              ></input>
+            )}
+            {userdata?.EMPL_NO === "NHU1903" && (
+              <Button
+                onClick={() => {
+                  if (webver !== 0) {
+                    setWebVer(webver);
+                  } else {
+                    Swal.fire("Thông báo", "Không setver =0 ", "warning");
+                  }
+                }}
+              >
+                Upver
               </Button>
             )}
           </h3>{" "}

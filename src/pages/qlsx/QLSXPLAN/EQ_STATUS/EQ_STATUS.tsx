@@ -75,6 +75,18 @@ const EQ_STATUS = () => {
   });
 
   useEffect(() => {
+    let currentTimeout = 5;
+    let showtimeout: any = localStorage.getItem("showtimeout")?.toString();
+    if (showtimeout !== undefined) {
+      setTime(Number(showtimeout));
+      currentTimeout = Number(showtimeout);
+    } else {
+      /* localStorage.setItem("server_ip", 'http://14.160.33.94:5011/api');
+      dispatch(changeServer('http://14.160.33.94:5011/api')); */
+      localStorage.setItem("showtimeout", "10");
+      currentTimeout = 10;
+    }
+
     handle_loadEQ_STATUS();
     let intervalID = window.setInterval(() => {
       handle_loadEQ_STATUS();
@@ -88,7 +100,7 @@ const EQ_STATUS = () => {
         page.current += 1;
       }
       setPageNum(page.current);
-    }, 5000);
+    }, currentTimeout * 1000);
     return () => {
       window.clearInterval(intervalID);
       window.clearInterval(intervalID2);
@@ -146,6 +158,16 @@ const EQ_STATUS = () => {
           value={machine_number}
           onChange={(e) => {
             setMachine_Number(Number(e.target.value));
+          }}
+        />
+        Show Time (s):
+        <input
+          type='text'
+          placeholder='Show Time'
+          value={time}
+          onChange={(e) => {
+            setTime(Number(e.target.value));
+            localStorage.setItem("showtimeout", e.target.value);
           }}
         />
         <Checkbox
