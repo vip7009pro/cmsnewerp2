@@ -74,7 +74,7 @@ import { useReactToPrint } from "react-to-print";
 import DrawComponent from "../../../kinhdoanh/ycsxmanager/DrawComponent/DrawComponent";
 import { setTimeout } from "timers/promises";
 const PLAN_DATATB = () => {
-  const dataGridRef = useRef(null);
+  const dataGridRef = useRef<any>(null);
   const currentRow = useRef(0);
   const datatbTotalRow = useRef(0);
 

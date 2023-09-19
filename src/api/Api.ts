@@ -48,7 +48,7 @@ export function login(user: string, pass: string) {
   let API_URL = getSever() + "/api";
   let UPLOAD_URL = getSever() + "/uploadfile";
   let die_token: string =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXlsb2FkIjoiW3tcIkVNUExfSU1BR0VcIjpcIllcIixcIkNUUl9DRFwiOlwiMDAyXCIsXCJFTVBMX05PXCI6XCJOSFUxOTAzXCIsXCJDTVNfSURcIjpcIkNNUzExNzlcIixcIkZJUlNUX05BTUVcIjpcIkjDmU5HM1wiLFwiTUlETEFTVF9OQU1FXCI6XCJOR1VZ4buETiBWxIJOXCIsXCJET0JcIjpcIjE5OTMtMTAtMThUMDA6MDA6MDAuMDAwWlwiLFwiSE9NRVRPV05cIjpcIlBow7ogVGjhu40gLSDEkMO0bmcgWHXDom4gLSBTw7NjIFPGoW4gLSBIw6AgTuG7mWlcIixcIlNFWF9DT0RFXCI6MSxcIkFERF9QUk9WSU5DRVwiOlwiSMOgIE7hu5lpXCIsXCJBRERfRElTVFJJQ1RcIjpcIlPDs2MgU8ahblwiLFwiQUREX0NPTU1VTkVcIjpcIsSQw7RuZyBYdcOiblwiLFwiQUREX1ZJTExBR0VcIjpcIlRow7RuIFBow7ogVGjhu41cIixcIlBIT05FX05VTUJFUlwiOlwiMDk3MTA5MjQ1NFwiLFwiV09SS19TVEFSVF9EQVRFXCI6XCIyMDE5LTAzLTExVDAwOjAwOjAwLjAwMFpcIixcIlBBU1NXT1JEXCI6XCJkYXV4YW5ocmF1bWFcIixcIkVNQUlMXCI6XCJudmgxOTAzQGNtc2JhbmRvLmNvbVwiLFwiV09SS19QT1NJVElPTl9DT0RFXCI6MixcIldPUktfU0hJRlRfQ09ERVwiOjAsXCJQT1NJVElPTl9DT0RFXCI6MCxcIkpPQl9DT0RFXCI6MixcIkZBQ1RPUllfQ09ERVwiOjEsXCJXT1JLX1NUQVRVU19DT0RFXCI6MSxcIlJFTUFSS1wiOm51bGwsXCJPTkxJTkVfREFURVRJTUVcIjpcIjIwMjMtMDUtMjhUMTY6MDg6MzcuMTM3WlwiLFwiU0VYX05BTUVcIjpcIk5hbVwiLFwiU0VYX05BTUVfS1JcIjpcIuuCqOyekFwiLFwiV09SS19TVEFUVVNfTkFNRVwiOlwixJBhbmcgbMOgbVwiLFwiV09SS19TVEFUVVNfTkFNRV9LUlwiOlwi6re866y07KSRXCIsXCJGQUNUT1JZX05BTUVcIjpcIk5ow6AgbcOheSAxXCIsXCJGQUNUT1JZX05BTUVfS1JcIjpcIjHqs7XsnqVcIixcIkpPQl9OQU1FXCI6XCJMZWFkZXJcIixcIkpPQl9OQU1FX0tSXCI6XCLrpqzrjZRcIixcIlBPU0lUSU9OX05BTUVcIjpcIk1hbmFnZXJcIixcIlBPU0lUSU9OX05BTUVfS1JcIjpcIk1hbmFnZXJcIixcIldPUktfU0hJRl9OQU1FXCI6XCJIw6BuaCBDaMOtbmhcIixcIldPUktfU0hJRl9OQU1FX0tSXCI6XCLsoJXqt5xcIixcIlNVQkRFUFRDT0RFXCI6MixcIldPUktfUE9TSVRJT05fTkFNRVwiOlwiUERcIixcIldPUktfUE9TSVRJT05fTkFNRV9LUlwiOlwiUERcIixcIkFUVF9HUk9VUF9DT0RFXCI6MSxcIk1BSU5ERVBUQ09ERVwiOjEsXCJTVUJERVBUTkFNRVwiOlwiUERcIixcIlNVQkRFUFROQU1FX0tSXCI6XCLthrXsl60gKFBEKVwiLFwiTUFJTkRFUFROQU1FXCI6XCJRQ1wiLFwiTUFJTkRFUFROQU1FX0tSXCI6XCLtkojsp4hcIn1dIiwiaWF0IjoxNjkxOTEyNjc4LCJleHAiOjE2OTQ1MDQ2Nzh9.Gpnsddj-ygrAXk0QGZSnBg36YEhpjPxjR7at885oCaY";
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXlsb2FkIjoiW3tcIkNUUl9DRFwiOlwiMDAyXCIsXCJFTVBMX05PXCI6XCJOSFUxOTAzXCIsXCJDTVNfSURcIjpcIkNNUzExNzlcIixcIkZJUlNUX05BTUVcIjpcIkjDmU5HM1wiLFwiTUlETEFTVF9OQU1FXCI6XCJOR1VZ4buETiBWxIJOXCIsXCJET0JcIjpcIjE5OTMtMTAtMThUMDA6MDA6MDAuMDAwWlwiLFwiSE9NRVRPV05cIjpcIlBow7ogVGjhu40gLSDEkMO0bmcgWHXDom4gLSBTw7NjIFPGoW4gLSBIw6AgTuG7mWlcIixcIlNFWF9DT0RFXCI6MSxcIkFERF9QUk9WSU5DRVwiOlwiSMOgIE7hu5lpXCIsXCJBRERfRElTVFJJQ1RcIjpcIlPDs2MgU8ahblwiLFwiQUREX0NPTU1VTkVcIjpcIsSQw7RuZyBYdcOiblwiLFwiQUREX1ZJTExBR0VcIjpcIlRow7RuIFBow7ogVGjhu41cIixcIlBIT05FX05VTUJFUlwiOlwiMDk3MTA5MjQ1NFwiLFwiV09SS19TVEFSVF9EQVRFXCI6XCIyMDE5LTAzLTExVDAwOjAwOjAwLjAwMFpcIixcIlBBU1NXT1JEXCI6XCIxMjM0NTY3ODlcIixcIkVNQUlMXCI6XCJudmgxOTAzQGNtc2JhbmRvLmNvbVwiLFwiV09SS19QT1NJVElPTl9DT0RFXCI6MixcIldPUktfU0hJRlRfQ09ERVwiOjAsXCJQT1NJVElPTl9DT0RFXCI6MyxcIkpPQl9DT0RFXCI6MSxcIkZBQ1RPUllfQ09ERVwiOjEsXCJXT1JLX1NUQVRVU19DT0RFXCI6MSxcIlJFTUFSS1wiOm51bGwsXCJPTkxJTkVfREFURVRJTUVcIjpcIjIwMjMtMDUtMjhUMTY6MDg6MzcuMTM3WlwiLFwiU0VYX05BTUVcIjpcIk5hbVwiLFwiU0VYX05BTUVfS1JcIjpcIuuCqOyekFwiLFwiV09SS19TVEFUVVNfTkFNRVwiOlwixJBhbmcgbMOgbVwiLFwiV09SS19TVEFUVVNfTkFNRV9LUlwiOlwi6re866y07KSRXCIsXCJGQUNUT1JZX05BTUVcIjpcIk5ow6AgbcOheSAxXCIsXCJGQUNUT1JZX05BTUVfS1JcIjpcIjHqs7XsnqVcIixcIkpPQl9OQU1FXCI6XCJEZXB0IFN0YWZmXCIsXCJKT0JfTkFNRV9LUlwiOlwi67aA7ISc64u064u57J6QXCIsXCJQT1NJVElPTl9OQU1FXCI6XCJTdGFmZlwiLFwiUE9TSVRJT05fTkFNRV9LUlwiOlwi7IKs7JuQXCIsXCJXT1JLX1NISUZfTkFNRVwiOlwiSMOgbmggQ2jDrW5oXCIsXCJXT1JLX1NISUZfTkFNRV9LUlwiOlwi7KCV6recXCIsXCJTVUJERVBUQ09ERVwiOjIsXCJXT1JLX1BPU0lUSU9OX05BTUVcIjpcIlBEXCIsXCJXT1JLX1BPU0lUSU9OX05BTUVfS1JcIjpcIlBEXCIsXCJBVFRfR1JPVVBfQ09ERVwiOjEsXCJNQUlOREVQVENPREVcIjoxLFwiU1VCREVQVE5BTUVcIjpcIlBEXCIsXCJTVUJERVBUTkFNRV9LUlwiOlwi7Ya17JetIChQRClcIixcIk1BSU5ERVBUTkFNRVwiOlwiUUNcIixcIk1BSU5ERVBUTkFNRV9LUlwiOlwi7ZKI7KeIXCJ9XSIsImlhdCI6MTY5NTEwNjM3OCwiZXhwIjoyMDU1MTA2Mzc4fQ.hR-iidSRAq0dIYb42wXKo0VLgRzLVuuZfIJiFXymayc";
   if (user.toUpperCase() === "ONGTRUM" && pass === "dkmvcl") {
     console.log("ong trum dang nhap");
     cookies.set("token", die_token, { path: "/" });
@@ -100,14 +100,14 @@ export function login(user: string, pass: string) {
         WORK_STATUS_NAME: "Đang làm",
         WORK_STATUS_NAME_KR: "근무중",
         EMPL_IMAGE: "N",
-      }),
+      })
     );
     //dispatch(update_socket(data.data.data.EMPL_NO + " da dangnhap"));
     store.dispatch(
       update_socket({
         event: "login",
         data: "ONG TRUM",
-      }),
+      })
     );
     /* setLoginState(true); */
     store.dispatch(loginSlice(true));
@@ -130,7 +130,7 @@ export function login(user: string, pass: string) {
           Swal.fire(
             "Thông báo",
             "Chúc mừng bạn, đăng nhập thành công !",
-            "success",
+            "success"
           );
           //alert("Đăng nhập thành công");
           cookies.set("token", Jresult.token_content, { path: "/" });
@@ -189,7 +189,7 @@ export function login(user: string, pass: string) {
                     WORK_STATUS_NAME: "Đang làm",
                     WORK_STATUS_NAME_KR: "근무중",
                     EMPL_IMAGE: "N",
-                  }),
+                  })
                 );
               } else {
                 //console.log(data.data.data);
@@ -200,7 +200,7 @@ export function login(user: string, pass: string) {
                     update_socket({
                       event: "login",
                       data: data.data.data.EMPL_NO,
-                    }),
+                    })
                   );
                   /* setLoginState(true); */
                   store.dispatch(loginSlice(true));
@@ -212,7 +212,7 @@ export function login(user: string, pass: string) {
                   Swal.fire(
                     "Thông báo",
                     "Nghỉ việc rồi không truy cập được!",
-                    "error",
+                    "error"
                   );
                 }
               }
@@ -258,7 +258,7 @@ export async function uploadQuery(
   file: any,
   filename: string,
   uploadfoldername: string,
-  filenamelist?: string[],
+  filenamelist?: string[]
 ) {
   const formData = new FormData();
   formData.append("uploadedfile", file);
