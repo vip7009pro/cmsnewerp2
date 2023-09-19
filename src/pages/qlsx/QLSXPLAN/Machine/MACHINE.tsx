@@ -86,7 +86,6 @@ import {
   UserData,
   YCSXTableData,
 } from "../../../../api/GlobalInterface";
-
 export const checkEQvsPROCESS = (
   EQ1: string,
   EQ2: string,
@@ -104,15 +103,11 @@ export const checkEQvsPROCESS = (
   if (["NA", "NO", "", null].indexOf(EQ4) === -1) maxprocess++;
   return maxprocess;
 };
-
-
 export const renderChiThi = (planlist: QLSXPLANDATA[]) => {
   return planlist.map((element, index) => (
     <CHITHI_COMPONENT key={index} DATA={element} />
   ));
 };
-
-
 export const renderChiThi2 = (planlist: QLSXPLANDATA[]) => {
   //console.log(planlist);
   return <CHITHI_COMPONENT2 PLAN_LIST={planlist} />;
@@ -138,8 +133,6 @@ export const renderBanVe = (ycsxlist: YCSXTableData[]) => {
     )
   );
 };
-
-
 const MACHINE = () => {
   const [isPending, startTransition] = useTransition();
   const chithiarray: QLSXPLANDATA[] | undefined = useSelector(
@@ -311,7 +304,6 @@ const MACHINE = () => {
         console.log(error);
       });
   };
-
   const column_ycsxtable = [
     { field: "G_CODE", headerName: "G_CODE", width: 80 },
     {
@@ -1062,6 +1054,21 @@ const MACHINE = () => {
       editable: editchithi,
     },
     {
+      field: "M_STOCK",
+      headerName: "M_STOCK",
+      width: 110,
+      editable: editchithi,
+      renderCell: (params: any) => {
+        return (
+          <p style={{ color: "gray", fontWeight: "bold" }}>
+            {params.row.M_STOCK !== null
+              ? params.row.M_STOCK.toLocaleString("en", "US")
+              : 0}
+          </p>
+        );
+      },
+    },
+    {
       field: "OUT_KHO_SX",
       headerName: "OUT_KHO_SX",
       width: 110,
@@ -1249,7 +1256,6 @@ const MACHINE = () => {
     { field: "EQUIPMENT_CD", headerName: "MAY", width: 40 },
     { field: "INS_DATE", headerName: "INS_DATE", width: 150 },
   ];
-
   const handle_loadEQ_STATUS = () => {
     generalQuery("checkEQ_STATUS", {})
       .then((response) => {
@@ -1690,8 +1696,6 @@ const MACHINE = () => {
       <YCKT key={index} DATA={element} />
     ));
   };
-
-
   const loadQLSXPlan = (plan_date: string) => {
     //console.log(selectedPlanDate);
     generalQuery("getqlsxplan", { PLAN_DATE: plan_date })
@@ -1828,7 +1832,7 @@ const MACHINE = () => {
       PLAN_ID: PLAN_ID,
     })
       .then((response) => {
-        //console.log(response.data.tk_status);
+        //console.log(response.data.data);
         if (response.data.tk_status !== "NG") {
           setChiThiDataTable(response.data.data);
         } else {
@@ -1842,7 +1846,7 @@ const MACHINE = () => {
             G_CODE: G_CODE,
           })
             .then((response) => {
-              //console.log(response.data.tk_status);
+              //console.log(response.data.data);
               if (response.data.tk_status !== "NG") {
                 const loaded_data: QLSXCHITHIDATA[] = response.data.data.map(
                   (element: QLSXCHITHIDATA, index: number) => {
@@ -1868,6 +1872,7 @@ const MACHINE = () => {
                       INS_DATE: "",
                       UPD_EMPL: "",
                       UPD_DATE: "",
+                      M_STOCK: element.M_STOCK,
                       id: index,
                     };
                   }
@@ -3122,12 +3127,7 @@ const MACHINE = () => {
         {/*  <GridToolbarColumnsButton />
         <GridToolbarFilterButton />
         <GridToolbarDensitySelector />  */}
-        <IconButton
-          className='buttonIcon'
-          onClick={() => {
-            
-          }}
-        >
+        <IconButton className='buttonIcon' onClick={() => {}}>
           <AiFillFileExcel color='green' size={25} />
           SAVE
         </IconButton>
@@ -5653,7 +5653,11 @@ const MACHINE = () => {
                     </button>
                     <button
                       onClick={() => {
-                        setChiThiListRender2(renderChiThi2(chithiarray!== undefined ? chithiarray: []));
+                        setChiThiListRender2(
+                          renderChiThi2(
+                            chithiarray !== undefined ? chithiarray : []
+                          )
+                        );
                       }}
                     >
                       Render Chỉ Thị 2

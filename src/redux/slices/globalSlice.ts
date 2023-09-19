@@ -35,8 +35,12 @@ socket.on("notification", (data) => {
   }
   console.log(data); // x8WIv7-mJelg7on_ALbx
 });
+
+socket.on("online_list", (data) => {
+  console.log("online list", data);
+});
 socket.on("login", (data) => {
-  //console.log(data);
+  console.log(data);
   // x8WIv7-mJelg7on_ALbx
 });
 socket.on("logout", (data) => {

@@ -75,8 +75,8 @@ import DrawComponent from "../../../kinhdoanh/ycsxmanager/DrawComponent/DrawComp
 import { setTimeout } from "timers/promises";
 const PLAN_DATATB = () => {
   const dataGridRef = useRef(null);
-  const currentRow = useRef(0)
-  const datatbTotalRow = useRef(0)
+  const currentRow = useRef(0);
+  const datatbTotalRow = useRef(0);
 
   const [ycsxlistrender, setYCSXListRender] = useState<Array<ReactElement>>();
   const [showkhoao, setShowKhoAo] = useState(false);
@@ -95,13 +95,13 @@ const PLAN_DATATB = () => {
   const [trigger, setTrigger] = useState(false);
   const [selectedRowKeys, setSelectedRowKeys] = useState<any>([]);
   const clearSelection = () => {
-    if (dataGridRef.current) {      
+    if (dataGridRef.current) {
       dataGridRef.current.instance.clearSelection();
       qlsxplandatafilter.current = [];
       console.log(dataGridRef.current);
     }
   };
-  const navigateToRow = (rowKey:any) => {
+  const navigateToRow = (rowKey: any) => {
     if (dataGridRef.current) {
       dataGridRef.current.instance.navigateToRow(rowKey);
       console.log(dataGridRef.current);
@@ -1049,9 +1049,18 @@ const PLAN_DATATB = () => {
                 TON_CD2: temp_TCD2,
                 TON_CD3: temp_TCD3,
                 TON_CD4: temp_TCD4,
-                SETTING_START_TIME: element.SETTING_START_TIME === null ? 'X' : moment.utc(element.SETTING_START_TIME).format('HH:mm:ss'),
-                MASS_START_TIME: element.MASS_START_TIME === null ? 'X' : moment.utc(element.MASS_START_TIME).format('HH:mm:ss'),
-                MASS_END_TIME: element.MASS_END_TIME === null ? 'X' : moment.utc(element.MASS_END_TIME).format('HH:mm:ss'),
+                SETTING_START_TIME:
+                  element.SETTING_START_TIME === null
+                    ? "X"
+                    : moment.utc(element.SETTING_START_TIME).format("HH:mm:ss"),
+                MASS_START_TIME:
+                  element.MASS_START_TIME === null
+                    ? "X"
+                    : moment.utc(element.MASS_START_TIME).format("HH:mm:ss"),
+                MASS_END_TIME:
+                  element.MASS_END_TIME === null
+                    ? "X"
+                    : moment.utc(element.MASS_END_TIME).format("HH:mm:ss"),
                 /* TON_CD1: element.TON_CD1 === null ? 0: element.TON_CD1,
                   TON_CD2: element.TON_CD2 === null ? 0: element.TON_CD2,
                   TON_CD3: element.TON_CD3 === null ? 0: element.TON_CD3,
@@ -1135,8 +1144,8 @@ const PLAN_DATATB = () => {
           temp_plan_data.ACHIVEMENT_RATE =
             (temp_plan_data.KETQUASX / temp_plan_data.PLAN_QTY) * 100;
           setSummaryData(temp_plan_data);
-          setPlanDataTable(loadeddata);         
-          datatbTotalRow.current = loadeddata.length; 
+          setPlanDataTable(loadeddata);
+          datatbTotalRow.current = loadeddata.length;
           setReadyRender(true);
           setisLoading(false);
           clearSelection();
@@ -1377,6 +1386,7 @@ const PLAN_DATATB = () => {
                       INS_DATE: "",
                       UPD_EMPL: "",
                       UPD_DATE: "",
+                      M_STOCK: element.M_STOCK,
                       id: index,
                     };
                   }
@@ -2027,8 +2037,7 @@ const PLAN_DATATB = () => {
                 </IconButton>
                 <IconButton
                   className='buttonIcon'
-                  onClick={() => {                    
-
+                  onClick={() => {
                     let ycsx_number: number = [
                       ...new Set(
                         qlsxplandatafilter.current.map(
@@ -2765,8 +2774,7 @@ const PLAN_DATATB = () => {
                 </IconButton>
                 <IconButton
                   className='buttonIcon'
-                  onClick={() => {                    
-
+                  onClick={() => {
                     let ycsx_number: number = [
                       ...new Set(
                         qlsxplandatafilter.current.map(
@@ -3077,7 +3085,7 @@ const PLAN_DATATB = () => {
               }}
               allowEditing={false}
             ></Column>
-             <Column
+            <Column
               dataField='SETTING_START_TIME'
               caption='SETTING_START'
               width={80}
@@ -3090,7 +3098,7 @@ const PLAN_DATATB = () => {
               }}
               allowEditing={false}
             ></Column>
-             <Column
+            <Column
               dataField='MASS_START_TIME'
               caption='MASS_START'
               width={90}
@@ -3103,7 +3111,7 @@ const PLAN_DATATB = () => {
               }}
               allowEditing={false}
             ></Column>
-             <Column
+            <Column
               dataField='MASS_END_TIME'
               caption='MASS_END'
               width={80}
@@ -3116,7 +3124,7 @@ const PLAN_DATATB = () => {
               }}
               allowEditing={false}
             ></Column>
-            
+
             <Column
               dataField='XUATDAOFILM'
               caption='Xuất Dao'
@@ -3928,6 +3936,19 @@ const PLAN_DATATB = () => {
               allowEditing={true}
             ></Column>
             <Column
+              dataField='M_STOCK'
+              caption='M_STOCK'
+              width={80}
+              cellRender={(params: any) => {
+                return (
+                  <span style={{ color: "gray", fontWeight: "bold" }}>
+                    {params.data.M_STOCK?.toLocaleString("en-US")}
+                  </span>
+                );
+              }}
+              allowEditing={true}
+            ></Column>
+            <Column
               dataField='OUT_KHO_SX'
               caption='OUT_KHO_SX'
               width={100}
@@ -4003,20 +4024,19 @@ const PLAN_DATATB = () => {
     ),
     [chithidatatable]
   );
- 
+
   useEffect(() => {
     getMachineList();
-   /*  let intervalID = window.setInterval(() => {
+    /*  let intervalID = window.setInterval(() => {
       console.log('current row',currentRow);
       navigateToRow(currentRow.current);      
       if(datatbTotalRow.current >0)
       currentRow.current +=10;
       if(currentRow.current >= datatbTotalRow.current) currentRow.current=0;
     }, 2000); */
-   
+
     return () => {
       /* window.clearInterval(intervalID);       */
-    
     };
 
     //setColumnDefinition(column_inspect_output);

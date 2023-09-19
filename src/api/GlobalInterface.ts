@@ -42,7 +42,7 @@ export interface POSummaryData {
 export interface CodeListData {
   G_CODE: string;
   G_NAME: string;
-  G_NAME_KD?: string,
+  G_NAME_KD?: string;
   PROD_LAST_PRICE: number;
   USE_YN: string;
   PO_BALANCE?: number;
@@ -1307,21 +1307,21 @@ export interface EQ_STT {
   EQ_CODE?: string;
   G_NAME_KD?: string;
   STEP?: number;
-  SETTING_START_TIME?: string,
-  MASS_START_TIME?: string,
-  MASS_END_TIME?: string,  
-  KQ_SX_TAM?: number,
-  SX_RESULT?: number,
-  UPH1?: number,
-  UPH2?: number,
-  UPH3?: number,
-  UPH4?: number,
-  Setting1?: number,
-  Setting2?: number,
-  Setting3?: number,
-  Setting4?: number,
-  PROCESS_NUMBER?: number,
-  PLAN_QTY?: number,
+  SETTING_START_TIME?: string;
+  MASS_START_TIME?: string;
+  MASS_END_TIME?: string;
+  KQ_SX_TAM?: number;
+  SX_RESULT?: number;
+  UPH1?: number;
+  UPH2?: number;
+  UPH3?: number;
+  UPH4?: number;
+  Setting1?: number;
+  Setting2?: number;
+  Setting3?: number;
+  Setting4?: number;
+  PROCESS_NUMBER?: number;
+  PLAN_QTY?: number;
 }
 //iqc data
 export interface IQC_INCOMMING_DATA {
@@ -1783,7 +1783,7 @@ export interface QLSXPLANDATA {
   CAVITY?: number;
   SETTING_START_TIME?: string;
   MASS_START_TIME?: string;
-  MASS_END_TIME?: string;  
+  MASS_END_TIME?: string;
 }
 export interface QLSXCHITHIDATA {
   id: string;
@@ -1803,6 +1803,7 @@ export interface QLSXCHITHIDATA {
   INS_DATE: string;
   UPD_EMPL: string;
   UPD_DATE: string;
+  M_STOCK: number;
 }
 export interface EQ_STATUS {
   FACTORY: string;
