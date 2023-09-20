@@ -1987,6 +1987,7 @@ const MACHINE = () => {
                   INS_DATE: "",
                   UPD_EMPL: "",
                   UPD_DATE: "",
+                  M_STOCK: element.M_STOCK,
                   id: index,
                 };
               }
