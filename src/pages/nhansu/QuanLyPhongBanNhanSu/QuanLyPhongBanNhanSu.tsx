@@ -29,7 +29,7 @@ import {
 
 const QuanLyPhongBanNhanSu = () => {
   const userData: UserData | undefined = useSelector(
-    (state: RootState) => state.totalSlice.userData,
+    (state: RootState) => state.totalSlice.userData
   );
   const [isLoading, setisLoading] = useState(false);
   const [workpositionload, setWorkPositionLoad] = useState<
@@ -48,22 +48,22 @@ const QuanLyPhongBanNhanSu = () => {
   const [ADD_VILLAGE, setADD_VILLAGE] = useState("");
   const [PHONE_NUMBER, setPHONE_NUMBER] = useState("");
   const [WORK_START_DATE, setWORK_START_DATE] = useState(
-    moment().format("YYYY-MM-DD"),
+    moment().format("YYYY-MM-DD")
   );
   const [RESIGN_DATE, setRESIGN_DATE] = useState(moment().format("YYYY-MM-DD"));
   const [PASSWORD, setPASSWORD] = useState("");
   const [EMAIL, setEMAIL] = useState("");
-  const [WORK_POSITION_CODE, setWORK_POSITION_CODE] = useState(0);
+  const [WORK_POSITION_CODE, setWORK_POSITION_CODE] = useState(1);
   const [WORK_SHIFT_CODE, setWORK_SHIFT_CODE] = useState(0);
   const [POSITION_CODE, setPOSITION_CODE] = useState(0);
   const [JOB_CODE, setJOB_CODE] = useState(0);
   const [FACTORY_CODE, setFACTORY_CODE] = useState(1);
   const [WORK_STATUS_CODE, setWORK_STATUS_CODE] = useState(0);
   const [employeeTable, setEmployeeTable] = useState<Array<EmployeeTableData>>(
-    [],
+    []
   );
   const [maindeptTable, setMainDeptTable] = useState<Array<MainDeptTableData>>(
-    [],
+    []
   );
   const [maindeptDataFilter, setMainDeptDataFilter] = useState<
     Array<MainDeptTableData>
@@ -110,7 +110,7 @@ const QuanLyPhongBanNhanSu = () => {
           Swal.fire(
             "Thông báo",
             "Thêm thất bại !" + response.data.message,
-            "error",
+            "error"
           );
         }
       })
@@ -144,7 +144,7 @@ const QuanLyPhongBanNhanSu = () => {
           Swal.fire(
             "Thông báo",
             "Sửa thất bại !" + response.data.message,
-            "error",
+            "error"
           );
         }
       })
@@ -178,7 +178,7 @@ const QuanLyPhongBanNhanSu = () => {
           Swal.fire(
             "Thông báo",
             "Xoá thất bại !" + response.data.message,
-            "error",
+            "error"
           );
         }
       })
@@ -213,7 +213,7 @@ const QuanLyPhongBanNhanSu = () => {
           Swal.fire(
             "Thông báo",
             "Thêm thất bại !" + response.data.message,
-            "error",
+            "error"
           );
         }
       })
@@ -248,7 +248,7 @@ const QuanLyPhongBanNhanSu = () => {
           Swal.fire(
             "Thông báo",
             "Sửa thất bại !" + response.data.message,
-            "error",
+            "error"
           );
         }
       })
@@ -283,7 +283,7 @@ const QuanLyPhongBanNhanSu = () => {
           Swal.fire(
             "Thông báo",
             "Xoá thất bại !" + response.data.message,
-            "error",
+            "error"
           );
         }
       })
@@ -319,7 +319,7 @@ const QuanLyPhongBanNhanSu = () => {
           Swal.fire(
             "Thông báo",
             "Thêm thất bại !" + response.data.message,
-            "error",
+            "error"
           );
         }
       })
@@ -355,7 +355,7 @@ const QuanLyPhongBanNhanSu = () => {
           Swal.fire(
             "Thông báo",
             "Sửa thất bại !" + response.data.message,
-            "error",
+            "error"
           );
         }
       })
@@ -391,7 +391,7 @@ const QuanLyPhongBanNhanSu = () => {
           Swal.fire(
             "Thông báo",
             "Xoá thất bại !" + response.data.message,
-            "error",
+            "error"
           );
         }
       })
@@ -443,7 +443,7 @@ const QuanLyPhongBanNhanSu = () => {
           Swal.fire(
             "Thông báo",
             "Thêm thất bại ! " + response.data.message,
-            "error",
+            "error"
           );
         }
       })
@@ -496,7 +496,7 @@ const QuanLyPhongBanNhanSu = () => {
           Swal.fire(
             "Thông báo",
             "Sửa thất bại !" + response.data.message,
-            "error",
+            "error"
           );
         }
       })
@@ -663,7 +663,7 @@ const QuanLyPhongBanNhanSu = () => {
   const handleMainDeptSelection = (ids: GridSelectionModel) => {
     const selectedID = new Set(ids);
     var datafilter = maindeptTable.filter((element: any) =>
-      selectedID.has(element.id),
+      selectedID.has(element.id)
     );
     if (datafilter.length > 0) {
       setMainDeptCode(datafilter[datafilter.length - 1].MAINDEPTCODE);
@@ -688,7 +688,7 @@ const QuanLyPhongBanNhanSu = () => {
   const handlesubDeptSelection = (ids: GridSelectionModel) => {
     const selectedID = new Set(ids);
     var datafilter = subdeptTable.filter((element: any) =>
-      selectedID.has(element.id),
+      selectedID.has(element.id)
     );
     if (datafilter.length > 0) {
       setSubDeptCode(datafilter[datafilter.length - 1].SUBDEPTCODE);
@@ -713,13 +713,13 @@ const QuanLyPhongBanNhanSu = () => {
   const handleworkPositionSelection = (ids: GridSelectionModel) => {
     const selectedID = new Set(ids);
     var datafilter = workpositionTable.filter((element: any) =>
-      selectedID.has(element.id),
+      selectedID.has(element.id)
     );
     if (datafilter.length > 0) {
       setWorkPositionCode(datafilter[datafilter.length - 1].WORK_POSITION_CODE);
       setWorkPositionName(datafilter[datafilter.length - 1].WORK_POSITION_NAME);
       setWorkPositionNameKR(
-        datafilter[datafilter.length - 1].WORK_POSITION_NAME_KR,
+        datafilter[datafilter.length - 1].WORK_POSITION_NAME_KR
       );
       setATT_GROUP_CODE(datafilter[datafilter.length - 1].ATT_GROUP_CODE);
     }
@@ -729,7 +729,7 @@ const QuanLyPhongBanNhanSu = () => {
   const handleEmployeeSelection = (ids: GridSelectionModel) => {
     const selectedID = new Set(ids);
     var datafilter = employeeTable.filter((element: any) =>
-      selectedID.has(element.id),
+      selectedID.has(element.id)
     );
     if (datafilter.length > 0) {
       setEMPL_NO(datafilter[datafilter.length - 1].EMPL_NO);
@@ -753,7 +753,7 @@ const QuanLyPhongBanNhanSu = () => {
       setPOSITION_CODE(datafilter[datafilter.length - 1].POSITION_CODE);
       setWORK_SHIFT_CODE(datafilter[datafilter.length - 1].WORK_SHIFT_CODE);
       setWORK_POSITION_CODE(
-        datafilter[datafilter.length - 1].WORK_POSITION_CODE,
+        datafilter[datafilter.length - 1].WORK_POSITION_CODE
       );
       setATT_GROUP_CODE(datafilter[datafilter.length - 1].ATT_GROUP_CODE);
       setAvatar(datafilter[datafilter.length - 1].EMPL_NO);
@@ -769,7 +769,7 @@ const QuanLyPhongBanNhanSu = () => {
         <GridToolbarDensitySelector />
         <GridToolbarQuickFilter />
         <button
-          className="saveexcelbutton"
+          className='saveexcelbutton'
           onClick={() => {
             SaveExcel(
               employeeTable.map((element: EmployeeTableData, index: number) => {
@@ -779,7 +779,7 @@ const QuanLyPhongBanNhanSu = () => {
                   PASSWORD: "xxx",
                 };
               }),
-              "DanhSachNhanVien",
+              "DanhSachNhanVien"
             );
           }}
         >
@@ -787,19 +787,19 @@ const QuanLyPhongBanNhanSu = () => {
         </button>
 
         <IconButton
-          className="buttonIcon"
+          className='buttonIcon'
           onClick={() => {
             loademployeefull();
           }}
         >
-          <BiRefresh color="green" size={25} />
+          <BiRefresh color='green' size={25} />
           Search
         </IconButton>
         <label>
           <b>Trừ người đã nghỉ_</b>
           <input
-            type="checkbox"
-            name="alltimecheckbox"
+            type='checkbox'
+            name='alltimecheckbox'
             defaultChecked={resigned_check}
             onChange={() => setResignedCheck(!resigned_check)}
           ></input>
@@ -837,14 +837,14 @@ const QuanLyPhongBanNhanSu = () => {
                 ...element,
                 FULL_NAME: element.MIDLAST_NAME + " " + element.FIRST_NAME,
               };
-            },
+            }
           );
           setEmployeeTable(loaded_data);
           setisLoading(false);
           Swal.fire(
             "Thông báo",
             "Đã load " + response.data.data.length + " dòng",
-            "success",
+            "success"
           );
         } else {
           Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
@@ -883,7 +883,7 @@ const QuanLyPhongBanNhanSu = () => {
           Swal.fire(
             "Thông báo",
             "Đã load " + response.data.data.length + " dòng",
-            "success",
+            "success"
           );
         } else {
           Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
@@ -894,34 +894,34 @@ const QuanLyPhongBanNhanSu = () => {
       });
   }, []);
   return (
-    <div className="quanlyphongbannhansu">
-      <div className="mininavbar">
+    <div className='quanlyphongbannhansu'>
+      <div className='mininavbar'>
         <div
-          className="mininavitem"
+          className='mininavitem'
           onClick={() => setNav(1)}
           style={{
             backgroundColor: selection.tab1 === true ? "#02c712" : "#abc9ae",
             color: selection.tab1 === true ? "yellow" : "yellow",
           }}
         >
-          <span className="mininavtext">Quản lý Nhân Sự</span>
+          <span className='mininavtext'>Quản lý Nhân Sự</span>
         </div>
         <div
-          className="mininavitem"
+          className='mininavitem'
           onClick={() => setNav(2)}
           style={{
             backgroundColor: selection.tab2 === true ? "#02c712" : "#abc9ae",
             color: selection.tab2 === true ? "yellow" : "yellow",
           }}
         >
-          <span className="mininavtext">Quản Lý Phòng Ban</span>
+          <span className='mininavtext'>Quản Lý Phòng Ban</span>
         </div>
       </div>
 
-      <div className="quanlyphongban">
+      <div className='quanlyphongban'>
         {selection.tab2 && (
-          <div className="maindept">
-            <div className="maindept_table">
+          <div className='maindept'>
+            <div className='maindept_table'>
               <DataGrid
                 sx={{ fontSize: "0.7rem" }}
                 rowHeight={25}
@@ -934,36 +934,36 @@ const QuanLyPhongBanNhanSu = () => {
                 }}
               />
             </div>
-            <div className="maindeptform">
-              <div className="maindeptinput">
-                <div className="maindeptinputlabel">
+            <div className='maindeptform'>
+              <div className='maindeptinput'>
+                <div className='maindeptinputlabel'>
                   MAIN DEPT CODE:<br></br>
                   <br></br>
                   MAIN DEPT NAME:<br></br>
                   <br></br>
                   MAIN DEPT NAME KR:
                 </div>
-                <div className="maindeptinputbox">
+                <div className='maindeptinputbox'>
                   <input
-                    type="text"
+                    type='text'
                     value={maindeptcode}
                     onChange={(e) => setMainDeptCode(Number(e.target.value))}
                   ></input>
                   <input
-                    type="text"
+                    type='text'
                     value={maindeptname}
                     onChange={(e) => setMainDeptName(e.target.value)}
                   ></input>
                   <input
-                    type="text"
+                    type='text'
                     value={maindeptnamekr}
                     onChange={(e) => setMainDeptNameKR(e.target.value)}
                   ></input>
                 </div>
               </div>
-              <div className="maindeptbutton">
+              <div className='maindeptbutton'>
                 <button
-                  className="thembutton"
+                  className='thembutton'
                   onClick={() => {
                     if (getCompany() === "PVN") {
                       checkBP(
@@ -971,7 +971,7 @@ const QuanLyPhongBanNhanSu = () => {
                         ["NHANSU"],
                         ["ALL"],
                         ["ALL"],
-                        handle_them_maindept,
+                        handle_them_maindept
                       );
                     } else {
                       handle_them_maindept();
@@ -981,7 +981,7 @@ const QuanLyPhongBanNhanSu = () => {
                   Thêm
                 </button>
                 <button
-                  className="suabutton"
+                  className='suabutton'
                   onClick={() => {
                     if (getCompany() === "PVN") {
                       checkBP(
@@ -989,7 +989,7 @@ const QuanLyPhongBanNhanSu = () => {
                         ["NHANSU"],
                         ["ALL"],
                         ["ALL"],
-                        handle_sua_maindept,
+                        handle_sua_maindept
                       );
                     } else {
                       handle_sua_maindept();
@@ -999,7 +999,7 @@ const QuanLyPhongBanNhanSu = () => {
                   Sửa
                 </button>
                 <button
-                  className="xoabutton"
+                  className='xoabutton'
                   onClick={() => {
                     if (getCompany() === "PVN") {
                       checkBP(
@@ -1007,7 +1007,7 @@ const QuanLyPhongBanNhanSu = () => {
                         ["NHANSU"],
                         ["ALL"],
                         ["ALL"],
-                        handle_xoa_maindept,
+                        handle_xoa_maindept
                       );
                     } else {
                       handle_xoa_maindept();
@@ -1021,8 +1021,8 @@ const QuanLyPhongBanNhanSu = () => {
           </div>
         )}
         {selection.tab2 && (
-          <div className="subdept">
-            <div className="subdept_table">
+          <div className='subdept'>
+            <div className='subdept_table'>
               <DataGrid
                 sx={{ fontSize: "0.7rem" }}
                 rowHeight={25}
@@ -1035,36 +1035,36 @@ const QuanLyPhongBanNhanSu = () => {
                 }}
               />
             </div>
-            <div className="subdeptform">
-              <div className="subdeptinput">
-                <div className="subdeptinputlabel">
+            <div className='subdeptform'>
+              <div className='subdeptinput'>
+                <div className='subdeptinputlabel'>
                   SUB DEPT CODE:<br></br>
                   <br></br>
                   SUB DEPT NAME:<br></br>
                   <br></br>
                   SUB DEPT NAME KR:
                 </div>
-                <div className="subdeptinputbox">
+                <div className='subdeptinputbox'>
                   <input
-                    type="text"
+                    type='text'
                     value={subdeptcode}
                     onChange={(e) => setSubDeptCode(Number(e.target.value))}
                   ></input>
                   <input
-                    type="text"
+                    type='text'
                     value={subdeptname}
                     onChange={(e) => setSubDeptName(e.target.value)}
                   ></input>
                   <input
-                    type="text"
+                    type='text'
                     value={subdeptnamekr}
                     onChange={(e) => setSubDeptNameKR(e.target.value)}
                   ></input>
                 </div>
               </div>
-              <div className="subdeptbutton">
+              <div className='subdeptbutton'>
                 <button
-                  className="thembutton"
+                  className='thembutton'
                   onClick={() => {
                     if (getCompany() === "PVN") {
                       checkBP(
@@ -1072,7 +1072,7 @@ const QuanLyPhongBanNhanSu = () => {
                         ["NHANSU"],
                         ["ALL"],
                         ["ALL"],
-                        handle_them_subdept,
+                        handle_them_subdept
                       );
                     } else {
                       handle_them_subdept();
@@ -1082,7 +1082,7 @@ const QuanLyPhongBanNhanSu = () => {
                   Thêm
                 </button>
                 <button
-                  className="suabutton"
+                  className='suabutton'
                   onClick={() => {
                     if (getCompany() === "PVN") {
                       checkBP(
@@ -1090,7 +1090,7 @@ const QuanLyPhongBanNhanSu = () => {
                         ["NHANSU"],
                         ["ALL"],
                         ["ALL"],
-                        handle_sua_subdept,
+                        handle_sua_subdept
                       );
                     } else {
                       handle_sua_subdept();
@@ -1100,7 +1100,7 @@ const QuanLyPhongBanNhanSu = () => {
                   Sửa
                 </button>
                 <button
-                  className="xoabutton"
+                  className='xoabutton'
                   onClick={() => {
                     if (getCompany() === "PVN") {
                       checkBP(
@@ -1108,7 +1108,7 @@ const QuanLyPhongBanNhanSu = () => {
                         ["NHANSU"],
                         ["ALL"],
                         ["ALL"],
-                        handle_xoa_subdept,
+                        handle_xoa_subdept
                       );
                     } else {
                       handle_xoa_subdept();
@@ -1122,8 +1122,8 @@ const QuanLyPhongBanNhanSu = () => {
           </div>
         )}
         {selection.tab2 && (
-          <div className="workposition">
-            <div className="workposition_table">
+          <div className='workposition'>
+            <div className='workposition_table'>
               <DataGrid
                 sx={{ fontSize: "0.7rem" }}
                 rowHeight={25}
@@ -1136,9 +1136,9 @@ const QuanLyPhongBanNhanSu = () => {
                 }}
               />
             </div>
-            <div className="workpositionform">
-              <div className="workpositioninput">
-                <div className="workpositioninputlabel">
+            <div className='workpositionform'>
+              <div className='workpositioninput'>
+                <div className='workpositioninputlabel'>
                   WORK POSITION CODE:<br></br>
                   <br></br>
                   WORK POSITION NAME:<br></br>
@@ -1147,34 +1147,34 @@ const QuanLyPhongBanNhanSu = () => {
                   <br></br>
                   ATT GROUP CDOE:
                 </div>
-                <div className="workpositioninputbox">
+                <div className='workpositioninputbox'>
                   <input
-                    type="text"
+                    type='text'
                     value={workpositioncode}
                     onChange={(e) =>
                       setWorkPositionCode(Number(e.target.value))
                     }
                   ></input>
                   <input
-                    type="text"
+                    type='text'
                     value={workpositionname}
                     onChange={(e) => setWorkPositionName(e.target.value)}
                   ></input>
                   <input
-                    type="text"
+                    type='text'
                     value={workpositionnamekr}
                     onChange={(e) => setWorkPositionNameKR(e.target.value)}
                   ></input>
                   <input
-                    type="text"
+                    type='text'
                     value={att_group_code}
                     onChange={(e) => setATT_GROUP_CODE(Number(e.target.value))}
                   ></input>
                 </div>
               </div>
-              <div className="workpositionbutton">
+              <div className='workpositionbutton'>
                 <button
-                  className="thembutton"
+                  className='thembutton'
                   onClick={() => {
                     if (getCompany() === "PVN") {
                       checkBP(
@@ -1182,7 +1182,7 @@ const QuanLyPhongBanNhanSu = () => {
                         ["NHANSU"],
                         ["ALL"],
                         ["ALL"],
-                        handle_them_workposition,
+                        handle_them_workposition
                       );
                     } else {
                       handle_them_workposition();
@@ -1192,7 +1192,7 @@ const QuanLyPhongBanNhanSu = () => {
                   Thêm
                 </button>
                 <button
-                  className="suabutton"
+                  className='suabutton'
                   onClick={() => {
                     if (getCompany() === "PVN") {
                       checkBP(
@@ -1200,7 +1200,7 @@ const QuanLyPhongBanNhanSu = () => {
                         ["NHANSU"],
                         ["ALL"],
                         ["ALL"],
-                        handle_sua_workposition,
+                        handle_sua_workposition
                       );
                     } else {
                       handle_sua_workposition();
@@ -1210,7 +1210,7 @@ const QuanLyPhongBanNhanSu = () => {
                   Sửa
                 </button>
                 <button
-                  className="xoabutton"
+                  className='xoabutton'
                   onClick={() => {
                     if (getCompany() === "PVN") {
                       checkBP(
@@ -1218,7 +1218,7 @@ const QuanLyPhongBanNhanSu = () => {
                         ["NHANSU"],
                         ["ALL"],
                         ["ALL"],
-                        handle_xoa_workposition,
+                        handle_xoa_workposition
                       );
                     } else {
                       handle_xoa_workposition();
@@ -1232,13 +1232,13 @@ const QuanLyPhongBanNhanSu = () => {
           </div>
         )}
       </div>
-      <div className="quanlynhansu">
+      <div className='quanlynhansu'>
         {selection.tab1 && (
-          <div className="maindept">
+          <div className='maindept'>
             <h3>Thông tin nhân lực</h3>
-            <div className="maindeptform">
-              <div className="inputform">
-                <div className="emplpicture">
+            <div className='maindeptform'>
+              <div className='inputform'>
+                <div className='emplpicture'>
                   {
                     <img
                       width={220}
@@ -1248,13 +1248,13 @@ const QuanLyPhongBanNhanSu = () => {
                     ></img>
                   }
                 </div>
-                <div className="maindeptinput">
-                  <div className="maindeptinputbox">
+                <div className='maindeptinput'>
+                  <div className='maindeptinputbox'>
                     <label>
                       Mã ERP:{" "}
                       <input
                         disabled={enableEdit}
-                        type="text"
+                        type='text'
                         value={EMPL_NO}
                         onChange={(e) => setEMPL_NO(e.target.value)}
                       ></input>
@@ -1263,7 +1263,7 @@ const QuanLyPhongBanNhanSu = () => {
                       Mã nhân sự:{" "}
                       <input
                         disabled={enableEdit}
-                        type="text"
+                        type='text'
                         value={CMS_ID}
                         onChange={(e) => setCMS_ID(e.target.value)}
                       ></input>
@@ -1271,7 +1271,7 @@ const QuanLyPhongBanNhanSu = () => {
                     <label>
                       Mã Chấm Công
                       <input
-                        name="gioitinh"
+                        name='gioitinh'
                         value={NV_CCID}
                         onChange={(e) => setNV_CCID(Number(e.target.value))}
                       ></input>
@@ -1280,7 +1280,7 @@ const QuanLyPhongBanNhanSu = () => {
                       Tên:{" "}
                       <input
                         disabled={enableEdit}
-                        type="text"
+                        type='text'
                         value={FIRST_NAME}
                         onChange={(e) => setFIRST_NAME(e.target.value)}
                       ></input>
@@ -1289,7 +1289,7 @@ const QuanLyPhongBanNhanSu = () => {
                       Họ và Đệm:{" "}
                       <input
                         disabled={enableEdit}
-                        type="text"
+                        type='text'
                         value={MIDLAST_NAME}
                         onChange={(e) => setMIDLAST_NAME(e.target.value)}
                       ></input>
@@ -1297,7 +1297,7 @@ const QuanLyPhongBanNhanSu = () => {
                     <label>
                       Ngày tháng năm sinh:{" "}
                       <input
-                        type="date"
+                        type='date'
                         value={DOB.slice(0, 10)}
                         onChange={(e) => setDOB(e.target.value)}
                       ></input>
@@ -1305,7 +1305,7 @@ const QuanLyPhongBanNhanSu = () => {
                     <label>
                       Quê quán:{" "}
                       <input
-                        type="text"
+                        type='text'
                         value={HOMETOWN}
                         onChange={(e) => setHOMETOWN(e.target.value)}
                       ></input>
@@ -1313,7 +1313,7 @@ const QuanLyPhongBanNhanSu = () => {
                     <label>
                       Giới tính:
                       <select
-                        name="gioitinh"
+                        name='gioitinh'
                         value={SEX_CODE}
                         onChange={(e) => setSEX_CODE(Number(e.target.value))}
                       >
@@ -1322,11 +1322,11 @@ const QuanLyPhongBanNhanSu = () => {
                       </select>
                     </label>
                   </div>
-                  <div className="maindeptinputbox">
+                  <div className='maindeptinputbox'>
                     <label>
                       Tỉnh/thành phố:{" "}
                       <input
-                        type="text"
+                        type='text'
                         value={ADD_PROVINCE}
                         onChange={(e) => setADD_PROVINCE(e.target.value)}
                       ></input>
@@ -1334,7 +1334,7 @@ const QuanLyPhongBanNhanSu = () => {
                     <label>
                       Quận/Huyện:{" "}
                       <input
-                        type="text"
+                        type='text'
                         value={ADD_DISTRICT}
                         onChange={(e) => setADD_DISTRICT(e.target.value)}
                       ></input>
@@ -1342,7 +1342,7 @@ const QuanLyPhongBanNhanSu = () => {
                     <label>
                       Xã/Thị trấn:{" "}
                       <input
-                        type="text"
+                        type='text'
                         value={ADD_COMMUNE}
                         onChange={(e) => setADD_COMMUNE(e.target.value)}
                       ></input>
@@ -1350,7 +1350,7 @@ const QuanLyPhongBanNhanSu = () => {
                     <label>
                       Thôn/xóm:{" "}
                       <input
-                        type="text"
+                        type='text'
                         value={ADD_VILLAGE}
                         onChange={(e) => setADD_VILLAGE(e.target.value)}
                       ></input>
@@ -1358,7 +1358,7 @@ const QuanLyPhongBanNhanSu = () => {
                     <label>
                       Số điện thoại:{" "}
                       <input
-                        type="text"
+                        type='text'
                         value={PHONE_NUMBER}
                         onChange={(e) => setPHONE_NUMBER(e.target.value)}
                       ></input>
@@ -1366,7 +1366,7 @@ const QuanLyPhongBanNhanSu = () => {
                     <label>
                       Ngày bắt đầu làm việc:{" "}
                       <input
-                        type="date"
+                        type='date'
                         value={WORK_START_DATE.slice(0, 10)}
                         onChange={(e) => setWORK_START_DATE(e.target.value)}
                       ></input>
@@ -1375,7 +1375,7 @@ const QuanLyPhongBanNhanSu = () => {
                       Ngày nghỉ việc:{" "}
                       <input
                         disabled={WORK_STATUS_CODE !== 0}
-                        type="date"
+                        type='date'
                         value={RESIGN_DATE.slice(0, 10)}
                         onChange={(e) => setRESIGN_DATE(e.target.value)}
                       ></input>
@@ -1383,17 +1383,17 @@ const QuanLyPhongBanNhanSu = () => {
                     <label>
                       Password:{" "}
                       <input
-                        type="password"
+                        type='password'
                         value={PASSWORD}
                         onChange={(e) => setPASSWORD(e.target.value)}
                       ></input>
                     </label>
                   </div>
-                  <div className="maindeptinputbox">
+                  <div className='maindeptinputbox'>
                     <label>
                       Email:{" "}
                       <input
-                        type="text"
+                        type='text'
                         value={EMAIL}
                         onChange={(e) => setEMAIL(e.target.value)}
                       ></input>
@@ -1401,7 +1401,7 @@ const QuanLyPhongBanNhanSu = () => {
                     <label>
                       Vị trí làm việc:
                       <select
-                        name="vitrilamviec"
+                        name='vitrilamviec'
                         value={WORK_POSITION_CODE}
                         onChange={(e) => {
                           setWORK_POSITION_CODE(Number(e.target.value));
@@ -1420,7 +1420,7 @@ const QuanLyPhongBanNhanSu = () => {
                     <label>
                       Team làm việc:
                       <select
-                        name="calamviec"
+                        name='calamviec'
                         value={WORK_SHIFT_CODE}
                         onChange={(e) =>
                           setWORK_SHIFT_CODE(Number(e.target.value))
@@ -1435,7 +1435,7 @@ const QuanLyPhongBanNhanSu = () => {
                     <label>
                       Cấp bậc:
                       <select
-                        name="chucdanh"
+                        name='chucdanh'
                         value={POSITION_CODE}
                         onChange={(e) =>
                           setPOSITION_CODE(Number(e.target.value))
@@ -1451,7 +1451,7 @@ const QuanLyPhongBanNhanSu = () => {
                     <label>
                       Chức vụ:
                       <select
-                        name="chucvu"
+                        name='chucvu'
                         value={JOB_CODE}
                         onChange={(e) => setJOB_CODE(Number(e.target.value))}
                       >
@@ -1464,7 +1464,7 @@ const QuanLyPhongBanNhanSu = () => {
                     <label>
                       Nhà máy:
                       <select
-                        name="nhamay"
+                        name='nhamay'
                         value={FACTORY_CODE}
                         onChange={(e) =>
                           setFACTORY_CODE(Number(e.target.value))
@@ -1477,7 +1477,7 @@ const QuanLyPhongBanNhanSu = () => {
                     <label>
                       Trạng thái làm việc:
                       <select
-                        name="trangthailamviec"
+                        name='trangthailamviec'
                         value={WORK_STATUS_CODE}
                         onChange={(e) =>
                           setWORK_STATUS_CODE(Number(e.target.value))
@@ -1490,9 +1490,9 @@ const QuanLyPhongBanNhanSu = () => {
                     </label>
                   </div>
                 </div>
-                <div className="maindeptbutton">
+                <div className='maindeptbutton'>
                   <button
-                    className="thembutton"
+                    className='thembutton'
                     onClick={() => {
                       if (getCompany() === "PVN") {
                         checkBP(
@@ -1500,7 +1500,7 @@ const QuanLyPhongBanNhanSu = () => {
                           ["NHANSU"],
                           ["ALL"],
                           ["ALL"],
-                          handle_them_employee,
+                          handle_them_employee
                         );
                       } else {
                         handle_them_employee();
@@ -1510,7 +1510,7 @@ const QuanLyPhongBanNhanSu = () => {
                     Thêm
                   </button>
                   <button
-                    className="suabutton"
+                    className='suabutton'
                     onClick={() => {
                       if (getCompany() === "PVN") {
                         checkBP(
@@ -1518,7 +1518,7 @@ const QuanLyPhongBanNhanSu = () => {
                           ["NHANSU"],
                           ["ALL"],
                           ["ALL"],
-                          handle_sua_employee,
+                          handle_sua_employee
                         );
                       } else {
                         handle_sua_employee();
@@ -1528,7 +1528,7 @@ const QuanLyPhongBanNhanSu = () => {
                     Update
                   </button>
                   <button
-                    className="xoabutton"
+                    className='xoabutton'
                     onClick={() => {
                       if (getCompany() === "PVN") {
                         checkBP(
@@ -1536,7 +1536,7 @@ const QuanLyPhongBanNhanSu = () => {
                           ["NHANSU"],
                           ["ALL"],
                           ["ALL"],
-                          handle_xoa_employee,
+                          handle_xoa_employee
                         );
                       } else {
                         handle_xoa_employee();
@@ -1548,7 +1548,7 @@ const QuanLyPhongBanNhanSu = () => {
                 </div>
               </div>
             </div>
-            <div className="maindept_table">
+            <div className='maindept_table'>
               <DataGrid
                 sx={{ fontSize: "0.8rem" }}
                 components={{
@@ -1561,13 +1561,13 @@ const QuanLyPhongBanNhanSu = () => {
                   resigned_check
                     ? employeeTable.filter(
                         (ele: EmployeeTableData, index: number) =>
-                          ele.WORK_STATUS_CODE !== 0,
+                          ele.WORK_STATUS_CODE !== 0
                       )
                     : employeeTable
                 }
                 columns={columns_employee_table}
                 rowsPerPageOptions={[5, 10, 50, 100, 500]}
-                editMode="row"
+                editMode='row'
                 onSelectionModelChange={(ids) => {
                   handleEmployeeSelection(ids);
                 }}
