@@ -24,7 +24,7 @@ import {
   AiOutlinePrinter,
 } from "react-icons/ai";
 import Swal from "sweetalert2";
-import "./BANGCHAMCONG.scss";
+import "./BangChamCong.scss";
 import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
 import { MdOutlinePivotTableChart } from "react-icons/md";
 import { SaveExcel, checkBP, weekdayarray } from "../../../api/GlobalFunction";
