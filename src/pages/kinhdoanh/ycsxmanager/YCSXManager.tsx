@@ -2042,9 +2042,11 @@ const YCSXManager = () => {
               last_prod_request_no = response.data.data[0].PROD_REQUEST_NO;
               next_prod_request_no =
                 next_header +
-                zeroPad(Number(last_prod_request_no.substring(3, 7)) + 1, 4);
+                moment().format("YYYY").substring(2, 3) +
+                zeroPad(Number(last_prod_request_no.substring(4, 7)) + 1, 3);
             } else {
-              next_prod_request_no = next_header + "0001";
+              next_prod_request_no =
+                next_header + moment().format("YYYY").substring(2, 3) + "001";
             }
           })
           .catch((error) => {
@@ -2452,9 +2454,11 @@ const YCSXManager = () => {
           last_prod_request_no = response.data.data[0].PROD_REQUEST_NO;
           next_prod_request_no =
             next_header +
-            zeroPad(Number(last_prod_request_no.substring(3, 7)) + 1, 4);
+            moment().format("YYYY").substring(2, 3) +
+            zeroPad(Number(last_prod_request_no.substring(4, 7)) + 1, 3);
         } else {
-          next_prod_request_no = next_header + "0001";
+          next_prod_request_no =
+            next_header + moment().format("YYYY").substring(2, 3) + "001";
         }
       })
       .catch((error) => {

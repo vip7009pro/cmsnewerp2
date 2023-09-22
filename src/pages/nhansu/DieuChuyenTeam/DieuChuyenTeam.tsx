@@ -66,14 +66,14 @@ const DieuChuyenTeam = () => {
                             ? "TEAM 1"
                             : "TEAM 2",
                       }
-                    : p,
+                    : p
                 );
                 setDiemDanhNhomTable(newProjects);
               } else {
                 Swal.fire(
                   "Có lỗi",
                   "Nội dung: " + response.data.message,
-                  "error",
+                  "error"
                 );
               }
             })
@@ -84,33 +84,33 @@ const DieuChuyenTeam = () => {
 
         if (params.row.WORK_SHIF_NAME === "Hành Chính") {
           return (
-            <div className="onoffdiv">
-              <button className="team1bt" onClick={() => onClick(1)}>
+            <div className='onoffdiv'>
+              <button className='team1bt' onClick={() => onClick(1)}>
                 TEAM1
               </button>
-              <button className="team2bt" onClick={() => onClick(2)}>
+              <button className='team2bt' onClick={() => onClick(2)}>
                 TEAM2
               </button>
             </div>
           );
         } else if (params.row.WORK_SHIF_NAME === "TEAM 1") {
           return (
-            <div className="onoffdiv">
-              <button className="hcbt" onClick={() => onClick(0)}>
+            <div className='onoffdiv'>
+              <button className='hcbt' onClick={() => onClick(0)}>
                 HanhChinh
               </button>
-              <button className="team2bt" onClick={() => onClick(2)}>
+              <button className='team2bt' onClick={() => onClick(2)}>
                 TEAM2
               </button>
             </div>
           );
         } else {
           return (
-            <div className="onoffdiv">
-              <button className="team1bt" onClick={() => onClick(1)}>
+            <div className='onoffdiv'>
+              <button className='team1bt' onClick={() => onClick(1)}>
                 TEAM1
               </button>
-              <button className="hcbt" onClick={() => onClick(0)}>
+              <button className='hcbt' onClick={() => onClick(0)}>
                 HanhChinh
               </button>
             </div>
@@ -140,14 +140,14 @@ const DieuChuyenTeam = () => {
                         FACTORY_NAME:
                           teamvalue_info === 1 ? "Nhà máy 1" : "Nhà máy 2",
                       }
-                    : p,
+                    : p
                 );
                 setDiemDanhNhomTable(newProjects);
               } else {
                 Swal.fire(
                   "Có lỗi",
                   "Nội dung: " + response.data.message,
-                  "error",
+                  "error"
                 );
               }
             })
@@ -158,27 +158,27 @@ const DieuChuyenTeam = () => {
 
         if (params.row.FACTORY_NAME === "Nhà máy 1") {
           return (
-            <div className="onoffdiv">
-              <button className="team2bt" onClick={() => onClick(2)}>
+            <div className='onoffdiv'>
+              <button className='team2bt' onClick={() => onClick(2)}>
                 SET NM2
               </button>
             </div>
           );
         } else if (params.row.FACTORY_NAME === "Nhà máy 2") {
           return (
-            <div className="onoffdiv">
-              <button className="hcbt" onClick={() => onClick(1)}>
+            <div className='onoffdiv'>
+              <button className='hcbt' onClick={() => onClick(1)}>
                 SET NM1
               </button>
             </div>
           );
         } else {
           return (
-            <div className="onoffdiv">
-              <button className="team1bt" onClick={() => onClick(1)}>
+            <div className='onoffdiv'>
+              <button className='team1bt' onClick={() => onClick(1)}>
                 SET NM1
               </button>
-              <button className="hcbt" onClick={() => onClick(2)}>
+              <button className='hcbt' onClick={() => onClick(2)}>
                 SET NM2
               </button>
             </div>
@@ -230,7 +230,7 @@ const DieuChuyenTeam = () => {
                           Swal.fire(
                             "Thông báo",
                             "Nội dung: " + response.data.message,
-                            "error",
+                            "error"
                           );
                         }
                       })
@@ -241,7 +241,7 @@ const DieuChuyenTeam = () => {
                     Swal.fire(
                       "Có lỗi",
                       "Nội dung: " + response.data.message,
-                      "error",
+                      "error"
                     );
                   }
                 })
@@ -252,10 +252,10 @@ const DieuChuyenTeam = () => {
           });
         };
         return (
-          <div className="onoffdiv">
+          <div className='onoffdiv'>
             <label>
               <select
-                name="vitrilamviec"
+                name='vitrilamviec'
                 value={params.row.WORK_POSITION_CODE}
                 onChange={(e) => {
                   onClick(Number(e.target.value));
@@ -290,7 +290,7 @@ const DieuChuyenTeam = () => {
         <GridToolbarFilterButton />
         <GridToolbarDensitySelector />
         <button
-          className="saveexcelbutton"
+          className='saveexcelbutton'
           onClick={() => {
             SaveExcel(diemdanhnhomtable, "DieuChuyenTeam");
           }}
@@ -336,7 +336,7 @@ const DieuChuyenTeam = () => {
           Swal.fire(
             "Thông báo",
             "Đã load " + response.data.data.length + " dòng",
-            "success",
+            "success"
           );
         } else {
           Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
@@ -348,13 +348,12 @@ const DieuChuyenTeam = () => {
   }, []);
 
   return (
-    <div className="dieuchuyenteam">
-      <h3>Điều chuyển team</h3>
-      <div className="filterform">
+    <div className='dieuchuyenteam'>
+      <div className='filterform'>
         <label>
           Ca làm việc:
           <select
-            name="calamviec"
+            name='calamviec'
             value={WORK_SHIFT_CODE}
             onChange={(e) => {
               onselectionteamhandle(Number(e.target.value));
@@ -369,7 +368,7 @@ const DieuChuyenTeam = () => {
           </select>
         </label>
       </div>
-      <div className="maindept_table">
+      <div className='maindept_table'>
         <DataGrid
           sx={{ fontSize: "0.8rem" }}
           components={{
@@ -381,7 +380,7 @@ const DieuChuyenTeam = () => {
           rows={diemdanhnhomtable}
           columns={columns_diemdanhnhom}
           rowsPerPageOptions={[5, 10, 50, 100, 500]}
-          editMode="row"
+          editMode='row'
           getRowHeight={() => "auto"}
         />
       </div>

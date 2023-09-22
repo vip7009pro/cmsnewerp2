@@ -24,7 +24,7 @@ import { DiemDanhLichSuData, UserData } from "../../../api/GlobalInterface";
 
 const LichSu = () => {
   const userData: UserData | undefined = useSelector(
-    (state: RootState) => state.totalSlice.userData,
+    (state: RootState) => state.totalSlice.userData
   );
 
   const [isLoading, setisLoading] = useState(false);
@@ -51,7 +51,7 @@ const LichSu = () => {
       renderCell: (params: any) => {
         if (params.row.WEEKDAY === "Sunday") {
           return (
-            <div className="onoffdiv">
+            <div className='onoffdiv'>
               <span style={{ fontWeight: "bold", color: "red" }}>
                 {params.row.WEEKDAY}
               </span>
@@ -59,7 +59,7 @@ const LichSu = () => {
           );
         } else {
           return (
-            <div className="onoffdiv">
+            <div className='onoffdiv'>
               <span style={{ fontWeight: "bold", color: "#4268F4" }}>
                 {params.row.WEEKDAY}
               </span>
@@ -75,19 +75,19 @@ const LichSu = () => {
       renderCell: (params: any) => {
         if (params.row.ON_OFF === 1) {
           return (
-            <div className="onoffdiv">
+            <div className='onoffdiv'>
               <span style={{ fontWeight: "bold", color: "green" }}>Đi làm</span>
             </div>
           );
         } else if (params.row.ON_OFF === 0) {
           return (
-            <div className="onoffdiv">
+            <div className='onoffdiv'>
               <span style={{ fontWeight: "bold", color: "red" }}>Nghỉ làm</span>
             </div>
           );
         } else {
           return (
-            <div className="onoffdiv">
+            <div className='onoffdiv'>
               <span style={{ fontWeight: "bold", color: "#754EFA" }}>
                 Chưa điểm danh
               </span>
@@ -102,7 +102,7 @@ const LichSu = () => {
       width: 120,
       renderCell: (params: any) => {
         return (
-          <div className="onoffdiv">
+          <div className='onoffdiv'>
             <span style={{ fontWeight: "bold", color: "black" }}>
               {params.row.CHECK1}
             </span>
@@ -116,7 +116,7 @@ const LichSu = () => {
       width: 120,
       renderCell: (params: any) => {
         return (
-          <div className="onoffdiv">
+          <div className='onoffdiv'>
             <span style={{ fontWeight: "bold", color: "black" }}>
               {params.row.CHECK2}
             </span>
@@ -130,7 +130,7 @@ const LichSu = () => {
       width: 120,
       renderCell: (params: any) => {
         return (
-          <div className="onoffdiv">
+          <div className='onoffdiv'>
             <span style={{ fontWeight: "bold", color: "black" }}>
               {params.row.CHECK3}
             </span>
@@ -145,13 +145,13 @@ const LichSu = () => {
       renderCell: (params: any) => {
         if (params.row.APPROVAL_STATUS === 0) {
           return (
-            <div className="onoffdiv">
+            <div className='onoffdiv'>
               <span style={{ fontWeight: "bold", color: "red" }}>Từ chối</span>
             </div>
           );
         } else if (params.row.APPROVAL_STATUS === 1) {
           return (
-            <div className="onoffdiv">
+            <div className='onoffdiv'>
               <span style={{ fontWeight: "bold", color: "green" }}>
                 Phê duyệt
               </span>
@@ -159,14 +159,14 @@ const LichSu = () => {
           );
         } else if (params.row.APPROVAL_STATUS === 2) {
           return (
-            <div className="onoffdiv">
+            <div className='onoffdiv'>
               <span style={{ fontWeight: "bold", color: "white" }}>
                 Chờ duyệt
               </span>
             </div>
           );
         } else {
-          return <div className="onoffdiv"></div>;
+          return <div className='onoffdiv'></div>;
         }
       },
     },
@@ -212,7 +212,7 @@ const LichSu = () => {
         <GridToolbarFilterButton />
         <GridToolbarDensitySelector />
         <button
-          className="saveexcelbutton"
+          className='saveexcelbutton'
           onClick={() => {
             SaveExcel(diemdanhnhomtable, "LichSuLamViec");
           }}
@@ -255,7 +255,7 @@ const LichSu = () => {
                     : "",
                 id: index,
               };
-            },
+            }
           );
           //console.log(loaded_data )
           setDiemDanhNhomTable(loaded_data);
@@ -263,7 +263,7 @@ const LichSu = () => {
           Swal.fire(
             "Thông báo",
             "Đã load " + response.data.data.length + " dòng",
-            "success",
+            "success"
           );
         } else {
           Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
@@ -279,13 +279,12 @@ const LichSu = () => {
     handleSearch();
   }, []);
   return (
-    <div className="lichsu">
-      <h3>Lịch Sử Làm Việc Của Tôi</h3>
-      <div className="filterform">
+    <div className='lichsu'>
+      <div className='filterform'>
         <label>
           <b>Từ ngày:</b>
           <input
-            type="date"
+            type='date'
             value={fromdate.slice(0, 10)}
             onChange={(e) => setFromDate(e.target.value)}
           ></input>
@@ -293,13 +292,13 @@ const LichSu = () => {
         <label>
           <b>Tới ngày:</b>{" "}
           <input
-            type="date"
+            type='date'
             value={todate.slice(0, 10)}
             onChange={(e) => setToDate(e.target.value)}
           ></input>
         </label>
         <button
-          className="searchbutton"
+          className='searchbutton'
           onClick={() => {
             handleSearch();
           }}
@@ -307,7 +306,7 @@ const LichSu = () => {
           Search
         </button>
       </div>
-      <div className="maindept_table">
+      <div className='maindept_table'>
         <DataGrid
           sx={{ fontSize: "0.8rem" }}
           components={{
@@ -319,7 +318,7 @@ const LichSu = () => {
           rows={diemdanhnhomtable}
           columns={columns_diemdanhnhom}
           rowsPerPageOptions={[5, 10, 50, 100, 500]}
-          editMode="row"
+          editMode='row'
           getRowHeight={() => "auto"}
         />
       </div>

@@ -103,7 +103,7 @@ export const TotalPOManagerDiv = styled.div`
         margin-top: 10px;
         background-image: linear-gradient(0deg, #afd3d1, #a0d898);
 
-        border-radius: 10px;
+        border-radius: 5px;
         .datatb {
           justify-items: center;
           width: 99%;
@@ -269,7 +269,7 @@ export const TotalPOManagerDiv = styled.div`
         -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
         box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
         gap: 20px;
-        border-radius: 10px;
+        border-radius: 5px;
         margin-top: 5px;
 
         table {
@@ -303,7 +303,7 @@ export const TotalPOManagerDiv = styled.div`
         -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
         box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
         gap: 20px;
-        border-radius: 10px;
+        border-radius: 5px;
         margin-top: 5px;
         table {
           border: 3px solid gray;
@@ -424,7 +424,7 @@ export const TotalPOManagerDiv = styled.div`
       height: fit-content;
       flex-wrap: wrap;
       background-image: linear-gradient(0deg, #9fc2eb, #42e9ff);
-      border-radius: 10px;
+      border-radius: 5px;
       box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
       -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
       -moz-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
@@ -440,7 +440,7 @@ export const TotalPOManagerDiv = styled.div`
         justify-self: center;
         padding: 20px;
         width: 97%;
-        border-radius: 10px;
+        border-radius: 5px;
         height: 40vh;
         margin-left: 10px;
         align-self: center;
@@ -517,7 +517,7 @@ export const TotalPOManagerDiv = styled.div`
             text-decoration: none;
             display: inline-block;
             font-size: 16px;
-            border-radius: 10px;
+            border-radius: 5px;
             outline: none;
             box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
             -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
@@ -536,7 +536,7 @@ export const TotalPOManagerDiv = styled.div`
             text-decoration: none;
             display: inline-block;
             font-size: 16px;
-            border-radius: 10px;
+            border-radius: 5px;
             outline: none;
             box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
             -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
@@ -556,7 +556,7 @@ export const TotalPOManagerDiv = styled.div`
             text-decoration: none;
             display: inline-block;
             font-size: 16px;
-            border-radius: 10px;
+            border-radius: 5px;
             outline: none;
             box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
             -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
@@ -575,7 +575,7 @@ export const TotalPOManagerDiv = styled.div`
             text-decoration: none;
             display: inline-block;
             font-size: 16px;
-            border-radius: 10px;
+            border-radius: 5px;
             outline: none;
             box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
             -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
@@ -601,7 +601,7 @@ export const TotalPOManagerDiv = styled.div`
       height: fit-content;
       flex-wrap: wrap;
       background-image: linear-gradient(0deg, #bbc7d4, #8880f5);
-      border-radius: 10px;
+      border-radius: 5px;
       box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
       -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
       -moz-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
@@ -617,7 +617,7 @@ export const TotalPOManagerDiv = styled.div`
         justify-self: center;
         padding: 20px;
         width: 97%;
-        border-radius: 10px;
+        border-radius: 5px;
         height: 40vh;
         margin-left: 10px;
         align-self: center;
@@ -694,7 +694,7 @@ export const TotalPOManagerDiv = styled.div`
             text-decoration: none;
             display: inline-block;
             font-size: 16px;
-            border-radius: 10px;
+            border-radius: 5px;
             outline: none;
             box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
             -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
@@ -713,7 +713,7 @@ export const TotalPOManagerDiv = styled.div`
             text-decoration: none;
             display: inline-block;
             font-size: 16px;
-            border-radius: 10px;
+            border-radius: 5px;
             outline: none;
             box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
             -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
@@ -733,7 +733,7 @@ export const TotalPOManagerDiv = styled.div`
             text-decoration: none;
             display: inline-block;
             font-size: 16px;
-            border-radius: 10px;
+            border-radius: 5px;
             outline: none;
             box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
             -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
@@ -752,7 +752,7 @@ export const TotalPOManagerDiv = styled.div`
             text-decoration: none;
             display: inline-block;
             font-size: 16px;
-            border-radius: 10px;
+            border-radius: 5px;
             outline: none;
             box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
             -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
@@ -862,7 +862,7 @@ export const InserPOTableDiv = styled.div`
   width: 100%;
   margin-top: 10px;
   background-image: linear-gradient(0deg, #afd3d1, #a0d898);
-  border-radius: 10px;
+  border-radius: 5px;
 `;
 
 export const DataTBDiv = styled.div`

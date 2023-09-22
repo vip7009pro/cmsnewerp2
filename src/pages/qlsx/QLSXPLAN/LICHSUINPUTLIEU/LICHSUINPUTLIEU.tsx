@@ -52,46 +52,46 @@ const LICHSUINPUTLIEU = () => {
   const [alltime, setAllTime] = useState(false);
   const [id, setID] = useState("");
   const [inspectiondatatable, setInspectionDataTable] = useState<Array<any>>(
-    [],
+    []
   );
   const [sumaryINSPECT, setSummaryInspect] = useState("");
   const [m_name, setM_Name] = useState("");
   const [m_code, setM_Code] = useState("");
 
   const column_lichsuinputlieusanxuat = [
-    { field: "PROD_REQUEST_NO", headerName: "YCSX NO", minwidth: 80, flex: 1 },
-    { field: "PLAN_ID", headerName: "PLAN_ID", minwidth: 80, flex: 1 },
-    { field: "G_CODE", headerName: "G_CODE", minwidth: 80, flex: 1 },
-    { field: "G_NAME_KD", headerName: "G_NAME_KD", minwidth: 80, flex: 1 },
-    { field: "M_CODE", headerName: "M_CODE", minwidth: 80, flex: 1 },
-    { field: "M_NAME", headerName: "M_NAME", minwidth: 150, flex: 2 },
-    { field: "WIDTH_CD", headerName: "SIZE", minwidth: 40, flex: 1 },
-    { field: "M_LOT_NO", headerName: "M_LOT_NO", minwidth: 90, flex: 1 },
-    { field: "INPUT_QTY", headerName: "INPUT_QTY", minwidth: 120, flex: 1 },
-    { field: "USED_QTY", headerName: "USED_QTY", minwidth: 80, flex: 1 },
-    { field: "REMAIN_QTY", headerName: "REMAIN_QTY", minwidth: 90, flex: 1 },
-    { field: "EMPL_NO", headerName: "EMPL_NO", minwidth: 80, flex: 1 },
-    { field: "EQUIPMENT_CD", headerName: "MAY", minwidth: 40, flex: 1 },
-    { field: "INS_DATE", headerName: "INS_DATE", minwidth: 150, flex: 1 },
+    { field: "PROD_REQUEST_NO", headerName: "YCSX NO", width: 80 },
+    { field: "PLAN_ID", headerName: "PLAN_ID", width: 80 },
+    { field: "G_CODE", headerName: "G_CODE", width: 80 },
+    { field: "G_NAME_KD", headerName: "G_NAME_KD", width: 150 },
+    { field: "M_CODE", headerName: "M_CODE", width: 80 },
+    { field: "M_NAME", headerName: "M_NAME", width: 150 },
+    { field: "WIDTH_CD", headerName: "SIZE", width: 40 },
+    { field: "M_LOT_NO", headerName: "M_LOT_NO", width: 90 },
+    { field: "INPUT_QTY", headerName: "INPUT_QTY", width: 120 },
+    { field: "USED_QTY", headerName: "USED_QTY", width: 80 },
+    { field: "REMAIN_QTY", headerName: "REMAIN_QTY", width: 90 },
+    { field: "EMPL_NO", headerName: "EMPL_NO", width: 80 },
+    { field: "EQUIPMENT_CD", headerName: "MAY", width: 40 },
+    { field: "INS_DATE", headerName: "INS_DATE", width: 150 },
   ];
   const [columnDefinition, setColumnDefinition] = useState<Array<any>>(
-    column_lichsuinputlieusanxuat,
+    column_lichsuinputlieusanxuat
   );
 
   function CustomToolbarLICHSUINPUTSX() {
     return (
       <GridToolbarContainer>
         <IconButton
-          className="buttonIcon"
+          className='buttonIcon'
           onClick={() => {
             SaveExcel(inspectiondatatable, "LICHSU INPUT Table");
           }}
         >
-          <AiFillFileExcel color="green" size={25} />
+          <AiFillFileExcel color='green' size={25} />
           SAVE
         </IconButton>
         <GridToolbarQuickFilter />
-        <div className="div" style={{ fontSize: 20, fontWeight: "bold" }}>
+        <div className='div' style={{ fontSize: 20, fontWeight: "bold" }}>
           Lịch sử input liệu sản xuất
         </div>
       </GridToolbarContainer>
@@ -121,7 +121,7 @@ const LICHSUINPUTLIEU = () => {
                   .format("YYYY-MM-DD HH:mm:ss"),
                 id: index,
               };
-            },
+            }
           );
           setInspectionDataTable(loaded_data);
           setReadyRender(true);
@@ -138,15 +138,15 @@ const LICHSUINPUTLIEU = () => {
     //setColumnDefinition(column_inspect_output);
   }, []);
   return (
-    <div className="lichsuinputlieu">
-      <div className="tracuuDataInspection">
-        <div className="tracuuDataInspectionform">
-          <div className="forminput">
-            <div className="forminputcolumn">
+    <div className='lichsuinputlieu'>
+      <div className='tracuuDataInspection'>
+        <div className='tracuuDataInspectionform'>
+          <div className='forminput'>
+            <div className='forminputcolumn'>
               <label>
                 <b>Từ ngày:</b>
                 <input
-                  type="date"
+                  type='date'
                   value={fromdate.slice(0, 10)}
                   onChange={(e) => setFromDate(e.target.value)}
                 ></input>
@@ -154,18 +154,18 @@ const LICHSUINPUTLIEU = () => {
               <label>
                 <b>Tới ngày:</b>{" "}
                 <input
-                  type="date"
+                  type='date'
                   value={todate.slice(0, 10)}
                   onChange={(e) => setToDate(e.target.value)}
                 ></input>
               </label>
             </div>
-            <div className="forminputcolumn">
+            <div className='forminputcolumn'>
               <label>
                 <b>Code KD:</b>{" "}
                 <input
-                  type="text"
-                  placeholder="GH63-xxxxxx"
+                  type='text'
+                  placeholder='GH63-xxxxxx'
                   value={codeKD}
                   onChange={(e) => setCodeKD(e.target.value)}
                 ></input>
@@ -173,19 +173,19 @@ const LICHSUINPUTLIEU = () => {
               <label>
                 <b>Code ERP:</b>{" "}
                 <input
-                  type="text"
-                  placeholder="7C123xxx"
+                  type='text'
+                  placeholder='7C123xxx'
                   value={codeCMS}
                   onChange={(e) => setCodeCMS(e.target.value)}
                 ></input>
               </label>
             </div>
-            <div className="forminputcolumn">
+            <div className='forminputcolumn'>
               <label>
                 <b>Tên Liệu:</b>{" "}
                 <input
-                  type="text"
-                  placeholder="SJ-203020HC"
+                  type='text'
+                  placeholder='SJ-203020HC'
                   value={m_name}
                   onChange={(e) => setM_Name(e.target.value)}
                 ></input>
@@ -193,19 +193,19 @@ const LICHSUINPUTLIEU = () => {
               <label>
                 <b>Mã Liệu CMS:</b>{" "}
                 <input
-                  type="text"
-                  placeholder="A123456"
+                  type='text'
+                  placeholder='A123456'
                   value={m_code}
                   onChange={(e) => setM_Code(e.target.value)}
                 ></input>
               </label>
             </div>
-            <div className="forminputcolumn">
+            <div className='forminputcolumn'>
               <label>
                 <b>Số YCSX:</b>{" "}
                 <input
-                  type="text"
-                  placeholder="1F80008"
+                  type='text'
+                  placeholder='1F80008'
                   value={prodrequestno}
                   onChange={(e) => setProdRequestNo(e.target.value)}
                 ></input>
@@ -213,26 +213,26 @@ const LICHSUINPUTLIEU = () => {
               <label>
                 <b>Số chỉ thị:</b>{" "}
                 <input
-                  type="text"
-                  placeholder="A123456"
+                  type='text'
+                  placeholder='A123456'
                   value={plan_id}
                   onChange={(e) => setPlanID(e.target.value)}
                 ></input>
               </label>
             </div>
           </div>
-          <div className="formbutton">
+          <div className='formbutton'>
             <label>
               <b>All Time:</b>
               <input
-                type="checkbox"
-                name="alltimecheckbox"
+                type='checkbox'
+                name='alltimecheckbox'
                 defaultChecked={alltime}
                 onChange={() => setAllTime(!alltime)}
               ></input>
             </label>
             <button
-              className="tranhatky"
+              className='tranhatky'
               onClick={() => {
                 setisLoading(true);
                 setReadyRender(false);
@@ -244,7 +244,7 @@ const LICHSUINPUTLIEU = () => {
             </button>
           </div>
         </div>
-        <div className="tracuuYCSXTable">
+        <div className='tracuuYCSXTable'>
           {readyRender && (
             <DataGrid
               sx={{ fontSize: "0.7rem", flex: 1 }}

@@ -71,21 +71,21 @@ const DiemDanhNhomBP = () => {
                 const newProjects = diemdanhnhomtable.map((p) =>
                   p.EMPL_NO === params.row.EMPL_NO
                     ? { ...p, ON_OFF: 0, REASON_NAME: "AUTO" }
-                    : p,
+                    : p
                 );
                 setDiemDanhNhomTable(newProjects);
 
                 Swal.fire(
                   "Thông báo",
                   "Người này nghỉ ko đăng ký, auto chuyển Nghỉ Việc Riêng!",
-                  "warning",
+                  "warning"
                 );
               } else {
                 Swal.fire(
                   "Lỗi",
                   "Người này nghỉ ko đăng ký, auto chuyển Nghỉ Việc Riêng, tuy nhiên thao tác thất bại ! " +
                     response.data.message,
-                  "error",
+                  "error"
                 );
               }
             })
@@ -155,14 +155,14 @@ const DiemDanhNhomBP = () => {
                       const newProjects = diemdanhnhomtable.map((p) =>
                         p.EMPL_NO === params.row.EMPL_NO
                           ? { ...p, ON_OFF: type }
-                          : p,
+                          : p
                       );
                       setDiemDanhNhomTable(newProjects);
                     } else {
                       Swal.fire(
                         "Có lỗi",
                         "Nội dung: " + response.data.message,
-                        "error",
+                        "error"
                       );
                     }
                   })
@@ -173,7 +173,7 @@ const DiemDanhNhomBP = () => {
                 Swal.fire(
                   "Có lỗi",
                   "Đã đăng ký nghỉ rồi, không điểm danh được",
-                  "error",
+                  "error"
                 );
               }
             } else if (type === 0) {
@@ -195,7 +195,7 @@ const DiemDanhNhomBP = () => {
                     const newProjects = diemdanhnhomtable.map((p) =>
                       p.EMPL_NO === params.row.EMPL_NO
                         ? { ...p, ON_OFF: type }
-                        : p,
+                        : p
                     );
                     if (params.row.OFF_ID === null) {
                       dangkynghi_auto(3);
@@ -205,7 +205,7 @@ const DiemDanhNhomBP = () => {
                     Swal.fire(
                       "Có lỗi",
                       "Nội dung: " + response.data.message,
-                      "error",
+                      "error"
                     );
                   }
                 })
@@ -229,9 +229,7 @@ const DiemDanhNhomBP = () => {
                   //console.log(response.data);
                   if (response.data.tk_status === "OK") {
                     const newProjects = diemdanhnhomtable.map((p) =>
-                      p.EMPL_NO === params.row.EMPL_NO
-                        ? { ...p, ON_OFF: 0 }
-                        : p,
+                      p.EMPL_NO === params.row.EMPL_NO ? { ...p, ON_OFF: 0 } : p
                     );
                     if (params.row.OFF_ID === null) {
                       dangkynghi_auto(5);
@@ -241,7 +239,7 @@ const DiemDanhNhomBP = () => {
                     Swal.fire(
                       "Có lỗi",
                       "Nội dung: " + response.data.message,
-                      "error",
+                      "error"
                     );
                   }
                 })
@@ -257,13 +255,13 @@ const DiemDanhNhomBP = () => {
             const newProjects = diemdanhnhomtable.map((p) =>
               p.EMPL_NO === params.row.EMPL_NO
                 ? { ...p, ON_OFF: null, OFF_ID: null, REASON_NAME: null }
-                : p,
+                : p
             );
             setDiemDanhNhomTable(newProjects);
             xoadangkynghi_auto();
           } else {
             const newProjects = diemdanhnhomtable.map((p) =>
-              p.EMPL_NO === params.row.EMPL_NO ? { ...p, ON_OFF: null } : p,
+              p.EMPL_NO === params.row.EMPL_NO ? { ...p, ON_OFF: null } : p
             );
             setDiemDanhNhomTable(newProjects);
           }
@@ -271,29 +269,29 @@ const DiemDanhNhomBP = () => {
         if (params.row.ON_OFF === null) {
           return (
             <div className={`onoffdiv ${typeclass}`}>
-              <button className="onbutton" onClick={() => onClick(1, 1)}>
+              <button className='onbutton' onClick={() => onClick(1, 1)}>
                 Làm Ngày
               </button>{" "}
               <br></br>
-              <button className="onbutton" onClick={() => onClick(1, 2)}>
+              <button className='onbutton' onClick={() => onClick(1, 2)}>
                 Làm Đêm
               </button>{" "}
               <br></br>
-              <button className="offbutton" onClick={() => onClick(0, 1)}>
+              <button className='offbutton' onClick={() => onClick(0, 1)}>
                 Nghỉ
               </button>
-              <button className="off50button" onClick={() => onClick(2)}>
+              <button className='off50button' onClick={() => onClick(2)}>
                 50%
               </button>
             </div>
           );
         }
         return (
-          <div className="onoffdiv">
+          <div className='onoffdiv'>
             <span className={`onoffshowtext A${params.row.ON_OFF}`}>
               {params.row.ON_OFF === 1 ? "ON" : "OFF"}
             </span>
-            <button className="resetbutton" onClick={() => onReset()}>
+            <button className='resetbutton' onClick={() => onReset()}>
               RESET
             </button>
           </div>
@@ -329,14 +327,14 @@ const DiemDanhNhomBP = () => {
                         OVERTIME: overtimeinfo === "KTC" ? 0 : 1,
                         OVERTIME_INFO: overtimeinfo,
                       }
-                    : p,
+                    : p
                 );
                 setDiemDanhNhomTable(newProjects);
               } else {
                 Swal.fire(
                   "Có lỗi",
                   "Nội dung: " + response.data.message,
-                  "error",
+                  "error"
                 );
               }
             })
@@ -348,7 +346,7 @@ const DiemDanhNhomBP = () => {
           const newProjects = diemdanhnhomtable.map((p) =>
             p.EMPL_NO === params.row.EMPL_NO
               ? { ...p, OVERTIME: null, OVERTIME_INFO: null }
-              : p,
+              : p
           );
           ////console.log(newProjects);
           setDiemDanhNhomTable(newProjects);
@@ -356,33 +354,33 @@ const DiemDanhNhomBP = () => {
         if (params.row.OVERTIME === null) {
           return (
             <div className={`onoffdiv ${typeclass}`}>
-              <button className="tcbutton" onClick={() => onClick("KTC")}>
+              <button className='tcbutton' onClick={() => onClick("KTC")}>
                 KTC
               </button>
-              <button className="tcbutton" onClick={() => onClick("0200-0600")}>
+              <button className='tcbutton' onClick={() => onClick("0200-0600")}>
                 02-06
               </button>
-              <button className="tcbutton" onClick={() => onClick("1700-2000")}>
+              <button className='tcbutton' onClick={() => onClick("1700-2000")}>
                 17-20
               </button>
-              <button className="tcbutton" onClick={() => onClick("1700-1800")}>
+              <button className='tcbutton' onClick={() => onClick("1700-1800")}>
                 17-18
               </button>
-              <button className="tcbutton" onClick={() => onClick("0500-0800")}>
+              <button className='tcbutton' onClick={() => onClick("0500-0800")}>
                 05-08
               </button>
-              <button className="tcbutton" onClick={() => onClick("1600-2000")}>
+              <button className='tcbutton' onClick={() => onClick("1600-2000")}>
                 16-20
               </button>
             </div>
           );
         }
         return (
-          <div className="onoffdiv">
+          <div className='onoffdiv'>
             <span className={`onoffshowtext A${params.row.OVERTIME}`}>
               {params.row.OVERTIME_INFO}
             </span>
-            <button className="resetbutton" onClick={() => onReset()}>
+            <button className='resetbutton' onClick={() => onReset()}>
               RESET
             </button>
           </div>
@@ -438,7 +436,7 @@ const DiemDanhNhomBP = () => {
         <GridToolbarFilterButton />
         <GridToolbarDensitySelector />
         <button
-          className="saveexcelbutton"
+          className='saveexcelbutton'
           onClick={() => {
             SaveExcel(diemdanhnhomtable, "DiemDanhNhom");
           }}
@@ -461,7 +459,7 @@ const DiemDanhNhomBP = () => {
           Swal.fire(
             "Thông báo",
             "Đã load " + response.data.data.length + " dòng",
-            "success",
+            "success"
           );
         } else {
           Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
@@ -482,7 +480,7 @@ const DiemDanhNhomBP = () => {
           Swal.fire(
             "Thông báo",
             "Đã load " + response.data.data.length + " dòng",
-            "success",
+            "success"
           );
         } else {
           Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
@@ -494,13 +492,12 @@ const DiemDanhNhomBP = () => {
   }, []);
 
   return (
-    <div className="diemdanhnhom">
-      <h3>Điểm danh nhóm</h3>
-      <div className="filterform">
+    <div className='diemdanhnhom'>
+      <div className='filterform'>
         <label>
           Ca làm việc:
           <select
-            name="calamviec"
+            name='calamviec'
             value={WORK_SHIFT_CODE}
             onChange={(e) => {
               onselectionteamhandle(Number(e.target.value));
@@ -515,7 +512,7 @@ const DiemDanhNhomBP = () => {
           </select>
         </label>
       </div>
-      <div className="maindept_table">
+      <div className='maindept_table'>
         <DataGrid
           sx={{ fontSize: "0.8rem" }}
           components={{
@@ -527,7 +524,7 @@ const DiemDanhNhomBP = () => {
           rows={diemdanhnhomtable}
           columns={columns_diemdanhnhom}
           rowsPerPageOptions={[5, 10, 50, 100, 500, 1000]}
-          editMode="row"
+          editMode='row'
           getRowHeight={() => "auto"}
         />
       </div>

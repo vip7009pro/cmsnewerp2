@@ -106,23 +106,26 @@
           width: 100%;
           margin-top: 10px;
           background-image: linear-gradient(0deg, #afd3d1, #a0d898);
-          
-          border-radius: 10px;
+
+          border-radius: 5px;
           .datatb {
             justify-items: center;
             width: 99%;
             height: 100%;
             padding: 5px;
-            .dx-datagrid-rowsview .dx-selection.dx-row:not(.dx-row-focused):not(.dx-row-removed) > td {
+            .dx-datagrid-rowsview
+              .dx-selection.dx-row:not(.dx-row-focused):not(.dx-row-removed)
+              > td {
               background-color: orange;
               color: unset;
-          }
-          
-          
-            .dx-datagrid-rowsview .dx-selection.dx-row:not(.dx-row-focused):not(.dx-row-removed) > td {
+            }
+
+            .dx-datagrid-rowsview
+              .dx-selection.dx-row:not(.dx-row-focused):not(.dx-row-removed)
+              > td {
               background-color: orange;
               color: unset;
-          }
+            }
             .dx-datagrid-borders > .dx-datagrid-header-panel {
               border-bottom: 0;
               background-color: #b5f398;
@@ -270,7 +273,7 @@
           -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
           box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
           gap: 20px;
-          border-radius: 10px;
+          border-radius: 5px;
           margin-top: 5px;
 
           table {
@@ -304,7 +307,7 @@
           -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
           box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
           gap: 20px;
-          border-radius: 10px;
+          border-radius: 5px;
           margin-top: 5px;
           table {
             border: 3px solid gray;
@@ -339,12 +342,13 @@
             width: 99%;
             height: 100%;
             padding: 5px;
-            .dx-datagrid-rowsview .dx-selection.dx-row:not(.dx-row-focused):not(.dx-row-removed) > td {
+            .dx-datagrid-rowsview
+              .dx-selection.dx-row:not(.dx-row-focused):not(.dx-row-removed)
+              > td {
               background-color: orange;
               color: unset;
-          }
-          
-          
+            }
+
             .dx-datagrid-borders > .dx-datagrid-header-panel {
               border-bottom: 0;
               background-color: #b5f398;
@@ -424,7 +428,7 @@
         height: fit-content;
         flex-wrap: wrap;
         background-image: linear-gradient(0deg, #9fc2eb, #42e9ff);
-        border-radius: 10px;
+        border-radius: 5px;
         box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
         -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
         -moz-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
@@ -440,7 +444,7 @@
           justify-self: center;
           padding: 20px;
           width: 97%;
-          border-radius: 10px;
+          border-radius: 5px;
           height: 40vh;
           margin-left: 10px;
           align-self: center;
@@ -517,7 +521,7 @@
               text-decoration: none;
               display: inline-block;
               font-size: 16px;
-              border-radius: 10px;
+              border-radius: 5px;
               outline: none;
               box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
               -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
@@ -536,7 +540,7 @@
               text-decoration: none;
               display: inline-block;
               font-size: 16px;
-              border-radius: 10px;
+              border-radius: 5px;
               outline: none;
               box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
               -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
@@ -556,7 +560,7 @@
               text-decoration: none;
               display: inline-block;
               font-size: 16px;
-              border-radius: 10px;
+              border-radius: 5px;
               outline: none;
               box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
               -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
@@ -575,7 +579,7 @@
               text-decoration: none;
               display: inline-block;
               font-size: 16px;
-              border-radius: 10px;
+              border-radius: 5px;
               outline: none;
               box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
               -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
@@ -601,7 +605,7 @@
         height: fit-content;
         flex-wrap: wrap;
         background-image: linear-gradient(0deg, #bbc7d4, #8880f5);
-        border-radius: 10px;
+        border-radius: 5px;
         box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
         -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
         -moz-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
@@ -617,7 +621,7 @@
           justify-self: center;
           padding: 20px;
           width: 97%;
-          border-radius: 10px;
+          border-radius: 5px;
           height: 40vh;
           margin-left: 10px;
           align-self: center;
@@ -694,7 +698,7 @@
               text-decoration: none;
               display: inline-block;
               font-size: 16px;
-              border-radius: 10px;
+              border-radius: 5px;
               outline: none;
               box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
               -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
@@ -713,7 +717,7 @@
               text-decoration: none;
               display: inline-block;
               font-size: 16px;
-              border-radius: 10px;
+              border-radius: 5px;
               outline: none;
               box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
               -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
@@ -733,7 +737,7 @@
               text-decoration: none;
               display: inline-block;
               font-size: 16px;
-              border-radius: 10px;
+              border-radius: 5px;
               outline: none;
               box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
               -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
@@ -752,7 +756,7 @@
               text-decoration: none;
               display: inline-block;
               font-size: 16px;
-              border-radius: 10px;
+              border-radius: 5px;
               outline: none;
               box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
               -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
@@ -879,18 +883,20 @@
           height: 80vh;
           margin-top: 10px;
           background-image: linear-gradient(0deg, #afd3d1, #a0d898);
-         
-          border-radius: 10px;
+
+          border-radius: 5px;
           .datatb {
             justify-items: center;
             width: 99%;
             height: 100%;
             padding: 5px;
-            .dx-datagrid-rowsview .dx-selection.dx-row:not(.dx-row-focused):not(.dx-row-removed) > td {
+            .dx-datagrid-rowsview
+              .dx-selection.dx-row:not(.dx-row-focused):not(.dx-row-removed)
+              > td {
               background-color: orange;
               color: unset;
-          }
-          
+            }
+
             .dx-datagrid-borders > .dx-datagrid-header-panel {
               border-bottom: 0;
               background-color: #b5f398;
@@ -1031,7 +1037,7 @@
           -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
           box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
           gap: 20px;
-          border-radius: 10px;
+          border-radius: 5px;
           margin-top: 5px;
           table {
             border: 3px solid gray;
@@ -1068,7 +1074,7 @@
         height: fit-content;
         flex-wrap: wrap;
         background-image: linear-gradient(0deg, #9fc2eb, #42e9ff);
-        border-radius: 10px;
+        border-radius: 5px;
         box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
         -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
         -moz-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
@@ -1084,7 +1090,7 @@
           justify-self: center;
           padding: 20px;
           width: 97%;
-          border-radius: 10px;
+          border-radius: 5px;
           height: 40vh;
           margin-left: 10px;
           align-self: center;
@@ -1161,7 +1167,7 @@
               text-decoration: none;
               display: inline-block;
               font-size: 16px;
-              border-radius: 10px;
+              border-radius: 5px;
               outline: none;
               box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
               -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
@@ -1180,7 +1186,7 @@
               text-decoration: none;
               display: inline-block;
               font-size: 16px;
-              border-radius: 10px;
+              border-radius: 5px;
               outline: none;
               box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
               -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
@@ -1200,7 +1206,7 @@
               text-decoration: none;
               display: inline-block;
               font-size: 16px;
-              border-radius: 10px;
+              border-radius: 5px;
               outline: none;
               box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
               -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
@@ -1219,7 +1225,7 @@
               text-decoration: none;
               display: inline-block;
               font-size: 16px;
-              border-radius: 10px;
+              border-radius: 5px;
               outline: none;
               box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
               -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
@@ -1246,7 +1252,7 @@
         height: fit-content;
         flex-wrap: wrap;
         background-image: linear-gradient(0deg, #bbc7d4, #8880f5);
-        border-radius: 10px;
+        border-radius: 5px;
         box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
         -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
         -moz-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
@@ -1262,7 +1268,7 @@
           justify-self: center;
           padding: 20px;
           width: 97%;
-          border-radius: 10px;
+          border-radius: 5px;
           height: 40vh;
           margin-left: 10px;
           align-self: center;
@@ -1339,7 +1345,7 @@
               text-decoration: none;
               display: inline-block;
               font-size: 16px;
-              border-radius: 10px;
+              border-radius: 5px;
               outline: none;
               box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
               -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
@@ -1358,7 +1364,7 @@
               text-decoration: none;
               display: inline-block;
               font-size: 16px;
-              border-radius: 10px;
+              border-radius: 5px;
               outline: none;
               box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
               -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
@@ -1378,7 +1384,7 @@
               text-decoration: none;
               display: inline-block;
               font-size: 16px;
-              border-radius: 10px;
+              border-radius: 5px;
               outline: none;
               box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
               -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
@@ -1397,7 +1403,7 @@
               text-decoration: none;
               display: inline-block;
               font-size: 16px;
-              border-radius: 10px;
+              border-radius: 5px;
               outline: none;
               box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
               -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);

@@ -22,7 +22,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { addTab, closeTab, settabIndex } from "../../redux/slices/globalSlice";
 import AccountInfo from "../../components/Navbar/AccountInfo/AccountInfo";
 import styled from "@emotion/styled";
-export const current_ver: number = 216;
+export const current_ver: number = 219;
 interface ELE_ARRAY {
   REACT_ELE: ReactElement;
   ELE_NAME: string;
@@ -140,7 +140,7 @@ function Home() {
     <div className='home'>
       <div className='navdiv'>
         <Navbar />
-        {/* <PrimarySearchAppBar/>  */}
+        {/* <PrimarySearchAppBar /> */}
       </div>
       <div className='homeContainer'>
         <div className='sidebardiv'>
@@ -194,7 +194,6 @@ function Home() {
                         return (
                           <CustomTab
                             key={index}
-                            /* label={index + 1 + "." + ele.ELE_NAME} */
                             label={
                               <CustomTabLabel style={{ fontSize: "0.8rem" }}>
                                 {index + 1}.{ele.ELE_NAME}
@@ -223,7 +222,7 @@ function Home() {
                       className='component_element'
                       style={{
                         visibility: index === tabIndex ? "visible" : "hidden",
-                        width: sidebarStatus ? "85%" : "100%",
+                        width: sidebarStatus ? "87%" : "100%",
                       }}
                     >
                       {ele.REACT_ELE}

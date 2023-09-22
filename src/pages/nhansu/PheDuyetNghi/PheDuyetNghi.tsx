@@ -65,14 +65,14 @@ const PheDuyetNghi = () => {
                               ...p,
                               APPROVAL_STATUS: pheduyet_value,
                             }
-                          : p,
+                          : p
                       );
                       setDiemDanhNhomTable(newProjects);
                     } else {
                       Swal.fire(
                         "Có lỗi",
                         "Nội dung: " + response.data.message,
-                        "error",
+                        "error"
                       );
                     }
                   })
@@ -95,14 +95,14 @@ const PheDuyetNghi = () => {
                           ...p,
                           APPROVAL_STATUS: pheduyet_value,
                         }
-                      : p,
+                      : p
                   );
                   setDiemDanhNhomTable(newProjects);
                 } else {
                   Swal.fire(
                     "Có lỗi",
                     "Nội dung: " + response.data.message,
-                    "error",
+                    "error"
                   );
                 }
               })
@@ -129,14 +129,14 @@ const PheDuyetNghi = () => {
                             ...p,
                             APPROVAL_STATUS: pheduyet_value,
                           }
-                        : p,
+                        : p
                     );
                     setDiemDanhNhomTable(newProjects);
                   } else {
                     Swal.fire(
                       "Có lỗi",
                       "Nội dung: " + response.data.message,
-                      "error",
+                      "error"
                     );
                   }
                 })
@@ -146,7 +146,7 @@ const PheDuyetNghi = () => {
             } else {
               Swal.fire(
                 "Thông báo",
-                "Đã điểm danh đi làm, không phê duyệt nghỉ được",
+                "Đã điểm danh đi làm, không phê duyệt nghỉ được"
               );
             }
           }
@@ -159,50 +159,50 @@ const PheDuyetNghi = () => {
                   ...p,
                   APPROVAL_STATUS: 2,
                 }
-              : p,
+              : p
           );
           setDiemDanhNhomTable(newProjects);
         };
 
         if (params.row.APPROVAL_STATUS === 0) {
           return (
-            <div className="onoffdiv">
+            <div className='onoffdiv'>
               <span style={{ fontWeight: "bold", color: "red" }}>Từ chối</span>
-              <button className="resetbutton" onClick={() => onReset()}>
+              <button className='resetbutton' onClick={() => onReset()}>
                 RESET
               </button>
-              <button className="deletebutton" onClick={() => onClick(3)}>
+              <button className='deletebutton' onClick={() => onClick(3)}>
                 XÓA
               </button>
             </div>
           );
         } else if (params.row.APPROVAL_STATUS === 1) {
           return (
-            <div className="onoffdiv">
+            <div className='onoffdiv'>
               <span style={{ fontWeight: "bold", color: "green" }}>
                 Phê Duyệt
               </span>
-              <button className="resetbutton" onClick={() => onReset()}>
+              <button className='resetbutton' onClick={() => onReset()}>
                 RESET
               </button>
-              <button className="deletebutton" onClick={() => onClick(3)}>
+              <button className='deletebutton' onClick={() => onClick(3)}>
                 XÓA
               </button>
             </div>
           );
         } else if (params.row.APPROVAL_STATUS === 3) {
           return (
-            <div className="onoffdiv">
+            <div className='onoffdiv'>
               <span style={{ fontWeight: "bold", color: "red" }}>Đã xóa</span>
             </div>
           );
         } else {
           return (
-            <div className="onoffdiv">
-              <button className="onbutton" onClick={() => onClick(1)}>
+            <div className='onoffdiv'>
+              <button className='onbutton' onClick={() => onClick(1)}>
                 Duyệt
               </button>
-              <button className="offbutton" onClick={() => onClick(0)}>
+              <button className='offbutton' onClick={() => onClick(0)}>
                 Từ chối
               </button>
             </div>
@@ -262,7 +262,7 @@ const PheDuyetNghi = () => {
         <GridToolbarFilterButton />
         <GridToolbarDensitySelector />
         <button
-          className="saveexcelbutton"
+          className='saveexcelbutton'
           onClick={() => {
             SaveExcel(diemdanhnhomtable, "PheDuyetNghi");
           }}
@@ -285,7 +285,7 @@ const PheDuyetNghi = () => {
           Swal.fire(
             "Thông báo",
             "Đã load " + response.data.data.length + " dòng",
-            "success",
+            "success"
           );
         } else {
           Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
@@ -298,9 +298,8 @@ const PheDuyetNghi = () => {
   }, []);
 
   return (
-    <div className="pheduyetnghi">
-      <h3>Phê duyệt nghỉ</h3>
-      <div className="maindept_table">
+    <div className='pheduyetnghi'>
+      <div className='maindept_table'>
         <DataGrid
           sx={{ fontSize: "0.8rem" }}
           components={{
@@ -312,7 +311,7 @@ const PheDuyetNghi = () => {
           rows={diemdanhnhomtable}
           columns={columns_diemdanhnhom}
           rowsPerPageOptions={[5, 10, 50, 100, 500, 1000, 2000]}
-          editMode="row"
+          editMode='row'
           getRowHeight={() => "auto"}
           checkboxSelection
           disableSelectionOnClick

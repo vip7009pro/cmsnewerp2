@@ -167,7 +167,7 @@
           -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
           box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
           gap: 20px;
-          border-radius: 10px;
+          border-radius: 5px;
           margin-top: 5px;
 
           .summarygroup {
@@ -202,10 +202,12 @@
           width: 99%;
           padding: 10px;
           font-size: 0.8rem;
-          .dx-datagrid-rowsview .dx-selection.dx-row:not(.dx-row-focused):not(.dx-row-removed) > td {
+          .dx-datagrid-rowsview
+            .dx-selection.dx-row:not(.dx-row-focused):not(.dx-row-removed)
+            > td {
             background-color: orange;
             color: unset;
-        }
+          }
           .dx-datagrid-borders > .dx-datagrid-header-panel {
             border-bottom: 0;
             background-color: #b5f398;

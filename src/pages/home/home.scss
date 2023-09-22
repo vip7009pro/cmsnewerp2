@@ -23,6 +23,8 @@
           .component_element {
             position: absolute;
             top: 25px;
+            display: flex;
+            justify-content: center;
           }
         }
       }

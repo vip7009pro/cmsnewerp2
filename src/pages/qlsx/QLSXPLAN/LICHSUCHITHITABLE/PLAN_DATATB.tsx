@@ -2961,6 +2961,7 @@ const PLAN_DATATB = () => {
               }}
               allowEditing={false}
             ></Column>
+
             <Column
               dataField='PLAN_EQ'
               caption='PLAN EQ'
@@ -2969,6 +2970,19 @@ const PLAN_DATATB = () => {
                 return (
                   <span style={{ color: "blue", fontWeight: "bold" }}>
                     {params.data.PLAN_EQ}
+                  </span>
+                );
+              }}
+              allowEditing={true}
+            ></Column>
+            <Column
+              dataField='PLAN_ORDER'
+              caption='STT'
+              width={50}
+              cellRender={(params: any) => {
+                return (
+                  <span style={{ color: "purple", fontWeight: "normarl" }}>
+                    {params.data.PLAN_ORDER}
                   </span>
                 );
               }}
@@ -3122,6 +3136,27 @@ const PLAN_DATATB = () => {
                     {params.data.MASS_END_TIME}
                   </span>
                 );
+              }}
+              allowEditing={false}
+            ></Column>
+            <Column
+              dataField='REQ_DF'
+              caption='REQ DAO FILM'
+              width={80}
+              cellRender={(params: any) => {
+                if (params.data.REQ_DF === "R") {
+                  return (
+                    <span style={{ color: "red", fontWeight: "normarl" }}>
+                      REQUESTED
+                    </span>
+                  );
+                } else {
+                  return (
+                    <span style={{ color: "green", fontWeight: "normarl" }}>
+                      COMPLETED
+                    </span>
+                  );
+                }
               }}
               allowEditing={false}
             ></Column>

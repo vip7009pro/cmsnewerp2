@@ -18,7 +18,7 @@
         align-self: center;
         padding: 20px;
         width: 97%;
-        border-radius: 10px;
+        border-radius: 5px;
         height: 4vh;
         margin-left: 10px;
         margin-bottom: 10px;
@@ -65,7 +65,7 @@
         justify-self: center;
         align-self: center;
         width: 100%;
-        border-radius: 10px;
+        border-radius: 5px;
         height: 450px;
         margin-left: 10px;
         background-image: linear-gradient(0deg, #ffffff, #aff0ff);
@@ -89,7 +89,7 @@
         justify-self: center;
         align-self: center;
         width: 100%;
-        border-radius: 10px;
+        border-radius: 5px;
         height: 450px;
         margin-left: 10px;
         background-image: linear-gradient(0deg, #ffffff, #aff0ff);
@@ -118,11 +118,13 @@
           justify-items: center;
           width: 99%;
           padding: 5px;
-          .dx-datagrid-rowsview .dx-selection.dx-row:not(.dx-row-focused):not(.dx-row-removed) > td {
+          .dx-datagrid-rowsview
+            .dx-selection.dx-row:not(.dx-row-focused):not(.dx-row-removed)
+            > td {
             background-color: orange;
             color: unset;
-        }
-        
+          }
+
           .dx-datagrid-borders > .dx-datagrid-header-panel {
             border-bottom: 0;
             background-color: #b5f398;
@@ -230,7 +232,7 @@
         align-self: center;
         padding: 20px;
         width: 100%;
-        border-radius: 10px;
+        border-radius: 5px;
         margin-left: 10px;
         margin-bottom: 10px;
         gap: 20px;
@@ -267,7 +269,7 @@
         display: flex;
         width: 100%;
         height: 250px;
-        border-radius: 10px;
+        border-radius: 5px;
         background-image: linear-gradient(0deg, #e7fa94, #edeeec);
       }
       .maindept_table {
@@ -279,7 +281,7 @@
         justify-self: center;
         align-self: center;
         width: 100%;
-        border-radius: 10px;
+        border-radius: 5px;
         height: 900px;
         background-image: linear-gradient(0deg, #6396f3, #edeeec);
 
@@ -302,7 +304,7 @@
         justify-self: flex-start;
         align-self: center;
         width: 100%;
-        border-radius: 10px;
+        border-radius: 5px;
         height: 800px;
         margin-left: 10px;
         background-image: linear-gradient(0deg, #add66b, #ffffff);

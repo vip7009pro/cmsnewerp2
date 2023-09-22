@@ -1784,6 +1784,7 @@ export interface QLSXPLANDATA {
   SETTING_START_TIME?: string;
   MASS_START_TIME?: string;
   MASS_END_TIME?: string;
+  REQ_DF?: string;
 }
 export interface QLSXCHITHIDATA {
   id: string;
