@@ -24,7 +24,8 @@ import { generalQuery } from "../../../../api/Api";
 import { UserContext } from "../../../../api/Context";
 import { SaveExcel } from "../../../../api/GlobalFunction";
 import "./DATASX.scss";
-import { MACHINE_LIST } from "../QUICKPLAN/QUICKPLAN";
+import { MACHINE_LIST } from "../../../../api/GlobalInterface";
+
 interface SX_DATA {
   G_CODE: string;
   PHAN_LOAI: string;
@@ -141,12 +142,12 @@ const DATASX = () => {
               return {
                 ...element,
               };
-            },
+            }
           );
           loadeddata.push(
             { EQ_NAME: "ALL" },
             { EQ_NAME: "NO" },
-            { EQ_NAME: "NA" },
+            { EQ_NAME: "NA" }
           );
           console.log(loadeddata);
           setMachine_List(loadeddata);
@@ -851,16 +852,16 @@ const DATASX = () => {
     return (
       <GridToolbarContainer>
         <IconButton
-          className="buttonIcon"
+          className='buttonIcon'
           onClick={() => {
             SaveExcel(datasxtable, "Data SX Table");
           }}
         >
-          <AiFillFileExcel color="green" size={25} />
+          <AiFillFileExcel color='green' size={25} />
           SAVE
         </IconButton>
         <GridToolbarQuickFilter />
-        <div className="div" style={{ fontSize: 20, fontWeight: "bold" }}>
+        <div className='div' style={{ fontSize: 20, fontWeight: "bold" }}>
           DATA SẢN XUẤT
         </div>
       </GridToolbarContainer>
@@ -936,7 +937,7 @@ const DATASX = () => {
                     : 0,
                 id: index,
               };
-            },
+            }
           );
 
           //setShowLoss(false);
@@ -1013,7 +1014,7 @@ const DATASX = () => {
                   .format("YYYY-MM-DD"),
                 id: index,
               };
-            },
+            }
           );
           let temp_loss_info: LOSS_TABLE_DATA = {
             XUATKHO_MET: 0,
@@ -1068,15 +1069,15 @@ const DATASX = () => {
     //setColumnDefinition(column_inspect_output);
   }, []);
   return (
-    <div className="datasx">
-      <div className="tracuuDataInspection">
-        <div className="tracuuDataInspectionform">
-          <div className="forminput">
-            <div className="forminputcolumn">
+    <div className='datasx'>
+      <div className='tracuuDataInspection'>
+        <div className='tracuuDataInspectionform'>
+          <div className='forminput'>
+            <div className='forminputcolumn'>
               <label>
                 <b>Từ ngày:</b>
                 <input
-                  type="date"
+                  type='date'
                   value={fromdate.slice(0, 10)}
                   onChange={(e) => setFromDate(e.target.value)}
                 ></input>
@@ -1084,18 +1085,18 @@ const DATASX = () => {
               <label>
                 <b>Tới ngày:</b>{" "}
                 <input
-                  type="date"
+                  type='date'
                   value={todate.slice(0, 10)}
                   onChange={(e) => setToDate(e.target.value)}
                 ></input>
               </label>
             </div>
-            <div className="forminputcolumn">
+            <div className='forminputcolumn'>
               <label>
                 <b>Code KD:</b>{" "}
                 <input
-                  type="text"
-                  placeholder="GH63-xxxxxx"
+                  type='text'
+                  placeholder='GH63-xxxxxx'
                   value={codeKD}
                   onChange={(e) => setCodeKD(e.target.value)}
                 ></input>
@@ -1103,19 +1104,19 @@ const DATASX = () => {
               <label>
                 <b>Code ERP:</b>{" "}
                 <input
-                  type="text"
-                  placeholder="7C123xxx"
+                  type='text'
+                  placeholder='7C123xxx'
                   value={codeCMS}
                   onChange={(e) => setCodeCMS(e.target.value)}
                 ></input>
               </label>
             </div>
-            <div className="forminputcolumn">
+            <div className='forminputcolumn'>
               <label>
                 <b>Tên Liệu:</b>{" "}
                 <input
-                  type="text"
-                  placeholder="SJ-203020HC"
+                  type='text'
+                  placeholder='SJ-203020HC'
                   value={m_name}
                   onChange={(e) => setM_Name(e.target.value)}
                 ></input>
@@ -1123,19 +1124,19 @@ const DATASX = () => {
               <label>
                 <b>Mã Liệu CMS:</b>{" "}
                 <input
-                  type="text"
-                  placeholder="A123456"
+                  type='text'
+                  placeholder='A123456'
                   value={m_code}
                   onChange={(e) => setM_Code(e.target.value)}
                 ></input>
               </label>
             </div>
-            <div className="forminputcolumn">
+            <div className='forminputcolumn'>
               <label>
                 <b>Số YCSX:</b>{" "}
                 <input
-                  type="text"
-                  placeholder="1F80008"
+                  type='text'
+                  placeholder='1F80008'
                   value={prodrequestno}
                   onChange={(e) => setProdRequestNo(e.target.value)}
                 ></input>
@@ -1143,33 +1144,33 @@ const DATASX = () => {
               <label>
                 <b>Số chỉ thị:</b>{" "}
                 <input
-                  type="text"
-                  placeholder="A123456"
+                  type='text'
+                  placeholder='A123456'
                   value={plan_id}
                   onChange={(e) => setPlanID(e.target.value)}
                 ></input>
               </label>
             </div>
-            <div className="forminputcolumn">
+            <div className='forminputcolumn'>
               <label>
                 <b>FACTORY:</b>
                 <select
-                  name="phanloai"
+                  name='phanloai'
                   value={factory}
                   onChange={(e) => {
                     setFactory(e.target.value);
                   }}
                 >
-                  <option value="ALL">ALL</option>
-                  <option value="NM1">NM1</option>
-                  <option value="NM2">NM2</option>
+                  <option value='ALL'>ALL</option>
+                  <option value='NM1'>NM1</option>
+                  <option value='NM2'>NM2</option>
                 </select>
               </label>
 
               <label>
                 <b>MACHINE:</b>
                 <select
-                  name="machine2"
+                  name='machine2'
                   value={machine}
                   onChange={(e) => {
                     setMachine(e.target.value);
@@ -1187,18 +1188,18 @@ const DATASX = () => {
               </label>
             </div>
           </div>
-          <div className="formbutton">
+          <div className='formbutton'>
             <label>
               <b>All Time:</b>
               <input
-                type="checkbox"
-                name="alltimecheckbox"
+                type='checkbox'
+                name='alltimecheckbox'
                 defaultChecked={alltime}
                 onChange={() => setAllTime(!alltime)}
               ></input>
             </label>
             <button
-              className="tranhatky"
+              className='tranhatky'
               onClick={() => {
                 setisLoading(true);
                 setReadyRender(false);
@@ -1209,7 +1210,7 @@ const DATASX = () => {
               TRA CHỈ THỊ
             </button>
             <button
-              className="tranhatky"
+              className='tranhatky'
               onClick={() => {
                 setisLoading(true);
                 setReadyRender(false);
@@ -1222,7 +1223,7 @@ const DATASX = () => {
           </div>
         </div>
         {
-          <div className="losstable">
+          <div className='losstable'>
             <table>
               <thead>
                 <tr>
@@ -1305,7 +1306,7 @@ const DATASX = () => {
             </table>
           </div>
         }
-        <div className="tracuuYCSXTable">
+        <div className='tracuuYCSXTable'>
           {readyRender && (
             <DataGrid
               sx={{ fontSize: 12, flex: 1 }}

@@ -44,7 +44,7 @@ import {
 
 const BANGCHAMCONG = () => {
   const userData: UserData | undefined = useSelector(
-    (state: RootState) => state.totalSlice.userData,
+    (state: RootState) => state.totalSlice.userData
   );
   const [cainfo, setCaInfo] = useState<CA_INFO[]>([]);
   const [bangchamcong, setBangChamCong] = useState<BANGCHAMCONG_DATA[]>([]);
@@ -752,12 +752,12 @@ const BANGCHAMCONG = () => {
       new PivotGridDataSource({
         fields: fields_chamcong,
         store: bangchamcong,
-      }),
+      })
     );
 
   const chamcongTBMM = React.useMemo(
     () => (
-      <div className="datatb">
+      <div className='datatb'>
         <DataGrid
           style={{ fontSize: "0.7rem" }}
           autoNavigateToFocusedRow={true}
@@ -768,9 +768,9 @@ const BANGCHAMCONG = () => {
           columnResizingMode={"widget"}
           showColumnLines={true}
           dataSource={bangchamcong2}
-          columnWidth="auto"
-          keyExpr="id"
-          height={"70vh"}
+          columnWidth='auto'
+          keyExpr='id'
+          height={"85vh"}
           showBorders={true}
           onSelectionChanged={(e) => {
             //console.log(e.selectedRowsData);
@@ -784,46 +784,46 @@ const BANGCHAMCONG = () => {
             useNative={true}
             scrollByContent={true}
             scrollByThumb={true}
-            showScrollbar="onHover"
-            mode="virtual"
+            showScrollbar='onHover'
+            mode='virtual'
           />
-          <Selection mode="multiple" selectAllMode="allPages" />
+          <Selection mode='multiple' selectAllMode='allPages' />
           <Editing
             allowUpdating={false}
             allowAdding={false}
             allowDeleting={false}
-            mode="cell"
+            mode='cell'
             confirmDelete={false}
             onChangesChange={(e) => {}}
           />
           <Export enabled={true} />
           <Toolbar disabled={false}>
-            <Item location="before">
+            <Item location='before'>
               <IconButton
-                className="buttonIcon"
+                className='buttonIcon'
                 onClick={() => {
                   SaveExcel(bangchamcong, "SXDATATABLE");
                 }}
               >
-                <AiFillFileExcel color="green" size={25} />
+                <AiFillFileExcel color='green' size={25} />
                 SAVE
               </IconButton>
               <IconButton
-                className="buttonIcon"
+                className='buttonIcon'
                 onClick={() => {
                   setShowHidePivotTable(!showhidePivotTable);
                 }}
               >
-                <MdOutlinePivotTableChart color="#ff33bb" size={25} />
+                <MdOutlinePivotTableChart color='#ff33bb' size={25} />
                 Pivot
               </IconButton>
             </Item>
-            <Item name="searchPanel" />
-            <Item name="exportButton" />
-            <Item name="columnChooserButton" />
-            <Item name="addRowButton" />
-            <Item name="saveButton" />
-            <Item name="revertButton" />
+            <Item name='searchPanel' />
+            <Item name='exportButton' />
+            <Item name='columnChooserButton' />
+            <Item name='addRowButton' />
+            <Item name='saveButton' />
+            <Item name='revertButton' />
           </Toolbar>
           <FilterRow visible={true} />
           <SearchPanel visible={true} />
@@ -834,50 +834,50 @@ const BANGCHAMCONG = () => {
             allowedPageSizes={[5, 10, 15, 20, 100, 1000, 10000, "all"]}
             showNavigationButtons={true}
             showInfo={true}
-            infoText="Page #{0}. Total: {1} ({2} items)"
-            displayMode="compact"
+            infoText='Page #{0}. Total: {1} ({2} items)'
+            displayMode='compact'
           />
           <Column
-            dataField="DATE_COLUMN"
-            caption="DATE_COLUMN"
+            dataField='DATE_COLUMN'
+            caption='DATE_COLUMN'
             width={100}
-            dataType="date"
+            dataType='date'
           ></Column>
           <Column
-            dataField="WEEKDAY"
-            caption="WEEKDAY"
+            dataField='WEEKDAY'
+            caption='WEEKDAY'
             width={80}
-            dataType="date"
+            dataType='date'
           ></Column>
-          <Column dataField="NV_CCID" caption="NV_CCID" width={80}></Column>
-          <Column dataField="EMPL_NO" caption="EMPL_NO" width={80}></Column>
-          <Column dataField="CMS_ID" caption="NS_ID" width={80}></Column>
+          <Column dataField='NV_CCID' caption='NV_CCID' width={80}></Column>
+          <Column dataField='EMPL_NO' caption='EMPL_NO' width={80}></Column>
+          <Column dataField='CMS_ID' caption='NS_ID' width={80}></Column>
           {/*  <Column dataField='MIDLAST_NAME' caption='MIDLAST_NAME' width={100}></Column>
             <Column dataField='FIRST_NAME' caption='FIRST_NAME' width={100}></Column> */}
           <Column
-            dataField="FULL_NAME"
-            caption="FULL_NAME"
+            dataField='FULL_NAME'
+            caption='FULL_NAME'
             width={100}
           ></Column>
           {/*  <Column dataField='PHONE_NUMBER' caption='PHONE_NUMBER' width={100}></Column>
             <Column dataField='SEX_NAME' caption='SEX_NAME' width={100}></Column>
             <Column dataField='WORK_STATUS_NAME' caption='WORK_STATUS_NAME' width={100}></Column> */}
           <Column
-            dataField="FACTORY_NAME"
-            caption="FACTORY_NAME"
+            dataField='FACTORY_NAME'
+            caption='FACTORY_NAME'
             width={100}
           ></Column>
           {/* <Column dataField='JOB_NAME' caption='JOB_NAME' width={100}></Column> */}
           <Column
-            dataField="WORK_SHIF_NAME"
-            caption="WORK_SHIF_NAME"
+            dataField='WORK_SHIF_NAME'
+            caption='WORK_SHIF_NAME'
             width={100}
           ></Column>
           {/* <Column dataField='WORK_POSITION_NAME' caption='WORK_POSITION_NAME' width={100}></Column>
             <Column dataField='SUBDEPTNAME' caption='SUBDEPTNAME' width={100}></Column> */}
           <Column
-            dataField="MAINDEPTNAME"
-            caption="MAINDEPTNAME"
+            dataField='MAINDEPTNAME'
+            caption='MAINDEPTNAME'
             width={100}
           ></Column>
           {/* <Column dataField='REQUEST_DATE' caption='REQUEST_DATE' width={100}></Column>
@@ -891,8 +891,8 @@ const BANGCHAMCONG = () => {
           {/* <Column dataField='REMARK' caption='REMARK' width={100}></Column> */}
           {/* <Column dataField='XACNHAN' caption='XACNHAN' width={100}></Column> */}
           <Column
-            dataField="IN_TIME"
-            caption="IN_TIME"
+            dataField='IN_TIME'
+            caption='IN_TIME'
             width={100}
             cellRender={(e: any) => {
               if (e.data.IN_TIME !== "Thiếu giờ vào") {
@@ -911,8 +911,8 @@ const BANGCHAMCONG = () => {
             }}
           ></Column>
           <Column
-            dataField="OUT_TIME"
-            caption="OUT_TIME"
+            dataField='OUT_TIME'
+            caption='OUT_TIME'
             width={100}
             cellRender={(e: any) => {
               if (e.data.OUT_TIME !== "Thiếu giờ ra") {
@@ -931,56 +931,56 @@ const BANGCHAMCONG = () => {
             }}
           ></Column>
           <Column
-            dataField="REASON_NAME"
-            caption="REASON_NAME"
+            dataField='REASON_NAME'
+            caption='REASON_NAME'
             width={100}
           ></Column>
-          <Column dataField="CHECK1" caption="CHECK1" width={100}></Column>
-          <Column dataField="CHECK2" caption="CHECK2" width={100}></Column>
-          <Column dataField="CHECK3" caption="CHECK3" width={100}></Column>
+          <Column dataField='CHECK1' caption='CHECK1' width={100}></Column>
+          <Column dataField='CHECK2' caption='CHECK2' width={100}></Column>
+          <Column dataField='CHECK3' caption='CHECK3' width={100}></Column>
           <Column
-            dataField="PREV_CHECK1"
-            caption="PREV_CHECK1"
-            width={100}
-          ></Column>
-          <Column
-            dataField="PREV_CHECK2"
-            caption="PREV_CHECK2"
+            dataField='PREV_CHECK1'
+            caption='PREV_CHECK1'
             width={100}
           ></Column>
           <Column
-            dataField="PREV_CHECK3"
-            caption="PREV_CHECK3"
+            dataField='PREV_CHECK2'
+            caption='PREV_CHECK2'
             width={100}
           ></Column>
           <Column
-            dataField="NEXT_CHECK1"
-            caption="NEXT_CHECK1"
+            dataField='PREV_CHECK3'
+            caption='PREV_CHECK3'
             width={100}
           ></Column>
           <Column
-            dataField="NEXT_CHECK2"
-            caption="NEXT_CHECK2"
+            dataField='NEXT_CHECK1'
+            caption='NEXT_CHECK1'
             width={100}
           ></Column>
           <Column
-            dataField="NEXT_CHECK3"
-            caption="NEXT_CHECK3"
+            dataField='NEXT_CHECK2'
+            caption='NEXT_CHECK2'
+            width={100}
+          ></Column>
+          <Column
+            dataField='NEXT_CHECK3'
+            caption='NEXT_CHECK3'
             width={100}
           ></Column>
 
           <Summary>
             <TotalItem
-              alignment="right"
-              column="DATE_COLUMN"
-              summaryType="count"
+              alignment='right'
+              column='DATE_COLUMN'
+              summaryType='count'
               valueFormat={"decimal"}
             />
           </Summary>
         </DataGrid>
       </div>
     ),
-    [bangchamcong2],
+    [bangchamcong2]
   );
   const loadBangChamCong = () => {
     Swal.fire({
@@ -1350,19 +1350,19 @@ const BANGCHAMCONG = () => {
                 }).OUT_TIME,
                 id: index,
               };
-            },
+            }
           );
           setBangChamCong(loaded_data);
           setSelectedDataSource(
             new PivotGridDataSource({
               fields: fields_chamcong,
               store: loaded_data,
-            }),
+            })
           );
           Swal.fire(
             "Thông báo",
             " Đã tải: " + loaded_data.length + " dòng",
-            "success",
+            "success"
           );
         } else {
           Swal.fire("Thông báo", " Có lỗi : " + response.data.message, "error");
@@ -1518,19 +1518,19 @@ const BANGCHAMCONG = () => {
                 }).OUT_TIME,
                 id: index,
               };
-            },
+            }
           );
           setBangChamCong2(loaded_data);
           setSelectedDataSource(
             new PivotGridDataSource({
               fields: fields_chamcong,
               store: loaded_data,
-            }),
+            })
           );
           Swal.fire(
             "Thông báo",
             " Đã tải: " + loaded_data.length + " dòng",
-            "success",
+            "success"
           );
         } else {
           Swal.fire("Thông báo", " Có lỗi : " + response.data.message, "error");
@@ -1564,24 +1564,24 @@ const BANGCHAMCONG = () => {
       IO_DATA.CHECK62 !== "" ? moment(IO_DATA.CHECK62, "HH:mm").valueOf() : 0,
     ];
     const check1_nozero: number[] = check1_array.filter(
-      (ele: number, index: number) => ele !== 0,
+      (ele: number, index: number) => ele !== 0
     );
     const check2_nozero: number[] = check2_array.filter(
-      (ele: number, index: number) => ele !== 0,
+      (ele: number, index: number) => ele !== 0
     );
 
     const check1_start_range: number[] = check1_nozero.filter(
-      (ele: number, index: number) => ele >= in_start && ele <= in_end,
+      (ele: number, index: number) => ele >= in_start && ele <= in_end
     );
     const check1_end_range: number[] = check1_nozero.filter(
-      (ele: number, index: number) => ele >= out_start && ele <= out_end,
+      (ele: number, index: number) => ele >= out_start && ele <= out_end
     );
 
     const check2_start_range: number[] = check2_nozero.filter(
-      (ele: number, index: number) => ele >= in_start && ele <= in_end,
+      (ele: number, index: number) => ele >= in_start && ele <= in_end
     );
     const check2_end_range: number[] = check2_nozero.filter(
-      (ele: number, index: number) => ele >= out_start && ele <= out_end,
+      (ele: number, index: number) => ele >= out_start && ele <= out_end
     );
 
     const mincheck1: number = Math.min.apply(Math, check1_nozero);
@@ -1680,7 +1680,7 @@ const BANGCHAMCONG = () => {
 
     const in_start1: number = moment(
       moment(cainfo[1].IN_START).format("HH:mm"),
-      "HH:mm",
+      "HH:mm"
     ).valueOf();
 
     const check0_array: number[] = [
@@ -1709,13 +1709,13 @@ const BANGCHAMCONG = () => {
     ];
 
     const check0_nozero: number[] = check0_array.filter(
-      (ele: number, index: number) => ele !== 0,
+      (ele: number, index: number) => ele !== 0
     );
     const check1_nozero: number[] = check1_array.filter(
-      (ele: number, index: number) => ele !== 0,
+      (ele: number, index: number) => ele !== 0
     );
     const check2_nozero: number[] = check2_array.filter(
-      (ele: number, index: number) => ele !== 0,
+      (ele: number, index: number) => ele !== 0
     );
 
     const mincheck0: number = Math.min.apply(Math, check0_nozero);
@@ -1730,36 +1730,36 @@ const BANGCHAMCONG = () => {
     if (team === "TEAM 1" || team === "TEAM 2" || team === "TEAM 12T") {
       const in_start1: number = moment(
         cainfo[1].IN_START.substring(11, 16),
-        "HH:mm",
+        "HH:mm"
       ).valueOf();
       const in_end1: number = moment(
         cainfo[1].IN_END.substring(11, 16),
-        "HH:mm",
+        "HH:mm"
       ).valueOf();
       const out_start1: number = moment(
         cainfo[1].OUT_START.substring(11, 16),
-        "HH:mm",
+        "HH:mm"
       ).valueOf();
       const out_end1: number = moment(
         cainfo[1].OUT_END.substring(11, 16),
-        "HH:mm",
+        "HH:mm"
       ).valueOf();
 
       const in_start2: number = moment(
         cainfo[2].IN_START.substring(11, 16),
-        "HH:mm",
+        "HH:mm"
       ).valueOf();
       const in_end2: number = moment(
         cainfo[2].IN_END.substring(11, 16),
-        "HH:mm",
+        "HH:mm"
       ).valueOf();
       const out_start2: number = moment(
         cainfo[2].OUT_START.substring(11, 16),
-        "HH:mm",
+        "HH:mm"
       ).valueOf();
       const out_end2: number = moment(
         cainfo[2].OUT_END.substring(11, 16),
-        "HH:mm",
+        "HH:mm"
       ).valueOf();
 
       let check1check: string = "NA";
@@ -1820,24 +1820,24 @@ const BANGCHAMCONG = () => {
       const out_end: number = final_ca === "CA1" ? out_end1 : out_end2;
 
       const check0_start_range: number[] = check0_nozero.filter(
-        (ele: number, index: number) => ele >= in_start && ele <= in_end,
+        (ele: number, index: number) => ele >= in_start && ele <= in_end
       );
       const check0_end_range: number[] = check0_nozero.filter(
-        (ele: number, index: number) => ele >= out_start && ele <= out_end,
+        (ele: number, index: number) => ele >= out_start && ele <= out_end
       );
 
       const check1_start_range: number[] = check1_nozero.filter(
-        (ele: number, index: number) => ele >= in_start && ele <= in_end,
+        (ele: number, index: number) => ele >= in_start && ele <= in_end
       );
       const check1_end_range: number[] = check1_nozero.filter(
-        (ele: number, index: number) => ele >= out_start && ele <= out_end,
+        (ele: number, index: number) => ele >= out_start && ele <= out_end
       );
 
       const check2_start_range: number[] = check2_nozero.filter(
-        (ele: number, index: number) => ele >= in_start && ele <= in_end,
+        (ele: number, index: number) => ele >= in_start && ele <= in_end
       );
       const check2_end_range: number[] = check2_nozero.filter(
-        (ele: number, index: number) => ele >= out_start && ele <= out_end,
+        (ele: number, index: number) => ele >= out_start && ele <= out_end
       );
 
       //ca dem
@@ -1920,19 +1920,19 @@ const BANGCHAMCONG = () => {
     } else {
       const in_start: number = moment(
         cainfo[0].IN_START.substring(11, 16),
-        "HH:mm",
+        "HH:mm"
       ).valueOf();
       const in_end: number = moment(
         cainfo[0].IN_END.substring(11, 16),
-        "HH:mm",
+        "HH:mm"
       ).valueOf();
       const out_start: number = moment(
         cainfo[0].OUT_START.substring(11, 16),
-        "HH:mm",
+        "HH:mm"
       ).valueOf();
       const out_end: number = moment(
         cainfo[0].OUT_END.substring(11, 16),
-        "HH:mm",
+        "HH:mm"
       ).valueOf();
 
       let temp_intime =
@@ -1998,13 +1998,13 @@ const BANGCHAMCONG = () => {
     ];
 
     const check0_nozero: number[] = check0_array.filter(
-      (ele: number, index: number) => ele !== 0,
+      (ele: number, index: number) => ele !== 0
     );
     const check1_nozero: number[] = check1_array.filter(
-      (ele: number, index: number) => ele !== 0,
+      (ele: number, index: number) => ele !== 0
     );
     const check2_nozero: number[] = check2_array.filter(
-      (ele: number, index: number) => ele !== 0,
+      (ele: number, index: number) => ele !== 0
     );
 
     console.log("check0_nozero", check0_nozero);
@@ -2129,24 +2129,24 @@ const BANGCHAMCONG = () => {
       const out_end: number = final_ca === "CA1" ? out_end1 : out_end2;
 
       const check0_start_range: number[] = check0_nozero.filter(
-        (ele: number, index: number) => ele >= in_start && ele <= in_end,
+        (ele: number, index: number) => ele >= in_start && ele <= in_end
       );
       const check0_end_range: number[] = check0_nozero.filter(
-        (ele: number, index: number) => ele >= out_start && ele <= out_end,
+        (ele: number, index: number) => ele >= out_start && ele <= out_end
       );
 
       const check1_start_range: number[] = check1_nozero.filter(
-        (ele: number, index: number) => ele >= in_start && ele <= in_end,
+        (ele: number, index: number) => ele >= in_start && ele <= in_end
       );
       const check1_end_range: number[] = check1_nozero.filter(
-        (ele: number, index: number) => ele >= out_start && ele <= out_end,
+        (ele: number, index: number) => ele >= out_start && ele <= out_end
       );
 
       const check2_start_range: number[] = check2_nozero.filter(
-        (ele: number, index: number) => ele >= in_start && ele <= in_end,
+        (ele: number, index: number) => ele >= in_start && ele <= in_end
       );
       const check2_end_range: number[] = check2_nozero.filter(
-        (ele: number, index: number) => ele >= out_start && ele <= out_end,
+        (ele: number, index: number) => ele >= out_start && ele <= out_end
       );
 
       //ca dem
@@ -2228,19 +2228,19 @@ const BANGCHAMCONG = () => {
     } else {
       const in_start: number = moment(
         cainfo[0].IN_START.substring(11, 16),
-        "HH:mm",
+        "HH:mm"
       ).valueOf();
       const in_end: number = moment(
         cainfo[0].IN_END.substring(11, 16),
-        "HH:mm",
+        "HH:mm"
       ).valueOf();
       const out_start: number = moment(
         cainfo[0].OUT_START.substring(11, 16),
-        "HH:mm",
+        "HH:mm"
       ).valueOf();
       const out_end: number = moment(
         cainfo[0].OUT_END.substring(11, 16),
-        "HH:mm",
+        "HH:mm"
       ).valueOf();
 
       let temp_intime =
@@ -2282,7 +2282,7 @@ const BANGCHAMCONG = () => {
               return {
                 ...element,
               };
-            },
+            }
           );
           console.log("cainfo", loaded_data);
           setCaInfo(loaded_data);
@@ -2300,15 +2300,15 @@ const BANGCHAMCONG = () => {
     loadCaInfo();
   }, []);
   return (
-    <div className="datasx">
-      <div className="tracuuDataInspection">
-        <div className="tracuuDataInspectionform">
-          <div className="forminput">
-            <div className="forminputcolumn">
+    <div className='bangchamcong'>
+      <div className='tracuuDataInspection'>
+        <div className='tracuuDataInspectionform'>
+          <div className='forminput'>
+            <div className='forminputcolumn'>
               <label>
                 <b>Từ ngày:</b>
                 <input
-                  type="date"
+                  type='date'
                   value={fromdate.slice(0, 10)}
                   onChange={(e) => setFromDate(e.target.value)}
                 ></input>
@@ -2316,25 +2316,25 @@ const BANGCHAMCONG = () => {
               <label>
                 <b>Tới ngày:</b>{" "}
                 <input
-                  type="date"
+                  type='date'
                   value={todate.slice(0, 10)}
                   onChange={(e) => setToDate(e.target.value)}
                 ></input>
               </label>
             </div>
           </div>
-          <div className="formbutton">
+          <div className='formbutton'>
             <label>
               <b>All Time:</b>
               <input
-                type="checkbox"
-                name="alltimecheckbox"
+                type='checkbox'
+                name='alltimecheckbox'
                 defaultChecked={alltime}
                 onChange={() => setAllTime(!alltime)}
               ></input>
             </label>
             <button
-              className="tranhatky"
+              className='tranhatky'
               onClick={() => {
                 /* checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['NHANSU'], loadBangChamCong2);  */
                 checkBP(
@@ -2342,7 +2342,7 @@ const BANGCHAMCONG = () => {
                   ["NHANSU"],
                   ["ALL"],
                   ["ALL"],
-                  loadBangChamCong2,
+                  loadBangChamCong2
                 );
               }}
             >
@@ -2350,21 +2350,21 @@ const BANGCHAMCONG = () => {
             </button>
           </div>
         </div>
-        <div className="tracuuYCSXTable">{chamcongTBMM}</div>
+        <div className='tracuuYCSXTable'>{chamcongTBMM}</div>
         {showhidePivotTable && (
-          <div className="pivottable1">
+          <div className='pivottable1'>
             <IconButton
-              className="buttonIcon"
+              className='buttonIcon'
               onClick={() => {
                 setShowHidePivotTable(false);
               }}
             >
-              <AiFillCloseCircle color="blue" size={25} />
+              <AiFillCloseCircle color='blue' size={25} />
               Close
             </IconButton>
             <PivotTable
               datasource={selectedDataSource}
-              tableID="datasxtablepivot"
+              tableID='datasxtablepivot'
             />
           </div>
         )}
