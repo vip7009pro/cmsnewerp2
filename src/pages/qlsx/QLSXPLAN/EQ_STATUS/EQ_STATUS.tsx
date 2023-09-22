@@ -257,6 +257,7 @@ const EQ_STATUS = () => {
                       borderRadius: 8,
                       ...springs,
                     }}
+                    key={index}
                   >
                     <div id='machinediv' className='FRlist' key={index}>
                       {eq_status
