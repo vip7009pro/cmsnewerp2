@@ -135,7 +135,7 @@ function Home() {
       window.clearInterval(intervalID2);
     };
   }, []);
-  //console.log(tabs)
+
   return (
     <div className='home'>
       <div className='navdiv'>
