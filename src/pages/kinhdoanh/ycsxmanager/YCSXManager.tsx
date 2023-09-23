@@ -726,27 +726,53 @@ const YCSXManager = () => {
       },
     },
     {
-      field: "INSPECT_BALANCE",
+      field: "INPUT_QTY",
       type: "number",
-      headerName: "TỒN KIỂM",
+      headerName: "NHẬP KHO",
       width: 80,
       renderCell: (params: any) => {
         return (
           <span style={{ color: "#cc0099" }}>
-            <b>{params.row.INSPECT_BALANCE.toLocaleString("en-US")}</b>
+            <b>{params.row.INPUT_QTY.toLocaleString("en-US")}</b>
           </span>
         );
       },
     },
     {
-      field: "SHORTAGE_YCSX",
+      field: "OUTPUT_QTY",
       type: "number",
-      headerName: "TỒN YCSX",
+      headerName: "XUẤT KHO",
       width: 80,
       renderCell: (params: any) => {
         return (
-          <span style={{ color: "blue" }}>
-            <b>{params.row.SHORTAGE_YCSX.toLocaleString("en-US")}</b>
+          <span style={{ color: "#cc0099" }}>
+            <b>{params.row.OUTPUT_QTY.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "STOCK",
+      type: "number",
+      headerName: "TỒN KHO",
+      width: 80,
+      renderCell: (params: any) => {
+        return (
+          <span style={{ color: "#cc0099" }}>
+            <b>{params.row.STOCK.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "BLOCK_QTY",
+      type: "number",
+      headerName: "BLOCK_QTY",
+      width: 80,
+      renderCell: (params: any) => {
+        return (
+          <span style={{ color: "#cc0099" }}>
+            <b>{params.row.BLOCK_QTY.toLocaleString("en-US")}</b>
           </span>
         );
       },
@@ -1485,9 +1511,9 @@ const YCSXManager = () => {
           Swal.fire(
             "Thông báo",
             "Yêu cầu có data trùng: " +
-              response.data.data[0].PROD_REQUEST_NO +
-              "______ ID công việc của data trùng: " +
-              response.data.data[0].NO_IN,
+            response.data.data[0].PROD_REQUEST_NO +
+            "______ ID công việc của data trùng: " +
+            response.data.data[0].NO_IN,
             "error"
           );
         } else {
@@ -1850,17 +1876,17 @@ const YCSXManager = () => {
                     : element.PO_TDYCSX,
                 TOTAL_TKHO_TDYCSX:
                   element.TOTAL_TKHO_TDYCSX === undefined ||
-                  element.TOTAL_TKHO_TDYCSX === null
+                    element.TOTAL_TKHO_TDYCSX === null
                     ? 0
                     : element.TOTAL_TKHO_TDYCSX,
                 TKHO_TDYCSX:
                   element.TKHO_TDYCSX === undefined ||
-                  element.TKHO_TDYCSX === null
+                    element.TKHO_TDYCSX === null
                     ? 0
                     : element.TKHO_TDYCSX,
                 BTP_TDYCSX:
                   element.BTP_TDYCSX === undefined ||
-                  element.BTP_TDYCSX === null
+                    element.BTP_TDYCSX === null
                     ? 0
                     : element.BTP_TDYCSX,
                 CK_TDYCSX:
@@ -1869,12 +1895,12 @@ const YCSXManager = () => {
                     : element.CK_TDYCSX,
                 BLOCK_TDYCSX:
                   element.BLOCK_TDYCSX === undefined ||
-                  element.BLOCK_TDYCSX === null
+                    element.BLOCK_TDYCSX === null
                     ? 0
                     : element.BLOCK_TDYCSX,
                 FCST_TDYCSX:
                   element.FCST_TDYCSX === undefined ||
-                  element.FCST_TDYCSX === null
+                    element.FCST_TDYCSX === null
                     ? 0
                     : element.FCST_TDYCSX,
                 W1:
@@ -1911,7 +1937,7 @@ const YCSXManager = () => {
                     : element.W8,
                 PROD_REQUEST_QTY:
                   element.PROD_REQUEST_QTY === undefined ||
-                  element.PROD_REQUEST_QTY === null
+                    element.PROD_REQUEST_QTY === null
                     ? 0
                     : element.PROD_REQUEST_QTY,
               };
@@ -3388,11 +3414,10 @@ const YCSXManager = () => {
                       options={ponolist}
                       className='pono_autocomplete'
                       getOptionLabel={(option: PONOLIST | any) => {
-                        return `${
-                          moment.utc(option.PO_DATE).isValid()
+                        return `${moment.utc(option.PO_DATE).isValid()
                             ? moment.utc(option.PO_DATE).format("YYYY-MM-DD")
                             : ""
-                        }| ${option.PO_NO}`;
+                          }| ${option.PO_NO}`;
                       }}
                       renderInput={(params) => (
                         <TextField {...params} label='Select PO NO' />
