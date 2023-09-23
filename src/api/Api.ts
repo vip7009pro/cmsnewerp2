@@ -267,8 +267,9 @@ export async function uploadQuery(
   formData.append("token_string", cookies.get("token"));
   if (filenamelist)
     formData.append("newfilenamelist", JSON.stringify(filenamelist));
-  console.log("filenamelist", filenamelist);
-  console.log("formData", formData);
+  //console.log("filenamelist", filenamelist);
+  //console.log("formData", formData);
+  //console.log("token", cookies.get("token"));
   let data = await axios.post(UPLOAD_URL, formData);
   return data;
 }
