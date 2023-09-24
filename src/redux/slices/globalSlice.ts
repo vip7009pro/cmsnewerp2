@@ -10,7 +10,7 @@ import {
   QLSXPLANDATA,
   UserData,
 } from "../../api/GlobalInterface";
-const startCPN: string = "PVN";
+const startCPN: string = "CMS";
 const socket = io(
   startCPN === "CMS"
     ? "http://14.160.33.94:3006"
@@ -290,7 +290,7 @@ export const glbSlice = createSlice({
         if (state.tabs[i].ELE_CODE !== "-1") checkallDeleted = false;
       }
       if (!checkallDeleted) {
-        state.tabs[state.tabIndex] = {
+        state.tabs[action.payload] = {
           ELE_CODE: "-1",
           ELE_NAME: "DELETED",
           REACT_ELE: "",

@@ -175,14 +175,14 @@ export default function Navbar() {
     () => {
       setLangMenu(false);
     },
-    () => {},
+    () => { },
   );
   useOutsideClick(
     refMenu,
     () => {
       setAvatarMenu(false);
     },
-    () => {},
+    () => { },
   );
   const [server_string, setServer_String] = useState(
     "http://14.160.33.94:5011/api",
@@ -555,12 +555,12 @@ export default function Navbar() {
     } else {
       setLang("en");
     }
-    let server_ip_local: any = localStorage.getItem("server_ip")?.toString();
+    /* let server_ip_local: any = localStorage.getItem("server_ip")?.toString();
     if (server_ip_local !== undefined) {
       setServer_String(server_ip_local);
     } else {
       localStorage.setItem("server_ip", "http://14.160.33.94:5011/api");
-    }
+    } */
     let saveTab: any = localStorage.getItem("tabs")?.toString();
     //console.log('savetab',saveTab);
     if (saveTab !== undefined) {
@@ -622,11 +622,10 @@ export default function Navbar() {
       <div
         className="wrapper"
         style={{
-          backgroundImage: `${
-            company === "CMS"
-              ? theme.CMS.backgroundImage
-              : theme.PVN.backgroundImage
-          }`,
+          backgroundImage: `${company === "CMS"
+            ? theme.CMS.backgroundImage
+            : theme.PVN.backgroundImage
+            }`,
         }}
       >
         <div className="navleft">
@@ -773,8 +772,8 @@ export default function Navbar() {
               {lang === "vi"
                 ? "Tiếng Việt"
                 : lang === "kr"
-                ? "한국어"
-                : "English"}
+                  ? "한국어"
+                  : "English"}
             </div>
             {langmenu && (
               <div className="langmenu" ref={refLang}>
@@ -883,7 +882,7 @@ export default function Navbar() {
             )}
           </div>
         </div>
-        {tabModeSwap &&
+        {tabModeSwap && false &&
           tabs.filter(
             (ele: ELE_ARRAY, index: number) =>
               ele.ELE_CODE !== "-1" && ele.ELE_CODE !== "NS0",

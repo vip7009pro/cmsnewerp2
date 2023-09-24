@@ -22,7 +22,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { addTab, closeTab, settabIndex } from "../../redux/slices/globalSlice";
 import AccountInfo from "../../components/Navbar/AccountInfo/AccountInfo";
 import styled from "@emotion/styled";
-export const current_ver: number = 221;
+export const current_ver: number = 222;
 interface ELE_ARRAY {
   REACT_ELE: ReactElement;
   ELE_NAME: string;
@@ -176,11 +176,10 @@ function Home() {
                     scrollButtons
                     allowScrollButtonsMobile
                     style={{
-                      backgroundImage: `${
-                        company === "CMS"
-                          ? theme.CMS.backgroundImage
-                          : theme.PVN.backgroundImage
-                      }`,
+                      backgroundImage: `${company === "CMS"
+                        ? theme.CMS.backgroundImage
+                        : theme.PVN.backgroundImage
+                        }`,
                       marginRight: "5px",
                       border: "none",
                       minHeight: "2px",
@@ -195,9 +194,16 @@ function Home() {
                           <CustomTab
                             key={index}
                             label={
-                              <CustomTabLabel style={{ fontSize: "0.8rem" }}>
-                                {index + 1}.{ele.ELE_NAME}
-                              </CustomTabLabel>
+                              <div className="tabdiv" style={{ display: 'flex', fontSize: "0.8rem", justifyContent: 'center', alignContent: 'center' }}>
+                                <CustomTabLabel style={{ fontSize: "0.8rem" }}>
+                                  {index + 1}.{ele.ELE_NAME}
+                                  <IconButton onClick={() => {
+                                    dispatch(closeTab(index));
+                                  }}>
+                                    <AiOutlineCloseCircle color="gray" size={20} />
+                                  </IconButton>
+                                </CustomTabLabel>
+                              </div>
                             }
                             value={index}
                             style={{
