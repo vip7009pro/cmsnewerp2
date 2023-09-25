@@ -1394,7 +1394,6 @@ const FCSTManager = () => {
           );
           setFCSTDataTable(loadeddata);
           setisLoading(false);
-          setShowHideSearchDiv(false);
           Swal.fire(
             "Thông báo",
             "Đã load " + response.data.data.length + " dòng",
@@ -2560,7 +2559,7 @@ const FCSTManager = () => {
     ],
     store: fcstdatatable,
   });
-  useEffect(() => {}, []);
+  useEffect(() => { }, []);
   return (
     <div className="fcstmanager">
       <div className="mininavbar">

@@ -95,7 +95,7 @@ const PoManager = () => {
   const [cust_name, setCust_Name] = useState("");
   const [prod_type, setProdType] = useState("");
   const [id, setID] = useState("");
-  const [alltime, setAllTime] = useState(true);
+  const [alltime, setAllTime] = useState(false);
   const [justpobalance, setJustPOBalance] = useState(true);
   const [selectedCode, setSelectedCode] = useState<CodeListData | null>({
     G_CODE: "7A00001A",
@@ -201,36 +201,36 @@ const PoManager = () => {
             loaded_data =
               company === "CMS"
                 ? response.data.data
-                    .map((element: PRICEWITHMOQ, index: number) => {
-                      return {
-                        ...element,
-                        PRICE_DATE:
-                          element.PRICE_DATE !== null
-                            ? moment
-                                .utc(element.PRICE_DATE)
-                                .format("YYYY-MM-DD")
-                            : "",
-                        id: index,
-                      };
-                    })
-                    .filter(
-                      (element: PRICEWITHMOQ, index: number) =>
-                        element.FINAL === "Y"
-                    )
+                  .map((element: PRICEWITHMOQ, index: number) => {
+                    return {
+                      ...element,
+                      PRICE_DATE:
+                        element.PRICE_DATE !== null
+                          ? moment
+                            .utc(element.PRICE_DATE)
+                            .format("YYYY-MM-DD")
+                          : "",
+                      id: index,
+                    };
+                  })
+                  .filter(
+                    (element: PRICEWITHMOQ, index: number) =>
+                      element.FINAL === "Y"
+                  )
                 : response.data.data.map(
-                    (element: PRICEWITHMOQ, index: number) => {
-                      return {
-                        ...element,
-                        PRICE_DATE:
-                          element.PRICE_DATE !== null
-                            ? moment
-                                .utc(element.PRICE_DATE)
-                                .format("YYYY-MM-DD")
-                            : "",
-                        id: index,
-                      };
-                    }
-                  );
+                  (element: PRICEWITHMOQ, index: number) => {
+                    return {
+                      ...element,
+                      PRICE_DATE:
+                        element.PRICE_DATE !== null
+                          ? moment
+                            .utc(element.PRICE_DATE)
+                            .format("YYYY-MM-DD")
+                          : "",
+                      id: index,
+                    };
+                  }
+                );
             setNewCodePrice(loaded_data);
           } else {
             /* Swal.fire("Thông báo", " Có lỗi : " + response.data.message, "error"); */
@@ -306,6 +306,15 @@ const PoManager = () => {
   };
   const handletraPO = () => {
     setisLoading(true);
+    Swal.fire({
+      title: "Tra cứu PO",
+      text: "Đang tải dữ liệu, hãy chờ chút",
+      icon: "info",
+      showCancelButton: false,
+      allowOutsideClick: false,
+      confirmButtonText: "OK",
+      showConfirmButton: false,
+    });
     generalQuery("traPODataFull", {
       alltime: alltime,
       justPoBalance: justpobalance,
@@ -402,9 +411,6 @@ const PoManager = () => {
           setPoSummary(po_summary_temp);
           setPoDataTable(loadeddata);
           setisLoading(false);
-          //setSH(false);
-          showhidesearchdiv.current = !showhidesearchdiv.current;
-          setSH(!showhidesearchdiv.current);
           Swal.fire(
             "Thông báo",
             "Đã load " + response.data.data.length + " dòng",
@@ -1680,7 +1686,7 @@ const PoManager = () => {
               allowDeleting={false}
               mode='batch'
               confirmDelete={true}
-              onChangesChange={(e) => {}}
+              onChangesChange={(e) => { }}
             />
             <Export enabled={true} />
             <Toolbar disabled={false}>
@@ -1878,7 +1884,7 @@ const PoManager = () => {
             keyExpr='id'
             height={"75vh"}
             showBorders={true}
-            onSelectionChanged={(e) => {}}
+            onSelectionChanged={(e) => { }}
             onRowClick={(e) => {
               //console.log(e.data);
             }}
@@ -1897,7 +1903,7 @@ const PoManager = () => {
               allowDeleting={false}
               mode='batch'
               confirmDelete={true}
-              onChangesChange={(e) => {}}
+              onChangesChange={(e) => { }}
             />
             <Export enabled={true} />
             <Toolbar disabled={false}>

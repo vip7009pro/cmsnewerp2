@@ -703,7 +703,6 @@ const PlanManager = () => {
           );
           setPlanDataTable(loadeddata);
           setisLoading(false);
-          setShowHideSearchDiv(false);
           Swal.fire(
             "Thông báo",
             "Đã load " + response.data.data.length + " dòng",
@@ -1333,7 +1332,7 @@ const PlanManager = () => {
     ],
     store: plandatatable,
   });
-  useEffect(() => {}, []);
+  useEffect(() => { }, []);
   return (
     <div className="planmanager">
       <div className="mininavbar">

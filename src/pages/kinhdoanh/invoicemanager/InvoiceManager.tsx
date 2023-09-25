@@ -86,7 +86,7 @@ const InvoiceManager = () => {
   const [cust_name, setCust_Name] = useState("");
   const [prod_type, setProdType] = useState("");
   const [id, setID] = useState("");
-  const [alltime, setAllTime] = useState(true);
+  const [alltime, setAllTime] = useState(false);
   const [justpobalance, setJustPOBalance] = useState(true);
   const [selectedCode, setSelectedCode] = useState<CodeListData | null>();
   const [selectedCust_CD, setSelectedCust_CD] =
@@ -119,9 +119,9 @@ const InvoiceManager = () => {
   const [invoicedatatable, setInvoiceDataTable] = useState<
     Array<InvoiceTableData>
   >([]);
-/*   const [invoicedatatablefilter, setInvoiceDataTableFilter] = useState<
-    Array<InvoiceTableData>
-  >([]); */
+  /*   const [invoicedatatablefilter, setInvoiceDataTableFilter] = useState<
+      Array<InvoiceTableData>
+    >([]); */
   const invoicedatatablefilter = useRef<InvoiceTableData[]>([]);
   const clickedRow = useRef<any>(null);
   const [selectedID, setSelectedID] = useState<number | null>();
@@ -443,7 +443,7 @@ const InvoiceManager = () => {
           XÓA INV
         </IconButton>
         <GridToolbarQuickFilter />
-        
+
       </GridToolbarContainer>
     );
   }
@@ -481,7 +481,15 @@ const InvoiceManager = () => {
     }
   };
   const handletraInvoice = () => {
-    setisLoading(true);
+    Swal.fire({
+      title: "Tra cứu Invoices",
+      text: "Đang tải dữ liệu, hãy chờ chút",
+      icon: "info",
+      showCancelButton: false,
+      allowOutsideClick: false,
+      confirmButtonText: "OK",
+      showConfirmButton: false,
+    });
     generalQuery("traInvoiceDataFull", {
       alltime: alltime,
       justPoBalance: justpobalance,
@@ -572,10 +580,6 @@ const InvoiceManager = () => {
           setColumns(column_map);
           setInvoiceSummary(invoice_summary_temp);
           setInvoiceDataTable(loadeddata);
-          setisLoading(false);
-
-          showhidesearchdiv.current = !showhidesearchdiv.current;
-          setSH(!showhidesearchdiv.current);
           Swal.fire(
             "Thông báo",
             "Đã load " + response.data.data.length + " dòng",
@@ -1070,19 +1074,19 @@ const InvoiceManager = () => {
       });
       const selectedCodeFilter: CodeListData = {
         G_CODE:
-        clickedRow.current?.G_CODE === undefined
-          ? ""
-          : clickedRow.current?.G_CODE,
-      G_NAME:
-        clickedRow.current?.G_NAME === undefined
-          ? ""
-          : clickedRow.current?.G_NAME,
-      G_NAME_KD:
-        clickedRow.current?.G_NAME_KD === undefined
-          ? ""
-          : clickedRow.current?.G_NAME_KD,
-      PROD_LAST_PRICE: Number(clickedRow.current?.PROD_PRICE),
-      USE_YN: "Y",     
+          clickedRow.current?.G_CODE === undefined
+            ? ""
+            : clickedRow.current?.G_CODE,
+        G_NAME:
+          clickedRow.current?.G_NAME === undefined
+            ? ""
+            : clickedRow.current?.G_NAME,
+        G_NAME_KD:
+          clickedRow.current?.G_NAME_KD === undefined
+            ? ""
+            : clickedRow.current?.G_NAME_KD,
+        PROD_LAST_PRICE: Number(clickedRow.current?.PROD_PRICE),
+        USE_YN: "Y",
       };
       const selectedCustomerFilter: CustomerListData = {
         CUST_CD:
@@ -1615,111 +1619,111 @@ const InvoiceManager = () => {
               allowDeleting={false}
               mode='batch'
               confirmDelete={true}
-              onChangesChange={(e) => {}}
+              onChangesChange={(e) => { }}
             />
             <Export enabled={true} />
             <Toolbar disabled={false}>
               <Item location='before'>
-              <IconButton
-          className="buttonIcon"
-          onClick={() => {
-            showhidesearchdiv.current = !showhidesearchdiv.current;
-            setSH(!showhidesearchdiv.current);
-          }}
-        >
-          <TbLogout color="green" size={15} />
-          Show/Hide
-        </IconButton>
-        <IconButton
-          className="buttonIcon"
-          onClick={() => {
-            SaveExcel(invoicedatatable, "Invoice Table");
-          }}
-        >
-          <AiFillFileExcel color="green" size={15} />
-          SAVE
-        </IconButton>
-        <IconButton
-          className="buttonIcon"
-          onClick={() => {
-            /*  checkBP(userData?.EMPL_NO, userData?.MAINDEPTNAME, ["KD"], () => {
-              setSelection({
-                ...selection,
-                trapo: true,
-                thempohangloat: false,
-                them1po: false,
-                them1invoice: true,
-              });
-              clearInvoiceform();
-            }); */
-            checkBP(userData, ["KD"], ["ALL"], ["ALL"], () => {
-              setSelection({
-                ...selection,
-                trapo: true,
-                thempohangloat: false,
-                them1po: false,
-                them1invoice: true,
-              });
-              clearInvoiceform();
-            });
-          }}
-        >
-          <AiFillFileAdd color="blue" size={15} />
-          NEW INV
-        </IconButton>
-        <IconButton
-          className="buttonIcon"
-          onClick={() => {
-            /* checkBP(
-              userData?.EMPL_NO,
-              userData?.MAINDEPTNAME,
-              ["KD"],
-              handle_fillsuaformInvoice
-            ); */
-            checkBP(
-              userData,
-              ["KD"],
-              ["ALL"],
-              ["ALL"],
-              handle_fillsuaformInvoice,
-            );
-            //handle_fillsuaformInvoice();
-          }}
-        >
-          <FaFileInvoiceDollar color="lightgreen" size={15} />
-          SỬA INV
-        </IconButton>
-        <IconButton
-          className="buttonIcon"
-          onClick={() => {
-            /*  checkBP(
-              userData?.EMPL_NO,
-              userData?.MAINDEPTNAME,
-              ["KD"],
-              handleConfirmDeleteInvoice
-            ); */
-            checkBP(
-              userData,
-              ["KD"],
-              ["ALL"],
-              ["ALL"],
-              handleConfirmDeleteInvoice,
-            );
-            //handleConfirmDeleteInvoice();
-          }}
-        >
-          <MdOutlineDelete color="red" size={15} />
-          XÓA INV
-        </IconButton>
-        <IconButton
-          className="buttonIcon"
-          onClick={() => {
-            setShowHidePivotTable(!showhidePivotTable);
-          }}
-        >
-          <MdOutlinePivotTableChart color="#ff33bb" size={15} />
-          Pivot
-        </IconButton>
+                <IconButton
+                  className="buttonIcon"
+                  onClick={() => {
+                    showhidesearchdiv.current = !showhidesearchdiv.current;
+                    setSH(!showhidesearchdiv.current);
+                  }}
+                >
+                  <TbLogout color="green" size={15} />
+                  Show/Hide
+                </IconButton>
+                <IconButton
+                  className="buttonIcon"
+                  onClick={() => {
+                    SaveExcel(invoicedatatable, "Invoice Table");
+                  }}
+                >
+                  <AiFillFileExcel color="green" size={15} />
+                  SAVE
+                </IconButton>
+                <IconButton
+                  className="buttonIcon"
+                  onClick={() => {
+                    /*  checkBP(userData?.EMPL_NO, userData?.MAINDEPTNAME, ["KD"], () => {
+                      setSelection({
+                        ...selection,
+                        trapo: true,
+                        thempohangloat: false,
+                        them1po: false,
+                        them1invoice: true,
+                      });
+                      clearInvoiceform();
+                    }); */
+                    checkBP(userData, ["KD"], ["ALL"], ["ALL"], () => {
+                      setSelection({
+                        ...selection,
+                        trapo: true,
+                        thempohangloat: false,
+                        them1po: false,
+                        them1invoice: true,
+                      });
+                      clearInvoiceform();
+                    });
+                  }}
+                >
+                  <AiFillFileAdd color="blue" size={15} />
+                  NEW INV
+                </IconButton>
+                <IconButton
+                  className="buttonIcon"
+                  onClick={() => {
+                    /* checkBP(
+                      userData?.EMPL_NO,
+                      userData?.MAINDEPTNAME,
+                      ["KD"],
+                      handle_fillsuaformInvoice
+                    ); */
+                    checkBP(
+                      userData,
+                      ["KD"],
+                      ["ALL"],
+                      ["ALL"],
+                      handle_fillsuaformInvoice,
+                    );
+                    //handle_fillsuaformInvoice();
+                  }}
+                >
+                  <FaFileInvoiceDollar color="lightgreen" size={15} />
+                  SỬA INV
+                </IconButton>
+                <IconButton
+                  className="buttonIcon"
+                  onClick={() => {
+                    /*  checkBP(
+                      userData?.EMPL_NO,
+                      userData?.MAINDEPTNAME,
+                      ["KD"],
+                      handleConfirmDeleteInvoice
+                    ); */
+                    checkBP(
+                      userData,
+                      ["KD"],
+                      ["ALL"],
+                      ["ALL"],
+                      handleConfirmDeleteInvoice,
+                    );
+                    //handleConfirmDeleteInvoice();
+                  }}
+                >
+                  <MdOutlineDelete color="red" size={15} />
+                  XÓA INV
+                </IconButton>
+                <IconButton
+                  className="buttonIcon"
+                  onClick={() => {
+                    setShowHidePivotTable(!showhidePivotTable);
+                  }}
+                >
+                  <MdOutlinePivotTableChart color="#ff33bb" size={15} />
+                  Pivot
+                </IconButton>
               </Item>
               <Item name='searchPanel' />
               <Item name='exportButton' />
@@ -1750,27 +1754,9 @@ const InvoiceManager = () => {
               />
               <TotalItem
                 alignment='right'
-                column='PO_QTY'
+                column='DELIVERY_QTY'
                 summaryType='sum'
                 valueFormat={"thousands"}
-              />
-              <TotalItem
-                alignment='right'
-                column='TOTAL_DELIVERED'
-                summaryType='sum'
-                valueFormat={"thousands"}
-              />
-              <TotalItem
-                alignment='right'
-                column='PO_BALANCE'
-                summaryType='sum'
-                valueFormat={"thousands"}
-              />
-              <TotalItem
-                alignment='right'
-                column='PO_AMOUNT'
-                summaryType='sum'
-                valueFormat={"currency"}
               />
               <TotalItem
                 alignment='right'
@@ -1778,12 +1764,7 @@ const InvoiceManager = () => {
                 summaryType='sum'
                 valueFormat={"currency"}
               />
-              <TotalItem
-                alignment='right'
-                column='BALANCE_AMOUNT'
-                summaryType='sum'
-                valueFormat={"currency"}
-              />
+
             </Summary>
           </DataGrid>
         </CustomResponsiveContainer>
@@ -1808,7 +1789,7 @@ const InvoiceManager = () => {
             keyExpr='id'
             height={"75vh"}
             showBorders={true}
-            onSelectionChanged={(e) => {}}
+            onSelectionChanged={(e) => { }}
             onRowClick={(e) => {
               //console.log(e.data);
             }}
@@ -1827,7 +1808,7 @@ const InvoiceManager = () => {
               allowDeleting={false}
               mode='batch'
               confirmDelete={true}
-              onChangesChange={(e) => {}}
+              onChangesChange={(e) => { }}
             />
             <Export enabled={true} />
             <Toolbar disabled={false}>
@@ -1962,8 +1943,8 @@ const InvoiceManager = () => {
             </form>
             <div className="insertInvoiceTable">
               {excelDataTable}
-              
-                {/* <DataGrid
+
+              {/* <DataGrid
                   sx={{ fontSize: "0.7rem", flex: 1 }}
                   components={{
                     Toolbar: CustomToolbar,
@@ -1978,7 +1959,7 @@ const InvoiceManager = () => {
                   ]}
                   editMode="row"
                 /> */}
-              
+
             </div>
           </div>
         </div>
