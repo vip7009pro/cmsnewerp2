@@ -200,7 +200,7 @@ function Home() {
                                   <IconButton onClick={() => {
                                     dispatch(closeTab(index));
                                   }}>
-                                    <AiOutlineCloseCircle color="gray" size={20} />
+                                    <AiOutlineCloseCircle color={tabIndex === index ? `blue` : `gray`} size={20} />
                                   </IconButton>
                                 </CustomTabLabel>
                               </div>
