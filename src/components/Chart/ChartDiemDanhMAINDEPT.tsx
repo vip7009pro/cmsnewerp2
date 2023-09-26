@@ -86,10 +86,10 @@ const ChartDiemDanhMAINDEPT = () => {
         fill='black'
         textAnchor={x > cx ? "start" : "end"}
         dominantBaseline='central'
-        style={{ color: "white" }}
+        style={{ color: "white", fontSize: '1rem' }}
       >
         {diemdanhMainDeptData[index].MAINDEPTNAME} : (
-        {value.toLocaleString("en-US")} người)
+        {value.toLocaleString("en-US")} ng)
       </text>
     );
   };

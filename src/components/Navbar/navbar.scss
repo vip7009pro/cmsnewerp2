@@ -191,13 +191,14 @@
       position: fixed;
       z-index: 9;
       top: 0;
+      left: 0;
       -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.29);
       box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.2);
       background-color: rgb(238, 240, 247);
       display: flex;
       padding: 10px;
       align-items: center;
-      justify-content: space-between;
+      justify-content: flex-start;
       width: 100%;
       border-radius: 5px;
       .navleft {

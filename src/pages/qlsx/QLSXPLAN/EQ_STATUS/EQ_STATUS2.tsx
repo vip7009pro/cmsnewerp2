@@ -121,9 +121,9 @@ const EQ_STATUS2 = () => {
                           upd_time={element.UPD_DATE}
                           upd_empl={element.UPD_EMPL}
                           machine_data={element}
-                          onClick={() => {}}
-                          onMouseEnter={() => {}}
-                          onMouseLeave={() => {}}
+                          onClick={() => { }}
+                          onMouseEnter={() => { }}
+                          onMouseLeave={() => { }}
                         />
                       );
                     })}
@@ -250,7 +250,7 @@ const EQ_STATUS2 = () => {
               />
               {eq_series.map((ele_series: string, index: number) => {
                 return (
-                  <div className="FRlist">
+                  <div className="FRlist" key={index}>
                     {eq_status
                       .filter(
                         (element: EQ_STT, index: number) =>
@@ -271,9 +271,9 @@ const EQ_STATUS2 = () => {
                             run_stop={element.EQ_ACTIVE === "OK" ? 1 : 0}
                             upd_time={element.UPD_DATE}
                             upd_empl={element.UPD_EMPL}
-                            onClick={() => {}}
-                            onMouseEnter={() => {}}
-                            onMouseLeave={() => {}}
+                            onClick={() => { }}
+                            onMouseEnter={() => { }}
+                            onMouseLeave={() => { }}
                           />
                         );
                       })}

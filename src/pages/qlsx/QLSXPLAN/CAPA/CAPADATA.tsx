@@ -217,6 +217,7 @@ const CAPADATA = () => {
           columnWidth="auto"
           keyExpr="id"
           height={"70vh"}
+          width={`100%`}
           showBorders={true}
           onSelectionChanged={(e) => {
             setSelectedRows(e.selectedRowsData.length);
@@ -242,7 +243,7 @@ const CAPADATA = () => {
             allowDeleting={false}
             mode="batch"
             confirmDelete={true}
-            onChangesChange={(e) => {}}
+            onChangesChange={(e) => { }}
           />
           <Export enabled={true} />
           <Toolbar disabled={false}>
@@ -576,7 +577,7 @@ const CAPADATA = () => {
     handle_loaddatasx();
   }, []);
   return (
-    <div className="tinhinhcuonlieu">
+    <div className="capadata">
       <div className="tracuuDataInspection">
         <div className="tracuuDataInspectionform">
           <div className="forminput">

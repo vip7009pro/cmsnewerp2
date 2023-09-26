@@ -709,29 +709,42 @@ const BaoCaoNhanSu = () => {
   };
   const maindeptchartMM = useMemo(() => {
     return (
-      <PieChart
-        id="pie"
-        dataSource={ddmaindepttb.filter(
-          (ele: DIEMDANHMAINDEPT, index: number) =>
-            ele.MAINDEPTNAME !== "TOTAL",
-        )}
-        palette="Bright"
-        title="Nhân lực theo bộ phận"
-        resolveLabelOverlapping="shift"
-      >
-        <Series argumentField="MAINDEPTNAME" valueField="COUNT_TOTAL">
-          <LB
-            visible={true}
-            customizeText={(e: any) => {
-              return `${e.argument}<br></br>${e.value} người
+      <CustomResponsiveContainer>
+        <PieChart
+          width={`100%`}
+          id="pie"
+          dataSource={ddmaindepttb.filter(
+            (ele: DIEMDANHMAINDEPT, index: number) =>
+              ele.MAINDEPTNAME !== "TOTAL",
+          )}
+          palette="Bright"
+          title="Nhân lực theo bộ phận"
+          resolveLabelOverlapping="shift"
+          adaptiveLayout={{
+            width: 200,
+            keepLabels: true
+          }}
+          animation={{
+            easing: "linear",
+            duration: 500,
+            maxPointCountSupported: 100
+          }}
+        >
+          <Series argumentField="MAINDEPTNAME" valueField="COUNT_TOTAL">
+            <LB
+              visible={true}
+              customizeText={(e: any) => {
+                return `${e.argument}<br></br>${e.value} người
               `;
-            }}
-          >
-            <Connector visible={true} width={0.5} />
-          </LB>
-        </Series>
-        <Size width={700} />
-      </PieChart>
+              }}
+            >
+              <Connector visible={true} width={0.5} />
+            </LB>
+          </Series>
+          <Size width={700} />
+        </PieChart>
+      </CustomResponsiveContainer>
+
     );
   }, [ddmaindepttb]);
   const subdeptchartMM = useMemo(() => {
@@ -1273,7 +1286,7 @@ const BaoCaoNhanSu = () => {
         <h3>Báo cáo nhân sự</h3>
         <div className="filterform">
           <label>
-            <b>Chọn bộ phận:</b>
+            <b>Bộ phận:</b>
             <select
               name="bophan"
               value={maindeptcode}
@@ -1290,7 +1303,7 @@ const BaoCaoNhanSu = () => {
             </select>
           </label>
           <label>
-            <b>Chọn nhà máy:</b>
+            <b>Nhà máy:</b>
             <select
               name="nhamay"
               value={nhamay}
@@ -1428,8 +1441,8 @@ const BaoCaoNhanSu = () => {
           </div>
           <div className="titrongphongbangraph">
             <CustomResponsiveContainer>
-              {/* <ChartDiemDanhMAINDEPT /> */}
-              {maindeptchartMM}
+              <ChartDiemDanhMAINDEPT />
+              {/* {maindeptchartMM} */}
             </CustomResponsiveContainer>
           </div>
         </div>

@@ -26,6 +26,7 @@ import {
   MACHINE_COUNTING,
   YCSX_BALANCE_CAPA_DATA,
 } from "../../../../api/GlobalInterface";
+import { CustomResponsiveContainer } from "../../../../api/GlobalFunction";
 
 const CAPASX = () => {
   const dailytime: number = 1200;
@@ -612,23 +613,23 @@ const CAPASX = () => {
       machinecount.filter(
         (ele: MACHINE_COUNTING, index: number) => ele.EQ_NAME === "FR"
       )[0]?.EQ_QTY *
-        2 *
-        2 +
+      2 *
+      2 +
       machinecount.filter(
         (ele: MACHINE_COUNTING, index: number) => ele.EQ_NAME === "SR"
       )[0]?.EQ_QTY *
-        2 *
-        2 +
+      2 *
+      2 +
       machinecount.filter(
         (ele: MACHINE_COUNTING, index: number) => ele.EQ_NAME === "DC"
       )[0]?.EQ_QTY *
-        2 *
-        1 +
+      2 *
+      1 +
       machinecount.filter(
         (ele: MACHINE_COUNTING, index: number) => ele.EQ_NAME === "ED"
       )[0]?.EQ_QTY *
-        2 *
-        1
+      2 *
+      1
     );
   };
   const getRetainEMPL = () => {
@@ -868,7 +869,7 @@ const CAPASX = () => {
         id='workforcechart'
         title='WORKFORCE STATUS'
         dataSource={dataSource_eq}
-        width={700}
+        width={`100%`}
       >
         <ArgumentAxis title='MACHINE NAME' />
         <ValueAxis title='Workforce (人)' />
@@ -915,7 +916,7 @@ const CAPASX = () => {
         dataSource={dlleadtime.filter(
           (e: DELIVERY_PLAN_CAPA, index: number) => e.EQ === "FR"
         )}
-        width={1400}
+        width={`100%`}
         resolveLabelOverlapping='hide'
       >
         {/* <Title
@@ -969,7 +970,7 @@ const CAPASX = () => {
         dataSource={dlleadtime.filter(
           (e: DELIVERY_PLAN_CAPA, index: number) => e.EQ === "SR"
         )}
-        width={1400}
+        width={`100%`}
         resolveLabelOverlapping='hide'
       >
         {/* <Title
@@ -1023,7 +1024,7 @@ const CAPASX = () => {
         dataSource={dlleadtime.filter(
           (e: DELIVERY_PLAN_CAPA, index: number) => e.EQ === "DC"
         )}
-        width={1400}
+        width={`100%`}
         resolveLabelOverlapping='hide'
       >
         {/* <Title
@@ -1077,7 +1078,7 @@ const CAPASX = () => {
         dataSource={dlleadtime.filter(
           (e: DELIVERY_PLAN_CAPA, index: number) => e.EQ === "ED"
         )}
-        width={1400}
+        width={`100%`}
         resolveLabelOverlapping='hide'
       >
         {/* <Title
@@ -1129,7 +1130,7 @@ const CAPASX = () => {
         id='chartcapa'
         rotated={true}
         dataSource={dataSource_capa}
-        width={700}
+        width={`100%`}
       >
         <ArgumentAxis title='MACHINE NAME' />
         <ValueAxis title='LeadTime (days)' />
@@ -1272,7 +1273,7 @@ const CAPASX = () => {
           <div className='capachart'>{leadtimechartMM}</div>
         </div>
       </div>
-      <div className='workforcechart'>
+      <div className='dailydeliverycapa'>
         <div className='sectiondiv'>
           <div className='title'>3. PRODUCTION BY DELIVERY PLAN</div>
           <div className='selectcontrol'>
@@ -1330,7 +1331,6 @@ const CAPASX = () => {
           )}
         </div>
       </div>
-
       <div className='ycsxbalancedatatable'>
         <table>
           <thead>

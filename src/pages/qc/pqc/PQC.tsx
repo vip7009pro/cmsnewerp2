@@ -61,7 +61,7 @@ const PQC = () => {
     }
   };
 
-  useEffect(() => {}, []);
+  useEffect(() => { }, []);
 
   return (
     <div className="pqc">
@@ -97,16 +97,6 @@ const PQC = () => {
           <span className="mininavtext">PQC3-DEFECT</span>
         </div>
 
-        <div
-          className="mininavitem"
-          onClick={() => setNav(1)}
-          style={{
-            backgroundColor: selection.tab1 === true ? "#02c712" : "#abc9ae",
-            color: selection.tab1 === true ? "yellow" : "yellow",
-          }}
-        >
-          <span className="mininavtext">CODE INFO</span>
-        </div>
       </div>
       {selection.tab2 && (
         <div className="trapqc">
