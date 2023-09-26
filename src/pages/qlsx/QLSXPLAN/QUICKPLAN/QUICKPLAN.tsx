@@ -225,7 +225,23 @@ const QUICKPLAN = () => {
     },
     { field: "EMPL_NAME", headerName: "PIC KD", width: 150 },
     { field: "CUST_NAME_KD", headerName: "KHÁCH", width: 120 },
-    { field: "PROD_REQUEST_NO", headerName: "SỐ YCSX", width: 80 },
+    {
+      field: "PROD_REQUEST_NO", headerName: "SỐ YCSX", width: 80, renderCell: (params: any) => {
+        if (params.row.DACHITHI === null) {
+          return (
+            <span style={{ color: "black" }}>
+              {params.row.PROD_REQUEST_NO.toLocaleString("en-US")}
+            </span>
+          );
+        } else {
+          return (
+            <span style={{ color: "green" }}>
+              <b>{params.row.PROD_REQUEST_NO.toLocaleString("en-US")}</b>
+            </span>
+          );
+        }
+      },
+    },
     { field: "PROD_REQUEST_DATE", headerName: "NGÀY YCSX", width: 80 },
     {
       field: "PO_BALANCE",
@@ -944,17 +960,17 @@ const QUICKPLAN = () => {
                     : element.PO_TDYCSX,
                 TOTAL_TKHO_TDYCSX:
                   element.TOTAL_TKHO_TDYCSX === undefined ||
-                  element.TOTAL_TKHO_TDYCSX === null
+                    element.TOTAL_TKHO_TDYCSX === null
                     ? 0
                     : element.TOTAL_TKHO_TDYCSX,
                 TKHO_TDYCSX:
                   element.TKHO_TDYCSX === undefined ||
-                  element.TKHO_TDYCSX === null
+                    element.TKHO_TDYCSX === null
                     ? 0
                     : element.TKHO_TDYCSX,
                 BTP_TDYCSX:
                   element.BTP_TDYCSX === undefined ||
-                  element.BTP_TDYCSX === null
+                    element.BTP_TDYCSX === null
                     ? 0
                     : element.BTP_TDYCSX,
                 CK_TDYCSX:
@@ -963,12 +979,12 @@ const QUICKPLAN = () => {
                     : element.CK_TDYCSX,
                 BLOCK_TDYCSX:
                   element.BLOCK_TDYCSX === undefined ||
-                  element.BLOCK_TDYCSX === null
+                    element.BLOCK_TDYCSX === null
                     ? 0
                     : element.BLOCK_TDYCSX,
                 FCST_TDYCSX:
                   element.FCST_TDYCSX === undefined ||
-                  element.FCST_TDYCSX === null
+                    element.FCST_TDYCSX === null
                     ? 0
                     : element.FCST_TDYCSX,
                 W1:
@@ -1005,7 +1021,7 @@ const QUICKPLAN = () => {
                     : element.W8,
                 PROD_REQUEST_QTY:
                   element.PROD_REQUEST_QTY === undefined ||
-                  element.PROD_REQUEST_QTY === null
+                    element.PROD_REQUEST_QTY === null
                     ? 0
                     : element.PROD_REQUEST_QTY,
                 CD1: element.CD1 === null ? 0 : element.CD1,
@@ -1200,7 +1216,7 @@ const QUICKPLAN = () => {
               next_plan_id =
                 old_plan_id.substring(0, 3) +
                 PLAN_ID_ARRAY[
-                  PLAN_ID_ARRAY.indexOf(old_plan_id.substring(3, 4)) + 1
+                PLAN_ID_ARRAY.indexOf(old_plan_id.substring(3, 4)) + 1
                 ] +
                 old_plan_id.substring(4, 7) +
                 "A";
@@ -1209,7 +1225,7 @@ const QUICKPLAN = () => {
             next_plan_id =
               old_plan_id.substring(0, 7) +
               PLAN_ID_ARRAY[
-                PLAN_ID_ARRAY.indexOf(old_plan_id.substring(7, 8)) + 1
+              PLAN_ID_ARRAY.indexOf(old_plan_id.substring(7, 8)) + 1
               ];
           }
           /* next_plan_id = PROD_REQUEST_NO +  String.fromCharCode(response.data.data[0].PLAN_ID.substring(7,8).charCodeAt(0) + 1); */
@@ -1396,7 +1412,7 @@ const QUICKPLAN = () => {
             parseInt(qlsxplandatafilter[i].PROCESS_NUMBER.toString()) <= 4) &&
           qlsxplandatafilter[i].PLAN_QTY !== 0 &&
           qlsxplandatafilter[i].PLAN_QTY <=
-            qlsxplandatafilter[i].PROD_REQUEST_QTY &&
+          qlsxplandatafilter[i].PROD_REQUEST_QTY &&
           qlsxplandatafilter[i].PLAN_EQ.substring(0, 2) !== "" &&
           (qlsxplandatafilter[i].PLAN_EQ.substring(0, 2) === "FR" ||
             qlsxplandatafilter[i].PLAN_EQ.substring(0, 2) === "SR" ||
@@ -1806,17 +1822,17 @@ const QUICKPLAN = () => {
                     : element.PO_TDYCSX,
                 TOTAL_TKHO_TDYCSX:
                   element.TOTAL_TKHO_TDYCSX === undefined ||
-                  element.TOTAL_TKHO_TDYCSX === null
+                    element.TOTAL_TKHO_TDYCSX === null
                     ? 0
                     : element.TOTAL_TKHO_TDYCSX,
                 TKHO_TDYCSX:
                   element.TKHO_TDYCSX === undefined ||
-                  element.TKHO_TDYCSX === null
+                    element.TKHO_TDYCSX === null
                     ? 0
                     : element.TKHO_TDYCSX,
                 BTP_TDYCSX:
                   element.BTP_TDYCSX === undefined ||
-                  element.BTP_TDYCSX === null
+                    element.BTP_TDYCSX === null
                     ? 0
                     : element.BTP_TDYCSX,
                 CK_TDYCSX:
@@ -1825,12 +1841,12 @@ const QUICKPLAN = () => {
                     : element.CK_TDYCSX,
                 BLOCK_TDYCSX:
                   element.BLOCK_TDYCSX === undefined ||
-                  element.BLOCK_TDYCSX === null
+                    element.BLOCK_TDYCSX === null
                     ? 0
                     : element.BLOCK_TDYCSX,
                 FCST_TDYCSX:
                   element.FCST_TDYCSX === undefined ||
-                  element.FCST_TDYCSX === null
+                    element.FCST_TDYCSX === null
                     ? 0
                     : element.FCST_TDYCSX,
                 W1:
@@ -1867,7 +1883,7 @@ const QUICKPLAN = () => {
                     : element.W8,
                 PROD_REQUEST_QTY:
                   element.PROD_REQUEST_QTY === undefined ||
-                  element.PROD_REQUEST_QTY === null
+                    element.PROD_REQUEST_QTY === null
                     ? 0
                     : element.PROD_REQUEST_QTY,
               };
@@ -1892,6 +1908,7 @@ const QUICKPLAN = () => {
     console.log(rowData);
     setSelectedCode("CODE: " + rowData.G_NAME_KD);
     setSelectedG_Code(rowData.G_CODE);
+
     setDataDinhMuc({
       ...datadinhmuc,
       FACTORY: rowData.FACTORY === null ? "NA" : rowData.FACTORY,
@@ -2033,8 +2050,8 @@ const QUICKPLAN = () => {
                       temp_ycsx_data[0].TON_CD1 <= 0
                         ? 0
                         : temp_ycsx_data[0].TON_CD1 < UPH1 * 10
-                        ? temp_ycsx_data[0].TON_CD1
-                        : UPH1 * 10,
+                          ? temp_ycsx_data[0].TON_CD1
+                          : UPH1 * 10,
                   };
                 } else if (plan_temp === p.EQ2) {
                   return {
@@ -2053,8 +2070,8 @@ const QUICKPLAN = () => {
                       temp_ycsx_data[0].TON_CD2 <= 0
                         ? 0
                         : temp_ycsx_data[0].TON_CD2 < UPH2 * 10
-                        ? temp_ycsx_data[0].TON_CD2
-                        : UPH2 * 10,
+                          ? temp_ycsx_data[0].TON_CD2
+                          : UPH2 * 10,
                   };
                 } else if (plan_temp === p.EQ3) {
                   return {
@@ -2073,8 +2090,8 @@ const QUICKPLAN = () => {
                       temp_ycsx_data[0].TON_CD3 <= 0
                         ? 0
                         : temp_ycsx_data[0].TON_CD3 < UPH3 * 10
-                        ? temp_ycsx_data[0].TON_CD3
-                        : UPH3 * 10,
+                          ? temp_ycsx_data[0].TON_CD3
+                          : UPH3 * 10,
                   };
                 } else if (plan_temp === p.EQ4) {
                   return {
@@ -2093,8 +2110,8 @@ const QUICKPLAN = () => {
                       temp_ycsx_data[0].TON_CD4 <= 0
                         ? 0
                         : temp_ycsx_data[0].TON_CD4 < UPH4 * 10
-                        ? temp_ycsx_data[0].TON_CD4
-                        : UPH4 * 10,
+                          ? temp_ycsx_data[0].TON_CD4
+                          : UPH4 * 10,
                   };
                 } else {
                   Swal.fire(

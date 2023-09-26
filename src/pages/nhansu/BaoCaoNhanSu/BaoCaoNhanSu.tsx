@@ -86,18 +86,46 @@ import {
   DiemDanhFullData,
   DiemDanhHistoryData,
   DiemDanhNhomData,
+  DiemDanhNhomDataSummary,
   MainDeptData,
   UserData,
 } from "../../../api/GlobalInterface";
 
 const BaoCaoNhanSu = () => {
+  const COLORS = [
+    "#ff8c66",
+    "#ffb366",
+    "#ffd966",
+    "#ffff66",
+    "#d9ff66",
+    "#b3ff66",
+    "#8cff66",
+    "#66ff66",
+    "#66ff8c",
+    "#66ffb3",
+    "#66ffd9",
+    "#66ffff",
+    "#66d9ff",
+    "#66b3ff",
+    "#668cff",
+    "#6666ff",
+    "#8c66ff",
+    "#b366ff",
+    "#d966ff",
+    "#ff66ff",
+    "#ff66d9",
+    "#ff66b3",
+    "#ff668c",
+    "#ff6666",
+  ];
+
   const userData: UserData | undefined = useSelector(
     (state: RootState) => state.totalSlice.userData,
   );
   const [isLoading, setisLoading] = useState(false);
   const [ddmaindepttb, setddmaindepttb] = useState<Array<DIEMDANHMAINDEPT>>([]);
   const [diemdanhnhomtable, setDiemDanhNhomTable] = useState<
-    Array<DiemDanhNhomData>
+    Array<DiemDanhNhomDataSummary>
   >([]);
   const [diemdanhfullsummary, setDiemDanhFullSummary] = useState<
     Array<DIEMDANHFULLSUMMARY>
@@ -472,7 +500,7 @@ const BaoCaoNhanSu = () => {
       </GridToolbarContainer>
     );
   }
-  const addTotal = (tabledata: Array<DiemDanhNhomData>) => {
+  const addTotal = (tabledata: Array<DiemDanhNhomDataSummary>) => {
     var TOTAL_ALL: number = 0;
     var TOTAL_OFF: number = 0;
     var TOTAL_ON: number = 0;
@@ -500,7 +528,7 @@ const BaoCaoNhanSu = () => {
       CDD_NM1 += obj.CDD_NM1;
       CDD_NM2 += obj.CDD_NM2;
     }
-    var grandTotalOBJ: DiemDanhNhomData = {
+    var grandTotalOBJ: DiemDanhNhomDataSummary = {
       id: "GRAND_TOTAL",
       MAINDEPTNAME: "GRAND_TOTAL",
       SUBDEPTNAME: "GRAND_TOTAL",
@@ -537,7 +565,8 @@ const BaoCaoNhanSu = () => {
         //console.log(response.data.data);
         if (response.data.tk_status !== "NG") {
           setPieChartData(response.data.data);
-          setDiemDanhNhomTable(addTotal(response.data.data));
+          let totalAdded: DiemDanhNhomDataSummary[] = addTotal(response.data.data);
+          setDiemDanhNhomTable(totalAdded);
           setisLoading(false);
         } else {
           Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
@@ -710,7 +739,7 @@ const BaoCaoNhanSu = () => {
       <Chart
         id="workforcechart"
         dataSource={diemdanhnhomtable.filter(
-          (ele: DiemDanhNhomData, index: number) =>
+          (ele: DiemDanhNhomDataSummary, index: number) =>
             ele.MAINDEPTNAME !== "GRAND_TOTAL",
         )}
         height={450}
@@ -1195,7 +1224,7 @@ const BaoCaoNhanSu = () => {
             allowDeleting={false}
             mode="cell"
             confirmDelete={true}
-            onChangesChange={(e) => {}}
+            onChangesChange={(e) => { }}
           />
           <Export enabled={true} />
           <Toolbar disabled={false}>
@@ -1423,13 +1452,18 @@ const BaoCaoNhanSu = () => {
             />
           </div>
           <div className="titrongphongbangraph">
-            {/* <CustomResponsiveContainer>
+            {/*  <CustomResponsiveContainer>
+              <ChartDiemDanhMAINDEPT />
+
               <PieChart width={500} height={500}>
                 <Legend />
                 <Tooltip />
-                {piechartdata && (
+                {
                   <Pie
-                    data={piechartdata.slice(0, piechartdata.length - 1)}
+                    data={diemdanhnhomtable.filter(
+                      (ele: DiemDanhNhomDataSummary, index: number) =>
+                        ele.MAINDEPTNAME !== "GRAND_TOTAL",
+                    )}
                     isAnimationActive={false}
                     cx='50%'
                     cy='50%'
@@ -1441,14 +1475,17 @@ const BaoCaoNhanSu = () => {
                     label
                     labelLine={true}
                   >
-                    {piechartdata.map((entry, index) => (
+                    {diemdanhnhomtable.filter(
+                      (ele: DiemDanhNhomDataSummary, index: number) =>
+                        ele.MAINDEPTNAME !== "GRAND_TOTAL",
+                    ).map((entry, index) => (
                       <Cell
                         key={`cell-${index}`}
                         fill={COLORS[index % COLORS.length]}
                       />
                     ))}
                   </Pie>
-                )}
+                }
               </PieChart>
             </CustomResponsiveContainer> */}
             <CustomResponsiveContainer>

@@ -788,7 +788,7 @@ const BOM_MANAGER = () => {
                 })
                   .then((response) => {
                     if (response.data.tk_status !== "NG") {
-                      generalQuery("resetbanve", {
+                      generalQuery("pdbanve", {
                         G_CODE: codefullinfo.G_CODE,
                         VALUE: "N",
                       })
@@ -1039,7 +1039,7 @@ const BOM_MANAGER = () => {
                     : element.DESCR,
                 PROD_MAIN_MATERIAL:
                   element.PROD_MAIN_MATERIAL === null ||
-                  element.PROD_MAIN_MATERIAL === ""
+                    element.PROD_MAIN_MATERIAL === ""
                     ? ""
                     : element.PROD_MAIN_MATERIAL,
                 G_NAME:
@@ -2737,9 +2737,9 @@ const BOM_MANAGER = () => {
                             )[0]?.CUST_NAME_KD === undefined
                               ? ""
                               : customerList.filter(
-                                  (e: CustomerListData, index: number) =>
-                                    e.CUST_CD === codefullinfo.CUST_CD,
-                                )[0]?.CUST_NAME_KD,
+                                (e: CustomerListData, index: number) =>
+                                  e.CUST_CD === codefullinfo.CUST_CD,
+                              )[0]?.CUST_NAME_KD,
                         }}
                         onChange={(event: any, newValue: any) => {
                           console.log(newValue);
@@ -3386,7 +3386,7 @@ const BOM_MANAGER = () => {
                         name="may1"
                         value={
                           codefullinfo?.PO_TYPE === null ||
-                          codefullinfo?.PO_TYPE === ""
+                            codefullinfo?.PO_TYPE === ""
                             ? "E1"
                             : codefullinfo?.PO_TYPE
                         }

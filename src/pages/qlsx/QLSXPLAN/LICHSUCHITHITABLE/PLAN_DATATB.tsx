@@ -1034,12 +1034,12 @@ const PLAN_DATATB = () => {
                   element.EQ_STATUS === "B"
                     ? "Đang setting"
                     : element.EQ_STATUS === "M"
-                    ? "Đang Run"
-                    : element.EQ_STATUS === "K"
-                    ? "Chạy xong"
-                    : element.EQ_STATUS === "K"
-                    ? "KTST-KSX"
-                    : "Chưa chạy",
+                      ? "Đang Run"
+                      : element.EQ_STATUS === "K"
+                        ? "Chạy xong"
+                        : element.EQ_STATUS === "K"
+                          ? "KTST-KSX"
+                          : "Chưa chạy",
                 ACHIVEMENT_RATE: (element.KETQUASX / element.PLAN_QTY) * 100,
                 CD1: element.CD1 === null ? 0 : element.CD1,
                 CD2: element.CD2 === null ? 0 : element.CD2,
@@ -1305,8 +1305,8 @@ const PLAN_DATATB = () => {
                 ? LOSS_SETTING1
                 : 0
               : calc_loss_setting
-              ? LOSS_SETTING2
-              : 0;
+                ? LOSS_SETTING2
+                : 0;
           if (PROCESS_NUMBER === 1) {
             FINAL_LOSS_SETTING = calc_loss_setting
               ? response.data.data[0].LOSS_SETTING1 === null
@@ -1373,9 +1373,9 @@ const PLAN_DATATB = () => {
                       M_ROLL_QTY: 0,
                       M_MET_QTY: parseInt(
                         "" +
-                          (M_MET_NEEDED +
-                            (M_MET_NEEDED * FINAL_LOSS_SX) / 100 +
-                            FINAL_LOSS_SETTING)
+                        (M_MET_NEEDED +
+                          (M_MET_NEEDED * FINAL_LOSS_SX) / 100 +
+                          FINAL_LOSS_SETTING)
                       ),
                       M_QTY: element.M_QTY,
                       LIEUQL_SX: element.LIEUQL_SX,
@@ -1455,8 +1455,8 @@ const PLAN_DATATB = () => {
                   ? LOSS_SETTING1
                   : 0
                 : calc_loss_setting
-                ? LOSS_SETTING2
-                : 0;
+                  ? LOSS_SETTING2
+                  : 0;
             //console.log(LOSS_SX1)
             //console.log(LOSS_SETTING1)
           } else {
@@ -1488,9 +1488,9 @@ const PLAN_DATATB = () => {
                   M_ROLL_QTY: 0,
                   M_MET_QTY: parseInt(
                     "" +
-                      (M_MET_NEEDED +
-                        (M_MET_NEEDED * FINAL_LOSS_SX) / 100 +
-                        FINAL_LOSS_SETTING)
+                    (M_MET_NEEDED +
+                      (M_MET_NEEDED * FINAL_LOSS_SX) / 100 +
+                      FINAL_LOSS_SETTING)
                   ),
                   M_QTY: element.M_QTY,
                   LIEUQL_SX: element.LIEUQL_SX,
@@ -1811,14 +1811,14 @@ const PLAN_DATATB = () => {
         });
       if (
         parseInt(qlsxplandatafilter.current[i].PROCESS_NUMBER.toString()) >=
-          1 &&
+        1 &&
         parseInt(qlsxplandatafilter.current[i].PROCESS_NUMBER.toString()) <=
-          4 &&
+        4 &&
         qlsxplandatafilter.current[i].PLAN_QTY !== 0 &&
         qlsxplandatafilter.current[i].PLAN_QTY <=
-          qlsxplandatafilter.current[i].PROD_REQUEST_QTY &&
+        qlsxplandatafilter.current[i].PROD_REQUEST_QTY &&
         qlsxplandatafilter.current[i].PLAN_ID !==
-          qlsxplandatafilter.current[i].NEXT_PLAN_ID &&
+        qlsxplandatafilter.current[i].NEXT_PLAN_ID &&
         qlsxplandatafilter.current[i].CHOTBC !== "V" &&
         check_NEXT_PLAN_ID &&
         parseInt(qlsxplandatafilter.current[i].STEP.toString()) >= 0 &&
@@ -1864,9 +1864,9 @@ const PLAN_DATATB = () => {
         if (
           !(
             parseInt(qlsxplandatafilter.current[i].PROCESS_NUMBER.toString()) >=
-              1 &&
+            1 &&
             parseInt(qlsxplandatafilter.current[i].PROCESS_NUMBER.toString()) <=
-              4
+            4
           )
         ) {
           err_code += "_: Process number chưa đúng";
@@ -1898,9 +1898,9 @@ const PLAN_DATATB = () => {
         } else if (
           !(
             parseInt(qlsxplandatafilter.current[i].PROCESS_NUMBER.toString()) >=
-              1 &&
+            1 &&
             parseInt(qlsxplandatafilter.current[i].PROCESS_NUMBER.toString()) <=
-              4
+            4
           )
         ) {
           err_code += "_: Hãy nhập PROCESS NUMBER từ 1 đến 4";
@@ -1978,7 +1978,7 @@ const PLAN_DATATB = () => {
               allowDeleting={false}
               mode='cell'
               confirmDelete={true}
-              onChangesChange={(e) => {}}
+              onChangesChange={(e) => { }}
             />
             <Export enabled={true} />
             <Toolbar disabled={false}>
@@ -2668,7 +2668,7 @@ const PLAN_DATATB = () => {
             dataSource={plandatatable}
             columnWidth='auto'
             keyExpr='PLAN_ID'
-            height={"88vh"}
+            height={"90vh"}
             showBorders={true}
             onSelectionChanged={(e) => {
               qlsxplandatafilter.current = e.selectedRowsData;
@@ -2715,7 +2715,7 @@ const PLAN_DATATB = () => {
               allowDeleting={false}
               mode='cell'
               confirmDelete={true}
-              onChangesChange={(e) => {}}
+              onChangesChange={(e) => { }}
             />
             <Export enabled={true} />
             <Toolbar disabled={false}>
@@ -3706,12 +3706,12 @@ const PLAN_DATATB = () => {
               allowDeleting={true}
               mode='cell'
               confirmDelete={true}
-              onChangesChange={(e) => {}}
+              onChangesChange={(e) => { }}
             />
             <Export enabled={true} />
             <Toolbar disabled={false}>
               <Item location='before'>
-                <IconButton className='buttonIcon' onClick={() => {}}>
+                <IconButton className='buttonIcon' onClick={() => { }}>
                   <AiFillFileExcel color='green' size={15} />
                   SAVE
                 </IconButton>

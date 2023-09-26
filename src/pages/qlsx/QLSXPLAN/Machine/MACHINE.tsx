@@ -328,7 +328,23 @@ const MACHINE = () => {
     },
     { field: "EMPL_NAME", headerName: "PIC KD", width: 150 },
     { field: "CUST_NAME_KD", headerName: "KHÁCH", width: 120 },
-    { field: "PROD_REQUEST_NO", headerName: "SỐ YCSX", width: 80 },
+    {
+      field: "PROD_REQUEST_NO", headerName: "SỐ YCSX", width: 80, renderCell: (params: any) => {
+        if (params.row.DACHITHI === null) {
+          return (
+            <span style={{ color: "black" }}>
+              {params.row.PROD_REQUEST_NO.toLocaleString("en-US")}
+            </span>
+          );
+        } else {
+          return (
+            <span style={{ color: "green" }}>
+              <b>{params.row.PROD_REQUEST_NO.toLocaleString("en-US")}</b>
+            </span>
+          );
+        }
+      },
+    },
     { field: "PROD_REQUEST_DATE", headerName: "NGÀY YCSX", width: 80 },
     {
       field: "PO_BALANCE",
@@ -1791,8 +1807,8 @@ const MACHINE = () => {
                 ? LOSS_SETTING1
                 : 0
               : calc_loss_setting
-              ? LOSS_SETTING2
-              : 0;
+                ? LOSS_SETTING2
+                : 0;
           if (PROCESS_NUMBER === 1) {
             FINAL_LOSS_SETTING = calc_loss_setting
               ? response.data.data[0].LOSS_SETTING1 === null
@@ -1859,9 +1875,9 @@ const MACHINE = () => {
                       M_ROLL_QTY: 0,
                       M_MET_QTY: parseInt(
                         "" +
-                          (M_MET_NEEDED +
-                            (M_MET_NEEDED * FINAL_LOSS_SX) / 100 +
-                            FINAL_LOSS_SETTING)
+                        (M_MET_NEEDED +
+                          (M_MET_NEEDED * FINAL_LOSS_SX) / 100 +
+                          FINAL_LOSS_SETTING)
                       ),
                       M_QTY: element.M_QTY,
                       LIEUQL_SX: element.LIEUQL_SX,
@@ -1941,8 +1957,8 @@ const MACHINE = () => {
                   ? LOSS_SETTING1
                   : 0
                 : calc_loss_setting
-                ? LOSS_SETTING2
-                : 0;
+                  ? LOSS_SETTING2
+                  : 0;
             //console.log(LOSS_SX1)
             //console.log(LOSS_SETTING1)
           } else {
@@ -1974,9 +1990,9 @@ const MACHINE = () => {
                   M_ROLL_QTY: 0,
                   M_MET_QTY: parseInt(
                     "" +
-                      (M_MET_NEEDED +
-                        (M_MET_NEEDED * FINAL_LOSS_SX) / 100 +
-                        FINAL_LOSS_SETTING)
+                    (M_MET_NEEDED +
+                      (M_MET_NEEDED * FINAL_LOSS_SX) / 100 +
+                      FINAL_LOSS_SETTING)
                   ),
                   M_QTY: element.M_QTY,
                   LIEUQL_SX: element.LIEUQL_SX,
@@ -2035,17 +2051,17 @@ const MACHINE = () => {
                     : element.PO_TDYCSX,
                 TOTAL_TKHO_TDYCSX:
                   element.TOTAL_TKHO_TDYCSX === undefined ||
-                  element.TOTAL_TKHO_TDYCSX === null
+                    element.TOTAL_TKHO_TDYCSX === null
                     ? 0
                     : element.TOTAL_TKHO_TDYCSX,
                 TKHO_TDYCSX:
                   element.TKHO_TDYCSX === undefined ||
-                  element.TKHO_TDYCSX === null
+                    element.TKHO_TDYCSX === null
                     ? 0
                     : element.TKHO_TDYCSX,
                 BTP_TDYCSX:
                   element.BTP_TDYCSX === undefined ||
-                  element.BTP_TDYCSX === null
+                    element.BTP_TDYCSX === null
                     ? 0
                     : element.BTP_TDYCSX,
                 CK_TDYCSX:
@@ -2054,12 +2070,12 @@ const MACHINE = () => {
                     : element.CK_TDYCSX,
                 BLOCK_TDYCSX:
                   element.BLOCK_TDYCSX === undefined ||
-                  element.BLOCK_TDYCSX === null
+                    element.BLOCK_TDYCSX === null
                     ? 0
                     : element.BLOCK_TDYCSX,
                 FCST_TDYCSX:
                   element.FCST_TDYCSX === undefined ||
-                  element.FCST_TDYCSX === null
+                    element.FCST_TDYCSX === null
                     ? 0
                     : element.FCST_TDYCSX,
                 W1:
@@ -2096,7 +2112,7 @@ const MACHINE = () => {
                     : element.W8,
                 PROD_REQUEST_QTY:
                   element.PROD_REQUEST_QTY === undefined ||
-                  element.PROD_REQUEST_QTY === null
+                    element.PROD_REQUEST_QTY === null
                     ? 0
                     : element.PROD_REQUEST_QTY,
               };
@@ -2328,8 +2344,8 @@ const MACHINE = () => {
                     Swal.fire(
                       "Thông báo",
                       "Chỉ thị + " +
-                        qlsxplandatafilter[i].PLAN_ID +
-                        ":  +đã chốt báo cáo, ko xóa được chỉ thị",
+                      qlsxplandatafilter[i].PLAN_ID +
+                      ":  +đã chốt báo cáo, ko xóa được chỉ thị",
                       "error"
                     );
                   }
@@ -2394,7 +2410,7 @@ const MACHINE = () => {
               next_plan_id =
                 old_plan_id.substring(0, 3) +
                 PLAN_ID_ARRAY[
-                  PLAN_ID_ARRAY.indexOf(old_plan_id.substring(3, 4)) + 1
+                PLAN_ID_ARRAY.indexOf(old_plan_id.substring(3, 4)) + 1
                 ] +
                 old_plan_id.substring(4, 7) +
                 "A";
@@ -2403,7 +2419,7 @@ const MACHINE = () => {
             next_plan_id =
               old_plan_id.substring(0, 7) +
               PLAN_ID_ARRAY[
-                PLAN_ID_ARRAY.indexOf(old_plan_id.substring(7, 8)) + 1
+              PLAN_ID_ARRAY.indexOf(old_plan_id.substring(7, 8)) + 1
               ];
           }
           /*  next_plan_id =
@@ -2482,8 +2498,8 @@ const MACHINE = () => {
               selectedMachine.substring(0, 2) === ycsxdatatablefilter[i].EQ1
                 ? 1
                 : selectedMachine.substring(0, 2) === ycsxdatatablefilter[i].EQ2
-                ? 2
-                : 0,
+                  ? 2
+                  : 0,
             G_CODE: ycsxdatatablefilter[i].G_CODE,
             NEXT_PLAN_ID: "X",
           })
@@ -2560,7 +2576,7 @@ const MACHINE = () => {
         parseInt(selectedPlanTable[i].PROCESS_NUMBER.toString()) <= 4 &&
         selectedPlanTable[i].PLAN_QTY !== 0 &&
         selectedPlanTable[i].PLAN_QTY <=
-          selectedPlanTable[i].PROD_REQUEST_QTY &&
+        selectedPlanTable[i].PROD_REQUEST_QTY &&
         selectedPlanTable[i].PLAN_ID !== selectedPlanTable[i].NEXT_PLAN_ID &&
         selectedPlanTable[i].CHOTBC !== "V" &&
         check_NEXT_PLAN_ID &&
@@ -3128,7 +3144,7 @@ const MACHINE = () => {
         {/*  <GridToolbarColumnsButton />
         <GridToolbarFilterButton />
         <GridToolbarDensitySelector />  */}
-        <IconButton className='buttonIcon' onClick={() => {}}>
+        <IconButton className='buttonIcon' onClick={() => { }}>
           <AiFillFileExcel color='green' size={25} />
           SAVE
         </IconButton>

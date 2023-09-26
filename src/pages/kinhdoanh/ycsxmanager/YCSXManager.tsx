@@ -671,6 +671,16 @@ const YCSXManager = () => {
     },
   ];
   const column_ycsxtable_pvn = [
+    {
+      field: "G_NAME_KD",
+      headerName: "G_NAME_KD",
+      width: 100,
+      renderCell: (params: any) => {
+        if (params.row.PDBV === "P" || params.row.PDBV === null)
+          return <span style={{ color: "red" }}>{params.row.G_NAME_KD}</span>;
+        return <span style={{ color: "green" }}>{params.row.G_NAME_KD}</span>;
+      },
+    },
     { field: "G_CODE", headerName: "G_CODE", width: 80 },
     {
       field: "G_NAME",
@@ -684,7 +694,23 @@ const YCSXManager = () => {
     },
     { field: "EMPL_NAME", headerName: "PIC KD", width: 150 },
     { field: "CUST_NAME_KD", headerName: "KHÁCH", width: 120 },
-    { field: "PROD_REQUEST_NO", headerName: "SỐ YCSX", width: 80 },
+    {
+      field: "PROD_REQUEST_NO", headerName: "SỐ YCSX", width: 80, renderCell: (params: any) => {
+        if (params.row.DACHITHI === null) {
+          return (
+            <span style={{ color: "black" }}>
+              {params.row.PROD_REQUEST_NO.toLocaleString("en-US")}
+            </span>
+          );
+        } else {
+          return (
+            <span style={{ color: "green" }}>
+              <b>{params.row.PROD_REQUEST_NO.toLocaleString("en-US")}</b>
+            </span>
+          );
+        }
+      },
+    },
     { field: "PROD_REQUEST_DATE", headerName: "NGÀY YCSX", width: 80 },
     {
       field: "PROD_REQUEST_QTY",
@@ -3415,8 +3441,8 @@ const YCSXManager = () => {
                       className='pono_autocomplete'
                       getOptionLabel={(option: PONOLIST | any) => {
                         return `${moment.utc(option.PO_DATE).isValid()
-                            ? moment.utc(option.PO_DATE).format("YYYY-MM-DD")
-                            : ""
+                          ? moment.utc(option.PO_DATE).format("YYYY-MM-DD")
+                          : ""
                           }| ${option.PO_NO}`;
                       }}
                       renderInput={(params) => (

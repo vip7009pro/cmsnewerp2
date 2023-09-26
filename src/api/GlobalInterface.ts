@@ -732,7 +732,7 @@ export interface DIEMDANHFULLSUMMARY {
   CHE_DO: number;
   KHONG_LY_DO: number;
 }
-export interface DiemDanhNhomData {
+export interface DiemDanhNhomDataSummary {
   id: string;
   MAINDEPTNAME: string;
   SUBDEPTNAME: string;

@@ -76,14 +76,14 @@ const ChartDiemDanhMAINDEPT = () => {
     index?: any;
   }) => {
     const RADIAN = Math.PI / 180;
-    const radius = 105 + innerRadius + (outerRadius - innerRadius);
+    const radius = 50 + innerRadius + (outerRadius - innerRadius);
     const x = cx + radius * Math.cos(-midAngle * RADIAN);
     const y = cy + radius * Math.sin(-midAngle * RADIAN);
     return (
       <text
         x={x}
         y={y}
-        fill='#8884d8'
+        fill='black'
         textAnchor={x > cx ? "start" : "end"}
         dominantBaseline='central'
         style={{ color: "white" }}
@@ -95,7 +95,10 @@ const ChartDiemDanhMAINDEPT = () => {
   };
 
   const handleGetCustomerRevenue = () => {
-    generalQuery("getddmaindepttb", {})
+    generalQuery("getddmaindepttb", {
+      FROM_DATE: moment.utc().format('YYYY-MM-DD'),
+      TO_DATE: moment.utc().format('YYYY-MM-DD'),
+    })
       .then((response) => {
         //console.log(response.data.data);
         if (response.data.tk_status !== "NG") {
@@ -157,9 +160,10 @@ const ChartDiemDanhMAINDEPT = () => {
           data={diemdanhMainDeptData}
           cx='50%'
           cy='50%'
-          outerRadius={80}
+          outerRadius={150}
           fill='#8884d8'
           label={CustomLabel}
+          labelLine={true}
         >
           {diemdanhMainDeptData.map((entry, index) => (
             <Cell
