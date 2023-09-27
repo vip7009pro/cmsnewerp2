@@ -1,4 +1,4 @@
-import { IconButton, LinearProgress } from "@mui/material";
+import { Button, IconButton, LinearProgress } from "@mui/material";
 import {
   DataGrid,
   GridCallbackDetails,
@@ -18,7 +18,6 @@ import { UserContext } from "../../../api/Context";
 import { SaveExcel, checkBP } from "../../../api/GlobalFunction";
 import { RootState } from "../../../redux/store";
 import { useSelector, useDispatch } from "react-redux";
-
 import "./KHOLIEU.scss";
 import {
   NHAPLIEUDATA,
@@ -26,7 +25,6 @@ import {
   UserData,
   XUATLIEUDATA,
 } from "../../../api/GlobalInterface";
-
 const KHOLIEU = () => {
   const userData: UserData | undefined = useSelector(
     (state: RootState) => state.totalSlice.userData,
@@ -245,6 +243,26 @@ const KHOLIEU = () => {
           SAVE
         </IconButton>
         <GridToolbarQuickFilter />
+        LOT NCC:
+        <input
+          type="text"
+          value={lotncc}
+          onChange={(e) => setLOTNCC(e.target.value)}
+        ></input>
+        <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#2639F6' }} onClick={() => {
+          if (userData?.SUBDEPTNAME === "IQC") {
+            //checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['QC','KHO'], updatelotNCC);
+            checkBP(
+              userData,
+              ["QC", "KHO"],
+              ["ALL"],
+              ["ALL"],
+              updatelotNCC,
+            );
+          } else {
+            Swal.fire("Thông báo", "Bạn không phải người IQC", "error");
+          }
+        }}>UPD LOT NCC</Button>
         <span
           style={{
             fontWeight: "bold",
@@ -296,7 +314,6 @@ const KHOLIEU = () => {
     setSummaryWH("");
     setisLoading(true);
     let roll_no_array = rollNo.trim().split("-");
-
     generalQuery("tranhaplieu", {
       M_NAME: m_name,
       FROM_DATE: fromdate,
@@ -318,8 +335,8 @@ const KHOLIEU = () => {
                 QC_PASS_DATE:
                   element.QC_PASS_DATE !== null
                     ? moment
-                        .utc(element.QC_PASS_DATE)
-                        .format("YYYY-MM-DD HH:mm:ss")
+                      .utc(element.QC_PASS_DATE)
+                      .format("YYYY-MM-DD HH:mm:ss")
                     : "",
               };
             },
@@ -455,7 +472,6 @@ const KHOLIEU = () => {
       }
     }
   };
-
   const handleInputLieuDataSelectionforUpdate = (ids: GridSelectionModel) => {
     const selectedID = new Set(ids);
     let datafilter = whdatatable.filter((element: any) =>
@@ -469,175 +485,133 @@ const KHOLIEU = () => {
       //console.log("xoa filter");
     }
   };
-
-  useEffect(() => {}, []);
+  useEffect(() => { }, []);
   return (
     <div className="kholieu">
-      <div className="tracuuDataWH">
-        <div className="tracuuDataWHform">
-          <div className="forminput">
-            <div className="forminputcolumn">
-              <label>
-                <b>Từ ngày:</b>
-                <input
-                  type="date"
-                  value={fromdate.slice(0, 10)}
-                  onChange={(e) => setFromDate(e.target.value)}
-                ></input>
-              </label>
-              <label>
-                <b>Tới ngày:</b>{" "}
-                <input
-                  type="date"
-                  value={todate.slice(0, 10)}
-                  onChange={(e) => setToDate(e.target.value)}
-                ></input>
-              </label>
-            </div>
-            <div className="forminputcolumn">
-              <label>
-                <b>Tên Liệu:</b>{" "}
-                <input
-                  type="text"
-                  placeholder="SJ-203020HC"
-                  value={m_name}
-                  onChange={(e) => setM_Name(e.target.value)}
-                ></input>
-              </label>
-              <label>
-                <b>Mã Liệu CMS:</b>{" "}
-                <input
-                  type="text"
-                  placeholder="A123456"
-                  value={m_code}
-                  onChange={(e) => setM_Code(e.target.value)}
-                ></input>
-              </label>
-            </div>
-            <div className="forminputcolumn">
-              <label>
-                <b>Code KD:</b>{" "}
-                <input
-                  type="text"
-                  placeholder="GH63-14904A"
-                  value={codeKD}
-                  onChange={(e) => setCodeKD(e.target.value)}
-                ></input>
-              </label>
-              <label>
-                <b>YCSX:</b>{" "}
-                <input
-                  type="text"
-                  placeholder="1F80008"
-                  value={prod_request_no}
-                  onChange={(e) => setProd_Request_No(e.target.value)}
-                ></input>
-              </label>
-            </div>
-            <div className="forminputcolumn">
-              <label>
-                <b>PLAN_ID:</b>{" "}
-                <input
-                  type="text"
-                  placeholder="1F80008A"
-                  value={plan_id}
-                  onChange={(e) => setPlanID(e.target.value)}
-                ></input>
-              </label>
-              <label>
-                <b>STT Cuộn:</b>{" "}
-                <input
-                  type="text"
-                  placeholder="1-120"
-                  value={rollNo}
-                  onChange={(e) => setRollNo(e.target.value)}
-                ></input>
-              </label>
-            </div>
-            <div className="forminputcolumn">
-              <label>
-                <b>All Time:</b>
-                <input
-                  type="checkbox"
-                  name="alltimecheckbox"
-                  defaultChecked={alltime}
-                  onChange={() => setAllTime(!alltime)}
-                ></input>
-              </label>
-              <label>
-                <b>Chỉ code có tồn:</b>
-                <input
-                  type="checkbox"
-                  name="alltimecheckbox"
-                  defaultChecked={justbalancecode}
-                  onChange={() => setJustBalanceCode(!justbalancecode)}
-                ></input>
-              </label>
-            </div>
+      <div className="tracuuDataWHform">
+        <div className="forminput">
+          <div className="forminputcolumn">
+            <label>
+              <b>Từ ngày:</b>
+              <input
+                type="date"
+                value={fromdate.slice(0, 10)}
+                onChange={(e) => setFromDate(e.target.value)}
+              ></input>
+            </label>
+            <label>
+              <b>Tới ngày:</b>{" "}
+              <input
+                type="date"
+                value={todate.slice(0, 10)}
+                onChange={(e) => setToDate(e.target.value)}
+              ></input>
+            </label>
           </div>
-          <div className="formbutton">
-            <button
-              className="tranhapkiembutton"
-              onClick={() => {
-                setisLoading(true);
-                setReadyRender(false);
-                setColumnDefinition(column_NHAPLIEUDATA);
-                handletra_inputlieu();
-              }}
-            >
-              Nhập Liệu
-            </button>
-            <button
-              className="tranhapkiembutton"
-              onClick={() => {
-                setisLoading(true);
-                setReadyRender(false);
-                setColumnDefinition(column_XUATLIEUDATA);
-                handletra_outputlieu();
-              }}
-            >
-              Xuất Liệu
-            </button>
-            <button
-              className="traxuatkiembutton"
-              onClick={() => {
-                setisLoading(true);
-                setReadyRender(false);
-                setColumnDefinition(column_STOCK_LIEU);
-                handletraWHSTOCKLIEU();
-              }}
-            >
-              Tồn Liệu
-            </button>
-            <button
-              className="tranhatky"
-              onClick={() => {
-                if (userData?.SUBDEPTNAME === "IQC") {
-                  //checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['QC','KHO'], updatelotNCC);
-                  checkBP(
-                    userData,
-                    ["QC", "KHO"],
-                    ["ALL"],
-                    ["ALL"],
-                    updatelotNCC,
-                  );
-                } else {
-                  Swal.fire("Thông báo", "Bạn không phải người IQC", "error");
-                }
-                //updatelotNCC();
-              }}
-            >
-              UPD LOT NCC
-            </button>
-            LOT NCC:
-            <input
-              type="text"
-              value={lotncc}
-              onChange={(e) => setLOTNCC(e.target.value)}
-            ></input>
+          <div className="forminputcolumn">
+            <label>
+              <b>Tên Liệu:</b>{" "}
+              <input
+                type="text"
+                placeholder="SJ-203020HC"
+                value={m_name}
+                onChange={(e) => setM_Name(e.target.value)}
+              ></input>
+            </label>
+            <label>
+              <b>Mã Liệu CMS:</b>{" "}
+              <input
+                type="text"
+                placeholder="A123456"
+                value={m_code}
+                onChange={(e) => setM_Code(e.target.value)}
+              ></input>
+            </label>
+          </div>
+          <div className="forminputcolumn">
+            <label>
+              <b>Code KD:</b>{" "}
+              <input
+                type="text"
+                placeholder="GH63-14904A"
+                value={codeKD}
+                onChange={(e) => setCodeKD(e.target.value)}
+              ></input>
+            </label>
+            <label>
+              <b>YCSX:</b>{" "}
+              <input
+                type="text"
+                placeholder="1F80008"
+                value={prod_request_no}
+                onChange={(e) => setProd_Request_No(e.target.value)}
+              ></input>
+            </label>
+          </div>
+          <div className="forminputcolumn">
+            <label>
+              <b>PLAN_ID:</b>{" "}
+              <input
+                type="text"
+                placeholder="1F80008A"
+                value={plan_id}
+                onChange={(e) => setPlanID(e.target.value)}
+              ></input>
+            </label>
+            <label>
+              <b>STT Cuộn:</b>{" "}
+              <input
+                type="text"
+                placeholder="1-120"
+                value={rollNo}
+                onChange={(e) => setRollNo(e.target.value)}
+              ></input>
+            </label>
+          </div>
+          <div className="forminputcolumn">
+            <label>
+              <b>All Time:</b>
+              <input
+                type="checkbox"
+                name="alltimecheckbox"
+                defaultChecked={alltime}
+                onChange={() => setAllTime(!alltime)}
+              ></input>
+            </label>
+            <label>
+              <b>Chỉ code có tồn:</b>
+              <input
+                type="checkbox"
+                name="alltimecheckbox"
+                defaultChecked={justbalancecode}
+                onChange={() => setJustBalanceCode(!justbalancecode)}
+              ></input>
+            </label>
           </div>
         </div>
-        <div className="tracuuWHTable">{readyRender && bangdata}</div>
+        <div className="formbutton">
+          <Button color={'primary'} variant="contained" size="small" fullWidth={true} sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: 'red' }} onClick={() => {
+            setisLoading(true);
+            setReadyRender(false);
+            setColumnDefinition(column_NHAPLIEUDATA);
+            handletra_inputlieu();
+          }}>Nhập Liệu</Button>
+          <Button color={'primary'} variant="contained" size="small" fullWidth={true} sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#36D334' }} onClick={() => {
+            setisLoading(true);
+            setReadyRender(false);
+            setColumnDefinition(column_XUATLIEUDATA);
+            handletra_outputlieu();
+          }}>Xuất Liệu</Button>
+          <Button color={'primary'} variant="contained" size="small" fullWidth={true} sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: 'yellow', color: 'black' }} onClick={() => {
+            setisLoading(true);
+            setReadyRender(false);
+            setColumnDefinition(column_STOCK_LIEU);
+            handletraWHSTOCKLIEU();
+          }}>Tồn Liệu</Button>
+        </div>
+      </div>
+      <div className="tracuuWHTable">
+        {readyRender && bangdata}
       </div>
     </div>
   );

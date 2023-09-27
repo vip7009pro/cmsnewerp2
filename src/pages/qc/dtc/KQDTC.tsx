@@ -1,4 +1,5 @@
 import {
+  Button,
   Autocomplete,
   IconButton,
   LinearProgress,
@@ -22,8 +23,8 @@ import Swal from "sweetalert2";
 import { generalQuery } from "../../../api/Api";
 import { UserContext } from "../../../api/Context";
 import { SaveExcel } from "../../../api/GlobalFunction";
-import "./KQDTC.scss";
 import { DTC_DATA } from "../../../api/GlobalInterface";
+import "./KQDTC.scss";
 
 const KQDTC = () => {
   const [readyRender, setReadyRender] = useState(false);
@@ -268,205 +269,198 @@ const KQDTC = () => {
   }, []);
   return (
     <div className='kqdtc'>
-      <div className='tracuuDataInspection'>
-        <div className='tracuuDataInspectionform'>
-          <div className='forminput'>
-            <div className='forminputcolumn'>
-              <label>
-                <b>Từ ngày:</b>
-                <input
-                  onKeyDown={(e) => {
-                    handleSearchCodeKeyDown(e);
-                  }}
-                  type='date'
-                  value={fromdate.slice(0, 10)}
-                  onChange={(e) => setFromDate(e.target.value)}
-                ></input>
-              </label>
-              <label>
-                <b>Tới ngày:</b>{" "}
-                <input
-                  onKeyDown={(e) => {
-                    handleSearchCodeKeyDown(e);
-                  }}
-                  type='date'
-                  value={todate.slice(0, 10)}
-                  onChange={(e) => setToDate(e.target.value)}
-                ></input>
-              </label>
-            </div>
-            <div className='forminputcolumn'>
-              <label>
-                <b>Code KD:</b>{" "}
-                <input
-                  onKeyDown={(e) => {
-                    handleSearchCodeKeyDown(e);
-                  }}
-                  type='text'
-                  placeholder='GH63-xxxxxx'
-                  value={codeKD}
-                  onChange={(e) => setCodeKD(e.target.value)}
-                ></input>
-              </label>
-              <label>
-                <b>Code ERP:</b>{" "}
-                <input
-                  onKeyDown={(e) => {
-                    handleSearchCodeKeyDown(e);
-                  }}
-                  type='text'
-                  placeholder='7C123xxx'
-                  value={codeCMS}
-                  onChange={(e) => setCodeCMS(e.target.value)}
-                ></input>
-              </label>
-            </div>
-            <div className='forminputcolumn'>
-              <label>
-                <b>Tên Liệu:</b>{" "}
-                <input
-                  onKeyDown={(e) => {
-                    handleSearchCodeKeyDown(e);
-                  }}
-                  type='text'
-                  placeholder='SJ-203020HC'
-                  value={m_name}
-                  onChange={(e) => setM_Name(e.target.value)}
-                ></input>
-              </label>
-              <label>
-                <b>Mã Liệu CMS:</b>{" "}
-                <input
-                  onKeyDown={(e) => {
-                    handleSearchCodeKeyDown(e);
-                  }}
-                  type='text'
-                  placeholder='A123456'
-                  value={m_code}
-                  onChange={(e) => setM_Code(e.target.value)}
-                ></input>
-              </label>
-            </div>
-            <div className='forminputcolumn'>
-              <label>
-                <b>Hạng mục test</b>
-                <select
-                  name='hangmuctest'
-                  value={testname}
-                  onChange={(e) => {
-                    setTestName(e.target.value);
-                  }}
-                >
-                  <option value='0'>ALL</option>
-                  <option value='1'>Kích thước</option>
-                  <option value='2'>Kéo keo</option>
-                  <option value='3'>XRF</option>
-                  <option value='4'>Điện trở</option>
-                  <option value='5'>Tĩnh điện</option>
-                  <option value='6'>Độ bóng</option>
-                  <option value='7'>Phtalate</option>
-                  <option value='8'>FTIR</option>
-                  <option value='9'>Mài mòn</option>
-                  <option value='10'>Màu sắc</option>
-                  <option value='11'>TVOC</option>
-                  <option value='12'>Cân nặng</option>
-                  <option value='13'>Scanbarcode</option>
-                  <option value='14'>Nhiệt cao Ẩm cao</option>
-                  <option value='15'>Shock nhiệt</option>
-                  <option value='1002'>Kéo keo 2</option>
-                  <option value='1003'>Ngoại quan</option>
-                  <option value='1005'>Độ dày</option>
-                </select>
-              </label>
-              <label>
-                <b>Số YCSX:</b>{" "}
-                <input
-                  onKeyDown={(e) => {
-                    handleSearchCodeKeyDown(e);
-                  }}
-                  type='text'
-                  placeholder='1H23456'
-                  value={prodrequestno}
-                  onChange={(e) => setProdRequestNo(e.target.value)}
-                ></input>
-              </label>
-            </div>
-            <div className='forminputcolumn'>
-              <label>
-                <b>Phân loại test</b>
-                <select
-                  name='phanloaihang'
-                  value={testtype}
-                  onChange={(e) => {
-                    setTestType(e.target.value);
-                  }}
-                >
-                  <option value='0'>ALL</option>
-                  <option value='1'>FIRST_LOT</option>
-                  <option value='2'>ECN</option>
-                  <option value='3'>MASS PRODUCTION</option>
-                  <option value='4'>SAMPLE</option>
-                </select>
-              </label>
-              <label>
-                <b>DTC ID:</b>{" "}
-                <input
-                  onKeyDown={(e) => {
-                    handleSearchCodeKeyDown(e);
-                  }}
-                  type='text'
-                  placeholder='12345'
-                  value={id}
-                  onChange={(e) => setID(e.target.value)}
-                ></input>
-              </label>
-            </div>
-          </div>
-          <div className='formbutton'>
+      <div className='tracuuDataInspectionform'>
+        <div className='forminput'>
+          <div className='forminputcolumn'>
             <label>
-              <b>All Time:</b>
+              <b>Từ ngày:</b>
               <input
                 onKeyDown={(e) => {
                   handleSearchCodeKeyDown(e);
                 }}
-                type='checkbox'
-                name='alltimecheckbox'
-                defaultChecked={alltime}
-                onChange={() => setAllTime(!alltime)}
+                type='date'
+                value={fromdate.slice(0, 10)}
+                onChange={(e) => setFromDate(e.target.value)}
               ></input>
             </label>
-            <button
-              className='tranhatky'
-              onClick={() => {
-                setisLoading(true);
-                setReadyRender(false);
-                setColumnDefinition(column_dtc_data);
-                handletraDTCData();
-              }}
-            >
-              Data DTC
-            </button>
+            <label>
+              <b>Tới ngày:</b>{" "}
+              <input
+                onKeyDown={(e) => {
+                  handleSearchCodeKeyDown(e);
+                }}
+                type='date'
+                value={todate.slice(0, 10)}
+                onChange={(e) => setToDate(e.target.value)}
+              ></input>
+            </label>
+          </div>
+          <div className='forminputcolumn'>
+            <label>
+              <b>Code KD:</b>{" "}
+              <input
+                onKeyDown={(e) => {
+                  handleSearchCodeKeyDown(e);
+                }}
+                type='text'
+                placeholder='GH63-xxxxxx'
+                value={codeKD}
+                onChange={(e) => setCodeKD(e.target.value)}
+              ></input>
+            </label>
+            <label>
+              <b>Code ERP:</b>{" "}
+              <input
+                onKeyDown={(e) => {
+                  handleSearchCodeKeyDown(e);
+                }}
+                type='text'
+                placeholder='7C123xxx'
+                value={codeCMS}
+                onChange={(e) => setCodeCMS(e.target.value)}
+              ></input>
+            </label>
+          </div>
+          <div className='forminputcolumn'>
+            <label>
+              <b>Tên Liệu:</b>{" "}
+              <input
+                onKeyDown={(e) => {
+                  handleSearchCodeKeyDown(e);
+                }}
+                type='text'
+                placeholder='SJ-203020HC'
+                value={m_name}
+                onChange={(e) => setM_Name(e.target.value)}
+              ></input>
+            </label>
+            <label>
+              <b>Mã Liệu CMS:</b>{" "}
+              <input
+                onKeyDown={(e) => {
+                  handleSearchCodeKeyDown(e);
+                }}
+                type='text'
+                placeholder='A123456'
+                value={m_code}
+                onChange={(e) => setM_Code(e.target.value)}
+              ></input>
+            </label>
+          </div>
+          <div className='forminputcolumn'>
+            <label>
+              <b>Hạng mục test</b>
+              <select
+                name='hangmuctest'
+                value={testname}
+                onChange={(e) => {
+                  setTestName(e.target.value);
+                }}
+              >
+                <option value='0'>ALL</option>
+                <option value='1'>Kích thước</option>
+                <option value='2'>Kéo keo</option>
+                <option value='3'>XRF</option>
+                <option value='4'>Điện trở</option>
+                <option value='5'>Tĩnh điện</option>
+                <option value='6'>Độ bóng</option>
+                <option value='7'>Phtalate</option>
+                <option value='8'>FTIR</option>
+                <option value='9'>Mài mòn</option>
+                <option value='10'>Màu sắc</option>
+                <option value='11'>TVOC</option>
+                <option value='12'>Cân nặng</option>
+                <option value='13'>Scanbarcode</option>
+                <option value='14'>Nhiệt cao Ẩm cao</option>
+                <option value='15'>Shock nhiệt</option>
+                <option value='1002'>Kéo keo 2</option>
+                <option value='1003'>Ngoại quan</option>
+                <option value='1005'>Độ dày</option>
+              </select>
+            </label>
+            <label>
+              <b>Số YCSX:</b>{" "}
+              <input
+                onKeyDown={(e) => {
+                  handleSearchCodeKeyDown(e);
+                }}
+                type='text'
+                placeholder='1H23456'
+                value={prodrequestno}
+                onChange={(e) => setProdRequestNo(e.target.value)}
+              ></input>
+            </label>
+          </div>
+          <div className='forminputcolumn'>
+            <label>
+              <b>Phân loại test</b>
+              <select
+                name='phanloaihang'
+                value={testtype}
+                onChange={(e) => {
+                  setTestType(e.target.value);
+                }}
+              >
+                <option value='0'>ALL</option>
+                <option value='1'>FIRST_LOT</option>
+                <option value='2'>ECN</option>
+                <option value='3'>MASS PRODUCTION</option>
+                <option value='4'>SAMPLE</option>
+              </select>
+            </label>
+            <label>
+              <b>DTC ID:</b>{" "}
+              <input
+                onKeyDown={(e) => {
+                  handleSearchCodeKeyDown(e);
+                }}
+                type='text'
+                placeholder='12345'
+                value={id}
+                onChange={(e) => setID(e.target.value)}
+              ></input>
+            </label>
           </div>
         </div>
-        <div className='tracuuYCSXTable'>
-          {readyRender && (
-            <DataGrid
-              sx={{ fontSize: "0.7rem", flex: 1 }}
-              components={{
-                Toolbar: CustomToolbarPOTable,
-                LoadingOverlay: LinearProgress,
+        <div className='formbutton'>
+          <label>
+            <b>All Time:</b>
+            <input
+              onKeyDown={(e) => {
+                handleSearchCodeKeyDown(e);
               }}
-              loading={isLoading}
-              rowHeight={30}
-              rows={inspectiondatatable}
-              columns={column_dtc_data}
-              rowsPerPageOptions={[
-                5, 10, 50, 100, 500, 1000, 5000, 10000, 500000,
-              ]}
-              editMode='row'
-            />
-          )}
+              type='checkbox'
+              name='alltimecheckbox'
+              defaultChecked={alltime}
+              onChange={() => setAllTime(!alltime)}
+            ></input>
+          </label>
+          <Button color={'primary'} variant="contained" size="small" fullWidth={true} sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#36D334', color: 'white' }} onClick={() => {
+            setisLoading(true);
+            setReadyRender(false);
+            setColumnDefinition(column_dtc_data);
+            handletraDTCData();
+          }}>DATA ĐTC</Button>
         </div>
+      </div>
+      <div className='tracuuYCSXTable'>
+        {readyRender && (
+          <DataGrid
+            sx={{ fontSize: "0.7rem", flex: 1 }}
+            components={{
+              Toolbar: CustomToolbarPOTable,
+              LoadingOverlay: LinearProgress,
+            }}
+            loading={isLoading}
+            rowHeight={30}
+            rows={inspectiondatatable}
+            columns={column_dtc_data}
+            rowsPerPageOptions={[
+              5, 10, 50, 100, 500, 1000, 5000, 10000, 500000,
+            ]}
+            editMode='row'
+          />
+        )}
       </div>
     </div>
   );

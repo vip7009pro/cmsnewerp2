@@ -604,6 +604,7 @@ export interface BANGCHAMCONG_DATA2 {
   FACTORY_NAME: string;
   JOB_NAME: string;
   WORK_SHIF_NAME: string;
+  CALV: number;
   WORK_POSITION_NAME: string;
   SUBDEPTNAME: string;
   MAINDEPTNAME: string;

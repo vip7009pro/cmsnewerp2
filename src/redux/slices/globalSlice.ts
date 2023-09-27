@@ -322,6 +322,8 @@ export const glbSlice = createSlice({
           }
         }
         /* state.tabIndex = state.tabIndex-1>0? state.tabIndex-1: 0;  */
+      } else {
+        state.tabs = [];
       }
     },
     settabIndex: (state, action: PayloadAction<number>) => {

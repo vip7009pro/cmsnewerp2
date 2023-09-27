@@ -41,11 +41,11 @@ import {
   IN_OUT_DATA22,
   UserData,
 } from "../../../api/GlobalInterface";
-
 const BANGCHAMCONG = () => {
   const userData: UserData | undefined = useSelector(
     (state: RootState) => state.totalSlice.userData
   );
+
   const [cainfo, setCaInfo] = useState<CA_INFO[]>([]);
   const [bangchamcong, setBangChamCong] = useState<BANGCHAMCONG_DATA[]>([]);
   const [bangchamcong2, setBangChamCong2] = useState<BANGCHAMCONG_DATA2[]>([]);
@@ -53,7 +53,8 @@ const BANGCHAMCONG = () => {
   const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
   const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));
   const [alltime, setAllTime] = useState(false);
-
+  const [trunghiviec, setTruNghiViec] = useState(true);
+  const [trunghisinh, setTruNghiSinh] = useState(true);
   const fields_chamcong: any = [
     {
       caption: "DATE_COLUMN",
@@ -746,7 +747,6 @@ const BANGCHAMCONG = () => {
       },
     },
   ];
-
   const [selectedDataSource, setSelectedDataSource] =
     useState<PivotGridDataSource>(
       new PivotGridDataSource({
@@ -754,7 +754,6 @@ const BANGCHAMCONG = () => {
         store: bangchamcong,
       })
     );
-
   const chamcongTBMM = React.useMemo(
     () => (
       <div className='datatb'>
@@ -794,7 +793,7 @@ const BANGCHAMCONG = () => {
             allowDeleting={false}
             mode='cell'
             confirmDelete={false}
-            onChangesChange={(e) => {}}
+            onChangesChange={(e) => { }}
           />
           <Export enabled={true} />
           <Toolbar disabled={false}>
@@ -871,6 +870,11 @@ const BANGCHAMCONG = () => {
           <Column
             dataField='WORK_SHIF_NAME'
             caption='WORK_SHIF_NAME'
+            width={100}
+          ></Column>
+          <Column
+            dataField='CALV'
+            caption='CALV'
             width={100}
           ></Column>
           {/* <Column dataField='WORK_POSITION_NAME' caption='WORK_POSITION_NAME' width={100}></Column>
@@ -968,7 +972,6 @@ const BANGCHAMCONG = () => {
             caption='NEXT_CHECK3'
             width={100}
           ></Column>
-
           <Summary>
             <TotalItem
               alignment='right'
@@ -1023,7 +1026,6 @@ const BANGCHAMCONG = () => {
                   element.CHECK_DATE2 !== null
                     ? moment.utc(element.CHECK_DATE2).format("DD/MM/YYYY")
                     : "",
-
                 CHECK10:
                   element.CHECK10 !== null
                     ? moment.utc(element.CHECK10).format("HH:mm:ss")
@@ -1048,7 +1050,6 @@ const BANGCHAMCONG = () => {
                   element.CHECK60 !== null
                     ? moment.utc(element.CHECK60).format("HH:mm:ss")
                     : "",
-
                 CHECK1:
                   element.CHECK1 !== null
                     ? moment.utc(element.CHECK1).format("HH:mm:ss")
@@ -1073,7 +1074,6 @@ const BANGCHAMCONG = () => {
                   element.CHECK6 !== null
                     ? moment.utc(element.CHECK6).format("HH:mm:ss")
                     : "",
-
                 CHECK12:
                   element.CHECK12 !== null
                     ? moment.utc(element.CHECK12).format("HH:mm:ss")
@@ -1098,7 +1098,6 @@ const BANGCHAMCONG = () => {
                   element.CHECK62 !== null
                     ? moment.utc(element.CHECK62).format("HH:mm:ss")
                     : "",
-
                 IN_START:
                   element.IN_START !== null
                     ? moment.utc(element.IN_START).format("HH:mm")
@@ -1115,7 +1114,6 @@ const BANGCHAMCONG = () => {
                   element.OUT_END !== null
                     ? moment.utc(element.OUT_END).format("HH:mm")
                     : "",
-
                 /*  IN_TIME: tinhInOutTime2({
                         SHIFT_NAME:element.WORK_SHIF_NAME,
                         IN_START: element.IN_START !== null? moment.utc(element.IN_START).format("HH:mm"): '',
@@ -1384,9 +1382,10 @@ const BANGCHAMCONG = () => {
       showConfirmButton: false,
     });
     generalQuery("loadC0012", {
-      ALLTIME: alltime,
       FROM_DATE: fromdate,
       TO_DATE: todate,
+      TRUNGHIVIEC: trunghiviec,
+      TRUNGHISINH: trunghisinh
     })
       .then((response) => {
         //console.log(response.data.data);
@@ -1398,6 +1397,7 @@ const BANGCHAMCONG = () => {
                 WEEKDAY: weekdayarray[new Date(element.DATE_COLUMN).getDay()],
                 FULL_NAME: element.MIDLAST_NAME + " " + element.FIRST_NAME,
                 DATE_COLUMN: element.DATE_COLUMN.substring(0, 10),
+                CALV: element.CALV === 0 ? 'Hành Chính' : element.CALV === 1 ? 'Ca Ngày' : element.CALV === 2 ? 'Ca Đêm' : 'Không có ca',
                 APPLY_DATE:
                   element.APPLY_DATE !== null
                     ? moment.utc(element.APPLY_DATE).format("DD/MM/YYYY")
@@ -1541,7 +1541,6 @@ const BANGCHAMCONG = () => {
         Swal.fire("Thông báo", " Có lỗi : " + error, "error");
       });
   };
-
   const tinhInOutTime = (IO_DATA: IN_OUT_DATA) => {
     const in_start: number = moment(IO_DATA.IN_START, "HH:mm").valueOf();
     const in_end: number = moment(IO_DATA.IN_END, "HH:mm").valueOf();
@@ -1569,46 +1568,37 @@ const BANGCHAMCONG = () => {
     const check2_nozero: number[] = check2_array.filter(
       (ele: number, index: number) => ele !== 0
     );
-
     const check1_start_range: number[] = check1_nozero.filter(
       (ele: number, index: number) => ele >= in_start && ele <= in_end
     );
     const check1_end_range: number[] = check1_nozero.filter(
       (ele: number, index: number) => ele >= out_start && ele <= out_end
     );
-
     const check2_start_range: number[] = check2_nozero.filter(
       (ele: number, index: number) => ele >= in_start && ele <= in_end
     );
     const check2_end_range: number[] = check2_nozero.filter(
       (ele: number, index: number) => ele >= out_start && ele <= out_end
     );
-
     const mincheck1: number = Math.min.apply(Math, check1_nozero);
     const maxcheck1: number = Math.max.apply(Math, check1_nozero);
-
     //console.log('check1 start range', moment(check1_start_range).format('HH:mm'));
     //console.log('check2 end range', moment(check2_end_range).format('HH:mm'));
     //ca dem
     const minStartRange: number = Math.min.apply(Math, check1_start_range);
     const maxEndRange: number = Math.max.apply(Math, check2_end_range);
-
     //ca ngay
     const maxStartRange: number = Math.max.apply(Math, check1_end_range);
-
     //min of all check1
     const minAllCheck1: number = Math.min.apply(Math, check1_nozero);
     //max of all check1
     const maxAllCheck1: number = Math.max.apply(Math, check1_nozero);
-
     //max all check2
     const maxAllCheck2: number = Math.max.apply(Math, check2_nozero);
-
     let result = {
       IN_TIME: "",
       OUT_TIME: "",
     };
-
     if (IO_DATA.IN_START !== "") {
       switch (IO_DATA.CA_CODE) {
         case 0:
@@ -1616,46 +1606,42 @@ const BANGCHAMCONG = () => {
             IN_TIME: moment(minStartRange).isValid()
               ? moment(minStartRange).format("HH:mm")
               : check1_nozero.length > 0
-              ? moment(minAllCheck1).format("HH:mm")
-              : "",
+                ? moment(minAllCheck1).format("HH:mm")
+                : "",
             OUT_TIME: moment(maxStartRange).isValid()
               ? moment(maxStartRange).format("HH:mm")
               : check1_nozero.length > 0
-              ? moment(maxAllCheck1).format("HH:mm")
-              : "",
+                ? moment(maxAllCheck1).format("HH:mm")
+                : "",
           };
-
           break;
-
         case 1:
           result = {
             IN_TIME: moment(minStartRange).isValid()
               ? moment(minStartRange).format("HH:mm")
               : check1_nozero.length > 0
-              ? moment(minAllCheck1).format("HH:mm")
-              : "",
+                ? moment(minAllCheck1).format("HH:mm")
+                : "",
             OUT_TIME: moment(maxStartRange).isValid()
               ? moment(maxStartRange).format("HH:mm")
               : check1_nozero.length > 0
-              ? moment(maxAllCheck1).format("HH:mm")
-              : "",
+                ? moment(maxAllCheck1).format("HH:mm")
+                : "",
           };
-
           break;
         case 2:
           result = {
             IN_TIME: moment(minStartRange).isValid()
               ? moment(minStartRange).format("HH:mm")
               : check1_nozero.length > 0
-              ? moment(minAllCheck1).format("HH:mm")
-              : "",
+                ? moment(minAllCheck1).format("HH:mm")
+                : "",
             OUT_TIME: moment(maxEndRange).isValid()
               ? moment(maxEndRange).format("HH:mm")
               : check2_nozero.length > 0
-              ? moment(maxAllCheck2).format("HH:mm")
-              : "",
+                ? moment(maxAllCheck2).format("HH:mm")
+                : "",
           };
-
           break;
       }
     } else {
@@ -1674,15 +1660,12 @@ const BANGCHAMCONG = () => {
       IN_TIME: "",
       OUT_TIME: "",
     };
-
     const tgv: string = "Thiếu giờ vào";
     const tgr: string = "Thiếu giờ ra";
-
     const in_start1: number = moment(
       moment(cainfo[1].IN_START).format("HH:mm"),
       "HH:mm"
     ).valueOf();
-
     const check0_array: number[] = [
       IO_DATA.CHECK10 !== "" ? moment(IO_DATA.CHECK10, "HH:mm").valueOf() : 0,
       IO_DATA.CHECK20 !== "" ? moment(IO_DATA.CHECK20, "HH:mm").valueOf() : 0,
@@ -1707,7 +1690,6 @@ const BANGCHAMCONG = () => {
       IO_DATA.CHECK52 !== "" ? moment(IO_DATA.CHECK52, "HH:mm").valueOf() : 0,
       IO_DATA.CHECK62 !== "" ? moment(IO_DATA.CHECK62, "HH:mm").valueOf() : 0,
     ];
-
     const check0_nozero: number[] = check0_array.filter(
       (ele: number, index: number) => ele !== 0
     );
@@ -1717,16 +1699,12 @@ const BANGCHAMCONG = () => {
     const check2_nozero: number[] = check2_array.filter(
       (ele: number, index: number) => ele !== 0
     );
-
     const mincheck0: number = Math.min.apply(Math, check0_nozero);
     const maxcheck0: number = Math.max.apply(Math, check0_nozero);
-
     const mincheck1: number = Math.min.apply(Math, check1_nozero);
     const maxcheck1: number = Math.max.apply(Math, check1_nozero);
-
     const mincheck2: number = Math.min.apply(Math, check2_nozero);
     const maxcheck2: number = Math.max.apply(Math, check2_nozero);
-
     if (team === "TEAM 1" || team === "TEAM 2" || team === "TEAM 12T") {
       const in_start1: number = moment(
         cainfo[1].IN_START.substring(11, 16),
@@ -1744,7 +1722,6 @@ const BANGCHAMCONG = () => {
         cainfo[1].OUT_END.substring(11, 16),
         "HH:mm"
       ).valueOf();
-
       const in_start2: number = moment(
         cainfo[2].IN_START.substring(11, 16),
         "HH:mm"
@@ -1761,46 +1738,39 @@ const BANGCHAMCONG = () => {
         cainfo[2].OUT_END.substring(11, 16),
         "HH:mm"
       ).valueOf();
-
       let check1check: string = "NA";
       if (mincheck1 >= in_start1 && mincheck1 <= in_end1) {
         check1check = "VAOCA1";
       } else if (mincheck1 >= in_start2 && mincheck1 <= in_end2) {
         check1check = "VAOCA2";
       }
-
       if (mincheck1 >= out_start1 && mincheck1 <= out_end1) {
         check1check = "RACA1";
       } else if (mincheck1 >= out_start2 && mincheck1 <= out_end2) {
         check1check = "RACA2";
       }
-
       let check1maxcheck: string = "NA";
       if (maxcheck1 >= in_start1 && maxcheck1 <= in_end1) {
         check1maxcheck = "VAOCA1";
       } else if (maxcheck1 >= in_start2 && maxcheck1 <= in_end2) {
         check1maxcheck = "VAOCA2";
       }
-
       if (maxcheck1 >= out_start1 && maxcheck1 <= out_end1) {
         check1maxcheck = "RACA1";
       } else if (maxcheck1 >= out_start2 && maxcheck1 <= out_end2) {
         check1maxcheck = "RACA2";
       }
-
       let check0check: string = "NA";
       if (maxcheck0 >= out_start1 && maxcheck0 <= out_end1) {
         check0check = "RACA1";
       } else if (maxcheck0 >= out_start2 && maxcheck0 <= out_end2) {
         check0check = "RACA2";
       }
-
       if (maxcheck0 >= in_start1 && maxcheck0 <= in_end1) {
         check0check = "VAOCA1";
       } else if (maxcheck0 >= in_start2 && maxcheck0 <= in_end2) {
         check0check = "VAOCA2";
       }
-
       let final_ca: string = "NA";
       if (check1check === "VAOCA1" && check1maxcheck === "RACA1") {
         final_ca = "CA1"; //
@@ -1809,64 +1779,52 @@ const BANGCHAMCONG = () => {
       } else {
         final_ca = "NA";
       }
-
       console.log("check1check", check1check);
       console.log("check0check", check0check);
       console.log("final ca", final_ca);
-
       const in_start: number = final_ca === "CA1" ? in_start1 : in_start2;
       const in_end: number = final_ca === "CA1" ? in_end1 : in_end2;
       const out_start: number = final_ca === "CA1" ? out_start1 : out_start2;
       const out_end: number = final_ca === "CA1" ? out_end1 : out_end2;
-
       const check0_start_range: number[] = check0_nozero.filter(
         (ele: number, index: number) => ele >= in_start && ele <= in_end
       );
       const check0_end_range: number[] = check0_nozero.filter(
         (ele: number, index: number) => ele >= out_start && ele <= out_end
       );
-
       const check1_start_range: number[] = check1_nozero.filter(
         (ele: number, index: number) => ele >= in_start && ele <= in_end
       );
       const check1_end_range: number[] = check1_nozero.filter(
         (ele: number, index: number) => ele >= out_start && ele <= out_end
       );
-
       const check2_start_range: number[] = check2_nozero.filter(
         (ele: number, index: number) => ele >= in_start && ele <= in_end
       );
       const check2_end_range: number[] = check2_nozero.filter(
         (ele: number, index: number) => ele >= out_start && ele <= out_end
       );
-
       //ca dem
       const minStartRange: number = Math.min.apply(Math, check1_start_range);
       const maxEndRange: number = Math.max.apply(Math, check2_end_range);
-
       //ca ngay
       const maxStartRange: number = Math.max.apply(Math, check1_end_range);
-
       //min of all check0
       const minAllCheck0: number = Math.min.apply(Math, check0_nozero);
       //max of all check0
       const maxAllCheck0: number = Math.max.apply(Math, check0_nozero);
-
       //min of all check1
       const minAllCheck1: number = Math.min.apply(Math, check1_nozero);
       //max of all check1
       const maxAllCheck1: number = Math.max.apply(Math, check1_nozero);
-
       //max all check2
       const maxAllCheck2: number = Math.max.apply(Math, check2_nozero);
-
       switch (final_ca) {
         case "CA1":
           var temp1_intime =
             check1_nozero.length > 0 ? moment(mincheck1).format("HH:mm") : tgv;
           let temp1_outtime =
             check1_nozero.length > 0 ? moment(maxcheck1).format("HH:mm") : tgv;
-
           let checkthieu: string = "NA";
           if (mincheck1 >= in_start1 && mincheck1 <= in_end1) {
             checkthieu = tgr;
@@ -1882,7 +1840,6 @@ const BANGCHAMCONG = () => {
               OUT_TIME: temp1_outtime,
             };
           }
-
           /*  result= {
                         IN_TIME: moment(minStartRange).isValid()?  moment(minStartRange).format('HH:mm'): check1_nozero.length>0? moment(minAllCheck1).format('HH:mm'): tgv,
                         OUT_TIME: moment(maxStartRange).isValid()?  moment(maxStartRange).format('HH:mm'):check1_nozero.length>0? moment(maxAllCheck1).format('HH:mm'): tgr,
@@ -1893,13 +1850,13 @@ const BANGCHAMCONG = () => {
             IN_TIME: moment(minStartRange).isValid()
               ? moment(minStartRange).format("HH:mm")
               : check1_nozero.length > 0
-              ? moment(minAllCheck1).format("HH:mm")
-              : tgv,
+                ? moment(minAllCheck1).format("HH:mm")
+                : tgv,
             OUT_TIME: moment(maxEndRange).isValid()
               ? moment(maxEndRange).format("HH:mm")
               : check2_nozero.length > 0
-              ? moment(maxAllCheck2).format("HH:mm")
-              : tgr,
+                ? moment(maxAllCheck2).format("HH:mm")
+                : tgr,
           };
           break;
         default:
@@ -1934,7 +1891,6 @@ const BANGCHAMCONG = () => {
         cainfo[0].OUT_END.substring(11, 16),
         "HH:mm"
       ).valueOf();
-
       let temp_intime =
         check1_nozero.length > 0 ? moment(mincheck1).format("HH:mm") : tgv;
       let temp_outtime =
@@ -1955,7 +1911,6 @@ const BANGCHAMCONG = () => {
         };
       }
     }
-
     return result;
   };
   const tinhInOutTime22 = (IO_DATA: IN_OUT_DATA22) => {
@@ -1965,10 +1920,8 @@ const BANGCHAMCONG = () => {
       IN_TIME: "",
       OUT_TIME: "",
     };
-
     const tgv: string = "Thiếu giờ vào";
     const tgr: string = "Thiếu giờ ra";
-
     const check0_array: number[] = [
       IO_DATA.PREV_CHECK1 !== ""
         ? moment(IO_DATA.PREV_CHECK1, "HH:mm").valueOf()
@@ -1996,7 +1949,6 @@ const BANGCHAMCONG = () => {
         ? moment(IO_DATA.NEXT_CHECK3, "HH:mm").valueOf()
         : 0,
     ];
-
     const check0_nozero: number[] = check0_array.filter(
       (ele: number, index: number) => ele !== 0
     );
@@ -2006,93 +1958,73 @@ const BANGCHAMCONG = () => {
     const check2_nozero: number[] = check2_array.filter(
       (ele: number, index: number) => ele !== 0
     );
-
-    console.log("check0_nozero", check0_nozero);
-    console.log("check1_nozero", check1_nozero);
-    console.log("check2_nozero", check2_nozero);
-
     const mincheck0: number = Math.min.apply(Math, check0_nozero);
     const maxcheck0: number = Math.max.apply(Math, check0_nozero);
-
     const mincheck1: number = Math.min.apply(Math, check1_nozero);
     const maxcheck1: number = Math.max.apply(Math, check1_nozero);
-
     const mincheck2: number = Math.min.apply(Math, check2_nozero);
     const maxcheck2: number = Math.max.apply(Math, check2_nozero);
-
     if (team === "TEAM 1" || team === "TEAM 2" || team === "TEAM 12T") {
       /*  const in_start1: number = moment(cainfo[1].IN_START.substring(11,16),'HH:mm').valueOf();
             const in_end1: number = moment(cainfo[1].IN_END.substring(11,16),'HH:mm').valueOf();
             const out_start1: number = moment(cainfo[1].OUT_START.substring(11,16),'HH:mm').valueOf();
             const out_end1: number = moment(cainfo[1].OUT_END.substring(11,16),'HH:mm').valueOf();
-
             const in_start2: number = moment(cainfo[2].IN_START.substring(11,16),'HH:mm').valueOf();
             const in_end2: number = moment(cainfo[2].IN_END.substring(11,16),'HH:mm').valueOf();
             const out_start2: number = moment(cainfo[2].OUT_START.substring(11,16),'HH:mm').valueOf();
             const out_end2: number = moment(cainfo[2].OUT_END.substring(11,16),'HH:mm').valueOf();  */
-
       const in_start1: number = moment("05:30", "HH:mm").valueOf();
       const in_end1: number = moment("07:59", "HH:mm").valueOf();
       const out_start1: number = moment("20:00", "HH:mm").valueOf();
       const out_end1: number = moment("22:00", "HH:mm").valueOf();
-
       const in_start2: number = moment("17:30", "HH:mm").valueOf();
       const in_end2: number = moment("19:59", "HH:mm").valueOf();
       const out_start2: number = moment("08:00", "HH:mm").valueOf();
       const out_end2: number = moment("10:00", "HH:mm").valueOf();
-
       let check1check: string = "NA";
       if (mincheck1 >= in_start1 && mincheck1 <= in_end1) {
         check1check = "VAOCA1";
       } else if (mincheck1 >= in_start2 && mincheck1 <= in_end2) {
         check1check = "VAOCA2";
       }
-
       if (mincheck1 >= out_start1 && mincheck1 <= out_end1) {
         check1check = "RACA1";
       } else if (mincheck1 >= out_start2 && mincheck1 <= out_end2) {
         check1check = "RACA2";
       }
-
       let check1maxcheck: string = "NA";
       if (maxcheck1 >= in_start1 && maxcheck1 <= in_end1) {
         check1maxcheck = "VAOCA1";
       } else if (maxcheck1 >= in_start2 && maxcheck1 <= in_end2) {
         check1maxcheck = "VAOCA2";
       }
-
       if (maxcheck1 >= out_start1 && maxcheck1 <= out_end1) {
         check1maxcheck = "RACA1";
       } else if (maxcheck1 >= out_start2 && maxcheck1 <= out_end2) {
         check1maxcheck = "RACA2";
       }
-
       let check0check: string = "NA";
       if (mincheck0 >= out_start1 && mincheck0 <= out_end1) {
         check0check = "RACA1";
       } else if (mincheck0 >= out_start2 && mincheck0 <= out_end2) {
         check0check = "RACA2";
       }
-
       if (mincheck0 >= in_start1 && mincheck0 <= in_end1) {
         check0check = "VAOCA1";
       } else if (mincheck0 >= in_start2 && mincheck0 <= in_end2) {
         check0check = "VAOCA2";
       }
-
       let check0maxcheck: string = "NA";
       if (maxcheck0 >= out_start1 && maxcheck0 <= out_end1) {
         check0maxcheck = "RACA1";
       } else if (maxcheck0 >= out_start2 && maxcheck0 <= out_end2) {
         check0maxcheck = "RACA2";
       }
-
       if (maxcheck0 >= in_start1 && maxcheck0 <= in_end1) {
         check0maxcheck = "VAOCA1";
       } else if (maxcheck0 >= in_start2 && maxcheck0 <= in_end2) {
         check0maxcheck = "VAOCA2";
       }
-
       let final_ca: string = "NA";
       if (check0check === "NA") {
         if (check1check === "VAOCA1") {
@@ -2117,66 +2049,54 @@ const BANGCHAMCONG = () => {
           final_ca = "CA1";
         }
       }
-
-      console.log("check1check", check1check);
+      /* console.log("check1check", check1check);
       console.log("check0check", check0check);
-      console.log("check0maxcheck", check0maxcheck);
-      console.log("final ca", final_ca);
-
+      console.log("check0maxcheck", check0maxcheck); */
+      /* console.log("final ca", final_ca); */
       const in_start: number = final_ca === "CA1" ? in_start1 : in_start2;
       const in_end: number = final_ca === "CA1" ? in_end1 : in_end2;
       const out_start: number = final_ca === "CA1" ? out_start1 : out_start2;
       const out_end: number = final_ca === "CA1" ? out_end1 : out_end2;
-
       const check0_start_range: number[] = check0_nozero.filter(
         (ele: number, index: number) => ele >= in_start && ele <= in_end
       );
       const check0_end_range: number[] = check0_nozero.filter(
         (ele: number, index: number) => ele >= out_start && ele <= out_end
       );
-
       const check1_start_range: number[] = check1_nozero.filter(
         (ele: number, index: number) => ele >= in_start && ele <= in_end
       );
       const check1_end_range: number[] = check1_nozero.filter(
         (ele: number, index: number) => ele >= out_start && ele <= out_end
       );
-
       const check2_start_range: number[] = check2_nozero.filter(
         (ele: number, index: number) => ele >= in_start && ele <= in_end
       );
       const check2_end_range: number[] = check2_nozero.filter(
         (ele: number, index: number) => ele >= out_start && ele <= out_end
       );
-
       //ca dem
       const minStartRange: number = Math.min.apply(Math, check1_start_range);
       const maxEndRange: number = Math.max.apply(Math, check2_end_range);
-
       //ca ngay
       const maxStartRange: number = Math.max.apply(Math, check1_end_range);
-
       //min of all check0
       const minAllCheck0: number = Math.min.apply(Math, check0_nozero);
       //max of all check0
       const maxAllCheck0: number = Math.max.apply(Math, check0_nozero);
-
       //min of all check1
       const minAllCheck1: number = Math.min.apply(Math, check1_nozero);
       //max of all check1
       const maxAllCheck1: number = Math.max.apply(Math, check1_nozero);
-
       //max all check2
       const minAllCheck2: number = Math.min.apply(Math, check2_nozero);
       const maxAllCheck2: number = Math.max.apply(Math, check2_nozero);
-
       switch (final_ca) {
         case "CA1":
           var temp1_intime =
             check1_nozero.length > 0 ? moment(mincheck1).format("HH:mm") : tgv;
           let temp1_outtime =
             check1_nozero.length > 0 ? moment(maxcheck1).format("HH:mm") : tgv;
-
           let checkthieu: string = "NA";
           if (mincheck1 >= in_start1 && mincheck1 <= in_end1) {
             checkthieu = tgr;
@@ -2198,7 +2118,7 @@ const BANGCHAMCONG = () => {
                     } */
           break;
         case "CA2":
-          console.log("dang tinh inout ca 2");
+          //console.log("dang tinh inout ca 2");
           result = {
             IN_TIME:
               check1_nozero.length > 0
@@ -2242,7 +2162,6 @@ const BANGCHAMCONG = () => {
         cainfo[0].OUT_END.substring(11, 16),
         "HH:mm"
       ).valueOf();
-
       let temp_intime =
         check1_nozero.length > 0 ? moment(mincheck1).format("HH:mm") : tgv;
       let temp_outtime =
@@ -2263,14 +2182,13 @@ const BANGCHAMCONG = () => {
         };
       }
     }
-
     return result;
   };
   const testcomparetime = () => {
     const a: number = moment.utc("19:47:42", "HH:mm:ss").valueOf();
     const reverse_a: string = moment.utc(a).format("HH:mm:ss");
-    console.log("a", a);
-    console.log("reverse_a", reverse_a);
+    /* console.log("a", a);
+    console.log("reverse_a", reverse_a); */
   };
   const loadCaInfo = () => {
     generalQuery("loadCaInfo", {})
@@ -2284,7 +2202,7 @@ const BANGCHAMCONG = () => {
               };
             }
           );
-          console.log("cainfo", loaded_data);
+          /* console.log("cainfo", loaded_data); */
           setCaInfo(loaded_data);
         } else {
           Swal.fire("Thông báo", " Có lỗi : " + response.data.message, "error");
@@ -2325,12 +2243,21 @@ const BANGCHAMCONG = () => {
           </div>
           <div className='formbutton'>
             <label>
-              <b>All Time:</b>
+              <b>Trừ nghỉ việc:</b>
               <input
                 type='checkbox'
                 name='alltimecheckbox'
-                defaultChecked={alltime}
-                onChange={() => setAllTime(!alltime)}
+                defaultChecked={trunghiviec}
+                onChange={() => setTruNghiViec(!trunghiviec)}
+              ></input>
+            </label>
+            <label>
+              <b>Trừ nghỉ sinh:</b>
+              <input
+                type='checkbox'
+                name='alltimecheckbox'
+                defaultChecked={trunghisinh}
+                onChange={() => setTruNghiSinh(!trunghisinh)}
               ></input>
             </label>
             <button
