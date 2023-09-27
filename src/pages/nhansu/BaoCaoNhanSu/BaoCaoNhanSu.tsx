@@ -1283,7 +1283,6 @@ const BaoCaoNhanSu = () => {
   return (
     <div className="baocaonhansu">
       <div className="baocao1">
-        <h3>Báo cáo nhân sự</h3>
         <div className="filterform">
           <label>
             <b>Bộ phận:</b>

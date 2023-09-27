@@ -132,11 +132,12 @@ const initialState: GlobalInterface = {
   loginState: false,
   theme: {
     CMS: {
-      backgroundImage: `linear-gradient(0deg, rgba(77, 175, 252,0.8), rgba(159, 212, 254,0.8))`,
+      backgroundImage: `linear-gradient(0deg, rgba(77, 175, 252,1), rgba(159, 212, 254,1))`,
+      outletBackground: `rgba(159, 212, 254,1)`,
     },
     PVN: {
       /* backgroundImage: `linear-gradient(90deg, rgba(254,255,23,1) 0%, rgba(235,242,144,0.9920343137254902) 47%, rgba(255,241,134,1) 100%)`, */
-      backgroundImage: `linear-gradient(0deg, rgba(214, 225, 132, 0.6), rgba(216, 255, 19, 0.6))`,
+      backgroundImage: `linear-gradient(0deg, rgba(220, 243, 165,1), rgba(243, 233, 89))`,
     },
   },
 };

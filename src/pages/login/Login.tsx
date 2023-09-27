@@ -87,9 +87,8 @@ const Login = () => {
         className="loginbackground"
         style={{
           position: "absolute",
-          backgroundImage: `url('${
-            company === "CMS" ? `/CMSVBackground.png` : `/PVNBackground.png`
-          }')`,
+          backgroundImage: `url('${company === "CMS" ? `/CMSVBackground.png` : `/PVNBackground.png`
+            }')`,
           backgroundSize: "cover",
           backgroundRepeat: "no-repeat",
           backgroundPosition: "center",
@@ -101,11 +100,10 @@ const Login = () => {
       <div
         className="login-form"
         style={{
-          backgroundImage: `${
-            company === "CMS"
+          backgroundImage: `${company === "CMS"
               ? theme.CMS.backgroundImage
               : theme.PVN.backgroundImage
-          }`,
+            }`,
         }}
       >
         <div className="logo">
@@ -171,10 +169,10 @@ const Login = () => {
               )}
               {company === "CMS" && (
                 <option value={"http://14.160.33.94:3007"}>SUB_SERVER</option>
-              )}             
+              )}
               {company === "CMS" && (
                 <option value={"http://192.168.1.2:5011"}>LAN_SERVER</option>
-              )}             
+              )}
               {company === "PVN" && (
                 <option value={"http://222.252.1.63:3007"}>PUBLIC_PVN</option>
               )}

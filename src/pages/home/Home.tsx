@@ -151,7 +151,7 @@ function Home() {
             className='animated_div'
             style={{
               width: "100%",
-              height: "100%",
+              height: "100vh",
               borderRadius: 8,
               ...springs,
             }}
@@ -180,7 +180,6 @@ function Home() {
                         ? theme.CMS.backgroundImage
                         : theme.PVN.backgroundImage
                         }`,
-                      marginRight: "5px",
                       border: "none",
                       minHeight: "2px",
                       boxSizing: "border-box",
