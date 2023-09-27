@@ -9,7 +9,6 @@ import Chart3 from "../../../components/Chart/Chart3";
 import Chart4 from "../../../components/Chart/Chart4";
 import ChartMonthLy from "../../../components/Chart/Chart5";
 import ChartYearly from "../../../components/Chart/Chart6";
-import Chart7 from "../../../components/Chart/Chart7";
 import ChartCustomerRevenue from "../../../components/Chart/ChartCustomerRevenue";
 import ChartFCSTSamSung from "../../../components/Chart/ChartFCSTSamSung";
 import ChartPICRevenue from "../../../components/Chart/ChartPICRevenue";

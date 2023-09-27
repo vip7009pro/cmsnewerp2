@@ -804,7 +804,7 @@ const BANGCHAMCONG = () => {
                   SaveExcel(bangchamcong, "SXDATATABLE");
                 }}
               >
-                <AiFillFileExcel color='green' size={25} />
+                <AiFillFileExcel color='green' size={15} />
                 SAVE
               </IconButton>
               <IconButton
@@ -813,7 +813,7 @@ const BANGCHAMCONG = () => {
                   setShowHidePivotTable(!showhidePivotTable);
                 }}
               >
-                <MdOutlinePivotTableChart color='#ff33bb' size={25} />
+                <MdOutlinePivotTableChart color='#ff33bb' size={15} />
                 Pivot
               </IconButton>
             </Item>
@@ -929,6 +929,26 @@ const BANGCHAMCONG = () => {
                 return (
                   <span style={{ color: "red", fontWeight: "bold" }}>
                     {e.data.OUT_TIME}
+                  </span>
+                );
+              }
+            }}
+          ></Column>
+          <Column
+            dataField='STATUS'
+            caption='STATUS'
+            width={100}
+            cellRender={(e: any) => {
+              if (e.data.STATUS !== "Thiếu công") {
+                return (
+                  <span style={{ color: "blue", fontWeight: "normal" }}>
+                    {e.data.STATUS}
+                  </span>
+                );
+              } else {
+                return (
+                  <span style={{ color: "red", fontWeight: "normal" }}>
+                    {e.data.STATUS}
                   </span>
                 );
               }
@@ -1392,6 +1412,86 @@ const BANGCHAMCONG = () => {
         if (response.data.tk_status !== "NG") {
           const loaded_data: BANGCHAMCONG_DATA2[] = response.data.data.map(
             (element: BANGCHAMCONG_DATA2, index: number) => {
+              const intime_calc: string = tinhInOutTime22({
+                SHIFT_NAME: element.WORK_SHIF_NAME,
+                CHECK1:
+                  element.CHECK1 !== null
+                    ? moment.utc(element.CHECK1).format("HH:mm")
+                    : "",
+                CHECK2:
+                  element.CHECK2 !== null
+                    ? moment.utc(element.CHECK2).format("HH:mm")
+                    : "",
+                CHECK3:
+                  element.CHECK3 !== null
+                    ? moment.utc(element.CHECK3).format("HH:mm")
+                    : "",
+                PREV_CHECK1:
+                  element.PREV_CHECK1 !== null
+                    ? moment.utc(element.PREV_CHECK1).format("HH:mm")
+                    : "",
+                PREV_CHECK2:
+                  element.PREV_CHECK2 !== null
+                    ? moment.utc(element.PREV_CHECK2).format("HH:mm")
+                    : "",
+                PREV_CHECK3:
+                  element.PREV_CHECK3 !== null
+                    ? moment.utc(element.PREV_CHECK3).format("HH:mm")
+                    : "",
+                NEXT_CHECK1:
+                  element.NEXT_CHECK1 !== null
+                    ? moment.utc(element.NEXT_CHECK1).format("HH:mm")
+                    : "",
+                NEXT_CHECK2:
+                  element.NEXT_CHECK2 !== null
+                    ? moment.utc(element.NEXT_CHECK2).format("HH:mm")
+                    : "",
+                NEXT_CHECK3:
+                  element.NEXT_CHECK3 !== null
+                    ? moment.utc(element.NEXT_CHECK3).format("HH:mm")
+                    : "",
+              }).IN_TIME;
+              const outtime_calc: string = tinhInOutTime22({
+                SHIFT_NAME: element.WORK_SHIF_NAME,
+                CHECK1:
+                  element.CHECK1 !== null
+                    ? moment.utc(element.CHECK1).format("HH:mm")
+                    : "",
+                CHECK2:
+                  element.CHECK2 !== null
+                    ? moment.utc(element.CHECK2).format("HH:mm")
+                    : "",
+                CHECK3:
+                  element.CHECK3 !== null
+                    ? moment.utc(element.CHECK3).format("HH:mm")
+                    : "",
+                PREV_CHECK1:
+                  element.PREV_CHECK1 !== null
+                    ? moment.utc(element.PREV_CHECK1).format("HH:mm")
+                    : "",
+                PREV_CHECK2:
+                  element.PREV_CHECK2 !== null
+                    ? moment.utc(element.PREV_CHECK2).format("HH:mm")
+                    : "",
+                PREV_CHECK3:
+                  element.PREV_CHECK3 !== null
+                    ? moment.utc(element.PREV_CHECK3).format("HH:mm")
+                    : "",
+                NEXT_CHECK1:
+                  element.NEXT_CHECK1 !== null
+                    ? moment.utc(element.NEXT_CHECK1).format("HH:mm")
+                    : "",
+                NEXT_CHECK2:
+                  element.NEXT_CHECK2 !== null
+                    ? moment.utc(element.NEXT_CHECK2).format("HH:mm")
+                    : "",
+                NEXT_CHECK3:
+                  element.NEXT_CHECK3 !== null
+                    ? moment.utc(element.NEXT_CHECK3).format("HH:mm")
+                    : "",
+              }).OUT_TIME;
+
+
               return {
                 ...element,
                 WEEKDAY: weekdayarray[new Date(element.DATE_COLUMN).getDay()],
@@ -1438,84 +1538,9 @@ const BANGCHAMCONG = () => {
                   element.NEXT_CHECK3 !== null
                     ? moment.utc(element.NEXT_CHECK3).format("HH:mm:ss")
                     : "",
-                IN_TIME: tinhInOutTime22({
-                  SHIFT_NAME: element.WORK_SHIF_NAME,
-                  CHECK1:
-                    element.CHECK1 !== null
-                      ? moment.utc(element.CHECK1).format("HH:mm")
-                      : "",
-                  CHECK2:
-                    element.CHECK2 !== null
-                      ? moment.utc(element.CHECK2).format("HH:mm")
-                      : "",
-                  CHECK3:
-                    element.CHECK3 !== null
-                      ? moment.utc(element.CHECK3).format("HH:mm")
-                      : "",
-                  PREV_CHECK1:
-                    element.PREV_CHECK1 !== null
-                      ? moment.utc(element.PREV_CHECK1).format("HH:mm")
-                      : "",
-                  PREV_CHECK2:
-                    element.PREV_CHECK2 !== null
-                      ? moment.utc(element.PREV_CHECK2).format("HH:mm")
-                      : "",
-                  PREV_CHECK3:
-                    element.PREV_CHECK3 !== null
-                      ? moment.utc(element.PREV_CHECK3).format("HH:mm")
-                      : "",
-                  NEXT_CHECK1:
-                    element.NEXT_CHECK1 !== null
-                      ? moment.utc(element.NEXT_CHECK1).format("HH:mm")
-                      : "",
-                  NEXT_CHECK2:
-                    element.NEXT_CHECK2 !== null
-                      ? moment.utc(element.NEXT_CHECK2).format("HH:mm")
-                      : "",
-                  NEXT_CHECK3:
-                    element.NEXT_CHECK3 !== null
-                      ? moment.utc(element.NEXT_CHECK3).format("HH:mm")
-                      : "",
-                }).IN_TIME,
-                OUT_TIME: tinhInOutTime22({
-                  SHIFT_NAME: element.WORK_SHIF_NAME,
-                  CHECK1:
-                    element.CHECK1 !== null
-                      ? moment.utc(element.CHECK1).format("HH:mm")
-                      : "",
-                  CHECK2:
-                    element.CHECK2 !== null
-                      ? moment.utc(element.CHECK2).format("HH:mm")
-                      : "",
-                  CHECK3:
-                    element.CHECK3 !== null
-                      ? moment.utc(element.CHECK3).format("HH:mm")
-                      : "",
-                  PREV_CHECK1:
-                    element.PREV_CHECK1 !== null
-                      ? moment.utc(element.PREV_CHECK1).format("HH:mm")
-                      : "",
-                  PREV_CHECK2:
-                    element.PREV_CHECK2 !== null
-                      ? moment.utc(element.PREV_CHECK2).format("HH:mm")
-                      : "",
-                  PREV_CHECK3:
-                    element.PREV_CHECK3 !== null
-                      ? moment.utc(element.PREV_CHECK3).format("HH:mm")
-                      : "",
-                  NEXT_CHECK1:
-                    element.NEXT_CHECK1 !== null
-                      ? moment.utc(element.NEXT_CHECK1).format("HH:mm")
-                      : "",
-                  NEXT_CHECK2:
-                    element.NEXT_CHECK2 !== null
-                      ? moment.utc(element.NEXT_CHECK2).format("HH:mm")
-                      : "",
-                  NEXT_CHECK3:
-                    element.NEXT_CHECK3 !== null
-                      ? moment.utc(element.NEXT_CHECK3).format("HH:mm")
-                      : "",
-                }).OUT_TIME,
+                IN_TIME: intime_calc,
+                OUT_TIME: outtime_calc,
+                STATUS: intime_calc === 'Thiếu giờ vào' || outtime_calc === 'Thiếu giờ ra' ? 'Thiếu công' : 'Đủ công',
                 id: index,
               };
             }
