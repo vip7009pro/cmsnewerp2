@@ -1,4 +1,4 @@
-import { IconButton } from "@mui/material";
+import { Button, IconButton } from "@mui/material";
 import DataGrid, {
   Column,
   ColumnChooser,
@@ -2285,21 +2285,15 @@ const BANGCHAMCONG = () => {
                 onChange={() => setTruNghiSinh(!trunghisinh)}
               ></input>
             </label>
-            <button
-              className='tranhatky'
-              onClick={() => {
-                /* checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['NHANSU'], loadBangChamCong2);  */
-                checkBP(
-                  userData,
-                  ["NHANSU"],
-                  ["ALL"],
-                  ["ALL"],
-                  loadBangChamCong2
-                );
-              }}
-            >
-              Tra chấm công
-            </button>
+            <Button color={'primary'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#15a012' }} onClick={() => {
+              checkBP(
+                userData,
+                ["NHANSU"],
+                ["ALL"],
+                ["ALL"],
+                loadBangChamCong2
+              );
+            }}>Tra chấm công</Button>
           </div>
         </div>
         <div className='tracuuYCSXTable'>{chamcongTBMM}</div>

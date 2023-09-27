@@ -1967,7 +1967,7 @@ const PoManager = () => {
     dongboGiaPO();
   }, []);
   return (
-    <TotalPOManagerDiv>
+    <div className="pomanager">
       <div className='mininavbar'>
         <div
           className='mininavitem'
@@ -2745,7 +2745,7 @@ const PoManager = () => {
           <PivotTable datasource={dataSource} tableID='potablepivot' />
         </div>
       )}
-    </TotalPOManagerDiv>
+    </div>
   );
 };
 export default PoManager;

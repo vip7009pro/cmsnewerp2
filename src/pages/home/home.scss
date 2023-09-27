@@ -15,6 +15,7 @@
       .outletdiv {
         display: flex;
         flex-direction: column;
+        width: 100%;
         flex: 10;
         box-sizing: border-box;
         .animated_div {
@@ -53,6 +54,7 @@
         z-index: 99999;
       }
       .outletdiv {
+        display: flex;
         width: 100%;
         .animated_div {
           display: flex;

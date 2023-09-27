@@ -1217,7 +1217,7 @@ const QuotationManager = () => {
               allowDeleting={false}
               mode="cell"
               confirmDelete={false}
-              onChangesChange={(e) => {}}
+              onChangesChange={(e) => { }}
             />
             <Export enabled={true} />
             <Toolbar disabled={false}>
@@ -1794,7 +1794,7 @@ const QuotationManager = () => {
               allowDeleting={false}
               mode="cell"
               confirmDelete={false}
-              onChangesChange={(e) => {}}
+              onChangesChange={(e) => { }}
             />
             <Export enabled={true} />
             <Toolbar disabled={false}>
@@ -2011,7 +2011,7 @@ const QuotationManager = () => {
             allowDeleting={true}
             mode="cell"
             confirmDelete={false}
-            onChangesChange={(e) => {}}
+            onChangesChange={(e) => { }}
           />
           <Export enabled={true} />
           <Toolbar disabled={false}>
@@ -2471,87 +2471,26 @@ const QuotationManager = () => {
             </div>
             <div className="formbutton">
               <div className="buttoncolumn">
-                <IconButton
-                  className="buttonIcon"
-                  onClick={() => {
-                    setSelectButton(false);
-                    /* checkBP(
-                  userData?.EMPL_NO,
-                  userData?.MAINDEPTNAME,
-                  ["KD"],
-                  loadBangGiaMoiNhat
-                );    */
-                    checkBP(
-                      userData,
-                      ["KD"],
-                      ["ALL"],
-                      ["ALL"],
-                      loadBangGiaMoiNhat,
-                    );
-                  }}
-                >
-                  <GrUpdate color="#070EFA" size={10} />
-                  <span style={{ fontSize: "0.6rem", padding: 0 }}>
-                    Giá mới nhất
-                  </span>
-                </IconButton>
-                <IconButton
-                  className="buttonIcon"
-                  onClick={() => {
-                    setSelectButton(true);
-                    /* checkBP(
-                  userData?.EMPL_NO,
-                  userData?.MAINDEPTNAME,
-                  ["KD"],
-                  loadBangGia
-                );   */
-                    checkBP(userData, ["KD"], ["ALL"], ["ALL"], loadBangGia);
-                  }}
-                >
-                  <AiOutlineHistory color="#070EFA" size={10} />
-                  <span style={{ fontSize: "0.6rem", padding: 0 }}>
-                    Giá ngang
-                  </span>
-                </IconButton>
+
+                <Button color={'primary'} variant="contained" size="small" fullWidth={true} sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#36D334' }} onClick={() => {
+                  setSelectButton(false);
+                  checkBP(userData, ["KD"], ["ALL"], ["ALL"], loadBangGiaMoiNhat);
+                }}>Giá mới nhất</Button>
+                <Button color={'primary'} variant="contained" size="small" fullWidth={true} sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: 'red' }} onClick={() => {
+                  checkBP(userData, ["KD"], ["Leader"], ["ALL"], pheduyetgia);
+                }}>Duyệt/Hủy Duyệt</Button>
+
               </div>
               <div className="buttoncolumn">
-                <IconButton
-                  className="buttonIcon"
-                  onClick={() => {
-                    setSelectButton(false);
-                    /*  checkBP(
-                    userData?.EMPL_NO,
-                    userData?.MAINDEPTNAME,
-                    ["KD"],
-                    loadBangGia2
-                  );  */
-                    checkBP(userData, ["KD"], ["ALL"], ["ALL"], loadBangGia2);
-                  }}
-                >
-                  <MdOutlineManageHistory color="#070EFA" size={10} />
-                  <span style={{ fontSize: "0.6rem", padding: 0 }}>
-                    Giá dọc
-                  </span>
-                </IconButton>
+                <Button color={'primary'} variant="contained" size="small" fullWidth={true} sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: 'yellow', color: 'black' }} onClick={() => {
+                  setSelectButton(true);
+                  checkBP(userData, ["KD"], ["ALL"], ["ALL"], loadBangGia);
+                }}>Giá Ngang</Button>
+                <Button color={'primary'} variant="contained" size="small" fullWidth={true} sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: 'yellow', color: 'black' }} onClick={() => {
+                  setSelectButton(false);
+                  checkBP(userData, ["KD"], ["ALL"], ["ALL"], loadBangGia2);
+                }}>Giá Dọc</Button>
 
-                <IconButton
-                  className="buttonIcon"
-                  onClick={() => {
-                    console.log(selectedBangGiaDocRow);
-                    /*  checkBP(
-                    userData?.EMPL_NO,
-                    userData?.MAINDEPTNAME,
-                    ["KD"],
-                    pheduyetgia
-                  );  */
-                    checkBP(userData, ["KD"], ["Leader"], ["ALL"], pheduyetgia);
-                  }}
-                >
-                  <FcApproval color="#070EFA" size={10} />
-                  <span style={{ fontSize: "0.6rem", padding: 0 }}>
-                    Duyệt/Hủy Duyệt Giá
-                  </span>
-                </IconButton>
               </div>
             </div>
           </div>
@@ -2601,7 +2540,7 @@ const QuotationManager = () => {
                   }}
                 />
               </label>
-              <IconButton className="buttonIcon" onClick={() => {}}>
+              <IconButton className="buttonIcon" onClick={() => { }}>
                 <AiOutlineCheckSquare color="#EB2EFE" size={15} />
                 Check Giá
               </IconButton>

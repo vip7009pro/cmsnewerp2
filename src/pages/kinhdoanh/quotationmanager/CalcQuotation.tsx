@@ -347,7 +347,7 @@ const CalcQuotation = () => {
               allowDeleting={false}
               mode="batch"
               confirmDelete={true}
-              onChangesChange={(e) => {}}
+              onChangesChange={(e) => { }}
             />
             <Export enabled={true} />
             <Toolbar disabled={false}>
@@ -546,7 +546,7 @@ const CalcQuotation = () => {
             keyExpr="id"
             height={"30vh"}
             showBorders={true}
-            onSelectionChanged={(e) => {}}
+            onSelectionChanged={(e) => { }}
             onRowClick={(e) => {
               //console.log(e.data);
             }}
@@ -565,7 +565,7 @@ const CalcQuotation = () => {
               allowDeleting={false}
               mode="cell"
               confirmDelete={true}
-              onChangesChange={(e) => {}}
+              onChangesChange={(e) => { }}
             />
             <Export enabled={true} />
             <Toolbar disabled={false}>
@@ -662,18 +662,18 @@ const CalcQuotation = () => {
             keyExpr="id"
             height={"40vh"}
             showBorders={true}
-            onSelectionChanged={(e) => {}}
+            onSelectionChanged={(e) => { }}
             onRowClick={(e) => {
               //console.log(e.data);
               setTempQty(e.data.MOQ);
               setTempQty(e.data.MOQ);
               setSalePriceNB(
                 tinhgia(selectedRows, listVL, e.data.MOQ).total_costCMS *
-                  (1 + profit / 100),
+                (1 + profit / 100),
               );
               setSalePriceOP(
                 tinhgia(selectedRows, listVL, e.data.MOQ).total_costSS *
-                  (1 + profit / 100),
+                (1 + profit / 100),
               );
               tinhgia(selectedRows, listVL, e.data.MOQ);
             }}
@@ -692,7 +692,7 @@ const CalcQuotation = () => {
               allowDeleting={true}
               mode="cell"
               confirmDelete={true}
-              onChangesChange={(e) => {}}
+              onChangesChange={(e) => { }}
             />
             <Export enabled={true} />
             <Toolbar disabled={false}>
@@ -949,7 +949,7 @@ const CalcQuotation = () => {
     <div className="calc_quotation">
       <div className="calc_title">BẢNG TÍNH GIÁ</div>
       <div className="calc_wrap">
-        <div className="left" style={{ width: sh ? "20%" : "100%" }}>
+        <div className="left" /* style={{ width: sh ? "20%" : "100%" }} */>
           <div className="listcode">{listcodeTable}</div>
           <div className="moqlist"></div>
           <div className="insert_button"></div>
@@ -1506,12 +1506,12 @@ const CalcQuotation = () => {
                       setSalePriceNB(
                         tinhgia(selectedRows, listVL, Number(e.target.value))
                           .total_costCMS *
-                          (1 + profit / 100),
+                        (1 + profit / 100),
                       );
                       setSalePriceOP(
                         tinhgia(selectedRows, listVL, Number(e.target.value))
                           .total_costSS *
-                          (1 + profit / 100),
+                        (1 + profit / 100),
                       );
                       tinhgia(selectedRows, listVL, Number(e.target.value));
                     }}
@@ -1526,11 +1526,11 @@ const CalcQuotation = () => {
                       setProfit(Number(e.target.value));
                       setSalePriceNB(
                         tinhgia(selectedRows, listVL, tempQTY).total_costCMS *
-                          (1 + Number(e.target.value) / 100),
+                        (1 + Number(e.target.value) / 100),
                       );
                       setSalePriceOP(
                         tinhgia(selectedRows, listVL, tempQTY).total_costSS *
-                          (1 + Number(e.target.value) / 100),
+                        (1 + Number(e.target.value) / 100),
                       );
                     }}
                   ></input>
@@ -1585,19 +1585,17 @@ const CalcQuotation = () => {
               </div>
               <div className="listbaogia">{banggiamoinhat}</div>
               <div className="buttondiv">
-                <div className="buttonsection">
-                  <IconButton
-                    className="buttonIcon"
-                    onClick={() => {
-                      uploadgia();
-                      updateCurrentUnit();
-                      loadListCode();
-                    }}
-                  >
-                    <BiSave color="#059B00" size={25} />
-                    Lưu Giá
-                  </IconButton>
-                </div>
+                <IconButton
+                  className="buttonIcon"
+                  onClick={() => {
+                    uploadgia();
+                    updateCurrentUnit();
+                    loadListCode();
+                  }}
+                >
+                  <BiSave color="#059B00" size={25} />
+                  Lưu Giá
+                </IconButton>
               </div>
             </div>
           </div>
