@@ -296,10 +296,11 @@
             flex-direction: column;
             gap: 5px;
             align-items: flex-end;
-            justify-content: center;
+            justify-content: flex-end;
             flex-wrap: wrap;
+            font-size: 0.75rem;
             input {
-              width: 150px;
+              width: 250px;
               height: 15px;
               font-size: 0.6rem;
               outline: none;
@@ -311,7 +312,7 @@
             }
 
             select {
-              width: 160px;
+              width: 260px;
               height: 25px;
               font-size: 0.6rem;
               outline: none;
@@ -323,6 +324,7 @@
             }
             .autocomplete {
               background-color: rgba(255, 255, 255, 0);
+              width: 261px;
               position: relative;
               * {
                 font-size: 0.8rem;
@@ -334,7 +336,6 @@
                 background-color: white;
                 z-index: 10;
                 height: 23px;
-                width: 150px;
               }
             }
           }

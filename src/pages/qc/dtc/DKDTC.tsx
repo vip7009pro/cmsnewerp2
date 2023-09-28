@@ -103,7 +103,7 @@ const DKDTC = () => {
             dataSource={inspectiondatatable}
             columnWidth="auto"
             keyExpr="id"
-            height={"85vh"}
+
             showBorders={true}
             onSelectionChanged={(e) => {
               //console.log(e.selectedRowsData);
@@ -132,7 +132,7 @@ const DKDTC = () => {
               allowDeleting={false}
               mode="batch"
               confirmDelete={true}
-              onChangesChange={(e) => {}}
+              onChangesChange={(e) => { }}
             />
             <Export enabled={true} />
             <Toolbar disabled={false}>
@@ -234,18 +234,18 @@ const DKDTC = () => {
                 ...element,
                 TEST_FINISH_TIME:
                   element.TEST_FINISH_TIME === "1900-01-01T00:00:00.000Z" ||
-                  element.TEST_FINISH_TIME === null
+                    element.TEST_FINISH_TIME === null
                     ? ""
                     : moment(element.TEST_FINISH_TIME)
-                        .utc()
-                        .format("YYYY-MM-DD HH:mm:ss"),
+                      .utc()
+                      .format("YYYY-MM-DD HH:mm:ss"),
                 REQUEST_DATETIME:
                   element.REQUEST_DATETIME === "1900-01-01T00:00:00.000Z" ||
-                  element.REQUEST_DATETIME === null
+                    element.REQUEST_DATETIME === null
                     ? ""
                     : moment(element.REQUEST_DATETIME)
-                        .utc()
-                        .format("YYYY-MM-DD HH:mm:ss"),
+                      .utc()
+                      .format("YYYY-MM-DD HH:mm:ss"),
                 id: index,
               };
             },
@@ -265,8 +265,8 @@ const DKDTC = () => {
           //console.log(response.data.data);
           setEmplName(
             response.data.data[0].MIDLAST_NAME +
-              " " +
-              response.data.data[0].FIRST_NAME,
+            " " +
+            response.data.data[0].FIRST_NAME,
           );
           setReqDeptCode(response.data.data[0].WORK_POSITION_CODE);
         } else {
@@ -306,8 +306,8 @@ const DKDTC = () => {
           //console.log(response.data.data);
           setM_Name(
             response.data.data[0].M_NAME +
-              " | " +
-              response.data.data[0].WIDTH_CD,
+            " | " +
+            response.data.data[0].WIDTH_CD,
           );
           setM_Code(response.data.data[0].M_CODE);
           checkAddedSpec(response.data.data[0].M_CODE, "");
@@ -524,7 +524,7 @@ const DKDTC = () => {
                                 fontSize: 13,
                                 color:
                                   addedSpec[index]?.CHECKADDED === null ||
-                                  addedSpec[index]?.CHECKADDED === undefined
+                                    addedSpec[index]?.CHECKADDED === undefined
                                     ? "black"
                                     : "blue",
                               }}
@@ -559,8 +559,8 @@ const DKDTC = () => {
                                   Swal.fire(
                                     "Thông báo",
                                     "Hạng mục " +
-                                      element.TEST_NAME +
-                                      " chưa add spec ko thể đăng ký test được, hãy add spec trước",
+                                    element.TEST_NAME +
+                                    " chưa add spec ko thể đăng ký test được, hãy add spec trước",
                                     "error",
                                   );
                                 } else {

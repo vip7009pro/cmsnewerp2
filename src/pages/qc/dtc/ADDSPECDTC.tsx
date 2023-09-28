@@ -1,4 +1,5 @@
 import {
+  Button,
   Autocomplete,
   IconButton,
   TextField,
@@ -165,7 +166,7 @@ const ADDSPECTDTC = () => {
               allowDeleting={true}
               mode="cell"
               confirmDelete={false}
-              onChangesChange={(e) => {}}
+              onChangesChange={(e) => { }}
             />
             <Export enabled={true} />
             <Toolbar disabled={false}>
@@ -398,8 +399,8 @@ const ADDSPECTDTC = () => {
                   Swal.fire(
                     "Thông báo",
                     "Chưa có SPEC, Đã load bảng trắng để nhập " +
-                      response.data.data.length +
-                      " dòng",
+                    response.data.data.length +
+                    " dòng",
                     "warning",
                   );
                 }
@@ -692,19 +693,14 @@ const ADDSPECTDTC = () => {
           </b>
           <br></br>
           <div className="forminput">
-            <b>Chọn sản phẩm/ vật liệu</b>
-            <div className="forminputcolumn">
-              {!checkNVL && (
-                <label>
-                  {/* <Autocomplete
-                  style={{width: 280}}
-                  dataSource={employeesTasks}                 
-                  valueExpr="Subject"
-                  searchTimeout={0}
-                  showClearButton={true}
-                  onValueChanged={onValueChanged}
-                  /> */}
 
+            <div className="forminputcolumn">
+              <div className="label">
+                <b>Code/Liệu</b>
+              </div>
+              <div className="inputbox">
+
+                {!checkNVL && (
                   <Autocomplete
                     sx={{ fontSize: "0.7rem", width: "240px", padding: 0 }}
                     hidden={checkNVL}
@@ -729,10 +725,8 @@ const ADDSPECTDTC = () => {
                     }}
                     value={selectedCode}
                   />
-                </label>
-              )}
-              {checkNVL && (
-                <label>
+                )}
+                {checkNVL && (
                   <Autocomplete
                     sx={{ fontSize: "0.7rem", width: "240px", padding: 0 }}
                     hidden={!checkNVL}
@@ -764,12 +758,18 @@ const ADDSPECTDTC = () => {
                       setSelectedMaterial(newValue);
                     }}
                   />
-                </label>
-              )}
+                )}
+              </div>
             </div>
-            <b>Hạng mục test</b>
+
+
+
+
             <div className="forminputcolumn">
-              <label>
+              <div className="label">
+                <b>Hạng mục test</b>
+              </div>
+              <div className="inputbox">
                 <select
                   name="hangmuctest"
                   value={testname}
@@ -802,36 +802,25 @@ const ADDSPECTDTC = () => {
                   <option value="1003">Ngoại Quan</option>
                   <option value="1005">Độ dày</option>
                 </select>
-              </label>
+
+              </div>
+
+
+
             </div>
             <div className="forminputcolumn"></div>
           </div>
           <div className="formbutton">
-            <button
-              className="tranhatky"
-              onClick={() => {
-                handletraDTCData(testname);
-                checkAddedSpec(selectedMaterial?.M_CODE, selectedCode?.G_CODE);
-              }}
-            >
-              Load SPEC
-            </button>
-            <button
-              className="tranhatky"
-              onClick={() => {
-                handleInsertSpec();
-              }}
-            >
-              Add SPEC
-            </button>
-            <button
-              className="tranhatky"
-              onClick={() => {
-                handleUpdateSpec();
-              }}
-            >
-              Update SPEC
-            </button>
+            <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.6rem', padding: '3px', backgroundColor: '#bb8947' }} onClick={() => {
+              handletraDTCData(testname);
+              checkAddedSpec(selectedMaterial?.M_CODE, selectedCode?.G_CODE);
+            }}>Load Spec</Button>
+            <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.6rem', padding: '3px', backgroundColor: '#3cd446' }} onClick={() => {
+              handleInsertSpec();
+            }}>Add Spec</Button>
+            <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.6rem', padding: '3px', backgroundColor: '#cb45e6' }} onClick={() => {
+              handleUpdateSpec();
+            }}>Update Spec</Button>
           </div>
           <div
             className="formbutton"

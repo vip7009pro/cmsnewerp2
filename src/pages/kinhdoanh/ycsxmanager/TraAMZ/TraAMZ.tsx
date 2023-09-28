@@ -1,5 +1,6 @@
 import {
   Autocomplete,
+  Button,
   IconButton,
   LinearProgress,
   TextField,
@@ -236,17 +237,13 @@ const TraAMZ = () => {
                   onChange={() => setAllTime(!alltime)}
                 ></input>
               </label>
-              <button
-                className="tranhatky"
-                onClick={() => {
-                  setisLoading(true);
-                  setReadyRender(true);
-                  setColumnDefinition(column_lichsuinputlieusanxuat);
-                  handle_loadlichsuinputlieu();
-                }}
-              >
-                Tra AMZ
-              </button>
+              <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#00DF0E' }} onClick={() => {
+                setisLoading(true);
+                setReadyRender(true);
+                setColumnDefinition(column_lichsuinputlieusanxuat);
+                handle_loadlichsuinputlieu();
+              }}>Tra AMZ</Button>
+
             </div>
           </div>
         )}
