@@ -1,4 +1,4 @@
-import { IconButton } from "@mui/material";
+import { IconButton, Button } from "@mui/material";
 import {
   Column,
   Editing,
@@ -238,7 +238,7 @@ const CUST_MANAGER = () => {
               allowDeleting={false}
               mode="batch"
               confirmDelete={true}
-              onChangesChange={(e) => {}}
+              onChangesChange={(e) => { }}
             />
             <Export enabled={true} />
             <Toolbar disabled={false}>
@@ -1091,30 +1091,15 @@ const CUST_MANAGER = () => {
             </div>
           </div>
           <div className="formbutton">
-            <button
-              className="tranhatky"
-              onClick={() => {
-                createNewCustomer(selectedRows.CUST_TYPE);
-              }}
-            >
-              New
-            </button>
-            <button
-              className="tranhatky"
-              onClick={() => {
-                handle_addCustomer();
-              }}
-            >
-              Add
-            </button>
-            <button
-              className="traxuatkiembutton"
-              onClick={() => {
-                handle_editCustomer();
-              }}
-            >
-              Update
-            </button>
+            <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#0bb937' }} onClick={() => {
+              createNewCustomer(selectedRows.CUST_TYPE);
+            }}>New</Button>
+            <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#f626da' }} onClick={() => {
+              handle_addCustomer();
+            }}>Add</Button>
+            <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#d19342' }} onClick={() => {
+              handle_editCustomer();
+            }}>Update</Button>
           </div>
         </div>
         <div className="tracuuYCSXTable">{materialDataTable}</div>

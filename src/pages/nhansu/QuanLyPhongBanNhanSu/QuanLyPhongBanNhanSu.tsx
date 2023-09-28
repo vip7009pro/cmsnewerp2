@@ -1240,10 +1240,20 @@ const QuanLyPhongBanNhanSu = () => {
               <div className='inputform'>
                 <div className='emplpicture'>
                   {
+                    userData?.EMPL_IMAGE === 'Y' &&
                     <img
                       width={220}
                       height={300}
                       src={"/Picture_NS/NS_" + avatar + ".jpg"}
+                      alt={avatar}
+                    ></img>
+                  }
+                  {
+                    userData?.EMPL_IMAGE !== 'Y' &&
+                    <img
+                      width={220}
+                      height={300}
+                      src={"/noimage.webp"}
                       alt={avatar}
                     ></img>
                   }
@@ -1560,9 +1570,9 @@ const QuanLyPhongBanNhanSu = () => {
                 rows={
                   resigned_check
                     ? employeeTable.filter(
-                        (ele: EmployeeTableData, index: number) =>
-                          ele.WORK_STATUS_CODE !== 0
-                      )
+                      (ele: EmployeeTableData, index: number) =>
+                        ele.WORK_STATUS_CODE !== 0
+                    )
                     : employeeTable
                 }
                 columns={columns_employee_table}

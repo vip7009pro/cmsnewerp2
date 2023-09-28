@@ -1,4 +1,5 @@
 import {
+  Button,
   Autocomplete,
   IconButton,
   LinearProgress,
@@ -2003,39 +2004,24 @@ const PoManager = () => {
           <div className='batchnewpo'>
             <h3>Thêm PO Hàng Loạt</h3>
             <div className='formupload'>
-              <label htmlFor='upload'>
-                <b>Chọn file Excel: </b>
-                <input
-                  onKeyDown={(e) => {
-                    handleSearchCodeKeyDown(e);
-                  }}
-                  className='selectfilebutton'
-                  type='file'
-                  name='upload'
-                  id='upload'
-                  onChange={(e: any) => {
-                    readUploadFile(e);
-                  }}
-                />
-              </label>
-              <div
-                className='checkpobutton'
-                onClick={(e) => {
-                  e.preventDefault();
-                  confirmCheckPoHangLoat();
+              <input
+                onKeyDown={(e) => {
+                  handleSearchCodeKeyDown(e);
                 }}
-              >
-                Check PO
-              </div>
-              <div
-                className='uppobutton'
-                onClick={(e) => {
-                  e.preventDefault();
-                  confirmUpPoHangLoat();
+                className='selectfilebutton'
+                type='file'
+                name='upload'
+                id='upload'
+                onChange={(e: any) => {
+                  readUploadFile(e);
                 }}
-              >
-                Up PO
-              </div>
+              />
+              <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#2639F6' }} onClick={() => {
+                confirmCheckPoHangLoat();
+              }}>CheckPO</Button>
+              <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#00DF0E' }} onClick={() => {
+                confirmUpPoHangLoat();
+              }}>Up PO</Button>
             </div>
             <div className='insertPOTable'>
               {excelDataTable}

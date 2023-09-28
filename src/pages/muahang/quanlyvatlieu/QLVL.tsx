@@ -1,4 +1,5 @@
 import {
+  Button,
   Autocomplete,
   Checkbox,
   FormControlLabel,
@@ -212,7 +213,7 @@ const QLVL = () => {
               allowDeleting={false}
               mode="batch"
               confirmDelete={true}
-              onChangesChange={(e) => {}}
+              onChangesChange={(e) => { }}
             />
             <Export enabled={true} />
             <Toolbar disabled={false}>
@@ -1014,8 +1015,7 @@ const QLVL = () => {
                     option.CUST_CD === value.CUST_CD
                   }
                   getOptionLabel={(option: any) =>
-                    `${option.CUST_CD !== null ? option.CUST_NAME_KD : ""}${
-                      option.CUST_CD !== null ? option.CUST_CD : ""
+                    `${option.CUST_CD !== null ? option.CUST_NAME_KD : ""}${option.CUST_CD !== null ? option.CUST_CD : ""
                     }`
                   }
                   renderInput={(params) => (
@@ -1039,9 +1039,9 @@ const QLVL = () => {
                       )[0]?.CUST_NAME_KD === undefined
                         ? ""
                         : customerList.filter(
-                            (e: CustomerListData, index: number) =>
-                              e.CUST_CD === selectedRows.CUST_CD,
-                          )[0]?.CUST_NAME_KD,
+                          (e: CustomerListData, index: number) =>
+                            e.CUST_CD === selectedRows.CUST_CD,
+                        )[0]?.CUST_NAME_KD,
                   }}
                   onChange={(event: any, newValue: any) => {
                     console.log(newValue);
@@ -1156,30 +1156,15 @@ const QLVL = () => {
             </div>
           </div>
           <div className="formbutton">
-            <button
-              className="tranhatky"
-              onClick={() => {
-                load_material_table();
-              }}
-            >
-              Refesh
-            </button>
-            <button
-              className="tranhatky"
-              onClick={() => {
-                addMaterial();
-              }}
-            >
-              Add
-            </button>
-            <button
-              className="traxuatkiembutton"
-              onClick={() => {
-                updateMaterial();
-              }}
-            >
-              Update
-            </button>
+            <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#129232' }} onClick={() => {
+              load_material_table();
+            }}>Refesh</Button>
+            <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#f05bd7' }} onClick={() => {
+              addMaterial();
+            }}>Add</Button>
+            <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#ec9d52' }} onClick={() => {
+              updateMaterial();
+            }}>Update</Button>
           </div>
         </div>
         <div className="tracuuYCSXTable">{materialDataTable}</div>

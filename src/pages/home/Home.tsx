@@ -183,7 +183,6 @@ function Home() {
                       border: "none",
                       minHeight: "2px",
                       boxSizing: "border-box",
-                      marginTop: 2,
                       borderRadius: "2px",
                     }}
                   >

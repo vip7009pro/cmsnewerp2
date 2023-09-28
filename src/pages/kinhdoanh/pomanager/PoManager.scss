@@ -836,45 +836,7 @@
 
         .formupload {
           display: flex;
-          gap: 20px;
-
-          .checkpobutton {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 80px;
-            height: 15px;
-            background-color: #99f86d;
-            outline: none;
-            border: none;
-            padding: 5px;
-            border-radius: 5px;
-            -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
-            box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
-            &:hover {
-              background-color: rgb(127, 219, 255);
-              cursor: pointer;
-            }
-          }
-          .uppobutton {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 80px;
-            height: 15px;
-            background-color: #ee1010;
-            color: white;
-            outline: none;
-            border: none;
-            padding: 5px;
-            border-radius: 5px;
-            -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
-            box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
-            &:hover {
-              background-color: rgb(127, 219, 255);
-              cursor: pointer;
-            }
-          }
+          gap: 10px;
         }
 
         .insertPOTable {

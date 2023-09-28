@@ -120,83 +120,6 @@
               gap: 10px;
               align-items: center;
               justify-content: space-between;
-              .thembutton {
-                background-color: #21a73e;
-                /* Green */
-                border: none;
-                color: white;
-                padding: 15px 32px;
-                text-align: center;
-                text-decoration: none;
-                display: inline-block;
-                font-size: 16px;
-                border-radius: 5px;
-                outline: none;
-                box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
-                -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
-                -moz-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
-                &:hover {
-                  background-color: #22fd7e;
-                }
-              }
-              .suabutton {
-                background-color: #ddff19;
-                /* Green */
-                border: none;
-                color: rgb(7, 32, 255);
-                padding: 15px 32px;
-                text-align: center;
-                text-decoration: none;
-                display: inline-block;
-                font-size: 16px;
-                border-radius: 5px;
-                outline: none;
-                box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
-                -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
-                -moz-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
-                &:hover {
-                  background-color: #22fd7e;
-                }
-              }
-              .closebutton {
-                background-color: #be19ff;
-                /* Green */
-                border: none;
-                color: rgb(255, 255, 255);
-                padding: 15px 32px;
-                text-align: center;
-                text-decoration: none;
-                display: inline-block;
-                font-size: 16px;
-                border-radius: 5px;
-                outline: none;
-                box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
-                -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
-                -moz-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
-                &:hover {
-                  background-color: #22fd7e;
-                }
-              }
-              .xoabutton {
-                background-color: #3633f7;
-                /* Green */
-                border: none;
-                color: rgb(194, 255, 28);
-                padding: 15px 32px;
-                text-align: center;
-                text-decoration: none;
-                display: inline-block;
-                font-size: 16px;
-                border-radius: 5px;
-                outline: none;
-                box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
-                -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
-                -moz-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
-                &:hover {
-                  background-color: #dde020;
-                  color: #35a9f7;
-                }
-              }
             }
           }
         }
@@ -226,7 +149,6 @@
       }
       .editcustomerform {
         display: flex;
-
         flex: 1;
         .formnho {
           display: flex;
@@ -247,7 +169,6 @@
           .dangkyform {
             display: flex;
             flex-direction: column;
-
             align-items: center;
             justify-content: space-around;
             padding: 20px;
@@ -290,83 +211,6 @@
               gap: 10px;
               align-items: center;
               justify-content: space-between;
-              .thembutton {
-                background-color: #21a73e;
-                /* Green */
-                border: none;
-                color: white;
-                padding: 15px 32px;
-                text-align: center;
-                text-decoration: none;
-                display: inline-block;
-                font-size: 16px;
-                border-radius: 5px;
-                outline: none;
-                box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
-                -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
-                -moz-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
-                &:hover {
-                  background-color: #22fd7e;
-                }
-              }
-              .suabutton {
-                background-color: #ddff19;
-                /* Green */
-                border: none;
-                color: rgb(7, 32, 255);
-                padding: 15px 32px;
-                text-align: center;
-                text-decoration: none;
-                display: inline-block;
-                font-size: 16px;
-                border-radius: 5px;
-                outline: none;
-                box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
-                -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
-                -moz-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
-                &:hover {
-                  background-color: #22fd7e;
-                }
-              }
-              .closebutton {
-                background-color: #be19ff;
-                /* Green */
-                border: none;
-                color: rgb(255, 255, 255);
-                padding: 15px 32px;
-                text-align: center;
-                text-decoration: none;
-                display: inline-block;
-                font-size: 16px;
-                border-radius: 5px;
-                outline: none;
-                box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
-                -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
-                -moz-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
-                &:hover {
-                  background-color: #22fd7e;
-                }
-              }
-              .xoabutton {
-                background-color: #3633f7;
-                /* Green */
-                border: none;
-                color: rgb(194, 255, 28);
-                padding: 15px 32px;
-                text-align: center;
-                text-decoration: none;
-                display: inline-block;
-                font-size: 16px;
-                border-radius: 5px;
-                outline: none;
-                box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
-                -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
-                -moz-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
-                &:hover {
-                  background-color: #dde020;
-                  color: #35a9f7;
-                }
-              }
             }
           }
         }

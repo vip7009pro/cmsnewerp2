@@ -3180,7 +3180,7 @@ const YCSXManager = () => {
     }
   };
   const handle_findAmazonCodeInfo = async (prod_request_no: string) => {
-    console.log(prod_request_no);
+    //console.log(prod_request_no);
     await generalQuery("get_ycsxInfo2", { ycsxno: prod_request_no })
       .then((response) => {
         if (response.data.tk_status !== "NG") {
@@ -3343,7 +3343,7 @@ const YCSXManager = () => {
                     ></input>
                   </label>
                   <label>
-                    <b>Loại hàng</b>
+                    <b>Loại hàng:</b>
                     <select
                       name='phanloaihang'
                       value={newphanloai}
@@ -3366,7 +3366,7 @@ const YCSXManager = () => {
                 </div>
                 <div className='dangkyinputbox'>
                   <label>
-                    <b>Loại sản xuất</b>
+                    <b>Loại sản xuất:</b>
                     <select
                       name='loasx'
                       value={loaisx}
@@ -3433,7 +3433,7 @@ const YCSXManager = () => {
                 </div>
                 <div className='dangkyinputbox'>
                   <label>
-                    <b>PO NO</b>
+                    <b>PO NO:</b>
                     <Autocomplete
                       size='small'
                       disablePortal
@@ -3472,51 +3472,27 @@ const YCSXManager = () => {
               </div>
               <div className='dangkybutton'>
                 {selection.themycsx && (
-                  <button
-                    className='thembutton'
-                    onClick={() => {
-                      handle_add_1YCSX();
-                    }}
-                  >
-                    Add
-                  </button>
+                  <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#00DF0E' }} onClick={() => {
+                    handle_add_1YCSX();
+                  }}>Add</Button>
                 )}
                 {selection.inserttableycsx && (
-                  <button
-                    className='thembutton'
-                    onClick={() => {
-                      handle_InsertYCSXTable();
-                    }}
-                  >
-                    Insert
-                  </button>
+                  <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: 'yellow', color: 'black' }} onClick={() => {
+                    handle_InsertYCSXTable();
+                  }}>Insert</Button>
                 )}
                 {selection.suaycsx && (
-                  <button
-                    className='suabutton'
-                    onClick={() => {
-                      updateYCSX();
-                    }}
-                  >
-                    Update
-                  </button>
+                  <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: 'red' }} onClick={() => {
+                    updateYCSX();
+                  }}>Update</Button>
                 )}
-                <button
-                  className='xoabutton'
-                  onClick={() => {
-                    clearYCSXform();
-                  }}
-                >
-                  Clear
-                </button>
-                <button
-                  className='closebutton'
-                  onClick={() => {
-                    setSelection({ ...selection, them1po: false });
-                  }}
-                >
-                  Close
-                </button>
+                <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: 'gray' }} onClick={() => {
+                  clearYCSXform();
+                }}>Clear</Button>
+                <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: 'black' }} onClick={() => {
+                  setSelection({ ...selection, them1po: false });
+                }}>Close</Button>
+
               </div>
             </div>
           </div>
@@ -3539,33 +3515,15 @@ const YCSXManager = () => {
                 />
               </label>
               <div className='ycsxbutton'>
-                <div
-                  className='checkpobutton'
-                  onClick={(e) => {
-                    e.preventDefault();
-                    confirmCheckYcsxHangLoat();
-                  }}
-                >
-                  Check YCSX
-                </div>
-                <div
-                  className='uppobutton'
-                  onClick={(e) => {
-                    e.preventDefault();
-                    confirmUpYcsxHangLoat();
-                  }}
-                >
-                  Up YCSX
-                </div>
-                <div
-                  className='clearobutton'
-                  onClick={(e) => {
-                    e.preventDefault();
-                    handle_DeleteYCSX_Excel();
-                  }}
-                >
-                  Clear YCSX
-                </div>
+                <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: 'blue' }} onClick={() => {
+                  confirmCheckYcsxHangLoat();
+                }}>Check YCSX</Button>
+                <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#3EAF45' }} onClick={() => {
+                  confirmUpYcsxHangLoat();
+                }}>Up YCSX</Button>
+                <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: 'gray' }} onClick={() => {
+                  handle_DeleteYCSX_Excel();
+                }}>Clear YCSX</Button>
               </div>
             </form>
             <div className='insertYCSXTable'>
@@ -3864,7 +3822,7 @@ const YCSXManager = () => {
               <div className='forminput'>
                 <div className='forminputcolumn'>
                   <label>
-                    <b>Số YCSX:</b>{" "}
+                    <b>Số Yêu Cầu:::</b>
                     <input
                       type='text'
                       placeholder='1F80008'
@@ -3876,7 +3834,7 @@ const YCSXManager = () => {
                     ></input>
                   </label>
                   <label>
-                    <b>ID Công việc:</b>{" "}
+                    <b>ID Công việc:</b>
                     <input
                       type='text'
                       placeholder='CG7607845474986040938'
@@ -3885,66 +3843,44 @@ const YCSXManager = () => {
                     ></input>
                   </label>
                 </div>
-                <div className='forminputcolumn'>
-                  <div className='prod_request_info'>
-                    <div style={{ color: "green" }}>Code KD: {codeKD}</div>
-                    <div style={{ color: "red" }}>Code ERP: {codeCMS}</div>
-                    <div style={{ color: "blue" }}>
-                      Cavity Amazon: {cavityAmazon}
-                    </div>
-                    <div style={{ color: "black" }}>Model: {prod_model}</div>
+                <div className='prod_request_info'>
+                  <div style={{ color: "green" }}>Code KD: {codeKD}</div>
+                  <div style={{ color: "red" }}>Code ERP: {codeCMS}</div>
+                  <div style={{ color: "blue" }}>
+                    Cavity Amazon: {cavityAmazon}
                   </div>
+                  <div style={{ color: "black" }}>Model: {prod_model}</div>
                 </div>
+
               </div>
               <form className='formupload'>
-                <label htmlFor='upload'>
-                  <b>Chọn file Excel: </b>
-                  <input
-                    className='selectfilebutton'
-                    type='file'
-                    name='upload'
-                    id='upload'
-                    onChange={(e: any) => {
-                      readUploadFileAmazon(e);
-                    }}
-                  />
-                </label>
-                <div
-                  className='uppobutton'
-                  onClick={(e) => {
-                    e.preventDefault();
-                    upAmazonData();
-                  }}
-                >
-                  Up
+                <div className="uploadfile">
+                  <label htmlFor='upload'>
+                    <input
+                      className='selectfilebutton'
+                      type='file'
+                      name='upload'
+                      id='upload'
+                      onChange={(e: any) => {
+                        readUploadFileAmazon(e);
+                      }}
+                    />
+                  </label>
                 </div>
-                <div
-                  className='uppobutton'
-                  onClick={(e) => {
-                    e.preventDefault();
+                <div className="uploadbutton">
+                  <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#00DF0E' }} onClick={() => {
                     upAmazonDataSuperFast();
-                  }}
-                >
-                  Up Super Fast
-                </div>
-                <div
-                  className='checkpobutton'
-                  onClick={(e) => {
-                    e.preventDefault();
+                  }}>Up</Button>
+                  <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#f3f70e', color: 'black' }} onClick={() => {
                     checkDuplicateAMZ();
-                  }}
-                >
-                  Check
-                </div>
-                <div
-                  className='clearobutton'
-                  onClick={(e) => {
-                    e.preventDefault();
+                  }}>Check</Button>
+                  <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: 'gray' }} onClick={() => {
                     setUploadExcelJSon([]);
-                  }}
-                >
-                  Clear
+                  }}>Clear</Button>
+
                 </div>
+
+
                 {progressvalue}/{uploadExcelJson.length}
               </form>
             </div>
