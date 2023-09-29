@@ -1136,17 +1136,9 @@ const YCSXManager = () => {
   function CustomToolbar() {
     return (
       <GridToolbarContainer>
-        <GridToolbarColumnsButton />
-        <GridToolbarFilterButton />
-        <GridToolbarDensitySelector />
-        <button
-          className='saveexcelbutton'
-          onClick={() => {
-            SaveExcel(uploadExcelJson, "Uploaded PO");
-          }}
-        >
-          Save Excel
-        </button>
+        <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#098611' }} onClick={() => {
+          SaveExcel(uploadExcelJson, "Uploaded PO");
+        }}>Save Excel</Button>
         <GridToolbarQuickFilter />
       </GridToolbarContainer>
     );
@@ -1154,17 +1146,9 @@ const YCSXManager = () => {
   function CustomToolbarAmazon() {
     return (
       <GridToolbarContainer>
-        <GridToolbarColumnsButton />
-        <GridToolbarFilterButton />
-        <GridToolbarDensitySelector />
-        <button
-          className='saveexcelbutton'
-          onClick={() => {
-            SaveExcel(uploadExcelJson, "Uploaded Amazon");
-          }}
-        >
-          Save Excel
-        </button>
+        <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#098611' }} onClick={() => {
+          SaveExcel(uploadExcelJson, "Uploaded Amazon");
+        }}>Save Excel</Button>
         <GridToolbarQuickFilter />
       </GridToolbarContainer>
     );

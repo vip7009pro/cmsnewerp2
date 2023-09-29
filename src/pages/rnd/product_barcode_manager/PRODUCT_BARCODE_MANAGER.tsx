@@ -223,7 +223,7 @@ const PRODUCT_BARCODE_MANAGER = () => {
               allowDeleting={false}
               mode="batch"
               confirmDelete={true}
-              onChangesChange={(e) => {}}
+              onChangesChange={(e) => { }}
             />
             <Export enabled={true} />
             <Toolbar disabled={false}>
@@ -1121,7 +1121,7 @@ const PRODUCT_BARCODE_MANAGER = () => {
     //setColumnDefinition(column_inspect_output);
   }, []);
   return (
-    <div className="qlvl">
+    <div className="product_barcode_mamanger">
       <div className="tracuuDataInspection">
         <div className="tracuuDataInspectionform">
           <div className="forminput">

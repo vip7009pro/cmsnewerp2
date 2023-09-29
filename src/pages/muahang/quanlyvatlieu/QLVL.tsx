@@ -1052,24 +1052,6 @@ const QLVL = () => {
                   }}
                 />
               </label>
-
-              {/* <label>
-                <b>Vendor:</b>{" "}
-                      <select
-                        name='vendor'
-                        value={selectedRows?.CUST_CD}
-                        onChange={(e) => {
-                            seMaterialInfo("CUST_CD", e.target.value);
-                            console.log(selectedRows);
-                        }}
-                      >
-                        {customerList.map((element, index) => (
-                          <option key={index} value={element.CUST_CD}>
-                            {element.CUST_NAME_KD}
-                          </option>
-                        ))}
-                      </select>
-                </label> */}
             </div>
             <div className="forminputcolumn">
               <label>

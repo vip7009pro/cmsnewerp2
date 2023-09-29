@@ -127,7 +127,7 @@ const DTCRESULT = () => {
               allowDeleting={false}
               mode="cell"
               confirmDelete={true}
-              onChangesChange={(e) => {}}
+              onChangesChange={(e) => { }}
             />
             <Export enabled={true} />
             <Toolbar disabled={false}>
@@ -314,7 +314,7 @@ const DTCRESULT = () => {
         console.log(error);
       });
   };
-  useEffect(() => {}, []);
+  useEffect(() => { }, []);
   return (
     <div className="dtcresult">
       <div className="tracuuDataInspection">
@@ -374,12 +374,15 @@ const DTCRESULT = () => {
                                 }}
                               >
                                 <FormControlLabel
+                                  labelPlacement="bottom"
                                   value={element.TEST_CODE.toString()}
                                   key={index}
-                                  style={{ fontSize: 5 }}
+                                  style={{ fontSize: 5, padding: 0, margin: 0 }}
                                   label={
                                     <Typography
                                       style={{
+                                        padding: 0,
+                                        margin: 0,
                                         fontSize: 12,
                                         fontWeight: element.CHECKADDED
                                           ? "bold"
@@ -392,7 +395,7 @@ const DTCRESULT = () => {
                                       {element.TEST_NAME}
                                     </Typography>
                                   }
-                                  sx={{ fontSize: 5 }}
+                                  sx={{ fontSize: 5, padding: 0, margin: 0 }}
                                   control={<Radio />}
                                 />
                               </div>
@@ -419,22 +422,17 @@ const DTCRESULT = () => {
               </div>
             </div>
             <div className="formbutton">
-              <button
-                className="tranhatky"
-                onClick={() => {
-                  if (checkInput()) {
-                    insertDTCResult();
-                  } else {
-                    Swal.fire(
-                      "Thông báo",
-                      "Hãy nhập đủ thông tin trước khi đăng ký",
-                      "error",
-                    );
-                  }
-                }}
-              >
-                NHẬP KẾT QUẢ
-              </button>
+              <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#2297c5' }} onClick={() => {
+                if (checkInput()) {
+                  insertDTCResult();
+                } else {
+                  Swal.fire(
+                    "Thông báo",
+                    "Hãy nhập đủ thông tin trước khi đăng ký",
+                    "error",
+                  );
+                }
+              }}>NHẬP KẾT QUẢ</Button>
             </div>
             <div
               className="formbutton"
