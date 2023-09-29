@@ -994,6 +994,7 @@ export interface EmployeeTableData {
   MAINDEPTNAME: string;
   MAINDEPTNAME_KR: string;
   NV_CCID: number;
+  EMPL_IMAGE: string;
 }
 //CS data
 export interface CSCONFIRM_DATA {

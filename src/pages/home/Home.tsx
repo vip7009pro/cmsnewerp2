@@ -22,7 +22,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { addTab, closeTab, settabIndex } from "../../redux/slices/globalSlice";
 import AccountInfo from "../../components/Navbar/AccountInfo/AccountInfo";
 import styled from "@emotion/styled";
-export const current_ver: number = 227;
+export const current_ver: number = 229;
 interface ELE_ARRAY {
   REACT_ELE: ReactElement;
   ELE_NAME: string;

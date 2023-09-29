@@ -1,4 +1,4 @@
-import { IconButton } from "@mui/material";
+import { IconButton, Button } from "@mui/material";
 import moment from "moment";
 import React, { useContext, useEffect, useState } from "react";
 import { AiFillFileExcel } from "react-icons/ai";
@@ -141,7 +141,7 @@ const HOLDING = () => {
           dataSource={holdingdatatable}
           columnWidth="auto"
           keyExpr="id"
-          height={"70vh"}
+          height={"76vh"}
           showBorders={true}
           onSelectionChanged={(e) => {
             //setSelectedRows(e.selectedRowsData.length);
@@ -166,7 +166,7 @@ const HOLDING = () => {
             allowDeleting={false}
             mode="cell"
             confirmDelete={true}
-            onChangesChange={(e) => {}}
+            onChangesChange={(e) => { }}
           />
           <Export enabled={true} />
           <Toolbar disabled={false}>
@@ -424,8 +424,8 @@ const HOLDING = () => {
                 QC_PASS_DATE:
                   element.QC_PASS_DATE !== null
                     ? moment
-                        .utc(element.QC_PASS_DATE)
-                        .format("YYYY-MM-DD HH:mm:ss")
+                      .utc(element.QC_PASS_DATE)
+                      .format("YYYY-MM-DD HH:mm:ss")
                     : "",
                 id: index,
               };
@@ -532,39 +532,17 @@ const HOLDING = () => {
                 </select>
               </label>
             </div>
-          </div>
-          <div className="formbutton">
-            <label>
-              <b>All Time:</b>
-              <input
-                onKeyDown={(e) => {
-                  handleSearchCodeKeyDown(e);
-                }}
-                type="checkbox"
-                name="alltimecheckbox"
-                defaultChecked={alltime}
-                onChange={() => setAllTime(!alltime)}
-              ></input>
-            </label>
-            <button
-              className="tranhatky"
-              onClick={() => {
+            <div className="forminputcolumn">
+              <Button color={'success'} variant="contained" size="small" fullWidth={true} sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#fa1717' }} onClick={() => {
                 handletraHoldingData();
-              }}
-            >
-              Tra Holding
-            </button>
-            <button
-              className="tranhatky"
-              onClick={() => {
+              }}>Tra Holding</Button>
+              <Button color={'success'} variant="contained" size="small" fullWidth={true} sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#fffc5b', color: 'black' }} onClick={() => {
                 updateReason();
-              }}
-            >
-              Update Reason
-            </button>
-            <IconButton
-              className="buttonIcon"
-              onClick={() => {
+              }}>Update Reason</Button>
+
+            </div>
+            <div className="forminputcolumn">
+              <Button color={'success'} variant="contained" size="small" fullWidth={true} sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#07cc00' }} onClick={() => {
                 if (userData?.SUBDEPTNAME === "IQC") {
                   setQCPASS("Y");
                 } else {
@@ -574,17 +552,8 @@ const HOLDING = () => {
                     "error",
                   );
                 }
-                //checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['QC'], ()=>{setQCPASS('Y');});
-                //checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['QLSX'], setQCPASS('Y'));
-                //setQCPASS('Y');
-              }}
-            >
-              <GrStatusGood color="green" size={25} />
-              SET PASS
-            </IconButton>
-            <IconButton
-              className="buttonIcon"
-              onClick={() => {
+              }}>SET PASS</Button>
+              <Button color={'success'} variant="contained" size="small" fullWidth={true} sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: 'gray' }} onClick={() => {
                 if (userData?.SUBDEPTNAME === "IQC") {
                   setQCPASS("N");
                 } else {
@@ -594,14 +563,25 @@ const HOLDING = () => {
                     "error",
                   );
                 }
-                //checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['QC'], ()=>{setQCPASS('Y');});
-                //checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['QLSX'], setQCPASS('N'));
-                //setQCPASS('N');
-              }}
-            >
-              <FcCancel color="red" size={25} />
-              RESET PASS
-            </IconButton>
+              }}>RESET PASS</Button>
+
+
+            </div>
+            <div className="forminputcolumn">
+              <label>
+                <b>All Time:</b>
+                <input
+                  onKeyDown={(e) => {
+                    handleSearchCodeKeyDown(e);
+                  }}
+                  type="checkbox"
+                  name="alltimecheckbox"
+                  defaultChecked={alltime}
+                  onChange={() => setAllTime(!alltime)}
+                ></input>
+              </label>
+
+            </div>
           </div>
         </div>
         <div className="tracuuYCSXTable">{materialDataTable}</div>

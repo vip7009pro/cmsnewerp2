@@ -1,4 +1,4 @@
-import { IconButton } from "@mui/material";
+import { IconButton, Button } from "@mui/material";
 import moment from "moment";
 import React, { useContext, useEffect, useState } from "react";
 import { AiFillFileExcel } from "react-icons/ai";
@@ -87,7 +87,7 @@ const SPECDTC = () => {
               allowDeleting={false}
               mode="batch"
               confirmDelete={true}
-              onChangesChange={(e) => {}}
+              onChangesChange={(e) => { }}
             />
             <Export enabled={true} />
             <Toolbar disabled={false}>
@@ -447,14 +447,9 @@ const SPECDTC = () => {
                 onChange={() => setAllTime(!alltime)}
               ></input>
             </label>
-            <button
-              className="tranhatky"
-              onClick={() => {
-                handletraDTCData();
-              }}
-            >
-              Spec DTC
-            </button>
+            <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#18a70b' }} onClick={() => {
+              handletraDTCData();
+            }}> Spec DTC</Button>
           </div>
         </div>
         <div className="tracuuYCSXTable">{materialDataTable}</div>

@@ -47,11 +47,9 @@ import {
   QC_FAIL_DATA,
   UserData,
 } from "../../../api/GlobalInterface";
-
 const FAILING = () => {
   const [cmsvcheck, setCMSVCheck] = useState(true);
   const [customerList, setCustomerList] = useState<CustomerListData[]>([]);
-
   const userData: UserData | undefined = useSelector(
     (state: RootState) => state.totalSlice.userData,
   );
@@ -143,19 +141,9 @@ const FAILING = () => {
             <BiShow color="blue" size={25} />
             Show/Hide Input
           </IconButton>
-          <span style={{ fontSize: 20, fontWeight: "bold" }}>
+          <span style={{ fontSize: '1rem', fontWeight: "bold" }}>
             BẢNG NHẬP THÔNG TIN CUỘN LIỆU- BTP QC FAIL
           </span>
-          <IconButton
-            className="buttonIcon"
-            onClick={() => {
-              handletraFailingData();
-              setShowHideInput(false);
-            }}
-          >
-            <AiOutlineSearch color="red" size={25} />
-            Tra Data
-          </IconButton>
         </div>
         <DataGrid
           style={{ fontSize: "0.7rem" }}
@@ -169,7 +157,7 @@ const FAILING = () => {
           dataSource={inspectiondatatable}
           columnWidth="auto"
           keyExpr="id"
-          height={"70vh"}
+          height={"79vh"}
           showBorders={true}
           onSelectionChanged={(e) => {
             setSelectedRowsData(e.selectedRowsData);
@@ -195,7 +183,7 @@ const FAILING = () => {
             allowDeleting={false}
             mode="cell"
             confirmDelete={true}
-            onChangesChange={(e) => {}}
+            onChangesChange={(e) => { }}
           />
           <Export enabled={true} />
           <Toolbar disabled={false}>
@@ -478,20 +466,20 @@ const FAILING = () => {
                   element.INS_DATE === null
                     ? ""
                     : moment(element.INS_DATE)
-                        .utc()
-                        .format("YYYY-MM-DD HH:mm:ss"),
+                      .utc()
+                      .format("YYYY-MM-DD HH:mm:ss"),
                 UPD_DATE:
                   element.UPD_DATE === null
                     ? ""
                     : moment(element.UPD_DATE)
-                        .utc()
-                        .format("YYYY-MM-DD HH:mm:ss"),
+                      .utc()
+                      .format("YYYY-MM-DD HH:mm:ss"),
                 QC_PASS_DATE:
                   element.QC_PASS_DATE === null
                     ? ""
                     : moment(element.QC_PASS_DATE)
-                        .utc()
-                        .format("YYYY-MM-DD HH:mm:ss"),
+                      .utc()
+                      .format("YYYY-MM-DD HH:mm:ss"),
                 id: index,
               };
             },
@@ -517,14 +505,14 @@ const FAILING = () => {
           if (selection === 1) {
             setEmplName(
               response.data.data[0].MIDLAST_NAME +
-                " " +
-                response.data.data[0].FIRST_NAME,
+              " " +
+              response.data.data[0].FIRST_NAME,
             );
           } else {
             setEmplName2(
               response.data.data[0].MIDLAST_NAME +
-                " " +
-                response.data.data[0].FIRST_NAME,
+              " " +
+              response.data.data[0].FIRST_NAME,
             );
           }
         } else {
@@ -579,8 +567,8 @@ const FAILING = () => {
           console.log(response.data.data);
           setM_Name(
             response.data.data[0].M_NAME +
-              " | " +
-              response.data.data[0].WIDTH_CD,
+            " | " +
+            response.data.data[0].WIDTH_CD,
           );
           setM_Code(response.data.data[0].M_CODE);
           setWidthCD(response.data.data[0].WIDTH_CD);
@@ -757,7 +745,7 @@ const FAILING = () => {
         Swal.fire("Thông báo", "Có lỗi: " + err_code, "error");
       }
     } else {
-      Swal.fire("Chọn ít nhất 1 dòng để thực hiện");
+      Swal.fire("Thông báo", "Chọn ít nhất 1 dòng để thực hiện", "error");
     }
   };
   useEffect(() => {
@@ -768,416 +756,407 @@ const FAILING = () => {
     <div className="failing">
       <div className="tracuuDataInspection">
         <div className="maintable">
-          {showhideinput && (
-            <div className="tracuuDataInspectionform">
-              <b style={{ color: "blue" }}>INPUT LIỆU QC FAIL</b>
-              <div className="forminput">
-                <div className="forminputcolumn">
-                  <label>
-                    Vendor:
-                    <select
-                      disabled={cmsvcheck}
-                      name="khachhang"
-                      value={cust_cd}
-                      onChange={(e) => {
-                        setCust_Cd(e.target.value);
-                      }}
-                    >
-                      {customerList.map((element, index) => (
-                        <option key={index} value={element.CUST_CD}>
-                          {element.CUST_NAME_KD}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
-                  <label>
-                    CMSV
-                    <input
-                      type="checkbox"
-                      name="alltimecheckbox"
-                      defaultChecked={cmsvcheck}
-                      onChange={(e) => {
-                        if (cmsvcheck === false) setCust_Cd("6969");
-                        setCMSVCheck(!cmsvcheck);
-                      }}
-                    ></input>
-                  </label>
-                  <b>Phân loại hàng</b>
-                  <label>
-                    <select
-                      name="phanloaihang"
-                      value={testtype}
-                      onChange={(e) => {
-                        setTestType(e.target.value);
-                      }}
-                    >
-                      <option value="NVL">Vật Liệu</option>
-                      <option value="BTP">Bán Thành Phẩm</option>
-                    </select>
-                  </label>
-                  <b>Số chỉ thị sản xuất</b>
-                  <label>
-                    <input
-                      type="text"
-                      placeholder="1F80008A"
-                      value={planId}
-                      onChange={(e) => {
-                        if (e.target.value.length >= 7) {
-                          checkPlanID(e.target.value);
-                          checkPQC3_ID(e.target.value);
-                        }
-                        setPlanId(e.target.value);
-                      }}
-                    ></input>
-                  </label>
-                  {g_name && (
-                    <span
-                      style={{
-                        fontSize: 15,
-                        fontWeight: "bold",
-                        color: "blue",
-                      }}
-                    >
-                      {g_name}
-                    </span>
-                  )}
-                  <b>LOT NVL CMS</b>
-                  <label>
-                    <input
-                      type="text"
-                      placeholder="202304190123"
-                      value={inputno}
-                      onChange={(e) => {
-                        //console.log(e.target.value.length);
-                        if (e.target.value.length >= 7) {
-                          //console.log(e.target.value);
-                          checkLotNVL(e.target.value);
-                        }
-                        setInputNo(e.target.value);
-                      }}
-                    ></input>
-                  </label>
-                  {m_name && (
-                    <span
-                      style={{
-                        fontSize: 15,
-                        fontWeight: "bold",
-                        color: "blue",
-                      }}
-                    >
-                      {m_name}
-                    </span>
-                  )}
-                  <b>VENDOR LOT</b>
-                  <label>
-                    <input
-                      type="text"
-                      placeholder={"54951949844984"}
-                      value={vendorLot}
-                      onChange={(e) => {
-                        setVendorLot(e.target.value);
-                      }}
-                    ></input>
-                  </label>
-                  <b>Mã nhân viên giao</b>
-                  <label>
-                    <input
-                      type="text"
-                      placeholder={"NVD1201"}
-                      value={request_empl}
-                      onChange={(e) => {
-                        if (e.target.value.length >= 7) {
-                          checkEMPL_NAME(1, e.target.value);
-                        }
-                        setrequest_empl(e.target.value);
-                      }}
-                    ></input>
-                  </label>
-                  {request_empl && (
-                    <span
-                      style={{
-                        fontSize: 15,
-                        fontWeight: "bold",
-                        color: "blue",
-                      }}
-                    >
-                      {empl_name}
-                    </span>
-                  )}
-                  <b>Mã nhân viên nhận</b>
-                  <label>
-                    <input
-                      type="text"
-                      placeholder={"NVD1201"}
-                      value={request_empl2}
-                      onChange={(e) => {
-                        if (e.target.value.length >= 7) {
-                          checkEMPL_NAME(2, e.target.value);
-                        }
-                        setrequest_empl2(e.target.value);
-                      }}
-                    ></input>
-                  </label>
-                  {request_empl2 && (
-                    <span
-                      style={{
-                        fontSize: 15,
-                        fontWeight: "bold",
-                        color: "blue",
-                      }}
-                    >
-                      {empl_name2}
-                    </span>
-                  )}
-                </div>
-                <b>Remark</b>
-                <div className="forminputcolumn">
-                  <label>
-                    <input
-                      type="text"
-                      placeholder={"Ghi chú"}
-                      value={remark}
-                      onChange={(e) => {
-                        setReMark(e.target.value);
-                      }}
-                    ></input>
-                  </label>
-                </div>
+          <div className="tracuuDataInspectionform">
+            <div className="forminput">
+              <div className="forminputcolumn">
+                <label>
+                  <b>Tên Nhà cung cấp:</b>
+                  <select
+                    disabled={cmsvcheck}
+                    name="khachhang"
+                    value={cust_cd}
+                    onChange={(e) => {
+                      setCust_Cd(e.target.value);
+                    }}
+                  >
+                    {customerList.map((element, index) => (
+                      <option key={index} value={element.CUST_CD}>
+                        {element.CUST_NAME_KD}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <label>
+                  <b>Phân loại hàng:</b>
+                  <select
+                    name="phanloaihang"
+                    value={testtype}
+                    onChange={(e) => {
+                      setTestType(e.target.value);
+                    }}
+                  >
+                    <option value="NVL">Vật Liệu</option>
+                    <option value="BTP">Bán Thành Phẩm</option>
+                  </select>
+                </label>
               </div>
-              <div className="formbutton">
-                <button
-                  className="tranhatky"
-                  onClick={() => {
-                    if (checkInput()) {
-                      let lotArray = inspectiondatatable.map(
-                        (element: QC_FAIL_DATA, index: number) => {
-                          return element.M_LOT_NO;
-                        },
-                      );
-                      if (pqc3Id !== 0) {
-                        if (lotArray.indexOf(inputno) < 0) {
-                          addRow();
-                        } else {
-                          Swal.fire(
-                            "Thông tin",
-                            "Đã thêm cuộn này rồi",
-                            "error",
-                          );
-                        }
+              <div className="forminputcolumn">
+                <label>
+                  <b>Số chỉ thị sản xuất:</b>
+                  <input
+                    type="text"
+                    placeholder="1F80008A"
+                    value={planId}
+                    onChange={(e) => {
+                      if (e.target.value.length >= 7) {
+                        checkPlanID(e.target.value);
+                        checkPQC3_ID(e.target.value);
+                      }
+                      setPlanId(e.target.value);
+                    }}
+                  ></input>
+                </label>
+                {g_name && (
+                  <span
+                    style={{
+                      fontSize: 15,
+                      fontWeight: "bold",
+                      color: "blue",
+                    }}
+                  >
+                    {g_name}
+                  </span>
+                )}
+                <label>
+                  <b>LOT NVL CMS:</b>
+                  <input
+                    type="text"
+                    placeholder="202304190123"
+                    value={inputno}
+                    onChange={(e) => {
+                      //console.log(e.target.value.length);
+                      if (e.target.value.length >= 7) {
+                        //console.log(e.target.value);
+                        checkLotNVL(e.target.value);
+                      }
+                      setInputNo(e.target.value);
+                    }}
+                  ></input>
+                </label>
+                {m_name && (
+                  <span
+                    style={{
+                      fontSize: 15,
+                      fontWeight: "bold",
+                      color: "blue",
+                    }}
+                  >
+                    {m_name}
+                  </span>
+                )}
+              </div>
+              <div className="forminputcolumn">
+                <label>
+                  <b>VENDOR LOT:</b>
+                  <input
+                    type="text"
+                    placeholder={"54951949844984"}
+                    value={vendorLot}
+                    onChange={(e) => {
+                      setVendorLot(e.target.value);
+                    }}
+                  ></input>
+                </label>
+                <label>
+                  <b>Mã nhân viên giao:</b>
+                  <input
+                    type="text"
+                    placeholder={"NVD1201"}
+                    value={request_empl}
+                    onChange={(e) => {
+                      if (e.target.value.length >= 7) {
+                        checkEMPL_NAME(1, e.target.value);
+                      }
+                      setrequest_empl(e.target.value);
+                    }}
+                  ></input>
+                </label>
+                {request_empl && (
+                  <span
+                    style={{
+                      fontSize: 15,
+                      fontWeight: "bold",
+                      color: "blue",
+                    }}
+                  >
+                    {empl_name}
+                  </span>
+                )}
+              </div>
+              <div className="forminputcolumn">
+                <label>
+                  <b>Mã nhân viên nhận:</b>
+                  <input
+                    type="text"
+                    placeholder={"NVD1201"}
+                    value={request_empl2}
+                    onChange={(e) => {
+                      if (e.target.value.length >= 7) {
+                        checkEMPL_NAME(2, e.target.value);
+                      }
+                      setrequest_empl2(e.target.value);
+                    }}
+                  ></input>
+                </label>
+                {request_empl2 && (
+                  <span
+                    style={{
+                      fontSize: 15,
+                      fontWeight: "bold",
+                      color: "blue",
+                    }}
+                  >
+                    {empl_name2}
+                  </span>
+                )}
+                <label>
+                  <b>Remark:</b>
+                  <input
+                    type="text"
+                    placeholder={"Ghi chú"}
+                    value={remark}
+                    onChange={(e) => {
+                      setReMark(e.target.value);
+                    }}
+                  ></input>
+                </label>
+              </div>
+              <div className="forminputcolumn">
+                <Button color={'success'} variant="contained" size="small" fullWidth={true} sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#33ac15' }} onClick={() => {
+                  if (checkInput()) {
+                    let lotArray = inspectiondatatable.map(
+                      (element: QC_FAIL_DATA, index: number) => {
+                        return element.M_LOT_NO;
+                      },
+                    );
+                    if (pqc3Id !== 0) {
+                      if (lotArray.indexOf(inputno) < 0) {
+                        addRow();
                       } else {
                         Swal.fire(
                           "Thông tin",
-                          "Số chỉ thị này PQC chưa lập lỗi, không thêm được",
+                          "Đã thêm cuộn này rồi",
                           "error",
                         );
                       }
                     } else {
                       Swal.fire(
-                        "Thông báo",
-                        "Hãy nhập đủ thông tin trước khi đăng ký",
+                        "Thông tin",
+                        "Số chỉ thị này PQC chưa lập lỗi, không thêm được",
                         "error",
                       );
                     }
-                  }}
-                >
-                  Add
-                </button>
-                <button
-                  className="tranhatky"
-                  onClick={() => {
-                    saveFailingData();
-                  }}
-                >
-                  Save
-                </button>
+                  } else {
+                    Swal.fire(
+                      "Thông báo",
+                      "Hãy nhập đủ thông tin trước khi đăng ký",
+                      "error",
+                    );
+                  }
+                }}>Add</Button>
+                <Button color={'success'} variant="contained" size="small" fullWidth={true} sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#f764ef' }} onClick={() => {
+                  saveFailingData();
+                }}>Save</Button>
               </div>
-              <div
-                className="formbutton"
-                style={{ marginTop: "20px", display: "flex", flexWrap: "wrap" }}
-              ></div>
+              <div className="forminputcolumn">
+                <label>
+                  <b>CMSV</b>
+                  <input
+                    type="checkbox"
+                    name="alltimecheckbox"
+                    defaultChecked={cmsvcheck}
+                    onChange={(e) => {
+                      if (cmsvcheck === false) setCust_Cd("6969");
+                      setCMSVCheck(!cmsvcheck);
+                    }}
+                  ></input>
+                </label>
+                <Button color={'success'} variant="contained" size="small" fullWidth={true} sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#d7f724', color: 'black' }} onClick={() => {
+                  handletraFailingData();
+                }}>Tra Data</Button>
+              </div>
             </div>
-          )}
-          <div className="tracuuYCSXTable">{materialDataTable}</div>
-          {!showhideinput && (
-            <div className="tracuuDataInspectionform">
-              <b style={{ color: "blue" }}>OUTPUT LIỆU QC FAIL</b>
-              <div className="forminput">
-                <div className="forminputcolumn">
-                  <label>
-                    Vendor:
-                    <select
-                      disabled={cmsvcheck}
-                      name="khachhang"
-                      value={cust_cd}
-                      onChange={(e) => {
-                        setCust_Cd(e.target.value);
-                      }}
-                    >
-                      {customerList.map((element, index) => (
-                        <option key={index} value={element.CUST_CD}>
-                          {element.CUST_NAME_KD}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
-                  <label>
-                    CMSV
-                    <input
-                      type="checkbox"
-                      name="alltimecheckbox"
-                      defaultChecked={cmsvcheck}
-                      onChange={(e) => {
-                        if (cmsvcheck === false) setCust_Cd("6969");
-                        setCMSVCheck(!cmsvcheck);
-                      }}
-                    ></input>
-                  </label>
-                  <b>Số chỉ thị xuất ra</b>
-                  <label>
-                    <input
-                      type="text"
-                      placeholder="1F80008A"
-                      value={planId}
-                      onChange={(e) => {
-                        if (e.target.value.length >= 7) {
-                          checkPlanID(e.target.value);
-                        }
-                        setPlanId(e.target.value);
-                      }}
-                    ></input>
-                  </label>
-                  {g_name && (
-                    <span
-                      style={{
-                        fontSize: 15,
-                        fontWeight: "bold",
-                        color: "blue",
-                      }}
-                    >
-                      {g_name}
-                    </span>
-                  )}
-                  <b>Mã nhân viên giao</b>
-                  <label>
-                    <input
-                      type="text"
-                      placeholder={"NVD1201"}
-                      value={request_empl}
-                      onChange={(e) => {
-                        if (e.target.value.length >= 7) {
-                          checkEMPL_NAME(1, e.target.value);
-                        }
-                        setrequest_empl(e.target.value);
-                      }}
-                    ></input>
-                  </label>
-                  {request_empl && (
-                    <span
-                      style={{
-                        fontSize: 15,
-                        fontWeight: "bold",
-                        color: "blue",
-                      }}
-                    >
-                      {empl_name}
-                    </span>
-                  )}
-                  <b>Mã nhân viên nhận</b>
-                  <label>
-                    <input
-                      type="text"
-                      placeholder={"NVD1201"}
-                      value={request_empl2}
-                      onChange={(e) => {
-                        if (e.target.value.length >= 7) {
-                          checkEMPL_NAME(2, e.target.value);
-                        }
-                        setrequest_empl2(e.target.value);
-                      }}
-                    ></input>
-                  </label>
-                  {request_empl2 && (
-                    <span
-                      style={{
-                        fontSize: 15,
-                        fontWeight: "bold",
-                        color: "blue",
-                      }}
-                    >
-                      {empl_name2}
-                    </span>
-                  )}
-                </div>
-                <b>Remark</b>
-                <div className="forminputcolumn">
-                  <label>
-                    <input
-                      type="text"
-                      placeholder={"Ghi chú"}
-                      value={remark}
-                      onChange={(e) => {
-                        setReMark(e.target.value);
-                      }}
-                    ></input>
-                  </label>
-                </div>
+          </div>
+          <div className="tracuuYCSXTable">
+            {materialDataTable}
+          </div>
+          <div className="tracuuDataInspectionform2">
+            <b style={{ color: "blue" }}>OUTPUT LIỆU QC FAIL</b>
+            <div className="forminput">
+              <div className="forminputcolumn">
+                <label>
+                  <b>Vendor:</b>
+                  <select
+                    disabled={cmsvcheck}
+                    name="khachhang"
+                    value={cust_cd}
+                    onChange={(e) => {
+                      setCust_Cd(e.target.value);
+                    }}
+                  >
+                    {customerList.map((element, index) => (
+                      <option key={index} value={element.CUST_CD}>
+                        {element.CUST_NAME_KD}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <label>
+                  <b>CMSV:</b>
+                  <input
+                    type="checkbox"
+                    name="alltimecheckbox"
+                    defaultChecked={cmsvcheck}
+                    onChange={(e) => {
+                      if (cmsvcheck === false) setCust_Cd("6969");
+                      setCMSVCheck(!cmsvcheck);
+                    }}
+                  ></input>
+                </label>
               </div>
-              <div className="formbutton">
-                <button
-                  className="tranhatky"
-                  onClick={() => {
-                    updateQCFailTable();
-                  }}
-                >
-                  Xuất
-                </button>
+              <div className="forminputcolumn">
+                <label>
+                  <b>Số CT:</b>
+                  <input
+                    type="text"
+                    placeholder="1F80008A"
+                    value={planId}
+                    onChange={(e) => {
+                      if (e.target.value.length >= 7) {
+                        checkPlanID(e.target.value);
+                      }
+                      setPlanId(e.target.value);
+                    }}
+                  ></input>
+                </label>
+                {g_name && (
+                  <span
+                    style={{
+                      fontSize: 15,
+                      fontWeight: "bold",
+                      color: "blue",
+                    }}
+                  >
+                    {g_name}
+                  </span>
+                )}
               </div>
-              <div className="formbutton">
-                <IconButton
-                  className="buttonIcon"
-                  onClick={() => {
-                    if (userData?.SUBDEPTNAME === "IQC") {
-                      //console.log(selectedRowsDataA);
-                      setQCPASS("Y");
-                    } else {
-                      Swal.fire(
-                        "Thông báo",
-                        "Bạn không phải người bộ phận IQC",
-                        "error",
-                      );
-                    }
-                  }}
-                >
-                  <GrStatusGood color="green" size={25} />
-                  SET PASS
-                </IconButton>
-                <IconButton
-                  className="buttonIcon"
-                  onClick={() => {
-                    if (userData?.SUBDEPTNAME === "IQC") {
-                      setQCPASS("N");
-                    } else {
-                      Swal.fire(
-                        "Thông báo",
-                        "Bạn không phải người bộ phận IQC",
-                        "error",
-                      );
-                    }
-                    //checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['QC'], ()=>{setQCPASS('Y');});
-                    //checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['QLSX'], setQCPASS('N'));
-                    //setQCPASS('N');
-                  }}
-                >
-                  <FcCancel color="red" size={25} />
-                  RESET PASS
-                </IconButton>
+              <div className="forminputcolumn">
+                <label>
+                  <b>Ng.Giao:</b>
+                  <input
+                    type="text"
+                    placeholder={"NVD1201"}
+                    value={request_empl}
+                    onChange={(e) => {
+                      if (e.target.value.length >= 7) {
+                        checkEMPL_NAME(1, e.target.value);
+                      }
+                      setrequest_empl(e.target.value);
+                    }}
+                  ></input>
+                </label>
+                {request_empl && (
+                  <span
+                    style={{
+                      fontSize: 15,
+                      fontWeight: "bold",
+                      color: "blue",
+                    }}
+                  >
+                    {empl_name}
+                  </span>
+                )}
+                <label>
+                  <b>Ng.Nhận:</b>
+                  <input
+                    type="text"
+                    placeholder={"NVD1201"}
+                    value={request_empl2}
+                    onChange={(e) => {
+                      if (e.target.value.length >= 7) {
+                        checkEMPL_NAME(2, e.target.value);
+                      }
+                      setrequest_empl2(e.target.value);
+                    }}
+                  ></input>
+                </label>
+                {request_empl2 && (
+                  <span
+                    style={{
+                      fontSize: 15,
+                      fontWeight: "bold",
+                      color: "blue",
+                    }}
+                  >
+                    {empl_name2}
+                  </span>
+                )}
               </div>
-              <div
-                className="formbutton"
-                style={{ marginTop: "20px", display: "flex", flexWrap: "wrap" }}
-              ></div>
+              <div className="forminputcolumn">
+                <label>
+                  <b>Remark:</b>
+                  <input
+                    type="text"
+                    placeholder={"Ghi chú"}
+                    value={remark}
+                    onChange={(e) => {
+                      setReMark(e.target.value);
+                    }}
+                  ></input>
+                </label>
+              </div>
             </div>
-          )}
+            <div className="formbutton">
+              <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#efff0c', color: 'black' }} onClick={() => {
+                updateQCFailTable();
+              }}>Xuất</Button>
+            </div>
+            <div className="formbutton">
+              <IconButton
+                className="buttonIcon"
+                onClick={() => {
+                  if (userData?.SUBDEPTNAME === "IQC") {
+                    //console.log(selectedRowsDataA);
+                    setQCPASS("Y");
+                  } else {
+                    Swal.fire(
+                      "Thông báo",
+                      "Bạn không phải người bộ phận IQC",
+                      "error",
+                    );
+                  }
+                }}
+              >
+                <GrStatusGood color="green" size={25} />
+                SET PASS
+              </IconButton>
+              <IconButton
+                className="buttonIcon"
+                onClick={() => {
+                  if (userData?.SUBDEPTNAME === "IQC") {
+                    setQCPASS("N");
+                  } else {
+                    Swal.fire(
+                      "Thông báo",
+                      "Bạn không phải người bộ phận IQC",
+                      "error",
+                    );
+                  }
+                  //checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['QC'], ()=>{setQCPASS('Y');});
+                  //checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['QLSX'], setQCPASS('N'));
+                  //setQCPASS('N');
+                }}
+              >
+                <FcCancel color="red" size={25} />
+                RESET PASS
+              </IconButton>
+            </div>
+            <div
+              className="formbutton"
+              style={{ marginTop: "20px", display: "flex", flexWrap: "wrap" }}
+            ></div>
+          </div>
         </div>
       </div>
     </div>

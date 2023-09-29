@@ -53,8 +53,6 @@
               display: flex;
               flex-direction: column;
               gap: 10px;
-              align-items: flex-end;
-              justify-content: center;
               flex-wrap: wrap;
               .checkboxarray {
                 .custom-checkbox-root .MuiSvgIcon-root {
@@ -62,7 +60,7 @@
                 }
               }
               input {
-                width: 270px;
+                width: 250px;
                 height: 20px;
                 outline: none;
                 border-radius: 5px;

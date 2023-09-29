@@ -332,9 +332,6 @@ const INCOMMING = () => {
               <BiShow color="blue" size={25} />
               Show/Hide Input
             </IconButton>
-            <span style={{ fontSize: 20, fontWeight: "bold" }}>
-              BẢNG NHẬP THÔNG TIN LIỆU INCOMMING
-            </span>
             <IconButton
               className="buttonIcon"
               onClick={() => {
@@ -1432,7 +1429,7 @@ const INCOMMING = () => {
     <div className="incomming">
       <div className="tracuuDataInspection">
         <div className="maintable">
-          {showhideinput && (
+          {true && (
             <div className="tracuuDataInspectionform">
               <b style={{ color: "blue" }}>INPUT DATA KIỂM TRA INCOMMING</b>
               <div className="forminput">
@@ -1473,6 +1470,10 @@ const INCOMMING = () => {
                       }}
                     ></input>
                   </label>
+
+
+                </div>
+                <div className="forminputcolumn">
                   <b>Hạn sử dụng</b>
                   <label>
                     <input
@@ -1483,7 +1484,7 @@ const INCOMMING = () => {
                       }}
                     ></input>
                   </label>
-                  <b>Số Roll check ngoại quan</b>
+                  <b>RL NgQuan</b>
                   <label>
                     <input
                       type="text"
@@ -1493,7 +1494,12 @@ const INCOMMING = () => {
                       }}
                     ></input>
                   </label>
-                  <b>ID Test ngoại quan- độ tin cậy</b>
+
+                </div>
+
+
+                <div className="forminputcolumn">
+                  <b>ID TestĐTC</b>
                   <label>
                     <input
                       type="text"
@@ -1503,7 +1509,7 @@ const INCOMMING = () => {
                       }}
                     ></input>
                   </label>
-                  <b>Mã nhân viên test IQC</b>
+                  <b>Mã IQC</b>
                   <label>
                     <input
                       type="text"
@@ -1529,8 +1535,8 @@ const INCOMMING = () => {
                     </span>
                   )}
                 </div>
-                <b>Remark</b>
                 <div className="forminputcolumn">
+                  <b>Remark</b>
                   <label>
                     <input
                       type="text"
@@ -1544,35 +1550,27 @@ const INCOMMING = () => {
                 </div>
               </div>
               <div className="formbutton">
-                <button
-                  className="tranhatky"
-                  onClick={() => {
-                    if (checkInput()) {
-                      addRow();
-                    } else {
-                      Swal.fire(
-                        "Thông báo",
-                        "Hãy nhập đủ thông tin trước khi đăng ký",
-                        "error",
-                      );
-                    }
-                  }}
-                >
-                  Add
-                </button>
-                <button
-                  className="tranhatky"
-                  onClick={() => {
-                    insertIQC1Table();
-                  }}
-                >
-                  Save
-                </button>
+                <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#f3f735', color: 'black' }} onClick={() => {
+                  if (checkInput()) {
+                    addRow();
+                  } else {
+                    Swal.fire(
+                      "Thông báo",
+                      "Hãy nhập đủ thông tin trước khi đăng ký",
+                      "error",
+                    );
+                  }
+                }}>Add</Button>
+                <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#0ca32d' }} onClick={() => {
+                  insertIQC1Table();
+                }}>Save</Button>
+
+
               </div>
             </div>
           )}
           <div className="tracuuYCSXTable">{materialDataTable}</div>
-          {!showhideinput && (
+          {true && (
             <div className="tracuuDataInspectionform2">
               <b style={{ color: "blue" }}>Kết quả ĐTC</b>
               <Datagrid2

@@ -617,37 +617,28 @@ const DKDTC = () => {
                   }}
                 ></input>
               </label>
-              <button
-                className="tranhatky"
-                onClick={() => {
-                  setTestList((tl) =>
-                    tl.map((e) => {
-                      return {
-                        ...e,
-                        SELECTED: false,
-                      };
-                    }),
+              <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#f3db55', color: 'black' }} onClick={() => {
+                setTestList((tl) =>
+                  tl.map((e) => {
+                    return {
+                      ...e,
+                      SELECTED: false,
+                    };
+                  }),
+                );
+              }}>Reset hạng mục</Button>
+              <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#18a70b' }} onClick={() => {
+                if (checkInput()) {
+                  registerDTC();
+                } else {
+                  Swal.fire(
+                    "Thông báo",
+                    "Hãy nhập đủ thông tin trước khi đăng ký",
+                    "error",
                   );
-                }}
-              >
-                Reset hạng mục
-              </button>
-              <button
-                className="tranhatky"
-                onClick={() => {
-                  if (checkInput()) {
-                    registerDTC();
-                  } else {
-                    Swal.fire(
-                      "Thông báo",
-                      "Hãy nhập đủ thông tin trước khi đăng ký",
-                      "error",
-                    );
-                  }
-                }}
-              >
-                Đăng ký TEST
-              </button>
+                }
+              }}>Đăng ký TEST</Button>
+
             </div>
             <div
               className="formbutton"

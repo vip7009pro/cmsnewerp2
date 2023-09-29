@@ -59,6 +59,7 @@ const QuanLyPhongBanNhanSu = () => {
   const [JOB_CODE, setJOB_CODE] = useState(0);
   const [FACTORY_CODE, setFACTORY_CODE] = useState(1);
   const [WORK_STATUS_CODE, setWORK_STATUS_CODE] = useState(0);
+  const [EMPL_IMAGE, setEMPL_IMAGE] = useState('N');
   const [employeeTable, setEmployeeTable] = useState<Array<EmployeeTableData>>(
     []
   );
@@ -758,6 +759,7 @@ const QuanLyPhongBanNhanSu = () => {
       setATT_GROUP_CODE(datafilter[datafilter.length - 1].ATT_GROUP_CODE);
       setAvatar(datafilter[datafilter.length - 1].EMPL_NO);
       setNV_CCID(datafilter[datafilter.length - 1].NV_CCID);
+      setEMPL_IMAGE(datafilter[datafilter.length - 1].EMPL_IMAGE);
     }
     //console.log(datafilter);
   };
@@ -1240,7 +1242,7 @@ const QuanLyPhongBanNhanSu = () => {
               <div className='inputform'>
                 <div className='emplpicture'>
                   {
-                    userData?.EMPL_IMAGE === 'Y' &&
+                    EMPL_IMAGE === 'Y' &&
                     <img
                       width={220}
                       height={300}
@@ -1249,7 +1251,7 @@ const QuanLyPhongBanNhanSu = () => {
                     ></img>
                   }
                   {
-                    userData?.EMPL_IMAGE !== 'Y' &&
+                    EMPL_IMAGE !== 'Y' &&
                     <img
                       width={220}
                       height={300}
