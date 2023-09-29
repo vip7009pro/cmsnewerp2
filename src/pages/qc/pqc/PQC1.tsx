@@ -49,7 +49,6 @@ import {
   SX_DATA,
   UserData,
 } from "../../../api/GlobalInterface";
-
 const PQC1 = () => {
   const [customerList, setCustomerList] = useState<CustomerListData[]>([]);
   const userData: UserData | undefined = useSelector(
@@ -92,7 +91,6 @@ const PQC1 = () => {
   const [pqc1datatable, setPqc1DataTable] = useState<Array<PQC1_DATA>>([]);
   const [sx_data, setSXData] = useState<SX_DATA[]>([]);
   const [ktdtc, setKTDTC] = useState("CKT");
-
   const checkKTDTC = (PROCESS_LOT_NO: string) => {
     generalQuery("checkktdtc", { PROCESS_LOT_NO: PROCESS_LOT_NO })
       .then((response) => {
@@ -137,20 +135,20 @@ const PQC1 = () => {
                   element.SETTING_START_TIME === null
                     ? ""
                     : moment
-                        .utc(element.SETTING_START_TIME)
-                        .format("YYYY-MM-DD HH:mm:ss"),
+                      .utc(element.SETTING_START_TIME)
+                      .format("YYYY-MM-DD HH:mm:ss"),
                 MASS_START_TIME:
                   element.MASS_START_TIME === null
                     ? ""
                     : moment
-                        .utc(element.MASS_START_TIME)
-                        .format("YYYY-MM-DD HH:mm:ss"),
+                      .utc(element.MASS_START_TIME)
+                      .format("YYYY-MM-DD HH:mm:ss"),
                 MASS_END_TIME:
                   element.MASS_END_TIME === null
                     ? ""
                     : moment
-                        .utc(element.MASS_END_TIME)
-                        .format("YYYY-MM-DD HH:mm:ss"),
+                      .utc(element.MASS_END_TIME)
+                      .format("YYYY-MM-DD HH:mm:ss"),
                 SX_DATE:
                   element.SX_DATE === null
                     ? ""
@@ -281,7 +279,7 @@ const PQC1 = () => {
             allowDeleting={false}
             mode="cell"
             confirmDelete={true}
-            onChangesChange={(e) => {}}
+            onChangesChange={(e) => { }}
           />
           <Export enabled={true} />
           <Toolbar disabled={false}>
@@ -328,7 +326,6 @@ const PQC1 = () => {
     ),
     [pqc1datatable],
   );
-
   const traPQC1Data = () => {
     generalQuery("trapqc1data", {
       ALLTIME: false,
@@ -383,14 +380,14 @@ const PQC1 = () => {
           if (selection === 1) {
             setEmplName(
               response.data.data[0].MIDLAST_NAME +
-                " " +
-                response.data.data[0].FIRST_NAME,
+              " " +
+              response.data.data[0].FIRST_NAME,
             );
           } else {
             setEmplName2(
               response.data.data[0].MIDLAST_NAME +
-                " " +
-                response.data.data[0].FIRST_NAME,
+              " " +
+              response.data.data[0].FIRST_NAME,
             );
           }
         } else {
@@ -484,8 +481,8 @@ const PQC1 = () => {
           //console.log(response.data.data);
           setM_Name(
             response.data.data[0].M_NAME +
-              " | " +
-              response.data.data[0].WIDTH_CD,
+            " | " +
+            response.data.data[0].WIDTH_CD,
           );
           setM_Code(response.data.data[0].M_CODE);
           setWidthCD(response.data.data[0].WIDTH_CD);
@@ -511,7 +508,6 @@ const PQC1 = () => {
         console.log(error);
       });
   };
-
   const inputDataPqc1 = () => {
     generalQuery("insert_pqc1", {
       PROCESS_LOT_NO: process_lot_no,
@@ -555,7 +551,6 @@ const PQC1 = () => {
       return false;
     }
   };
-
   useEffect(() => {
     traPQC1Data();
     ///handletraFailingData();
@@ -563,8 +558,8 @@ const PQC1 = () => {
   return (
     <div className="pqc1">
       <div className="tracuuDataInspection">
-        <div className="maintable">
-          {showhideinput && (
+        <div className="inputform">
+          {true && (
             <div className="tracuuDataInspectionform">
               <b style={{ color: "blue" }}>NHẬP THÔNG TIN SETTING</b>
               <div className="forminput">
@@ -691,6 +686,10 @@ const PQC1 = () => {
               ></div>
             </div>
           )}
+
+        </div>
+        <div className="maintable">
+
           {showhideinput && (
             <div className="tracuuDataInspectionform2">
               <b style={{ color: "blue" }}>THÔNG TIN CHỈ THỊ</b>
@@ -756,10 +755,9 @@ const PQC1 = () => {
                       value={
                         sx_data[0] !== undefined ? sx_data[0]?.EQ_NAME_TT : ""
                       }
-                      onChange={(e) => {}}
+                      onChange={(e) => { }}
                     ></input>
                   </label>
-
                   <b style={{ color: "gray" }}>PROCESS_NUMBER (Công đoạn)</b>
                   <label>
                     <input
@@ -770,40 +768,36 @@ const PQC1 = () => {
                           ? sx_data[0]?.PROCESS_NUMBER
                           : ""
                       }
-                      onChange={(e) => {}}
+                      onChange={(e) => { }}
                     ></input>
                   </label>
-
                   <b style={{ color: "gray" }}>STEP</b>
                   <label>
                     <input
                       disabled={true}
                       type="text"
                       value={sx_data[0] !== undefined ? sx_data[0]?.STEP : ""}
-                      onChange={(e) => {}}
+                      onChange={(e) => { }}
                     ></input>
                   </label>
-
                   <b style={{ color: "gray" }}>PD</b>
                   <label>
                     <input
                       disabled={true}
                       type="text"
                       value={sx_data[0] !== undefined ? sx_data[0]?.PD : ""}
-                      onChange={(e) => {}}
+                      onChange={(e) => { }}
                     ></input>
                   </label>
-
                   <b style={{ color: "gray" }}>CAVITY</b>
                   <label>
                     <input
                       disabled={true}
                       type="text"
                       value={sx_data[0] !== undefined ? sx_data[0]?.CAVITY : ""}
-                      onChange={(e) => {}}
+                      onChange={(e) => { }}
                     ></input>
                   </label>
-
                   <b style={{ color: "gray" }}>SETTING_OK_TIME</b>
                   <label>
                     <input
@@ -814,10 +808,9 @@ const PQC1 = () => {
                           ? sx_data[0]?.MASS_START_TIME
                           : ""
                       }
-                      onChange={(e) => {}}
+                      onChange={(e) => { }}
                     ></input>
                   </label>
-
                   <b style={{ color: "gray" }}>Mã CNSX</b>
                   <label>
                     <input
@@ -826,7 +819,7 @@ const PQC1 = () => {
                       value={
                         sx_data[0] !== undefined ? sx_data[0]?.INS_EMPL : ""
                       }
-                      onChange={(e) => {}}
+                      onChange={(e) => { }}
                     ></input>
                   </label>
                 </div>
