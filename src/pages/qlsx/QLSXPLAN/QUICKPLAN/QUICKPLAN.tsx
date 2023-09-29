@@ -507,7 +507,7 @@ const QUICKPLAN = () => {
         let file: any = null;
         const uploadFile2 = async (e: any) => {
           //console.log(file);
-          if (userData?.MAINDEPTNAME === "KD") {
+          checkBP(userData, ['KD'], ['ALL'], ['ALL'], async () => {
             uploadQuery(file, params.row.G_CODE + ".pdf", "banve")
               .then((response) => {
                 if (response.data.tk_status !== "NG") {
@@ -552,13 +552,10 @@ const QUICKPLAN = () => {
               .catch((error) => {
                 console.log(error);
               });
-          } else {
-            Swal.fire(
-              "Thông báo",
-              "Chỉ bộ phận kinh doanh upload được bản vẽ",
-              "error",
-            );
-          }
+
+          })
+
+
         };
         let hreftlink = "/banve/" + params.row.G_CODE + ".pdf";
         if (params.row.BANVE !== "N" && params.row.BANVE !== null) {
@@ -1499,12 +1496,8 @@ const QUICKPLAN = () => {
   };
   const handleSaveQLSX = async () => {
     if (selectedG_Code !== undefined) {
-      if (
-        userData?.EMPL_NO === "NHU1903" ||
-        userData?.MAINDEPTNAME === "QLSX"
-      ) {
+      checkBP(userData, ['QLSX'], ['ALL'], ['ALL'], async () => {
         let err_code: string = "0";
-        //console.log(datadinhmuc);
         if (
           datadinhmuc.FACTORY === "NA" ||
           datadinhmuc.EQ1 === "NA" ||
@@ -1571,9 +1564,9 @@ const QUICKPLAN = () => {
             Swal.fire("Thông báo", "Lưu thành công", "success");
           }
         }
-      } else {
-        Swal.fire("Thông báo", "Không đủ quyền hạn!", "error");
-      }
+
+      })
+
     } else {
       Swal.fire("Thông báo", "Chọn ít nhất 1 Code để SET !", "error");
     }

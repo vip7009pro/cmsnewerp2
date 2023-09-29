@@ -505,10 +505,8 @@ const CAPADATA = () => {
   });
   const handleSaveQLSX = async () => {
     if (selectedG_Code !== "") {
-      if (
-        userData?.EMPL_NO === "NHU1903" ||
-        userData?.MAINDEPTNAME === "QLSX"
-      ) {
+
+      checkBP(userData, ['QLSX'], ['ALL'], ['ALL'], async () => {
         let err_code: string = "0";
         console.log(datadinhmuc);
         if (
@@ -564,9 +562,7 @@ const CAPADATA = () => {
             Swal.fire("Thông báo", "Lưu thành công", "success");
           }
         }
-      } else {
-        Swal.fire("Thông báo", "Không đủ quyền hạn!", "error");
-      }
+      })
     } else {
       Swal.fire("Thông báo", "Chọn ít nhất 1 Code để SET !", "error");
     }
