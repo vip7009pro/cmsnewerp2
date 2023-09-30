@@ -1,6 +1,8 @@
 .home {
   display: flex;
   flex-direction: column;
+  width: 100%;
+  margin-left: 0px;
 
   @media only screen and (max-width: 3000px) {
     .homeContainer {
@@ -44,14 +46,14 @@
   @media only screen and (max-width: 768px) {
     .homeContainer {
       display: flex;
-      flex-direction: column;
+      flex-direction: row;
       width: 100%;
       height: fit-content;
       .sidebardiv {
         width: fit-content;
         position: fixed;
         left: 10;
-        z-index: 99999;
+        z-index: 9;
       }
       .outletdiv {
         display: flex;
@@ -59,10 +61,11 @@
         .animated_div {
           display: flex;
           flex-direction: column;
-          margin-top: 100px;
+          margin-top: 78px;
+          width: 100%;
           .component_element {
             position: absolute;
-            top: 125px;
+            top: 100px;
           }
         }
       }

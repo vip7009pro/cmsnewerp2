@@ -1,5 +1,6 @@
 import {
   Autocomplete,
+  Button,
   IconButton,
   LinearProgress,
   TextField,
@@ -388,8 +389,8 @@ const TRAPQC = () => {
                 OCCURR_TIME:
                   element.OCCURR_TIME !== null
                     ? moment
-                        .utc(element.OCCURR_TIME)
-                        .format("YYYY-MM-DD HH:mm:ss")
+                      .utc(element.OCCURR_TIME)
+                      .format("YYYY-MM-DD HH:mm:ss")
                     : "",
                 INPUT_DATETIME: moment
                   .utc(element.UPD_DATE)
@@ -397,8 +398,8 @@ const TRAPQC = () => {
                 DEFECT_RATE:
                   element.INSPECT_QTY !== null
                     ? ((element.DEFECT_QTY !== null ? element.DEFECT_QTY : 0) /
-                        element.INSPECT_QTY) *
-                      100
+                      element.INSPECT_QTY) *
+                    100
                     : "",
                 id: index,
               };
@@ -666,61 +667,56 @@ const TRAPQC = () => {
                 ></input>
               </label>
             </div>
+            <div className="forminputcolumn">
+              <label>
+                <b>All Time:</b>
+                <input
+                  type="checkbox"
+                  name="alltimecheckbox"
+                  defaultChecked={alltime}
+                  onChange={() => setAllTime(!alltime)}
+                ></input>
+              </label>
+
+            </div>
           </div>
           <div className="formbutton">
-            <label>
-              <b>All Time:</b>
-              <input
-                type="checkbox"
-                name="alltimecheckbox"
-                defaultChecked={alltime}
-                onChange={() => setAllTime(!alltime)}
-              ></input>
-            </label>
-            <button
-              className="pqc1button"
-              onClick={() => {
+            <div className="btgroup">
+              <Button color={'primary'} variant="contained" size="small" fullWidth={true} sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#69b1f5f' }} onClick={() => {
                 setisLoading(true);
                 setReadyRender(false);
                 setColumnDefinition(column_TRA_PQC1_DATA);
                 handletraInspectionInput();
-              }}
-            >
-              PQC1-Setting
-            </button>
-            <button
-              className="pqc3button"
-              onClick={() => {
+              }}>Setting</Button>
+
+              <Button color={'primary'} variant="contained" size="small" fullWidth={true} sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#9ddd49', color: 'black' }} onClick={() => {
                 setisLoading(true);
                 setReadyRender(false);
                 setColumnDefinition(column_pqc3_data);
                 handletraInspectionOutput();
-              }}
-            >
-              PQC3-Defect
-            </button>
-            <button
-              className="daofilmbutton"
-              onClick={() => {
+              }}>Defect</Button>
+
+            </div>
+            <div className="btgroup">
+              <Button color={'primary'} variant="contained" size="small" fullWidth={true} sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#f396fc' }} onClick={() => {
                 setisLoading(true);
                 setReadyRender(false);
                 setColumnDefinition(column_daofilm_data);
                 handletraInspectionInOut();
-              }}
-            >
-              Dao-film-TL
-            </button>
-            <button
-              className="lichsucndbbutton"
-              onClick={() => {
+              }}>Dao-film</Button>
+              <Button color={'primary'} variant="contained" size="small" fullWidth={true} sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#f7ab7e' }} onClick={() => {
                 setisLoading(true);
                 setReadyRender(false);
                 setColumnDefinition(column_cndb_data);
                 handletraInspectionNG();
-              }}
-            >
-              LS CNĐB
-            </button>
+              }}>CNĐB</Button>
+
+            </div>
+
+
+
+
+
           </div>
         </div>
         <div className="tracuuPQCTable">

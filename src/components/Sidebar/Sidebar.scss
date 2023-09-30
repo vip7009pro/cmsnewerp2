@@ -137,7 +137,7 @@
       display: flex;
       justify-content: flex-start;
       align-items: center;
-      z-index: 99999;
+      z-index: 99;
     }
   }
 
@@ -154,7 +154,7 @@
     height: 87vh;
     display: flex;
     justify-content: center;
-    top: 100px;
+    top: 81px;
     z-index: 10;
     -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.1);
     box-shadow: 5px 5px 15px 5px rgba(2, 2, 2, 0.1);
