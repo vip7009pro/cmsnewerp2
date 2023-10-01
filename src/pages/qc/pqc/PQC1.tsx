@@ -19,7 +19,7 @@ import { AiFillFileExcel, AiOutlineSearch } from "react-icons/ai";
 import Swal from "sweetalert2";
 import { generalQuery } from "../../../api/Api";
 import { UserContext } from "../../../api/Context";
-import { SaveExcel } from "../../../api/GlobalFunction";
+import { CustomResponsiveContainer, SaveExcel } from "../../../api/GlobalFunction";
 import "./PQC1.scss";
 import DataGrid, {
   Column,
@@ -52,7 +52,7 @@ import {
 const PQC1 = () => {
   const [customerList, setCustomerList] = useState<CustomerListData[]>([]);
   const userData: UserData | undefined = useSelector(
-    (state: RootState) => state.totalSlice.userData,
+    (state: RootState) => state.totalSlice.userData
   );
   const [testtype, setTestType] = useState("NVL");
   const [inputno, setInputNo] = useState("");
@@ -60,10 +60,10 @@ const PQC1 = () => {
   const [prod_leader_empl, setprod_leader_empl] = useState("");
   const [remark, setReMark] = useState("");
   const [inspectiondatatable, setInspectionDataTable] = useState<Array<any>>(
-    [],
+    []
   );
   const [selectedRowsDataA, setSelectedRowsData] = useState<Array<PQC1_DATA>>(
-    [],
+    []
   );
   const [empl_name, setEmplName] = useState("");
   const [empl_name2, setEmplName2] = useState("");
@@ -86,7 +86,7 @@ const PQC1 = () => {
   const [showhideinput, setShowHideInput] = useState(true);
   const [cust_cd, setCust_Cd] = useState("6969");
   const [factory, setFactory] = useState(
-    userData?.FACTORY_CODE === 1 ? "NM1" : "NM2",
+    userData?.FACTORY_CODE === 1 ? "NM1" : "NM2"
   );
   const [pqc1datatable, setPqc1DataTable] = useState<Array<PQC1_DATA>>([]);
   const [sx_data, setSXData] = useState<SX_DATA[]>([]);
@@ -135,27 +135,27 @@ const PQC1 = () => {
                   element.SETTING_START_TIME === null
                     ? ""
                     : moment
-                      .utc(element.SETTING_START_TIME)
-                      .format("YYYY-MM-DD HH:mm:ss"),
+                        .utc(element.SETTING_START_TIME)
+                        .format("YYYY-MM-DD HH:mm:ss"),
                 MASS_START_TIME:
                   element.MASS_START_TIME === null
                     ? ""
                     : moment
-                      .utc(element.MASS_START_TIME)
-                      .format("YYYY-MM-DD HH:mm:ss"),
+                        .utc(element.MASS_START_TIME)
+                        .format("YYYY-MM-DD HH:mm:ss"),
                 MASS_END_TIME:
                   element.MASS_END_TIME === null
                     ? ""
                     : moment
-                      .utc(element.MASS_END_TIME)
-                      .format("YYYY-MM-DD HH:mm:ss"),
+                        .utc(element.MASS_END_TIME)
+                        .format("YYYY-MM-DD HH:mm:ss"),
                 SX_DATE:
                   element.SX_DATE === null
                     ? ""
                     : moment.utc(element.SX_DATE).format("YYYY-MM-DD"),
                 id: index,
               };
-            },
+            }
           );
           //console.log(loaded_data);
           setSXData(loaded_data);
@@ -219,10 +219,7 @@ const PQC1 = () => {
           >
             <BiShow color="blue" size={25} />
             Show/Hide Input
-          </IconButton>
-          <span style={{ fontSize: 20, fontWeight: "bold" }}>
-            BẢNG NHẬP THÔNG TIN SETTING PQC
-          </span>
+          </IconButton>         
           <IconButton
             className="buttonIcon"
             onClick={() => {
@@ -234,6 +231,7 @@ const PQC1 = () => {
             Tra Data
           </IconButton>
         </div>
+        <CustomResponsiveContainer>
         <DataGrid
           style={{ fontSize: "0.7rem" }}
           autoNavigateToFocusedRow={true}
@@ -246,7 +244,7 @@ const PQC1 = () => {
           dataSource={pqc1datatable}
           columnWidth="auto"
           keyExpr="id"
-          height={"70vh"}
+          height={'100%'}
           showBorders={true}
           onSelectionChanged={(e) => {
             //console.log(e.selectedRowsData);
@@ -279,7 +277,7 @@ const PQC1 = () => {
             allowDeleting={false}
             mode="cell"
             confirmDelete={true}
-            onChangesChange={(e) => { }}
+            onChangesChange={(e) => {}}
           />
           <Export enabled={true} />
           <Toolbar disabled={false}>
@@ -322,9 +320,10 @@ const PQC1 = () => {
             />
           </Summary>
         </DataGrid>
+        </CustomResponsiveContainer>
       </div>
     ),
-    [pqc1datatable],
+    [pqc1datatable]
   );
   const traPQC1Data = () => {
     generalQuery("trapqc1data", {
@@ -360,7 +359,7 @@ const PQC1 = () => {
                   .format("YYYY-MM-DD HH:mm:ss"),
                 id: index,
               };
-            },
+            }
           );
           //setSummaryInspect('Tổng Nhập: ' +  summaryInput.toLocaleString('en-US') + 'EA');
           setPqc1DataTable(loadeddata);
@@ -380,14 +379,14 @@ const PQC1 = () => {
           if (selection === 1) {
             setEmplName(
               response.data.data[0].MIDLAST_NAME +
-              " " +
-              response.data.data[0].FIRST_NAME,
+                " " +
+                response.data.data[0].FIRST_NAME
             );
           } else {
             setEmplName2(
               response.data.data[0].MIDLAST_NAME +
-              " " +
-              response.data.data[0].FIRST_NAME,
+                " " +
+                response.data.data[0].FIRST_NAME
             );
           }
         } else {
@@ -481,8 +480,8 @@ const PQC1 = () => {
           //console.log(response.data.data);
           setM_Name(
             response.data.data[0].M_NAME +
-            " | " +
-            response.data.data[0].WIDTH_CD,
+              " | " +
+              response.data.data[0].WIDTH_CD
           );
           setM_Code(response.data.data[0].M_CODE);
           setWidthCD(response.data.data[0].WIDTH_CD);
@@ -491,7 +490,7 @@ const PQC1 = () => {
           setLieuQL_SX(
             response.data.data[0].LIEUQL_SX === null
               ? "0"
-              : response.data.data[0].LIEUQL_SX,
+              : response.data.data[0].LIEUQL_SX
           );
           setOut_Date(response.data.data[0].OUT_DATE);
         } else {
@@ -564,8 +563,8 @@ const PQC1 = () => {
               <b style={{ color: "blue" }}>NHẬP THÔNG TIN SETTING</b>
               <div className="forminput">
                 <div className="forminputcolumn">
-                  <b>FACTORY</b>
                   <label>
+                    <b>FACTORY</b>
                     <select
                       disabled={userData?.EMPL_NO === "NHU1903"}
                       name="factory"
@@ -578,8 +577,8 @@ const PQC1 = () => {
                       <option value="NM2">NM2</option>
                     </select>
                   </label>
-                  <b>Số chỉ thị sản xuất</b>
                   <label>
+                    <b>Số chỉ thị sản xuất</b>
                     <input
                       type="text"
                       placeholder="1F80008A"
@@ -597,8 +596,10 @@ const PQC1 = () => {
                       }}
                     ></input>
                   </label>
-                  <b>Mã LINEQC</b>
+                </div>
+                <div className="forminputcolumn">
                   <label>
+                    <b>Mã LINEQC</b>
                     <input
                       type="text"
                       placeholder={"NVD1201"}
@@ -622,8 +623,8 @@ const PQC1 = () => {
                       {empl_name}
                     </span>
                   )}
-                  <b>Mã Leader SX</b>
                   <label>
+                    <b>Mã Leader SX</b>
                     <input
                       type="text"
                       placeholder={"NVD1201"}
@@ -648,9 +649,9 @@ const PQC1 = () => {
                     </span>
                   )}
                 </div>
-                <b>Remark</b>
                 <div className="forminputcolumn">
                   <label>
+                    <b>Remark</b>
                     <input
                       type="text"
                       placeholder={"Ghi chú"}
@@ -660,43 +661,42 @@ const PQC1 = () => {
                       }}
                     ></input>
                   </label>
+                  <Button
+                    color={"primary"}
+                    variant="contained"
+                    size="small"
+                    sx={{
+                      fontSize: "0.7rem",
+                      padding: "3px",
+                      backgroundColor: "#756DFA",
+                    }}
+                    onClick={() => {
+                      if (checkInput()) {
+                        inputDataPqc1();
+                      } else {
+                        Swal.fire(
+                          "Thông báo",
+                          "Hãy nhập đủ thông tin trước khi input",
+                          "error"
+                        );
+                      }
+                    }}
+                  >
+                    Input Data
+                  </Button>
                 </div>
               </div>
-              <div className="formbutton">
-                <button
-                  className="tranhatky"
-                  onClick={() => {
-                    if (checkInput()) {
-                      inputDataPqc1();
-                    } else {
-                      Swal.fire(
-                        "Thông báo",
-                        "Hãy nhập đủ thông tin trước khi input",
-                        "error",
-                      );
-                    }
-                  }}
-                >
-                  Input Data
-                </button>
-              </div>
-              <div
-                className="formbutton"
-                style={{ marginTop: "20px", display: "flex", flexWrap: "wrap" }}
-              ></div>
             </div>
           )}
-
         </div>
         <div className="maintable">
-
           {showhideinput && (
             <div className="tracuuDataInspectionform2">
               <b style={{ color: "blue" }}>THÔNG TIN CHỈ THỊ</b>
               <div className="forminput">
                 <div className="forminputcolumn">
-                  <b style={{ color: "gray" }}>LOT sản xuất</b>
                   <label>
+                  <b style={{ color: "gray" }}>LOT SX</b>
                     <input
                       disabled={true}
                       type="text"
@@ -720,8 +720,8 @@ const PQC1 = () => {
                       {g_name}
                     </span>
                   )}
-                  <b style={{ color: "gray" }}>LOT NVL CMS</b>
                   <label>
+                  <b style={{ color: "gray" }}>LOT NVL</b>
                     <input
                       disabled={true}
                       type="text"
@@ -747,19 +747,21 @@ const PQC1 = () => {
                       {m_name}
                     </span>
                   )}
+                </div>
+                <div className="forminputcolumn">
+                <label>
                   <b style={{ color: "gray" }}>LINE NO</b>
-                  <label>
                     <input
                       disabled={true}
                       type="text"
                       value={
                         sx_data[0] !== undefined ? sx_data[0]?.EQ_NAME_TT : ""
                       }
-                      onChange={(e) => { }}
+                      onChange={(e) => {}}
                     ></input>
                   </label>
-                  <b style={{ color: "gray" }}>PROCESS_NUMBER (Công đoạn)</b>
                   <label>
+                  <b style={{ color: "gray" }}>Công Đoạn</b>
                     <input
                       disabled={true}
                       type="text"
@@ -768,38 +770,42 @@ const PQC1 = () => {
                           ? sx_data[0]?.PROCESS_NUMBER
                           : ""
                       }
-                      onChange={(e) => { }}
+                      onChange={(e) => {}}
                     ></input>
                   </label>
+                </div>
+                <div className="forminputcolumn">
+                <label>
                   <b style={{ color: "gray" }}>STEP</b>
-                  <label>
                     <input
                       disabled={true}
                       type="text"
                       value={sx_data[0] !== undefined ? sx_data[0]?.STEP : ""}
-                      onChange={(e) => { }}
+                      onChange={(e) => {}}
                     ></input>
                   </label>
-                  <b style={{ color: "gray" }}>PD</b>
                   <label>
+                  <b style={{ color: "gray" }}>PD</b>
                     <input
                       disabled={true}
                       type="text"
                       value={sx_data[0] !== undefined ? sx_data[0]?.PD : ""}
-                      onChange={(e) => { }}
+                      onChange={(e) => {}}
                     ></input>
                   </label>
+                </div>
+                <div className="forminputcolumn">
+                <label>
                   <b style={{ color: "gray" }}>CAVITY</b>
-                  <label>
                     <input
                       disabled={true}
                       type="text"
                       value={sx_data[0] !== undefined ? sx_data[0]?.CAVITY : ""}
-                      onChange={(e) => { }}
+                      onChange={(e) => {}}
                     ></input>
                   </label>
-                  <b style={{ color: "gray" }}>SETTING_OK_TIME</b>
                   <label>
+                  <b style={{ color: "gray" }}>ST.OK</b>
                     <input
                       disabled={true}
                       type="text"
@@ -808,32 +814,28 @@ const PQC1 = () => {
                           ? sx_data[0]?.MASS_START_TIME
                           : ""
                       }
-                      onChange={(e) => { }}
+                      onChange={(e) => {}}
                     ></input>
                   </label>
+                </div>
+                <div className="forminputcolumn">
+                <label>
                   <b style={{ color: "gray" }}>Mã CNSX</b>
-                  <label>
                     <input
                       disabled={true}
                       type="text"
                       value={
                         sx_data[0] !== undefined ? sx_data[0]?.INS_EMPL : ""
                       }
-                      onChange={(e) => { }}
+                      onChange={(e) => {}}
                     ></input>
                   </label>
                 </div>
-              </div>
-              <div
-                className="formbutton"
-                style={{ marginTop: "20px", display: "flex", flexWrap: "wrap" }}
-              ></div>
+              </div>              
             </div>
           )}
           <div
-            className="tracuuYCSXTable"
-            style={{ width: showhideinput ? "65vw" : "99vw" }}
-          >
+            className="tracuuYCSXTable">
             {pqc1DataTable}
           </div>
         </div>
