@@ -1,5 +1,6 @@
 import {
   Autocomplete,
+  Button,
   IconButton,
   LinearProgress,
   TextField,
@@ -2504,7 +2505,7 @@ const INSPECTION = () => {
             </div>
           </div>
           <div className="formbutton">
-            <label>
+          <label>
               <b>All Time:</b>
               <input
                 type="checkbox"
@@ -2513,50 +2514,33 @@ const INSPECTION = () => {
                 onChange={() => setAllTime(!alltime)}
               ></input>
             </label>
-            <button
-              className="tranhapkiembutton"
-              onClick={() => {
-                setisLoading(true);
-                setReadyRender(false);
-                setColumnDefinition(column_inspect_input);
-                handletraInspectionInput();
-              }}
-            >
-              Nhập Kiểm
-            </button>
-            <button
-              className="traxuatkiembutton"
-              onClick={() => {
-                setisLoading(true);
-                setReadyRender(false);
-                setColumnDefinition(column_inspect_output);
-                handletraInspectionOutput();
-              }}
-            >
-              Xuất Kiểm
-            </button>
-            <button
-              className="tranhapxuatkiembutton"
-              onClick={() => {
-                setisLoading(true);
-                setReadyRender(false);
-                setColumnDefinition(column_inspect_inoutycsx);
-                handletraInspectionInOut();
-              }}
-            >
-              Nhập-Xuất
-            </button>
-            <button
-              className="tranhatky"
-              onClick={() => {
-                setisLoading(true);
-                setReadyRender(false);
-                setColumnDefinition(column_inspection_NG);
-                handletraInspectionNG();
-              }}
-            >
-              Nhật Ký KT
-            </button>
+
+          </div>
+          <div className="formbutton">   
+          <Button color={'success'} variant="contained" size="small"  fullWidth={true} sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#36da59' }} onClick={() => {
+         setisLoading(true);
+         setReadyRender(false);
+         setColumnDefinition(column_inspect_input);
+         handletraInspectionInput();
+        }}>Nhập Kiểm</Button>
+          <Button color={'success'} variant="contained" size="small"  fullWidth={true} sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#fac83f' }} onClick={() => {
+         setisLoading(true);
+         setReadyRender(false);
+         setColumnDefinition(column_inspect_output);
+         handletraInspectionOutput();
+        }}> Xuất Kiểm</Button>
+          <Button color={'success'} variant="contained" size="small"  fullWidth={true} sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#52aeeb' }} onClick={() => {
+         setisLoading(true);
+         setReadyRender(false);
+         setColumnDefinition(column_inspect_inoutycsx);
+         handletraInspectionInOut();
+        }}> Nhập-Xuất</Button>
+          <Button color={'success'} variant="contained" size="small"  fullWidth={true} sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#df73fa' }} onClick={() => {
+        setisLoading(true);
+        setReadyRender(false);
+        setColumnDefinition(column_inspection_NG);
+        handletraInspectionNG();
+        }}> Nhật Ký KT</Button>           
           </div>
         </div>
         <div className="tracuuYCSXTable">

@@ -382,6 +382,7 @@ export interface YCSXTableData {
   LOSS_SETTING3: number;
   LOSS_SETTING4: number;
   NOTE: string;
+  PL_HANG?: string;
 }
 export interface UploadAmazonData {
   G_CODE?: string;

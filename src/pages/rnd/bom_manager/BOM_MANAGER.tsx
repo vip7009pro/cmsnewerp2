@@ -2940,7 +2940,7 @@ const BOM_MANAGER = () => {
                       ></input>
                     </label> */}
                     <label>
-                      {company === "CMS" ? "Code RnD:" : "Tên sản phẩm:"}
+                      {company === "CMS" ? "Code RnD:" : "Code Khách Hàng:"}
                       <input
                         disabled={enableform}
                         type="text"

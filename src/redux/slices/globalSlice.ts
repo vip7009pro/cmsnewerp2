@@ -286,11 +286,12 @@ export const glbSlice = createSlice({
               return index1 !== state.tabIndex;
             }
           ); */
-      let checkallDeleted: boolean = true;
+      let checkallDeleted: number = 0;
       for (let i = 0; i < state.tabs.length; i++) {
-        if (state.tabs[i].ELE_CODE !== "-1") checkallDeleted = false;
+        if (state.tabs[i].ELE_CODE !== "-1") checkallDeleted ++;
       }
-      if (!checkallDeleted) {
+      console.log(checkallDeleted);
+      if (checkallDeleted >1) {
         state.tabs[action.payload] = {
           ELE_CODE: "-1",
           ELE_NAME: "DELETED",

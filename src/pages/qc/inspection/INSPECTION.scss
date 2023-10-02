@@ -58,82 +58,13 @@
         }
         .formbutton {
           display: flex;
-          flex-direction: column;
+          flex-direction: row;
+          flex-wrap: wrap;
+          gap: 5px;
           align-items: center;
           justify-content: space-around;
           font-size: 0.7rem;
-          .tranhapkiembutton {
-            font-weight: bold;
-            padding-left: 5px;
-            padding-right: 5px;
-            height: 30px;
-            background-color: #99f86d;
-            outline: none;
-            border: none;
-            border-radius: 5px;
-            -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
-            box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
-            margin-bottom: 5px;
-            margin-top: 5px;
-            &:hover {
-              cursor: pointer;
-              background-color: #67c73a;
-            }
-          }
-          .traxuatkiembutton {
-            font-weight: bold;
-            padding-left: 5px;
-            padding-right: 5px;
-            height: 30px;
-            background-color: #3ebdf8;
-            outline: none;
-            border: none;
-            border-radius: 5px;
-            -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
-            box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
-            margin-bottom: 5px;
-            margin-top: 5px;
-            &:hover {
-              cursor: pointer;
-              background-color: #3f9eca;
-            }
-          }
-          .tranhapxuatkiembutton {
-            font-weight: bold;
-            padding-left: 5px;
-            padding-right: 5px;
-            height: 30px;
-            background-color: #f04dff;
-            outline: none;
-            border: none;
-            border-radius: 5px;
-            -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
-            box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
-            margin-bottom: 5px;
-            margin-top: 5px;
-            &:hover {
-              cursor: pointer;
-              background-color: #bd4dc7;
-            }
-          }
-          .tranhatky {
-            font-weight: bold;
-            padding-left: 5px;
-            padding-right: 5px;
-            height: 30px;
-            background-color: #ccff14;
-            outline: none;
-            border: none;
-            border-radius: 5px;
-            -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
-            box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
-            margin-bottom: 5px;
-            margin-top: 5px;
-            &:hover {
-              cursor: pointer;
-              background-color: #bd4dc7;
-            }
-          }
+         
         }
         .formsummary {
           display: flex;
@@ -202,6 +133,8 @@
     display: flex;
     flex-direction: column;
     .tracuuDataInspection {
+      display: flex;
+      flex-direction: column;
       .tracuuDataInspectionform {
         display: flex;
         flex-direction: column;
@@ -212,17 +145,13 @@
         border-radius: 3px;
         padding: 5px;
         font-size: 0.8rem;
-        span {
-          padding: 10px;
-          font-size: 20px;
-          margin: auto;
-        }
-
+        width: 100%;        
         .forminput {
           display: flex;
+          flex-direction: column;
           gap: 5px;
           flex-wrap: wrap;
-          align-items: center;
+          align-items: flex-end;
           justify-content: space-around;
           padding: 2px;
           width: 100%;
@@ -236,7 +165,7 @@
             justify-content: center;
             flex-wrap: wrap;
             input {
-              width: 150px;
+              width: 300px;
               height: 20px;
               font-size: 0.7rem;
               outline: none;
@@ -247,7 +176,7 @@
               background-image: linear-gradient(0deg, #ececec, #9dee95);
             }
             select {
-              width: 160px;
+              width: 300px;
               height: 30px;
               font-size: 0.7rem;
               outline: none;
@@ -261,81 +190,11 @@
         }
         .formbutton {
           display: flex;
+          width: 100%;
+          gap: 5px;
+          flex-direction: row;
           align-items: center;
           justify-content: space-around;
-          gap: 20px;
-          .tranhapkiembutton {
-            font-weight: bold;
-            padding-left: 5px;
-            padding-right: 5px;
-            height: 30px;
-            background-color: #99f86d;
-            outline: none;
-            border: none;
-            border-radius: 5px;
-            -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
-            box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
-            margin-bottom: 5px;
-            margin-top: 5px;
-            &:hover {
-              cursor: pointer;
-              background-color: #67c73a;
-            }
-          }
-          .traxuatkiembutton {
-            font-weight: bold;
-            padding-left: 5px;
-            padding-right: 5px;
-            height: 30px;
-            background-color: #3ebdf8;
-            outline: none;
-            border: none;
-            border-radius: 5px;
-            -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
-            box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
-            margin-bottom: 5px;
-            margin-top: 5px;
-            &:hover {
-              cursor: pointer;
-              background-color: #3f9eca;
-            }
-          }
-          .tranhapxuatkiembutton {
-            font-weight: bold;
-            padding-left: 5px;
-            padding-right: 5px;
-            height: 30px;
-            background-color: #f04dff;
-            outline: none;
-            border: none;
-            border-radius: 5px;
-            -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
-            box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
-            margin-bottom: 5px;
-            margin-top: 5px;
-            &:hover {
-              cursor: pointer;
-              background-color: #bd4dc7;
-            }
-          }
-          .tranhatky {
-            font-weight: bold;
-            padding-left: 5px;
-            padding-right: 5px;
-            height: 30px;
-            background-color: #ccff14;
-            outline: none;
-            border: none;
-            border-radius: 5px;
-            -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
-            box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
-            margin-bottom: 5px;
-            margin-top: 5px;
-            &:hover {
-              cursor: pointer;
-              background-color: #bd4dc7;
-            }
-          }
         }
         .formsummary {
           display: flex;

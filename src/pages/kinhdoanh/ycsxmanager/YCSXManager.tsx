@@ -303,6 +303,12 @@ const YCSXManager = () => {
       },
     },
     {
+      field: "PL_HANG",
+      type: "number",
+      headerName: "PL_HANG",
+      width: 80,
+    },
+    {
       field: "PHAN_LOAI",
       headerName: "PHAN_LOAI",
       width: 80,
@@ -712,6 +718,7 @@ const YCSXManager = () => {
       },
     },
     { field: "PROD_REQUEST_DATE", headerName: "NGÀY YCSX", width: 80 },
+    { field: "DELIVERY_DT", headerName: "NGÀY GH", width: 80 },
     {
       field: "PROD_REQUEST_QTY",
       type: "number",
@@ -821,6 +828,12 @@ const YCSXManager = () => {
             </span>
           );
       },
+    },
+    {
+      field: "PL_HANG",
+      type: "number",
+      headerName: "PL_HANG",
+      width: 80,
     },
     {
       field: "PHAN_LOAI",
@@ -2141,6 +2154,7 @@ const YCSXManager = () => {
         if (err_code1 === 0) {
           if (uploadExcelJson[i].PHANLOAI === "TT") {
             await generalQuery("insert_ycsx", {
+              PHANLOAI: uploadExcelJson[i].PHANLOAI,
               G_CODE: uploadExcelJson[i].G_CODE,
               CUST_CD: uploadExcelJson[i].CUST_CD,
               REMK: uploadExcelJson[i].REMK,
@@ -2205,6 +2219,7 @@ const YCSXManager = () => {
             let next_process_lot_no_p501: string =
               await process_lot_no_generate(newphanloai);
             await generalQuery("insert_ycsx", {
+              PHANLOAI: uploadExcelJson[i].PHANLOAI,
               G_CODE: uploadExcelJson[i].G_CODE,
               CUST_CD: uploadExcelJson[i].CUST_CD,
               REMK: next_process_lot_no_p501,
@@ -2555,6 +2570,7 @@ const YCSXManager = () => {
     if (err_code === 0) {
       if (newphanloai === "TT") {
         await generalQuery("insert_ycsx", {
+          PHANLOAI: newphanloai,
           G_CODE: selectedCode?.G_CODE,
           CUST_CD: selectedCust_CD?.CUST_CD,
           REMK: newycsxremark,
@@ -2617,6 +2633,7 @@ const YCSXManager = () => {
           newphanloai
         );
         await generalQuery("insert_ycsx", {
+          PHANLOAI: newphanloai,
           G_CODE: selectedCode?.G_CODE,
           CUST_CD: selectedCust_CD?.CUST_CD,
           REMK: next_process_lot_no_p501,
