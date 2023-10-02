@@ -48,7 +48,7 @@ import {
   AiOutlinePushpin,
 } from "react-icons/ai";
 import Swal from "sweetalert2";
-import { generalQuery, uploadQuery } from "../../../api/Api";
+import { generalQuery, getCompany, uploadQuery } from "../../../api/Api";
 import { UserContext } from "../../../api/Context";
 import { checkBP, SaveExcel } from "../../../api/GlobalFunction";
 import "./BOM_MANAGER.scss";
@@ -109,6 +109,24 @@ const BOM_MANAGER = () => {
     M_LOSS_UNIT: 0,
   });
   const [showhidetemlot, setShowHideTemLot] = useState(false);
+  const checkG_NAME_KD_Exist = async (g_name_kd: string)=> {
+    let gnamekdExist:boolean = false;
+    await generalQuery("checkGNAMEKDExist", {
+      G_NAME_KD: g_name_kd
+    })
+    .then((response) => {
+      console.log(response.data);
+      if (response.data.tk_status !== "NG") {
+        gnamekdExist = true;
+      } else {
+        gnamekdExist = false;
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+    return gnamekdExist;
+  }
   const loadDefaultDM = () => {
     generalQuery("loadDefaultDM", {})
       .then((response) => {
@@ -1305,13 +1323,13 @@ const BOM_MANAGER = () => {
       PROD_DVT: "01",
     });
   };
-  const handleCheckCodeInfo = () => {
+  const handleCheckCodeInfo = async () => {
     let abc: CODE_FULL_INFO = codefullinfo;
     let result: boolean = true;
 
-    if (company === "PVN" && userData?.MAINDEPTNAME === "KD") {
+    if (company === "PVN" && userData?.MAINDEPTNAME === "KD") {     
       result = true;
-    } else {
+    } else {      
       for (const [k, v] of Object.entries(abc)) {
         if (
           (v === null || v === "") &&
@@ -1508,7 +1526,10 @@ const BOM_MANAGER = () => {
   };
   const handleAddNewCode = async () => {
     //console.log(handleCheckCodeInfo());
-    if (handleCheckCodeInfo()) {
+    let checkg_name_kd:boolean = await checkG_NAME_KD_Exist(codefullinfo.G_NAME_KD===undefined? 'zzzzzzzzz': codefullinfo.G_NAME_KD);
+    console.log('checkg_name_kd',checkg_name_kd);
+
+    if (await handleCheckCodeInfo() && (getCompany()!=='PVN' || checkg_name_kd=== false)) {
       let CODE_27 = "C";
       if (
         codefullinfo.PROD_TYPE.trim() === "TSP" ||
@@ -1549,9 +1570,12 @@ const BOM_MANAGER = () => {
         });
       handleinsertCodeTBG(nextcode);
     }
+    else {
+      Swal.fire('Cảnh báo','Code '+(codefullinfo.G_NAME_KD===undefined? 'zzzzzzzzz': codefullinfo.G_NAME_KD)+ ' đã tồn tại','error');
+    }
   };
   const handleAddNewVer = async () => {
-    if (handleCheckCodeInfo()) {
+    if (await handleCheckCodeInfo()) {
       let CODE_27 = "C";
       if (
         codefullinfo.PROD_TYPE.trim() === "TSP" ||
@@ -1604,7 +1628,7 @@ const BOM_MANAGER = () => {
     }
   };
   const handleUpdateCode = async () => {
-    if (handleCheckCodeInfo()) {
+    if (await handleCheckCodeInfo()) {
       await generalQuery("updateM100", codefullinfo)
         .then((response) => {
           //console.log(response.data);

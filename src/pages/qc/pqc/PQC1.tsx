@@ -53,6 +53,7 @@ import {
   UserData,
 } from "../../../api/GlobalInterface";
 const PQC1 = () => {
+  
   const [customerList, setCustomerList] = useState<CustomerListData[]>([]);
   const userData: UserData | undefined = useSelector(
     (state: RootState) => state.totalSlice.userData
@@ -171,7 +172,6 @@ const PQC1 = () => {
         console.log(error);
       });
   };
-
   const pqc1DataTable = React.useMemo(
     () => (
       <div className="datatb">
@@ -495,6 +495,9 @@ const PQC1 = () => {
         if (response.data.tk_status !== "NG") {
           //console.log(response.data.data);
           traPQC1Data();
+          setPlanId('');
+          setLineqc_empl('');
+          setReMark('');          
         } else {
           Swal.fire("Cảnh báo", "Có lỗi: " + response.data.message, "error");
         }
@@ -517,7 +520,6 @@ const PQC1 = () => {
     }
   };
   const updateSampleQty = async () => {
-
     if (selectedRowsDataA.length > 0) {
       let err_code: string = '';
       for (let i = 0; i < selectedRowsDataA.length; i++) {
@@ -527,7 +529,6 @@ const PQC1 = () => {
         })
           .then((response) => {
             if (response.data.tk_status !== "NG") {
-
             } else {
               err_code += '|   ' + response.data.message + ', ';
               //Swal.fire("Cảnh báo", "Có lỗi: " + response.data.message, "error");
@@ -539,21 +540,14 @@ const PQC1 = () => {
       }
       if (err_code === '') {
         Swal.fire("Thông báo", "Update sample qty thành công", "success");
-
       }
       else {
         Swal.fire("Cảnh báo", "Có lỗi: " + err_code, "error");
       }
-
-
-
     }
     else {
       Swal.fire("Cảnh báo", "Có lỗi: Chọn ít nhất 1 dòng để update", "error");
-
     }
-
-
   }
   useEffect(() => {
     traPQC1Data();
@@ -584,7 +578,7 @@ const PQC1 = () => {
                   </label>
                   <label>
                     <b>Số chỉ thị sản xuất</b>
-                    <input
+                    <input                      
                       type="text"
                       placeholder="1F80008A"
                       value={planId}
@@ -605,7 +599,7 @@ const PQC1 = () => {
                 <div className="forminputcolumn">
                   <label>
                     <b>Mã LINEQC</b>
-                    <input
+                    <input 
                       type="text"
                       placeholder={"NVD1201"}
                       value={lineqc_empl}
