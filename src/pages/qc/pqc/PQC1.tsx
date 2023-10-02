@@ -19,7 +19,10 @@ import { AiFillFileExcel, AiOutlineSearch } from "react-icons/ai";
 import Swal from "sweetalert2";
 import { generalQuery } from "../../../api/Api";
 import { UserContext } from "../../../api/Context";
-import { CustomResponsiveContainer, SaveExcel } from "../../../api/GlobalFunction";
+import {
+  CustomResponsiveContainer,
+  SaveExcel,
+} from "../../../api/GlobalFunction";
 import "./PQC1.scss";
 import DataGrid, {
   Column,
@@ -135,20 +138,20 @@ const PQC1 = () => {
                   element.SETTING_START_TIME === null
                     ? ""
                     : moment
-                        .utc(element.SETTING_START_TIME)
-                        .format("YYYY-MM-DD HH:mm:ss"),
+                      .utc(element.SETTING_START_TIME)
+                      .format("YYYY-MM-DD HH:mm:ss"),
                 MASS_START_TIME:
                   element.MASS_START_TIME === null
                     ? ""
                     : moment
-                        .utc(element.MASS_START_TIME)
-                        .format("YYYY-MM-DD HH:mm:ss"),
+                      .utc(element.MASS_START_TIME)
+                      .format("YYYY-MM-DD HH:mm:ss"),
                 MASS_END_TIME:
                   element.MASS_END_TIME === null
                     ? ""
                     : moment
-                        .utc(element.MASS_END_TIME)
-                        .format("YYYY-MM-DD HH:mm:ss"),
+                      .utc(element.MASS_END_TIME)
+                      .format("YYYY-MM-DD HH:mm:ss"),
                 SX_DATE:
                   element.SX_DATE === null
                     ? ""
@@ -168,44 +171,7 @@ const PQC1 = () => {
         console.log(error);
       });
   };
-  const setQCPASS = async (value: string) => {
-    console.log(selectedRowsDataA);
-    if (selectedRowsDataA.length > 0) {
-      Swal.fire({
-        title: "Tra cứu vật liệu Holding",
-        text: "Đang tải dữ liệu, hãy chờ chút",
-        icon: "info",
-        showCancelButton: false,
-        allowOutsideClick: false,
-        confirmButtonText: "OK",
-        showConfirmButton: false,
-      });
-      let err_code: string = "";
-      for (let i = 0; i < selectedRowsDataA.length; i++) {
-        await generalQuery("updateQCPASS_FAILING", {
-          VALUE: value,
-        })
-          // eslint-disable-next-line no-loop-func
-          .then((response) => {
-            //console.log(response.data.data);
-            if (response.data.tk_status !== "NG") {
-            } else {
-              err_code += ` Lỗi: ${response.data.message}`;
-            }
-          })
-          .catch((error) => {
-            console.log(error);
-          });
-      }
-      if (err_code === "") {
-        Swal.fire("Thông báo", "SET thành công", "success");
-      } else {
-        Swal.fire("Thông báo", "Lỗi: " + err_code, "error");
-      }
-    } else {
-      Swal.fire("Thông báo", "Chọn ít nhất 1 dòng để thực hiện", "error");
-    }
-  };
+
   const pqc1DataTable = React.useMemo(
     () => (
       <div className="datatb">
@@ -219,12 +185,12 @@ const PQC1 = () => {
           >
             <BiShow color="blue" size={25} />
             Show/Hide Input
-          </IconButton>         
+          </IconButton>
           <IconButton
             className="buttonIcon"
             onClick={() => {
               traPQC1Data();
-              setShowHideInput(false);
+              //setShowHideInput(false);
             }}
           >
             <AiOutlineSearch color="red" size={25} />
@@ -232,94 +198,94 @@ const PQC1 = () => {
           </IconButton>
         </div>
         <CustomResponsiveContainer>
-        <DataGrid
-          style={{ fontSize: "0.7rem" }}
-          autoNavigateToFocusedRow={true}
-          allowColumnReordering={true}
-          allowColumnResizing={true}
-          columnAutoWidth={false}
-          cellHintEnabled={true}
-          columnResizingMode={"widget"}
-          showColumnLines={true}
-          dataSource={pqc1datatable}
-          columnWidth="auto"
-          keyExpr="id"
-          height={'100%'}
-          showBorders={true}
-          onSelectionChanged={(e) => {
-            //console.log(e.selectedRowsData);
-            //setselecterowfunction(e.selectedRowsData);
-            setSelectedRowsData(e.selectedRowsData);
-          }}
-          onRowClick={(e) => {
-            //console.log(e.data);
-          }}
-          onRowUpdated={(e) => {
-            //console.log(e);
-          }}
-        >
-          <KeyboardNavigation
-            editOnKeyPress={true}
-            enterKeyAction={"moveFocus"}
-            enterKeyDirection={"column"}
-          />
-          <Scrolling
-            useNative={false}
-            scrollByContent={true}
-            scrollByThumb={true}
-            showScrollbar="onHover"
-            mode="virtual"
-          />
-          <Selection mode="multiple" selectAllMode="allPages" />
-          <Editing
-            allowUpdating={true}
-            allowAdding={true}
-            allowDeleting={false}
-            mode="cell"
-            confirmDelete={true}
-            onChangesChange={(e) => {}}
-          />
-          <Export enabled={true} />
-          <Toolbar disabled={false}>
-            <Item location="before">
-              <IconButton
-                className="buttonIcon"
-                onClick={() => {
-                  SaveExcel(inspectiondatatable, "SPEC DTC");
-                }}
-              >
-                <AiFillFileExcel color="green" size={25} />
-                SAVE
-              </IconButton>
-            </Item>
-            <Item name="searchPanel" />
-            <Item name="exportButton" />
-            <Item name="columnChooserButton" />
-            <Item name="addRowButton" />
-            <Item name="saveButton" />
-            <Item name="revertButton" />
-          </Toolbar>
-          <FilterRow visible={true} />
-          <SearchPanel visible={true} />
-          <ColumnChooser enabled={true} />
-          <Paging defaultPageSize={15} />
-          <Pager
-            showPageSizeSelector={true}
-            allowedPageSizes={[5, 10, 15, 20, 100, 1000, 10000, "all"]}
-            showNavigationButtons={true}
-            showInfo={true}
-            infoText="Page #{0}. Total: {1} ({2} items)"
-            displayMode="compact"
-          />
-          <Summary>
-            <TotalItem
-              alignment="right"
-              column="PQC1_ID"
-              summaryType="count"
-              valueFormat={"decimal"}
+          <DataGrid
+            style={{ fontSize: "0.7rem" }}
+            autoNavigateToFocusedRow={true}
+            allowColumnReordering={true}
+            allowColumnResizing={true}
+            columnAutoWidth={false}
+            cellHintEnabled={true}
+            columnResizingMode={"widget"}
+            showColumnLines={true}
+            dataSource={pqc1datatable}
+            columnWidth="auto"
+            keyExpr="id"
+            height={"100%"}
+            showBorders={true}
+            onSelectionChanged={(e) => {
+              //console.log(e.selectedRowsData);
+              //setselecterowfunction(e.selectedRowsData);
+              setSelectedRowsData(e.selectedRowsData);
+            }}
+            onRowClick={(e) => {
+              //console.log(e.data);
+            }}
+            onRowUpdated={(e) => {
+              //console.log(e);
+            }}
+          >
+            <KeyboardNavigation
+              editOnKeyPress={true}
+              enterKeyAction={"moveFocus"}
+              enterKeyDirection={"column"}
             />
-          </Summary>
-        </DataGrid>
+            <Scrolling
+              useNative={false}
+              scrollByContent={true}
+              scrollByThumb={true}
+              showScrollbar="onHover"
+              mode="virtual"
+            />
+            <Selection mode="multiple" selectAllMode="allPages" />
+            <Editing
+              allowUpdating={true}
+              allowAdding={true}
+              allowDeleting={false}
+              mode="cell"
+              confirmDelete={true}
+              onChangesChange={(e) => { }}
+            />
+            <Export enabled={true} />
+            <Toolbar disabled={false}>
+              <Item location="before">
+                <IconButton
+                  className="buttonIcon"
+                  onClick={() => {
+                    SaveExcel(inspectiondatatable, "SPEC DTC");
+                  }}
+                >
+                  <AiFillFileExcel color="green" size={25} />
+                  SAVE
+                </IconButton>
+              </Item>
+              <Item name="searchPanel" />
+              <Item name="exportButton" />
+              <Item name="columnChooserButton" />
+              <Item name="addRowButton" />
+              <Item name="saveButton" />
+              <Item name="revertButton" />
+            </Toolbar>
+            <FilterRow visible={true} />
+            <SearchPanel visible={true} />
+            <ColumnChooser enabled={true} />
+            <Paging defaultPageSize={15} />
+            <Pager
+              showPageSizeSelector={true}
+              allowedPageSizes={[5, 10, 15, 20, 100, 1000, 10000, "all"]}
+              showNavigationButtons={true}
+              showInfo={true}
+              infoText="Page #{0}. Total: {1} ({2} items)"
+              displayMode="compact"
+            />
+            <Summary>
+              <TotalItem
+                alignment="right"
+                column="PQC1_ID"
+                summaryType="count"
+                valueFormat={"decimal"}
+              />
+            </Summary>
+          </DataGrid>
         </CustomResponsiveContainer>
       </div>
     ),
@@ -379,14 +345,14 @@ const PQC1 = () => {
           if (selection === 1) {
             setEmplName(
               response.data.data[0].MIDLAST_NAME +
-                " " +
-                response.data.data[0].FIRST_NAME
+              " " +
+              response.data.data[0].FIRST_NAME
             );
           } else {
             setEmplName2(
               response.data.data[0].MIDLAST_NAME +
-                " " +
-                response.data.data[0].FIRST_NAME
+              " " +
+              response.data.data[0].FIRST_NAME
             );
           }
         } else {
@@ -480,8 +446,8 @@ const PQC1 = () => {
           //console.log(response.data.data);
           setM_Name(
             response.data.data[0].M_NAME +
-              " | " +
-              response.data.data[0].WIDTH_CD
+            " | " +
+            response.data.data[0].WIDTH_CD
           );
           setM_Code(response.data.data[0].M_CODE);
           setWidthCD(response.data.data[0].WIDTH_CD);
@@ -550,6 +516,45 @@ const PQC1 = () => {
       return false;
     }
   };
+  const updateSampleQty = async () => {
+
+    if (selectedRowsDataA.length > 0) {
+      let err_code: string = '';
+      for (let i = 0; i < selectedRowsDataA.length; i++) {
+        await generalQuery("updatepqc1sampleqty", {
+          PQC1_ID: selectedRowsDataA[i].PQC1_ID,
+          INSPECT_SAMPLE_QTY: selectedRowsDataA[i].INSPECT_SAMPLE_QTY
+        })
+          .then((response) => {
+            if (response.data.tk_status !== "NG") {
+
+            } else {
+              err_code += '|   ' + response.data.message + ', ';
+              //Swal.fire("Cảnh báo", "Có lỗi: " + response.data.message, "error");
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }
+      if (err_code === '') {
+        Swal.fire("Thông báo", "Update sample qty thành công", "success");
+
+      }
+      else {
+        Swal.fire("Cảnh báo", "Có lỗi: " + err_code, "error");
+      }
+
+
+
+    }
+    else {
+      Swal.fire("Cảnh báo", "Có lỗi: Chọn ít nhất 1 dòng để update", "error");
+
+    }
+
+
+  }
   useEffect(() => {
     traPQC1Data();
     ///handletraFailingData();
@@ -684,6 +689,21 @@ const PQC1 = () => {
                   >
                     Input Data
                   </Button>
+                  <Button
+                    color={"primary"}
+                    variant="contained"
+                    size="small"
+                    sx={{
+                      fontSize: "0.7rem",
+                      padding: "3px",
+                      backgroundColor: "#02ac2c",
+                    }}
+                    onClick={() => {
+                      updateSampleQty();
+                    }}
+                  >
+                    Update QTY
+                  </Button>
                 </div>
               </div>
             </div>
@@ -696,7 +716,7 @@ const PQC1 = () => {
               <div className="forminput">
                 <div className="forminputcolumn">
                   <label>
-                  <b style={{ color: "gray" }}>LOT SX</b>
+                    <b style={{ color: "gray" }}>LOT SX</b>
                     <input
                       disabled={true}
                       type="text"
@@ -721,7 +741,7 @@ const PQC1 = () => {
                     </span>
                   )}
                   <label>
-                  <b style={{ color: "gray" }}>LOT NVL</b>
+                    <b style={{ color: "gray" }}>LOT NVL</b>
                     <input
                       disabled={true}
                       type="text"
@@ -749,19 +769,19 @@ const PQC1 = () => {
                   )}
                 </div>
                 <div className="forminputcolumn">
-                <label>
-                  <b style={{ color: "gray" }}>LINE NO</b>
+                  <label>
+                    <b style={{ color: "gray" }}>LINE NO</b>
                     <input
                       disabled={true}
                       type="text"
                       value={
                         sx_data[0] !== undefined ? sx_data[0]?.EQ_NAME_TT : ""
                       }
-                      onChange={(e) => {}}
+                      onChange={(e) => { }}
                     ></input>
                   </label>
                   <label>
-                  <b style={{ color: "gray" }}>Công Đoạn</b>
+                    <b style={{ color: "gray" }}>Công Đoạn</b>
                     <input
                       disabled={true}
                       type="text"
@@ -770,42 +790,42 @@ const PQC1 = () => {
                           ? sx_data[0]?.PROCESS_NUMBER
                           : ""
                       }
-                      onChange={(e) => {}}
+                      onChange={(e) => { }}
                     ></input>
                   </label>
                 </div>
                 <div className="forminputcolumn">
-                <label>
-                  <b style={{ color: "gray" }}>STEP</b>
+                  <label>
+                    <b style={{ color: "gray" }}>STEP</b>
                     <input
                       disabled={true}
                       type="text"
                       value={sx_data[0] !== undefined ? sx_data[0]?.STEP : ""}
-                      onChange={(e) => {}}
+                      onChange={(e) => { }}
                     ></input>
                   </label>
                   <label>
-                  <b style={{ color: "gray" }}>PD</b>
+                    <b style={{ color: "gray" }}>PD</b>
                     <input
                       disabled={true}
                       type="text"
                       value={sx_data[0] !== undefined ? sx_data[0]?.PD : ""}
-                      onChange={(e) => {}}
+                      onChange={(e) => { }}
                     ></input>
                   </label>
                 </div>
                 <div className="forminputcolumn">
-                <label>
-                  <b style={{ color: "gray" }}>CAVITY</b>
+                  <label>
+                    <b style={{ color: "gray" }}>CAVITY</b>
                     <input
                       disabled={true}
                       type="text"
                       value={sx_data[0] !== undefined ? sx_data[0]?.CAVITY : ""}
-                      onChange={(e) => {}}
+                      onChange={(e) => { }}
                     ></input>
                   </label>
                   <label>
-                  <b style={{ color: "gray" }}>ST.OK</b>
+                    <b style={{ color: "gray" }}>ST.OK</b>
                     <input
                       disabled={true}
                       type="text"
@@ -814,30 +834,27 @@ const PQC1 = () => {
                           ? sx_data[0]?.MASS_START_TIME
                           : ""
                       }
-                      onChange={(e) => {}}
+                      onChange={(e) => { }}
                     ></input>
                   </label>
                 </div>
                 <div className="forminputcolumn">
-                <label>
-                  <b style={{ color: "gray" }}>Mã CNSX</b>
+                  <label>
+                    <b style={{ color: "gray" }}>Mã CNSX</b>
                     <input
                       disabled={true}
                       type="text"
                       value={
                         sx_data[0] !== undefined ? sx_data[0]?.INS_EMPL : ""
                       }
-                      onChange={(e) => {}}
+                      onChange={(e) => { }}
                     ></input>
                   </label>
                 </div>
-              </div>              
+              </div>
             </div>
           )}
-          <div
-            className="tracuuYCSXTable">
-            {pqc1DataTable}
-          </div>
+          <div className="tracuuYCSXTable">{pqc1DataTable}</div>
         </div>
       </div>
     </div>

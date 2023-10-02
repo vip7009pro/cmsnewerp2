@@ -1641,6 +1641,7 @@ const YCSXManager = () => {
       let checkIDcongViecTonTai: boolean = false;
       await generalQuery("checkIDCongViecAMZ", {
         NO_IN: id_congviec,
+        PROD_REQUEST_NO: prodrequestno,
       })
         .then((response) => {
           console.log(response.data.tk_status);
@@ -1704,7 +1705,7 @@ const YCSXManager = () => {
           checkDuplicateAMZ();
           //Swal.fire("Thông báo", "Upload data Amazon Hoàn thành", "success");
         } else {
-          Swal.fire("Thông báo", "ID công việc đã tồn tại", "error");
+          Swal.fire("Thông báo", "ID công việc hoặc số yêu cầu đã tồn tại", "error");
         }
       }
     }
