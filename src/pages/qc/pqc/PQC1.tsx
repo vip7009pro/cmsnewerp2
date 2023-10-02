@@ -53,7 +53,6 @@ import {
   UserData,
 } from "../../../api/GlobalInterface";
 const PQC1 = () => {
-  
   const [customerList, setCustomerList] = useState<CustomerListData[]>([]);
   const userData: UserData | undefined = useSelector(
     (state: RootState) => state.totalSlice.userData
@@ -95,6 +94,15 @@ const PQC1 = () => {
   const [pqc1datatable, setPqc1DataTable] = useState<Array<PQC1_DATA>>([]);
   const [sx_data, setSXData] = useState<SX_DATA[]>([]);
   const [ktdtc, setKTDTC] = useState("CKT");
+  const refArray = [useRef<any>(null), useRef<any>(null), useRef<any>(null), useRef<any>(null), useRef<any>(null)];
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, index: number) => {
+    if (e.key === "Enter") {
+      // console.log('press enter')
+      e.preventDefault();
+      const nextIndex = (index + 1) % refArray.length;
+      refArray[nextIndex].current.focus();
+    }
+  };
   const checkKTDTC = (PROCESS_LOT_NO: string) => {
     generalQuery("checkktdtc", { PROCESS_LOT_NO: PROCESS_LOT_NO })
       .then((response) => {
@@ -475,9 +483,9 @@ const PQC1 = () => {
   };
   const inputDataPqc1 = () => {
     generalQuery("insert_pqc1", {
-      PROCESS_LOT_NO: process_lot_no,
+      PROCESS_LOT_NO: process_lot_no.toUpperCase(),
       LINEQC_PIC: lineqc_empl.toUpperCase(),
-      PROD_PIC: sx_data[0].INS_EMPL,
+      PROD_PIC: sx_data[0].INS_EMPL.toUpperCase(),
       PROD_LEADER: prod_leader_empl.toUpperCase(),
       STEPS: sx_data[0].STEP,
       CAVITY: sx_data[0].CAVITY,
@@ -486,7 +494,7 @@ const PQC1 = () => {
       REMARK: ktdtc,
       PROD_REQUEST_NO: sx_data[0].PROD_REQUEST_NO,
       G_CODE: sx_data[0].G_CODE,
-      PLAN_ID: sx_data[0].PLAN_ID,
+      PLAN_ID: sx_data[0].PLAN_ID.toUpperCase(),
       PROCESS_NUMBER: sx_data[0].PROCESS_NUMBER,
       LINE_NO: sx_data[0].EQ_NAME_TT,
       REMARK2: remark,
@@ -494,10 +502,11 @@ const PQC1 = () => {
       .then((response) => {
         if (response.data.tk_status !== "NG") {
           //console.log(response.data.data);
+          Swal.fire("Thông báo", "Input data thành công", "success");
           traPQC1Data();
           setPlanId('');
           setLineqc_empl('');
-          setReMark('');          
+          setReMark('');
         } else {
           Swal.fire("Cảnh báo", "Có lỗi: " + response.data.message, "error");
         }
@@ -578,10 +587,14 @@ const PQC1 = () => {
                   </label>
                   <label>
                     <b>Số chỉ thị sản xuất</b>
-                    <input                      
+                    <input
+                      ref={refArray[0]}
                       type="text"
-                      placeholder="1F80008A"
+                      placeholder=""
                       value={planId}
+                      onKeyDown={(e) => {
+                        handleKeyDown(e, 0);
+                      }}
                       onChange={(e) => {
                         if (e.target.value.length >= 8) {
                           checkPlanID(e.target.value);
@@ -599,9 +612,13 @@ const PQC1 = () => {
                 <div className="forminputcolumn">
                   <label>
                     <b>Mã LINEQC</b>
-                    <input 
+                    <input
+                      ref={refArray[1]}
+                      onKeyDown={(e) => {
+                        handleKeyDown(e, 1);
+                      }}
                       type="text"
-                      placeholder={"NVD1201"}
+                      placeholder={""}
                       value={lineqc_empl}
                       onChange={(e) => {
                         if (e.target.value.length >= 7) {
@@ -625,8 +642,12 @@ const PQC1 = () => {
                   <label>
                     <b>Mã Leader SX</b>
                     <input
+                      ref={refArray[2]}
+                      onKeyDown={(e) => {
+                        handleKeyDown(e, 2);
+                      }}
                       type="text"
-                      placeholder={"NVD1201"}
+                      placeholder={""}
                       value={prod_leader_empl}
                       onChange={(e) => {
                         if (e.target.value.length >= 7) {
@@ -652,6 +673,10 @@ const PQC1 = () => {
                   <label>
                     <b>Remark</b>
                     <input
+                      ref={refArray[3]}
+                      onKeyDown={(e) => {
+                        handleKeyDown(e, 3);
+                      }}
                       type="text"
                       placeholder={"Ghi chú"}
                       value={remark}
@@ -661,6 +686,10 @@ const PQC1 = () => {
                     ></input>
                   </label>
                   <Button
+                    ref={refArray[4]}
+                    onKeyDown={(e) => {
+                      //handleKeyDown(e,4);
+                    }}
                     color={"primary"}
                     variant="contained"
                     size="small"
