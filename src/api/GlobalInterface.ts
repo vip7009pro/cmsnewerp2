@@ -1434,6 +1434,14 @@ export interface QC_FAIL_DATA {
   REMARK_OUT: string;
   FAIL_ID: number;
 }
+
+//error table
+export interface ERROR_TABLE {
+  ERR_CODE: string,
+  ERR_NAME_VN: string,
+  ERR_NAME_KR: string,
+  ERR_TYPE: string
+}
 //pqc data
 export interface PQC1_DATA {
   PQC1_ID: string;

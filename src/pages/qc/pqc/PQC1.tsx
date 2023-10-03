@@ -285,6 +285,35 @@ const PQC1 = () => {
               infoText="Page #{0}. Total: {1} ({2} items)"
               displayMode="compact"
             />
+            <Column dataField='FACTORY' caption='FACTORY' allowEditing={false} width={50}></Column>
+            <Column dataField='PQC1_ID' caption='PQC1_ID' allowEditing={false} width={60}></Column>
+            <Column dataField='PLAN_ID' caption='PLAN_ID' allowEditing={false} width={70}></Column>
+            <Column dataField='SETTING_OK_TIME' caption='SETTING_OK_TIME' allowEditing={false} width={130}></Column>
+            <Column dataField='INSPECT_SAMPLE_QTY' caption='INSPECT_SAMPLE_QTY' allowEditing={true} width={150}></Column>
+            <Column dataField='YEAR_WEEK' caption='YEAR_WEEK' allowEditing={false} width={100}></Column>
+            <Column dataField='PROCESS_LOT_NO' caption='PROCESS_LOT_NO' allowEditing={false} width={100}></Column>
+            <Column dataField='G_NAME' caption='G_NAME' allowEditing={false} width={100}></Column>
+            <Column dataField='G_NAME_KD' caption='G_NAME_KD' allowEditing={false} width={100}></Column>
+            <Column dataField='LINEQC_PIC' caption='LINEQC_PIC' allowEditing={false} width={100}></Column>
+            <Column dataField='PROD_PIC' caption='PROD_PIC' allowEditing={false} width={100}></Column>
+            <Column dataField='PROD_LEADER' caption='PROD_LEADER' allowEditing={false} width={100}></Column>
+            <Column dataField='LINE_NO' caption='LINE_NO' allowEditing={false} width={100}></Column>
+            <Column dataField='STEPS' caption='STEPS' allowEditing={false} width={70}></Column>
+            <Column dataField='CAVITY' caption='CAVITY' allowEditing={false} width={60}></Column>
+            <Column dataField='PROD_LAST_PRICE' caption='PROD_LAST_PRICE' allowEditing={false} width={100}></Column>
+            <Column dataField='SAMPLE_AMOUNT' caption='SAMPLE_AMOUNT' allowEditing={false} width={100}></Column>
+            <Column dataField='CNDB_ENCODES' caption='CNDB_ENCODES' allowEditing={false} width={100}></Column>
+            <Column dataField='REMARK' caption='REMARK' allowEditing={false} width={100}></Column>
+            <Column dataField='INS_DATE' caption='INS_DATE' allowEditing={false} width={100}></Column>
+            <Column dataField='UPD_DATE' caption='UPD_DATE' allowEditing={false} width={100}></Column>
+            <Column dataField='PQC3_ID' caption='PQC3_ID' allowEditing={false} width={100}></Column>
+            <Column dataField='OCCURR_TIME' caption='OCCURR_TIME' allowEditing={false} width={100}></Column>
+            <Column dataField='INSPECT_QTY' caption='INSPECT_QTY' allowEditing={false} width={100}></Column>
+            <Column dataField='DEFECT_QTY' caption='DEFECT_QTY' allowEditing={false} width={100}></Column>
+            <Column dataField='DEFECT_PHENOMENON' caption='DEFECT_PHENOMENON' allowEditing={false} width={100}></Column>
+            <Column dataField='PROD_REQUEST_NO' caption='PROD_REQUEST_NO' allowEditing={false} width={100}></Column>
+            <Column dataField='PROD_REQUEST_QTY' caption='PROD_REQUEST_QTY' allowEditing={false} width={100}></Column>
+            <Column dataField='PROD_REQUEST_DATE' caption='PROD_REQUEST_DATE' allowEditing={false} width={100}></Column>
             <Summary>
               <TotalItem
                 alignment="right"
@@ -568,7 +597,27 @@ const PQC1 = () => {
         <div className="inputform">
           {true && (
             <div className="tracuuDataInspectionform">
-              <b style={{ color: "blue" }}>NHẬP THÔNG TIN SETTING</b>
+              <b style={{ color: "blue" }}> {lineqc_empl && (
+                <span
+                  style={{
+                    fontSize: '0.7rem',
+                    fontWeight: "bold",
+                    color: "red",
+                  }}
+                >
+                  {empl_name}
+                </span>
+              )}|NHẬP THÔNG TIN SETTING|  {prod_leader_empl && (
+                <span
+                  style={{
+                    fontSize: '0.7rem',
+                    fontWeight: "bold",
+                    color: "red",
+                  }}
+                >
+                  {empl_name2}
+                </span>
+              )}</b>
               <div className="forminput">
                 <div className="forminputcolumn">
                   <label>
@@ -628,17 +677,6 @@ const PQC1 = () => {
                       }}
                     ></input>
                   </label>
-                  {lineqc_empl && (
-                    <span
-                      style={{
-                        fontSize: 15,
-                        fontWeight: "bold",
-                        color: "blue",
-                      }}
-                    >
-                      {empl_name}
-                    </span>
-                  )}
                   <label>
                     <b>Mã Leader SX</b>
                     <input
@@ -657,17 +695,6 @@ const PQC1 = () => {
                       }}
                     ></input>
                   </label>
-                  {prod_leader_empl && (
-                    <span
-                      style={{
-                        fontSize: 15,
-                        fontWeight: "bold",
-                        color: "blue",
-                      }}
-                    >
-                      {empl_name2}
-                    </span>
-                  )}
                 </div>
                 <div className="forminputcolumn">
                   <label>
@@ -755,7 +782,7 @@ const PQC1 = () => {
                   {g_name && (
                     <span
                       style={{
-                        fontSize: 15,
+                        fontSize: '0.7rem',
                         fontWeight: "bold",
                         color: "blue",
                       }}
@@ -782,7 +809,7 @@ const PQC1 = () => {
                   {m_name && (
                     <span
                       style={{
-                        fontSize: 15,
+                        fontSize: '0.7rem',
                         fontWeight: "bold",
                         color: "blue",
                       }}

@@ -4,6 +4,7 @@ import TRAPQC from "./TRAPQC";
 import "./PQC.scss";
 import CODE_MANAGER from "../../rnd/code_manager/CODE_MANAGER";
 import PQC1 from "./PQC1";
+import PQC3 from "./PQC3";
 
 const PQC = () => {
   const [selection, setSelection] = useState<any>({
@@ -60,9 +61,7 @@ const PQC = () => {
       });
     }
   };
-
   useEffect(() => { }, []);
-
   return (
     <div className="pqc">
       <div className="mininavbar">
@@ -74,7 +73,7 @@ const PQC = () => {
             color: selection.tab2 === true ? "yellow" : "yellow",
           }}
         >
-          <span className="mininavtext">Data PQC</span>
+          <span className="mininavtext">DATA PQC</span>
         </div>
         <div
           className="mininavitem"
@@ -106,6 +105,11 @@ const PQC = () => {
       {selection.tab3 && (
         <div className="trapqc">
           <PQC1 />
+        </div>
+      )}
+      {selection.tab4 && (
+        <div className="trapqc">
+          <PQC3 />
         </div>
       )}
       {selection.tab1 && (
