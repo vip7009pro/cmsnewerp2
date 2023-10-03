@@ -652,7 +652,7 @@ export default function Navbar() {
                   alt="pvn logo"
                   src="/logopvn_big.png"
                   width={114.4}
-                  height={40}
+                  height={25}
                 />
               )}
             </Link>

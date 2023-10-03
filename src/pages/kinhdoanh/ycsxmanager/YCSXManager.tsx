@@ -143,6 +143,7 @@ const YCSXManager = () => {
   const [codeList, setCodeList] = useState<CodeListData[]>([]);
   const [phanloai, setPhanLoai] = useState("00");
   const [newphanloai, setNewPhanLoai] = useState("TT");
+  const [phanloaihang, setPhanLoaiHang] = useState("ALL");
   const [loaisx, setLoaiSX] = useState("01");
   const [loaixh, setLoaiXH] = useState("02");
   const [material, setMaterial] = useState("");
@@ -1885,6 +1886,7 @@ const YCSXManager = () => {
       inspect_inputcheck: inspectInputcheck,
       prod_request_no: prodrequestno,
       material: material,
+      phanloaihang: phanloaihang
     })
       .then((response) => {
         //console.log(response.data.data);
@@ -3494,7 +3496,6 @@ const YCSXManager = () => {
                 <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: 'black' }} onClick={() => {
                   setSelection({ ...selection, them1po: false });
                 }}>Close</Button>
-
               </div>
             </div>
           </div>
@@ -3693,6 +3694,39 @@ const YCSXManager = () => {
                     ></input>
                   </label>
                 </div>
+                <div className="forminputcolumn">
+                <label>
+                    <b>Loại hàng:</b>
+                    <select
+                      name='phanloaihang'
+                      value={phanloaihang}
+                      onChange={(e) => {
+                        setPhanLoaiHang(e.target.value);
+                      }}
+                    >
+                      <option value='ALL'>ALL</option>
+                      <option value='TT'>Hàng Thường (TT)</option>
+                      <option value='SP'>Sample sang FL (SP)</option>
+                      <option value='RB'>Ribbon (RB)</option>
+                      <option value='HQ'>Hàn Quốc (HQ)</option>
+                      <option value='VN'>Việt Nam (VN)</option>
+                      <option value='AM'>Amazon (AM)</option>
+                      <option value='DL'>Đổi LOT (DL)</option>
+                      <option value='M4'>NM4 (M4)</option>
+                      <option value='IN'>Hàng In Nhanh (IN)</option>
+                      {/* <option value='SL'>Slitting (SL)</option> */}
+                    </select>
+                  </label>
+                  <label>
+                  <b>All Time:</b>
+                  <input
+                    type='checkbox'
+                    name='alltimecheckbox'
+                    defaultChecked={alltime}
+                    onChange={() => setAllTime(!alltime)}
+                  ></input>
+                </label>
+                </div>
                 <div className='forminputcolumn'>
                   <label>
                     <b>YCSX Pending:</b>
@@ -3719,17 +3753,10 @@ const YCSXManager = () => {
                     ></input>
                   </label>
                 </div>
+                
               </div>
               <div className='formbutton'>
-                <label>
-                  <b>All Time:</b>
-                  <input
-                    type='checkbox'
-                    name='alltimecheckbox'
-                    defaultChecked={alltime}
-                    onChange={() => setAllTime(!alltime)}
-                  ></input>
-                </label>
+               
                 <IconButton
                   className='buttonIcon'
                   onClick={() => {
@@ -3853,7 +3880,6 @@ const YCSXManager = () => {
                   </div>
                   <div style={{ color: "black" }}>Model: {prod_model}</div>
                 </div>
-
               </div>
               <form className='formupload'>
                 <div className="uploadfile">
@@ -3879,10 +3905,7 @@ const YCSXManager = () => {
                   <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: 'gray' }} onClick={() => {
                     setUploadExcelJSon([]);
                   }}>Clear</Button>
-
                 </div>
-
-
                 {progressvalue}/{uploadExcelJson.length}
               </form>
             </div>
