@@ -214,7 +214,7 @@ const QLSXPLAN = () => {
               color: selection.tab5 === true ? "yellow" : "yellow",
             }}
           >
-            <span className="mininavtext">TRA PLAN</span>
+            <span className="mininavtext">PLAN TABLE</span>
           </div>
           <div
             className="mininavitem"

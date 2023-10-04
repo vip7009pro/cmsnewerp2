@@ -47,6 +47,7 @@ import { RootState } from "../../../redux/store";
 import {
   ERROR_TABLE,
   PQC1_DATA,
+  PQC3_DATA,
   SX_DATA,
   UserData,
 } from "../../../api/GlobalInterface";
@@ -87,6 +88,7 @@ const PQC3 = () => {
     userData?.FACTORY_CODE === 1 ? "NM1" : "NM2"
   );
   const [pqc1datatable, setPqc1DataTable] = useState<Array<PQC1_DATA>>([]);
+  const [pqc3datatable, setPqc3DataTable] = useState<Array<PQC3_DATA>>([]);
   const [sx_data, setSXData] = useState<SX_DATA[]>([]);
   const [ktdtc, setKTDTC] = useState("CKT");
   const refArray = [useRef<any>(null), useRef<any>(null), useRef<any>(null), useRef<any>(null), useRef<any>(null), useRef<any>(null), useRef<any>(null), useRef<any>(null), useRef<any>(null), useRef<any>(null), useRef<any>(null)];
@@ -104,10 +106,12 @@ const PQC3 = () => {
   //let file:any = null;
   const uploadFile2 = async (PQC3_ID: number) => {
     if (file !== null && file !== undefined) {
-      uploadQuery(file, "PQC3_" + PQC3_ID + ".png", "pqc")
+      uploadQuery(file, "PQC3_" + (PQC3_ID+1) + ".png", "pqc")
         .then((response) => {
           console.log("resopone upload:", response.data);
           if (response.data.tk_status !== "NG") {
+            Swal.fire("Thông báo", "Input data pqc3 thành công", "success");
+            handleTraPQC3Data();
           } else {
             Swal.fire(
               "Thông báo",
@@ -161,7 +165,7 @@ const PQC3 = () => {
         console.log(error);
       });
   };
-  const pqc3DataTable = React.useMemo(
+  const pqc1DataTable = React.useMemo(
     () => (
       <div className="datatb">
         <CustomResponsiveContainer>
@@ -248,7 +252,7 @@ const PQC3 = () => {
     ),
     [pqc1datatable]
   );
-  const pqc1DataTable = React.useMemo(
+  const pqc3DataTable = React.useMemo(
     () => (
       <div className="datatb">
         <CustomResponsiveContainer>
@@ -261,7 +265,7 @@ const PQC3 = () => {
             cellHintEnabled={true}
             columnResizingMode={"widget"}
             showColumnLines={true}
-            dataSource={pqc1datatable}
+            dataSource={pqc3datatable}
             columnWidth="auto"
             keyExpr="id"
             height={"100%"}
@@ -269,7 +273,8 @@ const PQC3 = () => {
             onSelectionChanged={(e) => {
               //console.log(e.selectedRowsData);
               //setselecterowfunction(e.selectedRowsData);
-              setSelectedRowsData(e.selectedRowsData);
+              //setSelectedRowsData(e.selectedRowsData);
+              setPQC3ID(e.selectedRowsData[0].PQC3_ID);
             }}
             onRowClick={(e) => {
               //console.log(e.data);
@@ -330,36 +335,7 @@ const PQC3 = () => {
               showInfo={true}
               infoText="Page #{0}. Total: {1} ({2} items)"
               displayMode="compact"
-            />
-            <Column dataField='FACTORY' caption='FACTORY' allowEditing={false} width={50}></Column>
-            <Column dataField='PQC1_ID' caption='PQC1_ID' allowEditing={false} width={60}></Column>
-            <Column dataField='PLAN_ID' caption='PLAN_ID' allowEditing={false} width={70}></Column>
-            <Column dataField='SETTING_OK_TIME' caption='SETTING_OK_TIME' allowEditing={false} width={130}></Column>
-            <Column dataField='INSPECT_SAMPLE_QTY' caption='INSPECT_SAMPLE_QTY' allowEditing={true} width={150}></Column>
-            <Column dataField='YEAR_WEEK' caption='YEAR_WEEK' allowEditing={false} width={100}></Column>
-            <Column dataField='PROCESS_LOT_NO' caption='PROCESS_LOT_NO' allowEditing={false} width={100}></Column>
-            <Column dataField='G_NAME' caption='G_NAME' allowEditing={false} width={100}></Column>
-            <Column dataField='G_NAME_KD' caption='G_NAME_KD' allowEditing={false} width={100}></Column>
-            <Column dataField='LINEQC_PIC' caption='LINEQC_PIC' allowEditing={false} width={100}></Column>
-            <Column dataField='PROD_PIC' caption='PROD_PIC' allowEditing={false} width={100}></Column>
-            <Column dataField='PROD_LEADER' caption='PROD_LEADER' allowEditing={false} width={100}></Column>
-            <Column dataField='LINE_NO' caption='LINE_NO' allowEditing={false} width={100}></Column>
-            <Column dataField='STEPS' caption='STEPS' allowEditing={false} width={70}></Column>
-            <Column dataField='CAVITY' caption='CAVITY' allowEditing={false} width={60}></Column>
-            <Column dataField='PROD_LAST_PRICE' caption='PROD_LAST_PRICE' allowEditing={false} width={100}></Column>
-            <Column dataField='SAMPLE_AMOUNT' caption='SAMPLE_AMOUNT' allowEditing={false} width={100}></Column>
-            <Column dataField='CNDB_ENCODES' caption='CNDB_ENCODES' allowEditing={false} width={100}></Column>
-            <Column dataField='REMARK' caption='REMARK' allowEditing={false} width={100}></Column>
-            <Column dataField='INS_DATE' caption='INS_DATE' allowEditing={false} width={100}></Column>
-            <Column dataField='UPD_DATE' caption='UPD_DATE' allowEditing={false} width={100}></Column>
-            <Column dataField='PQC3_ID' caption='PQC3_ID' allowEditing={false} width={100}></Column>
-            <Column dataField='OCCURR_TIME' caption='OCCURR_TIME' allowEditing={false} width={100}></Column>
-            <Column dataField='INSPECT_QTY' caption='INSPECT_QTY' allowEditing={false} width={100}></Column>
-            <Column dataField='DEFECT_QTY' caption='DEFECT_QTY' allowEditing={false} width={100}></Column>
-            <Column dataField='DEFECT_PHENOMENON' caption='DEFECT_PHENOMENON' allowEditing={false} width={100}></Column>
-            <Column dataField='PROD_REQUEST_NO' caption='PROD_REQUEST_NO' allowEditing={false} width={100}></Column>
-            <Column dataField='PROD_REQUEST_QTY' caption='PROD_REQUEST_QTY' allowEditing={false} width={100}></Column>
-            <Column dataField='PROD_REQUEST_DATE' caption='PROD_REQUEST_DATE' allowEditing={false} width={100}></Column>
+            />            
             <Summary>
               <TotalItem
                 alignment="right"
@@ -372,7 +348,7 @@ const PQC3 = () => {
         </CustomResponsiveContainer>
       </div>
     ),
-    [pqc1datatable]
+    [pqc3datatable]
   );
   const traPQC1Data = (g_code: string) => {
     generalQuery("trapqc1data", {
@@ -462,12 +438,17 @@ const PQC3 = () => {
       });
   }
   const checkInput = (): boolean => {
-    if (
-      inputno !== "" &&
+    if (      
       planId !== "" &&
-      lineqc_empl !== "" &&
-      sx_data.length !== 0 &&
-      process_lot_no !== ""
+      lineqc_empl !== "" &&      
+      process_lot_no !== "" &&
+      pqc1Id !== 0 &&
+      file !== undefined &&
+      file !== null &&
+      err_code !== "" &&
+      defect_phenomenon !== "" &&
+      prodrequestno !== "" &&
+      g_code !== ""
     ) {
       return true;
     } else {
@@ -475,7 +456,7 @@ const PQC3 = () => {
     }
   };
   const inputDataPqc3 = () => {
-    generalQuery("insert_pqc3", {
+    const uploadData = {
       PROCESS_LOT_NO: process_lot_no.toUpperCase(),
       LINEQC_PIC: lineqc_empl.toUpperCase(),
       OCCURR_TIME: occurr_time,
@@ -488,26 +469,68 @@ const PQC3 = () => {
       ERR_CODE: err_code,
       PROD_REQUEST_NO: prodrequestno,
       G_CODE: g_code,
+    };
+    console.log('upload data',uploadData);
+    generalQuery("insert_pqc3", uploadData)
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {          
+        generalQuery("getlastestPQC3_ID", {})
+          .then((response) => {
+            if (response.data.tk_status !== "NG") {
+              console.log(response.data.data);
+              setPQC3ID(response.data.data[0].PQC3_ID);
+              uploadFile2(response.data.data[0].PQC3_ID);
+            } else {
+              setPQC3ID(0);
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      } else {
+        Swal.fire("Cảnh báo", "Có lỗi: " + response.data.message, "error");
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  };
+  const handleTraPQC3Data = () => {    
+    generalQuery("trapqc3data", {
+      ALLTIME: true,
+      FROM_DATE: moment().add(-2, "day").format("YYYY-MM-DD"),
+      TO_DATE: moment().format("YYYY-MM-DD"),
+      CUST_NAME: '',
+      PROCESS_LOT_NO: '',
+      G_CODE: '',
+      G_NAME: '',
+      PROD_TYPE: '',
+      EMPL_NAME: '',
+      PROD_REQUEST_NO: '',
+      ID: '',
+      FACTORY: 'All',
     })
       .then((response) => {
+        //console.log(response.data.data);
         if (response.data.tk_status !== "NG") {
-          //console.log(response.data.data);
-          /* Swal.fire("Thông báo", "Input data thành công", "success"); */
-          generalQuery("getlastestPQC3_ID", {})
-            .then((response) => {
-              if (response.data.tk_status !== "NG") {
-                console.log(response.data.data);
-                setPQC3ID(response.data.data[0].PQC3_ID);
-                uploadFile2(response.data.data[0].PQC3_ID);
-              } else {
-                setPQC3ID(0);
-              }
-            })
-            .catch((error) => {
-              console.log(error);
-            });
+          const loadeddata: PQC3_DATA[] = response.data.data.map(
+            (element: PQC3_DATA, index: number) => {
+              //summaryOutput += element.OUTPUT_QTY_EA;
+              return {
+                ...element,
+                OCCURR_TIME: moment
+                  .utc(element.OCCURR_TIME)
+                  .format("YYYY-MM-DD HH:mm:ss"),
+                id: index,
+              };
+            },
+          );
+          //setSummaryInspect('Tổng Xuất: ' +  summaryOutput.toLocaleString('en-US') + 'EA');
+          setPqc3DataTable(loadeddata);          
+          
         } else {
-          Swal.fire("Cảnh báo", "Có lỗi: " + response.data.message, "error");
+          Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");   
+          setPqc3DataTable([]);       
         }
       })
       .catch((error) => {
@@ -516,6 +539,7 @@ const PQC3 = () => {
   };
   useEffect(() => {
     loadErrorTable();
+    handleTraPQC3Data();
     ///handletraFailingData();
   }, []);
   return (
@@ -702,7 +726,7 @@ const PQC3 = () => {
                   <Button
                     ref={refArray[9]}
                     onKeyDown={(e: any) => {
-                      handleKeyDown(e, 9);
+                      //handleKeyDown(e, 9);
                     }}
                     color={"primary"}
                     variant="contained"
@@ -713,16 +737,22 @@ const PQC3 = () => {
                       backgroundColor: "#f97bfd",
                     }}
                     onClick={() => {
-                      uploadFile2(pqc3Id);
+                      if(checkInput()){
+                        inputDataPqc3();
+                      }
+                      else {
+                        Swal.fire('Cảnh báo','Nhập đủ thông tin cần thiết','error');
+                      }
+                      
                     }}
                   >
-                    Up
+                    Input Data
                   </Button>
                   <Button
-                    ref={refArray[10]}
+                    /* ref={refArray[10]}
                     onKeyDown={(e: any) => {
                       handleKeyDown(e, 10);
-                    }}
+                    }} */
                     color={"primary"}
                     variant="contained"
                     size="small"
@@ -732,25 +762,13 @@ const PQC3 = () => {
                       backgroundColor: "#756DFA",
                     }}
                     onClick={() => {
-                      console.log(occurr_time)
+                      //console.log(occurr_time)
+                      uploadFile2(pqc3Id);                      
                     }}
                   >
-                    Input Data
+                    Update Ảnh
                   </Button>
-                  <Button
-                    color={"primary"}
-                    variant="contained"
-                    size="small"
-                    sx={{
-                      fontSize: "0.7rem",
-                      padding: "3px",
-                      backgroundColor: "#02ac2c",
-                    }}
-                    onClick={() => {
-                    }}
-                  >
-                    Update QTY
-                  </Button>
+                  
                   <IconButton
                     className="buttonIcon"
                     onClick={() => {
@@ -764,7 +782,7 @@ const PQC3 = () => {
               </div>
             </div>
           </div>
-          <div className="tracuuYCSXTable2">{pqc3DataTable}</div>
+          <div className="tracuuYCSXTable2">{pqc1DataTable}</div>
           <div className="tracuuYCSXTable">{pqc3DataTable}</div>
         </div>
       </div>
