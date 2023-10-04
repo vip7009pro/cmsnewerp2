@@ -330,6 +330,8 @@ const ProtectedRoute: any = ({
   }
 };
 function App() {
+ 
+
   const springs = useSpring({
     from: { x: 1000, y: 100 },
     to: { x: 0, y: 0 },

@@ -23,7 +23,6 @@ import { toggleSidebar } from "../../redux/slices/globalSlice";
 import { RootState } from "../../redux/store";
 import { logout } from "../../api/Api";
 import { UserData } from "../../api/GlobalInterface";
-
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
   borderRadius: theme.shape.borderRadius,
@@ -40,55 +39,25 @@ const Search = styled("div")(({ theme }) => ({
   },
 }));
 
-const SearchIconWrapper = styled("div")(({ theme }) => ({
-  padding: theme.spacing(0, 2),
-  height: "100%",
-  position: "absolute",
-  pointerEvents: "none",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-}));
-
-const StyledInputBase = styled(InputBase)(({ theme }) => ({
-  color: "inherit",
-  "& .MuiInputBase-input": {
-    padding: theme.spacing(1, 1, 1, 0),
-    // vertical padding + font size from searchIcon
-    paddingLeft: `calc(1em + ${theme.spacing(4)})`,
-    transition: theme.transitions.create("width"),
-    width: "100%",
-    [theme.breakpoints.up("md")]: {
-      width: "20ch",
-    },
-  },
-}));
-
 export default function PrimarySearchAppBar() {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] =
     React.useState<null | HTMLElement>(null);
-
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
-
   const handleProfileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
-
   const handleMobileMenuClose = () => {
     setMobileMoreAnchorEl(null);
   };
-
   const handleMenuClose = () => {
     setAnchorEl(null);
     handleMobileMenuClose();
   };
-
   const handleMobileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setMobileMoreAnchorEl(event.currentTarget);
   };
-
   const menuId = "primary-search-account-menu";
   const renderMenu = (
     <Menu
@@ -203,15 +172,15 @@ export default function PrimarySearchAppBar() {
               dispatch(toggleSidebar("2"));
             }}
           >
-            <MenuIcon />
+            <MenuIcon/>
           </IconButton>
           <Box sx={{ flexGrow: 1 }} />
           <Link to="/" className="menulink">
             <img
               alt="cmsvina logo"
               src="/logocmsvina.png"
-              width={171.6}
-              height={40.7}
+              width={114.4}
+              height={27.13333}
             />
           </Link>
           <Typography
@@ -244,9 +213,9 @@ export default function PrimarySearchAppBar() {
             >
               {/* <AccountCircle /> */}
               <img
-                width={50}
+                width={25}
                 style={{ borderRadius: "50%" }}
-                height={50}
+                height={25}
                 src={"/Picture_NS/NS_" + globalUserData?.EMPL_NO + ".jpg"}
                 alt={globalUserData?.EMPL_NO}
               ></img>

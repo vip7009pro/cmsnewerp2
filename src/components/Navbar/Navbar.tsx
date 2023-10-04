@@ -548,7 +548,26 @@ export default function Navbar() {
     (state: RootState) => state.totalSlice.tabs,
   );
   const dispatch = useDispatch();
+
+  const [show, setShow] = useState(true);
+  const [lastScrollY, setLastScrollY] = useState(0);
+
+/*   const controlNavbar = () => {
+    console.log(lastScrollY)
+    if (typeof window !== 'undefined') { 
+      if (window.scrollY > lastScrollY) { // if scroll down hide the navbar
+        setShow(false); 
+      } else { // if scroll up show the navbar
+        setShow(true);  
+      }
+      // remember current page location to use in the next move
+      setLastScrollY(window.scrollY); 
+    }
+  };   */
   useEffect(() => {
+    /* if (typeof window !== 'undefined') {
+      window.addEventListener('scroll', controlNavbar);
+    } */
     let saveLang: any = localStorage.getItem("lang")?.toString();
     if (saveLang !== undefined) {
       setLang(saveLang.toString());
@@ -594,6 +613,9 @@ export default function Navbar() {
       });
     } else {
     }
+    return () => {
+      /* window.removeEventListener('scroll', controlNavbar); */
+    }; 
   }, []);
   const filterOptions1 = createFilterOptions({
     matchFrom: "any",

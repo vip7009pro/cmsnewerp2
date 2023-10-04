@@ -21,26 +21,23 @@
     }
   }
 
-  .SidebarNav {
-    position: sticky;
-    /*  background: rgb(255, 255, 255); */
+  .SidebarNav {    
+    /*  background: rgb(255, 255, 255); */    
     background-image: linear-gradient(
       310deg,
       rgba(86, 199, 252, 1),
       rgba(200, 229, 240, 1)
     );
-    min-width: 250px;
-    margin-bottom: 0;
+    min-width: 230px;    
+    margin-bottom: 0;    
     display: flex;
-    justify-content: center;
-    top: 45px;
+    justify-content: center;   
     z-index: 10;
-    margin-bottom: -5000px; /* any large number will do */
+    margin-bottom: -5000px;
     padding-bottom: 5000px;
     -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.1);
     box-shadow: 5px 5px 15px 5px rgba(2, 2, 2, 0.1);
-    margin-top: 2px;
-    border-radius: 5px;
+    margin-top: 0px;    
     margin-left: 1px;
     overflow-y: scroll;
 

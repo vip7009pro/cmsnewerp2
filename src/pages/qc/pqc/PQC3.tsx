@@ -79,6 +79,7 @@ const PQC3 = () => {
   const [prodrequestno, setProdRequestNo] = useState("");
   const [planId, setPlanId] = useState("");
   const [pqc3Id, setPQC3ID] = useState(0);
+  const [pqc1Id, setPQC1ID] = useState(0);
   const [defect_phenomenon, setDefectPhenomenon] = useState("");
   const [prodreqdate, setProdReqDate] = useState("");
   const [process_lot_no, setProcessLotNo] = useState("");
@@ -88,7 +89,7 @@ const PQC3 = () => {
   const [pqc1datatable, setPqc1DataTable] = useState<Array<PQC1_DATA>>([]);
   const [sx_data, setSXData] = useState<SX_DATA[]>([]);
   const [ktdtc, setKTDTC] = useState("CKT");
-  const refArray = [useRef<any>(null), useRef<any>(null), useRef<any>(null), useRef<any>(null), useRef<any>(null), useRef<any>(null), useRef<any>(null)];
+  const refArray = [useRef<any>(null), useRef<any>(null), useRef<any>(null), useRef<any>(null), useRef<any>(null), useRef<any>(null), useRef<any>(null), useRef<any>(null), useRef<any>(null), useRef<any>(null), useRef<any>(null)];
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, index: number) => {
     if (e.key === "Enter") {
       // console.log('press enter')
@@ -97,6 +98,8 @@ const PQC3 = () => {
       refArray[nextIndex].current.focus();
     }
   };
+  const [sample_qty, setSample_Qty] = useState(0);
+  const [defect_qty, setDefect_Qty] = useState(0);
   const [file, setFile] = useState<any>(null);
   //let file:any = null;
   const uploadFile2 = async (PQC3_ID: number) => {
@@ -121,8 +124,6 @@ const PQC3 = () => {
       Swal.fire('Cảnh báo', 'Chưa chọn file', 'error');
     }
   };
-
-
   const checkPlanID = (PLAN_ID: string) => {
     generalQuery("checkPLAN_ID", { PLAN_ID: PLAN_ID })
       .then((response) => {
@@ -133,6 +134,7 @@ const PQC3 = () => {
           setProdRequestNo(response.data.data[0].PROD_REQUEST_NO);
           setProdReqDate(response.data.data[0].PROD_REQUEST_DATE);
           setGCode(response.data.data[0].G_CODE);
+          traPQC1Data(response.data.data[0].G_CODE);
         } else {
           setProdRequestNo("");
           setGName("");
@@ -159,8 +161,6 @@ const PQC3 = () => {
         console.log(error);
       });
   };
-
-
   const pqc3DataTable = React.useMemo(
     () => (
       <div className="datatb">
@@ -186,6 +186,7 @@ const PQC3 = () => {
             }}
             onRowClick={(e) => {
               //console.log(e.data);
+              setPQC1ID(Number(e.data.PQC1_ID));
             }}
             onRowUpdated={(e) => {
               //console.log(e);
@@ -203,14 +204,14 @@ const PQC3 = () => {
               scrollByThumb={true}
               showScrollbar="onHover"
               mode="virtual"
-            /> 
+            />
             <Column dataField='PQC1_ID' caption='PQC1_ID' allowEditing={false} width={60}></Column>
-            <Column dataField='LINE_NO' caption='LINE_NO' allowEditing={false} width={100}></Column>
-            <Column dataField='SETTING_OK_TIME' caption='SETTING_OK_TIME' allowEditing={false} width={130}></Column>
+            <Column dataField='LINE_NO' caption='LINE_NO' allowEditing={false} width={60}></Column>
+            <Column dataField='SETTING_OK_TIME' caption='SETTING_OK_TIME' allowEditing={false} width={120}></Column>
+            <Column dataField='PROCESS_LOT_NO' caption='PROCESS_LOT_NO' allowEditing={false} width={100}></Column>
             <Column dataField='PLAN_ID' caption='PLAN_ID' allowEditing={false} width={70}></Column>
             <Column dataField='INSPECT_SAMPLE_QTY' caption='INSPECT_SAMPLE_QTY' allowEditing={true} width={150}></Column>
             <Column dataField='YEAR_WEEK' caption='YEAR_WEEK' allowEditing={false} width={100}></Column>
-            <Column dataField='PROCESS_LOT_NO' caption='PROCESS_LOT_NO' allowEditing={false} width={100}></Column>
             <Column dataField='FACTORY' caption='FACTORY' allowEditing={false} width={50}></Column>
             <Column dataField='G_NAME' caption='G_NAME' allowEditing={false} width={100}></Column>
             <Column dataField='G_NAME_KD' caption='G_NAME_KD' allowEditing={false} width={100}></Column>
@@ -373,14 +374,14 @@ const PQC3 = () => {
     ),
     [pqc1datatable]
   );
-  const traPQC1Data = () => {
+  const traPQC1Data = (g_code: string) => {
     generalQuery("trapqc1data", {
-      ALLTIME: false,
+      ALLTIME: true,
       FROM_DATE: moment().add(-2, "day").format("YYYY-MM-DD"),
       TO_DATE: moment().format("YYYY-MM-DD"),
       CUST_NAME: "",
       PROCESS_LOT_NO: "",
-      G_CODE: "",
+      G_CODE: g_code,
       G_NAME: "",
       PROD_TYPE: "",
       EMPL_NAME: "",
@@ -473,8 +474,47 @@ const PQC3 = () => {
       return false;
     }
   };
+  const inputDataPqc3 = () => {
+    generalQuery("insert_pqc3", {
+      PROCESS_LOT_NO: process_lot_no.toUpperCase(),
+      LINEQC_PIC: lineqc_empl.toUpperCase(),
+      OCCURR_TIME: occurr_time,
+      INSPECT_QTY: sample_qty,
+      DEFECT_QTY: defect_qty,
+      DEFECT_PHENOMENON: defect_phenomenon,
+      DEFECT_IMAGE_LINK: 'Link_Web',
+      REMARK: remark,
+      PQC1_ID: pqc1Id,
+      ERR_CODE: err_code,
+      PROD_REQUEST_NO: prodrequestno,
+      G_CODE: g_code,
+    })
+      .then((response) => {
+        if (response.data.tk_status !== "NG") {
+          //console.log(response.data.data);
+          /* Swal.fire("Thông báo", "Input data thành công", "success"); */
+          generalQuery("getlastestPQC3_ID", {})
+            .then((response) => {
+              if (response.data.tk_status !== "NG") {
+                console.log(response.data.data);
+                setPQC3ID(response.data.data[0].PQC3_ID);
+                uploadFile2(response.data.data[0].PQC3_ID);
+              } else {
+                setPQC3ID(0);
+              }
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+        } else {
+          Swal.fire("Cảnh báo", "Có lỗi: " + response.data.message, "error");
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
   useEffect(() => {
-    traPQC1Data();
     loadErrorTable();
     ///handletraFailingData();
   }, []);
@@ -484,210 +524,245 @@ const PQC3 = () => {
         <div className="inputform">
         </div>
         <div className="maintable">
-          <div className="tracuuDataInspectionform2">           
-              <div className="tracuuDataInspectionform">
-                <div className="forminput">
-                  <div className="forminputcolumn">
-                    <label>
-                      <b>FACTORY</b>
-                      <select
-                        disabled={userData?.EMPL_NO === "NHU1903"}
-                        name="factory"
-                        value={factory}
-                        onChange={(e) => {
-                          setFactory(e.target.value);
-                        }}
-                      >
-                        <option value="NM1">NM1</option>
-                        <option value="NM2">NM2</option>
-                      </select>
-                    </label>
-                    <label>
-                      <b>Lot SX</b>
-                      <input
-                        ref={refArray[0]}
-                        type="text"
-                        placeholder=""
-                        value={process_lot_no}
-                        onKeyDown={(e) => {
-                          handleKeyDown(e, 0);
-                        }}
-                        onChange={(e) => {
-                          setProcessLotNo(e.target.value);
-                          if (e.target.value.length >= 8) {
-                          } else {
-                          }
-                        }}
-                      ></input>
-                    </label>
-                  </div>
-                  <div className="forminputcolumn">
-                    <label>
-                      <b>Mã LINEQC</b>
-                      <input
-                        ref={refArray[1]}
-                        onKeyDown={(e) => {
-                          handleKeyDown(e, 1);
-                        }}
-                        type="text"
-                        placeholder={""}
-                        value={lineqc_empl}
-                        onChange={(e) => {
-                          if (e.target.value.length >= 7) {
-                            checkEMPL_NAME(1, e.target.value);
-                          }
-                          setLineqc_empl(e.target.value);
-                        }}
-                      ></input>
-                    </label>
-                    <label>
-                      <b>Mã lỗi</b>
-                      <select
-                        ref={refArray[2]}
-                        onKeyDown={(e: any) => {
-                          handleKeyDown(e, 2);
-                        }}
-                        name="factory"
-                        value={err_code}
-                        onChange={(e) => {
-                          setErr_Code(e.target.value);
-                        }}
-                      >{
-                          error_tb.map((ele: ERROR_TABLE, index: number) => {
-                            return (
-                              <option key={index} value={ele.ERR_CODE}>{zeroPad(index + 1, 2)}|{ele.ERR_NAME_VN}</option>
-                            )
-                          })
-                        }
-                      </select>
-                    </label>
-                    <label>
-                      <b>Hiện tượng lỗi</b>
-                      <input
-                        ref={refArray[3]}
-                        onKeyDown={(e) => {
-                          handleKeyDown(e, 3);
-                        }}
-                        type="text"
-                        placeholder={""}
-                        value={defect_phenomenon}
-                        onChange={(e) => {
-                          setDefectPhenomenon(e.target.value);
-                        }}
-                      ></input>
-                    </label>
-                  </div>
-                  <div className="forminputcolumn">
-                    <label>
-                      <b>Time Phát Sinh</b>
-                      <input
-                        ref={refArray[4]}
-                        onKeyDown={(e) => {
-                          handleKeyDown(e, 4);
-                        }}
-                        type="datetime-local"
-                        placeholder={"Ghi chú"}
-                        value={occurr_time}
-                        onChange={(e) => {
-                          setOccurrTime(e.target.value);
-                        }}
-                      ></input>
-                    </label>
-                    <label>
-                      <b>Remark</b>
-                      <input
-                        ref={refArray[5]}
-                        onKeyDown={(e) => {
-                          handleKeyDown(e, 5);
-                        }}
-                        type="text"
-                        placeholder={"Ghi chú"}
-                        value={remark}
-                        onChange={(e) => {
-                          setReMark(e.target.value);
-                        }}
-                      ></input>
-                    </label>
-                  </div>
-                  <div className="forminputcolumn">
+          <div className="tracuuDataInspectionform2">
+            <div className="tracuuDataInspectionform">
+              <div className="forminput">
+                <div className="forminputcolumn">
+                  <label>
+                    <b>FACTORY</b>
+                    <select
+                      disabled={userData?.EMPL_NO === "NHU1903"}
+                      name="factory"
+                      value={factory}
+                      onChange={(e) => {
+                        setFactory(e.target.value);
+                      }}
+                    >
+                      <option value="NM1">NM1</option>
+                      <option value="NM2">NM2</option>
+                    </select>
+                  </label>
+                  <label>
+                    <b>Lot SX</b>
                     <input
-                      style={{ width: '170px' }}
-                      accept='.jpg'
-                      type='file'
-                      placeholder="Chọn file"
-                      onChange={(e: any) => {
-                        setFile(e.target.files[0]);
-                        console.log(e.target.files[0]);
-                      }}
-                    />
-                  </div>
-                  <div className="forminputcolumn">
-                    <Button
-                      ref={refArray[6]}
+                      ref={refArray[0]}
+                      type="text"
+                      placeholder=""
+                      value={process_lot_no}
                       onKeyDown={(e) => {
-                        //handleKeyDown(e,4);
+                        handleKeyDown(e, 0);
                       }}
-                      color={"primary"}
-                      variant="contained"
-                      size="small"
-                      sx={{
-                        fontSize: "0.7rem",
-                        padding: "3px",
-                        backgroundColor: "#f97bfd",
+                      onChange={(e) => {
+                        setProcessLotNo(e.target.value);
+                        if (e.target.value.length >= 8) {
+                          checkProcessLotNo(e.target.value);
+                        } else {
+                        }
                       }}
-                      onClick={() => {
-                        uploadFile2(999999);
-                      }}
-                    >
-                      Up
-                    </Button>
-                    <Button
-                      ref={refArray[6]}
+                    ></input>
+                  </label>
+                </div>
+                <div className="forminputcolumn">
+                  <label>
+                    <b>Mã LINEQC</b>
+                    <input
+                      ref={refArray[1]}
                       onKeyDown={(e) => {
-                        //handleKeyDown(e,4);
+                        handleKeyDown(e, 1);
                       }}
-                      color={"primary"}
-                      variant="contained"
-                      size="small"
-                      sx={{
-                        fontSize: "0.7rem",
-                        padding: "3px",
-                        backgroundColor: "#756DFA",
+                      type="text"
+                      placeholder={""}
+                      value={lineqc_empl}
+                      onChange={(e) => {
+                        if (e.target.value.length >= 7) {
+                          checkEMPL_NAME(1, e.target.value);
+                        }
+                        setLineqc_empl(e.target.value);
                       }}
-                      onClick={() => {
-                        console.log(occurr_time)
+                    ></input>
+                  </label>
+                  <label>
+                    <b>Mã lỗi</b>
+                    <select
+                      ref={refArray[2]}
+                      onKeyDown={(e: any) => {
+                        handleKeyDown(e, 2);
                       }}
-                    >
-                      Input Data
-                    </Button>
-                    <Button
-                      color={"primary"}
-                      variant="contained"
-                      size="small"
-                      sx={{
-                        fontSize: "0.7rem",
-                        padding: "3px",
-                        backgroundColor: "#02ac2c",
+                      name="factory"
+                      value={err_code}
+                      onChange={(e) => {
+                        setErr_Code(e.target.value);
                       }}
-                      onClick={() => {
+                    >{
+                        error_tb.map((ele: ERROR_TABLE, index: number) => {
+                          return (
+                            <option key={index} value={ele.ERR_CODE}>{zeroPad(index + 1, 2)}|{ele.ERR_NAME_VN}</option>
+                          )
+                        })
+                      }
+                    </select>
+                  </label>
+                  <label>
+                    <b>Hiện tượng lỗi</b>
+                    <input
+                      ref={refArray[3]}
+                      onKeyDown={(e) => {
+                        handleKeyDown(e, 3);
                       }}
-                    >
-                      Update QTY
-                    </Button>
-                    <IconButton
-                      className="buttonIcon"
-                      onClick={() => {
-                        traPQC1Data();
-                        //setShowHideInput(false);
+                      type="text"
+                      placeholder={""}
+                      value={defect_phenomenon}
+                      onChange={(e) => {
+                        setDefectPhenomenon(e.target.value);
                       }}
-                    >
-                      <AiOutlineSearch color="red" size={25} />
-                      Tra Data
-                    </IconButton>
-                  </div>                  
-                             
-                </div>                
-              </div>                          
+                    ></input>
+                  </label>
+                </div>
+                <div className="forminputcolumn">
+                  <label>
+                    <b>Time Phát Sinh</b>
+                    <input
+                      ref={refArray[4]}
+                      onKeyDown={(e) => {
+                        handleKeyDown(e, 4);
+                      }}
+                      type="datetime-local"
+                      placeholder={"Ghi chú"}
+                      value={occurr_time}
+                      onChange={(e) => {
+                        setOccurrTime(e.target.value);
+                      }}
+                    ></input>
+                  </label>
+                  <label>
+                    <b>Remark</b>
+                    <input
+                      ref={refArray[5]}
+                      onKeyDown={(e) => {
+                        handleKeyDown(e, 5);
+                      }}
+                      type="text"
+                      placeholder={"Ghi chú"}
+                      value={remark}
+                      onChange={(e) => {
+                        setReMark(e.target.value);
+                      }}
+                    ></input>
+                  </label>
+                </div>
+                <div className="forminputcolumn">
+                  <input
+                    ref={refArray[6]}
+                    onKeyDown={(e) => {
+                      handleKeyDown(e, 6);
+                    }}
+                    style={{ width: '170px' }}
+                    accept='.jpg'
+                    type='file'
+                    placeholder="Chọn file"
+                    onChange={(e: any) => {
+                      setFile(e.target.files[0]);
+                      console.log(e.target.files[0]);
+                    }}
+                  />
+                </div>
+                <div className="forminputcolumn">
+                  <label>
+                    <b>SAMPLE QTY</b>
+                    <input
+                      ref={refArray[7]}
+                      onKeyDown={(e) => {
+                        handleKeyDown(e, 7);
+                      }}
+                      type="text"
+                      placeholder=""
+                      value={sample_qty}
+                      onChange={(e) => {
+                        setSample_Qty(Number(e.target.value));
+                      }}
+                    ></input>
+                  </label>
+                  <label>
+                    <b>DEFECT QTY</b>
+                    <input
+                      ref={refArray[8]}
+                      onKeyDown={(e) => {
+                        handleKeyDown(e, 8);
+                      }}
+                      type="text"
+                      placeholder=""
+                      value={defect_qty}
+                      onChange={(e) => {
+                        setDefect_Qty(Number(e.target.value));
+                      }}
+                    ></input>
+                  </label>
+                </div>
+                <div className="forminputcolumn">
+                  <Button
+                    ref={refArray[9]}
+                    onKeyDown={(e: any) => {
+                      handleKeyDown(e, 9);
+                    }}
+                    color={"primary"}
+                    variant="contained"
+                    size="small"
+                    sx={{
+                      fontSize: "0.7rem",
+                      padding: "3px",
+                      backgroundColor: "#f97bfd",
+                    }}
+                    onClick={() => {
+                      uploadFile2(pqc3Id);
+                    }}
+                  >
+                    Up
+                  </Button>
+                  <Button
+                    ref={refArray[10]}
+                    onKeyDown={(e: any) => {
+                      handleKeyDown(e, 10);
+                    }}
+                    color={"primary"}
+                    variant="contained"
+                    size="small"
+                    sx={{
+                      fontSize: "0.7rem",
+                      padding: "3px",
+                      backgroundColor: "#756DFA",
+                    }}
+                    onClick={() => {
+                      console.log(occurr_time)
+                    }}
+                  >
+                    Input Data
+                  </Button>
+                  <Button
+                    color={"primary"}
+                    variant="contained"
+                    size="small"
+                    sx={{
+                      fontSize: "0.7rem",
+                      padding: "3px",
+                      backgroundColor: "#02ac2c",
+                    }}
+                    onClick={() => {
+                    }}
+                  >
+                    Update QTY
+                  </Button>
+                  <IconButton
+                    className="buttonIcon"
+                    onClick={() => {
+                      //setShowHideInput(false);
+                    }}
+                  >
+                    <AiOutlineSearch color="red" size={25} />
+                    Tra Data
+                  </IconButton>
+                </div>
+              </div>
+            </div>
           </div>
           <div className="tracuuYCSXTable2">{pqc3DataTable}</div>
           <div className="tracuuYCSXTable">{pqc3DataTable}</div>
