@@ -117,7 +117,7 @@ const INSPECT_REPORT = () => {
       FACTORY: FACTORY,
     })
       .then((response) => {
-        //console.log(response.data.data);
+        console.log(response.data.data);
         if (response.data.tk_status !== "NG") {
           const loadeddata: DailyPPMData[] = response.data.data.map(
             (element: DailyPPMData, index: number) => {
@@ -150,7 +150,7 @@ const INSPECT_REPORT = () => {
       FACTORY: FACTORY,
     })
       .then((response) => {
-        //console.log(response.data.data);
+        console.log(response.data.data);
         if (response.data.tk_status !== "NG") {
           const loadeddata: WeeklyPPMData[] = response.data.data.map(
             (element: WeeklyPPMData, index: number) => {
@@ -178,7 +178,7 @@ const INSPECT_REPORT = () => {
       FACTORY: FACTORY,
     })
       .then((response) => {
-        //console.log(response.data.data);
+        console.log(response.data.data);
         if (response.data.tk_status !== "NG") {
           const loadeddata: MonthlyPPMData[] = response.data.data.map(
             (element: MonthlyPPMData, index: number) => {
@@ -206,7 +206,7 @@ const INSPECT_REPORT = () => {
       FACTORY: FACTORY,
     })
       .then((response) => {
-        //console.log(response.data.data);
+        console.log(response.data.data);
         if (response.data.tk_status !== "NG") {
           const loadeddata: YearlyPPMData[] = response.data.data.map(
             (element: YearlyPPMData, index: number) => {
