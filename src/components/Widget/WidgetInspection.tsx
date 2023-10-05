@@ -37,13 +37,25 @@ export default function WidgetInspection({
         <div className="right">
           <span className="title">{label}</span>
           <span className="materialNG">
-            {material_ppm?.toLocaleString("en-US")} ppm
+            {material_ppm?.toLocaleString("en-US", {
+                style: "decimal",
+                maximumFractionDigits: 0,
+                minimumFractionDigits: 0,
+              })} ppm
           </span>
           <span className="processNG">
-            {process_ppm?.toLocaleString("en-US")} ppm
+            {process_ppm?.toLocaleString("en-US",{
+                style: "decimal",
+                maximumFractionDigits: 0,
+                minimumFractionDigits: 0,
+              })} ppm
           </span>
           <span className="totalNG">
-            {total_ppm?.toLocaleString("en-US")} ppm
+            {total_ppm?.toLocaleString("en-US",{
+                style: "decimal",
+                maximumFractionDigits: 0,
+                minimumFractionDigits: 0,
+              })} ppm
           </span>
         </div>
       </div>

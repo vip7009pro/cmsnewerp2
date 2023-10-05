@@ -767,17 +767,7 @@ const PQC3 = () => {
                     }}
                   >
                     Update Ảnh
-                  </Button>
-                  
-                  <IconButton
-                    className="buttonIcon"
-                    onClick={() => {
-                      //setShowHideInput(false);
-                    }}
-                  >
-                    <AiOutlineSearch color="red" size={25} />
-                    Tra Data
-                  </IconButton>
+                  </Button> 
                 </div>
               </div>
             </div>

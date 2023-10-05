@@ -81,7 +81,7 @@ const QUICKPLAN = () => {
     tabbanve: false,
   });
   const [datadinhmuc, setDataDinhMuc] = useState<DINHMUC_QSLX>({
-    FACTORY: "",
+    FACTORY: "NM1",
     EQ1: "",
     EQ2: "",
     EQ3: "",
@@ -1904,7 +1904,7 @@ const QUICKPLAN = () => {
 
     setDataDinhMuc({
       ...datadinhmuc,
-      FACTORY: rowData.FACTORY === null ? "NA" : rowData.FACTORY,
+      FACTORY: rowData.FACTORY === null ? "NM1" : rowData.FACTORY,
       EQ1: rowData.EQ1 === "" ? "NA" : rowData.EQ1,
       EQ2: rowData.EQ2 === "" ? "NA" : rowData.EQ2,
       EQ3: rowData.EQ3 === "" ? "NA" : rowData.EQ3,

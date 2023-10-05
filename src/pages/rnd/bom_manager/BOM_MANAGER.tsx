@@ -167,7 +167,7 @@ const BOM_MANAGER = () => {
     PROD_PROJECT: "",
     PROD_MODEL: "",
     CODE_12: "7",
-    PROD_TYPE: "TSP",
+    PROD_TYPE: getCompany()==='CMS'? "TSP":"LABEL",
     G_NAME_KD: "",
     DESCR: "",
     PROD_MAIN_MATERIAL: "",
@@ -1045,7 +1045,7 @@ const BOM_MANAGER = () => {
                     : element.CODE_12,
                 PROD_TYPE:
                   element.PROD_TYPE === null || element.PROD_TYPE === ""
-                    ? "TSP"
+                    ? getCompany()==='CMS'? "TSP":"LABEL"
                     : element.PROD_TYPE.trim(),
                 G_NAME_KD:
                   element.G_NAME_KD === null || element.G_NAME_KD === ""
@@ -1529,7 +1529,7 @@ const BOM_MANAGER = () => {
     let checkg_name_kd:boolean = await checkG_NAME_KD_Exist(codefullinfo.G_NAME_KD===undefined? 'zzzzzzzzz': codefullinfo.G_NAME_KD);
     console.log('checkg_name_kd',checkg_name_kd);
 
-    if (await handleCheckCodeInfo() && (getCompany()!=='PVN' || checkg_name_kd=== false)) {
+    if ((getCompany()==='CMS') && await handleCheckCodeInfo() || (getCompany()!=='CMS' && checkg_name_kd=== false)) {
       let CODE_27 = "C";
       if (
         codefullinfo.PROD_TYPE.trim() === "TSP" ||
@@ -1571,11 +1571,18 @@ const BOM_MANAGER = () => {
       handleinsertCodeTBG(nextcode);
     }
     else {
-      Swal.fire('Cảnh báo','Code '+(codefullinfo.G_NAME_KD===undefined? 'zzzzzzzzz': codefullinfo.G_NAME_KD)+ ' đã tồn tại','error');
+      if(getCompany()==='CMS')
+      {
+
+      }
+      else
+      {
+        Swal.fire('Cảnh báo','Code '+(codefullinfo.G_NAME_KD===undefined? 'zzzzzzzzz': codefullinfo.G_NAME_KD)+ ' đã tồn tại','error');
+      }
     }
   };
   const handleAddNewVer = async () => {
-    if (await handleCheckCodeInfo()) {
+    if ((getCompany()==='CMS') && await handleCheckCodeInfo() || getCompany()!=='CMS') {
       let CODE_27 = "C";
       if (
         codefullinfo.PROD_TYPE.trim() === "TSP" ||
@@ -1628,7 +1635,7 @@ const BOM_MANAGER = () => {
     }
   };
   const handleUpdateCode = async () => {
-    if (await handleCheckCodeInfo()) {
+    if ((getCompany()==='CMS') && await handleCheckCodeInfo() || getCompany()!=='CMS') {
       await generalQuery("updateM100", codefullinfo)
         .then((response) => {
           //console.log(response.data);
@@ -2857,7 +2864,7 @@ const BOM_MANAGER = () => {
                         name="phanloaisanpham"
                         value={
                           codefullinfo?.PROD_TYPE === null
-                            ? "TSP"
+                            ? getCompany()==='CMS'? "TSP":"LABEL"
                             : codefullinfo?.PROD_TYPE
                         }
                         onChange={(e) => {

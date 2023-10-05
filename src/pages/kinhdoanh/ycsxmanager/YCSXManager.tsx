@@ -699,8 +699,7 @@ const YCSXManager = () => {
         return <span style={{ color: "green" }}>{params.row.G_NAME}</span>;
       },
     },
-    { field: "EMPL_NAME", headerName: "PIC KD", width: 150 },
-    { field: "CUST_NAME_KD", headerName: "KHÁCH", width: 120 },
+    { field: "EMPL_NAME", headerName: "PIC KD", width: 150 },    
     {
       field: "PROD_REQUEST_NO", headerName: "SỐ YCSX", width: 80, renderCell: (params: any) => {
         if (params.row.DACHITHI === null) {
@@ -869,6 +868,8 @@ const YCSXManager = () => {
     },
     { field: "REMARK", headerName: "REMARK", width: 120 },
     { field: "PO_NO", headerName: "PO_NO", width: 120 },
+    { field: "DESCR", headerName: "DESCRIPTION", width: 150 },
+    { field: "PROD_MAIN_MATERIAL", headerName: "VL CHÍNH", width: 150 },
     {
       field: "PDUYET",
       headerName: "PDUYET",
