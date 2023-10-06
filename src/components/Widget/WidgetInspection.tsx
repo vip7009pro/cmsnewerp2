@@ -28,35 +28,35 @@ export default function WidgetInspection({
           backgroundImage: `linear-gradient(to right, ${topColor}, ${botColor})`,
         }}
       >
-        <div className="left">
-          <span className="title">Item</span>
-          <span className="materialNG">Material NG</span>
-          <span className="processNG">Process NG</span>
-          <span className="totalNG">Total NG</span>
-        </div>
-        <div className="right">
+        <div className="up">
           <span className="title">{label}</span>
-          <span className="materialNG">
+        </div>
+        <div className="middle">
+        <div className="totalNG">
+            {total_ppm?.toLocaleString("en-US", {
+              style: "decimal",
+              maximumFractionDigits: 0,
+              minimumFractionDigits: 0,
+            })} ppm
+          </div>
+
+        </div>
+        <div className="down">
+         {/*  <div className="materialNG">
             {material_ppm?.toLocaleString("en-US", {
-                style: "decimal",
-                maximumFractionDigits: 0,
-                minimumFractionDigits: 0,
-              })} ppm
-          </span>
-          <span className="processNG">
-            {process_ppm?.toLocaleString("en-US",{
-                style: "decimal",
-                maximumFractionDigits: 0,
-                minimumFractionDigits: 0,
-              })} ppm
-          </span>
-          <span className="totalNG">
-            {total_ppm?.toLocaleString("en-US",{
-                style: "decimal",
-                maximumFractionDigits: 0,
-                minimumFractionDigits: 0,
-              })} ppm
-          </span>
+              style: "decimal",
+              maximumFractionDigits: 0,
+              minimumFractionDigits: 0,
+            })} ppm
+          </div>
+          <div className="processNG">
+            {process_ppm?.toLocaleString("en-US", {
+              style: "decimal",
+              maximumFractionDigits: 0,
+              minimumFractionDigits: 0,
+            })} ppm
+          </div> */}
+         
         </div>
       </div>
     );

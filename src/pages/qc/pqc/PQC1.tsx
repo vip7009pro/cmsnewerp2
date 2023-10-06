@@ -727,13 +727,16 @@ const PQC1 = () => {
                     }}
                     onClick={() => {
                       if (checkInput()) {
+                        refArray[0].current.focus();
                         inputDataPqc1();
                       } else {
+                        refArray[0].current.focus();
                         Swal.fire(
                           "Thông báo",
                           "Hãy nhập đủ thông tin trước khi input",
                           "error"
                         );
+                        refArray[0].current.focus();
                       }
                     }}
                   >
@@ -750,6 +753,7 @@ const PQC1 = () => {
                     }}
                     onClick={() => {
                       updateSampleQty();
+                      refArray[0].current.focus();
                     }}
                   >
                     Update QTY

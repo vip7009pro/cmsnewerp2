@@ -1469,7 +1469,7 @@ const YCSXManager = () => {
               ...element,
               id: index,
               CHECKSTATUS: "Waiting",
-              PHANLOAI: "TT",
+              PHANLOAI: getCompany()==='CMS'?  "TT": element.PHANLOAI,
             };
           })
         );

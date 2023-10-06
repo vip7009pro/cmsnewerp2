@@ -230,22 +230,11 @@ const INSPECT_REPORT = () => {
       });
   };
 
-  useEffect(() => {
-    /* handle_getDailyPPM("NM1");
-    handle_getDailyPPM("NM2");
-    handle_getWeeklyPPM("NM1");
-    handle_getWeeklyPPM("NM2");
-    handle_getMonthlyPPM("NM1");
-    handle_getMonthlyPPM("NM2");
-    handle_getYearlyPPM("NM1");
-    handle_getYearlyPPM("NM2"); */
+  useEffect(() => {    
     handle_getDailyPPM("ALL");
     handle_getWeeklyPPM("ALL");
     handle_getMonthlyPPM("ALL");
-    handle_getYearlyPPM("ALL");
-
-
-  
+    handle_getYearlyPPM("ALL");  
   }, []);
   return (
     <div className="inspectionreport">
@@ -291,9 +280,9 @@ const INSPECT_REPORT = () => {
               label="This year NG"
               topColor="#b3c6ff"
               botColor="#b3ecff"
-              material_ppm={yearlyppm[0]?.MATERIAL_PPM}
-              process_ppm={yearlyppm[0]?.PROCESS_PPM}
-              total_ppm={yearlyppm[0]?.TOTAL_PPM}
+              material_ppm={yearlyppm[yearlyppm.length-1]?.MATERIAL_PPM}
+              process_ppm={yearlyppm[yearlyppm.length-1]?.PROCESS_PPM}
+              total_ppm={yearlyppm[yearlyppm.length-1]?.TOTAL_PPM}
             />
           </div>
         </div>
@@ -432,85 +421,8 @@ const INSPECT_REPORT = () => {
               />
             </div>
           </div>
-
-
-          </div>
-         {/*  <span className="subsection_title">a. FACTORY 1 NG Trending</span>
-          <div className="dailygraphtotal">
-            <div className="dailygraph">
-              <span className="subsection">Daily NG Rate</span>
-              <InspectionDailyPPM
-                dldata={dailyppm1}
-                processColor="#eb4034"
-                materialColor="#34eb92"
-              />
-            </div>
-            <div className="dailygraph">
-              <span className="subsection">Weekly NG Rate</span>
-              <InspectionWeeklyPPM
-                dldata={weeklyppm1}
-                processColor="#eb4034"
-                materialColor="#34eb92"
-              />
-            </div>
-          </div>
-          <div className="monthlyweeklygraph">
-            <div className="dailygraph">
-              <span className="subsection">Monthly NG Rate</span>
-              <InspectionMonthlyPPM
-                dldata={monthlyppm1}
-                processColor="#eb4034"
-                materialColor="#34eb92"
-              />
-            </div>
-            <div className="dailygraph">
-              <span className="subsection">Yearly NG Rate</span>
-              <InspectionYearlyPPM
-                dldata={yearlyppm1}
-                processColor="#eb4034"
-                materialColor="#34eb92"
-              />
-            </div>
-          </div>
-          <span className="subsection_title">b. FACTORY 2 NG Trending</span>
-          <div className="dailygraphtotal">
-            <div className="dailygraph">
-              <span className="subsection">Daily NG Rate</span>
-              <InspectionDailyPPM
-                dldata={dailyppm2}
-                processColor="#eb5c34"
-                materialColor="#53eb34"
-              />
-            </div>
-            <div className="dailygraph">
-              <span className="subsection">Weekly NG Rate</span>
-              <InspectionWeeklyPPM
-                dldata={weeklyppm2}
-                processColor="#eb5c34"
-                materialColor="#53eb34"
-              />
-            </div>
-          </div>
-          <div className="monthlyweeklygraph">
-            <div className="dailygraph">
-              <span className="subsection">Monthly NG Rate</span>
-              <InspectionMonthlyPPM
-                dldata={monthlyppm2}
-                processColor="#eb5c34"
-                materialColor="#53eb34"
-              />
-            </div>
-            <div className="dailygraph">
-              <span className="subsection">Yearly NG Rate</span>
-              <InspectionYearlyPPM
-                dldata={yearlyppm2}
-                processColor="#eb5c34"
-                materialColor="#53eb34"
-              />
-            </div>
-          </div>
-          <br></br>
-          <hr></hr> */}
+          </div>  
+                 
           <span className="section_title">3. WORST</span>
           <br></br>
           <div className="pobalancesummary">
@@ -531,71 +443,6 @@ const INSPECT_REPORT = () => {
                 onChange={(e) => setToDate(e.target.value)}
               ></input>
             </label>
-          </div>
-          <div className="monthlyweeklygraph">
-            <div className="dailygraph">
-              <span className="subsection">NG NM1</span>
-              <ChartWeeklyPO />
-            </div>
-            <div className="dailygraph">
-              <span className="subsection">NG NM2</span>
-              <ChartWeekLyDelivery />
-            </div>
-          </div>
-          <div className="monthlyweeklygraph">
-            <div className="dailygraph">
-              <span className="subsection">PO Balance Trending (By Week)</span>
-              <Chart4 />
-            </div>
-          </div>
-          <div className="datatable">
-            <div className="dailygraph">
-              <span className="subsection">
-                Customer PO Balance By Product Type
-              </span>
-              <CustomerPOBalanceByType />
-            </div>
-          </div>
-          <br></br>
-          <hr></hr>
-          <span className="section_title">4. Forecast</span>
-          <br></br>
-          <div className="fcstsummary">
-            <span className="subsection">
-              FCST Amount (FCST W{widgetdata_fcstAmount.FCSTWEEKNO})
-            </span>
-            <div className="fcstwidget">
-              <div className="fcstwidget1">
-                <Widget
-                  widgettype="revenue"
-                  label="FCST AMOUNT(4 WEEK)"
-                  topColor="#eb99ff"
-                  botColor="#99ccff"
-                  qty={widgetdata_fcstAmount.FCST4W_QTY * 1}
-                  amount={widgetdata_fcstAmount.FCST4W_AMOUNT}
-                  percentage={20}
-                />
-              </div>
-              <div className="fcstwidget1">
-                <Widget
-                  widgettype="revenue"
-                  label="FCST AMOUNT(8 WEEK)"
-                  topColor="#e6e600"
-                  botColor="#ff99c2"
-                  qty={widgetdata_fcstAmount.FCST8W_QTY * 1}
-                  amount={widgetdata_fcstAmount.FCST8W_AMOUNT}
-                  percentage={20}
-                />
-              </div>
-            </div>
-          </div>
-          <div className="monthlyweeklygraph">
-            <div className="dailygraph">
-              <span className="subsection">
-                SamSung ForeCast (So sánh FCST 2 tuần liền kề)
-              </span>
-              <ChartFCSTSamSung />
-            </div>
           </div>
         </div>
       </div>

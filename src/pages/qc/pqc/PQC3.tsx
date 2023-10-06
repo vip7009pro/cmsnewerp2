@@ -106,7 +106,7 @@ const PQC3 = () => {
   //let file:any = null;
   const uploadFile2 = async (PQC3_ID: number) => {
     if (file !== null && file !== undefined) {
-      uploadQuery(file, "PQC3_" + (PQC3_ID+1) + ".png", "pqc")
+      uploadQuery(file, "PQC3_" + (PQC3_ID + 1) + ".png", "pqc")
         .then((response) => {
           console.log("resopone upload:", response.data);
           if (response.data.tk_status !== "NG") {
@@ -335,7 +335,7 @@ const PQC3 = () => {
               showInfo={true}
               infoText="Page #{0}. Total: {1} ({2} items)"
               displayMode="compact"
-            />            
+            />
             <Summary>
               <TotalItem
                 alignment="right"
@@ -438,9 +438,9 @@ const PQC3 = () => {
       });
   }
   const checkInput = (): boolean => {
-    if (      
+    if (
       planId !== "" &&
-      lineqc_empl !== "" &&      
+      lineqc_empl !== "" &&
       process_lot_no !== "" &&
       pqc1Id !== 0 &&
       file !== undefined &&
@@ -470,32 +470,32 @@ const PQC3 = () => {
       PROD_REQUEST_NO: prodrequestno,
       G_CODE: g_code,
     };
-    console.log('upload data',uploadData);
+    console.log('upload data', uploadData);
     generalQuery("insert_pqc3", uploadData)
-    .then((response) => {
-      if (response.data.tk_status !== "NG") {          
-        generalQuery("getlastestPQC3_ID", {})
-          .then((response) => {
-            if (response.data.tk_status !== "NG") {
-              console.log(response.data.data);
-              setPQC3ID(response.data.data[0].PQC3_ID);
-              uploadFile2(response.data.data[0].PQC3_ID);
-            } else {
-              setPQC3ID(0);
-            }
-          })
-          .catch((error) => {
-            console.log(error);
-          });
-      } else {
-        Swal.fire("Cảnh báo", "Có lỗi: " + response.data.message, "error");
-      }
-    })
-    .catch((error) => {
-      console.log(error);
-    });
+      .then((response) => {
+        if (response.data.tk_status !== "NG") {
+          generalQuery("getlastestPQC3_ID", {})
+            .then((response) => {
+              if (response.data.tk_status !== "NG") {
+                console.log(response.data.data);
+                setPQC3ID(response.data.data[0].PQC3_ID);
+                uploadFile2(response.data.data[0].PQC3_ID);
+              } else {
+                setPQC3ID(0);
+              }
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+        } else {
+          Swal.fire("Cảnh báo", "Có lỗi: " + response.data.message, "error");
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
-  const handleTraPQC3Data = () => {    
+  const handleTraPQC3Data = () => {
     generalQuery("trapqc3data", {
       ALLTIME: true,
       FROM_DATE: moment().add(-2, "day").format("YYYY-MM-DD"),
@@ -526,11 +526,10 @@ const PQC3 = () => {
             },
           );
           //setSummaryInspect('Tổng Xuất: ' +  summaryOutput.toLocaleString('en-US') + 'EA');
-          setPqc3DataTable(loadeddata);          
-          
+          setPqc3DataTable(loadeddata);
         } else {
-          Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");   
-          setPqc3DataTable([]);       
+          Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
+          setPqc3DataTable([]);
         }
       })
       .catch((error) => {
@@ -725,9 +724,9 @@ const PQC3 = () => {
                 <div className="forminputcolumn">
                   <Button
                     ref={refArray[9]}
-                    onKeyDown={(e: any) => {
-                      //handleKeyDown(e, 9);
-                    }}
+                    /*  onKeyDown={(e: any) => {                      
+                       refArray[0].current.focus();
+                     }} */
                     color={"primary"}
                     variant="contained"
                     size="small"
@@ -736,14 +735,15 @@ const PQC3 = () => {
                       padding: "3px",
                       backgroundColor: "#f97bfd",
                     }}
-                    onClick={() => {
-                      if(checkInput()){
+                    onClick={(e) => {
+                      if (checkInput()) {
+                        refArray[0].current.focus();
                         inputDataPqc3();
                       }
                       else {
-                        Swal.fire('Cảnh báo','Nhập đủ thông tin cần thiết','error');
+                        refArray[0].current.focus();
+                        Swal.fire('Cảnh báo', 'Nhập đủ thông tin cần thiết', 'error');
                       }
-                      
                     }}
                   >
                     Input Data
@@ -763,11 +763,11 @@ const PQC3 = () => {
                     }}
                     onClick={() => {
                       //console.log(occurr_time)
-                      uploadFile2(pqc3Id);                      
+                      uploadFile2(pqc3Id);
                     }}
                   >
                     Update Ảnh
-                  </Button> 
+                  </Button>
                 </div>
               </div>
             </div>
