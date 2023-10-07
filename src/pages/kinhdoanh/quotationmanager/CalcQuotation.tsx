@@ -39,6 +39,7 @@ import {
   GIANVL,
   UserData,
 } from "../../../api/GlobalInterface";
+import { KeyboardNavigation } from "devextreme-react/tree-list";
 
 const CalcQuotation = () => {
   const company: string = useSelector(
@@ -678,6 +679,12 @@ const CalcQuotation = () => {
               tinhgia(selectedRows, listVL, e.data.MOQ);
             }}
           >
+            <KeyboardNavigation
+              editOnKeyPress={true}
+              enterKeyAction={"moveFocus"}
+              enterKeyDirection={"column"}
+            />
+
             <Scrolling
               useNative={true}
               scrollByContent={true}
@@ -687,7 +694,7 @@ const CalcQuotation = () => {
             />
             <Selection mode="single" selectAllMode="allPages" />
             <Editing
-              allowUpdating={false}
+              allowUpdating={true}
               allowAdding={false}
               allowDeleting={true}
               mode="cell"

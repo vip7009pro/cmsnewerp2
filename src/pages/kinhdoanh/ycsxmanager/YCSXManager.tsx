@@ -699,6 +699,7 @@ const YCSXManager = () => {
         return <span style={{ color: "green" }}>{params.row.G_NAME}</span>;
       },
     },
+    { field: "CUST_NAME_KD", headerName: "KHÁCH", width: 120 },
     { field: "EMPL_NAME", headerName: "PIC KD", width: 150 },    
     {
       field: "PROD_REQUEST_NO", headerName: "SỐ YCSX", width: 80, renderCell: (params: any) => {
@@ -2221,7 +2222,7 @@ const YCSXManager = () => {
               });
           } else {
             let next_process_lot_no_p501: string =
-              await process_lot_no_generate(newphanloai);
+              await process_lot_no_generate(uploadExcelJson[i].PHANLOAI);
             await generalQuery("insert_ycsx", {
               PHANLOAI: uploadExcelJson[i].PHANLOAI,
               G_CODE: uploadExcelJson[i].G_CODE,

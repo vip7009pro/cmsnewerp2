@@ -2104,7 +2104,7 @@ const QuotationManager = () => {
                 <span
                   style={{
                     backgroundColor:
-                      e.data.CHECKSTATUS === "OK" ? "green" : "red",
+                      e.data.CHECKSTATUS === "READY" ? "green" : "red",
                     color: "white",
                     padding: "5px",
                   }}
@@ -2171,7 +2171,7 @@ const QuotationManager = () => {
                 temp_fil !== undefined ? temp_fil.PROD_MAIN_MATERIAL : "NA",
               CHECKSTATUS:
                 temp_fil !== undefined && temp_filCUST !== undefined
-                  ? "OK"
+                  ? "READY"
                   : "NG",
               PRICE_DATE:
                 element.PRICE_DATE === null
@@ -2540,10 +2540,10 @@ const QuotationManager = () => {
                   }}
                 />
               </label>
-              <IconButton className="buttonIcon" onClick={() => { }}>
+              {/* <IconButton className="buttonIcon" onClick={() => { }}>
                 <AiOutlineCheckSquare color="#EB2EFE" size={15} />
                 Check Giá
-              </IconButton>
+              </IconButton> */}
               <IconButton
                 className="buttonIcon"
                 onClick={() => {
