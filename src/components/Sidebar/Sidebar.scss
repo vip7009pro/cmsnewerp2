@@ -44,39 +44,39 @@
     &.show-sidebar {
       display: flex;
       width: 15%;
-      animation: inAnimation 250ms ease-in;
+      animation: inAnimation 550ms ease-in;
     }
 
     &.hide-sidebar {
       display: none;
       width: 0%;
-      animation: outAnimation 270ms ease-out;
+      animation: outAnimation 570ms ease-out;
     }
 
     @keyframes inAnimation {
       0% {
         opacity: 0;
-        visibility: hidden;
-        left: -100;
+        /* visibility: hidden; */
+        left: -100px;
       }
 
       100% {
         opacity: 1;
-        visibility: visible;
-        left: 0;
+        /* visibility: visible; */
+        left: 0px;
       }
     }
 
     @keyframes outAnimation {
       0% {
         opacity: 1;
-        left: 0;
+        left: 0px;
       }
 
       100% {
         opacity: 0;
-        visibility: hidden;
-        left: -100;
+        visibility: visible;
+        left: -100px;
       }
     }
   }
@@ -165,20 +165,20 @@
     &.show-sidebar {
       display: flex;
       width: 15%;
-      animation: inAnimation 250ms ease-in;
+      animation: inAnimation 350ms ease-in;
     }
 
     &.hide-sidebar {
       display: none;
       width: 0%;
-      animation: outAnimation 270ms ease-out;
+      animation: outAnimation 370ms ease-out;
     }
 
     @keyframes inAnimation {
       0% {
         opacity: 0;
-        visibility: hidden;
-        left: -100;
+        visibility: visible;
+        left: -100px;
       }
 
       100% {

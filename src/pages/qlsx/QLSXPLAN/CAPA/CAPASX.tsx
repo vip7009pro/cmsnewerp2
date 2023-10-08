@@ -608,6 +608,7 @@ const CAPASX = () => {
         ),
     },
   ];
+
   const getTotalEMPL = () => {
     return (
       machinecount.filter(

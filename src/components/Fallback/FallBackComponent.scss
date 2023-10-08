@@ -1,7 +1,28 @@
 .fallback {
-  position: absolute;
-  background-color: rgb(70, 208, 250);
-  font-size: 30px;
-  top: 50%;
-  left: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  align-content: center;
+  justify-content: center;
+  width: 100vw;
+  height: 100vh;
+  .loading {
+    display: flex;
+    align-self: center;
+    width: 50px;
+    height: 50px;   
+    text-align: center;  
+    border: 5px solid black;
+    border-top-color: red;
+    border-right-color: greenyellow;
+    border-bottom-color: blue;
+    border-radius: 50%;
+    animation: circle-loading 1s infinite linear;
+
+  }
+  @keyframes circle-loading {
+    to {
+      transform: rotate(360deg);
+    }
+  }
 }
