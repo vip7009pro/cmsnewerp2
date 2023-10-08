@@ -22,6 +22,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { addTab, closeTab, settabIndex } from "../../redux/slices/globalSlice";
 import AccountInfo from "../../components/Navbar/AccountInfo/AccountInfo";
 import styled from "@emotion/styled";
+import { Draggable } from "devextreme-react";
 export const current_ver: number = 239;
 interface ELE_ARRAY {
   REACT_ELE: ReactElement;
@@ -146,6 +147,7 @@ function Home() {
         <div className='sidebardiv'>
           <Sidebar />
         </div>
+        
         <div className='outletdiv'>
           <animated.div
             className='animated_div'
@@ -217,6 +219,7 @@ function Home() {
                   </Tabs>
                 </Box>
               )}
+              
             {tabModeSwap &&
               tabs.map((ele: ELE_ARRAY, index: number) => {
                 if (ele.ELE_CODE !== "-1")
@@ -224,7 +227,7 @@ function Home() {
                     <div
                       key={index}
                       className='component_element'
-                      style={{
+                      style={{                        
                         visibility: index === tabIndex ? "visible" : "hidden",
                         width: sidebarStatus ? "87%" : "100%",
                       }}
@@ -233,6 +236,7 @@ function Home() {
                     </div>
                   );
               })}
+              
             {current_ver >= checkVerWeb ? (
               !tabModeSwap && <Outlet />
             ) : (
@@ -251,6 +255,7 @@ function Home() {
             {tabModeSwap && tabs.length === 0 && <AccountInfo />}
           </animated.div>
         </div>
+        
         {/* <div className="chatroom">
           <CHAT/>
         </div> */}

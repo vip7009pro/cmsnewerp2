@@ -279,7 +279,7 @@ export const glbSlice = createSlice({
             };
           })
         )
-      );
+      ); 
     },
     closeTab: (state, action: PayloadAction<number>) => {
       /*  state.tabs = state.tabs.filter(
@@ -291,7 +291,7 @@ export const glbSlice = createSlice({
       for (let i = 0; i < state.tabs.length; i++) {
         if (state.tabs[i].ELE_CODE !== "-1") checkallDeleted ++;
       }
-      console.log(checkallDeleted);
+      //console.log(checkallDeleted);
       if (checkallDeleted >1) {
         state.tabs[action.payload] = {
           ELE_CODE: "-1",
