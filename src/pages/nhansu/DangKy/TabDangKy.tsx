@@ -124,165 +124,159 @@ const TabDangKy = () => {
         console.log(error);
       });
   };
-  useEffect(() => {}, []);
+  useEffect(() => { }, []);
   return (
     <div className="tabdangky">
       <div className="formdangkys">
-        {quanlynhansuShow && (
-          <div className="formnho">
-            <h3>Đăng ký nghỉ</h3>
-            <div className="dangkyform">
-              <div className="dangkyinput">
-                <div className="dangkyinputbox">
-                  <label>
-                    <b>Ca nghỉ:</b>
-                    <select
-                      name="canghi"
-                      value={canghi}
-                      onChange={(e) => setCanNghi(Number(e.target.value))}
-                    >
-                      <option value={1}>Ca 1</option>
-                      <option value={2}>Ca 2</option>
-                    </select>
-                  </label>
-                  <label>
-                    <b>Nghỉ từ ngày:</b>
-                    <input
-                      type="date"
-                      value={fromdate.slice(0, 10)}
-                      onChange={(e) => setFromDate(e.target.value)}
-                    ></input>
-                  </label>
-                  <label>
-                    <b>Nghỉ tới ngày ngày:</b>{" "}
-                    <input
-                      type="date"
-                      value={todate.slice(0, 10)}
-                      onChange={(e) => setToDate(e.target.value)}
-                    ></input>
-                  </label>
-                  <label>
-                    <b>Kiểu nghỉ:</b>
-                    <select
-                      name="nghitype"
-                      value={nghitype}
-                      onChange={(e) => setNghiType(Number(e.target.value))}
-                    >
-                      <option value={1}>Phép năm</option>
-                      <option value={2}>Nửa phép</option>
-                      <option value={3}>Việc riêng</option>
-                      <option value={4}>Nghỉ ốm</option>
-                      <option value={5}>Chế độ</option>
-                      <option value={6}>Lý do khác</option>
-                    </select>
-                  </label>
-                  <label>
-                    <b>Lý do cụ thể:</b>{" "}
-                    <input
-                      type="text"
-                      placeholder="Viết ngắn gọn lý do vào đây"
-                      value={reason}
-                      onChange={(e) => setReason(e.target.value)}
-                    ></input>
-                  </label>
-                </div>
-              </div>
-              <div className="dangkybutton">
-                <button className="thembutton" onClick={hanlde_dangkynghi}>
-                  Đăng ký
-                </button>
-                <button className="xoabutton" onClick={handlecleardangkynghi}>
-                  Clear
-                </button>
+        <div className="formnho">
+          <h3>Đăng ký nghỉ</h3>
+          <div className="dangkyform">
+            <div className="dangkyinput">
+              <div className="dangkyinputbox">
+                <label>
+                  <b>Ca nghỉ:</b>
+                  <select
+                    name="canghi"
+                    value={canghi}
+                    onChange={(e) => setCanNghi(Number(e.target.value))}
+                  >
+                    <option value={1}>Ca 1</option>
+                    <option value={2}>Ca 2</option>
+                  </select>
+                </label>
+                <label>
+                  <b>Nghỉ từ ngày:</b>
+                  <input
+                    type="date"
+                    value={fromdate.slice(0, 10)}
+                    onChange={(e) => setFromDate(e.target.value)}
+                  ></input>
+                </label>
+                <label>
+                  <b>Nghỉ tới ngày ngày:</b>{" "}
+                  <input
+                    type="date"
+                    value={todate.slice(0, 10)}
+                    onChange={(e) => setToDate(e.target.value)}
+                  ></input>
+                </label>
+                <label>
+                  <b>Kiểu nghỉ:</b>
+                  <select
+                    name="nghitype"
+                    value={nghitype}
+                    onChange={(e) => setNghiType(Number(e.target.value))}
+                  >
+                    <option value={1}>Phép năm</option>
+                    <option value={2}>Nửa phép</option>
+                    <option value={3}>Việc riêng</option>
+                    <option value={4}>Nghỉ ốm</option>
+                    <option value={5}>Chế độ</option>
+                    <option value={6}>Lý do khác</option>
+                  </select>
+                </label>
+                <label>
+                  <b>Lý do cụ thể:</b>{" "}
+                  <input
+                    type="text"
+                    placeholder="Viết ngắn gọn lý do vào đây"
+                    value={reason}
+                    onChange={(e) => setReason(e.target.value)}
+                  ></input>
+                </label>
               </div>
             </div>
-          </div>
-        )}
-        {quanlynhansuShow && (
-          <div className="formnho">
-            <h3>Đăng ký tăng ca</h3>
-            <div className="dangkyform">
-              <div className="dangkyinput">
-                <div className="dangkyinputbox">
-                  <label>
-                    <b>Thời gian bắt đầu:</b>{" "}
-                    <input
-                      type="text"
-                      placeholder="1700"
-                      value={starttime}
-                      onChange={(e) => setStartTime(e.target.value)}
-                    ></input>
-                  </label>
-                  <label>
-                    <b>Thời gian kết thúc:</b>{" "}
-                    <input
-                      type="text"
-                      placeholder="2000"
-                      value={finishtime}
-                      onChange={(e) => setFinishTime(e.target.value)}
-                    ></input>
-                  </label>
-                </div>
-              </div>
-              <div className="dangkybutton">
-                <button className="thembutton" onClick={hanlde_dangkytangca}>
-                  Đăng ký
-                </button>
-                <button className="xoabutton" onClick={handlecleartangca}>
-                  Clear
-                </button>
-              </div>
+            <div className="dangkybutton">
+              <button className="thembutton" onClick={hanlde_dangkynghi}>
+                Đăng ký
+              </button>
+              <button className="xoabutton" onClick={handlecleardangkynghi}>
+                Clear
+              </button>
             </div>
           </div>
-        )}
-        {quanlynhansuShow && (
-          <div className="formnho">
-            <h3>Xác nhận chấm công (Quên chấm công)</h3>
-            <div className="dangkyform">
-              <div className="dangkyinput">
-                <div className="dangkyinputbox">
-                  <label>
-                    <b>Kiểu nghỉ:</b>
-                    <select
-                      name="nghitype"
-                      value={confirm_type}
-                      onChange={(e) => setConfirm_Type(e.target.value)}
-                    >
-                      <option value="GD">Quên giờ vào</option>
-                      <option value="GS">Quên giờ về</option>
-                      <option value="CA">Quên cả giờ vào - giờ về</option>
-                    </select>
-                  </label>
-                  <label>
-                    <b>Ngày quên:</b>
-                    <input
-                      type="date"
-                      value={confirm_date}
-                      onChange={(e) => setConfirm_Date(e.target.value)}
-                    ></input>
-                  </label>
-                  <label>
-                    <b>Giờ vào-về:</b>{" "}
-                    <input
-                      type="text"
-                      placeholder="0800-1700"
-                      value={confirm_worktime}
-                      onChange={(e) => setConfirm_WorkTime(e.target.value)}
-                    ></input>
-                  </label>
-                </div>
-              </div>
-              <div className="dangkybutton">
-                <button className="thembutton" onClick={handle_xacnhan}>
-                  Xác nhận
-                </button>
-                <button className="xoabutton" onClick={handleclearxacnhan}>
-                  Clear
-                </button>
+        </div>
+        <div className="formnho">
+          <h3>Đăng ký tăng ca</h3>
+          <div className="dangkyform">
+            <div className="dangkyinput">
+              <div className="dangkyinputbox">
+                <label>
+                  <b>Thời gian bắt đầu:</b>{" "}
+                  <input
+                    type="text"
+                    placeholder="1700"
+                    value={starttime}
+                    onChange={(e) => setStartTime(e.target.value)}
+                  ></input>
+                </label>
+                <label>
+                  <b>Thời gian kết thúc:</b>{" "}
+                  <input
+                    type="text"
+                    placeholder="2000"
+                    value={finishtime}
+                    onChange={(e) => setFinishTime(e.target.value)}
+                  ></input>
+                </label>
               </div>
             </div>
+            <div className="dangkybutton">
+              <button className="thembutton" onClick={hanlde_dangkytangca}>
+                Đăng ký
+              </button>
+              <button className="xoabutton" onClick={handlecleartangca}>
+                Clear
+              </button>
+            </div>
           </div>
-        )}
+        </div>
+        <div className="formnho">
+          <h3>Xác nhận chấm công (Quên chấm công)</h3>
+          <div className="dangkyform">
+            <div className="dangkyinput">
+              <div className="dangkyinputbox">
+                <label>
+                  <b>Kiểu nghỉ:</b>
+                  <select
+                    name="nghitype"
+                    value={confirm_type}
+                    onChange={(e) => setConfirm_Type(e.target.value)}
+                  >
+                    <option value="GD">Quên giờ vào</option>
+                    <option value="GS">Quên giờ về</option>
+                    <option value="CA">Quên cả giờ vào - giờ về</option>
+                  </select>
+                </label>
+                <label>
+                  <b>Ngày quên:</b>
+                  <input
+                    type="date"
+                    value={confirm_date}
+                    onChange={(e) => setConfirm_Date(e.target.value)}
+                  ></input>
+                </label>
+                <label>
+                  <b>Giờ vào-về:</b>{" "}
+                  <input
+                    type="text"
+                    placeholder="0800-1700"
+                    value={confirm_worktime}
+                    onChange={(e) => setConfirm_WorkTime(e.target.value)}
+                  ></input>
+                </label>
+              </div>
+            </div>
+            <div className="dangkybutton">
+              <button className="thembutton" onClick={handle_xacnhan}>
+                Xác nhận
+              </button>
+              <button className="xoabutton" onClick={handleclearxacnhan}>
+                Clear
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
