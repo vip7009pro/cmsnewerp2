@@ -23,7 +23,7 @@ import { addTab, closeTab, settabIndex } from "../../redux/slices/globalSlice";
 import AccountInfo from "../../components/Navbar/AccountInfo/AccountInfo";
 import styled from "@emotion/styled";
 import { Draggable } from "devextreme-react";
-export const current_ver: number = 240;
+export const current_ver: number = 241;
 interface ELE_ARRAY {
   REACT_ELE: ReactElement;
   ELE_NAME: string;
