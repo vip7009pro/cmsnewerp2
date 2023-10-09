@@ -225,6 +225,7 @@ export function login(user: string, pass: string) {
         }
       })
       .catch((error: any) => {
+        Swal.fire('Thông báo','Có lỗi: '+ error,'warning');
         console.log(error);
       });
   }
