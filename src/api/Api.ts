@@ -13,8 +13,7 @@ import axios from "axios";
 import { UserData } from "./GlobalInterface";
 const cookies = new Cookies();
 axios.defaults.withCredentials = true;
-//const API_URL = "http://14.160.33.94:3007/api";
-//const API_URL = "http://localhost:3007/api";
+
 export function getSever(): string {
   const state = store.getState();
   //console.log(state.totalSlice.server_ip);
@@ -191,6 +190,7 @@ export function login(user: string, pass: string) {
                     EMPL_IMAGE: "N",
                   })
                 );
+                
               } else {
                 //console.log(data.data.data);
                 if (data.data.data.WORK_STATUS_CODE !== 0) {
@@ -247,7 +247,10 @@ export async function checkLogin() {
   return data;
 }
 export async function generalQuery(command: string, queryData: any) {
-  let data = await axios.post(API_URL, {
+  
+  const  CURRENT_API_URL  = getSever() + "/api";
+ // console.log('API URL', CURRENT_API_URL);
+  let data = await axios.post(CURRENT_API_URL, {
     command: command,
     DATA: { ...queryData, token_string: cookies.get("token") },
   });
