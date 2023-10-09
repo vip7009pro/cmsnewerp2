@@ -171,7 +171,7 @@ const Login = () => {
                 <option value={"http://14.160.33.94:3007"}>SUB_SERVER</option>
               )}
               {company === "CMS" && (
-                <option value={"http://27.76.205.130:3007"}>SUB_SERVER2</option>
+                <option value={"http://pvnerp.ddns.net:3007"}>SUB_SERVER2</option>
               )}
               {company === "CMS" && (
                 <option value={"http://192.168.1.2:5011"}>LAN_SERVER</option>
