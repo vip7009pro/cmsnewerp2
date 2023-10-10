@@ -18,7 +18,7 @@ import { generalQuery } from "../../api/Api";
 import { CustomResponsiveContainer } from "../../api/GlobalFunction";
 import { RunningPOData } from "../../api/GlobalInterface";
 
-const Chart4 = () => {
+const ChartPOBalance = () => {
   const [runningPOData, setRunningPOData] = useState<Array<RunningPOData>>([]);
   const formatCash = (n: number) => {
     if (n < 1e3) return n;
@@ -136,4 +136,4 @@ const Chart4 = () => {
     </CustomResponsiveContainer>
   );
 };
-export default Chart4;
+export default ChartPOBalance;

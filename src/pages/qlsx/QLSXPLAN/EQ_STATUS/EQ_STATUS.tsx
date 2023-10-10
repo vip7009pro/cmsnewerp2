@@ -54,7 +54,7 @@ const EQ_STATUS = () => {
               loaded_data.map((e: EQ_STT, index: number) => {
                 return e.EQ_SERIES === undefined ? "" : e.EQ_SERIES;
               })
-            ),
+            ),'FR+SR'
           ]);
         } else {
           setEQ_STATUS([]);
@@ -264,7 +264,7 @@ const EQ_STATUS = () => {
                         .filter(
                           (element: EQ_STT, index: number) =>
                             element.FACTORY === factory &&
-                            element?.EQ_NAME?.substring(0, 2) === machine &&
+                            machine==='FR+SR' ? (element?.EQ_NAME?.substring(0, 2) ==='FR' || element?.EQ_NAME?.substring(0, 2) ==='SR') : element?.EQ_NAME?.substring(0, 2) === machine &&
                             ((onlyRunning === true &&
                               element?.EQ_STATUS === "MASS") ||
                               element?.EQ_STATUS === "SETTING" ||

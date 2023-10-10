@@ -3,10 +3,6 @@ import React, { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import { generalQuery } from "../../../api/Api";
 import ChartWeekLy from "../../../components/Chart/Chart";
-import Chart from "../../../components/Chart/Chart";
-import Chart2 from "../../../components/Chart/Chart2";
-import Chart3 from "../../../components/Chart/Chart3";
-import Chart4 from "../../../components/Chart/Chart4";
 import ChartMonthLy from "../../../components/Chart/Chart5";
 import ChartYearly from "../../../components/Chart/Chart6";
 import ChartCustomerRevenue from "../../../components/Chart/ChartCustomerRevenue";
@@ -17,6 +13,8 @@ import ChartWeeklyPO from "../../../components/Chart/ChartWeekLyPO";
 import CustomerPOBalanceByType from "../../../components/DataTable/CustomerPOBalanceByType";
 import Widget from "../../../components/Widget/Widget";
 import "./KinhDoanhReport.scss";
+import ChartDaily from "../../../components/Chart/Chart2";
+import ChartPOBalance from "../../../components/Chart/Chart4";
 interface InvoiceTableData {
   DELIVERY_ID: number;
   CUST_CD: string;
@@ -519,7 +517,7 @@ const KinhDoanhReport = () => {
           <div className="dailygraphtotal">
             <div className="dailygraph">
               <span className="subsection">Daily Closing</span>
-              <Chart2 />
+              <ChartDaily />
             </div>
             <div className="dailygraph">
               <span className="subsection">Weekly Closing</span>
@@ -575,7 +573,7 @@ const KinhDoanhReport = () => {
           <div className="monthlyweeklygraph">
             <div className="dailygraph">
               <span className="subsection">PO Balance Trending (By Week)</span>
-              <Chart4 />
+              <ChartPOBalance />
             </div>
           </div>
           <div className="datatable">

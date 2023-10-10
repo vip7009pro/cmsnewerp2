@@ -98,6 +98,23 @@ const ChartWeekLy = () => {
       });
   };
 
+  const CustomLabel = (props:any) => {
+    console.log(props);
+    return (
+      <g>
+        <rect
+          x={props.viewBox.x}
+          y={props.viewBox.y}
+          fill="#aaa" 
+          style={{transform:`rotate(90deg)`}}
+        />
+        <text x={props.viewBox.x} y={props.viewBox.y} fill="#111" dy={0} dx={0} fontSize={'0.7rem'} fontWeight={'bold'}>
+          {formatCash(props.value)}
+        </text>
+      </g>
+    );
+  };
+  
   useEffect(() => {
     handleGetDailyClosing();
   }, []);
@@ -145,7 +162,15 @@ const ChartWeekLy = () => {
           tickCount={8}
         />
         <Tooltip content={<CustomTooltip />} />
-        <Legend />
+        <Legend 
+        verticalAlign="top"
+        align="center"
+        iconSize={15}
+        iconType="diamond"
+        formatter={(value, entry) => (
+          <span style={{fontSize:'0.7rem', fontWeight:'bold'}}>{value}</span>
+        )}
+        />
         <Line
           yAxisId='left-axis'
           type='monotone'
@@ -157,8 +182,8 @@ const ChartWeekLy = () => {
           type='monotone'
           dataKey='DELIVERED_AMOUNT'
           stroke='#804d00'
-          fill='#ff9900'
-          label={{ position: "top", formatter: labelFormatter }}
+          fill='#ff9900'          
+          label={CustomLabel}
         ></Bar>
       </ComposedChart>
     </CustomResponsiveContainer>

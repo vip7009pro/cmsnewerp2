@@ -629,9 +629,7 @@ const InvoiceManager = () => {
         },
       };
     });
-    setColumnsExcel(column_map);
-
-    setisLoading(true);
+    setColumnsExcel(column_map);   
     let tempjson = uploadExcelJson;
     for (let i = 0; i < uploadExcelJson.length; i++) {
       let err_code: number = 0;
@@ -690,7 +688,7 @@ const InvoiceManager = () => {
         PO_NO: newpono,
       })
         .then((response) => {
-          console.log(response.data.tk_status);
+          //console.log(response.data.tk_status);
           if (response.data.tk_status !== "NG") {
             let tem_this_po_balance: number = response.data.data[0].PO_BALANCE;
             if (tem_this_po_balance < newinvoiceQTY) err_code = 5;
@@ -716,8 +714,9 @@ const InvoiceManager = () => {
       }
     }
     setisLoading(false);
-    Swal.fire("Thông báo", "Đã hoàn thành check Invoice hàng loạt", "success");
     setUploadExcelJSon(tempjson);
+    Swal.fire("Thông báo", "Đã hoàn thành check Invoice hàng loạt", "success");
+    
   };
   const handle_upInvoiceHangLoat = async () => {
     let keysArray = Object.getOwnPropertyNames(uploadExcelJson[0]);

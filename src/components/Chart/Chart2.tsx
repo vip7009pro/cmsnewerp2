@@ -22,7 +22,7 @@ import {
 } from "../../api/GlobalFunction";
 import { DailyClosingData } from "../../api/GlobalInterface";
 
-const Chart2 = () => {
+const ChartDaily = () => {
   const [dailyClosingData, setDailyClosingData] = useState<
     Array<DailyClosingData>
   >([]);
@@ -38,6 +38,18 @@ const Chart2 = () => {
 
   const labelFormatter = (value: number) => {
     return formatCash(value);
+  };
+
+  const CustomLegend = (payload: any) => {
+    return (
+      <ul>
+        {payload.map((entry:any, index: number) => (
+          <li key={`legend-${index}`} style={{ color: entry.color }}>
+            <span>{entry.value}</span>
+          </li>
+        ))}
+      </ul>
+    );
   };
 
   const CustomTooltip = ({
@@ -92,13 +104,7 @@ const Chart2 = () => {
             }
           );
 
-          setDailyClosingData(loadeddata);
-          //console.log(loadeddata);
-          /* Swal.fire(
-          "Thông báo",
-          "Đã load " + response.data.data.length + " dòng",
-          "success"
-        ); */
+          setDailyClosingData(loadeddata);          
         } else {
           Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
         }
@@ -108,6 +114,22 @@ const Chart2 = () => {
       });
   };
 
+  const CustomLabel = (props:any) => {
+    console.log(props);
+    return (
+      <g>
+        <rect
+          x={props.viewBox.x}
+          y={props.viewBox.y}
+          fill="#aaa" 
+          style={{transform:`rotate(90deg)`}}
+        />
+        <text x={props.viewBox.x} y={props.viewBox.y} fill="#111" dy={0} dx={0} fontSize={'0.7rem'} fontWeight={'bold'}>
+          {formatCash(props.value)}
+        </text>
+      </g>
+    );
+  };
   useEffect(() => {
     handleGetDailyClosing();
   }, []);
@@ -125,38 +147,53 @@ const Chart2 = () => {
         }}
       >
         <CartesianGrid strokeDasharray='3 3' className='chartGrid' />
-        <XAxis dataKey='DELIVERY_DATE'>
-          {" "}
-          <Label value='Ngày tháng' offset={0} position='insideBottom' />
+        <XAxis dataKey='DELIVERY_DATE' height={40} tick={{fontSize:'0.7rem'}}>    
+          <Label value='Ngày tháng' offset={0} position='insideBottom' style={{fontWeight:'normal', fontSize:'0.7rem'}} />
         </XAxis>
         <YAxis
+          width={50}
           yAxisId='left-axis'
           label={{
             value: "Số lượng",
             angle: -90,
-            position: "insideLeft",
+            position: "insideLeft",   
+            fontSize:'0.7rem'        
           }}
-          tickFormatter={(value) =>
+          tick={{fontSize:'0.7rem'}}
+          tickFormatter={(value) => 
             new Intl.NumberFormat("en", {
               notation: "compact",
               compactDisplay: "short",
             }).format(value)
           }
-          tickCount={6}
+          tickCount={6}          
         />
+        
+        
         <YAxis
+        width={70}
           yAxisId='right-axis'
           orientation='right'
           label={{
             value: "Số tiền",
             angle: -90,
             position: "insideRight",
+            fontSize:'0.7rem'    
           }}
+          tick={{fontSize:'0.7rem'}}
           tickFormatter={(value) => nFormatter(value, 2) + "$"}
           tickCount={10}
         />
         <Tooltip content={<CustomTooltip />} />
-        <Legend />
+        <Legend 
+        verticalAlign="top"
+        align="center"
+        iconSize={15}
+        iconType="diamond"
+        formatter={(value, entry) => (
+          <span style={{fontSize:'0.7rem', fontWeight:'bold'}}>{value}</span>
+        )}
+        />
         <Line
           yAxisId='left-axis'
           type='monotone'
@@ -169,10 +206,13 @@ const Chart2 = () => {
           dataKey='DELIVERED_AMOUNT'
           stroke='white'
           fill='#cc66ff'
-          label={{ position: "top", formatter: labelFormatter }}
-        ></Bar>
+         /*  label={{ position: "top", formatter: labelFormatter }} */
+         label={CustomLabel}
+        >
+          
+        </Bar>
       </ComposedChart>
     </CustomResponsiveContainer>
   );
 };
-export default Chart2;
+export default ChartDaily;
