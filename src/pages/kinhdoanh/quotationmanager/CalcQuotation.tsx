@@ -1569,17 +1569,8 @@ const CalcQuotation = () => {
                 <IconButton
                   className="buttonIcon"
                   onClick={() => {
-                    if (selectedRows.G_CODE !== "") {
-                      if (listVL.length === 0) {
-                        Swal.fire(
-                          "Thông báo",
-                          "Chú ý, code này chưa có vật liệu",
-                          "warning",
-                        );
-                      } else {
-                        addRowBG();
-                      }
-
+                    if (selectedRows.G_CODE !== "") {                      
+                        addRowBG(); 
                       //console.log(banggia);
                     } else {
                       Swal.fire("Thông báo", "Chọn code bất kỳ !", "error");
