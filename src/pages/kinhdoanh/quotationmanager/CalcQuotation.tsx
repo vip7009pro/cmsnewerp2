@@ -394,13 +394,27 @@ const CalcQuotation = () => {
               caption="KHÁCH HÀNG"
               width={100}
             ></Column>
-            <Column dataField="G_CODE" caption="G_CODE" width={100}></Column>
-            <Column dataField="G_NAME" caption="G_NAME" width={100}></Column>
+            
             <Column
               dataField="G_NAME_KD"
               caption="G_NAME_KD"
               width={100}
             ></Column>
+            <Column dataField="G_WIDTH" caption="RỘNG" width={50}></Column>
+            <Column dataField="G_LENGTH" caption="DÀI" width={50}></Column>
+            <Column dataField="G_C" caption="SỐ CỘT" width={70}></Column>
+            <Column dataField="G_C_R" caption="SỐ HÀNG" width={70}></Column>
+            <Column dataField="G_LG" caption="K/C HÀNG" width={100}></Column>
+            <Column dataField="G_CG" caption="K/C CỘT" width={100}></Column>
+            <Column dataField="G_SG_L" caption="MÉP TRÁI" width={100}></Column>
+            <Column dataField="G_SG_R" caption="MÉP PHẢI" width={100}></Column>
+            <Column
+              dataField="PROD_PRINT_TIMES"
+              caption="SỐ MÀU"
+              width={100}
+            ></Column>
+            <Column dataField="G_CODE" caption="G_CODE" width={100}></Column>
+            <Column dataField="G_NAME" caption="G_NAME" width={100}></Column>
             {/*  <Column
               dataField='MATERIAL_COST'
               caption='Tiền Liệu'
@@ -503,19 +517,7 @@ const CalcQuotation = () => {
               caption="HAO HỤT ĐV"
               width={100}
             ></Column>
-            <Column dataField="G_WIDTH" caption="RỘNG" width={100}></Column>
-            <Column dataField="G_LENGTH" caption="DÀI" width={100}></Column>
-            <Column dataField="G_C" caption="SỐ CỘT" width={100}></Column>
-            <Column dataField="G_C_R" caption="SỐ HÀNG" width={100}></Column>
-            <Column dataField="G_LG" caption="K/C HÀNG" width={100}></Column>
-            <Column dataField="G_CG" caption="K/C CỘT" width={100}></Column>
-            <Column dataField="G_SG_L" caption="MÉP TRÁI" width={100}></Column>
-            <Column dataField="G_SG_R" caption="MÉP PHẢI" width={100}></Column>
-            <Column
-              dataField="PROD_PRINT_TIMES"
-              caption="SỐ MÀU"
-              width={100}
-            ></Column>
+            
             <Summary>
               <TotalItem
                 alignment="right"

@@ -21,7 +21,6 @@ import {
   nFormatter,
 } from "../../api/GlobalFunction";
 import { YearlyClosingData } from "../../api/GlobalInterface";
-
 const ChartYearly = () => {
   const [yearlyClosingData, setYearlyClosingData] = useState<
     Array<YearlyClosingData>
@@ -29,11 +28,9 @@ const ChartYearly = () => {
   const formatCash = (n: number) => {
     return nFormatter(n, 2) + "$";
   };
-
   const labelFormatter = (value: number) => {
     return formatCash(value);
   };
-
   const CustomTooltip = ({
     active,
     payload,
@@ -69,8 +66,7 @@ const ChartYearly = () => {
     }
     return null;
   };
-
-  const handleGetDailyClosing = () => {
+  const handleGetYearlyClosing = () => {
     generalQuery("kd_annuallyclosing", {})
       .then((response) => {
         if (response.data.tk_status !== "NG") {
@@ -96,9 +92,24 @@ const ChartYearly = () => {
         console.log(error);
       });
   };
-
+  const CustomLabel = (props: any) => {
+    console.log(props);
+    return (
+      <g>
+        <rect
+          x={props.viewBox.x}
+          y={props.viewBox.y}
+          fill="#aaa"
+          style={{ transform: `rotate(90deg)` }}
+        />
+        <text x={props.viewBox.x} y={props.viewBox.y} fill="#000000" dy={-10} dx={10} fontSize={'0.7rem'} fontWeight={'bold'}>
+          {formatCash(props.value)}
+        </text>
+      </g>
+    );
+  };
   useEffect(() => {
-    handleGetDailyClosing();
+    handleGetYearlyClosing();
   }, []);
   return (
     <CustomResponsiveContainer>
@@ -114,8 +125,8 @@ const ChartYearly = () => {
         }}
       >
         <CartesianGrid strokeDasharray='3 3' className='chartGrid' />
-        <XAxis dataKey='YEAR_NUM'>
-          <Label value='Năm' offset={0} position='insideBottom' />
+        <XAxis dataKey='YEAR_NUM' height={40} tick={{ fontSize: '0.7rem' }}>
+          <Label value='Năm' offset={0} position='insideBottom' style={{ fontWeight: 'normal', fontSize: '0.7rem' }} />
         </XAxis>
         <YAxis
           yAxisId='left-axis'
@@ -123,7 +134,9 @@ const ChartYearly = () => {
             value: "Số lượng",
             angle: -90,
             position: "insideLeft",
+            fontSize: '0.7rem'
           }}
+          tick={{ fontSize: '0.7rem' }}
           tickFormatter={(value) =>
             new Intl.NumberFormat("en", {
               notation: "compact",
@@ -138,11 +151,21 @@ const ChartYearly = () => {
             value: "Số tiền",
             angle: -90,
             position: "insideRight",
+            fontSize: '0.7rem'
           }}
+          tick={{ fontSize: '0.7rem' }}
           tickFormatter={(value) => nFormatter(value, 2) + "$"}
         />
         <Tooltip content={<CustomTooltip />} />
-        <Legend />
+        <Legend
+          verticalAlign="top"
+          align="center"
+          iconSize={15}
+          iconType="diamond"
+          formatter={(value, entry) => (
+            <span style={{ fontSize: '0.7rem', fontWeight: 'bold' }}>{value}</span>
+          )}
+        />
         <Line
           yAxisId='left-axis'
           type='monotone'
@@ -155,7 +178,8 @@ const ChartYearly = () => {
           dataKey='DELIVERED_AMOUNT'
           stroke='#ff6666'
           fill='#ff1a1a'
-          label={{ position: "top", formatter: labelFormatter }}
+          /* label={{ position: "top", formatter: labelFormatter }} */
+          label={CustomLabel}
         ></Bar>
       </ComposedChart>
     </CustomResponsiveContainer>

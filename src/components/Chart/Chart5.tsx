@@ -21,7 +21,6 @@ import {
   nFormatter,
 } from "../../api/GlobalFunction";
 import { MonthlyClosingData } from "../../api/GlobalInterface";
-
 const ChartMonthLy = () => {
   const [monthlyClosingData, setMonthlyClosingData] = useState<
     Array<MonthlyClosingData>
@@ -64,12 +63,10 @@ const ChartMonthLy = () => {
     }
     return null;
   };
-
   const labelFormatter = (value: number) => {
     return formatCash(value);
   };
-
-  const handleGetDailyClosing = () => {
+  const handleGetMonthlyClosing = () => {
     generalQuery("kd_monthlyclosing", { YEAR: moment().format("YYYY") })
       .then((response) => {
         if (response.data.tk_status !== "NG") {
@@ -95,9 +92,24 @@ const ChartMonthLy = () => {
         console.log(error);
       });
   };
-
+  const CustomLabel = (props: any) => {
+    console.log(props);
+    return (
+      <g>
+        <rect
+          x={props.viewBox.x}
+          y={props.viewBox.y}
+          fill="#aaa"
+          style={{ transform: `rotate(90deg)` }}
+        />
+        <text x={props.viewBox.x} y={props.viewBox.y} fill="#000000" dy={-10} dx={0} fontSize={'0.7rem'} fontWeight={'bold'}>
+          {formatCash(props.value)}
+        </text>
+      </g>
+    );
+  };
   useEffect(() => {
-    handleGetDailyClosing();
+    handleGetMonthlyClosing();
   }, []);
   return (
     <CustomResponsiveContainer>
@@ -113,8 +125,8 @@ const ChartMonthLy = () => {
         }}
       >
         <CartesianGrid strokeDasharray='3 3' className='chartGrid' />
-        <XAxis dataKey='MONTH_NUM'>
-          <Label value='Tháng' offset={0} position='insideBottom' />
+        <XAxis dataKey='MONTH_NUM' tick={{ fontSize: '0.7rem' }}>
+          <Label value='Tháng' offset={0} position='insideBottom' style={{ fontWeight: 'normal', fontSize: '0.7rem' }} />
         </XAxis>
         <YAxis
           yAxisId='left-axis'
@@ -122,7 +134,9 @@ const ChartMonthLy = () => {
             value: "Số lượng",
             angle: -90,
             position: "insideLeft",
+            fontSize: '0.7rem'
           }}
+          tick={{ fontSize: '0.7rem' }}
           tickFormatter={(value) =>
             new Intl.NumberFormat("en", {
               notation: "compact",
@@ -137,11 +151,21 @@ const ChartMonthLy = () => {
             value: "Số tiền",
             angle: -90,
             position: "insideRight",
+            fontSize: '0.7rem'
           }}
+          tick={{ fontSize: '0.7rem' }}
           tickFormatter={(value) => nFormatter(value, 2) + "$"}
         />
         <Tooltip content={<CustomTooltip />} />
-        <Legend />
+        <Legend
+          verticalAlign="top"
+          align="center"
+          iconSize={15}
+          iconType="diamond"
+          formatter={(value, entry) => (
+            <span style={{ fontSize: '0.7rem', fontWeight: 'bold' }}>{value}</span>
+          )}
+        />
         <Line
           yAxisId='left-axis'
           type='monotone'
@@ -154,7 +178,7 @@ const ChartMonthLy = () => {
           dataKey='DELIVERED_AMOUNT'
           stroke='#196619'
           fill='#33cc33'
-          label={{ position: "top", formatter: labelFormatter }}
+          label={CustomLabel}
         ></Bar>
       </ComposedChart>
     </CustomResponsiveContainer>

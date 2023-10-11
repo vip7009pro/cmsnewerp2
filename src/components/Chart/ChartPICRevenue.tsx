@@ -87,6 +87,7 @@ const ChartPICRevenue = () => {
         fill='#8884d8'
         textAnchor={x > cx ? "start" : "end"}
         dominantBaseline='central'
+        fontSize={'0.9rem'}
       >
         {weeklyClosingData[index].EMPL_NAME} : (
         {value.toLocaleString("en-US", {
@@ -195,7 +196,7 @@ const ChartPICRevenue = () => {
           data={weeklyClosingData}
           cx='50%'
           cy='50%'
-          outerRadius={80}
+          outerRadius={110}
           fill='#8884d8'
           label={CustomLabel}
         >

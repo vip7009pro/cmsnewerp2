@@ -108,13 +108,13 @@ const ChartWeekLy = () => {
           fill="#aaa" 
           style={{transform:`rotate(90deg)`}}
         />
-        <text x={props.viewBox.x} y={props.viewBox.y} fill="#111" dy={0} dx={0} fontSize={'0.7rem'} fontWeight={'bold'}>
+        <text x={props.viewBox.x} y={props.viewBox.y} fill="#111" dy={-10} dx={0} fontSize={'0.7rem'} fontWeight={'bold'}>
           {formatCash(props.value)}
         </text>
       </g>
     );
   };
-  
+
   useEffect(() => {
     handleGetDailyClosing();
   }, []);
@@ -133,7 +133,7 @@ const ChartWeekLy = () => {
       >
         <CartesianGrid strokeDasharray='3 3' className='chartGrid' />
         <XAxis dataKey='DEL_WEEK'>
-          <Label value='Tuần' offset={0} position='insideBottom' />
+          <Label value='Tuần' offset={0} position='insideBottom' style={{fontWeight:'normal', fontSize:'0.7rem'}} />
         </XAxis>
         <YAxis
           yAxisId='left-axis'
@@ -141,7 +141,9 @@ const ChartWeekLy = () => {
             value: "Số lượng",
             angle: -90,
             position: "insideLeft",
+            fontSize: '0.7rem'
           }}
+          tick={{fontSize:'0.7rem'}}
           tickFormatter={(value) =>
             new Intl.NumberFormat("en", {
               notation: "compact",
@@ -157,7 +159,9 @@ const ChartWeekLy = () => {
             value: "Số tiền",
             angle: -90,
             position: "insideRight",
+            fontSize: '0.7rem'
           }}
+          tick={{fontSize:'0.7rem'}}
           tickFormatter={(value) => nFormatter(value, 2) + "$"}
           tickCount={8}
         />

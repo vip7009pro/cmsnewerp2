@@ -77,7 +77,7 @@ const ChartCustomerRevenue = () => {
     index?: any;
   }) => {
     const RADIAN = Math.PI / 180;
-    const radius = 25 + innerRadius + (outerRadius - innerRadius);
+    const radius = 20 + innerRadius + (outerRadius - innerRadius);
     const x = cx + radius * Math.cos(-midAngle * RADIAN);
     const y = cy + radius * Math.sin(-midAngle * RADIAN);
     return (
@@ -87,6 +87,7 @@ const ChartCustomerRevenue = () => {
         fill='#8884d8'
         textAnchor={x > cx ? "start" : "end"}
         dominantBaseline='central'
+        fontSize={'0.9rem'}
       >
         {weeklyClosingData[index].CUST_NAME_KD} : (
         {value.toLocaleString("en-US", {
@@ -142,7 +143,6 @@ const ChartCustomerRevenue = () => {
                     };
                   }
                 );
-
                 loadeddata = loadeddata.splice(0, 5);
                 //console.log(loadeddata);
                 setWeeklyClosingData(loadeddata);
@@ -159,6 +159,7 @@ const ChartCustomerRevenue = () => {
         console.log(error);
       });
   };
+  
   useEffect(() => {
     handleGetCustomerRevenue();
   }, []);
@@ -193,7 +194,16 @@ const ChartCustomerRevenue = () => {
     <CustomResponsiveContainer>
       <PieChart width={900} height={900}>
         <Tooltip content={<CustomTooltip />} />
-        <Legend />
+        <Legend 
+        verticalAlign="top"
+        align="center"
+        iconSize={15}
+        iconType="diamond"
+        formatter={(value, entry) => (
+          <span style={{fontSize:'0.7rem', fontWeight:'bold'}}>{value}</span>
+        )}
+        height={10}
+        />
         <Pie
           dataKey='DELIVERY_AMOUNT'
           nameKey='CUST_NAME_KD'
@@ -201,9 +211,9 @@ const ChartCustomerRevenue = () => {
           data={weeklyClosingData}
           cx='50%'
           cy='50%'
-          outerRadius={80}
+          outerRadius={110}
           fill='#8884d8'
-          label={CustomLabel}
+          label={CustomLabel}          
         >
           {weeklyClosingData.map((entry, index) => (
             <Cell

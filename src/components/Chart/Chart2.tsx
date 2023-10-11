@@ -28,7 +28,7 @@ const ChartDaily = () => {
   >([]);
   /* const startOfMonth = moment().startOf("month").format("YYYY-MM-DD");
   const endOfMonth = moment().endOf("month").format("YYYY-MM-DD"); */
-  const startOfMonth = moment().add(-20, "day").format("YYYY-MM-DD");
+  const startOfMonth = moment().add(-12, "day").format("YYYY-MM-DD");
   const endOfMonth = moment().format("YYYY-MM-DD");
 
   const formatCash = (n: number) => {
@@ -124,7 +124,7 @@ const ChartDaily = () => {
           fill="#aaa" 
           style={{transform:`rotate(90deg)`}}
         />
-        <text x={props.viewBox.x} y={props.viewBox.y} fill="#111" dy={0} dx={0} fontSize={'0.7rem'} fontWeight={'bold'}>
+        <text x={props.viewBox.x} y={props.viewBox.y} fill="#000000" dy={-10} dx={0} fontSize={'0.7rem'} fontWeight={'bold'}>
           {formatCash(props.value)}
         </text>
       </g>
@@ -205,7 +205,7 @@ const ChartDaily = () => {
           type='monotone'
           dataKey='DELIVERED_AMOUNT'
           stroke='white'
-          fill='#cc66ff'
+          fill='#52aaf1'
          /*  label={{ position: "top", formatter: labelFormatter }} */
          label={CustomLabel}
         >
