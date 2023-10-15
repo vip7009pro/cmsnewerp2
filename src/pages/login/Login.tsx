@@ -18,7 +18,7 @@ const Login = () => {
   const [user, setUser] = useState("");
   const [pass, setPass] = useState("");
   const [server_string, setServer_String] = useState("");
-  /* const [server_string, setServer_String] = useState('http://14.160.33.94:5011/api') */
+  /* const [server_string, setServer_String] = useState('http://14.160.33.94:5013/api') */
   //console.log(lang);
 
   const company: string = useSelector(
@@ -28,7 +28,7 @@ const Login = () => {
 
   const defaultIP: string =
     company === "CMS"
-      ? "http://14.160.33.94:5011/api"
+      ? "http://14.160.33.94:5013/api"
       : "http://222.252.1.63:3007/api";
   const handle_setUser = (e: React.ChangeEvent<HTMLInputElement>) => {
     setUser(e.target.value);
@@ -65,8 +65,8 @@ const Login = () => {
       setServer_String(server_ip_local);
       dispatch(changeServer(server_ip_local));
     } else {
-      /* localStorage.setItem("server_ip", 'http://14.160.33.94:5011/api');
-      dispatch(changeServer('http://14.160.33.94:5011/api')); */
+      /* localStorage.setItem("server_ip", 'http://14.160.33.94:5013/api');
+      dispatch(changeServer('http://14.160.33.94:5013/api')); */
       localStorage.setItem("server_ip", "");
       dispatch(changeServer(""));
     }
@@ -158,14 +158,14 @@ const Login = () => {
               name="select_server"
               value={server_string}
               onChange={(e) => {
-                localStorage.setItem("server_ip", e.target.value);
+                localStorage.setItem("server_ip", e.target.value);                
                 setServer_String(e.target.value);
                 dispatch(changeServer(e.target.value));
                 ///console.log(e.target.value);
               }}
-            >
+            >              
               {company === "CMS" && (
-                <option value={"http://14.160.33.94:5011"}>MAIN_SERVER</option>
+                <option value={"http://14.160.33.94:5013"}>MAIN_SERVER</option>
               )}
               {company === "CMS" && (
                 <option value={"http://14.160.33.94:3007"}>SUB_SERVER</option>
@@ -174,7 +174,7 @@ const Login = () => {
                 <option value={"http://pvnerp.ddns.net:3007"}>SUB_SERVER2</option>
               )}
               {company === "CMS" && (
-                <option value={"http://192.168.1.2:5011"}>LAN_SERVER</option>
+                <option value={"http://192.168.1.192:5013"}>LAN_SERVER</option>
               )}
               {company === "PVN" && (
                 <option value={"http://222.252.1.63:3007"}>PUBLIC_PVN</option>

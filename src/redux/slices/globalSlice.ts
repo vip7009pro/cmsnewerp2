@@ -60,7 +60,7 @@ if (server_ip_local !== undefined) {
   localStorage.setItem(
     "server_ip",
     startCPN === "CMS"
-      ? "http://14.160.33.94:5011"
+      ? "http://14.160.33.94:5013"
       : startCPN === "PVN"
       ? "http://222.252.1.63:3007"
       : ""
@@ -122,7 +122,7 @@ const initialState: GlobalInterface = {
   company: startCPN,
   server_ip:
     startCPN === "CMS"
-      ? "http://14.160.33.94:5011"
+      ? "http://14.160.33.94:5013"
       : startCPN === "PVN"
       ? "http://222.252.1.63:3007"
       : "",

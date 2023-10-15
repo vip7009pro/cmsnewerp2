@@ -23,13 +23,15 @@ import { addTab, closeTab, settabIndex } from "../../redux/slices/globalSlice";
 import AccountInfo from "../../components/Navbar/AccountInfo/AccountInfo";
 import styled from "@emotion/styled";
 import { Draggable } from "devextreme-react";
-export const current_ver: number = 243;
+import Cookies from "universal-cookie";
+export const current_ver: number = 247;
 interface ELE_ARRAY {
   REACT_ELE: ReactElement;
   ELE_NAME: string;
   ELE_CODE: string;
 }
 function Home() {
+  const cookies = new Cookies();
   const company: string = useSelector(
     (state: RootState) => state.totalSlice.company
   );
@@ -74,6 +76,24 @@ function Home() {
     fontWeight: 200, // Ví dụ: đặt độ đậm cho chữ
     // Thêm các kiểu tùy chỉnh khác tại đây...
   });
+
+  const getchamcong =()=> {
+    generalQuery("checkMYCHAMCONG", {})
+      .then((response) => {
+        //console.log(response.data);
+        if (response.data.tk_status !== "NG") {
+          //console.log('data',response.data.data)
+          //console.log('data',response.data.REFRESH_TOKEN);
+          let rfr_token: string = response.data.REFRESH_TOKEN;
+          cookies.set("token", rfr_token, { path: "/" });          
+        } else {
+          
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
 
   useEffect(() => {
     console.log("local ver", current_ver);
@@ -125,15 +145,17 @@ function Home() {
         .catch((error) => {
           console.log(error);
         });
+
+        getchamcong();
     }, 30000);
 
-    let intervalID2 = window.setInterval(() => {
+   /*  let intervalID2 = window.setInterval(() => {
       updatechamcongdiemdanh();
-    }, 5000);
+    }, 5000); */
 
     return () => {
       window.clearInterval(intervalID);
-      window.clearInterval(intervalID2);
+      /* window.clearInterval(intervalID2); */
     };
   }, []);
 

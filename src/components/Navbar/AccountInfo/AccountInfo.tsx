@@ -158,8 +158,8 @@ export default function AccountInfo() {
         if (response.data.tk_status !== "NG") {
           //console.log('data',response.data.data)
           //console.log('data',response.data.REFRESH_TOKEN);
-          let rfr_token: string = response.data.REFRESH_TOKEN;
-          cookies.set("token", rfr_token, { path: "/" });
+          /* let rfr_token: string = response.data.REFRESH_TOKEN;
+          cookies.set("token", rfr_token, { path: "/" }); */
 
           let loaded_data: MYCHAMCONG = response.data.data[0];
           loaded_data.MIN_TIME = loaded_data.MIN_TIME?.substring(11, 19);
@@ -244,7 +244,7 @@ export default function AccountInfo() {
     getchamcong();
     let intervalID2 = window.setInterval(() => {
       getchamcong();
-    }, 3000);
+    }, 5000);
 
     return () => {
       window.clearInterval(intervalID2);

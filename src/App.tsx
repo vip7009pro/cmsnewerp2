@@ -541,7 +541,7 @@ function App() {
     let server_ip_local: any = localStorage.getItem("server_ip")?.toString();
     if (server_ip_local !== undefined) {
     } else {
-      localStorage.setItem("server_ip", "http://14.160.33.94:5011/api");
+      localStorage.setItem("server_ip", "http://14.160.33.94:5013/api");
     }
     return () => {};
   }, []);

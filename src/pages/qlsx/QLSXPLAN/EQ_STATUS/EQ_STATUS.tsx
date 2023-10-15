@@ -81,8 +81,8 @@ const EQ_STATUS = () => {
       setTime(Number(showtimeout));
       currentTimeout = Number(showtimeout);
     } else {
-      /* localStorage.setItem("server_ip", 'http://14.160.33.94:5011/api');
-      dispatch(changeServer('http://14.160.33.94:5011/api')); */
+      /* localStorage.setItem("server_ip", 'http://14.160.33.94:5013/api');
+      dispatch(changeServer('http://14.160.33.94:5013/api')); */
       localStorage.setItem("showtimeout", "10");
       currentTimeout = 10;
     }

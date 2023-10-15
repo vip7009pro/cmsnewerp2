@@ -1189,7 +1189,7 @@ const CAPASX = () => {
       getDiemDanhAllBP();
       getMachineCounting();
       getYCSXBALANCE();
-    }, 5000);
+    }, 30000);
     return () => {
       window.clearInterval(intervalID);
     };

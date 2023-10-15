@@ -185,7 +185,7 @@ export default function Navbar() {
     () => { },
   );
   const [server_string, setServer_String] = useState(
-    "http://14.160.33.94:5011/api",
+    "http://14.160.33.94:5013/api",
   );
   const menulist: MENU_LIST_DATA[] = [
     {
@@ -578,7 +578,7 @@ export default function Navbar() {
     if (server_ip_local !== undefined) {
       setServer_String(server_ip_local);
     } else {
-      localStorage.setItem("server_ip", "http://14.160.33.94:5011/api");
+      localStorage.setItem("server_ip", "http://14.160.33.94:5013/api");
     } */
     let saveTab: any = localStorage.getItem("tabs")?.toString();
     //console.log('savetab',saveTab);
