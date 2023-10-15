@@ -1531,15 +1531,15 @@ const YCSXManager = () => {
     });
     await generalQuery("checktrungAMZ_Full", {})
       .then((response) => {
-        console.log(response.data.tk_status);
+        //console.log(response.data.tk_status);
         if (response.data.tk_status !== "NG") {
           isDuplicated = true;
           Swal.fire(
             "Thông báo",
-            "Yêu cầu có data trùng: " +
-            response.data.data[0].PROD_REQUEST_NO +
-            "______ ID công việc của data trùng: " +
-            response.data.data[0].NO_IN,
+            "Data trùng: " +
+            response.data.data[0].VALUE +
+            "______ Số lặp lại: " +
+            response.data.data[0].COUNT,
             "error"
           );
         } else {
@@ -2227,7 +2227,7 @@ const YCSXManager = () => {
               PHANLOAI: uploadExcelJson[i].PHANLOAI,
               G_CODE: uploadExcelJson[i].G_CODE,
               CUST_CD: uploadExcelJson[i].CUST_CD,
-              REMK: next_process_lot_no_p501,
+              REMK: next_process_lot_no_p501 + "REMARK: " + uploadExcelJson[i].REMK,
               PROD_REQUEST_DATE: moment().format("YYYYMMDD"),
               PROD_REQUEST_NO: next_prod_request_no,
               CODE_50: uploadExcelJson[i].CODE_50,
@@ -2238,10 +2238,7 @@ const YCSXManager = () => {
               EMPL_NO: userData?.EMPL_NO,
               USE_YN: "Y",
               DELIVERY_DT: uploadExcelJson[i].DELIVERY_DT,
-              PO_NO:
-                uploadExcelJson[i].PO_NO === undefined
-                  ? ""
-                  : uploadExcelJson[i].PO_NO,
+              PO_NO: uploadExcelJson[i].PO_NO ?? "",                 
               INS_EMPL: userData?.EMPL_NO,
               UPD_EMPL: userData?.EMPL_NO,
               YCSX_PENDING: 1,
@@ -2589,7 +2586,7 @@ const YCSXManager = () => {
           EMPL_NO: userData?.EMPL_NO,
           USE_YN: "Y",
           DELIVERY_DT: moment(deliverydate).format("YYYYMMDD"),
-          PO_NO: selectedPoNo?.PO_NO === undefined ? "" : selectedPoNo?.PO_NO,
+          PO_NO: selectedPoNo?.PO_NO ?? "",
           INS_EMPL: userData?.EMPL_NO,
           UPD_EMPL: userData?.EMPL_NO,
           YCSX_PENDING: 1,
@@ -2641,7 +2638,7 @@ const YCSXManager = () => {
           PHANLOAI: newphanloai,
           G_CODE: selectedCode?.G_CODE,
           CUST_CD: selectedCust_CD?.CUST_CD,
-          REMK: next_process_lot_no_p501,
+          REMK: next_process_lot_no_p501 + 'REMARK: ' + newycsxremark,
           PROD_REQUEST_DATE: moment().format("YYYYMMDD"),
           PROD_REQUEST_NO: next_prod_request_no,
           CODE_50: loaixh,

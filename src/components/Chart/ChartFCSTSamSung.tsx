@@ -89,7 +89,7 @@ const ChartFCSTSamSung = () => {
         //console.log(response.data.data)
         if (response.data.tk_status !== "NG") {
           fcstweek2 = response.data.data[0].FCSTWEEKNO;
-          console.log(response.data.data);
+          //console.log(response.data.data);
         } else {
           Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
         }
@@ -109,8 +109,8 @@ const ChartFCSTSamSung = () => {
       fcstweek1 = fcstweek2 - 1;
     }
 
-    console.log("fcst week 1", fcstweek1);
-    console.log("fcst week 2", fcstweek2);
+    //console.log("fcst week 1", fcstweek1);
+    //console.log("fcst week 2", fcstweek2);
 
     //console.log('fcst week 1',fcstweek1)
     // console.log('fcst week 2',fcstweek2)

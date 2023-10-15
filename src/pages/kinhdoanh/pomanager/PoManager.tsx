@@ -84,6 +84,7 @@ const PoManager = () => {
   const company: string = useSelector(
     (state: RootState) => state.totalSlice.company
   );
+  const [trigger, setTrigger] = useState(true);
   const [sh, setSH] = useState(true);
   const [uploadExcelJson, setUploadExcelJSon] = useState<Array<any>>([]);
   const [isLoading, setisLoading] = useState(false);
@@ -427,6 +428,15 @@ const PoManager = () => {
       });
   };
   const handle_checkPOHangLoat = async () => {
+    Swal.fire({
+      title: "Đang check PO hàng loạt",
+      text: "Đang check, hãy chờ chút",
+      icon: "info",
+      showCancelButton: false,
+      allowOutsideClick: false,
+      confirmButtonText: "OK",
+      showConfirmButton: false,
+    });
     let keysArray = Object.getOwnPropertyNames(uploadExcelJson[0]);
     let column_map = keysArray.map((e, index) => {
       return {
@@ -472,7 +482,7 @@ const PoManager = () => {
         PO_NO: uploadExcelJson[i].PO_NO,
       })
         .then((response) => {
-          console.log(response.data.tk_status);
+          //console.log(response.data.tk_status);
           if (response.data.tk_status !== "NG") {
             err_code = 1;
           } else {
@@ -496,7 +506,7 @@ const PoManager = () => {
         .then((response) => {
           //console.log(response.data.tk_status);
           if (response.data.tk_status !== "NG") {
-            console.log(response.data.data);
+            //console.log(response.data.data);
             if (response.data.data[0].USE_YN === "Y") {
               //tempjson[i].CHECKSTATUS = "OK";
             } else {
@@ -523,9 +533,10 @@ const PoManager = () => {
         tempjson[i].CHECKSTATUS = "NG: Không có Code ERP này";
       }
     }
-    setisLoading(false);
+    
     Swal.fire("Thông báo", "Đã hoàn thành check PO hàng loạt", "success");
     setUploadExcelJSon(tempjson);
+    setTrigger(!trigger);
   };
   const handle_upPOHangLoat = async () => {
     let keysArray = Object.getOwnPropertyNames(uploadExcelJson[0]);
@@ -1960,7 +1971,7 @@ const PoManager = () => {
         </CustomResponsiveContainer>
       </div>
     ),
-    [uploadExcelJson, columnsExcel]
+    [uploadExcelJson, columnsExcel, trigger]
   );
   useEffect(() => {
     getcustomerlist();

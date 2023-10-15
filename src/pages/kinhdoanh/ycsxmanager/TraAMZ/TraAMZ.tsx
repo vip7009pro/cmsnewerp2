@@ -53,6 +53,7 @@ const TraAMZ = () => {
 
   const [prodrequestno, setProdRequestNo] = useState("");
   const [plan_id, setPlanID] = useState("");
+  const [dataAMZ, setDataAMZ] = useState("");
   const [alltime, setAllTime] = useState(false);
   const [id, setID] = useState("");
   const [inspectiondatatable, setInspectionDataTable] = useState<Array<any>>(
@@ -118,7 +119,7 @@ const TraAMZ = () => {
       </GridToolbarContainer>
     );
   }
-  const handle_loadlichsuinputlieu = () => {
+  const handle_traAMZ = () => {
     generalQuery("traDataAMZ", {
       ALLTIME: alltime,
       FROM_DATE: fromdate,
@@ -127,6 +128,7 @@ const TraAMZ = () => {
       NO_IN: plan_id,
       G_NAME: codeKD,
       G_CODE: codeCMS,
+      DATA_AMZ: dataAMZ
     })
       .then((response) => {
         //console.log(response.data.data);
@@ -225,6 +227,15 @@ const TraAMZ = () => {
                     onChange={(e) => setPlanID(e.target.value)}
                   ></input>
                 </label>
+                <label>
+                  <b>DATA:</b>{" "}
+                  <input
+                    type="text"
+                    placeholder="AZ:H3BS9IZEHFHJDHR1UDQOB9WTWU"
+                    value={dataAMZ}
+                    onChange={(e) => setDataAMZ(e.target.value)}
+                  ></input>
+                </label>
               </div>
             </div>
             <div className="formbutton">
@@ -241,7 +252,7 @@ const TraAMZ = () => {
                 setisLoading(true);
                 setReadyRender(true);
                 setColumnDefinition(column_lichsuinputlieusanxuat);
-                handle_loadlichsuinputlieu();
+                handle_traAMZ();
               }}>Tra AMZ</Button>
 
             </div>

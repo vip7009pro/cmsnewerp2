@@ -115,7 +115,7 @@ const ChartDaily = () => {
   };
 
   const CustomLabel = (props:any) => {
-    console.log(props);
+    //console.log(props);
     return (
       <g>
         <rect

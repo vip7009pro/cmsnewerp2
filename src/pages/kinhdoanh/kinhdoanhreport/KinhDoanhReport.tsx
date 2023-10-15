@@ -262,7 +262,7 @@ const KinhDoanhReport = () => {
         console.log(error);
       });
 
-    console.log("fcst week2->: ", fcstweek2);
+    //console.log("fcst week2->: ", fcstweek2);
 
     generalQuery("fcstamount", { FCSTYEAR: fcstyear2, FCSTWEEKNO: fcstweek2 })
       .then((response) => {

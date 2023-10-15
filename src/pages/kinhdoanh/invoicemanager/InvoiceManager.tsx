@@ -94,9 +94,7 @@ const InvoiceManager = () => {
   const [newpodate, setNewPoDate] = useState(moment().format("YYYY-MM-DD"));
   const [newrddate, setNewRdDate] = useState(moment().format("YYYY-MM-DD"));
   const [newpono, setNewPoNo] = useState("");
-  const [newpoqty, setNewPoQty] = useState("");
   const [newpoprice, setNewPoPrice] = useState("");
-  const [newporemark, setNewPoRemark] = useState("");
   const [newinvoiceQTY, setNewInvoiceQty] = useState<number>(0);
   const [newinvoicedate, setNewInvoiceDate] = useState(
     moment().format("YYYY-MM-DD"),
@@ -119,210 +117,12 @@ const InvoiceManager = () => {
   const [invoicedatatable, setInvoiceDataTable] = useState<
     Array<InvoiceTableData>
   >([]);
-  /*   const [invoicedatatablefilter, setInvoiceDataTableFilter] = useState<
-      Array<InvoiceTableData>
-    >([]); */
+ 
   const invoicedatatablefilter = useRef<InvoiceTableData[]>([]);
   const clickedRow = useRef<any>(null);
   const [selectedID, setSelectedID] = useState<number | null>();
   const [showhidePivotTable, setShowHidePivotTable] = useState(false);
-  const column_invoicetable = [
-    { field: "CUST_NAME_KD", headerName: "CUST_NAME_KD", width: 110 },
-    { field: "EMPL_NAME", headerName: "EMPL_NAME", width: 130 },
-    { field: "G_CODE", headerName: "G_CODE", width: 80 },
-    {
-      field: "G_NAME",
-      headerName: "G_NAME",
-      flex: 1,
-      minWidth: 180,
-      renderCell: (params: any) => {
-        return (
-          <span style={{ color: "red" }}>
-            <b>{params.row.G_NAME}</b>
-          </span>
-        );
-      },
-    },
-    { field: "G_NAME_KD", headerName: "G_NAME_KD", width: 120 },
-    { field: "PO_NO", headerName: "PO_NO", width: 100 },
-    {
-      field: "DELIVERY_DATE",
-      type: "date",
-      headerName: "DELIVERY_DATE",
-      width: 120,
-    },
-    {
-      field: "DELIVERY_QTY",
-      type: "number",
-      headerName: "DELIVERY_QTY",
-      width: 100,
-      renderCell: (params: any) => {
-        return (
-          <span style={{ color: "blue" }}>
-            <b>{params.row.DELIVERY_QTY.toLocaleString("en-US")}</b>
-          </span>
-        );
-      },
-    },
-    {
-      field: "PROD_PRICE",
-      type: "number",
-      headerName: "PROD_PRICE",
-      width: 100,
-      renderCell: (params: any) => {
-        return (
-          <span style={{ color: "gray" }}>
-            <b>
-              {params.row.PROD_PRICE.toLocaleString("en-US", {
-                style: "decimal",
-                maximumFractionDigits: 8,
-              })}
-            </b>
-          </span>
-        );
-      },
-    },
-    {
-      field: "DELIVERED_AMOUNT",
-      type: "number",
-      headerName: "DELIVERED_AMOUNT",
-      width: 120,
-      renderCell: (params: any) => {
-        return (
-          <span style={{ color: "green" }}>
-            <b>
-              {params.row.DELIVERED_AMOUNT.toLocaleString("en-US", {
-                style: "currency",
-                currency: "USD",
-              })}
-            </b>
-          </span>
-        );
-      },
-    },
-    { field: "PROD_TYPE", headerName: "PROD_TYPE", width: 90 },
-    { field: "PROD_MODEL", headerName: "PROD_MODEL", width: 120 },
-    { field: "PROD_PROJECT", headerName: "PROD_PROJECT", width: 120 },
-    {
-      field: "PROD_MAIN_MATERIAL",
-      headerName: "PROD_MAIN_MATERIAL",
-      width: 120,
-    },
-    { field: "YEARNUM", type: "number", headerName: "YEARNUM", width: 80 },
-    { field: "WEEKNUM", type: "number", headerName: "WEEKNUM", width: 80 },
-    {
-      field: "INVOICE_NO",
-      type: "number",
-      headerName: "INVOICE_NO",
-      width: 120,
-    },
-    { field: "DELIVERY_ID", headerName: "DELIVERY_ID", width: 90 },
-    { field: "REMARK", headerName: "REMARK", width: 120 },
-  ];
-  const column_excel2 = [
-    { field: "CUST_CD", headerName: "CUST_CD", width: 120 },
-    { field: "G_CODE", headerName: "G_CODE", width: 120 },
-    { field: "PO_NO", type: "number", headerName: "PO_NO", width: 120 },
-    {
-      field: "PO_QTY",
-      type: "number",
-      headerName: "PO_QTY",
-      width: 120,
-      renderCell: (params: any) => {
-        return (
-          <span style={{ color: "blue" }}>
-            <b>{params.row.PO_QTY.toLocaleString("en-US")}</b>
-          </span>
-        );
-      },
-    },
-    { field: "PO_DATE", type: "date", headerName: "PO_DATE", width: 200 },
-    { field: "RD_DATE", type: "date", headerName: "RD_DATE", width: 200 },
-    {
-      field: "PROD_PRICE",
-      type: "number",
-      headerName: "PROD_PRICE",
-      width: 200,
-      renderCell: (params: any) => {
-        return (
-          <span style={{ color: "gray" }}>
-            <b>
-              {params.row.PROD_PRICE.toLocaleString("en-US", {
-                style: "decimal",
-                maximumFractionDigits: 8,
-              })}
-            </b>
-          </span>
-        );
-      },
-    },
-    {
-      field: "CHECKSTATUS",
-      headerName: "CHECKSTATUS",
-      width: 200,
-      renderCell: (params: any) => {
-        if (params.row.CHECKSTATUS.slice(0, 2) === "OK")
-          return (
-            <span style={{ color: "green" }}>
-              <b>{params.row.CHECKSTATUS}</b>
-            </span>
-          );
-        return (
-          <span style={{ color: "red" }}>
-            <b>{params.row.CHECKSTATUS}</b>
-          </span>
-        );
-      },
-    },
-  ];
-  const column_excelinvoice2 = [
-    { field: "CUST_CD", headerName: "CUST_CD", width: 120 },
-    { field: "G_CODE", headerName: "G_CODE", width: 120 },
-    { field: "PO_NO", headerName: "PO_NO", width: 120 },
-    {
-      field: "DELIVERY_QTY",
-      type: "number",
-      headerName: "DELIVERY_QTY",
-      width: 120,
-      renderCell: (params: any) => {
-        return (
-          <span style={{ color: "blue" }}>
-            <b>{params.row.DELIVERY_QTY}</b>
-          </span>
-        );
-      },
-    },
-    {
-      field: "DELIVERY_DATE",
-      type: "date",
-      headerName: "DELIVERY_DATE",
-      width: 200,
-    },
-    {
-      field: "INVOICE_NO",
-      type: "string",
-      headerName: "INVOICE_NO",
-      width: 200,
-    },
-    {
-      field: "CHECKSTATUS",
-      headerName: "CHECKSTATUS",
-      width: 200,
-      renderCell: (params: any) => {
-        if (params.row.CHECKSTATUS.slice(0, 2) === "OK")
-          return (
-            <span style={{ color: "green" }}>
-              <b>{params.row.CHECKSTATUS}</b>
-            </span>
-          );
-        return (
-          <span style={{ color: "red" }}>
-            <b>{params.row.CHECKSTATUS}</b>
-          </span>
-        );
-      },
-    },
-  ];
+  const [trigger, setTrigger] = useState(true);
   const handleSearchCodeKeyDown = (
     e: React.KeyboardEvent<HTMLInputElement>,
   ) => {
@@ -330,123 +130,6 @@ const InvoiceManager = () => {
       handletraInvoice();
     }
   };
-  function CustomToolbar() {
-    return (
-      <GridToolbarContainer>
-        <GridToolbarColumnsButton />
-        <GridToolbarFilterButton />
-        <GridToolbarDensitySelector />
-        <button
-          className="saveexcelbutton"
-          onClick={() => {
-            SaveExcel(uploadExcelJson, "Uploaded PO");
-          }}
-        >
-          Save Excel
-        </button>
-        <GridToolbarQuickFilter />
-      </GridToolbarContainer>
-    );
-  }
-  function CustomToolbarPOTable() {
-    return (
-      <GridToolbarContainer>
-        <IconButton
-          className="buttonIcon"
-          onClick={() => {
-            showhidesearchdiv.current = !showhidesearchdiv.current;
-            setSH(!showhidesearchdiv.current);
-          }}
-        >
-          <TbLogout color="green" size={15} />
-          Show/Hide
-        </IconButton>
-        <IconButton
-          className="buttonIcon"
-          onClick={() => {
-            SaveExcel(invoicedatatable, "Invoice Table");
-          }}
-        >
-          <AiFillFileExcel color="green" size={15} />
-          SAVE
-        </IconButton>
-        <IconButton
-          className="buttonIcon"
-          onClick={() => {
-            /*  checkBP(userData?.EMPL_NO, userData?.MAINDEPTNAME, ["KD"], () => {
-              setSelection({
-                ...selection,
-                trapo: true,
-                thempohangloat: false,
-                them1po: false,
-                them1invoice: true,
-              });
-              clearInvoiceform();
-            }); */
-            checkBP(userData, ["KD"], ["ALL"], ["ALL"], () => {
-              setSelection({
-                ...selection,
-                trapo: true,
-                thempohangloat: false,
-                them1po: false,
-                them1invoice: true,
-              });
-              clearInvoiceform();
-            });
-          }}
-        >
-          <AiFillFileAdd color="blue" size={15} />
-          NEW INV
-        </IconButton>
-        <IconButton
-          className="buttonIcon"
-          onClick={() => {
-            /* checkBP(
-              userData?.EMPL_NO,
-              userData?.MAINDEPTNAME,
-              ["KD"],
-              handle_fillsuaformInvoice
-            ); */
-            checkBP(
-              userData,
-              ["KD"],
-              ["ALL"],
-              ["ALL"],
-              handle_fillsuaformInvoice,
-            );
-            //handle_fillsuaformInvoice();
-          }}
-        >
-          <FaFileInvoiceDollar color="lightgreen" size={15} />
-          SỬA INV
-        </IconButton>
-        <IconButton
-          className="buttonIcon"
-          onClick={() => {
-            /*  checkBP(
-              userData?.EMPL_NO,
-              userData?.MAINDEPTNAME,
-              ["KD"],
-              handleConfirmDeleteInvoice
-            ); */
-            checkBP(
-              userData,
-              ["KD"],
-              ["ALL"],
-              ["ALL"],
-              handleConfirmDeleteInvoice,
-            );
-            //handleConfirmDeleteInvoice();
-          }}
-        >
-          <MdOutlineDelete color="red" size={15} />
-          XÓA INV
-        </IconButton>
-        <GridToolbarQuickFilter />
-
-      </GridToolbarContainer>
-    );
-  }
   const readUploadFile = (e: any) => {
     e.preventDefault();
     if (e.target.files) {
@@ -595,6 +278,15 @@ const InvoiceManager = () => {
       });
   };
   const handle_checkInvoiceHangLoat = async () => {
+    Swal.fire({
+      title: "Đang check Invoice hàng loạt",
+      text: "Đang check, hãy chờ chút",
+      icon: "info",
+      showCancelButton: false,
+      allowOutsideClick: false,
+      confirmButtonText: "OK",
+      showConfirmButton: false,
+    });
     let keysArray = Object.getOwnPropertyNames(uploadExcelJson[0]);
     let column_map = keysArray.map((e, index) => {
       return {
@@ -712,9 +404,10 @@ const InvoiceManager = () => {
       } else if (err_code === 5) {
         tempjson[i].CHECKSTATUS = "NG: Giao hàng nhiều hơn PO";
       }
-    }
-    setisLoading(false);
+    }   
     setUploadExcelJSon(tempjson);
+    setTrigger(!trigger);
+    
     Swal.fire("Thông báo", "Đã hoàn thành check Invoice hàng loạt", "success");
     
   };
@@ -1863,7 +1556,7 @@ const InvoiceManager = () => {
         </CustomResponsiveContainer>
       </div>
     ),
-    [uploadExcelJson, columnsExcel]
+    [uploadExcelJson, columnsExcel, trigger]
   );
   useEffect(() => {
     getcustomerlist();

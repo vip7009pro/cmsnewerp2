@@ -1753,79 +1753,27 @@ const MACHINE = () => {
           PD = response.data.data[0].PD;
           CAVITY_NGANG = response.data.data[0].G_C_R;
           CAVITY_DOC = response.data.data[0].G_C;
-          LOSS_SX1 =
-            response.data.data[0].LOSS_SX1 === null
-              ? 0
-              : response.data.data[0].LOSS_SX1;
-          LOSS_SX2 =
-            response.data.data[0].LOSS_SX2 === null
-              ? 0
-              : response.data.data[0].LOSS_SX2;
-          LOSS_SETTING1 =
-            response.data.data[0].LOSS_SETTING1 === null
-              ? 0
-              : response.data.data[0].LOSS_SETTING1;
-          LOSS_SETTING2 =
-            response.data.data[0].LOSS_SETTING2 === null
-              ? 0
-              : response.data.data[0].LOSS_SETTING2;
-          FINAL_LOSS_SX = PROCESS_NUMBER === 1 ? LOSS_SX1 : LOSS_SX2;
+          
           if (PROCESS_NUMBER === 1) {
-            FINAL_LOSS_SX =
-              response.data.data[0].LOSS_SX1 === null
-                ? 0
-                : response.data.data[0].LOSS_SX1;
+            FINAL_LOSS_SX = response.data.data[0].LOSS_SX1  ?? 0;
           } else if (PROCESS_NUMBER === 2) {
-            FINAL_LOSS_SX =
-              response.data.data[0].LOSS_SX2 === null
-                ? 0
-                : response.data.data[0].LOSS_SX2;
+            FINAL_LOSS_SX = response.data.data[0].LOSS_SX2 ?? 0; 
           } else if (PROCESS_NUMBER === 3) {
-            FINAL_LOSS_SX =
-              response.data.data[0].LOSS_SX3 === null
-                ? 0
-                : response.data.data[0].LOSS_SX3;
+            FINAL_LOSS_SX = response.data.data[0].LOSS_SX3 ?? 0;
           } else if (PROCESS_NUMBER === 4) {
-            FINAL_LOSS_SX =
-              response.data.data[0].LOSS_SX4 === null
-                ? 0
-                : response.data.data[0].LOSS_SX4;
+            FINAL_LOSS_SX = response.data.data[0].LOSS_SX4 ?? 0; 
           }
-          FINAL_LOSS_SETTING =
-            PROCESS_NUMBER === 1
-              ? calc_loss_setting
-                ? LOSS_SETTING1
-                : 0
-              : calc_loss_setting
-                ? LOSS_SETTING2
-                : 0;
+         
           if (PROCESS_NUMBER === 1) {
-            FINAL_LOSS_SETTING = calc_loss_setting
-              ? response.data.data[0].LOSS_SETTING1 === null
-                ? 0
-                : response.data.data[0].LOSS_SETTING1
-              : 0;
+            FINAL_LOSS_SETTING = calc_loss_setting  ? response.data.data[0].LOSS_SETTING1 ?? 0 : 0;
           } else if (PROCESS_NUMBER === 2) {
-            FINAL_LOSS_SETTING = calc_loss_setting
-              ? response.data.data[0].LOSS_SETTING2 === null
-                ? 0
-                : response.data.data[0].LOSS_SETTING2
-              : 0;
+            FINAL_LOSS_SETTING = calc_loss_setting  ? response.data.data[0].LOSS_SETTING2 ?? 0 : 0;
           } else if (PROCESS_NUMBER === 3) {
-            FINAL_LOSS_SETTING = calc_loss_setting
-              ? response.data.data[0].LOSS_SETTING3 === null
-                ? 0
-                : response.data.data[0].LOSS_SETTING3
-              : 0;
+            FINAL_LOSS_SETTING = calc_loss_setting  ? response.data.data[0].LOSS_SETTING3 ?? 0 : 0;
           } else if (PROCESS_NUMBER === 4) {
-            FINAL_LOSS_SETTING = calc_loss_setting
-              ? response.data.data[0].LOSS_SETTING4 === null
-                ? 0
-                : response.data.data[0].LOSS_SETTING4
-              : 0;
+            FINAL_LOSS_SETTING = calc_loss_setting  ? response.data.data[0].LOSS_SETTING4 ?? 0 : 0;
           }
-          //console.log(LOSS_SX1)
-          //console.log(LOSS_SETTING1)
+          
         } else {
         }
       })
@@ -1902,12 +1850,8 @@ const MACHINE = () => {
       let PD: number = 0,
         CAVITY_NGANG: number = 0,
         CAVITY_DOC: number = 0,
-        PLAN_QTY: number =
-          selectedPlan?.PLAN_QTY === undefined ? 0 : selectedPlan?.PLAN_QTY,
-        PROCESS_NUMBER: number =
-          selectedPlan?.PROCESS_NUMBER === undefined
-            ? 1
-            : selectedPlan?.PROCESS_NUMBER,
+        PLAN_QTY: number = selectedPlan?.PLAN_QTY ?? 0,
+        PROCESS_NUMBER: number = selectedPlan?.PROCESS_NUMBER ?? 0,
         LOSS_SX1: number = 0,
         LOSS_SX2: number = 0,
         LOSS_SETTING1: number = 0,
@@ -1924,33 +1868,25 @@ const MACHINE = () => {
             PD = response.data.data[0].PD;
             CAVITY_NGANG = response.data.data[0].G_C_R;
             CAVITY_DOC = response.data.data[0].G_C;
-            LOSS_SX1 =
-              response.data.data[0].LOSS_SX1 === null
-                ? 0
-                : response.data.data[0].LOSS_SX1;
-            LOSS_SX2 =
-              response.data.data[0].LOSS_SX2 === null
-                ? 0
-                : response.data.data[0].LOSS_SX2;
-            LOSS_SETTING1 =
-              response.data.data[0].LOSS_SETTING1 === null
-                ? 0
-                : response.data.data[0].LOSS_SETTING1;
-            LOSS_SETTING2 =
-              response.data.data[0].LOSS_SETTING2 === null
-                ? 0
-                : response.data.data[0].LOSS_SETTING2;
-            FINAL_LOSS_SX = PROCESS_NUMBER === 1 ? LOSS_SX1 : LOSS_SX2;
-            FINAL_LOSS_SETTING =
-              PROCESS_NUMBER === 1
-                ? calc_loss_setting
-                  ? LOSS_SETTING1
-                  : 0
-                : calc_loss_setting
-                  ? LOSS_SETTING2
-                  : 0;
-            //console.log(LOSS_SX1)
-            //console.log(LOSS_SETTING1)
+            if (PROCESS_NUMBER === 1) {
+              FINAL_LOSS_SX = response.data.data[0].LOSS_SX1  ?? 0;
+            } else if (PROCESS_NUMBER === 2) {
+              FINAL_LOSS_SX = response.data.data[0].LOSS_SX2 ?? 0; 
+            } else if (PROCESS_NUMBER === 3) {
+              FINAL_LOSS_SX = response.data.data[0].LOSS_SX3 ?? 0;
+            } else if (PROCESS_NUMBER === 4) {
+              FINAL_LOSS_SX = response.data.data[0].LOSS_SX4 ?? 0; 
+            }
+           
+            if (PROCESS_NUMBER === 1) {
+              FINAL_LOSS_SETTING = calc_loss_setting  ? response.data.data[0].LOSS_SETTING1 ?? 0 : 0;
+            } else if (PROCESS_NUMBER === 2) {
+              FINAL_LOSS_SETTING = calc_loss_setting  ? response.data.data[0].LOSS_SETTING2 ?? 0 : 0;
+            } else if (PROCESS_NUMBER === 3) {
+              FINAL_LOSS_SETTING = calc_loss_setting  ? response.data.data[0].LOSS_SETTING3 ?? 0 : 0;
+            } else if (PROCESS_NUMBER === 4) {
+              FINAL_LOSS_SETTING = calc_loss_setting  ? response.data.data[0].LOSS_SETTING4 ?? 0 : 0;
+            }            
           } else {
           }
         })
