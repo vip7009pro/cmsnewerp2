@@ -575,6 +575,7 @@ const PoManager = () => {
     });
     setColumnsExcel(column_map);
     let tempjson = uploadExcelJson;
+    console.log(tempjson);
     for (let i = 0; i < uploadExcelJson.length; i++) {
       let err_code: number = 0;
       await generalQuery("checkPOExist", {

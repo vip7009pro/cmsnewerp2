@@ -2143,6 +2143,7 @@ export interface KTP_OUT {
   REMARK: string;
   AUTO_ID_IN: string;
   OUT_PRT_SEQ: string;
+  PO_NO: string;
 }
 export interface STOCK_G_CODE {
   G_CODE: string;

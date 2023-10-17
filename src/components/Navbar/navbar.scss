@@ -1,8 +1,7 @@
 .navbar {
-  display: flex;
-  margin-top: 5px;
+  display: flex;  
   width: 100%;
-  font-size: 14px;
+  font-size: 0.8rem;
   @media only screen and (max-width: 3000px) {
     .wrapper {
       -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.29);
@@ -13,16 +12,20 @@
       /* background-color: rgb(159, 216, 248); */
       display: flex;
       flex-wrap: wrap;
-      padding: 2px;
+      padding: 0px;
       align-items: center;
       justify-content: space-between;
       width: 100%;
+      
       /*  position: fixed;
       z-index: 99999999;
       top: 0;
       left: 0;  */
       .navleft {
-        margin-left: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-left: 5px;
       }
       .navcenter {
         display: flex;

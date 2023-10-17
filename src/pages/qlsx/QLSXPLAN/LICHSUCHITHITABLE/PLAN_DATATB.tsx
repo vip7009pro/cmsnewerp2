@@ -73,11 +73,12 @@ import {
 import { useReactToPrint } from "react-to-print";
 import DrawComponent from "../../../kinhdoanh/ycsxmanager/DrawComponent/DrawComponent";
 import { setTimeout } from "timers/promises";
+import QUICKPLAN from "../QUICKPLAN/QUICKPLAN";
 const PLAN_DATATB = () => {
   const dataGridRef = useRef<any>(null);
   const currentRow = useRef(0);
   const datatbTotalRow = useRef(0);
-
+  const [showQuickPlan, setShowQuickPlan] = useState(false);
   const [ycsxlistrender, setYCSXListRender] = useState<Array<ReactElement>>();
   const [showkhoao, setShowKhoAo] = useState(false);
   const [maxLieu, setMaxLieu] = useState(12);
@@ -4188,6 +4189,14 @@ const PLAN_DATATB = () => {
                 <button
                   className='tranhatky'
                   onClick={() => {
+                   setShowQuickPlan(!showQuickPlan);
+                  }}
+                >
+                  QUICK PLAN
+                </button>
+                <button
+                  className='tranhatky'
+                  onClick={() => {
                     setisLoading(true);
                     setReadyRender(false);
                     loadQLSXPlan(fromdate);
@@ -4220,6 +4229,7 @@ const PLAN_DATATB = () => {
           {planDataTable}
         </div>
       </div>
+      
       {showhideM && (
         <div className='listlieuchithi'>
           <div className='chithiheader'>
@@ -4376,6 +4386,13 @@ const PLAN_DATATB = () => {
           </div>
         </div>
       )}
+      {
+        showQuickPlan && (
+          <div className="quickplandiv">
+            <QUICKPLAN/>
+          </div>        
+        )
+      }
     </div>
   );
 };

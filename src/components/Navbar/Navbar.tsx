@@ -98,6 +98,8 @@ import KHOTPNEW from "../../pages/kho/khotp_new/KHOTPNEW";
 import KHOTP from "../../pages/kho/khotp/KHOTP";
 import { ELE_ARRAY, UserData } from "../../api/GlobalInterface";
 import EQ_STATUS2 from "../../pages/qlsx/QLSXPLAN/EQ_STATUS/EQ_STATUS2";
+import NavMenu from "../NavMenu/NavMenu";
+
 /* 
 const KIEMTRA= lazy(()=> import('../../pages/qc/inspection/KIEMTRA'));
 const PQC= lazy(()=> import('../../pages/qc/pqc/PQC'));
@@ -161,15 +163,16 @@ export default function Navbar() {
   const [lang, setLang] = useContext(LangConText);
   const refLang = useRef<HTMLDivElement>(null);
   const refMenu = useRef<HTMLDivElement>(null);
-
   const userData: UserData | undefined = useSelector(
     (state: RootState) => state.totalSlice.userData,
   );
   const company: string = useSelector(
     (state: RootState) => state.totalSlice.company,
   );
+  const sidebarStatus: boolean | undefined = useSelector(
+    (state: RootState) => state.totalSlice.sidebarmenu,
+  );
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
-
   useOutsideClick(
     refLang,
     () => {
@@ -548,22 +551,6 @@ export default function Navbar() {
     (state: RootState) => state.totalSlice.tabs,
   );
   const dispatch = useDispatch();
-
-  const [show, setShow] = useState(true);
-  const [lastScrollY, setLastScrollY] = useState(0);
-
-/*   const controlNavbar = () => {
-    console.log(lastScrollY)
-    if (typeof window !== 'undefined') { 
-      if (window.scrollY > lastScrollY) { // if scroll down hide the navbar
-        setShow(false); 
-      } else { // if scroll up show the navbar
-        setShow(true);  
-      }
-      // remember current page location to use in the next move
-      setLastScrollY(window.scrollY); 
-    }
-  };   */
   useEffect(() => {
     /* if (typeof window !== 'undefined') {
       window.addEventListener('scroll', controlNavbar);
@@ -584,7 +571,6 @@ export default function Navbar() {
     //console.log('savetab',saveTab);
     if (saveTab !== undefined) {
       let tempTab: SEARCH_LIST_DATA[] = JSON.parse(saveTab);
-
       for (let i = 0; i < tempTab.length; i++) {
         if (tempTab[i].MENU_CODE !== "-1")
           dispatch(
@@ -615,7 +601,7 @@ export default function Navbar() {
     }
     return () => {
       /* window.removeEventListener('scroll', controlNavbar); */
-    }; 
+    };
   }, []);
   const filterOptions1 = createFilterOptions({
     matchFrom: "any",
@@ -639,6 +625,7 @@ export default function Navbar() {
     setLang(selectLang);
     localStorage.setItem("lang", selectLang);
   };
+ 
   return (
     <div className="navbar">
       <div
@@ -657,6 +644,7 @@ export default function Navbar() {
             }}
             size={20}
           />
+          {sidebarStatus && <NavMenu />}
         </div>
         <div className="navcenter">
           <div className="cmslogo" style={{ cursor: "pointer" }}>

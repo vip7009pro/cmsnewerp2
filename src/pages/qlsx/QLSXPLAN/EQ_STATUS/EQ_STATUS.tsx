@@ -17,7 +17,6 @@ import EQ_SUMMARY from "./EQ_SUMMARY";
 import { Checkbox, TextField } from "@mui/material";
 import { EQ_STT } from "../../../../api/GlobalInterface";
 import { useSpring, animated } from "@react-spring/web";
-
 const EQ_STATUS = () => {
   const [time, setTime] = useState(5);
   const [fullScreen, setFullScreen] = useState(false);
@@ -47,14 +46,13 @@ const EQ_STATUS = () => {
             }
           );
           //console.log(loaded_data);
-
           setEQ_STATUS(loaded_data);
           setEQ_SERIES([
             ...new Set(
               loaded_data.map((e: EQ_STT, index: number) => {
                 return e.EQ_SERIES === undefined ? "" : e.EQ_SERIES;
               })
-            ),'FR+SR'
+            ), 'FR+SR'
           ]);
         } else {
           setEQ_STATUS([]);
@@ -65,7 +63,6 @@ const EQ_STATUS = () => {
         console.log(error);
       });
   };
-
   const springs = useSpring({
     from: { x: 2000, y: 0 },
     to: { x: 0, y: 0 },
@@ -73,7 +70,6 @@ const EQ_STATUS = () => {
     /* transform: trigger ? "translateX(-50%)" : "translateX(50%)", // Slide in từ trái sang phải, slide out đi ngược lại
     opacity: trigger ? 1 : 0, */
   });
-
   useEffect(() => {
     let currentTimeout = 5;
     let showtimeout: any = localStorage.getItem("showtimeout")?.toString();
@@ -86,14 +82,12 @@ const EQ_STATUS = () => {
       localStorage.setItem("showtimeout", "10");
       currentTimeout = 10;
     }
-
     handle_loadEQ_STATUS();
     let intervalID = window.setInterval(() => {
       handle_loadEQ_STATUS();
     }, 3000);
-
     let intervalID2 = window.setInterval(() => {
-      console.log(39 / machine_number);
+      //console.log(39 / machine_number);
       if (page.current >= 39 / machine_number) {
         page.current = 1;
       } else {
@@ -138,7 +132,7 @@ const EQ_STATUS = () => {
             value={machine}
             onChange={(e) => {
               setMachine(e.target.value);
-              console.log(e.target.value);
+              //console.log(e.target.value);
             }}
             style={{ width: 160, height: 20 }}
           >
@@ -233,18 +227,12 @@ const EQ_STATUS = () => {
               {machine === "ED"
                 ? `- Máy ${machine_number * (page.current - 1) + 1} =>
               Máy
-              ${
-                machine_number * page.current >= 39
+              ${machine_number * page.current >= 39
                   ? 39
                   : machine_number * page.current
-              }`
+                }`
                 : ``}
             </span>
-            {/* <EQ_SUMMARY
-              EQ_DATA={eq_status.filter(
-                (element: EQ_STT, index: number) => element.FACTORY === factory && element.EQ_NAME=== machine
-              )}
-            /> */}
             {eq_series
               .filter((element: string, index: number) => element === machine)
               .map((ele_series: string, index: number) => {
@@ -262,13 +250,18 @@ const EQ_STATUS = () => {
                     <div id='machinediv' className='FRlist' key={index}>
                       {eq_status
                         .filter(
-                          (element: EQ_STT, index: number) =>
-                            element.FACTORY === factory &&
-                            machine==='FR+SR' ? (element?.EQ_NAME?.substring(0, 2) ==='FR' || element?.EQ_NAME?.substring(0, 2) ==='SR') : element?.EQ_NAME?.substring(0, 2) === machine &&
-                            ((onlyRunning === true &&
-                              element?.EQ_STATUS === "MASS") ||
-                              element?.EQ_STATUS === "SETTING" ||
-                              onlyRunning == false)
+                          (element: EQ_STT, index: number) => {
+                            let selected_eq_name: string = element?.EQ_NAME?.substring(0, 2) ?? 'ED';
+                            
+                            return (
+                              element.FACTORY === factory &&
+                                (machine === 'FR+SR' ? (selected_eq_name === 'FR' || selected_eq_name === 'SR') : selected_eq_name === machine) &&
+                              ((onlyRunning === true &&
+                                element?.EQ_STATUS === "MASS" ||
+                                element?.EQ_STATUS === "SETTING") ||
+                                onlyRunning === false)
+                            )
+                          }
                         )
                         .map((element: EQ_STT, index: number) => {
                           if (autoChange) {
@@ -286,9 +279,9 @@ const EQ_STATUS = () => {
                                 upd_time={element.UPD_DATE}
                                 upd_empl={element.UPD_EMPL}
                                 machine_data={element}
-                                onClick={() => {}}
-                                onMouseEnter={() => {}}
-                                onMouseLeave={() => {}}
+                                onClick={() => { }}
+                                onMouseEnter={() => { }}
+                                onMouseLeave={() => { }}
                               />
                             );
                           } else {
@@ -313,9 +306,9 @@ const EQ_STATUS = () => {
                                     upd_time={element.UPD_DATE}
                                     upd_empl={element.UPD_EMPL}
                                     machine_data={element}
-                                    onClick={() => {}}
-                                    onMouseEnter={() => {}}
-                                    onMouseLeave={() => {}}
+                                    onClick={() => { }}
+                                    onMouseEnter={() => { }}
+                                    onMouseLeave={() => { }}
                                   />
                                 );
                               } else {
@@ -335,9 +328,9 @@ const EQ_STATUS = () => {
                                   upd_time={element.UPD_DATE}
                                   upd_empl={element.UPD_EMPL}
                                   machine_data={element}
-                                  onClick={() => {}}
-                                  onMouseEnter={() => {}}
-                                  onMouseLeave={() => {}}
+                                  onClick={() => { }}
+                                  onMouseEnter={() => { }}
+                                  onMouseLeave={() => { }}
                                 />
                               );
                             }

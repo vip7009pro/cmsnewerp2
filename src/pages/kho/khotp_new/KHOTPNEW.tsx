@@ -82,6 +82,7 @@ const KHOTPNEW = () => {
   const [prod_type, setProdType] = useState("ALL");
   const [selectedRows, setSelectedRows] = useState<KTP_IN>();
   const [buttonselected, setbuttonselected] = useState("GR");
+  const [trigger, setTrigger] = useState(false);
 
   const ktp_in_fields: any = [
     {
@@ -465,6 +466,21 @@ const KHOTPNEW = () => {
       caption: "FACTORY",
       width: 80,
       dataField: "FACTORY",
+      allowSorting: true,
+      allowFiltering: true,
+      dataType: "string",
+      summaryType: "count",
+      format: "fixedPoint",
+      headerFilter: {
+        allowSearch: true,
+        height: 500,
+        width: 300,
+      },
+    },
+    {
+      caption: "PO_NO",
+      width: 80,
+      dataField: "PO_NO",
       allowSorting: true,
       allowFiltering: true,
       dataType: "string",
@@ -1187,7 +1203,7 @@ const KHOTPNEW = () => {
         </CustomResponsiveContainer>
       </div>
     ),
-    [khotpinputdatatable],
+    [khotpinputdatatable, selectedDataSource],
   );
   const KHOTP_OUTPUT = React.useMemo(
     () => (
@@ -1287,7 +1303,7 @@ const KHOTPNEW = () => {
         </CustomResponsiveContainer>
       </div>
     ),
-    [khotpoutputdatatable],
+    [khotpoutputdatatable, selectedDataSource],
   );
   const KHOTP_STOCKG_CODE = React.useMemo(
     () => (
@@ -1372,7 +1388,7 @@ const KHOTPNEW = () => {
         </CustomResponsiveContainer>
       </div>
     ),
-    [tonktp_gcode],
+    [tonktp_gcode, selectedDataSource],
   );
   const KHOTP_STOCKG_NAME_KD = React.useMemo(
     () => (
@@ -1457,7 +1473,7 @@ const KHOTPNEW = () => {
         </CustomResponsiveContainer>
       </div>
     ),
-    [tonktp_gnamekd],
+    [tonktp_gnamekd,selectedDataSource],
   );
   const KHOTP_STOCK_YCSX = React.useMemo(
     () => (
@@ -1542,7 +1558,7 @@ const KHOTPNEW = () => {
         </CustomResponsiveContainer>
       </div>
     ),
-    [tonktp_prod_request_no],
+    [tonktp_prod_request_no, selectedDataSource],
   );
 
   const filterOptions1 = createFilterOptions({
@@ -1753,6 +1769,7 @@ const KHOTPNEW = () => {
                     loadSTOCK_YCSX();
                     break;
                 }
+                setTrigger(!trigger);
               }}
             >
               Search

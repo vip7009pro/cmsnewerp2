@@ -24,7 +24,7 @@ import AccountInfo from "../../components/Navbar/AccountInfo/AccountInfo";
 import styled from "@emotion/styled";
 import { Draggable } from "devextreme-react";
 import Cookies from "universal-cookie";
-export const current_ver: number = 247;
+export const current_ver: number = 250;
 interface ELE_ARRAY {
   REACT_ELE: ReactElement;
   ELE_NAME: string;
@@ -166,9 +166,9 @@ function Home() {
         {/* <PrimarySearchAppBar /> */}
       </div>
       <div className='homeContainer'>
-        <div className='sidebardiv'>
+        {/* <div className='sidebardiv'>
           <Sidebar />
-        </div>
+        </div> */}
         
         <div className='outletdiv'>
           <animated.div
@@ -251,7 +251,7 @@ function Home() {
                       className='component_element'
                       style={{                        
                         visibility: index === tabIndex ? "visible" : "hidden",
-                        width: sidebarStatus ? "87%" : "100%",
+                        width: sidebarStatus ? "100%" : "100%",
                       }}
                     >
                       {ele.REACT_ELE}
