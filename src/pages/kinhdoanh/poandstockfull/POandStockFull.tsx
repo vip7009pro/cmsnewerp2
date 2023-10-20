@@ -723,7 +723,7 @@ const POandStockFull = () => {
       {selection.testinvoicetable && (
         <div className="inspection">
           {getCompany() === "CMS" && <KHOTP />}
-          {getCompany() === "PVN" && <KHOTPNEW />}
+          {getCompany() !== "CMS" && <KHOTPNEW />}
         </div>
       )}
       {selection.kholieu && (

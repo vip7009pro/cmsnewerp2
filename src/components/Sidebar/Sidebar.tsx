@@ -628,7 +628,7 @@ const Sidebar = () => {
                 height={20.35}
               />
             )}
-            {company === "PVN" && (
+            {company !== "CMS" && (
               <img
                 alt="logo"
                 src="/logopvn_big.png"

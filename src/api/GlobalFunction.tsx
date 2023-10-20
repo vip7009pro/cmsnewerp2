@@ -127,7 +127,7 @@ export async function checkBP(
       if (
         userData.EMPL_NO === "NHU1903" ||
         userData.EMPL_NO === "NVD1201" ||
-        (getCompany() === "PVN" &&
+        (getCompany() !== "CMS" &&
           (userData.EMPL_NO === "DSL1986" ||
             userData.EMPL_NO === "NTD1983" ||
             userData.EMPL_NO === "LTH1992"))

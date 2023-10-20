@@ -336,7 +336,7 @@ const CHITHI_COMPONENT = ({ DATA }: { DATA: QLSXPLANDATA }) => {
             {company === "CMS" && (
               <img alt="logo" src="/logocmsvina.png" width={160} height={40} />
             )}
-            {company === "PVN" && (
+            {company !== "CMS" && (
               <img alt="logo" src="/logopvn_big.png" width={160} height={40} />
             )}
             <Barcode
@@ -418,7 +418,7 @@ const CHITHI_COMPONENT = ({ DATA }: { DATA: QLSXPLANDATA }) => {
                     <td>Mã sản phẩm/제품코드</td>
                     <td>
                       {request_codeinfo[0]?.G_CODE}
-                      {company === "PVN"
+                      {company !== "CMS"
                         ? "/" + request_codeinfo[0]?.G_NAME_KD
                         : ""}{" "}
                     </td>

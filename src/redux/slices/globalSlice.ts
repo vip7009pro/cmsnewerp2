@@ -14,7 +14,7 @@ const startCPN: string = "CMS";
 const socket = io(
   startCPN === "CMS"
     ? "http://14.160.33.94:3006"
-    : startCPN === "PVN"
+    : startCPN !== "CMS"
     ? "http://222.252.1.63:3005"
     : ""
 );
@@ -61,7 +61,7 @@ if (server_ip_local !== undefined) {
     "server_ip",
     startCPN === "CMS"
       ? "http://14.160.33.94:5013"
-      : startCPN === "PVN"
+      : startCPN !== "CMS"
       ? "http://222.252.1.63:3007"
       : ""
   );
@@ -123,7 +123,7 @@ const initialState: GlobalInterface = {
   server_ip:
     startCPN === "CMS"
       ? "http://14.160.33.94:5013"
-      : startCPN === "PVN"
+      : startCPN !== "CMS"
       ? "http://222.252.1.63:3007"
       : "",
   tabs: [],

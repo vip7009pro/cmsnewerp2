@@ -1327,7 +1327,7 @@ const BOM_MANAGER = () => {
     let abc: CODE_FULL_INFO = codefullinfo;
     let result: boolean = true;
 
-    if (company === "PVN" && userData?.MAINDEPTNAME === "KD") {     
+    if (company !== "CMS" && userData?.MAINDEPTNAME === "KD") {     
       result = true;
     } else {      
       for (const [k, v] of Object.entries(abc)) {
@@ -2793,7 +2793,7 @@ const BOM_MANAGER = () => {
                         }
                         onChange={(e) => {
                           //handleSetCodeInfo("CUST_CD", e.target.value);
-                          if (company === "PVN") {
+                          if (company !== "CMS") {
                             autogenerateCodeKH(e.target.value);
                           } else {
                             handleSetCodeInfo("CUST_CD", e.target.value);

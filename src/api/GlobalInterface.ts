@@ -47,6 +47,20 @@ export interface CodeListData {
   USE_YN: string;
   PO_BALANCE?: number;
 }
+export interface XUATKHOPODATA {
+  CUST_CD: string,
+  CUST_NAME_KD: string,
+  G_CODE: string,
+  G_NAME_KD: string,
+  G_NAME: string,
+  OUT_DATE: string,
+  PO_NO: string,
+  PO_QTY: string,
+  DELIVERY_QTY: string,
+  PO_BALANCE: string,
+  THISDAY_OUT_QTY: string,
+  CHECKSTATUS: string,
+}
 export interface CodeListDataUpGia {
   G_CODE: string;
   G_NAME: string;
@@ -2777,6 +2791,9 @@ export interface RunningPOData {
   RUNNING_PO_QTY: number;
   RUNNING_DEL_QTY: number;
   RUNNING_PO_BALANCE: number;
+  RUNNING_PO_AMOUNT: number;
+  RUNNING_DEL_AMOUNT: number;
+  RUNNING_BALANCE_AMOUNT: number;
 }
 export interface MonthlyClosingData {
   MONTH_NUM: string;
@@ -2826,6 +2843,7 @@ export interface WeekLyPOData {
   PO_WEEK: number;
   YEAR_WEEK: string;
   WEEKLY_PO_QTY: number;
+  WEEKLY_PO_AMOUNT: number;
 }
 export interface DailyPPMData {
   INSPECT_DATE?: string;

@@ -657,7 +657,7 @@ export default function Navbar() {
                   height={27.13333}
                 />
               )}
-              {company === "PVN" && (
+              {company !== "CMS" && (
                 <img
                   alt="pvn logo"
                   src="/logopvn_big.png"

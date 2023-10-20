@@ -15,6 +15,8 @@ import Widget from "../../../components/Widget/Widget";
 import "./KinhDoanhReport.scss";
 import ChartDaily from "../../../components/Chart/Chart2";
 import ChartPOBalance from "../../../components/Chart/Chart4";
+import CustomerDailyClosing from "../../../components/DataTable/CustomerDailyClosing";
+import CustomerWeeklyClosing from "../../../components/DataTable/CustomerWeeklyClosing";
 interface InvoiceTableData {
   DELIVERY_ID: number;
   CUST_CD: string;
@@ -534,6 +536,7 @@ const KinhDoanhReport = () => {
               <ChartYearly />
             </div>
           </div>
+          
           <div className="monthlyweeklygraph">
             <div className="dailygraph">
               <span className="subsection">TOP 5 Customer Weekly Revenue</span>
@@ -543,6 +546,16 @@ const KinhDoanhReport = () => {
               <span className="subsection">PIC Weekly Revenue</span>
               <ChartPICRevenue />
             </div>
+          </div>
+          <div className="monthlyweeklygraph">
+            <div className="dailygraph">
+              <span className="subsection">Customer Daily Closing</span>
+              <CustomerDailyClosing/> 
+            </div> 
+            <div className="dailygraph">
+              <span className="subsection">Customer Weekly Closing</span>
+              <CustomerWeeklyClosing/> 
+            </div> 
           </div>
           <br></br>
           <hr></hr>
@@ -567,7 +580,7 @@ const KinhDoanhReport = () => {
             </div>
             <div className="dailygraph">
               <span className="subsection">Delivery By Week</span>
-              <ChartWeekLyDelivery />
+              <ChartWeekLy />
             </div>
           </div>
           <div className="monthlyweeklygraph">

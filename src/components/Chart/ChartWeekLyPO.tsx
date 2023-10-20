@@ -15,7 +15,7 @@ import {
 } from "recharts";
 import Swal from "sweetalert2";
 import { generalQuery } from "../../api/Api";
-import { CustomResponsiveContainer } from "../../api/GlobalFunction";
+import { CustomResponsiveContainer, nFormatter } from "../../api/GlobalFunction";
 import { WeekLyPOData } from "../../api/GlobalInterface";
 
 const ChartWeeklyPO = () => {
@@ -29,6 +29,22 @@ const ChartWeeklyPO = () => {
       notation: "compact",
       compactDisplay: "short",
     }).format(value);
+  };
+  const CustomLabel = (props:any) => {
+    //console.log(props);
+    return (
+      <g>
+        <rect
+          x={props.viewBox.x}
+          y={props.viewBox.y}
+          fill="#aaa" 
+          style={{transform:`rotate(90deg)`}}
+        />
+        <text x={props.viewBox.x} y={props.viewBox.y} fill="#000000" dy={20} dx={15} fontSize={'0.7rem'} fontWeight={'bold'}>
+          {formatCash(props.value)}
+        </text>
+      </g>
+    );
   };
   const CustomTooltip = ({
     active,
@@ -51,7 +67,10 @@ const ChartWeeklyPO = () => {
         >
           <p>{label}:</p>
           <p className='label'>
-            QTY: {`${payload[0].value.toLocaleString("en-US")}`} EA
+            AMOUNT: {`${payload[0].value.toLocaleString("en-US")}`} USD
+          </p>
+          <p className='label'>
+            QTY: {`${payload[1].value.toLocaleString("en-US")}`} EA
           </p>
         </div>
       );
@@ -97,17 +116,19 @@ const ChartWeeklyPO = () => {
       >
         {" "}
         <CartesianGrid strokeDasharray='3 3' className='chartGrid' />
-        <XAxis dataKey='YEAR_WEEK'>
-          {" "}
-          <Label value='Tuần' offset={0} position='insideBottom' />
+        <XAxis dataKey='YEAR_WEEK'  height={40} tick={{fontSize:'0.7rem'}}>          
+          <Label value='Tuần' offset={0} position='insideBottom' style={{fontWeight:'normal', fontSize:'0.7rem'}}  />
         </XAxis>
         <YAxis
+          width={50}
           yAxisId='left-axis'
           label={{
             value: "Số lượng",
             angle: -90,
             position: "insideLeft",
+            fontSize:'0.7rem' 
           }}
+          tick={{fontSize:'0.7rem'}}
           tickFormatter={(value) =>
             new Intl.NumberFormat("en", {
               notation: "compact",
@@ -116,16 +137,45 @@ const ChartWeeklyPO = () => {
           }
           tickCount={12}
         />
+        <YAxis
+          yAxisId='right-axis'
+          orientation='right'
+          label={{
+            value: "Số tiền",
+            angle: -90,
+            position: "insideRight",
+            fontSize:'0.7rem'    
+          }}
+          tick={{fontSize:'0.7rem'}}
+          tickFormatter={(value) => nFormatter(value, 2) + "$"}
+          tickCount={12}
+        />
         <Tooltip content={<CustomTooltip />} />
-        <Legend />
+        <Legend 
+        verticalAlign="top"
+        align="center"
+        iconSize={15}
+        iconType="diamond"
+        formatter={(value, entry) => (
+          <span style={{fontSize:'0.7rem', fontWeight:'bold'}}>{value}</span>
+        )}
+        />       
         <Bar
+          yAxisId='right-axis'
+          type='monotone'
+          dataKey='WEEKLY_PO_AMOUNT'
+          stroke='white'
+          fill='#f0d850'        
+          label={CustomLabel}
+        ></Bar>
+         <Line
           yAxisId='left-axis'
           type='monotone'
           dataKey='WEEKLY_PO_QTY'
-          stroke='white'
-          fill='#bb99ff'
+          stroke='green'
+          fill='#ff0000'
           label={{ position: "top", formatter: labelFormatter }}
-        ></Bar>
+        ></Line>
       </ComposedChart>
     </CustomResponsiveContainer>
   );

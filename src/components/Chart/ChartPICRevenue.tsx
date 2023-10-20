@@ -188,7 +188,16 @@ const ChartPICRevenue = () => {
     <CustomResponsiveContainer>
       <PieChart width={500} height={400}>
         <Tooltip content={<CustomTooltip />} />
-        <Legend />
+        <Legend 
+        verticalAlign="top"
+        align="center"
+        iconSize={15}
+        iconType="diamond"
+        formatter={(value, entry) => (
+          <span style={{fontSize:'0.7rem', fontWeight:'bold'}}>{value}</span>
+        )}
+        height={10}
+        />
         <Pie
           dataKey='DELIVERY_AMOUNT'
           nameKey='EMPL_NAME'

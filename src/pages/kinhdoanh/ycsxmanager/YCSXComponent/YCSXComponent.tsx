@@ -303,7 +303,7 @@ const YCSXComponent = ({ DATA }: { DATA: YCSXTableData }) => {
           {company === "CMS" && (
             <img alt="logo" src="/logocmsvina.png" width={160} height={40} />
           )}
-          {company === "PVN" && (
+          {company !== "CMS" && (
             <img alt="logo" src="/logopvn_big.png" width={160} height={80} />
           )}
           <div className="title">

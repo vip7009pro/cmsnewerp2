@@ -2373,7 +2373,7 @@ const PoManager = () => {
                         newValue: CustomerListData | any
                       ) => {
                         (async () => {
-                          if (company === "PVN") {
+                          if (company !== "CMS") {
                             setNewPoNo(
                               await autogeneratePO_NO(newValue.CUST_CD)
                             );

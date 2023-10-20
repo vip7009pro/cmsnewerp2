@@ -41,6 +41,7 @@ import {
   InvoiceSummaryData,
   InvoiceTableData,
   UserData,
+  XUATKHOPODATA,
 } from "../../../api/GlobalInterface";
 import {
   Column,
@@ -69,6 +70,7 @@ const InvoiceManager = () => {
     them1po: false,
     them1invoice: false,
     testinvoicetable: false,
+    checkkho: false
   });
   const userData: UserData | undefined = useSelector(
     (state: RootState) => state.totalSlice.userData,
@@ -123,6 +125,8 @@ const InvoiceManager = () => {
   const [selectedID, setSelectedID] = useState<number | null>();
   const [showhidePivotTable, setShowHidePivotTable] = useState(false);
   const [trigger, setTrigger] = useState(true);
+  const [xuatkhopotable, setXuatKhoPOTable] = useState<XUATKHOPODATA[]>([])
+  const [selectedxuatkhopo, setSelectedXuatKhoPo] = useState<XUATKHOPODATA[]>([])
   const handleSearchCodeKeyDown = (
     e: React.KeyboardEvent<HTMLInputElement>,
   ) => {
@@ -555,6 +559,71 @@ const InvoiceManager = () => {
     Swal.fire("Thông báo", "Đã hoàn thành thêm Invoice hàng loạt", "success");
     setUploadExcelJSon(tempjson);
   };
+
+  const handle_upInvoiceXKHL = async ()=> {
+    if(selectedxuatkhopo.length >0)
+    {
+      for(let i=0;i<selectedxuatkhopo.length; i++)
+      {
+        if(selectedxuatkhopo[i].CHECKSTATUS.substring(0,2)==='OK')
+        {
+          await generalQuery("insert_invoice", {
+            DELIVERY_QTY: selectedxuatkhopo[i].THISDAY_OUT_QTY,
+            DELIVERY_DATE: selectedxuatkhopo[i].OUT_DATE,
+            REMARK: "",
+            G_CODE: selectedxuatkhopo[i].G_CODE,
+            CUST_CD: selectedxuatkhopo[i].CUST_CD,
+            PO_NO: selectedxuatkhopo[i].PO_NO,
+            EMPL_NO: userData?.EMPL_NO,
+            INVOICE_NO: "",
+          })
+          .then((response) => {
+            console.log(response.data.tk_status);
+            if (response.data.tk_status !== "NG") {
+              
+            } else {
+              
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+        }
+        
+
+      }
+      loadXuatKho();
+    }
+    else
+    {
+      Swal.fire('Cảnh báo','Chọn ít nhất 1 dòng để thực hiện','error');
+    }
+  }
+  const loadXuatKho = ()=> {
+    generalQuery("loadxuatkhopo", {
+     OUT_DATE: moment.utc(newinvoicedate).format('YYYYMMDD')
+    })
+      .then((response) => {
+        console.log(response.data.tk_status);
+        if (response.data.tk_status !== "NG") {
+          const loadeddata: XUATKHOPODATA[] = response.data.data.map(
+            (element: XUATKHOPODATA, index: number) => {
+              return {
+                ...element,
+                OUT_DATE: moment.utc(element.OUT_DATE).format('YYYY-MM-DD'),
+                id: index
+              };
+            }
+          );
+          setXuatKhoPOTable(loadeddata);         
+        } else {
+          setXuatKhoPOTable([]);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
   const confirmUpInvoiceHangLoat = () => {
     Swal.fire({
       title: "Chắc chắn muốn thêm Invoice hàng loạt ?",
@@ -568,6 +637,22 @@ const InvoiceManager = () => {
       if (result.isConfirmed) {
         Swal.fire("Tiến hành thêm", "Đang thêm Invoice hàng loạt", "success");
         handle_upInvoiceHangLoat();
+      }
+    });
+  };
+  const confirmUpInvoiceHangLoat2 = () => {
+    Swal.fire({
+      title: "Chắc chắn muốn thêm Invoice hàng loạt ?",
+      text: "Thêm rồi mà sai, sửa là hơi vất đấy",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Vẫn thêm!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        Swal.fire("Tiến hành thêm", "Đang thêm Invoice hàng loạt", "success");
+        handle_upInvoiceXKHL();
       }
     });
   };
@@ -622,6 +707,7 @@ const InvoiceManager = () => {
         them1po: false,
         them1invoice: false,
         testinvoicetable: false,
+        checkkho: false
       });
     } else if (choose === 2) {
       setSelection({
@@ -631,6 +717,7 @@ const InvoiceManager = () => {
         them1po: false,
         them1invoice: false,
         testinvoicetable: false,
+        checkkho: false
       });
     } else if (choose === 3) {
       setSelection({
@@ -639,7 +726,8 @@ const InvoiceManager = () => {
         thempohangloat: false,
         them1po: false,
         them1invoice: false,
-        testinvoicetable: true,
+        testinvoicetable: false,
+        checkkho: true
       });
     }
   };
@@ -1558,6 +1646,103 @@ const InvoiceManager = () => {
     ),
     [uploadExcelJson, columnsExcel, trigger]
   );
+  const xuatkhoPOTable = React.useMemo(
+    () => (
+      <div className='datatb'>
+        <CustomResponsiveContainer>
+          <DataGrid
+            autoNavigateToFocusedRow={true}
+            allowColumnReordering={true}
+            allowColumnResizing={true}
+            columnAutoWidth={false}
+            cellHintEnabled={true}
+            columnResizingMode={"widget"}
+            showColumnLines={true}
+            dataSource={xuatkhopotable}
+            columnWidth='auto'
+            keyExpr='id'
+            height={"75vh"}
+            showBorders={true}
+            onSelectionChanged={(e) => { 
+              console.log(e.selectedRowsData)
+              setSelectedXuatKhoPo(e.selectedRowsData);
+            }}
+            onRowClick={(e) => {
+              //console.log(e.data);
+            }}
+          >
+            <Scrolling
+              useNative={true}
+              scrollByContent={true}
+              scrollByThumb={true}
+              showScrollbar='onHover'
+              mode='virtual'
+            />
+            <Selection mode='multiple' selectAllMode='allPages' />
+            <Editing
+              allowUpdating={false}
+              allowAdding={true}
+              allowDeleting={false}
+              mode='batch'
+              confirmDelete={true}
+              onChangesChange={(e) => { }}
+            />
+            <Export enabled={true} />
+            <Toolbar disabled={false}>
+              <Item location='before'>
+                <IconButton
+                  className='buttonIcon'
+                  onClick={() => {
+                    SaveExcel(uploadExcelJson, "MaterialStatus");
+                  }}
+                >
+                  <AiFillFileExcel color='green' size={25} />
+                  SAVE
+                </IconButton>
+                <IconButton
+                  className='buttonIcon'
+                  onClick={() => {
+                    setShowHidePivotTable(!showhidePivotTable);
+                  }}
+                >
+                  <MdOutlinePivotTableChart color='#ff33bb' size={25} />
+                  Pivot
+                </IconButton>
+              </Item>
+              <Item name='searchPanel' />
+              <Item name='exportButton' />
+              <Item name='columnChooser' />
+            </Toolbar>
+            <FilterRow visible={true} />
+            <SearchPanel visible={true} />
+            <ColumnChooser enabled={true} />
+            <Paging defaultPageSize={15} />
+            <Pager
+              showPageSizeSelector={true}
+              allowedPageSizes={[5, 10, 15, 20, 100, 1000, 10000, "all"]}
+              showNavigationButtons={true}
+              showInfo={true}
+              infoText='Page #{0}. Total: {1} ({2} items)'
+              displayMode='compact'
+            />
+            {columnsExcel.map((column, index) => {
+              //console.log(column);
+              return <Column key={index} {...column}></Column>;
+            })}
+            <Summary>
+              <TotalItem
+                alignment='right'
+                column='PO_ID'
+                summaryType='count'
+                valueFormat={"decimal"}
+              />
+            </Summary>
+          </DataGrid>
+        </CustomResponsiveContainer>
+      </div>
+    ),
+    [xuatkhopotable, trigger]
+  );
   useEffect(() => {
     getcustomerlist();
     getcodelist("");
@@ -1592,6 +1777,24 @@ const InvoiceManager = () => {
           }}
         >
           <span className="mininavtext">Thêm Invoice</span>
+        </div>
+        <div
+          className="mininavitem"
+          onClick={() =>
+            /* checkBP(userData?.EMPL_NO, userData?.MAINDEPTNAME, ["KD"], () => {
+              setNav(2);
+            }) */
+            checkBP(userData, ["KD"], ["ALL"], ["ALL"], () => {
+              setNav(3);
+            })
+          }
+          style={{
+            backgroundColor:
+              selection.checkkho === true ? "#02c712" : "#abc9ae",
+            color: selection.checkkho === true ? "yellow" : "yellow",
+          }}
+        >
+          <span className="mininavtext">Check Xuất Kho</span>
         </div>
       </div>
       {selection.thempohangloat && (
@@ -2091,6 +2294,52 @@ const InvoiceManager = () => {
           <PivotTable datasource={dataSource} tableID="invoicetablepivot" />
         </div>
       )}
+      {
+        selection.checkkho && (
+          <div className="newinvoice">
+          <div className="batchnewinvoice">
+            <h3>Check Giao Hàng Theo PO</h3>
+            <form className="formupload">
+                <label>
+                  <b>DATE:</b>{" "}
+                  <input
+                    onKeyDown={(e) => {
+                      
+                    }}
+                    className="inputdata"
+                    type="date"
+                    value={newinvoicedate.slice(0, 10)}
+                    onChange={(e) => setNewInvoiceDate(e.target.value)}
+                  ></input>
+                </label>  
+              <div
+                className="checkpobutton"
+                onClick={(e) => {
+                  e.preventDefault();
+                  loadXuatKho();
+                }}
+              >
+                Load Xuất Kho
+              </div>
+              <div
+                className="uppobutton"
+                onClick={(e) => {
+                  e.preventDefault();
+                  confirmUpInvoiceHangLoat2();
+                }}
+              >
+                Up Invoice XK
+              </div>
+            </form>
+            <div className="insertInvoiceTable">
+              {xuatkhoPOTable} 
+            </div>
+          </div>
+        </div>
+        )
+      }
+
+
     </div>
   );
 };

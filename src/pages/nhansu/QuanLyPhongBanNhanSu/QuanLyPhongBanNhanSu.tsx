@@ -967,7 +967,7 @@ const QuanLyPhongBanNhanSu = () => {
                 <button
                   className='thembutton'
                   onClick={() => {
-                    if (getCompany() === "PVN") {
+                    if (getCompany() !== "CMS") {
                       checkBP(
                         userData,
                         ["NHANSU"],
@@ -985,7 +985,7 @@ const QuanLyPhongBanNhanSu = () => {
                 <button
                   className='suabutton'
                   onClick={() => {
-                    if (getCompany() === "PVN") {
+                    if (getCompany() !== "CMS") {
                       checkBP(
                         userData,
                         ["NHANSU"],
@@ -1003,7 +1003,7 @@ const QuanLyPhongBanNhanSu = () => {
                 <button
                   className='xoabutton'
                   onClick={() => {
-                    if (getCompany() === "PVN") {
+                    if (getCompany() !== "CMS") {
                       checkBP(
                         userData,
                         ["NHANSU"],
@@ -1068,7 +1068,7 @@ const QuanLyPhongBanNhanSu = () => {
                 <button
                   className='thembutton'
                   onClick={() => {
-                    if (getCompany() === "PVN") {
+                    if (getCompany() !== "CMS") {
                       checkBP(
                         userData,
                         ["NHANSU"],
@@ -1086,7 +1086,7 @@ const QuanLyPhongBanNhanSu = () => {
                 <button
                   className='suabutton'
                   onClick={() => {
-                    if (getCompany() === "PVN") {
+                    if (getCompany() !== "CMS") {
                       checkBP(
                         userData,
                         ["NHANSU"],
@@ -1104,7 +1104,7 @@ const QuanLyPhongBanNhanSu = () => {
                 <button
                   className='xoabutton'
                   onClick={() => {
-                    if (getCompany() === "PVN") {
+                    if (getCompany() !== "CMS") {
                       checkBP(
                         userData,
                         ["NHANSU"],
@@ -1178,7 +1178,7 @@ const QuanLyPhongBanNhanSu = () => {
                 <button
                   className='thembutton'
                   onClick={() => {
-                    if (getCompany() === "PVN") {
+                    if (getCompany() !== "CMS") {
                       checkBP(
                         userData,
                         ["NHANSU"],
@@ -1196,7 +1196,7 @@ const QuanLyPhongBanNhanSu = () => {
                 <button
                   className='suabutton'
                   onClick={() => {
-                    if (getCompany() === "PVN") {
+                    if (getCompany() !== "CMS") {
                       checkBP(
                         userData,
                         ["NHANSU"],
@@ -1214,7 +1214,7 @@ const QuanLyPhongBanNhanSu = () => {
                 <button
                   className='xoabutton'
                   onClick={() => {
-                    if (getCompany() === "PVN") {
+                    if (getCompany() !== "CMS") {
                       checkBP(
                         userData,
                         ["NHANSU"],
@@ -1506,7 +1506,7 @@ const QuanLyPhongBanNhanSu = () => {
                   <button
                     className='thembutton'
                     onClick={() => {
-                      if (getCompany() === "PVN") {
+                      if (getCompany() !== "CMS") {
                         checkBP(
                           userData,
                           ["NHANSU"],
@@ -1524,7 +1524,7 @@ const QuanLyPhongBanNhanSu = () => {
                   <button
                     className='suabutton'
                     onClick={() => {
-                      if (getCompany() === "PVN") {
+                      if (getCompany() !== "CMS") {
                         checkBP(
                           userData,
                           ["NHANSU"],
@@ -1542,7 +1542,7 @@ const QuanLyPhongBanNhanSu = () => {
                   <button
                     className='xoabutton'
                     onClick={() => {
-                      if (getCompany() === "PVN") {
+                      if (getCompany() !== "CMS") {
                         checkBP(
                           userData,
                           ["NHANSU"],

@@ -128,24 +128,24 @@ const QuotationForm = ({
       <div className="header">
         <div className="companyinfo">
           <div className="companyname">
-            {company === "PVN" ? "CÔNG TY CỔ PHẦN PVN" : "CÔNG TY TNHH CMS"}{" "}
+            {company !== "CMS" ? "CÔNG TY CỔ PHẦN PVN" : "CÔNG TY TNHH CMS"}{" "}
           </div>
           <div className="diachi">
-            {company === "PVN"
+            {company !== "CMS"
               ? "Địa chỉ: Lô 44D, KCN Quang Minh, TT Chi Đông, Huyện Mê Linh, TP Hà Nội"
               : "Lô 10A, KCN Quang Minh, TT Quang Minh, Mê Linh, Hà Nội"}
           </div>
           <div className="mstsdt">
             <div className="mst">
-              MST:{company === "PVN" ? "1001007955" : "1900100 có"}
+              MST:{company !== "CMS" ? "1001007955" : "1900100 có"}
             </div>
             <div className="sdt">
-              Tel : {company === "PVN" ? "0973898913/0985657186" : "1900100 có"}
+              Tel : {company !== "CMS" ? "0973898913/0985657186" : "1900100 có"}
             </div>
           </div>
           <div className="email">
             Email:{" "}
-            {company === "PVN"
+            {company !== "CMS"
               ? "print.vietnam.ld@gmail.com"
               : "cms4285@gmail.com"}{" "}
           </div>
@@ -159,7 +159,7 @@ const QuotationForm = ({
           </div>
         </div>
         <div className="companylogo">
-          {company === "PVN" && (
+          {company !== "CMS" && (
             <img
               alt="cmsvina logo"
               src="/logopvn_big.png"
@@ -313,7 +313,7 @@ const QuotationForm = ({
       <div className="approval">
         <div className="kyduyet">
           KÝ DUYỆT
-          {company === "PVN" && (
+          {company !== "CMS" && (
             <img
               alt="cmsvina logo"
               src="/chukystamp.png"

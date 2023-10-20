@@ -115,7 +115,7 @@ const Login = () => {
               height={50}
             />
           )}
-          {company === "PVN" && (
+          {company !== "CMS" && (
             <img
               alt="cmsvina logo"
               src="/logopvn_big.png"
@@ -176,7 +176,7 @@ const Login = () => {
               {company === "CMS" && (
                 <option value={"http://192.168.1.192:5013"}>LAN_SERVER</option>
               )}
-              {company === "PVN" && (
+              {company !== "CMS" && (
                 <option value={"http://222.252.1.63:3007"}>PUBLIC_PVN</option>
               )}
               {/* {company === 'PVN' && <option value={"http://192.168.100.120:3007"}>LOCAL_PVN</option>} */}
