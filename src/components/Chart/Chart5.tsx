@@ -163,7 +163,7 @@ const ChartMonthLy = () => {
           iconSize={15}
           iconType="diamond"
           formatter={(value, entry) => (
-            <span style={{ fontSize: '0.7rem', fontWeight: 'bold' }}>{value}</span>
+            <span style={{ fontSize: '0.7rem', fontWeight: 'bold', color:'black' }}>{value}</span>
           )}
         />
         <Line
@@ -177,7 +177,7 @@ const ChartMonthLy = () => {
           type='monotone'
           dataKey='DELIVERED_AMOUNT'
           stroke='#196619'
-          fill='#33cc33'
+          fill='#f1eda7'
           label={CustomLabel}
         ></Bar>
       </ComposedChart>

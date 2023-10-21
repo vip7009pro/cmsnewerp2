@@ -1237,6 +1237,64 @@ const PLAN_DATATB = () => {
       }
     });
   };
+  const handleConfirmDeletePlan = () => {
+    Swal.fire({
+      title: "Chắc chắn muốn xóa plan đã chọn ?",
+      text: "Sẽ bắt đầu xóa plan đã chọn",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Vẫn chuyển!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        Swal.fire("Tiến hành xóa PLAN", "Đang xóa plan", "success");       
+        checkBP(userData, ["QLSX"], ["ALL"], ["ALL"], handle_DeletePlan);        
+      }
+    });
+  };
+  const handle_DeletePlan = async ()=> {
+    Swal.fire({
+      title: "Xóa Plan",
+      text: "Đang xóa plan, hãy chờ một chút",
+      icon: "info",
+      showCancelButton: false,
+      allowOutsideClick: false,
+      confirmButtonText: "OK",
+      showConfirmButton: false,
+    });
+    let selectedPlanTable: QLSXPLANDATA[] = qlsxplandatafilter.current;
+
+    let err_code: string = "0";
+    for (let i = 0; i < selectedPlanTable.length; i++) { 
+      if (selectedPlanTable[i].XUATDAOFILM !=="V" && selectedPlanTable[i].MAIN_MATERIAL !=="V" && selectedPlanTable[i].INT_TEM !== "V" && selectedPlanTable[i].CHOTBC !=="V") {
+        await generalQuery("deletePlanQLSX", {
+          PLAN_ID: selectedPlanTable[i].PLAN_ID,          
+        })
+          .then((response) => {
+            //console.log(response.data.tk_status);
+            if (response.data.tk_status !== "NG") {
+            } else {
+              
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      } else {
+        err_code += `${selectedPlanTable[i].PLAN_ID}: Đã xuất dao,  liệu hoặc in tem hoặc chốt báo cáo, ko xóa được !`
+      }
+    }
+    if (err_code !== "0") {
+      Swal.fire("Thông báo", "Có lỗi !" + err_code, "error");
+    } else {
+      Swal.fire("Thông báo", "Xóa PLAN thành công", "success");
+      loadQLSXPlan(fromdate);
+    }
+
+
+
+  }
   const handleGetChiThiTable = async (
     PLAN_ID: string,
     G_CODE: string,
@@ -1791,7 +1849,7 @@ const PLAN_DATATB = () => {
       showConfirmButton: false,
     });
     let selectedPlanTable: QLSXPLANDATA[] = qlsxplandatafilter.current;
-    console.log(selectedPlanTable);
+    //console.log(selectedPlanTable);
     let err_code: string = "0";
     for (let i = 0; i < qlsxplandatafilter.current.length; i++) {
       let check_NEXT_PLAN_ID: boolean = true;
@@ -4212,17 +4270,14 @@ const PLAN_DATATB = () => {
                 >
                   MOVE PLAN
                 </button>
-                {/* <button
-                  className='tranhatky'
+                <button
+                  className='deleteplanbutton'
                   onClick={() => {
-                    console.log(" da xoa");
-                    //setSelectedRowKeys([]);
-                    clearSelection();
-                    //navigateToRow(26)
+                    handleConfirmDeletePlan();                                        
                   }}
                 >
-                  Reset selection
-                </button> */}
+                  DELETE PLAN
+                </button>                
               </div>
             </div>
           </div>

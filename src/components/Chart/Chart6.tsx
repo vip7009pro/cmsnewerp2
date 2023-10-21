@@ -177,7 +177,7 @@ const ChartYearly = () => {
           type='monotone'
           dataKey='DELIVERED_AMOUNT'
           stroke='#ff6666'
-          fill='#ff1a1a'
+          fill='#00c421'
           /* label={{ position: "top", formatter: labelFormatter }} */
           label={CustomLabel}
         ></Bar>

@@ -29,7 +29,7 @@ import {
 import { CustomResponsiveContainer } from "../../../../api/GlobalFunction";
 
 const CAPASX = () => {
-  const dailytime: number = 1200;
+  const dailytime: number = 900;
   const dailytime2: number = 900;
   const [trigger, setTrigger] = useState(true);
   const [selectedFactory, setSelectedFactory] = useState("NM1");
@@ -514,15 +514,16 @@ const CAPASX = () => {
       REALTIME_WF: ED_EMPL.NM1 + ED_EMPL.NM2,
     },
   ];
+  //console.log(ED_EMPL.TNM1 , ED_EMPL.TNM2)
   const dataSource_capa: any = [
     {
       EQ_NAME: "ED",
-      EQ_LEADTIME:
+      EQ_LEADTIME: //NM3 lam 1 ca
         ycsxbalance.filter(
           (ele: YCSX_BALANCE_CAPA_DATA, index: number) => ele.EQ_NAME === "ED"
         )[0]?.YCSX_BALANCE /
         Math.min(
-          ((ED_EMPL.NM1 + ED_EMPL.NM2) / 2) * dailytime,
+          ((ED_EMPL.NM1 + ED_EMPL.NM2/2) / 2) * dailytime,
           machinecount.filter(
             (ele: MACHINE_COUNTING, index: number) => ele.EQ_NAME === "ED"
           )[0]?.EQ_QTY * dailytime
@@ -532,11 +533,12 @@ const CAPASX = () => {
           (ele: YCSX_BALANCE_CAPA_DATA, index: number) => ele.EQ_NAME === "ED"
         )[0]?.YCSX_BALANCE /
         Math.min(
-          ((ED_EMPL.TNM1 + ED_EMPL.TNM2) / 2) * dailytime,
+          ((ED_EMPL.TNM1 + ED_EMPL.TNM2/2) / 2) * dailytime,
           machinecount.filter(
             (ele: MACHINE_COUNTING, index: number) => ele.EQ_NAME === "ED"
           )[0]?.EQ_QTY * dailytime
         ),
+      
     },
     {
       EQ_NAME: "DC",
@@ -1137,7 +1139,7 @@ const CAPASX = () => {
         <ValueAxis title='LeadTime (days)' />
         <Title
           text='PRODUCTION LEADTIME BY EQUIPMENT'
-          subtitle='YCSX BALANCE STANDARD'
+          subtitle='PO BALANCE STANDARD (STOCK EXCLUDED)'
         />
         <Series
           valueField='EQ_LEADTIME'
@@ -1322,17 +1324,7 @@ const CAPASX = () => {
           <option value='ED'>ED</option>
         </select> */}
           </div>
-          <div className='starndardworkforce'>{DeliveryLeadTimeMMFR}</div>
-          <div className='starndardworkforce'>{DeliveryLeadTimeMMED}</div>
-          {selectedFactory === "NM1" && (
-            <div className='starndardworkforce'>{DeliveryLeadTimeMMSR}</div>
-          )}
-          {selectedFactory === "NM1" && (
-            <div className='starndardworkforce'>{DeliveryLeadTimeMMDC}</div>
-          )}
-        </div>
-      </div>
-      <div className='ycsxbalancedatatable'>
+          <div className='ycsxbalancedatatable'>
         <table>
           <thead>
             <tr>
@@ -1388,7 +1380,7 @@ const CAPASX = () => {
                 }
               </td>
               {/* EQ QTY*/}
-              <td style={{ color: "#fc2df6", fontWeight: "normal" }}>1,260</td>
+              <td style={{ color: "#fc2df6", fontWeight: "normal" }}>{dailytime}</td>
               {/* DAILY TIME*/}
               <td style={{ color: "#fc2df6", fontWeight: "normal" }}>
                 {(
@@ -1506,7 +1498,7 @@ const CAPASX = () => {
                 }
               </td>
               {/* EQ QTY*/}
-              <td style={{ color: "#fc2df6", fontWeight: "normal" }}>1,260</td>
+              <td style={{ color: "#fc2df6", fontWeight: "normal" }}>{dailytime}</td>
               {/* DAILY TIME*/}
               <td style={{ color: "#fc2df6", fontWeight: "normal" }}>
                 {(
@@ -1624,7 +1616,7 @@ const CAPASX = () => {
                 }
               </td>
               {/* EQ QTY*/}
-              <td style={{ color: "#fc2df6", fontWeight: "normal" }}>1,260</td>
+              <td style={{ color: "#fc2df6", fontWeight: "normal" }}>{dailytime}</td>
               {/* DAILY TIME*/}
               <td style={{ color: "#fc2df6", fontWeight: "normal" }}>
                 {(
@@ -1742,7 +1734,7 @@ const CAPASX = () => {
                 }
               </td>
               {/* EQ QTY*/}
-              <td style={{ color: "#fc2df6", fontWeight: "normal" }}>1,260</td>
+              <td style={{ color: "#fc2df6", fontWeight: "normal" }}>{dailytime}</td>
               {/* DAILY TIME*/}
               <td style={{ color: "#fc2df6", fontWeight: "normal" }}>
                 {(
@@ -1851,7 +1843,19 @@ const CAPASX = () => {
             </tr>
           </tbody>
         </table>
+          </div>
+          <div className='starndardworkforce'>{DeliveryLeadTimeMMFR}</div>
+          <div className='starndardworkforce'>{DeliveryLeadTimeMMED}</div>
+          
+          {selectedFactory === "NM1" && (
+            <div className='starndardworkforce'>{DeliveryLeadTimeMMSR}</div>
+          )}
+          {selectedFactory === "NM1" && (
+            <div className='starndardworkforce'>{DeliveryLeadTimeMMDC}</div>
+          )}
+        </div>
       </div>
+   
     </div>
   );
 };

@@ -17,6 +17,7 @@ import ChartDaily from "../../../components/Chart/Chart2";
 import ChartPOBalance from "../../../components/Chart/Chart4";
 import CustomerDailyClosing from "../../../components/DataTable/CustomerDailyClosing";
 import CustomerWeeklyClosing from "../../../components/DataTable/CustomerWeeklyClosing";
+import CustomerPobalancebyTypeNew from "../../../components/DataTable/CustomerPoBalanceByTypeNew";
 interface InvoiceTableData {
   DELIVERY_ID: number;
   CUST_CD: string;
@@ -443,21 +444,10 @@ const KinhDoanhReport = () => {
   };
 
   useEffect(() => {
-    /* let now = moment();
-    let yesterday = moment().add(-1, "day").format("YYYY-MM-DD");
-    let sunday = now.clone().weekday(0).format("YYYY-MM-DD");
-    let monday = now.clone().weekday(6).format("YYYY-MM-DD");
-    const startOfMonth = moment().startOf("month").format("YYYY-MM-DD");
-    const endOfMonth = moment().endOf("month").format("YYYY-MM-DD");
-    const startOfYear = moment().format("YYYY-01-01");
-    const rightnow = now.format("YYYY-MM-DD"); */
-    //handletraInvoice("day", "this", yesterday, yesterday);
-    handleGetDailyClosing();
-    //handletraInvoice("week", "this", sunday, monday);
-    handleGetWeeklyClosing();
-    //handletraInvoice("month", "this", startOfMonth, endOfMonth);
-    handleGetMonthlyClosing();
-    //handletraInvoice("year", "this", startOfYear, rightnow);
+    
+    handleGetDailyClosing();    
+    handleGetWeeklyClosing();    
+    handleGetMonthlyClosing();    
     handleGetYearlyClosing();
     handleGetPOBalanceSummary();
     handleGetFCSTAmount();
@@ -594,7 +584,8 @@ const KinhDoanhReport = () => {
               <span className="subsection">
                 Customer PO Balance By Product Type
               </span>
-              <CustomerPOBalanceByType />
+              <CustomerPobalancebyTypeNew/>
+              {/* <CustomerPOBalanceByType /> */}
             </div>
           </div>
           <br></br>

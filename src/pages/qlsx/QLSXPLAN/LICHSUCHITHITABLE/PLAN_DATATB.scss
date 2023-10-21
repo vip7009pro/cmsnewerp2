@@ -55,6 +55,28 @@
             background-color: #bd4dc7;
           }
         }
+        .deleteplanbutton {
+          font-weight: bold;
+          padding-left: 5px;
+          padding-right: 5px;
+          height: 30px;
+          background-color: #ff1414;
+          color: white ;
+          outline: none;
+          border: none;
+          border-radius: 5px;
+          -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+          box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+          margin-bottom: 5px;
+          margin-top: 5px;
+          width: 100px;
+          font-size: 0.7rem;
+
+          &:hover {
+            cursor: pointer;
+            background-color: #bd4dc7;
+          }
+        }
 
         .forminputcolumn {
           display: flex;
@@ -249,6 +271,28 @@
             width: 100px;
             font-size: 0.7rem;
 
+            &:hover {
+              cursor: pointer;
+              background-color: #bd4dc7;
+            }
+          }
+          .deleteplanbutton {
+            font-weight: bold;
+            padding-left: 5px;
+            padding-right: 5px;
+            height: 30px;
+            background-color: #ff1414;
+            color: white;
+            outline: none;
+            border: none;
+            border-radius: 5px;
+            -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+            box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+            margin-bottom: 5px;
+            margin-top: 5px;
+            width: 100px;
+            font-size: 0.7rem;
+  
             &:hover {
               cursor: pointer;
               background-color: #bd4dc7;

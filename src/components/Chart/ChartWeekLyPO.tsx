@@ -165,7 +165,7 @@ const ChartWeeklyPO = () => {
           type='monotone'
           dataKey='WEEKLY_PO_AMOUNT'
           stroke='white'
-          fill='#f0d850'        
+          fill='#7cb7e7'        
           label={CustomLabel}
         ></Bar>
          <Line
