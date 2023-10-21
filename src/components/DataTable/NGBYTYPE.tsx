@@ -65,7 +65,7 @@ const NGBYTYPE = ({
           overflow: "hidden",
         }}
       >
-        <HiOutlineQrcode color="black" size={25} /> {G_NAME_KD}
+        <HiOutlineQrcode color="black" size={15} /> {G_NAME_KD}
       </div>
       <div
         className="flag"
@@ -88,7 +88,7 @@ const NGBYTYPE = ({
           color: XUATDAO === null ? "white" : "black",
         }}
       >
-        <GiCurvyKnife color="black" size={25} />{" "}
+        <GiCurvyKnife color="black" size={15} />{" "}
         {XUATDAO === null ? `CHƯA XUẤT DAO` : `ĐÃ XUẤT DAO`}
       </div>
       <div
@@ -100,7 +100,7 @@ const NGBYTYPE = ({
           color: SETTING_START_TIME === null ? "white" : "black",
         }}
       >
-        <AiFillSetting color="black" size={25} />{" "}
+        <AiFillSetting color="black" size={15} />{" "}
         {SETTING_START_TIME === null ? `CHƯA BĐ SETTING` : `ĐÃ BĐ SETTING`}
       </div>
       <div
@@ -112,7 +112,7 @@ const NGBYTYPE = ({
           color: MASS_START_TIME === null ? "white" : "black",
         }}
       >
-        <AiFillSetting color="black" size={25} />{" "}
+        <AiFillSetting color="black" size={15} />{" "}
         {MASS_END_TIME === null ? `CHƯA KT SETTING` : `ĐÃ KT SETTING`}
       </div>
       <div
@@ -124,7 +124,7 @@ const NGBYTYPE = ({
           color: DKXL === null ? "white" : "black",
         }}
       >
-        <GiArchiveRegister color="black" size={25} />{" "}
+        <GiArchiveRegister color="black" size={15} />{" "}
         {DKXL === null ? `CHƯA ĐĂNG KÝ XL` : `ĐÃ ĐĂNG KÝ XL`}
       </div>
       <div
@@ -136,7 +136,7 @@ const NGBYTYPE = ({
           color: XUATLIEU === null ? "white" : "black",
         }}
       >
-        <HiLogout color="black" size={25} />{" "}
+        <HiLogout color="black" size={15} />{" "}
         {XUATLIEU === null ? `CHƯA XUẤT LIỆU CHÍNH` : `ĐÃ XUẤT LIỆU CHÍNH`}
       </div>
       <div
@@ -148,7 +148,7 @@ const NGBYTYPE = ({
           color: CHOTBC === null ? "white" : "black",
         }}
       >
-        <TbReportAnalytics color="black" size={25} />{" "}
+        <TbReportAnalytics color="black" size={15} />{" "}
         {CHOTBC === null ? `CHƯA CHỐT BC` : `ĐÃ CHỐT BC`}
       </div>
     </div>

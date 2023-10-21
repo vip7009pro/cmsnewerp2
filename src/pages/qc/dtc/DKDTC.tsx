@@ -143,7 +143,7 @@ const DKDTC = () => {
                     SaveExcel(inspectiondatatable, "SPEC DTC");
                   }}
                 >
-                  <AiFillFileExcel color="green" size={25} />
+                  <AiFillFileExcel color="green" size={15} />
                   SAVE
                 </IconButton>
                 <span style={{ fontSize: 20, fontWeight: "bold" }}>

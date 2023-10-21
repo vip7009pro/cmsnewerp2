@@ -82,7 +82,7 @@ if(phantram_tem >110)
           overflow: "hidden",
         }}
       >
-        <HiOutlineQrcode color="black" size={25} /> {DATA.G_NAME_KD}
+        <HiOutlineQrcode color="black" size={15} /> {DATA.G_NAME_KD}
       </div>
       <div
         className="flag"
@@ -131,7 +131,7 @@ if(phantram_tem >110)
           color: DATA.XUATDAO === null ? "white" : "black",
         }}
       >
-        <GiCurvyKnife color="black" size={25} />{" "}
+        <GiCurvyKnife color="black" size={15} />{" "}
         {DATA.XUATDAO === null ? `CHƯA XUẤT DAO` : `ĐÃ XUẤT DAO`}
       </div>
       <div
@@ -143,7 +143,7 @@ if(phantram_tem >110)
           color: DATA.SETTING_START_TIME === null ? "white" : "black",
         }}
       >
-        <AiFillSetting color="black" size={25} />{" "}
+        <AiFillSetting color="black" size={15} />{" "}
         {DATA.SETTING_START_TIME === null ? `CHƯA BĐ SETTING` : `ĐÃ BĐ SETTING`}
       </div>
       <div
@@ -155,7 +155,7 @@ if(phantram_tem >110)
           color: DATA.MASS_START_TIME === null ? "white" : "black",
         }}
       >
-        <AiFillSetting color="black" size={25} />{" "}
+        <AiFillSetting color="black" size={15} />{" "}
         {DATA.MASS_START_TIME === null ? `CHƯA KT SETTING` : `ĐÃ KT SETTING`}
       </div>
       <div
@@ -167,7 +167,7 @@ if(phantram_tem >110)
           color: DATA.DKXL === null ? "white" : "black",
         }}
       >
-        <GiArchiveRegister color="black" size={25} />{" "}
+        <GiArchiveRegister color="black" size={15} />{" "}
         {DATA.DKXL === null ? `CHƯA ĐĂNG KÝ XL` : `ĐÃ ĐĂNG KÝ XL`}
       </div>
       <div
@@ -179,7 +179,7 @@ if(phantram_tem >110)
           color: DATA.XUATLIEU === null ? "white" : "black",
         }}
       >
-        <HiLogout color="black" size={25} />{" "}
+        <HiLogout color="black" size={15} />{" "}
         {DATA.XUATLIEU === null ? `CHƯA XUẤT LIỆU CHÍNH` : `ĐÃ XUẤT LIỆU CHÍNH`}
       </div>
       <div
@@ -191,7 +191,7 @@ if(phantram_tem >110)
           color: DATA.CHOTBC === null ? "white" : "black",
         }}
       >
-        <TbReportAnalytics color="black" size={25} />{" "}
+        <TbReportAnalytics color="black" size={15} />{" "}
         {DATA.CHOTBC === null ? `CHƯA CHỐT BC` : `ĐÃ CHỐT BC`}
       </div>
       <div

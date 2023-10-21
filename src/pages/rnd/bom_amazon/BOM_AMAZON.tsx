@@ -213,7 +213,7 @@ const BOM_AMAZON = () => {
             SaveExcel(rows, "Code Info Table");
           }}
         >
-          <AiFillFileExcel color='green' size={25} />
+          <AiFillFileExcel color='green' size={15} />
           SAVE
         </IconButton>
         <GridToolbarQuickFilter />
@@ -280,7 +280,7 @@ const BOM_AMAZON = () => {
             });
           }}
         >
-          <AiFillEdit color='yellow' size={25} />
+          <AiFillEdit color='yellow' size={15} />
           Bật tắt sửa
         </IconButton>
         <GridToolbarQuickFilter />

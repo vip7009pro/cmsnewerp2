@@ -191,7 +191,7 @@ const PQC1 = () => {
               setInspectionDataTable([]);
             }}
           >
-            <BiShow color="blue" size={25} />
+            <BiShow color="blue" size={15} />
             Show/Hide Input
           </IconButton>
           <IconButton
@@ -201,7 +201,7 @@ const PQC1 = () => {
               //setShowHideInput(false);
             }}
           >
-            <AiOutlineSearch color="red" size={25} />
+            <AiOutlineSearch color="red" size={15} />
             Tra Data
           </IconButton>
         </div>
@@ -262,7 +262,7 @@ const PQC1 = () => {
                     SaveExcel(inspectiondatatable, "SPEC DTC");
                   }}
                 >
-                  <AiFillFileExcel color="green" size={25} />
+                  <AiFillFileExcel color="green" size={15} />
                   SAVE
                 </IconButton>
               </Item>

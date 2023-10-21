@@ -1579,7 +1579,7 @@ const CalcQuotation = () => {
                     }
                   }}
                 >
-                  <AiFillFolderAdd color="#69f542" size={25} />
+                  <AiFillFolderAdd color="#69f542" size={15} />
                   Add to List
                 </IconButton>
               </div>
@@ -1593,7 +1593,7 @@ const CalcQuotation = () => {
                     loadListCode();
                   }}
                 >
-                  <BiSave color="#059B00" size={25} />
+                  <BiSave color="#059B00" size={15} />
                   Lưu Giá
                 </IconButton>
               </div>

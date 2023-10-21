@@ -1535,7 +1535,7 @@ const KHCT = () => {
             SaveExcel(ycsxdatatable, "YCSX Table");
           }}
         >
-          <AiFillFileExcel color="green" size={25} />
+          <AiFillFileExcel color="green" size={15} />
           SAVE
         </IconButton>
         <GridToolbarQuickFilter />
@@ -1545,7 +1545,7 @@ const KHCT = () => {
             handleConfirmSetClosedYCSX();
           }}
         >
-          <FaArrowRight color="green" size={25} />
+          <FaArrowRight color="green" size={15} />
           SET CLOSED
         </IconButton>
         <IconButton
@@ -1554,7 +1554,7 @@ const KHCT = () => {
             handleConfirmSetPendingYCSX();
           }}
         >
-          <MdOutlinePendingActions color="red" size={25} />
+          <MdOutlinePendingActions color="red" size={15} />
           SET PENDING
         </IconButton>
         <IconButton
@@ -1572,7 +1572,7 @@ const KHCT = () => {
             }
           }}
         >
-          <AiOutlinePrinter color="#0066ff" size={25} />
+          <AiOutlinePrinter color="#0066ff" size={15} />
           Print YCSX
         </IconButton>
         <IconButton
@@ -1589,7 +1589,7 @@ const KHCT = () => {
             }
           }}
         >
-          <AiOutlinePrinter color="#ff751a" size={25} />
+          <AiOutlinePrinter color="#ff751a" size={15} />
           Print Bản Vẽ
         </IconButton>
         <IconButton
@@ -1606,7 +1606,7 @@ const KHCT = () => {
             }
           }}
         >
-          <AiFillFolderAdd color="#69f542" size={25} />
+          <AiFillFolderAdd color="#69f542" size={15} />
           Add to PLAN
         </IconButton>
       </GridToolbarContainer>
@@ -1621,7 +1621,7 @@ const KHCT = () => {
             SaveExcel(plandatatable, "Plan Table");
           }}
         >
-          <AiFillFileExcel color="green" size={25} />
+          <AiFillFileExcel color="green" size={15} />
           SAVE
         </IconButton>
         <GridToolbarQuickFilter />
@@ -1634,7 +1634,7 @@ const KHCT = () => {
             handle_AddBlankPlan();
           }}
         >
-          <AiFillFolderAdd color="#69f542" size={25} />
+          <AiFillFolderAdd color="#69f542" size={15} />
           Add Blank PLAN
         </IconButton>
         <IconButton
@@ -1714,7 +1714,7 @@ const KHCT = () => {
             SaveExcel(plandatatable, "Plan Table");
           }}
         >
-          <AiFillFileExcel color="green" size={25} />
+          <AiFillFileExcel color="green" size={15} />
           SAVE
         </IconButton>
         <GridToolbarQuickFilter />
@@ -1727,7 +1727,7 @@ const KHCT = () => {
             handle_AddBlankPlan();
           }}
         >
-          <AiFillFolderAdd color="#69f542" size={25} />
+          <AiFillFolderAdd color="#69f542" size={15} />
           Add Blank PLAN
         </IconButton>
       </GridToolbarContainer>

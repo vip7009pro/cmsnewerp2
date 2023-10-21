@@ -341,7 +341,7 @@ const TRAPQC = () => {
             SaveExcel(pqcdatatable, "Inspection Data Table");
           }}
         >
-          <AiFillFileExcel color="green" size={25} />
+          <AiFillFileExcel color="green" size={15} />
           SAVE
         </IconButton>
         <span

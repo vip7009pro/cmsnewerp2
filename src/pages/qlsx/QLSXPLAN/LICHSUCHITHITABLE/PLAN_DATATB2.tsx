@@ -477,7 +477,7 @@ const PLAN_DATATB2 = () => {
             SaveExcel(plandatatable, "PLAN Table");
           }}
         >
-          <AiFillFileExcel color="green" size={25} />
+          <AiFillFileExcel color="green" size={15} />
           SAVE
         </IconButton>
         <GridToolbarQuickFilter />

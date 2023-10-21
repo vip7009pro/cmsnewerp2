@@ -2092,7 +2092,7 @@ const PLAN_DATATB = () => {
                     }
                   }}
                 >
-                  <AiOutlinePrinter color='#0066ff' size={25} />
+                  <AiOutlinePrinter color='#0066ff' size={15} />
                   Print Chỉ Thị
                 </IconButton>
                 <IconButton
@@ -2178,7 +2178,7 @@ const PLAN_DATATB = () => {
                     }
                   }}
                 >
-                  <AiOutlinePrinter color='#0066ff' size={25} />
+                  <AiOutlinePrinter color='#0066ff' size={15} />
                   Print Chỉ Thị Combo
                 </IconButton>
                 <IconButton
@@ -2198,7 +2198,7 @@ const PLAN_DATATB = () => {
                     }
                   }}
                 >
-                  <AiOutlinePrinter color='#ff751a' size={25} />
+                  <AiOutlinePrinter color='#ff751a' size={15} />
                   Print Bản Vẽ
                 </IconButton>
               </Item>
@@ -2829,7 +2829,7 @@ const PLAN_DATATB = () => {
                     }
                   }}
                 >
-                  <AiOutlinePrinter color='#0066ff' size={25} />
+                  <AiOutlinePrinter color='#0066ff' size={15} />
                   Print Chỉ Thị
                 </IconButton>
                 <IconButton
@@ -2915,7 +2915,7 @@ const PLAN_DATATB = () => {
                     }
                   }}
                 >
-                  <AiOutlinePrinter color='#0066ff' size={25} />
+                  <AiOutlinePrinter color='#0066ff' size={15} />
                   Print Chỉ Thị Combo
                 </IconButton>
                 <IconButton
@@ -2935,7 +2935,7 @@ const PLAN_DATATB = () => {
                     }
                   }}
                 >
-                  <AiOutlinePrinter color='#ff751a' size={25} />
+                  <AiOutlinePrinter color='#ff751a' size={15} />
                   Print Bản Vẽ
                 </IconButton>
               </Item>

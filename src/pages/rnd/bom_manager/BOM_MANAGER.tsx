@@ -732,7 +732,7 @@ const BOM_MANAGER = () => {
             Swal.fire("Thông báo", "Bật/Tắt chế độ sửa", "success");
           }}
         >
-          <AiFillEdit color="yellow" size={25} />
+          <AiFillEdit color="yellow" size={15} />
           Bật tắt sửa
         </IconButton>
         <IconButton
@@ -2527,7 +2527,7 @@ const BOM_MANAGER = () => {
                     confirmAddNewCode();
                   }}
                 >
-                  <AiFillFileAdd color="#3366ff" size={25} />
+                  <AiFillFileAdd color="#3366ff" size={15} />
                   ADD
                 </IconButton>
                 <IconButton
@@ -2536,7 +2536,7 @@ const BOM_MANAGER = () => {
                     confirmUpdateCode();
                   }}
                 >
-                  <MdOutlineUpdate color="#ffff00" size={25} />
+                  <MdOutlineUpdate color="#ffff00" size={15} />
                   UPDATE
                 </IconButton>
               </div>
@@ -2547,7 +2547,7 @@ const BOM_MANAGER = () => {
                     confirmAddNewVer();
                   }}
                 >
-                  <MdUpgrade color="#cc33ff" size={25} />
+                  <MdUpgrade color="#cc33ff" size={15} />
                   ADD VER
                 </IconButton>
                 <IconButton
@@ -2556,7 +2556,7 @@ const BOM_MANAGER = () => {
                     handleClearInfo();
                   }}
                 >
-                  <AiFillDelete color="red" size={25} />
+                  <AiFillDelete color="red" size={15} />
                   Clear
                 </IconButton>
               </div>

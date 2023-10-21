@@ -392,7 +392,7 @@ export default function AccountInfo() {
                   {" "}
                   Avatar:
                   <IconButton className='buttonIcon' onClick={uploadFile2}>
-                    <AiOutlineCloudUpload color='yellow' size={25} />
+                    <AiOutlineCloudUpload color='yellow' size={15} />
                     Upload
                   </IconButton>
                   <input

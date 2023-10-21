@@ -219,7 +219,7 @@ const TINHLIEU = () => {
                     SaveExcel(datasxtable, "MaterialStatus");
                   }}
                 >
-                  <AiFillFileExcel color="green" size={25} />
+                  <AiFillFileExcel color="green" size={15} />
                   SAVE
                 </IconButton>
                 <IconButton
@@ -228,7 +228,7 @@ const TINHLIEU = () => {
                     setShowHidePivotTable(!showhidePivotTable);
                   }}
                 >
-                  <MdOutlinePivotTableChart color="#ff33bb" size={25} />
+                  <MdOutlinePivotTableChart color="#ff33bb" size={15} />
                   Pivot
                 </IconButton>
               </Item>
@@ -1152,7 +1152,7 @@ const TINHLIEU = () => {
                 setShowHidePivotTable(false);
               }}
             >
-              <AiFillCloseCircle color="blue" size={25} />
+              <AiFillCloseCircle color="blue" size={15} />
               Close
             </IconButton>
             <PivotTable datasource={dataSource} tableID="invoicetablepivot" />

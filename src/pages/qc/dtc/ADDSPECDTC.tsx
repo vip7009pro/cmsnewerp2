@@ -177,7 +177,7 @@ const ADDSPECTDTC = () => {
                     SaveExcel(inspectiondatatable, "SPEC DTC");
                   }}
                 >
-                  <AiFillFileExcel color="green" size={25} />
+                  <AiFillFileExcel color="green" size={15} />
                   SAVE
                 </IconButton>
               </Item>

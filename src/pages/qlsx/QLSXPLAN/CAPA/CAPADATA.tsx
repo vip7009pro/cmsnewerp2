@@ -254,7 +254,7 @@ const CAPADATA = () => {
                   SaveExcel(dataleadtimecapa, "MaterialStatus");
                 }}
               >
-                <AiFillFileExcel color="green" size={25} />
+                <AiFillFileExcel color="green" size={15} />
                 SAVE
               </IconButton>
               <IconButton
@@ -263,7 +263,7 @@ const CAPADATA = () => {
                   setShowHidePivotTable(!showhidePivotTable);
                 }}
               >
-                <MdOutlinePivotTableChart color="#ff33bb" size={25} />
+                <MdOutlinePivotTableChart color="#ff33bb" size={15} />
                 Pivot
               </IconButton>
               <IconButton
@@ -272,7 +272,7 @@ const CAPADATA = () => {
                   handle_loaddatasx();
                 }}
               >
-                <BiSearch color="blue" size={25} />
+                <BiSearch color="blue" size={15} />
                 Search
               </IconButton>
             </Item>
@@ -841,7 +841,7 @@ const CAPADATA = () => {
                 setShowHidePivotTable(false);
               }}
             >
-              <AiFillCloseCircle color="blue" size={25} />
+              <AiFillCloseCircle color="blue" size={15} />
               Close
             </IconButton>
             <PivotTable datasource={dataSource} tableID="invoicetablepivot" />

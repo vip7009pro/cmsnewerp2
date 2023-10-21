@@ -2469,7 +2469,7 @@ const PLANTABLE = () => {
             SaveExcel(ycsxdatatable, "YCSX Table");
           }}
         >
-          <AiFillFileExcel color="green" size={25} />
+          <AiFillFileExcel color="green" size={15} />
           SAVE
         </IconButton>
         <GridToolbarQuickFilter />
@@ -2479,7 +2479,7 @@ const PLANTABLE = () => {
             handleConfirmSetClosedYCSX();
           }}
         >
-          <FaArrowRight color="green" size={25} />
+          <FaArrowRight color="green" size={15} />
           SET CLOSED
         </IconButton>
         <IconButton
@@ -2488,7 +2488,7 @@ const PLANTABLE = () => {
             handleConfirmSetPendingYCSX();
           }}
         >
-          <MdOutlinePendingActions color="red" size={25} />
+          <MdOutlinePendingActions color="red" size={15} />
           SET PENDING
         </IconButton>
         <IconButton
@@ -2506,7 +2506,7 @@ const PLANTABLE = () => {
             }
           }}
         >
-          <AiOutlinePrinter color="#0066ff" size={25} />
+          <AiOutlinePrinter color="#0066ff" size={15} />
           Print YCSX
         </IconButton>
         <IconButton
@@ -2523,7 +2523,7 @@ const PLANTABLE = () => {
             }
           }}
         >
-          <AiOutlinePrinter color="#ff751a" size={25} />
+          <AiOutlinePrinter color="#ff751a" size={15} />
           Print Bản Vẽ
         </IconButton>
         <IconButton
@@ -2540,7 +2540,7 @@ const PLANTABLE = () => {
             }
           }}
         >
-          <AiFillFolderAdd color="#69f542" size={25} />
+          <AiFillFolderAdd color="#69f542" size={15} />
           Add to PLAN
         </IconButton>
       </GridToolbarContainer>
@@ -2558,7 +2558,7 @@ const PLANTABLE = () => {
             SaveExcel(plandatatable, "Plan Table");
           }}
         >
-          <AiFillFileExcel color="green" size={25} />
+          <AiFillFileExcel color="green" size={15} />
           SAVE
         </IconButton>
         <GridToolbarQuickFilter />
@@ -2597,7 +2597,7 @@ const PLANTABLE = () => {
             }
           }}
         >
-          <AiOutlinePrinter color="#0066ff" size={25} />
+          <AiOutlinePrinter color="#0066ff" size={15} />
           Print Chỉ Thị
         </IconButton>
         <IconButton
@@ -2613,7 +2613,7 @@ const PLANTABLE = () => {
             }
           }}
         >
-          <AiOutlinePrinter color="#9066ff" size={25} />
+          <AiOutlinePrinter color="#9066ff" size={15} />
           Print YCKT
         </IconButton>
         <IconButton
@@ -2679,7 +2679,7 @@ const PLANTABLE = () => {
             SaveExcel(ycsxdatatable, "YCSX Table");
           }}
         >
-          <AiFillFileExcel color="green" size={25} />
+          <AiFillFileExcel color="green" size={15} />
           SAVE
         </IconButton>
         <GridToolbarQuickFilter />
@@ -2840,7 +2840,7 @@ const PLANTABLE = () => {
             SaveExcel(ycsxdatatable, "YCSX Table");
           }}
         >
-          <AiFillFileExcel color="green" size={25} />
+          <AiFillFileExcel color="green" size={15} />
           SAVE
         </IconButton>
         <GridToolbarQuickFilter />
@@ -2871,7 +2871,7 @@ const PLANTABLE = () => {
             SaveExcel(ycsxdatatable, "YCSX Table");
           }}
         >
-          <AiFillFileExcel color="green" size={25} />
+          <AiFillFileExcel color="green" size={15} />
           SAVE
         </IconButton>
         <GridToolbarQuickFilter />
@@ -2912,7 +2912,7 @@ const PLANTABLE = () => {
             SaveExcel(ycsxdatatable, "YCSX Table");
           }}
         >
-          <AiFillFileExcel color="green" size={25} />
+          <AiFillFileExcel color="green" size={15} />
           SAVE
         </IconButton>
         <GridToolbarQuickFilter />
@@ -2934,7 +2934,7 @@ const PLANTABLE = () => {
             SaveExcel(ycsxdatatable, "YCSX Table");
           }}
         >
-          <AiFillFileExcel color="green" size={25} />
+          <AiFillFileExcel color="green" size={15} />
           SAVE
         </IconButton>
         <GridToolbarQuickFilter />

@@ -794,7 +794,7 @@ const QuanLyPhongBanNhanSu = () => {
             loademployeefull();
           }}
         >
-          <BiRefresh color='green' size={25} />
+          <BiRefresh color='green' size={15} />
           Search
         </IconButton>
         <label>

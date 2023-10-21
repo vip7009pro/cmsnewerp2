@@ -138,7 +138,7 @@ const FAILING = () => {
               setInspectionDataTable([]);
             }}
           >
-            <BiShow color="blue" size={25} />
+            <BiShow color="blue" size={15} />
             Show/Hide Input
           </IconButton>
           <span style={{ fontSize: '1rem', fontWeight: "bold" }}>
@@ -194,7 +194,7 @@ const FAILING = () => {
                   SaveExcel(inspectiondatatable, "SPEC DTC");
                 }}
               >
-                <AiFillFileExcel color="green" size={25} />
+                <AiFillFileExcel color="green" size={15} />
                 SAVE
               </IconButton>
             </Item>
@@ -1128,7 +1128,7 @@ const FAILING = () => {
                   }
                 }}
               >
-                <GrStatusGood color="green" size={25} />
+                <GrStatusGood color="green" size={15} />
                 SET PASS
               </IconButton>
               <IconButton
@@ -1148,7 +1148,7 @@ const FAILING = () => {
                   //setQCPASS('N');
                 }}
               >
-                <FcCancel color="red" size={25} />
+                <FcCancel color="red" size={15} />
                 RESET PASS
               </IconButton>
             </div>

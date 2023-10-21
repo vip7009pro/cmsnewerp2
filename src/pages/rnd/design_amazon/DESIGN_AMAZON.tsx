@@ -252,7 +252,7 @@ const DESIGN_AMAZON = () => {
             SaveExcel(rows, "Code Info Table");
           }}
         >
-          <AiFillFileExcel color="green" size={25} />
+          <AiFillFileExcel color="green" size={15} />
           SAVE
         </IconButton>
         <GridToolbarQuickFilter />
@@ -608,7 +608,7 @@ const DESIGN_AMAZON = () => {
                   addComponent();
                 }}
               >
-                <GrAdd color="white" size={25} />
+                <GrAdd color="white" size={15} />
                 Add
               </IconButton>
             </div>
@@ -1061,7 +1061,7 @@ const DESIGN_AMAZON = () => {
               setShowHideCodeList(!showhidecodelist);
             }}
           >
-            <BiShow color="black" size={25} />
+            <BiShow color="black" size={15} />
             List
           </IconButton>
           <IconButton
@@ -1070,7 +1070,7 @@ const DESIGN_AMAZON = () => {
               confirmSaveDESIGN_AMAZON();
             }}
           >
-            <BiSave color="black" size={25} />
+            <BiSave color="black" size={15} />
             Save
           </IconButton>
           <IconButton
@@ -1079,7 +1079,7 @@ const DESIGN_AMAZON = () => {
               handlePrint();
             }}
           >
-            <BiPrinter color="black" size={25} />
+            <BiPrinter color="black" size={15} />
             Print
           </IconButton>
           X:

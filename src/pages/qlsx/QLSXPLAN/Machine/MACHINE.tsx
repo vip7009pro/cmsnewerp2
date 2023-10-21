@@ -2766,7 +2766,7 @@ const MACHINE = () => {
             SaveExcel(ycsxdatatable, "YCSX Table");
           }}
         >
-          <AiFillFileExcel color='green' size={25} />
+          <AiFillFileExcel color='green' size={15} />
           SAVE
         </IconButton>
         <GridToolbarQuickFilter />
@@ -2776,7 +2776,7 @@ const MACHINE = () => {
             handleConfirmSetClosedYCSX();
           }}
         >
-          <FaArrowRight color='green' size={25} />
+          <FaArrowRight color='green' size={15} />
           SET CLOSED
         </IconButton>
         <IconButton
@@ -2785,7 +2785,7 @@ const MACHINE = () => {
             handleConfirmSetPendingYCSX();
           }}
         >
-          <MdOutlinePendingActions color='red' size={25} />
+          <MdOutlinePendingActions color='red' size={15} />
           SET PENDING
         </IconButton>
         <IconButton
@@ -2803,7 +2803,7 @@ const MACHINE = () => {
             }
           }}
         >
-          <AiOutlinePrinter color='#0066ff' size={25} />
+          <AiOutlinePrinter color='#0066ff' size={15} />
           Print YCSX
         </IconButton>
         <IconButton
@@ -2820,7 +2820,7 @@ const MACHINE = () => {
             }
           }}
         >
-          <AiOutlinePrinter color='#ff751a' size={25} />
+          <AiOutlinePrinter color='#ff751a' size={15} />
           Print Bản Vẽ
         </IconButton>
         <IconButton
@@ -2837,7 +2837,7 @@ const MACHINE = () => {
             }
           }}
         >
-          <AiFillFolderAdd color='#69f542' size={25} />
+          <AiFillFolderAdd color='#69f542' size={15} />
           Add to PLAN
         </IconButton>
       </GridToolbarContainer>
@@ -2864,7 +2864,7 @@ const MACHINE = () => {
             SaveExcel(plandatatable, "Plan Table");
           }}
         >
-          <AiFillFileExcel color='green' size={25} />
+          <AiFillFileExcel color='green' size={15} />
           SAVE
         </IconButton>
         <GridToolbarQuickFilter />
@@ -2890,7 +2890,7 @@ const MACHINE = () => {
             }
           }}
         >
-          <AiOutlinePrinter color='#0066ff' size={25} />
+          <AiOutlinePrinter color='#0066ff' size={15} />
           Print Chỉ Thị
         </IconButton>
         <IconButton
@@ -2935,7 +2935,7 @@ const MACHINE = () => {
             }
           }}
         >
-          <AiOutlinePrinter color='#0066ff' size={25} />
+          <AiOutlinePrinter color='#0066ff' size={15} />
           Print Chỉ Thị Combo
         </IconButton>
         <IconButton
@@ -2951,7 +2951,7 @@ const MACHINE = () => {
             }
           }}
         >
-          <AiOutlinePrinter color='#9066ff' size={25} />
+          <AiOutlinePrinter color='#9066ff' size={15} />
           Print YCKT
         </IconButton>
         <IconButton
@@ -3071,7 +3071,7 @@ const MACHINE = () => {
         <GridToolbarFilterButton />
         <GridToolbarDensitySelector />  */}
         <IconButton className='buttonIcon' onClick={() => { }}>
-          <AiFillFileExcel color='green' size={25} />
+          <AiFillFileExcel color='green' size={15} />
           SAVE
         </IconButton>
         <GridToolbarQuickFilter />
@@ -3485,7 +3485,7 @@ const MACHINE = () => {
             SaveExcel(tonlieuxuongdatatable, "Ton kho ao Table");
           }}
         >
-          <AiFillFileExcel color='green' size={25} />
+          <AiFillFileExcel color='green' size={15} />
           SAVE
         </IconButton>
         <GridToolbarQuickFilter />
@@ -3516,7 +3516,7 @@ const MACHINE = () => {
             SaveExcel(lichsuinputlieutable, "Lich Su Input Lieu Table");
           }}
         >
-          <AiFillFileExcel color='green' size={25} />
+          <AiFillFileExcel color='green' size={15} />
           SAVE
         </IconButton>
         <GridToolbarQuickFilter />
@@ -3557,7 +3557,7 @@ const MACHINE = () => {
             SaveExcel(lichsunhapkhoaotable, "Lich Su Nhap Kho Ao Table");
           }}
         >
-          <AiFillFileExcel color='green' size={25} />
+          <AiFillFileExcel color='green' size={15} />
           SAVE
         </IconButton>
         <GridToolbarQuickFilter />
@@ -3579,7 +3579,7 @@ const MACHINE = () => {
             SaveExcel(lichsuxuatkhoaotable, "Xuat kho ao Table");
           }}
         >
-          <AiFillFileExcel color='green' size={25} />
+          <AiFillFileExcel color='green' size={15} />
           SAVE
         </IconButton>
         <GridToolbarQuickFilter />

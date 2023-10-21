@@ -330,7 +330,7 @@ const ShortageKD = () => {
             SaveExcel(shortagedatatable, "Shortage Table");
           }}
         >
-          <AiFillFileExcel color="green" size={25} />
+          <AiFillFileExcel color="green" size={15} />
           SAVE
         </IconButton>
         <IconButton
@@ -347,7 +347,7 @@ const ShortageKD = () => {
             //handleConfirmDeletePlan();
           }}
         >
-          <MdOutlineDelete color="red" size={25} />
+          <MdOutlineDelete color="red" size={15} />
           XÓA PLAN
         </IconButton>
         <GridToolbarQuickFilter />

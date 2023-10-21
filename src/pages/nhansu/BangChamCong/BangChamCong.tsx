@@ -2305,7 +2305,7 @@ const BANGCHAMCONG = () => {
                 setShowHidePivotTable(false);
               }}
             >
-              <AiFillCloseCircle color='blue' size={25} />
+              <AiFillCloseCircle color='blue' size={15} />
               Close
             </IconButton>
             <PivotTable

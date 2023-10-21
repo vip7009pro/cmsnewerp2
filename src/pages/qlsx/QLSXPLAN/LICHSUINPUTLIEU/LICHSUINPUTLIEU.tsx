@@ -87,7 +87,7 @@ const LICHSUINPUTLIEU = () => {
             SaveExcel(inspectiondatatable, "LICHSU INPUT Table");
           }}
         >
-          <AiFillFileExcel color='green' size={25} />
+          <AiFillFileExcel color='green' size={15} />
           SAVE
         </IconButton>
         <GridToolbarQuickFilter />

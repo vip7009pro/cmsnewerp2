@@ -1599,7 +1599,7 @@ const InvoiceManager = () => {
                     SaveExcel(uploadExcelJson, "MaterialStatus");
                   }}
                 >
-                  <AiFillFileExcel color='green' size={25} />
+                  <AiFillFileExcel color='green' size={15} />
                   SAVE
                 </IconButton>
                 <IconButton
@@ -1608,7 +1608,7 @@ const InvoiceManager = () => {
                     setShowHidePivotTable(!showhidePivotTable);
                   }}
                 >
-                  <MdOutlinePivotTableChart color='#ff33bb' size={25} />
+                  <MdOutlinePivotTableChart color='#ff33bb' size={15} />
                   Pivot
                 </IconButton>
               </Item>
@@ -1696,7 +1696,7 @@ const InvoiceManager = () => {
                     SaveExcel(uploadExcelJson, "MaterialStatus");
                   }}
                 >
-                  <AiFillFileExcel color='green' size={25} />
+                  <AiFillFileExcel color='green' size={15} />
                   SAVE
                 </IconButton>
                 <IconButton
@@ -1705,7 +1705,7 @@ const InvoiceManager = () => {
                     setShowHidePivotTable(!showhidePivotTable);
                   }}
                 >
-                  <MdOutlinePivotTableChart color='#ff33bb' size={25} />
+                  <MdOutlinePivotTableChart color='#ff33bb' size={15} />
                   Pivot
                 </IconButton>
               </Item>
@@ -2288,7 +2288,7 @@ const InvoiceManager = () => {
               setShowHidePivotTable(false);
             }}
           >
-            <AiFillCloseCircle color="blue" size={25} />
+            <AiFillCloseCircle color="blue" size={15} />
             Close
           </IconButton>
           <PivotTable datasource={dataSource} tableID="invoicetablepivot" />

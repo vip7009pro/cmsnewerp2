@@ -1569,7 +1569,7 @@ const DATASX2 = () => {
                   SaveExcel(datasxtable, "SXDATATABLE");
                 }}
               >
-                <AiFillFileExcel color="green" size={25} />
+                <AiFillFileExcel color="green" size={15} />
                 SAVE
               </IconButton>
               <IconButton
@@ -1578,7 +1578,7 @@ const DATASX2 = () => {
                   setShowHidePivotTable(!showhidePivotTable);
                 }}
               >
-                <MdOutlinePivotTableChart color="#ff33bb" size={25} />
+                <MdOutlinePivotTableChart color="#ff33bb" size={15} />
                 Pivot
               </IconButton>
             </Item>
@@ -2162,7 +2162,7 @@ const DATASX2 = () => {
                   SaveExcel(datasxtable, "SXDATATABLE");
                 }}
               >
-                <AiFillFileExcel color="green" size={25} />
+                <AiFillFileExcel color="green" size={15} />
                 SAVE
               </IconButton>
               <IconButton
@@ -2171,7 +2171,7 @@ const DATASX2 = () => {
                   setShowHidePivotTable(!showhidePivotTable);
                 }}
               >
-                <MdOutlinePivotTableChart color="#ff33bb" size={25} />
+                <MdOutlinePivotTableChart color="#ff33bb" size={15} />
                 Pivot
               </IconButton>
             </Item>
@@ -2803,7 +2803,7 @@ const DATASX2 = () => {
                   SaveExcel(inputlieudatatable, "LICHSUINPUTLIEU");
                 }}
               >
-                <AiFillFileExcel color="green" size={25} />
+                <AiFillFileExcel color="green" size={15} />
                 SAVE
               </IconButton>
             </Item>
@@ -3468,7 +3468,7 @@ const DATASX2 = () => {
                 setShowHidePivotTable(false);
               }}
             >
-              <AiFillCloseCircle color="blue" size={25} />
+              <AiFillCloseCircle color="blue" size={15} />
               Close
             </IconButton>
             <PivotTable

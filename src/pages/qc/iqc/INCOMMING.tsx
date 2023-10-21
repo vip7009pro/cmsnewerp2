@@ -59,7 +59,7 @@ const INCOMMING = () => {
             SaveExcel(inspectiondatatable, "Inspection Data Table");
           }}
         >
-          <AiFillFileExcel color="green" size={25} />
+          <AiFillFileExcel color="green" size={15} />
           SAVE
         </IconButton>
         <GridToolbarQuickFilter />
@@ -329,7 +329,7 @@ const INCOMMING = () => {
                 setDtcDataTable([]);
               }}
             >
-              <BiShow color="blue" size={25} />
+              <BiShow color="blue" size={15} />
               Show/Hide Input
             </IconButton>
             <IconButton
@@ -339,7 +339,7 @@ const INCOMMING = () => {
                 setShowHideInput(false);
               }}
             >
-              <AiOutlineSearch color="red" size={25} />
+              <AiOutlineSearch color="red" size={15} />
               Tra Data
             </IconButton>
             <IconButton
@@ -359,7 +359,7 @@ const INCOMMING = () => {
                 //setQCPASS('Y');
               }}
             >
-              <GrStatusGood color="green" size={25} />
+              <GrStatusGood color="green" size={15} />
               SET PASS
             </IconButton>
             <IconButton
@@ -379,7 +379,7 @@ const INCOMMING = () => {
                 //setQCPASS('N');
               }}
             >
-              <FcCancel color="red" size={25} />
+              <FcCancel color="red" size={15} />
               RESET PASS
             </IconButton>
           </div>
@@ -433,7 +433,7 @@ const INCOMMING = () => {
                       SaveExcel(inspectiondatatable, "SPEC DTC");
                     }}
                   >
-                    <AiFillFileExcel color="green" size={25} />
+                    <AiFillFileExcel color="green" size={15} />
                     SAVE
                   </IconButton>
                 </Item>

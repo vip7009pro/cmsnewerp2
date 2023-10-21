@@ -1057,7 +1057,7 @@ const PLANRESULT = () => {
                 );
               }}
             >
-              <BiSearch color='green' size={25} />
+              <BiSearch color='green' size={15} />
               Search
             </IconButton>
           </div>

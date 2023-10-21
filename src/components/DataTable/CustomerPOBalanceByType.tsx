@@ -291,7 +291,7 @@ const CustomerPOBalanceByType = () => {
             SaveExcel(customerpobalancebytypedata, "Customer PO Balance Table");
           }}
         >
-          <AiFillFileExcel color="green" size={25} />
+          <AiFillFileExcel color="green" size={15} />
           SAVE
         </IconButton>
         <GridToolbarQuickFilter />

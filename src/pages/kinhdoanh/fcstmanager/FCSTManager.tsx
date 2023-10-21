@@ -1137,7 +1137,7 @@ const FCSTManager = () => {
             SaveExcel(fcstdatatable, "Fcst Table");
           }}
         >
-          <AiFillFileExcel color="green" size={25} />
+          <AiFillFileExcel color="green" size={15} />
           SAVE
         </IconButton>
         <IconButton

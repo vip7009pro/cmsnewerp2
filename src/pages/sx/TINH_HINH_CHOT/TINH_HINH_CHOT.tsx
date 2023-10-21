@@ -95,7 +95,7 @@ const TINH_HINH_CHOT = () => {
             SaveExcel(tinh_hinh_chot_NM1, "Plan Table");
           }}
         >
-          <AiFillFileExcel color="green" size={25} />
+          <AiFillFileExcel color="green" size={15} />
           SAVE
         </IconButton>
         <GridToolbarQuickFilter />
@@ -114,7 +114,7 @@ const TINH_HINH_CHOT = () => {
             SaveExcel(tinh_hinh_chot_NM2, "Plan Table");
           }}
         >
-          <AiFillFileExcel color="green" size={25} />
+          <AiFillFileExcel color="green" size={15} />
           SAVE
         </IconButton>
         <GridToolbarQuickFilter />
