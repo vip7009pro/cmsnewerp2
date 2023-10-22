@@ -29,6 +29,7 @@ import PivotChart from "./components/PivotChart/PivotChart";
 
 import { Button } from "@mui/material";
 import { UserData } from "./api/GlobalInterface";
+import TINHLIEU from "./pages/muahang/tinhlieu/TINHLIEU";
 /* import DATASX2 from "./pages/qlsx/QLSXPLAN/DATASX/DATASX2";
 import Home from "./pages/home/Home";
 import DiemDanhNhom from "./pages/nhansu/DiemDanhNhom/DiemDanhNhom";
@@ -696,7 +697,7 @@ function App() {
                       >
                         <Route index element={<MUAHANG />} />
                         <Route path='quanlyvatlieu' element={<QLVL />} />
-                        <Route path='mrp' element={<QLVL />} />
+                        <Route path='mrp' element={<TINHLIEU />} />
                       </Route>
                       <Route
                         path='bophankho'

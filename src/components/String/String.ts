@@ -11,6 +11,7 @@ type english_sentences = {
   CONTENT: string;
 };
 export const vn_lang = {
+  tinhlieu: "Tính Liệu",
   nhapxuattonlieu: "Nhập-Xuất-Tồn Liệu",
   bophankho: "Kho",
   nhapxuattontp: "Tra Nhập-Xuất-Tồn TP",
@@ -90,7 +91,7 @@ export const vn_lang = {
   planstatus: "Trạng Thái Chỉ Thị",
   eqstatus: "Trạng Thái Máy",
 };
-export const en_lang = {
+export const en_lang = {  
   nhapxuattonlieu: "Material In-Out-Stock",
   bophankho: "Warehouse Department",
   nhapxuattontp: "GR-GI-STOCK Query",

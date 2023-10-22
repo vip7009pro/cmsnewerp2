@@ -99,6 +99,7 @@ import KHOTP from "../../pages/kho/khotp/KHOTP";
 import { ELE_ARRAY, UserData } from "../../api/GlobalInterface";
 import EQ_STATUS2 from "../../pages/qlsx/QLSXPLAN/EQ_STATUS/EQ_STATUS2";
 import NavMenu from "../NavMenu/NavMenu";
+import TINHLIEU from "../../pages/muahang/tinhlieu/TINHLIEU";
 
 /* 
 const KIEMTRA= lazy(()=> import('../../pages/qc/inspection/KIEMTRA'));
@@ -315,6 +316,11 @@ export default function Navbar() {
       MENU_CODE: "PU1",
       MENU_NAME: getlang("quanlyvatlieu", lang),
       MENU_ITEM: <QLVL />,
+    },
+    {
+      MENU_CODE: "PU2",
+      MENU_NAME: getlang("quanlymrp", lang),
+      MENU_ITEM: <TINHLIEU />,
     },
     {
       MENU_CODE: "QC1",

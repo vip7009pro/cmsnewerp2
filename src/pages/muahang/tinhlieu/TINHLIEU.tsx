@@ -1,14 +1,10 @@
 import {
   Button,
-  Autocomplete,
   Checkbox,
   FormControlLabel,
   IconButton,
-  TextField,
-  createFilterOptions,
 } from "@mui/material";
 import {
-  Column,
   Editing,
   FilterRow,
   Pager,
@@ -23,12 +19,13 @@ import {
   ColumnChooser,
   Summary,
   TotalItem,
+  Column,
 } from "devextreme-react/data-grid";
 import moment from "moment";
 import React, { useContext, useEffect, useState } from "react";
 import { AiFillCloseCircle, AiFillFileExcel } from "react-icons/ai";
 import Swal from "sweetalert2";
-import "./QLVL.scss";
+import "./TINHLIEU.scss";
 import { generalQuery, getCompany } from "../../../api/Api";
 import { CustomResponsiveContainer, SaveExcel } from "../../../api/GlobalFunction";
 import { MdOutlinePivotTableChart } from "react-icons/md";
@@ -36,138 +33,152 @@ import PivotTable from "../../../components/PivotChart/PivotChart";
 import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
 import {
   CustomerListData,
-  MATERIAL_TABLE_DATA,
+  MaterialPOData,
+  MaterialPOSumData,
 } from "../../../api/GlobalInterface";
-
 const TINHLIEU = () => {
   const [showhidePivotTable, setShowHidePivotTable] = useState(false);
-  const [material_table_data, set_material_table_data] = useState<
-    Array<MATERIAL_TABLE_DATA>
-  >([]);
-  const [datasxtable, setDataSXTable] = useState<Array<any>>([]);
-  const [m_name, setM_Name] = useState("");
-  const [selectedRows, setSelectedRows] = useState<MATERIAL_TABLE_DATA>({
-    M_ID: 0,
-    M_NAME: "",
-    DESCR: "",
-    CUST_CD: "",
-    CUST_NAME_KD: "",
-    SSPRICE: 0,
-    CMSPRICE: 0,
-    SLITTING_PRICE: 0,
-    MASTER_WIDTH: 0,
-    ROLL_LENGTH: 0,
-    USE_YN: "Y",
-    INS_DATE: "",
-    INS_EMPL: "",
-    UPD_DATE: "",
-    UPD_EMPL: "",
+  const [currentTable, setCurrentTable] = useState<Array<any>>([]);
+  const [columns, setColumns] = useState<Array<any>>([]);
+  const [formdata, setFormData] = useState<any>({
+    CUST_NAME_KD: '',
+    M_NAME: '',
+    SHORTAGE_ONLY: false,
+    NEWPO: false
   });
-  const load_material_table = () => {
-    generalQuery("get_material_table", {
-      M_NAME: m_name,
-    })
-      .then((response) => {
-        //console.log(response.data.data);
-        if (response.data.tk_status !== "NG") {
-          let loadeddata = response.data.data.map(
-            (element: MATERIAL_TABLE_DATA, index: number) => {
-              return {
-                ...element,
-                DESCR: element.DESCR === null ? "" : element.DESCR,
-                SSPRICE: element.SSPRICE === null ? 0 : element.SSPRICE,
-                CMSPRICE: element.CMSPRICE === null ? 0 : element.CMSPRICE,
-                SLITTING_PRICE:
-                  element.SLITTING_PRICE === null ? 0 : element.SLITTING_PRICE,
-                MASTER_WIDTH:
-                  element.MASTER_WIDTH === null ? 0 : element.MASTER_WIDTH,
-                ROLL_LENGTH:
-                  element.ROLL_LENGTH === null ? 0 : element.ROLL_LENGTH,
-                INS_DATE: moment
-                  .utc(element.INS_DATE)
-                  .format("YYYY-MM-DD HH:mm:ss"),
-                UPD_DATE: moment
-                  .utc(element.UPD_DATE)
-                  .format("YYYY-MM-DD HH:mm:ss"),
-                id: index,
-              };
-            },
-          );
-          //console.log(loadeddata);
-          set_material_table_data(loadeddata);
-          Swal.fire(
-            "Thông báo",
-            "Đã load: " + response.data.data.length + " dòng",
-            "success",
-          );
-        } else {
-          set_material_table_data([]);
-          Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
-  const seMaterialInfo = (keyname: string, value: any) => {    
-    let tempCustInfo: MATERIAL_TABLE_DATA = {
-      ...selectedRows,
+  const setFormInfo = (keyname: string, value: any) => {
+    let tempCustInfo: MaterialPOData = {
+      ...formdata,
       [keyname]: value,
     };
-    //console.log(tempcodefullinfo);
-    setSelectedRows(tempCustInfo);
+    setFormData(tempCustInfo);
   };
-  const addMaterial = async () => {
-    let materialExist: boolean = false;
-    await generalQuery("checkMaterialExist", {
-      M_NAME: selectedRows.M_NAME,
-    })
-      .then((response) => {
-        //console.log(response.data.data);
-        if (response.data.tk_status !== "NG") {
-          materialExist = true;
-        } else {
-          materialExist = false;
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-
-    if (materialExist === false) {
-      await generalQuery("addMaterial", selectedRows)
+  const load_material_table = (option: string) => {
+    if (option === 'PO') {
+      generalQuery("loadMaterialByPO", formdata)
         .then((response) => {
           //console.log(response.data.data);
           if (response.data.tk_status !== "NG") {
-            Swal.fire("Thông báo", "Thêm vật liệu thành công", "success");
+            let loadeddata = response.data.data.map(
+              (element: MaterialPOData, index: number) => {
+                return {
+                  ...element,
+                  NEED_M_QTY: Number(element.NEED_M_QTY),
+                  id: index,
+                };
+              },
+            );
+            //console.log(loadeddata);
+            //set_material_table_data(loadeddata);
+            setCurrentTable(loadeddata);
+            let keysArray = Object.getOwnPropertyNames(loadeddata[0]);
+            let column_map = keysArray.map((e, index) => {
+              return {
+                dataField: e,
+                caption: e,
+                width: 100,
+                cellRender: (ele: any) => {
+                  //console.log(ele);
+                  if (['M_NAME', 'id'].indexOf(e) > -1) {
+                    return <span style={{fontWeight:'bold'}}>{ele.data[e]}</span>;
+                  }
+                  else if (["PO_QTY","DELIVERY_QTY","PO_BALANCE"].indexOf(e)>-1) {
+                    return <span style={{ color: "#F633EA", fontWeight: "normal" }}>
+                      {ele.data[e]?.toLocaleString("en-US",)}
+                    </span>
+                  }
+                  else if (["NEED_M_QTY"].indexOf(e)>-1) {
+                    return <span style={{ color: "#2300e9", fontWeight: "bold" }}>
+                      {ele.data[e]?.toLocaleString("en-US",)}
+                    </span>
+                  }
+                  else {
+                    return <span style={{ color: "black", fontWeight: "normal" }}>
+                      {ele.data[e]?.toLocaleString("en-US",)}
+                    </span>
+                  }
+                },
+              };
+            });
+            setColumns(column_map);
+
+            Swal.fire(
+              "Thông báo",
+              "Đã load: " + response.data.data.length + " dòng",
+              "success",
+            );
           } else {
+            //set_material_table_data([]);
+            setCurrentTable([]);
+            Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
           }
         })
         .catch((error) => {
           console.log(error);
         });
-    } else {
-      Swal.fire("Thông báo", "Vật liệu đã tồn tại", "error");
     }
-  };
-  const updateMaterial = async () => {
-    generalQuery("updateMaterial", selectedRows)
-      .then((response) => {
-        //console.log(response.data.data);
-        if (response.data.tk_status !== "NG") {
-          Swal.fire("Thông báo", "Update vật liệu thành công", "success");
-        } else {
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
-  const handleSearchCodeKeyDown = (
-    e: React.KeyboardEvent<HTMLInputElement>,
-  ) => {
-    if (e.key === "Enter") {
-      load_material_table();
+    else if (option === 'ALL') {
+      generalQuery("loadMaterialMRPALL", formdata)
+        .then((response) => {
+          //console.log(response.data.data);
+          if (response.data.tk_status !== "NG") {
+            let loadeddata = response.data.data.map(
+              (element: MaterialPOSumData, index: number) => {
+                return {
+                  ...element,     
+                  NEED_M_QTY: Number(element.NEED_M_QTY),             
+                  M_SHORTAGE: Number(element.M_SHORTAGE),             
+                  id: index,
+                };
+              },
+            );
+            //console.log(loadeddata);
+            //set_material_table_data(loadeddata);
+            setCurrentTable(loadeddata);
+            let keysArray = Object.getOwnPropertyNames(loadeddata[0]);
+            let column_map = keysArray.map((e, index) => {
+              return {
+                dataField: e,
+                caption: e,
+                width: 100,
+                cellRender: (ele: any) => {
+                  //console.log(ele);
+                  if (['M_NAME', 'id'].indexOf(e) > -1) {
+                    return <span style={{fontWeight:'bold'}}>{ele.data[e]}</span>;
+                  }
+                  else if (["STOCK_M","HOLDING_M","NEED_M_QTY"].indexOf(e)>-1) {
+                    return <span style={{ color: "#6e21ff", fontWeight: "normal" }}>
+                      {ele.data[e]?.toLocaleString("en-US",)}
+                    </span>
+                  }
+                  else if (["M_SHORTAGE"].indexOf(e)>-1) {
+                    return <span style={{ color: "#ff0000", fontWeight: "bold" }}>
+                      {ele.data[e]?.toLocaleString("en-US",)}
+                    </span>
+                  }
+                  else {
+                    return <span style={{ color: "black", fontWeight: "normal" }}>
+                      {ele.data[e]?.toLocaleString("en-US",)}
+                    </span>
+                  }
+                },
+              };
+            });
+            setColumns(column_map);
+            Swal.fire(
+              "Thông báo",
+              "Đã load: " + response.data.data.length + " dòng",
+              "success",
+            );
+          } else {
+            //set_material_table_data([]);
+            setCurrentTable([]);
+            Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     }
   };
   const materialDataTable = React.useMemo(
@@ -182,13 +193,13 @@ const TINHLIEU = () => {
             cellHintEnabled={true}
             columnResizingMode={"widget"}
             showColumnLines={true}
-            dataSource={material_table_data}
+            dataSource={currentTable}
             columnWidth="auto"
             keyExpr="id"
             height={"75vh"}
             showBorders={true}
             onSelectionChanged={(e) => {
-              setSelectedRows(e.selectedRowsData[0]);
+              //setFormData(e.selectedRowsData[0]);
             }}
             onRowClick={(e) => {
               //console.log(e.data);
@@ -216,7 +227,7 @@ const TINHLIEU = () => {
                 <IconButton
                   className="buttonIcon"
                   onClick={() => {
-                    SaveExcel(datasxtable, "MaterialStatus");
+                    SaveExcel(currentTable, "MaterialStatus");
                   }}
                 >
                   <AiFillFileExcel color="green" size={15} />
@@ -248,61 +259,9 @@ const TINHLIEU = () => {
               infoText="Page #{0}. Total: {1} ({2} items)"
               displayMode="compact"
             />
-            <Column dataField="M_ID" caption="M_ID" width={100}></Column>
-            <Column dataField="M_NAME" caption="M_NAME" width={100}></Column>
-            <Column dataField="DESCR" caption="DESCR" width={100}></Column>
-            <Column dataField="CUST_CD" caption="CUST_CD" width={100}></Column>
-            <Column
-              dataField="CUST_NAME_KD"
-              caption="CUST_NAME_KD"
-              width={100}
-            ></Column>
-            <Column
-              dataField="SSPRICE"
-              caption="OPEN_PRICE"
-              width={100}
-            ></Column>
-            <Column
-              dataField="CMSPRICE"
-              caption="ORIGIN_PRICE"
-              width={100}
-            ></Column>
-            <Column
-              dataField="SLITTING_PRICE"
-              caption="SLITTING_PRICE"
-              width={100}
-            ></Column>
-            <Column
-              dataField="MASTER_WIDTH"
-              caption="MASTER_WIDTH"
-              width={100}
-            ></Column>
-            <Column
-              dataField="ROLL_LENGTH"
-              caption="ROLL_LENGTH"
-              width={100}
-            ></Column>
-            <Column dataField="USE_YN" caption="USE_YN" width={100}></Column>
-            <Column
-              dataField="INS_DATE"
-              caption="INS_DATE"
-              width={100}
-            ></Column>
-            <Column
-              dataField="INS_EMPL"
-              caption="INS_EMPL"
-              width={100}
-            ></Column>
-            <Column
-              dataField="UPD_DATE"
-              caption="UPD_DATE"
-              width={100}
-            ></Column>
-            <Column
-              dataField="UPD_EMPL"
-              caption="UPD_EMPL"
-              width={100}
-            ></Column>
+            {columns.map((column, index) => {              
+              return <Column key={index} {...column}></Column>;
+            })}
             <Summary>
               <TotalItem
                 alignment="right"
@@ -315,25 +274,8 @@ const TINHLIEU = () => {
         </CustomResponsiveContainer>
       </div>
     ),
-    [material_table_data],
+    [currentTable,columns],
   );
-  const [customerList, setCustomerList] = useState<CustomerListData[]>([]);
-  const filterOptions1 = createFilterOptions({
-    matchFrom: "any",
-    limit: 100,
-  });
-  const getcustomerlist = () => {
-    generalQuery("selectVendorList", {})
-      .then((response) => {
-        if (response.data.tk_status !== "NG") {
-          setCustomerList(response.data.data);
-        } else {
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
   const dataSource = new PivotGridDataSource({
     fields: [
       {
@@ -967,11 +909,10 @@ const TINHLIEU = () => {
         },
       },
     ],
-    store: datasxtable,
+    store: currentTable,
   });
   useEffect(() => {
-    load_material_table();
-    getcustomerlist();
+    load_material_table('PO');
     //setColumnDefinition(column_inspect_output);
   }, []);
   return (
@@ -979,150 +920,54 @@ const TINHLIEU = () => {
       <div className="tracuuDataInspection">
         <div className="tracuuDataInspectionform">
           <div className="forminput">
-            <div className="forminputcolumn">
+           {/*  <div className="forminputcolumn">
               <label>
                 <b>Mã Vật Liệu:</b>{" "}
                 <input
                   type="text"
                   placeholder="Mã Vật Liệu"
-                  value={selectedRows?.M_NAME}
-                  onChange={(e) => seMaterialInfo("M_NAME", e.target.value)}
+                  value={formdata?.M_NAME}
+                  onChange={(e) => setFormInfo("M_NAME", e.target.value)}
                 ></input>
               </label>
               <label style={{ display: "flex", alignItems: "center" }}>
-                <b>Vendor:</b>{" "}
-                <Autocomplete
-                  sx={{
-                    height: 10,
-                    width: "160px",
-                    margin: "1px",
-                    fontSize: "0.7rem",
-                    marginBottom: "20px",
-                    backgroundColor: "white",
-                  }}
-                  size="small"
-                  disablePortal
-                  options={customerList}
-                  className="autocomplete"
-                  filterOptions={filterOptions1}
-                  isOptionEqualToValue={(option: any, value: any) =>
-                    option.CUST_CD === value.CUST_CD
+                <b>Customer:</b>{" "}
+                <input
+                  type="text"
+                  placeholder="Tên khách hàng"
+                  value={formdata?.CUST_NAME_KD}
+                  onChange={(e) => setFormInfo("M_NAME", e.target.value)}
+                ></input>
+              </label>
+
+            </div> */}
+            <div className="forminputcolumn" style={{ display: 'flex', flexDirection: 'row' , alignItems: 'flex-start' }}>
+              <label>
+                <FormControlLabel
+                  label="Chỉ liệu thiếu"
+                  control={
+                    <Checkbox
+                      checked={formdata?.SHORTAGE_ONLY === true}
+                      size="small"
+                      style={{ padding: 0, margin: 0 }}
+                      onChange={(e) => {
+                        setFormInfo("SHORTAGE_ONLY", e.target.checked);
+                      }}
+                      inputProps={{ "aria-label": "controlled" }}
+                    />
                   }
-                  getOptionLabel={(option: any) =>
-                    `${option.CUST_CD !== null ? option.CUST_NAME_KD : ""}${option.CUST_CD !== null ? option.CUST_CD : ""
-                    }`
-                  }
-                  renderInput={(params) => (
-                    <TextField {...params} style={{ height: "10px" }} />
-                  )}
-                  defaultValue={{
-                    CUST_CD: getCompany() === "CMS" ? "0000" : "KH000",
-                    CUST_NAME: getCompany() === "CMS" ? "SEOJIN" : "PVN",
-                    CUST_NAME_KD: getCompany() === "CMS" ? "SEOJIN" : "PVN",
-                  }}
-                  value={{
-                    CUST_CD: selectedRows.CUST_CD,
-                    CUST_NAME: customerList.filter(
-                      (e: CustomerListData, index: number) =>
-                        e.CUST_CD === selectedRows.CUST_CD,
-                    )[0]?.CUST_NAME,
-                    CUST_NAME_KD:
-                      customerList.filter(
-                        (e: CustomerListData, index: number) =>
-                          e.CUST_CD === selectedRows.CUST_CD,
-                      )[0]?.CUST_NAME_KD === undefined
-                        ? ""
-                        : customerList.filter(
-                          (e: CustomerListData, index: number) =>
-                            e.CUST_CD === selectedRows.CUST_CD,
-                        )[0]?.CUST_NAME_KD,
-                  }}
-                  onChange={(event: any, newValue: any) => {
-                    console.log(newValue);
-                    seMaterialInfo(
-                      "CUST_CD",
-                      newValue === null ? "" : newValue.CUST_CD,
-                    );
-                  }}
                 />
-              </label>
-            </div>
-            <div className="forminputcolumn">
-              <label>
-                <b>Mô tả:</b>{" "}
-                <input
-                  type="text"
-                  placeholder="Mô tả"
-                  value={selectedRows?.DESCR}
-                  onChange={(e) => seMaterialInfo("DESCR", e.target.value)}
-                ></input>
-              </label>
-              <label>
-                <b>Open Price:</b>{" "}
-                <input
-                  type="text"
-                  placeholder="Mô tả"
-                  value={selectedRows?.SSPRICE}
-                  onChange={(e) => seMaterialInfo("SSPRICE", e.target.value)}
-                ></input>
-              </label>
-            </div>
-            <div className="forminputcolumn">
-              <label>
-                <b>Origin Price:</b>{" "}
-                <input
-                  type="text"
-                  placeholder="Mô tả"
-                  value={selectedRows?.CMSPRICE}
-                  onChange={(e) => seMaterialInfo("CMSPRICE", e.target.value)}
-                ></input>
-              </label>
-              <label>
-                <b>Slitting Price:</b>{" "}
-                <input
-                  type="text"
-                  placeholder="Mô tả"
-                  value={selectedRows?.SLITTING_PRICE}
-                  onChange={(e) =>
-                    seMaterialInfo("SLITTING_PRICE", e.target.value)
-                  }
-                ></input>
-              </label>
-            </div>
-            <div className="forminputcolumn">
-              <label>
-                <b>Master Width:</b>{" "}
-                <input
-                  type="text"
-                  placeholder="Master width"
-                  value={selectedRows?.MASTER_WIDTH}
-                  onChange={(e) =>
-                    seMaterialInfo("MASTER_WIDTH", e.target.value)
-                  }
-                ></input>
-              </label>
-              <label>
-                <b>Roll Length:</b>{" "}
-                <input
-                  type="text"
-                  placeholder="Roll length"
-                  value={selectedRows?.ROLL_LENGTH}
-                  onChange={(e) =>
-                    seMaterialInfo("ROLL_LENGTH", e.target.value)
-                  }
-                ></input>
               </label>
               <label>
                 <FormControlLabel
-                  label="Mở/Khóa"
+                  label="Chỉ PO mới"
                   control={
                     <Checkbox
-                      checked={selectedRows?.USE_YN === "Y"}
+                      checked={formdata?.NEWPO === true}
+                      size="small"
+                      style={{ padding: 0, margin: 0 }}
                       onChange={(e) => {
-                        seMaterialInfo(
-                          "USE_YN",
-                          e.target.checked === true ? "Y" : "N",
-                        );
+                        setFormInfo("NEWPO", e.target.checked);
                       }}
                       inputProps={{ "aria-label": "controlled" }}
                     />
@@ -1133,14 +978,11 @@ const TINHLIEU = () => {
           </div>
           <div className="formbutton">
             <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#129232' }} onClick={() => {
-              load_material_table();
-            }}>Refesh</Button>
+              load_material_table('PO');
+            }}>MRP PO</Button>
             <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#f05bd7' }} onClick={() => {
-              addMaterial();
-            }}>Add</Button>
-            <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#ec9d52' }} onClick={() => {
-              updateMaterial();
-            }}>Update</Button>
+              load_material_table('ALL');
+            }}>MRP TOTAL</Button>
           </div>
         </div>
         <div className="tracuuYCSXTable">{materialDataTable}</div>

@@ -2805,6 +2805,33 @@ export interface YearlyClosingData {
   DELIVERY_QTY: number;
   DELIVERED_AMOUNT: number;
 }
+export interface MaterialPOData {
+  CUST_CD: string,
+  CUST_NAME_KD: string,
+  G_CODE: string,
+  G_NAME_KD: string,
+  M_CODE: string,
+  M_NAME: string,
+  WIDTH_CD: number,
+  PO_NO: string,
+  PO_QTY: number,
+  DELIVERY_QTY: number,
+  PO_BALANCE: number,
+  PD: number,
+  CAVITY_COT: number,
+  CAVITY_HANG:number,
+  CAVITY: number,
+  NEED_M_QTY: number,
+}
+export interface MaterialPOSumData {
+  M_CODE: string,
+  M_NAME: string,
+  WIDTH_CD: number,
+  STOCK_M: number,
+  HOLDING_M: number,
+  NEED_M_QTY: number,
+  M_SHORTAGE: number,
+}
 export interface WeeklyClosingData {
   CUST_NAME_KD: string;
   DELIVERY_AMOUNT: number;

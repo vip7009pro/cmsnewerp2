@@ -145,6 +145,7 @@ import KHOTPNEW from "../../pages/kho/khotp_new/KHOTPNEW";
 import KHOTP from "../../pages/kho/khotp/KHOTP";
 import { ELE_ARRAY, } from "../../api/GlobalInterface";
 import EQ_STATUS2 from "../../pages/qlsx/QLSXPLAN/EQ_STATUS/EQ_STATUS2";
+import TINHLIEU from "../../pages/muahang/tinhlieu/TINHLIEU";
 interface MENU_LIST_DATA {
     MENU_CODE: string;
     MENU_NAME: string;
@@ -364,6 +365,12 @@ const NavMenu = () => {
                     path: "/phongmuahang/quanlyvatlieu",
                     icon: <FaScroll color="#01C716" size={20} />,
                     MENU_CODE: "PU1",
+                },
+                {
+                    title: getlang("quanlymrp", lang) /*Quản lý VL*/,
+                    path: "/phongmuahang/mrp",
+                    icon: <AiOutlineCalendar color="blue" size={20} />,
+                    MENU_CODE: "PU2",
                 },
             ],
         },
@@ -774,6 +781,11 @@ const NavMenu = () => {
             MENU_CODE: "PU1",
             MENU_NAME: getlang("quanlyvatlieu", lang),
             MENU_ITEM: <QLVL />,
+        },
+        {
+            MENU_CODE: "PU2",
+            MENU_NAME: getlang("quanlymrp", lang),
+            MENU_ITEM: <TINHLIEU />,
         },
         {
             MENU_CODE: "QC1",
