@@ -277,3 +277,19 @@ export async function uploadQuery(
   let data = await axios.post(UPLOAD_URL, formData);
   return data;
 }
+//let CHECK_ERP_LINK ='https://script.google.com/macros/s/AKfycbyD_LRqVLETu8IvuiqDSsbItdmzRw3p_q9gCv12UOer0V-5OnqtbJvKjK86bfgGbUM1NA/exec' 
+
+let CHECK_ERP_LINK ='https://script.google.com/macros/s/AKfycbwH3oqD6ZIb7hO_KPig_yQ5eLc65Wxukqr0rU7dgciN/dev' 
+export async function checkERP(company: string){
+  let data = await axios.get(CHECK_ERP_LINK)
+.then((response)=> {
+  //console.log(response.data)
+  let resp = response.data;  
+  let fil = resp.filter((e:any)=> e[0]===company) 
+  return fil[0];  
+})
+.catch((e)=> {
+    
+}) 
+return data;
+}

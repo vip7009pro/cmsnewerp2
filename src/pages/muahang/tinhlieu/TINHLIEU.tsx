@@ -44,7 +44,10 @@ const TINHLIEU = () => {
     CUST_NAME_KD: '',
     M_NAME: '',
     SHORTAGE_ONLY: false,
-    NEWPO: false
+    NEWPO: false,
+    FROM_DATE: moment().format("YYYY-MM-DD"),
+    TO_DATE: moment().format("YYYY-MM-DD"),
+    ALLTIME: false
   });
   const setFormInfo = (keyname: string, value: any) => {
     let tempCustInfo: MaterialPOData = {
@@ -941,6 +944,43 @@ const TINHLIEU = () => {
               </label>
 
             </div> */}
+             <div className="forminputcolumn">
+              <label>
+                <b>Từ ngày:</b>
+                <input
+                  onKeyDown={(e) => {
+                   
+                  }}
+                  type="date"
+                  value={formdata.FROM_DATE.slice(0, 10)}
+                  onChange={(e) => setFormInfo("FROM_DATE", e.target.value)}
+                ></input>
+              </label>
+              <label>
+                <b>Tới ngày:</b>{" "}
+                <input
+                  onKeyDown={(e) => {
+                    
+                  }}
+                  type="date"
+                  value={formdata.TO_DATE.slice(0, 10)}
+                  onChange={(e) =>  setFormInfo("TO_DATE", e.target.value)}
+                ></input>
+              </label>
+              <label>
+              <b>All Time:</b>
+              <input
+                onKeyDown={(e) => {
+                  
+                }}
+                type="checkbox"
+                name="alltimecheckbox"
+                defaultChecked={formdata.ALLTIME}
+                onChange={() =>  setFormInfo("ALLTIME", !formdata.ALLTIME)}
+              ></input>
+            </label>
+            </div>
+
             <div className="forminputcolumn" style={{ display: 'flex', flexDirection: 'row' , alignItems: 'flex-start' }}>
               <label>
                 <FormControlLabel

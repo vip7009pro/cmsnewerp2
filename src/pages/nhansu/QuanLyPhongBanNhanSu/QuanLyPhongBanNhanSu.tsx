@@ -8,7 +8,7 @@ import {
   GridToolbarQuickFilter,
 } from "@mui/x-data-grid";
 import { useContext, useEffect, useState } from "react";
-import { generalQuery, getCompany } from "../../../api/Api";
+import { generalQuery, getCompany, uploadQuery } from "../../../api/Api";
 import "./QuanLyPhongBanNhanSu.scss";
 import Swal from "sweetalert2";
 import LinearProgress from "@mui/material/LinearProgress";
@@ -17,7 +17,6 @@ import moment from "moment";
 import { UserContext } from "../../../api/Context";
 import { RootState } from "../../../redux/store";
 import { useSelector, useDispatch } from "react-redux";
-import { IconButton } from "@mui/material";
 import { BiRefresh } from "react-icons/bi";
 import {
   EmployeeTableData,
@@ -26,6 +25,9 @@ import {
   UserData,
   WorkPositionTableData,
 } from "../../../api/GlobalInterface";
+import { changeUserData } from "../../../redux/slices/globalSlice";
+import { AiOutlineCloudUpload } from "react-icons/ai";
+import { IconButton } from "@mui/material";
 
 const QuanLyPhongBanNhanSu = () => {
   const userData: UserData | undefined = useSelector(
@@ -82,8 +84,59 @@ const QuanLyPhongBanNhanSu = () => {
   const [avatar, setAvatar] = useState("");
   const [enableEdit, setEnableEdit] = useState(false);
   const [NV_CCID, setNV_CCID] = useState(0);
-
   const [resigned_check, setResignedCheck] = useState(true);
+
+  const [file, setFile] = useState<any>(null);
+  const dispatch = useDispatch();
+  const uploadFile2 = async (empl_no: string) => {
+    if(file !==null && file !== undefined)
+    {
+      if(EMPL_NO !=="")
+      {
+        uploadQuery(file, "NS_" + empl_no + ".jpg", "Picture_NS")
+        .then((response) => {
+          console.log("resopone upload:", response.data);
+          if (response.data.tk_status !== "NG") {
+            generalQuery("update_empl_image", {
+              EMPL_NO: empl_no,
+              EMPL_IMAGE: "Y",
+            })
+              .then((response) => {
+                if (response.data.tk_status !== "NG") {
+                  dispatch(changeUserData({ ...userData, EMPL_IMAGE: "Y" }));
+                  Swal.fire("Thông báo", "Upload avatar thành công", "success");
+                } else {
+                  Swal.fire("Thông báo", "Upload avatar thất bại", "error");
+                }
+              })
+              .catch((error) => {
+                console.log(error);
+              });
+          } else {
+            Swal.fire(
+              "Thông báo",
+              "Upload file thất bại:" + response.data.message,
+              "error"
+            );
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+      }
+      else
+      {
+        Swal.fire('Thông báo','Chọn nhân viên trước','error');
+      }
+    }
+    else
+    {
+      Swal.fire('Thông báo','Chọn file trước','error');
+    }
+   
+
+   
+  };
 
   const handle_them_maindept = () => {
     const insertData = {
@@ -1259,6 +1312,29 @@ const QuanLyPhongBanNhanSu = () => {
                       alt={avatar}
                     ></img>
                   }
+                  <div className="uploadavatardiv">
+                    Change Avatar:
+                    <input
+                      accept='.jpg'
+                      type='file'
+                      onChange={(e: any) => {
+                        setFile(e.target.files[0]);
+                        console.log(e.target.files[0]);
+                      }}
+                    />
+                    <IconButton className='buttonIcon' onClick={()=> {
+                      checkBP(userData,['NHANSU'],['ALL'],['ALL'],async ()=> {
+                        uploadFile2(EMPL_NO)
+                      })
+                     }}>
+                      <AiOutlineCloudUpload color='yellow' size={15} />
+                      Upload
+                    </IconButton>
+                    
+
+                  </div>
+                  
+
                 </div>
                 <div className='maindeptinput'>
                   <div className='maindeptinputbox'>

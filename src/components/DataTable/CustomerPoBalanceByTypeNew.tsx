@@ -116,6 +116,13 @@ const CustomerPobalancebyTypeNew = () => {
                         onRowUpdated={(e) => {
                             //console.log(e);
                         }}
+                        onRowPrepared={(e: any) => {
+                            if (e.data?.CUST_NAME_KD === 'TOTAL') {
+                                e.rowElement.style.background = "#e9fc40";
+                                e.rowElement.style.fontWeight = "bold";
+                            }
+
+                        }}
                     >
                         <FilterRow visible={true} />
                         <KeyboardNavigation

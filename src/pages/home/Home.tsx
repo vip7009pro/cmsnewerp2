@@ -4,7 +4,7 @@ import Sidebar from "../../components/Sidebar/Sidebar";
 import "../home/home.scss";
 import { useSpring, animated } from "@react-spring/web";
 import { ReactElement, useEffect, useState } from "react";
-import { generalQuery } from "../../api/Api";
+import { checkERP, generalQuery, logout } from "../../api/Api";
 import Swal from "sweetalert2";
 import PrimarySearchAppBar from "../../components/AppBar/AppBarCustom";
 import CHAT from "../chat/CHAT";
@@ -24,7 +24,7 @@ import AccountInfo from "../../components/Navbar/AccountInfo/AccountInfo";
 import styled from "@emotion/styled";
 import { Draggable } from "devextreme-react";
 import Cookies from "universal-cookie";
-export const current_ver: number = 252;
+export const current_ver: number = 256;
 interface ELE_ARRAY {
   REACT_ELE: ReactElement;
   ELE_NAME: string;
@@ -95,6 +95,24 @@ function Home() {
       });
   }
 
+  const checkERPLicense = async ()=> {
+    generalQuery("checkLicense", {
+      COMPANY: company
+    })
+      .then((response) => {
+        console.log(response.data.tk_status);
+        if (response.data.tk_status !== "NG") {  
+          //console.log(response.data.message);          
+        } else {
+          //console.log(response.data.message);
+          Swal.fire('Thông báo','Please check your network','error')
+          logout();
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
   useEffect(() => {
     console.log("local ver", current_ver);
     generalQuery("checkWebVer", {})
@@ -149,13 +167,14 @@ function Home() {
         getchamcong();
     }, 30000);
 
-   /*  let intervalID2 = window.setInterval(() => {
-      updatechamcongdiemdanh();
-    }, 5000); */
+    let intervalID2 = window.setInterval(() => {
+      //updatechamcongdiemdanh();
+      checkERPLicense();
+    }, 30000);
 
     return () => {
       window.clearInterval(intervalID);
-      /* window.clearInterval(intervalID2); */
+      window.clearInterval(intervalID2);
     };
   }, []);
 

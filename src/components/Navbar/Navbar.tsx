@@ -663,12 +663,20 @@ export default function Navbar() {
                   height={27.13333}
                 />
               )}
-              {company !== "CMS" && (
+              {company === "PVN" && (
                 <img
                   alt="pvn logo"
                   src="/logopvn_big.png"
                   width={114.4}
                   height={25}
+                />
+              )}
+              {company === "NHATHAN" && (
+                <img
+                  alt="nhathan logo"
+                  src="/logo_nhathan_small.png"
+                  width={160}
+                  height={40}
                 />
               )}
             </Link>

@@ -75,6 +75,7 @@ const InvoiceManager = () => {
   const userData: UserData | undefined = useSelector(
     (state: RootState) => state.totalSlice.userData,
   );
+  const [old_invoice_qty, setOld_Invoice_Qty]= useState(0);
   const [columns, setColumns] = useState<Array<any>>([]);
   const [columnsExcel, setColumnsExcel] = useState<Array<any>>([]);
   const [uploadExcelJson, setUploadExcelJSon] = useState<Array<any>>([]);
@@ -901,6 +902,7 @@ const InvoiceManager = () => {
           ? ""
           : clickedRow.current?.DELIVERY_ID
       );
+      setOld_Invoice_Qty(clickedRow.current?.DELIVERY_QTY ?? 0);
     } else {
       clearInvoiceform();
       Swal.fire("Thông báo", "Lỗi: Chọn ít nhất 1 Invoice để sửa", "error");
@@ -913,17 +915,17 @@ const InvoiceManager = () => {
       CUST_CD: selectedCust_CD?.CUST_CD,
       PO_NO: newpono,
     })
-      .then((response) => {
-        console.log(response.data.tk_status);
-        if (response.data.tk_status !== "NG") {
-          //tempjson[i].CHECKSTATUS = "NG: Đã tồn tại PO";
-        } else {
-          err_code = 1;
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    .then((response) => {
+      console.log(response.data.tk_status);
+      if (response.data.tk_status !== "NG") {
+        //tempjson[i].CHECKSTATUS = "NG: Đã tồn tại PO";
+      } else {
+        err_code = 1;
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
     let now = moment();
     let invoicedate = moment(newinvoicedate);
     if (now < invoicedate) {
@@ -943,6 +945,23 @@ const InvoiceManager = () => {
     ) {
       err_code = 4;
     }
+    await generalQuery("checkcustcodeponoPOBALANCE", {
+      G_CODE: selectedCode?.G_CODE,
+      CUST_CD: selectedCust_CD?.CUST_CD,
+      PO_NO: newpono,
+    })
+    .then((response) => {
+      console.log(response.data.tk_status);
+      if (response.data.tk_status !== "NG") {
+        let tem_this_po_balance: number = response.data.data[0].PO_BALANCE;
+        if (tem_this_po_balance + old_invoice_qty < newinvoiceQTY) err_code = 5;
+      } else {
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+
     if (err_code === 0) {
       await generalQuery("update_invoice", {
         G_CODE: selectedCode?.G_CODE,
@@ -981,7 +1000,10 @@ const InvoiceManager = () => {
       Swal.fire("Thông báo", "NG: Ver này đã bị khóa", "error");
     } else if (err_code === 4) {
       Swal.fire("Thông báo", "NG: Không để trống thông tin bắt buộc", "error");
-    } else {
+    } else if (err_code === 5) {
+      Swal.fire("Thông báo", "NG: Giao hàng nhiều hơn PO Balance", "error");
+    }
+    else {
       Swal.fire("Thông báo", "Lỗi", "error");
     }
   };

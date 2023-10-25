@@ -48,13 +48,25 @@ const CustomerWeeklyClosing = () => {
                                         })}
                                     </span>
                                 }
-                                else {
-                                    return <span style={{ color: "green", fontWeight: "normal" }}>
+                                else {                                    
+                                    if(ele.data['CUST_NAME_KD']==='TOTAL')
+                                    {
+                                        return (<span style={{ color: "green", fontWeight: "bold" }}>
                                         {ele.data[e]?.toLocaleString("en-US", {
                                             style: "currency",
                                             currency: "USD",
                                         })}
-                                    </span>
+                                    </span>)
+                                    }                                    
+                                    else
+                                    {
+                                        return (<span style={{ color: "green", fontWeight: "normal" }}>
+                                        {ele.data[e]?.toLocaleString("en-US", {
+                                            style: "currency",
+                                            currency: "USD",
+                                        })}
+                                    </span>)
+                                    }
                                 }
                             },
                         };
@@ -106,6 +118,14 @@ const CustomerWeeklyClosing = () => {
                         onRowUpdated={(e) => {
                             //console.log(e);
                         }}
+                        onRowPrepared={(e: any) => { 
+                            if (e.data?.CUST_NAME_KD === 'TOTAL')
+                            {                                
+                                e.rowElement.style.background = "#e9fc40";
+                                e.rowElement.style.fontWeight = "bold";
+                            }
+                              
+                          }}
                     >
                         <FilterRow visible={true} />
                         <KeyboardNavigation

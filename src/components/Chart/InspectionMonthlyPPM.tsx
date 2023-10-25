@@ -45,7 +45,7 @@ const InspectionMonthlyPPM = ({
     label?: any;
   }) => {
     if (active && payload && payload.length) {
-      console.log(payload);
+      //console.log(payload);
       return (
         <div
           className='custom-tooltip'

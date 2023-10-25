@@ -6,9 +6,9 @@ import { generalQuery } from '../../api/Api';
 import Swal from 'sweetalert2';
 import moment from 'moment';
 import { AiFillFileExcel } from 'react-icons/ai';
-import {    
-    IconButton,   
-  } from "@mui/material";
+import {
+    IconButton,
+} from "@mui/material";
 const CustomerDailyClosing = () => {
     const [dailyClosingData, setDailyClosingData] = useState<any>([]);
     const [columns, setColumns] = useState<Array<any>>([]);
@@ -37,11 +37,11 @@ const CustomerDailyClosing = () => {
                             width: 100,
                             cellRender: (ele: any) => {
                                 //console.log(ele);
-                                if (['CUST_NAME_KD','id'].indexOf(e)>-1) {
+                                if (['CUST_NAME_KD', 'id'].indexOf(e) > -1) {
                                     return <span>{ele.data[e]}</span>;
                                 }
-                                else if (e ==='DELIVERED_AMOUNT'){
-                                    return <span style={{ color: "#F633EA", fontWeight: "bold" }}>
+                                else if (e === 'DELIVERED_AMOUNT') {
+                                    return <span style={{ color: "#050505", fontWeight: "bold" }}>
                                         {ele.data[e]?.toLocaleString("en-US", {
                                             style: "currency",
                                             currency: "USD",
@@ -49,12 +49,22 @@ const CustomerDailyClosing = () => {
                                     </span>
                                 }
                                 else {
-                                    return <span style={{ color: "green", fontWeight: "normal" }}>
-                                        {ele.data[e]?.toLocaleString("en-US", {
-                                            style: "currency",
-                                            currency: "USD",
-                                        })}
-                                    </span>
+                                    if (ele.data['CUST_NAME_KD'] === 'TOTAL') {
+                                        return (<span style={{ color: "green", fontWeight: "bold" }}>
+                                            {ele.data[e]?.toLocaleString("en-US", {
+                                                style: "currency",
+                                                currency: "USD",
+                                            })}
+                                        </span>)
+                                    }
+                                    else {
+                                        return (<span style={{ color: "green", fontWeight: "normal" }}>
+                                            {ele.data[e]?.toLocaleString("en-US", {
+                                                style: "currency",
+                                                currency: "USD",
+                                            })}
+                                        </span>)
+                                    }
                                 }
                             },
                         };
@@ -71,14 +81,14 @@ const CustomerDailyClosing = () => {
     const dailyClosingDataTable = React.useMemo(
         () => (
             <div className="datatb">
-                 <IconButton
-                  className='buttonIcon'
-                  onClick={() => {
-                    SaveExcel(dailyClosingData, "DailyClosingData");
-                  }}
+                <IconButton
+                    className='buttonIcon'
+                    onClick={() => {
+                        SaveExcel(dailyClosingData, "DailyClosingData");
+                    }}
                 >
-                  <AiFillFileExcel color='green' size={15} />
-                  Excel
+                    <AiFillFileExcel color='green' size={15} />
+                    Excel
                 </IconButton>
                 <CustomResponsiveContainer>
                     <DataGrid
@@ -105,6 +115,13 @@ const CustomerDailyClosing = () => {
                         }}
                         onRowUpdated={(e) => {
                             //console.log(e);
+                        }}
+                        onRowPrepared={(e: any) => {
+                            if (e.data?.CUST_NAME_KD === 'TOTAL') {
+                                e.rowElement.style.background = "#e9fc40";
+                                e.rowElement.style.fontWeight = "bold";
+                            }
+
                         }}
                     >
                         <FilterRow visible={true} />

@@ -194,15 +194,15 @@ const TINHHINHCUONLIEU = () => {
                     return (
                       <div
                         style={{
-                          color: "white",
+                          color: "black",
                           fontWeight: "bold",
                           height: "20px",
                           width: "80px",
-                          backgroundColor: "#54e00d",
+                          backgroundColor: "yellow",
                           textAlign: "center",
                         }}
                       >
-                        Y
+                        R
                       </div>
                     );
                   } else {

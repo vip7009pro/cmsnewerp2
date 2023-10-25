@@ -895,7 +895,7 @@ const NavMenu = () => {
         {
             MENU_CODE: "QL6",
             MENU_NAME: getlang("quanlymrp", lang),
-            MENU_ITEM: <CAPA_MANAGER />,
+            MENU_ITEM: <TINHLIEU />,
         },
         {
             MENU_CODE: "QL7",
@@ -1021,7 +1021,7 @@ const NavMenu = () => {
                                         {
                                             sidebar_element.subNav.map((subnav_element: any, index: number) => {
                                                 return (
-                                                    <li><Link to={subnav_element.path} key={index}
+                                                    <li key={index}><Link to={subnav_element.path} key={index}
                                                         onClick={() => {
                                                             if (tabModeSwap) {
                                                                 if (

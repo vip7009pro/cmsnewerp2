@@ -459,6 +459,7 @@
             justify-items: center;
             .emplpicture {
               display: flex;
+              flex-direction: column;
               width: 20%;
               img {
                 border-radius: 5%;
@@ -1011,6 +1012,7 @@
 
             .emplpicture {
               display: flex;
+              flex-direction: column;
               margin-bottom: 20px;
               img {
                 border-radius: 5%;

@@ -115,12 +115,20 @@ const Login = () => {
               height={50}
             />
           )}
-          {company !== "CMS" && (
+          {company === "PVN" && (
             <img
               alt="cmsvina logo"
               src="/logopvn_big.png"
               width={190}
               height={80}
+            />
+          )}
+          {company === "NHATHAN" && (
+            <img
+              alt="cmsvina logo"
+              src="/logopvn_big.png"
+              width={170}
+              height={160}
             />
           )}
         </div>
@@ -176,10 +184,12 @@ const Login = () => {
               {company === "CMS" && (
                 <option value={"http://192.168.1.192:5013"}>LAN_SERVER</option>
               )}
-              {company !== "CMS" && (
+              {company === "PVN" && (
                 <option value={"http://222.252.1.63:3007"}>PUBLIC_PVN</option>
-              )}
-              {/* {company === 'PVN' && <option value={"http://192.168.100.120:3007"}>LOCAL_PVN</option>} */}
+              )}              
+              {company === "NHATHAN" && (
+                <option value={"http://222.252.1.214:3007"}>PUBLIC_NHATHAN</option>
+              )}              
               <option value={"http://localhost:3007"}>TEST_SERVER</option>
             </select>
           </label>
