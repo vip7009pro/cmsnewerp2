@@ -76,6 +76,7 @@ import {
   MaterialListData,
   UserData,
 } from "../../../api/GlobalInterface";
+import UpHangLoat from "./UpHangLoat";
 
 const BOM_MANAGER = () => {
   const labelprintref = useRef(null);
@@ -2494,15 +2495,7 @@ const BOM_MANAGER = () => {
         </div>
         <div
           className="mininavitem"
-          onClick={() =>
-            /* checkBP(
-              userData?.EMPL_NO,
-              userData?.MAINDEPTNAME,
-              ["KD", "RND"],
-              () => {
-                setNav(2);
-              }
-            ) */
+          onClick={() =>           
             checkBP(userData, ["RND", "KD"], ["ALL"], ["ALL"], () => {
               setNav(2);
             })
@@ -2513,7 +2506,7 @@ const BOM_MANAGER = () => {
             color: selection.thempohangloat === true ? "yellow" : "yellow",
           }}
         >
-          <span className="mininavtext">Quản lý Liệu</span>
+          <span className="mininavtext">Up hàng loạt</span>
         </div>
       </div>
       {selection.trapo && (
@@ -3722,8 +3715,8 @@ const BOM_MANAGER = () => {
         </div>
       )}
       {selection.thempohangloat && (
-        <div className="quanlylieu">
-          <MATERIAL_MANAGER />
+        <div className="uphangloat">
+          <UpHangLoat/>
         </div>
       )}
     </div>
