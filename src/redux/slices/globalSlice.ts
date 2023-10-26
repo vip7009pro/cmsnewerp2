@@ -13,7 +13,6 @@ import {
 const startCPN: string = "CMS";
 const socket = io(
   startCPN === "CMS" ? "http://14.160.33.94:3006" : startCPN === "PVN" ? "http://222.252.1.63:3005": startCPN === "NHATHAN"  ? "http://222.252.1.214:3005":"");
-//const socket =  io('http://localhost:3005')
 socket.on("connect", () => {
   console.log(socket.id); // x8WIv7-mJelg7on_ALbx
 });

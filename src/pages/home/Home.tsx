@@ -100,11 +100,11 @@ function Home() {
       COMPANY: company
     })
       .then((response) => {
-        console.log(response.data.tk_status);
+        //console.log(response.data.tk_status);
         if (response.data.tk_status !== "NG") {  
-          //console.log(response.data.message);          
+          console.log(response.data.message);          
         } else {
-          //console.log(response.data.message);
+          console.log(response.data.message);
           Swal.fire('Thông báo','Please check your network','error')
           logout();
         }
