@@ -1545,7 +1545,7 @@ const BOM_MANAGER = () => {
       } else if (codefullinfo.PROD_TYPE.trim() === "RIBBON") {
         CODE_27 = "E";
       }
-      let nextcodeinfo = await await getNextG_CODE(
+      let nextcodeinfo =  await getNextG_CODE(
         codefullinfo.CODE_12,
         CODE_27,
       );

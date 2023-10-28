@@ -532,8 +532,7 @@ const PoManager = () => {
       } else if (err_code === 4) {
         tempjson[i].CHECKSTATUS = "NG: Không có Code ERP này";
       }
-    }
-    
+    }    
     Swal.fire("Thông báo", "Đã hoàn thành check PO hàng loạt", "success");
     setUploadExcelJSon(tempjson);
     setTrigger(!trigger);
