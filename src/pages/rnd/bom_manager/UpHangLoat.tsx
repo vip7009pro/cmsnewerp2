@@ -100,12 +100,12 @@ const UpHangLoat = () => {
                   SAVE
                 </IconButton>                
               </Item>
-              <Item name="searchPanel" />
+              <Item name="searchPanel" />             
               <Item name="exportButton" />
               <Item name="columnChooser" />
             </Toolbar>
             <FilterRow visible={true} />
-            <SearchPanel visible={true} />
+            <SearchPanel visible={true} />            
             <ColumnChooser enabled={true} />
             <Paging defaultPageSize={15} />
             <Pager
@@ -115,7 +115,10 @@ const UpHangLoat = () => {
               showInfo={true}
               infoText="Page #{0}. Total: {1} ({2} items)"
               displayMode="compact"
-            />           
+            />    
+             {columns.map((column, index) => {              
+              return <Column key={index} {...column}></Column>;
+            })}       
             <Summary>
               <TotalItem
                 alignment="right"
@@ -164,24 +167,24 @@ const UpHangLoat = () => {
             caption: e,
             width: 100,
             cellRender: (ele: any) => {
-              console.log(e);
+              //console.log(e);
               if (e === "CHECKSTATUS") {
                 if(ele.data[e] ==='OK')
                 {
                   return (
-                    <span style={{backgroundColor:'#00d134', color: "#000000", fontWeight: "normal" }}>OK</span>
+                    <div style={{textAlign:'center',width:'120px',backgroundColor:'#00d134', color: "#000000", fontWeight: "normal" }}>OK</div>
                   );
                 }
                 else if(ele.data[e] ==='NG')
                 {
                   return (
-                    <span style={{backgroundColor:'#ff0000', color: "#ffffff", fontWeight: "normal" }}>NG</span>
+                    <div style={{textAlign:'center',width:'120px',backgroundColor:'#ff0000', color: "#ffffff", fontWeight: "normal" }}>NG</div>
                   );
                 }               
                 else
                 {
                   return (
-                    <span style={{backgroundColor:'#4313f3', color: "#ffffff", fontWeight: "normal" }}>Waiting</span>
+                    <div style={{textAlign:'center',width:'120px',backgroundColor:'#4313f3', color: "#ffffff", fontWeight: "normal" }}>Waiting</div>
                   );
                 }               
               
@@ -422,39 +425,39 @@ const UpHangLoat = () => {
         }
       }    
       let keysArray = Object.getOwnPropertyNames(tempTable[0]);
-        let column_map = keysArray.map((e, index) => {
-          return {
-            dataField: e,
-            caption: e,
-            width: 100,
-            cellRender: (ele: any) => {
-              console.log(e);
-              if (e === "CHECKSTATUS") {
-                if(ele.data[e] ==='OK')
-                {
-                  return (
-                    <span style={{backgroundColor:'#00d134', color: "#000000", fontWeight: "normal" }}>OK</span>
-                  );
-                }
-                else if(ele.data[e] ==='NG')
-                {
-                  return (
-                    <span style={{backgroundColor:'#ff0000', color: "#ffffff", fontWeight: "normal" }}>NG</span>
-                  );
-                }               
-                else
-                {
-                  return (
-                    <span style={{backgroundColor:'#4313f3', color: "#ffffff", fontWeight: "normal" }}>Waiting</span>
-                  );
-                }               
-              
-              } else {
-                return <span>{ele.data[e]}</span>;
+      let column_map = keysArray.map((e, index) => {
+        return {
+          dataField: e,
+          caption: e,
+          width: 100,
+          cellRender: (ele: any) => {
+            //console.log(e);
+            if (e === "CHECKSTATUS") {
+              if(ele.data[e] ==='OK')
+              {
+                return (
+                  <div style={{textAlign:'center', width:'120px',backgroundColor:'#00d134', color: "#000000", fontWeight: "normal" }}>OK</div>
+                );
               }
-            },
-          };
-        });
+              else if(ele.data[e] ==='NG')
+              {
+                return (
+                  <div style={{textAlign:'center', width:'120px',backgroundColor:'#ff0000', color: "#ffffff", fontWeight: "normal" }}>NG</div>
+                );
+              }               
+              else
+              {
+                return (
+                  <div style={{textAlign:'center', width:'120px',backgroundColor:'#4313f3', color: "#ffffff", fontWeight: "normal" }}>Waiting</div>
+                );
+              }               
+            
+            } else {
+              return <span>{ele.data[e]}</span>;
+            }
+          },
+        };
+      });
         setColumns(column_map);   
         setCurrentTable(tempTable);
         setTrigger(!trigger);

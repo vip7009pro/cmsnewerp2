@@ -48,7 +48,6 @@ import {
   POINT_DATA,
   UserData,
 } from "../../../api/GlobalInterface";
-
 export const renderElement = (elementList: Array<COMPONENT_DATA>) => {
   return elementList.map((ele: COMPONENT_DATA, index: number) => {
     if (ele.PHANLOAI_DT === "TEXT") {
@@ -307,7 +306,6 @@ const DESIGN_AMAZON = () => {
       setCodeDataTableFilter([]);
     }
   };
-
   const addComponent = () => {
     if (codedatatablefilter.length > 0) {
       let max_dt_no: number = 0;
@@ -409,7 +407,6 @@ const DESIGN_AMAZON = () => {
         console.log(error);
       });
   };
-
   const saveDesignAmazon = async () => {
     if (codedatatablefilter.length > 0) {
       let checkExist: boolean = await checkDesignExist(
@@ -494,12 +491,11 @@ const DESIGN_AMAZON = () => {
           saveDesignAmazon
         ); */
         checkBP(userData, ["RND"], ["ALL"], ["ALL"], saveDesignAmazon);
-
         //handleInsertBOMSX();
       }
     });
   };
-  useEffect(() => {}, [trigger]);
+  useEffect(() => { }, [trigger]);
   return (
     <div className="design_window">
       <div className="design_control" id="dsg_ctrl">
