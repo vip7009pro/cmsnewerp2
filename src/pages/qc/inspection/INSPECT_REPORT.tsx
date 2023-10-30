@@ -14,6 +14,7 @@ import CustomerPOBalanceByType from "../../../components/DataTable/CustomerPOBal
 import Widget from "../../../components/Widget/Widget";
 import WidgetInspection from "../../../components/Widget/WidgetInspection";
 import "./INSPECT_REPORT.scss";
+import InspectionWorstTable from "../../../components/DataTable/InspectionWorstTable";
 
 interface DailyPPMData {
   INSPECT_DATE?: string;
@@ -390,7 +391,7 @@ const INSPECT_REPORT = () => {
               <span className="subsection">Daily NG Rate</span>
               <InspectionDailyPPM
                 dldata={dailyppm}
-                processColor="#eb5c34"
+                processColor="#eeeb30"
                 materialColor="#53eb34"
               />
             </div>
@@ -398,7 +399,7 @@ const INSPECT_REPORT = () => {
               <span className="subsection">Weekly NG Rate</span>
               <InspectionWeeklyPPM
                 dldata={weeklyppm}
-                processColor="#eb5c34"
+                processColor="#eeeb30"
                 materialColor="#53eb34"
               />
             </div>
@@ -408,7 +409,7 @@ const INSPECT_REPORT = () => {
               <span className="subsection">Monthly NG Rate</span>
               <InspectionMonthlyPPM
                 dldata={monthlyppm}
-                processColor="#eb5c34"
+                processColor="#eeeb30"
                 materialColor="#53eb34"
               />
             </div>
@@ -416,7 +417,7 @@ const INSPECT_REPORT = () => {
               <span className="subsection">Yearly NG Rate</span>
               <InspectionYearlyPPM
                 dldata={yearlyppm}
-                processColor="#eb5c34"
+                processColor="#eeeb30"
                 materialColor="#53eb34"
               />
             </div>
@@ -444,6 +445,23 @@ const INSPECT_REPORT = () => {
               ></input>
             </label>
           </div>
+          <div className="worstinspection">
+            <div className="worsttable">
+            <span className="subsection">Worst Table</span>
+              <InspectionWorstTable fromDate={fromdate} toDate={todate}/>
+            </div>
+            <div className="worstgraph">
+            <span className="subsection">Graph</span>
+              <InspectionDailyPPM
+                dldata={dailyppm}
+                processColor="#eeeb30"
+                materialColor="#dc34eb"
+              />
+              
+            </div>
+                        
+          </div>
+          
         </div>
       </div>
       <div className="poreport"></div>

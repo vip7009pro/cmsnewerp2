@@ -98,14 +98,14 @@ const UpHangLoat = () => {
                 >
                   <AiFillFileExcel color="green" size={15} />
                   SAVE
-                </IconButton>                
+                </IconButton>
               </Item>
-              <Item name="searchPanel" />             
+              <Item name="searchPanel" />
               <Item name="exportButton" />
               <Item name="columnChooser" />
             </Toolbar>
             <FilterRow visible={true} />
-            <SearchPanel visible={true} />            
+            <SearchPanel visible={true} />
             <ColumnChooser enabled={true} />
             <Paging defaultPageSize={15} />
             <Pager
@@ -115,10 +115,10 @@ const UpHangLoat = () => {
               showInfo={true}
               infoText="Page #{0}. Total: {1} ({2} items)"
               displayMode="compact"
-            />    
-             {columns.map((column, index) => {              
+            />
+            {columns.map((column, index) => {
               return <Column key={index} {...column}></Column>;
-            })}       
+            })}
             <Summary>
               <TotalItem
                 alignment="right"
@@ -133,7 +133,6 @@ const UpHangLoat = () => {
     ),
     [currentTable, trigger, columns]
   );
-
   const readUploadFile = (e: any) => {
     e.preventDefault();
     if (e.target.files) {
@@ -156,8 +155,8 @@ const UpHangLoat = () => {
           field: "CHECKSTATUS",
           headerName: "CHECKSTATUS",
           width: 350,
-        });       
-        let filejson  = json.map((element: any, index: number) => {
+        });
+        let filejson = json.map((element: any, index: number) => {
           return { ...element, CHECKSTATUS: "Waiting", id: index };
         });
         let keysArray = Object.getOwnPropertyNames(filejson[0]);
@@ -169,62 +168,57 @@ const UpHangLoat = () => {
             cellRender: (ele: any) => {
               //console.log(e);
               if (e === "CHECKSTATUS") {
-                if(ele.data[e] ==='OK')
-                {
+                if (ele.data[e] === 'OK') {
                   return (
-                    <div style={{textAlign:'center',width:'120px',backgroundColor:'#00d134', color: "#000000", fontWeight: "normal" }}>OK</div>
+                    <div style={{ textAlign: 'center', width: '120px', backgroundColor: '#00d134', color: "#000000", fontWeight: "normal" }}>OK</div>
                   );
                 }
-                else if(ele.data[e] ==='NG')
-                {
+                else if (ele.data[e] === 'NG') {
                   return (
-                    <div style={{textAlign:'center',width:'120px',backgroundColor:'#ff0000', color: "#ffffff", fontWeight: "normal" }}>NG</div>
+                    <div style={{ textAlign: 'center', width: '120px', backgroundColor: '#ff0000', color: "#ffffff", fontWeight: "normal" }}>NG</div>
                   );
-                }               
-                else
-                {
+                }
+                else {
                   return (
-                    <div style={{textAlign:'center',width:'120px',backgroundColor:'#4313f3', color: "#ffffff", fontWeight: "normal" }}>Waiting</div>
+                    <div style={{ textAlign: 'center', width: '120px', backgroundColor: '#4313f3', color: "#ffffff", fontWeight: "normal" }}>Waiting</div>
                   );
-                }               
-              
+                }
               } else {
                 return <span>{ele.data[e]}</span>;
               }
             },
           };
-        });        
-        setColumns(column_map); 
+        });
+        setColumns(column_map);
         setCurrentTable(filejson);
       };
       reader.readAsArrayBuffer(e.target.files[0]);
     }
   };
-  const checkG_NAME_KD_Exist = async (g_name_kd: string)=> {
-    let gnamekdExist:boolean = false;
+  const checkG_NAME_KD_Exist = async (g_name_kd: string) => {
+    let gnamekdExist: boolean = false;
     await generalQuery("checkGNAMEKDExist", {
       G_NAME_KD: g_name_kd
     })
-    .then((response) => {
-      console.log(response.data);
-      if (response.data.tk_status !== "NG") {
-        gnamekdExist = true;
-      } else {
-        gnamekdExist = false;
-      }
-    })
-    .catch((error) => {
-      console.log(error);
-    });
+      .then((response) => {
+        console.log(response.data);
+        if (response.data.tk_status !== "NG") {
+          gnamekdExist = true;
+        } else {
+          gnamekdExist = false;
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
     return gnamekdExist;
   }
   const handleCheckCodeInfo = async (codefullinfo: CODE_FULL_INFO) => {
     let abc: CODE_FULL_INFO = codefullinfo;
     let result: boolean = true;
-
-    if (getCompany() !== "CMS" && getUserData()?.MAINDEPTNAME === "KD") {     
+    if (getCompany() !== "CMS" && getUserData()?.MAINDEPTNAME === "KD") {
       result = true;
-    } else {      
+    } else {
       for (const [k, v] of Object.entries(abc)) {
         if (
           (v === null || v === "") &&
@@ -349,10 +343,9 @@ const UpHangLoat = () => {
   const handleAddNewCode = async (codefullinfo: CODE_FULL_INFO) => {
     //console.log(handleCheckCodeInfo());
     let insertStatus: boolean = false;
-    let checkg_name_kd:boolean = await checkG_NAME_KD_Exist(codefullinfo.G_NAME_KD===undefined? 'zzzzzzzzz': codefullinfo.G_NAME_KD);
-    console.log('checkg_name_kd',checkg_name_kd);
-
-    if ((getCompany()==='CMS') && await handleCheckCodeInfo(codefullinfo) || (getCompany()!=='CMS' && checkg_name_kd=== false)) {
+    let checkg_name_kd: boolean = await checkG_NAME_KD_Exist(codefullinfo.G_NAME_KD === undefined ? 'zzzzzzzzz' : codefullinfo.G_NAME_KD);
+    console.log('checkg_name_kd', checkg_name_kd);
+    if ((getCompany() === 'CMS') && await handleCheckCodeInfo(codefullinfo) || (getCompany() !== 'CMS' && checkg_name_kd === false)) {
       let CODE_27 = "C";
       if (
         codefullinfo.PROD_TYPE.trim() === "TSP" ||
@@ -367,7 +360,7 @@ const UpHangLoat = () => {
       } else if (codefullinfo.PROD_TYPE.trim() === "RIBBON") {
         CODE_27 = "E";
       }
-      let nextcodeinfo =  await getNextG_CODE(
+      let nextcodeinfo = await getNextG_CODE(
         codefullinfo.CODE_12,
         CODE_27,
       );
@@ -395,35 +388,28 @@ const UpHangLoat = () => {
       handleinsertCodeTBG(nextcode, codefullinfo);
     }
     else {
-      if(getCompany()==='CMS')
-      {
-
+      if (getCompany() === 'CMS') {
       }
-      else
-      {
+      else {
         //Swal.fire('Cảnh báo','Code '+(codefullinfo.G_NAME_KD===undefined? 'zzzzzzzzz': codefullinfo.G_NAME_KD)+ ' đã tồn tại','error');
       }
     }
     return insertStatus;
   };
-  const addhangloat = async ()=> {
-    if(currentTable.length !==0)
-    {
+  const addhangloat = async () => {
+    if (currentTable.length !== 0) {
       let err_code: string = '';
       let tempTable = currentTable;
-
-      for(let i=0;i<currentTable.length;i++)
-      {
+      for (let i = 0; i < currentTable.length; i++) {
         let insertStatus = await handleAddNewCode(currentTable[i]);
-        if(insertStatus === false) 
-        {
+        if (insertStatus === false) {
           err_code += `${currentTable[i].G_NAME_KD}: NG | `;
           tempTable[i]['CHECKSTATUS'] = 'NG';
         }
         else {
           tempTable[i]['CHECKSTATUS'] = 'OK';
         }
-      }    
+      }
       let keysArray = Object.getOwnPropertyNames(tempTable[0]);
       let column_map = keysArray.map((e, index) => {
         return {
@@ -433,46 +419,39 @@ const UpHangLoat = () => {
           cellRender: (ele: any) => {
             //console.log(e);
             if (e === "CHECKSTATUS") {
-              if(ele.data[e] ==='OK')
-              {
+              if (ele.data[e] === 'OK') {
                 return (
-                  <div style={{textAlign:'center', width:'120px',backgroundColor:'#00d134', color: "#000000", fontWeight: "normal" }}>OK</div>
+                  <div style={{ textAlign: 'center', width: '120px', backgroundColor: '#00d134', color: "#000000", fontWeight: "normal" }}>OK</div>
                 );
               }
-              else if(ele.data[e] ==='NG')
-              {
+              else if (ele.data[e] === 'NG') {
                 return (
-                  <div style={{textAlign:'center', width:'120px',backgroundColor:'#ff0000', color: "#ffffff", fontWeight: "normal" }}>NG</div>
+                  <div style={{ textAlign: 'center', width: '120px', backgroundColor: '#ff0000', color: "#ffffff", fontWeight: "normal" }}>NG</div>
                 );
-              }               
-              else
-              {
+              }
+              else {
                 return (
-                  <div style={{textAlign:'center', width:'120px',backgroundColor:'#4313f3', color: "#ffffff", fontWeight: "normal" }}>Waiting</div>
+                  <div style={{ textAlign: 'center', width: '120px', backgroundColor: '#4313f3', color: "#ffffff", fontWeight: "normal" }}>Waiting</div>
                 );
-              }               
-            
+              }
             } else {
               return <span>{ele.data[e]}</span>;
             }
           },
         };
       });
-        setColumns(column_map);   
-        setCurrentTable(tempTable);
-        setTrigger(!trigger);
-      if(err_code ==='')
-      {
-        Swal.fire('Thông báo','Up code hàng loạt thành công','success');
+      setColumns(column_map);
+      setCurrentTable(tempTable);
+      setTrigger(!trigger);
+      if (err_code === '') {
+        Swal.fire('Thông báo', 'Up code hàng loạt thành công', 'success');
       }
-      else
-      {
-        Swal.fire('Thông báo','Up thất bại các code sau, hãy check lại thông tin','error');
-      }      
+      else {
+        Swal.fire('Thông báo', 'Up thất bại các code sau, hãy check lại thông tin', 'error');
+      }
     }
-    else
-    {
-      Swal.fire('Thông báo','Kéo file vào trước khi up','error');
+    else {
+      Swal.fire('Thông báo', 'Kéo file vào trước khi up', 'error');
     }
   }
   useEffect(() => {
@@ -481,10 +460,10 @@ const UpHangLoat = () => {
   return (
     <div className="uphangloatcode">
       <div className="tracuuDataInspection">
-        <div className="tracuuDataInspectionform">     
-        <div className="forminput">
-          <div className="forminputcolumn">
-          <input               
+        <div className="tracuuDataInspectionform">
+          <div className="forminput">
+            <div className="forminputcolumn">
+              <input
                 className='selectfilebutton'
                 type='file'
                 name='upload'
@@ -492,22 +471,18 @@ const UpHangLoat = () => {
                 onChange={(e: any) => {
                   readUploadFile(e);
                 }}
-            />
+              />
+            </div>
+            <div className="forminputcolumn">
+              <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#129232' }} onClick={() => {
+                addhangloat();
+              }}>UP CODE</Button>
+              {/* <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#f05bd7' }} onClick={() => {
+              }}>UP BOM</Button> */}
+            </div>
           </div>
-          <div className="forminputcolumn">
-          <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#129232' }} onClick={() => {
-              addhangloat();
-            }}>UP CODE</Button>
-            <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#f05bd7' }} onClick={() => {
-              
-            }}>UP BOM</Button>
-          </div>
-        </div>    
-          
-            
-
         </div>
-        <div className="tracuuYCSXTable">{materialDataTable}</div>      
+        <div className="tracuuYCSXTable">{materialDataTable}</div>
       </div>
     </div>
   );

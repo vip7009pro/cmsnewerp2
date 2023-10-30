@@ -519,7 +519,7 @@ export default function Navbar() {
     },
     {
       MENU_CODE: "SX12",
-      MENU_NAME: "PLAN RESULT",
+      MENU_NAME: getlang("hieusuatsx", lang),
       MENU_ITEM: <PLANRESULT />,
     },
     {
