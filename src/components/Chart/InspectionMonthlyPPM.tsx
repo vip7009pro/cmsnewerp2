@@ -77,7 +77,7 @@ const InspectionMonthlyPPM = ({
       <ComposedChart
         width={500}
         height={300}
-        data={dldata?.reverse()}
+        data={dldata}
         margin={{
           top: 5,
           right: 30,

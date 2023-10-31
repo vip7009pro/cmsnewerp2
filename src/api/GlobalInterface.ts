@@ -2934,3 +2934,30 @@ export interface YearlyData {
   processColor?: string;
   materialColor?: string;
 }
+export interface FCSTAmountData {
+  FCSTYEAR: number;
+  FCSTWEEKNO: number;
+  FCST4W_QTY: number;
+  FCST4W_AMOUNT: number;
+  FCST8W_QTY: number;
+  FCST8W_AMOUNT: number;
+}
+export interface WorstData {
+  ERR_CODE: string,
+  ERR_NAME_VN: string,
+  ERR_NAME_KR: string,
+  NG_QTY: number,
+  NG_AMOUNT: number,
+  id: number
+}
+export interface WorstCodeData {
+  G_NAME_KD: string,
+  INSPECT_TOTAL_QTY: number,
+  NG_QTY: number,
+  NG_AMOUNT: number,
+  id: number,
+}
+export interface WidgetData_POBalanceSummary {
+  po_balance_qty: number;
+  po_balance_amount: number;
+}

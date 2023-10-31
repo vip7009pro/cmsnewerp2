@@ -19,11 +19,11 @@ import {
 
 import { generalQuery } from "../../api/Api";
 import { CustomResponsiveContainer } from "../../api/GlobalFunction";
-import { WeeklyClosingData, WorstData } from "../../api/GlobalInterface";
+import { WorstCodeData, WorstData } from "../../api/GlobalInterface";
 import Swal from "sweetalert2";
 
-const ChartInspectionWorst = ({dailyClosingData, worstby}: {dailyClosingData: Array<WorstData>, worstby: string}) => {
-  const [tempdata, setTempData]= useState<Array<WorstData>>([]);
+const ChartWorstCodeByErrCode = ({dailyClosingData, worstby}: {dailyClosingData: Array<WorstCodeData>, worstby: string}) => {
+  const [tempdata, setTempData]= useState<Array<WorstCodeData>>([]);
   const formatCash = (n: number) => {
     if (n < 1e3) return n;
     if (n >= 1e3) return +(n / 1e3).toFixed(1) + "K$";
@@ -75,34 +75,33 @@ const ChartInspectionWorst = ({dailyClosingData, worstby}: {dailyClosingData: Ar
     index?: any;
   }) => {
     const RADIAN = Math.PI / 180;
-    const radius = 20 + innerRadius + (outerRadius - innerRadius);
+    const radius = 30 + innerRadius + (outerRadius - innerRadius);
     const x = cx + radius * Math.cos(-midAngle * RADIAN);
     const y = cy + radius * Math.sin(-midAngle * RADIAN);
     
-    return (
-      
+    return (     
       <text
         x={x}
         y={y}
-        fill='#06034b'
+        fill='#0b0672'
         textAnchor={x > cx ? "start" : "end"}
         dominantBaseline='central'
-        fontSize={'0.8rem'}
+        fontSize={'0.9rem'}
+        color="black"
       >
-        {tempdata[index]?.ERR_NAME_VN} ({tempdata[index]?.ERR_NAME_KR}) : (
+        {tempdata[index]?.G_NAME_KD}: (
         {value.toLocaleString("en-US", worstby ==='AMOUNT' && {
           style: "currency",
           currency: "USD",
         })}
         )
-      </text>
-     
+      </text>      
     );
   };
   
   useEffect(() => { 
     setTempData(dailyClosingData);
-  }, [dailyClosingData, worstby]);
+  }, [dailyClosingData, worstby,]);
   const COLORS = [
     "#cc0000",
     "#cc3300",
@@ -142,13 +141,13 @@ const ChartInspectionWorst = ({dailyClosingData, worstby}: {dailyClosingData: Ar
         formatter={(value, entry) => (
           <span style={{fontSize:'0.8rem', fontWeight:'bold', color:'black'}}>{value}</span>
         )}
-        height={10}
+        height={30}
         />
         <Pie
           dataKey={worstby ==='QTY'? 'NG_QTY': 'NG_AMOUNT'}
-          nameKey='ERR_NAME_VN'
+          nameKey='G_NAME_KD'
           isAnimationActive={true}
-          data={tempdata.filter((e:WorstData, index: number)=> index <5)}
+          data={tempdata.filter((e:WorstCodeData, index: number)=> index <5)}
           cx='50%'
           cy='50%'
           outerRadius={150}
@@ -166,4 +165,4 @@ const ChartInspectionWorst = ({dailyClosingData, worstby}: {dailyClosingData: Ar
     </CustomResponsiveContainer>
   );
 };
-export default ChartInspectionWorst;
+export default ChartWorstCodeByErrCode;
