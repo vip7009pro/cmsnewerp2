@@ -625,7 +625,7 @@ const NavMenu = () => {
                     MENU_CODE: "SX11",
                 },
                 {
-                    title: "PLAN RESULT",
+                    title: getlang("hieusuatsx", lang),
                     path: "sx/planresult",
                     icon: <BiTrendingUp color="green" size={20} />,
                     MENU_CODE: "SX12",
@@ -984,7 +984,7 @@ const NavMenu = () => {
         },
         {
             MENU_CODE: "SX12",
-            MENU_NAME: "PLAN RESULT",
+            MENU_NAME: getlang("hieusuatsx", lang),
             MENU_ITEM: <PLANRESULT />,
         },
         {

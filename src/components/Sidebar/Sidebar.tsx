@@ -567,7 +567,7 @@ const Sidebar = () => {
           MENU_CODE: "SX11",
         },
         {
-          title: "PLAN RESULT",
+          title: getlang("hieusuatsx", lang),
           path: "sx/planresult",
           icon: <BiTrendingUp color="green" size={15} />,
           MENU_CODE: "SX12",

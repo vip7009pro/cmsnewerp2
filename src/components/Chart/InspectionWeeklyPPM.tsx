@@ -86,9 +86,8 @@ const InspectionWeeklyPPM = ({
         }}
       >
         <CartesianGrid strokeDasharray='3 3' className='chartGrid' />
-        <XAxis dataKey='WEEK_NUM'>
-          {" "}
-          <Label value='Tuần' offset={0} position='insideBottom' />
+        <XAxis dataKey='WEEK_NUM' height={40} tick={{fontSize:'0.7rem'}}>         
+          <Label value='Tuần' offset={0} position='insideBottom' style={{fontWeight:'normal', fontSize:'0.7rem'}}/>
         </XAxis>
         <YAxis
           yAxisId='left-axis'
@@ -96,7 +95,9 @@ const InspectionWeeklyPPM = ({
             value: "NG Rate",
             angle: -90,
             position: "insideLeft",
+            fontSize:'0.7rem'    
           }}
+          tick={{fontSize:'0.7rem'}}
           tickFormatter={(value) =>
             new Intl.NumberFormat("en", {
               notation: "compact",
@@ -106,7 +107,14 @@ const InspectionWeeklyPPM = ({
           tickCount={6}
         />
         <Tooltip content={<CustomTooltip />} />
-        <Legend />
+        <Legend 
+        verticalAlign="top"
+        align="center"
+        iconSize={15}
+        iconType="diamond"
+        formatter={(value, entry) => (
+          <span style={{fontSize:'0.7rem', fontWeight:'bold'}}>{value}</span>
+        )}/>
         <Line
           yAxisId='left-axis'
           type='monotone'
@@ -120,7 +128,7 @@ const InspectionWeeklyPPM = ({
           dataKey='PROCESS_PPM'
           stroke='white'
           fill={processColor}
-          label={{ position: "insideTop", formatter: labelFormatter }}
+          label={{ position: "insideTop", formatter: labelFormatter,fontSize:'0.7rem', fontWeight:'bold', color:'black' }}
         ></Bar>
         <Bar
           stackId='a'
@@ -129,7 +137,7 @@ const InspectionWeeklyPPM = ({
           dataKey='MATERIAL_PPM'
           stroke='white'
           fill={materialColor}
-          label={{ position: "insideTop", formatter: labelFormatter }}
+          label={{ position: "insideTop", formatter: labelFormatter, fontSize:'0.7rem', fontWeight:'bold', color:'black' }}
         ></Bar>
       </ComposedChart>
     </CustomResponsiveContainer>

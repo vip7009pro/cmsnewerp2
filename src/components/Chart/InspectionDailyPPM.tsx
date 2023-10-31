@@ -32,7 +32,7 @@ const InspectionDailyPPM = ({
   };
 
   const labelFormatter = (value: number) => {
-    return formatCash(value);
+    return formatCash(value); 
   };
 
   const CustomTooltip = ({
@@ -84,9 +84,8 @@ const InspectionDailyPPM = ({
         }}
       >
         <CartesianGrid strokeDasharray='3 3' className='chartGrid' />
-        <XAxis dataKey='INSPECT_DATE'>
-          {" "}
-          <Label value='Ngày tháng' offset={0} position='insideBottom' />
+        <XAxis dataKey='INSPECT_DATE' height={40} tick={{fontSize:'0.7rem'}}>         
+          <Label value='Ngày tháng' offset={0} position='insideBottom' style={{fontWeight:'normal', fontSize:'0.7rem'}} />
         </XAxis>
         <YAxis
           yAxisId='left-axis'
@@ -94,7 +93,9 @@ const InspectionDailyPPM = ({
             value: "NG Rate",
             angle: -90,
             position: "insideLeft",
+            fontSize:'0.7rem'    
           }}
+          tick={{fontSize:'0.7rem'}}
           tickFormatter={(value) =>
             new Intl.NumberFormat("en", {
               notation: "compact",
@@ -104,7 +105,14 @@ const InspectionDailyPPM = ({
           tickCount={7}
         />
         <Tooltip content={<CustomTooltip />} />
-        <Legend />
+        <Legend 
+        verticalAlign="top"
+        align="center"
+        iconSize={15}
+        iconType="diamond"
+        formatter={(value, entry) => (
+          <span style={{fontSize:'0.7rem', fontWeight:'bold'}}>{value}</span>
+        )}/>
         <Line
           yAxisId='left-axis'
           type='monotone'
@@ -118,7 +126,7 @@ const InspectionDailyPPM = ({
           dataKey='PROCESS_PPM'
           stroke='white'
           fill={processColor}
-          label={{ position: "insideTop", formatter: labelFormatter }}
+          label={{ position: "insideTop", formatter: labelFormatter, fontSize:'0.7rem', fontWeight:'bold', color:'black' }}         
         ></Bar>
         <Bar
           stackId='a'
@@ -127,7 +135,7 @@ const InspectionDailyPPM = ({
           dataKey='MATERIAL_PPM'
           stroke='white'
           fill={materialColor}
-          label={{ position: "insideTop", formatter: labelFormatter }}
+          label={{ position: "insideTop", formatter: labelFormatter,fontSize:'0.7rem', fontWeight:'bold', color:'black' }}         
         ></Bar>
       </ComposedChart>
     </CustomResponsiveContainer>

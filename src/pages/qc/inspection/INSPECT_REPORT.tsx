@@ -14,104 +14,54 @@ import CustomerPOBalanceByType from "../../../components/DataTable/CustomerPOBal
 import Widget from "../../../components/Widget/Widget";
 import WidgetInspection from "../../../components/Widget/WidgetInspection";
 import "./INSPECT_REPORT.scss";
+import InspectionWorstTable from "../../../components/DataTable/InspectionWorstTable";
+import ChartInspectionWorst from "../../../components/Chart/ChartInspectionWorst";
+import { DailyPPMData, FCSTAmountData, MonthlyPPMData, WeeklyPPMData, WidgetData_POBalanceSummary, WorstData, YearlyPPMData } from "../../../api/GlobalInterface";
 
-interface DailyPPMData {
-  INSPECT_DATE?: string;
-  INSPECT_TOTAL_QTY?: number;
-  MATERIAL_NG?: number;
-  PROCESS_NG?: number;
-  TOTAL_NG?: number;
-  TOTAL_PPM?: number;
-  MATERIAL_PPM?: number;
-  PROCESS_PPM?: number;
-}
-interface MonthlyPPMData {
-  YEAR_NUM?: number;
-  MONTH_NUM?: number;
-  INSPECT_TOTAL_QTY?: number;
-  MATERIAL_NG?: number;
-  PROCESS_NG?: number;
-  TOTAL_NG?: number;
-  TOTAL_PPM?: number;
-  MATERIAL_PPM?: number;
-  PROCESS_PPM?: number;
-}
-interface WeeklyPPMData {
-  YEAR_NUM?: number;
-  WEEK_NUM?: number;
-  INSPECT_TOTAL_QTY?: number;
-  MATERIAL_NG?: number;
-  PROCESS_NG?: number;
-  TOTAL_NG?: number;
-  TOTAL_PPM?: number;
-  MATERIAL_PPM?: number;
-  PROCESS_PPM?: number;
-}
-interface YearlyPPMData {
-  YEAR_NUM?: number;
-  INSPECT_TOTAL_QTY?: number;
-  MATERIAL_NG?: number;
-  PROCESS_NG?: number;
-  TOTAL_NG?: number;
-  TOTAL_PPM?: number;
-  MATERIAL_PPM?: number;
-  PROCESS_PPM?: number;
-}
-interface POBalanceSummaryData {
-  PO_QTY: number;
-  TOTAL_DELIVERED: number;
-  PO_BALANCE: number;
-  PO_AMOUNT: number;
-  DELIVERED_AMOUNT: number;
-  BALANCE_AMOUNT: number;
-}
-interface FCSTAmountData {
-  FCSTYEAR: number;
-  FCSTWEEKNO: number;
-  FCST4W_QTY: number;
-  FCST4W_AMOUNT: number;
-  FCST8W_QTY: number;
-  FCST8W_AMOUNT: number;
-}
-interface WidgetData_POBalanceSummary {
-  po_balance_qty: number;
-  po_balance_amount: number;
-}
 const INSPECT_REPORT = () => {
   const [dailyppm1, setDailyPPM1] = useState<DailyPPMData[]>([]);
   const [weeklyppm1, setWeeklyPPM1] = useState<WeeklyPPMData[]>([]);
   const [monthlyppm1, setMonthlyPPM1] = useState<MonthlyPPMData[]>([]);
   const [yearlyppm1, setYearlyPPM1] = useState<YearlyPPMData[]>([]);
-
   const [dailyppm2, setDailyPPM2] = useState<DailyPPMData[]>([]);
   const [weeklyppm2, setWeeklyPPM2] = useState<WeeklyPPMData[]>([]);
   const [monthlyppm2, setMonthlyPPM2] = useState<MonthlyPPMData[]>([]);
   const [yearlyppm2, setYearlyPPM2] = useState<YearlyPPMData[]>([]);
-
   const [dailyppm, setDailyPPM] = useState<DailyPPMData[]>([]);
   const [weeklyppm, setWeeklyPPM] = useState<WeeklyPPMData[]>([]);
   const [monthlyppm, setMonthlyPPM] = useState<MonthlyPPMData[]>([]);
   const [yearlyppm, setYearlyPPM] = useState<YearlyPPMData[]>([]);
-
-
   const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
   const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));
-
-  const [widgetdata_pobalancesummary, setWidgetData_PoBalanceSummary] =
-    useState<WidgetData_POBalanceSummary>({
-      po_balance_qty: 0,
-      po_balance_amount: 0,
-    });
-  const [widgetdata_fcstAmount, setWidgetData_FcstAmount] =
-    useState<FCSTAmountData>({
-      FCSTYEAR: 0,
-      FCSTWEEKNO: 1,
-      FCST4W_QTY: 0,
-      FCST4W_AMOUNT: 0,
-      FCST8W_QTY: 0,
-      FCST8W_AMOUNT: 0,
-    });
-
+  const [worstby, setWorstBy] = useState('AMOUNT');
+  const [ng_type, setNg_Type] = useState('ALL'); 
+  const [worstdatatable, setWorstDataTable] = useState<Array<WorstData>>([]);  
+  const handleGetInspectionWorst = (from_date: string, to_date: string, worst_by: string, ng_type: string) => {
+    generalQuery("getInspectionWorstTable", { FROM_DATE: from_date, TO_DATE: to_date, WORSTBY: worst_by, NG_TYPE: ng_type })
+      .then((response) => {
+        if (response.data.tk_status !== "NG") {
+          //console.log(response.data.data);
+          let loadeddata = response.data.data.map(
+            (element: WorstData, index: number) => {
+              return {
+                ...element,
+                NG_QTY: Number(element.NG_QTY),
+                NG_AMOUNT: Number(element.NG_AMOUNT),
+                id: index
+              };
+            }
+          );
+          //console.log(loadeddata);
+          setWorstDataTable(loadeddata);
+          
+        } else {
+          Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
   const handle_getDailyPPM = (FACTORY: string) => {
     generalQuery("inspect_daily_ppm", {
       FACTORY: FACTORY,
@@ -137,7 +87,6 @@ const INSPECT_REPORT = () => {
           } else {
             setDailyPPM(loadeddata);
           }
-
         } else {
         }
       })
@@ -189,7 +138,7 @@ const INSPECT_REPORT = () => {
           );
           if (FACTORY === "NM1") {
             setMonthlyPPM1(loadeddata);
-          } else if (FACTORY === "NM1") {
+          } else if (FACTORY === "NM2") {
             setMonthlyPPM2(loadeddata);
           } else {
             setMonthlyPPM(loadeddata)
@@ -217,7 +166,7 @@ const INSPECT_REPORT = () => {
           );
           if (FACTORY === "NM1") {
             setYearlyPPM1(loadeddata);
-          } else if (FACTORY === "NM1") {
+          } else if (FACTORY === "NM2") {
             setYearlyPPM2(loadeddata);
           } else {
             setYearlyPPM(loadeddata)
@@ -229,17 +178,17 @@ const INSPECT_REPORT = () => {
         console.log(error);
       });
   };
-
-  useEffect(() => {    
+  useEffect(() => {
     handle_getDailyPPM("ALL");
     handle_getWeeklyPPM("ALL");
     handle_getMonthlyPPM("ALL");
-    handle_getYearlyPPM("ALL");  
+    handle_getYearlyPPM("ALL");
+    handleGetInspectionWorst(fromdate, todate, worstby, ng_type);
   }, []);
   return (
     <div className="inspectionreport">
       <div className="doanhthureport">
-        <span className="section_title">1. NG Rate Trending</span>        
+        <span className="section_title">1. NG Rate Trending</span>
         <div className="revenuewidget">
           <div className="revenuwdg">
             <WidgetInspection
@@ -280,13 +229,13 @@ const INSPECT_REPORT = () => {
               label="This year NG"
               topColor="#b3c6ff"
               botColor="#b3ecff"
-              material_ppm={yearlyppm[yearlyppm.length-1]?.MATERIAL_PPM}
-              process_ppm={yearlyppm[yearlyppm.length-1]?.PROCESS_PPM}
-              total_ppm={yearlyppm[yearlyppm.length-1]?.TOTAL_PPM}
+              material_ppm={yearlyppm[yearlyppm.length - 1]?.MATERIAL_PPM}
+              process_ppm={yearlyppm[yearlyppm.length - 1]?.PROCESS_PPM}
+              total_ppm={yearlyppm[yearlyppm.length - 1]?.TOTAL_PPM}
             />
           </div>
         </div>
-       {/*  <span className="subsection_title">a. FACTORY 1</span>
+        {/*  <span className="subsection_title">a. FACTORY 1</span>
         <div className="revenuewidget">
           <div className="revenuwdg">
             <WidgetInspection
@@ -383,56 +332,56 @@ const INSPECT_REPORT = () => {
         <br></br>
         <hr></hr>
         <div className="graph">
-          <span className="section_title">2. NG Trending</span>          
+          <span className="section_title">2. NG Trending</span>
           <div className="dailygraphtotal">
-          <div className="dailygraphtotal">
-            <div className="dailygraph">
-              <span className="subsection">Daily NG Rate</span>
-              <InspectionDailyPPM
-                dldata={dailyppm}
-                processColor="#eb5c34"
-                materialColor="#53eb34"
-              />
+            <div className="dailygraphtotal">
+              <div className="dailygraph">
+                <span className="subsection">Daily NG Rate</span>
+                <InspectionDailyPPM
+                  dldata={dailyppm}
+                  processColor="#eeeb30"
+                  materialColor="#53eb34"
+                />
+              </div>
+              <div className="dailygraph">
+                <span className="subsection">Weekly NG Rate</span>
+                <InspectionWeeklyPPM
+                  dldata={weeklyppm}
+                  processColor="#eeeb30"
+                  materialColor="#53eb34"
+                />
+              </div>
             </div>
-            <div className="dailygraph">
-              <span className="subsection">Weekly NG Rate</span>
-              <InspectionWeeklyPPM
-                dldata={weeklyppm}
-                processColor="#eb5c34"
-                materialColor="#53eb34"
-              />
+            <div className="monthlyweeklygraph">
+              <div className="dailygraph">
+                <span className="subsection">Monthly NG Rate</span>
+                <InspectionMonthlyPPM
+                  dldata={monthlyppm}
+                  processColor="#eeeb30"
+                  materialColor="#53eb34"
+                />
+              </div>
+              <div className="dailygraph">
+                <span className="subsection">Yearly NG Rate</span>
+                <InspectionYearlyPPM
+                  dldata={yearlyppm}
+                  processColor="#eeeb30"
+                  materialColor="#53eb34"
+                />
+              </div>
             </div>
           </div>
-          <div className="monthlyweeklygraph">
-            <div className="dailygraph">
-              <span className="subsection">Monthly NG Rate</span>
-              <InspectionMonthlyPPM
-                dldata={monthlyppm}
-                processColor="#eb5c34"
-                materialColor="#53eb34"
-              />
-            </div>
-            <div className="dailygraph">
-              <span className="subsection">Yearly NG Rate</span>
-              <InspectionYearlyPPM
-                dldata={yearlyppm}
-                processColor="#eb5c34"
-                materialColor="#53eb34"
-              />
-            </div>
-          </div>
-          </div>  
-                 
-          <span className="section_title">3. WORST</span>
-          <br></br>
-          <div className="pobalancesummary">
-            <span className="subsection">Select Data Range: </span>
+          <span className="section_title">3. WORST</span>          
+          <div className="pobalancesummary">            
             <label>
               <b>Từ ngày:</b>
               <input
                 type="date"
                 value={fromdate.slice(0, 10)}
-                onChange={(e) => setFromDate(e.target.value)}
+                onChange={(e) => {
+                  setFromDate(e.target.value);
+                  handleGetInspectionWorst(e.target.value, todate, worstby, ng_type);
+                }}
               ></input>
             </label>
             <label>
@@ -440,9 +389,53 @@ const INSPECT_REPORT = () => {
               <input
                 type="date"
                 value={todate.slice(0, 10)}
-                onChange={(e) => setToDate(e.target.value)}
+                onChange={(e) => {
+                  setToDate(e.target.value)
+                  handleGetInspectionWorst(fromdate, e.target.value, worstby, ng_type);
+                }}
               ></input>
             </label>
+            <label>
+              <b>Worst by:</b>{" "}
+              <select
+                name="worstby"
+                value={worstby}
+                onChange={(e) => {
+                  setWorstBy(e.target.value);
+                  handleGetInspectionWorst(fromdate, todate, e.target.value, ng_type);
+                }}
+              >
+                <option value={"QTY"}>QTY</option>
+                <option value={"AMOUNT"}>AMOUNT</option>
+              </select>
+            </label>
+            <label>
+              <b>NG TYPE:</b>{" "}
+              <select
+                name="ngtype"
+                value={ng_type}
+                onChange={(e) => {
+                  setNg_Type(e.target.value);
+                  handleGetInspectionWorst(fromdate, todate, worstby, e.target.value);
+                }}
+              >
+                <option value={"ALL"}>ALL</option>
+                <option value={"P"}>PROCESS</option>
+                <option value={"M"}>MATERIAL</option>
+              </select>
+            </label>
+          </div>
+          <div className="ngtotalsummary">
+          </div>
+          <div className="worstinspection">
+            <div className="worsttable">
+              <span className="subsection">Worst Table</span>
+              {worstdatatable.length > 0 && <InspectionWorstTable dailyClosingData={worstdatatable} worstby={worstby} from_date={fromdate} to_date={todate} ng_type={ng_type}/>}
+            </div>
+            <div className="worstgraph">
+              <span className="subsection">WORST 5 BY {worstby}</span>
+              {worstdatatable.length > 0 && <ChartInspectionWorst dailyClosingData={worstdatatable} worstby={worstby} />}
+            </div>
           </div>
         </div>
       </div>
