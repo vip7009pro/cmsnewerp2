@@ -18,7 +18,7 @@ import InspectionWorstTable from "../../../components/DataTable/InspectionWorstT
 import ChartInspectionWorst from "../../../components/Chart/ChartInspectionWorst";
 import { DailyPPMData, FCSTAmountData, InspectSummary, MonthlyPPMData, WeeklyPPMData, WidgetData_POBalanceSummary, WorstData, YearlyPPMData } from "../../../api/GlobalInterface";
 import CIRCLE_COMPONENT from "../../qlsx/QLSXPLAN/CAPA/CIRCLE_COMPONENT/CIRCLE_COMPONENT";
-import { nFormatter } from "../../../api/GlobalFunction";
+import { deBounce, nFormatter } from "../../../api/GlobalFunction";
 
 const INSPECT_REPORT = () => {
   const [dailyppm1, setDailyPPM1] = useState<DailyPPMData[]>([]);
@@ -408,8 +408,8 @@ const INSPECT_REPORT = () => {
                 value={fromdate.slice(0, 10)}
                 onChange={(e) => {
                   setFromDate(e.target.value);
-                  handleGetInspectionWorst(e.target.value, todate, worstby, ng_type);
-                  handle_getInspectSummary(e.target.value, todate);
+                  //handleGetInspectionWorst(e.target.value, todate, worstby, ng_type);
+                  //handle_getInspectSummary(e.target.value, todate);
                 }}
               ></input>
             </label>
@@ -420,8 +420,8 @@ const INSPECT_REPORT = () => {
                 value={todate.slice(0, 10)}
                 onChange={(e) => {
                   setToDate(e.target.value)
-                  handleGetInspectionWorst(fromdate, e.target.value, worstby, ng_type);
-                  handle_getInspectSummary(fromdate,e.target.value);
+                  //handleGetInspectionWorst(fromdate, e.target.value, worstby, ng_type);
+                  //handle_getInspectSummary(fromdate,e.target.value);
                 }}
               ></input>
             </label>
@@ -432,7 +432,7 @@ const INSPECT_REPORT = () => {
                 value={worstby}
                 onChange={(e) => {
                   setWorstBy(e.target.value);
-                  handleGetInspectionWorst(fromdate, todate, e.target.value, ng_type);
+                  //handleGetInspectionWorst(fromdate, todate, e.target.value, ng_type);
                 }}
               >
                 <option value={"QTY"}>QTY</option>
@@ -446,7 +446,7 @@ const INSPECT_REPORT = () => {
                 value={ng_type}
                 onChange={(e) => {
                   setNg_Type(e.target.value);
-                  handleGetInspectionWorst(fromdate, todate, worstby, e.target.value);
+                  //handleGetInspectionWorst(fromdate, todate, worstby, e.target.value);
                 }}
               >
                 <option value={"ALL"}>ALL</option>
@@ -454,6 +454,15 @@ const INSPECT_REPORT = () => {
                 <option value={"M"}>MATERIAL</option>
               </select>
             </label>
+            <button
+            className="searchbutton"
+            onClick={() => {              
+              handleGetInspectionWorst(fromdate, todate, worstby,ng_type);
+              handle_getInspectSummary(fromdate, todate);
+            }}
+            >
+              Search
+            </button>
           </div>
           <div className="ngtotalsummary">
             <CIRCLE_COMPONENT

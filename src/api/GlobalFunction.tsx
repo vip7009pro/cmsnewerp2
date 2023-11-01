@@ -3,28 +3,9 @@ import { ResponsiveContainer } from "recharts";
 import Swal from "sweetalert2";
 import * as XLSX from "xlsx";
 import { generalQuery, getCompany } from "./Api";
-import AccountInfo from "../components/Navbar/AccountInfo/AccountInfo";
-import QuanLyPhongBanNhanSu from "../pages/nhansu/QuanLyPhongBanNhanSu/QuanLyPhongBanNhanSu";
-import { getlang } from "../components/String/String";
-import DiemDanhNhom from "../pages/nhansu/DiemDanhNhom/DiemDanhNhom";
-import DieuChuyenTeam from "../pages/nhansu/DieuChuyenTeam/DieuChuyenTeam";
-import TabDangKy from "../pages/nhansu/DangKy/TabDangKy";
-import PheDuyetNghi from "../pages/nhansu/PheDuyetNghi/PheDuyetNghi";
-import LichSu from "../pages/nhansu/LichSu/LichSu";
-import QuanLyCapCao from "../pages/nhansu/QuanLyCapCao/QuanLyCapCao";
-import BaoCaoNhanSu from "../pages/nhansu/BaoCaoNhanSu/BaoCaoNhanSu";
-import PoManager from "../pages/kinhdoanh/pomanager/PoManager";
-import InvoiceManager from "../pages/kinhdoanh/invoicemanager/InvoiceManager";
-import PlanManager from "../pages/kinhdoanh/planmanager/PlanManager";
-import ShortageKD from "../pages/kinhdoanh/shortageKD/ShortageKD";
-import FCSTManager from "../pages/kinhdoanh/fcstmanager/FCSTManager";
-import YCSXManager from "../pages/kinhdoanh/ycsxmanager/YCSXManager";
-import POandStockFull from "../pages/kinhdoanh/poandstockfull/POandStockFull";
-import CODE_MANAGER from "../pages/rnd/code_manager/CODE_MANAGER";
 import { UserData } from "./GlobalInterface";
 
-export const zeroPad = (num: number, places: number) =>
-  String(num).padStart(places, "0");
+export const zeroPad = (num: number, places: number) =>  String(num).padStart(places, "0");
 
 export const SaveExcel = (data: any, title: string) => {
   const worksheet = XLSX.utils.json_to_sheet(data);
@@ -32,7 +13,6 @@ export const SaveExcel = (data: any, title: string) => {
   XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
   XLSX.writeFile(workbook, `${title}.xlsx`);
 };
-
 export const readUploadFile = (e: any) => {
   e.preventDefault();
   if (e.target.files) {
@@ -268,11 +248,9 @@ export function removeVietnameseTones(str: string) {
 }
 
 export function deBounce (func: any, delay: number) {
-  let timer: any;
-  return function() {
+  let timer: any;  
     clearTimeout(timer);
     timer = setTimeout(() => {
       func();
-    }, delay);
-  };
+    }, delay); 
 };

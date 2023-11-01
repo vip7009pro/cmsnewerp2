@@ -16,6 +16,9 @@ function useCalc(initValue: number) {
   }
 }
 
+function useDebounce() {
+
+}
 
 
 export {useCalc}
