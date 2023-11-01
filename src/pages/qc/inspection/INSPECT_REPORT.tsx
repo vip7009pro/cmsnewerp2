@@ -16,7 +16,9 @@ import WidgetInspection from "../../../components/Widget/WidgetInspection";
 import "./INSPECT_REPORT.scss";
 import InspectionWorstTable from "../../../components/DataTable/InspectionWorstTable";
 import ChartInspectionWorst from "../../../components/Chart/ChartInspectionWorst";
-import { DailyPPMData, FCSTAmountData, MonthlyPPMData, WeeklyPPMData, WidgetData_POBalanceSummary, WorstData, YearlyPPMData } from "../../../api/GlobalInterface";
+import { DailyPPMData, FCSTAmountData, InspectSummary, MonthlyPPMData, WeeklyPPMData, WidgetData_POBalanceSummary, WorstData, YearlyPPMData } from "../../../api/GlobalInterface";
+import CIRCLE_COMPONENT from "../../qlsx/QLSXPLAN/CAPA/CIRCLE_COMPONENT/CIRCLE_COMPONENT";
+import { nFormatter } from "../../../api/GlobalFunction";
 
 const INSPECT_REPORT = () => {
   const [dailyppm1, setDailyPPM1] = useState<DailyPPMData[]>([]);
@@ -36,6 +38,7 @@ const INSPECT_REPORT = () => {
   const [worstby, setWorstBy] = useState('AMOUNT');
   const [ng_type, setNg_Type] = useState('ALL'); 
   const [worstdatatable, setWorstDataTable] = useState<Array<WorstData>>([]);  
+  const [inspectSummary, setInspectSummary] = useState<InspectSummary[]>([])
   const handleGetInspectionWorst = (from_date: string, to_date: string, worst_by: string, ng_type: string) => {
     generalQuery("getInspectionWorstTable", { FROM_DATE: from_date, TO_DATE: to_date, WORSTBY: worst_by, NG_TYPE: ng_type })
       .then((response) => {
@@ -178,6 +181,31 @@ const INSPECT_REPORT = () => {
         console.log(error);
       });
   };
+  const handle_getInspectSummary = (from_date: string, to_date: string)=> {
+    generalQuery("getInspectionSummary", {
+      FROM_DATE: from_date, TO_DATE: to_date
+    })
+      .then((response) => {
+        //console.log(response.data.data);
+        if (response.data.tk_status !== "NG") {
+          const loadeddata: InspectSummary[] = response.data.data.map(
+            (element: InspectSummary, index: number) => {              
+              return {
+                ...element,
+                M_RATE: element.ISP_TT_QTY !== 0 ? Number(element.M_NG_QTY)/Number(element.ISP_TT_QTY) : 0,
+                P_RATE: element.ISP_TT_QTY !== 0 ? Number(element.P_NG_QTY)/Number(element.ISP_TT_QTY) : 0,
+                T_RATE: element.ISP_TT_QTY !== 0 ? (Number(element.M_NG_QTY) + Number(element.P_NG_QTY))/Number(element.ISP_TT_QTY) : 0,
+              };
+            },
+          );
+          setInspectSummary(loadeddata);                 
+        } else {
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
   useEffect(() => {
     handle_getDailyPPM("ALL");
     handle_getWeeklyPPM("ALL");
@@ -381,6 +409,7 @@ const INSPECT_REPORT = () => {
                 onChange={(e) => {
                   setFromDate(e.target.value);
                   handleGetInspectionWorst(e.target.value, todate, worstby, ng_type);
+                  handle_getInspectSummary(e.target.value, todate);
                 }}
               ></input>
             </label>
@@ -392,6 +421,7 @@ const INSPECT_REPORT = () => {
                 onChange={(e) => {
                   setToDate(e.target.value)
                   handleGetInspectionWorst(fromdate, e.target.value, worstby, ng_type);
+                  handle_getInspectSummary(fromdate,e.target.value);
                 }}
               ></input>
             </label>
@@ -426,6 +456,48 @@ const INSPECT_REPORT = () => {
             </label>
           </div>
           <div className="ngtotalsummary">
+            <CIRCLE_COMPONENT
+              type='loss'
+              value={`${nFormatter(inspectSummary[0]?.ISP_TT_QTY,2)}`}
+              title='TOTAL QTY'
+              color='blue'
+            />
+            <CIRCLE_COMPONENT
+              type='loss'
+              value={`${nFormatter(inspectSummary[0]?.INSP_OK_QTY,2)}`}
+              title='TOTAL OK'
+              color='green'
+            />
+            <CIRCLE_COMPONENT
+              type='loss'
+              value={`${nFormatter(inspectSummary[0]?.P_NG_QTY,2)}`}
+              title='PROCESS NG'
+              color='#F5890E'
+            />
+            <CIRCLE_COMPONENT
+              type='loss'
+              value={`${nFormatter(inspectSummary[0]?.M_NG_QTY,2)}`}
+              title='MATERIAL NG'
+              color='#E8279F'
+            />
+            <CIRCLE_COMPONENT
+              type='loss'
+              value={`${nFormatter(inspectSummary[0]?.P_RATE*1000000,2)}`}
+              title='P NG RATE'
+              color='#F5890E'
+            />
+            <CIRCLE_COMPONENT
+              type='loss'
+              value={`${nFormatter(inspectSummary[0]?.M_RATE*1000000,2)}`}
+              title='M NG RATE'
+              color='#E8279F'
+            />
+            <CIRCLE_COMPONENT
+              type='loss'
+              value={`${nFormatter(inspectSummary[0]?.T_RATE*1000000,2)}`}
+              title='TOTAL RATE'
+              color='red'
+            />
           </div>
           <div className="worstinspection">
             <div className="worsttable">

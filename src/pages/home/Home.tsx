@@ -94,7 +94,6 @@ function Home() {
         console.log(error);
       });
   }
-
   const checkERPLicense = async ()=> {
     generalQuery("checkLicense", {
       COMPANY: company
@@ -295,8 +294,7 @@ function Home() {
             )}
             {tabModeSwap && tabs.length === 0 && <AccountInfo />}
           </animated.div>
-        </div>
-        
+        </div>        
         {/* <div className="chatroom">
           <CHAT/>
         </div> */}

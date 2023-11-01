@@ -2961,3 +2961,12 @@ export interface WidgetData_POBalanceSummary {
   po_balance_qty: number;
   po_balance_amount: number;
 }
+export interface InspectSummary {
+  ISP_TT_QTY: number,
+  INSP_OK_QTY: number,
+  M_NG_QTY: number,
+  P_NG_QTY: number,
+  M_RATE: number,
+  P_RATE: number,
+  T_RATE: number
+}
