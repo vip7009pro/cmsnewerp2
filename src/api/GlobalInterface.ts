@@ -2951,6 +2951,7 @@ export interface WorstData {
   id: number
 }
 export interface WorstCodeData {
+  G_CODE: string,
   G_NAME_KD: string,
   INSPECT_TOTAL_QTY: number,
   NG_QTY: number,

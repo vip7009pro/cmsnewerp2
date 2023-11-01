@@ -266,3 +266,13 @@ export function removeVietnameseTones(str: string) {
   );
   return str;
 }
+
+export function deBounce (func: any, delay: number) {
+  let timer: any;
+  return function() {
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+      func();
+    }, delay);
+  };
+};

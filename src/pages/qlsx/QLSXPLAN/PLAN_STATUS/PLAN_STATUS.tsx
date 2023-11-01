@@ -1,17 +1,3 @@
-import {
-  Autocomplete,
-  IconButton,
-  LinearProgress,
-  TextField,
-} from "@mui/material";
-import {
-  DataGrid,
-  GridSelectionModel,
-  GridToolbarContainer,
-  GridToolbarDensitySelector,
-  GridToolbarFilterButton,
-  GridToolbarQuickFilter,
-} from "@mui/x-data-grid";
 import moment from "moment";
 import React, { useContext, useEffect, useState, useTransition } from "react";
 import {
@@ -25,8 +11,7 @@ import { UserContext } from "../../../../api/Context";
 import { SaveExcel } from "../../../../api/GlobalFunction";
 import "./PLAN_STATUS.scss";
 import PLAN_STATUS_COMPONENTS from "./PLAN_STATUS_COMPONENTS";
-import { MACHINE_LIST } from "../QUICKPLAN/QUICKPLAN";
-import { SX_DATA } from "../../../../api/GlobalInterface";
+import { MACHINE_LIST, SX_DATA } from "../../../../api/GlobalInterface";
 
 const PLAN_STATUS = () => {
   const [machine_list, setMachine_List] = useState<MACHINE_LIST[]>([]);
@@ -124,17 +109,7 @@ const PLAN_STATUS = () => {
     return () => {
       window.clearInterval(intervalID);
     };
-  }, [
-    fromdate,
-    todate,
-    alltime,
-    factory,
-    codeCMS,
-    codeKD,
-    plan_id,
-    prodrequestno,
-    machine,
-  ]);
+  }, []);
   return (
     <div className="plan_status">
       <div className="tracuuDataInspection">

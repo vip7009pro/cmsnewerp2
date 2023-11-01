@@ -79,7 +79,8 @@ const ChartWorstCodeByErrCode = ({dailyClosingData, worstby}: {dailyClosingData:
     const x = cx + radius * Math.cos(-midAngle * RADIAN);
     const y = cy + radius * Math.sin(-midAngle * RADIAN);
     
-    return (     
+    return (  
+      <a href={`/banve/${tempdata[index]?.G_CODE}.pdf`} target="_blank" rel="noopener noreferrer" >
       <text
         x={x}
         y={y}
@@ -95,7 +96,8 @@ const ChartWorstCodeByErrCode = ({dailyClosingData, worstby}: {dailyClosingData:
           currency: "USD",
         })}
         )
-      </text>      
+      </text>   
+      </a>      
     );
   };
   
