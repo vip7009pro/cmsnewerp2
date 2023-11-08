@@ -5,6 +5,7 @@ import {
   changeUserData,
   login as loginSlice,
   logout as logoutSlice,
+  setTabModeSwap,
   update_socket,
 } from "../redux/slices/globalSlice";
 
@@ -34,6 +35,7 @@ console.log("company", getCompany());
 
 let API_URL = getSever() + "/api";
 let UPLOAD_URL = getSever() + "/uploadfile";
+let UPLOAD_CHECKSHEET_URL = getSever() + "/uploadfilechecksheet";
 
 let server_ip_local: any = localStorage.getItem("server_ip")?.toString();
 
@@ -200,8 +202,10 @@ export function login(user: string, pass: string) {
                     update_socket({
                       event: "login",
                       data: data.data.data.EMPL_NO,
-                    })
+                    })                    
                   );
+                  
+                  
                   /* setLoginState(true); */
                   store.dispatch(loginSlice(true));
                   setTimeout(() => {
@@ -277,19 +281,20 @@ export async function uploadQuery(
   let data = await axios.post(UPLOAD_URL, formData);
   return data;
 }
-//let CHECK_ERP_LINK ='https://script.google.com/macros/s/AKfycbyD_LRqVLETu8IvuiqDSsbItdmzRw3p_q9gCv12UOer0V-5OnqtbJvKjK86bfgGbUM1NA/exec' 
 
-let CHECK_ERP_LINK ='https://script.google.com/macros/s/AKfycbwH3oqD6ZIb7hO_KPig_yQ5eLc65Wxukqr0rU7dgciN/dev' 
-export async function checkERP(company: string){
-  let data = await axios.get(CHECK_ERP_LINK)
-.then((response)=> {
-  //console.log(response.data)
-  let resp = response.data;  
-  let fil = resp.filter((e:any)=> e[0]===company) 
-  return fil[0];  
-})
-.catch((e)=> {
-    
-}) 
-return data;
+export async function upload55Query(
+  file: any,
+  filename: string,
+  uploadfoldername: string,
+  filenamelist?: string[]
+) {
+  const formData = new FormData();
+  formData.append("uploadedfile", file);
+  formData.append("filename", filename);
+  formData.append("uploadfoldername", uploadfoldername);
+  formData.append("token_string", cookies.get("token"));
+  if (filenamelist)
+    formData.append("newfilenamelist", JSON.stringify(filenamelist));
+  let data = await axios.post("http://14.160.33.94:3007/uploadfilechecksheet", formData);
+  return data;
 }

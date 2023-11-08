@@ -149,11 +149,7 @@ export async function checkBP(
             Swal.fire("Thông báo", "Không đủ quyền hạn", "warning");
           }
         } else if (
-          permitted_position.indexOf(
-            userData.POSITION_NAME === undefined
-              ? "NA"
-              : userData.POSITION_NAME,
-          ) > -1
+          permitted_position.indexOf(userData.POSITION_NAME ?? "NA") > -1
         ) {
           if (permitted_empl.indexOf("ALL") > -1) {
             await func();

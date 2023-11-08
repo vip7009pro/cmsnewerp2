@@ -4,7 +4,7 @@ import Sidebar from "../../components/Sidebar/Sidebar";
 import "../home/home.scss";
 import { useSpring, animated } from "@react-spring/web";
 import { ReactElement, useEffect, useState } from "react";
-import { checkERP, generalQuery, logout } from "../../api/Api";
+import {  generalQuery, logout } from "../../api/Api";
 import Swal from "sweetalert2";
 import PrimarySearchAppBar from "../../components/AppBar/AppBarCustom";
 import CHAT from "../chat/CHAT";

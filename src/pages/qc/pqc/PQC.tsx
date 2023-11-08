@@ -5,12 +5,15 @@ import "./PQC.scss";
 import CODE_MANAGER from "../../rnd/code_manager/CODE_MANAGER";
 import PQC1 from "./PQC1";
 import PQC3 from "./PQC3";
+import LINEQC from "./LINEQC";
 
 const PQC = () => {
   const [selection, setSelection] = useState<any>({
-    tab1: false,
-    tab2: true,
+    tab1: true,
+    tab2: false,
     tab3: false,
+    tab4: false,
+    tab5: false,
   });
 
   const setNav = (choose: number) => {
@@ -67,6 +70,16 @@ const PQC = () => {
       <div className="mininavbar">
         <div
           className="mininavitem"
+          onClick={() => setNav(1)}
+          style={{
+            backgroundColor: selection.tab1 === true ? "#02c712" : "#abc9ae",
+            color: selection.tab1 === true ? "yellow" : "yellow",
+          }}
+        >
+          <span className="mininavtext">LINEQC</span>
+        </div>
+        <div
+          className="mininavitem"
           onClick={() => setNav(2)}
           style={{
             backgroundColor: selection.tab2 === true ? "#02c712" : "#abc9ae",
@@ -97,6 +110,11 @@ const PQC = () => {
         </div>
 
       </div>
+      {selection.tab1 && (
+        <div className="trapqc">
+          <LINEQC />
+        </div>
+      )}
       {selection.tab2 && (
         <div className="trapqc">
           <TRAPQC />
@@ -112,11 +130,7 @@ const PQC = () => {
           <PQC3 />
         </div>
       )}
-      {selection.tab1 && (
-        <div className="trapqc">
-          <CODE_MANAGER />
-        </div>
-      )}
+     
       {selection.tab3 && <div className="report"></div>}
     </div>
   );

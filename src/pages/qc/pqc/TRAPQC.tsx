@@ -21,9 +21,9 @@ import {
   AiOutlinePrinter,
 } from "react-icons/ai";
 import Swal from "sweetalert2";
-import { generalQuery } from "../../../api/Api";
+import { generalQuery, getUserData } from "../../../api/Api";
 import { UserContext } from "../../../api/Context";
-import { SaveExcel } from "../../../api/GlobalFunction";
+import { SaveExcel, checkBP } from "../../../api/GlobalFunction";
 import "./TRAPQC.scss";
 import {
   CNDB_DATA,
@@ -31,7 +31,6 @@ import {
   PQC3_DATA,
   TRA_PQC1_DATA,
 } from "../../../api/GlobalInterface";
-
 const TRAPQC = () => {
   const [readyRender, setReadyRender] = useState(true);
   const [selection, setSelection] = useState<any>({
@@ -677,7 +676,6 @@ const TRAPQC = () => {
                   onChange={() => setAllTime(!alltime)}
                 ></input>
               </label>
-
             </div>
           </div>
           <div className="formbutton">
@@ -688,14 +686,12 @@ const TRAPQC = () => {
                 setColumnDefinition(column_TRA_PQC1_DATA);
                 handletraInspectionInput();
               }}>Setting</Button>
-
               <Button color={'primary'} variant="contained" size="small" fullWidth={true} sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#9ddd49', color: 'black' }} onClick={() => {
                 setisLoading(true);
                 setReadyRender(false);
                 setColumnDefinition(column_pqc3_data);
                 handletraInspectionOutput();
               }}>Defect</Button>
-
             </div>
             <div className="btgroup">
               <Button color={'primary'} variant="contained" size="small" fullWidth={true} sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#f396fc' }} onClick={() => {
@@ -710,13 +706,7 @@ const TRAPQC = () => {
                 setColumnDefinition(column_cndb_data);
                 handletraInspectionNG();
               }}>CNĐB</Button>
-
             </div>
-
-
-
-
-
           </div>
         </div>
         <div className="tracuuPQCTable">

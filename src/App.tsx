@@ -21,6 +21,7 @@ import {
   update_socket,
   logout,
   login,
+  setTabModeSwap,
 } from "./redux/slices/globalSlice";
 import { useSpring, animated } from "@react-spring/web";
 import "./App.css";
@@ -508,6 +509,10 @@ function App() {
           //console.log(data.data.data);
           setUserData(data.data.data);
           dispatch(changeUserData(data.data.data));
+          console.log('data.data.data.POSITION_CODE',data.data.data.POSITION_CODE)
+          if(data.data.data.POSITION_CODE === 4){
+            dispatch(setTabModeSwap(false));
+          }
           //dispatch(update_socket(data.data.data.EMPL_NO + " da dangnhap"));
           dispatch(
             update_socket({
@@ -721,7 +726,7 @@ function App() {
                           <ProtectedRoute
                             user={globalUserData}
                             maindeptname='all'
-                            jobname='Leader'
+                            jobname='all'
                           >
                             <QC />
                           </ProtectedRoute>
@@ -770,7 +775,7 @@ function App() {
                             <ProtectedRoute
                               user={globalUserData}
                               maindeptname='all'
-                              jobname='Leader'
+                              jobname='all'
                             >
                               <PQC />
                             </ProtectedRoute>
