@@ -536,13 +536,13 @@ const INSPECTION = () => {
             (element: INSPECT_NG_DATA, index: number) => {
               return {
                 ...element,
-                INSPECT_DATETIME: moment(element.INSPECT_DATETIME).format(
+                INSPECT_DATETIME: moment.utc(element.INSPECT_DATETIME).format(
                   "YYYY-MM-DD HH:mm:ss",
                 ),
-                INSPECT_START_TIME: moment(element.INSPECT_START_TIME).format(
+                INSPECT_START_TIME: moment.utc(element.INSPECT_START_TIME).format(
                   "YYYY-MM-DD HH:mm:ss",
                 ),
-                INSPECT_FINISH_TIME: moment(element.INSPECT_FINISH_TIME).format(
+                INSPECT_FINISH_TIME: moment.utc(element.INSPECT_FINISH_TIME).format(
                   "YYYY-MM-DD HH:mm:ss",
                 ),
                 id: index,
