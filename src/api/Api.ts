@@ -295,6 +295,6 @@ export async function upload55Query(
   formData.append("token_string", cookies.get("token"));
   if (filenamelist)
     formData.append("newfilenamelist", JSON.stringify(filenamelist));
-  let data = await axios.post("http://14.160.33.94:3007/uploadfilechecksheet", formData);
+  let data = await axios.post(getSever() + "/uploadfilechecksheet", formData);
   return data;
 }

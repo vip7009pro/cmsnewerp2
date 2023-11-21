@@ -3,6 +3,7 @@ import {
 } from "@mui/material";
 import moment from "moment";
 import React, {
+  useCallback,
   useContext,
   useEffect,
   useRef,
@@ -18,7 +19,6 @@ import {
   SaveExcel,
 } from "../../../api/GlobalFunction";
 import "./LINEQC.scss";
-
 import { BiShow } from "react-icons/bi";
 import { GrStatusGood } from "react-icons/gr";
 import { FcCancel } from "react-icons/fc";
@@ -30,6 +30,7 @@ import {
   SX_DATA,
   UserData,
 } from "../../../api/GlobalInterface";
+import Webcam from "react-webcam";
 const LINEQC = () => {
   const userData: UserData | undefined = useSelector(
     (state: RootState) => state.totalSlice.userData
@@ -39,12 +40,6 @@ const LINEQC = () => {
   const [lineqc_empl, setLineqc_empl] = useState(userData?.EMPL_NO ?? "");
   const [prod_leader_empl, setprod_leader_empl] = useState("");
   const [remark, setReMark] = useState("");
-  const [inspectiondatatable, setInspectionDataTable] = useState<Array<any>>(
-    []
-  );
-  const [selectedRowsDataA, setSelectedRowsData] = useState<Array<PQC1_DATA>>(
-    []
-  );
   const [empl_name, setEmplName] = useState("");
   const [empl_name2, setEmplName2] = useState("");
   const [g_name, setGName] = useState("");
@@ -60,7 +55,6 @@ const LINEQC = () => {
   const [process_lot_no, setProcessLotNo] = useState("");
   const [lieql_sx, setLieuQL_SX] = useState(0);
   const [out_date, setOut_Date] = useState("");
-  const [showhideinput, setShowHideInput] = useState(true);
   const [factory, setFactory] = useState(
     userData?.FACTORY_CODE === 1 ? "NM1" : "NM2"
   );
@@ -69,8 +63,7 @@ const LINEQC = () => {
   const [ktdtc, setKTDTC] = useState("CKT");
   const refArray = [useRef<any>(null), useRef<any>(null), useRef<any>(null), useRef<any>(null), useRef<any>(null)];
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, index: number) => {
-    if (e.key === "Enter") {
-      // console.log('press enter')
+    if (e.key === "Enter") {      
       e.preventDefault();
       const nextIndex = (index + 1) % refArray.length;
       refArray[nextIndex].current.focus();
@@ -146,6 +139,7 @@ const LINEQC = () => {
           setSXData(loaded_data);
           checkPlanIDP501(loaded_data);
         } else {
+          setSXData([]);
           Swal.fire("Thông báo", " Có lỗi : " + response.data.message, "error");
         }
       })
@@ -183,72 +177,13 @@ const LINEQC = () => {
     upload55Query(file, PLAN_ID + "_" + STT + ".jpg", "PQC")
       .then((response) => {
         if (response.data.tk_status !== "NG") {
-          /* generalQuery("update_checksheet_image_status", {
-            EMPL_NO: userData?.EMPL_NO,
-            EMPL_IMAGE: "Y",
-          })
-            .then((response) => {
-              if (response.data.tk_status !== "NG") {
-                Swal.fire("Thông báo", "Upload avatar thành công", "success");
-              } else {
-                Swal.fire("Thông báo", "Upload avatar thất bại", "error");
-              }
-            })
-            .catch((error) => {
-              console.log(error);
-            }); */
+         
         } else {
           Swal.fire(
             "Thông báo",
             "Upload file thất bại:" + response.data.message,
             "error"
           );
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
-  const traPQC1Data = () => {
-    generalQuery("trapqc1data", {
-      ALLTIME: false,
-      FROM_DATE: moment().add(-2, "day").format("YYYY-MM-DD"),
-      TO_DATE: moment().format("YYYY-MM-DD"),
-      CUST_NAME: "",
-      PROCESS_LOT_NO: "",
-      G_CODE: "",
-      G_NAME: "",
-      PROD_TYPE: "",
-      EMPL_NAME: "",
-      PROD_REQUEST_NO: "",
-      ID: "",
-      FACTORY: userData?.FACTORY_CODE === 1 ? "NM1" : "NM2",
-    })
-      .then((response) => {
-        //console.log(response.data.data);
-        if (response.data.tk_status !== "NG") {
-          const loadeddata: PQC1_DATA[] = response.data.data.map(
-            (element: PQC1_DATA, index: number) => {
-              //summaryInput += element.INPUT_QTY_EA;
-              return {
-                ...element,
-                INS_DATE: moment
-                  .utc(element.INS_DATE)
-                  .format("YYYY-MM-DD HH:mm:ss"),
-                UPD_DATE: moment
-                  .utc(element.UPD_DATE)
-                  .format("YYYY-MM-DD HH:mm:ss"),
-                SETTING_OK_TIME: moment
-                  .utc(element.SETTING_OK_TIME)
-                  .format("YYYY-MM-DD HH:mm:ss"),
-                id: index,
-              };
-            }
-          );
-          //setSummaryInspect('Tổng Nhập: ' +  summaryInput.toLocaleString('en-US') + 'EA');
-          setPqc1DataTable(loadeddata);
-        } else {
-          Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
         }
       })
       .catch((error) => {
@@ -395,21 +330,51 @@ const LINEQC = () => {
       REMARK2: remark,
     })
       .then((response) => {
-        if (response.data.tk_status !== "NG") {
-          //console.log(response.data.data);
-          Swal.fire("Thông báo", "Input data thành công", "success");
-          traPQC1Data();
-          setPlanId('');
-          setLineqc_empl('');
+        if (response.data.tk_status !== "NG") {          
+          setPlanId('');          
           setReMark('');
+          setSXData([]);          
+          updateIMGPQC1(planId);  
+          Swal.fire("Thông báo", "Input data thành công", "success");             
         } else {
-          Swal.fire("Cảnh báo", "Có lỗi: " + response.data.message, "error");
+          updateIMGPQC1(planId);
+          console.log("Có lỗi: " + response.data.message);
         }
       })
       .catch((error) => {
         console.log(error);
       });
   };
+  const updateIMGPQC1 =async (PLAN_ID: string) => {
+    let stt: number = await checkPLAN_ID_Checksheet(PLAN_ID);
+    if(stt<4)
+    {
+      await generalQuery("update_checksheet_image_status", {      
+        PLAN_ID: planId.toUpperCase(),
+        STT: stt,
+      })
+        .then((response) => {
+          if (response.data.tk_status !== "NG") {
+            //console.log(response.data.data);
+            Swal.fire("Thông báo", "Input data thành công", "success");          
+            setPlanId('');          
+            setReMark('');
+            setSXData([]);
+            uploadFile2(planId, stt);
+          } else {
+            Swal.fire("Cảnh báo", "Có lỗi: " + response.data.message, "error");
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+    else
+    {
+      Swal.fire("Cảnh báo", "Đã up đủ đầu giữa cuối rồi", "error");
+    }
+    
+  }
   const checkInput = (): boolean => {
     if (
       inputno !== "" &&
@@ -423,9 +388,8 @@ const LINEQC = () => {
       return false;
     }
   };
-  useEffect(() => {
-    traPQC1Data();
-    ///handletraFailingData();
+  
+  useEffect(() => {   
   }, []);
   return (
     <div className="lineqc">
@@ -513,7 +477,7 @@ const LINEQC = () => {
                     {empl_name}
                   </span>
                 )}
-                <label>
+                {/* <label>
                   <b>Mã Leader SX</b>
                   <input
                     ref={refArray[2]}
@@ -530,7 +494,7 @@ const LINEQC = () => {
                       setprod_leader_empl(e.target.value);
                     }}
                   ></input>
-                </label>
+                </label> */}
                 {prod_leader_empl && (
                   <span
                     style={{
@@ -568,11 +532,13 @@ const LINEQC = () => {
                   />
                 </label>
               </div>
+              
             </div>
           </div>
           <div className="inputbutton">
             <div className="forminputcolumn">
               <Button
+                disabled={sx_data.length ===0}
                 ref={refArray[4]}
                 onKeyDown={(e) => {
                 }}
@@ -600,27 +566,7 @@ const LINEQC = () => {
                 }}
               >
                 Input Data
-              </Button>
-
-              <Button 
-                color={"primary"}
-                variant="contained"
-                size="large"
-                sx={{
-                  fontSize: "0.7rem",
-                  padding: "3px",
-                  backgroundColor: "#756DFA",
-                }}
-                onClick={() => {
-                  uploadFile2(planId,1);
-                  }}
-                
-              >
-                Upload55
-              </Button>
-
-
-             
+              </Button>                        
             </div>
           </div>
         </div>

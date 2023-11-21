@@ -3,8 +3,8 @@ import Navbar from "../../components/Navbar/Navbar";
 import Sidebar from "../../components/Sidebar/Sidebar";
 import "../home/home.scss";
 import { useSpring, animated } from "@react-spring/web";
-import { ReactElement, useEffect, useState } from "react";
-import {  generalQuery, logout } from "../../api/Api";
+import { ReactElement, useEffect, useRef, useState } from "react";
+import { generalQuery, logout } from "../../api/Api";
 import Swal from "sweetalert2";
 import PrimarySearchAppBar from "../../components/AppBar/AppBarCustom";
 import CHAT from "../chat/CHAT";
@@ -24,7 +24,7 @@ import AccountInfo from "../../components/Navbar/AccountInfo/AccountInfo";
 import styled from "@emotion/styled";
 import { Draggable } from "devextreme-react";
 import Cookies from "universal-cookie";
-export const current_ver: number = 261;
+export const current_ver: number = 264;
 interface ELE_ARRAY {
   REACT_ELE: ReactElement;
   ELE_NAME: string;
@@ -53,6 +53,8 @@ function Home() {
     from: { x: 1000, y: 100 },
     to: { x: 0, y: 0 },
   });
+  const [licenseFailCount, setLicenseFailCount] = useState(0);
+  const failCount = useRef(0);
   const [checkVerWeb, setCheckVerWeb] = useState(1);
   const updatechamcongdiemdanh = () => {
     generalQuery("updatechamcongdiemdanhauto", {})
@@ -71,13 +73,11 @@ function Home() {
     fontWeight: 200, // Ví dụ: đặt độ đậm cho chữ
     // Thêm các kiểu tùy chỉnh khác tại đây...
   });
-
   const CustomTabLabel = styled(Typography)({
     fontWeight: 200, // Ví dụ: đặt độ đậm cho chữ
     // Thêm các kiểu tùy chỉnh khác tại đây...
   });
-
-  const getchamcong =()=> {
+  const getchamcong = () => {
     generalQuery("checkMYCHAMCONG", {})
       .then((response) => {
         //console.log(response.data);
@@ -85,27 +85,31 @@ function Home() {
           //console.log('data',response.data.data)
           //console.log('data',response.data.REFRESH_TOKEN);
           let rfr_token: string = response.data.REFRESH_TOKEN;
-          cookies.set("token", rfr_token, { path: "/" });          
+          cookies.set("token", rfr_token, { path: "/" });
         } else {
-          
         }
       })
       .catch((error) => {
         console.log(error);
       });
   }
-  const checkERPLicense = async ()=> {
+  const checkERPLicense = async () => {
     generalQuery("checkLicense", {
       COMPANY: company
     })
       .then((response) => {
-        //console.log(response.data.tk_status);
-        if (response.data.tk_status !== "NG") {  
-          console.log(response.data.message);          
+        if (response.data.tk_status !== "NG") {
+          console.log(response.data.message);
+          failCount.current = 0;
         } else {
           console.log(response.data.message);
-          Swal.fire('Thông báo','Please check your network','error')
-          logout();
+          console.log('licenseFailCount', failCount.current);
+          failCount.current++;
+          if (failCount.current > 2) {
+            Swal.fire('Thông báo', 'Please check your network', 'error');
+            failCount.current = 0;
+            logout();
+          }
         }
       })
       .catch((error) => {
@@ -162,21 +166,16 @@ function Home() {
         .catch((error) => {
           console.log(error);
         });
-
-        getchamcong();
+      getchamcong();
     }, 30000);
-
     let intervalID2 = window.setInterval(() => {
-      //updatechamcongdiemdanh();
       checkERPLicense();
     }, 30000);
-
     return () => {
       window.clearInterval(intervalID);
       window.clearInterval(intervalID2);
     };
   }, []);
-
   return (
     <div className='home'>
       <div className='navdiv'>
@@ -187,7 +186,6 @@ function Home() {
         {/* <div className='sidebardiv'>
           <Sidebar />
         </div> */}
-        
         <div className='outletdiv'>
           <animated.div
             className='animated_div'
@@ -259,7 +257,6 @@ function Home() {
                   </Tabs>
                 </Box>
               )}
-              
             {tabModeSwap &&
               tabs.map((ele: ELE_ARRAY, index: number) => {
                 if (ele.ELE_CODE !== "-1")
@@ -267,7 +264,7 @@ function Home() {
                     <div
                       key={index}
                       className='component_element'
-                      style={{                        
+                      style={{
                         visibility: index === tabIndex ? "visible" : "hidden",
                         width: sidebarStatus ? "100%" : "100%",
                       }}
@@ -276,7 +273,6 @@ function Home() {
                     </div>
                   );
               })}
-              
             {current_ver >= checkVerWeb ? (
               !tabModeSwap && <Outlet />
             ) : (
@@ -294,7 +290,7 @@ function Home() {
             )}
             {tabModeSwap && tabs.length === 0 && <AccountInfo />}
           </animated.div>
-        </div>        
+        </div>
         {/* <div className="chatroom">
           <CHAT/>
         </div> */}

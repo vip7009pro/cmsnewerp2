@@ -40,7 +40,6 @@ import {
   UserData,
 } from "../../../api/GlobalInterface";
 import { KeyboardNavigation } from "devextreme-react/tree-list";
-
 const CalcQuotation = () => {
   const company: string = useSelector(
     (state: RootState) => state.totalSlice.company,
@@ -52,7 +51,6 @@ const CalcQuotation = () => {
   const [cust_vanchuyen, setCust_VanChuyen] = useState("0");
   const [cust_khauhao, setCust_KhauHao] = useState("0");
   const [cust_quanlychung, setCust_QuanLyChung] = useState("0");
-
   const [sh, setSH] = useState(true);
   const showhidesearchdiv = useRef(false);
   const [banggia, setBangGia] = useState<Array<BANGGIA_DATA_CALC>>([]);
@@ -91,7 +89,6 @@ const CalcQuotation = () => {
     totalcostCMS: 0,
     totalcostSS: 0,
   });
-
   const loadbanggia = (CUST_CD: string, G_CODE: string) => {
     generalQuery("loadbanggiamoinhat", {
       ALLTIME: true,
@@ -262,13 +259,37 @@ const CalcQuotation = () => {
       for (let i = 0; i < banggia.length; i++) {
         if (banggia[i].PRICE_DATE === moment.utc().format("YYYY-MM-DD")) {
           console.log("price date", banggia[i].PRICE_DATE);
-          await generalQuery("upgiasp", banggia[i])
+          await generalQuery("checkgiaExist", banggia[i])
             .then((response) => {
               //console.log(response.data.data);
               if (response.data.tk_status !== "NG") {
+                generalQuery("updategiasp", banggia[i])
+                  .then((response) => {
+                    //console.log(response.data.data);
+                    if (response.data.tk_status !== "NG") {
+                    } else {
+                      err_code += `Lỗi : ${response.data.message} |`;
+                      //Swal.fire("Thông báo", " Có lỗi : " + response.data.message, "error");
+                    }
+                  })
+                  .catch((error) => {
+                    console.log(error);
+                    Swal.fire("Thông báo", " Có lỗi : " + error, "error");
+                  });
               } else {
-                err_code += `Lỗi : ${response.data.message} |`;
-                //Swal.fire("Thông báo", " Có lỗi : " + response.data.message, "error");
+                generalQuery("upgiasp", banggia[i])
+                  .then((response) => {
+                    //console.log(response.data.data);
+                    if (response.data.tk_status !== "NG") {
+                    } else {
+                      err_code += `Lỗi : ${response.data.message} |`;
+                      //Swal.fire("Thông báo", " Có lỗi : " + response.data.message, "error");
+                    }
+                  })
+                  .catch((error) => {
+                    console.log(error);
+                    Swal.fire("Thông báo", " Có lỗi : " + error, "error");
+                  });
               }
             })
             .catch((error) => {
@@ -290,7 +311,6 @@ const CalcQuotation = () => {
       );
     }
   };
-
   const updateCurrentUnit = () => {
     generalQuery("updateCurrentUnit", selectedRows)
       .then((response) => {
@@ -394,7 +414,6 @@ const CalcQuotation = () => {
               caption="KHÁCH HÀNG"
               width={100}
             ></Column>
-            
             <Column
               dataField="G_NAME_KD"
               caption="G_NAME_KD"
@@ -466,7 +485,6 @@ const CalcQuotation = () => {
               width={100}
             ></Column>
             <Column dataField='PROFIT' caption='Lãi' width={100}></Column> */}
-
             <Column
               dataField="WIDTH_OFFSET"
               caption="OFFSET RỘNG"
@@ -517,7 +535,6 @@ const CalcQuotation = () => {
               caption="HAO HỤT ĐV"
               width={100}
             ></Column>
-            
             <Summary>
               <TotalItem
                 alignment="right"
@@ -686,7 +703,6 @@ const CalcQuotation = () => {
               enterKeyAction={"moveFocus"}
               enterKeyDirection={"column"}
             />
-
             <Scrolling
               useNative={true}
               scrollByContent={true}
@@ -793,7 +809,6 @@ const CalcQuotation = () => {
     ),
     [banggia],
   );
-
   const addRowBG = () => {
     const addBangGiaRow: BANGGIA_DATA_CALC = {
       CUST_CD: selectedRows.CUST_CD,
@@ -881,12 +896,10 @@ const CalcQuotation = () => {
       delivery_cost +
       deprecation_cost +
       gmanagement_cost;
-
     //setCust_NhanCong(labor_cost);
     //setCust_VanChuyen(delivery_cost);
     //setCust_KhauHao(deprecation_cost);
     //setCust_QuanLyChung(gmanagement_cost);
-
     setGiaNvl({
       mCutWidth: materialCutWidth,
       mLength: materialLength,
@@ -953,7 +966,6 @@ const CalcQuotation = () => {
     loadListCode();
     loadDefaultDM();
   }, []);
-
   return (
     <div className="calc_quotation">
       <div className="calc_title">BẢNG TÍNH GIÁ</div>
@@ -1064,7 +1076,6 @@ const CalcQuotation = () => {
                       }}
                     ></input>
                   </label>
-
                   <label>
                     CP giao hàng T/C:<br></br>
                     <input
@@ -1214,7 +1225,6 @@ const CalcQuotation = () => {
                       }}
                     ></input>
                   </label>
-
                   <label>
                     CP giao hàng T/C:<br></br>
                     <input
@@ -1571,8 +1581,8 @@ const CalcQuotation = () => {
                 <IconButton
                   className="buttonIcon"
                   onClick={() => {
-                    if (selectedRows.G_CODE !== "") {                      
-                        addRowBG(); 
+                    if (selectedRows.G_CODE !== "") {
+                      addRowBG();
                       //console.log(banggia);
                     } else {
                       Swal.fire("Thông báo", "Chọn code bất kỳ !", "error");
@@ -1604,5 +1614,4 @@ const CalcQuotation = () => {
     </div>
   );
 };
-
 export default CalcQuotation;
