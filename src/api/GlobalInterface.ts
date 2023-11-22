@@ -1582,6 +1582,9 @@ export interface TRA_PQC1_DATA {
   DEFECT_QTY: number;
   DEFECT_RATE: number;
   DEFECT_PHENOMENON: number;
+  IMG_1: string,
+  IMG_2: string,
+  IMG_3: string,
 }
 export interface PQC3_DATA {
   YEAR_WEEK: string;

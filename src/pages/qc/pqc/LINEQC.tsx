@@ -174,7 +174,7 @@ const LINEQC = () => {
   }
   const uploadFile2 = async (PLAN_ID: string, STT: number) => {
     console.log(file);
-    upload55Query(file, PLAN_ID + "_" + STT + ".jpg", "PQC")
+    uploadQuery(file, PLAN_ID + "_" + STT + ".jpg", "lineqc")
       .then((response) => {
         if (response.data.tk_status !== "NG") {
          

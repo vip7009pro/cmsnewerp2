@@ -1394,7 +1394,9 @@ const YCSXManager = () => {
       .then((response) => {
         //console.log(response.data.tk_status);
         if (response.data.tk_status !== "NG") {
-          giohethong = response.data.data[0].SYSTEM_DATETIME.slice(0, 10);
+          //giohethong = response.data.data[0].SYSTEM_DATETIME.slice(0, 10);
+          giohethong = response.data.data[0].SYSTEM_DATETIME;
+          //console.log("gio he thong", moment.utc(response.data.data[0].SYSTEM_DATETIME).format('Y'))
         } else {
           Swal.fire(
             "Thông báo",
@@ -1407,8 +1409,8 @@ const YCSXManager = () => {
         console.log(error);
       });
     //let year:number = moment(giohethong).year();
-    let month: number = moment(giohethong).month();
-    let day: number = moment(giohethong).date();
+    let month: number = moment.utc(giohethong).month();
+    let day: number = moment.utc(giohethong).date();
     let yearstr = giohethong.substring(3, 4);
     let monthstr = monthArray[month];
     let daystr = dayArray[day - 1];
@@ -3053,7 +3055,7 @@ const YCSXManager = () => {
       if (!err_code) {
         Swal.fire(
           "Thông báo",
-          "SET YCSX thành công (chỉ PO của người đăng nhập)!",
+          "SET YCSX thành công",
           "success"
         );
       } else {

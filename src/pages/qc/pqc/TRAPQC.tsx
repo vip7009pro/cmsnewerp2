@@ -158,6 +158,85 @@ const TRAPQC = () => {
         );
       },
     },
+    {
+      field: "IMG_1",     
+      headerName: "IMG_1",
+      width: 100,
+      renderCell: (params: any) => {
+        let href_link = `/lineqc/${params.row.PLAN_ID}_1.jpg`
+        if(params.row.IMG_1 ?? false)
+        {
+          return (
+            <span style={{ color: "blue" }}>
+              <a target="_blank" rel="noopener noreferrer" href={href_link}>
+                LINK
+              </a>
+            </span>
+          );
+        }
+        else
+        {
+          return (
+            <span style={{ color: "blue" }}>
+              NO
+            </span>
+          );
+        }        
+      },
+    },
+    {
+      field: "IMG_2",     
+      headerName: "IMG_2",
+      width: 100,
+      renderCell: (params: any) => {
+        let href_link = `/lineqc/${params.row.PLAN_ID}_2.jpg`
+        if(params.row.IMG_2 ?? false)
+        {
+          return (
+            <span style={{ color: "blue" }}>
+              <a target="_blank" rel="noopener noreferrer" href={href_link}>
+                LINK
+              </a>
+            </span>
+          );
+        }
+        else
+        {
+          return (
+            <span style={{ color: "blue" }}>
+              NO
+            </span>
+          );
+        }        
+      },
+    },
+    {
+      field: "IMG_3",     
+      headerName: "IMG_3",
+      width: 100,
+      renderCell: (params: any) => {
+        let href_link = `/lineqc/${params.row.PLAN_ID}_3.jpg`
+        if(params.row.IMG_3 ?? false)
+        {
+          return (
+            <span style={{ color: "blue" }}>
+              <a target="_blank" rel="noopener noreferrer" href={href_link}>
+              LINK
+              </a>
+            </span>
+          );
+        }
+        else
+        {
+          return (
+            <span style={{ color: "blue" }}>
+              NO
+            </span>
+          );
+        }        
+      },
+    },
+    
   ];
   const column_pqc3_data = [
     { field: "YEAR_WEEK", headerName: "YEAR_WEEK", width: 80 },
