@@ -63,7 +63,7 @@ const LINEQC = () => {
   const [ktdtc, setKTDTC] = useState("CKT");
   const refArray = [useRef<any>(null), useRef<any>(null), useRef<any>(null), useRef<any>(null), useRef<any>(null)];
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, index: number) => {
-    if (e.key === "Enter") {      
+    if (e.key === "Enter") {
       e.preventDefault();
       const nextIndex = (index + 1) % refArray.length;
       refArray[nextIndex].current.focus();
@@ -177,7 +177,6 @@ const LINEQC = () => {
     uploadQuery(file, PLAN_ID + "_" + STT + ".jpg", "lineqc")
       .then((response) => {
         if (response.data.tk_status !== "NG") {
-         
         } else {
           Swal.fire(
             "Thông báo",
@@ -330,12 +329,12 @@ const LINEQC = () => {
       REMARK2: remark,
     })
       .then((response) => {
-        if (response.data.tk_status !== "NG") {          
-          setPlanId('');          
+        if (response.data.tk_status !== "NG") {
+          setPlanId('');
           setReMark('');
-          setSXData([]);          
-          updateIMGPQC1(planId);  
-          Swal.fire("Thông báo", "Input data thành công", "success");             
+          setSXData([]);
+          updateIMGPQC1(planId);
+          Swal.fire("Thông báo", "Input data thành công", "success");
         } else {
           updateIMGPQC1(planId);
           console.log("Có lỗi: " + response.data.message);
@@ -345,22 +344,21 @@ const LINEQC = () => {
         console.log(error);
       });
   };
-  const updateIMGPQC1 =async (PLAN_ID: string) => {
+  const updateIMGPQC1 = async (PLAN_ID: string) => {
     let stt: number = await checkPLAN_ID_Checksheet(PLAN_ID);
-    if(stt<4)
-    {
-      await generalQuery("update_checksheet_image_status", {      
+    if (stt < 4) {
+      await generalQuery("update_checksheet_image_status", {
         PLAN_ID: planId.toUpperCase(),
         STT: stt,
       })
         .then((response) => {
           if (response.data.tk_status !== "NG") {
             //console.log(response.data.data);
-            Swal.fire("Thông báo", "Input data thành công", "success");          
-            setPlanId('');          
+            Swal.fire("Thông báo", "Input data thành công", "success");
+            setPlanId('');
             setReMark('');
             setSXData([]);
-            uploadFile2(planId, stt);
+            uploadFile2(planId.toUpperCase(), stt);
           } else {
             Swal.fire("Cảnh báo", "Có lỗi: " + response.data.message, "error");
           }
@@ -369,11 +367,9 @@ const LINEQC = () => {
           console.log(error);
         });
     }
-    else
-    {
+    else {
       Swal.fire("Cảnh báo", "Đã up đủ đầu giữa cuối rồi", "error");
     }
-    
   }
   const checkInput = (): boolean => {
     if (
@@ -388,8 +384,7 @@ const LINEQC = () => {
       return false;
     }
   };
-  
-  useEffect(() => {   
+  useEffect(() => {
   }, []);
   return (
     <div className="lineqc">
@@ -532,13 +527,12 @@ const LINEQC = () => {
                   />
                 </label>
               </div>
-              
             </div>
           </div>
           <div className="inputbutton">
             <div className="forminputcolumn">
               <Button
-                disabled={sx_data.length ===0}
+                disabled={sx_data.length === 0}
                 ref={refArray[4]}
                 onKeyDown={(e) => {
                 }}
@@ -566,7 +560,7 @@ const LINEQC = () => {
                 }}
               >
                 Input Data
-              </Button>                        
+              </Button>
             </div>
           </div>
         </div>
