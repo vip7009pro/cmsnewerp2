@@ -28,7 +28,6 @@ import moment from "moment";
 import React, { useContext, useEffect, useState } from "react";
 import { AiFillCloseCircle, AiFillFileExcel } from "react-icons/ai";
 import Swal from "sweetalert2";
-import "./QLVL.scss";
 import { UserContext } from "../../../api/Context";
 import { generalQuery, getCompany } from "../../../api/Api";
 import { CustomResponsiveContainer, SaveExcel } from "../../../api/GlobalFunction";
@@ -974,12 +973,12 @@ const OQC_DATA = () => {
   });
 
   useEffect(() => {
-    load_material_table();
+    //load_material_table();
     getcustomerlist();
     //setColumnDefinition(column_inspect_output);
   }, []);
   return (
-    <div className="qlvl">
+    <div className="oqcdata">
       <div className="tracuuDataInspection">
         <div className="tracuuDataInspectionform">
           <div className="forminput">

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import KHOTP from "../../kho/khotp/KHOTP";
 import "./OQC.scss";
+import OQC_DATA from "./OQC_DATA";
 const OQC = () => {
   const [selection, setSelection] = useState<any>({
     tab1: true,
@@ -51,7 +52,7 @@ const OQC = () => {
       )}
       {selection.tab2 && (
         <div className="trainspection">
-          <KHOTP />
+          <OQC_DATA />
         </div>
       )}
     </div>

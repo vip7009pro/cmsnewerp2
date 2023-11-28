@@ -45,7 +45,7 @@
 
           input {
             width: 125px;
-            height: 15px;
+            height: 20px;
             font-size: 0.6rem;
             outline: none;
             border-radius: 5px;
@@ -57,7 +57,7 @@
 
           select {
             width: 135px;
-            height: 20px;
+            height: 28px;
             font-size: 0.8rem;
             outline: none;
             border-radius: 5px;
@@ -136,6 +136,7 @@
         }
 
         .tranhatky {
+          font-size: 0.7rem;
           font-weight: bold;
           padding-left: 5px;
           padding-right: 5px;

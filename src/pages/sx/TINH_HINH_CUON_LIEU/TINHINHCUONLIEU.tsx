@@ -83,7 +83,7 @@ const TINHHINHCUONLIEU = () => {
   const [factory, setFactory] = useState("ALL");
   const [prodrequestno, setProdRequestNo] = useState("");
   const [plan_id, setPlanID] = useState("");
-  const [alltime, setAllTime] = useState(true);
+  const [alltime, setAllTime] = useState(false);
   const [datasxtable, setDataSXTable] = useState<Array<any>>([]);
   const [m_name, setM_Name] = useState("");
   const [m_code, setM_Code] = useState("");
@@ -1304,8 +1304,7 @@ const TINHHINHCUONLIEU = () => {
                   value={machine}
                   onChange={(e) => {
                     setMachine(e.target.value);
-                  }}
-                  style={{ width: 150, height: 30 }}
+                  }}                  
                 >
                   {machine_list.map((ele: MACHINE_LIST, index: number) => {
                     return (

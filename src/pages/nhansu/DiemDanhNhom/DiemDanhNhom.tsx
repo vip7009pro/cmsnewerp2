@@ -77,13 +77,13 @@ const DiemDanhNhom = () => {
 
                 Swal.fire(
                   "Thông báo",
-                  "Người này nghỉ ko đăng ký, auto chuyển Nghỉ Việc Riêng!",
+                  "Người này nghỉ ko đăng ký, auto đăng ký nghỉ!",
                   "warning"
                 );
               } else {
                 Swal.fire(
                   "Lỗi",
-                  "Người này nghỉ ko đăng ký, auto chuyển Nghỉ Việc Riêng, tuy nhiên thao tác thất bại ! " +
+                  "Người này nghỉ ko đăng ký, auto chuyển nghỉ, tuy nhiên thao tác thất bại ! " +
                     response.data.message,
                   "error"
                 );
