@@ -244,8 +244,7 @@ const LINEQC = () => {
           //console.log(response.data.data);
           setInputNo(response.data.data[0].M_LOT_NO);
           checkLotNVL(response.data.data[0].M_LOT_NO);
-          setProcessLotNo(response.data.data[0].PROCESS_LOT_NO);
-          checkKTDTC(response.data.data[0].PROCESS_LOT_NO);
+          setProcessLotNo(response.data.data[0].PROCESS_LOT_NO);         
         } else {
           if (SXDATA[0].PROCESS_NUMBER === 0) {
             setInputNo("");
@@ -255,12 +254,10 @@ const LINEQC = () => {
               PROD_REQUEST_NO: SXDATA[0].PROD_REQUEST_NO,
             })
               .then((response) => {
-                if (response.data.tk_status !== "NG") {
-                  //console.log(response.data.data);
+                if (response.data.tk_status !== "NG") {                  
                   setInputNo(response.data.data[0].M_LOT_NO);
                   checkLotNVL(response.data.data[0].M_LOT_NO);
-                  setProcessLotNo(response.data.data[0].PROCESS_LOT_NO);
-                  checkKTDTC(response.data.data[0].PROCESS_LOT_NO);
+                  setProcessLotNo(response.data.data[0].PROCESS_LOT_NO);                  
                 } else {
                   setInputNo("");
                   setProcessLotNo("");
@@ -392,7 +389,8 @@ const LINEQC = () => {
     if (      
       planId !== "" &&
       lineqc_empl !== "" &&
-      sx_data.length !== 0 
+      sx_data.length !== 0   &&
+      sx_data[0].MASS_START_TIME !==""     
     ) {
       return true;
     } else {
