@@ -2974,3 +2974,14 @@ export interface InspectSummary {
   P_RATE: number,
   T_RATE: number
 }
+export interface RecentDM {
+  G_CODE: string,
+  PROCESS_NUMBER: number,
+  TT_INPUT_QTY:number,
+  TT_REMAIN_QTY:number,	
+  TT_USED_QTY:number,	
+  TT_SETTING_MET:number,	
+  TT_SX:number,
+  TT_SX_RESULT:number,
+  LOSS_SX:number,	
+}

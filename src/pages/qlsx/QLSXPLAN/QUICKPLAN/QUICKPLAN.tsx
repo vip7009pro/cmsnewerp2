@@ -66,11 +66,14 @@ import {
   MACHINE_LIST,
   QLSXCHITHIDATA,
   QLSXPLANDATA,
+  RecentDM,
   UserData,
   YCSXTableData,
-} from "../../../../api/GlobalInterface";
-
-const QUICKPLAN = () => {
+} from "../../../../api/GlobalInterface";           
+const QUICKPLAN = () => {           
+  const qtyFactor: number = 10;
+  const [recentDMData, setRecentDMData]= useState<RecentDM[]>([])
+                                                  
   const [currentPlanPD, setCurrentPlanPD] = useState(0);
   const [currentPlanCAVITY, setCurrentPlanCAVITY] = useState(0);
   const [selection, setSelection] = useState<any>({
@@ -85,13 +88,13 @@ const QUICKPLAN = () => {
     EQ1: "",
     EQ2: "",
     EQ3: "",
-    EQ4: "",
+    EQ4: "",  
     Setting1: 0,
-    Setting2: 0,
+    Setting2: 0, 
     Setting3: 0,
     Setting4: 0,
-    UPH1: 0,
-    UPH2: 0,
+    UPH1: 0,  
+    UPH2: 0,              
     UPH3: 0,
     UPH4: 0,
     Step1: 0,
@@ -154,6 +157,31 @@ const QUICKPLAN = () => {
   const [showhideycsxtable, setShowHideYCSXTable] = useState(1);
   const [showhidedinhmuc, setShowHideDinhMuc] = useState(true);
   const [machine_list, setMachine_List] = useState<MACHINE_LIST[]>([]);
+
+  const getRecentDM = (G_CODE: string) => {
+    generalQuery("loadRecentDM", {G_CODE: G_CODE})
+      .then((response) => {
+        //console.log(response.data);
+        if (response.data.tk_status !== "NG") {
+          const loadeddata: RecentDM[] = response.data.data.map(
+            (element: RecentDM, index: number) => {
+              return {
+                ...element,
+              };
+            },
+          );          
+          setRecentDMData(loadeddata);
+        } else {
+          //Swal.fire("Thông báo", "Lỗi BOM SX: " + response.data.message, "error");
+          setRecentDMData([]);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    
+
+  }
   const getMachineList = () => {
     generalQuery("getmachinelist", {})
       .then((response) => {
@@ -1897,11 +1925,9 @@ const QUICKPLAN = () => {
     event, // MuiEvent<React.MouseEvent<HTMLElement>>
     details, // GridCallbackDetails
   ) => {
-    let rowData: QLSXPLANDATA = params.row;
-    console.log(rowData);
+    let rowData: QLSXPLANDATA = params.row; 
     setSelectedCode("CODE: " + rowData.G_NAME_KD);
     setSelectedG_Code(rowData.G_CODE);
-
     setDataDinhMuc({
       ...datadinhmuc,
       FACTORY: rowData.FACTORY === null ? "NM1" : rowData.FACTORY,
@@ -1931,6 +1957,9 @@ const QUICKPLAN = () => {
       LOSS_SETTING4: rowData.LOSS_SETTING4 === null ? 0 : rowData.LOSS_SETTING4,
       NOTE: rowData.NOTE === null ? "" : rowData.NOTE,
     });
+
+    if(rowData.G_CODE !=="")
+    getRecentDM(rowData.G_CODE);
     //console.log(params.row);
   };
   const cellEditHandler = (
@@ -2042,9 +2071,9 @@ const QUICKPLAN = () => {
                     PLAN_QTY:
                       temp_ycsx_data[0].TON_CD1 <= 0
                         ? 0
-                        : temp_ycsx_data[0].TON_CD1 < UPH1 * 10
+                        : temp_ycsx_data[0].TON_CD1 < UPH1 * qtyFactor
                           ? temp_ycsx_data[0].TON_CD1
-                          : UPH1 * 10,
+                          : UPH1 * qtyFactor,
                   };
                 } else if (plan_temp === p.EQ2) {
                   return {
@@ -2062,9 +2091,9 @@ const QUICKPLAN = () => {
                     PLAN_QTY:
                       temp_ycsx_data[0].TON_CD2 <= 0
                         ? 0
-                        : temp_ycsx_data[0].TON_CD2 < UPH2 * 10
+                        : temp_ycsx_data[0].TON_CD2 < UPH2 * qtyFactor
                           ? temp_ycsx_data[0].TON_CD2
-                          : UPH2 * 10,
+                          : UPH2 * qtyFactor,
                   };
                 } else if (plan_temp === p.EQ3) {
                   return {
@@ -2082,9 +2111,9 @@ const QUICKPLAN = () => {
                     PLAN_QTY:
                       temp_ycsx_data[0].TON_CD3 <= 0
                         ? 0
-                        : temp_ycsx_data[0].TON_CD3 < UPH3 * 10
+                        : temp_ycsx_data[0].TON_CD3 < UPH3 * qtyFactor
                           ? temp_ycsx_data[0].TON_CD3
-                          : UPH3 * 10,
+                          : UPH3 * qtyFactor,
                   };
                 } else if (plan_temp === p.EQ4) {
                   return {
@@ -2102,9 +2131,9 @@ const QUICKPLAN = () => {
                     PLAN_QTY:
                       temp_ycsx_data[0].TON_CD4 <= 0
                         ? 0
-                        : temp_ycsx_data[0].TON_CD4 < UPH4 * 10
+                        : temp_ycsx_data[0].TON_CD4 < UPH4 * qtyFactor
                           ? temp_ycsx_data[0].TON_CD4
-                          : UPH4 * 10,
+                          : UPH4 * qtyFactor,
                   };
                 } else {
                   Swal.fire(
@@ -2304,7 +2333,7 @@ const QUICKPLAN = () => {
                 </div>
                 <div className="forminputcolumn">
                   <label>
-                    <b>LOSS_SX1(%):</b>{" "}
+                    <b>LOSS_SX1(%): <span style={{color: 'red', fontSize: '0.7rem'}}>({recentDMData.filter((e)=> e.PROCESS_NUMBER === 1)[0]?.LOSS_SX.toLocaleString('en-US',{minimumFractionDigits:0, maximumFractionDigits:0}) ?? ""}%)</span></b>{" "}
                     <input
                       type="text"
                       placeholder="% loss sx 1"
@@ -2318,7 +2347,7 @@ const QUICKPLAN = () => {
                     ></input>
                   </label>
                   <label>
-                    <b>LOSS_SX2(%):</b>{" "}
+                    <b>LOSS_SX2(%):<span style={{color: 'red', fontSize: '0.7rem'}}>({recentDMData.filter((e)=> e.PROCESS_NUMBER === 2)[0]?.LOSS_SX.toLocaleString('en-US',{minimumFractionDigits:0, maximumFractionDigits:0}) ?? ""}%)</span></b>{" "}
                     <input
                       type="text"
                       placeholder="% loss sx 2"
@@ -2334,7 +2363,7 @@ const QUICKPLAN = () => {
                 </div>
                 <div className="forminputcolumn">
                   <label>
-                    <b>LOSS SETTING1 (m):</b>{" "}
+                    <b>LOSS SETTING1 (m):<span style={{color: 'red', fontSize: '0.7rem'}}>({recentDMData.filter((e)=> e.PROCESS_NUMBER === 1)[0]?.TT_SETTING_MET.toLocaleString('en-US',{minimumFractionDigits:0, maximumFractionDigits:0}) ?? ""}m)</span></b>{" "}
                     <input
                       type="text"
                       placeholder="met setting 1"
@@ -2348,7 +2377,7 @@ const QUICKPLAN = () => {
                     ></input>
                   </label>
                   <label>
-                    <b>LOSS SETTING2 (m):</b>{" "}
+                    <b>LOSS SETTING2 (m):<span style={{color: 'red', fontSize: '0.7rem'}}>({recentDMData.filter((e)=> e.PROCESS_NUMBER === 2)[0]?.TT_SETTING_MET.toLocaleString('en-US',{minimumFractionDigits:0, maximumFractionDigits:0}) ?? ""}m)</span></b>{" "}
                     <input
                       type="text"
                       placeholder="met setting 2"
@@ -2531,7 +2560,7 @@ const QUICKPLAN = () => {
                 </div>
                 <div className="forminputcolumn">
                   <label>
-                    <b>LOSS_SX3(%):</b>{" "}
+                    <b>LOSS_SX3(%):<span style={{color: 'red', fontSize: '0.7rem'}}>({recentDMData.filter((e)=> e.PROCESS_NUMBER === 3)[0]?.LOSS_SX.toLocaleString('en-US',{minimumFractionDigits:0, maximumFractionDigits:0}) ?? ""}%)</span></b>{" "}
                     <input
                       type="text"
                       placeholder="% loss sx 3"
@@ -2545,7 +2574,7 @@ const QUICKPLAN = () => {
                     ></input>
                   </label>
                   <label>
-                    <b>LOSS_SX4(%):</b>{" "}
+                    <b>LOSS_SX4(%):<span style={{color: 'red', fontSize: '0.7rem'}}>({recentDMData.filter((e)=> e.PROCESS_NUMBER === 4)[0]?.LOSS_SX.toLocaleString('en-US',{minimumFractionDigits:0, maximumFractionDigits:0}) ?? ""}%)</span></b>{" "}
                     <input
                       type="text"
                       placeholder="% loss sx 4"
@@ -2561,7 +2590,7 @@ const QUICKPLAN = () => {
                 </div>
                 <div className="forminputcolumn">
                   <label>
-                    <b>LOSS SETTING3 (m):</b>{" "}
+                    <b>LOSS SETTING3 (m):<span style={{color: 'red', fontSize: '0.7rem'}}>({recentDMData.filter((e)=> e.PROCESS_NUMBER === 3)[0]?.TT_SETTING_MET.toLocaleString('en-US',{minimumFractionDigits:0, maximumFractionDigits:0}) ?? ""}m)</span></b>{" "}
                     <input
                       type="text"
                       placeholder="met setting 3"
@@ -2575,7 +2604,7 @@ const QUICKPLAN = () => {
                     ></input>
                   </label>
                   <label>
-                    <b>LOSS SETTING4 (m):</b>{" "}
+                    <b>LOSS SETTING4 (m):<span style={{color: 'red', fontSize: '0.7rem'}}>({recentDMData.filter((e)=> e.PROCESS_NUMBER === 4)[0]?.TT_SETTING_MET.toLocaleString('en-US',{minimumFractionDigits:0, maximumFractionDigits:0}) ?? ""}m)</span></b>{" "}
                     <input
                       type="text"
                       placeholder="met setting 4"

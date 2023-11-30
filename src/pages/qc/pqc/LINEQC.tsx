@@ -177,6 +177,11 @@ const LINEQC = () => {
     uploadQuery(file, PLAN_ID + "_" + STT + ".jpg", "lineqc")
     .then((response) => {
       if (response.data.tk_status !== "NG") {
+        Swal.fire(
+          "Thông báo",
+          "Upload file thành công",
+          "success"
+        );
       } else {
         Swal.fire(
           "Thông báo",

@@ -82,6 +82,7 @@ import {
   MACHINE_LIST,
   QLSXCHITHIDATA,
   QLSXPLANDATA,
+  RecentDM,
   TONLIEUXUONG,
   UserData,
   YCSXTableData,
@@ -134,6 +135,31 @@ export const renderBanVe = (ycsxlist: YCSXTableData[]) => {
   );
 };
 const MACHINE = () => {
+  const [recentDMData, setRecentDMData]= useState<RecentDM[]>([])
+  const getRecentDM = (G_CODE: string) => {
+    generalQuery("loadRecentDM", {G_CODE: G_CODE})
+      .then((response) => {
+        //console.log(response.data);
+        if (response.data.tk_status !== "NG") {
+          const loadeddata: RecentDM[] = response.data.data.map(
+            (element: RecentDM, index: number) => {
+              return {
+                ...element,
+              };
+            },
+          );          
+          setRecentDMData(loadeddata);
+        } else {
+          //Swal.fire("Thông báo", "Lỗi BOM SX: " + response.data.message, "error");
+          setRecentDMData([]);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    
+
+  }
   const [isPending, startTransition] = useTransition();
   const chithiarray: QLSXPLANDATA[] | undefined = useSelector(
     (state: RootState) => state.totalSlice.multiple_chithi_array
@@ -4009,6 +4035,8 @@ const MACHINE = () => {
       rowData.PLAN_QTY,
       rowData.PROCESS_NUMBER
     );
+    if(rowData.G_CODE !=="")
+    getRecentDM(rowData.G_CODE);
     //console.log(params.row);
   };
   let temp_key: string = "";
@@ -4934,7 +4962,7 @@ const MACHINE = () => {
                   </div>
                   <div className='forminputcolumn'>
                     <label>
-                      <b>LOSS_SX1(%):</b>{" "}
+                    <b>LOSS_SX1(%): <span style={{color: 'red', fontSize: '0.7rem'}}>({recentDMData.filter((e)=> e.PROCESS_NUMBER === 1)[0]?.LOSS_SX.toLocaleString('en-US',{minimumFractionDigits:0, maximumFractionDigits:0}) ?? ""}%)</span></b>{" "}
                       <input
                         type='text'
                         placeholder='% loss sx 1'
@@ -4948,7 +4976,7 @@ const MACHINE = () => {
                       ></input>
                     </label>
                     <label>
-                      <b>LOSS_SX2(%):</b>{" "}
+                    <b>LOSS_SX2(%):<span style={{color: 'red', fontSize: '0.7rem'}}>({recentDMData.filter((e)=> e.PROCESS_NUMBER === 2)[0]?.LOSS_SX.toLocaleString('en-US',{minimumFractionDigits:0, maximumFractionDigits:0}) ?? ""}%)</span></b>{" "}
                       <input
                         type='text'
                         placeholder='% loss sx 2'
@@ -4964,7 +4992,7 @@ const MACHINE = () => {
                   </div>
                   <div className='forminputcolumn'>
                     <label>
-                      <b>LOSS SETTING1 (m):</b>{" "}
+                    <b>LOSS ST1 (m):<span style={{color: 'red', fontSize: '0.7rem'}}>({recentDMData.filter((e)=> e.PROCESS_NUMBER === 1)[0]?.TT_SETTING_MET.toLocaleString('en-US',{minimumFractionDigits:0, maximumFractionDigits:0}) ?? ""}m)</span></b>{" "}
                       <input
                         type='text'
                         placeholder='met setting 1'
@@ -4978,7 +5006,7 @@ const MACHINE = () => {
                       ></input>
                     </label>
                     <label>
-                      <b>LOSS SETTING2 (m):</b>{" "}
+                    <b>LOSS ST2 (m):<span style={{color: 'red', fontSize: '0.7rem'}}>({recentDMData.filter((e)=> e.PROCESS_NUMBER === 2)[0]?.TT_SETTING_MET.toLocaleString('en-US',{minimumFractionDigits:0, maximumFractionDigits:0}) ?? ""}m)</span></b>{" "}
                       <input
                         type='text'
                         placeholder='met setting 2'
@@ -5160,7 +5188,7 @@ const MACHINE = () => {
                   </div>
                   <div className='forminputcolumn'>
                     <label>
-                      <b>LOSS_SX3(%):</b>{" "}
+                    <b>LOSS_SX3(%):<span style={{color: 'red', fontSize: '0.7rem'}}>({recentDMData.filter((e)=> e.PROCESS_NUMBER === 3)[0]?.LOSS_SX.toLocaleString('en-US',{minimumFractionDigits:0, maximumFractionDigits:0}) ?? ""}%)</span></b>{" "}
                       <input
                         type='text'
                         placeholder='% loss sx 3'
@@ -5174,7 +5202,7 @@ const MACHINE = () => {
                       ></input>
                     </label>
                     <label>
-                      <b>LOSS_SX4(%):</b>{" "}
+                    <b>LOSS_SX4(%):<span style={{color: 'red', fontSize: '0.7rem'}}>({recentDMData.filter((e)=> e.PROCESS_NUMBER === 4)[0]?.LOSS_SX.toLocaleString('en-US',{minimumFractionDigits:0, maximumFractionDigits:0}) ?? ""}%)</span></b>{" "}
                       <input
                         type='text'
                         placeholder='% loss sx 4'
@@ -5190,7 +5218,7 @@ const MACHINE = () => {
                   </div>
                   <div className='forminputcolumn'>
                     <label>
-                      <b>LOSS SETTING3 (m):</b>{" "}
+                    <b>LOSS ST3 (m):<span style={{color: 'red', fontSize: '0.7rem'}}>({recentDMData.filter((e)=> e.PROCESS_NUMBER === 3)[0]?.TT_SETTING_MET.toLocaleString('en-US',{minimumFractionDigits:0, maximumFractionDigits:0}) ?? ""}m)</span></b>{" "}
                       <input
                         type='text'
                         placeholder='met setting 3'
@@ -5204,7 +5232,7 @@ const MACHINE = () => {
                       ></input>
                     </label>
                     <label>
-                      <b>LOSS SETTING4 (m):</b>{" "}
+                    <b>LOSS ST4 (m):<span style={{color: 'red', fontSize: '0.7rem'}}>({recentDMData.filter((e)=> e.PROCESS_NUMBER === 4)[0]?.TT_SETTING_MET.toLocaleString('en-US',{minimumFractionDigits:0, maximumFractionDigits:0}) ?? ""}m)</span></b>{" "}
                       <input
                         type='text'
                         placeholder='met setting 4'
