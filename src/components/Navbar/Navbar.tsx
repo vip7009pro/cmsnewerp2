@@ -100,6 +100,7 @@ import { ELE_ARRAY, UserData } from "../../api/GlobalInterface";
 import EQ_STATUS2 from "../../pages/qlsx/QLSXPLAN/EQ_STATUS/EQ_STATUS2";
 import NavMenu from "../NavMenu/NavMenu";
 import TINHLIEU from "../../pages/muahang/tinhlieu/TINHLIEU";
+import BAOCAOTHEOROLL from "../../pages/sx/BAOCAOTHEOROLL/BAOCAOTHEOROLL";
 
 /* 
 const KIEMTRA= lazy(()=> import('../../pages/qc/inspection/KIEMTRA'));
@@ -511,6 +512,11 @@ export default function Navbar() {
       MENU_CODE: "SX10",
       MENU_NAME: getlang("materiallotstatus", lang),
       MENU_ITEM: <TINHHINHCUONLIEU />,
+    },    
+    {
+      MENU_CODE: "SX13",
+      MENU_NAME: getlang("sxrolldata", lang),
+      MENU_ITEM: <BAOCAOTHEOROLL />,
     },
     {
       MENU_CODE: "SX11",

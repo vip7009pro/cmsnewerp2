@@ -340,8 +340,7 @@ const LINEQC = () => {
             setPlanId('');
             setReMark('');
             setSXData([]);
-            updateIMGPQC1(planId);
-            Swal.fire("Thông báo", "Input data thành công", "success");
+            updateIMGPQC1(planId);           
           } else {
             updateIMGPQC1(planId);
             console.log("Có lỗi: " + response.data.message);

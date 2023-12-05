@@ -1,0 +1,719 @@
+.baocaotheoroll {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+
+  .tracuuDataInspection {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    flex: 1;
+    gap: 5px;
+    .tracuuDataInspectionform {
+      display: flex;
+      flex: 1;
+      flex-direction: column;
+      align-items: center;
+      background-image: linear-gradient(0deg, #afd3d1, #86cfff);
+      -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+      box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+      border-radius: 3px;
+      padding: 5px;
+      span {
+        padding: 10px;
+        font-size: 20px;
+        margin: auto;
+      }
+      .forminput {
+        display: flex;
+        gap: 5px;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-around;
+        padding: 1px;
+        width: 100%;
+
+        .tranhatky {
+          font-weight: bold;
+          padding-left: 5px;
+          padding-right: 5px;
+          height: 30px;
+          background-color: #ccff14;
+          outline: none;
+          border: none;
+          border-radius: 5px;
+          -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+          box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+          margin-bottom: 5px;
+          margin-top: 5px;
+          width: 100px;
+          font-size: 0.7rem;
+
+          &:hover {
+            cursor: pointer;
+            background-color: #bd4dc7;
+          }
+        }
+        .deleteplanbutton {
+          font-weight: bold;
+          padding-left: 5px;
+          padding-right: 5px;
+          height: 30px;
+          background-color: #ff1414;
+          color: white ;
+          outline: none;
+          border: none;
+          border-radius: 5px;
+          -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+          box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+          margin-bottom: 5px;
+          margin-top: 5px;
+          width: 100px;
+          font-size: 0.7rem;
+
+          &:hover {
+            cursor: pointer;
+            background-color: #bd4dc7;
+          }
+        }
+
+        .forminputcolumn {
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+          align-items: flex-end;
+          justify-content: center;
+          flex-wrap: wrap;
+          font-size: 0.6rem;
+
+          input {
+            width: 150px;
+            height: 20px;
+            outline: none;
+            border-radius: 5px;
+            border: none;
+            padding: 5px;
+            margin-left: 5px;
+            background-image: linear-gradient(0deg, #ececec, #9dee95);
+            font-size: 0.7rem;
+          }
+          select {
+            width: 160px;
+            height: 28px;
+            outline: none;
+            border-radius: 5px;
+            border: none;
+            padding: 5px;
+            margin-left: 5px;
+            background-image: linear-gradient(0deg, #ececec, #9dee95);
+            font-size: 0.7rem;
+          }
+        }
+      }
+      .formbutton {
+        display: flex;
+        align-items: center;
+        justify-content: space-around;
+        gap: 20px;
+        .tranhapkiembutton {
+          font-weight: bold;
+          padding-left: 5px;
+          padding-right: 5px;
+          height: 30px;
+          background-color: #99f86d;
+          outline: none;
+          border: none;
+          border-radius: 5px;
+          -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+          box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+          margin-bottom: 5px;
+          margin-top: 5px;
+          &:hover {
+            cursor: pointer;
+            background-color: #67c73a;
+          }
+        }
+        .traxuatkiembutton {
+          font-weight: bold;
+          padding-left: 5px;
+          padding-right: 5px;
+          height: 30px;
+          background-color: #3ebdf8;
+          outline: none;
+          border: none;
+          border-radius: 5px;
+          -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+          box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+          margin-bottom: 5px;
+          margin-top: 5px;
+          &:hover {
+            cursor: pointer;
+            background-color: #3f9eca;
+          }
+        }
+        .tranhapxuatkiembutton {
+          font-weight: bold;
+          padding-left: 5px;
+          padding-right: 5px;
+          height: 30px;
+          background-color: #f04dff;
+          outline: none;
+          border: none;
+          border-radius: 5px;
+          -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+          box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+          margin-bottom: 5px;
+          margin-top: 5px;
+          &:hover {
+            cursor: pointer;
+            background-color: #bd4dc7;
+          }
+        }
+      }
+      .formsummary {
+        display: flex;
+        flex-direction: row;
+        background-image: linear-gradient(0deg, #ececec, #99f86d);
+        -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+        box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+        gap: 20px;
+        border-radius: 5px;
+        margin-top: 5px;
+
+        .summarygroup {
+          display: flex;
+          flex-direction: column;
+          align-items: flex-start;
+          justify-items: flex-start;
+          gap: 10px;
+          .summaryvalue {
+            display: flex;
+            font-size: 16px;
+            justify-self: flex-end;
+            align-self: flex-end;
+            padding: 5px;
+            color: rgb(83, 36, 255);
+          }
+        }
+      }
+    }
+    .tracuuYCSXTable {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-items: center;
+      flex: 9;
+      height: 82vh;
+      background-image: linear-gradient(0deg, #afd3d1, #86cfff);
+      -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+      box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+      border-radius: 3px;
+
+      .header {
+        display: flex;
+        width: 100%;
+        align-items: center;
+        justify-items: center;
+        align-self: center;
+        .lossinfo {
+          display: flex;
+          align-self: center;
+          flex-direction: row;
+          background-image: linear-gradient(0deg, #bbe2f5, #e9f1ed);
+          -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+          box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+          gap: 20px;
+          border-radius: 5px;
+          margin-top: 5px;
+          padding: 5px;
+          font-size: 0.8rem;
+          overflow: hidden;
+          table {
+            border: 2px solid gray;
+            width: fit-content;
+            text-align: center;
+          }
+          table thead tr td {
+            font-weight: bold;
+            border: 1px solid gray;
+            padding-left: 10px;
+            padding-right: 10px;
+          }
+          table tbody tr td {
+            border: 1px solid gray;
+            text-align: center;
+          }
+        }
+
+        .forminput {
+          display: flex;
+          gap: 5px;
+          flex-wrap: wrap;
+          align-items: center;
+          justify-content: space-around;
+          padding: 2px;
+          width: 100%;
+
+          .tranhatky {
+            font-weight: bold;
+            padding-left: 5px;
+            padding-right: 5px;
+            height: 30px;
+            background-color: #ccff14;
+            outline: none;
+            border: none;
+            border-radius: 5px;
+            -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+            box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+            margin-bottom: 5px;
+            margin-top: 5px;
+            width: 100px;
+            font-size: 0.7rem;
+
+            &:hover {
+              cursor: pointer;
+              background-color: #bd4dc7;
+            }
+          }
+          .deleteplanbutton {
+            font-weight: bold;
+            padding-left: 5px;
+            padding-right: 5px;
+            height: 30px;
+            background-color: #ff1414;
+            color: white;
+            outline: none;
+            border: none;
+            border-radius: 5px;
+            -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+            box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+            margin-bottom: 5px;
+            margin-top: 5px;
+            width: 100px;
+            font-size: 0.7rem;
+  
+            &:hover {
+              cursor: pointer;
+              background-color: #bd4dc7;
+            }
+          }
+
+          .forminputcolumn {
+            display: flex;
+            flex-direction: row;
+            gap: 10px;
+            align-items: flex-end;
+            justify-content: center;
+            flex-wrap: wrap;
+            font-size: 0.7rem;
+
+            input {
+              width: 150px;
+              height: 25px;
+              outline: none;
+              border-radius: 5px;
+              border: none;
+              padding: 2px;
+              margin-left: 5px;
+              background-image: linear-gradient(0deg, #ececec, #9dee95);
+              font-size: 0.7rem;
+            }
+            select {
+              width: 160px;
+              height: 30px;
+              outline: none;
+              border-radius: 5px;
+              border: none;
+              padding: 2px;
+              margin-left: 5px;
+              background-image: linear-gradient(0deg, #ececec, #9dee95);
+              font-size: 0.7rem;
+            }
+          }
+        }
+        .formbutton {
+          display: flex;
+          align-items: center;
+          justify-content: space-around;
+          gap: 20px;
+          .tranhapkiembutton {
+            font-weight: bold;
+            padding-left: 5px;
+            padding-right: 5px;
+            height: 30px;
+            background-color: #99f86d;
+            outline: none;
+            border: none;
+            border-radius: 5px;
+            -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+            box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+            margin-bottom: 5px;
+            margin-top: 5px;
+            &:hover {
+              cursor: pointer;
+              background-color: #67c73a;
+            }
+          }
+          .traxuatkiembutton {
+            font-weight: bold;
+            padding-left: 5px;
+            padding-right: 5px;
+            height: 30px;
+            background-color: #3ebdf8;
+            outline: none;
+            border: none;
+            border-radius: 5px;
+            -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+            box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+            margin-bottom: 5px;
+            margin-top: 5px;
+            &:hover {
+              cursor: pointer;
+              background-color: #3f9eca;
+            }
+          }
+          .tranhapxuatkiembutton {
+            font-weight: bold;
+            padding-left: 5px;
+            padding-right: 5px;
+            height: 30px;
+            background-color: #f04dff;
+            outline: none;
+            border: none;
+            border-radius: 5px;
+            -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+            box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+            margin-bottom: 5px;
+            margin-top: 5px;
+            &:hover {
+              cursor: pointer;
+              background-color: #bd4dc7;
+            }
+          }
+        }
+      }
+
+      .datatb {
+        justify-items: center;
+        width: 99%;
+        height: 80vh;
+        padding: 5px;
+
+        .dx-datagrid-rowsview
+          .dx-selection.dx-row:not(.dx-row-focused):not(.dx-row-removed)
+          > td {
+          background-color: orange;
+          color: unset;
+        }
+
+        .dx-datagrid-borders > .dx-datagrid-header-panel {
+          border-bottom: 0;
+          background-color: #b5f398;
+        }
+
+        .dx-toolbar .dx-toolbar-items-container {
+          height: 25px;
+          overflow: visible;
+          background-color: #b5f398;
+        }
+
+        //toan bo bang
+        .dx-gridbase-container > .dx-datagrid-rowsview.dx-scrollable {
+          display: -ms-flexbox;
+          display: flex;
+          background-image: linear-gradient(0deg, #e9e1eb, #f1f5cf);
+          font-size: 0.7rem;
+        }
+
+        .dx-datagrid-borders > .dx-datagrid-filter-panel,
+        .dx-datagrid-borders > .dx-datagrid-headers {
+          border-top: 1px solid #ddd;
+          background-image: linear-gradient(0deg, #e9e1eb, #a0f87e);
+          color: black;
+          font-weight: bold;
+          font-size: 0.7rem;
+        }
+        //filter row input
+        .dx-datagrid-filter-row
+          .dx-editor-cell
+          .dx-editor-with-menu
+          .dx-placeholder::before,
+        .dx-datagrid-filter-row
+          .dx-editor-cell
+          .dx-editor-with-menu
+          .dx-texteditor-input {
+          padding-left: 32px;
+          background-image: linear-gradient(0deg, #e9e1eb, #a0f87e);
+          color: black;
+          height: 10px;
+        }
+        .dx-editor-cell .dx-texteditor,
+        .dx-editor-cell .dx-texteditor .dx-texteditor-input {
+          background-image: linear-gradient(0deg, #e9e1eb, #a0f87e);
+        }
+
+        .dx-searchbox .dx-placeholder::before,
+        .dx-searchbox .dx-texteditor-input {
+          padding-left: 34px;
+          background-image: linear-gradient(0deg, #e9e1eb, #d7f0cd);
+        }
+
+        .dx-button-mode-contained {
+          background-color: #a0f87e;
+          border-color: #cacafa;
+          color: #430fff;
+        }
+
+        .dx-datagrid-total-footer > .dx-datagrid-content {
+          padding-top: 0px;
+          padding-bottom: 0px;
+        }
+        .dx-datagrid-rowsview
+          .dx-selection.dx-row:not(.dx-row-focused):not(.dx-row-removed)
+          > td {
+          background-color: orange;
+          color: unset;
+        }
+      }
+    }
+  }
+  .listlieuchithi {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    background-color: #effb89;
+    z-index: 99;
+    padding: 10px;
+    top: 40%;
+    left: 23%;
+    width: 1100px;
+    height: 500px;
+    box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.58);
+    -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.58);
+    border-radius: 5px;
+    .datatb {
+      justify-items: center;
+      width: 99%;
+      height: 100%;
+      padding: 5px;
+
+      .dx-datagrid-rowsview
+        .dx-selection.dx-row:not(.dx-row-focused):not(.dx-row-removed)
+        > td {
+        background-color: orange;
+        color: unset;
+      }
+
+      .dx-datagrid-borders > .dx-datagrid-header-panel {
+        border-bottom: 0;
+        background-color: #71bff3;
+      }
+
+      .dx-toolbar .dx-toolbar-items-container {
+        height: 25px;
+        overflow: visible;
+        background-color: #71bff3;
+      }
+
+      //toan bo bang
+      .dx-gridbase-container > .dx-datagrid-rowsview.dx-scrollable {
+        display: -ms-flexbox;
+        display: flex;
+        background-image: linear-gradient(0deg, #e9e1eb, #f1f5cf);
+        font-size: 0.7rem;
+      }
+
+      .dx-datagrid-borders > .dx-datagrid-filter-panel,
+      .dx-datagrid-borders > .dx-datagrid-headers {
+        border-top: 1px solid #ddd;
+        background-image: linear-gradient(0deg, #e9e1eb, #71bff3);
+        color: black;
+        font-weight: bold;
+        font-size: 0.7rem;
+      }
+      //filter row input
+      .dx-datagrid-filter-row
+        .dx-editor-cell
+        .dx-editor-with-menu
+        .dx-placeholder::before,
+      .dx-datagrid-filter-row
+        .dx-editor-cell
+        .dx-editor-with-menu
+        .dx-texteditor-input {
+        padding-left: 32px;
+        background-image: linear-gradient(0deg, #e9e1eb, #71bff3);
+        color: black;
+        height: 10px;
+      }
+      .dx-editor-cell .dx-texteditor,
+      .dx-editor-cell .dx-texteditor .dx-texteditor-input {
+        background-image: linear-gradient(0deg, #e9e1eb, #71bff3);
+      }
+
+      .dx-searchbox .dx-placeholder::before,
+      .dx-searchbox .dx-texteditor-input {
+        padding-left: 34px;
+        background-image: linear-gradient(0deg, #e9e1eb, #71bff3);
+      }
+
+      .dx-button-mode-contained {
+        background-color: #71bff3;
+        border-color: #cacafa;
+        color: #430fff;
+      }
+
+      .dx-datagrid-total-footer > .dx-datagrid-content {
+        padding-top: 0px;
+        padding-bottom: 0px;
+      }
+      .dx-datagrid-rowsview
+        .dx-selection.dx-row:not(.dx-row-focused):not(.dx-row-removed)
+        > td {
+        background-color: orange;
+        color: unset;
+      }
+    }
+  }
+  .quickplandiv {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    background-color: #eef08d;
+    z-index: 99;
+    padding: 10px;
+    top: 15%;
+    left: 1%;
+    width: fit-content;
+    height: 970px;
+    box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.58);
+    -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.58);
+    border-radius: 5px;
+    .datatb {
+      justify-items: center;
+      width: 99%;
+      height: 100%;
+      padding: 5px;
+
+      .dx-datagrid-rowsview
+        .dx-selection.dx-row:not(.dx-row-focused):not(.dx-row-removed)
+        > td {
+        background-color: orange;
+        color: unset;
+      }
+
+      .dx-datagrid-borders > .dx-datagrid-header-panel {
+        border-bottom: 0;
+        background-color: #71bff3;
+      }
+
+      .dx-toolbar .dx-toolbar-items-container {
+        height: 25px;
+        overflow: visible;
+        background-color: #71bff3;
+      }
+
+      //toan bo bang
+      .dx-gridbase-container > .dx-datagrid-rowsview.dx-scrollable {
+        display: -ms-flexbox;
+        display: flex;
+        background-image: linear-gradient(0deg, #e9e1eb, #f1f5cf);
+        font-size: 0.7rem;
+      }
+
+      .dx-datagrid-borders > .dx-datagrid-filter-panel,
+      .dx-datagrid-borders > .dx-datagrid-headers {
+        border-top: 1px solid #ddd;
+        background-image: linear-gradient(0deg, #e9e1eb, #71bff3);
+        color: black;
+        font-weight: bold;
+        font-size: 0.7rem;
+      }
+      //filter row input
+      .dx-datagrid-filter-row
+        .dx-editor-cell
+        .dx-editor-with-menu
+        .dx-placeholder::before,
+      .dx-datagrid-filter-row
+        .dx-editor-cell
+        .dx-editor-with-menu
+        .dx-texteditor-input {
+        padding-left: 32px;
+        background-image: linear-gradient(0deg, #e9e1eb, #71bff3);
+        color: black;
+        height: 10px;
+      }
+      .dx-editor-cell .dx-texteditor,
+      .dx-editor-cell .dx-texteditor .dx-texteditor-input {
+        background-image: linear-gradient(0deg, #e9e1eb, #71bff3);
+      }
+
+      .dx-searchbox .dx-placeholder::before,
+      .dx-searchbox .dx-texteditor-input {
+        padding-left: 34px;
+        background-image: linear-gradient(0deg, #e9e1eb, #71bff3);
+      }
+
+      .dx-button-mode-contained {
+        background-color: #71bff3;
+        border-color: #cacafa;
+        color: #430fff;
+      }
+
+      .dx-datagrid-total-footer > .dx-datagrid-content {
+        padding-top: 0px;
+        padding-bottom: 0px;
+      }
+      .dx-datagrid-rowsview
+        .dx-selection.dx-row:not(.dx-row-focused):not(.dx-row-removed)
+        > td {
+        background-color: orange;
+        color: unset;
+      }
+    }
+  }
+  .khoaodiv {
+    position: absolute;
+    background-color: #effb89;
+    z-index: 99;
+    padding: 10px;
+    top: 0%;
+    left: 23%;
+    width: 1100px;
+    height: 800px;
+    box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.58);
+    -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.58);
+    border-radius: 5px;
+  }
+  .printycsxpage {
+    position: fixed;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    z-index: 3;
+    width: fit-content;
+    height: 200mm;
+    align-items: center;
+    padding: 10px;
+    gap: 20px;
+    border-radius: 5px;
+    -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+    box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+    //background-color: rgba(233, 222, 222, 0.664);
+    background-color: white;
+    top: 50px;
+    left: 30%;
+
+    .buttongroup {
+      display: flex;
+      flex-direction: row;
+      align-items: flex-start;
+      gap: 5px;
+    }
+    .ycsxrender {
+      overflow: scroll;
+      border: 1px solid black;
+      background-color: white;
+    }
+  }
+}

@@ -24,7 +24,7 @@ import AccountInfo from "../../components/Navbar/AccountInfo/AccountInfo";
 import styled from "@emotion/styled";
 import { Draggable } from "devextreme-react";
 import Cookies from "universal-cookie";
-export const current_ver: number = 273;
+export const current_ver: number = 274;
 interface ELE_ARRAY {
   REACT_ELE: ReactElement;
   ELE_NAME: string;

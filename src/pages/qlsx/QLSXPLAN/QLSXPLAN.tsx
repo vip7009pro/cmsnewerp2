@@ -10,6 +10,7 @@ import PLAN_STATUS from "./PLAN_STATUS/PLAN_STATUS";
 import EQ_STATUS from "./EQ_STATUS/EQ_STATUS";
 import KHOAO from "./KHOAO/KHOAO";
 import EQ_STATUS2 from "./EQ_STATUS/EQ_STATUS2";
+import ACHIVEMENTTB from "./ACHIVEMENTTB/ACHIVEMENTTB";
 
 /* const EQ_STATUS= lazy(()=> import('./EQ_STATUS/EQ_STATUS'));
 const KHOAO= lazy(()=> import('./KHOAO/KHOAO'));
@@ -276,6 +277,16 @@ const QLSXPLAN = () => {
           >
             <span className="mininavtext">KHO ẢO</span>
           </div>
+          <div
+            className="mininavitem"
+            onClick={() => setNav(2)}
+            style={{
+              backgroundColor: selection.tab2 === true ? "#02c712" : "#abc9ae",
+              color: selection.tab2 === true ? "yellow" : "yellow",
+            }}
+          >
+            <span className="mininavtext">PLAN_RESULT</span>
+          </div>
         </div>
         {selection.tab1 && (
           <div className="traiqc">
@@ -284,7 +295,7 @@ const QLSXPLAN = () => {
         )}
         {selection.tab2 && (
           <div className="datadtc">
-            <PLANTABLE />
+            <ACHIVEMENTTB />
           </div>
         )}
         {selection.tab3 && (

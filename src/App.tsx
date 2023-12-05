@@ -31,6 +31,7 @@ import PivotChart from "./components/PivotChart/PivotChart";
 import { Button } from "@mui/material";
 import { UserData } from "./api/GlobalInterface";
 import TINHLIEU from "./pages/muahang/tinhlieu/TINHLIEU";
+import BAOCAOTHEOROLL from "./pages/sx/BAOCAOTHEOROLL/BAOCAOTHEOROLL";
 /* import DATASX2 from "./pages/qlsx/QLSXPLAN/DATASX/DATASX2";
 import Home from "./pages/home/Home";
 import DiemDanhNhom from "./pages/nhansu/DiemDanhNhom/DiemDanhNhom";
@@ -972,6 +973,18 @@ function App() {
                               jobname='Leader'
                             >
                               <TINHHINHCUONLIEU />
+                            </ProtectedRoute>
+                          }
+                        />
+                        <Route
+                          path='rolldata'
+                          element={
+                            <ProtectedRoute
+                              user={globalUserData}
+                              maindeptname='all'
+                              jobname='Leader'
+                            >
+                              <BAOCAOTHEOROLL />
                             </ProtectedRoute>
                           }
                         />

@@ -27,6 +27,7 @@ import {
     FaPeopleArrows,
     FaBarcode,
     FaLongArrowAltRight,
+    FaPaintRoller,
 } from "react-icons/fa";
 import {
     BiBarcode,
@@ -146,6 +147,7 @@ import KHOTP from "../../pages/kho/khotp/KHOTP";
 import { ELE_ARRAY, } from "../../api/GlobalInterface";
 import EQ_STATUS2 from "../../pages/qlsx/QLSXPLAN/EQ_STATUS/EQ_STATUS2";
 import TINHLIEU from "../../pages/muahang/tinhlieu/TINHLIEU";
+import BAOCAOTHEOROLL from "../../pages/sx/BAOCAOTHEOROLL/BAOCAOTHEOROLL";
 interface MENU_LIST_DATA {
     MENU_CODE: string;
     MENU_NAME: string;
@@ -619,6 +621,13 @@ const NavMenu = () => {
                     cName: "sub-nav",
                 },
                 {
+                    title: getlang("sxrolldata", lang),
+                    path: "sx/rolldata",
+                    icon: <FaPaintRoller color="#04a29d" size={20} />,
+                    MENU_CODE: "SX13",
+                    cName: "sub-nav",
+                },
+                {
                     title: getlang("quanlycapa", lang),
                     path: "sx/capamanager",
                     icon: <FcCapacitor color="blue" size={20} />,
@@ -976,6 +985,11 @@ const NavMenu = () => {
             MENU_CODE: "SX10",
             MENU_NAME: getlang("materiallotstatus", lang),
             MENU_ITEM: <TINHHINHCUONLIEU />,
+        },
+        {
+            MENU_CODE: "SX13",
+            MENU_NAME: getlang("sxrolldata", lang),
+            MENU_ITEM: <BAOCAOTHEOROLL />,
         },
         {
             MENU_CODE: "SX11",
