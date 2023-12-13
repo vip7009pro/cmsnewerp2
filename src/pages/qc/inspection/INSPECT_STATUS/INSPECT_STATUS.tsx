@@ -100,7 +100,7 @@ const INSPECT_STATUS = () => {
           >
             <MenuItem value={0}>ALL</MenuItem>
             <MenuItem value={1}>NM1</MenuItem>
-            <MenuItem value={2}>NM3</MenuItem>
+            <MenuItem value={2}>NM2</MenuItem>
           </Select>
           <TextField
             placeholder="Search Code"
@@ -110,7 +110,6 @@ const INSPECT_STATUS = () => {
             }}
           />
         </div>
-
         {/* <INS_SUMMARY INS_DATA={ins_status_data}/>
         <INS_SUMMARY INS_DATA={ins_status_data}/> */}
       </div>

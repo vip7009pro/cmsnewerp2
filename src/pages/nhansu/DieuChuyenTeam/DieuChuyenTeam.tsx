@@ -58,14 +58,14 @@ const DieuChuyenTeam = () => {
                 const newProjects = diemdanhnhomtable.map((p) =>
                   p.EMPL_NO === params.row.EMPL_NO
                     ? {
-                        ...p,
-                        WORK_SHIF_NAME:
-                          teamvalue_info === 0
-                            ? "Hành Chính"
-                            : teamvalue_info === 1
+                      ...p,
+                      WORK_SHIF_NAME:
+                        teamvalue_info === 0
+                          ? "Hành Chính"
+                          : teamvalue_info === 1
                             ? "TEAM 1"
                             : "TEAM 2",
-                      }
+                    }
                     : p
                 );
                 setDiemDanhNhomTable(newProjects);
@@ -136,10 +136,10 @@ const DieuChuyenTeam = () => {
                 const newProjects = diemdanhnhomtable.map((p) =>
                   p.EMPL_NO === params.row.EMPL_NO
                     ? {
-                        ...p,
-                        FACTORY_NAME:
-                          teamvalue_info === 1 ? "Nhà máy 1" : "Nhà máy 2",
-                      }
+                      ...p,
+                      FACTORY_NAME:
+                        teamvalue_info === 1 ? "Nhà máy 1" : "Nhà máy 2",
+                    }
                     : p
                 );
                 setDiemDanhNhomTable(newProjects);
@@ -209,7 +209,6 @@ const DieuChuyenTeam = () => {
           }).then((result) => {
             if (result.isConfirmed) {
               Swal.fire("Tiến hành chuyển team", "Đang chuyển team", "success");
-
               generalQuery("setEMPL_WORK_POSITION", {
                 WORK_POSITION_CODE: work_position_code,
                 EMPL_NO: params.row.EMPL_NO,

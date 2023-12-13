@@ -1137,6 +1137,15 @@ const PLAN_DATATB = () => {
             UPH3: 0,
             UPH4: 0,
             OLD_PLAN_QTY: 0,
+            ACC_TIME:0,
+            AT_LEADTIME:0,
+            CAVITY:1,
+            MASS_END_TIME:'',
+            MASS_START_TIME:'',
+            PD:1,
+            PDBV:'N',
+            REQ_DF:'R',
+            SETTING_START_TIME:''
           };
           for (let i = 0; i < loadeddata.length; i++) {
             temp_plan_data.PLAN_QTY += loadeddata[i].PLAN_QTY;
@@ -1156,6 +1165,7 @@ const PLAN_DATATB = () => {
               "Đã load: " + response.data.data.length + " dòng",
               "success"
             );
+            updatePlanOrder(fromdate);
         } else {
           setPlanDataTable([]);
           Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
@@ -1972,9 +1982,25 @@ const PLAN_DATATB = () => {
       Swal.fire("Thông báo", "Có lỗi !" + err_code, "error");
     } else {
       Swal.fire("Thông báo", "Lưu PLAN thành công", "success");
-      loadQLSXPlan(fromdate);
+      loadQLSXPlan(fromdate);      
     }
   };
+  const updatePlanOrder = (plan_date: string)=> {
+    generalQuery("updatePlanOrder", {
+      PLAN_DATE: plan_date    
+    })
+      .then((response) => {
+        console.log(response.data.data);
+        if (response.data.tk_status !== "NG") {
+          
+        } else {
+          Swal.fire('Thông báo','Update plan order thất bại','error');
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
   const planDataTable2 = React.useMemo(
     () => (
       <div className='datatb'>
@@ -3034,6 +3060,7 @@ const PLAN_DATATB = () => {
               }}
               allowEditing={true}
             ></Column>
+           
             <Column
               dataField='PLAN_ORDER'
               caption='STT'
@@ -3046,6 +3073,32 @@ const PLAN_DATATB = () => {
                 );
               }}
               allowEditing={true}
+            ></Column>
+             <Column
+              dataField='AT_LEADTIME'
+              caption='AT_LEADTIME'
+              width={90}
+              cellRender={(params: any) => {
+                return (
+                  <span style={{ color: "#4178D2", fontWeight: "bold" }}>
+                    {params.data.AT_LEADTIME}
+                  </span>
+                );
+              }}     
+              allowEditing={false}        
+            ></Column>
+             <Column
+              dataField='ACC_TIME'
+              caption='ACC_TIME'
+              width={80}
+              cellRender={(params: any) => {
+                return (
+                  <span style={{ color: "#4178D2", fontWeight: "bold" }}>
+                    {params.data.ACC_TIME}
+                  </span>
+                );
+              }}     
+              allowEditing={false}        
             ></Column>
             <Column
               dataField='PROCESS_NUMBER'
@@ -4258,6 +4311,7 @@ const PLAN_DATATB = () => {
                     setisLoading(true);
                     setReadyRender(false);
                     loadQLSXPlan(fromdate);
+                    //updatePlanOrder();
                   }}
                 >
                   Tra PLAN

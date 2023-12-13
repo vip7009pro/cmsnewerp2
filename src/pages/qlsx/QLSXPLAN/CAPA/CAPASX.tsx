@@ -518,7 +518,7 @@ const CAPASX = () => {
   const dataSource_capa: any = [
     {
       EQ_NAME: "ED",
-      EQ_LEADTIME: //NM3 lam 1 ca
+      EQ_LEADTIME: //NM2 lam 1 ca
         ycsxbalance.filter(
           (ele: YCSX_BALANCE_CAPA_DATA, index: number) => ele.EQ_NAME === "ED"
         )[0]?.YCSX_BALANCE /

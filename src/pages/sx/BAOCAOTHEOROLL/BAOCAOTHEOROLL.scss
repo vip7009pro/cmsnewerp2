@@ -216,35 +216,7 @@
         align-items: center;
         justify-items: center;
         align-self: center;
-        .lossinfo {
-          display: flex;
-          align-self: center;
-          flex-direction: row;
-          background-image: linear-gradient(0deg, #bbe2f5, #e9f1ed);
-          -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
-          box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
-          gap: 20px;
-          border-radius: 5px;
-          margin-top: 5px;
-          padding: 5px;
-          font-size: 0.8rem;
-          overflow: hidden;
-          table {
-            border: 2px solid gray;
-            width: fit-content;
-            text-align: center;
-          }
-          table thead tr td {
-            font-weight: bold;
-            border: 1px solid gray;
-            padding-left: 10px;
-            padding-right: 10px;
-          }
-          table tbody tr td {
-            border: 1px solid gray;
-            text-align: center;
-          }
-        }
+       
 
         .forminput {
           display: flex;
@@ -394,6 +366,35 @@
         }
       }
 
+      .lossinfo {
+        display: flex;
+        align-self: center;
+        flex-direction: row;
+        background-image: linear-gradient(0deg, #bbe2f5, #e9f1ed);
+        -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+        box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+        gap: 20px;
+        border-radius: 5px;
+        margin-top: 5px;
+        padding: 5px;
+        font-size: 0.8rem;
+        overflow: hidden;
+        table {
+          border: 2px solid gray;
+          width: fit-content;
+          text-align: center;
+        }
+        table thead tr td {
+          font-weight: bold;
+          border: 1px solid gray;
+          padding-left: 10px;
+          padding-right: 10px;
+        }
+        table tbody tr td {
+          border: 1px solid gray;
+          text-align: center;
+        }
+      }
       .datatb {
         justify-items: center;
         width: 99%;

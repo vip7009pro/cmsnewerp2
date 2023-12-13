@@ -129,24 +129,41 @@ const MACHINE_COMPONENT2 = (machine_data: MachineInterface2) => {
             : "blur(5px)",
       }}
     >
-      {machine_data.eq_status === "STOP" && machine_data.upd_empl !== "" && (
-        <div className='downtime' style={{ fontSize: "1.2rem" }}>
-          {" "}
-          Stop: {diff} min
-        </div>
-      )}
-      {machine_data.eq_status === "SETTING" && machine_data.upd_empl !== "" && (
-        <div className='downtime' style={{ fontSize: "1.2rem" }}>
-          {" "}
-          Setting: {diff} min
-        </div>
-      )}
-      {machine_data.eq_status === "MASS" && machine_data.upd_empl !== "" && (
-        <div className='downtime' style={{ fontSize: "1.2rem" }}>
-          {" "}
-          Run: {diff} min
-        </div>
-      )}
+      <div className="header">
+        {machine_data.eq_status === "STOP" && machine_data.upd_empl !== "" && (
+          <div className='downtime' style={{ fontSize: "1.2rem" }}>
+            <div className="currenttime">
+            Stop: {diff} min 
+            </div>
+            <div className="totaltime">
+            (TT:{machine_data.machine_data?.ACC_TIME} min)
+            </div>           
+          </div>
+        )}
+        {machine_data.eq_status === "SETTING" && machine_data.upd_empl !== "" && (
+          <div className='downtime' style={{ fontSize: "1.2rem" }}>           
+            <div className="currenttime">
+            Setting: {diff} min 
+            </div>
+            <div className="totaltime">
+            (TT:{machine_data.machine_data?.ACC_TIME} min)
+            </div>
+          </div>
+        )}
+        {machine_data.eq_status === "MASS" && machine_data.upd_empl !== "" && (
+          <div className='downtime' style={{ fontSize: "1.2rem" }}>
+           <div className="currenttime">
+            Run: {diff} min 
+            </div>
+            <div className="totaltime">
+            (TT:{machine_data.machine_data?.ACC_TIME} min)
+            </div>
+          </div>
+        )}
+
+      </div>
+      
+
       <div
         className='machine_component2'
         style={{

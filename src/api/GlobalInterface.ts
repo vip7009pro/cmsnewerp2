@@ -1339,6 +1339,7 @@ export interface EQ_STT {
   Setting4?: number;
   PROCESS_NUMBER?: number;
   PLAN_QTY?: number;
+  ACC_TIME?: number;
 }
 //iqc data
 export interface IQC_INCOMMING_DATA {
@@ -1813,6 +1814,8 @@ export interface QLSXPLANDATA {
   MASS_START_TIME?: string;
   MASS_END_TIME?: string;
   REQ_DF?: string;
+  AT_LEADTIME?: number;
+  ACC_TIME?: number;
 }
 export interface QLSXCHITHIDATA {
   id: string;
@@ -3005,11 +3008,13 @@ export interface SX_BAOCAOROLLDATA {
   id: number,
   EQUIPMENT_CD: string,
   PROD_REQUEST_NO: string,
+  PLAN_ID: string,
   PLAN_QTY: number,
   PROD_MODEL: string,
   G_NAME_KD: string,
   M_NAME: string,
   WIDTH_CD: number,
+  M_LOT_NO: string,
   INPUT_QTY: number,
   REMAIN_QTY: number,
   USED_QTY: number,
@@ -3023,6 +3028,7 @@ export interface SX_BAOCAOROLLDATA {
   OK_EA: number,
   OUTPUT_EA: number,
   INSPECT_INPUT: number,
+  INSPECT_TT_QTY: number,
   REMARK: string,
   PD: number,
   CAVITY: number,

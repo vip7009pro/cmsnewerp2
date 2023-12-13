@@ -87,6 +87,7 @@ import {
   UserData,
   YCSXTableData,
 } from "../../../../api/GlobalInterface";
+import { trigger } from "devextreme/events";
 export const checkEQvsPROCESS = (
   EQ1: string,
   EQ2: string,
@@ -291,6 +292,8 @@ const MACHINE = () => {
   const [showYCKT, setShowYCKT] = useState(false);
   const [editplan, seteditplan] = useState(true);
   const [editchithi, seteditchithi] = useState(true);
+  const [currentTotalLeadTime, setCurrentTotalLeadTime] = useState(0);
+  const [trigger, setTrigger] = useState(true);
   const ycsxprintref = useRef(null);
   const handlePrint = useReactToPrint({
     content: () => ycsxprintref.current,
@@ -1020,6 +1023,18 @@ const MACHINE = () => {
       editable: true,
     },
     {
+      field: "AT_LEADTIME",
+      headerName: "LEADTIME",
+      width: 80,
+      editable: false,
+    },
+    {
+      field: "ACC_TIME",
+      headerName: "ACC_TIME",
+      width: 80,
+      editable: false,
+    },
+    {
       field: "INS_EMPL",
       headerName: "INS_EMPL",
       width: 120,
@@ -1728,6 +1743,22 @@ const MACHINE = () => {
       <YCKT key={index} DATA={element} />
     ));
   };
+  const updatePlanOrder = (plan_date: string)=> {
+    generalQuery("updatePlanOrder", {
+      PLAN_DATE: plan_date    
+    })
+      .then((response) => {
+        console.log(response.data.data);
+        if (response.data.tk_status !== "NG") {
+          
+        } else {
+          Swal.fire('Thông báo','Update plan order thất bại','error');
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
   const loadQLSXPlan = (plan_date: string) => {
     //console.log(selectedPlanDate);
     generalQuery("getqlsxplan", { PLAN_DATE: plan_date })
@@ -1744,7 +1775,9 @@ const MACHINE = () => {
             }
           );
           //console.log(loadeddata);
+          
           setPlanDataTable(loadeddata);
+          updatePlanOrder(plan_date);
         } else {
           setPlanDataTable([]);
           Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
@@ -2086,6 +2119,27 @@ const MACHINE = () => {
         console.log(error);
       });
   };
+  const getCurrentTotalLeadtime = (): number => {
+    let machinePlanList: QLSXPLANDATA[] = plandatatable.filter(
+      (element: QLSXPLANDATA, index: number) => {
+        return (
+          element.PLAN_EQ === selectedMachine &&
+          element.PLAN_FACTORY === selectedFactory
+        );
+      }
+    );
+    console.log('machinePlanList',machinePlanList);
+    let sum:number =0 ;
+    for(let i= 0; i<machinePlanList.length;i++)
+    {
+      sum+= machinePlanList[i].AT_LEADTIME ?? 9990;
+
+    }
+    console.log('sum',sum)
+   
+    return sum;
+  }
+  
   const handleSearchCodeKeyDown = (
     e: React.KeyboardEvent<HTMLInputElement>
   ) => {
@@ -3087,6 +3141,21 @@ const MACHINE = () => {
           <BiRefresh color='red' size={20} />
           Show Combo
         </IconButton>
+        <span>Total time: { plandatatable.filter(
+      (element: QLSXPLANDATA, index: number) => {
+        return (
+          element.PLAN_EQ === selectedMachine &&
+          element.PLAN_FACTORY === selectedFactory
+        );
+      }
+    )[ plandatatable.filter(
+      (element: QLSXPLANDATA, index: number) => {
+        return (
+          element.PLAN_EQ === selectedMachine &&
+          element.PLAN_FACTORY === selectedFactory
+        );
+      }
+    ).length-1].ACC_TIME} min</span>
       </GridToolbarContainer>
     );
   }
@@ -4284,6 +4353,8 @@ const MACHINE = () => {
                             setShowPlanWindow(true);
                             setSelectedFactory(element.FACTORY);
                             setSelectedMachine(element.EQ_NAME);
+                            setCurrentTotalLeadTime(getCurrentTotalLeadtime());
+                            setTrigger(!trigger);
                             setSelectedPlan(undefined);
                             setChiThiDataTable([]);
                           }}
@@ -4442,6 +4513,8 @@ const MACHINE = () => {
                             setSelectedFactory(element.FACTORY);
                             setSelectedMachine(element.EQ_NAME);
                             setSelectedPlan(undefined);
+                            setCurrentTotalLeadTime(getCurrentTotalLeadtime());
+                            setTrigger(!trigger);
                             setChiThiDataTable([]);
                           }}
                         />

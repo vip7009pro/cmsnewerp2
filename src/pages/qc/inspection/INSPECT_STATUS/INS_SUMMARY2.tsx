@@ -35,17 +35,17 @@ const INS_SUMMARY2 = ({ INS_DATA }: INS_STT_DATA) => {
         </thead>
         <tbody>
           <tr>
-            <td>NM3</td>
+            <td>NM2</td>
             <td>NORMAL</td>
             <td>{totalNormal}</td>
           </tr>
           <tr>
-            <td>NM3</td>
+            <td>NM2</td>
             <td>OLED</td>
             <td>{totalOLED}</td>
           </tr>
           <tr>
-            <td>NM3</td>
+            <td>NM2</td>
             <td>UV</td>
             <td>{totalUV}</td>
           </tr>

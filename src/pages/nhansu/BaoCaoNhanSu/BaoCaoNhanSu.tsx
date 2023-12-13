@@ -118,7 +118,7 @@ const BaoCaoNhanSu = () => {
     "#ff668c",
     "#ff6666",
   ];
-
+  
   const userData: UserData | undefined = useSelector(
     (state: RootState) => state.totalSlice.userData,
   );

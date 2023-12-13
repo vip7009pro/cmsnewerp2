@@ -140,8 +140,7 @@ const EQ_SUMMARY = ({ EQ_DATA }: EQ_STT_DATA) => {
                   }
                 </td>
                 <td>
-                  {totalFR !== 0
-                    ? displayPercent(
+                  { displayPercent(
                         (EQ_DATA?.filter(
                           (element: EQ_STT, index: number) =>
                             element.EQ_NAME?.substring(0, 2) === e &&
@@ -157,7 +156,7 @@ const EQ_SUMMARY = ({ EQ_DATA }: EQ_STT_DATA) => {
                               element.EQ_NAME?.substring(0, 2) === e,
                           ).length,
                       )
-                    : "0%"}
+                    }
                 </td>
               </tr>
             );
