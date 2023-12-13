@@ -3226,26 +3226,19 @@ const PLAN_DATATB = () => {
               allowEditing={false}
             ></Column>
             <Column
-              dataField='REQ_DF'
-              caption='REQ DAO FILM'
+              dataField='IS_SETTING'
+              caption='IS_SETTING'
               width={80}
               cellRender={(params: any) => {
-                if (params.data.REQ_DF === "R") {
-                  return (
-                    <span style={{ color: "red", fontWeight: "normarl" }}>
-                      REQUESTED
-                    </span>
-                  );
-                } else {
-                  return (
-                    <span style={{ color: "green", fontWeight: "normarl" }}>
-                      COMPLETED
-                    </span>
-                  );
-                }
+                return (
+                  <span style={{ color: "blue", fontWeight: "normarl" }}>
+                    {params.data.IS_SETTING}
+                  </span>
+                );
               }}
               allowEditing={false}
             ></Column>
+           
 
             <Column
               dataField='XUATDAOFILM'
@@ -3477,7 +3470,7 @@ const PLAN_DATATB = () => {
               cellRender={(params: any) => {
                 return (
                   <span style={{ color: "#4178D2", fontWeight: "bold" }}>
-                    {params.data.AT_LEADTIME}
+                    {params.data.AT_LEADTIME.toLocaleString('en-US',{maximumFractionDigits: 0, minimumFractionDigits: 0})}
                   </span>
                 );
               }}     
@@ -3490,7 +3483,7 @@ const PLAN_DATATB = () => {
               cellRender={(params: any) => {
                 return (
                   <span style={{ color: "#4178D2", fontWeight: "bold" }}>
-                    {params.data.ACC_TIME}
+                    {params.data.ACC_TIME.toLocaleString('en-US',{maximumFractionDigits: 0, minimumFractionDigits: 0})}
                   </span>
                 );
               }}     
@@ -3506,6 +3499,27 @@ const PLAN_DATATB = () => {
                     {params.data.KQ_SX_TAM?.toLocaleString("en-US")}
                   </span>
                 );
+              }}
+              allowEditing={false}
+            ></Column>
+             <Column
+              dataField='REQ_DF'
+              caption='REQ DAO FILM'
+              width={80}
+              cellRender={(params: any) => {
+                if (params.data.REQ_DF === "R") {
+                  return (
+                    <span style={{ color: "red", fontWeight: "normarl" }}>
+                      REQUESTED
+                    </span>
+                  );
+                } else {
+                  return (
+                    <span style={{ color: "green", fontWeight: "normarl" }}>
+                      COMPLETED
+                    </span>
+                  );
+                }
               }}
               allowEditing={false}
             ></Column>

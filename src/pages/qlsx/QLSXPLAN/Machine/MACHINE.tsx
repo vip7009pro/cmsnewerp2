@@ -1028,18 +1028,29 @@ const MACHINE = () => {
       field: "AT_LEADTIME",
       headerName: "LEADTIME",
       width: 80,
+      renderCell: (params: any) => {
+        return (
+         <span>{params.row?.AT_LEADTIME.toLocaleString('en-US',{maximumFractionDigits: 0, minimumFractionDigits: 0})}</span>
+        )
+      },
       editable: false,
     },
     {
       field: "ACC_TIME",
       headerName: "ACC_TIME",
       width: 80,
+      renderCell: (params: any) => {
+        return (
+         <span>{params.row?.ACC_TIME.toLocaleString('en-US',{maximumFractionDigits: 0, minimumFractionDigits: 0})}</span>
+        )
+      },
       editable: false,
     },
     {
       field: "IS_SETTING",
       headerName: "IS_SETTING",
       width: 80,
+      
       renderCell: (params: any) => {
         return (
           <input
@@ -2641,6 +2652,7 @@ const MACHINE = () => {
             selectedPlanTable[i].NEXT_PLAN_ID === null
               ? "X"
               : selectedPlanTable[i].NEXT_PLAN_ID,
+          IS_SETTING: selectedPlanTable[i].IS_SETTING
         })
           .then((response) => {
             //console.log(response.data.tk_status);
@@ -3183,7 +3195,7 @@ const MACHINE = () => {
           element.PLAN_FACTORY === selectedFactory
         );
       }
-    ).length-1]?.ACC_TIME} min</span>
+    ).length-1]?.ACC_TIME?.toLocaleString('en-US',{maximumFractionDigits: 0, minimumFractionDigits: 0})} min</span>
       </GridToolbarContainer>
     );
   }
@@ -4135,6 +4147,7 @@ const MACHINE = () => {
       rowData.PROCESS_NUMBER
     );
     if(rowData.G_CODE !=="")
+    console.log('da click row roi');
     getRecentDM(rowData.G_CODE);
     //console.log(params.row);
   };

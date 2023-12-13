@@ -522,6 +522,7 @@ const CHITHI_COMPONENT2 = ({ PLAN_LIST }: PLAN_COMBO) => {
                 <th>Machine</th>
                 <th>Step</th>
                 <th>Plan QTY</th>
+                <th>Setting</th>
               </tr>
             </thead>
             <tbody>
@@ -556,6 +557,7 @@ const CHITHI_COMPONENT2 = ({ PLAN_LIST }: PLAN_COMBO) => {
                   <td>{element.PLAN_EQ}</td>
                   <td>{element.STEP}</td>
                   <td>{element.PLAN_QTY.toLocaleString("en-US")}</td>
+                  <td>{element.IS_SETTING ==='Y'? "Có setting":"Không setting"}</td>
                 </tr>
               ))}
             </tbody>

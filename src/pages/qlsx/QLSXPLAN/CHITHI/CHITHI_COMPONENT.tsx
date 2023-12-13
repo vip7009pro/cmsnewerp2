@@ -511,7 +511,7 @@ const CHITHI_COMPONENT = ({ DATA }: { DATA: QLSXPLANDATA }) => {
                 lineColor="black"
                 margin={0}
               />
-              ({DATA.PLAN_ID})
+              ({DATA.PLAN_ID}) - {DATA.IS_SETTING ==='Y'? 'CÓ SETTING': 'KHÔNG SETTING'}
             </div>
             <div className="thongtinyeucau">
               <table className="ttyc1">
