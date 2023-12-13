@@ -225,7 +225,7 @@ const MACHINE = () => {
   const [lichsunhapkhoaodatafilter, setLichSuNhapKhoAoDataFilter] = useState<
     Array<LICHSUNHAPKHOAO>
   >([]);
-  const [calc_loss_setting, setCalc_Loss_Setting] = useState(true);
+ /*  const [calc_loss_setting, setCalc_Loss_Setting] = useState(true); */
   const [lichsuxuatkhoaotable, setLichSuXuatKhoAoTable] = useState<
     LICHSUXUATKHOAO[]
   >([]);
@@ -989,7 +989,9 @@ const MACHINE = () => {
         } else {
           return <span>0</span>;
         }
+        
       },
+     
     },
     { field: "PLAN_EQ", headerName: "PLAN_EQ", width: 80, editable: editplan },
     {
@@ -1032,6 +1034,31 @@ const MACHINE = () => {
       field: "ACC_TIME",
       headerName: "ACC_TIME",
       width: 80,
+      editable: false,
+    },
+    {
+      field: "IS_SETTING",
+      headerName: "IS_SETTING",
+      width: 80,
+      renderCell: (params: any) => {
+        return (
+          <input
+          type='checkbox'
+          name='alltimecheckbox'
+          defaultChecked={params.row.IS_SETTING==='Y'}
+          onChange={(value) => {  
+            //console.log(value);
+            const newdata = plandatatable.map((p) =>
+              p.PLAN_ID === params.row.PLAN_ID
+                ? { ...p, IS_SETTING: params.row.IS_SETTING==='Y'? 'N': 'Y' }
+                : p
+            );
+            setPlanDataTable(newdata);
+            setQlsxPlanDataFilter([]);
+          }}
+        ></input>
+        )
+      },
       editable: false,
     },
     {
@@ -1812,7 +1839,7 @@ const MACHINE = () => {
           PD = response.data.data[0].PD;
           CAVITY_NGANG = response.data.data[0].G_C_R;
           CAVITY_DOC = response.data.data[0].G_C;
-          
+          let calc_loss_setting: boolean = selectedPlan?.IS_SETTING ==='Y'? true: false;
           if (PROCESS_NUMBER === 1) {
             FINAL_LOSS_SX = response.data.data[0].LOSS_SX1  ?? 0;
           } else if (PROCESS_NUMBER === 2) {
@@ -1927,6 +1954,7 @@ const MACHINE = () => {
             PD = response.data.data[0].PD;
             CAVITY_NGANG = response.data.data[0].G_C_R;
             CAVITY_DOC = response.data.data[0].G_C;
+            let calc_loss_setting: boolean = selectedPlan?.IS_SETTING ==='Y' ? true: false;
             if (PROCESS_NUMBER === 1) {
               FINAL_LOSS_SX = response.data.data[0].LOSS_SX1  ?? 0;
             } else if (PROCESS_NUMBER === 2) {
@@ -2128,7 +2156,7 @@ const MACHINE = () => {
         );
       }
     );
-    console.log('machinePlanList',machinePlanList);
+    //console.log('machinePlanList',machinePlanList);
     let sum:number =0 ;
     for(let i= 0; i<machinePlanList.length;i++)
     {
@@ -3155,7 +3183,7 @@ const MACHINE = () => {
           element.PLAN_FACTORY === selectedFactory
         );
       }
-    ).length-1].ACC_TIME} min</span>
+    ).length-1]?.ACC_TIME} min</span>
       </GridToolbarContainer>
     );
   }
@@ -3344,22 +3372,24 @@ const MACHINE = () => {
           ___PLAN_QTY:
           {selectedPlan?.PLAN_QTY.toLocaleString("en-US")}
         </span>
-        Có setting hay không?
+
+       {/*  Có setting hay không?
         <input
           type='checkbox'
           name='alltimecheckbox'
-          defaultChecked={calc_loss_setting}
-          onChange={() => setCalc_Loss_Setting(!calc_loss_setting)}
-        ></input>
-        {/*   <IconButton
-            className='buttonIcon'
-            onClick={() => {
-             console.log(selectedPlan);
-            }}
-          >
-            <BiRefresh color='yellow' size={20} />
-            show selected plan
-          </IconButton> */}
+          defaultChecked={selectedPlan?.IS_SETTING==='Y'}
+          onChange={() => {
+            const newdata = plandatatable.map((p) =>
+            p.PLAN_ID === selectedPlan?.PLAN_ID
+              ? { ...p, IS_SETTING: selectedPlan?.IS_SETTING==='Y'? 'N': 'Y' }
+              : p
+          );
+          setPlanDataTable(newdata);
+          setQlsxPlanDataFilter([]);
+            //setCalc_Loss_Setting(!calc_loss_setting)
+          }}
+        ></input> */}
+        
       </GridToolbarContainer>
     );
   }

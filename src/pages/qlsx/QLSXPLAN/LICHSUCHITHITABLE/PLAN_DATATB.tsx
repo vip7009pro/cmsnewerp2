@@ -3073,37 +3073,11 @@ const PLAN_DATATB = () => {
                 );
               }}
               allowEditing={true}
-            ></Column>
-             <Column
-              dataField='AT_LEADTIME'
-              caption='AT_LEADTIME'
-              width={90}
-              cellRender={(params: any) => {
-                return (
-                  <span style={{ color: "#4178D2", fontWeight: "bold" }}>
-                    {params.data.AT_LEADTIME}
-                  </span>
-                );
-              }}     
-              allowEditing={false}        
-            ></Column>
-             <Column
-              dataField='ACC_TIME'
-              caption='ACC_TIME'
-              width={80}
-              cellRender={(params: any) => {
-                return (
-                  <span style={{ color: "#4178D2", fontWeight: "bold" }}>
-                    {params.data.ACC_TIME}
-                  </span>
-                );
-              }}     
-              allowEditing={false}        
-            ></Column>
+            ></Column>             
             <Column
               dataField='PROCESS_NUMBER'
-              caption='PROC_NUMBER'
-              width={100}
+              caption='PR_NUM'
+              width={60}
               allowEditing={true}
             ></Column>
             <Column
@@ -3215,7 +3189,7 @@ const PLAN_DATATB = () => {
             <Column
               dataField='SETTING_START_TIME'
               caption='SETTING_START'
-              width={80}
+              width={60}
               cellRender={(params: any) => {
                 return (
                   <span style={{ color: "blue", fontWeight: "normarl" }}>
@@ -3228,7 +3202,7 @@ const PLAN_DATATB = () => {
             <Column
               dataField='MASS_START_TIME'
               caption='MASS_START'
-              width={90}
+              width={60}
               cellRender={(params: any) => {
                 return (
                   <span style={{ color: "blue", fontWeight: "normarl" }}>
@@ -3241,7 +3215,7 @@ const PLAN_DATATB = () => {
             <Column
               dataField='MASS_END_TIME'
               caption='MASS_END'
-              width={80}
+              width={60}
               cellRender={(params: any) => {
                 return (
                   <span style={{ color: "blue", fontWeight: "normarl" }}>
@@ -3495,6 +3469,32 @@ const PLAN_DATATB = () => {
                 }
               }}
               allowEditing={false}
+            ></Column>
+            <Column
+              dataField='AT_LEADTIME'
+              caption='AT_LEADTIME'
+              width={90}
+              cellRender={(params: any) => {
+                return (
+                  <span style={{ color: "#4178D2", fontWeight: "bold" }}>
+                    {params.data.AT_LEADTIME}
+                  </span>
+                );
+              }}     
+              allowEditing={false}        
+            ></Column>
+             <Column
+              dataField='ACC_TIME'
+              caption='ACC_TIME'
+              width={80}
+              cellRender={(params: any) => {
+                return (
+                  <span style={{ color: "#4178D2", fontWeight: "bold" }}>
+                    {params.data.ACC_TIME}
+                  </span>
+                );
+              }}     
+              allowEditing={false}        
             ></Column>
             <Column
               dataField='KQ_SX_TAM'

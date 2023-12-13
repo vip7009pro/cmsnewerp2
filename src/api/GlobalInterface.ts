@@ -1816,6 +1816,7 @@ export interface QLSXPLANDATA {
   REQ_DF?: string;
   AT_LEADTIME?: number;
   ACC_TIME?: number;
+  IS_SETTING?: string;
 }
 export interface QLSXCHITHIDATA {
   id: string;
