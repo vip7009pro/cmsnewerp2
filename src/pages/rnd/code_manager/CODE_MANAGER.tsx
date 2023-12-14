@@ -1300,6 +1300,7 @@ const CODE_MANAGER = () => {
               onSelectionModelChange={(ids) => {
                 handleCODESelectionforUpdate(ids);
               }}
+              disableSelectionOnClick={true}
               /*  rows={codeinfodatatable}
               columns={columnDefinition} */
               rowsPerPageOptions={[

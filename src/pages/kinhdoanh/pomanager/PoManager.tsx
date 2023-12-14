@@ -1908,6 +1908,12 @@ const PoManager = () => {
                 summaryType='sum'
                 valueFormat={"currency"}
               />
+              <TotalItem
+                alignment='right'
+                column='DELIVERED_BEP_AMOUNT'
+                summaryType='sum'
+                valueFormat={"currency"}
+              />
             </Summary>
           </DataGrid>
         </CustomResponsiveContainer>
