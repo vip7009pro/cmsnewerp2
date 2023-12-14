@@ -32,7 +32,7 @@ import { UserContext } from "../../../api/Context";
 import { SaveExcel, checkBP } from "../../../api/GlobalFunction";
 import "./CODE_MANAGER.scss";
 import { BiReset } from "react-icons/bi";
-import { MdOutlineDraw, MdUpdate } from "react-icons/md";
+import { MdOutlineDraw, MdPriceChange, MdUpdate } from "react-icons/md";
 import { UserData } from "../../../api/GlobalInterface";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
@@ -98,6 +98,12 @@ const CODE_MANAGER = () => {
     {
       field: "PROD_TYPE",
       headerName: "PROD_TYPE",
+      width: 80,
+      editable: enableEdit,
+    },
+    {
+      field: "BEP",
+      headerName: "BEP",
       width: 80,
       editable: enableEdit,
     },
@@ -930,6 +936,15 @@ const CODE_MANAGER = () => {
           <MdUpdate color="blue" size={15} />
           Update LOSS SX
         </IconButton>
+        <IconButton
+          className="buttonIcon"
+          onClick={() => {
+            updateBEP();
+          }}
+        >
+          <MdPriceChange  color="red" size={15} />
+          Update BEP
+        </IconButton>
       </GridToolbarContainer>
     );
   }
@@ -957,6 +972,32 @@ const CODE_MANAGER = () => {
       });
     } else {
       Swal.fire("Thông báo", "Chọn ít nhất 1 G_CODE để SET !", "error");
+    }
+  };
+  const updateBEP = async () => {
+    if (codedatatablefilter.length >= 1) {
+      checkBP(userData, ["KD"], ["ALL"], ["ALL"], async () => {
+        for (let i = 0; i < codedatatablefilter.length; i++) {
+          await generalQuery("updateBEP", {
+            G_CODE: codedatatablefilter[i].G_CODE,
+            BEP: codedatatablefilter[i].BEP ?? 0,
+          })
+            .then((response) => {
+              console.log(response.data.tk_status);
+              if (response.data.tk_status !== "NG") {
+                //Swal.fire("Thông báo", "Delete Po thành công", "success");
+              } else {
+                //Swal.fire("Thông báo", "Update PO thất bại: " +response.data.message , "error");
+              }
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+        }
+        Swal.fire("Thông báo", "Update BEP THÀNH CÔNG", "success");
+      });
+    } else {
+      Swal.fire("Thông báo", "Chọn ít nhất 1 G_CODE để Update !", "error");
     }
   };
   const pdBanVe = async (value: string) => {

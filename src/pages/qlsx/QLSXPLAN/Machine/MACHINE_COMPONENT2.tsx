@@ -136,7 +136,7 @@ const MACHINE_COMPONENT2 = (machine_data: MachineInterface2) => {
             Stop: {diff} min 
             </div>
             <div className="totaltime">
-            (TT:{machine_data.machine_data?.ACC_TIME} min)
+            (TT:{machine_data.machine_data?.ACC_TIME?.toLocaleString('en-US',{maximumFractionDigits:0,minimumFractionDigits:0})} min)
             </div>           
           </div>
         )}
@@ -146,7 +146,7 @@ const MACHINE_COMPONENT2 = (machine_data: MachineInterface2) => {
             Setting: {diff} min 
             </div>
             <div className="totaltime">
-            (TT:{machine_data.machine_data?.ACC_TIME} min)
+            (TT:{machine_data.machine_data?.ACC_TIME?.toLocaleString('en-US',{maximumFractionDigits:0,minimumFractionDigits:0})} min)
             </div>
           </div>
         )}
@@ -156,7 +156,7 @@ const MACHINE_COMPONENT2 = (machine_data: MachineInterface2) => {
             Run: {diff} min 
             </div>
             <div className="totaltime">
-            (TT:{machine_data.machine_data?.ACC_TIME} min)
+            (TT:{machine_data.machine_data?.ACC_TIME?.toLocaleString('en-US',{maximumFractionDigits:0,minimumFractionDigits:0})} min)
             </div>
           </div>
         )}

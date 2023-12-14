@@ -236,7 +236,18 @@ const InvoiceManager = () => {
                       })}
                     </span>
                   );
-                } else if (
+                }
+                else if(e === "BEP") {                
+                  return (
+                    <span style={{ color: "#0684cd", fontWeight: "normal" }}>
+                      {ele.data[e]?.toFixed(6).toLocaleString("en-US", {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 6,
+                      })}
+                    </span>
+                  );
+                }  
+                else if (
                   ["PO_QTY", "DELIVERY_QTY", "PO_BALANCE"].indexOf(e) > -1 ||
                   e.indexOf("RESULT") > -1
                 ) {
@@ -259,7 +270,23 @@ const InvoiceManager = () => {
                       })}
                     </span>
                   );
-                } else {
+                } 
+                else if (
+                  ["DELIVERED_BEP_AMOUNT"].indexOf(
+                    e
+                  ) > -1 ||
+                  e.indexOf("_EA") > -1
+                ) {
+                  return (
+                    <span style={{ color: "#094BB8", fontWeight: "bold" }}>
+                      {ele.data[e]?.toLocaleString("en-US", {
+                        style: "currency",
+                        currency: "USD",
+                      })}
+                    </span>
+                  );
+                } 
+                else {
                   return <span>{ele.data[e]}</span>;
                 }
               },

@@ -30,6 +30,7 @@ export interface POTableData {
   POWEEKNUM: string;
   OVERDUE: string;
   REMARK: string;
+  FINAL: string;
 }
 export interface POSummaryData {
   total_po_qty: number;
@@ -2288,6 +2289,7 @@ export interface CODE_FULL_INFO {
   LOSS_ST_SX3?: number;
   LOSS_ST_SX4?: number;
   NOTE?: string;
+  BEP?: number;
 }
 export interface LIST_BOM_AMAZON {
   id: string;

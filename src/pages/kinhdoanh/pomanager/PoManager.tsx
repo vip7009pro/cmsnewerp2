@@ -372,15 +372,35 @@ const PoManager = () => {
               cellRender: (ele: any) => {
                 //console.log(ele);
                 if (e === "PROD_PRICE") {
+                  if(ele.data["FINAL"]==='Y')
                   return (
-                    <span style={{ color: "#ED15FF", fontWeight: "normal" }}>
+                    <span style={{ color: "#03b048", fontWeight: "normal" }}>
                       {ele.data[e]?.toFixed(6).toLocaleString("en-US", {
                         minimumFractionDigits: 2,
                         maximumFractionDigits: 6,
                       })}
                     </span>
                   );
-                } else if (
+                  return (
+                    <span style={{ color: "#de0374", fontWeight: "normal" }}>
+                      {ele.data[e]?.toFixed(6).toLocaleString("en-US", {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 6,
+                      })}
+                    </span>
+                  );
+                } 
+                else if(e === "BEP") {                
+                  return (
+                    <span style={{ color: "#0684cd", fontWeight: "normal" }}>
+                      {ele.data[e]?.toFixed(6).toLocaleString("en-US", {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 6,
+                      })}
+                    </span>
+                  );
+                } 
+                else if (
                   ["PO_QTY", "TOTAL_DELIVERED", "PO_BALANCE"].indexOf(e) > -1 ||
                   e.indexOf("RESULT") > -1
                 ) {
@@ -403,7 +423,23 @@ const PoManager = () => {
                       })}
                     </span>
                   );
-                } else {
+                } else if (
+                  ["DELIVERED_BEP_AMOUNT"].indexOf(
+                    e
+                  ) > -1 ||
+                  e.indexOf("_EA") > -1
+                ) {
+                  return (
+                    <span style={{ color: "#094BB8", fontWeight: "bold" }}>
+                      {ele.data[e]?.toLocaleString("en-US", {
+                        style: "currency",
+                        currency: "USD",
+                      })}
+                    </span>
+                  );
+                } 
+                
+                else {
                   return <span>{ele.data[e]}</span>;
                 }
               },
