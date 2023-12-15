@@ -2773,6 +2773,7 @@ export interface MATERIAL_STATUS {
   INSPECT_TOTAL_EA: number;
   INSPECT_OK_EA: number;
   INS_OUTPUT_EA: number;
+  CUST_NAME_KD?: string;
 }
 export interface LOSS_TABLE_DATA_ROLL {
   XUATKHO_MET: number;
@@ -3039,4 +3040,6 @@ export interface SX_BAOCAOROLLDATA {
   PR_NB: number,
   MAX_PROCESS_NUMBER: number,
   LAST_PROCESS: number,
+  INPUT_DATE: string,
+  IS_SETTING: string,
 }

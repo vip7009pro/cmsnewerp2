@@ -2505,25 +2505,6 @@ const PLAN_DATATB = () => {
                     {params.data.IS_SETTING}
                   </span>
                 );
-
-              /*   return (
-                  <input
-                  type='checkbox'
-                  name='alltimecheckbox'
-                  defaultChecked={params.data.IS_SETTING==='Y'}
-                  onChange={(value) => {  
-                    //console.log(value);
-                    const newdata = plandatatable.map((p) =>
-                      p.PLAN_ID === params.data.PLAN_ID
-                        ? { ...p, IS_SETTING: params.data.IS_SETTING==='Y'? 'N': 'Y' }
-                        : p
-                    );
-                    setPlanDataTable(newdata);
-                  }}
-                ></input>
-                );
- */
-
               }}
               allowEditing={true}
             ></Column>

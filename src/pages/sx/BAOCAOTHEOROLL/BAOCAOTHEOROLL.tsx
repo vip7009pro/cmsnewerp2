@@ -122,6 +122,8 @@ const BAOCAOTHEOROLL = () => {
     PR_NB: 0,
     MAX_PROCESS_NUMBER: 0,
     LAST_PROCESS: 0,
+    INPUT_DATE:'TOTAL',
+    IS_SETTING:'Y'
 
   });
   const qlsxplandatafilter = useRef<SX_BAOCAOROLLDATA[]>([]);
@@ -138,9 +140,9 @@ const BAOCAOTHEOROLL = () => {
         if (response.data.tk_status !== "NG") {
           let loadeddata: SX_BAOCAOROLLDATA[] = response.data.data.map(
             (element: SX_BAOCAOROLLDATA, index: number) => {
-
               return {
                 ...element,
+                INPUT_DATE: moment(element.INPUT_DATE).format('YYYY-MM-DD'),
                 id: index,
               };
             }
@@ -178,6 +180,8 @@ const BAOCAOTHEOROLL = () => {
             PR_NB: 0,
             MAX_PROCESS_NUMBER: 0,
             LAST_PROCESS: 0,
+            INPUT_DATE:'TOTAL',
+            IS_SETTING:'Y'
           };
           for (let i = 0; i < loadeddata.length; i++) {
             temp_plan_data.PLAN_QTY += loadeddata[i].PLAN_QTY;
@@ -299,16 +303,30 @@ const BAOCAOTHEOROLL = () => {
               infoText='Page #{0}. Total: {1} ({2} items)'
               displayMode='compact'
             />
+            <Column dataField='INPUT_DATE' caption='INPUT_DATE' width={80}></Column>
+            <Column dataField='CUST_NAME_KD' caption='CUST' width={80}></Column>
             <Column dataField='EQUIPMENT_CD' caption='EQUIPMENT_CD' width={100}></Column>
             <Column dataField='PROD_REQUEST_NO' caption='PROD_REQUEST_NO' width={100}></Column>
-            <Column dataField='PLAN_ID' caption='PLAN_ID' width={100}></Column>
-            <Column dataField='PLAN_QTY' caption='PLAN_QTY' width={100} cellRender={(params: any) => {
-              return (
-                <span style={{ color: "gray", fontWeight: "bold" }}>
-                  {params.data.PLAN_QTY?.toLocaleString("en-US")}
-                </span>
-              );
-            }}></Column>
+            <Column dataField='PLAN_ID' caption='PLAN_ID' width={100}></Column>            
+            <Column
+              dataField='IS_SETTING'
+              caption='IS_SETTING'
+              width={80}
+              cellRender={(params: any) => {
+                if(params.data.IS_SETTING ==='Y')
+                return (
+                  <span style={{ color: "blue", fontWeight: "bold" }}>
+                    {params.data.IS_SETTING}
+                  </span>
+                );
+                return (
+                  <span style={{ color: "red", fontWeight: "bold" }}>
+                    {params.data.IS_SETTING}
+                  </span>
+                );
+              }}
+              allowEditing={true}
+            ></Column>
             <Column dataField='PROD_MODEL' caption='PROD_MODEL' width={100}></Column>
             <Column dataField='G_NAME_KD' caption='G_NAME_KD' width={100}></Column>
             <Column dataField='M_NAME' caption='M_NAME' width={100}></Column>

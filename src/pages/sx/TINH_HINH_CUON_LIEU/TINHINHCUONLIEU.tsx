@@ -87,6 +87,7 @@ const TINHHINHCUONLIEU = () => {
   const [datasxtable, setDataSXTable] = useState<Array<any>>([]);
   const [m_name, setM_Name] = useState("");
   const [m_code, setM_Code] = useState("");
+  const [cust_name_kd, setCUST_NAME_KD] = useState("");
   const [selectedRows, setSelectedRows] = useState<number>(0);
   const [columns, setColumns] = useState<Array<any>>([]);
   const handleSearchCodeKeyDown = (
@@ -118,6 +119,7 @@ const TINHHINHCUONLIEU = () => {
       G_CODE: codeCMS,
       FACTORY: factory,
       PLAN_EQ: machine,
+      CUST_NAME_KD: cust_name_kd
     })
       .then((response) => {
         //console.log(response.data.data);
@@ -1279,6 +1281,18 @@ const TINHHINHCUONLIEU = () => {
                   placeholder="A123456"
                   value={plan_id}
                   onChange={(e) => setPlanID(e.target.value)}
+                ></input>
+              </label>
+              <label>
+                <b>Khách hàng:</b>{" "}
+                <input
+                  onKeyDown={(e) => {
+                    handleSearchCodeKeyDown(e);
+                  }}
+                  type="text"
+                  placeholder="SEV"
+                  value={cust_name_kd}
+                  onChange={(e) => setCUST_NAME_KD(e.target.value)}
                 ></input>
               </label>
             </div>
