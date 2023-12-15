@@ -41,7 +41,7 @@ import {
 } from "react-icons/ai";
 import Swal from "sweetalert2";
 import * as XLSX from "xlsx";
-import { generalQuery } from "../../../api/Api";
+import { generalQuery, getCompany } from "../../../api/Api";
 import { UserContext } from "../../../api/Context";
 import {
   checkBP,
@@ -307,6 +307,10 @@ const PoManager = () => {
     }
   };
   const handletraPO = () => {
+    if(getCompany()==='CMS')
+    {
+      autopheduyetgia();
+    }
     setisLoading(true);
     Swal.fire({
       title: "Tra cứu PO",
@@ -1695,6 +1699,24 @@ const PoManager = () => {
     ],
     store: podatatable,
   });
+
+  const autopheduyetgia=()=> {
+     generalQuery("autopheduyetgiaall", {
+     
+    })
+      .then((response) => {
+        console.log(response.data.tk_status);
+        if (response.data.tk_status !== "NG") {
+         
+        } else {
+          
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+
+  }
   const poDataTable = React.useMemo(
     () => (
       <div className='datatb'>
@@ -2016,6 +2038,10 @@ const PoManager = () => {
     [uploadExcelJson, columnsExcel, trigger]
   );
   useEffect(() => {
+    if(getCompany()==='CMS')
+    {
+      autopheduyetgia();
+    }   
     getcustomerlist();
     getcodelist("");
     dongboGiaPO();
