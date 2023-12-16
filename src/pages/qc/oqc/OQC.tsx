@@ -8,7 +8,6 @@ const OQC = () => {
     tab2: false,
     tab3: false,
   });
-
   const setNav = (choose: number) => {
     if (choose === 1) {
       setSelection({ ...selection, tab1: true, tab2: false, tab3: false });
@@ -22,7 +21,7 @@ const OQC = () => {
   useEffect(() => {}, []);
 
   return (
-    <div className="oqc">
+     <div className="oqc">
       <div className="mininavbar">
         <div
           className="mininavitem"
@@ -55,7 +54,10 @@ const OQC = () => {
           <OQC_DATA />
         </div>
       )}
-    </div>
+    </div> 
+   
   );
 };
 export default OQC;
+
+ 

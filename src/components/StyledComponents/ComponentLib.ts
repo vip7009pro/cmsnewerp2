@@ -1,5 +1,23 @@
 import styled from "styled-components";
-
+const size = {
+  mobileS: "320px",
+  mobileM: "375px",
+  mobileL: "480px",
+  tablet: "768px",
+  laptop: "1024px",
+  laptopL: "1440px",
+  desktop: "2560px",
+};
+export const device = {
+  mobileS: `(max-width: ${size.mobileS})`,
+  mobileM: `(max-width: ${size.mobileM})`,
+  mobileL: `(max-width: ${size.mobileL})`,
+  tablet: `(max-width: ${size.tablet})`,
+  laptop: `(max-width: ${size.laptop})`,
+  laptopL: `(max-width: ${size.laptopL})`,
+  desktop: `(max-width: ${size.desktop})`,
+  desktopL: `(max-width: ${size.desktop})`,
+};
 export const TotalPOManagerDiv = styled.div`
   display: flex;
   flex-direction: column;
@@ -12,7 +30,6 @@ export const TotalPOManagerDiv = styled.div`
     margin-bottom: 5px;
     margin-top: 5px;
     width: 100%;
-
     .mininavitem {
       padding: 5px;
       background-color: aquamarine;
@@ -20,7 +37,6 @@ export const TotalPOManagerDiv = styled.div`
       border-radius: 5px;
       font-size: 0.7rem;
       padding: 5px;
-
       -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
       box-shadow: 5px 5px 10px 5px rgba(0, 0, 0, 0.27);
       &:hover {
@@ -33,7 +49,6 @@ export const TotalPOManagerDiv = styled.div`
     display: flex;
     flex-direction: column;
     box-sizing: border-box;
-
     .batchnewpo {
       display: flex;
       flex-direction: column;
@@ -42,7 +57,6 @@ export const TotalPOManagerDiv = styled.div`
       box-sizing: border-box;
       align-items: center;
       justify-items: center;
-
       .formupload {
         display: flex;
         gap: 20px;
@@ -55,7 +69,6 @@ export const TotalPOManagerDiv = styled.div`
         margin-left: 20px;
         margin-right: 20px;
         border-radius: 5px;
-
         .checkpobutton {
           display: flex;
           align-items: center;
@@ -94,7 +107,6 @@ export const TotalPOManagerDiv = styled.div`
           }
         }
       }
-
       .insertPOTable {
         display: flex;
         box-sizing: border-box;
@@ -102,7 +114,6 @@ export const TotalPOManagerDiv = styled.div`
         width: 100%;
         margin-top: 10px;
         background-image: linear-gradient(0deg, #afd3d1, #a0d898);
-
         border-radius: 5px;
         .datatb {
           justify-items: center;
@@ -115,7 +126,6 @@ export const TotalPOManagerDiv = styled.div`
             background-color: orange;
             color: unset;
           }
-
           .dx-datagrid-rowsview
             .dx-selection.dx-row:not(.dx-row-focused):not(.dx-row-removed)
             > td {
@@ -126,13 +136,11 @@ export const TotalPOManagerDiv = styled.div`
             border-bottom: 0;
             background-color: #b5f398;
           }
-
           .dx-toolbar .dx-toolbar-items-container {
             height: 25px;
             overflow: visible;
             background-color: #b5f398;
           }
-
           //toan bo bang
           .dx-gridbase-container > .dx-datagrid-rowsview.dx-scrollable {
             display: -ms-flexbox;
@@ -140,7 +148,6 @@ export const TotalPOManagerDiv = styled.div`
             background-image: linear-gradient(0deg, #e9e1eb, #f1f5cf);
             font-size: 0.7rem;
           }
-
           .dx-datagrid-borders > .dx-datagrid-filter-panel,
           .dx-datagrid-borders > .dx-datagrid-headers {
             border-top: 1px solid #ddd;
@@ -167,19 +174,16 @@ export const TotalPOManagerDiv = styled.div`
           .dx-editor-cell .dx-texteditor .dx-texteditor-input {
             background-image: linear-gradient(0deg, #e9e1eb, #a0f87e);
           }
-
           .dx-searchbox .dx-placeholder::before,
           .dx-searchbox .dx-texteditor-input {
             padding-left: 34px;
             background-image: linear-gradient(0deg, #e9e1eb, #d7f0cd);
           }
-
           .dx-button-mode-contained {
             background-color: #a0f87e;
             border-color: #cacafa;
             color: #430fff;
           }
-
           .dx-datagrid-total-footer > .dx-datagrid-content {
             padding-top: 0px;
             padding-bottom: 0px;
@@ -210,7 +214,6 @@ export const TotalPOManagerDiv = styled.div`
         margin: auto;
       }
       box-sizing: border-box;
-
       .forminput {
         display: flex;
         flex-direction: column;
@@ -221,7 +224,6 @@ export const TotalPOManagerDiv = styled.div`
         justify-content: space-around;
         padding: 2px;
         font-size: 0.6rem;
-
         .forminputcolumn {
           display: flex;
           flex-direction: column;
@@ -252,11 +254,9 @@ export const TotalPOManagerDiv = styled.div`
           align-items: center;
           align-self: center;
           align-content: center;
-
           justify-content: center;
           justify-items: center;
           justify-self: center;
-
           font-size: 0.6rem;
         }
         .searchbuttondiv {
@@ -271,7 +271,6 @@ export const TotalPOManagerDiv = styled.div`
         gap: 20px;
         border-radius: 5px;
         margin-top: 5px;
-
         table {
           border: 3px solid gray;
           width: 100%;
@@ -344,18 +343,15 @@ export const TotalPOManagerDiv = styled.div`
             background-color: orange;
             color: unset;
           }
-
           .dx-datagrid-borders > .dx-datagrid-header-panel {
             border-bottom: 0;
             background-color: #b5f398;
           }
-
           .dx-toolbar .dx-toolbar-items-container {
             height: 25px;
             overflow: visible;
             background-color: #b5f398;
           }
-
           //toan bo bang
           .dx-gridbase-container > .dx-datagrid-rowsview.dx-scrollable {
             display: -ms-flexbox;
@@ -363,7 +359,6 @@ export const TotalPOManagerDiv = styled.div`
             background-image: linear-gradient(0deg, #e9e1eb, #f1f5cf);
             font-size: 0.7rem;
           }
-
           .dx-datagrid-borders > .dx-datagrid-filter-panel,
           .dx-datagrid-borders > .dx-datagrid-headers {
             border-top: 1px solid #ddd;
@@ -390,19 +385,16 @@ export const TotalPOManagerDiv = styled.div`
           .dx-editor-cell .dx-texteditor .dx-texteditor-input {
             background-image: linear-gradient(0deg, #e9e1eb, #a0f87e);
           }
-
           .dx-searchbox .dx-placeholder::before,
           .dx-searchbox .dx-texteditor-input {
             padding-left: 34px;
             background-image: linear-gradient(0deg, #e9e1eb, #d7f0cd);
           }
-
           .dx-button-mode-contained {
             background-color: #a0f87e;
             border-color: #cacafa;
             color: #430fff;
           }
-
           .dx-datagrid-total-footer > .dx-datagrid-content {
             padding-top: 0px;
             padding-bottom: 0px;
@@ -429,7 +421,6 @@ export const TotalPOManagerDiv = styled.div`
       -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
       -moz-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
       padding-right: 30px;
-
       h3 {
         align-self: center;
         padding: 10px;
@@ -463,7 +454,6 @@ export const TotalPOManagerDiv = styled.div`
           justify-content: space-around;
           justify-self: center;
           width: 100%;
-
           .maindeptinputlabel {
             display: flex;
           }
@@ -472,7 +462,6 @@ export const TotalPOManagerDiv = styled.div`
             flex-direction: column;
             align-items: flex-end;
             gap: 10px;
-
             .autocomplete {
               width: 320px;
               margin-left: 20px;
@@ -547,7 +536,6 @@ export const TotalPOManagerDiv = styled.div`
           }
           .closebutton {
             background-color: #be19ff;
-
             /* Green */
             border: none;
             color: rgb(255, 255, 255);
@@ -606,7 +594,6 @@ export const TotalPOManagerDiv = styled.div`
       -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
       -moz-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
       padding-right: 30px;
-
       h3 {
         align-self: center;
         padding: 10px;
@@ -640,7 +627,6 @@ export const TotalPOManagerDiv = styled.div`
           justify-content: space-around;
           justify-self: center;
           width: 100%;
-
           .maindeptinputlabel {
             display: flex;
           }
@@ -649,7 +635,6 @@ export const TotalPOManagerDiv = styled.div`
             flex-direction: column;
             align-items: flex-end;
             gap: 10px;
-
             .autocomplete {
               width: 320px;
               margin-left: 20px;
@@ -724,7 +709,6 @@ export const TotalPOManagerDiv = styled.div`
           }
           .closebutton {
             background-color: #be19ff;
-
             /* Green */
             border: none;
             color: rgb(255, 255, 255);
@@ -793,7 +777,6 @@ export const POManagerDiv = styled.div`
   width: 100%;
   height: 500px;
 `;
-
 export const MiniNavBarDiv = styled.div`
   display: flex;
   flex-direction: row;
@@ -807,13 +790,11 @@ export const NewPoDiv = styled.div`
   flex-direction: column;
   box-sizing: border-box;
 `;
-
 export const TraCuuPODiv = styled.div`
   width: 100%;
   display: flex;
   gap: 10px;
 `;
-
 export const BatchNewPODiv = styled.div`
   display: flex;
   flex-direction: column;
@@ -823,7 +804,6 @@ export const BatchNewPODiv = styled.div`
   align-items: center;
   justify-items: center;
 `;
-
 export const FormUploadDiv = styled.div`
   display: flex;
   gap: 20px;
@@ -864,19 +844,19 @@ export const InserPOTableDiv = styled.div`
   background-image: linear-gradient(0deg, #afd3d1, #a0d898);
   border-radius: 5px;
 `;
-
 export const DataTBDiv = styled.div`
   justify-items: center;
-  width: 99%;
+  width: 100%;
   height: 100%;
-  padding: 5px;
+  margin-bottom: 0;
+  -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+  box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
   .dx-datagrid-rowsview
     .dx-selection.dx-row:not(.dx-row-focused):not(.dx-row-removed)
     > td {
     background-color: orange;
     color: unset;
   }
-
   .dx-datagrid-rowsview
     .dx-selection.dx-row:not(.dx-row-focused):not(.dx-row-removed)
     > td {
@@ -887,13 +867,11 @@ export const DataTBDiv = styled.div`
     border-bottom: 0;
     background-color: #b5f398;
   }
-
   .dx-toolbar .dx-toolbar-items-container {
     height: 25px;
     overflow: visible;
     background-color: #b5f398;
   }
-
   //toan bo bang
   .dx-gridbase-container > .dx-datagrid-rowsview.dx-scrollable {
     display: -ms-flexbox;
@@ -901,7 +879,6 @@ export const DataTBDiv = styled.div`
     background-image: linear-gradient(0deg, #e9e1eb, #f1f5cf);
     font-size: 0.7rem;
   }
-
   .dx-datagrid-borders > .dx-datagrid-filter-panel,
   .dx-datagrid-borders > .dx-datagrid-headers {
     border-top: 1px solid #ddd;
@@ -928,21 +905,160 @@ export const DataTBDiv = styled.div`
   .dx-editor-cell .dx-texteditor .dx-texteditor-input {
     background-image: linear-gradient(0deg, #e9e1eb, #a0f87e);
   }
-
   .dx-searchbox .dx-placeholder::before,
   .dx-searchbox .dx-texteditor-input {
     padding-left: 34px;
     background-image: linear-gradient(0deg, #e9e1eb, #d7f0cd);
   }
-
   .dx-button-mode-contained {
     background-color: #a0f87e;
     border-color: #cacafa;
     color: #430fff;
   }
-
   .dx-datagrid-total-footer > .dx-datagrid-content {
     padding-top: 0px;
     padding-bottom: 0px;
   }
+`;
+export const PivotTableDiv = styled.div`
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
+  position: absolute;
+  top: 1vh;
+  left: 1%;
+  width: 95%;
+  height: 85vh;
+  overflow: scroll;
+  padding: 10px;
+  border-radius: 5px;
+  background-image: linear-gradient(0deg, #afd3d1, #86cfff);
+  -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+  box-shadow: 5px 5px 10px 5px rgba(0, 0, 0, 0.27);
+  z-index: 100;
+  * {
+    font-size: 0.7rem;
+  }
+`;
+export const DataDiv = styled.div`
+  width: 100%;
+  height: 88vh;
+  display: flex;
+  gap: 5px;
+  @media ${device.desktop} {
+    width: 100%;
+    height: 88vh;
+    display: flex;
+    gap: 5px;
+  }
+  @media ${device.mobileL} {
+    width: 100%;
+    height: 88vh;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  @media ${device.desktop} {
+  }
+  @media ${device.mobileL} {
+  }
+`;
+export const QueryFormDiv = styled.div`
+  @media ${device.desktop} {
+    display: flex;
+    flex-direction: column;
+    width: 280px;
+    align-items: center;
+    background-image: linear-gradient(0deg, #afd3d1, #86cfff);
+    -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+    box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+    border-radius: 3px;
+    padding: 5px;
+    font-size: 0.8rem;
+    span {
+      padding: 10px;
+      font-size: 20px;
+      margin: auto;
+    }
+  }
+  @media ${device.mobileL} {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    align-items: center;
+    background-image: linear-gradient(0deg, #afd3d1, #86cfff);
+    -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+    box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+    border-radius: 3px;
+    padding: 5px;
+    font-size: 0.8rem;
+    span {
+      padding: 10px;
+      font-size: 20px;
+      margin: auto;
+    }
+  }
+`;
+export const FromInputDiv = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 5px;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-around;
+  padding: 2px;
+  font-size: 0.6rem;
+`;
+export const FromInputColumn = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  align-items: flex-end;
+  justify-content: center;
+  flex-wrap: wrap;
+  input {
+    width: 150px;
+    height: 15px;
+    font-size: 0.6rem;
+    outline: none;
+    border-radius: 5px;
+    border: none;
+    padding: 5px;
+    margin-left: 5px;
+    background-image: linear-gradient(0deg, #ececec, #9dee95);
+  }
+  select {
+    width: 160px;
+    height: 25px;
+    font-size: 0.6rem;
+    outline: none;
+    border-radius: 5px;
+    border: none;
+    padding: 5px;
+    margin-left: 5px;
+    background-image: linear-gradient(0deg, #ececec, #9dee95);
+  }
+  .autocomplete {
+    background-color: rgba(255, 255, 255, 0);
+    position: relative;
+    * {
+      font-size: 0.8rem;
+      background-color: rgba(255, 255, 255, 0);
+      margin: 0;
+      padding: 1.5px;
+    }
+    input {
+      background-color: white;
+      z-index: 1;
+      height: 23px;
+      width: 150px;
+    }
+  }
+`;
+export const FormButtonColumn = styled.div`
+  display: flex;
+  flex-direction: row;
+  font-size: 0.6rem;
+  gap: 20px;
 `;

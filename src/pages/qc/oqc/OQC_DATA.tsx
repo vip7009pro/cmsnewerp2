@@ -38,6 +38,7 @@ import {
   CustomerListData,
   MATERIAL_TABLE_DATA,
 } from "../../../api/GlobalInterface";
+import { DataDiv, DataTBDiv, FormButtonColumn, FromInputColumn, FromInputDiv, PivotTableDiv, QueryFormDiv } from "../../../components/StyledComponents/ComponentLib";
 const OQC_DATA = () => {
   const [showhidePivotTable, setShowHidePivotTable] = useState(false);
   const [material_table_data, set_material_table_data] = useState<
@@ -172,148 +173,146 @@ const OQC_DATA = () => {
   };
   const materialDataTable = React.useMemo(
     () => (
-      <div className="datatb">
-        <CustomResponsiveContainer>
-          <DataGrid
-            autoNavigateToFocusedRow={true}
-            allowColumnReordering={true}
-            allowColumnResizing={true}
-            columnAutoWidth={false}
-            cellHintEnabled={true}
-            columnResizingMode={"widget"}
-            showColumnLines={true}
-            dataSource={material_table_data}
-            columnWidth="auto"
-            keyExpr="id"
-            height={"75vh"}
-            showBorders={true}
-            onSelectionChanged={(e) => {
-              setSelectedRows(e.selectedRowsData[0]);
-            }}
-            onRowClick={(e) => {
-              //console.log(e.data);
-            }}
-          >
-            <Scrolling
-              useNative={true}
-              scrollByContent={true}
-              scrollByThumb={true}
-              showScrollbar="onHover"
-              mode="virtual"
+      <CustomResponsiveContainer>
+        <DataGrid
+          autoNavigateToFocusedRow={true}
+          allowColumnReordering={true}
+          allowColumnResizing={true}
+          columnAutoWidth={false}
+          cellHintEnabled={true}
+          columnResizingMode={"widget"}
+          showColumnLines={true}
+          dataSource={material_table_data}
+          columnWidth="auto"
+          keyExpr="id"
+          height={"75vh"}
+          showBorders={true}
+          onSelectionChanged={(e) => {
+            setSelectedRows(e.selectedRowsData[0]);
+          }}
+          onRowClick={(e) => {
+            //console.log(e.data);
+          }}
+        >
+          <Scrolling
+            useNative={true}
+            scrollByContent={true}
+            scrollByThumb={true}
+            showScrollbar="onHover"
+            mode="virtual"
+          />
+          <Selection mode="single" selectAllMode="allPages" />
+          <Editing
+            allowUpdating={false}
+            allowAdding={true}
+            allowDeleting={false}
+            mode="batch"
+            confirmDelete={true}
+            onChangesChange={(e) => { }}
+          />
+          <Export enabled={true} />
+          <Toolbar disabled={false}>
+            <Item location="before">
+              <IconButton
+                className="buttonIcon"
+                onClick={() => {
+                  SaveExcel(datasxtable, "MaterialStatus");
+                }}
+              >
+                <AiFillFileExcel color="green" size={15} />
+                SAVE
+              </IconButton>
+              <IconButton
+                className="buttonIcon"
+                onClick={() => {
+                  setShowHidePivotTable(!showhidePivotTable);
+                }}
+              >
+                <MdOutlinePivotTableChart color="#ff33bb" size={15} />
+                Pivot
+              </IconButton>
+            </Item>
+            <Item name="searchPanel" />
+            <Item name="exportButton" />
+            <Item name="columnChooser" />
+          </Toolbar>
+          <FilterRow visible={true} />
+          <SearchPanel visible={true} />
+          <ColumnChooser enabled={true} />
+          <Paging defaultPageSize={15} />
+          <Pager
+            showPageSizeSelector={true}
+            allowedPageSizes={[5, 10, 15, 20, 100, 1000, 10000, "all"]}
+            showNavigationButtons={true}
+            showInfo={true}
+            infoText="Page #{0}. Total: {1} ({2} items)"
+            displayMode="compact"
+          />
+          <Column dataField="M_ID" caption="M_ID" width={100}></Column>
+          <Column dataField="M_NAME" caption="M_NAME" width={100}></Column>
+          <Column dataField="DESCR" caption="DESCR" width={100}></Column>
+          <Column dataField="CUST_CD" caption="CUST_CD" width={100}></Column>
+          <Column
+            dataField="CUST_NAME_KD"
+            caption="CUST_NAME_KD"
+            width={100}
+          ></Column>
+          <Column
+            dataField="SSPRICE"
+            caption="OPEN_PRICE"
+            width={100}
+          ></Column>
+          <Column
+            dataField="CMSPRICE"
+            caption="ORIGIN_PRICE"
+            width={100}
+          ></Column>
+          <Column
+            dataField="SLITTING_PRICE"
+            caption="SLITTING_PRICE"
+            width={100}
+          ></Column>
+          <Column
+            dataField="MASTER_WIDTH"
+            caption="MASTER_WIDTH"
+            width={100}
+          ></Column>
+          <Column
+            dataField="ROLL_LENGTH"
+            caption="ROLL_LENGTH"
+            width={100}
+          ></Column>
+          <Column dataField="USE_YN" caption="USE_YN" width={100}></Column>
+          <Column
+            dataField="INS_DATE"
+            caption="INS_DATE"
+            width={100}
+          ></Column>
+          <Column
+            dataField="INS_EMPL"
+            caption="INS_EMPL"
+            width={100}
+          ></Column>
+          <Column
+            dataField="UPD_DATE"
+            caption="UPD_DATE"
+            width={100}
+          ></Column>
+          <Column
+            dataField="UPD_EMPL"
+            caption="UPD_EMPL"
+            width={100}
+          ></Column>
+          <Summary>
+            <TotalItem
+              alignment="right"
+              column="id"
+              summaryType="count"
+              valueFormat={"decimal"}
             />
-            <Selection mode="single" selectAllMode="allPages" />
-            <Editing
-              allowUpdating={false}
-              allowAdding={true}
-              allowDeleting={false}
-              mode="batch"
-              confirmDelete={true}
-              onChangesChange={(e) => { }}
-            />
-            <Export enabled={true} />
-            <Toolbar disabled={false}>
-              <Item location="before">
-                <IconButton
-                  className="buttonIcon"
-                  onClick={() => {
-                    SaveExcel(datasxtable, "MaterialStatus");
-                  }}
-                >
-                  <AiFillFileExcel color="green" size={15} />
-                  SAVE
-                </IconButton>
-                <IconButton
-                  className="buttonIcon"
-                  onClick={() => {
-                    setShowHidePivotTable(!showhidePivotTable);
-                  }}
-                >
-                  <MdOutlinePivotTableChart color="#ff33bb" size={15} />
-                  Pivot
-                </IconButton>
-              </Item>
-              <Item name="searchPanel" />
-              <Item name="exportButton" />
-              <Item name="columnChooser" />
-            </Toolbar>
-            <FilterRow visible={true} />
-            <SearchPanel visible={true} />
-            <ColumnChooser enabled={true} />
-            <Paging defaultPageSize={15} />
-            <Pager
-              showPageSizeSelector={true}
-              allowedPageSizes={[5, 10, 15, 20, 100, 1000, 10000, "all"]}
-              showNavigationButtons={true}
-              showInfo={true}
-              infoText="Page #{0}. Total: {1} ({2} items)"
-              displayMode="compact"
-            />
-            <Column dataField="M_ID" caption="M_ID" width={100}></Column>
-            <Column dataField="M_NAME" caption="M_NAME" width={100}></Column>
-            <Column dataField="DESCR" caption="DESCR" width={100}></Column>
-            <Column dataField="CUST_CD" caption="CUST_CD" width={100}></Column>
-            <Column
-              dataField="CUST_NAME_KD"
-              caption="CUST_NAME_KD"
-              width={100}
-            ></Column>
-            <Column
-              dataField="SSPRICE"
-              caption="OPEN_PRICE"
-              width={100}
-            ></Column>
-            <Column
-              dataField="CMSPRICE"
-              caption="ORIGIN_PRICE"
-              width={100}
-            ></Column>
-            <Column
-              dataField="SLITTING_PRICE"
-              caption="SLITTING_PRICE"
-              width={100}
-            ></Column>
-            <Column
-              dataField="MASTER_WIDTH"
-              caption="MASTER_WIDTH"
-              width={100}
-            ></Column>
-            <Column
-              dataField="ROLL_LENGTH"
-              caption="ROLL_LENGTH"
-              width={100}
-            ></Column>
-            <Column dataField="USE_YN" caption="USE_YN" width={100}></Column>
-            <Column
-              dataField="INS_DATE"
-              caption="INS_DATE"
-              width={100}
-            ></Column>
-            <Column
-              dataField="INS_EMPL"
-              caption="INS_EMPL"
-              width={100}
-            ></Column>
-            <Column
-              dataField="UPD_DATE"
-              caption="UPD_DATE"
-              width={100}
-            ></Column>
-            <Column
-              dataField="UPD_EMPL"
-              caption="UPD_EMPL"
-              width={100}
-            ></Column>
-            <Summary>
-              <TotalItem
-                alignment="right"
-                column="id"
-                summaryType="count"
-                valueFormat={"decimal"}
-              />
-            </Summary>
-          </DataGrid>
-        </CustomResponsiveContainer>
-      </div>
+          </Summary>
+        </DataGrid>
+      </CustomResponsiveContainer>
     ),
     [material_table_data],
   );
@@ -975,195 +974,191 @@ const OQC_DATA = () => {
     //setColumnDefinition(column_inspect_output);
   }, []);
   return (
-    <div className="container mx-auto">
-      
-
-    </div>
-   /*  <div className="container mx-auto">
-      <div className="tracuuDataInspection">
-        <div className="tracuuDataInspectionform">
-          <div className="forminput">
-            <div className="forminputcolumn">
-              <label>
-                <b>Mã Vật Liệu:</b>{" "}
-                <input
-                  type="text"
-                  placeholder="Mã Vật Liệu"
-                  value={selectedRows?.M_NAME}
-                  onChange={(e) => seMaterialInfo("M_NAME", e.target.value)}
-                ></input>
-              </label>
-              <label style={{ display: "flex", alignItems: "center" }}>
-                <b>Vendor:</b>{" "}
-                <Autocomplete
-                  sx={{
-                    height: 10,
-                    width: "160px",
-                    margin: "1px",
-                    fontSize: "0.7rem",
-                    marginBottom: "20px",
-                    backgroundColor: "white",
-                  }}
-                  size="small"
-                  disablePortal
-                  options={customerList}
-                  className="autocomplete"
-                  filterOptions={filterOptions1}
-                  isOptionEqualToValue={(option: any, value: any) =>
-                    option.CUST_CD === value.CUST_CD
-                  }
-                  getOptionLabel={(option: any) =>
-                    `${option.CUST_CD !== null ? option.CUST_NAME_KD : ""}${option.CUST_CD !== null ? option.CUST_CD : ""
-                    }`
-                  }
-                  renderInput={(params) => (
-                    <TextField {...params} style={{ height: "10px" }} />
-                  )}
-                  defaultValue={{
-                    CUST_CD: getCompany() === "CMS" ? "0000" : "KH000",
-                    CUST_NAME: getCompany() === "CMS" ? "SEOJIN" : "PVN",
-                    CUST_NAME_KD: getCompany() === "CMS" ? "SEOJIN" : "PVN",
-                  }}
-                  value={{
-                    CUST_CD: selectedRows.CUST_CD,
-                    CUST_NAME: customerList.filter(
+    <DataDiv>
+      <QueryFormDiv>
+        <FromInputDiv>
+          <FromInputColumn>
+            <label>
+              <b>Mã Vật Liệu:</b>{" "}
+              <input
+                type="text"
+                placeholder="Mã Vật Liệu"
+                value={selectedRows?.M_NAME}
+                onChange={(e) => seMaterialInfo("M_NAME", e.target.value)}
+              ></input>
+            </label>
+            <label style={{ display: "flex", alignItems: "center" }}>
+              <b>Vendor:</b>{" "}
+              <Autocomplete
+                sx={{
+                  height: 10,
+                  width: "160px",
+                  margin: "1px",
+                  fontSize: "0.7rem",
+                  marginBottom: "20px",
+                  backgroundColor: "white",
+                }}
+                size="small"
+                disablePortal
+                options={customerList}
+                className="autocomplete"
+                filterOptions={filterOptions1}
+                isOptionEqualToValue={(option: any, value: any) =>
+                  option.CUST_CD === value.CUST_CD
+                }
+                getOptionLabel={(option: any) =>
+                  `${option.CUST_CD !== null ? option.CUST_NAME_KD : ""}${option.CUST_CD !== null ? option.CUST_CD : ""
+                  }`
+                }
+                renderInput={(params) => (
+                  <TextField {...params} style={{ height: "10px" }} />
+                )}
+                defaultValue={{
+                  CUST_CD: getCompany() === "CMS" ? "0000" : "KH000",
+                  CUST_NAME: getCompany() === "CMS" ? "SEOJIN" : "PVN",
+                  CUST_NAME_KD: getCompany() === "CMS" ? "SEOJIN" : "PVN",
+                }}
+                value={{
+                  CUST_CD: selectedRows.CUST_CD,
+                  CUST_NAME: customerList.filter(
+                    (e: CustomerListData, index: number) =>
+                      e.CUST_CD === selectedRows.CUST_CD,
+                  )[0]?.CUST_NAME,
+                  CUST_NAME_KD:
+                    customerList.filter(
                       (e: CustomerListData, index: number) =>
                         e.CUST_CD === selectedRows.CUST_CD,
-                    )[0]?.CUST_NAME,
-                    CUST_NAME_KD:
-                      customerList.filter(
+                    )[0]?.CUST_NAME_KD === undefined
+                      ? ""
+                      : customerList.filter(
                         (e: CustomerListData, index: number) =>
                           e.CUST_CD === selectedRows.CUST_CD,
-                      )[0]?.CUST_NAME_KD === undefined
-                        ? ""
-                        : customerList.filter(
-                          (e: CustomerListData, index: number) =>
-                            e.CUST_CD === selectedRows.CUST_CD,
-                        )[0]?.CUST_NAME_KD,
-                  }}
-                  onChange={(event: any, newValue: any) => {
-                    console.log(newValue);
-                    seMaterialInfo(
-                      "CUST_CD",
-                      newValue === null ? "" : newValue.CUST_CD,
-                    );
-                  }}
-                />
-              </label>
-            </div>
-            <div className="forminputcolumn">
-              <label>
-                <b>Mô tả:</b>{" "}
-                <input
-                  type="text"
-                  placeholder="Mô tả"
-                  value={selectedRows?.DESCR}
-                  onChange={(e) => seMaterialInfo("DESCR", e.target.value)}
-                ></input>
-              </label>
-              <label>
-                <b>Open Price:</b>{" "}
-                <input
-                  type="text"
-                  placeholder="Mô tả"
-                  value={selectedRows?.SSPRICE}
-                  onChange={(e) => seMaterialInfo("SSPRICE", e.target.value)}
-                ></input>
-              </label>
-            </div>
-            <div className="forminputcolumn">
-              <label>
-                <b>Origin Price:</b>{" "}
-                <input
-                  type="text"
-                  placeholder="Mô tả"
-                  value={selectedRows?.CMSPRICE}
-                  onChange={(e) => seMaterialInfo("CMSPRICE", e.target.value)}
-                ></input>
-              </label>
-              <label>
-                <b>Slitting Price:</b>{" "}
-                <input
-                  type="text"
-                  placeholder="Mô tả"
-                  value={selectedRows?.SLITTING_PRICE}
-                  onChange={(e) =>
-                    seMaterialInfo("SLITTING_PRICE", e.target.value)
-                  }
-                ></input>
-              </label>
-            </div>
-            <div className="forminputcolumn">
-              <label>
-                <b>Master Width:</b>{" "}
-                <input
-                  type="text"
-                  placeholder="Master width"
-                  value={selectedRows?.MASTER_WIDTH}
-                  onChange={(e) =>
-                    seMaterialInfo("MASTER_WIDTH", e.target.value)
-                  }
-                ></input>
-              </label>
-              <label>
-                <b>Roll Length:</b>{" "}
-                <input
-                  type="text"
-                  placeholder="Roll length"
-                  value={selectedRows?.ROLL_LENGTH}
-                  onChange={(e) =>
-                    seMaterialInfo("ROLL_LENGTH", e.target.value)
-                  }
-                ></input>
-              </label>
-              <label>
-                <FormControlLabel
-                  label="Mở/Khóa"
-                  control={
-                    <Checkbox
-                      checked={selectedRows?.USE_YN === "Y"}
-                      onChange={(e) => {
-                        seMaterialInfo(
-                          "USE_YN",
-                          e.target.checked === true ? "Y" : "N",
-                        );
-                      }}
-                      inputProps={{ "aria-label": "controlled" }}
-                    />
-                  }
-                />
-              </label>
-            </div>
-          </div>
-          <div className="formbutton">
-            <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#129232' }} onClick={() => {
-              load_material_table();
-            }}>Refesh</Button>
-            <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#f05bd7' }} onClick={() => {
-              addMaterial();
-            }}>Add</Button>
-            <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#ec9d52' }} onClick={() => {
-              updateMaterial();
-            }}>Update</Button>
-          </div>
-        </div>
-        <div className="tracuuYCSXTable">{materialDataTable}</div>
-        {showhidePivotTable && (
-          <div className="pivottable1">
-            <IconButton
-              className="buttonIcon"
-              onClick={() => {
-                setShowHidePivotTable(false);
-              }}
-            >
-              <AiFillCloseCircle color="blue" size={15} />
-              Close
-            </IconButton>
-            <PivotTable datasource={dataSource} tableID="invoicetablepivot" />
-          </div>
-        )}
-      </div>
-    </div> */
+                      )[0]?.CUST_NAME_KD,
+                }}
+                onChange={(event: any, newValue: any) => {
+                  console.log(newValue);
+                  seMaterialInfo(
+                    "CUST_CD",
+                    newValue === null ? "" : newValue.CUST_CD,
+                  );
+                }}
+              />
+            </label>
+          </FromInputColumn>
+          <FromInputColumn>
+            <label>
+              <b>Mô tả:</b>{" "}
+              <input
+                type="text"
+                placeholder="Mô tả"
+                value={selectedRows?.DESCR}
+                onChange={(e) => seMaterialInfo("DESCR", e.target.value)}
+              ></input>
+            </label>
+            <label>
+              <b>Open Price:</b>{" "}
+              <input
+                type="text"
+                placeholder="Mô tả"
+                value={selectedRows?.SSPRICE}
+                onChange={(e) => seMaterialInfo("SSPRICE", e.target.value)}
+              ></input>
+            </label>
+          </FromInputColumn>
+          <FromInputColumn>
+            <label>
+              <b>Origin Price:</b>{" "}
+              <input
+                type="text"
+                placeholder="Mô tả"
+                value={selectedRows?.CMSPRICE}
+                onChange={(e) => seMaterialInfo("CMSPRICE", e.target.value)}
+              ></input>
+            </label>
+            <label>
+              <b>Slitting Price:</b>{" "}
+              <input
+                type="text"
+                placeholder="Mô tả"
+                value={selectedRows?.SLITTING_PRICE}
+                onChange={(e) =>
+                  seMaterialInfo("SLITTING_PRICE", e.target.value)
+                }
+              ></input>
+            </label>
+          </FromInputColumn>
+          <FromInputColumn>
+            <label>
+              <b>Master Width:</b>{" "}
+              <input
+                type="text"
+                placeholder="Master width"
+                value={selectedRows?.MASTER_WIDTH}
+                onChange={(e) =>
+                  seMaterialInfo("MASTER_WIDTH", e.target.value)
+                }
+              ></input>
+            </label>
+            <label>
+              <b>Roll Length:</b>{" "}
+              <input
+                type="text"
+                placeholder="Roll length"
+                value={selectedRows?.ROLL_LENGTH}
+                onChange={(e) =>
+                  seMaterialInfo("ROLL_LENGTH", e.target.value)
+                }
+              ></input>
+            </label>
+            <label>
+              <FormControlLabel
+                label="Mở/Khóa"
+                control={
+                  <Checkbox
+                    checked={selectedRows?.USE_YN === "Y"}
+                    onChange={(e) => {
+                      seMaterialInfo(
+                        "USE_YN",
+                        e.target.checked === true ? "Y" : "N",
+                      );
+                    }}
+                    inputProps={{ "aria-label": "controlled" }}
+                  />
+                }
+              />
+            </label>
+          </FromInputColumn>
+        </FromInputDiv>
+        <FormButtonColumn>
+          <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#129232' }} onClick={() => {
+            load_material_table();
+          }}>Refesh</Button>
+          <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#f05bd7' }} onClick={() => {
+            addMaterial();
+          }}>Add</Button>
+          <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#ec9d52' }} onClick={() => {
+            updateMaterial();
+          }}>Update</Button>
+        </FormButtonColumn>
+      </QueryFormDiv>
+      <DataTBDiv>
+        {materialDataTable}
+      </DataTBDiv>
+      {showhidePivotTable && (
+        <PivotTableDiv>
+          <IconButton
+            className="buttonIcon"
+            onClick={() => {
+              setShowHidePivotTable(false);
+            }}
+          >
+            <AiFillCloseCircle color="blue" size={15} />
+            Close
+          </IconButton>
+          <PivotTable datasource={dataSource} tableID="invoicetablepivot" />
+        </PivotTableDiv>
+      )}
+    </DataDiv>
   );
 };
 export default OQC_DATA;
