@@ -2547,6 +2547,7 @@ const MACHINE = () => {
                   : 0,
             G_CODE: ycsxdatatablefilter[i].G_CODE,
             NEXT_PLAN_ID: "X",
+            IS_SETTING: "Y"
           })
             .then((response) => {
               console.log(response.data.tk_status);

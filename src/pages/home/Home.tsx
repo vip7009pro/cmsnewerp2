@@ -24,7 +24,7 @@ import AccountInfo from "../../components/Navbar/AccountInfo/AccountInfo";
 import styled from "@emotion/styled";
 import { Draggable } from "devextreme-react";
 import Cookies from "universal-cookie";
-export const current_ver: number = 285;
+export const current_ver: number = 286;
 interface ELE_ARRAY {
   REACT_ELE: ReactElement;
   ELE_NAME: string;
@@ -105,7 +105,7 @@ function Home() {
           console.log(response.data.message);
           console.log('licenseFailCount', failCount.current);
           failCount.current++;
-          if (failCount.current > 2) {
+          if (failCount.current > 1) {
             Swal.fire('Thông báo', 'Please check your network', 'error');
             failCount.current = 0;
             logout();

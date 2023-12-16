@@ -861,6 +861,31 @@ const QUICKPLAN = () => {
     },
     { field: "STEP", headerName: "STEP", width: 50, editable: editplan },
     {
+      field: "IS_SETTING",
+      headerName: "IS_SETTING",
+      width: 100,
+      renderCell: (params: any) => {
+        return (
+          <input
+          type='checkbox'
+          name='alltimecheckbox'
+          defaultChecked={params.row.IS_SETTING==='Y'}
+          onChange={(value) => {  
+            //console.log(value);
+            const newdata = plandatatable.map((p) =>
+              p.PLAN_ID === params.row.PLAN_ID
+                ? { ...p, IS_SETTING: params.row.IS_SETTING==='Y'? 'N': 'Y' }
+                : p
+            );
+            setPlanDataTable(newdata);
+            setQlsxPlanDataFilter([]);
+          }}
+        ></input>
+        )
+      },
+      editable: false,    
+    },
+    {
       field: "PLAN_FACTORY",
       headerName: "NM",
       width: 50,
@@ -872,6 +897,7 @@ const QUICKPLAN = () => {
       width: 110,
       editable: false,
     },
+    
     {
       field: "NEXT_PLAN_ID",
       headerName: "NEXT_PLAN_ID",
@@ -1420,6 +1446,7 @@ const QUICKPLAN = () => {
       LOSS_SX4: 0,
       LOSS_SETTING3: 0,
       LOSS_SETTING4: 0,
+      IS_SETTING: 'Y'
     };
     setPlanDataTable([...plandatatable, temp_add_plan]);
     localStorage.setItem(
@@ -1490,6 +1517,7 @@ const QUICKPLAN = () => {
               PLAN_FACTORY: qlsxplandatafilter[i].PLAN_FACTORY,
               G_CODE: qlsxplandatafilter[i].G_CODE,
               NEXT_PLAN_ID: qlsxplandatafilter[i].NEXT_PLAN_ID,
+              IS_SETTING: qlsxplandatafilter[i].IS_SETTING
             })
               .then((response) => {
                 //console.log(response.data.tk_status);

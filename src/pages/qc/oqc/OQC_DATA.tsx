@@ -38,7 +38,6 @@ import {
   CustomerListData,
   MATERIAL_TABLE_DATA,
 } from "../../../api/GlobalInterface";
-
 const OQC_DATA = () => {
   const [showhidePivotTable, setShowHidePivotTable] = useState(false);
   const [material_table_data, set_material_table_data] = useState<
@@ -135,7 +134,6 @@ const OQC_DATA = () => {
       .catch((error) => {
         console.log(error);
       });
-
     if (materialExist === false) {
       await generalQuery("addMaterial", selectedRows)
         .then((response) => {
@@ -971,14 +969,17 @@ const OQC_DATA = () => {
     ],
     store: datasxtable,
   });
-
   useEffect(() => {
     //load_material_table();
     getcustomerlist();
     //setColumnDefinition(column_inspect_output);
   }, []);
   return (
-    <div className="oqcdata">
+    <div className="container mx-auto">
+      
+
+    </div>
+   /*  <div className="container mx-auto">
       <div className="tracuuDataInspection">
         <div className="tracuuDataInspectionform">
           <div className="forminput">
@@ -1162,7 +1163,7 @@ const OQC_DATA = () => {
           </div>
         )}
       </div>
-    </div>
+    </div> */
   );
 };
 export default OQC_DATA;

@@ -11,7 +11,6 @@ import React, {
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { LangConText, UserContext } from "../src/api/Context";
 import { checkLogin, generalQuery } from "./api/Api";
-import Login from "./pages/login/Login";
 import Swal from "sweetalert2";
 import { RootState } from "./redux/store";
 import { useSelector, useDispatch } from "react-redux";
@@ -26,68 +25,16 @@ import {
 import { useSpring, animated } from "@react-spring/web";
 import "./App.css";
 import FallBackComponent from "./components/Fallback/FallBackComponent";
-import PivotChart from "./components/PivotChart/PivotChart";
-
 import { Button } from "@mui/material";
 import { UserData } from "./api/GlobalInterface";
-import TINHLIEU from "./pages/muahang/tinhlieu/TINHLIEU";
-import BAOCAOTHEOROLL from "./pages/sx/BAOCAOTHEOROLL/BAOCAOTHEOROLL";
-/* import DATASX2 from "./pages/qlsx/QLSXPLAN/DATASX/DATASX2";
-import Home from "./pages/home/Home";
-import DiemDanhNhom from "./pages/nhansu/DiemDanhNhom/DiemDanhNhom";
-import BulletinBoard from "./components/BulletinBoard/BulletinBoard";
-import AccountInfo from "./components/Navbar/AccountInfo/AccountInfo";
-import KinhDoanh from "./pages/kinhdoanh/KinhDoanh";
-import KinhDoanhReport from "./pages/kinhdoanh/kinhdoanhreport/KinhDoanhReport";
-import PoManager from "./pages/kinhdoanh/pomanager/PoManager";
-import InvoiceManager from "./pages/kinhdoanh/invoicemanager/InvoiceManager";
-import PlanManager from "./pages/kinhdoanh/planmanager/PlanManager";
-import FCSTManager from "./pages/kinhdoanh/fcstmanager/FCSTManager";
-import YCSXManager from "./pages/kinhdoanh/ycsxmanager/YCSXManager";
-import BOM_MANAGER from "./pages/rnd/bom_manager/BOM_MANAGER";
-import POandStockFull from "./pages/kinhdoanh/poandstockfull/POandStockFull";
-import CODE_MANAGER from "./pages/rnd/code_manager/CODE_MANAGER";
-import CUST_MANAGER from "./pages/kinhdoanh/custManager/CUST_MANAGER";
-import QuotationManager from "./pages/kinhdoanh/quotationmanager/QuotationManager";
-import EQ_STATUS from "./pages/qlsx/QLSXPLAN/EQ_STATUS/EQ_STATUS";
-import INSPECT_STATUS from "./pages/qc/inspection/INSPECT_STATUS/INSPECT_STATUS";
-import ShortageKD from "./pages/kinhdoanh/shortageKD/ShortageKD";
-import DTC from "./pages/qc/dtc/DTC";
-import BOM_AMAZON from "./pages/rnd/bom_amazon/BOM_AMAZON";
-import DESIGN_AMAZON from "./pages/rnd/design_amazon/DESIGN_AMAZON";
-import QLSX from "./pages/qlsx/QLSX";
-import QLSXPLAN from "./pages/qlsx/QLSXPLAN/QLSXPLAN";
-import CAPASX from "./pages/qlsx/QLSXPLAN/CAPA/CAPASX";
-import QC from "./pages/qc/QC";
-import IQC from "./pages/qc/iqc/IQC";
-import PQC from "./pages/qc/pqc/PQC";
-import OQC from "./pages/qc/oqc/OQC";
-import KIEMTRA from "./pages/qc/inspection/KIEMTRA";
-import CSTOTAL from "./pages/qc/cs/CSTOTAL";
-import ISO from "./pages/qc/iso/ISO";
-import TRANGTHAICHITHI from "./pages/sx/TRANGTHAICHITHI/TRANGTHAICHITHI";
-import LICHSUINPUTLIEU from "./pages/qlsx/QLSXPLAN/LICHSUINPUTLIEU/LICHSUINPUTLIEU";
-import TINHHINHCUONLIEU from "./pages/sx/TINH_HINH_CUON_LIEU/TINHINHCUONLIEU";
-import KHOAO from "./pages/qlsx/QLSXPLAN/KHOAO/KHOAO";
-import KHOLIEU from "./pages/kho/kholieu/KHOLIEU";
-import NhanSu from "./pages/nhansu/NhanSu";
-import QuanLyPhongBanNhanSu from "./pages/nhansu/QuanLyPhongBanNhanSu/QuanLyPhongBanNhanSu";
-import DieuChuyenTeam from "./pages/nhansu/DieuChuyenTeam/DieuChuyenTeam";
-import TabDangKy from "./pages/nhansu/DangKy/TabDangKy";
-import PheDuyetNghi from "./pages/nhansu/PheDuyetNghi/PheDuyetNghi";
-import LichSu from "./pages/nhansu/LichSu/LichSu";
-import BaoCaoNhanSu from "./pages/nhansu/BaoCaoNhanSu/BaoCaoNhanSu";
-import QuanLyCapCao from "./pages/nhansu/QuanLyCapCao/QuanLyCapCao"; 
-import CAPA_MANAGER from "./pages/qlsx/QLSXPLAN/CAPA/CAPA_MANAGER";
-import PLANRESULT from "./pages/sx/PLANRESULT/PLANRESULT";
-import BANGCHAMCONG from "./pages/nhansu/BangChamCong/BangChamCong";
-import QuotationTotal from "./pages/kinhdoanh/quotationmanager/QuotationTotal";
-import MUAHANG from "./pages/muahang/MUAHANG";
-import QLVL from "./pages/muahang/quanlyvatlieu/QLVL";
-import PRODUCT_BARCODE_MANAGER from "./pages/rnd/product_barcode_manager/PRODUCT_BARCODE_MANAGER";
-import QLGN from "./pages/rnd/quanlygiaonhandaofilm/QLGN";
-import KHOTPNEW from "./pages/kho/khotp_new/KHOTPNEW";
-import KHOTOTAL from "./pages/kho/KHOTOTAL";*/
+const Login = React.lazy(() => import("./pages/login/Login"));
+const PivotChart = React.lazy(() => import("./components/PivotChart/PivotChart"));
+const BAOCAOTHEOROLL = lazy(
+  () => import("./pages/sx/BAOCAOTHEOROLL/BAOCAOTHEOROLL")
+);
+const TINHLIEU = lazy(
+  () => import("./pages/muahang/tinhlieu/TINHLIEU")
+);
 const CAPA_MANAGER = lazy(
   () => import("./pages/qlsx/QLSXPLAN/CAPA/CAPA_MANAGER")
 );
@@ -106,7 +53,6 @@ const PRODUCT_BARCODE_MANAGER = lazy(
 const QLGN = lazy(() => import("./pages/rnd/quanlygiaonhandaofilm/QLGN"));
 const KHOTPNEW = lazy(() => import("./pages/kho/khotp_new/KHOTPNEW"));
 const KHOTOTAL = lazy(() => import("./pages/kho/KHOTOTAL"));
-
 const Home = lazy(() => import("./pages/home/Home"));
 const KIEMTRA = lazy(() => import("./pages/qc/inspection/KIEMTRA"));
 const PQC = lazy(() => import("./pages/qc/pqc/PQC"));
@@ -333,8 +279,6 @@ const ProtectedRoute: any = ({
   }
 };
 function App() {
- 
-
   const springs = useSpring({
     from: { x: 1000, y: 100 },
     to: { x: 0, y: 0 },
@@ -510,8 +454,8 @@ function App() {
           //console.log(data.data.data);
           setUserData(data.data.data);
           dispatch(changeUserData(data.data.data));
-          console.log('data.data.data.POSITION_CODE',data.data.data.POSITION_CODE)
-          if(data.data.data.POSITION_CODE === 4){
+          console.log('data.data.data.POSITION_CODE', data.data.data.POSITION_CODE)
+          if (data.data.data.POSITION_CODE === 4) {
             dispatch(setTabModeSwap(false));
           }
           //dispatch(update_socket(data.data.data.EMPL_NO + " da dangnhap"));
@@ -545,12 +489,12 @@ function App() {
       .catch((error) => {
         console.log(error);
       });
-    let server_ip_local: any = localStorage.getItem("server_ip")?.toString();
+    /* let server_ip_local: any = localStorage.getItem("server_ip")?.toString();
     if (server_ip_local !== undefined) {
     } else {
       localStorage.setItem("server_ip", "http://14.160.33.94:5013/api");
-    }
-    return () => {};
+    } */
+    return () => { };
   }, []);
   return (
     <>
