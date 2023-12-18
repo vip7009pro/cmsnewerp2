@@ -242,15 +242,6 @@ const KHOLIEU = () => {
           SAVE
         </IconButton>
         <GridToolbarQuickFilter />
-        LOT NCC:
-        <input
-          type="text"
-          value={lotncc}
-          onChange={(e) =>{ 
-            console.log(e.target.value);
-            setLOTNCC(e.target.value);
-          }}
-        ></input>
         <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#2639F6' }} onClick={() => {
           if (userData?.SUBDEPTNAME === "IQC") {
             //checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['QC','KHO'], updatelotNCC);
@@ -567,6 +558,16 @@ const KHOLIEU = () => {
                 placeholder="1-120"
                 value={rollNo}
                 onChange={(e) => setRollNo(e.target.value)}
+              ></input>
+            </label>
+            <label>
+              LOT NCC:
+              <input
+                type="text"
+                value={lotncc}
+                onChange={(e) => {
+                  setLOTNCC(e.target.value);
+                }}
               ></input>
             </label>
           </div>

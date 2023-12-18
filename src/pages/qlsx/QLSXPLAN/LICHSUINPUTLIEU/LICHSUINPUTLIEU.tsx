@@ -21,11 +21,9 @@ import {
 } from "react-icons/ai";
 import Swal from "sweetalert2";
 import { generalQuery } from "../../../../api/Api";
-import { UserContext } from "../../../../api/Context";
 import { SaveExcel } from "../../../../api/GlobalFunction";
 import "./LICHSUINPUTLIEU.scss";
 import { LICHSUINPUTLIEU_DATA } from "../../../../api/GlobalInterface";
-
 const LICHSUINPUTLIEU = () => {
   const [selectionModel_INPUTSX, setSelectionModel_INPUTSX] = useState<any>([]);
   const [readyRender, setReadyRender] = useState(false);
@@ -46,7 +44,6 @@ const LICHSUINPUTLIEU = () => {
   const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));
   const [codeKD, setCodeKD] = useState("");
   const [codeCMS, setCodeCMS] = useState("");
-
   const [prodrequestno, setProdRequestNo] = useState("");
   const [plan_id, setPlanID] = useState("");
   const [alltime, setAllTime] = useState(false);
@@ -54,10 +51,8 @@ const LICHSUINPUTLIEU = () => {
   const [inspectiondatatable, setInspectionDataTable] = useState<Array<any>>(
     []
   );
-  const [sumaryINSPECT, setSummaryInspect] = useState("");
   const [m_name, setM_Name] = useState("");
   const [m_code, setM_Code] = useState("");
-
   const column_lichsuinputlieusanxuat = [
     { field: "PROD_REQUEST_NO", headerName: "YCSX NO", width: 80 },
     { field: "PLAN_ID", headerName: "PLAN_ID", width: 80 },
@@ -67,6 +62,7 @@ const LICHSUINPUTLIEU = () => {
     { field: "M_NAME", headerName: "M_NAME", width: 150 },
     { field: "WIDTH_CD", headerName: "SIZE", width: 40 },
     { field: "M_LOT_NO", headerName: "M_LOT_NO", width: 90 },
+    { field: "LOTNCC", headerName: "LOTNCC", width: 100 },
     { field: "INPUT_QTY", headerName: "INPUT_QTY", width: 120 },
     { field: "USED_QTY", headerName: "USED_QTY", width: 80 },
     { field: "REMAIN_QTY", headerName: "REMAIN_QTY", width: 90 },
@@ -77,7 +73,6 @@ const LICHSUINPUTLIEU = () => {
   const [columnDefinition, setColumnDefinition] = useState<Array<any>>(
     column_lichsuinputlieusanxuat
   );
-
   function CustomToolbarLICHSUINPUTSX() {
     return (
       <GridToolbarContainer>
@@ -110,7 +105,7 @@ const LICHSUINPUTLIEU = () => {
       G_CODE: codeCMS,
     })
       .then((response) => {
-        console.log(response.data.data);
+        //console.log(response.data.data);
         if (response.data.tk_status !== "NG") {
           const loaded_data: LICHSUINPUTLIEU_DATA[] = response.data.data.map(
             (element: LICHSUINPUTLIEU_DATA, index: number) => {
@@ -133,9 +128,8 @@ const LICHSUINPUTLIEU = () => {
         console.log(error);
       });
   };
-
   useEffect(() => {
-    //setColumnDefinition(column_inspect_output);
+    
   }, []);
   return (
     <div className='lichsuinputlieu'>

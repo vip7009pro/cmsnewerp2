@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import "./CSTOTAL.scss";
 import CS from "./CS";
+import CS_DATA_TB from "./CS_DATA";
 
 const CSTOTAL = () => {
   const [selection, setSelection] = useState<any>({
@@ -169,7 +170,7 @@ const CSTOTAL = () => {
         </div>
         <div
           className="mininavitem"
-          onClick={() => setNav(4)}
+          onClick={() => setNav(2)}
           style={{
             backgroundColor: selection.tab4 === true ? "#02c712" : "#abc9ae",
             color: selection.tab4 === true ? "yellow" : "yellow",
@@ -179,13 +180,13 @@ const CSTOTAL = () => {
         </div>
       </div>
       {selection.tab1 && (
-        <div className="traiqc">
-          <CS />
+        <div className="datacs">
+          <CS_DATA_TB />
         </div>
       )}
       {selection.tab2 && (
-        <div className="datadtc">
-          <CS />
+        <div className="baocaocs">
+          
         </div>
       )}
     </div>

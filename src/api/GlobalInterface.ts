@@ -1014,7 +1014,7 @@ export interface EmployeeTableData {
 }
 //CS data
 export interface CSCONFIRM_DATA {
-  YEAR_WEEK: number;
+  YEAR_WEEK: string;
   CONFIRM_ID: number;
   CONFIRM_DATE: string;
   CONTACT_ID: number;
@@ -2014,6 +2014,7 @@ export interface LICHSUINPUTLIEU_DATA {
   M_CODE: string;
   M_NAME: string;
   M_LOT_NO: string;
+  LOTNCC: string;
   WIDTH_CD: number;
   INPUT_QTY: number;
   USED_QTY: number;
