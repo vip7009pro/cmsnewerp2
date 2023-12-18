@@ -58,12 +58,8 @@ const FAILING = () => {
   const [request_empl, setrequest_empl] = useState("");
   const [request_empl2, setrequest_empl2] = useState("");
   const [remark, setReMark] = useState("");
-  const [inspectiondatatable, setInspectionDataTable] = useState<Array<any>>(
-    [],
-  );
-  const [selectedRowsDataA, setSelectedRowsData] = useState<
-    Array<QC_FAIL_DATA>
-  >([]);
+  const [inspectiondatatable, setInspectionDataTable] = useState<Array<any>>([]);
+  const [selectedRowsDataA, setSelectedRowsData] = useState<Array<QC_FAIL_DATA>>([]);
   const [empl_name, setEmplName] = useState("");
   const [empl_name2, setEmplName2] = useState("");
   const [g_name, setGName] = useState("");
@@ -81,7 +77,6 @@ const FAILING = () => {
   const [vendorLot, setVendorLot] = useState("");
   const [lieql_sx, setLieuQL_SX] = useState(0);
   const [out_date, setOut_Date] = useState("");
-  const [showhideinput, setShowHideInput] = useState(true);
   const [cust_cd, setCust_Cd] = useState("6969");
   const setQCPASS = async (value: string) => {
     console.log(selectedRowsDataA);
@@ -131,16 +126,6 @@ const FAILING = () => {
     () => (
       <div className="datatb">
         <div className="menubar">
-          <IconButton
-            className="buttonIcon"
-            onClick={() => {
-              setShowHideInput((pre) => !pre);
-              setInspectionDataTable([]);
-            }}
-          >
-            <BiShow color="blue" size={15} />
-            Show/Hide Input
-          </IconButton>
           <span style={{ fontSize: '1rem', fontWeight: "bold" }}>
             BẢNG NHẬP THÔNG TIN CUỘN LIỆU- BTP QC FAIL
           </span>

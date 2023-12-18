@@ -1174,6 +1174,8 @@ export interface INSPECT_OUTPUT_DATA {
   PROD_REQUEST_DATE: string;
   PROD_REQUEST_QTY: number;
   PROCESS_LOT_NO: string;
+  M_LOT_NO: string,
+  LOTNCC: string,
   PROD_DATETIME: string;
   OUTPUT_DATETIME: string;
   OUTPUT_QTY_EA: number;
@@ -1195,6 +1197,8 @@ export interface INSPECT_INPUT_DATA {
   PROD_REQUEST_DATE: string;
   PROD_REQUEST_QTY: number;
   PROCESS_LOT_NO: string;
+  M_LOT_NO: string,
+  LOTNCC: string,
   PROD_DATETIME: string;
   INPUT_DATETIME: string;
   INPUT_QTY_EA: number;
@@ -1229,6 +1233,7 @@ export interface INSPECT_NG_DATA {
   G_CODE: string;
   PROD_TYPE: string;
   M_LOT_NO: string;
+  LOTNCC: string,
   M_NAME: string;
   WIDTH_CD: number;
   INSPECTOR: string;
@@ -2042,6 +2047,7 @@ export interface XUATLIEUDATA {
   M_CODE: string;
   M_NAME: string;
   WIDTH_CD: number;
+  LOTNCC: string;
   M_LOT_NO: string;
   OUT_CFM_QTY: number;
   ROLL_QTY: number;
@@ -3042,4 +3048,30 @@ export interface SX_BAOCAOROLLDATA {
   LAST_PROCESS: number,
   INPUT_DATE: string,
   IS_SETTING: string,
+}
+export interface OQC_DATA{
+  OQC_ID: number,
+  DELIVERY_DATE: string,
+  SHIFT_CODE: string,
+  FACTORY_NAME: string,
+  FULL_NAME: string,
+  CUST_NAME_KD: string,
+  PROD_REQUEST_NO: string,
+  PROCESS_LOT_NO: string,
+  M_LOT_NO: string,
+  LOTNCC: string,
+  LABEL_ID: string,
+  PROD_REQUEST_DATE: string,
+  PROD_REQUEST_QTY: number,
+  G_CODE: string,
+  G_NAME: string,
+  G_NAME_KD: string,
+  DELIVERY_QTY: number,
+  SAMPLE_QTY: number,
+  SAMPLE_NG_QTY: number,
+  PROD_LAST_PRICE: number,
+  DELIVERY_AMOUNT: number,
+  SAMPLE_NG_AMOUNT: number,
+  REMARK: string,
+  RUNNING_COUNT: number,
 }

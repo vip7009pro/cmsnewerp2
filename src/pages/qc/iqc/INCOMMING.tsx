@@ -217,7 +217,8 @@ const INCOMMING = () => {
           );
           setDtcDataTable(loadeddata);
         } else {
-          Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
+          setDtcDataTable([])
+          /* Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error"); */
         }
       })
       .catch((error) => {
@@ -256,7 +257,6 @@ const INCOMMING = () => {
   const [total_qty, setTotal_QTY] = useState(0);
   const [total_roll, setTotal_ROLL] = useState(0);
   const [nq_qty, setNQ_QTY] = useState(0);
-  const [showhideinput, setShowHideInput] = useState(true);
   const setQCPASS = async (value: string) => {
     console.log(selectedRowsData);
     if (selectedRowsData.length > 0) {
@@ -320,23 +320,11 @@ const INCOMMING = () => {
     () => (
       <CustomResponsiveContainer>
         <div className="datatb">
-          <div className="menubar">
+          <div className="menubar">           
             <IconButton
               className="buttonIcon"
               onClick={() => {
-                setShowHideInput((pre) => !pre);
-                setInspectionDataTable([]);
-                setDtcDataTable([]);
-              }}
-            >
-              <BiShow color="blue" size={15} />
-              Show/Hide Input
-            </IconButton>
-            <IconButton
-              className="buttonIcon"
-              onClick={() => {
-                handletraIQC1Data();
-                setShowHideInput(false);
+                handletraIQC1Data();                
               }}
             >
               <AiOutlineSearch color="red" size={15} />

@@ -48,8 +48,6 @@ const KHOLIEU = () => {
   const [m_name, setM_Name] = useState("");
   const [m_code, setM_Code] = useState("");
   const [codeKD, setCodeKD] = useState("");
-  const [codeCMS, setCodeCMS] = useState("");
-  const [cust_name, setCustName] = useState("");
   const [prod_request_no, setProd_Request_No] = useState("");
   const [plan_id, setPlanID] = useState("");
   const [alltime, setAllTime] = useState(false);
@@ -163,6 +161,7 @@ const KHOLIEU = () => {
     { field: "M_CODE", headerName: "M_CODE", width: 100 },
     { field: "M_NAME", headerName: "M_NAME", width: 180 },
     { field: "WIDTH_CD", headerName: "WIDTH_CD", width: 90 },
+    { field: "LOTNCC", headerName: "LOTNCC", width: 100 },
     { field: "M_LOT_NO", headerName: "M_LOT_NO", width: 100 },
     {
       field: "OUT_CFM_QTY",

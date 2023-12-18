@@ -1,10 +1,6 @@
 import {
   Button,
-  Autocomplete,
-  Checkbox,
-  FormControlLabel,
   IconButton,
-  TextField,
   createFilterOptions,
 } from "@mui/material";
 import {
@@ -36,72 +32,72 @@ import PivotTable from "../../../components/PivotChart/PivotChart";
 import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
 import {
   CustomerListData,
-  MATERIAL_TABLE_DATA,
+  OQC_DATA,
 } from "../../../api/GlobalInterface";
 import { DataDiv, DataTBDiv, FormButtonColumn, FromInputColumn, FromInputDiv, PivotTableDiv, QueryFormDiv } from "../../../components/StyledComponents/ComponentLib";
-const OQC_DATA = () => {
+const OQC_DATA_TB = () => {
+  const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
+  const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));
   const [showhidePivotTable, setShowHidePivotTable] = useState(false);
-  const [material_table_data, set_material_table_data] = useState<
-    Array<MATERIAL_TABLE_DATA>
-  >([]);
-  const [datasxtable, setDataSXTable] = useState<Array<any>>([]);
-  const [m_name, setM_Name] = useState("");
-  const [selectedRows, setSelectedRows] = useState<MATERIAL_TABLE_DATA>({
-    M_ID: 0,
-    M_NAME: "",
-    DESCR: "",
-    CUST_CD: "",
-    CUST_NAME_KD: "",
-    SSPRICE: 0,
-    CMSPRICE: 0,
-    SLITTING_PRICE: 0,
-    MASTER_WIDTH: 0,
-    ROLL_LENGTH: 0,
-    USE_YN: "Y",
-    INS_DATE: "",
-    INS_EMPL: "",
-    UPD_DATE: "",
-    UPD_EMPL: "",
+  const [oqc_table_data, set_oqc_table_data] = useState<Array<OQC_DATA>>([]);
+  const [selectedRows, setSelectedRows] = useState<OQC_DATA>({
+    CUST_NAME_KD: '',
+    DELIVERY_AMOUNT: 0,
+    DELIVERY_DATE: '',
+    DELIVERY_QTY: 0,
+    FACTORY_NAME: '',
+    FULL_NAME: '',
+    G_CODE: '',
+    G_NAME: '',
+    G_NAME_KD: '',
+    LABEL_ID: '',
+    OQC_ID: 0,
+    PROCESS_LOT_NO: '',
+    M_LOT_NO: '',
+    LOTNCC: '',
+    PROD_LAST_PRICE: 0,
+    PROD_REQUEST_DATE: '',
+    PROD_REQUEST_NO: '',
+    PROD_REQUEST_QTY: 0,
+    REMARK: '',
+    RUNNING_COUNT: 0,
+    SAMPLE_NG_AMOUNT: 0,
+    SAMPLE_NG_QTY: 0,
+    SAMPLE_QTY: 0,
+    SHIFT_CODE: ''
   });
-  const load_material_table = () => {
-    generalQuery("get_material_table", {
-      M_NAME: m_name,
+  const load_oqc_data = () => {
+    generalQuery("traOQCData", {
+      CUST_NAME_KD: selectedRows.CUST_NAME_KD,
+      PROD_REQUEST_NO: selectedRows.PROD_REQUEST_NO,
+      G_NAME: selectedRows.G_NAME,
+      G_CODE: selectedRows.G_CODE,
+      FROM_DATE: fromdate,
+      TO_DATE: todate
     })
       .then((response) => {
         //console.log(response.data.data);
         if (response.data.tk_status !== "NG") {
           let loadeddata = response.data.data.map(
-            (element: MATERIAL_TABLE_DATA, index: number) => {
+            (element: OQC_DATA, index: number) => {
               return {
                 ...element,
-                DESCR: element.DESCR === null ? "" : element.DESCR,
-                SSPRICE: element.SSPRICE === null ? 0 : element.SSPRICE,
-                CMSPRICE: element.CMSPRICE === null ? 0 : element.CMSPRICE,
-                SLITTING_PRICE:
-                  element.SLITTING_PRICE === null ? 0 : element.SLITTING_PRICE,
-                MASTER_WIDTH:
-                  element.MASTER_WIDTH === null ? 0 : element.MASTER_WIDTH,
-                ROLL_LENGTH:
-                  element.ROLL_LENGTH === null ? 0 : element.ROLL_LENGTH,
-                INS_DATE: moment
-                  .utc(element.INS_DATE)
-                  .format("YYYY-MM-DD HH:mm:ss"),
-                UPD_DATE: moment
-                  .utc(element.UPD_DATE)
-                  .format("YYYY-MM-DD HH:mm:ss"),
+                DELIVERY_DATE: moment
+                  .utc(element.DELIVERY_DATE)
+                  .format("YYYY-MM-DD"),
                 id: index,
               };
             },
           );
           //console.log(loadeddata);
-          set_material_table_data(loadeddata);
+          set_oqc_table_data(loadeddata);
           Swal.fire(
             "Thông báo",
             "Đã load: " + response.data.data.length + " dòng",
             "success",
           );
         } else {
-          set_material_table_data([]);
+          set_oqc_table_data([]);
           Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
         }
       })
@@ -109,66 +105,21 @@ const OQC_DATA = () => {
         console.log(error);
       });
   };
-  const seMaterialInfo = (keyname: string, value: any) => {
+  const setOQCFormInfo = (keyname: string, value: any) => {
     console.log(keyname);
     console.log(value);
-    let tempCustInfo: MATERIAL_TABLE_DATA = {
+    let tempCustInfo: OQC_DATA = {
       ...selectedRows,
       [keyname]: value,
     };
     //console.log(tempcodefullinfo);
     setSelectedRows(tempCustInfo);
   };
-  const addMaterial = async () => {
-    let materialExist: boolean = false;
-    await generalQuery("checkMaterialExist", {
-      M_NAME: selectedRows.M_NAME,
-    })
-      .then((response) => {
-        //console.log(response.data.data);
-        if (response.data.tk_status !== "NG") {
-          materialExist = true;
-        } else {
-          materialExist = false;
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-    if (materialExist === false) {
-      await generalQuery("addMaterial", selectedRows)
-        .then((response) => {
-          //console.log(response.data.data);
-          if (response.data.tk_status !== "NG") {
-            Swal.fire("Thông báo", "Thêm vật liệu thành công", "success");
-          } else {
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    } else {
-      Swal.fire("Thông báo", "Vật liệu đã tồn tại", "error");
-    }
-  };
-  const updateMaterial = async () => {
-    generalQuery("updateMaterial", selectedRows)
-      .then((response) => {
-        //console.log(response.data.data);
-        if (response.data.tk_status !== "NG") {
-          Swal.fire("Thông báo", "Update vật liệu thành công", "success");
-        } else {
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
   const handleSearchCodeKeyDown = (
     e: React.KeyboardEvent<HTMLInputElement>,
   ) => {
     if (e.key === "Enter") {
-      load_material_table();
+      load_oqc_data();
     }
   };
   const materialDataTable = React.useMemo(
@@ -182,13 +133,13 @@ const OQC_DATA = () => {
           cellHintEnabled={true}
           columnResizingMode={"widget"}
           showColumnLines={true}
-          dataSource={material_table_data}
+          dataSource={oqc_table_data}
           columnWidth="auto"
           keyExpr="id"
           height={"75vh"}
           showBorders={true}
           onSelectionChanged={(e) => {
-            setSelectedRows(e.selectedRowsData[0]);
+            //setSelectedRows(e.selectedRowsData[0]);
           }}
           onRowClick={(e) => {
             //console.log(e.data);
@@ -216,7 +167,7 @@ const OQC_DATA = () => {
               <IconButton
                 className="buttonIcon"
                 onClick={() => {
-                  SaveExcel(datasxtable, "MaterialStatus");
+                  SaveExcel(oqc_table_data, "MaterialStatus");
                 }}
               >
                 <AiFillFileExcel color="green" size={15} />
@@ -248,61 +199,31 @@ const OQC_DATA = () => {
             infoText="Page #{0}. Total: {1} ({2} items)"
             displayMode="compact"
           />
-          <Column dataField="M_ID" caption="M_ID" width={100}></Column>
-          <Column dataField="M_NAME" caption="M_NAME" width={100}></Column>
-          <Column dataField="DESCR" caption="DESCR" width={100}></Column>
-          <Column dataField="CUST_CD" caption="CUST_CD" width={100}></Column>
-          <Column
-            dataField="CUST_NAME_KD"
-            caption="CUST_NAME_KD"
-            width={100}
-          ></Column>
-          <Column
-            dataField="SSPRICE"
-            caption="OPEN_PRICE"
-            width={100}
-          ></Column>
-          <Column
-            dataField="CMSPRICE"
-            caption="ORIGIN_PRICE"
-            width={100}
-          ></Column>
-          <Column
-            dataField="SLITTING_PRICE"
-            caption="SLITTING_PRICE"
-            width={100}
-          ></Column>
-          <Column
-            dataField="MASTER_WIDTH"
-            caption="MASTER_WIDTH"
-            width={100}
-          ></Column>
-          <Column
-            dataField="ROLL_LENGTH"
-            caption="ROLL_LENGTH"
-            width={100}
-          ></Column>
-          <Column dataField="USE_YN" caption="USE_YN" width={100}></Column>
-          <Column
-            dataField="INS_DATE"
-            caption="INS_DATE"
-            width={100}
-          ></Column>
-          <Column
-            dataField="INS_EMPL"
-            caption="INS_EMPL"
-            width={100}
-          ></Column>
-          <Column
-            dataField="UPD_DATE"
-            caption="UPD_DATE"
-            width={100}
-          ></Column>
-          <Column
-            dataField="UPD_EMPL"
-            caption="UPD_EMPL"
-            width={100}
-          ></Column>
+          <Column dataField='OQC_ID' caption='OQC_ID' width={100}></Column>
+          <Column dataField='DELIVERY_DATE' caption='DELIVERY_DATE' width={100}></Column>
+          <Column dataField='SHIFT_CODE' caption='SHIFT_CODE' width={100}></Column>
+          <Column dataField='FACTORY_NAME' caption='FACTORY_NAME' width={100}></Column>
+          <Column dataField='FULL_NAME' caption='FULL_NAME' width={100}></Column>
+          <Column dataField='CUST_NAME_KD' caption='CUST_NAME_KD' width={100}></Column>
+          <Column dataField='PROD_REQUEST_NO' caption='PROD_REQUEST_NO' width={100}></Column>
+          <Column dataField='PROCESS_LOT_NO' caption='PROCESS_LOT_NO' width={100}></Column>
+          <Column dataField='M_LOT_NO' caption='M_LOT_NO' width={100}></Column>
+          <Column dataField='LOTNCC' caption='LOTNCC' width={100}></Column>
+          <Column dataField='LABEL_ID' caption='LABEL_ID' width={100}></Column>
+          <Column dataField='PROD_REQUEST_DATE' caption='PROD_REQUEST_DATE' width={100}></Column>
+          <Column dataField='PROD_REQUEST_QTY' caption='PROD_REQUEST_QTY' width={100}></Column>
+          <Column dataField='G_CODE' caption='G_CODE' width={100}></Column>
+          <Column dataField='G_NAME' caption='G_NAME' width={100}></Column>
+          <Column dataField='G_NAME_KD' caption='G_NAME_KD' width={100}></Column>
+          <Column dataField='DELIVERY_QTY' caption='DELIVERY_QTY' width={100}></Column>
+          <Column dataField='SAMPLE_QTY' caption='SAMPLE_QTY' width={100}></Column>
+          <Column dataField='SAMPLE_NG_QTY' caption='SAMPLE_NG_QTY' width={100}></Column>
+          <Column dataField='PROD_LAST_PRICE' caption='PROD_LAST_PRICE' width={100}></Column>
+          <Column dataField='DELIVERY_AMOUNT' caption='DELIVERY_AMOUNT' width={100}></Column>
+          <Column dataField='SAMPLE_NG_AMOUNT' caption='SAMPLE_NG_AMOUNT' width={100}></Column>
+          <Column dataField='REMARK' caption='REMARK' width={100}></Column>
+          <Column dataField='DEFECT_IMAGE_LINK' caption='DEFECT_IMAGE_LINK' width={100}></Column>
+          <Column dataField='RUNNING_COUNT' caption='RUNNING_COUNT' width={100}></Column>
           <Summary>
             <TotalItem
               alignment="right"
@@ -314,664 +235,337 @@ const OQC_DATA = () => {
         </DataGrid>
       </CustomResponsiveContainer>
     ),
-    [material_table_data],
+    [oqc_table_data],
   );
-  const [customerList, setCustomerList] = useState<CustomerListData[]>([]);
-  const filterOptions1 = createFilterOptions({
-    matchFrom: "any",
-    limit: 100,
-  });
-  const getcustomerlist = () => {
-    generalQuery("selectVendorList", {})
-      .then((response) => {
-        if (response.data.tk_status !== "NG") {
-          setCustomerList(response.data.data);
-        } else {
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
   const dataSource = new PivotGridDataSource({
     fields: [
       {
-        caption: "INS_DATE",
+        caption: 'OQC_ID',
         width: 80,
-        dataField: "INS_DATE",
+        dataField: 'OQC_ID',
         allowSorting: true,
         allowFiltering: true,
-        dataType: "date",
-        summaryType: "count",
-        format: "fixedPoint",
+        dataType: 'number',
+        summaryType: 'sum',
+        format: 'fixedPoint',
         headerFilter: {
           allowSearch: true,
           height: 500,
           width: 300,
-        },
-      },
-      {
-        caption: "M_LOT_NO",
+        }
+      }, {
+        caption: 'DELIVERY_DATE',
         width: 80,
-        dataField: "M_LOT_NO",
+        dataField: 'DELIVERY_DATE',
         allowSorting: true,
         allowFiltering: true,
-        dataType: "string",
-        summaryType: "count",
-        format: "fixedPoint",
+        dataType: 'string',
+        summaryType: 'count',
+        format: 'fixedPoint',
         headerFilter: {
           allowSearch: true,
           height: 500,
           width: 300,
-        },
-      },
-      {
-        caption: "M_CODE",
+        }
+      }, {
+        caption: 'SHIFT_CODE',
         width: 80,
-        dataField: "M_CODE",
+        dataField: 'SHIFT_CODE',
         allowSorting: true,
         allowFiltering: true,
-        dataType: "string",
-        summaryType: "count",
-        format: "fixedPoint",
+        dataType: 'string',
+        summaryType: 'count',
+        format: 'fixedPoint',
         headerFilter: {
           allowSearch: true,
           height: 500,
           width: 300,
-        },
-      },
-      {
-        caption: "M_NAME",
+        }
+      }, {
+        caption: 'FACTORY_NAME',
         width: 80,
-        dataField: "M_NAME",
+        dataField: 'FACTORY_NAME',
         allowSorting: true,
         allowFiltering: true,
-        dataType: "string",
-        summaryType: "count",
-        format: "fixedPoint",
+        dataType: 'string',
+        summaryType: 'count',
+        format: 'fixedPoint',
         headerFilter: {
           allowSearch: true,
           height: 500,
           width: 300,
-        },
-      },
-      {
-        caption: "WIDTH_CD",
+        }
+      }, {
+        caption: 'FULL_NAME',
         width: 80,
-        dataField: "WIDTH_CD",
+        dataField: 'FULL_NAME',
         allowSorting: true,
         allowFiltering: true,
-        dataType: "string",
-        summaryType: "count",
-        format: "fixedPoint",
+        dataType: 'string',
+        summaryType: 'count',
+        format: 'fixedPoint',
         headerFilter: {
           allowSearch: true,
           height: 500,
           width: 300,
-        },
-      },
-      {
-        caption: "XUAT_KHO",
+        }
+      }, {
+        caption: 'CUST_NAME_KD',
         width: 80,
-        dataField: "XUAT_KHO",
+        dataField: 'CUST_NAME_KD',
         allowSorting: true,
         allowFiltering: true,
-        dataType: "string",
-        summaryType: "count",
-        format: "fixedPoint",
+        dataType: 'string',
+        summaryType: 'count',
+        format: 'fixedPoint',
         headerFilter: {
           allowSearch: true,
           height: 500,
           width: 300,
-        },
-      },
-      {
-        caption: "VAO_FR",
+        }
+      }, {
+        caption: 'PROD_REQUEST_NO',
         width: 80,
-        dataField: "VAO_FR",
+        dataField: 'PROD_REQUEST_NO',
         allowSorting: true,
         allowFiltering: true,
-        dataType: "string",
-        summaryType: "count",
-        format: "fixedPoint",
+        dataType: 'string',
+        summaryType: 'count',
+        format: 'fixedPoint',
         headerFilter: {
           allowSearch: true,
           height: 500,
           width: 300,
-        },
-      },
-      {
-        caption: "VAO_SR",
+        }
+      }, {
+        caption: 'PROCESS_LOT_NO',
         width: 80,
-        dataField: "VAO_SR",
+        dataField: 'PROCESS_LOT_NO',
         allowSorting: true,
         allowFiltering: true,
-        dataType: "string",
-        summaryType: "count",
-        format: "fixedPoint",
+        dataType: 'string',
+        summaryType: 'count',
+        format: 'fixedPoint',
         headerFilter: {
           allowSearch: true,
           height: 500,
           width: 300,
-        },
-      },
-      {
-        caption: "VAO_DC",
+        }
+      }, {
+        caption: 'LABEL_ID',
         width: 80,
-        dataField: "VAO_DC",
+        dataField: 'LABEL_ID',
         allowSorting: true,
         allowFiltering: true,
-        dataType: "string",
-        summaryType: "count",
-        format: "fixedPoint",
+        dataType: 'string',
+        summaryType: 'count',
+        format: 'fixedPoint',
         headerFilter: {
           allowSearch: true,
           height: 500,
           width: 300,
-        },
-      },
-      {
-        caption: "VAO_ED",
+        }
+      }, {
+        caption: 'PROD_REQUEST_DATE',
         width: 80,
-        dataField: "VAO_ED",
+        dataField: 'PROD_REQUEST_DATE',
         allowSorting: true,
         allowFiltering: true,
-        dataType: "string",
-        summaryType: "count",
-        format: "fixedPoint",
+        dataType: 'string',
+        summaryType: 'count',
+        format: 'fixedPoint',
         headerFilter: {
           allowSearch: true,
           height: 500,
           width: 300,
-        },
-      },
-      {
-        caption: "CONFIRM_GIAONHAN",
+        }
+      }, {
+        caption: 'PROD_REQUEST_QTY',
         width: 80,
-        dataField: "CONFIRM_GIAONHAN",
+        dataField: 'PROD_REQUEST_QTY',
         allowSorting: true,
         allowFiltering: true,
-        dataType: "string",
-        summaryType: "count",
-        format: "fixedPoint",
+        dataType: 'number',
+        summaryType: 'sum',
+        format: 'fixedPoint',
         headerFilter: {
           allowSearch: true,
           height: 500,
           width: 300,
-        },
-      },
-      {
-        caption: "VAO_KIEM",
+        }
+      }, {
+        caption: 'G_CODE',
         width: 80,
-        dataField: "VAO_KIEM",
+        dataField: 'G_CODE',
         allowSorting: true,
         allowFiltering: true,
-        dataType: "string",
-        summaryType: "count",
-        format: "fixedPoint",
+        dataType: 'string',
+        summaryType: 'count',
+        format: 'fixedPoint',
         headerFilter: {
           allowSearch: true,
           height: 500,
           width: 300,
-        },
-      },
-      {
-        caption: "NHATKY_KT",
+        }
+      }, {
+        caption: 'G_NAME',
         width: 80,
-        dataField: "NHATKY_KT",
+        dataField: 'G_NAME',
         allowSorting: true,
         allowFiltering: true,
-        dataType: "string",
-        summaryType: "count",
-        format: "fixedPoint",
+        dataType: 'string',
+        summaryType: 'count',
+        format: 'fixedPoint',
         headerFilter: {
           allowSearch: true,
           height: 500,
           width: 300,
-        },
-      },
-      {
-        caption: "RA_KIEM",
+        }
+      }, {
+        caption: 'G_NAME_KD',
         width: 80,
-        dataField: "RA_KIEM",
+        dataField: 'G_NAME_KD',
         allowSorting: true,
         allowFiltering: true,
-        dataType: "string",
-        summaryType: "count",
-        format: "fixedPoint",
+        dataType: 'string',
+        summaryType: 'count',
+        format: 'fixedPoint',
         headerFilter: {
           allowSearch: true,
           height: 500,
           width: 300,
-        },
-      },
-      {
-        caption: "ROLL_QTY",
+        }
+      }, {
+        caption: 'DELIVERY_QTY',
         width: 80,
-        dataField: "ROLL_QTY",
+        dataField: 'DELIVERY_QTY',
         allowSorting: true,
         allowFiltering: true,
-        dataType: "number",
-        summaryType: "sum",
-        format: "fixedPoint",
+        dataType: 'number',
+        summaryType: 'sum',
+        format: 'fixedPoint',
         headerFilter: {
           allowSearch: true,
           height: 500,
           width: 300,
-        },
-      },
-      {
-        caption: "OUT_CFM_QTY",
+        }
+      }, {
+        caption: 'SAMPLE_QTY',
         width: 80,
-        dataField: "OUT_CFM_QTY",
+        dataField: 'SAMPLE_QTY',
         allowSorting: true,
         allowFiltering: true,
-        dataType: "number",
-        summaryType: "sum",
-        format: "fixedPoint",
+        dataType: 'number',
+        summaryType: 'sum',
+        format: 'fixedPoint',
         headerFilter: {
           allowSearch: true,
           height: 500,
           width: 300,
-        },
-      },
-      {
-        caption: "TOTAL_OUT_QTY",
+        }
+      }, {
+        caption: 'SAMPLE_NG_QTY',
         width: 80,
-        dataField: "TOTAL_OUT_QTY",
+        dataField: 'SAMPLE_NG_QTY',
         allowSorting: true,
         allowFiltering: true,
-        dataType: "number",
-        summaryType: "sum",
-        format: "fixedPoint",
+        dataType: 'number',
+        summaryType: 'sum',
+        format: 'fixedPoint',
         headerFilter: {
           allowSearch: true,
           height: 500,
           width: 300,
-        },
-      },
-      {
-        caption: "FR_RESULT",
+        }
+      }, {
+        caption: 'PROD_LAST_PRICE',
         width: 80,
-        dataField: "FR_RESULT",
+        dataField: 'PROD_LAST_PRICE',
         allowSorting: true,
         allowFiltering: true,
-        dataType: "number",
-        summaryType: "sum",
-        format: "fixedPoint",
+        dataType: 'number',
+        summaryType: 'sum',
+        format: 'fixedPoint',
         headerFilter: {
           allowSearch: true,
           height: 500,
           width: 300,
-        },
-      },
-      {
-        caption: "SR_RESULT",
+        }
+      }, {
+        caption: 'DELIVERY_AMOUNT',
         width: 80,
-        dataField: "SR_RESULT",
+        dataField: 'DELIVERY_AMOUNT',
         allowSorting: true,
         allowFiltering: true,
-        dataType: "number",
-        summaryType: "sum",
-        format: "fixedPoint",
+        dataType: 'number',
+        summaryType: 'sum',
+        format: 'fixedPoint',
         headerFilter: {
           allowSearch: true,
           height: 500,
           width: 300,
-        },
-      },
-      {
-        caption: "DC_RESULT",
+        }
+      }, {
+        caption: 'SAMPLE_NG_AMOUNT',
         width: 80,
-        dataField: "DC_RESULT",
+        dataField: 'SAMPLE_NG_AMOUNT',
         allowSorting: true,
         allowFiltering: true,
-        dataType: "number",
-        summaryType: "sum",
-        format: "fixedPoint",
+        dataType: 'number',
+        summaryType: 'sum',
+        format: 'fixedPoint',
         headerFilter: {
           allowSearch: true,
           height: 500,
           width: 300,
-        },
-      },
-      {
-        caption: "ED_RESULT",
+        }
+      }, {
+        caption: 'REMARK',
         width: 80,
-        dataField: "ED_RESULT",
+        dataField: 'REMARK',
         allowSorting: true,
         allowFiltering: true,
-        dataType: "number",
-        summaryType: "sum",
-        format: "fixedPoint",
+        dataType: 'string',
+        summaryType: 'count',
+        format: 'fixedPoint',
         headerFilter: {
           allowSearch: true,
           height: 500,
           width: 300,
-        },
-      },
-      {
-        caption: "INSPECT_TOTAL_QTY",
+        }
+      }, {
+        caption: 'DEFECT_IMAGE_LINK',
         width: 80,
-        dataField: "INSPECT_TOTAL_QTY",
+        dataField: 'DEFECT_IMAGE_LINK',
         allowSorting: true,
         allowFiltering: true,
-        dataType: "number",
-        summaryType: "sum",
-        format: "fixedPoint",
+        dataType: 'string',
+        summaryType: 'count',
+        format: 'fixedPoint',
         headerFilter: {
           allowSearch: true,
           height: 500,
           width: 300,
-        },
-      },
-      {
-        caption: "INSPECT_OK_QTY",
+        }
+      }, {
+        caption: 'RUNNING_COUNT',
         width: 80,
-        dataField: "INSPECT_OK_QTY",
+        dataField: 'RUNNING_COUNT',
         allowSorting: true,
         allowFiltering: true,
-        dataType: "number",
-        summaryType: "sum",
-        format: "fixedPoint",
+        dataType: 'number',
+        summaryType: 'sum',
+        format: 'fixedPoint',
         headerFilter: {
           allowSearch: true,
           height: 500,
           width: 300,
-        },
-      },
-      {
-        caption: "INS_OUT",
-        width: 80,
-        dataField: "INS_OUT",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "number",
-        summaryType: "sum",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "PD",
-        width: 80,
-        dataField: "PD",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "number",
-        summaryType: "sum",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "CAVITY",
-        width: 80,
-        dataField: "CAVITY",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "number",
-        summaryType: "sum",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "TOTAL_OUT_EA",
-        width: 80,
-        dataField: "TOTAL_OUT_EA",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "number",
-        summaryType: "sum",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "FR_EA",
-        width: 80,
-        dataField: "FR_EA",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "number",
-        summaryType: "sum",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "SR_EA",
-        width: 80,
-        dataField: "SR_EA",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "number",
-        summaryType: "sum",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "DC_EA",
-        width: 80,
-        dataField: "DC_EA",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "number",
-        summaryType: "sum",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "ED_EA",
-        width: 80,
-        dataField: "ED_EA",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "number",
-        summaryType: "sum",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "INSPECT_TOTAL_EA",
-        width: 80,
-        dataField: "INSPECT_TOTAL_EA",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "number",
-        summaryType: "sum",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "INSPECT_OK_EA",
-        width: 80,
-        dataField: "INSPECT_OK_EA",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "number",
-        summaryType: "sum",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "INS_OUTPUT_EA",
-        width: 80,
-        dataField: "INS_OUTPUT_EA",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "number",
-        summaryType: "sum",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "ROLL_LOSS_KT",
-        width: 80,
-        dataField: "ROLL_LOSS_KT",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "number",
-        summaryType: "sum",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "ROLL_LOSS",
-        width: 80,
-        dataField: "ROLL_LOSS",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "number",
-        summaryType: "sum",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "PROD_REQUEST_NO",
-        width: 80,
-        dataField: "PROD_REQUEST_NO",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "string",
-        summaryType: "count",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "PLAN_ID",
-        width: 80,
-        dataField: "PLAN_ID",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "string",
-        summaryType: "count",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "PLAN_EQ",
-        width: 80,
-        dataField: "PLAN_EQ",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "string",
-        summaryType: "count",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "G_CODE",
-        width: 80,
-        dataField: "G_CODE",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "string",
-        summaryType: "count",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "G_NAME",
-        width: 80,
-        dataField: "G_NAME",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "string",
-        summaryType: "count",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "FACTORY",
-        width: 80,
-        dataField: "FACTORY",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "string",
-        summaryType: "count",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
+        }
       },
     ],
-    store: datasxtable,
+    store: oqc_table_data,
   });
   useEffect(() => {
-    //load_material_table();
-    getcustomerlist();
-    //setColumnDefinition(column_inspect_output);
   }, []);
   return (
     <DataDiv>
@@ -979,166 +573,85 @@ const OQC_DATA = () => {
         <FromInputDiv>
           <FromInputColumn>
             <label>
-              <b>Mã Vật Liệu:</b>{" "}
+              <b>Từ ngày:</b>
+              <input
+                onKeyDown={(e) => {
+                  handleSearchCodeKeyDown(e);
+                }}
+                type='date'
+                value={fromdate.slice(0, 10)}
+                onChange={(e) => setFromDate(e.target.value)}
+              ></input>
+            </label>
+            <label>
+              <b>Tới ngày:</b>{" "}
+              <input
+                onKeyDown={(e) => {
+                  handleSearchCodeKeyDown(e);
+                }}
+                type='date'
+                value={todate.slice(0, 10)}
+                onChange={(e) => setToDate(e.target.value)}
+              ></input>
+            </label>
+          </FromInputColumn>
+          <FromInputColumn>
+            <label>
+              <b>Code KD:</b>{" "}
               <input
                 type="text"
-                placeholder="Mã Vật Liệu"
-                value={selectedRows?.M_NAME}
-                onChange={(e) => seMaterialInfo("M_NAME", e.target.value)}
+                placeholder="Code hàng"
+                value={selectedRows?.G_NAME}
+                onKeyDown={(e) => {
+                  handleSearchCodeKeyDown(e);
+                }}
+                onChange={(e) => setOQCFormInfo("G_NAME_KD", e.target.value)}
               ></input>
             </label>
             <label style={{ display: "flex", alignItems: "center" }}>
-              <b>Vendor:</b>{" "}
-              <Autocomplete
-                sx={{
-                  height: 10,
-                  width: "160px",
-                  margin: "1px",
-                  fontSize: "0.7rem",
-                  marginBottom: "20px",
-                  backgroundColor: "white",
-                }}
-                size="small"
-                disablePortal
-                options={customerList}
-                className="autocomplete"
-                filterOptions={filterOptions1}
-                isOptionEqualToValue={(option: any, value: any) =>
-                  option.CUST_CD === value.CUST_CD
-                }
-                getOptionLabel={(option: any) =>
-                  `${option.CUST_CD !== null ? option.CUST_NAME_KD : ""}${option.CUST_CD !== null ? option.CUST_CD : ""
-                  }`
-                }
-                renderInput={(params) => (
-                  <TextField {...params} style={{ height: "10px" }} />
-                )}
-                defaultValue={{
-                  CUST_CD: getCompany() === "CMS" ? "0000" : "KH000",
-                  CUST_NAME: getCompany() === "CMS" ? "SEOJIN" : "PVN",
-                  CUST_NAME_KD: getCompany() === "CMS" ? "SEOJIN" : "PVN",
-                }}
-                value={{
-                  CUST_CD: selectedRows.CUST_CD,
-                  CUST_NAME: customerList.filter(
-                    (e: CustomerListData, index: number) =>
-                      e.CUST_CD === selectedRows.CUST_CD,
-                  )[0]?.CUST_NAME,
-                  CUST_NAME_KD:
-                    customerList.filter(
-                      (e: CustomerListData, index: number) =>
-                        e.CUST_CD === selectedRows.CUST_CD,
-                    )[0]?.CUST_NAME_KD === undefined
-                      ? ""
-                      : customerList.filter(
-                        (e: CustomerListData, index: number) =>
-                          e.CUST_CD === selectedRows.CUST_CD,
-                      )[0]?.CUST_NAME_KD,
-                }}
-                onChange={(event: any, newValue: any) => {
-                  console.log(newValue);
-                  seMaterialInfo(
-                    "CUST_CD",
-                    newValue === null ? "" : newValue.CUST_CD,
-                  );
-                }}
-              />
-            </label>
-          </FromInputColumn>
-          <FromInputColumn>
-            <label>
-              <b>Mô tả:</b>{" "}
+              <b>Code ERP:</b>{" "}
               <input
                 type="text"
-                placeholder="Mô tả"
-                value={selectedRows?.DESCR}
-                onChange={(e) => seMaterialInfo("DESCR", e.target.value)}
-              ></input>
-            </label>
-            <label>
-              <b>Open Price:</b>{" "}
-              <input
-                type="text"
-                placeholder="Mô tả"
-                value={selectedRows?.SSPRICE}
-                onChange={(e) => seMaterialInfo("SSPRICE", e.target.value)}
+                placeholder="Code hàng"
+                value={selectedRows?.G_CODE}
+                onKeyDown={(e) => {
+                  handleSearchCodeKeyDown(e);
+                }}
+                onChange={(e) => setOQCFormInfo("G_CODE", e.target.value)}
               ></input>
             </label>
           </FromInputColumn>
           <FromInputColumn>
             <label>
-              <b>Origin Price:</b>{" "}
+              <b>YCSX:</b>{" "}
               <input
                 type="text"
-                placeholder="Mô tả"
-                value={selectedRows?.CMSPRICE}
-                onChange={(e) => seMaterialInfo("CMSPRICE", e.target.value)}
+                placeholder="YCSX"
+                value={selectedRows?.PROD_REQUEST_NO}
+                onKeyDown={(e) => {
+                  handleSearchCodeKeyDown(e);
+                }}
+                onChange={(e) => setOQCFormInfo("PROD_REQUEST_NO", e.target.value)}
               ></input>
             </label>
             <label>
-              <b>Slitting Price:</b>{" "}
+              <b>Khách hàng:</b>{" "}
               <input
                 type="text"
-                placeholder="Mô tả"
-                value={selectedRows?.SLITTING_PRICE}
-                onChange={(e) =>
-                  seMaterialInfo("SLITTING_PRICE", e.target.value)
-                }
+                placeholder="Khách hàng"
+                value={selectedRows?.CUST_NAME_KD}
+                onKeyDown={(e) => {
+                  handleSearchCodeKeyDown(e);
+                }}
+                onChange={(e) => setOQCFormInfo("CUST_NAME_KD", e.target.value)}
               ></input>
-            </label>
-          </FromInputColumn>
-          <FromInputColumn>
-            <label>
-              <b>Master Width:</b>{" "}
-              <input
-                type="text"
-                placeholder="Master width"
-                value={selectedRows?.MASTER_WIDTH}
-                onChange={(e) =>
-                  seMaterialInfo("MASTER_WIDTH", e.target.value)
-                }
-              ></input>
-            </label>
-            <label>
-              <b>Roll Length:</b>{" "}
-              <input
-                type="text"
-                placeholder="Roll length"
-                value={selectedRows?.ROLL_LENGTH}
-                onChange={(e) =>
-                  seMaterialInfo("ROLL_LENGTH", e.target.value)
-                }
-              ></input>
-            </label>
-            <label>
-              <FormControlLabel
-                label="Mở/Khóa"
-                control={
-                  <Checkbox
-                    checked={selectedRows?.USE_YN === "Y"}
-                    onChange={(e) => {
-                      seMaterialInfo(
-                        "USE_YN",
-                        e.target.checked === true ? "Y" : "N",
-                      );
-                    }}
-                    inputProps={{ "aria-label": "controlled" }}
-                  />
-                }
-              />
             </label>
           </FromInputColumn>
         </FromInputDiv>
         <FormButtonColumn>
           <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#129232' }} onClick={() => {
-            load_material_table();
-          }}>Refesh</Button>
-          <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#f05bd7' }} onClick={() => {
-            addMaterial();
-          }}>Add</Button>
-          <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#ec9d52' }} onClick={() => {
-            updateMaterial();
-          }}>Update</Button>
+            load_oqc_data();
+          }}>Load</Button>
         </FormButtonColumn>
       </QueryFormDiv>
       <DataTBDiv>
@@ -1161,4 +674,4 @@ const OQC_DATA = () => {
     </DataDiv>
   );
 };
-export default OQC_DATA;
+export default OQC_DATA_TB;

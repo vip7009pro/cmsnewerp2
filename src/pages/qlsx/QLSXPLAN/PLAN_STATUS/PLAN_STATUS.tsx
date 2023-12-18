@@ -103,11 +103,11 @@ const PLAN_STATUS = () => {
   useEffect(() => {
     getMachineList();
     handle_loadplanStatus();
-    let intervalID = window.setInterval(() => {
+  /*   let intervalID = window.setInterval(() => {
       handle_loadplanStatus();
-    }, 3000);
+    }, 10000); */
     return () => {
-      window.clearInterval(intervalID);
+      //window.clearInterval(intervalID);
     };
   }, []);
   return (

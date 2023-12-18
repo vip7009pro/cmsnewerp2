@@ -35,7 +35,6 @@ import {
   INSPECT_NG_DATA,
   INSPECT_OUTPUT_DATA,
 } from "../../../api/GlobalInterface";
-
 const INSPECTION = () => {
   const [showhidePivotTable, setShowHidePivotTable] = useState(false);
   const [readyRender, setReadyRender] = useState(false);
@@ -103,6 +102,8 @@ const INSPECTION = () => {
       },
     },
     { field: "PROCESS_LOT_NO", headerName: "LOT SX", width: 80 },
+    { field: "M_LOT_NO", headerName: "M_LOT_NO", width: 100 },
+    { field: "LOTNCC", headerName: "LOTNCC", width: 100 },
     { field: "PROD_DATETIME", headerName: "NGÀY SX", width: 150 },
     {
       field: "INPUT_QTY_KG",
@@ -186,6 +187,8 @@ const INSPECTION = () => {
         }
       },
     },
+    { field: "M_LOT_NO", headerName: "M_LOT_NO", width: 100 },
+    { field: "LOTNCC", headerName: "LOTNCC", width: 100 },
   ];
   const column_inspect_inoutycsx = [
     { field: "PIC_KD", headerName: "PIC_KD", width: 150 },
@@ -289,7 +292,8 @@ const INSPECTION = () => {
     { field: "G_NAME", headerName: "Code full", width: 150 },
     { field: "G_CODE", headerName: "G_CODE", width: 80 },
     { field: "PROD_TYPE", headerName: "PROD_TYPE", width: 80 },
-    { field: "M_LOT_NO", headerName: "LOT VL", width: 80 },
+    { field: "M_LOT_NO", headerName: "LOT VL", width: 100 },
+    { field: "LOTNCC", headerName: "LOTNCC", width: 100 },
     { field: "M_NAME", headerName: "M_NAME", width: 120 },
     { field: "WIDTH_CD", headerName: "WIDTH_CD", width: 80 },
     { field: "INSPECTOR", headerName: "INSPECTOR", width: 80 },
@@ -320,38 +324,38 @@ const INSPECTION = () => {
     { field: "MATERIAL_NG_QTY", headerName: "NG MATERIAL", width: 100 },
     { field: "PROCESS_NG_QTY", headerName: "NG PROCESS", width: 100 },
     { field: "PROD_PRICE", headerName: "PROD_PRICE", width: 100 },
-    { field: "ERR1", headerName: "ERR1", width: 80 },
-    { field: "ERR2", headerName: "ERR2", width: 80 },
-    { field: "ERR3", headerName: "ERR3", width: 80 },
-    { field: "ERR4", headerName: "ERR4", width: 80 },
-    { field: "ERR5", headerName: "ERR5", width: 80 },
-    { field: "ERR6", headerName: "ERR6", width: 80 },
-    { field: "ERR7", headerName: "ERR7", width: 80 },
-    { field: "ERR8", headerName: "ERR8", width: 80 },
-    { field: "ERR9", headerName: "ERR9", width: 80 },
-    { field: "ERR10", headerName: "ERR10", width: 80 },
-    { field: "ERR11", headerName: "ERR11", width: 80 },
-    { field: "ERR12", headerName: "ERR12", width: 80 },
-    { field: "ERR13", headerName: "ERR13", width: 80 },
-    { field: "ERR14", headerName: "ERR14", width: 80 },
-    { field: "ERR15", headerName: "ERR15", width: 80 },
-    { field: "ERR16", headerName: "ERR16", width: 80 },
-    { field: "ERR17", headerName: "ERR17", width: 80 },
-    { field: "ERR18", headerName: "ERR18", width: 80 },
-    { field: "ERR19", headerName: "ERR19", width: 80 },
-    { field: "ERR20", headerName: "ERR20", width: 80 },
-    { field: "ERR21", headerName: "ERR21", width: 80 },
-    { field: "ERR22", headerName: "ERR22", width: 80 },
-    { field: "ERR23", headerName: "ERR23", width: 80 },
-    { field: "ERR24", headerName: "ERR24", width: 80 },
-    { field: "ERR25", headerName: "ERR25", width: 80 },
-    { field: "ERR26", headerName: "ERR26", width: 80 },
-    { field: "ERR27", headerName: "ERR27", width: 80 },
-    { field: "ERR28", headerName: "ERR28", width: 80 },
-    { field: "ERR29", headerName: "ERR29", width: 80 },
-    { field: "ERR30", headerName: "ERR30", width: 80 },
-    { field: "ERR31", headerName: "ERR31", width: 80 },
-    { field: "ERR32", headerName: "ERR32", width: 80 },
+    { field: "ERR1", headerName: "ERR1", width: 60 },
+    { field: "ERR2", headerName: "ERR2", width: 60 },
+    { field: "ERR3", headerName: "ERR3", width: 60 },
+    { field: "ERR4", headerName: "ERR4", width: 60 },
+    { field: "ERR5", headerName: "ERR5", width: 60 },
+    { field: "ERR6", headerName: "ERR6", width: 60 },
+    { field: "ERR7", headerName: "ERR7", width: 60 },
+    { field: "ERR8", headerName: "ERR8", width: 60 },
+    { field: "ERR9", headerName: "ERR9", width: 60 },
+    { field: "ERR10", headerName: "ERR10", width: 60 },
+    { field: "ERR11", headerName: "ERR11", width: 60 },
+    { field: "ERR12", headerName: "ERR12", width: 60 },
+    { field: "ERR13", headerName: "ERR13", width: 60 },
+    { field: "ERR14", headerName: "ERR14", width: 60 },
+    { field: "ERR15", headerName: "ERR15", width: 60 },
+    { field: "ERR16", headerName: "ERR16", width: 60 },
+    { field: "ERR17", headerName: "ERR17", width: 60 },
+    { field: "ERR18", headerName: "ERR18", width: 60 },
+    { field: "ERR19", headerName: "ERR19", width: 60 },
+    { field: "ERR20", headerName: "ERR20", width: 60 },
+    { field: "ERR21", headerName: "ERR21", width: 60 },
+    { field: "ERR22", headerName: "ERR22", width: 60 },
+    { field: "ERR23", headerName: "ERR23", width: 60 },
+    { field: "ERR24", headerName: "ERR24", width: 60 },
+    { field: "ERR25", headerName: "ERR25", width: 60 },
+    { field: "ERR26", headerName: "ERR26", width: 60 },
+    { field: "ERR27", headerName: "ERR27", width: 60 },
+    { field: "ERR28", headerName: "ERR28", width: 60 },
+    { field: "ERR29", headerName: "ERR29", width: 60 },
+    { field: "ERR30", headerName: "ERR30", width: 60 },
+    { field: "ERR31", headerName: "ERR31", width: 60 },
+    { field: "ERR32", headerName: "ERR32", width: 60 },
     { field: "CNDB_ENCODES", headerName: "CNDB_ENCODES", width: 150 },
   ];
   const [columnDefinition, setColumnDefinition] =
@@ -435,7 +439,6 @@ const INSPECTION = () => {
               store: loadeddata,
             }),
           );
-
           setReadyRender(true);
           setisLoading(false);
           Swal.fire(
@@ -2505,7 +2508,7 @@ const INSPECTION = () => {
             </div>
           </div>
           <div className="formbutton">
-          <label>
+            <label>
               <b>All Time:</b>
               <input
                 type="checkbox"
@@ -2514,33 +2517,32 @@ const INSPECTION = () => {
                 onChange={() => setAllTime(!alltime)}
               ></input>
             </label>
-
           </div>
-          <div className="formbutton">   
-          <Button color={'success'} variant="contained" size="small"  fullWidth={true} sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#36da59' }} onClick={() => {
-         setisLoading(true);
-         setReadyRender(false);
-         setColumnDefinition(column_inspect_input);
-         handletraInspectionInput();
-        }}>Nhập Kiểm</Button>
-          <Button color={'success'} variant="contained" size="small"  fullWidth={true} sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#fac83f' }} onClick={() => {
-         setisLoading(true);
-         setReadyRender(false);
-         setColumnDefinition(column_inspect_output);
-         handletraInspectionOutput();
-        }}> Xuất Kiểm</Button>
-          <Button color={'success'} variant="contained" size="small"  fullWidth={true} sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#52aeeb' }} onClick={() => {
-         setisLoading(true);
-         setReadyRender(false);
-         setColumnDefinition(column_inspect_inoutycsx);
-         handletraInspectionInOut();
-        }}> Nhập-Xuất</Button>
-          <Button color={'success'} variant="contained" size="small"  fullWidth={true} sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#df73fa' }} onClick={() => {
-        setisLoading(true);
-        setReadyRender(false);
-        setColumnDefinition(column_inspection_NG);
-        handletraInspectionNG();
-        }}> Nhật Ký KT</Button>           
+          <div className="formbutton">
+            <Button color={'success'} variant="contained" size="small" fullWidth={true} sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#36da59' }} onClick={() => {
+              setisLoading(true);
+              setReadyRender(false);
+              setColumnDefinition(column_inspect_input);
+              handletraInspectionInput();
+            }}>Nhập Kiểm</Button>
+            <Button color={'success'} variant="contained" size="small" fullWidth={true} sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#fac83f' }} onClick={() => {
+              setisLoading(true);
+              setReadyRender(false);
+              setColumnDefinition(column_inspect_output);
+              handletraInspectionOutput();
+            }}> Xuất Kiểm</Button>
+            <Button color={'success'} variant="contained" size="small" fullWidth={true} sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#52aeeb' }} onClick={() => {
+              setisLoading(true);
+              setReadyRender(false);
+              setColumnDefinition(column_inspect_inoutycsx);
+              handletraInspectionInOut();
+            }}> Nhập-Xuất</Button>
+            <Button color={'success'} variant="contained" size="small" fullWidth={true} sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#df73fa' }} onClick={() => {
+              setisLoading(true);
+              setReadyRender(false);
+              setColumnDefinition(column_inspection_NG);
+              handletraInspectionNG();
+            }}> Nhật Ký KT</Button>
           </div>
         </div>
         <div className="tracuuYCSXTable">
