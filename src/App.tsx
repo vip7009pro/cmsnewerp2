@@ -27,6 +27,7 @@ import "./App.css";
 import FallBackComponent from "./components/Fallback/FallBackComponent";
 import { Button } from "@mui/material";
 import { UserData } from "./api/GlobalInterface";
+import LICHSUTEMLOTSX from "./pages/sx/LICHSUTEMLOTSX/LICHSUTEMLOTSX";
 const Login = React.lazy(() => import("./pages/login/Login"));
 const PivotChart = React.lazy(() => import("./components/PivotChart/PivotChart"));
 const BAOCAOTHEOROLL = lazy(
@@ -905,6 +906,18 @@ function App() {
                               jobname='Leader'
                             >
                               <LICHSUINPUTLIEU />
+                            </ProtectedRoute>
+                          }
+                        />
+                        <Route
+                          path='lichsutemlotsx'
+                          element={
+                            <ProtectedRoute
+                              user={globalUserData}
+                              maindeptname='all'
+                              jobname='Leader'
+                            >
+                              <LICHSUTEMLOTSX />
                             </ProtectedRoute>
                           }
                         />

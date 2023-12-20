@@ -101,6 +101,7 @@ import EQ_STATUS2 from "../../pages/qlsx/QLSXPLAN/EQ_STATUS/EQ_STATUS2";
 import NavMenu from "../NavMenu/NavMenu";
 import TINHLIEU from "../../pages/muahang/tinhlieu/TINHLIEU";
 import BAOCAOTHEOROLL from "../../pages/sx/BAOCAOTHEOROLL/BAOCAOTHEOROLL";
+import LICHSUTEMLOTSX from "../../pages/sx/LICHSUTEMLOTSX/LICHSUTEMLOTSX";
 
 /* 
 const KIEMTRA= lazy(()=> import('../../pages/qc/inspection/KIEMTRA'));
@@ -517,6 +518,11 @@ export default function Navbar() {
       MENU_CODE: "SX13",
       MENU_NAME: getlang("sxrolldata", lang),
       MENU_ITEM: <BAOCAOTHEOROLL />,
+    },
+    {
+      MENU_CODE: "SX14",
+      MENU_NAME: getlang("lichsutemlotsx", lang),
+      MENU_ITEM: <LICHSUTEMLOTSX />,
     },
     {
       MENU_CODE: "SX11",

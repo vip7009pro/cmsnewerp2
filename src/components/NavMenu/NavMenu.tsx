@@ -12,6 +12,7 @@ import {
     FcServices,
 } from "react-icons/fc";
 import "./NavMenu.scss";
+import { GiPostStamp } from "react-icons/gi";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import HomeIcon from "@mui/icons-material/Home";
@@ -148,6 +149,7 @@ import { ELE_ARRAY, } from "../../api/GlobalInterface";
 import EQ_STATUS2 from "../../pages/qlsx/QLSXPLAN/EQ_STATUS/EQ_STATUS2";
 import TINHLIEU from "../../pages/muahang/tinhlieu/TINHLIEU";
 import BAOCAOTHEOROLL from "../../pages/sx/BAOCAOTHEOROLL/BAOCAOTHEOROLL";
+import LICHSUTEMLOTSX from "../../pages/sx/LICHSUTEMLOTSX/LICHSUTEMLOTSX";
 interface MENU_LIST_DATA {
     MENU_CODE: string;
     MENU_NAME: string;
@@ -614,6 +616,13 @@ const NavMenu = () => {
                     cName: "sub-nav",
                 },
                 {
+                    title: getlang("lichsutemlotsx", lang),
+                    path: "sx/lichsutemlotsx",
+                    icon: <GiPostStamp  color="#cea70e" size={20} />,
+                    MENU_CODE: "SX14",
+                    cName: "sub-nav",
+                },
+                {
                     title: getlang("materiallotstatus", lang),
                     path: "sx/materiallotstatus",
                     icon: <FaScroll color="black" size={20} />,
@@ -990,6 +999,11 @@ const NavMenu = () => {
             MENU_CODE: "SX13",
             MENU_NAME: getlang("sxrolldata", lang),
             MENU_ITEM: <BAOCAOTHEOROLL />,
+        },
+        {
+            MENU_CODE: "SX14",
+            MENU_NAME: getlang("lichsutemlotsx", lang),
+            MENU_ITEM: <LICHSUTEMLOTSX />,
         },
         {
             MENU_CODE: "SX11",
