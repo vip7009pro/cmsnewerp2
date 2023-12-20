@@ -23,7 +23,7 @@ import { addTab, closeTab, settabIndex } from "../../redux/slices/globalSlice";
 import AccountInfo from "../../components/Navbar/AccountInfo/AccountInfo";
 import styled from "@emotion/styled";
 import Cookies from "universal-cookie";
-export const current_ver: number = 288;
+export const current_ver: number = 289;
 interface ELE_ARRAY {
   REACT_ELE: ReactElement;
   ELE_NAME: string;
@@ -52,7 +52,6 @@ function Home() {
     from: { x: 1000, y: 100 },
     to: { x: 0, y: 0 },
   });
-  const [licenseFailCount, setLicenseFailCount] = useState(0);
   const failCount = useRef(0);
   const [checkVerWeb, setCheckVerWeb] = useState(1);
   const updatechamcongdiemdanh = () => {

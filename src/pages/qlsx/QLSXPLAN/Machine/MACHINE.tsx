@@ -88,6 +88,7 @@ import {
   YCSXTableData,
 } from "../../../../api/GlobalInterface";
 import { trigger } from "devextreme/events";
+import CHECKSHEETSX from "../CHITHI/CHECKSHEETSX";
 export const checkEQvsPROCESS = (
   EQ1: string,
   EQ2: string,
@@ -108,6 +109,10 @@ export const checkEQvsPROCESS = (
 export const renderChiThi = (planlist: QLSXPLANDATA[]) => {
   return planlist.map((element, index) => (
     <CHITHI_COMPONENT key={index} DATA={element} />
+   /*  <>
+    <CHITHI_COMPONENT key={index} DATA={element} />
+    <CHECKSHEETSX key={index+'A'} DATA={element}/>
+    </> */
   ));
 };
 export const renderChiThi2 = (planlist: QLSXPLANDATA[]) => {

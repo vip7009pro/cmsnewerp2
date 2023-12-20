@@ -1057,8 +1057,8 @@ export const FromInputColumn = styled.div`
   }
 `;
 export const FormButtonColumn = styled.div`
-  display: flex;
-  flex-direction: row;
+  display: flex;  
+  flex-direction: column;
   font-size: 0.6rem;
   gap: 20px;
 `;

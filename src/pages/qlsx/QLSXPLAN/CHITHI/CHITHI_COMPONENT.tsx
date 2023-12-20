@@ -130,7 +130,7 @@ const CHITHI_COMPONENT = ({ DATA }: { DATA: QLSXPLANDATA }) => {
           for (let i = 0; i < response.data.data.length; i++) {
             if (
               response.data.data[i].PROD_MAIN_MATERIAL ===
-                response.data.data[i].M_NAME &&
+              response.data.data[i].M_NAME &&
               response.data.data[i].LIEUQL_SX === 1
             ) {
               setCheckLieuChinh(true);
@@ -253,7 +253,7 @@ const CHITHI_COMPONENT = ({ DATA }: { DATA: QLSXPLANDATA }) => {
     EQ2: string,
     EQ3: string,
     EQ4: string,
-  ) => {   
+  ) => {
     let maxprocess: number = 0;
     if (["NA", "NO", "", null].indexOf(EQ1) === -1) maxprocess++;
     if (["NA", "NO", "", null].indexOf(EQ2) === -1) maxprocess++;
@@ -511,7 +511,7 @@ const CHITHI_COMPONENT = ({ DATA }: { DATA: QLSXPLANDATA }) => {
                 lineColor="black"
                 margin={0}
               />
-              ({DATA.PLAN_ID}) - {DATA.IS_SETTING ==='Y'? 'CÓ SETTING': 'KHÔNG SETTING'}
+              ({DATA.PLAN_ID}) - {DATA.IS_SETTING === 'Y' ? 'CÓ SETTING' : 'KHÔNG SETTING'}
             </div>
             <div className="thongtinyeucau">
               <table className="ttyc1">
@@ -528,23 +528,23 @@ const CHITHI_COMPONENT = ({ DATA }: { DATA: QLSXPLANDATA }) => {
                       {DATA.PROCESS_NUMBER === 1
                         ? request_codeinfo[0]?.EQ1
                         : DATA.PROCESS_NUMBER === 2
-                        ? request_codeinfo[0]?.EQ2
-                        : DATA.PROCESS_NUMBER === 3
-                        ? request_codeinfo[0]?.EQ3
-                        : DATA.PROCESS_NUMBER === 4
-                        ? request_codeinfo[0]?.EQ4
-                        : ""}
+                          ? request_codeinfo[0]?.EQ2
+                          : DATA.PROCESS_NUMBER === 3
+                            ? request_codeinfo[0]?.EQ3
+                            : DATA.PROCESS_NUMBER === 4
+                              ? request_codeinfo[0]?.EQ4
+                              : ""}
                     </td>
                     <td>
                       {DATA.PROCESS_NUMBER === 1
                         ? request_codeinfo[0]?.Setting1
                         : DATA.PROCESS_NUMBER === 2
-                        ? request_codeinfo[0]?.Setting2
-                        : DATA.PROCESS_NUMBER === 3
-                        ? request_codeinfo[0]?.Setting3
-                        : DATA.PROCESS_NUMBER === 4
-                        ? request_codeinfo[0]?.Setting4
-                        : ""}{" "}
+                          ? request_codeinfo[0]?.Setting2
+                          : DATA.PROCESS_NUMBER === 3
+                            ? request_codeinfo[0]?.Setting3
+                            : DATA.PROCESS_NUMBER === 4
+                              ? request_codeinfo[0]?.Setting4
+                              : ""}{" "}
                       minutes
                     </td>
                   </tr>
@@ -554,34 +554,34 @@ const CHITHI_COMPONENT = ({ DATA }: { DATA: QLSXPLANDATA }) => {
                       {DATA.PROCESS_NUMBER === 1
                         ? request_codeinfo[0]?.EQ1
                         : DATA.PROCESS_NUMBER === 2
-                        ? request_codeinfo[0]?.EQ2
-                        : DATA.PROCESS_NUMBER === 3
-                        ? request_codeinfo[0]?.EQ3
-                        : DATA.PROCESS_NUMBER === 4
-                        ? request_codeinfo[0]?.EQ4
-                        : ""}
+                          ? request_codeinfo[0]?.EQ2
+                          : DATA.PROCESS_NUMBER === 3
+                            ? request_codeinfo[0]?.EQ3
+                            : DATA.PROCESS_NUMBER === 4
+                              ? request_codeinfo[0]?.EQ4
+                              : ""}
                     </td>
                     <td>
                       {DATA.PROCESS_NUMBER === 1
                         ? request_codeinfo[0]?.UPH1
                         : DATA.PROCESS_NUMBER === 2
-                        ? request_codeinfo[0]?.UPH2
-                        : DATA.PROCESS_NUMBER === 3
-                        ? request_codeinfo[0]?.UPH3
-                        : DATA.PROCESS_NUMBER === 4
-                        ? request_codeinfo[0]?.UPH4
-                        : 0}
+                          ? request_codeinfo[0]?.UPH2
+                          : DATA.PROCESS_NUMBER === 3
+                            ? request_codeinfo[0]?.UPH3
+                            : DATA.PROCESS_NUMBER === 4
+                              ? request_codeinfo[0]?.UPH4
+                              : 0}
                       EA/h -{" "}
                       {(DATA.PLAN_QTY /
                         (DATA.PROCESS_NUMBER === 1
                           ? request_codeinfo[0]?.UPH1
                           : DATA.PROCESS_NUMBER === 2
-                          ? request_codeinfo[0]?.UPH2
-                          : DATA.PROCESS_NUMBER === 3
-                          ? request_codeinfo[0]?.UPH3
-                          : DATA.PROCESS_NUMBER === 4
-                          ? request_codeinfo[0]?.UPH4
-                          : 0)) *
+                            ? request_codeinfo[0]?.UPH2
+                            : DATA.PROCESS_NUMBER === 3
+                              ? request_codeinfo[0]?.UPH3
+                              : DATA.PROCESS_NUMBER === 4
+                                ? request_codeinfo[0]?.UPH4
+                                : 0)) *
                         60}{" "}
                       minutes
                     </td>
@@ -651,16 +651,16 @@ const CHITHI_COMPONENT = ({ DATA }: { DATA: QLSXPLANDATA }) => {
               {request_codeinfo[0].CODE_50 === "01"
                 ? "GC"
                 : request_codeinfo[0].CODE_50 === "02"
-                ? "SK"
-                : request_codeinfo[0].CODE_50 === "03"
-                ? "KD"
-                : request_codeinfo[0].CODE_50 === "04"
-                ? "VN"
-                : request_codeinfo[0].CODE_50 === "05"
-                ? "SAMPLE"
-                : request_codeinfo[0].CODE_50 === "06"
-                ? "Vai bac 4"
-                : "ETC"}
+                  ? "SK"
+                  : request_codeinfo[0].CODE_50 === "03"
+                    ? "KD"
+                    : request_codeinfo[0].CODE_50 === "04"
+                      ? "VN"
+                      : request_codeinfo[0].CODE_50 === "05"
+                        ? "SAMPLE"
+                        : request_codeinfo[0].CODE_50 === "06"
+                          ? "Vai bac 4"
+                          : "ETC"}
               )
               <Barcode
                 value={`${DATA.PLAN_ID}`}

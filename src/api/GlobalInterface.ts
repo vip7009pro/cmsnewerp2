@@ -1014,34 +1014,36 @@ export interface EmployeeTableData {
 }
 //CS data
 export interface CSCONFIRM_DATA {
-  YEAR_WEEK: string;
-  CONFIRM_ID: number;
-  CONFIRM_DATE: string;
-  CONTACT_ID: number;
-  CS_EMPL_NO: string;
-  EMPL_NAME: string;
-  G_CODE: string;
-  G_NAME: string;
-  G_NAME_KD: string;
-  PROD_REQUEST_NO: string;
-  CUST_CD: string;
-  CUST_NAME_KD: string;
-  CONTENT: string;
-  INSPECT_QTY: number;
-  NG_QTY: number;
-  REPLACE_RATE: number;
-  REDUCE_QTY: number;
-  FACTOR: number;
-  RESULT: string;
-  CONFIRM_STATUS: string;
-  REMARK: string;
-  INS_DATETIME: string;
-  PHANLOAI: string;
-  LINK: string;
-  PROD_TYPE: string;
-  PROD_MODEL: string;
-  PROD_PROJECT: string;
-  PROD_LAST_PRICE: number;
+  YEAR_WEEK: string,
+  CONFIRM_ID: number,
+  CONFIRM_DATE: string,
+  CONTACT_ID: number,
+  CS_EMPL_NO: string,
+  EMPL_NAME: string,
+  G_CODE: string,
+  G_NAME: string,
+  G_NAME_KD: string,
+  PROD_REQUEST_NO: string,
+  CUST_CD: string,
+  CUST_NAME_KD: string,
+  CONTENT: string,
+  INSPECT_QTY: number,
+  NG_QTY: number,
+  REPLACE_RATE: number,
+  REDUCE_QTY: number,
+  FACTOR: string,
+  RESULT: string,
+  CONFIRM_STATUS: string,
+  REMARK: string,
+  INS_DATETIME: string,
+  PHANLOAI: string,
+  LINK: string,
+  PROD_TYPE: string,
+  PROD_MODEL: string,
+  PROD_PROJECT: string,
+  PROD_LAST_PRICE: number,
+  REDUCE_AMOUNT: number,
+
 }
 //DTC data
 export interface DTC_ADD_SPEC_DATA {
@@ -3075,4 +3077,68 @@ export interface OQC_DATA{
   SAMPLE_NG_AMOUNT: number,
   REMARK: string,
   RUNNING_COUNT: number,
+}
+export interface CS_RMA_DATA {
+  RMA_ID: number,
+  CONFIRM_ID: number,
+  G_NAME_KD: string,
+  RETURN_DATE: string,
+  PROD_REQUEST_NO: string,
+  G_CODE: string,
+  RMA_TYPE: string,
+  RMA_EMPL_NO: string,
+  INS_DATETIME: string,
+  FACTORY: string,
+  RETURN_QTY: number,
+  SORTING_OK_QTY: number,
+  SORTING_NG_QTY: number,
+  RMA_DELIVERY_QTY: number,
+  PROD_LAST_PRICE: number,
+  RETURN_AMOUNT: number,
+  SORTING_OK_AMOUNT: number,
+  SORTING_NG_AMOUNT: number,
+  G_NAME: string,
+  PROD_TYPE: string,
+  PROD_MODEL: string,
+  CONFIRM_DATE: string,
+  CS_EMPL_NO: string,
+  CONTENT: string,
+  INSPECT_QTY: number,
+  NG_QTY: number,
+  REPLACE_RATE: number,
+  REDUCE_QTY: number,
+}
+export interface CS_CNDB_DATA {
+  SA_ID: number,
+  SA_REQUEST_DATE: string,
+  CONTACT_ID: number,
+  CS_EMPL_NO: string,
+  G_CODE: string,
+  G_NAME: string,
+  CUST_NAME_KD: string,
+  PROD_REQUEST_NO: string,
+  REQUEST_DATETIME: string,
+  CONTENT: string,
+  SA_QTY: number,
+  RESULT: string,
+  SA_STATUS: string,
+  SA_REMARK: string,
+  INS_DATETIME: string,
+  SA_CUST_CD: string,
+}
+export interface CS_TAXI_DATA {
+  TAXI_ID: number,
+  CONFIRM_ID: number,
+  SA_ID: number,
+  CHIEU: number,
+  CONG_VIEC: string,
+  TAXI_DATE: string,
+  TAXI_SHIFT: string,
+  CS_EMPL_NO: string,
+  DIEM_DI: string,
+  DIEM_DEN: string,
+  TAXI_AMOUNT: number,
+  TRANSPORTATION: string,
+  TAXI_REMARK: string,
+  INS_DATETIME: string,
 }

@@ -33,100 +33,219 @@ import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
 import {
   CustomerListData,
   CSCONFIRM_DATA,
+  CS_RMA_DATA,
+  CS_CNDB_DATA,
+  CS_TAXI_DATA,
 } from "../../../api/GlobalInterface";
 import { DataDiv, DataTBDiv, FormButtonColumn, FromInputColumn, FromInputDiv, PivotTableDiv, QueryFormDiv } from "../../../components/StyledComponents/ComponentLib";
 const CS_DATA_TB = () => {
-  const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
-  const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));
+  const [option, setOption] = useState("dataconfirm");
   const [showhidePivotTable, setShowHidePivotTable] = useState(false);
-  const [oqc_table_data, set_oqc_table_data] = useState<Array<CSCONFIRM_DATA>>([]);
-  const [selectedRows, setSelectedRows] = useState<CSCONFIRM_DATA>({
-    CONFIRM_DATE:'',
-    CONFIRM_ID:0,
-    CONFIRM_STATUS:'',
-    CONTACT_ID:0,
-    CONTENT:'',
-    CS_EMPL_NO:'',
-    CUST_CD:'',
-    CUST_NAME_KD:'',
-    EMPL_NAME:'',
-    FACTOR:0,
-    G_CODE:'',
-    G_NAME:'',
-    G_NAME_KD:'',
-    INS_DATETIME:'',
-    INSPECT_QTY:0,
-    LINK:'',
+  const [cs_table_data, set_cs_table_data] = useState<Array<CSCONFIRM_DATA>>([]);
+  const [cs_rma_table_data, set_cs_rma_table_data] = useState<Array<CS_RMA_DATA>>([]);
+  const [cs_cndb_table_data, set_cs_cndb_table_data] = useState<Array<CS_CNDB_DATA>>([]);
+  const [cs_taxi_table_data, set_cs_taxi_table_data] = useState<Array<CS_TAXI_DATA>>([]);
+  const [filterData, setFilterData] = useState({
+    FROM_DATE: moment().format("YYYY-MM-DD"),
+    TO_DATE: moment().format("YYYY-MM-DD"),
+    CONFIRM_DATE: '',
+    CONFIRM_ID: 0,
+    CONFIRM_STATUS: '',
+    CONTACT_ID: 0,
+    CONTENT: '',
+    CS_EMPL_NO: '',
+    CUST_CD: '',
+    CUST_NAME_KD: '',
+    EMPL_NAME: '',
+    FACTOR: '',
+    G_CODE: '',
+    G_NAME: '',
+    G_NAME_KD: '',
+    INS_DATETIME: '',
+    INSPECT_QTY: 0,
+    LINK: '',
     NG_QTY: 0,
-    PHANLOAI:'',
-    PROD_LAST_PRICE:0,
-    PROD_MODEL:'',
-    PROD_PROJECT:'',
-    PROD_REQUEST_NO:'',
-    PROD_TYPE:'',
-    REDUCE_QTY:0,
-    REMARK:'',
-    REPLACE_RATE:0,
-    RESULT:'',
-    YEAR_WEEK: ''
+    PHANLOAI: '',
+    PROD_LAST_PRICE: 0,
+    PROD_MODEL: '',
+    PROD_PROJECT: '',
+    PROD_REQUEST_NO: '',
+    PROD_TYPE: '',
+    REDUCE_QTY: 0,
+    REMARK: '',
+    REPLACE_RATE: 0,
+    RESULT: '',
+    YEAR_WEEK: '',
+    REDUCE_AMOUNT: 0
   });
-  const load_oqc_data = () => {
-    generalQuery("traOQCData", {
-      CUST_NAME_KD: selectedRows.CUST_NAME_KD,
-      PROD_REQUEST_NO: selectedRows.PROD_REQUEST_NO,
-      G_NAME: selectedRows.G_NAME,
-      G_CODE: selectedRows.G_CODE,
-      FROM_DATE: fromdate,
-      TO_DATE: todate
-    })
-      .then((response) => {
-        //console.log(response.data.data);
-        if (response.data.tk_status !== "NG") {
-          let loadeddata = response.data.data.map(
-            (element: CSCONFIRM_DATA, index: number) => {
-              return {
-                ...element,
-                DELIVERY_DATE: moment
-                  .utc(element.CONFIRM_DATE)
-                  .format("YYYY-MM-DD"),
-                id: index,
-              };
-            },
-          );
-          //console.log(loadeddata);
-          set_oqc_table_data(loadeddata);
-          Swal.fire(
-            "Thông báo",
-            "Đã load: " + response.data.data.length + " dòng",
-            "success",
-          );
-        } else {
-          set_oqc_table_data([]);
-          Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+  const load_cs_data = () => {
+    switch (option) {
+      case 'dataconfirm':
+        generalQuery("tracsconfirm", filterData)
+          .then((response) => {
+            //console.log(response.data.data);
+            if (response.data.tk_status !== "NG") {
+              let loadeddata = response.data.data.map(
+                (element: CSCONFIRM_DATA, index: number) => {
+                  return {
+                    ...element,
+                    CONFIRM_DATE: moment
+                      .utc(element.CONFIRM_DATE)
+                      .format("YYYY-MM-DD"),
+                    INS_DATETIME: moment
+                      .utc(element.INS_DATETIME)
+                      .format("YYYY-MM-DD HH:mm:ss"),
+                    id: index,
+                  };
+                },
+              );
+              //console.log(loadeddata);
+              set_cs_table_data(loadeddata);
+              Swal.fire(
+                "Thông báo",
+                "Đã load: " + response.data.data.length + " dòng",
+                "success",
+              );
+            } else {
+              set_cs_table_data([]);
+              Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+        break;
+      case 'datarma':
+        generalQuery("tracsrma", filterData)
+          .then((response) => {
+            //console.log(response.data.data);
+            if (response.data.tk_status !== "NG") {
+              let loadeddata = response.data.data.map(
+                (element: CS_RMA_DATA, index: number) => {
+                  return {
+                    ...element,
+                    CONFIRM_DATE: moment
+                      .utc(element.CONFIRM_DATE)
+                      .format("YYYY-MM-DD"),
+                    RETURN_DATE: moment
+                      .utc(element.RETURN_DATE)
+                      .format("YYYY-MM-DD"),
+                    INS_DATETIME: moment
+                      .utc(element.INS_DATETIME)
+                      .format("YYYY-MM-DD HH:mm:ss"),
+                    id: index,
+                  };
+                },
+              );
+              //console.log(loadeddata);
+              set_cs_rma_table_data(loadeddata);
+              Swal.fire(
+                "Thông báo",
+                "Đã load: " + response.data.data.length + " dòng",
+                "success",
+              );
+            } else {
+              set_cs_rma_table_data([]);
+              Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+        break;
+      case 'datacndbkhachhang':
+        generalQuery("tracsCNDB", filterData)
+          .then((response) => {
+            //console.log(response.data.data);
+            if (response.data.tk_status !== "NG") {
+              let loadeddata = response.data.data.map(
+                (element: CS_CNDB_DATA, index: number) => {
+                  return {
+                    ...element,
+                    SA_REQUEST_DATE: moment
+                      .utc(element.SA_REQUEST_DATE)
+                      .format("YYYY-MM-DD"),
+                    REQUEST_DATETIME: moment
+                      .utc(element.REQUEST_DATETIME)
+                      .format("YYYY-MM-DD"),
+                    INS_DATETIME: moment
+                      .utc(element.INS_DATETIME)
+                      .format("YYYY-MM-DD HH:mm:ss"),
+                    id: index,
+                  };
+                },
+              );
+              //console.log(loadeddata);
+              set_cs_cndb_table_data(loadeddata);
+              Swal.fire(
+                "Thông báo",
+                "Đã load: " + response.data.data.length + " dòng",
+                "success",
+              );
+            } else {
+              set_cs_cndb_table_data([]);
+              Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+        break;
+      case 'datataxi':
+        generalQuery("tracsTAXI", filterData)
+          .then((response) => {
+            //console.log(response.data.data);
+            if (response.data.tk_status !== "NG") {
+              let loadeddata = response.data.data.map(
+                (element: CS_TAXI_DATA, index: number) => {
+                  return {
+                    ...element,
+                    TAXI_DATE: moment
+                      .utc(element.TAXI_DATE)
+                      .format("YYYY-MM-DD"),
+                    INS_DATETIME: moment
+                      .utc(element.INS_DATETIME)
+                      .format("YYYY-MM-DD HH:mm:ss"),
+                    id: index,
+                  };
+                },
+              );
+              //console.log(loadeddata);
+              set_cs_taxi_table_data(loadeddata);
+              Swal.fire(
+                "Thông báo",
+                "Đã load: " + response.data.data.length + " dòng",
+                "success",
+              );
+            } else {
+              set_cs_taxi_table_data([]);
+              Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+        break;
+      default:
+        break;
+    }
   };
-  const setOQCFormInfo = (keyname: string, value: any) => {
-    console.log(keyname);
-    console.log(value);
-    let tempCustInfo: CSCONFIRM_DATA = {
-      ...selectedRows,
+  const setCSFormInfo = (keyname: string, value: any) => {
+    let tempCSInfo = {
+      ...filterData,
       [keyname]: value,
     };
     //console.log(tempcodefullinfo);
-    setSelectedRows(tempCustInfo);
+    setFilterData(tempCSInfo);
   };
   const handleSearchCodeKeyDown = (
     e: React.KeyboardEvent<HTMLInputElement>,
   ) => {
     if (e.key === "Enter") {
-      load_oqc_data();
+      load_cs_data();
     }
   };
-  const materialDataTable = React.useMemo(
+  const xacNhanDataTable = React.useMemo(
     () => (
       <CustomResponsiveContainer>
         <DataGrid
@@ -137,13 +256,13 @@ const CS_DATA_TB = () => {
           cellHintEnabled={true}
           columnResizingMode={"widget"}
           showColumnLines={true}
-          dataSource={oqc_table_data}
+          dataSource={cs_table_data}
           columnWidth="auto"
           keyExpr="id"
           height={"75vh"}
           showBorders={true}
           onSelectionChanged={(e) => {
-            //setSelectedRows(e.selectedRowsData[0]);
+            //setFilterData(e.selectedRowsData[0]);
           }}
           onRowClick={(e) => {
             //console.log(e.data);
@@ -171,7 +290,7 @@ const CS_DATA_TB = () => {
               <IconButton
                 className="buttonIcon"
                 onClick={() => {
-                  SaveExcel(oqc_table_data, "MaterialStatus");
+                  SaveExcel(cs_table_data, "CS Xac Nhan Table");
                 }}
               >
                 <AiFillFileExcel color="green" size={15} />
@@ -203,31 +322,62 @@ const CS_DATA_TB = () => {
             infoText="Page #{0}. Total: {1} ({2} items)"
             displayMode="compact"
           />
-          <Column dataField='OQC_ID' caption='OQC_ID' width={100}></Column>
-          <Column dataField='DELIVERY_DATE' caption='DELIVERY_DATE' width={100}></Column>
-          <Column dataField='SHIFT_CODE' caption='SHIFT_CODE' width={100}></Column>
-          <Column dataField='FACTORY_NAME' caption='FACTORY_NAME' width={100}></Column>
-          <Column dataField='FULL_NAME' caption='FULL_NAME' width={100}></Column>
-          <Column dataField='CUST_NAME_KD' caption='CUST_NAME_KD' width={100}></Column>
-          <Column dataField='PROD_REQUEST_NO' caption='PROD_REQUEST_NO' width={100}></Column>
-          <Column dataField='PROCESS_LOT_NO' caption='PROCESS_LOT_NO' width={100}></Column>
-          <Column dataField='M_LOT_NO' caption='M_LOT_NO' width={100}></Column>
-          <Column dataField='LOTNCC' caption='LOTNCC' width={100}></Column>
-          <Column dataField='LABEL_ID' caption='LABEL_ID' width={100}></Column>
-          <Column dataField='PROD_REQUEST_DATE' caption='PROD_REQUEST_DATE' width={100}></Column>
-          <Column dataField='PROD_REQUEST_QTY' caption='PROD_REQUEST_QTY' width={100}></Column>
+          <Column dataField='YEAR_WEEK' caption='YEAR_WEEK' width={80}></Column>
+          <Column dataField='CONFIRM_ID' caption='CF_ID' width={80}></Column>
+          <Column dataField='CONFIRM_DATE' caption='CF_DATE' width={80}></Column>
+          <Column dataField='CONTACT_ID' caption='CONTACT_ID' width={100}></Column>
+          <Column dataField='CS_EMPL_NO' caption='CS_EMPL_NO' width={100}></Column>
+          <Column dataField='EMPL_NAME' caption='EMPL_NAME' width={120}></Column>
           <Column dataField='G_CODE' caption='G_CODE' width={100}></Column>
           <Column dataField='G_NAME' caption='G_NAME' width={100}></Column>
           <Column dataField='G_NAME_KD' caption='G_NAME_KD' width={100}></Column>
-          <Column dataField='DELIVERY_QTY' caption='DELIVERY_QTY' width={100}></Column>
-          <Column dataField='SAMPLE_QTY' caption='SAMPLE_QTY' width={100}></Column>
-          <Column dataField='SAMPLE_NG_QTY' caption='SAMPLE_NG_QTY' width={100}></Column>
-          <Column dataField='PROD_LAST_PRICE' caption='PROD_LAST_PRICE' width={100}></Column>
-          <Column dataField='DELIVERY_AMOUNT' caption='DELIVERY_AMOUNT' width={100}></Column>
-          <Column dataField='SAMPLE_NG_AMOUNT' caption='SAMPLE_NG_AMOUNT' width={100}></Column>
+          <Column dataField='PROD_REQUEST_NO' caption='YCSX' width={80}></Column>
+          <Column dataField='CUST_CD' caption='CUST_CD' width={70}></Column>
+          <Column dataField='CUST_NAME_KD' caption='CUST_NAME_KD' width={100}></Column>
+          <Column dataField='CONTENT' caption='CONTENT' width={100}></Column>
+          <Column dataField='INSPECT_QTY' caption='INSPECT_QTY' width={100} cellRender={(ele: any) => {
+            return (
+              <span style={{ color: 'blue' }}>{ele.data.INSPECT_QTY?.toLocaleString('en-US')}</span>
+            )
+          }}></Column>
+          <Column dataField='NG_QTY' caption='NG_QTY' width={80} cellRender={(ele: any) => {
+            return (
+              <span style={{ color: 'red' }}>{ele.data.NG_QTY?.toLocaleString('en-US')}</span>
+            )
+          }}></Column>
+          <Column dataField='REPLACE_RATE' caption='REPLACE_RATE' width={100} cellRender={(ele: any) => {
+            return (
+              <span style={{ color: 'purple' }}>{ele.data.REPLACE_RATE?.toLocaleString('en-US', { maximumFractionDigits: 2, minimumFractionDigits: 2, })}%</span>
+            )
+          }}></Column>
+          <Column dataField='REDUCE_QTY' caption='REDUCE_QTY' width={90} cellRender={(ele: any) => {
+            return (
+              <span style={{ color: 'green' }}>{ele.data.REDUCE_QTY?.toLocaleString('en-US')}</span>
+            )
+          }}></Column>
+          <Column dataField='FACTOR' caption='NG.NHÂN' width={70}></Column>
+          <Column dataField='RESULT' caption='RESULT' width={70}></Column>
+          <Column dataField='CONFIRM_STATUS' caption='CF_STATUS' width={80}></Column>
           <Column dataField='REMARK' caption='REMARK' width={100}></Column>
-          <Column dataField='DEFECT_IMAGE_LINK' caption='DEFECT_IMAGE_LINK' width={100}></Column>
-          <Column dataField='RUNNING_COUNT' caption='RUNNING_COUNT' width={100}></Column>
+          <Column dataField='INS_DATETIME' caption='INS_DATETIME' width={100}></Column>
+          <Column dataField='PHANLOAI' caption='PHANLOAI' width={80}></Column>
+          <Column dataField='PROD_TYPE' caption='PROD_TYPE' width={100}></Column>
+          <Column dataField='PROD_MODEL' caption='PROD_MODEL' width={100}></Column>
+          <Column dataField='PROD_PROJECT' caption='PROD_PROJECT' width={100}></Column>
+          <Column dataField='PROD_LAST_PRICE' caption='PROD_PRICE' width={100} cellRender={(ele: any) => {
+            return (
+              <span style={{ color: '#0C8ADC' }}>{ele.data.PROD_LAST_PRICE?.toLocaleString('en-US', { maximumFractionDigits: 6, minimumFractionDigits: 6, })}</span>
+            )
+          }}></Column>
+          <Column dataField='REDUCE_AMOUNT' caption='REDUCE_AMOUNT' width={110} cellRender={(ele: any) => {
+            return (
+              <span style={{ color: 'green', fontWeight: 'bold' }}>{ele.data.REDUCE_AMOUNT?.toLocaleString("en-US", {
+                style: "currency",
+                currency: "USD",
+              })}</span>
+            )
+          }}></Column>
+          <Column dataField='LINK' caption='LINK' width={100}></Column>
           <Summary>
             <TotalItem
               alignment="right"
@@ -239,14 +389,422 @@ const CS_DATA_TB = () => {
         </DataGrid>
       </CustomResponsiveContainer>
     ),
-    [oqc_table_data],
+    [cs_table_data],
+  );
+  const rmaDataTable = React.useMemo(
+    () => (
+      <CustomResponsiveContainer>
+        <DataGrid
+          autoNavigateToFocusedRow={true}
+          allowColumnReordering={true}
+          allowColumnResizing={true}
+          columnAutoWidth={false}
+          cellHintEnabled={true}
+          columnResizingMode={"widget"}
+          showColumnLines={true}
+          dataSource={cs_rma_table_data}
+          columnWidth="auto"
+          keyExpr="id"
+          height={"75vh"}
+          showBorders={true}
+          onSelectionChanged={(e) => {
+            //setFilterData(e.selectedRowsData[0]);
+          }}
+          onRowClick={(e) => {
+            //console.log(e.data);
+          }}
+        >
+          <Scrolling
+            useNative={true}
+            scrollByContent={true}
+            scrollByThumb={true}
+            showScrollbar="onHover"
+            mode="virtual"
+          />
+          <Selection mode="single" selectAllMode="allPages" />
+          <Editing
+            allowUpdating={false}
+            allowAdding={true}
+            allowDeleting={false}
+            mode="batch"
+            confirmDelete={true}
+            onChangesChange={(e) => { }}
+          />
+          <Export enabled={true} />
+          <Toolbar disabled={false}>
+            <Item location="before">
+              <IconButton
+                className="buttonIcon"
+                onClick={() => {
+                  SaveExcel(cs_rma_table_data, "CS RMA Table");
+                }}
+              >
+                <AiFillFileExcel color="green" size={15} />
+                SAVE
+              </IconButton>
+              <IconButton
+                className="buttonIcon"
+                onClick={() => {
+                  setShowHidePivotTable(!showhidePivotTable);
+                }}
+              >
+                <MdOutlinePivotTableChart color="#ff33bb" size={15} />
+                Pivot
+              </IconButton>
+            </Item>
+            <Item name="searchPanel" />
+            <Item name="exportButton" />
+            <Item name="columnChooser" />
+          </Toolbar>
+          <FilterRow visible={true} />
+          <SearchPanel visible={true} />
+          <ColumnChooser enabled={true} />
+          <Paging defaultPageSize={15} />
+          <Pager
+            showPageSizeSelector={true}
+            allowedPageSizes={[5, 10, 15, 20, 100, 1000, 10000, "all"]}
+            showNavigationButtons={true}
+            showInfo={true}
+            infoText="Page #{0}. Total: {1} ({2} items)"
+            displayMode="compact"
+          />
+          <Column dataField='RMA_ID' caption='RMA_ID' width={100}></Column>
+          <Column dataField='CONFIRM_ID' caption='CONFIRM_ID' width={100}></Column>
+          <Column dataField='G_NAME_KD' caption='G_NAME_KD' width={100}></Column>
+          <Column dataField='RETURN_DATE' caption='RETURN_DATE' width={100}></Column>
+          <Column dataField='PROD_REQUEST_NO' caption='PROD_REQUEST_NO' width={100}></Column>
+          <Column dataField='G_CODE' caption='G_CODE' width={100}></Column>
+          <Column dataField='RMA_TYPE' caption='RMA_TYPE' width={100}></Column>
+          <Column dataField='RMA_EMPL_NO' caption='RMA_EMPL_NO' width={100}></Column>
+          <Column dataField='INS_DATETIME' caption='INS_DATETIME' width={100}></Column>
+          <Column dataField='FACTORY' caption='FACTORY' width={100}></Column>
+          <Column dataField='RETURN_QTY' caption='RETURN_QTY' width={100} cellRender={(ele: any) => {
+            return (
+              <span style={{ color: 'blue' }}>{ele.data.RETURN_QTY?.toLocaleString('en-US')}</span>
+            )
+          }}></Column>
+          <Column dataField='SORTING_OK_QTY' caption='SORTING_OK_QTY' width={100} cellRender={(ele: any) => {
+            return (
+              <span style={{ color: 'blue' }}>{ele.data.SORTING_OK_QTY?.toLocaleString('en-US')}</span>
+            )
+          }}></Column>
+          <Column dataField='SORTING_NG_QTY' caption='SORTING_NG_QTY' width={100} cellRender={(ele: any) => {
+            return (
+              <span style={{ color: 'blue' }}>{ele.data.SORTING_NG_QTY?.toLocaleString('en-US')}</span>
+            )
+          }}></Column>
+          <Column dataField='RMA_DELIVERY_QTY' caption='RMA_DELIVERY_QTY' width={100} cellRender={(ele: any) => {
+            return (
+              <span style={{ color: 'blue' }}>{ele.data.RMA_DELIVERY_QTY?.toLocaleString('en-US')}</span>
+            )
+          }}></Column>
+          <Column dataField='PROD_LAST_PRICE' caption='PROD_LAST_PRICE' width={100} cellRender={(ele: any) => {
+            return (
+              <span style={{ color: '#0C8ADC' }}>{ele.data.PROD_LAST_PRICE?.toLocaleString('en-US', { maximumFractionDigits: 6, minimumFractionDigits: 6, })}</span>
+            )
+          }}></Column>
+          <Column dataField='RETURN_AMOUNT' caption='RETURN_AMOUNT' width={100} cellRender={(ele: any) => {
+            return (
+              <span style={{ color: 'green', fontWeight: 'bold' }}>{ele.data.RETURN_AMOUNT?.toLocaleString("en-US", {
+                style: "currency",
+                currency: "USD",
+              })}</span>
+            )
+          }}></Column>
+          <Column dataField='SORTING_OK_AMOUNT' caption='SORTING_OK_AMOUNT' width={100} cellRender={(ele: any) => {
+            return (
+              <span style={{ color: 'green', fontWeight: 'bold' }}>{ele.data.SORTING_OK_AMOUNT?.toLocaleString("en-US", {
+                style: "currency",
+                currency: "USD",
+              })}</span>
+            )
+          }}></Column>
+          <Column dataField='SORTING_NG_AMOUNT' caption='SORTING_NG_AMOUNT' width={100} cellRender={(ele: any) => {
+            return (
+              <span style={{ color: 'green', fontWeight: 'bold' }}>{ele.data.SORTING_NG_AMOUNT?.toLocaleString("en-US", {
+                style: "currency",
+                currency: "USD",
+              })}</span>
+            )
+          }}></Column>
+          <Column dataField='G_NAME' caption='G_NAME' width={100}></Column>
+          <Column dataField='PROD_TYPE' caption='PROD_TYPE' width={100}></Column>
+          <Column dataField='PROD_MODEL' caption='PROD_MODEL' width={100}></Column>
+          <Column dataField='PROD_LAST_PRICE' caption='PROD_LAST_PRICE' width={100}></Column>
+          <Column dataField='CONFIRM_DATE' caption='CONFIRM_DATE' width={100}></Column>
+          <Column dataField='CS_EMPL_NO' caption='CS_EMPL_NO' width={100}></Column>
+          <Column dataField='CONTENT' caption='CONTENT' width={100}></Column>
+          <Column dataField='INSPECT_QTY' caption='INSPECT_QTY' width={100} cellRender={(ele: any) => {
+            return (
+              <span style={{ color: 'blue' }}>{ele.data.INSPECT_QTY?.toLocaleString('en-US')}</span>
+            )
+          }}></Column>
+          <Column dataField='NG_QTY' caption='NG_QTY' width={100} cellRender={(ele: any) => {
+            return (
+              <span style={{ color: 'blue' }}>{ele.data.NG_QTY?.toLocaleString('en-US')}</span>
+            )
+          }}></Column>
+          <Column dataField='REPLACE_RATE' caption='REPLACE_RATE' width={100} cellRender={(ele: any) => {
+            return (
+              <span style={{ color: 'purple' }}>{ele.data.REPLACE_RATE?.toLocaleString('en-US', { maximumFractionDigits: 2, minimumFractionDigits: 2, })}%</span>
+            )
+          }}></Column>
+          <Column dataField='REDUCE_QTY' caption='REDUCE_QTY' width={100} cellRender={(ele: any) => {
+            return (
+              <span style={{ color: 'blue' }}>{ele.data.REDUCE_QTY?.toLocaleString('en-US')}</span>
+            )
+          }}></Column>
+          <Summary>
+            <TotalItem
+              alignment="right"
+              column="id"
+              summaryType="count"
+              valueFormat={"decimal"}
+            />
+          </Summary>
+        </DataGrid>
+      </CustomResponsiveContainer>
+    ),
+    [cs_rma_table_data],
+  );
+  const cndbDataTable = React.useMemo(
+    () => (
+      <CustomResponsiveContainer>
+        <DataGrid
+          autoNavigateToFocusedRow={true}
+          allowColumnReordering={true}
+          allowColumnResizing={true}
+          columnAutoWidth={false}
+          cellHintEnabled={true}
+          columnResizingMode={"widget"}
+          showColumnLines={true}
+          dataSource={cs_cndb_table_data}
+          columnWidth="auto"
+          keyExpr="id"
+          height={"75vh"}
+          showBorders={true}
+          onSelectionChanged={(e) => {
+            //setFilterData(e.selectedRowsData[0]);
+          }}
+          onRowClick={(e) => {
+            //console.log(e.data);
+          }}
+        >
+          <Scrolling
+            useNative={true}
+            scrollByContent={true}
+            scrollByThumb={true}
+            showScrollbar="onHover"
+            mode="virtual"
+          />
+          <Selection mode="single" selectAllMode="allPages" />
+          <Editing
+            allowUpdating={false}
+            allowAdding={true}
+            allowDeleting={false}
+            mode="batch"
+            confirmDelete={true}
+            onChangesChange={(e) => { }}
+          />
+          <Export enabled={true} />
+          <Toolbar disabled={false}>
+            <Item location="before">
+              <IconButton
+                className="buttonIcon"
+                onClick={() => {
+                  SaveExcel(cs_rma_table_data, "CS RMA Table");
+                }}
+              >
+                <AiFillFileExcel color="green" size={15} />
+                SAVE
+              </IconButton>
+              <IconButton
+                className="buttonIcon"
+                onClick={() => {
+                  setShowHidePivotTable(!showhidePivotTable);
+                }}
+              >
+                <MdOutlinePivotTableChart color="#ff33bb" size={15} />
+                Pivot
+              </IconButton>
+            </Item>
+            <Item name="searchPanel" />
+            <Item name="exportButton" />
+            <Item name="columnChooser" />
+          </Toolbar>
+          <FilterRow visible={true} />
+          <SearchPanel visible={true} />
+          <ColumnChooser enabled={true} />
+          <Paging defaultPageSize={15} />
+          <Pager
+            showPageSizeSelector={true}
+            allowedPageSizes={[5, 10, 15, 20, 100, 1000, 10000, "all"]}
+            showNavigationButtons={true}
+            showInfo={true}
+            infoText="Page #{0}. Total: {1} ({2} items)"
+            displayMode="compact"
+          />
+          <Column dataField='SA_ID' caption='SA_ID' width={100}></Column>
+          <Column dataField='SA_REQUEST_DATE' caption='CNDB_DATE' width={100}></Column>
+          <Column dataField='CONTACT_ID' caption='CONTACT_ID' width={100}></Column>
+          <Column dataField='CS_EMPL_NO' caption='CS_EMPL_NO' width={100}></Column>
+          <Column dataField='G_CODE' caption='G_CODE' width={100}></Column>
+          <Column dataField='G_NAME' caption='G_NAME' width={100}></Column>
+          <Column dataField='CUST_NAME_KD' caption='CUST_NAME_KD' width={100}></Column>
+          <Column dataField='PROD_REQUEST_NO' caption='PROD_REQUEST_NO' width={100}></Column>
+          <Column dataField='REQUEST_DATETIME' caption='REQUEST_DATETIME' width={100}></Column>
+          <Column dataField='CONTENT' caption='CONTENT' width={100}></Column>
+          <Column dataField='SA_QTY' caption='SA_QTY' width={100} cellRender={(ele: any) => {
+            return (
+              <span style={{ color: 'blue' }}>{ele.data.SA_QTY?.toLocaleString('en-US')}</span>
+            )
+          }}></Column>
+          <Column dataField='RESULT' caption='RESULT' width={100}></Column>
+          <Column dataField='SA_STATUS' caption='SA_STATUS' width={100}></Column>
+          <Column dataField='SA_REMARK' caption='SA_REMARK' width={100}></Column>
+          <Column dataField='INS_DATETIME' caption='INS_DATETIME' width={100}></Column>
+          <Column dataField='SA_CUST_CD' caption='SA_CUST_CD' width={100}></Column>
+          <Summary>
+            <TotalItem
+              alignment="right"
+              column="id"
+              summaryType="count"
+              valueFormat={"decimal"}
+            />
+          </Summary>
+        </DataGrid>
+      </CustomResponsiveContainer>
+    ),
+    [cs_cndb_table_data],
+  );
+  const taxiDataTable = React.useMemo(
+    () => (
+      <CustomResponsiveContainer>
+        <DataGrid
+          autoNavigateToFocusedRow={true}
+          allowColumnReordering={true}
+          allowColumnResizing={true}
+          columnAutoWidth={false}
+          cellHintEnabled={true}
+          columnResizingMode={"widget"}
+          showColumnLines={true}
+          dataSource={cs_taxi_table_data}
+          columnWidth="auto"
+          keyExpr="id"
+          height={"75vh"}
+          showBorders={true}
+          onSelectionChanged={(e) => {
+            //setFilterData(e.selectedRowsData[0]);
+          }}
+          onRowClick={(e) => {
+            //console.log(e.data);
+          }}
+        >
+          <Scrolling
+            useNative={true}
+            scrollByContent={true}
+            scrollByThumb={true}
+            showScrollbar="onHover"
+            mode="virtual"
+          />
+          <Selection mode="single" selectAllMode="allPages" />
+          <Editing
+            allowUpdating={false}
+            allowAdding={true}
+            allowDeleting={false}
+            mode="batch"
+            confirmDelete={true}
+            onChangesChange={(e) => { }}
+          />
+          <Export enabled={true} />
+          <Toolbar disabled={false}>
+            <Item location="before">
+              <IconButton
+                className="buttonIcon"
+                onClick={() => {
+                  SaveExcel(cs_rma_table_data, "CS RMA Table");
+                }}
+              >
+                <AiFillFileExcel color="green" size={15} />
+                SAVE
+              </IconButton>
+              <IconButton
+                className="buttonIcon"
+                onClick={() => {
+                  setShowHidePivotTable(!showhidePivotTable);
+                }}
+              >
+                <MdOutlinePivotTableChart color="#ff33bb" size={15} />
+                Pivot
+              </IconButton>
+            </Item>
+            <Item name="searchPanel" />
+            <Item name="exportButton" />
+            <Item name="columnChooser" />
+          </Toolbar>
+          <FilterRow visible={true} />
+          <SearchPanel visible={true} />
+          <ColumnChooser enabled={true} />
+          <Paging defaultPageSize={15} />
+          <Pager
+            showPageSizeSelector={true}
+            allowedPageSizes={[5, 10, 15, 20, 100, 1000, 10000, "all"]}
+            showNavigationButtons={true}
+            showInfo={true}
+            infoText="Page #{0}. Total: {1} ({2} items)"
+            displayMode="compact"
+          />
+          <Column dataField='TAXI_ID' caption='TAXI_ID' width={80}></Column>
+          <Column dataField='CONFIRM_ID' caption='CONFIRM_ID' width={80}></Column>
+          <Column dataField='SA_ID' caption='SA_ID' width={50}></Column>
+          <Column dataField='CHIEU' caption='CHIEU' width={50}></Column>
+          <Column dataField='CONG_VIEC' caption='CONG_VIEC' width={100}></Column>
+          <Column dataField='TAXI_DATE' caption='TAXI_DATE' width={100}></Column>
+          <Column dataField='TAXI_SHIFT' caption='TAXI_SHIFT' width={100}></Column>
+          <Column dataField='CS_EMPL_NO' caption='CS_EMPL_NO' width={100}></Column>
+          <Column dataField='DIEM_DI' caption='DIEM_DI' width={100}></Column>
+          <Column dataField='DIEM_DEN' caption='DIEM_DEN' width={100}></Column>
+          <Column dataField='TAXI_AMOUNT' caption='TAXI_AMOUNT' width={100} cellRender={(ele: any) => {
+            return (
+              <span style={{ color: 'blue' }}>{ele.data.TAXI_AMOUNT?.toLocaleString('en-US')}</span>
+            )
+          }}></Column>
+          <Column dataField='TRANSPORTATION' caption='TRANSPORTATION' width={100}></Column>
+          <Column dataField='TAXI_REMARK' caption='TAXI_REMARK' width={100}></Column>
+          <Column dataField='INS_DATETIME' caption='INS_DATETIME' width={100}></Column>
+          <Summary>
+            <TotalItem
+              alignment="right"
+              column="id"
+              summaryType="count"
+              valueFormat={"decimal"}
+            />
+          </Summary>
+        </DataGrid>
+      </CustomResponsiveContainer>
+    ),
+    [cs_taxi_table_data],
   );
   const dataSource = new PivotGridDataSource({
     fields: [
       {
-        caption: 'OQC_ID',
+        caption: 'YEAR_WEEK',
         width: 80,
-        dataField: 'OQC_ID',
+        dataField: 'YEAR_WEEK',
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: 'string',
+        summaryType: 'count',
+        format: 'fixedPoint',
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        }
+      }, {
+        caption: 'CONFIRM_ID',
+        width: 80,
+        dataField: 'CONFIRM_ID',
         allowSorting: true,
         allowFiltering: true,
         dataType: 'number',
@@ -258,9 +816,9 @@ const CS_DATA_TB = () => {
           width: 300,
         }
       }, {
-        caption: 'DELIVERY_DATE',
+        caption: 'CONFIRM_DATE',
         width: 80,
-        dataField: 'DELIVERY_DATE',
+        dataField: 'CONFIRM_DATE',
         allowSorting: true,
         allowFiltering: true,
         dataType: 'string',
@@ -272,125 +830,41 @@ const CS_DATA_TB = () => {
           width: 300,
         }
       }, {
-        caption: 'SHIFT_CODE',
+        caption: 'CONTACT_ID',
         width: 80,
-        dataField: 'SHIFT_CODE',
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: 'string',
-        summaryType: 'count',
-        format: 'fixedPoint',
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        }
-      }, {
-        caption: 'FACTORY_NAME',
-        width: 80,
-        dataField: 'FACTORY_NAME',
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: 'string',
-        summaryType: 'count',
-        format: 'fixedPoint',
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        }
-      }, {
-        caption: 'FULL_NAME',
-        width: 80,
-        dataField: 'FULL_NAME',
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: 'string',
-        summaryType: 'count',
-        format: 'fixedPoint',
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        }
-      }, {
-        caption: 'CUST_NAME_KD',
-        width: 80,
-        dataField: 'CUST_NAME_KD',
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: 'string',
-        summaryType: 'count',
-        format: 'fixedPoint',
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        }
-      }, {
-        caption: 'PROD_REQUEST_NO',
-        width: 80,
-        dataField: 'PROD_REQUEST_NO',
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: 'string',
-        summaryType: 'count',
-        format: 'fixedPoint',
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        }
-      }, {
-        caption: 'PROCESS_LOT_NO',
-        width: 80,
-        dataField: 'PROCESS_LOT_NO',
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: 'string',
-        summaryType: 'count',
-        format: 'fixedPoint',
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        }
-      }, {
-        caption: 'LABEL_ID',
-        width: 80,
-        dataField: 'LABEL_ID',
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: 'string',
-        summaryType: 'count',
-        format: 'fixedPoint',
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        }
-      }, {
-        caption: 'PROD_REQUEST_DATE',
-        width: 80,
-        dataField: 'PROD_REQUEST_DATE',
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: 'string',
-        summaryType: 'count',
-        format: 'fixedPoint',
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        }
-      }, {
-        caption: 'PROD_REQUEST_QTY',
-        width: 80,
-        dataField: 'PROD_REQUEST_QTY',
+        dataField: 'CONTACT_ID',
         allowSorting: true,
         allowFiltering: true,
         dataType: 'number',
         summaryType: 'sum',
+        format: 'fixedPoint',
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        }
+      }, {
+        caption: 'CS_EMPL_NO',
+        width: 80,
+        dataField: 'CS_EMPL_NO',
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: 'string',
+        summaryType: 'count',
+        format: 'fixedPoint',
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        }
+      }, {
+        caption: 'EMPL_NAME',
+        width: 80,
+        dataField: 'EMPL_NAME',
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: 'string',
+        summaryType: 'count',
         format: 'fixedPoint',
         headerFilter: {
           allowSearch: true,
@@ -440,9 +914,65 @@ const CS_DATA_TB = () => {
           width: 300,
         }
       }, {
-        caption: 'DELIVERY_QTY',
+        caption: 'PROD_REQUEST_NO',
         width: 80,
-        dataField: 'DELIVERY_QTY',
+        dataField: 'PROD_REQUEST_NO',
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: 'string',
+        summaryType: 'count',
+        format: 'fixedPoint',
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        }
+      }, {
+        caption: 'CUST_CD',
+        width: 80,
+        dataField: 'CUST_CD',
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: 'string',
+        summaryType: 'count',
+        format: 'fixedPoint',
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        }
+      }, {
+        caption: 'CUST_NAME_KD',
+        width: 80,
+        dataField: 'CUST_NAME_KD',
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: 'string',
+        summaryType: 'count',
+        format: 'fixedPoint',
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        }
+      }, {
+        caption: 'CONTENT',
+        width: 80,
+        dataField: 'CONTENT',
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: 'string',
+        summaryType: 'count',
+        format: 'fixedPoint',
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        }
+      }, {
+        caption: 'INSPECT_QTY',
+        width: 80,
+        dataField: 'INSPECT_QTY',
         allowSorting: true,
         allowFiltering: true,
         dataType: 'number',
@@ -454,9 +984,9 @@ const CS_DATA_TB = () => {
           width: 300,
         }
       }, {
-        caption: 'SAMPLE_QTY',
+        caption: 'NG_QTY',
         width: 80,
-        dataField: 'SAMPLE_QTY',
+        dataField: 'NG_QTY',
         allowSorting: true,
         allowFiltering: true,
         dataType: 'number',
@@ -468,9 +998,9 @@ const CS_DATA_TB = () => {
           width: 300,
         }
       }, {
-        caption: 'SAMPLE_NG_QTY',
+        caption: 'REPLACE_RATE',
         width: 80,
-        dataField: 'SAMPLE_NG_QTY',
+        dataField: 'REPLACE_RATE',
         allowSorting: true,
         allowFiltering: true,
         dataType: 'number',
@@ -482,9 +1012,9 @@ const CS_DATA_TB = () => {
           width: 300,
         }
       }, {
-        caption: 'PROD_LAST_PRICE',
+        caption: 'REDUCE_QTY',
         width: 80,
-        dataField: 'PROD_LAST_PRICE',
+        dataField: 'REDUCE_QTY',
         allowSorting: true,
         allowFiltering: true,
         dataType: 'number',
@@ -496,13 +1026,13 @@ const CS_DATA_TB = () => {
           width: 300,
         }
       }, {
-        caption: 'DELIVERY_AMOUNT',
+        caption: 'FACTOR',
         width: 80,
-        dataField: 'DELIVERY_AMOUNT',
+        dataField: 'FACTOR',
         allowSorting: true,
         allowFiltering: true,
-        dataType: 'number',
-        summaryType: 'sum',
+        dataType: 'string',
+        summaryType: 'count',
         format: 'fixedPoint',
         headerFilter: {
           allowSearch: true,
@@ -510,13 +1040,27 @@ const CS_DATA_TB = () => {
           width: 300,
         }
       }, {
-        caption: 'SAMPLE_NG_AMOUNT',
+        caption: 'RESULT',
         width: 80,
-        dataField: 'SAMPLE_NG_AMOUNT',
+        dataField: 'RESULT',
         allowSorting: true,
         allowFiltering: true,
-        dataType: 'number',
-        summaryType: 'sum',
+        dataType: 'string',
+        summaryType: 'count',
+        format: 'fixedPoint',
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        }
+      }, {
+        caption: 'CONFIRM_STATUS',
+        width: 80,
+        dataField: 'CONFIRM_STATUS',
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: 'string',
+        summaryType: 'count',
         format: 'fixedPoint',
         headerFilter: {
           allowSearch: true,
@@ -538,9 +1082,9 @@ const CS_DATA_TB = () => {
           width: 300,
         }
       }, {
-        caption: 'DEFECT_IMAGE_LINK',
+        caption: 'INS_DATETIME',
         width: 80,
-        dataField: 'DEFECT_IMAGE_LINK',
+        dataField: 'INS_DATETIME',
         allowSorting: true,
         allowFiltering: true,
         dataType: 'string',
@@ -552,9 +1096,93 @@ const CS_DATA_TB = () => {
           width: 300,
         }
       }, {
-        caption: 'RUNNING_COUNT',
+        caption: 'PHANLOAI',
         width: 80,
-        dataField: 'RUNNING_COUNT',
+        dataField: 'PHANLOAI',
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: 'string',
+        summaryType: 'count',
+        format: 'fixedPoint',
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        }
+      }, {
+        caption: 'LINK',
+        width: 80,
+        dataField: 'LINK',
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: 'string',
+        summaryType: 'count',
+        format: 'fixedPoint',
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        }
+      }, {
+        caption: 'PROD_TYPE',
+        width: 80,
+        dataField: 'PROD_TYPE',
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: 'string',
+        summaryType: 'count',
+        format: 'fixedPoint',
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        }
+      }, {
+        caption: 'PROD_MODEL',
+        width: 80,
+        dataField: 'PROD_MODEL',
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: 'string',
+        summaryType: 'count',
+        format: 'fixedPoint',
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        }
+      }, {
+        caption: 'PROD_PROJECT',
+        width: 80,
+        dataField: 'PROD_PROJECT',
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: 'string',
+        summaryType: 'count',
+        format: 'fixedPoint',
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        }
+      }, {
+        caption: 'PROD_LAST_PRICE',
+        width: 80,
+        dataField: 'PROD_LAST_PRICE',
+        allowSorting: true,
+        allowFiltering: true,
+        dataType: 'number',
+        summaryType: 'sum',
+        format: 'fixedPoint',
+        headerFilter: {
+          allowSearch: true,
+          height: 500,
+          width: 300,
+        }
+      }, {
+        caption: 'REDUCE_AMOUNT',
+        width: 80,
+        dataField: 'REDUCE_AMOUNT',
         allowSorting: true,
         allowFiltering: true,
         dataType: 'number',
@@ -567,7 +1195,7 @@ const CS_DATA_TB = () => {
         }
       },
     ],
-    store: oqc_table_data,
+    store: cs_table_data,
   });
   useEffect(() => {
   }, []);
@@ -583,8 +1211,8 @@ const CS_DATA_TB = () => {
                   handleSearchCodeKeyDown(e);
                 }}
                 type='date'
-                value={fromdate.slice(0, 10)}
-                onChange={(e) => setFromDate(e.target.value)}
+                value={filterData?.FROM_DATE.slice(0, 10)}
+                onChange={(e) => setCSFormInfo("FROM_DATE", e.target.value)}
               ></input>
             </label>
             <label>
@@ -594,8 +1222,8 @@ const CS_DATA_TB = () => {
                   handleSearchCodeKeyDown(e);
                 }}
                 type='date'
-                value={todate.slice(0, 10)}
-                onChange={(e) => setToDate(e.target.value)}
+                value={filterData?.TO_DATE.slice(0, 10)}
+                onChange={(e) => setCSFormInfo("TO_DATE", e.target.value)}
               ></input>
             </label>
           </FromInputColumn>
@@ -605,11 +1233,11 @@ const CS_DATA_TB = () => {
               <input
                 type="text"
                 placeholder="Code hàng"
-                value={selectedRows?.G_NAME}
+                value={filterData?.G_NAME}
                 onKeyDown={(e) => {
                   handleSearchCodeKeyDown(e);
                 }}
-                onChange={(e) => setOQCFormInfo("G_NAME_KD", e.target.value)}
+                onChange={(e) => setCSFormInfo("G_NAME", e.target.value)}
               ></input>
             </label>
             <label style={{ display: "flex", alignItems: "center" }}>
@@ -617,11 +1245,11 @@ const CS_DATA_TB = () => {
               <input
                 type="text"
                 placeholder="Code hàng"
-                value={selectedRows?.G_CODE}
+                value={filterData?.G_CODE}
                 onKeyDown={(e) => {
                   handleSearchCodeKeyDown(e);
                 }}
-                onChange={(e) => setOQCFormInfo("G_CODE", e.target.value)}
+                onChange={(e) => setCSFormInfo("G_CODE", e.target.value)}
               ></input>
             </label>
           </FromInputColumn>
@@ -631,11 +1259,11 @@ const CS_DATA_TB = () => {
               <input
                 type="text"
                 placeholder="YCSX"
-                value={selectedRows?.PROD_REQUEST_NO}
+                value={filterData?.PROD_REQUEST_NO}
                 onKeyDown={(e) => {
                   handleSearchCodeKeyDown(e);
                 }}
-                onChange={(e) => setOQCFormInfo("PROD_REQUEST_NO", e.target.value)}
+                onChange={(e) => setCSFormInfo("PROD_REQUEST_NO", e.target.value)}
               ></input>
             </label>
             <label>
@@ -643,23 +1271,43 @@ const CS_DATA_TB = () => {
               <input
                 type="text"
                 placeholder="Khách hàng"
-                value={selectedRows?.CUST_NAME_KD}
+                value={filterData?.CUST_NAME_KD}
                 onKeyDown={(e) => {
                   handleSearchCodeKeyDown(e);
                 }}
-                onChange={(e) => setOQCFormInfo("CUST_NAME_KD", e.target.value)}
+                onChange={(e) => setCSFormInfo("CUST_NAME_KD", e.target.value)}
               ></input>
+            </label>
+          </FromInputColumn>
+          <FromInputColumn>
+            <label>
+              <b>Chọn data:</b>{" "}
+              <select
+                name="datatimekiem"
+                value={option}
+                onChange={(e) => {
+                  setOption(e.target.value);
+                }}
+              >
+                <option value="dataconfirm">Lịch Sử Xác Nhận Lỗi</option>
+                <option value="datarma">Lịch Sử RMA</option>
+                <option value="datacndbkhachhang">Lịch Sử Xin CNĐB</option>
+                <option value="datataxi">Lịch Sử Taxi</option>
+              </select>
             </label>
           </FromInputColumn>
         </FromInputDiv>
         <FormButtonColumn>
           <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#129232' }} onClick={() => {
-            load_oqc_data();
-          }}>Load</Button>
+            load_cs_data();
+          }}>Load Data</Button>
         </FormButtonColumn>
       </QueryFormDiv>
       <DataTBDiv>
-        {materialDataTable}
+        {option === 'dataconfirm' && xacNhanDataTable}
+        {option === 'datarma' && rmaDataTable}
+        {option === 'datacndbkhachhang' && cndbDataTable}
+        {option === 'datataxi' && taxiDataTable}
       </DataTBDiv>
       {showhidePivotTable && (
         <PivotTableDiv>
