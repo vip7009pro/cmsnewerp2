@@ -1,23 +1,26 @@
-import { useEffect, useState, lazy, Suspense } from "react";
+import { useEffect, useState, lazy, Suspense, useContext } from "react";
 import "./BAOCAOSXALL.scss";
-import MACHINE from "../qlsx/QLSXPLAN/Machine/MACHINE";
-import ACHIVEMENTTB from "../qlsx/QLSXPLAN/ACHIVEMENTTB/ACHIVEMENTTB";
 import LICHSUINPUTLIEU from "../qlsx/QLSXPLAN/LICHSUINPUTLIEU/LICHSUINPUTLIEU";
-import QUICKPLAN from "../qlsx/QLSXPLAN/QUICKPLAN/QUICKPLAN";
-import PLAN_DATATB from "../qlsx/QLSXPLAN/LICHSUCHITHITABLE/PLAN_DATATB";
 import DATASX2 from "../qlsx/QLSXPLAN/DATASX/DATASX2";
-import PLAN_STATUS from "../qlsx/QLSXPLAN/PLAN_STATUS/PLAN_STATUS";
-import EQ_STATUS from "../qlsx/QLSXPLAN/EQ_STATUS/EQ_STATUS";
-import EQ_STATUS2 from "../qlsx/QLSXPLAN/EQ_STATUS/EQ_STATUS2";
-import KHOAO from "../qlsx/QLSXPLAN/KHOAO/KHOAO";
-
+import LICHSUTEMLOTSX from "./LICHSUTEMLOTSX/LICHSUTEMLOTSX";
+import TINHHINHCUONLIEU from "./TINH_HINH_CUON_LIEU/TINHINHCUONLIEU";
+import BAOCAOTHEOROLL from "./BAOCAOTHEOROLL/BAOCAOTHEOROLL";
+import PLANRESULT from "./PLANRESULT/PLANRESULT";
+import ACHIVEMENTTB from "../qlsx/QLSXPLAN/ACHIVEMENTTB/ACHIVEMENTTB";
+import { getlang } from "../../components/String/String";
+import { LangConText } from "../../api/Context";
 const BAOCAOSXALL = () => {
   const [selection, setSelection] = useState<any>({
     tab1: true,
     tab2: false,
     tab3: false,
+    tab4: false,
+    tab5: false,
+    tab6: false,
+    tab7: false,
+    tab8: false,
   });
-
+  const [lang, setLang] = useContext(LangConText);
   const setNav = (choose: number) => {
     if (choose === 1) {
       setSelection({
@@ -161,8 +164,7 @@ const BAOCAOSXALL = () => {
       });
     }
   };
-  useEffect(() => {}, []);
-
+  useEffect(() => { }, []);
   return (
     <div className="qlsxplan">
       <Suspense fallback={<div> Loading...</div>}>
@@ -175,97 +177,7 @@ const BAOCAOSXALL = () => {
               color: selection.tab1 === true ? "yellow" : "yellow",
             }}
           >
-            <span className="mininavtext">PLAN VISUAL</span>
-          </div>
-          {/*  <div className='mininavitem'  onClick={() => setNav(9)} style={{backgroundColor:selection.tab9 === true ? '#02c712':'#abc9ae', color: selection.tab9 === true ? 'yellow':'yellow'}}>
-          <span className='mininavtext'>
-            KH-CT
-          </span>
-        </div>   */}
-          <div
-            className="mininavitem"
-            onClick={() => setNav(4)}
-            style={{
-              backgroundColor: selection.tab4 === true ? "#02c712" : "#abc9ae",
-              color: selection.tab4 === true ? "yellow" : "yellow",
-            }}
-          >
-            <span className="mininavtext">QUICK PLAN</span>
-          </div>
-          {/*  <div className='mininavitem'  onClick={() => setNav(2)} style={{backgroundColor:selection.tab2 === true ? '#02c712':'#abc9ae', color: selection.tab2 === true ? 'yellow':'yellow'}}>
-          <span className='mininavtext'>
-            PLAN YCSX
-          </span>
-        </div>   */}
-          <div
-            className="mininavitem"
-            onClick={() => setNav(5)}
-            style={{
-              backgroundColor: selection.tab5 === true ? "#02c712" : "#abc9ae",
-              color: selection.tab5 === true ? "yellow" : "yellow",
-            }}
-          >
-            <span className="mininavtext">PLAN TABLE</span>
-          </div>
-          <div
-            className="mininavitem"
-            onClick={() => setNav(3)}
-            style={{
-              backgroundColor: selection.tab3 === true ? "#02c712" : "#abc9ae",
-              color: selection.tab3 === true ? "yellow" : "yellow",
-            }}
-          >
-            <span className="mininavtext">LỊCH SỬ</span>
-          </div>
-          <div
-            className="mininavitem"
-            onClick={() => setNav(6)}
-            style={{
-              backgroundColor: selection.tab6 === true ? "#02c712" : "#abc9ae",
-              color: selection.tab6 === true ? "yellow" : "yellow",
-            }}
-          >
-            <span className="mininavtext">DATA SX</span>
-          </div>
-          <div
-            className="mininavitem"
-            onClick={() => setNav(7)}
-            style={{
-              backgroundColor: selection.tab7 === true ? "#02c712" : "#abc9ae",
-              color: selection.tab7 === true ? "yellow" : "yellow",
-            }}
-          >
-            <span className="mininavtext">PLAN STATUS</span>
-          </div>
-          <div
-            className="mininavitem"
-            onClick={() => setNav(8)}
-            style={{
-              backgroundColor: selection.tab8 === true ? "#02c712" : "#abc9ae",
-              color: selection.tab8 === true ? "yellow" : "yellow",
-            }}
-          >
-            <span className="mininavtext">TV SHOW</span>
-          </div>
-          <div
-            className="mininavitem"
-            onClick={() => setNav(9)}
-            style={{
-              backgroundColor: selection.tab9 === true ? "#02c712" : "#abc9ae",
-              color: selection.tab9 === true ? "yellow" : "yellow",
-            }}
-          >
-            <span className="mininavtext">EQ STATUS</span>
-          </div>
-          <div
-            className="mininavitem"
-            onClick={() => setNav(10)}
-            style={{
-              backgroundColor: selection.tab10 === true ? "#02c712" : "#abc9ae",
-              color: selection.tab10 === true ? "yellow" : "yellow",
-            }}
-          >
-            <span className="mininavtext">KHO ẢO</span>
+            <span className="mininavtext">{getlang("nhatkysanxuat", lang)}</span>
           </div>
           <div
             className="mininavitem"
@@ -275,57 +187,77 @@ const BAOCAOSXALL = () => {
               color: selection.tab2 === true ? "yellow" : "yellow",
             }}
           >
-            <span className="mininavtext">PLAN_RESULT</span>
+            <span className="mininavtext">{getlang("lichsuxuatlieuthat", lang)}</span>
+          </div>
+          <div
+            className="mininavitem"
+            onClick={() => setNav(3)}
+            style={{
+              backgroundColor: selection.tab3 === true ? "#02c712" : "#abc9ae",
+              color: selection.tab3 === true ? "yellow" : "yellow",
+            }}
+          >
+            <span className="mininavtext">{getlang("lichsutemlotsx", lang)}</span>
+          </div>
+          <div
+            className="mininavitem"
+            onClick={() => setNav(4)}
+            style={{
+              backgroundColor: selection.tab4 === true ? "#02c712" : "#abc9ae",
+              color: selection.tab4 === true ? "yellow" : "yellow",
+            }}
+          >
+            <span className="mininavtext">{getlang("materiallotstatus", lang)}</span>
+          </div>
+          <div
+            className="mininavitem"
+            onClick={() => setNav(5)}
+            style={{
+              backgroundColor: selection.tab5 === true ? "#02c712" : "#abc9ae",
+              color: selection.tab5 === true ? "yellow" : "yellow",
+            }}
+          >
+            <span className="mininavtext">{getlang("sxrolldata", lang)}</span>
+          </div>
+          <div
+            className="mininavitem"
+            onClick={() => setNav(6)}
+            style={{
+              backgroundColor: selection.tab6 === true ? "#02c712" : "#abc9ae",
+              color: selection.tab6 === true ? "yellow" : "yellow",
+            }}
+          >
+            <span className="mininavtext">PLAN-RESULT</span>
           </div>
         </div>
         {selection.tab1 && (
           <div className="traiqc">
-            <MACHINE />
+            <DATASX2 />
           </div>
         )}
         {selection.tab2 && (
           <div className="datadtc">
-            <ACHIVEMENTTB />
+            <LICHSUINPUTLIEU />
           </div>
         )}
         {selection.tab3 && (
           <div className="datadtc">
-            <LICHSUINPUTLIEU />
+            <LICHSUTEMLOTSX />
           </div>
         )}
         {selection.tab4 && (
           <div className="datadtc">
-            <QUICKPLAN />
+            <TINHHINHCUONLIEU />
           </div>
         )}
         {selection.tab5 && (
           <div className="datadtc">
-            <PLAN_DATATB />
+            <BAOCAOTHEOROLL />
           </div>
         )}
         {selection.tab6 && (
           <div className="datadtc">
-            <DATASX2 />
-          </div>
-        )}
-        {selection.tab7 && (
-          <div className="datadtc">
-            <PLAN_STATUS />
-          </div>
-        )}
-        {selection.tab8 && (
-          <div className="datadtc">
-            <EQ_STATUS />
-          </div>
-        )}
-        {selection.tab9 && (
-          <div className="datadtc">
-            <EQ_STATUS2 />
-          </div>
-        )}       
-        {selection.tab10 && (
-          <div className="datadtc">
-            <KHOAO />
+            <ACHIVEMENTTB />
           </div>
         )}
       </Suspense>

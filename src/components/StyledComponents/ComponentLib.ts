@@ -940,11 +940,7 @@ export const PivotTableDiv = styled.div`
     font-size: 0.7rem;
   }
 `;
-export const DataDiv = styled.div`
-  width: 100%;
-  height: 88vh;
-  display: flex;
-  gap: 5px;
+export const DataDiv = styled.div`  
   @media ${device.desktop} {
     width: 100%;
     height: 88vh;

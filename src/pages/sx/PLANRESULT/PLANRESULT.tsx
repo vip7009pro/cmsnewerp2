@@ -33,6 +33,7 @@ import {
   MACHINE_LIST,
   MONTHLY_SX_DATA,
   OPERATION_TIME_DATA,
+  SX_LOSS_TREND_DATA,
   TOTAL_TIME,
   WEEKLY_SX_DATA,
 } from "../../../api/GlobalInterface";
@@ -114,6 +115,7 @@ const PLANRESULT = () => {
   const [sxachivementdata, setSXAchivementData] = useState<ACHIVEMENT_DATA[]>(
     []
   );
+  const [sxlosstrendingdata, setSXLossTrendingData] = useState<SX_LOSS_TREND_DATA[]>([]);
   const sidebarstatus: boolean | undefined = useSelector(
     (state: RootState) => state.totalSlice.sidebarmenu
   );
@@ -251,6 +253,33 @@ const PLANRESULT = () => {
           setMachineCount(loaded_data);
         } else {
           setMachineCount([]);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+  const getDailySXLossTrendingData = (mc: string, ft: string, fr: string, td: string) => {
+    generalQuery("trasxlosstrendingdata", {
+      MACHINE: mc,
+      FACTORY: ft,
+      FROM_DATE: fr,
+      TO_DATE: td,
+    })
+      .then((response) => {
+        //console.log(response.data.data);
+        if (response.data.tk_status !== "NG") {
+          const loaded_data: SX_LOSS_TREND_DATA[] = response.data.data.map(
+            (element: SX_LOSS_TREND_DATA, index: number) => {
+              return {
+                ...element,
+                INPUT_DATE: moment(element.INPUT_DATE).utc().format("YYYY-MM-DD"),               
+              };
+            }
+          );
+          setSXLossTrendingData(loaded_data);
+        } else {
+          setSXLossTrendingData([]);
         }
       })
       .catch((error) => {
@@ -570,6 +599,89 @@ const PLANRESULT = () => {
       </Chart>
     );
   }, [daily_sx_data]);
+  const productionLossTrendingchartMM = useMemo(() => {
+    return (
+      <Chart
+        id='workforcechart'
+        dataSource={sxlosstrendingdata}
+        height={600}
+        resolveLabelOverlapping='hide'
+      >
+        <Title
+          text={`DAILY PRODUCTION LOSS TRENDING`}
+          subtitle={`[${fromdate} ~ ${todate}] [${machine}] -[${factory}]`}
+        />
+        <ArgumentAxis title='PRODUCTION DATE' />
+        <ValueAxis name='percentage' position='left' title='Loss (%)' />
+        <ValueAxis name='percentage2' position='right' title='Loss (%)' />
+       
+        <CommonSeriesSettings
+          argumentField='INPUT_DATE'
+          hoverMode='allArgumentPoints'
+          selectionMode='allArgumentPoints'
+        >
+          <Label visible={true}>
+            <Format type='fixedPoint' precision={0} />
+          </Label>
+        </CommonSeriesSettings>
+        <Series
+          axis='percentage'
+          argumentField='INPUT_DATE'
+          valueField='LOSS_ST'
+          name='SETTING LOSS'
+          color='#019623'
+          type='line'
+        >
+          <Label
+            visible={true}
+            customizeText={(e: any) => {
+              return `${e.value.toLocaleString("en-US", {
+                maximumFractionDigits: 1,
+              })}%`;
+            }}
+          />
+        </Series>
+        <Series
+          axis='percentage'
+          argumentField='INPUT_DATE'
+          valueField='LOSS_SX'
+          name='SX LOSS'
+          color='#ce45ed'
+          type='line'
+        >
+          <Label
+            visible={true}
+            customizeText={(e: any) => {
+              return `${e.value.toLocaleString("en-US", {
+                maximumFractionDigits: 1,
+              })}%`;
+            }}
+          />
+        </Series>        
+        <Series
+          axis='percentage2'
+          argumentField='INPUT_DATE'
+          valueField='RATE1'
+          name='RATE1'
+          color='#f5aa42'
+          type='bar'
+        >
+          <Label
+            visible={true}
+            customizeText={(e: any) => {
+              return `${e.value.toLocaleString("en-US", {
+                maximumFractionDigits: 1,
+              })}%`;
+            }}
+          />
+        </Series>        
+        <Legend
+          verticalAlignment='bottom'
+          horizontalAlignment='center'
+        ></Legend>
+      </Chart>
+    );
+  }, [sxlosstrendingdata]);
   const weeklySXchartMM = useMemo(() => {
     return (
       <Chart
@@ -788,6 +900,7 @@ const PLANRESULT = () => {
 
     return totalAvailableTime;
   };
+
   useEffect(() => {
     getMachineList();
     getMonthlySXData(
@@ -796,6 +909,7 @@ const PLANRESULT = () => {
       moment().format("YYYY") + "-01-01",
       moment().format("YYYY-MM-DD")
     );
+    getDailySXLossTrendingData(machine, factory, fromdate, todate);
     getWeeklySXData(machine, factory, fromdate, todate);
     getDailySXData(machine, factory, fromdate, todate);
     getSXAchiveMentData(factory, fromdate, todate);
@@ -1044,6 +1158,7 @@ const PLANRESULT = () => {
             <IconButton
               className='buttonIcon'
               onClick={() => {
+               
                 getDailySXData(machine, factory, fromdate, todate);
                 getSXAchiveMentData(factory, fromdate, todate);
                 getWeeklySXData(machine, factory, fromdate, todate);
@@ -1055,6 +1170,7 @@ const PLANRESULT = () => {
                     moment(todate).format("YYYY-MM-DD")
                   )
                 );
+                getDailySXLossTrendingData(machine, factory, fromdate, todate);
               }}
             >
               <BiSearch color='green' size={15} />
@@ -1396,6 +1512,14 @@ const PLANRESULT = () => {
             4. PRODUCTION PERFOMANCE TRENDING
           </div>
           <div className='starndardworkforce'>{productionresultchartMM}</div>
+        </div>
+      </div>
+      <div className='workforcechart'>
+        <div className='sectiondiv'>
+          <div className='titleplanresult'>
+            5. PRODUCTION LOSS TRENDING
+          </div>
+          <div className='starndardworkforce'>{productionLossTrendingchartMM}</div>
         </div>
       </div>
       <div className='workforcechart2'>

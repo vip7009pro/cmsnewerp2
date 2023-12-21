@@ -102,6 +102,7 @@ import NavMenu from "../NavMenu/NavMenu";
 import TINHLIEU from "../../pages/muahang/tinhlieu/TINHLIEU";
 import BAOCAOTHEOROLL from "../../pages/sx/BAOCAOTHEOROLL/BAOCAOTHEOROLL";
 import LICHSUTEMLOTSX from "../../pages/sx/LICHSUTEMLOTSX/LICHSUTEMLOTSX";
+import BAOCAOSXALL from "../../pages/sx/BAOCAOSXALL";
 
 /* 
 const KIEMTRA= lazy(()=> import('../../pages/qc/inspection/KIEMTRA'));
@@ -477,7 +478,7 @@ export default function Navbar() {
     {
       MENU_CODE: "SX3",
       MENU_NAME: getlang("datasanxuat", lang),
-      MENU_ITEM: <DATASX2 />,
+      MENU_ITEM: <BAOCAOSXALL />,
     },
     {
       MENU_CODE: "SX4",

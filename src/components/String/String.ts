@@ -11,6 +11,7 @@ type english_sentences = {
   CONTENT: string;
 };
 export const vn_lang = {
+  nhatkysanxuat: "Nhật ký sản xuất",
   lichsutemlotsx: "Lịch sử tem lot sản xuất",
   hieusuatsx: "Hiệu suất",
   tinhlieu: "Tính Liệu",
@@ -95,6 +96,7 @@ export const vn_lang = {
   eqstatus: "Trạng Thái Máy",
 };
 export const en_lang = {  
+  nhatkysanxuat: "Production Diary",
   lichsutemlotsx: "LOT No History",
   hieusuatsx: "Production Efficiency",
   nhapxuattonlieu: "Material In-Out-Stock",
@@ -179,7 +181,8 @@ export const en_lang = {
   datasanxuat: "Production DATA",
 };
 export const kr_lang = {
-  lichsutemlotsx: "LOT No History",
+  nhatkysanxuat: "생산 일기",
+  lichsutemlotsx: "LOT No 이력",
   hieusuatsx: "생산 효율",
   nhapxuattonlieu: "원단 창고 입-출-재고",
   bophankho: "창고팀",

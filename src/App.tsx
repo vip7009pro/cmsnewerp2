@@ -28,6 +28,7 @@ import FallBackComponent from "./components/Fallback/FallBackComponent";
 import { Button } from "@mui/material";
 import { UserData } from "./api/GlobalInterface";
 import LICHSUTEMLOTSX from "./pages/sx/LICHSUTEMLOTSX/LICHSUTEMLOTSX";
+import BAOCAOSXALL from "./pages/sx/BAOCAOSXALL";
 const Login = React.lazy(() => import("./pages/login/Login"));
 const PivotChart = React.lazy(() => import("./components/PivotChart/PivotChart"));
 const BAOCAOTHEOROLL = lazy(
@@ -869,7 +870,7 @@ function App() {
                               maindeptname='all'
                               jobname='Leader'
                             >
-                              <DATASX2 />
+                              <BAOCAOSXALL />
                             </ProtectedRoute>
                           }
                         />

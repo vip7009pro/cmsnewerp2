@@ -3142,3 +3142,32 @@ export interface CS_TAXI_DATA {
   TAXI_REMARK: string,
   INS_DATETIME: string,
 }
+export interface TEMLOTSX_DATA {
+  INS_DATE: string,
+  G_CODE: string,
+  G_NAME: string,
+  M_LOT_NO: string,
+  LOTNCC: string,
+  PROD_REQUEST_NO: string,
+  PROCESS_LOT_NO: string,
+  M_NAME: string,
+  WIDTH_CD: string,
+  EMPL_NAME: string,
+  PLAN_ID: string,
+  TEMP_QTY: number,
+  PROCESS_NUMBER: number,
+  LOT_STATUS: string,
+}
+export interface SX_LOSS_TREND_DATA {
+  INPUT_DATE: string,
+  USED_QTY: number,
+  SETTING_MET: number,
+  PR_NG: number,
+  LOSS_ST: number,
+  LOSS_SX: number,
+  OUTPUT_EA: number,
+  INSPECT_INPUT: number,
+  INSPECT_TT_QTY: number,
+  RATE1: number,
+  RATE2: number,
+}
