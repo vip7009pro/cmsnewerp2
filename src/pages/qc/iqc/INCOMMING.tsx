@@ -50,6 +50,7 @@ import {
   UserData,
 } from "../../../api/GlobalInterface";
 const INCOMMING = () => {
+  const [isNewRegister, setNewRegister] = useState(true);
   function CustomToolbarPOTable() {
     return (
       <GridToolbarContainer>
@@ -320,11 +321,11 @@ const INCOMMING = () => {
     () => (
       <CustomResponsiveContainer>
         <div className="datatb">
-          <div className="menubar">           
+          <div className="menubar">
             <IconButton
               className="buttonIcon"
               onClick={() => {
-                handletraIQC1Data();                
+                handletraIQC1Data();
               }}
             >
               <AiOutlineSearch color="red" size={15} />
@@ -1205,9 +1206,7 @@ const INCOMMING = () => {
                 allowEditing={true}
               ></Column>
             </DataGrid>
-
           </div>
-
         </div>
       </CustomResponsiveContainer>
     ),
@@ -1245,6 +1244,7 @@ const INCOMMING = () => {
             },
           );
           setInspectionDataTable(loadeddata);
+          setNewRegister(false);
           Swal.fire(
             "Thông báo",
             "Đã load :" + loadeddata.length + " dòng",
@@ -1417,165 +1417,170 @@ const INCOMMING = () => {
     <div className="incomming">
       <div className="tracuuDataInspection">
         <div className="maintable">
-          {true && (
-            <div className="tracuuDataInspectionform">
-              <b style={{ color: "blue" }}>INPUT DATA KIỂM TRA INCOMMING</b>
-              <div className="forminput">
-                <div className="forminputcolumn">
-                  <b>LOT NVL CMS</b>
-                  <label>
-                    <input
-                      type="text"
-                      placeholder="202304190123"
-                      value={inputno}
-                      onChange={(e) => {
-                        if (e.target.value.length >= 7) {
-                          checkLotNVL(e.target.value);
-                        }
-                        setInputNo(e.target.value);
-                      }}
-                    ></input>
-                  </label>
-                  {m_name && (
-                    <span
-                      style={{
-                        fontSize: 15,
-                        fontWeight: "bold",
-                        color: "blue",
-                      }}
-                    >
-                      {m_name}
-                    </span>
-                  )}
-                  <b>VENDOR LOT</b>
-                  <label>
-                    <input
-                      type="text"
-                      placeholder={"NVD1201"}
-                      value={vendorLot}
-                      onChange={(e) => {
-                        setVendorLot(e.target.value);
-                      }}
-                    ></input>
-                  </label>
-
-
-                </div>
-                <div className="forminputcolumn">
-                  <b>Hạn sử dụng</b>
-                  <label>
-                    <input
-                      type="date"
-                      value={exp_date}
-                      onChange={(e) => {
-                        setEXP_DATE(e.target.value);
-                      }}
-                    ></input>
-                  </label>
-                  <b>RL NgQuan</b>
-                  <label>
-                    <input
-                      type="text"
-                      value={nq_qty}
-                      onChange={(e) => {
-                        setNQ_QTY(Number(e.target.value));
-                      }}
-                    ></input>
-                  </label>
-
-                </div>
-
-
-                <div className="forminputcolumn">
-                  <b>ID TestĐTC</b>
-                  <label>
-                    <input
-                      type="text"
-                      value={dtc_id}
-                      onChange={(e) => {
-                        setDtc_ID(Number(e.target.value));
-                      }}
-                    ></input>
-                  </label>
-                  <b>Mã IQC</b>
-                  <label>
-                    <input
-                      type="text"
-                      placeholder={"NVD1201"}
-                      value={request_empl}
-                      onChange={(e) => {
-                        if (e.target.value.length >= 7) {
-                          checkEMPL_NAME(e.target.value);
-                        }
-                        setrequest_empl(e.target.value);
-                      }}
-                    ></input>
-                  </label>
-                  {request_empl && (
-                    <span
-                      style={{
-                        fontSize: 15,
-                        fontWeight: "bold",
-                        color: "blue",
-                      }}
-                    >
-                      {empl_name}
-                    </span>
-                  )}
-                </div>
-                <div className="forminputcolumn">
-                  <b>Remark</b>
-                  <label>
-                    <input
-                      type="text"
-                      placeholder={"Ghi chú"}
-                      value={remark}
-                      onChange={(e) => {
-                        setReMark(e.target.value);
-                      }}
-                    ></input>
-                  </label>
-                </div>
+          <div className="tracuuDataInspectionform">
+            <b style={{ color: "blue" }}>INPUT DATA KIỂM TRA INCOMMING</b>
+            <div className="forminput">
+              <div className="forminputcolumn">
+                <b>LOT NVL CMS</b>
+                <label>
+                  <input
+                    type="text"
+                    placeholder="202304190123"
+                    value={inputno}
+                    onChange={(e) => {
+                      if (e.target.value.length >= 7) {
+                        checkLotNVL(e.target.value);
+                      }
+                      setInputNo(e.target.value);
+                    }}
+                  ></input>
+                </label>
+                {m_name && (
+                  <span
+                    style={{
+                      fontSize: 15,
+                      fontWeight: "bold",
+                      color: "blue",
+                    }}
+                  >
+                    {m_name}
+                  </span>
+                )}
+                <b>VENDOR LOT</b>
+                <label>
+                  <input
+                    type="text"
+                    placeholder={"NVD1201"}
+                    value={vendorLot}
+                    onChange={(e) => {
+                      setVendorLot(e.target.value);
+                    }}
+                  ></input>
+                </label>
               </div>
-              <div className="formbutton">
-                <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#f3f735', color: 'black' }} onClick={() => {
-                  if (checkInput()) {
+              <div className="forminputcolumn">
+                <b>Hạn sử dụng</b>
+                <label>
+                  <input
+                    type="date"
+                    value={exp_date}
+                    onChange={(e) => {
+                      setEXP_DATE(e.target.value);
+                    }}
+                  ></input>
+                </label>
+                <b>RL NgQuan</b>
+                <label>
+                  <input
+                    type="text"
+                    value={nq_qty}
+                    onChange={(e) => {
+                      setNQ_QTY(Number(e.target.value));
+                    }}
+                  ></input>
+                </label>
+              </div>
+              <div className="forminputcolumn">
+                <b>ID TestĐTC</b>
+                <label>
+                  <input
+                    type="text"
+                    value={dtc_id}
+                    onChange={(e) => {
+                      setDtc_ID(Number(e.target.value));
+                    }}
+                  ></input>
+                </label>
+                <b>Mã IQC</b>
+                <label>
+                  <input
+                    type="text"
+                    placeholder={"NVD1201"}
+                    value={request_empl}
+                    onChange={(e) => {
+                      if (e.target.value.length >= 7) {
+                        checkEMPL_NAME(e.target.value);
+                      }
+                      setrequest_empl(e.target.value);
+                    }}
+                  ></input>
+                </label>
+                {request_empl && (
+                  <span
+                    style={{
+                      fontSize: 15,
+                      fontWeight: "bold",
+                      color: "blue",
+                    }}
+                  >
+                    {empl_name}
+                  </span>
+                )}
+              </div>
+              <div className="forminputcolumn">
+                <b>Remark</b>
+                <label>
+                  <input
+                    type="text"
+                    placeholder={"Ghi chú"}
+                    value={remark}
+                    onChange={(e) => {
+                      setReMark(e.target.value);
+                    }}
+                  ></input>
+                </label>
+              </div>
+            </div>
+            <div className="formbutton">
+              <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#4959e7', color: 'white' }} onClick={() => {
+                setInspectionDataTable([]);
+                setNewRegister(true);
+              }}>NEW</Button>
+              <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#f3f735', color: 'black' }} onClick={() => {
+                if (checkInput()) {
+                  if(isNewRegister)
+                  {
                     addRow();
-                  } else {
-                    Swal.fire(
-                      "Thông báo",
-                      "Hãy nhập đủ thông tin trước khi đăng ký",
-                      "error",
-                    );
                   }
-                }}>Add</Button>
-                <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#0ca32d' }} onClick={() => {
+                  else {
+                    Swal.fire('Thông báo','Bấm New và Add đăng ký mới rồi hãy save','warning');
+                  }
+                } else {
+                  Swal.fire(
+                    "Thông báo",
+                    "Hãy nhập đủ thông tin trước khi đăng ký",
+                    "error",
+                  );
+                }
+              }}>Add</Button>
+              <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#0ca32d' }} onClick={() => {
+                if(isNewRegister)
+                {
                   insertIQC1Table();
-                }}>Save</Button>
-
-
-              </div>
+                }
+                else {
+                  Swal.fire('Thông báo','Bấm New và Add đăng ký mới rồi hãy save','warning');
+                }
+              }}>Save</Button>
             </div>
-          )}
+          </div>
           <div className="tracuuYCSXTable">{materialDataTable}</div>
-          {true && (
-            <div className="tracuuDataInspectionform2">
-              <b style={{ color: "blue" }}>Kết quả ĐTC</b>
-              <Datagrid2
-                sx={{ fontSize: "0.7rem", flex: 1 }}
-                components={{
-                  Toolbar: CustomToolbarPOTable,
-                }}
-                rowHeight={30}
-                rows={dtcDataTable}
-                columns={column_dtc_data}
-                rowsPerPageOptions={[
-                  5, 10, 50, 100, 500, 1000, 5000, 10000, 500000,
-                ]}
-                editMode="row"
-              />
-            </div>
-          )}
+          <div className="tracuuDataInspectionform2">
+            <b style={{ color: "blue" }}>Kết quả ĐTC</b>
+            <Datagrid2
+              sx={{ fontSize: "0.7rem", flex: 1 }}
+              components={{
+                Toolbar: CustomToolbarPOTable,
+              }}
+              rowHeight={30}
+              rows={dtcDataTable}
+              columns={column_dtc_data}
+              rowsPerPageOptions={[
+                5, 10, 50, 100, 500, 1000, 5000, 10000, 500000,
+              ]}
+              editMode="row"
+            />
+          </div>
         </div>
       </div>
     </div>

@@ -14,6 +14,7 @@
       align-items: flex-start;
       justify-items: flex-start;
       justify-content: flex-start;
+
       .maintable {
         display: flex;
         flex-direction: row;
@@ -32,13 +33,15 @@
           box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
           border-radius: 3px;
           padding: 5px;
-          height: 82vh;
+          height: 83vh;
           font-size: 0.8rem;
+
           span {
             padding: 10px;
             font-size: 20px;
             margin: auto;
           }
+
           .forminput {
             display: flex;
             gap: 5px;
@@ -58,6 +61,7 @@
               justify-content: space-around;
               padding: 2px;
               font-size: 0.8rem;
+
               input {
                 width: 235px;
                 height: 15px;
@@ -69,6 +73,7 @@
                 margin-left: 5px;
                 background-image: linear-gradient(0deg, #ececec, #9dee95);
               }
+
               select {
                 width: 235px;
                 height: 25px;
@@ -82,11 +87,13 @@
               }
             }
           }
+
           .formbutton {
             display: flex;
             align-items: center;
             justify-content: space-around;
             gap: 20px;
+
             .tranhapkiembutton {
               font-weight: bold;
               padding-left: 5px;
@@ -100,11 +107,13 @@
               box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
               margin-bottom: 5px;
               margin-top: 5px;
+
               &:hover {
                 cursor: pointer;
                 background-color: #67c73a;
               }
             }
+
             .traxuatkiembutton {
               font-weight: bold;
               padding-left: 5px;
@@ -118,11 +127,13 @@
               box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
               margin-bottom: 5px;
               margin-top: 5px;
+
               &:hover {
                 cursor: pointer;
                 background-color: #3f9eca;
               }
             }
+
             .tranhapxuatkiembutton {
               font-weight: bold;
               padding-left: 5px;
@@ -136,11 +147,13 @@
               box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
               margin-bottom: 5px;
               margin-top: 5px;
+
               &:hover {
                 cursor: pointer;
                 background-color: #bd4dc7;
               }
             }
+
             .tranhatky {
               font-weight: bold;
               padding-left: 5px;
@@ -154,12 +167,14 @@
               box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
               margin-bottom: 5px;
               margin-top: 5px;
+
               &:hover {
                 cursor: pointer;
                 background-color: #bd4dc7;
               }
             }
           }
+
           .formsummary {
             display: flex;
             flex-direction: row;
@@ -176,6 +191,7 @@
               align-items: flex-start;
               justify-items: flex-start;
               gap: 10px;
+
               .summaryvalue {
                 display: flex;
                 font-size: 16px;
@@ -187,6 +203,7 @@
             }
           }
         }
+
         .tracuuYCSXTable {
           display: flex;
           flex-direction: column;
@@ -196,38 +213,96 @@
           box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
           border-radius: 3px;
           height: 84vh;
-          .datatb {
-            padding: 5px;
-            justify-items: center;
 
+         
+
+          .datatb {
+            justify-items: center;
+            width: 99%;
+            height: 100%;
+            padding: 5px;
             .menubar {
               display: flex;
               align-items: center;
               justify-content: center;
             }
+
             .datatable {
-              .dx-datagrid {
-                background-color: #b5d8eb00; /* Change to your desired color */
+              .dx-datagrid-rowsview .dx-selection.dx-row:not(.dx-row-focused):not(.dx-row-removed)>td {
+                background-color: orange;
+                color: unset;
               }
-              /* Change background color of the header */
-              .dx-datagrid .dx-datagrid-header {
-                background-color: #337ab7; /* Change to your desired color */
-                color: #fff; /* Change to your desired text color */
+  
+              .dx-datagrid-rowsview .dx-selection.dx-row:not(.dx-row-focused):not(.dx-row-removed)>td {
+                background-color: orange;
+                color: unset;
+              }
+  
+              .dx-datagrid-borders>.dx-datagrid-header-panel {
+                border-bottom: 0 !important;
+                background-color: #e7000c !important;
+                height: 30px;
+              }
+  
+              .dx-toolbar .dx-toolbar-items-container {
+                height: 25px;
+                overflow: visible;
+              }
+  
+              //toan bo bang
+              .dx-gridbase-container>.dx-datagrid-rowsview.dx-scrollable {
+                display: -ms-flexbox;
+                display: flex;
+                background-image: linear-gradient(0deg, #e9e1eb, #f1f5cf);
+                font-size: 0.7rem;
+              }
+  
+              .dx-datagrid-borders>.dx-datagrid-filter-panel,
+              .dx-datagrid-borders>.dx-datagrid-headers {
+                border-top: 1px solid #ddd;
+                background-image: linear-gradient(0deg, #e9e1eb, #a0f87e);
+                color: black;
+                font-weight: bold;
+                font-size: 0.7rem;
+              }
+  
+              //filter row input
+              .dx-datagrid-filter-row .dx-editor-cell .dx-editor-with-menu .dx-placeholder::before,
+              .dx-datagrid-filter-row .dx-editor-cell .dx-editor-with-menu .dx-texteditor-input {
+                padding-left: 32px;
+                background-image: linear-gradient(0deg, #e9e1eb, #a0f87e);
+                color: black;
+                height: 10px;
+              }
+  
+              .dx-editor-cell .dx-texteditor,
+              .dx-editor-cell .dx-texteditor .dx-texteditor-input {
+                background-image: linear-gradient(0deg, #e9e1eb, #a0f87e);
+              }
+  
+              .dx-searchbox .dx-placeholder::before,
+              .dx-searchbox .dx-texteditor-input {
+                padding-left: 34px;
+                background-image: linear-gradient(0deg, #e9e1eb, #d7f0cd);
+              }
+  
+              .dx-button-mode-contained {
+                background-color: #a0f87e;
+                border-color: #cacafa;
+                color: #430fff;
+              }
+  
+              .dx-datagrid-total-footer>.dx-datagrid-content {
+                padding-top: 0px;
+                padding-bottom: 0px;
               }
 
-              /* Change background color of the data rows */
-              .dx-datagrid .dx-row {
-                background-color: #f9f9f9; /* Change to your desired color */
-              }
-
-              /* Change background color of selected rows */
-              .dx-datagrid .dx-row.dx-selection {
-                background-color: #337ab7; /* Change to your desired color */
-                color: #fff; /* Change to your desired text color */
-              }
             }
+            
           }
+
         }
+
         .tracuuDataInspectionform2 {
           display: flex;
           width: 15vw;
@@ -241,6 +316,7 @@
           border-radius: 3px;
           padding: 10px;
           height: 82vh;
+
           span {
             padding: 10px;
             margin: auto;
@@ -250,6 +326,7 @@
     }
   }
 }
+
 @media only screen and (max-width: 768px) {
   .incomming {
     width: 100%;
@@ -290,11 +367,13 @@
           padding: 10px;
           height: fit-content;
           font-size: 0.8rem;
+
           span {
             padding: 10px;
             font-size: 20px;
             margin: auto;
           }
+
           .forminput {
             display: flex;
             gap: 2px;
@@ -314,6 +393,7 @@
               justify-content: space-between;
               padding: 2px;
               font-size: 0.6rem;
+
               input {
                 width: 100px;
                 height: 15px;
@@ -325,6 +405,7 @@
                 margin-left: 5px;
                 background-image: linear-gradient(0deg, #ececec, #9dee95);
               }
+
               select {
                 width: 100px;
                 height: 25px;
@@ -338,6 +419,7 @@
               }
             }
           }
+
           .formbutton {
             display: flex;
             align-items: center;
@@ -345,6 +427,7 @@
             gap: 20px;
           }
         }
+
         .tracuuYCSXTable {
           display: flex;
           flex-direction: column;
@@ -361,6 +444,7 @@
             padding: 10px;
             font-size: 0.8rem;
             background-color: #86cfff;
+
             .menubar {
               display: flex;
               width: 100%;
@@ -368,30 +452,40 @@
               justify-content: center;
               flex-wrap: wrap;
             }
+
             .datatable {
               width: 100%;
+
               .dx-datagrid {
-                background-color: white; /* Change to your desired color */
+                background-color: white;
+                /* Change to your desired color */
               }
+
               /* Change background color of the header */
               .dx-datagrid .dx-datagrid-header {
-                background-color: #337ab7; /* Change to your desired color */
-                color: #fff; /* Change to your desired text color */
+                background-color: #337ab7;
+                /* Change to your desired color */
+                color: #fff;
+                /* Change to your desired text color */
               }
 
               /* Change background color of the data rows */
               .dx-datagrid .dx-row {
-                background-color: #f9f9f9; /* Change to your desired color */
+                background-color: #f9f9f9;
+                /* Change to your desired color */
               }
 
               /* Change background color of selected rows */
               .dx-datagrid .dx-row.dx-selection {
-                background-color: #337ab7; /* Change to your desired color */
-                color: #fff; /* Change to your desired text color */
+                background-color: #337ab7;
+                /* Change to your desired color */
+                color: #fff;
+                /* Change to your desired text color */
               }
             }
           }
         }
+
         .tracuuDataInspectionform2 {
           display: flex;
           width: 100%;
@@ -399,6 +493,7 @@
           -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
           box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
           height: 50vh;
+
           span {
             padding: 10px;
             margin: auto;
