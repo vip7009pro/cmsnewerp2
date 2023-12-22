@@ -30,7 +30,10 @@ export function getUserData(): UserData | undefined {
   //console.log(state.totalSlice.server_ip);
   return state.totalSlice.userData;
 }
-
+export function getSocket() {
+  const state = store.getState();
+  return state.totalSlice.globalSocket;
+}
 console.log("company", getCompany());
 
 let API_URL = getSever() + "/api";

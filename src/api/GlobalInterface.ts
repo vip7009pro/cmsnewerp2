@@ -2568,6 +2568,7 @@ export interface ELE_ARRAY {
   ELE_CODE: string;
 }
 export interface GlobalInterface {
+  globalSocket?: any;
   userData?: UserData;
   diemdanhstate?: boolean;
   lang?: string;

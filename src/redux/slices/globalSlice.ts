@@ -12,7 +12,14 @@ import {
 } from "../../api/GlobalInterface";
 const startCPN: string = "CMS";
 const socket = io(
-  startCPN === "CMS" ? "http://14.160.33.94:3006" : startCPN === "PVN" ? "http://222.252.1.63:3005": startCPN === "NHATHAN"  ? "http://222.252.1.214:3005":"");
+  startCPN === "CMS"
+    ? "http://14.160.33.94:3006"
+    : startCPN === "PVN"
+    ? "http://222.252.1.63:3005"
+    : startCPN === "NHATHAN"
+    ? "http://222.252.1.214:3005"
+    : ""
+);
 socket.on("connect", () => {
   console.log(socket.id); // x8WIv7-mJelg7on_ALbx
 });
@@ -29,10 +36,9 @@ socket.on("notification", (data) => {
   }
   console.log(data); // x8WIv7-mJelg7on_ALbx
 });
-
-socket.on("online_list", (data) => {
-  console.log("online list", data);
-});
+/* socket.on("online_list", (data) => {
+  console.log(data);
+}); */
 socket.on("login", (data) => {
   console.log(data);
   // x8WIv7-mJelg7on_ALbx
@@ -61,6 +67,7 @@ if (server_ip_local !== undefined) {
   );
 }
 const initialState: GlobalInterface = {
+  globalSocket: socket,
   userData: {
     EMPL_IMAGE: "Y",
     ADD_COMMUNE: "Đông Xuân",
@@ -273,7 +280,7 @@ export const glbSlice = createSlice({
             };
           })
         )
-      ); 
+      );
     },
     closeTab: (state, action: PayloadAction<number>) => {
       /*  state.tabs = state.tabs.filter(
@@ -283,10 +290,10 @@ export const glbSlice = createSlice({
           ); */
       let checkallDeleted: number = 0;
       for (let i = 0; i < state.tabs.length; i++) {
-        if (state.tabs[i].ELE_CODE !== "-1") checkallDeleted ++;
+        if (state.tabs[i].ELE_CODE !== "-1") checkallDeleted++;
       }
       //console.log(checkallDeleted);
-      if (checkallDeleted >1) {
+      if (checkallDeleted > 1) {
         state.tabs[action.payload] = {
           ELE_CODE: "-1",
           ELE_NAME: "DELETED",

@@ -1,6 +1,6 @@
 import moment from "moment";
 import React, { useState, useEffect, useContext } from "react";
-import { generalQuery, uploadQuery } from "../../../api/Api";
+import { generalQuery, getSocket, uploadQuery } from "../../../api/Api";
 import { UserContext, LangConText } from "../../../api/Context";
 import "./AccountInfo.scss";
 
@@ -239,7 +239,11 @@ export default function AccountInfo() {
       });
   };
 
-  useEffect(() => {
+  useEffect(() => {  
+     
+    /* getSocket().on("online_list", (data:any) => {
+      console.log(data);
+    }); */
     getData();
     getchamcong();
     let intervalID2 = window.setInterval(() => {
@@ -509,6 +513,15 @@ export default function AccountInfo() {
                 }}
               >
                 Upver
+              </Button>
+            )}
+            {userdata?.EMPL_NO === "NHU1903" && (
+              <Button
+                onClick={() => {
+                  getSocket().emit("online_list", 'nguyen van hung');   
+                }}
+              >
+                Emit
               </Button>
             )}
           </h3>{" "}

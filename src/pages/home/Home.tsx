@@ -289,8 +289,8 @@ function Home() {
             {tabModeSwap && tabs.length === 0 && <AccountInfo />}
           </animated.div>
         </div>
-        {/* <div className="chatroom">
-          <CHAT/>
+      {/*   <div className="chatroom">
+          <CHAT />
         </div> */}
       </div>
     </div>
