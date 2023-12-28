@@ -156,7 +156,7 @@ const PATROL = () => {
                 G_NAME_KD: ele.G_NAME_KD,
                 INSPECT_QTY: ele.INSPECT_QTY,
                 INSPECT_NG: ele.DEFECT_QTY,
-                LINK: `/pqc/PQC3_${ele.PQC3_ID + 1}.png`,
+                LINK: `http://192.168.1.192/pqc/PQC3_${ele.PQC3_ID + 1}.png`,
                 TIME: ele.OCCURR_TIME,
                 EMPL_NO: ele.LINEQC_PIC
               }} />
@@ -176,7 +176,7 @@ const PATROL = () => {
                 G_NAME_KD: ele.G_NAME_KD,
                 INSPECT_QTY: ele.INSPECT_QTY,
                 INSPECT_NG: ele.DEFECT_QTY,
-                LINK: `/INS_PATROL/INS_PATROL_${ele.INS_PATROL_ID}.png`,
+                LINK: `http://192.168.1.192/INS_PATROL/INS_PATROL_${ele.INS_PATROL_ID}.png`,
                 TIME: ele.OCCURR_TIME,
                 EMPL_NO: ele.INSP_PIC
               }} />
