@@ -119,8 +119,8 @@ const PLAN_DATATB = () => {
         G_CODE={element.G_CODE}
         PDBV={element.PDBV}
         PROD_REQUEST_NO={element.PROD_REQUEST_NO}
-        PDBV_EMPL={"QLSX"}
-        PDBV_DATE={"QLSX"}
+        PDBV_EMPL={element.PDBV_EMPL}
+        PDBV_DATE={element.PDBV_DATE}
       />
     ));
   };
@@ -733,7 +733,7 @@ const PLAN_DATATB = () => {
       selectedPlan?.PROCESS_NUMBER === undefined
         ? 1
         : selectedPlan?.PROCESS_NUMBER,
-        selectedPlan?.IS_SETTING?? 'Y'
+      selectedPlan?.IS_SETTING ?? 'Y'
     );
   };
   const updateDKXLPLAN = (PLAN_ID: string) => {
@@ -1138,15 +1138,15 @@ const PLAN_DATATB = () => {
             UPH3: 0,
             UPH4: 0,
             OLD_PLAN_QTY: 0,
-            ACC_TIME:0,
-            AT_LEADTIME:0,
-            CAVITY:1,
-            MASS_END_TIME:'',
-            MASS_START_TIME:'',
-            PD:1,
-            PDBV:'N',
-            REQ_DF:'R',
-            SETTING_START_TIME:''
+            ACC_TIME: 0,
+            AT_LEADTIME: 0,
+            CAVITY: 1,
+            MASS_END_TIME: '',
+            MASS_START_TIME: '',
+            PD: 1,
+            PDBV: 'N',
+            REQ_DF: 'R',
+            SETTING_START_TIME: ''
           };
           for (let i = 0; i < loadeddata.length; i++) {
             temp_plan_data.PLAN_QTY += loadeddata[i].PLAN_QTY;
@@ -1166,7 +1166,7 @@ const PLAN_DATATB = () => {
               "Đã load: " + response.data.data.length + " dòng",
               "success"
             );
-            updatePlanOrder(fromdate);
+          updatePlanOrder(fromdate);
         } else {
           setPlanDataTable([]);
           Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
@@ -1259,12 +1259,12 @@ const PLAN_DATATB = () => {
       confirmButtonText: "Vẫn chuyển!",
     }).then((result) => {
       if (result.isConfirmed) {
-        Swal.fire("Tiến hành xóa PLAN", "Đang xóa plan", "success");       
-        checkBP(userData, ["QLSX"], ["ALL"], ["ALL"], handle_DeletePlan);        
+        Swal.fire("Tiến hành xóa PLAN", "Đang xóa plan", "success");
+        checkBP(userData, ["QLSX"], ["ALL"], ["ALL"], handle_DeletePlan);
       }
     });
   };
-  const handle_DeletePlan = async ()=> {
+  const handle_DeletePlan = async () => {
     Swal.fire({
       title: "Xóa Plan",
       text: "Đang xóa plan, hãy chờ một chút",
@@ -1277,16 +1277,16 @@ const PLAN_DATATB = () => {
     let selectedPlanTable: QLSXPLANDATA[] = qlsxplandatafilter.current;
 
     let err_code: string = "0";
-    for (let i = 0; i < selectedPlanTable.length; i++) { 
-      if (selectedPlanTable[i].XUATDAOFILM !=="V" && selectedPlanTable[i].MAIN_MATERIAL !=="V" && selectedPlanTable[i].INT_TEM !== "V" && selectedPlanTable[i].CHOTBC !=="V") {
+    for (let i = 0; i < selectedPlanTable.length; i++) {
+      if (selectedPlanTable[i].XUATDAOFILM !== "V" && selectedPlanTable[i].MAIN_MATERIAL !== "V" && selectedPlanTable[i].INT_TEM !== "V" && selectedPlanTable[i].CHOTBC !== "V") {
         await generalQuery("deletePlanQLSX", {
-          PLAN_ID: selectedPlanTable[i].PLAN_ID,          
+          PLAN_ID: selectedPlanTable[i].PLAN_ID,
         })
           .then((response) => {
             //console.log(response.data.tk_status);
             if (response.data.tk_status !== "NG") {
             } else {
-              
+
             }
           })
           .catch((error) => {
@@ -1332,7 +1332,7 @@ const PLAN_DATATB = () => {
           PD = response.data.data[0].PD;
           CAVITY_NGANG = response.data.data[0].G_C_R;
           CAVITY_DOC = response.data.data[0].G_C;
-          let calc_loss_setting: boolean = IS_SETTING ==='Y'? true: false;
+          let calc_loss_setting: boolean = IS_SETTING === 'Y' ? true : false;
 
           LOSS_SX1 =
             response.data.data[0].LOSS_SX1 === null
@@ -1500,30 +1500,30 @@ const PLAN_DATATB = () => {
         G_CODE: selectedPlan?.G_CODE,
       })
         .then((response) => {
-          if (response.data.tk_status !== "NG") { 
+          if (response.data.tk_status !== "NG") {
             PD = response.data.data[0].PD;
             CAVITY_NGANG = response.data.data[0].G_C_R;
             CAVITY_DOC = response.data.data[0].G_C;
-            let calc_loss_setting: boolean =  selectedPlan?.IS_SETTING ==='Y' ? true: false;
+            let calc_loss_setting: boolean = selectedPlan?.IS_SETTING === 'Y' ? true : false;
             if (PROCESS_NUMBER === 1) {
-              FINAL_LOSS_SX = response.data.data[0].LOSS_SX1  ?? 0;
+              FINAL_LOSS_SX = response.data.data[0].LOSS_SX1 ?? 0;
             } else if (PROCESS_NUMBER === 2) {
-              FINAL_LOSS_SX = response.data.data[0].LOSS_SX2 ?? 0; 
+              FINAL_LOSS_SX = response.data.data[0].LOSS_SX2 ?? 0;
             } else if (PROCESS_NUMBER === 3) {
               FINAL_LOSS_SX = response.data.data[0].LOSS_SX3 ?? 0;
             } else if (PROCESS_NUMBER === 4) {
-              FINAL_LOSS_SX = response.data.data[0].LOSS_SX4 ?? 0; 
+              FINAL_LOSS_SX = response.data.data[0].LOSS_SX4 ?? 0;
             }
-           
+
             if (PROCESS_NUMBER === 1) {
-              FINAL_LOSS_SETTING = calc_loss_setting  ? response.data.data[0].LOSS_SETTING1 ?? 0 : 0;
+              FINAL_LOSS_SETTING = calc_loss_setting ? response.data.data[0].LOSS_SETTING1 ?? 0 : 0;
             } else if (PROCESS_NUMBER === 2) {
-              FINAL_LOSS_SETTING = calc_loss_setting  ? response.data.data[0].LOSS_SETTING2 ?? 0 : 0;
+              FINAL_LOSS_SETTING = calc_loss_setting ? response.data.data[0].LOSS_SETTING2 ?? 0 : 0;
             } else if (PROCESS_NUMBER === 3) {
-              FINAL_LOSS_SETTING = calc_loss_setting  ? response.data.data[0].LOSS_SETTING3 ?? 0 : 0;
+              FINAL_LOSS_SETTING = calc_loss_setting ? response.data.data[0].LOSS_SETTING3 ?? 0 : 0;
             } else if (PROCESS_NUMBER === 4) {
-              FINAL_LOSS_SETTING = calc_loss_setting  ? response.data.data[0].LOSS_SETTING4 ?? 0 : 0;
-            }   
+              FINAL_LOSS_SETTING = calc_loss_setting ? response.data.data[0].LOSS_SETTING4 ?? 0 : 0;
+            }
           } else {
           }
         })
@@ -1913,7 +1913,7 @@ const PLAN_DATATB = () => {
             qlsxplandatafilter.current[i].NEXT_PLAN_ID === null
               ? "X"
               : qlsxplandatafilter.current[i].NEXT_PLAN_ID,
-              IS_SETTING: qlsxplandatafilter.current[i].IS_SETTING?.toUpperCase()
+          IS_SETTING: qlsxplandatafilter.current[i].IS_SETTING?.toUpperCase()
         })
           .then((response) => {
             //console.log(response.data.tk_status);
@@ -1979,19 +1979,19 @@ const PLAN_DATATB = () => {
       Swal.fire("Thông báo", "Có lỗi !" + err_code, "error");
     } else {
       Swal.fire("Thông báo", "Lưu PLAN thành công", "success");
-      loadQLSXPlan(fromdate);      
+      loadQLSXPlan(fromdate);
     }
   };
-  const updatePlanOrder = (plan_date: string)=> {
+  const updatePlanOrder = (plan_date: string) => {
     generalQuery("updatePlanOrder", {
-      PLAN_DATE: plan_date    
+      PLAN_DATE: plan_date
     })
       .then((response) => {
         console.log(response.data.data);
         if (response.data.tk_status !== "NG") {
-          
+
         } else {
-          Swal.fire('Thông báo','Update plan order thất bại','error');
+          Swal.fire('Thông báo', 'Update plan order thất bại', 'error');
         }
       })
       .catch((error) => {
@@ -2032,8 +2032,8 @@ const PLAN_DATATB = () => {
                 e.data.PLAN_ID,
                 e.data.G_CODE,
                 e.data.PLAN_QTY,
-                e.data.PROCESS_NUMBER,               
-                e.data.IS_SETTING?? 'Y'
+                e.data.PROCESS_NUMBER,
+                e.data.IS_SETTING ?? 'Y'
               );
             }}
             onRowPrepared={(e: any) => {
@@ -2134,7 +2134,7 @@ const PLAN_DATATB = () => {
                         )
                       ),
                     ].length;
-                   // console.log("ycsx_number", ycsx_number);
+                    // console.log("ycsx_number", ycsx_number);
                     if (
                       qlsxplandatafilter.current !== undefined &&
                       qlsxplandatafilter.current.length > 0
@@ -2322,7 +2322,7 @@ const PLAN_DATATB = () => {
               }}
               allowEditing={true}
             ></Column>
-           
+
             <Column
               dataField='PLAN_ORDER'
               caption='STT'
@@ -2335,7 +2335,7 @@ const PLAN_DATATB = () => {
                 );
               }}
               allowEditing={true}
-            ></Column>             
+            ></Column>
             <Column
               dataField='PROCESS_NUMBER'
               caption='PR_NUM'
@@ -2484,7 +2484,7 @@ const PLAN_DATATB = () => {
                   <span style={{ color: "blue", fontWeight: "normarl" }}>
                     {params.data.MASS_END_TIME}
                   </span>
-                );               
+                );
 
               }}
               allowEditing={false}
@@ -2494,12 +2494,12 @@ const PLAN_DATATB = () => {
               caption='IS_SETTING'
               width={80}
               cellRender={(params: any) => {
-                if(params.data.IS_SETTING ==='Y')
-                return (
-                  <span style={{ color: "blue", fontWeight: "bold" }}>
-                    {params.data.IS_SETTING}
-                  </span>
-                );
+                if (params.data.IS_SETTING === 'Y')
+                  return (
+                    <span style={{ color: "blue", fontWeight: "bold" }}>
+                      {params.data.IS_SETTING}
+                    </span>
+                  );
                 return (
                   <span style={{ color: "red", fontWeight: "bold" }}>
                     {params.data.IS_SETTING}
@@ -2738,24 +2738,24 @@ const PLAN_DATATB = () => {
               cellRender={(params: any) => {
                 return (
                   <span style={{ color: "#4178D2", fontWeight: "bold" }}>
-                    {params.data.AT_LEADTIME.toLocaleString('en-US',{maximumFractionDigits: 0, minimumFractionDigits: 0})}
+                    {params.data.AT_LEADTIME.toLocaleString('en-US', { maximumFractionDigits: 0, minimumFractionDigits: 0 })}
                   </span>
                 );
-              }}     
-              allowEditing={false}        
+              }}
+              allowEditing={false}
             ></Column>
-             <Column
+            <Column
               dataField='ACC_TIME'
               caption='ACC_TIME'
               width={80}
               cellRender={(params: any) => {
                 return (
                   <span style={{ color: "#4178D2", fontWeight: "bold" }}>
-                    {params.data.ACC_TIME.toLocaleString('en-US',{maximumFractionDigits: 0, minimumFractionDigits: 0})}
+                    {params.data.ACC_TIME.toLocaleString('en-US', { maximumFractionDigits: 0, minimumFractionDigits: 0 })}
                   </span>
                 );
-              }}     
-              allowEditing={false}        
+              }}
+              allowEditing={false}
             ></Column>
             <Column
               dataField='KQ_SX_TAM'
@@ -2770,7 +2770,7 @@ const PLAN_DATATB = () => {
               }}
               allowEditing={false}
             ></Column>
-             <Column
+            <Column
               dataField='REQ_DF'
               caption='REQ DAO FILM'
               width={80}
@@ -3216,7 +3216,7 @@ const PLAN_DATATB = () => {
                       selectedPlan?.PROCESS_NUMBER === undefined
                         ? 0
                         : selectedPlan?.PROCESS_NUMBER,
-                        selectedPlan?.IS_SETTING?? 'Y'
+                      selectedPlan?.IS_SETTING ?? 'Y'
                     );
                   }}
                 >
@@ -3583,7 +3583,7 @@ const PLAN_DATATB = () => {
                 <button
                   className='tranhatky'
                   onClick={() => {
-                   setShowQuickPlan(!showQuickPlan);
+                    setShowQuickPlan(!showQuickPlan);
                   }}
                 >
                   QUICK PLAN
@@ -3610,18 +3610,18 @@ const PLAN_DATATB = () => {
                 <button
                   className='deleteplanbutton'
                   onClick={() => {
-                    handleConfirmDeletePlan();                                        
+                    handleConfirmDeletePlan();
                   }}
                 >
                   DELETE PLAN
-                </button>                
+                </button>
               </div>
             </div>
           </div>
           {planDataTable}
         </div>
       </div>
-      
+
       {showhideM && (
         <div className='listlieuchithi'>
           <div className='chithiheader'>
@@ -3653,7 +3653,7 @@ const PLAN_DATATB = () => {
               ___PLAN_QTY:
               {selectedPlan?.PLAN_QTY.toLocaleString("en-US")}
             </span>
-           
+
           </div>
           {planMaterialTable}
         </div>
@@ -3775,8 +3775,8 @@ const PLAN_DATATB = () => {
       {
         showQuickPlan && (
           <div className="quickplandiv">
-            <QUICKPLAN/>
-          </div>        
+            <QUICKPLAN />
+          </div>
         )
       }
     </div>

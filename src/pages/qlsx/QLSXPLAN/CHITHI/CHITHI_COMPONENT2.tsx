@@ -256,7 +256,20 @@ const CHITHI_COMPONENT2 = ({ PLAN_LIST }: PLAN_COMBO) => {
   }, []);
   return (
     <div className="chithicomponent2">
-      {
+       <div className="qcpass">
+        {request_codeinfo[0].PDBV === "Y" && checklieuchinh === true && (
+          <img
+            alt="qcpass"
+            src="/QC PASS20.png"
+            width={440 - 100 - 10}
+            height={400 - 100}
+          />
+        )}
+      </div>
+      
+        
+       
+
         <div className="tieudeycsx">
           <div className="leftlogobarcode">
             {/* {(request_codeinfo[0].PDBV==='Y' && checklieuchinh ===true) && <img alt='logo' src='/logocmsvina.png' width={160} height={40} />} */}
@@ -310,7 +323,7 @@ const CHITHI_COMPONENT2 = ({ PLAN_LIST }: PLAN_COMBO) => {
             </div>
           </div>
         </div>
-      }
+      
       <div className="thongtinycsx">
         <div className="text1">
           1. 지시 정보 Thông tin chỉ thị ({request_codeinfo[0].G_NAME} ) __

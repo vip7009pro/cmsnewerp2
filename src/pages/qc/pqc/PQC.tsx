@@ -6,6 +6,7 @@ import CODE_MANAGER from "../../rnd/code_manager/CODE_MANAGER";
 import PQC1 from "./PQC1";
 import PQC3 from "./PQC3";
 import LINEQC from "./LINEQC";
+import PATROL from "../../sx/PATROL/PATROL";
 
 const PQC = () => {
   const [selection, setSelection] = useState<any>({
@@ -108,6 +109,16 @@ const PQC = () => {
         >
           <span className="mininavtext">PQC3-DEFECT</span>
         </div>
+        <div
+          className="mininavitem"
+          onClick={() => setNav(5)}
+          style={{
+            backgroundColor: selection.tab5 === true ? "#02c712" : "#abc9ae",
+            color: selection.tab5 === true ? "yellow" : "yellow",
+          }}
+        >
+          <span className="mininavtext">PATROL</span>
+        </div>
 
       </div>
       {selection.tab1 && (
@@ -128,6 +139,11 @@ const PQC = () => {
       {selection.tab4 && (
         <div className="trapqc">
           <PQC3 />
+        </div>
+      )}
+      {selection.tab5 && (
+        <div className="trapqc">
+          <PATROL />
         </div>
       )}
      

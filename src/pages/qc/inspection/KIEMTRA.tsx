@@ -4,6 +4,7 @@ import INSPECTION from "./INSPECTION";
 import INSPECT_REPORT from "./INSPECT_REPORT";
 import INSPECT_STATUS from "./INSPECT_STATUS/INSPECT_STATUS";
 import TINHHINHCUONLIEU from "../../sx/TINH_HINH_CUON_LIEU/TINHINHCUONLIEU";
+import PATROL from "../../sx/PATROL/PATROL";
 
 /* const INSPECTION= lazy(()=> import('./INSPECTION'));
 const INSPECT_REPORT= lazy(()=> import('./INSPECT_REPORT'));
@@ -15,6 +16,8 @@ const KIEMTRA = () => {
     tab1: true,
     tab2: false,
     tab3: false,
+    tab4: false,
+    tab5: false,
   });
 
   const setNav = (choose: number) => {
@@ -25,6 +28,7 @@ const KIEMTRA = () => {
         tab2: false,
         tab3: false,
         tab4: false,
+        tab5: false,
       });
     } else if (choose === 2) {
       setSelection({
@@ -33,6 +37,7 @@ const KIEMTRA = () => {
         tab2: true,
         tab3: false,
         tab4: false,
+        tab5: false,
       });
     } else if (choose === 3) {
       setSelection({
@@ -41,6 +46,7 @@ const KIEMTRA = () => {
         tab2: false,
         tab3: true,
         tab4: false,
+        tab5: false,
       });
     } else if (choose === 4) {
       setSelection({
@@ -49,6 +55,16 @@ const KIEMTRA = () => {
         tab2: false,
         tab3: false,
         tab4: true,
+        tab5: false,
+      });
+    } else if (choose === 5) {
+      setSelection({
+        ...selection,
+        tab1: false,
+        tab2: false,
+        tab3: false,
+        tab4: false,
+        tab5: true,
       });
     }
   };
@@ -99,6 +115,16 @@ const KIEMTRA = () => {
           >
             <span className="mininavtext">Material Status</span>
           </div>
+          <div
+            className="mininavitem"
+            onClick={() => setNav(5)}
+            style={{
+              backgroundColor: selection.tab5 === true ? "#02c712" : "#abc9ae",
+              color: selection.tab5 === true ? "yellow" : "yellow",
+            }}
+          >
+            <span className="mininavtext">PATROL</span>
+          </div>
         </div>
         {selection.tab1 && (
           <div className="trainspection">
@@ -118,6 +144,11 @@ const KIEMTRA = () => {
         {selection.tab4 && (
           <div className="trainspection">
             <TINHHINHCUONLIEU />
+          </div>
+        )}
+        {selection.tab5 && (
+          <div className="trainspection">
+            <PATROL />
           </div>
         )}
       </Suspense>

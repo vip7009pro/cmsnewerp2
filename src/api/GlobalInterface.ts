@@ -1479,7 +1479,7 @@ export interface PQC1_DATA {
   LINEQC_PIC: string;
   PROD_PIC: string;
   PROD_LEADER: string;
-  LINE_NO: number;
+  LINE_NO: string;
   STEPS: string;
   CAVITY: number;
   SETTING_OK_TIME: string;
@@ -1574,7 +1574,7 @@ export interface TRA_PQC1_DATA {
   LINEQC_PIC: string;
   PROD_PIC: string;
   PROD_LEADER: string;
-  LINE_NO: number;
+  LINE_NO: string;
   STEPS: string;
   CAVITY: number;
   SETTING_OK_TIME: string;
@@ -1611,7 +1611,7 @@ export interface PQC3_DATA {
   LINEQC_PIC: string;
   PROD_PIC: string;
   PROD_LEADER: string;
-  LINE_NO: number;
+  LINE_NO: string;
   OCCURR_TIME: string;
   INSPECT_QTY: number;
   DEFECT_QTY: number;
@@ -1825,6 +1825,8 @@ export interface QLSXPLANDATA {
   AT_LEADTIME?: number;
   ACC_TIME?: number;
   IS_SETTING?: string;
+  PDBV_EMPL?: string;
+  PDBV_DATE?: string;
 }
 export interface QLSXCHITHIDATA {
   id: string;
@@ -3171,4 +3173,55 @@ export interface SX_LOSS_TREND_DATA {
   INSPECT_TT_QTY: number,
   RATE1: number,
   RATE2: number,
+}
+
+export interface PATROL_HEADER_DATA {
+  G_CODE: string,
+  G_NAME_KD: string,
+  NG_AMOUNT: number,
+  INSPECT_TOTAL_QTY: number,
+  NG_QTY: number,
+  WORST1: string,
+  WORST2: string,
+  WORST3: string,
+}
+
+export interface PATROL_DATA {
+  TIME: string,
+  EQ: string,
+  FACTORY: string,
+  G_NAME_KD: string,
+  CUST_NAME_KD: string,
+  DEFECT: string,
+  INSPECT_QTY: number,
+  INSPECT_NG: number,
+  LINK: string,
+  EMPL_NO: string,
+}
+export interface INSP_PATROL_DATA {
+  INS_PATROL_ID: number,
+  PROD_REQUEST_NO: string,
+  PLAN_ID: string,
+  PROCESS_LOT_NO: string,
+  G_CODE: string,
+  ERR_CODE: string,
+  INSPECT_QTY: number,
+  DEFECT_QTY: number,
+  DEFECT_PHENOMENON: string,
+  DEFECT_IMAGE_LINK: string,
+  LINEQC_PIC: string,
+  PROD_PIC: string,
+  INSP_PIC: string,
+  INS_DATE: string,
+  INS_EMPL: string,
+  UPD_DATE: string,
+  UPD_EMPL: string,
+  PHANLOAI: string,
+  REMARK: string, 
+  G_NAME_KD: string,
+  CUST_NAME_KD: string,
+  EQUIPMENT_CD: string,
+  FACTORY: string,
+  OCCURR_TIME: string
+
 }

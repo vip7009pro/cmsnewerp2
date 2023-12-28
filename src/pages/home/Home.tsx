@@ -23,7 +23,7 @@ import { addTab, closeTab, settabIndex } from "../../redux/slices/globalSlice";
 import AccountInfo from "../../components/Navbar/AccountInfo/AccountInfo";
 import styled from "@emotion/styled";
 import Cookies from "universal-cookie";
-export const current_ver: number = 292;
+export const current_ver: number = 294;
 interface ELE_ARRAY {
   REACT_ELE: ReactElement;
   ELE_NAME: string;
@@ -289,7 +289,7 @@ function Home() {
             {tabModeSwap && tabs.length === 0 && <AccountInfo />}
           </animated.div>
         </div>
-      {/*   <div className="chatroom">
+        {/*   <div className="chatroom">
           <CHAT />
         </div> */}
       </div>

@@ -175,24 +175,24 @@ const LINEQC = () => {
   const uploadFile2 = async (PLAN_ID: string, STT: number) => {
     console.log(file);
     uploadQuery(file, PLAN_ID + "_" + STT + ".jpg", "lineqc")
-    .then((response) => {
-      if (response.data.tk_status !== "NG") {
-        Swal.fire(
-          "Thông báo",
-          "Upload file thành công",
-          "success"
-        );
-      } else {
-        Swal.fire(
-          "Thông báo",
-          "Upload file thất bại:" + response.data.message,
-          "error"
-        );
-      }
-    })
-    .catch((error) => {
-      console.log(error);
-    });
+      .then((response) => {
+        if (response.data.tk_status !== "NG") {
+          Swal.fire(
+            "Thông báo",
+            "Upload file thành công",
+            "success"
+          );
+        } else {
+          Swal.fire(
+            "Thông báo",
+            "Upload file thất bại:" + response.data.message,
+            "error"
+          );
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
   const checkEMPL_NAME = (selection: number, EMPL_NO: string) => {
     generalQuery("checkEMPL_NO_mobile", { EMPL_NO: EMPL_NO })
@@ -249,7 +249,7 @@ const LINEQC = () => {
           //console.log(response.data.data);
           setInputNo(response.data.data[0].M_LOT_NO);
           checkLotNVL(response.data.data[0].M_LOT_NO);
-          setProcessLotNo(response.data.data[0].PROCESS_LOT_NO);         
+          setProcessLotNo(response.data.data[0].PROCESS_LOT_NO);
         } else {
           if (SXDATA[0].PROCESS_NUMBER === 0) {
             setInputNo("");
@@ -259,10 +259,10 @@ const LINEQC = () => {
               PROD_REQUEST_NO: SXDATA[0].PROD_REQUEST_NO,
             })
               .then((response) => {
-                if (response.data.tk_status !== "NG") {                  
+                if (response.data.tk_status !== "NG") {
                   setInputNo(response.data.data[0].M_LOT_NO);
                   checkLotNVL(response.data.data[0].M_LOT_NO);
-                  setProcessLotNo(response.data.data[0].PROCESS_LOT_NO);                  
+                  setProcessLotNo(response.data.data[0].PROCESS_LOT_NO);
                 } else {
                   setInputNo("");
                   setProcessLotNo("");
@@ -314,53 +314,47 @@ const LINEQC = () => {
   };
   const inputDataPqc1 = async () => {
     let checkplid: number = await checkPLAN_ID_Checksheet(planId)
-    if(sx_data[0].EQ_NAME_TT !== null)
-    {
-      if( checkplid ===1)
-    {
-      await generalQuery("insert_pqc1", {
-        PROCESS_LOT_NO: process_lot_no?.toUpperCase(),
-        LINEQC_PIC: lineqc_empl?.toUpperCase(),
-        PROD_PIC: sx_data[0].INS_EMPL?.toUpperCase(),
-        PROD_LEADER: prod_leader_empl?.toUpperCase(),
-        STEPS: sx_data[0].STEP,
-        CAVITY: sx_data[0].CAVITY,
-        SETTING_OK_TIME: sx_data[0].MASS_START_TIME,
-        FACTORY: sx_data[0].PLAN_FACTORY,
-        REMARK: ktdtc,
-        PROD_REQUEST_NO: sx_data[0].PROD_REQUEST_NO?.toUpperCase(),
-        G_CODE: sx_data[0].G_CODE,
-        PLAN_ID: sx_data[0].PLAN_ID?.toUpperCase(),
-        PROCESS_NUMBER: sx_data[0].PROCESS_NUMBER,
-        LINE_NO: sx_data[0].EQ_NAME_TT,
-        REMARK2: remark,
-      })
-        .then((response) => {
-          if (response.data.tk_status !== "NG") {
-            setPlanId('');
-            setReMark('');
-            setSXData([]);
-            updateIMGPQC1(planId);           
-          } else {
-            updateIMGPQC1(planId);
-            console.log("Có lỗi: " + response.data.message);
-          }
+    if (sx_data[0].EQ_NAME_TT !== null) {
+      if (checkplid === 1) {
+        await generalQuery("insert_pqc1", {
+          PROCESS_LOT_NO: process_lot_no?.toUpperCase(),
+          LINEQC_PIC: lineqc_empl?.toUpperCase(),
+          PROD_PIC: sx_data[0].INS_EMPL?.toUpperCase(),
+          PROD_LEADER: prod_leader_empl?.toUpperCase(),
+          STEPS: sx_data[0].STEP,
+          CAVITY: sx_data[0].CAVITY,
+          SETTING_OK_TIME: sx_data[0].MASS_START_TIME,
+          FACTORY: sx_data[0].PLAN_FACTORY,
+          REMARK: ktdtc,
+          PROD_REQUEST_NO: sx_data[0].PROD_REQUEST_NO?.toUpperCase(),
+          G_CODE: sx_data[0].G_CODE,
+          PLAN_ID: sx_data[0].PLAN_ID?.toUpperCase(),
+          PROCESS_NUMBER: sx_data[0].PROCESS_NUMBER,
+          LINE_NO: sx_data[0].EQ_NAME_TT,
+          REMARK2: remark,
         })
-        .catch((error) => {
-          console.log(error);
-        });
-    }
-    else
-    {
-      updateIMGPQC1(planId);      
-    }
+          .then((response) => {
+            if (response.data.tk_status !== "NG") {
+              setPlanId('');
+              setReMark('');
+              setSXData([]);
+              updateIMGPQC1(planId);
+            } else {
+              updateIMGPQC1(planId);
+              console.log("Có lỗi: " + response.data.message);
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }
+      else {
+        updateIMGPQC1(planId);
+      }
     }
     else {
-      Swal.fire('Thông báo',"Chỉ thị đã được bắn setting hay chưa ?","warning");
+      Swal.fire('Thông báo', "Chỉ thị đã được bắn setting hay chưa ?", "warning");
     }
-    
-    
-    
   };
   const updateIMGPQC1 = async (PLAN_ID: string) => {
     let stt: number = await checkPLAN_ID_Checksheet(PLAN_ID);
@@ -389,12 +383,12 @@ const LINEQC = () => {
       Swal.fire("Cảnh báo", "Đã up đủ đầu giữa cuối rồi", "error");
     }
   }
-  const checkInput = (): boolean => {  
-    if (      
+  const checkInput = (): boolean => {
+    if (
       planId !== "" &&
       lineqc_empl !== "" &&
-      sx_data.length !== 0   &&
-      sx_data[0].MASS_START_TIME !==""     
+      sx_data.length !== 0 &&
+      sx_data[0].MASS_START_TIME !== ""
     ) {
       return true;
     } else {
@@ -566,7 +560,6 @@ const LINEQC = () => {
                   console.log(planId)
                   console.log(lineqc_empl)
                   console.log(sx_data)
-                  
                   if (checkInput()) {
                     refArray[0].current.focus();
                     inputDataPqc1();
