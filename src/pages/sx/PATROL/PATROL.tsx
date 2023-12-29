@@ -18,8 +18,8 @@ const PATROL = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [trigger, setTrigger] = useState(false);
   const getPatrolHeaderData = async () => {
-    console.log(fromdateRef.current);
-    console.log(todateRef.current);
+    /* console.log(fromdateRef.current);
+    console.log(todateRef.current); */
     setIsLoading(true);
     await generalQuery("getpatrolheader", {
       FROM_DATE: fromdateRef.current,
@@ -205,7 +205,27 @@ const PATROL = () => {
       </div>
       <div className="row">
         {
-          inspectionPatrolTable.map((ele: INSP_PATROL_DATA, index: number) => {
+          inspectionPatrolTable.filter((element: INSP_PATROL_DATA, index: number) =>  element.PHANLOAI==='NL').map((ele: INSP_PATROL_DATA, index: number) => {
+            return (
+              <PATROL_COMPONENT key={index} data={{
+                CUST_NAME_KD: ele.CUST_NAME_KD,
+                DEFECT: ele.ERR_CODE + ':' + ele.DEFECT_PHENOMENON,
+                EQ: ele.EQUIPMENT_CD,
+                FACTORY: ele.FACTORY,
+                G_NAME_KD: ele.G_NAME_KD,
+                INSPECT_QTY: ele.INSPECT_QTY,
+                INSPECT_NG: ele.DEFECT_QTY,
+                LINK: `/INS_PATROL/INS_PATROL_${ele.INS_PATROL_ID}.png`,
+                TIME: ele.OCCURR_TIME,
+                EMPL_NO: ele.INSP_PIC
+              }} />
+            )
+          })
+        }
+      </div>
+      <div className="row">
+        {
+          inspectionPatrolTable.filter((element: INSP_PATROL_DATA, index: number) =>  element.PHANLOAI==='PK').map((ele: INSP_PATROL_DATA, index: number) => {
             return (
               <PATROL_COMPONENT key={index} data={{
                 CUST_NAME_KD: ele.CUST_NAME_KD,
