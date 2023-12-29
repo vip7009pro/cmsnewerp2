@@ -342,6 +342,10 @@ export const glbSlice = createSlice({
     login: (state, action: PayloadAction<boolean>) => {
       state.loginState = true;
     },
+    changeGLBLanguage:  (state, action: PayloadAction<string>) => {
+      //console.log(action.payload);
+      state.lang = action.payload;
+    },
   },
 });
 export const {
@@ -361,5 +365,6 @@ export const {
   resetTab,
   logout,
   login,
+  changeGLBLanguage
 } = glbSlice.actions;
 export default glbSlice.reducer;

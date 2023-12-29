@@ -3,14 +3,18 @@ import DiemDanhNhomBP from "../DiemDanhNhom/DiemDanhBP";
 import DieuChuyenTeamBP from "../DieuChuyenTeam/DieuChuyenTeamBP";
 import PheDuyetNghiBP from "../PheDuyetNghi/PheDuyetNghiBP";
 import "./QuanLyCapCao.scss";
-
+import { useSelector } from "react-redux";
+import { RootState } from "../../../redux/store";
+import { getlang } from "../../../components/String/String";
 const QuanLyCapCao = () => {
+  const glbLang: string | undefined = useSelector(
+    (state: RootState) => state.totalSlice.lang,
+  );
   const [selection, setSelection] = useState<any>({
     tab1: true,
     tab2: false,
     tab3: false,
   });
-
   const setNav = (choose: number) => {
     if (choose === 1) {
       setSelection({ ...selection, tab1: true, tab2: false, tab3: false });
@@ -20,9 +24,7 @@ const QuanLyCapCao = () => {
       setSelection({ ...selection, tab1: false, tab2: false, tab3: true });
     }
   };
-
-  useEffect(() => {}, []);
-
+  useEffect(() => { }, []);
   return (
     <div className="quanlycapcao">
       <div className="mininavbar">
@@ -34,7 +36,7 @@ const QuanLyCapCao = () => {
             color: selection.tab1 === true ? "yellow" : "yellow",
           }}
         >
-          <span className="mininavtext">Điểm danh toàn bộ phận</span>
+          <span className="mininavtext"> {getlang("diemdanhtoanbophan", glbLang!)}</span>
         </div>
         <div
           className="mininavitem"
@@ -44,7 +46,7 @@ const QuanLyCapCao = () => {
             color: selection.tab2 === true ? "yellow" : "yellow",
           }}
         >
-          <span className="mininavtext">Phê duyệt nghỉ toàn bộ phận</span>
+          <span className="mininavtext">{getlang("pheduyetnghitoanbophan", glbLang!)}</span>
         </div>
         <div
           className="mininavitem"
@@ -54,7 +56,7 @@ const QuanLyCapCao = () => {
             color: selection.tab3 === true ? "yellow" : "yellow",
           }}
         >
-          <span className="mininavtext">Điều chuyển toàn bộ phận</span>
+          <span className="mininavtext">{getlang("dieuchuyentoanbophan", glbLang!)}</span>
         </div>
       </div>
       {selection.tab1 && (

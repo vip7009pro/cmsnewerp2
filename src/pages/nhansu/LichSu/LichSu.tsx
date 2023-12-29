@@ -282,7 +282,7 @@ const LichSu = () => {
     <div className='lichsu'>
       <div className='filterform'>
         <label>
-          <b>Từ ngày:</b>
+          <b>From Date:</b>
           <input
             type='date'
             value={fromdate.slice(0, 10)}
@@ -290,7 +290,7 @@ const LichSu = () => {
           ></input>
         </label>
         <label>
-          <b>Tới ngày:</b>{" "}
+          <b>To Date:</b>{" "}
           <input
             type='date'
             value={todate.slice(0, 10)}

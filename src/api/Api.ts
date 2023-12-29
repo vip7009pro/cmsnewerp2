@@ -34,6 +34,10 @@ export function getSocket() {
   const state = store.getState();
   return state.totalSlice.globalSocket;
 }
+export function getGlobalLang() {
+  const state = store.getState();
+  return state.totalSlice.lang;
+}
 console.log("company", getCompany());
 
 let API_URL = getSever() + "/api";

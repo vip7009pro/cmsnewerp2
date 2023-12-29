@@ -190,7 +190,7 @@ const NavMenu = () => {
           MENU_CODE: "NS3",
         },
         {
-          title: getlang("dangky", lang),
+          title: getlang("dangky1", lang),
           path: "/nhansu/dangky",
           icon: <MdOutlineAppRegistration size={20} />,
           MENU_CODE: "NS4",
@@ -696,7 +696,7 @@ const NavMenu = () => {
     },
     {
       MENU_CODE: "NS4",
-      MENU_NAME: getlang("dangky", lang),
+      MENU_NAME: getlang("dangky1", lang),
       MENU_ITEM: <TabDangKy />,
     },
     {

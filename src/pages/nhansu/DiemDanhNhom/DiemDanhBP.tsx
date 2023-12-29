@@ -19,8 +19,15 @@ import LinearProgress from "@mui/material/LinearProgress";
 import { SaveExcel } from "../../../api/GlobalFunction";
 import moment from "moment";
 import { DiemDanhNhomData } from "../../../api/GlobalInterface";
+import { getlang } from "../../../components/String/String";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../redux/store";
 
 const DiemDanhNhomBP = () => {
+  const glbLang: string | undefined = useSelector(
+    (state: RootState) => state.totalSlice.lang,
+  );
+
   const [isLoading, setisLoading] = useState(false);
   const [WORK_SHIFT_CODE, setWORK_SHIFT_CODE] = useState(0);
   const [diemdanhnhomtable, setDiemDanhNhomTable] = useState<
@@ -53,8 +60,8 @@ const DiemDanhNhomBP = () => {
           params.row.ON_OFF === 1
             ? "onbt"
             : params.row.ON_OFF === 0
-            ? "offbt"
-            : "";
+              ? "offbt"
+              : "";
         const dangkynghi_auto = (REASON_CODE: number) => {
           const insertData = {
             canghi: 1,
@@ -84,7 +91,7 @@ const DiemDanhNhomBP = () => {
                 Swal.fire(
                   "Lỗi",
                   "Người này nghỉ ko đăng ký, auto chuyển Nghỉ Việc Riêng, tuy nhiên thao tác thất bại ! " +
-                    response.data.message,
+                  response.data.message,
                   "error"
                 );
               }
@@ -144,8 +151,8 @@ const DiemDanhNhomBP = () => {
                     params.row.WORK_SHIF_NAME === "Hành Chính"
                       ? 0
                       : params.row.WORK_SHIF_NAME === "TEAM 1"
-                      ? 1
-                      : 2,
+                        ? 1
+                        : 2,
                   CURRENT_CA:
                     params.row.WORK_SHIF_NAME === "Hành Chính" ? 0 : calv,
                 })
@@ -184,8 +191,8 @@ const DiemDanhNhomBP = () => {
                   params.row.WORK_SHIF_NAME === "Hành Chính"
                     ? 0
                     : params.row.WORK_SHIF_NAME === "TEAM 1"
-                    ? 1
-                    : 2,
+                      ? 1
+                      : 2,
                 CURRENT_CA:
                   params.row.WORK_SHIF_NAME === "Hành Chính" ? 0 : calv,
               })
@@ -220,8 +227,8 @@ const DiemDanhNhomBP = () => {
                   params.row.WORK_SHIF_NAME === "Hành Chính"
                     ? 0
                     : params.row.WORK_SHIF_NAME === "TEAM 1"
-                    ? 1
-                    : 2,
+                      ? 1
+                      : 2,
                 CURRENT_CA:
                   params.row.WORK_SHIF_NAME === "Hành Chính" ? 0 : calv,
               })
@@ -308,8 +315,8 @@ const DiemDanhNhomBP = () => {
           params.row.OVERTIME === 1
             ? "onbt"
             : params.row.OVERTIME === 0
-            ? "offbt"
-            : "";
+              ? "offbt"
+              : "";
         const onClick = (overtimeinfo: string) => {
           //Swal.fire("Thông báo", "Gia tri = " + params.row.EMPL_NO, "success");
           generalQuery("dangkytangcanhom", {
@@ -323,10 +330,10 @@ const DiemDanhNhomBP = () => {
                 const newProjects = diemdanhnhomtable.map((p) =>
                   p.EMPL_NO === params.row.EMPL_NO
                     ? {
-                        ...p,
-                        OVERTIME: overtimeinfo === "KTC" ? 0 : 1,
-                        OVERTIME_INFO: overtimeinfo,
-                      }
+                      ...p,
+                      OVERTIME: overtimeinfo === "KTC" ? 0 : 1,
+                      OVERTIME_INFO: overtimeinfo,
+                    }
                     : p
                 );
                 setDiemDanhNhomTable(newProjects);
@@ -495,7 +502,7 @@ const DiemDanhNhomBP = () => {
     <div className='diemdanhnhom'>
       <div className='filterform'>
         <label>
-          Ca làm việc:
+          {getlang("calamviec", glbLang!)}:
           <select
             name='calamviec'
             value={WORK_SHIFT_CODE}

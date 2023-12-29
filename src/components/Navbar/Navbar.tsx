@@ -24,6 +24,7 @@ import {
   toggleSidebar,
   setTabModeSwap,
   closeTab,
+  changeGLBLanguage
 } from "../../redux/slices/globalSlice";
 import { RootState } from "../../redux/store";
 import { useSelector, useDispatch } from "react-redux";
@@ -104,54 +105,6 @@ import BAOCAOTHEOROLL from "../../pages/sx/BAOCAOTHEOROLL/BAOCAOTHEOROLL";
 import LICHSUTEMLOTSX from "../../pages/sx/LICHSUTEMLOTSX/LICHSUTEMLOTSX";
 import BAOCAOSXALL from "../../pages/sx/BAOCAOSXALL";
 
-/* 
-const KIEMTRA= lazy(()=> import('../../pages/qc/inspection/KIEMTRA'));
-const PQC= lazy(()=> import('../../pages/qc/pqc/PQC'));
-const IQC= lazy(()=> import('../../pages/qc/iqc/IQC'));
-const DTC= lazy(()=> import('../../pages/qc/dtc/DTC'));
-const ISO= lazy(()=> import('../../pages/qc/iso/ISO'));
-const OQC= lazy(()=> import('../../pages/qc/oqc/OQC'));
-const CSTOTAL= lazy(()=> import('../../pages/qc/cs/CSTOTAL'));
-const QuotationManager= lazy(()=> import('../../pages/kinhdoanh/quotationmanager/QuotationManager'));
-const BulletinBoard= lazy(()=> import('../../components/BulletinBoard/BulletinBoard'));
-const QLSX= lazy(()=> import('../../pages/qlsx/QLSX'));
-const QC= lazy(()=> import('../../pages/qc/QC'));
-const NhanSu= lazy(()=> import('../../pages/nhansu/NhanSu'));
-const KinhDoanh= lazy(()=> import('../../pages/kinhdoanh/KinhDoanh'));
-const AccountInfo= lazy(()=> import('../../components/Navbar/AccountInfo/AccountInfo'));
-const QuanLyCapCao= lazy(()=> import('../../pages/nhansu/QuanLyCapCao/QuanLyCapCao'));
-const DESIGN_AMAZON= lazy(()=> import('../../pages/rnd/design_amazon/DESIGN_AMAZON'));
-const KHOLIEU= lazy(()=> import('../../pages/kho/kholieu/KHOLIEU'));
-const DATASX= lazy(()=> import('../../pages/qlsx/QLSXPLAN/DATASX/DATASX'));
-const EQ_STATUS= lazy(()=> import('../../pages/qlsx/QLSXPLAN/EQ_STATUS/EQ_STATUS'));
-const LICHSUINPUTLIEU= lazy(()=> import('../../pages/qlsx/QLSXPLAN/LICHSUINPUTLIEU/LICHSUINPUTLIEU'));
-const INSPECT_STATUS= lazy(()=> import('../../pages/qc/inspection/INSPECT_STATUS/INSPECT_STATUS'));
-const ShortageKD= lazy(()=> import('../../pages/kinhdoanh/shortageKD/ShortageKD'));
-const TRANGTHAICHITHI= lazy(()=> import('../../pages/sx/TRANGTHAICHITHI/TRANGTHAICHITHI'));
-const CAPASX= lazy(()=> import('../../pages/qlsx/QLSXPLAN/CAPA/CAPASX'));
-const KHOAO= lazy(()=> import('../../pages/qlsx/QLSXPLAN/KHOAO/KHOAO'));
-const QLSXPLAN= lazy(()=> import('../../pages/qlsx/QLSXPLAN/QLSXPLAN'));
-const BOM_MANAGER= lazy(()=> import('../../pages/rnd/bom_manager/BOM_MANAGER'));
-const BOM_AMAZON= lazy(()=> import('../../pages/rnd/bom_amazon/BOM_AMAZON'));
-const CODE_MANAGER= lazy(()=> import('../../pages/rnd/code_manager/CODE_MANAGER'));
-const CUST_MANAGER= lazy(()=> import('../../pages/kinhdoanh/custManager/CUST_MANAGER'));
-const QuanLyPhongBanNhanSu= lazy(()=> import('../../pages/nhansu/QuanLyPhongBanNhanSu/QuanLyPhongBanNhanSu'));
-const DiemDanhNhom= lazy(()=> import('../../pages/nhansu/DiemDanhNhom/DiemDanhNhom'));
-const DieuChuyenTeam= lazy(()=> import('../../pages/nhansu/DieuChuyenTeam/DieuChuyenTeam'));
-const TabDangKy= lazy(()=> import('../../pages/nhansu/DangKy/TabDangKy'));
-const PheDuyetNghi= lazy(()=> import('../../pages/nhansu/PheDuyetNghi/PheDuyetNghi'));
-const LichSu= lazy(()=> import('../../pages/nhansu/LichSu/LichSu'));
-const BaoCaoNhanSu= lazy(()=> import('../../pages/nhansu/BaoCaoNhanSu/BaoCaoNhanSu'));
-const PoManager= lazy(()=> import('../../pages/kinhdoanh/pomanager/PoManager'));
-const KinhDoanhReport= lazy(()=> import('../../pages/kinhdoanh/kinhdoanhreport/KinhDoanhReport'));
-const InvoiceManager= lazy(()=> import('../../pages/kinhdoanh/invoicemanager/InvoiceManager'));
-const PlanManager= lazy(()=> import('../../pages/kinhdoanh/planmanager/PlanManager'));
-const FCSTManager= lazy(()=> import('../../pages/kinhdoanh/fcstmanager/FCSTManager'));
-const YCSXManager= lazy(()=> import('../../pages/kinhdoanh/ycsxmanager/YCSXManager'));
-const POandStockFull= lazy(()=> import('../../pages/kinhdoanh/poandstockfull/POandStockFull'));
-const CS= lazy(()=> import('../../pages/qc/cs/CS'));
-const DATASX2= lazy(()=> import('../../pages/qlsx/QLSXPLAN/DATASX/DATASX2'));
-const TINHHINHCUONLIEU= lazy(()=> import('../../pages/sx/TINH_HINH_CUON_LIEU/TINHINHCUONLIEU')); */
 interface MENU_LIST_DATA {
   MENU_CODE: string;
   MENU_NAME: string;
@@ -642,6 +595,7 @@ export default function Navbar() {
     //console.log(selectLang);
     setLangMenu(false);
     setLang(selectLang);
+    dispatch(changeGLBLanguage(selectLang));
     localStorage.setItem("lang", selectLang);
   };
  

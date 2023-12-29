@@ -1,22 +1,16 @@
-import {
-  DataGrid,
-  GridSelectionModel,
-  GridToolbar,
-  GridToolbarContainer,
-  GridToolbarExport,
-  GridCsvExportOptions,
-  GridToolbarColumnsButton,
-  GridToolbarFilterButton,
-  GridToolbarDensitySelector,
-} from "@mui/x-data-grid";
 import React, { useEffect, useState } from "react";
-import { generalQuery } from "../../../api/Api";
+import { generalQuery, getGlobalLang, } from "../../../api/Api";
 import "./TabDangKy.scss";
 import Swal from "sweetalert2";
-import LinearProgress from "@mui/material/LinearProgress";
 import moment from "moment";
+import { getlang } from "../../../components/String/String";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../redux/store";
 const TabDangKy = () => {
-  const [quanlynhansuShow, setQuanLyNhanSuShow] = useState(true);
+  const glbLang: string | undefined = useSelector(
+    (state: RootState) => state.totalSlice.lang,
+  );
+
   const [canghi, setCanNghi] = useState(1);
   const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
   const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));
@@ -129,12 +123,12 @@ const TabDangKy = () => {
     <div className="tabdangky">
       <div className="formdangkys">
         <div className="formnho">
-          <h3>Đăng ký nghỉ</h3>
+          <h3>{getlang("dangkynghi",glbLang!)}</h3>
           <div className="dangkyform">
             <div className="dangkyinput">
               <div className="dangkyinputbox">
                 <label>
-                  <b>Ca nghỉ:</b>
+                  <b>{getlang("canghi",glbLang!)}:</b>
                   <select
                     name="canghi"
                     value={canghi}
@@ -145,7 +139,7 @@ const TabDangKy = () => {
                   </select>
                 </label>
                 <label>
-                  <b>Nghỉ từ ngày:</b>
+                  <b>From Date:</b>
                   <input
                     type="date"
                     value={fromdate.slice(0, 10)}
@@ -153,7 +147,7 @@ const TabDangKy = () => {
                   ></input>
                 </label>
                 <label>
-                  <b>Nghỉ tới ngày ngày:</b>{" "}
+                  <b>To Date:</b>{" "}
                   <input
                     type="date"
                     value={todate.slice(0, 10)}
@@ -161,7 +155,7 @@ const TabDangKy = () => {
                   ></input>
                 </label>
                 <label>
-                  <b>Kiểu nghỉ:</b>
+                  <b>{getlang("kieunghi",glbLang!)}:</b>
                   <select
                     name="nghitype"
                     value={nghitype}
@@ -176,7 +170,7 @@ const TabDangKy = () => {
                   </select>
                 </label>
                 <label>
-                  <b>Lý do cụ thể:</b>{" "}
+                  <b>{getlang("lydocuthe",glbLang!)}:</b>{" "}
                   <input
                     type="text"
                     placeholder="Viết ngắn gọn lý do vào đây"
@@ -188,7 +182,7 @@ const TabDangKy = () => {
             </div>
             <div className="dangkybutton">
               <button className="thembutton" onClick={hanlde_dangkynghi}>
-                Đăng ký
+              {getlang("dangky1",glbLang!)}
               </button>
               <button className="xoabutton" onClick={handlecleardangkynghi}>
                 Clear
@@ -197,12 +191,12 @@ const TabDangKy = () => {
           </div>
         </div>
         <div className="formnho">
-          <h3>Đăng ký tăng ca</h3>
+          <h3>{getlang("dangkytangca",glbLang!)}</h3>
           <div className="dangkyform">
             <div className="dangkyinput">
               <div className="dangkyinputbox">
                 <label>
-                  <b>Thời gian bắt đầu:</b>{" "}
+                  <b>{getlang("thoigianbatdau",glbLang!)}:</b>{" "}
                   <input
                     type="text"
                     placeholder="1700"
@@ -211,7 +205,7 @@ const TabDangKy = () => {
                   ></input>
                 </label>
                 <label>
-                  <b>Thời gian kết thúc:</b>{" "}
+                  <b>{getlang("thoigianketthuc",glbLang!)}:</b>{" "}
                   <input
                     type="text"
                     placeholder="2000"
@@ -223,7 +217,7 @@ const TabDangKy = () => {
             </div>
             <div className="dangkybutton">
               <button className="thembutton" onClick={hanlde_dangkytangca}>
-                Đăng ký
+              {getlang("dangky1",glbLang!)}
               </button>
               <button className="xoabutton" onClick={handlecleartangca}>
                 Clear
@@ -232,12 +226,12 @@ const TabDangKy = () => {
           </div>
         </div>
         <div className="formnho">
-          <h3>Xác nhận chấm công (Quên chấm công)</h3>
+          <h3>{getlang("xacnhanchamcong",glbLang!)}</h3>
           <div className="dangkyform">
             <div className="dangkyinput">
               <div className="dangkyinputbox">
                 <label>
-                  <b>Kiểu nghỉ:</b>
+                  <b>{getlang("kieuxacnhan",glbLang!)}:</b>
                   <select
                     name="nghitype"
                     value={confirm_type}
@@ -249,7 +243,7 @@ const TabDangKy = () => {
                   </select>
                 </label>
                 <label>
-                  <b>Ngày quên:</b>
+                  <b>Date:</b>
                   <input
                     type="date"
                     value={confirm_date}
@@ -257,7 +251,7 @@ const TabDangKy = () => {
                   ></input>
                 </label>
                 <label>
-                  <b>Giờ vào-về:</b>{" "}
+                  <b>Time:</b>{" "}
                   <input
                     type="text"
                     placeholder="0800-1700"
@@ -269,7 +263,7 @@ const TabDangKy = () => {
             </div>
             <div className="dangkybutton">
               <button className="thembutton" onClick={handle_xacnhan}>
-                Xác nhận
+              {getlang("dangky1",glbLang!)}
               </button>
               <button className="xoabutton" onClick={handleclearxacnhan}>
                 Clear

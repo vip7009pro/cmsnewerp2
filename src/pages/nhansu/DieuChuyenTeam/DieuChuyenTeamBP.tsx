@@ -17,6 +17,9 @@ import "./DieuChuyenTeam.scss";
 import Swal from "sweetalert2";
 import LinearProgress from "@mui/material/LinearProgress";
 import { SaveExcel } from "../../../api/GlobalFunction";
+import { getlang } from "../../../components/String/String";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../redux/store";
 
 interface WorkPositionTableData {
   id: number;
@@ -54,6 +57,9 @@ interface DiemDanhNhomData {
 }
 
 const DieuChuyenTeamBP = () => {
+  const glbLang: string | undefined = useSelector(
+    (state: RootState) => state.totalSlice.lang,
+  );
   const [isLoading, setisLoading] = useState(false);
   const [WORK_SHIFT_CODE, setWORK_SHIFT_CODE] = useState(5);
   const [diemdanhnhomtable, setDiemDanhNhomTable] = useState<
@@ -382,7 +388,7 @@ const DieuChuyenTeamBP = () => {
     <div className='dieuchuyenteam'>
       <div className='filterform'>
         <label>
-          Ca làm việc:
+        {getlang("calamviec", glbLang!)}:
           <select
             name='calamviec'
             value={WORK_SHIFT_CODE}

@@ -19,8 +19,14 @@ import LinearProgress from "@mui/material/LinearProgress";
 import { SaveExcel } from "../../../api/GlobalFunction";
 import moment from "moment";
 import { DiemDanhNhomData } from "../../../api/GlobalInterface";
+import { getlang } from "../../../components/String/String";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../redux/store";
 
 const DiemDanhNhom = () => {
+  const glbLang: string | undefined = useSelector(
+    (state: RootState) => state.totalSlice.lang,
+  );
   const [isLoading, setisLoading] = useState(false);
   const [WORK_SHIFT_CODE, setWORK_SHIFT_CODE] = useState(0);
   const [diemdanhnhomtable, setDiemDanhNhomTable] = useState<
@@ -490,7 +496,7 @@ const DiemDanhNhom = () => {
     <div className='diemdanhnhom'>
       <div className='filterform'>
         <label>
-          Ca làm việc:
+        {getlang("calamviec",glbLang!)}:
           <select
             name='calamviec'
             value={WORK_SHIFT_CODE}

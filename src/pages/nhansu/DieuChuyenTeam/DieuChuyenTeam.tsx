@@ -21,8 +21,14 @@ import {
   DiemDanhNhomData,
   WorkPositionTableData,
 } from "../../../api/GlobalInterface";
+import { getlang } from "../../../components/String/String";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../redux/store";
 
 const DieuChuyenTeam = () => {
+  const glbLang: string | undefined = useSelector(
+    (state: RootState) => state.totalSlice.lang,
+  );
   const [isLoading, setisLoading] = useState(false);
   const [WORK_SHIFT_CODE, setWORK_SHIFT_CODE] = useState(5);
   const [diemdanhnhomtable, setDiemDanhNhomTable] = useState<
@@ -350,7 +356,7 @@ const DieuChuyenTeam = () => {
     <div className='dieuchuyenteam'>
       <div className='filterform'>
         <label>
-          Ca làm việc:
+        {getlang("calamviec", glbLang!)}:
           <select
             name='calamviec'
             value={WORK_SHIFT_CODE}
