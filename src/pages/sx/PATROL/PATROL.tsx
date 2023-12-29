@@ -16,8 +16,7 @@ const PATROL = () => {
   const fromdateRef = useRef((moment().format("YYYY-MM-DD")));
   const todateRef = useRef((moment().format("YYYY-MM-DD")));
   const [isLoading, setIsLoading] = useState(false);
-  const [trigger,setTrigger] = useState(false);
-
+  const [trigger, setTrigger] = useState(false);
   const getPatrolHeaderData = async () => {
     console.log(fromdateRef.current);
     console.log(todateRef.current);
@@ -170,7 +169,7 @@ const PATROL = () => {
               <input
                 type="date"
                 value={fromdateRef.current.toString()}
-                onChange={(e) => {fromdateRef.current = e.target.value; setTrigger(!trigger)}}
+                onChange={(e) => { fromdateRef.current = e.target.value; setTrigger(!trigger) }}
               ></input>
             </label>
             <label>
@@ -178,7 +177,7 @@ const PATROL = () => {
               <input
                 type="date"
                 value={todateRef.current.toString()}
-                onChange={(e) => {todateRef.current = e.target.value; setTrigger(!trigger)} }
+                onChange={(e) => { todateRef.current = e.target.value; setTrigger(!trigger) }}
               ></input>
             </label>
           </FromInputColumn>
