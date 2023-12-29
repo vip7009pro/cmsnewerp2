@@ -1,20 +1,30 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import './PATROL.scss'
 import PATROL_COMPONENT from './PATROL_COMPONENT'
 import PATROL_HEADER from './PATROL_HEADER'
 import { INSP_PATROL_DATA, PATROL_HEADER_DATA, PQC3_DATA } from '../../../api/GlobalInterface'
 import { generalQuery } from '../../../api/Api'
-import { Checkbox } from '@mui/material'
+import { Button, Checkbox } from '@mui/material'
 import moment from 'moment'
+import { FromInputColumn } from '../../../components/StyledComponents/ComponentLib'
+import Swal from 'sweetalert2'
 const PATROL = () => {
   const [patrolheaderdata, setPatrolHeaderData] = useState<PATROL_HEADER_DATA[]>([]);
   const [fullScreen, setFullScreen] = useState(false);
   const [pqcdatatable, setPqcDataTable] = useState<Array<PQC3_DATA>>([]);
   const [inspectionPatrolTable, setInspectionPatrolTable] = useState<Array<INSP_PATROL_DATA>>([]);
-  const getPatrolHeaderData = () => {
-    generalQuery("getpatrolheader", {
-      FROM_DATE: moment().format('YYYY-MM-DD'),
-      TO_DATE: moment().format('YYYY-MM-DD'),
+  const fromdateRef = useRef((moment().format("YYYY-MM-DD")));
+  const todateRef = useRef((moment().format("YYYY-MM-DD")));
+  const [isLoading, setIsLoading] = useState(false);
+  const [trigger,setTrigger] = useState(false);
+
+  const getPatrolHeaderData = async () => {
+    console.log(fromdateRef.current);
+    console.log(todateRef.current);
+    setIsLoading(true);
+    await generalQuery("getpatrolheader", {
+      FROM_DATE: fromdateRef.current,
+      TO_DATE: todateRef.current,
     })
       .then((response) => {
         //console.log(response.data);
@@ -27,6 +37,7 @@ const PATROL = () => {
             }
           );
           //console.log(loadeddata);
+          setIsLoading(false);
           setPatrolHeaderData(loadeddata);
         } else {
           //Swal.fire("Thông báo", "Lỗi BOM SX: " + response.data.message, "error");
@@ -39,8 +50,8 @@ const PATROL = () => {
   };
   const getInspectionPatrol = () => {
     generalQuery("trainspectionpatrol", {
-      FROM_DATE: moment().format('YYYY-MM-DD'),
-      TO_DATE: moment().format('YYYY-MM-DD'),
+      FROM_DATE: fromdateRef.current,
+      TO_DATE: todateRef.current,
     })
       .then((response) => {
         //console.log(response.data);
@@ -66,8 +77,8 @@ const PATROL = () => {
   const traPQC3 = () => {
     generalQuery("trapqc3data", {
       ALLTIME: false,
-      FROM_DATE: moment().format('YYYY-MM-DD'),
-      TO_DATE: moment().format('YYYY-MM-DD'),
+      FROM_DATE: fromdateRef.current,
+      TO_DATE: todateRef.current,
       CUST_NAME: '',
       PROCESS_LOT_NO: '',
       G_CODE: '',
@@ -110,7 +121,12 @@ const PATROL = () => {
       });
   };
   const initFunction = () => {
-    getPatrolHeaderData();
+    if (!isLoading) {
+      getPatrolHeaderData();
+    }
+    else {
+      Swal.fire('Thông báo', 'Đang load đợi tý', 'warning');
+    }
     traPQC3();
     getInspectionPatrol();
   }
@@ -118,7 +134,7 @@ const PATROL = () => {
     initFunction();
     let intervalID = window.setInterval(() => {
       initFunction();
-    }, 30000);
+    }, 10000);
     return () => {
       clearInterval(intervalID);
     }
@@ -130,19 +146,43 @@ const PATROL = () => {
       left: fullScreen ? `0` : `0`,
       zIndex: fullScreen ? `99999` : '9'
     }}>
-
       <div className="header">
-      <img alt="running" src="/blink.gif" width={120} height={50}></img>
-        <PATROL_HEADER data={patrolheaderdata} />        
-        <Checkbox
-          checked={fullScreen}
-          onChange={(e) => {
-            //console.log(onlyRunning);
-            setFullScreen(!fullScreen);
-          }}
-          inputProps={{ "aria-label": "controlled" }}
-        />
-        Full Screen
+        <img alt="running" src="/blink.gif" width={120} height={50}></img>
+        <PATROL_HEADER data={patrolheaderdata} />
+        <div className="control">
+          <div className="checkb">
+            <Button color='secondary' onClick={() => {
+              initFunction();
+            }}>Load</Button>
+            <Checkbox
+              checked={fullScreen}
+              onChange={(e) => {
+                //console.log(onlyRunning);
+                setFullScreen(!fullScreen);
+              }}
+              inputProps={{ "aria-label": "controlled" }}
+            />
+            Full Screen
+          </div>
+          <FromInputColumn>
+            <label>
+              <b>FROM:</b>
+              <input
+                type="date"
+                value={fromdateRef.current.toString()}
+                onChange={(e) => {fromdateRef.current = e.target.value; setTrigger(!trigger)}}
+              ></input>
+            </label>
+            <label>
+              <b>TO:</b>{" "}
+              <input
+                type="date"
+                value={todateRef.current.toString()}
+                onChange={(e) => {todateRef.current = e.target.value; setTrigger(!trigger)} }
+              ></input>
+            </label>
+          </FromInputColumn>
+        </div>
       </div>
       <div className="row">
         {
