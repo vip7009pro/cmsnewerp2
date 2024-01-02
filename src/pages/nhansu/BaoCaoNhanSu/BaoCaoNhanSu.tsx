@@ -90,6 +90,7 @@ import {
   MainDeptData,
   UserData,
 } from "../../../api/GlobalInterface";
+import { getlang } from "../../../components/String/String";
 
 const BaoCaoNhanSu = () => {
   const COLORS = [
@@ -121,6 +122,9 @@ const BaoCaoNhanSu = () => {
   
   const userData: UserData | undefined = useSelector(
     (state: RootState) => state.totalSlice.userData,
+  );
+  const glbLang: string | undefined = useSelector(
+    (state: RootState) => state.totalSlice.lang,
   );
   const [isLoading, setisLoading] = useState(false);
   const [ddmaindepttb, setddmaindepttb] = useState<Array<DIEMDANHMAINDEPT>>([]);
@@ -1285,7 +1289,7 @@ const BaoCaoNhanSu = () => {
       <div className="baocao1">
         <div className="filterform">
           <label>
-            <b>Bộ phận:</b>
+            <b>{getlang("bophan", glbLang!)}:</b>
             <select
               name="bophan"
               value={maindeptcode}
@@ -1302,7 +1306,7 @@ const BaoCaoNhanSu = () => {
             </select>
           </label>
           <label>
-            <b>Nhà máy:</b>
+            <b>{getlang("nhamay", glbLang!)}:</b>
             <select
               name="nhamay"
               value={nhamay}
@@ -1316,7 +1320,7 @@ const BaoCaoNhanSu = () => {
             </select>
           </label>
           <label>
-            <b>Chọn ca:</b>
+            <b>{getlang("calamviec", glbLang!)}:</b>
             <select
               name="ca"
               value={ca}
@@ -1357,7 +1361,7 @@ const BaoCaoNhanSu = () => {
             Search
           </button>
         </div>
-        <h3>Biểu đồ trending tình hình đi làm</h3>
+        <h3>{getlang("bieudotrendingdilam", glbLang!)}</h3>
         <div className="diemdanhhistorychart">
           <CustomResponsiveContainer>
             <ComposedChart
@@ -1421,7 +1425,7 @@ const BaoCaoNhanSu = () => {
             </ComposedChart>
           </CustomResponsiveContainer>
         </div>
-        <h3>Nhân lực điểm danh trong ngày theo bộ phận chính</h3>
+        <h3>{getlang("nhanlucbophanchinh", glbLang!)}</h3>
         <div className="maindept_tableOK">
           <div className="tiledilamtable">
             <DataGrid
@@ -1445,9 +1449,9 @@ const BaoCaoNhanSu = () => {
             </CustomResponsiveContainer>
           </div>
         </div>
-        <h3>Nhân lực điểm danh trong ngày theo bộ phận chính</h3>
+        <h3>{getlang("nhanlucbophanchinh", glbLang!)}</h3>
         <div className="maindeptsummarydiv">{mainDeptSummaryTable}</div>
-        <h3>Nhân lực điểm danh trong ngày theo bộ phận phụ</h3>
+        <h3>{getlang("nhanlucbophanphu", glbLang!)}</h3>
         <div className="maindept_table">
           <div className="tiledilamtable">
             <DataGrid
@@ -1505,7 +1509,7 @@ const BaoCaoNhanSu = () => {
             </CustomResponsiveContainer>
           </div>
         </div>
-        <h3>Lịch sử đi làm full info</h3>
+        <h3>{getlang("lichsudilamfullinfo", glbLang!)}</h3>
         <div className="maindept_table">
           <DataGrid
             components={{

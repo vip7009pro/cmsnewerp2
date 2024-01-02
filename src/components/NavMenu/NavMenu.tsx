@@ -171,7 +171,7 @@ const NavMenu = () => {
   const dispatch = useDispatch();
   const SidebarData = [
     {
-      title: getlang("nhansu", lang) /*Nhân sự*/,
+      title: getlang("nhansubophan", lang) /*Nhân sự*/,
       path: "#",
       icon: <FcManager color="green" size={20} />,
       iconClosed: <KeyboardArrowDownIcon />,

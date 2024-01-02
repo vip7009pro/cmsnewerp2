@@ -11,6 +11,33 @@ type english_sentences = {
   CONTENT: string;
 };
 export const vn_lang = {
+  tinhthanhpho: "Tỉnh/thành phố",
+  quanhuyen: "Quận huyện",
+  xathitran: "Xã/Thị trấn",
+  thonxom: "Thôn/xóm",
+  sodienthoai:"Số điện thoại",
+  ngaybatdaulamviec:"Ngày bắt đầu làm việc",
+  ngaynghiviec: "Ngày nghỉ việc",
+  password: "Password",
+  email: "Email", 
+  teamlamviec: "Team làm việc",
+  capbac: "Cấp bậc",
+  trangthailamviec: "Trạng thái làm việc",
+  them: "Thêm",
+  update: "Update",
+  clear:"Clear",
+  
+
+  gioitinh: "Giới tính",
+  ten: "Tên",
+  hovadem: "Họ và đệm",
+  machamcong: "Mã chấm công",
+  lichsudilamfullinfo: "Lịch sử đi làm full info",
+  nhanlucbophanphu: "Nhân lực điểm danh trong ngày theo bộ phận phụ",
+  nhanlucbophanchinh: "Nhân lực điểm danh trong ngày theo bộ phận chính",
+  bieudotrendingdilam: "Biểu đồ trending tình hình đi làm",
+  nhamay: "Nhà máy",
+  bophan: "Bộ phận",
   dieuchuyentoanbophan: "Điều chuyển toàn bộ phận",
   pheduyetnghitoanbophan: "Phê duyệt nghỉ toàn bộ phận",
   diemdanhtoanbophan: "Điểm danh toàn bộ phận",
@@ -108,7 +135,33 @@ export const vn_lang = {
   planstatus: "Trạng Thái Chỉ Thị",
   eqstatus: "Trạng Thái Máy",
 };
-export const en_lang = {  
+export const en_lang = { 
+  tinhthanhpho: "Province/City",
+  quanhuyen: "District",
+  xathitran: "Commune",
+  thonxom: "Village",
+  sodienthoai:"Phone Number",
+  ngaybatdaulamviec:"Work Start Date",
+  ngaynghiviec: "Work End Date",
+  password: "Password",
+  email: "Email", 
+  teamlamviec: "Team",
+  capbac: "Rank",
+  trangthailamviec: "Work Status",
+  them: "Add",
+  update: "Update",
+  clear:"Clear",
+
+  gioitinh: "Sex",
+  ten: "First Name",
+  hovadem: "Mid & Last Name",
+  machamcong: "Att ID",
+  lichsudilamfullinfo: "Working history full",
+  nhanlucbophanphu: "Checkin by Sub Dept",
+  nhanlucbophanchinh: "Checkin by Main Dept",
+  bieudotrendingdilam: "Work situation trending chart", 
+  nhamay: "Factory",
+  bophan: "Department",
   dieuchuyentoanbophan: "All Dept HR Transffer",
   pheduyetnghitoanbophan: "App Dept Leave Approve",
   diemdanhtoanbophan: "All Dept Att",
@@ -164,7 +217,7 @@ export const en_lang = {
   thongtincuaban: "Your information",
   thongtinnhanvien: "Staff information",
   hovaten: "First and last name",
-  manhansu: "Human resources",
+  manhansu: "HR code",
   maerp: "ERP code",
   ngaythangnamsinh: "Date of birth",
   quequan: "Home town",
@@ -207,6 +260,32 @@ export const en_lang = {
   datasanxuat: "Production DATA",
 };
 export const kr_lang = {
+  tinhthanhpho: "시",
+  quanhuyen: "군",
+  xathitran: "코뮌",
+  thonxom: "마을",
+  sodienthoai:"전화 번호",
+  ngaybatdaulamviec:"근무 시작일",
+  ngaynghiviec: "퇴사 일",
+  password: "Password",
+  email: "Email", 
+  teamlamviec: "팀",
+  capbac: "직급",
+  trangthailamviec: "근무 상태",
+  them: "추가",
+  update: "업데이트",
+  clear:"지우기",
+  
+  gioitinh: "성별",
+  ten: "이름",
+  hovadem: "성",
+  machamcong: "출석 ID",
+  lichsudilamfullinfo: "출근 이력 Full",
+  nhanlucbophanphu: "파트별 출근 현황",
+  nhanlucbophanchinh: "부서별 출근 현황",
+  bieudotrendingdilam: "출근 현황",
+  nhamay: "공장",
+  bophan: "부서",
   dieuchuyentoanbophan: "전 부서 인원 배치",
   pheduyetnghitoanbophan: "전 부서 결근 승인",
   diemdanhtoanbophan: "전 부서 출석 체크",
@@ -564,7 +643,8 @@ const getsentence = (sentence: number, lang: string): any => {
   return output;
 };
 const getValue = (part: any, o: any) =>
-  Object.entries(o).find(([k, v]) => k.startsWith(part))?.[1];
+  Object.entries(o).find(([k, v]) => k===part)?.[1];
+ /*  Object.entries(o).find(([k, v]) => k.startsWith(part))?.[1]; */
 export const getlang = (key: string, lang: string): any => {
   //console.log(lang);
   if (lang === "vi") {

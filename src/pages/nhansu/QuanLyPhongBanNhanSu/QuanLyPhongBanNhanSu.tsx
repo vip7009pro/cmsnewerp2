@@ -28,10 +28,13 @@ import {
 import { changeUserData } from "../../../redux/slices/globalSlice";
 import { AiOutlineCloudUpload } from "react-icons/ai";
 import { IconButton } from "@mui/material";
-
+import { getlang } from "../../../components/String/String";
 const QuanLyPhongBanNhanSu = () => {
   const userData: UserData | undefined = useSelector(
     (state: RootState) => state.totalSlice.userData
+  );
+  const glbLang: string | undefined = useSelector(
+    (state: RootState) => state.totalSlice.lang,
   );
   const [isLoading, setisLoading] = useState(false);
   const [workpositionload, setWorkPositionLoad] = useState<
@@ -85,59 +88,50 @@ const QuanLyPhongBanNhanSu = () => {
   const [enableEdit, setEnableEdit] = useState(false);
   const [NV_CCID, setNV_CCID] = useState(0);
   const [resigned_check, setResignedCheck] = useState(true);
-
   const [file, setFile] = useState<any>(null);
   const dispatch = useDispatch();
   const uploadFile2 = async (empl_no: string) => {
-    if(file !==null && file !== undefined)
-    {
-      if(EMPL_NO !=="")
-      {
+    if (file !== null && file !== undefined) {
+      if (EMPL_NO !== "") {
         uploadQuery(file, "NS_" + empl_no + ".jpg", "Picture_NS")
-        .then((response) => {
-          console.log("resopone upload:", response.data);
-          if (response.data.tk_status !== "NG") {
-            generalQuery("update_empl_image", {
-              EMPL_NO: empl_no,
-              EMPL_IMAGE: "Y",
-            })
-              .then((response) => {
-                if (response.data.tk_status !== "NG") {
-                  dispatch(changeUserData({ ...userData, EMPL_IMAGE: "Y" }));
-                  Swal.fire("Thông báo", "Upload avatar thành công", "success");
-                } else {
-                  Swal.fire("Thông báo", "Upload avatar thất bại", "error");
-                }
+          .then((response) => {
+            console.log("resopone upload:", response.data);
+            if (response.data.tk_status !== "NG") {
+              generalQuery("update_empl_image", {
+                EMPL_NO: empl_no,
+                EMPL_IMAGE: "Y",
               })
-              .catch((error) => {
-                console.log(error);
-              });
-          } else {
-            Swal.fire(
-              "Thông báo",
-              "Upload file thất bại:" + response.data.message,
-              "error"
-            );
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+                .then((response) => {
+                  if (response.data.tk_status !== "NG") {
+                    dispatch(changeUserData({ ...userData, EMPL_IMAGE: "Y" }));
+                    Swal.fire("Thông báo", "Upload avatar thành công", "success");
+                  } else {
+                    Swal.fire("Thông báo", "Upload avatar thất bại", "error");
+                  }
+                })
+                .catch((error) => {
+                  console.log(error);
+                });
+            } else {
+              Swal.fire(
+                "Thông báo",
+                "Upload file thất bại:" + response.data.message,
+                "error"
+              );
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
       }
-      else
-      {
-        Swal.fire('Thông báo','Chọn nhân viên trước','error');
+      else {
+        Swal.fire('Thông báo', 'Chọn nhân viên trước', 'error');
       }
     }
-    else
-    {
-      Swal.fire('Thông báo','Chọn file trước','error');
+    else {
+      Swal.fire('Thông báo', 'Chọn file trước', 'error');
     }
-   
-
-   
   };
-
   const handle_them_maindept = () => {
     const insertData = {
       CTR_CD: "002",
@@ -840,7 +834,6 @@ const QuanLyPhongBanNhanSu = () => {
         >
           Save Excel
         </button>
-
         <IconButton
           className='buttonIcon'
           onClick={() => {
@@ -862,13 +855,11 @@ const QuanLyPhongBanNhanSu = () => {
       </GridToolbarContainer>
     );
   }
-
   const [selection, setSelection] = useState<any>({
     tab1: true,
     tab2: false,
     tab3: false,
   });
-
   const setNav = (choose: number) => {
     if (choose === 1) {
       setSelection({ ...selection, tab1: true, tab2: false, tab3: false });
@@ -880,7 +871,6 @@ const QuanLyPhongBanNhanSu = () => {
   };
   const zeroPad = (num: number, places: number) =>
     String(num).padStart(places, "0");
-
   const loademployeefull = () => {
     generalQuery("getemployee_full", {})
       .then((response) => {
@@ -972,7 +962,6 @@ const QuanLyPhongBanNhanSu = () => {
           <span className='mininavtext'>Quản Lý Phòng Ban</span>
         </div>
       </div>
-
       <div className='quanlyphongban'>
         {selection.tab2 && (
           <div className='maindept'>
@@ -1033,7 +1022,7 @@ const QuanLyPhongBanNhanSu = () => {
                     }
                   }}
                 >
-                  Thêm
+                  {getlang("them", glbLang!)}
                 </button>
                 <button
                   className='suabutton'
@@ -1051,7 +1040,7 @@ const QuanLyPhongBanNhanSu = () => {
                     }
                   }}
                 >
-                  Sửa
+                  {getlang("update", glbLang!)}
                 </button>
                 <button
                   className='xoabutton'
@@ -1069,7 +1058,7 @@ const QuanLyPhongBanNhanSu = () => {
                     }
                   }}
                 >
-                  Xoá
+                  {getlang("clear", glbLang!)}
                 </button>
               </div>
             </div>
@@ -1134,7 +1123,7 @@ const QuanLyPhongBanNhanSu = () => {
                     }
                   }}
                 >
-                  Thêm
+                  {getlang("them", glbLang!)}
                 </button>
                 <button
                   className='suabutton'
@@ -1152,7 +1141,7 @@ const QuanLyPhongBanNhanSu = () => {
                     }
                   }}
                 >
-                  Sửa
+                  {getlang("update", glbLang!)}
                 </button>
                 <button
                   className='xoabutton'
@@ -1170,7 +1159,7 @@ const QuanLyPhongBanNhanSu = () => {
                     }
                   }}
                 >
-                  Xoá
+                  {getlang("clear", glbLang!)}
                 </button>
               </div>
             </div>
@@ -1244,7 +1233,7 @@ const QuanLyPhongBanNhanSu = () => {
                     }
                   }}
                 >
-                  Thêm
+                  {getlang("them", glbLang!)}
                 </button>
                 <button
                   className='suabutton'
@@ -1262,7 +1251,7 @@ const QuanLyPhongBanNhanSu = () => {
                     }
                   }}
                 >
-                  Sửa
+                  {getlang("update", glbLang!)}
                 </button>
                 <button
                   className='xoabutton'
@@ -1280,7 +1269,7 @@ const QuanLyPhongBanNhanSu = () => {
                     }
                   }}
                 >
-                  Xoá
+                  {getlang("clear", glbLang!)}
                 </button>
               </div>
             </div>
@@ -1290,7 +1279,7 @@ const QuanLyPhongBanNhanSu = () => {
       <div className='quanlynhansu'>
         {selection.tab1 && (
           <div className='maindept'>
-            <h3>Thông tin nhân lực</h3>
+            <h3>{getlang("thongtinnhanvien", glbLang!)}</h3>
             <div className='maindeptform'>
               <div className='inputform'>
                 <div className='emplpicture'>
@@ -1322,24 +1311,20 @@ const QuanLyPhongBanNhanSu = () => {
                         console.log(e.target.files[0]);
                       }}
                     />
-                    <IconButton className='buttonIcon' onClick={()=> {
-                      checkBP(userData,['NHANSU'],['ALL'],['ALL'],async ()=> {
+                    <IconButton className='buttonIcon' onClick={() => {
+                      checkBP(userData, ['NHANSU'], ['ALL'], ['ALL'], async () => {
                         uploadFile2(EMPL_NO)
                       })
-                     }}>
+                    }}>
                       <AiOutlineCloudUpload color='yellow' size={15} />
                       Upload
                     </IconButton>
-                    
-
                   </div>
-                  
-
                 </div>
                 <div className='maindeptinput'>
                   <div className='maindeptinputbox'>
                     <label>
-                      Mã ERP:{" "}
+                      {getlang("maerp", glbLang!)}{" "}
                       <input
                         disabled={enableEdit}
                         type='text'
@@ -1348,7 +1333,7 @@ const QuanLyPhongBanNhanSu = () => {
                       ></input>
                     </label>
                     <label>
-                      Mã nhân sự:{" "}
+                      {getlang("manhansu", glbLang!)}{" "}
                       <input
                         disabled={enableEdit}
                         type='text'
@@ -1357,7 +1342,7 @@ const QuanLyPhongBanNhanSu = () => {
                       ></input>
                     </label>
                     <label>
-                      Mã Chấm Công
+                      {getlang("machamcong", glbLang!)}
                       <input
                         name='gioitinh'
                         value={NV_CCID}
@@ -1365,7 +1350,7 @@ const QuanLyPhongBanNhanSu = () => {
                       ></input>
                     </label>
                     <label>
-                      Tên:{" "}
+                      {getlang("ten", glbLang!)}{" "}
                       <input
                         disabled={enableEdit}
                         type='text'
@@ -1374,7 +1359,7 @@ const QuanLyPhongBanNhanSu = () => {
                       ></input>
                     </label>
                     <label>
-                      Họ và Đệm:{" "}
+                      {getlang("hovadem", glbLang!)}
                       <input
                         disabled={enableEdit}
                         type='text'
@@ -1383,7 +1368,7 @@ const QuanLyPhongBanNhanSu = () => {
                       ></input>
                     </label>
                     <label>
-                      Ngày tháng năm sinh:{" "}
+                      {getlang("ngaythangnamsinh", glbLang!)}
                       <input
                         type='date'
                         value={DOB.slice(0, 10)}
@@ -1391,7 +1376,7 @@ const QuanLyPhongBanNhanSu = () => {
                       ></input>
                     </label>
                     <label>
-                      Quê quán:{" "}
+                      {getlang("quequan", glbLang!)}
                       <input
                         type='text'
                         value={HOMETOWN}
@@ -1399,7 +1384,7 @@ const QuanLyPhongBanNhanSu = () => {
                       ></input>
                     </label>
                     <label>
-                      Giới tính:
+                      {getlang("gioitinh", glbLang!)}
                       <select
                         name='gioitinh'
                         value={SEX_CODE}
@@ -1412,7 +1397,7 @@ const QuanLyPhongBanNhanSu = () => {
                   </div>
                   <div className='maindeptinputbox'>
                     <label>
-                      Tỉnh/thành phố:{" "}
+                      {getlang("tinhthanhpho", glbLang!)}
                       <input
                         type='text'
                         value={ADD_PROVINCE}
@@ -1420,7 +1405,7 @@ const QuanLyPhongBanNhanSu = () => {
                       ></input>
                     </label>
                     <label>
-                      Quận/Huyện:{" "}
+                      {getlang("quanhuyen", glbLang!)}
                       <input
                         type='text'
                         value={ADD_DISTRICT}
@@ -1428,7 +1413,7 @@ const QuanLyPhongBanNhanSu = () => {
                       ></input>
                     </label>
                     <label>
-                      Xã/Thị trấn:{" "}
+                      {getlang("xathitran", glbLang!)}
                       <input
                         type='text'
                         value={ADD_COMMUNE}
@@ -1436,7 +1421,7 @@ const QuanLyPhongBanNhanSu = () => {
                       ></input>
                     </label>
                     <label>
-                      Thôn/xóm:{" "}
+                      {getlang("thonxom", glbLang!)}
                       <input
                         type='text'
                         value={ADD_VILLAGE}
@@ -1444,7 +1429,7 @@ const QuanLyPhongBanNhanSu = () => {
                       ></input>
                     </label>
                     <label>
-                      Số điện thoại:{" "}
+                      {getlang("sodienthoai", glbLang!)}
                       <input
                         type='text'
                         value={PHONE_NUMBER}
@@ -1452,7 +1437,7 @@ const QuanLyPhongBanNhanSu = () => {
                       ></input>
                     </label>
                     <label>
-                      Ngày bắt đầu làm việc:{" "}
+                      {getlang("ngaybatdaulamviec", glbLang!)}
                       <input
                         type='date'
                         value={WORK_START_DATE.slice(0, 10)}
@@ -1460,7 +1445,7 @@ const QuanLyPhongBanNhanSu = () => {
                       ></input>
                     </label>
                     <label>
-                      Ngày nghỉ việc:{" "}
+                      {getlang("ngaynghiviec", glbLang!)}
                       <input
                         disabled={WORK_STATUS_CODE !== 0}
                         type='date'
@@ -1469,7 +1454,7 @@ const QuanLyPhongBanNhanSu = () => {
                       ></input>
                     </label>
                     <label>
-                      Password:{" "}
+                      {getlang("password", glbLang!)}
                       <input
                         type='password'
                         value={PASSWORD}
@@ -1479,7 +1464,7 @@ const QuanLyPhongBanNhanSu = () => {
                   </div>
                   <div className='maindeptinputbox'>
                     <label>
-                      Email:{" "}
+                      {getlang("email", glbLang!)}
                       <input
                         type='text'
                         value={EMAIL}
@@ -1487,7 +1472,7 @@ const QuanLyPhongBanNhanSu = () => {
                       ></input>
                     </label>
                     <label>
-                      Vị trí làm việc:
+                      {getlang("vitrilamviec", glbLang!)}
                       <select
                         name='vitrilamviec'
                         value={WORK_POSITION_CODE}
@@ -1506,7 +1491,7 @@ const QuanLyPhongBanNhanSu = () => {
                       </select>
                     </label>
                     <label>
-                      Team làm việc:
+                      {getlang("teamlamviec", glbLang!)}
                       <select
                         name='calamviec'
                         value={WORK_SHIFT_CODE}
@@ -1521,7 +1506,7 @@ const QuanLyPhongBanNhanSu = () => {
                       </select>
                     </label>
                     <label>
-                      Cấp bậc:
+                      {getlang("capbac", glbLang!)}
                       <select
                         name='chucdanh'
                         value={POSITION_CODE}
@@ -1537,7 +1522,7 @@ const QuanLyPhongBanNhanSu = () => {
                       </select>
                     </label>
                     <label>
-                      Chức vụ:
+                      {getlang("chucvu", glbLang!)}
                       <select
                         name='chucvu'
                         value={JOB_CODE}
@@ -1550,7 +1535,7 @@ const QuanLyPhongBanNhanSu = () => {
                       </select>
                     </label>
                     <label>
-                      Nhà máy:
+                      {getlang("nhamay", glbLang!)}
                       <select
                         name='nhamay'
                         value={FACTORY_CODE}
@@ -1563,7 +1548,7 @@ const QuanLyPhongBanNhanSu = () => {
                       </select>
                     </label>
                     <label>
-                      Trạng thái làm việc:
+                      {getlang("trangthailamviec", glbLang!)}
                       <select
                         name='trangthailamviec'
                         value={WORK_STATUS_CODE}
@@ -1595,7 +1580,7 @@ const QuanLyPhongBanNhanSu = () => {
                       }
                     }}
                   >
-                    Thêm
+                    {getlang("them", glbLang!)}
                   </button>
                   <button
                     className='suabutton'
@@ -1613,7 +1598,7 @@ const QuanLyPhongBanNhanSu = () => {
                       }
                     }}
                   >
-                    Update
+                    {getlang("update", glbLang!)}
                   </button>
                   <button
                     className='xoabutton'
@@ -1631,7 +1616,7 @@ const QuanLyPhongBanNhanSu = () => {
                       }
                     }}
                   >
-                    Clear
+                    {getlang("clear", glbLang!)}
                   </button>
                 </div>
               </div>

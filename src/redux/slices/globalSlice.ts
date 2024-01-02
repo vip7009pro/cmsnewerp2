@@ -117,7 +117,7 @@ const initialState: GlobalInterface = {
     WORK_STATUS_NAME_KR: "근무중",
   },
   diemdanhstate: false,
-  lang: "vi",
+  lang: localStorage.getItem("lang")?.toString() ?? "vi",
   sidebarmenu: true,
   multiple_chithi_array: [],
   company: startCPN,
