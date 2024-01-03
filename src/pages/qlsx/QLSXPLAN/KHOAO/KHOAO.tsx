@@ -355,8 +355,9 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
       .then((response) => {
         console.log(response.data.data);
         if (response.data.tk_status !== "NG") {
-          checkTonTai = response.data.data.length > 0;
+          checkTonTai = false;
         } else {
+          checkTonTai = true;
         }
       })
       .catch((error) => {
@@ -388,6 +389,7 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
         let err_code: string = "0";
         for (let i = 0; i < tonkhoaodatafilter.length; i++) {
           let checktontaikhoao: boolean = await checktontaiMlotPlanIdSuDung(nextPlan,tonkhoaodatafilter[i].M_LOT_NO);
+          console.log('checktontaikhoao',checktontaikhoao);
           let checklieuchithi: boolean = true;
           await generalQuery("checkM_CODE_CHITHI", {
             PLAN_ID_OUTPUT: nextPlan,
@@ -536,13 +538,7 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
       confirmButtonText: "Vẫn Xóa!",
     }).then((result) => {
       if (result.isConfirmed) {
-        Swal.fire("Tiến hành Xóa", "Đang xóa hàng loạt", "success");
-        /* checkBP(
-          userData?.EMPL_NO,
-          userData?.MAINDEPTNAME,
-          ["SX"],
-          handle_xoa_rac
-        ); */
+        Swal.fire("Tiến hành Xóa", "Đang xóa hàng loạt", "success");       
         checkBP(userData, ["SX"], ["ALL"], ["ALL"], handle_xoa_rac);
       }
     });
@@ -558,13 +554,7 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
       confirmButtonText: "Vẫn Ẩn!",
     }).then((result) => {
       if (result.isConfirmed) {
-        Swal.fire("Tiến hành Ẩn", "Đang Ẩn hàng loạt", "success");
-        /* checkBP(
-          userData?.EMPL_NO,
-          userData?.MAINDEPTNAME,
-          ["SX"],
-          handle_an_rac
-        ); */
+        Swal.fire("Tiến hành Ẩn", "Đang Ẩn hàng loạt", "success");        
         checkBP(userData, ["SX"], ["ALL"], ["ALL"], handle_an_rac);
       }
     });
