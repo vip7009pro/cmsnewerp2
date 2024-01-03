@@ -346,6 +346,24 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
         console.log(error);
       });
   };
+  const checktontaiMlotPlanIdSuDung = async (NEXT_PLAN: string, M_LOT_NO: string) => {
+    let checkTonTai: boolean = false;
+    await generalQuery("checkTonTaiXuatKhoAo", {
+      PLAN_ID: NEXT_PLAN,
+      M_LOT_NO: M_LOT_NO
+    })
+      .then((response) => {
+        console.log(response.data.data);
+        if (response.data.tk_status !== "NG") {
+          checkTonTai = response.data.data.length > 0;
+        } else {
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    return checkTonTai;
+  }
   const checkNextPlanFSC = async (NEXT_PLAN: string) => {
     let checkFSC: string = "N";
     await generalQuery("checkFSC_PLAN_ID", {
@@ -369,6 +387,7 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
       if (tonkhoaodatafilter.length > 0) {
         let err_code: string = "0";
         for (let i = 0; i < tonkhoaodatafilter.length; i++) {
+          let checktontaikhoao: boolean = await checktontaiMlotPlanIdSuDung(nextPlan,tonkhoaodatafilter[i].M_LOT_NO);
           let checklieuchithi: boolean = true;
           await generalQuery("checkM_CODE_CHITHI", {
             PLAN_ID_OUTPUT: nextPlan,
@@ -389,7 +408,8 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
           if (
             checklieuchithi === true &&
             nextPlan !== tonkhoaodatafilter[i].PLAN_ID_INPUT &&
-            checkFSC === tonkhoaodatafilter[i].FSC
+            checkFSC === tonkhoaodatafilter[i].FSC && 
+            checktontaikhoao
           ) {
             await generalQuery("xuatkhoao", {
               FACTORY: tonkhoaodatafilter[i].FACTORY,
@@ -433,7 +453,7 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
               .catch((error) => {
                 console.log(error);
               });
-          } else {
+          } else {            
             err_code +=
               "| " +
               "Liệu: " +
@@ -442,11 +462,12 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
           }
         }
         if (err_code !== "0") {
-          Swal.fire("Thông báo", "Có lỗi: " + err_code, "error");
+          Swal.fire("Thông báo", "Có lỗi: " + err_code, "error"); 
+         
         } else {
-          setTonKhoAoDataFilter([]);
-          handle_loadKhoAo();
+          setTonKhoAoDataFilter([]);          
         }
+        handle_loadKhoAo();
       } else {
         Swal.fire("Thông báo", "Chọn ít nhất 1 liệu để xuất kho", "error");
       }

@@ -70,7 +70,7 @@ const CustomerPobalancebyTypeNew = () => {
                     });
                     setColumns(column_map);
                 } else {
-                    Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
+                    //Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
                 }
             })
             .catch((error) => {

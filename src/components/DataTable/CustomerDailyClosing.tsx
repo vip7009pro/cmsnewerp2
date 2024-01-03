@@ -71,7 +71,72 @@ const CustomerDailyClosing = () => {
           });
           setColumns(column_map);
         } else {
-          Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
+          //Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
+          const lastmonth = moment().subtract(1, 'months');
+          generalQuery("getDailyClosingKD", {
+            FROM_DATE: lastmonth.startOf('month').format('YYYY-MM-DD'),
+            TO_DATE:lastmonth.endOf('month').format('YYYY-MM-DD')
+          })
+          .then((response) => {
+            if (response.data.tk_status !== "NG") {
+              let loadeddata =
+              response.data.data.map(
+                (element: any, index: number) => {
+                  return {
+                    ...element,
+                    id: index
+                  };
+                },
+                );
+                setDailyClosingData(loadeddata);
+                let keysArray = Object.getOwnPropertyNames(loadeddata[0]);
+                let column_map = keysArray.map((e, index) => {
+                  return {
+                    dataField: e,
+                    caption: e,
+                    width: 100,
+                    cellRender: (ele: any) => {
+                      //console.log(ele);
+                      if (['CUST_NAME_KD', 'id'].indexOf(e) > -1) {
+                        return <span>{ele.data[e]}</span>;
+                      }
+                      else if (e === 'DELIVERED_AMOUNT') {
+                        return <span style={{ color: "#050505", fontWeight: "bold" }}>
+                        {ele.data[e]?.toLocaleString("en-US", {
+                          style: "currency",
+                          currency: "USD",
+                        })}
+                        </span>
+                      }
+                      else {
+                        if (ele.data['CUST_NAME_KD'] === 'TOTAL') {
+                          return (<span style={{ color: "green", fontWeight: "bold" }}>
+                          {ele.data[e]?.toLocaleString("en-US", {
+                            style: "currency",
+                            currency: "USD",
+                          })}
+                          </span>)
+                        }
+                        else {
+                          return (<span style={{ color: "green", fontWeight: "normal" }}>
+                          {ele.data[e]?.toLocaleString("en-US", {
+                            style: "currency",
+                            currency: "USD",
+                          })}
+                          </span>)
+                        }
+                      }
+                    },
+                  };
+                });
+                setColumns(column_map);
+              } else {
+                //Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
+              }
+            })
+            .catch((error) => {
+              console.log(error);
+            });
         }
       })
       .catch((error) => {

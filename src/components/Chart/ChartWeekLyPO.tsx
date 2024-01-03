@@ -88,10 +88,10 @@ const ChartWeeklyPO = () => {
               };
             }
           );
-          setWeekLyPOData(loadeddata);
+          setWeekLyPOData(loadeddata.reverse());
           //console.log(loadeddata);
         } else {
-          Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
+          //Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
         }
       })
       .catch((error) => {

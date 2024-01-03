@@ -91,7 +91,7 @@ const ChartFCSTSamSung = () => {
           fcstweek2 = response.data.data[0].FCSTWEEKNO;
           //console.log(response.data.data);
         } else {
-          Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
+          //Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
         }
       })
       .catch((error) => {
@@ -174,11 +174,11 @@ const ChartFCSTSamSung = () => {
                   setSamSungFCSTData(loadeddata.splice(0, 15));
                   //console.log(loadeddata);
                 } else {
-                  Swal.fire(
+                  /* Swal.fire(
                     "Thông báo",
                     "Nội dung: " + response.data.message,
                     "error"
-                  );
+                  ); */
                 }
               })
               .catch((error) => {
@@ -187,7 +187,7 @@ const ChartFCSTSamSung = () => {
           }
           //console.log(loadeddata);
         } else {
-          Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
+          //Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
         }
       })
       .catch((error) => {

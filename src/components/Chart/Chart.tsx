@@ -82,15 +82,27 @@ const ChartWeekLy = () => {
               };
             }
           );
-          setWeeklyClosingData(loadeddata);
-          //console.log(loadeddata);
-          /* Swal.fire(
-          "Thông báo",
-          "Đã load " + response.data.data.length + " dòng",
-          "success"
-        ); */
+          setWeeklyClosingData(loadeddata.reverse());        
         } else {
-          Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
+         // Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
+          generalQuery("kd_weeklyclosing", { YEAR: parseInt(moment().format("YYYY"))-1 })
+          .then((response) => {
+            if (response.data.tk_status !== "NG") {
+              const loadeddata: WeeklyClosingData[] = response.data.data.map(
+                (element: WeeklyClosingData, index: number) => {
+                  return {
+                    ...element,
+                  };
+                }
+              );
+              setWeeklyClosingData(loadeddata.reverse());        
+            } else {
+              //Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
         }
       })
       .catch((error) => {
@@ -132,7 +144,7 @@ const ChartWeekLy = () => {
         }}
       >
         <CartesianGrid strokeDasharray='3 3' className='chartGrid' />
-        <XAxis dataKey='DEL_WEEK'>
+        <XAxis dataKey='DEL_YW'>
           <Label value='Tuần' offset={0} position='insideBottom' style={{fontWeight:'normal', fontSize:'0.7rem'}} />
         </XAxis>
         <YAxis

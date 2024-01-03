@@ -67,27 +67,27 @@ const ChartPOBalance = () => {
         if (response.data.tk_status !== "NG") {
           const loadeddata: RunningPOData[] = response.data.data.map(
             (element: RunningPOData, index: number) => {
-              let temp_data: number =
+             /*  let temp_data: number =
                 element.RUNNING_DEL_QTY === 0
                   ? index >0 ? response.data.data[index - 1].RUNNING_DEL_QTY: element.RUNNING_DEL_QTY
                   : element.RUNNING_DEL_QTY;
               let temp_amount_data: number =
                 element.RUNNING_DEL_AMOUNT === 0
                   ? index >0 ? response.data.data[index - 1].RUNNING_DEL_AMOUNT: element.RUNNING_DEL_AMOUNT
-                  : element.RUNNING_DEL_AMOUNT;
+                  : element.RUNNING_DEL_AMOUNT; */
               return {
                 ...element,
-                RUNNING_DEL_QTY: temp_data,
+               /*  RUNNING_DEL_QTY: temp_data,
                 RUNNING_PO_BALANCE: element.RUNNING_PO_QTY - temp_data,
                 RUNNING_DEL_AMOUNT: temp_amount_data,
-                RUNNING_BALANCE_AMOUNT: element.RUNNING_PO_AMOUNT - temp_amount_data
+                RUNNING_BALANCE_AMOUNT: element.RUNNING_PO_AMOUNT - temp_amount_data */
               };
             }
           );
-          setRunningPOData(loadeddata);
+          setRunningPOData(loadeddata.reverse());
           //console.log(loadeddata);
         } else {
-          Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
+          //Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
         }
       })
       .catch((error) => {

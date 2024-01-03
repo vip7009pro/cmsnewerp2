@@ -62,6 +62,7 @@ const ChartWeekLyDelivery = () => {
     return null;
   };
   const handleGetDailyClosing = () => {
+    console.log('vao day');
     generalQuery("kd_weeklyclosing", { YEAR: moment().format("YYYY") })
       .then((response) => {
         if (response.data.tk_status !== "NG") {
@@ -80,7 +81,36 @@ const ChartWeekLyDelivery = () => {
           "success"
         ); */
         } else {
-          Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
+
+          let lastyear: number = parseInt(moment().year.toString())-1;
+          console.log('lastyear',lastyear);
+          generalQuery("kd_weeklyclosing", { YEAR: lastyear })
+          .then((response) => {
+            if (response.data.tk_status !== "NG") {
+              const loadeddata: WeeklyClosingData[] = response.data.data.map(
+                (element: WeeklyClosingData, index: number) => {
+                  return {
+                    ...element,
+                  };
+                }
+              );
+              setWeeklyClosingData(loadeddata);
+              //console.log(loadeddata);
+              /* Swal.fire(
+              "Thông báo",
+              "Đã load " + response.data.data.length + " dòng",
+              "success"
+            ); */
+            } else {
+              Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+
+
+          //Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
         }
       })
       .catch((error) => {

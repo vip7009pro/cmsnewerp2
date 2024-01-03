@@ -31,10 +31,10 @@ import "./DATASX.scss";
 import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
 import { MdOutlinePivotTableChart } from "react-icons/md";
 import PivotTable from "../../../../components/PivotChart/PivotChart";
-import { MACHINE_LIST } from "../QUICKPLAN/QUICKPLAN";
 import {
   LICHSUINPUTLIEU_DATA,
   LOSS_TABLE_DATA,
+  MACHINE_LIST,
   SX_DATA,
   YCSX_SX_DATA,
 } from "../../../../api/GlobalInterface";
@@ -1810,6 +1810,20 @@ const DATASX2 = () => {
             }}
           ></Column>
           <Column
+            dataField="KETQUASX_TP"
+            caption="KETQUASX_TP"
+            minWidth={100}
+            dataType="number"
+            format={"decimal"}
+            cellRender={(e: any) => {
+              return (
+                <span style={{ color: "blue", fontWeight: "bold" }}>
+                  {e.data.KETQUASX_TP?.toLocaleString("en-US")}
+                </span>
+              );
+            }}
+          ></Column>
+          <Column
             dataField="LOSS_SX_ST"
             caption="LOSS_SX_ST"
             minWidth={100}
@@ -1820,8 +1834,8 @@ const DATASX2 = () => {
                 <span style={{ color: "green", fontWeight: "bold" }}>
                   {100 *
                     e.data.LOSS_SX_ST?.toFixed(2).toLocaleString("en-US", {
-                      maximumFractionDigits: 2,
-                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 0,
+                      minimumFractionDigits: 0,
                     })}{" "}
                   %
                 </span>
@@ -1837,7 +1851,10 @@ const DATASX2 = () => {
             cellRender={(e: any) => {
               return (
                 <span style={{ color: "green", fontWeight: "bold" }}>
-                  {100 * e.data.LOSS_SX?.toLocaleString("en-US")} %
+                  {100 * e.data.LOSS_SX?.toLocaleString("en-US", {
+                      maximumFractionDigits: 0,
+                      minimumFractionDigits: 0,
+                    })} %
                 </span>
               );
             }}
@@ -1907,7 +1924,10 @@ const DATASX2 = () => {
             cellRender={(e: any) => {
               return (
                 <span style={{ color: "green", fontWeight: "bold" }}>
-                  {100 * e.data.LOSS_SX_KT?.toLocaleString("en-US")} %
+                  {100 * e.data.LOSS_SX_KT?.toLocaleString("en-US", {
+                      maximumFractionDigits: 0,
+                      minimumFractionDigits: 0,
+                    })} %
                 </span>
               );
             }}
@@ -1921,7 +1941,10 @@ const DATASX2 = () => {
             cellRender={(e: any) => {
               return (
                 <span style={{ color: "#DF6709", fontWeight: "bold" }}>
-                  {e.data.INS_OUTPUT?.toLocaleString("en-US")}
+                  {e.data.INS_OUTPUT?.toLocaleString("en-US", {
+                      maximumFractionDigits: 0,
+                      minimumFractionDigits: 0,
+                    })}
                 </span>
               );
             }}
@@ -1935,7 +1958,10 @@ const DATASX2 = () => {
             cellRender={(e: any) => {
               return (
                 <span style={{ color: "green", fontWeight: "bold" }}>
-                  {100 * e.data.LOSS_KT?.toLocaleString("en-US")} %
+                  {100 * e.data.LOSS_KT?.toLocaleString("en-US",{
+                      maximumFractionDigits: 0,
+                      minimumFractionDigits: 0,
+                    })} %
                 </span>
               );
             }}
@@ -3091,6 +3117,7 @@ const DATASX2 = () => {
                 : 0;
             temp_loss_info.INSPECTION_INPUT += loaded_data[i].INS_INPUT;
             temp_loss_info.INSPECTION_OUTPUT += loaded_data[i].INS_OUTPUT;
+            temp_loss_info.SX_RESULT += loaded_data[i].KETQUASX_TP?? 0;
           }
           temp_loss_info.LOSS_INS_OUT_VS_SCANNED_EA =
             1 - temp_loss_info.INSPECTION_OUTPUT / temp_loss_info.SCANNED_EA;

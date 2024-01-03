@@ -77,15 +77,29 @@ const ChartMonthLy = () => {
               };
             }
           );
-          setMonthlyClosingData(loadeddata);
-          //console.log(loadeddata);
-          /*  Swal.fire(
-          "Thông báo",
-          "Đã load " + response.data.data.length + " dòng",
-          "success"
-        ); */
+          setMonthlyClosingData(loadeddata.reverse());
+          
         } else {
-          Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
+          //Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
+          generalQuery("kd_monthlyclosing", { YEAR: parseInt(moment().format("YYYY"))-1 })
+          .then((response) => {
+            if (response.data.tk_status !== "NG") {
+              const loadeddata: MonthlyClosingData[] = response.data.data.map(
+                (element: MonthlyClosingData, index: number) => {
+                  return {
+                    ...element,
+                  };
+                }
+              );
+              setMonthlyClosingData(loadeddata.reverse());              
+            } else {
+              //Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+          
         }
       })
       .catch((error) => {
@@ -125,7 +139,7 @@ const ChartMonthLy = () => {
         }}
       >
         <CartesianGrid strokeDasharray='3 3' className='chartGrid' />
-        <XAxis dataKey='MONTH_NUM' tick={{ fontSize: '0.7rem' }}>
+        <XAxis dataKey='MONTH_YW' tick={{ fontSize: '0.7rem' }}>
           <Label value='Tháng' offset={0} position='insideBottom' style={{ fontWeight: 'normal', fontSize: '0.7rem' }} />
         </XAxis>
         <YAxis

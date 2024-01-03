@@ -1520,6 +1520,7 @@ export interface SX_DATA {
   ESTIMATED_QTY_ST: number;
   ESTIMATED_QTY: number;
   KETQUASX: number;
+  KETQUASX_TP?: number;
   LOSS_SX_ST: number;
   LOSS_SX: number;
   INS_INPUT: number;
@@ -2797,7 +2798,9 @@ export interface LOSS_TABLE_DATA_ROLL {
 }
 //chart
 export interface WeeklyClosingData {
+  DEL_YEAR: string,  
   DEL_WEEK: string;
+  DEL_YW: string;
   DELIVERY_QTY: number;
   DELIVERED_AMOUNT: number;
 }
@@ -2818,6 +2821,8 @@ export interface RunningPOData {
   RUNNING_BALANCE_AMOUNT: number;
 }
 export interface MonthlyClosingData {
+  MONTH_YW: string;
+  MONTH_YEAR: string;
   MONTH_NUM: string;
   DELIVERY_QTY: number;
   DELIVERED_AMOUNT: number;

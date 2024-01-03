@@ -258,7 +258,7 @@ const KinhDoanhReport = () => {
           fcstweek2 = response.data.data[0].FCSTWEEKNO;
           //console.log(response.data.data);
         } else {
-          Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
+          //Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
         }
       })
       .catch((error) => {
@@ -349,11 +349,11 @@ const KinhDoanhReport = () => {
             },
           );
           setWidgetData_ThisWeek({
-            thisweek_qty: loadeddata[loadeddata.length - 1].DELIVERY_QTY,
-            thisweek_amount: loadeddata[loadeddata.length - 1].DELIVERED_AMOUNT,
+            thisweek_qty: loadeddata[0].DELIVERY_QTY,
+            thisweek_amount: loadeddata[0].DELIVERED_AMOUNT,
           });
         } else {
-          Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
+          //Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
         }
       })
       .catch((error) => {
@@ -372,12 +372,12 @@ const KinhDoanhReport = () => {
             },
           );
           setWidgetData_ThisMonth({
-            thismonth_qty: loadeddata[loadeddata.length - 1].DELIVERY_QTY,
+            thismonth_qty: loadeddata[0].DELIVERY_QTY,
             thismonth_amount:
-              loadeddata[loadeddata.length - 1].DELIVERED_AMOUNT,
+              loadeddata[0].DELIVERED_AMOUNT,
           });
         } else {
-          Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
+          //Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
         }
       })
       .catch((error) => {
@@ -406,7 +406,7 @@ const KinhDoanhReport = () => {
           "success"
         ); */
         } else {
-          Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
+          //Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
         }
       })
       .catch((error) => {
@@ -435,7 +435,7 @@ const KinhDoanhReport = () => {
           "success"
         ); */
         } else {
-          Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
+          //Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
         }
       })
       .catch((error) => {
