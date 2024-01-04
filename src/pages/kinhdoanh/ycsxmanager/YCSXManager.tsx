@@ -700,7 +700,7 @@ const YCSXManager = () => {
       },
     },
     { field: "CUST_NAME_KD", headerName: "KHÁCH", width: 120 },
-    { field: "EMPL_NAME", headerName: "PIC KD", width: 150 },    
+    { field: "EMPL_NAME", headerName: "PIC KD", width: 150 },
     {
       field: "PROD_REQUEST_NO", headerName: "SỐ YCSX", width: 80, renderCell: (params: any) => {
         if (params.row.DACHITHI === null) {
@@ -1442,7 +1442,7 @@ const YCSXManager = () => {
               ...element,
               id: index,
               CHECKSTATUS: "Waiting",
-              PHANLOAI: getCompany()==='CMS'?  "TT": element.PHANLOAI,
+              PHANLOAI: getCompany() === 'CMS' ? "TT" : element.PHANLOAI,
             };
           })
         );
@@ -2210,7 +2210,7 @@ const YCSXManager = () => {
               EMPL_NO: userData?.EMPL_NO,
               USE_YN: "Y",
               DELIVERY_DT: uploadExcelJson[i].DELIVERY_DT,
-              PO_NO: uploadExcelJson[i].PO_NO ?? "",                 
+              PO_NO: uploadExcelJson[i].PO_NO ?? "",
               INS_EMPL: userData?.EMPL_NO,
               UPD_EMPL: userData?.EMPL_NO,
               YCSX_PENDING: 1,
@@ -3335,7 +3335,7 @@ const YCSXManager = () => {
                       <option value='DL'>Đổi LOT (DL)</option>
                       <option value='M4'>NM4 (M4)</option>
                       <option value='IN'>Hàng In Nhanh (IN)</option>
-                      <option value='GC'>Hàng Gia Công (GC)</option>                     
+                      <option value='GC'>Hàng Gia Công (GC)</option>
                     </select>
                   </label>
                 </div>
@@ -3666,7 +3666,7 @@ const YCSXManager = () => {
                   </label>
                 </div>
                 <div className="forminputcolumn">
-                <label>
+                  <label>
                     <b>Loại hàng:</b>
                     <select
                       name='phanloaihang'
@@ -3689,14 +3689,14 @@ const YCSXManager = () => {
                     </select>
                   </label>
                   <label>
-                  <b>All Time:</b>
-                  <input
-                    type='checkbox'
-                    name='alltimecheckbox'
-                    defaultChecked={alltime}
-                    onChange={() => setAllTime(!alltime)}
-                  ></input>
-                </label>
+                    <b>All Time:</b>
+                    <input
+                      type='checkbox'
+                      name='alltimecheckbox'
+                      defaultChecked={alltime}
+                      onChange={() => setAllTime(!alltime)}
+                    ></input>
+                  </label>
                 </div>
                 <div className='forminputcolumn'>
                   <label>
@@ -3724,10 +3724,8 @@ const YCSXManager = () => {
                     ></input>
                   </label>
                 </div>
-                
               </div>
               <div className='formbutton'>
-               
                 <IconButton
                   className='buttonIcon'
                   onClick={() => {

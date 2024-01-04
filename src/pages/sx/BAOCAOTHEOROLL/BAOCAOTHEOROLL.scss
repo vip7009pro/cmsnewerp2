@@ -20,6 +20,7 @@
       box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
       border-radius: 3px;
       padding: 5px;
+      width: 100%;
       span {
         padding: 10px;
         font-size: 20px;
@@ -204,6 +205,7 @@
       align-items: center;
       justify-items: center;
       flex: 9;
+      width: 100%;
       height: 82vh;
       background-image: linear-gradient(0deg, #afd3d1, #86cfff);
       -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
@@ -366,6 +368,17 @@
         }
       }
 
+      .graph {
+        display: flex;       
+        align-self: center; 
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        background-image: linear-gradient(0deg, #ebf2f2, #cad3da);
+        -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+        box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+        width: 99%;
+      }
       .lossinfo {
         display: flex;
         align-self: center;
@@ -389,16 +402,18 @@
           border: 1px solid gray;
           padding-left: 10px;
           padding-right: 10px;
+          font-size: 1.3rem;
         }
         table tbody tr td {
           border: 1px solid gray;
           text-align: center;
+          font-size: 1.2rem;
         }
       }
       .datatb {
         justify-items: center;
         width: 99%;
-        height: 80vh;
+        height: 90vh;
         padding: 5px;
 
         .dx-datagrid-rowsview

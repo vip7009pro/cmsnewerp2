@@ -464,12 +464,14 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
           }
         }
         if (err_code !== "0") {
+          //handle_loadKhoAo();
           Swal.fire("Thông báo", "Có lỗi: " + err_code, "error"); 
          
         } else {
+          //handle_loadKhoAo();
           setTonKhoAoDataFilter([]);          
         }
-        handle_loadKhoAo();
+        
       } else {
         Swal.fire("Thông báo", "Chọn ít nhất 1 liệu để xuất kho", "error");
       }
