@@ -391,7 +391,9 @@ const CHITHI_COMPONENT = ({ DATA }: { DATA: QLSXPLANDATA }) => {
         checklieuqlsx &&
         DATA.PLAN_QTY !== 0 &&
         DATA.PROCESS_NUMBER !== 0 &&
-        eq_process_check && (
+        eq_process_check && 
+        DATA.CHOTBC !=='V' &&
+        (
           <div className="thongtinycsx">
             <div className="text1">
               1. 지시 정보 Thông tin chỉ thị ({request_codeinfo[0].G_NAME} ) __
@@ -865,6 +867,7 @@ const CHITHI_COMPONENT = ({ DATA }: { DATA: QLSXPLANDATA }) => {
             </div>
           </div>
         )}
+        {DATA.CHOTBC ==='V' && <div>Chị thị chốt nhật ký rồi ko in lại nữa</div>}
       {!check_dinh_muc() && <div>Chưa đủ thông tin định mức</div>}
       {!checklieuqlsx && (
         <div>
