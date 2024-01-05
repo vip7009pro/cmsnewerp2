@@ -21,7 +21,7 @@ import { addTab, closeTab, settabIndex } from "../../redux/slices/globalSlice";
 import AccountInfo from "../../components/Navbar/AccountInfo/AccountInfo";
 import styled from "@emotion/styled";
 import Cookies from "universal-cookie";
-export const current_ver: number = 301;
+export const current_ver: number = 302;
 interface ELE_ARRAY {
   REACT_ELE: ReactElement;
   ELE_NAME: string;
