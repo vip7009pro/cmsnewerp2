@@ -177,12 +177,12 @@ const Login = () => {
               )}
               {company === "CMS" && (
                 <option value={"http://14.160.33.94:3007"}>SUB_SERVER</option>
-              )}
-              {company === "CMS" && (
-                <option value={"http://pvnerp.ddns.net:3007"}>SUB_SERVER2</option>
-              )}
+              )}              
               {company === "CMS" && (
                 <option value={"http://192.168.1.192:5013"}>LAN_SERVER</option>
+              )}
+              {company === "CMS" && (
+                <option value={"http://cms.ddns.net:5013"}>NET_SERVER</option>
               )}
               {company === "PVN" && (
                 <option value={"http://222.252.1.63:3007"}>PUBLIC_PVN</option>

@@ -313,7 +313,7 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
         console.log(error);
       });
   };
-  const handle_loadKhoAo = () => {
+  const handle_loadKhoAo = (shownotification: boolean) => {
     generalQuery("checktonlieutrongxuong", {
       FACTORY: factory,
     })
@@ -333,6 +333,7 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
           setReadyRender(true);
           setisLoading(false);
           setTableTitle("TỒN KHO ẢO");
+          if(shownotification)
           Swal.fire(
             "Thông báo",
             "Đã load: " + response.data.data.length + " dòng",
@@ -455,20 +456,27 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
               .catch((error) => {
                 console.log(error);
               });
-          } else {            
-            err_code +=
-              "| " +
-              "Liệu: " +
-              tonkhoaodatafilter[i].M_NAME +
-              " chưa được đăng ký xuất liệu \n Đã xuất các liệu hợp lệ";
+          } else {    
+            if(!checklieuchithi) {
+              err_code += `| Liệu:  ${tonkhoaodatafilter[i].M_NAME} chưa được đăng ký xuất liệu`;            
+            }
+            else if(nextPlan === tonkhoaodatafilter[i].PLAN_ID_INPUT) {
+              err_code += `| Liệu:  ${tonkhoaodatafilter[i].M_NAME} không thể xuất lại vào chỉ thị đã từng dùng nó`;      
+            }
+            else if(checkFSC !== tonkhoaodatafilter[i].FSC) {
+              err_code += `| Liệu:  ${tonkhoaodatafilter[i].M_NAME} không cùng trạng thái liệu FSC với code được chỉ thị vào`;      
+            }
+            else if(!checktontaikhoao) {
+              err_code += `| Liệu:  ${tonkhoaodatafilter[i].M_NAME} liệu này đã được xuát vào chỉ thị  ${nextPlan} rồi, không xuất lại được nữa`;      
+            }            
           }
         }
-        if (err_code !== "0") {
-          //handle_loadKhoAo();
+        if (err_code !== "0") {         
           Swal.fire("Thông báo", "Có lỗi: " + err_code, "error"); 
+          handle_loadKhoAo(false);
          
         } else {
-          //handle_loadKhoAo();
+          handle_loadKhoAo(true);
           setTonKhoAoDataFilter([]);          
         }
         
@@ -698,7 +706,7 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
     setisLoading(true);
     setReadyRender(false);
     setCurrent_Column(column_tonkhoaotable);
-    handle_loadKhoAo();
+    handle_loadKhoAo(true);
     //setColumnDefinition(column_inspect_output);
   }, []);
   return (
@@ -756,7 +764,7 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
                   setReadyRender(false);
                   setCurrent_Column(column_tonkhoaotable);
                   setNextPermission(true);
-                  handle_loadKhoAo();
+                  handle_loadKhoAo(true);
                 }}
               >
                 TỒN KHO ẢO
