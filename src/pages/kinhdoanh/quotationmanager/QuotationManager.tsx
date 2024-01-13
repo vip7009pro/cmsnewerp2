@@ -2342,6 +2342,71 @@ const QuotationManager = () => {
         Swal.fire("Thông báo", " Có lỗi : " + error, "error");
       });
   };
+  
+  const updategia = async () => {
+    if (selectedBangGiaDocRow.length > 0) {
+      let err_code: string = "";
+      for (let i = 0; i < selectedBangGiaDocRow.length; i++) {
+        await generalQuery("updategia", {
+          ...selectedBangGiaDocRow[i],          
+        })
+          .then((response) => {
+            //console.log(response.data.data);
+            if (response.data.tk_status !== "NG") {
+            } else {
+              err_code += `Lỗi : ${response.data.message} |`;
+              //Swal.fire("Thông báo", " Có lỗi : " + response.data.message, "error");
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+            Swal.fire("Thông báo", " Có lỗi : " + error, "error");
+          });
+      }
+      if (err_code === "") {
+        Swal.fire("Thông báo", "Cập nhật thông tin giá thành công", "success");
+        checkBP(userData, ["KD"], ["ALL"], ["ALL"], loadBangGia2);
+      } else {
+        Swal.fire("Thông báo", " Có lỗi : " + err_code, "error");
+      }
+    } else {
+      Swal.fire("Thông báo", "Chọn ít nhất 1 dòng để update (Bảng giá dọc)", "error");
+    }
+  };
+
+  const deletegia = async () => {
+    if (selectedBangGiaDocRow.length > 0) {
+      let err_code: string = "";
+      for (let i = 0; i < selectedBangGiaDocRow.length; i++) {
+        await generalQuery("deletegia", {
+          ...selectedBangGiaDocRow[i],          
+        })
+          .then((response) => {
+            //console.log(response.data.data);
+            if (response.data.tk_status !== "NG") {
+            } else {
+              err_code += `Lỗi : ${response.data.message} |`;
+              //Swal.fire("Thông báo", " Có lỗi : " + response.data.message, "error");
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+            Swal.fire("Thông báo", " Có lỗi : " + error, "error");
+          });
+      }
+      if (err_code === "") {
+        Swal.fire("Thông báo", "Xóa thành công", "success");
+        checkBP(userData, ["KD"], ["ALL"], ["ALL"], loadBangGia2);
+      } else {
+        Swal.fire("Thông báo", " Có lỗi : " + err_code, "error");
+      }
+    } else {
+      Swal.fire("Thông báo", "Chọn ít nhất 1 dòng để xóa(Bảng giá dọc)", "error");
+    }
+  };
+
+
+
   const loadBangGiaMoiNhat = () => {
     generalQuery("loadbanggiamoinhat", {
       ALLTIME: alltime,
@@ -2475,14 +2540,9 @@ const QuotationManager = () => {
                 <Button color={'primary'} variant="contained" size="small" fullWidth={true} sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#36D334' }} onClick={() => {
                   setSelectButton(false);
                   checkBP(userData, ["KD"], ["ALL"], ["ALL"], loadBangGiaMoiNhat);
-                }}>Giá mới nhất</Button>
-                <Button color={'primary'} variant="contained" size="small" fullWidth={true} sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: 'red' }} onClick={() => {
-                  checkBP(userData, ["KD"], ["Leader"], ["ALL"], pheduyetgia);
-                }}>Duyệt/Hủy Duyệt</Button>
-
-              </div>
-              <div className="buttoncolumn">
-                <Button color={'primary'} variant="contained" size="small" fullWidth={true} sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: 'yellow', color: 'black' }} onClick={() => {
+                }}>Last Price</Button>
+                
+                   <Button color={'primary'} variant="contained" size="small" fullWidth={true} sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: 'yellow', color: 'black' }} onClick={() => {
                   setSelectButton(true);
                   checkBP(userData, ["KD"], ["ALL"], ["ALL"], loadBangGia);
                 }}>Giá Ngang</Button>
@@ -2492,6 +2552,21 @@ const QuotationManager = () => {
                 }}>Giá Dọc</Button>
 
               </div>
+              
+              <div className="buttoncolumn">
+              <Button color={'primary'} variant="contained" size="small" fullWidth={true} sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#36D334' }} onClick={() => {
+                  checkBP(userData, ["KD"], ["Leader"], ["ALL"], pheduyetgia);
+                }}>Approve</Button>
+                <Button color={'primary'} variant="contained" size="small" fullWidth={true} sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: 'blue', color: 'yellow' }} onClick={() => {
+                  setSelectButton(true);
+                  checkBP(userData, ["KD"], ["ALL"], ["ALL"], updategia);
+                }}>Update</Button>
+                <Button color={'primary'} variant="contained" size="small" fullWidth={true} sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: 'red', color: 'black' }} onClick={() => {
+                  setSelectButton(false);
+                  checkBP(userData, ["KD"], ["ALL"], ["ALL"], deletegia);
+                }}>Delete</Button>
+              </div>
+
             </div>
           </div>
         )}
