@@ -2708,6 +2708,7 @@ export interface BANGGIA_DATA {
 }
 export interface BANGGIA_DATA2 {
   id: number;
+  PROD_ID: number;
   CUST_NAME_KD?: string;
   CUST_CD?: string;
   G_CODE?: string;

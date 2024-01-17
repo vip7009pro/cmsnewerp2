@@ -1820,7 +1820,7 @@ const PoManager2 = () => {
   useEffect(() => {
     getcustomerlist();
     getcodelist("");
-    dongboGiaPO();
+    //dongboGiaPO();
   }, []);
   return (
     <div className="pomanager">

@@ -2041,10 +2041,11 @@ const PoManager = () => {
     if(getCompany()==='CMS')
     {
       autopheduyetgia();
+      dongboGiaPO();
     }   
     getcustomerlist();
     getcodelist("");
-    dongboGiaPO();
+    
   }, []);
   return (
     <div className="pomanager">

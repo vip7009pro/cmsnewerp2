@@ -47,7 +47,7 @@ import {
   MdOutlinePivotTableChart,
 } from "react-icons/md";
 import { CustomResponsiveContainer, SaveExcel, checkBP, weekdayarray } from "../../../api/GlobalFunction";
-import { generalQuery } from "../../../api/Api";
+import { generalQuery, getCompany } from "../../../api/Api";
 import PivotTable from "../../../components/PivotChart/PivotChart";
 import { RootState } from "../../../redux/store";
 import { useSelector, useDispatch } from "react-redux";
@@ -1789,7 +1789,7 @@ const QuotationManager = () => {
             />
             <Selection mode="multiple" selectAllMode="allPages" />
             <Editing
-              allowUpdating={false}
+              allowUpdating={true}
               allowAdding={false}
               allowDeleting={false}
               mode="cell"
@@ -1875,10 +1875,17 @@ const QuotationManager = () => {
               displayMode="compact"
             />
             <Column
+              dataField="PROD_ID"
+              caption="PROD_ID"
+              width={50}
+            ></Column>
+            <Column
               dataField="CUST_NAME_KD"
               caption="CUST_NAME_KD"
               width={100}
             ></Column>
+            <Column dataField="CUST_CD" caption="CUST_CD" width={100}></Column>
+            
             <Column dataField="CUST_CD" caption="CUST_CD" width={100}></Column>
             <Column dataField="G_CODE" caption="G_CODE" width={100}></Column>
             <Column dataField="G_NAME" caption="G_NAME" width={250}></Column>
@@ -2045,6 +2052,11 @@ const QuotationManager = () => {
             infoText="Page #{0}. Total: {1} ({2} items)"
             displayMode="compact"
           />
+          <Column
+              dataField="PROD_ID"
+              caption="PROD_ID"
+              width={50}
+            ></Column>
           <Column
             dataField="CUST_NAME_KD"
             caption="CUST_NAME_KD"
@@ -2343,6 +2355,40 @@ const QuotationManager = () => {
       });
   };
   
+  const confirmUpdateGiaHangLoat = () => {
+    Swal.fire({
+      title: "Chắc chắn muốn update giá hàng loạt ?",
+      text: "Hãy suy nghĩ kỹ trước khi làm",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Vẫn update!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        Swal.fire("Tiến hành update", "Đang update giá hàng loạt", "success");
+        updategia();
+      }
+    });
+  };
+
+  const confirmDeleteGiaHangLoat = () => {
+    Swal.fire({
+      title: "Chắc chắn muốn xóa giá hàng loạt ?",
+      text: "Hãy suy nghĩ kỹ trước khi làm",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Vẫn xóa!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        Swal.fire("Tiến hành xóa", "Đang xóa giá hàng loạt", "success");
+        deletegia();
+      }
+    });
+  };
+
   const updategia = async () => {
     if (selectedBangGiaDocRow.length > 0) {
       let err_code: string = "";
@@ -2366,6 +2412,7 @@ const QuotationManager = () => {
       if (err_code === "") {
         Swal.fire("Thông báo", "Cập nhật thông tin giá thành công", "success");
         checkBP(userData, ["KD"], ["ALL"], ["ALL"], loadBangGia2);
+        setSelectButton(false);
       } else {
         Swal.fire("Thông báo", " Có lỗi : " + err_code, "error");
       }
@@ -2455,7 +2502,9 @@ const QuotationManager = () => {
   useEffect(() => {
     //loadBangGia();
     console.log("render lai");
-    dongboGiaPO();
+    if(getCompany()==='CMS') {
+      dongboGiaPO();
+    }
   }, [sh]);
   return (
     <div className="quotationmanager">
@@ -2558,12 +2607,12 @@ const QuotationManager = () => {
                   checkBP(userData, ["KD"], ["Leader"], ["ALL"], pheduyetgia);
                 }}>Approve</Button>
                 <Button color={'primary'} variant="contained" size="small" fullWidth={true} sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: 'blue', color: 'yellow' }} onClick={() => {
-                  setSelectButton(true);
-                  checkBP(userData, ["KD"], ["ALL"], ["ALL"], updategia);
+                  setSelectButton(false);
+                  checkBP(userData, ["KD"], ["ALL"], ["ALL"], confirmUpdateGiaHangLoat);
                 }}>Update</Button>
                 <Button color={'primary'} variant="contained" size="small" fullWidth={true} sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: 'red', color: 'black' }} onClick={() => {
                   setSelectButton(false);
-                  checkBP(userData, ["KD"], ["ALL"], ["ALL"], deletegia);
+                  checkBP(userData, ["KD"], ["ALL"], ["ALL"], confirmDeleteGiaHangLoat);
                 }}>Delete</Button>
               </div>
 
@@ -2724,6 +2773,7 @@ const QuotationManager = () => {
                 className="buttonIcon"
                 onClick={() => {
                   let temp_row: BANGGIA_DATA2 = {
+                    PROD_ID: uploadExcelJson.length + 1, 
                     id: uploadExcelJson.length + 1,
                     CUST_CD: selectedCust_CD?.CUST_CD,
                     CUST_NAME_KD: selectedCust_CD?.CUST_NAME_KD,
