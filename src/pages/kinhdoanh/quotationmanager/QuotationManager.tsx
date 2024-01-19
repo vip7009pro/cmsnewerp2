@@ -1884,9 +1884,7 @@ const QuotationManager = () => {
               caption="CUST_NAME_KD"
               width={100}
             ></Column>
-            <Column dataField="CUST_CD" caption="CUST_CD" width={100}></Column>
-            
-            <Column dataField="CUST_CD" caption="CUST_CD" width={100}></Column>
+            <Column dataField="CUST_CD" caption="CUST_CD" width={100}></Column>  
             <Column dataField="G_CODE" caption="G_CODE" width={100}></Column>
             <Column dataField="G_NAME" caption="G_NAME" width={250}></Column>
             <Column
@@ -2720,7 +2718,7 @@ const QuotationManager = () => {
                     option.G_CODE === value.G_CODE
                   }
                   getOptionLabel={(option: CodeListDataUpGia | any) =>
-                    `${option.G_CODE}: ${option.G_NAME}`
+                    `${option.G_CODE}: ${option.G_NAME_KD} : ${option.G_NAME}`
                   }
                   renderInput={(params) => (
                     <TextField {...params} label="Select code" />
