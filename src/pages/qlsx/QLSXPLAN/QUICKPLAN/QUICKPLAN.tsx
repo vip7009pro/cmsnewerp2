@@ -71,8 +71,8 @@ import {
   YCSXTableData,
 } from "../../../../api/GlobalInterface";           
 const QUICKPLAN = () => {           
-  const qtyFactor: number = 7;
-  const [recentDMData, setRecentDMData]= useState<RecentDM[]>([])
+  const qtyFactor: number = 10;
+  const [recentDMData, setRecentDMData]= useState<RecentDM[]>([]);
                                                   
   const [currentPlanPD, setCurrentPlanPD] = useState(0);
   const [currentPlanCAVITY, setCurrentPlanCAVITY] = useState(0);

@@ -27,10 +27,9 @@ import "./App.css";
 import FallBackComponent from "./components/Fallback/FallBackComponent";
 import { Button } from "@mui/material";
 import { UserData } from "./api/GlobalInterface";
-import LICHSUTEMLOTSX from "./pages/sx/LICHSUTEMLOTSX/LICHSUTEMLOTSX";
-import BAOCAOSXALL from "./pages/sx/BAOCAOSXALL";
+const LICHSUTEMLOTSX = lazy(() => import("./pages/sx/LICHSUTEMLOTSX/LICHSUTEMLOTSX"));
+const BAOCAOSXALL = lazy(() => import("./pages/sx/BAOCAOSXALL"));
 const Login = React.lazy(() => import("./pages/login/Login"));
-const PivotChart = React.lazy(() => import("./components/PivotChart/PivotChart"));
 const BAOCAOTHEOROLL = lazy(
   () => import("./pages/sx/BAOCAOTHEOROLL/BAOCAOTHEOROLL")
 );
@@ -152,7 +151,6 @@ const POandStockFull = lazy(
 const TINHHINHCUONLIEU = lazy(
   () => import("./pages/sx/TINH_HINH_CUON_LIEU/TINHINHCUONLIEU")
 );
-const DATASX2 = lazy(() => import("./pages/qlsx/QLSXPLAN/DATASX/DATASX2"));
 interface userDataInterface {
   EMPL_IMAGE?: string;
   ADD_COMMUNE: string;

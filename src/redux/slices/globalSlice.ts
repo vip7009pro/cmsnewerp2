@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
-import { ReactElement } from "react";
+import { lazy, ReactElement } from "react";
 import { io } from "socket.io-client";
 import Swal from "sweetalert2";
 import { getUserData, logout as LGOT } from "../../api/Api";
@@ -10,6 +10,7 @@ import {
   QLSXPLANDATA,
   UserData,
 } from "../../api/GlobalInterface";
+
 const startCPN: string = "CMS";
 const socket = io(
   startCPN === "CMS"
@@ -128,6 +129,7 @@ const initialState: GlobalInterface = {
       ? "http://222.252.1.63:3007"
       : "",
   tabs: [],
+  componentArray: [],
   tabIndex: 0,
   tabModeSwap: true,
   loginState: false,
@@ -249,6 +251,7 @@ export const glbSlice = createSlice({
           .length < 8
       ) {
         state.tabs = [...state.tabs, action.payload];
+        console.log(state.tabs);
         localStorage.setItem(
           "tabs",
           JSON.stringify(
@@ -268,6 +271,14 @@ export const glbSlice = createSlice({
         );
       }
     },
+    addComponent: (state, action: PayloadAction<ReactElement>) => {
+      
+        state.componentArray = [...state.componentArray, action.payload];
+        console.log(state.componentArray);
+       ;
+      
+    },
+
     resetTab: (state, action: PayloadAction<any>) => {
       state.tabs = [];
       localStorage.setItem(
@@ -283,16 +294,17 @@ export const glbSlice = createSlice({
       );
     },
     closeTab: (state, action: PayloadAction<number>) => {
-      /*  state.tabs = state.tabs.filter(
+       /* state.tabs = state.tabs.filter(
             (ele: ELE_ARRAY, index1: number) => {
               return index1 !== state.tabIndex;
             }
-          ); */
+          );
+          state.tabIndex = state.tabIndex-1>0? state.tabIndex-1: 0;  */
       let checkallDeleted: number = 0;
       for (let i = 0; i < state.tabs.length; i++) {
         if (state.tabs[i].ELE_CODE !== "-1") checkallDeleted++;
       }
-      //console.log(checkallDeleted);
+     
       if (checkallDeleted > 1) {
         state.tabs[action.payload] = {
           ELE_CODE: "-1",
@@ -310,7 +322,7 @@ export const glbSlice = createSlice({
             })
           )
         );
-        //let i=state.tabIndex;
+        
         while (
           state.tabIndex > 0 &&
           state.tabs[state.tabIndex].ELE_CODE === "-1"
@@ -324,8 +336,7 @@ export const glbSlice = createSlice({
           ) {
             state.tabIndex++;
           }
-        }
-        /* state.tabIndex = state.tabIndex-1>0? state.tabIndex-1: 0;  */
+        }        
       } else {
         state.tabs = [];
       }
@@ -359,6 +370,7 @@ export const {
   changeServer,
   listen_socket,
   addTab,
+  addComponent,
   closeTab,
   settabIndex,
   setTabModeSwap,

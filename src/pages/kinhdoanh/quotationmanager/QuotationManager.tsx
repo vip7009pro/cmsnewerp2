@@ -67,6 +67,7 @@ import {
 } from "../../../api/GlobalInterface";
 
 const QuotationManager = () => {
+  const dataGridRef = useRef<any>(null);
   const userData: UserData | undefined = useSelector(
     (state: RootState) => state.totalSlice.userData,
   );
@@ -138,6 +139,15 @@ const QuotationManager = () => {
   const [showhideupprice, setShowHideUpPrice] = useState(false);
   const [uploadExcelJson, setUploadExcelJSon] = useState<Array<any>>([]);
   const [showhideQuotationForm, setShowHideQuotationForm] = useState(false);
+
+  const clearSelection = () => {
+    if (dataGridRef.current) {
+      dataGridRef.current.instance.clearSelection();
+      setselectedBangGiaDocRow([]);
+      //qlsxplandatafilter.current = [];
+      //console.log(dataGridRef.current);
+    }
+  };
 
   const pheduyetgia = async () => {
     if (selectedBangGiaDocRow.length > 0) {
@@ -1760,6 +1770,7 @@ const QuotationManager = () => {
         <CustomResponsiveContainer>
           <DataGrid
             style={{ fontSize: "0.7rem" }}
+            ref={dataGridRef}
             autoNavigateToFocusedRow={true}
             allowColumnReordering={true}
             allowColumnResizing={true}
@@ -2195,6 +2206,7 @@ const QuotationManager = () => {
     }
   };
   const loadBangGia = () => {
+    
     generalQuery("loadbanggia", {
       ALLTIME: alltime,
       FROM_DATE: fromdate,
@@ -2302,6 +2314,7 @@ const QuotationManager = () => {
               store: loaded_data,
             }),
           );
+          clearSelection();
         } else {
           Swal.fire("Thông báo", " Có lỗi : " + response.data.message, "error");
         }
@@ -2310,6 +2323,7 @@ const QuotationManager = () => {
         console.log(error);
         Swal.fire("Thông báo", " Có lỗi : " + error, "error");
       });
+      setselectedBangGiaDocRow([]);
   };
   const loadBangGia2 = () => {
     generalQuery("loadbanggia2", {
@@ -2321,36 +2335,37 @@ const QuotationManager = () => {
       G_NAME: codeKD,
       CUST_NAME_KD: cust_name,
     })
-      .then((response) => {
-        //console.log(response.data.data);
-        if (response.data.tk_status !== "NG") {
-          const loaded_data: BANGGIA_DATA2[] = response.data.data.map(
-            (element: BANGGIA_DATA2, index: number) => {
-              return {
-                ...element,
-                PRICE_DATE:
-                  element.PRICE_DATE !== null
-                    ? moment.utc(element.PRICE_DATE).format("YYYY-MM-DD")
-                    : "",
-                id: index,
-              };
-            },
-          );
-          setBangGia2(loaded_data);
-          setSelectedDataSource(
-            new PivotGridDataSource({
-              fields: fields_banggia2,
-              store: loaded_data,
-            }),
-          );
-        } else {
-          Swal.fire("Thông báo", " Có lỗi : " + response.data.message, "error");
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-        Swal.fire("Thông báo", " Có lỗi : " + error, "error");
-      });
+    .then((response) => {
+      //console.log(response.data.data);
+      if (response.data.tk_status !== "NG") {
+        const loaded_data: BANGGIA_DATA2[] = response.data.data.map(
+          (element: BANGGIA_DATA2, index: number) => {
+            return {
+              ...element,
+              PRICE_DATE:
+                element.PRICE_DATE !== null
+                  ? moment.utc(element.PRICE_DATE).format("YYYY-MM-DD")
+                  : "",
+              id: index,
+            };
+          },
+        );
+        setBangGia2(loaded_data);
+        setSelectedDataSource(
+          new PivotGridDataSource({
+            fields: fields_banggia2,
+            store: loaded_data,
+          }),
+        );
+        clearSelection();
+      } else {
+        Swal.fire("Thông báo", " Có lỗi : " + response.data.message, "error");
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+      Swal.fire("Thông báo", " Có lỗi : " + error, "error");
+    });      
   };
   
   const confirmUpdateGiaHangLoat = () => {
@@ -2450,8 +2465,6 @@ const QuotationManager = () => {
     }
   };
 
-
-
   const loadBangGiaMoiNhat = () => {
     generalQuery("loadbanggiamoinhat", {
       ALLTIME: alltime,
@@ -2484,6 +2497,7 @@ const QuotationManager = () => {
               store: loaded_data,
             }),
           );
+          clearSelection();
         } else {
           Swal.fire("Thông báo", " Có lỗi : " + response.data.message, "error");
         }
@@ -2492,6 +2506,7 @@ const QuotationManager = () => {
         console.log(error);
         Swal.fire("Thông báo", " Có lỗi : " + error, "error");
       });
+      
   };
   const quotationprintref = useRef(null);
   const handlePrint = useReactToPrint({

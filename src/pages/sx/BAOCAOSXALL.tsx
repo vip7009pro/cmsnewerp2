@@ -1,15 +1,25 @@
 import { useEffect, useState, lazy, Suspense, useContext } from "react";
 import "./BAOCAOSXALL.scss";
-import LICHSUINPUTLIEU from "../qlsx/QLSXPLAN/LICHSUINPUTLIEU/LICHSUINPUTLIEU";
+const LICHSUINPUTLIEU = lazy(() => import("../qlsx/QLSXPLAN/LICHSUINPUTLIEU/LICHSUINPUTLIEU"));
+const DATASX2 = lazy(() => import("../qlsx/QLSXPLAN/DATASX/DATASX2"));
+const LICHSUTEMLOTSX = lazy(() => import("./LICHSUTEMLOTSX/LICHSUTEMLOTSX"));
+const TINHHINHCUONLIEU = lazy(() => import("./TINH_HINH_CUON_LIEU/TINHINHCUONLIEU"));
+const BAOCAOTHEOROLL = lazy(() => import("./BAOCAOTHEOROLL/BAOCAOTHEOROLL"));
+const PLANRESULT = lazy(() => import("./PLANRESULT/PLANRESULT"));
+const ACHIVEMENTTB = lazy(() => import("../qlsx/QLSXPLAN/ACHIVEMENTTB/ACHIVEMENTTB"));
+const PATROL = lazy(() => import("./PATROL/PATROL"));
+/* import LICHSUINPUTLIEU from "../qlsx/QLSXPLAN/LICHSUINPUTLIEU/LICHSUINPUTLIEU";
 import DATASX2 from "../qlsx/QLSXPLAN/DATASX/DATASX2";
 import LICHSUTEMLOTSX from "./LICHSUTEMLOTSX/LICHSUTEMLOTSX";
 import TINHHINHCUONLIEU from "./TINH_HINH_CUON_LIEU/TINHINHCUONLIEU";
 import BAOCAOTHEOROLL from "./BAOCAOTHEOROLL/BAOCAOTHEOROLL";
 import PLANRESULT from "./PLANRESULT/PLANRESULT";
 import ACHIVEMENTTB from "../qlsx/QLSXPLAN/ACHIVEMENTTB/ACHIVEMENTTB";
+import PATROL from "./PATROL/PATROL"; */
+
 import { getlang } from "../../components/String/String";
 import { LangConText } from "../../api/Context";
-import PATROL from "./PATROL/PATROL";
+
 const BAOCAOSXALL = () => {
   const [selection, setSelection] = useState<any>({
     tab1: true,

@@ -1,3 +1,5 @@
+import { ReactElement } from "react";
+
 //PO kinh doanh
 export interface POTableData {
   PO_ID: number;
@@ -2579,6 +2581,7 @@ export interface GlobalInterface {
   multiple_chithi_array: QLSXPLANDATA[];
   server_ip: string;
   tabs: ELE_ARRAY[];
+  componentArray: Array<any>;
   tabIndex: number;
   tabModeSwap: boolean;
   loginState: boolean;
@@ -3235,4 +3238,9 @@ export interface INSP_PATROL_DATA {
   FACTORY: string,
   OCCURR_TIME: string
 
+}
+export interface MENU_LIST_DATA {
+  MENU_CODE: string;
+  MENU_NAME: string;
+  MENU_ITEM: any;
 }

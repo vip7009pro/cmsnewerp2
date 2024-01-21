@@ -116,7 +116,7 @@ const BOM_MANAGER = () => {
       G_NAME_KD: g_name_kd
     })
     .then((response) => {
-      console.log(response.data);
+      //console.log(response.data);
       if (response.data.tk_status !== "NG") {
         gnamekdExist = true;
       } else {
@@ -124,14 +124,14 @@ const BOM_MANAGER = () => {
       }
     })
     .catch((error) => {
-      console.log(error);
+      //console.log(error);
     });
     return gnamekdExist;
   }
   const loadDefaultDM = () => {
     generalQuery("loadDefaultDM", {})
       .then((response) => {
-        console.log(response.data);
+        //console.log(response.data);
         if (response.data.tk_status !== "NG") {
           const loadeddata: DEFAULT_DM[] = response.data.data.map(
             (element: DEFAULT_DM, index: number) => {
@@ -159,7 +159,7 @@ const BOM_MANAGER = () => {
         }
       })
       .catch((error) => {
-        console.log(error);
+        //console.log(error);
       });
   };
 
@@ -256,7 +256,7 @@ const BOM_MANAGER = () => {
   >([]);
   const handleSetCodeInfo = (keyname: string, value: any) => {
     let tempcodefullinfo = { ...codefullinfo, [keyname]: value };
-    //console.log(tempcodefullinfo);
+    ////console.log(tempcodefullinfo);
     setCodeFullInfo(tempcodefullinfo);
   };
   const [pinBOM, setPINBOM] = useState(false);
@@ -334,7 +334,7 @@ const BOM_MANAGER = () => {
       renderCell: (params: any) => {
         let file: any = null;
         const uploadFile2 = async (e: any) => {
-          //console.log(file);
+          ////console.log(file);
           checkBP(userData, ["RND", "KD"], ["ALL"], ["ALL"], async () => {
             uploadQuery(file, params.row.G_CODE + ".pdf", "banve")
               .then((response) => {
@@ -367,7 +367,7 @@ const BOM_MANAGER = () => {
                       }
                     })
                     .catch((error) => {
-                      console.log(error);
+                      //console.log(error);
                     });
                 } else {
                   Swal.fire(
@@ -378,7 +378,7 @@ const BOM_MANAGER = () => {
                 }
               })
               .catch((error) => {
-                console.log(error);
+                //console.log(error);
               });
           });
         };
@@ -403,7 +403,7 @@ const BOM_MANAGER = () => {
                 type="file"
                 onChange={(e: any) => {
                   file = e.target.files[0];
-                  console.log(file);
+                  //console.log(file);
                 }}
               />
             </div>
@@ -753,13 +753,13 @@ const BOM_MANAGER = () => {
     generalQuery("getMasterMaterialList", {})
       .then((response) => {
         if (response.data.tk_status !== "NG") {
-          //console.log(response.data.data);
+          ////console.log(response.data.data);
           setMasterMaterialList(response.data.data);
         } else {
         }
       })
       .catch((error) => {
-        console.log(error);
+        //console.log(error);
       });
   };
   const resetBanVe = async (value: string) => {
@@ -775,7 +775,7 @@ const BOM_MANAGER = () => {
             VALUE: value,
           })
             .then((response) => {
-              console.log(response.data.tk_status);
+              //console.log(response.data.tk_status);
               if (response.data.tk_status !== "NG") {
                 //Swal.fire("Thông báo", "Delete Po thành công", "success");
               } else {
@@ -783,7 +783,7 @@ const BOM_MANAGER = () => {
               }
             })
             .catch((error) => {
-              console.log(error);
+              //console.log(error);
             });
         }
         Swal.fire("Thông báo", "RESET BAN VE THÀNH CÔNG", "success");
@@ -812,7 +812,7 @@ const BOM_MANAGER = () => {
                         VALUE: "N",
                       })
                         .then((response) => {
-                          console.log(response.data.tk_status);
+                          //console.log(response.data.tk_status);
                           if (response.data.tk_status !== "NG") {
                             //Swal.fire("Thông báo", "Delete Po thành công", "success");
                           } else {
@@ -820,7 +820,7 @@ const BOM_MANAGER = () => {
                           }
                         })
                         .catch((error) => {
-                          console.log(error);
+                          //console.log(error);
                         });
 
                       Swal.fire(
@@ -839,7 +839,7 @@ const BOM_MANAGER = () => {
                     }
                   })
                   .catch((error) => {
-                    console.log(error);
+                    //console.log(error);
                   });
               } else {
                 Swal.fire(
@@ -850,7 +850,7 @@ const BOM_MANAGER = () => {
               }
             })
             .catch((error) => {
-              console.log(error);
+              //console.log(error);
             });
         } else {
           Swal.fire("Thông báo", "Chọn code trước khi up bản vẽ", "error");
@@ -866,7 +866,7 @@ const BOM_MANAGER = () => {
       G_CODE: G_CODE,
     })
       .then((response) => {
-        //console.log(response.data);
+        ////console.log(response.data);
         if (response.data.tk_status !== "NG") {
           const loadeddata: BOM_SX[] = response.data.data.map(
             (element: BOM_SX, index: number) => {
@@ -891,7 +891,7 @@ const BOM_MANAGER = () => {
         }
       })
       .catch((error) => {
-        console.log(error);
+        //console.log(error);
       });
   };
   const handleGETBOMGIA = (G_CODE: string) => {
@@ -900,7 +900,7 @@ const BOM_MANAGER = () => {
       G_CODE: G_CODE,
     })
       .then((response) => {
-        //console.log(response.data);
+        ////console.log(response.data);
         if (response.data.tk_status !== "NG") {
           const loadeddata: BOM_GIA[] = response.data.data.map(
             (element: BOM_GIA, index: number) => {
@@ -925,7 +925,7 @@ const BOM_MANAGER = () => {
         }
       })
       .catch((error) => {
-        console.log(error);
+        //console.log(error);
       });
   };
   const handleCODEINFO = () => {
@@ -934,7 +934,7 @@ const BOM_MANAGER = () => {
       G_NAME: codeCMS,
     })
       .then((response) => {
-        //console.log(response.data);
+        ////console.log(response.data);
         if (response.data.tk_status !== "NG") {
           const loadeddata: CODE_INFO[] = response.data.data.map(
             (element: CODE_INFO, index: number) => {
@@ -958,7 +958,7 @@ const BOM_MANAGER = () => {
         }
       })
       .catch((error) => {
-        console.log(error);
+        //console.log(error);
       });
   };
   const setNav = (choose: number) => {
@@ -1000,20 +1000,20 @@ const BOM_MANAGER = () => {
         }
       })
       .catch((error) => {
-        console.log(error);
+        //console.log(error);
       });
   };
   const getmateriallist = () => {
     generalQuery("getMaterialList", {})
       .then((response) => {
         if (response.data.tk_status !== "NG") {
-          //console.log(response.data.data);
+          ////console.log(response.data.data);
           setMaterialList(response.data.data);
         } else {
         }
       })
       .catch((error) => {
-        console.log(error);
+        //console.log(error);
       });
   };
   const handlecodefullinfo = (G_CODE: string) => {
@@ -1021,9 +1021,9 @@ const BOM_MANAGER = () => {
       G_CODE: G_CODE,
     })
       .then((response) => {
-        //console.log(response.data);
+        ////console.log(response.data);
         if (response.data.tk_status !== "NG") {
-          //console.log(response.data.data[0]);
+          ////console.log(response.data.data[0]);
           let loaded_data: CODE_FULL_INFO[] = response.data.data.map(
             (element: CODE_FULL_INFO, index: number) => {
               return {
@@ -1125,7 +1125,7 @@ const BOM_MANAGER = () => {
               };
             },
           );
-          //console.log(loaded_data[0]);
+          ////console.log(loaded_data[0]);
           setCodeFullInfo(loaded_data[0]);
           setComponentList(
             componentList.map((e: COMPONENT_DATA, index: number) => {
@@ -1239,7 +1239,7 @@ const BOM_MANAGER = () => {
         }
       })
       .catch((error) => {
-        console.log(error);
+        //console.log(error);
       });
   };
   const handleCODESelectionforUpdate = (ids: GridSelectionModel) => {
@@ -1248,13 +1248,13 @@ const BOM_MANAGER = () => {
       selectedID.has(element.id),
     );
     if (datafilter.length > 0) {
-      //console.log(datafilter);
+      ////console.log(datafilter);
       setCodeDataTableFilter(datafilter);
       if (!pinBOM) {
         handleGETBOMSX(datafilter[0].G_CODE);
         handleGETBOMGIA(datafilter[0].G_CODE);
       }
-      //console.log(datafilter[0]);
+      ////console.log(datafilter[0]);
       handlecodefullinfo(datafilter[0].G_CODE);
     } else {
       setCodeDataTableFilter([]);
@@ -1266,7 +1266,7 @@ const BOM_MANAGER = () => {
       selectedID.has(element.id),
     );
     if (datafilter.length > 0) {
-      //console.log(datafilter);
+      ////console.log(datafilter);
       setBomSXDataTableFilter(datafilter);
     } else {
       setBomSXDataTableFilter([]);
@@ -1278,7 +1278,7 @@ const BOM_MANAGER = () => {
       selectedID.has(element.id),
     );
     if (datafilter.length > 0) {
-      //console.log(datafilter);
+      ////console.log(datafilter);
       setBomGiaDataTableFilter(datafilter);
     } else {
       setBomGiaDataTableFilter([]);
@@ -1463,7 +1463,7 @@ const BOM_MANAGER = () => {
       CODE_27: CODE_27,
     })
       .then((response) => {
-        //console.log(response.data);
+        ////console.log(response.data);
         let currentseq = response.data.data[0].LAST_SEQ_NO;
         if (response.data.tk_status !== "NG") {
           if (CODE_12 === "9") {
@@ -1485,7 +1485,7 @@ const BOM_MANAGER = () => {
         }
       })
       .catch((error) => {
-        console.log(error);
+        //console.log(error);
       });
     return { NEXT_G_CODE: CODE_12 + CODE_27 + nextseq, NEXT_SEQ_NO: nextseqno };
   };
@@ -1496,7 +1496,7 @@ const BOM_MANAGER = () => {
       CODE_FULL_INFO: codefullinfo,
     })
       .then((response) => {
-        //console.log(response.data);
+        ////console.log(response.data);
         if (response.data.tk_status !== "NG") {
           //Swal.fire("Thông báo", "Code mới: " + nextcode, "success");
         } else {
@@ -1504,13 +1504,13 @@ const BOM_MANAGER = () => {
         }
       })
       .catch((error) => {
-        console.log(error);
+        //console.log(error);
       });
   };
   const handleupdateCodeTBG = () => {
     generalQuery("updateM100BangTinhGia", codefullinfo)
       .then((response) => {
-        //console.log(response.data);
+        ////console.log(response.data);
         if (response.data.tk_status !== "NG") {
           Swal.fire(
             "Thông báo",
@@ -1522,13 +1522,13 @@ const BOM_MANAGER = () => {
         }
       })
       .catch((error) => {
-        console.log(error);
+        //console.log(error);
       });
   };
   const handleAddNewCode = async () => {
-    //console.log(handleCheckCodeInfo());
+    ////console.log(handleCheckCodeInfo());
     let checkg_name_kd:boolean = await checkG_NAME_KD_Exist(codefullinfo.G_NAME_KD===undefined? 'zzzzzzzzz': codefullinfo.G_NAME_KD);
-    console.log('checkg_name_kd',checkg_name_kd);
+    //console.log('checkg_name_kd',checkg_name_kd);
 
     if ((getCompany()==='CMS') && await handleCheckCodeInfo() || (getCompany()!=='CMS' && checkg_name_kd=== false)) {
       let CODE_27 = "C";
@@ -1559,7 +1559,7 @@ const BOM_MANAGER = () => {
         CODE_FULL_INFO: codefullinfo,
       })
         .then((response) => {
-          //console.log(response.data);
+          ////console.log(response.data);
           if (response.data.tk_status !== "NG") {
             Swal.fire("Thông báo", "Code mới: " + nextcode, "success");
           } else {
@@ -1567,7 +1567,7 @@ const BOM_MANAGER = () => {
           }
         })
         .catch((error) => {
-          console.log(error);
+          //console.log(error);
         });
       handleinsertCodeTBG(nextcode);
     }
@@ -1611,9 +1611,9 @@ const BOM_MANAGER = () => {
         NEXT_REV_NO = String.fromCharCode(CURRENT_REV_NO.charCodeAt(0) + 1);
         newGCODE = codefullinfo.CODE_12 + CODE_27 + nextseqno + NEXT_REV_NO;
       }
-      console.log(newGCODE);
-      console.log(nextseqno);
-      console.log("NEXT REV", NEXT_REV_NO);
+      //console.log(newGCODE);
+      //console.log(nextseqno);
+      //console.log("NEXT REV", NEXT_REV_NO);
       await generalQuery("insertM100_AddVer", {
         G_CODE: newGCODE,
         CODE_27: CODE_27,
@@ -1622,7 +1622,7 @@ const BOM_MANAGER = () => {
         CODE_FULL_INFO: codefullinfo,
       })
         .then((response) => {
-          //console.log(response.data);
+          ////console.log(response.data);
           if (response.data.tk_status !== "NG") {
             Swal.fire("Thông báo", "Code ver mới: " + newGCODE, "success");
           } else {
@@ -1630,7 +1630,7 @@ const BOM_MANAGER = () => {
           }
         })
         .catch((error) => {
-          console.log(error);
+          //console.log(error);
         });
       handleinsertCodeTBG(newGCODE);
     }
@@ -1639,7 +1639,7 @@ const BOM_MANAGER = () => {
     if ((getCompany()==='CMS') && await handleCheckCodeInfo() || getCompany()!=='CMS') {
       await generalQuery("updateM100", codefullinfo)
         .then((response) => {
-          //console.log(response.data);
+          ////console.log(response.data);
           if (response.data.tk_status !== "NG") {
             Swal.fire(
               "Thông báo",
@@ -1651,7 +1651,7 @@ const BOM_MANAGER = () => {
           }
         })
         .catch((error) => {
-          console.log(error);
+          //console.log(error);
         });
 
       confirmUpdateM100TBG();
@@ -1683,7 +1683,7 @@ const BOM_MANAGER = () => {
         UPD_EMPL: userData?.EMPL_NO,
         UPD_DATE: moment().format("YYYY-MM-DD HH:mm:ss.SSS"),
       };
-      //console.log(tempeditrows);
+      ////console.log(tempeditrows);
       setBOMSXTable([...bomsxtable, tempeditrows]);
     } else {
       Swal.fire("Thông báo", "Chọn 1 code trong list để thêm liệu", "warning");
@@ -1714,13 +1714,13 @@ const BOM_MANAGER = () => {
         let check_num_lieuql_sx: number = 1;
         let check_lieu_qlsx_khac1: number = 0;
         let m_list: string = "";
-        //console.log(chithidatatable);
+        ////console.log(chithidatatable);
         for (let i = 0; i < bomsxtable.length; i++) {
           total_lieuql_sx += bomsxtable[i].LIEUQL_SX;
           if (bomsxtable[i].LIEUQL_SX > 1) check_lieu_qlsx_khac1 += 1;
         }
         for (let i = 0; i < bomsxtable.length; i++) {
-          //console.log(bomsxtable[i].LIEUQL_SX);
+          ////console.log(bomsxtable[i].LIEUQL_SX);
           if (parseInt(bomsxtable[i].LIEUQL_SX.toString()) === 1) {
             for (let j = 0; j < bomsxtable.length; j++) {
               if (
@@ -1732,13 +1732,13 @@ const BOM_MANAGER = () => {
             }
           }
         }
-        //console.log('bang chi thi', bomsxtable);
+        ////console.log('bang chi thi', bomsxtable);
         for (let i = 0; i < bomsxtable.length; i++) {
           if (parseInt(bomsxtable[i].LIEUQL_SX.toString()) === 1) {
             for (let j = 0; j < bomsxtable.length; j++) {
               if (parseInt(bomsxtable[j].LIEUQL_SX.toString()) === 1) {
-                //console.log('i', bomsxtable[i].M_NAME);
-                //console.log('j', bomsxtable[j].M_NAME);
+                ////console.log('i', bomsxtable[i].M_NAME);
+                ////console.log('j', bomsxtable[j].M_NAME);
                 if (bomsxtable[i].M_NAME !== bomsxtable[j].M_NAME) {
                   check_num_lieuql_sx = 2;
                 }
@@ -1746,13 +1746,13 @@ const BOM_MANAGER = () => {
             }
           }
         }
-        //console.log('num lieu qlsx: ' + check_num_lieuql_sx);
-        //console.log('tong lieu qly: '+ total_lieuql_sx);
+        ////console.log('num lieu qlsx: ' + check_num_lieuql_sx);
+        ////console.log('tong lieu qly: '+ total_lieuql_sx);
         for (let i = 0; i < bomsxtable.length - 1; i++) {
           m_list += `'${bomsxtable[i].M_CODE}',`;
         }
         m_list += `'${bomsxtable[bomsxtable.length - 1].M_CODE}'`;
-        console.log("m_list", m_list);
+        //console.log("m_list", m_list);
         if (
           total_lieuql_sx > 0 &&
           check_lieuql_sx_sot === 0 &&
@@ -1769,12 +1769,12 @@ const BOM_MANAGER = () => {
           })
             .then((response) => {
               if (response.data.tk_status !== "NG") {
-                //console.log(response.data.data);
+                ////console.log(response.data.data);
               } else {
               }
             })
             .catch((error) => {
-              console.log(error);
+              //console.log(error);
             });
           let max_g_seq: string = "001";
           await generalQuery("checkGSEQ_M140", {
@@ -1782,14 +1782,14 @@ const BOM_MANAGER = () => {
           })
             .then((response) => {
               if (response.data.tk_status !== "NG") {
-                //console.log(response.data.data);
+                ////console.log(response.data.data);
                 max_g_seq = response.data.data[0].MAX_G_SEQ;
               } else {
                 max_g_seq = "001";
               }
             })
             .catch((error) => {
-              console.log(error);
+              //console.log(error);
             });
           for (let i = 0; i < bomsxtable.length; i++) {
             let check_M_CODE: boolean = false;
@@ -1799,14 +1799,14 @@ const BOM_MANAGER = () => {
             })
               .then((response) => {
                 if (response.data.tk_status !== "NG") {
-                  //console.log(response.data.data);
+                  ////console.log(response.data.data);
                   check_M_CODE = true;
                 } else {
                   check_M_CODE = false;
                 }
               })
               .catch((error) => {
-                console.log(error);
+                //console.log(error);
               });
             if (check_M_CODE) {
               await generalQuery("update_M140", {
@@ -1822,12 +1822,12 @@ const BOM_MANAGER = () => {
               })
                 .then((response) => {
                   if (response.data.tk_status !== "NG") {
-                    //console.log(response.data.data);
+                    ////console.log(response.data.data);
                   } else {
                   }
                 })
                 .catch((error) => {
-                  console.log(error);
+                  //console.log(error);
                 });
             } else {
               await generalQuery("insertM140", {
@@ -1844,12 +1844,12 @@ const BOM_MANAGER = () => {
               })
                 .then((response) => {
                   if (response.data.tk_status !== "NG") {
-                    //console.log(response.data.data);
+                    ////console.log(response.data.data);
                   } else {
                   }
                 })
                 .catch((error) => {
-                  console.log(error);
+                  //console.log(error);
                 });
             }
           }
@@ -1876,12 +1876,12 @@ const BOM_MANAGER = () => {
         })
           .then((response) => {
             if (response.data.tk_status !== "NG") {
-              //console.log(response.data.data);
+              ////console.log(response.data.data);
             } else {
             }
           })
           .catch((error) => {
-            console.log(error);
+            //console.log(error);
           });
         for (let i = 0; i < bomgiatable.length; i++) {
           await generalQuery("insertM140", {
@@ -1893,12 +1893,12 @@ const BOM_MANAGER = () => {
           })
             .then((response) => {
               if (response.data.tk_status !== "NG") {
-                //console.log(response.data.data);
+                ////console.log(response.data.data);
               } else {
               }
             })
             .catch((error) => {
-              console.log(error);
+              //console.log(error);
             });
         }
       } else {
@@ -1929,13 +1929,13 @@ const BOM_MANAGER = () => {
       })
         .then((response) => {
           if (response.data.tk_status !== "NG") {
-            //console.log(response.data.data);
+            ////console.log(response.data.data);
             selected_Material_Info = response.data.data[0];
           } else {
           }
         })
         .catch((error) => {
-          console.log(error);
+          //console.log(error);
         });
       let tempeditrows: BOM_GIA = {
         id: moment().format("YYYY-MM-DD HH:mm:ss.SSS"),
@@ -1974,7 +1974,7 @@ const BOM_MANAGER = () => {
         UPD_EMPL: userData?.EMPL_NO,
         UPD_DATE: moment().format("YYYY-MM-DD HH:mm:ss.SSS"),
       };
-      //console.log(tempeditrows);
+      ////console.log(tempeditrows);
       setBOMGIATable([...bomgiatable, tempeditrows]);
     } else {
       Swal.fire("Thông báo", "Chọn 1 code trong list để thêm liệu", "warning");
@@ -2011,24 +2011,24 @@ const BOM_MANAGER = () => {
           err_code = "Không được để ô nào NG màu đỏ";
         }
       }
-      console.log(checkMAIN_M);
+      //console.log(checkMAIN_M);
       if (checkMAIN_M === 0) {
         err_code += "| Phải chỉ định liệu quản lý";
       }
-      //console.log(err_code);
+      ////console.log(err_code);
       if (err_code === "0") {
-        console.log("vao bom gia insert");
+        //console.log("vao bom gia insert");
         await generalQuery("deleteBOM2", {
           G_CODE: codefullinfo.G_CODE,
         })
           .then((response) => {
             if (response.data.tk_status !== "NG") {
-              //console.log(response.data.data);
+              ////console.log(response.data.data);
             } else {
             }
           })
           .catch((error) => {
-            console.log(error);
+            //console.log(error);
           });
         for (let i = 0; i < bomgiatable.length; i++) {
           await generalQuery("insertBOM2", {
@@ -2052,12 +2052,12 @@ const BOM_MANAGER = () => {
           })
             .then((response) => {
               if (response.data.tk_status !== "NG") {
-                //console.log(response.data.data);
+                ////console.log(response.data.data);
               } else {
               }
             })
             .catch((error) => {
-              console.log(error);
+              //console.log(error);
             });
         }
         handleInsertBOMSX_WITH_GIA();
@@ -2224,7 +2224,7 @@ const BOM_MANAGER = () => {
           G_CODE: codefullinfo.G_CODE,
         })
           .then((response) => {
-            //console.log(response.data);
+            ////console.log(response.data);
             if (response.data.tk_status !== "NG") {
               checkTBGExist = 1;
               handleupdateCodeTBG();
@@ -2234,7 +2234,7 @@ const BOM_MANAGER = () => {
             }
           })
           .catch((error) => {
-            console.log(error);
+            //console.log(error);
           });
       }
     });
@@ -2265,7 +2265,7 @@ const BOM_MANAGER = () => {
   const getMachineList = () => {
     generalQuery("getmachinelist", {})
       .then((response) => {
-        //console.log(response.data);
+        ////console.log(response.data);
         if (response.data.tk_status !== "NG") {
           const loadeddata: MACHINE_LIST[] = response.data.data.map(
             (element: MACHINE_LIST, index: number) => {
@@ -2275,7 +2275,7 @@ const BOM_MANAGER = () => {
             },
           );
           loadeddata.push({ EQ_NAME: "NO" }, { EQ_NAME: "NA" });
-          console.log(loadeddata);
+          //console.log(loadeddata);
           setMachine_List(loadeddata);
         } else {
           //Swal.fire("Thông báo", "Lỗi BOM SX: " + response.data.message, "error");
@@ -2283,7 +2283,7 @@ const BOM_MANAGER = () => {
         }
       })
       .catch((error) => {
-        console.log(error);
+        //console.log(error);
       });
   };
   const autogenerateCodeKH = (cust_cd: string) => {
@@ -2292,11 +2292,11 @@ const BOM_MANAGER = () => {
       CUST_CD: cust_cd,
     })
       .then((response) => {
-        console.log(response.data.data);
+        //console.log(response.data.data);
         if (response.data.tk_status !== "NG") {
           let arr = response.data.data[0].G_NAME_KD.split("-");
           nextCodeKH = cust_cd + "-" + zeroPad(parseInt(arr[1]) + 1, 4);
-          console.log("nex codeKH", nextCodeKH);
+          //console.log("nex codeKH", nextCodeKH);
           handleSetCodeInfo("CUST_CD", cust_cd);
         } else {
           //Swal.fire("Thông báo", " Có lỗi : " + response.data.message, "error");
@@ -2309,7 +2309,7 @@ const BOM_MANAGER = () => {
         setCodeFullInfo(tempcodefullinfo);
       })
       .catch((error) => {
-        console.log(error);
+        //console.log(error);
         Swal.fire("Thông báo", " Có lỗi : " + error, "error");
       });
 
@@ -2450,7 +2450,7 @@ const BOM_MANAGER = () => {
       G_CODE: G_CODE,
     })
       .then((response) => {
-        //console.log(response.data);
+        ////console.log(response.data);
         if (response.data.tk_status !== "NG") {
           const loadeddata: COMPONENT_DATA[] = response.data.data.map(
             (element: COMPONENT_DATA, index: number) => {
@@ -2460,7 +2460,7 @@ const BOM_MANAGER = () => {
               };
             },
           );
-          //console.log(loadeddata);
+          ////console.log(loadeddata);
           setComponentList(loadeddata);
         } else {
           //Swal.fire("Thông báo", "Lỗi BOM SX: " + response.data.message, "error");
@@ -2468,7 +2468,7 @@ const BOM_MANAGER = () => {
         }
       })
       .catch((error) => {
-        console.log(error);
+        //console.log(error);
       });
   };
 
@@ -2608,11 +2608,11 @@ const BOM_MANAGER = () => {
                       event: MuiEvent<MuiBaseEvent>,
                       details: GridCallbackDetails,
                     ) => {
-                      //console.log(params);
+                      ////console.log(params);
                       let tempeditrows = editedRows;
                       tempeditrows.push(params);
                       setEditedRows(tempeditrows);
-                      //console.log(editedRows);
+                      ////console.log(editedRows);
                       const keyvar = params.field;
                       const newdata = rows.map((p) =>
                         p.id === params.id
@@ -2766,7 +2766,7 @@ const BOM_MANAGER = () => {
                               )[0]?.CUST_NAME_KD,
                         }}
                         onChange={(event: any, newValue: any) => {
-                          console.log(newValue);
+                          //console.log(newValue);
                           handleSetCodeInfo(
                             "CUST_CD",
                             newValue === null ? "" : newValue.CUST_CD,
@@ -2937,7 +2937,7 @@ const BOM_MANAGER = () => {
                           M_NAME: codefullinfo.PROD_MAIN_MATERIAL,
                         }}
                         onChange={(event: any, newValue: any) => {
-                          console.log(newValue);
+                          //console.log(newValue);
                           handleSetCodeInfo(
                             "PROD_MAIN_MATERIAL",
                             newValue === null ? "" : newValue.M_NAME,
@@ -3485,7 +3485,7 @@ const BOM_MANAGER = () => {
                           type="file"
                           onChange={(e: any) => {
                             setFile(e.target.files[0]);
-                            console.log(e.target.files[0]);
+                            //console.log(e.target.files[0]);
                           }}
                         />
                       </div>
@@ -3533,7 +3533,7 @@ const BOM_MANAGER = () => {
                         }}
                         value={selectedMasterMaterial}
                         onChange={(event: any, newValue: any) => {
-                          console.log(newValue);
+                          //console.log(newValue);
                           handleSetCodeInfo(
                             "PROD_MAIN_MATERIAL",
                             newValue === null ? "" : newValue.M_NAME
@@ -3602,7 +3602,7 @@ const BOM_MANAGER = () => {
                 }}
                 value={selectedMaterial}
                 onChange={(event: any, newValue: MaterialListData | any) => {
-                  console.log(newValue);
+                  //console.log(newValue);
                   setSelectedMaterial(newValue);
                 }}
               />
@@ -3643,11 +3643,11 @@ const BOM_MANAGER = () => {
                       event: MuiEvent<MuiBaseEvent>,
                       details: GridCallbackDetails,
                     ) => {
-                      //console.log(params);
+                      ////console.log(params);
                       let tempeditrows = editedRows;
                       tempeditrows.push(params);
                       setEditedBOMSXRows(tempeditrows);
-                      //console.log(editedRows);
+                      ////console.log(editedRows);
                       const keyvar = params.field;
                       const newdata = bomsxtable.map((p) =>
                         p.id === params.id
@@ -3693,11 +3693,11 @@ const BOM_MANAGER = () => {
                       event: MuiEvent<MuiBaseEvent>,
                       details: GridCallbackDetails,
                     ) => {
-                      //console.log(params);
+                      ////console.log(params);
                       let tempeditrows = editedRows;
                       tempeditrows.push(params);
                       setEditedBOMGIARows(tempeditrows);
-                      //console.log(editedRows);
+                      ////console.log(editedRows);
                       const keyvar = params.field;
                       const newdata = bomgiatable.map((p) =>
                         p.id === params.id
