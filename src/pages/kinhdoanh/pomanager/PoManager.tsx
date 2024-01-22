@@ -201,7 +201,6 @@ const PoManager = () => {
       });
       return loaded_price;
   }
-
   const autogeneratePO_NO = async (cust_cd: string) => {
     let po_no_to_check: string = cust_cd + "_" + moment.utc().format("YYMMDD");
     let next_po_no: string = po_no_to_check + "_001";
@@ -627,7 +626,7 @@ const PoManager = () => {
           err_code = 5;
         }
       }
-            
+
       if (err_code === 0) {
         tempjson[i].CHECKSTATUS = "OK";
       } else if (err_code === 1) {
