@@ -63,7 +63,7 @@ const SettingPage = () => {
               (element: WEB_SETTING_DATA, index: number) => {
                 return {
                   ...element,
-                  CURRENT_VALUE: crST.filter((ele: WEB_SETTING_DATA, id: number) => ele.ID === element.ID)[0].CURRENT_VALUE ?? 'xxxxxx'
+                  CURRENT_VALUE: crST.filter((ele: WEB_SETTING_DATA, id: number) => ele.ID === element.ID)[0]?.CURRENT_VALUE ?? element.DEFAULT_VALUE
                 };
               }
             );
