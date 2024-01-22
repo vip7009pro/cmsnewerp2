@@ -9,11 +9,13 @@ import {
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../redux/store";
 import {
-  changeServer,
   changeGLBSetting
 } from "../../redux/slices/globalSlice";
 const SettingPage = () => {
   const dispatch = useDispatch();
+  const globalSetting: WEB_SETTING_DATA[] | undefined = useSelector(
+    (state: RootState) => state.totalSlice.globalSetting
+  );
   const [settings, setSettings] = useState<Array<WEB_SETTING_DATA>>([]);
   const updateSettingValue = (ID: number, newValue: any) => {
     setSettings((prevSettings) =>
@@ -134,6 +136,9 @@ const SettingPage = () => {
             }
           });
         }}>Reset</Button>
+        <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#f17bde' }} onClick={() => {
+          console.log(globalSetting);
+        }}>Show</Button>
       </div>
       <table>
         <thead>

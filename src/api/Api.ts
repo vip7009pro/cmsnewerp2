@@ -38,6 +38,10 @@ export function getGlobalLang() {
   const state = store.getState();
   return state.totalSlice.lang;
 }
+export function getGlobalSetting() {
+  const state = store.getState();
+  return state.totalSlice.globalSetting;
+}
 console.log("company", getCompany());
 
 let API_URL = getSever() + "/api";

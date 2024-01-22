@@ -716,26 +716,6 @@ function Home() {
                     </div>
                   );
               })}
-            {/* {tabModeSwap &&
-              tabs.map((ele: ELE_ARRAY, index: number) => {                
-                if (ele.ELE_CODE !== "-1")
-                  return (
-                    <div
-                      key={index}
-                      className='component_element'
-                      style={{
-                        visibility: index === tabIndex ? "visible" : "hidden",
-                        width: sidebarStatus ? "100%" : "100%",
-                      }}
-                    >                     
-                        {ele.REACT_ELE}                      
-                    </div>
-                  );
-              })} */}
-              
-
-
-              {/* {componentArrayy} */}
             {current_ver >= checkVerWeb ? (
               !tabModeSwap && <Outlet />
             ) : (
