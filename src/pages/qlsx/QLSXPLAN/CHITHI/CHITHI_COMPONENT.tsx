@@ -496,7 +496,7 @@ const CHITHI_COMPONENT = ({ DATA }: { DATA: QLSXPLANDATA }) => {
                   </tr>
                   <tr>
                     <td>Chú ý (QLSX)</td>
-                    <td>{request_codeinfo[0]?.NOTE}</td>
+                    <td>{request_codeinfo[0]?.NOTE} ({(DATA.PLAN_QTY * (1+(DATA.PROCESS_NUMBER === 1 ? request_codeinfo[0]?.LOSS_SX1: DATA.PROCESS_NUMBER === 2 ? request_codeinfo[0]?.LOSS_SX2: DATA.PROCESS_NUMBER === 3 ? request_codeinfo[0]?.LOSS_SX3:request_codeinfo[0]?.LOSS_SX4 )/100)).toLocaleString('en-US')  } EA Cả loss)</td>
                   </tr>
                 </tbody>
               </table>
