@@ -383,14 +383,31 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
       });
     return checkFSC;
   };
+  const checkNhapKhoTPDuHayChua = async(NEXT_PLAN: string)=> {
+    let checkNhapKho: string = "N";
+    await generalQuery("checkYcsxStatus", {
+      PLAN_ID: NEXT_PLAN,
+    })
+      .then((response) => {
+        console.log(response.data.data);
+        if (response.data.tk_status !== "NG") {
+          checkNhapKho = response.data.data[0].USE_YN;
+        } else {
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    return checkNhapKho;
+  }
   const handle_xuatKhoAo = async () => {
     //console.log(nextPlan);
     if (nextPlan !== "" && nextPlan !== undefined) {
       if (tonkhoaodatafilter.length > 0) {
         let err_code: string = "0";
         for (let i = 0; i < tonkhoaodatafilter.length; i++) {
-          let checktontaikhoao: boolean = await checktontaiMlotPlanIdSuDung(nextPlan,tonkhoaodatafilter[i].M_LOT_NO);
-          console.log('checktontaikhoao',checktontaikhoao);
+          let checkYCSX_USE_YN: string = await checkNhapKhoTPDuHayChua(nextPlan);
+          let checktontaikhoao: boolean = await checktontaiMlotPlanIdSuDung(nextPlan,tonkhoaodatafilter[i].M_LOT_NO);         
           let checklieuchithi: boolean = true;
           await generalQuery("checkM_CODE_CHITHI", {
             PLAN_ID_OUTPUT: nextPlan,
@@ -412,7 +429,8 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
             checklieuchithi === true &&
             nextPlan !== tonkhoaodatafilter[i].PLAN_ID_INPUT &&
             checkFSC === tonkhoaodatafilter[i].FSC && 
-            checktontaikhoao
+            checktontaikhoao && 
+            checkYCSX_USE_YN ==='Y'
           ) {
             await generalQuery("xuatkhoao", {
               FACTORY: tonkhoaodatafilter[i].FACTORY,
@@ -469,6 +487,9 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
             else if(!checktontaikhoao) {
               err_code += `| Liệu:  ${tonkhoaodatafilter[i].M_NAME} liệu này đã được xuát vào chỉ thị  ${nextPlan} rồi, không xuất lại được nữa`;      
             }            
+            else if(checkYCSX_USE_YN !=='Y') {
+              err_code += `| YCSX đã nhập kho đủ, không thể input liệu để chạy nữa, chạy nữa là dư !`;      
+            }            
           }
         }
         if (err_code !== "0") {         
@@ -478,8 +499,7 @@ const KHOAO = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
         } else {
           handle_loadKhoAo(true);
           setTonKhoAoDataFilter([]);          
-        }
-        
+        }        
       } else {
         Swal.fire("Thông báo", "Chọn ít nhất 1 liệu để xuất kho", "error");
       }

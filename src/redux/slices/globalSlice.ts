@@ -9,6 +9,7 @@ import {
   GlobalInterface,
   QLSXPLANDATA,
   UserData,
+  WEB_SETTING_DATA,
 } from "../../api/GlobalInterface";
 const startCPN: string = "CMS";
 const socket = io(
@@ -66,7 +67,13 @@ if (server_ip_local !== undefined) {
       : ""
   );
 }
+let crST_string: any = localStorage.getItem("setting") ?? '';
+let crST: WEB_SETTING_DATA[] = [];
+if (crST_string !== '') { 
+   crST = JSON.parse(crST_string);
+}
 const initialState: GlobalInterface = {
+  globalSetting: crST,
   globalSocket: socket,
   userData: {
     EMPL_IMAGE: "Y",
@@ -350,6 +357,9 @@ export const glbSlice = createSlice({
       //console.log(action.payload);
       state.lang = action.payload;
     },
+    changeGLBSetting: (state, action: PayloadAction<WEB_SETTING_DATA[]>) => {
+      state.globalSetting = action.payload;
+    }
   },
 });
 export const {
@@ -371,5 +381,6 @@ export const {
   logout,
   login,
   changeGLBLanguage,
+  changeGLBSetting
 } = glbSlice.actions;
 export default glbSlice.reducer;
