@@ -37,12 +37,10 @@ import {
   AiFillEdit,
   AiFillFileAdd,
   AiFillFileExcel,
-  AiOutlineLogout,
 } from "react-icons/ai";
 import Swal from "sweetalert2";
 import * as XLSX from "xlsx";
 import { generalQuery, getCompany } from "../../../api/Api";
-import { UserContext } from "../../../api/Context";
 import {
   checkBP,
   CustomResponsiveContainer,
@@ -65,10 +63,7 @@ import {
   PRICEWITHMOQ,
   UserData,
 } from "../../../api/GlobalInterface";
-import {
-  POManagerDiv,
-  TotalPOManagerDiv,
-} from "../../../components/StyledComponents/ComponentLib";
+
 const PoManager = () => {
   const showhidesearchdiv = useRef(false);
   const [isPending, startTransition] = useTransition();

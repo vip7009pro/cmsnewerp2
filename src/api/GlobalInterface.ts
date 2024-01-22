@@ -3244,3 +3244,10 @@ export interface MENU_LIST_DATA {
   MENU_NAME: string;
   MENU_ITEM: any;
 }
+export interface WEB_SETTING_DATA {
+  ID: number,
+  ITEM_NAME: string,
+  DEFAULT_VALUE: string,
+  CURRENT_VALUE: string,
+  SECTION: string,
+}

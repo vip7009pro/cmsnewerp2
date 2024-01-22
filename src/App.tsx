@@ -10,7 +10,7 @@ import React, {
 } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { LangConText, UserContext } from "../src/api/Context";
-import { checkLogin, generalQuery } from "./api/Api";
+import { checkLogin, generalQuery, getSocket } from "./api/Api";
 import Swal from "sweetalert2";
 import { RootState } from "./redux/store";
 import { useSelector, useDispatch } from "react-redux";
@@ -27,6 +27,8 @@ import "./App.css";
 import FallBackComponent from "./components/Fallback/FallBackComponent";
 import { Button } from "@mui/material";
 import { UserData } from "./api/GlobalInterface";
+import { current_ver } from "./pages/home/Home";
+import SettingPage from "./pages/setting/SettingPage";
 const LICHSUTEMLOTSX = lazy(() => import("./pages/sx/LICHSUTEMLOTSX/LICHSUTEMLOTSX"));
 const BAOCAOSXALL = lazy(() => import("./pages/sx/BAOCAOSXALL"));
 const Login = React.lazy(() => import("./pages/login/Login"));
@@ -489,12 +491,40 @@ function App() {
       .catch((error) => {
         console.log(error);
       });
-    /* let server_ip_local: any = localStorage.getItem("server_ip")?.toString();
-    if (server_ip_local !== undefined) {
-    } else {
-      localStorage.setItem("server_ip", "http://14.160.33.94:5013/api");
-    } */
-    return () => { };
+    if (!getSocket().hasListeners('setWebVer')) {
+      getSocket().on("setWebVer", (data: any) => {
+        console.log(data);
+        if (current_ver >= data) {
+        } else {          
+          Swal.fire({
+            title: "ERP has updates?",
+            text: "Update Web",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Update",
+            cancelButtonText: "Update later",
+          }).then((result) => {
+            if (result.isConfirmed) {
+              Swal.fire("Notification", "Update Web", "success");
+              window.location.reload();
+            } else {
+              Swal.fire(
+                "Notification",
+                "Press Ctrl + F5 to update the Web",
+                "info"
+              );
+            }
+          });
+        }
+      });
+    }
+    return () => {
+      getSocket().off("setWebVer", (data: any) => {
+        //console.log(data);
+      });
+    };
   }, []);
   return (
     <>
@@ -664,6 +694,20 @@ function App() {
                         <Route index element={<KHOTPNEW />} />
                         <Route path='nhapxuattontp' element={<KHOTPNEW />} />
                         <Route path='nhapxuattonlieu' element={<KHOLIEU />} />
+                      </Route>
+                      <Route
+                        path='setting'
+                        element={
+                          <ProtectedRoute
+                            user={globalUserData}
+                            maindeptname='all'
+                            jobname='Leader'
+                          >
+                            <SettingPage />
+                          </ProtectedRoute>
+                        }
+                      >
+                        <Route index element={<SettingPage />} />
                       </Route>
                       <Route
                         path='qc'

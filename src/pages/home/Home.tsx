@@ -26,6 +26,7 @@ import FallBackComponent from "../../components/Fallback/FallBackComponent";
 import { getlang } from "../../components/String/String";
 import { LangConText } from "../../api/Context";
 import { MENU_LIST_DATA } from "../../api/GlobalInterface";
+import SettingPage from "../setting/SettingPage";
 
 const PoManager = lazy(() => import("../../pages/kinhdoanh/pomanager/PoManager"));
 const MACHINE = lazy(() => import("../../pages/qlsx/QLSXPLAN/Machine/MACHINE"));
@@ -472,6 +473,11 @@ function Home() {
       MENU_CODE: "KO2",
       MENU_NAME: getlang("nhapxuattonlieu", lang),
       MENU_ITEM: <KHOLIEU/>,
+    },
+    {
+      MENU_CODE: "ST01",
+      MENU_NAME: "Setting",
+      MENU_ITEM: <SettingPage/>,
     },
     {
       MENU_CODE: "",

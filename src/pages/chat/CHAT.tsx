@@ -9,12 +9,13 @@ const CHAT = () => {
       getSocket().on("online_list", (data: any) => {
         console.log(data);
       });
+    }
       return () => {
         getSocket().off("online_list", (data: any) => {
         });
       }
-    }
-  }, [])
+    
+  }, []);
   return (
     <div className="chatwindow">
       <button

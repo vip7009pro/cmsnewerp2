@@ -86,12 +86,15 @@ export default function AccountInfo() {
   }
   days = getBusinessDatesCount(new Date(startOfYear), new Date());
   const setWebVer = (web_ver: number) => {
+    getSocket().emit("setWebVer", web_ver);
+
     generalQuery("setWebVer", {
       WEB_VER: web_ver,
     })
       .then((response) => {
         if (response.data.tk_status !== "NG") {
           Swal.fire("Thông báo", "Set web ver thành công", "success");
+          
         } else {
           Swal.fire(
             "Thông báo",
@@ -239,11 +242,7 @@ export default function AccountInfo() {
       });
   };
 
-  useEffect(() => {  
-     
-    /* getSocket().on("online_list", (data:any) => {
-      console.log(data);
-    }); */
+  useEffect(() => {
     getData();
     getchamcong();
     let intervalID2 = window.setInterval(() => {
@@ -518,7 +517,7 @@ export default function AccountInfo() {
             {userdata?.EMPL_NO === "NHU1903" && (
               <Button
                 onClick={() => {
-                  getSocket().emit("online_list", 'nguyen van hung');   
+                  getSocket().emit("setWebVer", 125);   
                 }}
               >
                 Emit

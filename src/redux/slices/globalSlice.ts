@@ -250,7 +250,7 @@ export const glbSlice = createSlice({
           .length < 8
       ) {
         state.tabs = [...state.tabs, action.payload];
-        console.log(state.tabs);
+        //console.log(state.tabs);
         localStorage.setItem(
           "tabs",
           JSON.stringify(

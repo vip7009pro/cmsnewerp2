@@ -44,8 +44,8 @@ import "./navbar.scss";
 import { AiOutlineCloseCircle } from "react-icons/ai";
 import { ELE_ARRAY, MENU_LIST_DATA, UserData } from "../../api/GlobalInterface";
 import useOutsideClick from "../../api/customHooks";
+import { MdOutlineSettings } from "react-icons/md";
 const NavMenu = lazy(() => import("../NavMenu/NavMenu"));
-
 interface SEARCH_LIST_DATA {
   MENU_CODE: string;
   MENU_NAME: string;
@@ -400,7 +400,7 @@ export default function Navbar() {
       MENU_CODE: "SX10",
       MENU_NAME: getlang("materiallotstatus", lang),
       MENU_ITEM: "",
-    },    
+    },
     {
       MENU_CODE: "SX13",
       MENU_NAME: getlang("sxrolldata", lang),
@@ -462,8 +462,8 @@ export default function Navbar() {
       setLang(saveLang.toString());
     } else {
       setLang("en");
-    }    
-    let saveTab: any = localStorage.getItem("tabs")?.toString();    
+    }
+    let saveTab: any = localStorage.getItem("tabs")?.toString();
     if (saveTab !== undefined) {
       let tempTab: SEARCH_LIST_DATA[] = JSON.parse(saveTab);
       for (let i = 0; i < tempTab.length; i++) {
@@ -472,7 +472,7 @@ export default function Navbar() {
             addTab({
               ELE_CODE: tempTab[i].MENU_CODE,
               ELE_NAME: tempTab[i].MENU_NAME,
-              REACT_ELE:"",
+              REACT_ELE: "",
             }),
           );
       }
@@ -518,7 +518,6 @@ export default function Navbar() {
     dispatch(changeGLBLanguage(selectLang));
     localStorage.setItem("lang", selectLang);
   };
- 
   return (
     <div className="navbar">
       <div
@@ -752,6 +751,7 @@ export default function Navbar() {
                   <div className="menu_item">
                     <SwitchRightIcon className="menu_icon" />
                     <FormControlLabel
+                      sx={{ color: 'green', fontWeight: 'bold' }}
                       label={tabModeSwap ? "Multiple Tabs" : "Single Tab"}
                       control={
                         <Checkbox
@@ -773,6 +773,50 @@ export default function Navbar() {
                         />
                       }
                     />
+                  </div>
+                  <div className="menu_item">
+                    <MdOutlineSettings size={22} className="menu_icon" />
+                    <Link
+                      to="/setting"
+                      className="menulink"
+                      onClick={() => {
+                        if (tabModeSwap) {
+                          if (
+                            userData?.JOB_NAME === "ADMIN" ||
+                            userData?.JOB_NAME === "Leader" ||
+                            userData?.JOB_NAME === "Sub Leader" ||
+                            userData?.JOB_NAME === "Dept Staff"
+                          ) {
+                            if (tabModeSwap) {
+                              let ele_code_array: string[] = tabs.map(
+                                (ele: ELE_ARRAY, index: number) => {
+                                  return ele.ELE_CODE;
+                                },
+                              );
+                              let tab_index: number = ele_code_array.indexOf(
+                                "ST01",
+                              );
+                              if (tab_index !== -1) {
+                                dispatch(settabIndex(tab_index));
+                              } else {
+                                dispatch(
+                                  addTab({
+                                    ELE_CODE: "ST01",
+                                    ELE_NAME: "SETTING",
+                                    REACT_ELE: "",
+                                  }),
+                                );
+                                dispatch(settabIndex(tabs.length));
+                              }
+                            }
+                          } else {
+                            Swal.fire("Cảnh báo", "Không đủ quyền hạn", "error");
+                          }
+                        }
+                      }}
+                    >
+                      Setting
+                    </Link>
                   </div>
                   <div className="menu_item">
                     <LogoutIcon className="menu_icon" />
