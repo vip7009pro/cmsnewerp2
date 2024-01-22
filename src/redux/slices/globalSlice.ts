@@ -10,7 +10,6 @@ import {
   QLSXPLANDATA,
   UserData,
 } from "../../api/GlobalInterface";
-
 const startCPN: string = "CMS";
 const socket = io(
   startCPN === "CMS"
@@ -272,13 +271,9 @@ export const glbSlice = createSlice({
       }
     },
     addComponent: (state, action: PayloadAction<ReactElement>) => {
-      
-        state.componentArray = [...state.componentArray, action.payload];
-        console.log(state.componentArray);
-       ;
-      
+      state.componentArray = [...state.componentArray, action.payload];
+      console.log(state.componentArray);
     },
-
     resetTab: (state, action: PayloadAction<any>) => {
       state.tabs = [];
       localStorage.setItem(
@@ -294,7 +289,7 @@ export const glbSlice = createSlice({
       );
     },
     closeTab: (state, action: PayloadAction<number>) => {
-       /* state.tabs = state.tabs.filter(
+      /* state.tabs = state.tabs.filter(
             (ele: ELE_ARRAY, index1: number) => {
               return index1 !== state.tabIndex;
             }
@@ -304,7 +299,6 @@ export const glbSlice = createSlice({
       for (let i = 0; i < state.tabs.length; i++) {
         if (state.tabs[i].ELE_CODE !== "-1") checkallDeleted++;
       }
-     
       if (checkallDeleted > 1) {
         state.tabs[action.payload] = {
           ELE_CODE: "-1",
@@ -322,7 +316,6 @@ export const glbSlice = createSlice({
             })
           )
         );
-        
         while (
           state.tabIndex > 0 &&
           state.tabs[state.tabIndex].ELE_CODE === "-1"
@@ -336,7 +329,7 @@ export const glbSlice = createSlice({
           ) {
             state.tabIndex++;
           }
-        }        
+        }
       } else {
         state.tabs = [];
       }
@@ -353,7 +346,7 @@ export const glbSlice = createSlice({
     login: (state, action: PayloadAction<boolean>) => {
       state.loginState = true;
     },
-    changeGLBLanguage:  (state, action: PayloadAction<string>) => {
+    changeGLBLanguage: (state, action: PayloadAction<string>) => {
       //console.log(action.payload);
       state.lang = action.payload;
     },
@@ -377,6 +370,6 @@ export const {
   resetTab,
   logout,
   login,
-  changeGLBLanguage
+  changeGLBLanguage,
 } = glbSlice.actions;
 export default glbSlice.reducer;

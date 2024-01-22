@@ -7,9 +7,6 @@ import { login } from "../../api/Api";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../redux/store";
 import {
-  changeDiemDanhState,
-  changeUserData,
-  update_socket,
   changeServer,
 } from "../../redux/slices/globalSlice";
 const Login = () => {
@@ -18,18 +15,10 @@ const Login = () => {
   const [user, setUser] = useState("");
   const [pass, setPass] = useState("");
   const [server_string, setServer_String] = useState("");
-  /* const [server_string, setServer_String] = useState('http://14.160.33.94:5013/api') */
-  //console.log(lang);
-
   const company: string = useSelector(
     (state: RootState) => state.totalSlice.company,
   );
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
-
-  const defaultIP: string =
-    company === "CMS"
-      ? "http://14.160.33.94:5013/api"
-      : "http://222.252.1.63:3007/api";
   const handle_setUser = (e: React.ChangeEvent<HTMLInputElement>) => {
     setUser(e.target.value);
   };
@@ -47,40 +36,30 @@ const Login = () => {
       login(user, pass);
     }
   };
-  const lang2: any = localStorage.getItem("lang");
-  //console.log('lang2: ' + lang2);
   const login_bt = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     login(user, pass);
   };
-
   const server_ip: string | undefined = useSelector(
     (state: RootState) => state.totalSlice.server_ip,
   );
   const dispatch = useDispatch();
-
   useEffect(() => {
     let server_ip_local: any = localStorage.getItem("server_ip")?.toString();
     if (server_ip_local !== undefined) {
       setServer_String(server_ip_local);
       dispatch(changeServer(server_ip_local));
     } else {
-      /* localStorage.setItem("server_ip", 'http://14.160.33.94:5013/api');
-      dispatch(changeServer('http://14.160.33.94:5013/api')); */
       localStorage.setItem("server_ip", "");
       dispatch(changeServer(""));
     }
     let saveLang: any = localStorage.getItem("lang")?.toString();
     if (saveLang !== undefined) {
       setLang(saveLang.toString());
-      //console.log(getlang("dangnhap", lang));
     } else {
       setLang("en");
     }
   }, []);
-  //console.log(company)
-
-  //if (userData.EMPL_NO!=='none') return <Navigate to='/' replace />;
   return (
     <div className="loginscreen">
       <div
@@ -101,8 +80,8 @@ const Login = () => {
         className="login-form"
         style={{
           backgroundImage: `${company === "CMS"
-              ? theme.CMS.backgroundImage
-              : theme.PVN.backgroundImage
+            ? theme.CMS.backgroundImage
+            : theme.PVN.backgroundImage
             }`,
         }}
       >
@@ -166,18 +145,18 @@ const Login = () => {
               name="select_server"
               value={server_string}
               onChange={(e) => {
-                localStorage.setItem("server_ip", e.target.value);                
+                localStorage.setItem("server_ip", e.target.value);
                 setServer_String(e.target.value);
                 dispatch(changeServer(e.target.value));
                 ///console.log(e.target.value);
               }}
-            >              
+            >
               {company === "CMS" && (
                 <option value={"http://14.160.33.94:5013"}>MAIN_SERVER</option>
               )}
               {company === "CMS" && (
                 <option value={"http://14.160.33.94:3007"}>SUB_SERVER</option>
-              )}              
+              )}
               {company === "CMS" && (
                 <option value={"http://192.168.1.192:5013"}>LAN_SERVER</option>
               )}
@@ -186,10 +165,10 @@ const Login = () => {
               )}
               {company === "PVN" && (
                 <option value={"http://222.252.1.63:3007"}>PUBLIC_PVN</option>
-              )}              
+              )}
               {company === "NHATHAN" && (
                 <option value={"http://222.252.1.214:3007"}>PUBLIC_NHATHAN</option>
-              )}              
+              )}
               <option value={"http://localhost:3007"}>TEST_SERVER</option>
             </select>
           </label>
@@ -216,5 +195,4 @@ const Login = () => {
     </div>
   );
 };
-
 export default Login;

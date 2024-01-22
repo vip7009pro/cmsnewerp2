@@ -80,9 +80,6 @@ export default function Navbar() {
     },
     () => { },
   );
-  const [server_string, setServer_String] = useState(
-    "http://14.160.33.94:5013/api",
-  );
   const menulist: MENU_LIST_DATA[] = [
     {
       MENU_CODE: "NS0",
@@ -460,23 +457,13 @@ export default function Navbar() {
   );
   const dispatch = useDispatch();
   useEffect(() => {
-    /* if (typeof window !== 'undefined') {
-      window.addEventListener('scroll', controlNavbar);
-    } */
     let saveLang: any = localStorage.getItem("lang")?.toString();
     if (saveLang !== undefined) {
       setLang(saveLang.toString());
     } else {
       setLang("en");
-    }
-    /* let server_ip_local: any = localStorage.getItem("server_ip")?.toString();
-    if (server_ip_local !== undefined) {
-      setServer_String(server_ip_local);
-    } else {
-      localStorage.setItem("server_ip", "http://14.160.33.94:5013/api");
-    } */
-    let saveTab: any = localStorage.getItem("tabs")?.toString();
-    //console.log('savetab',saveTab);
+    }    
+    let saveTab: any = localStorage.getItem("tabs")?.toString();    
     if (saveTab !== undefined) {
       let tempTab: SEARCH_LIST_DATA[] = JSON.parse(saveTab);
       for (let i = 0; i < tempTab.length; i++) {
