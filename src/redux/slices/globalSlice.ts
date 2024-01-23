@@ -67,10 +67,10 @@ if (server_ip_local !== undefined) {
       : ""
   );
 }
-let crST_string: any = localStorage.getItem("setting") ?? '';
+let crST_string: any = localStorage.getItem("setting") ?? "";
 let crST: WEB_SETTING_DATA[] = [];
-if (crST_string !== '') { 
-   crST = JSON.parse(crST_string);
+if (crST_string !== "") {
+  crST = JSON.parse(crST_string);
 }
 const initialState: GlobalInterface = {
   globalSetting: crST,
@@ -359,7 +359,7 @@ export const glbSlice = createSlice({
     },
     changeGLBSetting: (state, action: PayloadAction<WEB_SETTING_DATA[]>) => {
       state.globalSetting = action.payload;
-    }
+    },
   },
 });
 export const {
@@ -381,6 +381,6 @@ export const {
   logout,
   login,
   changeGLBLanguage,
-  changeGLBSetting
+  changeGLBSetting,
 } = glbSlice.actions;
 export default glbSlice.reducer;

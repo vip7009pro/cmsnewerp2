@@ -32,14 +32,13 @@ const SettingPage = () => {
           CURRENT_VALUE: setting.DEFAULT_VALUE
         }
       });
-    });    
+    });
     dispatch(changeGLBSetting(settings.map((setting: WEB_SETTING_DATA, id: number) => {
       return {
         ...setting,
         CURRENT_VALUE: setting.DEFAULT_VALUE
       }
     })));
-
     localStorage.setItem(
       "setting",
       JSON.stringify(
@@ -58,7 +57,7 @@ const SettingPage = () => {
       .then((response) => {
         if (response.data.tk_status !== "NG") {
           let crST_string: any = localStorage.getItem("setting") ?? '';
-          let loadeddata: WEB_SETTING_DATA[] =[];
+          let loadeddata: WEB_SETTING_DATA[] = [];
           if (crST_string !== '') {
             let crST: WEB_SETTING_DATA[] = JSON.parse(crST_string);
             loadeddata = response.data.data.map(
@@ -69,7 +68,6 @@ const SettingPage = () => {
                 };
               }
             );
-            
           }
           else {
             loadeddata = response.data.data.map(
@@ -79,7 +77,7 @@ const SettingPage = () => {
                   CURRENT_VALUE: element.DEFAULT_VALUE
                 };
               }
-            );            
+            );
           }
           dispatch(changeGLBSetting(loadeddata));
           setSettings(loadeddata);

@@ -144,6 +144,16 @@ const PoManager = () => {
   const [newcodeprice, setNewCodePrice] = useState<PRICEWITHMOQ[]>([]);
   const [columns, setColumns] = useState<Array<any>>([]);
   const [columnsExcel, setColumnsExcel] = useState<Array<any>>([]);
+  function removeInvisibleCharacters(inputString: string) {
+    // Define a regular expression to match invisible characters
+    var regex = /[^\x20-\x7E\t]/g; // This regex matches anything outside the printable ASCII range
+
+    // Use the replace method to remove the matched characters
+    var cleanedString = inputString.replace(regex, '');
+
+    return cleanedString;
+}
+
   const autoGetProdPrice = async (G_CODE: string, CUST_CD: string, PO_QTY: number) => {
     let loaded_price: number = 0;
     await generalQuery("loadbanggiamoinhat", {
@@ -177,7 +187,7 @@ const PoManager = () => {
               ).filter(
                 (element: PRICEWITHMOQ, index: number) =>
                   element.FINAL === "Y"
-              );
+              );              
               loaded_price = loaded_data.filter(
                 (e: PRICEWITHMOQ, index: number) => {
                   return PO_QTY >= e.MOQ;
