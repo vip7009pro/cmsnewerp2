@@ -11,6 +11,7 @@ import { RootState } from "../../redux/store";
 import {
   changeGLBSetting
 } from "../../redux/slices/globalSlice";
+import CameraComponent from '../../components/Camera/Camera';
 const SettingPage = () => {
   const dispatch = useDispatch();
   const globalSetting: WEB_SETTING_DATA[] | undefined = useSelector(
@@ -164,6 +165,10 @@ const SettingPage = () => {
           ))}
         </tbody>
       </table>
+
+
+
+      <CameraComponent/>
     </div>
   );
 }
