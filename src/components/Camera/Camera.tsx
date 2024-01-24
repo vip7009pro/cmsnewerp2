@@ -1,12 +1,15 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 const CameraComponent: React.FC = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const [isFrontCamera, setIsFrontCamera] = useState<boolean>(true);
 
   useEffect(() => {
     const enableCamera = async () => {
       try {
-        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+        const facingMode = isFrontCamera ? 'user' : 'environment';
+        const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode } });
+
         if (videoRef.current) {
           videoRef.current.srcObject = stream;
         }
@@ -25,12 +28,17 @@ const CameraComponent: React.FC = () => {
         tracks.forEach(track => track.stop());
       }
     };
-  }, []);
+  }, [isFrontCamera]);
+
+  const handleCameraSwitch = () => {
+    setIsFrontCamera(prevIsFrontCamera => !prevIsFrontCamera);
+  };
 
   return (
     <div>
       <h2>Camera Debug Mode</h2>
       <video ref={videoRef} autoPlay playsInline muted />
+      <button onClick={handleCameraSwitch}>Switch Camera</button>
     </div>
   );
 };

@@ -12,6 +12,7 @@ import {
   changeGLBSetting
 } from "../../redux/slices/globalSlice";
 import CameraComponent from '../../components/Camera/Camera';
+import Scanner from '../../components/Scanner/Scanner';
 const SettingPage = () => {
   const dispatch = useDispatch();
   const globalSetting: WEB_SETTING_DATA[] | undefined = useSelector(
@@ -95,6 +96,7 @@ const SettingPage = () => {
   }, [])
   return (
     <div className='settingpage'>
+      <Scanner/>
       <h2>Setting Page</h2>
       <div className="headerbutton">
         <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#2639F6' }} onClick={() => {
@@ -167,8 +169,9 @@ const SettingPage = () => {
       </table>
 
 
+      
 
-      <CameraComponent/>
+      {/* <CameraComponent/> */}
     </div>
   );
 }

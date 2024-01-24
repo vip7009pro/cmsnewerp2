@@ -12,13 +12,18 @@ import {
   WEB_SETTING_DATA,
 } from "../../api/GlobalInterface";
 const startCPN: string = "CMS";
+console.log('protocol',window.location.protocol)
+const protocol = window.location.protocol.startsWith("https") ? 'https' : 'http';
+const main_port = protocol ==='https' ? '5014' : '5013';
+const sub_port = protocol ==='https' ? '3006' : '3007';
+
 const socket = io(
   startCPN === "CMS"
-    ? "http://14.160.33.94:3006"
+    ? `${protocol}://cms.ddns.net:${sub_port}`
     : startCPN === "PVN"
-    ? "http://222.252.1.63:3005"
+    ? `${protocol}://222.252.1.63:${sub_port}`
     : startCPN === "NHATHAN"
-    ? "http://222.252.1.214:3005"
+    ? `${protocol}://222.252.1.214:${sub_port}`
     : ""
 );
 socket.on("connect", () => {
@@ -61,9 +66,9 @@ if (server_ip_local !== undefined) {
   localStorage.setItem(
     "server_ip",
     startCPN === "CMS"
-      ? "http://14.160.33.94:5013"
+      ? `${protocol}://cms.ddns.net:${main_port}`
       : startCPN !== "CMS"
-      ? "http://222.252.1.63:3007"
+      ? `${protocol}://222.252.1.63:${sub_port}`
       : ""
   );
 }
@@ -125,15 +130,15 @@ const initialState: GlobalInterface = {
   },
   diemdanhstate: false,
   lang: localStorage.getItem("lang")?.toString() ?? "vi",
-  sidebarmenu: true,
+  sidebarmenu: false,
   multiple_chithi_array: [],
   company: startCPN,
   server_ip:
-    startCPN === "CMS"
-      ? "http://14.160.33.94:5013"
-      : startCPN !== "CMS"
-      ? "http://222.252.1.63:3007"
-      : "",
+  startCPN === "CMS"
+  ? `${protocol}://cms.ddns.net:${main_port}`
+  : startCPN !== "CMS"
+  ? `${protocol}://222.252.1.63:${sub_port}`
+  : "",
   tabs: [],
   componentArray: [],
   tabIndex: 0,
