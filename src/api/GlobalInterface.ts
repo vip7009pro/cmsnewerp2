@@ -2116,7 +2116,7 @@ export interface TONKIEMGOP_KD {
   GRAND_TOTAL_STOCK: number;
 }
 export interface TONKIEMTACH {
-  KHONAME: string;
+  KHO_NAME: string;
   LC_NAME: string;
   G_CODE: string;
   G_NAME: string;

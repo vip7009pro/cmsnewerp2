@@ -586,6 +586,7 @@ const KHOTP = () => {
             (element: TONKIEMTACH, index: number) => {
               return {
                 ...element,
+                KHO_NAME: element.KHO_NAME ==='NM1'? 'SK1': element.KHO_NAME ==='NM3'? 'SK3': element.KHO_NAME,
                 id: index,
               };
             },
