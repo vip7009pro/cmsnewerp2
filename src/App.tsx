@@ -28,6 +28,7 @@ import FallBackComponent from "./components/Fallback/FallBackComponent";
 import { Button } from "@mui/material";
 import { UserData } from "./api/GlobalInterface";
 import { current_ver } from "./pages/home/Home";
+import { Notifications } from 'react-push-notification';
 import SettingPage from "./pages/setting/SettingPage";
 const LICHSUTEMLOTSX = lazy(() => import("./pages/sx/LICHSUTEMLOTSX/LICHSUTEMLOTSX"));
 const BAOCAOSXALL = lazy(() => import("./pages/sx/BAOCAOSXALL"));
@@ -495,7 +496,7 @@ function App() {
       getSocket().on("setWebVer", (data: any) => {
         console.log(data);
         if (current_ver >= data) {
-        } else {          
+        } else {
           Swal.fire({
             title: "ERP has updates?",
             text: "Update Web",
@@ -1166,6 +1167,7 @@ function App() {
           </LangConText.Provider>
         </div>
       )}
+      <Notifications />
     </>
   );
 }

@@ -18,13 +18,16 @@ const Scanner = () => {
   useEffect(() => {    
     scanner.current = new Html5QrcodeScanner('reader', {      
       qrbox: {
-        width: 500,
-        height: 500
+        width: 300,
+        height: 300
       },
       fps: 1,
       rememberLastUsedCamera: true,
       showTorchButtonIfSupported: true,
     }, false);
+    return ()=> {
+      scanner.current.clear();      
+    }
   }, [])
   return (
     <div className="scanQR">

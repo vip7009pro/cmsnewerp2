@@ -13,6 +13,8 @@ import {
 } from "../../redux/slices/globalSlice";
 import CameraComponent from '../../components/Camera/Camera';
 import Scanner from '../../components/Scanner/Scanner';
+import OpenCV from '../../components/OpenCV/OpenCV';
+import addNotification from 'react-push-notification';
 const SettingPage = () => {
   const dispatch = useDispatch();
   const globalSetting: WEB_SETTING_DATA[] | undefined = useSelector(
@@ -91,12 +93,45 @@ const SettingPage = () => {
         console.log(error);
       });
   }
+  const getWifiInfo = async () => {
+    try {
+      if ('geolocation' in navigator) {
+        const position = await new Promise<GeolocationPosition>(
+          (resolve, reject) => {
+            navigator.geolocation.getCurrentPosition(resolve, reject);
+          }
+        );
+
+        const { coords } = position;
+        const { latitude, longitude } = coords;
+        console.log('Latitude:', latitude);
+        console.log('Longitude:', longitude);
+    
+      } else {
+        console.log('Geolocation is not supported');
+      }
+    } catch (error: any) {
+      console.error('Error getting geolocation:', error.message);
+    }
+  };
+
+  const buttonClick = () => {
+    addNotification({
+        title: 'Thông báo',
+        subtitle: 'Hàng được nhập kho',
+        message: 'Code GH68-48946A đã được nhập kho 10K vào lúc 10h30p',
+        theme: 'darkblue',
+        native: true // when using native, your OS will handle theming.
+    });
+};
   useEffect(() => {
     loadWebSetting();
+    //getWifiInfo();
   }, [])
   return (
     <div className='settingpage'>
-      <Scanner/>
+      <button onClick={buttonClick}>Show Notification</button>
+      
       <h2>Setting Page</h2>
       <div className="headerbutton">
         <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#2639F6' }} onClick={() => {
@@ -169,7 +204,8 @@ const SettingPage = () => {
       </table>
 
 
-      
+      <OpenCV/>
+      {/* <Scanner/> */}
 
       {/* <CameraComponent/> */}
     </div>
