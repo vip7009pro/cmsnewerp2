@@ -3,7 +3,8 @@ import { ResponsiveContainer } from "recharts";
 import Swal from "sweetalert2";
 import * as XLSX from "xlsx";
 import { generalQuery, getCompany } from "./Api";
-import { UserData } from "./GlobalInterface";
+import { PRICEWITHMOQ, UserData } from "./GlobalInterface";
+import moment from "moment";
 
 export const zeroPad = (num: number, places: number) =>  String(num).padStart(places, "0");
 
@@ -89,6 +90,59 @@ export async function checkver() {
   } else {
     return 0;
   }
+}
+
+export const autoGetProdPrice = async (G_CODE: string, CUST_CD: string, PO_QTY: number) => {
+  let loaded_price: number = 0;
+  await generalQuery("loadbanggiamoinhat", {
+    ALLTIME: true,
+    FROM_DATE: "",
+    TO_DATE: "",
+    M_NAME: "",
+    G_CODE: G_CODE,
+    G_NAME: "",
+    CUST_NAME_KD: "",
+    CUST_CD: CUST_CD
+  })
+    .then((response) => {
+      //console.log(response.data.data);
+      if (response.data.tk_status !== "NG") {
+        let loaded_data: PRICEWITHMOQ[] = [];
+        loaded_data =
+          response.data.data.map(
+              (element: PRICEWITHMOQ, index: number) => {
+                return {
+                  ...element,
+                  PRICE_DATE:
+                    element.PRICE_DATE !== null
+                      ? moment
+                        .utc(element.PRICE_DATE)
+                        .format("YYYY-MM-DD")
+                      : "",
+                  id: index,
+                };
+              }
+            ).filter(
+              (element: PRICEWITHMOQ, index: number) =>
+                element.FINAL === "Y"
+            );              
+            loaded_price = loaded_data.filter(
+              (e: PRICEWITHMOQ, index: number) => {
+                return PO_QTY >= e.MOQ;
+              }
+            )[0]?.PROD_PRICE ?? 0;
+
+          
+        //setNewCodePrice(loaded_data);
+      } else {
+        /* Swal.fire("Thông báo", " Có lỗi : " + response.data.message, "error"); */
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+      //Swal.fire("Thông báo", " Có lỗi : " + error, "error");
+    });
+    return loaded_price;
 }
 
 export async function checkBP(

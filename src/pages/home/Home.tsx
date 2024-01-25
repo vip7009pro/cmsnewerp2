@@ -19,7 +19,6 @@ import { AiOutlineCloseCircle } from "react-icons/ai";
 import { RootState } from "../../redux/store";
 import { useSelector, useDispatch } from "react-redux";
 import { addTab, closeTab, settabIndex } from "../../redux/slices/globalSlice";
-
 import styled from "@emotion/styled";
 import Cookies from "universal-cookie";
 import FallBackComponent from "../../components/Fallback/FallBackComponent";
@@ -27,7 +26,6 @@ import { getlang } from "../../components/String/String";
 import { LangConText } from "../../api/Context";
 import { MENU_LIST_DATA } from "../../api/GlobalInterface";
 import SettingPage from "../setting/SettingPage";
-
 const PoManager = lazy(() => import("../../pages/kinhdoanh/pomanager/PoManager"));
 const MACHINE = lazy(() => import("../../pages/qlsx/QLSXPLAN/Machine/MACHINE"));
 const QUICKPLAN = lazy(() => import("../../pages/qlsx/QLSXPLAN/QUICKPLAN/QUICKPLAN"));
@@ -40,7 +38,6 @@ const PheDuyetNghi = lazy(() => import("../../pages/nhansu/PheDuyetNghi/PheDuyet
 const LichSu = lazy(() => import("../../pages/nhansu/LichSu/LichSu"));
 const QuanLyCapCao = lazy(() => import("../../pages/nhansu/QuanLyCapCao/QuanLyCapCao"));
 const BaoCaoNhanSu = lazy(() => import("../../pages/nhansu/BaoCaoNhanSu/BaoCaoNhanSu"));
-
 const InvoiceManager = lazy(() => import("../../pages/kinhdoanh/invoicemanager/InvoiceManager"));
 const PlanManager = lazy(() => import("../../pages/kinhdoanh/planmanager/PlanManager"));
 const ShortageKD = lazy(() => import("../../pages/kinhdoanh/shortageKD/ShortageKD"));
@@ -84,7 +81,7 @@ const TINHLIEU = lazy(() => import("../../pages/muahang/tinhlieu/TINHLIEU"));
 const BAOCAOTHEOROLL = lazy(() => import("../../pages/sx/BAOCAOTHEOROLL/BAOCAOTHEOROLL"));
 const LICHSUTEMLOTSX = lazy(() => import("../../pages/sx/LICHSUTEMLOTSX/LICHSUTEMLOTSX"));
 const BAOCAOSXALL = lazy(() => import("../../pages/sx/BAOCAOSXALL"));
-export const current_ver: number = 310;
+export const current_ver: number = 312;
 interface ELE_ARRAY {
   REACT_ELE: any;
   ELE_NAME: string;
@@ -98,7 +95,7 @@ function Home() {
     setComponentArrayy((prevArray) => [
       ...prevArray,
       <Suspense key={prevArray.length} fallback={<div>Loading...</div>}>
-        <Component/>
+        <Component />
       </Suspense>
     ]);
   };
@@ -122,7 +119,6 @@ function Home() {
   const sidebarStatus: boolean | undefined = useSelector(
     (state: RootState) => state.totalSlice.sidebarmenu
   );
-
   const menulist: MENU_LIST_DATA[] = [
     {
       MENU_CODE: "NS0",
@@ -443,7 +439,7 @@ function Home() {
       MENU_CODE: "SX10",
       MENU_NAME: getlang("materiallotstatus", lang),
       MENU_ITEM: <TINHHINHCUONLIEU />,
-    },    
+    },
     {
       MENU_CODE: "SX13",
       MENU_NAME: getlang("sxrolldata", lang),
@@ -472,12 +468,12 @@ function Home() {
     {
       MENU_CODE: "KO2",
       MENU_NAME: getlang("nhapxuattonlieu", lang),
-      MENU_ITEM: <KHOLIEU/>,
+      MENU_ITEM: <KHOLIEU />,
     },
     {
       MENU_CODE: "ST01",
       MENU_NAME: "Setting",
-      MENU_ITEM: <SettingPage/>,
+      MENU_ITEM: <SettingPage />,
     },
     {
       MENU_CODE: "",
@@ -490,8 +486,6 @@ function Home() {
       MENU_ITEM: <AccountInfo />,
     },
   ];
-
-
   const dispatch = useDispatch();
   const springs = useSpring({
     from: { x: 1000, y: 100 },
@@ -560,7 +554,7 @@ function Home() {
       });
   }
   useEffect(() => {
-    console.log("local ver", current_ver);   
+    console.log("local ver", current_ver);
     generalQuery("checkWebVer", {})
       .then((response) => {
         console.log(response.data.tk_status);
@@ -621,7 +615,7 @@ function Home() {
   }, []);
   return (
     <div className='home'>
-      <div className='navdiv'>    
+      <div className='navdiv'>
         <Navbar />
         {/* <PrimarySearchAppBar /> */}
       </div>
@@ -701,7 +695,7 @@ function Home() {
                 </Box>
               )}
             {tabModeSwap &&
-              tabs.map((ele: ELE_ARRAY, index: number) => {                
+              tabs.map((ele: ELE_ARRAY, index: number) => {
                 if (ele.ELE_CODE !== "-1")
                   return (
                     <div
@@ -711,8 +705,8 @@ function Home() {
                         visibility: index === tabIndex ? "visible" : "hidden",
                         width: sidebarStatus ? "100%" : "100%",
                       }}
-                    >       
-                        {menulist.filter((menu:MENU_LIST_DATA, index: number)=> menu.MENU_CODE === ele.ELE_CODE)[0].MENU_ITEM}                      
+                    >
+                      {menulist.filter((menu: MENU_LIST_DATA, index: number) => menu.MENU_CODE === ele.ELE_CODE)[0].MENU_ITEM}
                     </div>
                   );
               })}

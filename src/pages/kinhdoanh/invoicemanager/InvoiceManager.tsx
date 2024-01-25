@@ -586,6 +586,7 @@ const InvoiceManager = () => {
     }
     Swal.fire("Thông báo", "Đã hoàn thành thêm Invoice hàng loạt", "success");
     setUploadExcelJSon(tempjson);
+    setTrigger(!trigger);
   };
 
   const handle_upInvoiceXKHL = async ()=> {

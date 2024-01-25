@@ -42,6 +42,7 @@ import Swal from "sweetalert2";
 import * as XLSX from "xlsx";
 import { generalQuery, getCompany } from "../../../api/Api";
 import {
+  autoGetProdPrice,
   checkBP,
   CustomResponsiveContainer,
   SaveExcel,
@@ -63,7 +64,6 @@ import {
   PRICEWITHMOQ,
   UserData,
 } from "../../../api/GlobalInterface";
-
 const PoManager = () => {
   const showhidesearchdiv = useRef(false);
   const [isPending, startTransition] = useTransition();
@@ -147,64 +147,9 @@ const PoManager = () => {
   function removeInvisibleCharacters(inputString: string) {
     // Define a regular expression to match invisible characters
     var regex = /[^\x20-\x7E\t]/g; // This regex matches anything outside the printable ASCII range
-
     // Use the replace method to remove the matched characters
     var cleanedString = inputString.replace(regex, '');
-
     return cleanedString;
-}
-
-  const autoGetProdPrice = async (G_CODE: string, CUST_CD: string, PO_QTY: number) => {
-    let loaded_price: number = 0;
-    await generalQuery("loadbanggiamoinhat", {
-      ALLTIME: true,
-      FROM_DATE: "",
-      TO_DATE: "",
-      M_NAME: "",
-      G_CODE: G_CODE,
-      G_NAME: "",
-      CUST_NAME_KD: "",
-      CUST_CD: CUST_CD
-    })
-      .then((response) => {
-        //console.log(response.data.data);
-        if (response.data.tk_status !== "NG") {
-          let loaded_data: PRICEWITHMOQ[] = [];
-          loaded_data =
-            response.data.data.map(
-                (element: PRICEWITHMOQ, index: number) => {
-                  return {
-                    ...element,
-                    PRICE_DATE:
-                      element.PRICE_DATE !== null
-                        ? moment
-                          .utc(element.PRICE_DATE)
-                          .format("YYYY-MM-DD")
-                        : "",
-                    id: index,
-                  };
-                }
-              ).filter(
-                (element: PRICEWITHMOQ, index: number) =>
-                  element.FINAL === "Y"
-              );              
-              loaded_price = loaded_data.filter(
-                (e: PRICEWITHMOQ, index: number) => {
-                  return PO_QTY >= e.MOQ;
-                }
-              )[0]?.PROD_PRICE ?? 0;
-
-            
-          //setNewCodePrice(loaded_data);
-        } else {
-          /* Swal.fire("Thông báo", " Có lỗi : " + response.data.message, "error"); */
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-        Swal.fire("Thông báo", " Có lỗi : " + error, "error");
-      });
-      return loaded_price;
   }
   const autogeneratePO_NO = async (cust_cd: string) => {
     let po_no_to_check: string = cust_cd + "_" + moment.utc().format("YYMMDD");
@@ -364,8 +309,7 @@ const PoManager = () => {
     }
   };
   const handletraPO = () => {
-    if(getCompany()==='CMS')
-    {
+    if (getCompany() === 'CMS') {
       autopheduyetgia();
     }
     setisLoading(true);
@@ -433,15 +377,15 @@ const PoManager = () => {
               cellRender: (ele: any) => {
                 //console.log(ele);
                 if (e === "PROD_PRICE") {
-                  if(ele.data["FINAL"]==='Y')
-                  return (
-                    <span style={{ color: "#03b048", fontWeight: "normal" }}>
-                      {ele.data[e]?.toFixed(6).toLocaleString("en-US", {
-                        minimumFractionDigits: 2,
-                        maximumFractionDigits: 6,
-                      })}
-                    </span>
-                  );
+                  if (ele.data["FINAL"] === 'Y')
+                    return (
+                      <span style={{ color: "#03b048", fontWeight: "normal" }}>
+                        {ele.data[e]?.toFixed(6).toLocaleString("en-US", {
+                          minimumFractionDigits: 2,
+                          maximumFractionDigits: 6,
+                        })}
+                      </span>
+                    );
                   return (
                     <span style={{ color: "#de0374", fontWeight: "normal" }}>
                       {ele.data[e]?.toFixed(6).toLocaleString("en-US", {
@@ -450,8 +394,8 @@ const PoManager = () => {
                       })}
                     </span>
                   );
-                } 
-                else if(e === "BEP") {                
+                }
+                else if (e === "BEP") {
                   return (
                     <span style={{ color: "#0684cd", fontWeight: "normal" }}>
                       {ele.data[e]?.toFixed(6).toLocaleString("en-US", {
@@ -460,7 +404,7 @@ const PoManager = () => {
                       })}
                     </span>
                   );
-                } 
+                }
                 else if (
                   ["PO_QTY", "TOTAL_DELIVERED", "PO_BALANCE"].indexOf(e) > -1 ||
                   e.indexOf("RESULT") > -1
@@ -498,8 +442,7 @@ const PoManager = () => {
                       })}
                     </span>
                   );
-                } 
-                
+                }
                 else {
                   return <span>{ele.data[e]}</span>;
                 }
@@ -618,9 +561,7 @@ const PoManager = () => {
         .catch((error) => {
           console.log(error);
         });
-
-        let tempgia: number =0;
-
+      let tempgia: number = 0;
       if (getCompany() !== 'CMS') {
         tempgia = await autoGetProdPrice(uploadExcelJson[i].G_CODE, uploadExcelJson[i].CUST_CD, uploadExcelJson[i].PO_QTY);
         //console.log(tempgia);
@@ -631,7 +572,6 @@ const PoManager = () => {
           err_code = 5;
         }
       }
-
       if (err_code === 0) {
         tempjson[i].CHECKSTATUS = "OK";
       } else if (err_code === 1) {
@@ -643,10 +583,10 @@ const PoManager = () => {
       } else if (err_code === 4) {
         tempjson[i].CHECKSTATUS = "NG: Không có Code ERP này";
       }
-       else if (err_code === 5) {
+      else if (err_code === 5) {
         tempjson[i].CHECKSTATUS = "NG: Chưa có giá hoặc chua phê duyệt giá";
       }
-    }    
+    }
     Swal.fire("Thông báo", "Đã hoàn thành check PO hàng loạt", "success");
     setUploadExcelJSon(tempjson);
     setTrigger(!trigger);
@@ -736,6 +676,11 @@ const PoManager = () => {
         .catch((error) => {
           console.log(error);
         });
+      if (getCompany() !== 'CMS') {
+        if (uploadExcelJson[i].CHECKSTATUS != 'OK') {
+          err_code = 5;
+        }
+      }
       if (err_code === 0) {
         await generalQuery("insert_po", {
           G_CODE: uploadExcelJson[i].G_CODE,
@@ -769,9 +714,13 @@ const PoManager = () => {
       } else if (err_code === 4) {
         tempjson[i].CHECKSTATUS = "NG: Không có Code ERP này";
       }
+      else if (err_code === 5) {
+        tempjson[i].CHECKSTATUS = "NG: PO chưa được check trước khi up";
+      }
     }
     Swal.fire("Thông báo", "Đã hoàn thành thêm PO hàng loạt", "success");
     setUploadExcelJSon(tempjson);
+    setTrigger(!trigger);
   };
   const confirmUpPoHangLoat = () => {
     Swal.fire({
@@ -789,7 +738,6 @@ const PoManager = () => {
       }
     });
   };
-
   const confirmCheckPoHangLoat = () => {
     Swal.fire({
       title: "Chắc chắn muốn check PO hàng loạt ?",
@@ -899,6 +847,14 @@ const PoManager = () => {
     ) {
       err_code = 4;
     }
+    let recheckPrice: number = newcodeprice.filter(
+      (e: PRICEWITHMOQ, index: number) => {
+        return newpoprice === e.PROD_PRICE.toString();
+      }
+    ).length;
+    if (getCompany() !== 'CMS') {
+      if (recheckPrice === 0) err_code = 5;
+    }
     if (err_code === 0) {
       await generalQuery("insert_po", {
         G_CODE: selectedCode?.G_CODE,
@@ -938,6 +894,8 @@ const PoManager = () => {
       Swal.fire("Thông báo", "NG: Ver này đã bị khóa", "error");
     } else if (err_code === 4) {
       Swal.fire("Thông báo", "NG: Không để trống thông tin bắt buộc", "error");
+    } else if (err_code === 5) {
+      Swal.fire("Thông báo", "NG: Giá không tồn tại trong bảng giá", "error");
     }
   };
   const handle_add_1Invoice = async () => {
@@ -1774,23 +1732,18 @@ const PoManager = () => {
     ],
     store: podatatable,
   });
-
-  const autopheduyetgia=()=> {
-     generalQuery("autopheduyetgiaall", {
-     
+  const autopheduyetgia = () => {
+    generalQuery("autopheduyetgiaall", {
     })
       .then((response) => {
         console.log(response.data.tk_status);
         if (response.data.tk_status !== "NG") {
-         
         } else {
-          
         }
       })
       .catch((error) => {
         console.log(error);
       });
-
   }
   const poDataTable = React.useMemo(
     () => (
@@ -2113,14 +2066,12 @@ const PoManager = () => {
     [uploadExcelJson, columnsExcel, trigger]
   );
   useEffect(() => {
-    if(getCompany()==='CMS')
-    {
+    if (getCompany() === 'CMS') {
       autopheduyetgia();
       dongboGiaPO();
-    }   
+    }
     getcustomerlist();
     getcodelist("");
-    
   }, []);
   return (
     <div className="pomanager">
@@ -2170,7 +2121,7 @@ const PoManager = () => {
                 onChange={(e: any) => {
                   readUploadFile(e);
                 }}
-              />              
+              />
               <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#2639F6' }} onClick={() => {
                 confirmCheckPoHangLoat();
               }}>CheckPO</Button>

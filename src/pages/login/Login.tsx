@@ -13,7 +13,7 @@ const Login = () => {
   const protocol = window.location.protocol.startsWith("https") ? 'https' : 'http';
   const main_port = protocol === 'https' ? '5014' : '5013';
   const sub_port = protocol === 'https' ? '3006' : '3007';
-  console.log('sub_port', sub_port)
+  //console.log('sub_port', sub_port)
   const ref = useRef<any>(null);
   const [lang, setLang] = useContext(LangConText);
   const [user, setUser] = useState("");
@@ -155,13 +155,13 @@ const Login = () => {
                 ///console.log(e.target.value);
               }}
             >
-              {company === "CMS" && (
+              {company === "CMS" && protocol !== 'https' && (
                 <option value={protocol + "://14.160.33.94:" + main_port}>MAIN_SERVER</option>
               )}
-              {company === "CMS" && (
+              {company === "CMS" && protocol !== 'https' && (
                 <option value={protocol + "://14.160.33.94:" + sub_port}>SUB_SERVER</option>
               )}
-              {company === "CMS" && (
+              {company === "CMS" && protocol !== 'https' && (
                 <option value={protocol + "://192.168.1.192:" + main_port}>LAN_SERVER</option>
               )}
               {company === "CMS" && (
@@ -170,10 +170,10 @@ const Login = () => {
               {company === "CMS" && (
                 <option value={protocol + "://cms.ddns.net:" + sub_port}>SUBNET_SERVER</option>
               )}
-              {company === "PVN" && (
+              {company === "PVN" && protocol !== 'https' && (
                 <option value={protocol + "://222.252.1.63:" + sub_port}>PUBLIC_PVN</option>
               )}
-              {company === "NHATHAN" && (
+              {company === "NHATHAN" && protocol !== 'https' && (
                 <option value={protocol + "://222.252.1.214:" + sub_port}>PUBLIC_NHATHAN</option>
               )}
               <option value={protocol + "://localhost:" + sub_port}>TEST_SERVER</option>
