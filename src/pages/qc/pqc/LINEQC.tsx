@@ -30,7 +30,11 @@ import {
   SX_DATA,
   UserData,
 } from "../../../api/GlobalInterface";
-import Webcam from "react-webcam";
+
+import html2canvas from 'html2canvas';
+import Camera, { FACING_MODES, IMAGE_TYPES } from 'react-html5-camera-photo';
+import 'react-html5-camera-photo/build/css/index.css';
+
 const LINEQC = () => {
   const userData: UserData | undefined = useSelector(
     (state: RootState) => state.totalSlice.userData
@@ -395,11 +399,78 @@ const LINEQC = () => {
       return false;
     }
   };
+
+  const [dataUri, setDataUri] = useState<string | null>(null);
+  const [cameraDevices, setCameraDevices] = useState<MediaDeviceInfo[]>([]);
+  const [selectedCameraIndex, setSelectedCameraIndex] = useState<number>(0);
+  const [key, setKey] = useState<number>(0);
+
+  const handleTakePhotoAnimationDone = (dataUri: string) => {
+    setDataUri(dataUri);
+  };
+
+  const handleDownload = () => {
+    if (dataUri) {
+      const link = document.createElement('a');
+      link.href = dataUri;
+      link.download = 'captured_image.jpg';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  };
+
+  const handleCameraSwitch = () => {
+    setSelectedCameraIndex((prevIndex) => (prevIndex + 1) % cameraDevices.length);
+    setKey((prevKey) => prevKey + 1); // Update the key to force re-render
+  };
+
+  const getCameraDevices = async () => {
+    try {
+      const devices = await navigator.mediaDevices.enumerateDevices();
+      console.log(devices);
+      const cameras = devices.filter(device => device.kind === 'videoinput');      
+      let kk  = cameras[0]?.getCapabilities();
+      console.log('kk',kk)
+      setCameraDevices(cameras);
+    } catch (error) {
+      console.error('Error getting camera devices:', error);
+    }
+  };
+
   useEffect(() => {
+    getCameraDevices();   
+    return ()=> {
+      
+    }    
   }, []);
+
   return (
     <div className="lineqc">
-      <div className="tracuuDataInspection">
+      <div className="tracuuDataInspection">  
+        {/* <div>
+          <h2>Camera Capture</h2>
+          {cameraDevices.length > 1 && (
+            <button onClick={handleCameraSwitch}>Switch Camera {selectedCameraIndex}</button>
+          )}
+          <Camera
+            key={key}
+            onTakePhotoAnimationDone={handleTakePhotoAnimationDone}       
+            isImageMirror={false}
+            imageType={IMAGE_TYPES.JPG}
+            isFullscreen= {false}
+            isMaxResolution ={true}
+            idealFacingMode={ cameraDevices[selectedCameraIndex]?.facingMode ||FACING_MODES.ENVIRONMENT}
+            
+          />
+          {dataUri && (
+            <div>
+              <img src={dataUri} alt="Captured" width={`400px`} height={'300px'} />
+              <button onClick={handleDownload}>Download Image</button>
+            </div>
+          )}
+        </div> */}
+
         <div className="inputform">
           <div className="tracuuDataInspectionform">
             <b style={{ color: "blue" }}> NHẬP THÔNG TIN</b>

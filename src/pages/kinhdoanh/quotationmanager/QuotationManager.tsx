@@ -65,7 +65,6 @@ import {
   CustomerListData,
   UserData,
 } from "../../../api/GlobalInterface";
-
 const QuotationManager = () => {
   const dataGridRef = useRef<any>(null);
   const userData: UserData | undefined = useSelector(
@@ -139,7 +138,6 @@ const QuotationManager = () => {
   const [showhideupprice, setShowHideUpPrice] = useState(false);
   const [uploadExcelJson, setUploadExcelJSon] = useState<Array<any>>([]);
   const [showhideQuotationForm, setShowHideQuotationForm] = useState(false);
-
   const clearSelection = () => {
     if (dataGridRef.current) {
       dataGridRef.current.instance.clearSelection();
@@ -148,7 +146,6 @@ const QuotationManager = () => {
       //console.log(dataGridRef.current);
     }
   };
-
   const pheduyetgia = async () => {
     if (selectedBangGiaDocRow.length > 0) {
       let err_code: string = "";
@@ -180,7 +177,6 @@ const QuotationManager = () => {
       Swal.fire("Thông báo", "Chọn ít nhất 1 dòng để phê duyệt", "error");
     }
   };
-
   const handleShowHideSearchBar = () => {
     console.log(showhidesearchdiv.current);
     showhidesearchdiv.current = !showhidesearchdiv.current;
@@ -189,7 +185,6 @@ const QuotationManager = () => {
   const clearuploadrow = () => {
     if (selectedUploadExcelRow.length > 0) {
       let tempexceltable: BANGGIA_DATA2[] = uploadExcelJson;
-
       for (let j = 0; j < tempexceltable.length; j++) {
         for (let i = 0; i < selectedUploadExcelRow.length; i++) {
           if (selectedUploadExcelRow[i].id === tempexceltable[j].id) {
@@ -198,7 +193,6 @@ const QuotationManager = () => {
         }
       }
       console.log(tempexceltable);
-
       setUploadExcelJSon(tempexceltable);
     } else {
       Swal.fire("Thông báo", "Chọn ít nhất 1 dòng để clear", "error");
@@ -1895,7 +1889,7 @@ const QuotationManager = () => {
               caption="CUST_NAME_KD"
               width={100}
             ></Column>
-            <Column dataField="CUST_CD" caption="CUST_CD" width={100}></Column>  
+            <Column dataField="CUST_CD" caption="CUST_CD" width={100}></Column>
             <Column dataField="G_CODE" caption="G_CODE" width={100}></Column>
             <Column dataField="G_NAME" caption="G_NAME" width={250}></Column>
             <Column
@@ -2062,10 +2056,10 @@ const QuotationManager = () => {
             displayMode="compact"
           />
           <Column
-              dataField="PROD_ID"
-              caption="PROD_ID"
-              width={50}
-            ></Column>
+            dataField="PROD_ID"
+            caption="PROD_ID"
+            width={50}
+          ></Column>
           <Column
             dataField="CUST_NAME_KD"
             caption="CUST_NAME_KD"
@@ -2206,7 +2200,6 @@ const QuotationManager = () => {
     }
   };
   const loadBangGia = () => {
-    
     generalQuery("loadbanggia", {
       ALLTIME: alltime,
       FROM_DATE: fromdate,
@@ -2323,7 +2316,7 @@ const QuotationManager = () => {
         console.log(error);
         Swal.fire("Thông báo", " Có lỗi : " + error, "error");
       });
-      setselectedBangGiaDocRow([]);
+    setselectedBangGiaDocRow([]);
   };
   const loadBangGia2 = () => {
     generalQuery("loadbanggia2", {
@@ -2335,39 +2328,38 @@ const QuotationManager = () => {
       G_NAME: codeKD,
       CUST_NAME_KD: cust_name,
     })
-    .then((response) => {
-      //console.log(response.data.data);
-      if (response.data.tk_status !== "NG") {
-        const loaded_data: BANGGIA_DATA2[] = response.data.data.map(
-          (element: BANGGIA_DATA2, index: number) => {
-            return {
-              ...element,
-              PRICE_DATE:
-                element.PRICE_DATE !== null
-                  ? moment.utc(element.PRICE_DATE).format("YYYY-MM-DD")
-                  : "",
-              id: index,
-            };
-          },
-        );
-        setBangGia2(loaded_data);
-        setSelectedDataSource(
-          new PivotGridDataSource({
-            fields: fields_banggia2,
-            store: loaded_data,
-          }),
-        );
-        clearSelection();
-      } else {
-        Swal.fire("Thông báo", " Có lỗi : " + response.data.message, "error");
-      }
-    })
-    .catch((error) => {
-      console.log(error);
-      Swal.fire("Thông báo", " Có lỗi : " + error, "error");
-    });      
+      .then((response) => {
+        //console.log(response.data.data);
+        if (response.data.tk_status !== "NG") {
+          const loaded_data: BANGGIA_DATA2[] = response.data.data.map(
+            (element: BANGGIA_DATA2, index: number) => {
+              return {
+                ...element,
+                PRICE_DATE:
+                  element.PRICE_DATE !== null
+                    ? moment.utc(element.PRICE_DATE).format("YYYY-MM-DD")
+                    : "",
+                id: index,
+              };
+            },
+          );
+          setBangGia2(loaded_data);
+          setSelectedDataSource(
+            new PivotGridDataSource({
+              fields: fields_banggia2,
+              store: loaded_data,
+            }),
+          );
+          clearSelection();
+        } else {
+          Swal.fire("Thông báo", " Có lỗi : " + response.data.message, "error");
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        Swal.fire("Thông báo", " Có lỗi : " + error, "error");
+      });
   };
-  
   const confirmUpdateGiaHangLoat = () => {
     Swal.fire({
       title: "Chắc chắn muốn update giá hàng loạt ?",
@@ -2384,7 +2376,6 @@ const QuotationManager = () => {
       }
     });
   };
-
   const confirmDeleteGiaHangLoat = () => {
     Swal.fire({
       title: "Chắc chắn muốn xóa giá hàng loạt ?",
@@ -2401,13 +2392,12 @@ const QuotationManager = () => {
       }
     });
   };
-
   const updategia = async () => {
     if (selectedBangGiaDocRow.length > 0) {
       let err_code: string = "";
       for (let i = 0; i < selectedBangGiaDocRow.length; i++) {
         await generalQuery("updategia", {
-          ...selectedBangGiaDocRow[i],          
+          ...selectedBangGiaDocRow[i],
         })
           .then((response) => {
             //console.log(response.data.data);
@@ -2433,13 +2423,12 @@ const QuotationManager = () => {
       Swal.fire("Thông báo", "Chọn ít nhất 1 dòng để update (Bảng giá dọc)", "error");
     }
   };
-
   const deletegia = async () => {
     if (selectedBangGiaDocRow.length > 0) {
       let err_code: string = "";
       for (let i = 0; i < selectedBangGiaDocRow.length; i++) {
         await generalQuery("deletegia", {
-          ...selectedBangGiaDocRow[i],          
+          ...selectedBangGiaDocRow[i],
         })
           .then((response) => {
             //console.log(response.data.data);
@@ -2464,7 +2453,6 @@ const QuotationManager = () => {
       Swal.fire("Thông báo", "Chọn ít nhất 1 dòng để xóa(Bảng giá dọc)", "error");
     }
   };
-
   const loadBangGiaMoiNhat = () => {
     generalQuery("loadbanggiamoinhat", {
       ALLTIME: alltime,
@@ -2506,7 +2494,6 @@ const QuotationManager = () => {
         console.log(error);
         Swal.fire("Thông báo", " Có lỗi : " + error, "error");
       });
-      
   };
   const quotationprintref = useRef(null);
   const handlePrint = useReactToPrint({
@@ -2515,7 +2502,7 @@ const QuotationManager = () => {
   useEffect(() => {
     //loadBangGia();
     console.log("render lai");
-    if(getCompany()==='CMS') {
+    if (getCompany() === 'CMS') {
       dongboGiaPO();
     }
   }, [sh]);
@@ -2598,13 +2585,11 @@ const QuotationManager = () => {
             </div>
             <div className="formbutton">
               <div className="buttoncolumn">
-
                 <Button color={'primary'} variant="contained" size="small" fullWidth={true} sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#36D334' }} onClick={() => {
                   setSelectButton(false);
                   checkBP(userData, ["KD"], ["ALL"], ["ALL"], loadBangGiaMoiNhat);
                 }}>Last Price</Button>
-                
-                   <Button color={'primary'} variant="contained" size="small" fullWidth={true} sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: 'yellow', color: 'black' }} onClick={() => {
+                <Button color={'primary'} variant="contained" size="small" fullWidth={true} sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: 'yellow', color: 'black' }} onClick={() => {
                   setSelectButton(true);
                   checkBP(userData, ["KD"], ["ALL"], ["ALL"], loadBangGia);
                 }}>Giá Ngang</Button>
@@ -2612,11 +2597,9 @@ const QuotationManager = () => {
                   setSelectButton(false);
                   checkBP(userData, ["KD"], ["ALL"], ["ALL"], loadBangGia2);
                 }}>Giá Dọc</Button>
-
               </div>
-              
               <div className="buttoncolumn">
-              <Button color={'primary'} variant="contained" size="small" fullWidth={true} sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#36D334' }} onClick={() => {
+                <Button color={'primary'} variant="contained" size="small" fullWidth={true} sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#36D334' }} onClick={() => {
                   checkBP(userData, ["KD"], ["Leader"], ["ALL"], pheduyetgia);
                 }}>Approve</Button>
                 <Button color={'primary'} variant="contained" size="small" fullWidth={true} sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: 'blue', color: 'yellow' }} onClick={() => {
@@ -2628,7 +2611,6 @@ const QuotationManager = () => {
                   checkBP(userData, ["KD"], ["ALL"], ["ALL"], confirmDeleteGiaHangLoat);
                 }}>Delete</Button>
               </div>
-
             </div>
           </div>
         )}
@@ -2720,7 +2702,6 @@ const QuotationManager = () => {
                   }}
                 />
               </div>
-
               <div className="upgiaform">
                 <Autocomplete
                   sx={{ fontSize: 10, width: "250px" }}
@@ -2786,7 +2767,7 @@ const QuotationManager = () => {
                 className="buttonIcon"
                 onClick={() => {
                   let temp_row: BANGGIA_DATA2 = {
-                    PROD_ID: uploadExcelJson.length + 1, 
+                    PROD_ID: uploadExcelJson.length + 1,
                     id: uploadExcelJson.length + 1,
                     CUST_CD: selectedCust_CD?.CUST_CD,
                     CUST_NAME_KD: selectedCust_CD?.CUST_NAME_KD,
