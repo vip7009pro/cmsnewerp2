@@ -21,7 +21,8 @@ const WebCam = () => {
       [setDevices]
     );
     const capture = React.useCallback(
-      () => {
+      () => {        
+        
         const imageSrc = webcamRef.current?.getScreenshot({ width: 1920, height: 1080 });
         setCapturedImage(imageSrc);
       },
@@ -37,6 +38,8 @@ const WebCam = () => {
         document.body.removeChild(link);
       }
     };
+    let kk  = devices[0]?.getCapabilities();
+        console.log(kk);
     useEffect(() => {
       navigator.mediaDevices.enumerateDevices().then(handleDevices);
     }, [])
