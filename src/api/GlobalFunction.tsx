@@ -93,7 +93,11 @@ export async function checkver() {
 }
 
 export const autoGetProdPrice = async (G_CODE: string, CUST_CD: string, PO_QTY: number) => {
-  let loaded_price: number = 0;
+  
+  let loaded_price = {
+    prod_price:0,
+    bep: 0
+  }
   await generalQuery("loadbanggiamoinhat", {
     ALLTIME: true,
     FROM_DATE: "",
@@ -126,11 +130,20 @@ export const autoGetProdPrice = async (G_CODE: string, CUST_CD: string, PO_QTY: 
               (element: PRICEWITHMOQ, index: number) =>
                 element.FINAL === "Y"
             );              
-            loaded_price = loaded_data.filter(
-              (e: PRICEWITHMOQ, index: number) => {
-                return PO_QTY >= e.MOQ;
-              }
-            )[0]?.PROD_PRICE ?? 0;
+            loaded_price = {
+              prod_price: loaded_data.filter(
+                (e: PRICEWITHMOQ, index: number) => {
+                  return PO_QTY >= e.MOQ;
+                }
+              )[0]?.PROD_PRICE ?? 0,
+              bep: loaded_data.filter(
+                (e: PRICEWITHMOQ, index: number) => {
+                  return PO_QTY >= e.MOQ;
+                }
+              )[0]?.BEP ?? 0
+            }
+            
+            
 
           
         //setNewCodePrice(loaded_data);

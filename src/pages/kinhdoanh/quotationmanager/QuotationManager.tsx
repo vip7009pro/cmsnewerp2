@@ -2115,6 +2115,23 @@ const QuotationManager = () => {
             }}
           ></Column>
           <Column
+            dataField="BEP"
+            caption="BEP"
+            width={100}
+            dataType="number"
+            format={"decimal"}
+            cellRender={(e: any) => {
+              return (
+                <span style={{ color: "blue", fontWeight: "normal" }}>
+                  {e.data.BEP?.toFixed(6).toLocaleString("en-US", {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 6,
+                  })}
+                </span>
+              );
+            }}
+          ></Column>
+          <Column
             dataField="PRICE_DATE"
             caption="PRICE_DATE"
             width={100}

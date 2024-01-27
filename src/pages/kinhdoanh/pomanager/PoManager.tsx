@@ -113,6 +113,7 @@ const PoManager = () => {
   const [newpono, setNewPoNo] = useState("");
   const [newpoqty, setNewPoQty] = useState("");
   const [newpoprice, setNewPoPrice] = useState("");
+  const [newpoBEP, setNewPoBEP] = useState("");
   const [newporemark, setNewPoRemark] = useState("");
   const [newinvoiceQTY, setNewInvoiceQty] = useState<number>(0);
   const [newinvoicedate, setNewInvoiceDate] = useState(
@@ -561,12 +562,17 @@ const PoManager = () => {
         .catch((error) => {
           console.log(error);
         });
-      let tempgia: number = 0;
+      let tempgia = {
+        prod_price:0,
+        bep:0
+      };
+      
       if (getCompany() !== 'CMS') {
-        tempgia = await autoGetProdPrice(uploadExcelJson[i].G_CODE, uploadExcelJson[i].CUST_CD, uploadExcelJson[i].PO_QTY);
+        tempgia = await autoGetProdPrice(uploadExcelJson[i].G_CODE, uploadExcelJson[i].CUST_CD, uploadExcelJson[i].PO_QTY);        
         //console.log(tempgia);
-        if (tempgia !== 0) {
-          tempjson[i].PROD_PRICE = tempgia;
+        if (tempgia.prod_price !== 0) {
+          tempjson[i].PROD_PRICE = tempgia.prod_price;
+          tempjson[i].BEP = tempgia.bep;
         }
         else {
           err_code = 5;
@@ -691,6 +697,7 @@ const PoManager = () => {
           PO_DATE: uploadExcelJson[i].PO_DATE,
           RD_DATE: uploadExcelJson[i].RD_DATE,
           PROD_PRICE: uploadExcelJson[i].PROD_PRICE,
+          BEP: uploadExcelJson[i].BEP,
           REMARK: uploadExcelJson[i].REMARK,
         })
           .then((response) => {
@@ -852,8 +859,13 @@ const PoManager = () => {
         return newpoprice === e.PROD_PRICE.toString();
       }
     ).length;
+    let recheckBEP: number = newcodeprice.filter(
+      (e: PRICEWITHMOQ, index: number) => {
+        return newpoBEP === e.BEP.toString();
+      }
+    ).length;
     if (getCompany() !== 'CMS') {
-      if (recheckPrice === 0) err_code = 5;
+      if (recheckPrice === 0 || recheckBEP) err_code = 5;
     }
     if (err_code === 0) {
       await generalQuery("insert_po", {
@@ -865,6 +877,7 @@ const PoManager = () => {
         PO_DATE: newpodate,
         RD_DATE: newrddate,
         PROD_PRICE: newpoprice,
+        BEP: newpoBEP===""? 0 : newpoBEP,
         REMARK: newporemark === undefined ? "" : newporemark,
       })
         .then((response) => {
@@ -2560,8 +2573,15 @@ const PoManager = () => {
                             return tempQTY >= e.MOQ;
                           }
                         )[0]?.PROD_PRICE;
-                        if (tempprice !== undefined)
-                          setNewPoPrice(tempprice.toString());
+                        if (tempprice !== undefined) setNewPoPrice(tempprice.toString());
+
+                        let tempBEP: number = newcodeprice.filter(
+                          (e: PRICEWITHMOQ, index: number) => {
+                            return tempQTY >= e.MOQ;
+                          }
+                        )[0]?.BEP;
+                        if (tempBEP !== undefined) setNewPoBEP(tempBEP.toString());
+
                         setNewPoQty(e.target.value);
                       }}
                       size='small'
@@ -2575,15 +2595,29 @@ const PoManager = () => {
                   <label>
                     <b>Price:</b>{" "}
                     <TextField
+                    style={{width:'150px'}}
                       value={newpoprice}
                       onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                         setNewPoPrice(e.target.value)
-                      }
+                      }                      
                       size='small'
                       color='success'
                       className='autocomplete'
                       id='outlined-basic'
                       label='Price'
+                      variant='outlined'
+                    />
+                    <TextField
+                     style={{width:'150px'}}
+                      value={newpoBEP}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        setNewPoBEP(e.target.value)
+                      }
+                      size='small'
+                      color='success'
+                      className='autocomplete'
+                      id='outlined-basic'
+                      label='BEP'
                       variant='outlined'
                     />
                   </label>

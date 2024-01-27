@@ -126,7 +126,7 @@ const CalcQuotation = () => {
         Swal.fire("Thông báo", " Có lỗi : " + error, "error");
       });
   };
-  const loadListCode = () => {
+  const loadListCode = async () => {
     generalQuery("loadlistcodequotation", {})
       .then((response) => {
         //console.log(response.data);
@@ -258,7 +258,7 @@ const CalcQuotation = () => {
       let err_code: string = "";
       for (let i = 0; i < banggia.length; i++) {
         if (banggia[i].PRICE_DATE === moment.utc().format("YYYY-MM-DD")) {
-          console.log("price date", banggia[i].PRICE_DATE);
+          //console.log("price date", banggia[i].PRICE_DATE);
           await generalQuery("checkgiaExist", banggia[i])
             .then((response) => {
               //console.log(response.data.data);
@@ -311,7 +311,7 @@ const CalcQuotation = () => {
       );
     }
   };
-  const updateCurrentUnit = () => {
+  const updateCurrentUnit = async () => {
     generalQuery("updateCurrentUnit", selectedRows)
       .then((response) => {
         if (response.data.tk_status !== "NG") {
@@ -748,18 +748,23 @@ const CalcQuotation = () => {
               infoText="Page #{0}. Total: {1} ({2} items)"
               displayMode="compact"
             />
-            <Column dataField="CUST_CD" caption="MÃ KH" width={100}></Column>
-            <Column dataField="G_CODE" caption="G_CODE" width={100}></Column>
+            <Column dataField="CUST_CD" caption="MÃ KH" width={50}></Column>
+            <Column dataField="G_CODE" caption="G_CODE" width={60}></Column>
             <Column
               dataField="PRICE_DATE"
-              caption="NGÀY LÀM GIÁ"
-              width={100}
+              caption="PRICE_DATE"
+              width={80}
             ></Column>
-            <Column dataField="MOQ" caption="MOQ" width={100}></Column>
+            <Column dataField="MOQ" caption="MOQ" width={50}></Column>
             <Column
               dataField="PROD_PRICE"
-              caption="GIÁ SP"
-              width={100}
+              caption="PROD_PRICE"
+              width={80}
+            ></Column>
+            <Column
+              dataField="BEP"
+              caption="BEP"
+              width={80}
             ></Column>
             <Column
               dataField="FINAL"
@@ -817,6 +822,7 @@ const CalcQuotation = () => {
       MOQ: tempQTY,
       FINAL: "N",
       PROD_PRICE: Number((salePriceOP / tempQTY).toFixed(0)),
+      BEP: Number((gianvl.totalcostSS / tempQTY).toFixed(0)), 
       id: banggia.length + 1,
       INS_DATE: moment.utc().format("YYYY-MM-DD HH:mm:ss"),
       INS_EMPL: userData?.EMPL_NO === undefined ? "" : userData?.EMPL_NO,
@@ -1597,10 +1603,10 @@ const CalcQuotation = () => {
               <div className="buttondiv">
                 <IconButton
                   className="buttonIcon"
-                  onClick={() => {
-                    uploadgia();
-                    updateCurrentUnit();
-                    loadListCode();
+                  onClick={async () => {
+                    await uploadgia();
+                    await updateCurrentUnit();
+                    await loadListCode();
                   }}
                 >
                   <BiSave color="#059B00" size={15} />
