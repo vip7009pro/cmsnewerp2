@@ -10,22 +10,23 @@ import { FromInputColumn } from '../../../components/StyledComponents/ComponentL
 import Swal from 'sweetalert2'
 const PATROL = () => {
   const [patrolheaderdata, setPatrolHeaderData] = useState<PATROL_HEADER_DATA[]>([]);
-  const [liveStream,setLiveStream] = useState(true);
-  const [fullScreen, setFullScreen] = useState(false);
+    const [fullScreen, setFullScreen] = useState(false);
   const [pqcdatatable, setPqcDataTable] = useState<Array<PQC3_DATA>>([]);
   const [inspectionPatrolTable, setInspectionPatrolTable] = useState<Array<INSP_PATROL_DATA>>([]);
   const fromdateRef = useRef((moment().format("YYYY-MM-DD")));
   const todateRef = useRef((moment().format("YYYY-MM-DD")));
+  const liveStream = useRef(true);
   const [isLoading, setIsLoading] = useState(false);
   const [trigger, setTrigger] = useState(false);
   const getPatrolHeaderData = async () => {
     console.log('vao get patrol header')
+
     /* console.log(fromdateRef.current);
     console.log(todateRef.current); */
     setIsLoading(true);
     await generalQuery("getpatrolheader", {
-      FROM_DATE: liveStream? moment().format('YYYY-MM-DD') : fromdateRef.current,
-      TO_DATE: liveStream? moment().format('YYYY-MM-DD') : todateRef.current,
+      FROM_DATE: liveStream?.current? moment().format('YYYY-MM-DD') : fromdateRef.current,
+      TO_DATE: liveStream?.current? moment().format('YYYY-MM-DD') : todateRef.current,
     })
       .then((response) => {
         //console.log(response.data);
@@ -51,8 +52,8 @@ const PATROL = () => {
   };
   const getInspectionPatrol = () => {
     generalQuery("trainspectionpatrol", {
-      FROM_DATE: liveStream? moment().format('YYYY-MM-DD') : fromdateRef.current,
-      TO_DATE: liveStream? moment().format('YYYY-MM-DD') : todateRef.current,
+      FROM_DATE: liveStream?.current? moment().format('YYYY-MM-DD') : fromdateRef.current,
+      TO_DATE: liveStream?.current? moment().format('YYYY-MM-DD') : todateRef.current,
     })
       .then((response) => {
         //console.log(response.data);
@@ -76,10 +77,11 @@ const PATROL = () => {
       });
   };
   const traPQC3 = () => {
+    console.log('liveStream', liveStream.current);
     generalQuery("trapqc3data", {
       ALLTIME: false,
-      FROM_DATE: liveStream? moment().format('YYYY-MM-DD') : fromdateRef.current,
-      TO_DATE: liveStream? moment().format('YYYY-MM-DD') : todateRef.current,
+      FROM_DATE: liveStream.current? moment().format('YYYY-MM-DD') : fromdateRef.current,
+      TO_DATE: liveStream.current? moment().format('YYYY-MM-DD') : todateRef.current,
       CUST_NAME: '',
       PROCESS_LOT_NO: '',
       G_CODE: '',
@@ -122,7 +124,7 @@ const PATROL = () => {
       });
   };
   const initFunction = () => {
-    if(liveStream) {
+    if(liveStream.current) {
       fromdateRef.current = moment().format('YYYY-MM-DD')
       todateRef.current = moment().format('YYYY-MM-DD')
     }
@@ -170,14 +172,16 @@ const PATROL = () => {
             />
             Full Screen
             <Checkbox
-              checked={liveStream}
+              checked={liveStream.current}
               onChange={(e) => {
                 //console.log(onlyRunning);
-                setLiveStream(!liveStream);
-                if(liveStream== false) {
+                liveStream.current = !liveStream.current
+                
+                if(liveStream.current=== true) {
                   fromdateRef.current = moment().format('YYYY-MM-DD')
                   todateRef.current = moment().format('YYYY-MM-DD')
                 }
+                setTrigger(!trigger);
               }}
               inputProps={{ "aria-label": "controlled" }}
             />

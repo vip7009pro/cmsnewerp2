@@ -120,6 +120,7 @@ const QuotationManager = () => {
   };
   const [moq, setMOQ] = useState(1);
   const [newprice, setNewPrice] = useState("");
+  const [newbep, setNewBep] = useState("");
   const [newpricedate, setNewPriceDate] = useState(
     moment.utc().format("YYYY-MM-DD"),
   );
@@ -1921,6 +1922,23 @@ const QuotationManager = () => {
               }}
             ></Column>
             <Column
+              dataField="BEP"
+              caption="BEP"
+              width={100}
+              dataType="number"
+              format={"decimal"}
+              cellRender={(e: any) => {
+                return (
+                  <span style={{ color: "blue", fontWeight: "normal" }}>
+                    {e.data.BEP?.toFixed(6).toLocaleString("en-US", {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 6,
+                    })}
+                  </span>
+                );
+              }}
+            ></Column>
+            <Column
               dataField="PRICE_DATE"
               caption="PRICE_DATE"
               width={100}
@@ -2755,6 +2773,20 @@ const QuotationManager = () => {
                 />
               </div>
               <div className="upgiaform">
+                <TextField
+                  value={newbep}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    setNewBep(e.target.value)
+                  }
+                  size="small"
+                  color="success"
+                  className="autocomplete"
+                  id="outlined-basic"
+                  label="BEP"
+                  variant="outlined"
+                />
+              </div>
+              <div className="upgiaform">
                 <input
                   className="inputdata"
                   placeholder="PriceDate"
@@ -2778,7 +2810,8 @@ const QuotationManager = () => {
                     INS_EMPL: "",
                     INS_DATE: "",
                     MOQ: moq,
-                    PRICE_DATE: newpricedate,
+                    PRICE_DATE: newpricedate,        
+                    BEP: Number(newbep),            
                     PROD_PRICE: Number(newprice),
                     PROD_MAIN_MATERIAL: selectedCode?.PROD_MAIN_MATERIAL,
                     REMARK: "",

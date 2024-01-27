@@ -2724,6 +2724,7 @@ export interface BANGGIA_DATA2 {
   PRICE_DATE: string;
   MOQ: number;
   PROD_PRICE: number;
+  BEP: number;
   INS_DATE: string;
   INS_EMPL: string;
   UPD_DATE: string;
