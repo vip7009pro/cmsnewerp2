@@ -563,12 +563,11 @@ const PoManager = () => {
           console.log(error);
         });
       let tempgia = {
-        prod_price:0,
-        bep:0
+        prod_price: 0,
+        bep: 0
       };
-      
       if (getCompany() !== 'CMS') {
-        tempgia = await autoGetProdPrice(uploadExcelJson[i].G_CODE, uploadExcelJson[i].CUST_CD, uploadExcelJson[i].PO_QTY);        
+        tempgia = await autoGetProdPrice(uploadExcelJson[i].G_CODE, uploadExcelJson[i].CUST_CD, uploadExcelJson[i].PO_QTY);
         //console.log(tempgia);
         if (tempgia.prod_price !== 0) {
           tempjson[i].PROD_PRICE = tempgia.prod_price;
@@ -697,7 +696,7 @@ const PoManager = () => {
           PO_DATE: uploadExcelJson[i].PO_DATE,
           RD_DATE: uploadExcelJson[i].RD_DATE,
           PROD_PRICE: uploadExcelJson[i].PROD_PRICE,
-          BEP: uploadExcelJson[i].BEP,
+          BEP: uploadExcelJson[i].BEP ?? 0,
           REMARK: uploadExcelJson[i].REMARK,
         })
           .then((response) => {
@@ -877,7 +876,7 @@ const PoManager = () => {
         PO_DATE: newpodate,
         RD_DATE: newrddate,
         PROD_PRICE: newpoprice,
-        BEP: newpoBEP===""? 0 : newpoBEP,
+        BEP: newpoBEP === "" ? 0 : newpoBEP,
         REMARK: newporemark === undefined ? "" : newporemark,
       })
         .then((response) => {
@@ -2574,14 +2573,12 @@ const PoManager = () => {
                           }
                         )[0]?.PROD_PRICE;
                         if (tempprice !== undefined) setNewPoPrice(tempprice.toString());
-
                         let tempBEP: number = newcodeprice.filter(
                           (e: PRICEWITHMOQ, index: number) => {
                             return tempQTY >= e.MOQ;
                           }
                         )[0]?.BEP;
                         if (tempBEP !== undefined) setNewPoBEP(tempBEP.toString());
-
                         setNewPoQty(e.target.value);
                       }}
                       size='small'
@@ -2595,11 +2592,11 @@ const PoManager = () => {
                   <label>
                     <b>Price:</b>{" "}
                     <TextField
-                    style={{width:'150px'}}
+                      style={{ width: '150px' }}
                       value={newpoprice}
                       onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                         setNewPoPrice(e.target.value)
-                      }                      
+                      }
                       size='small'
                       color='success'
                       className='autocomplete'
@@ -2608,7 +2605,7 @@ const PoManager = () => {
                       variant='outlined'
                     />
                     <TextField
-                     style={{width:'150px'}}
+                      style={{ width: '150px' }}
                       value={newpoBEP}
                       onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                         setNewPoBEP(e.target.value)
