@@ -1077,6 +1077,9 @@ const PoManager = () => {
           ? "0"
           : clickedRow.current?.PROD_PRICE
       );
+      setNewPoBEP(
+        clickedRow.current?.BEP ?? 0          
+      );
       setNewPoRemark(
         clickedRow.current?.REMARK === undefined
           ? ""
@@ -1196,6 +1199,7 @@ const PoManager = () => {
         PO_DATE: newpodate,
         RD_DATE: newrddate,
         PROD_PRICE: newpoprice,
+        BEP: newpoBEP === ''? 0 : newpoBEP,
         REMARK: newporemark,
         PO_ID: selectedID,
       })
