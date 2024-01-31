@@ -25,7 +25,7 @@ import FallBackComponent from "../../components/Fallback/FallBackComponent";
 import { getlang } from "../../components/String/String";
 import { LangConText } from "../../api/Context";
 import { MENU_LIST_DATA } from "../../api/GlobalInterface";
-import SettingPage from "../setting/SettingPage";
+const SettingPage = lazy(() => import("../setting/SettingPage"));
 const PoManager = lazy(() => import("../../pages/kinhdoanh/pomanager/PoManager"));
 const MACHINE = lazy(() => import("../../pages/qlsx/QLSXPLAN/Machine/MACHINE"));
 const QUICKPLAN = lazy(() => import("../../pages/qlsx/QLSXPLAN/QUICKPLAN/QUICKPLAN"));
@@ -81,7 +81,7 @@ const TINHLIEU = lazy(() => import("../../pages/muahang/tinhlieu/TINHLIEU"));
 const BAOCAOTHEOROLL = lazy(() => import("../../pages/sx/BAOCAOTHEOROLL/BAOCAOTHEOROLL"));
 const LICHSUTEMLOTSX = lazy(() => import("../../pages/sx/LICHSUTEMLOTSX/LICHSUTEMLOTSX"));
 const BAOCAOSXALL = lazy(() => import("../../pages/sx/BAOCAOSXALL"));
-export const current_ver: number = 313;
+export const current_ver: number = 314;
 interface ELE_ARRAY {
   REACT_ELE: any;
   ELE_NAME: string;
