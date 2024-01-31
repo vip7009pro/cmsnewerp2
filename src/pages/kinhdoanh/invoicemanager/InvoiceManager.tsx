@@ -168,6 +168,17 @@ const InvoiceManager = () => {
       reader.readAsArrayBuffer(e.target.files[0]);
     }
   };
+
+  const dataGridRef = useRef<any>(null);
+  const clearSelection = () => {
+    if (dataGridRef.current) {
+      dataGridRef.current.instance.clearSelection();
+      invoicedatatablefilter.current = [];
+      //qlsxplandatafilter.current = [];
+      //console.log(dataGridRef.current);
+    }
+  };
+
   const handletraInvoice = () => {
     Swal.fire({
       title: "Tra cứu Invoices",
@@ -178,6 +189,7 @@ const InvoiceManager = () => {
       confirmButtonText: "OK",
       showConfirmButton: false,
     });
+    clearSelection();
     generalQuery("traInvoiceDataFull", {
       alltime: alltime,
       justPoBalance: justpobalance,
@@ -1415,6 +1427,7 @@ const InvoiceManager = () => {
       <div className='datatb'>
         <CustomResponsiveContainer>
           <DataGrid
+            ref={dataGridRef}
             autoNavigateToFocusedRow={true}
             allowColumnReordering={true}
             allowColumnResizing={true}

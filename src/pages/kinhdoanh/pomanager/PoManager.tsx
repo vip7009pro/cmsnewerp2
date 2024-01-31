@@ -65,6 +65,7 @@ import {
   UserData,
 } from "../../../api/GlobalInterface";
 const PoManager = () => {
+  const dataGridRef = useRef<any>(null);
   const showhidesearchdiv = useRef(false);
   const [isPending, startTransition] = useTransition();
   const [selection, setSelection] = useState<any>({
@@ -145,6 +146,15 @@ const PoManager = () => {
   const [newcodeprice, setNewCodePrice] = useState<PRICEWITHMOQ[]>([]);
   const [columns, setColumns] = useState<Array<any>>([]);
   const [columnsExcel, setColumnsExcel] = useState<Array<any>>([]);
+  const clearSelection = () => {
+    if (dataGridRef.current) {
+      dataGridRef.current.instance.clearSelection();
+      podatatablefilter.current = [];
+      //qlsxplandatafilter.current = [];
+      //console.log(dataGridRef.current);
+    }
+  };
+
   function removeInvisibleCharacters(inputString: string) {
     // Define a regular expression to match invisible characters
     var regex = /[^\x20-\x7E\t]/g; // This regex matches anything outside the printable ASCII range
@@ -323,6 +333,7 @@ const PoManager = () => {
       confirmButtonText: "OK",
       showConfirmButton: false,
     });
+    clearSelection();
     generalQuery("traPODataFull", {
       alltime: alltime,
       justPoBalance: justpobalance,
@@ -1189,6 +1200,14 @@ const PoManager = () => {
     ) {
       err_code = 4;
     }
+    if(newpoqty < clickedRow.current.TOTAL_DELIVERED) {
+      err_code =5;
+    }
+    if(getCompany() !== 'CMS') {
+      if(newpoprice !== clickedRow.current.PROD_PRICE) {
+        err_code = 6;
+      }
+    }
     if (err_code === 0) {
       await generalQuery("update_po", {
         G_CODE: selectedCode?.G_CODE,
@@ -1230,7 +1249,12 @@ const PoManager = () => {
       Swal.fire("Thông báo", "NG: Ver này đã bị khóa", "error");
     } else if (err_code === 4) {
       Swal.fire("Thông báo", "NG: Không để trống thông tin bắt buộc", "error");
-    } else {
+    } else if (err_code === 5) {
+      Swal.fire("Thông báo", "NG: Số lượng po mới không được nhỏ hơn số lượng đã giao hàng", "error");
+    } else if (err_code === 6) {
+      Swal.fire("Thông báo", "NG: Không được đổi giá PO, xóa tạo lại PO nhé", "error");
+    }
+    else {
       Swal.fire("Thông báo", "Kiểm tra xem PO có giao hàng chưa?", "error");
     }
   };
@@ -1766,6 +1790,7 @@ const PoManager = () => {
       <div className='datatb'>
         <CustomResponsiveContainer>
           <DataGrid
+            ref={dataGridRef}
             autoNavigateToFocusedRow={true}
             allowColumnReordering={true}
             allowColumnResizing={true}
