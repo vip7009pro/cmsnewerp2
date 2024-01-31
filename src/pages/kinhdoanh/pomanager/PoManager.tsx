@@ -473,6 +473,7 @@ const PoManager = () => {
         } else {
           Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
           setisLoading(false);
+          setPoDataTable([]);
         }
       })
       .catch((error) => {
@@ -868,14 +869,10 @@ const PoManager = () => {
       (e: PRICEWITHMOQ, index: number) => {
         return newpoprice === e.PROD_PRICE.toString();
       }
-    ).length;
-    let recheckBEP: number = newcodeprice.filter(
-      (e: PRICEWITHMOQ, index: number) => {
-        return newpoBEP === e.BEP.toString();
-      }
-    ).length;
+    ).length ?? 0;
+
     if (getCompany() !== 'CMS') {
-      if (recheckPrice === 0 || recheckBEP) err_code = 5;
+      if (recheckPrice === 0) err_code = 5;
     }
     if (err_code === 0) {
       await generalQuery("insert_po", {
@@ -2600,13 +2597,13 @@ const PoManager = () => {
                           (e: PRICEWITHMOQ, index: number) => {
                             return tempQTY >= e.MOQ;
                           }
-                        )[0]?.PROD_PRICE;
+                        )[0]?.PROD_PRICE ?? 0;
                         if (tempprice !== undefined) setNewPoPrice(tempprice.toString());
                         let tempBEP: number = newcodeprice.filter(
                           (e: PRICEWITHMOQ, index: number) => {
                             return tempQTY >= e.MOQ;
                           }
-                        )[0]?.BEP;
+                        )[0]?.BEP ?? 0;
                         if (tempBEP !== undefined) setNewPoBEP(tempBEP.toString());
                         setNewPoQty(e.target.value);
                       }}

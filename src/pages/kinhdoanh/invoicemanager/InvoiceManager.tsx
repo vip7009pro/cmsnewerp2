@@ -315,6 +315,7 @@ const InvoiceManager = () => {
         } else {
           Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
           setisLoading(false);
+          setInvoiceDataTable([]);
         }
       })
       .catch((error) => {
