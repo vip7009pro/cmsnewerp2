@@ -1094,6 +1094,10 @@ const PoManager = () => {
           : clickedRow.current?.REMARK
       );
       setSelectedID(clickedRow.current?.PO_ID);
+      loadprice(
+        clickedRow.current?.G_CODE,
+        clickedRow.current?.CUST_NAME_KD
+      );
     } else {
       clearPOform();
       Swal.fire("Thông báo", "Lỗi: Chọn ít nhất 1 PO để sửa", "error");
