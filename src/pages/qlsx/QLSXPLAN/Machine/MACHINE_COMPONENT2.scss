@@ -1,50 +1,190 @@
 .mc2 {
-    display: flex;
-    flex-direction: column;
-    justify-items: center;
-    background-color: white;    
-    position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-items: center;
+  background-color: white;
+  position: relative;
 
-   /*  -webkit-filter: blur(5px);
+  /*  -webkit-filter: blur(5px);
     -moz-filter: blur(5px);
     -o-filter: blur(5px);
     -ms-filter: blur(5px);
-    filter: blur(5px);  */  
-   
+    filter: blur(5px);  */
 
-    .machine_component2 {
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-evenly;
+      .downtime {
+        width: 100%;
         display: flex;
-        flex-direction: column;
-        width: 100px;
-        height: 50px;
-        background-image: linear-gradient(0deg,  #cbeea3,#ffffff);
-        border-radius: 10px;
-        box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
-        -webkit-box-shadow: 19px 15px 27px 0px rgba(0.5, 0, 0, 0.18);
-        font-size: 0.5rem;
-        .tieude {
+        align-items: center;
+        justify-content: space-between;
+      }
+    }
+  .machine_component2 {
+    display: flex;
+    flex-direction: column;
+    width: 300px;
+    height: 220px;
+    background-image: linear-gradient(0deg, #cbeea3, #ffffff);
+    border-radius: 5px;
+    box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
+    -webkit-box-shadow: 19px 15px 27px 0px rgba(0.5, 0, 0, 0.18);
+    font-size: 0.5rem;
+    .tieude {
+      display: flex;
+      flex-direction: column;
+      flex: 0.2;
+      background-color: bisque;
+      width: 100%;
+      align-self: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 0.8rem;
+      align-items: center;
+    }
+    .noidung {
+      display: flex;
+      flex-direction: column;
+      flex: 25;
+      font-size: 0.8rem;
+      .up {
+        display: flex;
+        border: #ffffff solid 1px;
+        .emplpicture {
+          display: flex;
+          flex-direction: column;
+          flex: 0.8;
+          font-size: 1rem;
+          background-color: rgb(240, 229, 238);
+        }
+        .target {
+          display: flex;
+          flex-direction: column;
+          flex: 1;
+          justify-items: center;
+          justify-content: center;
+          background-color: rgb(120, 238, 84);
+          border: #ffffff solid 0.1px;
+          .title {
             display: flex;
-            flex-direction: column;
-            flex: 1;        
-            background-color: bisque;
-            width: 100%;
-            align-self: center;
-            justify-content: center;        
+            flex: 1;
+            justify-content: center;
+            font-size: 1rem;
             font-weight: bold;
-            font-size: 0.8rem;
-            align-items: center;        
+          }
+          .content {
+            display: flex;
+            flex: 10;
+            flex-direction: column;
+            justify-content: space-around;
+            align-items: flex-start;
+            * {
+              font-weight: 600;
+            }
+          }
         }
-        .machineplan {
-            font-size: 0.5rem;
-            overflow-x: inherit;
-            flex: 0;
+        .result {
+          display: flex;
+          flex-direction: column;
+          flex: 1;
+          justify-items: center;
+          justify-content: center;
+          background-color: rgb(120, 238, 84);
+          border: #ffffff solid 0.1px;
+          .title {
+            display: flex;
+            flex: 1;
+            justify-content: center;
+            font-size: 1rem;
+            font-weight: bold;
+          }
+          .content {
+            display: flex;
+            flex: 10;
+            flex-direction: column;
+            justify-content: space-around;
+            align-items: flex-start;
+            * {
+              font-weight: 600;
+            }
+          }
         }
-       
+      }
+      .down {
+        display: flex;
+        .planqty {
+          display: flex;
+          flex: 1;
+          flex-direction: column;
+          .title {
+            display: flex;
+            justify-content: center;
+            font-weight: bold;
+            color: rgb(223, 0, 0);
+          }
+          .value {
+            display: flex;
+            justify-content: center;
+            font-weight: bold;
+            margin-top: 2px;
+            font-size: 1.5rem;
+            color: rgb(207, 58, 245);
+          }
+        }
+        .result {
+          display: flex;
+          flex: 1;
+          flex-direction: column;
+          .title {
+            display: flex;
+            justify-content: center;
+            font-weight: bold;
+            color: rgb(218, 0, 0);
+          }
+          .value {
+            display: flex;
+            justify-content: center;
+            font-weight: bold;
+            margin-top: 2px;
+            font-size: 1.5rem;
+            color: rgb(218, 0, 0);
+          }
+        }
+        .rate {
+          display: flex;
+          flex: 1;
+          flex-direction: column;
+          .title {
+            display: flex;
+            justify-content: center;
+            font-weight: bold;
+            color: rgb(13, 0, 199);
+          }
+          .value {
+            display: flex;
+            justify-content: center;
+            font-weight: bold;
+            margin-top: 2px;
+            font-size: 1.5rem;
+            color: rgb(13, 0, 199);
+          }
+        }
+      }
     }
-    .chitiet {
-        background-color: #cbeea3;    
-        font-size: 0.5rem; 
-        position: initial; 
+    .machineplan {
+      display: flex;
+      flex-direction: row;
+      font-size: 0.8rem;
+      overflow-x: inherit;
+      flex: 2;
+      background-color: #cbeea3;
     }
-
+  }
+  .chitiet {
+    background-color: #cbeea3;
+    font-size: 0.5rem;
+    position: initial;
+  }
 }

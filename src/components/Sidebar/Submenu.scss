@@ -1,38 +1,38 @@
 .SidebarLink {
-    display: flex;  
-    color: black;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 15px 0px 10px;
-    list-style: none;
-    height: 30px;   
-    text-decoration: none;
-    font-size: 0.9rem;    
-    font-weight: 700;
-    &:hover {
-      background: rgba(0, 0, 0, 0.1);
-      border-left: 4px solid #2ce435;
-      cursor: pointer;
-    }
-    .SidebarLabel {
-        margin-left: 20px;
-    }
+  display: flex;
+  color: black;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 15px 0px 10px;
+  list-style: none;
+  height: 25px;
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 700;
+  &:hover {
+    background: rgba(0, 0, 0, 0.1);
+    border-left: 4px solid #2ce435;
+    cursor: pointer;
+  }
+  .SidebarLabel {
+    margin-left: 15px;
+  }
 }
 
 .DropdownLink {
-    /* background: rgba(255, 255, 255, 0.7);   */
-    height: 25px;
-    padding-left: 1rem;
-    display: flex;        
-    align-items: center;
-    text-decoration: none;
-    color: black;
-    font-size: 0.8rem;
-    &:hover {
-      background: rgba(0, 0, 0, 0.1);
-      cursor: pointer;
-    }
-    .SidebarLabel {
-        margin-left: 10px;
-    }
+  /* background: rgba(255, 255, 255, 0.7);   */
+  height: 25px;
+  padding-left: 1rem;
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: black;
+  font-size: 0.8rem;
+  &:hover {
+    background: rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+  }
+  .SidebarLabel {
+    margin-left: 10px;
+  }
 }

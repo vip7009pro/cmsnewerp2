@@ -19,10 +19,10 @@ import LanguageIcon from "@mui/icons-material/Language";
 import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
 import { useSelector, useDispatch } from "react-redux";
-import { toggleSidebar, UserData } from "../../redux/slices/globalSlice";
+import { toggleSidebar } from "../../redux/slices/globalSlice";
 import { RootState } from "../../redux/store";
 import { logout } from "../../api/Api";
-
+import { UserData } from "../../api/GlobalInterface";
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
   borderRadius: theme.shape.borderRadius,
@@ -39,55 +39,25 @@ const Search = styled("div")(({ theme }) => ({
   },
 }));
 
-const SearchIconWrapper = styled("div")(({ theme }) => ({
-  padding: theme.spacing(0, 2),
-  height: "100%",
-  position: "absolute",
-  pointerEvents: "none",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-}));
-
-const StyledInputBase = styled(InputBase)(({ theme }) => ({
-  color: "inherit",
-  "& .MuiInputBase-input": {
-    padding: theme.spacing(1, 1, 1, 0),
-    // vertical padding + font size from searchIcon
-    paddingLeft: `calc(1em + ${theme.spacing(4)})`,
-    transition: theme.transitions.create("width"),
-    width: "100%",
-    [theme.breakpoints.up("md")]: {
-      width: "20ch",
-    },
-  },
-}));
-
 export default function PrimarySearchAppBar() {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] =
     React.useState<null | HTMLElement>(null);
-
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
-
   const handleProfileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
-
   const handleMobileMenuClose = () => {
     setMobileMoreAnchorEl(null);
   };
-
   const handleMenuClose = () => {
     setAnchorEl(null);
     handleMobileMenuClose();
   };
-
   const handleMobileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setMobileMoreAnchorEl(event.currentTarget);
   };
-
   const menuId = "primary-search-account-menu";
   const renderMenu = (
     <Menu
@@ -111,8 +81,8 @@ export default function PrimarySearchAppBar() {
         }}
       >
         <Link
-          to='/accountinfo'
-          className='menulink'
+          to="/accountinfo"
+          className="menulink"
           style={{ textDecoration: "none", color: "black" }}
         >
           Profile
@@ -151,8 +121,8 @@ export default function PrimarySearchAppBar() {
         }}
       >
         <Link
-          to='/accountinfo'
-          className='menulink'
+          to="/accountinfo"
+          className="menulink"
           style={{ textDecoration: "none", color: "black" }}
         >
           Language
@@ -164,8 +134,8 @@ export default function PrimarySearchAppBar() {
         }}
       >
         <Link
-          to='/accountinfo'
-          className='menulink'
+          to="/accountinfo"
+          className="menulink"
           style={{ textDecoration: "none", color: "black" }}
         >
           Profile
@@ -182,41 +152,41 @@ export default function PrimarySearchAppBar() {
     </Menu>
   );
   const globalUserData: UserData | undefined = useSelector(
-    (state: RootState) => state.totalSlice.userData
+    (state: RootState) => state.totalSlice.userData,
   );
   const dispatch = useDispatch();
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar
-        position='static'
+        position="static"
         sx={{ backgroundColor: "white", color: "black", borderRadius: "5px" }}
       >
         <Toolbar>
           <IconButton
-            size='large'
-            edge='start'
-            color='inherit'
-            aria-label='open drawer'
+            size="large"
+            edge="start"
+            color="inherit"
+            aria-label="open drawer"
             sx={{ mr: 2 }}
             onClick={() => {
               dispatch(toggleSidebar("2"));
             }}
           >
-            <MenuIcon />
+            <MenuIcon/>
           </IconButton>
           <Box sx={{ flexGrow: 1 }} />
-          <Link to='/' className='menulink'>
+          <Link to="/" className="menulink">
             <img
-              alt='cmsvina logo'
-              src='/logocmsvina.png'
-              width={171.6}
-              height={40.7}
+              alt="cmsvina logo"
+              src="/logocmsvina.png"
+              width={114.4}
+              height={27.13333}
             />
           </Link>
           <Typography
-            variant='h6'
+            variant="h6"
             noWrap
-            component='div'
+            component="div"
             sx={{ display: { xs: "none", sm: "block", fontSize: "10px" } }}
             onClick={() => {}}
           >
@@ -225,27 +195,27 @@ export default function PrimarySearchAppBar() {
           <Box sx={{ flexGrow: 1 }} />
           <Box sx={{ display: { xs: "none", md: "flex" } }}>
             <IconButton
-              size='large'
-              aria-label='show 4 new mails'
-              color='inherit'
+              size="large"
+              aria-label="show 4 new mails"
+              color="inherit"
               onClick={() => {}}
             >
               <LanguageIcon />
             </IconButton>
             <IconButton
-              size='large'
-              edge='end'
-              aria-label='account of current user'
+              size="large"
+              edge="end"
+              aria-label="account of current user"
               aria-controls={menuId}
-              aria-haspopup='true'
+              aria-haspopup="true"
               onClick={handleProfileMenuOpen}
-              color='inherit'
+              color="inherit"
             >
               {/* <AccountCircle /> */}
               <img
-                width={50}
+                width={25}
                 style={{ borderRadius: "50%" }}
-                height={50}
+                height={25}
                 src={"/Picture_NS/NS_" + globalUserData?.EMPL_NO + ".jpg"}
                 alt={globalUserData?.EMPL_NO}
               ></img>
@@ -253,12 +223,12 @@ export default function PrimarySearchAppBar() {
           </Box>
           <Box sx={{ display: { xs: "flex", md: "none" } }}>
             <IconButton
-              size='large'
-              aria-label='show more'
+              size="large"
+              aria-label="show more"
               aria-controls={mobileMenuId}
-              aria-haspopup='true'
+              aria-haspopup="true"
               onClick={handleMobileMenuOpen}
-              color='inherit'
+              color="inherit"
             >
               <MoreIcon />
             </IconButton>

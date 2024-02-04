@@ -1,113 +1,137 @@
 .home {
- display: flex;
- flex-direction: column;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin-left: 0px;
 
-
- @media only screen and (max-width: 3000px) {
-  .homeContainer {      
-    display: flex;
-    position: relative;
-    flex-direction: row;    
-    width: 100%;   
-    height: fit-content; 
-    .sidebardiv {
-      z-index: 99999;
-    }
-    .outletdiv {  
+  @media only screen and (max-width: 3000px) {
+    .homeContainer {
       display: flex;
-      flex-direction: column;   
-      flex: 10;
-      box-sizing: border-box;
-      .animated_div {
-        display: flex;
-        flex-direction: column;  
-        .component_element {
-          position: absolute;
-          top: 25px;         
-        }
-       
-      }
-    }
-    .navdiv {
-      z-index: 999999;
-    }
-    .chatroom {
-      display: flex;
-      position: fixed;
-      right: 2%;
-      top: 90vh;       
-      
-    }
-    
-  }
-}
-
-@media only screen and (max-width: 768px) {   
-  .homeContainer {      
-    display: flex;
-    flex-direction: column;    
-    width: 100%;   
-    height: fit-content; 
-    .sidebardiv {
-      width: fit-content;
-      position: fixed;     
-      left: 10;
-      z-index: 99999;
-    } 
-    .outletdiv {      
+      position: relative;
+      flex-direction: row;
       width: 100%;
-      .animated_div {
+      height: fit-content;
+      .sidebardiv {
+        z-index: 99999;
+        /* position: absolute;
+        left: -16em;
+        top: 0;
+        bottom: 0;
+        background-color: #5fc2f000;
+        border-right: 40px solid #15c01500;
+        //box-shadow: 4px 0 5px rgba(0,0,0,0.2);
+        z-index: 1;
+        cursor: pointer; */
+      }
+      /* .sidebardiv:hover {
+        left: 0;
+      }
+      .sidebardiv:hover ~ .outletdiv:after
+      {
+        left: 100%;
+      }
+      .sidebardiv:hover ~ .outletdiv
+      {
+        -webkit-transform: translateX(250px) perspective(5000px) rotateY(90deg);
+        -moz-transform: translateX(250px) perspective(5000px) rotateY(90deg);
+        -ms-transform: translateX(250px) perspective(5000px) rotateY(50deg);
+        -o-transform: translateX(250px) perspective(5000px) rotateY(20deg);
+        transform: translateX(250px) perspective(5000px) rotateY(20deg);
+      }
+
+      .outletdiv, .outletdiv:after, .sidebardiv, .sidebardiv *
+      {
+        -webkit-transition: all 500ms ease;
+        -moz-transition: all 500ms ease;
+        -ms-transition: all 500ms ease;
+        -o-transition: all 500ms ease;
+        transition: all 500ms ease;
+      } */
+
+      .outletdiv {
         display: flex;
-        flex-direction: column;  
-        margin-top: 100px;
-        .component_element {
-          position: absolute;
-          top: 125px;         
+        flex-direction: column;
+        width: 100%;
+        flex: 10;
+        box-sizing: border-box;
+        .animated_div {
+          display: flex;
+          flex-direction: column;
+          .component_element {
+            position: absolute;
+            top: 25px;
+            display: flex;
+            justify-content: center;
+          }
         }
-
-
-       
+      }
+      .navdiv {
+        display: flex; 
+        z-index: 999999;
+      }
+      .chatroom {
+        display: flex;
+        position: fixed;
+        right: 2%;
+        top: 90vh;
       }
     }
   }
-}
 
-  @media only screen and (max-width: 320px) {
-   
-    .homeContainer {      
+  @media only screen and (max-width: 768px) {
+    .homeContainer {
       display: flex;
-      flex-direction: column;    
-      width: 100%;   
-      height: fit-content; 
+      flex-direction: row;
+      width: 100%;
+      height: fit-content;
       .sidebardiv {
         width: fit-content;
-        position: fixed;     
+        position: fixed;
         left: 10;
-        z-index: 99999;
-      } 
-      .outletdiv {      
+        z-index: 9;
+      }
+      .outletdiv {
+        display: flex;
         width: 100%;
         .animated_div {
           display: flex;
-          flex-direction: column;  
+          flex-direction: column;
+          margin-top: 78px;
+          width: 100%;
+          .component_element {
+            position: absolute;
+            top: 100px;
+          }
+        }
+      }
+    }
+  }
+
+  @media only screen and (max-width: 320px) {
+    .homeContainer {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      height: fit-content;
+      .sidebardiv {
+        width: fit-content;
+        position: fixed;
+        z-index: 99999;
+
+
+      }
+      .outletdiv {
+        width: 100%;
+        .animated_div {
+          display: flex;
+          flex-direction: column;
           margin-top: 100px;
           .component_element {
             position: absolute;
             top: "25px";
-           
           }
-  
-  
-         
         }
       }
     }
   }
-
-  
-
-
-
-
 }
-

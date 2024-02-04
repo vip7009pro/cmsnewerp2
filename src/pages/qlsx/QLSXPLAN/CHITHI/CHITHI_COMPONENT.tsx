@@ -8,163 +8,22 @@ import { useSelector, useDispatch } from "react-redux";
 import {
   changeDiemDanhState,
   changeUserData,
-  UserData,
 } from "../../../../redux/slices/globalSlice";
 import "./CHITHI_COMPONENT.scss";
-import Barcode from 'react-barcode';
-interface YCSXTableData {
-  DESCR?: string;
-  PDBV_EMPL?: string;
-  PDBV_DATE?: string;
-  PDBV?: string;
-  PROD_MAIN_MATERIAL?: string;
-  PROD_TYPE?: string;
-  EMPL_NO?: string;
-  CUST_CD?: string;
-  EMPL_NAME?: string;
-  CUST_NAME_KD?: string;
-  LOT_TOTAL_INPUT_QTY_EA?: number;
-  LOT_TOTAL_OUTPUT_QTY_EA?: number;
-  INSPECT_BALANCE?: number;
-  SHORTAGE_YCSX?: number;
-  YCSX_PENDING?: number;
-  PHAN_LOAI?: string;
-  REMARK?: string;
-  PO_TDYCSX?: number;
-  TOTAL_TKHO_TDYCSX?: number;
-  TKHO_TDYCSX?: number;
-  BTP_TDYCSX?: number;
-  CK_TDYCSX?: number;
-  BLOCK_TDYCSX?: number;
-  FCST_TDYCSX?: number;
-  W1?: number;
-  W2?: number;
-  W3?: number;
-  W4?: number;
-  W5?: number;
-  W6?: number;
-  W7?: number;
-  W8?: number;
-  PDUYET?: number;
-  LOAIXH?: string;
-  PLAN_ID?: string;
-  PLAN_DATE?: string;
-  PROD_REQUEST_NO?: string;
-  PLAN_QTY: number;
-  PLAN_EQ?: string;
-  PLAN_FACTORY?: string;
-  PLAN_LEADTIME?: number;
-  INS_EMPL?: string;
-  INS_DATE?: string;
-  UPD_EMPL?: string;
-  UPD_DATE?: string;
-  G_CODE?: string;
-  G_NAME?: string;
-  G_NAME_KD?: string;
-  PROD_REQUEST_DATE?: string;
-  PROD_REQUEST_QTY?: number;
-  STEP?: number;
-  PLAN_ORDER?: string;
-  OLD_PLAN_QTY?: string,
-  PROCESS_NUMBER?: number,
-}
-interface FullBOM {
-  PDBV?: string;
-  NO_INSPECTION?: string;
-  PDUYET?: number;
-  REMK: string;
-  PROD_REQUEST_QTY: number;
-  PROD_REQUEST_NO: string;
-  PROD_REQUEST_DATE: string;
-  G_CODE: string;
-  DELIVERY_DT: string;
-  CODE_55: string;
-  CODE_50: string;
-  RIV_NO: string;
-  M_QTY: number;
-  M_CODE: string;
-  CUST_NAME: string;
-  ROLE_EA_QTY: number;
-  PACK_DRT: string;
-  PROD_PRINT_TIMES: number;
-  G_WIDTH: number;
-  G_SG_R: number;
-  G_SG_L: number;
-  G_R: number;
-  G_NAME: string;
-  G_LG: number;
-  G_LENGTH: number;
-  G_CODE_C: string;
-  G_CG: number;
-  G_C: number;
-  G_C_R: number;
-  PD: number;
-  CODE_33: string;
-  M_NAME: string;
-  WIDTH_CD: number;
-  EMPL_NO: string;
-  EMPL_NAME: string;
-  CODE_03: string;
-  REMARK: string;
-  TONLIEU: number;
-  HOLDING: number;
-  TONG_TON_LIEU: number;
-  PROD_DIECUT_STEP: number,  
-  FACTORY: string,
-  EQ1: string,
-  EQ2: string, 
-  Setting1: number,
-  Setting2: number,
-  UPH1: number,
-  UPH2: number,
-  Step1: number,
-  Step2: number,
-  LOSS_SX1: number,
-  LOSS_SX2: number,
-  LOSS_SETTING1 : number,
-  LOSS_SETTING2 : number,
-  NOTE:string,
-  PO_TYPE: string,
-  FSC: string,
-  PROD_MAIN_MATERIAL?: string,
-  LIEUQL_SX?: number,
-}
-interface QLSXCHITHIDATA {
-  id: string,
-  CHITHI_ID: number,
-  PLAN_ID: string,    
-  M_CODE: string,
-  M_NAME: string, 
-  WIDTH_CD: number,
-  M_ROLL_QTY: number,
-  M_MET_QTY: number,
-  M_QTY: number,
-  LIEUQL_SX: number,
-  OUT_CFM_QTY: number,
-  INS_EMPL: string,
-  INS_DATE: string,
-  UPD_EMPL: string,
-  UPD_DATE: string,
-}
-const CHITHI_COMPONENT = ({
-  PROD_REQUEST_NO,
-  PDBV,
-  PLAN_ID,
-  PLAN_QTY,
-  PLAN_DATE,
-  PLAN_EQ,
-  PLAN_FACTORY,
-  PLAN_LEADTIME,
-  G_CODE,
-  G_NAME,
-  G_NAME_KD,
-  STEP,
-  PLAN_ORDER,  
-  PROCESS_NUMBER
-}: YCSXTableData) => {
-  const [checklieuchinh,setCheckLieuChinh] = useState(false);
+import Barcode from "react-barcode";
+import {
+  FullBOM,
+  QLSXCHITHIDATA,
+  QLSXPLANDATA,
+  UserData,
+} from "../../../../api/GlobalInterface";
+const CHITHI_COMPONENT = ({ DATA }: { DATA: QLSXPLANDATA }) => {
+  const company: string = useSelector(
+    (state: RootState) => state.totalSlice.company,
+  );
+  const [checklieuchinh, setCheckLieuChinh] = useState(false);
   const userData: UserData | undefined = useSelector(
-    (state: RootState) => state.totalSlice.userData
+    (state: RootState) => state.totalSlice.userData,
   );
   const [request_codeinfo, setRequest_CodeInfo] = useState<Array<FullBOM>>([
     {
@@ -173,6 +32,7 @@ const CHITHI_COMPONENT = ({
       PROD_REQUEST_NO: "2FH0078",
       PROD_REQUEST_DATE: "20220617",
       G_CODE: "7A07975A",
+      G_NAME_KD: "",
       DELIVERY_DT: "20220620",
       CODE_55: "03",
       CODE_50: "02",
@@ -205,33 +65,47 @@ const CHITHI_COMPONENT = ({
       TONLIEU: 0,
       HOLDING: 0,
       TONG_TON_LIEU: 0,
-      PROD_DIECUT_STEP: 0,  
-      FACTORY: '',
-      EQ1: '',
-      EQ2: '', 
+      PROD_DIECUT_STEP: 0,
+      FACTORY: "",
+      EQ1: "",
+      EQ2: "",
+      EQ3: "",
+      EQ4: "",
       Setting1: 0,
       Setting2: 0,
+      Setting3: 0,
+      Setting4: 0,
       UPH1: 0,
       UPH2: 0,
+      UPH3: 0,
+      UPH4: 0,
       Step1: 0,
       Step2: 0,
+      Step3: 0,
+      Step4: 0,
       LOSS_SX1: 0,
       LOSS_SX2: 0,
-      LOSS_SETTING1 : 0,
-      LOSS_SETTING2 : 0,
-      NOTE:'',
-      PO_TYPE:'E1',
-      PROD_MAIN_MATERIAL: '',
+      LOSS_SX3: 0,
+      LOSS_SX4: 0,
+      LOSS_SETTING1: 0,
+      LOSS_SETTING2: 0,
+      LOSS_SETTING3: 0,
+      LOSS_SETTING4: 0,
+      NOTE: "",
+      PO_TYPE: "E1",
+      PROD_MAIN_MATERIAL: "",
       LIEUQL_SX: 0,
-      FSC: 'N'
+      FSC: "N",
     },
   ]);
   const [chithidatatable, setChiThiDataTable] = useState<QLSXCHITHIDATA[]>([]);
   const [checklieuqlsx, setChecklieuqlsx] = useState(false);
-  const [maxLieu, setMaxLieu]=  useState(12);
+  const [po_balance, setPoBalance] = useState(0);
+  const [maxLieu, setMaxLieu] = useState(12);
+  const [eq_process_check, setEQ_Process_check] = useState(false);
   const handleGetChiThiTable = async () => {
     generalQuery("getchithidatatable", {
-      PLAN_ID: PLAN_ID,
+      PLAN_ID: DATA.PLAN_ID,
     })
       .then((response) => {
         //console.log(response.data.tk_status);
@@ -244,23 +118,33 @@ const CHITHI_COMPONENT = ({
         console.log(error);
       });
   };
-  const max_lieu:number =  17;
+  const max_lieu: number = 17;
   const initCTSX = async () => {
     generalQuery("ycsx_fullinfo", {
-      PROD_REQUEST_NO: PROD_REQUEST_NO,
+      PROD_REQUEST_NO: DATA.PROD_REQUEST_NO,
     })
       .then((response) => {
         //console.log('Data request full ycsx :');
         //console.log(response.data.data);
         if (response.data.tk_status !== "NG") {
-          for(let i=0;i<response.data.data.length ;i++)
-          {
-            if(response.data.data[i].PROD_MAIN_MATERIAL === response.data.data[i].M_NAME && response.data.data[i].LIEUQL_SX===1)
-            {
+          for (let i = 0; i < response.data.data.length; i++) {
+            if (
+              response.data.data[i].PROD_MAIN_MATERIAL ===
+              response.data.data[i].M_NAME &&
+              response.data.data[i].LIEUQL_SX === 1
+            ) {
               setCheckLieuChinh(true);
             }
           }
           setRequest_CodeInfo(response.data.data);
+          let checkpr: number = checkEQvsPROCESS(
+            response.data.data[0].EQ1,
+            response.data.data[0].EQ2,
+            response.data.data[0].EQ3,
+            response.data.data[0].EQ4,
+          );
+          console.log("max", checkpr);
+          setEQ_Process_check(DATA.PROCESS_NUMBER > checkpr ? false : true);
         } else {
           setRequest_CodeInfo([
             {
@@ -269,6 +153,7 @@ const CHITHI_COMPONENT = ({
               PROD_REQUEST_NO: "",
               PROD_REQUEST_DATE: "",
               G_CODE: "",
+              G_NAME_KD: "",
               DELIVERY_DT: "",
               CODE_55: "03",
               CODE_50: "02",
@@ -302,23 +187,35 @@ const CHITHI_COMPONENT = ({
               HOLDING: 0,
               TONG_TON_LIEU: 0,
               NO_INSPECTION: "N",
-              PROD_DIECUT_STEP: 0,  
-              FACTORY: '',
-              EQ1: '',
-              EQ2: '', 
+              PROD_DIECUT_STEP: 0,
+              FACTORY: "",
+              EQ1: "",
+              EQ2: "",
+              EQ3: "",
+              EQ4: "",
               Setting1: 0,
               Setting2: 0,
+              Setting3: 0,
+              Setting4: 0,
               UPH1: 0,
               UPH2: 0,
+              UPH3: 0,
+              UPH4: 0,
               Step1: 0,
               Step2: 0,
+              Step3: 0,
+              Step4: 0,
               LOSS_SX1: 0,
               LOSS_SX2: 0,
-              LOSS_SETTING1 : 0,
-              LOSS_SETTING2 : 0,
-              NOTE:'',
-              PO_TYPE:'E1',
-              FSC:'N'
+              LOSS_SX3: 0,
+              LOSS_SX4: 0,
+              LOSS_SETTING1: 0,
+              LOSS_SETTING2: 0,
+              LOSS_SETTING3: 0,
+              LOSS_SETTING4: 0,
+              NOTE: "",
+              PO_TYPE: "E1",
+              FSC: "N",
             },
           ]);
           //Swal.fire("Thông báo","Số yêu cầu " + PROD_REQUEST_NO + "không tồn tại","error");
@@ -328,89 +225,144 @@ const CHITHI_COMPONENT = ({
         console.log(error);
       });
   };
-  const check_dinh_muc =()=> {
-    if(request_codeinfo[0].FACTORY === null ||
-    request_codeinfo[0].EQ1 === null ||
-    request_codeinfo[0].EQ2 === null ||
-    request_codeinfo[0].Setting1 === null ||
-    request_codeinfo[0].Setting2 === null ||
-    request_codeinfo[0].UPH1 === null ||
-    request_codeinfo[0].UPH2 === null ||
-    request_codeinfo[0].Step1 === null ||
-    request_codeinfo[0].Step1 === null ||
-    request_codeinfo[0].LOSS_SX1 === null ||
-    request_codeinfo[0].LOSS_SX2 === null ||
-    request_codeinfo[0].LOSS_SETTING1 === null ||
-    request_codeinfo[0].LOSS_SETTING2 === null)
-    {
+  const check_dinh_muc = () => {
+    if (
+      request_codeinfo[0].FACTORY === null ||
+      request_codeinfo[0].EQ1 === null ||
+      request_codeinfo[0].EQ2 === null ||
+      request_codeinfo[0].Setting1 === null ||
+      request_codeinfo[0].Setting2 === null ||
+      request_codeinfo[0].UPH1 === null ||
+      request_codeinfo[0].UPH2 === null ||
+      request_codeinfo[0].Step1 === null ||
+      request_codeinfo[0].Step1 === null ||
+      request_codeinfo[0].LOSS_SX1 === null ||
+      request_codeinfo[0].LOSS_SX2 === null ||
+      request_codeinfo[0].LOSS_SETTING1 === null ||
+      request_codeinfo[0].LOSS_SETTING2 === null
+    ) {
       //console.log(false)
       return false;
-    }
-    else
-    {
+    } else {
       //console.log(true)
       return true;
     }
-  }
-  const check_lieuql_sx_m140 =  ()=> {
-     generalQuery("check_lieuql_sx_m140", {
-      G_CODE: G_CODE,
+  };
+  const checkEQvsPROCESS = (
+    EQ1: string,
+    EQ2: string,
+    EQ3: string,
+    EQ4: string,
+  ) => {
+    let maxprocess: number = 0;
+    if (["NA", "NO", "", null].indexOf(EQ1) === -1) maxprocess++;
+    if (["NA", "NO", "", null].indexOf(EQ2) === -1) maxprocess++;
+    if (["NA", "NO", "", null].indexOf(EQ3) === -1) maxprocess++;
+    if (["NA", "NO", "", null].indexOf(EQ4) === -1) maxprocess++;
+    return maxprocess;
+  };
+  const check_lieuql_sx_m140 = () => {
+    generalQuery("check_lieuql_sx_m140", {
+      G_CODE: DATA.G_CODE,
     })
       .then((response) => {
         //console.log(response.data);
         if (response.data.tk_status !== "NG") {
-          setChecklieuqlsx(true);        
+          setChecklieuqlsx(true);
         } else {
-          setChecklieuqlsx(false);         
+          setChecklieuqlsx(false);
         }
       })
       .catch((error) => {
         console.log(error);
-      });     
-  }
-  const checkMaxLieu =()=> {
+      });
+  };
+  const checkMaxLieu = () => {
     let temp_maxLieu: any = localStorage.getItem("maxLieu")?.toString();
     if (temp_maxLieu !== undefined) {
-      console.log('temp max lieu : ',temp_maxLieu)
+      console.log("temp max lieu : ", temp_maxLieu);
       setMaxLieu(temp_maxLieu);
-    } else {      
-      localStorage.setItem("maxLieu", '12');
+    } else {
+      localStorage.setItem("maxLieu", "12");
     }
-  }
+  };
+  const checkPOBalance = () => {
+    generalQuery("checkpobalance_tdycsx", {
+      G_CODE: DATA.G_CODE,
+    })
+      .then((response) => {
+        if (response.data.tk_status !== "NG") {
+          //console.log(response.data.data);
+          setPoBalance(response.data.data[0].PO_BALANCE);
+        } else {
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
   useEffect(() => {
     checkMaxLieu();
     check_lieuql_sx_m140();
     initCTSX();
     handleGetChiThiTable();
-  }, [PLAN_ID]);
+    checkPOBalance();
+  }, [DATA.PLAN_ID]);
   return (
-    <div className='chithicomponent'>     
-    <div className="qcpass">
-        {(request_codeinfo[0].PDBV==='Y' && checklieuchinh ===true) && <img alt="qcpass" src="/QC PASS20.png" width={440-100-10} height={400-100}/>}
-      </div>    
-    {(request_codeinfo[0]?.FSC ==='Y') && <div className="fsc">
-        <img alt="qcpass" src="/fsc logo2.png" width={440-100-10} height={400-100}/>
-      </div>}    
+    <div className="chithicomponent">
+      <div className="qcpass">
+        {request_codeinfo[0].PDBV === "Y" && checklieuchinh === true && (
+          <img
+            alt="qcpass"
+            src="/QC PASS20.png"
+            width={440 - 100 - 10}
+            height={400 - 100}
+          />
+        )}
+      </div>
+      {request_codeinfo[0]?.FSC === "Y" && (
+        <div className="fsc">
+          <img
+            alt="qcpass"
+            src="/fsc logo2.png"
+            width={440 - 100 - 10}
+            height={400 - 100}
+          />
+        </div>
+      )}
       {
-        <div className='tieudeycsx'>
-          <div className='leftlogobarcode'>
-            <img alt='logo' src='/logocmsvina.png' width={160} height={40} />
+        <div className="tieudeycsx">
+          <div className="leftlogobarcode">
+            {company === "CMS" && (
+              <img alt="logo" src="/logocmsvina.png" width={160} height={40} />
+            )}
+            {company !== "CMS" && (
+              <img alt="logo" src="/logopvn_big.png" width={160} height={40} />
+            )}
             <Barcode
-              value={`${PLAN_ID}`}              
-              format='CODE128'
+              value={`${DATA.PLAN_ID}`}
+              format="CODE128"
               width={1}
               height={50}
               displayValue={false}
-              background='#fff'
-              lineColor='black'
+              background="#fff"
+              lineColor="black"
               margin={0}
             />
-            {PLAN_ID}
+            {DATA.PLAN_ID}
           </div>
-          <div className='headertitle'>
-            <span style={{fontSize: 16}}>생산 지시서 - Chỉ thị Sản Xuất({PLAN_EQ}- B{STEP})</span><br></br>
+          <div className="headertitle">
+            <span style={{ fontSize: 16 }}>
+              생산 지시서 - Chỉ thị Sản Xuất({DATA.PLAN_EQ}- CĐ
+              {DATA.PROCESS_NUMBER}- B{DATA.STEP})
+            </span>
+            <br></br>
             <span style={{ fontSize: 12 }}>
               Thời điểm in CTSX: {moment().format("YYYY-MM-DD HH:mm:ss")}
+            </span>
+            <br></br>{" "}
+            <span style={{ fontSize: 12 }}>
+              Ngày giao hàng: {request_codeinfo[0]?.DELIVERY_DT}
             </span>
             <br></br>{" "}
             {request_codeinfo[0].NO_INSPECTION === "Y" && (
@@ -419,19 +371,19 @@ const CHITHI_COMPONENT = ({
               </span>
             )}
           </div>
-          <div className='soycsx'>
-            <div className='ycsxbarcode'>              
+          <div className="soycsx">
+            <div className="ycsxbarcode">
               <Barcode
                 value={request_codeinfo[0]?.PROD_REQUEST_NO}
-                format='CODE128'
+                format="CODE128"
                 width={1}
                 height={50}
                 displayValue={false}
-                background='#fff'
-                lineColor='black'
+                background="#fff"
+                lineColor="black"
                 margin={0}
               />
-               <div className='ycsxno'>
+              <div className="ycsxno">
                 {request_codeinfo[0].PROD_REQUEST_DATE}-
                 {request_codeinfo[0].PROD_REQUEST_NO}{" "}
               </div>
@@ -439,116 +391,211 @@ const CHITHI_COMPONENT = ({
           </div>
         </div>
       }
-      {(check_dinh_muc() && checklieuqlsx && PLAN_QTY !==0 && PROCESS_NUMBER !==0) && <div className='thongtinycsx'>
-        <div className='text1'>
-          1. 지시 정보 Thông tin chỉ thị ({request_codeinfo[0].G_NAME} ) __ PO_TYPE: {request_codeinfo[0].PO_TYPE} 
-        </div>
-        <div className='thongtinyeucau'>
-          <table className='ttyc1'>
-            <thead>
-              <tr>
-                <th>Hạng mục/항목</th>
-                <th>Thông tin/정보</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>Người yêu cầu/요청자</td>
-                <td>{request_codeinfo[0]?.EMPL_NAME}</td>
-              </tr>
-              <tr>
-                <td>Khách hàng/고객사</td>
-                <td>{request_codeinfo[0]?.CUST_NAME}</td>
-              </tr>
-              <tr>
-                <td>Mã sản phẩm/제품코드</td>
-                <td>{request_codeinfo[0]?.G_CODE}</td>
-              </tr>
-              <tr>
-                <td>Tên sản phẩm/제품명</td>
-                <td>{request_codeinfo[0]?.G_NAME}</td>
-              </tr>
-            </tbody>
-          </table>
-          <table className='ttyc2'>
-            <thead>
-              <tr>
-                <th>Hạng mục/항목</th>
-                <th>Thông tin/정보</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>Số lượng yêu cầu/요청 수량</td>
-                <td>
-                  {request_codeinfo[0]?.PROD_REQUEST_QTY.toLocaleString(
-                    "en-US"
-                  )}{" "}
-                  EA
-                </td>
-              </tr>
-              <tr>
-                <td>Số lượng chỉ thị/지시 수량</td>
-                <td>{PLAN_QTY?.toLocaleString("en-US")} EA</td>
-              </tr>
-              <tr>
-                <td>P/D</td>
-                <td>{request_codeinfo[0]?.PD.toLocaleString("en-US")}</td>
-              </tr>
-              <tr>
-                <td>Cavity (Hàng * Cột)</td>
-                <td>
-                  {request_codeinfo[0]?.G_C_R} * {request_codeinfo[0]?.G_C} ={" "}
-                  {request_codeinfo[0]?.G_C_R * request_codeinfo[0]?.G_C}
-                </td>
-              </tr>
-            </tbody>
-          </table>
-          <table className='ttyc2'>
-            <thead>
-              <tr>
-                <th>Hạng mục/항목</th>
-                <th>Thông tin/정보</th>
-              </tr>
-            </thead>
-            <tbody>
-            <tr>
-                <td>Nhà máy/공장</td>
-                <td>{PLAN_FACTORY}</td>
-              </tr>
-              <tr>
-                <td>MIN QTY</td>
-                <td>Min CD1:{(request_codeinfo[0]?.UPH1/6).toLocaleString('en-US',{maximumFractionDigits:0})}  |  Min CD2: {(request_codeinfo[0]?.UPH2/6).toLocaleString('en-US',{maximumFractionDigits:0})}</td>
-              </tr>             
-              <tr>
-                <td>Chú ý (Kdoanh)</td>
-                <td>{request_codeinfo[0].REMK}</td>
-              </tr>
-              <tr>
-                <td>Chú ý (QLSX)</td>
-                <td>     
-                  {request_codeinfo[0]?.NOTE}            
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        {/* <div className='text1'>
-          2. 생산 정보 Thông tin Sản xuất
-          {' '}
-          <Barcode
-              value={PLAN_ID}
-              format='CODE128'
-              width={1.5}
-              height={20}
-              displayValue={false}
-              background='#fff'
-              lineColor='black'
-              margin={0}
-            />
-             ({PLAN_ID})
-        </div>
-        <div className='thongtinyeucau'>
+      {check_dinh_muc() &&
+        checklieuqlsx &&
+        DATA.PLAN_QTY !== 0 &&
+        DATA.PROCESS_NUMBER !== 0 &&
+        eq_process_check && 
+        DATA.CHOTBC !=='V' &&
+        (
+          <div className="thongtinycsx">
+            <div className="text1">
+              1. 지시 정보 Thông tin chỉ thị ({request_codeinfo[0].G_NAME} ) __
+              PO_TYPE: {request_codeinfo[0].PO_TYPE}
+            </div>
+            <div className="thongtinyeucau">
+              <table className="ttyc1">
+                <thead>
+                  <tr>
+                    <th>Hạng mục/항목</th>
+                    <th>Thông tin/정보</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Người yêu cầu/요청자</td>
+                    <td>{request_codeinfo[0]?.EMPL_NAME}</td>
+                  </tr>
+                  <tr>
+                    <td>Khách hàng/고객사</td>
+                    <td>{request_codeinfo[0]?.CUST_NAME}</td>
+                  </tr>
+                  <tr>
+                    <td>Mã sản phẩm/제품코드</td>
+                    <td>
+                      {request_codeinfo[0]?.G_CODE}
+                      {company !== "CMS"
+                        ? "/" + request_codeinfo[0]?.G_NAME_KD
+                        : ""}{" "}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Tên sản phẩm/제품명</td>
+                    <td>{request_codeinfo[0]?.G_NAME}</td>
+                  </tr>
+                </tbody>
+              </table>
+              <table className="ttyc2">
+                <thead>
+                  <tr>
+                    <th>Hạng mục/항목</th>
+                    <th>Thông tin/정보</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Số lượng yêu cầu/요청 수량</td>
+                    <td>
+                      {request_codeinfo[0]?.PROD_REQUEST_QTY.toLocaleString(
+                        "en-US",
+                      )}{" "}
+                      EA
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Số lượng chỉ thị/지시 수량</td>
+                    <td>{DATA.PLAN_QTY?.toLocaleString("en-US")} EA</td>
+                  </tr>
+                  <tr>
+                    <td>P/D</td>
+                    <td>{request_codeinfo[0]?.PD.toLocaleString("en-US")}</td>
+                  </tr>
+                  <tr>
+                    <td>Cavity (Hàng * Cột)</td>
+                    <td>
+                      {request_codeinfo[0]?.G_C_R} * {request_codeinfo[0]?.G_C}{" "}
+                      = {request_codeinfo[0]?.G_C_R * request_codeinfo[0]?.G_C}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              <table className="ttyc2">
+                <thead>
+                  <tr>
+                    <th>Hạng mục/항목</th>
+                    <th>Thông tin/정보</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Nhà máy/공장</td>
+                    <td>{DATA.PLAN_FACTORY}</td>
+                  </tr>
+                  <tr>
+                    <td>MIN QTY</td>
+                    <td>
+                      Min CD1:
+                      {(request_codeinfo[0]?.UPH1 / 6).toLocaleString("en-US", {
+                        maximumFractionDigits: 0,
+                      })}{" "}
+                      | Min CD2:{" "}
+                      {(request_codeinfo[0]?.UPH2 / 6).toLocaleString("en-US", {
+                        maximumFractionDigits: 0,
+                      })}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Chú ý (Kdoanh)</td>
+                    <td>{request_codeinfo[0].REMK}</td>
+                  </tr>
+                  <tr>
+                    <td>Chú ý (QLSX)</td>
+                    <td>{request_codeinfo[0]?.NOTE} ({(DATA.PLAN_QTY * (1+(DATA.PROCESS_NUMBER === 1 ? request_codeinfo[0]?.LOSS_SX1: DATA.PROCESS_NUMBER === 2 ? request_codeinfo[0]?.LOSS_SX2: DATA.PROCESS_NUMBER === 3 ? request_codeinfo[0]?.LOSS_SX3:request_codeinfo[0]?.LOSS_SX4 )/100)).toLocaleString('en-US')  } EA Cả loss)</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div className="text1">
+              2. 생산 정보 Thông tin Sản xuất{" "}
+              <Barcode
+                value={`${DATA.PLAN_ID}`}
+                format="CODE128"
+                width={1.5}
+                height={20}
+                displayValue={false}
+                background="#fff"
+                lineColor="black"
+                margin={0}
+              />
+              ({DATA.PLAN_ID}) - {DATA.IS_SETTING === 'Y' ? 'CÓ SETTING' : 'KHÔNG SETTING'}
+            </div>
+            <div className="thongtinyeucau">
+              <table className="ttyc1">
+                <thead>
+                  <tr>
+                    <th>Hạng mục/항목</th>
+                    <th>Thông tin/정보</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>
+                      Thời gian setting{" "}
+                      {DATA.PROCESS_NUMBER === 1
+                        ? request_codeinfo[0]?.EQ1
+                        : DATA.PROCESS_NUMBER === 2
+                          ? request_codeinfo[0]?.EQ2
+                          : DATA.PROCESS_NUMBER === 3
+                            ? request_codeinfo[0]?.EQ3
+                            : DATA.PROCESS_NUMBER === 4
+                              ? request_codeinfo[0]?.EQ4
+                              : ""}
+                    </td>
+                    <td>
+                      {DATA.PROCESS_NUMBER === 1
+                        ? request_codeinfo[0]?.Setting1
+                        : DATA.PROCESS_NUMBER === 2
+                          ? request_codeinfo[0]?.Setting2
+                          : DATA.PROCESS_NUMBER === 3
+                            ? request_codeinfo[0]?.Setting3
+                            : DATA.PROCESS_NUMBER === 4
+                              ? request_codeinfo[0]?.Setting4
+                              : ""}{" "}
+                      minutes
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      UPH (EA/h) -{" "}
+                      {DATA.PROCESS_NUMBER === 1
+                        ? request_codeinfo[0]?.EQ1
+                        : DATA.PROCESS_NUMBER === 2
+                          ? request_codeinfo[0]?.EQ2
+                          : DATA.PROCESS_NUMBER === 3
+                            ? request_codeinfo[0]?.EQ3
+                            : DATA.PROCESS_NUMBER === 4
+                              ? request_codeinfo[0]?.EQ4
+                              : ""}
+                    </td>
+                    <td>
+                      {DATA.PROCESS_NUMBER === 1
+                        ? request_codeinfo[0]?.UPH1
+                        : DATA.PROCESS_NUMBER === 2
+                          ? request_codeinfo[0]?.UPH2
+                          : DATA.PROCESS_NUMBER === 3
+                            ? request_codeinfo[0]?.UPH3
+                            : DATA.PROCESS_NUMBER === 4
+                              ? request_codeinfo[0]?.UPH4
+                              : 0}
+                      EA/h -{" "}
+                      {(DATA.PLAN_QTY /
+                        (DATA.PROCESS_NUMBER === 1
+                          ? request_codeinfo[0]?.UPH1
+                          : DATA.PROCESS_NUMBER === 2
+                            ? request_codeinfo[0]?.UPH2
+                            : DATA.PROCESS_NUMBER === 3
+                              ? request_codeinfo[0]?.UPH3
+                              : DATA.PROCESS_NUMBER === 4
+                                ? request_codeinfo[0]?.UPH4
+                                : 0)) *
+                        60}{" "}
+                      minutes
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            {/*<div className='thongtinyeucau'>
           <table className='ttyc1'>
             <thead>
               <tr>
@@ -605,162 +652,238 @@ const CHITHI_COMPONENT = ({
             </tbody>
           </table>         
         </div> */}
-        <div className='text1'>3. LOSS INFO__ {' '}{PLAN_ID} {':  '} (Phân loại: {request_codeinfo[0].CODE_50 ==='01'? 'GC': request_codeinfo[0].CODE_50 ==='02'? 'SK': request_codeinfo[0].CODE_50 ==='03'? 'KD' : request_codeinfo[0].CODE_50 ==='04'? 'VN' : request_codeinfo[0].CODE_50 ==='05' ? 'SAMPLE' : request_codeinfo[0].CODE_50 ==='06' ? 'Vai bac 4' :'ETC'})  
-          <Barcode
-              value={`${PLAN_ID}`} 
-              format='CODE128'
-              width={1.5}
-              height={20}
-              displayValue={false}
-              background='#fff'
-              lineColor='black'
-              margin={0}
-            />_{request_codeinfo[0]?.FSC ==='Y' ? '(FSC Mix Credit)':''}</div>
-            
-        <div className='thongtinyeucau'>
-          <table className='ttyc1'>
-            <thead>
-              <tr>
-                <th>Bóc kiểm (EA)/파괴검사</th>
-                <th>Lấy đồ/도구 준비</th>
-                <th>Máy hỏng/설비 고장</th>
-                <th>Dao NG/칼 불량</th>
-                <th>Chờ liệu/원단 대기</th>
-                <th>Chờ BTP/BTP 대기</th>
-                <th>Hết liệu/원단 떨어짐</th>
-                <th>Liệu NG/원단 불량</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td style={{height: '20px'}}></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>               
-              </tr>             
-            </tbody>
-          </table>               
-        </div>       
-        <div className='text1'>4. 제품 정보 Thông tin vật liệu | Liệu chính {request_codeinfo[0].PROD_MAIN_MATERIAL} | {checklieuchinh ===true? 'Đã SET':'Chưa SET'}</div>
-        <div className='thongtinvatlieu'>
-          {chithidatatable.length <= maxLieu && (
-            <div className='vatlieugiua'>
-              <table>
+            <div className="text1">
+              3. LOSS INFO__ {DATA.PLAN_ID} {":  "} (Phân loại:{" "}
+              {request_codeinfo[0].CODE_50 === "01"
+                ? "GC"
+                : request_codeinfo[0].CODE_50 === "02"
+                  ? "SK"
+                  : request_codeinfo[0].CODE_50 === "03"
+                    ? "KD"
+                    : request_codeinfo[0].CODE_50 === "04"
+                      ? "VN"
+                      : request_codeinfo[0].CODE_50 === "05"
+                        ? "SAMPLE"
+                        : request_codeinfo[0].CODE_50 === "06"
+                          ? "Vai bac 4"
+                          : "ETC"}
+              )
+              <Barcode
+                value={`${DATA.PLAN_ID}`}
+                format="CODE128"
+                width={1.5}
+                height={20}
+                displayValue={false}
+                background="#fff"
+                lineColor="black"
+                margin={0}
+              />
+              _{request_codeinfo[0]?.FSC === "Y" ? "(FSC Mix Credit)" : ""}{" "}
+              POBALANCE: {po_balance?.toLocaleString("en-US")}{" "}
+            </div>
+            <div className="thongtinyeucau">
+              <table className="ttyc1">
                 <thead>
                   <tr>
-                    <th>No</th>
-                    <th>Mã Liệu/원단코드</th>
-                    <th>Tên Liệu/원단명</th>
-                    <th>Size Liệu/원단폭</th>
-                    <th>SL chỉ thị/지시 수량</th>
-                    <th>Thực xuất M/실제 출고 M</th>
-                    <th>Thực xuất Roll/실제 출고 Roll</th>                    
-                    <th>Ghi chú/비고</th>
+                    <th>Bóc kiểm (EA)/파괴검사</th>
+                    <th>Lấy đồ/도구 준비</th>
+                    <th>Máy hỏng/설비 고장</th>
+                    <th>Dao NG/칼 불량</th>
+                    <th>Chờ liệu/원단 대기</th>
+                    <th>Chờ BTP/BTP 대기</th>
+                    <th>Hết liệu/원단 떨어짐</th>
+                    <th>Liệu NG/원단 불량</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {chithidatatable.map((element, index) => (
-                    <tr key={index}>
-                      <td>{index}</td>
-                      <td>{element.M_CODE}</td>
-                      {
-                        (element.LIEUQL_SX ===1)? <td style={{color:'red', fontWeight:'bold', backgroundColor:'lightgreen'}}>{element.M_NAME}</td>:<td>{element.M_NAME}</td>
-                      }                      
-                      <td>{element.WIDTH_CD}</td>
-                      <td>{(element.M_MET_QTY * element.M_QTY).toLocaleString("en-US")} M</td>
-                      <td></td>
-                      <td></td>
-                      <td>{element.LIEUQL_SX}</td>
-                    </tr>
-                  ))}
+                  <tr>
+                    <td style={{ height: "20px" }}></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                  </tr>
                 </tbody>
               </table>
             </div>
-          )}
-          {chithidatatable.length > maxLieu && (
-            <div className='vatlieutrai'>
-              <table>
-                <thead>
-                  <tr>
-                  <th>No</th>
-                    <th>Mã Liệu/원단코드</th>
-                    <th>Tên Liệu/원단명</th>
-                    <th>Size Liệu/원단폭</th>
-                    <th>SL chỉ thị/지시 수량</th>
-                    <th>Thực xuất M/실제 출고 M</th>
-                    <th>Thực xuất Roll/실제 출고 Roll</th>                    
-                    <th>Ghi chú/비고</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {chithidatatable.map(
-                    (element, index) =>
-                      index <= maxLieu && (
+            <div className="text1">
+              4. 제품 정보 Thông tin vật liệu | Liệu chính{" "}
+              {request_codeinfo[0].PROD_MAIN_MATERIAL} |{" "}
+              {checklieuchinh === true ? "Đã SET" : "Chưa SET"}
+            </div>
+            <div className="thongtinvatlieu">
+              {chithidatatable.length <= maxLieu && (
+                <div className="vatlieugiua">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>No</th>
+                        <th>Mã Liệu/원단코드</th>
+                        <th>Tên Liệu/원단명</th>
+                        <th>Size Liệu/원단폭</th>
+                        <th>SL chỉ thị/지시 수량</th>
+                        <th>Thực xuất M/실제 출고 M</th>
+                        <th>Thực xuất Roll/실제 출고 Roll</th>
+                        <th>Ghi chú/비고</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {chithidatatable.map((element, index) => (
                         <tr key={index}>
-                         <td>{index}</td>
-                        <td>{element.M_CODE}</td>
-                        {
-                        (element.LIEUQL_SX ===1)? <td style={{color:'red', fontWeight:'bold', backgroundColor:'lightgreen'}}>{element.M_NAME}</td>:<td>{element.M_NAME}</td>
-                      }  
-                        <td>{element.WIDTH_CD}</td>
-                        <td>{(element.M_MET_QTY * element.M_QTY).toLocaleString("en-US")} M</td>
-                        <td></td>
-                        <td></td>
-                        <td>{element.LIEUQL_SX}</td>
+                          <td>{index}</td>
+                          <td>{element.M_CODE}</td>
+                          {element.LIEUQL_SX === 1 ? (
+                            <td
+                              style={{
+                                color: "red",
+                                fontWeight: "bold",
+                                backgroundColor: "lightgreen",
+                              }}
+                            >
+                              {element.M_NAME}
+                            </td>
+                          ) : (
+                            <td>{element.M_NAME}</td>
+                          )}
+                          <td>{element.WIDTH_CD}</td>
+                          <td>
+                            {(element.M_MET_QTY * element.M_QTY).toLocaleString(
+                              "en-US",
+                            )}{" "}
+                            M
+                          </td>
+                          <td></td>
+                          <td></td>
+                          <td>{element.LIEUQL_SX}</td>
                         </tr>
-                      )
-                  )}
-                </tbody>
-              </table>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+              {chithidatatable.length > maxLieu && (
+                <div className="vatlieutrai">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>No</th>
+                        <th>Mã Liệu/원단코드</th>
+                        <th>Tên Liệu/원단명</th>
+                        <th>Size Liệu/원단폭</th>
+                        <th>SL chỉ thị/지시 수량</th>
+                        <th>Thực xuất M/실제 출고 M</th>
+                        <th>Thực xuất Roll/실제 출고 Roll</th>
+                        <th>Ghi chú/비고</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {chithidatatable.map(
+                        (element, index) =>
+                          index <= maxLieu && (
+                            <tr key={index}>
+                              <td>{index}</td>
+                              <td>{element.M_CODE}</td>
+                              {element.LIEUQL_SX === 1 ? (
+                                <td
+                                  style={{
+                                    color: "red",
+                                    fontWeight: "bold",
+                                    backgroundColor: "lightgreen",
+                                  }}
+                                >
+                                  {element.M_NAME}
+                                </td>
+                              ) : (
+                                <td>{element.M_NAME}</td>
+                              )}
+                              <td>{element.WIDTH_CD}</td>
+                              <td>
+                                {(
+                                  element.M_MET_QTY * element.M_QTY
+                                ).toLocaleString("en-US")}{" "}
+                                M
+                              </td>
+                              <td></td>
+                              <td></td>
+                              <td>{element.LIEUQL_SX}</td>
+                            </tr>
+                          ),
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+              {chithidatatable.length > maxLieu && (
+                <div className="vatlieuphai">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>No</th>
+                        <th>Mã Liệu/원단코드</th>
+                        <th>Tên Liệu/원단명</th>
+                        <th>Size Liệu/원단폭</th>
+                        <th>SL chỉ thị/지시 수량</th>
+                        <th>Thực xuất M/실제 출고 M</th>
+                        <th>Thực xuất Roll/실제 출고 Roll</th>
+                        <th>Ghi chú/비고</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {chithidatatable.map(
+                        (element, index) =>
+                          index > maxLieu && (
+                            <tr key={index}>
+                              <td>{index}</td>
+                              <td>{element.M_CODE}</td>
+                              {element.LIEUQL_SX === 1 ? (
+                                <td
+                                  style={{
+                                    color: "red",
+                                    fontWeight: "bold",
+                                    backgroundColor: "lightgreen",
+                                  }}
+                                >
+                                  {element.M_NAME}
+                                </td>
+                              ) : (
+                                <td>{element.M_NAME}</td>
+                              )}
+                              <td>{element.WIDTH_CD}</td>
+                              <td>
+                                {(
+                                  element.M_MET_QTY * element.M_QTY
+                                ).toLocaleString("en-US")}{" "}
+                                M
+                              </td>
+                              <td></td>
+                              <td></td>
+                              <td>{element.LIEUQL_SX}</td>
+                            </tr>
+                          ),
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              )}
             </div>
-          )}
-          {chithidatatable.length > maxLieu && (
-            <div className='vatlieuphai'>
-              <table>
-                <thead>
-                  <tr>
-                  <th>No</th>
-                    <th>Mã Liệu/원단코드</th>
-                    <th>Tên Liệu/원단명</th>
-                    <th>Size Liệu/원단폭</th>
-                    <th>SL chỉ thị/지시 수량</th>
-                    <th>Thực xuất M/실제 출고 M</th>
-                    <th>Thực xuất Roll/실제 출고 Roll</th>                    
-                    <th>Ghi chú/비고</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {chithidatatable.map(
-                    (element, index) =>
-                      index > maxLieu && (
-                        <tr key={index}>
-                         <td>{index}</td>
-                        <td>{element.M_CODE}</td>
-                        {
-                        (element.LIEUQL_SX ===1)? <td style={{color:'red', fontWeight:'bold', backgroundColor:'lightgreen'}}>{element.M_NAME}</td>:<td>{element.M_NAME}</td>
-                      }  
-                        <td>{element.WIDTH_CD}</td>
-                        <td>{(element.M_MET_QTY * element.M_QTY).toLocaleString("en-US")} M</td>
-                        <td></td>
-                        <td></td>
-                        <td>{element.LIEUQL_SX}</td>
-                        </tr>
-                      )
-                  )}
-                </tbody>
-              </table>
-            </div>
-          )}
+          </div>
+        )}
+        {DATA.CHOTBC ==='V' && <div>Chị thị chốt nhật ký rồi ko in lại nữa</div>}
+      {!check_dinh_muc() && <div>Chưa đủ thông tin định mức</div>}
+      {!checklieuqlsx && (
+        <div>
+          Chưa chỉ định liệu chính, hãy lưu liệu chỉ thị để đồng bộ liệu chính
+          lên BOM
         </div>
-      </div>}
-      {!check_dinh_muc() && <div>Chưa đủ thông tin định mức</div>}      
-      {!checklieuqlsx && <div>Chưa chỉ định liệu chính, hãy lưu liệu chỉ thị để đồng bộ liệu chính lên BOM</div>}
-      {(PLAN_QTY ===0) && <div>Số lượng chỉ thị không thể = 0</div>}
-      {(PROCESS_NUMBER ===0) && <div>PROCESS_NUMBER phải đặt 1 hoặc 2</div>}
+      )}
+      {DATA.PLAN_QTY === 0 && <div>Số lượng chỉ thị không thể = 0</div>}
+      {DATA.PROCESS_NUMBER === 0 && (
+        <div>PROCESS_NUMBER phải đặt 1,2,3 hoặc 4</div>
+      )}
+      {eq_process_check === false && <div>PROCESS_NUMBER sai</div>}
     </div>
   );
 };

@@ -1,270 +1,617 @@
-.quotationmanager {    
+@media only screen and (max-width: 3000px) {
+  .quotationmanager {
     display: flex;
     flex-direction: column;
-    width: 100%;  
-     
+    width: 100%;
+
     .tracuuDataInspection {
+      display: flex;
+      flex-direction: row;
+      height: 85vh;
+      gap: 5px;
+      .tracuuDataInspectionform {
         display: flex;
-        flex-direction: row;  
-        height: 85vh;   
-        gap: 5px;   
-        .tracuuDataInspectionform {
-            display: flex;         
-            width: 250px;    
+        width: 250px;
+        flex-direction: column;
+        align-items: center;
+        background-image: linear-gradient(0deg, #afd3d1, #86cfff);
+        -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+        box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+        border-radius: 3px;
+        padding: 5px;
+        font-size: 0.7rem;
+        span {
+          padding: 10px;
+          font-size: 20px;
+          margin: auto;
+        }
+        .forminput {
+          display: flex;
+          flex-direction: column;
+          width: 100%;
+          gap: 5px;
+          flex-wrap: wrap;
+          align-items: flex-end;
+          justify-content: space-around;
+          padding: 2px;
+          font-size: 0.6rem;
+
+          .forminputcolumn {
+            display: flex;
             flex-direction: column;
-            align-items: center;            
-            background-image: linear-gradient(0deg, #afd3d1, #86cfff);
-            -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
-            box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
-            border-radius: 3px;
-            padding: 5px;
+            gap: 10px;
+            align-items: flex-end;
+            justify-content: flex-end;
+            flex-wrap: wrap;
+            input {
+              width: 125px;
+              height: 15px;
+              font-size: 0.6rem;
+              outline: none;
+              border-radius: 5px;
+              border: none;
+              padding: 5px;
+              margin-left: 5px;
+              background-image: linear-gradient(0deg, #ececec, #9dee95);
+            }
+          }
+        }
+        .formbutton {
+          display: flex;
+          align-items: center;
+          font-size: 0.6rem;
+          gap: 5px;
+          flex-direction: row;
+          .buttoncolumn {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+          }
+        }
+      }
+      .tracuuYCSXTable {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        height: 85vh;
+        background-image: linear-gradient(0deg, #afd3d1, #86cfff);
+        -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+        box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+        border-radius: 5px;
+        height: 100%;
+        .datatb {
+          justify-items: center;
+          width: 99%;
+          flex: 1;
+          padding: 5px;
+          height: 100%;
+          .dx-datagrid-rowsview
+            .dx-selection.dx-row:not(.dx-row-focused):not(.dx-row-removed)
+            > td {
+            background-color: orange;
+            color: unset;
+          }
+
+          .dx-datagrid-borders > .dx-datagrid-header-panel {
+            border-bottom: 0;
+            background-color: #b5f398;
+          }
+
+          .dx-toolbar .dx-toolbar-items-container {
+            height: 25px;
+            overflow: visible;
+            background-color: #b5f398;
+          }
+
+          //toan bo bang
+          .dx-gridbase-container > .dx-datagrid-rowsview.dx-scrollable {
+            display: -ms-flexbox;
+            display: flex;
+            background-image: linear-gradient(0deg, #e9e1eb, #f1f5cf);
             font-size: 0.7rem;
-            span {
-                padding: 10px;
-                font-size: 20px;
-                margin: auto;
-            }
-            .forminput {
-                display: flex;
-                flex-direction: column;
-                width: 100%;
-                gap: 5px;
-                flex-wrap: wrap;
-                align-items: flex-end;
-                justify-content: space-around;
-                padding: 2px;  
-                font-size: 0.6rem;                      
+          }
 
-                .forminputcolumn {
-                    display: flex;
-                    flex-direction: column;
-                    gap: 10px;
-                    align-items: flex-end;
-                    justify-content: flex-end;
-                    flex-wrap: wrap;
-                    input {              
-                        width: 125px;         
-                        height: 15px;
-                        font-size: 0.6rem;
-                        outline: none;
-                        border-radius: 5px;
-                        border: none;
-                        padding: 5px;
-                        margin-left: 5px;
-                        background-image: linear-gradient(0deg, #ececec, #9dee95);
-                    }
-                }
-            }
-            .formbutton {
-                display: flex;
-                align-items: center; 
-                font-size: 0.6rem;
-                .buttoncolumn {
-                    display: flex;
-                    flex-direction: column;
+          .dx-datagrid-borders > .dx-datagrid-filter-panel,
+          .dx-datagrid-borders > .dx-datagrid-headers {
+            border-top: 1px solid #ddd;
+            background-image: linear-gradient(0deg, #e9e1eb, #a0f87e);
+            color: black;
+            font-size: 0.7rem;
+          }
+          //filter row input
+          .dx-datagrid-filter-row
+            .dx-editor-cell
+            .dx-editor-with-menu
+            .dx-placeholder::before,
+          .dx-datagrid-filter-row
+            .dx-editor-cell
+            .dx-editor-with-menu
+            .dx-texteditor-input {
+            padding-left: 32px;
+            background-image: linear-gradient(0deg, #e9e1eb, #a0f87e);
+            color: black;
+            height: 10px;
+          }
+          .dx-editor-cell .dx-texteditor,
+          .dx-editor-cell .dx-texteditor .dx-texteditor-input {
+            background-image: linear-gradient(0deg, #e9e1eb, #a0f87e);
+          }
 
-                }
+          .dx-searchbox .dx-placeholder::before,
+          .dx-searchbox .dx-texteditor-input {
+            padding-left: 34px;
+            background-image: linear-gradient(0deg, #e9e1eb, #d7f0cd);
+          }
 
-                
-            }
-         
-        }       
-        .tracuuYCSXTable {
-            display: flex;
-            flex-direction: column;            
-            width: 100%;
-            height: 85vh;
-            background-image: linear-gradient(0deg, #afd3d1, #86cfff);
-            -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
-            box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
-            border-radius: 5px;
-            height: 100%;
-            .datatb { 
-                justify-items: center;                    
-                width: 99%;
-                flex: 1;
-                padding: 5px;
-                height: 100%;
-                .dx-datagrid-borders > .dx-datagrid-header-panel {
-                    border-bottom: 0;
-                    background-color: #b5f398;
-                }
-                
-                .dx-toolbar .dx-toolbar-items-container {
-                    height: 25px;
-                    overflow: visible;
-                    background-color: #b5f398;
-                }
+          .dx-button-mode-contained {
+            background-color: #a0f87e;
+            border-color: #cacafa;
+            color: #430fff;
+          }
 
-                //toan bo bang
-                .dx-gridbase-container > .dx-datagrid-rowsview.dx-scrollable {
-                    display: -ms-flexbox;
-                    display: flex;
-                    background-image: linear-gradient(0deg, #e9e1eb, #f1f5cf);
-                    font-size: 0.7rem;
-                }
-
-                .dx-datagrid-borders > .dx-datagrid-filter-panel, .dx-datagrid-borders > .dx-datagrid-headers {
-                    border-top: 1px solid #ddd;
-                    background-image: linear-gradient(0deg, #e9e1eb, #a0f87e);
-                    color: black;
-                    font-size: 0.7rem;
-                }
-                //filter row input
-                .dx-datagrid-filter-row .dx-editor-cell .dx-editor-with-menu .dx-placeholder::before, .dx-datagrid-filter-row .dx-editor-cell .dx-editor-with-menu .dx-texteditor-input {
-                    padding-left: 32px;                    
-                    background-image: linear-gradient(0deg, #e9e1eb, #a0f87e);     
-                    color: black;   
-                    height: 10px;           
-
-                }
-                .dx-editor-cell .dx-texteditor, .dx-editor-cell .dx-texteditor .dx-texteditor-input {
-                    background-image: linear-gradient(0deg, #e9e1eb, #a0f87e);  
-                }
-
-
-                .dx-searchbox .dx-placeholder::before, .dx-searchbox .dx-texteditor-input {
-                    padding-left: 34px;
-                    background-image: linear-gradient(0deg, #e9e1eb, #d7f0cd);     
-                }
-
-                .dx-button-mode-contained {
-                    background-color: #a0f87e;
-                    border-color: #cacafa;
-                    color: #430fff;
-                }
-
-                .dx-datagrid-total-footer > .dx-datagrid-content {
-                    padding-top: 0px;
-                    padding-bottom: 0px;
-                }
-
-                
-            }
-            .datatb2 { 
-                justify-items: center;                    
-                width: 28%;
-                flex: 1;
-                padding: 5px;
-                height: fit-content; 
-                
-                .dx-datagrid-borders > .dx-datagrid-header-panel {
-                    border-bottom: 0;
-                    background-color: #b5f398;
-                }
-                
-                .dx-toolbar .dx-toolbar-items-container {
-                    height: 25px;
-                    overflow: visible;
-                    background-color: #b5f398;
-                }
-
-                //toan bo bang
-                .dx-gridbase-container > .dx-datagrid-rowsview.dx-scrollable {
-                    display: -ms-flexbox;
-                    display: flex;
-                    background-image: linear-gradient(0deg, #e9e1eb, #f1f5cf);
-                    font-size: 0.7rem;
-                }
-
-                .dx-datagrid-borders > .dx-datagrid-filter-panel, .dx-datagrid-borders > .dx-datagrid-headers {
-                    border-top: 1px solid #ddd;
-                    background-image: linear-gradient(0deg, #e9e1eb, #a0f87e);
-                    color: black;
-                    font-size: 0.7rem;
-                }
-                //filter row input
-                .dx-datagrid-filter-row .dx-editor-cell .dx-editor-with-menu .dx-placeholder::before, .dx-datagrid-filter-row .dx-editor-cell .dx-editor-with-menu .dx-texteditor-input {
-                    padding-left: 32px;                    
-                    background-image: linear-gradient(0deg, #e9e1eb, #a0f87e);     
-                    color: black;   
-                    height: 10px;           
-
-                }
-                .dx-editor-cell .dx-texteditor, .dx-editor-cell .dx-texteditor .dx-texteditor-input {
-                    background-image: linear-gradient(0deg, #e9e1eb, #a0f87e);  
-                }
-
-
-                .dx-searchbox .dx-placeholder::before, .dx-searchbox .dx-texteditor-input {
-                    padding-left: 34px;
-                    background-image: linear-gradient(0deg, #e9e1eb, #d7f0cd);     
-                }
-
-                .dx-button-mode-contained {
-                    background-color: #a0f87e;
-                    border-color: #cacafa;
-                    color: #430fff;
-                }   
-                .dx-datagrid-total-footer > .dx-datagrid-content {
-                    padding-top: 0px;
-                    padding-bottom: 0px;
-                }             
-            }
+          .dx-datagrid-total-footer > .dx-datagrid-content {
+            padding-top: 0px;
+            padding-bottom: 0px;
+          }
         }
-        .pivottable1 {
-            display: flex;
-            align-items: flex-start;
-            flex-direction: column;
-            position: absolute;
-            top: 1vh;
-            left: 1%;
-            width:95%;
-            height: 85vh;
-            overflow: scroll;
-            padding: 10px;
-            border-radius: 5px;
-            background-image: linear-gradient(0deg, #afd3d1, #86cfff);
-            -webkit-box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27); 
-            box-shadow: 5px 5px 10px 5px rgba(0,0,0,0.27);
-            z-index: 100;
-            * {
-                font-size: 0.7rem;
-            }
-        }
-        .upgia {
-            display: flex;
-            align-items: flex-start;
-            flex-direction: column;
-            position: absolute;
-            top: 1vh;
-            left: 1%;
-            width:95%;
-            height: 85vh;
-            overflow: scroll;
-            padding: 10px;
-            border-radius: 5px;
-            background-image: linear-gradient(0deg, #afd3d1, #86cfff);
-            -webkit-box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27); 
-            box-shadow: 5px 5px 10px 5px rgba(0,0,0,0.27);
-            z-index: 100; 
-            .barbutton {
-                display: flex;
-                align-items:  center;
-                .upgiaform {
-                    margin-right: 5px;
-                    .inputdata {
-                        padding-left: 5px;
-                        margin-left: 2px;
-                        width: 120px;
-                        height: 35px;  
-                        background-color: transparent;                          
-                        outline: none;
-                        border:  solid 0.5px;
-                        border-color: rgba(0, 0, 0,0.3);
-                        border-radius: 5px;
-                        font-size: 16px;
-                        margin-left: 20px;
-                        color: black;
-                        
+        .datatb2 {
+          justify-items: center;
+          width: 28%;
+          flex: 1;
+          padding: 5px;
+          height: fit-content;
 
-                    }
-                }
-            }
+          .dx-datagrid-borders > .dx-datagrid-header-panel {
+            border-bottom: 0;
+            background-color: #b5f398;
+          }
 
-            * {
-                font-size: 0.7rem;
-            }
+          .dx-toolbar .dx-toolbar-items-container {
+            height: 25px;
+            overflow: visible;
+            background-color: #b5f398;
+          }
+
+          //toan bo bang
+          .dx-gridbase-container > .dx-datagrid-rowsview.dx-scrollable {
+            display: -ms-flexbox;
+            display: flex;
+            background-image: linear-gradient(0deg, #e9e1eb, #f1f5cf);
+            font-size: 0.7rem;
+          }
+
+          .dx-datagrid-borders > .dx-datagrid-filter-panel,
+          .dx-datagrid-borders > .dx-datagrid-headers {
+            border-top: 1px solid #ddd;
+            background-image: linear-gradient(0deg, #e9e1eb, #a0f87e);
+            color: black;
+            font-size: 0.7rem;
+          }
+          //filter row input
+          .dx-datagrid-filter-row
+            .dx-editor-cell
+            .dx-editor-with-menu
+            .dx-placeholder::before,
+          .dx-datagrid-filter-row
+            .dx-editor-cell
+            .dx-editor-with-menu
+            .dx-texteditor-input {
+            padding-left: 32px;
+            background-image: linear-gradient(0deg, #e9e1eb, #a0f87e);
+            color: black;
+            height: 10px;
+          }
+          .dx-editor-cell .dx-texteditor,
+          .dx-editor-cell .dx-texteditor .dx-texteditor-input {
+            background-image: linear-gradient(0deg, #e9e1eb, #a0f87e);
+          }
+
+          .dx-searchbox .dx-placeholder::before,
+          .dx-searchbox .dx-texteditor-input {
+            padding-left: 34px;
+            background-image: linear-gradient(0deg, #e9e1eb, #d7f0cd);
+          }
+
+          .dx-button-mode-contained {
+            background-color: #a0f87e;
+            border-color: #cacafa;
+            color: #430fff;
+          }
+          .dx-datagrid-total-footer > .dx-datagrid-content {
+            padding-top: 0px;
+            padding-bottom: 0px;
+          }
         }
+      }
+      .pivottable1 {
+        display: flex;
+        align-items: flex-start;
+        flex-direction: column;
+        position: absolute;
+        top: 1vh;
+        left: 1%;
+        width: 95%;
+        height: 85vh;
+        overflow: scroll;
+        padding: 10px;
+        border-radius: 5px;
+        background-image: linear-gradient(0deg, #afd3d1, #86cfff);
+        -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+        box-shadow: 5px 5px 10px 5px rgba(0, 0, 0, 0.27);
+        z-index: 100;
+        * {
+          font-size: 0.7rem;
+        }
+      }
+      .upgia {
+        display: flex;
+        align-items: flex-start;
+        flex-direction: column;
+        position: absolute;
+        top: 1vh;
+        left: 1%;
+        width: 95%;
+        height: 85vh;
+        overflow: scroll;
+        padding: 10px;
+        border-radius: 5px;
+        background-image: linear-gradient(0deg, #afd3d1, #86cfff);
+        -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+        box-shadow: 5px 5px 10px 5px rgba(0, 0, 0, 0.27);
+        z-index: 100;
+        .barbutton {
+          display: flex;
+          align-items: center;
+          .upgiaform {
+            margin-right: 5px;
+            .inputdata {
+              padding-left: 5px;
+              margin-left: 2px;
+              width: 120px;
+              height: 35px;
+              background-color: transparent;
+              outline: none;
+              border: solid 0.5px;
+              border-color: rgba(0, 0, 0, 0.3);
+              border-radius: 5px;
+              font-size: 16px;
+              margin-left: 20px;
+              color: black;
+            }
+            .autocomplete1 {
+              display: flex;
+              width: 300px;
+            }
+          }
+        }
+
+        * {
+          font-size: 0.7rem;
+        }
+      }
+      .quotation_from {
+        position: absolute;
+        background-color: #fffd74;
+        padding: 10px;
+        top: 10px;
+        left: 30%;
+        overflow: scroll;
+        z-index: 99999;
+        width: fit-content;
+        height: 200mm;
+        border: #ece0e0 solid 1px;
+        box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.24);
+        -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.24);
+        -moz-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.24);
+      }
     }
+  }
+}
+@media only screen and (max-width: 768px) {
+  .quotationmanager {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+
+    .tracuuDataInspection {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      height: 85vh;
+      gap: 5px;
+      .tracuuDataInspectionform {
+        display: flex;
+        width: 100%;
+        flex-direction: column;
+        align-items: center;
+        background-image: linear-gradient(0deg, #afd3d1, #86cfff);
+        -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+        box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+        border-radius: 3px;
+        padding: 5px;
+        font-size: 0.7rem;
+        span {
+          padding: 10px;
+          font-size: 20px;
+          margin: auto;
+        }
+        .forminput {
+          display: flex;
+          flex-direction: column;
+          width: 100%;
+          gap: 5px;
+          flex-wrap: wrap;
+          align-items: flex-end;
+          justify-content: space-around;
+          padding: 2px;
+          font-size: 0.6rem;
+
+          .forminputcolumn {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            align-items: flex-end;
+            justify-content: flex-end;
+            flex-wrap: wrap;
+            input {
+              width: 280px;
+              height: 15px;
+              font-size: 0.6rem;
+              outline: none;
+              border-radius: 5px;
+              border: none;
+              padding: 5px;
+              margin-left: 5px;
+              background-image: linear-gradient(0deg, #ececec, #9dee95);
+            }
+          }
+        }
+        .formbutton {
+          display: flex;
+          align-items: center;
+          font-size: 0.6rem;
+          flex-direction: row;
+          .buttoncolumn {
+            display: flex;
+            flex-direction: column;
+          }
+        }
+      }
+      .tracuuYCSXTable {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        height: 85vh;
+        background-image: linear-gradient(0deg, #afd3d1, #86cfff);
+        -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+        box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+        border-radius: 5px;
+        height: 100%;
+        .datatb {
+          justify-items: center;
+          width: 99%;
+          flex: 1;
+          padding: 5px;
+          height: 100%;
+          .dx-datagrid-rowsview
+            .dx-selection.dx-row:not(.dx-row-focused):not(.dx-row-removed)
+            > td {
+            background-color: orange;
+            color: unset;
+          }
+
+          .dx-datagrid-borders > .dx-datagrid-header-panel {
+            border-bottom: 0;
+            background-color: #b5f398;
+          }
+
+          .dx-toolbar .dx-toolbar-items-container {
+            height: 25px;
+            overflow: visible;
+            background-color: #b5f398;
+          }
+
+          //toan bo bang
+          .dx-gridbase-container > .dx-datagrid-rowsview.dx-scrollable {
+            display: -ms-flexbox;
+            display: flex;
+            background-image: linear-gradient(0deg, #e9e1eb, #f1f5cf);
+            font-size: 0.7rem;
+          }
+
+          .dx-datagrid-borders > .dx-datagrid-filter-panel,
+          .dx-datagrid-borders > .dx-datagrid-headers {
+            border-top: 1px solid #ddd;
+            background-image: linear-gradient(0deg, #e9e1eb, #a0f87e);
+            color: black;
+            font-size: 0.7rem;
+          }
+          //filter row input
+          .dx-datagrid-filter-row
+            .dx-editor-cell
+            .dx-editor-with-menu
+            .dx-placeholder::before,
+          .dx-datagrid-filter-row
+            .dx-editor-cell
+            .dx-editor-with-menu
+            .dx-texteditor-input {
+            padding-left: 32px;
+            background-image: linear-gradient(0deg, #e9e1eb, #a0f87e);
+            color: black;
+            height: 10px;
+          }
+          .dx-editor-cell .dx-texteditor,
+          .dx-editor-cell .dx-texteditor .dx-texteditor-input {
+            background-image: linear-gradient(0deg, #e9e1eb, #a0f87e);
+          }
+
+          .dx-searchbox .dx-placeholder::before,
+          .dx-searchbox .dx-texteditor-input {
+            padding-left: 34px;
+            background-image: linear-gradient(0deg, #e9e1eb, #d7f0cd);
+          }
+
+          .dx-button-mode-contained {
+            background-color: #a0f87e;
+            border-color: #cacafa;
+            color: #430fff;
+          }
+
+          .dx-datagrid-total-footer > .dx-datagrid-content {
+            padding-top: 0px;
+            padding-bottom: 0px;
+          }
+        }
+        .datatb2 {
+          justify-items: center;
+          width: 28%;
+          flex: 1;
+          padding: 5px;
+          height: fit-content;
+
+          .dx-datagrid-borders > .dx-datagrid-header-panel {
+            border-bottom: 0;
+            background-color: #b5f398;
+          }
+
+          .dx-toolbar .dx-toolbar-items-container {
+            height: 25px;
+            overflow: visible;
+            background-color: #b5f398;
+          }
+
+          //toan bo bang
+          .dx-gridbase-container > .dx-datagrid-rowsview.dx-scrollable {
+            display: -ms-flexbox;
+            display: flex;
+            background-image: linear-gradient(0deg, #e9e1eb, #f1f5cf);
+            font-size: 0.7rem;
+          }
+
+          .dx-datagrid-borders > .dx-datagrid-filter-panel,
+          .dx-datagrid-borders > .dx-datagrid-headers {
+            border-top: 1px solid #ddd;
+            background-image: linear-gradient(0deg, #e9e1eb, #a0f87e);
+            color: black;
+            font-size: 0.7rem;
+          }
+          //filter row input
+          .dx-datagrid-filter-row
+            .dx-editor-cell
+            .dx-editor-with-menu
+            .dx-placeholder::before,
+          .dx-datagrid-filter-row
+            .dx-editor-cell
+            .dx-editor-with-menu
+            .dx-texteditor-input {
+            padding-left: 32px;
+            background-image: linear-gradient(0deg, #e9e1eb, #a0f87e);
+            color: black;
+            height: 10px;
+          }
+          .dx-editor-cell .dx-texteditor,
+          .dx-editor-cell .dx-texteditor .dx-texteditor-input {
+            background-image: linear-gradient(0deg, #e9e1eb, #a0f87e);
+          }
+
+          .dx-searchbox .dx-placeholder::before,
+          .dx-searchbox .dx-texteditor-input {
+            padding-left: 34px;
+            background-image: linear-gradient(0deg, #e9e1eb, #d7f0cd);
+          }
+
+          .dx-button-mode-contained {
+            background-color: #a0f87e;
+            border-color: #cacafa;
+            color: #430fff;
+          }
+          .dx-datagrid-total-footer > .dx-datagrid-content {
+            padding-top: 0px;
+            padding-bottom: 0px;
+          }
+        }
+      }
+      .pivottable1 {
+        display: flex;
+        align-items: flex-start;
+        flex-direction: column;
+        position: absolute;
+        top: 1vh;
+        left: 1%;
+        width: 95%;
+        height: 85vh;
+        overflow: scroll;
+        padding: 10px;
+        border-radius: 5px;
+        background-image: linear-gradient(0deg, #afd3d1, #86cfff);
+        -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+        box-shadow: 5px 5px 10px 5px rgba(0, 0, 0, 0.27);
+        z-index: 100;
+        * {
+          font-size: 0.7rem;
+        }
+      }
+      .upgia {
+        display: flex;
+        align-items: flex-start;
+        flex-direction: column;
+        position: absolute;
+        top: 1vh;
+        left: 1%;
+        width: 95%;
+        height: 85vh;
+        overflow: scroll;
+        padding: 10px;
+        border-radius: 5px;
+        background-image: linear-gradient(0deg, #afd3d1, #86cfff);
+        -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+        box-shadow: 5px 5px 10px 5px rgba(0, 0, 0, 0.27);
+        z-index: 100;
+        .barbutton {
+          display: flex;
+          align-items: center;
+          .upgiaform {
+            margin-right: 5px;
+            .inputdata {
+              padding-left: 5px;
+              margin-left: 2px;
+              width: 120px;
+              height: 35px;
+              background-color: transparent;
+              outline: none;
+              border: solid 0.5px;
+              border-color: rgba(0, 0, 0, 0.3);
+              border-radius: 5px;
+              font-size: 16px;
+              margin-left: 20px;
+              color: black;
+            }
+            .autocomplete1 {
+              display: flex;
+              width: 300px;
+            }
+          }
+        }
+
+        * {
+          font-size: 0.7rem;
+        }
+      }
+      .quotation_from {
+        position: absolute;
+        background-color: #fffd74;
+        padding: 10px;
+        top: 10px;
+        left: 30%;
+        overflow: scroll;
+        z-index: 99999;
+        width: fit-content;
+        height: 200mm;
+        border: #ece0e0 solid 1px;
+        box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.24);
+        -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.24);
+        -moz-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.24);
+      }
+    }
+  }
 }

@@ -1,9 +1,10 @@
-import React from 'react'
+import React from "react";
+import CAMERASCANNER from "../../sx/SCANBARCODE/CAMERASCANNER";
 
 const ISO = () => {
-  return (
-    <div>ISO</div>
-  )
-}
+  return <div>
+    <CAMERASCANNER/>
+  </div>;
+};
 
-export default ISO
+export default ISO;

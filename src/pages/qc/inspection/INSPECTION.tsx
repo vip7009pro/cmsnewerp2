@@ -1,5 +1,6 @@
 import {
   Autocomplete,
+  Button,
   IconButton,
   LinearProgress,
   TextField,
@@ -28,129 +29,12 @@ import "./INSPECTION.scss";
 import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
 import { MdOutlinePivotTableChart } from "react-icons/md";
 import PivotTable from "../../../components/PivotChart/PivotChart";
-interface INSPECT_OUTPUT_DATA {
-  INSPECT_OUTPUT_ID: string;
-  CUST_NAME_KD: string;
-  EMPL_NAME: string;
-  G_CODE: string;
-  G_NAME: string;
-  PROD_TYPE: string;
-  G_NAME_KD: string;
-  PROD_REQUEST_NO: string;
-  PROD_REQUEST_DATE: string;
-  PROD_REQUEST_QTY: number;
-  PROCESS_LOT_NO: string;
-  PROD_DATETIME: string;
-  OUTPUT_DATETIME: string;
-  OUTPUT_QTY_EA: number;
-  REMARK: string;
-  PIC_KD: string;
-  CA_LAM_VIEC: string;
-  NGAY_LAM_VIEC: string;
-  STATUS: string;
-}
-interface INSPECT_INPUT_DATA {
-  INSPECT_INPUT_ID: string;
-  CUST_NAME_KD: string;
-  EMPL_NAME: string;
-  G_CODE: string;
-  G_NAME: string;
-  PROD_TYPE: string;
-  G_NAME_KD: string;
-  PROD_REQUEST_NO: string;
-  PROD_REQUEST_DATE: string;
-  PROD_REQUEST_QTY: number;
-  PROCESS_LOT_NO: string;
-  PROD_DATETIME: string;
-  INPUT_DATETIME: string;
-  INPUT_QTY_EA: number;
-  INPUT_QTY_KG: number;
-  REMARK: string;
-  CNDB_ENCODES: string;
-  PIC_KD: string;
-}
-interface INSPECT_INOUT_YCSX {
-  PIC_KD: string;
-  CUST_NAME_KD: string;
-  G_CODE: string;
-  G_NAME: string;
-  G_NAME_KD: string;
-  PROD_REQUEST_NO: string;
-  PROD_REQUEST_DATE: string;
-  PROD_REQUEST_QTY: number;
-  LOT_TOTAL_INPUT_QTY_EA: number;
-  LOT_TOTAL_OUTPUT_QTY_EA: number;
-  DA_KIEM_TRA: number;
-  OK_QTY: number;
-  LOSS_NG_QTY: number;
-  INSPECT_BALANCE: number;
-}
-interface INSPECT_NG_DATA {
-  INSPECT_ID: number;
-  YEAR_WEEK: string;
-  CUST_NAME_KD: string;
-  PROD_REQUEST_NO: string;
-  G_NAME_KD: string;
-  G_NAME: string;
-  G_CODE: string;
-  PROD_TYPE: string;
-  M_LOT_NO: string;
-  M_NAME: string;
-  WIDTH_CD: number;
-  INSPECTOR: string;
-  LINEQC: string;
-  PROD_PIC: string;
-  UNIT: string;
-  PROCESS_LOT_NO: string;
-  PROCESS_IN_DATE: string;
-  INSPECT_DATETIME: string;
-  INSPECT_START_TIME: string;
-  INSPECT_FINISH_TIME: string;
-  FACTORY: string;
-  LINEQC_PIC: string;
-  MACHINE_NO: number;
-  INSPECT_TOTAL_QTY: number;
-  INSPECT_OK_QTY: number;
-  INSPECT_SPEED: number;
-  INSPECT_TOTAL_LOSS_QTY: number;
-  INSPECT_TOTAL_NG_QTY: number;
-  MATERIAL_NG_QTY: number;
-  PROCESS_NG_QTY: number;
-  PROD_PRICE: number;
-  ERR1: number;
-  ERR2: number;
-  ERR3: number;
-  ERR4: number;
-  ERR5: number;
-  ERR6: number;
-  ERR7: number;
-  ERR8: number;
-  ERR9: number;
-  ERR10: number;
-  ERR11: number;
-  ERR12: number;
-  ERR13: number;
-  ERR14: number;
-  ERR15: number;
-  ERR16: number;
-  ERR17: number;
-  ERR18: number;
-  ERR19: number;
-  ERR20: number;
-  ERR21: number;
-  ERR22: number;
-  ERR23: number;
-  ERR24: number;
-  ERR25: number;
-  ERR26: number;
-  ERR27: number;
-  ERR28: number;
-  ERR29: number;
-  ERR30: number;
-  ERR31: number;
-  ERR32: number;
-  CNDB_ENCODES: string;
-}
+import {
+  INSPECT_INOUT_YCSX,
+  INSPECT_INPUT_DATA,
+  INSPECT_NG_DATA,
+  INSPECT_OUTPUT_DATA,
+} from "../../../api/GlobalInterface";
 const INSPECTION = () => {
   const [showhidePivotTable, setShowHidePivotTable] = useState(false);
   const [readyRender, setReadyRender] = useState(false);
@@ -179,7 +63,7 @@ const INSPECTION = () => {
   const [alltime, setAllTime] = useState(false);
   const [id, setID] = useState("");
   const [inspectiondatatable, setInspectionDataTable] = useState<Array<any>>(
-    []
+    [],
   );
   const [sumaryINSPECT, setSummaryInspect] = useState("");
   const column_inspect_input = [
@@ -218,6 +102,8 @@ const INSPECTION = () => {
       },
     },
     { field: "PROCESS_LOT_NO", headerName: "LOT SX", width: 80 },
+    { field: "M_LOT_NO", headerName: "M_LOT_NO", width: 100 },
+    { field: "LOTNCC", headerName: "LOTNCC", width: 100 },
     { field: "PROD_DATETIME", headerName: "NGÀY SX", width: 150 },
     {
       field: "INPUT_QTY_KG",
@@ -301,6 +187,8 @@ const INSPECTION = () => {
         }
       },
     },
+    { field: "M_LOT_NO", headerName: "M_LOT_NO", width: 100 },
+    { field: "LOTNCC", headerName: "LOTNCC", width: 100 },
   ];
   const column_inspect_inoutycsx = [
     { field: "PIC_KD", headerName: "PIC_KD", width: 150 },
@@ -404,7 +292,8 @@ const INSPECTION = () => {
     { field: "G_NAME", headerName: "Code full", width: 150 },
     { field: "G_CODE", headerName: "G_CODE", width: 80 },
     { field: "PROD_TYPE", headerName: "PROD_TYPE", width: 80 },
-    { field: "M_LOT_NO", headerName: "LOT VL", width: 80 },
+    { field: "M_LOT_NO", headerName: "LOT VL", width: 100 },
+    { field: "LOTNCC", headerName: "LOTNCC", width: 100 },
     { field: "M_NAME", headerName: "M_NAME", width: 120 },
     { field: "WIDTH_CD", headerName: "WIDTH_CD", width: 80 },
     { field: "INSPECTOR", headerName: "INSPECTOR", width: 80 },
@@ -435,38 +324,38 @@ const INSPECTION = () => {
     { field: "MATERIAL_NG_QTY", headerName: "NG MATERIAL", width: 100 },
     { field: "PROCESS_NG_QTY", headerName: "NG PROCESS", width: 100 },
     { field: "PROD_PRICE", headerName: "PROD_PRICE", width: 100 },
-    { field: "ERR1", headerName: "ERR1", width: 80 },
-    { field: "ERR2", headerName: "ERR2", width: 80 },
-    { field: "ERR3", headerName: "ERR3", width: 80 },
-    { field: "ERR4", headerName: "ERR4", width: 80 },
-    { field: "ERR5", headerName: "ERR5", width: 80 },
-    { field: "ERR6", headerName: "ERR6", width: 80 },
-    { field: "ERR7", headerName: "ERR7", width: 80 },
-    { field: "ERR8", headerName: "ERR8", width: 80 },
-    { field: "ERR9", headerName: "ERR9", width: 80 },
-    { field: "ERR10", headerName: "ERR10", width: 80 },
-    { field: "ERR11", headerName: "ERR11", width: 80 },
-    { field: "ERR12", headerName: "ERR12", width: 80 },
-    { field: "ERR13", headerName: "ERR13", width: 80 },
-    { field: "ERR14", headerName: "ERR14", width: 80 },
-    { field: "ERR15", headerName: "ERR15", width: 80 },
-    { field: "ERR16", headerName: "ERR16", width: 80 },
-    { field: "ERR17", headerName: "ERR17", width: 80 },
-    { field: "ERR18", headerName: "ERR18", width: 80 },
-    { field: "ERR19", headerName: "ERR19", width: 80 },
-    { field: "ERR20", headerName: "ERR20", width: 80 },
-    { field: "ERR21", headerName: "ERR21", width: 80 },
-    { field: "ERR22", headerName: "ERR22", width: 80 },
-    { field: "ERR23", headerName: "ERR23", width: 80 },
-    { field: "ERR24", headerName: "ERR24", width: 80 },
-    { field: "ERR25", headerName: "ERR25", width: 80 },
-    { field: "ERR26", headerName: "ERR26", width: 80 },
-    { field: "ERR27", headerName: "ERR27", width: 80 },
-    { field: "ERR28", headerName: "ERR28", width: 80 },
-    { field: "ERR29", headerName: "ERR29", width: 80 },
-    { field: "ERR30", headerName: "ERR30", width: 80 },
-    { field: "ERR31", headerName: "ERR31", width: 80 },
-    { field: "ERR32", headerName: "ERR32", width: 80 },
+    { field: "ERR1", headerName: "ERR1", width: 60 },
+    { field: "ERR2", headerName: "ERR2", width: 60 },
+    { field: "ERR3", headerName: "ERR3", width: 60 },
+    { field: "ERR4", headerName: "ERR4", width: 60 },
+    { field: "ERR5", headerName: "ERR5", width: 60 },
+    { field: "ERR6", headerName: "ERR6", width: 60 },
+    { field: "ERR7", headerName: "ERR7", width: 60 },
+    { field: "ERR8", headerName: "ERR8", width: 60 },
+    { field: "ERR9", headerName: "ERR9", width: 60 },
+    { field: "ERR10", headerName: "ERR10", width: 60 },
+    { field: "ERR11", headerName: "ERR11", width: 60 },
+    { field: "ERR12", headerName: "ERR12", width: 60 },
+    { field: "ERR13", headerName: "ERR13", width: 60 },
+    { field: "ERR14", headerName: "ERR14", width: 60 },
+    { field: "ERR15", headerName: "ERR15", width: 60 },
+    { field: "ERR16", headerName: "ERR16", width: 60 },
+    { field: "ERR17", headerName: "ERR17", width: 60 },
+    { field: "ERR18", headerName: "ERR18", width: 60 },
+    { field: "ERR19", headerName: "ERR19", width: 60 },
+    { field: "ERR20", headerName: "ERR20", width: 60 },
+    { field: "ERR21", headerName: "ERR21", width: 60 },
+    { field: "ERR22", headerName: "ERR22", width: 60 },
+    { field: "ERR23", headerName: "ERR23", width: 60 },
+    { field: "ERR24", headerName: "ERR24", width: 60 },
+    { field: "ERR25", headerName: "ERR25", width: 60 },
+    { field: "ERR26", headerName: "ERR26", width: 60 },
+    { field: "ERR27", headerName: "ERR27", width: 60 },
+    { field: "ERR28", headerName: "ERR28", width: 60 },
+    { field: "ERR29", headerName: "ERR29", width: 60 },
+    { field: "ERR30", headerName: "ERR30", width: 60 },
+    { field: "ERR31", headerName: "ERR31", width: 60 },
+    { field: "ERR32", headerName: "ERR32", width: 60 },
     { field: "CNDB_ENCODES", headerName: "CNDB_ENCODES", width: 150 },
   ];
   const [columnDefinition, setColumnDefinition] =
@@ -475,18 +364,18 @@ const INSPECTION = () => {
     return (
       <GridToolbarContainer>
         <IconButton
-          className='buttonIcon'
+          className="buttonIcon"
           onClick={() => {
             SaveExcel(inspectiondatatable, "Inspection Data Table");
           }}
         >
-          <AiFillFileExcel color='green' size={15} />
+          <AiFillFileExcel color="green" size={15} />
           SAVE
         </IconButton>
         <span
           style={{
             fontWeight: "bold",
-            fontSize: '1rem',
+            fontSize: "1rem",
             paddingLeft: 20,
             color: "blue",
           }}
@@ -495,12 +384,12 @@ const INSPECTION = () => {
         </span>
         <GridToolbarQuickFilter />
         <IconButton
-          className='buttonIcon'
+          className="buttonIcon"
           onClick={() => {
             setShowHidePivotTable(!showhidePivotTable);
           }}
         >
-          <MdOutlinePivotTableChart color='#ff33bb' size={15} />
+          <MdOutlinePivotTableChart color="#ff33bb" size={15} />
           Pivot
         </IconButton>
       </GridToolbarContainer>
@@ -538,25 +427,24 @@ const INSPECTION = () => {
                   .format("YYYY-MM-DD HH:mm:ss"),
                 id: index,
               };
-            }
+            },
           );
           setSummaryInspect(
-            "Tổng Nhập: " + summaryInput.toLocaleString("en-US") + "EA"
+            "Tổng Nhập: " + summaryInput.toLocaleString("en-US") + "EA",
           );
           setInspectionDataTable(loadeddata);
           setSelectedDataSource(
             new PivotGridDataSource({
               fields: fieldsinputkiem,
               store: loadeddata,
-            })
+            }),
           );
-
           setReadyRender(true);
           setisLoading(false);
           Swal.fire(
             "Thông báo",
             "Đã load " + response.data.data.length + " dòng",
-            "success"
+            "success",
           );
         } else {
           Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
@@ -600,24 +488,24 @@ const INSPECTION = () => {
                 NGAY_LAM_VIEC: element.NGAY_LAM_VIEC.slice(0, 10),
                 id: index,
               };
-            }
+            },
           );
           setSummaryInspect(
-            "Tổng Xuất: " + summaryOutput.toLocaleString("en-US") + "EA"
+            "Tổng Xuất: " + summaryOutput.toLocaleString("en-US") + "EA",
           );
           setInspectionDataTable(loadeddata);
           setSelectedDataSource(
             new PivotGridDataSource({
               fields: fieldsoutputkiem,
               store: loadeddata,
-            })
+            }),
           );
           setReadyRender(true);
           setisLoading(false);
           Swal.fire(
             "Thông báo",
             "Đã load " + response.data.data.length + " dòng",
-            "success"
+            "success",
           );
         } else {
           Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
@@ -651,32 +539,32 @@ const INSPECTION = () => {
             (element: INSPECT_NG_DATA, index: number) => {
               return {
                 ...element,
-                INSPECT_DATETIME: moment(element.INSPECT_DATETIME).format(
-                  "YYYY-MM-DD HH:mm:ss"
+                INSPECT_DATETIME: moment.utc(element.INSPECT_DATETIME).format(
+                  "YYYY-MM-DD HH:mm:ss",
                 ),
-                INSPECT_START_TIME: moment(element.INSPECT_START_TIME).format(
-                  "YYYY-MM-DD HH:mm:ss"
+                INSPECT_START_TIME: moment.utc(element.INSPECT_START_TIME).format(
+                  "YYYY-MM-DD HH:mm:ss",
                 ),
-                INSPECT_FINISH_TIME: moment(element.INSPECT_FINISH_TIME).format(
-                  "YYYY-MM-DD HH:mm:ss"
+                INSPECT_FINISH_TIME: moment.utc(element.INSPECT_FINISH_TIME).format(
+                  "YYYY-MM-DD HH:mm:ss",
                 ),
                 id: index,
               };
-            }
+            },
           );
           setInspectionDataTable(loadeddata);
           setSelectedDataSource(
             new PivotGridDataSource({
               fields: fieldsnhatkykiem,
               store: loadeddata,
-            })
+            }),
           );
           setReadyRender(true);
           setisLoading(false);
           Swal.fire(
             "Thông báo",
             "Đã load " + response.data.data.length + " dòng",
-            "success"
+            "success",
           );
         } else {
           Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
@@ -712,21 +600,21 @@ const INSPECTION = () => {
                 ...element,
                 id: index,
               };
-            }
+            },
           );
           setInspectionDataTable(loadeddata);
           setSelectedDataSource(
             new PivotGridDataSource({
               fields: fieldsinoutputkiem,
               store: loadeddata,
-            })
+            }),
           );
           setReadyRender(true);
           setisLoading(false);
           Swal.fire(
             "Thông báo",
             "Đã load " + response.data.data.length + " dòng",
-            "success"
+            "success",
           );
         } else {
           Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
@@ -2510,60 +2398,60 @@ const INSPECTION = () => {
       new PivotGridDataSource({
         fields: fieldsinputkiem,
         store: inspectiondatatable,
-      })
+      }),
     );
   useEffect(() => {
     //setColumnDefinition(column_inspect_output);
   }, []);
   return (
-    <div className='inspection'>
-      <div className='tracuuDataInspection'>
-        <div className='tracuuDataInspectionform'>
-          <div className='forminput'>
-            <div className='forminputcolumn'>
+    <div className="inspection">
+      <div className="tracuuDataInspection">
+        <div className="tracuuDataInspectionform">
+          <div className="forminput">
+            <div className="forminputcolumn">
               <label>
                 <b>Từ ngày:</b>
                 <input
-                  type='date'
+                  type="date"
                   value={fromdate.slice(0, 10)}
-                  onChange={(e) => setFromDate(e.target.value)} 
+                  onChange={(e) => setFromDate(e.target.value)}
                 ></input>
               </label>
               <label>
                 <b>Tới ngày:</b>{" "}
                 <input
-                  type='date'
+                  type="date"
                   value={todate.slice(0, 10)}
                   onChange={(e) => setToDate(e.target.value)}
                 ></input>
               </label>
             </div>
-            <div className='forminputcolumn'>
+            <div className="forminputcolumn">
               <label>
                 <b>Code KD:</b>{" "}
                 <input
-                  type='text'
-                  placeholder='GH63-xxxxxx'
+                  type="text"
+                  placeholder="GH63-xxxxxx"
                   value={codeKD}
                   onChange={(e) => setCodeKD(e.target.value)}
                 ></input>
               </label>
               <label>
-                <b>Code CMS:</b>{" "}
+                <b>Code ERP:</b>{" "}
                 <input
-                  type='text'
-                  placeholder='7C123xxx'
+                  type="text"
+                  placeholder="7C123xxx"
                   value={codeCMS}
                   onChange={(e) => setCodeCMS(e.target.value)}
                 ></input>
               </label>
             </div>
-            <div className='forminputcolumn'>
+            <div className="forminputcolumn">
               <label>
                 <b>Tên nhân viên:</b>{" "}
                 <input
-                  type='text'
-                  placeholder='Trang'
+                  type="text"
+                  placeholder="Trang"
                   value={empl_name}
                   onChange={(e) => setEmpl_Name(e.target.value)}
                 ></input>
@@ -2571,19 +2459,19 @@ const INSPECTION = () => {
               <label>
                 <b>Khách:</b>{" "}
                 <input
-                  type='text'
-                  placeholder='SEVT'
+                  type="text"
+                  placeholder="SEVT"
                   value={cust_name}
                   onChange={(e) => setCustName(e.target.value)}
                 ></input>
               </label>
             </div>
-            <div className='forminputcolumn'>
+            <div className="forminputcolumn">
               <label>
                 <b>Loại sản phẩm:</b>{" "}
                 <input
-                  type='text'
-                  placeholder='TSP'
+                  type="text"
+                  placeholder="TSP"
                   value={prod_type}
                   onChange={(e) => setProdType(e.target.value)}
                 ></input>
@@ -2591,19 +2479,19 @@ const INSPECTION = () => {
               <label>
                 <b>Số YCSX:</b>{" "}
                 <input
-                  type='text'
-                  placeholder='1H23456'
+                  type="text"
+                  placeholder="1H23456"
                   value={prodrequestno}
                   onChange={(e) => setProdRequestNo(e.target.value)}
                 ></input>
               </label>
             </div>
-            <div className='forminputcolumn'>
+            <div className="forminputcolumn">
               <label>
                 <b>LOT SX:</b>{" "}
                 <input
-                  type='text'
-                  placeholder='ED2H3076'
+                  type="text"
+                  placeholder="ED2H3076"
                   value={process_lot_no}
                   onChange={(e) => setProcess_Lot_No(e.target.value)}
                 ></input>
@@ -2611,74 +2499,56 @@ const INSPECTION = () => {
               <label>
                 <b>ID:</b>{" "}
                 <input
-                  type='text'
-                  placeholder='12345'
+                  type="text"
+                  placeholder="12345"
                   value={id}
                   onChange={(e) => setID(e.target.value)}
                 ></input>
               </label>
             </div>
           </div>
-          <div className='formbutton'>
+          <div className="formbutton">
             <label>
               <b>All Time:</b>
               <input
-                type='checkbox'
-                name='alltimecheckbox'
+                type="checkbox"
+                name="alltimecheckbox"
                 defaultChecked={alltime}
                 onChange={() => setAllTime(!alltime)}
               ></input>
             </label>
-            <button
-              className='tranhapkiembutton'
-              onClick={() => {
-                setisLoading(true);
-                setReadyRender(false);
-                setColumnDefinition(column_inspect_input);
-                handletraInspectionInput();
-              }}
-            >
-              Nhập Kiểm
-            </button>
-            <button
-              className='traxuatkiembutton'
-              onClick={() => {
-                setisLoading(true);
-                setReadyRender(false);
-                setColumnDefinition(column_inspect_output);
-                handletraInspectionOutput();
-              }}
-            >
-              Xuất Kiểm
-            </button>
-            <button
-              className='tranhapxuatkiembutton'
-              onClick={() => {
-                setisLoading(true);
-                setReadyRender(false);
-                setColumnDefinition(column_inspect_inoutycsx); 
-                handletraInspectionInOut();
-              }}
-            >
-              Nhập-Xuất
-            </button>
-            <button
-              className='tranhatky'
-              onClick={() => {
-                setisLoading(true);
-                setReadyRender(false);
-                setColumnDefinition(column_inspection_NG);
-                handletraInspectionNG();
-              }}
-            >
-              Nhật Ký KT
-            </button>
+          </div>
+          <div className="formbutton">
+            <Button color={'success'} variant="contained" size="small" fullWidth={true} sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#36da59' }} onClick={() => {
+              setisLoading(true);
+              setReadyRender(false);
+              setColumnDefinition(column_inspect_input);
+              handletraInspectionInput();
+            }}>Nhập Kiểm</Button>
+            <Button color={'success'} variant="contained" size="small" fullWidth={true} sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#fac83f' }} onClick={() => {
+              setisLoading(true);
+              setReadyRender(false);
+              setColumnDefinition(column_inspect_output);
+              handletraInspectionOutput();
+            }}> Xuất Kiểm</Button>
+            <Button color={'success'} variant="contained" size="small" fullWidth={true} sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#52aeeb' }} onClick={() => {
+              setisLoading(true);
+              setReadyRender(false);
+              setColumnDefinition(column_inspect_inoutycsx);
+              handletraInspectionInOut();
+            }}> Nhập-Xuất</Button>
+            <Button color={'success'} variant="contained" size="small" fullWidth={true} sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#df73fa' }} onClick={() => {
+              setisLoading(true);
+              setReadyRender(false);
+              setColumnDefinition(column_inspection_NG);
+              handletraInspectionNG();
+            }}> Nhật Ký KT</Button>
           </div>
         </div>
-        <div className='tracuuYCSXTable'>
+        <div className="tracuuYCSXTable">
           {readyRender && (
             <DataGrid
-              sx={{ fontSize: '0.7rem', flex: 1 }}
+              sx={{ fontSize: "0.7rem", flex: 1 }}
               components={{
                 Toolbar: CustomToolbarPOTable,
                 LoadingOverlay: LinearProgress,
@@ -2691,24 +2561,24 @@ const INSPECTION = () => {
               rowsPerPageOptions={[
                 5, 10, 50, 100, 500, 1000, 5000, 10000, 500000,
               ]}
-              editMode='row'
+              editMode="row"
             />
           )}
         </div>
         {showhidePivotTable && (
-          <div className='pivottable1'>
+          <div className="pivottable1">
             <IconButton
-              className='buttonIcon'
+              className="buttonIcon"
               onClick={() => {
                 setShowHidePivotTable(false);
               }}
             >
-              <AiFillCloseCircle color='blue' size={25} />
+              <AiFillCloseCircle color="blue" size={15} />
               Close
             </IconButton>
             <PivotTable
               datasource={selectedDataSource}
-              tableID='inspectiontablepivot'
+              tableID="inspectiontablepivot"
             />
           </div>
         )}

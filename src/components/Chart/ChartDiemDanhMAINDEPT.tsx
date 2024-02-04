@@ -9,7 +9,6 @@ import {
   CartesianGrid,
   Tooltip,
   Legend,
-  ResponsiveContainer,
   ComposedChart,
   Label,
   LabelList,
@@ -18,27 +17,18 @@ import {
   Pie,
 } from "recharts";
 
-
 import Swal from "sweetalert2";
 import { generalQuery } from "../../api/Api";
 import { CustomResponsiveContainer } from "../../api/GlobalFunction";
-interface DiemDanhMainDeptData {
-    id: number, 
-    MAINDEPTNAME: string, 
-    COUNT_TOTAL: number,
-    COUT_ON: number,
-    COUT_OFF: number, 
-    COUNT_CDD: number,
-    ON_RATE: number
-}
+import { DiemDanhMainDeptData } from "../../api/GlobalInterface";
+
 const ChartDiemDanhMAINDEPT = () => {
   const [diemdanhMainDeptData, setDiemDanhMainDeptData] = useState<
     Array<DiemDanhMainDeptData>
   >([]);
-  const formatCash = (n: number) => {
-    if (n < 1e3) return n;
-    if (n >= 1e3) return +(n / 1e3).toFixed(1) + "K$";
-  };
+    const formatCash = (n: number) => {  
+     return nFormatter(n, 2) + (getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0].CURRENT_VALUE ==='USD' ? ' $' : " đ");
+   };
   const labelFormatter = (value: number) => {
     return new Intl.NumberFormat("en", {
       notation: "compact",
@@ -46,59 +36,87 @@ const ChartDiemDanhMAINDEPT = () => {
     }).format(value);
   };
 
-  const CustomTooltip = ({ active, payload, label } : {active?:any, payload?:any, label?: any}) => {
+  const CustomTooltip = ({
+    active,
+    payload,
+    label,
+  }: {
+    active?: any;
+    payload?: any;
+    label?: any;
+  }) => {
     if (active && payload && payload.length) {
       return (
-        <div className="custom-tooltip">
-          <p className="label">{`${payload[0].value.toLocaleString("en-US")} người`}</p>   
+        <div className='custom-tooltip'>
+          <p className='label'>{`${payload[0].value.toLocaleString(
+            "en-US"
+          )} người`}</p>
         </div>
       );
     }
     return null;
-}
-
-const CustomLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, value, index }:{ cx?:any, cy?:any, midAngle?:any, innerRadius?:any, outerRadius?:any, value?:any, index?:any }) => {  
-    const RADIAN = Math.PI / 180;          
-          const radius = 105 + innerRadius + (outerRadius - innerRadius);          
-          const x = cx + radius * Math.cos(-midAngle * RADIAN);          
-          const y = cy + radius * Math.sin(-midAngle * RADIAN);
-          return (
-            <text
-              x={x}
-              y={y}
-              fill="#8884d8"
-              textAnchor={x > cx ? "start" : "end"}
-              dominantBaseline="central"
-              style={{color: 'white'}}
-            >              
-              {diemdanhMainDeptData[index].MAINDEPTNAME} : ({value.toLocaleString("en-US")} người)
-              
-            </text>
-          );
   };
 
+  const CustomLabel = ({
+    cx,
+    cy,
+    midAngle,
+    innerRadius,
+    outerRadius,
+    value,
+    index,
+  }: {
+    cx?: any;
+    cy?: any;
+    midAngle?: any;
+    innerRadius?: any;
+    outerRadius?: any;
+    value?: any;
+    index?: any;
+  }) => {
+    const RADIAN = Math.PI / 180;
+    const radius = 50 + innerRadius + (outerRadius - innerRadius);
+    const x = cx + radius * Math.cos(-midAngle * RADIAN);
+    const y = cy + radius * Math.sin(-midAngle * RADIAN);
+    return (
+      <text
+        x={x}
+        y={y}
+        fill='black'
+        textAnchor={x > cx ? "start" : "end"}
+        dominantBaseline='central'
+        style={{ color: "white", fontSize: '1rem' }}
+      >
+        {diemdanhMainDeptData[index].MAINDEPTNAME} : (
+        {value.toLocaleString("en-US")} ng)
+      </text>
+    );
+  };
 
-  const handleGetCustomerRevenue = () => {    
-    generalQuery("getddmaindepttb", {})
-    .then((response) => {
-      //console.log(response.data.data);
-      if (response.data.tk_status !== "NG") {
-       
-
-        let loadeddata = response.data.data.map((element: DiemDanhMainDeptData, index: number)=> {         
-          return {
-            ...element, 
-            id: index
-          }
-        }) 
-        setDiemDanhMainDeptData(loadeddata);               
-      } else {
-        Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
-      }
+  const handleGetCustomerRevenue = () => {
+    generalQuery("getddmaindepttb", {
+      FROM_DATE: moment.utc().format('YYYY-MM-DD'),
+      TO_DATE: moment.utc().format('YYYY-MM-DD'),
     })
-    .catch((error) => {
-      console.log(error);
-    });
+      .then((response) => {
+        //console.log(response.data.data);
+        if (response.data.tk_status !== "NG") {
+          let loadeddata = response.data.data.map(
+            (element: DiemDanhMainDeptData, index: number) => {
+              return {
+                ...element,
+                id: index,
+              };
+            }
+          );
+          setDiemDanhMainDeptData(loadeddata);
+        } else {
+          Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
   useEffect(() => {
     handleGetCustomerRevenue();
@@ -133,7 +151,7 @@ const CustomLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, value, index 
   return (
     <CustomResponsiveContainer>
       <PieChart width={500} height={400}>
-        <Tooltip content={<CustomTooltip/>} />        
+        <Tooltip content={<CustomTooltip />} />
         <Pie
           dataKey='COUNT_TOTAL'
           nameKey='MAINDEPTNAME'
@@ -141,15 +159,18 @@ const CustomLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, value, index 
           data={diemdanhMainDeptData}
           cx='50%'
           cy='50%'
-          outerRadius={80}
+          outerRadius={150}
           fill='#8884d8'
           label={CustomLabel}
+          labelLine={true}
         >
           {diemdanhMainDeptData.map((entry, index) => (
-            <Cell key={`cell-${index}`} fill={COLORS[(2+index)*3 % COLORS.length]} />
+            <Cell
+              key={`cell-${index}`}
+              fill={COLORS[((2 + index) * 3) % COLORS.length]}
+            />
           ))}
         </Pie>
-        
       </PieChart>
     </CustomResponsiveContainer>
   );

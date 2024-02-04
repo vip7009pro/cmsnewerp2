@@ -1,1207 +1,1129 @@
-
 @media only screen and (max-width: 3000px) {
-    .machineplan {
-        display: flex;  
-        flex-direction: column;  
-        gap: 20px;
-        align-items: center;
-        margin-left: 15px;
-        margin-right: 15px;
-        z-index: 0;
-    
-        .mininavbar {
-            display: flex;
-            flex-direction: row;
-            flex-wrap: wrap;
-            margin-bottom: 5px;
-            margin-top: 5px;
-    
-            .mininavitem {
-                padding: 5px;
-                background-color: rgb(86, 163, 226);
-                margin-left: 5px;
-                border-radius: 5px;
-                font-size: 0.7rem;           
-                padding:5px;
-                color: white;
-                -webkit-box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27); 
-                box-shadow: 5px 5px 10px 5px rgba(0,0,0,0.27);
-                &:hover{
-                    background-color: rgb(127, 219, 255);
-                    cursor: pointer;
-                    color: black;
-                }            
-            }
-    
-        }
-        
-        .plandateselect {
-            .inputdata {
-                padding-left: 5px;
-                margin-left: 2px;
-                width: 310px;
-                height: 35px;  
-                background-color: transparent;                          
-                outline: none;
-                border:  solid 0.5px;
-                border-color: rgba(0, 0, 0,0.3);
-                border-radius: 5px;
-                font-size: 16px;
-                margin-left: 20px;
-                color: black;
-                
-    
-            }
-        }
-        .NM1 {
-            display: flex;  
-            flex-direction: column;  
-            gap: 20px;
-            align-items: center;
-            margin-left: 15px;
-            margin-right: 15px;
-            background-color: rgba(198, 219, 77, 0.2);
-            padding: 20px;
-            box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
-            -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
-            border-radius: 10px;
-    
-            .machine_title {
-                font-size: 30px;
-                font-weight: bold;
-                color: blue
-            }
-            .FRlist {
-                display: flex;
-                flex-direction: row;
-                width: 100%;
-                justify-content: space-around;
-                border: 1px solid black;
-                border-width: 3px;
-                border-radius: 5px;
-                padding: 10px;
-                margin-left: 10px;
-                margin-right: 10px;
-                align-items: center;
-                flex-wrap: wrap;
-        
-            }
-            .SRlist {
-                display: flex;
-                flex-direction: row;
-                width: 100%;
-                justify-content: space-around;
-                border: 1px solid black;
-                border-width: 3px;
-                border-radius: 5px;
-                padding: 10px;
-                margin-left: 10px;
-                margin-right: 10px;
-                align-items: center;
-                flex-wrap: wrap;
-        
-            }
-            .DClist {
-                display: flex;
-                flex-direction: row;
-                width: 100%;
-                justify-content: space-around;
-                border: 1px solid black;
-                border-width: 3px;
-                border-radius: 5px;
-                padding: 10px;
-                margin-left: 10px;
-                margin-right: 10px;
-                align-items: center;
-                flex-wrap: wrap;
-        
-            }
-            .EDlist {
-                display: flex;
-                flex-direction: row;
-                width: 100%;
-                flex-wrap: wrap;
-                border: 1px solid black;
-                border-width: 3px;
-                padding: 10px;
-                margin-left: 10px;
-                margin-right: 10px;
-                gap: 10px;       
-                justify-content: space-around;
-        
-            }
-    
-    
-            
-        }
-        .NM2 {
-            display: flex;  
-            flex-direction: column;  
-            gap: 20px;
-            align-items: center;
-            margin-left: 15px;
-            margin-right: 15px;
-            background-color: rgba(238, 148, 230,0.2);
-            padding: 20px;
-            box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
-            -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
-            border-radius: 10px;
-    
-            .machine_title {
-                font-size: 30px;
-                font-weight: bold;
-                color: blue
-            }
-            .FRlist {
-                display: flex;
-                flex-direction: row;
-                width: 100%;
-                justify-content: space-around;
-                border: 1px solid black;
-                border-width: 3px;
-                border-radius: 5px;
-                padding: 10px;
-                margin-left: 10px;
-                margin-right: 10px;
-                align-items: center;
-                flex-wrap: wrap;
-        
-            }
-            .EDlist {
-                display: flex;
-                flex-direction: row;
-                width: 100%;
-                flex-wrap: wrap;
-                border: 1px solid black;
-                border-width: 3px;
-                padding: 10px;
-                margin-left: 10px;
-                margin-right: 10px;
-                gap: 10px;       
-                justify-content: space-around;
-        
-            }
-    
-    
-    
-        }
-        .NM3 {
-            display: flex;  
-            flex-direction: column;  
-            gap: 20px;
-            align-items: center;
-            margin-left: 15px;
-            margin-right: 15px;
-            background-color: rgb(238, 148, 230);
-            padding: 20px;
-            box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
-            -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
-            border-radius: 10px;
-    
-            .machine_title {
-                font-size: 30px;
-                font-weight: bold;
-                color: blue
-            }
-            .FRlist {
-                display: flex;
-                flex-direction: row;
-                width: 100%;
-                justify-content: space-around;
-                border: 1px solid black;
-                border-width: 3px;
-                border-radius: 5px;
-                padding: 10px;
-                margin-left: 10px;
-                margin-right: 10px;
-                align-items: center;
-                flex-wrap: wrap;
-        
-            }
-            .EDlist {
-                display: flex;
-                flex-direction: row;
-                width: 100%;
-                flex-wrap: wrap;
-                border: 1px solid black;
-                border-width: 3px;
-                padding: 10px;
-                margin-left: 10px;
-                margin-right: 10px;
-                gap: 10px;       
-                justify-content: space-around;
-        
-            }
-    
-    
-    
-        }
-        .planwindow {
-            display: flex;   
-            flex-direction: column;     
-            background-color: rgba(255, 255, 255, 0.58); 
-            width: 100%;
-            height: 100%;
-            position: fixed;
-            box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
-            -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);        
-            top: 0;
-            justify-self: center;  
-            align-self: center;      
-            
-            .title {
-                display: flex;
-                flex: 0.3;
-                justify-content: space-around;   
-                align-items: center;
-                font-weight: bold;
-                font-size: 1rem;
-                background-image: linear-gradient(0deg, #afd3d1,#25d468);
-            }
-            .content 
-            {
-                display: flex;
-                width: 100%;
-                height: 80%;
-                flex: 15;        
-                align-self: center;
-                background-color: white;
-    
-                .ycsxlist  {
-                    display: flex;
-                    flex-direction: column;
-                    flex: 3;                
-                    height: 100%;
-                    padding: 10px;                
-                    .tracuuYCSX{
-                        .tracuuYCSXform {
-                            display: flex;
-                            flex-direction: column;
-                            align-items: center;
-                            flex: 1;
-                            font-size: 12px;
-                            background-image: linear-gradient(0deg, #afd3d1, #eea94f);
-                            -webkit-box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27); 
-                            box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27);
-                            border-radius: 8px;
-                            padding: 5px;
-                            &:hover {
-                                background-image: linear-gradient(0deg, #afd3d1, #eaec67);                
-                            }
-                            span {
-                                padding: 10px;
-                                font-size: 12px;
-                                margin: auto;
-                            }
-                
-                
-                            .forminput {
-                                display: flex;
-                                gap: 5px;
-                                flex-wrap: wrap;
-                                align-items: center;
-                                justify-content: space-around;
-                                padding: 2px;
-                                width: 100%;           
-                
-                                .forminputcolumn {
-                                    display: flex;
-                                    flex-direction: column;
-                                    gap: 10px;
-                                    align-items: flex-end;
-                                    justify-content: center;
-                                    flex-wrap: wrap;
-                                    input {
-                                        width: 150px;
-                                        height: 20px;
-                                        outline: none;
-                                        border-radius: 5px;
-                                        border: none;
-                                        padding: 5px;
-                                        margin-left: 5px;
-                                        background-image: linear-gradient(0deg, #ececec, #9dee95);
-                                    }
-                                    select {
-                                        width: 160px;
-                                        height: 30px;
-                                        outline: none;
-                                        border-radius: 5px;
-                                        border: none;
-                                        padding: 5px;
-                                        margin-left: 5px;
-                                        background-image: linear-gradient(0deg, #ececec, #9dee95);
-                                    }
-                                }
-                            }
-                            .formbutton {
-                                display: flex;
-                                align-items: center;
-                                justify-content: space-around;
-                                gap: 20px;
-                            }
-                            .formsummary {
-                                display: flex;
-                                flex-direction: row;
-                                background-image: linear-gradient(0deg, #ececec, #99f86d);       
-                                -webkit-box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27); 
-                                box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27);         
-                                gap: 20px;         
-                                border-radius: 10px;   
-                                margin-top: 5px;
-                                
-                
-                                .summarygroup {
-                                    display: flex;
-                                    flex-direction: column;
-                                    align-items: flex-start;
-                                    justify-items: flex-start;                    
-                                    gap: 10px;
-                                    .summaryvalue {                        
-                                        display: flex;
-                                        font-size: 16px;
-                                        justify-self: flex-end;
-                                        align-self: flex-end;
-                                        padding: 5px;
-                                        color: rgb(83, 36, 255);
-                                    }                    
-                                }
-                
-                            }
-                
-                        }
-                        .tracuuYCSXTable {
-                            display: flex;
-                            margin-top: 10px;
-                            
-                            height: 65vh;
-                            background-image: linear-gradient(0deg, #afd3d1, #6dd1f8);
-                            -webkit-box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27); 
-                            box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27);
-                            border-radius: 8px;
-                
-                        }
-                        .printycsxpage {
-                            position: fixed;
-                            display: flex;
-                            flex-direction: column;        
-                            justify-content: space-between;
-                            z-index: 3;
-                            width: fit-content;
-                            height:200mm;
-                            align-items: center;
-                            padding: 10px;
-                            gap:20px;
-                            border-radius: 10px;
-                            -webkit-box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27); 
-                            box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27);
-                            //background-color: rgba(233, 222, 222, 0.664);
-                            background-color: white;                
-                            top: 50px;
-                            left: 30%;                       
-                           
-                            .buttongroup {
-                                display: flex;
-                                flex-direction: row;
-                                align-items:flex-start;            
-                                gap: 5px;
-                            }
-                            .ycsxrender {
-                                overflow: scroll;
-                                border: 1px solid black;
-                                background-color: white;                            
-                                
-                            }
-                        } 
-                        .khoaodiv {
-                            position: fixed;
-                            display: flex;
-                            flex-direction: column;        
-                            justify-content: flex-start;
-                            z-index: 3;
-                            width: 98%;
-                            height:90vh;
-                            align-items: center;
-                            padding: 10px;
-                            gap:20px;
-                            border-radius: 10px;
-                            -webkit-box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27); 
-                            box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27);
-                            //background-color: rgba(233, 222, 222, 0.664);
-                            background-color: rgba(255, 255, 255, 0.78);                
-                            top: 70px;
-                            left: 0.5%;                       
-                            z-index: 10;
-                            .buttongroup {
-                                display: flex;
-                                flex-direction: row;
-                                width: 100%;                                  
-                                gap: 5px;
-                            }
-                            .khoaodivtable {
-                                display: flex;
-                                background-color: transparent;
-                                height: 100%;
-                                width: 100%;
-                                gap: 10px;
-                                .tablekhoao {    
-                                    display: flex;  
-                                    flex: 2.5; 
-                                    flex-direction: column;
-                                    border-radius: 5px;     
-                                    gap: 10px;                                             
-                                    background-color: transparent;                                
-                                    box-shadow: 5px 5px 15px 5px rgba(255,255,255,0.17);
-                                    .tabletonkhoao {
-                                        display: flex;
-                                        flex: 1;
-                                        background-image: linear-gradient(0deg, #afd3d1,#f7b7f1);
-    
-                                    }
-                                    .lichsuinputsanxuat {
-                                        display: flex;
-                                        flex:1;
-                                        background-image: linear-gradient(0deg, #afd3d1,#4eaae7);
-    
-                                    }
-                                }
-                                .nhapxuatkhoao  {
-                                    display: flex;
-                                    flex-direction: column;
-                                    height: 100%;
-                                    gap: 10px;
-                                    flex: 3;
-                                    .nhapkhoao {
-                                        display: flex;      
-                                        background-image: linear-gradient(0deg, #afd3d1,#4be7ec);  
-                                        -webkit-box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27); 
-                                        box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27);                            
-                                    }
-                                    .xuatkhoao {
-                                        display: flex;
-                                        background-image: linear-gradient(0deg, #afd3d1,#f7d36e);
-                                        -webkit-box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27); 
-                                        box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27);   
-                                    }
-                                }
-                            }
-                            
-                        }            
-                    }   
-                }
-                .chithidiv {
-                    display: flex;
-                    flex-direction: column;
-                    flex: 3;
-                    padding: 10px;
-                    gap: 10px;    
-                    .printycsxpage {
-                        position: fixed;
-                        display: flex;
-                        flex-direction: column;        
-                        justify-content: space-between;
-                        z-index: 3;
-                        width: fit-content;
-                        height:200mm;
-                        align-items: center;
-                        padding: 10px;
-                        gap:20px;
-                        border-radius: 10px;
-                        -webkit-box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27); 
-                        box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27);
-                        //background-color: rgba(233, 222, 222, 0.664);
-                        background-color: white;                
-                        top: 50px;
-                        left: 30%;                       
-                       
-                        .buttongroup {
-                            display: flex;
-                            flex-direction: row;
-                            align-items:flex-start;            
-                            gap: 5px;
-                        }
-                        .ycsxrender {
-                            overflow: scroll;
-                            border: 1px solid black;
-                            background-color: white;                            
-                            
-                        }
-                    } 
-                    .khoaodiv {
-                        position: fixed;
-                        display: flex;
-                        flex-direction: column;        
-                        justify-content: flex-start;
-                        z-index: 3;
-                        width: 98%;
-                        height:90vh;
-                        align-items: center;
-                        padding: 10px;
-                        gap:20px;
-                        border-radius: 10px;
-                        -webkit-box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27); 
-                        box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27);
-                        //background-color: rgba(233, 222, 222, 0.664);
-                        background-color: rgba(255, 255, 255, 0.78);                
-                        top: 70px;
-                        left: 0.5%;                       
-                        z-index: 10;
-                        .buttongroup {
-                            display: flex;
-                            flex-direction: row;
-                            width: 100%;                                  
-                            gap: 5px;
-                        }
-                        .khoaodivtable {
-                            display: flex;
-                            background-color: transparent;
-                            height: 100%;
-                            width: 100%;
-                            gap: 10px;
-                            .tablekhoao {    
-                                display: flex;  
-                                flex: 2.5; 
-                                flex-direction: column;
-                                border-radius: 5px;     
-                                gap: 10px;                                             
-                                background-color: transparent;                                
-                                box-shadow: 5px 5px 15px 5px rgba(255,255,255,0.17);
-                                .tabletonkhoao {
-                                    display: flex;
-                                    flex: 1;
-                                    background-image: linear-gradient(0deg, #afd3d1,#f7b7f1);
+  .machineplan {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    align-items: center;
+    margin-left: 15px;
+    margin-right: 15px;
+    z-index: 0;
 
-                                }
-                                .lichsuinputsanxuat {
-                                    display: flex;
-                                    flex:1;
-                                    background-image: linear-gradient(0deg, #afd3d1,#4eaae7);
+    .mininavbar {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      margin-bottom: 5px;
+      margin-top: 5px;
 
-                                }
-                            }
-                            .nhapxuatkhoao  {
-                                display: flex;
-                                flex-direction: column;
-                                height: 100%;
-                                gap: 10px;
-                                flex: 3;
-                                .nhapkhoao {
-                                    display: flex;      
-                                    background-image: linear-gradient(0deg, #afd3d1,#4be7ec);  
-                                    -webkit-box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27); 
-                                    box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27);                            
-                                }
-                                .xuatkhoao {
-                                    display: flex;
-                                    background-image: linear-gradient(0deg, #afd3d1,#f7d36e);
-                                    -webkit-box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27); 
-                                    box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27);   
-                                }
-                            }
-                        }
-                        
-                    }                     
-                    .listchithi {
-                        display: flex;
-                        flex: 0.5;
-
-                        .planlist {
-                            display: flex;                    
-                            background-image: linear-gradient(0deg, #afd3d1, #66c4f0);
-                            flex: 1;
-                            border-radius: 5px;
-                            box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
-                            -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);  
-                
-                        }
-                    }    
-                    .datadinhmucto {
-                        display: flex;
-                        flex-direction: column;
-                        background-image: linear-gradient(0deg, #afd3d1,#25d468);
-                        gap: 0px;
-                        padding: 5px;
-                        .datadinhmuc {
-                            display: flex;                            
-                            
-                            gap: 2px;
-                            border-radius: 5px;        
-                        }   
-                        box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
-                            -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);  
-
-                    }        
-                    
-                    .listlieuchithi {
-                        display: flex;
-                        flex: 0.5;
-                        .chithitable {
-                            display: flex;
-                            background-image: linear-gradient(0deg, #afd3d1, #f5df7e);
-                            flex:1;
-                            border-radius: 5px;
-                            box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
-                            -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);  
-                            
-                        }
-                    }
-                }
-    
-            }
-            
-    
+      .mininavitem {
+        padding: 5px;
+        background-color: rgb(86, 163, 226);
+        margin-left: 5px;
+        border-radius: 5px;
+        font-size: 0.7rem;
+        padding: 5px;
+        color: white;
+        -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+        box-shadow: 5px 5px 10px 5px rgba(0, 0, 0, 0.27);
+        &:hover {
+          background-color: rgb(127, 219, 255);
+          cursor: pointer;
+          color: black;
         }
+      }
     }
-}
- @media only screen and (max-width: 768px) {
-    .machineplan {
-        display: flex;  
-        flex-direction: column;  
-        gap: 20px;
+
+    .plandateselect {
+      .inputdata {
+        padding-left: 5px;
+        margin-left: 2px;
+        width: 310px;
+        height: 35px;
+        background-color: transparent;
+        outline: none;
+        border: solid 0.5px;
+        border-color: rgba(0, 0, 0, 0.3);
+        border-radius: 5px;
+        font-size: 16px;
+        margin-left: 20px;
+        color: black;
+      }
+    }
+    .NM1 {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      align-items: center;
+      margin-left: 15px;
+      margin-right: 15px;
+      background-color: rgba(198, 219, 77, 0.2);
+      padding: 20px;
+      box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
+      -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
+      border-radius: 5px;
+
+      .machine_title {
+        font-size: 30px;
+        font-weight: bold;
+        color: blue;
+      }
+      .FRlist {
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+        justify-content: space-around;
+        border: 1px solid black;
+        border-width: 3px;
+        border-radius: 5px;
+        padding: 10px;
+        margin-left: 10px;
+        margin-right: 10px;
         align-items: center;
-        margin-left: 15px;
-        margin-right: 15px;
-        z-index: 0;
-    
-        .mininavbar {
-            display: flex;
-            flex-direction: row;
-            flex-wrap: wrap;
-            margin-bottom: 5px;
-            margin-top: 5px;
-    
-            .mininavitem {
-                padding: 5px;
-                background-color: rgb(86, 163, 226);
-                margin-left: 5px;
-                border-radius: 5px;
-                color: white;
-                -webkit-box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27); 
-                box-shadow: 5px 5px 10px 5px rgba(0,0,0,0.27);
-                &:hover{
-                    background-color: rgb(127, 219, 255);
-                    cursor: pointer;
-                    color: black;
-                }            
-            }
-    
-        }
-        
-        .plandateselect {
-            .inputdata {
-                padding-left: 5px;
-                margin-left: 2px;
-                width: 310px;
-                height: 35px;  
-                background-color: transparent;                          
-                outline: none;
-                border:  solid 0.5px;
-                border-color: rgba(0, 0, 0,0.3);
-                border-radius: 5px;
-                font-size: 16px;
-                margin-left: 20px;
-                color: black;
-                
-    
-            }
-        }
-        .NM1 {
-            display: flex;  
-            flex-direction: column;  
-            gap: 20px;
-            align-items: center;
-            margin-left: 15px;
-            margin-right: 15px;
-            background-color: rgba(198, 219, 77, 0.2);
-            padding: 20px;
-            box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
-            -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
-            border-radius: 10px;
-    
-            .machine_title {
-                font-size: 30px;
-                font-weight: bold;
-                color: blue
-            }
-            .FRlist {
-                display: flex;
-                flex-direction: row;
-                width: 100%;
-                justify-content: space-around;
-                border: 1px solid black;
-                border-width: 3px;
-                border-radius: 5px;
+        flex-wrap: wrap;
+      }
+      .SRlist {
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+        justify-content: space-around;
+        border: 1px solid black;
+        border-width: 3px;
+        border-radius: 5px;
+        padding: 10px;
+        margin-left: 10px;
+        margin-right: 10px;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+      .DClist {
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+        justify-content: space-around;
+        border: 1px solid black;
+        border-width: 3px;
+        border-radius: 5px;
+        padding: 10px;
+        margin-left: 10px;
+        margin-right: 10px;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+      .EDlist {
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+        flex-wrap: wrap;
+        border: 1px solid black;
+        border-width: 3px;
+        padding: 10px;
+        margin-left: 10px;
+        margin-right: 10px;
+        gap: 10px;
+        justify-content: space-around;
+      }
+    }
+    .NM2 {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      align-items: center;
+      margin-left: 15px;
+      margin-right: 15px;
+      background-color: rgba(238, 148, 230, 0.2);
+      padding: 20px;
+      box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
+      -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
+      border-radius: 5px;
+
+      .machine_title {
+        font-size: 30px;
+        font-weight: bold;
+        color: blue;
+      }
+      .FRlist {
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+        justify-content: space-around;
+        border: 1px solid black;
+        border-width: 3px;
+        border-radius: 5px;
+        padding: 10px;
+        margin-left: 10px;
+        margin-right: 10px;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+      .EDlist {
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+        flex-wrap: wrap;
+        border: 1px solid black;
+        border-width: 3px;
+        padding: 10px;
+        margin-left: 10px;
+        margin-right: 10px;
+        gap: 10px;
+        justify-content: space-around;
+      }
+    }
+    .NM2 {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      align-items: center;
+      margin-left: 15px;
+      margin-right: 15px;
+      background-color: rgb(238, 148, 230);
+      padding: 20px;
+      box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
+      -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
+      border-radius: 5px;
+
+      .machine_title {
+        font-size: 30px;
+        font-weight: bold;
+        color: blue;
+      }
+      .FRlist {
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+        justify-content: space-around;
+        border: 1px solid black;
+        border-width: 3px;
+        border-radius: 5px;
+        padding: 10px;
+        margin-left: 10px;
+        margin-right: 10px;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+      .EDlist {
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+        flex-wrap: wrap;
+        border: 1px solid black;
+        border-width: 3px;
+        padding: 10px;
+        margin-left: 10px;
+        margin-right: 10px;
+        gap: 10px;
+        justify-content: space-around;
+      }
+    }
+    .planwindow {
+      display: flex;
+      flex-direction: column;
+      background-color: rgba(255, 255, 255, 0.58);
+      width: 100%;
+      height: 105vh;
+      position: fixed;
+      box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
+      -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
+      top: 0;
+      justify-self: center;
+      align-self: center;
+      background-color: white;
+      .title {
+        display: flex;
+        flex: 0.3;
+        justify-content: space-around;
+        align-items: center;
+        font-weight: bold;
+        font-size: 1rem;
+        background-image: linear-gradient(0deg, #afd3d1, #25d468);
+      }
+      .content {
+        display: flex;
+        width: 100%;
+        height: 80%;
+        flex: 15;
+        align-self: center;
+
+        .ycsxlist {
+          display: flex;
+          flex-direction: column;
+          flex: 3;
+          height: 80vh;
+          padding: 10px;
+          .tracuuYCSX {
+            .tracuuYCSXform {
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+              flex: 1;
+              font-size: 12px;
+              background-image: linear-gradient(0deg, #afd3d1, #eea94f);
+              -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+              box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+              border-radius: 8px;
+              padding: 5px;
+              &:hover {
+                background-image: linear-gradient(0deg, #afd3d1, #eaec67);
+              }
+              span {
                 padding: 10px;
-                margin-left: 10px;
-                margin-right: 10px;
+                font-size: 12px;
+                margin: auto;
+              }
+
+              .forminput {
+                display: flex;
+                gap: 5px;
+                flex-wrap: wrap;
                 align-items: center;
-                flex-wrap: wrap;
-        
-            }
-            .SRlist {
-                display: flex;
-                flex-direction: row;
-                width: 100%;
                 justify-content: space-around;
-                border: 1px solid black;
-                border-width: 3px;
-                border-radius: 5px;
-                padding: 10px;
-                margin-left: 10px;
-                margin-right: 10px;
+                padding: 2px;
+                width: 100%;
+
+                .forminputcolumn {
+                  display: flex;
+                  flex-direction: column;
+                  gap: 10px;
+                  align-items: flex-end;
+                  justify-content: center;
+                  flex-wrap: wrap;
+                  input {
+                    width: 150px;
+                    height: 20px;
+                    outline: none;
+                    border-radius: 5px;
+                    border: none;
+                    padding: 5px;
+                    margin-left: 5px;
+                    background-image: linear-gradient(0deg, #ececec, #9dee95);
+                  }
+                  select {
+                    width: 160px;
+                    height: 30px;
+                    outline: none;
+                    border-radius: 5px;
+                    border: none;
+                    padding: 5px;
+                    margin-left: 5px;
+                    background-image: linear-gradient(0deg, #ececec, #9dee95);
+                  }
+                }
+              }
+              .formbutton {
+                display: flex;
                 align-items: center;
-                flex-wrap: wrap;
-        
-            }
-            .DClist {
+                justify-content: space-around;
+                gap: 20px;
+              }
+              .formsummary {
                 display: flex;
                 flex-direction: row;
-                width: 100%;
-                justify-content: space-around;
-                border: 1px solid black;
-                border-width: 3px;
+                background-image: linear-gradient(0deg, #ececec, #99f86d);
+                -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+                box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+                gap: 20px;
                 border-radius: 5px;
-                padding: 10px;
-                margin-left: 10px;
-                margin-right: 10px;
-                align-items: center;
-                flex-wrap: wrap;
-        
+                margin-top: 5px;
+
+                .summarygroup {
+                  display: flex;
+                  flex-direction: column;
+                  align-items: flex-start;
+                  justify-items: flex-start;
+                  gap: 10px;
+                  .summaryvalue {
+                    display: flex;
+                    font-size: 16px;
+                    justify-self: flex-end;
+                    align-self: flex-end;
+                    padding: 5px;
+                    color: rgb(83, 36, 255);
+                  }
+                }
+              }
             }
-            .EDlist {
+            .tracuuYCSXTable {
+              display: flex;
+              margin-top: 10px;
+
+              height: 65vh;
+              background-image: linear-gradient(0deg, #afd3d1, #6dd1f8);
+              -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+              box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+              border-radius: 8px;
+            }
+            .printycsxpage {
+              position: fixed;
+              display: flex;
+              flex-direction: column;
+              justify-content: space-between;
+              z-index: 3;
+              width: fit-content;
+              height: 200mm;
+              align-items: center;
+              padding: 10px;
+              gap: 20px;
+              border-radius: 5px;
+              -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+              box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+              //background-color: rgba(233, 222, 222, 0.664);
+              background-color: white;
+              top: 50px;
+              left: 30%;
+
+              .buttongroup {
+                display: flex;
+                flex-direction: row;
+                align-items: flex-start;
+                gap: 5px;
+              }
+              .ycsxrender {
+                overflow: scroll;
+                border: 1px solid black;
+                background-color: white;
+              }
+            }
+            .khoaodiv {
+              position: fixed;
+              display: flex;
+              flex-direction: column;
+              justify-content: flex-start;
+              z-index: 3;
+              width: 98%;
+              height: 90vh;
+              align-items: center;
+              padding: 10px;
+              gap: 20px;
+              border-radius: 5px;
+              -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+              box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+              //background-color: rgba(233, 222, 222, 0.664);
+              background-color: rgba(255, 255, 255, 0.78);
+              top: 70px;
+              left: 0.5%;
+              z-index: 10;
+              .buttongroup {
                 display: flex;
                 flex-direction: row;
                 width: 100%;
-                flex-wrap: wrap;
-                border: 1px solid black;
-                border-width: 3px;
-                padding: 10px;
-                margin-left: 10px;
-                margin-right: 10px;
-                gap: 10px;       
-                justify-content: space-around;
-        
+                gap: 5px;
+              }
+              .khoaodivtable {
+                display: flex;
+                background-color: transparent;
+                height: 100%;
+                width: 100%;
+                gap: 10px;
+                .tablekhoao {
+                  display: flex;
+                  flex: 2.5;
+                  flex-direction: column;
+                  border-radius: 5px;
+                  gap: 10px;
+                  background-color: transparent;
+                  box-shadow: 5px 5px 15px 5px rgba(255, 255, 255, 0.17);
+                  .tabletonkhoao {
+                    display: flex;
+                    flex: 1;
+                    background-image: linear-gradient(0deg, #afd3d1, #f7b7f1);
+                  }
+                  .lichsuinputsanxuat {
+                    display: flex;
+                    flex: 1;
+                    background-image: linear-gradient(0deg, #afd3d1, #4eaae7);
+                  }
+                }
+                .nhapxuatkhoao {
+                  display: flex;
+                  flex-direction: column;
+                  height: 100%;
+                  gap: 10px;
+                  flex: 3;
+                  .nhapkhoao {
+                    display: flex;
+                    background-image: linear-gradient(0deg, #afd3d1, #4be7ec);
+                    -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+                    box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+                  }
+                  .xuatkhoao {
+                    display: flex;
+                    background-image: linear-gradient(0deg, #afd3d1, #f7d36e);
+                    -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+                    box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+                  }
+                }
+              }
             }
-    
-    
-            
+          }
         }
-        .NM2 {
-            display: flex;  
-            flex-direction: column;  
-            gap: 20px;
-            align-items: center;
-            margin-left: 15px;
-            margin-right: 15px;
-            background-color: rgba(238, 148, 230,0.2);
-            padding: 20px;
-            box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
-            -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
-            border-radius: 10px;
-    
-            .machine_title {
-                font-size: 30px;
-                font-weight: bold;
-                color: blue
-            }
-            .FRlist {
-                display: flex;
-                flex-direction: row;
-                width: 100%;
-                justify-content: space-around;
-                border: 1px solid black;
-                border-width: 3px;
-                border-radius: 5px;
-                padding: 10px;
-                margin-left: 10px;
-                margin-right: 10px;
-                align-items: center;
-                flex-wrap: wrap;
-        
-            }
-            .EDlist {
-                display: flex;
-                flex-direction: row;
-                width: 100%;
-                flex-wrap: wrap;
-                border: 1px solid black;
-                border-width: 3px;
-                padding: 10px;
-                margin-left: 10px;
-                margin-right: 10px;
-                gap: 10px;       
-                justify-content: space-around;
-        
-            }
-    
-    
-    
-        }
-        .NM3 {
-            display: flex;  
-            flex-direction: column;  
-            gap: 20px;
-            align-items: center;
-            margin-left: 15px;
-            margin-right: 15px;
-            background-color: rgb(238, 148, 230);
-            padding: 20px;
-            box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
-            -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
-            border-radius: 10px;
-    
-            .machine_title {
-                font-size: 30px;
-                font-weight: bold;
-                color: blue
-            }
-            .FRlist {
-                display: flex;
-                flex-direction: row;
-                width: 100%;
-                justify-content: space-around;
-                border: 1px solid black;
-                border-width: 3px;
-                border-radius: 5px;
-                padding: 10px;
-                margin-left: 10px;
-                margin-right: 10px;
-                align-items: center;
-                flex-wrap: wrap;
-        
-            }
-            .EDlist {
-                display: flex;
-                flex-direction: row;
-                width: 100%;
-                flex-wrap: wrap;
-                border: 1px solid black;
-                border-width: 3px;
-                padding: 10px;
-                margin-left: 10px;
-                margin-right: 10px;
-                gap: 10px;       
-                justify-content: space-around;
-        
-            }
-    
-    
-    
-        }
-        .planwindow {
-            display: flex;   
-            flex-direction: column;     
-            background-color: rgba(255, 255, 255, 0.58); 
-            width: 100%;
-            height: 100%;
+        .chithidiv {
+          display: flex;
+          flex-direction: column;
+          flex: 3;
+          padding: 10px;
+          height: 96vh;
+          gap: 10px;
+          .printycsxpage {
             position: fixed;
-            box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
-            -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);        
-            top: 0;
-            justify-self: center;  
-            align-self: center;     
-            overflow: scroll; 
-            margin-top: 70px;
-            
-            .title {
-                display: flex;
-                flex: 1;
-                justify-content: space-around;   
-                align-items: center;
-                font-weight: bold;
-                font-size: 25px;
-                background-image: linear-gradient(0deg, #afd3d1,#25d468);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            z-index: 3;
+            width: fit-content;
+            height: 200mm;
+            align-items: center;
+            padding: 10px;
+            gap: 20px;
+            border-radius: 5px;
+            -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+            box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+            //background-color: rgba(233, 222, 222, 0.664);
+            background-color: white;
+            top: 50px;
+            left: 30%;
+
+            .buttongroup {
+              display: flex;
+              flex-direction: row;
+              align-items: flex-start;
+              gap: 5px;
             }
-            .content 
-            {
+            .ycsxrender {
+              overflow: scroll;
+              border: 1px solid black;
+              background-color: white;
+            }
+          }
+          .khoaodiv {
+            position: fixed;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            z-index: 3;
+            width: 98%;
+            height: 90vh;
+            align-items: center;
+            padding: 10px;
+            gap: 20px;
+            border-radius: 5px;
+            -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+            box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+            //background-color: rgba(233, 222, 222, 0.664);
+            background-color: rgba(255, 255, 255, 0.78);
+            top: 70px;
+            left: 0.5%;
+            z-index: 10;
+            .buttongroup {
+              display: flex;
+              flex-direction: row;
+              width: 100%;
+              gap: 5px;
+            }
+            .khoaodivtable {
+              display: flex;
+              background-color: transparent;
+              height: 100%;
+              width: 100%;
+              gap: 10px;
+              .tablekhoao {
+                display: flex;
+                flex: 2.5;
+                flex-direction: column;
+                border-radius: 5px;
+                gap: 10px;
+                background-color: transparent;
+                box-shadow: 5px 5px 15px 5px rgba(255, 255, 255, 0.17);
+                .tabletonkhoao {
+                  display: flex;
+                  flex: 1;
+                  background-image: linear-gradient(0deg, #afd3d1, #f7b7f1);
+                }
+                .lichsuinputsanxuat {
+                  display: flex;
+                  flex: 1;
+                  background-image: linear-gradient(0deg, #afd3d1, #4eaae7);
+                }
+              }
+              .nhapxuatkhoao {
                 display: flex;
                 flex-direction: column;
-                width: 100%;
-                height: 80%;
-                flex: 15;        
-                align-self: center;
-                background-color: white;
-                z-index: 99999;
-               
-    
-                .ycsxlist  {
-                    display: flex;
-                    flex-direction: column;
-                    flex: 3;                
-                    height: 100%;
-                    padding: 10px;     
-                    margin-bottom: 300px;           
-                    .tracuuYCSX{
-                        .tracuuYCSXform {
-                            display: flex;
-                            flex-direction: column;
-                            align-items: center;
-                            flex: 1;
-                            font-size: 12px;
-                            background-image: linear-gradient(0deg, #afd3d1, #eea94f);
-                            -webkit-box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27); 
-                            box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27);
-                            border-radius: 8px;
-                            padding: 5px;
-                            &:hover {
-                                background-image: linear-gradient(0deg, #afd3d1, #eaec67);                
-                            }
-                            span {
-                                padding: 10px;
-                                font-size: 12px;
-                                margin: auto;
-                            }
-                
-                
-                            .forminput {
-                                display: flex;
-                                gap: 5px;
-                                flex-wrap: wrap;
-                                align-items: center;
-                                justify-content: space-around;
-                                padding: 2px;
-                                width: 100%;           
-                
-                                .forminputcolumn {
-                                    display: flex;
-                                    flex-direction: column;
-                                    gap: 10px;
-                                    align-items: flex-end;
-                                    justify-content: center;
-                                    flex-wrap: wrap;
-                                    input {
-                                        width: 150px;
-                                        height: 20px;
-                                        outline: none;
-                                        border-radius: 5px;
-                                        border: none;
-                                        padding: 5px;
-                                        margin-left: 5px;
-                                        background-image: linear-gradient(0deg, #ececec, #9dee95);
-                                    }
-                                    select {
-                                        width: 160px;
-                                        height: 30px;
-                                        outline: none;
-                                        border-radius: 5px;
-                                        border: none;
-                                        padding: 5px;
-                                        margin-left: 5px;
-                                        background-image: linear-gradient(0deg, #ececec, #9dee95);
-                                    }
-                                }
-                            }
-                            .formbutton {
-                                display: flex;
-                                align-items: center;
-                                justify-content: space-around;
-                                gap: 20px;
-                            }
-                            .formsummary {
-                                display: flex;
-                                flex-direction: row;
-                                background-image: linear-gradient(0deg, #ececec, #99f86d);       
-                                -webkit-box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27); 
-                                box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27);         
-                                gap: 20px;         
-                                border-radius: 10px;   
-                                margin-top: 5px;
-                                
-                
-                                .summarygroup {
-                                    display: flex;
-                                    flex-direction: column;
-                                    align-items: flex-start;
-                                    justify-items: flex-start;                    
-                                    gap: 10px;
-                                    .summaryvalue {                        
-                                        display: flex;
-                                        font-size: 16px;
-                                        justify-self: flex-end;
-                                        align-self: flex-end;
-                                        padding: 5px;
-                                        color: rgb(83, 36, 255);
-                                    }                    
-                                }
-                
-                            }
-                
-                        }
-                        .tracuuYCSXTable {
-                            display: flex;
-                            margin-top: 10px;
-                            
-                            height: 65vh;
-                            background-image: linear-gradient(0deg, #afd3d1, #6dd1f8);
-                            -webkit-box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27); 
-                            box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27);
-                            border-radius: 8px;
-                
-                        }
-                        .printycsxpage {
-                            position: fixed;
-                            display: flex;
-                            flex-direction: column;        
-                            justify-content: space-between;
-                            z-index: 3;
-                            width: fit-content;
-                            height:200mm;
-                            align-items: center;
-                            padding: 10px;
-                            gap:20px;
-                            border-radius: 10px;
-                            -webkit-box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27); 
-                            box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27);
-                            //background-color: rgba(233, 222, 222, 0.664);
-                            background-color: white;                
-                            top: 50px;
-                            left: 30%;                       
-                           
-                            .buttongroup {
-                                display: flex;
-                                flex-direction: row;
-                                align-items:flex-start;            
-                                gap: 5px;
-                            }
-                            .ycsxrender {
-                                overflow: scroll;
-                                border: 1px solid black;
-                                background-color: white;                            
-                                
-                            }
-                        }      
-    
-                        .khoaodiv {
-                            position: fixed;
-                            display: flex;
-                            flex-direction: column;        
-                            justify-content: flex-start;
-                            z-index: 3;
-                            width: 98%;
-                            height:90vh;
-                            align-items: center;
-                            padding: 10px;
-                            gap:20px;
-                            border-radius: 10px;
-                            -webkit-box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27); 
-                            box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27);
-                            //background-color: rgba(233, 222, 222, 0.664);
-                            background-color: rgba(255, 255, 255, 0.78);                
-                            top: 70px;
-                            left: 0.5%;                       
-                            z-index: 10;
-                            .buttongroup {
-                                display: flex;
-                                flex-direction: row;
-                                width: 100%;                                  
-                                gap: 5px;
-                            }
-                            .khoaodivtable {
-                                display: flex;
-                                background-color: transparent;
-                                height: 100%;
-                                width: 100%;
-                                gap: 10px;
-                                .tablekhoao {    
-                                    display: flex;  
-                                    flex: 2.5; 
-                                    flex-direction: column;
-                                    border-radius: 5px;     
-                                    gap: 10px;                                             
-                                    background-color: transparent;                                
-                                    box-shadow: 5px 5px 15px 5px rgba(255,255,255,0.17);
-                                    .tabletonkhoao {
-                                        display: flex;
-                                        flex: 1;
-                                        background-image: linear-gradient(0deg, #afd3d1,#f7b7f1);
-    
-                                    }
-                                    .lichsuinputsanxuat {
-                                        display: flex;
-                                        flex:1;
-                                        background-image: linear-gradient(0deg, #afd3d1,#4eaae7);
-    
-                                    }
-                                }
-                                .nhapxuatkhoao  {
-                                    display: flex;
-                                    flex-direction: column;
-                                    height: 100%;
-                                    gap: 10px;
-                                    flex: 3;
-                                    .nhapkhoao {
-                                        display: flex;      
-                                        background-image: linear-gradient(0deg, #afd3d1,#4be7ec);  
-                                        -webkit-box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27); 
-                                        box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27);                            
-                                    }
-                                    .xuatkhoao {
-                                        display: flex;
-                                        background-image: linear-gradient(0deg, #afd3d1,#f7d36e);
-                                        -webkit-box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27); 
-                                        box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27);   
-                                    }
-                                }
-                            }
-                            
-                        }            
-                    }   
+                height: 100%;
+                gap: 10px;
+                flex: 3;
+                .nhapkhoao {
+                  display: flex;
+                  background-image: linear-gradient(0deg, #afd3d1, #4be7ec);
+                  -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+                  box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
                 }
-                .chithidiv {
-                    display: flex;
-                    flex-direction: column;                   
-                    padding: 10px;
-                    gap: 10px;     
-                    height: 3000px;   
-                    .listchithi {
-                        display: flex;
-                        height: 500px;
-
-                        .planlist {
-                            display: flex;                    
-                            background-image: linear-gradient(0deg, #afd3d1, #66c4f0);
-                            height: 100%;
-                            border-radius: 5px;
-                            box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
-                            -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
-                
-                        }
-                    }  
-                    .datadinhmuc {
-                        display: flex;
-                        flex-direction: column;
-                        justify-content: flex-start;
-                        background-image: linear-gradient(0deg, #afd3d1,#25d468);
-                        padding: 20px;
-                        gap: 2px;
-                        border-radius: 5px;
-                        box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
-                        -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);  
-                        .forminputcolumn {
-                            display: flex;
-                        }
-    
-                    }
-    
-                    .listlieuchithi {
-                        display: flex;
-                        height: 700px;
-
-                        .chithitable {
-                            display: flex;
-                            background-image: linear-gradient(0deg, #afd3d1, #f5df7e);                        
-                            height: 100%;
-                            border-radius: 5px;
-                            box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
-                            -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
-                        }
-                    }
+                .xuatkhoao {
+                  display: flex;
+                  background-image: linear-gradient(0deg, #afd3d1, #f7d36e);
+                  -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+                  box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
                 }
-    
+              }
             }
-            
-    
+          }
+          .listchithi {
+            display: flex;
+            flex: 0.5;
+
+            .planlist {
+              display: flex;
+              background-image: linear-gradient(0deg, #afd3d1, #66c4f0);
+              flex: 1;
+              border-radius: 5px;
+              box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
+              -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
+            }
+          }
+          .datadinhmucto {
+            display: flex;
+            flex-direction: column;
+            background-image: linear-gradient(0deg, #afd3d1, #25d468);
+            gap: 0px;
+            padding: 5px;
+            .datadinhmuc {
+              display: flex;
+
+              gap: 2px;
+              border-radius: 5px;
+            }
+            box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
+            -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
+          }
+          .listlieuchithi {
+            display: flex;
+            flex: 0.5;
+            .chithitable {
+              display: flex;
+              background-image: linear-gradient(0deg, #afd3d1, #f5df7e);
+              flex: 1;
+              border-radius: 5px;
+              box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
+              -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
+            }
+          }
         }
+      }
     }
+  }
 }
- @media only screen and (max-width: 320px) {
+@media only screen and (max-width: 768px) {
+  .machineplan {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    align-items: center;
+    margin-left: 15px;
+    margin-right: 15px;
+    z-index: 0;
+
+    .mininavbar {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      margin-bottom: 5px;
+      margin-top: 5px;
+
+      .mininavitem {
+        padding: 5px;
+        background-color: rgb(86, 163, 226);
+        margin-left: 5px;
+        border-radius: 5px;
+        color: white;
+        -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+        box-shadow: 5px 5px 10px 5px rgba(0, 0, 0, 0.27);
+        &:hover {
+          background-color: rgb(127, 219, 255);
+          cursor: pointer;
+          color: black;
+        }
+      }
+    }
+
+    .plandateselect {
+      .inputdata {
+        padding-left: 5px;
+        margin-left: 2px;
+        width: 310px;
+        height: 35px;
+        background-color: transparent;
+        outline: none;
+        border: solid 0.5px;
+        border-color: rgba(0, 0, 0, 0.3);
+        border-radius: 5px;
+        font-size: 16px;
+        margin-left: 20px;
+        color: black;
+      }
+    }
+    .NM1 {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      align-items: center;
+      margin-left: 15px;
+      margin-right: 15px;
+      background-color: rgba(198, 219, 77, 0.2);
+      padding: 20px;
+      box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
+      -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
+      border-radius: 5px;
+
+      .machine_title {
+        font-size: 30px;
+        font-weight: bold;
+        color: blue;
+      }
+      .FRlist {
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+        justify-content: space-around;
+        border: 1px solid black;
+        border-width: 3px;
+        border-radius: 5px;
+        padding: 10px;
+        margin-left: 10px;
+        margin-right: 10px;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+      .SRlist {
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+        justify-content: space-around;
+        border: 1px solid black;
+        border-width: 3px;
+        border-radius: 5px;
+        padding: 10px;
+        margin-left: 10px;
+        margin-right: 10px;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+      .DClist {
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+        justify-content: space-around;
+        border: 1px solid black;
+        border-width: 3px;
+        border-radius: 5px;
+        padding: 10px;
+        margin-left: 10px;
+        margin-right: 10px;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+      .EDlist {
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+        flex-wrap: wrap;
+        border: 1px solid black;
+        border-width: 3px;
+        padding: 10px;
+        margin-left: 10px;
+        margin-right: 10px;
+        gap: 10px;
+        justify-content: space-around;
+      }
+    }
+    .NM2 {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      align-items: center;
+      margin-left: 15px;
+      margin-right: 15px;
+      background-color: rgba(238, 148, 230, 0.2);
+      padding: 20px;
+      box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
+      -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
+      border-radius: 5px;
+
+      .machine_title {
+        font-size: 30px;
+        font-weight: bold;
+        color: blue;
+      }
+      .FRlist {
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+        justify-content: space-around;
+        border: 1px solid black;
+        border-width: 3px;
+        border-radius: 5px;
+        padding: 10px;
+        margin-left: 10px;
+        margin-right: 10px;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+      .EDlist {
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+        flex-wrap: wrap;
+        border: 1px solid black;
+        border-width: 3px;
+        padding: 10px;
+        margin-left: 10px;
+        margin-right: 10px;
+        gap: 10px;
+        justify-content: space-around;
+      }
+    }
+    .NM2 {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      align-items: center;
+      margin-left: 15px;
+      margin-right: 15px;
+      background-color: rgb(238, 148, 230);
+      padding: 20px;
+      box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
+      -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
+      border-radius: 5px;
+
+      .machine_title {
+        font-size: 30px;
+        font-weight: bold;
+        color: blue;
+      }
+      .FRlist {
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+        justify-content: space-around;
+        border: 1px solid black;
+        border-width: 3px;
+        border-radius: 5px;
+        padding: 10px;
+        margin-left: 10px;
+        margin-right: 10px;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+      .EDlist {
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+        flex-wrap: wrap;
+        border: 1px solid black;
+        border-width: 3px;
+        padding: 10px;
+        margin-left: 10px;
+        margin-right: 10px;
+        gap: 10px;
+        justify-content: space-around;
+      }
+    }
+    .planwindow {
+      display: flex;
+      flex-direction: column;
+      background-color: rgba(255, 255, 255, 0.58);
+      width: 100%;
+      height: 100%;
+      position: fixed;
+      box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
+      -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
+      top: 0;
+      justify-self: center;
+      align-self: center;
+      overflow: scroll;
+      margin-top: 70px;
+
+      .title {
+        display: flex;
+        flex: 1;
+        justify-content: space-around;
+        align-items: center;
+        font-weight: bold;
+        font-size: 25px;
+        background-image: linear-gradient(0deg, #afd3d1, #25d468);
+      }
+      .content {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        height: 80%;
+        flex: 15;
+        align-self: center;
+        background-color: white;
+        z-index: 99999;
+
+        .ycsxlist {
+          display: flex;
+          flex-direction: column;
+          flex: 3;
+          height: 100%;
+          padding: 10px;
+          margin-bottom: 300px;
+          .tracuuYCSX {
+            .tracuuYCSXform {
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+              flex: 1;
+              font-size: 12px;
+              background-image: linear-gradient(0deg, #afd3d1, #eea94f);
+              -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+              box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+              border-radius: 8px;
+              padding: 5px;
+              &:hover {
+                background-image: linear-gradient(0deg, #afd3d1, #eaec67);
+              }
+              span {
+                padding: 10px;
+                font-size: 12px;
+                margin: auto;
+              }
+
+              .forminput {
+                display: flex;
+                gap: 5px;
+                flex-wrap: wrap;
+                align-items: center;
+                justify-content: space-around;
+                padding: 2px;
+                width: 100%;
+
+                .forminputcolumn {
+                  display: flex;
+                  flex-direction: column;
+                  gap: 10px;
+                  align-items: flex-end;
+                  justify-content: center;
+                  flex-wrap: wrap;
+                  input {
+                    width: 150px;
+                    height: 20px;
+                    outline: none;
+                    border-radius: 5px;
+                    border: none;
+                    padding: 5px;
+                    margin-left: 5px;
+                    background-image: linear-gradient(0deg, #ececec, #9dee95);
+                  }
+                  select {
+                    width: 160px;
+                    height: 30px;
+                    outline: none;
+                    border-radius: 5px;
+                    border: none;
+                    padding: 5px;
+                    margin-left: 5px;
+                    background-image: linear-gradient(0deg, #ececec, #9dee95);
+                  }
+                }
+              }
+              .formbutton {
+                display: flex;
+                align-items: center;
+                justify-content: space-around;
+                gap: 20px;
+              }
+              .formsummary {
+                display: flex;
+                flex-direction: row;
+                background-image: linear-gradient(0deg, #ececec, #99f86d);
+                -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+                box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+                gap: 20px;
+                border-radius: 5px;
+                margin-top: 5px;
+
+                .summarygroup {
+                  display: flex;
+                  flex-direction: column;
+                  align-items: flex-start;
+                  justify-items: flex-start;
+                  gap: 10px;
+                  .summaryvalue {
+                    display: flex;
+                    font-size: 16px;
+                    justify-self: flex-end;
+                    align-self: flex-end;
+                    padding: 5px;
+                    color: rgb(83, 36, 255);
+                  }
+                }
+              }
+            }
+            .tracuuYCSXTable {
+              display: flex;
+              margin-top: 10px;
+
+              height: 65vh;
+              background-image: linear-gradient(0deg, #afd3d1, #6dd1f8);
+              -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+              box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+              border-radius: 8px;
+            }
+            .printycsxpage {
+              position: fixed;
+              display: flex;
+              flex-direction: column;
+              justify-content: space-between;
+              z-index: 3;
+              width: fit-content;
+              height: 200mm;
+              align-items: center;
+              padding: 10px;
+              gap: 20px;
+              border-radius: 5px;
+              -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+              box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+              //background-color: rgba(233, 222, 222, 0.664);
+              background-color: white;
+              top: 50px;
+              left: 30%;
+
+              .buttongroup {
+                display: flex;
+                flex-direction: row;
+                align-items: flex-start;
+                gap: 5px;
+              }
+              .ycsxrender {
+                overflow: scroll;
+                border: 1px solid black;
+                background-color: white;
+              }
+            }
+
+            .khoaodiv {
+              position: fixed;
+              display: flex;
+              flex-direction: column;
+              justify-content: flex-start;
+              z-index: 3;
+              width: 98%;
+              height: 90vh;
+              align-items: center;
+              padding: 10px;
+              gap: 20px;
+              border-radius: 5px;
+              -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+              box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+              //background-color: rgba(233, 222, 222, 0.664);
+              background-color: rgba(255, 255, 255, 0.78);
+              top: 70px;
+              left: 0.5%;
+              z-index: 10;
+              .buttongroup {
+                display: flex;
+                flex-direction: row;
+                width: 100%;
+                gap: 5px;
+              }
+              .khoaodivtable {
+                display: flex;
+                background-color: transparent;
+                height: 100%;
+                width: 100%;
+                gap: 10px;
+                .tablekhoao {
+                  display: flex;
+                  flex: 2.5;
+                  flex-direction: column;
+                  border-radius: 5px;
+                  gap: 10px;
+                  background-color: transparent;
+                  box-shadow: 5px 5px 15px 5px rgba(255, 255, 255, 0.17);
+                  .tabletonkhoao {
+                    display: flex;
+                    flex: 1;
+                    background-image: linear-gradient(0deg, #afd3d1, #f7b7f1);
+                  }
+                  .lichsuinputsanxuat {
+                    display: flex;
+                    flex: 1;
+                    background-image: linear-gradient(0deg, #afd3d1, #4eaae7);
+                  }
+                }
+                .nhapxuatkhoao {
+                  display: flex;
+                  flex-direction: column;
+                  height: 100%;
+                  gap: 10px;
+                  flex: 3;
+                  .nhapkhoao {
+                    display: flex;
+                    background-image: linear-gradient(0deg, #afd3d1, #4be7ec);
+                    -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+                    box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+                  }
+                  .xuatkhoao {
+                    display: flex;
+                    background-image: linear-gradient(0deg, #afd3d1, #f7d36e);
+                    -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+                    box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+                  }
+                }
+              }
+            }
+          }
+        }
+        .chithidiv {
+          display: flex;
+          flex-direction: column;
+          padding: 10px;
+          gap: 10px;
+          height: 3000px;
+          .listchithi {
+            display: flex;
+            height: 500px;
+
+            .planlist {
+              display: flex;
+              background-image: linear-gradient(0deg, #afd3d1, #66c4f0);
+              height: 100%;
+              border-radius: 5px;
+              box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
+              -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
+            }
+          }
+          .datadinhmuc {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            background-image: linear-gradient(0deg, #afd3d1, #25d468);
+            padding: 20px;
+            gap: 2px;
+            border-radius: 5px;
+            box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
+            -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
+            .forminputcolumn {
+              display: flex; 
+            }
+          }
+
+          .listlieuchithi {
+            display: flex;
+            height: 700px;
+
+            .chithitable {
+              display: flex;
+              background-image: linear-gradient(0deg, #afd3d1, #f5df7e);
+              height: 100%;
+              border-radius: 5px;
+              box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
+              -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
+            }
+          }
+        }
+      }
+    }
+  }
+}
+@media only screen and (max-width: 320px) {
 }

@@ -3,13 +3,8 @@ import React, { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import { generalQuery } from "../../../api/Api";
 import ChartWeekLy from "../../../components/Chart/Chart";
-import Chart from "../../../components/Chart/Chart";
-import Chart2 from "../../../components/Chart/Chart2";
-import Chart3 from "../../../components/Chart/Chart3";
-import Chart4 from "../../../components/Chart/Chart4";
 import ChartMonthLy from "../../../components/Chart/Chart5";
 import ChartYearly from "../../../components/Chart/Chart6";
-import Chart7 from "../../../components/Chart/Chart7";
 import ChartCustomerRevenue from "../../../components/Chart/ChartCustomerRevenue";
 import ChartFCSTSamSung from "../../../components/Chart/ChartFCSTSamSung";
 import ChartPICRevenue from "../../../components/Chart/ChartPICRevenue";
@@ -18,6 +13,13 @@ import ChartWeeklyPO from "../../../components/Chart/ChartWeekLyPO";
 import CustomerPOBalanceByType from "../../../components/DataTable/CustomerPOBalanceByType";
 import Widget from "../../../components/Widget/Widget";
 import "./KinhDoanhReport.scss";
+import ChartDaily from "../../../components/Chart/Chart2";
+import ChartPOBalance from "../../../components/Chart/Chart4";
+import CustomerDailyClosing from "../../../components/DataTable/CustomerDailyClosing";
+import CustomerWeeklyClosing from "../../../components/DataTable/CustomerWeeklyClosing";
+import CustomerPobalancebyTypeNew from "../../../components/DataTable/CustomerPoBalanceByTypeNew";
+import { DropDownBox } from "devextreme-react/drop-down-box";
+import { CustomerListData } from "../../../api/GlobalInterface";
 interface InvoiceTableData {
   DELIVERY_ID: number;
   CUST_CD: string;
@@ -71,45 +73,45 @@ interface WidgetData {
 }
 
 interface YearlyClosingData {
-  YEAR_NUM: string, 
-  DELIVERY_QTY: number, 
-  DELIVERED_AMOUNT: number
+  YEAR_NUM: string;
+  DELIVERY_QTY: number;
+  DELIVERED_AMOUNT: number;
 }
 interface MonthlyClosingData {
-  MONTH_NUM: string, 
-  DELIVERY_QTY: number, 
-  DELIVERED_AMOUNT: number
+  MONTH_NUM: string;
+  DELIVERY_QTY: number;
+  DELIVERED_AMOUNT: number;
 }
 interface DailyClosingData {
-  DELIVERY_DATE: string, 
-  DELIVERY_QTY: number, 
-  DELIVERED_AMOUNT: number
+  DELIVERY_DATE: string;
+  DELIVERY_QTY: number;
+  DELIVERED_AMOUNT: number;
 }
 interface WeeklyClosingData {
-  DEL_WEEK: string, 
-  DELIVERY_QTY: number, 
-  DELIVERED_AMOUNT: number
+  DEL_WEEK: string;
+  DELIVERY_QTY: number;
+  DELIVERED_AMOUNT: number;
 }
 interface POBalanceSummaryData {
-  PO_QTY: number,
-  TOTAL_DELIVERED: number, 
-  PO_BALANCE: number, 
-  PO_AMOUNT: number, 
-  DELIVERED_AMOUNT:number, 
-  BALANCE_AMOUNT: number
+  PO_QTY: number;
+  TOTAL_DELIVERED: number;
+  PO_BALANCE: number;
+  PO_AMOUNT: number;
+  DELIVERED_AMOUNT: number;
+  BALANCE_AMOUNT: number;
 }
 interface FCSTAmountData {
-  FCSTYEAR: number, 
-  FCSTWEEKNO: number,
-  FCST4W_QTY: number,
-  FCST4W_AMOUNT: number,
-  FCST8W_QTY: number,
-  FCST8W_AMOUNT: number,  
+  FCSTYEAR: number;
+  FCSTWEEKNO: number;
+  FCST4W_QTY: number;
+  FCST4W_AMOUNT: number;
+  FCST8W_QTY: number;
+  FCST8W_AMOUNT: number;
 }
 
 interface WidgetData_FCST {
-  fcstqty: number,
-  fcstamount: number
+  fcstqty: number;
+  fcstamount: number;
 }
 interface WidgetData_Yesterday {
   yesterday_qty: number;
@@ -159,18 +161,20 @@ const KinhDoanhReport = () => {
     });
   const [widgetdata_fcstAmount, setWidgetData_FcstAmount] =
     useState<FCSTAmountData>({
-     FCSTYEAR:0,
-     FCSTWEEKNO:1,
-     FCST4W_QTY:0,
-     FCST4W_AMOUNT:0,
-     FCST8W_QTY:0,
-     FCST8W_AMOUNT:0
+      FCSTYEAR: 0,
+      FCSTWEEKNO: 1,
+      FCST4W_QTY: 0,
+      FCST4W_AMOUNT: 0,
+      FCST8W_QTY: 0,
+      FCST8W_AMOUNT: 0,
     });
+  const [customerList, setCustomerList] = useState<CustomerListData[]>([]);
+  const [selectedCustomerList, setSelectedCustomerList] = useState<CustomerListData[]>([]);
   const handletraInvoice = (
     invoice_type: string,
     invoice_order: string,
     start_date: string,
-    end_date: string
+    end_date: string,
   ) => {
     generalQuery("traInvoiceDataFull", {
       alltime: false,
@@ -196,7 +200,7 @@ const KinhDoanhReport = () => {
                 ...element,
                 DELIVERY_DATE: element.DELIVERY_DATE.slice(0, 10),
               };
-            }
+            },
           );
           let total_qty: number = 0;
           let total_amount: number = 0;
@@ -245,251 +249,308 @@ const KinhDoanhReport = () => {
       });
   };
 
-  const handleGetFCSTAmount =  async () => {
-    let fcstweek2:number = moment().add(1,'days').isoWeek();
-    let fcstyear2: number = moment().year(); 
+  const handleGetFCSTAmount = async () => {
+    let fcstweek2: number = moment().add(1, "days").isoWeek();
+    let fcstyear2: number = moment().year();
 
-    
-    await generalQuery("checklastfcstweekno", { 
+    await generalQuery("checklastfcstweekno", {
       FCSTWEEKNO: fcstyear2,
     })
-    .then((response) => {
-      //console.log(response.data.data)
-      if (response.data.tk_status !== "NG") {
-        fcstweek2 = response.data.data[0].FCSTWEEKNO;                        
-        //console.log(response.data.data);
-      } else {
-        Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
-      }
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-
-    console.log('fcst week2->: ' , fcstweek2);
-
-    generalQuery("fcstamount", { FCSTYEAR: fcstyear2, FCSTWEEKNO: fcstweek2})
-    .then((response) => {
-      //console.log(response.data.data);
-      if (response.data.tk_status !== "NG") {
-        const loadeddata: FCSTAmountData[] =  response.data.data.map((element:FCSTAmountData,index: number)=> {
-          return {
-            ...element,                 
-          }
-        })
-        setWidgetData_FcstAmount(loadeddata[0]);        
-      } else {
-        
-        generalQuery("fcstamount", { FCSTYEAR: fcstweek2-1 ===0? fcstyear2-1 : fcstyear2, FCSTWEEKNO: fcstweek2-1 ===0? 52:fcstweek2-1  })
-        .then((response) => {
+      .then((response) => {
+        //console.log(response.data.data)
+        if (response.data.tk_status !== "NG") {
+          fcstweek2 = response.data.data[0].FCSTWEEKNO;
           //console.log(response.data.data);
-          if (response.data.tk_status !== "NG") {
-            const loadeddata: FCSTAmountData[] =  response.data.data.map((element:FCSTAmountData,index: number)=> {
+        } else {
+          //Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+
+    //console.log("fcst week2->: ", fcstweek2);
+
+    generalQuery("fcstamount", { FCSTYEAR: fcstyear2, FCSTWEEKNO: fcstweek2 })
+      .then((response) => {
+        //console.log(response.data.data);
+        if (response.data.tk_status !== "NG") {
+          const loadeddata: FCSTAmountData[] = response.data.data.map(
+            (element: FCSTAmountData, index: number) => {
               return {
-                ...element,                 
+                ...element,
+              };
+            },
+          );
+          setWidgetData_FcstAmount(loadeddata[0]);
+        } else {
+          generalQuery("fcstamount", {
+            FCSTYEAR: fcstweek2 - 1 === 0 ? fcstyear2 - 1 : fcstyear2,
+            FCSTWEEKNO: fcstweek2 - 1 === 0 ? 52 : fcstweek2 - 1,
+          })
+            .then((response) => {
+              //console.log(response.data.data);
+              if (response.data.tk_status !== "NG") {
+                const loadeddata: FCSTAmountData[] = response.data.data.map(
+                  (element: FCSTAmountData, index: number) => {
+                    return {
+                      ...element,
+                    };
+                  },
+                );
+                setWidgetData_FcstAmount(loadeddata[0]);
+              } else {
+                //Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
               }
             })
-            setWidgetData_FcstAmount(loadeddata[0]);        
-          } else {
-            //Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-        //Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
-      }
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-  }
+            .catch((error) => {
+              console.log(error);
+            });
+          //Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
   const handleGetDailyClosing = () => {
     let yesterday = moment().add(-1, "day").format("YYYY-MM-DD");
-    generalQuery("kd_dailyclosing", { START_DATE: yesterday, END_DATE: yesterday })
-    .then((response) => {
-      
-      if (response.data.tk_status !== "NG") {
-        const loadeddata: DailyClosingData[] =  response.data.data.map((element:DailyClosingData,index: number)=> {
-          return {
-            ...element,
-            DELIVERY_DATE : element.DELIVERY_DATE.slice(0,10),            
-          }
-        })
-        setWidgetData_Yesterday({
-          yesterday_qty:loadeddata[0].DELIVERY_QTY,
-          yesterday_amount: loadeddata[0].DELIVERED_AMOUNT
-        })        
-      } else {
-        //Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
-      }
+    generalQuery("kd_dailyclosing", {
+      START_DATE: yesterday,
+      END_DATE: yesterday,
     })
-    .catch((error) => {
-      console.log(error);
-    });
-  }
+      .then((response) => {
+        if (response.data.tk_status !== "NG") {
+          const loadeddata: DailyClosingData[] = response.data.data.map(
+            (element: DailyClosingData, index: number) => {
+              return {
+                ...element,
+                DELIVERY_DATE: element.DELIVERY_DATE.slice(0, 10),
+              };
+            },
+          );
+          setWidgetData_Yesterday({
+            yesterday_qty: loadeddata[0].DELIVERY_QTY,
+            yesterday_amount: loadeddata[0].DELIVERED_AMOUNT,
+          });
+        } else {
+          //Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
   const handleGetWeeklyClosing = () => {
     generalQuery("kd_weeklyclosing", { YEAR: moment().format("YYYY") })
-    .then((response) => {      
-      if (response.data.tk_status !== "NG") {
-        const loadeddata: WeeklyClosingData[] =  response.data.data.map((element:WeeklyClosingData,index: number)=> {
-          return {
-            ...element,
-          }
-        });
-        setWidgetData_ThisWeek({
-          thisweek_qty:loadeddata[loadeddata.length-1].DELIVERY_QTY,
-          thisweek_amount: loadeddata[loadeddata.length-1].DELIVERED_AMOUNT
-        }) 
-       
-      } else {
-        Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
-      }
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-  }
+      .then((response) => {
+        if (response.data.tk_status !== "NG") {
+          const loadeddata: WeeklyClosingData[] = response.data.data.map(
+            (element: WeeklyClosingData, index: number) => {
+              return {
+                ...element,
+              };
+            },
+          );
+          setWidgetData_ThisWeek({
+            thisweek_qty: loadeddata[0].DELIVERY_QTY,
+            thisweek_amount: loadeddata[0].DELIVERED_AMOUNT,
+          });
+        } else {
+          //Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
   const handleGetMonthlyClosing = () => {
     generalQuery("kd_monthlyclosing", { YEAR: moment().format("YYYY") })
-    .then((response) => {      
-      if (response.data.tk_status !== "NG") {
-        const loadeddata: MonthlyClosingData[] =  response.data.data.map((element:MonthlyClosingData,index: number)=> {
-          return {
-            ...element,
-          }
-        });
-        setWidgetData_ThisMonth({
-          thismonth_qty:loadeddata[loadeddata.length-1].DELIVERY_QTY,
-          thismonth_amount: loadeddata[loadeddata.length-1].DELIVERED_AMOUNT
-        }) 
-      } else {
-        Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
-      }
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-  }
+      .then((response) => {
+        if (response.data.tk_status !== "NG") {
+          const loadeddata: MonthlyClosingData[] = response.data.data.map(
+            (element: MonthlyClosingData, index: number) => {
+              return {
+                ...element,
+              };
+            },
+          );
+          setWidgetData_ThisMonth({
+            thismonth_qty: loadeddata[0].DELIVERY_QTY,
+            thismonth_amount:
+              loadeddata[0].DELIVERED_AMOUNT,
+          });
+        } else {
+          //Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
   const handleGetYearlyClosing = () => {
-    generalQuery("kd_annuallyclosing", {  })
-    .then((response) => {      
-      if (response.data.tk_status !== "NG") {
-        const loadeddata: YearlyClosingData[] =  response.data.data.map((element:YearlyClosingData,index: number)=> {
-          return {
-            ...element,
-          }
-        });
-        setWidgetData_ThisYear({
-          thisyear_qty:loadeddata[loadeddata.length-1].DELIVERY_QTY,
-          thisyear_amount: loadeddata[loadeddata.length-1].DELIVERED_AMOUNT
-        }) 
-        //console.log(loadeddata);
-       /*  Swal.fire(
+    generalQuery("kd_annuallyclosing", {})
+      .then((response) => {
+        if (response.data.tk_status !== "NG") {
+          const loadeddata: YearlyClosingData[] = response.data.data.map(
+            (element: YearlyClosingData, index: number) => {
+              return {
+                ...element,
+              };
+            },
+          );
+          setWidgetData_ThisYear({
+            thisyear_qty: loadeddata[loadeddata.length - 1].DELIVERY_QTY,
+            thisyear_amount: loadeddata[loadeddata.length - 1].DELIVERED_AMOUNT,
+          });
+          //console.log(loadeddata);
+          /*  Swal.fire(
           "Thông báo",
           "Đã load " + response.data.data.length + " dòng",
           "success"
         ); */
-      } else {
-        Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
-      }
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-  }
+        } else {
+          //Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
   const handleGetPOBalanceSummary = () => {
-    generalQuery("traPOSummaryTotal", {  })
-    .then((response) => {      
-      if (response.data.tk_status !== "NG") {
-        const loadeddata: POBalanceSummaryData[] =  response.data.data.map((element:POBalanceSummaryData,index: number)=> {
-          return {
-            ...element,
-          }
-        });
-        setWidgetData_PoBalanceSummary({
-          po_balance_qty:loadeddata[0].PO_BALANCE,
-          po_balance_amount: loadeddata[0].BALANCE_AMOUNT
-        }) 
-        //console.log(loadeddata);
-       /*  Swal.fire(
+    generalQuery("traPOSummaryTotal", {})
+      .then((response) => {
+        if (response.data.tk_status !== "NG") {
+          const loadeddata: POBalanceSummaryData[] = response.data.data.map(
+            (element: POBalanceSummaryData, index: number) => {
+              return {
+                ...element,
+              };
+            },
+          );
+          setWidgetData_PoBalanceSummary({
+            po_balance_qty: loadeddata[0].PO_BALANCE,
+            po_balance_amount: loadeddata[0].BALANCE_AMOUNT,
+          });
+          //console.log(loadeddata);
+          /*  Swal.fire(
           "Thông báo",
           "Đã load " + response.data.data.length + " dòng",
           "success"
         ); */
-      } else {
-        Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
-      }
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-  }
+        } else {
+          //Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+  const getcustomerlist = () => {
+    generalQuery("selectcustomerList", {})
+      .then((response) => {
+        if (response.data.tk_status !== "NG") {
+          //console.log(response.data.data);
+          setCustomerList(response.data.data);
+        } else {
+          setCustomerList([]);
+        }
+      })
+      .catch((error) => {
+        //console.log(error);
+      });
+  };
+  
+  const countriesData = [
+    { id: 1, name: 'Vietnam' },
+    { id: 2, name: 'United States' },
+    { id: 3, name: 'Japan' },
+    { id: 4, name: 'Germany' },
+    { id: 5, name: 'France' },
+  ];
+  const [selectedCountries, setSelectedCountries] = useState([]);
 
-  useEffect(() => {
-    /* let now = moment();
-    let yesterday = moment().add(-1, "day").format("YYYY-MM-DD");
-    let sunday = now.clone().weekday(0).format("YYYY-MM-DD");
-    let monday = now.clone().weekday(6).format("YYYY-MM-DD");
-    const startOfMonth = moment().startOf("month").format("YYYY-MM-DD");
-    const endOfMonth = moment().endOf("month").format("YYYY-MM-DD");
-    const startOfYear = moment().format("YYYY-01-01");
-    const rightnow = now.format("YYYY-MM-DD"); */
-    //handletraInvoice("day", "this", yesterday, yesterday);
-    handleGetDailyClosing();
-    //handletraInvoice("week", "this", sunday, monday);
-    handleGetWeeklyClosing();
-    //handletraInvoice("month", "this", startOfMonth, endOfMonth);
-    handleGetMonthlyClosing();
-    //handletraInvoice("year", "this", startOfYear, rightnow);
+  const initFunction = () => {
+    getcustomerlist();
+    handleGetDailyClosing();    
+    handleGetWeeklyClosing();    
+    handleGetMonthlyClosing();    
     handleGetYearlyClosing();
     handleGetPOBalanceSummary();
     handleGetFCSTAmount();
+  }
+
+  useEffect(() => {    
+    initFunction();
+    
   }, []);
   return (
-    <div className='kinhdoanhreport'>
-      <div className='doanhthureport'>
-        <span className='section_title'>1. Summary</span>
-        <div className='revenuewidget'>
-          <div className='revenuwdg'>
+    <div className="kinhdoanhreport">
+      <div className="filterdiv">
+        <DropDownBox
+          dataSource={countriesData}
+          placeholder="Select countries"
+          value={selectedCountries}
+          valueExpr="id"
+          displayExpr="name"
+          showClearButton={true}
+          onValueChanged={(e) => setSelectedCountries(e.value)}
+          opened={true}
+        />
+
+        {/* <DropDownBox
+          dataSource={customerList}
+          placeholder="Select Customer"
+          value={selectedCustomerList}
+          valueExpr="CUST_CD"
+          displayExpr="CUST_NAME_KD"
+          showClearButton={true}
+          onValueChanged={(e) => setSelectedCustomerList(e.value)}
+          opened={true}
+        /> */}
+      </div>
+      <div className="doanhthureport">
+        <span className="section_title">1. Summary</span>
+        <div className="revenuewidget">
+          <div className="revenuwdg">
             <Widget
-              widgettype='revenue'
-              label='Yesterday'
-              topColor='#b3c6ff'
-              botColor='#b3ecff'
+              widgettype="revenue"
+              label="Yesterday"
+              topColor="#b3c6ff"
+              botColor="#b3ecff"
               qty={widgetdata_yesterday.yesterday_qty}
               amount={widgetdata_yesterday.yesterday_amount}
               percentage={20}
             />
           </div>
-          <div className='revenuwdg'>
+          <div className="revenuwdg">
             <Widget
-              widgettype='revenue'
-              label='This week'
-              topColor='#ccffcc'
-              botColor='#80ff80'
+              widgettype="revenue"
+              label="This week"
+              topColor="#ccffcc"
+              botColor="#80ff80"
               qty={widgetdata_thisweek.thisweek_qty}
               amount={widgetdata_thisweek.thisweek_amount}
               percentage={20}
             />
           </div>
-          <div className='revenuwdg'>
+          <div className="revenuwdg">
             <Widget
-              widgettype='revenue'
-              label='This month'
-              topColor='#fff2e6'
-              botColor='#ffbf80'
+              widgettype="revenue"
+              label="This month"
+              topColor="#fff2e6"
+              botColor="#ffbf80"
               qty={widgetdata_thismonth.thismonth_qty}
               amount={widgetdata_thismonth.thismonth_amount}
               percentage={20}
             />
           </div>
-          <div className='revenuwdg'>
+          <div className="revenuwdg">
             <Widget
-              widgettype='revenue'
-              label='This year'
-              topColor='#ffe6e6'
-              botColor='#ffb3b3'
+              widgettype="revenue"
+              label="This year"
+              topColor="#ffe6e6"
+              botColor="#ffb3b3"
               qty={widgetdata_thisyear.thisyear_qty}
               amount={widgetdata_thisyear.thisyear_amount}
               percentage={20}
@@ -498,102 +559,116 @@ const KinhDoanhReport = () => {
         </div>
         <br></br>
         <hr></hr>
-        <div className='graph'>
-          <span className='section_title'>2. Closing</span>
-          <div className='dailygraphtotal'>
-            <div className='dailygraph'>
-              <span className='subsection'>Daily Closing</span>
-              <Chart2 />
+        <div className="graph">
+          <span className="section_title">2. Closing</span>
+          <div className="dailygraphtotal">
+            <div className="dailygraph">
+              <span className="subsection">Daily Closing</span>
+              <ChartDaily />
             </div>
-            <div className='dailygraph'>
-              <span className='subsection'>Weekly Closing</span>
+            <div className="dailygraph">
+              <span className="subsection">Weekly Closing</span>
               <ChartWeekLy />
             </div>
           </div>
-          <div className='monthlyweeklygraph'>
-            <div className='dailygraph'>
-              <span className='subsection'>Monthly Closing</span>
+          <div className="monthlyweeklygraph">
+            <div className="dailygraph">
+              <span className="subsection">Monthly Closing</span>
               <ChartMonthLy />
             </div>
-            <div className='dailygraph'>
-              <span className='subsection'>Yearly Closing</span>
+            <div className="dailygraph">
+              <span className="subsection">Yearly Closing</span>
               <ChartYearly />
             </div>
           </div>
-          <div className='monthlyweeklygraph'>
-            <div className='dailygraph'>
-              <span className='subsection'>TOP 5 Customer Weekly Revenue</span>
+          
+          <div className="monthlyweeklygraph">
+            <div className="dailygraph">
+              <span className="subsection">TOP 5 Customer Weekly Revenue</span>
               <ChartCustomerRevenue />
             </div>
-            <div className='dailygraph'>
-              <span className='subsection'>PIC Weekly Revenue</span>
+            <div className="dailygraph">
+              <span className="subsection">PIC Weekly Revenue</span>
               <ChartPICRevenue />
             </div>
           </div>
+          <div className="monthlyweeklygraph">
+            <div className="dailygraph">
+              <span className="subsection">Customer Daily Closing</span>
+              <CustomerDailyClosing/> 
+            </div> 
+            <div className="dailygraph">
+              <span className="subsection">Customer Weekly Closing</span>
+              <CustomerWeeklyClosing/> 
+            </div> 
+          </div>
           <br></br>
           <hr></hr>
-          <span className='section_title'>3. Purchase Order (PO)</span>
+          <span className="section_title">3. Purchase Order (PO)</span>
           <br></br>
-          <div className='pobalancesummary'>
-            <span className='subsection'>PO Balance info</span>
+          <div className="pobalancesummary">
+            <span className="subsection">PO Balance info</span>
             <Widget
-              widgettype='revenue'
-              label='PO BALANCE INFOMATION'
-              topColor='#ccff33'
-              botColor='#99ccff'
+              widgettype="revenue"
+              label="PO BALANCE INFOMATION"
+              topColor="#ccff33"
+              botColor="#99ccff"
               qty={widgetdata_pobalancesummary.po_balance_qty * 1}
               amount={widgetdata_pobalancesummary.po_balance_amount}
               percentage={20}
             />
           </div>
-          <div className='monthlyweeklygraph'>
-            <div className='dailygraph'>
-              <span className='subsection'>PO By Week</span>
+          <div className="monthlyweeklygraph">
+            <div className="dailygraph">
+              <span className="subsection">PO By Week</span>
               <ChartWeeklyPO />
             </div>
-            <div className='dailygraph'>
-              <span className='subsection'>Delivery By Week</span>
-              <ChartWeekLyDelivery />
+            <div className="dailygraph">
+              <span className="subsection">Delivery By Week</span>
+              <ChartWeekLy />
             </div>
           </div>
-          <div className='monthlyweeklygraph'>
-            <div className='dailygraph'>
-              <span className='subsection'>PO Balance Trending (By Week)</span>
-              <Chart4 />
+          <div className="monthlyweeklygraph">
+            <div className="dailygraph">
+              <span className="subsection">PO Balance Trending (By Week)</span>
+              <ChartPOBalance />
             </div>
           </div>
-          <div className='datatable'>
-            <div className='dailygraph'>
-              <span className='subsection'>
+          <div className="datatable">
+            <div className="dailygraph">
+              <span className="subsection">
                 Customer PO Balance By Product Type
               </span>
-              <CustomerPOBalanceByType />
+              <CustomerPobalancebyTypeNew/>
+              {/* <CustomerPOBalanceByType /> */}
             </div>
           </div>
           <br></br>
           <hr></hr>
-          <span className='section_title'>4. Forecast</span>
+          <span className="section_title">4. Forecast</span>
           <br></br>
-          <div className='fcstsummary'>
-            <span className='subsection'>FCST Amount (FCST W{widgetdata_fcstAmount.FCSTWEEKNO})</span>
-            <div className='fcstwidget'>
-              <div className='fcstwidget1'>
+          <div className="fcstsummary">
+            <span className="subsection">
+              FCST Amount (FCST W{widgetdata_fcstAmount.FCSTWEEKNO})
+            </span>
+            <div className="fcstwidget">
+              <div className="fcstwidget1">
                 <Widget
-                  widgettype='revenue'
-                  label='FCST AMOUNT(4 WEEK)'
-                  topColor='#eb99ff'
-                  botColor='#99ccff'
+                  widgettype="revenue"
+                  label="FCST AMOUNT(4 WEEK)"
+                  topColor="#eb99ff"
+                  botColor="#99ccff"
                   qty={widgetdata_fcstAmount.FCST4W_QTY * 1}
                   amount={widgetdata_fcstAmount.FCST4W_AMOUNT}
                   percentage={20}
                 />
               </div>
-              <div className='fcstwidget1'>
+              <div className="fcstwidget1">
                 <Widget
-                  widgettype='revenue'
-                  label='FCST AMOUNT(8 WEEK)'
-                  topColor='#e6e600'
-                  botColor='#ff99c2'
+                  widgettype="revenue"
+                  label="FCST AMOUNT(8 WEEK)"
+                  topColor="#e6e600"
+                  botColor="#ff99c2"
                   qty={widgetdata_fcstAmount.FCST8W_QTY * 1}
                   amount={widgetdata_fcstAmount.FCST8W_AMOUNT}
                   percentage={20}
@@ -601,9 +676,9 @@ const KinhDoanhReport = () => {
               </div>
             </div>
           </div>
-          <div className='monthlyweeklygraph'>
-            <div className='dailygraph'>
-              <span className='subsection'>
+          <div className="monthlyweeklygraph">
+            <div className="dailygraph">
+              <span className="subsection">
                 SamSung ForeCast (So sánh FCST 2 tuần liền kề)
               </span>
               <ChartFCSTSamSung />
@@ -611,7 +686,7 @@ const KinhDoanhReport = () => {
           </div>
         </div>
       </div>
-      <div className='poreport'></div>
+      <div className="poreport"></div>
     </div>
   );
 };

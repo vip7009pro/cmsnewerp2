@@ -1,9 +1,8 @@
 import moment from "moment";
 import React, { useState, useEffect, useContext } from "react";
-import { generalQuery, uploadQuery } from "../../../api/Api";
+import { generalQuery, getSocket, uploadQuery } from "../../../api/Api";
 import { UserContext, LangConText } from "../../../api/Context";
 import "./AccountInfo.scss";
-
 
 import LinearProgress, {
   LinearProgressProps,
@@ -11,17 +10,21 @@ import LinearProgress, {
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import getsentence from "../../String/String";
-import { IconButton } from "@mui/material";
+import { Button, IconButton } from "@mui/material";
 import { AiOutlineCloudUpload } from "react-icons/ai";
 import Swal from "sweetalert2";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
-import { UserData, changeUserData } from "../../../redux/slices/globalSlice";
-import axios from 'axios';
+import {
+  changeUserData,
+  update_socket,
+} from "../../../redux/slices/globalSlice";
+import Cookies from "universal-cookie";
+import { UserData } from "../../../api/GlobalInterface";
 
-interface  MYCHAMCONG {
-  MIN_TIME: string,
-  MAX_TIME: string,
+interface MYCHAMCONG {
+  MIN_TIME: string;
+  MAX_TIME: string;
 }
 export function LinearProgressWithLabel(
   props: LinearProgressProps & { value: number }
@@ -41,19 +44,20 @@ export function LinearProgressWithLabel(
 }
 
 export default function AccountInfo() {
+  const cookies = new Cookies();
   const userdata: UserData | undefined = useSelector(
     (state: RootState) => state.totalSlice.userData
   );
   const company: string = useSelector(
     (state: RootState) => state.totalSlice.company
   );
-  const theme: any = useSelector(
-    (state: RootState) => state.totalSlice.theme
-  );
+  const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
 
+  const [webver, setwebver] = useState(0);
   const dispatch = useDispatch();
-  const [mychamcong,setMyChamCong] = useState<MYCHAMCONG>();
-  const [lang,setLang] = useContext(LangConText);
+  const [logoutID, setLogOutID] = useState("");
+  const [mychamcong, setMyChamCong] = useState<MYCHAMCONG>();
+  const [lang, setLang] = useContext(LangConText);
   const [workday, setWorkDay] = useState(0);
   const [overtimeday, setOverTimeDay] = useState(0);
   const [nghiday, setNghiDay] = useState(0);
@@ -81,6 +85,28 @@ export default function AccountInfo() {
     return count;
   }
   days = getBusinessDatesCount(new Date(startOfYear), new Date());
+  const setWebVer = (web_ver: number) => {
+    getSocket().emit("setWebVer", web_ver);
+
+    generalQuery("setWebVer", {
+      WEB_VER: web_ver,
+    })
+      .then((response) => {
+        if (response.data.tk_status !== "NG") {
+          Swal.fire("Thông báo", "Set web ver thành công", "success");
+          
+        } else {
+          Swal.fire(
+            "Thông báo",
+            "Set web ver thất bại: " + response.data.message,
+            "error"
+          );
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
   const getData = () => {
     let insertData = {};
     generalQuery("workdaycheck", insertData)
@@ -118,7 +144,7 @@ export default function AccountInfo() {
       });
 
     generalQuery("countthuongphat", insertData)
-      .then((response) => {        
+      .then((response) => {
         setThuongPhat({
           count_thuong: response.data.data.count_thuong[0].THUONG,
           count_phat: response.data.data.count_phat[0]?.PHAT,
@@ -128,20 +154,32 @@ export default function AccountInfo() {
         console.log(error);
       });
   };
-  const getchamcong =()=> {
+  const getchamcong = () => {
     generalQuery("checkMYCHAMCONG", {})
       .then((response) => {
-        //console.log(response.data.data);
+        //console.log(response.data);
         if (response.data.tk_status !== "NG") {
           //console.log('data',response.data.data)
-          let loaded_data: MYCHAMCONG = response.data.data[0];
-          loaded_data.MIN_TIME = loaded_data.MIN_TIME.substring(11,19);
-          loaded_data.MAX_TIME = loaded_data.MAX_TIME.substring(11,19); 
-          let tempminhour: number = Number(loaded_data.MIN_TIME.substring(0,2));
-          let tempminminute: number = Number(loaded_data.MIN_TIME.substring(3,5));
+          //console.log('data',response.data.REFRESH_TOKEN);
+          /* let rfr_token: string = response.data.REFRESH_TOKEN;
+          cookies.set("token", rfr_token, { path: "/" }); */
 
-          let tempmaxhour: number = Number(loaded_data.MAX_TIME.substring(0,2));
-          let tempmaxminute: number = Number(loaded_data.MAX_TIME.substring(3,5));
+          let loaded_data: MYCHAMCONG = response.data.data[0];
+          loaded_data.MIN_TIME = loaded_data.MIN_TIME?.substring(11, 19);
+          loaded_data.MAX_TIME = loaded_data.MAX_TIME?.substring(11, 19);
+          let tempminhour: number = Number(
+            loaded_data.MIN_TIME?.substring(0, 2)
+          );
+          let tempminminute: number = Number(
+            loaded_data.MIN_TIME?.substring(3, 5)
+          );
+
+          let tempmaxhour: number = Number(
+            loaded_data.MAX_TIME?.substring(0, 2)
+          );
+          let tempmaxminute: number = Number(
+            loaded_data.MAX_TIME?.substring(3, 5)
+          );
 
           /* console.log('tempminhour',tempminhour);
           console.log('tempmaxhour',tempmaxhour);
@@ -150,66 +188,66 @@ export default function AccountInfo() {
           console.log('tempmaxminute',tempmaxminute);
  */
 
-          if(tempminhour === tempmaxhour) {
-            if(tempmaxminute - tempminminute >=30)
-            {
-              
-            }
-            else
-            {
-              loaded_data.MAX_TIME='Chưa chấm';              
+          if (tempminhour === tempmaxhour) {
+            if (tempmaxminute - tempminminute >= 30) {
+            } else {
+              loaded_data.MAX_TIME = "Chưa chấm";
             }
           }
           //console.log('gio xu ly',loaded_data)
-          setMyChamCong(loaded_data);          
-        }
-        else {
+          setMyChamCong(loaded_data);
+        } else {
           setMyChamCong({
-            MIN_TIME:'Chưa chấm',
-            MAX_TIME:'Chưa chấm'
-          })
-        }        
+            MIN_TIME: "Chưa chấm",
+            MAX_TIME: "Chưa chấm",
+          });
+        }
       })
       .catch((error) => {
         console.log(error);
       });
-   
-  }
-  let file:any = null;
-  const uploadFile2 = async(e:any)=> {
-    uploadQuery(file,'NS_'+ userdata?.EMPL_NO+'.jpg','Picture_NS')
-          .then((response)=> {
-            if (response.data.tk_status !== "NG") {
-              generalQuery("update_empl_image", { EMPL_NO: userdata?.EMPL_NO, EMPL_IMAGE: 'Y' })
-              .then((response) => {        
-                if (response.data.tk_status !== "NG") 
-                {                 
-                  dispatch(changeUserData({...userdata, EMPL_IMAGE:'Y'}));
-                  Swal.fire('Thông báo','Upload avatar thành công','success');
-                } 
-                else {
-                  Swal.fire('Thông báo','Upload avatar thất bại','error');
-                }
-              })
-              .catch((error) => {
-                console.log(error);
-              });   
-            } else {
-              Swal.fire('Thông báo','Upload file thất bại:' + response.data.message,'error'); 
-            }
+  };
+  const [file, setFile] = useState<any>(null);
+  //let file:any = null;
+  const uploadFile2 = async (e: any) => {
+    uploadQuery(file, "NS_" + userdata?.EMPL_NO + ".jpg", "Picture_NS")
+      .then((response) => {
+        console.log("resopone upload:", response.data);
+        if (response.data.tk_status !== "NG") {
+          generalQuery("update_empl_image", {
+            EMPL_NO: userdata?.EMPL_NO,
+            EMPL_IMAGE: "Y",
           })
-          .catch((error) => {
-            console.log(error);
-          });
-  }
+            .then((response) => {
+              if (response.data.tk_status !== "NG") {
+                dispatch(changeUserData({ ...userdata, EMPL_IMAGE: "Y" }));
+                Swal.fire("Thông báo", "Upload avatar thành công", "success");
+              } else {
+                Swal.fire("Thông báo", "Upload avatar thất bại", "error");
+              }
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+        } else {
+          Swal.fire(
+            "Thông báo",
+            "Upload file thất bại:" + response.data.message,
+            "error"
+          );
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 
-  useEffect(() => {    
+  useEffect(() => {
     getData();
     getchamcong();
     let intervalID2 = window.setInterval(() => {
-      getchamcong();         
-    }, 3000);
-
+      getchamcong();
+    }, 5000);
 
     return () => {
       window.clearInterval(intervalID2);
@@ -275,13 +313,16 @@ export default function AccountInfo() {
                     ? mychamcong?.MIN_TIME
                     : "Chưa chấm"}
                 </div>
-                <div className='chamcongmax'  style={{
+                <div
+                  className='chamcongmax'
+                  style={{
                     backgroundImage: `${
                       company === "CMS"
                         ? theme.CMS.backgroundImage
                         : theme.PVN.backgroundImage
                     }`,
-                  }}>
+                  }}
+                >
                   {mychamcong?.MAX_TIME !== null
                     ? mychamcong?.MAX_TIME
                     : "Chưa chấm"}
@@ -354,15 +395,15 @@ export default function AccountInfo() {
                   {" "}
                   Avatar:
                   <IconButton className='buttonIcon' onClick={uploadFile2}>
-                    <AiOutlineCloudUpload color='yellow' size={25} />
+                    <AiOutlineCloudUpload color='yellow' size={15} />
                     Upload
                   </IconButton>
                   <input
                     accept='.jpg'
                     type='file'
                     onChange={(e: any) => {
-                      file = e.target.files[0];
-                      console.log(file);
+                      setFile(e.target.files[0]);
+                      console.log(e.target.files[0]);
                     }}
                   />
                 </div>
@@ -423,6 +464,65 @@ export default function AccountInfo() {
             {/*Khen thuong*/}
             {getsentence(37, lang)} {thuongphat.count_thuong} , {/* Kỷ luật */}
             {getsentence(38, lang)}: {thuongphat.count_phat}
+          </h3>{" "}
+          <h3 className='h3h3' style={{ color: "black" }}>
+            {userdata?.EMPL_NO === "NHU1903" && (
+              <input
+                type='text'
+                value={logoutID}
+                onChange={(e) => {
+                  setLogOutID(e.target.value);
+                }}
+              ></input>
+            )}
+            {userdata?.EMPL_NO === "NHU1903" && (
+              <Button
+                onClick={() => {
+                  dispatch(
+                    update_socket({
+                      event: "notification",
+                      data: {
+                        command: "logout",
+                        EMPL_NO: logoutID,
+                      },
+                    })
+                  );
+                }}
+              >
+                X
+              </Button>
+            )}
+            {userdata?.EMPL_NO === "NHU1903" && (
+              <input
+                type='text'
+                value={webver}
+                onChange={(e) => {
+                  setwebver(Number(e.target.value));
+                }}
+              ></input>
+            )}
+            {userdata?.EMPL_NO === "NHU1903" && (
+              <Button
+                onClick={() => {
+                  if (webver !== 0) {
+                    setWebVer(webver);
+                  } else {
+                    Swal.fire("Thông báo", "Không setver =0 ", "warning");
+                  }
+                }}
+              >
+                Upver
+              </Button>
+            )}
+            {userdata?.EMPL_NO === "NHU1903" && (
+              <Button
+                onClick={() => {
+                  getSocket().emit("setWebVer", 125);   
+                }}
+              >
+                Emit
+              </Button>
+            )}
           </h3>{" "}
           <br></br>
         </div>

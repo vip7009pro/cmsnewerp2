@@ -1,0 +1,509 @@
+@media only screen and (max-width: 3000px) {
+  .pqc3 {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;    
+    .tracuuDataInspection {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      align-items: flex-start;
+      justify-items: flex-start;
+      justify-content: flex-start;       
+      .maintable {
+        display: flex;
+        flex-direction: row;
+        gap: 5px;
+        width: 100%;
+        height: 92vh;
+        .tracuuDataInspectionform2 {
+          display: flex;          
+          flex: 1;
+          height: 95vh;
+          gap: 10px;
+          flex-direction: column;
+          align-items: center;
+          justify-items: flex-start;
+          background-image: linear-gradient(0deg, #df9ef0, #f0f182);
+          -webkit-box-shadow: 5px 5px 15px 5px rgba(20, 9, 9, 0.27);
+          box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+          border-radius: 3px;
+          padding: 10px;
+          height: fit-content;
+          font-size: 0.8rem;
+          span {
+            padding: 10px;
+            font-size: 20px;
+            margin: auto;
+          }
+          .forminput {
+            display: flex;
+            gap: 5px;
+            align-items: center;
+            flex-direction: column;
+            justify-content: flex-start;
+            padding: 2px;
+            width: 100%;
+            height: 83vh;
+            .forminputcolumn {
+              display: flex;
+              flex-direction: column;
+              gap: 5px;
+              align-items: flex-start;
+              justify-content: center;
+              flex-wrap: wrap;
+              font-size: 0.7rem;
+             
+              input {
+                width: 170px;
+                height: 15px;
+                outline: none;
+                border-radius: 5px;
+                border: none;
+                padding: 5px;
+                margin-left: 5px;
+                background-image: linear-gradient(0deg, #ececec, #9dee95);
+                :focus {
+                  background-image: linear-gradient(0deg, #ececec, #1c4df0);
+                }
+              }
+              select {
+                width: 180px;
+                height: 25px;
+                outline: none;
+                border-radius: 5px;
+                border: none;
+                padding: 5px;
+                margin-left: 5px;
+                background-image: linear-gradient(0deg, #ececec, #9dee95);
+              }
+            }
+          }      
+         
+        }
+        .tracuuYCSXTable2 {
+          display: flex;
+          flex-direction: column;          
+          flex: 3;
+          height: 100%;          
+          background-image: linear-gradient(0deg, #afd3d1, #6dd1f8);
+          -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+          box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+          border-radius: 3px;
+          .datatb {
+            justify-items: center;
+            width: 100%;
+            padding: 2px;
+            height: 85vh;
+            .menubar {
+              display: flex;
+              justify-content: center;
+              align-items: center;
+            }
+            .dx-datagrid-rowsview
+              .dx-selection.dx-row:not(.dx-row-focused):not(.dx-row-removed)
+              > td {
+              background-color: rgb(7, 190, 68);
+              color: unset;
+            }
+            .dx-datagrid-borders > .dx-datagrid-header-panel {
+              border-bottom: 0;
+              background-color: #b5f398;
+            }
+  
+            .dx-toolbar .dx-toolbar-items-container {
+              height: 25px;
+              overflow: visible;
+              background-color: #b5f398;
+            }
+  
+            //toan bo bang
+            .dx-gridbase-container > .dx-datagrid-rowsview.dx-scrollable {
+              display: -ms-flexbox;
+              display: flex;
+              background-image: linear-gradient(0deg, #e9e1eb, #ffffff);
+              font-size: 0.7rem;
+            }
+  
+            .dx-datagrid-borders > .dx-datagrid-filter-panel,
+            .dx-datagrid-borders > .dx-datagrid-headers {
+              border-top: 1px solid #ddd;
+              background-image: linear-gradient(0deg, #e9e1eb, #a0f87e);
+              color: rgb(3, 26, 235);
+              font-size: 0.7rem;              
+            }
+            //filter row input
+            .dx-datagrid-filter-row
+              .dx-editor-cell
+              .dx-editor-with-menu
+              .dx-placeholder::before,
+            .dx-datagrid-filter-row
+              .dx-editor-cell
+              .dx-editor-with-menu
+              .dx-texteditor-input {
+              padding-left: 32px;
+              background-image: linear-gradient(0deg, #e9e1eb, #a0f87e);
+              color: black;
+              height: 10px;
+            }
+            .dx-editor-cell .dx-texteditor,
+            .dx-editor-cell .dx-texteditor .dx-texteditor-input {
+              background-image: linear-gradient(0deg, #e9e1eb, #a0f87e);
+            }
+  
+            .dx-searchbox .dx-placeholder::before,
+            .dx-searchbox .dx-texteditor-input {
+              padding-left: 34px;
+              background-image: linear-gradient(0deg, #e9e1eb, #d7f0cd);
+            }
+  
+            .dx-button-mode-contained {
+              background-color: #a0f87e;
+              border-color: #cacafa;
+              color: #430fff;
+            }
+  
+            .dx-datagrid-total-footer > .dx-datagrid-content {
+              padding-top: 0px;
+              padding-bottom: 0px;
+            }
+          }
+        }
+        .tracuuYCSXTable {
+          display: flex;
+          flex-direction: column;          
+          flex: 6;
+          height: 100%;          
+          background-image: linear-gradient(0deg, #afd3d1, #6dd1f8);
+          -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+          box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+          border-radius: 3px;
+          .datatb {
+            justify-items: center;
+            width: 100%;
+            padding: 2px;
+            height: 85vh;
+            .menubar {
+              display: flex;
+              justify-content: center;
+              align-items: center;
+            }
+            .dx-datagrid-rowsview
+              .dx-selection.dx-row:not(.dx-row-focused):not(.dx-row-removed)
+              > td {
+              background-color: orange;
+              color: unset;
+            }
+            .dx-datagrid-borders > .dx-datagrid-header-panel {
+              border-bottom: 0;
+              background-color: #b5f398;
+            }
+  
+            .dx-toolbar .dx-toolbar-items-container {
+              height: 25px;
+              overflow: visible;
+              background-color: #b5f398;
+            }
+  
+            //toan bo bang
+            .dx-gridbase-container > .dx-datagrid-rowsview.dx-scrollable {
+              display: -ms-flexbox;
+              display: flex;
+              background-image: linear-gradient(0deg, #e9e1eb, #e4a5f7);
+              font-size: 0.7rem;
+            }
+  
+            .dx-datagrid-borders > .dx-datagrid-filter-panel,
+            .dx-datagrid-borders > .dx-datagrid-headers {
+              border-top: 1px solid #ddd;
+              background-image: linear-gradient(0deg, #e9e1eb, #a0f87e);
+              color: black;
+              font-size: 0.7rem;
+            }
+            //filter row input
+            .dx-datagrid-filter-row
+              .dx-editor-cell
+              .dx-editor-with-menu
+              .dx-placeholder::before,
+            .dx-datagrid-filter-row
+              .dx-editor-cell
+              .dx-editor-with-menu
+              .dx-texteditor-input {
+              padding-left: 32px;
+              background-image: linear-gradient(0deg, #e9e1eb, #a0f87e);
+              color: black;
+              height: 10px;
+            }
+            .dx-editor-cell .dx-texteditor,
+            .dx-editor-cell .dx-texteditor .dx-texteditor-input {
+              background-image: linear-gradient(0deg, #e9e1eb, #a0f87e);
+            }
+  
+            .dx-searchbox .dx-placeholder::before,
+            .dx-searchbox .dx-texteditor-input {
+              padding-left: 34px;
+              background-image: linear-gradient(0deg, #e9e1eb, #d7f0cd);
+            }
+  
+            .dx-button-mode-contained {
+              background-color: #a0f87e;
+              border-color: #cacafa;
+              color: #430fff;
+            }
+  
+            .dx-datagrid-total-footer > .dx-datagrid-content {
+              padding-top: 0px;
+              padding-bottom: 0px;
+            }
+          }
+        }
+      }
+    }
+  }  
+}
+@media only screen and (max-width: 768px) {
+  .pqc3 {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    .tracuuDataInspection {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 5px; 
+      align-items: flex-start;
+      justify-items: flex-start;
+      justify-content: flex-start;
+      .inputform {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        .tracuuDataInspectionform {
+          display: flex;
+          width: 100%;          
+          flex: 1;          
+          flex-direction: column;
+          align-items: center;
+          justify-items: flex-start;
+          background-image: linear-gradient(0deg, #4bc033, #f5e876);
+          -webkit-box-shadow: 5px 5px 15px 5px rgba(133, 228, 56, 0.27);
+          box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+          border-radius: 3px;
+          padding: 10px;
+          height: fit-content;
+          font-size: 0.8rem;         
+          .forminput {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            align-items: flex-start;            
+            justify-content: space-evenly;
+            padding: 2px;
+            width: 100%;
+            margin-right: 50px;
+            .forminputcolumn {
+              display: flex;
+              width: 100%;
+              flex-direction: column;
+              gap: 5px;
+              align-items: flex-end;
+              justify-content: flex-end;
+              flex-wrap: wrap;
+              
+             
+              input {
+                width: 270px;
+                height: 20px;
+                outline: none;
+                border-radius: 5px;
+                border: none;
+                padding: 5px;
+                margin-left: 5px;
+                background-image: linear-gradient(0deg, #ececec, #9dee95);
+              }
+              select {
+                width: 280px;
+                height: 30px;
+                outline: none;
+                border-radius: 5px;
+                border: none;
+                padding: 5px;
+                margin-left: 5px;
+                background-image: linear-gradient(0deg, #ececec, #9dee95);
+              }
+            }
+          }         
+        }
+      }
+      .maintable {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        width: 100%;
+        height: 88vh; 
+       
+        .tracuuDataInspectionform2 {
+          display: flex;           
+          width: 100%;
+          gap: 10px;
+          flex-direction: column;
+          align-items: center;
+          justify-items: flex-start;
+          background-image: linear-gradient(0deg, #7ff2fa, #d7dad9);
+          -webkit-box-shadow: 5px 5px 15px 5px rgba(20, 9, 9, 0.27);
+          box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+          border-radius: 3px;
+          padding: 10px;
+          height: fit-content;
+          font-size: 0.8rem;
+          span {
+            padding: 10px;
+            font-size: 20px;
+            margin: auto;
+          }
+          .forminput {
+            display: flex;
+            gap: 5px;
+            align-items: flex-start;
+            flex-direction: row;
+            justify-content: flex-start;
+            flex-wrap: wrap;
+            padding: 2px;
+            width: 100%;
+            height: fit-content;
+            .forminputcolumn {
+              display: flex;
+              flex-direction: column;
+              gap: 5px;
+              align-items: flex-end;
+              justify-content: center;
+              flex-wrap: wrap;
+              .checkboxarray {
+                .custom-checkbox-root .MuiSvgIcon-root {
+                  font-size: 20px;
+                }
+              }
+              input {
+                width: 100px;
+                height: 20px;
+                outline: none;
+                border-radius: 5px;
+                border: none;
+                padding: 5px;
+                margin-left: 5px;
+                background-image: linear-gradient(0deg, #ececec, #9dee95);
+              }
+              select {
+                width: 110px;
+                height: 30px;
+                outline: none;
+                border-radius: 5px;
+                border: none;
+                padding: 5px;
+                margin-left: 5px;
+                background-image: linear-gradient(0deg, #ececec, #9dee95);
+              }
+            }
+          }         
+        }
+        .tracuuYCSXTable {
+          display: flex;
+          flex-direction: column;
+          width: 100%;          
+          height: 100%;          
+          background-image: linear-gradient(0deg, #afd3d1, #6dd1f8);
+          -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+          box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+          border-radius: 3px;
+          
+          .datatb {
+            justify-items: center;
+            width: 100%;
+            padding: 2px;
+            height: 76vh;
+            .menubar {
+              display: flex;
+              width: 100%;
+              justify-content: center;
+              align-items: center;
+            }
+            .dx-datagrid-rowsview
+              .dx-selection.dx-row:not(.dx-row-focused):not(.dx-row-removed)
+              > td {
+              background-color: orange;
+              color: unset;
+            }
+            .dx-datagrid-borders > .dx-datagrid-header-panel {
+              border-bottom: 0;
+              background-color: #b5f398;
+            }
+  
+            .dx-toolbar .dx-toolbar-items-container {
+              height: 25px;
+              overflow: visible;
+              background-color: #b5f398;
+            }
+  
+            //toan bo bang
+            .dx-gridbase-container > .dx-datagrid-rowsview.dx-scrollable {
+              display: -ms-flexbox;
+              display: flex;
+              background-image: linear-gradient(0deg, #e9e1eb, #e4a5f7);
+              font-size: 0.7rem;
+            }
+  
+            .dx-datagrid-borders > .dx-datagrid-filter-panel,
+            .dx-datagrid-borders > .dx-datagrid-headers {
+              border-top: 1px solid #ddd;
+              background-image: linear-gradient(0deg, #e9e1eb, #a0f87e);
+              color: black;
+              font-size: 0.7rem;
+            }
+            //filter row input
+            .dx-datagrid-filter-row
+              .dx-editor-cell
+              .dx-editor-with-menu
+              .dx-placeholder::before,
+            .dx-datagrid-filter-row
+              .dx-editor-cell
+              .dx-editor-with-menu
+              .dx-texteditor-input {
+              padding-left: 32px;
+              background-image: linear-gradient(0deg, #e9e1eb, #a0f87e);
+              color: black;
+              height: 10px;
+            }
+            .dx-editor-cell .dx-texteditor,
+            .dx-editor-cell .dx-texteditor .dx-texteditor-input {
+              background-image: linear-gradient(0deg, #e9e1eb, #a0f87e);
+            }
+  
+            .dx-searchbox .dx-placeholder::before,
+            .dx-searchbox .dx-texteditor-input {
+              padding-left: 34px;
+              background-image: linear-gradient(0deg, #e9e1eb, #d7f0cd);
+            }
+  
+            .dx-button-mode-contained {
+              background-color: #a0f87e;
+              border-color: #cacafa;
+              color: #430fff;
+            }
+  
+            .dx-datagrid-total-footer > .dx-datagrid-content {
+              padding-top: 0px;
+              padding-bottom: 0px;
+            }
+          }
+        }
+      }
+    }
+  }
+  
+
+}

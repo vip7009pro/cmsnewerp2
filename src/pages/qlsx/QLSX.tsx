@@ -1,12 +1,12 @@
-import React from 'react'
-import { Outlet } from 'react-router-dom'
+import React from "react";
+import { Outlet } from "react-router-dom";
 
 const QLSX = () => {
   return (
-    <div className='qlsx'>     
+    <div className="qlsx">
       <Outlet />
     </div>
-  )
-}
+  );
+};
 
-export default QLSX
+export default QLSX;

@@ -13,22 +13,21 @@ import {
 } from "devextreme-react/data-grid";
 import { employees } from "./employees";
 function DATATBNEW() {
-
-  const renderHeader =(data:any)=> {    
+  const renderHeader = (data: any) => {
     return (
-      <p style={{fontWeight:'bold', fontSize: 12, color: 'red'}}>{data.column.caption}</p>
-    )
-  }
+      <p style={{ fontWeight: "bold", fontSize: 12, color: "red" }}>
+        {data.column.caption}
+      </p>
+    );
+  };
 
-  const calculatedCellFunction = (data:any) => {
-    return (
-      data.EmployeeID + '_' + data.FullName
-    )
-  }
+  const calculatedCellFunction = (data: any) => {
+    return data.EmployeeID + "_" + data.FullName;
+  };
   return (
     <div
-      className='App'
-      style={{        
+      className="App"
+      style={{
         width: "90%",
         height: "50vh",
       }}
@@ -42,31 +41,31 @@ function DATATBNEW() {
         columnResizingMode={"widget"}
         showColumnLines={true}
         dataSource={employees}
-        columnWidth='auto'
-        keyExpr='EmployeeID'
+        columnWidth="auto"
+        keyExpr="EmployeeID"
         paging={{ enabled: true, pageIndex: 0, pageSize: 10 }}
         height={"70vh"}
         onSelectionChanged={(e) => {}}
         onRowClick={(e) => {
           console.log(e.data);
-        }}        
+        }}
       >
         <LoadPanel enabled />
         <Scrolling
           useNative={false}
           scrollByContent={true}
           scrollByThumb={false}
-          showScrollbar='onHover'
-          mode='virtual'
+          showScrollbar="onHover"
+          mode="virtual"
           columnRenderingMode="virtual"
         />{" "}
         {/* or "onScroll" | "always" | "never" */}
-        <Selection mode='multiple' selectAllMode='page' />
+        <Selection mode="multiple" selectAllMode="page" />
         <Editing
           allowUpdating={false}
           allowAdding={false}
           allowDeleting={false}
-          mode='batch'
+          mode="batch"
           confirmDelete={true}
           onChangesChange={(e) => {
             console.log(employees);
@@ -81,53 +80,53 @@ function DATATBNEW() {
         <FilterRow visible={true} />
         <SearchPanel visible={true} />
         <Column
-          dataField='EmployeeID'
+          dataField="EmployeeID"
           caption={"Mã Nhân Viên"}
           fixed={false}
-          width={100}          
+          width={100}
         ></Column>
         <Column
-          dataField='FullName'
+          dataField="FullName"
           caption={"Tên đầy đủ"}
           fixed={false}
         ></Column>
-        <Column dataField='Position' caption={"Vị trí"} fixed={false}></Column>
+        <Column dataField="Position" caption={"Vị trí"} fixed={false}></Column>
         <Column
-          dataField='TitleOfCourtesy'
+          dataField="TitleOfCourtesy"
           caption={"Danh xưng"}
           fixed={false}
         ></Column>
         <Column
-          dataField='BirthDate'
+          dataField="BirthDate"
           caption={"Sinh nhật"}
           fixed={false}
         ></Column>
         <Column
-          dataField='HireDate'
+          dataField="HireDate"
           caption={"Ngày vào"}
           fixed={false}
         ></Column>
-        <Column dataField='Address' caption={"Địa chỉ"} fixed={false}></Column>
-        <Column dataField='City' caption={"Thành phố"} fixed={false}></Column>
-        <Column dataField='Region' caption={"Vùng"} fixed={false}></Column>
+        <Column dataField="Address" caption={"Địa chỉ"} fixed={false}></Column>
+        <Column dataField="City" caption={"Thành phố"} fixed={false}></Column>
+        <Column dataField="Region" caption={"Vùng"} fixed={false}></Column>
         <Column
-          dataField='PostalCode'
+          dataField="PostalCode"
           caption={"Mã bưu điện"}
           fixed={false}
         ></Column>
-        <Column dataField='Country' caption={"Quốc gia"} fixed={false}></Column>
+        <Column dataField="Country" caption={"Quốc gia"} fixed={false}></Column>
         <Column
-          dataField='HomePhone'
+          dataField="HomePhone"
           caption={"Điện thoại"}
           fixed={false}
         ></Column>
         <Column
-          dataField='Extension'
+          dataField="Extension"
           caption={"Số máy lẻ"}
           fixed={false}
         ></Column>
         <Column
-          dataField='Photo'
+          dataField="Photo"
           caption={"Link Ảnh"}
           fixed={false}
           width={200}
@@ -135,23 +134,23 @@ function DATATBNEW() {
           {" "}
         </Column>
         <Column
-          dataField='Notes'
+          dataField="Notes"
           caption={"Ghi chú"}
           fixed={false}
-          width={100}          
+          width={100}
         ></Column>
         <Column
-          dataField='ReportsTo'
+          dataField="ReportsTo"
           caption={"Báo cáo tới"}
           fixed={false}
           width={100}
         ></Column>
         <Column
-          dataField='autofield'
+          dataField="autofield"
           caption={"AUTO FIELD"}
           fixed={false}
           width={100}
-          calculateCellValue={calculatedCellFunction}          
+          calculateCellValue={calculatedCellFunction}
         ></Column>
       </DataGrid>
     </div>

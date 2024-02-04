@@ -9,7 +9,7 @@ import React, {
 import MACHINE_COMPONENT from "../Machine/MACHINE_COMPONENT";
 import "./PLANTABLE.scss";
 import Swal from "sweetalert2";
-import { generalQuery } from "../../../../api/Api";
+import { generalQuery, uploadQuery } from "../../../../api/Api";
 import moment from "moment";
 import { UserContext } from "../../../../api/Context";
 import {
@@ -47,210 +47,32 @@ import {
 import { MdOutlineDelete, MdOutlinePendingActions } from "react-icons/md";
 import { FaArrowRight, FaWarehouse } from "react-icons/fa";
 import { FcApprove, FcCancel, FcDeleteRow, FcSearch } from "react-icons/fc";
-import { checkBP, PLAN_ID_ARRAY, SaveExcel } from "../../../../api/GlobalFunction";
+import {
+  checkBP,
+  PLAN_ID_ARRAY,
+  SaveExcel,
+} from "../../../../api/GlobalFunction";
 import YCSXComponent from "../../../kinhdoanh/ycsxmanager/YCSXComponent/YCSXComponent";
 import DrawComponent from "../../../kinhdoanh/ycsxmanager/DrawComponent/DrawComponent";
 import { useReactToPrint } from "react-to-print";
 import CHITHI_COMPONENT from "../CHITHI/CHITHI_COMPONENT";
 import { BiRefresh, BiReset } from "react-icons/bi";
 import YCKT from "../YCKT/YCKT";
-import { UserData } from "../../../../redux/slices/globalSlice";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../redux/store";
-import axios from 'axios';
-interface TONLIEUXUONG {
-  id: number;
-  FACTORY: string;
-  PHANLOAI: string;
-  PLAN_ID_INPUT: string;
-  M_CODE: string;
-  M_NAME: string;
-  WIDTH_CD: number;
-  M_LOT_NO: string;
-  ROLL_QTY: number;
-  IN_QTY: number;
-  TOTAL_IN_QTY: number;
-}
-interface LICHSUNHAPKHOAO {
-  id: string;
-  FACTORY: string;
-  PHANLOAI: string;
-  M_CODE: string;
-  M_NAME: string;
-  WIDTH_CD: number;
-  M_LOT_NO: string;
-  PLAN_ID_INPUT: string;
-  ROLL_QTY: number;
-  IN_QTY: number;
-  TOTAL_IN_QTY: number;
-  INS_DATE: string;
-}
-interface LICHSUXUATKHOAO {
-  id: string;
-  FACTORY: string;
-  PHANLOAI: string;
-  M_CODE: string;
-  M_NAME: string;
-  WIDTH_CD: number;
-  M_LOT_NO: string;
-  PLAN_ID_INPUT: string;
-  PLAN_ID_OUTPUT: string;
-  ROLL_QTY: number;
-  OUT_QTY: number;
-  TOTAL_OUT_QTY: number;
-  INS_DATE: string;
-}
-interface LICHSUINPUTLIEUSX {
-  id: string;
-  PLAN_ID: string;
-  G_NAME: string;
-  G_NAME_KD: string;
-  M_CODE: string;
-  M_NAME: string;
-  M_LOT_NO: string;
-  WIDTH_CD: number;
-  INPUT_QTY: number;
-  USED_QTY: number;
-  REMAIN_QTY: number;
-  EMPL_NO: string;
-  EQUIPMENT_CD: string;
-  INS_DATE: string;
-}
-interface DINHMUC_QSLX {
-  FACTORY: string;
-  EQ1: string;
-  EQ2: string;
-  Setting1: number;
-  Setting2: number;
-  UPH1: number;
-  UPH2: number;
-  Step1: number;
-  Step2: number;
-  LOSS_SX1: number;
-  LOSS_SX2: number;
-  LOSS_SETTING1: number;
-  LOSS_SETTING2: number;
-  NOTE: string;
-}
-interface QLSXPLANDATA {
-  id: string;
-  PLAN_ID: string;
-  PLAN_DATE: string;
-  PROD_REQUEST_NO: string;
-  PLAN_QTY: number;
-  PLAN_EQ: string;
-  PLAN_FACTORY: string;
-  PLAN_LEADTIME: number;
-  INS_EMPL: string;
-  INS_DATE: string;
-  UPD_EMPL: string;
-  UPD_DATE: string;
-  G_CODE: string;
-  G_NAME: string;
-  G_NAME_KD: string;
-  PROD_REQUEST_DATE: string;
-  PROD_REQUEST_QTY: number;
-  STEP: number;
-  PLAN_ORDER: string;
-  PROCESS_NUMBER: number;
-  KETQUASX: number;
-  KQ_SX_TAM: number;
-  CD1: number;
-  CD2: number;
-  TON_CD1: number;
-  TON_CD2: number;
-  FACTORY: string;
-  EQ1: string;
-  EQ2: string;
-  Setting1: number;
-  Setting2: number;
-  UPH1: number;
-  UPH2: number;
-  Step1: number;
-  Step2: number;
-  LOSS_SX1: number;
-  LOSS_SX2: number;
-  LOSS_SETTING1: number;
-  LOSS_SETTING2: number;
-  NOTE: string;
-  NEXT_PLAN_ID: string;
-  XUATDAOFILM?: string;
-  EQ_STATUS?: string;
-  MAIN_MATERIAL?: string;
-  INT_TEM?: string;
-  CHOTBC?: string;
-  DKXL?: string;
-}
-interface YCSXTableData {
-  DESCR?: string;
-  PDBV_EMPL?: string;
-  PDBV_DATE?: string;
-  PDBV?: string;
-  BANVE?: string;
-  PROD_MAIN_MATERIAL?: string;
-  PROD_TYPE?: string;
-  EMPL_NO: string;
-  CUST_CD: string;
-  G_CODE: string;
-  G_NAME: string;
-  EMPL_NAME: string;
-  CUST_NAME_KD: string;
-  PROD_REQUEST_NO: string;
-  PROD_REQUEST_DATE: string;
-  PROD_REQUEST_QTY: number;
-  LOT_TOTAL_INPUT_QTY_EA: number;
-  LOT_TOTAL_OUTPUT_QTY_EA: number;
-  INSPECT_BALANCE: number;
-  SHORTAGE_YCSX: number;
-  YCSX_PENDING: number;
-  PHAN_LOAI: string;
-  REMARK: string;
-  PO_TDYCSX: number;
-  TOTAL_TKHO_TDYCSX: number;
-  TKHO_TDYCSX: number;
-  BTP_TDYCSX: number;
-  CK_TDYCSX: number;
-  BLOCK_TDYCSX: number;
-  FCST_TDYCSX: number;
-  W1: number;
-  W2: number;
-  W3: number;
-  W4: number;
-  W5: number;
-  W6: number;
-  W7: number;
-  W8: number;
-  PDUYET: number;
-  LOAIXH: string;
-  PO_BALANCE: number;
-  EQ1: string;
-  EQ2: string;
-  CD1: number;
-  CD2: number;
-  CD_IN: number;
-  CD_DIECUT: number;
-  TON_CD1: number;
-  TON_CD2: number;
-}
-interface QLSXCHITHIDATA {
-  id: string;
-  CHITHI_ID: number;
-  PLAN_ID: string;
-  M_CODE: string;
-  M_NAME: string;
-  WIDTH_CD: number;
-  M_ROLL_QTY: number;
-  M_MET_QTY: number;
-  M_QTY: number;
-  LIEUQL_SX: number;
-  MAIN_M: number;
-  OUT_KHO_SX: number;
-  OUT_CFM_QTY: number;
-  INS_EMPL: string;
-  INS_DATE: string;
-  UPD_EMPL: string;
-  UPD_DATE: string;
-}
+import axios from "axios";
+import {
+  DINHMUC_QSLX,
+  LICHSUINPUTLIEUSX,
+  LICHSUNHAPKHOAO,
+  LICHSUXUATKHOAO,
+  QLSXCHITHIDATA,
+  QLSXPLANDATA,
+  TONLIEUXUONG,
+  UserData,
+  YCSXTableData,
+} from "../../../../api/GlobalInterface";
+
 const PLANTABLE = () => {
   const [currentPlanPD, setCurrentPlanPD] = useState(0);
   const [currentPlanCAVITY, setCurrentPlanCAVITY] = useState(0);
@@ -271,24 +93,36 @@ const PLANTABLE = () => {
     }
   };
   const [datadinhmuc, setDataDinhMuc] = useState<DINHMUC_QSLX>({
-    FACTORY: "",
+    FACTORY: "NM1",
     EQ1: "",
     EQ2: "",
+    EQ3: "",
+    EQ4: "",
     Setting1: 0,
     Setting2: 0,
+    Setting3: 0,
+    Setting4: 0,
     UPH1: 0,
     UPH2: 0,
+    UPH3: 0,
+    UPH4: 0,
     Step1: 0,
     Step2: 0,
+    Step3: 0,
+    Step4: 0,
     LOSS_SX1: 0,
     LOSS_SX2: 0,
+    LOSS_SX3: 0,
+    LOSS_SX4: 0,
     LOSS_SETTING1: 0,
     LOSS_SETTING2: 0,
+    LOSS_SETTING3: 0,
+    LOSS_SETTING4: 0,
     NOTE: "",
   });
   const [selectionModel, setSelectionModel] = useState<any>([]);
   const [selectionModel_XUATKHOAO, setSelectionModel_XUATKHOAO] = useState<any>(
-    []
+    [],
   );
   const [selectionModel_INPUTSX, setSelectionModel_INPUTSX] = useState<any>([]);
   const [lichsunhapkhoaotable, setLichSuNhapKhoAoTable] = useState<
@@ -315,7 +149,7 @@ const PLANTABLE = () => {
   const [showplanwindow, setShowPlanWindow] = useState(false);
   const [showkhoao, setShowKhoAo] = useState(false);
   const userData: UserData | undefined = useSelector(
-    (state: RootState) => state.totalSlice.userData
+    (state: RootState) => state.totalSlice.userData,
   );
   const [isLoading, setisLoading] = useState(false);
   const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
@@ -354,7 +188,7 @@ const PLANTABLE = () => {
   const [selectedMachine, setSelectedMachine] = useState("FR01");
   const [selectedFactory, setSelectedFactory] = useState("NM1");
   const [selectedPlanDate, setSelectedPlanDate] = useState(
-    moment().format("YYYY-MM-DD")
+    moment().format("YYYY-MM-DD"),
   );
   const [showChiThi, setShowChiThi] = useState(false);
   const [showYCKT, setShowYCKT] = useState(false);
@@ -486,85 +320,83 @@ const PLANTABLE = () => {
     {
       field: "BANVE",
       headerName: "BANVE",
-      width: 250,
+      width: 260,
       renderCell: (params: any) => {
         let file: any = null;
-        let upload_url = "http://14.160.33.94:5011/upload";
-        const uploadFile = async (e: any) => {
-          console.log(file);
-          const formData = new FormData();
-          formData.append("banve", file);
-          formData.append("filename", params.row.G_CODE);
+        const uploadFile2 = async (e: any) => {
+          //console.log(file);
           if (userData?.MAINDEPTNAME === "KD") {
-            try {
-              const response = await axios.post(upload_url, formData);
-              //console.log("ket qua");
-              //console.log(response);
-              if (response.data.tk_status === "OK") {
-                //Swal.fire('Thông báo','Upload bản vẽ thành công','success');
-                generalQuery("update_banve_value", {
-                  G_CODE: params.row.G_CODE,
-                  banvevalue: "Y",
-                })
-                  .then((response) => {
-                    if (response.data.tk_status !== "NG") {
-                      Swal.fire(
-                        "Thông báo",
-                        "Upload bản vẽ thành công",
-                        "success"
-                      );
-                      let tempycsxdatatable = ycsxdatatable.map(
-                        (element, index) => {
-                          return element.PROD_REQUEST_NO ===
-                            params.row.PROD_REQUEST_NO
-                            ? { ...element, BANVE: "Y" }
-                            : element;
-                        }
-                      );
-                      setYcsxDataTable(tempycsxdatatable);
-                    } else {
-                      Swal.fire("Thông báo", "Upload bản vẽ thất bại", "error");
-                    }
+            uploadQuery(file, params.row.G_CODE + ".pdf", "banve")
+              .then((response) => {
+                if (response.data.tk_status !== "NG") {
+                  generalQuery("update_banve_value", {
+                    G_CODE: params.row.G_CODE,
+                    banvevalue: "Y",
                   })
-                  .catch((error) => {
-                    console.log(error);
-                  });
-              } else {
-                Swal.fire("Thông báo", response.data.message, "error");
-              }
-              //console.log(response.data);
-            } catch (ex) {
-              console.log(ex);
-            }
+                    .then((response) => {
+                      if (response.data.tk_status !== "NG") {
+                        Swal.fire(
+                          "Thông báo",
+                          "Upload bản vẽ thành công",
+                          "success",
+                        );
+                        let tempcodeinfodatatable = ycsxdatatable.map(
+                          (element: YCSXTableData, index) => {
+                            return element.G_CODE === params.row.G_CODE
+                              ? { ...element, BANVE: "Y" }
+                              : element;
+                          },
+                        );
+                        setYcsxDataTable(tempcodeinfodatatable);
+                      } else {
+                        Swal.fire(
+                          "Thông báo",
+                          "Upload bản vẽ thất bại",
+                          "error",
+                        );
+                      }
+                    })
+                    .catch((error) => {
+                      console.log(error);
+                    });
+                } else {
+                  Swal.fire(
+                    "Thông báo",
+                    "Upload file thất bại:" + response.data.message,
+                    "error",
+                  );
+                }
+              })
+              .catch((error) => {
+                console.log(error);
+              });
           } else {
             Swal.fire(
               "Thông báo",
               "Chỉ bộ phận kinh doanh upload được bản vẽ",
-              "error"
+              "error",
             );
           }
         };
         let hreftlink = "/banve/" + params.row.G_CODE + ".pdf";
-        if (params.row.BANVE === "Y")
+        if (params.row.BANVE !== "N" && params.row.BANVE !== null) {
           return (
-            <span style={{ color: "green" }}>
-              <b>
-                <a target='_blank' rel='noopener noreferrer' href={hreftlink}>
-                  LINK
-                </a>
-              </b>
+            <span style={{ color: "gray" }}>
+              <a target="_blank" rel="noopener noreferrer" href={hreftlink}>
+                LINK
+              </a>
             </span>
           );
-        else
+        } else {
           return (
-            <div className='uploadfile'>
-              <IconButton className='buttonIcon' onClick={uploadFile}>
-                <AiOutlineCloudUpload color='yellow' size={25} />
+            <div className="uploadfile">
+              <IconButton className="buttonIcon" onClick={uploadFile2}>
+                <AiOutlineCloudUpload color="yellow" size={15} />
                 Upload
               </IconButton>
               <input
-                accept='.pdf'
-                type='file'
+                accept=".pdf"
+                type="file"
                 onChange={(e: any) => {
                   file = e.target.files[0];
                   console.log(file);
@@ -572,6 +404,7 @@ const PLANTABLE = () => {
               />
             </div>
           );
+        }
       },
     },
     {
@@ -755,16 +588,13 @@ const PLANTABLE = () => {
       width: 90,
       editable: false,
       resizeable: true,
-      renderCell: (params: any)=> {
-        if(params.row.DKXL ===null)
-        {
-          return <span style={{color: 'red'}}>{params.row.PLAN_ID}</span>
+      renderCell: (params: any) => {
+        if (params.row.DKXL === null) {
+          return <span style={{ color: "red" }}>{params.row.PLAN_ID}</span>;
+        } else {
+          return <span style={{ color: "green" }}>{params.row.PLAN_ID}</span>;
         }
-        else
-        {
-          return <span style={{color: 'green'}}>{params.row.PLAN_ID}</span>
-        }
-      }
+      },
     },
     { field: "G_CODE", headerName: "G_CODE", width: 100, editable: false },
     {
@@ -1313,7 +1143,7 @@ const PLANTABLE = () => {
                   .format("YYYY-MM-DD HH:mm:ss"),
                 id: index,
               };
-            }
+            },
           );
           setLichSuInputLieuTable(loaded_data);
         } else {
@@ -1392,7 +1222,7 @@ const PLANTABLE = () => {
                   .format("YYYY-MM-DD HH:mm:ss"),
                 id: index,
               };
-            }
+            },
           );
           setLichSuNhapKhoAoTable(loaded_data);
         } else {
@@ -1417,7 +1247,7 @@ const PLANTABLE = () => {
                   .format("YYYY-MM-DD HH:mm:ss"),
                 id: index,
               };
-            }
+            },
           );
           setLichSuXuatKhoAoTable(loaded_data);
         } else {
@@ -1523,7 +1353,7 @@ const PLANTABLE = () => {
                 ...element,
                 id: index,
               };
-            }
+            },
           );
           setTonLieuXuongDataTable(loaded_data);
         } else {
@@ -1536,7 +1366,10 @@ const PLANTABLE = () => {
   };
   const handleSaveQLSX = async () => {
     if (qlsxplandatafilter.length >= 1) {
-      if (userData?.EMPL_NO === "NHU1903" || userData?.MAINDEPTNAME === "QLSX") {
+      if (
+        userData?.EMPL_NO === "NHU1903" ||
+        userData?.MAINDEPTNAME === "QLSX"
+      ) {
         let err_code: string = "0";
         console.log(datadinhmuc);
         if (
@@ -1552,7 +1385,7 @@ const PLANTABLE = () => {
           Swal.fire(
             "Thông báo",
             "Lưu thất bại, hãy nhập đủ thông tin",
-            "error"
+            "error",
           );
         } else {
           generalQuery("saveQLSX", {
@@ -1586,7 +1419,7 @@ const PLANTABLE = () => {
             Swal.fire(
               "Thông báo",
               "Lưu thất bại, không được để trống ô cần thiết",
-              "error"
+              "error",
             );
           } else {
             loadQLSXPlan(qlsxplandatafilter[0].PROD_REQUEST_NO);
@@ -1599,67 +1432,20 @@ const PLANTABLE = () => {
     } else {
       Swal.fire("Thông báo", "Chọn ít nhất 1 G_CODE để SET !", "error");
     }
-  };    
+  };
   const renderYCKT = (planlist: QLSXPLANDATA[]) => {
     return planlist.map((element, index) => (
-      <YCKT
-        key={index}
-        PLAN_ID={element.PLAN_ID}
-        PLAN_DATE={element.PLAN_DATE}
-        PROD_REQUEST_NO={element.PROD_REQUEST_NO}
-        PLAN_QTY={element.PLAN_QTY}
-        PLAN_EQ={element.PLAN_EQ}
-        PLAN_FACTORY={element.PLAN_FACTORY}
-        PLAN_LEADTIME={element.PLAN_LEADTIME}
-        G_CODE={element.G_CODE}
-        G_NAME={element.G_NAME}
-        G_NAME_KD={element.G_NAME_KD}
-        PROD_REQUEST_DATE={element.PROD_REQUEST_DATE}
-        PROD_REQUEST_QTY={element.PROD_REQUEST_QTY}
-        STEP={element.STEP}
-        PLAN_ORDER={element.PLAN_ORDER}
-      />
+      <YCKT key={index} DATA={element} />
     ));
   };
   const renderChiThi = (planlist: QLSXPLANDATA[]) => {
     return planlist.map((element, index) => (
-      <CHITHI_COMPONENT
-        key={index}
-        PLAN_ID={element.PLAN_ID}
-        PLAN_DATE={element.PLAN_DATE}
-        PROD_REQUEST_NO={element.PROD_REQUEST_NO}
-        PLAN_QTY={element.PLAN_QTY}
-        PLAN_EQ={element.PLAN_EQ}
-        PLAN_FACTORY={element.PLAN_FACTORY}
-        PLAN_LEADTIME={element.PLAN_LEADTIME}
-        G_CODE={element.G_CODE}
-        G_NAME={element.G_NAME}
-        G_NAME_KD={element.G_NAME_KD}
-        PROD_REQUEST_DATE={element.PROD_REQUEST_DATE}
-        PROD_REQUEST_QTY={element.PROD_REQUEST_QTY}
-        STEP={element.STEP}
-        PLAN_ORDER={element.PLAN_ORDER}
-      />
+      <CHITHI_COMPONENT key={index} DATA={element} />
     ));
   };
   const renderYCSX = (ycsxlist: YCSXTableData[]) => {
     return ycsxlist.map((element, index) => (
-      <YCSXComponent
-        key={index}
-        PROD_REQUEST_NO={element.PROD_REQUEST_NO}
-        G_CODE={element.G_CODE}
-        PO_TDYCSX={element.PO_TDYCSX}
-        TOTAL_TKHO_TDYCSX={element.TOTAL_TKHO_TDYCSX}
-        TKHO_TDYCSX={element.TKHO_TDYCSX}
-        BTP_TDYCSX={element.BTP_TDYCSX}
-        CK_TDYCSX={element.CK_TDYCSX}
-        BLOCK_TDYCSX={element.BLOCK_TDYCSX}
-        FCST_TDYCSX={element.FCST_TDYCSX}
-        PDBV={element.PDBV}
-        PDBV_EMPL={element.PDBV_EMPL}
-        PDBV_DATE={element.PDBV_DATE}
-        DESCR={element.DESCR}
-      />
+      <YCSXComponent key={index} DATA={element} />
     ));
   };
   const renderBanVe = (ycsxlist: YCSXTableData[]) => {
@@ -1675,7 +1461,7 @@ const PLANTABLE = () => {
         />
       ) : (
         <div>Code: {element.G_NAME} : Không có bản vẽ</div>
-      )
+      ),
     );
   };
   const loadQLSXPlan = (PROD_REQUEST_NO: string) => {
@@ -1691,7 +1477,7 @@ const PLANTABLE = () => {
                 PLAN_DATE: moment.utc(element.PLAN_DATE).format("YYYY-MM-DD"),
                 id: index,
               };
-            }
+            },
           );
           //console.log(loadeddata);
           setPlanDataTable(loadeddata);
@@ -1708,7 +1494,7 @@ const PLANTABLE = () => {
     PLAN_ID: string,
     G_CODE: string,
     PLAN_QTY: number,
-    PROCESS_NUMBER: number
+    PROCESS_NUMBER: number,
   ) => {
     let PD: number = 0,
       CAVITY_NGANG: number = 0,
@@ -1773,7 +1559,7 @@ const PLANTABLE = () => {
           setChiThiDataTable(response.data.data);
         } else {
           M_MET_NEEDED = parseInt(
-            ((PLAN_QTY * PD) / (CAVITY_DOC * CAVITY_NGANG) / 1000).toString()
+            ((PLAN_QTY * PD) / (CAVITY_DOC * CAVITY_NGANG) / 1000).toString(),
           );
           generalQuery("getbomsx", {
             G_CODE: G_CODE,
@@ -1794,7 +1580,7 @@ const PLANTABLE = () => {
                         "" +
                           (M_MET_NEEDED +
                             (M_MET_NEEDED * FINAL_LOSS_SX) / 100 +
-                            FINAL_LOSS_SETTING)
+                            FINAL_LOSS_SETTING),
                       ),
                       M_QTY: element.M_QTY,
                       LIEUQL_SX: element.LIEUQL_SX,
@@ -1807,7 +1593,7 @@ const PLANTABLE = () => {
                       UPD_DATE: "",
                       id: index,
                     };
-                  }
+                  },
                 );
                 setChiThiDataTable(loaded_data);
               } else {
@@ -1882,7 +1668,7 @@ const PLANTABLE = () => {
       setCurrentPlanPD(PD);
       setCurrentPlanCAVITY(CAVITY_NGANG * CAVITY_DOC);
       M_MET_NEEDED = parseInt(
-        ((PLAN_QTY * PD) / (CAVITY_DOC * CAVITY_NGANG) / 1000).toString()
+        ((PLAN_QTY * PD) / (CAVITY_DOC * CAVITY_NGANG) / 1000).toString(),
       );
       //console.log(M_MET_NEEDED);
       await generalQuery("getbomsx", {
@@ -1904,7 +1690,7 @@ const PLANTABLE = () => {
                     "" +
                       (M_MET_NEEDED +
                         (M_MET_NEEDED * FINAL_LOSS_SX) / 100 +
-                        FINAL_LOSS_SETTING)
+                        FINAL_LOSS_SETTING),
                   ),
                   M_QTY: element.M_QTY,
                   LIEUQL_SX: element.LIEUQL_SX,
@@ -1917,7 +1703,7 @@ const PLANTABLE = () => {
                   UPD_DATE: "",
                   id: index,
                 };
-              }
+              },
             );
             setChiThiDataTable(loaded_data);
           } else {
@@ -2027,14 +1813,14 @@ const PLANTABLE = () => {
                     ? 0
                     : element.PROD_REQUEST_QTY,
               };
-            }
+            },
           );
           setYcsxDataTable(loadeddata);
           setisLoading(false);
           Swal.fire(
             "Thông báo",
             "Đã load " + response.data.data.length + " dòng",
-            "success"
+            "success",
           );
         } else {
           Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
@@ -2046,7 +1832,7 @@ const PLANTABLE = () => {
       });
   };
   const handleSearchCodeKeyDown = (
-    e: React.KeyboardEvent<HTMLInputElement>
+    e: React.KeyboardEvent<HTMLInputElement>,
   ) => {
     if (e.key === "Enter") {
       handletraYCSX();
@@ -2075,7 +1861,7 @@ const PLANTABLE = () => {
         Swal.fire(
           "Thông báo",
           "SET YCSX thành công (chỉ PO của người đăng nhập)!",
-          "success"
+          "success",
         );
       } else {
         Swal.fire("Thông báo", "Có lỗi SQL: ", "error");
@@ -2098,7 +1884,7 @@ const PLANTABLE = () => {
         Swal.fire(
           "Tiến hành SET PENDING",
           "Đang SET PENDING YCSX hàng loạt",
-          "success"
+          "success",
         );
         setPendingYCSX(1);
       }
@@ -2118,7 +1904,7 @@ const PLANTABLE = () => {
         Swal.fire(
           "Tiến hành SET CLOSED",
           "Đang SET CLOSED YCSX hàng loạt",
-          "success"
+          "success",
         );
         setPendingYCSX(0);
       }
@@ -2172,8 +1958,8 @@ const PLANTABLE = () => {
           text: "Đang đăng ký xuất liệu kho thật, hãy chờ một chút",
           icon: "info",
           showCancelButton: false,
-          allowOutsideClick: false,      
-          confirmButtonText:'OK',
+          allowOutsideClick: false,
+          confirmButtonText: "OK",
           showConfirmButton: false,
         });
         //Swal.fire("Tiến hành ĐK liệu", "Đang ĐK liệu", "success");
@@ -2183,18 +1969,18 @@ const PLANTABLE = () => {
             qlsxplandatafilter[0].PLAN_ID,
             qlsxplandatafilter[0].G_CODE,
             qlsxplandatafilter[0].PLAN_QTY,
-            qlsxplandatafilter[0].PROCESS_NUMBER
+            qlsxplandatafilter[0].PROCESS_NUMBER,
           );
           handleDangKyXuatLieu(
             qlsxplandatafilter[0].PLAN_ID,
             qlsxplandatafilter[0].PROD_REQUEST_NO,
-            qlsxplandatafilter[0].PROD_REQUEST_DATE
+            qlsxplandatafilter[0].PROD_REQUEST_DATE,
           );
         } else {
           Swal.fire(
             "Thông báo",
             "Chọn ít nhất 1 chỉ thị để đăng ký xuất liệu",
-            "error"
+            "error",
           );
         }
       }
@@ -2238,7 +2024,7 @@ const PLANTABLE = () => {
                         Swal.fire(
                           "Thông báo",
                           "Nội dung: " + response.data.message,
-                          "error"
+                          "error",
                         );
                       } else {
                         datafilter.splice(j, 1);
@@ -2298,27 +2084,33 @@ const PLANTABLE = () => {
         //console.log(response.data.tk_status);
         if (response.data.tk_status !== "NG") {
           console.log(response.data.data[0].PLAN_ID);
-          console.log('length', response.data.data[0].PLAN_ID.length);
-          let old_plan_id: string =  response.data.data[0].PLAN_ID;         
-          if(old_plan_id.substring(7, 8) === 'Z')
-          {
-            if(old_plan_id.substring(3,4) ==='0')
-            {
-              next_plan_id = old_plan_id.substring(0,3) +'A' + old_plan_id.substring(4,7) +'A';
+          console.log("length", response.data.data[0].PLAN_ID.length);
+          let old_plan_id: string = response.data.data[0].PLAN_ID;
+          if (old_plan_id.substring(7, 8) === "Z") {
+            if (old_plan_id.substring(3, 4) === "0") {
+              next_plan_id =
+                old_plan_id.substring(0, 3) +
+                "A" +
+                old_plan_id.substring(4, 7) +
+                "A";
+            } else {
+              next_plan_id =
+                old_plan_id.substring(0, 3) +
+                PLAN_ID_ARRAY[
+                  PLAN_ID_ARRAY.indexOf(old_plan_id.substring(3, 4)) + 1
+                ] +
+                old_plan_id.substring(4, 7) +
+                "A";
             }
-            else
-            {
-              next_plan_id = old_plan_id.substring(0,3) + PLAN_ID_ARRAY[PLAN_ID_ARRAY.indexOf(old_plan_id.substring(3, 4))+1] + old_plan_id.substring(4,7) +'A';
-            }  
-                      
+          } else {
+            next_plan_id =
+              old_plan_id.substring(0, 7) +
+              PLAN_ID_ARRAY[
+                PLAN_ID_ARRAY.indexOf(old_plan_id.substring(7, 8)) + 1
+              ];
           }
-          else
-          {
-            next_plan_id = old_plan_id.substring(0,7)  + PLAN_ID_ARRAY[PLAN_ID_ARRAY.indexOf(old_plan_id.substring(7, 8))+1];
-          }
-          
 
-         /*  next_plan_id =
+          /*  next_plan_id =
             PROD_REQUEST_NO +
             String.fromCharCode(
               response.data.data[0].PLAN_ID.substring(7, 8).charCodeAt(0) + 1
@@ -2374,7 +2166,7 @@ const PLANTABLE = () => {
           });
         //check_ycsx_hethongcu = false;
         let nextPlan = await getNextPLAN_ID(
-          ycsxdatatablefilter[i].PROD_REQUEST_NO
+          ycsxdatatablefilter[i].PROD_REQUEST_NO,
         );
         let NextPlanID = nextPlan.NEXT_PLAN_ID;
         let NextPlanOrder = nextPlan.NEXT_PLAN_ORDER;
@@ -2407,7 +2199,7 @@ const PLANTABLE = () => {
           Swal.fire(
             "Thông báo",
             "Yêu cầu sản xuất này đã chạy từ hệ thống cũ, không chạy được lẫn lộn cũ mới, hãy chạy hết bằng hệ thống cũ với yc này",
-            "error"
+            "error",
           );
         }
       }
@@ -2422,7 +2214,7 @@ const PLANTABLE = () => {
           element.PLAN_EQ === selectedMachine &&
           element.PLAN_FACTORY === selectedFactory
         );
-      }
+      },
     );
     let err_code: string = "0";
     for (let i = 0; i < selectedPlanTable.length; i++) {
@@ -2437,13 +2229,16 @@ const PLANTABLE = () => {
         }
       }
       if (
-        (parseInt(selectedPlanTable[i].PROCESS_NUMBER.toString()) ===1 ||  parseInt(selectedPlanTable[i].PROCESS_NUMBER.toString()) ===2) &&
+        (parseInt(selectedPlanTable[i].PROCESS_NUMBER.toString()) === 1 ||
+          parseInt(selectedPlanTable[i].PROCESS_NUMBER.toString()) === 2) &&
         selectedPlanTable[i].PLAN_QTY !== 0 &&
         selectedPlanTable[i].PLAN_QTY <=
           selectedPlanTable[i].PROD_REQUEST_QTY &&
         selectedPlanTable[i].PLAN_ID !== selectedPlanTable[i].NEXT_PLAN_ID &&
         selectedPlanTable[i].CHOTBC !== "V" &&
-        check_NEXT_PLAN_ID && (parseInt(selectedPlanTable[i].STEP.toString())>=0 &&  parseInt(selectedPlanTable[i].STEP.toString())<=9)
+        check_NEXT_PLAN_ID &&
+        parseInt(selectedPlanTable[i].STEP.toString()) >= 0 &&
+        parseInt(selectedPlanTable[i].STEP.toString()) <= 9
       ) {
         generalQuery("updatePlanQLSX", {
           PLAN_ID: selectedPlanTable[i].PLAN_ID,
@@ -2475,7 +2270,12 @@ const PLANTABLE = () => {
           });
       } else {
         err_code += "_" + selectedPlanTable[i].G_NAME_KD + ":";
-        if ( !(parseInt(selectedPlanTable[i].PROCESS_NUMBER.toString()) ===1 ||  parseInt(selectedPlanTable[i].PROCESS_NUMBER.toString()) ===2)) {
+        if (
+          !(
+            parseInt(selectedPlanTable[i].PROCESS_NUMBER.toString()) === 1 ||
+            parseInt(selectedPlanTable[i].PROCESS_NUMBER.toString()) === 2
+          )
+        ) {
           err_code += "_: Process number chưa đúng";
         }
         if (selectedPlanTable[i].PLAN_QTY === 0) {
@@ -2499,9 +2299,13 @@ const PLANTABLE = () => {
           err_code +=
             "_: Chỉ thị đã chốt báo cáo, sẽ ko sửa được, thông tin các chỉ thị khác trong máy được lưu thành công";
         }
-        if (!(parseInt(selectedPlanTable[i].STEP.toString())>=0 &&  parseInt(selectedPlanTable[i].STEP.toString())<=9)) {
-          err_code +=
-            "_: Hãy nhập STEP từ 0 -> 9";
+        if (
+          !(
+            parseInt(selectedPlanTable[i].STEP.toString()) >= 0 &&
+            parseInt(selectedPlanTable[i].STEP.toString()) <= 9
+          )
+        ) {
+          err_code += "_: Hãy nhập STEP từ 0 -> 9";
         }
       }
     }
@@ -2649,7 +2453,7 @@ const PLANTABLE = () => {
       Swal.fire(
         "Thông báo",
         "Phải chỉ định liệu quản lý, k để sót size nào, và chỉ chọn 1 loại liệu làm liệu chính",
-        "error"
+        "error",
       );
     }
   };
@@ -2660,35 +2464,35 @@ const PLANTABLE = () => {
         <GridToolbarFilterButton />
         <GridToolbarDensitySelector />  */}
         <IconButton
-          className='buttonIcon'
+          className="buttonIcon"
           onClick={() => {
             SaveExcel(ycsxdatatable, "YCSX Table");
           }}
         >
-          <AiFillFileExcel color='green' size={25} />
+          <AiFillFileExcel color="green" size={15} />
           SAVE
         </IconButton>
         <GridToolbarQuickFilter />
         <IconButton
-          className='buttonIcon'
+          className="buttonIcon"
           onClick={() => {
             handleConfirmSetClosedYCSX();
           }}
         >
-          <FaArrowRight color='green' size={25} />
+          <FaArrowRight color="green" size={15} />
           SET CLOSED
         </IconButton>
         <IconButton
-          className='buttonIcon'
+          className="buttonIcon"
           onClick={() => {
             handleConfirmSetPendingYCSX();
           }}
         >
-          <MdOutlinePendingActions color='red' size={25} />
+          <MdOutlinePendingActions color="red" size={15} />
           SET PENDING
         </IconButton>
         <IconButton
-          className='buttonIcon'
+          className="buttonIcon"
           onClick={() => {
             if (ycsxdatatablefilter.length > 0) {
               setSelection({
@@ -2702,11 +2506,11 @@ const PLANTABLE = () => {
             }
           }}
         >
-          <AiOutlinePrinter color='#0066ff' size={25} />
+          <AiOutlinePrinter color="#0066ff" size={15} />
           Print YCSX
         </IconButton>
         <IconButton
-          className='buttonIcon'
+          className="buttonIcon"
           onClick={() => {
             if (ycsxdatatablefilter.length > 0) {
               setSelection({
@@ -2719,11 +2523,11 @@ const PLANTABLE = () => {
             }
           }}
         >
-          <AiOutlinePrinter color='#ff751a' size={25} />
+          <AiOutlinePrinter color="#ff751a" size={15} />
           Print Bản Vẽ
         </IconButton>
         <IconButton
-          className='buttonIcon'
+          className="buttonIcon"
           onClick={() => {
             if (ycsxdatatablefilter.length > 0) {
               handle_AddPlan();
@@ -2731,12 +2535,12 @@ const PLANTABLE = () => {
               Swal.fire(
                 "Thông báo",
                 "Chọn ít nhất 1 YCSX để thêm PLAN",
-                "error"
+                "error",
               );
             }
           }}
         >
-          <AiFillFolderAdd color='#69f542' size={25} />
+          <AiFillFolderAdd color="#69f542" size={15} />
           Add to PLAN
         </IconButton>
       </GridToolbarContainer>
@@ -2749,17 +2553,17 @@ const PLANTABLE = () => {
         <GridToolbarFilterButton />
         <GridToolbarDensitySelector />  */}
         <IconButton
-          className='buttonIcon'
+          className="buttonIcon"
           onClick={() => {
             SaveExcel(plandatatable, "Plan Table");
           }}
         >
-          <AiFillFileExcel color='green' size={25} />
+          <AiFillFileExcel color="green" size={15} />
           SAVE
         </IconButton>
         <GridToolbarQuickFilter />
         <IconButton
-          className='buttonIcon'
+          className="buttonIcon"
           onClick={() => {
             if (qlsxplandatafilter.length > 0) {
               if (
@@ -2780,7 +2584,7 @@ const PLANTABLE = () => {
                 Swal.fire(
                   "Thông báo",
                   "Nhập data định mức trước khi chỉ thị",
-                  "error"
+                  "error",
                 );
               } else {
                 setShowChiThi(true);
@@ -2793,11 +2597,11 @@ const PLANTABLE = () => {
             }
           }}
         >
-          <AiOutlinePrinter color='#0066ff' size={25} />
+          <AiOutlinePrinter color="#0066ff" size={15} />
           Print Chỉ Thị
         </IconButton>
         <IconButton
-          className='buttonIcon'
+          className="buttonIcon"
           onClick={() => {
             if (qlsxplandatafilter.length > 0) {
               setShowYCKT(true);
@@ -2809,49 +2613,55 @@ const PLANTABLE = () => {
             }
           }}
         >
-          <AiOutlinePrinter color='#9066ff' size={25} />
+          <AiOutlinePrinter color="#9066ff" size={15} />
           Print YCKT
         </IconButton>
         <IconButton
-          className='buttonIcon'
+          className="buttonIcon"
           onClick={() => {
             /* checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['QLSX'], handle_UpdatePlan); */
-            checkBP(userData,['QLSX'],['ALL'],['ALL'],handle_UpdatePlan);
+            checkBP(userData, ["QLSX"], ["ALL"], ["ALL"], handle_UpdatePlan);
             //handle_UpdatePlan();
           }}
         >
-          <AiFillSave color='blue' size={20} />
+          <AiFillSave color="blue" size={20} />
           Lưu PLAN
         </IconButton>
         <IconButton
-          className='buttonIcon'
+          className="buttonIcon"
           onClick={() => {
-           /*  checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['QLSX'], handleConfirmDeletePlan); */
-            checkBP(userData,['QLSX'],['ALL'],['ALL'],handleConfirmDeletePlan);
+            /*  checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['QLSX'], handleConfirmDeletePlan); */
+            checkBP(
+              userData,
+              ["QLSX"],
+              ["ALL"],
+              ["ALL"],
+              handleConfirmDeletePlan,
+            );
             //handleConfirmDeletePlan();
           }}
         >
-          <FcDeleteRow color='yellow' size={20} />
+          <FcDeleteRow color="yellow" size={20} />
           Xóa PLAN
         </IconButton>
         <IconButton
-          className='buttonIcon'
+          className="buttonIcon"
           onClick={() => {
             loadQLSXPlan(ycsxdatatablefilter[0].PROD_REQUEST_NO);
           }}
         >
-          <BiRefresh color='yellow' size={20} />
+          <BiRefresh color="yellow" size={20} />
           Refresh PLAN
         </IconButton>
         <IconButton
-          className='buttonIcon'
+          className="buttonIcon"
           onClick={() => {
             /* checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['QLSX'], handleSaveQLSX); */
-            checkBP(userData,['QLSX'],['ALL'],['ALL'],handleSaveQLSX);
+            checkBP(userData, ["QLSX"], ["ALL"], ["ALL"], handleSaveQLSX);
             //handleSaveQLSX();
           }}
         >
-          <AiFillSave color='lightgreen' size={20} />
+          <AiFillSave color="lightgreen" size={20} />
           Lưu Data Định Mức
         </IconButton>
       </GridToolbarContainer>
@@ -2864,17 +2674,17 @@ const PLANTABLE = () => {
         <GridToolbarFilterButton />
         <GridToolbarDensitySelector />  */}
         <IconButton
-          className='buttonIcon'
+          className="buttonIcon"
           onClick={() => {
             SaveExcel(ycsxdatatable, "YCSX Table");
           }}
         >
-          <AiFillFileExcel color='green' size={25} />
+          <AiFillFileExcel color="green" size={15} />
           SAVE
         </IconButton>
         <GridToolbarQuickFilter />
         <IconButton
-          className='buttonIcon'
+          className="buttonIcon"
           onClick={() => {
             if (chithidatatable.length > 0) {
               Swal.fire({
@@ -2882,48 +2692,60 @@ const PLANTABLE = () => {
                 text: "Đang lưu chỉ thị, hãy chờ một chút",
                 icon: "info",
                 showCancelButton: false,
-                allowOutsideClick: false,      
-                confirmButtonText:'OK',
+                allowOutsideClick: false,
+                confirmButtonText: "OK",
                 showConfirmButton: false,
               });
               /* checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['QLSX'], hanlde_SaveChiThi); */
-              checkBP(userData,['QLSX'],['ALL'],['ALL'],hanlde_SaveChiThi);
+              checkBP(userData, ["QLSX"], ["ALL"], ["ALL"], hanlde_SaveChiThi);
               //hanlde_SaveChiThi();
             } else {
               Swal.fire("Thông báo", "Không có liệu để chỉ thị", "error");
             }
           }}
         >
-          <AiFillSave color='blue' size={20} />
+          <AiFillSave color="blue" size={20} />
           Lưu chỉ thị
         </IconButton>
         <IconButton
-          className='buttonIcon'
+          className="buttonIcon"
           onClick={() => {
-           /*  checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['QLSX'], handleConfirmDeleteLieu); */
-            checkBP(userData,['QLSX'],['ALL'],['ALL'],handleConfirmDeleteLieu);
+            /*  checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['QLSX'], handleConfirmDeleteLieu); */
+            checkBP(
+              userData,
+              ["QLSX"],
+              ["ALL"],
+              ["ALL"],
+              handleConfirmDeleteLieu,
+            );
 
             //handleConfirmDeleteLieu();
           }}
         >
-          <FcDeleteRow color='yellow' size={20} />
+          <FcDeleteRow color="yellow" size={20} />
           Xóa Liệu
         </IconButton>
         <IconButton
-          className='buttonIcon'
+          className="buttonIcon"
           onClick={() => {
-           /*  checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['QLSX'], handleConfirmRESETLIEU); */
-            checkBP(userData,['QLSX'],['ALL'],['ALL'],handleConfirmRESETLIEU);
+            /*  checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['QLSX'], handleConfirmRESETLIEU); */
+            checkBP(
+              userData,
+              ["QLSX"],
+              ["ALL"],
+              ["ALL"],
+              handleConfirmRESETLIEU,
+            );
             //handleConfirmRESETLIEU();
           }}
         >
-          <BiReset color='red' size={20} />
+          <BiReset color="red" size={20} />
           RESET Liệu
         </IconButton>
         <IconButton
-          className='buttonIcon'
+          className="buttonIcon"
           onClick={() => {
-           /*  checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['QLSX'], ()=> {
+            /*  checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['QLSX'], ()=> {
               if (qlsxplandatafilter.length > 0) {
                 setShowKhoAo(!showkhoao);
                 handle_loadKhoAo();
@@ -2935,7 +2757,7 @@ const PLANTABLE = () => {
               }
 
             }); */
-            checkBP(userData,['QLSX'],['ALL'],['ALL'],()=> {
+            checkBP(userData, ["QLSX"], ["ALL"], ["ALL"], () => {
               if (qlsxplandatafilter.length > 0) {
                 setShowKhoAo(!showkhoao);
                 handle_loadKhoAo();
@@ -2945,37 +2767,36 @@ const PLANTABLE = () => {
               } else {
                 Swal.fire("Thông báo", "Hãy chọn một chỉ thị", "error");
               }
-            })
-           
+            });
           }}
         >
-          <FaWarehouse color='blue' size={20} />
+          <FaWarehouse color="blue" size={20} />
           Xuất kho ảo
         </IconButton>
         <IconButton
-          className='buttonIcon'
+          className="buttonIcon"
           onClick={() => {
             /* checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['QLSX'], handleConfirmDKXL); */
-            checkBP(userData,['QLSX'],['ALL'],['ALL'],handleConfirmDKXL);
+            checkBP(userData, ["QLSX"], ["ALL"], ["ALL"], handleConfirmDKXL);
 
             handleConfirmDKXL();
           }}
         >
-          <AiOutlineBarcode color='green' size={20} />
+          <AiOutlineBarcode color="green" size={20} />
           Đăng ký Xuất Kho Thật
         </IconButton>
         <IconButton
-          className='buttonIcon'
+          className="buttonIcon"
           onClick={() => {
             handleGetChiThiTable(
               qlsxplandatafilter[0].PLAN_ID,
               qlsxplandatafilter[0].G_CODE,
               qlsxplandatafilter[0].PLAN_QTY,
-              qlsxplandatafilter[0].PROCESS_NUMBER
+              qlsxplandatafilter[0].PROCESS_NUMBER,
             );
           }}
         >
-          <BiRefresh color='yellow' size={20} />
+          <BiRefresh color="yellow" size={20} />
           Refresh chỉ thị
         </IconButton>
         <span style={{ fontSize: 20, fontWeight: "bold", color: "red" }}>
@@ -2999,8 +2820,8 @@ const PLANTABLE = () => {
         </span>
         Có setting hay không?
         <input
-          type='checkbox'
-          name='alltimecheckbox'
+          type="checkbox"
+          name="alltimecheckbox"
           defaultChecked={calc_loss_setting}
           onChange={() => setCalc_Loss_Setting(!calc_loss_setting)}
         ></input>
@@ -3014,25 +2835,25 @@ const PLANTABLE = () => {
         <GridToolbarFilterButton />
         <GridToolbarDensitySelector />  */}
         <IconButton
-          className='buttonIcon'
+          className="buttonIcon"
           onClick={() => {
             SaveExcel(ycsxdatatable, "YCSX Table");
           }}
         >
-          <AiFillFileExcel color='green' size={25} />
+          <AiFillFileExcel color="green" size={15} />
           SAVE
         </IconButton>
         <GridToolbarQuickFilter />
-        <div className='div' style={{ fontSize: 20, fontWeight: "bold" }}>
+        <div className="div" style={{ fontSize: 20, fontWeight: "bold" }}>
           Tồn kho ảo
         </div>
         <IconButton
-          className='buttonIcon'
+          className="buttonIcon"
           onClick={() => {
             handle_xuatKhoAo();
           }}
         >
-          <AiOutlineCaretRight color='blue' size={20} />
+          <AiOutlineCaretRight color="blue" size={20} />
           Xuất kho
         </IconButton>
       </GridToolbarContainer>
@@ -3045,35 +2866,35 @@ const PLANTABLE = () => {
         <GridToolbarFilterButton />
         <GridToolbarDensitySelector />  */}
         <IconButton
-          className='buttonIcon'
+          className="buttonIcon"
           onClick={() => {
             SaveExcel(ycsxdatatable, "YCSX Table");
           }}
         >
-          <AiFillFileExcel color='green' size={25} />
+          <AiFillFileExcel color="green" size={15} />
           SAVE
         </IconButton>
         <GridToolbarQuickFilter />
-        <div className='div' style={{ fontSize: 20, fontWeight: "bold" }}>
+        <div className="div" style={{ fontSize: 20, fontWeight: "bold" }}>
           Lịch sử input liệu sản xuất
         </div>
         <IconButton
-          className='buttonIcon'
+          className="buttonIcon"
           onClick={() => {
             Swal.fire("Thông báo", "Bên sản xuất sẽ confirm", "info");
             //handle_saveConfirmLieuTon();
           }}
         >
-          <AiFillSave color='yellow' size={20} />
+          <AiFillSave color="yellow" size={20} />
           Lưu tồn liệu
         </IconButton>
         <IconButton
-          className='buttonIcon'
+          className="buttonIcon"
           onClick={() => {
             Swal.fire("Thông báo", "Bên sản xuất sẽ confirm", "info");
           }}
         >
-          <AiOutlineRollback color='yellow' size={20} />
+          <AiOutlineRollback color="yellow" size={20} />
           Nhập lại vào kho ảo
         </IconButton>
       </GridToolbarContainer>
@@ -3086,16 +2907,16 @@ const PLANTABLE = () => {
         <GridToolbarFilterButton />
         <GridToolbarDensitySelector />  */}
         <IconButton
-          className='buttonIcon'
+          className="buttonIcon"
           onClick={() => {
             SaveExcel(ycsxdatatable, "YCSX Table");
           }}
         >
-          <AiFillFileExcel color='green' size={25} />
+          <AiFillFileExcel color="green" size={15} />
           SAVE
         </IconButton>
         <GridToolbarQuickFilter />
-        <div className='div' style={{ fontSize: 20, fontWeight: "bold" }}>
+        <div className="div" style={{ fontSize: 20, fontWeight: "bold" }}>
           Lịch sử nhập kho ảo
         </div>
       </GridToolbarContainer>
@@ -3108,26 +2929,26 @@ const PLANTABLE = () => {
         <GridToolbarFilterButton />
         <GridToolbarDensitySelector />  */}
         <IconButton
-          className='buttonIcon'
+          className="buttonIcon"
           onClick={() => {
             SaveExcel(ycsxdatatable, "YCSX Table");
           }}
         >
-          <AiFillFileExcel color='green' size={25} />
+          <AiFillFileExcel color="green" size={15} />
           SAVE
         </IconButton>
         <GridToolbarQuickFilter />
-        <div className='div' style={{ fontSize: 20, fontWeight: "bold" }}>
+        <div className="div" style={{ fontSize: 20, fontWeight: "bold" }}>
           Lịch sử xuất kho ảo
         </div>
         <IconButton
-          className='buttonIcon'
+          className="buttonIcon"
           onClick={() => {
             Swal.fire("Thông báo", "Không được phép", "error");
             //handle_huyxuatkhoao();
           }}
         >
-          <FcCancel color='white' size={20} />
+          <FcCancel color="white" size={20} />
           Hủy Xuất
         </IconButton>
       </GridToolbarContainer>
@@ -3136,7 +2957,7 @@ const PLANTABLE = () => {
   const handleYCSXSelectionforUpdate = (ids: GridSelectionModel) => {
     const selectedID = new Set(ids);
     let datafilter = ycsxdatatable.filter((element: any) =>
-      selectedID.has(element.PROD_REQUEST_NO)
+      selectedID.has(element.PROD_REQUEST_NO),
     );
     if (datafilter.length > 0) {
       setYcsxDataTableFilter(datafilter);
@@ -3149,7 +2970,7 @@ const PLANTABLE = () => {
   const handleQLSXPlanDataSelectionforUpdate = (ids: GridSelectionModel) => {
     const selectedID = new Set(ids);
     let datafilter = plandatatable.filter((element: any) =>
-      selectedID.has(element.PLAN_ID)
+      selectedID.has(element.PLAN_ID),
     );
     //console.log(datafilter);
     if (datafilter.length > 0) {
@@ -3191,7 +3012,7 @@ const PLANTABLE = () => {
         datafilter[0].PLAN_ID,
         datafilter[0].G_CODE,
         datafilter[0].PLAN_QTY,
-        datafilter[0].PROCESS_NUMBER
+        datafilter[0].PROCESS_NUMBER,
       );
     } else {
       setQlsxPlanDataFilter([]);
@@ -3202,7 +3023,7 @@ const PLANTABLE = () => {
   const handleQLSXCHITHIDataSelectionforUpdate = (ids: GridSelectionModel) => {
     const selectedID = new Set(ids);
     let datafilter = chithidatatable.filter((element: any) =>
-      selectedID.has(element.CHITHI_ID)
+      selectedID.has(element.CHITHI_ID),
     );
     //console.log(datafilter);
     if (datafilter.length > 0) {
@@ -3213,11 +3034,11 @@ const PLANTABLE = () => {
     }
   };
   const handleTonLieuXuongDataSelectionforUpdate = (
-    ids: GridSelectionModel
+    ids: GridSelectionModel,
   ) => {
     const selectedID = new Set(ids);
     let datafilter = tonlieuxuongdatatable.filter((element: any) =>
-      selectedID.has(element.id)
+      selectedID.has(element.id),
     );
     //console.log(datafilter);
     if (datafilter.length > 0) {
@@ -3228,11 +3049,11 @@ const PLANTABLE = () => {
     }
   };
   const handleLichSuXuatKhoAoDataSelectionforUpdate = (
-    ids: GridSelectionModel
+    ids: GridSelectionModel,
   ) => {
     const selectedID = new Set(ids);
     let datafilter = lichsuxuatkhoaotable.filter((element: any) =>
-      selectedID.has(element.id)
+      selectedID.has(element.id),
     );
     //console.log(datafilter);
     if (datafilter.length > 0) {
@@ -3243,11 +3064,11 @@ const PLANTABLE = () => {
     }
   };
   const handleLichSuInputSXDataSelectionforUpdate = (
-    ids: GridSelectionModel
+    ids: GridSelectionModel,
   ) => {
     const selectedID = new Set(ids);
     let datafilter = lichsuinputlieutable.filter((element: any) =>
-      selectedID.has(element.id)
+      selectedID.has(element.id),
     );
     //console.log(datafilter);
     if (datafilter.length > 0) {
@@ -3274,7 +3095,7 @@ const PLANTABLE = () => {
   const handleDangKyXuatLieu = async (
     PLAN_ID: string,
     PROD_REQUEST_NO: string,
-    PROD_REQUEST_DATE: string
+    PROD_REQUEST_DATE: string,
   ) => {
     let checkPlanIdO300: boolean = true;
     let NEXT_OUT_NO: string = "001";
@@ -3318,7 +3139,7 @@ const PLANTABLE = () => {
           if (response.data.tk_status !== "NG") {
             NEXT_OUT_NO = zeroPad(
               parseInt(response.data.data[0].OUT_NO) + 1,
-              3
+              3,
             );
             console.log("nextoutno_o300", NEXT_OUT_NO);
           } else {
@@ -3479,21 +3300,21 @@ const PLANTABLE = () => {
       loadQLSXPlan(ycsxdatatablefilter[0].PROD_REQUEST_NO);
   }, []);
   return (
-    <div className='tableplan'>
-      <div className='planwindow'>
-        <div className='content'>
-          <div className='ycsxlist'>
-            <div className='tracuuYCSX'>
-              <div className='tracuuYCSXform'>
-                <div className='forminput'>
-                  <div className='forminputcolumn'>
+    <div className="tableplan">
+      <div className="planwindow">
+        <div className="content">
+          <div className="ycsxlist">
+            <div className="tracuuYCSX">
+              <div className="tracuuYCSXform">
+                <div className="forminput">
+                  <div className="forminputcolumn">
                     <label>
                       <b>Từ ngày:</b>
                       <input
                         onKeyDown={(e) => {
                           handleSearchCodeKeyDown(e);
                         }}
-                        type='date'
+                        type="date"
                         value={fromdate.slice(0, 10)}
                         onChange={(e) => setFromDate(e.target.value)}
                       ></input>
@@ -3504,47 +3325,47 @@ const PLANTABLE = () => {
                         onKeyDown={(e) => {
                           handleSearchCodeKeyDown(e);
                         }}
-                        type='date'
+                        type="date"
                         value={todate.slice(0, 10)}
                         onChange={(e) => setToDate(e.target.value)}
                       ></input>
                     </label>
                   </div>
-                  <div className='forminputcolumn'>
+                  <div className="forminputcolumn">
                     <label>
                       <b>Code KD:</b>{" "}
                       <input
                         onKeyDown={(e) => {
                           handleSearchCodeKeyDown(e);
                         }}
-                        type='text'
-                        placeholder='GH63-xxxxxx'
+                        type="text"
+                        placeholder="GH63-xxxxxx"
                         value={codeKD}
                         onChange={(e) => setCodeKD(e.target.value)}
                       ></input>
                     </label>
                     <label>
-                      <b>Code CMS:</b>{" "}
+                      <b>Code ERP:</b>{" "}
                       <input
                         onKeyDown={(e) => {
                           handleSearchCodeKeyDown(e);
                         }}
-                        type='text'
-                        placeholder='7C123xxx'
+                        type="text"
+                        placeholder="7C123xxx"
                         value={codeCMS}
                         onChange={(e) => setCodeCMS(e.target.value)}
                       ></input>
                     </label>
                   </div>
-                  <div className='forminputcolumn'>
+                  <div className="forminputcolumn">
                     <label>
                       <b>Tên nhân viên:</b>{" "}
                       <input
                         onKeyDown={(e) => {
                           handleSearchCodeKeyDown(e);
                         }}
-                        type='text'
-                        placeholder='Trang'
+                        type="text"
+                        placeholder="Trang"
                         value={empl_name}
                         onChange={(e) => setEmpl_Name(e.target.value)}
                       ></input>
@@ -3555,22 +3376,22 @@ const PLANTABLE = () => {
                         onKeyDown={(e) => {
                           handleSearchCodeKeyDown(e);
                         }}
-                        type='text'
-                        placeholder='SEVT'
+                        type="text"
+                        placeholder="SEVT"
                         value={cust_name}
                         onChange={(e) => setCust_Name(e.target.value)}
                       ></input>
                     </label>
                   </div>
-                  <div className='forminputcolumn'>
+                  <div className="forminputcolumn">
                     <label>
                       <b>Loại sản phẩm:</b>{" "}
                       <input
                         onKeyDown={(e) => {
                           handleSearchCodeKeyDown(e);
                         }}
-                        type='text'
-                        placeholder='TSP'
+                        type="text"
+                        placeholder="TSP"
                         value={prod_type}
                         onChange={(e) => setProdType(e.target.value)}
                       ></input>
@@ -3581,29 +3402,29 @@ const PLANTABLE = () => {
                         onKeyDown={(e) => {
                           handleSearchCodeKeyDown(e);
                         }}
-                        type='text'
-                        placeholder='12345'
+                        type="text"
+                        placeholder="12345"
                         value={prodrequestno}
                         onChange={(e) => setProdRequestNo(e.target.value)}
                       ></input>
                     </label>
                   </div>
-                  <div className='forminputcolumn'>
+                  <div className="forminputcolumn">
                     <label>
                       <b>Phân loại:</b>
                       <select
-                        name='phanloai'
+                        name="phanloai"
                         value={phanloai}
                         onChange={(e) => {
                           setPhanLoai(e.target.value);
                         }}
                       >
-                        <option value='00'>ALL</option>
-                        <option value='01'>Thông thường</option>
-                        <option value='02'>SDI</option>
-                        <option value='03'>GC</option>
-                        <option value='04'>SAMPLE</option>
-                        <option value='22'>NOT SAMPLE</option>
+                        <option value="00">ALL</option>
+                        <option value="01">Thông thường</option>
+                        <option value="02">SDI</option>
+                        <option value="03">GC</option>
+                        <option value="04">SAMPLE</option>
+                        <option value="22">NOT SAMPLE</option>
                       </select>
                     </label>
                     <label>
@@ -3612,22 +3433,22 @@ const PLANTABLE = () => {
                         onKeyDown={(e) => {
                           handleSearchCodeKeyDown(e);
                         }}
-                        type='text'
-                        placeholder='SJ-203020HC'
+                        type="text"
+                        placeholder="SJ-203020HC"
                         value={material}
                         onChange={(e) => setMaterial(e.target.value)}
                       ></input>
                     </label>
                   </div>
-                  <div className='forminputcolumn'>
+                  <div className="forminputcolumn">
                     <label>
                       <b>YCSX Pending:</b>
                       <input
                         onKeyDown={(e) => {
                           handleSearchCodeKeyDown(e);
                         }}
-                        type='checkbox'
-                        name='alltimecheckbox'
+                        type="checkbox"
+                        name="alltimecheckbox"
                         defaultChecked={ycsxpendingcheck}
                         onChange={() => setYCSXPendingCheck(!ycsxpendingcheck)}
                       ></input>
@@ -3638,8 +3459,8 @@ const PLANTABLE = () => {
                         onKeyDown={(e) => {
                           handleSearchCodeKeyDown(e);
                         }}
-                        type='checkbox'
-                        name='alltimecheckbox'
+                        type="checkbox"
+                        name="alltimecheckbox"
                         defaultChecked={inspectInputcheck}
                         onChange={() =>
                           setInspectInputCheck(!inspectInputcheck)
@@ -3648,28 +3469,28 @@ const PLANTABLE = () => {
                     </label>
                   </div>
                 </div>
-                <div className='formbutton'>
+                <div className="formbutton">
                   <label>
                     <b>All Time:</b>
                     <input
-                      type='checkbox'
-                      name='alltimecheckbox'
+                      type="checkbox"
+                      name="alltimecheckbox"
                       defaultChecked={alltime}
                       onChange={() => setAllTime(!alltime)}
                     ></input>
                   </label>
                   <IconButton
-                    className='buttonIcon'
+                    className="buttonIcon"
                     onClick={() => {
                       handletraYCSX();
                     }}
                   >
-                    <FcSearch color='green' size={30} />
+                    <FcSearch color="green" size={30} />
                     Search
                   </IconButton>
                 </div>
               </div>
-              <div className='tracuuYCSXTable'>
+              <div className="tracuuYCSXTable">
                 <DataGrid
                   sx={{ fontSize: 12, flex: 1 }}
                   components={{
@@ -3683,7 +3504,7 @@ const PLANTABLE = () => {
                   rowsPerPageOptions={[
                     5, 10, 50, 100, 500, 1000, 5000, 10000, 500000,
                   ]}
-                  editMode='row'
+                  editMode="row"
                   getRowId={(row) => row.PROD_REQUEST_NO}
                   onSelectionModelChange={(ids) => {
                     handleYCSXSelectionforUpdate(ids);
@@ -3691,8 +3512,8 @@ const PLANTABLE = () => {
                 />
               </div>
               {selection.tabycsx && (
-                <div className='printycsxpage'>
-                  <div className='buttongroup'>
+                <div className="printycsxpage">
+                  <div className="buttongroup">
                     <Button
                       onClick={() => {
                         setYCSXListRender(renderYCSX(ycsxdatatablefilter));
@@ -3709,14 +3530,14 @@ const PLANTABLE = () => {
                       Close
                     </Button>
                   </div>
-                  <div className='ycsxrender' ref={ycsxprintref}>
+                  <div className="ycsxrender" ref={ycsxprintref}>
                     {ycsxlistrender}
                   </div>
                 </div>
               )}
               {selection.tabbanve && (
-                <div className='printycsxpage'>
-                  <div className='buttongroup'>
+                <div className="printycsxpage">
+                  <div className="buttongroup">
                     <Button
                       onClick={() => {
                         setYCSXListRender(renderBanVe(ycsxdatatablefilter));
@@ -3733,15 +3554,15 @@ const PLANTABLE = () => {
                       Close
                     </Button>
                   </div>
-                  <div className='ycsxrender' ref={ycsxprintref}>
+                  <div className="ycsxrender" ref={ycsxprintref}>
                     {ycsxlistrender}
                   </div>
                 </div>
               )}
               {showkhoao && (
-                <div className='khoaodiv'>
+                <div className="khoaodiv">
                   <div
-                    className='khoaotieude'
+                    className="khoaotieude"
                     style={{ fontSize: 25, fontWeight: "bold" }}
                   >
                     KHO ẢO
@@ -3758,19 +3579,19 @@ const PLANTABLE = () => {
                         handle_loadlichsunhapkhoao();
                         handle_loadlichsuxuatkhoao();
                         handle_loadlichsuinputlieu(
-                          qlsxplandatafilter[0].PLAN_ID
+                          qlsxplandatafilter[0].PLAN_ID,
                         );
                       }}
                     >
                       Refresh
                     </Button>
                   </div>
-                  <div className='khoaodivtable'>
+                  <div className="khoaodivtable">
                     <div
-                      className='tablekhoao'
+                      className="tablekhoao"
                       style={{ height: "100%", width: "50%" }}
                     >
-                      <div className='tabletonkhoao'>
+                      <div className="tabletonkhoao">
                         <DataGrid
                           sx={{ fontSize: 12, flex: 1 }}
                           components={{
@@ -3794,20 +3615,20 @@ const PLANTABLE = () => {
                           onCellEditCommit={(
                             params: GridCellEditCommitParams,
                             event: MuiEvent<MuiBaseEvent>,
-                            details: GridCallbackDetails
+                            details: GridCallbackDetails,
                           ) => {
                             const keyvar = params.field;
                             const newdata = tonlieuxuongdatatable.map((p) =>
                               p.id === params.id
                                 ? { ...p, [keyvar]: params.value }
-                                : p
+                                : p,
                             );
                             setTonLieuXuongDataFilter(newdata);
                             //console.log(chithidatatable);
                           }}
                         />
                       </div>
-                      <div className='lichsuinputsanxuat'>
+                      <div className="lichsuinputsanxuat">
                         <DataGrid
                           sx={{ fontSize: 12, flex: 1 }}
                           components={{
@@ -3831,13 +3652,13 @@ const PLANTABLE = () => {
                           onCellEditCommit={(
                             params: GridCellEditCommitParams,
                             event: MuiEvent<MuiBaseEvent>,
-                            details: GridCallbackDetails
+                            details: GridCallbackDetails,
                           ) => {
                             const keyvar = params.field;
                             const newdata = lichsuinputlieutable.map((p) =>
                               p.id === params.id
                                 ? { ...p, [keyvar]: params.value }
-                                : p
+                                : p,
                             );
                             setLichSuInputLieuTable(newdata);
                             //console.log(chithidatatable);
@@ -3846,11 +3667,11 @@ const PLANTABLE = () => {
                       </div>
                     </div>
                     <div
-                      className='nhapxuatkhoao'
+                      className="nhapxuatkhoao"
                       style={{ height: "100%", width: "50%" }}
                     >
                       <div
-                        className='nhapkhoao'
+                        className="nhapkhoao"
                         style={{ height: "100%", width: "100%" }}
                       >
                         <DataGrid
@@ -3874,13 +3695,13 @@ const PLANTABLE = () => {
                           onCellEditCommit={(
                             params: GridCellEditCommitParams,
                             event: MuiEvent<MuiBaseEvent>,
-                            details: GridCallbackDetails
+                            details: GridCallbackDetails,
                           ) => {
                             const keyvar = params.field;
                             const newdata = lichsunhapkhoaotable.map((p) =>
                               p.id === params.id
                                 ? { ...p, [keyvar]: params.value }
-                                : p
+                                : p,
                             );
                             setLichSuNhapKhoAoTable(newdata);
                             //console.log(chithidatatable);
@@ -3888,7 +3709,7 @@ const PLANTABLE = () => {
                         />
                       </div>
                       <div
-                        className='xuatkhoao'
+                        className="xuatkhoao"
                         style={{ height: "100%", width: "100%" }}
                       >
                         <DataGrid
@@ -3914,13 +3735,13 @@ const PLANTABLE = () => {
                           onCellEditCommit={(
                             params: GridCellEditCommitParams,
                             event: MuiEvent<MuiBaseEvent>,
-                            details: GridCallbackDetails
+                            details: GridCallbackDetails,
                           ) => {
                             const keyvar = params.field;
                             const newdata = lichsuxuatkhoaotable.map((p) =>
                               p.id === params.id
                                 ? { ...p, [keyvar]: params.value }
-                                : p
+                                : p,
                             );
                             setLichSuXuatKhoAoTable(newdata);
                             //console.log(chithidatatable);
@@ -3932,8 +3753,8 @@ const PLANTABLE = () => {
                 </div>
               )}
               {showChiThi && (
-                <div className='printycsxpage'>
-                  <div className='buttongroup'>
+                <div className="printycsxpage">
+                  <div className="buttongroup">
                     <button
                       onClick={() => {
                         setChiThiListRender(renderChiThi(qlsxplandatafilter));
@@ -3950,14 +3771,14 @@ const PLANTABLE = () => {
                       Close
                     </button>
                   </div>
-                  <div className='ycsxrender' ref={ycsxprintref}>
+                  <div className="ycsxrender" ref={ycsxprintref}>
                     {chithilistrender}
                   </div>
                 </div>
               )}
               {showYCKT && (
-                <div className='printycsxpage'>
-                  <div className='buttongroup'>
+                <div className="printycsxpage">
+                  <div className="buttongroup">
                     <button
                       onClick={() => {
                         setYCKTListRender(renderYCKT(qlsxplandatafilter));
@@ -3974,15 +3795,15 @@ const PLANTABLE = () => {
                       Close
                     </button>
                   </div>
-                  <div className='ycsxrender' ref={ycsxprintref}>
+                  <div className="ycsxrender" ref={ycsxprintref}>
                     {ycktlistrender}
                   </div>
                 </div>
               )}
             </div>
           </div>
-          <div className='chithidiv'>
-            <div className='planlist'>
+          <div className="chithidiv">
+            <div className="planlist">
               <DataGrid
                 sx={{ fontSize: 12, flex: 1 }}
                 components={{
@@ -3996,7 +3817,7 @@ const PLANTABLE = () => {
                 rowsPerPageOptions={[
                   5, 10, 50, 100, 500, 1000, 5000, 10000, 500000,
                 ]}
-                editMode='cell'
+                editMode="cell"
                 getRowId={(row) => row.PLAN_ID}
                 onSelectionModelChange={(ids) => {
                   handleQLSXPlanDataSelectionforUpdate(ids);
@@ -4004,64 +3825,64 @@ const PLANTABLE = () => {
                 onCellEditCommit={(
                   params: GridCellEditCommitParams,
                   event: MuiEvent<MuiBaseEvent>,
-                  details: GridCallbackDetails
+                  details: GridCallbackDetails,
                 ) => {
                   const keyvar = params.field;
                   const newdata = plandatatable.map((p) =>
                     p.PLAN_ID === params.id
                       ? { ...p, [keyvar]: params.value }
-                      : p
+                      : p,
                   );
                   setPlanDataTable(newdata);
                   //console.log(plandatatable);
                 }}
               />
             </div>
-            <div className='datadinhmuc'>
-              <div className='forminputcolumn'>
+            <div className="datadinhmuc">
+              <div className="forminputcolumn">
                 <label>
                   <b>EQ1:</b>
                   <select
-                    name='phanloai'
+                    name="phanloai"
                     value={datadinhmuc.EQ1}
                     onChange={(e) =>
                       setDataDinhMuc({ ...datadinhmuc, EQ1: e.target.value })
                     }
-                    style={{ width: 150, height: 22 }}
+                    style={{ width: 150, height: 30 }}
                   >
-                    <option value='FR'>FR</option>
-                    <option value='SR'>SR</option>
-                    <option value='DC'>DC</option>
-                    <option value='ED'>ED</option>
-                    <option value='NO'>NO</option>
-                    <option value='NA'>NA</option>
+                    <option value="FR">FR</option>
+                    <option value="SR">SR</option>
+                    <option value="DC">DC</option>
+                    <option value="ED">ED</option>
+                    <option value="NO">NO</option>
+                    <option value="NA">NA</option>
                   </select>
                 </label>
                 <label>
                   <b>EQ2:</b>
                   <select
-                    name='phanloai'
+                    name="phanloai"
                     value={datadinhmuc.EQ2}
                     onChange={(e) =>
                       setDataDinhMuc({ ...datadinhmuc, EQ2: e.target.value })
                     }
-                    style={{ width: 150, height: 22 }}
+                    style={{ width: 150, height: 30 }}
                   >
-                    <option value='FR'>FR</option>
-                    <option value='SR'>SR</option>
-                    <option value='DC'>DC</option>
-                    <option value='ED'>ED</option>
-                    <option value='NO'>NO</option>
-                    <option value='NA'>NA</option>
+                    <option value="FR">FR</option>
+                    <option value="SR">SR</option>
+                    <option value="DC">DC</option>
+                    <option value="ED">ED</option>
+                    <option value="NO">NO</option>
+                    <option value="NA">NA</option>
                   </select>
                 </label>
               </div>
-              <div className='forminputcolumn'>
+              <div className="forminputcolumn">
                 <label>
                   <b>Setting1(min):</b>{" "}
                   <input
-                    type='text'
-                    placeholder='Thời gian setting 1'
+                    type="text"
+                    placeholder="Thời gian setting 1"
                     value={datadinhmuc.Setting1}
                     onChange={(e) =>
                       setDataDinhMuc({
@@ -4074,8 +3895,8 @@ const PLANTABLE = () => {
                 <label>
                   <b>Setting2(min):</b>{" "}
                   <input
-                    type='text'
-                    placeholder='Thời gian setting 2'
+                    type="text"
+                    placeholder="Thời gian setting 2"
                     value={datadinhmuc.Setting2}
                     onChange={(e) =>
                       setDataDinhMuc({
@@ -4086,12 +3907,12 @@ const PLANTABLE = () => {
                   ></input>
                 </label>
               </div>
-              <div className='forminputcolumn'>
+              <div className="forminputcolumn">
                 <label>
                   <b>UPH1(EA/h):</b>{" "}
                   <input
-                    type='text'
-                    placeholder='Tốc độ sx 1'
+                    type="text"
+                    placeholder="Tốc độ sx 1"
                     value={datadinhmuc.UPH1}
                     onChange={(e) =>
                       setDataDinhMuc({
@@ -4104,8 +3925,8 @@ const PLANTABLE = () => {
                 <label>
                   <b>UPH2(EA/h):</b>{" "}
                   <input
-                    type='text'
-                    placeholder='Tốc độ sx 2'
+                    type="text"
+                    placeholder="Tốc độ sx 2"
                     value={datadinhmuc.UPH2}
                     onChange={(e) =>
                       setDataDinhMuc({
@@ -4116,12 +3937,12 @@ const PLANTABLE = () => {
                   ></input>
                 </label>
               </div>
-              <div className='forminputcolumn'>
+              <div className="forminputcolumn">
                 <label>
                   <b>Step1:</b>{" "}
                   <input
-                    type='text'
-                    placeholder='Số bước 1'
+                    type="text"
+                    placeholder="Số bước 1"
                     value={datadinhmuc.Step1}
                     onChange={(e) =>
                       setDataDinhMuc({
@@ -4134,8 +3955,8 @@ const PLANTABLE = () => {
                 <label>
                   <b>Step2:</b>{" "}
                   <input
-                    type='text'
-                    placeholder='Số bước 2'
+                    type="text"
+                    placeholder="Số bước 2"
                     value={datadinhmuc.Step2}
                     onChange={(e) =>
                       setDataDinhMuc({
@@ -4146,12 +3967,12 @@ const PLANTABLE = () => {
                   ></input>
                 </label>
               </div>
-              <div className='forminputcolumn'>
+              <div className="forminputcolumn">
                 <label>
                   <b>LOSS_SX1(%):</b>{" "}
                   <input
-                    type='text'
-                    placeholder='% loss sx 1'
+                    type="text"
+                    placeholder="% loss sx 1"
                     value={datadinhmuc.LOSS_SX1}
                     onChange={(e) =>
                       setDataDinhMuc({
@@ -4164,8 +3985,8 @@ const PLANTABLE = () => {
                 <label>
                   <b>LOSS_SX2(%):</b>{" "}
                   <input
-                    type='text'
-                    placeholder='% loss sx 2'
+                    type="text"
+                    placeholder="% loss sx 2"
                     value={datadinhmuc.LOSS_SX2}
                     onChange={(e) =>
                       setDataDinhMuc({
@@ -4176,12 +3997,12 @@ const PLANTABLE = () => {
                   ></input>
                 </label>
               </div>
-              <div className='forminputcolumn'>
+              <div className="forminputcolumn">
                 <label>
                   <b>LOSS SETTING1 (m):</b>{" "}
                   <input
-                    type='text'
-                    placeholder='met setting 1'
+                    type="text"
+                    placeholder="met setting 1"
                     value={datadinhmuc.LOSS_SETTING1}
                     onChange={(e) =>
                       setDataDinhMuc({
@@ -4194,8 +4015,8 @@ const PLANTABLE = () => {
                 <label>
                   <b>LOSS SETTING2 (m):</b>{" "}
                   <input
-                    type='text'
-                    placeholder='met setting 2'
+                    type="text"
+                    placeholder="met setting 2"
                     value={datadinhmuc.LOSS_SETTING2}
                     onChange={(e) =>
                       setDataDinhMuc({
@@ -4206,11 +4027,11 @@ const PLANTABLE = () => {
                   ></input>
                 </label>
               </div>
-              <div className='forminputcolumn'>
+              <div className="forminputcolumn">
                 <label>
                   <b>FACTORY:</b>
                   <select
-                    name='nhamay'
+                    name="nhamay"
                     value={
                       datadinhmuc.FACTORY === null ? "NA" : datadinhmuc.FACTORY
                     }
@@ -4222,16 +4043,16 @@ const PLANTABLE = () => {
                     }}
                     style={{ width: 162, height: 22 }}
                   >
-                    <option value='NA'>NA</option>
-                    <option value='NM1'>NM1</option>
-                    <option value='NM2'>NM2</option>
+                    <option value="NA">NA</option>
+                    <option value="NM1">NM1</option>
+                    <option value="NM2">NM2</option>
                   </select>
                 </label>
                 <label>
                   <b>NOTE (QLSX):</b>{" "}
                   <input
-                    type='text'
-                    placeholder='Chú ý'
+                    type="text"
+                    placeholder="Chú ý"
                     value={datadinhmuc.NOTE}
                     onChange={(e) =>
                       setDataDinhMuc({ ...datadinhmuc, NOTE: e.target.value })
@@ -4240,7 +4061,7 @@ const PLANTABLE = () => {
                 </label>
               </div>
             </div>
-            <div className='chithitable'>
+            <div className="chithitable">
               <DataGrid
                 sx={{ fontSize: 12, flex: 1 }}
                 components={{
@@ -4255,7 +4076,7 @@ const PLANTABLE = () => {
                 rowsPerPageOptions={[
                   5, 10, 50, 100, 500, 1000, 5000, 10000, 500000,
                 ]}
-                editMode='cell'
+                editMode="cell"
                 checkboxSelection
                 onSelectionModelChange={(ids) => {
                   handleQLSXCHITHIDataSelectionforUpdate(ids);
@@ -4263,13 +4084,13 @@ const PLANTABLE = () => {
                 onCellEditCommit={(
                   params: GridCellEditCommitParams,
                   event: MuiEvent<MuiBaseEvent>,
-                  details: GridCallbackDetails
+                  details: GridCallbackDetails,
                 ) => {
                   const keyvar = params.field;
                   const newdata = chithidatatable.map((p) =>
                     p.CHITHI_ID === params.id
                       ? { ...p, [keyvar]: params.value }
-                      : p
+                      : p,
                   );
                   setChiThiDataTable(newdata);
                   //console.log(chithidatatable);

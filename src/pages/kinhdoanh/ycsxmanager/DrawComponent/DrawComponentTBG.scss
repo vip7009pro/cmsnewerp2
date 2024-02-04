@@ -1,0 +1,37 @@
+.drawcomponenttbg {
+  position: relative;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  outline: 0;
+  pointer-events: none;
+  .draw {
+    width: 150mm !important;
+    height: 90mm !important;
+  }
+  .approval_info {
+    position: absolute;
+    font-size: 12px;
+    top: 198mm;
+    left: 115mm;
+  }
+  .approval_info2 {
+    position: absolute;
+    font-size: 12px;
+    top: 198mm;
+    left: 91mm;
+  }
+  .qcpass {
+    position: absolute;
+    top: 155mm;
+    left: 5mm;
+  }
+  .qcpass2 {
+    position: absolute;
+    top: 0mm;
+    left: 235mm;
+  }
+}

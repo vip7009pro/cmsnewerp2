@@ -20,47 +20,16 @@ import { SaveExcel, weekdayarray } from "../../../api/GlobalFunction";
 import moment from "moment";
 import { RootState } from "../../../redux/store";
 import { useSelector, useDispatch } from "react-redux";
-import { UserData } from "../../../redux/slices/globalSlice";
-interface DiemDanhNhomData {
-  DATE_COLUMN: string,
-  WEEKDAY: string,
-  id: string,
-  EMPL_NO: string,
-  CMS_ID: string,
-  MIDLAST_NAME: string,
-  FIRST_NAME: string,
-  PHONE_NUMBER: string,
-  SEX_NAME: string,
-  WORK_STATUS_NAME: string,
-  FACTORY_NAME: string,
-  JOB_NAME: string,
-  WORK_SHIF_NAME: string,
-  WORK_POSITION_NAME: string,
-  SUBDEPTNAME: string,
-  MAINDEPTNAME: string,
-  REQUEST_DATE: string,
-  APPLY_DATE: string,
-  APPROVAL_STATUS: number,
-  OFF_ID: number,
-  CA_NGHI: number,
-  ON_OFF: number,
-  OVERTIME_INFO: string,
-  OVERTIME: number,
-  REASON_NAME: string,
-  REMARK: string,
-  XACNHAN: string,
-  CHECK1: string,
-  CHECK2: string,
-  CHECK3: string,
-}
+import { DiemDanhLichSuData, UserData } from "../../../api/GlobalInterface";
+
 const LichSu = () => {
-    const userData: UserData | undefined = useSelector(
-        (state: RootState) => state.totalSlice.userData
-        );
-    
+  const userData: UserData | undefined = useSelector(
+    (state: RootState) => state.totalSlice.userData
+  );
+
   const [isLoading, setisLoading] = useState(false);
   const [diemdanhnhomtable, setDiemDanhNhomTable] = useState<
-    Array<DiemDanhNhomData>
+    Array<DiemDanhLichSuData>
   >([]);
   const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-01"));
   const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));
@@ -70,28 +39,34 @@ const LichSu = () => {
       headerName: "DATE_COLUMN",
       width: 120,
       valueGetter: (params: any) => {
-        return params.row.DATE_COLUMN ? params.row.DATE_COLUMN.slice(0, 10) : "";
+        return params.row.DATE_COLUMN
+          ? params.row.DATE_COLUMN.slice(0, 10)
+          : "";
       },
     },
     {
       field: "WEEKDAY",
-      headerName: "WEEKDAY", 
+      headerName: "WEEKDAY",
       width: 120,
       renderCell: (params: any) => {
-        if (params.row.WEEKDAY === 'Sunday') {
-            return (
-              <div className='onoffdiv'>
-                <span style={{ fontWeight: "bold", color: "red" }}>{params.row.WEEKDAY}</span>
-              </div>
-            );
-          } else {
-            return (
-              <div className='onoffdiv'>
-                <span style={{ fontWeight: "bold", color: "#4268F4" }}>{params.row.WEEKDAY}</span>
-              </div>
-            );
+        if (params.row.WEEKDAY === "Sunday") {
+          return (
+            <div className='onoffdiv'>
+              <span style={{ fontWeight: "bold", color: "red" }}>
+                {params.row.WEEKDAY}
+              </span>
+            </div>
+          );
+        } else {
+          return (
+            <div className='onoffdiv'>
+              <span style={{ fontWeight: "bold", color: "#4268F4" }}>
+                {params.row.WEEKDAY}
+              </span>
+            </div>
+          );
         }
-      }
+      },
     },
     {
       field: "ON_OFF",
@@ -110,14 +85,14 @@ const LichSu = () => {
               <span style={{ fontWeight: "bold", color: "red" }}>Nghỉ làm</span>
             </div>
           );
-        }
-        else 
-        {
-            return (
+        } else {
+          return (
             <div className='onoffdiv'>
-                <span style={{ fontWeight: "bold", color: "#754EFA" }}>Chưa điểm danh</span>
+              <span style={{ fontWeight: "bold", color: "#754EFA" }}>
+                Chưa điểm danh
+              </span>
             </div>
-            );
+          );
         }
       },
     },
@@ -125,39 +100,42 @@ const LichSu = () => {
       field: "CHECK1",
       headerName: "CHECK1",
       width: 120,
-      renderCell: (params: any) => {       
-          return (
-            <div className='onoffdiv'>
-              <span style={{ fontWeight: "bold", color: "black" }}>{params.row.CHECK1}</span>
-            </div>
-          );
-        
+      renderCell: (params: any) => {
+        return (
+          <div className='onoffdiv'>
+            <span style={{ fontWeight: "bold", color: "black" }}>
+              {params.row.CHECK1}
+            </span>
+          </div>
+        );
       },
     },
     {
       field: "CHECK2",
       headerName: "CHECK2",
       width: 120,
-      renderCell: (params: any) => {       
-          return (
-            <div className='onoffdiv'>
-              <span style={{ fontWeight: "bold", color: "black" }}>{params.row.CHECK2}</span>
-            </div>
-          );
-        
+      renderCell: (params: any) => {
+        return (
+          <div className='onoffdiv'>
+            <span style={{ fontWeight: "bold", color: "black" }}>
+              {params.row.CHECK2}
+            </span>
+          </div>
+        );
       },
     },
     {
       field: "CHECK3",
       headerName: "CHECK3",
       width: 120,
-      renderCell: (params: any) => {       
-          return (
-            <div className='onoffdiv'>
-              <span style={{ fontWeight: "bold", color: "black" }}>{params.row.CHECK3}</span>
-            </div>
-          );
-        
+      renderCell: (params: any) => {
+        return (
+          <div className='onoffdiv'>
+            <span style={{ fontWeight: "bold", color: "black" }}>
+              {params.row.CHECK3}
+            </span>
+          </div>
+        );
       },
     },
     {
@@ -193,7 +171,7 @@ const LichSu = () => {
       },
     },
     { field: "EMPL_NO", headerName: "EMPL_NO", width: 120 },
-    { field: "CMS_ID", headerName: "CMS_ID", width: 120 },
+    { field: "CMS_ID", headerName: "NS_ID", width: 120 },
     { field: "MIDLAST_NAME", headerName: "MIDLAST_NAME", width: 170 },
     { field: "FIRST_NAME", headerName: "FIRST_NAME", width: 120 },
     { field: "CA_NGHI", headerName: "CA_NGHI", width: 100 },
@@ -244,24 +222,38 @@ const LichSu = () => {
         <GridToolbarQuickFilter />
       </GridToolbarContainer>
     );
-  } 
+  }
   const handleSearch = () => {
     generalQuery("mydiemdanhnhom", { from_date: fromdate, to_date: todate })
       .then((response) => {
         //console.log(response.data.data);
         if (response.data.tk_status !== "NG") {
-          const loaded_data: DiemDanhNhomData[] = response.data.data.map(
-            (element: DiemDanhNhomData, index: number) => {
+          const loaded_data: DiemDanhLichSuData[] = response.data.data.map(
+            (element: DiemDanhLichSuData, index: number) => {
               return {
                 ...element,
-                EMPL_NO: userData?.EMPL_NO,          
-                DATE_COLUMN: moment(element.DATE_COLUMN).utc().format('YYYY-MM-DD'),      
-                APPLY_DATE: element.APPLY_DATE===null?'' : moment(element.APPLY_DATE).utc().format('YYYY-MM-DD'),      
+                EMPL_NO: userData?.EMPL_NO,
+                DATE_COLUMN: moment(element.DATE_COLUMN)
+                  .utc()
+                  .format("YYYY-MM-DD"),
+                APPLY_DATE:
+                  element.APPLY_DATE === null
+                    ? ""
+                    : moment(element.APPLY_DATE).utc().format("YYYY-MM-DD"),
                 WEEKDAY: weekdayarray[new Date(element.DATE_COLUMN).getDay()],
-                CHECK1: element.CHECK1 !== null? moment.utc(element.CHECK1).format('HH:mm:ss'):'',
-                CHECK2: element.CHECK2 !== null? moment.utc(element.CHECK2).format('HH:mm:ss'):'',
-                CHECK3: element.CHECK3 !== null? moment.utc(element.CHECK3).format('HH:mm:ss'):'',
-                id: index
+                CHECK1:
+                  element.CHECK1 !== null
+                    ? moment.utc(element.CHECK1).format("HH:mm:ss")
+                    : "",
+                CHECK2:
+                  element.CHECK2 !== null
+                    ? moment.utc(element.CHECK2).format("HH:mm:ss")
+                    : "",
+                CHECK3:
+                  element.CHECK3 !== null
+                    ? moment.utc(element.CHECK3).format("HH:mm:ss")
+                    : "",
+                id: index,
               };
             }
           );
@@ -281,17 +273,16 @@ const LichSu = () => {
         console.log(error);
       });
   };
-  
+
   useEffect(() => {
     setisLoading(true);
     handleSearch();
   }, []);
   return (
     <div className='lichsu'>
-      <h3>Lịch Sử Làm Việc Của Tôi</h3>
       <div className='filterform'>
         <label>
-          <b>Từ ngày:</b>
+          <b>From Date:</b>
           <input
             type='date'
             value={fromdate.slice(0, 10)}
@@ -299,7 +290,7 @@ const LichSu = () => {
           ></input>
         </label>
         <label>
-          <b>Tới ngày:</b>{" "}
+          <b>To Date:</b>{" "}
           <input
             type='date'
             value={todate.slice(0, 10)}

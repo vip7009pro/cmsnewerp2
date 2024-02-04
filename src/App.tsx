@@ -10,73 +10,53 @@ import React, {
 } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { LangConText, UserContext } from "../src/api/Context";
-import { checkLogin, generalQuery } from "./api/Api";
-import Login from "./pages/login/Login";
+import { checkLogin, generalQuery, getSocket } from "./api/Api";
 import Swal from "sweetalert2";
 import { RootState } from "./redux/store";
 import { useSelector, useDispatch } from "react-redux";
 import {
   changeDiemDanhState,
   changeUserData,
-  UserData,
   update_socket,
   logout,
   login,
+  setTabModeSwap,
 } from "./redux/slices/globalSlice";
 import { useSpring, animated } from "@react-spring/web";
 import "./App.css";
 import FallBackComponent from "./components/Fallback/FallBackComponent";
-import PivotChart from "./components/PivotChart/PivotChart";
-import CAPA_MANAGER from "./pages/qlsx/QLSXPLAN/CAPA/CAPA_MANAGER";
-import PLANRESULT from "./pages/sx/PLANRESULT/PLANRESULT";
-import BANGCHAMCONG from "./pages/nhansu/BangChamCong/BangChamCong";
-import QuotationTotal from "./pages/kinhdoanh/quotationmanager/QuotationTotal";
-/* import DATASX2 from "./pages/qlsx/QLSXPLAN/DATASX/DATASX2";
-import Home from "./pages/home/Home";
-import DiemDanhNhom from "./pages/nhansu/DiemDanhNhom/DiemDanhNhom";
-import BulletinBoard from "./components/BulletinBoard/BulletinBoard";
-import AccountInfo from "./components/Navbar/AccountInfo/AccountInfo";
-import KinhDoanh from "./pages/kinhdoanh/KinhDoanh";
-import KinhDoanhReport from "./pages/kinhdoanh/kinhdoanhreport/KinhDoanhReport";
-import PoManager from "./pages/kinhdoanh/pomanager/PoManager";
-import InvoiceManager from "./pages/kinhdoanh/invoicemanager/InvoiceManager";
-import PlanManager from "./pages/kinhdoanh/planmanager/PlanManager";
-import FCSTManager from "./pages/kinhdoanh/fcstmanager/FCSTManager";
-import YCSXManager from "./pages/kinhdoanh/ycsxmanager/YCSXManager";
-import BOM_MANAGER from "./pages/rnd/bom_manager/BOM_MANAGER";
-import POandStockFull from "./pages/kinhdoanh/poandstockfull/POandStockFull";
-import CODE_MANAGER from "./pages/rnd/code_manager/CODE_MANAGER";
-import CUST_MANAGER from "./pages/kinhdoanh/custManager/CUST_MANAGER";
-import QuotationManager from "./pages/kinhdoanh/quotationmanager/QuotationManager";
-import EQ_STATUS from "./pages/qlsx/QLSXPLAN/EQ_STATUS/EQ_STATUS";
-import INSPECT_STATUS from "./pages/qc/inspection/INSPECT_STATUS/INSPECT_STATUS";
-import ShortageKD from "./pages/kinhdoanh/shortageKD/ShortageKD";
-import DTC from "./pages/qc/dtc/DTC";
-import BOM_AMAZON from "./pages/rnd/bom_amazon/BOM_AMAZON";
-import DESIGN_AMAZON from "./pages/rnd/design_amazon/DESIGN_AMAZON";
-import QLSX from "./pages/qlsx/QLSX";
-import QLSXPLAN from "./pages/qlsx/QLSXPLAN/QLSXPLAN";
-import CAPASX from "./pages/qlsx/QLSXPLAN/CAPA/CAPASX";
-import QC from "./pages/qc/QC";
-import IQC from "./pages/qc/iqc/IQC";
-import PQC from "./pages/qc/pqc/PQC";
-import OQC from "./pages/qc/oqc/OQC";
-import KIEMTRA from "./pages/qc/inspection/KIEMTRA";
-import CSTOTAL from "./pages/qc/cs/CSTOTAL";
-import ISO from "./pages/qc/iso/ISO";
-import TRANGTHAICHITHI from "./pages/sx/TRANGTHAICHITHI/TRANGTHAICHITHI";
-import LICHSUINPUTLIEU from "./pages/qlsx/QLSXPLAN/LICHSUINPUTLIEU/LICHSUINPUTLIEU";
-import TINHHINHCUONLIEU from "./pages/sx/TINH_HINH_CUON_LIEU/TINHINHCUONLIEU";
-import KHOAO from "./pages/qlsx/QLSXPLAN/KHOAO/KHOAO";
-import KHOLIEU from "./pages/kho/kholieu/KHOLIEU";
-import NhanSu from "./pages/nhansu/NhanSu";
-import QuanLyPhongBanNhanSu from "./pages/nhansu/QuanLyPhongBanNhanSu/QuanLyPhongBanNhanSu";
-import DieuChuyenTeam from "./pages/nhansu/DieuChuyenTeam/DieuChuyenTeam";
-import TabDangKy from "./pages/nhansu/DangKy/TabDangKy";
-import PheDuyetNghi from "./pages/nhansu/PheDuyetNghi/PheDuyetNghi";
-import LichSu from "./pages/nhansu/LichSu/LichSu";
-import BaoCaoNhanSu from "./pages/nhansu/BaoCaoNhanSu/BaoCaoNhanSu";
-import QuanLyCapCao from "./pages/nhansu/QuanLyCapCao/QuanLyCapCao"; */
+import { Button } from "@mui/material";
+import { UserData } from "./api/GlobalInterface";
+import { current_ver } from "./pages/home/Home";
+import { Notifications } from 'react-push-notification';
+import SettingPage from "./pages/setting/SettingPage";
+const LICHSUTEMLOTSX = lazy(() => import("./pages/sx/LICHSUTEMLOTSX/LICHSUTEMLOTSX"));
+const BAOCAOSXALL = lazy(() => import("./pages/sx/BAOCAOSXALL"));
+const Login = React.lazy(() => import("./pages/login/Login"));
+const BAOCAOTHEOROLL = lazy(
+  () => import("./pages/sx/BAOCAOTHEOROLL/BAOCAOTHEOROLL")
+);
+const TINHLIEU = lazy(
+  () => import("./pages/muahang/tinhlieu/TINHLIEU")
+);
+const CAPA_MANAGER = lazy(
+  () => import("./pages/qlsx/QLSXPLAN/CAPA/CAPA_MANAGER")
+);
+const PLANRESULT = lazy(() => import("./pages/sx/PLANRESULT/PLANRESULT"));
+const BANGCHAMCONG = lazy(
+  () => import("./pages/nhansu/BangChamCong/BangChamCong")
+);
+const QuotationTotal = lazy(
+  () => import("./pages/kinhdoanh/quotationmanager/QuotationTotal")
+);
+const MUAHANG = lazy(() => import("./pages/muahang/MUAHANG"));
+const QLVL = lazy(() => import("./pages/muahang/quanlyvatlieu/QLVL"));
+const PRODUCT_BARCODE_MANAGER = lazy(
+  () => import("./pages/rnd/product_barcode_manager/PRODUCT_BARCODE_MANAGER")
+);
+const QLGN = lazy(() => import("./pages/rnd/quanlygiaonhandaofilm/QLGN"));
+const KHOTPNEW = lazy(() => import("./pages/kho/khotp_new/KHOTPNEW"));
+const KHOTOTAL = lazy(() => import("./pages/kho/KHOTOTAL"));
 const Home = lazy(() => import("./pages/home/Home"));
 const KIEMTRA = lazy(() => import("./pages/qc/inspection/KIEMTRA"));
 const PQC = lazy(() => import("./pages/qc/pqc/PQC"));
@@ -174,7 +154,6 @@ const POandStockFull = lazy(
 const TINHHINHCUONLIEU = lazy(
   () => import("./pages/sx/TINH_HINH_CUON_LIEU/TINHINHCUONLIEU")
 );
-const DATASX2 = lazy(() => import("./pages/qlsx/QLSXPLAN/DATASX/DATASX2"));
 interface userDataInterface {
   EMPL_IMAGE?: string;
   ADD_COMMUNE: string;
@@ -478,6 +457,10 @@ function App() {
           //console.log(data.data.data);
           setUserData(data.data.data);
           dispatch(changeUserData(data.data.data));
+          console.log('data.data.data.POSITION_CODE', data.data.data.POSITION_CODE)
+          if (data.data.data.POSITION_CODE === 4) {
+            dispatch(setTabModeSwap(false));
+          }
           //dispatch(update_socket(data.data.data.EMPL_NO + " da dangnhap"));
           dispatch(
             update_socket({
@@ -509,12 +492,40 @@ function App() {
       .catch((error) => {
         console.log(error);
       });
-    let server_ip_local: any = localStorage.getItem("server_ip")?.toString();
-    if (server_ip_local !== undefined) {
-    } else {
-      localStorage.setItem("server_ip", "http://14.160.33.94:5011/api");
+    if (!getSocket().hasListeners('setWebVer')) {
+      getSocket().on("setWebVer", (data: any) => {
+        console.log(data);
+        if (current_ver >= data) {
+        } else {
+          Swal.fire({
+            title: "ERP has updates?",
+            text: "Update Web",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Update",
+            cancelButtonText: "Update later",
+          }).then((result) => {
+            if (result.isConfirmed) {
+              Swal.fire("Notification", "Update Web", "success");
+              window.location.reload();
+            } else {
+              Swal.fire(
+                "Notification",
+                "Press Ctrl + F5 to update the Web",
+                "info"
+              );
+            }
+          });
+        }
+      });
     }
-    return () => {};
+    return () => {
+      getSocket().off("setWebVer", (data: any) => {
+        //console.log(data);
+      });
+    };
   }, []);
   return (
     <>
@@ -627,6 +638,11 @@ function App() {
                           path='designamazon'
                           element={<DESIGN_AMAZON />}
                         />
+                        <Route
+                          path='productbarcodemanager'
+                          element={<PRODUCT_BARCODE_MANAGER />}
+                        />
+                        <Route path='quanlygiaonhan' element={<QLGN />} />
                       </Route>
                       <Route
                         path='qlsx'
@@ -646,7 +662,53 @@ function App() {
                         <Route path='qlsxplan' element={<QLSXPLAN />} />
                         <Route path='quanlycodebom' element={<BOM_MANAGER />} />
                         <Route path='capamanager' element={<CAPASX />} />
-                        <Route path='qlsxmrp' element={<CAPASX />} />
+                        <Route path='qlsxmrp' element={<TINHLIEU />} />
+                      </Route>
+                      <Route
+                        path='phongmuahang'
+                        element={
+                          <ProtectedRoute
+                            user={globalUserData}
+                            maindeptname='all'
+                            jobname='Leader'
+                          >
+                            <MUAHANG />
+                          </ProtectedRoute>
+                        }
+                      >
+                        <Route index element={<MUAHANG />} />
+                        <Route path='quanlyvatlieu' element={<QLVL />} />
+                        <Route path='mrp' element={<TINHLIEU />} />
+                      </Route>
+                      <Route
+                        path='bophankho'
+                        element={
+                          <ProtectedRoute
+                            user={globalUserData}
+                            maindeptname='all'
+                            jobname='Leader'
+                          >
+                            <KHOTOTAL />
+                          </ProtectedRoute>
+                        }
+                      >
+                        <Route index element={<KHOTPNEW />} />
+                        <Route path='nhapxuattontp' element={<KHOTPNEW />} />
+                        <Route path='nhapxuattonlieu' element={<KHOLIEU />} />
+                      </Route>
+                      <Route
+                        path='setting'
+                        element={
+                          <ProtectedRoute
+                            user={globalUserData}
+                            maindeptname='all'
+                            jobname='Leader'
+                          >
+                            <SettingPage />
+                          </ProtectedRoute>
+                        }
+                      >
+                        <Route index element={<SettingPage />} />
                       </Route>
                       <Route
                         path='qc'
@@ -654,7 +716,7 @@ function App() {
                           <ProtectedRoute
                             user={globalUserData}
                             maindeptname='all'
-                            jobname='Leader'
+                            jobname='all'
                           >
                             <QC />
                           </ProtectedRoute>
@@ -703,7 +765,7 @@ function App() {
                             <ProtectedRoute
                               user={globalUserData}
                               maindeptname='all'
-                              jobname='Leader'
+                              jobname='all'
                             >
                               <PQC />
                             </ProtectedRoute>
@@ -851,7 +913,7 @@ function App() {
                               maindeptname='all'
                               jobname='Leader'
                             >
-                              <DATASX2 />
+                              <BAOCAOSXALL />
                             </ProtectedRoute>
                           }
                         />
@@ -892,6 +954,18 @@ function App() {
                           }
                         />
                         <Route
+                          path='lichsutemlotsx'
+                          element={
+                            <ProtectedRoute
+                              user={globalUserData}
+                              maindeptname='all'
+                              jobname='Leader'
+                            >
+                              <LICHSUTEMLOTSX />
+                            </ProtectedRoute>
+                          }
+                        />
+                        <Route
                           path='materiallotstatus'
                           element={
                             <ProtectedRoute
@@ -900,6 +974,18 @@ function App() {
                               jobname='Leader'
                             >
                               <TINHHINHCUONLIEU />
+                            </ProtectedRoute>
+                          }
+                        />
+                        <Route
+                          path='rolldata'
+                          element={
+                            <ProtectedRoute
+                              user={globalUserData}
+                              maindeptname='all'
+                              jobname='Leader'
+                            >
+                              <BAOCAOTHEOROLL />
                             </ProtectedRoute>
                           }
                         />
@@ -1081,6 +1167,7 @@ function App() {
           </LangConText.Provider>
         </div>
       )}
+      <Notifications />
     </>
   );
 }

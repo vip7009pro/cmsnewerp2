@@ -14,27 +14,27 @@ import { generalQuery } from "../../../api/Api";
 import { UserContext } from "../../../api/Context";
 import { SaveExcel, checkBP } from "../../../api/GlobalFunction";
 import "./CUST_MANAGER.scss";
-import { UserData } from "../../../redux/slices/globalSlice";
 import { RootState } from "../../../redux/store";
 import { useSelector } from "react-redux";
+import { UserData } from "../../../api/GlobalInterface";
 
 interface CUST_INFO {
   id: string;
-  CUST_CD: string,
-  CUST_NAME_KD: string,
-  CUST_NAME: string,
-  CUST_ADDR1: string,
-  TAX_NO: string,
-  CUST_NUMBER: string,
-  BOSS_NAME: string,
-  TEL_NO1: string,
-  FAX_NO: string,
-  CUST_POSTAL: string,
-  REMK: string,
-  INS_DATE: string,
-  INS_EMPL: string,
-  UPD_DATE: string,
-  UPD_EMPL: string,
+  CUST_CD: string;
+  CUST_NAME_KD: string;
+  CUST_NAME: string;
+  CUST_ADDR1: string;
+  TAX_NO: string;
+  CUST_NUMBER: string;
+  BOSS_NAME: string;
+  TEL_NO1: string;
+  FAX_NO: string;
+  CUST_POSTAL: string;
+  REMK: string;
+  INS_DATE: string;
+  INS_EMPL: string;
+  UPD_DATE: string;
+  UPD_EMPL: string;
 }
 const CUST_MANAGER = () => {
   const [selection, setSelection] = useState<any>({
@@ -45,7 +45,7 @@ const CUST_MANAGER = () => {
     testinvoicetable: false,
   });
   const userData: UserData | undefined = useSelector(
-    (state: RootState) => state.totalSlice.userData
+    (state: RootState) => state.totalSlice.userData,
   );
   const [isLoading, setisLoading] = useState(false);
   const [custinfodatatable, setCUSTINFODataTable] = useState<Array<any>>([]);
@@ -64,16 +64,16 @@ const CUST_MANAGER = () => {
             (element: CUST_INFO, index: number) => {
               return {
                 ...element,
-                id: index
+                id: index,
               };
-            }
+            },
           );
           setCUSTINFODataTable(loadeddata);
           setisLoading(false);
           Swal.fire(
             "Thông báo",
             "Đã load " + response.data.data.length + " dòng",
-            "success"
+            "success",
           );
         } else {
           Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
@@ -101,7 +101,7 @@ const CUST_MANAGER = () => {
           Swal.fire(
             "Thông báo",
             "Thêm khách thất bại: " + response.data.message,
-            "error"
+            "error",
           );
           setisLoading(false);
         }
@@ -128,7 +128,7 @@ const CUST_MANAGER = () => {
           Swal.fire(
             "Thông báo",
             "Sửa khách thất bại: " + response.data.message,
-            "error"
+            "error",
           );
           setisLoading(false);
         }
@@ -142,20 +142,19 @@ const CUST_MANAGER = () => {
   }, []);
 
   return (
-    <div className='customermamanger'>
+    <div className="customermamanger">
       <span style={{ fontWeight: "bold", fontSize: 20, marginTop: 5 }}>
         Quản lý Khách Hàng
       </span>
       {selection.trapo && (
-        <div className='tracuuFcst'>
-          <div className='tracuuFcstTable'>           
-          </div>
-          <div className='editcustomerform'>
-            <div className='formnho'>
-              <div className='dangkyform'>
+        <div className="tracuuFcst">
+          <div className="tracuuFcstTable"></div>
+          <div className="editcustomerform">
+            <div className="formnho">
+              <div className="dangkyform">
                 <h3>Thêm - Sửa khách hàng</h3>
-                <div className='dangkyinput'>
-                  <div className='dangkyinputbox'>
+                <div className="dangkyinput">
+                  <div className="dangkyinputbox">
                     <label>
                       <b>Mã khách hàng:</b>{" "}
                       <TextField
@@ -163,12 +162,12 @@ const CUST_MANAGER = () => {
                         onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                           setCust_Cd(e.target.value);
                         }}
-                        size='small'
-                        color='success'
-                        className='autocomplete'
-                        id='outlined-basic'
-                        label='Số PO'
-                        variant='outlined'
+                        size="small"
+                        color="success"
+                        className="autocomplete"
+                        id="outlined-basic"
+                        label="Số PO"
+                        variant="outlined"
                       />
                     </label>
                     <label>
@@ -178,12 +177,12 @@ const CUST_MANAGER = () => {
                         onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                           setCustName(e.target.value);
                         }}
-                        size='small'
-                        color='success'
-                        className='autocomplete'
-                        id='outlined-basic'
-                        label='INVOICE QTY'
-                        variant='outlined'
+                        size="small"
+                        color="success"
+                        className="autocomplete"
+                        id="outlined-basic"
+                        label="INVOICE QTY"
+                        variant="outlined"
                       />
                     </label>
                     <label>
@@ -193,45 +192,57 @@ const CUST_MANAGER = () => {
                         onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                           setCust_Name_KD(e.target.value);
                         }}
-                        size='small'
-                        className='autocomplete'
-                        id='outlined-basic'
-                        label='Remark'
-                        variant='outlined'
+                        size="small"
+                        className="autocomplete"
+                        id="outlined-basic"
+                        label="Remark"
+                        variant="outlined"
                       />
                     </label>
                   </div>
                 </div>
-                <div className='dangkybutton'>
+                <div className="dangkybutton">
                   <button
-                    className='thembutton'
+                    className="thembutton"
                     onClick={() => {
-                      checkBP(userData,['RND'],['ALL'],['ALL'],handle_addCustomer);
+                      checkBP(
+                        userData,
+                        ["RND"],
+                        ["ALL"],
+                        ["ALL"],
+                        handle_addCustomer,
+                      );
 
-                      if(userData?.EMPL_NO==='LVT1906' || userData?.EMPL_NO==='NHU1903')
-                      {
+                      if (
+                        userData?.EMPL_NO === "LVT1906" ||
+                        userData?.EMPL_NO === "NHU1903"
+                      ) {
                         handle_addCustomer();
+                      } else {
+                        Swal.fire(
+                          "Thông báo",
+                          "Chỉ leader kinh doanh mới tạo khách mới được",
+                          "error",
+                        );
                       }
-                      else
-                      {
-                        Swal.fire('Thông báo','Chỉ leader kinh doanh mới tạo khách mới được', 'error');
-
-                      }
-                      
                     }}
                   >
                     Thêm
                   </button>
                   <button
-                    className='suabutton'
-                    onClick={() => {                     
-                      if(userData?.EMPL_NO==='LVT1906' || userData?.EMPL_NO==='NHU1903')
-                      {
+                    className="suabutton"
+                    onClick={() => {
+                      if (
+                        userData?.EMPL_NO === "LVT1906" ||
+                        userData?.EMPL_NO === "NHU1903"
+                      ) {
                         handle_editCustomer();
-                      }
-                      else
-                      {
-                        Swal.fire('Thông báo','Chỉ leader kinh doanh mới sửa khách được', 'error');
+                      } else {
+                        Swal.fire(
+                          "Thông báo",
+                          "Chỉ leader kinh doanh mới sửa khách được",
+                          "error",
+                        );
                       }
                     }}
                   >

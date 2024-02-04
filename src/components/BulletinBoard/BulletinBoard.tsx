@@ -3,10 +3,10 @@ import AccountInfo from "../Navbar/AccountInfo/AccountInfo";
 import "./BulletinBoard.scss";
 const BulletinBoard = () => {
   return (
-    <div className='landingpage'>
-      <div className='accountinfodiv'>       
+    <div className="landingpage">
+      <div className="accountinfodiv">
         <AccountInfo />
-      </div>      
+      </div>
     </div>
   );
 };

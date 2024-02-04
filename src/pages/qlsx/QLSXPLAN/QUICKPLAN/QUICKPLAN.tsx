@@ -8,7 +8,7 @@ import React, {
 import MACHINE_COMPONENT from "../Machine/MACHINE_COMPONENT";
 import "./QUICKPLAN.scss";
 import Swal from "sweetalert2";
-import { generalQuery } from "../../../../api/Api";
+import { generalQuery, uploadQuery } from "../../../../api/Api";
 import moment from "moment";
 import { UserContext } from "../../../../api/Context";
 import {
@@ -58,206 +58,22 @@ import { useReactToPrint } from "react-to-print";
 import CHITHI_COMPONENT from "../CHITHI/CHITHI_COMPONENT";
 import { BiRefresh, BiReset, BiShow } from "react-icons/bi";
 import YCKT from "../YCKT/YCKT";
-import { UserData } from "../../../../redux/slices/globalSlice";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../redux/store";
-import axios from 'axios';
-interface MACHINE_LIST {
-  EQ_NAME: string;
-}
-interface DINHMUC_QSLX {
-  FACTORY: string;
-  EQ1: string;
-  EQ2: string;
-  EQ3: string;
-  EQ4: string;
-  Setting1: number;
-  Setting2: number;
-  Setting3: number;
-  Setting4: number;
-  UPH1: number;
-  UPH2: number;
-  UPH3: number;
-  UPH4: number;
-  Step1: number;
-  Step2: number;
-  Step3: number;
-  Step4: number;
-  LOSS_SX1: number;
-  LOSS_SX2: number;
-  LOSS_SX3: number;
-  LOSS_SX4: number;
-  LOSS_SETTING1: number;
-  LOSS_SETTING2: number;
-  LOSS_SETTING3: number;
-  LOSS_SETTING4: number;
-  NOTE: string;
-}
-interface QLSXPLANDATA {
-  id: number;
-  PLAN_ID: string;
-  PLAN_DATE: string;
-  PROD_REQUEST_NO: string;
-  PLAN_QTY: number;
-  PLAN_EQ: string;
-  PLAN_FACTORY: string;
-  PLAN_LEADTIME: number;
-  INS_EMPL: string;
-  INS_DATE: string;
-  UPD_EMPL: string;
-  UPD_DATE: string;
-  G_CODE: string;
-  G_NAME: string;
-  G_NAME_KD: string;
-  PROD_REQUEST_DATE: string;
-  PROD_REQUEST_QTY: number;
-  STEP: number;
-  PLAN_ORDER: string;
-  PROCESS_NUMBER: number;
-  KQ_SX_TAM: number;
-  KETQUASX: number;
-  CD1: number;
-  CD2: number;
-  CD3: number;
-  CD4: number;
-  TON_CD1: number;
-  TON_CD2: number;
-  TON_CD3: number;
-  TON_CD4: number;
-  FACTORY: string;
-  EQ1: string;
-  EQ2: string;
-  EQ3: string;
-  EQ4: string;
-  Setting1: number;
-  Setting2: number;
-  Setting3: number;
-  Setting4: number;
-  UPH1: number;
-  UPH2: number;
-  UPH3: number;
-  UPH4: number;
-  Step1: number;
-  Step2: number;
-  Step3: number;
-  Step4: number;
-  LOSS_SX1: number;
-  LOSS_SX2: number;
-  LOSS_SX3: number;
-  LOSS_SX4: number;
-  LOSS_SETTING1: number;
-  LOSS_SETTING2: number;
-  LOSS_SETTING3: number;
-  LOSS_SETTING4: number;
-  NOTE: string;
-  NEXT_PLAN_ID: string;
-  XUATDAOFILM?: string;
-  EQ_STATUS?: string;
-  MAIN_MATERIAL?: string;
-  INT_TEM?: string;
-  CHOTBC?: string;
-  DKXL?: string;
-  OLD_PLAN_QTY?: string;
-}
-interface YCSXTableData {
-  DESCR?: string;
-  PDBV_EMPL?: string;
-  PDBV_DATE?: string;
-  PDBV?: string;
-  BANVE?: string;
-  PROD_MAIN_MATERIAL?: string;
-  PROD_TYPE?: string;
-  EMPL_NO: string;
-  CUST_CD: string;
-  G_CODE: string;
-  G_NAME: string;
-  EMPL_NAME: string;
-  CUST_NAME_KD: string;
-  PROD_REQUEST_NO: string;
-  PROD_REQUEST_DATE: string;
-  PROD_REQUEST_QTY: number;
-  LOT_TOTAL_INPUT_QTY_EA: number;
-  LOT_TOTAL_OUTPUT_QTY_EA: number;
-  INSPECT_BALANCE: number;
-  SHORTAGE_YCSX: number;
-  YCSX_PENDING: number;
-  PHAN_LOAI: string;
-  REMARK: string;
-  PO_TDYCSX: number;
-  TOTAL_TKHO_TDYCSX: number;
-  TKHO_TDYCSX: number;
-  BTP_TDYCSX: number;
-  CK_TDYCSX: number;
-  BLOCK_TDYCSX: number;
-  FCST_TDYCSX: number;
-  W1: number;
-  W2: number;
-  W3: number;
-  W4: number;
-  W5: number;
-  W6: number;
-  W7: number;
-  W8: number;
-  PDUYET: number;
-  LOAIXH: string;
-  PO_BALANCE: number;
-  EQ1: string;
-  EQ2: string;
-  EQ3: string;
-  EQ4: string;
-  CD1: number;
-  CD2: number;
-  CD3: number;
-  CD4: number;
-  CD_IN: number;
-  CD_DIECUT: number;
-  TON_CD1: number;
-  TON_CD2: number;
-  TON_CD3: number;
-  TON_CD4: number;
-  UPH1: number;
-  UPH2: number;
-  UPH3: number;
-  UPH4: number;
-  FACTORY: string;
-  Setting1: number;
-  Setting2: number;
-  Setting3: number;
-  Setting4: number;
-  Step1: number;
-  Step2: number;
-  Step3: number;
-  Step4: number;
-  LOSS_SX1: number;
-  LOSS_SX2: number;
-  LOSS_SX3: number;
-  LOSS_SX4: number;
-  LOSS_SETTING1: number;
-  LOSS_SETTING2: number;
-  LOSS_SETTING3: number;
-  LOSS_SETTING4: number;
-  NOTE: string;
-}
-interface QLSXCHITHIDATA {
-  id: string;
-  CHITHI_ID: number;
-  PLAN_ID: string;
-  M_CODE: string;
-  M_NAME: string;
-  WIDTH_CD: number;
-  M_ROLL_QTY: number;
-  M_MET_QTY: number;
-  M_QTY: number;
-  LIEUQL_SX: number;
-  MAIN_M: number;
-  OUT_KHO_SX: number;
-  OUT_CFM_QTY: number;
-  INS_EMPL: string;
-  INS_DATE: string;
-  UPD_EMPL: string;
-  UPD_DATE: string;
-}
-const QUICKPLAN = () => {
+import axios from "axios";
+import {
+  DINHMUC_QSLX,
+  MACHINE_LIST,
+  QLSXCHITHIDATA,
+  QLSXPLANDATA,
+  RecentDM,
+  UserData,
+  YCSXTableData,
+} from "../../../../api/GlobalInterface";           
+const QUICKPLAN = () => {           
+  const qtyFactor: number = 10;
+  const [recentDMData, setRecentDMData]= useState<RecentDM[]>([]);
+                                                  
   const [currentPlanPD, setCurrentPlanPD] = useState(0);
   const [currentPlanCAVITY, setCurrentPlanCAVITY] = useState(0);
   const [selection, setSelection] = useState<any>({
@@ -268,17 +84,17 @@ const QUICKPLAN = () => {
     tabbanve: false,
   });
   const [datadinhmuc, setDataDinhMuc] = useState<DINHMUC_QSLX>({
-    FACTORY: "",
+    FACTORY: "NM1",
     EQ1: "",
     EQ2: "",
     EQ3: "",
-    EQ4: "",
+    EQ4: "",  
     Setting1: 0,
-    Setting2: 0,
+    Setting2: 0, 
     Setting3: 0,
     Setting4: 0,
-    UPH1: 0,
-    UPH2: 0,
+    UPH1: 0,  
+    UPH2: 0,              
     UPH3: 0,
     UPH4: 0,
     Step1: 0,
@@ -300,7 +116,7 @@ const QUICKPLAN = () => {
   const [showplanwindow, setShowPlanWindow] = useState(false);
   const [showkhoao, setShowKhoAo] = useState(false);
   const userData: UserData | undefined = useSelector(
-    (state: RootState) => state.totalSlice.userData
+    (state: RootState) => state.totalSlice.userData,
   );
   const [isLoading, setisLoading] = useState(false);
   const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
@@ -332,15 +148,40 @@ const QUICKPLAN = () => {
   const [selectedMachine, setSelectedMachine] = useState("FR01");
   const [selectedFactory, setSelectedFactory] = useState("NM1");
   const [selectedPlanDate, setSelectedPlanDate] = useState(
-    moment().format("YYYY-MM-DD")
+    moment().format("YYYY-MM-DD"),
   );
   const [showChiThi, setShowChiThi] = useState(false);
   const [showYCKT, setShowYCKT] = useState(false);
   const [editplan, seteditplan] = useState(true);
   const [temp_id, setTemID] = useState(0);
-  const [showhideycsxtable, setShowHideYCSXTable] = useState(false);
+  const [showhideycsxtable, setShowHideYCSXTable] = useState(1);
   const [showhidedinhmuc, setShowHideDinhMuc] = useState(true);
   const [machine_list, setMachine_List] = useState<MACHINE_LIST[]>([]);
+
+  const getRecentDM = (G_CODE: string) => {
+    generalQuery("loadRecentDM", {G_CODE: G_CODE})
+      .then((response) => {
+        //console.log(response.data);
+        if (response.data.tk_status !== "NG") {
+          const loadeddata: RecentDM[] = response.data.data.map(
+            (element: RecentDM, index: number) => {
+              return {
+                ...element,
+              };
+            },
+          );          
+          setRecentDMData(loadeddata);
+        } else {
+          //Swal.fire("Thông báo", "Lỗi BOM SX: " + response.data.message, "error");
+          setRecentDMData([]);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    
+
+  }
   const getMachineList = () => {
     generalQuery("getmachinelist", {})
       .then((response) => {
@@ -351,7 +192,7 @@ const QUICKPLAN = () => {
               return {
                 ...element,
               };
-            }
+            },
           );
           loadeddata.push({ EQ_NAME: "NO" }, { EQ_NAME: "NA" });
           console.log(loadeddata);
@@ -370,7 +211,36 @@ const QUICKPLAN = () => {
     content: () => ycsxprintref.current,
   });
   const column_ycsxtable = [
+    {
+      field: "YCSX_PENDING",
+      headerName: "YCSX_PENDING",
+      width: 80,
+      renderCell: (params: any) => {
+        if (params.row.YCSX_PENDING === 1)
+          return (
+            <span style={{ color: "red" }}>
+              <b>PENDING</b>
+            </span>
+          );
+        else
+          return (
+            <span style={{ color: "green" }}>
+              <b>CLOSED</b>
+            </span>
+          );
+      },
+    },
     { field: "G_CODE", headerName: "G_CODE", width: 80 },
+    {
+      field: "G_NAME_KD",
+      headerName: "G_NAME_KD",
+      width: 100,
+      renderCell: (params: any) => {
+        if (params.row.PDBV === "P" || params.row.PDBV === null)
+          return <span style={{ color: "red" }}>{params.row.G_NAME_KD}</span>;
+        return <span style={{ color: "green" }}>{params.row.G_NAME_KD}</span>;
+      },
+    },
     {
       field: "G_NAME",
       headerName: "G_NAME",
@@ -383,8 +253,36 @@ const QUICKPLAN = () => {
     },
     { field: "EMPL_NAME", headerName: "PIC KD", width: 150 },
     { field: "CUST_NAME_KD", headerName: "KHÁCH", width: 120 },
-    { field: "PROD_REQUEST_NO", headerName: "SỐ YCSX", width: 80 },
+    {
+      field: "PROD_REQUEST_NO", headerName: "SỐ YCSX", width: 80, renderCell: (params: any) => {
+        if (params.row.DACHITHI === null) {
+          return (
+            <span style={{ color: "black" }}>
+              {params.row.PROD_REQUEST_NO.toLocaleString("en-US")}
+            </span>
+          );
+        } else {
+          return (
+            <span style={{ color: "green" }}>
+              <b>{params.row.PROD_REQUEST_NO.toLocaleString("en-US")}</b>
+            </span>
+          );
+        }
+      },
+    },
     { field: "PROD_REQUEST_DATE", headerName: "NGÀY YCSX", width: 80 },
+    {
+      field: "PO_BALANCE",
+      headerName: "PO_BALANCE",
+      width: 110,
+      renderCell: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            <b>{params.row.PO_BALANCE.toLocaleString("en", "US")}</b>
+          </span>
+        );
+      },
+    },
     {
       field: "PROD_REQUEST_QTY",
       type: "number",
@@ -399,10 +297,58 @@ const QUICKPLAN = () => {
       },
     },
     {
+      field: "CD1",
+      headerName: "CD1",
+      width: 60,
+      renderCell: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            <b>{params.row.CD1.toLocaleString("en", "US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "CD2",
+      headerName: "CD2",
+      width: 60,
+      renderCell: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            <b>{params.row.CD2.toLocaleString("en", "US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "CD3",
+      headerName: "CD3",
+      width: 60,
+      renderCell: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            <b>{params.row.CD3.toLocaleString("en", "US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "CD4",
+      headerName: "CD4",
+      width: 60,
+      renderCell: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            <b>{params.row.CD4.toLocaleString("en", "US")}</b>
+          </span>
+        );
+      },
+    },
+    {
       field: "LOT_TOTAL_INPUT_QTY_EA",
       type: "number",
-      headerName: "NHẬP KIỂM",
-      width: 80,
+      headerName: "NK",
+      width: 60,
       renderCell: (params: any) => {
         return (
           <span style={{ color: "#cc0099" }}>
@@ -414,14 +360,107 @@ const QUICKPLAN = () => {
     {
       field: "LOT_TOTAL_OUTPUT_QTY_EA",
       type: "number",
-      headerName: "XUẤT KIỂM",
-      width: 80,
+      headerName: "XK",
+      width: 60,
       renderCell: (params: any) => {
         return (
           <span style={{ color: "#cc0099" }}>
             <b>{params.row.LOT_TOTAL_OUTPUT_QTY_EA.toLocaleString("en-US")}</b>
           </span>
         );
+      },
+    },
+    {
+      field: "TON_CD1",
+      headerName: "TCD1",
+      width: 60,
+      renderCell: (params: any) => {
+        return (
+          <span style={{ color: "red" }}>
+            <b>{params.row.TON_CD1.toLocaleString("en", "US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "TON_CD2",
+      headerName: "TCD2",
+      width: 60,
+      renderCell: (params: any) => {
+        return (
+          <span style={{ color: "red" }}>
+            <b>{params.row.TON_CD2.toLocaleString("en", "US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "TON_CD3",
+      headerName: "TCD3",
+      width: 60,
+      renderCell: (params: any) => {
+        return (
+          <span style={{ color: "red" }}>
+            <b>{params.row.TON_CD3.toLocaleString("en", "US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "TON_CD4",
+      headerName: "TCD4",
+      width: 60,
+      renderCell: (params: any) => {
+        return (
+          <span style={{ color: "red" }}>
+            <b>{params.row.TON_CD4.toLocaleString("en", "US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "INSPECT_BALANCE",
+      type: "number",
+      headerName: "TKIEM",
+      width: 60,
+      renderCell: (params: any) => {
+        return (
+          <span style={{ color: "#cc0099" }}>
+            <b>{params.row.INSPECT_BALANCE.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "EQ1",
+      headerName: "EQ1",
+      width: 50,
+      renderCell: (params: any) => {
+        return <span style={{ color: "black" }}>{params.row.EQ1}</span>;
+      },
+    },
+    {
+      field: "EQ2",
+      headerName: "EQ2",
+      width: 50,
+      renderCell: (params: any) => {
+        return <span style={{ color: "black" }}>{params.row.EQ2}</span>;
+      },
+    },
+    {
+      field: "EQ3",
+      headerName: "EQ3",
+      width: 50,
+      renderCell: (params: any) => {
+        return <span style={{ color: "black" }}>{params.row.EQ3}</span>;
+      },
+    },
+    {
+      field: "EQ4",
+      headerName: "EQ4",
+      width: 50,
+      renderCell: (params: any) => {
+        return <span style={{ color: "black" }}>{params.row.EQ4}</span>;
       },
     },
     {
@@ -491,85 +530,80 @@ const QUICKPLAN = () => {
     {
       field: "BANVE",
       headerName: "BANVE",
-      width: 250,
+      width: 260,
       renderCell: (params: any) => {
         let file: any = null;
-        let upload_url = "http://14.160.33.94:5011/upload";
-        const uploadFile = async (e: any) => {
-          console.log(file);
-          const formData = new FormData();
-          formData.append("banve", file);
-          formData.append("filename", params.row.G_CODE);
-          if (userData?.MAINDEPTNAME === "KD") {
-            try {
-              const response = await axios.post(upload_url, formData);
-              //console.log("ket qua");
-              //console.log(response);
-              if (response.data.tk_status === "OK") {
-                //Swal.fire('Thông báo','Upload bản vẽ thành công','success');
-                generalQuery("update_banve_value", {
-                  G_CODE: params.row.G_CODE,
-                  banvevalue: "Y",
-                })
-                  .then((response) => {
-                    if (response.data.tk_status !== "NG") {
-                      Swal.fire(
-                        "Thông báo",
-                        "Upload bản vẽ thành công",
-                        "success"
-                      );
-                      let tempycsxdatatable = ycsxdatatable.map(
-                        (element, index) => {
-                          return element.PROD_REQUEST_NO ===
-                            params.row.PROD_REQUEST_NO
-                            ? { ...element, BANVE: "Y" }
-                            : element;
-                        }
-                      );
-                      setYcsxDataTable(tempycsxdatatable);
-                    } else {
-                      Swal.fire("Thông báo", "Upload bản vẽ thất bại", "error");
-                    }
+        const uploadFile2 = async (e: any) => {
+          //console.log(file);
+          checkBP(userData, ['KD'], ['ALL'], ['ALL'], async () => {
+            uploadQuery(file, params.row.G_CODE + ".pdf", "banve")
+              .then((response) => {
+                if (response.data.tk_status !== "NG") {
+                  generalQuery("update_banve_value", {
+                    G_CODE: params.row.G_CODE,
+                    banvevalue: "Y",
                   })
-                  .catch((error) => {
-                    console.log(error);
-                  });
-              } else {
-                Swal.fire("Thông báo", response.data.message, "error");
-              }
-              //console.log(response.data);
-            } catch (ex) {
-              console.log(ex);
-            }
-          } else {
-            Swal.fire(
-              "Thông báo",
-              "Chỉ bộ phận kinh doanh upload được bản vẽ",
-              "error"
-            );
-          }
+                    .then((response) => {
+                      if (response.data.tk_status !== "NG") {
+                        Swal.fire(
+                          "Thông báo",
+                          "Upload bản vẽ thành công",
+                          "success",
+                        );
+                        let tempcodeinfodatatable = ycsxdatatable.map(
+                          (element: YCSXTableData, index) => {
+                            return element.G_CODE === params.row.G_CODE
+                              ? { ...element, BANVE: "Y" }
+                              : element;
+                          },
+                        );
+                        setYcsxDataTable(tempcodeinfodatatable);
+                      } else {
+                        Swal.fire(
+                          "Thông báo",
+                          "Upload bản vẽ thất bại",
+                          "error",
+                        );
+                      }
+                    })
+                    .catch((error) => {
+                      console.log(error);
+                    });
+                } else {
+                  Swal.fire(
+                    "Thông báo",
+                    "Upload file thất bại:" + response.data.message,
+                    "error",
+                  );
+                }
+              })
+              .catch((error) => {
+                console.log(error);
+              });
+
+          })
+
+
         };
         let hreftlink = "/banve/" + params.row.G_CODE + ".pdf";
-        if (params.row.BANVE === "Y")
+        if (params.row.BANVE !== "N" && params.row.BANVE !== null) {
           return (
-            <span style={{ color: "green" }}>
-              <b>
-                <a target='_blank' rel='noopener noreferrer' href={hreftlink}>
-                  LINK
-                </a>
-              </b>
+            <span style={{ color: "gray" }}>
+              <a target="_blank" rel="noopener noreferrer" href={hreftlink}>
+                LINK
+              </a>
             </span>
           );
-        else
+        } else {
           return (
-            <div className='uploadfile'>
-              <IconButton className='buttonIcon' onClick={uploadFile}>
-                <AiOutlineCloudUpload color='yellow' size={15} />
+            <div className="uploadfile">
+              <IconButton className="buttonIcon" onClick={uploadFile2}>
+                <AiOutlineCloudUpload color="yellow" size={15} />
                 Upload
               </IconButton>
               <input
-                accept='.pdf'
-                type='file'
+                accept=".pdf"
+                type="file"
                 onChange={(e: any) => {
                   file = e.target.files[0];
                   console.log(file);
@@ -577,6 +611,7 @@ const QUICKPLAN = () => {
               />
             </div>
           );
+        }
       },
     },
     {
@@ -607,151 +642,6 @@ const QUICKPLAN = () => {
         return <span style={{ color: "green" }}>{params.row.G_NAME}</span>;
       },
     },
-    {
-      field: "PO_BALANCE",
-      headerName: "PO_BALANCE",
-      width: 110,
-      renderCell: (params: any) => {
-        return (
-          <span style={{ color: "blue" }}>
-            <b>{params.row.PO_BALANCE.toLocaleString("en", "US")}</b>
-          </span>
-        );
-      },
-    },
-    {
-      field: "EQ1",
-      headerName: "EQ1",
-      width: 80,
-      renderCell: (params: any) => {
-        return <span style={{ color: "black" }}>{params.row.EQ1}</span>;
-      },
-    },
-    {
-      field: "EQ2",
-      headerName: "EQ2",
-      width: 80,
-      renderCell: (params: any) => {
-        return <span style={{ color: "black" }}>{params.row.EQ2}</span>;
-      },
-    },
-    {
-      field: "CD1",
-      headerName: "XUAT_CD1",
-      width: 100,
-      renderCell: (params: any) => {
-        return (
-          <span style={{ color: "blue" }}>
-            <b>{params.row.CD1.toLocaleString("en", "US")}</b>
-          </span>
-        );
-      },
-    },
-    {
-      field: "CD2",
-      headerName: "XUAT_CD2",
-      width: 100,
-      renderCell: (params: any) => {
-        return (
-          <span style={{ color: "blue" }}>
-            <b>{params.row.CD2.toLocaleString("en", "US")}</b>
-          </span>
-        );
-      },
-    },
-    {
-      field: "LOT_TOTAL_OUTPUT_QTY_EA",
-      type: "number",
-      headerName: "XUẤT KIỂM",
-      width: 100,
-      renderCell: (params: any) => {
-        return (
-          <span style={{ color: "#cc0099" }}>
-            <b>{params.row.LOT_TOTAL_OUTPUT_QTY_EA.toLocaleString("en-US")}</b>
-          </span>
-        );
-      },
-    },
-    {
-      field: "CD_IN",
-      headerName: "CD_IN",
-      width: 80,
-      renderCell: (params: any) => {
-        return (
-          <span style={{ color: "gray" }}>
-            <b>{params.row.CD_IN.toLocaleString("en", "US")}</b>
-          </span>
-        );
-      },
-    },
-    {
-      field: "CD_DIECUT",
-      headerName: "CD_DIECUT",
-      width: 80,
-      renderCell: (params: any) => {
-        return (
-          <span style={{ color: "gray" }}>
-            <b>{params.row.CD_DIECUT.toLocaleString("en", "US")}</b>
-          </span>
-        );
-      },
-    },
-    {
-      field: "TON_CD1",
-      headerName: "TONYCSX_CD1",
-      width: 120,
-      renderCell: (params: any) => {
-        return (
-          <span style={{ color: "red" }}>
-            <b>{params.row.TON_CD1.toLocaleString("en", "US")}</b>
-          </span>
-        );
-      },
-    },
-    {
-      field: "TON_CD2",
-      headerName: "TONYCSX_CD2",
-      width: 120,
-      renderCell: (params: any) => {
-        return (
-          <span style={{ color: "red" }}>
-            <b>{params.row.TON_CD2.toLocaleString("en", "US")}</b>
-          </span>
-        );
-      },
-    },
-    {
-      field: "INSPECT_BALANCE",
-      type: "number",
-      headerName: "TỒN KIỂM",
-      width: 80,
-      renderCell: (params: any) => {
-        return (
-          <span style={{ color: "#cc0099" }}>
-            <b>{params.row.INSPECT_BALANCE.toLocaleString("en-US")}</b>
-          </span>
-        );
-      },
-    },
-    {
-      field: "YCSX_PENDING",
-      headerName: "YCSX_PENDING",
-      width: 80,
-      renderCell: (params: any) => {
-        if (params.row.YCSX_PENDING === 1)
-          return (
-            <span style={{ color: "red" }}>
-              <b>PENDING</b>
-            </span>
-          );
-        else
-          return (
-            <span style={{ color: "green" }}>
-              <b>CLOSED</b>
-            </span>
-          );
-      },
-    },
   ];
   const column_plandatatable = [
     {
@@ -768,10 +658,11 @@ const QUICKPLAN = () => {
       editable: true,
     },
     { field: "G_CODE", headerName: "G_CODE", width: 80, editable: false },
+    { field: "G_NAME", headerName: "G_NAME", width: 130, editable: false },
     {
       field: "G_NAME_KD",
       headerName: "G_NAME_KD",
-      width: 200,
+      width: 100,
       editable: false,
       renderCell: (params: any) => {
         if (
@@ -808,34 +699,60 @@ const QUICKPLAN = () => {
     },
     {
       field: "CD1",
-      headerName: "KQ_CD1",
-      width: 80,
+      headerName: "CD1",
+      width: 60,
       editable: false,
       renderCell: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            {params.row.CD1.toLocaleString("en", "US")}
+            {params.row.CD1?.toLocaleString("en", "US")}
           </span>
         );
       },
     },
     {
       field: "CD2",
-      headerName: "KQ_CD2",
-      width: 80,
+      headerName: "CD2",
+      width: 60,
       editable: false,
       renderCell: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
-            {params.row.CD2.toLocaleString("en", "US")}
+            {params.row.CD2?.toLocaleString("en", "US")}
+          </span>
+        );
+      },
+    },
+    {
+      field: "CD3",
+      headerName: "CD3",
+      width: 60,
+      editable: false,
+      renderCell: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            {params.row.CD3?.toLocaleString("en", "US")}
+          </span>
+        );
+      },
+    },
+    {
+      field: "CD4",
+      headerName: "CD4",
+      width: 60,
+      editable: false,
+      renderCell: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            {params.row.CD4?.toLocaleString("en", "US")}
           </span>
         );
       },
     },
     {
       field: "TON_CD1",
-      headerName: "TONYCSX_CD1",
-      width: 120,
+      headerName: "TCD1",
+      width: 70,
       editable: false,
       renderCell: (params: any) => {
         return (
@@ -847,13 +764,39 @@ const QUICKPLAN = () => {
     },
     {
       field: "TON_CD2",
-      headerName: "TONYCSX_CD2",
-      width: 120,
+      headerName: "TCD2",
+      width: 70,
       editable: false,
       renderCell: (params: any) => {
         return (
           <span style={{ color: "blue" }}>
             {params.row.TON_CD2.toLocaleString("en", "US")}
+          </span>
+        );
+      },
+    },
+    {
+      field: "TON_CD3",
+      headerName: "TCD3",
+      width: 70,
+      editable: false,
+      renderCell: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            {params.row.TON_CD3.toLocaleString("en", "US")}
+          </span>
+        );
+      },
+    },
+    {
+      field: "TON_CD4",
+      headerName: "TCD4",
+      width: 70,
+      editable: false,
+      renderCell: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            {params.row.TON_CD4.toLocaleString("en", "US")}
           </span>
         );
       },
@@ -877,8 +820,8 @@ const QUICKPLAN = () => {
     },
     {
       field: "PROCESS_NUMBER",
-      headerName: "PROCESS_NUMBER",
-      width: 110,
+      headerName: "PROC_NUM",
+      width: 80,
       editable: editplan,
       renderCell: (params: any) => {
         if (
@@ -895,12 +838,14 @@ const QUICKPLAN = () => {
     },
     {
       field: "PLAN_ORDER",
-      headerName: "PLAN_ORDER",
-      width: 110,
+      headerName: "ORDER",
+      width: 60,
       editable: editplan,
     },
-    { field: "EQ1", headerName: "EQ1", width: 80, editable: editplan },
-    { field: "EQ2", headerName: "EQ2", width: 80, editable: editplan },
+    { field: "EQ1", headerName: "EQ1", width: 50, editable: editplan },
+    { field: "EQ2", headerName: "EQ2", width: 50, editable: editplan },
+    { field: "EQ3", headerName: "EQ3", width: 50, editable: editplan },
+    { field: "EQ4", headerName: "EQ4", width: 50, editable: editplan },
     {
       field: "PLAN_EQ",
       headerName: "PLAN_EQ",
@@ -914,11 +859,36 @@ const QUICKPLAN = () => {
         }
       },
     },
-    { field: "STEP", headerName: "STEP", width: 60, editable: editplan },
+    { field: "STEP", headerName: "STEP", width: 50, editable: editplan },
+    {
+      field: "IS_SETTING",
+      headerName: "IS_SETTING",
+      width: 100,
+      renderCell: (params: any) => {
+        return (
+          <input
+          type='checkbox'
+          name='alltimecheckbox'
+          defaultChecked={params.row.IS_SETTING==='Y'}
+          onChange={(value) => {  
+            //console.log(value);
+            const newdata = plandatatable.map((p) =>
+              p.PLAN_ID === params.row.PLAN_ID
+                ? { ...p, IS_SETTING: params.row.IS_SETTING==='Y'? 'N': 'Y' }
+                : p
+            );
+            setPlanDataTable(newdata);
+            setQlsxPlanDataFilter([]);
+          }}
+        ></input>
+        )
+      },
+      editable: false,    
+    },
     {
       field: "PLAN_FACTORY",
-      headerName: "FACTORY",
-      width: 80,
+      headerName: "NM",
+      width: 50,
       editable: false,
     },
     {
@@ -927,6 +897,7 @@ const QUICKPLAN = () => {
       width: 110,
       editable: false,
     },
+    
     {
       field: "NEXT_PLAN_ID",
       headerName: "NEXT_PLAN_ID",
@@ -936,64 +907,17 @@ const QUICKPLAN = () => {
   ];
   const renderYCKT = (planlist: QLSXPLANDATA[]) => {
     return planlist.map((element, index) => (
-      <YCKT
-        key={index}
-        PLAN_ID={element.PLAN_ID}
-        PLAN_DATE={element.PLAN_DATE}
-        PROD_REQUEST_NO={element.PROD_REQUEST_NO}
-        PLAN_QTY={element.PLAN_QTY}
-        PLAN_EQ={element.PLAN_EQ}
-        PLAN_FACTORY={element.PLAN_FACTORY}
-        PLAN_LEADTIME={element.PLAN_LEADTIME}
-        G_CODE={element.G_CODE}
-        G_NAME={element.G_NAME}
-        G_NAME_KD={element.G_NAME_KD}
-        PROD_REQUEST_DATE={element.PROD_REQUEST_DATE}
-        PROD_REQUEST_QTY={element.PROD_REQUEST_QTY}
-        STEP={element.STEP}
-        PLAN_ORDER={element.PLAN_ORDER}
-      />
+      <YCKT key={index} DATA={element} />
     ));
   };
   const renderChiThi = (planlist: QLSXPLANDATA[]) => {
     return planlist.map((element, index) => (
-      <CHITHI_COMPONENT
-        key={index}
-        PLAN_ID={element.PLAN_ID}
-        PLAN_DATE={element.PLAN_DATE}
-        PROD_REQUEST_NO={element.PROD_REQUEST_NO}
-        PLAN_QTY={element.PLAN_QTY}
-        PLAN_EQ={element.PLAN_EQ}
-        PLAN_FACTORY={element.PLAN_FACTORY}
-        PLAN_LEADTIME={element.PLAN_LEADTIME}
-        G_CODE={element.G_CODE}
-        G_NAME={element.G_NAME}
-        G_NAME_KD={element.G_NAME_KD}
-        PROD_REQUEST_DATE={element.PROD_REQUEST_DATE}
-        PROD_REQUEST_QTY={element.PROD_REQUEST_QTY}
-        STEP={element.STEP}
-        PLAN_ORDER={element.PLAN_ORDER}        
-      />
+      <CHITHI_COMPONENT key={index} DATA={element} />
     ));
   };
   const renderYCSX = (ycsxlist: YCSXTableData[]) => {
     return ycsxlist.map((element, index) => (
-      <YCSXComponent
-        key={index}
-        PROD_REQUEST_NO={element.PROD_REQUEST_NO}
-        G_CODE={element.G_CODE}
-        PO_TDYCSX={element.PO_TDYCSX}
-        TOTAL_TKHO_TDYCSX={element.TOTAL_TKHO_TDYCSX}
-        TKHO_TDYCSX={element.TKHO_TDYCSX}
-        BTP_TDYCSX={element.BTP_TDYCSX}
-        CK_TDYCSX={element.CK_TDYCSX}
-        BLOCK_TDYCSX={element.BLOCK_TDYCSX}
-        FCST_TDYCSX={element.FCST_TDYCSX}
-        PDBV={element.PDBV}
-        PDBV_EMPL={element.PDBV_EMPL}
-        PDBV_DATE={element.PDBV_DATE}
-        DESCR={element.DESCR}
-      />
+      <YCSXComponent key={index} DATA={element} />
     ));
   };
   const renderBanVe = (ycsxlist: YCSXTableData[]) => {
@@ -1009,7 +933,7 @@ const QUICKPLAN = () => {
         />
       ) : (
         <div>Code: {element.G_NAME} : Không có bản vẽ</div>
-      )
+      ),
     );
   };
   const loadQLSXPlan = (PROD_REQUEST_NO: string) => {
@@ -1025,7 +949,7 @@ const QUICKPLAN = () => {
                 PLAN_DATE: moment.utc(element.PLAN_DATE).format("YYYY-MM-DD"),
                 id: index,
               };
-            }
+            },
           );
           //console.log(loadeddata);
           setPlanDataTable(loadeddata);
@@ -1061,6 +985,24 @@ const QUICKPLAN = () => {
           //console.log(response.data.data);
           const loadeddata: YCSXTableData[] = response.data.data.map(
             (element: YCSXTableData, index: number) => {
+              let temp_TCD1: number =
+                element.TON_CD1 === null ? 0 : element.TON_CD1;
+              let temp_TCD2: number =
+                element.TON_CD2 === null ? 0 : element.TON_CD2;
+              let temp_TCD3: number =
+                element.TON_CD3 === null ? 0 : element.TON_CD3;
+              let temp_TCD4: number =
+                element.TON_CD4 === null ? 0 : element.TON_CD4;
+              if (temp_TCD1 < 0) {
+                temp_TCD2 = temp_TCD2 - temp_TCD1;
+              }
+              if (temp_TCD2 < 0) {
+                temp_TCD3 = temp_TCD3 - temp_TCD2;
+              }
+              if (temp_TCD3 < 0) {
+                temp_TCD4 = temp_TCD4 - temp_TCD3;
+              }
+
               return {
                 ...element,
                 PO_TDYCSX:
@@ -1069,17 +1011,17 @@ const QUICKPLAN = () => {
                     : element.PO_TDYCSX,
                 TOTAL_TKHO_TDYCSX:
                   element.TOTAL_TKHO_TDYCSX === undefined ||
-                  element.TOTAL_TKHO_TDYCSX === null
+                    element.TOTAL_TKHO_TDYCSX === null
                     ? 0
                     : element.TOTAL_TKHO_TDYCSX,
                 TKHO_TDYCSX:
                   element.TKHO_TDYCSX === undefined ||
-                  element.TKHO_TDYCSX === null
+                    element.TKHO_TDYCSX === null
                     ? 0
                     : element.TKHO_TDYCSX,
                 BTP_TDYCSX:
                   element.BTP_TDYCSX === undefined ||
-                  element.BTP_TDYCSX === null
+                    element.BTP_TDYCSX === null
                     ? 0
                     : element.BTP_TDYCSX,
                 CK_TDYCSX:
@@ -1088,12 +1030,12 @@ const QUICKPLAN = () => {
                     : element.CK_TDYCSX,
                 BLOCK_TDYCSX:
                   element.BLOCK_TDYCSX === undefined ||
-                  element.BLOCK_TDYCSX === null
+                    element.BLOCK_TDYCSX === null
                     ? 0
                     : element.BLOCK_TDYCSX,
                 FCST_TDYCSX:
                   element.FCST_TDYCSX === undefined ||
-                  element.FCST_TDYCSX === null
+                    element.FCST_TDYCSX === null
                     ? 0
                     : element.FCST_TDYCSX,
                 W1:
@@ -1130,18 +1072,26 @@ const QUICKPLAN = () => {
                     : element.W8,
                 PROD_REQUEST_QTY:
                   element.PROD_REQUEST_QTY === undefined ||
-                  element.PROD_REQUEST_QTY === null
+                    element.PROD_REQUEST_QTY === null
                     ? 0
                     : element.PROD_REQUEST_QTY,
+                CD1: element.CD1 === null ? 0 : element.CD1,
+                CD2: element.CD2 === null ? 0 : element.CD2,
+                CD3: element.CD3 === null ? 0 : element.CD3,
+                CD4: element.CD4 === null ? 0 : element.CD4,
+                TON_CD1: temp_TCD1,
+                TON_CD2: temp_TCD2,
+                TON_CD3: temp_TCD3,
+                TON_CD4: temp_TCD4,
               };
-            }
+            },
           );
           setYcsxDataTable(loadeddata);
           setisLoading(false);
           Swal.fire(
             "Thông báo",
             "Đã load " + response.data.data.length + " dòng",
-            "success"
+            "success",
           );
         } else {
           Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
@@ -1153,7 +1103,7 @@ const QUICKPLAN = () => {
       });
   };
   const handleSearchCodeKeyDown = (
-    e: React.KeyboardEvent<HTMLInputElement>
+    e: React.KeyboardEvent<HTMLInputElement>,
   ) => {
     if (e.key === "Enter") {
       handletraYCSX();
@@ -1182,7 +1132,7 @@ const QUICKPLAN = () => {
         Swal.fire(
           "Thông báo",
           "SET YCSX thành công (chỉ PO của người đăng nhập)!",
-          "success"
+          "success",
         );
       } else {
         Swal.fire("Thông báo", "Có lỗi SQL: ", "error");
@@ -1205,7 +1155,7 @@ const QUICKPLAN = () => {
         Swal.fire(
           "Tiến hành SET PENDING",
           "Đang SET PENDING YCSX hàng loạt",
-          "success"
+          "success",
         );
         setPendingYCSX(1);
       }
@@ -1225,7 +1175,7 @@ const QUICKPLAN = () => {
         Swal.fire(
           "Tiến hành SET CLOSED",
           "Đang SET CLOSED YCSX hàng loạt",
-          "success"
+          "success",
         );
         setPendingYCSX(0);
       }
@@ -1280,7 +1230,7 @@ const QUICKPLAN = () => {
               setTemID(datafilter[len].id);
               localStorage.setItem(
                 "temp_plan_table_max_id",
-                datafilter[len].id.toString()
+                datafilter[len].id.toString(),
               );
             }
             setPlanDataTable(datafilter);
@@ -1294,7 +1244,7 @@ const QUICKPLAN = () => {
   };
   const getNextPLAN_ID = async (
     PROD_REQUEST_NO: string,
-    plan_row: QLSXPLANDATA
+    plan_row: QLSXPLANDATA,
   ) => {
     let next_plan_id: string = PROD_REQUEST_NO;
     let next_plan_order: number = 1;
@@ -1317,7 +1267,7 @@ const QUICKPLAN = () => {
               next_plan_id =
                 old_plan_id.substring(0, 3) +
                 PLAN_ID_ARRAY[
-                  PLAN_ID_ARRAY.indexOf(old_plan_id.substring(3, 4)) + 1
+                PLAN_ID_ARRAY.indexOf(old_plan_id.substring(3, 4)) + 1
                 ] +
                 old_plan_id.substring(4, 7) +
                 "A";
@@ -1326,7 +1276,7 @@ const QUICKPLAN = () => {
             next_plan_id =
               old_plan_id.substring(0, 7) +
               PLAN_ID_ARRAY[
-                PLAN_ID_ARRAY.indexOf(old_plan_id.substring(7, 8)) + 1
+              PLAN_ID_ARRAY.indexOf(old_plan_id.substring(7, 8)) + 1
               ];
           }
           /* next_plan_id = PROD_REQUEST_NO +  String.fromCharCode(response.data.data[0].PLAN_ID.substring(7,8).charCodeAt(0) + 1); */
@@ -1373,9 +1323,9 @@ const QUICKPLAN = () => {
           PLAN_EQ: "",
           PLAN_FACTORY: userData?.FACTORY_CODE === 1 ? "NM1" : "NM2",
           PLAN_LEADTIME: 0,
-          INS_EMPL: '',
+          INS_EMPL: "",
           INS_DATE: moment().format("YYYY-MM-DD HH:mm:ss"),
-          UPD_EMPL: '',
+          UPD_EMPL: "",
           UPD_DATE: moment().format("YYYY-MM-DD HH:mm:ss"),
           G_CODE: ycsxdatatablefilter[i].G_CODE,
           G_NAME: ycsxdatatablefilter[i].G_NAME,
@@ -1389,44 +1339,44 @@ const QUICKPLAN = () => {
           KQ_SX_TAM: 0,
           CD1: ycsxdatatablefilter[i].CD1,
           CD2: ycsxdatatablefilter[i].CD2,
+          CD3: ycsxdatatablefilter[i].CD3,
+          CD4: ycsxdatatablefilter[i].CD4,
           TON_CD1: ycsxdatatablefilter[i].TON_CD1,
           TON_CD2: ycsxdatatablefilter[i].TON_CD2,
-          FACTORY: "",
+          TON_CD3: ycsxdatatablefilter[i].TON_CD3,
+          TON_CD4: ycsxdatatablefilter[i].TON_CD4,
+          FACTORY: userData?.FACTORY_CODE === 1 ? "NM1" : "NM2",
           EQ1: ycsxdatatablefilter[i].EQ1,
           EQ2: ycsxdatatablefilter[i].EQ2,
+          EQ3: ycsxdatatablefilter[i].EQ3,
+          EQ4: ycsxdatatablefilter[i].EQ4,
           Setting1: ycsxdatatablefilter[i].Setting1,
           Setting2: ycsxdatatablefilter[i].Setting2,
+          Setting3: ycsxdatatablefilter[i].Setting3,
+          Setting4: ycsxdatatablefilter[i].Setting4,
           UPH1: ycsxdatatablefilter[i].UPH1,
           UPH2: ycsxdatatablefilter[i].UPH2,
+          UPH3: ycsxdatatablefilter[i].UPH3,
+          UPH4: ycsxdatatablefilter[i].UPH4,
           Step1: ycsxdatatablefilter[i].Step1,
           Step2: ycsxdatatablefilter[i].Step2,
+          Step3: ycsxdatatablefilter[i].Step3,
+          Step4: ycsxdatatablefilter[i].Step4,
           LOSS_SX1: ycsxdatatablefilter[i].LOSS_SX1,
           LOSS_SX2: ycsxdatatablefilter[i].LOSS_SX2,
+          LOSS_SX3: ycsxdatatablefilter[i].LOSS_SX3,
+          LOSS_SX4: ycsxdatatablefilter[i].LOSS_SX4,
           LOSS_SETTING1: ycsxdatatablefilter[i].LOSS_SETTING1,
           LOSS_SETTING2: ycsxdatatablefilter[i].LOSS_SETTING2,
+          LOSS_SETTING3: ycsxdatatablefilter[i].LOSS_SETTING3,
+          LOSS_SETTING4: ycsxdatatablefilter[i].LOSS_SETTING4,
           NOTE: ycsxdatatablefilter[i].NOTE,
           NEXT_PLAN_ID: "X",
-          CD3: 0,
-          CD4: 0,
-          TON_CD3: 0,
-          TON_CD4: 0,
-          EQ3: "",
-          EQ4: "",
-          Setting3: 0,
-          Setting4: 0,
-          UPH3: 0,
-          UPH4: 0,
-          Step3: 0,
-          Step4: 0,
-          LOSS_SX3: 0,
-          LOSS_SX4: 0,
-          LOSS_SETTING3: 0,
-          LOSS_SETTING4: 0
         };
         setPlanDataTable([...plandatatable, temp_add_plan]);
         localStorage.setItem(
           "temp_plan_table",
-          JSON.stringify([...plandatatable, temp_add_plan])
+          JSON.stringify([...plandatatable, temp_add_plan]),
         );
       }
     } else {
@@ -1439,7 +1389,7 @@ const QUICKPLAN = () => {
     setTemID(temp_);
     localStorage.setItem("temp_plan_table_max_id", temp_.toString());
     let temp_add_plan: QLSXPLANDATA = {
-      id: (temp_id + 1),
+      id: temp_id + 1,
       PLAN_ID: "PL" + (temp_id + 1),
       PLAN_DATE: moment().format("YYYY-MM-DD"),
       PROD_REQUEST_NO: "",
@@ -1447,9 +1397,9 @@ const QUICKPLAN = () => {
       PLAN_EQ: "",
       PLAN_FACTORY: userData?.FACTORY_CODE === 1 ? "NM1" : "NM2",
       PLAN_LEADTIME: 0,
-      INS_EMPL: '',
+      INS_EMPL: "",
       INS_DATE: moment().format("YYYY-MM-DD HH:mm:ss"),
-      UPD_EMPL: '',
+      UPD_EMPL: "",
       UPD_DATE: moment().format("YYYY-MM-DD HH:mm:ss"),
       G_CODE: "",
       G_NAME: "",
@@ -1495,12 +1445,13 @@ const QUICKPLAN = () => {
       LOSS_SX3: 0,
       LOSS_SX4: 0,
       LOSS_SETTING3: 0,
-      LOSS_SETTING4: 0
+      LOSS_SETTING4: 0,
+      IS_SETTING: 'Y'
     };
     setPlanDataTable([...plandatatable, temp_add_plan]);
     localStorage.setItem(
       "temp_plan_table",
-      JSON.stringify([...plandatatable, temp_add_plan])
+      JSON.stringify([...plandatatable, temp_add_plan]),
     );
   };
   const handle_SavePlan = async () => {
@@ -1509,11 +1460,11 @@ const QUICKPLAN = () => {
       let err_code: string = "0";
       for (let i = 0; i < qlsxplandatafilter.length; i++) {
         if (
-          (parseInt(qlsxplandatafilter[i].PROCESS_NUMBER.toString()) === 1 ||
-            parseInt(qlsxplandatafilter[i].PROCESS_NUMBER.toString()) === 2) &&
+          (parseInt(qlsxplandatafilter[i].PROCESS_NUMBER.toString()) >= 1 ||
+            parseInt(qlsxplandatafilter[i].PROCESS_NUMBER.toString()) <= 4) &&
           qlsxplandatafilter[i].PLAN_QTY !== 0 &&
           qlsxplandatafilter[i].PLAN_QTY <=
-            qlsxplandatafilter[i].PROD_REQUEST_QTY &&
+          qlsxplandatafilter[i].PROD_REQUEST_QTY &&
           qlsxplandatafilter[i].PLAN_EQ.substring(0, 2) !== "" &&
           (qlsxplandatafilter[i].PLAN_EQ.substring(0, 2) === "FR" ||
             qlsxplandatafilter[i].PLAN_EQ.substring(0, 2) === "SR" ||
@@ -1544,7 +1495,7 @@ const QUICKPLAN = () => {
           //check_ycsx_hethongcu = false;
           let nextPlan = await getNextPLAN_ID(
             qlsxplandatafilter[i].PROD_REQUEST_NO,
-            qlsxplandatafilter[i]
+            qlsxplandatafilter[i],
           );
           let NextPlanID = nextPlan.NEXT_PLAN_ID;
           let NextPlanOrder = nextPlan.NEXT_PLAN_ORDER;
@@ -1566,6 +1517,7 @@ const QUICKPLAN = () => {
               PLAN_FACTORY: qlsxplandatafilter[i].PLAN_FACTORY,
               G_CODE: qlsxplandatafilter[i].G_CODE,
               NEXT_PLAN_ID: qlsxplandatafilter[i].NEXT_PLAN_ID,
+              IS_SETTING: qlsxplandatafilter[i].IS_SETTING
             })
               .then((response) => {
                 //console.log(response.data.tk_status);
@@ -1600,9 +1552,8 @@ const QUICKPLAN = () => {
   };
   const handleSaveQLSX = async () => {
     if (selectedG_Code !== undefined) {
-      if (userData?.EMPL_NO === "NHU1903" || userData?.MAINDEPTNAME === "QLSX") {
+      checkBP(userData, ['QLSX'], ['ALL'], ['ALL'], async () => {
         let err_code: string = "0";
-        //console.log(datadinhmuc);
         if (
           datadinhmuc.FACTORY === "NA" ||
           datadinhmuc.EQ1 === "NA" ||
@@ -1616,7 +1567,7 @@ const QUICKPLAN = () => {
           Swal.fire(
             "Thông báo",
             "Lưu thất bại, hãy nhập đủ thông tin",
-            "error"
+            "error",
           );
         } else {
           generalQuery("saveQLSX", {
@@ -1646,7 +1597,7 @@ const QUICKPLAN = () => {
             LOSS_SETTING2: datadinhmuc.LOSS_SETTING2,
             LOSS_SETTING3: datadinhmuc.LOSS_SETTING3,
             LOSS_SETTING4: datadinhmuc.LOSS_SETTING4,
-            NOTE: datadinhmuc.NOTE,        
+            NOTE: datadinhmuc.NOTE,
           })
             .then((response) => {
               console.log(response.data.tk_status);
@@ -1662,53 +1613,64 @@ const QUICKPLAN = () => {
             Swal.fire(
               "Thông báo",
               "Lưu thất bại, không được để trống ô cần thiết",
-              "error"
+              "error",
             );
           } else {
-            loadQLSXPlan(selectedPlanDate);
+            //loadQLSXPlan(selectedPlanDate);
             Swal.fire("Thông báo", "Lưu thành công", "success");
           }
         }
-      } else {
-        Swal.fire("Thông báo", "Không đủ quyền hạn!", "error");
-      }
+
+      })
+
     } else {
       Swal.fire("Thông báo", "Chọn ít nhất 1 Code để SET !", "error");
     }
   };
   function CustomToolbarPOTable() {
     return (
-      <GridToolbarContainer>      
+      <GridToolbarContainer>
         <IconButton
-          className='buttonIcon'
+          className="buttonIcon"
+          onClick={() => {
+            setShowHideYCSXTable(
+              showhideycsxtable === 3 ? 1 : showhideycsxtable + 1,
+            );
+          }}
+        >
+          <BiShow color="green" size={20} />
+          Switch Tab
+        </IconButton>
+        <IconButton
+          className="buttonIcon"
           onClick={() => {
             SaveExcel(ycsxdatatable, "YCSX Table");
           }}
         >
-          <AiFillFileExcel color='green' size={15} />
+          <AiFillFileExcel color="green" size={15} />
           SAVE
         </IconButton>
         <GridToolbarQuickFilter />
         <IconButton
-          className='buttonIcon'
+          className="buttonIcon"
           onClick={() => {
             handleConfirmSetClosedYCSX();
           }}
         >
-          <FaArrowRight color='green' size={15} />
+          <FaArrowRight color="green" size={15} />
           SET CLOSED
         </IconButton>
         <IconButton
-          className='buttonIcon'
+          className="buttonIcon"
           onClick={() => {
             handleConfirmSetPendingYCSX();
           }}
         >
-          <MdOutlinePendingActions color='red' size={15} />
+          <MdOutlinePendingActions color="red" size={15} />
           SET PENDING
         </IconButton>
         <IconButton
-          className='buttonIcon'
+          className="buttonIcon"
           onClick={() => {
             if (ycsxdatatablefilter.length > 0) {
               setSelection({
@@ -1722,11 +1684,11 @@ const QUICKPLAN = () => {
             }
           }}
         >
-          <AiOutlinePrinter color='#0066ff' size={15} />
+          <AiOutlinePrinter color="#0066ff" size={15} />
           Print YCSX
         </IconButton>
         <IconButton
-          className='buttonIcon'
+          className="buttonIcon"
           onClick={() => {
             if (ycsxdatatablefilter.length > 0) {
               setSelection({
@@ -1739,11 +1701,11 @@ const QUICKPLAN = () => {
             }
           }}
         >
-          <AiOutlinePrinter color='#ff751a' size={15} />
+          <AiOutlinePrinter color="#ff751a" size={15} />
           Print Bản Vẽ
         </IconButton>
         <IconButton
-          className='buttonIcon'
+          className="buttonIcon"
           onClick={() => {
             if (ycsxdatatablefilter.length > 0) {
               handle_AddPlan();
@@ -1751,12 +1713,12 @@ const QUICKPLAN = () => {
               Swal.fire(
                 "Thông báo",
                 "Chọn ít nhất 1 YCSX để thêm PLAN",
-                "error"
+                "error",
               );
             }
           }}
         >
-          <AiFillFolderAdd color='#69f542' size={15} />
+          <AiFillFolderAdd color="#69f542" size={15} />
           Add to PLAN
         </IconButton>
       </GridToolbarContainer>
@@ -1766,21 +1728,23 @@ const QUICKPLAN = () => {
     return (
       <GridToolbarContainer>
         <IconButton
-          className='buttonIcon'
+          className="buttonIcon"
           onClick={() => {
-            setShowHideYCSXTable(!showhideycsxtable);
+            setShowHideYCSXTable(
+              showhideycsxtable === 3 ? 1 : showhideycsxtable + 1,
+            );
           }}
         >
-          <BiShow color='green' size={20} />
-          Ẩn /Hiện
+          <BiShow color="green" size={20} />
+          Switch Tab
         </IconButton>
         <IconButton
-          className='buttonIcon'
+          className="buttonIcon"
           onClick={() => {
             SaveExcel(plandatatable, "Plan Table");
           }}
         >
-          <AiFillFileExcel color='green' size={15} />
+          <AiFillFileExcel color="green" size={15} />
           SAVE
         </IconButton>
         <GridToolbarQuickFilter />
@@ -1788,16 +1752,16 @@ const QUICKPLAN = () => {
           Bảng tạm xắp PLAN
         </span>
         <IconButton
-          className='buttonIcon'
+          className="buttonIcon"
           onClick={() => {
             handle_AddBlankPlan();
           }}
         >
-          <AiFillFolderAdd color='#69f542' size={15} />
+          <AiFillFolderAdd color="#69f542" size={15} />
           Add Blank PLAN
         </IconButton>
         <IconButton
-          className='buttonIcon'
+          className="buttonIcon"
           onClick={() => {
             /* checkBP(
               userData?.EMPL_NO,
@@ -1805,26 +1769,32 @@ const QUICKPLAN = () => {
               ["QLSX"],
               handleConfirmSavePlan
             ); */
-            checkBP(userData,['QLSX'],['ALL'],['ALL'],handleConfirmSavePlan);
+            checkBP(
+              userData,
+              ["QLSX"],
+              ["ALL"],
+              ["ALL"],
+              handleConfirmSavePlan,
+            );
 
             //handleConfirmSavePlan();
           }}
         >
-          <AiFillSave color='blue' size={20} />
+          <AiFillSave color="blue" size={20} />
           LƯU PLAN
         </IconButton>
         <IconButton
-          className='buttonIcon'
+          className="buttonIcon"
           onClick={() => {
             handleConfirmDeletePlan();
           }}
         >
-          <FcDeleteRow color='yellow' size={20} />
+          <FcDeleteRow color="yellow" size={20} />
           XÓA PLAN NHÁP
         </IconButton>
-        
+
         <IconButton
-          className='buttonIcon'
+          className="buttonIcon"
           onClick={() => {
             /* checkBP(
               userData?.EMPL_NO,
@@ -1832,12 +1802,12 @@ const QUICKPLAN = () => {
               ["QLSX"],
               handleSaveQLSX
             ); */
-            checkBP(userData,['QLSX'],['ALL'],['ALL'],handleSaveQLSX);
+            checkBP(userData, ["QLSX"], ["ALL"], ["ALL"], handleSaveQLSX);
 
             //handleSaveQLSX();
           }}
         >
-          <AiFillSave color='lightgreen' size={20} />
+          <AiFillSave color="lightgreen" size={20} />
           Lưu Data Định Mức
         </IconButton>
       </GridToolbarContainer>
@@ -1846,7 +1816,7 @@ const QUICKPLAN = () => {
   const handleYCSXSelectionforUpdate = (ids: GridSelectionModel) => {
     const selectedID = new Set(ids);
     let datafilter = ycsxdatatable.filter((element: any) =>
-      selectedID.has(element.PROD_REQUEST_NO)
+      selectedID.has(element.PROD_REQUEST_NO),
     );
     if (datafilter.length > 0) {
       setYcsxDataTableFilter(datafilter);
@@ -1858,7 +1828,7 @@ const QUICKPLAN = () => {
   const handleQLSXPlanDataSelectionforUpdate = (ids: GridSelectionModel) => {
     const selectedID = new Set(ids);
     let datafilter = plandatatable.filter((element: any) =>
-      selectedID.has(element.PLAN_ID)
+      selectedID.has(element.PLAN_ID),
     );
     //console.log(datafilter);
     if (datafilter.length > 0) {
@@ -1901,17 +1871,17 @@ const QUICKPLAN = () => {
                     : element.PO_TDYCSX,
                 TOTAL_TKHO_TDYCSX:
                   element.TOTAL_TKHO_TDYCSX === undefined ||
-                  element.TOTAL_TKHO_TDYCSX === null
+                    element.TOTAL_TKHO_TDYCSX === null
                     ? 0
                     : element.TOTAL_TKHO_TDYCSX,
                 TKHO_TDYCSX:
                   element.TKHO_TDYCSX === undefined ||
-                  element.TKHO_TDYCSX === null
+                    element.TKHO_TDYCSX === null
                     ? 0
                     : element.TKHO_TDYCSX,
                 BTP_TDYCSX:
                   element.BTP_TDYCSX === undefined ||
-                  element.BTP_TDYCSX === null
+                    element.BTP_TDYCSX === null
                     ? 0
                     : element.BTP_TDYCSX,
                 CK_TDYCSX:
@@ -1920,12 +1890,12 @@ const QUICKPLAN = () => {
                     : element.CK_TDYCSX,
                 BLOCK_TDYCSX:
                   element.BLOCK_TDYCSX === undefined ||
-                  element.BLOCK_TDYCSX === null
+                    element.BLOCK_TDYCSX === null
                     ? 0
                     : element.BLOCK_TDYCSX,
                 FCST_TDYCSX:
                   element.FCST_TDYCSX === undefined ||
-                  element.FCST_TDYCSX === null
+                    element.FCST_TDYCSX === null
                     ? 0
                     : element.FCST_TDYCSX,
                 W1:
@@ -1962,11 +1932,11 @@ const QUICKPLAN = () => {
                     : element.W8,
                 PROD_REQUEST_QTY:
                   element.PROD_REQUEST_QTY === undefined ||
-                  element.PROD_REQUEST_QTY === null
+                    element.PROD_REQUEST_QTY === null
                     ? 0
                     : element.PROD_REQUEST_QTY,
               };
-            }
+            },
           );
           temp_data = loadeddata;
         } else {
@@ -1981,15 +1951,14 @@ const QUICKPLAN = () => {
   const handleEvent: GridEventListener<"rowClick"> = (
     params, // GridRowParams
     event, // MuiEvent<React.MouseEvent<HTMLElement>>
-    details // GridCallbackDetails
+    details, // GridCallbackDetails
   ) => {
-    let rowData: QLSXPLANDATA = params.row;
-    console.log(rowData);
+    let rowData: QLSXPLANDATA = params.row; 
     setSelectedCode("CODE: " + rowData.G_NAME_KD);
     setSelectedG_Code(rowData.G_CODE);
     setDataDinhMuc({
       ...datadinhmuc,
-      FACTORY: rowData.FACTORY === null ? "NA" : rowData.FACTORY,
+      FACTORY: rowData.FACTORY === null ? "NM1" : rowData.FACTORY,
       EQ1: rowData.EQ1 === "" ? "NA" : rowData.EQ1,
       EQ2: rowData.EQ2 === "" ? "NA" : rowData.EQ2,
       EQ3: rowData.EQ3 === "" ? "NA" : rowData.EQ3,
@@ -2003,9 +1972,9 @@ const QUICKPLAN = () => {
       UPH3: rowData.UPH3 === null ? 0 : rowData.UPH3,
       UPH4: rowData.UPH4 === null ? 0 : rowData.UPH4,
       Step1: rowData.Step1 === null ? 0 : rowData.Step1,
-      Step2: rowData.Step2 === null ? 0 : rowData.Step2,     
-      Step3: rowData.Step3 === null ? 0 : rowData.Step3,     
-      Step4: rowData.Step4 === null ? 0 : rowData.Step4,     
+      Step2: rowData.Step2 === null ? 0 : rowData.Step2,
+      Step3: rowData.Step3 === null ? 0 : rowData.Step3,
+      Step4: rowData.Step4 === null ? 0 : rowData.Step4,
       LOSS_SX1: rowData.LOSS_SX1 === null ? 0 : rowData.LOSS_SX1,
       LOSS_SX2: rowData.LOSS_SX2 === null ? 0 : rowData.LOSS_SX2,
       LOSS_SX3: rowData.LOSS_SX3 === null ? 0 : rowData.LOSS_SX3,
@@ -2016,12 +1985,15 @@ const QUICKPLAN = () => {
       LOSS_SETTING4: rowData.LOSS_SETTING4 === null ? 0 : rowData.LOSS_SETTING4,
       NOTE: rowData.NOTE === null ? "" : rowData.NOTE,
     });
+
+    if(rowData.G_CODE !=="")
+    getRecentDM(rowData.G_CODE);
     //console.log(params.row);
   };
   const cellEditHandler = (
     params: GridCellEditCommitParams,
     event: MuiEvent<MuiBaseEvent>,
-    details: GridCallbackDetails
+    details: GridCallbackDetails,
   ) => {
     (async () => {
       const keyvar = params.field;
@@ -2040,7 +2012,8 @@ const QUICKPLAN = () => {
                   ...p,
                   [keyvar]: params.value,
                   G_CODE: temp_ycsx_data[0].G_CODE,
-                  G_NAME_KD: temp_ycsx_data[0].G_NAME,
+                  G_NAME: temp_ycsx_data[0].G_NAME,
+                  G_NAME_KD: temp_ycsx_data[0].G_NAME_KD,
                   PROD_REQUEST_QTY: temp_ycsx_data[0].PROD_REQUEST_QTY,
                   CD1: temp_ycsx_data[0].CD1,
                   CD2: temp_ycsx_data[0].CD2,
@@ -2095,7 +2068,7 @@ const QUICKPLAN = () => {
         setPlanDataTable(newdata);
       } else if (keyvar === "PLAN_EQ") {
         let current_PROD_REQUEST_NO: string | undefined = plandatatable.find(
-          (element) => element.PLAN_ID === params.id
+          (element) => element.PLAN_ID === params.id,
         )?.PROD_REQUEST_NO;
         if (current_PROD_REQUEST_NO !== undefined) {
           temp_ycsx_data = await get1YCSXDATA(current_PROD_REQUEST_NO);
@@ -2107,8 +2080,9 @@ const QUICKPLAN = () => {
                 let plan_temp = params.value.substring(0, 2);
                 let UPH1: number = p.UPH1 === null ? 999999999 : p.UPH1;
                 let UPH2: number = p.UPH2 === null ? 999999999 : p.UPH2;
-                console.log("UPH1", UPH1);
-                console.log("UPH2", UPH2);
+                let UPH3: number = p.UPH3 === null ? 999999999 : p.UPH3;
+                let UPH4: number = p.UPH4 === null ? 999999999 : p.UPH4;
+
                 if (plan_temp === p.EQ1) {
                   return {
                     ...p,
@@ -2116,14 +2090,18 @@ const QUICKPLAN = () => {
                     PROCESS_NUMBER: 1,
                     CD1: temp_ycsx_data[0].CD1,
                     CD2: temp_ycsx_data[0].CD2,
+                    CD3: temp_ycsx_data[0].CD3,
+                    CD4: temp_ycsx_data[0].CD4,
                     TON_CD1: temp_ycsx_data[0].TON_CD1,
                     TON_CD2: temp_ycsx_data[0].TON_CD2,
+                    TON_CD3: temp_ycsx_data[0].TON_CD3,
+                    TON_CD4: temp_ycsx_data[0].TON_CD4,
                     PLAN_QTY:
                       temp_ycsx_data[0].TON_CD1 <= 0
                         ? 0
-                        : temp_ycsx_data[0].TON_CD1 < UPH1 * 10
-                        ? temp_ycsx_data[0].TON_CD1
-                        : UPH1 * 10,
+                        : temp_ycsx_data[0].TON_CD1 < UPH1 * qtyFactor
+                          ? temp_ycsx_data[0].TON_CD1
+                          : UPH1 * qtyFactor,
                   };
                 } else if (plan_temp === p.EQ2) {
                   return {
@@ -2132,20 +2110,64 @@ const QUICKPLAN = () => {
                     PROCESS_NUMBER: 2,
                     CD1: temp_ycsx_data[0].CD1,
                     CD2: temp_ycsx_data[0].CD2,
+                    CD3: temp_ycsx_data[0].CD3,
+                    CD4: temp_ycsx_data[0].CD4,
                     TON_CD1: temp_ycsx_data[0].TON_CD1,
                     TON_CD2: temp_ycsx_data[0].TON_CD2,
+                    TON_CD3: temp_ycsx_data[0].TON_CD3,
+                    TON_CD4: temp_ycsx_data[0].TON_CD4,
                     PLAN_QTY:
                       temp_ycsx_data[0].TON_CD2 <= 0
                         ? 0
-                        : temp_ycsx_data[0].TON_CD2 < UPH2 * 10
-                        ? temp_ycsx_data[0].TON_CD2
-                        : UPH2 * 10,
+                        : temp_ycsx_data[0].TON_CD2 < UPH2 * qtyFactor
+                          ? temp_ycsx_data[0].TON_CD2
+                          : UPH2 * qtyFactor,
+                  };
+                } else if (plan_temp === p.EQ3) {
+                  return {
+                    ...p,
+                    [keyvar]: params.value,
+                    PROCESS_NUMBER: 3,
+                    CD1: temp_ycsx_data[0].CD1,
+                    CD2: temp_ycsx_data[0].CD2,
+                    CD3: temp_ycsx_data[0].CD3,
+                    CD4: temp_ycsx_data[0].CD4,
+                    TON_CD1: temp_ycsx_data[0].TON_CD1,
+                    TON_CD2: temp_ycsx_data[0].TON_CD2,
+                    TON_CD3: temp_ycsx_data[0].TON_CD3,
+                    TON_CD4: temp_ycsx_data[0].TON_CD4,
+                    PLAN_QTY:
+                      temp_ycsx_data[0].TON_CD3 <= 0
+                        ? 0
+                        : temp_ycsx_data[0].TON_CD3 < UPH3 * qtyFactor
+                          ? temp_ycsx_data[0].TON_CD3
+                          : UPH3 * qtyFactor,
+                  };
+                } else if (plan_temp === p.EQ4) {
+                  return {
+                    ...p,
+                    [keyvar]: params.value,
+                    PROCESS_NUMBER: 2,
+                    CD1: temp_ycsx_data[0].CD1,
+                    CD2: temp_ycsx_data[0].CD2,
+                    CD3: temp_ycsx_data[0].CD3,
+                    CD4: temp_ycsx_data[0].CD4,
+                    TON_CD1: temp_ycsx_data[0].TON_CD1,
+                    TON_CD2: temp_ycsx_data[0].TON_CD2,
+                    TON_CD3: temp_ycsx_data[0].TON_CD3,
+                    TON_CD4: temp_ycsx_data[0].TON_CD4,
+                    PLAN_QTY:
+                      temp_ycsx_data[0].TON_CD4 <= 0
+                        ? 0
+                        : temp_ycsx_data[0].TON_CD4 < UPH4 * qtyFactor
+                          ? temp_ycsx_data[0].TON_CD4
+                          : UPH4 * qtyFactor,
                   };
                 } else {
                   Swal.fire(
                     "Thông báo",
                     "Máy đã nhập ko giống trong BOM",
-                    "warning"
+                    "warning",
                   );
                   return { ...p, [keyvar]: params.value };
                 }
@@ -2197,497 +2219,486 @@ const QUICKPLAN = () => {
     getMachineList();
   }, []);
   return (
-    <div className='quickplan'>
-      <div className='planwindow'>
-      <span style={{ fontSize: 25, color: "blue", marginLeft: 20 }}>
+    <div className="quickplan">
+      <div className="planwindow">
+        <span style={{ fontSize: 25, color: "blue", marginLeft: 20 }}>
           {selectedCode}
         </span>
-       
-        <div className="dinhmucdiv">
-        
-          {showhidedinhmuc && (
-            <div className="datadinhmucto">
-            <div className='datadinhmuc'>
-              <div className='forminputcolumn'>
-                <label>
-                  <b>EQ1:</b>
-                  <select
-                    name='phanloai'
-                    value={datadinhmuc.EQ1}
-                    onChange={(e) =>
-                      setDataDinhMuc({ ...datadinhmuc, EQ1: e.target.value })
-                    }
-                    style={{ width: 150, height: 22 }}
-                  >
-                    {machine_list.map(
-                        (ele: MACHINE_LIST, index: number) => {
-                          return (
-                            <option key={index} value={ele.EQ_NAME}>
-                              {ele.EQ_NAME}
-                            </option>
-                          );
-                        }
-                      )}
-                  </select>
-                </label>
-                <label>
-                  <b>EQ2:</b>
-                  <select
-                    name='phanloai'
-                    value={datadinhmuc.EQ2}
-                    onChange={(e) =>
-                      setDataDinhMuc({ ...datadinhmuc, EQ2: e.target.value })
-                    }
-                    style={{ width: 150, height: 22 }}
-                  >
-                    {machine_list.map(
-                        (ele: MACHINE_LIST, index: number) => {
-                          return (
-                            <option key={index} value={ele.EQ_NAME}>
-                              {ele.EQ_NAME}
-                            </option>
-                          );
-                        }
-                      )}
-                  </select>
-                </label>
-              </div>
-              <div className='forminputcolumn'>
-                <label>
-                  <b>Setting1(min):</b>{" "}
-                  <input
-                    type='text'
-                    placeholder='Thời gian setting 1'
-                    value={datadinhmuc.Setting1}
-                    onChange={(e) =>
-                      setDataDinhMuc({
-                        ...datadinhmuc,
-                        Setting1: Number(e.target.value),
-                      })
-                    }
-                  ></input>
-                </label>
-                <label>
-                  <b>Setting2(min):</b>{" "}
-                  <input
-                    type='text'
-                    placeholder='Thời gian setting 2'
-                    value={datadinhmuc.Setting2}
-                    onChange={(e) =>
-                      setDataDinhMuc({
-                        ...datadinhmuc,
-                        Setting2: Number(e.target.value),
-                      })
-                    }
-                  ></input>
-                </label>
-              </div>
-              <div className='forminputcolumn'>
-                <label>
-                  <b>UPH1(EA/h):</b>{" "}
-                  <input
-                    type='text'
-                    placeholder='Tốc độ sx 1'
-                    value={datadinhmuc.UPH1}
-                    onChange={(e) =>
-                      setDataDinhMuc({
-                        ...datadinhmuc,
-                        UPH1: Number(e.target.value),
-                      })
-                    }
-                  ></input>
-                </label>
-                <label>
-                  <b>UPH2(EA/h):</b>{" "}
-                  <input
-                    type='text'
-                    placeholder='Tốc độ sx 2'
-                    value={datadinhmuc.UPH2}
-                    onChange={(e) =>
-                      setDataDinhMuc({
-                        ...datadinhmuc,
-                        UPH2: Number(e.target.value),
-                      })
-                    }
-                  ></input>
-                </label>
-              </div>
-              <div className='forminputcolumn'>
-                <label>
-                  <b>Step1:</b>{" "}
-                  <input
-                    type='text'
-                    placeholder='Số bước 1'
-                    value={datadinhmuc.Step1}
-                    onChange={(e) =>
-                      setDataDinhMuc({
-                        ...datadinhmuc,
-                        Step1: Number(e.target.value),
-                      })
-                    }
-                  ></input>
-                </label>
-                <label>
-                  <b>Step2:</b>{" "}
-                  <input
-                    type='text'
-                    placeholder='Số bước 2'
-                    value={datadinhmuc.Step2}
-                    onChange={(e) =>
-                      setDataDinhMuc({
-                        ...datadinhmuc,
-                        Step2: Number(e.target.value),
-                      })
-                    }
-                  ></input>
-                </label>
-              </div>
-              <div className='forminputcolumn'>
-                <label>
-                  <b>LOSS_SX1(%):</b>{" "}
-                  <input
-                    type='text'
-                    placeholder='% loss sx 1'
-                    value={datadinhmuc.LOSS_SX1}
-                    onChange={(e) =>
-                      setDataDinhMuc({
-                        ...datadinhmuc,
-                        LOSS_SX1: Number(e.target.value),
-                      })
-                    }
-                  ></input>
-                </label>
-                <label>
-                  <b>LOSS_SX2(%):</b>{" "}
-                  <input
-                    type='text'
-                    placeholder='% loss sx 2'
-                    value={datadinhmuc.LOSS_SX2}
-                    onChange={(e) =>
-                      setDataDinhMuc({
-                        ...datadinhmuc,
-                        LOSS_SX2: Number(e.target.value),
-                      })
-                    }
-                  ></input>
-                </label>
-              </div>
-              <div className='forminputcolumn'>
-                <label>
-                  <b>LOSS SETTING1 (m):</b>{" "}
-                  <input
-                    type='text'
-                    placeholder='met setting 1'
-                    value={datadinhmuc.LOSS_SETTING1}
-                    onChange={(e) =>
-                      setDataDinhMuc({
-                        ...datadinhmuc,
-                        LOSS_SETTING1: Number(e.target.value),
-                      })
-                    }
-                  ></input>
-                </label>
-                <label>
-                  <b>LOSS SETTING2 (m):</b>{" "}
-                  <input
-                    type='text'
-                    placeholder='met setting 2'
-                    value={datadinhmuc.LOSS_SETTING2}
-                    onChange={(e) =>
-                      setDataDinhMuc({
-                        ...datadinhmuc,
-                        LOSS_SETTING2: Number(e.target.value),
-                      })
-                    }
-                  ></input>
-                </label>
-              </div>
-              <div className='forminputcolumn'>
-                <label>
-                  <b>FACTORY:</b>
-                  <select
-                    name='phanloai'
-                    value={
-                      datadinhmuc.FACTORY === null
-                        ? "NA"
-                        : datadinhmuc.FACTORY
-                    }
-                    onChange={(e) => {
-                      setDataDinhMuc({
-                        ...datadinhmuc,
-                        FACTORY: e.target.value,
-                      });
-                    }}
-                    style={{ width: 162, height: 22 }}
-                  >
-                    <option value='NA'>NA</option>
-                    <option value='NM1'>NM1</option>
-                    <option value='NM2'>NM2</option>
-                  </select>
-                </label>
-                <label>
-                  <b>NOTE (QLSX):</b>{" "}
-                  <input
-                    type='text'
-                    placeholder='Chú ý'
-                    value={datadinhmuc.NOTE}
-                    onChange={(e) =>
-                      setDataDinhMuc({ ...datadinhmuc, NOTE: e.target.value })
-                    }
-                  ></input>
-                </label>
-              </div>
-            </div>
-            <div className='datadinhmuc'>
-              <div className='forminputcolumn'>
-                <label>
-                  <b>EQ3:</b>
-                  <select
-                    name='phanloai'
-                    value={datadinhmuc.EQ3}
-                    onChange={(e) =>
-                      setDataDinhMuc({ ...datadinhmuc, EQ3: e.target.value })
-                    }
-                    style={{ width: 150, height: 22 }}
-                  >
-                    {machine_list.map(
-                        (ele: MACHINE_LIST, index: number) => {
-                          return (
-                            <option key={index} value={ele.EQ_NAME}>
-                              {ele.EQ_NAME}
-                            </option>
-                          );
-                        }
-                      )}
-                  </select>
-                </label>
-                <label>
-                  <b>EQ4:</b>
-                  <select
-                    name='phanloai'
-                    value={datadinhmuc.EQ4}
-                    onChange={(e) =>
-                      setDataDinhMuc({ ...datadinhmuc, EQ4: e.target.value })
-                    }
-                    style={{ width: 150, height: 22 }}
-                  >
-                    {machine_list.map(
-                        (ele: MACHINE_LIST, index: number) => {
-                          return (
-                            <option key={index} value={ele.EQ_NAME}>
-                              {ele.EQ_NAME}
-                            </option>
-                          );
-                        }
-                      )}
-                  </select>
-                </label>
-              </div>
-              <div className='forminputcolumn'>
-                <label>
-                  <b>Setting3(min):</b>{" "}
-                  <input
-                    type='text'
-                    placeholder='Thời gian setting 3'
-                    value={datadinhmuc.Setting3}
-                    onChange={(e) =>
-                      setDataDinhMuc({
-                        ...datadinhmuc,
-                        Setting3: Number(e.target.value),
-                      })
-                    }
-                  ></input>
-                </label>
-                <label>
-                  <b>Setting4(min):</b>{" "}
-                  <input
-                    type='text'
-                    placeholder='Thời gian setting 4'
-                    value={datadinhmuc.Setting4}
-                    onChange={(e) =>
-                      setDataDinhMuc({
-                        ...datadinhmuc,
-                        Setting4: Number(e.target.value),
-                      })
-                    }
-                  ></input>
-                </label>
-              </div>
-              <div className='forminputcolumn'>
-                <label>
-                  <b>UPH3(EA/h):</b>{" "}
-                  <input
-                    type='text'
-                    placeholder='Tốc độ sx 1'
-                    value={datadinhmuc.UPH3}
-                    onChange={(e) =>
-                      setDataDinhMuc({
-                        ...datadinhmuc,
-                        UPH3: Number(e.target.value),
-                      })
-                    }
-                  ></input>
-                </label>
-                <label>
-                  <b>UPH4(EA/h):</b>{" "}
-                  <input
-                    type='text'
-                    placeholder='Tốc độ sx 2'
-                    value={datadinhmuc.UPH4}
-                    onChange={(e) =>
-                      setDataDinhMuc({
-                        ...datadinhmuc,
-                        UPH4: Number(e.target.value),
-                      })
-                    }
-                  ></input>
-                </label>
-              </div>
-              <div className='forminputcolumn'>
-                <label>
-                  <b>Step3:</b>{" "}
-                  <input
-                    type='text'
-                    placeholder='Số bước 3'
-                    value={datadinhmuc.Step3}
-                    onChange={(e) =>
-                      setDataDinhMuc({
-                        ...datadinhmuc,
-                        Step3: Number(e.target.value),
-                      })
-                    }
-                  ></input>
-                </label>
-                <label>
-                  <b>Step4:</b>{" "}
-                  <input
-                    type='text'
-                    placeholder='Số bước 4'
-                    value={datadinhmuc.Step4}
-                    onChange={(e) =>
-                      setDataDinhMuc({
-                        ...datadinhmuc,
-                        Step4: Number(e.target.value),
-                      })
-                    }
-                  ></input>
-                </label>
-              </div>
-              <div className='forminputcolumn'>
-                <label>
-                  <b>LOSS_SX3(%):</b>{" "}
-                  <input
-                    type='text'
-                    placeholder='% loss sx 3'
-                    value={datadinhmuc.LOSS_SX3}
-                    onChange={(e) =>
-                      setDataDinhMuc({
-                        ...datadinhmuc,
-                        LOSS_SX3: Number(e.target.value),
-                      })
-                    }
-                  ></input>
-                </label>
-                <label>
-                  <b>LOSS_SX4(%):</b>{" "}
-                  <input
-                    type='text'
-                    placeholder='% loss sx 4'
-                    value={datadinhmuc.LOSS_SX4}
-                    onChange={(e) =>
-                      setDataDinhMuc({
-                        ...datadinhmuc,
-                        LOSS_SX4: Number(e.target.value),
-                      })
-                    }
-                  ></input>
-                </label>
-              </div>
-              <div className='forminputcolumn'>
-                <label>
-                  <b>LOSS SETTING3 (m):</b>{" "}
-                  <input
-                    type='text'
-                    placeholder='met setting 3'
-                    value={datadinhmuc.LOSS_SETTING3}
-                    onChange={(e) =>
-                      setDataDinhMuc({
-                        ...datadinhmuc,
-                        LOSS_SETTING3: Number(e.target.value),
-                      })
-                    }
-                  ></input>
-                </label>
-                <label>
-                  <b>LOSS SETTING4 (m):</b>{" "}
-                  <input
-                    type='text'
-                    placeholder='met setting 4'
-                    value={datadinhmuc.LOSS_SETTING4}
-                    onChange={(e) =>
-                      setDataDinhMuc({
-                        ...datadinhmuc,
-                        LOSS_SETTING4: Number(e.target.value),
-                      })
-                    }
-                  ></input>
-                </label>
-              </div>
-              <div className='forminputcolumn'>
-                <label>
-                  <b>FACTORY:</b>
-                  <select
-                    name='phanloai'
-                    value={
-                      datadinhmuc.FACTORY === null
-                        ? "NA"
-                        : datadinhmuc.FACTORY
-                    }
-                    onChange={(e) => {
-                      setDataDinhMuc({
-                        ...datadinhmuc,
-                        FACTORY: e.target.value,
-                      });
-                    }}
-                    style={{ width: 162, height: 22 }}
-                  >
-                    <option value='NA'>NA</option>
-                    <option value='NM1'>NM1</option>
-                    <option value='NM2'>NM2</option>
-                  </select>
-                </label>
-                <label>
-                  <b>NOTE (QLSX):</b>{" "}
-                  <input
-                    type='text'
-                    placeholder='Chú ý'
-                    value={datadinhmuc.NOTE}
-                    onChange={(e) =>
-                      setDataDinhMuc({ ...datadinhmuc, NOTE: e.target.value })
-                    }
-                  ></input>
-                </label>
-              </div>
-            </div>
 
+        <div className="dinhmucdiv">
+          {(showhideycsxtable === 1 || showhideycsxtable === 3) && (
+            <div className="datadinhmucto">
+              <div className="datadinhmuc">
+                <div className="forminputcolumn">
+                  <label>
+                    <b>EQ1:</b>
+                    <select
+                      name="phanloai"
+                      value={datadinhmuc.EQ1}
+                      onChange={(e) =>
+                        setDataDinhMuc({ ...datadinhmuc, EQ1: e.target.value })
+                      }
+                      style={{ width: 150, height: 22 }}
+                    >
+                      {machine_list.map((ele: MACHINE_LIST, index: number) => {
+                        return (
+                          <option key={index} value={ele.EQ_NAME}>
+                            {ele.EQ_NAME}
+                          </option>
+                        );
+                      })}
+                    </select>
+                  </label>
+                  <label>
+                    <b>EQ2:</b>
+                    <select
+                      name="phanloai"
+                      value={datadinhmuc.EQ2}
+                      onChange={(e) =>
+                        setDataDinhMuc({ ...datadinhmuc, EQ2: e.target.value })
+                      }
+                      style={{ width: 150, height: 22 }}
+                    >
+                      {machine_list.map((ele: MACHINE_LIST, index: number) => {
+                        return (
+                          <option key={index} value={ele.EQ_NAME}>
+                            {ele.EQ_NAME}
+                          </option>
+                        );
+                      })}
+                    </select>
+                  </label>
+                </div>
+                <div className="forminputcolumn">
+                  <label>
+                    <b>Setting1(min):</b>{" "}
+                    <input
+                      type="text"
+                      placeholder="Thời gian setting 1"
+                      value={datadinhmuc.Setting1}
+                      onChange={(e) =>
+                        setDataDinhMuc({
+                          ...datadinhmuc,
+                          Setting1: Number(e.target.value),
+                        })
+                      }
+                    ></input>
+                  </label>
+                  <label>
+                    <b>Setting2(min):</b>{" "}
+                    <input
+                      type="text"
+                      placeholder="Thời gian setting 2"
+                      value={datadinhmuc.Setting2}
+                      onChange={(e) =>
+                        setDataDinhMuc({
+                          ...datadinhmuc,
+                          Setting2: Number(e.target.value),
+                        })
+                      }
+                    ></input>
+                  </label>
+                </div>
+                <div className="forminputcolumn">
+                  <label>
+                    <b>UPH1(EA/h):</b>{" "}
+                    <input
+                      type="text"
+                      placeholder="Tốc độ sx 1"
+                      value={datadinhmuc.UPH1}
+                      onChange={(e) =>
+                        setDataDinhMuc({
+                          ...datadinhmuc,
+                          UPH1: Number(e.target.value),
+                        })
+                      }
+                    ></input>
+                  </label>
+                  <label>
+                    <b>UPH2(EA/h):</b>{" "}
+                    <input
+                      type="text"
+                      placeholder="Tốc độ sx 2"
+                      value={datadinhmuc.UPH2}
+                      onChange={(e) =>
+                        setDataDinhMuc({
+                          ...datadinhmuc,
+                          UPH2: Number(e.target.value),
+                        })
+                      }
+                    ></input>
+                  </label>
+                </div>
+                <div className="forminputcolumn">
+                  <label>
+                    <b>Step1:</b>{" "}
+                    <input
+                      type="text"
+                      placeholder="Số bước 1"
+                      value={datadinhmuc.Step1}
+                      onChange={(e) =>
+                        setDataDinhMuc({
+                          ...datadinhmuc,
+                          Step1: Number(e.target.value),
+                        })
+                      }
+                    ></input>
+                  </label>
+                  <label>
+                    <b>Step2:</b>{" "}
+                    <input
+                      type="text"
+                      placeholder="Số bước 2"
+                      value={datadinhmuc.Step2}
+                      onChange={(e) =>
+                        setDataDinhMuc({
+                          ...datadinhmuc,
+                          Step2: Number(e.target.value),
+                        })
+                      }
+                    ></input>
+                  </label>
+                </div>
+                <div className="forminputcolumn">
+                  <label>
+                    <b>LOSS_SX1(%): <span style={{color: 'red', fontSize: '0.7rem'}}>({recentDMData.filter((e)=> e.PROCESS_NUMBER === 1)[0]?.LOSS_SX.toLocaleString('en-US',{minimumFractionDigits:0, maximumFractionDigits:0}) ?? ""}%)</span></b>{" "}
+                    <input
+                      type="text"
+                      placeholder="% loss sx 1"
+                      value={datadinhmuc.LOSS_SX1}
+                      onChange={(e) =>
+                        setDataDinhMuc({
+                          ...datadinhmuc,
+                          LOSS_SX1: Number(e.target.value),
+                        })
+                      }
+                    ></input>
+                  </label>
+                  <label>
+                    <b>LOSS_SX2(%):<span style={{color: 'red', fontSize: '0.7rem'}}>({recentDMData.filter((e)=> e.PROCESS_NUMBER === 2)[0]?.LOSS_SX.toLocaleString('en-US',{minimumFractionDigits:0, maximumFractionDigits:0}) ?? ""}%)</span></b>{" "}
+                    <input
+                      type="text"
+                      placeholder="% loss sx 2"
+                      value={datadinhmuc.LOSS_SX2}
+                      onChange={(e) =>
+                        setDataDinhMuc({
+                          ...datadinhmuc,
+                          LOSS_SX2: Number(e.target.value),
+                        })
+                      }
+                    ></input>
+                  </label>
+                </div>
+                <div className="forminputcolumn">
+                  <label>
+                    <b>LOSS SETTING1 (m):<span style={{color: 'red', fontSize: '0.7rem'}}>({recentDMData.filter((e)=> e.PROCESS_NUMBER === 1)[0]?.TT_SETTING_MET.toLocaleString('en-US',{minimumFractionDigits:0, maximumFractionDigits:0}) ?? ""}m)</span></b>{" "}
+                    <input
+                      type="text"
+                      placeholder="met setting 1"
+                      value={datadinhmuc.LOSS_SETTING1}
+                      onChange={(e) =>
+                        setDataDinhMuc({
+                          ...datadinhmuc,
+                          LOSS_SETTING1: Number(e.target.value),
+                        })
+                      }
+                    ></input>
+                  </label>
+                  <label>
+                    <b>LOSS SETTING2 (m):<span style={{color: 'red', fontSize: '0.7rem'}}>({recentDMData.filter((e)=> e.PROCESS_NUMBER === 2)[0]?.TT_SETTING_MET.toLocaleString('en-US',{minimumFractionDigits:0, maximumFractionDigits:0}) ?? ""}m)</span></b>{" "}
+                    <input
+                      type="text"
+                      placeholder="met setting 2"
+                      value={datadinhmuc.LOSS_SETTING2}
+                      onChange={(e) =>
+                        setDataDinhMuc({
+                          ...datadinhmuc,
+                          LOSS_SETTING2: Number(e.target.value),
+                        })
+                      }
+                    ></input>
+                  </label>
+                </div>
+                <div className="forminputcolumn">
+                  <label>
+                    <b>FACTORY:</b>
+                    <select
+                      name="phanloai"
+                      value={
+                        datadinhmuc.FACTORY === null
+                          ? "NA"
+                          : datadinhmuc.FACTORY
+                      }
+                      onChange={(e) => {
+                        setDataDinhMuc({
+                          ...datadinhmuc,
+                          FACTORY: e.target.value,
+                        });
+                      }}
+                      style={{ width: 162, height: 22 }}
+                    >
+                      <option value="NA">NA</option>
+                      <option value="NM1">NM1</option>
+                      <option value="NM2">NM2</option>
+                    </select>
+                  </label>
+                  <label>
+                    <b>NOTE (QLSX):</b>{" "}
+                    <input
+                      type="text"
+                      placeholder="Chú ý"
+                      value={datadinhmuc.NOTE}
+                      onChange={(e) =>
+                        setDataDinhMuc({ ...datadinhmuc, NOTE: e.target.value })
+                      }
+                    ></input>
+                  </label>
+                </div>
+              </div>
+              <div className="datadinhmuc">
+                <div className="forminputcolumn">
+                  <label>
+                    <b>EQ3:</b>
+                    <select
+                      name="phanloai"
+                      value={datadinhmuc.EQ3}
+                      onChange={(e) =>
+                        setDataDinhMuc({ ...datadinhmuc, EQ3: e.target.value })
+                      }
+                      style={{ width: 150, height: 22 }}
+                    >
+                      {machine_list.map((ele: MACHINE_LIST, index: number) => {
+                        return (
+                          <option key={index} value={ele.EQ_NAME}>
+                            {ele.EQ_NAME}
+                          </option>
+                        );
+                      })}
+                    </select>
+                  </label>
+                  <label>
+                    <b>EQ4:</b>
+                    <select
+                      name="phanloai"
+                      value={datadinhmuc.EQ4}
+                      onChange={(e) =>
+                        setDataDinhMuc({ ...datadinhmuc, EQ4: e.target.value })
+                      }
+                      style={{ width: 150, height: 22 }}
+                    >
+                      {machine_list.map((ele: MACHINE_LIST, index: number) => {
+                        return (
+                          <option key={index} value={ele.EQ_NAME}>
+                            {ele.EQ_NAME}
+                          </option>
+                        );
+                      })}
+                    </select>
+                  </label>
+                </div>
+                <div className="forminputcolumn">
+                  <label>
+                    <b>Setting3(min):</b>{" "}
+                    <input
+                      type="text"
+                      placeholder="Thời gian setting 3"
+                      value={datadinhmuc.Setting3}
+                      onChange={(e) =>
+                        setDataDinhMuc({
+                          ...datadinhmuc,
+                          Setting3: Number(e.target.value),
+                        })
+                      }
+                    ></input>
+                  </label>
+                  <label>
+                    <b>Setting4(min):</b>{" "}
+                    <input
+                      type="text"
+                      placeholder="Thời gian setting 4"
+                      value={datadinhmuc.Setting4}
+                      onChange={(e) =>
+                        setDataDinhMuc({
+                          ...datadinhmuc,
+                          Setting4: Number(e.target.value),
+                        })
+                      }
+                    ></input>
+                  </label>
+                </div>
+                <div className="forminputcolumn">
+                  <label>
+                    <b>UPH3(EA/h):</b>{" "}
+                    <input
+                      type="text"
+                      placeholder="Tốc độ sx 1"
+                      value={datadinhmuc.UPH3}
+                      onChange={(e) =>
+                        setDataDinhMuc({
+                          ...datadinhmuc,
+                          UPH3: Number(e.target.value),
+                        })
+                      }
+                    ></input>
+                  </label>
+                  <label>
+                    <b>UPH4(EA/h):</b>{" "}
+                    <input
+                      type="text"
+                      placeholder="Tốc độ sx 2"
+                      value={datadinhmuc.UPH4}
+                      onChange={(e) =>
+                        setDataDinhMuc({
+                          ...datadinhmuc,
+                          UPH4: Number(e.target.value),
+                        })
+                      }
+                    ></input>
+                  </label>
+                </div>
+                <div className="forminputcolumn">
+                  <label>
+                    <b>Step3:</b>{" "}
+                    <input
+                      type="text"
+                      placeholder="Số bước 3"
+                      value={datadinhmuc.Step3}
+                      onChange={(e) =>
+                        setDataDinhMuc({
+                          ...datadinhmuc,
+                          Step3: Number(e.target.value),
+                        })
+                      }
+                    ></input>
+                  </label>
+                  <label>
+                    <b>Step4:</b>{" "}
+                    <input
+                      type="text"
+                      placeholder="Số bước 4"
+                      value={datadinhmuc.Step4}
+                      onChange={(e) =>
+                        setDataDinhMuc({
+                          ...datadinhmuc,
+                          Step4: Number(e.target.value),
+                        })
+                      }
+                    ></input>
+                  </label>
+                </div>
+                <div className="forminputcolumn">
+                  <label>
+                    <b>LOSS_SX3(%):<span style={{color: 'red', fontSize: '0.7rem'}}>({recentDMData.filter((e)=> e.PROCESS_NUMBER === 3)[0]?.LOSS_SX.toLocaleString('en-US',{minimumFractionDigits:0, maximumFractionDigits:0}) ?? ""}%)</span></b>{" "}
+                    <input
+                      type="text"
+                      placeholder="% loss sx 3"
+                      value={datadinhmuc.LOSS_SX3}
+                      onChange={(e) =>
+                        setDataDinhMuc({
+                          ...datadinhmuc,
+                          LOSS_SX3: Number(e.target.value),
+                        })
+                      }
+                    ></input>
+                  </label>
+                  <label>
+                    <b>LOSS_SX4(%):<span style={{color: 'red', fontSize: '0.7rem'}}>({recentDMData.filter((e)=> e.PROCESS_NUMBER === 4)[0]?.LOSS_SX.toLocaleString('en-US',{minimumFractionDigits:0, maximumFractionDigits:0}) ?? ""}%)</span></b>{" "}
+                    <input
+                      type="text"
+                      placeholder="% loss sx 4"
+                      value={datadinhmuc.LOSS_SX4}
+                      onChange={(e) =>
+                        setDataDinhMuc({
+                          ...datadinhmuc,
+                          LOSS_SX4: Number(e.target.value),
+                        })
+                      }
+                    ></input>
+                  </label>
+                </div>
+                <div className="forminputcolumn">
+                  <label>
+                    <b>LOSS SETTING3 (m):<span style={{color: 'red', fontSize: '0.7rem'}}>({recentDMData.filter((e)=> e.PROCESS_NUMBER === 3)[0]?.TT_SETTING_MET.toLocaleString('en-US',{minimumFractionDigits:0, maximumFractionDigits:0}) ?? ""}m)</span></b>{" "}
+                    <input
+                      type="text"
+                      placeholder="met setting 3"
+                      value={datadinhmuc.LOSS_SETTING3}
+                      onChange={(e) =>
+                        setDataDinhMuc({
+                          ...datadinhmuc,
+                          LOSS_SETTING3: Number(e.target.value),
+                        })
+                      }
+                    ></input>
+                  </label>
+                  <label>
+                    <b>LOSS SETTING4 (m):<span style={{color: 'red', fontSize: '0.7rem'}}>({recentDMData.filter((e)=> e.PROCESS_NUMBER === 4)[0]?.TT_SETTING_MET.toLocaleString('en-US',{minimumFractionDigits:0, maximumFractionDigits:0}) ?? ""}m)</span></b>{" "}
+                    <input
+                      type="text"
+                      placeholder="met setting 4"
+                      value={datadinhmuc.LOSS_SETTING4}
+                      onChange={(e) =>
+                        setDataDinhMuc({
+                          ...datadinhmuc,
+                          LOSS_SETTING4: Number(e.target.value),
+                        })
+                      }
+                    ></input>
+                  </label>
+                </div>
+                <div className="forminputcolumn">
+                  <label>
+                    <b>FACTORY:</b>
+                    <select
+                      name="phanloai"
+                      value={
+                        datadinhmuc.FACTORY === null
+                          ? "NA"
+                          : datadinhmuc.FACTORY
+                      }
+                      onChange={(e) => {
+                        setDataDinhMuc({
+                          ...datadinhmuc,
+                          FACTORY: e.target.value,
+                        });
+                      }}
+                      style={{ width: 162, height: 22 }}
+                    >
+                      <option value="NA">NA</option>
+                      <option value="NM1">NM1</option>
+                      <option value="NM2">NM2</option>
+                    </select>
+                  </label>
+                  <label>
+                    <b>NOTE (QLSX):</b>{" "}
+                    <input
+                      type="text"
+                      placeholder="Chú ý"
+                      value={datadinhmuc.NOTE}
+                      onChange={(e) =>
+                        setDataDinhMuc({ ...datadinhmuc, NOTE: e.target.value })
+                      }
+                    ></input>
+                  </label>
+                </div>
+              </div>
             </div>
           )}
-
-        </div>        
-        <div className='content'>
-          {showhideycsxtable && (
-            <div className='ycsxlist'>
-              <div className='tracuuYCSX'>
-                <div className='tracuuYCSXform'>
-                  <div className='forminput'>
-                    <div className='forminputcolumn'>
+        </div>
+        <div className="content">
+          {(showhideycsxtable === 2 || showhideycsxtable === 3) && (
+            <div className="ycsxlist">
+              <div className="tracuuYCSX">
+                <div className="tracuuYCSXform">
+                  <div className="forminput">
+                    <div className="forminputcolumn">
                       <label>
                         <b>Từ ngày:</b>
                         <input
                           onKeyDown={(e) => {
                             handleSearchCodeKeyDown(e);
                           }}
-                          type='date'
+                          type="date"
                           value={fromdate.slice(0, 10)}
                           onChange={(e) => setFromDate(e.target.value)}
                         ></input>
@@ -2698,47 +2709,47 @@ const QUICKPLAN = () => {
                           onKeyDown={(e) => {
                             handleSearchCodeKeyDown(e);
                           }}
-                          type='date'
+                          type="date"
                           value={todate.slice(0, 10)}
                           onChange={(e) => setToDate(e.target.value)}
                         ></input>
                       </label>
                     </div>
-                    <div className='forminputcolumn'>
+                    <div className="forminputcolumn">
                       <label>
                         <b>Code KD:</b>{" "}
                         <input
                           onKeyDown={(e) => {
                             handleSearchCodeKeyDown(e);
                           }}
-                          type='text'
-                          placeholder='GH63-xxxxxx'
+                          type="text"
+                          placeholder="GH63-xxxxxx"
                           value={codeKD}
                           onChange={(e) => setCodeKD(e.target.value)}
                         ></input>
                       </label>
                       <label>
-                        <b>Code CMS:</b>{" "}
+                        <b>Code ERP:</b>{" "}
                         <input
                           onKeyDown={(e) => {
                             handleSearchCodeKeyDown(e);
                           }}
-                          type='text'
-                          placeholder='7C123xxx'
+                          type="text"
+                          placeholder="7C123xxx"
                           value={codeCMS}
                           onChange={(e) => setCodeCMS(e.target.value)}
                         ></input>
                       </label>
                     </div>
-                    <div className='forminputcolumn'>
+                    <div className="forminputcolumn">
                       <label>
                         <b>Tên nhân viên:</b>{" "}
                         <input
                           onKeyDown={(e) => {
                             handleSearchCodeKeyDown(e);
                           }}
-                          type='text'
-                          placeholder='Trang'
+                          type="text"
+                          placeholder="Trang"
                           value={empl_name}
                           onChange={(e) => setEmpl_Name(e.target.value)}
                         ></input>
@@ -2749,22 +2760,22 @@ const QUICKPLAN = () => {
                           onKeyDown={(e) => {
                             handleSearchCodeKeyDown(e);
                           }}
-                          type='text'
-                          placeholder='SEVT'
+                          type="text"
+                          placeholder="SEVT"
                           value={cust_name}
                           onChange={(e) => setCust_Name(e.target.value)}
                         ></input>
                       </label>
                     </div>
-                    <div className='forminputcolumn'>
+                    <div className="forminputcolumn">
                       <label>
                         <b>Loại sản phẩm:</b>{" "}
                         <input
                           onKeyDown={(e) => {
                             handleSearchCodeKeyDown(e);
                           }}
-                          type='text'
-                          placeholder='TSP'
+                          type="text"
+                          placeholder="TSP"
                           value={prod_type}
                           onChange={(e) => setProdType(e.target.value)}
                         ></input>
@@ -2775,29 +2786,29 @@ const QUICKPLAN = () => {
                           onKeyDown={(e) => {
                             handleSearchCodeKeyDown(e);
                           }}
-                          type='text'
-                          placeholder='12345'
+                          type="text"
+                          placeholder="12345"
                           value={prodrequestno}
                           onChange={(e) => setProdRequestNo(e.target.value)}
                         ></input>
                       </label>
                     </div>
-                    <div className='forminputcolumn'>
+                    <div className="forminputcolumn">
                       <label>
                         <b>Phân loại:</b>
                         <select
-                          name='phanloai'
+                          name="phanloai"
                           value={phanloai}
                           onChange={(e) => {
                             setPhanLoai(e.target.value);
                           }}
                         >
-                          <option value='00'>ALL</option>
-                          <option value='01'>Thông thường</option>
-                          <option value='02'>SDI</option>
-                          <option value='03'>GC</option>
-                          <option value='04'>SAMPLE</option>
-                          <option value='22'>NOT SAMPLE</option>
+                          <option value="00">ALL</option>
+                          <option value="01">Thông thường</option>
+                          <option value="02">SDI</option>
+                          <option value="03">GC</option>
+                          <option value="04">SAMPLE</option>
+                          <option value="22">NOT SAMPLE</option>
                         </select>
                       </label>
                       <label>
@@ -2806,22 +2817,22 @@ const QUICKPLAN = () => {
                           onKeyDown={(e) => {
                             handleSearchCodeKeyDown(e);
                           }}
-                          type='text'
-                          placeholder='SJ-203020HC'
+                          type="text"
+                          placeholder="SJ-203020HC"
                           value={material}
                           onChange={(e) => setMaterial(e.target.value)}
                         ></input>
                       </label>
                     </div>
-                    <div className='forminputcolumn'>
+                    <div className="forminputcolumn">
                       <label>
                         <b>YCSX Pending:</b>
                         <input
                           onKeyDown={(e) => {
                             handleSearchCodeKeyDown(e);
                           }}
-                          type='checkbox'
-                          name='alltimecheckbox'
+                          type="checkbox"
+                          name="alltimecheckbox"
                           defaultChecked={ycsxpendingcheck}
                           onChange={() =>
                             setYCSXPendingCheck(!ycsxpendingcheck)
@@ -2834,8 +2845,8 @@ const QUICKPLAN = () => {
                           onKeyDown={(e) => {
                             handleSearchCodeKeyDown(e);
                           }}
-                          type='checkbox'
-                          name='alltimecheckbox'
+                          type="checkbox"
+                          name="alltimecheckbox"
                           defaultChecked={inspectInputcheck}
                           onChange={() =>
                             setInspectInputCheck(!inspectInputcheck)
@@ -2844,28 +2855,28 @@ const QUICKPLAN = () => {
                       </label>
                     </div>
                   </div>
-                  <div className='formbutton'>
+                  <div className="formbutton">
                     <label>
                       <b>All Time:</b>
                       <input
-                        type='checkbox'
-                        name='alltimecheckbox'
+                        type="checkbox"
+                        name="alltimecheckbox"
                         defaultChecked={alltime}
                         onChange={() => setAllTime(!alltime)}
                       ></input>
                     </label>
                     <IconButton
-                      className='buttonIcon'
+                      className="buttonIcon"
                       onClick={() => {
                         handletraYCSX();
                       }}
                     >
-                      <FcSearch color='green' size={30} />
+                      <FcSearch color="green" size={30} />
                       Search
                     </IconButton>
                   </div>
                 </div>
-                <div className='tracuuYCSXTable'>
+                <div className="tracuuYCSXTable">
                   <DataGrid
                     sx={{ fontSize: 12, flex: 1 }}
                     components={{
@@ -2879,7 +2890,7 @@ const QUICKPLAN = () => {
                     rowsPerPageOptions={[
                       5, 10, 50, 100, 500, 1000, 5000, 10000, 500000,
                     ]}
-                    editMode='row'
+                    editMode="row"
                     getRowId={(row) => row.PROD_REQUEST_NO}
                     onSelectionModelChange={(ids) => {
                       handleYCSXSelectionforUpdate(ids);
@@ -2887,8 +2898,8 @@ const QUICKPLAN = () => {
                   />
                 </div>
                 {selection.tabycsx && (
-                  <div className='printycsxpage'>
-                    <div className='buttongroup'>
+                  <div className="printycsxpage">
+                    <div className="buttongroup">
                       <Button
                         onClick={() => {
                           setYCSXListRender(renderYCSX(ycsxdatatablefilter));
@@ -2905,14 +2916,14 @@ const QUICKPLAN = () => {
                         Close
                       </Button>
                     </div>
-                    <div className='ycsxrender' ref={ycsxprintref}>
+                    <div className="ycsxrender" ref={ycsxprintref}>
                       {ycsxlistrender}
                     </div>
                   </div>
                 )}
                 {selection.tabbanve && (
-                  <div className='printycsxpage'>
-                    <div className='buttongroup'>
+                  <div className="printycsxpage">
+                    <div className="buttongroup">
                       <Button
                         onClick={() => {
                           setYCSXListRender(renderBanVe(ycsxdatatablefilter));
@@ -2929,14 +2940,14 @@ const QUICKPLAN = () => {
                         Close
                       </Button>
                     </div>
-                    <div className='ycsxrender' ref={ycsxprintref}>
+                    <div className="ycsxrender" ref={ycsxprintref}>
                       {ycsxlistrender}
                     </div>
                   </div>
                 )}
                 {showChiThi && (
-                  <div className='printycsxpage'>
-                    <div className='buttongroup'>
+                  <div className="printycsxpage">
+                    <div className="buttongroup">
                       <button
                         onClick={() => {
                           setChiThiListRender(renderChiThi(qlsxplandatafilter));
@@ -2953,14 +2964,14 @@ const QUICKPLAN = () => {
                         Close
                       </button>
                     </div>
-                    <div className='ycsxrender' ref={ycsxprintref}>
+                    <div className="ycsxrender" ref={ycsxprintref}>
                       {chithilistrender}
                     </div>
                   </div>
                 )}
                 {showYCKT && (
-                  <div className='printycsxpage'>
-                    <div className='buttongroup'>
+                  <div className="printycsxpage">
+                    <div className="buttongroup">
                       <button
                         onClick={() => {
                           setYCKTListRender(renderYCKT(qlsxplandatafilter));
@@ -2977,7 +2988,7 @@ const QUICKPLAN = () => {
                         Close
                       </button>
                     </div>
-                    <div className='ycsxrender' ref={ycsxprintref}>
+                    <div className="ycsxrender" ref={ycsxprintref}>
                       {ycktlistrender}
                     </div>
                   </div>
@@ -2985,33 +2996,35 @@ const QUICKPLAN = () => {
               </div>
             </div>
           )}
-          <div className='chithidiv'>
-            <div className='planlist'>
-              <DataGrid
-                sx={{ fontSize: 12, flex: 1 }}
-                components={{
-                  Toolbar: CustomToolbarPLANTABLE,
-                  LoadingOverlay: LinearProgress,
-                }}
-                loading={isLoading}
-                rowHeight={30}
-                rows={plandatatable}
-                columns={column_plandatatable}
-                rowsPerPageOptions={[
-                  5, 10, 50, 100, 500, 1000, 5000, 10000, 500000,
-                ]}
-                disableSelectionOnClick
-                checkboxSelection
-                editMode='cell'
-                getRowId={(row) => row.PLAN_ID}
-                onSelectionModelChange={(ids) => {
-                  handleQLSXPlanDataSelectionforUpdate(ids);
-                }}
-                onCellEditCommit={cellEditHandler}
-                onRowClick={handleEvent}
-              />
+          {(showhideycsxtable === 1 || showhideycsxtable === 3) && (
+            <div className="chithidiv">
+              <div className="planlist">
+                <DataGrid
+                  sx={{ fontSize: 12, flex: 1 }}
+                  components={{
+                    Toolbar: CustomToolbarPLANTABLE,
+                    LoadingOverlay: LinearProgress,
+                  }}
+                  loading={isLoading}
+                  rowHeight={30}
+                  rows={plandatatable}
+                  columns={column_plandatatable}
+                  rowsPerPageOptions={[
+                    5, 10, 50, 100, 500, 1000, 5000, 10000, 500000,
+                  ]}
+                  disableSelectionOnClick
+                  checkboxSelection
+                  editMode="cell"
+                  getRowId={(row) => row.PLAN_ID}
+                  onSelectionModelChange={(ids) => {
+                    handleQLSXPlanDataSelectionforUpdate(ids);
+                  }}
+                  onCellEditCommit={cellEditHandler}
+                  onRowClick={handleEvent}
+                />
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
     </div>

@@ -8,204 +8,30 @@ import { useSelector, useDispatch } from "react-redux";
 import {
   changeDiemDanhState,
   changeUserData,
-  UserData,
 } from "../../../../redux/slices/globalSlice";
 import "./CHITHI_COMPONENT2.scss";
-import Barcode from 'react-barcode';
-interface YCSXTableData {
-  DESCR?: string;
-  PDBV_EMPL?: string;
-  PDBV_DATE?: string;
-  PDBV?: string;
-  PROD_MAIN_MATERIAL?: string;
-  PROD_TYPE?: string;
-  EMPL_NO?: string;
-  CUST_CD?: string;
-  EMPL_NAME?: string;
-  CUST_NAME_KD?: string;
-  LOT_TOTAL_INPUT_QTY_EA?: number;
-  LOT_TOTAL_OUTPUT_QTY_EA?: number;
-  INSPECT_BALANCE?: number;
-  SHORTAGE_YCSX?: number;
-  YCSX_PENDING?: number;
-  PHAN_LOAI?: string;
-  REMARK?: string;
-  PO_TDYCSX?: number;
-  TOTAL_TKHO_TDYCSX?: number;
-  TKHO_TDYCSX?: number;
-  BTP_TDYCSX?: number;
-  CK_TDYCSX?: number;
-  BLOCK_TDYCSX?: number;
-  FCST_TDYCSX?: number;
-  W1?: number;
-  W2?: number;
-  W3?: number;
-  W4?: number;
-  W5?: number;
-  W6?: number;
-  W7?: number;
-  W8?: number;
-  PDUYET?: number;
-  LOAIXH?: string;
-  PLAN_ID?: string;
-  PLAN_DATE?: string;
-  PROD_REQUEST_NO?: string;
-  PLAN_QTY: number;
-  PLAN_EQ?: string;
-  PLAN_FACTORY?: string;
-  PLAN_LEADTIME?: number;
-  INS_EMPL?: string;
-  INS_DATE?: string;
-  UPD_EMPL?: string;
-  UPD_DATE?: string;
-  G_CODE?: string;
-  G_NAME?: string;
-  G_NAME_KD?: string;
-  PROD_REQUEST_DATE?: string;
-  PROD_REQUEST_QTY?: number;
-  STEP?: string;
-  PLAN_ORDER?: string;
-  OLD_PLAN_QTY?: string,
-}
-interface FullBOM {
-  PDBV?: string;
-  NO_INSPECTION?: string;
-  PDUYET?: number;
-  REMK: string;
-  PROD_REQUEST_QTY: number;
-  PROD_REQUEST_NO: string;
-  PROD_REQUEST_DATE: string;
-  G_CODE: string;
-  DELIVERY_DT: string;
-  CODE_55: string;
-  CODE_50: string;
-  RIV_NO: string;
-  M_QTY: number;
-  M_CODE: string;
-  CUST_NAME: string;
-  ROLE_EA_QTY: number;
-  PACK_DRT: string;
-  PROD_PRINT_TIMES: number;
-  G_WIDTH: number;
-  G_SG_R: number;
-  G_SG_L: number;
-  G_R: number;
-  G_NAME: string;
-  G_LG: number;
-  G_LENGTH: number;
-  G_CODE_C: string;
-  G_CG: number;
-  G_C: number;
-  G_C_R: number;
-  PD: number;
-  CODE_33: string;
-  M_NAME: string;
-  WIDTH_CD: number;
-  EMPL_NO: string;
-  EMPL_NAME: string;
-  CODE_03: string;
-  REMARK: string;
-  TONLIEU: number;
-  HOLDING: number;
-  TONG_TON_LIEU: number;
-  PROD_DIECUT_STEP: number,  
-  FACTORY: string,
-  EQ1: string,
-  EQ2: string, 
-  Setting1: number,
-  Setting2: number,
-  UPH1: number,
-  UPH2: number,
-  Step1: number,
-  Step2: number,
-  LOSS_SX1: number,
-  LOSS_SX2: number,
-  LOSS_SETTING1 : number,
-  LOSS_SETTING2 : number,
-  NOTE:string,
-  PO_TYPE?: string,
-  FSC: string,
-  PROD_MAIN_MATERIAL?: string,
-  LIEUQL_SX?: number,
-}
-interface QLSXCHITHIDATA {
-  id: string,
-  CHITHI_ID: number,
-  PLAN_ID: string,    
-  M_CODE: string,
-  M_NAME: string, 
-  WIDTH_CD: number,
-  M_ROLL_QTY: number,
-  M_MET_QTY: number,
-  M_QTY: number,
-  LIEUQL_SX: number,
-  OUT_CFM_QTY: number,
-  INS_EMPL: string,
-  INS_DATE: string,
-  UPD_EMPL: string,
-  UPD_DATE: string,
-}
-interface QLSXPLANDATA {
-    id: number;
-    PLAN_ID: string;
-    PLAN_DATE: string;
-    PROD_REQUEST_NO: string;
-    PLAN_QTY: number;
-    PLAN_EQ: string;
-    PLAN_FACTORY: string;
-    PLAN_LEADTIME: number;
-    INS_EMPL: string;
-    INS_DATE: string;
-    UPD_EMPL: string;
-    UPD_DATE: string;
-    G_CODE: string;
-    G_NAME: string;
-    G_NAME_KD: string;
-    PROD_REQUEST_DATE: string;
-    PROD_REQUEST_QTY: number;
-    STEP: number;
-    PLAN_ORDER: string;
-    PROCESS_NUMBER: number;
-    KQ_SX_TAM: number;
-    KETQUASX: number;
-    CD1: number;
-    CD2: number;
-    TON_CD1: number;
-    TON_CD2: number;
-    FACTORY: string;
-    EQ1: string;
-    EQ2: string;
-    Setting1: number;
-    Setting2: number;
-    UPH1: number;
-    UPH2: number;
-    Step1: number;
-    Step2: number;
-    LOSS_SX1: number;
-    LOSS_SX2: number;
-    LOSS_SETTING1: number;
-    LOSS_SETTING2: number;
-    NOTE: string;
-    NEXT_PLAN_ID: string;
-    XUATDAOFILM?: string;
-    EQ_STATUS?: string;
-    MAIN_MATERIAL?: string;
-    INT_TEM?: string;
-    CHOTBC?: string;
-    DKXL?: string;
-    OLD_PLAN_QTY?: string;
-  }
-  interface PLAN_COMBO {
-    PLAN_LIST: QLSXPLANDATA[]
-  }
+import Barcode from "react-barcode";
+import {
+  FullBOM,
+  QLSXCHITHIDATA,
+  QLSXPLANDATA,
+  UserData,
+} from "../../../../api/GlobalInterface";
 
-const CHITHI_COMPONENT2 = ({PLAN_LIST}: PLAN_COMBO) => {
-  const [checklieuchinh,setCheckLieuChinh] = useState(false);
-    //console.log(PLAN_LIST);
-    let main_plan: QLSXPLANDATA = PLAN_LIST.filter((element, index)=> element.STEP ===0)[0];    
-
+interface PLAN_COMBO {
+  PLAN_LIST: QLSXPLANDATA[];
+}
+const CHITHI_COMPONENT2 = ({ PLAN_LIST }: PLAN_COMBO) => {
+  const company: string = useSelector(
+    (state: RootState) => state.totalSlice.company,
+  );
+  const [checklieuchinh, setCheckLieuChinh] = useState(false);
+  //console.log(PLAN_LIST);
+  let main_plan: QLSXPLANDATA = PLAN_LIST.filter(
+    (element, index) => element.STEP === 0,
+  )[0];
   const userData: UserData | undefined = useSelector(
-    (state: RootState) => state.totalSlice.userData
+    (state: RootState) => state.totalSlice.userData,
   );
   const [request_codeinfo, setRequest_CodeInfo] = useState<Array<FullBOM>>([
     {
@@ -214,6 +40,7 @@ const CHITHI_COMPONENT2 = ({PLAN_LIST}: PLAN_COMBO) => {
       PROD_REQUEST_NO: "2FH0078",
       PROD_REQUEST_DATE: "20220617",
       G_CODE: "7A07975A",
+      G_NAME_KD: "",
       DELIVERY_DT: "20220620",
       CODE_55: "03",
       CODE_50: "02",
@@ -246,26 +73,42 @@ const CHITHI_COMPONENT2 = ({PLAN_LIST}: PLAN_COMBO) => {
       TONLIEU: 0,
       HOLDING: 0,
       TONG_TON_LIEU: 0,
-      PROD_DIECUT_STEP: 0,  
-      FACTORY: '',
-      EQ1: '',
-      EQ2: '', 
+      PROD_DIECUT_STEP: 0,
+      FACTORY: "",
+      EQ1: "",
+      EQ2: "",
+      EQ3: "",
+      EQ4: "",
       Setting1: 0,
       Setting2: 0,
+      Setting3: 0,
+      Setting4: 0,
       UPH1: 0,
       UPH2: 0,
+      UPH3: 0,
+      UPH4: 0,
       Step1: 0,
       Step2: 0,
+      Step3: 0,
+      Step4: 0,
       LOSS_SX1: 0,
       LOSS_SX2: 0,
-      LOSS_SETTING1 : 0,
-      LOSS_SETTING2 : 0,
-      NOTE:'',
-      FSC: 'N'
+      LOSS_SX3: 0,
+      LOSS_SX4: 0,
+      LOSS_SETTING1: 0,
+      LOSS_SETTING2: 0,
+      LOSS_SETTING3: 0,
+      LOSS_SETTING4: 0,
+      NOTE: "",
+      PO_TYPE: "E1",
+      PROD_MAIN_MATERIAL: "",
+      LIEUQL_SX: 0,
+      FSC: "N",
     },
   ]);
   const [chithidatatable, setChiThiDataTable] = useState<QLSXCHITHIDATA[]>([]);
-  const [maxLieu, setMaxLieu]=  useState(12);
+  const [maxLieu, setMaxLieu] = useState(12);
+  const [po_balance, setPoBalance] = useState(0);
   const handleGetChiThiTable = async () => {
     generalQuery("getchithidatatable", {
       PLAN_ID: main_plan.PLAN_ID,
@@ -281,7 +124,7 @@ const CHITHI_COMPONENT2 = ({PLAN_LIST}: PLAN_COMBO) => {
         console.log(error);
       });
   };
-  const max_lieu:number =  12;
+  const max_lieu: number = 12;
   const initCTSX = async () => {
     generalQuery("ycsx_fullinfo", {
       PROD_REQUEST_NO: main_plan.PROD_REQUEST_NO,
@@ -290,10 +133,12 @@ const CHITHI_COMPONENT2 = ({PLAN_LIST}: PLAN_COMBO) => {
         //console.log('Data request full ycsx :');
         //console.log(response.data.data);
         if (response.data.tk_status !== "NG") {
-          for(let i=0;i<response.data.data.length ;i++)
-          {
-            if(response.data.data[i].PROD_MAIN_MATERIAL === response.data.data[i].M_NAME && response.data.data[i].LIEUQL_SX===1)
-            {
+          for (let i = 0; i < response.data.data.length; i++) {
+            if (
+              response.data.data[i].PROD_MAIN_MATERIAL ===
+                response.data.data[i].M_NAME &&
+              response.data.data[i].LIEUQL_SX === 1
+            ) {
               setCheckLieuChinh(true);
             }
           }
@@ -301,36 +146,37 @@ const CHITHI_COMPONENT2 = ({PLAN_LIST}: PLAN_COMBO) => {
         } else {
           setRequest_CodeInfo([
             {
-              REMK: "",
-              PROD_REQUEST_QTY: 0,
-              PROD_REQUEST_NO: "",
-              PROD_REQUEST_DATE: "",
-              G_CODE: "",
-              DELIVERY_DT: "",
+              REMK: "20220617",
+              PROD_REQUEST_QTY: 18000,
+              PROD_REQUEST_NO: "2FH0078",
+              PROD_REQUEST_DATE: "20220617",
+              G_CODE: "7A07975A",
+              G_NAME_KD: "",
+              DELIVERY_DT: "20220620",
               CODE_55: "03",
               CODE_50: "02",
-              RIV_NO: "",
+              RIV_NO: "A",
               M_QTY: 1,
-              M_CODE: "",
+              M_CODE: "A0009027",
               CUST_NAME: "",
-              ROLE_EA_QTY: 0,
+              ROLE_EA_QTY: 2000,
               PACK_DRT: "",
-              PROD_PRINT_TIMES: 0,
-              G_WIDTH: 0,
-              G_SG_R: 0,
-              G_SG_L: 0,
+              PROD_PRINT_TIMES: 1,
+              G_WIDTH: 28.6,
+              G_SG_R: 2,
+              G_SG_L: 2,
               G_R: 0,
               G_NAME: "",
-              G_LG: 0,
-              G_LENGTH: 0,
+              G_LG: 3,
+              G_LENGTH: 23,
               G_CODE_C: "",
-              G_CG: 0,
-              G_C: 0,
-              G_C_R: 0,
-              PD: 0,
+              G_CG: 4,
+              G_C: 1,
+              G_C_R: 4,
+              PD: 31.6,
               CODE_33: "02",
               M_NAME: "",
-              WIDTH_CD: 0,
+              WIDTH_CD: 110,
               EMPL_NO: "",
               EMPL_NAME: "",
               CODE_03: "01",
@@ -338,23 +184,37 @@ const CHITHI_COMPONENT2 = ({PLAN_LIST}: PLAN_COMBO) => {
               TONLIEU: 0,
               HOLDING: 0,
               TONG_TON_LIEU: 0,
-              NO_INSPECTION: "N",
-              PROD_DIECUT_STEP: 0,  
-              FACTORY: '',
-              EQ1: '',
-              EQ2: '', 
+              PROD_DIECUT_STEP: 0,
+              FACTORY: "",
+              EQ1: "",
+              EQ2: "",
+              EQ3: "",
+              EQ4: "",
               Setting1: 0,
               Setting2: 0,
+              Setting3: 0,
+              Setting4: 0,
               UPH1: 0,
               UPH2: 0,
+              UPH3: 0,
+              UPH4: 0,
               Step1: 0,
               Step2: 0,
+              Step3: 0,
+              Step4: 0,
               LOSS_SX1: 0,
               LOSS_SX2: 0,
-              LOSS_SETTING1 : 0,
-              LOSS_SETTING2 : 0,
-              NOTE:'',
-              FSC:'N'
+              LOSS_SX3: 0,
+              LOSS_SX4: 0,
+              LOSS_SETTING1: 0,
+              LOSS_SETTING2: 0,
+              LOSS_SETTING3: 0,
+              LOSS_SETTING4: 0,
+              NOTE: "",
+              PO_TYPE: "E1",
+              PROD_MAIN_MATERIAL: "",
+              LIEUQL_SX: 0,
+              FSC: "N",
             },
           ]);
           //Swal.fire("Thông báo","Số yêu cầu " + PROD_REQUEST_NO + "không tồn tại","error");
@@ -364,44 +224,82 @@ const CHITHI_COMPONENT2 = ({PLAN_LIST}: PLAN_COMBO) => {
         console.log(error);
       });
   };
-  const checkMaxLieu =()=> {
-
+  const checkMaxLieu = () => {
     let temp_maxLieu: any = localStorage.getItem("maxLieu")?.toString();
     if (temp_maxLieu !== undefined) {
-      console.log('temp max lieu: ',temp_maxLieu)
+      console.log("temp max lieu: ", temp_maxLieu);
       setMaxLieu(temp_maxLieu);
-    } else {      
-      localStorage.setItem("maxLieu", '12');
+    } else {
+      localStorage.setItem("maxLieu", "12");
     }
-  }
+  };
+  const checkPOBalance = () => {
+    generalQuery("checkpobalance_tdycsx", {
+      G_CODE: main_plan.G_CODE,
+    })
+      .then((response) => {
+        if (response.data.tk_status !== "NG") {
+          //console.log(response.data.data);
+          setPoBalance(response.data.data[0].PO_BALANCE);
+        } else {
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
   useEffect(() => {
     checkMaxLieu();
     initCTSX();
     handleGetChiThiTable();
+    checkPOBalance();
   }, []);
   return (
-    <div className='chithicomponent2'>
-      {
-        <div className='tieudeycsx'>
-          <div className='leftlogobarcode'>
-            {(request_codeinfo[0].PDBV==='Y' && checklieuchinh ===true) && <img alt='logo' src='/logocmsvina.png' width={160} height={40} />}
+    <div className="chithicomponent2">
+       <div className="qcpass">
+        {request_codeinfo[0].PDBV === "Y" && checklieuchinh === true && (
+          <img
+            alt="qcpass"
+            src="/QC PASS20.png"
+            width={440 - 100 - 10}
+            height={400 - 100}
+          />
+        )}
+      </div>
+      
+        
+       
+
+        <div className="tieudeycsx">
+          <div className="leftlogobarcode">
+            {/* {(request_codeinfo[0].PDBV==='Y' && checklieuchinh ===true) && <img alt='logo' src='/logocmsvina.png' width={160} height={40} />} */}
+            {company === "CMS" && (
+              <img alt="logo" src="/logocmsvina.png" width={160} height={40} />
+            )}
+            {company !== "CMS" && (
+              <img alt="logo" src="/logopvn_big.png" width={160} height={40} />
+            )}
             <Barcode
               value={main_plan.PLAN_ID}
-              format='CODE128'
+              format="CODE128"
               width={1}
               height={50}
               displayValue={false}
-              background='#fff'
-              lineColor='black'
+              background="#fff"
+              lineColor="black"
               margin={0}
             />
             {main_plan.PLAN_ID}
           </div>
-          <div className='headertitle'>
+          <div className="headertitle">
             생산 지시서 - Chỉ thị Sản Xuất({main_plan.PLAN_EQ}- B
             {main_plan.STEP})<br></br>
             <span style={{ fontSize: 12 }}>
               Thời điểm in CTSX: {moment().format("YYYY-MM-DD HH:mm:ss")}
+            </span>
+            <br></br>
+            <span style={{ fontSize: 12 }}>
+              Ngày giao hàng: {request_codeinfo[0]?.DELIVERY_DT}
             </span>
             <br></br>{" "}
             {request_codeinfo[0].NO_INSPECTION === "Y" && (
@@ -410,32 +308,33 @@ const CHITHI_COMPONENT2 = ({PLAN_LIST}: PLAN_COMBO) => {
               </span>
             )}
           </div>
-          <div className='soycsx'>
-            <div className='ycsxbarcode'>
+          <div className="soycsx">
+            <div className="ycsxbarcode">
               <Barcode
                 value={request_codeinfo[0]?.PROD_REQUEST_NO}
-                format='CODE128'
+                format="CODE128"
                 width={1}
                 height={50}
                 displayValue={false}
-                background='#fff'
-                lineColor='black'
+                background="#fff"
+                lineColor="black"
                 margin={0}
               />
-              <div className='ycsxno'>
+              <div className="ycsxno">
                 {request_codeinfo[0].PROD_REQUEST_DATE}-
                 {request_codeinfo[0].PROD_REQUEST_NO}{" "}
               </div>
             </div>
           </div>
         </div>
-      }
-      <div className='thongtinycsx'>
-        <div className='text1'>
-        1. 지시 정보 Thông tin chỉ thị ({request_codeinfo[0].G_NAME} ) __ PO_TYPE: {request_codeinfo[0].PO_TYPE}
+      
+      <div className="thongtinycsx">
+        <div className="text1">
+          1. 지시 정보 Thông tin chỉ thị ({request_codeinfo[0].G_NAME} ) __
+          PO_TYPE: {request_codeinfo[0].PO_TYPE}
         </div>
-        <div className='thongtinyeucau'>
-          <table className='ttyc1'>
+        <div className="thongtinyeucau">
+          <table className="ttyc1">
             <thead>
               <tr>
                 <th>Hạng mục/항목</th>
@@ -453,7 +352,12 @@ const CHITHI_COMPONENT2 = ({PLAN_LIST}: PLAN_COMBO) => {
               </tr>
               <tr>
                 <td>Mã sản phẩm/제품코드</td>
-                <td>{request_codeinfo[0]?.G_CODE}</td>
+                <td>
+                  {request_codeinfo[0]?.G_CODE}
+                  {company !== "CMS"
+                    ? "/" + request_codeinfo[0]?.G_NAME_KD
+                    : ""}{" "}
+                </td>
               </tr>
               <tr>
                 <td>Tên sản phẩm/제품명</td>
@@ -461,7 +365,7 @@ const CHITHI_COMPONENT2 = ({PLAN_LIST}: PLAN_COMBO) => {
               </tr>
             </tbody>
           </table>
-          <table className='ttyc2'>
+          <table className="ttyc2">
             <thead>
               <tr>
                 <th>Hạng mục/항목</th>
@@ -473,7 +377,7 @@ const CHITHI_COMPONENT2 = ({PLAN_LIST}: PLAN_COMBO) => {
                 <td>Số lượng yêu cầu/요청 수량</td>
                 <td>
                   {request_codeinfo[0]?.PROD_REQUEST_QTY.toLocaleString(
-                    "en-US"
+                    "en-US",
                   )}{" "}
                   EA
                 </td>
@@ -495,7 +399,7 @@ const CHITHI_COMPONENT2 = ({PLAN_LIST}: PLAN_COMBO) => {
               </tr>
             </tbody>
           </table>
-          <table className='ttyc2'>
+          <table className="ttyc2">
             <thead>
               <tr>
                 <th>Hạng mục/항목</th>
@@ -508,10 +412,18 @@ const CHITHI_COMPONENT2 = ({PLAN_LIST}: PLAN_COMBO) => {
                 <td>{main_plan.PLAN_FACTORY}</td>
               </tr>
               <tr>
-              <td>MIN QTY</td>
-                <td>Min CD1:{(request_codeinfo[0]?.UPH1/6).toLocaleString('en-US',{maximumFractionDigits:0})}  |  Min CD2: {(request_codeinfo[0]?.UPH2/6).toLocaleString('en-US',{maximumFractionDigits:0})}</td>
+                <td>MIN QTY</td>
+                <td>
+                  Min CD1:
+                  {(request_codeinfo[0]?.UPH1 / 6).toLocaleString("en-US", {
+                    maximumFractionDigits: 0,
+                  })}{" "}
+                  | Min CD2:{" "}
+                  {(request_codeinfo[0]?.UPH2 / 6).toLocaleString("en-US", {
+                    maximumFractionDigits: 0,
+                  })}
+                </td>
               </tr>
-
               <tr>
                 <td>Chú ý (Kdoanh)</td>
                 <td>{request_codeinfo[0].REMK}</td>
@@ -613,8 +525,11 @@ const CHITHI_COMPONENT2 = ({PLAN_LIST}: PLAN_COMBO) => {
             </tbody>
           </table>
         </div> */}
-        <div className='text1'>2. Thông tin combo chỉ thị</div>
-        <div className='combochithi'>
+        <div className="text1">
+          2. Thông tin combo chỉ thị_ POBALANCE:{" "}
+          {po_balance?.toLocaleString("en-US")}{" "}
+        </div>
+        <div className="combochithi">
           <table>
             <thead>
               <tr>
@@ -624,12 +539,13 @@ const CHITHI_COMPONENT2 = ({PLAN_LIST}: PLAN_COMBO) => {
                 <th>Machine</th>
                 <th>Step</th>
                 <th>Plan QTY</th>
+                <th>Setting</th>
               </tr>
             </thead>
             <tbody>
               {PLAN_LIST.map((element: QLSXPLANDATA, index: number) => (
                 <tr key={index}>
-                  <td>{index}</td>                  
+                  <td>{index}</td>
                   {element.STEP === 0 ? (
                     <td
                       style={{
@@ -646,26 +562,43 @@ const CHITHI_COMPONENT2 = ({PLAN_LIST}: PLAN_COMBO) => {
                   <td>
                     <Barcode
                       value={element.PLAN_ID}
-                      format='CODE128'
+                      format="CODE128"
                       width={1.5}
                       height={25}
                       displayValue={false}
-                      background='#fff'
-                      lineColor='black'
+                      background="#fff"
+                      lineColor="black"
                       margin={0}
                     />
                   </td>
                   <td>{element.PLAN_EQ}</td>
                   <td>{element.STEP}</td>
                   <td>{element.PLAN_QTY.toLocaleString("en-US")}</td>
+                  <td>{element.IS_SETTING ==='Y'? "Có setting":"Không setting"}</td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
-        <div className='text1'>3. LOSS INFO (Phân loại: {request_codeinfo[0].CODE_50 ==='01'? 'GC': request_codeinfo[0].CODE_50 ==='02'? 'SK': request_codeinfo[0].CODE_50 ==='03'? 'KD' : request_codeinfo[0].CODE_50 ==='04'? 'VN' : request_codeinfo[0].CODE_50 ==='05' ? 'SAMPLE' : request_codeinfo[0].CODE_50 ==='06' ? 'Vai bac 4' :'ETC'})  _{request_codeinfo[0]?.FSC ==='Y' ? '(FSC Mix Credit)':''}  </div>
-        <div className='thongtinyeucau'>
-          <table className='ttyc1'>
+        <div className="text1">
+          3. LOSS INFO (Phân loại:{" "}
+          {request_codeinfo[0].CODE_50 === "01"
+            ? "GC"
+            : request_codeinfo[0].CODE_50 === "02"
+            ? "SK"
+            : request_codeinfo[0].CODE_50 === "03"
+            ? "KD"
+            : request_codeinfo[0].CODE_50 === "04"
+            ? "VN"
+            : request_codeinfo[0].CODE_50 === "05"
+            ? "SAMPLE"
+            : request_codeinfo[0].CODE_50 === "06"
+            ? "Vai bac 4"
+            : "ETC"}
+          ) _{request_codeinfo[0]?.FSC === "Y" ? "(FSC Mix Credit)" : ""}{" "}
+        </div>
+        <div className="thongtinyeucau">
+          <table className="ttyc1">
             <thead>
               <tr>
                 <th>PLAN_ID</th>
@@ -681,32 +614,33 @@ const CHITHI_COMPONENT2 = ({PLAN_LIST}: PLAN_COMBO) => {
               </tr>
             </thead>
             <tbody>
-              {
-                PLAN_LIST.map((element: QLSXPLANDATA,index: number)=> {
-                  return(
-                    <tr>
-                    <td style={{height: '20px'}}>{element.PLAN_ID}</td>
-                    <td style={{height: '20px'}}>{element.STEP}</td>
+              {PLAN_LIST.map((element: QLSXPLANDATA, index: number) => {
+                return (
+                  <tr key={index}>
+                    <td style={{ height: "20px" }}>{element.PLAN_ID}</td>
+                    <td style={{ height: "20px" }}>{element.STEP}</td>
                     <td></td>
                     <td></td>
                     <td></td>
                     <td></td>
                     <td></td>
                     <td></td>
-                    <td></td>               
-                    <td></td>               
-                  </tr> 
-                  )
-                })
-              }
-                         
+                    <td></td>
+                    <td></td>
+                  </tr>
+                );
+              })}
             </tbody>
-          </table>               
-        </div>  
-        <div className='text1'>5. 제품 정보 Thông tin vật liệu | Liệu chính {request_codeinfo[0].PROD_MAIN_MATERIAL} | {checklieuchinh ===true? 'Đã SET':'Chưa SET'}</div>
-        <div className='thongtinvatlieu'>
+          </table>
+        </div>
+        <div className="text1">
+          5. 제품 정보 Thông tin vật liệu | Liệu chính{" "}
+          {request_codeinfo[0].PROD_MAIN_MATERIAL} |{" "}
+          {checklieuchinh === true ? "Đã SET" : "Chưa SET"}
+        </div>
+        <div className="thongtinvatlieu">
           {chithidatatable.length <= maxLieu && (
-            <div className='vatlieugiua'>
+            <div className="vatlieugiua">
               <table>
                 <thead>
                   <tr>
@@ -741,7 +675,7 @@ const CHITHI_COMPONENT2 = ({PLAN_LIST}: PLAN_COMBO) => {
                       <td>{element.WIDTH_CD}</td>
                       <td>
                         {(element.M_MET_QTY * element.M_QTY).toLocaleString(
-                          "en-US"
+                          "en-US",
                         )}{" "}
                         M
                       </td>
@@ -755,7 +689,7 @@ const CHITHI_COMPONENT2 = ({PLAN_LIST}: PLAN_COMBO) => {
             </div>
           )}
           {chithidatatable.length > maxLieu && (
-            <div className='vatlieutrai'>
+            <div className="vatlieutrai">
               <table>
                 <thead>
                   <tr>
@@ -792,7 +726,7 @@ const CHITHI_COMPONENT2 = ({PLAN_LIST}: PLAN_COMBO) => {
                           <td>{element.WIDTH_CD}</td>
                           <td>
                             {(element.M_MET_QTY * element.M_QTY).toLocaleString(
-                              "en-US"
+                              "en-US",
                             )}{" "}
                             M
                           </td>
@@ -800,14 +734,14 @@ const CHITHI_COMPONENT2 = ({PLAN_LIST}: PLAN_COMBO) => {
                           <td></td>
                           <td>{element.LIEUQL_SX}</td>
                         </tr>
-                      )
+                      ),
                   )}
                 </tbody>
               </table>
             </div>
           )}
           {chithidatatable.length > maxLieu && (
-            <div className='vatlieuphai'>
+            <div className="vatlieuphai">
               <table>
                 <thead>
                   <tr>
@@ -844,7 +778,7 @@ const CHITHI_COMPONENT2 = ({PLAN_LIST}: PLAN_COMBO) => {
                           <td>{element.WIDTH_CD}</td>
                           <td>
                             {(element.M_MET_QTY * element.M_QTY).toLocaleString(
-                              "en-US"
+                              "en-US",
                             )}{" "}
                             M
                           </td>
@@ -852,7 +786,7 @@ const CHITHI_COMPONENT2 = ({PLAN_LIST}: PLAN_COMBO) => {
                           <td></td>
                           <td>{element.LIEUQL_SX}</td>
                         </tr>
-                      )
+                      ),
                   )}
                 </tbody>
               </table>

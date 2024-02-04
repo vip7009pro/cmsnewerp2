@@ -1,11 +1,23 @@
-import { Autocomplete, IconButton, TextField, createFilterOptions } from "@mui/material";
+import {
+  Button,
+  Autocomplete,
+  IconButton,
+  TextField,
+  createFilterOptions,
+} from "@mui/material";
 import moment from "moment";
-import React, { useCallback, useContext, useEffect, useState, useTransition } from "react";
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+  useTransition,
+} from "react";
 import { AiFillFileExcel } from "react-icons/ai";
 import Swal from "sweetalert2";
 import { generalQuery } from "../../../api/Api";
 import { UserContext } from "../../../api/Context";
-import { SaveExcel } from "../../../api/GlobalFunction";
+import { CustomResponsiveContainer, SaveExcel } from "../../../api/GlobalFunction";
 import "./ADDSPECTDTC.scss";
 import DataGrid, {
   Column,
@@ -24,47 +36,17 @@ import DataGrid, {
   Toolbar,
   TotalItem,
 } from "devextreme-react/data-grid";
-import { UserData } from "../../../redux/slices/globalSlice";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
-import { ResponsiveContainer } from "recharts";
+import {
+  CheckAddedSPECDATA,
+  CodeListData,
+  DTC_ADD_SPEC_DATA,
+  MaterialListData,
+  UserData,
+} from "../../../api/GlobalInterface";
 /* import { Autocomplete } from 'devextreme-react'; */
-interface DTC_ADD_SPEC_DATA {
-  CUST_NAME_KD: string;
-  G_CODE: string;
-  G_NAME: string;
-  TEST_CODE: number;
-  POINT_CODE: number;
-  TEST_NAME: string;
-  POINT_NAME: string;
-  PRI: number;
-  CENTER_VALUE: number;
-  UPPER_TOR: number;
-  LOWER_TOR: number;
-  BARCODE_CONTENT: string;
-  REMARK: string;
-  M_NAME: string;
-  WIDTH_CD: number;
-  M_CODE: string;
-  TDS: string;
-  BANVE: string;
-}
-interface CodeListData {
-  G_CODE: string;
-  G_NAME: string;
-  PROD_LAST_PRICE: number;
-  USE_YN: string;
-}
-interface MaterialListData {
-  M_CODE: string;
-  M_NAME: string;
-  WIDTH_CD: number;
-}
-interface CheckAddedSPECDATA {
-  TEST_CODE: number;
-  TEST_NAME: string;
-  CHECKADDED: number;
-}
+
 const ADDSPECTDTC = () => {
   const [addedSpec, setAddedSpec] = useState<CheckAddedSPECDATA[]>([]);
   const [materialList, setMaterialList] = useState<MaterialListData[]>([
@@ -90,7 +72,7 @@ const ADDSPECTDTC = () => {
   });
 
   const userData: UserData | undefined = useSelector(
-    (state: RootState) => state.totalSlice.userData
+    (state: RootState) => state.totalSlice.userData,
   );
   const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
   const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));
@@ -99,10 +81,12 @@ const ADDSPECTDTC = () => {
   const [testname, setTestName] = useState("0");
   const [testtype, setTestType] = useState("0");
   const [prodrequestno, setProdRequestNo] = useState("");
-  const [checkNVL, setCheckNVL] = useState((userData?.SUBDEPTNAME === 'IQC'? true: false));
+  const [checkNVL, setCheckNVL] = useState(
+    userData?.SUBDEPTNAME === "IQC" ? true : false,
+  );
   const [id, setID] = useState("");
   const [inspectiondatatable, setInspectionDataTable] = useState<Array<any>>(
-    []
+    [],
   );
   const [m_name, setM_Name] = useState("");
   const [selectedRowsData, setSelectedRowsData] = useState<
@@ -139,204 +123,211 @@ const ADDSPECTDTC = () => {
   };
   const materialDataTable = React.useMemo(
     () => (
-      <div className='datatb'>
-        <ResponsiveContainer>
-        <DataGrid
-          style={{fontSize:'0.7rem'}}
-          autoNavigateToFocusedRow={true}
-          allowColumnReordering={true}
-          allowColumnResizing={true}
-          columnAutoWidth={false}
-          cellHintEnabled={true}
-          columnResizingMode={"widget"}
-          showColumnLines={true}
-          dataSource={inspectiondatatable}
-          columnWidth='auto'
-          keyExpr='id'
-          height={"85vh"}
-          showBorders={true}
-          onSelectionChanged={(e) => {
-            //console.log(e.selectedRowsData);
-            setSelectedRowsData(e.selectedRowsData);
-          }}
-          onRowClick={(e) => {
-            //console.log(e.data);
-          }}
-        >
-           <KeyboardNavigation
-            editOnKeyPress={true}
-            enterKeyAction={'moveFocus'}
-            enterKeyDirection={'column'} />
-          <Scrolling
-            useNative={true}
-            scrollByContent={true}
-            scrollByThumb={true}
-            showScrollbar='onHover'
-            mode='virtual'
-          />
-          <Selection mode='multiple' selectAllMode='allPages' />
-          <Editing
-            allowUpdating={true}
-            allowAdding={false}
-            allowDeleting={true}
-            mode='cell'
-            confirmDelete={false}
-            onChangesChange={(e) => {}}
-          />
-          <Export enabled={true} />
-          <Toolbar disabled={false}>
-            <Item location='before'>
-              <IconButton
-                className='buttonIcon'
-                onClick={() => {
-                  SaveExcel(inspectiondatatable, "SPEC DTC");
-                }}
-              >
-                <AiFillFileExcel color='green' size={25} />
-                SAVE
-              </IconButton>
-            </Item>
-            <Item name='searchPanel' />
-            <Item name='exportButton' />
-            <Item name='columnChooserButton' />
-            <Item name='addRowButton' />
-            <Item name='saveButton' />            
-            <Item name='revertButton' />
-          </Toolbar>
-          <FilterRow visible={true} />
-          <SearchPanel visible={true} />
-          <ColumnChooser enabled={true} />
-          <Paging defaultPageSize={15} />
-          <Pager
-            showPageSizeSelector={true}
-            allowedPageSizes={[5, 10, 15, 20, 100, 1000, 10000, "all"]}
-            showNavigationButtons={true}
-            showInfo={true}
-            infoText='Page #{0}. Total: {1} ({2} items)'
-            displayMode='compact'
-          />
-          
-          <Column dataField='TEST_NAME' caption='TEST_NAME'></Column>
-          <Column dataField='POINT_NAME' caption='POINT_NAME'></Column>
-          <Column dataField='PRI' caption='PRI'></Column>
-          <Column
-            dataField='CENTER_VALUE'
-            caption='CENTER_VALUE'
-            width={120}
-          ></Column>
-          <Column
-            dataField='UPPER_TOR'
-            caption='UPPER_TOR'
-            width={120}
-          ></Column>
-          <Column
-            dataField='LOWER_TOR'
-            caption='LOWER_TOR'
-            width={120}
-          ></Column>
-          <Column
-            dataField='BARCODE_CONTENT'
-            caption='BARCODE_CONTENT'
-          ></Column>
-          <Column dataField='REMARK' caption='REMARK'></Column>
-          <Column dataField='M_NAME' caption='M_NAME' width={120}></Column>
-          <Column dataField='WIDTH_CD' caption='WIDTH_CD'></Column>
-          <Column dataField='M_CODE' caption='M_CODE'></Column>
-          <Column
-            caption='BANVE/TDS'
-            width={150}
-            cellRender={(e: any) => {
-              if (e.data.M_CODE === "B0000035") {
-                let link: string = `/banve/${e.data.G_CODE}.pdf`;
-                if (e.data.BANVE === "Y") {
-                  return (
-                    <div
-                      style={{
-                        color: "white",
-                        fontWeight: "bold",
-                        height: "20px",
-                        width: "80px",
-                        backgroundColor: "#54e00d",
-                        textAlign: "center",
-                      }}
-                    >
-                      <a href={link} target='_blank' rel='noopener noreferrer'>
-                        Bản Vẽ
-                      </a>
-                    </div>
-                  );
-                } else {
-                  return (
-                    <div
-                      style={{
-                        color: "white",
-                        fontWeight: "bold",
-                        height: "20px",
-                        width: "80px",
-                        backgroundColor: "gray",
-                        textAlign: "center",
-                      }}
-                    >
-                      Chưa có bản vẽ
-                    </div>
-                  );
-                }
-              } else {
-                let link: string = `/tds/${e.data.M_CODE}.pdf`;
-                if (e.data.TDS === "Y") {
-                  return (
-                    <div
-                      style={{
-                        color: "white",
-                        fontWeight: "bold",
-                        height: "20px",
-                        width: "80px",
-                        backgroundColor: "#54e00d",
-                        textAlign: "center",
-                      }}
-                    >
-                      <a href={link} target='_blank' rel='noopener noreferrer'>
-                        TDS
-                      </a>
-                    </div>
-                  );
-                } else {
-                  return (
-                    <div
-                      style={{
-                        color: "white",
-                        fontWeight: "bold",
-                        height: "20px",
-                        width: "80px",
-                        backgroundColor: "gray",
-                        textAlign: "center",
-                      }}
-                    >
-                      Chưa có TDS
-                    </div>
-                  );
-                }
-              }
+      <div className="datatb">
+        <CustomResponsiveContainer>
+          <DataGrid
+            style={{ fontSize: "0.7rem" }}
+            autoNavigateToFocusedRow={true}
+            allowColumnReordering={true}
+            allowColumnResizing={true}
+            columnAutoWidth={false}
+            cellHintEnabled={true}
+            columnResizingMode={"widget"}
+            showColumnLines={true}
+            dataSource={inspectiondatatable}
+            columnWidth="auto"
+            keyExpr="id"
+            height={"85vh"}
+            showBorders={true}
+            onSelectionChanged={(e) => {
+              //console.log(e.selectedRowsData);
+              setSelectedRowsData(e.selectedRowsData);
             }}
-          ></Column>
-          <Column dataField='CUST_NAME_KD' caption='CUST_NAME_KD'></Column>
-          <Column dataField='G_CODE' caption='G_CODE'></Column>
-          <Column dataField='G_NAME' caption='G_NAME' width={150}></Column>
-          <Summary>
-            <TotalItem
-              alignment='right'
-              column='G_CODE'
-              summaryType='count'
-              valueFormat={"decimal"}
+            onRowClick={(e) => {
+              //console.log(e.data);
+            }}
+          >
+            <KeyboardNavigation
+              editOnKeyPress={true}
+              enterKeyAction={"moveFocus"}
+              enterKeyDirection={"column"}
             />
-          </Summary>
-        </DataGrid>
+            <Scrolling
+              useNative={true}
+              scrollByContent={true}
+              scrollByThumb={true}
+              showScrollbar="onHover"
+              mode="virtual"
+            />
+            <Selection mode="multiple" selectAllMode="allPages" />
+            <Editing
+              allowUpdating={true}
+              allowAdding={false}
+              allowDeleting={true}
+              mode="cell"
+              confirmDelete={false}
+              onChangesChange={(e) => { }}
+            />
+            <Export enabled={true} />
+            <Toolbar disabled={false}>
+              <Item location="before">
+                <IconButton
+                  className="buttonIcon"
+                  onClick={() => {
+                    SaveExcel(inspectiondatatable, "SPEC DTC");
+                  }}
+                >
+                  <AiFillFileExcel color="green" size={15} />
+                  SAVE
+                </IconButton>
+              </Item>
+              <Item name="searchPanel" />
+              <Item name="exportButton" />
+              <Item name="columnChooserButton" />
+              <Item name="addRowButton" />
+              <Item name="saveButton" />
+              <Item name="revertButton" />
+            </Toolbar>
+            <FilterRow visible={true} />
+            <SearchPanel visible={true} />
+            <ColumnChooser enabled={true} />
+            <Paging defaultPageSize={15} />
+            <Pager
+              showPageSizeSelector={true}
+              allowedPageSizes={[5, 10, 15, 20, 100, 1000, 10000, "all"]}
+              showNavigationButtons={true}
+              showInfo={true}
+              infoText="Page #{0}. Total: {1} ({2} items)"
+              displayMode="compact"
+            />
 
-        </ResponsiveContainer>
-        
+            <Column dataField="TEST_NAME" caption="TEST_NAME"></Column>
+            <Column dataField="POINT_NAME" caption="POINT_NAME"></Column>
+            <Column dataField="PRI" caption="PRI"></Column>
+            <Column
+              dataField="CENTER_VALUE"
+              caption="CENTER_VALUE"
+              width={120}
+            ></Column>
+            <Column
+              dataField="UPPER_TOR"
+              caption="UPPER_TOR"
+              width={120}
+            ></Column>
+            <Column
+              dataField="LOWER_TOR"
+              caption="LOWER_TOR"
+              width={120}
+            ></Column>
+            <Column
+              dataField="BARCODE_CONTENT"
+              caption="BARCODE_CONTENT"
+            ></Column>
+            <Column dataField="REMARK" caption="REMARK"></Column>
+            <Column dataField="M_NAME" caption="M_NAME" width={120}></Column>
+            <Column dataField="WIDTH_CD" caption="WIDTH_CD"></Column>
+            <Column dataField="M_CODE" caption="M_CODE"></Column>
+            <Column
+              caption="BANVE/TDS"
+              width={150}
+              cellRender={(e: any) => {
+                if (e.data.M_CODE === "B0000035") {
+                  let link: string = `/banve/${e.data.G_CODE}.pdf`;
+                  if (e.data.BANVE === "Y") {
+                    return (
+                      <div
+                        style={{
+                          color: "white",
+                          fontWeight: "bold",
+                          height: "20px",
+                          width: "80px",
+                          backgroundColor: "#54e00d",
+                          textAlign: "center",
+                        }}
+                      >
+                        <a
+                          href={link}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          Bản Vẽ
+                        </a>
+                      </div>
+                    );
+                  } else {
+                    return (
+                      <div
+                        style={{
+                          color: "white",
+                          fontWeight: "bold",
+                          height: "20px",
+                          width: "80px",
+                          backgroundColor: "gray",
+                          textAlign: "center",
+                        }}
+                      >
+                        Chưa có bản vẽ
+                      </div>
+                    );
+                  }
+                } else {
+                  let link: string = `/tds/${e.data.M_CODE}.pdf`;
+                  if (e.data.TDS === "Y") {
+                    return (
+                      <div
+                        style={{
+                          color: "white",
+                          fontWeight: "bold",
+                          height: "20px",
+                          width: "80px",
+                          backgroundColor: "#54e00d",
+                          textAlign: "center",
+                        }}
+                      >
+                        <a
+                          href={link}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          TDS
+                        </a>
+                      </div>
+                    );
+                  } else {
+                    return (
+                      <div
+                        style={{
+                          color: "white",
+                          fontWeight: "bold",
+                          height: "20px",
+                          width: "80px",
+                          backgroundColor: "gray",
+                          textAlign: "center",
+                        }}
+                      >
+                        Chưa có TDS
+                      </div>
+                    );
+                  }
+                }
+              }}
+            ></Column>
+            <Column dataField="CUST_NAME_KD" caption="CUST_NAME_KD"></Column>
+            <Column dataField="G_CODE" caption="G_CODE"></Column>
+            <Column dataField="G_NAME" caption="G_NAME" width={150}></Column>
+            <Summary>
+              <TotalItem
+                alignment="right"
+                column="G_CODE"
+                summaryType="count"
+                valueFormat={"decimal"}
+              />
+            </Summary>
+          </DataGrid>
+        </CustomResponsiveContainer>
       </div>
     ),
-    [inspectiondatatable]
+    [inspectiondatatable],
   );
   const handletraDTCData = (test_name: string) => {
     generalQuery("checkSpecDTC", {
@@ -361,13 +352,13 @@ const ADDSPECTDTC = () => {
                 ...element,
                 id: index,
               };
-            }
-          );          
+            },
+          );
           setInspectionDataTable(loadeddata);
           Swal.fire(
             "Thông báo",
             "Đã load " + response.data.data.length + " dòng",
-            "success"
+            "success",
           );
           checkAddedSpec(selectedMaterial?.M_CODE, selectedCode?.G_CODE);
         } else {
@@ -393,30 +384,27 @@ const ADDSPECTDTC = () => {
                       ...element,
                       id: index,
                     };
-                  }
+                  },
                 );
-                if(checkNVL && test_name ==='1')
-                {
-                  let temp_loaded:DTC_ADD_SPEC_DATA[] = [];
+                if (checkNVL && test_name === "1") {
+                  let temp_loaded: DTC_ADD_SPEC_DATA[] = [];
                   setInspectionDataTable([...temp_loaded, loadeddata[0]]);
                   Swal.fire(
                     "Thông báo",
                     "Chưa có SPEC, Đã load bảng trắng để nhập 1 dòng",
-                    "warning"
+                    "warning",
                   );
-                }
-                else
-                {
+                } else {
                   setInspectionDataTable(loadeddata);
                   Swal.fire(
                     "Thông báo",
                     "Chưa có SPEC, Đã load bảng trắng để nhập " +
-                      response.data.data.length +
-                      " dòng",
-                    "warning"
+                    response.data.data.length +
+                    " dòng",
+                    "warning",
                   );
                 }
-                
+
                 checkAddedSpec(selectedMaterial?.M_CODE, selectedCode?.G_CODE);
               } else {
                 setInspectionDataTable([]);
@@ -457,8 +445,14 @@ const ADDSPECTDTC = () => {
             CENTER_VALUE: inspectiondatatable[i].CENTER_VALUE,
             UPPER_TOR: inspectiondatatable[i].UPPER_TOR,
             LOWER_TOR: inspectiondatatable[i].LOWER_TOR,
-            BARCODE_CONTENT: inspectiondatatable[i].BARCODE_CONTENT === undefined ? '': inspectiondatatable[i].BARCODE_CONTENT,
-            REMARK: inspectiondatatable[i].REMARK === undefined ? '': inspectiondatatable[i].REMARK,
+            BARCODE_CONTENT:
+              inspectiondatatable[i].BARCODE_CONTENT === undefined
+                ? ""
+                : inspectiondatatable[i].BARCODE_CONTENT,
+            REMARK:
+              inspectiondatatable[i].REMARK === undefined
+                ? ""
+                : inspectiondatatable[i].REMARK,
           })
             // eslint-disable-next-line no-loop-func
             .then((response) => {
@@ -484,15 +478,15 @@ const ADDSPECTDTC = () => {
           Swal.fire("Thông báo: ", "Add SPEC thành công", "success");
         }
       } else {
-        let mCodeList: {M_CODE: string, WIDTH_CD: number}[] = materialList
+        let mCodeList: { M_CODE: string; WIDTH_CD: number }[] = materialList
           .filter((element: MaterialListData) => {
             return element.M_NAME === selectedMaterial?.M_NAME;
           })
           .map((ele2: MaterialListData) => {
             return {
               M_CODE: ele2.M_CODE,
-              WIDTH_CD: ele2.WIDTH_CD
-            }
+              WIDTH_CD: ele2.WIDTH_CD,
+            };
           });
         let err_code: string = "";
         for (let j = 0; j < mCodeList.length; j++) {
@@ -504,11 +498,20 @@ const ADDSPECTDTC = () => {
               TEST_CODE: testname,
               POINT_CODE: inspectiondatatable[i].POINT_CODE,
               PRI: inspectiondatatable[i].PRI,
-              CENTER_VALUE: testname ==='1' ? mCodeList[j].WIDTH_CD : inspectiondatatable[i].CENTER_VALUE,
+              CENTER_VALUE:
+                testname === "1"
+                  ? mCodeList[j].WIDTH_CD
+                  : inspectiondatatable[i].CENTER_VALUE,
               UPPER_TOR: inspectiondatatable[i].UPPER_TOR,
               LOWER_TOR: inspectiondatatable[i].LOWER_TOR,
-              BARCODE_CONTENT: inspectiondatatable[i].BARCODE_CONTENT === undefined ? '': inspectiondatatable[i].BARCODE_CONTENT,
-              REMARK: inspectiondatatable[i].REMARK === undefined ? '': inspectiondatatable[i].REMARK,
+              BARCODE_CONTENT:
+                inspectiondatatable[i].BARCODE_CONTENT === undefined
+                  ? ""
+                  : inspectiondatatable[i].BARCODE_CONTENT,
+              REMARK:
+                inspectiondatatable[i].REMARK === undefined
+                  ? ""
+                  : inspectiondatatable[i].REMARK,
             })
               // eslint-disable-next-line no-loop-func
               .then((response) => {
@@ -593,16 +596,16 @@ const ADDSPECTDTC = () => {
           Swal.fire("Thông báo: ", "Add SPEC thành công", "success");
         }
       } else {
-        let mCodeList: {M_CODE: string, WIDTH_CD: number}[] = materialList
-        .filter((element: MaterialListData) => {
-          return element.M_NAME === selectedMaterial?.M_NAME;
-        })
-        .map((ele2: MaterialListData) => {
-          return {
-            M_CODE: ele2.M_CODE,
-            WIDTH_CD: ele2.WIDTH_CD
-          }
-        });
+        let mCodeList: { M_CODE: string; WIDTH_CD: number }[] = materialList
+          .filter((element: MaterialListData) => {
+            return element.M_NAME === selectedMaterial?.M_NAME;
+          })
+          .map((ele2: MaterialListData) => {
+            return {
+              M_CODE: ele2.M_CODE,
+              WIDTH_CD: ele2.WIDTH_CD,
+            };
+          });
 
         let err_code: string = "";
         for (let j = 0; j < mCodeList.length; j++) {
@@ -614,7 +617,10 @@ const ADDSPECTDTC = () => {
               TEST_CODE: testname,
               POINT_CODE: selectedRowsData[i].POINT_CODE,
               PRI: selectedRowsData[i].PRI,
-              CENTER_VALUE: testname === '1' ? mCodeList[j].WIDTH_CD: selectedRowsData[i].CENTER_VALUE,
+              CENTER_VALUE:
+                testname === "1"
+                  ? mCodeList[j].WIDTH_CD
+                  : selectedRowsData[i].CENTER_VALUE,
               UPPER_TOR: selectedRowsData[i].UPPER_TOR,
               LOWER_TOR: selectedRowsData[i].LOWER_TOR,
               BARCODE_CONTENT: selectedRowsData[i].BARCODE_CONTENT,
@@ -650,64 +656,59 @@ const ADDSPECTDTC = () => {
   };
   const checkAddedSpec = (
     m_code: string | undefined,
-    g_code: string | undefined
+    g_code: string | undefined,
   ) => {
     generalQuery("checkAddedSpec", {
       M_CODE: checkNVL ? m_code : "B0000035",
       G_CODE: checkNVL ? "7A07540A" : g_code,
     })
-    .then((response) => {
-      if (response.data.tk_status !== "NG") {
-        //console.log(response.data.data);
-        setAddedSpec(response.data.data);
-      } else {
-      }
-    })
-    .catch((error) => {
-      console.log(error);
-    });
+      .then((response) => {
+        if (response.data.tk_status !== "NG") {
+          //console.log(response.data.data);
+          setAddedSpec(response.data.data);
+        } else {
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
   const filterOptions1 = createFilterOptions({
-    matchFrom: 'any',
+    matchFrom: "any",
     limit: 100,
   });
 
   useEffect(() => {
     getcodelist("");
-    getmateriallist();    
+    getmateriallist();
   }, []);
   return (
-    <div className='addspecdtc'>
-      <div className='tracuuDataInspection'>
-        <div className='tracuuDataInspectionform'>
-            <b style={{ color: "blue" }}>
-              {checkNVL
-                ? "ADD SPEC ĐTC NVL (IQC)"
-                : "ADD SPEC ĐTC SẢN PHẨM (RND)"}
-            </b>
-            <br></br>
-          <div className='forminput'>
-            <b>Chọn sản phẩm/ vật liệu</b>            
-            <div className='forminputcolumn'>            
-              {!checkNVL && (
-                <label>
-                  {/* <Autocomplete
-                  style={{width: 280}}
-                  dataSource={employeesTasks}                 
-                  valueExpr="Subject"
-                  searchTimeout={0}
-                  showClearButton={true}
-                  onValueChanged={onValueChanged}
-                  /> */}
-                  
-                  <Autocomplete   
-                    sx={{fontSize:'0.7rem', width:'240px', padding:0,}}                 
+    <div className="addspecdtc">
+      <div className="tracuuDataInspection">
+        <div className="tracuuDataInspectionform">
+          <b style={{ color: "blue" }}>
+            {checkNVL
+              ? "ADD SPEC ĐTC NVL (IQC)"
+              : "ADD SPEC ĐTC SẢN PHẨM (RND)"}
+          </b>
+          <br></br>
+          <div className="forminput">
+
+            <div className="forminputcolumn">
+              <div className="label">
+                <b>Code/Liệu</b>
+              </div>
+              <div className="inputbox">
+
+                {!checkNVL && (
+                  <Autocomplete
+                    sx={{ fontSize: "0.7rem", width: "240px", padding: 0 }}
                     hidden={checkNVL}
                     disabled={checkNVL}
-                    size='small'
+                    size="small"
                     disablePortal
                     options={codeList}
-                    className='autocomplete'                    
+                    className="autocomplete"
                     filterOptions={filterOptions1}
                     isOptionEqualToValue={(option: any, value: any) =>
                       option.G_CODE === value.G_CODE
@@ -715,9 +716,7 @@ const ADDSPECTDTC = () => {
                     getOptionLabel={(option: any) =>
                       `${option.G_CODE}: ${option.G_NAME}`
                     }
-                    renderInput={(params) => (
-                      <TextField {...params} />
-                    )}                    
+                    renderInput={(params) => <TextField {...params} />}
                     onChange={(event: any, newValue: any) => {
                       //console.log(newValue);
                       //checkAddedSpec(undefined, selectedCode?.G_CODE);
@@ -726,27 +725,25 @@ const ADDSPECTDTC = () => {
                     }}
                     value={selectedCode}
                   />
-                </label>
-              )}
-              {checkNVL && (
-                <label>
+                )}
+                {checkNVL && (
                   <Autocomplete
-                    sx={{fontSize:'0.7rem', width:'240px', padding:0,}}
+                    sx={{ fontSize: "0.7rem", width: "240px", padding: 0 }}
                     hidden={!checkNVL}
                     disabled={!checkNVL}
-                    size='small'
+                    size="small"
                     disablePortal
                     options={materialList}
-                    className='autocomplete'
+                    className="autocomplete"
                     filterOptions={filterOptions1}
-                    isOptionEqualToValue={(option:any, value:any) =>
+                    isOptionEqualToValue={(option: any, value: any) =>
                       option.M_CODE === value.M_CODE
                     }
                     getOptionLabel={(option: any) =>
                       `${option.M_NAME}|${option.WIDTH_CD}|${option.M_CODE}`
                     }
                     renderInput={(params) => (
-                      <TextField {...params} label='Chọn NVL' />
+                      <TextField {...params} label="Chọn NVL" />
                     )}
                     defaultValue={{
                       M_CODE: "A0007770",
@@ -754,100 +751,94 @@ const ADDSPECTDTC = () => {
                       WIDTH_CD: 208,
                     }}
                     value={selectedMaterial}
-                    onChange={(
-                      event: any,
-                      newValue: any
-                    ) => {
+                    onChange={(event: any, newValue: any) => {
                       //console.log(newValue);
                       //checkAddedSpec(newValue?.M_CODE, undefined);
                       //handletraDTCData(testname);
                       setSelectedMaterial(newValue);
                     }}
                   />
-                </label>
-              )}
+                )}
+              </div>
             </div>
-            <b>Hạng mục test</b>
-            <div className='forminputcolumn'>            
-              <label>
+
+
+
+
+            <div className="forminputcolumn">
+              <div className="label">
+                <b>Hạng mục test</b>
+              </div>
+              <div className="inputbox">
                 <select
-                  name='hangmuctest'
+                  name="hangmuctest"
                   value={testname}
                   onChange={(e) => {
                     setTestName(e.target.value);
                     handletraDTCData(e.target.value);
                     checkAddedSpec(
                       selectedMaterial?.M_CODE,
-                      selectedCode?.G_CODE
+                      selectedCode?.G_CODE,
                     );
                   }}
                 >
-                  <option value='0'>ALL</option>
-                  <option value='1'>Kích thước</option>
-                  <option value='2'>Kéo keo</option>
-                  <option value='3'>XRF</option>
-                  <option value='4'>Điện trở</option>
-                  <option value='5'>Tĩnh điện</option>
-                  <option value='6'>Độ bóng</option>
-                  <option value='7'>Phtalate</option>
-                  <option value='8'>FTIR</option>
-                  <option value='9'>Mài mòn</option>
-                  <option value='10'>Màu sắc</option>
-                  <option value='11'>TVOC</option>
-                  <option value='12'>Cân nặng</option>
-                  <option value='13'>Scanbarcode</option>
-                  <option value='14'>Nhiệt cao Ẩm cao</option>
-                  <option value='15'>Shock nhiệt</option>
-                  <option value='1002'>Kéo keo 2</option>
-                  <option value='1003'>Ngoại Quan</option>
-                  <option value='1005'>Độ dày</option>
+                  <option value="0">ALL</option>
+                  <option value="1">Kích thước</option>
+                  <option value="2">Kéo keo</option>
+                  <option value="3">XRF</option>
+                  <option value="4">Điện trở</option>
+                  <option value="5">Tĩnh điện</option>
+                  <option value="6">Độ bóng</option>
+                  <option value="7">Phtalate</option>
+                  <option value="8">FTIR</option>
+                  <option value="9">Mài mòn</option>
+                  <option value="10">Màu sắc</option>
+                  <option value="11">TVOC</option>
+                  <option value="12">Cân nặng</option>
+                  <option value="13">Scanbarcode</option>
+                  <option value="14">Nhiệt cao Ẩm cao</option>
+                  <option value="15">Shock nhiệt</option>
+                  <option value="1002">Kéo keo 2</option>
+                  <option value="1003">Ngoại Quan</option>
+                  <option value="1005">Độ dày</option>
                 </select>
-              </label>
+
+              </div>
+
+
+
             </div>
-            <div className='forminputcolumn'></div>
+            <div className="forminputcolumn"></div>
           </div>
-          <div className='formbutton'>           
-            <button
-              className='tranhatky'
-              onClick={() => {
-                handletraDTCData(testname);
-                checkAddedSpec(selectedMaterial?.M_CODE, selectedCode?.G_CODE);
-              }}
-            >
-              Load SPEC
-            </button>
-            <button
-              className='tranhatky'
-              onClick={() => {
-                handleInsertSpec();
-              }}
-            >
-              Add SPEC
-            </button>
-            <button
-              className='tranhatky'
-              onClick={() => {
-                handleUpdateSpec();
-              }}
-            >
-              Update SPEC
-            </button>            
+          <div className="formbutton">
+            <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.6rem', padding: '3px', backgroundColor: '#bb8947' }} onClick={() => {
+              handletraDTCData(testname);
+              checkAddedSpec(selectedMaterial?.M_CODE, selectedCode?.G_CODE);
+            }}>Load Spec</Button>
+            <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.6rem', padding: '3px', backgroundColor: '#3cd446' }} onClick={() => {
+              handleInsertSpec();
+            }}>Add Spec</Button>
+            <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.6rem', padding: '3px', backgroundColor: '#cb45e6' }} onClick={() => {
+              handleUpdateSpec();
+            }}>Update Spec</Button>
           </div>
           <div
-            className='formbutton'
-            style={{ display: "flex",  flexWrap: "wrap" , marginTop: "20px", marginBottom: "20px" }}
+            className="formbutton"
+            style={{
+              display: "flex",
+              flexWrap: "wrap",
+              marginTop: "20px",
+              marginBottom: "20px",
+            }}
           >
             {addedSpec.map((element: CheckAddedSPECDATA, index: number) => {
               return (
-                <div
-                  key={index}
-                  style={{  }}
-                >
+                <div key={index} style={{}}>
                   <span style={{ fontSize: 12 }}>{element.TEST_NAME}:</span>
                   <span
                     style={{
                       fontSize: 12,
-                      fontWeight: element.CHECKADDED ? "bold" : 'normal',
+                      fontWeight: element.CHECKADDED ? "bold" : "normal",
                       color: element.CHECKADDED ? "blue" : "red",
                     }}
                   >
@@ -855,14 +846,14 @@ const ADDSPECTDTC = () => {
                   </span>
                 </div>
               );
-            })}             
+            })}
           </div>
           <div className="formbutton">
-          <label>
+            <label>
               <b>{checkNVL === true ? "Swap (SP)" : "Swap (NVL)"}:</b>
               <input
-                type='checkbox'
-                name='alltimecheckbox'
+                type="checkbox"
+                name="alltimecheckbox"
                 defaultChecked={checkNVL}
                 onChange={() => {
                   setCheckNVL(!checkNVL);
@@ -873,7 +864,7 @@ const ADDSPECTDTC = () => {
             </label>
           </div>
         </div>
-        <div className='tracuuYCSXTable'>{materialDataTable}</div>
+        <div className="tracuuYCSXTable">{materialDataTable}</div>
       </div>
     </div>
   );

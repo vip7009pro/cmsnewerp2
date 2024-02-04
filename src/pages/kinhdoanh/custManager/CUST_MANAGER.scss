@@ -1,377 +1,222 @@
 .customerinput {
-    border: none;
-    background-color: transparent;
-    outline: none;
+  border: none;
+  background-color: transparent;
+  outline: none;
 }
 @media only screen and (max-width: 3000px) {
-    .customermamanger {
-        width: 100%;
-        height: 100%;
+  .customermamanger {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    .tracuuFcst {
+      display: flex;
+      flex-direction: row;
+      box-sizing: border-box;
+      .tracuuFcstTable {
         display: flex;
-        flex-direction: column;
-        box-sizing: border-box;
-        .tracuuFcst {
+        flex: 1;
+        margin-top: 10px;
+        height: 87vh;
+        background-image: linear-gradient(0deg, #afd3d1, #86cfff);
+        -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+        box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+        border-radius: 3px;
+      }
+      .editcustomerform {
+        display: flex;
+        flex: 1;
+        .formnho {
+          display: flex;
+          flex-direction: column;
+          flex: 1;
+          height: fit-content;
+          flex-wrap: wrap;
+          background-image: linear-gradient(0deg, #afd3d1, #86cfff);
+          border-radius: 5px;
+          box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
+          -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
+          -moz-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
+          padding-right: 30px;
+          margin-top: 10px;
+          margin-left: 10px;
+          font-size: 0.8rem;
+          h3 {
+            align-self: center;
+            padding: 10px;
+          }
+          .maindept_table {
+            align-items: center;
+            justify-content: center;
+            justify-self: center;
+            padding: 20px;
+            width: 97%;
+            border-radius: 5px;
+            height: 40vh;
+            margin-left: 10px;
+            align-self: center;
+            background-image: linear-gradient(0deg, #afd3d1, #7fca98);
+          }
+          .dangkyform {
             display: flex;
-            flex-direction: row;  
-            box-sizing: border-box;        
-            .tracuuFcstTable {
+            flex-direction: column;
+            margin-bottom: 10px;
+            gap: 10px;
+            align-items: center;
+            justify-content: space-around;
+            padding: 20px;
+            height: fit-content;
+            .dangkyinput {
+              display: flex;
+              flex-direction: row;
+              gap: 20px;
+              align-items: center;
+              justify-content: space-around;
+              justify-self: center;
+              width: 100%;
+              .maindeptinputlabel {
                 display: flex;
-                flex: 1;
-                margin-top: 10px;
-                height: 87vh;
-                background-image: linear-gradient(0deg, #afd3d1, #86cfff);
-                -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
-                box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
-                border-radius: 3px;
-            }
-            .editcustomerform {
+              }
+              .dangkyinputbox {
                 display: flex;
-                flex: 1;
-                .formnho {
-                    display: flex;
-                    flex-direction: column;
-                    flex: 1;
-                    height: fit-content;
-                    flex-wrap: wrap;
-                    background-image: linear-gradient(0deg, #afd3d1, #86cfff);
-                    border-radius: 10px;
-                    box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
-                    -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
-                    -moz-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
-                    padding-right: 30px;
-                    margin-top: 10px;
-                    margin-left: 10px;
-                    font-size: 0.8rem;
-                    h3 {
-                        align-self: center;
-                        padding: 10px;
-                    }
-                    .maindept_table {
-                        align-items: center;
-                        justify-content: center;
-                        justify-self: center;
-                        padding: 20px;
-                        width: 97%;
-                        border-radius: 10px;
-                        height: 40vh;
-                        margin-left: 10px;
-                        align-self: center;
-                        background-image: linear-gradient(0deg, #afd3d1, #7fca98);
-                    }
-                    .dangkyform {
-                        display: flex;
-                        flex-direction: column;
-                        margin-bottom: 10px;
-                        gap: 10px;
-                        align-items: center;
-                        justify-content: space-around;
-                        padding: 20px;
-                        height: fit-content;                        
-                        .dangkyinput {
-                            display: flex;
-                            flex-direction: row;
-                            gap: 20px;
-                            align-items: center;
-                            justify-content: space-around;
-                            justify-self: center;
-                            width: 100%;
-                            .maindeptinputlabel {
-                                display: flex;
-                            }
-                            .dangkyinputbox {
-                                display: flex;
-                                flex-direction: column;
-                                align-items: flex-end;
-                                gap: 10px;
-                                .autocomplete {
-                                    font-size: 0.8rem;
-                                    width: 320px;
-                                    margin-left: 20px;
-                                }
-                                select {
-                                    font-size: 0.8rem;
-                                    width: 200px;
-                                    height: 24px;
-                                }
-                                .inputdata {
-                                    font-size: 0.8rem;
-                                    padding-left: 5px;
-                                    margin-left: 2px;
-                                    width: 310px;
-                                    height: 35px;
-                                    background-color: transparent;
-                                    outline: none;
-                                    border: solid 0.5px;
-                                    border-color: rgba(0, 0, 0, 0.3);
-                                    border-radius: 5px;
-                                    font-size: 16px;
-                                    margin-left: 20px;
-                                    color: black;
-                                }
-                                label {
-                                    display: flex;
-                                    flex-direction: row;
-                                    align-items: flex-end;
-                                }
-                            }
-                        }
-                        .dangkybutton {
-                            display: flex;
-                            gap: 10px;
-                            align-items: center;
-                            justify-content: space-between;
-                            .thembutton {
-                                background-color: #21a73e;
-                                /* Green */
-                                border: none;
-                                color: white;
-                                padding: 15px 32px;
-                                text-align: center;
-                                text-decoration: none;
-                                display: inline-block;
-                                font-size: 16px;
-                                border-radius: 10px;
-                                outline: none;
-                                box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
-                                -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
-                                -moz-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
-                                &:hover {
-                                    background-color: #22fd7e;
-                                }
-                            }
-                            .suabutton {
-                                background-color: #ddff19;
-                                /* Green */
-                                border: none;
-                                color: rgb(7, 32, 255);
-                                padding: 15px 32px;
-                                text-align: center;
-                                text-decoration: none;
-                                display: inline-block;
-                                font-size: 16px;
-                                border-radius: 10px;
-                                outline: none;
-                                box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
-                                -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
-                                -moz-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
-                                &:hover {
-                                    background-color: #22fd7e;
-                                }
-                            }
-                            .closebutton {
-                                background-color: #be19ff;
-                                /* Green */
-                                border: none;
-                                color: rgb(255, 255, 255);
-                                padding: 15px 32px;
-                                text-align: center;
-                                text-decoration: none;
-                                display: inline-block;
-                                font-size: 16px;
-                                border-radius: 10px;
-                                outline: none;
-                                box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
-                                -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
-                                -moz-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
-                                &:hover {
-                                    background-color: #22fd7e;
-                                }
-                            }
-                            .xoabutton {
-                                background-color: #3633f7;
-                                /* Green */
-                                border: none;
-                                color: rgb(194, 255, 28);
-                                padding: 15px 32px;
-                                text-align: center;
-                                text-decoration: none;
-                                display: inline-block;
-                                font-size: 16px;
-                                border-radius: 10px;
-                                outline: none;
-                                box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
-                                -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
-                                -moz-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
-                                &:hover {
-                                    background-color: #dde020;
-                                    color: #35a9f7;
-                                }
-                            }
-                        }
-                    }
+                flex-direction: column;
+                align-items: flex-end;
+                gap: 10px;
+                .autocomplete {
+                  font-size: 0.8rem;
+                  width: 320px;
+                  margin-left: 20px;
                 }
+                select {
+                  font-size: 0.8rem;
+                  width: 200px;
+                  height: 24px;
+                }
+                .inputdata {
+                  font-size: 0.8rem;
+                  padding-left: 5px;
+                  margin-left: 2px;
+                  width: 310px;
+                  height: 35px;
+                  background-color: transparent;
+                  outline: none;
+                  border: solid 0.5px;
+                  border-color: rgba(0, 0, 0, 0.3);
+                  border-radius: 5px;
+                  font-size: 16px;
+                  margin-left: 20px;
+                  color: black;
+                }
+                label {
+                  display: flex;
+                  flex-direction: row;
+                  align-items: flex-end;
+                }
+              }
             }
+            .dangkybutton {
+              display: flex;
+              gap: 10px;
+              align-items: center;
+              justify-content: space-between;
+            }
+          }
         }
+      }
     }
+  }
 }
 @media only screen and (max-width: 768px) {
-    .customermamanger {
-        width: 100%;
-        height: 100%;
+  .customermamanger {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    .tracuuFcst {
+      display: flex;
+      flex-direction: column;
+      height: 800px;
+      .tracuuFcstTable {
         display: flex;
-        flex-direction: column;
-        .tracuuFcst {
+        flex: 1;
+        margin-top: 10px;
+        height: 87vh;
+        background-image: linear-gradient(0deg, #afd3d1, #a1c0bd);
+        -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+        box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+        border-radius: 3px;
+      }
+      .editcustomerform {
+        display: flex;
+        flex: 1;
+        .formnho {
+          display: flex;
+          height: fit-content;
+          margin-left: 0px;
+          flex-wrap: wrap;
+          background-image: linear-gradient(0deg, #bbc7d4, #8880f5);
+          border-radius: 5px;
+          box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
+          -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
+          -moz-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
+          padding-right: 30px;
+          margin-top: 10px;
+          h3 {
+            align-self: center;
+            padding: 10px;
+          }
+          .dangkyform {
             display: flex;
-            flex-direction: column;    
-            height: 800px;     
-            .tracuuFcstTable {
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-around;
+            padding: 20px;
+            height: fit-content;
+            .dangkyinput {
+              font-size: 12px;
+              display: flex;
+              flex-direction: row;
+              gap: 20px;
+              align-items: center;
+              justify-content: space-around;
+              justify-self: center;
+              width: 100%;
+              .maindeptinputlabel {
                 display: flex;
-                flex: 1;
-                margin-top: 10px;
-                height: 87vh;
-                background-image: linear-gradient(0deg, #afd3d1, #a1c0bd);
-                -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
-                box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
-                border-radius: 3px;
-            }
-            .editcustomerform {
+              }
+              .dangkyinputbox {
                 display: flex;
-                
-                flex: 1;
-                .formnho {
-                    display: flex;                                       
-                    height: fit-content;
-                    margin-left: 0px;
-                    flex-wrap: wrap;
-                    background-image: linear-gradient(0deg, #bbc7d4, #8880f5);
-                    border-radius: 10px;
-                    box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
-                    -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
-                    -moz-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
-                    padding-right: 30px;
-                    margin-top: 10px;                    
-                    h3 {
-                        align-self: center;
-                        padding: 10px;
-                    }                    
-                    .dangkyform {
-                        display: flex;
-                        flex-direction: column;                       
-                        
-                        align-items: center;
-                        justify-content: space-around;
-                        padding: 20px;
-                        height: fit-content;
-                        .dangkyinput {
-                            font-size: 12px;
-                            display: flex;
-                            flex-direction: row;
-                            gap: 20px;
-                            align-items: center;
-                            justify-content: space-around;
-                            justify-self: center;
-                            width: 100%;
-                            .maindeptinputlabel {
-                                display: flex;
-                            }
-                            .dangkyinputbox {
-                                display: flex;
-                                flex-direction: column;
-                                align-items: flex-end;
-                                gap: 10px;
-                                .autocomplete {
-                                    width: 100%;
-                                    margin-left: 20px;                                    
-                                }
-                                select {
-                                    width: 200px;
-                                    height: 24px;
-                                }
-                                
-                                label {
-                                    display: flex;
-                                    flex-direction: row;
-                                    align-items: flex-end;
-                                }
-                            }
-                        }
-                        .dangkybutton {
-                            display: flex;
-                            gap: 10px;
-                            align-items: center;
-                            justify-content: space-between;
-                            .thembutton {
-                                background-color: #21a73e;
-                                /* Green */
-                                border: none;
-                                color: white;
-                                padding: 15px 32px;
-                                text-align: center;
-                                text-decoration: none;
-                                display: inline-block;
-                                font-size: 16px;
-                                border-radius: 10px;
-                                outline: none;
-                                box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
-                                -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
-                                -moz-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
-                                &:hover {
-                                    background-color: #22fd7e;
-                                }
-                            }
-                            .suabutton {
-                                background-color: #ddff19;
-                                /* Green */
-                                border: none;
-                                color: rgb(7, 32, 255);
-                                padding: 15px 32px;
-                                text-align: center;
-                                text-decoration: none;
-                                display: inline-block;
-                                font-size: 16px;
-                                border-radius: 10px;
-                                outline: none;
-                                box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
-                                -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
-                                -moz-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
-                                &:hover {
-                                    background-color: #22fd7e;
-                                }
-                            }
-                            .closebutton {
-                                background-color: #be19ff;
-                                /* Green */
-                                border: none;
-                                color: rgb(255, 255, 255);
-                                padding: 15px 32px;
-                                text-align: center;
-                                text-decoration: none;
-                                display: inline-block;
-                                font-size: 16px;
-                                border-radius: 10px;
-                                outline: none;
-                                box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
-                                -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
-                                -moz-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
-                                &:hover {
-                                    background-color: #22fd7e;
-                                }
-                            }
-                            .xoabutton {
-                                background-color: #3633f7;
-                                /* Green */
-                                border: none;
-                                color: rgb(194, 255, 28);
-                                padding: 15px 32px;
-                                text-align: center;
-                                text-decoration: none;
-                                display: inline-block;
-                                font-size: 16px;
-                                border-radius: 10px;
-                                outline: none;
-                                box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
-                                -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
-                                -moz-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
-                                &:hover {
-                                    background-color: #dde020;
-                                    color: #35a9f7;
-                                }
-                            }
-                        }
-                    }
+                flex-direction: column;
+                align-items: flex-end;
+                gap: 10px;
+                .autocomplete {
+                  width: 100%;
+                  margin-left: 20px;
                 }
+                select {
+                  width: 200px;
+                  height: 24px;
+                }
+
+                label {
+                  display: flex;
+                  flex-direction: row;
+                  align-items: flex-end;
+                }
+              }
             }
+            .dangkybutton {
+              display: flex;
+              gap: 10px;
+              align-items: center;
+              justify-content: space-between;
+            }
+          }
         }
+      }
     }
+  }
 }
-@media only screen and (max-width: 320px) {}
+@media only screen and (max-width: 320px) {
+}

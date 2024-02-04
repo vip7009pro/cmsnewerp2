@@ -1,8 +1,4 @@
-import {
-  Autocomplete,
-  LinearProgress,
-  TextField,
-} from "@mui/material";
+import { Autocomplete, LinearProgress, TextField } from "@mui/material";
 import {
   DataGrid,
   GridSelectionModel,
@@ -20,34 +16,25 @@ import { generalQuery } from "../../../api/Api";
 import { UserContext } from "../../../api/Context";
 import { SaveExcel } from "../../../api/GlobalFunction";
 import "./INPUTPQC.scss";
-import { UserData } from "../../../redux/slices/globalSlice";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
-import axios from 'axios';
+import axios from "axios";
+import {
+  CodeListData,
+  CustomerListData,
+  UserData,
+} from "../../../api/GlobalInterface";
 
-interface CodeListData {
-  G_CODE: string;
-  G_NAME: string;
-  PROD_LAST_PRICE?: number;
-  USE_YN: string;
-  PO_BALANCE?: number;
-}
-interface CustomerListData {
-  CUST_CD: string;
-  CUST_NAME_KD: string;
-  CUST_NAME?: string;
-}
-
-const INPUTPQC = () => {  
+const INPUTPQC = () => {
   const [file, setFile] = useState<any>();
   const [isPending, startTransition] = useTransition();
   const [selection, setSelection] = useState<any>({
     tab1: true,
     tab2: false,
-    tab3: false
+    tab3: false,
   });
   const userData: UserData | undefined = useSelector(
-    (state: RootState) => state.totalSlice.userData
+    (state: RootState) => state.totalSlice.userData,
   );
   const [uploadExcelJson, setUploadExcelJSon] = useState<Array<any>>([]);
   const [isLoading, setisLoading] = useState(false);
@@ -64,7 +51,7 @@ const INPUTPQC = () => {
       CUST_NAME_KD: "SEOJIN",
     });
   const [deliverydate, setNewDeliveryDate] = useState(
-    moment().format("YYYY-MM-DD")
+    moment().format("YYYY-MM-DD"),
   );
   const [newycsxqty, setNewYcsxQty] = useState("");
   const [newycsxremark, setNewYcsxRemark] = useState("");
@@ -137,7 +124,7 @@ const INPUTPQC = () => {
         <GridToolbarFilterButton />
         <GridToolbarDensitySelector />
         <button
-          className='saveexcelbutton'
+          className="saveexcelbutton"
           onClick={() => {
             SaveExcel(uploadExcelJson, "Uploaded PQC1  DATA");
           }}
@@ -148,7 +135,6 @@ const INPUTPQC = () => {
       </GridToolbarContainer>
     );
   }
-
 
   const readUploadFile = (e: any) => {
     e.preventDefault();
@@ -183,7 +169,7 @@ const INPUTPQC = () => {
               CHECKSTATUS: "Waiting",
               PHANLOAI: "TT",
             };
-          })
+          }),
         );
       };
       reader.readAsArrayBuffer(e.target.files[0]);
@@ -202,7 +188,6 @@ const INPUTPQC = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         Swal.fire("Tiến hành thêm", "Đang thêm YCSX hàng loạt", "success");
-        
       }
     });
   };
@@ -217,7 +202,7 @@ const INPUTPQC = () => {
       confirmButtonText: "Vẫn check!",
     }).then((result) => {
       if (result.isConfirmed) {
-        Swal.fire("Tiến hành check", "Đang check YCSX hàng loạt", "success");        
+        Swal.fire("Tiến hành check", "Đang check YCSX hàng loạt", "success");
       }
     });
   };
@@ -260,7 +245,7 @@ const INPUTPQC = () => {
   const handleYCSXSelectionforUpdateExcel = (ids: GridSelectionModel) => {
     const selectedID = new Set(ids);
     let datafilter = uploadExcelJson.filter((element: any) =>
-      selectedID.has(element.id)
+      selectedID.has(element.id),
     );
     //console.log(datafilter);
     if (datafilter.length > 0) {
@@ -290,7 +275,7 @@ const INPUTPQC = () => {
       Swal.fire(
         "Thông báo",
         "Không được để trống thông tin cần thiết",
-        "error"
+        "error",
       );
     } else {
       setUploadExcelJSon([...uploadExcelJson, newycsx_row]);
@@ -313,608 +298,608 @@ const INPUTPQC = () => {
   };
 
   const setNav = (choose: number) => {
-    if(choose ===1 )
-    {
-      setSelection({...selection, tab1:true, tab2: false, tab3:false});
+    if (choose === 1) {
+      setSelection({ ...selection, tab1: true, tab2: false, tab3: false });
+    } else if (choose === 2) {
+      setSelection({ ...selection, tab1: false, tab2: true, tab3: false });
+    } else if (choose === 3) {
+      setSelection({ ...selection, tab1: false, tab2: false, tab3: true });
     }
-    else if(choose ===2 )
-    {
-      setSelection({...selection, tab1:false, tab2: true, tab3:false});
-    }
-    else if(choose ===3 )
-    {
-      setSelection({...selection, tab1:false, tab2: false, tab3:true});
-    }
-  }
+  };
   //console.log(userData);
   useEffect(() => {
     getcustomerlist();
     getcodelist("");
   }, []);
   return (
-    <div className='INPUTPQC'>        
-    <div className='mininavbarinput'>
-        <div className='mininavitem'  onClick={() => setNav(1)}>
-          <span className='mininavtext'>
-            Input PQC1
-          </span>
-        </div>   
-        <div className='mininavitem'  onClick={() => setNav(2)}>
-          <span className='mininavtext'>
-            Input PQC3
-          </span>
-        </div>   
-        <div className='mininavitem'  onClick={() => setNav(3)}>
-          <span className='mininavtext'>
-            Input Dao Film
-          </span>
-        </div>   
-      </div>   
-      <div className='them1ycsx'>
-        
-        <div className='formnho'>
-          {selection.tab1 &&<div className='dangkyform1'>
-            <h3>Thêm DATA SETTING mới</h3>
-            <div className='dangkyinput'>
-              <div className='dangkyinputbox'>
-                <label>
-                  <b>Khách hàng:</b>{" "}
-                  <Autocomplete
-                    size='small'
-                    disablePortal
-                    options={customerList}
-                    className='autocomplete'
-                    getOptionLabel={(option: CustomerListData) => {
-                      return `${option.CUST_CD}: ${option.CUST_NAME_KD}`;
-                    }}
-                    renderInput={(params) => (
-                      <TextField {...params} label='Select customer' />
-                    )}
-                    value={selectedCust_CD}
-                    onChange={(
-                      event: any,
-                      newValue: CustomerListData | null
-                    ) => {
-                      console.log(newValue);
-                      setSelectedCust_CD(newValue);
-                    }}
-                    isOptionEqualToValue={(option, value) =>
-                      option.CUST_CD === value.CUST_CD
-                    }
-                  />
-                </label>
-                <label>
-                  <b>Code hàng:</b>{" "}
-                  <Autocomplete
-                    size='small'
-                    disablePortal
-                    options={codeList}
-                    className='autocomplete'
-                    getOptionLabel={(option: CodeListData) =>
-                      `${option.G_CODE}: ${option.G_NAME}`
-                    }
-                    renderInput={(params) => (
-                      <TextField {...params} label='Select code' />
-                    )}
-                    onChange={(event: any, newValue: CodeListData | null) => {
-                      console.log(newValue);
-                      setSelectedCode(newValue);
-                    }}
-                    value={selectedCode}
-                    isOptionEqualToValue={(option, value) =>
-                      option.G_CODE === value.G_CODE
-                    }
-                  />
-                </label>
-                <label>
-                  <b>Delivery Date:</b>
-                  <input
-                    className='inputdata'
-                    type='date'
-                    value={deliverydate.slice(0, 10)}
-                    onChange={(e) => setNewDeliveryDate(e.target.value)}
-                  ></input>
-                </label>
-                <label>
-                  <b>Loại hàng</b>
-                  <select
-                    name='phanloaihang'
-                    value={newphanloai}
-                    onChange={(e) => {
-                      setNewPhanLoai(e.target.value);
-                    }}
-                  > <option value='TT'>Hàng Thường</option>
-                    <option value='SP'>SP</option>
-                    <option value='RB'>RB</option>
-                    <option value='HQ'>HQ</option>
-                  </select>
-                </label>
-              </div>
-              <div className='dangkyinputbox'>
-                <label>
-                  <b>Loại sản xuất</b>
-                  <select
-                    name='loasx'
-                    value={loaisx}
-                    onChange={(e) => {
-                      setLoaiSX(e.target.value);
-                    }}
-                  >
-                    <option value='01'>Thông Thường</option>
-                    <option value='02'>SDI</option>
-                    <option value='03'>ETC</option>
-                    <option value='04'>SAMPLE</option>
-                  </select>
-                </label>
-                <label>
-                  <b>Loại xuất hàng</b>
-                  <select
-                    name='loaixh'
-                    value={loaixh}
-                    onChange={(e) => {
-                      setLoaiXH(e.target.value);
-                    }}
-                  >
-                    <option value='01'>GC</option>
-                    <option value='02'>SK</option>
-                    <option value='03'>KD</option>
-                    <option value='04'>VN</option>
-                    <option value='05'>SAMPLE</option>
-                    <option value='06'>Vai bac 4</option>
-                    <option value='07'>ETC</option>
-                  </select>
-                </label>
-                <label>
-                  <b>YCSX QTY:</b>{" "}
-                  <TextField
-                    value={newycsxqty}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                      setNewYcsxQty(e.target.value)
-                    }
-                    size='small'
-                    color='success'
-                    className='autocomplete'
-                    id='outlined-basic'
-                    label='YCSX QTY'
-                    variant='outlined'
-                  />
-                </label>
-                <label>
-                  <b>Remark:</b>{" "}
-                  <TextField
-                    value={newycsxremark}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                      setNewYcsxRemark(e.target.value)
-                    }
-                    size='small'
-                    color='success'
-                    className='autocomplete'
-                    id='outlined-basic'
-                    label='Remark'
-                    variant='outlined'
-                  />
-                </label>
-              </div>
-            </div>
-            <div className='dangkybutton'>
-              {selection.themycsx && (
-                <button
-                  className='thembutton'
-                  onClick={() => {
-                    //handle_add_1YCSX();
-                  }}
-                >
-                  Thêm YCSX
-                </button>
-              )}
-              <button
-                className='thembutton'
-                onClick={() => {
-                  handle_InsertYCSXTable();
-                }}
-              >
-                Insert Dòng
-              </button>
-              <button
-                className='xoabutton'
-                onClick={() => {
-                  clearYCSXform();
-                }}
-              >
-                Clear Dòng 
-              </button>
-              <button
-                className='closebutton'
-                onClick={() => {
-                  setSelection({ ...selection, them1po: false });
-                }}
-              >
-                Close Form
-              </button>
-            </div>
-          </div>}
-          {selection.tab2 &&<div className='dangkyform2'>
-            <h3>Thêm DATA SETTING mới</h3>
-            <div className='dangkyinput'>
-              <div className='dangkyinputbox'>
-                <label>
-                  <b>Khách hàng:</b>{" "}
-                  <Autocomplete
-                    size='small'
-                    disablePortal
-                    options={customerList}
-                    className='autocomplete'
-                    getOptionLabel={(option: CustomerListData) => {
-                      return `${option.CUST_CD}: ${option.CUST_NAME_KD}`;
-                    }}
-                    renderInput={(params) => (
-                      <TextField {...params} label='Select customer' />
-                    )}
-                    value={selectedCust_CD}
-                    onChange={(
-                      event: any,
-                      newValue: CustomerListData | null
-                    ) => {
-                      console.log(newValue);
-                      setSelectedCust_CD(newValue);
-                    }}
-                    isOptionEqualToValue={(option, value) =>
-                      option.CUST_CD === value.CUST_CD
-                    }
-                  />
-                </label>
-                <label>
-                  <b>Code hàng:</b>{" "}
-                  <Autocomplete
-                    size='small'
-                    disablePortal
-                    options={codeList}
-                    className='autocomplete'
-                    getOptionLabel={(option: CodeListData) =>
-                      `${option.G_CODE}: ${option.G_NAME}`
-                    }
-                    renderInput={(params) => (
-                      <TextField {...params} label='Select code' />
-                    )}
-                    onChange={(event: any, newValue: CodeListData | null) => {
-                      console.log(newValue);
-                      setSelectedCode(newValue);
-                    }}
-                    value={selectedCode}
-                    isOptionEqualToValue={(option, value) =>
-                      option.G_CODE === value.G_CODE
-                    }
-                  />
-                </label>
-                <label>
-                  <b>Delivery Date:</b>
-                  <input
-                    className='inputdata'
-                    type='date'
-                    value={deliverydate.slice(0, 10)}
-                    onChange={(e) => setNewDeliveryDate(e.target.value)}
-                  ></input>
-                </label>
-                <label>
-                  <b>Loại hàng</b>
-                  <select
-                    name='phanloaihang'
-                    value={newphanloai}
-                    onChange={(e) => {
-                      setNewPhanLoai(e.target.value);
-                    }}
-                  > <option value='TT'>Hàng Thường</option>
-                    <option value='SP'>SP</option>
-                    <option value='RB'>RB</option>
-                    <option value='HQ'>HQ</option>
-                  </select>
-                </label>
-              </div>
-              <div className='dangkyinputbox'>
-                <label>
-                  <b>Loại sản xuất</b>
-                  <select
-                    name='loasx'
-                    value={loaisx}
-                    onChange={(e) => {
-                      setLoaiSX(e.target.value);
-                    }}
-                  >
-                    <option value='01'>Thông Thường</option>
-                    <option value='02'>SDI</option>
-                    <option value='03'>ETC</option>
-                    <option value='04'>SAMPLE</option>
-                  </select>
-                </label>
-                <label>
-                  <b>Loại xuất hàng</b>
-                  <select
-                    name='loaixh'
-                    value={loaixh}
-                    onChange={(e) => {
-                      setLoaiXH(e.target.value);
-                    }}
-                  >
-                    <option value='01'>GC</option>
-                    <option value='02'>SK</option>
-                    <option value='03'>KD</option>
-                    <option value='04'>VN</option>
-                    <option value='05'>SAMPLE</option>
-                    <option value='06'>Vai bac 4</option>
-                    <option value='07'>ETC</option>
-                  </select>
-                </label>
-                <label>
-                  <b>YCSX QTY:</b>{" "}
-                  <TextField
-                    value={newycsxqty}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                      setNewYcsxQty(e.target.value)
-                    }
-                    size='small'
-                    color='success'
-                    className='autocomplete'
-                    id='outlined-basic'
-                    label='YCSX QTY'
-                    variant='outlined'
-                  />
-                </label>
-                <label>
-                  <b>Remark:</b>{" "}
-                  <TextField
-                    value={newycsxremark}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                      setNewYcsxRemark(e.target.value)
-                    }
-                    size='small'
-                    color='success'
-                    className='autocomplete'
-                    id='outlined-basic'
-                    label='Remark'
-                    variant='outlined'
-                  />
-                </label>
-              </div>
-            </div>
-            <div className='dangkybutton'>
-              {selection.themycsx && (
-                <button
-                  className='thembutton'
-                  onClick={() => {
-                    //handle_add_1YCSX();
-                  }}
-                >
-                  Thêm YCSX
-                </button>
-              )}
-              <button
-                className='thembutton'
-                onClick={() => {
-                  handle_InsertYCSXTable();
-                }}
-              >
-                Insert Dòng
-              </button>
-              <button
-                className='xoabutton'
-                onClick={() => {
-                  clearYCSXform();
-                }}
-              >
-                Clear Dòng 
-              </button>
-              <button
-                className='closebutton'
-                onClick={() => {
-                  setSelection({ ...selection, them1po: false });
-                }}
-              >
-                Close Form
-              </button>
-            </div>
-          </div>}
-          {selection.tab3 &&<div className='dangkyform3'>
-            <h3>Thêm DATA SETTING mới</h3>
-            <div className='dangkyinput'>
-              <div className='dangkyinputbox'>
-                <label>
-                  <b>Khách hàng:</b>{" "}
-                  <Autocomplete
-                    size='small'
-                    disablePortal
-                    options={customerList}
-                    className='autocomplete'
-                    getOptionLabel={(option: CustomerListData) => {
-                      return `${option.CUST_CD}: ${option.CUST_NAME_KD}`;
-                    }}
-                    renderInput={(params) => (
-                      <TextField {...params} label='Select customer' />
-                    )}
-                    value={selectedCust_CD}
-                    onChange={(
-                      event: any,
-                      newValue: CustomerListData | null
-                    ) => {
-                      console.log(newValue);
-                      setSelectedCust_CD(newValue);
-                    }}
-                    isOptionEqualToValue={(option, value) =>
-                      option.CUST_CD === value.CUST_CD
-                    }
-                  />
-                </label>
-                <label>
-                  <b>Code hàng:</b>{" "}
-                  <Autocomplete
-                    size='small'
-                    disablePortal
-                    options={codeList}
-                    className='autocomplete'
-                    getOptionLabel={(option: CodeListData) =>
-                      `${option.G_CODE}: ${option.G_NAME}`
-                    }
-                    renderInput={(params) => (
-                      <TextField {...params} label='Select code' />
-                    )}
-                    onChange={(event: any, newValue: CodeListData | null) => {
-                      console.log(newValue);
-                      setSelectedCode(newValue);
-                    }}
-                    value={selectedCode}
-                    isOptionEqualToValue={(option, value) =>
-                      option.G_CODE === value.G_CODE
-                    }
-                  />
-                </label>
-                <label>
-                  <b>Delivery Date:</b>
-                  <input
-                    className='inputdata'
-                    type='date'
-                    value={deliverydate.slice(0, 10)}
-                    onChange={(e) => setNewDeliveryDate(e.target.value)}
-                  ></input>
-                </label>
-                <label>
-                  <b>Loại hàng</b>
-                  <select
-                    name='phanloaihang'
-                    value={newphanloai}
-                    onChange={(e) => {
-                      setNewPhanLoai(e.target.value);
-                    }}
-                  > <option value='TT'>Hàng Thường</option>
-                    <option value='SP'>SP</option>
-                    <option value='RB'>RB</option>
-                    <option value='HQ'>HQ</option>
-                  </select>
-                </label>
-              </div>
-              <div className='dangkyinputbox'>
-                <label>
-                  <b>Loại sản xuất</b>
-                  <select
-                    name='loasx'
-                    value={loaisx}
-                    onChange={(e) => {
-                      setLoaiSX(e.target.value);
-                    }}
-                  >
-                    <option value='01'>Thông Thường</option>
-                    <option value='02'>SDI</option>
-                    <option value='03'>ETC</option>
-                    <option value='04'>SAMPLE</option>
-                  </select>
-                </label>
-                <label>
-                  <b>Loại xuất hàng</b>
-                  <select
-                    name='loaixh'
-                    value={loaixh}
-                    onChange={(e) => {
-                      setLoaiXH(e.target.value);
-                    }}
-                  >
-                    <option value='01'>GC</option>
-                    <option value='02'>SK</option>
-                    <option value='03'>KD</option>
-                    <option value='04'>VN</option>
-                    <option value='05'>SAMPLE</option>
-                    <option value='06'>Vai bac 4</option>
-                    <option value='07'>ETC</option>
-                  </select>
-                </label>
-                <label>
-                  <b>YCSX QTY:</b>{" "}
-                  <TextField
-                    value={newycsxqty}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                      setNewYcsxQty(e.target.value)
-                    }
-                    size='small'
-                    color='success'
-                    className='autocomplete'
-                    id='outlined-basic'
-                    label='YCSX QTY'
-                    variant='outlined'
-                  />
-                </label>
-                <label>
-                  <b>Remark:</b>{" "}
-                  <TextField
-                    value={newycsxremark}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                      setNewYcsxRemark(e.target.value)
-                    }
-                    size='small'
-                    color='success'
-                    className='autocomplete'
-                    id='outlined-basic'
-                    label='Remark'
-                    variant='outlined'
-                  />
-                </label>
-              </div>
-            </div>
-            <div className='dangkybutton'>
-              {selection.themycsx && (
-                <button
-                  className='thembutton'
-                  onClick={() => {
-                    //handle_add_1YCSX();
-                  }}
-                >
-                  Thêm YCSX
-                </button>
-              )}
-              <button
-                className='thembutton'
-                onClick={() => {
-                  handle_InsertYCSXTable();
-                }}
-              >
-                Insert Dòng
-              </button>
-              <button
-                className='xoabutton'
-                onClick={() => {
-                  clearYCSXform();
-                }}
-              >
-                Clear Dòng 
-              </button>
-              <button
-                className='closebutton'
-                onClick={() => {
-                  setSelection({ ...selection, them1po: false });
-                }}
-              >
-                Close Form
-              </button>
-            </div>
-          </div>}          
+    <div className="INPUTPQC">
+      <div className="mininavbarinput">
+        <div className="mininavitem" onClick={() => setNav(1)}>
+          <span className="mininavtext">Input PQC1</span>
+        </div>
+        <div className="mininavitem" onClick={() => setNav(2)}>
+          <span className="mininavtext">Input PQC3</span>
+        </div>
+        <div className="mininavitem" onClick={() => setNav(3)}>
+          <span className="mininavtext">Input Dao Film</span>
         </div>
       </div>
-      <div className='newycsx'>
+      <div className="them1ycsx">
+        <div className="formnho">
+          {selection.tab1 && (
+            <div className="dangkyform1">
+              <h3>Thêm DATA SETTING mới</h3>
+              <div className="dangkyinput">
+                <div className="dangkyinputbox">
+                  <label>
+                    <b>Khách hàng:</b>{" "}
+                    <Autocomplete
+                      size="small"
+                      disablePortal
+                      options={customerList}
+                      className="autocomplete"
+                      getOptionLabel={(option: CustomerListData) => {
+                        return `${option.CUST_CD}: ${option.CUST_NAME_KD}`;
+                      }}
+                      renderInput={(params) => (
+                        <TextField {...params} label="Select customer" />
+                      )}
+                      value={selectedCust_CD}
+                      onChange={(
+                        event: any,
+                        newValue: CustomerListData | null,
+                      ) => {
+                        console.log(newValue);
+                        setSelectedCust_CD(newValue);
+                      }}
+                      isOptionEqualToValue={(option, value) =>
+                        option.CUST_CD === value.CUST_CD
+                      }
+                    />
+                  </label>
+                  <label>
+                    <b>Code hàng:</b>{" "}
+                    <Autocomplete
+                      size="small"
+                      disablePortal
+                      options={codeList}
+                      className="autocomplete"
+                      getOptionLabel={(option: CodeListData) =>
+                        `${option.G_CODE}: ${option.G_NAME}`
+                      }
+                      renderInput={(params) => (
+                        <TextField {...params} label="Select code" />
+                      )}
+                      onChange={(event: any, newValue: CodeListData | null) => {
+                        console.log(newValue);
+                        setSelectedCode(newValue);
+                      }}
+                      value={selectedCode}
+                      isOptionEqualToValue={(option, value) =>
+                        option.G_CODE === value.G_CODE
+                      }
+                    />
+                  </label>
+                  <label>
+                    <b>Delivery Date:</b>
+                    <input
+                      className="inputdata"
+                      type="date"
+                      value={deliverydate.slice(0, 10)}
+                      onChange={(e) => setNewDeliveryDate(e.target.value)}
+                    ></input>
+                  </label>
+                  <label>
+                    <b>Loại hàng</b>
+                    <select
+                      name="phanloaihang"
+                      value={newphanloai}
+                      onChange={(e) => {
+                        setNewPhanLoai(e.target.value);
+                      }}
+                    >
+                      {" "}
+                      <option value="TT">Hàng Thường</option>
+                      <option value="SP">SP</option>
+                      <option value="RB">RB</option>
+                      <option value="HQ">HQ</option>
+                    </select>
+                  </label>
+                </div>
+                <div className="dangkyinputbox">
+                  <label>
+                    <b>Loại sản xuất</b>
+                    <select
+                      name="loasx"
+                      value={loaisx}
+                      onChange={(e) => {
+                        setLoaiSX(e.target.value);
+                      }}
+                    >
+                      <option value="01">Thông Thường</option>
+                      <option value="02">SDI</option>
+                      <option value="03">ETC</option>
+                      <option value="04">SAMPLE</option>
+                    </select>
+                  </label>
+                  <label>
+                    <b>Loại xuất hàng</b>
+                    <select
+                      name="loaixh"
+                      value={loaixh}
+                      onChange={(e) => {
+                        setLoaiXH(e.target.value);
+                      }}
+                    >
+                      <option value="01">GC</option>
+                      <option value="02">SK</option>
+                      <option value="03">KD</option>
+                      <option value="04">VN</option>
+                      <option value="05">SAMPLE</option>
+                      <option value="06">Vai bac 4</option>
+                      <option value="07">ETC</option>
+                    </select>
+                  </label>
+                  <label>
+                    <b>YCSX QTY:</b>{" "}
+                    <TextField
+                      value={newycsxqty}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        setNewYcsxQty(e.target.value)
+                      }
+                      size="small"
+                      color="success"
+                      className="autocomplete"
+                      id="outlined-basic"
+                      label="YCSX QTY"
+                      variant="outlined"
+                    />
+                  </label>
+                  <label>
+                    <b>Remark:</b>{" "}
+                    <TextField
+                      value={newycsxremark}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        setNewYcsxRemark(e.target.value)
+                      }
+                      size="small"
+                      color="success"
+                      className="autocomplete"
+                      id="outlined-basic"
+                      label="Remark"
+                      variant="outlined"
+                    />
+                  </label>
+                </div>
+              </div>
+              <div className="dangkybutton">
+                {selection.themycsx && (
+                  <button
+                    className="thembutton"
+                    onClick={() => {
+                      //handle_add_1YCSX();
+                    }}
+                  >
+                    Thêm YCSX
+                  </button>
+                )}
+                <button
+                  className="thembutton"
+                  onClick={() => {
+                    handle_InsertYCSXTable();
+                  }}
+                >
+                  Insert Dòng
+                </button>
+                <button
+                  className="xoabutton"
+                  onClick={() => {
+                    clearYCSXform();
+                  }}
+                >
+                  Clear Dòng
+                </button>
+                <button
+                  className="closebutton"
+                  onClick={() => {
+                    setSelection({ ...selection, them1po: false });
+                  }}
+                >
+                  Close Form
+                </button>
+              </div>
+            </div>
+          )}
+          {selection.tab2 && (
+            <div className="dangkyform2">
+              <h3>Thêm DATA SETTING mới</h3>
+              <div className="dangkyinput">
+                <div className="dangkyinputbox">
+                  <label>
+                    <b>Khách hàng:</b>{" "}
+                    <Autocomplete
+                      size="small"
+                      disablePortal
+                      options={customerList}
+                      className="autocomplete"
+                      getOptionLabel={(option: CustomerListData) => {
+                        return `${option.CUST_CD}: ${option.CUST_NAME_KD}`;
+                      }}
+                      renderInput={(params) => (
+                        <TextField {...params} label="Select customer" />
+                      )}
+                      value={selectedCust_CD}
+                      onChange={(
+                        event: any,
+                        newValue: CustomerListData | null,
+                      ) => {
+                        console.log(newValue);
+                        setSelectedCust_CD(newValue);
+                      }}
+                      isOptionEqualToValue={(option, value) =>
+                        option.CUST_CD === value.CUST_CD
+                      }
+                    />
+                  </label>
+                  <label>
+                    <b>Code hàng:</b>{" "}
+                    <Autocomplete
+                      size="small"
+                      disablePortal
+                      options={codeList}
+                      className="autocomplete"
+                      getOptionLabel={(option: CodeListData) =>
+                        `${option.G_CODE}: ${option.G_NAME}`
+                      }
+                      renderInput={(params) => (
+                        <TextField {...params} label="Select code" />
+                      )}
+                      onChange={(event: any, newValue: CodeListData | null) => {
+                        console.log(newValue);
+                        setSelectedCode(newValue);
+                      }}
+                      value={selectedCode}
+                      isOptionEqualToValue={(option, value) =>
+                        option.G_CODE === value.G_CODE
+                      }
+                    />
+                  </label>
+                  <label>
+                    <b>Delivery Date:</b>
+                    <input
+                      className="inputdata"
+                      type="date"
+                      value={deliverydate.slice(0, 10)}
+                      onChange={(e) => setNewDeliveryDate(e.target.value)}
+                    ></input>
+                  </label>
+                  <label>
+                    <b>Loại hàng</b>
+                    <select
+                      name="phanloaihang"
+                      value={newphanloai}
+                      onChange={(e) => {
+                        setNewPhanLoai(e.target.value);
+                      }}
+                    >
+                      {" "}
+                      <option value="TT">Hàng Thường</option>
+                      <option value="SP">SP</option>
+                      <option value="RB">RB</option>
+                      <option value="HQ">HQ</option>
+                    </select>
+                  </label>
+                </div>
+                <div className="dangkyinputbox">
+                  <label>
+                    <b>Loại sản xuất</b>
+                    <select
+                      name="loasx"
+                      value={loaisx}
+                      onChange={(e) => {
+                        setLoaiSX(e.target.value);
+                      }}
+                    >
+                      <option value="01">Thông Thường</option>
+                      <option value="02">SDI</option>
+                      <option value="03">ETC</option>
+                      <option value="04">SAMPLE</option>
+                    </select>
+                  </label>
+                  <label>
+                    <b>Loại xuất hàng</b>
+                    <select
+                      name="loaixh"
+                      value={loaixh}
+                      onChange={(e) => {
+                        setLoaiXH(e.target.value);
+                      }}
+                    >
+                      <option value="01">GC</option>
+                      <option value="02">SK</option>
+                      <option value="03">KD</option>
+                      <option value="04">VN</option>
+                      <option value="05">SAMPLE</option>
+                      <option value="06">Vai bac 4</option>
+                      <option value="07">ETC</option>
+                    </select>
+                  </label>
+                  <label>
+                    <b>YCSX QTY:</b>{" "}
+                    <TextField
+                      value={newycsxqty}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        setNewYcsxQty(e.target.value)
+                      }
+                      size="small"
+                      color="success"
+                      className="autocomplete"
+                      id="outlined-basic"
+                      label="YCSX QTY"
+                      variant="outlined"
+                    />
+                  </label>
+                  <label>
+                    <b>Remark:</b>{" "}
+                    <TextField
+                      value={newycsxremark}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        setNewYcsxRemark(e.target.value)
+                      }
+                      size="small"
+                      color="success"
+                      className="autocomplete"
+                      id="outlined-basic"
+                      label="Remark"
+                      variant="outlined"
+                    />
+                  </label>
+                </div>
+              </div>
+              <div className="dangkybutton">
+                {selection.themycsx && (
+                  <button
+                    className="thembutton"
+                    onClick={() => {
+                      //handle_add_1YCSX();
+                    }}
+                  >
+                    Thêm YCSX
+                  </button>
+                )}
+                <button
+                  className="thembutton"
+                  onClick={() => {
+                    handle_InsertYCSXTable();
+                  }}
+                >
+                  Insert Dòng
+                </button>
+                <button
+                  className="xoabutton"
+                  onClick={() => {
+                    clearYCSXform();
+                  }}
+                >
+                  Clear Dòng
+                </button>
+                <button
+                  className="closebutton"
+                  onClick={() => {
+                    setSelection({ ...selection, them1po: false });
+                  }}
+                >
+                  Close Form
+                </button>
+              </div>
+            </div>
+          )}
+          {selection.tab3 && (
+            <div className="dangkyform3">
+              <h3>Thêm DATA SETTING mới</h3>
+              <div className="dangkyinput">
+                <div className="dangkyinputbox">
+                  <label>
+                    <b>Khách hàng:</b>{" "}
+                    <Autocomplete
+                      size="small"
+                      disablePortal
+                      options={customerList}
+                      className="autocomplete"
+                      getOptionLabel={(option: CustomerListData) => {
+                        return `${option.CUST_CD}: ${option.CUST_NAME_KD}`;
+                      }}
+                      renderInput={(params) => (
+                        <TextField {...params} label="Select customer" />
+                      )}
+                      value={selectedCust_CD}
+                      onChange={(
+                        event: any,
+                        newValue: CustomerListData | null,
+                      ) => {
+                        console.log(newValue);
+                        setSelectedCust_CD(newValue);
+                      }}
+                      isOptionEqualToValue={(option, value) =>
+                        option.CUST_CD === value.CUST_CD
+                      }
+                    />
+                  </label>
+                  <label>
+                    <b>Code hàng:</b>{" "}
+                    <Autocomplete
+                      size="small"
+                      disablePortal
+                      options={codeList}
+                      className="autocomplete"
+                      getOptionLabel={(option: CodeListData) =>
+                        `${option.G_CODE}: ${option.G_NAME}`
+                      }
+                      renderInput={(params) => (
+                        <TextField {...params} label="Select code" />
+                      )}
+                      onChange={(event: any, newValue: CodeListData | null) => {
+                        console.log(newValue);
+                        setSelectedCode(newValue);
+                      }}
+                      value={selectedCode}
+                      isOptionEqualToValue={(option, value) =>
+                        option.G_CODE === value.G_CODE
+                      }
+                    />
+                  </label>
+                  <label>
+                    <b>Delivery Date:</b>
+                    <input
+                      className="inputdata"
+                      type="date"
+                      value={deliverydate.slice(0, 10)}
+                      onChange={(e) => setNewDeliveryDate(e.target.value)}
+                    ></input>
+                  </label>
+                  <label>
+                    <b>Loại hàng</b>
+                    <select
+                      name="phanloaihang"
+                      value={newphanloai}
+                      onChange={(e) => {
+                        setNewPhanLoai(e.target.value);
+                      }}
+                    >
+                      {" "}
+                      <option value="TT">Hàng Thường</option>
+                      <option value="SP">SP</option>
+                      <option value="RB">RB</option>
+                      <option value="HQ">HQ</option>
+                    </select>
+                  </label>
+                </div>
+                <div className="dangkyinputbox">
+                  <label>
+                    <b>Loại sản xuất</b>
+                    <select
+                      name="loasx"
+                      value={loaisx}
+                      onChange={(e) => {
+                        setLoaiSX(e.target.value);
+                      }}
+                    >
+                      <option value="01">Thông Thường</option>
+                      <option value="02">SDI</option>
+                      <option value="03">ETC</option>
+                      <option value="04">SAMPLE</option>
+                    </select>
+                  </label>
+                  <label>
+                    <b>Loại xuất hàng</b>
+                    <select
+                      name="loaixh"
+                      value={loaixh}
+                      onChange={(e) => {
+                        setLoaiXH(e.target.value);
+                      }}
+                    >
+                      <option value="01">GC</option>
+                      <option value="02">SK</option>
+                      <option value="03">KD</option>
+                      <option value="04">VN</option>
+                      <option value="05">SAMPLE</option>
+                      <option value="06">Vai bac 4</option>
+                      <option value="07">ETC</option>
+                    </select>
+                  </label>
+                  <label>
+                    <b>YCSX QTY:</b>{" "}
+                    <TextField
+                      value={newycsxqty}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        setNewYcsxQty(e.target.value)
+                      }
+                      size="small"
+                      color="success"
+                      className="autocomplete"
+                      id="outlined-basic"
+                      label="YCSX QTY"
+                      variant="outlined"
+                    />
+                  </label>
+                  <label>
+                    <b>Remark:</b>{" "}
+                    <TextField
+                      value={newycsxremark}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        setNewYcsxRemark(e.target.value)
+                      }
+                      size="small"
+                      color="success"
+                      className="autocomplete"
+                      id="outlined-basic"
+                      label="Remark"
+                      variant="outlined"
+                    />
+                  </label>
+                </div>
+              </div>
+              <div className="dangkybutton">
+                {selection.themycsx && (
+                  <button
+                    className="thembutton"
+                    onClick={() => {
+                      //handle_add_1YCSX();
+                    }}
+                  >
+                    Thêm YCSX
+                  </button>
+                )}
+                <button
+                  className="thembutton"
+                  onClick={() => {
+                    handle_InsertYCSXTable();
+                  }}
+                >
+                  Insert Dòng
+                </button>
+                <button
+                  className="xoabutton"
+                  onClick={() => {
+                    clearYCSXform();
+                  }}
+                >
+                  Clear Dòng
+                </button>
+                <button
+                  className="closebutton"
+                  onClick={() => {
+                    setSelection({ ...selection, them1po: false });
+                  }}
+                >
+                  Close Form
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+      <div className="newycsx">
         <h3>Thêm DATA PQC Hàng Loạt</h3>
         <br></br>
-        <div className='batchnewycsx'>
-          <form className='formupload'>
-            <label htmlFor='upload'>
+        <div className="batchnewycsx">
+          <form className="formupload">
+            <label htmlFor="upload">
               <b>Chọn file Excel: </b>
               <input
-                className='selectfilebutton'
-                type='file'
-                name='upload'
-                id='upload'
+                className="selectfilebutton"
+                type="file"
+                name="upload"
+                id="upload"
                 onChange={(e: any) => {
                   readUploadFile(e);
                 }}
               />
             </label>
-            <div className='ycsxbutton'>
+            <div className="ycsxbutton">
               <div
-                className='checkpobutton'
+                className="checkpobutton"
                 onClick={(e) => {
                   e.preventDefault();
                   confirmCheckYcsxHangLoat();
@@ -923,7 +908,7 @@ const INPUTPQC = () => {
                 Check Data PQC1
               </div>
               <div
-                className='uppobutton'
+                className="uppobutton"
                 onClick={(e) => {
                   e.preventDefault();
                   confirmUpYcsxHangLoat();
@@ -932,7 +917,7 @@ const INPUTPQC = () => {
                 Up Data PQC1
               </div>
               <div
-                className='clearobutton'
+                className="clearobutton"
                 onClick={(e) => {
                   e.preventDefault();
                   handle_DeleteYCSX_Excel();
@@ -942,7 +927,7 @@ const INPUTPQC = () => {
               </div>
             </div>
           </form>
-          <div className='insertYCSXTable'>
+          <div className="insertYCSXTable">
             {true && (
               <DataGrid
                 components={{
@@ -956,7 +941,7 @@ const INPUTPQC = () => {
                 rowsPerPageOptions={[
                   5, 10, 50, 100, 500, 1000, 5000, 10000, 100000,
                 ]}
-                editMode='row'
+                editMode="row"
                 getRowHeight={() => "auto"}
                 checkboxSelection
                 onSelectionModelChange={(ids) => {

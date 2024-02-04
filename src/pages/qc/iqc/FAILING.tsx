@@ -40,71 +40,26 @@ import DataGrid, {
 import { BiShow } from "react-icons/bi";
 import { GrStatusGood } from "react-icons/gr";
 import { FcCancel } from "react-icons/fc";
-import { UserData } from "../../../redux/slices/globalSlice";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
-interface QC_FAIL_DATA {
-  id?: number;
-  FACTORY: string;
-  PLAN_ID_SUDUNG: string;
-  G_NAME: string;
-  LIEUQL_SX: number;
-  M_CODE: string;
-  M_LOT_NO: string;
-  VENDOR_LOT: string;
-  M_NAME: string;
-  WIDTH_CD: number;
-  ROLL_QTY: number;
-  IN_QTY: number;
-  TOTAL_IN_QTY: number;
-  USE_YN: string;
-  PQC3_ID: number;
-  DEFECT_PHENOMENON: string;
-  OUT_DATE: string;
-  INS_EMPL?: string;
-  INS_DATE: string;
-  UPD_EMPL: string;
-  UPD_DATE: string;
-  PHANLOAI: string;
-  QC_PASS: string;
-  QC_PASS_DATE: string;
-  QC_PASS_EMPL: string;
-  REMARK: string;
-  IN1_EMPL: string;
-  IN2_EMPL: string;
-  OUT1_EMPL: string;
-  OUT2_EMPL: string;
-  OUT_PLAN_ID: string;
-  IN_CUST_CD: string;
-  OUT_CUST_CD: string;
-  IN_CUST_NAME: string;
-  OUT_CUST_NAME: string;
-  REMARK_OUT: string;
-  FAIL_ID: number;
-}
-interface CustomerListData {
-  CUST_CD: string;
-  CUST_NAME_KD: string;
-  CUST_NAME: string;
-}
+import {
+  CustomerListData,
+  QC_FAIL_DATA,
+  UserData,
+} from "../../../api/GlobalInterface";
 const FAILING = () => {
   const [cmsvcheck, setCMSVCheck] = useState(true);
   const [customerList, setCustomerList] = useState<CustomerListData[]>([]);
-
   const userData: UserData | undefined = useSelector(
-    (state: RootState) => state.totalSlice.userData
+    (state: RootState) => state.totalSlice.userData,
   );
   const [testtype, setTestType] = useState("NVL");
   const [inputno, setInputNo] = useState("");
   const [request_empl, setrequest_empl] = useState("");
   const [request_empl2, setrequest_empl2] = useState("");
   const [remark, setReMark] = useState("");
-  const [inspectiondatatable, setInspectionDataTable] = useState<Array<any>>(
-    []
-  );
-  const [selectedRowsDataA, setSelectedRowsData] = useState<
-    Array<QC_FAIL_DATA>
-  >([]);
+  const [inspectiondatatable, setInspectionDataTable] = useState<Array<any>>([]);
+  const [selectedRowsDataA, setSelectedRowsData] = useState<Array<QC_FAIL_DATA>>([]);
   const [empl_name, setEmplName] = useState("");
   const [empl_name2, setEmplName2] = useState("");
   const [g_name, setGName] = useState("");
@@ -122,7 +77,6 @@ const FAILING = () => {
   const [vendorLot, setVendorLot] = useState("");
   const [lieql_sx, setLieuQL_SX] = useState(0);
   const [out_date, setOut_Date] = useState("");
-  const [showhideinput, setShowHideInput] = useState(true);
   const [cust_cd, setCust_Cd] = useState("6969");
   const setQCPASS = async (value: string) => {
     console.log(selectedRowsDataA);
@@ -170,35 +124,14 @@ const FAILING = () => {
   };
   const materialDataTable = React.useMemo(
     () => (
-      <div className='datatb'>
+      <div className="datatb">
         <div className="menubar">
-        <IconButton
-                className='buttonIcon'
-                onClick={() => {
-                  setShowHideInput((pre) => !pre);
-                  setInspectionDataTable([]);
-                }}
-              >
-                <BiShow color='blue' size={25} />
-                Show/Hide Input
-              </IconButton>
-              <span style={{ fontSize: 20, fontWeight: "bold" }}>
-                BẢNG NHẬP THÔNG TIN CUỘN LIỆU- BTP QC FAIL
-              </span>
-              <IconButton
-                className='buttonIcon'
-                onClick={() => {
-                  handletraFailingData();
-                  setShowHideInput(false);
-                }}
-              >
-                <AiOutlineSearch color='red' size={25} />
-                Tra Data
-              </IconButton>    
-
+          <span style={{ fontSize: '1rem', fontWeight: "bold" }}>
+            BẢNG NHẬP THÔNG TIN CUỘN LIỆU- BTP QC FAIL
+          </span>
         </div>
         <DataGrid
-          style={{fontSize:'0.7rem'}}
+          style={{ fontSize: "0.7rem" }}
           autoNavigateToFocusedRow={true}
           allowColumnReordering={true}
           allowColumnResizing={true}
@@ -207,11 +140,11 @@ const FAILING = () => {
           columnResizingMode={"widget"}
           showColumnLines={true}
           dataSource={inspectiondatatable}
-          columnWidth='auto'
-          keyExpr='id'
-          height={"70vh"}
+          columnWidth="auto"
+          keyExpr="id"
+          height={"79vh"}
           showBorders={true}
-          onSelectionChanged={(e) => {            
+          onSelectionChanged={(e) => {
             setSelectedRowsData(e.selectedRowsData);
           }}
           onRowClick={(e) => {
@@ -225,37 +158,37 @@ const FAILING = () => {
             useNative={false}
             scrollByContent={true}
             scrollByThumb={true}
-            showScrollbar='onHover'
-            mode='virtual'
+            showScrollbar="onHover"
+            mode="virtual"
           />
-          <Selection mode='multiple' selectAllMode='allPages' />
+          <Selection mode="multiple" selectAllMode="allPages" />
           <Editing
             allowUpdating={true}
             allowAdding={false}
             allowDeleting={false}
-            mode='cell'
+            mode="cell"
             confirmDelete={true}
-            onChangesChange={(e) => {}}
+            onChangesChange={(e) => { }}
           />
           <Export enabled={true} />
           <Toolbar disabled={false}>
-            <Item location='before'>
+            <Item location="before">
               <IconButton
-                className='buttonIcon'
+                className="buttonIcon"
                 onClick={() => {
                   SaveExcel(inspectiondatatable, "SPEC DTC");
                 }}
               >
-                <AiFillFileExcel color='green' size={25} />
+                <AiFillFileExcel color="green" size={15} />
                 SAVE
               </IconButton>
             </Item>
-            <Item name='searchPanel' />
-            <Item name='exportButton' />
-            <Item name='columnChooserButton' />
-            <Item name='addRowButton' />
-            <Item name='saveButton' />
-            <Item name='revertButton' />
+            <Item name="searchPanel" />
+            <Item name="exportButton" />
+            <Item name="columnChooserButton" />
+            <Item name="addRowButton" />
+            <Item name="saveButton" />
+            <Item name="revertButton" />
           </Toolbar>
           <FilterRow visible={true} />
           <SearchPanel visible={true} />
@@ -266,244 +199,244 @@ const FAILING = () => {
             allowedPageSizes={[5, 10, 15, 20, 100, 1000, 10000, "all"]}
             showNavigationButtons={true}
             showInfo={true}
-            infoText='Page #{0}. Total: {1} ({2} items)'
-            displayMode='compact'
+            infoText="Page #{0}. Total: {1} ({2} items)"
+            displayMode="compact"
           />
           <Column
-            dataField='FAIL_ID'
-            caption='FAIL_ID'
+            dataField="FAIL_ID"
+            caption="FAIL_ID"
             width={100}
             allowEditing={false}
           ></Column>
           <Column
-            dataField='FACTORY'
-            caption='FACTORY'
+            dataField="FACTORY"
+            caption="FACTORY"
             width={100}
             allowEditing={false}
           ></Column>
           <Column
-            dataField='PLAN_ID_SUDUNG'
-            caption='PLAN_ID_SUDUNG'
+            dataField="PLAN_ID_SUDUNG"
+            caption="PLAN_ID_SUDUNG"
             width={100}
             allowEditing={false}
           ></Column>
           <Column
-            dataField='G_NAME'
-            caption='G_NAME'
+            dataField="G_NAME"
+            caption="G_NAME"
             width={100}
             allowEditing={false}
           ></Column>
           <Column
-            dataField='LIEUQL_SX'
-            caption='LIEUQL_SX'
+            dataField="LIEUQL_SX"
+            caption="LIEUQL_SX"
             width={100}
             allowEditing={false}
           ></Column>
           <Column
-            dataField='M_CODE'
-            caption='M_CODE'
+            dataField="M_CODE"
+            caption="M_CODE"
             width={100}
             allowEditing={false}
           ></Column>
           <Column
-            dataField='M_LOT_NO'
-            caption='M_LOT_NO'
+            dataField="M_LOT_NO"
+            caption="M_LOT_NO"
             width={100}
             allowEditing={true}
           ></Column>
           <Column
-            dataField='VENDOR_LOT'
-            caption='VENDOR_LOT'
+            dataField="VENDOR_LOT"
+            caption="VENDOR_LOT"
             width={100}
             allowEditing={false}
           ></Column>
           <Column
-            dataField='M_NAME'
-            caption='M_NAME'
+            dataField="M_NAME"
+            caption="M_NAME"
             width={100}
             allowEditing={false}
           ></Column>
           <Column
-            dataField='WIDTH_CD'
-            caption='WIDTH_CD'
+            dataField="WIDTH_CD"
+            caption="WIDTH_CD"
             width={100}
             allowEditing={false}
           ></Column>
-          <Column dataField='ROLL_QTY' caption='ROLL_QTY' width={100}></Column>
-          <Column dataField='IN_QTY' caption='IN_QTY' width={100}></Column>
+          <Column dataField="ROLL_QTY" caption="ROLL_QTY" width={100}></Column>
+          <Column dataField="IN_QTY" caption="IN_QTY" width={100}></Column>
           <Column
-            dataField='TOTAL_IN_QTY'
-            caption='TOTAL_IN_QTY'
+            dataField="TOTAL_IN_QTY"
+            caption="TOTAL_IN_QTY"
             width={100}
           ></Column>
           <Column
-            dataField='USE_YN'
-            caption='USE_YN'
-            width={100}
-            allowEditing={false}
-          ></Column>
-          <Column
-            dataField='PQC3_ID'
-            caption='PQC3_ID'
+            dataField="USE_YN"
+            caption="USE_YN"
             width={100}
             allowEditing={false}
           ></Column>
           <Column
-            dataField='DEFECT_PHENOMENON'
-            caption='DEFECT_PHENOMENON'
+            dataField="PQC3_ID"
+            caption="PQC3_ID"
             width={100}
             allowEditing={false}
           ></Column>
           <Column
-            dataField='OUT_DATE'
-            caption='OUT_DATE'
+            dataField="DEFECT_PHENOMENON"
+            caption="DEFECT_PHENOMENON"
             width={100}
             allowEditing={false}
           ></Column>
           <Column
-            dataField='INS_EMPL'
-            caption='INS_EMPL'
+            dataField="OUT_DATE"
+            caption="OUT_DATE"
             width={100}
             allowEditing={false}
           ></Column>
           <Column
-            dataField='INS_DATE'
-            caption='INS_DATE'
+            dataField="INS_EMPL"
+            caption="INS_EMPL"
             width={100}
             allowEditing={false}
           ></Column>
           <Column
-            dataField='UPD_EMPL'
-            caption='UPD_EMPL'
+            dataField="INS_DATE"
+            caption="INS_DATE"
             width={100}
             allowEditing={false}
           ></Column>
           <Column
-            dataField='UPD_DATE'
-            caption='UPD_DATE'
+            dataField="UPD_EMPL"
+            caption="UPD_EMPL"
             width={100}
             allowEditing={false}
           ></Column>
           <Column
-            dataField='PHANLOAI'
-            caption='PHANLOAI'
+            dataField="UPD_DATE"
+            caption="UPD_DATE"
             width={100}
             allowEditing={false}
           ></Column>
           <Column
-            dataField='QC_PASS'
-            caption='QC_PASS'
+            dataField="PHANLOAI"
+            caption="PHANLOAI"
             width={100}
             allowEditing={false}
           ></Column>
           <Column
-            dataField='QC_PASS_DATE'
-            caption='QC_PASS_DATE'
+            dataField="QC_PASS"
+            caption="QC_PASS"
             width={100}
             allowEditing={false}
           ></Column>
           <Column
-            dataField='QC_PASS_EMPL'
-            caption='QC_PASS_EMPL'
+            dataField="QC_PASS_DATE"
+            caption="QC_PASS_DATE"
             width={100}
             allowEditing={false}
           ></Column>
           <Column
-            dataField='REMARK'
-            caption='REMARK'
+            dataField="QC_PASS_EMPL"
+            caption="QC_PASS_EMPL"
             width={100}
             allowEditing={false}
           ></Column>
           <Column
-            dataField='IN1_EMPL'
-            caption='IN1_EMPL'
+            dataField="REMARK"
+            caption="REMARK"
             width={100}
             allowEditing={false}
           ></Column>
           <Column
-            dataField='IN2_EMPL'
-            caption='IN2_EMPL'
+            dataField="IN1_EMPL"
+            caption="IN1_EMPL"
             width={100}
             allowEditing={false}
           ></Column>
           <Column
-            dataField='OUT1_EMPL'
-            caption='OUT1_EMPL'
+            dataField="IN2_EMPL"
+            caption="IN2_EMPL"
             width={100}
             allowEditing={false}
           ></Column>
           <Column
-            dataField='OUT2_EMPL'
-            caption='OUT2_EMPL'
+            dataField="OUT1_EMPL"
+            caption="OUT1_EMPL"
             width={100}
             allowEditing={false}
           ></Column>
           <Column
-            dataField='IN_CUST_CD'
-            caption='IN_CUST_CD'
+            dataField="OUT2_EMPL"
+            caption="OUT2_EMPL"
             width={100}
             allowEditing={false}
           ></Column>
           <Column
-            dataField='OUT_CUST_CD'
-            caption='OUT_CUST_CD'
+            dataField="IN_CUST_CD"
+            caption="IN_CUST_CD"
             width={100}
             allowEditing={false}
           ></Column>
           <Column
-            dataField='IN_CUST_NAME'
-            caption='IN_CUST_NAME'
+            dataField="OUT_CUST_CD"
+            caption="OUT_CUST_CD"
             width={100}
             allowEditing={false}
           ></Column>
           <Column
-            dataField='OUT_CUST_NAME'
-            caption='OUT_CUST_NAME'
+            dataField="IN_CUST_NAME"
+            caption="IN_CUST_NAME"
             width={100}
             allowEditing={false}
           ></Column>
           <Column
-            dataField='OUT_PLAN_ID'
-            caption='OUT_PLAN_ID'
+            dataField="OUT_CUST_NAME"
+            caption="OUT_CUST_NAME"
             width={100}
             allowEditing={false}
           ></Column>
           <Column
-            dataField='REMARK_OUT'
-            caption='REMARK_OUT'
+            dataField="OUT_PLAN_ID"
+            caption="OUT_PLAN_ID"
+            width={100}
+            allowEditing={false}
+          ></Column>
+          <Column
+            dataField="REMARK_OUT"
+            caption="REMARK_OUT"
             width={100}
             allowEditing={false}
           ></Column>
           <Summary>
             <TotalItem
-              alignment='right'
-              column='M_CODE'
-              summaryType='count'
+              alignment="right"
+              column="M_CODE"
+              summaryType="count"
               valueFormat={"decimal"}
             />
             <TotalItem
-              alignment='right'
-              column='ROLL_QTY'
-              summaryType='sum'
+              alignment="right"
+              column="ROLL_QTY"
+              summaryType="sum"
               valueFormat={"decimal"}
             />
             <TotalItem
-              alignment='right'
-              column='IN_QTY'
-              summaryType='sum'
+              alignment="right"
+              column="IN_QTY"
+              summaryType="sum"
               valueFormat={"decimal"}
             />
             <TotalItem
-              alignment='right'
-              column='TOTAL_IN_QTY'
-              summaryType='sum'
+              alignment="right"
+              column="TOTAL_IN_QTY"
+              summaryType="sum"
               valueFormat={"decimal"}
             />
           </Summary>
         </DataGrid>
       </div>
     ),
-    [inspectiondatatable]
+    [inspectiondatatable],
   );
   const handletraFailingData = () => {
     generalQuery("loadQCFailData", {})
@@ -518,29 +451,29 @@ const FAILING = () => {
                   element.INS_DATE === null
                     ? ""
                     : moment(element.INS_DATE)
-                        .utc()
-                        .format("YYYY-MM-DD HH:mm:ss"),
+                      .utc()
+                      .format("YYYY-MM-DD HH:mm:ss"),
                 UPD_DATE:
                   element.UPD_DATE === null
                     ? ""
                     : moment(element.UPD_DATE)
-                        .utc()
-                        .format("YYYY-MM-DD HH:mm:ss"),
+                      .utc()
+                      .format("YYYY-MM-DD HH:mm:ss"),
                 QC_PASS_DATE:
                   element.QC_PASS_DATE === null
                     ? ""
                     : moment(element.QC_PASS_DATE)
-                        .utc()
-                        .format("YYYY-MM-DD HH:mm:ss"),
+                      .utc()
+                      .format("YYYY-MM-DD HH:mm:ss"),
                 id: index,
               };
-            }
+            },
           );
           setInspectionDataTable(loadeddata);
           Swal.fire(
             "Thông báo",
             "Đã load :" + loadeddata.length + " dòng",
-            "success"
+            "success",
           );
         } else {
         }
@@ -557,14 +490,14 @@ const FAILING = () => {
           if (selection === 1) {
             setEmplName(
               response.data.data[0].MIDLAST_NAME +
-                " " +
-                response.data.data[0].FIRST_NAME
+              " " +
+              response.data.data[0].FIRST_NAME,
             );
           } else {
             setEmplName2(
               response.data.data[0].MIDLAST_NAME +
-                " " +
-                response.data.data[0].FIRST_NAME
+              " " +
+              response.data.data[0].FIRST_NAME,
             );
           }
         } else {
@@ -619,8 +552,8 @@ const FAILING = () => {
           console.log(response.data.data);
           setM_Name(
             response.data.data[0].M_NAME +
-              " | " +
-              response.data.data[0].WIDTH_CD
+            " | " +
+            response.data.data[0].WIDTH_CD,
           );
           setM_Code(response.data.data[0].M_CODE);
           setWidthCD(response.data.data[0].WIDTH_CD);
@@ -629,7 +562,7 @@ const FAILING = () => {
           setLieuQL_SX(
             response.data.data[0].LIEUQL_SX === null
               ? "0"
-              : response.data.data[0].LIEUQL_SX
+              : response.data.data[0].LIEUQL_SX,
           );
           setOut_Date(response.data.data[0].OUT_DATE);
         } else {
@@ -797,7 +730,7 @@ const FAILING = () => {
         Swal.fire("Thông báo", "Có lỗi: " + err_code, "error");
       }
     } else {
-      Swal.fire("Chọn ít nhất 1 dòng để thực hiện");
+      Swal.fire("Thông báo", "Chọn ít nhất 1 dòng để thực hiện", "error");
     }
   };
   useEffect(() => {
@@ -805,377 +738,368 @@ const FAILING = () => {
     ///handletraFailingData();
   }, []);
   return (
-    <div className='failing'>
-      <div className='tracuuDataInspection'>
-        <div className='maintable'>         
-          {showhideinput && (
-            <div className='tracuuDataInspectionform'>
-              <b style={{ color: "blue" }}>INPUT LIỆU QC FAIL</b>
-              <div className='forminput'>
-                <div className='forminputcolumn'>
-                  <label>
-                    Vendor:
-                    <select
-                      disabled={cmsvcheck}
-                      name='khachhang'
-                      value={cust_cd}
-                      onChange={(e) => {
-                        setCust_Cd(e.target.value);
-                      }}
-                    >
-                      {customerList.map((element, index) => (
-                        <option key={index} value={element.CUST_CD}>
-                          {element.CUST_NAME_KD}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
-                  <label>
-                    CMSV
-                    <input
-                      type='checkbox'
-                      name='alltimecheckbox'
-                      defaultChecked={cmsvcheck}
-                      onChange={(e) => {
-                        if (cmsvcheck === false) setCust_Cd("6969");
-                        setCMSVCheck(!cmsvcheck);
-                      }}
-                    ></input>
-                  </label>
-                  <b>Phân loại hàng</b>
-                  <label>
-                    <select
-                      name='phanloaihang'
-                      value={testtype}
-                      onChange={(e) => {
-                        setTestType(e.target.value);
-                      }}
-                    >
-                      <option value='NVL'>Vật Liệu</option>
-                      <option value='BTP'>Bán Thành Phẩm</option>
-                    </select>
-                  </label>
-                  <b>Số chỉ thị sản xuất</b>
-                  <label>
-                    <input
-                      type='text'
-                      placeholder='1F80008A'
-                      value={planId}
-                      onChange={(e) => {
-                        if (e.target.value.length >= 7) {
-                          checkPlanID(e.target.value);
-                          checkPQC3_ID(e.target.value);
-                        }
-                        setPlanId(e.target.value);
-                      }}
-                    ></input>
-                  </label>
-                  {g_name && (
-                    <span
-                      style={{
-                        fontSize: 15,
-                        fontWeight: "bold",
-                        color: "blue",
-                      }}
-                    >
-                      {g_name}
-                    </span>
-                  )}
-                  <b>LOT NVL CMS</b>
-                  <label>
-                    <input
-                      type='text'
-                      placeholder='202304190123'
-                      value={inputno}
-                      onChange={(e) => {
-                        //console.log(e.target.value.length);
-                        if (e.target.value.length >= 7) {
-                          //console.log(e.target.value);
-                          checkLotNVL(e.target.value);
-                        }
-                        setInputNo(e.target.value);
-                      }}
-                    ></input>
-                  </label>
-                  {m_name && (
-                    <span
-                      style={{
-                        fontSize: 15,
-                        fontWeight: "bold",
-                        color: "blue",
-                      }}
-                    >
-                      {m_name}
-                    </span>
-                  )}
-                  <b>VENDOR LOT</b>
-                  <label>
-                    <input
-                      type='text'
-                      placeholder={"54951949844984"}
-                      value={vendorLot}
-                      onChange={(e) => {
-                        setVendorLot(e.target.value);
-                      }}
-                    ></input>
-                  </label>
-                  <b>Mã nhân viên giao</b>
-                  <label>
-                    <input
-                      type='text'
-                      placeholder={"NVD1201"}
-                      value={request_empl}
-                      onChange={(e) => {
-                        if (e.target.value.length >= 7) {
-                          checkEMPL_NAME(1, e.target.value);
-                        }
-                        setrequest_empl(e.target.value);
-                      }}
-                    ></input>
-                  </label>
-                  {request_empl && (
-                    <span
-                      style={{
-                        fontSize: 15,
-                        fontWeight: "bold",
-                        color: "blue",
-                      }}
-                    >
-                      {empl_name}
-                    </span>
-                  )}
-                  <b>Mã nhân viên nhận</b>
-                  <label>
-                    <input
-                      type='text'
-                      placeholder={"NVD1201"}
-                      value={request_empl2}
-                      onChange={(e) => {
-                        if (e.target.value.length >= 7) {
-                          checkEMPL_NAME(2, e.target.value);
-                        }
-                        setrequest_empl2(e.target.value);
-                      }}
-                    ></input>
-                  </label>
-                  {request_empl2 && (
-                    <span
-                      style={{
-                        fontSize: 15,
-                        fontWeight: "bold",
-                        color: "blue",
-                      }}
-                    >
-                      {empl_name2}
-                    </span>
-                  )}
-                </div>
-                <b>Remark</b>
-                <div className='forminputcolumn'>
-                  <label>
-                    <input
-                      type='text'
-                      placeholder={"Ghi chú"}
-                      value={remark}
-                      onChange={(e) => {
-                        setReMark(e.target.value);
-                      }}
-                    ></input>
-                  </label>
-                </div>
+    <div className="failing">
+      <div className="tracuuDataInspection">
+        <div className="maintable">
+          <div className="tracuuDataInspectionform">
+            <div className="forminput">
+              <div className="forminputcolumn">
+                <label>
+                  <b>Tên Nhà cung cấp:</b>
+                  <select
+                    disabled={cmsvcheck}
+                    name="khachhang"
+                    value={cust_cd}
+                    onChange={(e) => {
+                      setCust_Cd(e.target.value);
+                    }}
+                  >
+                    {customerList.map((element, index) => (
+                      <option key={index} value={element.CUST_CD}>
+                        {element.CUST_NAME_KD}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <label>
+                  <b>Phân loại hàng:</b>
+                  <select
+                    name="phanloaihang"
+                    value={testtype}
+                    onChange={(e) => {
+                      setTestType(e.target.value);
+                    }}
+                  >
+                    <option value="NVL">Vật Liệu</option>
+                    <option value="BTP">Bán Thành Phẩm</option>
+                  </select>
+                </label>
               </div>
-              <div className='formbutton'>
-                <button
-                  className='tranhatky'
-                  onClick={() => {
-                    if (checkInput()) {
-                      let lotArray = inspectiondatatable.map(
-                        (element: QC_FAIL_DATA, index: number) => {
-                          return element.M_LOT_NO;
-                        }
-                      );
-                      if (pqc3Id !== 0) {
-                        if (lotArray.indexOf(inputno) < 0) {
-                          addRow();
-                        } else {
-                          Swal.fire(
-                            "Thông tin",
-                            "Đã thêm cuộn này rồi",
-                            "error"
-                          );
-                        }
+              <div className="forminputcolumn">
+                <label>
+                  <b>Số chỉ thị sản xuất:</b>
+                  <input
+                    type="text"
+                    placeholder="1F80008A"
+                    value={planId}
+                    onChange={(e) => {
+                      if (e.target.value.length >= 7) {
+                        checkPlanID(e.target.value);
+                        checkPQC3_ID(e.target.value);
+                      }
+                      setPlanId(e.target.value);
+                    }}
+                  ></input>
+                </label>
+                {g_name && (
+                  <span
+                    style={{
+                      fontSize: 15,
+                      fontWeight: "bold",
+                      color: "blue",
+                    }}
+                  >
+                    {g_name}
+                  </span>
+                )}
+                <label>
+                  <b>LOT NVL CMS:</b>
+                  <input
+                    type="text"
+                    placeholder="202304190123"
+                    value={inputno}
+                    onChange={(e) => {
+                      //console.log(e.target.value.length);
+                      if (e.target.value.length >= 7) {
+                        //console.log(e.target.value);
+                        checkLotNVL(e.target.value);
+                      }
+                      setInputNo(e.target.value);
+                    }}
+                  ></input>
+                </label>
+                {m_name && (
+                  <span
+                    style={{
+                      fontSize: 15,
+                      fontWeight: "bold",
+                      color: "blue",
+                    }}
+                  >
+                    {m_name}
+                  </span>
+                )}
+              </div>
+              <div className="forminputcolumn">
+                <label>
+                  <b>VENDOR LOT:</b>
+                  <input
+                    type="text"
+                    placeholder={"54951949844984"}
+                    value={vendorLot}
+                    onChange={(e) => {
+                      setVendorLot(e.target.value);
+                    }}
+                  ></input>
+                </label>
+                <label>
+                  <b>Mã nhân viên giao:</b>
+                  <input
+                    type="text"
+                    placeholder={"NVD1201"}
+                    value={request_empl}
+                    onChange={(e) => {
+                      if (e.target.value.length >= 7) {
+                        checkEMPL_NAME(1, e.target.value);
+                      }
+                      setrequest_empl(e.target.value);
+                    }}
+                  ></input>
+                </label>
+                {request_empl && (
+                  <span
+                    style={{
+                      fontSize: 15,
+                      fontWeight: "bold",
+                      color: "blue",
+                    }}
+                  >
+                    {empl_name}
+                  </span>
+                )}
+              </div>
+              <div className="forminputcolumn">
+                <label>
+                  <b>Mã nhân viên nhận:</b>
+                  <input
+                    type="text"
+                    placeholder={"NVD1201"}
+                    value={request_empl2}
+                    onChange={(e) => {
+                      if (e.target.value.length >= 7) {
+                        checkEMPL_NAME(2, e.target.value);
+                      }
+                      setrequest_empl2(e.target.value);
+                    }}
+                  ></input>
+                </label>
+                {request_empl2 && (
+                  <span
+                    style={{
+                      fontSize: 15,
+                      fontWeight: "bold",
+                      color: "blue",
+                    }}
+                  >
+                    {empl_name2}
+                  </span>
+                )}
+                <label>
+                  <b>Remark:</b>
+                  <input
+                    type="text"
+                    placeholder={"Ghi chú"}
+                    value={remark}
+                    onChange={(e) => {
+                      setReMark(e.target.value);
+                    }}
+                  ></input>
+                </label>
+              </div>
+              <div className="forminputcolumn">
+                <Button color={'success'} variant="contained" size="small" fullWidth={true} sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#33ac15' }} onClick={() => {
+                  if (checkInput()) {
+                    let lotArray = inspectiondatatable.map(
+                      (element: QC_FAIL_DATA, index: number) => {
+                        return element.M_LOT_NO;
+                      },
+                    );
+                    if (pqc3Id !== 0) {
+                      if (lotArray.indexOf(inputno) < 0) {
+                        addRow();
                       } else {
                         Swal.fire(
                           "Thông tin",
-                          "Số chỉ thị này PQC chưa lập lỗi, không thêm được",
-                          "error"
+                          "Đã thêm cuộn này rồi",
+                          "error",
                         );
                       }
                     } else {
                       Swal.fire(
-                        "Thông báo",
-                        "Hãy nhập đủ thông tin trước khi đăng ký",
-                        "error"
+                        "Thông tin",
+                        "Số chỉ thị này PQC chưa lập lỗi, không thêm được",
+                        "error",
                       );
                     }
-                  }}
-                >
-                  Add
-                </button>
-                <button
-                  className='tranhatky'
-                  onClick={() => {
-                    saveFailingData();
-                  }}
-                >
-                  Save
-                </button>
+                  } else {
+                    Swal.fire(
+                      "Thông báo",
+                      "Hãy nhập đủ thông tin trước khi đăng ký",
+                      "error",
+                    );
+                  }
+                }}>Add</Button>
+                <Button color={'success'} variant="contained" size="small" fullWidth={true} sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#f764ef' }} onClick={() => {
+                  saveFailingData();
+                }}>Save</Button>
               </div>
-              <div
-                className='formbutton'
-                style={{ marginTop: "20px", display: "flex", flexWrap: "wrap" }}
-              ></div>
+              <div className="forminputcolumn">
+                <label>
+                  <b>CMSV</b>
+                  <input
+                    type="checkbox"
+                    name="alltimecheckbox"
+                    defaultChecked={cmsvcheck}
+                    onChange={(e) => {
+                      if (cmsvcheck === false) setCust_Cd("6969");
+                      setCMSVCheck(!cmsvcheck);
+                    }}
+                  ></input>
+                </label>
+                <Button color={'success'} variant="contained" size="small" fullWidth={true} sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#d7f724', color: 'black' }} onClick={() => {
+                  handletraFailingData();
+                }}>Tra Data</Button>
+              </div>
             </div>
-          )}
-          <div className='tracuuYCSXTable'>{materialDataTable}</div>
-          {!showhideinput && (
-            <div className='tracuuDataInspectionform'>
-              <b style={{ color: "blue" }}>OUTPUT LIỆU QC FAIL</b>
-              <div className='forminput'>
-                <div className='forminputcolumn'>
-                  <label>
-                    Vendor:
-                    <select
-                      disabled={cmsvcheck}
-                      name='khachhang'
-                      value={cust_cd}
-                      onChange={(e) => {
-                        setCust_Cd(e.target.value);
-                      }}
-                    >
-                      {customerList.map((element, index) => (
-                        <option key={index} value={element.CUST_CD}>
-                          {element.CUST_NAME_KD}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
-                  <label>
-                    CMSV
-                    <input
-                      type='checkbox'
-                      name='alltimecheckbox'
-                      defaultChecked={cmsvcheck}
-                      onChange={(e) => {
-                        if (cmsvcheck === false) setCust_Cd("6969");
-                        setCMSVCheck(!cmsvcheck);
-                      }}
-                    ></input>
-                  </label>
-                  <b>Số chỉ thị xuất ra</b>
-                  <label>
-                    <input
-                      type='text'
-                      placeholder='1F80008A'
-                      value={planId}
-                      onChange={(e) => {
-                        if (e.target.value.length >= 7) {
-                          checkPlanID(e.target.value);
-                        }
-                        setPlanId(e.target.value);
-                      }}
-                    ></input>
-                  </label>
-                  {g_name && (
-                    <span
-                      style={{
-                        fontSize: 15,
-                        fontWeight: "bold",
-                        color: "blue",
-                      }}
-                    >
-                      {g_name}
-                    </span>
-                  )}
-                  <b>Mã nhân viên giao</b>
-                  <label>
-                    <input
-                      type='text'
-                      placeholder={"NVD1201"}
-                      value={request_empl}
-                      onChange={(e) => {
-                        if (e.target.value.length >= 7) {
-                          checkEMPL_NAME(1, e.target.value);
-                        }
-                        setrequest_empl(e.target.value);
-                      }}
-                    ></input>
-                  </label>
-                  {request_empl && (
-                    <span
-                      style={{
-                        fontSize: 15,
-                        fontWeight: "bold",
-                        color: "blue",
-                      }}
-                    >
-                      {empl_name}
-                    </span>
-                  )}
-                  <b>Mã nhân viên nhận</b>
-                  <label>
-                    <input
-                      type='text'
-                      placeholder={"NVD1201"}
-                      value={request_empl2}
-                      onChange={(e) => {
-                        if (e.target.value.length >= 7) {
-                          checkEMPL_NAME(2, e.target.value);
-                        }
-                        setrequest_empl2(e.target.value);
-                      }}
-                    ></input>
-                  </label>
-                  {request_empl2 && (
-                    <span
-                      style={{
-                        fontSize: 15,
-                        fontWeight: "bold",
-                        color: "blue",
-                      }}
-                    >
-                      {empl_name2}
-                    </span>
-                  )}
-                </div>
-                <b>Remark</b>
-                <div className='forminputcolumn'>
-                  <label>
-                    <input
-                      type='text'
-                      placeholder={"Ghi chú"}
-                      value={remark}
-                      onChange={(e) => {
-                        setReMark(e.target.value);
-                      }}
-                    ></input>
-                  </label>
-                </div>
+          </div>
+          <div className="tracuuYCSXTable">
+            {materialDataTable}
+          </div>
+          <div className="tracuuDataInspectionform2">
+            <b style={{ color: "blue" }}>OUTPUT LIỆU QC FAIL</b>
+            <div className="forminput">
+              <div className="forminputcolumn">
+                <label>
+                  <b>Vendor:</b>
+                  <select
+                    disabled={cmsvcheck}
+                    name="khachhang"
+                    value={cust_cd}
+                    onChange={(e) => {
+                      setCust_Cd(e.target.value);
+                    }}
+                  >
+                    {customerList.map((element, index) => (
+                      <option key={index} value={element.CUST_CD}>
+                        {element.CUST_NAME_KD}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <label>
+                  <b>CMSV:</b>
+                  <input
+                    type="checkbox"
+                    name="alltimecheckbox"
+                    defaultChecked={cmsvcheck}
+                    onChange={(e) => {
+                      if (cmsvcheck === false) setCust_Cd("6969");
+                      setCMSVCheck(!cmsvcheck);
+                    }}
+                  ></input>
+                </label>
               </div>
-              <div className='formbutton'>
-                <button
-                  className='tranhatky'
-                  onClick={() => {
-                    updateQCFailTable();
-                  }}
-                >
-                  Xuất
-                </button>               
-              
+              <div className="forminputcolumn">
+                <label>
+                  <b>Số CT:</b>
+                  <input
+                    type="text"
+                    placeholder="1F80008A"
+                    value={planId}
+                    onChange={(e) => {
+                      if (e.target.value.length >= 7) {
+                        checkPlanID(e.target.value);
+                      }
+                      setPlanId(e.target.value);
+                    }}
+                  ></input>
+                </label>
+                {g_name && (
+                  <span
+                    style={{
+                      fontSize: 15,
+                      fontWeight: "bold",
+                      color: "blue",
+                    }}
+                  >
+                    {g_name}
+                  </span>
+                )}
               </div>
-              <div className='formbutton'>               
-                <IconButton
-                className='buttonIcon'
+              <div className="forminputcolumn">
+                <label>
+                  <b>Ng.Giao:</b>
+                  <input
+                    type="text"
+                    placeholder={"NVD1201"}
+                    value={request_empl}
+                    onChange={(e) => {
+                      if (e.target.value.length >= 7) {
+                        checkEMPL_NAME(1, e.target.value);
+                      }
+                      setrequest_empl(e.target.value);
+                    }}
+                  ></input>
+                </label>
+                {request_empl && (
+                  <span
+                    style={{
+                      fontSize: 15,
+                      fontWeight: "bold",
+                      color: "blue",
+                    }}
+                  >
+                    {empl_name}
+                  </span>
+                )}
+                <label>
+                  <b>Ng.Nhận:</b>
+                  <input
+                    type="text"
+                    placeholder={"NVD1201"}
+                    value={request_empl2}
+                    onChange={(e) => {
+                      if (e.target.value.length >= 7) {
+                        checkEMPL_NAME(2, e.target.value);
+                      }
+                      setrequest_empl2(e.target.value);
+                    }}
+                  ></input>
+                </label>
+                {request_empl2 && (
+                  <span
+                    style={{
+                      fontSize: 15,
+                      fontWeight: "bold",
+                      color: "blue",
+                    }}
+                  >
+                    {empl_name2}
+                  </span>
+                )}
+              </div>
+              <div className="forminputcolumn">
+                <label>
+                  <b>Remark:</b>
+                  <input
+                    type="text"
+                    placeholder={"Ghi chú"}
+                    value={remark}
+                    onChange={(e) => {
+                      setReMark(e.target.value);
+                    }}
+                  ></input>
+                </label>
+              </div>
+            </div>
+            <div className="formbutton">
+              <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#efff0c', color: 'black' }} onClick={() => {
+                updateQCFailTable();
+              }}>Xuất</Button>
+            </div>
+            <div className="formbutton">
+              <IconButton
+                className="buttonIcon"
                 onClick={() => {
                   if (userData?.SUBDEPTNAME === "IQC") {
                     //console.log(selectedRowsDataA);
@@ -1184,16 +1108,16 @@ const FAILING = () => {
                     Swal.fire(
                       "Thông báo",
                       "Bạn không phải người bộ phận IQC",
-                      "error"
+                      "error",
                     );
-                  }                  
+                  }
                 }}
               >
-                <GrStatusGood color='green' size={25} />
+                <GrStatusGood color="green" size={15} />
                 SET PASS
               </IconButton>
               <IconButton
-                className='buttonIcon'
+                className="buttonIcon"
                 onClick={() => {
                   if (userData?.SUBDEPTNAME === "IQC") {
                     setQCPASS("N");
@@ -1201,7 +1125,7 @@ const FAILING = () => {
                     Swal.fire(
                       "Thông báo",
                       "Bạn không phải người bộ phận IQC",
-                      "error"
+                      "error",
                     );
                   }
                   //checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['QC'], ()=>{setQCPASS('Y');});
@@ -1209,17 +1133,15 @@ const FAILING = () => {
                   //setQCPASS('N');
                 }}
               >
-                <FcCancel color='red' size={25} />
+                <FcCancel color="red" size={15} />
                 RESET PASS
               </IconButton>
-
-              </div>
-              <div
-                className='formbutton'
-                style={{ marginTop: "20px", display: "flex", flexWrap: "wrap" }}
-              ></div>
             </div>
-          )}
+            <div
+              className="formbutton"
+              style={{ marginTop: "20px", display: "flex", flexWrap: "wrap" }}
+            ></div>
+          </div>
         </div>
       </div>
     </div>

@@ -1,0 +1,47 @@
+.mc3 {
+  display: flex;
+  flex-direction: column;
+  justify-items: center;
+  background-color: white;
+  position: relative;
+
+  /*  -webkit-filter: blur(5px);
+    -moz-filter: blur(5px);
+    -o-filter: blur(5px);
+    -ms-filter: blur(5px);
+    filter: blur(5px);  */
+
+  .machine_component2 {
+    display: flex;
+    flex-direction: column;
+    width: 100px;
+    height: 50px;
+    background-image: linear-gradient(0deg, #cbeea3, #ffffff);
+    border-radius: 5px;
+    box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
+    -webkit-box-shadow: 19px 15px 27px 0px rgba(0.5, 0, 0, 0.18);
+    font-size: 0.5rem;
+    .tieude {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      background-color: bisque;
+      width: 100%;
+      align-self: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 0.8rem;
+      align-items: center;
+    }
+    .machineplan {
+      font-size: 0.5rem;
+      overflow-x: inherit;
+      flex: 0;
+    }
+  }
+  .chitiet {
+    background-color: #cbeea3;
+    font-size: 0.5rem;
+    position: initial;
+  }
+}

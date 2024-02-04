@@ -1,5 +1,6 @@
 import {
   Autocomplete,
+  Button,
   IconButton,
   LinearProgress,
   TextField,
@@ -20,103 +21,16 @@ import {
   AiOutlinePrinter,
 } from "react-icons/ai";
 import Swal from "sweetalert2";
-import { generalQuery } from "../../../api/Api";
+import { generalQuery, getUserData } from "../../../api/Api";
 import { UserContext } from "../../../api/Context";
-import { SaveExcel } from "../../../api/GlobalFunction";
+import { SaveExcel, checkBP } from "../../../api/GlobalFunction";
 import "./TRAPQC.scss";
-interface PQC1_DATA {
-  PQC1_ID: string;
-  YEAR_WEEK: string;
-  PROD_REQUEST_NO: string;
-  PROD_REQUEST_QTY: number;
-  PROD_REQUEST_DATE: string;
-  PLAN_ID: string;
-  PROCESS_LOT_NO: string;
-  G_NAME: string;
-  G_NAME_KD: string;
-  LINEQC_PIC: string;
-  PROD_PIC: string;
-  PROD_LEADER: string;
-  LINE_NO: number;
-  STEPS: string;
-  CAVITY: number;
-  SETTING_OK_TIME: string;
-  FACTORY: string;
-  INSPECT_SAMPLE_QTY: number;
-  PROD_LAST_PRICE: number;
-  SAMPLE_AMOUNT: number;
-  REMARK: string;
-  INS_DATE: string;
-  UPD_DATE: string;
-  PQC3_ID: string, 
-  OCCURR_TIME: string,
-  INSPECT_QTY: number,
-  DEFECT_QTY: number,
-  DEFECT_RATE: number,
-  DEFECT_PHENOMENON: number,
-}
-interface PQC3_DATA {
-  YEAR_WEEK: string;
-  PQC3_ID: number;
-  PQC1_ID: number;
-  CUST_NAME_KD: string;
-  FACTORY: string;
-  PROD_REQUEST_NO: string;
-  PROD_REQUEST_DATE: string;
-  PROCESS_LOT_NO: string;
-  G_CODE: string;
-  G_NAME: string;
-  G_NAME_KD: string;
-  PROD_LAST_PRICE: number;
-  LINEQC_PIC: string;
-  PROD_PIC: string;
-  PROD_LEADER: string;
-  LINE_NO: number;
-  OCCURR_TIME: string;
-  INSPECT_QTY: number;
-  DEFECT_QTY: number;
-  DEFECT_AMOUNT: number;
-  DEFECT_PHENOMENON: string;
-  DEFECT_IMAGE_LINK: string;
-  REMARK: string;
-  WORST5: string;
-  WORST5_MONTH: string;
-  ERR_CODE: string;
-}
-interface DAO_FILM_DATA {
-  KNIFE_FILM_ID: string;
-  FACTORY_NAME: number;
-  NGAYBANGIAO: number;
-  G_CODE: string;
-  G_NAME: string;
-  LOAIBANGIAO_PDP: string;
-  LOAIPHATHANH: string;
-  SOLUONG: string;
-  SOLUONGOHP: string;
-  LYDOBANGIAO: string;
-  PQC_EMPL_NO: number;
-  RND_EMPL_NO: string;
-  SX_EMPL_NO: string;
-  MA_DAO: string;
-  REMARK: number;
-}
-interface CNDB_DATA {
-  CNDB_DATE: string;
-  CNDB_NO: string;
-  CNDB_ENCODE: string;
-  M_NAME: string;
-  DEFECT_NAME: string;
-  DEFECT_CONTENT: string;
-  REG_EMPL_NO: string;
-  REMARK: string;
-  M_NAME2: string;
-  INS_DATE: string;
-  APPROVAL_STATUS: string;
-  APPROVAL_EMPL: string;
-  APPROVAL_DATE: string;
-  G_CODE: string;
-  G_NAME: string;
-}
+import {
+  CNDB_DATA,
+  DAO_FILM_DATA,
+  PQC3_DATA,
+  TRA_PQC1_DATA,
+} from "../../../api/GlobalInterface";
 const TRAPQC = () => {
   const [readyRender, setReadyRender] = useState(true);
   const [selection, setSelection] = useState<any>({
@@ -146,7 +60,7 @@ const TRAPQC = () => {
   const [factory, setFactory] = useState("All");
   const [pqcdatatable, setPqcDataTable] = useState<Array<any>>([]);
   const [sumaryINSPECT, setSummaryInspect] = useState("");
-  const column_pqc1_data = [
+  const column_TRA_PQC1_DATA = [
     { field: "PQC1_ID", headerName: "PQC1_ID", width: 80 },
     { field: "YEAR_WEEK", headerName: "YEAR_WEEK", width: 80 },
     { field: "PROD_REQUEST_NO", headerName: "PROD_REQUEST_NO", width: 80 },
@@ -202,13 +116,21 @@ const TRAPQC = () => {
     { field: "OCCURR_TIME", headerName: "OCCURR_TIME", width: 150 },
     { field: "INSPECT_QTY", headerName: "INSPECT_QTY", width: 120 },
     { field: "DEFECT_QTY", headerName: "DEFECT_QTY", width: 120 },
-    { field: "DEFECT_RATE", headerName: "DEFECT_RATE", width: 120, renderCell: (params: any) => {
-      return (
-        <span style={{ color: "red" }}>
-          {params.row.DEFECT_RATE.toLocaleString('en-US',{ maximumFractionDigits: 0,})}%
-        </span>
-      );
-    },},
+    {
+      field: "DEFECT_RATE",
+      headerName: "DEFECT_RATE",
+      width: 120,
+      renderCell: (params: any) => {
+        return (
+          <span style={{ color: "red" }}>
+            {params.row.DEFECT_RATE.toLocaleString("en-US", {
+              maximumFractionDigits: 0,
+            })}
+            %
+          </span>
+        );
+      },
+    },
     { field: "DEFECT_PHENOMENON", headerName: "DEFECT_PHENOMENON", width: 150 },
     {
       field: "INS_DATE",
@@ -236,6 +158,85 @@ const TRAPQC = () => {
         );
       },
     },
+    {
+      field: "IMG_1",     
+      headerName: "IMG_1",
+      width: 100,
+      renderCell: (params: any) => {
+        let href_link = `/lineqc/${params.row.PLAN_ID}_1.jpg`
+        if(params.row.IMG_1 ?? false)
+        {
+          return (
+            <span style={{ color: "blue" }}>
+              <a target="_blank" rel="noopener noreferrer" href={href_link}>
+                LINK
+              </a>
+            </span>
+          );
+        }
+        else
+        {
+          return (
+            <span style={{ color: "blue" }}>
+              NO
+            </span>
+          );
+        }        
+      },
+    },
+    {
+      field: "IMG_2",     
+      headerName: "IMG_2",
+      width: 100,
+      renderCell: (params: any) => {
+        let href_link = `/lineqc/${params.row.PLAN_ID}_2.jpg`
+        if(params.row.IMG_2 ?? false)
+        {
+          return (
+            <span style={{ color: "blue" }}>
+              <a target="_blank" rel="noopener noreferrer" href={href_link}>
+                LINK
+              </a>
+            </span>
+          );
+        }
+        else
+        {
+          return (
+            <span style={{ color: "blue" }}>
+              NO
+            </span>
+          );
+        }        
+      },
+    },
+    {
+      field: "IMG_3",     
+      headerName: "IMG_3",
+      width: 100,
+      renderCell: (params: any) => {
+        let href_link = `/lineqc/${params.row.PLAN_ID}_3.jpg`
+        if(params.row.IMG_3 ?? false)
+        {
+          return (
+            <span style={{ color: "blue" }}>
+              <a target="_blank" rel="noopener noreferrer" href={href_link}>
+              LINK
+              </a>
+            </span>
+          );
+        }
+        else
+        {
+          return (
+            <span style={{ color: "blue" }}>
+              NO
+            </span>
+          );
+        }        
+      },
+    },
+    
   ];
   const column_pqc3_data = [
     { field: "YEAR_WEEK", headerName: "YEAR_WEEK", width: 80 },
@@ -278,7 +279,7 @@ const TRAPQC = () => {
         let href_link = "/pqc/PQC3_" + (params.row.PQC3_ID + 1) + ".png";
         return (
           <span style={{ color: "blue" }}>
-            <a target='_blank' rel='noopener noreferrer' href={href_link}>
+            <a target="_blank" rel="noopener noreferrer" href={href_link}>
               LINK
             </a>
           </span>
@@ -408,17 +409,17 @@ const TRAPQC = () => {
     { field: "G_NAME", headerName: "G_NAME", width: 250 },
   ];
   const [columnDefinition, setColumnDefinition] =
-    useState<Array<any>>(column_pqc1_data);
+    useState<Array<any>>(column_TRA_PQC1_DATA);
   function CustomToolbarPOTable() {
     return (
       <GridToolbarContainer>
         <IconButton
-          className='buttonIcon'
+          className="buttonIcon"
           onClick={() => {
             SaveExcel(pqcdatatable, "Inspection Data Table");
           }}
         >
-          <AiFillFileExcel color='green' size={25} />
+          <AiFillFileExcel color="green" size={15} />
           SAVE
         </IconButton>
         <span
@@ -455,24 +456,32 @@ const TRAPQC = () => {
       .then((response) => {
         //console.log(response.data.data);
         if (response.data.tk_status !== "NG") {
-          const loadeddata: PQC1_DATA[] = response.data.data.map(
-            (element: PQC1_DATA, index: number) => {
+          const loadeddata: TRA_PQC1_DATA[] = response.data.data.map(
+            (element: TRA_PQC1_DATA, index: number) => {
               //summaryInput += element.INPUT_QTY_EA;
               return {
                 ...element,
                 PROD_DATETIME: moment
                   .utc(element.INS_DATE)
                   .format("YYYY-MM-DD HH:mm:ss"),
-                OCCURR_TIME: element.OCCURR_TIME !== null ? moment
-                  .utc(element.OCCURR_TIME)
-                  .format("YYYY-MM-DD HH:mm:ss"):'',
+                OCCURR_TIME:
+                  element.OCCURR_TIME !== null
+                    ? moment
+                      .utc(element.OCCURR_TIME)
+                      .format("YYYY-MM-DD HH:mm:ss")
+                    : "",
                 INPUT_DATETIME: moment
                   .utc(element.UPD_DATE)
                   .format("YYYY-MM-DD HH:mm:ss"),
-                DEFECT_RATE: element.INSPECT_QTY !== null? (element.DEFECT_QTY !== null? element.DEFECT_QTY: 0)/(element.INSPECT_QTY)*100:'',
+                DEFECT_RATE:
+                  element.INSPECT_QTY !== null
+                    ? ((element.DEFECT_QTY !== null ? element.DEFECT_QTY : 0) /
+                      element.INSPECT_QTY) *
+                    100
+                    : "",
                 id: index,
               };
-            }
+            },
           );
           //setSummaryInspect('Tổng Nhập: ' +  summaryInput.toLocaleString('en-US') + 'EA');
           setPqcDataTable(loadeddata);
@@ -481,7 +490,7 @@ const TRAPQC = () => {
           Swal.fire(
             "Thông báo",
             "Đã load " + response.data.data.length + " dòng",
-            "success"
+            "success",
           );
         } else {
           Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
@@ -522,7 +531,7 @@ const TRAPQC = () => {
                   .format("YYYY-MM-DD HH:mm:ss"),
                 id: index,
               };
-            }
+            },
           );
           //setSummaryInspect('Tổng Xuất: ' +  summaryOutput.toLocaleString('en-US') + 'EA');
           setPqcDataTable(loadeddata);
@@ -531,7 +540,7 @@ const TRAPQC = () => {
           Swal.fire(
             "Thông báo",
             "Đã load " + response.data.data.length + " dòng",
-            "success"
+            "success",
           );
         } else {
           Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
@@ -567,7 +576,7 @@ const TRAPQC = () => {
                 CNDB_DATE: moment.utc(element.CNDB_DATE).format("YYYY-MM-DD"),
                 id: index,
               };
-            }
+            },
           );
           setPqcDataTable(loadeddata);
           setReadyRender(true);
@@ -575,7 +584,7 @@ const TRAPQC = () => {
           Swal.fire(
             "Thông báo",
             "Đã load " + response.data.data.length + " dòng",
-            "success"
+            "success",
           );
         } else {
           Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
@@ -606,7 +615,7 @@ const TRAPQC = () => {
                 ...element,
                 id: index,
               };
-            }
+            },
           );
           setPqcDataTable(loadeddata);
           setReadyRender(true);
@@ -614,7 +623,7 @@ const TRAPQC = () => {
           Swal.fire(
             "Thông báo",
             "Đã load " + response.data.data.length + " dòng",
-            "success"
+            "success",
           );
         } else {
           Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
@@ -629,15 +638,15 @@ const TRAPQC = () => {
     //setColumnDefinition(column_pqc3_data);
   }, []);
   return (
-    <div className='trapqc'>
-      <div className='tracuuDataPqc'>
-        <div className='tracuuDataPQCform'>
-          <div className='forminput'>
-            <div className='forminputcolumn'>
+    <div className="trapqc">
+      <div className="tracuuDataPqc">
+        <div className="tracuuDataPQCform">
+          <div className="forminput">
+            <div className="forminputcolumn">
               <label>
                 <b>Từ ngày:</b>
                 <input
-                  type='date'
+                  type="date"
                   value={fromdate.slice(0, 10)}
                   onChange={(e) => setFromDate(e.target.value)}
                 ></input>
@@ -645,38 +654,38 @@ const TRAPQC = () => {
               <label>
                 <b>Tới ngày:</b>{" "}
                 <input
-                  type='date'
+                  type="date"
                   value={todate.slice(0, 10)}
                   onChange={(e) => setToDate(e.target.value)}
                 ></input>
               </label>
             </div>
-            <div className='forminputcolumn'>
+            <div className="forminputcolumn">
               <label>
                 <b>Code KD:</b>{" "}
                 <input
-                  type='text'
-                  placeholder='GH63-xxxxxx'
+                  type="text"
+                  placeholder="GH63-xxxxxx"
                   value={codeKD}
                   onChange={(e) => setCodeKD(e.target.value)}
                 ></input>
               </label>
               <label>
-                <b>Code CMS:</b>{" "}
+                <b>Code ERP:</b>{" "}
                 <input
-                  type='text'
-                  placeholder='7C123xxx'
+                  type="text"
+                  placeholder="7C123xxx"
                   value={codeCMS}
                   onChange={(e) => setCodeCMS(e.target.value)}
                 ></input>
               </label>
             </div>
-            <div className='forminputcolumn'>
+            <div className="forminputcolumn">
               <label>
                 <b>Tên nhân viên:</b>{" "}
                 <input
-                  type='text'
-                  placeholder='Ten Line QC'
+                  type="text"
+                  placeholder="Ten Line QC"
                   value={empl_name}
                   onChange={(e) => setEmpl_Name(e.target.value)}
                 ></input>
@@ -684,24 +693,24 @@ const TRAPQC = () => {
               <label>
                 <b>Nhà máy:</b>
                 <select
-                  name='phanloai'
+                  name="phanloai"
                   value={factory}
                   onChange={(e) => {
                     setFactory(e.target.value);
                   }}
                 >
-                  <option value='All'>All</option>
-                  <option value='NM1'>NM1</option>
-                  <option value='NM2'>NM2</option>
+                  <option value="All">All</option>
+                  <option value="NM1">NM1</option>
+                  <option value="NM2">NM2</option>
                 </select>
               </label>
             </div>
-            <div className='forminputcolumn'>
+            <div className="forminputcolumn">
               <label>
                 <b>Loại sản phẩm:</b>{" "}
                 <input
-                  type='text'
-                  placeholder='TSP'
+                  type="text"
+                  placeholder="TSP"
                   value={prod_type}
                   onChange={(e) => setProdType(e.target.value)}
                 ></input>
@@ -709,19 +718,19 @@ const TRAPQC = () => {
               <label>
                 <b>Số YCSX:</b>{" "}
                 <input
-                  type='text'
-                  placeholder='1H23456'
+                  type="text"
+                  placeholder="1H23456"
                   value={prodrequestno}
                   onChange={(e) => setProdRequestNo(e.target.value)}
                 ></input>
               </label>
             </div>
-            <div className='forminputcolumn'>
+            <div className="forminputcolumn">
               <label>
                 <b>LOT SX:</b>{" "}
                 <input
-                  type='text'
-                  placeholder='ED2H3076'
+                  type="text"
+                  placeholder="ED2H3076"
                   value={process_lot_no}
                   onChange={(e) => setProcess_Lot_No(e.target.value)}
                 ></input>
@@ -729,71 +738,57 @@ const TRAPQC = () => {
               <label>
                 <b>ID:</b>{" "}
                 <input
-                  type='text'
-                  placeholder='12345'
+                  type="text"
+                  placeholder="12345"
                   value={id}
                   onChange={(e) => setID(e.target.value)}
                 ></input>
               </label>
             </div>
+            <div className="forminputcolumn">
+              <label>
+                <b>All Time:</b>
+                <input
+                  type="checkbox"
+                  name="alltimecheckbox"
+                  defaultChecked={alltime}
+                  onChange={() => setAllTime(!alltime)}
+                ></input>
+              </label>
+            </div>
           </div>
-          <div className='formbutton'>
-            <label>
-              <b>All Time:</b>
-              <input
-                type='checkbox'
-                name='alltimecheckbox'
-                defaultChecked={alltime}
-                onChange={() => setAllTime(!alltime)}
-              ></input>
-            </label>
-            <button
-              className='pqc1button'
-              onClick={() => {
+          <div className="formbutton">
+            <div className="btgroup">
+              <Button color={'primary'} variant="contained" size="small" fullWidth={true} sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#69b1f5f' }} onClick={() => {
                 setisLoading(true);
                 setReadyRender(false);
-                setColumnDefinition(column_pqc1_data);
+                setColumnDefinition(column_TRA_PQC1_DATA);
                 handletraInspectionInput();
-              }}
-            >
-              PQC1-Setting
-            </button>
-            <button
-              className='pqc3button'
-              onClick={() => {
+              }}>Setting</Button>
+              <Button color={'primary'} variant="contained" size="small" fullWidth={true} sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#9ddd49', color: 'black' }} onClick={() => {
                 setisLoading(true);
                 setReadyRender(false);
                 setColumnDefinition(column_pqc3_data);
                 handletraInspectionOutput();
-              }}
-            >
-              PQC3-Defect
-            </button>
-            <button
-              className='daofilmbutton'
-              onClick={() => {
+              }}>Defect</Button>
+            </div>
+            <div className="btgroup">
+              <Button color={'primary'} variant="contained" size="small" fullWidth={true} sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#f396fc' }} onClick={() => {
                 setisLoading(true);
                 setReadyRender(false);
                 setColumnDefinition(column_daofilm_data);
                 handletraInspectionInOut();
-              }}
-            >
-              Dao-film-TL
-            </button>
-            <button
-              className='lichsucndbbutton'
-              onClick={() => {
+              }}>Dao-film</Button>
+              <Button color={'primary'} variant="contained" size="small" fullWidth={true} sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#f7ab7e' }} onClick={() => {
                 setisLoading(true);
                 setReadyRender(false);
                 setColumnDefinition(column_cndb_data);
                 handletraInspectionNG();
-              }}
-            >
-              LS CNĐB
-            </button>
+              }}>CNĐB</Button>
+            </div>
           </div>
         </div>
-        <div className='tracuuPQCTable'>
+        <div className="tracuuPQCTable">
           {readyRender && (
             <DataGrid
               sx={{ fontSize: 12, flex: 1 }}
@@ -808,7 +803,7 @@ const TRAPQC = () => {
               rowsPerPageOptions={[
                 5, 10, 50, 100, 500, 1000, 5000, 10000, 500000,
               ]}
-              editMode='row'
+              editMode="row"
             />
           )}
         </div>

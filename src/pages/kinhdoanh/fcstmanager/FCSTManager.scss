@@ -1,427 +1,412 @@
 .buttonIcon {
-    font-size: 13px !important;
-    color: rgb(59, 45, 182) !important;
+  font-size: 13px !important;
+  color: rgb(59, 45, 182) !important;
 }
 
 @media only screen and (max-width: 3000px) {
-    .fcstmanager{
-        width: 100%;
-        height: 500px;
+  .fcstmanager {
+    width: 100%;
+    height: 500px;
+    display: flex;
+    flex-direction: column;
+
+    .mininavbar {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      margin-bottom: 5px;
+      margin-top: 5px;
+
+      .mininavitem {
+        padding: 5px;
+        background-color: rgb(68, 19, 247);
+        margin-left: 5px;
+        border-radius: 5px;
+        font-size: 0.7rem;
+        padding: 5px;
+        color: white;
+        -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+        box-shadow: 5px 5px 10px 5px rgba(0, 0, 0, 0.27);
+        &:hover {
+          background-color: rgb(127, 219, 255);
+          cursor: pointer;
+          color: black;
+        }
+      }
+    }
+
+    .newfcst {
+      display: flex;
+      flex-direction: column;
+      box-sizing: border-box;
+
+      .batchnewplan {
         display: flex;
         flex-direction: column;
-    
-    
-        .mininavbar {
+        gap: 10px;
+        width: 100%;
+        box-sizing: border-box;
+        align-items: center;
+        justify-items: center;
+
+        .formupload {
+          display: flex;
+          gap: 20px;
+          width: 100%;
+          align-items: center;
+          justify-content: center;
+          background-image: linear-gradient(0deg, #afd3d1, #86cfff);
+          padding-top: 10px;
+          padding-bottom: 10px;
+          margin-left: 20px;
+          margin-right: 20px;
+          border-radius: 5px;
+
+          .checkpobutton {
             display: flex;
-            flex-direction: row;
-            flex-wrap: wrap;
-            margin-bottom: 5px;
-            margin-top: 5px;
-    
-            .mininavitem {
-                padding: 5px;
-                background-color: rgb(68, 19, 247);
-                margin-left: 5px;
-                border-radius: 5px;
-                font-size: 0.7rem;           
-                padding:5px;
-                color: white;
-                -webkit-box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27); 
-                box-shadow: 5px 5px 10px 5px rgba(0,0,0,0.27);
-                &:hover{
-                    background-color: rgb(127, 219, 255);
-                    cursor: pointer;
-                    color: black;
-                }            
-            }
-    
-        }
-    
-        .newfcst {
-            display: flex;
-            flex-direction: column;             
-            box-sizing: border-box;  
-    
-            .batchnewplan {
-                display: flex;
-                flex-direction: column; 
-                gap: 10px;
-                width: 100%;
-                box-sizing: border-box;
-                align-items: center;
-                justify-items: center;
-    
-                .formupload {
-                    display: flex;
-                    gap: 20px;                    
-                    width: 100%;
-                    align-items: center;                   
-                    justify-content: center;
-                    background-image: linear-gradient(0deg, #afd3d1, #86cfff);
-                    padding-top: 10px;
-                    padding-bottom: 10px;
-                    margin-left: 20px;
-                    margin-right: 20px;
-                    border-radius: 5px;
-    
-                   
-                    .checkpobutton {
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        width: 100px;
-                        height: 15px;
-                        background-color: #99f86d;
-                        outline: none;
-                        border: none;
-                        padding: 5px;
-                        border-radius: 5px;
-                        -webkit-box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27); 
-                        box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27);
-                        &:hover{
-                            background-color: rgb(127, 219, 255);
-                            cursor: pointer;
-                        }            
-                        
-                    }
-                    .uppobutton{
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        width: 100px;
-                        height: 15px;
-                        background-color: #ee1010;
-                        color: white;
-                        outline: none;
-                        border: none;
-                        padding: 5px;
-                        border-radius: 5px;
-                        -webkit-box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27); 
-                        box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27);
-                        &:hover{
-                            background-color: rgb(127, 219, 255);
-                            cursor: pointer;
-                        }  
-                    }
-                }
-    
-                .insertPlanTable {
-                    display: flex;
-                    width: 99%;
-                    height: 80vh;
-                    margin-top: 10px;
-                    background-image: linear-gradient(0deg, #5e6666, #c0c0c9);
-                    padding: 10px;
-                    border-radius: 10px;               
-                    
-                }
-            }
-        }
-    
-        .tracuuFcst{
-            width: 100%; 
-            display: flex;
-            gap: 10px;
-            .tracuuFcstform {
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                width: 260px; 
-                height: 85vh;
-                
-                background-image: linear-gradient(0deg, #c9afd3, #b997f8);
-                -webkit-box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27); 
-                box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27);
-                border-radius: 8px;
-                padding: 5px;           
-                span {
-                    padding: 10px;
-                    font-size: 20px;
-                    margin: auto;
-                }
-    
-    
-                .forminput {
-                    display: flex;
-                    flex-direction: column;
-                    width: 100%;
-                    gap: 5px;
-                    flex-wrap: wrap;
-                    align-items: flex-end;
-                    justify-content: space-around;
-                    padding: 2px;  
-                    font-size: 0.6rem;                      
-    
-                    .forminputcolumn {
-                        display: flex;
-                        flex-direction: column;
-                        gap: 10px;
-                        align-items: flex-end;
-                        justify-content: flex-end;
-                        flex-wrap: wrap;
-                        input {              
-                            width: 125px;         
-                            height: 15px;
-                            font-size: 0.6rem;
-                            outline: none;
-                            border-radius: 5px;
-                            border: none;
-                            padding: 5px;
-                            margin-left: 5px;
-                            background-image: linear-gradient(0deg, #ececec, #9dee95);
-                        }
-                    }
-                }
-                .formbutton {
-                    display: flex;
-                    align-items: center;
-                    justify-content: space-around;
-                    gap: 20px;
-                }
-            }
-            .tracuuFcstTable {
-                display: flex;
-                flex-direction: column;           
-                width: 100%;
-                height: 85vh;
-                background-image: linear-gradient(0deg, #c9afd3, #b997f8);
-                -webkit-box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27); 
-                box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27);
-                border-radius: 8px; 
-            }
-    
-        }
-        .pivottable1 {
-            display: flex;
-            align-items: flex-start;
-            flex-direction: column;
-            position: absolute;
-            top: 1vh;
-            left: 1%;
-            width:95%;
-            height: 85vh;
-            overflow: scroll;
-            padding: 10px;
+            align-items: center;
+            justify-content: center;
+            width: 100px;
+            height: 15px;
+            background-color: #99f86d;
+            outline: none;
+            border: none;
+            padding: 5px;
             border-radius: 5px;
-            background-image: linear-gradient(0deg, #afd3d1, #86cfff);
-            -webkit-box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27); 
-            box-shadow: 5px 5px 10px 5px rgba(0,0,0,0.27);
-            z-index: 100;
-            * {
-                font-size: 0.7rem;
+            -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+            box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+            &:hover {
+              background-color: rgb(127, 219, 255);
+              cursor: pointer;
             }
+          }
+          .uppobutton {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100px;
+            height: 15px;
+            background-color: #ee1010;
+            color: white;
+            outline: none;
+            border: none;
+            padding: 5px;
+            border-radius: 5px;
+            -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+            box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+            &:hover {
+              background-color: rgb(127, 219, 255);
+              cursor: pointer;
+            }
+          }
         }
-       
+
+        .insertPlanTable {
+          display: flex;
+          width: 99%;
+          height: 80vh;
+          margin-top: 10px;
+          background-image: linear-gradient(0deg, #5e6666, #c0c0c9);
+          padding: 10px;
+          border-radius: 5px;
+        }
+      }
     }
+
+    .tracuuFcst {
+      width: 100%;
+      display: flex;
+      gap: 10px;
+      .tracuuFcstform {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 260px;
+        height: 85vh;
+
+        background-image: linear-gradient(0deg, #c9afd3, #b997f8);
+        -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+        box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+        border-radius: 8px;
+        padding: 5px;
+        span {
+          padding: 10px;
+          font-size: 20px;
+          margin: auto;
+        }
+
+        .forminput {
+          display: flex;
+          flex-direction: column;
+          width: 100%;
+          gap: 5px;
+          flex-wrap: wrap;
+          align-items: flex-end;
+          justify-content: space-around;
+          padding: 2px;
+          font-size: 0.6rem;
+
+          .forminputcolumn {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            align-items: flex-end;
+            justify-content: flex-end;
+            flex-wrap: wrap;
+            input {
+              width: 125px;
+              height: 15px;
+              font-size: 0.6rem;
+              outline: none;
+              border-radius: 5px;
+              border: none;
+              padding: 5px;
+              margin-left: 5px;
+              background-image: linear-gradient(0deg, #ececec, #9dee95);
+            }
+          }
+        }
+        .formbutton {
+          display: flex;
+          align-items: center;
+          justify-content: space-around;
+          gap: 20px;
+        }
+      }
+      .tracuuFcstTable {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        height: 85vh;
+        background-image: linear-gradient(0deg, #c9afd3, #b997f8);
+        -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+        box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+        border-radius: 8px;
+      }
+    }
+    .pivottable1 {
+      display: flex;
+      align-items: flex-start;
+      flex-direction: column;
+      position: absolute;
+      top: 1vh;
+      left: 1%;
+      width: 95%;
+      height: 85vh;
+      overflow: scroll;
+      padding: 10px;
+      border-radius: 5px;
+      background-image: linear-gradient(0deg, #afd3d1, #86cfff);
+      -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+      box-shadow: 5px 5px 10px 5px rgba(0, 0, 0, 0.27);
+      z-index: 100;
+      * {
+        font-size: 0.7rem;
+      }
+    }
+  }
 }
 @media only screen and (max-width: 768px) {
-    .fcstmanager{
-        width: 100%;
-        height: 500px;
+  .fcstmanager {
+    width: 100%;
+    height: 500px;
+    display: flex;
+    flex-direction: column;
+
+    .mininavbar {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      margin-bottom: 5px;
+      margin-top: 5px;
+
+      .mininavitem {
+        padding: 5px;
+        background-color: rgb(68, 19, 247);
+        margin-left: 5px;
+        border-radius: 5px;
+        font-size: 0.7rem;
+        padding: 5px;
+        color: white;
+        -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+        box-shadow: 5px 5px 10px 5px rgba(0, 0, 0, 0.27);
+        &:hover {
+          background-color: rgb(127, 219, 255);
+          cursor: pointer;
+          color: black;
+        }
+      }
+    }
+
+    .newfcst {
+      display: flex;
+      flex-direction: column;
+      box-sizing: border-box;
+
+      .batchnewplan {
         display: flex;
         flex-direction: column;
-    
-    
-        .mininavbar {
+        gap: 10px;
+        width: 100%;
+        box-sizing: border-box;
+        align-items: center;
+        justify-items: center;
+
+        .formupload {
+          display: flex;
+          gap: 20px;
+          width: 100%;
+          align-items: center;
+          justify-content: center;
+          background-image: linear-gradient(0deg, #afd3d1, #86cfff);
+          padding-top: 10px;
+          padding-bottom: 10px;
+          margin-left: 20px;
+          margin-right: 20px;
+          border-radius: 5px;
+
+          .checkpobutton {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100px;
+            height: 15px;
+            background-color: #99f86d;
+            outline: none;
+            border: none;
+            padding: 5px;
+            border-radius: 5px;
+            -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+            box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+            &:hover {
+              background-color: rgb(127, 219, 255);
+              cursor: pointer;
+            }
+          }
+          .uppobutton {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100px;
+            height: 15px;
+            background-color: #ee1010;
+            color: white;
+            outline: none;
+            border: none;
+            padding: 5px;
+            border-radius: 5px;
+            -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+            box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+            &:hover {
+              background-color: rgb(127, 219, 255);
+              cursor: pointer;
+            }
+          }
+        }
+
+        .insertPlanTable {
+          display: flex;
+          width: 99%;
+          height: 80vh;
+          margin-top: 10px;
+          background-image: linear-gradient(0deg, #5e6666, #c0c0c9);
+          padding: 10px;
+          border-radius: 5px;
+        }
+      }
+    }
+
+    .tracuuFcst {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      .tracuuFcstform {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        height: fit-content;
+
+        background-image: linear-gradient(0deg, #c9afd3, #b997f8);
+        -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+        box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+        border-radius: 8px;
+        padding: 5px;
+        span {
+          padding: 10px;
+          font-size: 20px;
+          margin: auto;
+        }
+
+        .forminput {
+          display: flex;
+          flex-direction: column;
+          width: 100%;
+          gap: 5px;
+          flex-wrap: wrap;
+          align-items: flex-end;
+          justify-content: space-around;
+          padding: 2px;
+          font-size: 0.6rem;
+
+          .forminputcolumn {
             display: flex;
             flex-direction: row;
-            flex-wrap: wrap;
-            margin-bottom: 5px;
-            margin-top: 5px;
-    
-            .mininavitem {
-                padding: 5px;
-                background-color: rgb(68, 19, 247);
-                margin-left: 5px;
-                border-radius: 5px;
-                font-size: 0.7rem;           
-                padding:5px;
-                color: white;
-                -webkit-box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27); 
-                box-shadow: 5px 5px 10px 5px rgba(0,0,0,0.27);
-                &:hover{
-                    background-color: rgb(127, 219, 255);
-                    cursor: pointer;
-                    color: black;
-                }            
-            }
-    
-        }
-    
-        .newfcst {
-            display: flex;
-            flex-direction: column;             
-            box-sizing: border-box;  
-    
-            .batchnewplan {
-                display: flex;
-                flex-direction: column; 
-                gap: 10px;
-                width: 100%;
-                box-sizing: border-box;
-                align-items: center;
-                justify-items: center;
-    
-                .formupload {
-                    display: flex;
-                    gap: 20px;                    
-                    width: 100%;
-                    align-items: center;                   
-                    justify-content: center;
-                    background-image: linear-gradient(0deg, #afd3d1, #86cfff);
-                    padding-top: 10px;
-                    padding-bottom: 10px;
-                    margin-left: 20px;
-                    margin-right: 20px;
-                    border-radius: 5px;
-    
-                   
-                    .checkpobutton {
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        width: 100px;
-                        height: 15px;
-                        background-color: #99f86d;
-                        outline: none;
-                        border: none;
-                        padding: 5px;
-                        border-radius: 5px;
-                        -webkit-box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27); 
-                        box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27);
-                        &:hover{
-                            background-color: rgb(127, 219, 255);
-                            cursor: pointer;
-                        }            
-                        
-                    }
-                    .uppobutton{
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        width: 100px;
-                        height: 15px;
-                        background-color: #ee1010;
-                        color: white;
-                        outline: none;
-                        border: none;
-                        padding: 5px;
-                        border-radius: 5px;
-                        -webkit-box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27); 
-                        box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27);
-                        &:hover{
-                            background-color: rgb(127, 219, 255);
-                            cursor: pointer;
-                        }  
-                    }
-                }
-    
-                .insertPlanTable {
-                    display: flex;
-                    width: 99%;
-                    height: 80vh;
-                    margin-top: 10px;
-                    background-image: linear-gradient(0deg, #5e6666, #c0c0c9);
-                    padding: 10px;
-                    border-radius: 10px;               
-                    
-                }
-            }
-        }
-    
-        .tracuuFcst{
-            width: 100%; 
-            display: flex;
-            flex-direction: column;
             gap: 10px;
-            .tracuuFcstform {
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                width: 100%; 
-                height: fit-content;
-                
-                background-image: linear-gradient(0deg, #c9afd3, #b997f8);
-                -webkit-box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27); 
-                box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27);
-                border-radius: 8px;
-                padding: 5px;           
-                span {
-                    padding: 10px;
-                    font-size: 20px;
-                    margin: auto;
-                }   
-    
-                .forminput {
-                    display: flex;
-                    flex-direction: column;
-                    width: 100%;
-                    gap: 5px;
-                    flex-wrap: wrap;
-                    align-items: flex-end;
-                    justify-content: space-around;
-                    padding: 2px;  
-                    font-size: 0.6rem;                      
-    
-                    .forminputcolumn {
-                        display: flex;
-                        flex-direction: row;
-                        gap: 10px;
-                        align-items: flex-end;
-                        justify-content: flex-end;
-                        flex-wrap: wrap;
-                        input {              
-                            width: 125px;         
-                            height: 15px;
-                            font-size: 0.6rem;
-                            outline: none;
-                            border-radius: 5px;
-                            border: none;
-                            padding: 5px;
-                            margin-left: 5px;
-                            background-image: linear-gradient(0deg, #ececec, #9dee95);
-                        }
-                    }
-                }
-                .formbutton {
-                    display: flex;
-                    align-items: center;
-                    justify-content: space-around;
-                    gap: 20px;
-                }
+            align-items: flex-end;
+            justify-content: flex-end;
+            flex-wrap: wrap;
+            input {
+              width: 125px;
+              height: 15px;
+              font-size: 0.6rem;
+              outline: none;
+              border-radius: 5px;
+              border: none;
+              padding: 5px;
+              margin-left: 5px;
+              background-image: linear-gradient(0deg, #ececec, #9dee95);
             }
-            .tracuuFcstTable {
-                display: flex;
-                flex-direction: column;           
-                width: 100%;
-                height: 85vh;
-                background-image: linear-gradient(0deg, #c9afd3, #b997f8);
-                -webkit-box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27); 
-                box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27);
-                border-radius: 8px; 
-            }
-    
+          }
         }
-        .pivottable1 {
-            display: flex;
-            align-items: flex-start;
-            flex-direction: column;
-            position: absolute;
-            top: 1vh;
-            left: 1%;
-            width:95%;
-            height: 85vh;
-            overflow: scroll;
-            padding: 10px;
-            border-radius: 5px;
-            background-image: linear-gradient(0deg, #afd3d1, #86cfff);
-            -webkit-box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.27); 
-            box-shadow: 5px 5px 10px 5px rgba(0,0,0,0.27);
-            z-index: 100;
-            * {
-                font-size: 0.7rem;
-            }
+        .formbutton {
+          display: flex;
+          align-items: center;
+          justify-content: space-around;
+          gap: 20px;
         }
-       
+      }
+      .tracuuFcstTable {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        height: 85vh;
+        background-image: linear-gradient(0deg, #c9afd3, #b997f8);
+        -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+        box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+        border-radius: 8px;
+      }
     }
+    .pivottable1 {
+      display: flex;
+      align-items: flex-start;
+      flex-direction: column;
+      position: absolute;
+      top: 1vh;
+      left: 1%;
+      width: 95%;
+      height: 85vh;
+      overflow: scroll;
+      padding: 10px;
+      border-radius: 5px;
+      background-image: linear-gradient(0deg, #afd3d1, #86cfff);
+      -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+      box-shadow: 5px 5px 10px 5px rgba(0, 0, 0, 0.27);
+      z-index: 100;
+      * {
+        font-size: 0.7rem;
+      }
+    }
+  }
 }

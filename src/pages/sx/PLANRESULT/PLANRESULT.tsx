@@ -1,18 +1,5 @@
 import React, { useEffect, useMemo, useState, useTransition } from "react";
 import Swal from "sweetalert2";
-import {
-  EditingState,
-  FilteringState,
-  IntegratedFiltering,
-  IntegratedPaging,
-  IntegratedSelection,
-  IntegratedSorting,
-  PagingState,
-  SearchState,
-  SelectionState,
-  SortingState,
-  TableRowDetail,
-} from "@devexpress/dx-react-grid";
 import moment from "moment";
 import {
   Chart,
@@ -38,67 +25,52 @@ import { BiSearch } from "react-icons/bi";
 import useWindowDimensions from "../../../api/useWindowDimensions";
 import { RootState } from "../../../redux/store";
 import { useSelector, useDispatch } from "react-redux";
-import { ResponsiveContainer } from "recharts";
-interface MACHINE_COUNTING {
-  FACTORY: string;
-  EQ_NAME: string;
-  EQ_QTY: number;
-}
-interface DAILY_SX_DATA {
-  MACHINE_NAME: string;
-  SX_DATE: string;
-  SX_RESULT: number;
-  PLAN_QTY: number;
-  RATE: number;
-}
-interface ACHIVEMENT_DATA {
-  MACHINE_NAME: string;
-  PLAN_QTY: number;
-  WH_OUTPUT: number;
-  SX_RESULT_TOTAL: number;
-  RESULT_STEP_FINAL: number;
-  RESULT_TO_NEXT_PROCESS: number;
-  RESULT_TO_INSPECTION: number;
-  INS_INPUT: number;
-  INSPECT_TOTAL_QTY: number;
-  INSPECT_OK_QTY: number;
-  INSPECT_NG_QTY: number;
-  INS_OUTPUT: number;
-  TOTAL_LOSS: number;
-  ACHIVEMENT_RATE: number;
-}
-interface WEEKLY_SX_DATA {
-  SX_WEEK: number;
-  SX_RESULT: number;
-  PLAN_QTY: number;
-  RATE: number;
-}
-interface MONTHLY_SX_DATA {
-  SX_MONTH: number;
-  SX_RESULT: number;
-  PLAN_QTY: number;
-  RATE: number;
-}
-interface TOTAL_TIME {
-  T_FR: number;
-  T_SR: number;
-  T_DC: number;
-  T_ED: number;
-  T_TOTAL: number;
-}
-interface OPERATION_TIME_DATA {
-  PLAN_FACTORY: string;
-  MACHINE: string;
-  TOTAL_TIME: number;
-  RUN_TIME_SX: number;
-  SETTING_TIME: number;
-  LOSS_TIME: number;
-  HIEU_SUAT_TIME: number;
-  SETTING_TIME_RATE: number;
-  LOSS_TIME_RATE: number;
-}
+
+import {
+  ACHIVEMENT_DATA,
+  DAILY_SX_DATA,
+  MACHINE_COUNTING,
+  MACHINE_LIST,
+  MONTHLY_SX_DATA,
+  OPERATION_TIME_DATA,
+  SX_LOSS_TREND_DATA,
+  TOTAL_TIME,
+  WEEKLY_SX_DATA,
+} from "../../../api/GlobalInterface";
+
 const PLANRESULT = () => {
   const { height, width } = useWindowDimensions();
+  const [machine_list, setMachine_List] = useState<MACHINE_LIST[]>([]);
+
+  const getMachineList = () => {
+    generalQuery("getmachinelist", {})
+      .then((response) => {
+        //console.log(response.data);
+        if (response.data.tk_status !== "NG") {
+          const loadeddata: MACHINE_LIST[] = response.data.data.map(
+            (element: MACHINE_LIST, index: number) => {
+              return {
+                ...element,
+              };
+            }
+          );
+
+          loadeddata.push(
+            { EQ_NAME: "ALL" },
+            { EQ_NAME: "NO" },
+            { EQ_NAME: "NA" }
+          );
+          console.log(loadeddata);
+          setMachine_List(loadeddata);
+        } else {
+          //Swal.fire("Thông báo", "Lỗi BOM SX: " + response.data.message, "error");
+          setMachine_List([]);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
   function getBusinessDatesCount(st: any, ed: any) {
     const startDate = new Date(moment(st).format("YYYY-MM-DD"));
     const endDate = new Date(moment(ed).format("YYYY-MM-DD"));
@@ -143,6 +115,7 @@ const PLANRESULT = () => {
   const [sxachivementdata, setSXAchivementData] = useState<ACHIVEMENT_DATA[]>(
     []
   );
+  const [sxlosstrendingdata, setSXLossTrendingData] = useState<SX_LOSS_TREND_DATA[]>([]);
   const sidebarstatus: boolean | undefined = useSelector(
     (state: RootState) => state.totalSlice.sidebarmenu
   );
@@ -150,7 +123,10 @@ const PLANRESULT = () => {
     getBusinessDatesCount(fromdate, todate)
   );
   const getMachineCounting = () => {
-    generalQuery("machinecounting2", {})
+    generalQuery("machinecounting2", {
+      FACTORY: factory,
+      EQ_NAME: machine,
+    })
       .then((response) => {
         //console.log(response.data.data);
         if (response.data.tk_status !== "NG") {
@@ -162,6 +138,7 @@ const PLANRESULT = () => {
               };
             }
           );
+
           let temp_TIME_NM1: TOTAL_TIME = {
             T_FR:
               (loaded_data.filter(
@@ -276,6 +253,33 @@ const PLANRESULT = () => {
           setMachineCount(loaded_data);
         } else {
           setMachineCount([]);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+  const getDailySXLossTrendingData = (mc: string, ft: string, fr: string, td: string) => {
+    generalQuery("trasxlosstrendingdata", {
+      MACHINE: mc,
+      FACTORY: ft,
+      FROM_DATE: fr,
+      TO_DATE: td,
+    })
+      .then((response) => {
+        //console.log(response.data.data);
+        if (response.data.tk_status !== "NG") {
+          const loaded_data: SX_LOSS_TREND_DATA[] = response.data.data.map(
+            (element: SX_LOSS_TREND_DATA, index: number) => {
+              return {
+                ...element,
+                INPUT_DATE: moment(element.INPUT_DATE).utc().format("YYYY-MM-DD"),               
+              };
+            }
+          );
+          setSXLossTrendingData(loaded_data);
+        } else {
+          setSXLossTrendingData([]);
         }
       })
       .catch((error) => {
@@ -595,8 +599,91 @@ const PLANRESULT = () => {
       </Chart>
     );
   }, [daily_sx_data]);
+  const productionLossTrendingchartMM = useMemo(() => {
+    return (
+      <Chart
+        id='workforcechart'
+        dataSource={sxlosstrendingdata}
+        height={600}
+        resolveLabelOverlapping='hide'
+      >
+        <Title
+          text={`DAILY PRODUCTION LOSS TRENDING`}
+          subtitle={`[${fromdate} ~ ${todate}] [${machine}] -[${factory}]`}
+        />
+        <ArgumentAxis title='PRODUCTION DATE' />
+        <ValueAxis name='percentage' position='left' title='Loss (%)' />
+        <ValueAxis name='percentage2' position='right' title='Loss (%)' />
+       
+        <CommonSeriesSettings
+          argumentField='INPUT_DATE'
+          hoverMode='allArgumentPoints'
+          selectionMode='allArgumentPoints'
+        >
+          <Label visible={true}>
+            <Format type='fixedPoint' precision={0} />
+          </Label>
+        </CommonSeriesSettings>
+        <Series
+          axis='percentage'
+          argumentField='INPUT_DATE'
+          valueField='LOSS_ST'
+          name='SETTING LOSS'
+          color='#019623'
+          type='line'
+        >
+          <Label
+            visible={true}
+            customizeText={(e: any) => {
+              return `${e.value.toLocaleString("en-US", {
+                maximumFractionDigits: 1,
+              })}%`;
+            }}
+          />
+        </Series>
+        <Series
+          axis='percentage'
+          argumentField='INPUT_DATE'
+          valueField='LOSS_SX'
+          name='SX LOSS'
+          color='#ce45ed'
+          type='line'
+        >
+          <Label
+            visible={true}
+            customizeText={(e: any) => {
+              return `${e.value.toLocaleString("en-US", {
+                maximumFractionDigits: 1,
+              })}%`;
+            }}
+          />
+        </Series>        
+        <Series
+          axis='percentage2'
+          argumentField='INPUT_DATE'
+          valueField='RATE1'
+          name='RATE1'
+          color='#f5aa42'
+          type='bar'
+        >
+          <Label
+            visible={true}
+            customizeText={(e: any) => {
+              return `${e.value.toLocaleString("en-US", {
+                maximumFractionDigits: 1,
+              })}%`;
+            }}
+          />
+        </Series>        
+        <Legend
+          verticalAlignment='bottom'
+          horizontalAlignment='center'
+        ></Legend>
+      </Chart>
+    );
+  }, [sxlosstrendingdata]);
   const weeklySXchartMM = useMemo(() => {
-    return (     
+    return (
       <Chart
         id='workforcechart'
         dataSource={weekly_sx_data}
@@ -608,7 +695,7 @@ const PLANRESULT = () => {
           text={`WEEKLY PRODUCTION TRENDING`}
           subtitle={`[${fromdate} ~ ${todate}]`}
         />
-        <ArgumentAxis title='PRODUCTION WEEK' allowDecimals={false}/>
+        <ArgumentAxis title='PRODUCTION WEEK' allowDecimals={false} />
         <ValueAxis name='quantity' position='left' title='QUANTITY (EA)' />
         <ValueAxis
           name='rate'
@@ -673,11 +760,10 @@ const PLANRESULT = () => {
           horizontalAlignment='center'
         ></Legend>
       </Chart>
-     
     );
   }, [weekly_sx_data, width, height]);
   const monthlySXchartMM = useMemo(() => {
-    return (      
+    return (
       <Chart
         id='workforcechart'
         dataSource={monthly_sx_data}
@@ -753,7 +839,7 @@ const PLANRESULT = () => {
           verticalAlignment='bottom'
           horizontalAlignment='center'
         ></Legend>
-      </Chart>      
+      </Chart>
     );
   }, [monthly_sx_data, width, height]);
   const getAvailableTime = () => {
@@ -802,15 +888,28 @@ const PLANRESULT = () => {
         }
       }
     }
+    totalAvailableTime =
+      machinecount.filter(
+        (e: MACHINE_COUNTING, index: number) => e.EQ_NAME === machine
+      ).length * dailytime1;
+    if (machine === "ALL") {
+      for (let i = 0; i < machinecount.length; i++) {
+        totalAvailableTime += machinecount[i].EQ_QTY * dailytime1;
+      }
+    }
+
     return totalAvailableTime;
   };
+
   useEffect(() => {
+    getMachineList();
     getMonthlySXData(
       machine,
       factory,
       moment().format("YYYY") + "-01-01",
       moment().format("YYYY-MM-DD")
     );
+    getDailySXLossTrendingData(machine, factory, fromdate, todate);
     getWeeklySXData(machine, factory, fromdate, todate);
     getDailySXData(machine, factory, fromdate, todate);
     getSXAchiveMentData(factory, fromdate, todate);
@@ -1034,29 +1133,24 @@ const PLANRESULT = () => {
                 <option value='NM2'>NM2</option>
               </select>
             </label>
+
             <label>
               <b>MACHINE:</b>
               <select
-                name='machine'
+                name='machine2'
                 value={machine}
                 onChange={(e) => {
                   setMachine(e.target.value);
-                  /* getDailySXData(e.target.value, factory, fromdate, todate);
-                  getWeeklySXData(e.target.value, factory, fromdate, todate);
-                  getMonthlySXData(
-                    e.target.value,
-                    factory,
-                    moment().format("YYYY") + "-01-01",
-                    moment().format("YYYY-MM-DD")
-                  );
-                  getMachineTimeEfficiency(e.target.value,factory, fromdate, todate); */
                 }}
+                style={{ width: 150, height: 30 }}
               >
-                <option value='ALL'>ALL</option>
-                <option value='FR'>FR</option>
-                <option value='SR'>SR</option>
-                <option value='DC'>DC</option>
-                <option value='ED'>ED</option>
+                {machine_list.map((ele: MACHINE_LIST, index: number) => {
+                  return (
+                    <option key={index} value={ele.EQ_NAME}>
+                      {ele.EQ_NAME}
+                    </option>
+                  );
+                })}
               </select>
             </label>
           </div>
@@ -1064,19 +1158,22 @@ const PLANRESULT = () => {
             <IconButton
               className='buttonIcon'
               onClick={() => {
+               
                 getDailySXData(machine, factory, fromdate, todate);
                 getSXAchiveMentData(factory, fromdate, todate);
                 getWeeklySXData(machine, factory, fromdate, todate);
                 getMachineTimeEfficiency(machine, factory, fromdate, todate);
+                getMachineCounting();
                 setDayRange(
                   getBusinessDatesCount(
                     moment(fromdate).format("YYYY-MM-DD"),
                     moment(todate).format("YYYY-MM-DD")
                   )
                 );
+                getDailySXLossTrendingData(machine, factory, fromdate, todate);
               }}
             >
-              <BiSearch color='green' size={25} />
+              <BiSearch color='green' size={15} />
               Search
             </IconButton>
           </div>
@@ -1102,128 +1199,49 @@ const PLANRESULT = () => {
                 </div>
               </div>
             </div>
-            <div className='subprogressdiv'>
-              <div className='sectiondiv'>
-                FR:{" "}
-                {sxachivementdata
-                  .filter(
-                    (ele: ACHIVEMENT_DATA, index: number) =>
-                      ele.MACHINE_NAME === "FR"
-                  )[0]
-                  ?.ACHIVEMENT_RATE?.toLocaleString("en-US", {
-                    maximumFractionDigits: 1,
-                  })}{" "}
-                %
-                <LinearProgress
-                  style={{ height: "10px" }}
-                  variant='determinate'
-                  color='primary'
-                  aria-valuemin={0}
-                  aria-valuemax={100}
-                  value={
-                    sxachivementdata.filter(
-                      (ele: ACHIVEMENT_DATA, index: number) =>
-                        ele.MACHINE_NAME === "FR"
-                    )[0]?.ACHIVEMENT_RATE === undefined
-                      ? 0
-                      : sxachivementdata.filter(
+            {machine_list
+              .filter(
+                (ee: MACHINE_LIST, index: number) =>
+                  ee.EQ_NAME !== "NO" &&
+                  ee.EQ_NAME !== "NA" &&
+                  ee.EQ_NAME !== "ALL"
+              )
+              .map((element: MACHINE_LIST, index: number) => {
+                return (
+                  <div key={index} className='subprogressdiv'>
+                    <div className='sectiondiv'>
+                      {element.EQ_NAME}:{" "}
+                      {sxachivementdata
+                        .filter(
                           (ele: ACHIVEMENT_DATA, index: number) =>
-                            ele.MACHINE_NAME === "FR"
-                        )[0]?.ACHIVEMENT_RATE
-                  }
-                />
-              </div>
-              <div className='sectiondiv'>
-                SR:{" "}
-                {sxachivementdata
-                  .filter(
-                    (ele: ACHIVEMENT_DATA, index: number) =>
-                      ele.MACHINE_NAME === "SR"
-                  )[0]
-                  ?.ACHIVEMENT_RATE?.toLocaleString("en-US", {
-                    maximumFractionDigits: 1,
-                  })}{" "}
-                %
-                <LinearProgress
-                  style={{ height: "10px" }}
-                  variant='determinate'
-                  color='secondary'
-                  aria-valuemin={0}
-                  aria-valuemax={100}
-                  value={
-                    sxachivementdata.filter(
-                      (ele: ACHIVEMENT_DATA, index: number) =>
-                        ele.MACHINE_NAME === "SR"
-                    )[0]?.ACHIVEMENT_RATE === undefined
-                      ? 0
-                      : sxachivementdata.filter(
-                          (ele: ACHIVEMENT_DATA, index: number) =>
-                            ele.MACHINE_NAME === "SR"
-                        )[0]?.ACHIVEMENT_RATE
-                  }
-                />
-              </div>
-              <div className='sectiondiv'>
-                DC:{" "}
-                {sxachivementdata
-                  .filter(
-                    (ele: ACHIVEMENT_DATA, index: number) =>
-                      ele.MACHINE_NAME === "DC"
-                  )[0]
-                  ?.ACHIVEMENT_RATE?.toLocaleString("en-US", {
-                    maximumFractionDigits: 1,
-                  })}{" "}
-                %
-                <LinearProgress
-                  style={{ height: "10px" }}
-                  variant='determinate'
-                  color='info'
-                  aria-valuemin={0}
-                  aria-valuemax={100}
-                  value={
-                    sxachivementdata.filter(
-                      (ele: ACHIVEMENT_DATA, index: number) =>
-                        ele.MACHINE_NAME === "DC"
-                    )[0]?.ACHIVEMENT_RATE === undefined
-                      ? 0
-                      : sxachivementdata.filter(
-                          (ele: ACHIVEMENT_DATA, index: number) =>
-                            ele.MACHINE_NAME === "DC"
-                        )[0]?.ACHIVEMENT_RATE
-                  }
-                />
-              </div>
-              <div className='sectiondiv'>
-                ED:{" "}
-                {sxachivementdata
-                  .filter(
-                    (ele: ACHIVEMENT_DATA, index: number) =>
-                      ele.MACHINE_NAME === "ED"
-                  )[0]
-                  ?.ACHIVEMENT_RATE?.toLocaleString("en-US", {
-                    maximumFractionDigits: 1,
-                  })}{" "}
-                %
-                <LinearProgress
-                  style={{ height: "10px" }}
-                  variant='determinate'
-                  color='warning'
-                  aria-valuemin={0}
-                  aria-valuemax={100}
-                  value={
-                    sxachivementdata.filter(
-                      (ele: ACHIVEMENT_DATA, index: number) =>
-                        ele.MACHINE_NAME === "ED"
-                    )[0]?.ACHIVEMENT_RATE === undefined
-                      ? 0
-                      : sxachivementdata.filter(
-                          (ele: ACHIVEMENT_DATA, index: number) =>
-                            ele.MACHINE_NAME === "ED"
-                        )[0]?.ACHIVEMENT_RATE
-                  }
-                />
-              </div>
-            </div>
+                            ele.MACHINE_NAME === element.EQ_NAME
+                        )[0]
+                        ?.ACHIVEMENT_RATE?.toLocaleString("en-US", {
+                          maximumFractionDigits: 1,
+                        })}{" "}
+                      %
+                      <LinearProgress
+                        style={{ height: "10px" }}
+                        variant='determinate'
+                        color='primary'
+                        aria-valuemin={0}
+                        aria-valuemax={100}
+                        value={
+                          sxachivementdata.filter(
+                            (ele: ACHIVEMENT_DATA, index: number) =>
+                              ele.MACHINE_NAME === element.EQ_NAME
+                          )[0]?.ACHIVEMENT_RATE === undefined
+                            ? 0
+                            : sxachivementdata.filter(
+                                (ele: ACHIVEMENT_DATA, index: number) =>
+                                  ele.MACHINE_NAME === element.EQ_NAME
+                              )[0]?.ACHIVEMENT_RATE
+                        }
+                      />
+                    </div>
+                  </div>
+                );
+              })}
           </div>
         </div>
         <div className='progressdiv'>
@@ -1494,6 +1512,14 @@ const PLANRESULT = () => {
             4. PRODUCTION PERFOMANCE TRENDING
           </div>
           <div className='starndardworkforce'>{productionresultchartMM}</div>
+        </div>
+      </div>
+      <div className='workforcechart'>
+        <div className='sectiondiv'>
+          <div className='titleplanresult'>
+            5. PRODUCTION LOSS TRENDING
+          </div>
+          <div className='starndardworkforce'>{productionLossTrendingchartMM}</div>
         </div>
       </div>
       <div className='workforcechart2'>

@@ -19,7 +19,10 @@ import { AiFillFileExcel, AiOutlineSearch } from "react-icons/ai";
 import Swal from "sweetalert2";
 import { generalQuery } from "../../../api/Api";
 import { UserContext } from "../../../api/Context";
-import { SaveExcel } from "../../../api/GlobalFunction";
+import {
+  CustomResponsiveContainer,
+  SaveExcel,
+} from "../../../api/GlobalFunction";
 import "./PQC1.scss";
 import DataGrid, {
   Column,
@@ -41,101 +44,14 @@ import DataGrid, {
 import { BiShow } from "react-icons/bi";
 import { GrStatusGood } from "react-icons/gr";
 import { FcCancel } from "react-icons/fc";
-import internal from "stream";
-import { UserData } from "../../../redux/slices/globalSlice";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
-
-interface PQC1_DATA {
-  PQC1_ID: string;
-  YEAR_WEEK: string;
-  PROD_REQUEST_NO: string;
-  PROD_REQUEST_QTY: number;
-  PROD_REQUEST_DATE: string;
-  PLAN_ID: string;
-  PROCESS_LOT_NO: string;
-  G_NAME: string;
-  G_NAME_KD: string;
-  LINEQC_PIC: string;
-  PROD_PIC: string;
-  PROD_LEADER: string;
-  LINE_NO: number;
-  STEPS: string;
-  CAVITY: number;
-  SETTING_OK_TIME: string;
-  FACTORY: string;
-  INSPECT_SAMPLE_QTY: number;
-  PROD_LAST_PRICE: number;
-  SAMPLE_AMOUNT: number;
-  REMARK: string;
-  INS_DATE: string;
-  UPD_DATE: string;
-}
-interface CustomerListData {
-  CUST_CD: string;
-  CUST_NAME_KD: string;
-  CUST_NAME: string;
-}
-interface SX_DATA {
-  G_CODE: string;
-  PHAN_LOAI: string;
-  PLAN_ID: string;
-  PLAN_DATE: string;
-  PROD_REQUEST_NO: string;
-  G_NAME: string;
-  G_NAME_KD: string;
-  PLAN_QTY: number;
-  EQ1: string, 
-  EQ2: string,
-  PLAN_EQ: string;
-  PLAN_FACTORY: string;
-  PROCESS_NUMBER: number;
-  STEP: number;
-  M_NAME: string;
-  WAREHOUSE_OUTPUT_QTY: number;
-  TOTAL_OUT_QTY: number;
-  USED_QTY: number;
-  REMAIN_QTY: number;
-  PD: number;
-  CAVITY: number;
-  SETTING_MET_TC: number;
-  SETTING_DM_SX: number;
-  SETTING_MET: number;
-  WAREHOUSE_ESTIMATED_QTY: number;
-  ESTIMATED_QTY_ST: number;
-  ESTIMATED_QTY: number;
-  KETQUASX: number;
-  LOSS_SX_ST: number;
-  LOSS_SX: number;
-  INS_INPUT: number;
-  LOSS_SX_KT: number;
-  INS_OUTPUT: number;
-  LOSS_KT: number;
-  SETTING_START_TIME: string;
-  MASS_START_TIME: string;
-  MASS_END_TIME: string;
-  RPM: number;
-  EQ_NAME_TT: string;
-  SX_DATE: string;
-  WORK_SHIFT: string;
-  INS_EMPL: string;
-  FACTORY: string;
-  BOC_KIEM: number;
-  LAY_DO: number;
-  MAY_HONG: number;
-  DAO_NG: number;
-  CHO_LIEU: number;
-  CHO_BTP: number;
-  HET_LIEU: number;
-  LIEU_NG: number;
-  CAN_HANG: number;
-  HOP_FL: number;
-  CHO_QC: number;
-  CHOT_BAOCAO: number;
-  CHUYEN_CODE: number;
-  KHAC: number;
-  REMARK: string;
-}
+import {
+  CustomerListData,
+  PQC1_DATA,
+  SX_DATA,
+  UserData,
+} from "../../../api/GlobalInterface";
 const PQC1 = () => {
   const [customerList, setCustomerList] = useState<CustomerListData[]>([]);
   const userData: UserData | undefined = useSelector(
@@ -176,45 +92,48 @@ const PQC1 = () => {
     userData?.FACTORY_CODE === 1 ? "NM1" : "NM2"
   );
   const [pqc1datatable, setPqc1DataTable] = useState<Array<PQC1_DATA>>([]);
-  const [sx_data, setSXData] = useState<SX_DATA[]>([])
-  const [ktdtc,setKTDTC] = useState('CKT');
-  
-  const checkKTDTC = (PROCESS_LOT_NO: string) =>  {
+  const [sx_data, setSXData] = useState<SX_DATA[]>([]);
+  const [ktdtc, setKTDTC] = useState("CKT");
+  const refArray = [useRef<any>(null), useRef<any>(null), useRef<any>(null), useRef<any>(null), useRef<any>(null)];
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, index: number) => {
+    if (e.key === "Enter") {
+      // console.log('press enter')
+      e.preventDefault();
+      const nextIndex = (index + 1) % refArray.length;
+      refArray[nextIndex].current.focus();
+    }
+  };
+  const checkKTDTC = (PROCESS_LOT_NO: string) => {
     generalQuery("checkktdtc", { PROCESS_LOT_NO: PROCESS_LOT_NO })
-    .then((response) => {
-      if (response.data.tk_status !== "NG") {
-        //console.log(response.data.data);
-        if(response.data.data[0].TRANGTHAI !== null)
-        {
-          setKTDTC('DKT');
+      .then((response) => {
+        if (response.data.tk_status !== "NG") {
+          //console.log(response.data.data);
+          if (response.data.data[0].TRANGTHAI !== null) {
+            setKTDTC("DKT");
+          } else {
+            setKTDTC("CKT");
+          }
+        } else {
+          setKTDTC("CKT");
         }
-        else
-        {
-          setKTDTC('CKT');
-        }
-       
-      } else {
-        setKTDTC('CKT');       
-      }
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-
-  }
-  const checkDataSX = (PLAN_ID: string)=> {    
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+  const checkDataSX = (PLAN_ID: string) => {
     generalQuery("loadDataSX", {
       ALLTIME: true,
-      FROM_DATE: '',
-      TO_DATE: '',
-      PROD_REQUEST_NO: '',
+      FROM_DATE: "",
+      TO_DATE: "",
+      PROD_REQUEST_NO: "",
       PLAN_ID: PLAN_ID,
-      M_NAME: '',
-      M_CODE: '',
-      G_NAME: '',
-      G_CODE: '',
-      FACTORY: 'ALL',
-      PLAN_EQ: 'ALL',
+      M_NAME: "",
+      M_CODE: "",
+      G_NAME: "",
+      G_CODE: "",
+      FACTORY: "ALL",
+      PLAN_EQ: "ALL",
     })
       .then((response) => {
         //console.log(response.data.data);
@@ -228,32 +147,31 @@ const PQC1 = () => {
                   element.SETTING_START_TIME === null
                     ? ""
                     : moment
-                        .utc(element.SETTING_START_TIME)
-                        .format("YYYY-MM-DD HH:mm:ss"),
+                      .utc(element.SETTING_START_TIME)
+                      .format("YYYY-MM-DD HH:mm:ss"),
                 MASS_START_TIME:
                   element.MASS_START_TIME === null
                     ? ""
                     : moment
-                        .utc(element.MASS_START_TIME)
-                        .format("YYYY-MM-DD HH:mm:ss"),
+                      .utc(element.MASS_START_TIME)
+                      .format("YYYY-MM-DD HH:mm:ss"),
                 MASS_END_TIME:
                   element.MASS_END_TIME === null
                     ? ""
                     : moment
-                        .utc(element.MASS_END_TIME)
-                        .format("YYYY-MM-DD HH:mm:ss"),
+                      .utc(element.MASS_END_TIME)
+                      .format("YYYY-MM-DD HH:mm:ss"),
                 SX_DATE:
                   element.SX_DATE === null
                     ? ""
-                    : moment.utc(element.SX_DATE).format("YYYY-MM-DD"),        
+                    : moment.utc(element.SX_DATE).format("YYYY-MM-DD"),
                 id: index,
               };
             }
           );
           //console.log(loaded_data);
-          setSXData(loaded_data);    
-          checkPlanIDP501(loaded_data);      
-           
+          setSXData(loaded_data);
+          checkPlanIDP501(loaded_data);
         } else {
           Swal.fire("Thông báo", " Có lỗi : " + response.data.message, "error");
         }
@@ -261,166 +179,155 @@ const PQC1 = () => {
       .catch((error) => {
         console.log(error);
       });
-  }
-  const setQCPASS = async (value: string) => {
-    console.log(selectedRowsDataA);
-    if (selectedRowsDataA.length > 0) {
-      Swal.fire({
-        title: "Tra cứu vật liệu Holding",
-        text: "Đang tải dữ liệu, hãy chờ chút",
-        icon: "info",
-        showCancelButton: false,
-        allowOutsideClick: false,
-        confirmButtonText: "OK",
-        showConfirmButton: false,
-      });
-      let err_code: string = "";
-      for (let i = 0; i < selectedRowsDataA.length; i++) {
-        await generalQuery("updateQCPASS_FAILING", {
-          VALUE: value,
-        })
-          // eslint-disable-next-line no-loop-func
-          .then((response) => {
-            //console.log(response.data.data);
-            if (response.data.tk_status !== "NG") {
-            } else {
-              err_code += ` Lỗi: ${response.data.message}`;
-            }
-          })
-          .catch((error) => {
-            console.log(error);
-          });
-      }
-      if (err_code === "") {
-        Swal.fire("Thông báo", "SET thành công", "success");
-      } else {
-        Swal.fire("Thông báo", "Lỗi: " + err_code, "error");
-      }
-    } else {
-      Swal.fire("Thông báo", "Chọn ít nhất 1 dòng để thực hiện", "error");
-    }
   };
   const pqc1DataTable = React.useMemo(
     () => (
-      <div className='datatb'>
-        <div className='menubar'>
+      <div className="datatb">
+        <div className="menubar">
           <IconButton
-            className='buttonIcon'
+            className="buttonIcon"
             onClick={() => {
               setShowHideInput((pre) => !pre);
               setInspectionDataTable([]);
             }}
           >
-            <BiShow color='blue' size={25} />
+            <BiShow color="blue" size={15} />
             Show/Hide Input
           </IconButton>
-          <span style={{ fontSize: 20, fontWeight: "bold" }}>
-            BẢNG NHẬP THÔNG TIN SETTING PQC
-          </span>
           <IconButton
-            className='buttonIcon'
+            className="buttonIcon"
             onClick={() => {
-              traPQC1Data();              
-              setShowHideInput(false);
+              traPQC1Data();
+              //setShowHideInput(false);
             }}
           >
-            <AiOutlineSearch color='red' size={25} />
+            <AiOutlineSearch color="red" size={15} />
             Tra Data
           </IconButton>
         </div>
-        <DataGrid
-          style={{fontSize:'0.7rem'}}
-          autoNavigateToFocusedRow={true}
-          allowColumnReordering={true}
-          allowColumnResizing={true}
-          columnAutoWidth={false}
-          cellHintEnabled={true}
-          columnResizingMode={"widget"}
-          showColumnLines={true}
-          dataSource={pqc1datatable}
-          columnWidth='auto'
-          keyExpr='id'
-          height={"70vh"}
-          showBorders={true}
-          onSelectionChanged={(e) => {
-            //console.log(e.selectedRowsData);
-            //setselecterowfunction(e.selectedRowsData);
-            setSelectedRowsData(e.selectedRowsData);
-          }}
-          onRowClick={(e) => {
-            //console.log(e.data);
-          }}
-          onRowUpdated={(e) => {
-            //console.log(e);
-          }}
-        >
-          <KeyboardNavigation
-            editOnKeyPress={true}
-            enterKeyAction={"moveFocus"}
-            enterKeyDirection={"column"}
-          />
-          <Scrolling
-            useNative={false}
-            scrollByContent={true}
-            scrollByThumb={true}
-            showScrollbar='onHover'
-            mode='virtual'
-          />
-          <Selection mode='multiple' selectAllMode='allPages' />
-          <Editing
-            allowUpdating={true}
-            allowAdding={true}
-            allowDeleting={false}
-            mode='cell'
-            confirmDelete={true}
-            onChangesChange={(e) => {}}
-          />
-          <Export enabled={true} />
-          <Toolbar disabled={false}>
-            <Item location='before'>
-              <IconButton
-                className='buttonIcon'
-                onClick={() => {
-                  SaveExcel(inspectiondatatable, "SPEC DTC");
-                }}
-              >
-                <AiFillFileExcel color='green' size={25} />
-                SAVE
-              </IconButton>
-            </Item>
-            <Item name='searchPanel' />
-            <Item name='exportButton' />
-            <Item name='columnChooserButton' />
-            <Item name='addRowButton' />
-            <Item name='saveButton' />
-            <Item name='revertButton' />
-          </Toolbar>
-          <FilterRow visible={true} />
-          <SearchPanel visible={true} />
-          <ColumnChooser enabled={true} />
-          <Paging defaultPageSize={15} />
-          <Pager
-            showPageSizeSelector={true}
-            allowedPageSizes={[5, 10, 15, 20, 100, 1000, 10000, "all"]}
-            showNavigationButtons={true}
-            showInfo={true}
-            infoText='Page #{0}. Total: {1} ({2} items)'
-            displayMode='compact'
-          />
-          <Summary>
-            <TotalItem
-              alignment='right'
-              column='PQC1_ID'
-              summaryType='count'
-              valueFormat={"decimal"}
+        <CustomResponsiveContainer>
+          <DataGrid
+            style={{ fontSize: "0.7rem" }}
+            autoNavigateToFocusedRow={true}
+            allowColumnReordering={true}
+            allowColumnResizing={true}
+            columnAutoWidth={false}
+            cellHintEnabled={true}
+            columnResizingMode={"widget"}
+            showColumnLines={true}
+            dataSource={pqc1datatable}
+            columnWidth="auto"
+            keyExpr="id"
+            height={"100%"}
+            showBorders={true}
+            onSelectionChanged={(e) => {
+              //console.log(e.selectedRowsData);
+              //setselecterowfunction(e.selectedRowsData);
+              setSelectedRowsData(e.selectedRowsData);
+            }}
+            onRowClick={(e) => {
+              //console.log(e.data);
+            }}
+            onRowUpdated={(e) => {
+              //console.log(e);
+            }}
+          >
+            <KeyboardNavigation
+              editOnKeyPress={true}
+              enterKeyAction={"moveFocus"}
+              enterKeyDirection={"column"}
             />
-          </Summary>
-        </DataGrid>
+            <Scrolling
+              useNative={false}
+              scrollByContent={true}
+              scrollByThumb={true}
+              showScrollbar="onHover"
+              mode="virtual"
+            />
+            <Selection mode="multiple" selectAllMode="allPages" />
+            <Editing
+              allowUpdating={true}
+              allowAdding={true}
+              allowDeleting={false}
+              mode="cell"
+              confirmDelete={true}
+              onChangesChange={(e) => { }}
+            />
+            <Export enabled={true} />
+            <Toolbar disabled={false}>
+              <Item location="before">
+                <IconButton
+                  className="buttonIcon"
+                  onClick={() => {
+                    SaveExcel(inspectiondatatable, "SPEC DTC");
+                  }}
+                >
+                  <AiFillFileExcel color="green" size={15} />
+                  SAVE
+                </IconButton>
+              </Item>
+              <Item name="searchPanel" />
+              <Item name="exportButton" />
+              <Item name="columnChooserButton" />
+              <Item name="addRowButton" />
+              <Item name="saveButton" />
+              <Item name="revertButton" />
+            </Toolbar>
+            <FilterRow visible={true} />
+            <SearchPanel visible={true} />
+            <ColumnChooser enabled={true} />
+            <Paging defaultPageSize={15} />
+            <Pager
+              showPageSizeSelector={true}
+              allowedPageSizes={[5, 10, 15, 20, 100, 1000, 10000, "all"]}
+              showNavigationButtons={true}
+              showInfo={true}
+              infoText="Page #{0}. Total: {1} ({2} items)"
+              displayMode="compact"
+            />
+            <Column dataField='FACTORY' caption='FACTORY' allowEditing={false} width={50}></Column>
+            <Column dataField='PQC1_ID' caption='PQC1_ID' allowEditing={false} width={60}></Column>
+            <Column dataField='PLAN_ID' caption='PLAN_ID' allowEditing={false} width={70}></Column>
+            <Column dataField='SETTING_OK_TIME' caption='SETTING_OK_TIME' allowEditing={false} width={130}></Column>
+            <Column dataField='INSPECT_SAMPLE_QTY' caption='INSPECT_SAMPLE_QTY' allowEditing={true} width={150}></Column>
+            <Column dataField='YEAR_WEEK' caption='YEAR_WEEK' allowEditing={false} width={100}></Column>
+            <Column dataField='PROCESS_LOT_NO' caption='PROCESS_LOT_NO' allowEditing={false} width={100}></Column>
+            <Column dataField='G_NAME' caption='G_NAME' allowEditing={false} width={100}></Column>
+            <Column dataField='G_NAME_KD' caption='G_NAME_KD' allowEditing={false} width={100}></Column>
+            <Column dataField='LINEQC_PIC' caption='LINEQC_PIC' allowEditing={false} width={100}></Column>
+            <Column dataField='PROD_PIC' caption='PROD_PIC' allowEditing={false} width={100}></Column>
+            <Column dataField='PROD_LEADER' caption='PROD_LEADER' allowEditing={false} width={100}></Column>
+            <Column dataField='LINE_NO' caption='LINE_NO' allowEditing={false} width={100}></Column>
+            <Column dataField='STEPS' caption='STEPS' allowEditing={false} width={70}></Column>
+            <Column dataField='CAVITY' caption='CAVITY' allowEditing={false} width={60}></Column>
+            <Column dataField='PROD_LAST_PRICE' caption='PROD_LAST_PRICE' allowEditing={false} width={100}></Column>
+            <Column dataField='SAMPLE_AMOUNT' caption='SAMPLE_AMOUNT' allowEditing={false} width={100}></Column>
+            <Column dataField='CNDB_ENCODES' caption='CNDB_ENCODES' allowEditing={false} width={100}></Column>
+            <Column dataField='REMARK' caption='REMARK' allowEditing={false} width={100}></Column>
+            <Column dataField='INS_DATE' caption='INS_DATE' allowEditing={false} width={100}></Column>
+            <Column dataField='UPD_DATE' caption='UPD_DATE' allowEditing={false} width={100}></Column>
+            <Column dataField='PQC3_ID' caption='PQC3_ID' allowEditing={false} width={100}></Column>
+            <Column dataField='OCCURR_TIME' caption='OCCURR_TIME' allowEditing={false} width={100}></Column>
+            <Column dataField='INSPECT_QTY' caption='INSPECT_QTY' allowEditing={false} width={100}></Column>
+            <Column dataField='DEFECT_QTY' caption='DEFECT_QTY' allowEditing={false} width={100}></Column>
+            <Column dataField='DEFECT_PHENOMENON' caption='DEFECT_PHENOMENON' allowEditing={false} width={100}></Column>
+            <Column dataField='PROD_REQUEST_NO' caption='PROD_REQUEST_NO' allowEditing={false} width={100}></Column>
+            <Column dataField='PROD_REQUEST_QTY' caption='PROD_REQUEST_QTY' allowEditing={false} width={100}></Column>
+            <Column dataField='PROD_REQUEST_DATE' caption='PROD_REQUEST_DATE' allowEditing={false} width={100}></Column>
+            <Summary>
+              <TotalItem
+                alignment="right"
+                column="PQC1_ID"
+                summaryType="count"
+                valueFormat={"decimal"}
+              />
+            </Summary>
+          </DataGrid>
+        </CustomResponsiveContainer>
       </div>
     ),
     [pqc1datatable]
   );
-
   const traPQC1Data = () => {
     generalQuery("trapqc1data", {
       ALLTIME: false,
@@ -475,14 +382,14 @@ const PQC1 = () => {
           if (selection === 1) {
             setEmplName(
               response.data.data[0].MIDLAST_NAME +
-                " " +
-                response.data.data[0].FIRST_NAME
+              " " +
+              response.data.data[0].FIRST_NAME
             );
           } else {
             setEmplName2(
               response.data.data[0].MIDLAST_NAME +
-                " " +
-                response.data.data[0].FIRST_NAME
+              " " +
+              response.data.data[0].FIRST_NAME
             );
           }
         } else {
@@ -530,48 +437,45 @@ const PQC1 = () => {
         console.log(error);
       });
   };
-  const checkPlanIDP501 = (SXDATA: SX_DATA[]) =>  {
+  const checkPlanIDP501 = (SXDATA: SX_DATA[]) => {
     generalQuery("checkPlanIdP501", { PLAN_ID: SXDATA[0].PLAN_ID })
-    .then((response) => {
-      if (response.data.tk_status !== "NG") {
-        //console.log(response.data.data);
-        setInputNo(response.data.data[0].M_LOT_NO);
-        checkLotNVL(response.data.data[0].M_LOT_NO);
-        setProcessLotNo(response.data.data[0].PROCESS_LOT_NO);   
-        checkKTDTC(response.data.data[0].PROCESS_LOT_NO);
-      } else {        
-        if(SXDATA[0].PROCESS_NUMBER===0)
-        {
-          setInputNo('');
-          setProcessLotNo('');
+      .then((response) => {
+        if (response.data.tk_status !== "NG") {
+          //console.log(response.data.data);
+          setInputNo(response.data.data[0].M_LOT_NO);
+          checkLotNVL(response.data.data[0].M_LOT_NO);
+          setProcessLotNo(response.data.data[0].PROCESS_LOT_NO);
+          checkKTDTC(response.data.data[0].PROCESS_LOT_NO);
+        } else {
+          if (SXDATA[0].PROCESS_NUMBER === 0) {
+            setInputNo("");
+            setProcessLotNo("");
+          } else {
+            generalQuery("checkProcessLotNo_Prod_Req_No", {
+              PROD_REQUEST_NO: SXDATA[0].PROD_REQUEST_NO,
+            })
+              .then((response) => {
+                if (response.data.tk_status !== "NG") {
+                  //console.log(response.data.data);
+                  setInputNo(response.data.data[0].M_LOT_NO);
+                  checkLotNVL(response.data.data[0].M_LOT_NO);
+                  setProcessLotNo(response.data.data[0].PROCESS_LOT_NO);
+                  checkKTDTC(response.data.data[0].PROCESS_LOT_NO);
+                } else {
+                  setInputNo("");
+                  setProcessLotNo("");
+                }
+              })
+              .catch((error) => {
+                console.log(error);
+              });
+          }
         }
-        else
-        {
-          generalQuery("checkProcessLotNo_Prod_Req_No", { PROD_REQUEST_NO: SXDATA[0].PROD_REQUEST_NO })
-          .then((response) => {
-            if (response.data.tk_status !== "NG") {
-              //console.log(response.data.data);
-              setInputNo(response.data.data[0].M_LOT_NO);
-              checkLotNVL(response.data.data[0].M_LOT_NO);
-              setProcessLotNo(response.data.data[0].PROCESS_LOT_NO);   
-              checkKTDTC(response.data.data[0].PROCESS_LOT_NO);
-            } else {
-              setInputNo('');
-              setProcessLotNo('');
-            }
-          })
-          .catch((error) => {
-            console.log(error);
-          });
-        }
-        
-      }
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-
-  }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
   const checkLotNVL = (M_LOT_NO: string) => {
     generalQuery("checkMNAMEfromLot", { M_LOT_NO: M_LOT_NO })
       .then((response) => {
@@ -579,8 +483,8 @@ const PQC1 = () => {
           //console.log(response.data.data);
           setM_Name(
             response.data.data[0].M_NAME +
-              " | " +
-              response.data.data[0].WIDTH_CD
+            " | " +
+            response.data.data[0].WIDTH_CD
           );
           setM_Code(response.data.data[0].M_CODE);
           setWidthCD(response.data.data[0].WIDTH_CD);
@@ -606,13 +510,12 @@ const PQC1 = () => {
         console.log(error);
       });
   };
-
   const inputDataPqc1 = () => {
     generalQuery("insert_pqc1", {
-      PROCESS_LOT_NO: process_lot_no,
+      PROCESS_LOT_NO: process_lot_no.toUpperCase(),
       LINEQC_PIC: lineqc_empl.toUpperCase(),
-      PROD_PIC:  sx_data[0].INS_EMPL,
-      PROD_LEADER:  prod_leader_empl.toUpperCase(),
+      PROD_PIC: sx_data[0].INS_EMPL.toUpperCase(),
+      PROD_LEADER: prod_leader_empl.toUpperCase(),
       STEPS: sx_data[0].STEP,
       CAVITY: sx_data[0].CAVITY,
       SETTING_OK_TIME: sx_data[0].MASS_START_TIME,
@@ -620,91 +523,151 @@ const PQC1 = () => {
       REMARK: ktdtc,
       PROD_REQUEST_NO: sx_data[0].PROD_REQUEST_NO,
       G_CODE: sx_data[0].G_CODE,
-      PLAN_ID: sx_data[0].PLAN_ID,
+      PLAN_ID: sx_data[0].PLAN_ID.toUpperCase(),
       PROCESS_NUMBER: sx_data[0].PROCESS_NUMBER,
       LINE_NO: sx_data[0].EQ_NAME_TT,
-      REMARK2: remark
-     })
-    .then((response) => {
-      if (response.data.tk_status !== "NG") {
-        //console.log(response.data.data);
-        traPQC1Data();       
-      } else {
-         Swal.fire('Cảnh báo','Có lỗi: ' + response.data.message,'error');
-      }
+      REMARK2: remark,
     })
-    .catch((error) => {
-      console.log(error);
-    });
-  }
+      .then((response) => {
+        if (response.data.tk_status !== "NG") {
+          //console.log(response.data.data);
+          Swal.fire("Thông báo", "Input data thành công", "success");
+          traPQC1Data();
+          setPlanId('');
+          setLineqc_empl('');
+          setReMark('');
+        } else {
+          Swal.fire("Cảnh báo", "Có lỗi: " + response.data.message, "error");
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
   const checkInput = (): boolean => {
     if (
       inputno !== "" &&
-      planId !== "" &&     
-      lineqc_empl !== "" && 
+      planId !== "" &&
+      lineqc_empl !== "" &&
       sx_data.length !== 0 &&
-      process_lot_no !== '' 
+      process_lot_no !== ""
     ) {
       return true;
     } else {
       return false;
     }
   };
-
-
+  const updateSampleQty = async () => {
+    if (selectedRowsDataA.length > 0) {
+      let err_code: string = '';
+      for (let i = 0; i < selectedRowsDataA.length; i++) {
+        await generalQuery("updatepqc1sampleqty", {
+          PQC1_ID: selectedRowsDataA[i].PQC1_ID,
+          INSPECT_SAMPLE_QTY: selectedRowsDataA[i].INSPECT_SAMPLE_QTY
+        })
+          .then((response) => {
+            if (response.data.tk_status !== "NG") {
+            } else {
+              err_code += '|   ' + response.data.message + ', ';
+              //Swal.fire("Cảnh báo", "Có lỗi: " + response.data.message, "error");
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }
+      if (err_code === '') {
+        Swal.fire("Thông báo", "Update sample qty thành công", "success");
+      }
+      else {
+        Swal.fire("Cảnh báo", "Có lỗi: " + err_code, "error");
+      }
+    }
+    else {
+      Swal.fire("Cảnh báo", "Có lỗi: Chọn ít nhất 1 dòng để update", "error");
+    }
+  }
   useEffect(() => {
     traPQC1Data();
     ///handletraFailingData();
   }, []);
   return (
-    <div className='pqc1'>
-      <div className='tracuuDataInspection'>
-        <div className='maintable'>
-          {showhideinput && (
-            <div className='tracuuDataInspectionform'>
-              <b style={{ color: "blue" }}>NHẬP THÔNG TIN SETTING</b>
-              <div className='forminput'>
-                <div className='forminputcolumn'>
-                  <b>FACTORY</b>
-                  <label>                   
+    <div className="pqc1">
+      <div className="tracuuDataInspection">
+        <div className="inputform">
+          {true && (
+            <div className="tracuuDataInspectionform">
+              <b style={{ color: "blue" }}> {lineqc_empl && (
+                <span
+                  style={{
+                    fontSize: '0.7rem',
+                    fontWeight: "bold",
+                    color: "red",
+                  }}
+                >
+                  {empl_name}
+                </span>
+              )}|NHẬP THÔNG TIN SETTING|  {prod_leader_empl && (
+                <span
+                  style={{
+                    fontSize: '0.7rem',
+                    fontWeight: "bold",
+                    color: "red",
+                  }}
+                >
+                  {empl_name2}
+                </span>
+              )}</b>
+              <div className="forminput">
+                <div className="forminputcolumn">
+                  <label>
+                    <b>FACTORY</b>
                     <select
                       disabled={userData?.EMPL_NO === "NHU1903"}
-                      name='factory'
+                      name="factory"
                       value={factory}
                       onChange={(e) => {
                         setFactory(e.target.value);
                       }}
                     >
-                      <option value='NM1'>NM1</option>
-                      <option value='NM2'>NM2</option>
+                      <option value="NM1">NM1</option>
+                      <option value="NM2">NM2</option>
                     </select>
                   </label>
-                  <b>Số chỉ thị sản xuất</b>
                   <label>
+                    <b>Số chỉ thị sản xuất</b>
                     <input
-                      type='text'
-                      placeholder='1F80008A'
+                      ref={refArray[0]}
+                      type="text"
+                      placeholder=""
                       value={planId}
+                      onKeyDown={(e) => {
+                        handleKeyDown(e, 0);
+                      }}
                       onChange={(e) => {
                         if (e.target.value.length >= 8) {
-                         
-                          checkPlanID(e.target.value);                          
+                          checkPlanID(e.target.value);
                           checkDataSX(e.target.value);
-                        }
-                        else{
+                        } else {
                           setSXData([]);
-                          setInputNo('');
-                          setProcessLotNo('');
+                          setInputNo("");
+                          setProcessLotNo("");
                         }
                         setPlanId(e.target.value);
                       }}
                     ></input>
-                  </label>                  
-                  <b>Mã LINEQC</b>
+                  </label>
+                </div>
+                <div className="forminputcolumn">
                   <label>
+                    <b>Mã LINEQC</b>
                     <input
-                      type='text'
-                      placeholder={"NVD1201"}
+                      ref={refArray[1]}
+                      onKeyDown={(e) => {
+                        handleKeyDown(e, 1);
+                      }}
+                      type="text"
+                      placeholder={""}
                       value={lineqc_empl}
                       onChange={(e) => {
                         if (e.target.value.length >= 7) {
@@ -714,22 +677,15 @@ const PQC1 = () => {
                       }}
                     ></input>
                   </label>
-                  {lineqc_empl && (
-                    <span
-                      style={{
-                        fontSize: 15,
-                        fontWeight: "bold",
-                        color: "blue",
-                      }}
-                    >
-                      {empl_name}
-                    </span>
-                  )}
-                  <b>Mã Leader SX</b>
                   <label>
+                    <b>Mã Leader SX</b>
                     <input
-                      type='text'
-                      placeholder={"NVD1201"}
+                      ref={refArray[2]}
+                      onKeyDown={(e) => {
+                        handleKeyDown(e, 2);
+                      }}
+                      type="text"
+                      placeholder={""}
                       value={prod_leader_empl}
                       onChange={(e) => {
                         if (e.target.value.length >= 7) {
@@ -739,23 +695,16 @@ const PQC1 = () => {
                       }}
                     ></input>
                   </label>
-                  {prod_leader_empl && (
-                    <span
-                      style={{
-                        fontSize: 15,
-                        fontWeight: "bold",
-                        color: "blue",
-                      }}
-                    >
-                      {empl_name2}
-                    </span>
-                  )}
                 </div>
-                <b>Remark</b>
-                <div className='forminputcolumn'>
+                <div className="forminputcolumn">
                   <label>
+                    <b>Remark</b>
                     <input
-                      type='text'
+                      ref={refArray[3]}
+                      onKeyDown={(e) => {
+                        handleKeyDown(e, 3);
+                      }}
+                      type="text"
                       placeholder={"Ghi chú"}
                       value={remark}
                       onChange={(e) => {
@@ -763,42 +712,68 @@ const PQC1 = () => {
                       }}
                     ></input>
                   </label>
-                </div>               
+                  <Button
+                    ref={refArray[4]}
+                    onKeyDown={(e) => {
+                      //handleKeyDown(e,4);
+                    }}
+                    color={"primary"}
+                    variant="contained"
+                    size="small"
+                    sx={{
+                      fontSize: "0.7rem",
+                      padding: "3px",
+                      backgroundColor: "#756DFA",
+                    }}
+                    onClick={() => {
+                      if (checkInput()) {
+                        refArray[0].current.focus();
+                        inputDataPqc1();
+                      } else {
+                        refArray[0].current.focus();
+                        Swal.fire(
+                          "Thông báo",
+                          "Hãy nhập đủ thông tin trước khi input",
+                          "error"
+                        );
+                        refArray[0].current.focus();
+                      }
+                    }}
+                  >
+                    Input Data
+                  </Button>
+                  <Button
+                    color={"primary"}
+                    variant="contained"
+                    size="small"
+                    sx={{
+                      fontSize: "0.7rem",
+                      padding: "3px",
+                      backgroundColor: "#02ac2c",
+                    }}
+                    onClick={() => {
+                      updateSampleQty();
+                      refArray[0].current.focus();
+                    }}
+                  >
+                    Update QTY
+                  </Button>
+                </div>
               </div>
-              <div className='formbutton'>
-                <button
-                  className='tranhatky'
-                  onClick={() => {
-                    if (checkInput()) {
-                      inputDataPqc1();
-                    } else {
-                      Swal.fire(
-                        "Thông báo",
-                        "Hãy nhập đủ thông tin trước khi input",
-                        "error"
-                      );
-                    }
-                  }}
-                >
-                  Input Data
-                </button>               
-              </div>
-              <div
-                className='formbutton'
-                style={{ marginTop: "20px", display: "flex", flexWrap: "wrap" }}
-              ></div>
             </div>
           )}
+        </div>
+        <div className="maintable">
           {showhideinput && (
-            <div className='tracuuDataInspectionform2'>
+            <div className="tracuuDataInspectionform2">
               <b style={{ color: "blue" }}>THÔNG TIN CHỈ THỊ</b>
-              <div className='forminput'>
-                <div className='forminputcolumn'>                  
-                  <b style={{color:'gray'}}>LOT sản xuất</b>
+              <div className="forminput">
+                <div className="forminputcolumn">
                   <label>
+                    <b style={{ color: "gray" }}>LOT SX</b>
                     <input
                       disabled={true}
-                      type='text'                      
+                      type="text"
                       value={process_lot_no}
                       onChange={(e) => {
                         if (e.target.value.length >= 7) {
@@ -811,7 +786,7 @@ const PQC1 = () => {
                   {g_name && (
                     <span
                       style={{
-                        fontSize: 15,
+                        fontSize: '0.7rem',
                         fontWeight: "bold",
                         color: "blue",
                       }}
@@ -819,11 +794,11 @@ const PQC1 = () => {
                       {g_name}
                     </span>
                   )}
-                  <b style={{color:'gray'}}>LOT NVL CMS</b>
                   <label>
+                    <b style={{ color: "gray" }}>LOT NVL</b>
                     <input
                       disabled={true}
-                      type='text'                      
+                      type="text"
                       value={inputno}
                       onChange={(e) => {
                         //console.log(e.target.value.length);
@@ -834,111 +809,106 @@ const PQC1 = () => {
                         setInputNo(e.target.value);
                       }}
                     ></input>
-                  </label>                 
+                  </label>
                   {m_name && (
                     <span
                       style={{
-                        fontSize: 15,
+                        fontSize: '0.7rem',
                         fontWeight: "bold",
                         color: "blue",
                       }}
                     >
                       {m_name}
                     </span>
-                  )} 
-                   <b style={{color:'gray'}}>LINE NO</b>
+                  )}
+                </div>
+                <div className="forminputcolumn">
                   <label>
+                    <b style={{ color: "gray" }}>LINE NO</b>
                     <input
                       disabled={true}
-                      type='text'                      
-                      value={sx_data[0] !== undefined?  sx_data[0]?.EQ_NAME_TT : ''}
-                      onChange={(e) => {
-                       
-                      }}
+                      type="text"
+                      value={
+                        sx_data[0] !== undefined ? sx_data[0]?.EQ_NAME_TT : ""
+                      }
+                      onChange={(e) => { }}
                     ></input>
                   </label>
-
-                  <b style={{color:'gray'}}>PROCESS_NUMBER (Công đoạn)</b>
                   <label>
+                    <b style={{ color: "gray" }}>Công Đoạn</b>
                     <input
                       disabled={true}
-                      type='text'                     
-                      value={sx_data[0] !== undefined? sx_data[0]?.PROCESS_NUMBER : ''}
-                      onChange={(e) => {
-                       
-                      }}
+                      type="text"
+                      value={
+                        sx_data[0] !== undefined
+                          ? sx_data[0]?.PROCESS_NUMBER
+                          : ""
+                      }
+                      onChange={(e) => { }}
                     ></input>
                   </label>
-
-                  <b style={{color:'gray'}}>STEP</b>
+                </div>
+                <div className="forminputcolumn">
                   <label>
+                    <b style={{ color: "gray" }}>STEP</b>
                     <input
                       disabled={true}
-                      type='text'                      
-                      value={sx_data[0] !== undefined? sx_data[0]?.STEP : ''}
-                      onChange={(e) => {
-                       
-                      }}
+                      type="text"
+                      value={sx_data[0] !== undefined ? sx_data[0]?.STEP : ""}
+                      onChange={(e) => { }}
                     ></input>
                   </label>
-
-                  <b style={{color:'gray'}}>PD</b>
                   <label>
+                    <b style={{ color: "gray" }}>PD</b>
                     <input
                       disabled={true}
-                      type='text'                      
-                      value={sx_data[0] !== undefined? sx_data[0]?.PD : ''}
-                      onChange={(e) => {
-                       
-                      }}
+                      type="text"
+                      value={sx_data[0] !== undefined ? sx_data[0]?.PD : ""}
+                      onChange={(e) => { }}
                     ></input>
                   </label>
-
-                  <b style={{color:'gray'}}>CAVITY</b>
+                </div>
+                <div className="forminputcolumn">
                   <label>
+                    <b style={{ color: "gray" }}>CAVITY</b>
                     <input
                       disabled={true}
-                      type='text'                      
-                      value={sx_data[0] !== undefined? sx_data[0]?.CAVITY : ''}
-                      onChange={(e) => {
-                       
-                      }}
+                      type="text"
+                      value={sx_data[0] !== undefined ? sx_data[0]?.CAVITY : ""}
+                      onChange={(e) => { }}
                     ></input>
                   </label>
-
-                  <b style={{color:'gray'}}>SETTING_OK_TIME</b>
                   <label>
+                    <b style={{ color: "gray" }}>ST.OK</b>
                     <input
                       disabled={true}
-                      type='text'                      
-                      value={sx_data[0] !== undefined? sx_data[0]?.MASS_START_TIME : ''}
-                      onChange={(e) => {
-                       
-                      }}
+                      type="text"
+                      value={
+                        sx_data[0] !== undefined
+                          ? sx_data[0]?.MASS_START_TIME
+                          : ""
+                      }
+                      onChange={(e) => { }}
                     ></input>
                   </label>
-
-                  <b style={{color:'gray'}}>Mã CNSX</b>
+                </div>
+                <div className="forminputcolumn">
                   <label>
+                    <b style={{ color: "gray" }}>Mã CNSX</b>
                     <input
                       disabled={true}
-                      type='text'                      
-                      value={sx_data[0] !== undefined? sx_data[0]?.INS_EMPL : ''}
-                      onChange={(e) => {
-                       
-                      }}
+                      type="text"
+                      value={
+                        sx_data[0] !== undefined ? sx_data[0]?.INS_EMPL : ""
+                      }
+                      onChange={(e) => { }}
                     ></input>
                   </label>
-                 
-                </div>                          
-              </div>            
-              <div
-                className='formbutton'
-                style={{ marginTop: "20px", display: "flex", flexWrap: "wrap" }}
-              ></div>
+                </div>
+              </div>
             </div>
           )}
-          <div className='tracuuYCSXTable' style={{width: showhideinput? '65vw': '99vw'}}>{pqc1DataTable}</div>
+          <div className="tracuuYCSXTable">{pqc1DataTable}</div>
         </div>
       </div>
     </div>

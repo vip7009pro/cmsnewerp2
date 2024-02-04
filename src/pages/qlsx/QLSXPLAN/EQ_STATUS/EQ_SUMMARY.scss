@@ -1,21 +1,22 @@
 .eq_summary {
-    display: flex;
-    width: 100%;   
-    border-radius: 10px;
-    box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
-    -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
-    font-size: 0.8rem;
-    table {
-        width: 100%;
-        background-image: linear-gradient(0deg,  #cbeea3,#ffffff);
-        thead {
-            font-weight: bold;
-        }
+  display: flex;
+  width: 100%;
+  border-radius: 5px;
+  box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
+  -webkit-box-shadow: 19px 15px 27px 0px rgba(0, 0, 0, 0.18);
+  font-size: 0.8rem;
+  table {
+    width: 100%;
+    background-image: linear-gradient(0deg, #cbeea3, #ffffff);
+    thead {
+      font-weight: bold;
     }
-   
-    table, th, td {
-        border: 1px solid;     
-        text-align: center; 
-    }
+  }
 
+  table,
+  th,
+  td {
+    border: 1px solid;
+    text-align: center;
+  }
 }

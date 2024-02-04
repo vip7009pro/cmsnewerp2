@@ -1,0 +1,198 @@
+@font-face {
+  font-family: quotationfont;
+  src: url("../../../../../public/fonts/times.ttf");
+}
+
+.pvnquotationform {
+  display: flex;
+  flex-direction: column;
+  width: 210mm;
+  height: 297mm;
+  background-color: white;
+  * {
+    font-family: quotationfont;
+  }
+  .header {
+    display: flex;
+    height: 30mm;
+    * {
+      font-weight: bold;
+      font-size: 0.9rem;
+    }
+    .companyinfo {
+      display: flex;
+      flex-direction: column;
+      flex: 2.5;
+      .companyname {
+        display: flex;
+        justify-content: center;
+        font-weight: bold;
+        font-size: 1.3rem;
+      }
+      .diachi {
+        display: flex;
+        justify-content: center;
+      }
+      .email {
+        display: flex;
+        justify-content: center;
+      }
+      .mstsdt {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        .mst {
+          display: flex;
+          justify-content: center;
+          flex: 1;
+        }
+        .sdt {
+          display: flex;
+          justify-content: center;
+          flex: 1;
+        }
+      }
+      .quotationno {
+        display: flex;
+        justify-content: center;
+        .qno {
+          display: flex;
+          justify-content: center;
+          flex: 1;
+        }
+        .qdate {
+          display: flex;
+          justify-content: center;
+          flex: 1;
+        }
+      }
+    }
+    .companylogo {
+      display: flex;
+      flex: 1;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+  .title {
+    display: flex;
+    height: 25mm;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 1.3rem;
+    flex-direction: column;
+    justify-items: center;
+    justify-content: center;
+    justify-self: center;
+    .vn {
+      display: flex;
+      align-self: center;
+    }
+    .en {
+      display: flex;
+      align-self: center;
+    }
+  }
+  .customer_info {
+    display: flex;
+    height: 30mm;
+    flex-direction: row;
+    align-items: center;
+    justify-items: center;
+    .tabletitle {
+      display: flex;
+      flex: 1;
+      flex-direction: column;
+      font-size: 0.8rem;
+      height: 100%;
+      align-items: center;
+      justify-items: center;
+      gap: 5px;
+      font-weight: bold;
+    }
+    .content {
+      display: flex;
+      flex: 8;
+      flex-direction: column;
+      font-size: 0.8rem;
+      height: 100%;
+      align-items: flex-start;
+      justify-items: center;
+      gap: 5px;
+    }
+  }
+  .quotation_info {
+    display: flex;
+    height: 110mm;
+    flex-direction: column;
+
+    .quotationtitle {
+      display: flex;
+      font-style: italic;
+    }
+    .qtable {
+      display: flex;
+
+      table,
+      th,
+      td {
+        border: 1px solid black;
+        border-collapse: collapse;
+      }
+      table thead tr td {
+        text-align: center;
+        align-items: center;
+        font-size: 0.7rem;
+        font-weight: bold;
+      }
+      table tbody tr td {
+        text-align: center;
+        align-items: center;
+        font-size: 0.7rem;
+      }
+    }
+  }
+
+  .remark {
+    display: flex;
+    height: 40mm;
+    flex-direction: column;
+    gap: 2px;
+    .ghichutitle {
+      display: flex;
+    }
+    .ghichucontent {
+      font-style: italic;
+    }
+  }
+  .loichuc {
+    display: flex;
+    height: 10mm;
+    align-self: center;
+    justify-items: center;
+    text-align: center;
+    font-weight: bold;
+    font-style: italic;
+  }
+  .approval {
+    display: flex;
+    height: 40mm;
+    .kyduyet {
+      display: flex;
+      flex-direction: column;
+      flex: 3;
+      align-items: center;
+      justify-content: flex-start;
+      font-weight: bold;
+      font-style: italic;
+    }
+    .phutrach {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      align-items: center;
+      justify-content: flex-start;
+      font-style: italic;
+    }
+  }
+}

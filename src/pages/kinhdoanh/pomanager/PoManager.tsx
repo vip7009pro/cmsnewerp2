@@ -1,4 +1,5 @@
 import {
+  Button,
   Autocomplete,
   IconButton,
   LinearProgress,
@@ -6,107 +7,67 @@ import {
   createFilterOptions,
 } from "@mui/material";
 import {
+  Column,
+  Editing,
+  FilterRow,
+  Pager,
+  Scrolling,
+  SearchPanel,
+  Selection,
   DataGrid,
-  GridSelectionModel,
-  GridToolbarColumnsButton,
-  GridToolbarContainer,
-  GridToolbarDensitySelector,
-  GridToolbarFilterButton,
-  GridToolbarQuickFilter,
-} from "@mui/x-data-grid";
+  Paging,
+  Toolbar,
+  Item,
+  Export,
+  ColumnChooser,
+  Summary,
+  TotalItem,
+} from "devextreme-react/data-grid";
 import moment from "moment";
-import React, { useContext, useEffect, useState, useTransition } from "react";
+import React, {
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+  useTransition,
+} from "react";
 import { FcSearch } from "react-icons/fc";
 import {
   AiFillCloseCircle,
   AiFillEdit,
   AiFillFileAdd,
   AiFillFileExcel,
-  AiOutlineLogout,
 } from "react-icons/ai";
 import Swal from "sweetalert2";
 import * as XLSX from "xlsx";
-import { generalQuery } from "../../../api/Api";
-import { UserContext } from "../../../api/Context";
-import { checkBP, SaveExcel } from "../../../api/GlobalFunction";
+import { generalQuery, getCompany, getGlobalSetting } from "../../../api/Api";
+import {
+  autoGetProdPrice,
+  checkBP,
+  CustomResponsiveContainer,
+  SaveExcel,
+  zeroPad,
+} from "../../../api/GlobalFunction";
 import { MdOutlineDelete, MdOutlinePivotTableChart } from "react-icons/md";
 import "./PoManager.scss";
 import { FaFileInvoiceDollar } from "react-icons/fa";
 import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
 import PivotTable from "../../../components/PivotChart/PivotChart";
-import { UserData } from "../../../redux/slices/globalSlice";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import { TbLogout } from "react-icons/tb";
-interface POTableData {
-  PO_ID: number;
-  CUST_NAME_KD: string;
-  PO_NO: string;
-  G_NAME: string;
-  G_NAME_KD: string;
-  G_CODE: string;
-  PO_DATE: string;
-  RD_DATE: string;
-  PROD_PRICE: string;
-  PO_QTY: number;
-  TOTAL_DELIVERED: number;
-  PO_BALANCE: number;
-  PO_AMOUNT: number;
-  DELIVERED_AMOUNT: number;
-  BALANCE_AMOUNT: number;
-  TON_KIEM: number;
-  BTP: number;
-  TP: number;
-  BLOCK_QTY: number;
-  GRAND_TOTAL_STOCK: number;
-  EMPL_NAME: string;
-  PROD_TYPE: string;
-  M_NAME_FULLBOM: string;
-  PROD_MAIN_MATERIAL: string;
-  CUST_CD: string;
-  EMPL_NO: string;
-  POMONTH: string;
-  POWEEKNUM: string;
-  OVERDUE: string;
-  REMARK: string;
-}
-interface POSummaryData {
-  total_po_qty: number;
-  total_delivered_qty: number;
-  total_pobalance_qty: number;
-  total_po_amount: number;
-  total_delivered_amount: number;
-  total_pobalance_amount: number;
-}
-interface CodeListData {
-  G_CODE: string;
-  G_NAME: string;
-  PROD_LAST_PRICE: number;
-  USE_YN: string;
-  PO_BALANCE?: number;
-}
-interface CustomerListData {
-  CUST_CD: string;
-  CUST_NAME_KD: string;
-  CUST_NAME?: string;
-}
-interface PRICEWITHMOQ {
-  CUST_NAME_KD: string,
-  CUST_CD: string,
-  G_CODE: string,
-  G_NAME: string,
-  PROD_MAIN_MATERIAL: string,
-  PRICE_DATE: string,
-  MOQ: number,
-  PROD_PRICE: number,
-  INS_DATE: string,
-  INS_EMPL: string,
-  UPD_DATE: string,
-  UPD_EMPL: string,
-  REMARK: string,
-  FINAL: string,
-}
+import {
+  CodeListData,
+  CustomerListData,
+  POSummaryData,
+  POTableData,
+  PRICEWITHMOQ,
+  UserData,
+  WEB_SETTING_DATA,
+} from "../../../api/GlobalInterface";
 const PoManager = () => {
+  const dataGridRef = useRef<any>(null);
+  const showhidesearchdiv = useRef(false);
   const [isPending, startTransition] = useTransition();
   const [selection, setSelection] = useState<any>({
     trapo: true,
@@ -114,14 +75,14 @@ const PoManager = () => {
     them1po: false,
     them1invoice: false,
   });
-
   const userData: UserData | undefined = useSelector(
     (state: RootState) => state.totalSlice.userData
   );
   const company: string = useSelector(
     (state: RootState) => state.totalSlice.company
   );
-  const [showhidesearchdiv, setShowHideSearchDiv]= useState(true);
+  const [trigger, setTrigger] = useState(true);
+  const [sh, setSH] = useState(true);
   const [uploadExcelJson, setUploadExcelJSon] = useState<Array<any>>([]);
   const [isLoading, setisLoading] = useState(false);
   const [column_excel, setColumn_Excel] = useState<Array<any>>([]);
@@ -133,16 +94,28 @@ const PoManager = () => {
   const [cust_name, setCust_Name] = useState("");
   const [prod_type, setProdType] = useState("");
   const [id, setID] = useState("");
-  const [alltime, setAllTime] = useState(true);
+  const [alltime, setAllTime] = useState(false);
   const [justpobalance, setJustPOBalance] = useState(true);
-  const [selectedCode, setSelectedCode] = useState<CodeListData | null>();
+  const [selectedCode, setSelectedCode] = useState<CodeListData | null>({
+    G_CODE: "7A00001A",
+    G_NAME: "SELECT CODE",
+    G_NAME_KD: "SELECT CODE",
+    PROD_LAST_PRICE: 0,
+    USE_YN: "Y",
+    PO_BALANCE: 0,
+  });
   const [selectedCust_CD, setSelectedCust_CD] =
-    useState<CustomerListData | null>();
+    useState<CustomerListData | null>({
+      CUST_CD: "0000",
+      CUST_NAME_KD: "SELECT_CUSTOMER",
+      CUST_NAME: "SELECT_CUSTOMER VINA",
+    });
   const [newpodate, setNewPoDate] = useState(moment().format("YYYY-MM-DD"));
   const [newrddate, setNewRdDate] = useState(moment().format("YYYY-MM-DD"));
   const [newpono, setNewPoNo] = useState("");
   const [newpoqty, setNewPoQty] = useState("");
   const [newpoprice, setNewPoPrice] = useState("");
+  const [newpoBEP, setNewPoBEP] = useState("");
   const [newporemark, setNewPoRemark] = useState("");
   const [newinvoiceQTY, setNewInvoiceQty] = useState<number>(0);
   const [newinvoicedate, setNewInvoiceDate] = useState(
@@ -164,20 +137,43 @@ const PoManager = () => {
   const [over, setOver] = useState("");
   const [invoice_no, setInvoice_No] = useState("");
   const [podatatable, setPoDataTable] = useState<Array<POTableData>>([]);
-  const [podatatablefilter, setPoDataTableFilter] = useState<
+  /*   const [podatatablefilter, setPoDataTableFilter] = useState<
     Array<POTableData>
-  >([]);
+  >([]); */
+  const podatatablefilter = useRef<POTableData[]>([]);
+  const clickedRow = useRef<any>(null);
   const [selectedID, setSelectedID] = useState<number | null>();
   const [showhidePivotTable, setShowHidePivotTable] = useState(false);
   const [newcodeprice, setNewCodePrice] = useState<PRICEWITHMOQ[]>([]);
-  const dongboGiaPO =()=> {
-    generalQuery("dongbogiasptupo", {
-     
+  const [columns, setColumns] = useState<Array<any>>([]);
+  const [columnsExcel, setColumnsExcel] = useState<Array<any>>([]);
+  const clearSelection = () => {
+    if (dataGridRef.current) {
+      dataGridRef.current.instance.clearSelection();
+      podatatablefilter.current = [];
+      //qlsxplandatafilter.current = [];
+      //console.log(dataGridRef.current);
+    }
+  };
+  function removeInvisibleCharacters(inputString: string) {
+    // Define a regular expression to match invisible characters
+    var regex = /[^\x20-\x7E\t]/g; // This regex matches anything outside the printable ASCII range
+    // Use the replace method to remove the matched characters
+    var cleanedString = inputString.replace(regex, '');
+    return cleanedString;
+  }
+  const autogeneratePO_NO = async (cust_cd: string) => {
+    let po_no_to_check: string = cust_cd + "_" + moment.utc().format("YYMMDD");
+    let next_po_no: string = po_no_to_check + "_001";
+    await generalQuery("checkcustomerpono", {
+      CHECK_PO_NO: po_no_to_check,
     })
       .then((response) => {
-        //console.log(response.data.data);
-        if (response.data.tk_status !== "NG") {             
-         
+        console.log(response.data.data);
+        if (response.data.tk_status !== "NG") {
+          let arr = response.data.data[0].PO_NO.split("_");
+          next_po_no = po_no_to_check + "_" + zeroPad(parseInt(arr[2]) + 1, 3);
+          console.log("next_PO_NO", next_po_no);
         } else {
           //Swal.fire("Thông báo", " Có lỗi : " + response.data.message, "error");
         }
@@ -185,44 +181,71 @@ const PoManager = () => {
       .catch((error) => {
         console.log(error);
         Swal.fire("Thông báo", " Có lỗi : " + error, "error");
-      });  }
-
-  const loadprice = (G_CODE?: string, CUST_NAME?: string)=>
-  {
-    if(G_CODE !== undefined && CUST_NAME !== undefined)
-    {
+      });
+    return next_po_no;
+  };
+  const dongboGiaPO = () => {
+    generalQuery("dongbogiasptupo", {})
+      .then((response) => {
+        //console.log(response.data.data);
+        if (response.data.tk_status !== "NG") {
+        } else {
+          //Swal.fire("Thông báo", " Có lỗi : " + response.data.message, "error");
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        Swal.fire("Thông báo", " Có lỗi : " + error, "error");
+      });
+  };
+  const loadprice = (G_CODE?: string, CUST_NAME?: string) => {
+    if (G_CODE !== undefined && CUST_NAME !== undefined) {
       generalQuery("loadbanggiamoinhat", {
         ALLTIME: true,
-        FROM_DATE: '',
-        TO_DATE: '',
-        M_NAME: '',
+        FROM_DATE: "",
+        TO_DATE: "",
+        M_NAME: "",
         G_CODE: G_CODE,
-        G_NAME: '',      
-        CUST_NAME_KD: CUST_NAME,      
+        G_NAME: "",
+        CUST_NAME_KD: CUST_NAME,
       })
         .then((response) => {
           //console.log(response.data.data);
           if (response.data.tk_status !== "NG") {
-            let loaded_data: PRICEWITHMOQ[] =[];
-             loaded_data = company ==='CMS' ? response.data.data.map(
-              (element: PRICEWITHMOQ, index: number) => {
-               return {
-                ...element,
-                PRICE_DATE: element.PRICE_DATE !== null? moment.utc(element.PRICE_DATE).format('YYYY-MM-DD'):'',              
-                id: index,
-               }
-              }
-            ).filter((element: PRICEWITHMOQ, index: number)=> element.FINAL ==='Y'): 
-            response.data.data.map(
-              (element: PRICEWITHMOQ, index: number) => {
-               return {
-                ...element,
-                PRICE_DATE: element.PRICE_DATE !== null? moment.utc(element.PRICE_DATE).format('YYYY-MM-DD'):'',              
-                id: index,
-               }
-              }
-            )
-            ; 
+            let loaded_data: PRICEWITHMOQ[] = [];
+            loaded_data =
+              company !== "CMS"
+                ? response.data.data
+                  .map((element: PRICEWITHMOQ, index: number) => {
+                    return {
+                      ...element,
+                      PRICE_DATE:
+                        element.PRICE_DATE !== null
+                          ? moment
+                            .utc(element.PRICE_DATE)
+                            .format("YYYY-MM-DD")
+                          : "",
+                      id: index,
+                    };
+                  })
+                  .filter(
+                    (element: PRICEWITHMOQ, index: number) =>
+                      element.FINAL === "Y"
+                  )
+                : response.data.data.map(
+                  (element: PRICEWITHMOQ, index: number) => {
+                    return {
+                      ...element,
+                      PRICE_DATE:
+                        element.PRICE_DATE !== null
+                          ? moment
+                            .utc(element.PRICE_DATE)
+                            .format("YYYY-MM-DD")
+                          : "",
+                      id: index,
+                    };
+                  }
+                );
             setNewCodePrice(loaded_data);
           } else {
             /* Swal.fire("Thông báo", " Có lỗi : " + response.data.message, "error"); */
@@ -233,7 +256,7 @@ const PoManager = () => {
           Swal.fire("Thông báo", " Có lỗi : " + error, "error");
         });
     }
-  }
+  };
   const handleSearchCodeKeyDown = (
     e: React.KeyboardEvent<HTMLInputElement>
   ) => {
@@ -241,262 +264,6 @@ const PoManager = () => {
       handletraPO();
     }
   };
-  const column_potable = [
-    { field: "CUST_NAME_KD", headerName: "CUST_NAME_KD", width: 120 },
-    { field: "PO_NO", headerName: "PO_NO", width: 110 },
-    { field: "G_NAME", headerName: "G_NAME", width: 150 },
-    { field: "G_NAME_KD", headerName: "G_NAME_KD", width: 120 },
-    { field: "G_CODE", headerName: "G_CODE", width: 100 },
-    { field: "PO_DATE", type: "date", headerName: "PO_DATE", width: 100 },
-    { field: "RD_DATE", type: "date", headerName: "RD_DATE", width: 100 },
-    {
-      field: "PROD_PRICE",
-      type: "number",
-      headerName: "PROD_PRICE",
-      width: 100,
-      renderCell: (params: any) => {
-        return (
-          <span style={{ color: "gray" }}>
-            <b>
-              {params.row.PROD_PRICE.toLocaleString("en-US", {
-                style: "decimal",
-                maximumFractionDigits: 8,
-              })}
-            </b>
-          </span>
-        );
-      },
-    },
-    {
-      field: "PO_QTY",
-      type: "number",
-      headerName: "PO_QTY",
-      width: 100,
-      renderCell: (params: any) => {
-        return (
-          <span style={{ color: "blue" }}>
-            <b>{params.row.PO_QTY.toLocaleString("en-US")}</b>
-          </span>
-        );
-      },
-    },
-    {
-      field: "TOTAL_DELIVERED",
-      type: "number",
-      headerName: "TOTAL_DELIVERED",
-      width: 110,
-      renderCell: (params: any) => {
-        return (
-          <span style={{ color: "blue" }}>
-            <b>{params.row.TOTAL_DELIVERED.toLocaleString("en-US")}</b>
-          </span>
-        );
-      },
-    },
-    {
-      field: "PO_BALANCE",
-      type: "number",
-      headerName: "PO_BALANCE",
-      width: 100,
-      renderCell: (params: any) => {
-        return (
-          <span style={{ color: "blue" }}>
-            <b>{params.row.PO_BALANCE.toLocaleString("en-US")}</b>
-          </span>
-        );
-      },
-    },
-    {
-      field: "PO_AMOUNT",
-      type: "number",
-      headerName: "PO_AMOUNT",
-      width: 100,
-      renderCell: (params: any) => {
-        return (
-          <span style={{ color: "green" }}>
-            <b>
-              {params.row.PO_AMOUNT.toLocaleString("en-US", {
-                style: "currency",
-                currency: "USD",
-              })}
-            </b>
-          </span>
-        );
-      },
-    },
-    {
-      field: "DELIVERED_AMOUNT",
-      type: "number",
-      headerName: "DELIVERED_AMOUNT",
-      width: 100,
-      renderCell: (params: any) => {
-        return (
-          <span style={{ color: "green" }}>
-            <b>
-              {params.row.DELIVERED_AMOUNT.toLocaleString("en-US", {
-                style: "currency",
-                currency: "USD",
-              })}
-            </b>
-          </span>
-        );
-      },
-    },
-    {
-      field: "BALANCE_AMOUNT",
-      type: "number",
-      headerName: "BALANCE_AMOUNT",
-      width: 100,
-      renderCell: (params: any) => {
-        return (
-          <span style={{ color: "green" }}>
-            <b>
-              {params.row.BALANCE_AMOUNT.toLocaleString("en-US", {
-                style: "currency",
-                currency: "USD",
-              })}
-            </b>
-          </span>
-        );
-      },
-    },
-    {
-      field: "TON_KIEM",
-      type: "number",
-      headerName: "TON_KIEM",
-      width: 100,
-      renderCell: (params: any) => {
-        return <span>{params.row.TON_KIEM.toLocaleString("en-US")}</span>;
-      },
-    },
-    {
-      field: "BTP",
-      type: "number",
-      headerName: "BTP",
-      width: 90,
-      renderCell: (params: any) => {
-        return <span>{params.row.BTP.toLocaleString("en-US")}</span>;
-      },
-    },
-    {
-      field: "TP",
-      type: "number",
-      headerName: "TP",
-      width: 90,
-      renderCell: (params: any) => {
-        return <span>{params.row.TP.toLocaleString("en-US")}</span>;
-      },
-    },
-    {
-      field: "BLOCK_QTY",
-      type: "number",
-      headerName: "BLOCK_QTY",
-      width: 90,
-      renderCell: (params: any) => {
-        return <span>{params.row.BLOCK_QTY.toLocaleString("en-US")}</span>;
-      },
-    },
-    {
-      field: "GRAND_TOTAL_STOCK",
-      type: "number",
-      headerName: "GRAND_TOTAL_STOCK",
-      width: 90,
-      renderCell: (params: any) => {
-        return (
-          <span>
-            <b>{params.row.GRAND_TOTAL_STOCK.toLocaleString("en-US")}</b>
-          </span>
-        );
-      },
-    },
-    { field: "EMPL_NAME", headerName: "EMPL_NAME", width: 150 },
-    { field: "PROD_TYPE", headerName: "PROD_TYPE", width: 90 },
-    { field: "M_NAME_FULLBOM", headerName: "M_NAME_FULLBOM", width: 110 },
-    {
-      field: "PROD_MAIN_MATERIAL",
-      headerName: "PROD_MAIN_MATERIAL",
-      width: 110,
-    },
-    { field: "POMONTH", type: "number", headerName: "POMONTH", width: 80 },
-    { field: "POWEEKNUM", type: "number", headerName: "POWEEKNUM", width: 80 },
-    { field: "OVERDUE", headerName: "OVERDUE", width: 80 },
-    { field: "REMARK", headerName: "REMARK", width: 110 },
-    { field: "PO_ID", type: "number", headerName: "PO_ID", width: 90 },
-  ];
-  const column_excel2 = [
-    { field: "CUST_CD", headerName: "CUST_CD", width: 120 },
-    { field: "G_CODE", headerName: "G_CODE", width: 120 },
-    { field: "PO_NO", headerName: "PO_NO", width: 120 },
-    {
-      field: "PO_QTY",
-      type: "number",
-      headerName: "PO_QTY",
-      width: 120,
-      renderCell: (params: any) => {
-        return (
-          <span style={{ color: "blue" }}>
-            <b>{params.row.PO_QTY.toLocaleString("en-US")}</b>
-          </span>
-        );
-      },
-    },
-    { field: "PO_DATE", headerName: "PO_DATE", width: 200 },
-    { field: "RD_DATE", headerName: "RD_DATE", width: 200 },
-    {
-      field: "PROD_PRICE",
-      type: "number",
-      headerName: "PROD_PRICE",
-      width: 200,
-      renderCell: (params: any) => {
-        return (
-          <span style={{ color: "gray" }}>
-            <b>
-              {params.row.PROD_PRICE.toLocaleString("en-US", {
-                style: "decimal",
-                maximumFractionDigits: 8,
-              })}
-            </b>
-          </span>
-        );
-      },
-    },
-    {
-      field: "CHECKSTATUS",
-      headerName: "CHECKSTATUS",
-      width: 200,
-      renderCell: (params: any) => {
-        if (params.row.CHECKSTATUS.slice(0, 2) === "OK")
-          return (
-            <span style={{ color: "green" }}>
-              <b>{params.row.CHECKSTATUS}</b>
-            </span>
-          );
-        return (
-          <span style={{ color: "red" }}>
-            <b>{params.row.CHECKSTATUS}</b>
-          </span>
-        );
-      },
-    },
-  ];
-  function CustomToolbar() {
-    return (
-      <GridToolbarContainer>
-        <GridToolbarColumnsButton />
-        <GridToolbarFilterButton />
-        <GridToolbarDensitySelector />
-        <button
-          className='saveexcelbutton'
-          onClick={() => {
-            SaveExcel(uploadExcelJson, "Uploaded PO");
-          }}
-        >
-          Save Excel
-        </button>
-        <GridToolbarQuickFilter />
-      </GridToolbarContainer>
-    );
-  }
   const showNewPO = () => {
     setSelection({
       ...selection,
@@ -505,101 +272,20 @@ const PoManager = () => {
       them1po: !selection.them1po,
       them1invoice: false,
     });
+    setSelectedCode({
+      G_CODE: "7A00001A",
+      G_NAME: "SELECT CODE",
+      G_NAME_KD: "SELECT CODE",
+      PROD_LAST_PRICE: 0,
+      USE_YN: "Y",
+      PO_BALANCE: 0,
+    });
+    setSelectedCust_CD({
+      CUST_CD: "0000",
+      CUST_NAME_KD: "SELECT_CUSTOMER",
+      CUST_NAME: "SELECT_CUSTOMER VINA",
+    });
   };
-  function CustomToolbarPOTable() {
-    return (
-      <GridToolbarContainer>       
-        <IconButton
-          className='buttonIcon'
-          onClick={() => {
-            setShowHideSearchDiv(!showhidesearchdiv);
-          }}
-        >
-          <TbLogout color='green' size={15} />
-          Show/Hide
-        </IconButton>
-        <IconButton
-          className='buttonIcon'
-          onClick={() => {
-            SaveExcel(podatatable, "PO Table");
-          }}
-        >
-          <AiFillFileExcel color='green' size={15} />
-          SAVE
-        </IconButton>
-        <IconButton
-          className='buttonIcon'
-          onClick={() => {
-            /* checkBP(userData?.EMPL_NO, userData?.MAINDEPTNAME, ["KD"], showNewPO); */
-            checkBP(userData,['KD'],['ALL'],['ALL'],showNewPO);
-            clearPOform();
-          }}
-        >
-          <AiFillFileAdd color='blue' size={15} />
-          NEW PO
-        </IconButton>
-        <IconButton
-          className='buttonIcon'
-          onClick={() => {
-            /* checkBP(
-              userData?.EMPL_NO,
-              userData?.MAINDEPTNAME,
-              ["KD"],
-              handle_fillsuaformInvoice
-            ); */
-            checkBP(userData,['KD'],['ALL'],['ALL'],handle_fillsuaformInvoice);
-            //handle_fillsuaformInvoice();
-          }}
-        >
-          <FaFileInvoiceDollar color='lightgreen' size={15} />
-          NEW INV
-        </IconButton>
-        <IconButton
-          className='buttonIcon'
-          onClick={() => {
-           /*  checkBP(
-              userData?.EMPL_NO,
-              userData?.MAINDEPTNAME,
-              ["KD"],
-              handle_fillsuaform
-            ); */
-            checkBP(userData,['KD'],['ALL'],['ALL'],handle_fillsuaform);
-
-            //handle_fillsuaform();
-          }}
-        >
-          <AiFillEdit color='orange' size={15} />
-          SỬA PO
-        </IconButton>
-        <IconButton
-          className='buttonIcon'
-          onClick={() => {
-           /*  checkBP(
-              userData?.EMPL_NO,
-              userData?.MAINDEPTNAME,
-              ["KD"],
-              handleConfirmDeletePO
-            ); */
-            checkBP(userData,['KD'],['ALL'],['ALL'],handleConfirmDeletePO);
-            //handleConfirmDeletePO();
-          }}
-        >
-          <MdOutlineDelete color='red' size={15} />
-          XÓA PO
-        </IconButton>
-        <GridToolbarQuickFilter />
-        <IconButton
-          className='buttonIcon'
-          onClick={() => {
-            setShowHidePivotTable(!showhidePivotTable);
-          }}
-        >
-          <MdOutlinePivotTableChart color='#ff33bb' size={15} />
-          Pivot
-        </IconButton>
-      </GridToolbarContainer>
-    );
-  }
   const readUploadFile = (e: any) => {
     e.preventDefault();
     if (e.target.files) {
@@ -626,7 +312,7 @@ const PoManager = () => {
         setColumn_Excel(uploadexcelcolumn);
         setUploadExcelJSon(
           json.map((element: any, index: number) => {
-            return { ...element, id: index, CHECKSTATUS: "Waiting" };
+            return { ...element, CHECKSTATUS: "Waiting", id: index };
           })
         );
       };
@@ -634,7 +320,20 @@ const PoManager = () => {
     }
   };
   const handletraPO = () => {
+    if (getCompany() === 'CMS') {
+      autopheduyetgia();
+    }
     setisLoading(true);
+    Swal.fire({
+      title: "Tra cứu PO",
+      text: "Đang tải dữ liệu, hãy chờ chút",
+      icon: "info",
+      showCancelButton: false,
+      allowOutsideClick: false,
+      confirmButtonText: "OK",
+      showConfirmButton: false,
+    });
+    clearSelection();
     generalQuery("traPODataFull", {
       alltime: alltime,
       justPoBalance: justpobalance,
@@ -681,10 +380,91 @@ const PoManager = () => {
             po_summary_temp.total_pobalance_amount +=
               loadeddata[i].BALANCE_AMOUNT;
           }
+          let keysArray = Object.getOwnPropertyNames(loadeddata[0]);
+          let column_map = keysArray.map((e, index) => {
+            return {
+              dataField: e,
+              caption: e,
+              width: 100,
+              cellRender: (ele: any) => {
+                //console.log(ele);
+                if (e === "PROD_PRICE") {
+                  if (ele.data["FINAL"] === 'Y')
+                    return (
+                      <span style={{ color: "#03b048", fontWeight: "normal" }}>
+                        {ele.data[e]?.toFixed(6).toLocaleString("en-US", {
+                          minimumFractionDigits: 2,
+                          maximumFractionDigits: 6,
+                        })}
+                      </span>
+                    );
+                  return (
+                    <span style={{ color: "#de0374", fontWeight: "normal" }}>
+                      {ele.data[e]?.toFixed(6).toLocaleString("en-US", {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 6,
+                      })}
+                    </span>
+                  );
+                }
+                else if (e === "BEP") {
+                  return (
+                    <span style={{ color: "#0684cd", fontWeight: "normal" }}>
+                      {ele.data[e]?.toFixed(6).toLocaleString("en-US", {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 6,
+                      })}
+                    </span>
+                  );
+                }
+                else if (
+                  ["PO_QTY", "TOTAL_DELIVERED", "PO_BALANCE"].indexOf(e) > -1 ||
+                  e.indexOf("RESULT") > -1
+                ) {
+                  return (
+                    <span style={{ color: "blue", fontWeight: "bold" }}>
+                      {ele.data[e]?.toLocaleString("en-US")}
+                    </span>
+                  );
+                } else if (
+                  ["PO_AMOUNT", "DELIVERED_AMOUNT", "BALANCE_AMOUNT"].indexOf(
+                    e
+                  ) > -1 ||
+                  e.indexOf("_EA") > -1
+                ) {
+                  return (
+                    <span style={{ color: "green", fontWeight: "bold" }}>
+                      {ele.data[e]?.toLocaleString("en-US", {
+                        style: "currency",
+                        currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0].CURRENT_VALUE,
+                      })}
+                    </span>
+                  );
+                } else if (
+                  ["DELIVERED_BEP_AMOUNT"].indexOf(
+                    e
+                  ) > -1 ||
+                  e.indexOf("_EA") > -1
+                ) {
+                  return (
+                    <span style={{ color: "#094BB8", fontWeight: "bold" }}>
+                      {ele.data[e]?.toLocaleString("en-US", {
+                        style: "currency",
+                        currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0].CURRENT_VALUE,
+                      })}
+                    </span>
+                  );
+                }
+                else {
+                  return <span>{ele.data[e]}</span>;
+                }
+              },
+            };
+          });
+          setColumns(column_map);
           setPoSummary(po_summary_temp);
           setPoDataTable(loadeddata);
           setisLoading(false);
-          setShowHideSearchDiv(false);
           Swal.fire(
             "Thông báo",
             "Đã load " + response.data.data.length + " dòng",
@@ -693,6 +473,7 @@ const PoManager = () => {
         } else {
           Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
           setisLoading(false);
+          setPoDataTable([]);
         }
       })
       .catch((error) => {
@@ -700,6 +481,50 @@ const PoManager = () => {
       });
   };
   const handle_checkPOHangLoat = async () => {
+    Swal.fire({
+      title: "Đang check PO hàng loạt",
+      text: "Đang check, hãy chờ chút",
+      icon: "info",
+      showCancelButton: false,
+      allowOutsideClick: false,
+      confirmButtonText: "OK",
+      showConfirmButton: false,
+    });
+    let keysArray = Object.getOwnPropertyNames(uploadExcelJson[0]);
+    let column_map = keysArray.map((e, index) => {
+      return {
+        dataField: e,
+        caption: e,
+        width: 100,
+        cellRender: (ele: any) => {
+          //console.log(ele);
+          if (e === "CHECKSTATUS") {
+            if (ele.data[e] === "Waiting") {
+              return (
+                <span style={{ color: "blue", fontWeight: "bold" }}>
+                  {ele.data[e]}
+                </span>
+              );
+            } else if (ele.data[e] === "OK") {
+              return (
+                <span style={{ color: "green", fontWeight: "bold" }}>
+                  {ele.data[e]}
+                </span>
+              );
+            } else {
+              return (
+                <span style={{ color: "red", fontWeight: "bold" }}>
+                  {ele.data[e]}
+                </span>
+              );
+            }
+          } else {
+            return <span>{ele.data[e]}</span>;
+          }
+        },
+      };
+    });
+    setColumnsExcel(column_map);
     setisLoading(true);
     let tempjson = uploadExcelJson;
     for (let i = 0; i < uploadExcelJson.length; i++) {
@@ -710,7 +535,7 @@ const PoManager = () => {
         PO_NO: uploadExcelJson[i].PO_NO,
       })
         .then((response) => {
-          console.log(response.data.tk_status);
+          //console.log(response.data.tk_status);
           if (response.data.tk_status !== "NG") {
             err_code = 1;
           } else {
@@ -734,7 +559,7 @@ const PoManager = () => {
         .then((response) => {
           //console.log(response.data.tk_status);
           if (response.data.tk_status !== "NG") {
-            console.log(response.data.data);
+            //console.log(response.data.data);
             if (response.data.data[0].USE_YN === "Y") {
               //tempjson[i].CHECKSTATUS = "OK";
             } else {
@@ -742,13 +567,28 @@ const PoManager = () => {
               err_code = 3;
             }
           } else {
-            //tempjson[i].CHECKSTATUS = "NG: Không có code CMS này";
+            //tempjson[i].CHECKSTATUS = "NG: Không có Code ERP này";
             err_code = 4;
           }
         })
         .catch((error) => {
           console.log(error);
         });
+      let tempgia = {
+        prod_price: 0,
+        bep: 0
+      };
+      if (getCompany() !== 'CMS') {
+        tempgia = await autoGetProdPrice(uploadExcelJson[i].G_CODE, uploadExcelJson[i].CUST_CD, uploadExcelJson[i].PO_QTY);
+        //console.log(tempgia);
+        if (tempgia.prod_price !== 0) {
+          tempjson[i].PROD_PRICE = tempgia.prod_price;
+          tempjson[i].BEP = tempgia.bep;
+        }
+        else {
+          err_code = 5;
+        }
+      }
       if (err_code === 0) {
         tempjson[i].CHECKSTATUS = "OK";
       } else if (err_code === 1) {
@@ -758,15 +598,54 @@ const PoManager = () => {
       } else if (err_code === 3) {
         tempjson[i].CHECKSTATUS = "NG: Ver này đã bị khóa";
       } else if (err_code === 4) {
-        tempjson[i].CHECKSTATUS = "NG: Không có code CMS này";
+        tempjson[i].CHECKSTATUS = "NG: Không có Code ERP này";
+      }
+      else if (err_code === 5) {
+        tempjson[i].CHECKSTATUS = "NG: Chưa có giá hoặc chua phê duyệt giá";
       }
     }
-    setisLoading(false);
     Swal.fire("Thông báo", "Đã hoàn thành check PO hàng loạt", "success");
     setUploadExcelJSon(tempjson);
+    setTrigger(!trigger);
   };
   const handle_upPOHangLoat = async () => {
+    let keysArray = Object.getOwnPropertyNames(uploadExcelJson[0]);
+    let column_map = keysArray.map((e, index) => {
+      return {
+        dataField: e,
+        caption: e,
+        width: 100,
+        cellRender: (ele: any) => {
+          //console.log(ele);
+          if (e === "CHECKSTATUS") {
+            if (ele.data[e] === "Waiting") {
+              return (
+                <span style={{ color: "blue", fontWeight: "bold" }}>
+                  {ele.data[e]}
+                </span>
+              );
+            } else if (ele.data[e] === "OK") {
+              return (
+                <span style={{ color: "green", fontWeight: "bold" }}>
+                  {ele.data[e]}
+                </span>
+              );
+            } else {
+              return (
+                <span style={{ color: "red", fontWeight: "bold" }}>
+                  {ele.data[e]}
+                </span>
+              );
+            }
+          } else {
+            return <span>{ele.data[e]}</span>;
+          }
+        },
+      };
+    });
+    setColumnsExcel(column_map);
     let tempjson = uploadExcelJson;
+    console.log(tempjson);
     for (let i = 0; i < uploadExcelJson.length; i++) {
       let err_code: number = 0;
       await generalQuery("checkPOExist", {
@@ -807,13 +686,18 @@ const PoManager = () => {
               err_code = 3;
             }
           } else {
-            //tempjson[i].CHECKSTATUS = "NG: Không có code CMS này";
+            //tempjson[i].CHECKSTATUS = "NG: Không có Code ERP này";
             err_code = 4;
           }
         })
         .catch((error) => {
           console.log(error);
         });
+      if (getCompany() !== 'CMS') {
+        if (uploadExcelJson[i].CHECKSTATUS != 'OK') {
+          err_code = 5;
+        }
+      }
       if (err_code === 0) {
         await generalQuery("insert_po", {
           G_CODE: uploadExcelJson[i].G_CODE,
@@ -824,6 +708,7 @@ const PoManager = () => {
           PO_DATE: uploadExcelJson[i].PO_DATE,
           RD_DATE: uploadExcelJson[i].RD_DATE,
           PROD_PRICE: uploadExcelJson[i].PROD_PRICE,
+          BEP: uploadExcelJson[i].BEP ?? 0,
           REMARK: uploadExcelJson[i].REMARK,
         })
           .then((response) => {
@@ -845,11 +730,15 @@ const PoManager = () => {
       } else if (err_code === 3) {
         tempjson[i].CHECKSTATUS = "NG: Ver này đã bị khóa";
       } else if (err_code === 4) {
-        tempjson[i].CHECKSTATUS = "NG: Không có code CMS này";
+        tempjson[i].CHECKSTATUS = "NG: Không có Code ERP này";
+      }
+      else if (err_code === 5) {
+        tempjson[i].CHECKSTATUS = "NG: PO chưa được check trước khi up";
       }
     }
     Swal.fire("Thông báo", "Đã hoàn thành thêm PO hàng loạt", "success");
     setUploadExcelJSon(tempjson);
+    setTrigger(!trigger);
   };
   const confirmUpPoHangLoat = () => {
     Swal.fire({
@@ -976,6 +865,15 @@ const PoManager = () => {
     ) {
       err_code = 4;
     }
+    let recheckPrice: number = newcodeprice.filter(
+      (e: PRICEWITHMOQ, index: number) => {
+        return newpoprice === e.PROD_PRICE.toString();
+      }
+    ).length ?? 0;
+
+    if (getCompany() !== 'CMS') {
+      if (recheckPrice === 0) err_code = 5;
+    }
     if (err_code === 0) {
       await generalQuery("insert_po", {
         G_CODE: selectedCode?.G_CODE,
@@ -986,6 +884,7 @@ const PoManager = () => {
         PO_DATE: newpodate,
         RD_DATE: newrddate,
         PROD_PRICE: newpoprice,
+        BEP: newpoBEP === "" ? 0 : newpoBEP,
         REMARK: newporemark === undefined ? "" : newporemark,
       })
         .then((response) => {
@@ -1015,6 +914,8 @@ const PoManager = () => {
       Swal.fire("Thông báo", "NG: Ver này đã bị khóa", "error");
     } else if (err_code === 4) {
       Swal.fire("Thông báo", "NG: Không để trống thông tin bắt buộc", "error");
+    } else if (err_code === 5) {
+      Swal.fire("Thông báo", "NG: Giá không tồn tại trong bảng giá", "error");
     }
   };
   const handle_add_1Invoice = async () => {
@@ -1124,19 +1025,8 @@ const PoManager = () => {
     setNewInvoiceDate("");
     setNewInvoiceRemark("");
   };
-  const handlePOSelectionforUpdate = (ids: GridSelectionModel) => {
-    const selectedID = new Set(ids);
-    let datafilter = podatatable.filter((element: any) =>
-      selectedID.has(element.PO_ID)
-    );
-    if (datafilter.length > 0) {
-      setPoDataTableFilter(datafilter);
-    } else {
-      setPoDataTableFilter([]);
-    }
-  };
   const handle_fillsuaform = () => {
-    if (podatatablefilter.length === 1) {
+    if (clickedRow.current !== null) {
       setSelection({
         ...selection,
         trapo: true,
@@ -1144,41 +1034,77 @@ const PoManager = () => {
         them1po: !selection.them1po,
       });
       const selectedCodeFilter: CodeListData = {
-        G_CODE: podatatablefilter[podatatablefilter.length - 1].G_CODE,
-        G_NAME: podatatablefilter[podatatablefilter.length - 1].G_NAME,
-        PROD_LAST_PRICE: Number(
-          podatatablefilter[podatatablefilter.length - 1].PROD_PRICE
-        ),
+        G_CODE:
+          clickedRow.current?.G_CODE === undefined
+            ? ""
+            : clickedRow.current?.G_CODE,
+        G_NAME:
+          clickedRow.current?.G_NAME === undefined
+            ? ""
+            : clickedRow.current?.G_NAME,
+        G_NAME_KD:
+          clickedRow.current?.G_NAME_KD === undefined
+            ? ""
+            : clickedRow.current?.G_NAME_KD,
+        PROD_LAST_PRICE: Number(clickedRow.current?.PROD_PRICE),
         USE_YN: "Y",
-        PO_BALANCE: Number(
-          podatatablefilter[podatatablefilter.length - 1].PO_BALANCE
-        ),
+        PO_BALANCE: Number(clickedRow.current?.PO_BALANCE),
       };
       const selectedCustomerFilter: CustomerListData = {
-        CUST_CD: podatatablefilter[podatatablefilter.length - 1].CUST_CD,
+        CUST_CD:
+          clickedRow.current?.CUST_CD === undefined
+            ? ""
+            : clickedRow.current?.CUST_CD,
         CUST_NAME_KD:
-          podatatablefilter[podatatablefilter.length - 1].CUST_NAME_KD,
+          clickedRow.current?.CUST_NAME_KD === undefined
+            ? ""
+            : clickedRow.current?.CUST_NAME_KD,
       };
       setSelectedCode(selectedCodeFilter);
       setSelectedCust_CD(selectedCustomerFilter);
-      setNewPoDate(podatatablefilter[podatatablefilter.length - 1].PO_DATE);
-      setNewRdDate(podatatablefilter[podatatablefilter.length - 1].RD_DATE);
-      setNewPoQty(
-        podatatablefilter[podatatablefilter.length - 1].PO_QTY.toString()
+      setNewPoDate(
+        clickedRow.current?.PO_DATE === undefined
+          ? ""
+          : clickedRow.current?.PO_DATE
       );
-      setNewPoNo(podatatablefilter[podatatablefilter.length - 1].PO_NO);
-      setNewPoPrice(podatatablefilter[podatatablefilter.length - 1].PROD_PRICE);
-      setNewPoRemark(podatatablefilter[podatatablefilter.length - 1].REMARK);
-      setSelectedID(podatatablefilter[podatatablefilter.length - 1].PO_ID);
-    } else if (podatatablefilter.length === 0) {
+      setNewRdDate(
+        clickedRow.current?.RD_DATE === undefined
+          ? ""
+          : clickedRow.current?.RD_DATE
+      );
+      setNewPoQty(
+        clickedRow.current?.PO_QTY === undefined
+          ? "0"
+          : clickedRow.current?.PO_QTY
+      );
+      setNewPoNo(
+        clickedRow.current?.PO_NO === undefined ? "" : clickedRow.current?.PO_NO
+      );
+      setNewPoPrice(
+        clickedRow.current?.PROD_PRICE === undefined
+          ? "0"
+          : clickedRow.current?.PROD_PRICE
+      );
+      setNewPoBEP(
+        clickedRow.current?.BEP ?? 0          
+      );
+      setNewPoRemark(
+        clickedRow.current?.REMARK === undefined
+          ? ""
+          : clickedRow.current?.REMARK
+      );
+      setSelectedID(clickedRow.current?.PO_ID);
+      loadprice(
+        clickedRow.current?.G_CODE,
+        clickedRow.current?.CUST_NAME_KD
+      );
+    } else {
       clearPOform();
       Swal.fire("Thông báo", "Lỗi: Chọn ít nhất 1 PO để sửa", "error");
-    } else {
-      Swal.fire("Thông báo", "Lỗi: Chỉ tích chọn 1 dòng để sửa thôi", "error");
     }
   };
   const handle_fillsuaformInvoice = () => {
-    if (podatatablefilter.length === 1) {
+    if (clickedRow.current !== null) {
       setSelection({
         ...selection,
         trapo: true,
@@ -1187,35 +1113,54 @@ const PoManager = () => {
         them1invoice: true,
       });
       const selectedCodeFilter: CodeListData = {
-        G_CODE: podatatablefilter[podatatablefilter.length - 1].G_CODE,
-        G_NAME: podatatablefilter[podatatablefilter.length - 1].G_NAME,
-        PROD_LAST_PRICE: Number(
-          podatatablefilter[podatatablefilter.length - 1].PROD_PRICE
-        ),
+        G_CODE:
+          clickedRow.current?.G_CODE === undefined
+            ? ""
+            : clickedRow.current?.G_CODE,
+        G_NAME:
+          clickedRow.current?.G_NAME === undefined
+            ? ""
+            : clickedRow.current?.G_NAME,
+        G_NAME_KD:
+          clickedRow.current?.G_NAME_KD === undefined
+            ? ""
+            : clickedRow.current?.G_NAME_KD,
+        PROD_LAST_PRICE: Number(clickedRow.current?.PROD_PRICE),
         USE_YN: "Y",
-        PO_BALANCE: Number(
-          podatatablefilter[podatatablefilter.length - 1].PO_BALANCE
-        ),
+        PO_BALANCE: Number(clickedRow.current?.PO_BALANCE),
       };
       const selectedCustomerFilter: CustomerListData = {
-        CUST_CD: podatatablefilter[podatatablefilter.length - 1].CUST_CD,
+        CUST_CD:
+          clickedRow.current?.CUST_CD === undefined
+            ? ""
+            : clickedRow.current?.CUST_CD,
         CUST_NAME_KD:
-          podatatablefilter[podatatablefilter.length - 1].CUST_NAME_KD,
+          clickedRow.current?.CUST_NAME_KD === undefined
+            ? ""
+            : clickedRow.current?.CUST_NAME_KD,
       };
       setSelectedCode(selectedCodeFilter);
       setSelectedCust_CD(selectedCustomerFilter);
-      setNewPoDate(podatatablefilter[podatatablefilter.length - 1].PO_DATE);
-      setNewRdDate(podatatablefilter[podatatablefilter.length - 1].RD_DATE);
+      setNewPoDate(
+        clickedRow.current?.PO_DATE === undefined
+          ? ""
+          : clickedRow.current?.PO_DATE
+      );
+      setNewRdDate(
+        clickedRow.current?.RD_DATE === undefined
+          ? ""
+          : clickedRow.current?.RD_DATE
+      );
       setNewInvoiceQty(0);
-      setNewPoNo(podatatablefilter[podatatablefilter.length - 1].PO_NO);
+      setNewPoNo(
+        clickedRow.current?.PO_NO === undefined ? "" : clickedRow.current?.PO_NO
+      );
       setNewInvoiceDate(moment().add(-1, "day").format("YYYY-MM-DD"));
       setNewInvoiceRemark("");
-      setSelectedID(podatatablefilter[podatatablefilter.length - 1].PO_ID);
-    } else if (podatatablefilter.length === 0) {
+      setSelectedID(clickedRow.current?.PO_ID);
+    } else {
       clearPOform();
       Swal.fire("Thông báo", "Lỗi: Chọn ít nhất 1 PO để thêm invoice", "error");
-    } else {
-      Swal.fire("Thông báo", "Lỗi: Chỉ tích chọn 1 dòng thêm thôi", "error");
     }
   };
   const updatePO = async () => {
@@ -1256,6 +1201,14 @@ const PoManager = () => {
     ) {
       err_code = 4;
     }
+    if(newpoqty < clickedRow.current.TOTAL_DELIVERED) {
+      err_code =5;
+    }
+    if(getCompany() !== 'CMS') {
+      if(newpoprice !== clickedRow.current.PROD_PRICE) {
+        err_code = 6;
+      }
+    }
     if (err_code === 0) {
       await generalQuery("update_po", {
         G_CODE: selectedCode?.G_CODE,
@@ -1266,6 +1219,7 @@ const PoManager = () => {
         PO_DATE: newpodate,
         RD_DATE: newrddate,
         PROD_PRICE: newpoprice,
+        BEP: newpoBEP === ''? 0 : newpoBEP,
         REMARK: newporemark,
         PO_ID: selectedID,
       })
@@ -1296,17 +1250,22 @@ const PoManager = () => {
       Swal.fire("Thông báo", "NG: Ver này đã bị khóa", "error");
     } else if (err_code === 4) {
       Swal.fire("Thông báo", "NG: Không để trống thông tin bắt buộc", "error");
-    } else {
+    } else if (err_code === 5) {
+      Swal.fire("Thông báo", "NG: Số lượng po mới không được nhỏ hơn số lượng đã giao hàng", "error");
+    } else if (err_code === 6) {
+      Swal.fire("Thông báo", "NG: Không được đổi giá PO, xóa tạo lại PO nhé", "error");
+    }
+    else {
       Swal.fire("Thông báo", "Kiểm tra xem PO có giao hàng chưa?", "error");
     }
   };
   const deletePO = async () => {
-    if (podatatablefilter.length >= 1) {
+    if (podatatablefilter.current.length >= 1) {
       let err_code: boolean = false;
-      for (let i = 0; i < podatatablefilter.length; i++) {
-        if (podatatablefilter[i].EMPL_NO === userData?.EMPL_NO) {
+      for (let i = 0; i < podatatablefilter.current.length; i++) {
+        if (podatatablefilter.current[i].EMPL_NO === userData?.EMPL_NO) {
           await generalQuery("delete_po", {
-            PO_ID: podatatablefilter[i].PO_ID,
+            PO_ID: podatatablefilter.current[i].PO_ID,
           })
             .then((response) => {
               console.log(response.data.tk_status);
@@ -1370,7 +1329,6 @@ const PoManager = () => {
         dataType: "number",
         summaryType: "count",
         format: "fixedPoint",
-
         headerFilter: {
           allowSearch: true,
           height: 500,
@@ -1385,7 +1343,7 @@ const PoManager = () => {
         allowFiltering: true,
         dataType: "string",
         summaryType: "count",
-        format: "fixedPoint",        
+        format: "fixedPoint",
         headerFilter: {
           allowSearch: true,
           height: 500,
@@ -1505,7 +1463,7 @@ const PoManager = () => {
         allowFiltering: true,
         dataType: "number",
         summaryType: "sum",
-        format: "fixedPoint",        
+        format: "fixedPoint",
         headerFilter: {
           allowSearch: true,
           height: 500,
@@ -1520,7 +1478,7 @@ const PoManager = () => {
         allowFiltering: true,
         dataType: "number",
         summaryType: "sum",
-        format: "fixedPoint",       
+        format: "fixedPoint",
         headerFilter: {
           allowSearch: true,
           height: 500,
@@ -1535,7 +1493,7 @@ const PoManager = () => {
         allowFiltering: true,
         dataType: "number",
         summaryType: "sum",
-        format: "fixedPoint",        
+        format: "fixedPoint",
         headerFilter: {
           allowSearch: true,
           height: 500,
@@ -1549,7 +1507,7 @@ const PoManager = () => {
         allowSorting: true,
         allowFiltering: true,
         dataType: "number",
-        summaryType: "sum",        
+        summaryType: "sum",
         format: "currency",
         headerFilter: {
           allowSearch: true,
@@ -1564,7 +1522,7 @@ const PoManager = () => {
         allowSorting: true,
         allowFiltering: true,
         dataType: "number",
-        summaryType: "sum",        
+        summaryType: "sum",
         format: "currency",
         headerFilter: {
           allowSearch: true,
@@ -1579,7 +1537,7 @@ const PoManager = () => {
         allowSorting: true,
         allowFiltering: true,
         dataType: "number",
-        summaryType: "sum",        
+        summaryType: "sum",
         format: "currency",
         headerFilter: {
           allowSearch: true,
@@ -1815,13 +1773,350 @@ const PoManager = () => {
     ],
     store: podatatable,
   });
+  const autopheduyetgia = () => {
+    generalQuery("autopheduyetgiaall", {
+    })
+      .then((response) => {
+        console.log(response.data.tk_status);
+        if (response.data.tk_status !== "NG") {
+        } else {
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+  const poDataTable = React.useMemo(
+    () => (
+      <div className='datatb'>
+        <CustomResponsiveContainer>
+          <DataGrid
+            ref={dataGridRef}
+            autoNavigateToFocusedRow={true}
+            allowColumnReordering={true}
+            allowColumnResizing={true}
+            columnAutoWidth={false}
+            cellHintEnabled={true}
+            columnResizingMode={"widget"}
+            showColumnLines={true}
+            dataSource={podatatable}
+            columnWidth='auto'
+            keyExpr='PO_ID'
+            height={"75vh"}
+            showBorders={true}
+            onSelectionChanged={(e) => {
+              podatatablefilter.current = e.selectedRowsData;
+            }}
+            onRowClick={(e) => {
+              //console.log(e.data);
+              clickedRow.current = e.data;
+            }}
+          >
+            <Scrolling
+              useNative={true}
+              scrollByContent={true}
+              scrollByThumb={true}
+              showScrollbar='onHover'
+              mode='virtual'
+            />
+            <Selection mode='multiple' selectAllMode='allPages' />
+            <Editing
+              allowUpdating={false}
+              allowAdding={true}
+              allowDeleting={false}
+              mode='batch'
+              confirmDelete={true}
+              onChangesChange={(e) => { }}
+            />
+            <Export enabled={true} />
+            <Toolbar disabled={false}>
+              <Item location='before'>
+                <IconButton
+                  className='buttonIcon'
+                  onClick={() => {
+                    showhidesearchdiv.current = !showhidesearchdiv.current;
+                    setSH(!showhidesearchdiv.current);
+                  }}
+                >
+                  <TbLogout color='green' size={15} />
+                  Show/Hide
+                </IconButton>
+                <IconButton
+                  className='buttonIcon'
+                  onClick={() => {
+                    SaveExcel(podatatable, "PO Table");
+                  }}
+                >
+                  <AiFillFileExcel color='green' size={15} />
+                  SAVE
+                </IconButton>
+                <IconButton
+                  className='buttonIcon'
+                  onClick={() => {
+                    /* checkBP(userData?.EMPL_NO, userData?.MAINDEPTNAME, ["KD"], showNewPO); */
+                    checkBP(userData, ["KD"], ["ALL"], ["ALL"], showNewPO);
+                    clearPOform();
+                  }}
+                >
+                  <AiFillFileAdd color='blue' size={15} />
+                  NEW PO
+                </IconButton>
+                <IconButton
+                  className='buttonIcon'
+                  onClick={() => {
+                    /* checkBP(
+              userData?.EMPL_NO,
+              userData?.MAINDEPTNAME,
+              ["KD"],
+              handle_fillsuaformInvoice
+            ); */
+                    checkBP(
+                      userData,
+                      ["KD"],
+                      ["ALL"],
+                      ["ALL"],
+                      handle_fillsuaformInvoice
+                    );
+                    //handle_fillsuaformInvoice();
+                  }}
+                >
+                  <FaFileInvoiceDollar color='lightgreen' size={15} />
+                  NEW INV
+                </IconButton>
+                <IconButton
+                  className='buttonIcon'
+                  onClick={() => {
+                    /*  checkBP(
+              userData?.EMPL_NO,
+              userData?.MAINDEPTNAME,
+              ["KD"],
+              handle_fillsuaform
+            ); */
+                    checkBP(
+                      userData,
+                      ["KD"],
+                      ["ALL"],
+                      ["ALL"],
+                      handle_fillsuaform
+                    );
+                    //handle_fillsuaform();
+                  }}
+                >
+                  <AiFillEdit color='orange' size={15} />
+                  SỬA PO
+                </IconButton>
+                <IconButton
+                  className='buttonIcon'
+                  onClick={() => {
+                    /*  checkBP(
+              userData?.EMPL_NO,
+              userData?.MAINDEPTNAME,
+              ["KD"],
+              handleConfirmDeletePO
+            ); */
+                    checkBP(
+                      userData,
+                      ["KD"],
+                      ["ALL"],
+                      ["ALL"],
+                      handleConfirmDeletePO
+                    );
+                    //handleConfirmDeletePO();
+                  }}
+                >
+                  <MdOutlineDelete color='red' size={15} />
+                  XÓA PO
+                </IconButton>
+                <IconButton
+                  className='buttonIcon'
+                  onClick={() => {
+                    setShowHidePivotTable(!showhidePivotTable);
+                  }}
+                >
+                  <MdOutlinePivotTableChart color='#ff33bb' size={15} />
+                  Pivot
+                </IconButton>
+              </Item>
+              <Item name='searchPanel' />
+              <Item name='exportButton' />
+              <Item name='columnChooser' />
+            </Toolbar>
+            <FilterRow visible={true} />
+            <SearchPanel visible={true} />
+            <ColumnChooser enabled={true} />
+            <Paging defaultPageSize={15} />
+            <Pager
+              showPageSizeSelector={true}
+              allowedPageSizes={[5, 10, 15, 20, 100, 1000, 10000, "all"]}
+              showNavigationButtons={true}
+              showInfo={true}
+              infoText='Page #{0}. Total: {1} ({2} items)'
+              displayMode='compact'
+            />
+            {columns.map((column, index) => {
+              //console.log(column);
+              return <Column key={index} {...column}></Column>;
+            })}
+            <Summary>
+              <TotalItem
+                alignment='right'
+                column='PO_ID'
+                summaryType='count'
+                valueFormat={"decimal"}
+              />
+              <TotalItem
+                alignment='right'
+                column='PO_QTY'
+                summaryType='sum'
+                valueFormat={"thousands"}
+              />
+              <TotalItem
+                alignment='right'
+                column='TOTAL_DELIVERED'
+                summaryType='sum'
+                valueFormat={"thousands"}
+              />
+              <TotalItem
+                alignment='right'
+                column='PO_BALANCE'
+                summaryType='sum'
+                valueFormat={"thousands"}
+              />
+              <TotalItem
+                alignment='right'
+                column='PO_AMOUNT'
+                summaryType='sum'
+                valueFormat={"currency"}
+              />
+              <TotalItem
+                alignment='right'
+                column='DELIVERED_AMOUNT'
+                summaryType='sum'
+                valueFormat={"currency"}
+              />
+              <TotalItem
+                alignment='right'
+                column='BALANCE_AMOUNT'
+                summaryType='sum'
+                valueFormat={"currency"}
+              />
+              <TotalItem
+                alignment='right'
+                column='DELIVERED_BEP_AMOUNT'
+                summaryType='sum'
+                valueFormat={"currency"}
+              />
+            </Summary>
+          </DataGrid>
+        </CustomResponsiveContainer>
+      </div>
+    ),
+    [podatatable,getGlobalSetting()]
+  );
+  const excelDataTable = React.useMemo(
+    () => (
+      <div className='datatb'>
+        <CustomResponsiveContainer>
+          <DataGrid
+            autoNavigateToFocusedRow={true}
+            allowColumnReordering={true}
+            allowColumnResizing={true}
+            columnAutoWidth={false}
+            cellHintEnabled={true}
+            columnResizingMode={"widget"}
+            showColumnLines={true}
+            dataSource={uploadExcelJson}
+            columnWidth='auto'
+            keyExpr='id'
+            height={"75vh"}
+            showBorders={true}
+            onSelectionChanged={(e) => { }}
+            onRowClick={(e) => {
+              //console.log(e.data);
+            }}
+          >
+            <Scrolling
+              useNative={true}
+              scrollByContent={true}
+              scrollByThumb={true}
+              showScrollbar='onHover'
+              mode='virtual'
+            />
+            <Selection mode='single' selectAllMode='allPages' />
+            <Editing
+              allowUpdating={false}
+              allowAdding={true}
+              allowDeleting={false}
+              mode='batch'
+              confirmDelete={true}
+              onChangesChange={(e) => { }}
+            />
+            <Export enabled={true} />
+            <Toolbar disabled={false}>
+              <Item location='before'>
+                <IconButton
+                  className='buttonIcon'
+                  onClick={() => {
+                    SaveExcel(uploadExcelJson, "MaterialStatus");
+                  }}
+                >
+                  <AiFillFileExcel color='green' size={15} />
+                  SAVE
+                </IconButton>
+                <IconButton
+                  className='buttonIcon'
+                  onClick={() => {
+                    setShowHidePivotTable(!showhidePivotTable);
+                  }}
+                >
+                  <MdOutlinePivotTableChart color='#ff33bb' size={15} />
+                  Pivot
+                </IconButton>
+              </Item>
+              <Item name='searchPanel' />
+              <Item name='exportButton' />
+              <Item name='columnChooser' />
+            </Toolbar>
+            <FilterRow visible={true} />
+            <SearchPanel visible={true} />
+            <ColumnChooser enabled={true} />
+            <Paging defaultPageSize={15} />
+            <Pager
+              showPageSizeSelector={true}
+              allowedPageSizes={[5, 10, 15, 20, 100, 1000, 10000, "all"]}
+              showNavigationButtons={true}
+              showInfo={true}
+              infoText='Page #{0}. Total: {1} ({2} items)'
+              displayMode='compact'
+            />
+            {columnsExcel.map((column, index) => {
+              //console.log(column);
+              return <Column key={index} {...column}></Column>;
+            })}
+            <Summary>
+              <TotalItem
+                alignment='right'
+                column='PO_ID'
+                summaryType='count'
+                valueFormat={"decimal"}
+              />
+            </Summary>
+          </DataGrid>
+        </CustomResponsiveContainer>
+      </div>
+    ),
+    [uploadExcelJson, columnsExcel, trigger]
+  );
   useEffect(() => {
+    if (getCompany() === 'CMS') {
+      autopheduyetgia();
+      dongboGiaPO();
+    }
     getcustomerlist();
     getcodelist("");
-    dongboGiaPO();
   }, []);
   return (
-    <div className='pomanager'>
+    <div className="pomanager">
       <div className='mininavbar'>
         <div
           className='mininavitem'
@@ -1836,10 +2131,10 @@ const PoManager = () => {
         <div
           className='mininavitem'
           onClick={() =>
-           /*  checkBP(userData?.EMPL_NO, userData?.MAINDEPTNAME, ["KD"], () => {
+            /*  checkBP(userData?.EMPL_NO, userData?.MAINDEPTNAME, ["KD"], () => {
               setNav(2);
             }) */
-            checkBP(userData,['KD'],['ALL'],['ALL'],()=> {
+            checkBP(userData, ["KD"], ["ALL"], ["ALL"], () => {
               setNav(2);
             })
           }
@@ -1853,47 +2148,32 @@ const PoManager = () => {
         </div>
       </div>
       {selection.thempohangloat && (
-        <div className='newpo'> 
+        <div className='newpo'>
           <div className='batchnewpo'>
             <h3>Thêm PO Hàng Loạt</h3>
             <div className='formupload'>
-              <label htmlFor='upload'>
-                <b>Chọn file Excel: </b>
-                <input
-                  onKeyDown={(e) => {
-                    handleSearchCodeKeyDown(e);
-                  }}
-                  className='selectfilebutton'
-                  type='file'
-                  name='upload'
-                  id='upload'
-                  onChange={(e: any) => {
-                    readUploadFile(e);
-                  }}
-                />
-              </label>
-              <div
-                className='checkpobutton'
-                onClick={(e) => {
-                  e.preventDefault();
-                  confirmCheckPoHangLoat();
+              <input
+                onKeyDown={(e) => {
+                  handleSearchCodeKeyDown(e);
                 }}
-              >
-                Check PO
-              </div>
-              <div
-                className='uppobutton'
-                onClick={(e) => {
-                  e.preventDefault();
-                  confirmUpPoHangLoat();
+                className='selectfilebutton'
+                type='file'
+                name='upload'
+                id='upload'
+                onChange={(e: any) => {
+                  readUploadFile(e);
                 }}
-              >
-                Up PO
-              </div>
+              />
+              <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#2639F6' }} onClick={() => {
+                confirmCheckPoHangLoat();
+              }}>CheckPO</Button>
+              <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#00DF0E' }} onClick={() => {
+                confirmUpPoHangLoat();
+              }}>Up PO</Button>
             </div>
             <div className='insertPOTable'>
-              {true && (
-                <DataGrid
+              {excelDataTable}
+              {/* <DataGrid
                   sx={{ fontSize: "0.6rem" }}
                   components={{
                     Toolbar: CustomToolbar,
@@ -1906,10 +2186,9 @@ const PoManager = () => {
                   rowsPerPageOptions={[
                     5, 10, 50, 100, 500, 1000, 5000, 10000, 100000,
                   ]}
-                  editMode='row'
+                  editMode="row"
                   getRowHeight={() => "auto"}
-                />
-              )}
+                /> */}
             </div>
           </div>
           <div className='singlenewpo'></div>
@@ -1917,209 +2196,207 @@ const PoManager = () => {
       )}
       {selection.trapo && (
         <div className='tracuuPO'>
-          {showhidesearchdiv && <div className='tracuuPOform'>
-            <div className='forminput'>
-              <div className='forminputcolumn'>
-                <label>
-                  <b>Từ ngày:</b>
-                  <input
-                    onKeyDown={(e) => {
-                      handleSearchCodeKeyDown(e);
-                    }}
-                    type='date'
-                    value={fromdate.slice(0, 10)}
-                    onChange={(e) => setFromDate(e.target.value)}
-                  ></input>
-                </label>
-                <label>
-                  <b>Tới ngày:</b>{" "}
-                  <input
-                    onKeyDown={(e) => {
-                      handleSearchCodeKeyDown(e);
-                    }}
-                    type='date'
-                    value={todate.slice(0, 10)}
-                    onChange={(e) => setToDate(e.target.value)}
-                  ></input>
-                </label>
+          {sh && (
+            <div className='tracuuPOform'>
+              <div className='forminput'>
+                <div className='forminputcolumn'>
+                  <label>
+                    <b>Từ ngày:</b>
+                    <input
+                      onKeyDown={(e) => {
+                        handleSearchCodeKeyDown(e);
+                      }}
+                      type='date'
+                      value={fromdate.slice(0, 10)}
+                      onChange={(e) => setFromDate(e.target.value)}
+                    ></input>
+                  </label>
+                  <label>
+                    <b>Tới ngày:</b>{" "}
+                    <input
+                      onKeyDown={(e) => {
+                        handleSearchCodeKeyDown(e);
+                      }}
+                      type='date'
+                      value={todate.slice(0, 10)}
+                      onChange={(e) => setToDate(e.target.value)}
+                    ></input>
+                  </label>
+                </div>
+                <div className='forminputcolumn'>
+                  <label>
+                    <b>Code KD:</b>{" "}
+                    <input
+                      onKeyDown={(e) => {
+                        handleSearchCodeKeyDown(e);
+                      }}
+                      type='text'
+                      placeholder='GH63-xxxxxx'
+                      value={codeKD}
+                      onChange={(e) => setCodeKD(e.target.value)}
+                    ></input>
+                  </label>
+                  <label>
+                    <b>Code ERP:</b>{" "}
+                    <input
+                      onKeyDown={(e) => {
+                        handleSearchCodeKeyDown(e);
+                      }}
+                      type='text'
+                      placeholder='7C123xxx'
+                      value={codeCMS}
+                      onChange={(e) => setCodeCMS(e.target.value)}
+                    ></input>
+                  </label>
+                </div>
+                <div className='forminputcolumn'>
+                  <label>
+                    <b>Tên nhân viên:</b>{" "}
+                    <input
+                      onKeyDown={(e) => {
+                        handleSearchCodeKeyDown(e);
+                      }}
+                      type='text'
+                      placeholder='Trang'
+                      value={empl_name}
+                      onChange={(e) => setEmpl_Name(e.target.value)}
+                    ></input>
+                  </label>
+                  <label>
+                    <b>Khách:</b>{" "}
+                    <input
+                      onKeyDown={(e) => {
+                        handleSearchCodeKeyDown(e);
+                      }}
+                      type='text'
+                      placeholder='SEVT'
+                      value={cust_name}
+                      onChange={(e) => setCust_Name(e.target.value)}
+                    ></input>
+                  </label>
+                </div>
+                <div className='forminputcolumn'>
+                  <label>
+                    <b>Loại sản phẩm:</b>{" "}
+                    <input
+                      onKeyDown={(e) => {
+                        handleSearchCodeKeyDown(e);
+                      }}
+                      type='text'
+                      placeholder='TSP'
+                      value={prod_type}
+                      onChange={(e) => setProdType(e.target.value)}
+                    ></input>
+                  </label>
+                  <label>
+                    <b>ID:</b>{" "}
+                    <input
+                      onKeyDown={(e) => {
+                        handleSearchCodeKeyDown(e);
+                      }}
+                      type='text'
+                      placeholder='12345'
+                      value={id}
+                      onChange={(e) => setID(e.target.value)}
+                    ></input>
+                  </label>
+                </div>
+                <div className='forminputcolumn'>
+                  <label>
+                    <b>PO NO:</b>{" "}
+                    <input
+                      onKeyDown={(e) => {
+                        handleSearchCodeKeyDown(e);
+                      }}
+                      type='text'
+                      placeholder='123abc'
+                      value={po_no}
+                      onChange={(e) => setPo_No(e.target.value)}
+                    ></input>
+                  </label>
+                  <label>
+                    <b>Vật liệu:</b>{" "}
+                    <input
+                      onKeyDown={(e) => {
+                        handleSearchCodeKeyDown(e);
+                      }}
+                      type='text'
+                      placeholder='SJ-203020HC'
+                      value={material}
+                      onChange={(e) => setMaterial(e.target.value)}
+                    ></input>
+                  </label>
+                </div>
+                <div className='forminputcolumn'>
+                  <label>
+                    <b>Over/OK:</b>{" "}
+                    <input
+                      onKeyDown={(e) => {
+                        handleSearchCodeKeyDown(e);
+                      }}
+                      type='text'
+                      placeholder='OVER'
+                      value={over}
+                      onChange={(e) => setOver(e.target.value)}
+                    ></input>
+                  </label>
+                  <label>
+                    <b>Invoice No:</b>{" "}
+                    <input
+                      onKeyDown={(e) => {
+                        handleSearchCodeKeyDown(e);
+                      }}
+                      type='text'
+                      placeholder='số invoice'
+                      value={invoice_no}
+                      onChange={(e) => setInvoice_No(e.target.value)}
+                    ></input>
+                  </label>
+                </div>
               </div>
-              <div className='forminputcolumn'>
-                <label>
-                  <b>Code KD:</b>{" "}
-                  <input
-                    onKeyDown={(e) => {
-                      handleSearchCodeKeyDown(e);
+              <div className='formbutton'>
+                <div className='checkboxdiv'>
+                  <label>
+                    <b>All Time:</b>
+                    <input
+                      onKeyDown={(e) => {
+                        handleSearchCodeKeyDown(e);
+                      }}
+                      type='checkbox'
+                      name='alltimecheckbox'
+                      defaultChecked={alltime}
+                      onChange={() => setAllTime(!alltime)}
+                    ></input>
+                  </label>
+                  <label>
+                    <b>Chỉ PO Tồn:</b>
+                    <input
+                      onKeyDown={(e) => {
+                        handleSearchCodeKeyDown(e);
+                      }}
+                      type='checkbox'
+                      name='pobalancecheckbox'
+                      defaultChecked={justpobalance}
+                      onChange={() => setJustPOBalance(!justpobalance)}
+                    ></input>
+                  </label>
+                </div>
+                <div className='searchbuttondiv'>
+                  <IconButton
+                    className='buttonIcon'
+                    onClick={() => {
+                      handletraPO();
                     }}
-                    type='text'
-                    placeholder='GH63-xxxxxx'
-                    value={codeKD}
-                    onChange={(e) => setCodeKD(e.target.value)}
-                  ></input>
-                </label>
-                <label>
-                  <b>Code CMS:</b>{" "}
-                  <input
-                    onKeyDown={(e) => {
-                      handleSearchCodeKeyDown(e);
-                    }}
-                    type='text'
-                    placeholder='7C123xxx'
-                    value={codeCMS}
-                    onChange={(e) => setCodeCMS(e.target.value)}
-                  ></input>
-                </label>
-              </div>
-              <div className='forminputcolumn'>
-                <label>
-                  <b>Tên nhân viên:</b>{" "}
-                  <input
-                    onKeyDown={(e) => {
-                      handleSearchCodeKeyDown(e);
-                    }}
-                    type='text'
-                    placeholder='Trang'
-                    value={empl_name}
-                    onChange={(e) => setEmpl_Name(e.target.value)}
-                  ></input>
-                </label>
-                <label>
-                  <b>Khách:</b>{" "}
-                  <input
-                    onKeyDown={(e) => {
-                      handleSearchCodeKeyDown(e);
-                    }}
-                    type='text'
-                    placeholder='SEVT'
-                    value={cust_name}
-                    onChange={(e) => setCust_Name(e.target.value)}
-                  ></input>
-                </label>
-              </div>
-              <div className='forminputcolumn'>
-                <label>
-                  <b>Loại sản phẩm:</b>{" "}
-                  <input
-                    onKeyDown={(e) => {
-                      handleSearchCodeKeyDown(e);
-                    }}
-                    type='text'
-                    placeholder='TSP'
-                    value={prod_type}
-                    onChange={(e) => setProdType(e.target.value)}
-                  ></input>
-                </label>
-                <label>
-                  <b>ID:</b>{" "}
-                  <input
-                    onKeyDown={(e) => {
-                      handleSearchCodeKeyDown(e);
-                    }}
-                    type='text'
-                    placeholder='12345'
-                    value={id}
-                    onChange={(e) => setID(e.target.value)}
-                  ></input>
-                </label>
-              </div>
-              <div className='forminputcolumn'>
-                <label>
-                  <b>PO NO:</b>{" "}
-                  <input
-                    onKeyDown={(e) => {
-                      handleSearchCodeKeyDown(e);
-                    }}
-                    type='text'
-                    placeholder='123abc'
-                    value={po_no}
-                    onChange={(e) => setPo_No(e.target.value)}
-                  ></input>
-                </label>
-                <label>
-                  <b>Vật liệu:</b>{" "}
-                  <input
-                    onKeyDown={(e) => {
-                      handleSearchCodeKeyDown(e);
-                    }}
-                    type='text'
-                    placeholder='SJ-203020HC'
-                    value={material}
-                    onChange={(e) => setMaterial(e.target.value)}
-                  ></input>
-                </label>
-              </div>
-              <div className='forminputcolumn'>
-                <label>
-                  <b>Over/OK:</b>{" "}
-                  <input
-                    onKeyDown={(e) => {
-                      handleSearchCodeKeyDown(e);
-                    }}
-                    type='text'
-                    placeholder='OVER'
-                    value={over}
-                    onChange={(e) => setOver(e.target.value)}
-                  ></input>
-                </label>
-                <label>
-                  <b>Invoice No:</b>{" "}
-                  <input
-                    onKeyDown={(e) => {
-                      handleSearchCodeKeyDown(e);
-                    }}
-                    type='text'
-                    placeholder='số invoice'
-                    value={invoice_no}
-                    onChange={(e) => setInvoice_No(e.target.value)}
-                  ></input>
-                </label>
+                  >
+                    <FcSearch color='green' size={30} />
+                    Search
+                  </IconButton>
+                </div>
               </div>
             </div>
-            <div className='formbutton'>
-              <div className="checkboxdiv">
-              <label>
-                <b>All Time:</b>
-                <input
-                  onKeyDown={(e) => {
-                    handleSearchCodeKeyDown(e);
-                  }}
-                  type='checkbox'
-                  name='alltimecheckbox'
-                  defaultChecked={alltime}
-                  onChange={() => setAllTime(!alltime)}
-                ></input>
-              </label>
-              <label>
-                <b>Chỉ PO Tồn:</b>
-                <input
-                  onKeyDown={(e) => {
-                    handleSearchCodeKeyDown(e);
-                  }}
-                  type='checkbox'
-                  name='pobalancecheckbox'
-                  defaultChecked={justpobalance}
-                  onChange={() => setJustPOBalance(!justpobalance)}
-                ></input>
-              </label>
-
-              </div>
-              <div className="searchbuttondiv">
-              <IconButton
-                className='buttonIcon'
-                onClick={() => {
-                  handletraPO();
-                }}
-              >
-                <FcSearch color='green' size={30} />
-                Search
-              </IconButton>  
-
-              </div>
-             
-                       
-            </div>            
-          </div>}
-          <div className='tracuuPOTable'>  
-          <div className='formsummary'>
+          )}
+          <div className='tracuuPOTable'>
+            <div className='formsummary'>
               <table>
                 <thead>
                   <tr>
@@ -2148,7 +2425,7 @@ const PoManager = () => {
                       {" "}
                       {poSummary.total_po_amount.toLocaleString("en-US", {
                         style: "currency",
-                        currency: "USD",
+                        currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0].CURRENT_VALUE,
                       })}
                     </td>
                     <td style={{ color: "blue", fontWeight: "bold" }}>
@@ -2157,7 +2434,7 @@ const PoManager = () => {
                         "en-US",
                         {
                           style: "currency",
-                          currency: "USD",
+                          currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0].CURRENT_VALUE,
                         }
                       )}
                     </td>
@@ -2167,7 +2444,7 @@ const PoManager = () => {
                         "en-US",
                         {
                           style: "currency",
-                          currency: "USD",
+                          currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0].CURRENT_VALUE,
                         }
                       )}
                     </td>
@@ -2175,31 +2452,30 @@ const PoManager = () => {
                 </tbody>
               </table>
             </div>
-            <div className="tablegrid">
-            <DataGrid
-              sx={{ fontSize: "0.7rem", flex: 1 }}
-              components={{
-                Toolbar: CustomToolbarPOTable,
-                LoadingOverlay: LinearProgress,
-              }}
-              loading={isLoading}
-              rowHeight={30}
-              rows={podatatable}
-              columns={column_potable}
-              rowsPerPageOptions={[
-                5, 10, 50, 100, 500, 1000, 5000, 10000, 100000,
-              ]}
-              editMode='row'
-              getRowId={(row) => row.PO_ID}
-              checkboxSelection
-              disableSelectionOnClick
-              onSelectionModelChange={(ids) => {
-                handlePOSelectionforUpdate(ids);
-              }}
-            />
-              
+            <div className='tablegrid'>
+              {poDataTable}
+              {/* <DataGrid
+                sx={{ fontSize: "0.7rem", flex: 1 }}
+                components={{
+                  Toolbar: CustomToolbarPOTable,
+                  LoadingOverlay: LinearProgress,
+                }}
+                loading={isLoading}
+                rowHeight={30}
+                rows={podatatable}
+                columns={column_potable}
+                rowsPerPageOptions={[
+                  5, 10, 50, 100, 500, 1000, 5000, 10000, 100000,
+                ]}
+                editMode="row"
+                getRowId={(row) => row.PO_ID}
+                checkboxSelection
+                disableSelectionOnClick
+                onSelectionModelChange={(ids) => {
+                  handlePOSelectionforUpdate(ids);
+                }}
+              /> */}
             </div>
-           
           </div>
         </div>
       )}
@@ -2232,6 +2508,14 @@ const PoManager = () => {
                         event: any,
                         newValue: CustomerListData | any
                       ) => {
+                        (async () => {
+                          if (company !== "CMS") {
+                            setNewPoNo(
+                              await autogeneratePO_NO(newValue.CUST_CD)
+                            );
+                          }
+                          //console.log(await autogeneratePO_NO(newValue.CUST_CD));
+                        })();
                         console.log(newValue);
                         loadprice(selectedCode?.G_CODE, newValue.CUST_NAME_KD);
                         setSelectedCust_CD(newValue);
@@ -2250,14 +2534,17 @@ const PoManager = () => {
                         option.G_CODE === value.G_CODE
                       }
                       getOptionLabel={(option: CodeListData | any) =>
-                        `${option.G_CODE}: ${option.G_NAME}`
+                        `${option.G_CODE}: ${option.G_NAME_KD}:${option.G_NAME}`
                       }
                       renderInput={(params) => (
                         <TextField {...params} label='Select code' />
                       )}
                       onChange={(event: any, newValue: CodeListData | any) => {
-                        console.log(newValue);                        
-                        loadprice(newValue.G_CODE, selectedCust_CD?.CUST_NAME_KD);                        
+                        console.log(newValue);
+                        loadprice(
+                          newValue.G_CODE,
+                          selectedCust_CD?.CUST_NAME_KD
+                        );
                         setSelectedCode(newValue);
                       }}
                       value={selectedCode}
@@ -2310,14 +2597,20 @@ const PoManager = () => {
                       value={newpoqty}
                       onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                         let tempQTY: number = Number(e.target.value);
-                        let tempprice: number = newcodeprice.filter((e:PRICEWITHMOQ, index: number)=> {
-                          return tempQTY >= e.MOQ
-                        })[0]?.PROD_PRICE;
-                        if(tempprice !== undefined)
-                        setNewPoPrice(tempprice.toString());
+                        let tempprice: number = newcodeprice.filter(
+                          (e: PRICEWITHMOQ, index: number) => {
+                            return tempQTY >= e.MOQ;
+                          }
+                        )[0]?.PROD_PRICE ?? 0;
+                        if (tempprice !== undefined) setNewPoPrice(tempprice.toString());
+                        let tempBEP: number = newcodeprice.filter(
+                          (e: PRICEWITHMOQ, index: number) => {
+                            return tempQTY >= e.MOQ;
+                          }
+                        )[0]?.BEP ?? 0;
+                        if (tempBEP !== undefined) setNewPoBEP(tempBEP.toString());
                         setNewPoQty(e.target.value);
-                      }
-                      }
+                      }}
                       size='small'
                       color='success'
                       className='autocomplete'
@@ -2329,6 +2622,7 @@ const PoManager = () => {
                   <label>
                     <b>Price:</b>{" "}
                     <TextField
+                      style={{ width: '150px' }}
                       value={newpoprice}
                       onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                         setNewPoPrice(e.target.value)
@@ -2338,6 +2632,19 @@ const PoManager = () => {
                       className='autocomplete'
                       id='outlined-basic'
                       label='Price'
+                      variant='outlined'
+                    />
+                    <TextField
+                      style={{ width: '150px' }}
+                      value={newpoBEP}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        setNewPoBEP(e.target.value)
+                      }
+                      size='small'
+                      color='success'
+                      className='autocomplete'
+                      id='outlined-basic'
+                      label='BEP'
                       variant='outlined'
                     />
                   </label>
@@ -2440,7 +2747,7 @@ const PoManager = () => {
                       className='autocomplete'
                       filterOptions={filterOptions1}
                       getOptionLabel={(option: CodeListData | any) =>
-                        `${option.G_CODE}: ${option.G_NAME}`
+                        `${option.G_CODE}: ${option.G_NAME_KD}:${option.G_NAME}`
                       }
                       renderInput={(params) => (
                         <TextField {...params} label='Select code' />
@@ -2585,13 +2892,12 @@ const PoManager = () => {
               setShowHidePivotTable(false);
             }}
           >
-            <AiFillCloseCircle color='blue' size={25} />
+            <AiFillCloseCircle color='blue' size={15} />
             Close
           </IconButton>
           <PivotTable datasource={dataSource} tableID='potablepivot' />
         </div>
       )}
-    
     </div>
   );
 };

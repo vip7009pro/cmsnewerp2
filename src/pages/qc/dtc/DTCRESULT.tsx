@@ -17,7 +17,7 @@ import { AiFillFileExcel } from "react-icons/ai";
 import Swal from "sweetalert2";
 import { generalQuery } from "../../../api/Api";
 import { UserContext } from "../../../api/Context";
-import { SaveExcel } from "../../../api/GlobalFunction";
+import { CustomResponsiveContainer, SaveExcel } from "../../../api/GlobalFunction";
 import "./DTCRESULT.scss";
 import DataGrid, {
   Column,
@@ -36,45 +36,11 @@ import DataGrid, {
   Toolbar,
   TotalItem,
 } from "devextreme-react/data-grid";
-import { ResponsiveContainer } from "recharts";
-interface DTC_REG_DATA {
-  DTC_ID: number;
-  FACTORY: string;
-  TEST_FINISH_TIME: string;
-  TEST_EMPL_NO: string;
-  G_CODE: string;
-  PROD_REQUEST_NO: number;
-  G_NAME: number;
-  TEST_NAME: number;
-  TEST_TYPE_NAME: number;
-  WORK_POSITION_NAME: number;
-  REQUEST_DATETIME: string;
-  REQUEST_EMPL_NO: string;
-  M_NAME: string;
-  SIZE: number;
-  REMARK: string;
-  LOTCMS: string;
-}
-interface TestListTable {
-  TEST_CODE: string;
-  TEST_NAME: string;
-  CHECKADDED: boolean;
-}
-interface DTC_RESULT_INPUT {
-  DTC_ID: number,
-  G_CODE: string,
-  M_CODE: string,
-  TEST_NAME: string,
-  TEST_CODE: number,
-  POINT_NAME: string,
-  POINT_CODE: number,
-  CENTER_VALUE: number,
-  UPPER_TOR: number,
-  LOWER_TOR: number,
-  RESULT: number,
-  REMARK: number,
-
-}
+import {
+  DTC_REG_DATA,
+  DTC_RESULT_INPUT,
+  TestListTable,
+} from "../../../api/GlobalInterface";
 const DTCRESULT = () => {
   const [testtype, setTestType] = useState("3");
   const [inputno, setInputNo] = useState("");
@@ -102,11 +68,11 @@ const DTCRESULT = () => {
     { TEST_CODE: "1005", TEST_NAME: "Độ dày", CHECKADDED: false },
   ]);
   const [inspectiondatatable, setInspectionDataTable] = useState<Array<any>>(
-    []
+    [],
   );
   const [testname, setTestName] = useState("1003");
   const [selectedRowsData, setSelectedRowsData] = useState<Array<DTC_REG_DATA>>(
-    []
+    [],
   );
   const [empl_name, setEmplName] = useState("");
   const [reqDeptCode, setReqDeptCode] = useState("");
@@ -118,105 +84,124 @@ const DTCRESULT = () => {
   const [prodreqdate, setProdReqDate] = useState("");
   const materialDataTable = React.useMemo(
     () => (
-      <div className='datatb'>
-        <ResponsiveContainer>
-        <DataGrid
-          style={{fontSize:'0.7rem'}}
-          autoNavigateToFocusedRow={true}
-          allowColumnReordering={true}
-          allowColumnResizing={true}
-          columnAutoWidth={false}
-          cellHintEnabled={true}
-          columnResizingMode={"widget"}
-          showColumnLines={true}
-          dataSource={inspectiondatatable}
-          columnWidth='auto'
-          keyExpr='id'
-          height={"85vh"}
-          showBorders={true}
-          onSelectionChanged={(e) => {
-            //console.log(e.selectedRowsData);
-            //setSelectedRowsData(e.selectedRowsData);
-          }}
-          onRowClick={(e) => {
-            //console.log(e.data);
-          }}
-        >
-           <KeyboardNavigation
-            editOnKeyPress={true}
-            enterKeyAction={'moveFocus'}
-            enterKeyDirection={'column'} />
-          <Scrolling
-            useNative={true}
-            scrollByContent={true}
-            scrollByThumb={true}
-            showScrollbar='onHover'
-            mode='virtual'
-          />
-      {/*     <Selection mode='multiple' selectAllMode='allPages' /> */}
-          <Editing
-            allowUpdating={true}
-            allowAdding={false}
-            allowDeleting={false}
-            mode='cell'
-            confirmDelete={true}
-            onChangesChange={(e) => {}}
-          />
-          <Export enabled={true} />
-          <Toolbar disabled={false}>
-            <Item location='before'>
-              <IconButton
-                className='buttonIcon'
-                onClick={() => {
-                  SaveExcel(inspectiondatatable, "SPEC DTC");
-                }}
-              >
-                <AiFillFileExcel color='green' size={25} />
-                SAVE
-              </IconButton>
-              <span style={{ fontSize: 20, fontWeight: "bold" }}>
-                Bảng nhập kết quả độ tin cậy
-              </span>
-            </Item>
-            <Item name='searchPanel' />
-            <Item name='exportButton' />
-            <Item name='columnChooserButton' />
-            <Item name='addRowButton' />
-            <Item name='saveButton' />
-            <Item name='revertButton' />
-          </Toolbar>
-          <FilterRow visible={true} />
-          <SearchPanel visible={true} />
-          <ColumnChooser enabled={true} />
-          <Paging defaultPageSize={15} />
-          <Pager
-            showPageSizeSelector={true}
-            allowedPageSizes={[5, 10, 15, 20, 100, 1000, 10000, "all"]}
-            showNavigationButtons={true}
-            showInfo={true}
-            infoText='Page #{0}. Total: {1} ({2} items)'
-            displayMode='compact'
-          />
-        <Column dataField='DTC_ID' caption='DTC_ID' width={100}></Column>        
-        <Column dataField='TEST_NAME' caption='TEST_NAME' width={100}></Column>       
-        <Column dataField='POINT_NAME' caption='POINT_NAME' width={100}></Column>        
-        <Column dataField='CENTER_VALUE' caption='CENTER_VALUE' width={100}></Column>
-        <Column dataField='UPPER_TOR' caption='UPPER_TOR' width={100}></Column>
-        <Column dataField='LOWER_TOR' caption='LOWER_TOR' width={100}></Column>
-        <Column dataField='RESULT' caption='RESULT' width={100}></Column>
-        <Column dataField='REMARK' caption='REMARK' width={100}></Column>
-        </DataGrid>
-
-        </ResponsiveContainer>
-        
+      <div className="datatb">
+        <CustomResponsiveContainer>
+          <DataGrid
+            style={{ fontSize: "0.7rem" }}
+            autoNavigateToFocusedRow={true}
+            allowColumnReordering={true}
+            allowColumnResizing={true}
+            columnAutoWidth={false}
+            cellHintEnabled={true}
+            columnResizingMode={"widget"}
+            showColumnLines={true}
+            dataSource={inspectiondatatable}
+            columnWidth="auto"
+            keyExpr="id"
+            height={"85vh"}
+            showBorders={true}
+            onSelectionChanged={(e) => {
+              //console.log(e.selectedRowsData);
+              //setSelectedRowsData(e.selectedRowsData);
+            }}
+            onRowClick={(e) => {
+              //console.log(e.data);
+            }}
+          >
+            <KeyboardNavigation
+              editOnKeyPress={true}
+              enterKeyAction={"moveFocus"}
+              enterKeyDirection={"column"}
+            />
+            <Scrolling
+              useNative={true}
+              scrollByContent={true}
+              scrollByThumb={true}
+              showScrollbar="onHover"
+              mode="virtual"
+            />
+            {/*     <Selection mode='multiple' selectAllMode='allPages' /> */}
+            <Editing
+              allowUpdating={true}
+              allowAdding={false}
+              allowDeleting={false}
+              mode="cell"
+              confirmDelete={true}
+              onChangesChange={(e) => { }}
+            />
+            <Export enabled={true} />
+            <Toolbar disabled={false}>
+              <Item location="before">
+                <IconButton
+                  className="buttonIcon"
+                  onClick={() => {
+                    SaveExcel(inspectiondatatable, "SPEC DTC");
+                  }}
+                >
+                  <AiFillFileExcel color="green" size={15} />
+                  SAVE
+                </IconButton>
+                <span style={{ fontSize: 20, fontWeight: "bold" }}>
+                  Bảng nhập kết quả độ tin cậy
+                </span>
+              </Item>
+              <Item name="searchPanel" />
+              <Item name="exportButton" />
+              <Item name="columnChooserButton" />
+              <Item name="addRowButton" />
+              <Item name="saveButton" />
+              <Item name="revertButton" />
+            </Toolbar>
+            <FilterRow visible={true} />
+            <SearchPanel visible={true} />
+            <ColumnChooser enabled={true} />
+            <Paging defaultPageSize={15} />
+            <Pager
+              showPageSizeSelector={true}
+              allowedPageSizes={[5, 10, 15, 20, 100, 1000, 10000, "all"]}
+              showNavigationButtons={true}
+              showInfo={true}
+              infoText="Page #{0}. Total: {1} ({2} items)"
+              displayMode="compact"
+            />
+            <Column dataField="DTC_ID" caption="DTC_ID" width={100}></Column>
+            <Column
+              dataField="TEST_NAME"
+              caption="TEST_NAME"
+              width={100}
+            ></Column>
+            <Column
+              dataField="POINT_NAME"
+              caption="POINT_NAME"
+              width={100}
+            ></Column>
+            <Column
+              dataField="CENTER_VALUE"
+              caption="CENTER_VALUE"
+              width={100}
+            ></Column>
+            <Column
+              dataField="UPPER_TOR"
+              caption="UPPER_TOR"
+              width={100}
+            ></Column>
+            <Column
+              dataField="LOWER_TOR"
+              caption="LOWER_TOR"
+              width={100}
+            ></Column>
+            <Column dataField="RESULT" caption="RESULT" width={100}></Column>
+            <Column dataField="REMARK" caption="REMARK" width={100}></Column>
+          </DataGrid>
+        </CustomResponsiveContainer>
       </div>
     ),
-    [inspectiondatatable]
+    [inspectiondatatable],
   );
   const handletraDTCData = (dtc_id: string, test_code: string) => {
     generalQuery("getinputdtcspec", {
       DTC_ID: dtc_id,
-      TEST_CODE: test_code
+      TEST_CODE: test_code,
     })
       .then((response) => {
         //console.log(response.data.data);
@@ -224,10 +209,10 @@ const DTCRESULT = () => {
           const loadeddata: DTC_RESULT_INPUT[] = response.data.data.map(
             (element: DTC_RESULT_INPUT, index: number) => {
               return {
-                ...element,               
+                ...element,
                 id: index,
               };
-            }
+            },
           );
           setInspectionDataTable(loadeddata);
         } else {
@@ -240,11 +225,12 @@ const DTCRESULT = () => {
   };
   const checkInput = (): boolean => {
     let checkresult: boolean = true;
-    for(let i=0;i<inspectiondatatable.length;i++)
-    {
-      if(inspectiondatatable[i].RESULT ==='' || inspectiondatatable[i].RESULT === null)
-      {
-        checkresult =false;
+    for (let i = 0; i < inspectiondatatable.length; i++) {
+      if (
+        inspectiondatatable[i].RESULT === "" ||
+        inspectiondatatable[i].RESULT === null
+      ) {
+        checkresult = false;
       }
     }
     if (dtc_id !== "" && checkresult === true) {
@@ -266,7 +252,7 @@ const DTCRESULT = () => {
                 ...element,
                 CHECKADDED: element.CHECKADDED === null ? false : true,
               };
-            }
+            },
           );
           //console.log(temp_loaded);
           setTestList(temp_loaded);
@@ -277,12 +263,10 @@ const DTCRESULT = () => {
         console.log(error);
       });
   };
-  const insertDTCResult = async ()=> {
-    if(inspectiondatatable.length >0)
-    {
-      let err_code:string = '';
-      for(let i=0;i<inspectiondatatable.length;i++)
-      {
+  const insertDTCResult = async () => {
+    if (inspectiondatatable.length > 0) {
+      let err_code: string = "";
+      for (let i = 0; i < inspectiondatatable.length; i++) {
         await generalQuery("insert_dtc_result", {
           DTC_ID: dtc_id,
           G_CODE: inspectiondatatable[i].G_CODE,
@@ -291,65 +275,59 @@ const DTCRESULT = () => {
           POINT_CODE: inspectiondatatable[i].POINT_CODE,
           SAMPLE_NO: 1,
           RESULT: inspectiondatatable[i].RESULT,
-          REMARK: remark
+          REMARK: remark,
         })
           // eslint-disable-next-line no-loop-func
           .then((response) => {
             if (response.data.tk_status !== "NG") {
               //console.log(response.data.data);
-             
             } else {
               err_code += `Lỗi : ` + response.data.message;
             }
-           
           })
           .catch((error) => {
             console.log(error);
           });
-
       }
-      if(err_code === '')
-      {
-        updateDTCTESEMPL(inspectiondatatable[0].DTC_ID,inspectiondatatable[0].TEST_CODE);
-        Swal.fire('Thông báo','Up kết quả thành công','success');
+      if (err_code === "") {
+        updateDTCTESEMPL(
+          inspectiondatatable[0].DTC_ID,
+          inspectiondatatable[0].TEST_CODE,
+        );
+        Swal.fire("Thông báo", "Up kết quả thành công", "success");
+      } else {
+        Swal.fire("Thông báo", "Lỗi: " + err_code, "error");
       }
-      else
-      {
-        Swal.fire('Thông báo','Lỗi: ' + err_code,'error');
-      }
-
     }
-  }
-  const updateDTCTESEMPL =(dtc_id: string, test_code: string)=> {
+  };
+  const updateDTCTESEMPL = (dtc_id: string, test_code: string) => {
     generalQuery("updateDTC_TEST_EMPL", {
       DTC_ID: dtc_id,
-      TEST_CODE: test_code
+      TEST_CODE: test_code,
     })
       .then((response) => {
         if (response.data.tk_status !== "NG") {
-          
         } else {
         }
       })
       .catch((error) => {
         console.log(error);
       });
-  }  
-  useEffect(() => {
-    
-  }, []);
+  };
+  useEffect(() => { }, []);
   return (
-    <div className='dtcresult'>
-      <div className='tracuuDataInspection'>
-        <div className='maintable'>
-          <div className='tracuuDataInspectionform'>
+    <div className="dtcresult">
+      <div className="tracuuDataInspection">
+        <div className="maintable">
+          <div className="tracuuDataInspectionform">
             <b style={{ color: "blue" }}>NHẬP KẾT QUẢ ĐỘ TIN CẬY</b>
-            <div className='forminput'>
-              <div className='forminputcolumn'>
+            <div className="forminput">
+              <div className="forminputcolumn">
+
                 <label>
-                  <b>ID Test Độ Tin Cậy</b>
+                  <b>ID:</b>
                   <input
-                    type='text'
+                    type="text"
                     placeholder={"123456"}
                     value={dtc_id}
                     onChange={(e) => {
@@ -364,38 +342,49 @@ const DTCRESULT = () => {
                   </span>
                 </label>
               </div>
-              <div className='forminputcolumn'>
+              <div className="forminputcolumn">
                 <label>
-                  <b>Hạng mục test</b>
-                  <div className='checkboxarray' style={{ display: "flex" }}>
+                  <b>Hạng mục test</b><br></br>
+                  <div className="checkboxarray" style={{ display: "flex" }}>
                     <RadioGroup
-                      aria-labelledby='demo-controlled-radio-buttons-group'
-                      name='controlled-radio-buttons-group'
+                      aria-labelledby="demo-controlled-radio-buttons-group"
+                      name="controlled-radio-buttons-group"
                       value={testname}
                       onChange={(e) => {
                         console.log(e.target.value);
                         setTestName(e.target.value);
-                        if(dtc_id !=='')
-                        handletraDTCData(dtc_id, e.target.value);
+                        if (dtc_id !== "")
+                          handletraDTCData(dtc_id, e.target.value);
                       }}
                       style={{ display: "flex" }}
                     >
                       <div
-                        className='radiogroup'
+                        className="radiogroup"
                         style={{ display: "flex", flexWrap: "wrap" }}
                       >
                         {testList.map(
                           (element: TestListTable, index: number) => {
                             return (
-                              <div key={index} className='radioelement' style={{display:'flex', margin: 0, padding: 0}}>
-                                <FormControlLabel                                  
+                              <div
+                                key={index}
+                                className="radioelement"
+                                style={{
+                                  display: "flex",
+                                  margin: 0,
+                                  padding: 0,
+                                }}
+                              >
+                                <FormControlLabel
+                                  labelPlacement="bottom"
                                   value={element.TEST_CODE.toString()}
                                   key={index}
-                                  style={{ fontSize: 5 }}
+                                  style={{ fontSize: 5, padding: 0, margin: 0 }}
                                   label={
                                     <Typography
                                       style={{
-                                        fontSize: 12  ,
+                                        padding: 0,
+                                        margin: 0,
+                                        fontSize: 12,
                                         fontWeight: element.CHECKADDED
                                           ? "bold"
                                           : "normal",
@@ -407,23 +396,23 @@ const DTCRESULT = () => {
                                       {element.TEST_NAME}
                                     </Typography>
                                   }
-                                  sx={{ fontSize: 5 }}
+                                  sx={{ fontSize: 5, padding: 0, margin: 0 }}
                                   control={<Radio />}
                                 />
                               </div>
                             );
-                          }
+                          },
                         )}
                       </div>
                     </RadioGroup>
                   </div>
                 </label>
               </div>
-              <div className='forminputcolumn'>
+              <div className="forminputcolumn">
                 <label>
                   <b>Remark</b>
                   <input
-                    type='text'
+                    type="text"
                     placeholder={"Ghi chú"}
                     value={remark}
                     onChange={(e) => {
@@ -433,30 +422,25 @@ const DTCRESULT = () => {
                 </label>
               </div>
             </div>
-            <div className='formbutton'>
-              <button
-                className='tranhatky'
-                onClick={() => {
-                  if (checkInput()) {
-                    insertDTCResult();
-                  } else {
-                    Swal.fire(
-                      "Thông báo",
-                      "Hãy nhập đủ thông tin trước khi đăng ký",
-                      "error"
-                    );
-                  }
-                }}
-              >
-                NHẬP KẾT QUẢ
-              </button>
+            <div className="formbutton">
+              <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#2297c5' }} onClick={() => {
+                if (checkInput()) {
+                  insertDTCResult();
+                } else {
+                  Swal.fire(
+                    "Thông báo",
+                    "Hãy nhập đủ thông tin trước khi đăng ký",
+                    "error",
+                  );
+                }
+              }}>NHẬP KẾT QUẢ</Button>
             </div>
             <div
-              className='formbutton'
+              className="formbutton"
               style={{ marginTop: "20px", display: "flex", flexWrap: "wrap" }}
             ></div>
           </div>
-          <div className='tracuuYCSXTable'>{materialDataTable}</div>
+          <div className="tracuuYCSXTable">{materialDataTable}</div>
         </div>
       </div>
     </div>

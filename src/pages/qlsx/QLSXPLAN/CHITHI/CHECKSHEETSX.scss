@@ -1,0 +1,79 @@
+.checksheetcomponent {
+  display: flex;
+  flex-direction: column;
+  height: 297mm;
+  width: 210mm;
+ /*  padding: 10px;  */
+  margin-bottom: 6px;
+  /* border: 0.01px solid black; */
+  position: relative;
+  z-index: 99999999;
+
+  .checksheettitle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 1.5rem;
+    margin-top: 2mm;
+    padding: 2mm;    
+    background-color: rgb(101, 196, 246);
+  }
+  .headertable {
+    margin-bottom: 5mm;
+    table {
+      font-size: 11px;
+      font-family: arial, sans-serif;
+      border-collapse: collapse;
+      width: 100%;
+    }
+  
+    tbody td {
+      border: 1px solid #dddddd;
+      text-align: left;
+      padding: 8px;
+      width: fit-content;
+      font-size: 0.9rem;
+    }
+  
+    thead tr th {
+      border: 1px solid #dddddd;
+      text-align: left;
+      padding: 8px;
+      font-weight: bold;
+      font-size: 0.8rem;
+      background-color: rgb(219, 206, 206);
+      text-align: center;
+    }
+
+  }
+  .contenttable {
+    width: 100%;
+
+    table {
+      width: 100%;
+      font-size: 11px;
+      font-family: arial, sans-serif;
+      border-collapse: collapse;
+      width: 100%;
+    }
+  
+    tbody td {
+      border: 1px solid #dddddd;
+      text-align: left;
+      padding: 8px;
+      width: fit-content;
+      font-size: 0.9rem;
+    }
+  
+    thead tr th {
+      border: 1px solid #dddddd;
+      text-align: left;
+      padding: 8px;
+      font-weight: bold;
+      font-size: 0.8rem;
+      background-color: rgb(219, 206, 206);
+      text-align: center;
+    }
+  }
+}

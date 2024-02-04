@@ -1,215 +1,373 @@
-
 @media only screen and (max-width: 3000px) {
-    .kinhdoanhreport {
+  .kinhdoanhreport {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    .doanhthureport {
+      display: flex;
+      flex-direction: column;
+      .section_title {
+        font-size: 20px;
+        font-weight: bold;
+        margin-top: 10px;
+        margin-bottom: 10px;
+        color: blue;
+        font-style: italic;
+      }
+      .revenuewidget {
         display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: space-around;
+        gap: 5%;
+        margin-top: 5px;
+        .revenuwdg {
+          display: flex;
+          flex: 1;
+        }
+      }
+      .graph {
+        display: flex;
+        width: 100%;
         flex-direction: column;
-        .doanhthureport {
+        .dailygraphtotal {
+          display: flex;
+          width: 100%;
+          height: 100%;
+          flex: 1;
+          gap:20px;
+          margin-bottom: 20px;
+          .dailygraph {
             display: flex;
             flex-direction: column;
-            .section_title {
-                font-size: 20px;
-                font-weight: bold;
-                margin-top: 10px;
-                margin-bottom: 10px;
-                color: blue;
-                font-style: italic;
+            width: 100%;
+            height: 550px;
+            flex: 1;
+            .subsection {
+              font-weight: bold;
+              padding-left: 90px;
             }
-            .revenuewidget {
-                display: flex;
-                flex-direction: row;
-                flex-wrap: wrap;
-                justify-content: space-around;
-                gap: 5%;
-                margin-top: 5px;
-                .revenuwdg {
-                    display: flex;
-                    flex: 1;
-                }
-            }
-            .graph {
-                display: flex;
-                width: 100%;
-                flex-direction: column;
-                .dailygraphtotal {
-                    display: flex;
-                    width: 100%;
-                    height: 100%;
-                    flex: 1;
-                    margin-bottom: 20px;
-                    .dailygraph {
-                        display: flex;
-                        flex-direction: column;
-                        width: 100%;
-                        height: 450px;
-                        flex: 1;
-                        .subsection {
-                            font-weight: bold;
-                            padding-left: 90px;
-                        }
-                    }
-                }
-                .pobalancesummary {
-                    display: flex;      
-                    flex-direction: column;              
-                    align-self: center;
-                    width: 30%;
-                    margin-bottom: 10px;
-                    .subsection {
-                        font-weight: bold;
-                        
-                    }
-                }
-                .fcstsummary {
-                    display: flex;      
-                    flex-direction: column;              
-                    align-self: center;                    
-                    margin-bottom: 10px;
-                    .subsection {
-                        font-weight: bold;
-                        
-                    }
-                    .fcstwidget {
-                        display: flex;    
-                        align-items: center;                        
-                        gap: 50px;                        
-                    }
-                }
-                .monthlyweeklygraph {
-                    display: flex;
-                    width: 100%;
-                    flex: 1;
-                    height: fit-content;
-                    .dailygraph {
-                        display: flex;
-                        flex-direction: column;
-                        width: 100%;
-                        height: 450px;
-                        flex: 1;
-                        .subsection {
-                            font-weight: bold;
-                            padding-left: 90px;
-                        }
-                    }
-                }
-                .datatable {
-                    display: flex;
-                    width: 100%;
-                    flex: 1;
-                    height: fit-content;
-                    .dailygraph {
-                        display: flex;
-                        flex-direction: column;
-                        width: 100%;
-                        height: 1060px;
-                        
-                        .subsection {
-                            font-weight: bold;
-                            padding-left: 90px;
-                        }
-                    }
-                }
-            }
+          }
         }
-    }
-}
- @media only screen and (max-width: 768px) {
-    .kinhdoanhreport {
-        display: flex;
-        flex-direction: column;
-        .doanhthureport {
+        .pobalancesummary {
+          display: flex;
+          flex-direction: column;
+          align-self: center;
+          width: 30%;
+          margin-bottom: 10px;
+          .subsection {
+            font-weight: bold;
+          }
+        }
+        .fcstsummary {
+          display: flex;
+          flex-direction: column;
+          align-self: center;
+          margin-bottom: 10px;
+          .subsection {
+            font-weight: bold;
+          }
+          .fcstwidget {
+            display: flex;
+            align-items: center;
+            gap: 50px;
+          }
+        }
+        .monthlyweeklygraph {
+          display: flex;
+          width: 100%;
+          flex: 1;
+          height: fit-content;
+          gap: 20px;
+          .dailygraph {
             display: flex;
             flex-direction: column;
-            .section_title {
-                font-size: 20px;
-                font-weight: bold;
-                margin-top: 10px;
-                margin-bottom: 10px;
-                color: blue;
-                font-style: italic;
+            width: 100%;
+            height: 550px;
+            flex: 1;
+            .subsection {
+              font-weight: bold;
+              padding-left: 90px;
             }
-            .revenuewidget {
+            .datatb {
+              justify-items: center;
+              width: 100%;
+              padding: 2px;
+              height: 500px;
+              margin-left: 20px;
+              margin-right: 20px;
+              .menubar {
                 display: flex;
-                flex-direction: column;
-                flex-wrap: wrap;
-                justify-content: space-around;
-                gap: 5%;
-                margin-top: 5px;
-                .revenuwdg {
-                    display: flex;
-                    flex: 1;
-                }
-            }
-            .graph {
+                justify-content: center;
+                align-items: center;
+              }
+              .dx-datagrid-rowsview
+                .dx-selection.dx-row:not(.dx-row-focused):not(.dx-row-removed)
+                > td {
+                  background-color: rgb(255, 243, 68);
+                color: unset;
+              }
+              .dx-datagrid-borders > .dx-datagrid-header-panel {
+                border-bottom: 0;
+                background-color: #b5f398;
+              }
+    
+              .dx-toolbar .dx-toolbar-items-container {
+                height: 25px;
+                overflow: visible;
+                background-color: #b5f398;
+              }
+    
+              //toan bo bang
+              .dx-gridbase-container > .dx-datagrid-rowsview.dx-scrollable {
+                display: -ms-flexbox;
                 display: flex;
-                width: 100%;
-                height: 4500px;
-                flex-direction: column;
-                .dailygraphtotal {
-                    display: flex; 
-                    flex-direction: column;
-                    width: 100%;
-                    height:600px;                    
-                    margin-bottom: 20px;
-                    .dailygraph {
-                        display: flex;
-                        flex-direction: column;
-                        width: 100%;
-                        height: 650px;
-                        flex: 1;
-                        .subsection {
-                            font-weight: bold;
-                            padding-left: 90px;
-                        }
-                    }
-                }
-                .pobalancesummary {
-                    display: flex;      
-                    flex-direction: column;              
-                    align-self: center;
-                    width: 100%;
-                    margin-bottom: 10px;
-                    .subsection {
-                        font-weight: bold;
-                        
-                    }
-                }
-                .fcstsummary {
-                    display: flex;      
-                    flex-direction: column;              
-                    align-self: center;                    
-                    margin-bottom: 10px;
-                    .subsection {
-                        font-weight: bold;
-                        
-                    }
-                    .fcstwidget {
-                        display: flex;    
-                        flex-direction: column;
-                        align-items: center;                        
-                        gap: 10px;                        
-                    }
-                }
-                .monthlyweeklygraph {
-                    display: flex;
-                    flex-direction: column;
-                    width: 100%;
-                    flex: 1;
-                    height: 650px;
-                    .dailygraph {
-                        display: flex;
-                        flex-direction: column;
-                        width: 100%;
-                        height: 650px;
-                        flex: 1;
-                        .subsection {
-                            font-weight: bold;
-                            padding-left: 90px;
-                        }
-                    }
-                }
+                background-image: linear-gradient(0deg, #e9e1eb, #ffffff);
+                font-size: 0.7rem;
+              }
+    
+              .dx-datagrid-borders > .dx-datagrid-filter-panel,
+              .dx-datagrid-borders > .dx-datagrid-headers {
+                border-top: 1px solid #ddd;
+                background-image: linear-gradient(0deg, #e9e1eb, #a0f87e);
+                color: rgb(3, 26, 235);
+                font-size: 0.7rem;              
+              }
+              //filter row input
+              .dx-datagrid-filter-row
+                .dx-editor-cell
+                .dx-editor-with-menu
+                .dx-placeholder::before,
+              .dx-datagrid-filter-row
+                .dx-editor-cell
+                .dx-editor-with-menu
+                .dx-texteditor-input {
+                padding-left: 32px;
+                background-image: linear-gradient(0deg, #e9e1eb, #a0f87e);
+                color: black;
+                height: 10px;
+              }
+              .dx-editor-cell .dx-texteditor,
+              .dx-editor-cell .dx-texteditor .dx-texteditor-input {
+                background-image: linear-gradient(0deg, #e9e1eb, #a0f87e);
+              }
+    
+              .dx-searchbox .dx-placeholder::before,
+              .dx-searchbox .dx-texteditor-input {
+                padding-left: 34px;
+                background-image: linear-gradient(0deg, #e9e1eb, #d7f0cd);
+              }
+    
+              .dx-button-mode-contained {
+                background-color: #a0f87e;
+                border-color: #cacafa;
+                color: #430fff;
+              }
+    
+              .dx-datagrid-total-footer > .dx-datagrid-content {
+                padding-top: 0px;
+                padding-bottom: 0px;
+              }
             }
+          }
         }
+        .datatable {
+          display: flex;
+          width: 100%;
+          flex: 1;
+          height: fit-content;
+          .dailygraph {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            height: 1060px;
+
+            .subsection {
+              font-weight: bold;
+              padding-left: 90px;
+            }
+          }
+        }
+      }
     }
+  }
 }
- @media only screen and (max-width: 320px) {
+@media only screen and (max-width: 768px) {
+  .kinhdoanhreport {
+    display: flex;
+    flex-direction: column;
+    .doanhthureport {
+      display: flex;
+      flex-direction: column;
+      .section_title {
+        font-size: 20px;
+        font-weight: bold;
+        margin-top: 10px;
+        margin-bottom: 10px;
+        color: blue;
+        font-style: italic;
+      }
+      .revenuewidget {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-around;
+        gap: 5%;
+        margin-top: 5px;
+        .revenuwdg {
+          display: flex;
+          flex: 1;
+        }
+      }
+      .graph {
+        display: flex;
+        width: 100%;
+        height: 6500px;
+        flex-direction: column;
+        .dailygraphtotal {
+          display: flex;
+          flex-direction: column;
+          width: 100%;
+          height: 600px;
+          margin-bottom: 20px;
+          .dailygraph {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            height: 650px;
+            flex: 1;
+            .subsection {
+              font-weight: bold;
+              padding-left: 90px;
+            }
+          }
+        }
+        .pobalancesummary {
+          display: flex;
+          flex-direction: column;
+          align-self: center;
+          width: 100%;
+          margin-bottom: 10px;
+          .subsection {
+            font-weight: bold;
+          }
+          
+        }
+        .fcstsummary {
+          display: flex;
+          flex-direction: column;
+          align-self: center;
+          margin-bottom: 10px;
+          .subsection {
+            font-weight: bold;
+          }
+          .fcstwidget {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+          }
+        }
+        .monthlyweeklygraph {
+          display: flex;
+          flex-direction: column;
+          width: 100%;
+          flex: 1;
+          height: 1300px;
+          gap: 20px;
+          .dailygraph {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            height: 950px;
+            flex: 1;
+            .subsection {
+              font-weight: bold;
+              padding-left: 90px;
+            }
+            .datatb {
+              justify-items: center;
+              width: 100%;
+              padding: 2px;
+              height: 400px;
+              
+              .menubar {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+              }
+              .dx-datagrid-rowsview
+                .dx-selection.dx-row:not(.dx-row-focused):not(.dx-row-removed)
+                > td {
+                  background-color: rgb(255, 243, 68);
+                color: unset;
+              }
+              .dx-datagrid-borders > .dx-datagrid-header-panel {
+                border-bottom: 0;
+                background-color: #b5f398;
+              }
+    
+              .dx-toolbar .dx-toolbar-items-container {
+                height: 25px;
+                overflow: visible;
+                background-color: #b5f398;
+              }
+    
+              //toan bo bang
+              .dx-gridbase-container > .dx-datagrid-rowsview.dx-scrollable {
+                display: -ms-flexbox;
+                display: flex;
+                background-image: linear-gradient(0deg, #e9e1eb, #ffffff);
+                font-size: 0.7rem;
+              }
+    
+              .dx-datagrid-borders > .dx-datagrid-filter-panel,
+              .dx-datagrid-borders > .dx-datagrid-headers {
+                border-top: 1px solid #ddd;
+                background-image: linear-gradient(0deg, #e9e1eb, #a0f87e);
+                color: rgb(3, 26, 235);
+                font-size: 0.7rem;              
+              }
+              //filter row input
+              .dx-datagrid-filter-row
+                .dx-editor-cell
+                .dx-editor-with-menu
+                .dx-placeholder::before,
+              .dx-datagrid-filter-row
+                .dx-editor-cell
+                .dx-editor-with-menu
+                .dx-texteditor-input {
+                padding-left: 32px;
+                background-image: linear-gradient(0deg, #e9e1eb, #a0f87e);
+                color: black;
+                height: 10px;
+              }
+              .dx-editor-cell .dx-texteditor,
+              .dx-editor-cell .dx-texteditor .dx-texteditor-input {
+                background-image: linear-gradient(0deg, #e9e1eb, #a0f87e);
+              }
+    
+              .dx-searchbox .dx-placeholder::before,
+              .dx-searchbox .dx-texteditor-input {
+                padding-left: 34px;
+                background-image: linear-gradient(0deg, #e9e1eb, #d7f0cd);
+              }
+    
+              .dx-button-mode-contained {
+                background-color: #a0f87e;
+                border-color: #cacafa;
+                color: #430fff;
+              }
+    
+              .dx-datagrid-total-footer > .dx-datagrid-content {
+                padding-top: 0px;
+                padding-bottom: 0px;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+@media only screen and (max-width: 320px) {
 }

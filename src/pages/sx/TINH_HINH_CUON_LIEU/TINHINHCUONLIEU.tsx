@@ -1,6 +1,4 @@
-import {
-  IconButton,
-} from "@mui/material";
+import { IconButton } from "@mui/material";
 import {
   Column,
   Editing,
@@ -19,75 +17,57 @@ import {
   TotalItem,
 } from "devextreme-react/data-grid";
 import moment from "moment";
-import React, { useContext, useEffect, useState } from "react";
-import {
-  AiFillCloseCircle,
-  AiFillFileExcel,
-} from "react-icons/ai";
+import React, { ReactNode, useContext, useEffect, useState } from "react";
+import { AiFillCloseCircle, AiFillFileExcel } from "react-icons/ai";
 import Swal from "sweetalert2";
 import "./TINHHINHCUONLIEU.scss";
 import { UserContext } from "../../../api/Context";
 import { generalQuery } from "../../../api/Api";
-import { SaveExcel } from "../../../api/GlobalFunction";
+import { CustomResponsiveContainer, SaveExcel } from "../../../api/GlobalFunction";
 import { MdOutlinePivotTableChart } from "react-icons/md";
 import PivotTable from "../../../components/PivotChart/PivotChart";
 import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
-import { ResponsiveContainer } from "recharts";
-interface MATERIAL_STATUS {
-  INS_DATE: string;
-  FACTORY: string;
-  M_LOT_NO: string;
-  M_CODE: string;
-  M_NAME: string;
-  WIDTH_CD: number;
-  ROLL_QTY: number;
-  OUT_CFM_QTY: number;
-  TOTAL_OUT_QTY: number;
-  PROD_REQUEST_NO: string;
-  PLAN_ID: string;
-  PLAN_EQ: string;
-  G_CODE: string;
-  G_NAME: string;
-  XUAT_KHO: string;
-  VAO_FR: string;
-  VAO_SR: string;
-  VAO_DC: string;
-  VAO_ED: string;
-  CONFIRM_GIAONHAN: string;
-  VAO_KIEM: string;
-  NHATKY_KT: string;
-  RA_KIEM: string;
-  INSPECT_TOTAL_QTY: number;
-  INSPECT_OK_QTY: number;
-  INS_OUT: number;
-  ROLL_LOSS_KT: number;
-  ROLL_LOSS: number;
-  PD: number;
-  CAVITY: number;
-  FR_RESULT: number;
-  SR_RESULT: number;
-  DC_RESULT: number;
-  ED_RESULT: number;
-  TOTAL_OUT_EA: number;
-  FR_EA: number;
-  SR_EA: number;
-  DC_EA: number;
-  ED_EA: number;
-  INSPECT_TOTAL_EA: number;
-  INSPECT_OK_EA: number;
-  INS_OUTPUT_EA: number;
-}
-interface LOSS_TABLE_DATA {
-  XUATKHO_MET: number;
-  INSPECTION_INPUT: number;
-  INSPECTION_OK: number;
-  INSPECTION_OUTPUT: number;
-  TOTAL_LOSS_KT: number;
-  TOTAL_LOSS: number;
-}
+import { esES } from "@mui/x-data-grid";
+import {
+  LOSS_TABLE_DATA_ROLL,
+  MACHINE_LIST,
+  MATERIAL_STATUS,
+} from "../../../api/GlobalInterface";
+
 const TINHHINHCUONLIEU = () => {
+  const [machine_list, setMachine_List] = useState<MACHINE_LIST[]>([]);
+
+  const getMachineList = () => {
+    generalQuery("getmachinelist", {})
+      .then((response) => {
+        //console.log(response.data);
+        if (response.data.tk_status !== "NG") {
+          const loadeddata: MACHINE_LIST[] = response.data.data.map(
+            (element: MACHINE_LIST, index: number) => {
+              return {
+                ...element,
+              };
+            },
+          );
+          loadeddata.push(
+            { EQ_NAME: "ALL" },
+            { EQ_NAME: "NO" },
+            { EQ_NAME: "NA" },
+          );
+          //console.log(loadeddata);
+          setMachine_List(loadeddata);
+        } else {
+          //Swal.fire("Thông báo", "Lỗi BOM SX: " + response.data.message, "error");
+          setMachine_List([]);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
   const [showhidePivotTable, setShowHidePivotTable] = useState(false);
-  const [losstableinfo, setLossTableInfo] = useState<LOSS_TABLE_DATA>({
+  const [losstableinfo, setLossTableInfo] = useState<LOSS_TABLE_DATA_ROLL>({
     XUATKHO_MET: 0,
     INSPECTION_INPUT: 0,
     INSPECTION_OK: 0,
@@ -103,15 +83,17 @@ const TINHHINHCUONLIEU = () => {
   const [factory, setFactory] = useState("ALL");
   const [prodrequestno, setProdRequestNo] = useState("");
   const [plan_id, setPlanID] = useState("");
-  const [alltime, setAllTime] = useState(true);
+  const [alltime, setAllTime] = useState(false);
   const [datasxtable, setDataSXTable] = useState<Array<any>>([]);
   const [m_name, setM_Name] = useState("");
   const [m_code, setM_Code] = useState("");
+  const [cust_name_kd, setCUST_NAME_KD] = useState("");
   const [selectedRows, setSelectedRows] = useState<number>(0);
+  const [columns, setColumns] = useState<Array<any>>([]);
   const handleSearchCodeKeyDown = (
-    e: React.KeyboardEvent<HTMLInputElement>
+    e: React.KeyboardEvent<HTMLInputElement>,
   ) => {
-    if (e.key === "Enter") {                      
+    if (e.key === "Enter") {
       handle_loaddatasx();
     }
   };
@@ -137,6 +119,7 @@ const TINHHINHCUONLIEU = () => {
       G_CODE: codeCMS,
       FACTORY: factory,
       PLAN_EQ: machine,
+      CUST_NAME_KD: cust_name_kd
     })
       .then((response) => {
         //console.log(response.data.data);
@@ -144,6 +127,7 @@ const TINHHINHCUONLIEU = () => {
           const loaded_data: MATERIAL_STATUS[] = response.data.data.map(
             (element: MATERIAL_STATUS, index: number) => {
               return {
+                ID: index,
                 ...element,
                 INS_DATE:
                   element.INS_DATE === null
@@ -151,17 +135,16 @@ const TINHHINHCUONLIEU = () => {
                     : moment
                         .utc(element.INS_DATE)
                         .format("YYYY-MM-DD HH:mm:ss"),
-                id: index,
               };
-            }
+            },
           );
           //setShowLoss(false);
           Swal.fire(
             "Thông báo",
             "Đã load : " + loaded_data.length + " dòng",
-            "success"
+            "success",
           );
-          let temp_loss_info: LOSS_TABLE_DATA = {
+          let temp_loss_info: LOSS_TABLE_DATA_ROLL = {
             XUATKHO_MET: 0,
             INSPECTION_INPUT: 0,
             INSPECTION_OK: 0,
@@ -179,6 +162,114 @@ const TINHHINHCUONLIEU = () => {
             1 - temp_loss_info.INSPECTION_OK / temp_loss_info.XUATKHO_MET;
           temp_loss_info.TOTAL_LOSS =
             1 - temp_loss_info.INSPECTION_OUTPUT / temp_loss_info.XUATKHO_MET;
+          let keysArray = Object.getOwnPropertyNames(loaded_data[0]);
+          let column_map = keysArray.map((e, index) => {
+            return {
+              dataField: e,
+              caption: e,
+              width: 100,
+              cellRender: (ele: any) => {
+                //console.log(ele);
+                if (
+                  e.substring(0, 4) === "VAO_" ||
+                  e === "XUAT_KHO" ||
+                  e === "CONFIRM_GIAONHAN" ||
+                  e === "NHATKY_KT" ||
+                  e === "RA_KIEM"
+                ) {
+                  if (ele.data[e] === "Y") {
+                    return (
+                      <div
+                        style={{
+                          color: "white",
+                          fontWeight: "bold",
+                          height: "20px",
+                          width: "80px",
+                          backgroundColor: "#54e00d",
+                          textAlign: "center",
+                        }}
+                      >
+                        Y
+                      </div>
+                    );
+                  } else if (ele.data[e] === "R") {
+                    return (
+                      <div
+                        style={{
+                          color: "black",
+                          fontWeight: "bold",
+                          height: "20px",
+                          width: "80px",
+                          backgroundColor: "yellow",
+                          textAlign: "center",
+                        }}
+                      >
+                        R
+                      </div>
+                    );
+                  } else {
+                    return (
+                      <div
+                        style={{
+                          color: "white",
+                          fontWeight: "bold",
+                          height: "20px",
+                          width: "50px",
+                          backgroundColor: "red",
+                          textAlign: "center",
+                        }}
+                      >
+                        N
+                      </div>
+                    );
+                  }
+                } else if (
+                  [
+                    "TOTAL_OUT_QTY",
+                    "INSPECT_TOTAL_QTY",
+                    "INSPECT_OK_QTY",
+                    "INS_OUT",
+                  ].indexOf(e) > -1 ||
+                  e.indexOf("RESULT") > -1
+                ) {
+                  return (
+                    <span style={{ color: "blue", fontWeight: "bold" }}>
+                      {ele.data[e]?.toLocaleString("en-US")}
+                    </span>
+                  );
+                } else if (
+                  [
+                    "TOTAL_OUT_EA",
+                    "INSPECT_TOTAL_EA",
+                    "INSPECT_OK_EA",
+                    "INS_OUTPUT_EA",
+                  ].indexOf(e) > -1 ||
+                  e.indexOf("_EA") > -1
+                ) {
+                  return (
+                    <span style={{ color: "green", fontWeight: "bold" }}>
+                      {ele.data[e]?.toLocaleString("en-US")}
+                    </span>
+                  );
+                } else if (e.indexOf("_LOSS") > -1) {
+                  return (
+                    <span style={{ color: "green", fontWeight: "bold" }}>
+                      {100 *
+                        ele.data[e]?.toLocaleString("en-US", {
+                          minimumFractionDigits: 2,
+                          maximumFractionDigits: 2,
+                        })}{" "}
+                      %
+                    </span>
+                  );
+                } else {
+                  return <span>{ele.data[e]}</span>;
+                }
+              },
+            };
+          });
+
+          setColumns(column_map);
           setLossTableInfo(temp_loss_info);
           setDataSXTable(loaded_data);
         } else {
@@ -189,10 +280,11 @@ const TINHHINHCUONLIEU = () => {
         console.log(error);
       });
   };
+
   const materialDataTable = React.useMemo(
-    () => ( 
-         <div className='datatb'>
-          <div className='losstable'>
+    () => (
+      <div className="datatb">
+        <div className="losstable">
           <table>
             <thead>
               <tr>
@@ -256,792 +348,195 @@ const TINHHINHCUONLIEU = () => {
               </tr>
             </tbody>
           </table>
-          </div>  
-        <ResponsiveContainer>
-        <DataGrid
-          autoNavigateToFocusedRow={true}
-          allowColumnReordering={true}
-          allowColumnResizing={true}
-          columnAutoWidth={false}
-          cellHintEnabled={true}
-          columnResizingMode={"widget"}
-          showColumnLines={true}
-          dataSource={datasxtable}
-          columnWidth='auto'
-          keyExpr='id'
-          height={"75vh"}
-          showBorders={true}
-          onSelectionChanged={(e) => {
-            setSelectedRows(e.selectedRowsData.length);
-          }}          
-          onRowClick={(e) => {
-            //console.log(e.data);
-          }}
-        >
-          <Scrolling
-            useNative={true}
-            scrollByContent={true}
-            scrollByThumb={true}
-            showScrollbar='onHover'
-            mode='virtual'
-          />
-          <Selection mode='multiple' selectAllMode='allPages' />
-          <Editing
-            allowUpdating={false}
-            allowAdding={true}
-            allowDeleting={false}
-            mode='batch'
-            confirmDelete={true}
-            onChangesChange={(e) => {}}
-          />
-          <Export enabled={true} />
-          <Toolbar disabled={false}>
-            <Item location='before'>
-              <IconButton
-                className='buttonIcon'
-                onClick={() => {
-                  SaveExcel(datasxtable, "MaterialStatus");
-                }}
-              >
-                <AiFillFileExcel color='green' size={25} />
-                SAVE
-              </IconButton>
-              <IconButton
-          className='buttonIcon'
-          onClick={() => {
-            setShowHidePivotTable(!showhidePivotTable);
-          }}
-        >
-          <MdOutlinePivotTableChart color='#ff33bb' size={25} />
-          Pivot
-        </IconButton>
-            </Item>
-            <Item name='searchPanel' />
-            <Item name='exportButton' />
-            <Item name='columnChooser' />
-          </Toolbar>
-          <FilterRow visible={true} />
-          <SearchPanel visible={true} />         
-          <ColumnChooser enabled={true} />
-          <Column dataField='id' caption='ID' width={100}></Column>
-          <Column dataField='FACTORY' caption='FACTORY' width={100}></Column>
-          <Column dataField='INS_DATE' caption='INS_DATE' width={150}></Column>
-          <Column dataField='M_LOT_NO' caption='M_LOT_NO' width={100}></Column>
-          <Column dataField='M_CODE' caption='M_CODE' width={100}></Column>
-          <Column dataField='M_NAME' caption='M_NAME' width={100}></Column>
-          <Column dataField='WIDTH_CD' caption='WIDTH_CD' width={70}></Column>
-          <Column dataField='EQ1' caption='EQ1' width={50}></Column>
-          <Column dataField='EQ2' caption='EQ2' width={50}></Column>
-          <Column
-            dataField='XUAT_KHO'
-            caption='XUAT_KHO'
-            width={100}
-            cellRender={(e: any) => {
-              if (e.data.XUAT_KHO === "Y") {
-                return (
-                  <div
-                    style={{
-                      color: "white",
-                      fontWeight: "bold",
-                      height: "20px",
-                      width: "80px",
-                      backgroundColor: "#54e00d",
-                      textAlign: "center",
-                    }}
-                  >
-                    Y
-                  </div>
-                );
-              } else {
-                return (
-                  <div
-                    style={{
-                      color: "white",
-                      fontWeight: "bold",
-                      height: "20px",
-                      width: "50px",
-                      backgroundColor: "red",
-                      textAlign: "center",
-                    }}
-                  >
-                    N
-                  </div>
-                );
-              }
+        </div>
+        <CustomResponsiveContainer>
+          <DataGrid
+            autoNavigateToFocusedRow={true}
+            allowColumnReordering={true}
+            allowColumnResizing={true}
+            columnAutoWidth={true}
+            cellHintEnabled={true}
+            columnResizingMode={"widget"}
+            showColumnLines={true}
+            dataSource={datasxtable}
+            columnWidth="auto"
+            keyExpr="ID"
+            height={"75vh"}
+            showBorders={true}
+            onSelectionChanged={(e) => {
+              setSelectedRows(e.selectedRowsData.length);
             }}
-          ></Column>
-          <Column
-            dataField='VAO_FR'
-            caption='VAO_FR'
-            width={100}
-            cellRender={(e: any) => {
-              if (e.data.VAO_FR === "Y") {
-                return (
-                  <div
-                    style={{
-                      color: "white",
-                      fontWeight: "bold",
-                      height: "20px",
-                      width: "80px",
-                      backgroundColor: "#54e00d",
-                      textAlign: "center",
-                    }}
-                  >
-                    Y
-                  </div>
-                );
-              } else {
-                return (
-                  <div
-                    style={{
-                      color: "white",
-                      fontWeight: "bold",
-                      height: "20px",
-                      width: "50px",
-                      backgroundColor: "red",
-                      textAlign: "center",
-                    }}
-                  >
-                    N
-                  </div>
-                );
-              }
+            onRowClick={(e) => {
+              //console.log(e.data);
             }}
-          ></Column>
-          <Column
-            dataField='VAO_SR'
-            caption='VAO_SR'
-            width={100}
-            cellRender={(e: any) => {
-              if (e.data.VAO_SR === "Y") {
-                return (
-                  <div
-                    style={{
-                      color: "white",
-                      fontWeight: "bold",
-                      height: "20px",
-                      width: "80px",
-                      backgroundColor: "#54e00d",
-                      textAlign: "center",
-                    }}
-                  >
-                    Y
-                  </div>
-                );
-              } else {
-                return (
-                  <div
-                    style={{
-                      color: "white",
-                      fontWeight: "bold",
-                      height: "20px",
-                      width: "50px",
-                      backgroundColor: "red",
-                      textAlign: "center",
-                    }}
-                  >
-                    N
-                  </div>
-                );
-              }
-            }}
-          ></Column>
-          <Column
-            dataField='VAO_DC'
-            caption='VAO_DC'
-            width={100}
-            cellRender={(e: any) => {
-              if (e.data.VAO_DC === "Y") {
-                return (
-                  <div
-                    style={{
-                      color: "white",
-                      fontWeight: "bold",
-                      height: "20px",
-                      width: "80px",
-                      backgroundColor: "#54e00d",
-                      textAlign: "center",
-                    }}
-                  >
-                    Y
-                  </div>
-                );
-              } else {
-                return (
-                  <div
-                    style={{
-                      color: "white",
-                      fontWeight: "bold",
-                      height: "20px",
-                      width: "50px",
-                      backgroundColor: "red",
-                      textAlign: "center",
-                    }}
-                  >
-                    N
-                  </div>
-                );
-              }
-            }}
-          ></Column>
-          <Column
-            dataField='VAO_ED'
-            caption='VAO_ED'
-            width={100}
-            cellRender={(e: any) => {
-              if (e.data.VAO_ED === "Y") {
-                return (
-                  <div
-                    style={{
-                      color: "white",
-                      fontWeight: "bold",
-                      height: "20px",
-                      width: "80px",
-                      backgroundColor: "#54e00d",
-                      textAlign: "center",
-                    }}
-                  >
-                    Y
-                  </div>
-                );
-              } else {
-                return (
-                  <div
-                    style={{
-                      color: "white",
-                      fontWeight: "bold",
-                      height: "20px",
-                      width: "50px",
-                      backgroundColor: "red",
-                      textAlign: "center",
-                    }}
-                  >
-                    N
-                  </div>
-                );
-              }
-            }}
-          ></Column>
-          <Column
-            dataField='CONFIRM_GIAONHAN'
-            caption='CONFIRM_GIAONHAN'
-            width={100}
-            cellRender={(e: any) => {
-              if (e.data.CONFIRM_GIAONHAN === "Y") {
-                return (
-                  <div
-                    style={{
-                      color: "white",
-                      fontWeight: "bold",
-                      height: "20px",
-                      width: "80px",
-                      backgroundColor: "#54e00d",
-                      textAlign: "center",
-                    }}
-                  >
-                    Y
-                  </div>
-                );
-              } 
-              else if (e.data.CONFIRM_GIAONHAN === "R")  {
-                return (
-                  <div
-                    style={{
-                      color: "black",
-                      fontWeight: "bold",
-                      height: "20px",
-                      width: "80px",
-                      backgroundColor: "yellow",
-                      textAlign: "center",
-                    }}
-                  >
-                    R
-                  </div>
-                );
-              }
-              else {
-                return (
-                  <div
-                    style={{
-                      color: "white",
-                      fontWeight: "bold",
-                      height: "20px",
-                      width: "50px",
-                      backgroundColor: "red",
-                      textAlign: "center",
-                    }}
-                  >
-                    N
-                  </div>
-                );
-              }
-            }}
-          ></Column>
-          <Column
-            dataField='VAO_KIEM'
-            caption='VAO_KIEM'
-            width={100}
-            cellRender={(e: any) => {
-              if (e.data.VAO_KIEM === "Y") {
-                return (
-                  <div
-                    style={{
-                      color: "white",
-                      fontWeight: "bold",
-                      height: "20px",
-                      width: "80px",
-                      backgroundColor: "#54e00d",
-                      textAlign: "center",
-                    }}
-                  >
-                    Y
-                  </div>
-                );
-              } else {
-                return (
-                  <div
-                    style={{
-                      color: "white",
-                      fontWeight: "bold",
-                      height: "20px",
-                      width: "50px",
-                      backgroundColor: "red",
-                      textAlign: "center",
-                    }}
-                  >
-                    N
-                  </div>
-                );
-              }
-            }}
-          ></Column>
-          <Column
-            dataField='NHATKY_KT'
-            caption='NHATKY_KT'
-            width={100}
-            cellRender={(e: any) => {
-              if (e.data.NHATKY_KT === "Y") {
-                return (
-                  <div
-                    style={{
-                      color: "white",
-                      fontWeight: "bold",
-                      height: "20px",
-                      width: "80px",
-                      backgroundColor: "#54e00d",
-                      textAlign: "center",
-                    }}
-                  >
-                    Y
-                  </div>
-                );
-              } else {
-                return (
-                  <div
-                    style={{
-                      color: "white",
-                      fontWeight: "bold",
-                      height: "20px",
-                      width: "50px",
-                      backgroundColor: "red",
-                      textAlign: "center",
-                    }}
-                  >
-                    N
-                  </div>
-                );
-              }
-            }}
-          ></Column>
-          <Column dataField='ROLL_QTY' caption='ROLL_QTY' width={100}></Column>
-          <Column
-            dataField='OUT_CFM_QTY'
-            caption='OUT_CFM_QTY'
-            width={100}
-            dataType='number'
-            format={"decimal"}
-          ></Column>
-          <Column
-            dataField='TOTAL_OUT_QTY'
-            caption='TOTAL_OUT_QTY'
-            width={100}
-            dataType='number'
-            format={"decimal"}
-            cellRender={(e: any) => {
-              return (
-                <span style={{ color: "blue", fontWeight: "bold" }}>
-                  {e.data.TOTAL_OUT_QTY?.toLocaleString("en-US")}
-                </span>
-              );
-            }}
-          ></Column>
-          <Column
-            dataField='FR_RESULT'
-            caption='FR_RESULT'
-            width={100}
-            dataType='number'
-            format={"decimal"}
-            cellRender={(e: any) => {
-              return (
-                <span style={{ color: "blue", fontWeight: "bold" }}>
-                  {e.data.FR_RESULT?.toLocaleString("en-US")}
-                </span>
-              );
-            }}
-          ></Column>
-          <Column
-            dataField='SR_RESULT'
-            caption='SR_RESULT'
-            width={100}
-            dataType='number'
-            format={"decimal"}
-            cellRender={(e: any) => {
-              return (
-                <span style={{ color: "blue", fontWeight: "bold" }}>
-                  {e.data.SR_RESULT?.toLocaleString("en-US")}
-                </span>
-              );
-            }}
-          ></Column>
-          <Column
-            dataField='DC_RESULT'
-            caption='DC_RESULT'
-            width={100}
-            dataType='number'
-            format={"decimal"}
-            cellRender={(e: any) => {
-              return (
-                <span style={{ color: "blue", fontWeight: "bold" }}>
-                  {e.data.DC_RESULT?.toLocaleString("en-US")}
-                </span>
-              );
-            }}
-          ></Column>
-          <Column
-            dataField='ED_RESULT'
-            caption='ED_RESULT'
-            width={100}
-            dataType='number'
-            format={"decimal"}
-            cellRender={(e: any) => {
-              return (
-                <span style={{ color: "blue", fontWeight: "bold" }}>
-                  {e.data.ED_RESULT?.toLocaleString("en-US")}
-                </span>
-              );
-            }}
-          ></Column>
-          <Column
-            dataField='INSPECT_TOTAL_QTY'
-            caption='INSPECT_TOTAL_QTY'
-            width={100}
-            dataType='number'
-            format={"decimal"}
-            cellRender={(e: any) => {
-              return (
-                <span style={{ color: "blue", fontWeight: "bold" }}>
-                  {e.data.INSPECT_TOTAL_QTY?.toLocaleString("en-US")}
-                </span>
-              );
-            }}
-          ></Column>
-          <Column
-            dataField='INSPECT_OK_QTY'
-            caption='INSPECT_OK_QTY'
-            width={100}
-            dataType='number'
-            format={"decimal"}
-            cellRender={(e: any) => {
-              return (
-                <span style={{ color: "blue", fontWeight: "bold" }}>
-                  {e.data.INSPECT_OK_QTY?.toLocaleString("en-US")}
-                </span>
-              );
-            }}
-          ></Column>
-          <Column
-            dataField='INS_OUT'
-            caption='INS_OUT'
-            width={100}
-            dataType='number'
-            format={"decimal"}
-            cellRender={(e: any) => {
-              return (
-                <span style={{ color: "blue", fontWeight: "bold" }}>
-                  {e.data.INS_OUT?.toLocaleString("en-US")}
-                </span>
-              );
-            }}
-          ></Column>
-          <Column
-            dataField='TOTAL_OUT_EA'
-            caption='TOTAL_OUT_EA'
-            width={100}
-            dataType='number'
-            format={"decimal"}
-            cellRender={(e: any) => {
-              return (
-                <span style={{ color: "green", fontWeight: "bold" }}>
-                  {e.data.TOTAL_OUT_EA?.toLocaleString("en-US")}
-                </span>
-              );
-            }}
-          ></Column>
-          <Column
-            dataField='FR_EA'
-            caption='FR_EA'
-            width={100}
-            dataType='number'
-            format={"decimal"}
-            cellRender={(e: any) => {
-              return (
-                <span style={{ color: "green", fontWeight: "bold" }}>
-                  {e.data.FR_EA?.toLocaleString("en-US")}
-                </span>
-              );
-            }}
-          ></Column>
-          <Column
-            dataField='SR_EA'
-            caption='SR_EA'
-            width={100}
-            dataType='number'
-            format={"decimal"}
-            cellRender={(e: any) => {
-              return (
-                <span style={{ color: "green", fontWeight: "bold" }}>
-                  {e.data.SR_EA?.toLocaleString("en-US")}
-                </span>
-              );
-            }}
-          ></Column>
-          <Column
-            dataField='DC_EA'
-            caption='DC_EA'
-            width={100}
-            dataType='number'
-            format={"decimal"}
-            cellRender={(e: any) => {
-              return (
-                <span style={{ color: "green", fontWeight: "bold" }}>
-                  {e.data.DC_EA?.toLocaleString("en-US")}
-                </span>
-              );
-            }}
-          ></Column>
-          <Column
-            dataField='ED_EA'
-            caption='ED_EA'
-            width={100}
-            dataType='number'
-            format={"decimal"}
-            cellRender={(e: any) => {
-              return (
-                <span style={{ color: "green", fontWeight: "bold" }}>
-                  {e.data.ED_EA?.toLocaleString("en-US")}
-                </span>
-              );
-            }}
-          ></Column>
-          <Column
-            dataField='INSPECT_TOTAL_EA'
-            caption='INSPECT_TOTAL_EA'
-            width={100}
-            dataType='number'
-            format={"decimal"}
-            cellRender={(e: any) => {
-              return (
-                <span style={{ color: "green", fontWeight: "bold" }}>
-                  {e.data.INSPECT_TOTAL_EA?.toLocaleString("en-US")}
-                </span>
-              );
-            }}
-          ></Column>
-          <Column
-            dataField='INSPECT_OK_EA'
-            caption='INSPECT_OK_EA'
-            width={100}
-            dataType='number'
-            format={"decimal"}
-            cellRender={(e: any) => {
-              return (
-                <span style={{ color: "green", fontWeight: "bold" }}>
-                  {e.data.INSPECT_OK_EA?.toLocaleString("en-US")}
-                </span>
-              );
-            }}
-          ></Column>
-          <Column
-            dataField='INS_OUTPUT_EA'
-            caption='INS_OUTPUT_EA'
-            width={100}
-            dataType='number'
-            format={"decimal"}
-            cellRender={(e: any) => {
-              return (
-                <span style={{ color: "green", fontWeight: "bold" }}>
-                  {e.data.INS_OUTPUT_EA?.toLocaleString("en-US")}
-                </span>
-              );
-            }}
-          ></Column>
-          <Column
-            dataField='ROLL_LOSS_KT'
-            caption='ROLL_LOSS_KT'
-            width={100}
-            dataType='number'
-            format={"percent"}
-            cellRender={(e: any) => {
-              return (
-                <span style={{ color: "green", fontWeight: "bold" }}>
-                  {100*e.data.ROLL_LOSS_KT?.toLocaleString("en-US",)} %
-                </span>
-              );
-            }}
-          ></Column>         
-          <Column
-            dataField='ROLL_LOSS'
-            caption='ROLL_LOSS'
-            width={100}
-            dataType='number'
-            format={"percent"}
-            cellRender={(e: any) => {
-              return (
-                <span style={{ color: "green", fontWeight: "bold" }}>
-                  {100*e.data.ROLL_LOSS?.toLocaleString("en-US",)} %
-                </span>
-              );
-            }}
-          ></Column>         
-          <Column dataField='PD' caption='PD' width={100}></Column>
-          <Column dataField='CAVITY' caption='CAVITY' width={100}></Column>
-          <Column
-            dataField='PROD_REQUEST_NO'
-            caption='PROD_REQUEST_NO'
-            width={100}
-          ></Column>
-          <Column dataField='PLAN_ID' caption='PLAN_ID' width={100}></Column>
-          <Column dataField='PLAN_EQ' caption='PLAN_EQ' width={100}></Column>
-          <Column dataField='G_CODE' caption='G_CODE'></Column>
-          <Column dataField='G_NAME' caption='G_NAME'></Column>
-          <Paging defaultPageSize={15} />
-          <Pager
-            showPageSizeSelector={true}
-            allowedPageSizes={[5, 10, 15, 20, 100, 1000, 10000, "all"]}
-            showNavigationButtons={true}
-            showInfo={true}
-            infoText='Page #{0}. Total: {1} ({2} items)'
-            displayMode='compact'
-          />
-          <Summary>
-            <TotalItem
-              alignment='right'
-              column='id'
-              summaryType='count'
-              valueFormat={"decimal"}
+          >
+            <Scrolling
+              useNative={true}
+              scrollByContent={true}
+              scrollByThumb={true}
+              showScrollbar="onHover"
+              mode="virtual"
             />
-            <TotalItem
-              alignment='right'
-              column='TOTAL_OUT_QTY'
-              summaryType='sum'
-              valueFormat={"thousands"}
+            <Selection mode="multiple" selectAllMode="allPages" />
+            <Editing
+              allowUpdating={false}
+              allowAdding={true}
+              allowDeleting={false}
+              mode="batch"
+              confirmDelete={true}
+              onChangesChange={(e) => {}}
             />
-            <TotalItem
-              alignment='right'
-              column='TOTAL_OUT_EA'
-              summaryType='sum'
-              valueFormat={"thousands"}
+            <Export enabled={true} />
+            <Toolbar disabled={false}>
+              <Item location="before">
+                <IconButton
+                  className="buttonIcon"
+                  onClick={() => {
+                    SaveExcel(datasxtable, "MaterialStatus");
+                  }}
+                >
+                  <AiFillFileExcel color="green" size={15} />
+                  SAVE
+                </IconButton>
+                <IconButton
+                  className="buttonIcon"
+                  onClick={() => {
+                    setShowHidePivotTable(!showhidePivotTable);
+                  }}
+                >
+                  <MdOutlinePivotTableChart color="#ff33bb" size={15} />
+                  Pivot
+                </IconButton>
+              </Item>
+              <Item name="searchPanel" />
+              <Item name="exportButton" />
+              <Item name="columnChooser" />
+            </Toolbar>
+            <FilterRow visible={true} />
+            <SearchPanel visible={true} />
+            <ColumnChooser enabled={true} />
+            {columns.map((column, index) => {
+              //console.log(column);
+              return <Column key={index} {...column}></Column>;
+            })}
+            <Paging defaultPageSize={15} />
+            <Pager
+              showPageSizeSelector={true}
+              allowedPageSizes={[5, 10, 15, 20, 100, 1000, 10000, "all"]}
+              showNavigationButtons={true}
+              showInfo={true}
+              infoText="Page #{0}. Total: {1} ({2} items)"
+              displayMode="compact"
             />
-            <TotalItem
-              alignment='right'
-              column='FR_RESULT'
-              summaryType='sum'
-              valueFormat={"thousands"}
-            />
-            <TotalItem
-              alignment='right'
-              column='SR_RESULT'
-              summaryType='sum'
-              valueFormat={"thousands"}
-            />
-            <TotalItem
-              alignment='right'
-              column='DC_RESULT'
-              summaryType='sum'
-              valueFormat={"thousands"}
-            />
-            <TotalItem
-              alignment='right'
-              column='ED_RESULT'
-              summaryType='sum'
-              valueFormat={"thousands"}
-            />
-            <TotalItem
-              alignment='right'
-              column='FR_EA'
-              summaryType='sum'
-              valueFormat={"thousands"}
-            />
-            <TotalItem
-              alignment='right'
-              column='SR_EA'
-              summaryType='sum'
-              valueFormat={"thousands"}
-            />
-            <TotalItem
-              alignment='right'
-              column='DC_EA'
-              summaryType='sum'
-              valueFormat={"thousands"}
-            />
-            <TotalItem
-              alignment='right'
-              column='ED_EA'
-              summaryType='sum'
-              valueFormat={"thousands"}
-            />
-            <TotalItem
-              alignment='right'
-              column='INSPECT_TOTAL_QTY'
-              summaryType='sum'
-              valueFormat={"thousands"}
-            />
-            <TotalItem
-              alignment='right'
-              column='INSPECT_OK_QTY'
-              summaryType='sum'
-              valueFormat={"thousands"}
-            />
-            <TotalItem
-              alignment='right'
-              column='INS_OUT'
-              summaryType='sum'
-              valueFormat={"thousands"}
-            />
-            <TotalItem
-              alignment='right'
-              column='INSPECT_TOTAL_EA'
-              summaryType='sum'
-              valueFormat={"thousands"}
-            />
-            <TotalItem
-              alignment='right'
-              column='INSPECT_OK_EA'
-              summaryType='sum'
-              valueFormat={"thousands"}
-            />
-            <TotalItem
-              alignment='right'
-              column='INS_OUTPUT_EA'
-              summaryType='sum'
-              valueFormat={"thousands"}
-            />
-          </Summary>
-        </DataGrid>
-        </ResponsiveContainer>   
+            <Summary>
+              <TotalItem
+                alignment="right"
+                column="ID"
+                summaryType="count"
+                valueFormat={"decimal"}
+              />
+              <TotalItem
+                alignment="right"
+                column="TOTAL_OUT_QTY"
+                summaryType="sum"
+                valueFormat={"thousands"}
+              />
+              <TotalItem
+                alignment="right"
+                column="TOTAL_OUT_EA"
+                summaryType="sum"
+                valueFormat={"thousands"}
+              />
+              <TotalItem
+                alignment="right"
+                column="FR_RESULT"
+                summaryType="sum"
+                valueFormat={"thousands"}
+              />
+              <TotalItem
+                alignment="right"
+                column="SR_RESULT"
+                summaryType="sum"
+                valueFormat={"thousands"}
+              />
+              <TotalItem
+                alignment="right"
+                column="DC_RESULT"
+                summaryType="sum"
+                valueFormat={"thousands"}
+              />
+              <TotalItem
+                alignment="right"
+                column="ED_RESULT"
+                summaryType="sum"
+                valueFormat={"thousands"}
+              />
+              <TotalItem
+                alignment="right"
+                column="FR_EA"
+                summaryType="sum"
+                valueFormat={"thousands"}
+              />
+              <TotalItem
+                alignment="right"
+                column="SR_EA"
+                summaryType="sum"
+                valueFormat={"thousands"}
+              />
+              <TotalItem
+                alignment="right"
+                column="DC_EA"
+                summaryType="sum"
+                valueFormat={"thousands"}
+              />
+              <TotalItem
+                alignment="right"
+                column="ED_EA"
+                summaryType="sum"
+                valueFormat={"thousands"}
+              />
+              <TotalItem
+                alignment="right"
+                column="INSPECT_TOTAL_QTY"
+                summaryType="sum"
+                valueFormat={"thousands"}
+              />
+              <TotalItem
+                alignment="right"
+                column="INSPECT_OK_QTY"
+                summaryType="sum"
+                valueFormat={"thousands"}
+              />
+              <TotalItem
+                alignment="right"
+                column="INS_OUT"
+                summaryType="sum"
+                valueFormat={"thousands"}
+              />
+              <TotalItem
+                alignment="right"
+                column="INSPECT_TOTAL_EA"
+                summaryType="sum"
+                valueFormat={"thousands"}
+              />
+              <TotalItem
+                alignment="right"
+                column="INSPECT_OK_EA"
+                summaryType="sum"
+                valueFormat={"thousands"}
+              />
+              <TotalItem
+                alignment="right"
+                column="INS_OUTPUT_EA"
+                summaryType="sum"
+                valueFormat={"thousands"}
+              />
+            </Summary>
+          </DataGrid>
+        </CustomResponsiveContainer>
       </div>
     ),
-    [datasxtable]
+    [datasxtable, columns],
   );
   const dataSource = new PivotGridDataSource({
     fields: [
@@ -1679,138 +1174,179 @@ const TINHHINHCUONLIEU = () => {
     store: datasxtable,
   });
   useEffect(() => {
+    getMachineList();
     //setColumnDefinition(column_inspect_output);
   }, []);
   return (
-    <div className='tinhinhcuonlieu'>
-      <div className='tracuuDataInspection'>
-        <div className='tracuuDataInspectionform'>
-          <div className='forminput'>
-            <div className='forminputcolumn'>
+    <div className="tinhinhcuonlieu">
+      <div className="tracuuDataInspection">
+        <div className="tracuuDataInspectionform">
+          <div className="forminput">
+            <div className="forminputcolumn">
               <label>
                 <b>Từ ngày:</b>
-                <input onKeyDown={(e)=> {handleSearchCodeKeyDown(e);} }
-                  type='date'
+                <input
+                  onKeyDown={(e) => {
+                    handleSearchCodeKeyDown(e);
+                  }}
+                  type="date"
                   value={fromdate.slice(0, 10)}
                   onChange={(e) => setFromDate(e.target.value)}
                 ></input>
               </label>
               <label>
                 <b>Tới ngày:</b>{" "}
-                <input onKeyDown={(e)=> {handleSearchCodeKeyDown(e);} }
-                  type='date'
+                <input
+                  onKeyDown={(e) => {
+                    handleSearchCodeKeyDown(e);
+                  }}
+                  type="date"
                   value={todate.slice(0, 10)}
                   onChange={(e) => setToDate(e.target.value)}
                 ></input>
               </label>
             </div>
-            <div className='forminputcolumn'>
+            <div className="forminputcolumn">
               <label>
                 <b>Code KD:</b>{" "}
-                <input 
-                  onKeyDown={(e)=> {handleSearchCodeKeyDown(e);} }
-                  type='text'
-                  placeholder='GH63-xxxxxx'
+                <input
+                  onKeyDown={(e) => {
+                    handleSearchCodeKeyDown(e);
+                  }}
+                  type="text"
+                  placeholder="GH63-xxxxxx"
                   value={codeKD}
                   onChange={(e) => setCodeKD(e.target.value)}
                 ></input>
               </label>
               <label>
-                <b>Code CMS:</b>{" "}
-                <input onKeyDown={(e)=> {handleSearchCodeKeyDown(e);} }
-                  type='text'
-                  placeholder='7C123xxx'
+                <b>Code ERP:</b>{" "}
+                <input
+                  onKeyDown={(e) => {
+                    handleSearchCodeKeyDown(e);
+                  }}
+                  type="text"
+                  placeholder="7C123xxx"
                   value={codeCMS}
                   onChange={(e) => setCodeCMS(e.target.value)}
                 ></input>
               </label>
             </div>
-            <div className='forminputcolumn'>
+            <div className="forminputcolumn">
               <label>
                 <b>Tên Liệu:</b>{" "}
-                <input onKeyDown={(e)=> {handleSearchCodeKeyDown(e);} }
-                  type='text'
-                  placeholder='SJ-203020HC'
+                <input
+                  onKeyDown={(e) => {
+                    handleSearchCodeKeyDown(e);
+                  }}
+                  type="text"
+                  placeholder="SJ-203020HC"
                   value={m_name}
                   onChange={(e) => setM_Name(e.target.value)}
                 ></input>
               </label>
               <label>
                 <b>Mã Liệu CMS:</b>{" "}
-                <input onKeyDown={(e)=> {handleSearchCodeKeyDown(e);} }
-                  type='text'
-                  placeholder='A123456'
+                <input
+                  onKeyDown={(e) => {
+                    handleSearchCodeKeyDown(e);
+                  }}
+                  type="text"
+                  placeholder="A123456"
                   value={m_code}
                   onChange={(e) => setM_Code(e.target.value)}
                 ></input>
               </label>
             </div>
-            <div className='forminputcolumn'>
+            <div className="forminputcolumn">
               <label>
                 <b>Số YCSX:</b>{" "}
-                <input onKeyDown={(e)=> {handleSearchCodeKeyDown(e);} }
-                  type='text'
-                  placeholder='1F80008'
+                <input
+                  onKeyDown={(e) => {
+                    handleSearchCodeKeyDown(e);
+                  }}
+                  type="text"
+                  placeholder="1F80008"
                   value={prodrequestno}
                   onChange={(e) => setProdRequestNo(e.target.value)}
                 ></input>
               </label>
               <label>
                 <b>Số chỉ thị:</b>{" "}
-                <input onKeyDown={(e)=> {handleSearchCodeKeyDown(e);} }
-                  type='text'
-                  placeholder='A123456'
+                <input
+                  onKeyDown={(e) => {
+                    handleSearchCodeKeyDown(e);
+                  }}
+                  type="text"
+                  placeholder="A123456"
                   value={plan_id}
                   onChange={(e) => setPlanID(e.target.value)}
                 ></input>
               </label>
+              <label>
+                <b>Khách hàng:</b>{" "}
+                <input
+                  onKeyDown={(e) => {
+                    handleSearchCodeKeyDown(e);
+                  }}
+                  type="text"
+                  placeholder="SEV"
+                  value={cust_name_kd}
+                  onChange={(e) => setCUST_NAME_KD(e.target.value)}
+                ></input>
+              </label>
             </div>
-            <div className='forminputcolumn'>
+            <div className="forminputcolumn">
               <label>
                 <b>FACTORY:</b>
-                <select                  
-                  name='phanloai'
+                <select
+                  name="phanloai"
                   value={factory}
                   onChange={(e) => {
                     setFactory(e.target.value);
                   }}
                 >
-                  <option value='ALL'>ALL</option>
-                  <option value='NM1'>NM1</option>
-                  <option value='NM2'>NM2</option>
+                  <option value="ALL">ALL</option>
+                  <option value="NM1">NM1</option>
+                  <option value="NM2">NM2</option>
                 </select>
               </label>
               <label>
                 <b>MACHINE:</b>
-                <select                  
-                  name='machine'
+                <select
+                  name="machine2"
                   value={machine}
                   onChange={(e) => {
                     setMachine(e.target.value);
-                  }}
+                  }}                  
                 >
-                  <option value='ALL'>ALL</option>
-                  <option value='FR'>FR</option>
-                  <option value='SR'>SR</option>
-                  <option value='DC'>DC</option>
-                  <option value='ED'>ED</option>
+                  {machine_list.map((ele: MACHINE_LIST, index: number) => {
+                    return (
+                      <option key={index} value={ele.EQ_NAME}>
+                        {ele.EQ_NAME}
+                      </option>
+                    );
+                  })}
                 </select>
               </label>
             </div>
           </div>
-          <div className='formbutton'>
+          <div className="formbutton">
             <label>
               <b>All Time:</b>
-              <input onKeyDown={(e)=> {handleSearchCodeKeyDown(e);} }
-                type='checkbox'
-                name='alltimecheckbox'
+              <input
+                onKeyDown={(e) => {
+                  handleSearchCodeKeyDown(e);
+                }}
+                type="checkbox"
+                name="alltimecheckbox"
                 defaultChecked={alltime}
                 onChange={() => setAllTime(!alltime)}
               ></input>
             </label>
             <button
-              className='tranhatky'
-              onClick={() => {                                          
+              className="tranhatky"
+              onClick={() => {
                 handle_loaddatasx();
               }}
             >
@@ -1818,24 +1354,26 @@ const TINHHINHCUONLIEU = () => {
             </button>
           </div>
         </div>
-        <div className='tracuuYCSXTable'>
-          <span style={{fontSize:10}}>Số dòng đã chọn: {selectedRows} / {datasxtable.length}</span>
+        <div className="tracuuYCSXTable">
+          <span style={{ fontSize: 10 }}>
+            Số dòng đã chọn: {selectedRows} / {datasxtable.length}
+          </span>
           {materialDataTable}
         </div>
         {showhidePivotTable && (
-        <div className='pivottable1'>
-          <IconButton
-            className='buttonIcon'
-            onClick={() => {
-              setShowHidePivotTable(false);
-            }}
-          >
-            <AiFillCloseCircle color='blue' size={25} />
-            Close
-          </IconButton>
-          <PivotTable datasource={dataSource} tableID='invoicetablepivot' />
-        </div>
-      )}
+          <div className="pivottable1">
+            <IconButton
+              className="buttonIcon"
+              onClick={() => {
+                setShowHidePivotTable(false);
+              }}
+            >
+              <AiFillCloseCircle color="blue" size={15} />
+              Close
+            </IconButton>
+            <PivotTable datasource={dataSource} tableID="invoicetablepivot" />
+          </div>
+        )}
       </div>
     </div>
   );

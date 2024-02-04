@@ -1,0 +1,81 @@
+.customerpobalance {
+  .datatb {
+    justify-items: center;
+    width: 100%;
+    padding: 20px;
+    height: 1000px;
+    
+    .menubar {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .dx-datagrid-rowsview
+      .dx-selection.dx-row:not(.dx-row-focused):not(.dx-row-removed)
+      > td {
+      background-color: rgb(255, 243, 68);
+      color: unset;
+    }
+    .dx-datagrid-borders > .dx-datagrid-header-panel {
+      border-bottom: 0;
+      background-color: #b5f398;
+    }
+
+    .dx-toolbar .dx-toolbar-items-container {
+      height: 25px;
+      overflow: visible;
+      background-color: #b5f398;
+    }
+
+    //toan bo bang
+    .dx-gridbase-container > .dx-datagrid-rowsview.dx-scrollable {
+      display: -ms-flexbox;
+      display: flex;
+      background-image: linear-gradient(0deg, #e9e1eb, #ffffff);
+      font-size: 0.7rem;
+    }
+
+    .dx-datagrid-borders > .dx-datagrid-filter-panel,
+    .dx-datagrid-borders > .dx-datagrid-headers {
+      border-top: 1px solid #ddd;
+      background-image: linear-gradient(0deg, #e9e1eb, #a0f87e);
+      color: rgb(3, 26, 235);
+      font-size: 0.7rem;              
+    }
+    //filter row input
+    .dx-datagrid-filter-row
+      .dx-editor-cell
+      .dx-editor-with-menu
+      .dx-placeholder::before,
+    .dx-datagrid-filter-row
+      .dx-editor-cell
+      .dx-editor-with-menu
+      .dx-texteditor-input {
+      padding-left: 32px;
+      background-image: linear-gradient(0deg, #e9e1eb, #a0f87e);
+      color: black;
+      height: 10px;
+    }
+    .dx-editor-cell .dx-texteditor,
+    .dx-editor-cell .dx-texteditor .dx-texteditor-input {
+      background-image: linear-gradient(0deg, #e9e1eb, #a0f87e);
+    }
+
+    .dx-searchbox .dx-placeholder::before,
+    .dx-searchbox .dx-texteditor-input {
+      padding-left: 34px;
+      background-image: linear-gradient(0deg, #e9e1eb, #d7f0cd);
+    }
+
+    .dx-button-mode-contained {
+      background-color: #a0f87e;
+      border-color: #cacafa;
+      color: #430fff;
+    }
+
+    .dx-datagrid-total-footer > .dx-datagrid-content {
+      padding-top: 0px;
+      padding-bottom: 0px;
+    }
+  }
+}

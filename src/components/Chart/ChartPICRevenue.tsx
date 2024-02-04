@@ -9,7 +9,6 @@ import {
   CartesianGrid,
   Tooltip,
   Legend,
-  ResponsiveContainer,
   ComposedChart,
   Label,
   LabelList,
@@ -18,22 +17,18 @@ import {
   Pie,
 } from "recharts";
 
-
 import Swal from "sweetalert2";
-import { generalQuery } from "../../api/Api";
-import { CustomResponsiveContainer } from "../../api/GlobalFunction";
-interface WeeklyClosingData {
-    EMPL_NAME: string;
-    DELIVERY_AMOUNT: number;  
-}
+import { generalQuery, getGlobalSetting } from "../../api/Api";
+import { CustomResponsiveContainer, nFormatter } from "../../api/GlobalFunction";
+import { WEB_SETTING_DATA, WeeklyClosingData } from "../../api/GlobalInterface";
+
 const ChartPICRevenue = () => {
   const [weeklyClosingData, setWeeklyClosingData] = useState<
     Array<WeeklyClosingData>
   >([]);
-  const formatCash = (n: number) => {
-    if (n < 1e3) return n;
-    if (n >= 1e3) return +(n / 1e3).toFixed(1) + "K$";
-  };
+    const formatCash = (n: number) => {  
+     return nFormatter(n, 2) + (getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0].CURRENT_VALUE ==='USD' ? ' $' : " đ");
+   };
   const labelFormatter = (value: number) => {
     return new Intl.NumberFormat("en", {
       notation: "compact",
@@ -41,49 +36,75 @@ const ChartPICRevenue = () => {
     }).format(value);
   };
 
-  const CustomTooltip = ({ active, payload, label } : {active?:any, payload?:any, label?: any}) => {
+  const CustomTooltip = ({
+    active,
+    payload,
+    label,
+  }: {
+    active?: any;
+    payload?: any;
+    label?: any;
+  }) => {
     if (active && payload && payload.length) {
       return (
-        <div className="custom-tooltip">
-          <p className="label">{`${payload[0].value.toLocaleString("en-US", {
-                      style: "currency",
-                      currency: "USD",
-                    })}`}</p>   
+        <div className='custom-tooltip'>
+          <p className='label'>{`${payload[0].value.toLocaleString("en-US", {
+            style: "currency",
+            currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0].CURRENT_VALUE,
+          })}`}</p>
         </div>
       );
     }
     return null;
-}
-
-const CustomLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, value, index }:{ cx?:any, cy?:any, midAngle?:any, innerRadius?:any, outerRadius?:any, value?:any, index?:any }) => {  
-    const RADIAN = Math.PI / 180;          
-          const radius = 25 + innerRadius + (outerRadius - innerRadius);          
-          const x = cx + radius * Math.cos(-midAngle * RADIAN);          
-          const y = cy + radius * Math.sin(-midAngle * RADIAN);
-          return (
-            <text
-              x={x}
-              y={y}
-              fill="#8884d8"
-              textAnchor={x > cx ? "start" : "end"}
-              dominantBaseline="central"
-            >
-              {weeklyClosingData[index].EMPL_NAME} : ({value.toLocaleString("en-US", {
-                      style: "currency",
-                      currency: "USD",
-                    })})
-            </text>
-          );
   };
 
+  const CustomLabel = ({
+    cx,
+    cy,
+    midAngle,
+    innerRadius,
+    outerRadius,
+    value,
+    index,
+  }: {
+    cx?: any;
+    cy?: any;
+    midAngle?: any;
+    innerRadius?: any;
+    outerRadius?: any;
+    value?: any;
+    index?: any;
+  }) => {
+    const RADIAN = Math.PI / 180;
+    const radius = 25 + innerRadius + (outerRadius - innerRadius);
+    const x = cx + radius * Math.cos(-midAngle * RADIAN);
+    const y = cy + radius * Math.sin(-midAngle * RADIAN);
+    return (
+      <text
+        x={x}
+        y={y}
+        fill='#8884d8'
+        textAnchor={x > cx ? "start" : "end"}
+        dominantBaseline='central'
+        fontSize={'0.9rem'}
+      >
+        {weeklyClosingData[index].EMPL_NAME} : (
+        {value.toLocaleString("en-US", {
+          style: "currency",
+          currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0].CURRENT_VALUE,
+        })}
+        )
+      </text>
+    );
+  };
 
   const handleGetCustomerRevenue = () => {
     let sunday = moment().clone().weekday(0).format("YYYY-MM-DD");
     let monday = moment().clone().weekday(6).format("YYYY-MM-DD");
-    generalQuery("PICRevenue", { START_DATE:sunday, END_DATE: monday  })
+    generalQuery("PICRevenue", { START_DATE: sunday, END_DATE: monday })
       .then((response) => {
         if (response.data.tk_status !== "NG") {
-            //console.log(response.data.data);
+          //console.log(response.data.data);
           let loadeddata: WeeklyClosingData[] = response.data.data.map(
             (element: WeeklyClosingData, index: number) => {
               return {
@@ -91,35 +112,41 @@ const CustomLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, value, index 
               };
             }
           );
-         
+
           setWeeklyClosingData(loadeddata);
-                    
         } else {
           //Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
-          sunday = moment().clone().weekday(0).add(-7,'days').format("YYYY-MM-DD");
-           monday = moment().clone().weekday(6).add(-7,'days').format("YYYY-MM-DD");
-           
-          generalQuery("PICRevenue", { START_DATE:sunday, END_DATE: monday  })
-          .then((response) => {
-            if (response.data.tk_status !== "NG") {
+          sunday = moment()
+            .clone()
+            .weekday(0)
+            .add(-7, "days")
+            .format("YYYY-MM-DD");
+          monday = moment()
+            .clone()
+            .weekday(6)
+            .add(-7, "days")
+            .format("YYYY-MM-DD");
+
+          generalQuery("PICRevenue", { START_DATE: sunday, END_DATE: monday })
+            .then((response) => {
+              if (response.data.tk_status !== "NG") {
                 //console.log(response.data.data);
-              let loadeddata: WeeklyClosingData[] = response.data.data.map(
-                (element: WeeklyClosingData, index: number) => {
-                  return {
-                    ...element,
-                  };
-                }
-              );
-            
-              setWeeklyClosingData(loadeddata);
-                        
-            } else {
-              //Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
-            }
-          })
-          .catch((error) => {
-            console.log(error);
-          });
+                let loadeddata: WeeklyClosingData[] = response.data.data.map(
+                  (element: WeeklyClosingData, index: number) => {
+                    return {
+                      ...element,
+                    };
+                  }
+                );
+
+                setWeeklyClosingData(loadeddata);
+              } else {
+                //Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
+              }
+            })
+            .catch((error) => {
+              console.log(error);
+            });
         }
       })
       .catch((error) => {
@@ -159,8 +186,17 @@ const CustomLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, value, index 
   return (
     <CustomResponsiveContainer>
       <PieChart width={500} height={400}>
-        <Tooltip content={<CustomTooltip/>} />
-        <Legend />
+        <Tooltip content={<CustomTooltip />} />
+        <Legend 
+        verticalAlign="top"
+        align="center"
+        iconSize={15}
+        iconType="diamond"
+        formatter={(value, entry) => (
+          <span style={{fontSize:'0.7rem', fontWeight:'bold'}}>{value}</span>
+        )}
+        height={10}
+        />
         <Pie
           dataKey='DELIVERY_AMOUNT'
           nameKey='EMPL_NAME'
@@ -168,15 +204,17 @@ const CustomLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, value, index 
           data={weeklyClosingData}
           cx='50%'
           cy='50%'
-          outerRadius={80}
+          outerRadius={110}
           fill='#8884d8'
           label={CustomLabel}
         >
           {weeklyClosingData.map((entry, index) => (
-            <Cell key={`cell-${index}`} fill={COLORS[(2+index)*3 % COLORS.length]} />
+            <Cell
+              key={`cell-${index}`}
+              fill={COLORS[((2 + index) * 3) % COLORS.length]}
+            />
           ))}
         </Pie>
-        
       </PieChart>
     </CustomResponsiveContainer>
   );
