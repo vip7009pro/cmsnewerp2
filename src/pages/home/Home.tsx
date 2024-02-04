@@ -531,7 +531,7 @@ function Home() {
       });
   }
   const checkERPLicense = async () => {
-    console.log(getSever());
+    //console.log(getSever());
     //if (getSever() !== 'http://192.168.1.192:5013') {
       if (true) {
       generalQuery("checkLicense", {

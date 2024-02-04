@@ -25,8 +25,8 @@ const ChartYearly = () => {
   const [yearlyClosingData, setYearlyClosingData] = useState<
     Array<YearlyClosingData>
   >([]);
-  const formatCash = (n: number) => {
-    return nFormatter(n, 2) + "$";
+  const formatCash = (n: number) => {  
+    return nFormatter(n, 2) + (getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0].CURRENT_VALUE ==='USD' ? ' $' : " đ");
   };
   const labelFormatter = (value: number) => {
     return formatCash(value);
@@ -110,7 +110,7 @@ const ChartYearly = () => {
   };
   useEffect(() => {
     handleGetYearlyClosing();
-  }, []);
+  }, [getGlobalSetting()]);
   return (
     <CustomResponsiveContainer>
       <ComposedChart

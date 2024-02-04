@@ -289,7 +289,7 @@ const CustomerWeeklyClosing = () => {
         </CustomResponsiveContainer>
       </div>
     ),
-    [dailyClosingData]
+    [dailyClosingData, getGlobalSetting()]
   );
   useEffect(() => {
     loadDailyClosing();

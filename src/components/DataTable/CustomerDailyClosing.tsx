@@ -220,7 +220,7 @@ const CustomerDailyClosing = () => {
         </CustomResponsiveContainer>
         </div>
         ),
-        [dailyClosingData]
+        [dailyClosingData, getGlobalSetting()]
         );
         useEffect(() => {
           loadDailyClosing();
