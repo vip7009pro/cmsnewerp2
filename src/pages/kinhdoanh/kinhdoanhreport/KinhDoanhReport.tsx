@@ -442,15 +442,19 @@ const KinhDoanhReport = () => {
         console.log(error);
       });
   };
-
-  useEffect(() => {
-    
+  
+  const initFunction = () => {
     handleGetDailyClosing();    
     handleGetWeeklyClosing();    
     handleGetMonthlyClosing();    
     handleGetYearlyClosing();
     handleGetPOBalanceSummary();
     handleGetFCSTAmount();
+  }
+
+  useEffect(() => {    
+    initFunction();
+    
   }, []);
   return (
     <div className="kinhdoanhreport">

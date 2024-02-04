@@ -190,7 +190,7 @@ const Chart8 = () => {
             fontSize:'0.7rem'    
           }}
           tick={{fontSize:'0.7rem'}}
-          tickFormatter={(value) => nFormatter(value, 2) + "$"}
+          tickFormatter={(value) => nFormatter(value, 2) + (getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0].CURRENT_VALUE==='USD'? ' $' : ' đ')}
           tickCount={12}
         />
         <Tooltip content={<CustomTooltip />} />
