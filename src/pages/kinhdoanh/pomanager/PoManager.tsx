@@ -1809,7 +1809,7 @@ const PoManager = () => {
               podatatablefilter.current = e.selectedRowsData;
             }}
             onRowClick={(e) => {
-              console.log(e.data);
+              //console.log(e.data);
               clickedRow.current = e.data;
             }}
           >
