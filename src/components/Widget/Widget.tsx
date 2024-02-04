@@ -1,3 +1,5 @@
+import { getCompany, getGlobalSetting } from "../../api/Api";
+import { WEB_SETTING_DATA } from "../../api/GlobalInterface";
 import "../Widget/Widget.scss";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 interface WidgetInfo {
@@ -40,7 +42,7 @@ export default function Widget({
           <span className="counter">
             {amount?.toLocaleString("en-US", {
               style: "currency",
-              currency: "USD",
+              currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0].CURRENT_VALUE,
             })}
           </span>
         </div>

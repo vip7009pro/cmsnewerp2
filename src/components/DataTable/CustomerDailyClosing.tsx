@@ -2,13 +2,14 @@ import React, { useState, useEffect } from 'react'
 import { CustomResponsiveContainer, SaveExcel } from '../../api/GlobalFunction';
 import { DataGrid } from 'devextreme-react';
 import { Column, FilterRow, KeyboardNavigation, Scrolling, Selection, Summary, TotalItem } from 'devextreme-react/data-grid';
-import { generalQuery } from '../../api/Api';
+import { generalQuery, getGlobalSetting } from '../../api/Api';
 import Swal from 'sweetalert2';
 import moment from 'moment';
 import { AiFillFileExcel } from 'react-icons/ai';
 import {
   IconButton,
 } from "@mui/material";
+import { WEB_SETTING_DATA } from '../../api/GlobalInterface';
 const CustomerDailyClosing = () => {
   const [dailyClosingData, setDailyClosingData] = useState<any>([]);
   const [columns, setColumns] = useState<Array<any>>([]);
@@ -44,7 +45,7 @@ const CustomerDailyClosing = () => {
                   return <span style={{ color: "#050505", fontWeight: "bold" }}>
                   {ele.data[e]?.toLocaleString("en-US", {
                     style: "currency",
-                    currency: "USD",
+                    currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0].CURRENT_VALUE,
                   })}
                   </span>
                 }
@@ -53,7 +54,7 @@ const CustomerDailyClosing = () => {
                     return (<span style={{ color: "green", fontWeight: "bold" }}>
                     {ele.data[e]?.toLocaleString("en-US", {
                       style: "currency",
-                      currency: "USD",
+                      currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0].CURRENT_VALUE,
                     })}
                     </span>)
                   }
@@ -61,7 +62,7 @@ const CustomerDailyClosing = () => {
                     return (<span style={{ color: "green", fontWeight: "normal" }}>
                     {ele.data[e]?.toLocaleString("en-US", {
                       style: "currency",
-                      currency: "USD",
+                      currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0].CURRENT_VALUE,
                     })}
                     </span>)
                   }
@@ -104,7 +105,7 @@ const CustomerDailyClosing = () => {
                         return <span style={{ color: "#050505", fontWeight: "bold" }}>
                         {ele.data[e]?.toLocaleString("en-US", {
                           style: "currency",
-                          currency: "USD",
+                          currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0].CURRENT_VALUE,
                         })}
                         </span>
                       }
@@ -113,7 +114,7 @@ const CustomerDailyClosing = () => {
                           return (<span style={{ color: "green", fontWeight: "bold" }}>
                           {ele.data[e]?.toLocaleString("en-US", {
                             style: "currency",
-                            currency: "USD",
+                            currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0].CURRENT_VALUE,
                           })}
                           </span>)
                         }
@@ -121,7 +122,7 @@ const CustomerDailyClosing = () => {
                           return (<span style={{ color: "green", fontWeight: "normal" }}>
                           {ele.data[e]?.toLocaleString("en-US", {
                             style: "currency",
-                            currency: "USD",
+                            currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0].CURRENT_VALUE,
                           })}
                           </span>)
                         }

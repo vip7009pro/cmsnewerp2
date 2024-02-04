@@ -25,7 +25,7 @@ import {
 } from "react-icons/ai";
 import Swal from "sweetalert2";
 import * as XLSX from "xlsx";
-import { generalQuery } from "../../../api/Api";
+import { generalQuery, getGlobalSetting } from "../../../api/Api";
 import { UserContext } from "../../../api/Context";
 import { checkBP, SaveExcel } from "../../../api/GlobalFunction";
 import { MdOutlineDelete, MdOutlinePivotTableChart } from "react-icons/md";
@@ -42,6 +42,7 @@ import {
   InvoiceSummaryData,
   InvoiceTableData,
   UserData,
+  WEB_SETTING_DATA,
 } from "../../../api/GlobalInterface";
 
 const InvoiceManager2 = () => {
@@ -174,7 +175,7 @@ const InvoiceManager2 = () => {
             <b>
               {params.row.DELIVERED_AMOUNT.toLocaleString("en-US", {
                 style: "currency",
-                currency: "USD",
+                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0].CURRENT_VALUE,
               })}
             </b>
           </span>
@@ -1753,7 +1754,7 @@ const InvoiceManager2 = () => {
                           "en-US",
                           {
                             style: "currency",
-                            currency: "USD",
+                            currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0].CURRENT_VALUE,
                           },
                         )}{" "}
                       </td>
@@ -1773,7 +1774,7 @@ const InvoiceManager2 = () => {
                     DELIVERED AMOUNT:{" "}
                     {invoiceSummary.total_delivered_amount.toLocaleString("en-US", {
                       style: "currency",
-                      currency: "USD",
+                      currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0].CURRENT_VALUE,
                     })}
                   </b>
                 </div>

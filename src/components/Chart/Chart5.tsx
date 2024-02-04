@@ -15,18 +15,18 @@ import {
   Line,
 } from "recharts";
 import Swal from "sweetalert2";
-import { generalQuery } from "../../api/Api";
+import { generalQuery, getGlobalSetting } from "../../api/Api";
 import {
   CustomResponsiveContainer,
   nFormatter,
 } from "../../api/GlobalFunction";
-import { MonthlyClosingData } from "../../api/GlobalInterface";
+import { MonthlyClosingData, WEB_SETTING_DATA } from "../../api/GlobalInterface";
 const ChartMonthLy = () => {
   const [monthlyClosingData, setMonthlyClosingData] = useState<
     Array<MonthlyClosingData>
   >([]);
   const formatCash = (n: number) => {
-    return nFormatter(n, 2) + "$";
+    return nFormatter(n, 2) + (getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0].CURRENT_VALUE ==='USD' ? ' $' : " đ");
   };
   const CustomTooltip = ({
     active,
@@ -55,7 +55,7 @@ const ChartMonthLy = () => {
             AMOUNT:{" "}
             {`${payload[1].value.toLocaleString("en-US", {
               style: "currency",
-              currency: "USD",
+              currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0].CURRENT_VALUE,
             })}`}
           </p>
         </div>

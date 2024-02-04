@@ -25,7 +25,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { AiFillCloseCircle, AiFillFileExcel } from "react-icons/ai";
 import Swal from "sweetalert2";
 import { UserContext } from "../../../api/Context";
-import { generalQuery, getCompany } from "../../../api/Api";
+import { generalQuery, getCompany, getGlobalSetting } from "../../../api/Api";
 import { CustomResponsiveContainer, SaveExcel } from "../../../api/GlobalFunction";
 import { MdOutlinePivotTableChart } from "react-icons/md";
 import PivotTable from "../../../components/PivotChart/PivotChart";
@@ -36,6 +36,7 @@ import {
   CS_RMA_DATA,
   CS_CNDB_DATA,
   CS_TAXI_DATA,
+  WEB_SETTING_DATA,
 } from "../../../api/GlobalInterface";
 import { DataDiv, DataTBDiv, FormButtonColumn, FromInputColumn, FromInputDiv, PivotTableDiv, QueryFormDiv } from "../../../components/StyledComponents/ComponentLib";
 const CS_DATA_TB = () => {
@@ -373,7 +374,7 @@ const CS_DATA_TB = () => {
             return (
               <span style={{ color: 'green', fontWeight: 'bold' }}>{ele.data.REDUCE_AMOUNT?.toLocaleString("en-US", {
                 style: "currency",
-                currency: "USD",
+                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0].CURRENT_VALUE,
               })}</span>
             )
           }}></Column>
@@ -507,7 +508,7 @@ const CS_DATA_TB = () => {
             return (
               <span style={{ color: 'green', fontWeight: 'bold' }}>{ele.data.RETURN_AMOUNT?.toLocaleString("en-US", {
                 style: "currency",
-                currency: "USD",
+                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0].CURRENT_VALUE,
               })}</span>
             )
           }}></Column>
@@ -515,7 +516,7 @@ const CS_DATA_TB = () => {
             return (
               <span style={{ color: 'green', fontWeight: 'bold' }}>{ele.data.SORTING_OK_AMOUNT?.toLocaleString("en-US", {
                 style: "currency",
-                currency: "USD",
+                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0].CURRENT_VALUE,
               })}</span>
             )
           }}></Column>
@@ -523,7 +524,7 @@ const CS_DATA_TB = () => {
             return (
               <span style={{ color: 'green', fontWeight: 'bold' }}>{ele.data.SORTING_NG_AMOUNT?.toLocaleString("en-US", {
                 style: "currency",
-                currency: "USD",
+                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0].CURRENT_VALUE,
               })}</span>
             )
           }}></Column>

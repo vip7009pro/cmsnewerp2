@@ -27,7 +27,7 @@ import {
 } from "react-icons/ai";
 import Swal from "sweetalert2";
 import * as XLSX from "xlsx";
-import { generalQuery } from "../../../api/Api";
+import { generalQuery, getGlobalSetting } from "../../../api/Api";
 import { UserContext } from "../../../api/Context";
 import { checkBP, CustomResponsiveContainer, SaveExcel, zeroPad } from "../../../api/GlobalFunction";
 import { MdOutlineDelete, MdOutlinePivotTableChart } from "react-icons/md";
@@ -45,6 +45,7 @@ import {
   POTableData,
   PRICEWITHMOQ,
   UserData,
+  WEB_SETTING_DATA,
 } from "../../../api/GlobalInterface";
 
 const PoManager2 = () => {
@@ -301,7 +302,7 @@ const PoManager2 = () => {
             <b>
               {params.row.PO_AMOUNT.toLocaleString("en-US", {
                 style: "currency",
-                currency: "USD",
+                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0].CURRENT_VALUE,
               })}
             </b>
           </span>
@@ -319,7 +320,7 @@ const PoManager2 = () => {
             <b>
               {params.row.DELIVERED_AMOUNT.toLocaleString("en-US", {
                 style: "currency",
-                currency: "USD",
+                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0].CURRENT_VALUE,
               })}
             </b>
           </span>
@@ -337,7 +338,7 @@ const PoManager2 = () => {
             <b>
               {params.row.BALANCE_AMOUNT.toLocaleString("en-US", {
                 style: "currency",
-                currency: "USD",
+                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0].CURRENT_VALUE,
               })}
             </b>
           </span>
@@ -2148,7 +2149,7 @@ const PoManager2 = () => {
                       {" "}
                       {poSummary.total_po_amount.toLocaleString("en-US", {
                         style: "currency",
-                        currency: "USD",
+                        currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0].CURRENT_VALUE,
                       })}
                     </td>
                     <td style={{ color: "blue", fontWeight: "bold" }}>
@@ -2157,7 +2158,7 @@ const PoManager2 = () => {
                         "en-US",
                         {
                           style: "currency",
-                          currency: "USD",
+                          currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0].CURRENT_VALUE,
                         },
                       )}
                     </td>
@@ -2167,7 +2168,7 @@ const PoManager2 = () => {
                         "en-US",
                         {
                           style: "currency",
-                          currency: "USD",
+                          currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0].CURRENT_VALUE,
                         },
                       )}
                     </td>

@@ -14,16 +14,15 @@ import {
   Label,
 } from "recharts";
 import Swal from "sweetalert2";
-import { generalQuery } from "../../api/Api";
+import { generalQuery, getGlobalSetting } from "../../api/Api";
 import { CustomResponsiveContainer, nFormatter } from "../../api/GlobalFunction";
-import { RunningPOData } from "../../api/GlobalInterface";
+import { RunningPOData, WEB_SETTING_DATA } from "../../api/GlobalInterface";
 
 const Chart8 = () => {
   const [runningPOData, setRunningPOData] = useState<Array<RunningPOData>>([]);
-  const formatCash = (n: number) => {
-    if (n < 1e3) return n;
-    if (n >= 1e3) return +(n / 1e3).toFixed(1) + "K$";
-  };
+    const formatCash = (n: number) => {  
+     return nFormatter(n, 2) + (getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0].CURRENT_VALUE ==='USD' ? ' $' : " đ");
+   };
   const labelFormatter = (value: number) => {
     return new Intl.NumberFormat("en", {
       notation: "compact",

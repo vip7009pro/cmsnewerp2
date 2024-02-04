@@ -1,6 +1,7 @@
 import React from 'react'
 import './PATROL_HEADER.scss'
-import { PATROL_HEADER_DATA } from '../../../api/GlobalInterface'
+import { PATROL_HEADER_DATA, WEB_SETTING_DATA } from '../../../api/GlobalInterface'
+import { getGlobalSetting } from '../../../api/Api'
 const PATROL_HEADER = ({ data }: { data: PATROL_HEADER_DATA[] }) => {
   return (
     <div className='patrolheader'>
@@ -28,7 +29,7 @@ const PATROL_HEADER = ({ data }: { data: PATROL_HEADER_DATA[] }) => {
                         "en-US",
                         {
                           style: "currency",
-                          currency: "USD",
+                          currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0].CURRENT_VALUE,
                         }
                       )}</td>
                 <td>{ele.INSPECT_TOTAL_QTY.toLocaleString("en-US")}</td>

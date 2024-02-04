@@ -6,9 +6,9 @@ import { AiFillFileExcel } from 'react-icons/ai';
 import {
   IconButton,
 } from "@mui/material";
-import { WorstCodeData, WorstData } from '../../api/GlobalInterface';
+import { WEB_SETTING_DATA, WorstCodeData, WorstData } from '../../api/GlobalInterface';
 import ChartWorstCodeByErrCode from '../Chart/ChartWorstCodeByErrCode';
-import { generalQuery } from '../../api/Api';
+import { generalQuery, getGlobalSetting } from '../../api/Api';
 import Swal from 'sweetalert2';
 import './InspectionWorstTable.scss'
 const InspectionWorstTable = ({ dailyClosingData, worstby, from_date, to_date, ng_type }: { dailyClosingData: Array<WorstData>, worstby: string, from_date: string, to_date: string, ng_type: string }) => {
@@ -90,7 +90,7 @@ const InspectionWorstTable = ({ dailyClosingData, worstby, from_date, to_date, n
         </CustomResponsiveContainer>
       </div>
     ),
-    [dailyClosingData, columns]
+    [dailyClosingData, columns,getGlobalSetting()]
   );
   const getWorstByErrCode = (err_code: string) => {
     generalQuery("getInspectionWorstByCode", { FROM_DATE: from_date, TO_DATE: to_date, WORSTBY: worstby, NG_TYPE: ng_type, ERR_CODE: err_code })
@@ -131,7 +131,7 @@ const InspectionWorstTable = ({ dailyClosingData, worstby, from_date, to_date, n
               return <span style={{ color: "#050505", fontWeight: "bold" }}>
                 {ele.data[e]?.toLocaleString("en-US", {
                   style: "currency",
-                  currency: "USD",
+                  currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0].CURRENT_VALUE,
                 })}
               </span>
             }

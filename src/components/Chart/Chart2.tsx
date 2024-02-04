@@ -15,12 +15,12 @@ import {
   Line,
 } from "recharts";
 import Swal from "sweetalert2";
-import { generalQuery } from "../../api/Api";
+import { generalQuery, getGlobalSetting } from "../../api/Api";
 import {
   CustomResponsiveContainer,
   nFormatter,
 } from "../../api/GlobalFunction";
-import { DailyClosingData } from "../../api/GlobalInterface";
+import { DailyClosingData, WEB_SETTING_DATA } from "../../api/GlobalInterface";
 
 const ChartDaily = () => {
   const [dailyClosingData, setDailyClosingData] = useState<
@@ -32,9 +32,12 @@ const ChartDaily = () => {
   const endOfMonth = moment().format("YYYY-MM-DD");
 
   const formatCash = (n: number) => {
-    if (n < 1e3) return n;
-    if (n >= 1e3) return +(n / 1e3).toFixed(1) + "K$";
+   /*  if (n < 1e3) return n;
+    if (n >= 1e3) return +(n / 1e3).toFixed(1) + "K$"; */
+    return nFormatter(n, 2) + (getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0].CURRENT_VALUE ==='USD' ? ' $' : " đ");
   };
+
+  
 
   const labelFormatter = (value: number) => {
     return formatCash(value);
@@ -79,7 +82,7 @@ const ChartDaily = () => {
             AMOUNT:{" "}
             {`${payload[1].value.toLocaleString("en-US", {
               style: "currency",
-              currency: "USD",
+              currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0].CURRENT_VALUE,
             })}`}
           </p>
         </div>

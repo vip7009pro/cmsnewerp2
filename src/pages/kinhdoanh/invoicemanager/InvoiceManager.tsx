@@ -24,7 +24,7 @@ import {
 } from "react-icons/ai";
 import Swal from "sweetalert2";
 import * as XLSX from "xlsx";
-import { generalQuery } from "../../../api/Api";
+import { generalQuery, getGlobalSetting } from "../../../api/Api";
 import { UserContext } from "../../../api/Context";
 import { checkBP, CustomResponsiveContainer, SaveExcel } from "../../../api/GlobalFunction";
 import { MdOutlineDelete, MdOutlinePivotTableChart } from "react-icons/md";
@@ -41,6 +41,7 @@ import {
   InvoiceSummaryData,
   InvoiceTableData,
   UserData,
+  WEB_SETTING_DATA,
   XUATKHOPODATA,
 } from "../../../api/GlobalInterface";
 import {
@@ -278,7 +279,7 @@ const InvoiceManager = () => {
                     <span style={{ color: "green", fontWeight: "bold" }}>
                       {ele.data[e]?.toLocaleString("en-US", {
                         style: "currency",
-                        currency: "USD",
+                        currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0].CURRENT_VALUE,
                       })}
                     </span>
                   );
@@ -293,7 +294,7 @@ const InvoiceManager = () => {
                     <span style={{ color: "#094BB8", fontWeight: "bold" }}>
                       {ele.data[e]?.toLocaleString("en-US", {
                         style: "currency",
-                        currency: "USD",
+                        currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0].CURRENT_VALUE,
                       })}
                     </span>
                   );
@@ -1620,7 +1621,7 @@ const InvoiceManager = () => {
         </CustomResponsiveContainer>
       </div>
     ),
-    [invoicedatatable]
+    [invoicedatatable,getGlobalSetting()]
   );
   const excelDataTable = React.useMemo(
     () => (
@@ -2135,7 +2136,7 @@ const InvoiceManager = () => {
                           "en-US",
                           {
                             style: "currency",
-                            currency: "USD",
+                            currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0].CURRENT_VALUE,
                           },
                         )}{" "}
                       </td>
@@ -2154,7 +2155,7 @@ const InvoiceManager = () => {
                     DELIVERED AMOUNT:{" "}
                     {invoiceSummary.total_delivered_amount.toLocaleString("en-US", {
                       style: "currency",
-                      currency: "USD",
+                      currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0].CURRENT_VALUE,
                     })}
                   </b>
                 </div>

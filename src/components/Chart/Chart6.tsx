@@ -15,12 +15,12 @@ import {
   Line,
 } from "recharts";
 import Swal from "sweetalert2";
-import { generalQuery } from "../../api/Api";
+import { generalQuery, getGlobalSetting } from "../../api/Api";
 import {
   CustomResponsiveContainer,
   nFormatter,
 } from "../../api/GlobalFunction";
-import { YearlyClosingData } from "../../api/GlobalInterface";
+import { WEB_SETTING_DATA, YearlyClosingData } from "../../api/GlobalInterface";
 const ChartYearly = () => {
   const [yearlyClosingData, setYearlyClosingData] = useState<
     Array<YearlyClosingData>
@@ -58,7 +58,7 @@ const ChartYearly = () => {
             AMOUNT:{" "}
             {`${payload[1].value.toLocaleString("en-US", {
               style: "currency",
-              currency: "USD",
+              currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0].CURRENT_VALUE,
             })}`}
           </p>
         </div>

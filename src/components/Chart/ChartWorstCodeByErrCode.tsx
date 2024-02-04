@@ -17,17 +17,16 @@ import {
   Pie,
 } from "recharts";
 
-import { generalQuery } from "../../api/Api";
-import { CustomResponsiveContainer } from "../../api/GlobalFunction";
-import { WorstCodeData, WorstData } from "../../api/GlobalInterface";
+import { generalQuery, getGlobalSetting } from "../../api/Api";
+import { CustomResponsiveContainer, nFormatter } from "../../api/GlobalFunction";
+import { WEB_SETTING_DATA, WorstCodeData, WorstData } from "../../api/GlobalInterface";
 import Swal from "sweetalert2";
 
 const ChartWorstCodeByErrCode = ({dailyClosingData, worstby}: {dailyClosingData: Array<WorstCodeData>, worstby: string}) => {
   const [tempdata, setTempData]= useState<Array<WorstCodeData>>([]);
-  const formatCash = (n: number) => {
-    if (n < 1e3) return n;
-    if (n >= 1e3) return +(n / 1e3).toFixed(1) + "K$";
-  };
+    const formatCash = (n: number) => {  
+     return nFormatter(n, 2) + (getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0].CURRENT_VALUE ==='USD' ? ' $' : " đ");
+   };
   const labelFormatter = (value: number) => {
     return new Intl.NumberFormat("en", {
       notation: "compact",
@@ -49,7 +48,7 @@ const ChartWorstCodeByErrCode = ({dailyClosingData, worstby}: {dailyClosingData:
         <div className='custom-tooltip'>
           <p className='label'>{`${payload[0].value.toLocaleString("en-US", worstby ==='AMOUNT' && {
           style: "currency",
-          currency: "USD",
+          currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0].CURRENT_VALUE,
         })}`}</p>
         </div>
       );
@@ -93,7 +92,7 @@ const ChartWorstCodeByErrCode = ({dailyClosingData, worstby}: {dailyClosingData:
         {tempdata[index]?.G_NAME_KD}: (
         {value.toLocaleString("en-US", worstby ==='AMOUNT' && {
           style: "currency",
-          currency: "USD",
+          currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0].CURRENT_VALUE,
         })}
         )
       </text>   

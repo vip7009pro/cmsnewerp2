@@ -94,27 +94,7 @@ const SettingPage = () => {
         console.log(error);
       });
   }
-  const getWifiInfo = async () => {
-    try {
-      if ('geolocation' in navigator) {
-        const position = await new Promise<GeolocationPosition>(
-          (resolve, reject) => {
-            navigator.geolocation.getCurrentPosition(resolve, reject);
-          }
-        );
 
-        const { coords } = position;
-        const { latitude, longitude } = coords;
-        console.log('Latitude:', latitude);
-        console.log('Longitude:', longitude);
-    
-      } else {
-        console.log('Geolocation is not supported');
-      }
-    } catch (error: any) {
-      console.error('Error getting geolocation:', error.message);
-    }
-  };
 
   const buttonClick = () => {
     addNotification({
@@ -205,7 +185,7 @@ const SettingPage = () => {
       </table>
 
 
-      <WebCam/>
+      {/* <WebCam/> */}
       {/*  <OpenCV/> */}
       {/* <Scanner/> */}
       {/* <CameraComponent/> */}

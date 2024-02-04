@@ -14,18 +14,17 @@ import {
   Label,
 } from "recharts";
 import Swal from "sweetalert2";
-import { generalQuery } from "../../api/Api";
-import { CustomResponsiveContainer } from "../../api/GlobalFunction";
-import { SamSungFCSTData } from "../../api/GlobalInterface";
+import { generalQuery, getGlobalSetting } from "../../api/Api";
+import { CustomResponsiveContainer, nFormatter } from "../../api/GlobalFunction";
+import { SamSungFCSTData, WEB_SETTING_DATA } from "../../api/GlobalInterface";
 
 const ChartFCSTSamSung = () => {
   const [runningPOData, setSamSungFCSTData] = useState<Array<SamSungFCSTData>>(
     []
   );
-  const formatCash = (n: number) => {
-    if (n < 1e3) return n;
-    if (n >= 1e3) return +(n / 1e3).toFixed(1) + "K$";
-  };
+    const formatCash = (n: number) => {  
+     return nFormatter(n, 2) + (getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0].CURRENT_VALUE ==='USD' ? ' $' : " đ");
+   };
   const labelFormatter = (value: number) => {
     return new Intl.NumberFormat("en", {
       notation: "compact",
@@ -123,7 +122,7 @@ const ChartFCSTSamSung = () => {
     })
       .then((response) => {
         //console.log(response.data.data)
-        if (response.data.tk_status !== "NG") {
+        if (response.data.tk_status !== "NG") {          
           const loadeddata: SamSungFCSTData[] = response.data.data.map(
             (element: SamSungFCSTData, index: number) => {
               return {
@@ -141,7 +140,9 @@ const ChartFCSTSamSung = () => {
               };
             }
           );
-          if (loadeddata[0].TT_SS1 !== null && loadeddata[0].TT_SS2 !== null) {
+          setSamSungFCSTData(loadeddata.splice(0, 15));
+          //console.log('fcst data', loadeddata);
+         /*  if (loadeddata[0].TT_SS1 !== null && loadeddata[0].TT_SS2 !== null) {
             setSamSungFCSTData(loadeddata.splice(0, 15));
           } else {
             generalQuery("baocaofcstss", {
@@ -151,8 +152,7 @@ const ChartFCSTSamSung = () => {
               FCSTWEEKNUM2: fcstweek2 - 1 === 0 ? 1 : fcstweek2 - 1,
             })
               .then((response) => {
-                // console.log('vao fcst 2')
-                //console.log(response.data.data)
+                
                 if (response.data.tk_status !== "NG") {
                   const loadeddata: SamSungFCSTData[] = response.data.data.map(
                     (element: SamSungFCSTData, index: number) => {
@@ -172,19 +172,15 @@ const ChartFCSTSamSung = () => {
                     }
                   );
                   setSamSungFCSTData(loadeddata.splice(0, 15));
-                  //console.log(loadeddata);
+                  
                 } else {
-                  /* Swal.fire(
-                    "Thông báo",
-                    "Nội dung: " + response.data.message,
-                    "error"
-                  ); */
+                  
                 }
               })
               .catch((error) => {
                 console.log(error);
               });
-          }
+          } */
           //console.log(loadeddata);
         } else {
           //Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");

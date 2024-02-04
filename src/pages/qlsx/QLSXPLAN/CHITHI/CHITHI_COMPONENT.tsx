@@ -361,6 +361,10 @@ const CHITHI_COMPONENT = ({ DATA }: { DATA: QLSXPLANDATA }) => {
               Thời điểm in CTSX: {moment().format("YYYY-MM-DD HH:mm:ss")}
             </span>
             <br></br>{" "}
+            <span style={{ fontSize: 12 }}>
+              Ngày giao hàng: {request_codeinfo[0]?.DELIVERY_DT}
+            </span>
+            <br></br>{" "}
             {request_codeinfo[0].NO_INSPECTION === "Y" && (
               <span style={{ fontSize: 18 }}>
                 (Sản phẩm không kiểm tra ngoại quan)
