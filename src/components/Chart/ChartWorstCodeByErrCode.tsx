@@ -48,7 +48,7 @@ const ChartWorstCodeByErrCode = ({dailyClosingData, worstby}: {dailyClosingData:
         <div className='custom-tooltip'>
           <p className='label'>{`${payload[0].value.toLocaleString("en-US", worstby ==='AMOUNT' && {
           style: "currency",
-          currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0].CURRENT_VALUE,
+          currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0].CURRENT_VALUE ?? 'USD',
         })}`}</p>
         </div>
       );
@@ -92,7 +92,7 @@ const ChartWorstCodeByErrCode = ({dailyClosingData, worstby}: {dailyClosingData:
         {tempdata[index]?.G_NAME_KD}: (
         {value.toLocaleString("en-US", worstby ==='AMOUNT' && {
           style: "currency",
-          currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0].CURRENT_VALUE,
+          currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0].CURRENT_VALUE ?? 'USD',
         })}
         )
       </text>   

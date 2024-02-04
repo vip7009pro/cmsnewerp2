@@ -55,7 +55,7 @@ const ChartMonthLy = () => {
             AMOUNT:{" "}
             {`${payload[1].value.toLocaleString("en-US", {
               style: "currency",
-              currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0].CURRENT_VALUE,
+              currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0].CURRENT_VALUE ?? 'USD',
             })}`}
           </p>
         </div>

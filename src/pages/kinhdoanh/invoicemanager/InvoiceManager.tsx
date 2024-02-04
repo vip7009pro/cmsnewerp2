@@ -279,7 +279,7 @@ const InvoiceManager = () => {
                     <span style={{ color: "green", fontWeight: "bold" }}>
                       {ele.data[e]?.toLocaleString("en-US", {
                         style: "currency",
-                        currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0].CURRENT_VALUE,
+                        currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0].CURRENT_VALUE ?? 'USD',
                       })}
                     </span>
                   );
@@ -294,7 +294,7 @@ const InvoiceManager = () => {
                     <span style={{ color: "#094BB8", fontWeight: "bold" }}>
                       {ele.data[e]?.toLocaleString("en-US", {
                         style: "currency",
-                        currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0].CURRENT_VALUE,
+                        currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0].CURRENT_VALUE ?? 'USD',
                       })}
                     </span>
                   );
@@ -2136,7 +2136,7 @@ const InvoiceManager = () => {
                           "en-US",
                           {
                             style: "currency",
-                            currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0].CURRENT_VALUE,
+                            currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0].CURRENT_VALUE ?? 'USD',
                           },
                         )}{" "}
                       </td>
@@ -2155,7 +2155,7 @@ const InvoiceManager = () => {
                     DELIVERED AMOUNT:{" "}
                     {invoiceSummary.total_delivered_amount.toLocaleString("en-US", {
                       style: "currency",
-                      currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0].CURRENT_VALUE,
+                      currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0].CURRENT_VALUE ?? 'USD',
                     })}
                   </b>
                 </div>

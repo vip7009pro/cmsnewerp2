@@ -634,7 +634,7 @@ function Home() {
               width: "100%",
               height: "100vh",
               borderRadius: 8,
-              ...springs,
+              /* ...springs, */
             }}
           >
             {tabModeSwap &&

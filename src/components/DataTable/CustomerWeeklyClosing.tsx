@@ -47,7 +47,7 @@ const CustomerWeeklyClosing = () => {
                     return <span style={{ color: "#F633EA", fontWeight: "bold" }}>
                       {ele.data[e]?.toLocaleString("en-US", {
                         style: "currency",
-                        currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0].CURRENT_VALUE,
+                        currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0].CURRENT_VALUE ?? 'USD',
                       })}
                     </span>
                   }
@@ -56,7 +56,7 @@ const CustomerWeeklyClosing = () => {
                       return (<span style={{ color: "green", fontWeight: "bold" }}>
                         {ele.data[e]?.toLocaleString("en-US", {
                           style: "currency",
-                          currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0].CURRENT_VALUE,
+                          currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0].CURRENT_VALUE ?? 'USD',
                         })}
                       </span>)
                     }
@@ -64,7 +64,7 @@ const CustomerWeeklyClosing = () => {
                       return (<span style={{ color: "green", fontWeight: "normal" }}>
                         {ele.data[e]?.toLocaleString("en-US", {
                           style: "currency",
-                          currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0].CURRENT_VALUE,
+                          currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0].CURRENT_VALUE ?? 'USD',
                         })}
                       </span>)
                     }
@@ -107,7 +107,7 @@ const CustomerWeeklyClosing = () => {
                           return <span style={{ color: "#F633EA", fontWeight: "bold" }}>
                             {ele.data[e]?.toLocaleString("en-US", {
                               style: "currency",
-                              currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0].CURRENT_VALUE,
+                              currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0].CURRENT_VALUE ?? 'USD',
                             })}
                           </span>
                         }
@@ -116,7 +116,7 @@ const CustomerWeeklyClosing = () => {
                             return (<span style={{ color: "green", fontWeight: "bold" }}>
                               {ele.data[e]?.toLocaleString("en-US", {
                                 style: "currency",
-                                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0].CURRENT_VALUE,
+                                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0].CURRENT_VALUE ?? 'USD',
                               })}
                             </span>)
                           }
@@ -124,7 +124,7 @@ const CustomerWeeklyClosing = () => {
                             return (<span style={{ color: "green", fontWeight: "normal" }}>
                               {ele.data[e]?.toLocaleString("en-US", {
                                 style: "currency",
-                                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0].CURRENT_VALUE,
+                                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0].CURRENT_VALUE ?? 'USD',
                               })}
                             </span>)
                           }
@@ -175,7 +175,7 @@ const CustomerWeeklyClosing = () => {
                         return <span style={{ color: "#F633EA", fontWeight: "bold" }}>
                           {ele.data[e]?.toLocaleString("en-US", {
                             style: "currency",
-                            currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0].CURRENT_VALUE,
+                            currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0].CURRENT_VALUE ?? 'USD',
                           })}
                         </span>
                       }
@@ -184,7 +184,7 @@ const CustomerWeeklyClosing = () => {
                           return (<span style={{ color: "green", fontWeight: "bold" }}>
                             {ele.data[e]?.toLocaleString("en-US", {
                               style: "currency",
-                              currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0].CURRENT_VALUE,
+                              currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0].CURRENT_VALUE ?? 'USD',
                             })}
                           </span>)
                         }
@@ -192,7 +192,7 @@ const CustomerWeeklyClosing = () => {
                           return (<span style={{ color: "green", fontWeight: "normal" }}>
                             {ele.data[e]?.toLocaleString("en-US", {
                               style: "currency",
-                              currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0].CURRENT_VALUE,
+                              currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0].CURRENT_VALUE ?? 'USD',
                             })}
                           </span>)
                         }

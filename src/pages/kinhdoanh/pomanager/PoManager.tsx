@@ -436,7 +436,7 @@ const PoManager = () => {
                     <span style={{ color: "green", fontWeight: "bold" }}>
                       {ele.data[e]?.toLocaleString("en-US", {
                         style: "currency",
-                        currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0].CURRENT_VALUE,
+                        currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0].CURRENT_VALUE ?? 'USD',
                       })}
                     </span>
                   );
@@ -450,7 +450,7 @@ const PoManager = () => {
                     <span style={{ color: "#094BB8", fontWeight: "bold" }}>
                       {ele.data[e]?.toLocaleString("en-US", {
                         style: "currency",
-                        currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0].CURRENT_VALUE,
+                        currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0].CURRENT_VALUE ?? 'USD',
                       })}
                     </span>
                   );
@@ -2425,7 +2425,7 @@ const PoManager = () => {
                       {" "}
                       {poSummary.total_po_amount.toLocaleString("en-US", {
                         style: "currency",
-                        currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0].CURRENT_VALUE,
+                        currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? 'USD',
                       })}
                     </td>
                     <td style={{ color: "blue", fontWeight: "bold" }}>
@@ -2434,7 +2434,7 @@ const PoManager = () => {
                         "en-US",
                         {
                           style: "currency",
-                          currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0].CURRENT_VALUE,
+                          currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? 'USD',
                         }
                       )}
                     </td>
@@ -2444,7 +2444,7 @@ const PoManager = () => {
                         "en-US",
                         {
                           style: "currency",
-                          currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0].CURRENT_VALUE,
+                          currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? 'USD',
                         }
                       )}
                     </td>

@@ -374,7 +374,7 @@ const CS_DATA_TB = () => {
             return (
               <span style={{ color: 'green', fontWeight: 'bold' }}>{ele.data.REDUCE_AMOUNT?.toLocaleString("en-US", {
                 style: "currency",
-                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0].CURRENT_VALUE,
+                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0].CURRENT_VALUE ?? 'USD',
               })}</span>
             )
           }}></Column>
@@ -508,7 +508,7 @@ const CS_DATA_TB = () => {
             return (
               <span style={{ color: 'green', fontWeight: 'bold' }}>{ele.data.RETURN_AMOUNT?.toLocaleString("en-US", {
                 style: "currency",
-                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0].CURRENT_VALUE,
+                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0].CURRENT_VALUE ?? 'USD',
               })}</span>
             )
           }}></Column>
@@ -516,7 +516,7 @@ const CS_DATA_TB = () => {
             return (
               <span style={{ color: 'green', fontWeight: 'bold' }}>{ele.data.SORTING_OK_AMOUNT?.toLocaleString("en-US", {
                 style: "currency",
-                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0].CURRENT_VALUE,
+                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0].CURRENT_VALUE ?? 'USD',
               })}</span>
             )
           }}></Column>
@@ -524,7 +524,7 @@ const CS_DATA_TB = () => {
             return (
               <span style={{ color: 'green', fontWeight: 'bold' }}>{ele.data.SORTING_NG_AMOUNT?.toLocaleString("en-US", {
                 style: "currency",
-                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0].CURRENT_VALUE,
+                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0].CURRENT_VALUE ?? 'USD',
               })}</span>
             )
           }}></Column>

@@ -21,12 +21,13 @@ import {
   logout,
   login,
   setTabModeSwap,
+  changeGLBSetting,
 } from "./redux/slices/globalSlice";
 import { useSpring, animated } from "@react-spring/web";
 import "./App.css";
 import FallBackComponent from "./components/Fallback/FallBackComponent";
 import { Button } from "@mui/material";
-import { UserData } from "./api/GlobalInterface";
+import { UserData, WEB_SETTING_DATA } from "./api/GlobalInterface";
 import { current_ver } from "./pages/home/Home";
 import { Notifications } from 'react-push-notification';
 import SettingPage from "./pages/setting/SettingPage";
@@ -345,9 +346,51 @@ function App() {
     (state: RootState) => state.totalSlice.userData
   );
   const dispatch = useDispatch();
+
+  const loadWebSetting = () => {
+    generalQuery("loadWebSetting", {
+    })
+      .then((response) => {
+        if (response.data.tk_status !== "NG") {
+          let crST_string: any = localStorage.getItem("setting") ?? '';
+          let loadeddata: WEB_SETTING_DATA[] = [];
+          if (crST_string !== '') {
+            let crST: WEB_SETTING_DATA[] = JSON.parse(crST_string);
+            loadeddata = response.data.data.map(
+              (element: WEB_SETTING_DATA, index: number) => {
+                return {
+                  ...element,
+                  CURRENT_VALUE: crST.filter((ele: WEB_SETTING_DATA, id: number) => ele.ID === element.ID)[0]?.CURRENT_VALUE ?? element.DEFAULT_VALUE
+                };
+              }
+            );
+          }
+          else {
+            loadeddata = response.data.data.map(
+              (element: WEB_SETTING_DATA, index: number) => {
+                return {
+                  ...element,
+                  CURRENT_VALUE: element.DEFAULT_VALUE
+                };
+              }
+            );
+          }
+          dispatch(changeGLBSetting(loadeddata));
+          
+        } else {
+          
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+
+
   //console.log(userData.JOB_NAME);
   useEffect(() => {
     console.log("check login");
+    loadWebSetting();
     checkLogin()
       .then((data) => {
         //console.log(data);

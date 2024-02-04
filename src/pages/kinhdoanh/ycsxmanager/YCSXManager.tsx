@@ -8,7 +8,7 @@ import {
 } from "@mui/material";
 import {
   DataGrid,
-  GridSelectionModel,
+  GridRowSelectionModel,
   GridToolbarColumnsButton,
   GridToolbarContainer,
   GridToolbarDensitySelector,
@@ -2748,7 +2748,7 @@ const YCSXManager = () => {
     setLoaiSX("01");
     setLoaiXH("02");
   };
-  const handleYCSXSelectionforUpdate = (ids: GridSelectionModel) => {
+  const handleYCSXSelectionforUpdate = (ids: GridRowSelectionModel) => {
     const selectedID = new Set(ids);
     let datafilter = ycsxdatatable.filter((element: any) =>
       selectedID.has(element.PROD_REQUEST_NO)
@@ -2760,7 +2760,7 @@ const YCSXManager = () => {
       console.log("xoa filter");
     }
   };
-  const handleYCSXSelectionforUpdateExcel = (ids: GridSelectionModel) => {
+  const handleYCSXSelectionforUpdateExcel = (ids: GridRowSelectionModel) => {
     const selectedID = new Set(ids);
     let datafilter = uploadExcelJson.filter((element: any) =>
       selectedID.has(element.id)
@@ -3505,21 +3505,21 @@ const YCSXManager = () => {
               {true && (
                 <DataGrid
                   sx={{ fontSize: "0.7rem" }}
-                  components={{
-                    Toolbar: CustomToolbar,
-                    LoadingOverlay: LinearProgress,
+                  slots={{
+                    toolbar: CustomToolbar,
+                    loadingOverlay: LinearProgress,
                   }}
                   loading={isLoading}
                   rowHeight={35}
                   rows={uploadExcelJson}
                   columns={column_excel2}
-                  rowsPerPageOptions={[
+                  pageSizeOptions={[
                     5, 10, 50, 100, 500, 1000, 5000, 10000, 100000,
                   ]}
                   editMode='row'
                   getRowHeight={() => "auto"}
                   checkboxSelection
-                  onSelectionModelChange={(ids) => {
+                  onRowSelectionModelChange={(ids) => {
                     handleYCSXSelectionforUpdateExcel(ids);
                   }}
                 />
@@ -3741,25 +3741,25 @@ const YCSXManager = () => {
           )}
           <div className='tracuuYCSXTable'>
             <DataGrid
-              sx={{ fontSize: "0.7rem" }}
-              components={{
-                Toolbar: CustomToolbarPOTable,
-                LoadingOverlay: LinearProgress,
+              sx={{ fontSize: "0.7rem" }}             
+              slots={{
+                toolbar: CustomToolbarPOTable,
+                loadingOverlay: LinearProgress,
               }}
               loading={isLoading}
               rowHeight={30}
               rows={ycsxdatatable}
               columns={
                 getCompany() === "CMS" ? column_ycsxtable : column_ycsxtable_pvn
-              }
-              rowsPerPageOptions={[
+              }              
+              pageSizeOptions={[
                 5, 10, 50, 100, 500, 1000, 5000, 10000, 500000,
               ]}
               editMode='row'
               getRowId={(row) => row.PROD_REQUEST_NO}
               checkboxSelection
-              disableSelectionOnClick
-              onSelectionModelChange={(ids) => {
+              disableRowSelectionOnClick
+              onRowSelectionModelChange={(ids) => {
                 handleYCSXSelectionforUpdate(ids);
               }}
             />
@@ -3884,15 +3884,15 @@ const YCSXManager = () => {
                 {true && (
                   <DataGrid
                     sx={{ fontSize: "0.7rem" }}
-                    components={{
-                      Toolbar: CustomToolbarAmazon,
-                      LoadingOverlay: LinearProgress,
+                    slots={{
+                      toolbar: CustomToolbarAmazon,
+                      loadingOverlay: LinearProgress,
                     }}
                     loading={isLoading}
                     rowHeight={35}
                     rows={uploadExcelJson}
                     columns={column_excel_amazon}
-                    rowsPerPageOptions={[
+                    pageSizeOptions={[
                       5, 10, 50, 100, 500, 1000, 5000, 10000, 100000,
                     ]}
                     editMode='row'
