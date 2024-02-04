@@ -94,17 +94,15 @@ const SettingPage = () => {
         console.log(error);
       });
   }
-
-
-/*   const buttonClick = () => {
-    addNotification({
-        title: 'Thông báo',
-        subtitle: 'Hàng được nhập kho',
-        message: 'Code GH68-48946A đã được nhập kho 10K vào lúc 10h30p',
-        theme: 'darkblue',
-        native: true // when using native, your OS will handle theming.
-    });
-}; */
+  /*   const buttonClick = () => {
+      addNotification({
+          title: 'Thông báo',
+          subtitle: 'Hàng được nhập kho',
+          message: 'Code GH68-48946A đã được nhập kho 10K vào lúc 10h30p',
+          theme: 'darkblue',
+          native: true // when using native, your OS will handle theming.
+      });
+  }; */
   useEffect(() => {
     loadWebSetting();
     //getWifiInfo();
@@ -112,7 +110,6 @@ const SettingPage = () => {
   return (
     <div className='settingpage'>
       {/* <button onClick={buttonClick}>Show Notification</button> */}
-      
       <h2>Setting Page</h2>
       <div className="headerbutton">
         <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#2639F6' }} onClick={() => {
@@ -183,8 +180,6 @@ const SettingPage = () => {
           ))}
         </tbody>
       </table>
-
-
       {/* <WebCam/> */}
       {/*  <OpenCV/> */}
       {/* <Scanner/> */}
