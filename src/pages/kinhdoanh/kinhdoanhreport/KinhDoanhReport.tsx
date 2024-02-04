@@ -18,6 +18,8 @@ import ChartPOBalance from "../../../components/Chart/Chart4";
 import CustomerDailyClosing from "../../../components/DataTable/CustomerDailyClosing";
 import CustomerWeeklyClosing from "../../../components/DataTable/CustomerWeeklyClosing";
 import CustomerPobalancebyTypeNew from "../../../components/DataTable/CustomerPoBalanceByTypeNew";
+import { DropDownBox } from "devextreme-react/drop-down-box";
+import { CustomerListData } from "../../../api/GlobalInterface";
 interface InvoiceTableData {
   DELIVERY_ID: number;
   CUST_CD: string;
@@ -166,6 +168,8 @@ const KinhDoanhReport = () => {
       FCST8W_QTY: 0,
       FCST8W_AMOUNT: 0,
     });
+  const [customerList, setCustomerList] = useState<CustomerListData[]>([]);
+  const [selectedCustomerList, setSelectedCustomerList] = useState<CustomerListData[]>([]);
   const handletraInvoice = (
     invoice_type: string,
     invoice_order: string,
@@ -442,8 +446,32 @@ const KinhDoanhReport = () => {
         console.log(error);
       });
   };
+  const getcustomerlist = () => {
+    generalQuery("selectcustomerList", {})
+      .then((response) => {
+        if (response.data.tk_status !== "NG") {
+          //console.log(response.data.data);
+          setCustomerList(response.data.data);
+        } else {
+          setCustomerList([]);
+        }
+      })
+      .catch((error) => {
+        //console.log(error);
+      });
+  };
   
+  const countriesData = [
+    { id: 1, name: 'Vietnam' },
+    { id: 2, name: 'United States' },
+    { id: 3, name: 'Japan' },
+    { id: 4, name: 'Germany' },
+    { id: 5, name: 'France' },
+  ];
+  const [selectedCountries, setSelectedCountries] = useState([]);
+
   const initFunction = () => {
+    getcustomerlist();
     handleGetDailyClosing();    
     handleGetWeeklyClosing();    
     handleGetMonthlyClosing();    
@@ -458,6 +486,29 @@ const KinhDoanhReport = () => {
   }, []);
   return (
     <div className="kinhdoanhreport">
+      <div className="filterdiv">
+        <DropDownBox
+          dataSource={countriesData}
+          placeholder="Select countries"
+          value={selectedCountries}
+          valueExpr="id"
+          displayExpr="name"
+          showClearButton={true}
+          onValueChanged={(e) => setSelectedCountries(e.value)}
+          opened={true}
+        />
+
+        {/* <DropDownBox
+          dataSource={customerList}
+          placeholder="Select Customer"
+          value={selectedCustomerList}
+          valueExpr="CUST_CD"
+          displayExpr="CUST_NAME_KD"
+          showClearButton={true}
+          onValueChanged={(e) => setSelectedCustomerList(e.value)}
+          opened={true}
+        /> */}
+      </div>
       <div className="doanhthureport">
         <span className="section_title">1. Summary</span>
         <div className="revenuewidget">
