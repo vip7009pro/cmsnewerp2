@@ -155,7 +155,6 @@ const PoManager = () => {
       //console.log(dataGridRef.current);
     }
   };
-
   function removeInvisibleCharacters(inputString: string) {
     // Define a regular expression to match invisible characters
     var regex = /[^\x20-\x7E\t]/g; // This regex matches anything outside the printable ASCII range
