@@ -96,7 +96,7 @@ const SettingPage = () => {
   }
 
 
-  const buttonClick = () => {
+/*   const buttonClick = () => {
     addNotification({
         title: 'Thông báo',
         subtitle: 'Hàng được nhập kho',
@@ -104,14 +104,14 @@ const SettingPage = () => {
         theme: 'darkblue',
         native: true // when using native, your OS will handle theming.
     });
-};
+}; */
   useEffect(() => {
     loadWebSetting();
     //getWifiInfo();
   }, [])
   return (
     <div className='settingpage'>
-      <button onClick={buttonClick}>Show Notification</button>
+      {/* <button onClick={buttonClick}>Show Notification</button> */}
       
       <h2>Setting Page</h2>
       <div className="headerbutton">
