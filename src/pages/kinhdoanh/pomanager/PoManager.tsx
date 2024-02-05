@@ -436,7 +436,7 @@ const PoManager = () => {
                     <span style={{ color: "green", fontWeight: "bold" }}>
                       {ele.data[e]?.toLocaleString("en-US", {
                         style: "currency",
-                        currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
+                        currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
                       })}
                     </span>
                   );
@@ -450,7 +450,7 @@ const PoManager = () => {
                     <span style={{ color: "#094BB8", fontWeight: "bold" }}>
                       {ele.data[e]?.toLocaleString("en-US", {
                         style: "currency",
-                        currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
+                        currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
                       })}
                     </span>
                   );
@@ -870,7 +870,6 @@ const PoManager = () => {
         return newpoprice === e.PROD_PRICE.toString();
       }
     ).length ?? 0;
-
     if (getCompany() !== 'CMS') {
       if (recheckPrice === 0) err_code = 5;
     }
@@ -1086,7 +1085,7 @@ const PoManager = () => {
           : clickedRow.current?.PROD_PRICE
       );
       setNewPoBEP(
-        clickedRow.current?.BEP ?? 0          
+        clickedRow.current?.BEP ?? 0
       );
       setNewPoRemark(
         clickedRow.current?.REMARK === undefined
@@ -1201,11 +1200,11 @@ const PoManager = () => {
     ) {
       err_code = 4;
     }
-    if(newpoqty < clickedRow.current.TOTAL_DELIVERED) {
-      err_code =5;
+    if (newpoqty < clickedRow.current.TOTAL_DELIVERED) {
+      err_code = 5;
     }
-    if(getCompany() !== 'CMS') {
-      if(newpoprice !== clickedRow.current.PROD_PRICE) {
+    if (getCompany() !== 'CMS') {
+      if (newpoprice !== clickedRow.current.PROD_PRICE) {
         err_code = 6;
       }
     }
@@ -1219,7 +1218,7 @@ const PoManager = () => {
         PO_DATE: newpodate,
         RD_DATE: newrddate,
         PROD_PRICE: newpoprice,
-        BEP: newpoBEP === ''? 0 : newpoBEP,
+        BEP: newpoBEP === '' ? 0 : newpoBEP,
         REMARK: newporemark,
         PO_ID: selectedID,
       })
@@ -2011,7 +2010,7 @@ const PoManager = () => {
         </CustomResponsiveContainer>
       </div>
     ),
-    [podatatable,getGlobalSetting()]
+    [podatatable, getGlobalSetting()]
   );
   const excelDataTable = React.useMemo(
     () => (
@@ -2425,7 +2424,7 @@ const PoManager = () => {
                       {" "}
                       {poSummary.total_po_amount.toLocaleString("en-US", {
                         style: "currency",
-                        currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
+                        currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
                       })}
                     </td>
                     <td style={{ color: "blue", fontWeight: "bold" }}>
@@ -2434,7 +2433,7 @@ const PoManager = () => {
                         "en-US",
                         {
                           style: "currency",
-                          currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
+                          currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
                         }
                       )}
                     </td>
@@ -2444,7 +2443,7 @@ const PoManager = () => {
                         "en-US",
                         {
                           style: "currency",
-                          currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
+                          currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
                         }
                       )}
                     </td>
