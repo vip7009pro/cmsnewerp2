@@ -21,15 +21,16 @@ import {
   logout,
   login,
   setTabModeSwap,
+  changeGLBSetting,
 } from "./redux/slices/globalSlice";
 import { useSpring, animated } from "@react-spring/web";
 import "./App.css";
 import FallBackComponent from "./components/Fallback/FallBackComponent";
 import { Button } from "@mui/material";
-import { UserData } from "./api/GlobalInterface";
+import { UserData, WEB_SETTING_DATA } from "./api/GlobalInterface";
 import { current_ver } from "./pages/home/Home";
 import { Notifications } from 'react-push-notification';
-import SettingPage from "./pages/setting/SettingPage";
+const SettingPage = React.lazy(() => import("./pages/setting/SettingPage"));
 const LICHSUTEMLOTSX = lazy(() => import("./pages/sx/LICHSUTEMLOTSX/LICHSUTEMLOTSX"));
 const BAOCAOSXALL = lazy(() => import("./pages/sx/BAOCAOSXALL"));
 const Login = React.lazy(() => import("./pages/login/Login"));
@@ -282,6 +283,46 @@ const ProtectedRoute: any = ({
   }
 };
 function App() {
+
+  const loadWebSetting = () => {
+    generalQuery("loadWebSetting", {
+    })
+      .then((response) => {
+        if (response.data.tk_status !== "NG") {
+          let crST_string: any = localStorage.getItem("setting") ?? '';
+          let loadeddata: WEB_SETTING_DATA[] = [];
+          if (crST_string !== '') {
+            let crST: WEB_SETTING_DATA[] = JSON.parse(crST_string);
+            loadeddata = response.data.data.map(
+              (element: WEB_SETTING_DATA, index: number) => {
+                return {
+                  ...element,
+                  CURRENT_VALUE: crST.filter((ele: WEB_SETTING_DATA, id: number) => ele.ID === element.ID)[0]?.CURRENT_VALUE ?? element.DEFAULT_VALUE
+                };
+              }
+            );
+          }
+          else {
+            loadeddata = response.data.data.map(
+              (element: WEB_SETTING_DATA, index: number) => {
+                return {
+                  ...element,
+                  CURRENT_VALUE: element.DEFAULT_VALUE
+                };
+              }
+            );
+          }
+          dispatch(changeGLBSetting(loadeddata));
+          
+        } else {
+          dispatch(changeGLBSetting([]));
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+
   const springs = useSpring({
     from: { x: 1000, y: 100 },
     to: { x: 0, y: 0 },
@@ -354,6 +395,7 @@ function App() {
         if (data.data.tk_status === "ng") {
           /* console.log("khong co token");
           setLoginState(false); */
+          loadWebSetting();
           dispatch(logout(false));
           dispatch(
             changeUserData({
@@ -549,7 +591,7 @@ function App() {
                               width: "100%",
                               height: "100%",
                               borderRadius: 8,
-                              ...springs,
+                              /*...springs,*/
                             }}
                           >
                             <Home />

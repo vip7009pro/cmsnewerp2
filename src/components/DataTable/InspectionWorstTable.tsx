@@ -131,7 +131,7 @@ const InspectionWorstTable = ({ dailyClosingData, worstby, from_date, to_date, n
               return <span style={{ color: "#050505", fontWeight: "bold" }}>
                 {ele.data[e]?.toLocaleString("en-US", {
                   style: "currency",
-                  currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0].CURRENT_VALUE,
+                  currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
                 })}
               </span>
             }

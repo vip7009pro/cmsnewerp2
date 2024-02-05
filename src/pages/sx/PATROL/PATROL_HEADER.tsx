@@ -29,7 +29,7 @@ const PATROL_HEADER = ({ data }: { data: PATROL_HEADER_DATA[] }) => {
                         "en-US",
                         {
                           style: "currency",
-                          currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0].CURRENT_VALUE,
+                          currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
                         }
                       )}</td>
                 <td>{ele.INSPECT_TOTAL_QTY.toLocaleString("en-US")}</td>

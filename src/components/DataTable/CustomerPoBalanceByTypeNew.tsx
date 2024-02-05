@@ -49,7 +49,7 @@ const CustomerPobalancebyTypeNew = () => {
                                     return <span style={{ color: "#8105a0", fontWeight: "bold" }}>
                                         {ele.data[e]?.toLocaleString("en-US", {
                                             style: "currency",
-                                            currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0].CURRENT_VALUE,
+                                            currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
                                         })}
                                     </span>
                                 }
@@ -62,7 +62,7 @@ const CustomerPobalancebyTypeNew = () => {
                                     return <span style={{ color: "green", fontWeight: "normal" }}>
                                         {ele.data[e]?.toLocaleString("en-US", {
                                             style: "currency",
-                                            currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0].CURRENT_VALUE,
+                                            currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
                                         })}
                                     </span>
                                 }

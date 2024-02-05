@@ -481,13 +481,12 @@ const KinhDoanhReport = () => {
   }
 
   useEffect(() => {    
-    initFunction();
-    
+    initFunction();    
   }, []);
   return (
     <div className="kinhdoanhreport">
       <div className="filterdiv">
-        <DropDownBox
+        {/* <DropDownBox
           dataSource={countriesData}
           placeholder="Select countries"
           value={selectedCountries}
@@ -496,7 +495,7 @@ const KinhDoanhReport = () => {
           showClearButton={true}
           onValueChanged={(e) => setSelectedCountries(e.value)}
           opened={true}
-        />
+        /> */}
 
         {/* <DropDownBox
           dataSource={customerList}

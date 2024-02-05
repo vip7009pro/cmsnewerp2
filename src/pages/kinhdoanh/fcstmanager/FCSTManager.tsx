@@ -393,7 +393,7 @@ const FCSTManager = () => {
             <b>
               {params.row.W1A.toLocaleString("en-US", {
                 style: "currency",
-                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0].CURRENT_VALUE,
+                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
               })}
             </b>
           </span>
@@ -411,7 +411,7 @@ const FCSTManager = () => {
             <b>
               {params.row.W2A.toLocaleString("en-US", {
                 style: "currency",
-                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0].CURRENT_VALUE,
+                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
               })}
             </b>
           </span>
@@ -429,7 +429,7 @@ const FCSTManager = () => {
             <b>
               {params.row.W3A.toLocaleString("en-US", {
                 style: "currency",
-                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0].CURRENT_VALUE,
+                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
               })}
             </b>
           </span>
@@ -447,7 +447,7 @@ const FCSTManager = () => {
             <b>
               {params.row.W4A.toLocaleString("en-US", {
                 style: "currency",
-                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0].CURRENT_VALUE,
+                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
               })}
             </b>
           </span>
@@ -465,7 +465,7 @@ const FCSTManager = () => {
             <b>
               {params.row.W5A.toLocaleString("en-US", {
                 style: "currency",
-                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0].CURRENT_VALUE,
+                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
               })}
             </b>
           </span>
@@ -483,7 +483,7 @@ const FCSTManager = () => {
             <b>
               {params.row.W6A.toLocaleString("en-US", {
                 style: "currency",
-                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0].CURRENT_VALUE,
+                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
               })}
             </b>
           </span>
@@ -501,7 +501,7 @@ const FCSTManager = () => {
             <b>
               {params.row.W7A.toLocaleString("en-US", {
                 style: "currency",
-                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0].CURRENT_VALUE,
+                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
               })}
             </b>
           </span>
@@ -519,7 +519,7 @@ const FCSTManager = () => {
             <b>
               {params.row.W8A.toLocaleString("en-US", {
                 style: "currency",
-                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0].CURRENT_VALUE,
+                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
               })}
             </b>
           </span>
@@ -537,7 +537,7 @@ const FCSTManager = () => {
             <b>
               {params.row.W9A.toLocaleString("en-US", {
                 style: "currency",
-                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0].CURRENT_VALUE,
+                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
               })}
             </b>
           </span>
@@ -555,7 +555,7 @@ const FCSTManager = () => {
             <b>
               {params.row.W10A.toLocaleString("en-US", {
                 style: "currency",
-                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0].CURRENT_VALUE,
+                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
               })}
             </b>
           </span>
@@ -573,7 +573,7 @@ const FCSTManager = () => {
             <b>
               {params.row.W11A.toLocaleString("en-US", {
                 style: "currency",
-                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0].CURRENT_VALUE,
+                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
               })}
             </b>
           </span>
@@ -591,7 +591,7 @@ const FCSTManager = () => {
             <b>
               {params.row.W12A.toLocaleString("en-US", {
                 style: "currency",
-                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0].CURRENT_VALUE,
+                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
               })}
             </b>
           </span>
@@ -609,7 +609,7 @@ const FCSTManager = () => {
             <b>
               {params.row.W13A.toLocaleString("en-US", {
                 style: "currency",
-                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0].CURRENT_VALUE,
+                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
               })}
             </b>
           </span>
@@ -627,7 +627,7 @@ const FCSTManager = () => {
             <b>
               {params.row.W14A.toLocaleString("en-US", {
                 style: "currency",
-                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0].CURRENT_VALUE,
+                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
               })}
             </b>
           </span>
@@ -645,7 +645,7 @@ const FCSTManager = () => {
             <b>
               {params.row.W15A.toLocaleString("en-US", {
                 style: "currency",
-                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0].CURRENT_VALUE,
+                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
               })}
             </b>
           </span>
@@ -663,7 +663,7 @@ const FCSTManager = () => {
             <b>
               {params.row.W16A.toLocaleString("en-US", {
                 style: "currency",
-                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0].CURRENT_VALUE,
+                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
               })}
             </b>
           </span>
@@ -681,7 +681,7 @@ const FCSTManager = () => {
             <b>
               {params.row.W17A.toLocaleString("en-US", {
                 style: "currency",
-                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0].CURRENT_VALUE,
+                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
               })}
             </b>
           </span>
@@ -699,7 +699,7 @@ const FCSTManager = () => {
             <b>
               {params.row.W18A.toLocaleString("en-US", {
                 style: "currency",
-                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0].CURRENT_VALUE,
+                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
               })}
             </b>
           </span>
@@ -717,7 +717,7 @@ const FCSTManager = () => {
             <b>
               {params.row.W19A.toLocaleString("en-US", {
                 style: "currency",
-                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0].CURRENT_VALUE,
+                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
               })}
             </b>
           </span>
@@ -735,7 +735,7 @@ const FCSTManager = () => {
             <b>
               {params.row.W20A.toLocaleString("en-US", {
                 style: "currency",
-                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0].CURRENT_VALUE,
+                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
               })}
             </b>
           </span>
@@ -753,7 +753,7 @@ const FCSTManager = () => {
             <b>
               {params.row.W21A.toLocaleString("en-US", {
                 style: "currency",
-                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0].CURRENT_VALUE,
+                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
               })}
             </b>
           </span>
@@ -771,7 +771,7 @@ const FCSTManager = () => {
             <b>
               {params.row.W22A.toLocaleString("en-US", {
                 style: "currency",
-                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0].CURRENT_VALUE,
+                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
               })}
             </b>
           </span>

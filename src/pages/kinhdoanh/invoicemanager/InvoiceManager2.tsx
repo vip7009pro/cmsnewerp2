@@ -175,7 +175,7 @@ const InvoiceManager2 = () => {
             <b>
               {params.row.DELIVERED_AMOUNT.toLocaleString("en-US", {
                 style: "currency",
-                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0].CURRENT_VALUE,
+                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
               })}
             </b>
           </span>
@@ -1754,7 +1754,7 @@ const InvoiceManager2 = () => {
                           "en-US",
                           {
                             style: "currency",
-                            currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0].CURRENT_VALUE,
+                            currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
                           },
                         )}{" "}
                       </td>
@@ -1774,7 +1774,7 @@ const InvoiceManager2 = () => {
                     DELIVERED AMOUNT:{" "}
                     {invoiceSummary.total_delivered_amount.toLocaleString("en-US", {
                       style: "currency",
-                      currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0].CURRENT_VALUE,
+                      currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
                     })}
                   </b>
                 </div>

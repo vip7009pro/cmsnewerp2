@@ -25,7 +25,7 @@ import Swal from "sweetalert2";
 const ChartWorstCodeByErrCode = ({dailyClosingData, worstby}: {dailyClosingData: Array<WorstCodeData>, worstby: string}) => {
   const [tempdata, setTempData]= useState<Array<WorstCodeData>>([]);
     const formatCash = (n: number) => {  
-     return nFormatter(n, 2) + (getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0].CURRENT_VALUE ==='USD' ? ' $' : " đ");
+     return nFormatter(n, 2) + ((getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD") === 'USD'?  " $": " đ");
    };
   const labelFormatter = (value: number) => {
     return new Intl.NumberFormat("en", {
@@ -48,7 +48,7 @@ const ChartWorstCodeByErrCode = ({dailyClosingData, worstby}: {dailyClosingData:
         <div className='custom-tooltip'>
           <p className='label'>{`${payload[0].value.toLocaleString("en-US", worstby ==='AMOUNT' && {
           style: "currency",
-          currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0].CURRENT_VALUE,
+          currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
         })}`}</p>
         </div>
       );
@@ -92,7 +92,7 @@ const ChartWorstCodeByErrCode = ({dailyClosingData, worstby}: {dailyClosingData:
         {tempdata[index]?.G_NAME_KD}: (
         {value.toLocaleString("en-US", worstby ==='AMOUNT' && {
           style: "currency",
-          currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0].CURRENT_VALUE,
+          currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
         })}
         )
       </text>   

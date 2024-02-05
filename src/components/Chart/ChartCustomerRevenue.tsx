@@ -27,7 +27,7 @@ const ChartCustomerRevenue = () => {
     Array<WeeklyClosingData>
   >([]);
     const formatCash = (n: number) => {  
-     return nFormatter(n, 2) + (getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0].CURRENT_VALUE ==='USD' ? ' $' : " đ");
+     return nFormatter(n, 2) + ((getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD") === 'USD'?  " $": " đ");
    };
   const labelFormatter = (value: number) => {
     return new Intl.NumberFormat("en", {
@@ -50,7 +50,7 @@ const ChartCustomerRevenue = () => {
         <div className='custom-tooltip'>
           <p className='label'>{`${payload[0].value.toLocaleString("en-US", {
             style: "currency",
-            currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0].CURRENT_VALUE,
+            currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
           })}`}</p>
         </div>
       );
@@ -91,7 +91,7 @@ const ChartCustomerRevenue = () => {
         {weeklyClosingData[index].CUST_NAME_KD} : (
         {value.toLocaleString("en-US", {
           style: "currency",
-          currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0].CURRENT_VALUE,
+          currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
         })}
         )
       </text>
