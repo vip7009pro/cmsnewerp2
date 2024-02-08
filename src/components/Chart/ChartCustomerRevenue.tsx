@@ -20,12 +20,9 @@ import {
 import Swal from "sweetalert2";
 import { generalQuery, getGlobalSetting } from "../../api/Api";
 import { CustomResponsiveContainer, nFormatter } from "../../api/GlobalFunction";
-import { WEB_SETTING_DATA, WeeklyClosingData } from "../../api/GlobalInterface";
+import { CUSTOMER_REVENUE_DATA, WEB_SETTING_DATA, WeeklyClosingData } from "../../api/GlobalInterface";
 
-const ChartCustomerRevenue = () => {
-  const [weeklyClosingData, setWeeklyClosingData] = useState<
-    Array<WeeklyClosingData>
-  >([]);
+const ChartCustomerRevenue = ({data}: {data: CUSTOMER_REVENUE_DATA[]}) => { 
     const formatCash = (n: number) => {  
      return nFormatter(n, 2) + ((getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD") === 'USD'?  " $": " đ");
    };
@@ -88,7 +85,7 @@ const ChartCustomerRevenue = () => {
         dominantBaseline='central'
         fontSize={'0.9rem'}
       >
-        {weeklyClosingData[index].CUST_NAME_KD} : (
+        {data[index].CUST_NAME_KD} : (
         {value.toLocaleString("en-US", {
           style: "currency",
           currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
@@ -98,69 +95,10 @@ const ChartCustomerRevenue = () => {
     );
   };
 
-  const handleGetCustomerRevenue = () => {
-    let sunday = moment().clone().weekday(0).format("YYYY-MM-DD");
-    let monday = moment().clone().weekday(6).format("YYYY-MM-DD");
-    generalQuery("customerRevenue", { START_DATE: sunday, END_DATE: monday })
-      .then((response) => {
-        if (response.data.tk_status !== "NG") {
-          //console.log(response.data.data);
-          let loadeddata: WeeklyClosingData[] = response.data.data.map(
-            (element: WeeklyClosingData, index: number) => {
-              return {
-                ...element,
-              };
-            }
-          );
 
-          loadeddata = loadeddata.splice(0, 5);
-          //console.log(loadeddata);
-          setWeeklyClosingData(loadeddata);
-        } else {
-          //Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
-          sunday = moment()
-            .clone()
-            .weekday(0)
-            .add(-7, "days")
-            .format("YYYY-MM-DD");
-          monday = moment()
-            .clone()
-            .weekday(6)
-            .add(-7, "days")
-            .format("YYYY-MM-DD");
-          generalQuery("customerRevenue", {
-            START_DATE: sunday,
-            END_DATE: monday,
-          })
-            .then((response) => {
-              if (response.data.tk_status !== "NG") {
-                //console.log(response.data.data);
-                let loadeddata: WeeklyClosingData[] = response.data.data.map(
-                  (element: WeeklyClosingData, index: number) => {
-                    return {
-                      ...element,
-                    };
-                  }
-                );
-                loadeddata = loadeddata.splice(0, 5);
-                //console.log(loadeddata);
-                setWeeklyClosingData(loadeddata);
-              } else {
-                //Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
-              }
-            })
-            .catch((error) => {
-              console.log(error);
-            });
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
   
   useEffect(() => {
-    handleGetCustomerRevenue();
+    
   }, []);
   const COLORS = [
     "#cc0000",
@@ -207,14 +145,14 @@ const ChartCustomerRevenue = () => {
           dataKey='DELIVERY_AMOUNT'
           nameKey='CUST_NAME_KD'
           isAnimationActive={false}
-          data={weeklyClosingData}
+          data={data}
           cx='50%'
           cy='50%'
           outerRadius={110}
           fill='#8884d8'
           label={CustomLabel}          
         >
-          {weeklyClosingData.map((entry, index) => (
+          {data?.map((entry, index) => (
             <Cell
               key={`cell-${index}`}
               fill={COLORS[((2 * index) % COLORS.length) * 2]}

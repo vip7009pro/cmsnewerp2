@@ -21,7 +21,7 @@ import {
   nFormatter,
 } from "../../api/GlobalFunction";
 import { WEB_SETTING_DATA, YearlyClosingData } from "../../api/GlobalInterface";
-const ChartYearly = () => {
+const ChartYearly = ({data}: {data: YearlyClosingData[]}) => {
   const [yearlyClosingData, setYearlyClosingData] = useState<
     Array<YearlyClosingData>
   >([]);
@@ -109,14 +109,14 @@ const ChartYearly = () => {
     );
   };
   useEffect(() => {
-    handleGetYearlyClosing();
+    //handleGetYearlyClosing();
   }, [getGlobalSetting()]);
   return (
     <CustomResponsiveContainer>
       <ComposedChart
         width={500}
         height={300}
-        data={yearlyClosingData}
+        data={data}
         margin={{
           top: 5,
           right: 30,

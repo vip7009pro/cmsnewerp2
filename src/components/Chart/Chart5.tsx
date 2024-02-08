@@ -21,7 +21,7 @@ import {
   nFormatter,
 } from "../../api/GlobalFunction";
 import { MonthlyClosingData, WEB_SETTING_DATA } from "../../api/GlobalInterface";
-const ChartMonthLy = () => {
+const ChartMonthLy = ({data}: {data: MonthlyClosingData[]}) => {
   const [monthlyClosingData, setMonthlyClosingData] = useState<
     Array<MonthlyClosingData>
   >([]);
@@ -123,14 +123,14 @@ const ChartMonthLy = () => {
     );
   };
   useEffect(() => {
-    handleGetMonthlyClosing();
+    //handleGetMonthlyClosing();
   }, []);
   return (
     <CustomResponsiveContainer>
       <ComposedChart
         width={500}
         height={300}
-        data={monthlyClosingData}
+        data={data}
         margin={{
           top: 5,
           right: 30,

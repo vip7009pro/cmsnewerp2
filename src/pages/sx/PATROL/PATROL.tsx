@@ -10,7 +10,7 @@ import { FromInputColumn } from '../../../components/StyledComponents/ComponentL
 import Swal from 'sweetalert2'
 const PATROL = () => {
   const [patrolheaderdata, setPatrolHeaderData] = useState<PATROL_HEADER_DATA[]>([]);
-    const [fullScreen, setFullScreen] = useState(false);
+  const [fullScreen, setFullScreen] = useState(false);
   const [pqcdatatable, setPqcDataTable] = useState<Array<PQC3_DATA>>([]);
   const [inspectionPatrolTable, setInspectionPatrolTable] = useState<Array<INSP_PATROL_DATA>>([]);
   const fromdateRef = useRef((moment().format("YYYY-MM-DD")));
@@ -20,13 +20,12 @@ const PATROL = () => {
   const [trigger, setTrigger] = useState(false);
   const getPatrolHeaderData = async () => {
     console.log('vao get patrol header')
-
     /* console.log(fromdateRef.current);
     console.log(todateRef.current); */
     setIsLoading(true);
     await generalQuery("getpatrolheader", {
-      FROM_DATE: liveStream?.current? moment().format('YYYY-MM-DD') : fromdateRef.current,
-      TO_DATE: liveStream?.current? moment().format('YYYY-MM-DD') : todateRef.current,
+      FROM_DATE: liveStream?.current ? moment().format('YYYY-MM-DD') : fromdateRef.current,
+      TO_DATE: liveStream?.current ? moment().format('YYYY-MM-DD') : todateRef.current,
     })
       .then((response) => {
         //console.log(response.data);
@@ -52,8 +51,8 @@ const PATROL = () => {
   };
   const getInspectionPatrol = () => {
     generalQuery("trainspectionpatrol", {
-      FROM_DATE: liveStream?.current? moment().format('YYYY-MM-DD') : fromdateRef.current,
-      TO_DATE: liveStream?.current? moment().format('YYYY-MM-DD') : todateRef.current,
+      FROM_DATE: liveStream?.current ? moment().format('YYYY-MM-DD') : fromdateRef.current,
+      TO_DATE: liveStream?.current ? moment().format('YYYY-MM-DD') : todateRef.current,
     })
       .then((response) => {
         //console.log(response.data);
@@ -80,8 +79,8 @@ const PATROL = () => {
     console.log('liveStream', liveStream.current);
     generalQuery("trapqc3data", {
       ALLTIME: false,
-      FROM_DATE: liveStream.current? moment().format('YYYY-MM-DD') : fromdateRef.current,
-      TO_DATE: liveStream.current? moment().format('YYYY-MM-DD') : todateRef.current,
+      FROM_DATE: liveStream.current ? moment().format('YYYY-MM-DD') : fromdateRef.current,
+      TO_DATE: liveStream.current ? moment().format('YYYY-MM-DD') : todateRef.current,
       CUST_NAME: '',
       PROCESS_LOT_NO: '',
       G_CODE: '',
@@ -124,11 +123,10 @@ const PATROL = () => {
       });
   };
   const initFunction = () => {
-    if(liveStream.current) {
+    if (liveStream.current) {
       fromdateRef.current = moment().format('YYYY-MM-DD')
       todateRef.current = moment().format('YYYY-MM-DD')
     }
-    
     if (!isLoading) {
       getPatrolHeaderData();
     }
@@ -176,8 +174,7 @@ const PATROL = () => {
               onChange={(e) => {
                 //console.log(onlyRunning);
                 liveStream.current = !liveStream.current
-                
-                if(liveStream.current=== true) {
+                if (liveStream.current === true) {
                   fromdateRef.current = moment().format('YYYY-MM-DD')
                   todateRef.current = moment().format('YYYY-MM-DD')
                 }
@@ -229,7 +226,7 @@ const PATROL = () => {
       </div>
       <div className="row">
         {
-          inspectionPatrolTable.filter((element: INSP_PATROL_DATA, index: number) =>  element.PHANLOAI==='NL').map((ele: INSP_PATROL_DATA, index: number) => {
+          inspectionPatrolTable.filter((element: INSP_PATROL_DATA, index: number) => element.PHANLOAI === 'NL').map((ele: INSP_PATROL_DATA, index: number) => {
             return (
               <PATROL_COMPONENT key={index} data={{
                 CUST_NAME_KD: ele.CUST_NAME_KD,
@@ -249,7 +246,7 @@ const PATROL = () => {
       </div>
       <div className="row">
         {
-          inspectionPatrolTable.filter((element: INSP_PATROL_DATA, index: number) =>  element.PHANLOAI==='PK').map((ele: INSP_PATROL_DATA, index: number) => {
+          inspectionPatrolTable.filter((element: INSP_PATROL_DATA, index: number) => element.PHANLOAI === 'PK').map((ele: INSP_PATROL_DATA, index: number) => {
             return (
               <PATROL_COMPONENT key={index} data={{
                 CUST_NAME_KD: ele.CUST_NAME_KD,

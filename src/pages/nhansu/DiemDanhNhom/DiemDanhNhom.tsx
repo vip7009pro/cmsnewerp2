@@ -363,8 +363,8 @@ const DiemDanhNhom = () => {
               <button className='tcbutton' onClick={() => onClick("KTC")}>
                 KTC
               </button>
-              <button className='tcbutton' onClick={() => onClick("0200-0600")}>
-                02-06
+              <button className='tcbutton' onClick={() => onClick("0500-0800")}>
+                05-08
               </button>
               <button className='tcbutton' onClick={() => onClick("1700-2000")}>
                 17-20

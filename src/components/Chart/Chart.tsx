@@ -22,7 +22,7 @@ import {
 } from "../../api/GlobalFunction";
 import { WEB_SETTING_DATA, WeeklyClosingData } from "../../api/GlobalInterface";
 
-const ChartWeekLy = () => {
+const ChartWeekLy = ({data}: {data: WeeklyClosingData[]}) => {
   const [weeklyClosingData, setWeeklyClosingData] = useState<
     Array<WeeklyClosingData>
   >([]);
@@ -127,14 +127,14 @@ const ChartWeekLy = () => {
   };
 
   useEffect(() => {
-    handleGetDailyClosing();
+    //handleGetDailyClosing();
   }, []);
   return (
     <CustomResponsiveContainer>
       <ComposedChart
         width={500}
         height={300}
-        data={weeklyClosingData}
+        data={data}
         margin={{
           top: 5,
           right: 30,

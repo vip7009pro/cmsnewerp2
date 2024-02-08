@@ -401,6 +401,7 @@ export interface YCSXTableData {
   LOSS_SETTING4: number;
   NOTE: string;
   PL_HANG?: string;
+  DELIVERY_DT?: string;
 }
 export interface UploadAmazonData {
   G_CODE?: string;
@@ -2816,6 +2817,14 @@ export interface DailyClosingData {
   DELIVERY_DATE: string;
   DELIVERY_QTY: number;
   DELIVERED_AMOUNT: number;
+}
+export interface CUSTOMER_REVENUE_DATA {
+  CUST_NAME_KD: string;  
+  DELIVERY_AMOUNT: number;
+}
+export interface PIC_REVENUE_DATA {
+  EMPL_NAME: string;  
+  DELIVERY_AMOUNT: number;
 }
 export interface RunningPOData {
   PO_YEAR: number;

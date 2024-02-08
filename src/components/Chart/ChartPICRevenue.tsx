@@ -20,11 +20,11 @@ import {
 import Swal from "sweetalert2";
 import { generalQuery, getGlobalSetting } from "../../api/Api";
 import { CustomResponsiveContainer, nFormatter } from "../../api/GlobalFunction";
-import { WEB_SETTING_DATA, WeeklyClosingData } from "../../api/GlobalInterface";
+import { PIC_REVENUE_DATA, WEB_SETTING_DATA, WeeklyClosingData } from "../../api/GlobalInterface";
 
-const ChartPICRevenue = () => {
+const ChartPICRevenue = ({data}: {data: PIC_REVENUE_DATA[]}) => {
   const [weeklyClosingData, setWeeklyClosingData] = useState<
-    Array<WeeklyClosingData>
+    Array<PIC_REVENUE_DATA>
   >([]);
     const formatCash = (n: number) => {  
      return nFormatter(n, 2) + ((getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD") === 'USD'?  " $": " đ");
@@ -88,7 +88,7 @@ const ChartPICRevenue = () => {
         dominantBaseline='central'
         fontSize={'0.9rem'}
       >
-        {weeklyClosingData[index].EMPL_NAME} : (
+        {data[index].EMPL_NAME} : (
         {value.toLocaleString("en-US", {
           style: "currency",
           currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
@@ -105,8 +105,8 @@ const ChartPICRevenue = () => {
       .then((response) => {
         if (response.data.tk_status !== "NG") {
           //console.log(response.data.data);
-          let loadeddata: WeeklyClosingData[] = response.data.data.map(
-            (element: WeeklyClosingData, index: number) => {
+          let loadeddata: PIC_REVENUE_DATA[] = response.data.data.map(
+            (element: PIC_REVENUE_DATA, index: number) => {
               return {
                 ...element,
               };
@@ -131,8 +131,8 @@ const ChartPICRevenue = () => {
             .then((response) => {
               if (response.data.tk_status !== "NG") {
                 //console.log(response.data.data);
-                let loadeddata: WeeklyClosingData[] = response.data.data.map(
-                  (element: WeeklyClosingData, index: number) => {
+                let loadeddata: PIC_REVENUE_DATA[] = response.data.data.map(
+                  (element: PIC_REVENUE_DATA, index: number) => {
                     return {
                       ...element,
                     };
@@ -154,7 +154,7 @@ const ChartPICRevenue = () => {
       });
   };
   useEffect(() => {
-    handleGetCustomerRevenue();
+    //handleGetCustomerRevenue();
   }, []);
   const COLORS = [
     "#cc0000",
@@ -201,14 +201,14 @@ const ChartPICRevenue = () => {
           dataKey='DELIVERY_AMOUNT'
           nameKey='EMPL_NAME'
           isAnimationActive={false}
-          data={weeklyClosingData}
+          data={data}
           cx='50%'
           cy='50%'
           outerRadius={110}
           fill='#8884d8'
           label={CustomLabel}
         >
-          {weeklyClosingData.map((entry, index) => (
+          {data?.map((entry, index) => (
             <Cell
               key={`cell-${index}`}
               fill={COLORS[((2 + index) * 3) % COLORS.length]}

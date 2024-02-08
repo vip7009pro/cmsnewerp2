@@ -283,7 +283,6 @@ const ProtectedRoute: any = ({
   }
 };
 function App() {
-
   const loadWebSetting = () => {
     generalQuery("loadWebSetting", {
     })
@@ -313,7 +312,6 @@ function App() {
             );
           }
           dispatch(changeGLBSetting(loadeddata));
-          
         } else {
           dispatch(changeGLBSetting([]));
         }
@@ -322,7 +320,6 @@ function App() {
         console.log(error);
       });
   }
-
   const springs = useSpring({
     from: { x: 1000, y: 100 },
     to: { x: 0, y: 0 },

@@ -1,3 +1,4 @@
+import KeyboardArrowDown from "@mui/icons-material/KeyboardArrowDown";
 import { getCompany, getGlobalSetting } from "../../api/Api";
 import { WEB_SETTING_DATA } from "../../api/GlobalInterface";
 import "../Widget/Widget.scss";
@@ -31,12 +32,13 @@ export default function Widget({
         <div className="left">
           <span className="title">{label}</span>
           <span className="title2">QTY</span>
-          <span className="counter">{qty.toLocaleString("en-US")} EA</span>
+          <span className="counter">{qty?.toLocaleString("en-US")} EA</span>
         </div>
         <div className="right">
           <div className="percentage positive">
-            <KeyboardArrowUpIcon />
-            {/*  {percentage}% */}
+            {percentage >=0 && <KeyboardArrowUpIcon color="success"/>}
+            {percentage <0 && <KeyboardArrowDown color="error"/>}
+             <span style={{color: `${percentage >=0 ? 'green': 'red'}` }}>{percentage?.toLocaleString('en-US',{minimumFractionDigits: 2, maximumFractionDigits: 2})}%</span>
           </div>
           <span className="title2">AMOUNT</span>
           <span className="counter">

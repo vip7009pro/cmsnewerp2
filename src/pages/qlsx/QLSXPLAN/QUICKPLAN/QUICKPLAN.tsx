@@ -271,6 +271,7 @@ const QUICKPLAN = () => {
       },
     },
     { field: "PROD_REQUEST_DATE", headerName: "NGÀY YCSX", width: 80 },
+    { field: "DELIVERY_DT", headerName: "NGÀY GH", width: 80 },
     {
       field: "PO_BALANCE",
       headerName: "PO_BALANCE",
@@ -1838,8 +1839,6 @@ const QUICKPLAN = () => {
       //console.log("xoa filter");
     }
   };
-  const zeroPad = (num: number, places: number) =>
-    String(num).padStart(places, "0");
   const get1YCSXDATA = async (PROD_REQUEST_NO: string) => {
     let temp_data: YCSXTableData[] = [];
     await generalQuery("traYCSXDataFull_QLSX", {

@@ -380,6 +380,7 @@ const MACHINE = () => {
       },
     },
     { field: "PROD_REQUEST_DATE", headerName: "NGÀY YCSX", width: 80 },
+    { field: "DELIVERY_DT", headerName: "NGÀY GH", width: 80 },
     {
       field: "PO_BALANCE",
       headerName: "PO_BALANCE",
@@ -2183,7 +2184,6 @@ const MACHINE = () => {
    
     return sum;
   }
-  
   const handleSearchCodeKeyDown = (
     e: React.KeyboardEvent<HTMLInputElement>
   ) => {

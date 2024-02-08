@@ -22,7 +22,7 @@ import {
 } from "../../api/GlobalFunction";
 import { DailyClosingData, WEB_SETTING_DATA } from "../../api/GlobalInterface";
 
-const ChartDaily = () => {
+const ChartDaily = ({data}: {data: DailyClosingData[]}) => {
   const [dailyClosingData, setDailyClosingData] = useState<
     Array<DailyClosingData>
   >([]);
@@ -134,14 +134,14 @@ const ChartDaily = () => {
     );
   };
   useEffect(() => {
-    handleGetDailyClosing();
+    //handleGetDailyClosing();
   }, []);
   return (
     <CustomResponsiveContainer>
       <ComposedChart
         width={500}
         height={300}
-        data={dailyClosingData}
+        data={data}
         margin={{
           top: 5,
           right: 30,

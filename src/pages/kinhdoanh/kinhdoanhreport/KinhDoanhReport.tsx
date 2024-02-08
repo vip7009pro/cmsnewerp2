@@ -8,9 +8,7 @@ import ChartYearly from "../../../components/Chart/Chart6";
 import ChartCustomerRevenue from "../../../components/Chart/ChartCustomerRevenue";
 import ChartFCSTSamSung from "../../../components/Chart/ChartFCSTSamSung";
 import ChartPICRevenue from "../../../components/Chart/ChartPICRevenue";
-import ChartWeekLyDelivery from "../../../components/Chart/ChartWeeklyDelivery";
 import ChartWeeklyPO from "../../../components/Chart/ChartWeekLyPO";
-import CustomerPOBalanceByType from "../../../components/DataTable/CustomerPOBalanceByType";
 import Widget from "../../../components/Widget/Widget";
 import "./KinhDoanhReport.scss";
 import ChartDaily from "../../../components/Chart/Chart2";
@@ -18,77 +16,16 @@ import ChartPOBalance from "../../../components/Chart/Chart4";
 import CustomerDailyClosing from "../../../components/DataTable/CustomerDailyClosing";
 import CustomerWeeklyClosing from "../../../components/DataTable/CustomerWeeklyClosing";
 import CustomerPobalancebyTypeNew from "../../../components/DataTable/CustomerPoBalanceByTypeNew";
-import { DropDownBox } from "devextreme-react/drop-down-box";
-import { CustomerListData } from "../../../api/GlobalInterface";
-interface InvoiceTableData {
-  DELIVERY_ID: number;
-  CUST_CD: string;
-  CUST_NAME_KD: string;
-  EMPL_NO: string;
-  EMPL_NAME: string;
-  G_CODE: string;
-  G_NAME: string;
-  G_NAME_KD: string;
-  PO_NO: string;
-  DELIVERY_DATE: string;
-  DELIVERY_QTY: number;
-  PROD_PRICE: string;
-  DELIVERED_AMOUNT: number;
-  REMARK: string;
-  INVOICE_NO: string;
-  PROD_TYPE: string;
-  PROD_MODEL: string;
-  PROD_PROJECT: string;
-  YEARNUM: number;
-  WEEKNUM: number;
-}
-interface InvoiceSummaryData {
-  total_po_qty: number;
-  total_delivered_qty: number;
-  total_pobalance_qty: number;
-  total_po_amount: number;
-  total_delivered_amount: number;
-  total_pobalance_amount: number;
-}
-interface WidgetData {
-  yesterday_qty: number;
-  yesterday_amount: number;
-  before_yesterday_qty: number;
-  before_yesterday_amount: number;
-  yesterday_percentage: number;
-  thisweek_qty: number;
-  thisweek_amount: number;
-  lastweek_qty: number;
-  lastweek_amount: number;
-  thisweek_percentage: number;
-  thismonth_qty: number;
-  thismonth_amount: number;
-  lastmonth_qty: number;
-  lastmonth_amount: number;
-  thismonth_percentage: number;
-  thisyear_qty: number;
-  thisyear_amount: number;
-  lastyear_qty: number;
-  lastyear_amount: number;
-}
+import { CUSTOMER_REVENUE_DATA, CustomerListData, MonthlyClosingData, PIC_REVENUE_DATA, WeeklyClosingData } from "../../../api/GlobalInterface";
+import { Checkbox } from "@mui/material";
 
 interface YearlyClosingData {
   YEAR_NUM: string;
   DELIVERY_QTY: number;
   DELIVERED_AMOUNT: number;
 }
-interface MonthlyClosingData {
-  MONTH_NUM: string;
-  DELIVERY_QTY: number;
-  DELIVERED_AMOUNT: number;
-}
 interface DailyClosingData {
   DELIVERY_DATE: string;
-  DELIVERY_QTY: number;
-  DELIVERED_AMOUNT: number;
-}
-interface WeeklyClosingData {
-  DEL_WEEK: string;
   DELIVERY_QTY: number;
   DELIVERED_AMOUNT: number;
 }
@@ -108,57 +45,24 @@ interface FCSTAmountData {
   FCST8W_QTY: number;
   FCST8W_AMOUNT: number;
 }
-
-interface WidgetData_FCST {
-  fcstqty: number;
-  fcstamount: number;
-}
-interface WidgetData_Yesterday {
-  yesterday_qty: number;
-  yesterday_amount: number;
-}
-interface WidgetData_ThisWeek {
-  thisweek_qty: number;
-  thisweek_amount: number;
-}
-interface WidgetData_ThisMonth {
-  thismonth_qty: number;
-  thismonth_amount: number;
-}
-interface WidgetData_ThisYear {
-  thisyear_qty: number;
-  thisyear_amount: number;
-}
 interface WidgetData_POBalanceSummary {
   po_balance_qty: number;
   po_balance_amount: number;
 }
 const KinhDoanhReport = () => {
-  const [widgetdata_yesterday, setWidgetData_Yesterday] =
-    useState<WidgetData_Yesterday>({
-      yesterday_qty: 0,
-      yesterday_amount: 0,
-    });
-  const [widgetdata_thisweek, setWidgetData_ThisWeek] =
-    useState<WidgetData_ThisWeek>({
-      thisweek_qty: 0,
-      thisweek_amount: 0,
-    });
-  const [widgetdata_thismonth, setWidgetData_ThisMonth] =
-    useState<WidgetData_ThisMonth>({
-      thismonth_qty: 0,
-      thismonth_amount: 0,
-    });
-  const [widgetdata_thisyear, setWidgetData_ThisYear] =
-    useState<WidgetData_ThisYear>({
-      thisyear_qty: 0,
-      thisyear_amount: 0,
-    });
-  const [widgetdata_pobalancesummary, setWidgetData_PoBalanceSummary] =
-    useState<WidgetData_POBalanceSummary>({
-      po_balance_qty: 0,
-      po_balance_amount: 0,
-    });
+  const [df, setDF] = useState(true);
+  const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
+  const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));
+  const [widgetdata_yesterday, setWidgetData_Yesterday] = useState<DailyClosingData[]>([]);
+  const [widgetdata_thisweek, setWidgetData_ThisWeek] = useState<WeeklyClosingData[]>([]);
+  const [widgetdata_thismonth, setWidgetData_ThisMonth] = useState<MonthlyClosingData[]>([]);
+  const [widgetdata_thisyear, setWidgetData_ThisYear] = useState<YearlyClosingData[]>([]);
+  const [customerRevenue, setCustomerRevenue] = useState<CUSTOMER_REVENUE_DATA[]>([]);
+  const [picRevenue, setPICRevenue] = useState<PIC_REVENUE_DATA[]>([]);
+  const [widgetdata_pobalancesummary, setWidgetData_PoBalanceSummary] = useState<WidgetData_POBalanceSummary>({
+    po_balance_qty: 0,
+    po_balance_amount: 0,
+  });
   const [widgetdata_fcstAmount, setWidgetData_FcstAmount] =
     useState<FCSTAmountData>({
       FCSTYEAR: 0,
@@ -170,89 +74,9 @@ const KinhDoanhReport = () => {
     });
   const [customerList, setCustomerList] = useState<CustomerListData[]>([]);
   const [selectedCustomerList, setSelectedCustomerList] = useState<CustomerListData[]>([]);
-  const handletraInvoice = (
-    invoice_type: string,
-    invoice_order: string,
-    start_date: string,
-    end_date: string,
-  ) => {
-    generalQuery("traInvoiceDataFull", {
-      alltime: false,
-      justPoBalance: false,
-      start_date: start_date,
-      end_date: end_date,
-      cust_name: "",
-      codeCMS: "",
-      codeKD: "",
-      prod_type: "",
-      empl_name: "",
-      po_no: "",
-      over: "",
-      id: "",
-      material: "",
-    })
-      .then((response) => {
-        //console.log(response.data);
-        if (response.data.tk_status !== "NG") {
-          const loadeddata: InvoiceTableData[] = response.data.data.map(
-            (element: InvoiceTableData, index: number) => {
-              return {
-                ...element,
-                DELIVERY_DATE: element.DELIVERY_DATE.slice(0, 10),
-              };
-            },
-          );
-          let total_qty: number = 0;
-          let total_amount: number = 0;
-          for (let i = 0; i < loadeddata.length; i++) {
-            total_qty += loadeddata[i].DELIVERY_QTY;
-            total_amount += loadeddata[i].DELIVERED_AMOUNT;
-          }
-          /* console.log("TOTAL QTY = " + total_qty);
-        console.log("TOTAL AMOUNT = " + total_amount); */
-          if (invoice_type === "day") {
-            if (invoice_order === "this") {
-              setWidgetData_Yesterday({
-                yesterday_qty: total_qty,
-                yesterday_amount: total_amount,
-              });
-            }
-          } else if (invoice_type === "week") {
-            if (invoice_order === "this") {
-              setWidgetData_ThisWeek({
-                thisweek_qty: total_qty,
-                thisweek_amount: total_amount,
-              });
-            }
-          } else if (invoice_type === "month") {
-            if (invoice_order === "this") {
-              setWidgetData_ThisMonth({
-                thismonth_qty: total_qty,
-                thismonth_amount: total_amount,
-              });
-            }
-          } else if (invoice_type === "year") {
-            if (invoice_order === "this") {
-              setWidgetData_ThisYear({
-                thisyear_qty: total_qty,
-                thisyear_amount: total_amount,
-              });
-            }
-          }
-          ///Swal.fire("Thông báo", "Đã load " + response.data.data.length + " dòng", "success");
-        } else {
-          //Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
-
   const handleGetFCSTAmount = async () => {
     let fcstweek2: number = moment().add(1, "days").isoWeek();
     let fcstyear2: number = moment().year();
-
     await generalQuery("checklastfcstweekno", {
       FCSTWEEKNO: fcstyear2,
     })
@@ -268,9 +92,7 @@ const KinhDoanhReport = () => {
       .catch((error) => {
         console.log(error);
       });
-
     //console.log("fcst week2->: ", fcstweek2);
-
     generalQuery("fcstamount", { FCSTYEAR: fcstyear2, FCSTWEEKNO: fcstweek2 })
       .then((response) => {
         //console.log(response.data.data);
@@ -314,10 +136,11 @@ const KinhDoanhReport = () => {
       });
   };
   const handleGetDailyClosing = () => {
-    let yesterday = moment().add(-1, "day").format("YYYY-MM-DD");
+    let yesterday = moment().add(0, "day").format("YYYY-MM-DD");
+    let yesterday2 = moment().add(-12, "day").format("YYYY-MM-DD");
     generalQuery("kd_dailyclosing", {
-      START_DATE: yesterday,
-      END_DATE: yesterday,
+      START_DATE: df? yesterday2 : fromdate,
+      END_DATE: df? yesterday: todate,
     })
       .then((response) => {
         if (response.data.tk_status !== "NG") {
@@ -328,11 +151,8 @@ const KinhDoanhReport = () => {
                 DELIVERY_DATE: element.DELIVERY_DATE.slice(0, 10),
               };
             },
-          );
-          setWidgetData_Yesterday({
-            yesterday_qty: loadeddata[0].DELIVERY_QTY,
-            yesterday_amount: loadeddata[0].DELIVERED_AMOUNT,
-          });
+          );          
+          setWidgetData_Yesterday(loadeddata);
         } else {
           //Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
         }
@@ -342,7 +162,12 @@ const KinhDoanhReport = () => {
       });
   };
   const handleGetWeeklyClosing = () => {
-    generalQuery("kd_weeklyclosing", { YEAR: moment().format("YYYY") })
+    let yesterday = moment().add(0, "day").format("YYYY-MM-DD");
+    let yesterday2 = moment().add(-56, "day").format("YYYY-MM-DD");    
+    generalQuery("kd_weeklyclosing", {
+      START_DATE: df? yesterday2 : fromdate,
+      END_DATE: df? yesterday: todate,
+     })
       .then((response) => {
         if (response.data.tk_status !== "NG") {
           const loadeddata: WeeklyClosingData[] = response.data.data.map(
@@ -352,10 +177,7 @@ const KinhDoanhReport = () => {
               };
             },
           );
-          setWidgetData_ThisWeek({
-            thisweek_qty: loadeddata[0].DELIVERY_QTY,
-            thisweek_amount: loadeddata[0].DELIVERED_AMOUNT,
-          });
+          setWidgetData_ThisWeek(loadeddata.reverse());
         } else {
           //Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
         }
@@ -365,7 +187,12 @@ const KinhDoanhReport = () => {
       });
   };
   const handleGetMonthlyClosing = () => {
-    generalQuery("kd_monthlyclosing", { YEAR: moment().format("YYYY") })
+    let yesterday = moment().add(0, "day").format("YYYY-MM-DD");
+    let yesterday2 = moment().add(-365, "day").format("YYYY-MM-DD");  
+    generalQuery("kd_monthlyclosing", {
+      START_DATE: df? yesterday2 : fromdate,
+      END_DATE: df? yesterday: todate,
+    })
       .then((response) => {
         if (response.data.tk_status !== "NG") {
           const loadeddata: MonthlyClosingData[] = response.data.data.map(
@@ -375,11 +202,7 @@ const KinhDoanhReport = () => {
               };
             },
           );
-          setWidgetData_ThisMonth({
-            thismonth_qty: loadeddata[0].DELIVERY_QTY,
-            thismonth_amount:
-              loadeddata[0].DELIVERED_AMOUNT,
-          });
+          setWidgetData_ThisMonth(loadeddata.reverse());
         } else {
           //Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
         }
@@ -389,7 +212,12 @@ const KinhDoanhReport = () => {
       });
   };
   const handleGetYearlyClosing = () => {
-    generalQuery("kd_annuallyclosing", {})
+    let yesterday = moment().add(0, "day").format("YYYY-MM-DD");
+    let yesterday2 = "2020-01-01"; 
+    generalQuery("kd_annuallyclosing", {
+      START_DATE: df? yesterday2 : fromdate,
+      END_DATE: df? yesterday: todate,
+    })
       .then((response) => {
         if (response.data.tk_status !== "NG") {
           const loadeddata: YearlyClosingData[] = response.data.data.map(
@@ -399,16 +227,7 @@ const KinhDoanhReport = () => {
               };
             },
           );
-          setWidgetData_ThisYear({
-            thisyear_qty: loadeddata[loadeddata.length - 1].DELIVERY_QTY,
-            thisyear_amount: loadeddata[loadeddata.length - 1].DELIVERED_AMOUNT,
-          });
-          //console.log(loadeddata);
-          /*  Swal.fire(
-          "Thông báo",
-          "Đã load " + response.data.data.length + " dòng",
-          "success"
-        ); */
+          setWidgetData_ThisYear(loadeddata);
         } else {
           //Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
         }
@@ -446,6 +265,130 @@ const KinhDoanhReport = () => {
         console.log(error);
       });
   };
+  const handleGetCustomerRevenue = () => {
+    let sunday = moment().clone().weekday(0).format("YYYY-MM-DD");
+    let monday = moment().clone().weekday(6).format("YYYY-MM-DD");
+    generalQuery("customerRevenue", { 
+      START_DATE: df? sunday : fromdate,
+      END_DATE: df? monday: todate,      
+    })
+      .then((response) => {
+        if (response.data.tk_status !== "NG") {
+          //console.log(response.data.data);
+          let loadeddata: CUSTOMER_REVENUE_DATA[] = response.data.data.map(
+            (element: CUSTOMER_REVENUE_DATA, index: number) => {
+              return {
+                ...element,
+              };
+            }
+          );
+
+          loadeddata = loadeddata.splice(0, 5);
+          //console.log(loadeddata);
+          setCustomerRevenue(loadeddata);
+        } else {
+          //Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
+          sunday = moment()
+            .clone()
+            .weekday(0)
+            .add(-7, "days")
+            .format("YYYY-MM-DD");
+          monday = moment()
+            .clone()
+            .weekday(6)
+            .add(-7, "days")
+            .format("YYYY-MM-DD");
+          generalQuery("customerRevenue", {
+            START_DATE: df? sunday : fromdate,
+            END_DATE: df? monday: todate, 
+          })
+            .then((response) => {
+              if (response.data.tk_status !== "NG") {
+                //console.log(response.data.data);
+                let loadeddata: CUSTOMER_REVENUE_DATA[] = response.data.data.map(
+                  (element: CUSTOMER_REVENUE_DATA, index: number) => {
+                    return {
+                      ...element,
+                    };
+                  }
+                );
+                loadeddata = loadeddata.splice(0, 5);
+                //console.log(loadeddata);
+                setCustomerRevenue(loadeddata);
+              } else {
+                //Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
+              }
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+  const handleGetPICRevenue = () => {
+    let sunday = moment().clone().weekday(0).format("YYYY-MM-DD");
+    let monday = moment().clone().weekday(6).format("YYYY-MM-DD");
+    generalQuery("PICRevenue", { 
+      START_DATE: df? sunday : fromdate,
+      END_DATE: df? monday: todate, 
+    })
+      .then((response) => {
+        if (response.data.tk_status !== "NG") {
+          //console.log(response.data.data);
+          let loadeddata: PIC_REVENUE_DATA[] = response.data.data.map(
+            (element: PIC_REVENUE_DATA, index: number) => {
+              return {
+                ...element,
+              };
+            }
+          );
+
+          setPICRevenue(loadeddata);
+        } else {
+          //Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
+          sunday = moment()
+            .clone()
+            .weekday(0)
+            .add(-7, "days")
+            .format("YYYY-MM-DD");
+          monday = moment()
+            .clone()
+            .weekday(6)
+            .add(-7, "days")
+            .format("YYYY-MM-DD");
+
+          generalQuery("PICRevenue", { 
+            START_DATE: df? sunday : fromdate,
+            END_DATE: df? monday: todate, 
+           })
+            .then((response) => {
+              if (response.data.tk_status !== "NG") {
+                //console.log(response.data.data);
+                let loadeddata: PIC_REVENUE_DATA[] = response.data.data.map(
+                  (element: PIC_REVENUE_DATA, index: number) => {
+                    return {
+                      ...element,
+                    };
+                  }
+                );
+
+                setPICRevenue(loadeddata);
+              } else {
+                //Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
+              }
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
   const getcustomerlist = () => {
     generalQuery("selectcustomerList", {})
       .then((response) => {
@@ -460,53 +403,59 @@ const KinhDoanhReport = () => {
         //console.log(error);
       });
   };
-  
-  const countriesData = [
-    { id: 1, name: 'Vietnam' },
-    { id: 2, name: 'United States' },
-    { id: 3, name: 'Japan' },
-    { id: 4, name: 'Germany' },
-    { id: 5, name: 'France' },
-  ];
-  const [selectedCountries, setSelectedCountries] = useState([]);
-
   const initFunction = () => {
     getcustomerlist();
-    handleGetDailyClosing();    
-    handleGetWeeklyClosing();    
-    handleGetMonthlyClosing();    
+    handleGetDailyClosing();
+    handleGetWeeklyClosing();
+    handleGetMonthlyClosing();
     handleGetYearlyClosing();
+    handleGetCustomerRevenue();
+    handleGetPICRevenue();
     handleGetPOBalanceSummary();
     handleGetFCSTAmount();
   }
-
-  useEffect(() => {    
-    initFunction();    
+  useEffect(() => {
+    initFunction();
   }, []);
   return (
     <div className="kinhdoanhreport">
-      <div className="filterdiv">
-        {/* <DropDownBox
-          dataSource={countriesData}
-          placeholder="Select countries"
-          value={selectedCountries}
-          valueExpr="id"
-          displayExpr="name"
-          showClearButton={true}
-          onValueChanged={(e) => setSelectedCountries(e.value)}
-          opened={true}
-        /> */}
-
-        {/* <DropDownBox
-          dataSource={customerList}
-          placeholder="Select Customer"
-          value={selectedCustomerList}
-          valueExpr="CUST_CD"
-          displayExpr="CUST_NAME_KD"
-          showClearButton={true}
-          onValueChanged={(e) => setSelectedCustomerList(e.value)}
-          opened={true}
-        /> */}
+      <div className='filterform'>
+        <label>
+          <b>From Date:</b>
+          <input
+            type='date'
+            value={fromdate.slice(0, 10)}
+            onChange={(e) => setFromDate(e.target.value)}
+          ></input>
+        </label>
+        <label>
+          <b>To Date:</b>{" "}
+          <input
+            type='date'
+            value={todate.slice(0, 10)}
+            onChange={(e) => setToDate(e.target.value)}
+          ></input>
+        </label>
+        <label>
+        <b>Default:</b>{" "}
+        <Checkbox
+          checked={df}
+          
+          onChange={(e) => {
+            //console.log(e.target.checked);
+            setDF(e.target.checked);
+          }}
+          inputProps={{ "aria-label": "controlled" }}
+        />
+        </label>        
+        <button
+          className='searchbutton'
+          onClick={() => {
+            initFunction();
+          }}
+        >
+          Search
+        </button>
       </div>
       <div className="doanhthureport">
         <span className="section_title">1. Summary</span>
@@ -517,9 +466,9 @@ const KinhDoanhReport = () => {
               label="Yesterday"
               topColor="#b3c6ff"
               botColor="#b3ecff"
-              qty={widgetdata_yesterday.yesterday_qty}
-              amount={widgetdata_yesterday.yesterday_amount}
-              percentage={20}
+              qty={widgetdata_yesterday[widgetdata_yesterday.length-1]?.DELIVERY_QTY}
+              amount={widgetdata_yesterday[widgetdata_yesterday.length-1]?.DELIVERED_AMOUNT}
+              percentage={(1 - widgetdata_yesterday[widgetdata_yesterday.length-2]?.DELIVERED_AMOUNT * 1.0 / widgetdata_yesterday[widgetdata_yesterday.length-3]?.DELIVERED_AMOUNT) * 100}
             />
           </div>
           <div className="revenuwdg">
@@ -528,9 +477,9 @@ const KinhDoanhReport = () => {
               label="This week"
               topColor="#ccffcc"
               botColor="#80ff80"
-              qty={widgetdata_thisweek.thisweek_qty}
-              amount={widgetdata_thisweek.thisweek_amount}
-              percentage={20}
+              qty={widgetdata_thisweek[widgetdata_thisweek.length-1]?.DELIVERY_QTY}
+              amount={widgetdata_thisweek[widgetdata_thisweek.length-1]?.DELIVERED_AMOUNT}
+              percentage={(1 - widgetdata_thisweek[widgetdata_thisweek.length-1]?.DELIVERED_AMOUNT * 1.0 / widgetdata_thisweek[widgetdata_thisweek.length-2]?.DELIVERED_AMOUNT) * 100}
             />
           </div>
           <div className="revenuwdg">
@@ -539,9 +488,9 @@ const KinhDoanhReport = () => {
               label="This month"
               topColor="#fff2e6"
               botColor="#ffbf80"
-              qty={widgetdata_thismonth.thismonth_qty}
-              amount={widgetdata_thismonth.thismonth_amount}
-              percentage={20}
+              qty={widgetdata_thismonth[widgetdata_thismonth.length -1 ]?.DELIVERY_QTY}
+              amount={widgetdata_thismonth[widgetdata_thismonth.length - 1]?.DELIVERED_AMOUNT}
+              percentage={(1 - widgetdata_thismonth[widgetdata_thismonth.length - 1]?.DELIVERED_AMOUNT * 1.0 / widgetdata_thismonth[widgetdata_thismonth.length - 2]?.DELIVERED_AMOUNT) * 100}
             />
           </div>
           <div className="revenuwdg">
@@ -550,9 +499,9 @@ const KinhDoanhReport = () => {
               label="This year"
               topColor="#ffe6e6"
               botColor="#ffb3b3"
-              qty={widgetdata_thisyear.thisyear_qty}
-              amount={widgetdata_thisyear.thisyear_amount}
-              percentage={20}
+              qty={widgetdata_thisyear[widgetdata_thisyear.length - 1]?.DELIVERY_QTY}
+              amount={widgetdata_thisyear[widgetdata_thisyear.length - 1]?.DELIVERED_AMOUNT}
+              percentage={(1 - widgetdata_thismonth[widgetdata_thisyear.length - 1]?.DELIVERED_AMOUNT * 1.0 / widgetdata_thismonth[0]?.DELIVERED_AMOUNT) * 100}
             />
           </div>
         </div>
@@ -563,43 +512,42 @@ const KinhDoanhReport = () => {
           <div className="dailygraphtotal">
             <div className="dailygraph">
               <span className="subsection">Daily Closing</span>
-              <ChartDaily />
+              <ChartDaily data={widgetdata_yesterday}/>
             </div>
             <div className="dailygraph">
               <span className="subsection">Weekly Closing</span>
-              <ChartWeekLy />
+              <ChartWeekLy data={widgetdata_thisweek}/>
             </div>
           </div>
           <div className="monthlyweeklygraph">
             <div className="dailygraph">
               <span className="subsection">Monthly Closing</span>
-              <ChartMonthLy />
+              <ChartMonthLy data={widgetdata_thismonth}/>
             </div>
             <div className="dailygraph">
               <span className="subsection">Yearly Closing</span>
-              <ChartYearly />
+              <ChartYearly data={widgetdata_thisyear}/>
             </div>
           </div>
-          
           <div className="monthlyweeklygraph">
             <div className="dailygraph">
               <span className="subsection">TOP 5 Customer Weekly Revenue</span>
-              <ChartCustomerRevenue />
+              <ChartCustomerRevenue data={customerRevenue}/>
             </div>
             <div className="dailygraph">
               <span className="subsection">PIC Weekly Revenue</span>
-              <ChartPICRevenue />
+              <ChartPICRevenue data={picRevenue}/>
             </div>
           </div>
           <div className="monthlyweeklygraph">
             <div className="dailygraph">
               <span className="subsection">Customer Daily Closing</span>
-              <CustomerDailyClosing/> 
-            </div> 
+              <CustomerDailyClosing />
+            </div>
             <div className="dailygraph">
               <span className="subsection">Customer Weekly Closing</span>
-              <CustomerWeeklyClosing/> 
-            </div> 
+              <CustomerWeeklyClosing />
+            </div>
           </div>
           <br></br>
           <hr></hr>
@@ -624,7 +572,7 @@ const KinhDoanhReport = () => {
             </div>
             <div className="dailygraph">
               <span className="subsection">Delivery By Week</span>
-              <ChartWeekLy />
+              <ChartWeekLy data={widgetdata_thisweek}/>
             </div>
           </div>
           <div className="monthlyweeklygraph">
@@ -638,7 +586,7 @@ const KinhDoanhReport = () => {
               <span className="subsection">
                 Customer PO Balance By Product Type
               </span>
-              <CustomerPobalancebyTypeNew/>
+              <CustomerPobalancebyTypeNew />
               {/* <CustomerPOBalanceByType /> */}
             </div>
           </div>
@@ -659,7 +607,7 @@ const KinhDoanhReport = () => {
                   botColor="#99ccff"
                   qty={widgetdata_fcstAmount.FCST4W_QTY * 1}
                   amount={widgetdata_fcstAmount.FCST4W_AMOUNT}
-                  percentage={20}
+                  percentage={0}
                 />
               </div>
               <div className="fcstwidget1">
@@ -670,7 +618,7 @@ const KinhDoanhReport = () => {
                   botColor="#ff99c2"
                   qty={widgetdata_fcstAmount.FCST8W_QTY * 1}
                   amount={widgetdata_fcstAmount.FCST8W_AMOUNT}
-                  percentage={20}
+                  percentage={0}
                 />
               </div>
             </div>
