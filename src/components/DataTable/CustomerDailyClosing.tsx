@@ -10,140 +10,7 @@ import {
   IconButton,
 } from "@mui/material";
 import { WEB_SETTING_DATA } from '../../api/GlobalInterface';
-const CustomerDailyClosing = ({data, columns} : {data: Array<any>, columns: Array<any>}) => {
-  //const [dailyClosingData, setDailyClosingData] = useState<any>([]);
-  //const [columns, setColumns] = useState<Array<any>>([]);
- /*  const loadDailyClosing = () => {
-    generalQuery("getDailyClosingKD", {
-      FROM_DATE: df ? moment.utc().format('YYYY-MM-01'):fromdate,
-      TO_DATE: df ? moment.utc().format('YYYY-MM-DD'): todate
-    })
-      .then((response) => {
-        if (response.data.tk_status !== "NG") {
-          let loadeddata =
-            response.data.data.map(
-              (element: any, index: number) => {
-                return {
-                  ...element,
-                  id: index
-                };
-              },
-            );
-          setDailyClosingData(loadeddata);
-          let keysArray = Object.getOwnPropertyNames(loadeddata[0]);
-          let column_map = keysArray.map((e, index) => {
-            return {
-              dataField: e,
-              caption: e,
-              width: 100,
-              cellRender: (ele: any) => {
-                //console.log(ele);
-                if (['CUST_NAME_KD', 'id'].indexOf(e) > -1) {
-                  return <span>{ele.data[e]}</span>;
-                }
-                else if (e === 'DELIVERED_AMOUNT') {
-                  return <span style={{ color: "#050505", fontWeight: "bold" }}>
-                    {ele.data[e]?.toLocaleString("en-US", {
-                      style: "currency",
-                      currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
-                    })}
-                  </span>
-                }
-                else {
-                  if (ele.data['CUST_NAME_KD'] === 'TOTAL') {
-                    return (<span style={{ color: "green", fontWeight: "bold" }}>
-                      {ele.data[e]?.toLocaleString("en-US", {
-                        style: "currency",
-                        currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
-                      })}
-                    </span>)
-                  }
-                  else {
-                    return (<span style={{ color: "green", fontWeight: "normal" }}>
-                      {ele.data[e]?.toLocaleString("en-US", {
-                        style: "currency",
-                        currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
-                      })}
-                    </span>)
-                  }
-                }
-              },
-            };
-          });
-          setColumns(column_map);
-        } else {
-          //Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
-          const lastmonth = moment().subtract(1, 'months');
-          generalQuery("getDailyClosingKD", {            
-            FROM_DATE: df ? lastmonth.startOf('month').format('YYYY-MM-DD'):fromdate,
-            TO_DATE: df ? lastmonth.endOf('month').format('YYYY-MM-DD'): todate
-          })
-            .then((response) => {
-              if (response.data.tk_status !== "NG") {
-                let loadeddata =
-                  response.data.data.map(
-                    (element: any, index: number) => {
-                      return {
-                        ...element,
-                        id: index
-                      };
-                    },
-                  );
-                setDailyClosingData(loadeddata);
-                let keysArray = Object.getOwnPropertyNames(loadeddata[0]);
-                let column_map = keysArray.map((e, index) => {
-                  return {
-                    dataField: e,
-                    caption: e,
-                    width: 100,
-                    cellRender: (ele: any) => {
-                      //console.log(ele);
-                      if (['CUST_NAME_KD', 'id'].indexOf(e) > -1) {
-                        return <span>{ele.data[e]}</span>;
-                      }
-                      else if (e === 'DELIVERED_AMOUNT') {
-                        return <span style={{ color: "#050505", fontWeight: "bold" }}>
-                          {ele.data[e]?.toLocaleString("en-US", {
-                            style: "currency",
-                            currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
-                          })}
-                        </span>
-                      }
-                      else {
-                        if (ele.data['CUST_NAME_KD'] === 'TOTAL') {
-                          return (<span style={{ color: "green", fontWeight: "bold" }}>
-                            {ele.data[e]?.toLocaleString("en-US", {
-                              style: "currency",
-                              currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
-                            })}
-                          </span>)
-                        }
-                        else {
-                          return (<span style={{ color: "green", fontWeight: "normal" }}>
-                            {ele.data[e]?.toLocaleString("en-US", {
-                              style: "currency",
-                              currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
-                            })}
-                          </span>)
-                        }
-                      }
-                    },
-                  };
-                });
-                setColumns(column_map);
-              } else {
-                //Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
-              }
-            })
-            .catch((error) => {
-              console.log(error);
-            });
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  } */
+const CustomerDailyClosing = ({data, columns} : {data: Array<any>, columns: Array<any>}) => {  
   const dailyClosingDataTable = React.useMemo(
     () => (
       <div className="datatb">
@@ -222,8 +89,7 @@ const CustomerDailyClosing = ({data, columns} : {data: Array<any>, columns: Arra
     ),
     [data, getGlobalSetting()]
   );
-  useEffect(() => {
-    //loadDailyClosing();
+  useEffect(() => {    
     return () => {
     }
   }, [])

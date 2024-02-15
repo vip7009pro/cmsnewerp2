@@ -16,7 +16,7 @@ import ChartPOBalance from "../../../components/Chart/Chart4";
 import CustomerDailyClosing from "../../../components/DataTable/CustomerDailyClosing";
 import CustomerWeeklyClosing from "../../../components/DataTable/CustomerWeeklyClosing";
 import CustomerPobalancebyTypeNew from "../../../components/DataTable/CustomerPoBalanceByTypeNew";
-import { CUSTOMER_REVENUE_DATA, CustomerListData, MonthlyClosingData, PIC_REVENUE_DATA, WEB_SETTING_DATA, WeeklyClosingData } from "../../../api/GlobalInterface";
+import { CUSTOMER_REVENUE_DATA, CustomerListData, MonthlyClosingData, PIC_REVENUE_DATA, RunningPOData, WEB_SETTING_DATA, WeekLyPOData, WeeklyClosingData } from "../../../api/GlobalInterface";
 import { Checkbox } from "@mui/material";
 
 interface YearlyClosingData {
@@ -65,6 +65,10 @@ const KinhDoanhReport = () => {
 
   const [weeklyClosingData, setWeeklyClosingData] = useState<any>([]);
   const [columnsweek, setColumnsWeek] = useState<Array<any>>([]);
+
+  const [runningPOData, setWeekLyPOData] = useState<Array<WeekLyPOData>>([]);
+  const [runningPOBalanceData, setRunningPOBalanceData] = useState<Array<RunningPOData>>([]);
+
 
   const [widgetdata_pobalancesummary, setWidgetData_PoBalanceSummary] = useState<WidgetData_POBalanceSummary>({
     po_balance_qty: 0,
@@ -742,21 +746,69 @@ const KinhDoanhReport = () => {
         console.log(error);
       });
   }
+  const loadPoOverWeek = () => {
+    generalQuery("kd_pooverweek", { 
+      FROM_DATE: df ? moment().add(-70, "day").format("YYYY-MM-DD"):fromdate,
+      TO_DATE: df ? moment.utc().format('YYYY-MM-DD'): todate
+    })
+      .then((response) => {
+        if (response.data.tk_status !== "NG") {
+          const loadeddata: WeekLyPOData[] = response.data.data.map(
+            (element: WeekLyPOData, index: number) => {
+              return {
+                ...element,
+              };
+            }
+          );
+          setWeekLyPOData(loadeddata.reverse());
+          //console.log(loadeddata);
+        } else {
+          //Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+  const loadRunningPOBalanceData = () => {
+    generalQuery("kd_runningpobalance", {       
+      TO_DATE: df ?  moment().format("YYYY-MM-DD"): todate
+     })
+      .then((response) => {
+        if (response.data.tk_status !== "NG") {
+          const loadeddata: RunningPOData[] = response.data.data.map(
+            (element: RunningPOData, index: number) => {             
+              return {
+                ...element,              
+              };
+            }
+          );
+          setRunningPOBalanceData(loadeddata.splice(0,10).reverse());          
+        } else {
+          //Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
   const initFunction = () => {
     getcustomerlist();
-    handleGetDailyClosing();
-    loadDailyClosing();
-    handleGetWeeklyClosing();
-    loadWeeklyClosing();
+    handleGetDailyClosing();    
+    handleGetWeeklyClosing();    
     handleGetMonthlyClosing();
     handleGetYearlyClosing();
+    loadDailyClosing();
+    loadWeeklyClosing();
+    loadPoOverWeek();
+    loadRunningPOBalanceData();
     handleGetCustomerRevenue();
     handleGetPICRevenue();
     handleGetPOBalanceSummary();
     handleGetFCSTAmount();
   }
-  useEffect(() => {   
-    console.log('render')
+  useEffect(() => {
     initFunction();
   }, []);
   return (
@@ -910,7 +962,7 @@ const KinhDoanhReport = () => {
           <div className="monthlyweeklygraph">
             <div className="dailygraph">
               <span className="subsection">PO By Week</span>
-              <ChartWeeklyPO />
+              <ChartWeeklyPO data={runningPOData}/>
             </div>
             <div className="dailygraph">
               <span className="subsection">Delivery By Week</span>
@@ -920,7 +972,7 @@ const KinhDoanhReport = () => {
           <div className="monthlyweeklygraph">
             <div className="dailygraph">
               <span className="subsection">PO Balance Trending (By Week)</span>
-              <ChartPOBalance />
+              <ChartPOBalance data={runningPOBalanceData}/>
             </div>
           </div>
           <div className="datatable">

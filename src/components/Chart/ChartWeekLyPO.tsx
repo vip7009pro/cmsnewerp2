@@ -18,8 +18,8 @@ import { generalQuery, getGlobalSetting } from "../../api/Api";
 import { CustomResponsiveContainer, nFormatter } from "../../api/GlobalFunction";
 import { WEB_SETTING_DATA, WeekLyPOData } from "../../api/GlobalInterface";
 
-const ChartWeeklyPO = () => {
-  const [runningPOData, setWeekLyPOData] = useState<Array<WeekLyPOData>>([]);
+const ChartWeeklyPO = ({data}: {data: Array<WeekLyPOData>}) => {
+
     const formatCash = (n: number) => {  
      return nFormatter(n, 2) + ((getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD") === 'USD'?  " $": " đ");
    };
@@ -76,44 +76,23 @@ const ChartWeeklyPO = () => {
     }
     return null;
   };
-  const handleGetDailyClosing = () => {
-    generalQuery("kd_pooverweek", { YEAR: moment().format("YYYY") })
-      .then((response) => {
-        if (response.data.tk_status !== "NG") {
-          const loadeddata: WeekLyPOData[] = response.data.data.map(
-            (element: WeekLyPOData, index: number) => {
-              return {
-                ...element,
-              };
-            }
-          );
-          setWeekLyPOData(loadeddata.reverse());
-          //console.log(loadeddata);
-        } else {
-          //Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
+
   useEffect(() => {
-    handleGetDailyClosing();
+    
   }, []);
   return (
     <CustomResponsiveContainer>
       <ComposedChart
         width={500}
         height={300}
-        data={runningPOData}
+        data={data}
         margin={{
           top: 5,
           right: 30,
           left: 20,
           bottom: 5,
         }}
-      >
-        {" "}
+      >       
         <CartesianGrid strokeDasharray='3 3' className='chartGrid' />
         <XAxis dataKey='YEAR_WEEK'  height={40} tick={{fontSize:'0.7rem'}}>          
           <Label value='Tuần' offset={0} position='insideBottom' style={{fontWeight:'normal', fontSize:'0.7rem'}}  />
