@@ -1,4 +1,4 @@
-import { IconButton, LinearProgress } from "@mui/material";
+import { Button, IconButton, LinearProgress } from "@mui/material";
 import {
   DataGrid,
   GridToolbarContainer,
@@ -694,61 +694,36 @@ const KHOTP = () => {
             </div>
           </div>
           <div className="formbutton">
-            <button
-              className="tranhapkiembutton"
-              onClick={() => {
-                setisLoading(true);
-                setReadyRender(false);
-                setColumnDefinition(column_WH_IN_OUT);
-                handletraWHInOut("IN");
-              }}
-            >
-              Nhập Kho
-            </button>
-            <button
-              className="tranhapkiembutton"
-              onClick={() => {
-                setisLoading(true);
-                setReadyRender(false);
-                setColumnDefinition(column_WH_IN_OUT);
-                handletraWHInOut("OUT");
-              }}
-            >
-              Xuất Kho
-            </button>
-            <button
-              className="traxuatkiembutton"
-              onClick={() => {
-                setisLoading(true);
-                setReadyRender(false);
-                setColumnDefinition(column_STOCK_CMS);
-                handletraWHSTOCKCMS();
-              }}
-            >
-              Tồn(G_CODE)
-            </button>
-            <button
-              className="tranhapxuatkiembutton"
-              onClick={() => {
-                setisLoading(true);
-                setReadyRender(false);
-                setColumnDefinition(column_STOCK_KD);
-                handletraWHSTOCKKD();
-              }}
-            >
-              Tồn(KD)
-            </button>
-            <button
-              className="tranhatky"
-              onClick={() => {
-                setisLoading(true);
-                setReadyRender(false);
-                setColumnDefinition(column_STOCK_TACH);
-                handletraWHSTOCKTACH();
-              }}
-            >
-              Tồn(Tách kho)
-            </button>
+            <Button fullWidth={true} color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#31ad00' }} onClick={() => {
+              setisLoading(true);
+              setReadyRender(false);
+              setColumnDefinition(column_WH_IN_OUT);
+              handletraWHInOut("IN");
+            }}>NHẬP</Button>
+            <Button fullWidth={true} color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#ecc61a' }} onClick={() => {
+              setisLoading(true);
+              setReadyRender(false);
+              setColumnDefinition(column_WH_IN_OUT);
+              handletraWHInOut("OUT");
+            }}>XUẤT</Button>
+            <Button fullWidth={true} color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#20bdc9' }} onClick={() => {
+              setisLoading(true);
+              setReadyRender(false);
+              setColumnDefinition(column_STOCK_CMS);
+              handletraWHSTOCKCMS();
+            }}>TỒN(G_CODE)</Button>
+            <Button fullWidth={true} color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#a240cf' }} onClick={() => {
+              setisLoading(true);
+              setReadyRender(false);
+              setColumnDefinition(column_STOCK_KD);
+              handletraWHSTOCKKD();
+            }}>TỒN(KD)</Button>
+            <Button fullWidth={true} color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#c0277b' }} onClick={() => {
+              setisLoading(true);
+              setReadyRender(false);
+              setColumnDefinition(column_STOCK_TACH);
+              handletraWHSTOCKTACH();
+            }}>TỒN(TÁCH KHO)</Button>           
           </div>
         </div>
         <div className="tracuuWHTable">
