@@ -1,7 +1,7 @@
 import moment from "moment";
 import React, { useEffect, useState } from "react";
 import Swal from "sweetalert2";
-import { generalQuery } from "../../../api/Api";
+import { generalQuery, getGlobalSetting } from "../../../api/Api";
 import ChartWeekLy from "../../../components/Chart/Chart";
 import ChartMonthLy from "../../../components/Chart/Chart5";
 import ChartYearly from "../../../components/Chart/Chart6";
@@ -16,7 +16,7 @@ import ChartPOBalance from "../../../components/Chart/Chart4";
 import CustomerDailyClosing from "../../../components/DataTable/CustomerDailyClosing";
 import CustomerWeeklyClosing from "../../../components/DataTable/CustomerWeeklyClosing";
 import CustomerPobalancebyTypeNew from "../../../components/DataTable/CustomerPoBalanceByTypeNew";
-import { CUSTOMER_REVENUE_DATA, CustomerListData, MonthlyClosingData, PIC_REVENUE_DATA, WeeklyClosingData } from "../../../api/GlobalInterface";
+import { CUSTOMER_REVENUE_DATA, CustomerListData, MonthlyClosingData, PIC_REVENUE_DATA, WEB_SETTING_DATA, WeeklyClosingData } from "../../../api/GlobalInterface";
 import { Checkbox } from "@mui/material";
 
 interface YearlyClosingData {
@@ -59,6 +59,13 @@ const KinhDoanhReport = () => {
   const [widgetdata_thisyear, setWidgetData_ThisYear] = useState<YearlyClosingData[]>([]);
   const [customerRevenue, setCustomerRevenue] = useState<CUSTOMER_REVENUE_DATA[]>([]);
   const [picRevenue, setPICRevenue] = useState<PIC_REVENUE_DATA[]>([]);
+
+  const [dailyClosingData, setDailyClosingData] = useState<any>([]);
+  const [columns, setColumns] = useState<Array<any>>([]);
+
+  const [weeklyClosingData, setWeeklyClosingData] = useState<any>([]);
+  const [columnsweek, setColumnsWeek] = useState<Array<any>>([]);
+
   const [widgetdata_pobalancesummary, setWidgetData_PoBalanceSummary] = useState<WidgetData_POBalanceSummary>({
     po_balance_qty: 0,
     po_balance_amount: 0,
@@ -403,10 +410,344 @@ const KinhDoanhReport = () => {
         //console.log(error);
       });
   };
+  const loadDailyClosing = () => {
+    generalQuery("getDailyClosingKD", {
+      FROM_DATE: df ? moment.utc().format('YYYY-MM-01'):fromdate,
+      TO_DATE: df ? moment.utc().format('YYYY-MM-DD'): todate
+    })
+      .then((response) => {
+        if (response.data.tk_status !== "NG") {
+          let loadeddata =
+            response.data.data.map(
+              (element: any, index: number) => {
+                return {
+                  ...element,
+                  id: index
+                };
+              },
+            );
+          setDailyClosingData(loadeddata);
+          let keysArray = Object.getOwnPropertyNames(loadeddata[0]);
+          let column_map = keysArray.map((e, index) => {
+            return {
+              dataField: e,
+              caption: e,
+              width: 100,
+              cellRender: (ele: any) => {
+                //console.log(ele);
+                if (['CUST_NAME_KD', 'id'].indexOf(e) > -1) {
+                  return <span>{ele.data[e]}</span>;
+                }
+                else if (e === 'DELIVERED_AMOUNT') {
+                  return <span style={{ color: "#050505", fontWeight: "bold" }}>
+                    {ele.data[e]?.toLocaleString("en-US", {
+                      style: "currency",
+                      currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
+                    })}
+                  </span>
+                }
+                else {
+                  if (ele.data['CUST_NAME_KD'] === 'TOTAL') {
+                    return (<span style={{ color: "green", fontWeight: "bold" }}>
+                      {ele.data[e]?.toLocaleString("en-US", {
+                        style: "currency",
+                        currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
+                      })}
+                    </span>)
+                  }
+                  else {
+                    return (<span style={{ color: "green", fontWeight: "normal" }}>
+                      {ele.data[e]?.toLocaleString("en-US", {
+                        style: "currency",
+                        currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
+                      })}
+                    </span>)
+                  }
+                }
+              },
+            };
+          });
+          setColumns(column_map);
+        } else {
+          //Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
+          const lastmonth = moment().subtract(1, 'months');
+          generalQuery("getDailyClosingKD", {            
+            FROM_DATE: df ? lastmonth.startOf('month').format('YYYY-MM-DD'):fromdate,
+            TO_DATE: df ? lastmonth.endOf('month').format('YYYY-MM-DD'): todate
+          })
+            .then((response) => {
+              if (response.data.tk_status !== "NG") {
+                let loadeddata =
+                  response.data.data.map(
+                    (element: any, index: number) => {
+                      return {
+                        ...element,
+                        id: index
+                      };
+                    },
+                  );
+                setDailyClosingData(loadeddata);
+                let keysArray = Object.getOwnPropertyNames(loadeddata[0]);
+                let column_map = keysArray.map((e, index) => {
+                  return {
+                    dataField: e,
+                    caption: e,
+                    width: 100,
+                    cellRender: (ele: any) => {
+                      //console.log(ele);
+                      if (['CUST_NAME_KD', 'id'].indexOf(e) > -1) {
+                        return <span>{ele.data[e]}</span>;
+                      }
+                      else if (e === 'DELIVERED_AMOUNT') {
+                        return <span style={{ color: "#050505", fontWeight: "bold" }}>
+                          {ele.data[e]?.toLocaleString("en-US", {
+                            style: "currency",
+                            currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
+                          })}
+                        </span>
+                      }
+                      else {
+                        if (ele.data['CUST_NAME_KD'] === 'TOTAL') {
+                          return (<span style={{ color: "green", fontWeight: "bold" }}>
+                            {ele.data[e]?.toLocaleString("en-US", {
+                              style: "currency",
+                              currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
+                            })}
+                          </span>)
+                        }
+                        else {
+                          return (<span style={{ color: "green", fontWeight: "normal" }}>
+                            {ele.data[e]?.toLocaleString("en-US", {
+                              style: "currency",
+                              currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
+                            })}
+                          </span>)
+                        }
+                      }
+                    },
+                  };
+                });
+                setColumns(column_map);
+              } else {
+                //Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
+              }
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+  const loadWeeklyClosing = () => {    
+    generalQuery("getWeeklyClosingKD", {
+      FROM_DATE: df ? moment.utc().format('YYYY-MM-01'):fromdate,
+      TO_DATE: df ? moment.utc().format('YYYY-MM-DD'): todate
+    })
+      .then((response) => {
+        //console.log(response);
+        if (response.data.tk_status !== "NG") {
+          if (response.data.data.length > 0) {
+            let loadeddata =
+              response.data.data.map(
+                (element: any, index: number) => {
+                  return {
+                    ...element,
+                    id: index
+                  };
+                },
+              );
+            setWeeklyClosingData(loadeddata);
+            let keysArray = Object.getOwnPropertyNames(loadeddata[0]);
+            let column_map = keysArray.map((e, index) => {
+              return {
+                dataField: e,
+                caption: e,
+                width: 100,
+                cellRender: (ele: any) => {
+                  //console.log(ele);
+                  if (['CUST_NAME_KD', 'id'].indexOf(e) > -1) {
+                    return <span>{ele.data[e]}</span>;
+                  }
+                  else if (e === 'TOTAL_AMOUNT') {
+                    return <span style={{ color: "#F633EA", fontWeight: "bold" }}>
+                      {ele.data[e]?.toLocaleString("en-US", {
+                        style: "currency",
+                        currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
+                      })}
+                    </span>
+                  }
+                  else {
+                    if (ele.data['CUST_NAME_KD'] === 'TOTAL') {
+                      return (<span style={{ color: "green", fontWeight: "bold" }}>
+                        {ele.data[e]?.toLocaleString("en-US", {
+                          style: "currency",
+                          currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
+                        })}
+                      </span>)
+                    }
+                    else {
+                      return (<span style={{ color: "green", fontWeight: "normal" }}>
+                        {ele.data[e]?.toLocaleString("en-US", {
+                          style: "currency",
+                          currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
+                        })}
+                      </span>)
+                    }
+                  }
+                },
+              };
+            });
+            setColumnsWeek(column_map);
+          }
+          else {
+            const lastmonth = moment().subtract(1, 'months');
+            generalQuery("getWeeklyClosingKD", {
+              FROM_DATE: df ? lastmonth.startOf('month').format('YYYY-MM-DD'):fromdate,
+              TO_DATE: df ? lastmonth.endOf('month').format('YYYY-MM-DD'): todate
+            })
+              .then((response) => {
+                if (response.data.tk_status !== "NG") {
+                  let loadeddata =
+                    response.data.data.map(
+                      (element: any, index: number) => {
+                        return {
+                          ...element,
+                          id: index
+                        };
+                      },
+                    );
+                  setWeeklyClosingData(loadeddata);
+                  let keysArray = Object.getOwnPropertyNames(loadeddata[0] ?? []);
+                  let column_map = keysArray.map((e, index) => {
+                    return {
+                      dataField: e,
+                      caption: e,
+                      width: 100,
+                      cellRender: (ele: any) => {
+                        //console.log(ele);
+                        if (['CUST_NAME_KD', 'id'].indexOf(e) > -1) {
+                          return <span>{ele.data[e]}</span>;
+                        }
+                        else if (e === 'TOTAL_AMOUNT') {
+                          return <span style={{ color: "#F633EA", fontWeight: "bold" }}>
+                            {ele.data[e]?.toLocaleString("en-US", {
+                              style: "currency",
+                              currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
+                            })}
+                          </span>
+                        }
+                        else {
+                          if (ele.data['CUST_NAME_KD'] === 'TOTAL') {
+                            return (<span style={{ color: "green", fontWeight: "bold" }}>
+                              {ele.data[e]?.toLocaleString("en-US", {
+                                style: "currency",
+                                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
+                              })}
+                            </span>)
+                          }
+                          else {
+                            return (<span style={{ color: "green", fontWeight: "normal" }}>
+                              {ele.data[e]?.toLocaleString("en-US", {
+                                style: "currency",
+                                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
+                              })}
+                            </span>)
+                          }
+                        }
+                      },
+                    };
+                  });
+                  setColumnsWeek(column_map);
+                } else {
+                  //Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
+                }
+              })
+              .catch((error) => {
+                console.log(error);
+              });
+          }
+        } else {
+          //Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
+          const lastmonth = moment().subtract(1, 'months');
+          generalQuery("getWeeklyClosingKD", {
+            FROM_DATE: lastmonth.startOf('month').format('YYYY-MM-DD'),
+            TO_DATE: lastmonth.endOf('month').format('YYYY-MM-DD')
+          })
+            .then((response) => {
+              if (response.data.tk_status !== "NG") {
+                let loadeddata =
+                  response.data.data.map(
+                    (element: any, index: number) => {
+                      return {
+                        ...element,
+                        id: index
+                      };
+                    },
+                  );
+                setDailyClosingData(loadeddata);
+                let keysArray = Object.getOwnPropertyNames(loadeddata[0]);
+                let column_map = keysArray.map((e, index) => {
+                  return {
+                    dataField: e,
+                    caption: e,
+                    width: 100,
+                    cellRender: (ele: any) => {
+                      //console.log(ele);
+                      if (['CUST_NAME_KD', 'id'].indexOf(e) > -1) {
+                        return <span>{ele.data[e]}</span>;
+                      }
+                      else if (e === 'TOTAL_AMOUNT') {
+                        return <span style={{ color: "#F633EA", fontWeight: "bold" }}>
+                          {ele.data[e]?.toLocaleString("en-US", {
+                            style: "currency",
+                            currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
+                          })}
+                        </span>
+                      }
+                      else {
+                        if (ele.data['CUST_NAME_KD'] === 'TOTAL') {
+                          return (<span style={{ color: "green", fontWeight: "bold" }}>
+                            {ele.data[e]?.toLocaleString("en-US", {
+                              style: "currency",
+                              currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
+                            })}
+                          </span>)
+                        }
+                        else {
+                          return (<span style={{ color: "green", fontWeight: "normal" }}>
+                            {ele.data[e]?.toLocaleString("en-US", {
+                              style: "currency",
+                              currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
+                            })}
+                          </span>)
+                        }
+                      }
+                    },
+                  };
+                });
+                setColumns(column_map);
+              } else {
+                //Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
+              }
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
   const initFunction = () => {
     getcustomerlist();
     handleGetDailyClosing();
+    loadDailyClosing();
     handleGetWeeklyClosing();
+    loadWeeklyClosing();
     handleGetMonthlyClosing();
     handleGetYearlyClosing();
     handleGetCustomerRevenue();
@@ -414,7 +755,8 @@ const KinhDoanhReport = () => {
     handleGetPOBalanceSummary();
     handleGetFCSTAmount();
   }
-  useEffect(() => {
+  useEffect(() => {   
+    console.log('render')
     initFunction();
   }, []);
   return (
@@ -542,11 +884,11 @@ const KinhDoanhReport = () => {
           <div className="monthlyweeklygraph">
             <div className="dailygraph">
               <span className="subsection">Customer Daily Closing</span>
-              <CustomerDailyClosing />
+              <CustomerDailyClosing data={dailyClosingData} columns={columns}/>
             </div>
             <div className="dailygraph">
               <span className="subsection">Customer Weekly Closing</span>
-              <CustomerWeeklyClosing />
+              <CustomerWeeklyClosing  data={weeklyClosingData} columns={columnsweek}/>
             </div>
           </div>
           <br></br>

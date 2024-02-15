@@ -9,14 +9,14 @@ import {
   IconButton,
 } from "@mui/material";
 import { WEB_SETTING_DATA } from '../../api/GlobalInterface';
-const CustomerWeeklyClosing = () => {
-  const [dailyClosingData, setDailyClosingData] = useState<any>([]);
-  const [columns, setColumns] = useState<Array<any>>([]);
-  const loadDailyClosing = () => {
-    //console.log('vao day');
+const CustomerWeeklyClosing = ({data, columns} : {data: Array<any>, columns: Array<any>}) => {
+/*   const [dailyClosingData, setDailyClosingData] = useState<any>([]);
+  const [columns, setColumns] = useState<Array<any>>([]); */
+/*   const loadDailyClosing = () => {
+    console.log('vao day');
     generalQuery("getWeeklyClosingKD", {
-      FROM_DATE: moment.utc().format('YYYY-MM-01'),
-      TO_DATE: moment.utc().format('YYYY-MM-DD')
+      FROM_DATE: df ? moment.utc().format('YYYY-MM-01'):fromdate,
+      TO_DATE: df ? moment.utc().format('YYYY-MM-DD'): todate
     })
       .then((response) => {
         //console.log(response);
@@ -77,8 +77,8 @@ const CustomerWeeklyClosing = () => {
           else {
             const lastmonth = moment().subtract(1, 'months');
             generalQuery("getWeeklyClosingKD", {
-              FROM_DATE: lastmonth.startOf('month').format('YYYY-MM-DD'),
-              TO_DATE: lastmonth.endOf('month').format('YYYY-MM-DD')
+              FROM_DATE: df ? lastmonth.startOf('month').format('YYYY-MM-DD'):fromdate,
+              TO_DATE: df ? lastmonth.endOf('month').format('YYYY-MM-DD'): todate
             })
               .then((response) => {
                 if (response.data.tk_status !== "NG") {
@@ -92,7 +92,7 @@ const CustomerWeeklyClosing = () => {
                       },
                     );
                   setDailyClosingData(loadeddata);
-                  let keysArray = Object.getOwnPropertyNames(loadeddata[0]);
+                  let keysArray = Object.getOwnPropertyNames(loadeddata[0] ?? []);
                   let column_map = keysArray.map((e, index) => {
                     return {
                       dataField: e,
@@ -213,14 +213,14 @@ const CustomerWeeklyClosing = () => {
       .catch((error) => {
         console.log(error);
       });
-  }
+  } */
   const dailyClosingDataTable = React.useMemo(
     () => (
       <div className="datatb">
         <IconButton
           className='buttonIcon'
           onClick={() => {
-            SaveExcel(dailyClosingData, "WeeklyClosingData");
+            SaveExcel(data, "WeeklyClosingData");
           }}
         >
           <AiFillFileExcel color='green' size={15} />
@@ -236,7 +236,7 @@ const CustomerWeeklyClosing = () => {
             cellHintEnabled={true}
             columnResizingMode={"widget"}
             showColumnLines={true}
-            dataSource={dailyClosingData}
+            dataSource={data}
             columnWidth="auto"
             keyExpr="id"
             height={"100%"}
@@ -289,10 +289,10 @@ const CustomerWeeklyClosing = () => {
         </CustomResponsiveContainer>
       </div>
     ),
-    [dailyClosingData, getGlobalSetting()]
+    [data, getGlobalSetting()]
   );
   useEffect(() => {
-    loadDailyClosing();
+    //loadDailyClosing();
     return () => {
     }
   }, [])

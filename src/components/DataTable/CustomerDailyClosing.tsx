@@ -10,13 +10,13 @@ import {
   IconButton,
 } from "@mui/material";
 import { WEB_SETTING_DATA } from '../../api/GlobalInterface';
-const CustomerDailyClosing = () => {
-  const [dailyClosingData, setDailyClosingData] = useState<any>([]);
-  const [columns, setColumns] = useState<Array<any>>([]);
-  const loadDailyClosing = () => {
+const CustomerDailyClosing = ({data, columns} : {data: Array<any>, columns: Array<any>}) => {
+  //const [dailyClosingData, setDailyClosingData] = useState<any>([]);
+  //const [columns, setColumns] = useState<Array<any>>([]);
+ /*  const loadDailyClosing = () => {
     generalQuery("getDailyClosingKD", {
-      FROM_DATE: moment.utc().format('YYYY-MM-01'),
-      TO_DATE: moment.utc().format('YYYY-MM-DD')
+      FROM_DATE: df ? moment.utc().format('YYYY-MM-01'):fromdate,
+      TO_DATE: df ? moment.utc().format('YYYY-MM-DD'): todate
     })
       .then((response) => {
         if (response.data.tk_status !== "NG") {
@@ -74,9 +74,9 @@ const CustomerDailyClosing = () => {
         } else {
           //Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
           const lastmonth = moment().subtract(1, 'months');
-          generalQuery("getDailyClosingKD", {
-            FROM_DATE: lastmonth.startOf('month').format('YYYY-MM-DD'),
-            TO_DATE: lastmonth.endOf('month').format('YYYY-MM-DD')
+          generalQuery("getDailyClosingKD", {            
+            FROM_DATE: df ? lastmonth.startOf('month').format('YYYY-MM-DD'):fromdate,
+            TO_DATE: df ? lastmonth.endOf('month').format('YYYY-MM-DD'): todate
           })
             .then((response) => {
               if (response.data.tk_status !== "NG") {
@@ -143,14 +143,14 @@ const CustomerDailyClosing = () => {
       .catch((error) => {
         console.log(error);
       });
-  }
+  } */
   const dailyClosingDataTable = React.useMemo(
     () => (
       <div className="datatb">
         <IconButton
           className='buttonIcon'
           onClick={() => {
-            SaveExcel(dailyClosingData, "DailyClosingData");
+            SaveExcel(data, "DailyClosingData");
           }}
         >
           <AiFillFileExcel color='green' size={15} />
@@ -166,7 +166,7 @@ const CustomerDailyClosing = () => {
             cellHintEnabled={true}
             columnResizingMode={"widget"}
             showColumnLines={true}
-            dataSource={dailyClosingData}
+            dataSource={data}
             columnWidth="auto"
             keyExpr="id"
             height={"100%"}
@@ -220,10 +220,10 @@ const CustomerDailyClosing = () => {
         </CustomResponsiveContainer>
       </div>
     ),
-    [dailyClosingData, getGlobalSetting()]
+    [data, getGlobalSetting()]
   );
   useEffect(() => {
-    loadDailyClosing();
+    //loadDailyClosing();
     return () => {
     }
   }, [])
