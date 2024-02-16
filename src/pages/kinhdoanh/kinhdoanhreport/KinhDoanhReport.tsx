@@ -833,8 +833,7 @@ const KinhDoanhReport = () => {
         <label>
         <b>Default:</b>{" "}
         <Checkbox
-          checked={df}
-          
+          checked={df}          
           onChange={(e) => {
             //console.log(e.target.checked);
             setDF(e.target.checked);
