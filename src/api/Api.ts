@@ -215,8 +215,6 @@ export function login(user: string, pass: string) {
                       data: data.data.data.EMPL_NO,
                     })                    
                   );
-                  
-                  
                   /* setLoginState(true); */
                   store.dispatch(loginSlice(true));
                   setTimeout(() => {
@@ -247,6 +245,13 @@ export function login(user: string, pass: string) {
 }
 export function logout() {
   cookies.set("token", "reset", { path: "/" });
+  store.dispatch(
+    update_socket({
+      event: "logout",
+      data: getUserData()?.EMPL_NO,
+    })                    
+  );
+  
   /* Swal.fire("Thông báo", "Đăng xuất thành công !", "success"); */
   setTimeout(() => {
     /* window.location.href = "/"; */

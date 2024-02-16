@@ -7,10 +7,10 @@ import "./index.css";
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement,
 );
-root.render(  
+root.render(
   <StrictMode>
     <Provider store={store}>
       <App />
     </Provider>
-  </StrictMode> 
+  </StrictMode>
 );
