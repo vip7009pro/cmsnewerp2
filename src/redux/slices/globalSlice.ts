@@ -12,11 +12,12 @@ import {
   WEB_SETTING_DATA,
 } from "../../api/GlobalInterface";
 const startCPN: string = "CMS";
-console.log('protocol',window.location.protocol)
-const protocol = window.location.protocol.startsWith("https") ? 'https' : 'http';
-const main_port = protocol ==='https' ? '5014' : '5013';
-const sub_port = protocol ==='https' ? '3006' : '3007';
-
+console.log("protocol", window.location.protocol);
+const protocol = window.location.protocol.startsWith("https")
+  ? "https"
+  : "http";
+const main_port = protocol === "https" ? "5014" : "5013";
+const sub_port = protocol === "https" ? "3006" : "3007";
 const socket = io(
   startCPN === "CMS"
     ? `${protocol}://cms.ddns.net:${sub_port}`
@@ -134,11 +135,11 @@ const initialState: GlobalInterface = {
   multiple_chithi_array: [],
   company: startCPN,
   server_ip:
-  startCPN === "CMS"
-  ? `${protocol}://cms.ddns.net:${main_port}`
-  : startCPN !== "CMS"
-  ? `${protocol}://222.252.1.63:${sub_port}`
-  : "",
+    startCPN === "CMS"
+      ? `${protocol}://cms.ddns.net:${main_port}`
+      : startCPN !== "CMS"
+      ? `${protocol}://222.252.1.63:${sub_port}`
+      : "",
   tabs: [],
   componentArray: [],
   tabIndex: 0,

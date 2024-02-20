@@ -30,6 +30,7 @@ import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
 import { MdOutlinePivotTableChart } from "react-icons/md";
 import PivotTable from "../../../components/PivotChart/PivotChart";
 import {
+  CHO_KIEM_DATA,
   INSPECT_INOUT_YCSX,
   INSPECT_INPUT_DATA,
   INSPECT_NG_DATA,
@@ -39,16 +40,16 @@ const INSPECTION = () => {
   const [showhidePivotTable, setShowHidePivotTable] = useState(false);
   const [readyRender, setReadyRender] = useState(false);
   const [selection, setSelection] = useState<any>({
-    trapo: true,
-    thempohangloat: false,
-    them1po: false,
-    them1invoice: false,
-    themycsx: false,
-    suaycsx: false,
-    inserttableycsx: false,
-    renderycsx: false,
-    renderbanve: false,
-    amazontab: false,
+    tab1: true,
+    tab2: false,
+    tab3: false,
+    tab4: false,
+    tab5: false,
+    tab6: false,
+    tab7: false,
+    tab8: false,
+    tab9: false,
+    tab10: false,
   });
   const [isLoading, setisLoading] = useState(false);
   const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
@@ -358,6 +359,39 @@ const INSPECTION = () => {
     { field: "ERR32", headerName: "ERR32", width: 60 },
     { field: "CNDB_ENCODES", headerName: "CNDB_ENCODES", width: 150 },
   ];
+  const column_inspect_balance = [
+    { field: "G_CODE", headerName: "G_CODE", width: 80 },
+    { field: "G_NAME", headerName: "G_NAME", width: 130 },
+    { field: "G_NAME_KD", headerName: "G_NAME_KD", width: 150 },
+    { field: "INSPECT_BALANCE_QTY", headerName: "TON_KIEM", width: 100, renderCell: (params: any) => {
+      return (
+        <span style={{ color: "black" }}>
+          <b>{params.row.INSPECT_BALANCE_QTY.toLocaleString("en-US")}</b>
+        </span>
+      );
+    }, },
+    { field: "WAIT_CS_QTY", headerName: "CHO_CS", width: 100,  renderCell: (params: any) => {
+      return (
+        <span style={{ color: "black" }}>
+          <b>{params.row.WAIT_CS_QTY.toLocaleString("en-US")}</b>
+        </span>
+      );
+    },},
+    { field: "WAIT_SORTING_RMA", headerName: "RMA_CHO_SORTING", width: 100, renderCell: (params: any) => {
+      return (
+        <span style={{ color: "black" }}>
+          <b>{params.row.WAIT_SORTING_RMA.toLocaleString("en-US")}</b>
+        </span>
+      );
+    }, },
+    { field: "TOTAL_WAIT", headerName: "TOTAL_WAIT", width: 100, renderCell: (params: any) => {
+      return (
+        <span style={{ color: "blue" }}>
+          <b>{params.row.TOTAL_WAIT.toLocaleString("en-US")}</b>
+        </span>
+      );
+    }, },
+  ];
   const [columnDefinition, setColumnDefinition] =
     useState<Array<any>>(column_inspect_input);
   function CustomToolbarPOTable() {
@@ -625,41 +659,179 @@ const INSPECTION = () => {
         console.log(error);
       });
   };
-  const setNav = (choose: number) => {
-    if (choose === 1) {
-      setSelection({
-        ...selection,
-        trapo: true,
-        thempohangloat: false,
-        them1po: false,
-        them1invoice: false,
-        inserttableycsx: false,
-        amazontab: false,
+  const handleLoadChoKiem = () => {
+    setSummaryInspect("");
+    setisLoading(true);
+    generalQuery("loadChoKiemGop", {      
+      ALLTIME: alltime,
+      FROM_DATE: fromdate,
+      TO_DATE: todate,
+      CUST_NAME: cust_name,
+      process_lot_no: process_lot_no,
+      G_CODE: codeCMS,
+      G_NAME: codeKD,
+      PROD_TYPE: prod_type,
+      EMPL_NAME: empl_name,
+      PROD_REQUEST_NO: prodrequestno,
+    })
+      .then((response) => {
+        //console.log(response.data.data);
+        if (response.data.tk_status !== "NG") {
+          const loadeddata: CHO_KIEM_DATA[] = response.data.data.map(
+            (element: CHO_KIEM_DATA, index: number) => {
+              return {
+                ...element,
+                id: index,
+              };
+            },
+          );
+          setInspectionDataTable(loadeddata);
+          setSelectedDataSource(
+            new PivotGridDataSource({
+              fields: fieldsinspectbalance,
+              store: loadeddata,
+            }),
+          );
+          setReadyRender(true);
+          setisLoading(false);
+          Swal.fire(
+            "Thông báo",
+            "Đã load " + response.data.data.length + " dòng",
+            "success",
+          );
+        } else {
+          setInspectionDataTable([]);
+          Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
+          setisLoading(false);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
       });
-    } else if (choose === 2) {
-      setSelection({
-        ...selection,
-        trapo: false,
-        thempohangloat: true,
-        them1po: true,
-        them1invoice: false,
-        themycsx: false,
-        suaycsx: false,
-        inserttableycsx: true,
-        amazontab: false,
-      });
-    } else if (choose === 3) {
-      setSelection({
-        ...selection,
-        trapo: false,
-        thempohangloat: false,
-        them1po: false,
-        them1invoice: false,
-        inserttableycsx: false,
-        amazontab: true,
-      });
-    }
   };
+  
+  const fieldsinspectbalance: any = [
+    {
+      caption: "ID",
+      width: 80,
+      dataField: "id",
+      allowSorting: true,
+      allowFiltering: true,
+      dataType: "number",
+      summaryType: "sum",
+      format: "fixedPoint",
+      headerFilter: {
+        allowSearch: true,
+        height: 500,
+        width: 300,
+      },
+    },
+    {
+      caption: "G_CODE",
+      width: 80,
+      dataField: "G_CODE",
+      allowSorting: true,
+      allowFiltering: true,
+      dataType: "string",
+      summaryType: "count",
+      format: "fixedPoint",
+      headerFilter: {
+        allowSearch: true,
+        height: 500,
+        width: 300,
+      },
+    },
+    {
+      caption: "G_NAME",
+      width: 80,
+      dataField: "G_NAME",
+      allowSorting: true,
+      allowFiltering: true,
+      dataType: "string",
+      summaryType: "count",
+      format: "fixedPoint",
+      headerFilter: {
+        allowSearch: true,
+        height: 500,
+        width: 300,
+      },
+    },
+    {
+      caption: "G_NAME_KD",
+      width: 80,
+      dataField: "G_NAME_KD",
+      allowSorting: true,
+      allowFiltering: true,
+      dataType: "string",
+      summaryType: "count",
+      format: "fixedPoint",
+      headerFilter: {
+        allowSearch: true,
+        height: 500,
+        width: 300,
+      },
+    },
+    {
+      caption: "INSPECT_BALANCE_QTY",
+      width: 80,
+      dataField: "INSPECT_BALANCE_QTY",
+      allowSorting: true,
+      allowFiltering: true,
+      dataType: "number",
+      summaryType: "sum",
+      format: "fixedPoint",
+      headerFilter: {
+        allowSearch: true,
+        height: 500,
+        width: 300,
+      },
+    },
+    {
+      caption: "WAIT_CS_QTY",
+      width: 80,
+      dataField: "WAIT_CS_QTY",
+      allowSorting: true,
+      allowFiltering: true,
+      dataType: "number",
+      summaryType: "sum",
+      format: "fixedPoint",
+      headerFilter: {
+        allowSearch: true,
+        height: 500,
+        width: 300,
+      },
+    },
+    {
+      caption: "WAIT_SORTING_RMA",
+      width: 80,
+      dataField: "WAIT_SORTING_RMA",
+      allowSorting: true,
+      allowFiltering: true,
+      dataType: "number",
+      summaryType: "sum",
+      format: "fixedPoint",
+      headerFilter: {
+        allowSearch: true,
+        height: 500,
+        width: 300,
+      },
+    },
+    {
+      caption: "TOTAL_WAIT",
+      width: 80,
+      dataField: "TOTAL_WAIT",
+      allowSorting: true,
+      allowFiltering: true,
+      dataType: "number",
+      summaryType: "sum",
+      format: "fixedPoint",
+      headerFilter: {
+        allowSearch: true,
+        height: 500,
+        width: 300,
+      },
+    },    
+  ];
   const fieldsinputkiem: any = [
     {
       caption: "INSPECT_INPUT_ID",
@@ -2543,6 +2715,12 @@ const INSPECTION = () => {
               setColumnDefinition(column_inspection_NG);
               handletraInspectionNG();
             }}> Nhật Ký KT</Button>
+            <Button color={'success'} variant="contained" size="small" fullWidth={true} sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#ff0e1a' }} onClick={() => {
+              setisLoading(true);
+              setReadyRender(false);
+              setColumnDefinition(column_inspect_balance);
+              handleLoadChoKiem();
+            }}> Chờ kiểm</Button>
           </div>
         </div>
         <div className="tracuuYCSXTable">

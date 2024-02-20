@@ -3264,3 +3264,12 @@ export interface WEB_SETTING_DATA {
   CURRENT_VALUE: string,
   SECTION: string,
 }
+export interface CHO_KIEM_DATA {
+  G_CODE: string,
+  G_NAME: string, 
+  G_NAME_KD: string,
+  INSPECT_BALANCE_QTY: number,
+  WAIT_CS_QTY: number,
+  WAIT_SORTING_RMA: number,
+  TOTAL_WAIT: number
+}

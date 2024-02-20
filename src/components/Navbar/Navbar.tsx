@@ -622,24 +622,7 @@ export default function Navbar() {
                       userData?.JOB_NAME === "Leader" ||
                       userData?.JOB_NAME === "Sub Leader" ||
                       userData?.JOB_NAME === "Dept Staff"
-                    ) {
-                      /* if (tabModeSwap) {
-                      dispatch(
-                        addTab({
-                          ELE_NAME: newValue.MENU_NAME,
-                          ELE_CODE: newValue.MENU_CODE,
-                          REACT_ELE: menulist.filter(
-                            (ele: MENU_LIST_DATA, index: number) =>
-                              ele.MENU_CODE === newValue.MENU_CODE
-                          )[0].MENU_ITEM,
-                        })
-                      );
-                      dispatch(settabIndex(tabs.length));
-                      setSelectedTab({
-                        MENU_CODE: "",
-                        MENU_NAME: "",
-                      });
-                    } */
+                    ) {                      
                       if (tabModeSwap) {
                         let ele_code_array: string[] = tabs.map(
                           (ele: ELE_ARRAY, index: number) => {

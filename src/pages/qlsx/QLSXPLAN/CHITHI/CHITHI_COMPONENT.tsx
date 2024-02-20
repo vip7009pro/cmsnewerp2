@@ -1,7 +1,7 @@
 import moment from "moment";
 import { useContext, useEffect, useState } from "react";
 import Swal from "sweetalert2";
-import { generalQuery } from "../../../../api/Api";
+import { generalQuery, getCompany } from "../../../../api/Api";
 import { UserContext } from "../../../../api/Context";
 import { RootState } from "../../../../redux/store";
 import { useSelector, useDispatch } from "react-redux";
@@ -301,6 +301,14 @@ const CHITHI_COMPONENT = ({ DATA }: { DATA: QLSXPLANDATA }) => {
         console.log(error);
       });
   };
+  const checkApprove = () => {
+    if (getCompany() === 'CMS') {
+      return (request_codeinfo[0].PDBV === "Y" || request_codeinfo[0].CODE_50 === '05') && checklieuchinh === true
+    }
+    else {
+      return true;
+    }
+  }
   useEffect(() => {
     checkMaxLieu();
     check_lieuql_sx_m140();
@@ -311,7 +319,7 @@ const CHITHI_COMPONENT = ({ DATA }: { DATA: QLSXPLANDATA }) => {
   return (
     <div className="chithicomponent">
       <div className="qcpass">
-        {request_codeinfo[0].PDBV === "Y" && checklieuchinh === true && (
+        {checkApprove() && (
           <img
             alt="qcpass"
             src="/QC PASS20.png"
@@ -395,8 +403,10 @@ const CHITHI_COMPONENT = ({ DATA }: { DATA: QLSXPLANDATA }) => {
         checklieuqlsx &&
         DATA.PLAN_QTY !== 0 &&
         DATA.PROCESS_NUMBER !== 0 &&
-        eq_process_check && 
-        DATA.CHOTBC !=='V' &&
+        eq_process_check &&
+        DATA.CHOTBC !== 'V' &&
+        checkApprove()
+        &&
         (
           <div className="thongtinycsx">
             <div className="text1">
@@ -500,7 +510,7 @@ const CHITHI_COMPONENT = ({ DATA }: { DATA: QLSXPLANDATA }) => {
                   </tr>
                   <tr>
                     <td>Chú ý (QLSX)</td>
-                    <td>{request_codeinfo[0]?.NOTE} ({(DATA.PLAN_QTY * (1+(DATA.PROCESS_NUMBER === 1 ? request_codeinfo[0]?.LOSS_SX1: DATA.PROCESS_NUMBER === 2 ? request_codeinfo[0]?.LOSS_SX2: DATA.PROCESS_NUMBER === 3 ? request_codeinfo[0]?.LOSS_SX3:request_codeinfo[0]?.LOSS_SX4 )/100)).toLocaleString('en-US')  } EA Cả loss)</td>
+                    <td>{request_codeinfo[0]?.NOTE} ({(DATA.PLAN_QTY * (1 + (DATA.PROCESS_NUMBER === 1 ? request_codeinfo[0]?.LOSS_SX1 : DATA.PROCESS_NUMBER === 2 ? request_codeinfo[0]?.LOSS_SX2 : DATA.PROCESS_NUMBER === 3 ? request_codeinfo[0]?.LOSS_SX3 : request_codeinfo[0]?.LOSS_SX4) / 100)).toLocaleString('en-US')} EA Cả loss)</td>
                   </tr>
                 </tbody>
               </table>
@@ -871,7 +881,13 @@ const CHITHI_COMPONENT = ({ DATA }: { DATA: QLSXPLANDATA }) => {
             </div>
           </div>
         )}
-        {DATA.CHOTBC ==='V' && <div>Chị thị chốt nhật ký rồi ko in lại nữa</div>}
+      {!checkApprove() && <div>Yêu cầu chưa được QC Pass <br></br>
+        Cụ thể: <br></br>
+        Phê duyệt bản vẽ : {request_codeinfo[0].PDBV === 'Y' ? "Đã phê duyệt" : "Chưa phê duyệt, báo PQC"} <br></br>
+        Sample hay không : {request_codeinfo[0].CODE_50 === '05' ? "Là Sample, chưa cần phê duyệt bản vẽ, nhưng cần khớp liệu chính trong BOM" : "Không phải sample"} <br></br>
+        Liệu chính trong thông tin sp có khớp với liệu chính trong BOM : {checklieuchinh === true ? "Khớp" : "Không khớp, báo RnD (hoặc hỗ trợ sửa)"} <br></br>
+      </div>}
+      {DATA.CHOTBC === 'V' && <div>Chị thị chốt nhật ký rồi ko in lại nữa</div>}
       {!check_dinh_muc() && <div>Chưa đủ thông tin định mức</div>}
       {!checklieuqlsx && (
         <div>

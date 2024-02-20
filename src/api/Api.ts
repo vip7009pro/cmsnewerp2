@@ -8,13 +8,11 @@ import {
   setTabModeSwap,
   update_socket,
 } from "../redux/slices/globalSlice";
-
 /* import axios from 'axios'; */
 import axios from "axios";
 import { UserData } from "./GlobalInterface";
 const cookies = new Cookies();
 axios.defaults.withCredentials = true;
-
 export function getSever(): string {
   const state = store.getState();
   //console.log(state.totalSlice.server_ip);
@@ -43,19 +41,15 @@ export function getGlobalSetting() {
   return state.totalSlice.globalSetting;
 }
 console.log("company", getCompany());
-
 let API_URL = getSever() + "/api";
 let UPLOAD_URL = getSever() + "/uploadfile";
 let UPLOAD_CHECKSHEET_URL = getSever() + "/uploadfilechecksheet";
-
 let server_ip_local: any = localStorage.getItem("server_ip")?.toString();
-
 if (server_ip_local !== undefined) {
   API_URL = server_ip_local + "/api";
   UPLOAD_URL = server_ip_local + "/uploadfile";
 } else {
 }
-
 export function login(user: string, pass: string) {
   let API_URL = getSever() + "/api";
   let UPLOAD_URL = getSever() + "/uploadfile";
@@ -203,7 +197,6 @@ export function login(user: string, pass: string) {
                     EMPL_IMAGE: "N",
                   })
                 );
-                
               } else {
                 //console.log(data.data.data);
                 if (data.data.data.WORK_STATUS_CODE !== 0) {
@@ -213,7 +206,7 @@ export function login(user: string, pass: string) {
                     update_socket({
                       event: "login",
                       data: data.data.data.EMPL_NO,
-                    })                    
+                    })
                   );
                   /* setLoginState(true); */
                   store.dispatch(loginSlice(true));
@@ -238,7 +231,7 @@ export function login(user: string, pass: string) {
         }
       })
       .catch((error: any) => {
-        Swal.fire('Thông báo','Có lỗi: '+ error,'warning');
+        Swal.fire("Thông báo", "Có lỗi: " + error, "warning");
         console.log(error);
       });
   }
@@ -249,9 +242,8 @@ export function logout() {
     update_socket({
       event: "logout",
       data: getUserData()?.EMPL_NO,
-    })                    
+    })
   );
-  
   /* Swal.fire("Thông báo", "Đăng xuất thành công !", "success"); */
   setTimeout(() => {
     /* window.location.href = "/"; */
@@ -268,16 +260,14 @@ export async function checkLogin() {
   return data;
 }
 export async function generalQuery(command: string, queryData: any) {
-  
-  const  CURRENT_API_URL  = getSever() + "/api";
- // console.log('API URL', CURRENT_API_URL);
+  const CURRENT_API_URL = getSever() + "/api";
+  // console.log('API URL', CURRENT_API_URL);
   let data = await axios.post(CURRENT_API_URL, {
     command: command,
     DATA: { ...queryData, token_string: cookies.get("token") },
   });
   return data;
 }
-
 export async function uploadQuery(
   file: any,
   filename: string,
@@ -297,7 +287,6 @@ export async function uploadQuery(
   let data = await axios.post(UPLOAD_URL, formData);
   return data;
 }
-
 export async function upload55Query(
   file: any,
   filename: string,

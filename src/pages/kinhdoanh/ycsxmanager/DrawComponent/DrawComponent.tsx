@@ -33,7 +33,7 @@ const DrawComponent = ({
     scale: 3,
     canvasRef,
   });
-
+  
   console.log('PDBV',PDBV);
   return (
     <div className="drawcomponent">
@@ -50,7 +50,7 @@ const DrawComponent = ({
           {moment.utc(PDBV_DATE).format("YYYY-MM-DD HH:mm:ss")} | YCSX:{" "}
           {PROD_REQUEST_NO}
         </span>
-      )}      
+      )}
       {PDBV === "Y" && (
         <div className="qcpass2">
           <img alt="qcpass2" src="/QC PASS20.png" width={220} height={200} />
