@@ -12,6 +12,7 @@
     "@mui/x-date-pickers": "^6.18.5",
     "@react-spring/web": "^9.5.5",
     "@reduxjs/toolkit": "^1.8.6",
+    "@techstark/opencv-js": "^4.9.0-release.2",
     "@types/jest": "^27.5.2",
     "@types/react": "^18.0.15",
     "@types/react-dom": "^18.0.6",

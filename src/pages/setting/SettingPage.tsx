@@ -109,6 +109,7 @@ const SettingPage = () => {
   }, [])
   return (
     <div className='settingpage'>
+      <OpenCV/>
       {/* <button onClick={buttonClick}>Show Notification</button> */}
       <h2>Setting Page</h2>
       <div className="headerbutton">
@@ -181,7 +182,7 @@ const SettingPage = () => {
         </tbody>
       </table>
       {/* <WebCam/> */}
-      {/*  <OpenCV/> */}
+       
       {/* <Scanner/> */}
       {/* <CameraComponent/> */}
     </div>
