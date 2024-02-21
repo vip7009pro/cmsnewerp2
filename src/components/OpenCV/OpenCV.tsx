@@ -3,26 +3,24 @@ import React, { useEffect, useRef, useState } from "react";
 import './OpenCV.scss'
 const OpenCV = () => {
   const orgMat = useRef<any>();
+  const tempRef = useRef<HTMLCanvasElement>();
   const inputImgRef = useRef<any>();
   const grayImgRef = useRef<any>();
   const cannyEdgeRef = useRef<any>();
   const canvasRefs = useRef<Array<React.RefObject<HTMLCanvasElement>>>([]);
-  const [templates, setTemplates]= useState<cv.Mat[]>([]);
+  const [templates, setTemplates] = useState<cv.Mat[]>([]);
   const [imgUrl, setImgUrl] = useState("/Picture_NS/NS_NHU1903.jpg");
   const [isDrawing, setIsDrawing] = useState(false);
   const [startPosition, setStartPosition] = useState({ x: 0, y: 0 });
   const [endPosition, setEndPosition] = useState({ x: 0, y: 0 });
   const [trigger, setTrigger] = useState(true);
-
-
-  const saveTemplate = () => {
+  const downloadTemplate = () => {
     const canvas = inputImgRef.current;
     const link = document.createElement('a');
     link.download = 'template.png';
     link.href = canvas.toDataURL();
     link.click();
   };
-
   const drawRectangle = (start: any, end: any) => {
     const canvas = inputImgRef.current;
     const ctx = canvas.getContext('2d');
@@ -31,7 +29,6 @@ const OpenCV = () => {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.strokeRect(start.x, start.y, width, height);
   };
-
   const updatePosition = (e: any) => {
     if (!isDrawing) return;
     const { offsetX, offsetY } = e.nativeEvent;
@@ -45,8 +42,6 @@ const OpenCV = () => {
     cv.imshow(inputImgRef.current, img);
     img.delete();
   };
-
-
   const startDrawing = (e: any) => {
     setIsDrawing(true);
     const canvas = inputImgRef.current;
@@ -54,12 +49,10 @@ const OpenCV = () => {
     const { offsetX, offsetY } = e.nativeEvent;
     setStartPosition({ x: offsetX, y: offsetY });
   };
-
   const endDrawing = () => {
     setIsDrawing(false);
     setTrigger(!trigger);
   };
-
   const draw = (e: any) => {
     if (!isDrawing) return;
     const canvas = inputImgRef.current;
@@ -68,20 +61,19 @@ const OpenCV = () => {
     ctx.lineTo(offsetX, offsetY);
     ctx.stroke();
   };
-
   const resetcanvas = async () => {
     const img = cv.imread(orgMat.current);
     cv.imshow(inputImgRef.current, img);
     img.delete();
     setTemplates([]);
-    canvasRefs.current=[];
+    canvasRefs.current = [];
     setTrigger(!trigger);
   }
-
   const drawMatsToCanvas = async (templates: cv.Mat[]) => {
+    console.log('inputtemp', templates)
     canvasRefs.current = Array(templates.length)
       .fill(null)
-      .map((_, i) => canvasRefs.current[i] || React.createRef<HTMLCanvasElement>());      
+      .map((_, i) => canvasRefs.current[i] || React.createRef<HTMLCanvasElement>());
     const canvasContexts = canvasRefs.current.map(ref => ref.current?.getContext('2d'));
     // Draw each mat to its respective canvas
     await Promise.all(templates.map(async (mat, index) => {
@@ -93,12 +85,53 @@ const OpenCV = () => {
     }));
   };
 
-  const addTemplate = async ()=> {
-    console.log(startPosition,endPosition);
-    const img = cv.imread(orgMat.current);    
+  const saveImage = ({ mat }: { mat: cv.Mat }) => {
+    console.log('vao day')
+    if (!mat) return;
+
+    console.log('vao dayr ')
+    const canvas = tempRef.current;
+    const ctx = canvas?.getContext('2d');
+        // Clear canvas
+    ctx?.clearRect(0, 0, canvas?.width??0, canvas?.height??0);
+
+
+    // Convert the cv.Mat to a blob
+    cv.imshow(canvas, mat);
+
+    // Create a download link
+    const link = document.createElement('a');
+    link.href = tempRef.current?.toDataURL() ?? ""; // Convert canvas to data URL
+    link.download = 'image.png'; // Set the download filename
+    document.body.appendChild(link);
+    // Simulate a click to trigger the download
+    link.click();
+    // Clean up
+    document.body.removeChild(link);
+  };
+
+
+
+  const MatToCanvas = ({ mat }: { mat: cv.Mat }) => {
+    const canvasRef = useRef<HTMLCanvasElement>(null);
+    useEffect(() => {
+      const drawMatToCanvas = async () => {
+        if (!canvasRef.current || !mat) return;
+        const canvas = canvasRef.current;
+        const ctx = canvas.getContext('2d');
+        // Clear canvas
+        ctx?.clearRect(0, 0, canvas.width, canvas.height);
+        // Draw the cv.Mat on the canvas
+        await cv.imshow(canvas, mat);
+      };
+      drawMatToCanvas();
+    }, [mat]);
+    return <canvas ref={canvasRef} />;
+  };
+  const addTemplate = async () => {
+    console.log(startPosition, endPosition);
+    const img = cv.imread(orgMat.current);
     cv.imshow(inputImgRef.current, img);
-
-
     const canvas = inputImgRef.current;
     const ctx = canvas.getContext('2d');
     const imageData = ctx.getImageData(startPosition.x, startPosition.y, endPosition.x - startPosition.x, endPosition.y - startPosition.y);
@@ -106,17 +139,14 @@ const OpenCV = () => {
     const croppedCtx = croppedCanvas.getContext('2d');
     croppedCanvas.width = endPosition.x - startPosition.x;
     croppedCanvas.height = endPosition.y - startPosition.y;
-    croppedCtx?.putImageData(imageData, 0, 0);    
+    croppedCtx?.putImageData(imageData, 0, 0);
     const croppedImageData = croppedCtx?.getImageData(0, 0, croppedCanvas.width, croppedCanvas.height);
-    const croppedMat = cv.matFromArray(croppedCanvas.height, croppedCanvas.width, cv.CV_8UC4, croppedImageData?.data);   
-
-    setTemplates([...templates, croppedMat]);    
-    console.log(templates);
+    const croppedMat = cv.matFromArray(croppedCanvas.height, croppedCanvas.width, cv.CV_8UC4, croppedImageData?.data);
+    setTemplates([...templates, croppedMat]);
+    console.log([...templates, croppedMat]);
     setTrigger(!trigger);
-
     drawMatsToCanvas([...templates, croppedMat]);
   }
-
   const processImage = async (imgSrc: any) => {
     const img = cv.imread(imgSrc);
     // to original image    
@@ -135,12 +165,7 @@ const OpenCV = () => {
     imgGray.delete();
     edges.delete();
   }
-
-
-  useEffect(() => {    
-
-
-
+  useEffect(() => {
   }, [])
   return (
     <div className="opencvdiv">
@@ -161,12 +186,24 @@ const OpenCV = () => {
         <button onClick={() => {
           addTemplate()
         }}>Add Template</button>
+        <button onClick={() => {
+          console.log(templates);
+        }}>Refresh</button>
+        <div>
+          {
+            templates.map((mat, index) => {
+              return (
+                <div className="templatecv" onClick={() => {
+                  saveImage({mat: templates[index]});
 
-      <div>
-      {templates.map((mat, index) => (
-        <canvas key={index} ref={canvasRefs.current[index]} />
-      ))}
-    </div>
+                }}>
+                  <MatToCanvas key={index} mat={mat}></MatToCanvas>
+                </div>
+              )
+            }
+            )
+          }
+        </div>
         <div className="image-card">
           <img
             hidden={true}
@@ -179,13 +216,13 @@ const OpenCV = () => {
               console.log("Loaded");
               orgMat.current = (e.target);
               processImage(e.target);
-            }}            
+            }}
           />
         </div>
         <div className="image-card">
           <div style={{ margin: "10px" }}>↓↓↓ The original image ↓↓↓</div>
           <canvas
-            style={{backgroundColor:'red'}}           
+            style={{ backgroundColor: 'red' }}
             ref={inputImgRef}
             onMouseDown={startDrawing}
             onMouseUp={endDrawing}
