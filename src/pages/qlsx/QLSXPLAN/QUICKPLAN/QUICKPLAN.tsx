@@ -508,6 +508,7 @@ const QUICKPLAN = () => {
           );
       },
     },
+    { field: "PL_HANG", headerName: "PL_HANG", width: 120 },
     { field: "REMARK", headerName: "REMARK", width: 120 },
     {
       field: "PDUYET",

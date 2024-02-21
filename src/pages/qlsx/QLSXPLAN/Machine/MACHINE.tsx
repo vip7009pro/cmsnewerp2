@@ -109,10 +109,10 @@ export const checkEQvsPROCESS = (
 export const renderChiThi = (planlist: QLSXPLANDATA[]) => {
   return planlist.map((element, index) => (
     <CHITHI_COMPONENT key={index} DATA={element} />
-   /*  <>
-    <CHITHI_COMPONENT key={index} DATA={element} />
-    <CHECKSHEETSX key={index+'A'} DATA={element}/>
-    </> */
+    /*  <>
+     <CHITHI_COMPONENT key={index} DATA={element} />
+     <CHECKSHEETSX key={index+'A'} DATA={element}/>
+     </> */
   ));
 };
 export const renderChiThi2 = (planlist: QLSXPLANDATA[]) => {
@@ -141,9 +141,9 @@ export const renderBanVe = (ycsxlist: YCSXTableData[]) => {
   );
 };
 const MACHINE = () => {
-  const [recentDMData, setRecentDMData]= useState<RecentDM[]>([])
+  const [recentDMData, setRecentDMData] = useState<RecentDM[]>([])
   const getRecentDM = (G_CODE: string) => {
-    generalQuery("loadRecentDM", {G_CODE: G_CODE})
+    generalQuery("loadRecentDM", { G_CODE: G_CODE })
       .then((response) => {
         //console.log(response.data);
         if (response.data.tk_status !== "NG") {
@@ -153,7 +153,7 @@ const MACHINE = () => {
                 ...element,
               };
             },
-          );          
+          );
           setRecentDMData(loadeddata);
         } else {
           //Swal.fire("Thông báo", "Lỗi BOM SX: " + response.data.message, "error");
@@ -163,8 +163,6 @@ const MACHINE = () => {
       .catch((error) => {
         console.log(error);
       });
-    
-
   }
   const [isPending, startTransition] = useTransition();
   const chithiarray: QLSXPLANDATA[] | undefined = useSelector(
@@ -230,7 +228,7 @@ const MACHINE = () => {
   const [lichsunhapkhoaodatafilter, setLichSuNhapKhoAoDataFilter] = useState<
     Array<LICHSUNHAPKHOAO>
   >([]);
- /*  const [calc_loss_setting, setCalc_Loss_Setting] = useState(true); */
+  /*  const [calc_loss_setting, setCalc_Loss_Setting] = useState(true); */
   const [lichsuxuatkhoaotable, setLichSuXuatKhoAoTable] = useState<
     LICHSUXUATKHOAO[]
   >([]);
@@ -617,6 +615,7 @@ const MACHINE = () => {
           );
       },
     },
+    { field: "PL_HANG", headerName: "PL_HANG", width: 120 },
     { field: "REMARK", headerName: "REMARK", width: 120 },
     {
       field: "PDUYET",
@@ -690,7 +689,6 @@ const MACHINE = () => {
               .catch((error) => {
                 console.log(error);
               });
-
           })
         };
         let hreftlink = "/banve/" + params.row.G_CODE + ".pdf";
@@ -995,9 +993,7 @@ const MACHINE = () => {
         } else {
           return <span>0</span>;
         }
-        
       },
-     
     },
     { field: "PLAN_EQ", headerName: "PLAN_EQ", width: 80, editable: editplan },
     {
@@ -1036,7 +1032,7 @@ const MACHINE = () => {
       width: 80,
       renderCell: (params: any) => {
         return (
-         <span>{params.row?.AT_LEADTIME.toLocaleString('en-US',{maximumFractionDigits: 0, minimumFractionDigits: 0})}</span>
+          <span>{params.row?.AT_LEADTIME.toLocaleString('en-US', { maximumFractionDigits: 0, minimumFractionDigits: 0 })}</span>
         )
       },
       editable: false,
@@ -1047,7 +1043,7 @@ const MACHINE = () => {
       width: 80,
       renderCell: (params: any) => {
         return (
-         <span>{params.row?.ACC_TIME.toLocaleString('en-US',{maximumFractionDigits: 0, minimumFractionDigits: 0})}</span>
+          <span>{params.row?.ACC_TIME.toLocaleString('en-US', { maximumFractionDigits: 0, minimumFractionDigits: 0 })}</span>
         )
       },
       editable: false,
@@ -1056,24 +1052,23 @@ const MACHINE = () => {
       field: "IS_SETTING",
       headerName: "IS_SETTING",
       width: 80,
-      
       renderCell: (params: any) => {
         return (
           <input
-          type='checkbox'
-          name='alltimecheckbox'
-          defaultChecked={params.row.IS_SETTING==='Y'}
-          onChange={(value) => {  
-            //console.log(value);
-            const newdata = plandatatable.map((p) =>
-              p.PLAN_ID === params.row.PLAN_ID
-                ? { ...p, IS_SETTING: params.row.IS_SETTING==='Y'? 'N': 'Y' }
-                : p
-            );
-            setPlanDataTable(newdata);
-            setQlsxPlanDataFilter([]);
-          }}
-        ></input>
+            type='checkbox'
+            name='alltimecheckbox'
+            defaultChecked={params.row.IS_SETTING === 'Y'}
+            onChange={(value) => {
+              //console.log(value);
+              const newdata = plandatatable.map((p) =>
+                p.PLAN_ID === params.row.PLAN_ID
+                  ? { ...p, IS_SETTING: params.row.IS_SETTING === 'Y' ? 'N' : 'Y' }
+                  : p
+              );
+              setPlanDataTable(newdata);
+              setQlsxPlanDataFilter([]);
+            }}
+          ></input>
         )
       },
       editable: false,
@@ -1787,16 +1782,15 @@ const MACHINE = () => {
       <YCKT key={index} DATA={element} />
     ));
   };
-  const updatePlanOrder = (plan_date: string)=> {
+  const updatePlanOrder = (plan_date: string) => {
     generalQuery("updatePlanOrder", {
-      PLAN_DATE: plan_date    
+      PLAN_DATE: plan_date
     })
       .then((response) => {
         console.log(response.data.data);
         if (response.data.tk_status !== "NG") {
-          
         } else {
-          Swal.fire('Thông báo','Update plan order thất bại','error');
+          Swal.fire('Thông báo', 'Update plan order thất bại', 'error');
         }
       })
       .catch((error) => {
@@ -1819,7 +1813,6 @@ const MACHINE = () => {
             }
           );
           //console.log(loadeddata);
-          
           setPlanDataTable(loadeddata);
           updatePlanOrder(plan_date);
         } else {
@@ -1856,27 +1849,25 @@ const MACHINE = () => {
           PD = response.data.data[0].PD;
           CAVITY_NGANG = response.data.data[0].G_C_R;
           CAVITY_DOC = response.data.data[0].G_C;
-          let calc_loss_setting: boolean = selectedPlan?.IS_SETTING ==='Y'? true: false;
+          let calc_loss_setting: boolean = selectedPlan?.IS_SETTING === 'Y' ? true : false;
           if (PROCESS_NUMBER === 1) {
-            FINAL_LOSS_SX = response.data.data[0].LOSS_SX1  ?? 0;
+            FINAL_LOSS_SX = response.data.data[0].LOSS_SX1 ?? 0;
           } else if (PROCESS_NUMBER === 2) {
-            FINAL_LOSS_SX = response.data.data[0].LOSS_SX2 ?? 0; 
+            FINAL_LOSS_SX = response.data.data[0].LOSS_SX2 ?? 0;
           } else if (PROCESS_NUMBER === 3) {
             FINAL_LOSS_SX = response.data.data[0].LOSS_SX3 ?? 0;
           } else if (PROCESS_NUMBER === 4) {
-            FINAL_LOSS_SX = response.data.data[0].LOSS_SX4 ?? 0; 
+            FINAL_LOSS_SX = response.data.data[0].LOSS_SX4 ?? 0;
           }
-         
           if (PROCESS_NUMBER === 1) {
-            FINAL_LOSS_SETTING = calc_loss_setting  ? response.data.data[0].LOSS_SETTING1 ?? 0 : 0;
+            FINAL_LOSS_SETTING = calc_loss_setting ? response.data.data[0].LOSS_SETTING1 ?? 0 : 0;
           } else if (PROCESS_NUMBER === 2) {
-            FINAL_LOSS_SETTING = calc_loss_setting  ? response.data.data[0].LOSS_SETTING2 ?? 0 : 0;
+            FINAL_LOSS_SETTING = calc_loss_setting ? response.data.data[0].LOSS_SETTING2 ?? 0 : 0;
           } else if (PROCESS_NUMBER === 3) {
-            FINAL_LOSS_SETTING = calc_loss_setting  ? response.data.data[0].LOSS_SETTING3 ?? 0 : 0;
+            FINAL_LOSS_SETTING = calc_loss_setting ? response.data.data[0].LOSS_SETTING3 ?? 0 : 0;
           } else if (PROCESS_NUMBER === 4) {
-            FINAL_LOSS_SETTING = calc_loss_setting  ? response.data.data[0].LOSS_SETTING4 ?? 0 : 0;
+            FINAL_LOSS_SETTING = calc_loss_setting ? response.data.data[0].LOSS_SETTING4 ?? 0 : 0;
           }
-          
         } else {
         }
       })
@@ -1971,26 +1962,25 @@ const MACHINE = () => {
             PD = response.data.data[0].PD;
             CAVITY_NGANG = response.data.data[0].G_C_R;
             CAVITY_DOC = response.data.data[0].G_C;
-            let calc_loss_setting: boolean = selectedPlan?.IS_SETTING ==='Y' ? true: false;
+            let calc_loss_setting: boolean = selectedPlan?.IS_SETTING === 'Y' ? true : false;
             if (PROCESS_NUMBER === 1) {
-              FINAL_LOSS_SX = response.data.data[0].LOSS_SX1  ?? 0;
+              FINAL_LOSS_SX = response.data.data[0].LOSS_SX1 ?? 0;
             } else if (PROCESS_NUMBER === 2) {
-              FINAL_LOSS_SX = response.data.data[0].LOSS_SX2 ?? 0; 
+              FINAL_LOSS_SX = response.data.data[0].LOSS_SX2 ?? 0;
             } else if (PROCESS_NUMBER === 3) {
               FINAL_LOSS_SX = response.data.data[0].LOSS_SX3 ?? 0;
             } else if (PROCESS_NUMBER === 4) {
-              FINAL_LOSS_SX = response.data.data[0].LOSS_SX4 ?? 0; 
+              FINAL_LOSS_SX = response.data.data[0].LOSS_SX4 ?? 0;
             }
-           
             if (PROCESS_NUMBER === 1) {
-              FINAL_LOSS_SETTING = calc_loss_setting  ? response.data.data[0].LOSS_SETTING1 ?? 0 : 0;
+              FINAL_LOSS_SETTING = calc_loss_setting ? response.data.data[0].LOSS_SETTING1 ?? 0 : 0;
             } else if (PROCESS_NUMBER === 2) {
-              FINAL_LOSS_SETTING = calc_loss_setting  ? response.data.data[0].LOSS_SETTING2 ?? 0 : 0;
+              FINAL_LOSS_SETTING = calc_loss_setting ? response.data.data[0].LOSS_SETTING2 ?? 0 : 0;
             } else if (PROCESS_NUMBER === 3) {
-              FINAL_LOSS_SETTING = calc_loss_setting  ? response.data.data[0].LOSS_SETTING3 ?? 0 : 0;
+              FINAL_LOSS_SETTING = calc_loss_setting ? response.data.data[0].LOSS_SETTING3 ?? 0 : 0;
             } else if (PROCESS_NUMBER === 4) {
-              FINAL_LOSS_SETTING = calc_loss_setting  ? response.data.data[0].LOSS_SETTING4 ?? 0 : 0;
-            }            
+              FINAL_LOSS_SETTING = calc_loss_setting ? response.data.data[0].LOSS_SETTING4 ?? 0 : 0;
+            }
           } else {
           }
         })
@@ -2174,14 +2164,11 @@ const MACHINE = () => {
       }
     );
     //console.log('machinePlanList',machinePlanList);
-    let sum:number =0 ;
-    for(let i= 0; i<machinePlanList.length;i++)
-    {
-      sum+= machinePlanList[i].AT_LEADTIME ?? 9990;
-
+    let sum: number = 0;
+    for (let i = 0; i < machinePlanList.length; i++) {
+      sum += machinePlanList[i].AT_LEADTIME ?? 9990;
     }
-    console.log('sum',sum)
-   
+    console.log('sum', sum)
     return sum;
   }
   const handleSearchCodeKeyDown = (
@@ -3187,21 +3174,21 @@ const MACHINE = () => {
           <BiRefresh color='red' size={20} />
           Show Combo
         </IconButton>
-        <span>Total time: { plandatatable.filter(
-      (element: QLSXPLANDATA, index: number) => {
-        return (
-          element.PLAN_EQ === selectedMachine &&
-          element.PLAN_FACTORY === selectedFactory
-        );
-      }
-    )[ plandatatable.filter(
-      (element: QLSXPLANDATA, index: number) => {
-        return (
-          element.PLAN_EQ === selectedMachine &&
-          element.PLAN_FACTORY === selectedFactory
-        );
-      }
-    ).length-1]?.ACC_TIME?.toLocaleString('en-US',{maximumFractionDigits: 0, minimumFractionDigits: 0})} min</span>
+        <span>Total time: {plandatatable.filter(
+          (element: QLSXPLANDATA, index: number) => {
+            return (
+              element.PLAN_EQ === selectedMachine &&
+              element.PLAN_FACTORY === selectedFactory
+            );
+          }
+        )[plandatatable.filter(
+          (element: QLSXPLANDATA, index: number) => {
+            return (
+              element.PLAN_EQ === selectedMachine &&
+              element.PLAN_FACTORY === selectedFactory
+            );
+          }
+        ).length - 1]?.ACC_TIME?.toLocaleString('en-US', { maximumFractionDigits: 0, minimumFractionDigits: 0 })} min</span>
       </GridToolbarContainer>
     );
   }
@@ -3390,8 +3377,7 @@ const MACHINE = () => {
           ___PLAN_QTY:
           {selectedPlan?.PLAN_QTY.toLocaleString("en-US")}
         </span>
-
-       {/*  Có setting hay không?
+        {/*  Có setting hay không?
         <input
           type='checkbox'
           name='alltimecheckbox'
@@ -3407,7 +3393,6 @@ const MACHINE = () => {
             //setCalc_Loss_Setting(!calc_loss_setting)
           }}
         ></input> */}
-        
       </GridToolbarContainer>
     );
   }
@@ -4152,8 +4137,8 @@ const MACHINE = () => {
       rowData.PLAN_QTY,
       rowData.PROCESS_NUMBER
     );
-    if(rowData.G_CODE !=="")
-    console.log('da click row roi');
+    if (rowData.G_CODE !== "")
+      console.log('da click row roi');
     getRecentDM(rowData.G_CODE);
     //console.log(params.row);
   };
@@ -5084,7 +5069,7 @@ const MACHINE = () => {
                   </div>
                   <div className='forminputcolumn'>
                     <label>
-                    <b>LOSS_SX1(%): <span style={{color: 'red', fontSize: '0.7rem'}}>({recentDMData.filter((e)=> e.PROCESS_NUMBER === 1)[0]?.LOSS_SX.toLocaleString('en-US',{minimumFractionDigits:0, maximumFractionDigits:0}) ?? ""}%)</span></b>{" "}
+                      <b>LOSS_SX1(%): <span style={{ color: 'red', fontSize: '0.7rem' }}>({recentDMData.filter((e) => e.PROCESS_NUMBER === 1)[0]?.LOSS_SX.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) ?? ""}%)</span></b>{" "}
                       <input
                         type='text'
                         placeholder='% loss sx 1'
@@ -5098,7 +5083,7 @@ const MACHINE = () => {
                       ></input>
                     </label>
                     <label>
-                    <b>LOSS_SX2(%):<span style={{color: 'red', fontSize: '0.7rem'}}>({recentDMData.filter((e)=> e.PROCESS_NUMBER === 2)[0]?.LOSS_SX.toLocaleString('en-US',{minimumFractionDigits:0, maximumFractionDigits:0}) ?? ""}%)</span></b>{" "}
+                      <b>LOSS_SX2(%):<span style={{ color: 'red', fontSize: '0.7rem' }}>({recentDMData.filter((e) => e.PROCESS_NUMBER === 2)[0]?.LOSS_SX.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) ?? ""}%)</span></b>{" "}
                       <input
                         type='text'
                         placeholder='% loss sx 2'
@@ -5114,7 +5099,7 @@ const MACHINE = () => {
                   </div>
                   <div className='forminputcolumn'>
                     <label>
-                    <b>LOSS ST1 (m):<span style={{color: 'red', fontSize: '0.7rem'}}>({recentDMData.filter((e)=> e.PROCESS_NUMBER === 1)[0]?.TT_SETTING_MET.toLocaleString('en-US',{minimumFractionDigits:0, maximumFractionDigits:0}) ?? ""}m)</span></b>{" "}
+                      <b>LOSS ST1 (m):<span style={{ color: 'red', fontSize: '0.7rem' }}>({recentDMData.filter((e) => e.PROCESS_NUMBER === 1)[0]?.TT_SETTING_MET.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) ?? ""}m)</span></b>{" "}
                       <input
                         type='text'
                         placeholder='met setting 1'
@@ -5128,7 +5113,7 @@ const MACHINE = () => {
                       ></input>
                     </label>
                     <label>
-                    <b>LOSS ST2 (m):<span style={{color: 'red', fontSize: '0.7rem'}}>({recentDMData.filter((e)=> e.PROCESS_NUMBER === 2)[0]?.TT_SETTING_MET.toLocaleString('en-US',{minimumFractionDigits:0, maximumFractionDigits:0}) ?? ""}m)</span></b>{" "}
+                      <b>LOSS ST2 (m):<span style={{ color: 'red', fontSize: '0.7rem' }}>({recentDMData.filter((e) => e.PROCESS_NUMBER === 2)[0]?.TT_SETTING_MET.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) ?? ""}m)</span></b>{" "}
                       <input
                         type='text'
                         placeholder='met setting 2'
@@ -5310,7 +5295,7 @@ const MACHINE = () => {
                   </div>
                   <div className='forminputcolumn'>
                     <label>
-                    <b>LOSS_SX3(%):<span style={{color: 'red', fontSize: '0.7rem'}}>({recentDMData.filter((e)=> e.PROCESS_NUMBER === 3)[0]?.LOSS_SX.toLocaleString('en-US',{minimumFractionDigits:0, maximumFractionDigits:0}) ?? ""}%)</span></b>{" "}
+                      <b>LOSS_SX3(%):<span style={{ color: 'red', fontSize: '0.7rem' }}>({recentDMData.filter((e) => e.PROCESS_NUMBER === 3)[0]?.LOSS_SX.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) ?? ""}%)</span></b>{" "}
                       <input
                         type='text'
                         placeholder='% loss sx 3'
@@ -5324,7 +5309,7 @@ const MACHINE = () => {
                       ></input>
                     </label>
                     <label>
-                    <b>LOSS_SX4(%):<span style={{color: 'red', fontSize: '0.7rem'}}>({recentDMData.filter((e)=> e.PROCESS_NUMBER === 4)[0]?.LOSS_SX.toLocaleString('en-US',{minimumFractionDigits:0, maximumFractionDigits:0}) ?? ""}%)</span></b>{" "}
+                      <b>LOSS_SX4(%):<span style={{ color: 'red', fontSize: '0.7rem' }}>({recentDMData.filter((e) => e.PROCESS_NUMBER === 4)[0]?.LOSS_SX.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) ?? ""}%)</span></b>{" "}
                       <input
                         type='text'
                         placeholder='% loss sx 4'
@@ -5340,7 +5325,7 @@ const MACHINE = () => {
                   </div>
                   <div className='forminputcolumn'>
                     <label>
-                    <b>LOSS ST3 (m):<span style={{color: 'red', fontSize: '0.7rem'}}>({recentDMData.filter((e)=> e.PROCESS_NUMBER === 3)[0]?.TT_SETTING_MET.toLocaleString('en-US',{minimumFractionDigits:0, maximumFractionDigits:0}) ?? ""}m)</span></b>{" "}
+                      <b>LOSS ST3 (m):<span style={{ color: 'red', fontSize: '0.7rem' }}>({recentDMData.filter((e) => e.PROCESS_NUMBER === 3)[0]?.TT_SETTING_MET.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) ?? ""}m)</span></b>{" "}
                       <input
                         type='text'
                         placeholder='met setting 3'
@@ -5354,7 +5339,7 @@ const MACHINE = () => {
                       ></input>
                     </label>
                     <label>
-                    <b>LOSS ST4 (m):<span style={{color: 'red', fontSize: '0.7rem'}}>({recentDMData.filter((e)=> e.PROCESS_NUMBER === 4)[0]?.TT_SETTING_MET.toLocaleString('en-US',{minimumFractionDigits:0, maximumFractionDigits:0}) ?? ""}m)</span></b>{" "}
+                      <b>LOSS ST4 (m):<span style={{ color: 'red', fontSize: '0.7rem' }}>({recentDMData.filter((e) => e.PROCESS_NUMBER === 4)[0]?.TT_SETTING_MET.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) ?? ""}m)</span></b>{" "}
                       <input
                         type='text'
                         placeholder='met setting 4'
