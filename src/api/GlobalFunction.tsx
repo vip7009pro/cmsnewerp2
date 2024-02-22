@@ -93,6 +93,7 @@ export async function checkver() {
 }
 
 export const autoGetProdPrice = async (G_CODE: string, CUST_CD: string, PO_QTY: number) => {
+  //console.log(G_CODE, CUST_CD, PO_QTY);
   
   let loaded_price = {
     prod_price:0,
@@ -143,7 +144,7 @@ export const autoGetProdPrice = async (G_CODE: string, CUST_CD: string, PO_QTY: 
               )[0]?.BEP ?? 0
             }
             
-            
+            console.log('loaded_price', loaded_price);
 
           
         //setNewCodePrice(loaded_data);

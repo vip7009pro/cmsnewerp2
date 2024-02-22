@@ -40,7 +40,7 @@ import {
 } from "react-icons/ai";
 import Swal from "sweetalert2";
 import * as XLSX from "xlsx";
-import { generalQuery, getCompany, getGlobalSetting } from "../../../api/Api";
+import { generalQuery, getCompany, getGlobalSetting, getSever } from "../../../api/Api";
 import {
   autoGetProdPrice,
   checkBP,
@@ -2107,7 +2107,7 @@ const PoManager = () => {
     [uploadExcelJson, columnsExcel, trigger]
   );
   useEffect(() => {
-    if (getCompany() === 'CMS') {
+    if (getCompany() === 'CMS' && getSever() !=='http://222.252.1.63:3007' ) {
       autopheduyetgia();
       dongboGiaPO();
     }

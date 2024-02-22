@@ -3,8 +3,13 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  .images-container {
+  .templatediv {
     display: flex;
+    gap: 10px;
+
+  }
+  .images-container {
+  display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;

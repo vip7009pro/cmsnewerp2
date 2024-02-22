@@ -163,6 +163,7 @@ const KinhDoanhReport = () => {
               };
             },
           );          
+          //console.log(loadeddata)
           setWidgetData_Yesterday(loadeddata);
         } else {
           //Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
@@ -213,6 +214,7 @@ const KinhDoanhReport = () => {
               };
             },
           );
+          console.log(loadeddata.reverse())
           setWidgetData_ThisMonth(loadeddata.reverse());
         } else {
           //Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
@@ -861,7 +863,7 @@ const KinhDoanhReport = () => {
               botColor="#b3ecff"
               qty={widgetdata_yesterday[widgetdata_yesterday.length-1]?.DELIVERY_QTY}
               amount={widgetdata_yesterday[widgetdata_yesterday.length-1]?.DELIVERED_AMOUNT}
-              percentage={(1 - widgetdata_yesterday[widgetdata_yesterday.length-2]?.DELIVERED_AMOUNT * 1.0 / widgetdata_yesterday[widgetdata_yesterday.length-3]?.DELIVERED_AMOUNT) * 100}
+              percentage={(1 - widgetdata_yesterday[widgetdata_yesterday.length-2]?.DELIVERED_AMOUNT * 1.0 / widgetdata_yesterday[widgetdata_yesterday.length-1]?.DELIVERED_AMOUNT) * 100}
             />
           </div>
           <div className="revenuwdg">
@@ -872,7 +874,7 @@ const KinhDoanhReport = () => {
               botColor="#80ff80"
               qty={widgetdata_thisweek[widgetdata_thisweek.length-1]?.DELIVERY_QTY}
               amount={widgetdata_thisweek[widgetdata_thisweek.length-1]?.DELIVERED_AMOUNT}
-              percentage={(1 - widgetdata_thisweek[widgetdata_thisweek.length-1]?.DELIVERED_AMOUNT * 1.0 / widgetdata_thisweek[widgetdata_thisweek.length-2]?.DELIVERED_AMOUNT) * 100}
+              percentage={(1 - widgetdata_thisweek[widgetdata_thisweek.length-2]?.DELIVERED_AMOUNT * 1.0 / widgetdata_thisweek[widgetdata_thisweek.length-1]?.DELIVERED_AMOUNT) * 100}
             />
           </div>
           <div className="revenuwdg">

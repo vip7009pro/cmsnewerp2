@@ -1443,6 +1443,7 @@ const YCSXManager = () => {
               id: index,
               CHECKSTATUS: "Waiting",
               PHANLOAI: getCompany() === 'CMS' ? "TT" : element.PHANLOAI,
+              PROD_REQUEST_DATE: getCompany() === 'CMS' ? element.PROD_REQUEST_DATE : moment(element.PROD_REQUEST_DATE).format('YYYYMMDD')
             };
           })
         );
@@ -1468,7 +1469,8 @@ const YCSXManager = () => {
         temp_amazon_row.NO_IN = NO_IN;
         temp_amazon_row.ROW_NO = i;
         if (cavity === 1) {
-          temp_amazon_row.DATA1 = amazon_data[i].DATA;
+          temp_amazon_row.DATA1 = amazon_data[i*cavity-1].DATA;
+          temp_amazon_row.DATA2 = amazon_data[i*cavity-1].DATA + "_NOT_USE";
         } else if (cavity === 2) {
           temp_amazon_row.DATA1 = amazon_data[i * cavity - 2].DATA;
           temp_amazon_row.DATA2 = amazon_data[i * cavity - 1].DATA;

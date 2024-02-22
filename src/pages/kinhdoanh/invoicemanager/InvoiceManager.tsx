@@ -27,7 +27,7 @@ import * as XLSX from "xlsx";
 import { generalQuery, getGlobalSetting } from "../../../api/Api";
 import { UserContext } from "../../../api/Context";
 import { checkBP, CustomResponsiveContainer, SaveExcel } from "../../../api/GlobalFunction";
-import { MdOutlineDelete, MdOutlinePivotTableChart } from "react-icons/md";
+import { MdOutlineDelete, MdOutlinePivotTableChart, MdUpdate } from "react-icons/md";
 import "./InvoiceManager.scss";
 import { FaFileInvoiceDollar } from "react-icons/fa";
 import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
@@ -205,6 +205,7 @@ const InvoiceManager = () => {
       over: over,
       id: id,
       material: material,
+      invoice_no: invoice_no
     })
       .then((response) => {
         //console.log(response.data);
@@ -1104,6 +1105,42 @@ const InvoiceManager = () => {
     matchFrom: "any",
     limit: 100,
   });
+  const updateInvoiceNo = async (invoice_no: string) => {
+    if (invoicedatatablefilter.current.length >= 1) {
+      let err_code: boolean = false;
+      for (let i = 0; i < invoicedatatablefilter.current.length; i++) {
+        if (invoicedatatablefilter.current[i].EMPL_NO === userData?.EMPL_NO) {
+          await generalQuery("update_invoice_no", {
+            DELIVERY_ID: invoicedatatablefilter.current[i].DELIVERY_ID,
+            INVOICE_NO: invoice_no
+          })
+            .then((response) => {
+              console.log(response.data.tk_status);
+              if (response.data.tk_status !== "NG") {
+                //Swal.fire("Thông báo", "Delete Po thành công", "success");
+              } else {
+                //Swal.fire("Thông báo", "Update PO thất bại: " +response.data.message , "error");
+                err_code = true;
+              }
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+        }
+      }
+      if (!err_code) {
+        Swal.fire(
+          "Thông báo",
+          "Update invoice no!",
+          "success",
+        );
+      } else {
+        Swal.fire("Thông báo", "Có lỗi SQL!", "error");
+      }
+    } else {
+      Swal.fire("Thông báo", "Chọn ít nhất 1 Invoice để update invoice no !", "error");
+    }
+  }
   const dataSource = new PivotGridDataSource({
     fields: [
       {
@@ -1568,6 +1605,15 @@ const InvoiceManager = () => {
                 >
                   <MdOutlinePivotTableChart color="#ff33bb" size={15} />
                   Pivot
+                </IconButton>
+                <IconButton
+                  className="buttonIcon"
+                  onClick={() => {
+                    updateInvoiceNo(invoice_no);                    
+                  }}
+                >
+                  <MdUpdate color="#dc3240" size={15} />
+                  Update I.V No
                 </IconButton>
               </Item>
               <Item name='searchPanel' />
@@ -2415,3 +2461,4 @@ const InvoiceManager = () => {
   );
 };
 export default InvoiceManager;
+

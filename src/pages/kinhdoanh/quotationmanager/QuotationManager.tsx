@@ -47,7 +47,7 @@ import {
   MdOutlinePivotTableChart,
 } from "react-icons/md";
 import { CustomResponsiveContainer, SaveExcel, checkBP, weekdayarray } from "../../../api/GlobalFunction";
-import { generalQuery, getCompany } from "../../../api/Api";
+import { generalQuery, getCompany, getSever } from "../../../api/Api";
 import PivotTable from "../../../components/PivotChart/PivotChart";
 import { RootState } from "../../../redux/store";
 import { useSelector, useDispatch } from "react-redux";
@@ -2537,7 +2537,7 @@ const QuotationManager = () => {
   useEffect(() => {
     //loadBangGia();
     console.log("render lai");
-    if (getCompany() === 'CMS') {
+    if (getCompany() === 'CMS' && getSever() !=='http://222.252.1.63:3007' ) {
       dongboGiaPO();
     }
   }, [sh]);

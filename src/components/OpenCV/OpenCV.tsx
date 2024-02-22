@@ -1,9 +1,15 @@
 import cv, { Mat } from "@techstark/opencv-js";
 import React, { useEffect, useRef, useState } from "react";
 import './OpenCV.scss'
+interface ROI_POINT {
+  p1: cv.Point,
+  p2: cv.Point
+}
 const OpenCV = () => {
+  const wait = useRef(false);
+  const timesPerSecond = 1000000;
   const orgMat = useRef<any>();
-  const tempRef = useRef<HTMLCanvasElement>();
+  const tempRef = useRef<HTMLCanvasElement>(null);
   const inputImgRef = useRef<any>();
   const grayImgRef = useRef<any>();
   const cannyEdgeRef = useRef<any>();
@@ -14,6 +20,7 @@ const OpenCV = () => {
   const [startPosition, setStartPosition] = useState({ x: 0, y: 0 });
   const [endPosition, setEndPosition] = useState({ x: 0, y: 0 });
   const [trigger, setTrigger] = useState(true);
+  const [roiList, setROIList] = useState<ROI_POINT[]>([]);
   const downloadTemplate = () => {
     const canvas = inputImgRef.current;
     const link = document.createElement('a');
@@ -23,7 +30,7 @@ const OpenCV = () => {
   };
   const drawRectangle = (start: any, end: any) => {
     const canvas = inputImgRef.current;
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext('2d', { willReadFrequently: true });
     const width = end.x - start.x;
     const height = end.y - start.y;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -31,21 +38,27 @@ const OpenCV = () => {
   };
   const updatePosition = (e: any) => {
     if (!isDrawing) return;
-    const { offsetX, offsetY } = e.nativeEvent;
-    setEndPosition({ x: offsetX, y: offsetY });
-    const img = cv.imread(orgMat.current);
-    let startPoint = new cv.Point(startPosition.x, startPosition.y);
-    let endPoint = new cv.Point(endPosition.x, endPosition.y);
-    let color = new cv.Scalar(255, 255, 0, 255);
-    let thickness = 1;
-    cv.rectangle(img, startPoint, endPoint, color, thickness, cv.LINE_4, 0);
-    cv.imshow(inputImgRef.current, img);
-    img.delete();
+    if (!wait.current) {
+      wait.current = true;
+      setTimeout(() => {
+        wait.current = false;
+        const { offsetX, offsetY } = e.nativeEvent;
+        setEndPosition({ x: offsetX, y: offsetY });
+        const img = cv.imread(orgMat.current);
+        let startPoint = new cv.Point(startPosition.x, startPosition.y);
+        let endPoint = new cv.Point(endPosition.x, endPosition.y);
+        let color = new cv.Scalar(255, 255, 0, 255);
+        let thickness = 1;
+        cv.rectangle(img, startPoint, endPoint, color, thickness, cv.LINE_4, 0);
+        cv.imshow(inputImgRef.current, img);
+        img.delete();
+      }, 1000 / timesPerSecond);
+    }
   };
   const startDrawing = (e: any) => {
     setIsDrawing(true);
     const canvas = inputImgRef.current;
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext('2d', { willReadFrequently: true });
     const { offsetX, offsetY } = e.nativeEvent;
     setStartPosition({ x: offsetX, y: offsetY });
   };
@@ -56,7 +69,7 @@ const OpenCV = () => {
   const draw = (e: any) => {
     if (!isDrawing) return;
     const canvas = inputImgRef.current;
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext('2d', { willReadFrequently: true });
     const { offsetX, offsetY } = e.nativeEvent;
     ctx.lineTo(offsetX, offsetY);
     ctx.stroke();
@@ -68,60 +81,43 @@ const OpenCV = () => {
     setTemplates([]);
     canvasRefs.current = [];
     setTrigger(!trigger);
+    setROIList([]);
+    setStartPosition({ x: 0, y: 0 });
+    setEndPosition({ x: 0, y: 0 });
   }
   const drawMatsToCanvas = async (templates: cv.Mat[]) => {
     console.log('inputtemp', templates)
     canvasRefs.current = Array(templates.length)
       .fill(null)
       .map((_, i) => canvasRefs.current[i] || React.createRef<HTMLCanvasElement>());
-    const canvasContexts = canvasRefs.current.map(ref => ref.current?.getContext('2d'));
+    const canvasContexts = canvasRefs.current.map(ref => ref.current?.getContext('2d', { willReadFrequently: true }));
     // Draw each mat to its respective canvas
     await Promise.all(templates.map(async (mat, index) => {
       const canvas = canvasRefs.current[index].current;
-      if (!canvas) return; // Skip if canvas is not available
+      if (!canvas) return;
+      // Skip if canvas is not available
       // Convert the OpenCV Mat to a canvas image
       await cv.imshow(canvas, mat);
       // Draw the canvas image      
     }));
   };
-
   const saveImage = ({ mat }: { mat: cv.Mat }) => {
-    console.log('vao day')
-    if (!mat) return;
-
-    console.log('vao dayr ')
+    console.log('mat', mat);
+    cv.imshow(tempRef.current!, mat);
     const canvas = tempRef.current;
-    const ctx = canvas?.getContext('2d');
-        // Clear canvas
-    ctx?.clearRect(0, 0, canvas?.width??0, canvas?.height??0);
-
-
-    // Convert the cv.Mat to a blob
-    cv.imshow(canvas, mat);
-
-    // Create a download link
     const link = document.createElement('a');
-    link.href = tempRef.current?.toDataURL() ?? ""; // Convert canvas to data URL
-    link.download = 'image.png'; // Set the download filename
-    document.body.appendChild(link);
-    // Simulate a click to trigger the download
+    link.download = 'template.png';
+    link.href = canvas?.toDataURL()!;
     link.click();
-    // Clean up
-    document.body.removeChild(link);
   };
-
-
-
   const MatToCanvas = ({ mat }: { mat: cv.Mat }) => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     useEffect(() => {
       const drawMatToCanvas = async () => {
         if (!canvasRef.current || !mat) return;
         const canvas = canvasRef.current;
-        const ctx = canvas.getContext('2d');
-        // Clear canvas
+        const ctx = canvas.getContext('2d', { willReadFrequently: true });
         ctx?.clearRect(0, 0, canvas.width, canvas.height);
-        // Draw the cv.Mat on the canvas
         await cv.imshow(canvas, mat);
       };
       drawMatToCanvas();
@@ -133,10 +129,10 @@ const OpenCV = () => {
     const img = cv.imread(orgMat.current);
     cv.imshow(inputImgRef.current, img);
     const canvas = inputImgRef.current;
-    const ctx = canvas.getContext('2d');
-    const imageData = ctx.getImageData(startPosition.x, startPosition.y, endPosition.x - startPosition.x, endPosition.y - startPosition.y);
+    const ctx = canvas.getContext('2d', { willReadFrequently: true });
+    const imageData = ctx.getImageData(startPosition.x, startPosition.y, endPosition.x - startPosition.x, endPosition.y - startPosition.y, { willReadFrequently: true });
     const croppedCanvas = document.createElement('canvas');
-    const croppedCtx = croppedCanvas.getContext('2d');
+    const croppedCtx = croppedCanvas.getContext('2d', { willReadFrequently: true });
     croppedCanvas.width = endPosition.x - startPosition.x;
     croppedCanvas.height = endPosition.y - startPosition.y;
     croppedCtx?.putImageData(imageData, 0, 0);
@@ -146,6 +142,46 @@ const OpenCV = () => {
     console.log([...templates, croppedMat]);
     setTrigger(!trigger);
     drawMatsToCanvas([...templates, croppedMat]);
+  }
+  const addROI = async () => {
+    console.log(startPosition, endPosition);
+    let startPoint = new cv.Point(startPosition.x, startPosition.y);
+    let endPoint = new cv.Point(endPosition.x, endPosition.y);
+    let newROI: ROI_POINT = {
+      p1: startPoint,
+      p2: endPoint
+    }
+    setROIList([...roiList, newROI]);
+    console.log([...roiList, newROI]);
+  }
+  const drawROI = async () => {
+    const img = cv.imread(orgMat.current);
+    for (let i = 0; i < roiList.length; i++) {
+      let color = new cv.Scalar(255, 255, 0, 255);
+      let thickness = 1;
+      cv.rectangle(img, roiList[i].p1, roiList[i].p2, color, thickness, cv.LINE_4, 0);
+      cv.imshow(inputImgRef.current, img);
+    }
+    img.delete();
+  }
+  const matchTemplate = async () => {
+    const img = cv.imread(orgMat.current);
+    for (let i = 0; i < templates.length; i++) {
+      const dstMat = new cv.Mat();
+      const mask = new cv.Mat();
+      cv.matchTemplate(img, templates[i], dstMat, cv.TM_CCOEFF_NORMED, mask);
+      const result = cv.minMaxLoc(dstMat, mask);
+      const maxPoint = result.maxLoc;
+      let addMaxPoint: cv.Point = {
+        x: maxPoint.x + templates[i].cols,
+        y: maxPoint.y + templates[i].rows
+      }
+      let color = new cv.Scalar(255, 255, 0, 255);
+      let thickness = 1;
+      cv.rectangle(img, maxPoint, addMaxPoint, color, thickness, cv.LINE_4, 0);
+      cv.imshow(inputImgRef.current, img);
+    }
+    img.delete();
   }
   const processImage = async (imgSrc: any) => {
     const img = cv.imread(imgSrc);
@@ -169,6 +205,7 @@ const OpenCV = () => {
   }, [])
   return (
     <div className="opencvdiv">
+      <canvas ref={tempRef} style={{ display: 'none' }} />
       <div style={{ marginTop: "30px" }}>
         <span style={{ marginRight: "10px" }}>Select an image file:</span>
         <input
@@ -180,23 +217,37 @@ const OpenCV = () => {
         />
       </div>
       <div className="images-container">
-        <button onClick={() => {
-          resetcanvas()
-        }}>Reset</button>
-        <button onClick={() => {
-          addTemplate()
-        }}>Add Template</button>
-        <button onClick={() => {
-          console.log(templates);
-        }}>Refresh</button>
-        <div>
+        <div className="buttondiv">
+          <button onClick={() => {
+            resetcanvas()
+          }}>Reset</button>
+          <button onClick={() => {
+            addTemplate()
+          }}>Add Template</button>
+          <button onClick={() => {
+          }}>Save Template</button>
+          <button onClick={() => {
+            addROI();
+          }}>Add ROI</button>
+          <button onClick={() => {
+            drawROI();
+          }}>Draw ROI</button>
+          <button onClick={() => {
+            matchTemplate();
+          }}>Match template</button>
+          <button onClick={() => {
+            console.log(templates);
+          }}>Refresh</button>
+        </div>
+        <div className="templatediv">
           {
             templates.map((mat, index) => {
               return (
                 <div className="templatecv" onClick={() => {
-                  saveImage({mat: templates[index]});
-
-                }}>
+                  console.log(templates[index])
+                  //downloadTemplate();
+                  saveImage({ mat: templates[index] });
+                }} key={index}>
                   <MatToCanvas key={index} mat={mat}></MatToCanvas>
                 </div>
               )
@@ -209,8 +260,8 @@ const OpenCV = () => {
             hidden={true}
             crossOrigin="anonymous"
             alt="Original input"
-            width={"520px"}
-            height={"550px"}
+            /*  width={"1920px"}
+             height={"1080px"} */
             src={imgUrl}
             onLoad={(e) => {
               console.log("Loaded");
