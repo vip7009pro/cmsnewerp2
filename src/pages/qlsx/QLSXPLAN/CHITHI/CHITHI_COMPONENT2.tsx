@@ -526,8 +526,8 @@ const CHITHI_COMPONENT2 = ({ PLAN_LIST }: PLAN_COMBO) => {
           </table>
         </div> */}
         <div className="text1">
-          2. Thông tin combo chỉ thị_ POBALANCE:{" "}
-          {po_balance?.toLocaleString("en-US")}{" "}
+          2. Thông tin combo chỉ thị_ POBALANCE:{" "} 
+          {po_balance?.toLocaleString("en-US")}{" "} / ({request_codeinfo[0]?.PROD_TYPE})
         </div>
         <div className="combochithi">
           <table>
