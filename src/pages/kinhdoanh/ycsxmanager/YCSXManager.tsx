@@ -168,9 +168,17 @@ const YCSXManager = () => {
       headerName: "G_NAME_KD",
       width: 100,
       renderCell: (params: any) => {
-        if (params.row.PDBV === "P" || params.row.PDBV === null)
+        if (params.row.SETVL ==='N')
+        {
+          return <span style={{ color: "gray" }}>{params.row.G_NAME_KD}</span>;
+        }
+        else if(params.row.PDBV === "P" || params.row.PDBV === null)
+        {
           return <span style={{ color: "red" }}>{params.row.G_NAME_KD}</span>;
-        return <span style={{ color: "green" }}>{params.row.G_NAME_KD}</span>;
+        }
+        else {
+          return <span style={{ color: "green" }}>{params.row.G_NAME_KD}</span>;
+        }
       },
     },
     { field: "G_CODE", headerName: "G_CODE", width: 80 },

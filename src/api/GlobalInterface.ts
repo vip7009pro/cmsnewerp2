@@ -402,6 +402,7 @@ export interface YCSXTableData {
   NOTE: string;
   PL_HANG?: string;
   DELIVERY_DT?: string;
+  SETVL?: string;
 }
 export interface UploadAmazonData {
   G_CODE?: string;
