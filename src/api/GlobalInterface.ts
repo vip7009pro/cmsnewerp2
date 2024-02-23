@@ -530,6 +530,7 @@ export interface FullBOM {
   LOSS_SETTING3: number;
   LOSS_SETTING4: number;
   NOTE: string;
+  PROD_TYPE?: string;
 }
 //quan ly vat lieu
 export interface MATERIAL_TABLE_DATA {

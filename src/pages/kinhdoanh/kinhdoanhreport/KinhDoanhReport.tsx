@@ -214,8 +214,10 @@ const KinhDoanhReport = () => {
               };
             },
           );
-          console.log(loadeddata.reverse())
+          //console.log(loadeddata.reverse())
           setWidgetData_ThisMonth(loadeddata.reverse());
+          //console.log('length - 1', loadeddata.reverse()[loadeddata.length - 1]?.DELIVERED_AMOUNT);
+          //console.log('length - 2', loadeddata.reverse()[loadeddata.length - 2]?.DELIVERED_AMOUNT);
         } else {
           //Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
         }
@@ -241,6 +243,7 @@ const KinhDoanhReport = () => {
             },
           );
           setWidgetData_ThisYear(loadeddata);
+          //console.log(loadeddata)
         } else {
           //Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
         }
@@ -863,7 +866,7 @@ const KinhDoanhReport = () => {
               botColor="#b3ecff"
               qty={widgetdata_yesterday[widgetdata_yesterday.length-1]?.DELIVERY_QTY}
               amount={widgetdata_yesterday[widgetdata_yesterday.length-1]?.DELIVERED_AMOUNT}
-              percentage={(1 - widgetdata_yesterday[widgetdata_yesterday.length-2]?.DELIVERED_AMOUNT * 1.0 / widgetdata_yesterday[widgetdata_yesterday.length-1]?.DELIVERED_AMOUNT) * 100}
+              percentage={(widgetdata_yesterday[widgetdata_yesterday.length-1]?.DELIVERED_AMOUNT * 1.0 / widgetdata_yesterday[widgetdata_yesterday.length-2]?.DELIVERED_AMOUNT-1) * 100}
             />
           </div>
           <div className="revenuwdg">
@@ -874,7 +877,7 @@ const KinhDoanhReport = () => {
               botColor="#80ff80"
               qty={widgetdata_thisweek[widgetdata_thisweek.length-1]?.DELIVERY_QTY}
               amount={widgetdata_thisweek[widgetdata_thisweek.length-1]?.DELIVERED_AMOUNT}
-              percentage={(1 - widgetdata_thisweek[widgetdata_thisweek.length-2]?.DELIVERED_AMOUNT * 1.0 / widgetdata_thisweek[widgetdata_thisweek.length-1]?.DELIVERED_AMOUNT) * 100}
+              percentage={(widgetdata_thisweek[widgetdata_thisweek.length-1]?.DELIVERED_AMOUNT * 1.0 / widgetdata_thisweek[widgetdata_thisweek.length-2]?.DELIVERED_AMOUNT-1) * 100}
             />
           </div>
           <div className="revenuwdg">
@@ -885,7 +888,7 @@ const KinhDoanhReport = () => {
               botColor="#ffbf80"
               qty={widgetdata_thismonth[widgetdata_thismonth.length -1 ]?.DELIVERY_QTY}
               amount={widgetdata_thismonth[widgetdata_thismonth.length - 1]?.DELIVERED_AMOUNT}
-              percentage={(1 - widgetdata_thismonth[widgetdata_thismonth.length - 1]?.DELIVERED_AMOUNT * 1.0 / widgetdata_thismonth[widgetdata_thismonth.length - 2]?.DELIVERED_AMOUNT) * 100}
+              percentage={((widgetdata_thismonth[widgetdata_thismonth.length - 1]?.DELIVERED_AMOUNT * 1.0 / widgetdata_thismonth[widgetdata_thismonth.length - 2]?.DELIVERED_AMOUNT)-1) * 100}
             />
           </div>
           <div className="revenuwdg">
@@ -896,7 +899,7 @@ const KinhDoanhReport = () => {
               botColor="#ffb3b3"
               qty={widgetdata_thisyear[widgetdata_thisyear.length - 1]?.DELIVERY_QTY}
               amount={widgetdata_thisyear[widgetdata_thisyear.length - 1]?.DELIVERED_AMOUNT}
-              percentage={(1 - widgetdata_thismonth[widgetdata_thisyear.length - 1]?.DELIVERED_AMOUNT * 1.0 / widgetdata_thismonth[0]?.DELIVERED_AMOUNT) * 100}
+              percentage={(widgetdata_thisyear[widgetdata_thisyear.length - 1]?.DELIVERED_AMOUNT * 1.0 / widgetdata_thisyear[widgetdata_thisyear.length - 2]?.DELIVERED_AMOUNT-1) * 100}
             />
           </div>
         </div>

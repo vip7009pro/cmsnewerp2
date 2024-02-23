@@ -165,6 +165,7 @@ const OpenCV = () => {
     img.delete();
   }
   const matchTemplate = async () => {
+    let Start = new Date().getTime(); 
     const img = cv.imread(orgMat.current);
     for (let i = 0; i < templates.length; i++) {
       const dstMat = new cv.Mat();
@@ -182,6 +183,9 @@ const OpenCV = () => {
       cv.imshow(inputImgRef.current, img);
     }
     img.delete();
+    let  end = new Date().getTime();
+    let executionTime = end - Start; 
+    console.log("Function took " + executionTime + " milliseconds");
   }
   const processImage = async (imgSrc: any) => {
     const img = cv.imread(imgSrc);

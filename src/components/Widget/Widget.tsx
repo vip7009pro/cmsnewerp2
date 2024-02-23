@@ -21,6 +21,7 @@ export default function Widget({
   topColor,
   botColor,
 }: WidgetInfo) {
+  //console.log('percentage',percentage);
   if (widgettype === "revenue") {
     return (
       <div
