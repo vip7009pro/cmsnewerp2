@@ -72,6 +72,18 @@
       box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
       border-radius: 3px;
     }
+    .nhaplieudiv {
+      display: flex;
+      flex-direction: column;
+      width: 80%;
+      position: absolute;
+      left:10%;
+      padding: 10px;
+      background-color: #cbe07f;
+      -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.29);
+      box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.2);
+      border-radius: 5px;
+    }
   }
 }
 @media only screen and (max-width: 768px) {

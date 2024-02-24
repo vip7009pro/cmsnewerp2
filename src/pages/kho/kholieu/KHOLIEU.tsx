@@ -11,7 +11,7 @@ import {
 } from "@mui/x-data-grid";
 import moment from "moment";
 import React, { useContext, useEffect, useMemo, useState } from "react";
-import { AiFillFileExcel } from "react-icons/ai";
+import { AiFillCloseCircle, AiFillFileExcel } from "react-icons/ai";
 import Swal from "sweetalert2";
 import { generalQuery } from "../../../api/Api";
 import { UserContext } from "../../../api/Context";
@@ -25,23 +25,12 @@ import {
   UserData,
   XUATLIEUDATA,
 } from "../../../api/GlobalInterface";
+import NHAPLIEU from "./nhaplieu/NHAPLIEU";
 const KHOLIEU = () => {
   const userData: UserData | undefined = useSelector(
     (state: RootState) => state.totalSlice.userData,
   );
   const [readyRender, setReadyRender] = useState(false);
-  const [selection, setSelection] = useState<any>({
-    trapo: true,
-    thempohangloat: false,
-    them1po: false,
-    them1invoice: false,
-    themycsx: false,
-    suaycsx: false,
-    inserttableycsx: false,
-    renderycsx: false,
-    renderbanve: false,
-    amazontab: false,
-  });
   const [isLoading, setisLoading] = useState(false);
   const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
   const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));
@@ -57,6 +46,8 @@ const KHOLIEU = () => {
   const [rollNo, setRollNo] = useState("");
   const [lotncc, setLOTNCC] = useState("");
   const [inputlieufilter, setInputLieuFilter] = useState<NHAPLIEUDATA[]>([]);
+  const [shownhaplieu, setShowNhapLieu] = useState(false);
+  const [showxuatlieu, setShowXuatLieu] = useState(false);
   const column_STOCK_LIEU = [
     { field: "M_CODE", headerName: "M_CODE", width: 90 },
     { field: "M_NAME", headerName: "M_NAME", width: 180 },
@@ -242,20 +233,7 @@ const KHOLIEU = () => {
           SAVE
         </IconButton>
         <GridToolbarQuickFilter />
-        <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#2639F6' }} onClick={() => {
-          if (userData?.SUBDEPTNAME === "IQC") {
-            //checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['QC','KHO'], updatelotNCC);
-            checkBP(
-              userData,
-              ["QC", "KHO"],
-              ["ALL"],
-              ["ALL"],
-              updatelotNCC,
-            );
-          } else {
-            Swal.fire("Thông báo", "Bạn không phải người IQC", "error");
-          }
-        }}>UPD LOT NCC</Button>
+        
         <span
           style={{
             fontWeight: "bold",
@@ -570,6 +548,20 @@ const KHOLIEU = () => {
                 }}
               ></input>
             </label>
+            <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#2639F6' }} onClick={() => {
+          if (userData?.SUBDEPTNAME === "IQC") {
+            //checkBP(userData?.EMPL_NO,userData?.MAINDEPTNAME,['QC','KHO'], updatelotNCC);
+            checkBP(
+              userData,
+              ["QC", "KHO"],
+              ["ALL"],
+              ["ALL"],
+              updatelotNCC,
+            );
+          } else {
+            Swal.fire("Thông báo", "Bạn không phải người IQC", "error");
+          }
+        }}>UPD LOT NCC</Button>
           </div>
           <div className="forminputcolumn">
             <label>
@@ -598,13 +590,13 @@ const KHOLIEU = () => {
             setReadyRender(false);
             setColumnDefinition(column_NHAPLIEUDATA);
             handletra_inputlieu();
-          }}>Nhập Liệu</Button>
+          }}>Data Nhập</Button>
           <Button color={'primary'} variant="contained" size="small" fullWidth={true} sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#36D334' }} onClick={() => {
             setisLoading(true);
             setReadyRender(false);
             setColumnDefinition(column_XUATLIEUDATA);
             handletra_outputlieu();
-          }}>Xuất Liệu</Button>
+          }}>Data Xuất</Button>
           <Button color={'primary'} variant="contained" size="small" fullWidth={true} sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: 'yellow', color: 'black' }} onClick={() => {
             setisLoading(true);
             setReadyRender(false);
@@ -612,10 +604,50 @@ const KHOLIEU = () => {
             handletraWHSTOCKLIEU();
           }}>Tồn Liệu</Button>
         </div>
+        <div className="toolbardiv" style={{display:'flex', gap:'10px'}}>        
+          <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#e6d53c', color:'black' }} onClick={() => { 
+              checkBP(
+                userData,
+                ["KHO"],
+                ["ALL"],
+                ["ALL"],
+                ()=> {
+                  setShowNhapLieu(true);
+                },
+              );            
+          }}>Nhập</Button>
+          <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#db3823', color:'white' }} onClick={() => { 
+              checkBP(
+                userData,
+                ["KHO"],
+                ["ALL"],
+                ["ALL"],
+                ()=> {
+
+                },
+              );            
+          }}>Xuất</Button>
+      </div>
       </div>
       <div className="tracuuWHTable">
         {readyRender && bangdata}
       </div>
+      {shownhaplieu &&<div className="nhaplieudiv">     
+       <div>
+        Nhập vật liệu vào kho
+        <IconButton
+            className="buttonIcon"
+            onClick={() => {
+              setShowNhapLieu(false);
+            }}
+          >
+            <AiFillCloseCircle color="blue" size={15} />
+            Close
+          </IconButton>
+        </div>
+         <NHAPLIEU/>
+        
+      </div>}
     </div>
   );
 };

@@ -30,6 +30,7 @@ import { Button } from "@mui/material";
 import { UserData, WEB_SETTING_DATA } from "./api/GlobalInterface";
 import { current_ver } from "./pages/home/Home";
 import { Notifications } from 'react-push-notification';
+import KHOTABS from "./pages/kho/KHOTABS";
 const SettingPage = React.lazy(() => import("./pages/setting/SettingPage"));
 const LICHSUTEMLOTSX = lazy(() => import("./pages/sx/LICHSUTEMLOTSX/LICHSUTEMLOTSX"));
 const BAOCAOSXALL = lazy(() => import("./pages/sx/BAOCAOSXALL"));
@@ -731,7 +732,8 @@ function App() {
                           </ProtectedRoute>
                         }
                       >
-                        <Route index element={<KHOTPNEW />} />
+                        <Route index element={<KHOTABS />} />
+                        <Route path='khotabs' element={<KHOTABS />} />
                         <Route path='nhapxuattontp' element={<KHOTPNEW />} />
                         <Route path='nhapxuattonlieu' element={<KHOLIEU />} />
                       </Route>

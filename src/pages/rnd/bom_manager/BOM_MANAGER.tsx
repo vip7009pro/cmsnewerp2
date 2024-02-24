@@ -767,24 +767,27 @@ const BOM_MANAGER = () => {
       if (
         userData?.EMPL_NO?.toUpperCase() === "NVH1011" ||
         userData?.EMPL_NO?.toUpperCase() === "NHU1903" ||
-        userData?.EMPL_NO?.toUpperCase() === "LVT1906"
+        userData?.EMPL_NO?.toUpperCase() === "LVT1906" ||
+        userData?.EMPL_NO?.toUpperCase() === "DSL1986" ||
+        userData?.EMPL_NO?.toUpperCase() === "LTH1992" ||
+        userData?.EMPL_NO?.toUpperCase() === "LTD1984"
       ) {
         for (let i = 0; i < codedatatablefilter.length; i++) {
           await generalQuery("resetbanve", {
             G_CODE: codedatatablefilter[i].G_CODE,
             VALUE: value,
           })
-            .then((response) => {
-              //console.log(response.data.tk_status);
-              if (response.data.tk_status !== "NG") {
-                //Swal.fire("Thông báo", "Delete Po thành công", "success");
-              } else {
-                //Swal.fire("Thông báo", "Update PO thất bại: " +response.data.message , "error");
-              }
-            })
-            .catch((error) => {
-              //console.log(error);
-            });
+          .then((response) => {
+            //console.log(response.data.tk_status);
+            if (response.data.tk_status !== "NG") {
+              //Swal.fire("Thông báo", "Delete Po thành công", "success");
+            } else {
+              //Swal.fire("Thông báo", "Update PO thất bại: " +response.data.message , "error");
+            }
+          })
+          .catch((error) => {
+            //console.log(error);
+          });
         }
         Swal.fire("Thông báo", "RESET BAN VE THÀNH CÔNG", "success");
       } else {
@@ -2315,7 +2318,6 @@ const BOM_MANAGER = () => {
 
     return nextCodeKH;
   };
-
   const [componentList, setComponentList] = useState<COMPONENT_DATA[]>([
     {
       G_CODE_MAU: "123456",
@@ -2444,7 +2446,6 @@ const BOM_MANAGER = () => {
       REMARK: "remark",
     },
   ]);
-
   const handleGETBOMAMAZON = (G_CODE: string) => {
     generalQuery("getAMAZON_DESIGN", {
       G_CODE: G_CODE,
@@ -2471,7 +2472,6 @@ const BOM_MANAGER = () => {
         //console.log(error);
       });
   };
-
   useEffect(() => {
     getmateriallist();
     getcustomerlist();

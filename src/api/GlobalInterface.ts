@@ -3275,3 +3275,19 @@ export interface CHO_KIEM_DATA {
   WAIT_SORTING_RMA: number,
   TOTAL_WAIT: number
 }
+
+export interface WH_M_INPUT_DATA {
+  id: string,
+  CUST_CD: string,
+  CUST_NAME_KD: string,
+  M_NAME: string,
+  M_CODE: string,
+  WIDTH_CD: number,
+  UNIT_IN_QTY: number,
+  ROLL_QTY: number,
+  TOTAL_IN_QTY: number,
+  INVOICE_NO: string,
+  REMARK: string,
+  EXP_DATE: string,
+  PROD_REQUEST_NO: string,
+}
