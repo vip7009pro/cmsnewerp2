@@ -33,20 +33,24 @@ import { AiFillCloseCircle, AiFillFileExcel } from "react-icons/ai";
 import Swal from "sweetalert2";
 import { MdOutlinePivotTableChart } from "react-icons/md";
 import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
-import { CustomerListData, MATERIAL_TABLE_DATA, MaterialListData, WH_M_INPUT_DATA } from "../../../../api/GlobalInterface";
+import { CustomerListData, DKXL_DATA, MATERIAL_TABLE_DATA, MaterialListData, WH_M_INPUT_DATA, WH_M_OUTPUT_DATA } from "../../../../api/GlobalInterface";
 import { generalQuery, getCompany } from "../../../../api/Api";
 import { CustomResponsiveContainer, SaveExcel, zeroPad } from "../../../../api/GlobalFunction";
 import PivotTable from "../../../../components/PivotChart/PivotChart";
-import './NHAPLIEU.scss';
-const NHAPLIEU = () => {
+import './XUATLIEU.scss';
+const XUATLIEU = () => {
   const [showhidePivotTable, setShowHidePivotTable] = useState(false);
   const [material_table_data, set_material_table_data] = useState<Array<WH_M_INPUT_DATA>>([]);
   const [datasxtable, setDataSXTable] = useState<Array<any>>([]);
-  const [m_name, setM_Name] = useState("");
+  const [giao_empl, setGiao_Empl] = useState("");
+  const [nhan_empl, setNhan_Empl] = useState("");
+  const [giao_empl_name, setGiao_Empl_Name] = useState("");
+  const [nhan_empl_name, setNhan_Empl_Name] = useState("");
+  const [planId, setPlanId] = useState("");
+  const [g_name, setGName] = useState("");
   const [invoice_no, setInvoiceNo] = useState("");
   const [loaink, setloaiNK] = useState("03");
-  const [cust_cd, setCust_CD] = useState("");
-  const [cust_name_kd, setCust_Name_KD] = useState("");
+  const [prepareOutData, setPrepareOutData] = useState<WH_M_OUTPUT_DATA[]>([]);
   const [selectedRows, setSelectedRows] = useState<MATERIAL_TABLE_DATA>({
     M_ID: 0,
     M_NAME: "",
@@ -80,19 +84,64 @@ const NHAPLIEU = () => {
     });
   const [selectedCustomer, setSelectedCustomer] =
     useState<CustomerListData | null>({
-      CUST_CD: getCompany() === "CMS" ? "0049" : "KH000",
-      CUST_NAME: getCompany() === "CMS" ? "SSJ CO., LTD" : "PVN",
-      CUST_NAME_KD: getCompany() === "CMS" ? "SSJ" : "PVN", 
+      CUST_CD: getCompany() === "CMS" ? "6969" : "KH000",
+      CUST_NAME: getCompany() === "CMS" ? "CMSVINA" : "PVN",
+      CUST_NAME_KD: getCompany() === "CMS" ? "CMSVINA" : "PVN",
     });
   const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
   const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));
-  const seMaterialInfo = (keyname: string, value: any) => {
-    let tempCustInfo: MATERIAL_TABLE_DATA = {
-      ...selectedRows,
-      [keyname]: value,
-    };
-    //console.log(tempcodefullinfo);
-    setSelectedRows(tempCustInfo);
+  const [m_lot_no, setM_LOT_NO] = useState("");
+  const [m_name, setM_Name] = useState("");
+  const [width_cd, setWidthCD] = useState(0);
+  const [in_cfm_qty, setInCFMQTY] = useState(0);
+  const [roll_qty, setRollQty] = useState(0);
+  const [m_code, setM_Code] = useState("");
+  const [lieql_sx, setLieuQL_SX] = useState(0);
+  const [out_date, setOut_Date] = useState("");
+  const [wahs_cd, setWAHS_CD] = useState("");
+  const [loc_cd, setLOC_CD] = useState("");
+  
+  const checkEMPL_NAME = (selection: number, EMPL_NO: string) => {
+    generalQuery("checkEMPL_NO_mobile", { EMPL_NO: EMPL_NO })
+      .then((response) => {
+        if (response.data.tk_status !== "NG") {
+          //console.log(response.data.data);\
+          if (selection === 1) {
+            setGiao_Empl_Name(
+              response.data.data[0].MIDLAST_NAME +
+              " " +
+              response.data.data[0].FIRST_NAME,
+            );
+          } else {
+            setNhan_Empl_Name(
+              response.data.data[0].MIDLAST_NAME +
+              " " +
+              response.data.data[0].FIRST_NAME,
+            );
+          }
+        } else {
+          setGiao_Empl_Name("");
+          setGiao_Empl_Name("");
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+  const checkPlanID = (PLAN_ID: string) => {
+    generalQuery("checkPLAN_ID", { PLAN_ID: PLAN_ID })
+      .then((response) => {
+        if (response.data.tk_status !== "NG") {
+          //console.log(response.data.data);
+          setPlanId(PLAN_ID);
+          setGName(response.data.data[0].G_NAME);
+        } else {
+          setGName("");
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
   const addMaterial = async () => {
     let temp_m_invoie: WH_M_INPUT_DATA = {
@@ -117,146 +166,217 @@ const NHAPLIEU = () => {
       set_material_table_data([...material_table_data, temp_m_invoie]);
     }
   };
-  const getI221NextIN_NO= async () => {
+  const getI221NextIN_NO = async () => {
     let next_in_no: string = "001";
     await generalQuery("getI221Lastest_IN_NO", {})
-    .then((response) => {
-      if (response.data.tk_status !== "NG") {
-        console.log(response.data.data);
-        const current_in_no:string = response.data.data[0].MAX_IN_NO ?? '000';        
-        next_in_no = zeroPad(parseInt(current_in_no)+1,3);
-      } else {
-      }
-    })
-    .catch((error) => {
-      //console.log(error);
-    });
+      .then((response) => {
+        if (response.data.tk_status !== "NG") {
+          console.log(response.data.data);
+          const current_in_no: string = response.data.data[0].MAX_IN_NO ?? '000';
+          next_in_no = zeroPad(parseInt(current_in_no) + 1, 3);
+        } else {
+        }
+      })
+      .catch((error) => {
+        //console.log(error);
+      });
     console.log(next_in_no);
     return next_in_no;
-
   }
-  const getI222Next_M_LOT_NO = async ()=> {
+  const getI222Next_M_LOT_NO = async () => {
     let next_m_lot_no: string = "001";
     await generalQuery("getI222Lastest_M_LOT_NO", {})
-    .then((response) => {
-      if (response.data.tk_status !== "NG") {
-        console.log(response.data.data);
-        const current_m_lot_no:string = response.data.data[0].MAX_M_LOT_NO;
-        let part1: string = current_m_lot_no.substring(0,8);
-        let part2: string = current_m_lot_no.substring(8,12);
-        next_m_lot_no = part1 + zeroPad(parseInt(part2)+1,4);
-      } else {
-      }
-    })
-    .catch((error) => {
-      //console.log(error);
-    });
+      .then((response) => {
+        if (response.data.tk_status !== "NG") {
+          console.log(response.data.data);
+          const current_m_lot_no: string = response.data.data[0].MAX_M_LOT_NO;
+          let part1: string = current_m_lot_no.substring(0, 8);
+          let part2: string = current_m_lot_no.substring(8, 12);
+          next_m_lot_no = part1 + zeroPad(parseInt(part2) + 1, 4);
+        } else {
+        }
+      })
+      .catch((error) => {
+        //console.log(error);
+      });
     console.log(next_m_lot_no);
     return next_m_lot_no;
   }
-
   const nhapkho = async () => {
-    if(material_table_data.length >0) {
+    if (material_table_data.length > 0) {
       let next_in_no: string = await getI221NextIN_NO();
       console.log(next_in_no);
       let err_code: string = '';
-    
-     let checkmet: boolean = true;
-     for(let i=0;i<material_table_data.length;i++)  {
-      let ttmet =  material_table_data[i].LOT_QTY * material_table_data[i].ROLL_PER_LOT * material_table_data[i].MET_PER_ROLL;
-      if(ttmet ===0) checkmet = false;
-     }
-
-     if(checkmet)  {
-      for(let i=0;i<material_table_data.length;i++)  {
-        if(material_table_data[i].LOT_QTY * material_table_data[i].ROLL_PER_LOT * material_table_data[i].MET_PER_ROLL >0)
-        {
-          let next_in_seq: string = zeroPad(i+1,3);
-          await generalQuery("insert_I221", {
-            IN_NO: next_in_no,
-            IN_SEQ: next_in_seq,
-            M_CODE: material_table_data[i].M_CODE,
-            IN_CFM_QTY: material_table_data[i].LOT_QTY * material_table_data[i].ROLL_PER_LOT * material_table_data[i].MET_PER_ROLL,
-            REMARK: material_table_data[i].REMARK,
-            FACTORY: selectedFactory,
-            CODE_50: loaink,
-            INVOICE_NO: invoice_no,
-            CUST_CD: selectedCustomer?.CUST_CD,
-            ROLL_QTY: material_table_data[i].LOT_QTY * material_table_data[i].ROLL_PER_LOT,
-            EXP_DATE: material_table_data[i].EXP_DATE
-          })
-          .then((response) => {
-            if (response.data.tk_status !== "NG") {
-              ////console.log(response.data.data);              
-              //set_material_table_data([]);
-              
-                (async () => {
-                  for(let j=0;j<material_table_data[i].LOT_QTY;j++) {
-                  let next_m_lot_no: string = await getI222Next_M_LOT_NO();
-                  await generalQuery("insert_I222", {
-                    IN_NO: next_in_no,
-                    IN_SEQ: next_in_seq,
-                    M_LOT_NO: next_m_lot_no,
-                    LOC_CD: selectedFactory==='NM1' ? 'BE010': 'HD001',
-                    WAHS_CD: selectedFactory==='NM1' ? 'B': 'H',
-                    M_CODE: material_table_data[i].M_CODE,
-                    IN_CFM_QTY:  material_table_data[i].ROLL_PER_LOT * material_table_data[i].MET_PER_ROLL,                    
-                    FACTORY: selectedFactory, 
-                    CUST_CD: selectedCustomer?.CUST_CD,
-                    ROLL_QTY: material_table_data[i].ROLL_PER_LOT,        
-                    PROD_REQUEST_NO: material_table_data[i].PROD_REQUEST_NO,        
-                  })
-                  .then((response) => {
-                    if (response.data.tk_status !== "NG") {
-                      ////console.log(response.data.data);              
-                      //set_material_table_data([]);
-                     
-                      
-                    } else {
-                      console.log(response.data.message);  
-                      err_code += `Lỗi: ${response.data.message} | `;
+      let checkmet: boolean = true;
+      for (let i = 0; i < material_table_data.length; i++) {
+        let ttmet = material_table_data[i].LOT_QTY * material_table_data[i].ROLL_PER_LOT * material_table_data[i].MET_PER_ROLL;
+        if (ttmet === 0) checkmet = false;
+      }
+      if (checkmet) {
+        for (let i = 0; i < material_table_data.length; i++) {
+          if (material_table_data[i].LOT_QTY * material_table_data[i].ROLL_PER_LOT * material_table_data[i].MET_PER_ROLL > 0) {
+            let next_in_seq: string = zeroPad(i + 1, 3);
+            await generalQuery("insert_I221", {
+              IN_NO: next_in_no,
+              IN_SEQ: next_in_seq,
+              M_CODE: material_table_data[i].M_CODE,
+              IN_CFM_QTY: material_table_data[i].LOT_QTY * material_table_data[i].ROLL_PER_LOT * material_table_data[i].MET_PER_ROLL,
+              REMARK: material_table_data[i].REMARK,
+              FACTORY: selectedFactory,
+              CODE_50: loaink,
+              INVOICE_NO: invoice_no,
+              CUST_CD: selectedCustomer?.CUST_CD,
+              ROLL_QTY: material_table_data[i].LOT_QTY * material_table_data[i].ROLL_PER_LOT,
+              EXP_DATE: material_table_data[i].EXP_DATE
+            })
+              .then((response) => {
+                if (response.data.tk_status !== "NG") {
+                  ////console.log(response.data.data);              
+                  //set_material_table_data([]);
+                  (async () => {
+                    for (let j = 0; j < material_table_data[i].LOT_QTY; j++) {
+                      let next_m_lot_no: string = await getI222Next_M_LOT_NO();
+                      await generalQuery("insert_I222", {
+                        IN_NO: next_in_no,
+                        IN_SEQ: next_in_seq,
+                        M_LOT_NO: next_m_lot_no,
+                        LOC_CD: selectedFactory === 'NM1' ? 'BE010' : 'HD001',
+                        WAHS_CD: selectedFactory === 'NM1' ? 'B' : 'H',
+                        M_CODE: material_table_data[i].M_CODE,
+                        IN_CFM_QTY: material_table_data[i].ROLL_PER_LOT * material_table_data[i].MET_PER_ROLL,
+                        FACTORY: selectedFactory,
+                        CUST_CD: selectedCustomer?.CUST_CD,
+                        ROLL_QTY: material_table_data[i].ROLL_PER_LOT,
+                        PROD_REQUEST_NO: material_table_data[i].PROD_REQUEST_NO,
+                      })
+                        .then((response) => {
+                          if (response.data.tk_status !== "NG") {
+                            ////console.log(response.data.data);              
+                            //set_material_table_data([]);
+                          } else {
+                            console.log(response.data.message);
+                            err_code += `Lỗi: ${response.data.message} | `;
+                          }
+                        })
+                        .catch((error) => {
+                          //console.log(error);
+                        });
                     }
-                  })
-                  .catch((error) => {
-                    //console.log(error);
-                  });
+                  })()
+                } else {
+                  err_code += `Lỗi: ${response.data.message} | `;
                 }
-
-                })()
-            } else {
-              err_code += `Lỗi: ${response.data.message} | `;
-            }
-          })
-          .catch((error) => {
-            //console.log(error);
-          });
-  
+              })
+              .catch((error) => {
+                //console.log(error);
+              });
+          }
+          else {
+            err_code += `Lỗi: Số roll hoặc số met phải lớn hơn 0 `;
+          }
         }
-        else {
-          err_code += `Lỗi: Số roll hoặc số met phải lớn hơn 0 `;
-        }  
-       }
-     }
-     else {
-      err_code = `Có dòng tổng met = 0 , check lại`;
-     }
-     
-
-     if(err_code !=='') {
-      set_material_table_data([]);
-      Swal.fire('Thông báo','Nhập kho vật liệu thất bại: ' + err_code,'error');
-     }
-     else {
-      Swal.fire('Thông báo','Nhập kho vật liệu thành công','success');
-     }
-
+      }
+      else {
+        err_code = `Có dòng tổng met = 0 , check lại`;
+      }
+      if (err_code !== '') {
+        set_material_table_data([]);
+        Swal.fire('Thông báo', 'Nhập kho vật liệu thất bại: ' + err_code, 'error');
+      }
+      else {
+        Swal.fire('Thông báo', 'Nhập kho vật liệu thành công', 'success');
+      }
     }
     else {
-      Swal.fire("Thông báo", "Chưa có dòng nào",'error');
-
+      Swal.fire("Thông báo", "Chưa có dòng nào", 'error');
     }
   }
-  const handleConfirmNhapKho= () => {
+  const checkLotNVL = async (M_LOT_NO: string, PLAN_ID: string) => {
+    await generalQuery("checkMNAMEfromLotI222XuatKho", { M_LOT_NO: M_LOT_NO, PLAN_ID: PLAN_ID })
+      .then((response) => {
+        if (response.data.tk_status !== "NG") {
+          //console.log(response.data.data);
+          setM_Name(
+            response.data.data[0].M_NAME +
+            " | " +
+            response.data.data[0].WIDTH_CD,
+          );
+          setM_Code(response.data.data[0].M_CODE);
+          setWidthCD(response.data.data[0].WIDTH_CD);
+          setInCFMQTY(response.data.data[0].IN_CFM_QTY);
+          setRollQty(response.data.data[0].ROLL_QTY);
+          setLieuQL_SX(response.data.data[0].LIEUQL_SX ?? 0);
+          setOut_Date(response.data.data[0].OUT_DATE);
+          setWAHS_CD(response.data.data[0].WAHS_CD);
+          setLOC_CD(response.data.data[0].LOC_CD);
+          let M_CODE: string = response.data.data[0].M_CODE;
+          let M_NAME: string = response.data.data[0].M_NAME;
+          let WIDTH_CD: number = response.data.data[0].WIDTH_CD;
+          let IN_CFM_QTY: number = response.data.data[0].IN_CFM_QTY;
+          let ROLL_QTY: number = response.data.data[0].ROLL_QTY;
+          let LIEUQL_SX: number = response.data.data[0].LIEUQL_SX;          
+          let WAHS_CD: string = response.data.data[0].WAHS_CD;
+          let LOC_CD: string = response.data.data[0].LOC_CD;
+          let lot_info: DKXL_DATA = dangkyxuatlieutable.filter((ele: DKXL_DATA, index: number)=> {
+            return ele.M_CODE === M_CODE;
+          })[0];
+          let OUT_DATE: string = lot_info.OUT_DATE;
+          let OUT_NO: string = lot_info.OUT_NO;
+          let OUT_SEQ: string = lot_info.OUT_SEQ; 
+          
+          let temp_row: WH_M_OUTPUT_DATA = {
+            id: moment().format("YYYYMMDD_HHmmsss" + prepareOutData.length),
+            M_CODE: M_CODE,
+            M_NAME: M_NAME,
+            WIDTH_CD: WIDTH_CD,
+            M_LOT_NO: M_LOT_NO,
+            ROLL_QTY: ROLL_QTY,
+            UNIT_QTY: IN_CFM_QTY,
+            TOTAL_QTY: ROLL_QTY* IN_CFM_QTY,
+            WAHS_CD: WAHS_CD,
+            LOC_CD: LOC_CD,
+            LIEUQL_SX: LIEUQL_SX,
+            OUT_DATE: OUT_DATE,
+            OUT_NO: OUT_NO,
+            OUT_SEQ: OUT_SEQ,
+          }
+          let checkExist_lot : boolean = prepareOutData.filter((ele: WH_M_OUTPUT_DATA, index: number)=> {
+            return ele.M_LOT_NO === M_LOT_NO;
+          }).length > 0;
+
+          let checkExist_lot1 : WH_M_OUTPUT_DATA[] = prepareOutData.filter((ele: WH_M_OUTPUT_DATA, index: number)=> {
+            return ele.M_LOT_NO === M_LOT_NO;
+          });
+          console.log(checkExist_lot1);
+
+
+          if(!checkExist_lot) {
+            setPrepareOutData([...prepareOutData, temp_row]);            
+          }
+          else {
+            Swal.fire("Thông báo","Lot này bắn rồi", "warning");
+
+          }
+          setM_LOT_NO("");
+
+          
+        } else {
+          setM_Name("");
+          setM_Code("");
+          setWidthCD(0);
+          setRollQty(0);
+          setInCFMQTY(0);
+          setLieuQL_SX(0);
+          setOut_Date("");
+          setWAHS_CD("");
+          setLOC_CD("");
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+  const handleConfirmXuatKho = () => {
     Swal.fire({
       title: "Nhập liệu vào kho",
       text: "Chắc chắn muốn nhập kho các liệu đã nhập ?",
@@ -266,12 +386,26 @@ const NHAPLIEU = () => {
       cancelButtonColor: "#d33",
       confirmButtonText: "Vẫn Nhập!",
     }).then((result) => {
-      if (result.isConfirmed) {        
+      if (result.isConfirmed) {
         nhapkho();
       }
     });
   };
-
+  const [dangkyxuatlieutable, setDangKyXuatLieuTable] = useState<DKXL_DATA[]>([]);
+  const loadDKXLTB = async (PLAN_ID: string) => {
+    await generalQuery("checkPLANID_O301", { PLAN_ID: PLAN_ID })
+      .then((response) => {
+        //console.log(response.data);
+        if (response.data.tk_status !== "NG") {
+          setDangKyXuatLieuTable(response.data.data);          
+        } else {
+          setDangKyXuatLieuTable([]);          
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
   const materialDataTable = React.useMemo(
     () => (
       <div className="datatb">
@@ -284,7 +418,7 @@ const NHAPLIEU = () => {
             cellHintEnabled={true}
             columnResizingMode={"widget"}
             showColumnLines={true}
-            dataSource={material_table_data}
+            dataSource={prepareOutData}
             columnWidth="auto"
             keyExpr="id"
             height={"75vh"}
@@ -350,42 +484,20 @@ const NHAPLIEU = () => {
               showInfo={true}
               infoText="Page #{0}. Total: {1} ({2} items)"
               displayMode="compact"
-            />
-            <Column dataField="CUST_NAME_KD" caption="CUST_NAME_KD" width={100} allowEditing={false} ></Column>
+            />            
             <Column dataField="M_CODE" caption="M_CODE" width={100} allowEditing={false} ></Column>
             <Column dataField="M_NAME" caption="M_NAME" width={100} allowEditing={false} ></Column>
             <Column dataField="WIDTH_CD" caption="WIDTH_CD" width={100} allowEditing={false} ></Column>
-            <Column
-              dataField="LOT_QTY"
-              caption="LOT_QTY"
-              width={100}
-             allowEditing={true} ></Column>
-             <Column
-              dataField="ROLL_PER_LOT"
-              caption="ROLL_PER_LOT"
-              width={100}
-             allowEditing={true} ></Column>
-            <Column
-              dataField="MET_PER_ROLL"
-              caption="MET_PER_ROLL"
-              width={100}              
-             allowEditing={true} ></Column>   
-            <Column
-              dataField="INVOICE_NO"
-              caption="INVOICE_NO"
-              width={100}
-             allowEditing={false} ></Column>
-            <Column
-              dataField="REMARK"
-              caption="REMARK"
-              width={100}
-             allowEditing={true} ></Column>
-            <Column
-              dataField="EXP_DATE"
-              caption="EXP_DATE"
-              width={100}
-             allowEditing={false} ></Column>
-            <Column dataField="PROD_REQUEST_NO" caption="PROD_REQUEST_NO" width={100} allowEditing={true} ></Column>
+            <Column dataField="M_LOT_NO" caption="M_LOT_NO" width={100} allowEditing={false} ></Column>
+            <Column dataField="ROLL_QTY" caption="ROLL_QTY" width={100} allowEditing={true} ></Column>
+            <Column dataField="UNIT_QTY" caption="UNIT_QTY" width={100} allowEditing={true} ></Column>
+            <Column dataField="TOTAL_QTY" caption="TOTAL_QTY" width={100} allowEditing={true} ></Column>
+            <Column dataField="LIEUQL_SX" caption="LIEUQL_SX" width={100} allowEditing={false} ></Column>
+            <Column dataField="WAHS_CD" caption="WAHS_CD" width={100} allowEditing={true} ></Column>
+            <Column dataField="LOC_CD" caption="LOC_CD" width={100} allowEditing={false} ></Column>
+            <Column dataField="OUT_DATE" caption="OUT_DATE" width={100} allowEditing={true} ></Column>
+            <Column dataField="OUT_NO" caption="OUT_NO" width={100} allowEditing={true} ></Column>
+            <Column dataField="OUT_SEQ" caption="OUT_SEQ" width={100} allowEditing={true} ></Column>
             <Summary>
               <TotalItem
                 alignment="right"
@@ -398,7 +510,7 @@ const NHAPLIEU = () => {
         </CustomResponsiveContainer>
       </div>
     ),
-    [material_table_data],
+    [prepareOutData],
   );
   const [customerList, setCustomerList] = useState<CustomerListData[]>([]);
   const filterOptions1 = createFilterOptions({
@@ -406,7 +518,7 @@ const NHAPLIEU = () => {
     limit: 100,
   });
   const getcustomerlist = () => {
-    generalQuery("selectVendorList", {})
+    generalQuery("selectCustomerAndVendorList", {})
       .then((response) => {
         if (response.data.tk_status !== "NG") {
           setCustomerList(response.data.data);
@@ -1065,51 +1177,16 @@ const NHAPLIEU = () => {
         //console.log(error);
       });
   };
-
   useEffect(() => {
     getcustomerlist();
     getmateriallist();
   }, []);
   return (
-    <div className="nhaplieu">
+    <div className="xuatlieu">
       <div className="tracuuDataInspection">
         <div className="tracuuDataInspectionform">
           <div className="forminput">
             <div className="forminputcolumn">
-              <div className="chonvatlieu" style={{ display: 'flex', alignItems: 'center' }}>
-                <b>Vật liệu:</b>
-                <label>
-                  <Autocomplete
-                    size="small"
-                    disablePortal
-                    options={materialList}
-                    className="autocomplete"
-                    filterOptions={filterOptions1}
-                    isOptionEqualToValue={(option: any, value: any) =>
-                      option.M_CODE === value.M_CODE
-                    }
-                    getOptionLabel={(option: MaterialListData | any) =>
-                      `${option.M_NAME}|${option.WIDTH_CD}|${option.M_CODE}`
-                    }
-                    renderInput={(params) => (
-                      <TextField {...params} label="Select material" />
-                    )}
-                    renderOption={(props, option: any)=> <Typography style={{ fontSize: '0.7rem' }} {...props}>
-                    {`${option.M_NAME}|${option.WIDTH_CD}|${option.M_CODE}`}
-                  </Typography>}
-                    defaultValue={{
-                      M_CODE: "A0007770",
-                      M_NAME: "SJ-203020HC",
-                      WIDTH_CD: 208,
-                    }}
-                    value={selectedMaterial}
-                    onChange={(event: any, newValue: MaterialListData | any) => {
-                      //console.log(newValue);
-                      setSelectedMaterial(newValue);
-                    }}
-                  />
-                </label>
-              </div>
               <label style={{ display: "flex", alignItems: "center" }}>
                 <b>Vendor:</b>
                 <Autocomplete
@@ -1136,9 +1213,9 @@ const NHAPLIEU = () => {
                   renderInput={(params) => (
                     <TextField {...params} style={{ height: "10px" }} />
                   )}
-                  renderOption={(props, option: any)=> <Typography style={{ fontSize: '0.7rem' }} {...props}>
-                  {`${option.CUST_CD !== null ? option.CUST_NAME_KD : ""}${option.CUST_CD !== null ? option.CUST_CD : ""}`}
-                 </Typography>}
+                  renderOption={(props, option: any) => <Typography style={{ fontSize: '0.7rem' }} {...props}>
+                    {`${option.CUST_CD !== null ? option.CUST_NAME_KD : ""}${option.CUST_CD !== null ? option.CUST_CD : ""}`}
+                  </Typography>}
                   defaultValue={{
                     CUST_CD: getCompany() === "CMS" ? "0000" : "KH000",
                     CUST_NAME: getCompany() === "CMS" ? "SEOJIN" : "PVN",
@@ -1171,52 +1248,118 @@ const NHAPLIEU = () => {
                 </select>
               </label>
               <label>
-                <b>PL Nhập Khẩu</b>
-                <select
-                  name="loaixh"
-                  value={loaink}
-                  onChange={(e) => {
-                    setloaiNK(e.target.value);
-                  }}
-                >
-                  <option value="01">GC</option>
-                  <option value="02">SK</option>
-                  <option value="03">KD</option>
-                  <option value="04">VN</option>
-                  <option value="05">SAMPLE</option>
-                  <option value="06">Vai bac 4</option>
-                  <option value="07">ETC</option>
-                </select>
-              </label>
-            </div>
-            <div className="forminputcolumn">
-              <label>
-                <b>Ngày nhập kho:</b>
+                <b>Ngày xuất kho:</b>
                 <input
                   type="date"
                   value={fromdate.slice(0, 10)}
                   onChange={(e) => setFromDate(e.target.value)}
                 ></input>
               </label>
-              <label>
-                <b>Hạn Sử Dụng:</b>{" "}
-                <input
-                  type="date"
-                  value={todate.slice(0, 10)}
-                  onChange={(e) => setToDate(e.target.value)}
-                ></input>
-              </label>
             </div>
             <div className="forminputcolumn">
               <label>
-                <b>Invoice No:</b>{" "}
+                <b>Ng.Giao:</b>
                 <input
                   type="text"
-                  placeholder="Invoice No"
-                  value={invoice_no}
-                  onChange={(e) => setInvoiceNo(e.target.value)}
+                  placeholder={"NHU1903"}
+                  value={giao_empl}
+                  onChange={(e) => {
+                    if (e.target.value.length >= 7) {
+                      checkEMPL_NAME(1, e.target.value);
+                    }
+                    setGiao_Empl(e.target.value);
+                  }}
                 ></input>
               </label>
+              {giao_empl_name && (
+                <span
+                  style={{
+                    fontSize: '0.7rem',
+                    fontWeight: "bold",
+                    color: "blue",
+                  }}
+                >
+                  {giao_empl_name}
+                </span>
+              )}
+              <label>
+                <b>Ng.Nhận:</b>
+                <input
+                  type="text"
+                  placeholder={"NHU1903"}
+                  value={nhan_empl}
+                  onChange={(e) => {
+                    if (e.target.value.length >= 7) {
+                      checkEMPL_NAME(2, e.target.value);
+                    }
+                    setNhan_Empl(e.target.value);
+                  }}
+                ></input>
+              </label>
+              {nhan_empl && (
+                <span
+                  style={{
+                    fontSize: '0.7rem',
+                    fontWeight: "bold",
+                    color: "blue",
+                  }}
+                >
+                  {nhan_empl_name}
+                </span>
+              )}
+            </div>
+            <div className="forminputcolumn">
+              <label>
+                <b>Số chỉ thị:</b>{" "}
+                <input
+                  type="text"
+                  placeholder="Số chỉ thị"
+                  value={planId}
+                  onChange={(e) => {
+                    setPlanId(e.target.value)
+                    if (e.target.value.length >= 7) {
+                      checkPlanID(e.target.value);
+                      loadDKXLTB(e.target.value);
+                    }
+                  }}
+                ></input>
+              </label>
+              {g_name && (
+                <span
+                  style={{
+                    fontSize: '0.7rem',
+                    fontWeight: "bold",
+                    color: "blue",
+                  }}
+                >
+                  {g_name}
+                </span>
+              )}
+              <label>
+                <b>LOT Vật liệu:</b>{" "}
+                <input
+                  type="text"
+                  placeholder="Lot vật liệu"
+                  value={m_lot_no}
+                  onChange={(e) => {
+                    setM_LOT_NO(e.target.value)
+                    if (e.target.value.length >= 10) {
+                      checkLotNVL(e.target.value, planId);
+                    }
+                  }}
+                ></input>
+              </label>
+              {m_name && (
+                <span
+                  style={{
+                    fontSize: '0.7rem',
+                    fontWeight: "bold",
+                    color: "blue",
+                  }}
+                >
+                  {m_name}
+                </span>
+              )}
             </div>
           </div>
           <div className="formbutton">
@@ -1224,8 +1367,8 @@ const NHAPLIEU = () => {
               addMaterial();
             }}>Add</Button>
             <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#ec9d52' }} onClick={() => {
-              handleConfirmNhapKho();
-            }}>Nhập kho</Button>
+              handleConfirmXuatKho();
+            }}>Xuất kho</Button>
           </div>
         </div>
         <div className="tracuuYCSXTable">{materialDataTable}</div>
@@ -1247,4 +1390,4 @@ const NHAPLIEU = () => {
     </div>
   );
 };
-export default NHAPLIEU;
+export default XUATLIEU;

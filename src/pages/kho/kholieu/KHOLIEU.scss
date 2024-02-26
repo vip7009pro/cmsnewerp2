@@ -75,11 +75,23 @@
     .nhaplieudiv {
       display: flex;
       flex-direction: column;
-      width: 80%;
+      width: 90%;
       position: absolute;
-      left:10%;
+      left:5%;
       padding: 10px;
       background-color: #cbe07f;
+      -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.29);
+      box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.2);
+      border-radius: 5px;
+    }
+    .xuatlieudiv {
+      display: flex;
+      flex-direction: column;
+      width: 90%;
+      position: absolute;
+      left:5%;
+      padding: 10px;
+      background-color: #e789e3;
       -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.29);
       box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.2);
       border-radius: 5px;
@@ -159,6 +171,30 @@
       -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
       box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
       border-radius: 3px;
+    }
+    .nhaplieudiv {
+      display: flex;
+      flex-direction: column;
+      width: 90%;
+      position: absolute;
+      left:5%;
+      padding: 10px;
+      background-color: #cbe07f;
+      -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.29);
+      box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.2);
+      border-radius: 5px;
+    }
+    .xuatlieudiv {
+      display: flex;
+      flex-direction: column;
+      width: 90%;
+      position: absolute;
+      left:5%;
+      padding: 10px;
+      background-color: #e789e3;
+      -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.29);
+      box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.2);
+      border-radius: 5px;
     }
   }
 }

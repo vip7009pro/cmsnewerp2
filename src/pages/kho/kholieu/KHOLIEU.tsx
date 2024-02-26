@@ -26,6 +26,7 @@ import {
   XUATLIEUDATA,
 } from "../../../api/GlobalInterface";
 import NHAPLIEU from "./nhaplieu/NHAPLIEU";
+import XUATLIEU from "./xuatlieu/XUATLIEU";
 const KHOLIEU = () => {
   const userData: UserData | undefined = useSelector(
     (state: RootState) => state.totalSlice.userData,
@@ -613,6 +614,7 @@ const KHOLIEU = () => {
                 ["ALL"],
                 ()=> {
                   setShowNhapLieu(true);
+                  setShowXuatLieu(false);
                 },
               );            
           }}>Nhập</Button>
@@ -623,7 +625,8 @@ const KHOLIEU = () => {
                 ["ALL"],
                 ["ALL"],
                 ()=> {
-
+                  setShowNhapLieu(false);
+                  setShowXuatLieu(true);
                 },
               );            
           }}>Xuất</Button>
@@ -639,6 +642,7 @@ const KHOLIEU = () => {
             className="buttonIcon"
             onClick={() => {
               setShowNhapLieu(false);
+              setShowXuatLieu(false);              
             }}
           >
             <AiFillCloseCircle color="blue" size={15} />
@@ -646,6 +650,23 @@ const KHOLIEU = () => {
           </IconButton>
         </div>
          <NHAPLIEU/>
+        
+      </div>}
+      {showxuatlieu &&<div className="xuatlieudiv">     
+       <div>
+        Xuất vật liệu
+        <IconButton
+            className="buttonIcon"
+            onClick={() => {
+              setShowXuatLieu(false);
+              setShowNhapLieu(false);
+            }}
+          >
+            <AiFillCloseCircle color="blue" size={15} />
+            Close
+          </IconButton>
+        </div>
+         <XUATLIEU/>
         
       </div>}
     </div>

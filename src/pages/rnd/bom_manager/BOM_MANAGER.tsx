@@ -1,5 +1,6 @@
 import {
   Autocomplete,
+  AutocompleteRenderOptionState,
   Button,
   Checkbox,
   createFilterOptions,
@@ -8,6 +9,7 @@ import {
   keyframes,
   LinearProgress,
   TextField,
+  Typography,
 } from "@mui/material";
 import {
   DataGrid,
@@ -2472,6 +2474,21 @@ const BOM_MANAGER = () => {
         //console.log(error);
       });
   };
+  const renderOptionCustomer = (props: React.HTMLAttributes<HTMLLIElement>, option: CustomerListData, state: AutocompleteRenderOptionState) => (
+    <Typography style={{ fontSize: '0.7rem' }} {...props}>
+     {`${option.CUST_NAME_KD}${option.CUST_CD}`}
+    </Typography>
+  );
+  const renderOptionMaterial = (props: React.HTMLAttributes<HTMLLIElement>, option: MaterialListData, state: AutocompleteRenderOptionState) => (
+    <Typography style={{ fontSize: '0.7rem' }} {...props}>
+      {`${option.M_NAME}|${option.WIDTH_CD}|${option.M_CODE}`}
+    </Typography>
+  );
+  const renderOptionMainMaterial = (props: React.HTMLAttributes<HTMLLIElement>, option: MaterialListData, state: AutocompleteRenderOptionState) => (
+    <Typography style={{ fontSize: '0.7rem' }} {...props}>
+      {`${option.M_NAME}`}
+    </Typography>
+  );
   useEffect(() => {
     getmateriallist();
     getcustomerlist();
@@ -2743,6 +2760,9 @@ const BOM_MANAGER = () => {
                         renderInput={(params) => (
                           <TextField {...params} style={{ height: "10px" }} />
                         )}
+                        renderOption={(props, option:any)=> <Typography style={{ fontSize: '0.7rem' }} {...props}>
+                        {`${option.CUST_NAME_KD}${option.CUST_CD}`}
+                       </Typography>}
                         defaultValue={{
                           CUST_CD: company === "CMS" ? "0000" : "KH000",
                           CUST_NAME: company === "CMS" ? "SEOJIN" : "PVN",
@@ -2930,6 +2950,9 @@ const BOM_MANAGER = () => {
                         renderInput={(params) => (
                           <TextField {...params} style={{ height: "10px" }} />
                         )}
+                        renderOption={(props, option: any)=> <Typography style={{ fontSize: '0.7rem' }} {...props}>
+                        {`${option.M_NAME}`}
+                      </Typography>}
                         defaultValue={{
                           M_NAME: "SJ-203020HC",
                         }}
@@ -3595,6 +3618,9 @@ const BOM_MANAGER = () => {
                 renderInput={(params) => (
                   <TextField {...params} label="Select material" />
                 )}
+                renderOption={(props, option: any)=> <Typography style={{ fontSize: '0.7rem' }} {...props}>
+                {`${option.M_NAME}|${option.WIDTH_CD}|${option.M_CODE}`}
+              </Typography>}
                 defaultValue={{
                   M_CODE: "A0007770",
                   M_NAME: "SJ-203020HC",
