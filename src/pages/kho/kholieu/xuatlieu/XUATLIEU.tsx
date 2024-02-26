@@ -358,8 +358,6 @@ const XUATLIEU = () => {
 
           }
           setM_LOT_NO("");
-
-          
         } else {
           setM_Name("");
           setM_Code("");
