@@ -69,7 +69,6 @@ const KinhDoanhReport = () => {
   const [runningPOData, setWeekLyPOData] = useState<Array<WeekLyPOData>>([]);
   const [runningPOBalanceData, setRunningPOBalanceData] = useState<Array<RunningPOData>>([]);
 
-
   const [widgetdata_pobalancesummary, setWidgetData_PoBalanceSummary] = useState<WidgetData_POBalanceSummary>({
     po_balance_qty: 0,
     po_balance_amount: 0,

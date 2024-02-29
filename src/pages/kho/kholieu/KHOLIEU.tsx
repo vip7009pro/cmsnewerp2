@@ -605,7 +605,7 @@ const KHOLIEU = () => {
             handletraWHSTOCKLIEU();
           }}>Tồn Liệu</Button>
         </div>
-        <div className="toolbardiv" style={{display:'flex', gap:'10px'}}>        
+        {/* <div className="toolbardiv" style={{display:'flex', gap:'10px'}}>        
           <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#e6d53c', color:'black' }} onClick={() => { 
               checkBP(
                 userData,
@@ -630,7 +630,7 @@ const KHOLIEU = () => {
                 },
               );            
           }}>Xuất</Button>
-      </div>
+      </div> */}
       </div>
       <div className="tracuuWHTable">
         {readyRender && bangdata}

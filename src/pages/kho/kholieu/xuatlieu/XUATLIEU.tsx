@@ -100,7 +100,8 @@ const XUATLIEU = () => {
   const [out_date, setOut_Date] = useState("");
   const [wahs_cd, setWAHS_CD] = useState("");
   const [loc_cd, setLOC_CD] = useState("");
-  
+  const [solanout,setSoLanOut] = useState(1);
+  const [fsc, setFSC] = useState('N');
   const checkEMPL_NAME = (selection: number, EMPL_NO: string) => {
     generalQuery("checkEMPL_NO_mobile", { EMPL_NO: EMPL_NO })
       .then((response) => {
@@ -135,6 +136,7 @@ const XUATLIEU = () => {
           //console.log(response.data.data);
           setPlanId(PLAN_ID);
           setGName(response.data.data[0].G_NAME);
+          setFSC(response.data.data[0].G_NAME ?? 'N')
         } else {
           setGName("");
         }
@@ -142,6 +144,8 @@ const XUATLIEU = () => {
       .catch((error) => {
         console.log(error);
       });
+
+
   };
   const addMaterial = async () => {
     let temp_m_invoie: WH_M_INPUT_DATA = {
@@ -166,124 +170,47 @@ const XUATLIEU = () => {
       set_material_table_data([...material_table_data, temp_m_invoie]);
     }
   };
-  const getI221NextIN_NO = async () => {
-    let next_in_no: string = "001";
-    await generalQuery("getI221Lastest_IN_NO", {})
-      .then((response) => {
-        if (response.data.tk_status !== "NG") {
-          console.log(response.data.data);
-          const current_in_no: string = response.data.data[0].MAX_IN_NO ?? '000';
-          next_in_no = zeroPad(parseInt(current_in_no) + 1, 3);
-        } else {
-        }
-      })
-      .catch((error) => {
-        //console.log(error);
-      });
-    console.log(next_in_no);
-    return next_in_no;
-  }
-  const getI222Next_M_LOT_NO = async () => {
-    let next_m_lot_no: string = "001";
-    await generalQuery("getI222Lastest_M_LOT_NO", {})
-      .then((response) => {
-        if (response.data.tk_status !== "NG") {
-          console.log(response.data.data);
-          const current_m_lot_no: string = response.data.data[0].MAX_M_LOT_NO;
-          let part1: string = current_m_lot_no.substring(0, 8);
-          let part2: string = current_m_lot_no.substring(8, 12);
-          next_m_lot_no = part1 + zeroPad(parseInt(part2) + 1, 4);
-        } else {
-        }
-      })
-      .catch((error) => {
-        //console.log(error);
-      });
-    console.log(next_m_lot_no);
-    return next_m_lot_no;
-  }
-  const nhapkho = async () => {
-    if (material_table_data.length > 0) {
-      let next_in_no: string = await getI221NextIN_NO();
-      console.log(next_in_no);
+  const xuatkho = async () => {
+    if (prepareOutData.length > 0) {
       let err_code: string = '';
-      let checkmet: boolean = true;
-      for (let i = 0; i < material_table_data.length; i++) {
-        let ttmet = material_table_data[i].LOT_QTY * material_table_data[i].ROLL_PER_LOT * material_table_data[i].MET_PER_ROLL;
-        if (ttmet === 0) checkmet = false;
-      }
-      if (checkmet) {
-        for (let i = 0; i < material_table_data.length; i++) {
-          if (material_table_data[i].LOT_QTY * material_table_data[i].ROLL_PER_LOT * material_table_data[i].MET_PER_ROLL > 0) {
-            let next_in_seq: string = zeroPad(i + 1, 3);
-            await generalQuery("insert_I221", {
-              IN_NO: next_in_no,
-              IN_SEQ: next_in_seq,
-              M_CODE: material_table_data[i].M_CODE,
-              IN_CFM_QTY: material_table_data[i].LOT_QTY * material_table_data[i].ROLL_PER_LOT * material_table_data[i].MET_PER_ROLL,
-              REMARK: material_table_data[i].REMARK,
+        for (let i = 0; i < prepareOutData.length; i++) {
+            await generalQuery("insert_O302", {
+              OUT_DATE: prepareOutData[i].OUT_DATE,
+              OUT_NO: prepareOutData[i].OUT_NO,
+              OUT_SEQ: prepareOutData[i].OUT_SEQ,
+              M_LOT_NO: prepareOutData[i].M_LOT_NO,
+              LOC_CD: prepareOutData[i].LOC_CD,
+              M_CODE: prepareOutData[i].M_CODE,
+              OUT_CFM_QTY: prepareOutData[i].TOTAL_QTY,
+              WAHS_CD: prepareOutData[i].WAHS_CD,
               FACTORY: selectedFactory,
-              CODE_50: loaink,
-              INVOICE_NO: invoice_no,
-              CUST_CD: selectedCustomer?.CUST_CD,
-              ROLL_QTY: material_table_data[i].LOT_QTY * material_table_data[i].ROLL_PER_LOT,
-              EXP_DATE: material_table_data[i].EXP_DATE
+              CUST_CD: selectedCustomer?.CUST_CD,              
+              ROLL_QTY: prepareOutData[i].ROLL_QTY,
+              IN_DATE_O302: prepareOutData[i].IN_DATE,
+              PLAN_ID: planId,
+              SOLANOUT: solanout,
+              LIEUQL_SX: prepareOutData[i].LIEUQL_SX,
+              INS_RECEPTION: nhan_empl,
+              FSC_O302: fsc,
             })
-              .then((response) => {
-                if (response.data.tk_status !== "NG") {
-                  ////console.log(response.data.data);              
-                  //set_material_table_data([]);
-                  (async () => {
-                    for (let j = 0; j < material_table_data[i].LOT_QTY; j++) {
-                      let next_m_lot_no: string = await getI222Next_M_LOT_NO();
-                      await generalQuery("insert_I222", {
-                        IN_NO: next_in_no,
-                        IN_SEQ: next_in_seq,
-                        M_LOT_NO: next_m_lot_no,
-                        LOC_CD: selectedFactory === 'NM1' ? 'BE010' : 'HD001',
-                        WAHS_CD: selectedFactory === 'NM1' ? 'B' : 'H',
-                        M_CODE: material_table_data[i].M_CODE,
-                        IN_CFM_QTY: material_table_data[i].ROLL_PER_LOT * material_table_data[i].MET_PER_ROLL,
-                        FACTORY: selectedFactory,
-                        CUST_CD: selectedCustomer?.CUST_CD,
-                        ROLL_QTY: material_table_data[i].ROLL_PER_LOT,
-                        PROD_REQUEST_NO: material_table_data[i].PROD_REQUEST_NO,
-                      })
-                        .then((response) => {
-                          if (response.data.tk_status !== "NG") {
-                            ////console.log(response.data.data);              
-                            //set_material_table_data([]);
-                          } else {
-                            console.log(response.data.message);
-                            err_code += `Lỗi: ${response.data.message} | `;
-                          }
-                        })
-                        .catch((error) => {
-                          //console.log(error);
-                        });
-                    }
-                  })()
-                } else {
-                  err_code += `Lỗi: ${response.data.message} | `;
-                }
-              })
-              .catch((error) => {
-                //console.log(error);
-              });
-          }
-          else {
-            err_code += `Lỗi: Số roll hoặc số met phải lớn hơn 0 `;
-          }
+            .then((response) => {
+              if (response.data.tk_status !== "NG") {
+
+
+              } else {
+                err_code += `Lỗi: ${response.data.message} | `;
+              }
+            })
+            .catch((error) => {
+              //console.log(error);
+            });          
         }
-      }
-      else {
-        err_code = `Có dòng tổng met = 0 , check lại`;
-      }
-      if (err_code !== '') {
-        set_material_table_data([]);
+     
+      if (err_code !== '') {        
         Swal.fire('Thông báo', 'Nhập kho vật liệu thất bại: ' + err_code, 'error');
       }
       else {
+        set_material_table_data([]);
         Swal.fire('Thông báo', 'Nhập kho vật liệu thành công', 'success');
       }
     }
@@ -309,21 +236,23 @@ const XUATLIEU = () => {
           setOut_Date(response.data.data[0].OUT_DATE);
           setWAHS_CD(response.data.data[0].WAHS_CD);
           setLOC_CD(response.data.data[0].LOC_CD);
+          let IN_DATE: string = response.data.data[0].IN_DATE;
+          let USE_YN: string = response.data.data[0].USE_YN;
           let M_CODE: string = response.data.data[0].M_CODE;
           let M_NAME: string = response.data.data[0].M_NAME;
           let WIDTH_CD: number = response.data.data[0].WIDTH_CD;
-          let IN_CFM_QTY: number = response.data.data[0].IN_CFM_QTY;
+          let IN_CFM_QTY: number = USE_YN !=='R'?  response.data.data[0].IN_CFM_QTY : response.data.data[0].RETURN_QTY;
           let ROLL_QTY: number = response.data.data[0].ROLL_QTY;
-          let LIEUQL_SX: number = response.data.data[0].LIEUQL_SX;          
+          let LIEUQL_SX: number = response.data.data[0].LIEUQL_SX;
           let WAHS_CD: string = response.data.data[0].WAHS_CD;
           let LOC_CD: string = response.data.data[0].LOC_CD;
-          let lot_info: DKXL_DATA = dangkyxuatlieutable.filter((ele: DKXL_DATA, index: number)=> {
+          let lot_info: DKXL_DATA = dangkyxuatlieutable.filter((ele: DKXL_DATA, index: number) => {
             return ele.M_CODE === M_CODE;
-          })[0];
-          let OUT_DATE: string = lot_info.OUT_DATE;
-          let OUT_NO: string = lot_info.OUT_NO;
-          let OUT_SEQ: string = lot_info.OUT_SEQ; 
-          
+          })[0] ?? "NG";
+          console.log(lot_info);
+          let OUT_DATE: string = lot_info.OUT_DATE ?? 'NG';
+          let OUT_NO: string = lot_info.OUT_NO ?? "NG";
+          let OUT_SEQ: string = lot_info.OUT_SEQ ?? "NG";
           let temp_row: WH_M_OUTPUT_DATA = {
             id: moment().format("YYYYMMDD_HHmmsss" + prepareOutData.length),
             M_CODE: M_CODE,
@@ -332,30 +261,30 @@ const XUATLIEU = () => {
             M_LOT_NO: M_LOT_NO,
             ROLL_QTY: ROLL_QTY,
             UNIT_QTY: IN_CFM_QTY,
-            TOTAL_QTY: ROLL_QTY* IN_CFM_QTY,
+            TOTAL_QTY: ROLL_QTY * IN_CFM_QTY,
             WAHS_CD: WAHS_CD,
             LOC_CD: LOC_CD,
             LIEUQL_SX: LIEUQL_SX,
             OUT_DATE: OUT_DATE,
             OUT_NO: OUT_NO,
             OUT_SEQ: OUT_SEQ,
+            IN_DATE: IN_DATE,
+            USE_YN: USE_YN
           }
-          let checkExist_lot : boolean = prepareOutData.filter((ele: WH_M_OUTPUT_DATA, index: number)=> {
+          let checkExist_lot: boolean = prepareOutData.filter((ele: WH_M_OUTPUT_DATA, index: number) => {
             return ele.M_LOT_NO === M_LOT_NO;
           }).length > 0;
-
-          let checkExist_lot1 : WH_M_OUTPUT_DATA[] = prepareOutData.filter((ele: WH_M_OUTPUT_DATA, index: number)=> {
-            return ele.M_LOT_NO === M_LOT_NO;
-          });
-          console.log(checkExist_lot1);
-
-
-          if(!checkExist_lot) {
-            setPrepareOutData([...prepareOutData, temp_row]);            
+          if (!checkExist_lot && OUT_DATE !=='NG' && USE_YN !=='X') {
+            setPrepareOutData([...prepareOutData, temp_row]);
+          }
+          else if(OUT_DATE ==='NG') {
+            Swal.fire("Thông báo", "Lot này là Liệu chưa đăng ký xuất kho", "warning");
+          }
+          else if(USE_YN ==='X') {
+            Swal.fire("Thông báo", "Lot này đã sử dụng rồi", "warning");
           }
           else {
-            Swal.fire("Thông báo","Lot này bắn rồi", "warning");
-
+            Swal.fire("Thông báo", "Lot này bắn rồi", "warning");
           }
           setM_LOT_NO("");
         } else {
@@ -385,7 +314,7 @@ const XUATLIEU = () => {
       confirmButtonText: "Vẫn Nhập!",
     }).then((result) => {
       if (result.isConfirmed) {
-        nhapkho();
+        xuatkho();
       }
     });
   };
@@ -395,9 +324,23 @@ const XUATLIEU = () => {
       .then((response) => {
         //console.log(response.data);
         if (response.data.tk_status !== "NG") {
-          setDangKyXuatLieuTable(response.data.data);          
+          setDangKyXuatLieuTable(response.data.data);
         } else {
-          setDangKyXuatLieuTable([]);          
+          setDangKyXuatLieuTable([]);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+  const checkSoLanOutO302 = async (PLAN_ID: string) => {
+    await generalQuery("checksolanout_O302", { PLAN_ID: PLAN_ID })
+      .then((response) => {
+        //console.log(response.data);
+        if (response.data.tk_status !== "NG") {
+          setSoLanOut((response.data.data[0].SOLANOUT ?? 0) +1);
+        } else {
+          setSoLanOut(1);
         }
       })
       .catch((error) => {
@@ -419,7 +362,7 @@ const XUATLIEU = () => {
             dataSource={prepareOutData}
             columnWidth="auto"
             keyExpr="id"
-            height={"75vh"}
+            height={"80vh"}
             showBorders={true}
             onSelectionChanged={(e) => {
               //setSelectedRows(e.selectedRowsData[0]);
@@ -482,20 +425,22 @@ const XUATLIEU = () => {
               showInfo={true}
               infoText="Page #{0}. Total: {1} ({2} items)"
               displayMode="compact"
-            />            
-            <Column dataField="M_CODE" caption="M_CODE" width={100} allowEditing={false} ></Column>
-            <Column dataField="M_NAME" caption="M_NAME" width={100} allowEditing={false} ></Column>
-            <Column dataField="WIDTH_CD" caption="WIDTH_CD" width={100} allowEditing={false} ></Column>
-            <Column dataField="M_LOT_NO" caption="M_LOT_NO" width={100} allowEditing={false} ></Column>
-            <Column dataField="ROLL_QTY" caption="ROLL_QTY" width={100} allowEditing={true} ></Column>
-            <Column dataField="UNIT_QTY" caption="UNIT_QTY" width={100} allowEditing={true} ></Column>
-            <Column dataField="TOTAL_QTY" caption="TOTAL_QTY" width={100} allowEditing={true} ></Column>
-            <Column dataField="LIEUQL_SX" caption="LIEUQL_SX" width={100} allowEditing={false} ></Column>
-            <Column dataField="WAHS_CD" caption="WAHS_CD" width={100} allowEditing={true} ></Column>
-            <Column dataField="LOC_CD" caption="LOC_CD" width={100} allowEditing={false} ></Column>
-            <Column dataField="OUT_DATE" caption="OUT_DATE" width={100} allowEditing={true} ></Column>
-            <Column dataField="OUT_NO" caption="OUT_NO" width={100} allowEditing={true} ></Column>
-            <Column dataField="OUT_SEQ" caption="OUT_SEQ" width={100} allowEditing={true} ></Column>
+            />
+            <Column dataField="M_CODE" caption="M_CODE" width={90} allowEditing={false} ></Column>
+            <Column dataField="M_NAME" caption="M_NAME" width={90} allowEditing={false} ></Column>
+            <Column dataField="WIDTH_CD" caption="WIDTH_CD" width={90} allowEditing={false} ></Column>
+            <Column dataField="M_LOT_NO" caption="M_LOT_NO" width={90} allowEditing={false} ></Column>
+            <Column dataField="ROLL_QTY" caption="ROLL_QTY" width={90} allowEditing={false} ></Column>
+            <Column dataField="UNIT_QTY" caption="UNIT_QTY" width={90} allowEditing={false} ></Column>
+            <Column dataField="TOTAL_QTY" caption="TOTAL_QTY" width={90} allowEditing={false} ></Column>
+            <Column dataField="LIEUQL_SX" caption="LIEUQL_SX" width={90} allowEditing={false} ></Column>
+            <Column dataField="WAHS_CD" caption="WAHS_CD" width={90} allowEditing={false} ></Column>
+            <Column dataField="LOC_CD" caption="LOC_CD" width={90} allowEditing={false} ></Column>
+            <Column dataField="OUT_DATE" caption="OUT_DATE" width={90} allowEditing={false} ></Column>
+            <Column dataField="OUT_NO" caption="OUT_NO" width={90} allowEditing={false} ></Column>
+            <Column dataField="OUT_SEQ" caption="OUT_SEQ" width={90} allowEditing={false} ></Column>
+            <Column dataField="IN_DATE" caption="IN_DATE" width={90} allowEditing={false} ></Column>
+            <Column dataField="USE_YN" caption="USE_YN" width={90} allowEditing={false} ></Column>
             <Summary>
               <TotalItem
                 alignment="right"
@@ -509,6 +454,73 @@ const XUATLIEU = () => {
       </div>
     ),
     [prepareOutData],
+  );
+  const dkxlDataTable = React.useMemo(
+    () => (
+      <div className="datatb">
+        <CustomResponsiveContainer>
+          <DataGrid
+            autoNavigateToFocusedRow={true}
+            allowColumnReordering={true}
+            allowColumnResizing={true}
+            columnAutoWidth={false}
+            cellHintEnabled={true}
+            columnResizingMode={"widget"}
+            showColumnLines={true}
+            dataSource={dangkyxuatlieutable}
+            columnWidth="auto"
+            keyExpr="M_CODE"
+            height={"65vh"}
+            showBorders={true}
+            onSelectionChanged={(e) => {
+              //setSelectedRows(e.selectedRowsData[0]);
+            }}
+            onRowClick={(e) => {
+              //console.log(e.data);
+            }}
+          >
+            <Scrolling
+              useNative={true}
+              scrollByContent={true}
+              scrollByThumb={true}
+              showScrollbar="onHover"
+              mode="virtual"
+            />
+            <Editing
+              allowUpdating={true}
+              allowAdding={false}
+              allowDeleting={false}
+              mode="cell"
+              confirmDelete={true}
+              onChangesChange={(e) => { }}
+            />
+            <Paging defaultPageSize={15} />
+            <Pager
+              showPageSizeSelector={true}
+              allowedPageSizes={[5, 10, 15, 20, 100, 1000, 10000, "all"]}
+              showNavigationButtons={true}
+              showInfo={true}
+              infoText="Page #{0}. Total: {1} ({2} items)"
+              displayMode="compact"
+            />
+            <Column dataField="M_CODE" caption="M_CODE" width={60} allowEditing={false} ></Column>
+            <Column dataField="M_NAME" caption="M_NAME" width={70} allowEditing={false} ></Column>
+            <Column dataField="WIDTH_CD" caption="SIZE" width={50} allowEditing={false} ></Column>
+            <Column dataField="OUT_PRE_QTY" caption="DKY" width={50} allowEditing={false} ></Column>
+            <Column dataField="OUT_CFM_QTY" caption="OUT" width={50} allowEditing={false} ></Column>
+            <Summary>
+              <TotalItem
+                alignment="right"
+                column="id"
+                summaryType="count"
+                valueFormat={"decimal"}
+              />
+            </Summary>
+          </DataGrid>
+        </CustomResponsiveContainer>
+      </div>
+    ),
+    [dangkyxuatlieutable],
   );
   const [customerList, setCustomerList] = useState<CustomerListData[]>([]);
   const filterOptions1 = createFilterOptions({
@@ -1317,6 +1329,7 @@ const XUATLIEU = () => {
                     setPlanId(e.target.value)
                     if (e.target.value.length >= 7) {
                       checkPlanID(e.target.value);
+                      checkSoLanOutO302(e.target.value);
                       loadDKXLTB(e.target.value);
                     }
                   }}
@@ -1368,6 +1381,7 @@ const XUATLIEU = () => {
               handleConfirmXuatKho();
             }}>Xuất kho</Button>
           </div>
+          <div className="dkxlTable">{dkxlDataTable}</div>
         </div>
         <div className="tracuuYCSXTable">{materialDataTable}</div>
         {showhidePivotTable && (

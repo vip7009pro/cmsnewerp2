@@ -17,6 +17,7 @@ import {
   TONKIEMGOP_KD,
   TONKIEMTACH,
   WH_IN_OUT,
+  XUATPACK_DATA,
 } from "../../../api/GlobalInterface";
 
 const KHOTP = () => {
@@ -408,6 +409,47 @@ const KHOTP = () => {
     { field: "IO_Note", headerName: "IO_Note", width: 150 },
     { field: "IO_Number", headerName: "IO_Number", width: 100 },
   ];
+  const column_XUATPACK = [
+    { field: "G_CODE", headerName: "G_CODE", width: 90 },
+    { field: "G_NAME", headerName: "G_NAME", width: 180 },
+    { field: "G_NAME_KD", headerName: "G_NAME_KD", width: 100 },
+    { field: "PROD_MODEL", headerName: "PROD_MODEL", width: 90 },
+    { field: "OutID", headerName: "OutID", width: 90 },
+    { field: "CUST_NAME_KD", headerName: "CUST_NAME_KD", width: 110, renderCell: (params: any) => {
+      return (
+        <span style={{ color: "#B008B0" }}>
+          <b>{params.row.CUST_NAME_KD}</b>
+        </span>
+      );
+    }  },
+    { field: "Customer_SortName", headerName: "Customer_SortName", width: 110 },
+    { field: "OUT_DATE", headerName: "OUT_DATE", width: 90, renderCell: (params: any) => {
+      return (
+        <span style={{ color: "blue" }}>
+          <b>{params.row.OUT_DATE}</b>
+        </span>
+      );
+    } },
+    { field: "OUT_DATETIME", headerName: "OUT_DATETIME", width: 155},
+    { field: "Out_Qty", headerName: "Out_Qty", width: 90, renderCell: (params: any) => {
+      return (
+        <span style={{ color: "green" }}>
+          <b>{params.row.Out_Qty.toLocaleString("en-US")}</b>
+        </span>
+      );
+    }, },
+    { field: "SX_DATE", headerName: "SX_DATE", width: 90 },
+    { field: "INSPECT_LOT_NO", headerName: "INSPECT_LOT_NO", width: 110 },
+    { field: "PROCESS_LOT_NO", headerName: "PROCESS_LOT_NO", width: 110 },
+    { field: "M_LOT_NO", headerName: "M_LOT_NO", width: 110 },
+    { field: "M_NAME", headerName: "M_NAME", width: 120 },
+    { field: "WIDTH_CD", headerName: "WIDTH_CD", width: 90 },
+    { field: "SX_EMPL", headerName: "SX_EMPL", width: 90 },
+    { field: "LINEQC_EMPL", headerName: "LINEQC_EMPL", width: 90 },
+    { field: "INSPECT_EMPL", headerName: "INSPECT_EMPL", width: 100 },
+    { field: "EXP_DATE", headerName: "EXP_DATE", width: 100 },
+    { field: "Outtype", headerName: "Outtype", width: 90 },
+  ];
   const [columnDefinition, setColumnDefinition] =
     useState<Array<any>>(column_STOCK_CMS);
   function CustomToolbarPOTable() {
@@ -436,16 +478,67 @@ const KHOTP = () => {
       </GridToolbarContainer>
     );
   }
+  const handletraXuatPack = () => {
+    let inout_qty: number = 0;
+    setSummaryWH("");
+    setisLoading(true);
+    generalQuery("xuatpackkhotp", {
+      G_CODE: codeCMS.trim(),
+      G_NAME: codeKD.trim(),
+      ALLTIME: alltime,
+      JUSTBALANCE: justbalancecode,
+      CUST_NAME_KD: cust_name.trim(),
+      FROM_DATE: fromdate,
+      TO_DATE: todate,      
+      CAPBU: capbu,
+    })
+      .then((response) => {
+        //console.log(response.data.data);
+        if (response.data.tk_status !== "NG") {
+          //console.log(response.data.data)
+          const loadeddata: XUATPACK_DATA[] = response.data.data.map(
+            (element: XUATPACK_DATA, index: number) => {
+              inout_qty += element.Out_Qty;
+              return {
+                ...element,
+                id: index,                
+                OUT_DATE: moment.utc(element.OUT_DATE).format("YYYY-MM-DD"),
+                OUT_DATETIME: moment.utc(element.OUT_DATETIME.slice(0,element.OUT_DATETIME.length-2)).format("YYYY-MM-DD HH:mm:ss"),
+                SX_DATE: moment.utc(element.SX_DATE).format("YYYY-MM-DD"),
+                EXP_DATE: moment.utc(element.EXP_DATE).format("YYYY-MM-DD"),
+              };
+            },
+          );
+          setWhDataTable(loadeddata);
+          setReadyRender(true);
+          setisLoading(false);
+          setSummaryWH(
+            "TOTAL QTY: " + inout_qty.toLocaleString("en-US") + "EA",
+          );
+          Swal.fire(
+            "Thông báo",
+            "Đã load " + response.data.data.length + " dòng",
+            "success",
+          );
+        } else {
+          Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
+          setisLoading(false);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
   const handletraWHInOut = (inout: string) => {
     let inout_qty: number = 0;
     setSummaryWH("");
     setisLoading(true);
     generalQuery("trakhotpInOut", {
-      G_CODE: codeCMS,
-      G_NAME: codeKD,
+      G_CODE: codeCMS.trim(),
+      G_NAME: codeKD.trim(),
       ALLTIME: alltime,
       JUSTBALANCE: justbalancecode,
-      CUST_NAME: cust_name,
+      CUST_NAME: cust_name.trim(),
       FROM_DATE: fromdate,
       TO_DATE: todate,
       INOUT: inout,
@@ -491,11 +584,11 @@ const KHOTP = () => {
     setSummaryWH("");
     setisLoading(true);
     generalQuery("traSTOCKCMS", {
-      G_CODE: codeCMS,
-      G_NAME: codeKD,
+      G_CODE: codeCMS.trim(),
+      G_NAME: codeKD.trim(),
       ALLTIME: alltime,
       JUSTBALANCE: justbalancecode,
-      CUST_NAME: cust_name,
+      CUST_NAME: cust_name.trim(),
       FROM_DATE: fromdate,
       TO_DATE: todate,
     })
@@ -531,11 +624,11 @@ const KHOTP = () => {
     setSummaryWH("");
     setisLoading(true);
     generalQuery("traSTOCKKD", {
-      G_CODE: codeCMS,
-      G_NAME: codeKD,
+      G_CODE: codeCMS.trim(),
+      G_NAME: codeKD.trim(),
       ALLTIME: alltime,
       JUSTBALANCE: justbalancecode,
-      CUST_NAME: cust_name,
+      CUST_NAME: cust_name.trim(),
       FROM_DATE: fromdate,
       TO_DATE: todate,
     })
@@ -571,11 +664,11 @@ const KHOTP = () => {
     setSummaryWH("");
     setisLoading(true);
     generalQuery("traSTOCKTACH", {
-      G_CODE: codeCMS,
-      G_NAME: codeKD,
+      G_CODE: codeCMS.trim(),
+      G_NAME: codeKD.trim(),
       ALLTIME: alltime,
       JUSTBALANCE: justbalancecode,
-      CUST_NAME: cust_name,
+      CUST_NAME: cust_name.trim(),
       FROM_DATE: fromdate,
       TO_DATE: todate,
     })
@@ -724,6 +817,12 @@ const KHOTP = () => {
               setColumnDefinition(column_STOCK_TACH);
               handletraWHSTOCKTACH();
             }}>TỒN(TÁCH KHO)</Button>           
+            <Button fullWidth={true} color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#05d86e' }} onClick={() => {
+              setisLoading(true);
+              setReadyRender(false);
+              setColumnDefinition(column_XUATPACK);
+              handletraXuatPack();
+            }}>XUẤT PACK</Button>           
           </div>
         </div>
         <div className="tracuuWHTable">
