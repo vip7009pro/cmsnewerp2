@@ -100,7 +100,7 @@ const XUATLIEU = () => {
   const [out_date, setOut_Date] = useState("");
   const [wahs_cd, setWAHS_CD] = useState("");
   const [loc_cd, setLOC_CD] = useState("");
-  const [solanout,setSoLanOut] = useState(1);
+  const [solanout, setSoLanOut] = useState(1);
   const [fsc, setFSC] = useState('N');
   const checkEMPL_NAME = (selection: number, EMPL_NO: string) => {
     generalQuery("checkEMPL_NO_mobile", { EMPL_NO: EMPL_NO })
@@ -144,8 +144,6 @@ const XUATLIEU = () => {
       .catch((error) => {
         console.log(error);
       });
-
-
   };
   const addMaterial = async () => {
     let temp_m_invoie: WH_M_INPUT_DATA = {
@@ -173,40 +171,37 @@ const XUATLIEU = () => {
   const xuatkho = async () => {
     if (prepareOutData.length > 0) {
       let err_code: string = '';
-        for (let i = 0; i < prepareOutData.length; i++) {
-            await generalQuery("insert_O302", {
-              OUT_DATE: prepareOutData[i].OUT_DATE,
-              OUT_NO: prepareOutData[i].OUT_NO,
-              OUT_SEQ: prepareOutData[i].OUT_SEQ,
-              M_LOT_NO: prepareOutData[i].M_LOT_NO,
-              LOC_CD: prepareOutData[i].LOC_CD,
-              M_CODE: prepareOutData[i].M_CODE,
-              OUT_CFM_QTY: prepareOutData[i].TOTAL_QTY,
-              WAHS_CD: prepareOutData[i].WAHS_CD,
-              FACTORY: selectedFactory,
-              CUST_CD: selectedCustomer?.CUST_CD,              
-              ROLL_QTY: prepareOutData[i].ROLL_QTY,
-              IN_DATE_O302: prepareOutData[i].IN_DATE,
-              PLAN_ID: planId,
-              SOLANOUT: solanout,
-              LIEUQL_SX: prepareOutData[i].LIEUQL_SX,
-              INS_RECEPTION: nhan_empl,
-              FSC_O302: fsc,
-            })
-            .then((response) => {
-              if (response.data.tk_status !== "NG") {
-
-
-              } else {
-                err_code += `Lỗi: ${response.data.message} | `;
-              }
-            })
-            .catch((error) => {
-              //console.log(error);
-            });          
-        }
-     
-      if (err_code !== '') {        
+      for (let i = 0; i < prepareOutData.length; i++) {
+        await generalQuery("insert_O302", {
+          OUT_DATE: prepareOutData[i].OUT_DATE,
+          OUT_NO: prepareOutData[i].OUT_NO,
+          OUT_SEQ: prepareOutData[i].OUT_SEQ,
+          M_LOT_NO: prepareOutData[i].M_LOT_NO,
+          LOC_CD: prepareOutData[i].LOC_CD,
+          M_CODE: prepareOutData[i].M_CODE,
+          OUT_CFM_QTY: prepareOutData[i].TOTAL_QTY,
+          WAHS_CD: prepareOutData[i].WAHS_CD,
+          FACTORY: selectedFactory,
+          CUST_CD: selectedCustomer?.CUST_CD,
+          ROLL_QTY: prepareOutData[i].ROLL_QTY,
+          IN_DATE_O302: prepareOutData[i].IN_DATE,
+          PLAN_ID: planId,
+          SOLANOUT: solanout,
+          LIEUQL_SX: prepareOutData[i].LIEUQL_SX,
+          INS_RECEPTION: nhan_empl,
+          FSC_O302: fsc,
+        })
+          .then((response) => {
+            if (response.data.tk_status !== "NG") {
+            } else {
+              err_code += `Lỗi: ${response.data.message} | `;
+            }
+          })
+          .catch((error) => {
+            //console.log(error);
+          });
+      }
+      if (err_code !== '') {
         Swal.fire('Thông báo', 'Nhập kho vật liệu thất bại: ' + err_code, 'error');
       }
       else {
@@ -241,7 +236,7 @@ const XUATLIEU = () => {
           let M_CODE: string = response.data.data[0].M_CODE;
           let M_NAME: string = response.data.data[0].M_NAME;
           let WIDTH_CD: number = response.data.data[0].WIDTH_CD;
-          let IN_CFM_QTY: number = USE_YN !=='R'?  response.data.data[0].IN_CFM_QTY : response.data.data[0].RETURN_QTY;
+          let IN_CFM_QTY: number = USE_YN !== 'R' ? response.data.data[0].IN_CFM_QTY : response.data.data[0].RETURN_QTY;
           let ROLL_QTY: number = response.data.data[0].ROLL_QTY;
           let LIEUQL_SX: number = response.data.data[0].LIEUQL_SX;
           let WAHS_CD: string = response.data.data[0].WAHS_CD;
@@ -274,13 +269,13 @@ const XUATLIEU = () => {
           let checkExist_lot: boolean = prepareOutData.filter((ele: WH_M_OUTPUT_DATA, index: number) => {
             return ele.M_LOT_NO === M_LOT_NO;
           }).length > 0;
-          if (!checkExist_lot && OUT_DATE !=='NG' && USE_YN !=='X') {
+          if (!checkExist_lot && OUT_DATE !== 'NG' && USE_YN !== 'X') {
             setPrepareOutData([...prepareOutData, temp_row]);
           }
-          else if(OUT_DATE ==='NG') {
+          else if (OUT_DATE === 'NG') {
             Swal.fire("Thông báo", "Lot này là Liệu chưa đăng ký xuất kho", "warning");
           }
-          else if(USE_YN ==='X') {
+          else if (USE_YN === 'X') {
             Swal.fire("Thông báo", "Lot này đã sử dụng rồi", "warning");
           }
           else {
@@ -338,7 +333,7 @@ const XUATLIEU = () => {
       .then((response) => {
         //console.log(response.data);
         if (response.data.tk_status !== "NG") {
-          setSoLanOut((response.data.data[0].SOLANOUT ?? 0) +1);
+          setSoLanOut((response.data.data[0].SOLANOUT ?? 0) + 1);
         } else {
           setSoLanOut(1);
         }

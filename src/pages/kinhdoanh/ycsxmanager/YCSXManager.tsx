@@ -168,12 +168,10 @@ const YCSXManager = () => {
       headerName: "G_NAME_KD",
       width: 100,
       renderCell: (params: any) => {
-        if (params.row.SETVL ==='N')
-        {
+        if (params.row.SETVL === 'N') {
           return <span style={{ color: "gray" }}>{params.row.G_NAME_KD}</span>;
         }
-        else if(params.row.PDBV === "P" || params.row.PDBV === null)
-        {
+        else if (params.row.PDBV === "P" || params.row.PDBV === null) {
           return <span style={{ color: "red" }}>{params.row.G_NAME_KD}</span>;
         }
         else {
@@ -1477,8 +1475,8 @@ const YCSXManager = () => {
         temp_amazon_row.NO_IN = NO_IN;
         temp_amazon_row.ROW_NO = i;
         if (cavity === 1) {
-          temp_amazon_row.DATA1 = amazon_data[i*cavity-1].DATA;
-          temp_amazon_row.DATA2 = amazon_data[i*cavity-1].DATA + "_NOT_USE";
+          temp_amazon_row.DATA1 = amazon_data[i * cavity - 1].DATA;
+          temp_amazon_row.DATA2 = amazon_data[i * cavity - 1].DATA + "_NOT_USE";
         } else if (cavity === 2) {
           temp_amazon_row.DATA1 = amazon_data[i * cavity - 2].DATA;
           temp_amazon_row.DATA2 = amazon_data[i * cavity - 1].DATA;
@@ -1687,6 +1685,7 @@ const YCSXManager = () => {
             .catch((error) => {
               console.log(error);
             });
+          setUploadExcelJSon([]);
           checkDuplicateAMZ();
           //Swal.fire("Thông báo", "Upload data Amazon Hoàn thành", "success");
         } else {
@@ -1803,8 +1802,10 @@ const YCSXManager = () => {
         filename.search(id_congviec) === -1 ? false : true;
       if (!checkmodel) {
         Swal.fire("Thông báo", "Nghi vấn sai model", "error");
+        setUploadExcelJSon([]);
       } else if (!checkIDCV) {
         Swal.fire("Thông báo", "Không đúng ID công việc đã nhập", "error");
+        setUploadExcelJSon([]);
       } else {
         const reader = new FileReader();
         reader.onload = (e: any) => {
@@ -1829,6 +1830,7 @@ const YCSXManager = () => {
           console.log(isDuplicate);
           if (isDuplicate) {
             Swal.fire("Thông báo", "Có giá trị trùng lặp !", "error");
+            setUploadExcelJSon([]);
           } else {
             const keys = Object.keys(json[0]);
             let uploadexcelcolumn = keys.map((element, index) => {
@@ -3831,7 +3833,7 @@ const YCSXManager = () => {
               <div className='forminput'>
                 <div className='forminputcolumn'>
                   <label>
-                    <b>Số Yêu Cầu:::</b>
+                    <b>Số Yêu Cầu:</b>
                     <input
                       type='text'
                       placeholder='1F80008'
