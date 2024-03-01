@@ -447,6 +447,7 @@ const KHOTP = () => {
     { field: "INSPECT_LOT_NO", headerName: "INSPECT_LOT_NO", width: 110 },
     { field: "PROCESS_LOT_NO", headerName: "PROCESS_LOT_NO", width: 110 },
     { field: "M_LOT_NO", headerName: "M_LOT_NO", width: 110 },
+    { field: "LOTNCC", headerName: "LOTNCC", width: 110 },
     { field: "M_NAME", headerName: "M_NAME", width: 120 },
     { field: "WIDTH_CD", headerName: "WIDTH_CD", width: 90 },
     { field: "SX_EMPL", headerName: "SX_EMPL", width: 90 },
