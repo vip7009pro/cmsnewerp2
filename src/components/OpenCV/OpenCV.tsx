@@ -264,8 +264,8 @@ const OpenCV = () => {
             hidden={true}
             crossOrigin="anonymous"
             alt="Original input"
-            /*  width={"1920px"}
-             height={"1080px"} */
+             width={"700px"}
+             height={"640px"}
             src={imgUrl}
             onLoad={(e) => {
               console.log("Loaded");

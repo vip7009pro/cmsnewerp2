@@ -12,10 +12,8 @@ import { SaveExcel } from "../../../../api/GlobalFunction";
 import "./PLAN_STATUS.scss";
 import PLAN_STATUS_COMPONENTS from "./PLAN_STATUS_COMPONENTS";
 import { MACHINE_LIST, SX_DATA } from "../../../../api/GlobalInterface";
-
 const PLAN_STATUS = () => {
   const [machine_list, setMachine_List] = useState<MACHINE_LIST[]>([]);
-
   const getMachineList = () => {
     generalQuery("getmachinelist", {})
       .then((response) => {
@@ -44,7 +42,6 @@ const PLAN_STATUS = () => {
         console.log(error);
       });
   };
-
   const [readyRender, setReadyRender] = useState(false);
   const [isLoading, setisLoading] = useState(false);
   const [isPending, startTransition] = useTransition();
@@ -52,7 +49,6 @@ const PLAN_STATUS = () => {
   const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));
   const [codeKD, setCodeKD] = useState("");
   const [codeCMS, setCodeCMS] = useState("");
-
   const [machine, setMachine] = useState("ALL");
   const [factory, setFactory] = useState("ALL");
   const [prodrequestno, setProdRequestNo] = useState("");
@@ -61,7 +57,6 @@ const PLAN_STATUS = () => {
   const [datasxtable, setDataSXTable] = useState<Array<any>>([]);
   const [m_name, setM_Name] = useState("");
   const [m_code, setM_Code] = useState("");
-
   const handle_loadplanStatus = () => {
     generalQuery("checkQLSXPLANSTATUS", {
       ALLTIME: alltime,
@@ -89,7 +84,6 @@ const PLAN_STATUS = () => {
           startTransition(() => {
             setDataSXTable(loaded_data);
           });
-
           setReadyRender(true);
           setisLoading(false);
         } else {
@@ -99,13 +93,12 @@ const PLAN_STATUS = () => {
         console.log(error);
       });
   };
-
   useEffect(() => {
     getMachineList();
     handle_loadplanStatus();
-  /*   let intervalID = window.setInterval(() => {
-      handle_loadplanStatus();
-    }, 10000); */
+    /*   let intervalID = window.setInterval(() => {
+        handle_loadplanStatus();
+      }, 10000); */
     return () => {
       //window.clearInterval(intervalID);
     };

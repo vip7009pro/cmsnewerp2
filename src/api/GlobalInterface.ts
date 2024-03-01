@@ -3082,6 +3082,8 @@ export interface SX_BAOCAOROLLDATA {
   LAST_PROCESS: number,
   INPUT_DATE: string,
   IS_SETTING: string,
+  USED_SQM: number,
+  LOSS_SQM: number
 }
 export interface OQC_DATA{
   OQC_ID: number,

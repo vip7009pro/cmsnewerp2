@@ -131,7 +131,9 @@ const BAOCAOTHEOROLL = () => {
     MAX_PROCESS_NUMBER: 0,
     LAST_PROCESS: 0,
     INPUT_DATE: 'TOTAL',
-    IS_SETTING: 'Y'
+    IS_SETTING: 'Y',
+    LOSS_SQM: 0,
+    USED_SQM: 0
   });
   const qlsxplandatafilter = useRef<SX_BAOCAOROLLDATA[]>([]);
   const [sxlosstrendingdata, setSXLossTrendingData] = useState<SX_LOSS_TREND_DATA[]>([]);
@@ -194,7 +196,9 @@ const BAOCAOTHEOROLL = () => {
             MAX_PROCESS_NUMBER: 0,
             LAST_PROCESS: 0,
             INPUT_DATE: 'TOTAL',
-            IS_SETTING: 'Y'
+            IS_SETTING: 'Y',
+            LOSS_SQM: 0,
+            USED_SQM: 0,
           };
           for (let i = 0; i < loadeddata.length; i++) {
             temp_plan_data.PLAN_QTY += loadeddata[i].PLAN_QTY;
@@ -472,6 +476,21 @@ const BAOCAOTHEOROLL = () => {
                 </span>
               );
             }}></Column>
+             <Column dataField='USED_SQM' caption='USED_SQM' width={70} cellRender={(params: any) => {
+              return (
+                <span style={{ color: "blue", fontWeight: "bold" }}>
+                  {params.data.USED_SQM?.toLocaleString("en-US",)}
+                </span>
+              );
+            }}></Column>
+             <Column dataField='LOSS_SQM' caption='LOSS_SQM' width={70} cellRender={(params: any) => {
+              return (
+                <span style={{ color: "blue", fontWeight: "bold" }}>
+                  {params.data.LOSS_SQM?.toLocaleString("en-US",)}
+                </span>
+              );
+            }}></Column>
+
             <Column dataField='LOSS_ST' caption='LOSS_ST' width={70} cellRender={(params: any) => {
               return (
                 <span style={{ color: "red", fontWeight: "bold" }}>

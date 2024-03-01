@@ -19,7 +19,6 @@ import {
   WH_IN_OUT,
   XUATPACK_DATA,
 } from "../../../api/GlobalInterface";
-
 const KHOTP = () => {
   const [readyRender, setReadyRender] = useState(false);
   const [selection, setSelection] = useState<any>({
@@ -415,29 +414,35 @@ const KHOTP = () => {
     { field: "G_NAME_KD", headerName: "G_NAME_KD", width: 100 },
     { field: "PROD_MODEL", headerName: "PROD_MODEL", width: 90 },
     { field: "OutID", headerName: "OutID", width: 90 },
-    { field: "CUST_NAME_KD", headerName: "CUST_NAME_KD", width: 110, renderCell: (params: any) => {
-      return (
-        <span style={{ color: "#B008B0" }}>
-          <b>{params.row.CUST_NAME_KD}</b>
-        </span>
-      );
-    }  },
+    {
+      field: "CUST_NAME_KD", headerName: "CUST_NAME_KD", width: 110, renderCell: (params: any) => {
+        return (
+          <span style={{ color: "#B008B0" }}>
+            <b>{params.row.CUST_NAME_KD}</b>
+          </span>
+        );
+      }
+    },
     { field: "Customer_SortName", headerName: "Customer_SortName", width: 110 },
-    { field: "OUT_DATE", headerName: "OUT_DATE", width: 90, renderCell: (params: any) => {
-      return (
-        <span style={{ color: "blue" }}>
-          <b>{params.row.OUT_DATE}</b>
-        </span>
-      );
-    } },
-    { field: "OUT_DATETIME", headerName: "OUT_DATETIME", width: 155},
-    { field: "Out_Qty", headerName: "Out_Qty", width: 90, renderCell: (params: any) => {
-      return (
-        <span style={{ color: "green" }}>
-          <b>{params.row.Out_Qty.toLocaleString("en-US")}</b>
-        </span>
-      );
-    }, },
+    {
+      field: "OUT_DATE", headerName: "OUT_DATE", width: 90, renderCell: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            <b>{params.row.OUT_DATE}</b>
+          </span>
+        );
+      }
+    },
+    { field: "OUT_DATETIME", headerName: "OUT_DATETIME", width: 155 },
+    {
+      field: "Out_Qty", headerName: "Out_Qty", width: 90, renderCell: (params: any) => {
+        return (
+          <span style={{ color: "green" }}>
+            <b>{params.row.Out_Qty.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
     { field: "SX_DATE", headerName: "SX_DATE", width: 90 },
     { field: "INSPECT_LOT_NO", headerName: "INSPECT_LOT_NO", width: 110 },
     { field: "PROCESS_LOT_NO", headerName: "PROCESS_LOT_NO", width: 110 },
@@ -489,7 +494,7 @@ const KHOTP = () => {
       JUSTBALANCE: justbalancecode,
       CUST_NAME_KD: cust_name.trim(),
       FROM_DATE: fromdate,
-      TO_DATE: todate,      
+      TO_DATE: todate,
       CAPBU: capbu,
     })
       .then((response) => {
@@ -501,9 +506,9 @@ const KHOTP = () => {
               inout_qty += element.Out_Qty;
               return {
                 ...element,
-                id: index,                
+                id: index,
                 OUT_DATE: moment.utc(element.OUT_DATE).format("YYYY-MM-DD"),
-                OUT_DATETIME: moment.utc(element.OUT_DATETIME.slice(0,element.OUT_DATETIME.length-2)).format("YYYY-MM-DD HH:mm:ss"),
+                OUT_DATETIME: moment.utc(element.OUT_DATETIME.slice(0, element.OUT_DATETIME.length - 2)).format("YYYY-MM-DD HH:mm:ss"),
                 SX_DATE: moment.utc(element.SX_DATE).format("YYYY-MM-DD"),
                 EXP_DATE: moment.utc(element.EXP_DATE).format("YYYY-MM-DD"),
               };
@@ -679,7 +684,7 @@ const KHOTP = () => {
             (element: TONKIEMTACH, index: number) => {
               return {
                 ...element,
-                KHO_NAME: element.KHO_NAME ==='NM1'? 'SK1': element.KHO_NAME ==='NM3'? 'SK3': element.KHO_NAME,
+                KHO_NAME: element.KHO_NAME === 'NM1' ? 'SK1' : element.KHO_NAME === 'NM3' ? 'SK3' : element.KHO_NAME,
                 id: index,
               };
             },
@@ -701,7 +706,7 @@ const KHOTP = () => {
         console.log(error);
       });
   };
-  useEffect(() => {}, []);
+  useEffect(() => { }, []);
   return (
     <div className="khotp">
       <div className="tracuuDataWH">
@@ -816,13 +821,13 @@ const KHOTP = () => {
               setReadyRender(false);
               setColumnDefinition(column_STOCK_TACH);
               handletraWHSTOCKTACH();
-            }}>TỒN(TÁCH KHO)</Button>           
+            }}>TỒN(TÁCH KHO)</Button>
             <Button fullWidth={true} color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#05d86e' }} onClick={() => {
               setisLoading(true);
               setReadyRender(false);
               setColumnDefinition(column_XUATPACK);
               handletraXuatPack();
-            }}>XUẤT PACK</Button>           
+            }}>XUẤT PACK</Button>
           </div>
         </div>
         <div className="tracuuWHTable">
