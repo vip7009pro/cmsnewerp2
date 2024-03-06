@@ -303,7 +303,7 @@ const CHITHI_COMPONENT = ({ DATA }: { DATA: QLSXPLANDATA }) => {
   };
   const checkApprove = () => {
     if (getCompany() === 'CMS') {
-      return (request_codeinfo[0].PDBV === "Y" || request_codeinfo[0].CODE_50 === '05') && checklieuchinh === true
+      return (request_codeinfo[0].PDBV === "Y" || request_codeinfo[0].CODE_55 === '04') && checklieuchinh === true
     }
     else {
       return true;
@@ -319,7 +319,7 @@ const CHITHI_COMPONENT = ({ DATA }: { DATA: QLSXPLANDATA }) => {
   return (
     <div className="chithicomponent">
       <div className="qcpass">
-        {checkApprove() && (
+        {(checkApprove() && request_codeinfo[0].CODE_55 !== '04') && (
           <img
             alt="qcpass"
             src="/QC PASS20.png"

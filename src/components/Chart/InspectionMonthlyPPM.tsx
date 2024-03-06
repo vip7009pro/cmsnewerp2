@@ -86,7 +86,7 @@ const InspectionMonthlyPPM = ({
         }}
       >
         <CartesianGrid strokeDasharray='3 3' className='chartGrid' />
-        <XAxis dataKey='MONTH_NUM' height={40} tick={{fontSize:'0.7rem'}}>        
+        <XAxis dataKey='YEAR_MONTH' height={40} tick={{fontSize:'0.7rem'}}>        
           <Label value='Tháng' offset={0} position='insideBottom'  style={{fontWeight:'normal', fontSize:'0.7rem'}}/>
         </XAxis>
         <YAxis

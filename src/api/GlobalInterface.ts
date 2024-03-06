@@ -2933,7 +2933,13 @@ export interface DailyData {
   processColor?: string;
   materialColor?: string;
 }
+export interface FcostData {
+  dldata?: InspectSummary[];
+  processColor?: string;
+  materialColor?: string;
+}
 export interface MonthlyPPMData {
+  YEAR_MONTH?: string,
   YEAR_NUM?: number;
   MONTH_NUM?: number;
   INSPECT_TOTAL_QTY?: number;
@@ -2950,6 +2956,7 @@ export interface MonthlyData {
   materialColor?: string;
 }
 export interface WeeklyPPMData {
+  YEAR_WEEK?: number,
   YEAR_NUM?: number;
   WEEK_NUM?: number;
   INSPECT_TOTAL_QTY?: number;
@@ -3009,13 +3016,29 @@ export interface WidgetData_POBalanceSummary {
   po_balance_amount: number;
 }
 export interface InspectSummary {
+  INSPECT_DATE?: string,
+  INSPECT_YEAR?: string,
+  INSPECT_YM?: string,  
+  INSPECT_YW?: string,  
+  INSPECT_MONTH?: string,
+  INSPECT_WEEK?: string,
+
   ISP_TT_QTY: number,
   INSP_OK_QTY: number,
   M_NG_QTY: number,
   P_NG_QTY: number,
+  T_NG_QTY: number,
+  ISP_TT_AMOUNT: number,
+  INSP_OK_AMOUNT: number,
+  M_NG_AMOUNT: number,
+  P_NG_AMOUNT: number,
+  T_NG_AMOUNT: number,
   M_RATE: number,
   P_RATE: number,
-  T_RATE: number
+  T_RATE: number,
+  M_A_RATE: number,
+  P_A_RATE: number,
+  T_A_RATE: number
 }
 export interface RecentDM {
   G_CODE: string,

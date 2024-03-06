@@ -11,7 +11,7 @@ import ChartWorstCodeByErrCode from '../Chart/ChartWorstCodeByErrCode';
 import { generalQuery, getGlobalSetting } from '../../api/Api';
 import Swal from 'sweetalert2';
 import './InspectionWorstTable.scss'
-const InspectionWorstTable = ({ dailyClosingData, worstby, from_date, to_date, ng_type }: { dailyClosingData: Array<WorstData>, worstby: string, from_date: string, to_date: string, ng_type: string }) => {
+const InspectionWorstTable = ({ dailyClosingData, worstby, from_date, to_date, ng_type, listCode }: { dailyClosingData: Array<WorstData>, worstby: string, from_date: string, to_date: string, ng_type: string, listCode: string[] }) => {
   //console.log(dailyClosingData)
   const [columns, setColumns] = useState<Array<any>>([]);
   const [worstByCodeData, setWorstByCodeData] = useState<Array<WorstCodeData>>([]); 
@@ -93,7 +93,7 @@ const InspectionWorstTable = ({ dailyClosingData, worstby, from_date, to_date, n
     [dailyClosingData, columns,getGlobalSetting()]
   );
   const getWorstByErrCode = (err_code: string) => {
-    generalQuery("getInspectionWorstByCode", { FROM_DATE: from_date, TO_DATE: to_date, WORSTBY: worstby, NG_TYPE: ng_type, ERR_CODE: err_code })
+    generalQuery("getInspectionWorstByCode", { FROM_DATE: from_date, TO_DATE: to_date, WORSTBY: worstby, NG_TYPE: ng_type, ERR_CODE: err_code, codeArray: listCode })
       .then((response) => {
         if (response.data.tk_status !== "NG") {
           //console.log(response.data.data);

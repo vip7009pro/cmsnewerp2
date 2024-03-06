@@ -266,10 +266,6 @@ const CHITHI_COMPONENT2 = ({ PLAN_LIST }: PLAN_COMBO) => {
           />
         )}
       </div>
-      
-        
-       
-
         <div className="tieudeycsx">
           <div className="leftlogobarcode">
             {/* {(request_codeinfo[0].PDBV==='Y' && checklieuchinh ===true) && <img alt='logo' src='/logocmsvina.png' width={160} height={40} />} */}

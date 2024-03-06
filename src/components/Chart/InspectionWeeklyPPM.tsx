@@ -77,7 +77,7 @@ const InspectionWeeklyPPM = ({
       <ComposedChart
         width={500}
         height={300}
-        data={dldata?.slice(0, 10).reverse()}
+        data={dldata}
         margin={{
           top: 5,
           right: 30,
@@ -86,7 +86,7 @@ const InspectionWeeklyPPM = ({
         }}
       >
         <CartesianGrid strokeDasharray='3 3' className='chartGrid' />
-        <XAxis dataKey='WEEK_NUM' height={40} tick={{fontSize:'0.7rem'}}>         
+        <XAxis dataKey='YEAR_WEEK' height={40} tick={{fontSize:'0.7rem'}}>         
           <Label value='Tuần' offset={0} position='insideBottom' style={{fontWeight:'normal', fontSize:'0.7rem'}}/>
         </XAxis>
         <YAxis

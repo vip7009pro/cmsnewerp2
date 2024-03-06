@@ -20,19 +20,19 @@ import {
   CustomResponsiveContainer,
   nFormatter,
 } from "../../api/GlobalFunction";
-import { DailyData } from "../../api/GlobalInterface";
+import { DailyData, FcostData } from "../../api/GlobalInterface";
 
-const InspectionDailyPPM = ({
+const InspectionWeeklyFcost = ({
   dldata,
   processColor,
   materialColor,
-}: DailyData) => {
+}: FcostData) => {
   const formatCash = (n: number) => {
     return nFormatter(n, 1);
   };
 
   const labelFormatter = (value: number) => {
-    return formatCash(value); 
+    return formatCash(value) + ' $'; 
   };
 
   const CustomTooltip = ({
@@ -54,15 +54,15 @@ const InspectionDailyPPM = ({
             borderRadius: 5,
           }}
         >
-          <p>Ngày {label}:</p>
+          <p>Tuần {label}:</p>
           <p className='label'>
-            PROCESS_NG: {`${payload[1].value.toLocaleString("en-US")}`} ppm
+            PROCESS_NG: {`${payload[1]?.value.toLocaleString("en-US")}`} $
           </p>
           <p className='label'>
-            MATERIAL_NG: {`${payload[2].value.toLocaleString("en-US")}`} ppm
+            MATERIAL_NG: {`${payload[2]?.value.toLocaleString("en-US")}`} $
           </p>
           <p className='label'>
-            TOTAL_NG: {`${payload[0].value.toLocaleString("en-US")}`} ppm
+            TOTAL_NG: {`${payload[0]?.value.toLocaleString("en-US")}`} $
           </p>
         </div>
       );
@@ -84,8 +84,8 @@ const InspectionDailyPPM = ({
         }}
       >
         <CartesianGrid strokeDasharray='3 3' className='chartGrid' />
-        <XAxis dataKey='INSPECT_DATE' height={40} tick={{fontSize:'0.7rem'}}>         
-          <Label value='Ngày tháng' offset={0} position='insideBottom' style={{fontWeight:'normal', fontSize:'0.7rem'}} />
+        <XAxis dataKey='INSPECT_YW' height={40} tick={{fontSize:'0.7rem'}}>         
+          <Label value='Tuần' offset={0} position='insideBottom' style={{fontWeight:'normal', fontSize:'0.7rem'}} />
         </XAxis>
         <YAxis
           yAxisId='left-axis'
@@ -116,29 +116,29 @@ const InspectionDailyPPM = ({
         <Line
           yAxisId='left-axis'
           type='monotone'
-          dataKey='TOTAL_PPM'
+          dataKey='T_NG_AMOUNT'
           stroke='green'
         />
         <Bar
           stackId='a'
           yAxisId='left-axis'
           type='monotone'
-          dataKey='PROCESS_PPM'
+          dataKey='P_NG_AMOUNT'
           stroke='white'
           fill={processColor}
-          label={{ position: "insideTop", formatter: labelFormatter, fontSize:'0.7rem', fontWeight:'bold', color:'black' }}         
+          label={{ position: "center", formatter: labelFormatter, fontSize:'0.6rem', fontWeight:'bold', color:'black' }}         
         ></Bar>
         <Bar
           stackId='a'
           yAxisId='left-axis'
           type='monotone'
-          dataKey='MATERIAL_PPM'
+          dataKey='M_NG_AMOUNT'
           stroke='white'
           fill={materialColor}
-          label={{ position: "insideTop", formatter: labelFormatter,fontSize:'0.7rem', fontWeight:'bold', color:'black' }}         
+          label={{ position: "insideTop", formatter: labelFormatter,fontSize:'0.6rem', fontWeight:'bold', color:'black' }}         
         ></Bar>
       </ComposedChart>
     </CustomResponsiveContainer>
   );
 };
-export default InspectionDailyPPM;
+export default InspectionWeeklyFcost;
