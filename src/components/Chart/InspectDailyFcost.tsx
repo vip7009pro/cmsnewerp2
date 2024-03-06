@@ -85,7 +85,7 @@ const InspectionDailyFcost = ({
       >
         <CartesianGrid strokeDasharray='3 3' className='chartGrid' />
         <XAxis dataKey='INSPECT_DATE' height={40} tick={{fontSize:'0.7rem'}}>         
-          <Label value='Ngày tháng' offset={0} position='insideBottom' style={{fontWeight:'normal', fontSize:'0.7rem'}} />
+          <Label value='Ngày' offset={0} position='insideBottom' style={{fontWeight:'normal', fontSize:'0.7rem'}} />
         </XAxis>
         <YAxis
           yAxisId='left-axis'

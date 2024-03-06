@@ -1985,6 +1985,10 @@ const QuotationManager = () => {
                 }
               }}
             ></Column>
+            <Column dataField="INS_DATE" caption="INS_DATE" width={120}></Column>
+            <Column dataField="INS_EMPL" caption="INS_EMPL" width={80}></Column>
+            <Column dataField="UPD_DATE" caption="UPD_DATE" width={120}></Column>
+            <Column dataField="UPD_EMPL" caption="UPD_EMPL" width={80}></Column>
             <Summary>
               <TotalItem
                 alignment="right"
@@ -2374,6 +2378,8 @@ const QuotationManager = () => {
                   element.PRICE_DATE !== null
                     ? moment.utc(element.PRICE_DATE).format("YYYY-MM-DD")
                     : "",
+                INS_DATE: moment.utc(element.INS_DATE).format("YYYY-MM-DD HH:mm:ss"),
+                UPD_DATE: moment.utc(element.UPD_DATE).format("YYYY-MM-DD HH:mm:ss"),
                 id: index,
               };
             },
@@ -2509,6 +2515,8 @@ const QuotationManager = () => {
                   element.PRICE_DATE !== null
                     ? moment.utc(element.PRICE_DATE).format("YYYY-MM-DD")
                     : "",
+                    INS_DATE: moment.utc(element.INS_DATE).format("YYYY-MM-DD HH:mm:ss"),
+                UPD_DATE: moment.utc(element.UPD_DATE).format("YYYY-MM-DD HH:mm:ss"),
                 id: index,
               };
             },

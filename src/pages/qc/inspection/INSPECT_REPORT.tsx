@@ -16,7 +16,7 @@ import WidgetInspection from "../../../components/Widget/WidgetInspection";
 import "./INSPECT_REPORT.scss";
 import InspectionWorstTable from "../../../components/DataTable/InspectionWorstTable";
 import ChartInspectionWorst from "../../../components/Chart/ChartInspectionWorst";
-import { CodeListData, DailyPPMData, FCSTAmountData, InspectSummary, MonthlyPPMData, WEB_SETTING_DATA, WeeklyPPMData, WidgetData_POBalanceSummary, WorstData, YearlyPPMData } from "../../../api/GlobalInterface";
+import { CodeListData, DailyPPMData, FCSTAmountData, InspectSummary, MonthlyPPMData, PATROL_HEADER_DATA, WEB_SETTING_DATA, WeeklyPPMData, WidgetData_POBalanceSummary, WorstData, YearlyPPMData } from "../../../api/GlobalInterface";
 import CIRCLE_COMPONENT from "../../qlsx/QLSXPLAN/CAPA/CIRCLE_COMPONENT/CIRCLE_COMPONENT";
 import { deBounce, nFormatter } from "../../../api/GlobalFunction";
 import { Autocomplete, Checkbox, FormControlLabel, FormGroup, TextField, Typography, createFilterOptions } from "@mui/material";
@@ -25,6 +25,7 @@ import InspectionDailyFcost from "../../../components/Chart/InspectDailyFcost";
 import InspectionWeeklyFcost from "../../../components/Chart/InspectWeeklyFcost";
 import InspectionMonthlyFcost from "../../../components/Chart/InspectMonthlyFcost";
 import InspectionYearlyFcost from "../../../components/Chart/InspectYearlyFcost";
+import PATROL_HEADER from "../../sx/PATROL/PATROL_HEADER";
 const INSPECT_REPORT = () => {
   const [dailyppm1, setDailyPPM1] = useState<DailyPPMData[]>([]);
   const [weeklyppm1, setWeeklyPPM1] = useState<WeeklyPPMData[]>([]);
@@ -39,7 +40,7 @@ const INSPECT_REPORT = () => {
   const [weeklyppm, setWeeklyPPM] = useState<WeeklyPPMData[]>([]);
   const [monthlyppm, setMonthlyPPM] = useState<MonthlyPPMData[]>([]);
   const [yearlyppm, setYearlyPPM] = useState<YearlyPPMData[]>([]);
-  const [fromdate, setFromDate] = useState(moment().add(-7, "day").format("YYYY-MM-DD"));
+  const [fromdate, setFromDate] = useState(moment().add(-14, "day").format("YYYY-MM-DD"));
   const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));
   const [worstby, setWorstBy] = useState('AMOUNT');
   const [ng_type, setNg_Type] = useState('ALL');
@@ -51,6 +52,7 @@ const INSPECT_REPORT = () => {
   const [annualyFcostData, setAnnualyFcostData] = useState<InspectSummary[]>([]);
   const [codeList, setCodeList] = useState<CodeListData[]>([]);
   const [searchCodeArray, setSearchCodeArray] = useState<string[]>([]);
+  const [patrolheaderdata, setPatrolHeaderData] = useState<PATROL_HEADER_DATA[]>([]);
   const [selectedCode, setSelectedCode] = useState<CodeListData | null>({
     G_CODE: "6A00001B",
     G_NAME: "GT-I9500_SJ68-01284A",
@@ -63,6 +65,34 @@ const INSPECT_REPORT = () => {
     matchFrom: "any",
     limit: 100,
   });
+  const getPatrolHeaderData = async (from_date: string, to_date: string) => {    
+    let td = moment().add(0, "day").format("YYYY-MM-DD");
+    let frd = moment().add(-12, "day").format("YYYY-MM-DD");
+    await generalQuery("getpatrolheader", {
+      FROM_DATE: df ? frd : fromdate,
+      TO_DATE: df ? td : todate,
+    })
+      .then((response) => {
+        //console.log(response.data);
+        if (response.data.tk_status !== "NG") {
+          const loadeddata: PATROL_HEADER_DATA[] = response.data.data.map(
+            (element: PATROL_HEADER_DATA, index: number) => {
+              return {
+                ...element,
+              };
+            }
+          );
+          //console.log(loadeddata);          
+          setPatrolHeaderData(loadeddata);
+        } else {
+          //Swal.fire("Thông báo", "Lỗi BOM SX: " + response.data.message, "error");
+          setPatrolHeaderData([]);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
   const handleGetInspectionWorst = async (from_date: string, to_date: string, worst_by: string, ng_type: string, listCode: string[]) => {
     let td = moment().add(0, "day").format("YYYY-MM-DD");
     let frd = moment().add(-7, "day").format("YYYY-MM-DD");
@@ -269,7 +299,7 @@ const INSPECT_REPORT = () => {
   }
   const handle_getDailyFcost = async (from_date: string, to_date: string, listCode: string[]) => {
     let td = moment().add(0, "day").format("YYYY-MM-DD");
-    let frd = moment().add(-7, "day").format("YYYY-MM-DD");
+    let frd = moment().add(-14, "day").format("YYYY-MM-DD");
     generalQuery("dailyFcost", {
       FROM_DATE: df ? frd : from_date,
       TO_DATE: df ? td : to_date,
@@ -445,6 +475,7 @@ const INSPECT_REPORT = () => {
       handle_getWeeklyFcost(fromdate, todate, searchCodeArray),
       handle_getMonthlyFcost(fromdate, todate, searchCodeArray),
       handle_getAnnuallyFcost(fromdate, todate, searchCodeArray),
+      getPatrolHeaderData(fromdate, todate),
     ]).then((values) => {
       Swal.fire("Thông báo","Đã load xong báo cáo",'success');
     });
@@ -462,7 +493,7 @@ const INSPECT_REPORT = () => {
   }
   useEffect(() => {
     getcodelist("");
-    initFunction();
+    //initFunction();
   }, []);
   return (
     <div className="inspectionreport">
@@ -592,7 +623,7 @@ const INSPECT_REPORT = () => {
             Search
           </button>
         </div>
-        <span className="section_title">1. NG Rate Trending</span>
+        <span className="section_title">1. OverView</span>
         <div className="revenuewidget">
           <div className="revenuwdg">
             <WidgetInspection
@@ -638,101 +669,7 @@ const INSPECT_REPORT = () => {
               total_ppm={yearlyppm[yearlyppm.length - 1]?.TOTAL_PPM}
             />
           </div>
-        </div>
-        {/*  <span className="subsection_title">a. FACTORY 1</span>
-        <div className="revenuewidget">
-          <div className="revenuwdg">
-            <WidgetInspection
-              widgettype="revenue"
-              label="Yesterday NG"
-              topColor="#b3c6ff"
-              botColor="#b3ecff"
-              material_ppm={dailyppm1[0]?.MATERIAL_PPM}
-              process_ppm={dailyppm1[0]?.PROCESS_PPM}
-              total_ppm={dailyppm1[0]?.TOTAL_PPM}
-            />
-          </div>
-          <div className="revenuwdg">
-            <WidgetInspection
-              widgettype="revenue"
-              label="This Week NG"
-              topColor="#b3c6ff"
-              botColor="#b3ecff"
-              material_ppm={weeklyppm1[0]?.MATERIAL_PPM}
-              process_ppm={weeklyppm1[0]?.PROCESS_PPM}
-              total_ppm={weeklyppm1[0]?.TOTAL_PPM}
-            />
-          </div>
-          <div className="revenuwdg">
-            <WidgetInspection
-              widgettype="revenue"
-              label="This month NG"
-              topColor="#b3c6ff"
-              botColor="#b3ecff"
-              material_ppm={monthlyppm1[0]?.MATERIAL_PPM}
-              process_ppm={monthlyppm1[0]?.PROCESS_PPM}
-              total_ppm={monthlyppm1[0]?.TOTAL_PPM}
-            />
-          </div>
-          <div className="revenuwdg">
-            <WidgetInspection
-              widgettype="revenue"
-              label="This year NG"
-              topColor="#b3c6ff"
-              botColor="#b3ecff"
-              material_ppm={yearlyppm1[0]?.MATERIAL_PPM}
-              process_ppm={yearlyppm1[0]?.PROCESS_PPM}
-              total_ppm={yearlyppm1[0]?.TOTAL_PPM}
-            />
-          </div>
-        </div>
-        <span className="subsection_title">b. FACTORY 2</span>
-        <div className="revenuewidget">
-          <div className="revenuwdg">
-            <WidgetInspection
-              widgettype="revenue"
-              label="Yesterday NG"
-              topColor="#80ff80"
-              botColor="#e6ffe6"
-              material_ppm={dailyppm2[0]?.MATERIAL_PPM}
-              process_ppm={dailyppm2[0]?.PROCESS_PPM}
-              total_ppm={dailyppm2[0]?.TOTAL_PPM}
-            />
-          </div>
-          <div className="revenuwdg">
-            <WidgetInspection
-              widgettype="revenue"
-              label="This Week NG"
-              topColor="#80ff80"
-              botColor="#e6ffe6"
-              material_ppm={weeklyppm2[0]?.MATERIAL_PPM}
-              process_ppm={weeklyppm2[0]?.PROCESS_PPM}
-              total_ppm={weeklyppm2[0]?.TOTAL_PPM}
-            />
-          </div>
-          <div className="revenuwdg">
-            <WidgetInspection
-              widgettype="revenue"
-              label="This month NG"
-              topColor="#80ff80"
-              botColor="#e6ffe6"
-              material_ppm={monthlyppm2[0]?.MATERIAL_PPM}
-              process_ppm={monthlyppm2[0]?.PROCESS_PPM}
-              total_ppm={monthlyppm2[0]?.TOTAL_PPM}
-            />
-          </div>
-          <div className="revenuwdg">
-            <WidgetInspection
-              widgettype="revenue"
-              label="This year NG"
-              topColor="#80ff80"
-              botColor="#e6ffe6"
-              material_ppm={yearlyppm2[0]?.MATERIAL_PPM}
-              process_ppm={yearlyppm2[0]?.PROCESS_PPM}
-              total_ppm={yearlyppm2[0]?.TOTAL_PPM}
-            />
-          </div>
-        </div> */}
+        </div>        
         <br></br>
         <hr></hr>
         <div className="graph">
@@ -775,30 +712,34 @@ const INSPECT_REPORT = () => {
               </div>
             </div>
           </div>
-          <span className="section_title">3. F-COST</span>
+          <span className="section_title">3. F-COST Status</span>
+          <span className="subsection_title">F-Cost Summary</span>
           <FCOSTTABLE data={inspectSummary} />
+          <span className="subsection_title">F-Cost Trending</span>
           <div className="fcosttrending">
             <div className="fcostgraph">
               <div className="dailygraph">
-                <span className="subsection">Daily NG Amount</span>
+                <span className="subsection">Daily F-Cost</span>
                 <InspectionDailyFcost
                   dldata={[...dailyFcostData].reverse()}
                   processColor="#89fc98"
                   materialColor="#41d5fa"
                 />
-              </div>
+              </div>             
+            </div>            
+          </div>
+          <div className="fcosttrending">
+            <div className="fcostgraph">              
               <div className="dailygraph">
-                <span className="subsection">Weekly NG Amount</span>
+                <span className="subsection">Weekly F-Cost</span>
                 <InspectionWeeklyFcost
                   dldata={[...weeklyFcostData].reverse()}
                   processColor="#89fc98"
                   materialColor="#41d5fa"
                 />
               </div>
-            </div>
-            <div className="monthlyweeklygraph">
               <div className="dailygraph">
-                <span className="subsection">Monthly NG Amount</span>
+                <span className="subsection">Monthly F-Cost</span>
                 <InspectionMonthlyFcost
                   dldata={[...monthlyFcostData].reverse()}
                   processColor="#89fc98"
@@ -806,7 +747,7 @@ const INSPECT_REPORT = () => {
                 />
               </div>
               <div className="dailygraph">
-                <span className="subsection">Yearly NG Amount</span>
+                <span className="subsection">Yearly F-Cost</span>
                 <InspectionYearlyFcost
                   dldata={[...annualyFcostData].reverse()}
                   processColor="#89fc98"
@@ -814,8 +755,15 @@ const INSPECT_REPORT = () => {
                 />
               </div>
             </div>
+            
           </div>
+          <span className="subsection_title">Top 3 F-Cost</span>
+          <div className="patrolheader1">            
+            <PATROL_HEADER data={patrolheaderdata} />
+          </div>
+          <span className="subsection_title">F-Cost by Defect</span>
           <div className="worstinspection">
+            
             <div className="worsttable">
               <span className="subsection">Worst Table</span>
               {worstdatatable.length > 0 && <InspectionWorstTable dailyClosingData={worstdatatable} worstby={worstby} from_date={fromdate} to_date={todate} ng_type={ng_type} listCode={searchCodeArray} />}
