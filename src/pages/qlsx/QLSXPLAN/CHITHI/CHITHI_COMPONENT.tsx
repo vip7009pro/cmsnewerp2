@@ -327,6 +327,14 @@ const CHITHI_COMPONENT = ({ DATA }: { DATA: QLSXPLANDATA }) => {
             height={400 - 100}
           />
         )}
+        {(checkApprove() && request_codeinfo[0].CODE_55 === '04') && (
+          <img
+            alt="qcpass"
+            src="/SAMPLE.png"
+            width={440 - 100 - 10}
+            height={400 - 100}
+          />
+        )}
       </div>
       {request_codeinfo[0]?.FSC === "Y" && (
         <div className="fsc">

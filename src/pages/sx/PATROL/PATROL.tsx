@@ -42,6 +42,7 @@ const PATROL = () => {
           setPatrolHeaderData(loadeddata);
         } else {
           //Swal.fire("Thông báo", "Lỗi BOM SX: " + response.data.message, "error");
+          setIsLoading(true);
           setPatrolHeaderData([]);
         }
       })

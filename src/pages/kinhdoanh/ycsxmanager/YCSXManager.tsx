@@ -347,6 +347,7 @@ const YCSXManager = () => {
       },
     },
     { field: "REMARK", headerName: "REMARK", width: 120 },
+    { field: "PROD_MAIN_MATERIAL", headerName: "VL CHÍNH", width: 150 },
     { field: "PO_NO", headerName: "PO_NO", width: 120 },
     {
       field: "PO_TDYCSX",

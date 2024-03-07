@@ -100,6 +100,7 @@ const DATASX2 = () => {
   const [prodrequestno, setProdRequestNo] = useState("");
   const [plan_id, setPlanID] = useState("");
   const [alltime, setAllTime] = useState(false);
+  const [truSample, setTruSample] = useState(true);
   const [id, setID] = useState("");
   const [datasxtable, setDataSXTable] = useState<Array<any>>([]);
   const [m_name, setM_Name] = useState("");
@@ -3019,6 +3020,7 @@ const DATASX2 = () => {
       G_CODE: codeCMS,
       FACTORY: factory,
       PLAN_EQ: machine,
+      TRUSAMPLE: truSample
     })
       .then((response) => {
         //console.log(response.data.data);
@@ -3097,8 +3099,8 @@ const DATASX2 = () => {
           for (let i = 0; i < loaded_data.length; i++) {
             temp_loss_info.XUATKHO_MET += loaded_data[i].WAREHOUSE_OUTPUT_QTY;
             temp_loss_info.XUATKHO_EA += loaded_data[i].WAREHOUSE_ESTIMATED_QTY;
-            temp_loss_info.SCANNED_MET += loaded_data[i].USED_QTY;
-            temp_loss_info.SCANNED_EA += loaded_data[i].ESTIMATED_QTY;
+            temp_loss_info.SCANNED_MET += loaded_data[i].PROCESS_NUMBER === 1 ? loaded_data[i].USED_QTY : 0;
+            temp_loss_info.SCANNED_EA += loaded_data[i].PROCESS_NUMBER === 1 ? loaded_data[i].ESTIMATED_QTY :0;
             temp_loss_info.PROCESS1_RESULT +=
               loaded_data[i].PROCESS_NUMBER === 1 && loaded_data[i].STEP === 0
                 ? loaded_data[i].KETQUASX
@@ -3167,6 +3169,7 @@ const DATASX2 = () => {
       G_CODE: codeCMS,
       FACTORY: factory,
       PLAN_EQ: machine,
+      TRUSAMPLE: truSample
     })
       .then((response) => {
         //console.log(response.data.data);
@@ -3374,6 +3377,15 @@ const DATASX2 = () => {
                 name="alltimecheckbox"
                 defaultChecked={alltime}
                 onChange={() => setAllTime(!alltime)}
+              ></input>
+            </label>
+            <label>
+              <b>Trừ Sample:</b>
+              <input
+                type="checkbox"
+                name="alltimecheckbox"
+                defaultChecked={truSample}
+                onChange={() => setTruSample(!truSample)}
               ></input>
             </label>
             <button
