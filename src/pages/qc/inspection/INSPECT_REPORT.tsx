@@ -35,7 +35,6 @@ const INSPECT_REPORT = () => {
   const [weeklyppm2, setWeeklyPPM2] = useState<WeeklyPPMData[]>([]);
   const [monthlyppm2, setMonthlyPPM2] = useState<MonthlyPPMData[]>([]);
   const [yearlyppm2, setYearlyPPM2] = useState<YearlyPPMData[]>([]);
-
   const [dailyppm, setDailyPPM] = useState<DailyPPMData[]>([]);
   const [weeklyppm, setWeeklyPPM] = useState<WeeklyPPMData[]>([]);
   const [monthlyppm, setMonthlyPPM] = useState<MonthlyPPMData[]>([]);
@@ -65,7 +64,7 @@ const INSPECT_REPORT = () => {
     matchFrom: "any",
     limit: 100,
   });
-  const getPatrolHeaderData = async (from_date: string, to_date: string) => {    
+  const getPatrolHeaderData = async (from_date: string, to_date: string) => {
     let td = moment().add(0, "day").format("YYYY-MM-DD");
     let frd = moment().add(-12, "day").format("YYYY-MM-DD");
     await generalQuery("getpatrolheader", {
@@ -126,7 +125,7 @@ const INSPECT_REPORT = () => {
         console.log(error);
       });
   };
-  const handle_getDailyPPM = async (FACTORY: string,listCode: string[]) => {
+  const handle_getDailyPPM = async (FACTORY: string, listCode: string[]) => {
     let td = moment().add(0, "day").format("YYYY-MM-DD");
     let frd = moment().add(-12, "day").format("YYYY-MM-DD");
     generalQuery("inspect_daily_ppm", {
@@ -163,7 +162,7 @@ const INSPECT_REPORT = () => {
         console.log(error);
       });
   };
-  const handle_getWeeklyPPM = async (FACTORY: string,listCode: string[]) => {
+  const handle_getWeeklyPPM = async (FACTORY: string, listCode: string[]) => {
     let td = moment().add(0, "day").format("YYYY-MM-DD");
     let frd = moment().add(-70, "day").format("YYYY-MM-DD");
     generalQuery("inspect_weekly_ppm", {
@@ -196,7 +195,7 @@ const INSPECT_REPORT = () => {
         console.log(error);
       });
   };
-  const handle_getMonthlyPPM = async (FACTORY: string,listCode: string[]) => {
+  const handle_getMonthlyPPM = async (FACTORY: string, listCode: string[]) => {
     let td = moment().add(0, "day").format("YYYY-MM-DD");
     let frd = moment().add(-365, "day").format("YYYY-MM-DD");
     generalQuery("inspect_monthly_ppm", {
@@ -229,7 +228,7 @@ const INSPECT_REPORT = () => {
         console.log(error);
       });
   };
-  const handle_getYearlyPPM = async (FACTORY: string,listCode: string[]) => {
+  const handle_getYearlyPPM = async (FACTORY: string, listCode: string[]) => {
     let td = moment().add(0, "day").format("YYYY-MM-DD");
     let frd = moment().add(-3650, "day").format("YYYY-MM-DD");
     generalQuery("inspect_yearly_ppm", {
@@ -276,7 +275,7 @@ const INSPECT_REPORT = () => {
           const loadeddata: InspectSummary[] = response.data.data.map(
             (element: InspectSummary, index: number) => {
               return {
-                ...element,                
+                ...element,
                 T_NG_AMOUNT: element.P_NG_AMOUNT + element.M_NG_AMOUNT,
                 T_NG_QTY: element.P_NG_QTY + element.M_NG_QTY,
                 M_RATE: element.ISP_TT_QTY !== 0 ? Number(element.M_NG_QTY) / Number(element.ISP_TT_QTY) : 0,
@@ -465,10 +464,10 @@ const INSPECT_REPORT = () => {
       showConfirmButton: false,
     });
     Promise.all([
-      handle_getDailyPPM("ALL",searchCodeArray), 
-      handle_getWeeklyPPM("ALL",searchCodeArray), 
-      handle_getMonthlyPPM("ALL",searchCodeArray),
-      handle_getYearlyPPM("ALL",searchCodeArray),
+      handle_getDailyPPM("ALL", searchCodeArray),
+      handle_getWeeklyPPM("ALL", searchCodeArray),
+      handle_getMonthlyPPM("ALL", searchCodeArray),
+      handle_getYearlyPPM("ALL", searchCodeArray),
       handleGetInspectionWorst(fromdate, todate, worstby, ng_type, searchCodeArray),
       handle_getInspectSummary(fromdate, todate, searchCodeArray),
       handle_getDailyFcost(fromdate, todate, searchCodeArray),
@@ -477,23 +476,22 @@ const INSPECT_REPORT = () => {
       handle_getAnnuallyFcost(fromdate, todate, searchCodeArray),
       getPatrolHeaderData(fromdate, todate),
     ]).then((values) => {
-      Swal.fire("Thông báo","Đã load xong báo cáo",'success');
+      Swal.fire("Thông báo", "Đã load xong báo cáo", 'success');
     });
-   /*  handle_getDailyPPM("ALL",searchCodeArray);
-    handle_getWeeklyPPM("ALL",searchCodeArray);
-    handle_getMonthlyPPM("ALL",searchCodeArray);
-    handle_getYearlyPPM("ALL",searchCodeArray);
-
-    handleGetInspectionWorst(fromdate, todate, worstby, ng_type, searchCodeArray);
-    handle_getInspectSummary(fromdate, todate, searchCodeArray);
-    handle_getDailyFcost(fromdate, todate, searchCodeArray);
-    handle_getWeeklyFcost(fromdate, todate, searchCodeArray);
-    handle_getMonthlyFcost(fromdate, todate, searchCodeArray);
-    handle_getAnnuallyFcost(fromdate, todate, searchCodeArray); */
+    /*  handle_getDailyPPM("ALL",searchCodeArray);
+     handle_getWeeklyPPM("ALL",searchCodeArray);
+     handle_getMonthlyPPM("ALL",searchCodeArray);
+     handle_getYearlyPPM("ALL",searchCodeArray);
+     handleGetInspectionWorst(fromdate, todate, worstby, ng_type, searchCodeArray);
+     handle_getInspectSummary(fromdate, todate, searchCodeArray);
+     handle_getDailyFcost(fromdate, todate, searchCodeArray);
+     handle_getWeeklyFcost(fromdate, todate, searchCodeArray);
+     handle_getMonthlyFcost(fromdate, todate, searchCodeArray);
+     handle_getAnnuallyFcost(fromdate, todate, searchCodeArray); */
   }
   useEffect(() => {
     getcodelist("");
-    //initFunction();
+    initFunction();
   }, []);
   return (
     <div className="inspectionreport">
@@ -608,8 +606,8 @@ const INSPECT_REPORT = () => {
               onChange={(e) => {
                 //console.log(e.target.checked);
                 setDF(e.target.checked);
-                if(!df)
-                setSearchCodeArray([]);
+                if (!df)
+                  setSearchCodeArray([]);
               }}
               inputProps={{ "aria-label": "controlled" }}
             />
@@ -669,7 +667,7 @@ const INSPECT_REPORT = () => {
               total_ppm={yearlyppm[yearlyppm.length - 1]?.TOTAL_PPM}
             />
           </div>
-        </div>        
+        </div>
         <br></br>
         <hr></hr>
         <div className="graph">
@@ -725,19 +723,20 @@ const INSPECT_REPORT = () => {
                   processColor="#89fc98"
                   materialColor="#41d5fa"
                 />
-              </div>             
-            </div>            
+              </div>
+            </div>
+            
           </div>
           <div className="fcosttrending">
-            <div className="fcostgraph">              
-              <div className="dailygraph">
-                <span className="subsection">Weekly F-Cost</span>
-                <InspectionWeeklyFcost
-                  dldata={[...weeklyFcostData].reverse()}
-                  processColor="#89fc98"
-                  materialColor="#41d5fa"
-                />
-              </div>
+            <div className="fcostgraph">
+            <div className="dailygraph">
+              <span className="subsection">Weekly F-Cost</span>
+              <InspectionWeeklyFcost
+                dldata={[...weeklyFcostData].reverse()}
+                processColor="#89fc98"
+                materialColor="#41d5fa"
+              />
+            </div>
               <div className="dailygraph">
                 <span className="subsection">Monthly F-Cost</span>
                 <InspectionMonthlyFcost
@@ -755,15 +754,13 @@ const INSPECT_REPORT = () => {
                 />
               </div>
             </div>
-            
           </div>
-          <span className="subsection_title">Top 3 F-Cost</span>
-          <div className="patrolheader1">            
+          <span className="subsection_title">Top 3 F-Cost Products ({fromdate} ~ {todate})</span>
+          <div className="patrolheader1">
             <PATROL_HEADER data={patrolheaderdata} />
           </div>
           <span className="subsection_title">F-Cost by Defect</span>
           <div className="worstinspection">
-            
             <div className="worsttable">
               <span className="subsection">Worst Table</span>
               {worstdatatable.length > 0 && <InspectionWorstTable dailyClosingData={worstdatatable} worstby={worstby} from_date={fromdate} to_date={todate} ng_type={ng_type} listCode={searchCodeArray} />}

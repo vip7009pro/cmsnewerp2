@@ -23,22 +23,22 @@ const PATROL_HEADER = ({ data }: { data: PATROL_HEADER_DATA[] }) => {
           {data.map((ele: PATROL_HEADER_DATA, index: number) => {
             return (
               <tr>
-                <td>{index+1}</td>
+                <td>{index + 1}</td>
                 <td>{ele.G_NAME_KD}</td>
-                <td>{ele.NG_AMOUNT.toLocaleString(
-                        "en-US",
-                        {
-                          style: "currency",
-                          currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
-                        }
-                      )}</td>
-                <td>{ele.INSPECT_TOTAL_QTY.toLocaleString("en-US")}</td>
-                <td>{ele.NG_QTY.toLocaleString("en-US")}</td>
+                <td style={{color:'red', fontWeight:'bold'}}>{ele.NG_AMOUNT.toLocaleString(
+                  "en-US",
+                  {
+                    style: "currency",
+                    currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
+                  }
+                )}</td>
+                <td>{Number(ele.INSPECT_TOTAL_QTY).toLocaleString("en-US")}</td>
+                <td>{Number(ele.NG_QTY).toLocaleString("en-US")}</td>
                 <td>{(ele.NG_QTY * 1.0 / ele.INSPECT_TOTAL_QTY * 100).toLocaleString("en-US", {
-              style: "decimal",
-              maximumFractionDigits: 1,
-              minimumFractionDigits: 1,
-            })}%</td>
+                  style: "decimal",
+                  maximumFractionDigits: 1,
+                  minimumFractionDigits: 1,
+                })}%</td>
                 <td>{ele.WORST1}</td>
                 <td>{ele.WORST2}</td>
                 <td>{ele.WORST3}</td>

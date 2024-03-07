@@ -118,6 +118,7 @@ const InspectionDailyPPM = ({
           type='monotone'
           dataKey='TOTAL_PPM'
           stroke='green'
+          label={{ position: "top", formatter: labelFormatter, fontSize:'0.7rem', fontWeight:'bold', color:'black' }} 
         />
         <Bar
           stackId='a'
@@ -126,8 +127,10 @@ const InspectionDailyPPM = ({
           dataKey='PROCESS_PPM'
           stroke='white'
           fill={processColor}
-          label={{ position: "insideTop", formatter: labelFormatter, fontSize:'0.7rem', fontWeight:'bold', color:'black' }}         
-        ></Bar>
+          /* label={{ position: "insideTop", formatter: labelFormatter, fontSize:'0.7rem', fontWeight:'bold', color:'black' }}     */     
+        >
+          <LabelList dataKey="PROCESS_PPM" position="inside" formatter={labelFormatter} fontSize={"0.7rem"} />
+        </Bar>
         <Bar
           stackId='a'
           yAxisId='left-axis'
@@ -135,8 +138,10 @@ const InspectionDailyPPM = ({
           dataKey='MATERIAL_PPM'
           stroke='white'
           fill={materialColor}
-          label={{ position: "insideTop", formatter: labelFormatter,fontSize:'0.7rem', fontWeight:'bold', color:'black' }}         
-        ></Bar>
+          /* label={{ position: "insideTop", formatter: labelFormatter,fontSize:'0.7rem', fontWeight:'bold', color:'black' }}    */      
+        >
+          <LabelList dataKey="MATERIAL_PPM" position="inside" formatter={labelFormatter} fontSize={"0.7rem"} />
+        </Bar>
       </ComposedChart>
     </CustomResponsiveContainer>
   );

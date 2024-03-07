@@ -90,7 +90,7 @@ const InspectionDailyFcost = ({
         <YAxis
           yAxisId='left-axis'
           label={{
-            value: "NG Rate",
+            value: "Fcost",
             angle: -90,
             position: "insideLeft",
             fontSize:'0.7rem'    
@@ -100,7 +100,7 @@ const InspectionDailyFcost = ({
             new Intl.NumberFormat("en", {
               notation: "compact",
               compactDisplay: "short",
-            }).format(value)
+            }).format(value) + "$"
           }
           tickCount={7}
         />
@@ -118,6 +118,7 @@ const InspectionDailyFcost = ({
           type='monotone'
           dataKey='T_NG_AMOUNT'
           stroke='green'
+          label={{ position: "top", formatter: labelFormatter, fontSize:'0.7rem', fontWeight:'bold', color:'black' }}         
         />
         <Bar
           stackId='a'
@@ -125,18 +126,20 @@ const InspectionDailyFcost = ({
           type='monotone'
           dataKey='P_NG_AMOUNT'
           stroke='white'
-          fill={processColor}
-          label={{ position: "center", formatter: labelFormatter, fontSize:'0.6rem', fontWeight:'bold', color:'black' }}         
-        ></Bar>
+          fill={processColor}          
+        >
+          <LabelList dataKey="P_NG_AMOUNT" position="inside" formatter={labelFormatter} fontSize={"0.7rem"} />
+        </Bar>
         <Bar
           stackId='a'
           yAxisId='left-axis'
           type='monotone'
           dataKey='M_NG_AMOUNT'
           stroke='white'
-          fill={materialColor}
-          label={{ position: "insideTop", formatter: labelFormatter,fontSize:'0.6rem', fontWeight:'bold', color:'black' }}         
-        ></Bar>
+          fill={materialColor}          
+        >
+          <LabelList dataKey="M_NG_AMOUNT" position="inside" formatter={labelFormatter} fontSize={"0.7rem"} />
+        </Bar>
       </ComposedChart>
     </CustomResponsiveContainer>
   );

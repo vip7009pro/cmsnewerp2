@@ -115,11 +115,12 @@ const InspectionYearlyPPM = ({
          formatter={(value, entry) => (
            <span style={{fontSize:'0.7rem', fontWeight:'bold'}}>{value}</span>
          )}/>
-        <Line
+         <Line
           yAxisId='left-axis'
           type='monotone'
           dataKey='TOTAL_PPM'
           stroke='green'
+          label={{ position: "top", formatter: labelFormatter, fontSize:'0.7rem', fontWeight:'bold', color:'black' }} 
         />
         <Bar
           stackId='a'
@@ -128,8 +129,10 @@ const InspectionYearlyPPM = ({
           dataKey='PROCESS_PPM'
           stroke='white'
           fill={processColor}
-          label={{ position: "insideTop", formatter: labelFormatter, fontSize:'0.7rem', fontWeight:'bold', color:'black' }}
-        ></Bar>
+          /* label={{ position: "insideTop", formatter: labelFormatter, fontSize:'0.7rem', fontWeight:'bold', color:'black' }}     */     
+        >
+          <LabelList dataKey="PROCESS_PPM" position="inside" formatter={labelFormatter} fontSize={"0.7rem"} />
+        </Bar>
         <Bar
           stackId='a'
           yAxisId='left-axis'
@@ -137,8 +140,10 @@ const InspectionYearlyPPM = ({
           dataKey='MATERIAL_PPM'
           stroke='white'
           fill={materialColor}
-          label={{ position: "insideTop", formatter: labelFormatter, fontSize:'0.7rem', fontWeight:'bold', color:'black' }}
-        ></Bar>
+          /* label={{ position: "insideTop", formatter: labelFormatter,fontSize:'0.7rem', fontWeight:'bold', color:'black' }}    */      
+        >
+          <LabelList dataKey="MATERIAL_PPM" position="inside" formatter={labelFormatter} fontSize={"0.7rem"} />
+        </Bar>
       </ComposedChart>
     </CustomResponsiveContainer>
   );
