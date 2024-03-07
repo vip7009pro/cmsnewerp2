@@ -609,12 +609,12 @@ function Home() {
         });
       getchamcong();
     }, 30000);
-    let intervalID2 = window.setInterval(() => {
+    /* let intervalID2 = window.setInterval(() => {
       checkERPLicense();
-    }, 30000);
+    }, 30000); */
     return () => {
       window.clearInterval(intervalID);
-      window.clearInterval(intervalID2);
+      /* window.clearInterval(intervalID2); */
     };
   }, []);
   return (

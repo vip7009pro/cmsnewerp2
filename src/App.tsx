@@ -10,7 +10,7 @@ import React, {
 } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { LangConText, UserContext } from "../src/api/Context";
-import { checkLogin, generalQuery, getSocket } from "./api/Api";
+import { checkLogin, generalQuery, getCompany, getSocket, logout as LGOUTF } from "./api/Api";
 import Swal from "sweetalert2";
 import { RootState } from "./redux/store";
 import { useSelector, useDispatch } from "react-redux";
@@ -384,6 +384,34 @@ function App() {
     (state: RootState) => state.totalSlice.userData
   );
   const dispatch = useDispatch();
+  const checkERPLicense = async () => {
+    console.log("Check han su dung")
+    //if (getSever() !== 'http://192.168.1.192:5013') {
+    if (true) {
+      generalQuery("checkLicense", {
+        COMPANY: getCompany()
+      })
+        .then((response) => {
+          console.log('hohoho',response.data.message);
+          if (response.data.tk_status !== "NG") {
+            console.log(response.data.message);
+            
+          } else {
+            if(userData.EMPL_NO.toUpperCase()!=='NHU1903')
+            {
+              console.log(response.data.message);                       
+              Swal.fire('Thông báo', 'Please check your network', 'error');  
+              LGOUTF();            
+             /*  dispatch(logout(true));    */
+            }             
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+  }
+
   //console.log(userData.JOB_NAME);
   useEffect(() => {
     console.log("check login");
@@ -392,7 +420,8 @@ function App() {
         //console.log(data);
         if (data.data.tk_status === "ng") {
           /* console.log("khong co token");
-          setLoginState(false); */
+          setLoginState(false); */  
+                 
           loadWebSetting();
           dispatch(logout(false));
           dispatch(
@@ -495,6 +524,7 @@ function App() {
           });
         } else {
           //console.log(data.data.data);
+          checkERPLicense();
           setUserData(data.data.data);
           dispatch(changeUserData(data.data.data));
           console.log('data.data.data.POSITION_CODE', data.data.data.POSITION_CODE)
