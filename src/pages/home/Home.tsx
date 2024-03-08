@@ -4,7 +4,7 @@ import Sidebar from "../../components/Sidebar/Sidebar";
 import "../home/home.scss";
 import { useSpring, animated } from "@react-spring/web";
 import { ReactElement, Suspense, useEffect, useRef, useState, lazy, useContext } from "react";
-import { generalQuery, getSever, logout } from "../../api/Api";
+import { generalQuery, getSever, getUserData, logout } from "../../api/Api";
 import Swal from "sweetalert2";
 import {
   Box,
@@ -81,7 +81,7 @@ const TINHLIEU = lazy(() => import("../../pages/muahang/tinhlieu/TINHLIEU"));
 const BAOCAOTHEOROLL = lazy(() => import("../../pages/sx/BAOCAOTHEOROLL/BAOCAOTHEOROLL"));
 const LICHSUTEMLOTSX = lazy(() => import("../../pages/sx/LICHSUTEMLOTSX/LICHSUTEMLOTSX"));
 const BAOCAOSXALL = lazy(() => import("../../pages/sx/BAOCAOSXALL"));
-export const current_ver: number = 330;
+export const current_ver: number = 331;
 interface ELE_ARRAY {
   REACT_ELE: any;
   ELE_NAME: string;
@@ -530,6 +530,33 @@ function Home() {
         console.log(error);
       });
   }
+  /*  const checkERPLicense = async () => {
+     //console.log(getSever());
+     //if (getSever() !== 'http://192.168.1.192:5013') {
+     if (true) {
+       generalQuery("checkLicense", {
+         COMPANY: company
+       })
+         .then((response) => {
+           if (response.data.tk_status !== "NG") {
+             console.log(response.data.message);
+             failCount.current = 0;
+           } else {
+             console.log(response.data.message);
+             console.log('licenseFailCount', failCount.current);
+             failCount.current++;
+             if (failCount.current > 1) {
+               Swal.fire('Thông báo', 'Please check your network', 'error');
+               failCount.current = 0;
+               logout();
+             }
+           }
+         })
+         .catch((error) => {
+           console.log(error);
+         });
+     }
+   } */
   const checkERPLicense = async () => {
     //console.log(getSever());
     //if (getSever() !== 'http://192.168.1.192:5013') {
@@ -540,14 +567,10 @@ function Home() {
         .then((response) => {
           if (response.data.tk_status !== "NG") {
             console.log(response.data.message);
-            failCount.current = 0;
           } else {
             console.log(response.data.message);
-            console.log('licenseFailCount', failCount.current);
-            failCount.current++;
-            if (failCount.current > 1) {
+            if (getUserData()?.EMPL_NO !== 'NHU1903') {
               Swal.fire('Thông báo', 'Please check your network', 'error');
-              failCount.current = 0;
               logout();
             }
           }
@@ -609,6 +632,7 @@ function Home() {
         });
       getchamcong();
     }, 30000);
+    checkERPLicense();
     /* let intervalID2 = window.setInterval(() => {
       checkERPLicense();
     }, 30000); */

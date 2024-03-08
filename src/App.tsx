@@ -373,7 +373,7 @@ function App() {
     WORK_STATUS_NAME: "Đang làm",
     WORK_STATUS_NAME_KR: "근무중",
   });
-  const [loginState, setLoginState] = useState(false);
+/*   const [loginState, setLoginState] = useState(false); */
   const trangthaidiemdanh: boolean | undefined = useSelector(
     (state: RootState) => state.totalSlice.diemdanhstate
   );
@@ -383,21 +383,25 @@ function App() {
   const globalUserData: UserData | undefined = useSelector(
     (state: RootState) => state.totalSlice.userData
   );
+  const loginState: boolean | undefined = useSelector(
+    (state: RootState) => state.totalSlice.loginState
+  );
   const dispatch = useDispatch();
   const checkERPLicense = async () => {
-    console.log("Check han su dung")
+    
     //if (getSever() !== 'http://192.168.1.192:5013') {
+      console.log(loginState)
     if (true) {
+      console.log("Vao check license")
       generalQuery("checkLicense", {
-        COMPANY: getCompany()
+        COMPANY: /* getCompany() */'TEST'
       })
         .then((response) => {
           console.log('hohoho',response.data.message);
           if (response.data.tk_status !== "NG") {
-            console.log(response.data.message);
-            
+            console.log(response.data.message);            
           } else {
-            if(userData.EMPL_NO.toUpperCase()!=='NHU1903')
+            if(userData.EMPL_NO.toUpperCase()==='NHU1903')
             {
               console.log(response.data.message);                       
               Swal.fire('Thông báo', 'Please check your network', 'error');  
@@ -524,7 +528,7 @@ function App() {
           });
         } else {
           //console.log(data.data.data);
-          checkERPLicense();
+          /* checkERPLicense(); */
           setUserData(data.data.data);
           dispatch(changeUserData(data.data.data));
           console.log('data.data.data.POSITION_CODE', data.data.data.POSITION_CODE)
