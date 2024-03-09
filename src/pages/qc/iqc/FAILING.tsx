@@ -78,6 +78,42 @@ const FAILING = () => {
   const [lieql_sx, setLieuQL_SX] = useState(0);
   const [out_date, setOut_Date] = useState("");
   const [cust_cd, setCust_Cd] = useState("6969");
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      // console.log('press enter')
+      e.preventDefault();
+      if (checkInput()) {
+        let lotArray = inspectiondatatable.map(
+          (element: QC_FAIL_DATA, index: number) => {
+            return element.M_LOT_NO;
+          },
+        );
+        if (pqc3Id !== 0) {
+          if (lotArray.indexOf(inputno) < 0) {
+            addRow();
+          } else {
+            Swal.fire(
+              "Thông tin",
+              "Đã thêm cuộn này rồi",
+              "error",
+            );
+          }
+        } else {
+          Swal.fire(
+            "Thông tin",
+            "Số chỉ thị này PQC chưa lập lỗi, không thêm được",
+            "error",
+          );
+        }
+      } else {
+        Swal.fire(
+          "Thông báo",
+          "Hãy nhập đủ thông tin trước khi đăng ký",
+          "error",
+        );
+      }
+    }
+  };
   const setQCPASS = async (value: string) => {
     console.log(selectedRowsDataA);
     if (selectedRowsDataA.length > 0) {
@@ -559,6 +595,13 @@ const FAILING = () => {
           setWidthCD(response.data.data[0].WIDTH_CD);
           setInCFMQTY(response.data.data[0].OUT_CFM_QTY);
           setRollQty(response.data.data[0].ROLL_QTY);
+          setVendorLot(response.data.data[0].LOTNCC?? "");
+          setPlanId(response.data.data[0].PLAN_ID?? "");
+
+          if((response.data.data[0].PLAN_ID ?? "").length>7) {
+            checkPlanID(response.data.data[0].PLAN_ID);
+            checkPQC3_ID(response.data.data[0].PLAN_ID);
+          }
           setLieuQL_SX(
             response.data.data[0].LIEUQL_SX === null
               ? "0"
@@ -573,6 +616,8 @@ const FAILING = () => {
           setInCFMQTY(0);
           setLieuQL_SX(0);
           setOut_Date("");
+          setVendorLot("");
+          setPlanId("");
         }
       })
       .catch((error) => {
@@ -582,8 +627,7 @@ const FAILING = () => {
   const checkInput = (): boolean => {
     if (
       inputno !== "" &&
-      planId !== "" &&
-      vendorLot !== "" &&
+      planId !== "" &&      
       request_empl !== ""
     ) {
       return true;
@@ -619,8 +663,8 @@ const FAILING = () => {
       QC_PASS_DATE: "",
       QC_PASS_EMPL: "",
       REMARK: remark,
-      IN1_EMPL: "",
-      IN2_EMPL: "",
+      IN1_EMPL: request_empl,
+      IN2_EMPL: request_empl2,
       OUT1_EMPL: "",
       OUT2_EMPL: "",
       OUT_PLAN_ID: "",
@@ -634,6 +678,7 @@ const FAILING = () => {
     setInspectionDataTable((prev) => {
       return [...prev, temp_row];
     });
+    setInputNo("");
   };
   const saveFailingData = async () => {
     if (inspectiondatatable.length > 0) {
@@ -808,6 +853,9 @@ const FAILING = () => {
                     type="text"
                     placeholder="202304190123"
                     value={inputno}
+                    onKeyDown={(e)=> {
+                      handleKeyDown(e);
+                    }}
                     onChange={(e) => {
                       //console.log(e.target.value.length);
                       if (e.target.value.length >= 7) {
@@ -956,9 +1004,15 @@ const FAILING = () => {
                     }}
                   ></input>
                 </label>
-                <Button color={'success'} variant="contained" size="small" fullWidth={true} sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#d7f724', color: 'black' }} onClick={() => {
+                <div className="btdiv" style={{display:'flex', gap: '10px'}}>
+                <Button color={'success'} variant="contained" size="small" fullWidth={false} sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#01aa01', color: 'white' }} onClick={() => {
+                  setInspectionDataTable([]);
+                }}>New</Button>
+                <Button color={'success'} variant="contained" size="small" fullWidth={false} sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#d7f724', color: 'black' }} onClick={() => {
                   handletraFailingData();
                 }}>Tra Data</Button>
+                </div>
+                
               </div>
             </div>
           </div>

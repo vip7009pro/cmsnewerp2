@@ -16,7 +16,7 @@ import WidgetInspection from "../../../components/Widget/WidgetInspection";
 import "./INSPECT_REPORT.scss";
 import InspectionWorstTable from "../../../components/DataTable/InspectionWorstTable";
 import ChartInspectionWorst from "../../../components/Chart/ChartInspectionWorst";
-import { CodeListData, DailyPPMData, FCSTAmountData, InspectSummary, MonthlyPPMData, PATROL_HEADER_DATA, WEB_SETTING_DATA, WeeklyPPMData, WidgetData_POBalanceSummary, WorstData, YearlyPPMData } from "../../../api/GlobalInterface";
+import { CodeListData, DEFECT_TRENDING_DATA, DailyPPMData, FCSTAmountData, InspectSummary, MonthlyPPMData, PATROL_HEADER_DATA, WEB_SETTING_DATA, WeeklyPPMData, WidgetData_POBalanceSummary, WorstData, YearlyPPMData } from "../../../api/GlobalInterface";
 import CIRCLE_COMPONENT from "../../qlsx/QLSXPLAN/CAPA/CIRCLE_COMPONENT/CIRCLE_COMPONENT";
 import { deBounce, nFormatter } from "../../../api/GlobalFunction";
 import { Autocomplete, Checkbox, FormControlLabel, FormGroup, TextField, Typography, createFilterOptions } from "@mui/material";
@@ -26,6 +26,7 @@ import InspectionWeeklyFcost from "../../../components/Chart/InspectWeeklyFcost"
 import InspectionMonthlyFcost from "../../../components/Chart/InspectMonthlyFcost";
 import InspectionYearlyFcost from "../../../components/Chart/InspectYearlyFcost";
 import PATROL_HEADER from "../../sx/PATROL/PATROL_HEADER";
+import InspectDailyDefectTrending from "../../../components/Chart/InspectDailyDefectTrending";
 const INSPECT_REPORT = () => {
   const [dailyppm1, setDailyPPM1] = useState<DailyPPMData[]>([]);
   const [weeklyppm1, setWeeklyPPM1] = useState<WeeklyPPMData[]>([]);
@@ -45,6 +46,7 @@ const INSPECT_REPORT = () => {
   const [ng_type, setNg_Type] = useState('ALL');
   const [worstdatatable, setWorstDataTable] = useState<Array<WorstData>>([]);
   const [inspectSummary, setInspectSummary] = useState<InspectSummary[]>([]);
+  const [dailyDefectTrendingData, setDailyDefectTrendingData] = useState<DEFECT_TRENDING_DATA[]>([]);
   const [dailyFcostData, setDailyFcostData] = useState<InspectSummary[]>([]);
   const [weeklyFcostData, setWeeklyFcostData] = useState<InspectSummary[]>([]);
   const [monthlyFcostData, setMonthlyFcostData] = useState<InspectSummary[]>([]);
@@ -128,7 +130,7 @@ const INSPECT_REPORT = () => {
   const handle_getDailyPPM = async (FACTORY: string, listCode: string[]) => {
     let td = moment().add(0, "day").format("YYYY-MM-DD");
     let frd = moment().add(-12, "day").format("YYYY-MM-DD");
-    generalQuery("inspect_daily_ppm", {
+    await generalQuery("inspect_daily_ppm", {
       FACTORY: FACTORY,
       FROM_DATE: df ? frd : fromdate,
       TO_DATE: df ? td : todate,
@@ -165,7 +167,7 @@ const INSPECT_REPORT = () => {
   const handle_getWeeklyPPM = async (FACTORY: string, listCode: string[]) => {
     let td = moment().add(0, "day").format("YYYY-MM-DD");
     let frd = moment().add(-70, "day").format("YYYY-MM-DD");
-    generalQuery("inspect_weekly_ppm", {
+    await generalQuery("inspect_weekly_ppm", {
       FACTORY: FACTORY,
       FROM_DATE: df ? frd : fromdate,
       TO_DATE: df ? td : todate,
@@ -198,7 +200,7 @@ const INSPECT_REPORT = () => {
   const handle_getMonthlyPPM = async (FACTORY: string, listCode: string[]) => {
     let td = moment().add(0, "day").format("YYYY-MM-DD");
     let frd = moment().add(-365, "day").format("YYYY-MM-DD");
-    generalQuery("inspect_monthly_ppm", {
+    await generalQuery("inspect_monthly_ppm", {
       FACTORY: FACTORY,
       FROM_DATE: df ? frd : fromdate,
       TO_DATE: df ? td : todate,
@@ -231,7 +233,7 @@ const INSPECT_REPORT = () => {
   const handle_getYearlyPPM = async (FACTORY: string, listCode: string[]) => {
     let td = moment().add(0, "day").format("YYYY-MM-DD");
     let frd = moment().add(-3650, "day").format("YYYY-MM-DD");
-    generalQuery("inspect_yearly_ppm", {
+    await generalQuery("inspect_yearly_ppm", {
       FACTORY: FACTORY,
       FROM_DATE: df ? frd : fromdate,
       TO_DATE: df ? td : todate,
@@ -264,7 +266,7 @@ const INSPECT_REPORT = () => {
   const handle_getInspectSummary = async (from_date: string, to_date: string, listCode: string[]) => {
     let td = moment().add(0, "day").format("YYYY-MM-DD");
     let frd = moment().add(-7, "day").format("YYYY-MM-DD");
-    generalQuery("getInspectionSummary", {
+    await generalQuery("getInspectionSummary", {
       FROM_DATE: df ? frd : from_date,
       TO_DATE: df ? td : to_date,
       codeArray: listCode
@@ -299,7 +301,7 @@ const INSPECT_REPORT = () => {
   const handle_getDailyFcost = async (from_date: string, to_date: string, listCode: string[]) => {
     let td = moment().add(0, "day").format("YYYY-MM-DD");
     let frd = moment().add(-14, "day").format("YYYY-MM-DD");
-    generalQuery("dailyFcost", {
+    await generalQuery("dailyFcost", {
       FROM_DATE: df ? frd : from_date,
       TO_DATE: df ? td : to_date,
       codeArray: listCode
@@ -336,7 +338,7 @@ const INSPECT_REPORT = () => {
   const handle_getWeeklyFcost = async (from_date: string, to_date: string, listCode: string[]) => {
     let td = moment().add(0, "day").format("YYYY-MM-DD");
     let frd = moment().add(-70, "day").format("YYYY-MM-DD");
-    generalQuery("weeklyFcost", {
+    await generalQuery("weeklyFcost", {
       FROM_DATE: df ? frd : from_date,
       TO_DATE: df ? td : to_date,
       codeArray: listCode
@@ -372,7 +374,7 @@ const INSPECT_REPORT = () => {
   const handle_getMonthlyFcost = async (from_date: string, to_date: string, listCode: string[]) => {
     let td = moment().add(0, "day").format("YYYY-MM-DD");
     let frd = moment().add(-365, "day").format("YYYY-MM-DD");
-    generalQuery("monthlyFcost", {
+    await generalQuery("monthlyFcost", {
       FROM_DATE: df ? frd : from_date,
       TO_DATE: df ? td : to_date,
       codeArray: listCode
@@ -408,7 +410,7 @@ const INSPECT_REPORT = () => {
   const handle_getAnnuallyFcost = async (from_date: string, to_date: string, listCode: string[]) => {
     let td = moment().add(0, "day").format("YYYY-MM-DD");
     let frd = moment().add(-3650, "day").format("YYYY-MM-DD");
-    generalQuery("annuallyFcost", {
+    await generalQuery("annuallyFcost", {
       FROM_DATE: df ? frd : from_date,
       TO_DATE: df ? td : to_date,
       codeArray: listCode
@@ -435,6 +437,36 @@ const INSPECT_REPORT = () => {
           setAnnualyFcostData(loadeddata);
         } else {
           setAnnualyFcostData([]);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+  const handle_getDailyDefectTrending = async (from_date: string, to_date: string, listCode: string[]) => {
+    let td = moment().add(0, "day").format("YYYY-MM-DD");
+    let frd = moment().add(-14, "day").format("YYYY-MM-DD");
+    await generalQuery("dailyDefectTrending", {
+      FROM_DATE: df ? frd : from_date,
+      TO_DATE: df ? td : to_date,
+      codeArray: listCode
+    })
+      .then((response) => {
+        //console.log(response.data.data);
+        if (response.data.tk_status !== "NG") {
+          const loadeddata: DEFECT_TRENDING_DATA[] = response.data.data.map(
+            (element: DEFECT_TRENDING_DATA, index: number) => {
+              return {
+                ...element,
+                INSPECT_DATE: moment(element.INSPECT_DATE).format("YYYY-MM-DD"),
+                id: index
+              };
+            },
+          );
+          //console.log(loadeddata);
+          setDailyDefectTrendingData(loadeddata);
+        } else {
+          setDailyDefectTrendingData([]);
         }
       })
       .catch((error) => {
@@ -474,20 +506,11 @@ const INSPECT_REPORT = () => {
       handle_getWeeklyFcost(fromdate, todate, searchCodeArray),
       handle_getMonthlyFcost(fromdate, todate, searchCodeArray),
       handle_getAnnuallyFcost(fromdate, todate, searchCodeArray),
-      getPatrolHeaderData(fromdate, todate),
+      handle_getDailyDefectTrending(fromdate, todate, searchCodeArray),
+      /* getPatrolHeaderData(fromdate, todate), */
     ]).then((values) => {
       Swal.fire("Thông báo", "Đã load xong báo cáo", 'success');
     });
-    /*  handle_getDailyPPM("ALL",searchCodeArray);
-     handle_getWeeklyPPM("ALL",searchCodeArray);
-     handle_getMonthlyPPM("ALL",searchCodeArray);
-     handle_getYearlyPPM("ALL",searchCodeArray);
-     handleGetInspectionWorst(fromdate, todate, worstby, ng_type, searchCodeArray);
-     handle_getInspectSummary(fromdate, todate, searchCodeArray);
-     handle_getDailyFcost(fromdate, todate, searchCodeArray);
-     handle_getWeeklyFcost(fromdate, todate, searchCodeArray);
-     handle_getMonthlyFcost(fromdate, todate, searchCodeArray);
-     handle_getAnnuallyFcost(fromdate, todate, searchCodeArray); */
   }
   useEffect(() => {
     getcodelist("");
@@ -710,6 +733,12 @@ const INSPECT_REPORT = () => {
               </div>
             </div>
           </div>
+          <span className="subsection_title">2.5 Defects Trending</span>
+          <div className="dailygraphtotal">
+            <div className="dailygraph" style={{ height: '600px' }}>
+              <InspectDailyDefectTrending dldata={[...dailyDefectTrendingData].reverse()} />
+            </div>
+          </div>
           <span className="section_title">3. F-COST Status</span>
           <span className="subsection_title">F-Cost Summary</span>
           <FCOSTTABLE data={inspectSummary} />
@@ -725,18 +754,17 @@ const INSPECT_REPORT = () => {
                 />
               </div>
             </div>
-            
           </div>
           <div className="fcosttrending">
             <div className="fcostgraph">
-            <div className="dailygraph">
-              <span className="subsection">Weekly F-Cost</span>
-              <InspectionWeeklyFcost
-                dldata={[...weeklyFcostData].reverse()}
-                processColor="#89fc98"
-                materialColor="#41d5fa"
-              />
-            </div>
+              <div className="dailygraph">
+                <span className="subsection">Weekly F-Cost</span>
+                <InspectionWeeklyFcost
+                  dldata={[...weeklyFcostData].reverse()}
+                  processColor="#89fc98"
+                  materialColor="#41d5fa"
+                />
+              </div>
               <div className="dailygraph">
                 <span className="subsection">Monthly F-Cost</span>
                 <InspectionMonthlyFcost

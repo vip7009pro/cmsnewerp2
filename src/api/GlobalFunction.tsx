@@ -320,3 +320,49 @@ export function deBounce (func: any, delay: number) {
       func();
     }, delay); 
 };
+
+export const COLORS = [
+  "#cc0000",
+  "#cc3300",
+  "#cc6600",
+  "#cc9900",
+  "#cccc00",
+  "#99cc00",
+  "#66cc00",
+  "#33cc00",
+  "#00cc00",
+  "#00cc33",
+  "#00cc66",
+  "#00cc99",
+  "#00cccc",
+  "#0099cc",
+  "#0066cc",
+  "#0033cc",
+  "#0000cc",
+  "#3300cc",
+  "#6600cc",
+  "#9900cc",
+  "#cc00cc",
+  "#cc0099",
+  "#cc0066",
+  "#cc0033",
+  "#cc0000",
+];
+
+export  const ERR_TABLE = [{ ERR_CODE: 'ERR1', ERR_NAME_VN: 'Loss thêm túi', ERR_NAME_KR: '포장 로스' }, { ERR_CODE: 'ERR2', ERR_NAME_VN: 'Loss bóc đầu cuối', ERR_NAME_KR: '초종 파괴 검사 로스' }, { ERR_CODE: 'ERR3', ERR_NAME_VN: 'Loss điểm nối', ERR_NAME_KR: '이음애 로스' }, { ERR_CODE: 'ERR4', ERR_NAME_VN: 'Dị vật/chấm gel', ERR_NAME_KR: '원단 이물/겔 점' }, { ERR_CODE: 'ERR5', ERR_NAME_VN: 'Nhăn VL', ERR_NAME_KR: '원단 주름' }, { ERR_CODE: 'ERR6', ERR_NAME_VN: 'Loang bẩn VL', ERR_NAME_KR: '얼룩' }, { ERR_CODE: 'ERR7', ERR_NAME_VN: 'Bóng khí VL', ERR_NAME_KR: '원단 기포' }, { ERR_CODE: 'ERR8', ERR_NAME_VN: 'Xước VL', ERR_NAME_KR: '원단 스크래치' }, { ERR_CODE: 'ERR9', ERR_NAME_VN: 'Chấm lồi lõm VL', ERR_NAME_KR: '원단 눌림' }, { ERR_CODE: 'ERR10', ERR_NAME_VN: 'Keo VL', ERR_NAME_KR: '원단 찐' }, { ERR_CODE: 'ERR11', ERR_NAME_VN: 'Lông PE VL', ERR_NAME_KR: '원단 버 (털 모양)' }, { ERR_CODE: 'ERR12', ERR_NAME_VN: 'Lỗi IN (Dây mực)', ERR_NAME_KR: '잉크 튐' }, { ERR_CODE: 'ERR13', ERR_NAME_VN: 'Lỗi IN (Mất nét)', ERR_NAME_KR: '글자 유실' }, { ERR_CODE: 'ERR14', ERR_NAME_VN: 'Lỗi IN (Lỗi màu)', ERR_NAME_KR: '색상 불량' }, { ERR_CODE: 'ERR15', ERR_NAME_VN: 'Lỗi IN (Chấm đường khử keo)', ERR_NAME_KR: '점착 제거 선 점 불량' }, { ERR_CODE: 'ERR16', ERR_NAME_VN: 'DIECUT (Lệch/Viền màu)', ERR_NAME_KR: '타발 편심' }, { ERR_CODE: 'ERR17', ERR_NAME_VN: 'DIECUT (Sâu)', ERR_NAME_KR: '과타발' }, { ERR_CODE: 'ERR18', ERR_NAME_VN: 'DIECUT (Nông)', ERR_NAME_KR: '미타발' }, { ERR_CODE: 'ERR19', ERR_NAME_VN: 'DIECUT (BAVIA)', ERR_NAME_KR: '타발 버' }, { ERR_CODE: 'ERR20', ERR_NAME_VN: 'Mất bước', ERR_NAME_KR: '차수 누락' }, { ERR_CODE: 'ERR21', ERR_NAME_VN: 'Xước', ERR_NAME_KR: '스크래치' }, { ERR_CODE: 'ERR22', ERR_NAME_VN: 'Nhăn gãy', ERR_NAME_KR: '주름꺽임' }, { ERR_CODE: 'ERR23', ERR_NAME_VN: 'Hằn', ERR_NAME_KR: '자국' }, { ERR_CODE: 'ERR24', ERR_NAME_VN: 'Sót rác', ERR_NAME_KR: '미 스크랩' }, { ERR_CODE: 'ERR25', ERR_NAME_VN: 'Bóng Khí', ERR_NAME_KR: '기포' }, { ERR_CODE: 'ERR26', ERR_NAME_VN: 'Bẩn keo bề mặt', ERR_NAME_KR: '표면 찐' }, { ERR_CODE: 'ERR27', ERR_NAME_VN: 'Chấm thủng/lồi lõm', ERR_NAME_KR: '찍힘' }, { ERR_CODE: 'ERR28', ERR_NAME_VN: 'Bụi trong', ERR_NAME_KR: '내면 이물' }, { ERR_CODE: 'ERR29', ERR_NAME_VN: 'Hụt Tape', ERR_NAME_KR: '테이프 줄여듬' }, { ERR_CODE: 'ERR30', ERR_NAME_VN: 'Bong keo', ERR_NAME_KR: '찐 벗겨짐' }, { ERR_CODE: 'ERR31', ERR_NAME_VN: 'Lấp lỗ sensor', ERR_NAME_KR: '센서 홀 막힘' }, { ERR_CODE: 'ERR32', ERR_NAME_VN: 'Marking SX', ERR_NAME_KR: '생산 마킹 구간 썩임' }, { ERR_CODE: 'ERR33', ERR_NAME_VN: 'Cong Vinyl', ERR_NAME_KR: '비닐 컬' }, { ERR_CODE: 'ERR34', ERR_NAME_VN: 'Mixing', ERR_NAME_KR: '혼입' }, { ERR_CODE: 'ERR35', ERR_NAME_VN: 'Sai thiết kế', ERR_NAME_KR: '설계 불량' }, { ERR_CODE: 'ERR36', ERR_NAME_VN: 'Sai vật liệu', ERR_NAME_KR: '원단 잘 못 사용' }, { ERR_CODE: 'ERR37', ERR_NAME_VN: 'NG kích thước', ERR_NAME_KR: '치수 불량' }
+  ];
+
+export function dynamicSort(property: string) {
+  var sortOrder = 1;
+  if(property[0] === "-") {
+      sortOrder = -1;
+      property = property.substring(1);
+  }
+  return function (a: any,b: any) {
+      /* next line works with strings and numbers, 
+       * and you may want to customize it to your needs
+       */
+      var result = (a[property] < b[property]) ? -1 : (a[property] > b[property]) ? 1 : 0;
+      return result * sortOrder;
+  }
+}

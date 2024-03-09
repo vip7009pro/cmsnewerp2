@@ -415,7 +415,6 @@ function App() {
         });
     }
   }
-
   //console.log(userData.JOB_NAME);
   useEffect(() => {
     console.log("check login");

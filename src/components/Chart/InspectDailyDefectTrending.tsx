@@ -17,54 +17,56 @@ import {
 import Swal from "sweetalert2";
 import { generalQuery } from "../../api/Api";
 import {
+  COLORS,
   CustomResponsiveContainer,
+  ERR_TABLE,
+  dynamicSort,
   nFormatter,
 } from "../../api/GlobalFunction";
-import { DailyData, FcostData } from "../../api/GlobalInterface";
+import { DEFECT_TRENDING_DATA, DailyData, FcostData } from "../../api/GlobalInterface";
 
-const InspectDailyDefectTrending = ({
-  dldata,
-  processColor,
-  materialColor,
-}: FcostData) => {
+const InspectDailyDefectTrending = ({ dldata}: {dldata: DEFECT_TRENDING_DATA[]}) => {
+
+
+
   const formatCash = (n: number) => {
     return nFormatter(n, 1);
   };
 
   const labelFormatter = (value: number) => {
-    return formatCash(value) + ' $'; 
+    return formatCash(value); 
   };
 
   const CustomTooltip = ({
     active,
     payload,
-    label,
+    label,    
   }: {
     active?: any;
     payload?: any;
-    label?: any;
+    label?: any;    
   }) => {
-    if (active && payload && payload.length) {
+    if (active && payload && payload.length) {      
+      let newPayLoad = payload.sort(dynamicSort("-value"));
+      //console.log(newPayLoad); 
       return (
-        <div
-          className='custom-tooltip'
-          style={{
-            backgroundImage: "linear-gradient(to right, #ccffff, #00cccc)",
-            padding: 20,
-            borderRadius: 5,
-          }}
-        >
-          <p>Ngày {label}:</p>
-          <p className='label'>
-            PROCESS_NG: {`${payload[1]?.value.toLocaleString("en-US")}`} $
+        <div className="custom-tooltip">
+        <p className="label">{`Date: ${label}`}</p>
+        {newPayLoad.map((entry:any, index:number) => {
+           let err_name_vn = ERR_TABLE.filter((ele: any, index: number)=> entry.dataKey === ele.ERR_CODE)[0].ERR_NAME_VN ;
+           let err_name_kr = ERR_TABLE.filter((ele: any, index: number)=> entry.dataKey === ele.ERR_CODE)[0].ERR_NAME_KR ;
+          return (
+          entry.value !==0 && (
+          <p key={index} className={`value ${entry.dataKey}`} style={{fontSize:'0.7rem'}}>
+            {`${err_name_vn}(${err_name_kr}): ${entry.value.toLocaleString('en-US', {
+              style: "decimal",
+              maximumFractionDigits: 0,
+              minimumFractionDigits: 0,
+            } )} ppm`}
           </p>
-          <p className='label'>
-            MATERIAL_NG: {`${payload[2]?.value.toLocaleString("en-US")}`} $
-          </p>
-          <p className='label'>
-            TOTAL_NG: {`${payload[0]?.value.toLocaleString("en-US")}`} $
-          </p>
-        </div>
+        ))
+        })}
+      </div>
       );
     }
     return null;
@@ -90,7 +92,7 @@ const InspectDailyDefectTrending = ({
         <YAxis
           yAxisId='left-axis'
           label={{
-            value: "Fcost",
+            value: "NG Rate",
             angle: -90,
             position: "insideLeft",
             fontSize:'0.7rem'    
@@ -100,7 +102,7 @@ const InspectDailyDefectTrending = ({
             new Intl.NumberFormat("en", {
               notation: "compact",
               compactDisplay: "short",
-            }).format(value) + "$"
+            }).format(value)
           }
           tickCount={7}
         />
@@ -110,23 +112,35 @@ const InspectDailyDefectTrending = ({
         align="center"
         iconSize={15}
         iconType="diamond"
-        formatter={(value, entry) => (
-          <span style={{fontSize:'0.7rem', fontWeight:'bold'}}>{value}</span>
-        )}/>
-        <Line
-          yAxisId='left-axis'
-          type='monotone'
-          dataKey='T_NG_AMOUNT'
-          stroke='green'
-          label={{ position: "top", formatter: labelFormatter, fontSize:'0.7rem', fontWeight:'bold', color:'black' }}         
-        />
-        <Bar
+        formatter={(value, entry) => { 
+          let err_name_vn = (ERR_TABLE.filter((ele: any, index: number)=> value === ele.ERR_CODE)[0].ERR_NAME_VN);
+          let err_name_kr = (ERR_TABLE.filter((ele: any, index: number)=> value === ele.ERR_CODE)[0].ERR_NAME_KR);
+          return (
+          <span style={{fontSize:'0.7rem', fontWeight:'bold'}}>{`${err_name_vn}(${err_name_kr})`}</span>
+        )}}/>
+        {
+          Object.entries(dldata[0]?? []).map((ele: any, index: number)=>{
+            if(['INSPECT_DATE','INSPECT_TOTAL_QTY','INSPECT_OK_QTY','INSPECT_NG_QTY','id','ERR1','ERR2','ERR3','ERR32'].indexOf(ele[0]) <0)
+            return (
+              <Line
+              key={`chart-${index}`}
+              yAxisId='left-axis'
+              type='monotone'
+              dataKey={`${ele[0]}`}
+              stroke={COLORS[((2 * index) % COLORS.length) * 2]}
+              label={{ position: "top", formatter: labelFormatter, fontSize:'0.7rem', fontWeight:'bold', color:'black' }} 
+              fill={COLORS[((Math.floor(Math.random()*32) * index) % COLORS.length) * 2]}              
+            />
+            )
+          })
+        }
+       
+        {/* <Bar
           stackId='a'
           yAxisId='left-axis'
           type='monotone'
           dataKey='P_NG_AMOUNT'
-          stroke='white'
-          fill={processColor}          
+          stroke='white'                 
         >
           <LabelList dataKey="P_NG_AMOUNT" position="inside" formatter={labelFormatter} fontSize={"0.7rem"} />
         </Bar>
@@ -135,11 +149,10 @@ const InspectDailyDefectTrending = ({
           yAxisId='left-axis'
           type='monotone'
           dataKey='M_NG_AMOUNT'
-          stroke='white'
-          fill={materialColor}          
+          stroke='white'                   
         >
           <LabelList dataKey="M_NG_AMOUNT" position="inside" formatter={labelFormatter} fontSize={"0.7rem"} />
-        </Bar>
+        </Bar> */}
       </ComposedChart>
     </CustomResponsiveContainer>
   );

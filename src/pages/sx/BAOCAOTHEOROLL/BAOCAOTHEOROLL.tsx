@@ -119,10 +119,14 @@ const BAOCAOTHEOROLL = () => {
     LOSS_ST: 0,
     LOSS_SX: 0,
     LOSS_TT:0,
+    LOSS_TT_KT: 0,    
     OK_EA: 0,
     OUTPUT_EA: 0,
     INSPECT_INPUT: 0,
     INSPECT_TT_QTY: 0,
+    INSPECT_OK_QTY: 0,
+    INSPECT_OK_SQM: 0,
+    TT_LOSS_SQM: 0,
     REMARK: '',
     PD: 0,
     CAVITY: 0,
@@ -138,9 +142,9 @@ const BAOCAOTHEOROLL = () => {
   const qlsxplandatafilter = useRef<SX_BAOCAOROLLDATA[]>([]);
   const [sxlosstrendingdata, setSXLossTrendingData] = useState<SX_LOSS_TREND_DATA[]>([]);
   const [showhidePivotTable, setShowHidePivotTable] = useState(false);
-  const loadBaoCaoTheoRoll = () => {
+  const loadBaoCaoTheoRoll = async () => {
     //console.log(todate);
-    generalQuery("loadBaoCaoTheoRoll", {
+    await generalQuery("loadBaoCaoTheoRoll", {
       FROM_DATE: fromdate,
       TO_DATE: todate,
       MACHINE: machine,
@@ -184,10 +188,14 @@ const BAOCAOTHEOROLL = () => {
             LOSS_ST: 0,
             LOSS_SX: 0,
             LOSS_TT:0, 
+            LOSS_TT_KT: 0,
             OK_EA: 0,
             OUTPUT_EA: 0,
             INSPECT_INPUT: 0,
-            INSPECT_TT_QTY: 0,
+            INSPECT_TT_QTY: 0,          
+            INSPECT_OK_SQM:0,
+            INSPECT_OK_QTY: 0,
+            TT_LOSS_SQM: 0,            
             REMARK: '',
             PD: 0,
             CAVITY: 0,
@@ -202,7 +210,7 @@ const BAOCAOTHEOROLL = () => {
           };
           for (let i = 0; i < loadeddata.length; i++) {
             temp_plan_data.PLAN_QTY += loadeddata[i].PLAN_QTY;
-            temp_plan_data.INPUT_QTY += loadeddata[i].INPUT_QTY;
+            temp_plan_data.INPUT_QTY +=  loadeddata[i].INPUT_QTY;
             temp_plan_data.REMAIN_QTY += loadeddata[i].REMAIN_QTY;
             temp_plan_data.USED_QTY += loadeddata[i].USED_QTY;
             temp_plan_data.SETTING_MET += loadeddata[i].SETTING_MET;
@@ -241,8 +249,8 @@ const BAOCAOTHEOROLL = () => {
         console.log(error);
       });
   };
-  const getDailySXLossTrendingData = (mc: string, ft: string, fr: string, td: string) => {
-    generalQuery("trasxlosstrendingdata", {
+  const getDailySXLossTrendingData = async (mc: string, ft: string, fr: string, td: string) => {
+    await generalQuery("trasxlosstrendingdata", {
       MACHINE: mc,
       FACTORY: ft,
       FROM_DATE: fr,
@@ -490,6 +498,13 @@ const BAOCAOTHEOROLL = () => {
                 </span>
               );
             }}></Column>
+             <Column dataField='TT_LOSS_SQM' caption='TT_LOSS_SQM' width={70} cellRender={(params: any) => {
+              return (
+                <span style={{ color: "blue", fontWeight: "bold" }}>
+                  {params.data.TT_LOSS_SQM?.toLocaleString("en-US",)}
+                </span>
+              );
+            }}></Column>
 
             <Column dataField='LOSS_ST' caption='LOSS_ST' width={70} cellRender={(params: any) => {
               return (
@@ -513,6 +528,15 @@ const BAOCAOTHEOROLL = () => {
               return (
                 <span style={{ color: "red", fontWeight: "bold" }}>
                   {params.data.LOSS_TT?.toLocaleString("en-US", {
+                    style: 'percent'
+                  })}
+                </span>
+              );
+            }}></Column>
+            <Column dataField='LOSS_TT_KT' caption='LOSS_TT_KT' width={70} cellRender={(params: any) => {
+              return (
+                <span style={{ color: "red", fontWeight: "bold" }}>
+                  {params.data.LOSS_TT_KT?.toLocaleString("en-US", {
                     style: 'percent'
                   })}
                 </span>
@@ -543,6 +567,20 @@ const BAOCAOTHEOROLL = () => {
               return (
                 <span style={{ color: "gray", fontWeight: "bold" }}>
                   {params.data.INSPECT_TT_QTY?.toLocaleString("en-US")}
+                </span>
+              );
+            }}></Column>
+            <Column dataField='INSPECT_OK_QTY' caption='INSPECT_OK_QTY' width={100} cellRender={(params: any) => {
+              return (
+                <span style={{ color: "gray", fontWeight: "bold" }}>
+                  {params.data.INSPECT_OK_QTY?.toLocaleString("en-US")}
+                </span>
+              );
+            }}></Column>
+            <Column dataField='INSPECT_OK_SQM' caption='INSPECT_OK_SQM' width={100} cellRender={(params: any) => {
+              return (
+                <span style={{ color: "gray", fontWeight: "bold" }}>
+                  {params.data.INSPECT_OK_SQM?.toLocaleString("en-US")}
                 </span>
               );
             }}></Column>
@@ -1253,6 +1291,27 @@ const BAOCAOTHEOROLL = () => {
     store: plandatatable,
   });
 
+  const initFunction = async () => {
+    Swal.fire({
+      title: "Đang tải báo cáo",
+      text: "Đang tải dữ liệu, hãy chờ chút",
+      icon: "info",
+      showCancelButton: false,
+      allowOutsideClick: false,
+      confirmButtonText: "OK",
+      showConfirmButton: false,
+    });
+    
+    Promise.all([
+      loadBaoCaoTheoRoll(),
+      getDailySXLossTrendingData(machine, factory, fromdate,todate)
+      /* getPatrolHeaderData(fromdate, todate), */
+    ]).then((values) => {
+      Swal.fire("Thông báo", "Đã load xong báo cáo", 'success');
+    });    
+  }
+
+
   useEffect(() => {
     getMachineList();
     getDailySXLossTrendingData(machine,factory, moment().add(-8, "day").format("YYYY-MM-DD"), moment().add(0, "day").format("YYYY-MM-DD"));
@@ -1328,8 +1387,7 @@ const BAOCAOTHEOROLL = () => {
                   onClick={() => {
                     setisLoading(true);
                     setReadyRender(false);
-                    loadBaoCaoTheoRoll();
-                    getDailySXLossTrendingData(machine, factory, fromdate,todate);
+                    initFunction();
                   }}
                 >
                   Tra PLAN
