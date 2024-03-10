@@ -34,6 +34,7 @@ import {
 import html2canvas from 'html2canvas';
 import Camera, { FACING_MODES, IMAGE_TYPES } from 'react-html5-camera-photo';
 import 'react-html5-camera-photo/build/css/index.css';
+import { Html5QrcodeScanner } from 'html5-qrcode'
 
 const LINEQC = () => {
   const userData: UserData | undefined = useSelector(
@@ -438,10 +439,46 @@ const LINEQC = () => {
     }
   };
 
+  const [scanResult, setScanResult] = useState('');
+  const [showScanner, setShowScanner] = useState(false);
+  const scanner = useRef<any>(null);
+  function success(result: string) {
+    scanner.current.clear();     
+    if (result.length >= 8) {
+      checkPlanID(result);
+      checkDataSX(result);
+    } else {
+      setSXData([]);
+      setInputNo("");
+      setProcessLotNo("");
+    }
+    setPlanId(result); 
+    setShowScanner(false);
+  }
+  function error(err: string) {
+    //console.log(err)
+  }
+  const startRender = () => {
+    scanner.current.render(success, error);
+  }
+
+  const startScanner = () => {
+    scanner.current = new Html5QrcodeScanner('reader', {      
+      qrbox: {
+        width: 300,
+        height: 300
+      },
+      fps: 1,
+      rememberLastUsedCamera: true,
+      showTorchButtonIfSupported: true,
+    }, false);
+  }
+
   useEffect(() => {
     getCameraDevices();   
+    startScanner();
     return ()=> {
-      
+      scanner.current.clear();       
     }    
   }, []);
 
@@ -492,6 +529,18 @@ const LINEQC = () => {
                 </label>
                 <label>
                   <b>Số CTSX</b>
+                  <button onClick={() => {
+                      setShowScanner(true);
+                      setScanResult('');
+                      startRender();
+                    }}>Scan</button>
+                  <button onClick={() => {
+                      scanner.current.clear();
+                      setShowScanner(false);
+                    }}>Tắt Scan</button>
+                  <div className="scanQR" style={{display:`${showScanner? 'block':'none'}`}}> 
+                    <div id="reader"></div>
+                  </div>
                   <input
                     ref={refArray[0]}
                     type="text"

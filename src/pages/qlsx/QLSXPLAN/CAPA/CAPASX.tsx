@@ -1185,15 +1185,15 @@ const CAPASX = () => {
     getYCSXBALANCE();
     handle_loadEQ_STATUS();
     getDeliveryLeadTime(selectedFactory, selectedMachine, selectedPlanDate);
-    let intervalID = window.setInterval(() => {
+    /* let intervalID = window.setInterval(() => {
       handle_loadEQ_STATUS();
-      /* getDeliveryLeadTime(selectedFactory,selectedMachine,selectedPlanDate); */
+      getDeliveryLeadTime(selectedFactory,selectedMachine,selectedPlanDate); 
       getDiemDanhAllBP();
       getMachineCounting();
       getYCSXBALANCE();
-    }, 30000);
+    }, 30000); */
     return () => {
-      window.clearInterval(intervalID);
+      //window.clearInterval(intervalID);
     };
   }, []);
   return (

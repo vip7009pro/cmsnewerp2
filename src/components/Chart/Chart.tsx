@@ -144,7 +144,7 @@ const ChartWeekLy = ({data}: {data: WeeklyClosingData[]}) => {
       >
         <CartesianGrid strokeDasharray='3 3' className='chartGrid' />
         <XAxis dataKey='DEL_YW'>
-          <Label value='Tuần' offset={0} position='insideBottom' style={{fontWeight:'normal', fontSize:'0.7rem'}} />
+          <Label value='Tuần' offset={0} position='insideBottom' style={{fontWeight:'normal', fontSize:'0.7rem',}} />
         </XAxis>
         <YAxis
           yAxisId='left-axis'
