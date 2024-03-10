@@ -183,7 +183,7 @@ const SettingPage = () => {
       </table>
       {/* <WebCam/> */}
        
-      <Scanner/>
+      {/* <Scanner/> */}
       {/* <CameraComponent/> */}
     </div>
   );
