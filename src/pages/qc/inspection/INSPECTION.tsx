@@ -35,6 +35,7 @@ import {
   INSPECT_INPUT_DATA,
   INSPECT_NG_DATA,
   INSPECT_OUTPUT_DATA,
+  INSPECT_PATROL,
 } from "../../../api/GlobalInterface";
 const INSPECTION = () => {
   const [showhidePivotTable, setShowHidePivotTable] = useState(false);
@@ -392,6 +393,31 @@ const INSPECTION = () => {
       );
     }, },
   ];
+  const column_inspect_patrol = [
+    { field: 'INS_PATROL_ID', headerName: 'INS_PATROL_ID', width: 80 },
+    { field: 'G_NAME', headerName: 'G_NAME', width: 80 },
+    { field: 'G_NAME_KD', headerName: 'G_NAME_KD', width: 80 },
+    { field: 'CUST_NAME_KD', headerName: 'CUST_NAME_KD', width: 80 },
+    { field: 'PROD_REQUEST_NO', headerName: 'PROD_REQUEST_NO', width: 80 },
+    { field: 'PLAN_ID', headerName: 'PLAN_ID', width: 80 },
+    { field: 'PROCESS_LOT_NO', headerName: 'PROCESS_LOT_NO', width: 80 },
+    { field: 'G_CODE', headerName: 'G_CODE', width: 80 },
+    { field: 'ERR_CODE', headerName: 'ERR_CODE', width: 80 },
+    { field: 'INSPECT_QTY', headerName: 'INSPECT_QTY', width: 80 },
+    { field: 'DEFECT_QTY', headerName: 'DEFECT_QTY', width: 80 },
+    { field: 'DEFECT_PHENOMENON', headerName: 'DEFECT_PHENOMENON', width: 80 },
+    { field: 'LINEQC_PIC', headerName: 'LINEQC_PIC', width: 80 },
+    { field: 'INSP_PIC', headerName: 'INSP_PIC', width: 80 },
+    { field: 'PROD_PIC', headerName: 'PROD_PIC', width: 80 },
+    { field: 'INS_DATE', headerName: 'INS_DATE', width: 80 },
+    { field: 'PHANLOAI', headerName: 'PHANLOAI', width: 80 },
+    { field: 'REMARK', headerName: 'REMARK', width: 80 },
+    { field: 'OCCURR_TIME', headerName: 'OCCURR_TIME', width: 80 },
+    { field: 'LABEL_ID', headerName: 'LABEL_ID', width: 80 },
+    { field: 'EQUIPMENT_CD', headerName: 'EQUIPMENT_CD', width: 80 },
+    { field: 'CUST_CD', headerName: 'CUST_CD', width: 80 },
+    { field: 'FACTORY', headerName: 'FACTORY', width: 80 },
+  ];
   const [columnDefinition, setColumnDefinition] =
     useState<Array<any>>(column_inspect_input);
   function CustomToolbarPOTable() {
@@ -709,6 +735,56 @@ const INSPECTION = () => {
         console.log(error);
       });
   };
+  const handleGetInspectionPatrol =()=> {
+    setSummaryInspect("");
+    setisLoading(true);
+    generalQuery("loadInspectionPatrol", {      
+      ALLTIME: alltime,
+      FROM_DATE: fromdate,
+      TO_DATE: todate,
+      CUST_NAME: cust_name,
+      process_lot_no: process_lot_no,
+      G_CODE: codeCMS,
+      G_NAME: codeKD,
+      PROD_TYPE: prod_type,
+      EMPL_NAME: empl_name,
+      PROD_REQUEST_NO: prodrequestno,
+    })
+      .then((response) => {
+        //console.log(response.data.data);
+        if (response.data.tk_status !== "NG") {
+          const loadeddata: INSPECT_PATROL[] = response.data.data.map(
+            (element: INSPECT_PATROL, index: number) => {
+              return {
+                ...element,
+                id: index,
+              };
+            },
+          );
+          setInspectionDataTable(loadeddata);
+          setSelectedDataSource(
+            new PivotGridDataSource({
+              fields: fieldsinspectionpatrol,
+              store: loadeddata,
+            }),
+          );
+          setReadyRender(true);
+          setisLoading(false);
+          Swal.fire(
+            "Thông báo",
+            "Đã load " + response.data.data.length + " dòng",
+            "success",
+          );
+        } else {
+          setInspectionDataTable([]);
+          Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
+          setisLoading(false);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
   
   const fieldsinspectbalance: any = [
     {
@@ -2565,6 +2641,9 @@ const INSPECTION = () => {
       },
     },
   ];
+  const fieldsinspectionpatrol: any =  [
+
+  ]
   const [selectedDataSource, setSelectedDataSource] =
     useState<PivotGridDataSource>(
       new PivotGridDataSource({
@@ -2721,6 +2800,12 @@ const INSPECTION = () => {
               setColumnDefinition(column_inspect_balance);
               handleLoadChoKiem();
             }}> Chờ kiểm</Button>
+            <Button color={'success'} variant="contained" size="small" fullWidth={true} sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#0656c0' }} onClick={() => {
+              setisLoading(true);
+              setReadyRender(false);
+              setColumnDefinition(column_inspect_patrol);
+              handleGetInspectionPatrol();
+            }}> Data Patrol</Button>
           </div>
         </div>
         <div className="tracuuYCSXTable">

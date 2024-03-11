@@ -7,6 +7,7 @@ import PQC1 from "./PQC1";
 import PQC3 from "./PQC3";
 import LINEQC from "./LINEQC";
 import PATROL from "../../sx/PATROL/PATROL";
+import PQC_REPORT from "./PQC_REPORT";
 
 const PQC = () => {
   const [selection, setSelection] = useState<any>({
@@ -15,6 +16,7 @@ const PQC = () => {
     tab3: false,
     tab4: false,
     tab5: false,
+    tab6: false,
   });
 
   const setNav = (choose: number) => {
@@ -26,6 +28,7 @@ const PQC = () => {
         tab3: false,
         tab4: false,
         tab5: false,
+        tab6: false,
       });
     } else if (choose === 2) {
       setSelection({
@@ -35,6 +38,7 @@ const PQC = () => {
         tab3: false,
         tab4: false,
         tab5: false,
+        tab6: false,
       });
     } else if (choose === 3) {
       setSelection({
@@ -44,6 +48,7 @@ const PQC = () => {
         tab3: true,
         tab4: false,
         tab5: false,
+        tab6: false,
       });
     } else if (choose === 4) {
       setSelection({
@@ -53,6 +58,7 @@ const PQC = () => {
         tab3: false,
         tab4: true,
         tab5: false,
+        tab6: false,
       });
     } else if (choose === 5) {
       setSelection({
@@ -62,6 +68,17 @@ const PQC = () => {
         tab3: false,
         tab4: false,
         tab5: true,
+        tab6: false,
+      });
+    } else if (choose === 6) {
+      setSelection({
+        ...selection,
+        tab1: false,
+        tab2: false,
+        tab3: false,
+        tab4: false,
+        tab5: false,
+        tab6: true,
       });
     }
   };
@@ -119,6 +136,16 @@ const PQC = () => {
         >
           <span className="mininavtext">PATROL</span>
         </div>
+        <div
+          className="mininavitem"
+          onClick={() => setNav(6)}
+          style={{
+            backgroundColor: selection.tab6 === true ? "#02c712" : "#abc9ae",
+            color: selection.tab6 === true ? "yellow" : "yellow",
+          }}
+        >
+          <span className="mininavtext">Báo Cáo</span>
+        </div>
 
       </div>
       {selection.tab1 && (
@@ -144,6 +171,11 @@ const PQC = () => {
       {selection.tab5 && (
         <div className="trapqc">
           <PATROL />
+        </div>
+      )}
+      {selection.tab6 && (
+        <div className="trapqc">
+          <PQC_REPORT />
         </div>
       )}
      

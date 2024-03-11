@@ -423,8 +423,7 @@ function App() {
         //console.log(data);
         if (data.data.tk_status === "ng") {
           /* console.log("khong co token");
-          setLoginState(false); */  
-                 
+          setLoginState(false); */
           loadWebSetting();
           dispatch(logout(false));
           dispatch(
