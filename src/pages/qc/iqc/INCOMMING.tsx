@@ -262,8 +262,8 @@ const INCOMMING = () => {
     console.log(selectedRowsData);
     if (selectedRowsData.length > 0) {
       Swal.fire({
-        title: "Tra cứu vật liệu Holding",
-        text: "Đang tải dữ liệu, hãy chờ chút",
+        title: "Set QC Pass",
+        text: "Đang set pass, hãy chờ chút",
         icon: "info",
         showCancelButton: false,
         allowOutsideClick: false,
@@ -447,72 +447,72 @@ const INCOMMING = () => {
               />
               <Column
                 dataField="IQC1_ID"
-                caption="IQC1_ID"
-                width={100}
+                caption="ID"
+                width={40}
                 allowEditing={false}
               ></Column>
               <Column
                 dataField="M_CODE"
                 caption="M_CODE"
-                width={100}
+                width={70}
                 allowEditing={false}
               ></Column>
               <Column
                 dataField="M_LOT_NO"
                 caption="M_LOT_NO"
-                width={100}
+                width={90}
                 allowEditing={false}
               ></Column>
               <Column
                 dataField="LOT_CMS"
                 caption="LOT_CMS"
-                width={100}
+                width={80}
                 allowEditing={false}
               ></Column>
               <Column
                 dataField="LOT_VENDOR"
-                caption="LOT_VENDOR"
-                width={100}
+                caption="LOT_NCC"
+                width={80}
               ></Column>
               <Column
                 dataField="CUST_CD"
                 caption="CUST_CD"
-                width={100}
+                width={80}
                 allowEditing={false}
               ></Column>
               <Column
                 dataField="CUST_NAME_KD"
-                caption="VENDOR NAME"
-                width={120}
+                caption="VDR NAME"
+                width={90}
                 allowEditing={false}
               ></Column>
               <Column
                 dataField="EXP_DATE"
                 caption="EXP_DATE"
-                width={150}
+                width={90}
               ></Column>
               <Column
                 dataField="INPUT_LENGTH"
-                caption="INPUT_LENGTH"
-                width={100}
+                caption="INP_LEN"
+                width={80}
                 allowEditing={false}
               ></Column>
               <Column
                 dataField="TOTAL_ROLL"
-                caption="TOTAL_ROLL"
-                width={100}
+                caption="TT_ROLL"
+                width={80}
                 allowEditing={false}
               ></Column>
               <Column
                 dataField="NQ_CHECK_ROLL"
-                caption="NQ_CHECK_ROLL"
-                width={100}
+                caption="NQ_ROLL"
+                width={80}
                 allowEditing={false}
               ></Column>
               <Column
                 dataField="DTC_ID"
                 caption="DTC_ID"
-                width={100}
+                width={70}
                 allowEditing={false}
               ></Column>
               <Column
@@ -1238,7 +1238,7 @@ const INCOMMING = () => {
                     ? ""
                     : moment(element.EXP_DATE)
                       .utc()
-                      .format("YYYY-MM-DD HH:mm:ss"),
+                      .format("YYYY-MM-DD"),
                 id: index,
               };
             },
@@ -1293,6 +1293,8 @@ const INCOMMING = () => {
           setRollQty(response.data.data[0].ROLL_QTY);
           setCust_Cd(response.data.data[0].CUST_CD);
           setCust_Name_KD(response.data.data[0].CUST_NAME_KD);
+          setVendorLot(response.data.data[0].LOTNCC);
+          setEXP_DATE(moment(response.data.data[0].EXP_DATE).format("YYYY-MM-DD"));
           generalQuery("checkMNAMEfromLotI222Total", {
             M_CODE: response.data.data[0].M_CODE,
             LOTCMS: M_LOT_NO.substring(0, 6),
@@ -1318,6 +1320,8 @@ const INCOMMING = () => {
           setInCFMQTY(0);
           setCust_Cd("");
           setCust_Name_KD("");
+          setVendorLot("");
+          setEXP_DATE(moment().format('YYYY-MM-DD'))
         }
       })
       .catch((error) => {

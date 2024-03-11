@@ -16,6 +16,7 @@ import Scanner from '../../components/Scanner/Scanner';
 import OpenCV from '../../components/OpenCV/OpenCV';
 import addNotification from 'react-push-notification';
 import WebCam from '../../components/Camera/WebCam';
+import FlowChart from '../../components/FlowChart/FlowChart';
 const SettingPage = () => {
   const dispatch = useDispatch();
   const globalSetting: WEB_SETTING_DATA[] | undefined = useSelector(
@@ -182,7 +183,7 @@ const SettingPage = () => {
         </tbody>
       </table>
       {/* <WebCam/> */}
-       
+      {/* <FlowChart/> */}
       {/* <Scanner/> */}
       {/* <CameraComponent/> */}
     </div>
