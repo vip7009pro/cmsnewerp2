@@ -7,14 +7,13 @@ import InspectionMonthlyPPM from "../../../components/Chart/InspectionMonthlyPPM
 import InspectionWeeklyPPM from "../../../components/Chart/InspectionWeeklyPPM";
 import InspectionYearlyPPM from "../../../components/Chart/InspectionYearlyPPM";
 import CustomerPOBalanceByType from "../../../components/DataTable/CustomerPOBalanceByType";
-import "./INSPECT_REPORT.scss";
+import "./CSREPORT.scss";
 import InspectionWorstTable from "../../../components/DataTable/InspectionWorstTable";
 import ChartInspectionWorst from "../../../components/Chart/ChartInspectionWorst";
-import { CodeListData, DEFECT_TRENDING_DATA, DailyPPMData, FCSTAmountData, InspectSummary, MonthlyPPMData, PATROL_HEADER_DATA, WEB_SETTING_DATA, WeeklyPPMData, WidgetData_POBalanceSummary, WorstData, YearlyPPMData } from "../../../api/GlobalInterface";
+import { CS_CONFIRM_TRENDING_DATA, CodeListData, DEFECT_TRENDING_DATA, DailyPPMData, FCSTAmountData, InspectSummary, MonthlyPPMData, PATROL_HEADER_DATA, WEB_SETTING_DATA, WeeklyPPMData, WidgetData_POBalanceSummary, WorstData, YearlyPPMData } from "../../../api/GlobalInterface";
 import CIRCLE_COMPONENT from "../../qlsx/QLSXPLAN/CAPA/CIRCLE_COMPONENT/CIRCLE_COMPONENT";
 import { deBounce, nFormatter } from "../../../api/GlobalFunction";
 import { Autocomplete, Checkbox, FormControlLabel, FormGroup, TextField, Typography, createFilterOptions } from "@mui/material";
-import FCOSTTABLE from "./FCOSTTABLE";
 import InspectionDailyFcost from "../../../components/Chart/InspectDailyFcost";
 import InspectionWeeklyFcost from "../../../components/Chart/InspectWeeklyFcost";
 import InspectionMonthlyFcost from "../../../components/Chart/InspectMonthlyFcost";
@@ -22,7 +21,12 @@ import InspectionYearlyFcost from "../../../components/Chart/InspectYearlyFcost"
 import PATROL_HEADER from "../../sx/PATROL/PATROL_HEADER";
 import InspectDailyDefectTrending from "../../../components/Chart/InspectDailyDefectTrending";
 import WidgetInspection from "../../../components/Widget/WidgetInspection";
-const INSPECT_REPORT = () => {
+import FCOSTTABLE from "../inspection/FCOSTTABLE";
+import WidgetCS from "../../../components/Widget/WidgetCS";
+import CSDailyConfirm from "../../../components/Chart/CSDailyConfirm";
+import CSWeeklyConfirm from "../../../components/Chart/CSWeeklyConfirm";
+import CSMonthlyConfirm from "../../../components/Chart/CSMonthlyConfirm";
+const CSREPORT = () => {
   const [dailyppm1, setDailyPPM1] = useState<DailyPPMData[]>([]);
   const [weeklyppm1, setWeeklyPPM1] = useState<WeeklyPPMData[]>([]);
   const [monthlyppm1, setMonthlyPPM1] = useState<MonthlyPPMData[]>([]);
@@ -31,10 +35,10 @@ const INSPECT_REPORT = () => {
   const [weeklyppm2, setWeeklyPPM2] = useState<WeeklyPPMData[]>([]);
   const [monthlyppm2, setMonthlyPPM2] = useState<MonthlyPPMData[]>([]);
   const [yearlyppm2, setYearlyPPM2] = useState<YearlyPPMData[]>([]);
-  const [dailyppm, setDailyPPM] = useState<DailyPPMData[]>([]);
-  const [weeklyppm, setWeeklyPPM] = useState<WeeklyPPMData[]>([]);
-  const [monthlyppm, setMonthlyPPM] = useState<MonthlyPPMData[]>([]);
-  const [yearlyppm, setYearlyPPM] = useState<YearlyPPMData[]>([]);
+  const [dailyppm, setDailyPPM] = useState<CS_CONFIRM_TRENDING_DATA[]>([]);
+  const [weeklyppm, setWeeklyPPM] = useState<CS_CONFIRM_TRENDING_DATA[]>([]);
+  const [monthlyppm, setMonthlyPPM] = useState<CS_CONFIRM_TRENDING_DATA[]>([]);
+  const [yearlyppm, setYearlyPPM] = useState<CS_CONFIRM_TRENDING_DATA[]>([]);
   const [fromdate, setFromDate] = useState(moment().add(-14, "day").format("YYYY-MM-DD"));
   const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));
   const [worstby, setWorstBy] = useState('AMOUNT');
@@ -122,142 +126,6 @@ const INSPECT_REPORT = () => {
         console.log(error);
       });
   };
-  const handle_getDailyPPM = async (FACTORY: string, listCode: string[]) => {
-    let td = moment().add(0, "day").format("YYYY-MM-DD");
-    let frd = moment().add(-12, "day").format("YYYY-MM-DD");
-    await generalQuery("inspect_daily_ppm", {
-      FACTORY: FACTORY,
-      FROM_DATE: df ? frd : fromdate,
-      TO_DATE: df ? td : todate,
-      codeArray: df ? [] : listCode
-    })
-      .then((response) => {
-        //console.log(response.data.data);
-        if (response.data.tk_status !== "NG") {
-          const loadeddata: DailyPPMData[] = response.data.data.map(
-            (element: DailyPPMData, index: number) => {
-              return {
-                ...element,
-                INSPECT_DATE: moment
-                  .utc(element.INSPECT_DATE)
-                  .format("YYYY-MM-DD"),
-              };
-            },
-          );
-          //console.log(loadeddata);
-          if (FACTORY === "NM1") {
-            setDailyPPM1(loadeddata);
-          } else if (FACTORY === "NM2") {
-            setDailyPPM2(loadeddata);
-          } else {
-            setDailyPPM(loadeddata);
-          }
-        } else {
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
-  const handle_getWeeklyPPM = async (FACTORY: string, listCode: string[]) => {
-    let td = moment().add(0, "day").format("YYYY-MM-DD");
-    let frd = moment().add(-70, "day").format("YYYY-MM-DD");
-    await generalQuery("inspect_weekly_ppm", {
-      FACTORY: FACTORY,
-      FROM_DATE: df ? frd : fromdate,
-      TO_DATE: df ? td : todate,
-      codeArray: df ? [] : listCode
-    })
-      .then((response) => {
-        //console.log(response.data.data);
-        if (response.data.tk_status !== "NG") {
-          const loadeddata: WeeklyPPMData[] = response.data.data.map(
-            (element: WeeklyPPMData, index: number) => {
-              return {
-                ...element,
-              };
-            },
-          );
-          if (FACTORY === "NM1") {
-            setWeeklyPPM1(loadeddata);
-          } else if (FACTORY === "NM2") {
-            setWeeklyPPM2(loadeddata);
-          } else {
-            setWeeklyPPM(loadeddata);
-          }
-        } else {
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
-  const handle_getMonthlyPPM = async (FACTORY: string, listCode: string[]) => {
-    let td = moment().add(0, "day").format("YYYY-MM-DD");
-    let frd = moment().add(-365, "day").format("YYYY-MM-DD");
-    await generalQuery("inspect_monthly_ppm", {
-      FACTORY: FACTORY,
-      FROM_DATE: df ? frd : fromdate,
-      TO_DATE: df ? td : todate,
-      codeArray: df ? [] : listCode
-    })
-      .then((response) => {
-        //console.log(response.data.data);
-        if (response.data.tk_status !== "NG") {
-          const loadeddata: MonthlyPPMData[] = response.data.data.map(
-            (element: MonthlyPPMData, index: number) => {
-              return {
-                ...element,
-              };
-            },
-          );
-          if (FACTORY === "NM1") {
-            setMonthlyPPM1(loadeddata);
-          } else if (FACTORY === "NM2") {
-            setMonthlyPPM2(loadeddata);
-          } else {
-            setMonthlyPPM(loadeddata)
-          }
-        } else {
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
-  const handle_getYearlyPPM = async (FACTORY: string, listCode: string[]) => {
-    let td = moment().add(0, "day").format("YYYY-MM-DD");
-    let frd = moment().add(-3650, "day").format("YYYY-MM-DD");
-    await generalQuery("inspect_yearly_ppm", {
-      FACTORY: FACTORY,
-      FROM_DATE: df ? frd : fromdate,
-      TO_DATE: df ? td : todate,
-      codeArray: df ? [] : listCode
-    })
-      .then((response) => {
-        //console.log(response.data.data);
-        if (response.data.tk_status !== "NG") {
-          const loadeddata: YearlyPPMData[] = response.data.data.map(
-            (element: YearlyPPMData, index: number) => {
-              return {
-                ...element,
-              };
-            },
-          );
-          if (FACTORY === "NM1") {
-            setYearlyPPM1(loadeddata);
-          } else if (FACTORY === "NM2") {
-            setYearlyPPM2(loadeddata);
-          } else {
-            setYearlyPPM(loadeddata)
-          }
-        } else {
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
   const handle_getInspectSummary = async (from_date: string, to_date: string, listCode: string[]) => {
     let td = moment().add(0, "day").format("YYYY-MM-DD");
     let frd = moment().add(-7, "day").format("YYYY-MM-DD");
@@ -287,151 +155,6 @@ const INSPECT_REPORT = () => {
           //console.log(loadeddata);
           setInspectSummary(loadeddata);
         } else {
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }
-  const handle_getDailyFcost = async (from_date: string, to_date: string, listCode: string[]) => {
-    let td = moment().add(0, "day").format("YYYY-MM-DD");
-    let frd = moment().add(-14, "day").format("YYYY-MM-DD");
-    await generalQuery("dailyFcost", {
-      FROM_DATE: df ? frd : from_date,
-      TO_DATE: df ? td : to_date,
-      codeArray: listCode
-    })
-      .then((response) => {
-        //console.log(response.data.data);
-        if (response.data.tk_status !== "NG") {
-          const loadeddata: InspectSummary[] = response.data.data.map(
-            (element: InspectSummary, index: number) => {
-              return {
-                ...element,
-                INSPECT_DATE: moment(element.INSPECT_DATE).format("YYYY-MM-DD"),
-                T_NG_AMOUNT: element.P_NG_AMOUNT + element.M_NG_AMOUNT,
-                T_NG_QTY: element.P_NG_QTY + element.M_NG_QTY,
-                M_RATE: element.ISP_TT_QTY !== 0 ? Number(element.M_NG_QTY) / Number(element.ISP_TT_QTY) : 0,
-                P_RATE: element.ISP_TT_QTY !== 0 ? Number(element.P_NG_QTY) / Number(element.ISP_TT_QTY) : 0,
-                T_RATE: element.ISP_TT_QTY !== 0 ? (Number(element.M_NG_QTY) + Number(element.P_NG_QTY)) / Number(element.ISP_TT_QTY) : 0,
-                M_A_RATE: element.ISP_TT_QTY !== 0 ? Number(element.M_NG_AMOUNT) / Number(element.ISP_TT_AMOUNT) : 0,
-                P_A_RATE: element.ISP_TT_QTY !== 0 ? Number(element.P_NG_AMOUNT) / Number(element.ISP_TT_AMOUNT) : 0,
-                T_A_RATE: element.ISP_TT_QTY !== 0 ? Number(element.P_NG_AMOUNT + element.M_NG_AMOUNT) / Number(element.ISP_TT_AMOUNT) : 0,
-              };
-            },
-          );
-          //console.log(loadeddata);
-          setDailyFcostData(loadeddata);
-        } else {
-          setDailyFcostData([]);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }
-  const handle_getWeeklyFcost = async (from_date: string, to_date: string, listCode: string[]) => {
-    let td = moment().add(0, "day").format("YYYY-MM-DD");
-    let frd = moment().add(-70, "day").format("YYYY-MM-DD");
-    await generalQuery("weeklyFcost", {
-      FROM_DATE: df ? frd : from_date,
-      TO_DATE: df ? td : to_date,
-      codeArray: listCode
-    })
-      .then((response) => {
-        //console.log(response.data.data);
-        if (response.data.tk_status !== "NG") {
-          const loadeddata: InspectSummary[] = response.data.data.map(
-            (element: InspectSummary, index: number) => {
-              return {
-                ...element,
-                T_NG_AMOUNT: element.P_NG_AMOUNT + element.M_NG_AMOUNT,
-                T_NG_QTY: element.P_NG_QTY + element.M_NG_QTY,
-                M_RATE: element.ISP_TT_QTY !== 0 ? Number(element.M_NG_QTY) / Number(element.ISP_TT_QTY) : 0,
-                P_RATE: element.ISP_TT_QTY !== 0 ? Number(element.P_NG_QTY) / Number(element.ISP_TT_QTY) : 0,
-                T_RATE: element.ISP_TT_QTY !== 0 ? (Number(element.M_NG_QTY) + Number(element.P_NG_QTY)) / Number(element.ISP_TT_QTY) : 0,
-                M_A_RATE: element.ISP_TT_QTY !== 0 ? Number(element.M_NG_AMOUNT) / Number(element.ISP_TT_AMOUNT) : 0,
-                P_A_RATE: element.ISP_TT_QTY !== 0 ? Number(element.P_NG_AMOUNT) / Number(element.ISP_TT_AMOUNT) : 0,
-                T_A_RATE: element.ISP_TT_QTY !== 0 ? Number(element.P_NG_AMOUNT + element.M_NG_AMOUNT) / Number(element.ISP_TT_AMOUNT) : 0,
-              };
-            },
-          );
-          //console.log(loadeddata);
-          setWeeklyFcostData(loadeddata);
-        } else {
-          setWeeklyFcostData([]);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }
-  const handle_getMonthlyFcost = async (from_date: string, to_date: string, listCode: string[]) => {
-    let td = moment().add(0, "day").format("YYYY-MM-DD");
-    let frd = moment().add(-365, "day").format("YYYY-MM-DD");
-    await generalQuery("monthlyFcost", {
-      FROM_DATE: df ? frd : from_date,
-      TO_DATE: df ? td : to_date,
-      codeArray: listCode
-    })
-      .then((response) => {
-        //console.log(response.data.data);
-        if (response.data.tk_status !== "NG") {
-          const loadeddata: InspectSummary[] = response.data.data.map(
-            (element: InspectSummary, index: number) => {
-              return {
-                ...element,
-                T_NG_AMOUNT: element.P_NG_AMOUNT + element.M_NG_AMOUNT,
-                T_NG_QTY: element.P_NG_QTY + element.M_NG_QTY,
-                M_RATE: element.ISP_TT_QTY !== 0 ? Number(element.M_NG_QTY) / Number(element.ISP_TT_QTY) : 0,
-                P_RATE: element.ISP_TT_QTY !== 0 ? Number(element.P_NG_QTY) / Number(element.ISP_TT_QTY) : 0,
-                T_RATE: element.ISP_TT_QTY !== 0 ? (Number(element.M_NG_QTY) + Number(element.P_NG_QTY)) / Number(element.ISP_TT_QTY) : 0,
-                M_A_RATE: element.ISP_TT_QTY !== 0 ? Number(element.M_NG_AMOUNT) / Number(element.ISP_TT_AMOUNT) : 0,
-                P_A_RATE: element.ISP_TT_QTY !== 0 ? Number(element.P_NG_AMOUNT) / Number(element.ISP_TT_AMOUNT) : 0,
-                T_A_RATE: element.ISP_TT_QTY !== 0 ? Number(element.P_NG_AMOUNT + element.M_NG_AMOUNT) / Number(element.ISP_TT_AMOUNT) : 0,
-              };
-            },
-          );
-          //console.log(loadeddata);
-          setMonthlyFcostData(loadeddata);
-        } else {
-          setMonthlyFcostData([]);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }
-  const handle_getAnnuallyFcost = async (from_date: string, to_date: string, listCode: string[]) => {
-    let td = moment().add(0, "day").format("YYYY-MM-DD");
-    let frd = moment().add(-3650, "day").format("YYYY-MM-DD");
-    await generalQuery("annuallyFcost", {
-      FROM_DATE: df ? frd : from_date,
-      TO_DATE: df ? td : to_date,
-      codeArray: listCode
-    })
-      .then((response) => {
-        //console.log(response.data.data);
-        if (response.data.tk_status !== "NG") {
-          const loadeddata: InspectSummary[] = response.data.data.map(
-            (element: InspectSummary, index: number) => {
-              return {
-                ...element,
-                T_NG_AMOUNT: element.P_NG_AMOUNT + element.M_NG_AMOUNT,
-                T_NG_QTY: element.P_NG_QTY + element.M_NG_QTY,
-                M_RATE: element.ISP_TT_QTY !== 0 ? Number(element.M_NG_QTY) / Number(element.ISP_TT_QTY) : 0,
-                P_RATE: element.ISP_TT_QTY !== 0 ? Number(element.P_NG_QTY) / Number(element.ISP_TT_QTY) : 0,
-                T_RATE: element.ISP_TT_QTY !== 0 ? (Number(element.M_NG_QTY) + Number(element.P_NG_QTY)) / Number(element.ISP_TT_QTY) : 0,
-                M_A_RATE: element.ISP_TT_QTY !== 0 ? Number(element.M_NG_AMOUNT) / Number(element.ISP_TT_AMOUNT) : 0,
-                P_A_RATE: element.ISP_TT_QTY !== 0 ? Number(element.P_NG_AMOUNT) / Number(element.ISP_TT_AMOUNT) : 0,
-                T_A_RATE: element.ISP_TT_QTY !== 0 ? Number(element.P_NG_AMOUNT + element.M_NG_AMOUNT) / Number(element.ISP_TT_AMOUNT) : 0,
-              };
-            },
-          );
-          //console.log(loadeddata);
-          setAnnualyFcostData(loadeddata);
-        } else {
-          setAnnualyFcostData([]);
         }
       })
       .catch((error) => {
@@ -480,6 +203,133 @@ const INSPECT_REPORT = () => {
         console.log(error);
       });
   };
+  const handle_getCSDailyConfirmData = async (from_date: string, to_date: string, listCode: string[]) => {
+    let td = moment().add(0, "day").format("YYYY-MM-DD");
+    let frd = moment().add(-14, "day").format("YYYY-MM-DD");
+    await generalQuery("csdailyconfirmdata",{
+      FROM_DATE: df ? frd : from_date,
+      TO_DATE: df ? td : to_date,
+      codeArray: listCode
+    } )
+          .then((response) => {
+            //console.log(response.data.data);
+            if (response.data.tk_status !== "NG") {
+              let loadeddata = response.data.data.map(
+                (element: CS_CONFIRM_TRENDING_DATA, index: number) => {
+                  return {
+                    ...element,
+                    CONFIRM_DATE: moment
+                      .utc(element.CONFIRM_DATE)
+                      .format("YYYY-MM-DD"),   
+                    TOTAL: element.C + element.K,                 
+                    id: index,
+                  };
+                },
+              );
+              //console.log(loadeddata);
+              setDailyPPM(loadeddata);             
+            } else {
+              setDailyPPM([]);             
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+
+  }
+  const handle_getCSWeeklyConfirmData = async (from_date: string, to_date: string, listCode: string[]) => {
+    let td = moment().add(0, "day").format("YYYY-MM-DD");
+    let frd = moment().add(-70, "day").format("YYYY-MM-DD");
+    await generalQuery("csweeklyconfirmdata",{
+      FROM_DATE: df ? frd : from_date,
+      TO_DATE: df ? td : to_date,
+      codeArray: listCode
+    } )
+          .then((response) => {
+            //console.log(response.data.data);
+            if (response.data.tk_status !== "NG") {
+              let loadeddata = response.data.data.map(
+                (element: CS_CONFIRM_TRENDING_DATA, index: number) => {
+                  return {
+                    ...element,    
+                    TOTAL: element.C + element.K,                              
+                    id: index,
+                  };
+                },
+              );
+              //console.log(loadeddata);
+              setWeeklyPPM(loadeddata);             
+            } else {
+              setWeeklyPPM([]);             
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+
+  }
+  const handle_getCSMonthlyConfirmData = async (from_date: string, to_date: string, listCode: string[]) => {
+    let td = moment().add(0, "day").format("YYYY-MM-DD");
+    let frd = moment().add(-365, "day").format("YYYY-MM-DD");
+    await generalQuery("csmonthlyconfirmdata",{
+      FROM_DATE: df ? frd : from_date,
+      TO_DATE: df ? td : to_date,
+      codeArray: listCode
+    } )
+          .then((response) => {
+            //console.log(response.data.data);
+            if (response.data.tk_status !== "NG") {
+              let loadeddata = response.data.data.map(
+                (element: CS_CONFIRM_TRENDING_DATA, index: number) => {
+                  return {
+                    ...element,      
+                    TOTAL: element.C + element.K,                                
+                    id: index,
+                  };
+                },
+              );
+              //console.log(loadeddata);
+              setMonthlyPPM(loadeddata);             
+            } else {
+              setMonthlyPPM([]);             
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+
+  }
+  const handle_getCSYearlyConfirmData = async (from_date: string, to_date: string, listCode: string[]) => {
+    let td = moment().add(0, "day").format("YYYY-MM-DD");
+    let frd = moment().add(-3650, "day").format("YYYY-MM-DD");
+    await generalQuery("csyearlyconfirmdata",{
+      FROM_DATE: df ? frd : from_date,
+      TO_DATE: df ? td : to_date,
+      codeArray: listCode
+    } )
+          .then((response) => {
+            //console.log(response.data.data);
+            if (response.data.tk_status !== "NG") {
+              let loadeddata = response.data.data.map(
+                (element: CS_CONFIRM_TRENDING_DATA, index: number) => {
+                  return {
+                    ...element,     
+                    TOTAL: element.C + element.K,                              
+                    id: index,
+                  };
+                },
+              );
+              //console.log(loadeddata);
+              setYearlyPPM(loadeddata);             
+            } else {
+              setYearlyPPM([]);             
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+
+  }
   const initFunction = async () => {
     Swal.fire({
       title: "Đang tải báo cáo",
@@ -491,18 +341,15 @@ const INSPECT_REPORT = () => {
       showConfirmButton: false,
     });
     Promise.all([
-      handle_getDailyPPM("ALL", searchCodeArray),
-      handle_getWeeklyPPM("ALL", searchCodeArray),
-      handle_getMonthlyPPM("ALL", searchCodeArray),
-      handle_getYearlyPPM("ALL", searchCodeArray),
-      handleGetInspectionWorst(fromdate, todate, worstby, ng_type, searchCodeArray),
-      handle_getInspectSummary(fromdate, todate, searchCodeArray),
-      handle_getDailyFcost(fromdate, todate, searchCodeArray),
-      handle_getWeeklyFcost(fromdate, todate, searchCodeArray),
-      handle_getMonthlyFcost(fromdate, todate, searchCodeArray),
-      handle_getAnnuallyFcost(fromdate, todate, searchCodeArray),
+     /*  handleGetInspectionWorst(fromdate, todate, worstby, ng_type, searchCodeArray),
+      handle_getInspectSummary(fromdate, todate, searchCodeArray),   
       handle_getDailyDefectTrending(fromdate, todate, searchCodeArray),
-      getPatrolHeaderData(fromdate, todate),
+      getPatrolHeaderData(fromdate, todate), */
+      handle_getCSDailyConfirmData(fromdate, todate, searchCodeArray),
+      handle_getCSWeeklyConfirmData(fromdate, todate, searchCodeArray),
+      handle_getCSMonthlyConfirmData(fromdate, todate, searchCodeArray),
+      handle_getCSYearlyConfirmData(fromdate, todate, searchCodeArray),
+
     ]).then((values) => {
       Swal.fire("Thông báo", "Đã load xong báo cáo", 'success');
     });
@@ -514,7 +361,7 @@ const INSPECT_REPORT = () => {
   return (
     <div className="inspectionreport">
       <div className="title">
-        <span>INSPECTION REPORT</span>
+        <span>CS REPORT</span>
       </div>
       <div className="doanhthureport">
         <div className="pobalancesummary">
@@ -640,70 +487,70 @@ const INSPECT_REPORT = () => {
             Search
           </button>
         </div>
-        <span className="section_title">1. OverView</span>
+        <span className="section_title">1. CS OverView</span>
         <div className="revenuewidget">
           <div className="revenuwdg">
-            <WidgetInspection
+            <WidgetCS
               widgettype="revenue"
-              label="Yesterday NG"
+              label="Today issue"
               topColor="#b3c6ff"
               botColor="#b3ecff"
-              material_ppm={dailyppm[0]?.MATERIAL_PPM}
-              process_ppm={dailyppm[0]?.PROCESS_PPM}
-              total_ppm={dailyppm[0]?.TOTAL_PPM}
+              material_ppm={dailyppm[0]?.C}
+              process_ppm={dailyppm[0]?.K}
+              total_ppm={dailyppm[0]?.C+dailyppm[0]?.K}
             />
           </div>
           <div className="revenuwdg">
-            <WidgetInspection
+            <WidgetCS
               widgettype="revenue"
-              label="This Week NG"
+              label="This Week issue"
               topColor="#b3c6ff"
               botColor="#b3ecff"
-              material_ppm={weeklyppm[0]?.MATERIAL_PPM}
-              process_ppm={weeklyppm[0]?.PROCESS_PPM}
-              total_ppm={weeklyppm[0]?.TOTAL_PPM}
+              material_ppm={weeklyppm[0]?.C}
+              process_ppm={weeklyppm[0]?.K}
+              total_ppm={weeklyppm[0]?.C+weeklyppm[0]?.K}
             />
           </div>
           <div className="revenuwdg">
-            <WidgetInspection
+            <WidgetCS
               widgettype="revenue"
-              label="This month NG"
+              label="This month issue"
               topColor="#b3c6ff"
               botColor="#b3ecff"
-              material_ppm={monthlyppm[0]?.MATERIAL_PPM}
-              process_ppm={monthlyppm[0]?.PROCESS_PPM}
-              total_ppm={monthlyppm[0]?.TOTAL_PPM}
+              material_ppm={monthlyppm[0]?.C}
+              process_ppm={monthlyppm[0]?.K}
+              total_ppm={monthlyppm[0]?.C+monthlyppm[0]?.K}
             />
           </div>
           <div className="revenuwdg">
-            <WidgetInspection
+            <WidgetCS
               widgettype="revenue"
-              label="This year NG"
+              label="This year issue"
               topColor="#b3c6ff"
               botColor="#b3ecff"
-              material_ppm={yearlyppm[yearlyppm.length - 1]?.MATERIAL_PPM}
-              process_ppm={yearlyppm[yearlyppm.length - 1]?.PROCESS_PPM}
-              total_ppm={yearlyppm[yearlyppm.length - 1]?.TOTAL_PPM}
+              material_ppm={yearlyppm[0]?.C}
+              process_ppm={yearlyppm[0]?.K}
+              total_ppm={yearlyppm[0]?.C+yearlyppm[0]?.K}
             />
           </div>
         </div>
         <br></br>
         <hr></hr>
         <div className="graph">
-          <span className="section_title">2. NG Trending</span>
+          <span className="section_title">2. Issue Trending</span>
           <div className="dailygraphtotal">
             <div className="dailygraphtotal">
               <div className="dailygraph">
-                <span className="subsection">Daily NG Rate</span>
-                <InspectionDailyPPM
+                <span className="subsection">Daily Issue</span>
+                <CSDailyConfirm
                   dldata={[...dailyppm].reverse()}
                   processColor="#eeeb30"
                   materialColor="#53eb34"
                 />
               </div>
               <div className="dailygraph">
-                <span className="subsection">Weekly NG Rate</span>
-                <InspectionWeeklyPPM
+                <span className="subsection">Weekly Issue</span>
+                <CSWeeklyConfirm
                   dldata={[...weeklyppm].reverse()}
                   processColor="#eeeb30"
                   materialColor="#53eb34"
@@ -712,17 +559,17 @@ const INSPECT_REPORT = () => {
             </div>
             <div className="monthlyweeklygraph">
               <div className="dailygraph">
-                <span className="subsection">Monthly NG Rate</span>
-                <InspectionMonthlyPPM
+                <span className="subsection">Monthly Issue</span>
+                <CSMonthlyConfirm
                   dldata={[...monthlyppm].reverse()}
                   processColor="#eeeb30"
                   materialColor="#53eb34"
                 />
               </div>
               <div className="dailygraph">
-                <span className="subsection">Yearly NG Rate</span>
-                <InspectionYearlyPPM
-                  dldata={yearlyppm}
+                <span className="subsection">Yearly Issue</span>
+                <CSDailyConfirm
+                  dldata={[...yearlyppm].reverse()}
                   processColor="#eeeb30"
                   materialColor="#53eb34"
                 />
@@ -799,4 +646,4 @@ const INSPECT_REPORT = () => {
     </div>
   );
 };
-export default INSPECT_REPORT;
+export default CSREPORT;

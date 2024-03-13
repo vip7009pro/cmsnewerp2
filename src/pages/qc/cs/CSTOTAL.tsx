@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import "./CSTOTAL.scss";
 import CS from "./CS";
 import CS_DATA_TB from "./CS_DATA";
+import CSREPORT from "./CSREPORT";
 
 const CSTOTAL = () => {
   const [selection, setSelection] = useState<any>({
@@ -186,7 +187,7 @@ const CSTOTAL = () => {
       )}
       {selection.tab2 && (
         <div className="baocaocs">
-          
+          <CSREPORT/>          
         </div>
       )}
     </div>

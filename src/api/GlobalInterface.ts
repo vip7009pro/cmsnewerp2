@@ -3471,3 +3471,12 @@ export interface PQCSummary {
   NG_RATE: number,
   INSPECT_AMOUNT: number
 }
+export interface CS_CONFIRM_TRENDING_DATA {
+  CONFIRM_DATE?: string,
+  CONFIRM_YW?: string,
+  CONFIRM_YM?: string,
+  CONFIRM_YEAR?: number,  
+  C: number, 
+  K: number,
+  TOTAL: number,
+}
