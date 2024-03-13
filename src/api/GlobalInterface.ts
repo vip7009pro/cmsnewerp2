@@ -3462,5 +3462,12 @@ export interface PQC_PPM_DATA {
   TOTAL_LOT: number,
   OK_LOT: number,
   NG_LOT: number,
+  INSPECT_AMOUNT: number,
   NG_RATE: number,
+}
+export interface PQCSummary {
+  TOTAL_LOT: number,
+  NG_LOT: number,
+  NG_RATE: number,
+  INSPECT_AMOUNT: number
 }

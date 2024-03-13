@@ -518,6 +518,9 @@ const INSPECT_REPORT = () => {
   }, []);
   return (
     <div className="inspectionreport">
+      <div className="title">
+        <span>INSPECTION REPORT</span>
+      </div>
       <div className="doanhthureport">
         <div className="pobalancesummary">
           <label>

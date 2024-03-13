@@ -16,7 +16,7 @@ import WidgetInspection from "../../../components/Widget/WidgetInspection";
 import "./PQC_REPORT.scss";
 import InspectionWorstTable from "../../../components/DataTable/InspectionWorstTable";
 import ChartInspectionWorst from "../../../components/Chart/ChartInspectionWorst";
-import { CodeListData, DEFECT_TRENDING_DATA, DailyPPMData, FCSTAmountData, InspectSummary, MonthlyPPMData, PATROL_HEADER_DATA, PQC_PPM_DATA, WEB_SETTING_DATA, WeeklyPPMData, WidgetData_POBalanceSummary, WorstData, YearlyPPMData } from "../../../api/GlobalInterface";
+import { CodeListData, DEFECT_TRENDING_DATA, DailyPPMData, FCSTAmountData, InspectSummary, MonthlyPPMData, PATROL_HEADER_DATA, PQC3_DATA, PQCSummary, PQC_PPM_DATA, WEB_SETTING_DATA, WeeklyPPMData, WidgetData_POBalanceSummary, WorstData, YearlyPPMData } from "../../../api/GlobalInterface";
 import CIRCLE_COMPONENT from "../../qlsx/QLSXPLAN/CAPA/CIRCLE_COMPONENT/CIRCLE_COMPONENT";
 import { deBounce, nFormatter } from "../../../api/GlobalFunction";
 import { Autocomplete, Checkbox, FormControlLabel, FormGroup, TextField, Typography, createFilterOptions } from "@mui/material";
@@ -32,6 +32,13 @@ import PQCWeeklyNGRate from "../../../components/Chart/PQCWeeklyNGRate";
 import PQCMonthlyNGRate from "../../../components/Chart/PQCMonthlyNGRate";
 import PQCYearlyNGRate from "../../../components/Chart/PQCYearlyNGRate";
 import WidgetPQC from "../../../components/Widget/WidgetPQC";
+import PQCDailyDefectTrending from "../../../components/Chart/PQCDailyDefectTrending";
+import PQCFCOSTTABLE from "../inspection/PQCFCOSTTABLE";
+import PQCDailyFcost from "../../../components/Chart/PQCDailyFcost";
+import PQCWeeklyFcost from "../../../components/Chart/PQCWeeklyFcost";
+import PQCMonthlyFcost from "../../../components/Chart/PQCMonthlyFcost";
+import PQCYearlyFcost from "../../../components/Chart/PQCYearlyFcost";
+import PATROL_COMPONENT from "../../sx/PATROL/PATROL_COMPONENT";
 const PQC_REPORT = () => {
   const [dailyppm1, setDailyPPM1] = useState<PQC_PPM_DATA[]>([]);
   const [weeklyppm1, setWeeklyPPM1] = useState<PQC_PPM_DATA[]>([]);
@@ -49,16 +56,11 @@ const PQC_REPORT = () => {
   const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));
   const [worstby, setWorstBy] = useState('AMOUNT');
   const [ng_type, setNg_Type] = useState('ALL');
-  const [worstdatatable, setWorstDataTable] = useState<Array<WorstData>>([]);
-  const [inspectSummary, setInspectSummary] = useState<InspectSummary[]>([]);
+  const [inspectSummary, setInspectSummary] = useState<PQCSummary[]>([]);
   const [dailyDefectTrendingData, setDailyDefectTrendingData] = useState<DEFECT_TRENDING_DATA[]>([]);
-  const [dailyFcostData, setDailyFcostData] = useState<InspectSummary[]>([]);
-  const [weeklyFcostData, setWeeklyFcostData] = useState<InspectSummary[]>([]);
-  const [monthlyFcostData, setMonthlyFcostData] = useState<InspectSummary[]>([]);
-  const [annualyFcostData, setAnnualyFcostData] = useState<InspectSummary[]>([]);
   const [codeList, setCodeList] = useState<CodeListData[]>([]);
   const [searchCodeArray, setSearchCodeArray] = useState<string[]>([]);
-  const [patrolheaderdata, setPatrolHeaderData] = useState<PATROL_HEADER_DATA[]>([]);
+  const [pqcdatatable, setPqcDataTable] = useState<Array<PQC3_DATA>>([]);
   const [selectedCode, setSelectedCode] = useState<CodeListData | null>({
     G_CODE: "6A00001B",
     G_NAME: "GT-I9500_SJ68-01284A",
@@ -71,67 +73,6 @@ const PQC_REPORT = () => {
     matchFrom: "any",
     limit: 100,
   });
-  const getPatrolHeaderData = async (from_date: string, to_date: string) => {
-    let td = moment().add(0, "day").format("YYYY-MM-DD");
-    let frd = moment().add(-12, "day").format("YYYY-MM-DD");
-    await generalQuery("getpatrolheader", {
-      FROM_DATE: df ? frd : fromdate,
-      TO_DATE: df ? td : todate,
-    })
-      .then((response) => {
-        //console.log(response.data);
-        if (response.data.tk_status !== "NG") {
-          const loadeddata: PATROL_HEADER_DATA[] = response.data.data.map(
-            (element: PATROL_HEADER_DATA, index: number) => {
-              return {
-                ...element,
-              };
-            }
-          );
-          //console.log(loadeddata);          
-          setPatrolHeaderData(loadeddata);
-        } else {
-          //Swal.fire("Thông báo", "Lỗi BOM SX: " + response.data.message, "error");
-          setPatrolHeaderData([]);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
-  const handleGetInspectionWorst = async (from_date: string, to_date: string, worst_by: string, ng_type: string, listCode: string[]) => {
-    let td = moment().add(0, "day").format("YYYY-MM-DD");
-    let frd = moment().add(-7, "day").format("YYYY-MM-DD");
-    generalQuery("getInspectionWorstTable", {
-      FROM_DATE: df ? frd : fromdate,
-      TO_DATE: df ? td : todate,
-      WORSTBY: worst_by,
-      NG_TYPE: ng_type,
-      codeArray: df ? [] : listCode
-    })
-      .then((response) => {
-        if (response.data.tk_status !== "NG") {
-          //console.log(response.data.data);
-          let loadeddata = response.data.data.map(
-            (element: WorstData, index: number) => {
-              return {
-                ...element,
-                NG_QTY: Number(element.NG_QTY),
-                NG_AMOUNT: Number(element.NG_AMOUNT),
-                id: index
-              };
-            }
-          );
-          //console.log(loadeddata);
-          setWorstDataTable(loadeddata);
-        } else {
-          Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
   const handle_getDailyPPM = async (FACTORY: string, listCode: string[]) => {
     let td = moment().add(0, "day").format("YYYY-MM-DD");
     let frd = moment().add(-12, "day").format("YYYY-MM-DD");
@@ -214,7 +155,7 @@ const PQC_REPORT = () => {
       codeArray: df ? [] : listCode
     })
       .then((response) => {
-        console.log(response.data.data);
+        //console.log(response.data.data);
         if (response.data.tk_status !== "NG") {
           const loadeddata: PQC_PPM_DATA[] = response.data.data.map(
             (element: PQC_PPM_DATA, index: number) => {
@@ -275,7 +216,7 @@ const PQC_REPORT = () => {
   const handle_getInspectSummary = async (from_date: string, to_date: string, listCode: string[]) => {
     let td = moment().add(0, "day").format("YYYY-MM-DD");
     let frd = moment().add(-7, "day").format("YYYY-MM-DD");
-    await generalQuery("getInspectionSummary", {
+    await generalQuery("getPQCSummary", {
       FROM_DATE: df ? frd : from_date,
       TO_DATE: df ? td : to_date,
       codeArray: listCode
@@ -283,18 +224,11 @@ const PQC_REPORT = () => {
       .then((response) => {
         //console.log(response.data.data);
         if (response.data.tk_status !== "NG") {
-          const loadeddata: InspectSummary[] = response.data.data.map(
-            (element: InspectSummary, index: number) => {
+          const loadeddata: PQCSummary[] = response.data.data.map(
+            (element: PQCSummary, index: number) => {
               return {
                 ...element,
-                T_NG_AMOUNT: element.P_NG_AMOUNT + element.M_NG_AMOUNT,
-                T_NG_QTY: element.P_NG_QTY + element.M_NG_QTY,
-                M_RATE: element.ISP_TT_QTY !== 0 ? Number(element.M_NG_QTY) / Number(element.ISP_TT_QTY) : 0,
-                P_RATE: element.ISP_TT_QTY !== 0 ? Number(element.P_NG_QTY) / Number(element.ISP_TT_QTY) : 0,
-                T_RATE: element.ISP_TT_QTY !== 0 ? (Number(element.M_NG_QTY) + Number(element.P_NG_QTY)) / Number(element.ISP_TT_QTY) : 0,
-                M_A_RATE: element.ISP_TT_QTY !== 0 ? Number(element.M_NG_AMOUNT) / Number(element.ISP_TT_AMOUNT) : 0,
-                P_A_RATE: element.ISP_TT_QTY !== 0 ? Number(element.P_NG_AMOUNT) / Number(element.ISP_TT_AMOUNT) : 0,
-                T_A_RATE: element.ISP_TT_QTY !== 0 ? Number(element.P_NG_AMOUNT + element.M_NG_AMOUNT) / Number(element.ISP_TT_AMOUNT) : 0,
+               
               };
             },
           );
@@ -307,161 +241,16 @@ const PQC_REPORT = () => {
         console.log(error);
       });
   }
-  const handle_getDailyFcost = async (from_date: string, to_date: string, listCode: string[]) => {
-    let td = moment().add(0, "day").format("YYYY-MM-DD");
-    let frd = moment().add(-14, "day").format("YYYY-MM-DD");
-    await generalQuery("dailyFcost", {
-      FROM_DATE: df ? frd : from_date,
-      TO_DATE: df ? td : to_date,
-      codeArray: listCode
-    })
-      .then((response) => {
-        //console.log(response.data.data);
-        if (response.data.tk_status !== "NG") {
-          const loadeddata: InspectSummary[] = response.data.data.map(
-            (element: InspectSummary, index: number) => {
-              return {
-                ...element,
-                INSPECT_DATE: moment(element.INSPECT_DATE).format("YYYY-MM-DD"),
-                T_NG_AMOUNT: element.P_NG_AMOUNT + element.M_NG_AMOUNT,
-                T_NG_QTY: element.P_NG_QTY + element.M_NG_QTY,
-                M_RATE: element.ISP_TT_QTY !== 0 ? Number(element.M_NG_QTY) / Number(element.ISP_TT_QTY) : 0,
-                P_RATE: element.ISP_TT_QTY !== 0 ? Number(element.P_NG_QTY) / Number(element.ISP_TT_QTY) : 0,
-                T_RATE: element.ISP_TT_QTY !== 0 ? (Number(element.M_NG_QTY) + Number(element.P_NG_QTY)) / Number(element.ISP_TT_QTY) : 0,
-                M_A_RATE: element.ISP_TT_QTY !== 0 ? Number(element.M_NG_AMOUNT) / Number(element.ISP_TT_AMOUNT) : 0,
-                P_A_RATE: element.ISP_TT_QTY !== 0 ? Number(element.P_NG_AMOUNT) / Number(element.ISP_TT_AMOUNT) : 0,
-                T_A_RATE: element.ISP_TT_QTY !== 0 ? Number(element.P_NG_AMOUNT + element.M_NG_AMOUNT) / Number(element.ISP_TT_AMOUNT) : 0,
-              };
-            },
-          );
-          //console.log(loadeddata);
-          setDailyFcostData(loadeddata);
-        } else {
-          setDailyFcostData([]);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }
-  const handle_getWeeklyFcost = async (from_date: string, to_date: string, listCode: string[]) => {
-    let td = moment().add(0, "day").format("YYYY-MM-DD");
-    let frd = moment().add(-70, "day").format("YYYY-MM-DD");
-    await generalQuery("weeklyFcost", {
-      FROM_DATE: df ? frd : from_date,
-      TO_DATE: df ? td : to_date,
-      codeArray: listCode
-    })
-      .then((response) => {
-        //console.log(response.data.data);
-        if (response.data.tk_status !== "NG") {
-          const loadeddata: InspectSummary[] = response.data.data.map(
-            (element: InspectSummary, index: number) => {
-              return {
-                ...element,
-                T_NG_AMOUNT: element.P_NG_AMOUNT + element.M_NG_AMOUNT,
-                T_NG_QTY: element.P_NG_QTY + element.M_NG_QTY,
-                M_RATE: element.ISP_TT_QTY !== 0 ? Number(element.M_NG_QTY) / Number(element.ISP_TT_QTY) : 0,
-                P_RATE: element.ISP_TT_QTY !== 0 ? Number(element.P_NG_QTY) / Number(element.ISP_TT_QTY) : 0,
-                T_RATE: element.ISP_TT_QTY !== 0 ? (Number(element.M_NG_QTY) + Number(element.P_NG_QTY)) / Number(element.ISP_TT_QTY) : 0,
-                M_A_RATE: element.ISP_TT_QTY !== 0 ? Number(element.M_NG_AMOUNT) / Number(element.ISP_TT_AMOUNT) : 0,
-                P_A_RATE: element.ISP_TT_QTY !== 0 ? Number(element.P_NG_AMOUNT) / Number(element.ISP_TT_AMOUNT) : 0,
-                T_A_RATE: element.ISP_TT_QTY !== 0 ? Number(element.P_NG_AMOUNT + element.M_NG_AMOUNT) / Number(element.ISP_TT_AMOUNT) : 0,
-              };
-            },
-          );
-          //console.log(loadeddata);
-          setWeeklyFcostData(loadeddata);
-        } else {
-          setWeeklyFcostData([]);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }
-  const handle_getMonthlyFcost = async (from_date: string, to_date: string, listCode: string[]) => {
-    let td = moment().add(0, "day").format("YYYY-MM-DD");
-    let frd = moment().add(-365, "day").format("YYYY-MM-DD");
-    await generalQuery("monthlyFcost", {
-      FROM_DATE: df ? frd : from_date,
-      TO_DATE: df ? td : to_date,
-      codeArray: listCode
-    })
-      .then((response) => {
-        //console.log(response.data.data);
-        if (response.data.tk_status !== "NG") {
-          const loadeddata: InspectSummary[] = response.data.data.map(
-            (element: InspectSummary, index: number) => {
-              return {
-                ...element,
-                T_NG_AMOUNT: element.P_NG_AMOUNT + element.M_NG_AMOUNT,
-                T_NG_QTY: element.P_NG_QTY + element.M_NG_QTY,
-                M_RATE: element.ISP_TT_QTY !== 0 ? Number(element.M_NG_QTY) / Number(element.ISP_TT_QTY) : 0,
-                P_RATE: element.ISP_TT_QTY !== 0 ? Number(element.P_NG_QTY) / Number(element.ISP_TT_QTY) : 0,
-                T_RATE: element.ISP_TT_QTY !== 0 ? (Number(element.M_NG_QTY) + Number(element.P_NG_QTY)) / Number(element.ISP_TT_QTY) : 0,
-                M_A_RATE: element.ISP_TT_QTY !== 0 ? Number(element.M_NG_AMOUNT) / Number(element.ISP_TT_AMOUNT) : 0,
-                P_A_RATE: element.ISP_TT_QTY !== 0 ? Number(element.P_NG_AMOUNT) / Number(element.ISP_TT_AMOUNT) : 0,
-                T_A_RATE: element.ISP_TT_QTY !== 0 ? Number(element.P_NG_AMOUNT + element.M_NG_AMOUNT) / Number(element.ISP_TT_AMOUNT) : 0,
-              };
-            },
-          );
-          //console.log(loadeddata);
-          setMonthlyFcostData(loadeddata);
-        } else {
-          setMonthlyFcostData([]);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }
-  const handle_getAnnuallyFcost = async (from_date: string, to_date: string, listCode: string[]) => {
-    let td = moment().add(0, "day").format("YYYY-MM-DD");
-    let frd = moment().add(-3650, "day").format("YYYY-MM-DD");
-    await generalQuery("annuallyFcost", {
-      FROM_DATE: df ? frd : from_date,
-      TO_DATE: df ? td : to_date,
-      codeArray: listCode
-    })
-      .then((response) => {
-        //console.log(response.data.data);
-        if (response.data.tk_status !== "NG") {
-          const loadeddata: InspectSummary[] = response.data.data.map(
-            (element: InspectSummary, index: number) => {
-              return {
-                ...element,
-                T_NG_AMOUNT: element.P_NG_AMOUNT + element.M_NG_AMOUNT,
-                T_NG_QTY: element.P_NG_QTY + element.M_NG_QTY,
-                M_RATE: element.ISP_TT_QTY !== 0 ? Number(element.M_NG_QTY) / Number(element.ISP_TT_QTY) : 0,
-                P_RATE: element.ISP_TT_QTY !== 0 ? Number(element.P_NG_QTY) / Number(element.ISP_TT_QTY) : 0,
-                T_RATE: element.ISP_TT_QTY !== 0 ? (Number(element.M_NG_QTY) + Number(element.P_NG_QTY)) / Number(element.ISP_TT_QTY) : 0,
-                M_A_RATE: element.ISP_TT_QTY !== 0 ? Number(element.M_NG_AMOUNT) / Number(element.ISP_TT_AMOUNT) : 0,
-                P_A_RATE: element.ISP_TT_QTY !== 0 ? Number(element.P_NG_AMOUNT) / Number(element.ISP_TT_AMOUNT) : 0,
-                T_A_RATE: element.ISP_TT_QTY !== 0 ? Number(element.P_NG_AMOUNT + element.M_NG_AMOUNT) / Number(element.ISP_TT_AMOUNT) : 0,
-              };
-            },
-          );
-          //console.log(loadeddata);
-          setAnnualyFcostData(loadeddata);
-        } else {
-          setAnnualyFcostData([]);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }
   const handle_getDailyDefectTrending = async (from_date: string, to_date: string, listCode: string[]) => {
     let td = moment().add(0, "day").format("YYYY-MM-DD");
     let frd = moment().add(-14, "day").format("YYYY-MM-DD");
-    await generalQuery("dailyDefectTrending", {
+    await generalQuery("dailyPQCDefectTrending", {
       FROM_DATE: df ? frd : from_date,
       TO_DATE: df ? td : to_date,
       codeArray: listCode
     })
       .then((response) => {
-        //console.log(response.data.data);
+        console.log(response.data.data);
         if (response.data.tk_status !== "NG") {
           const loadeddata: DEFECT_TRENDING_DATA[] = response.data.data.map(
             (element: DEFECT_TRENDING_DATA, index: number) => {
@@ -482,6 +271,54 @@ const PQC_REPORT = () => {
         console.log(error);
       });
   }
+  const traPQC3 = (from_date: string, to_date: string, listCode: string[]) => {    
+    let td = moment().add(0, "day").format("YYYY-MM-DD");
+    let frd = moment().add(-14, "day").format("YYYY-MM-DD");
+    generalQuery("trapqc3data", {
+      ALLTIME: false,
+      FROM_DATE: df ? frd : from_date,
+      TO_DATE: df ? td : to_date,
+      CUST_NAME: '',
+      PROCESS_LOT_NO: '',
+      G_CODE: '',
+      G_NAME: '',
+      PROD_TYPE: '',
+      EMPL_NAME: '',
+      PROD_REQUEST_NO: '',
+      ID: '',
+      FACTORY: 'All',
+    })
+      .then((response) => {
+        //console.log(response.data.data);
+        if (response.data.tk_status !== "NG") {
+          const loadeddata: PQC3_DATA[] = response.data.data.map(
+            (element: PQC3_DATA, index: number) => {
+              //summaryOutput += element.OUTPUT_QTY_EA;
+              return {
+                ...element,
+                OCCURR_TIME: moment
+                  .utc(element.OCCURR_TIME)
+                  .format("YYYY-MM-DD HH:mm:ss"),
+                id: index,
+              };
+            },
+          );
+          //setSummaryInspect('Tổng Xuất: ' +  summaryOutput.toLocaleString('en-US') + 'EA');
+          if (loadeddata.length > 3) {
+            setPqcDataTable(loadeddata);
+          }
+          else {
+            setPqcDataTable(loadeddata);
+          }
+        } else {
+          //Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
+          setPqcDataTable([]);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
   const getcodelist = (G_NAME: string) => {
     generalQuery("selectcodeList", { G_NAME: G_NAME })
       .then((response) => {
@@ -508,15 +345,10 @@ const PQC_REPORT = () => {
       handle_getDailyPPM("ALL", searchCodeArray),
       handle_getWeeklyPPM("ALL", searchCodeArray),
       handle_getMonthlyPPM("ALL", searchCodeArray),
-      handle_getYearlyPPM("ALL", searchCodeArray),
-      handleGetInspectionWorst(fromdate, todate, worstby, ng_type, searchCodeArray),
+      handle_getYearlyPPM("ALL", searchCodeArray),   
+      handle_getDailyDefectTrending(fromdate, todate, searchCodeArray), 
       handle_getInspectSummary(fromdate, todate, searchCodeArray),
-      handle_getDailyFcost(fromdate, todate, searchCodeArray),
-      handle_getWeeklyFcost(fromdate, todate, searchCodeArray),
-      handle_getMonthlyFcost(fromdate, todate, searchCodeArray),
-      handle_getAnnuallyFcost(fromdate, todate, searchCodeArray),
-      handle_getDailyDefectTrending(fromdate, todate, searchCodeArray),
-      /* getPatrolHeaderData(fromdate, todate), */
+      traPQC3(fromdate, todate, searchCodeArray) 
     ]).then((values) => {
       Swal.fire("Thông báo", "Đã load xong báo cáo", 'success');
     });
@@ -526,7 +358,10 @@ const PQC_REPORT = () => {
     initFunction();
   }, []);
   return (
-    <div className="inspectionreport">
+    <div className="pqcreport">
+      <div className="title">
+        <span>PQC REPORT</span>
+      </div>
       <div className="doanhthureport">
         <div className="pobalancesummary">
           <label>
@@ -658,7 +493,7 @@ const PQC_REPORT = () => {
           <div className="revenuwdg">
             <WidgetPQC
               widgettype="revenue"
-              label="Yesterday NG"
+              label="Today NG"
               topColor="#ace73d"
               botColor="#ffbf6b"
               material_ppm={dailyppm[0]?.NG_RATE}
@@ -703,7 +538,7 @@ const PQC_REPORT = () => {
         <br></br>
         <hr></hr>
         <div className="graph">
-          <span className="section_title">2. NG Trending</span>
+          <span className="section_title">2. PQC NG Trending</span>
           <div className="dailygraphtotal">
             <div className="dailygraphtotal">
               <div className="dailygraph">
@@ -742,23 +577,23 @@ const PQC_REPORT = () => {
               </div>
             </div>
           </div>
-          <span className="subsection_title">2.5 Defects Trending</span>
+          <span className="subsection_title">2.5 PQC Defects Trending</span>
           <div className="dailygraphtotal">
             <div className="dailygraph" style={{ height: '600px' }}>
-              <InspectDailyDefectTrending dldata={[...dailyDefectTrendingData].reverse()} />
+              <PQCDailyDefectTrending dldata={[...dailyDefectTrendingData].reverse()} />
             </div>
           </div>
-          <span className="section_title">3. F-COST Status</span>
-          <span className="subsection_title">F-Cost Summary</span>
-          <FCOSTTABLE data={inspectSummary} />
-          <span className="subsection_title">F-Cost Trending</span>
+          <span className="section_title">3. PQC F-COST Status</span>
+          <span className="subsection_title">PQC F-Cost Summary</span>
+          <PQCFCOSTTABLE data={inspectSummary} />
+          <span className="subsection_title">PQC F-Cost Trending</span>
           <div className="fcosttrending">
             <div className="fcostgraph">
               <div className="dailygraph">
                 <span className="subsection">Daily F-Cost</span>
-                <InspectionDailyFcost
-                  dldata={[...dailyFcostData].reverse()}
-                  processColor="#89fc98"
+                <PQCDailyFcost
+                  dldata={[...dailyppm].reverse()}
+                  processColor="#8b89fc"
                   materialColor="#41d5fa"
                 />
               </div>
@@ -768,46 +603,58 @@ const PQC_REPORT = () => {
             <div className="fcostgraph">
               <div className="dailygraph">
                 <span className="subsection">Weekly F-Cost</span>
-                <InspectionWeeklyFcost
-                  dldata={[...weeklyFcostData].reverse()}
-                  processColor="#89fc98"
+                <PQCWeeklyFcost
+                  dldata={[...weeklyppm].reverse()}
+                  processColor="#8b89fc"
                   materialColor="#41d5fa"
                 />
               </div>
               <div className="dailygraph">
                 <span className="subsection">Monthly F-Cost</span>
-                <InspectionMonthlyFcost
-                  dldata={[...monthlyFcostData].reverse()}
-                  processColor="#89fc98"
+                <PQCMonthlyFcost
+                  dldata={[...monthlyppm].reverse()}
+                  processColor="#8b89fc"
                   materialColor="#41d5fa"
                 />
               </div>
               <div className="dailygraph">
                 <span className="subsection">Yearly F-Cost</span>
-                <InspectionYearlyFcost
-                  dldata={[...annualyFcostData].reverse()}
-                  processColor="#89fc98"
+                <PQCYearlyFcost
+                  dldata={[...yearlyppm].reverse()}
+                  processColor="#8b89fc"
                   materialColor="#41d5fa"
                 />
               </div>
             </div>
-          </div>
-          <span className="subsection_title">Top 3 F-Cost Products ({fromdate} ~ {todate})</span>
-          <div className="patrolheader1">
-            <PATROL_HEADER data={patrolheaderdata} />
-          </div>
-          <span className="subsection_title">F-Cost by Defect</span>
+          </div>          
+          <span className="section_title">4. QPN History</span>
           <div className="worstinspection">
-            <div className="worsttable">
-              <span className="subsection">Worst Table</span>
-              {worstdatatable.length > 0 && <InspectionWorstTable dailyClosingData={worstdatatable} worstby={worstby} from_date={fromdate} to_date={todate} ng_type={ng_type} listCode={searchCodeArray} />}
-            </div>
-            <div className="worstgraph">
-              <span className="subsection">WORST 5 BY {worstby}</span>
-              {worstdatatable.length > 0 && <ChartInspectionWorst dailyClosingData={worstdatatable} worstby={worstby} />}
-            </div>
+            <div className="worsttable"> 
+            {
+            pqcdatatable.map((ele: PQC3_DATA, index: number) => {
+              return (
+                <div style={{display:'flex', flexDirection:'column', color: 'black', fontWeight:'bold'}}>
+                {`OCCURRED_TIME: ${ele.OCCURR_TIME}`}
+                <PATROL_COMPONENT key={index} data={{
+                  CUST_NAME_KD: ele.CUST_NAME_KD,
+                  DEFECT: ele.ERR_CODE + ':' + ele.DEFECT_PHENOMENON,
+                  EQ: ele.LINE_NO,
+                  FACTORY: ele.FACTORY,
+                  G_NAME_KD: ele.G_NAME_KD,
+                  INSPECT_QTY: ele.INSPECT_QTY,
+                  INSPECT_NG: ele.DEFECT_QTY,
+                  LINK: `/pqc/PQC3_${ele.PQC3_ID + 1}.png`,
+                  TIME: ele.OCCURR_TIME,
+                  EMPL_NO: ele.LINEQC_PIC
+                }} />
+                </div>
+              )
+            })
+          }
+
+            </div>            
           </div>
-        </div>
+        </div>  
       </div>
     </div>
   );

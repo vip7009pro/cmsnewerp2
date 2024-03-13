@@ -25,13 +25,13 @@ import {
 } from "../../api/GlobalFunction";
 import { DEFECT_TRENDING_DATA, DailyData, FcostData } from "../../api/GlobalInterface";
 
-const InspectDailyDefectTrending = ({ dldata}: {dldata: DEFECT_TRENDING_DATA[]}) => {
+const PQCDailyDefectTrending = ({ dldata}: {dldata: DEFECT_TRENDING_DATA[]}) => {
   const formatCash = (n: number) => {
     return nFormatter(n, 1);
   };
 
   const labelFormatter = (value: number) => {
-    return formatCash(value); 
+    return value.toLocaleString('en-US',{style:'percent'}); 
   };
 
   const CustomTooltip = ({
@@ -56,10 +56,10 @@ const InspectDailyDefectTrending = ({ dldata}: {dldata: DEFECT_TRENDING_DATA[]})
           entry.value !==0 && (
           <p key={index} className={`value ${entry.dataKey}`} style={{fontSize:'0.7rem'}}>
             {`${err_name_vn}(${err_name_kr}): ${entry.value.toLocaleString('en-US', {
-              style: "decimal",
+              style: "percent",
               maximumFractionDigits: 0,
               minimumFractionDigits: 0,
-            } )} ppm`}
+            } )}`}
           </p>
         ))
         })}
@@ -119,7 +119,7 @@ const InspectDailyDefectTrending = ({ dldata}: {dldata: DEFECT_TRENDING_DATA[]})
           Object.entries(dldata[0]?? []).map((ele: any, index: number)=>{
             if(['INSPECT_DATE','INSPECT_TOTAL_QTY','INSPECT_OK_QTY','INSPECT_NG_QTY','id','ERR1','ERR2','ERR3','ERR32'].indexOf(ele[0]) <0)
             return (
-              <Line
+              <Line              
               key={`chart-${index}`}
               yAxisId='left-axis'
               type='monotone'
@@ -154,4 +154,4 @@ const InspectDailyDefectTrending = ({ dldata}: {dldata: DEFECT_TRENDING_DATA[]})
     </CustomResponsiveContainer>
   );
 };
-export default InspectDailyDefectTrending;
+export default PQCDailyDefectTrending;
