@@ -37,7 +37,7 @@ export default function WidgetCS({
               style: "decimal",
               maximumFractionDigits: 0,
               minimumFractionDigits: 0,
-            })} vụ
+            })}
           </div>
 
         </div>

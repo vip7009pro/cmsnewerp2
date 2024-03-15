@@ -3480,3 +3480,15 @@ export interface CS_CONFIRM_TRENDING_DATA {
   K: number,
   TOTAL: number,
 }
+export interface CS_CONFIRM_BY_CUSTOMER_DATA {
+  CUST_NAME_KD: string,
+  EMPL_NAME?: string,
+  TOTAL: number
+}
+export interface CS_REDUCE_AMOUNT_DATA {
+  CONFIRM_DATE?: string,
+  CONFIRM_YW?: string,
+  CONFIRM_YM?: string,
+  CONFIRM_YEAR?: number,
+  REDUCE_AMOUNT: number
+}

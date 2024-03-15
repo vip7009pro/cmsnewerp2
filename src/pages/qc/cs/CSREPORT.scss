@@ -1,5 +1,5 @@
 @media only screen and (max-width: 3000px) {
-  .inspectionreport {
+  .csreport {
     display: flex;
     flex-direction: column;
     .title {
@@ -52,7 +52,7 @@
         border-radius: 5px;
         height: 4vh;
         gap: 20px;
-        background-image: linear-gradient(0deg, #afd3d1, #a4ec51);
+        background-image: linear-gradient(0deg, #ffec7f, #e98e65);
         .searchbutton {
           background-color: #2181a7;
           /* Green */
@@ -130,8 +130,7 @@
             width: 100%;
             height: 100%;
             flex: 1;
-            margin-bottom: 20px;
-            
+            margin-bottom: 20px;            
             .dailygraph {
               display: flex;
               flex-direction: column;
@@ -172,7 +171,7 @@
           height: 100%;
           flex: 1;
           margin-bottom: 20px;
-          background-image: linear-gradient(0deg, #aff5a1, #ffffff);
+          background-image: linear-gradient(0deg,   #ebb5fc,#ffffff);
           .dailygraph {
             display: flex;
             flex-direction: column;
@@ -413,7 +412,7 @@
   }
 }
 @media only screen and (max-width: 768px) {
-  .inspectionreport {
+  .csreport {
     display: flex;
     flex-direction: column;
     .doanhthureport {

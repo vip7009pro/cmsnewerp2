@@ -10,7 +10,7 @@ import CustomerPOBalanceByType from "../../../components/DataTable/CustomerPOBal
 import "./CSREPORT.scss";
 import InspectionWorstTable from "../../../components/DataTable/InspectionWorstTable";
 import ChartInspectionWorst from "../../../components/Chart/ChartInspectionWorst";
-import { CS_CONFIRM_TRENDING_DATA, CodeListData, DEFECT_TRENDING_DATA, DailyPPMData, FCSTAmountData, InspectSummary, MonthlyPPMData, PATROL_HEADER_DATA, WEB_SETTING_DATA, WeeklyPPMData, WidgetData_POBalanceSummary, WorstData, YearlyPPMData } from "../../../api/GlobalInterface";
+import { CS_CONFIRM_BY_CUSTOMER_DATA, CS_CONFIRM_TRENDING_DATA, CS_REDUCE_AMOUNT_DATA, CodeListData, DEFECT_TRENDING_DATA, DailyPPMData, FCSTAmountData, InspectSummary, MonthlyPPMData, PATROL_HEADER_DATA, WEB_SETTING_DATA, WeeklyPPMData, WidgetData_POBalanceSummary, WorstData, YearlyPPMData } from "../../../api/GlobalInterface";
 import CIRCLE_COMPONENT from "../../qlsx/QLSXPLAN/CAPA/CIRCLE_COMPONENT/CIRCLE_COMPONENT";
 import { deBounce, nFormatter } from "../../../api/GlobalFunction";
 import { Autocomplete, Checkbox, FormControlLabel, FormGroup, TextField, Typography, createFilterOptions } from "@mui/material";
@@ -26,6 +26,12 @@ import WidgetCS from "../../../components/Widget/WidgetCS";
 import CSDailyConfirm from "../../../components/Chart/CSDailyConfirm";
 import CSWeeklyConfirm from "../../../components/Chart/CSWeeklyConfirm";
 import CSMonthlyConfirm from "../../../components/Chart/CSMonthlyConfirm";
+import CSIssueChart from "../../../components/Chart/CSIssueChart";
+import CSIssuePICChart from "../../../components/Chart/CSIssuePICChart";
+import CSDDailySavingChart from "../../../components/Chart/CSDDailySavingChart";
+import CSWeeklySavingChart from "../../../components/Chart/CSWeeklySavingChart";
+import CSMonthlySavingChart from "../../../components/Chart/CSMonthlySavingChart";
+import CSYearlySavingChart from "../../../components/Chart/CSYearlySavingChart";
 const CSREPORT = () => {
   const [dailyppm1, setDailyPPM1] = useState<DailyPPMData[]>([]);
   const [weeklyppm1, setWeeklyPPM1] = useState<WeeklyPPMData[]>([]);
@@ -45,14 +51,21 @@ const CSREPORT = () => {
   const [ng_type, setNg_Type] = useState('ALL');
   const [worstdatatable, setWorstDataTable] = useState<Array<WorstData>>([]);
   const [inspectSummary, setInspectSummary] = useState<InspectSummary[]>([]);
-  const [dailyDefectTrendingData, setDailyDefectTrendingData] = useState<DEFECT_TRENDING_DATA[]>([]);
   const [dailyFcostData, setDailyFcostData] = useState<InspectSummary[]>([]);
   const [weeklyFcostData, setWeeklyFcostData] = useState<InspectSummary[]>([]);
   const [monthlyFcostData, setMonthlyFcostData] = useState<InspectSummary[]>([]);
   const [annualyFcostData, setAnnualyFcostData] = useState<InspectSummary[]>([]);
+  const [csConfirmDataByCustomer, setCsConfirmDataByCustomer] = useState<CS_CONFIRM_BY_CUSTOMER_DATA[]>([]);
+  const [csConfirmDataByPIC, setCsConfirmDataByPIC] = useState<CS_CONFIRM_BY_CUSTOMER_DATA[]>([]);
   const [codeList, setCodeList] = useState<CodeListData[]>([]);
   const [searchCodeArray, setSearchCodeArray] = useState<string[]>([]);
   const [patrolheaderdata, setPatrolHeaderData] = useState<PATROL_HEADER_DATA[]>([]);
+
+  const [csDailyReduceAmount, setCSDailyReduceAmount] = useState<CS_REDUCE_AMOUNT_DATA[]>([]);
+  const [csWeeklyReduceAmount, setCSWeeklyReduceAmount] = useState<CS_REDUCE_AMOUNT_DATA[]>([]);
+  const [csMonthlyReduceAmount, setCSMonthlyReduceAmount] = useState<CS_REDUCE_AMOUNT_DATA[]>([]);
+  const [csYearlyReduceAmount, setCSYearlyReduceAmount] = useState<CS_REDUCE_AMOUNT_DATA[]>([]);
+
   const [selectedCode, setSelectedCode] = useState<CodeListData | null>({
     G_CODE: "6A00001B",
     G_NAME: "GT-I9500_SJ68-01284A",
@@ -65,132 +78,6 @@ const CSREPORT = () => {
     matchFrom: "any",
     limit: 100,
   });
-  const getPatrolHeaderData = async (from_date: string, to_date: string) => {
-    let td = moment().add(0, "day").format("YYYY-MM-DD");
-    let frd = moment().add(-12, "day").format("YYYY-MM-DD");
-    await generalQuery("getpatrolheader", {
-      FROM_DATE: df ? frd : fromdate,
-      TO_DATE: df ? td : todate,
-    })
-      .then((response) => {
-        //console.log(response.data);
-        if (response.data.tk_status !== "NG") {
-          const loadeddata: PATROL_HEADER_DATA[] = response.data.data.map(
-            (element: PATROL_HEADER_DATA, index: number) => {
-              return {
-                ...element,
-              };
-            }
-          );
-          //console.log(loadeddata);          
-          setPatrolHeaderData(loadeddata);
-        } else {
-          //Swal.fire("Thông báo", "Lỗi BOM SX: " + response.data.message, "error");
-          setPatrolHeaderData([]);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
-  const handleGetInspectionWorst = async (from_date: string, to_date: string, worst_by: string, ng_type: string, listCode: string[]) => {
-    let td = moment().add(0, "day").format("YYYY-MM-DD");
-    let frd = moment().add(-7, "day").format("YYYY-MM-DD");
-    generalQuery("getInspectionWorstTable", {
-      FROM_DATE: df ? frd : fromdate,
-      TO_DATE: df ? td : todate,
-      WORSTBY: worst_by,
-      NG_TYPE: ng_type,
-      codeArray: df ? [] : listCode
-    })
-      .then((response) => {
-        if (response.data.tk_status !== "NG") {
-          //console.log(response.data.data);
-          let loadeddata = response.data.data.map(
-            (element: WorstData, index: number) => {
-              return {
-                ...element,
-                NG_QTY: Number(element.NG_QTY),
-                NG_AMOUNT: Number(element.NG_AMOUNT),
-                id: index
-              };
-            }
-          );
-          //console.log(loadeddata);
-          setWorstDataTable(loadeddata);
-        } else {
-          Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
-  const handle_getInspectSummary = async (from_date: string, to_date: string, listCode: string[]) => {
-    let td = moment().add(0, "day").format("YYYY-MM-DD");
-    let frd = moment().add(-7, "day").format("YYYY-MM-DD");
-    await generalQuery("getInspectionSummary", {
-      FROM_DATE: df ? frd : from_date,
-      TO_DATE: df ? td : to_date,
-      codeArray: listCode
-    })
-      .then((response) => {
-        //console.log(response.data.data);
-        if (response.data.tk_status !== "NG") {
-          const loadeddata: InspectSummary[] = response.data.data.map(
-            (element: InspectSummary, index: number) => {
-              return {
-                ...element,
-                T_NG_AMOUNT: element.P_NG_AMOUNT + element.M_NG_AMOUNT,
-                T_NG_QTY: element.P_NG_QTY + element.M_NG_QTY,
-                M_RATE: element.ISP_TT_QTY !== 0 ? Number(element.M_NG_QTY) / Number(element.ISP_TT_QTY) : 0,
-                P_RATE: element.ISP_TT_QTY !== 0 ? Number(element.P_NG_QTY) / Number(element.ISP_TT_QTY) : 0,
-                T_RATE: element.ISP_TT_QTY !== 0 ? (Number(element.M_NG_QTY) + Number(element.P_NG_QTY)) / Number(element.ISP_TT_QTY) : 0,
-                M_A_RATE: element.ISP_TT_QTY !== 0 ? Number(element.M_NG_AMOUNT) / Number(element.ISP_TT_AMOUNT) : 0,
-                P_A_RATE: element.ISP_TT_QTY !== 0 ? Number(element.P_NG_AMOUNT) / Number(element.ISP_TT_AMOUNT) : 0,
-                T_A_RATE: element.ISP_TT_QTY !== 0 ? Number(element.P_NG_AMOUNT + element.M_NG_AMOUNT) / Number(element.ISP_TT_AMOUNT) : 0,
-              };
-            },
-          );
-          //console.log(loadeddata);
-          setInspectSummary(loadeddata);
-        } else {
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }
-  const handle_getDailyDefectTrending = async (from_date: string, to_date: string, listCode: string[]) => {
-    let td = moment().add(0, "day").format("YYYY-MM-DD");
-    let frd = moment().add(-14, "day").format("YYYY-MM-DD");
-    await generalQuery("dailyDefectTrending", {
-      FROM_DATE: df ? frd : from_date,
-      TO_DATE: df ? td : to_date,
-      codeArray: listCode
-    })
-      .then((response) => {
-        //console.log(response.data.data);
-        if (response.data.tk_status !== "NG") {
-          const loadeddata: DEFECT_TRENDING_DATA[] = response.data.data.map(
-            (element: DEFECT_TRENDING_DATA, index: number) => {
-              return {
-                ...element,
-                INSPECT_DATE: moment(element.INSPECT_DATE).format("YYYY-MM-DD"),
-                id: index
-              };
-            },
-          );
-          //console.log(loadeddata);
-          setDailyDefectTrendingData(loadeddata);
-        } else {
-          setDailyDefectTrendingData([]);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }
   const getcodelist = (G_NAME: string) => {
     generalQuery("selectcodeList", { G_NAME: G_NAME })
       .then((response) => {
@@ -206,130 +93,303 @@ const CSREPORT = () => {
   const handle_getCSDailyConfirmData = async (from_date: string, to_date: string, listCode: string[]) => {
     let td = moment().add(0, "day").format("YYYY-MM-DD");
     let frd = moment().add(-14, "day").format("YYYY-MM-DD");
-    await generalQuery("csdailyconfirmdata",{
+    await generalQuery("csdailyconfirmdata", {
       FROM_DATE: df ? frd : from_date,
       TO_DATE: df ? td : to_date,
       codeArray: listCode
-    } )
-          .then((response) => {
-            //console.log(response.data.data);
-            if (response.data.tk_status !== "NG") {
-              let loadeddata = response.data.data.map(
-                (element: CS_CONFIRM_TRENDING_DATA, index: number) => {
-                  return {
-                    ...element,
-                    CONFIRM_DATE: moment
-                      .utc(element.CONFIRM_DATE)
-                      .format("YYYY-MM-DD"),   
-                    TOTAL: element.C + element.K,                 
-                    id: index,
-                  };
-                },
-              );
-              //console.log(loadeddata);
-              setDailyPPM(loadeddata);             
-            } else {
-              setDailyPPM([]);             
-            }
-          })
-          .catch((error) => {
-            console.log(error);
-          });
-
+    })
+      .then((response) => {
+        //console.log(response.data.data);
+        if (response.data.tk_status !== "NG") {
+          let loadeddata = response.data.data.map(
+            (element: CS_CONFIRM_TRENDING_DATA, index: number) => {
+              return {
+                ...element,
+                CONFIRM_DATE: moment
+                  .utc(element.CONFIRM_DATE)
+                  .format("YYYY-MM-DD"),
+                TOTAL: element.C + element.K,
+                id: index,
+              };
+            },
+          );
+          //console.log(loadeddata);
+          setDailyPPM(loadeddata);
+        } else {
+          setDailyPPM([]);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   }
   const handle_getCSWeeklyConfirmData = async (from_date: string, to_date: string, listCode: string[]) => {
     let td = moment().add(0, "day").format("YYYY-MM-DD");
     let frd = moment().add(-70, "day").format("YYYY-MM-DD");
-    await generalQuery("csweeklyconfirmdata",{
+    await generalQuery("csweeklyconfirmdata", {
       FROM_DATE: df ? frd : from_date,
       TO_DATE: df ? td : to_date,
       codeArray: listCode
-    } )
-          .then((response) => {
-            //console.log(response.data.data);
-            if (response.data.tk_status !== "NG") {
-              let loadeddata = response.data.data.map(
-                (element: CS_CONFIRM_TRENDING_DATA, index: number) => {
-                  return {
-                    ...element,    
-                    TOTAL: element.C + element.K,                              
-                    id: index,
-                  };
-                },
-              );
-              //console.log(loadeddata);
-              setWeeklyPPM(loadeddata);             
-            } else {
-              setWeeklyPPM([]);             
-            }
-          })
-          .catch((error) => {
-            console.log(error);
-          });
-
+    })
+      .then((response) => {
+        //console.log(response.data.data);
+        if (response.data.tk_status !== "NG") {
+          let loadeddata = response.data.data.map(
+            (element: CS_CONFIRM_TRENDING_DATA, index: number) => {
+              return {
+                ...element,
+                TOTAL: element.C + element.K,
+                id: index,
+              };
+            },
+          );
+          //console.log(loadeddata);
+          setWeeklyPPM(loadeddata);
+        } else {
+          setWeeklyPPM([]);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   }
   const handle_getCSMonthlyConfirmData = async (from_date: string, to_date: string, listCode: string[]) => {
     let td = moment().add(0, "day").format("YYYY-MM-DD");
     let frd = moment().add(-365, "day").format("YYYY-MM-DD");
-    await generalQuery("csmonthlyconfirmdata",{
+    await generalQuery("csmonthlyconfirmdata", {
       FROM_DATE: df ? frd : from_date,
       TO_DATE: df ? td : to_date,
       codeArray: listCode
-    } )
-          .then((response) => {
-            //console.log(response.data.data);
-            if (response.data.tk_status !== "NG") {
-              let loadeddata = response.data.data.map(
-                (element: CS_CONFIRM_TRENDING_DATA, index: number) => {
-                  return {
-                    ...element,      
-                    TOTAL: element.C + element.K,                                
-                    id: index,
-                  };
-                },
-              );
-              //console.log(loadeddata);
-              setMonthlyPPM(loadeddata);             
-            } else {
-              setMonthlyPPM([]);             
-            }
-          })
-          .catch((error) => {
-            console.log(error);
-          });
-
+    })
+      .then((response) => {
+        //console.log(response.data.data);
+        if (response.data.tk_status !== "NG") {
+          let loadeddata = response.data.data.map(
+            (element: CS_CONFIRM_TRENDING_DATA, index: number) => {
+              return {
+                ...element,
+                TOTAL: element.C + element.K,
+                id: index,
+              };
+            },
+          );
+          //console.log(loadeddata);
+          setMonthlyPPM(loadeddata);
+        } else {
+          setMonthlyPPM([]);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   }
   const handle_getCSYearlyConfirmData = async (from_date: string, to_date: string, listCode: string[]) => {
     let td = moment().add(0, "day").format("YYYY-MM-DD");
     let frd = moment().add(-3650, "day").format("YYYY-MM-DD");
-    await generalQuery("csyearlyconfirmdata",{
+    await generalQuery("csyearlyconfirmdata", {
       FROM_DATE: df ? frd : from_date,
       TO_DATE: df ? td : to_date,
       codeArray: listCode
-    } )
-          .then((response) => {
-            //console.log(response.data.data);
-            if (response.data.tk_status !== "NG") {
-              let loadeddata = response.data.data.map(
-                (element: CS_CONFIRM_TRENDING_DATA, index: number) => {
-                  return {
-                    ...element,     
-                    TOTAL: element.C + element.K,                              
-                    id: index,
-                  };
-                },
-              );
-              //console.log(loadeddata);
-              setYearlyPPM(loadeddata);             
-            } else {
-              setYearlyPPM([]);             
-            }
-          })
-          .catch((error) => {
-            console.log(error);
-          });
-
+    })
+      .then((response) => {
+        //console.log(response.data.data);
+        if (response.data.tk_status !== "NG") {
+          let loadeddata = response.data.data.map(
+            (element: CS_CONFIRM_TRENDING_DATA, index: number) => {
+              return {
+                ...element,
+                TOTAL: element.C + element.K,
+                id: index,
+              };
+            },
+          );
+          //console.log(loadeddata);
+          setYearlyPPM(loadeddata);
+        } else {
+          setYearlyPPM([]);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   }
+  const handle_getCSConfirmDataByCustomer = async (from_date: string, to_date: string, listCode: string[]) => {
+    let td = moment().add(0, "day").format("YYYY-MM-DD");
+    let frd = moment().add(-14, "day").format("YYYY-MM-DD");
+    await generalQuery("csConfirmDataByCustomer", {
+      FROM_DATE: df ? frd : from_date,
+      TO_DATE: df ? td : to_date,
+      codeArray: listCode
+    })
+      .then((response) => {
+        //console.log(response.data.data);
+        if (response.data.tk_status !== "NG") {
+          let loadeddata = response.data.data.map(
+            (element: CS_CONFIRM_BY_CUSTOMER_DATA, index: number) => {
+              return {
+                ...element,
+                id: index,
+              };
+            },
+          );
+          //console.log(loadeddata);
+          setCsConfirmDataByCustomer(loadeddata);
+        } else {
+          setCsConfirmDataByCustomer([]);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+  const handle_getCSConfirmDataByPIC = async (from_date: string, to_date: string, listCode: string[]) => {
+    let td = moment().add(0, "day").format("YYYY-MM-DD");
+    let frd = moment().add(-14, "day").format("YYYY-MM-DD");
+    await generalQuery("csConfirmDataByPIC", {
+      FROM_DATE: df ? frd : from_date,
+      TO_DATE: df ? td : to_date,
+      codeArray: listCode
+    })
+      .then((response) => {
+        //console.log(response.data.data);
+        if (response.data.tk_status !== "NG") {
+          let loadeddata = response.data.data.map(
+            (element: CS_CONFIRM_BY_CUSTOMER_DATA, index: number) => {
+              return {
+                ...element,
+                id: index,
+              };
+            },
+          );
+          //console.log(loadeddata);
+          setCsConfirmDataByPIC(loadeddata);
+        } else {
+          setCsConfirmDataByPIC([]);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+  const handle_getCSDailyReduceAmount  = async (from_date: string, to_date: string, listCode: string[]) => {
+    let td = moment().add(0, "day").format("YYYY-MM-DD");
+    let frd = moment().add(-14, "day").format("YYYY-MM-DD");
+    await generalQuery("csdailyreduceamount", {
+      FROM_DATE: df ? frd : from_date,
+      TO_DATE: df ? td : to_date,
+      codeArray: listCode
+    })
+      .then((response) => {
+        //console.log(response.data.data);
+        if (response.data.tk_status !== "NG") {
+          let loadeddata = response.data.data.map(
+            (element: CS_REDUCE_AMOUNT_DATA, index: number) => {
+              return {
+                ...element,
+                CONFIRM_DATE: moment(element.CONFIRM_DATE).format("YYYY-MM-DD"),
+                id: index,
+              };
+            },
+          );
+          //console.log(loadeddata);
+          setCSDailyReduceAmount(loadeddata);
+        } else {
+          setCSDailyReduceAmount([]);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+  const handle_getCSWeeklyReduceAmount  = async (from_date: string, to_date: string, listCode: string[]) => {
+    let td = moment().add(0, "day").format("YYYY-MM-DD");
+    let frd = moment().add(-70, "day").format("YYYY-MM-DD");
+    await generalQuery("csweeklyreduceamount", {
+      FROM_DATE: df ? frd : from_date,
+      TO_DATE: df ? td : to_date,
+      codeArray: listCode
+    })
+      .then((response) => {
+        //console.log(response.data.data);
+        if (response.data.tk_status !== "NG") {
+          let loadeddata = response.data.data.map(
+            (element: CS_REDUCE_AMOUNT_DATA, index: number) => {
+              return {
+                ...element,
+                id: index,
+              };
+            },
+          );
+          //console.log(loadeddata);
+          setCSWeeklyReduceAmount(loadeddata);
+        } else {
+          setCSWeeklyReduceAmount([]);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+  const handle_getCSMonthlyReduceAmount  = async (from_date: string, to_date: string, listCode: string[]) => {
+    let td = moment().add(0, "day").format("YYYY-MM-DD");
+    let frd = moment().add(-365, "day").format("YYYY-MM-DD");
+    await generalQuery("csmonthlyreduceamount", {
+      FROM_DATE: df ? frd : from_date,
+      TO_DATE: df ? td : to_date,
+      codeArray: listCode
+    })
+      .then((response) => {
+        //console.log(response.data.data);
+        if (response.data.tk_status !== "NG") {
+          let loadeddata = response.data.data.map(
+            (element: CS_REDUCE_AMOUNT_DATA, index: number) => {
+              return {
+                ...element,
+                id: index,
+              };
+            },
+          );
+          //console.log(loadeddata);
+          setCSMonthlyReduceAmount(loadeddata);
+        } else {
+          setCSMonthlyReduceAmount([]);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+  const handle_getCSYearlyReduceAmount  = async (from_date: string, to_date: string, listCode: string[]) => {
+    let td = moment().add(0, "day").format("YYYY-MM-DD");
+    let frd = moment().add(-3650, "day").format("YYYY-MM-DD");
+    await generalQuery("csyearlyreduceamount", {
+      FROM_DATE: df ? frd : from_date,
+      TO_DATE: df ? td : to_date,
+      codeArray: listCode
+    })
+      .then((response) => {
+        //console.log(response.data.data);
+        if (response.data.tk_status !== "NG") {
+          let loadeddata = response.data.data.map(
+            (element: CS_REDUCE_AMOUNT_DATA, index: number) => {
+              return {
+                ...element,
+                id: index,
+              };
+            },
+          );
+          //console.log(loadeddata);
+          setCSYearlyReduceAmount(loadeddata);
+        } else {
+          setCSYearlyReduceAmount([]);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+
+
   const initFunction = async () => {
     Swal.fire({
       title: "Đang tải báo cáo",
@@ -341,15 +401,16 @@ const CSREPORT = () => {
       showConfirmButton: false,
     });
     Promise.all([
-     /*  handleGetInspectionWorst(fromdate, todate, worstby, ng_type, searchCodeArray),
-      handle_getInspectSummary(fromdate, todate, searchCodeArray),   
-      handle_getDailyDefectTrending(fromdate, todate, searchCodeArray),
-      getPatrolHeaderData(fromdate, todate), */
       handle_getCSDailyConfirmData(fromdate, todate, searchCodeArray),
       handle_getCSWeeklyConfirmData(fromdate, todate, searchCodeArray),
       handle_getCSMonthlyConfirmData(fromdate, todate, searchCodeArray),
       handle_getCSYearlyConfirmData(fromdate, todate, searchCodeArray),
-
+      handle_getCSConfirmDataByCustomer(fromdate, todate, searchCodeArray),
+      handle_getCSConfirmDataByPIC(fromdate, todate, searchCodeArray),
+      handle_getCSDailyReduceAmount(fromdate, todate, searchCodeArray),
+      handle_getCSWeeklyReduceAmount(fromdate, todate, searchCodeArray),
+      handle_getCSMonthlyReduceAmount(fromdate, todate, searchCodeArray),
+      handle_getCSYearlyReduceAmount(fromdate, todate, searchCodeArray),
     ]).then((values) => {
       Swal.fire("Thông báo", "Đã load xong báo cáo", 'success');
     });
@@ -359,7 +420,7 @@ const CSREPORT = () => {
     initFunction();
   }, []);
   return (
-    <div className="inspectionreport">
+    <div className="csreport">
       <div className="title">
         <span>CS REPORT</span>
       </div>
@@ -371,7 +432,7 @@ const CSREPORT = () => {
               type="date"
               value={fromdate.slice(0, 10)}
               onChange={(e) => {
-                setFromDate(e.target.value);               
+                setFromDate(e.target.value);
               }}
             ></input>
           </label>
@@ -487,7 +548,7 @@ const CSREPORT = () => {
             Search
           </button>
         </div>
-        <span className="section_title">1. CS OverView</span>
+        <span className="section_title">1. CS Issue OverView</span>
         <div className="revenuewidget">
           <div className="revenuwdg">
             <WidgetCS
@@ -497,7 +558,7 @@ const CSREPORT = () => {
               botColor="#b3ecff"
               material_ppm={dailyppm[0]?.C}
               process_ppm={dailyppm[0]?.K}
-              total_ppm={dailyppm[0]?.C+dailyppm[0]?.K}
+              total_ppm={dailyppm[0]?.C + dailyppm[0]?.K}
             />
           </div>
           <div className="revenuwdg">
@@ -508,7 +569,7 @@ const CSREPORT = () => {
               botColor="#b3ecff"
               material_ppm={weeklyppm[0]?.C}
               process_ppm={weeklyppm[0]?.K}
-              total_ppm={weeklyppm[0]?.C+weeklyppm[0]?.K}
+              total_ppm={weeklyppm[0]?.C + weeklyppm[0]?.K}
             />
           </div>
           <div className="revenuwdg">
@@ -519,7 +580,7 @@ const CSREPORT = () => {
               botColor="#b3ecff"
               material_ppm={monthlyppm[0]?.C}
               process_ppm={monthlyppm[0]?.K}
-              total_ppm={monthlyppm[0]?.C+monthlyppm[0]?.K}
+              total_ppm={monthlyppm[0]?.C + monthlyppm[0]?.K}
             />
           </div>
           <div className="revenuwdg">
@@ -530,14 +591,14 @@ const CSREPORT = () => {
               botColor="#b3ecff"
               material_ppm={yearlyppm[0]?.C}
               process_ppm={yearlyppm[0]?.K}
-              total_ppm={yearlyppm[0]?.C+yearlyppm[0]?.K}
+              total_ppm={yearlyppm[0]?.C + yearlyppm[0]?.K}
             />
           </div>
         </div>
         <br></br>
         <hr></hr>
         <div className="graph">
-          <span className="section_title">2. Issue Trending</span>
+          <span className="section_title">2. Customer Issue Feedback Trending</span>
           <div className="dailygraphtotal">
             <div className="dailygraphtotal">
               <div className="dailygraph">
@@ -576,19 +637,60 @@ const CSREPORT = () => {
               </div>
             </div>
           </div>
-          <span className="subsection_title">2.5 Defects Trending</span>
+          <span className="subsection_title">2.5 Issue by Customer and PICs</span>
           <div className="dailygraphtotal">
             <div className="dailygraph" style={{ height: '600px' }}>
-              <InspectDailyDefectTrending dldata={[...dailyDefectTrendingData].reverse()} />
+              <CSIssueChart data={csConfirmDataByCustomer} />
+            </div>
+            <div className="dailygraph" style={{ height: '600px' }}>
+              <CSIssuePICChart data={csConfirmDataByPIC} />
             </div>
           </div>
-          <span className="section_title">3. F-COST Status</span>
-          <span className="subsection_title">F-Cost Summary</span>
-          <FCOSTTABLE data={inspectSummary} />
-          <span className="subsection_title">F-Cost Trending</span>
+          <span className="section_title">3. Cost Saving</span>        
+          <span className="subsection_title">Cost Saving Trending</span>         
           <div className="fcosttrending">
             <div className="fcostgraph">
+            <div className="dailygraph">
+                <span className="subsection">Daily Saving</span>
+                <CSDDailySavingChart
+                  dldata={[...csDailyReduceAmount].reverse()}
+                  processColor="#00da5b"
+                  materialColor="#41d5fa"
+                />
+              </div>
               <div className="dailygraph">
+                <span className="subsection">Weekly Saving</span>
+                <CSWeeklySavingChart
+                  dldata={[...csWeeklyReduceAmount].reverse()}
+                  processColor="#00da5b"
+                  materialColor="#41d5fa"
+                />
+              </div>
+              <div className="dailygraph">
+                <span className="subsection">Monthly Saving</span>
+                <CSMonthlySavingChart
+                  dldata={[...csMonthlyReduceAmount].reverse()}
+                  processColor="#00da5b"
+                  materialColor="#41d5fa"
+                />
+              </div>
+              <div className="dailygraph">
+                <span className="subsection">Yearly Saving</span>
+                <CSYearlySavingChart
+                  dldata={[...csYearlyReduceAmount].reverse()}
+                  processColor="#00da5b"
+                  materialColor="#41d5fa"
+                />
+              </div>
+            </div>
+          </div>
+          <span className="section_title">4. F-COST Status</span>
+          <span className="subsection_title">F-Cost Summary</span>
+          <FCOSTTABLE data={inspectSummary} />
+          <span className="subsection_title">RMA Amount Trending</span>          
+          <div className="fcosttrending">
+            <div className="fcostgraph">
+            <div className="dailygraph">
                 <span className="subsection">Daily F-Cost</span>
                 <InspectionDailyFcost
                   dldata={[...dailyFcostData].reverse()}
@@ -596,10 +698,6 @@ const CSREPORT = () => {
                   materialColor="#41d5fa"
                 />
               </div>
-            </div>
-          </div>
-          <div className="fcosttrending">
-            <div className="fcostgraph">
               <div className="dailygraph">
                 <span className="subsection">Weekly F-Cost</span>
                 <InspectionWeeklyFcost

@@ -1105,10 +1105,10 @@ const InvoiceManager = () => {
     matchFrom: "any",
     limit: 100,
   });
-  const updateInvoiceNo = async (invoice_no: string) => {
-    if (invoicedatatablefilter.current.length >= 1) {
+  const updateInvoiceNo = async (invoice_no: string) => {    
+    if (invoicedatatablefilter.current.length >= 1) {      
       let err_code: boolean = false;
-      for (let i = 0; i < invoicedatatablefilter.current.length; i++) {
+      for (let i = 0; i < invoicedatatablefilter.current.length; i++) {                
         if (invoicedatatablefilter.current[i].EMPL_NO === userData?.EMPL_NO) {
           await generalQuery("update_invoice_no", {
             DELIVERY_ID: invoicedatatablefilter.current[i].DELIVERY_ID,

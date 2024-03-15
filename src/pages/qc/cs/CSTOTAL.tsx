@@ -173,8 +173,8 @@ const CSTOTAL = () => {
           className="mininavitem"
           onClick={() => setNav(2)}
           style={{
-            backgroundColor: selection.tab4 === true ? "#02c712" : "#abc9ae",
-            color: selection.tab4 === true ? "yellow" : "yellow",
+            backgroundColor: selection.tab2 === true ? "#02c712" : "#abc9ae",
+            color: selection.tab2 === true ? "yellow" : "yellow",
           }}
         >
           <span className="mininavtext">BÁO CÁO CS</span>
