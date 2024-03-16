@@ -106,16 +106,16 @@ const CSDDailySavingChart = ({
         formatter={(value, entry) => (
           <span style={{fontSize:'0.7rem', fontWeight:'bold'}}>{value}</span>
         )}/>       
-        <Bar
-          stackId='a'
+        <Line
+          
           yAxisId='left-axis'
           type='monotone'
           dataKey='REDUCE_AMOUNT'
-          stroke='white'
+          stroke='#07BCFA'
           fill={processColor}          
         >
           <LabelList dataKey="REDUCE_AMOUNT" fill="black" position="top" formatter={labelFormatter} fontSize={"0.7rem"} />
-        </Bar>        
+        </Line>        
       </ComposedChart>
     </CustomResponsiveContainer>
   );

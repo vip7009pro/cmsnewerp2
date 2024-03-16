@@ -10,7 +10,7 @@ import CustomerPOBalanceByType from "../../../components/DataTable/CustomerPOBal
 import "./CSREPORT.scss";
 import InspectionWorstTable from "../../../components/DataTable/InspectionWorstTable";
 import ChartInspectionWorst from "../../../components/Chart/ChartInspectionWorst";
-import { CS_CONFIRM_BY_CUSTOMER_DATA, CS_CONFIRM_TRENDING_DATA, CS_REDUCE_AMOUNT_DATA, CodeListData, DEFECT_TRENDING_DATA, DailyPPMData, FCSTAmountData, InspectSummary, MonthlyPPMData, PATROL_HEADER_DATA, WEB_SETTING_DATA, WeeklyPPMData, WidgetData_POBalanceSummary, WorstData, YearlyPPMData } from "../../../api/GlobalInterface";
+import { CS_CONFIRM_BY_CUSTOMER_DATA, CS_CONFIRM_TRENDING_DATA, CS_REDUCE_AMOUNT_DATA, CS_RMA_AMOUNT_DATA, CodeListData, DEFECT_TRENDING_DATA, DailyPPMData, FCSTAmountData, InspectSummary, MonthlyPPMData, PATROL_HEADER_DATA, WEB_SETTING_DATA, WeeklyPPMData, WidgetData_POBalanceSummary, WorstData, YearlyPPMData } from "../../../api/GlobalInterface";
 import CIRCLE_COMPONENT from "../../qlsx/QLSXPLAN/CAPA/CIRCLE_COMPONENT/CIRCLE_COMPONENT";
 import { deBounce, nFormatter } from "../../../api/GlobalFunction";
 import { Autocomplete, Checkbox, FormControlLabel, FormGroup, TextField, Typography, createFilterOptions } from "@mui/material";
@@ -65,6 +65,11 @@ const CSREPORT = () => {
   const [csWeeklyReduceAmount, setCSWeeklyReduceAmount] = useState<CS_REDUCE_AMOUNT_DATA[]>([]);
   const [csMonthlyReduceAmount, setCSMonthlyReduceAmount] = useState<CS_REDUCE_AMOUNT_DATA[]>([]);
   const [csYearlyReduceAmount, setCSYearlyReduceAmount] = useState<CS_REDUCE_AMOUNT_DATA[]>([]);
+
+  const [csDailyRMAAmount, setCSDailyRMAAmount] = useState<CS_RMA_AMOUNT_DATA[]>([]);
+  const [csWeeklyRMAAmount, setCSWeeklyRMAAmount] = useState<CS_RMA_AMOUNT_DATA[]>([]);
+  const [csMonthlyRMAAmount, setCSDMonthyRMAAmount] = useState<CS_RMA_AMOUNT_DATA[]>([]);
+  const [csYearlyRMAAmount, setCSYearlyRMAAmount] = useState<CS_RMA_AMOUNT_DATA[]>([]);
 
   const [selectedCode, setSelectedCode] = useState<CodeListData | null>({
     G_CODE: "6A00001B",
@@ -389,7 +394,36 @@ const CSREPORT = () => {
       });
   }
 
-
+  const handle_getCSDailyRMAAmount  = async (from_date: string, to_date: string, listCode: string[]) => {
+    let td = moment().add(0, "day").format("YYYY-MM-DD");
+    let frd = moment().add(-14, "day").format("YYYY-MM-DD");
+    await generalQuery("csdailyRMAAmount", {
+      FROM_DATE: df ? frd : from_date,
+      TO_DATE: df ? td : to_date,
+      codeArray: listCode
+    })
+      .then((response) => {
+        //console.log(response.data.data);
+        if (response.data.tk_status !== "NG") {
+          let loadeddata = response.data.data.map(
+            (element: CS_RMA_AMOUNT_DATA, index: number) => {
+              return {
+                ...element,
+                RT_DATE: moment(element.RT_DATE).format("YYYY-MM-DD"),
+                id: index,
+              };
+            },
+          );
+          //console.log(loadeddata);
+          setCSDailyRMAAmount(loadeddata);
+        } else {
+          setCSDailyRMAAmount([]);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
   const initFunction = async () => {
     Swal.fire({
       title: "Đang tải báo cáo",
@@ -687,7 +721,7 @@ const CSREPORT = () => {
           <span className="section_title">4. F-COST Status</span>
           <span className="subsection_title">F-Cost Summary</span>
           <FCOSTTABLE data={inspectSummary} />
-          <span className="subsection_title">RMA Amount Trending</span>          
+          <span className="subsection_title">RMA Amount Trending</span>
           <div className="fcosttrending">
             <div className="fcostgraph">
             <div className="dailygraph">

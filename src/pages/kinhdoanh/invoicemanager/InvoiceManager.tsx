@@ -123,6 +123,7 @@ const InvoiceManager = () => {
   >([]);
  
   const invoicedatatablefilter = useRef<InvoiceTableData[]>([]);
+  const invoice_no_ref = useRef<string>("");
   const clickedRow = useRef<any>(null);
   const [selectedID, setSelectedID] = useState<number | null>();
   const [showhidePivotTable, setShowHidePivotTable] = useState(false);
@@ -1108,24 +1109,27 @@ const InvoiceManager = () => {
   const updateInvoiceNo = async (invoice_no: string) => {    
     if (invoicedatatablefilter.current.length >= 1) {      
       let err_code: boolean = false;
-      for (let i = 0; i < invoicedatatablefilter.current.length; i++) {                
+      for (let i = 0; i < invoicedatatablefilter.current.length; i++) {         
+        console.log(userData?.EMPL_NO);       
+        console.log(invoicedatatablefilter.current[i].EMPL_NO);       
+        console.log('invoice_no',invoice_no);       
         if (invoicedatatablefilter.current[i].EMPL_NO === userData?.EMPL_NO) {
           await generalQuery("update_invoice_no", {
             DELIVERY_ID: invoicedatatablefilter.current[i].DELIVERY_ID,
-            INVOICE_NO: invoice_no
+            INVOICE_NO: invoice_no_ref.current
           })
-            .then((response) => {
-              console.log(response.data.tk_status);
-              if (response.data.tk_status !== "NG") {
-                //Swal.fire("Thông báo", "Delete Po thành công", "success");
-              } else {
-                //Swal.fire("Thông báo", "Update PO thất bại: " +response.data.message , "error");
-                err_code = true;
-              }
-            })
-            .catch((error) => {
-              console.log(error);
-            });
+          .then((response) => {
+            console.log(response.data.tk_status);
+            if (response.data.tk_status !== "NG") {
+              //Swal.fire("Thông báo", "Delete Po thành công", "success");
+            } else {
+              //Swal.fire("Thông báo", "Update PO thất bại: " +response.data.message , "error");
+              err_code = true;
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
         }
       }
       if (!err_code) {
@@ -1609,7 +1613,7 @@ const InvoiceManager = () => {
                 <IconButton
                   className="buttonIcon"
                   onClick={() => {
-                    updateInvoiceNo(invoice_no);                    
+                    updateInvoiceNo(invoice_no_ref.current);                    
                   }}
                 >
                   <MdUpdate color="#dc3240" size={15} />
@@ -2131,7 +2135,10 @@ const InvoiceManager = () => {
                       type="text"
                       placeholder="số invoice"
                       value={invoice_no}
-                      onChange={(e) => setInvoice_No(e.target.value)}
+                      onChange={(e) => {
+                        setInvoice_No(e.target.value)
+                        invoice_no_ref.current = e.target.value;
+                      }}
                     ></input>
                   </label>
                 </div>

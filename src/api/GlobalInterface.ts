@@ -3492,3 +3492,12 @@ export interface CS_REDUCE_AMOUNT_DATA {
   CONFIRM_YEAR?: number,
   REDUCE_AMOUNT: number
 }
+export interface CS_RMA_AMOUNT_DATA {
+  RT_DATE?: string;
+  RT_YW?: string;
+  RT_YM?: string;
+  RT_YEAR?: number;
+  HT: number;
+  MD: number;
+  CD: number;
+}
