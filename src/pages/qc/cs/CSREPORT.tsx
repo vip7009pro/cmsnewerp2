@@ -36,6 +36,7 @@ import CSDDailyRMAChart from "../../../components/Chart/CSDDailyRMAChart";
 import CSDWeeklyRMAChart from "../../../components/Chart/CSDWeeklyRMAChart";
 import CSMonthlyRMAChart from "../../../components/Chart/CSMonthlyRMAChart";
 import CSYearlyRMAChart from "../../../components/Chart/CSYearlyRMAChart";
+import CSYearlyConfirm from "../../../components/Chart/CSYearlyConfirm";
 const CSREPORT = () => {
   const [dailyppm1, setDailyPPM1] = useState<DailyPPMData[]>([]);
   const [weeklyppm1, setWeeklyPPM1] = useState<WeeklyPPMData[]>([]);
@@ -412,6 +413,7 @@ const CSREPORT = () => {
             (element: CS_RMA_AMOUNT_DATA, index: number) => {
               return {
                 ...element,
+                TT: element.CD + element.HT + element.MD,
                 RT_DATE: moment(element.RT_DATE).format("YYYY-MM-DD"),
                 id: index,
               };
@@ -442,6 +444,7 @@ const CSREPORT = () => {
             (element: CS_RMA_AMOUNT_DATA, index: number) => {
               return {
                 ...element,
+                TT: element.CD + element.HT + element.MD,
                 RT_DATE: moment(element.RT_DATE).format("YYYY-MM-DD"),
                 id: index,
               };
@@ -472,6 +475,7 @@ const CSREPORT = () => {
             (element: CS_RMA_AMOUNT_DATA, index: number) => {
               return {
                 ...element,
+                TT: element.CD + element.HT + element.MD,
                 RT_DATE: moment(element.RT_DATE).format("YYYY-MM-DD"),
                 id: index,
               };
@@ -502,6 +506,7 @@ const CSREPORT = () => {
             (element: CS_RMA_AMOUNT_DATA, index: number) => {
               return {
                 ...element,
+                TT: element.CD + element.HT + element.MD,
                 RT_DATE: moment(element.RT_DATE).format("YYYY-MM-DD"),
                 id: index,
               };
@@ -760,7 +765,7 @@ const CSREPORT = () => {
               </div>
               <div className="dailygraph">
                 <span className="subsection">Yearly Issue</span>
-                <CSDailyConfirm
+                <CSYearlyConfirm
                   dldata={[...yearlyppm].reverse()}
                   processColor="#eeeb30"
                   materialColor="#53eb34"

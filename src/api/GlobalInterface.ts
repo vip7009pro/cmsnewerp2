@@ -3500,4 +3500,5 @@ export interface CS_RMA_AMOUNT_DATA {
   HT: number;
   MD: number;
   CD: number;
+  TT: number;
 }

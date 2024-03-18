@@ -21,19 +21,17 @@ import {
   nFormatter,
 } from "../../api/GlobalFunction";
 import { CS_REDUCE_AMOUNT_DATA, DailyData, FcostData } from "../../api/GlobalInterface";
-
 const CSMonthlySavingChart = ({
   dldata,
   processColor,
   materialColor,
-}: {dldata: CS_REDUCE_AMOUNT_DATA[], processColor: string, materialColor: string}) => {
+}: { dldata: CS_REDUCE_AMOUNT_DATA[], processColor: string, materialColor: string }) => {
   const formatCash = (n: number) => {
     return nFormatter(n, 1);
   };
   const labelFormatter = (value: number) => {
-    return formatCash(value) + ' $'; 
+    return formatCash(value) + ' $';
   };
-
   const CustomTooltip = ({
     active,
     payload,
@@ -53,7 +51,7 @@ const CSMonthlySavingChart = ({
             borderRadius: 5,
           }}
         >
-          <p>Tháng {label}:</p>          
+          <p>Tháng {label}:</p>
           <p className='label'>
             Saving Amount: {`${payload[0]?.value.toLocaleString("en-US")}`} $
           </p>
@@ -62,7 +60,7 @@ const CSMonthlySavingChart = ({
     }
     return null;
   };
-  useEffect(() => {}, []);
+  useEffect(() => { }, []);
   return (
     <CustomResponsiveContainer>
       <ComposedChart
@@ -77,8 +75,8 @@ const CSMonthlySavingChart = ({
         }}
       >
         <CartesianGrid strokeDasharray='3 3' className='chartGrid' />
-        <XAxis dataKey='CONFIRM_YM' height={40} tick={{fontSize:'0.7rem'}}>         
-          <Label value='Tháng' offset={0} position='insideBottom' style={{fontWeight:'normal', fontSize:'0.7rem'}} />
+        <XAxis dataKey='CONFIRM_YM' height={40} tick={{ fontSize: '0.7rem' }}>
+          <Label value='Tháng' offset={0} position='insideBottom' style={{ fontWeight: 'normal', fontSize: '0.7rem' }} />
         </XAxis>
         <YAxis
           yAxisId='left-axis'
@@ -86,9 +84,9 @@ const CSMonthlySavingChart = ({
             value: "Saved Amount",
             angle: -90,
             position: "insideLeft",
-            fontSize:'0.7rem'    
+            fontSize: '0.7rem'
           }}
-          tick={{fontSize:'0.7rem'}}
+          tick={{ fontSize: '0.7rem' }}
           tickFormatter={(value) =>
             new Intl.NumberFormat("en", {
               notation: "compact",
@@ -98,24 +96,23 @@ const CSMonthlySavingChart = ({
           tickCount={7}
         />
         <Tooltip content={<CustomTooltip />} />
-        <Legend 
-        verticalAlign="top"
-        align="center"
-        iconSize={15}
-        iconType="diamond"
-        formatter={(value, entry) => (
-          <span style={{fontSize:'0.7rem', fontWeight:'bold'}}>{value}</span>
-        )}/>       
-       <Line
-          
+        <Legend
+          verticalAlign="top"
+          align="center"
+          iconSize={15}
+          iconType="diamond"
+          formatter={(value, entry) => (
+            <span style={{ fontSize: '0.7rem', fontWeight: 'bold' }}>{value}</span>
+          )} />
+        <Line
           yAxisId='left-axis'
           type='monotone'
           dataKey='REDUCE_AMOUNT'
           stroke='#07BCFA'
-          fill={processColor}          
+          fill={processColor}
         >
           <LabelList dataKey="REDUCE_AMOUNT" fill="black" position="top" formatter={labelFormatter} fontSize={"0.7rem"} />
-        </Line>         
+        </Line>
       </ComposedChart>
     </CustomResponsiveContainer>
   );

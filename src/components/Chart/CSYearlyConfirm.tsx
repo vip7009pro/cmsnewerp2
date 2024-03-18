@@ -20,19 +20,19 @@ import {
   CustomResponsiveContainer,
   nFormatter,
 } from "../../api/GlobalFunction";
-import { CS_REDUCE_AMOUNT_DATA, CS_RMA_AMOUNT_DATA, DailyData, FcostData } from "../../api/GlobalInterface";
+import { CS_CONFIRM_TRENDING_DATA, DailyData } from "../../api/GlobalInterface";
 
-const CSYearlyRMAChart = ({
+const CSYearlyConfirm = ({
   dldata,
-  HT,
-  CD,
-  MD
-}: {dldata: CS_RMA_AMOUNT_DATA[], HT: string, CD: string, MD: string}) => {
+  processColor,
+  materialColor,
+}:  {dldata: CS_CONFIRM_TRENDING_DATA[], processColor: string, materialColor: string}) => {
   const formatCash = (n: number) => {
     return nFormatter(n, 1);
   };
+
   const labelFormatter = (value: number) => {
-    return formatCash(value) + ' $'; 
+    return formatCash(value); 
   };
 
   const CustomTooltip = ({
@@ -54,15 +54,15 @@ const CSYearlyRMAChart = ({
             borderRadius: 5,
           }}
         >
-          <p>Năm {label}:</p>          
+          <p>Năm {label}:</p>
           <p className='label'>
-            RMA HT Amount: {`${payload[0]?.value.toLocaleString("en-US")}`} $
+            CMS: {`${payload[1].value.toLocaleString("en-US")}`} issues
           </p>
           <p className='label'>
-            RMA CD Amount: {`${payload[1]?.value.toLocaleString("en-US")}`} $
+            CUSTOMER: {`${payload[2].value.toLocaleString("en-US")}`} issues
           </p>
           <p className='label'>
-            RMA MD Amount: {`${payload[2]?.value.toLocaleString("en-US")}`} $
+            TOTAL: {`${payload[0].value.toLocaleString("en-US")}`} issues
           </p>
         </div>
       );
@@ -84,13 +84,13 @@ const CSYearlyRMAChart = ({
         }}
       >
         <CartesianGrid strokeDasharray='3 3' className='chartGrid' />
-        <XAxis dataKey='RT_YEAR' height={40} tick={{fontSize:'0.7rem'}}>         
+        <XAxis dataKey='CONFIRM_YEAR' height={40} tick={{fontSize:'0.7rem'}}>         
           <Label value='Năm' offset={0} position='insideBottom' style={{fontWeight:'normal', fontSize:'0.7rem'}} />
         </XAxis>
         <YAxis
           yAxisId='left-axis'
           label={{
-            value: "Saved Amount",
+            value: "NG Rate",
             angle: -90,
             position: "insideLeft",
             fontSize:'0.7rem'    
@@ -100,7 +100,7 @@ const CSYearlyRMAChart = ({
             new Intl.NumberFormat("en", {
               notation: "compact",
               compactDisplay: "short",
-            }).format(value) + "$"
+            }).format(value)
           }
           tickCount={7}
         />
@@ -112,47 +112,38 @@ const CSYearlyRMAChart = ({
         iconType="diamond"
         formatter={(value, entry) => (
           <span style={{fontSize:'0.7rem', fontWeight:'bold'}}>{value}</span>
-        )}/>       
-        <Bar
-          stackId={'a'}
-          yAxisId='left-axis'
-          type='monotone'
-          dataKey='MD'
-          stroke='#1707fa'
-          fill={MD}
-        >
-          {/* <LabelList dataKey="MD" fill="black" position="top" formatter={labelFormatter} fontSize={"0.7rem"} /> */}
-        </Bar>
-        <Bar
-          stackId={'a'}
-          yAxisId='left-axis'
-          type='monotone'
-          dataKey='HT'
-          stroke='#1707fa'
-          fill={HT}
-        >
-          {/* <LabelList dataKey="HT" fill="black" position="top" formatter={labelFormatter} fontSize={"0.7rem"} /> */}
-        </Bar>
-        <Bar
-          stackId={'a'}
-          yAxisId='left-axis'
-          type='monotone'
-          dataKey='CD'
-          stroke='#1707fa'
-          fill={CD}
-        >
-          {/* <LabelList dataKey="CD" fill="black" position="top" formatter={labelFormatter} fontSize={"0.7rem"} /> */}
-        </Bar>
+        )}/>
         <Line
           yAxisId='left-axis'
           type='monotone'
-          dataKey='TT'
+          dataKey='TOTAL'
           stroke='green'
           label={{ position: "top", formatter: labelFormatter, fontSize:'0.7rem', fontWeight:'bold', color:'black' }} 
-        />      
-               
+        />
+        <Bar
+          stackId='a'
+          yAxisId='left-axis'
+          type='monotone'
+          dataKey='C'
+          stroke='white'
+          fill={processColor}
+          /* label={{ position: "insideTop", formatter: labelFormatter, fontSize:'0.7rem', fontWeight:'bold', color:'black' }}     */     
+        >
+          <LabelList dataKey="C" position="inside" formatter={labelFormatter} fontSize={"0.7rem"} />
+        </Bar>
+        <Bar
+          stackId='a'
+          yAxisId='left-axis'
+          type='monotone'
+          dataKey='K'
+          stroke='white'
+          fill={materialColor}
+          /* label={{ position: "insideTop", formatter: labelFormatter,fontSize:'0.7rem', fontWeight:'bold', color:'black' }}    */      
+        >
+          <LabelList dataKey="K" position="inside" formatter={labelFormatter} fontSize={"0.7rem"} />
+        </Bar>
       </ComposedChart>
     </CustomResponsiveContainer>
   );
 };
-export default CSYearlyRMAChart;
+export default CSYearlyConfirm;

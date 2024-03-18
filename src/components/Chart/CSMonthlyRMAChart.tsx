@@ -119,30 +119,37 @@ const CSMonthlyRMAChart = ({
           type='monotone'
           dataKey='MD'
           stroke='#1707fa'
-          fill={MD}          
+          fill={MD}
         >
-          <LabelList dataKey="MD" fill="black" position="top" formatter={labelFormatter} fontSize={"0.7rem"} />
-        </Bar>    
+          {/* <LabelList dataKey="MD" fill="black" position="top" formatter={labelFormatter} fontSize={"0.7rem"} /> */}
+        </Bar>
         <Bar
           stackId={'a'}
           yAxisId='left-axis'
           type='monotone'
           dataKey='HT'
           stroke='#1707fa'
-          fill={HT}          
+          fill={HT}
         >
-          <LabelList dataKey="HT" fill="black" position="top" formatter={labelFormatter} fontSize={"0.7rem"} />
-        </Bar>        
+          {/* <LabelList dataKey="HT" fill="black" position="top" formatter={labelFormatter} fontSize={"0.7rem"} /> */}
+        </Bar>
         <Bar
           stackId={'a'}
           yAxisId='left-axis'
           type='monotone'
           dataKey='CD'
           stroke='#1707fa'
-          fill={CD}          
+          fill={CD}
         >
-          <LabelList dataKey="CD" fill="black" position="top" formatter={labelFormatter} fontSize={"0.7rem"} />
-        </Bar>        
+          {/* <LabelList dataKey="CD" fill="black" position="top" formatter={labelFormatter} fontSize={"0.7rem"} /> */}
+        </Bar>
+        <Line
+          yAxisId='left-axis'
+          type='monotone'
+          dataKey='TT'
+          stroke='green'
+          label={{ position: "top", formatter: labelFormatter, fontSize:'0.7rem', fontWeight:'bold', color:'black' }} 
+        />     
               
       </ComposedChart>
     </CustomResponsiveContainer>
