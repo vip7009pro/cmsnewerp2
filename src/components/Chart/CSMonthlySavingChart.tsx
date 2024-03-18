@@ -53,7 +53,7 @@ const CSMonthlySavingChart = ({
             borderRadius: 5,
           }}
         >
-          <p>Ngày {label}:</p>          
+          <p>Tháng {label}:</p>          
           <p className='label'>
             Saving Amount: {`${payload[0]?.value.toLocaleString("en-US")}`} $
           </p>

@@ -15,9 +15,9 @@ import {
   Line,
 } from "recharts";
 import Swal from "sweetalert2";
-import { generalQuery } from "../../api/Api";
-import { CustomResponsiveContainer } from "../../api/GlobalFunction";
-import { WeeklyClosingData } from "../../api/GlobalInterface";
+import { generalQuery, getGlobalSetting } from "../../api/Api";
+import { CustomResponsiveContainer, nFormatter } from "../../api/GlobalFunction";
+import { WEB_SETTING_DATA, WeeklyClosingData } from "../../api/GlobalInterface";
 
 const ChartWeekLyDelivery = () => {
   const [weeklyClosingData, setWeeklyClosingData] = useState<

@@ -20,17 +20,18 @@ import {
   CustomResponsiveContainer,
   nFormatter,
 } from "../../api/GlobalFunction";
-import { CS_CONFIRM_TRENDING_DATA, DailyData } from "../../api/GlobalInterface";
-const CSDailyConfirm = ({
+import { CS_REDUCE_AMOUNT_DATA, CS_RMA_AMOUNT_DATA, DailyData, FcostData } from "../../api/GlobalInterface";
+const CSDDailyRMAChart = ({
   dldata,
-  processColor,
-  materialColor,
-}: { dldata: CS_CONFIRM_TRENDING_DATA[], processColor: string, materialColor: string }) => {
+  HT,
+  CD,
+  MD
+}: { dldata: CS_RMA_AMOUNT_DATA[], HT: string, CD: string, MD: string }) => {
   const formatCash = (n: number) => {
     return nFormatter(n, 1);
   };
   const labelFormatter = (value: number) => {
-    return formatCash(value);
+    return formatCash(value) + ' $';
   };
   const CustomTooltip = ({
     active,
@@ -53,13 +54,13 @@ const CSDailyConfirm = ({
         >
           <p>Ngày {label}:</p>
           <p className='label'>
-            CMS: {`${payload[1].value.toLocaleString("en-US")}`} issues
+            RMA HT Amount: {`${payload[0]?.value.toLocaleString("en-US")}`} $
           </p>
           <p className='label'>
-            CUSTOMER: {`${payload[2].value.toLocaleString("en-US")}`} issues
+            RMA CD Amount: {`${payload[1]?.value.toLocaleString("en-US")}`} $
           </p>
           <p className='label'>
-            TOTAL: {`${payload[0].value.toLocaleString("en-US")}`} issues
+            RMA MD Amount: {`${payload[2]?.value.toLocaleString("en-US")}`} $
           </p>
         </div>
       );
@@ -81,13 +82,13 @@ const CSDailyConfirm = ({
         }}
       >
         <CartesianGrid strokeDasharray='3 3' className='chartGrid' />
-        <XAxis dataKey='CONFIRM_DATE' height={40} tick={{ fontSize: '0.7rem' }}>
-          <Label value='Ngày tháng' offset={0} position='insideBottom' style={{ fontWeight: 'normal', fontSize: '0.7rem' }} />
+        <XAxis dataKey='RT_DATE' height={40} tick={{ fontSize: '0.7rem' }}>
+          <Label value='Ngày' offset={0} position='insideBottom' style={{ fontWeight: 'normal', fontSize: '0.7rem' }} />
         </XAxis>
         <YAxis
           yAxisId='left-axis'
           label={{
-            value: "NG Rate",
+            value: "Saved Amount",
             angle: -90,
             position: "insideLeft",
             fontSize: '0.7rem'
@@ -97,7 +98,7 @@ const CSDailyConfirm = ({
             new Intl.NumberFormat("en", {
               notation: "compact",
               compactDisplay: "short",
-            }).format(value)
+            }).format(value) + "$"
           }
           tickCount={7}
         />
@@ -110,37 +111,38 @@ const CSDailyConfirm = ({
           formatter={(value, entry) => (
             <span style={{ fontSize: '0.7rem', fontWeight: 'bold' }}>{value}</span>
           )} />
-        <Line
-          yAxisId='left-axis'
-          type='monotone'
-          dataKey='TOTAL'
-          stroke='green'
-          label={{ position: "top", formatter: labelFormatter, fontSize: '0.7rem', fontWeight: 'bold', color: 'black' }}
-        />
         <Bar
-          stackId='a'
+          stackId={'a'}
           yAxisId='left-axis'
           type='monotone'
-          dataKey='C'
-          stroke='white'
-          fill={processColor}
-        /* label={{ position: "insideTop", formatter: labelFormatter, fontSize:'0.7rem', fontWeight:'bold', color:'black' }}     */
+          dataKey='MD'
+          stroke='#1707fa'
+          fill={MD}
         >
-          <LabelList dataKey="C" position="inside" formatter={labelFormatter} fontSize={"0.7rem"} />
+          <LabelList dataKey="MD" fill="black" position="top" formatter={labelFormatter} fontSize={"0.7rem"} />
         </Bar>
         <Bar
-          stackId='a'
+          stackId={'a'}
           yAxisId='left-axis'
           type='monotone'
-          dataKey='K'
-          stroke='white'
-          fill={materialColor}
-        /* label={{ position: "insideTop", formatter: labelFormatter,fontSize:'0.7rem', fontWeight:'bold', color:'black' }}    */
+          dataKey='HT'
+          stroke='#1707fa'
+          fill={HT}
         >
-          <LabelList dataKey="K" position="inside" formatter={labelFormatter} fontSize={"0.7rem"} />
+          <LabelList dataKey="HT" fill="black" position="top" formatter={labelFormatter} fontSize={"0.7rem"} />
+        </Bar>
+        <Bar
+          stackId={'a'}
+          yAxisId='left-axis'
+          type='monotone'
+          dataKey='CD'
+          stroke='#1707fa'
+          fill={CD}
+        >
+          <LabelList dataKey="CD" fill="black" position="top" formatter={labelFormatter} fontSize={"0.7rem"} />
         </Bar>
       </ComposedChart>
     </CustomResponsiveContainer>
   );
 };
-export default CSDailyConfirm;
+export default CSDDailyRMAChart;

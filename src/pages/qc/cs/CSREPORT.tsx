@@ -32,6 +32,10 @@ import CSDDailySavingChart from "../../../components/Chart/CSDDailySavingChart";
 import CSWeeklySavingChart from "../../../components/Chart/CSWeeklySavingChart";
 import CSMonthlySavingChart from "../../../components/Chart/CSMonthlySavingChart";
 import CSYearlySavingChart from "../../../components/Chart/CSYearlySavingChart";
+import CSDDailyRMAChart from "../../../components/Chart/CSDDailyRMAChart";
+import CSDWeeklyRMAChart from "../../../components/Chart/CSDWeeklyRMAChart";
+import CSMonthlyRMAChart from "../../../components/Chart/CSMonthlyRMAChart";
+import CSYearlyRMAChart from "../../../components/Chart/CSYearlyRMAChart";
 const CSREPORT = () => {
   const [dailyppm1, setDailyPPM1] = useState<DailyPPMData[]>([]);
   const [weeklyppm1, setWeeklyPPM1] = useState<WeeklyPPMData[]>([]);
@@ -393,7 +397,6 @@ const CSREPORT = () => {
         console.log(error);
       });
   }
-
   const handle_getCSDailyRMAAmount  = async (from_date: string, to_date: string, listCode: string[]) => {
     let td = moment().add(0, "day").format("YYYY-MM-DD");
     let frd = moment().add(-14, "day").format("YYYY-MM-DD");
@@ -424,6 +427,96 @@ const CSREPORT = () => {
         console.log(error);
       });
   }
+  const handle_getCSWeeklyRMAAmount  = async (from_date: string, to_date: string, listCode: string[]) => {
+    let td = moment().add(0, "day").format("YYYY-MM-DD");
+    let frd = moment().add(-70, "day").format("YYYY-MM-DD");
+    await generalQuery("csweeklyRMAAmount", {
+      FROM_DATE: df ? frd : from_date,
+      TO_DATE: df ? td : to_date,
+      codeArray: listCode
+    })
+      .then((response) => {
+        //console.log(response.data.data);
+        if (response.data.tk_status !== "NG") {
+          let loadeddata = response.data.data.map(
+            (element: CS_RMA_AMOUNT_DATA, index: number) => {
+              return {
+                ...element,
+                RT_DATE: moment(element.RT_DATE).format("YYYY-MM-DD"),
+                id: index,
+              };
+            },
+          );
+          //console.log(loadeddata);
+          setCSWeeklyRMAAmount(loadeddata);
+        } else {
+          setCSWeeklyRMAAmount([]);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+  const handle_getCSMonthlyRMAAmount  = async (from_date: string, to_date: string, listCode: string[]) => {
+    let td = moment().add(0, "day").format("YYYY-MM-DD");
+    let frd = moment().add(-365, "day").format("YYYY-MM-DD");
+    await generalQuery("csmonthlyRMAAmount", {
+      FROM_DATE: df ? frd : from_date,
+      TO_DATE: df ? td : to_date,
+      codeArray: listCode
+    })
+      .then((response) => {
+        //console.log(response.data.data);
+        if (response.data.tk_status !== "NG") {
+          let loadeddata = response.data.data.map(
+            (element: CS_RMA_AMOUNT_DATA, index: number) => {
+              return {
+                ...element,
+                RT_DATE: moment(element.RT_DATE).format("YYYY-MM-DD"),
+                id: index,
+              };
+            },
+          );
+          //console.log(loadeddata);
+          setCSDMonthyRMAAmount(loadeddata);
+        } else {
+          setCSDMonthyRMAAmount([]);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+  const handle_getCSYearlyRMAAmount  = async (from_date: string, to_date: string, listCode: string[]) => {
+    let td = moment().add(0, "day").format("YYYY-MM-DD");
+    let frd = moment().add(-3650, "day").format("YYYY-MM-DD");
+    await generalQuery("csyearlyRMAAmount", {
+      FROM_DATE: df ? frd : from_date,
+      TO_DATE: df ? td : to_date,
+      codeArray: listCode
+    })
+      .then((response) => {
+        //console.log(response.data.data);
+        if (response.data.tk_status !== "NG") {
+          let loadeddata = response.data.data.map(
+            (element: CS_RMA_AMOUNT_DATA, index: number) => {
+              return {
+                ...element,
+                RT_DATE: moment(element.RT_DATE).format("YYYY-MM-DD"),
+                id: index,
+              };
+            },
+          );
+          //console.log(loadeddata);
+          setCSYearlyRMAAmount(loadeddata);
+        } else {
+          setCSYearlyRMAAmount([]);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
   const initFunction = async () => {
     Swal.fire({
       title: "Đang tải báo cáo",
@@ -445,6 +538,10 @@ const CSREPORT = () => {
       handle_getCSWeeklyReduceAmount(fromdate, todate, searchCodeArray),
       handle_getCSMonthlyReduceAmount(fromdate, todate, searchCodeArray),
       handle_getCSYearlyReduceAmount(fromdate, todate, searchCodeArray),
+      handle_getCSDailyRMAAmount(fromdate, todate, searchCodeArray),
+      handle_getCSWeeklyRMAAmount(fromdate, todate, searchCodeArray),
+      handle_getCSMonthlyRMAAmount(fromdate, todate, searchCodeArray),
+      handle_getCSYearlyRMAAmount(fromdate, todate, searchCodeArray),
     ]).then((values) => {
       Swal.fire("Thông báo", "Đã load xong báo cáo", 'success');
     });
@@ -725,35 +822,39 @@ const CSREPORT = () => {
           <div className="fcosttrending">
             <div className="fcostgraph">
             <div className="dailygraph">
-                <span className="subsection">Daily F-Cost</span>
-                <InspectionDailyFcost
-                  dldata={[...dailyFcostData].reverse()}
-                  processColor="#89fc98"
-                  materialColor="#41d5fa"
+                <span className="subsection">Daily RMA</span>
+                <CSDDailyRMAChart
+                  dldata={[...csDailyRMAAmount].reverse()}
+                  HT="#00da5b"
+                  CD="#41d5fa"
+                  MD="#c0ec21"
                 />
               </div>
               <div className="dailygraph">
-                <span className="subsection">Weekly F-Cost</span>
-                <InspectionWeeklyFcost
-                  dldata={[...weeklyFcostData].reverse()}
-                  processColor="#89fc98"
-                  materialColor="#41d5fa"
+                <span className="subsection">Weekly RMA</span>
+                <CSDWeeklyRMAChart
+                  dldata={[...csWeeklyRMAAmount].reverse()}
+                  HT="#00da5b"
+                  CD="#41d5fa"
+                  MD="#c0ec21"
                 />
               </div>
               <div className="dailygraph">
-                <span className="subsection">Monthly F-Cost</span>
-                <InspectionMonthlyFcost
-                  dldata={[...monthlyFcostData].reverse()}
-                  processColor="#89fc98"
-                  materialColor="#41d5fa"
+                <span className="subsection">Monthly RMA</span>
+                <CSMonthlyRMAChart
+                  dldata={[...csMonthlyRMAAmount].reverse()}
+                  HT="#00da5b"
+                  CD="#41d5fa"
+                  MD="#c0ec21"
                 />
               </div>
               <div className="dailygraph">
-                <span className="subsection">Yearly F-Cost</span>
-                <InspectionYearlyFcost
-                  dldata={[...annualyFcostData].reverse()}
-                  processColor="#89fc98"
-                  materialColor="#41d5fa"
+                <span className="subsection">Yearly RMA</span>
+                <CSYearlyRMAChart
+                  dldata={[...csYearlyRMAAmount].reverse()}
+                  HT="#00da5b"
+                  CD="#41d5fa"
+                  MD="#c0ec21"
                 />
               </div>
             </div>
