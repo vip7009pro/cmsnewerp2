@@ -3502,3 +3502,14 @@ export interface CS_RMA_AMOUNT_DATA {
   CD: number;
   TT: number;
 }
+export interface CS_TAXI_AMOUNT_DATA {
+  TAXI_DATE?:string,
+  TAXI_YW?: string,
+  TAXI_YM?: string,
+  TAXI_YEAR?: string,
+  TAXI_AMOUNT: number
+}
+export interface CSFCOST {
+  RMA_DATA: CS_RMA_AMOUNT_DATA[],
+  TAXI_DATA: CS_TAXI_AMOUNT_DATA[]
+}

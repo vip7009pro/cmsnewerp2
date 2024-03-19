@@ -10,7 +10,7 @@ import CustomerPOBalanceByType from "../../../components/DataTable/CustomerPOBal
 import "./CSREPORT.scss";
 import InspectionWorstTable from "../../../components/DataTable/InspectionWorstTable";
 import ChartInspectionWorst from "../../../components/Chart/ChartInspectionWorst";
-import { CS_CONFIRM_BY_CUSTOMER_DATA, CS_CONFIRM_TRENDING_DATA, CS_REDUCE_AMOUNT_DATA, CS_RMA_AMOUNT_DATA, CodeListData, DEFECT_TRENDING_DATA, DailyPPMData, FCSTAmountData, InspectSummary, MonthlyPPMData, PATROL_HEADER_DATA, WEB_SETTING_DATA, WeeklyPPMData, WidgetData_POBalanceSummary, WorstData, YearlyPPMData } from "../../../api/GlobalInterface";
+import { CS_CONFIRM_BY_CUSTOMER_DATA, CS_CONFIRM_TRENDING_DATA, CS_REDUCE_AMOUNT_DATA, CS_RMA_AMOUNT_DATA, CS_TAXI_AMOUNT_DATA, CodeListData, DEFECT_TRENDING_DATA, DailyPPMData, FCSTAmountData, InspectSummary, MonthlyPPMData, PATROL_HEADER_DATA, WEB_SETTING_DATA, WeeklyPPMData, WidgetData_POBalanceSummary, WorstData, YearlyPPMData } from "../../../api/GlobalInterface";
 import CIRCLE_COMPONENT from "../../qlsx/QLSXPLAN/CAPA/CIRCLE_COMPONENT/CIRCLE_COMPONENT";
 import { deBounce, nFormatter } from "../../../api/GlobalFunction";
 import { Autocomplete, Checkbox, FormControlLabel, FormGroup, TextField, Typography, createFilterOptions } from "@mui/material";
@@ -37,6 +37,11 @@ import CSDWeeklyRMAChart from "../../../components/Chart/CSDWeeklyRMAChart";
 import CSMonthlyRMAChart from "../../../components/Chart/CSMonthlyRMAChart";
 import CSYearlyRMAChart from "../../../components/Chart/CSYearlyRMAChart";
 import CSYearlyConfirm from "../../../components/Chart/CSYearlyConfirm";
+import CSDWeeklyTaxiChart from "../../../components/Chart/CSWeeklyTaxiChart";
+import CSDDailyTaxiChart from "../../../components/Chart/CSDailyTaxiChart";
+import CSDMonthlyTaxiChart from "../../../components/Chart/CSMonthlyTaxiChart";
+import CSYearlyTaxiChart from "../../../components/Chart/CSYearlyTaxiChart";
+import CSFCOSTTABLE from "./FCOSTTABLE";
 const CSREPORT = () => {
   const [dailyppm1, setDailyPPM1] = useState<DailyPPMData[]>([]);
   const [weeklyppm1, setWeeklyPPM1] = useState<WeeklyPPMData[]>([]);
@@ -75,6 +80,11 @@ const CSREPORT = () => {
   const [csWeeklyRMAAmount, setCSWeeklyRMAAmount] = useState<CS_RMA_AMOUNT_DATA[]>([]);
   const [csMonthlyRMAAmount, setCSDMonthyRMAAmount] = useState<CS_RMA_AMOUNT_DATA[]>([]);
   const [csYearlyRMAAmount, setCSYearlyRMAAmount] = useState<CS_RMA_AMOUNT_DATA[]>([]);
+
+  const [csDailyTAXIAmount, setCSDailyTAXIAmount] = useState<CS_TAXI_AMOUNT_DATA[]>([]);
+  const [csWeeklyTAXIAmount, setCSWeeklyTAXIAmount] = useState<CS_TAXI_AMOUNT_DATA[]>([]);
+  const [csMonthlyTAXIAmount, setCSDMonthyTAXIAmount] = useState<CS_TAXI_AMOUNT_DATA[]>([]);
+  const [csYearlyTAXIAmount, setCSYearlyTAXIAmount] = useState<CS_TAXI_AMOUNT_DATA[]>([]);
 
   const [selectedCode, setSelectedCode] = useState<CodeListData | null>({
     G_CODE: "6A00001B",
@@ -371,7 +381,7 @@ const CSREPORT = () => {
   }
   const handle_getCSYearlyReduceAmount  = async (from_date: string, to_date: string, listCode: string[]) => {
     let td = moment().add(0, "day").format("YYYY-MM-DD");
-    let frd = moment().add(-3650, "day").format("YYYY-MM-DD");
+    let frd = moment().add(-1200, "day").format("YYYY-MM-DD");
     await generalQuery("csyearlyreduceamount", {
       FROM_DATE: df ? frd : from_date,
       TO_DATE: df ? td : to_date,
@@ -522,6 +532,124 @@ const CSREPORT = () => {
         console.log(error);
       });
   }
+
+  const handle_getCSDailyTaxiAmount  = async (from_date: string, to_date: string, listCode: string[]) => {
+    let td = moment().add(0, "day").format("YYYY-MM-DD");
+    let frd = moment().add(-14, "day").format("YYYY-MM-DD");
+    await generalQuery("csdailyTaxiAmount", {
+      FROM_DATE: df ? frd : from_date,
+      TO_DATE: df ? td : to_date,
+      codeArray: listCode
+    })
+      .then((response) => {
+        //console.log(response.data.data);
+        if (response.data.tk_status !== "NG") {
+          let loadeddata = response.data.data.map(
+            (element: CS_TAXI_AMOUNT_DATA, index: number) => {
+              return {
+                ...element,
+                TAXI_DATE: moment(element.TAXI_DATE).format('YYYY-MM-DD'),                
+                id: index,
+              };
+            },
+          );
+          //console.log(loadeddata);
+          setCSDailyTAXIAmount(loadeddata);
+        } else {
+          setCSDailyTAXIAmount([]);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+  const handle_getCSMonthlyTaxiAmount  = async (from_date: string, to_date: string, listCode: string[]) => {
+    let td = moment().add(0, "day").format("YYYY-MM-DD");
+    let frd = moment().add(-14, "day").format("YYYY-MM-DD");
+    await generalQuery("csmonthlyTaxiAmount", {
+      FROM_DATE: df ? frd : from_date,
+      TO_DATE: df ? td : to_date,
+      codeArray: listCode
+    })
+      .then((response) => {
+        //console.log(response.data.data);
+        if (response.data.tk_status !== "NG") {
+          let loadeddata = response.data.data.map(
+            (element: CS_TAXI_AMOUNT_DATA, index: number) => {
+              return {
+                ...element,                           
+                id: index,
+              };
+            },
+          );
+          //console.log(loadeddata);
+          setCSDMonthyTAXIAmount(loadeddata);
+        } else {
+          setCSDMonthyTAXIAmount([]);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+  const handle_getCSWeeklyTaxiAmount  = async (from_date: string, to_date: string, listCode: string[]) => {
+    let td = moment().add(0, "day").format("YYYY-MM-DD");
+    let frd = moment().add(-14, "day").format("YYYY-MM-DD");
+    await generalQuery("csweeklyTaxiAmount", {
+      FROM_DATE: df ? frd : from_date,
+      TO_DATE: df ? td : to_date,
+      codeArray: listCode
+    })
+      .then((response) => {
+        //console.log(response.data.data);
+        if (response.data.tk_status !== "NG") {
+          let loadeddata = response.data.data.map(
+            (element: CS_TAXI_AMOUNT_DATA, index: number) => {
+              return {
+                ...element,                
+                id: index,
+              };
+            },
+          );
+          //console.log(loadeddata);
+          setCSWeeklyTAXIAmount(loadeddata);
+        } else {
+          setCSWeeklyTAXIAmount([]);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+  const handle_getCSYearlyTaxiAmount  = async (from_date: string, to_date: string, listCode: string[]) => {
+    let td = moment().add(0, "day").format("YYYY-MM-DD");
+    let frd = moment().add(-14, "day").format("YYYY-MM-DD");
+    await generalQuery("csyearlyTaxiAmount", {
+      FROM_DATE: df ? frd : from_date,
+      TO_DATE: df ? td : to_date,
+      codeArray: listCode
+    })
+      .then((response) => {
+        //console.log(response.data.data);
+        if (response.data.tk_status !== "NG") {
+          let loadeddata = response.data.data.map(
+            (element: CS_TAXI_AMOUNT_DATA, index: number) => {
+              return {
+                ...element,                
+                id: index,
+              };
+            },
+          );
+          //console.log(loadeddata);
+          setCSYearlyTAXIAmount(loadeddata);
+        } else {
+          setCSYearlyTAXIAmount([]);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
   const initFunction = async () => {
     Swal.fire({
       title: "Đang tải báo cáo",
@@ -547,6 +675,10 @@ const CSREPORT = () => {
       handle_getCSWeeklyRMAAmount(fromdate, todate, searchCodeArray),
       handle_getCSMonthlyRMAAmount(fromdate, todate, searchCodeArray),
       handle_getCSYearlyRMAAmount(fromdate, todate, searchCodeArray),
+      handle_getCSDailyTaxiAmount(fromdate, todate, searchCodeArray),
+      handle_getCSMonthlyTaxiAmount(fromdate, todate, searchCodeArray),
+      handle_getCSWeeklyTaxiAmount(fromdate, todate, searchCodeArray),
+      handle_getCSYearlyTaxiAmount(fromdate, todate, searchCodeArray),
     ]).then((values) => {
       Swal.fire("Thông báo", "Đã load xong báo cáo", 'success');
     });
@@ -821,8 +953,11 @@ const CSREPORT = () => {
             </div>
           </div>
           <span className="section_title">4. F-COST Status</span>
-          <span className="subsection_title">F-Cost Summary</span>
-          <FCOSTTABLE data={inspectSummary} />
+          <span className="subsection_title">CS F-Cost Summary ({fromdate}~ {todate})</span>
+          <CSFCOSTTABLE data={{
+            RMA_DATA: csDailyRMAAmount,
+            TAXI_DATA: csDailyTAXIAmount}            
+          } />
           <span className="subsection_title">RMA Amount Trending</span>
           <div className="fcosttrending">
             <div className="fcostgraph">
@@ -864,21 +999,43 @@ const CSREPORT = () => {
               </div>
             </div>
           </div>
-          <span className="subsection_title">Top 3 F-Cost Products ({fromdate} ~ {todate})</span>
-          <div className="patrolheader1">
-            <PATROL_HEADER data={patrolheaderdata} />
-          </div>
-          <span className="subsection_title">F-Cost by Defect</span>
-          <div className="worstinspection">
-            <div className="worsttable">
-              <span className="subsection">Worst Table</span>
-              {worstdatatable.length > 0 && <InspectionWorstTable dailyClosingData={worstdatatable} worstby={worstby} from_date={fromdate} to_date={todate} ng_type={ng_type} listCode={searchCodeArray} />}
+          <span className="subsection_title">Taxi Amount Trending</span>         
+          <div className="fcosttrending">
+            <div className="fcostgraph">
+            <div className="dailygraph">
+                <span className="subsection">Daily Taxi</span>
+                <CSDDailyTaxiChart
+                  dldata={[...csDailyTAXIAmount].reverse()}
+                  processColor="#00da5b"
+                  materialColor="#41d5fa"
+                />
+              </div>
+              <div className="dailygraph">
+                <span className="subsection">Weekly Taxi</span>
+                <CSDWeeklyTaxiChart
+                  dldata={[...csWeeklyTAXIAmount].reverse()}
+                  processColor="#00da5b"
+                  materialColor="#41d5fa"
+                />
+              </div>
+              <div className="dailygraph">
+                <span className="subsection">Monthly Taxi</span>
+                <CSDMonthlyTaxiChart
+                  dldata={[...csMonthlyTAXIAmount].reverse()}
+                  processColor="#00da5b"
+                  materialColor="#41d5fa"
+                />
+              </div>
+              <div className="dailygraph">
+                <span className="subsection">Yearly Taxi</span>
+                <CSYearlyTaxiChart
+                  dldata={[...csYearlyTAXIAmount].reverse()}
+                  processColor="#00da5b"
+                  materialColor="#41d5fa"
+                />
+              </div>
             </div>
-            <div className="worstgraph">
-              <span className="subsection">WORST 5 BY {worstby}</span>
-              {worstdatatable.length > 0 && <ChartInspectionWorst dailyClosingData={worstdatatable} worstby={worstby} />}
-            </div>
-          </div>
+          </div>          
         </div>
       </div>
     </div>

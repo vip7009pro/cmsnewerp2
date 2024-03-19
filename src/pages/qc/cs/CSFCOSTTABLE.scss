@@ -1,0 +1,30 @@
+.csfcosttable {
+  display: flex;
+  align-items: center;
+  align-content: center;
+  align-self: center;
+  justify-content: center;
+  justify-items: center;
+  -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+  box-shadow: 5px 5px 10px 5px rgba(0, 0, 0, 0.27);
+  margin-bottom: 10px;
+
+  background-image: linear-gradient(0deg, #ffffff, #7ef0fa);
+
+  table {
+    border: 3px solid gray;
+    width: 100%;
+  }
+
+  table thead tr td {
+    font-weight: bold;
+    border: 1px solid gray;
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+
+  table tbody tr td {
+    border: 1px solid gray;
+    text-align: center;
+  }
+}
