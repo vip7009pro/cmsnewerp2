@@ -42,6 +42,7 @@ import CSDDailyTaxiChart from "../../../components/Chart/CSDailyTaxiChart";
 import CSDMonthlyTaxiChart from "../../../components/Chart/CSMonthlyTaxiChart";
 import CSYearlyTaxiChart from "../../../components/Chart/CSYearlyTaxiChart";
 import CSFCOSTTABLE from "./FCOSTTABLE";
+import SAVINGTABLE from "./SAVINGTABLE";
 const CSREPORT = () => {
   const [dailyppm1, setDailyPPM1] = useState<DailyPPMData[]>([]);
   const [weeklyppm1, setWeeklyPPM1] = useState<WeeklyPPMData[]>([]);
@@ -914,7 +915,10 @@ const CSREPORT = () => {
               <CSIssuePICChart data={csConfirmDataByPIC} />
             </div>
           </div>
-          <span className="section_title">3. Cost Saving</span>        
+          <span className="section_title">3. Cost Saving</span>
+          <span className="subsection_title">CS Saving Summary ({fromdate}~ {todate})</span>
+          <SAVINGTABLE data={csDailyReduceAmount} />
+
           <span className="subsection_title">Cost Saving Trending</span>         
           <div className="fcosttrending">
             <div className="fcostgraph">

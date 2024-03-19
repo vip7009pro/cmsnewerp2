@@ -8,7 +8,7 @@
       span {
         font-size: 1.5rem;
         font-weight: bold;
-        color:#430fff
+        color: #430fff
       }
     }
     .doanhthureport {
@@ -130,7 +130,7 @@
             width: 100%;
             height: 100%;
             flex: 1;
-            margin-bottom: 20px;            
+            margin-bottom: 20px;
             .dailygraph {
               display: flex;
               flex-direction: column;
@@ -143,7 +143,6 @@
               }
             }
           }
-          
           .dailygraph {
             display: flex;
             flex-direction: column;
@@ -156,7 +155,6 @@
             }
           }
         }
-
         .patrolheader1 {
           display: flex;
           align-items: center;
@@ -164,14 +162,13 @@
           margin-bottom: 10px;
           width: 90%;
         }
-
         .dailygraphtotal {
           display: flex;
           width: 100%;
           height: 100%;
           flex: 1;
           margin-bottom: 20px;
-          background-image: linear-gradient(0deg,   #ebb5fc,#ffffff);
+          background-image: linear-gradient(0deg, #ebb5fc, #ffffff);
           .dailygraph {
             display: flex;
             flex-direction: column;
