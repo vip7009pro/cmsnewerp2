@@ -12,8 +12,8 @@ import InspectionWorstTable from "../../../components/DataTable/InspectionWorstT
 import ChartInspectionWorst from "../../../components/Chart/ChartInspectionWorst";
 import { CodeListData, DEFECT_TRENDING_DATA, DailyPPMData, FCSTAmountData, InspectSummary, MonthlyPPMData, PATROL_HEADER_DATA, WEB_SETTING_DATA, WeeklyPPMData, WidgetData_POBalanceSummary, WorstData, YearlyPPMData } from "../../../api/GlobalInterface";
 import CIRCLE_COMPONENT from "../../qlsx/QLSXPLAN/CAPA/CIRCLE_COMPONENT/CIRCLE_COMPONENT";
-import { deBounce, nFormatter } from "../../../api/GlobalFunction";
-import { Autocomplete, Checkbox, FormControlLabel, FormGroup, TextField, Typography, createFilterOptions } from "@mui/material";
+import { SaveExcel, deBounce, nFormatter } from "../../../api/GlobalFunction";
+import { Autocomplete, Checkbox, FormControlLabel, FormGroup, TextField, Typography, createFilterOptions, IconButton } from "@mui/material";
 import FCOSTTABLE from "./FCOSTTABLE";
 import InspectionDailyFcost from "../../../components/Chart/InspectDailyFcost";
 import InspectionWeeklyFcost from "../../../components/Chart/InspectWeeklyFcost";
@@ -22,6 +22,7 @@ import InspectionYearlyFcost from "../../../components/Chart/InspectYearlyFcost"
 import PATROL_HEADER from "../../sx/PATROL/PATROL_HEADER";
 import InspectDailyDefectTrending from "../../../components/Chart/InspectDailyDefectTrending";
 import WidgetInspection from "../../../components/Widget/WidgetInspection";
+import { AiFillFileExcel } from "react-icons/ai";
 const INSPECT_REPORT = () => {
   const [dailyppm1, setDailyPPM1] = useState<DailyPPMData[]>([]);
   const [weeklyppm1, setWeeklyPPM1] = useState<WeeklyPPMData[]>([]);
@@ -43,6 +44,7 @@ const INSPECT_REPORT = () => {
   const [inspectSummary, setInspectSummary] = useState<InspectSummary[]>([]);
   const [dailyDefectTrendingData, setDailyDefectTrendingData] = useState<DEFECT_TRENDING_DATA[]>([]);
   const [dailyFcostData, setDailyFcostData] = useState<InspectSummary[]>([]);
+  const [cust_name, setCust_Name] = useState('');
   const [weeklyFcostData, setWeeklyFcostData] = useState<InspectSummary[]>([]);
   const [monthlyFcostData, setMonthlyFcostData] = useState<InspectSummary[]>([]);
   const [annualyFcostData, setAnnualyFcostData] = useState<InspectSummary[]>([]);
@@ -97,7 +99,8 @@ const INSPECT_REPORT = () => {
       TO_DATE: df ? td : todate,
       WORSTBY: worst_by,
       NG_TYPE: ng_type,
-      codeArray: df ? [] : listCode
+      codeArray: df ? [] : listCode,
+      CUST_NAME_KD: cust_name
     })
       .then((response) => {
         if (response.data.tk_status !== "NG") {
@@ -115,6 +118,7 @@ const INSPECT_REPORT = () => {
           //console.log(loadeddata);
           setWorstDataTable(loadeddata);
         } else {
+          setWorstDataTable([]);
           Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
         }
       })
@@ -129,7 +133,8 @@ const INSPECT_REPORT = () => {
       FACTORY: FACTORY,
       FROM_DATE: df ? frd : fromdate,
       TO_DATE: df ? td : todate,
-      codeArray: df ? [] : listCode
+      codeArray: df ? [] : listCode,
+      CUST_NAME_KD: cust_name
     })
       .then((response) => {
         //console.log(response.data.data);
@@ -153,6 +158,7 @@ const INSPECT_REPORT = () => {
             setDailyPPM(loadeddata);
           }
         } else {
+          setDailyPPM([]);
         }
       })
       .catch((error) => {
@@ -166,7 +172,8 @@ const INSPECT_REPORT = () => {
       FACTORY: FACTORY,
       FROM_DATE: df ? frd : fromdate,
       TO_DATE: df ? td : todate,
-      codeArray: df ? [] : listCode
+      codeArray: df ? [] : listCode,
+      CUST_NAME_KD: cust_name
     })
       .then((response) => {
         //console.log(response.data.data);
@@ -186,6 +193,7 @@ const INSPECT_REPORT = () => {
             setWeeklyPPM(loadeddata);
           }
         } else {
+          setWeeklyPPM([]);
         }
       })
       .catch((error) => {
@@ -199,7 +207,8 @@ const INSPECT_REPORT = () => {
       FACTORY: FACTORY,
       FROM_DATE: df ? frd : fromdate,
       TO_DATE: df ? td : todate,
-      codeArray: df ? [] : listCode
+      codeArray: df ? [] : listCode,
+      CUST_NAME_KD: cust_name
     })
       .then((response) => {
         //console.log(response.data.data);
@@ -219,6 +228,7 @@ const INSPECT_REPORT = () => {
             setMonthlyPPM(loadeddata)
           }
         } else {
+          setMonthlyPPM([])
         }
       })
       .catch((error) => {
@@ -232,7 +242,8 @@ const INSPECT_REPORT = () => {
       FACTORY: FACTORY,
       FROM_DATE: df ? frd : fromdate,
       TO_DATE: df ? td : todate,
-      codeArray: df ? [] : listCode
+      codeArray: df ? [] : listCode,
+      CUST_NAME_KD: cust_name
     })
       .then((response) => {
         //console.log(response.data.data);
@@ -252,6 +263,7 @@ const INSPECT_REPORT = () => {
             setYearlyPPM(loadeddata)
           }
         } else {
+          setYearlyPPM([])
         }
       })
       .catch((error) => {
@@ -264,7 +276,8 @@ const INSPECT_REPORT = () => {
     await generalQuery("getInspectionSummary", {
       FROM_DATE: df ? frd : from_date,
       TO_DATE: df ? td : to_date,
-      codeArray: listCode
+      codeArray: listCode,
+      CUST_NAME_KD: cust_name
     })
       .then((response) => {
         //console.log(response.data.data);
@@ -287,6 +300,7 @@ const INSPECT_REPORT = () => {
           //console.log(loadeddata);
           setInspectSummary(loadeddata);
         } else {
+          setInspectSummary([]);
         }
       })
       .catch((error) => {
@@ -299,7 +313,8 @@ const INSPECT_REPORT = () => {
     await generalQuery("dailyFcost", {
       FROM_DATE: df ? frd : from_date,
       TO_DATE: df ? td : to_date,
-      codeArray: listCode
+      codeArray: listCode,
+      CUST_NAME_KD: cust_name
     })
       .then((response) => {
         //console.log(response.data.data);
@@ -336,7 +351,8 @@ const INSPECT_REPORT = () => {
     await generalQuery("weeklyFcost", {
       FROM_DATE: df ? frd : from_date,
       TO_DATE: df ? td : to_date,
-      codeArray: listCode
+      codeArray: listCode,
+      CUST_NAME_KD: cust_name
     })
       .then((response) => {
         //console.log(response.data.data);
@@ -372,7 +388,8 @@ const INSPECT_REPORT = () => {
     await generalQuery("monthlyFcost", {
       FROM_DATE: df ? frd : from_date,
       TO_DATE: df ? td : to_date,
-      codeArray: listCode
+      codeArray: listCode,
+      CUST_NAME_KD: cust_name
     })
       .then((response) => {
         //console.log(response.data.data);
@@ -408,7 +425,8 @@ const INSPECT_REPORT = () => {
     await generalQuery("annuallyFcost", {
       FROM_DATE: df ? frd : from_date,
       TO_DATE: df ? td : to_date,
-      codeArray: listCode
+      codeArray: listCode,
+      CUST_NAME_KD: cust_name
     })
       .then((response) => {
         //console.log(response.data.data);
@@ -444,7 +462,8 @@ const INSPECT_REPORT = () => {
     await generalQuery("dailyDefectTrending", {
       FROM_DATE: df ? frd : from_date,
       TO_DATE: df ? td : to_date,
-      codeArray: listCode
+      codeArray: listCode,
+      CUST_NAME_KD: cust_name
     })
       .then((response) => {
         //console.log(response.data.data);
@@ -524,7 +543,7 @@ const INSPECT_REPORT = () => {
               type="date"
               value={fromdate.slice(0, 10)}
               onChange={(e) => {
-                setFromDate(e.target.value);               
+                setFromDate(e.target.value);
               }}
             ></input>
           </label>
@@ -619,6 +638,16 @@ const INSPECT_REPORT = () => {
             ></input> ({searchCodeArray.length})
           </label>
           <label>
+            <b>Customer:</b>{" "}
+            <input
+              type="text"
+              value={cust_name}
+              onChange={(e) => {
+                setCust_Name(e.target.value);
+              }}
+            ></input> ({searchCodeArray.length})
+          </label>
+          <label>
             <b>Default:</b>{" "}
             <Checkbox
               checked={df}
@@ -694,7 +723,15 @@ const INSPECT_REPORT = () => {
           <div className="dailygraphtotal">
             <div className="dailygraphtotal">
               <div className="dailygraph">
-                <span className="subsection">Daily NG Rate</span>
+                <span className="subsection">Daily NG Rate <IconButton
+          className='buttonIcon'
+          onClick={() => {
+            SaveExcel(dailyppm, "DailyPPMData");
+          }}
+        >
+          <AiFillFileExcel color='green' size={15} />
+          Excel
+        </IconButton></span>
                 <InspectionDailyPPM
                   dldata={[...dailyppm].reverse()}
                   processColor="#eeeb30"
@@ -702,7 +739,15 @@ const INSPECT_REPORT = () => {
                 />
               </div>
               <div className="dailygraph">
-                <span className="subsection">Weekly NG Rate</span>
+                <span className="subsection">Weekly NG Rate <IconButton
+          className='buttonIcon'
+          onClick={() => {
+            SaveExcel(weeklyppm, "WeeklyPPMData");
+          }}
+        >
+          <AiFillFileExcel color='green' size={15} />
+          Excel
+        </IconButton></span>
                 <InspectionWeeklyPPM
                   dldata={[...weeklyppm].reverse()}
                   processColor="#eeeb30"
@@ -712,7 +757,15 @@ const INSPECT_REPORT = () => {
             </div>
             <div className="monthlyweeklygraph">
               <div className="dailygraph">
-                <span className="subsection">Monthly NG Rate</span>
+                <span className="subsection">Monthly NG Rate <IconButton
+          className='buttonIcon'
+          onClick={() => {
+            SaveExcel(monthlyppm, "MonthlyPPMData");
+          }}
+        >
+          <AiFillFileExcel color='green' size={15} />
+          Excel
+        </IconButton></span>
                 <InspectionMonthlyPPM
                   dldata={[...monthlyppm].reverse()}
                   processColor="#eeeb30"
@@ -720,7 +773,15 @@ const INSPECT_REPORT = () => {
                 />
               </div>
               <div className="dailygraph">
-                <span className="subsection">Yearly NG Rate</span>
+                <span className="subsection">Yearly NG Rate <IconButton
+          className='buttonIcon'
+          onClick={() => {
+            SaveExcel(yearlyppm, "YearlyPPMData");
+          }}
+        >
+          <AiFillFileExcel color='green' size={15} />
+          Excel
+        </IconButton></span>
                 <InspectionYearlyPPM
                   dldata={yearlyppm}
                   processColor="#eeeb30"
@@ -742,7 +803,15 @@ const INSPECT_REPORT = () => {
           <div className="fcosttrending">
             <div className="fcostgraph">
               <div className="dailygraph">
-                <span className="subsection">Daily F-Cost</span>
+                <span className="subsection">Daily F-Cost <IconButton
+          className='buttonIcon'
+          onClick={() => {
+            SaveExcel(dailyFcostData, "DailyFcostData");
+          }}
+        >
+          <AiFillFileExcel color='green' size={15} />
+          Excel
+        </IconButton></span>
                 <InspectionDailyFcost
                   dldata={[...dailyFcostData].reverse()}
                   processColor="#89fc98"
@@ -754,7 +823,15 @@ const INSPECT_REPORT = () => {
           <div className="fcosttrending">
             <div className="fcostgraph">
               <div className="dailygraph">
-                <span className="subsection">Weekly F-Cost</span>
+                <span className="subsection">Weekly F-Cost <IconButton
+          className='buttonIcon'
+          onClick={() => {
+            SaveExcel(weeklyFcostData, "WeeklyFcostData");
+          }}
+        >
+          <AiFillFileExcel color='green' size={15} />
+          Excel
+        </IconButton></span>
                 <InspectionWeeklyFcost
                   dldata={[...weeklyFcostData].reverse()}
                   processColor="#89fc98"
@@ -762,7 +839,15 @@ const INSPECT_REPORT = () => {
                 />
               </div>
               <div className="dailygraph">
-                <span className="subsection">Monthly F-Cost</span>
+                <span className="subsection">Monthly F-Cost <IconButton
+          className='buttonIcon'
+          onClick={() => {
+            SaveExcel(monthlyFcostData, "MonthFcostData");
+          }}
+        >
+          <AiFillFileExcel color='green' size={15} />
+          Excel
+        </IconButton></span>
                 <InspectionMonthlyFcost
                   dldata={[...monthlyFcostData].reverse()}
                   processColor="#89fc98"
@@ -770,7 +855,15 @@ const INSPECT_REPORT = () => {
                 />
               </div>
               <div className="dailygraph">
-                <span className="subsection">Yearly F-Cost</span>
+                <span className="subsection">Yearly F-Cost <IconButton
+          className='buttonIcon'
+          onClick={() => {
+            SaveExcel(annualyFcostData, "YearlyFcostData");
+          }}
+        >
+          <AiFillFileExcel color='green' size={15} />
+          Excel
+        </IconButton></span>
                 <InspectionYearlyFcost
                   dldata={[...annualyFcostData].reverse()}
                   processColor="#89fc98"
@@ -787,7 +880,7 @@ const INSPECT_REPORT = () => {
           <div className="worstinspection">
             <div className="worsttable">
               <span className="subsection">Worst Table</span>
-              {worstdatatable.length > 0 && <InspectionWorstTable dailyClosingData={worstdatatable} worstby={worstby} from_date={fromdate} to_date={todate} ng_type={ng_type} listCode={searchCodeArray} />}
+              {worstdatatable.length > 0 && <InspectionWorstTable dailyClosingData={worstdatatable} worstby={worstby} from_date={fromdate} to_date={todate} ng_type={ng_type} listCode={searchCodeArray} cust_name={cust_name} />}
             </div>
             <div className="worstgraph">
               <span className="subsection">WORST 5 BY {worstby}</span>

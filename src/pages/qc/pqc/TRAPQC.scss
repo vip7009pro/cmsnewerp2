@@ -110,6 +110,29 @@
         border-radius: 3px;
       }
     }
+    .updatenndsform {
+      display: flex;
+      position: absolute;
+      padding: 10px;
+      align-items: center;
+      flex-direction: column;
+      border-radius: 5px;
+      top: -5%;
+      left: 35%;
+      width: fit-content;
+      height: fit-content;      
+      background-image: linear-gradient(0deg, #d3d2af, #86ffa4);
+        -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+        box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+        .inputbox {
+          display: flex;
+          width: 100%;
+          padding: 10px;
+          flex-direction: column;
+          align-items: flex-start;
+          justify-content: flex-start;
+        }
+    }
   }
 }
 @media only screen and (max-width: 768px) {

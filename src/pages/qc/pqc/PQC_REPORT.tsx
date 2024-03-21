@@ -4,7 +4,7 @@ import Swal from "sweetalert2";
 import { generalQuery, getGlobalSetting } from "../../../api/Api";
 import "./PQC_REPORT.scss";
 import { CodeListData, DEFECT_TRENDING_DATA, DailyPPMData, FCSTAmountData, InspectSummary, MonthlyPPMData, PATROL_HEADER_DATA, PQC3_DATA, PQCSummary, PQC_PPM_DATA, WEB_SETTING_DATA, WeeklyPPMData, WidgetData_POBalanceSummary, WorstData, YearlyPPMData } from "../../../api/GlobalInterface";
-import { Autocomplete, Checkbox, FormControlLabel, FormGroup, TextField, Typography, createFilterOptions } from "@mui/material";
+import { Autocomplete, Checkbox, FormControlLabel, FormGroup, IconButton, TextField, Typography, createFilterOptions } from "@mui/material";
 import PQCDailyNGRate from "../../../components/Chart/PQCDailyNGRate";
 import PQCWeeklyNGRate from "../../../components/Chart/PQCWeeklyNGRate";
 import PQCMonthlyNGRate from "../../../components/Chart/PQCMonthlyNGRate";
@@ -17,6 +17,9 @@ import PQCWeeklyFcost from "../../../components/Chart/PQCWeeklyFcost";
 import PQCMonthlyFcost from "../../../components/Chart/PQCMonthlyFcost";
 import PQCYearlyFcost from "../../../components/Chart/PQCYearlyFcost";
 import PATROL_COMPONENT from "../../sx/PATROL/PATROL_COMPONENT";
+import PATROL_COMPONENT2 from "../../sx/PATROL/PATROL_COMPONENT2";
+import { SaveExcel } from "../../../api/GlobalFunction";
+import { AiFillFileExcel } from "react-icons/ai";
 const PQC_REPORT = () => {
   const [dailyppm1, setDailyPPM1] = useState<PQC_PPM_DATA[]>([]);
   const [weeklyppm1, setWeeklyPPM1] = useState<PQC_PPM_DATA[]>([]);
@@ -36,6 +39,7 @@ const PQC_REPORT = () => {
   const [ng_type, setNg_Type] = useState('ALL');
   const [inspectSummary, setInspectSummary] = useState<PQCSummary[]>([]);
   const [dailyDefectTrendingData, setDailyDefectTrendingData] = useState<DEFECT_TRENDING_DATA[]>([]);
+  const [cust_name, setCust_Name] = useState('');
   const [codeList, setCodeList] = useState<CodeListData[]>([]);
   const [searchCodeArray, setSearchCodeArray] = useState<string[]>([]);
   const [pqcdatatable, setPqcDataTable] = useState<Array<PQC3_DATA>>([]);
@@ -58,7 +62,8 @@ const PQC_REPORT = () => {
       FACTORY: FACTORY,
       FROM_DATE: df ? frd : fromdate,
       TO_DATE: df ? td : todate,
-      codeArray: df ? [] : listCode
+      codeArray: df ? [] : listCode,
+      CUST_NAME_KD: cust_name
     })
       .then((response) => {
         //console.log(response.data.data);
@@ -83,6 +88,7 @@ const PQC_REPORT = () => {
             setDailyPPM(loadeddata);
           }
         } else {
+          setDailyPPM([]);
         }
       })
       .catch((error) => {
@@ -96,7 +102,8 @@ const PQC_REPORT = () => {
       FACTORY: FACTORY,
       FROM_DATE: df ? frd : fromdate,
       TO_DATE: df ? td : todate,
-      codeArray: df ? [] : listCode
+      codeArray: df ? [] : listCode,
+      CUST_NAME_KD: cust_name
     })
       .then((response) => {
         //console.log(response.data.data);
@@ -117,6 +124,7 @@ const PQC_REPORT = () => {
             setWeeklyPPM(loadeddata);
           }
         } else {
+          setWeeklyPPM([]);
         }
       })
       .catch((error) => {
@@ -130,7 +138,8 @@ const PQC_REPORT = () => {
       FACTORY: FACTORY,
       FROM_DATE: df ? frd : fromdate,
       TO_DATE: df ? td : todate,
-      codeArray: df ? [] : listCode
+      codeArray: df ? [] : listCode,
+      CUST_NAME_KD: cust_name
     })
       .then((response) => {
         //console.log(response.data.data);
@@ -151,6 +160,7 @@ const PQC_REPORT = () => {
             setMonthlyPPM(loadeddata)
           }
         } else {
+          setMonthlyPPM([])
         }
       })
       .catch((error) => {
@@ -164,7 +174,8 @@ const PQC_REPORT = () => {
       FACTORY: FACTORY,
       FROM_DATE: df ? frd : fromdate,
       TO_DATE: df ? td : todate,
-      codeArray: df ? [] : listCode
+      codeArray: df ? [] : listCode,
+      CUST_NAME_KD: cust_name
     })
       .then((response) => {
         //console.log(response.data.data);
@@ -185,6 +196,7 @@ const PQC_REPORT = () => {
             setYearlyPPM(loadeddata)
           }
         } else {
+          setYearlyPPM([])
         }
       })
       .catch((error) => {
@@ -197,7 +209,8 @@ const PQC_REPORT = () => {
     await generalQuery("getPQCSummary", {
       FROM_DATE: df ? frd : from_date,
       TO_DATE: df ? td : to_date,
-      codeArray: listCode
+      codeArray: listCode,
+      CUST_NAME_KD: cust_name
     })
       .then((response) => {
         //console.log(response.data.data);
@@ -206,7 +219,6 @@ const PQC_REPORT = () => {
             (element: PQCSummary, index: number) => {
               return {
                 ...element,
-               
               };
             },
           );
@@ -225,10 +237,11 @@ const PQC_REPORT = () => {
     await generalQuery("dailyPQCDefectTrending", {
       FROM_DATE: df ? frd : from_date,
       TO_DATE: df ? td : to_date,
-      codeArray: listCode
+      codeArray: listCode,
+      CUST_NAME_KD: cust_name
     })
       .then((response) => {
-        console.log(response.data.data);
+        // console.log(response.data.data);
         if (response.data.tk_status !== "NG") {
           const loadeddata: DEFECT_TRENDING_DATA[] = response.data.data.map(
             (element: DEFECT_TRENDING_DATA, index: number) => {
@@ -249,14 +262,14 @@ const PQC_REPORT = () => {
         console.log(error);
       });
   }
-  const traPQC3 = (from_date: string, to_date: string, listCode: string[]) => {    
+  const traPQC3 = (from_date: string, to_date: string, listCode: string[]) => {
     let td = moment().add(0, "day").format("YYYY-MM-DD");
     let frd = moment().add(-14, "day").format("YYYY-MM-DD");
     generalQuery("trapqc3data", {
       ALLTIME: false,
       FROM_DATE: df ? frd : from_date,
       TO_DATE: df ? td : to_date,
-      CUST_NAME: '',
+      CUST_NAME: cust_name,
       PROCESS_LOT_NO: '',
       G_CODE: '',
       G_NAME: '',
@@ -281,6 +294,56 @@ const PQC_REPORT = () => {
               };
             },
           );
+          //Swal.fire("Thông báo", "Đã load: " + loadeddata.length + "dong", "success");
+          //setSummaryInspect('Tổng Xuất: ' +  summaryOutput.toLocaleString('en-US') + 'EA');
+          if (loadeddata.length > 3) {
+            setPqcDataTable(loadeddata);
+          }
+          else {
+            setPqcDataTable(loadeddata);
+          }
+        } else {
+          //Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
+          setPqcDataTable([]);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+  const traPQC32 = (from_date: string, to_date: string, listCode: string[]) => {
+    let td = moment().add(0, "day").format("YYYY-MM-DD");
+    let frd = moment().add(-14, "day").format("YYYY-MM-DD");
+    generalQuery("trapqc3data", {
+      ALLTIME: false,
+      FROM_DATE: from_date,
+      TO_DATE: to_date,
+      CUST_NAME: cust_name,
+      PROCESS_LOT_NO: '',
+      G_CODE: '',
+      G_NAME: '',
+      PROD_TYPE: '',
+      EMPL_NAME: '',
+      PROD_REQUEST_NO: '',
+      ID: '',
+      FACTORY: 'All',
+    })
+      .then((response) => {
+        //console.log(response.data.data);
+        if (response.data.tk_status !== "NG") {
+          const loadeddata: PQC3_DATA[] = response.data.data.map(
+            (element: PQC3_DATA, index: number) => {
+              //summaryOutput += element.OUTPUT_QTY_EA;
+              return {
+                ...element,
+                OCCURR_TIME: moment
+                  .utc(element.OCCURR_TIME)
+                  .format("YYYY-MM-DD HH:mm:ss"),
+                id: index,
+              };
+            },
+          );
+          //Swal.fire("Thông báo", "Đã load: " + loadeddata.length + "dong", "success");
           //setSummaryInspect('Tổng Xuất: ' +  summaryOutput.toLocaleString('en-US') + 'EA');
           if (loadeddata.length > 3) {
             setPqcDataTable(loadeddata);
@@ -323,10 +386,10 @@ const PQC_REPORT = () => {
       handle_getDailyPPM("ALL", searchCodeArray),
       handle_getWeeklyPPM("ALL", searchCodeArray),
       handle_getMonthlyPPM("ALL", searchCodeArray),
-      handle_getYearlyPPM("ALL", searchCodeArray),   
-      handle_getDailyDefectTrending(fromdate, todate, searchCodeArray), 
+      handle_getYearlyPPM("ALL", searchCodeArray),
+      handle_getDailyDefectTrending(fromdate, todate, searchCodeArray),
       handle_getInspectSummary(fromdate, todate, searchCodeArray),
-      traPQC3(fromdate, todate, searchCodeArray) 
+      traPQC3(fromdate, todate, searchCodeArray)
     ]).then((values) => {
       Swal.fire("Thông báo", "Đã load xong báo cáo", 'success');
     });
@@ -445,6 +508,16 @@ const PQC_REPORT = () => {
             ></input> ({searchCodeArray.length})
           </label>
           <label>
+            <b>Customer:</b>{" "}
+            <input
+              type="text"
+              value={cust_name}
+              onChange={(e) => {
+                setCust_Name(e.target.value);
+              }}
+            ></input> ({searchCodeArray.length})
+          </label>
+          <label>
             <b>Default:</b>{" "}
             <Checkbox
               checked={df}
@@ -480,7 +553,7 @@ const PQC_REPORT = () => {
             />
           </div>
           <div className="revenuwdg">
-          <WidgetPQC
+            <WidgetPQC
               widgettype="revenue"
               label="This Week NG"
               topColor="#ace73d"
@@ -491,7 +564,7 @@ const PQC_REPORT = () => {
             />
           </div>
           <div className="revenuwdg">
-          <WidgetPQC
+            <WidgetPQC
               widgettype="revenue"
               label="This Month NG"
               topColor="#ace73d"
@@ -502,7 +575,7 @@ const PQC_REPORT = () => {
             />
           </div>
           <div className="revenuwdg">
-          <WidgetPQC
+            <WidgetPQC
               widgettype="revenue"
               label="This Year NG"
               topColor="#ace73d"
@@ -520,7 +593,16 @@ const PQC_REPORT = () => {
           <div className="dailygraphtotal">
             <div className="dailygraphtotal">
               <div className="dailygraph">
-                <span className="subsection">Daily NG Rate</span>
+                <span className="subsection">Daily NG Rate <IconButton
+          className='buttonIcon'
+          onClick={() => {
+            SaveExcel(dailyppm, "DailyPPMData");
+          }}
+        >
+          <AiFillFileExcel color='green' size={15} />
+          Excel
+        </IconButton>
+                </span>
                 <PQCDailyNGRate
                   dldata={[...dailyppm].reverse()}
                   processColor="#53eb34"
@@ -528,7 +610,15 @@ const PQC_REPORT = () => {
                 />
               </div>
               <div className="dailygraph">
-                <span className="subsection">Weekly NG Rate</span>
+                <span className="subsection">Weekly NG Rate <IconButton
+          className='buttonIcon'
+          onClick={() => {
+            SaveExcel(weeklyppm, "WeeklyPPMData");
+          }}
+        >
+          <AiFillFileExcel color='green' size={15} />
+          Excel
+        </IconButton></span>
                 <PQCWeeklyNGRate
                   dldata={[...weeklyppm].reverse()}
                   processColor="#53eb34"
@@ -538,7 +628,15 @@ const PQC_REPORT = () => {
             </div>
             <div className="monthlyweeklygraph">
               <div className="dailygraph">
-                <span className="subsection">Monthly NG Rate</span>
+                <span className="subsection">Monthly NG Rate <IconButton
+          className='buttonIcon'
+          onClick={() => {
+            SaveExcel(monthlyppm, "MonthlyPPMData");
+          }}
+        >
+          <AiFillFileExcel color='green' size={15} />
+          Excel
+        </IconButton></span>
                 <PQCMonthlyNGRate
                   dldata={[...monthlyppm].reverse()}
                   processColor="#53eb34"
@@ -546,7 +644,15 @@ const PQC_REPORT = () => {
                 />
               </div>
               <div className="dailygraph">
-                <span className="subsection">Yearly NG Rate</span>
+                <span className="subsection">Yearly NG Rate <IconButton
+          className='buttonIcon'
+          onClick={() => {
+            SaveExcel(yearlyppm, "YearlyPPMData");
+          }}
+        >
+          <AiFillFileExcel color='green' size={15} />
+          Excel
+        </IconButton></span>
                 <PQCYearlyNGRate
                   dldata={[...yearlyppm].reverse()}
                   processColor="#53eb34"
@@ -555,10 +661,49 @@ const PQC_REPORT = () => {
               </div>
             </div>
           </div>
-          <span className="subsection_title">2.5 PQC Defects Trending</span>
-          <div className="dailygraphtotal">
+          <span className="subsection_title">2.5 PQC Defects Trending <IconButton
+          className='buttonIcon'
+          onClick={() => {
+            SaveExcel(PQCDailyDefectTrending, "PQCDefectTrending");
+          }}
+        >
+          <AiFillFileExcel color='green' size={15} />
+          Excel
+        </IconButton></span>
+          <div className="defect_trending">
             <div className="dailygraph" style={{ height: '600px' }}>
-              <PQCDailyDefectTrending dldata={[...dailyDefectTrendingData].reverse()} />
+              <PQCDailyDefectTrending dldata={[...dailyDefectTrendingData].reverse()} onClick={(e) => {
+                console.log(e)
+                traPQC32(e.activeLabel, e.activeLabel, searchCodeArray);
+              }} />
+            </div>
+          </div>
+          <div className="worstinspection">
+            <div className="worsttable">
+              {
+                pqcdatatable.map((ele: PQC3_DATA, index: number) => {
+                  return (
+                    <div style={{ display: 'flex', flexDirection: 'column', color: 'black', fontWeight: 'bold' }}>
+                      {`OCCURRED_TIME: ${ele.OCCURR_TIME}`}
+                      <PATROL_COMPONENT2 key={index} data={{
+                        CUST_NAME_KD: ele.CUST_NAME_KD,
+                        DEFECT: ele.ERR_CODE + ':' + ele.DEFECT_PHENOMENON,
+                        EQ: ele.LINE_NO,
+                        FACTORY: ele.FACTORY,
+                        G_NAME_KD: ele.G_NAME_KD,
+                        INSPECT_QTY: ele.INSPECT_QTY,
+                        INSPECT_NG: ele.DEFECT_QTY,
+                        LINK: `/pqc/PQC3_${ele.PQC3_ID + 1}.png`,
+                        TIME: ele.OCCURR_TIME,
+                        EMPL_NO: ele.LINEQC_PIC,
+                        DOI_SACH: ele.DOI_SACH,
+                        NG_NHAN: ele.NG_NHAN,
+                        STATUS: ele.STATUS
+                      }} />
+                    </div>
+                  )
+                })
+              }
             </div>
           </div>
           <span className="section_title">3. PQC F-COST Status</span>
@@ -568,7 +713,15 @@ const PQC_REPORT = () => {
           <div className="fcosttrending">
             <div className="fcostgraph">
               <div className="dailygraph">
-                <span className="subsection">Daily F-Cost</span>
+                <span className="subsection">Daily F-Cost <IconButton
+          className='buttonIcon'
+          onClick={() => {
+            SaveExcel(dailyppm, "DailyFcostData");
+          }}
+        >
+          <AiFillFileExcel color='green' size={15} />
+          Excel
+        </IconButton></span>
                 <PQCDailyFcost
                   dldata={[...dailyppm].reverse()}
                   processColor="#8b89fc"
@@ -580,7 +733,15 @@ const PQC_REPORT = () => {
           <div className="fcosttrending">
             <div className="fcostgraph">
               <div className="dailygraph">
-                <span className="subsection">Weekly F-Cost</span>
+                <span className="subsection">Weekly F-Cost <IconButton
+          className='buttonIcon'
+          onClick={() => {
+            SaveExcel(weeklyppm, "WeeklyFcostData");
+          }}
+        >
+          <AiFillFileExcel color='green' size={15} />
+          Excel
+        </IconButton></span>
                 <PQCWeeklyFcost
                   dldata={[...weeklyppm].reverse()}
                   processColor="#8b89fc"
@@ -588,7 +749,15 @@ const PQC_REPORT = () => {
                 />
               </div>
               <div className="dailygraph">
-                <span className="subsection">Monthly F-Cost</span>
+                <span className="subsection">Monthly F-Cost <IconButton
+          className='buttonIcon'
+          onClick={() => {
+            SaveExcel(monthlyppm, "MonthlyFcostData");
+          }}
+        >
+          <AiFillFileExcel color='green' size={15} />
+          Excel
+        </IconButton></span>
                 <PQCMonthlyFcost
                   dldata={[...monthlyppm].reverse()}
                   processColor="#8b89fc"
@@ -596,7 +765,15 @@ const PQC_REPORT = () => {
                 />
               </div>
               <div className="dailygraph">
-                <span className="subsection">Yearly F-Cost</span>
+                <span className="subsection">Yearly F-Cost <IconButton
+          className='buttonIcon'
+          onClick={() => {
+            SaveExcel(yearlyppm, "YearlyFcostData");
+          }}
+        >
+          <AiFillFileExcel color='green' size={15} />
+          Excel
+        </IconButton></span>
                 <PQCYearlyFcost
                   dldata={[...yearlyppm].reverse()}
                   processColor="#8b89fc"
@@ -604,35 +781,8 @@ const PQC_REPORT = () => {
                 />
               </div>
             </div>
-          </div>          
-          <span className="section_title">4. QPN History</span>
-          <div className="worstinspection">
-            <div className="worsttable"> 
-            {
-            pqcdatatable.map((ele: PQC3_DATA, index: number) => {
-              return (
-                <div style={{display:'flex', flexDirection:'column', color: 'black', fontWeight:'bold'}}>
-                {`OCCURRED_TIME: ${ele.OCCURR_TIME}`}
-                <PATROL_COMPONENT key={index} data={{
-                  CUST_NAME_KD: ele.CUST_NAME_KD,
-                  DEFECT: ele.ERR_CODE + ':' + ele.DEFECT_PHENOMENON,
-                  EQ: ele.LINE_NO,
-                  FACTORY: ele.FACTORY,
-                  G_NAME_KD: ele.G_NAME_KD,
-                  INSPECT_QTY: ele.INSPECT_QTY,
-                  INSPECT_NG: ele.DEFECT_QTY,
-                  LINK: `/pqc/PQC3_${ele.PQC3_ID + 1}.png`,
-                  TIME: ele.OCCURR_TIME,
-                  EMPL_NO: ele.LINEQC_PIC
-                }} />
-                </div>
-              )
-            })
-          }
-
-            </div>            
           </div>
-        </div>  
+        </div>
       </div>
     </div>
   );

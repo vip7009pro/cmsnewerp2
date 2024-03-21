@@ -292,7 +292,7 @@ const CSREPORT = () => {
         console.log(error);
       });
   }
-  const handle_getCSDailyReduceAmount  = async (from_date: string, to_date: string, listCode: string[]) => {
+  const handle_getCSDailyReduceAmount = async (from_date: string, to_date: string, listCode: string[]) => {
     let td = moment().add(0, "day").format("YYYY-MM-DD");
     let frd = moment().add(-14, "day").format("YYYY-MM-DD");
     await generalQuery("csdailyreduceamount", {
@@ -322,7 +322,7 @@ const CSREPORT = () => {
         console.log(error);
       });
   }
-  const handle_getCSWeeklyReduceAmount  = async (from_date: string, to_date: string, listCode: string[]) => {
+  const handle_getCSWeeklyReduceAmount = async (from_date: string, to_date: string, listCode: string[]) => {
     let td = moment().add(0, "day").format("YYYY-MM-DD");
     let frd = moment().add(-70, "day").format("YYYY-MM-DD");
     await generalQuery("csweeklyreduceamount", {
@@ -351,7 +351,7 @@ const CSREPORT = () => {
         console.log(error);
       });
   }
-  const handle_getCSMonthlyReduceAmount  = async (from_date: string, to_date: string, listCode: string[]) => {
+  const handle_getCSMonthlyReduceAmount = async (from_date: string, to_date: string, listCode: string[]) => {
     let td = moment().add(0, "day").format("YYYY-MM-DD");
     let frd = moment().add(-365, "day").format("YYYY-MM-DD");
     await generalQuery("csmonthlyreduceamount", {
@@ -380,7 +380,7 @@ const CSREPORT = () => {
         console.log(error);
       });
   }
-  const handle_getCSYearlyReduceAmount  = async (from_date: string, to_date: string, listCode: string[]) => {
+  const handle_getCSYearlyReduceAmount = async (from_date: string, to_date: string, listCode: string[]) => {
     let td = moment().add(0, "day").format("YYYY-MM-DD");
     let frd = moment().add(-1200, "day").format("YYYY-MM-DD");
     await generalQuery("csyearlyreduceamount", {
@@ -409,7 +409,7 @@ const CSREPORT = () => {
         console.log(error);
       });
   }
-  const handle_getCSDailyRMAAmount  = async (from_date: string, to_date: string, listCode: string[]) => {
+  const handle_getCSDailyRMAAmount = async (from_date: string, to_date: string, listCode: string[]) => {
     let td = moment().add(0, "day").format("YYYY-MM-DD");
     let frd = moment().add(-14, "day").format("YYYY-MM-DD");
     await generalQuery("csdailyRMAAmount", {
@@ -440,7 +440,7 @@ const CSREPORT = () => {
         console.log(error);
       });
   }
-  const handle_getCSWeeklyRMAAmount  = async (from_date: string, to_date: string, listCode: string[]) => {
+  const handle_getCSWeeklyRMAAmount = async (from_date: string, to_date: string, listCode: string[]) => {
     let td = moment().add(0, "day").format("YYYY-MM-DD");
     let frd = moment().add(-70, "day").format("YYYY-MM-DD");
     await generalQuery("csweeklyRMAAmount", {
@@ -471,7 +471,7 @@ const CSREPORT = () => {
         console.log(error);
       });
   }
-  const handle_getCSMonthlyRMAAmount  = async (from_date: string, to_date: string, listCode: string[]) => {
+  const handle_getCSMonthlyRMAAmount = async (from_date: string, to_date: string, listCode: string[]) => {
     let td = moment().add(0, "day").format("YYYY-MM-DD");
     let frd = moment().add(-365, "day").format("YYYY-MM-DD");
     await generalQuery("csmonthlyRMAAmount", {
@@ -502,7 +502,7 @@ const CSREPORT = () => {
         console.log(error);
       });
   }
-  const handle_getCSYearlyRMAAmount  = async (from_date: string, to_date: string, listCode: string[]) => {
+  const handle_getCSYearlyRMAAmount = async (from_date: string, to_date: string, listCode: string[]) => {
     let td = moment().add(0, "day").format("YYYY-MM-DD");
     let frd = moment().add(-3650, "day").format("YYYY-MM-DD");
     await generalQuery("csyearlyRMAAmount", {
@@ -534,7 +534,7 @@ const CSREPORT = () => {
       });
   }
 
-  const handle_getCSDailyTaxiAmount  = async (from_date: string, to_date: string, listCode: string[]) => {
+  const handle_getCSDailyTaxiAmount = async (from_date: string, to_date: string, listCode: string[]) => {
     let td = moment().add(0, "day").format("YYYY-MM-DD");
     let frd = moment().add(-14, "day").format("YYYY-MM-DD");
     await generalQuery("csdailyTaxiAmount", {
@@ -549,7 +549,7 @@ const CSREPORT = () => {
             (element: CS_TAXI_AMOUNT_DATA, index: number) => {
               return {
                 ...element,
-                TAXI_DATE: moment(element.TAXI_DATE).format('YYYY-MM-DD'),                
+                TAXI_DATE: moment(element.TAXI_DATE).format('YYYY-MM-DD'),
                 id: index,
               };
             },
@@ -564,7 +564,7 @@ const CSREPORT = () => {
         console.log(error);
       });
   }
-  const handle_getCSMonthlyTaxiAmount  = async (from_date: string, to_date: string, listCode: string[]) => {
+  const handle_getCSMonthlyTaxiAmount = async (from_date: string, to_date: string, listCode: string[]) => {
     let td = moment().add(0, "day").format("YYYY-MM-DD");
     let frd = moment().add(-14, "day").format("YYYY-MM-DD");
     await generalQuery("csmonthlyTaxiAmount", {
@@ -578,7 +578,7 @@ const CSREPORT = () => {
           let loadeddata = response.data.data.map(
             (element: CS_TAXI_AMOUNT_DATA, index: number) => {
               return {
-                ...element,                           
+                ...element,
                 id: index,
               };
             },
@@ -593,7 +593,7 @@ const CSREPORT = () => {
         console.log(error);
       });
   }
-  const handle_getCSWeeklyTaxiAmount  = async (from_date: string, to_date: string, listCode: string[]) => {
+  const handle_getCSWeeklyTaxiAmount = async (from_date: string, to_date: string, listCode: string[]) => {
     let td = moment().add(0, "day").format("YYYY-MM-DD");
     let frd = moment().add(-14, "day").format("YYYY-MM-DD");
     await generalQuery("csweeklyTaxiAmount", {
@@ -607,7 +607,7 @@ const CSREPORT = () => {
           let loadeddata = response.data.data.map(
             (element: CS_TAXI_AMOUNT_DATA, index: number) => {
               return {
-                ...element,                
+                ...element,
                 id: index,
               };
             },
@@ -622,7 +622,7 @@ const CSREPORT = () => {
         console.log(error);
       });
   }
-  const handle_getCSYearlyTaxiAmount  = async (from_date: string, to_date: string, listCode: string[]) => {
+  const handle_getCSYearlyTaxiAmount = async (from_date: string, to_date: string, listCode: string[]) => {
     let td = moment().add(0, "day").format("YYYY-MM-DD");
     let frd = moment().add(-14, "day").format("YYYY-MM-DD");
     await generalQuery("csyearlyTaxiAmount", {
@@ -636,7 +636,7 @@ const CSREPORT = () => {
           let loadeddata = response.data.data.map(
             (element: CS_TAXI_AMOUNT_DATA, index: number) => {
               return {
-                ...element,                
+                ...element,
                 id: index,
               };
             },
@@ -919,10 +919,10 @@ const CSREPORT = () => {
           <span className="subsection_title">CS Saving Summary ({fromdate}~ {todate})</span>
           <SAVINGTABLE data={csDailyReduceAmount} />
 
-          <span className="subsection_title">Cost Saving Trending</span>         
+          <span className="subsection_title">Cost Saving Trending</span>
           <div className="fcosttrending">
             <div className="fcostgraph">
-            <div className="dailygraph">
+              <div className="dailygraph">
                 <span className="subsection">Daily Saving</span>
                 <CSDDailySavingChart
                   dldata={[...csDailyReduceAmount].reverse()}
@@ -960,12 +960,13 @@ const CSREPORT = () => {
           <span className="subsection_title">CS F-Cost Summary ({fromdate}~ {todate})</span>
           <CSFCOSTTABLE data={{
             RMA_DATA: csDailyRMAAmount,
-            TAXI_DATA: csDailyTAXIAmount}            
+            TAXI_DATA: csDailyTAXIAmount
+          }
           } />
           <span className="subsection_title">RMA Amount Trending</span>
           <div className="fcosttrending">
             <div className="fcostgraph">
-            <div className="dailygraph">
+              <div className="dailygraph">
                 <span className="subsection">Daily RMA</span>
                 <CSDDailyRMAChart
                   dldata={[...csDailyRMAAmount].reverse()}
@@ -1003,10 +1004,10 @@ const CSREPORT = () => {
               </div>
             </div>
           </div>
-          <span className="subsection_title">Taxi Amount Trending</span>         
+          <span className="subsection_title">Taxi Amount Trending</span>
           <div className="fcosttrending">
             <div className="fcostgraph">
-            <div className="dailygraph">
+              <div className="dailygraph">
                 <span className="subsection">Daily Taxi</span>
                 <CSDDailyTaxiChart
                   dldata={[...csDailyTAXIAmount].reverse()}
@@ -1039,7 +1040,7 @@ const CSREPORT = () => {
                 />
               </div>
             </div>
-          </div>          
+          </div>
         </div>
       </div>
     </div>

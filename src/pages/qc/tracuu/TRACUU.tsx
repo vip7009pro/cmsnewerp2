@@ -1,13 +1,11 @@
 import { useEffect, useState } from "react";
 import "./TRACUU.scss";
-
 const TRACUU = () => {
   const [selection, setSelection] = useState<any>({
     tab1: false,
     tab2: true,
     tab3: false,
   });
-
   const setNav = (choose: number) => {
     if (choose === 1) {
       setSelection({ ...selection, tab1: true, tab2: false, tab3: false });
@@ -17,9 +15,7 @@ const TRACUU = () => {
       setSelection({ ...selection, tab1: false, tab2: false, tab3: true });
     }
   };
-
-  useEffect(() => {}, []);
-
+  useEffect(() => { }, []);
   return (
     <div className="TRACUU">
       <div className="mininavbar">

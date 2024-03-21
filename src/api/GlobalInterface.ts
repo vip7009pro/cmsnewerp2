@@ -1473,6 +1473,7 @@ export interface ERROR_TABLE {
 }
 //pqc data
 export interface PQC1_DATA {
+  CUST_NAME_KD?: string,
   PQC1_ID: string;
   YEAR_WEEK: string;
   PROD_REQUEST_NO: string;
@@ -1629,6 +1630,9 @@ export interface PQC3_DATA {
   WORST5: string;
   WORST5_MONTH: string;
   ERR_CODE: string;
+  NG_NHAN?: string,
+  DOI_SACH?: string,
+  STATUS?: string
 }
 export interface DAO_FILM_DATA {
   KNIFE_FILM_ID: string;
@@ -3255,6 +3259,9 @@ export interface PATROL_DATA {
   INSPECT_NG: number,
   LINK: string,
   EMPL_NO: string,
+  NG_NHAN?: string,
+  DOI_SACH?: string,
+  STATUS?: string
 }
 export interface INSP_PATROL_DATA {
   INS_PATROL_ID: number,

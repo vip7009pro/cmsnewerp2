@@ -265,6 +265,14 @@ const CHITHI_COMPONENT2 = ({ PLAN_LIST }: PLAN_COMBO) => {
             height={400 - 100}
           />
         )}
+        {(request_codeinfo[0].CODE_55 === '04') && (
+          <img
+            alt="qcpass"
+            src="/SAMPLE.png"
+            width={440 - 100 - 10}
+            height={400 - 100}
+          />
+        )}
       </div>
         <div className="tieudeycsx">
           <div className="leftlogobarcode">

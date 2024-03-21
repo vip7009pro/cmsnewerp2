@@ -25,7 +25,7 @@ import {
 } from "../../api/GlobalFunction";
 import { DEFECT_TRENDING_DATA, DailyData, FcostData } from "../../api/GlobalInterface";
 
-const PQCDailyDefectTrending = ({ dldata}: {dldata: DEFECT_TRENDING_DATA[]}) => {
+const PQCDailyDefectTrending = ({ dldata, onClick}: {dldata: DEFECT_TRENDING_DATA[], onClick: (e: any) => void}) => {
   const formatCash = (n: number) => {
     return nFormatter(n, 1);
   };
@@ -68,10 +68,15 @@ const PQCDailyDefectTrending = ({ dldata}: {dldata: DEFECT_TRENDING_DATA[]}) => 
     }
     return null;
   };
+  const handleClick =(e:any)=> {
+   // console.log(e)
+    onClick(e);
+  }
   useEffect(() => {}, []);
   return (
     <CustomResponsiveContainer>
       <ComposedChart
+      onClick={(e)=> {handleClick(e)}}
         width={500}
         height={300}
         data={dldata}
@@ -119,7 +124,7 @@ const PQCDailyDefectTrending = ({ dldata}: {dldata: DEFECT_TRENDING_DATA[]}) => 
           Object.entries(dldata[0]?? []).map((ele: any, index: number)=>{
             if(['INSPECT_DATE','INSPECT_TOTAL_QTY','INSPECT_OK_QTY','INSPECT_NG_QTY','id','ERR1','ERR2','ERR3','ERR32'].indexOf(ele[0]) <0)
             return (
-              <Line              
+              <Line               
               key={`chart-${index}`}
               yAxisId='left-axis'
               type='monotone'
@@ -127,7 +132,9 @@ const PQCDailyDefectTrending = ({ dldata}: {dldata: DEFECT_TRENDING_DATA[]}) => 
               stroke={COLORS[((2 * index) % COLORS.length) * 2]}
               label={{ position: "top", formatter: labelFormatter, fontSize:'0.7rem', fontWeight:'bold', color:'black' }} 
               fill={COLORS[((Math.floor(Math.random()*32) * index) % COLORS.length) * 2]}              
-            />
+            >
+              <LabelList dataKey= {`${ele[0]}`} fill="black" position="top" formatter={labelFormatter} fontSize={"0.7rem"}/>
+              </Line>
             )
           })
         }

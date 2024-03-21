@@ -31,7 +31,42 @@ import {
   PQC3_DATA,
   TRA_PQC1_DATA,
 } from "../../../api/GlobalInterface";
+import PATROL_COMPONENT from "../../sx/PATROL/PATROL_COMPONENT";
 const TRAPQC = () => {
+  const [showhideupdatennds, setShowHideUpdateNNDS] = useState(false);
+  const [currentNN, setCurrentNN] = useState("");
+  const [currentDS, setCurrentDS] = useState("");
+  const [currentDefectRow, setCurrentDefectRow] = useState<PQC3_DATA>({
+    CUST_NAME_KD: '',
+    DEFECT_AMOUNT: 0,
+    DEFECT_IMAGE_LINK: '',
+    DEFECT_PHENOMENON: '',
+    DEFECT_QTY: 0,
+    ERR_CODE: '',
+    FACTORY: '',
+    G_CODE: '',
+    G_NAME: '',
+    G_NAME_KD: '',
+    INSPECT_QTY: 0,
+    LINE_NO: '',
+    LINEQC_PIC: '',
+    OCCURR_TIME: '',
+    PQC1_ID: 0,
+    PQC3_ID: 0,
+    PROCESS_LOT_NO: '',
+    PROD_LAST_PRICE: 0,
+    PROD_LEADER: '',
+    PROD_PIC: '',
+    PROD_REQUEST_DATE: '',
+    PROD_REQUEST_NO: '',
+    REMARK: '',
+    WORST5: '',
+    WORST5_MONTH: '',
+    YEAR_WEEK: '',
+    DOI_SACH: '',
+    NG_NHAN: "",
+    STATUS: ''
+  });
   const [readyRender, setReadyRender] = useState(true);
   const [selection, setSelection] = useState<any>({
     trapo: true,
@@ -63,6 +98,7 @@ const TRAPQC = () => {
   const column_TRA_PQC1_DATA = [
     { field: "PQC1_ID", headerName: "PQC1_ID", width: 80 },
     { field: "YEAR_WEEK", headerName: "YEAR_WEEK", width: 80 },
+    { field: "CUST_NAME_KD", headerName: "CUST_NAME_KD", width: 120 },
     { field: "PROD_REQUEST_NO", headerName: "PROD_REQUEST_NO", width: 80 },
     { field: "PROD_REQUEST_QTY", headerName: "PROD_REQUEST_QTY", width: 80 },
     { field: "PROD_REQUEST_DATE", headerName: "PROD_REQUEST_DATE", width: 80 },
@@ -159,13 +195,12 @@ const TRAPQC = () => {
       },
     },
     {
-      field: "IMG_1",     
+      field: "IMG_1",
       headerName: "IMG_1",
       width: 100,
       renderCell: (params: any) => {
         let href_link = `/lineqc/${params.row.PLAN_ID}_1.jpg`
-        if(params.row.IMG_1 ?? false)
-        {
+        if (params.row.IMG_1 ?? false) {
           return (
             <span style={{ color: "blue" }}>
               <a target="_blank" rel="noopener noreferrer" href={href_link}>
@@ -174,24 +209,22 @@ const TRAPQC = () => {
             </span>
           );
         }
-        else
-        {
+        else {
           return (
             <span style={{ color: "blue" }}>
               NO
             </span>
           );
-        }        
+        }
       },
     },
     {
-      field: "IMG_2",     
+      field: "IMG_2",
       headerName: "IMG_2",
       width: 100,
       renderCell: (params: any) => {
         let href_link = `/lineqc/${params.row.PLAN_ID}_2.jpg`
-        if(params.row.IMG_2 ?? false)
-        {
+        if (params.row.IMG_2 ?? false) {
           return (
             <span style={{ color: "blue" }}>
               <a target="_blank" rel="noopener noreferrer" href={href_link}>
@@ -200,43 +233,39 @@ const TRAPQC = () => {
             </span>
           );
         }
-        else
-        {
+        else {
           return (
             <span style={{ color: "blue" }}>
               NO
             </span>
           );
-        }        
+        }
       },
     },
     {
-      field: "IMG_3",     
+      field: "IMG_3",
       headerName: "IMG_3",
       width: 100,
       renderCell: (params: any) => {
         let href_link = `/lineqc/${params.row.PLAN_ID}_3.jpg`
-        if(params.row.IMG_3 ?? false)
-        {
+        if (params.row.IMG_3 ?? false) {
           return (
             <span style={{ color: "blue" }}>
               <a target="_blank" rel="noopener noreferrer" href={href_link}>
-              LINK
+                LINK
               </a>
             </span>
           );
         }
-        else
-        {
+        else {
           return (
             <span style={{ color: "blue" }}>
               NO
             </span>
           );
-        }        
+        }
       },
     },
-    
   ];
   const column_pqc3_data = [
     { field: "YEAR_WEEK", headerName: "YEAR_WEEK", width: 80 },
@@ -289,6 +318,21 @@ const TRAPQC = () => {
     { field: "REMARK", headerName: "REMARK", width: 120 },
     { field: "WORST5", headerName: "WORST5", width: 80 },
     { field: "WORST5_MONTH", headerName: "WORST5_MONTH", width: 80 },
+    {
+      field: "UPDATE_NNDS", headerName: "UPDATE_NNDS", width: 120, renderCell: (params: any) => {
+        return (
+          <button onClick={() => {
+            setCurrentDefectRow(params.row);
+            setShowHideUpdateNNDS(true)
+            setCurrentDS(params.row.DOI_SACH);
+            setCurrentNN(params.row.NG_NHAN);
+          }
+          }>Update NNDS</button>
+        );
+      },
+    },
+    { field: "NG_NHAN", headerName: "NG_NHAN", width: 80 },
+    { field: "DOI_SACH", headerName: "DOI_SACH", width: 80 },
   ];
   const column_daofilm_data = [
     { field: "KNIFE_FILM_ID", headerName: "ID", width: 80 },
@@ -634,6 +678,29 @@ const TRAPQC = () => {
         console.log(error);
       });
   };
+  const updateNNDS =()=> {    
+    generalQuery("updatenndspqc", {
+      PQC3_ID: currentDefectRow.PQC3_ID,
+      NG_NHAN: currentNN,
+      DOI_SACH: currentDS
+    })
+    .then((response) => {
+      //console.log(response.data.data);
+      if (response.data.tk_status !== "NG") {         
+        Swal.fire(
+          "Thông báo",
+          "Update thành công",
+          "success",
+        );
+      } else {
+        Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");          
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  }
+
   useEffect(() => {
     //setColumnDefinition(column_pqc3_data);
   }, []);
@@ -808,6 +875,69 @@ const TRAPQC = () => {
           )}
         </div>
       </div>
+      {showhideupdatennds && <div className="updatenndsform">
+        <span style={{ fontWeight: 'bold' }}>Form update nguyên nhân đối sách</span>
+        <div className="inputbox">
+          1. Hiện tượng (현상)
+          <PATROL_COMPONENT data={{
+            CUST_NAME_KD: currentDefectRow.CUST_NAME_KD,
+            DEFECT: currentDefectRow.ERR_CODE + ':' + currentDefectRow.DEFECT_PHENOMENON,
+            EQ: currentDefectRow.LINE_NO,
+            FACTORY: currentDefectRow.FACTORY,
+            G_NAME_KD: currentDefectRow.G_NAME_KD,
+            INSPECT_QTY: currentDefectRow.INSPECT_QTY,
+            INSPECT_NG: currentDefectRow.DEFECT_QTY,
+            LINK: `/pqc/PQC3_${currentDefectRow.PQC3_ID + 1}.png`,
+            TIME: currentDefectRow.OCCURR_TIME,
+            EMPL_NO: currentDefectRow.LINEQC_PIC
+          }} />
+          2. Nguyên nhân (원인)
+          <textarea rows={8} style={{ width: '100%' }} value={currentNN} onChange={(e)=> {setCurrentNN(e.target.value)}}></textarea>
+          3. Đối sách (대책)
+          <textarea rows={8} style={{ width: '100%' }} value={currentDS} onChange={(e)=> {setCurrentDS(e.target.value)}}></textarea>
+        </div>
+        <div className="buttondiv">
+          <button onClick={() => {
+            updateNNDS();
+          }}>Update</button>
+          <button onClick={() => {
+            setShowHideUpdateNNDS(false);
+            setCurrentDS('');
+            setCurrentNN('');
+            setCurrentDefectRow({
+              CUST_NAME_KD: '',
+              DEFECT_AMOUNT: 0,
+              DEFECT_IMAGE_LINK: '',
+              DEFECT_PHENOMENON: '',
+              DEFECT_QTY: 0,
+              ERR_CODE: '',
+              FACTORY: '',
+              G_CODE: '',
+              G_NAME: '',
+              G_NAME_KD: '',
+              INSPECT_QTY: 0,
+              LINE_NO: '',
+              LINEQC_PIC: '',
+              OCCURR_TIME: '',
+              PQC1_ID: 0,
+              PQC3_ID: 0,
+              PROCESS_LOT_NO: '',
+              PROD_LAST_PRICE: 0,
+              PROD_LEADER: '',
+              PROD_PIC: '',
+              PROD_REQUEST_DATE: '',
+              PROD_REQUEST_NO: '',
+              REMARK: '',
+              WORST5: '',
+              WORST5_MONTH: '',
+              YEAR_WEEK: '',
+              DOI_SACH: '',
+              NG_NHAN: "",
+              STATUS: ''
+            });
+          }}>Close</button>
+        </div>
+      </div>}
     </div>
   );
 };

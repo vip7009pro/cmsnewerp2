@@ -22,7 +22,7 @@ const PATROL_HEADER = ({ data }: { data: PATROL_HEADER_DATA[] }) => {
         <tbody>
           {data.map((ele: PATROL_HEADER_DATA, index: number) => {
             return (
-              <tr>
+              <tr key={index}>
                 <td>{index + 1}</td>
                 <td>{ele.G_NAME_KD}</td>
                 <td style={{color:'red', fontWeight:'bold'}}>{ele.NG_AMOUNT.toLocaleString(
