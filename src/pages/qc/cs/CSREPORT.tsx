@@ -44,14 +44,6 @@ import CSYearlyTaxiChart from "../../../components/Chart/CSYearlyTaxiChart";
 import CSFCOSTTABLE from "./FCOSTTABLE";
 import SAVINGTABLE from "./SAVINGTABLE";
 const CSREPORT = () => {
-  const [dailyppm1, setDailyPPM1] = useState<DailyPPMData[]>([]);
-  const [weeklyppm1, setWeeklyPPM1] = useState<WeeklyPPMData[]>([]);
-  const [monthlyppm1, setMonthlyPPM1] = useState<MonthlyPPMData[]>([]);
-  const [yearlyppm1, setYearlyPPM1] = useState<YearlyPPMData[]>([]);
-  const [dailyppm2, setDailyPPM2] = useState<DailyPPMData[]>([]);
-  const [weeklyppm2, setWeeklyPPM2] = useState<WeeklyPPMData[]>([]);
-  const [monthlyppm2, setMonthlyPPM2] = useState<MonthlyPPMData[]>([]);
-  const [yearlyppm2, setYearlyPPM2] = useState<YearlyPPMData[]>([]);
   const [dailyppm, setDailyPPM] = useState<CS_CONFIRM_TRENDING_DATA[]>([]);
   const [weeklyppm, setWeeklyPPM] = useState<CS_CONFIRM_TRENDING_DATA[]>([]);
   const [monthlyppm, setMonthlyPPM] = useState<CS_CONFIRM_TRENDING_DATA[]>([]);
@@ -60,17 +52,11 @@ const CSREPORT = () => {
   const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));
   const [worstby, setWorstBy] = useState('AMOUNT');
   const [ng_type, setNg_Type] = useState('ALL');
-  const [worstdatatable, setWorstDataTable] = useState<Array<WorstData>>([]);
-  const [inspectSummary, setInspectSummary] = useState<InspectSummary[]>([]);
-  const [dailyFcostData, setDailyFcostData] = useState<InspectSummary[]>([]);
-  const [weeklyFcostData, setWeeklyFcostData] = useState<InspectSummary[]>([]);
-  const [monthlyFcostData, setMonthlyFcostData] = useState<InspectSummary[]>([]);
-  const [annualyFcostData, setAnnualyFcostData] = useState<InspectSummary[]>([]);
+
   const [csConfirmDataByCustomer, setCsConfirmDataByCustomer] = useState<CS_CONFIRM_BY_CUSTOMER_DATA[]>([]);
   const [csConfirmDataByPIC, setCsConfirmDataByPIC] = useState<CS_CONFIRM_BY_CUSTOMER_DATA[]>([]);
   const [codeList, setCodeList] = useState<CodeListData[]>([]);
   const [searchCodeArray, setSearchCodeArray] = useState<string[]>([]);
-  const [patrolheaderdata, setPatrolHeaderData] = useState<PATROL_HEADER_DATA[]>([]);
 
   const [csDailyReduceAmount, setCSDailyReduceAmount] = useState<CS_REDUCE_AMOUNT_DATA[]>([]);
   const [csWeeklyReduceAmount, setCSWeeklyReduceAmount] = useState<CS_REDUCE_AMOUNT_DATA[]>([]);
@@ -86,7 +72,7 @@ const CSREPORT = () => {
   const [csWeeklyTAXIAmount, setCSWeeklyTAXIAmount] = useState<CS_TAXI_AMOUNT_DATA[]>([]);
   const [csMonthlyTAXIAmount, setCSDMonthyTAXIAmount] = useState<CS_TAXI_AMOUNT_DATA[]>([]);
   const [csYearlyTAXIAmount, setCSYearlyTAXIAmount] = useState<CS_TAXI_AMOUNT_DATA[]>([]);
-
+  const [cust_name, setCust_Name] = useState('');
   const [selectedCode, setSelectedCode] = useState<CodeListData | null>({
     G_CODE: "6A00001B",
     G_NAME: "GT-I9500_SJ68-01284A",
@@ -117,7 +103,8 @@ const CSREPORT = () => {
     await generalQuery("csdailyconfirmdata", {
       FROM_DATE: df ? frd : from_date,
       TO_DATE: df ? td : to_date,
-      codeArray: listCode
+      codeArray: listCode,
+      CUST_NAME_KD: cust_name,      
     })
       .then((response) => {
         //console.log(response.data.data);
@@ -150,7 +137,8 @@ const CSREPORT = () => {
     await generalQuery("csweeklyconfirmdata", {
       FROM_DATE: df ? frd : from_date,
       TO_DATE: df ? td : to_date,
-      codeArray: listCode
+      codeArray: listCode,
+      CUST_NAME_KD: cust_name,      
     })
       .then((response) => {
         //console.log(response.data.data);
@@ -180,7 +168,8 @@ const CSREPORT = () => {
     await generalQuery("csmonthlyconfirmdata", {
       FROM_DATE: df ? frd : from_date,
       TO_DATE: df ? td : to_date,
-      codeArray: listCode
+      codeArray: listCode,
+      CUST_NAME_KD: cust_name
     })
       .then((response) => {
         //console.log(response.data.data);
@@ -210,7 +199,8 @@ const CSREPORT = () => {
     await generalQuery("csyearlyconfirmdata", {
       FROM_DATE: df ? frd : from_date,
       TO_DATE: df ? td : to_date,
-      codeArray: listCode
+      codeArray: listCode,
+      CUST_NAME_KD: cust_name
     })
       .then((response) => {
         //console.log(response.data.data);
@@ -240,7 +230,8 @@ const CSREPORT = () => {
     await generalQuery("csConfirmDataByCustomer", {
       FROM_DATE: df ? frd : from_date,
       TO_DATE: df ? td : to_date,
-      codeArray: listCode
+      codeArray: listCode,
+      CUST_NAME_KD: cust_name
     })
       .then((response) => {
         //console.log(response.data.data);
@@ -269,7 +260,8 @@ const CSREPORT = () => {
     await generalQuery("csConfirmDataByPIC", {
       FROM_DATE: df ? frd : from_date,
       TO_DATE: df ? td : to_date,
-      codeArray: listCode
+      codeArray: listCode,
+      CUST_NAME_KD: cust_name
     })
       .then((response) => {
         //console.log(response.data.data);
@@ -298,7 +290,8 @@ const CSREPORT = () => {
     await generalQuery("csdailyreduceamount", {
       FROM_DATE: df ? frd : from_date,
       TO_DATE: df ? td : to_date,
-      codeArray: listCode
+      codeArray: listCode,
+      CUST_NAME_KD: cust_name
     })
       .then((response) => {
         //console.log(response.data.data);
@@ -328,7 +321,8 @@ const CSREPORT = () => {
     await generalQuery("csweeklyreduceamount", {
       FROM_DATE: df ? frd : from_date,
       TO_DATE: df ? td : to_date,
-      codeArray: listCode
+      codeArray: listCode,
+      CUST_NAME_KD: cust_name
     })
       .then((response) => {
         //console.log(response.data.data);
@@ -357,7 +351,8 @@ const CSREPORT = () => {
     await generalQuery("csmonthlyreduceamount", {
       FROM_DATE: df ? frd : from_date,
       TO_DATE: df ? td : to_date,
-      codeArray: listCode
+      codeArray: listCode,
+      CUST_NAME_KD: cust_name
     })
       .then((response) => {
         //console.log(response.data.data);
@@ -386,7 +381,8 @@ const CSREPORT = () => {
     await generalQuery("csyearlyreduceamount", {
       FROM_DATE: df ? frd : from_date,
       TO_DATE: df ? td : to_date,
-      codeArray: listCode
+      codeArray: listCode,
+      CUST_NAME_KD: cust_name
     })
       .then((response) => {
         //console.log(response.data.data);
@@ -415,7 +411,8 @@ const CSREPORT = () => {
     await generalQuery("csdailyRMAAmount", {
       FROM_DATE: df ? frd : from_date,
       TO_DATE: df ? td : to_date,
-      codeArray: listCode
+      codeArray: listCode,
+      CUST_NAME_KD: cust_name
     })
       .then((response) => {
         //console.log(response.data.data);
@@ -446,7 +443,8 @@ const CSREPORT = () => {
     await generalQuery("csweeklyRMAAmount", {
       FROM_DATE: df ? frd : from_date,
       TO_DATE: df ? td : to_date,
-      codeArray: listCode
+      codeArray: listCode,
+      CUST_NAME_KD: cust_name
     })
       .then((response) => {
         //console.log(response.data.data);
@@ -477,7 +475,8 @@ const CSREPORT = () => {
     await generalQuery("csmonthlyRMAAmount", {
       FROM_DATE: df ? frd : from_date,
       TO_DATE: df ? td : to_date,
-      codeArray: listCode
+      codeArray: listCode,
+      CUST_NAME_KD: cust_name
     })
       .then((response) => {
         //console.log(response.data.data);
@@ -508,7 +507,8 @@ const CSREPORT = () => {
     await generalQuery("csyearlyRMAAmount", {
       FROM_DATE: df ? frd : from_date,
       TO_DATE: df ? td : to_date,
-      codeArray: listCode
+      codeArray: listCode,
+      CUST_NAME_KD: cust_name
     })
       .then((response) => {
         //console.log(response.data.data);
@@ -540,7 +540,8 @@ const CSREPORT = () => {
     await generalQuery("csdailyTaxiAmount", {
       FROM_DATE: df ? frd : from_date,
       TO_DATE: df ? td : to_date,
-      codeArray: listCode
+      codeArray: listCode,
+      CUST_NAME_KD: cust_name
     })
       .then((response) => {
         //console.log(response.data.data);
@@ -566,11 +567,12 @@ const CSREPORT = () => {
   }
   const handle_getCSMonthlyTaxiAmount = async (from_date: string, to_date: string, listCode: string[]) => {
     let td = moment().add(0, "day").format("YYYY-MM-DD");
-    let frd = moment().add(-14, "day").format("YYYY-MM-DD");
+    let frd = moment().add(-365, "day").format("YYYY-MM-DD");
     await generalQuery("csmonthlyTaxiAmount", {
       FROM_DATE: df ? frd : from_date,
       TO_DATE: df ? td : to_date,
-      codeArray: listCode
+      codeArray: listCode,
+      CUST_NAME_KD: cust_name
     })
       .then((response) => {
         //console.log(response.data.data);
@@ -595,11 +597,12 @@ const CSREPORT = () => {
   }
   const handle_getCSWeeklyTaxiAmount = async (from_date: string, to_date: string, listCode: string[]) => {
     let td = moment().add(0, "day").format("YYYY-MM-DD");
-    let frd = moment().add(-14, "day").format("YYYY-MM-DD");
+    let frd = moment().add(-70, "day").format("YYYY-MM-DD");
     await generalQuery("csweeklyTaxiAmount", {
       FROM_DATE: df ? frd : from_date,
       TO_DATE: df ? td : to_date,
-      codeArray: listCode
+      codeArray: listCode,
+      CUST_NAME_KD: cust_name
     })
       .then((response) => {
         //console.log(response.data.data);
@@ -624,11 +627,12 @@ const CSREPORT = () => {
   }
   const handle_getCSYearlyTaxiAmount = async (from_date: string, to_date: string, listCode: string[]) => {
     let td = moment().add(0, "day").format("YYYY-MM-DD");
-    let frd = moment().add(-14, "day").format("YYYY-MM-DD");
+    let frd = moment().add(-3650, "day").format("YYYY-MM-DD");
     await generalQuery("csyearlyTaxiAmount", {
       FROM_DATE: df ? frd : from_date,
       TO_DATE: df ? td : to_date,
-      codeArray: listCode
+      codeArray: listCode,
+      CUST_NAME_KD: cust_name
     })
       .then((response) => {
         //console.log(response.data.data);
@@ -684,6 +688,7 @@ const CSREPORT = () => {
       Swal.fire("Thông báo", "Đã load xong báo cáo", 'success');
     });
   }
+
   useEffect(() => {
     getcodelist("");
     initFunction();
@@ -792,6 +797,16 @@ const CSREPORT = () => {
               value={searchCodeArray.concat()}
               onChange={(e) => {
                 setSearchCodeArray([]);
+              }}
+            ></input> ({searchCodeArray.length})
+          </label>
+          <label>
+            <b>Customer:</b>{" "}
+            <input
+              type="text"
+              value={cust_name}
+              onChange={(e) => {
+                setCust_Name(e.target.value);
               }}
             ></input> ({searchCodeArray.length})
           </label>
