@@ -798,6 +798,29 @@ const KinhDoanhReport = () => {
         console.log(error);
       });
   };
+  const loadWeeklyRevenueByCustomer = ()=> {
+    generalQuery("loadWeeklyRevenueByCustomer", {       
+      FROM_DATE: df ? moment.utc().format('YYYY-MM-01'):fromdate,
+      TO_DATE: df ? moment.utc().format('YYYY-MM-DD'): todate
+     })
+      .then((response) => {
+        if (response.data.tk_status !== "NG") {
+          const loadeddata: RunningPOData[] = response.data.data.map(
+            (element: RunningPOData, index: number) => {             
+              return {
+                ...element,              
+              };
+            }
+          );
+          setRunningPOBalanceData(loadeddata.splice(0,10).reverse());          
+        } else {
+          //Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
 
   const initFunction = () => {
     getcustomerlist();
