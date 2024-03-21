@@ -3520,3 +3520,6 @@ export interface CSFCOST {
   RMA_DATA: CS_RMA_AMOUNT_DATA[],
   TAXI_DATA: CS_TAXI_AMOUNT_DATA[]
 }
+export interface CustomerWeeklyRevenueData {
+  
+}

@@ -17,7 +17,9 @@ import CustomerDailyClosing from "../../../components/DataTable/CustomerDailyClo
 import CustomerWeeklyClosing from "../../../components/DataTable/CustomerWeeklyClosing";
 import CustomerPobalancebyTypeNew from "../../../components/DataTable/CustomerPoBalanceByTypeNew";
 import { CUSTOMER_REVENUE_DATA, CustomerListData, MonthlyClosingData, PIC_REVENUE_DATA, RunningPOData, WEB_SETTING_DATA, WeekLyPOData, WeeklyClosingData } from "../../../api/GlobalInterface";
-import { Checkbox } from "@mui/material";
+import { Checkbox, IconButton } from "@mui/material";
+import { SaveExcel } from "../../../api/GlobalFunction";
+import { AiFillFileExcel } from "react-icons/ai";
 
 interface YearlyClosingData {
   YEAR_NUM: string;
@@ -908,31 +910,79 @@ const KinhDoanhReport = () => {
           <span className="section_title">2. Closing</span>
           <div className="dailygraphtotal">
             <div className="dailygraph">
-              <span className="subsection">Daily Closing</span>
+              <span className="subsection">Daily Closing <IconButton
+          className='buttonIcon'
+          onClick={() => {
+            SaveExcel(widgetdata_yesterday, "DailyClosing");
+          }}
+        >
+          <AiFillFileExcel color='green' size={15} />
+          Excel
+        </IconButton></span>
               <ChartDaily data={widgetdata_yesterday}/>
             </div>
             <div className="dailygraph">
-              <span className="subsection">Weekly Closing</span>
+              <span className="subsection">Weekly Closing <IconButton
+          className='buttonIcon'
+          onClick={() => {
+            SaveExcel(widgetdata_thisweek, "WeeklyClosing");
+          }}
+        >
+          <AiFillFileExcel color='green' size={15} />
+          Excel
+        </IconButton></span>
               <ChartWeekLy data={widgetdata_thisweek}/>
             </div>
           </div>
           <div className="monthlyweeklygraph">
             <div className="dailygraph">
-              <span className="subsection">Monthly Closing</span>
+              <span className="subsection">Monthly Closing <IconButton
+          className='buttonIcon'
+          onClick={() => {
+            SaveExcel(widgetdata_thismonth, "MonthlyClosing");
+          }}
+        >
+          <AiFillFileExcel color='green' size={15} />
+          Excel
+        </IconButton></span>
               <ChartMonthLy data={widgetdata_thismonth}/>
             </div>
             <div className="dailygraph">
-              <span className="subsection">Yearly Closing</span>
+              <span className="subsection">Yearly Closing <IconButton
+          className='buttonIcon'
+          onClick={() => {
+            SaveExcel(widgetdata_thisyear, "YearlyClosing");
+          }}
+        >
+          <AiFillFileExcel color='green' size={15} />
+          Excel
+        </IconButton></span>
               <ChartYearly data={widgetdata_thisyear}/>
             </div>
           </div>
           <div className="monthlyweeklygraph">
             <div className="dailygraph">
-              <span className="subsection">TOP 5 Customer Weekly Revenue</span>
+              <span className="subsection">TOP 5 Customer Weekly Revenue <IconButton
+          className='buttonIcon'
+          onClick={() => {
+            SaveExcel(customerRevenue, "Customer Revenue");
+          }}
+        >
+          <AiFillFileExcel color='green' size={15} />
+          Excel
+        </IconButton></span>
               <ChartCustomerRevenue data={customerRevenue}/>
             </div>
             <div className="dailygraph">
-              <span className="subsection">PIC Weekly Revenue</span>
+              <span className="subsection">PIC Weekly Revenue <IconButton
+          className='buttonIcon'
+          onClick={() => {
+            SaveExcel(picRevenue, "PIC Revenue");
+          }}
+        >
+          <AiFillFileExcel color='green' size={15} />
+          Excel
+        </IconButton></span>
               <ChartPICRevenue data={picRevenue}/>
             </div>
           </div>
@@ -964,24 +1014,48 @@ const KinhDoanhReport = () => {
           </div>
           <div className="monthlyweeklygraph">
             <div className="dailygraph">
-              <span className="subsection">PO By Week</span>
+              <span className="subsection">PO By Week <IconButton
+          className='buttonIcon'
+          onClick={() => {
+            SaveExcel(runningPOData, "WeeklyPO");
+          }}
+        >
+          <AiFillFileExcel color='green' size={15} />
+          Excel
+        </IconButton></span>
               <ChartWeeklyPO data={runningPOData}/>
             </div>
             <div className="dailygraph">
-              <span className="subsection">Delivery By Week</span>
+              <span className="subsection">Delivery By Week <IconButton
+          className='buttonIcon'
+          onClick={() => {
+            SaveExcel(widgetdata_thisweek, "WeeklyClosing");
+          }}
+        >
+          <AiFillFileExcel color='green' size={15} />
+          Excel
+        </IconButton></span>
               <ChartWeekLy data={widgetdata_thisweek}/>
             </div>
           </div>
           <div className="monthlyweeklygraph">
             <div className="dailygraph">
-              <span className="subsection">PO Balance Trending (By Week)</span>
+              <span className="subsection">PO Balance Trending (By Week) <IconButton
+          className='buttonIcon'
+          onClick={() => {
+            SaveExcel(runningPOBalanceData, "RunningPOBalance");
+          }}
+        >
+          <AiFillFileExcel color='green' size={15} />
+          Excel
+        </IconButton></span>
               <ChartPOBalance data={runningPOBalanceData}/>
             </div>
           </div>
           <div className="datatable">
             <div className="dailygraph">
               <span className="subsection">
-                Customer PO Balance By Product Type
+                Customer PO Balance By Product Type 
               </span>
               <CustomerPobalancebyTypeNew />
               {/* <CustomerPOBalanceByType /> */}
