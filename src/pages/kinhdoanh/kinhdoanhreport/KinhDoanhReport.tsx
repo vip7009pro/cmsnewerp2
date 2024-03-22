@@ -20,6 +20,7 @@ import { CUSTOMER_REVENUE_DATA, CustomerListData, MonthlyClosingData, PIC_REVENU
 import { Checkbox, IconButton } from "@mui/material";
 import { SaveExcel } from "../../../api/GlobalFunction";
 import { AiFillFileExcel } from "react-icons/ai";
+import CustomerMonthlyClosing from "../../../components/DataTable/CustomerMonthlyClosing";
 interface YearlyClosingData {
   YEAR_NUM: string;
   DELIVERY_QTY: number;
@@ -690,7 +691,7 @@ const KinhDoanhReport = () => {
                       };
                     },
                   );
-                  setWeeklyClosingData(loadeddata);
+                setWeeklyClosingData(loadeddata);
                 let keysArray = Object.getOwnPropertyNames(loadeddata[0]);
                 let column_map = keysArray.map((e, index) => {
                   return {
@@ -1060,18 +1061,42 @@ const KinhDoanhReport = () => {
           </div>
           <div className="monthlyweeklygraph">
             <div className="dailygraph">
-              <span className="subsection">Customer Daily Closing</span>
+              <span className="subsection">Customer Daily Closing  <IconButton
+                className='buttonIcon'
+                onClick={() => {
+                  SaveExcel(dailyClosingData, "CustomerDailyClosing");
+                }}
+              >
+                <AiFillFileExcel color='green' size={15} />
+                Excel
+              </IconButton></span>
               <CustomerDailyClosing data={dailyClosingData} columns={columns} />
             </div>
             <div className="dailygraph">
-              <span className="subsection">Customer Weekly Closing</span>
+              <span className="subsection">Customer Weekly Closing <IconButton
+                className='buttonIcon'
+                onClick={() => {
+                  SaveExcel(weeklyClosingData, "CustomerWeeklyClosing");
+                }}
+              >
+                <AiFillFileExcel color='green' size={15} />
+                Excel
+              </IconButton></span>
               <CustomerWeeklyClosing data={weeklyClosingData} columns={columnsweek} />
             </div>
           </div>
           <div className="monthlyweeklygraph">
             <div className="dailygraph">
-              <span className="subsection">Customer Monthly Closing</span>
-              <CustomerDailyClosing data={monthlyvRevenuebyCustomer} columns={columnsmonth} />
+              <span className="subsection">Customer Monthly Closing  <IconButton
+                className='buttonIcon'
+                onClick={() => {
+                  SaveExcel(monthlyvRevenuebyCustomer, "CustomerMonthlyClosing");
+                }}
+              >
+                <AiFillFileExcel color='green' size={15} />
+                Excel
+              </IconButton></span>
+              <CustomerMonthlyClosing data={monthlyvRevenuebyCustomer} columns={columnsmonth} />
             </div>
           </div>
           <br></br>
@@ -1136,7 +1161,6 @@ const KinhDoanhReport = () => {
                 Customer PO Balance By Product Type
               </span>
               <CustomerPobalancebyTypeNew />
-              {/* <CustomerPOBalanceByType /> */}
             </div>
           </div>
           <br></br>

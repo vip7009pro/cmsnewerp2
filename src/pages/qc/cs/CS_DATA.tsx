@@ -25,7 +25,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { AiFillCloseCircle, AiFillFileExcel } from "react-icons/ai";
 import Swal from "sweetalert2";
 import { UserContext } from "../../../api/Context";
-import { generalQuery, getCompany, getGlobalSetting } from "../../../api/Api";
+import { generalQuery, getCompany, getGlobalSetting, uploadQuery } from "../../../api/Api";
 import { CustomResponsiveContainer, SaveExcel } from "../../../api/GlobalFunction";
 import { MdOutlinePivotTableChart } from "react-icons/md";
 import PivotTable from "../../../components/PivotChart/PivotChart";
@@ -79,6 +79,42 @@ const CS_DATA_TB = () => {
     YEAR_WEEK: '',
     REDUCE_AMOUNT: 0
   });
+  const uploadCSImage = async (cs_ID: number, up_file: any) => {
+    uploadQuery(up_file, "CS_" + cs_ID + ".jpg", "cs")
+      .then((response) => {
+        if (response.data.tk_status !== "NG") {
+          generalQuery("updateCSImageStatus", { CONFIRM_ID: cs_ID })
+            .then((response) => {
+              if (response.data.tk_status !== "NG") {
+                //console.log(response.data.data);
+                Swal.fire(
+                  "Thông báo",
+                  "Upload file thành công",
+                  "success"
+                );
+              } else {
+                Swal.fire(
+                  "Thông báo",
+                  "Upload file thất bại:" + response.data.message,
+                  "error"
+                );
+              }
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+        } else {
+          Swal.fire(
+            "Thông báo",
+            "Upload file thất bại:" + response.data.message,
+            "error"
+          );
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
   const load_cs_data = () => {
     switch (option) {
       case 'dataconfirm':
@@ -378,7 +414,32 @@ const CS_DATA_TB = () => {
               })}</span>
             )
           }}></Column>
-          <Column dataField='LINK' caption='LINK' width={100}></Column>
+          <Column dataField='LINK' caption='LINK' width={200} cellRender={(ele: any) => {
+            let href = `/cs/CS_${ele.data.CONFIRM_ID}.jpg`;
+            let file:any = null;
+            if(ele.data.LINK ==='Y')
+            {
+              return (
+                <a href={href}>LINK</a>
+              )              
+            }
+            else {
+              return (
+                <div className="csuploadbutton">
+                  <button onClick={() => {
+                    uploadCSImage(ele.data.CONFIRM_ID,file);
+                  }}>Upload</button>
+                  <input
+                    accept='.jpg'
+                    type='file'
+                    onChange={(e: any) => {
+                      file  = e.target.files[0];                      
+                    }}
+                  />                  
+                </div>  
+              )             
+            }
+          }}></Column>
           <Summary>
             <TotalItem
               alignment="right"

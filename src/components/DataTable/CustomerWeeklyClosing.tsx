@@ -12,16 +12,7 @@ import { WEB_SETTING_DATA } from '../../api/GlobalInterface';
 const CustomerWeeklyClosing = ({ data, columns }: { data: Array<any>, columns: Array<any> }) => {
   const dailyClosingDataTable = React.useMemo(
     () => (
-      <div className="datatb">
-        <IconButton
-          className='buttonIcon'
-          onClick={() => {
-            SaveExcel(data, "WeeklyClosingData");
-          }}
-        >
-          <AiFillFileExcel color='green' size={15} />
-          Excel
-        </IconButton>
+      <div className="datatb">        
         <CustomResponsiveContainer>
           <DataGrid
             style={{ fontSize: "0.7rem" }}
