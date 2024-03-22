@@ -20,7 +20,6 @@ import { CUSTOMER_REVENUE_DATA, CustomerListData, MonthlyClosingData, PIC_REVENU
 import { Checkbox, IconButton } from "@mui/material";
 import { SaveExcel } from "../../../api/GlobalFunction";
 import { AiFillFileExcel } from "react-icons/ai";
-
 interface YearlyClosingData {
   YEAR_NUM: string;
   DELIVERY_QTY: number;
@@ -60,17 +59,15 @@ const KinhDoanhReport = () => {
   const [widgetdata_thismonth, setWidgetData_ThisMonth] = useState<MonthlyClosingData[]>([]);
   const [widgetdata_thisyear, setWidgetData_ThisYear] = useState<YearlyClosingData[]>([]);
   const [customerRevenue, setCustomerRevenue] = useState<CUSTOMER_REVENUE_DATA[]>([]);
+  const [monthlyvRevenuebyCustomer, setMonthlyvRevenuebyCustomer] = useState<Array<any>>([]);
   const [picRevenue, setPICRevenue] = useState<PIC_REVENUE_DATA[]>([]);
-
   const [dailyClosingData, setDailyClosingData] = useState<any>([]);
   const [columns, setColumns] = useState<Array<any>>([]);
-
   const [weeklyClosingData, setWeeklyClosingData] = useState<any>([]);
   const [columnsweek, setColumnsWeek] = useState<Array<any>>([]);
-
+  const [columnsmonth, setColumnsMonth] = useState<Array<any>>([]);
   const [runningPOData, setWeekLyPOData] = useState<Array<WeekLyPOData>>([]);
   const [runningPOBalanceData, setRunningPOBalanceData] = useState<Array<RunningPOData>>([]);
-
   const [widgetdata_pobalancesummary, setWidgetData_PoBalanceSummary] = useState<WidgetData_POBalanceSummary>({
     po_balance_qty: 0,
     po_balance_amount: 0,
@@ -147,12 +144,12 @@ const KinhDoanhReport = () => {
         console.log(error);
       });
   };
-  const handleGetDailyClosing = () => {
+  const handleGetDailyClosing = async () => {
     let yesterday = moment().add(0, "day").format("YYYY-MM-DD");
     let yesterday2 = moment().add(-12, "day").format("YYYY-MM-DD");
-    generalQuery("kd_dailyclosing", {
-      START_DATE: df? yesterday2 : fromdate,
-      END_DATE: df? yesterday: todate,
+    await generalQuery("kd_dailyclosing", {
+      START_DATE: df ? yesterday2 : fromdate,
+      END_DATE: df ? yesterday : todate,
     })
       .then((response) => {
         if (response.data.tk_status !== "NG") {
@@ -163,7 +160,7 @@ const KinhDoanhReport = () => {
                 DELIVERY_DATE: element.DELIVERY_DATE.slice(0, 10),
               };
             },
-          );          
+          );
           //console.log(loadeddata)
           setWidgetData_Yesterday(loadeddata);
         } else {
@@ -174,13 +171,13 @@ const KinhDoanhReport = () => {
         console.log(error);
       });
   };
-  const handleGetWeeklyClosing = () => {
+  const handleGetWeeklyClosing = async () => {
     let yesterday = moment().add(0, "day").format("YYYY-MM-DD");
-    let yesterday2 = moment().add(-56, "day").format("YYYY-MM-DD");    
-    generalQuery("kd_weeklyclosing", {
-      START_DATE: df? yesterday2 : fromdate,
-      END_DATE: df? yesterday: todate,
-     })
+    let yesterday2 = moment().add(-56, "day").format("YYYY-MM-DD");
+    await generalQuery("kd_weeklyclosing", {
+      START_DATE: df ? yesterday2 : fromdate,
+      END_DATE: df ? yesterday : todate,
+    })
       .then((response) => {
         if (response.data.tk_status !== "NG") {
           const loadeddata: WeeklyClosingData[] = response.data.data.map(
@@ -199,12 +196,12 @@ const KinhDoanhReport = () => {
         console.log(error);
       });
   };
-  const handleGetMonthlyClosing = () => {
+  const handleGetMonthlyClosing = async () => {
     let yesterday = moment().add(0, "day").format("YYYY-MM-DD");
-    let yesterday2 = moment().add(-365, "day").format("YYYY-MM-DD");  
-    generalQuery("kd_monthlyclosing", {
-      START_DATE: df? yesterday2 : fromdate,
-      END_DATE: df? yesterday: todate,
+    let yesterday2 = moment().add(-365, "day").format("YYYY-MM-DD");
+    await generalQuery("kd_monthlyclosing", {
+      START_DATE: df ? yesterday2 : fromdate,
+      END_DATE: df ? yesterday : todate,
     })
       .then((response) => {
         if (response.data.tk_status !== "NG") {
@@ -227,12 +224,12 @@ const KinhDoanhReport = () => {
         console.log(error);
       });
   };
-  const handleGetYearlyClosing = () => {
+  const handleGetYearlyClosing = async () => {
     let yesterday = moment().add(0, "day").format("YYYY-MM-DD");
-    let yesterday2 = "2020-01-01"; 
-    generalQuery("kd_annuallyclosing", {
-      START_DATE: df? yesterday2 : fromdate,
-      END_DATE: df? yesterday: todate,
+    let yesterday2 = "2020-01-01";
+    await generalQuery("kd_annuallyclosing", {
+      START_DATE: df ? yesterday2 : fromdate,
+      END_DATE: df ? yesterday : todate,
     })
       .then((response) => {
         if (response.data.tk_status !== "NG") {
@@ -253,8 +250,8 @@ const KinhDoanhReport = () => {
         console.log(error);
       });
   };
-  const handleGetPOBalanceSummary = () => {
-    generalQuery("traPOSummaryTotal", {})
+  const handleGetPOBalanceSummary = async () => {
+    await generalQuery("traPOSummaryTotal", {})
       .then((response) => {
         if (response.data.tk_status !== "NG") {
           const loadeddata: POBalanceSummaryData[] = response.data.data.map(
@@ -282,12 +279,12 @@ const KinhDoanhReport = () => {
         console.log(error);
       });
   };
-  const handleGetCustomerRevenue = () => {
+  const handleGetCustomerRevenue = async () => {
     let sunday = moment().clone().weekday(0).format("YYYY-MM-DD");
     let monday = moment().clone().weekday(6).format("YYYY-MM-DD");
-    generalQuery("customerRevenue", { 
-      START_DATE: df? sunday : fromdate,
-      END_DATE: df? monday: todate,      
+    await generalQuery("customerRevenue", {
+      START_DATE: df ? sunday : fromdate,
+      END_DATE: df ? monday : todate,
     })
       .then((response) => {
         if (response.data.tk_status !== "NG") {
@@ -299,7 +296,6 @@ const KinhDoanhReport = () => {
               };
             }
           );
-
           loadeddata = loadeddata.splice(0, 5);
           //console.log(loadeddata);
           setCustomerRevenue(loadeddata);
@@ -316,8 +312,8 @@ const KinhDoanhReport = () => {
             .add(-7, "days")
             .format("YYYY-MM-DD");
           generalQuery("customerRevenue", {
-            START_DATE: df? sunday : fromdate,
-            END_DATE: df? monday: todate, 
+            START_DATE: df ? sunday : fromdate,
+            END_DATE: df ? monday : todate,
           })
             .then((response) => {
               if (response.data.tk_status !== "NG") {
@@ -345,12 +341,12 @@ const KinhDoanhReport = () => {
         console.log(error);
       });
   };
-  const handleGetPICRevenue = () => {
+  const handleGetPICRevenue = async () => {
     let sunday = moment().clone().weekday(0).format("YYYY-MM-DD");
     let monday = moment().clone().weekday(6).format("YYYY-MM-DD");
-    generalQuery("PICRevenue", { 
-      START_DATE: df? sunday : fromdate,
-      END_DATE: df? monday: todate, 
+    await generalQuery("PICRevenue", {
+      START_DATE: df ? sunday : fromdate,
+      END_DATE: df ? monday : todate,
     })
       .then((response) => {
         if (response.data.tk_status !== "NG") {
@@ -362,7 +358,6 @@ const KinhDoanhReport = () => {
               };
             }
           );
-
           setPICRevenue(loadeddata);
         } else {
           //Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
@@ -376,11 +371,10 @@ const KinhDoanhReport = () => {
             .weekday(6)
             .add(-7, "days")
             .format("YYYY-MM-DD");
-
-          generalQuery("PICRevenue", { 
-            START_DATE: df? sunday : fromdate,
-            END_DATE: df? monday: todate, 
-           })
+          generalQuery("PICRevenue", {
+            START_DATE: df ? sunday : fromdate,
+            END_DATE: df ? monday : todate,
+          })
             .then((response) => {
               if (response.data.tk_status !== "NG") {
                 //console.log(response.data.data);
@@ -391,7 +385,6 @@ const KinhDoanhReport = () => {
                     };
                   }
                 );
-
                 setPICRevenue(loadeddata);
               } else {
                 //Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
@@ -406,7 +399,7 @@ const KinhDoanhReport = () => {
         console.log(error);
       });
   };
-  const getcustomerlist = () => {
+  const getcustomerlist = async () => {
     generalQuery("selectcustomerList", {})
       .then((response) => {
         if (response.data.tk_status !== "NG") {
@@ -420,10 +413,10 @@ const KinhDoanhReport = () => {
         //console.log(error);
       });
   };
-  const loadDailyClosing = () => {
-    generalQuery("getDailyClosingKD", {
-      FROM_DATE: df ? moment.utc().format('YYYY-MM-01'):fromdate,
-      TO_DATE: df ? moment.utc().format('YYYY-MM-DD'): todate
+  const loadDailyClosing = async () => {
+    await generalQuery("getDailyClosingKD", {
+      FROM_DATE: df ? moment.utc().format('YYYY-MM-01') : fromdate,
+      TO_DATE: df ? moment.utc().format('YYYY-MM-DD') : todate
     })
       .then((response) => {
         if (response.data.tk_status !== "NG") {
@@ -481,9 +474,9 @@ const KinhDoanhReport = () => {
         } else {
           //Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
           const lastmonth = moment().subtract(1, 'months');
-          generalQuery("getDailyClosingKD", {            
-            FROM_DATE: df ? lastmonth.startOf('month').format('YYYY-MM-DD'):fromdate,
-            TO_DATE: df ? lastmonth.endOf('month').format('YYYY-MM-DD'): todate
+          generalQuery("getDailyClosingKD", {
+            FROM_DATE: df ? lastmonth.startOf('month').format('YYYY-MM-DD') : fromdate,
+            TO_DATE: df ? lastmonth.endOf('month').format('YYYY-MM-DD') : todate
           })
             .then((response) => {
               if (response.data.tk_status !== "NG") {
@@ -551,10 +544,10 @@ const KinhDoanhReport = () => {
         console.log(error);
       });
   }
-  const loadWeeklyClosing = () => {    
-    generalQuery("getWeeklyClosingKD", {
-      FROM_DATE: df ? moment.utc().format('YYYY-MM-01'):fromdate,
-      TO_DATE: df ? moment.utc().format('YYYY-MM-DD'): todate
+  const loadWeeklyClosing = async () => {
+    await generalQuery("getWeeklyClosingKD", {
+      FROM_DATE: df ? moment.utc().format('YYYY-MM-01') : fromdate,
+      TO_DATE: df ? moment.utc().format('YYYY-MM-DD') : todate
     })
       .then((response) => {
         //console.log(response);
@@ -585,7 +578,7 @@ const KinhDoanhReport = () => {
                     return <span style={{ color: "#F633EA", fontWeight: "bold" }}>
                       {ele.data[e]?.toLocaleString("en-US", {
                         style: "currency",
-                        currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
+                        currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
                       })}
                     </span>
                   }
@@ -594,7 +587,7 @@ const KinhDoanhReport = () => {
                       return (<span style={{ color: "green", fontWeight: "bold" }}>
                         {ele.data[e]?.toLocaleString("en-US", {
                           style: "currency",
-                          currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
+                          currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
                         })}
                       </span>)
                     }
@@ -602,7 +595,7 @@ const KinhDoanhReport = () => {
                       return (<span style={{ color: "green", fontWeight: "normal" }}>
                         {ele.data[e]?.toLocaleString("en-US", {
                           style: "currency",
-                          currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
+                          currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
                         })}
                       </span>)
                     }
@@ -615,8 +608,8 @@ const KinhDoanhReport = () => {
           else {
             const lastmonth = moment().subtract(1, 'months');
             generalQuery("getWeeklyClosingKD", {
-              FROM_DATE: df ? lastmonth.startOf('month').format('YYYY-MM-DD'):fromdate,
-              TO_DATE: df ? lastmonth.endOf('month').format('YYYY-MM-DD'): todate
+              FROM_DATE: df ? lastmonth.startOf('month').format('YYYY-MM-DD') : fromdate,
+              TO_DATE: df ? lastmonth.endOf('month').format('YYYY-MM-DD') : todate
             })
               .then((response) => {
                 if (response.data.tk_status !== "NG") {
@@ -645,7 +638,7 @@ const KinhDoanhReport = () => {
                           return <span style={{ color: "#F633EA", fontWeight: "bold" }}>
                             {ele.data[e]?.toLocaleString("en-US", {
                               style: "currency",
-                              currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
+                              currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
                             })}
                           </span>
                         }
@@ -654,7 +647,7 @@ const KinhDoanhReport = () => {
                             return (<span style={{ color: "green", fontWeight: "bold" }}>
                               {ele.data[e]?.toLocaleString("en-US", {
                                 style: "currency",
-                                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
+                                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
                               })}
                             </span>)
                           }
@@ -662,7 +655,7 @@ const KinhDoanhReport = () => {
                             return (<span style={{ color: "green", fontWeight: "normal" }}>
                               {ele.data[e]?.toLocaleString("en-US", {
                                 style: "currency",
-                                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
+                                currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
                               })}
                             </span>)
                           }
@@ -697,7 +690,7 @@ const KinhDoanhReport = () => {
                       };
                     },
                   );
-                setDailyClosingData(loadeddata);
+                  setWeeklyClosingData(loadeddata);
                 let keysArray = Object.getOwnPropertyNames(loadeddata[0]);
                 let column_map = keysArray.map((e, index) => {
                   return {
@@ -713,7 +706,7 @@ const KinhDoanhReport = () => {
                         return <span style={{ color: "#F633EA", fontWeight: "bold" }}>
                           {ele.data[e]?.toLocaleString("en-US", {
                             style: "currency",
-                            currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
+                            currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
                           })}
                         </span>
                       }
@@ -722,7 +715,7 @@ const KinhDoanhReport = () => {
                           return (<span style={{ color: "green", fontWeight: "bold" }}>
                             {ele.data[e]?.toLocaleString("en-US", {
                               style: "currency",
-                              currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
+                              currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
                             })}
                           </span>)
                         }
@@ -730,7 +723,7 @@ const KinhDoanhReport = () => {
                           return (<span style={{ color: "green", fontWeight: "normal" }}>
                             {ele.data[e]?.toLocaleString("en-US", {
                               style: "currency",
-                              currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
+                              currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
                             })}
                           </span>)
                         }
@@ -752,10 +745,10 @@ const KinhDoanhReport = () => {
         console.log(error);
       });
   }
-  const loadPoOverWeek = () => {
-    generalQuery("kd_pooverweek", { 
-      FROM_DATE: df ? moment().add(-70, "day").format("YYYY-MM-DD"):fromdate,
-      TO_DATE: df ? moment.utc().format('YYYY-MM-DD'): todate
+  const loadPoOverWeek = async () => {
+    await generalQuery("kd_pooverweek", {
+      FROM_DATE: df ? moment().add(-70, "day").format("YYYY-MM-DD") : fromdate,
+      TO_DATE: df ? moment.utc().format('YYYY-MM-DD') : todate
     })
       .then((response) => {
         if (response.data.tk_status !== "NG") {
@@ -776,20 +769,20 @@ const KinhDoanhReport = () => {
         console.log(error);
       });
   };
-  const loadRunningPOBalanceData = () => {
-    generalQuery("kd_runningpobalance", {       
-      TO_DATE: df ?  moment().format("YYYY-MM-DD"): todate
-     })
+  const loadRunningPOBalanceData = async () => {
+    await generalQuery("kd_runningpobalance", {
+      TO_DATE: df ? moment().format("YYYY-MM-DD") : todate
+    })
       .then((response) => {
         if (response.data.tk_status !== "NG") {
           const loadeddata: RunningPOData[] = response.data.data.map(
-            (element: RunningPOData, index: number) => {             
+            (element: RunningPOData, index: number) => {
               return {
-                ...element,              
+                ...element,
               };
             }
           );
-          setRunningPOBalanceData(loadeddata.splice(0,10).reverse());          
+          setRunningPOBalanceData(loadeddata.splice(0, 10).reverse());
         } else {
           //Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
         }
@@ -798,21 +791,63 @@ const KinhDoanhReport = () => {
         console.log(error);
       });
   };
-  const loadWeeklyRevenueByCustomer = ()=> {
-    generalQuery("loadWeeklyRevenueByCustomer", {       
-      FROM_DATE: df ? moment.utc().format('YYYY-MM-01'):fromdate,
-      TO_DATE: df ? moment.utc().format('YYYY-MM-DD'): todate
-     })
+  const loadMonthlyRevenueByCustomer = async () => {
+    await generalQuery("loadMonthlyRevenueByCustomer", {
+      FROM_DATE: df ? moment.utc().format('YYYY-01-01') : fromdate,
+      TO_DATE: df ? moment.utc().format('YYYY-MM-DD') : todate
+    })
       .then((response) => {
         if (response.data.tk_status !== "NG") {
-          const loadeddata: RunningPOData[] = response.data.data.map(
-            (element: RunningPOData, index: number) => {             
+          const loadeddata = response.data.data.map(
+            (element: any, index: number) => {
               return {
-                ...element,              
+                ...element,
+                id: index,
               };
             }
           );
-          setRunningPOBalanceData(loadeddata.splice(0,10).reverse());          
+          setMonthlyvRevenuebyCustomer(loadeddata);
+          let keysArray = Object.getOwnPropertyNames(loadeddata[0]);
+          let column_map = keysArray.map((e, index) => {
+            return {
+              dataField: e,
+              caption: e,
+              width: 100,
+              cellRender: (ele: any) => {
+                //console.log(ele);
+                if (['CUST_NAME_KD', 'id'].indexOf(e) > -1) {
+                  return <span>{ele.data[e]}</span>;
+                }
+                else if (e === 'TOTAL') {
+                  return <span style={{ color: "#F633EA", fontWeight: "bold" }}>
+                    {ele.data[e]?.toLocaleString("en-US", {
+                      style: "currency",
+                      currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
+                    })}
+                  </span>
+                }
+                else {
+                  if (ele.data['CUST_NAME_KD'] === 'TOTAL') {
+                    return (<span style={{ color: "green", fontWeight: "bold" }}>
+                      {ele.data[e]?.toLocaleString("en-US", {
+                        style: "currency",
+                        currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
+                      })}
+                    </span>)
+                  }
+                  else {
+                    return (<span style={{ color: "green", fontWeight: "normal" }}>
+                      {ele.data[e]?.toLocaleString("en-US", {
+                        style: "currency",
+                        currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
+                      })}
+                    </span>)
+                  }
+                }
+              },
+            };
+          });
+          setColumnsMonth(column_map);
         } else {
           //Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
         }
@@ -821,21 +856,35 @@ const KinhDoanhReport = () => {
         console.log(error);
       });
   }
-
-  const initFunction = () => {
-    getcustomerlist();
-    handleGetDailyClosing();    
-    handleGetWeeklyClosing();    
-    handleGetMonthlyClosing();
-    handleGetYearlyClosing();
-    loadDailyClosing();
-    loadWeeklyClosing();
-    loadPoOverWeek();
-    loadRunningPOBalanceData();
-    handleGetCustomerRevenue();
-    handleGetPICRevenue();
-    handleGetPOBalanceSummary();
-    handleGetFCSTAmount();
+  const initFunction = async () => {
+    Swal.fire({
+      title: "Đang tải báo cáo",
+      text: "Đang tải dữ liệu, hãy chờ chút",
+      icon: "info",
+      showCancelButton: false,
+      allowOutsideClick: false,
+      confirmButtonText: "OK",
+      showConfirmButton: false,
+    });
+    Promise.all([
+      getcustomerlist(),
+      handleGetDailyClosing(),
+      handleGetWeeklyClosing(),
+      handleGetMonthlyClosing(),
+      handleGetYearlyClosing(),
+      loadDailyClosing(),
+      loadWeeklyClosing(),
+      loadPoOverWeek(),
+      loadRunningPOBalanceData(),
+      handleGetCustomerRevenue(),
+      handleGetPICRevenue(),
+      handleGetPOBalanceSummary(),
+      handleGetFCSTAmount(),
+      loadMonthlyRevenueByCustomer()
+    ]
+    ).then(() => {
+      Swal.fire("Thông báo", "Đã load xong báo cáo", 'success');
+    })
   }
   useEffect(() => {
     initFunction();
@@ -860,16 +909,16 @@ const KinhDoanhReport = () => {
           ></input>
         </label>
         <label>
-        <b>Default:</b>{" "}
-        <Checkbox
-          checked={df}          
-          onChange={(e) => {
-            //console.log(e.target.checked);
-            setDF(e.target.checked);
-          }}
-          inputProps={{ "aria-label": "controlled" }}
-        />
-        </label>        
+          <b>Default:</b>{" "}
+          <Checkbox
+            checked={df}
+            onChange={(e) => {
+              //console.log(e.target.checked);
+              setDF(e.target.checked);
+            }}
+            inputProps={{ "aria-label": "controlled" }}
+          />
+        </label>
         <button
           className='searchbutton'
           onClick={() => {
@@ -888,9 +937,9 @@ const KinhDoanhReport = () => {
               label="Yesterday"
               topColor="#b3c6ff"
               botColor="#b3ecff"
-              qty={widgetdata_yesterday[widgetdata_yesterday.length-1]?.DELIVERY_QTY}
-              amount={widgetdata_yesterday[widgetdata_yesterday.length-1]?.DELIVERED_AMOUNT}
-              percentage={(widgetdata_yesterday[widgetdata_yesterday.length-1]?.DELIVERED_AMOUNT * 1.0 / widgetdata_yesterday[widgetdata_yesterday.length-2]?.DELIVERED_AMOUNT-1) * 100}
+              qty={widgetdata_yesterday[widgetdata_yesterday.length - 1]?.DELIVERY_QTY}
+              amount={widgetdata_yesterday[widgetdata_yesterday.length - 1]?.DELIVERED_AMOUNT}
+              percentage={(widgetdata_yesterday[widgetdata_yesterday.length - 1]?.DELIVERED_AMOUNT * 1.0 / widgetdata_yesterday[widgetdata_yesterday.length - 2]?.DELIVERED_AMOUNT - 1) * 100}
             />
           </div>
           <div className="revenuwdg">
@@ -899,9 +948,9 @@ const KinhDoanhReport = () => {
               label="This week"
               topColor="#ccffcc"
               botColor="#80ff80"
-              qty={widgetdata_thisweek[widgetdata_thisweek.length-1]?.DELIVERY_QTY}
-              amount={widgetdata_thisweek[widgetdata_thisweek.length-1]?.DELIVERED_AMOUNT}
-              percentage={(widgetdata_thisweek[widgetdata_thisweek.length-1]?.DELIVERED_AMOUNT * 1.0 / widgetdata_thisweek[widgetdata_thisweek.length-2]?.DELIVERED_AMOUNT-1) * 100}
+              qty={widgetdata_thisweek[widgetdata_thisweek.length - 1]?.DELIVERY_QTY}
+              amount={widgetdata_thisweek[widgetdata_thisweek.length - 1]?.DELIVERED_AMOUNT}
+              percentage={(widgetdata_thisweek[widgetdata_thisweek.length - 1]?.DELIVERED_AMOUNT * 1.0 / widgetdata_thisweek[widgetdata_thisweek.length - 2]?.DELIVERED_AMOUNT - 1) * 100}
             />
           </div>
           <div className="revenuwdg">
@@ -910,9 +959,9 @@ const KinhDoanhReport = () => {
               label="This month"
               topColor="#fff2e6"
               botColor="#ffbf80"
-              qty={widgetdata_thismonth[widgetdata_thismonth.length -1 ]?.DELIVERY_QTY}
+              qty={widgetdata_thismonth[widgetdata_thismonth.length - 1]?.DELIVERY_QTY}
               amount={widgetdata_thismonth[widgetdata_thismonth.length - 1]?.DELIVERED_AMOUNT}
-              percentage={((widgetdata_thismonth[widgetdata_thismonth.length - 1]?.DELIVERED_AMOUNT * 1.0 / widgetdata_thismonth[widgetdata_thismonth.length - 2]?.DELIVERED_AMOUNT)-1) * 100}
+              percentage={((widgetdata_thismonth[widgetdata_thismonth.length - 1]?.DELIVERED_AMOUNT * 1.0 / widgetdata_thismonth[widgetdata_thismonth.length - 2]?.DELIVERED_AMOUNT) - 1) * 100}
             />
           </div>
           <div className="revenuwdg">
@@ -923,7 +972,7 @@ const KinhDoanhReport = () => {
               botColor="#ffb3b3"
               qty={widgetdata_thisyear[widgetdata_thisyear.length - 1]?.DELIVERY_QTY}
               amount={widgetdata_thisyear[widgetdata_thisyear.length - 1]?.DELIVERED_AMOUNT}
-              percentage={(widgetdata_thisyear[widgetdata_thisyear.length - 1]?.DELIVERED_AMOUNT * 1.0 / widgetdata_thisyear[widgetdata_thisyear.length - 2]?.DELIVERED_AMOUNT-1) * 100}
+              percentage={(widgetdata_thisyear[widgetdata_thisyear.length - 1]?.DELIVERED_AMOUNT * 1.0 / widgetdata_thisyear[widgetdata_thisyear.length - 2]?.DELIVERED_AMOUNT - 1) * 100}
             />
           </div>
         </div>
@@ -934,89 +983,95 @@ const KinhDoanhReport = () => {
           <div className="dailygraphtotal">
             <div className="dailygraph">
               <span className="subsection">Daily Closing <IconButton
-          className='buttonIcon'
-          onClick={() => {
-            SaveExcel(widgetdata_yesterday, "DailyClosing");
-          }}
-        >
-          <AiFillFileExcel color='green' size={15} />
-          Excel
-        </IconButton></span>
-              <ChartDaily data={widgetdata_yesterday}/>
+                className='buttonIcon'
+                onClick={() => {
+                  SaveExcel(widgetdata_yesterday, "DailyClosing");
+                }}
+              >
+                <AiFillFileExcel color='green' size={15} />
+                Excel
+              </IconButton></span>
+              <ChartDaily data={widgetdata_yesterday} />
             </div>
             <div className="dailygraph">
               <span className="subsection">Weekly Closing <IconButton
-          className='buttonIcon'
-          onClick={() => {
-            SaveExcel(widgetdata_thisweek, "WeeklyClosing");
-          }}
-        >
-          <AiFillFileExcel color='green' size={15} />
-          Excel
-        </IconButton></span>
-              <ChartWeekLy data={widgetdata_thisweek}/>
+                className='buttonIcon'
+                onClick={() => {
+                  SaveExcel(widgetdata_thisweek, "WeeklyClosing");
+                }}
+              >
+                <AiFillFileExcel color='green' size={15} />
+                Excel
+              </IconButton></span>
+              <ChartWeekLy data={widgetdata_thisweek} />
             </div>
           </div>
           <div className="monthlyweeklygraph">
             <div className="dailygraph">
               <span className="subsection">Monthly Closing <IconButton
-          className='buttonIcon'
-          onClick={() => {
-            SaveExcel(widgetdata_thismonth, "MonthlyClosing");
-          }}
-        >
-          <AiFillFileExcel color='green' size={15} />
-          Excel
-        </IconButton></span>
-              <ChartMonthLy data={widgetdata_thismonth}/>
+                className='buttonIcon'
+                onClick={() => {
+                  SaveExcel(widgetdata_thismonth, "MonthlyClosing");
+                }}
+              >
+                <AiFillFileExcel color='green' size={15} />
+                Excel
+              </IconButton></span>
+              <ChartMonthLy data={widgetdata_thismonth} />
             </div>
             <div className="dailygraph">
               <span className="subsection">Yearly Closing <IconButton
-          className='buttonIcon'
-          onClick={() => {
-            SaveExcel(widgetdata_thisyear, "YearlyClosing");
-          }}
-        >
-          <AiFillFileExcel color='green' size={15} />
-          Excel
-        </IconButton></span>
-              <ChartYearly data={widgetdata_thisyear}/>
+                className='buttonIcon'
+                onClick={() => {
+                  SaveExcel(widgetdata_thisyear, "YearlyClosing");
+                }}
+              >
+                <AiFillFileExcel color='green' size={15} />
+                Excel
+              </IconButton></span>
+              <ChartYearly data={widgetdata_thisyear} />
             </div>
           </div>
           <div className="monthlyweeklygraph">
             <div className="dailygraph">
               <span className="subsection">TOP 5 Customer Weekly Revenue <IconButton
-          className='buttonIcon'
-          onClick={() => {
-            SaveExcel(customerRevenue, "Customer Revenue");
-          }}
-        >
-          <AiFillFileExcel color='green' size={15} />
-          Excel
-        </IconButton></span>
-              <ChartCustomerRevenue data={customerRevenue}/>
+                className='buttonIcon'
+                onClick={() => {
+                  SaveExcel(customerRevenue, "Customer Revenue");
+                }}
+              >
+                <AiFillFileExcel color='green' size={15} />
+                Excel
+              </IconButton></span>
+              <ChartCustomerRevenue data={customerRevenue} />
             </div>
             <div className="dailygraph">
               <span className="subsection">PIC Weekly Revenue <IconButton
-          className='buttonIcon'
-          onClick={() => {
-            SaveExcel(picRevenue, "PIC Revenue");
-          }}
-        >
-          <AiFillFileExcel color='green' size={15} />
-          Excel
-        </IconButton></span>
-              <ChartPICRevenue data={picRevenue}/>
+                className='buttonIcon'
+                onClick={() => {
+                  SaveExcel(picRevenue, "PIC Revenue");
+                }}
+              >
+                <AiFillFileExcel color='green' size={15} />
+                Excel
+              </IconButton></span>
+              <ChartPICRevenue data={picRevenue} />
             </div>
           </div>
           <div className="monthlyweeklygraph">
             <div className="dailygraph">
               <span className="subsection">Customer Daily Closing</span>
-              <CustomerDailyClosing data={dailyClosingData} columns={columns}/>
+              <CustomerDailyClosing data={dailyClosingData} columns={columns} />
             </div>
             <div className="dailygraph">
               <span className="subsection">Customer Weekly Closing</span>
-              <CustomerWeeklyClosing  data={weeklyClosingData} columns={columnsweek}/>
+              <CustomerWeeklyClosing data={weeklyClosingData} columns={columnsweek} />
+            </div>
+          </div>
+          <div className="monthlyweeklygraph">
+            <div className="dailygraph">
+              <span className="subsection">Customer Monthly Closing</span>
+              <CustomerDailyClosing data={monthlyvRevenuebyCustomer} columns={columnsmonth} />
             </div>
           </div>
           <br></br>
@@ -1038,47 +1093,47 @@ const KinhDoanhReport = () => {
           <div className="monthlyweeklygraph">
             <div className="dailygraph">
               <span className="subsection">PO By Week <IconButton
-          className='buttonIcon'
-          onClick={() => {
-            SaveExcel(runningPOData, "WeeklyPO");
-          }}
-        >
-          <AiFillFileExcel color='green' size={15} />
-          Excel
-        </IconButton></span>
-              <ChartWeeklyPO data={runningPOData}/>
+                className='buttonIcon'
+                onClick={() => {
+                  SaveExcel(runningPOData, "WeeklyPO");
+                }}
+              >
+                <AiFillFileExcel color='green' size={15} />
+                Excel
+              </IconButton></span>
+              <ChartWeeklyPO data={runningPOData} />
             </div>
             <div className="dailygraph">
               <span className="subsection">Delivery By Week <IconButton
-          className='buttonIcon'
-          onClick={() => {
-            SaveExcel(widgetdata_thisweek, "WeeklyClosing");
-          }}
-        >
-          <AiFillFileExcel color='green' size={15} />
-          Excel
-        </IconButton></span>
-              <ChartWeekLy data={widgetdata_thisweek}/>
+                className='buttonIcon'
+                onClick={() => {
+                  SaveExcel(widgetdata_thisweek, "WeeklyClosing");
+                }}
+              >
+                <AiFillFileExcel color='green' size={15} />
+                Excel
+              </IconButton></span>
+              <ChartWeekLy data={widgetdata_thisweek} />
             </div>
           </div>
           <div className="monthlyweeklygraph">
             <div className="dailygraph">
               <span className="subsection">PO Balance Trending (By Week) <IconButton
-          className='buttonIcon'
-          onClick={() => {
-            SaveExcel(runningPOBalanceData, "RunningPOBalance");
-          }}
-        >
-          <AiFillFileExcel color='green' size={15} />
-          Excel
-        </IconButton></span>
-              <ChartPOBalance data={runningPOBalanceData}/>
+                className='buttonIcon'
+                onClick={() => {
+                  SaveExcel(runningPOBalanceData, "RunningPOBalance");
+                }}
+              >
+                <AiFillFileExcel color='green' size={15} />
+                Excel
+              </IconButton></span>
+              <ChartPOBalance data={runningPOBalanceData} />
             </div>
           </div>
           <div className="datatable">
             <div className="dailygraph">
               <span className="subsection">
-                Customer PO Balance By Product Type 
+                Customer PO Balance By Product Type
               </span>
               <CustomerPobalancebyTypeNew />
               {/* <CustomerPOBalanceByType /> */}
