@@ -38,8 +38,46 @@ import {
   CS_TAXI_DATA,
   WEB_SETTING_DATA,
 } from "../../../api/GlobalInterface";
-import { DataDiv, DataTBDiv, FormButtonColumn, FromInputColumn, FromInputDiv, PivotTableDiv, QueryFormDiv } from "../../../components/StyledComponents/ComponentLib";
+import { DataDiv, DataTBDiv, FormButtonColumn, FromInputColumn, FromInputDiv, NNDSDiv, PivotTableDiv, QueryFormDiv } from "../../../components/StyledComponents/ComponentLib";
 const CS_DATA_TB = () => {
+  const [showhideupdatennds, setShowHideUpdateNNDS] = useState(false);
+  const [currentNN, setCurrentNN] = useState("");
+  const [currentDS, setCurrentDS] = useState("");
+  const [currentDefectRow, setCurrentDefectRow] = useState<CSCONFIRM_DATA>({
+    YEAR_WEEK: '',
+    CONFIRM_ID: 0,
+    CONFIRM_DATE: '',
+    CONTACT_ID: 0,
+    CS_EMPL_NO: '',
+    EMPL_NAME: '',
+    G_CODE: '',
+    G_NAME: '',
+    G_NAME_KD: '',
+    PROD_REQUEST_NO: '',
+    CUST_CD: '',
+    CUST_NAME_KD: '',
+    CONTENT: '',
+    INSPECT_QTY: 0,
+    NG_QTY: 0,
+    REPLACE_RATE: 0,
+    REDUCE_QTY: 0,
+    FACTOR: '',
+    RESULT: '',
+    CONFIRM_STATUS: '',
+    REMARK: '',
+    INS_DATETIME: '',
+    PHANLOAI: '',
+    LINK: '',
+    PROD_TYPE: '',
+    PROD_MODEL: '',
+    PROD_PROJECT: '',
+    PROD_LAST_PRICE: 0,
+    REDUCE_AMOUNT: 0,
+    NG_NHAN: '',
+    DOI_SACH: '',
+    DS_VN: '',
+    DS_KR: ''
+  });
   const [option, setOption] = useState("dataconfirm");
   const [showhidePivotTable, setShowHidePivotTable] = useState(false);
   const [cs_table_data, set_cs_table_data] = useState<Array<CSCONFIRM_DATA>>([]);
@@ -79,41 +117,111 @@ const CS_DATA_TB = () => {
     YEAR_WEEK: '',
     REDUCE_AMOUNT: 0
   });
-  const uploadCSImage = async (cs_ID: number, up_file: any) => {
-    uploadQuery(up_file, "CS_" + cs_ID + ".jpg", "cs")
+  const updateNNDS = () => {
+    generalQuery("updatenndscs", {
+      CONFIRM_ID: currentDefectRow.CONFIRM_ID,
+      NG_NHAN: currentNN,
+      DOI_SACH: currentDS
+    })
       .then((response) => {
+        //console.log(response.data.data);
         if (response.data.tk_status !== "NG") {
-          generalQuery("updateCSImageStatus", { CONFIRM_ID: cs_ID })
-            .then((response) => {
-              if (response.data.tk_status !== "NG") {
-                //console.log(response.data.data);
-                Swal.fire(
-                  "Thông báo",
-                  "Upload file thành công",
-                  "success"
-                );
-              } else {
-                Swal.fire(
-                  "Thông báo",
-                  "Upload file thất bại:" + response.data.message,
-                  "error"
-                );
-              }
-            })
-            .catch((error) => {
-              console.log(error);
-            });
-        } else {
           Swal.fire(
             "Thông báo",
-            "Upload file thất bại:" + response.data.message,
-            "error"
+            "Update thành công",
+            "success",
           );
+        } else {
+          Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
         }
       })
       .catch((error) => {
         console.log(error);
       });
+  }
+  const uploadCSImage = async (cs_ID: number, up_file: any) => {
+    if (up_file !== null && up_file !== undefined) {
+      uploadQuery(up_file, "CS_" + cs_ID + ".jpg", "cs")
+        .then((response) => {
+          if (response.data.tk_status !== "NG") {
+            generalQuery("updateCSImageStatus", { CONFIRM_ID: cs_ID })
+              .then((response) => {
+                if (response.data.tk_status !== "NG") {
+                  //console.log(response.data.data);
+                  Swal.fire(
+                    "Thông báo",
+                    "Upload file thành công",
+                    "success"
+                  );
+                } else {
+                  Swal.fire(
+                    "Thông báo",
+                    "Upload file thất bại:" + response.data.message,
+                    "error"
+                  );
+                }
+              })
+              .catch((error) => {
+                console.log(error);
+              });
+          } else {
+            Swal.fire(
+              "Thông báo",
+              "Upload file thất bại:" + response.data.message,
+              "error"
+            );
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+    else {
+      Swal.fire("Thông báo", "Hãy chọn file", "warning");
+    }
+  }
+  const uploadCSDoiSach = async (cs_ID: number, up_file: any, lang: string) => {
+    console.log(up_file);
+    if (up_file !== null && up_file !== undefined) {
+      uploadQuery(up_file, "CS_" + cs_ID + "_" + lang + ".pptx", "cs")
+        .then((response) => {
+          if (response.data.tk_status !== "NG") {
+            let command = lang == 'VN' ? 'updateCSDoiSachVNStatus' : 'updateCSDoiSachKRStatus';
+            generalQuery(command, { CONFIRM_ID: cs_ID, })
+              .then((response) => {
+                if (response.data.tk_status !== "NG") {
+                  //console.log(response.data.data);
+                  Swal.fire(
+                    "Thông báo",
+                    "Upload file thành công",
+                    "success"
+                  );
+                } else {
+                  Swal.fire(
+                    "Thông báo",
+                    "Upload file thất bại:" + response.data.message,
+                    "error"
+                  );
+                }
+              })
+              .catch((error) => {
+                console.log(error);
+              });
+          } else {
+            Swal.fire(
+              "Thông báo",
+              "Upload file thất bại:" + response.data.message,
+              "error"
+            );
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+    else {
+      Swal.fire("Thông báo", "Hãy chọn file", "warning");
+    }
   }
   const load_cs_data = () => {
     switch (option) {
@@ -126,6 +234,7 @@ const CS_DATA_TB = () => {
                 (element: CSCONFIRM_DATA, index: number) => {
                   return {
                     ...element,
+                    PHANLOAI: element.PHANLOAI !== '' ? element.PHANLOAI : 'MD',
                     CONFIRM_DATE: moment
                       .utc(element.CONFIRM_DATE)
                       .format("YYYY-MM-DD"),
@@ -298,8 +407,12 @@ const CS_DATA_TB = () => {
           keyExpr="id"
           height={"75vh"}
           showBorders={true}
+          /* wordWrapEnabled={true} */
           onSelectionChanged={(e) => {
             //setFilterData(e.selectedRowsData[0]);
+          }}
+          onRowPrepared={(e) => {
+            /*  e.rowElement.style.height = "20px"; */
           }}
           onRowClick={(e) => {
             //console.log(e.data);
@@ -372,6 +485,12 @@ const CS_DATA_TB = () => {
           <Column dataField='CUST_CD' caption='CUST_CD' width={70}></Column>
           <Column dataField='CUST_NAME_KD' caption='CUST_NAME_KD' width={100}></Column>
           <Column dataField='CONTENT' caption='CONTENT' width={100}></Column>
+          <Column dataField='LINK' caption='DEFECT_IMAGE' width={200} cellRender={(ele: any) => {
+            let href = `/cs/CS_${ele.data.CONFIRM_ID}.jpg`;
+            return (
+              <a target="_blank" rel="noopener noreferrer" href={href} ><img src={href} width={200} height={100}></img></a>
+            )
+          }}></Column>
           <Column dataField='INSPECT_QTY' caption='INSPECT_QTY' width={100} cellRender={(ele: any) => {
             return (
               <span style={{ color: 'blue' }}>{ele.data.INSPECT_QTY?.toLocaleString('en-US')}</span>
@@ -414,30 +533,100 @@ const CS_DATA_TB = () => {
               })}</span>
             )
           }}></Column>
-          <Column dataField='LINK' caption='LINK' width={200} cellRender={(ele: any) => {
+          <Column dataField='LINK' caption='DEFECT_IMAGE' width={200} cellRender={(ele: any) => {
             let href = `/cs/CS_${ele.data.CONFIRM_ID}.jpg`;
-            let file:any = null;
-            if(ele.data.LINK ==='Y')
-            {
+            let file: any = null;
+            if (ele.data.LINK === 'Y') {
               return (
-                <a href={href}>LINK</a>
-              )              
+                <a target="_blank" rel="noopener noreferrer" href={href} ><img src={href} width={200} height={100}></img></a>
+              )
             }
             else {
               return (
                 <div className="csuploadbutton">
                   <button onClick={() => {
-                    uploadCSImage(ele.data.CONFIRM_ID,file);
+                    uploadCSImage(ele.data.CONFIRM_ID, file);
                   }}>Upload</button>
                   <input
                     accept='.jpg'
                     type='file'
                     onChange={(e: any) => {
-                      file  = e.target.files[0];                      
+                      file = e.target.files[0];
                     }}
-                  />                  
-                </div>  
-              )             
+                  />
+                </div>
+              )
+            }
+          }}></Column>
+          <Column dataField='UP_NNDS' caption='UP_NNDS' width={120} cellRender={(ele: any) => {
+            return (
+              <button onClick={() => {
+                setCurrentDefectRow(ele.data);
+                setShowHideUpdateNNDS(true)
+                setCurrentDS(ele.data.DOI_SACH);
+                setCurrentNN(ele.data.NG_NHAN);
+              }
+              }>Update NNDS</button>
+            )
+          }}></Column>
+          <Column dataField='NG_NHAN' caption='NG_NHAN' width={150} cellRender={(ele: any) => {
+            return (
+              <span style={{ width: '150px', color: 'red', fontWeight: 'bold', wordWrap: 'break-word' }}>{ele.data.NG_NHAN}</span>
+            )
+          }}></Column>
+          <Column dataField='DOI_SACH' caption='DOI_SACH' width={150} cellRender={(ele: any) => {
+            return (
+              <span style={{ width: '150px', color: 'green', fontWeight: 'bold', wordWrap: 'break-word' }}>{ele.data.DOI_SACH}</span>
+            )
+          }}></Column>
+          <Column dataField='DS_VN' caption='DS_VN' width={200} cellRender={(ele: any) => {
+            let href = `/cs/CS_${ele.data.CONFIRM_ID}_VN.pptx`;
+            let file: any = null;
+            if (ele.data.DS_VN === 'Y') {
+              return (
+                <a href={href}>LINK</a>
+              )
+            }
+            else {
+              return (
+                <div className="csuploadbutton">
+                  <button onClick={() => {
+                    uploadCSDoiSach(ele.data.CONFIRM_ID, file, "VN");
+                  }}>Upload</button>
+                  <input
+                    accept='.pptx'
+                    type='file'
+                    onChange={(e: any) => {
+                      file = e.target.files[0];
+                    }}
+                  />
+                </div>
+              )
+            }
+          }}></Column>
+          <Column dataField='DS_KR' caption='DS_KR' width={200} cellRender={(ele: any) => {
+            let href = `/cs/CS_${ele.data.CONFIRM_ID}_KR.pptx`;
+            let file: any = null;
+            if (ele.data.DS_KR === 'Y') {
+              return (
+                <a href={href}>LINK</a>
+              )
+            }
+            else {
+              return (
+                <div className="csuploadbutton">
+                  <button onClick={() => {
+                    uploadCSDoiSach(ele.data.CONFIRM_ID, file, "KR");
+                  }}>Upload</button>
+                  <input
+                    accept='.pptx'
+                    type='file'
+                    onChange={(e: any) => {
+                      file = e.target.files[0];
+                    }}
+                  />
+                </div>
+              )
             }
           }}></Column>
           <Summary>
@@ -1385,6 +1574,66 @@ const CS_DATA_TB = () => {
           <PivotTable datasource={dataSource} tableID="invoicetablepivot" />
         </PivotTableDiv>
       )}
+      {showhideupdatennds && <NNDSDiv>
+        <span style={{ fontWeight: 'bold' }}>Form update nguyên nhân đối sách</span>
+        <div className="inputbox">
+          1. Hiện tượng (현상)
+          <div className="hientuongdiv" style={{ display: 'flex', flexDirection: 'column' }}>
+            <span style={{ fontWeight: 'bold', color: 'blue' }}>Khách: {currentDefectRow.CUST_NAME_KD}| <span style={{ fontWeight: 'bold', color: 'red' }}>Hiện tượng: {currentDefectRow.CONTENT} </span></span>
+            <img src={`/cs/CS_${currentDefectRow.CONFIRM_ID}.jpg`} width={'400px'} height={'200px'}></img>
+          </div>
+          2. Nguyên nhân (원인)
+          <textarea rows={8} style={{ width: '100%', color: 'red' }} value={currentNN} onChange={(e) => { setCurrentNN(e.target.value) }}></textarea>
+          3. Đối sách (대책)
+          <textarea rows={8} style={{ width: '100%', color: 'green' }} value={currentDS} onChange={(e) => { setCurrentDS(e.target.value) }}></textarea>
+        </div>
+        <div className="buttondiv">
+          <button onClick={() => {
+            updateNNDS();
+          }}>Update</button>
+          <button onClick={() => {
+            setShowHideUpdateNNDS(false);
+            setCurrentDS('');
+            setCurrentNN('');
+            setCurrentDefectRow({
+              YEAR_WEEK: '',
+              CONFIRM_ID: 0,
+              CONFIRM_DATE: '',
+              CONTACT_ID: 0,
+              CS_EMPL_NO: '',
+              EMPL_NAME: '',
+              G_CODE: '',
+              G_NAME: '',
+              G_NAME_KD: '',
+              PROD_REQUEST_NO: '',
+              CUST_CD: '',
+              CUST_NAME_KD: '',
+              CONTENT: '',
+              INSPECT_QTY: 0,
+              NG_QTY: 0,
+              REPLACE_RATE: 0,
+              REDUCE_QTY: 0,
+              FACTOR: '',
+              RESULT: '',
+              CONFIRM_STATUS: '',
+              REMARK: '',
+              INS_DATETIME: '',
+              PHANLOAI: '',
+              LINK: '',
+              PROD_TYPE: '',
+              PROD_MODEL: '',
+              PROD_PROJECT: '',
+              PROD_LAST_PRICE: 0,
+              REDUCE_AMOUNT: 0,
+              NG_NHAN: '',
+              DOI_SACH: '',
+              DS_VN: '',
+              DS_KR: ''
+            });
+          }}>Close</button>
+        </div>
+      </NNDSDiv>
+      }
     </DataDiv>
   );
 };

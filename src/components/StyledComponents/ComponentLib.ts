@@ -850,7 +850,7 @@ export const DataTBDiv = styled.div`
   height: 100%;
   margin-bottom: 0;
   -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
-  box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+  box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27); 
   .dx-datagrid-rowsview
     .dx-selection.dx-row:not(.dx-row-focused):not(.dx-row-removed)
     > td {
@@ -953,6 +953,60 @@ export const DataDiv = styled.div`
     display: flex;
     flex-direction: column;
     gap: 5px;
+  }
+  @media ${device.desktop} {
+  }
+  @media ${device.mobileL} {
+  }
+`;
+export const NNDSDiv = styled.div`  
+  @media ${device.desktop} {
+    display: flex;
+      position: absolute;
+      z-index:99;
+      padding: 10px;
+      align-items: center;
+      flex-direction: column;
+      border-radius: 5px;
+      top: 15%;
+      left: 40%;
+      width: 500px;
+      height: fit-content;      
+      background-image: linear-gradient(0deg, #d3d2af, #86ffa4);
+        -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+        box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+        .inputbox {
+          display: flex;
+          width: 100%;
+          padding: 10px;
+          flex-direction: column;
+          align-items: flex-start;
+          justify-content: flex-start;
+        }
+  }
+  @media ${device.mobileL} {
+    display: flex;
+      position: absolute;
+      padding: 10px;
+      z-index:99;
+      align-items: center;
+      flex-direction: column;
+      border-radius: 5px;
+      top: -5%;
+      left: 40%;
+      width: 500px;
+      height: fit-content;      
+      background-image: linear-gradient(0deg, #d3d2af, #86ffa4);
+        -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+        box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+        .inputbox {
+          display: flex;
+          width: 100%;
+          padding: 10px;
+          flex-direction: column;
+          align-items: flex-start;
+          justify-content: flex-start;
+        }
   }
   @media ${device.desktop} {
   }

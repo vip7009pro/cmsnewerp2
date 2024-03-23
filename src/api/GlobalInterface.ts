@@ -1049,6 +1049,10 @@ export interface CSCONFIRM_DATA {
   PROD_PROJECT: string,
   PROD_LAST_PRICE: number,
   REDUCE_AMOUNT: number,
+  NG_NHAN?: string,
+  DOI_SACH?: string,
+  DS_VN?: string,
+  DS_KR?: string
 
 }
 //DTC data

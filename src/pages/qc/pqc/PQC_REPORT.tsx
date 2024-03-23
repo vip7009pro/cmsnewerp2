@@ -264,7 +264,7 @@ const PQC_REPORT = () => {
   }
   const traPQC3 = (from_date: string, to_date: string, listCode: string[]) => {
     let td = moment().add(0, "day").format("YYYY-MM-DD");
-    let frd = moment().add(-14, "day").format("YYYY-MM-DD");
+    let frd = moment().add(-7, "day").format("YYYY-MM-DD");
     generalQuery("trapqc3data", {
       ALLTIME: false,
       FROM_DATE: df ? frd : from_date,
@@ -313,7 +313,7 @@ const PQC_REPORT = () => {
   };
   const traPQC32 = (from_date: string, to_date: string, listCode: string[]) => {
     let td = moment().add(0, "day").format("YYYY-MM-DD");
-    let frd = moment().add(-14, "day").format("YYYY-MM-DD");
+    let frd = moment().add(-7, "day").format("YYYY-MM-DD");
     generalQuery("trapqc3data", {
       ALLTIME: false,
       FROM_DATE: from_date,

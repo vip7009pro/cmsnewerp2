@@ -53,12 +53,12 @@ const PATROL_COMPONENT2 = ({ data }: { data?: PATROL_DATA }) => {
       </div>
       <div className="doisachdiv">
         <div className="nguyennhan">
-          <span style={{ fontWeight: 'bold' }}>1. Nguyên nhân (원인)</span>
-          <span>{data?.NG_NHAN}</span>
+          <span style={{ fontWeight: 'bold', color:'red' }}>1. Nguyên nhân (원인)</span>
+          <span style={{color:'blue'}}>{data?.NG_NHAN}</span>
         </div>
         <div className="doisach">
-          <span style={{ fontWeight: 'bold' }}>2. Đối sách (대책)</span>
-          <span>{data?.DOI_SACH}</span>
+          <span style={{ fontWeight: 'bold', color:'green' }}>2. Đối sách (대책)</span>
+          <span style={{color:'blue'}}>{data?.DOI_SACH}</span>
         </div>
       </div>
     </div>
