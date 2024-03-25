@@ -10,7 +10,7 @@ import React, {
 } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { LangConText, UserContext } from "../src/api/Context";
-import { checkLogin, generalQuery, getCompany, getSocket, logout as LGOUTF } from "./api/Api";
+import { checkLogin, generalQuery, getCompany, getSocket, getUserData, logout as LGOUTF } from "./api/Api";
 import Swal from "sweetalert2";
 import { RootState } from "./redux/store";
 import { useSelector, useDispatch } from "react-redux";
@@ -373,7 +373,7 @@ function App() {
     WORK_STATUS_NAME: "Đang làm",
     WORK_STATUS_NAME_KR: "근무중",
   });
-/*   const [loginState, setLoginState] = useState(false); */
+  /*   const [loginState, setLoginState] = useState(false); */
   const trangthaidiemdanh: boolean | undefined = useSelector(
     (state: RootState) => state.totalSlice.diemdanhstate
   );
@@ -388,26 +388,24 @@ function App() {
   );
   const dispatch = useDispatch();
   const checkERPLicense = async () => {
-    
     //if (getSever() !== 'http://192.168.1.192:5013') {
-      console.log(loginState)
+    console.log(loginState)
     if (true) {
       console.log("Vao check license")
       generalQuery("checkLicense", {
-        COMPANY: /* getCompany() */'TEST'
+        COMPANY: getCompany()
       })
         .then((response) => {
-          console.log('hohoho',response.data.message);
+          console.log('hohoho', response.data.message);
           if (response.data.tk_status !== "NG") {
-            console.log(response.data.message);            
+            console.log(response.data.message);
           } else {
-            if(userData.EMPL_NO.toUpperCase()==='NHU1903')
-            {
-              console.log(response.data.message);                       
-              Swal.fire('Thông báo', 'Please check your network', 'error');  
-              LGOUTF();            
-             /*  dispatch(logout(true));    */
-            }             
+            if (userData.EMPL_NO.toUpperCase() === 'NHU1903') {
+              console.log(response.data.message);
+              Swal.fire('Thông báo', 'Please check your network', 'error');
+              LGOUTF();
+              /*  dispatch(logout(true));    */
+            }
           }
         })
         .catch((error) => {
@@ -565,6 +563,7 @@ function App() {
         console.log(error);
       });
     if (!getSocket().hasListeners('setWebVer')) {
+      console.log('vao set sever')
       getSocket().on("setWebVer", (data: any) => {
         console.log(data);
         if (current_ver >= data) {
@@ -593,8 +592,19 @@ function App() {
         }
       });
     }
+    if (!getSocket().hasListeners('request_check_online')) {
+      console.log('kich hoat nhan thogn tin check online');
+      getSocket().on("request_check_online", (data: any) => {
+        //console.log('co request check online', data);
+        //Swal.fire('Thông báo','Có yêu cầu check online từ server','info');
+        getSocket().emit("respond_check_online", getUserData()?.EMPL_NO);
+      });
+    }
     return () => {
       getSocket().off("setWebVer", (data: any) => {
+        //console.log(data);
+      });
+      getSocket().off("request_check_online", (data: any) => {
         //console.log(data);
       });
     };
