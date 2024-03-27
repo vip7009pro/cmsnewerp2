@@ -22,6 +22,7 @@ import {
   login,
   setTabModeSwap,
   changeGLBSetting,
+  changeServer,
 } from "./redux/slices/globalSlice";
 import { useSpring, animated } from "@react-spring/web";
 import "./App.css";
@@ -592,12 +593,24 @@ function App() {
         }
       });
     }
-    if (!getSocket().hasListeners('request_check_online')) {
+    if (!getSocket().hasListeners('request_check_online2')) {
       console.log('kich hoat nhan thogn tin check online');
-      getSocket().on("request_check_online", (data: any) => {
+      getSocket().on("request_check_online2", (data: any) => {
         //console.log('co request check online', data);
         //Swal.fire('Thông báo','Có yêu cầu check online từ server','info');
-        getSocket().emit("respond_check_online", getUserData()?.EMPL_NO);
+        getSocket().emit("respond_check_online", getUserData());
+      });
+    }
+    if (!getSocket().hasListeners('changeServer')) {      
+      getSocket().on("changeServer", (data: any) => {        
+        console.log("Change server commnand received !");
+        console.log(data.server);
+        if(getCompany()==='CMS' && (data.empl_no.toUpperCase() ===getUserData()?.EMPL_NO?.toUpperCase() || data.empl_no.toUpperCase() ==='ALL'))
+        {
+          dispatch(changeServer(data.server));
+          localStorage.setItem("server_ip", data.server);
+        }         
+       
       });
     }
     return () => {

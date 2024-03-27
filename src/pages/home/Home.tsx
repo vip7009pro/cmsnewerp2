@@ -24,7 +24,9 @@ import Cookies from "universal-cookie";
 import FallBackComponent from "../../components/Fallback/FallBackComponent";
 import { getlang } from "../../components/String/String";
 import { LangConText } from "../../api/Context";
-import { MENU_LIST_DATA } from "../../api/GlobalInterface";
+import { MENU_LIST_DATA, UserData } from "../../api/GlobalInterface";
+import CHAT from "../chat/CHAT";
+import CHAT2 from "../chat/CHAT2";
 const SettingPage = lazy(() => import("../setting/SettingPage"));
 const PoManager = lazy(() => import("../../pages/kinhdoanh/pomanager/PoManager"));
 const MACHINE = lazy(() => import("../../pages/qlsx/QLSXPLAN/Machine/MACHINE"));
@@ -81,7 +83,7 @@ const TINHLIEU = lazy(() => import("../../pages/muahang/tinhlieu/TINHLIEU"));
 const BAOCAOTHEOROLL = lazy(() => import("../../pages/sx/BAOCAOTHEOROLL/BAOCAOTHEOROLL"));
 const LICHSUTEMLOTSX = lazy(() => import("../../pages/sx/LICHSUTEMLOTSX/LICHSUTEMLOTSX"));
 const BAOCAOSXALL = lazy(() => import("../../pages/sx/BAOCAOSXALL"));
-export const current_ver: number = 344;
+export const current_ver: number = 346;
 interface ELE_ARRAY {
   REACT_ELE: any;
   ELE_NAME: string;
@@ -102,6 +104,9 @@ function Home() {
   const cookies = new Cookies();
   const company: string = useSelector(
     (state: RootState) => state.totalSlice.company
+  );
+  const userData: UserData | undefined = useSelector(
+    (state: RootState) => state.totalSlice.userData
   );
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const tabs: ELE_ARRAY[] = useSelector(
@@ -756,9 +761,9 @@ function Home() {
             {tabModeSwap && tabs.length === 0 && <AccountInfo />}
           </animated.div>
         </div>
-        {/*   <div className="chatroom">
+        {userData?.EMPL_NO==='NHU1903' && <div className="chatroom">
           <CHAT />
-        </div> */}
+        </div>}
       </div>
     </div>
   );

@@ -1,9 +1,8 @@
 import moment from "moment";
 import React, { useState, useEffect, useContext } from "react";
-import { generalQuery, getSocket, uploadQuery } from "../../../api/Api";
+import { generalQuery, getCompany, getSocket, uploadQuery } from "../../../api/Api";
 import { UserContext, LangConText } from "../../../api/Context";
 import "./AccountInfo.scss";
-
 import LinearProgress, {
   LinearProgressProps,
 } from "@mui/material/LinearProgress";
@@ -21,7 +20,6 @@ import {
 } from "../../../redux/slices/globalSlice";
 import Cookies from "universal-cookie";
 import { UserData } from "../../../api/GlobalInterface";
-
 interface MYCHAMCONG {
   MIN_TIME: string;
   MAX_TIME: string;
@@ -42,7 +40,6 @@ export function LinearProgressWithLabel(
     </Box>
   );
 }
-
 export default function AccountInfo() {
   const cookies = new Cookies();
   const userdata: UserData | undefined = useSelector(
@@ -52,7 +49,7 @@ export default function AccountInfo() {
     (state: RootState) => state.totalSlice.company
   );
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
-
+  const [server_string, setServer_String] = useState('http://14.160.33.94:5013');
   const [webver, setwebver] = useState(0);
   const dispatch = useDispatch();
   const [logoutID, setLogOutID] = useState("");
@@ -66,7 +63,6 @@ export default function AccountInfo() {
     count_thuong: 0,
     count_phat: 0,
   });
-
   const startOfYear = moment().year() + "-01-01";
   //console.log(moment().startOf('year').format('YYYY-MM-DD'));
   const now = moment(new Date());
@@ -87,14 +83,12 @@ export default function AccountInfo() {
   days = getBusinessDatesCount(new Date(startOfYear), new Date());
   const setWebVer = (web_ver: number) => {
     getSocket().emit("setWebVer", web_ver);
-
     generalQuery("setWebVer", {
       WEB_VER: web_ver,
     })
       .then((response) => {
         if (response.data.tk_status !== "NG") {
           Swal.fire("Thông báo", "Set web ver thành công", "success");
-          
         } else {
           Swal.fire(
             "Thông báo",
@@ -133,7 +127,6 @@ export default function AccountInfo() {
       .catch((error) => {
         console.log(error);
       });
-
     generalQuery("countxacnhanchamcong", insertData)
       .then((response) => {
         //console.log(response.data.data[0].WORK_DAY);
@@ -142,7 +135,6 @@ export default function AccountInfo() {
       .catch((error) => {
         console.log(error);
       });
-
     generalQuery("countthuongphat", insertData)
       .then((response) => {
         setThuongPhat({
@@ -163,7 +155,6 @@ export default function AccountInfo() {
           //console.log('data',response.data.REFRESH_TOKEN);
           /* let rfr_token: string = response.data.REFRESH_TOKEN;
           cookies.set("token", rfr_token, { path: "/" }); */
-
           let loaded_data: MYCHAMCONG = response.data.data[0];
           loaded_data.MIN_TIME = loaded_data.MIN_TIME?.substring(11, 19);
           loaded_data.MAX_TIME = loaded_data.MAX_TIME?.substring(11, 19);
@@ -173,21 +164,17 @@ export default function AccountInfo() {
           let tempminminute: number = Number(
             loaded_data.MIN_TIME?.substring(3, 5)
           );
-
           let tempmaxhour: number = Number(
             loaded_data.MAX_TIME?.substring(0, 2)
           );
           let tempmaxminute: number = Number(
             loaded_data.MAX_TIME?.substring(3, 5)
           );
-
           /* console.log('tempminhour',tempminhour);
           console.log('tempmaxhour',tempmaxhour);
-
           console.log('tempminminute',tempminminute);
           console.log('tempmaxminute',tempmaxminute);
  */
-
           if (tempminhour === tempmaxhour) {
             if (tempmaxminute - tempminminute >= 30) {
             } else {
@@ -241,19 +228,16 @@ export default function AccountInfo() {
         console.log(error);
       });
   };
-
   useEffect(() => {
     getData();
     getchamcong();
     let intervalID2 = window.setInterval(() => {
       getchamcong();
     }, 5000);
-
     return () => {
       window.clearInterval(intervalID2);
     };
   }, []);
-
   const DOB = () => {
     if (userdata?.DOB != null) {
       return userdata?.DOB;
@@ -265,18 +249,16 @@ export default function AccountInfo() {
     <div
       className='accountinfo'
       style={{
-        backgroundImage: `${
-          company === "CMS"
-            ? theme.CMS.backgroundImage
-            : theme.PVN.backgroundImage
-        }`,
+        backgroundImage: `${company === "CMS"
+          ? theme.CMS.backgroundImage
+          : theme.PVN.backgroundImage
+          }`,
       }}
     >
       <h1 className='text-3xl'>
         {/* Thông tin của bạn */}
         {getsentence(17, lang)}
       </h1>
-
       <div className='panelhome'>
         <div className={`cot0 ${userdata?.EMPL_IMAGE === "Y" ? "on" : "off"}`}>
           {userdata?.EMPL_IMAGE === "Y" && (
@@ -302,11 +284,10 @@ export default function AccountInfo() {
                 <div
                   className='chamcongmin'
                   style={{
-                    backgroundImage: `${
-                      company === "CMS"
-                        ? theme.CMS.backgroundImage
-                        : theme.PVN.backgroundImage
-                    }`,
+                    backgroundImage: `${company === "CMS"
+                      ? theme.CMS.backgroundImage
+                      : theme.PVN.backgroundImage
+                      }`,
                   }}
                 >
                   {mychamcong?.MIN_TIME !== null
@@ -316,11 +297,10 @@ export default function AccountInfo() {
                 <div
                   className='chamcongmax'
                   style={{
-                    backgroundImage: `${
-                      company === "CMS"
-                        ? theme.CMS.backgroundImage
-                        : theme.PVN.backgroundImage
-                    }`,
+                    backgroundImage: `${company === "CMS"
+                      ? theme.CMS.backgroundImage
+                      : theme.PVN.backgroundImage
+                      }`,
                   }}
                 >
                   {mychamcong?.MAX_TIME !== null
@@ -329,7 +309,6 @@ export default function AccountInfo() {
                 </div>
               </div>
             </div>
-
             <li className='emplInfoList'>
               {" "}
               {/*  Họ và tên */}
@@ -514,13 +493,33 @@ export default function AccountInfo() {
                 Upver
               </Button>
             )}
+            {
+              userdata?.EMPL_NO === 'NHU1903' && (
+                <label>
+                  Chọn Server:
+                  <select
+                    name="select_server"
+                    value={server_string}
+                    onChange={(e) => {
+                      setServer_String(e.target.value);
+                    }}
+                  >
+                    <option value={"http://14.160.33.94:" + 5013}>MAIN_SERVER</option>
+                    <option value={"http://14.160.33.94:" + 3007}>SUB_SERVER</option>
+                    <option value={"http://192.168.1.192:" + 5013}>LAN_SERVER</option>
+                    <option value={"http://cms.ddns.net:" + 5013}>NET_SERVER</option>
+                    <option value={"http://cms.ddns.net:" + 3007}>SUBNET_SERVER</option>
+                  </select>
+                </label>
+              )
+            }
             {userdata?.EMPL_NO === "NHU1903" && (
               <Button
                 onClick={() => {
-                  getSocket().emit("setWebVer", 125);   
+                  getSocket().emit("changeServer", { server: server_string, empl_no: logoutID });
                 }}
               >
-                Emit
+                Set Server
               </Button>
             )}
           </h3>{" "}
