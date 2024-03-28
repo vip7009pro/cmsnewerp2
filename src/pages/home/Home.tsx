@@ -83,7 +83,7 @@ const TINHLIEU = lazy(() => import("../../pages/muahang/tinhlieu/TINHLIEU"));
 const BAOCAOTHEOROLL = lazy(() => import("../../pages/sx/BAOCAOTHEOROLL/BAOCAOTHEOROLL"));
 const LICHSUTEMLOTSX = lazy(() => import("../../pages/sx/LICHSUTEMLOTSX/LICHSUTEMLOTSX"));
 const BAOCAOSXALL = lazy(() => import("../../pages/sx/BAOCAOSXALL"));
-export const current_ver: number = 346;
+export const current_ver: number = 347;
 interface ELE_ARRAY {
   REACT_ELE: any;
   ELE_NAME: string;
@@ -761,7 +761,7 @@ function Home() {
             {tabModeSwap && tabs.length === 0 && <AccountInfo />}
           </animated.div>
         </div>
-        {userData?.EMPL_NO==='NHU1903' && <div className="chatroom">
+        {userData?.EMPL_NO === 'NHU1903' && <div className="chatroom">
           <CHAT />
         </div>}
       </div>

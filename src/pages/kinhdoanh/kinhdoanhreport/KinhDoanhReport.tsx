@@ -609,8 +609,8 @@ const KinhDoanhReport = () => {
           else {
             const lastmonth = moment().subtract(1, 'months');
             generalQuery("getWeeklyClosingKD", {
-              FROM_DATE: df ? lastmonth.startOf('month').format('YYYY-MM-DD') : fromdate,
-              TO_DATE: df ? lastmonth.endOf('month').format('YYYY-MM-DD') : todate
+              FROM_DATE: df ? moment.utc().format('YYYY-MM-01') : fromdate,
+              TO_DATE: df ? moment.utc().format('YYYY-MM-DD') : todate
             })
               .then((response) => {
                 if (response.data.tk_status !== "NG") {
@@ -819,12 +819,24 @@ const KinhDoanhReport = () => {
                 if (['CUST_NAME_KD', 'id'].indexOf(e) > -1) {
                   return <span>{ele.data[e]}</span>;
                 }
-                else if (e === 'TOTAL') {
+                else if (e === 'TOTAL_AMOUNT') {
                   return <span style={{ color: "#F633EA", fontWeight: "bold" }}>
                     {ele.data[e]?.toLocaleString("en-US", {
                       style: "currency",
                       currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
                     })}
+                  </span>
+                }
+                else if (e === 'TOTAL_QTY') {
+                  return <span style={{ color: "#052ee7", fontWeight: "bold" }}>
+                    {ele.data[e]?.toLocaleString("en-US", {
+                      style: "decimal",})}
+                  </span>
+                }
+                else if (e.indexOf("QTY")> -1) {
+                  return <span style={{ color: "#052ee7", fontWeight: "normal" }}>
+                    {ele.data[e]?.toLocaleString("en-US", {
+                      style: "decimal",})}
                   </span>
                 }
                 else {
