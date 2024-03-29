@@ -83,7 +83,7 @@ const TINHLIEU = lazy(() => import("../../pages/muahang/tinhlieu/TINHLIEU"));
 const BAOCAOTHEOROLL = lazy(() => import("../../pages/sx/BAOCAOTHEOROLL/BAOCAOTHEOROLL"));
 const LICHSUTEMLOTSX = lazy(() => import("../../pages/sx/LICHSUTEMLOTSX/LICHSUTEMLOTSX"));
 const BAOCAOSXALL = lazy(() => import("../../pages/sx/BAOCAOSXALL"));
-export const current_ver: number = 347;
+export const current_ver: number = 348;
 interface ELE_ARRAY {
   REACT_ELE: any;
   ELE_NAME: string;

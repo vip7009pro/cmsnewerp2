@@ -91,6 +91,7 @@ import {
   UserData,
 } from "../../../api/GlobalInterface";
 import { getlang } from "../../../components/String/String";
+import NSDailyGraph from "../../../components/Chart/NSDailyGraph";
 
 const BaoCaoNhanSu = () => {
   const COLORS = [
@@ -1275,6 +1276,175 @@ const BaoCaoNhanSu = () => {
             infoText="Page #{0}. Total: {1} ({2} items)"
             displayMode="compact"
           />
+          <Column dataField="MAINDEPTNAME" caption="MAINDEPTNAME" width={80} />
+          <Column dataField="COUNT_TOTAL" caption="TOTAL" width={50} cellRender={(e: any) => {
+                return (
+                  <span style={{ color: "blue", fontWeight: "bold" }}>
+                    {e.data.COUNT_TOTAL}
+                  </span>
+                );
+              }}/>
+          <Column dataField="COUNT_ON" caption="ON" width={50} cellRender={(e: any) => {
+                return (
+                  <span style={{ color: "blue", fontWeight: "normal" }}>
+                    {e.data.COUNT_ON}
+                  </span>
+                );
+              }}/>
+          <Column dataField="COUNT_OFF" caption="OFF" width={50} cellRender={(e: any) => {
+                return (
+                  <span style={{ color: "blue", fontWeight: "normal" }}>
+                    {e.data.COUNT_OFF}
+                  </span>
+                );
+              }}/>
+          <Column dataField="COUNT_CDD" caption="CDD" width={50} cellRender={(e: any) => {
+                return (
+                  <span style={{ color: "blue", fontWeight: "normal" }}>
+                    {e.data.COUNT_CDD}
+                  </span>
+                );
+              }}/>
+          <Column dataField="T1_TOTAL" caption="T1_TOTAL" width={70} cellRender={(e: any) => {
+                return (
+                  <span style={{ color: "green", fontWeight: "bold" }}>
+                    {e.data.T1_TOTAL}
+                  </span>
+                );
+              }}/>
+          <Column dataField="T1_ON" caption="T1_ON" width={70} cellRender={(e: any) => {
+                return (
+                  <span style={{ color: "green", fontWeight: "normal" }}>
+                    {e.data.T1_ON}
+                  </span>
+                );
+              }}/>
+          <Column dataField="T1_OFF" caption="T1_OFF" width={70} cellRender={(e: any) => {
+                return (
+                  <span style={{ color: "green", fontWeight: "normal" }}>
+                    {e.data.T1_OFF}
+                  </span>
+                );
+              }}/>
+          <Column dataField="T1_CDD" caption="T1_CDD" width={70} cellRender={(e: any) => {
+                return (
+                  <span style={{ color: "green", fontWeight: "normal" }}>
+                    {e.data.T1_CDD}
+                  </span>
+                );
+              }}/>
+          <Column dataField="T2_TOTAL" caption="T2_TOTAL" width={70} cellRender={(e: any) => {
+                return (
+                  <span style={{ color: "#F705FB", fontWeight: "bold" }}>
+                    {e.data.T2_TOTAL}
+                  </span>
+                );
+              }}/>
+          <Column dataField="T2_ON" caption="T2_ON" width={70} cellRender={(e: any) => {
+                return (
+                  <span style={{ color: "#F705FB", fontWeight: "normal" }}>
+                    {e.data.T2_ON}
+                  </span>
+                );
+              }}/>
+          <Column dataField="T2_OFF" caption="T2_OFF" width={70} cellRender={(e: any) => {
+                return (
+                  <span style={{ color: "#F705FB", fontWeight: "normal" }}>
+                    {e.data.T2_OFF}
+                  </span>
+                );
+              }}/>
+          <Column dataField="T2_CDD" caption="T2_CDD" width={70} cellRender={(e: any) => {
+                return (
+                  <span style={{ color: "#F705FB", fontWeight: "normal" }}>
+                    {e.data.T2_CDD}
+                  </span>
+                );
+              }}/>
+          <Column dataField="HC_TOTAL" caption="HC_TOTAL" width={70} cellRender={(e: any) => {
+                return (
+                  <span style={{ color: "#01C0A3", fontWeight: "bold" }}>
+                    {e.data.HC_TOTAL}
+                  </span>
+                );
+              }}/>
+          <Column dataField="HC_ON" caption="HC_ON" width={70} cellRender={(e: any) => {
+                return (
+                  <span style={{ color: "#01C0A3", fontWeight: "normal" }}>
+                    {e.data.HC_ON}
+                  </span>
+                );
+              }}/>
+          <Column dataField="HC_OFF" caption="HC_OFF" width={70} cellRender={(e: any) => {
+                return (
+                  <span style={{ color: "#01C0A3", fontWeight: "normal" }}>
+                    {e.data.HC_OFF}
+                  </span>
+                );
+              }}/>
+          <Column dataField="HC_CDD" caption="HC_CDD" width={70} cellRender={(e: any) => {
+                return (
+                  <span style={{ color: "#01C0A3", fontWeight: "normal" }}>
+                    {e.data.HC_CDD}
+                  </span>
+                );
+              }}/>
+          <Column dataField="ON_RATE" caption="ON_RATE" width={70} cellRender={(e: any) => {
+                return (
+                  <span style={{ color: "blue", fontWeight: "bold" }}>
+                    {(e.data.ON_RATE/100).toLocaleString('en-US', {style:'percent'})}
+                  </span>
+                );
+              }}/>
+          <Column dataField="TOTAL" caption="TOTAL" width={70} cellRender={(e: any) => {
+                return (
+                  <span style={{ color: "red", fontWeight: "bold" }}>
+                    {e.data.TOTAL}
+                  </span>
+                );
+              }}/>
+          <Column dataField="PHEP_NAM" caption="PHEP_NAM" width={70} cellRender={(e: any) => {
+                return (
+                  <span style={{ color: "red", fontWeight: "normal" }}>
+                    {e.data.PHEP_NAM}
+                  </span>
+                );
+              }}/>
+          <Column dataField="NUA_PHEP" caption="NUA_PHEP" width={70} cellRender={(e: any) => {
+                return (
+                  <span style={{ color: "red", fontWeight: "normal" }}>
+                    {e.data.NUA_PHEP}
+                  </span>
+                );
+              }}/>
+          <Column dataField="NGHI_VIEC_RIENG" caption="VIECRIENG" width={70} cellRender={(e: any) => {
+                return (
+                  <span style={{ color: "red", fontWeight: "normal" }}>
+                    {e.data.NGHI_VIEC_RIENG}
+                  </span>
+                );
+              }}/>
+          <Column dataField="NGHI_OM" caption="NGHI_OM" width={70} cellRender={(e: any) => {
+                return (
+                  <span style={{ color: "red", fontWeight: "normal" }}>
+                    {e.data.NGHI_OM}
+                  </span>
+                );
+              }}/>
+          <Column dataField="CHE_DO" caption="CHE_DO" width={70} cellRender={(e: any) => {
+                return (
+                  <span style={{ color: "red", fontWeight: "normal" }}>
+                    {e.data.CHE_DO}
+                  </span>
+                );
+              }}/>
+          <Column dataField="KHONG_LY_DO" caption="KOLYDO" width={70} cellRender={(e: any) => {
+                return (
+                  <span style={{ color: "red", fontWeight: "normal" }}>
+                    {e.data.KHONG_LY_DO}
+                  </span>
+                );
+              }}/>
         </GridData>
       </div>
     ),
@@ -1363,67 +1533,7 @@ const BaoCaoNhanSu = () => {
         </div>
         <h3>{getlang("bieudotrendingdilam", glbLang!)}</h3>
         <div className="diemdanhhistorychart">
-          <CustomResponsiveContainer>
-            <ComposedChart
-              width={500}
-              height={300}
-              data={diemdanh_historyTable}
-              margin={{
-                top: 5,
-                right: 30,
-                left: 20,
-                bottom: 5,
-              }}
-            >
-              <CartesianGrid strokeDasharray="3 3" className="chartGrid" />
-              <XAxis dataKey="APPLY_DATE">
-                {" "}
-                <Label value="Ngày tháng" offset={0} position="insideBottom" />
-              </XAxis>
-              <YAxis
-                yAxisId="left-axis"
-                label={{
-                  value: "Số lượng đi làm",
-                  angle: -90,
-                  position: "insideLeft",
-                }}
-              />
-              <YAxis
-                orientation="right"
-                yAxisId="right-axis"
-                label={{
-                  value: "Tỉ lệ đi làm",
-                  angle: -90,
-                  position: "outsideRight",
-                }}
-              />
-              <Tooltip />
-              <Legend />
-              <Bar
-                yAxisId="left-axis"
-                dataKey="TOTAL_ON"
-                stackId="a"
-                fill="#8884d8"
-              >
-                <LabelList dataKey="TOTAL_ON" position="inside" />
-              </Bar>
-              <Bar
-                yAxisId="left-axis"
-                dataKey="TOTAL_OFF"
-                stackId="a"
-                fill="#82ca9d"
-              >
-                <LabelList dataKey="TOTAL_OFF" position="inside" />
-              </Bar>
-              <Line
-                yAxisId="right-axis"
-                type="monotone"
-                dataKey="ON_RATE"
-                stroke="#FF0000"
-                activeDot={{ r: 8 }}
-              ></Line>
-            </ComposedChart>
-          </CustomResponsiveContainer>
+          <NSDailyGraph dldata={diemdanh_historyTable} processColor="#a9ec71" materialColor="#FF0000"/>          
         </div>
         <h3>{getlang("nhanlucbophanchinh", glbLang!)}</h3>
         <div className="maindept_tableOK">
