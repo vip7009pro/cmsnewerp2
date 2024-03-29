@@ -583,6 +583,20 @@ const KinhDoanhReport = () => {
                       })}
                     </span>
                   }
+                  else if (e === 'TOTAL_QTY') {
+                    return <span style={{ color: "#052ee7", fontWeight: "bold" }}>
+                      {ele.data[e]?.toLocaleString("en-US", {
+                        style: "decimal",
+                      })}
+                    </span>
+                  }
+                  else if (e.indexOf("QTY") > -1) {
+                    return <span style={{ color: "#052ee7", fontWeight: "normal" }}>
+                      {ele.data[e]?.toLocaleString("en-US", {
+                        style: "decimal",
+                      })}
+                    </span>
+                  }
                   else {
                     if (ele.data['CUST_NAME_KD'] === 'TOTAL') {
                       return (<span style={{ color: "green", fontWeight: "bold" }}>
@@ -783,7 +797,12 @@ const KinhDoanhReport = () => {
               };
             }
           );
-          setRunningPOBalanceData(loadeddata.splice(0, 10).reverse());
+          if (df) {
+            setRunningPOBalanceData(loadeddata.splice(0, 10).reverse());
+          }
+          else {
+            setRunningPOBalanceData(loadeddata.reverse());
+          }
         } else {
           //Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
         }
@@ -830,13 +849,15 @@ const KinhDoanhReport = () => {
                 else if (e === 'TOTAL_QTY') {
                   return <span style={{ color: "#052ee7", fontWeight: "bold" }}>
                     {ele.data[e]?.toLocaleString("en-US", {
-                      style: "decimal",})}
+                      style: "decimal",
+                    })}
                   </span>
                 }
-                else if (e.indexOf("QTY")> -1) {
+                else if (e.indexOf("QTY") > -1) {
                   return <span style={{ color: "#052ee7", fontWeight: "normal" }}>
                     {ele.data[e]?.toLocaleString("en-US", {
-                      style: "decimal",})}
+                      style: "decimal",
+                    })}
                   </span>
                 }
                 else {

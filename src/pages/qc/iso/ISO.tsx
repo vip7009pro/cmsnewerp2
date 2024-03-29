@@ -67,7 +67,7 @@ const ISO = () => {
             color: selection.tab1 === true ? "yellow" : "yellow",
           }}
         >
-          <span className="mininavtext">Internal EMPL G_RNR</span>
+          <span className="mininavtext">EMPL G_RNR</span>
         </div>
         <div
           className="mininavitem"
@@ -77,7 +77,7 @@ const ISO = () => {
             color: selection.tab2 === true ? "yellow" : "yellow",
           }}
         >
-          <span className="mininavtext">Self QPA</span>
+          <span className="mininavtext">SELF QPA</span>
         </div>
         <div
           className="mininavitem"
@@ -87,7 +87,7 @@ const ISO = () => {
             color: selection.tab3 === true ? "yellow" : "yellow",
           }}
         >
-          <span className="mininavtext">Self QSA</span>
+          <span className="mininavtext">SELF QSA</span>
         </div>
       </div>
       {selection.tab1 && (
