@@ -567,7 +567,7 @@ const POandStockFull = () => {
       });
     }
   };
-  useEffect(() => {}, []);
+  useEffect(() => { }, []);
   return (
     <div className="poandstockfull">
       <div className="mininavbar">

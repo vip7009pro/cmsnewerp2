@@ -1833,12 +1833,12 @@ const DATASX2 = () => {
             cellRender={(e: any) => {
               return (
                 <span style={{ color: "green", fontWeight: "bold" }}>
-                  {100 *
-                    e.data.LOSS_SX_ST?.toFixed(2).toLocaleString("en-US", {
-                      maximumFractionDigits: 0,
-                      minimumFractionDigits: 0,
-                    })}{" "}
-                  %
+                  {
+                    e.data.LOSS_SX_ST?.toLocaleString("en-US", {
+                      style:'percent',
+                      maximumFractionDigits: 1,
+                      minimumFractionDigits: 1,
+                    })}{" "}                  
                 </span>
               );
             }}
@@ -1852,10 +1852,11 @@ const DATASX2 = () => {
             cellRender={(e: any) => {
               return (
                 <span style={{ color: "green", fontWeight: "bold" }}>
-                  {100 * e.data.LOSS_SX?.toLocaleString("en-US", {
-                      maximumFractionDigits: 0,
-                      minimumFractionDigits: 0,
-                    })} %
+                  {e.data.LOSS_SX?.toLocaleString("en-US", {
+                      style:'percent',
+                      maximumFractionDigits: 1,
+                      minimumFractionDigits: 1,
+                    })}
                 </span>
               );
             }}
@@ -1924,11 +1925,13 @@ const DATASX2 = () => {
             format={"percent"}
             cellRender={(e: any) => {
               return (
-                <span style={{ color: "green", fontWeight: "bold" }}>
-                  {100 * e.data.LOSS_SX_KT?.toLocaleString("en-US", {
-                      maximumFractionDigits: 0,
-                      minimumFractionDigits: 0,
-                    })} %
+                
+                <span style={{ color: "green", fontWeight: "bold" }}>                 
+                    {e.data.LOSS_SX_KT?.toLocaleString("en-US", {
+                      style:'percent',
+                      maximumFractionDigits: 1,
+                      minimumFractionDigits: 1,
+                    })}
                 </span>
               );
             }}
@@ -1958,11 +1961,12 @@ const DATASX2 = () => {
             format={"percent"}
             cellRender={(e: any) => {
               return (
-                <span style={{ color: "green", fontWeight: "bold" }}>
-                  {100 * e.data.LOSS_KT?.toLocaleString("en-US",{
-                      maximumFractionDigits: 0,
-                      minimumFractionDigits: 0,
-                    })} %
+                <span style={{ color: "green", fontWeight: "bold" }}>                  
+                     {e.data.LOSS_KT?.toLocaleString("en-US", {
+                      style:'percent',
+                      maximumFractionDigits: 1,
+                      minimumFractionDigits: 1,
+                    })}
                 </span>
               );
             }}
@@ -3030,52 +3034,14 @@ const DATASX2 = () => {
               return {
                 ...element,
                 PLAN_DATE: moment.utc(element.PLAN_DATE).format("YYYY-MM-DD"),
-                SETTING_START_TIME:
-                  element.SETTING_START_TIME === null
-                    ? ""
-                    : moment
-                        .utc(element.SETTING_START_TIME)
-                        .format("YYYY-MM-DD HH:mm:ss"),
-                MASS_START_TIME:
-                  element.MASS_START_TIME === null
-                    ? ""
-                    : moment
-                        .utc(element.MASS_START_TIME)
-                        .format("YYYY-MM-DD HH:mm:ss"),
-                MASS_END_TIME:
-                  element.MASS_END_TIME === null
-                    ? ""
-                    : moment
-                        .utc(element.MASS_END_TIME)
-                        .format("YYYY-MM-DD HH:mm:ss"),
-                SX_DATE:
-                  element.SX_DATE === null
-                    ? ""
-                    : moment.utc(element.SX_DATE).format("YYYY-MM-DD"),
-                LOSS_SX_ST:
-                  element.KETQUASX !== null && element.ESTIMATED_QTY_ST !== null
-                    ? element.ESTIMATED_QTY_ST !== 0
-                      ? 1 - element.KETQUASX / element.ESTIMATED_QTY_ST
-                      : -9999999999999999
-                    : 0,
-                LOSS_SX:
-                  element.KETQUASX !== null && element.ESTIMATED_QTY !== null
-                    ? element.ESTIMATED_QTY !== 0
-                      ? 1 - element.KETQUASX / element.ESTIMATED_QTY
-                      : -9999999999999999
-                    : 0,
-                LOSS_SX_KT:
-                  element.KETQUASX !== null && element.INS_INPUT !== null
-                    ? element.KETQUASX !== 0
-                      ? 1 - element.INS_INPUT / element.KETQUASX
-                      : -9999999999999999
-                    : 0,
-                LOSS_KT:
-                  element.INS_INPUT !== null && element.INS_OUTPUT !== null
-                    ? element.INS_INPUT !== 0
-                      ? 1 - element.INS_OUTPUT / element.INS_INPUT
-                      : -9999999999999999
-                    : 0,
+                SETTING_START_TIME: element.SETTING_START_TIME === null? "": moment.utc(element.SETTING_START_TIME).format("YYYY-MM-DD HH:mm:ss"),
+                MASS_START_TIME: element.MASS_START_TIME === null? "": moment.utc(element.MASS_START_TIME).format("YYYY-MM-DD HH:mm:ss"),
+                MASS_END_TIME: element.MASS_END_TIME === null? "": moment.utc(element.MASS_END_TIME).format("YYYY-MM-DD HH:mm:ss"),
+                SX_DATE: element.SX_DATE === null? "": moment.utc(element.SX_DATE).format("YYYY-MM-DD"),
+                LOSS_SX_ST: (element.ESTIMATED_QTY_ST??0) !== 0 ? 1 - (element.KETQUASX ?? 0)*1.0 / (element.ESTIMATED_QTY_ST ??0): 0,
+                LOSS_SX: (element.ESTIMATED_QTY??0) !== 0 ? 1 - (element.KETQUASX ?? 0)*1.0 / (element.ESTIMATED_QTY ??0): 0,                 
+                LOSS_SX_KT: (element.KETQUASX??0) !== 0 ? 1 - (element.INS_INPUT ?? 0)*1.0 / (element.KETQUASX ??0): 0,
+                LOSS_KT:(element.INS_INPUT??0) !== 0 ? 1 - (element.INS_OUTPUT ?? 0)*1.0 / (element.INS_INPUT ??0): 0,
                 id: index,
               };
             },
@@ -3159,8 +3125,8 @@ const DATASX2 = () => {
     });
     generalQuery("loadDataSX_YCSX", {
       ALLTIME: alltime,
-      FROM_DATE: fromdate,
-      TO_DATE: todate,
+      FROM_DATE: moment(fromdate).format('YYYYMMDD'),
+      TO_DATE: moment(todate).format('YYYYMMDD'),
       PROD_REQUEST_NO: prodrequestno,
       PLAN_ID: plan_id,
       M_NAME: m_name,

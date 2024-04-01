@@ -699,7 +699,63 @@ const BaoCaoNhanSu = () => {
               };
             },
           );
-          setDiemDanhFullSummary(loaded_data);
+          let totalRow: DIEMDANHFULLSUMMARY = {
+            id: 0,
+            MAINDEPTNAME: "TOTAL",
+            COUNT_TOTAL: 0,
+            COUNT_ON: 0,
+            COUNT_OFF: 0,
+            COUNT_CDD: 0,
+            T1_TOTAL: 0,
+            T1_ON: 0,
+            T1_OFF: 0,
+            T1_CDD: 0,
+            T2_TOTAL: 0,
+            T2_ON: 0,
+            T2_OFF: 0,
+            T2_CDD: 0,
+            HC_TOTAL: 0,
+            HC_ON: 0,
+            HC_OFF: 0,
+            HC_CDD: 0,
+            ON_RATE: 0,
+            TOTAL: 0,
+            PHEP_NAM: 0,
+            NUA_PHEP: 0,
+            NGHI_VIEC_RIENG: 0,
+            NGHI_OM: 0,
+            CHE_DO: 0,
+            KHONG_LY_DO: 0
+          }
+          for(let i =0 ; i< loaded_data.length ;i++) {
+            totalRow.T1_CDD += loaded_data[i].T1_CDD;
+            totalRow.T1_OFF += loaded_data[i].T1_OFF;
+            totalRow.T1_ON += loaded_data[i].T1_ON;
+            totalRow.T1_TOTAL += loaded_data[i].T1_TOTAL;
+            totalRow.T2_CDD += loaded_data[i].T2_CDD;
+            totalRow.T2_OFF += loaded_data[i].T2_OFF;
+            totalRow.T2_ON += loaded_data[i].T2_ON;
+            totalRow.T2_TOTAL += loaded_data[i].T2_TOTAL;
+            totalRow.HC_CDD += loaded_data[i].HC_CDD;
+            totalRow.HC_OFF += loaded_data[i].HC_OFF;
+            totalRow.HC_ON += loaded_data[i].HC_ON;
+            totalRow.HC_TOTAL += loaded_data[i].HC_TOTAL;
+            totalRow.COUNT_CDD += loaded_data[i].COUNT_CDD;
+            totalRow.COUNT_OFF += loaded_data[i].COUNT_OFF;
+            totalRow.COUNT_ON += loaded_data[i].COUNT_ON;
+            totalRow.COUNT_TOTAL += loaded_data[i].COUNT_TOTAL;
+
+            totalRow.TOTAL += loaded_data[i].TOTAL;
+            totalRow.PHEP_NAM += loaded_data[i].PHEP_NAM;
+            totalRow.NUA_PHEP += loaded_data[i].NUA_PHEP;
+            totalRow.NGHI_VIEC_RIENG += loaded_data[i].NGHI_VIEC_RIENG;
+            totalRow.NGHI_OM += loaded_data[i].NGHI_OM;
+            totalRow.CHE_DO += loaded_data[i].CHE_DO;
+            totalRow.KHONG_LY_DO += loaded_data[i].KHONG_LY_DO;            
+            
+          }
+          totalRow.ON_RATE = totalRow.COUNT_ON/totalRow.COUNT_TOTAL*100;   
+          setDiemDanhFullSummary([...loaded_data, totalRow]);
         } else {
           Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
         }

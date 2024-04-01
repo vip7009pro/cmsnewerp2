@@ -439,13 +439,13 @@ const DATASX = () => {
       headerName: "LOSS_SX",
       minWidth: 120,
       flex: 1,
-      valueGetter: (params: any) => {
+      valueGetter: (params: any) => {        
         if (params.row.KETQUASX !== null && params.row.ESTIMATED_QTY !== null) {
           return (
             1 -
             params.row.KETQUASX / params.row.ESTIMATED_QTY
           ).toLocaleString("en-US", { style: "percent" });
-        } else {
+        } else {          
           return "0%";
         }
       },
