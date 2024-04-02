@@ -2751,6 +2751,7 @@ export interface BANGGIA_DATA2 {
   EQ2: string;
   EQ3: string;
   EQ4: string;
+  DUPLICATE: number;
 }
 //tinh hinh chot bao cao
 export interface TINH_HINH_CHOT_BC {

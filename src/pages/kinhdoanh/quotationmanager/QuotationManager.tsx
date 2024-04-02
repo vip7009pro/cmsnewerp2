@@ -1985,6 +1985,40 @@ const QuotationManager = () => {
                 }
               }}
             ></Column>
+            <Column
+              dataField="DUPLICATE"
+              caption="DUPLICATE"
+              width={100}
+              cellRender={(e: any) => {
+                if (e.data.DUPLICATE ===1) {
+                  return (
+                    <div
+                      style={{
+                        color: "white",
+                        backgroundColor: "#13DC0C",
+                        width: "80px",
+                        textAlign: "center",
+                      }}
+                    >
+                      OK
+                    </div>
+                  );
+                } else {
+                  return (
+                    <div
+                      style={{
+                        color: "white",
+                        backgroundColor: "red",
+                        width: "80px",
+                        textAlign: "center",
+                      }}
+                    >
+                      NG
+                    </div>
+                  );
+                }
+              }}
+            ></Column>
             <Column dataField="INS_DATE" caption="INS_DATE" width={120}></Column>
             <Column dataField="INS_EMPL" caption="INS_EMPL" width={80}></Column>
             <Column dataField="UPD_DATE" caption="UPD_DATE" width={120}></Column>
@@ -2849,6 +2883,7 @@ const QuotationManager = () => {
                     EQ2: "",
                     EQ3: "",
                     EQ4: "",
+                    DUPLICATE: 1,
                   };
                   setUploadExcelJSon([...uploadExcelJson, temp_row]);
                 }}

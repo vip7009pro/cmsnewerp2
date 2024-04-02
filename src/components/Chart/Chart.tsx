@@ -21,19 +21,16 @@ import {
   nFormatter,
 } from "../../api/GlobalFunction";
 import { WEB_SETTING_DATA, WeeklyClosingData } from "../../api/GlobalInterface";
-
-const ChartWeekLy = ({data}: {data: WeeklyClosingData[]}) => {
+const ChartWeekLy = ({ data }: { data: WeeklyClosingData[] }) => {
   const [weeklyClosingData, setWeeklyClosingData] = useState<
     Array<WeeklyClosingData>
   >([]);
-    const formatCash = (n: number) => {  
-     return nFormatter(n, 2) + ((getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD") === 'USD'?  " $": " đ");
-   };
-
+  const formatCash = (n: number) => {
+    return nFormatter(n, 2) + ((getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD") === 'USD' ? " $" : " đ");
+  };
   const labelFormatter = (value: number) => {
     return formatCash(value);
   };
-
   const CustomTooltip = ({
     active,
     payload,
@@ -61,7 +58,7 @@ const ChartWeekLy = ({data}: {data: WeeklyClosingData[]}) => {
             AMOUNT:{" "}
             {`${payload[1].value.toLocaleString("en-US", {
               style: "currency",
-              currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
+              currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
             })}`}
           </p>
         </div>
@@ -69,7 +66,6 @@ const ChartWeekLy = ({data}: {data: WeeklyClosingData[]}) => {
     }
     return null;
   };
-
   const handleGetDailyClosing = () => {
     generalQuery("kd_weeklyclosing", { YEAR: moment().format("YYYY") })
       .then((response) => {
@@ -81,43 +77,42 @@ const ChartWeekLy = ({data}: {data: WeeklyClosingData[]}) => {
               };
             }
           );
-          setWeeklyClosingData(loadeddata.reverse());        
+          setWeeklyClosingData(loadeddata.reverse());
         } else {
-         // Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
-          generalQuery("kd_weeklyclosing", { YEAR: parseInt(moment().format("YYYY"))-1 })
-          .then((response) => {
-            if (response.data.tk_status !== "NG") {
-              const loadeddata: WeeklyClosingData[] = response.data.data.map(
-                (element: WeeklyClosingData, index: number) => {
-                  return {
-                    ...element,
-                  };
-                }
-              );
-              setWeeklyClosingData(loadeddata.reverse());        
-            } else {
-              //Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
-            }
-          })
-          .catch((error) => {
-            console.log(error);
-          });
+          // Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
+          generalQuery("kd_weeklyclosing", { YEAR: parseInt(moment().format("YYYY")) - 1 })
+            .then((response) => {
+              if (response.data.tk_status !== "NG") {
+                const loadeddata: WeeklyClosingData[] = response.data.data.map(
+                  (element: WeeklyClosingData, index: number) => {
+                    return {
+                      ...element,
+                    };
+                  }
+                );
+                setWeeklyClosingData(loadeddata.reverse());
+              } else {
+                //Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
+              }
+            })
+            .catch((error) => {
+              console.log(error);
+            });
         }
       })
       .catch((error) => {
         console.log(error);
       });
   };
-
-  const CustomLabel = (props:any) => {
+  const CustomLabel = (props: any) => {
     //console.log(props);
     return (
       <g>
         <rect
           x={props.viewBox.x}
           y={props.viewBox.y}
-          fill="#aaa" 
-          style={{transform:`rotate(90deg)`}}
+          fill="#aaa"
+          style={{ transform: `rotate(90deg)` }}
         />
         <text x={props.viewBox.x} y={props.viewBox.y} fill="#111" dy={-10} dx={0} fontSize={'0.7rem'} fontWeight={'bold'}>
           {formatCash(props.value)}
@@ -125,7 +120,6 @@ const ChartWeekLy = ({data}: {data: WeeklyClosingData[]}) => {
       </g>
     );
   };
-
   useEffect(() => {
     //handleGetDailyClosing();
   }, []);
@@ -143,8 +137,8 @@ const ChartWeekLy = ({data}: {data: WeeklyClosingData[]}) => {
         }}
       >
         <CartesianGrid strokeDasharray='3 3' className='chartGrid' />
-        <XAxis dataKey='DEL_YW'>
-          <Label value='Tuần' offset={0} position='insideBottom' style={{fontWeight:'normal', fontSize:'0.7rem',}} />
+        <XAxis dataKey='DEL_YW' height={40} tick={{ fontSize: '0.7rem' }}>
+          <Label value='Tuần' offset={0} position='insideBottom' style={{ fontWeight: 'normal', fontSize: '0.7rem', }} />
         </XAxis>
         <YAxis
           yAxisId='left-axis'
@@ -154,7 +148,7 @@ const ChartWeekLy = ({data}: {data: WeeklyClosingData[]}) => {
             position: "insideLeft",
             fontSize: '0.7rem'
           }}
-          tick={{fontSize:'0.7rem'}}
+          tick={{ fontSize: '0.7rem' }}
           tickFormatter={(value) =>
             new Intl.NumberFormat("en", {
               notation: "compact",
@@ -172,19 +166,19 @@ const ChartWeekLy = ({data}: {data: WeeklyClosingData[]}) => {
             position: "insideRight",
             fontSize: '0.7rem'
           }}
-          tick={{fontSize:'0.7rem'}}
-          tickFormatter={(value) => nFormatter(value, 2) + (getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE==='USD'? ' $' : ' đ') ?? "$"}
+          tick={{ fontSize: '0.7rem' }}
+          tickFormatter={(value) => nFormatter(value, 2) + (getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE === 'USD' ? ' $' : ' đ') ?? "$"}
           tickCount={8}
         />
         <Tooltip content={<CustomTooltip />} />
-        <Legend 
-        verticalAlign="top"
-        align="center"
-        iconSize={15}
-        iconType="diamond"
-        formatter={(value, entry) => (
-          <span style={{fontSize:'0.7rem', fontWeight:'bold'}}>{value}</span>
-        )}
+        <Legend
+          verticalAlign="top"
+          align="center"
+          iconSize={15}
+          iconType="diamond"
+          formatter={(value, entry) => (
+            <span style={{ fontSize: '0.7rem', fontWeight: 'bold' }}>{value}</span>
+          )}
         />
         <Line
           yAxisId='left-axis'
@@ -197,7 +191,7 @@ const ChartWeekLy = ({data}: {data: WeeklyClosingData[]}) => {
           type='monotone'
           dataKey='DELIVERED_AMOUNT'
           stroke='#804d00'
-          fill='#ff9900'          
+          fill='#ff9900'
           label={CustomLabel}
         ></Bar>
       </ComposedChart>

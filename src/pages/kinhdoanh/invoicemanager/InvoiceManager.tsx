@@ -373,6 +373,7 @@ const InvoiceManager = () => {
     let tempjson = uploadExcelJson;
     for (let i = 0; i < uploadExcelJson.length; i++) {
       let err_code: number = 0;
+      let po_date: string = '';
       await generalQuery("checkPOExist", {
         G_CODE: uploadExcelJson[i].G_CODE,
         CUST_CD: uploadExcelJson[i].CUST_CD,
@@ -380,6 +381,7 @@ const InvoiceManager = () => {
       })
         .then((response) => {
           if (response.data.tk_status !== "NG") {
+            po_date = response.data.data.PO_DATE;
             if (
               uploadExcelJson[i].DELIVERY_QTY > response.data.data[0].PO_BALANCE
             ) {
@@ -396,10 +398,11 @@ const InvoiceManager = () => {
       let now = moment();
       let deliverydate = moment(uploadExcelJson[i].DELIVERY_DATE);
       if (now < deliverydate) {
-        err_code = 2;
-        //tempjson[i].CHECKSTATUS = "NG: Ngày PO không được trước ngày hôm nay";
-      } else {
-        //tempjson[i].CHECKSTATUS = "OK";
+        err_code = 2;        
+      } 
+      let podate = moment(po_date);
+      if (podate > deliverydate) {
+        err_code = 6;
       }
       await generalQuery("checkGCodeVer", {
         G_CODE: uploadExcelJson[i].G_CODE,
@@ -451,6 +454,8 @@ const InvoiceManager = () => {
         tempjson[i].CHECKSTATUS = "NG: Không có Code ERP này";
       } else if (err_code === 5) {
         tempjson[i].CHECKSTATUS = "NG: Giao hàng nhiều hơn PO";
+      } else if (err_code === 6) {
+        tempjson[i].CHECKSTATUS = "NG: Ngày Invoice không được trước ngày PO";
       }
     }   
     setUploadExcelJSon(tempjson);
@@ -498,6 +503,7 @@ const InvoiceManager = () => {
     let tempjson = uploadExcelJson;
     for (let i = 0; i < uploadExcelJson.length; i++) {
       let err_code: number = 0;
+      let po_date: string = '';
       await generalQuery("checkPOExist", {
         G_CODE: uploadExcelJson[i].G_CODE,
         CUST_CD: uploadExcelJson[i].CUST_CD,
@@ -506,6 +512,7 @@ const InvoiceManager = () => {
         .then((response) => {
           console.log(response.data.tk_status);
           if (response.data.tk_status !== "NG") {
+            po_date = response.data.data.PO_DATE;
             if (
               uploadExcelJson[i].DELIVERY_QTY > response.data.data[0].PO_BALANCE
             ) {
@@ -522,10 +529,11 @@ const InvoiceManager = () => {
       let now = moment();
       let deliverydate = moment(uploadExcelJson[i].DELIVERY_DATE);
       if (now < deliverydate) {
-        err_code = 2;
-        //tempjson[i].CHECKSTATUS = "NG: Ngày PO không được trước ngày hôm nay";
-      } else {
-        //tempjson[i].CHECKSTATUS = "OK";
+        err_code = 2;        
+      } 
+      let podate = moment(po_date);
+      if (podate > deliverydate) {
+        err_code = 6;
       }
       await generalQuery("checkGCodeVer", {
         G_CODE: uploadExcelJson[i].G_CODE,
@@ -598,6 +606,8 @@ const InvoiceManager = () => {
         tempjson[i].CHECKSTATUS = "NG: Không có Code ERP này";
       } else if (err_code === 5) {
         tempjson[i].CHECKSTATUS = "NG: Giao hàng nhiều hơn PO";
+      } else if (err_code === 6) {
+        tempjson[i].CHECKSTATUS = "NG: Ngày Invoice không được trước ngày PO";
       }
     }
     Swal.fire("Thông báo", "Đã hoàn thành thêm Invoice hàng loạt", "success");
@@ -778,33 +788,38 @@ const InvoiceManager = () => {
   };
   const handle_add_1Invoice = async () => {
     let err_code: number = 0;
+    let po_date: string = '';
     await generalQuery("checkPOExist", {
       G_CODE: selectedCode?.G_CODE,
       CUST_CD: selectedCust_CD?.CUST_CD,
       PO_NO: newpono,
     })
-      .then((response) => {
-        console.log(response.data.tk_status);
-        if (response.data.tk_status !== "NG") {
-          if (newinvoiceQTY > response.data.data.PO_BALANCE) {
-            err_code = 5; //giao hang nhieu hon PO balance
-          }
-          //tempjson[i].CHECKSTATUS = "NG: Đã tồn tại PO";
-        } else {
-          err_code = 1;
+    .then((response) => {
+      console.log(response.data.tk_status);
+      if (response.data.tk_status !== "NG") {
+        po_date = response.data.data.PO_DATE;
+        if (newinvoiceQTY > response.data.data.PO_BALANCE) {
+          err_code = 5; //giao hang nhieu hon PO balance
         }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+        //tempjson[i].CHECKSTATUS = "NG: Đã tồn tại PO";
+      } else {
+        err_code = 1;
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+    
     let now = moment();
     let invoicedate = moment(newinvoicedate);
     if (now < invoicedate) {
-      err_code = 2;
-      //tempjson[i].CHECKSTATUS = "NG: Ngày PO không được trước ngày hôm nay";
-    } else {
-      //tempjson[i].CHECKSTATUS = "OK";
+      err_code = 2;      
+    } 
+    let podate = moment(po_date);
+    if (podate > invoicedate) {
+      err_code = 6;
     }
+
     if (selectedCode?.USE_YN === "N") {
       err_code = 3;
     }
@@ -833,6 +848,7 @@ const InvoiceManager = () => {
       .catch((error) => {
         console.log(error);
       });
+
     if (err_code === 0) {
       await generalQuery("insert_invoice", {
         G_CODE: selectedCode?.G_CODE,
@@ -877,6 +893,8 @@ const InvoiceManager = () => {
         "NG: Số lượng giao hàng nhiều hơn PO BALANCE",
         "error",
       );
+    } else if (err_code === 6) {
+      Swal.fire("Thông báo","NG: Ngày Invoice không được trước ngày PO","error");
     }
   };
   const clearInvoiceform = () => {

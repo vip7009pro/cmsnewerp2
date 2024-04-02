@@ -937,11 +937,12 @@ const PoManager = () => {
       });
     let now = moment();
     let invoicedate = moment(newinvoicedate);
+    let podate = moment(newpodate);
     if (now < invoicedate) {
-      err_code = 2;
-      //tempjson[i].CHECKSTATUS = "NG: Ngày PO không được trước ngày hôm nay";
-    } else {
-      //tempjson[i].CHECKSTATUS = "OK";
+      err_code = 2;      
+    }
+    if (podate > invoicedate) {
+      err_code = 6;      
     }
     if (selectedCode?.USE_YN === "N") {
       err_code = 3;
@@ -995,17 +996,16 @@ const PoManager = () => {
     } else if (err_code === 1) {
       Swal.fire("Thông báo", "NG: Không tồn tại PO", "error");
     } else if (err_code === 2) {
-      Swal.fire(
-        "Thông báo",
-        "NG: Ngày Invoice không được trước ngày hôm nay",
-        "error"
-      );
+      Swal.fire("Thông báo","NG: Ngày Invoice không được trước ngày hôm nay","error");
     } else if (err_code === 3) {
       Swal.fire("Thông báo", "NG: Ver này đã bị khóa", "error");
     } else if (err_code === 4) {
       Swal.fire("Thông báo", "NG: Không để trống thông tin bắt buộc", "error");
     } else if (err_code === 5) {
       Swal.fire("Thông báo", "NG: Invoice QTY nhiều hơn PO BALANCE", "error");
+    }
+    else if (err_code === 6) {
+      Swal.fire("Thông báo","NG: Ngày Invoice không được trước ngày PO","error");
     }
   };
   const clearPOform = () => {
