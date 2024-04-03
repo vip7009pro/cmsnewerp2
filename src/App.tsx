@@ -601,16 +601,14 @@ function App() {
         getSocket().emit("respond_check_online", getUserData());
       });
     }
-    if (!getSocket().hasListeners('changeServer')) {      
-      getSocket().on("changeServer", (data: any) => {        
+    if (!getSocket().hasListeners('changeServer')) {
+      getSocket().on("changeServer", (data: any) => {
         console.log("Change server commnand received !");
         console.log(data.server);
-        if(getCompany()==='CMS' && (data.empl_no.toUpperCase() ===getUserData()?.EMPL_NO?.toUpperCase() || data.empl_no.toUpperCase() ==='ALL'))
-        {
+        if (getCompany() === 'CMS' && (data.empl_no.toUpperCase() === getUserData()?.EMPL_NO?.toUpperCase() || data.empl_no.toUpperCase() === 'ALL')) {
           dispatch(changeServer(data.server));
           localStorage.setItem("server_ip", data.server);
-        }         
-       
+        }
       });
     }
     return () => {

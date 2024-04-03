@@ -35,7 +35,6 @@ socket.on("connect", () => {
   Swal.fire('Thông báo','Có yêu cầu check online từ server','info');
   socket.emit("respond_check_online", 'hohoo');       
 }); */
-
 socket.on("notification", (data) => {
   if (data.command === "logout") {
     console.log(getUserData());
