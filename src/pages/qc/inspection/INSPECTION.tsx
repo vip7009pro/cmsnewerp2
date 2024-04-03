@@ -364,34 +364,42 @@ const INSPECTION = () => {
     { field: "G_CODE", headerName: "G_CODE", width: 80 },
     { field: "G_NAME", headerName: "G_NAME", width: 130 },
     { field: "G_NAME_KD", headerName: "G_NAME_KD", width: 150 },
-    { field: "INSPECT_BALANCE_QTY", headerName: "TON_KIEM", width: 100, renderCell: (params: any) => {
-      return (
-        <span style={{ color: "black" }}>
-          <b>{params.row.INSPECT_BALANCE_QTY.toLocaleString("en-US")}</b>
-        </span>
-      );
-    }, },
-    { field: "WAIT_CS_QTY", headerName: "CHO_CS", width: 100,  renderCell: (params: any) => {
-      return (
-        <span style={{ color: "black" }}>
-          <b>{params.row.WAIT_CS_QTY.toLocaleString("en-US")}</b>
-        </span>
-      );
-    },},
-    { field: "WAIT_SORTING_RMA", headerName: "RMA_CHO_SORTING", width: 100, renderCell: (params: any) => {
-      return (
-        <span style={{ color: "black" }}>
-          <b>{params.row.WAIT_SORTING_RMA.toLocaleString("en-US")}</b>
-        </span>
-      );
-    }, },
-    { field: "TOTAL_WAIT", headerName: "TOTAL_WAIT", width: 100, renderCell: (params: any) => {
-      return (
-        <span style={{ color: "blue" }}>
-          <b>{params.row.TOTAL_WAIT.toLocaleString("en-US")}</b>
-        </span>
-      );
-    }, },
+    {
+      field: "INSPECT_BALANCE_QTY", headerName: "TON_KIEM", width: 100, renderCell: (params: any) => {
+        return (
+          <span style={{ color: "black" }}>
+            <b>{params.row.INSPECT_BALANCE_QTY.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "WAIT_CS_QTY", headerName: "CHO_CS", width: 100, renderCell: (params: any) => {
+        return (
+          <span style={{ color: "black" }}>
+            <b>{params.row.WAIT_CS_QTY.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "WAIT_SORTING_RMA", headerName: "RMA_CHO_SORTING", width: 100, renderCell: (params: any) => {
+        return (
+          <span style={{ color: "black" }}>
+            <b>{params.row.WAIT_SORTING_RMA.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "TOTAL_WAIT", headerName: "TOTAL_WAIT", width: 100, renderCell: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            <b>{params.row.TOTAL_WAIT.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
   ];
   const column_inspect_patrol = [
     { field: 'INS_PATROL_ID', headerName: 'INS_PATROL_ID', width: 80 },
@@ -688,7 +696,7 @@ const INSPECTION = () => {
   const handleLoadChoKiem = () => {
     setSummaryInspect("");
     setisLoading(true);
-    generalQuery("loadChoKiemGop", {      
+    generalQuery("loadChoKiemGop", {
       ALLTIME: alltime,
       FROM_DATE: fromdate,
       TO_DATE: todate,
@@ -735,10 +743,10 @@ const INSPECTION = () => {
         console.log(error);
       });
   };
-  const handleGetInspectionPatrol =()=> {
+  const handleGetInspectionPatrol = () => {
     setSummaryInspect("");
     setisLoading(true);
-    generalQuery("loadInspectionPatrol", {      
+    generalQuery("loadInspectionPatrol", {
       ALLTIME: alltime,
       FROM_DATE: fromdate,
       TO_DATE: todate,
@@ -785,7 +793,6 @@ const INSPECTION = () => {
         console.log(error);
       });
   }
-  
   const fieldsinspectbalance: any = [
     {
       caption: "ID",
@@ -906,7 +913,7 @@ const INSPECTION = () => {
         height: 500,
         width: 300,
       },
-    },    
+    },
   ];
   const fieldsinputkiem: any = [
     {
@@ -2641,8 +2648,7 @@ const INSPECTION = () => {
       },
     },
   ];
-  const fieldsinspectionpatrol: any =  [
-
+  const fieldsinspectionpatrol: any = [
   ]
   const [selectedDataSource, setSelectedDataSource] =
     useState<PivotGridDataSource>(

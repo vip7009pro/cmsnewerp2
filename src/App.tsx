@@ -594,7 +594,7 @@ function App() {
       });
     }
     if (!getSocket().hasListeners('request_check_online2')) {
-      console.log('kich hoat nhan thogn tin check online');
+      //console.log('kich hoat nhan thogn tin check online');
       getSocket().on("request_check_online2", (data: any) => {
         //console.log('co request check online', data);
         //Swal.fire('Thông báo','Có yêu cầu check online từ server','info');

@@ -550,6 +550,7 @@ export interface MATERIAL_TABLE_DATA {
   INS_EMPL: string;
   UPD_DATE: string;
   UPD_EMPL: string;
+  EXP_DATE: string;
 }
 //bang chang cong
 export interface BANGCHAMCONG_DATA {

@@ -76,7 +76,7 @@ const InvoiceManager = () => {
   const userData: UserData | undefined = useSelector(
     (state: RootState) => state.totalSlice.userData,
   );
-  const [old_invoice_qty, setOld_Invoice_Qty]= useState(0);
+  const [old_invoice_qty, setOld_Invoice_Qty] = useState(0);
   const [columns, setColumns] = useState<Array<any>>([]);
   const [columnsExcel, setColumnsExcel] = useState<Array<any>>([]);
   const [uploadExcelJson, setUploadExcelJSon] = useState<Array<any>>([]);
@@ -121,7 +121,6 @@ const InvoiceManager = () => {
   const [invoicedatatable, setInvoiceDataTable] = useState<
     Array<InvoiceTableData>
   >([]);
- 
   const invoicedatatablefilter = useRef<InvoiceTableData[]>([]);
   const invoice_no_ref = useRef<string>("");
   const clickedRow = useRef<any>(null);
@@ -170,7 +169,6 @@ const InvoiceManager = () => {
       reader.readAsArrayBuffer(e.target.files[0]);
     }
   };
-
   const dataGridRef = useRef<any>(null);
   const clearSelection = () => {
     if (dataGridRef.current) {
@@ -180,7 +178,6 @@ const InvoiceManager = () => {
       //console.log(dataGridRef.current);
     }
   };
-
   const handletraInvoice = () => {
     Swal.fire({
       title: "Tra cứu Invoices",
@@ -233,7 +230,6 @@ const InvoiceManager = () => {
             invoice_summary_temp.total_delivered_amount +=
               loadeddata[i].DELIVERED_AMOUNT;
           }
-
           let keysArray = Object.getOwnPropertyNames(loadeddata[0]);
           let column_map = keysArray.map((e, index) => {
             return {
@@ -252,7 +248,7 @@ const InvoiceManager = () => {
                     </span>
                   );
                 }
-                else if(e === "BEP") {                
+                else if (e === "BEP") {
                   return (
                     <span style={{ color: "#0684cd", fontWeight: "normal" }}>
                       {ele.data[e]?.toFixed(6).toLocaleString("en-US", {
@@ -261,7 +257,7 @@ const InvoiceManager = () => {
                       })}
                     </span>
                   );
-                }  
+                }
                 else if (
                   ["PO_QTY", "DELIVERY_QTY", "PO_BALANCE"].indexOf(e) > -1 ||
                   e.indexOf("RESULT") > -1
@@ -281,11 +277,11 @@ const InvoiceManager = () => {
                     <span style={{ color: "green", fontWeight: "bold" }}>
                       {ele.data[e]?.toLocaleString("en-US", {
                         style: "currency",
-                        currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
+                        currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
                       })}
                     </span>
                   );
-                } 
+                }
                 else if (
                   ["DELIVERED_BEP_AMOUNT"].indexOf(
                     e
@@ -296,11 +292,11 @@ const InvoiceManager = () => {
                     <span style={{ color: "#094BB8", fontWeight: "bold" }}>
                       {ele.data[e]?.toLocaleString("en-US", {
                         style: "currency",
-                        currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
+                        currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
                       })}
                     </span>
                   );
-                } 
+                }
                 else {
                   return <span>{ele.data[e]}</span>;
                 }
@@ -369,7 +365,7 @@ const InvoiceManager = () => {
         },
       };
     });
-    setColumnsExcel(column_map);   
+    setColumnsExcel(column_map);
     let tempjson = uploadExcelJson;
     for (let i = 0; i < uploadExcelJson.length; i++) {
       let err_code: number = 0;
@@ -381,7 +377,8 @@ const InvoiceManager = () => {
       })
         .then((response) => {
           if (response.data.tk_status !== "NG") {
-            po_date = response.data.data.PO_DATE;
+            po_date = response.data.data[0].PO_DATE;
+            console.log(po_date);
             if (
               uploadExcelJson[i].DELIVERY_QTY > response.data.data[0].PO_BALANCE
             ) {
@@ -398,8 +395,8 @@ const InvoiceManager = () => {
       let now = moment();
       let deliverydate = moment(uploadExcelJson[i].DELIVERY_DATE);
       if (now < deliverydate) {
-        err_code = 2;        
-      } 
+        err_code = 2;
+      }
       let podate = moment(po_date);
       if (podate > deliverydate) {
         err_code = 6;
@@ -457,12 +454,10 @@ const InvoiceManager = () => {
       } else if (err_code === 6) {
         tempjson[i].CHECKSTATUS = "NG: Ngày Invoice không được trước ngày PO";
       }
-    }   
+    }
     setUploadExcelJSon(tempjson);
     setTrigger(!trigger);
-    
     Swal.fire("Thông báo", "Đã hoàn thành check Invoice hàng loạt", "success");
-    
   };
   const handle_upInvoiceHangLoat = async () => {
     let keysArray = Object.getOwnPropertyNames(uploadExcelJson[0]);
@@ -512,7 +507,8 @@ const InvoiceManager = () => {
         .then((response) => {
           console.log(response.data.tk_status);
           if (response.data.tk_status !== "NG") {
-            po_date = response.data.data.PO_DATE;
+            po_date = response.data.data[0].PO_DATE;
+            console.log(po_date);
             if (
               uploadExcelJson[i].DELIVERY_QTY > response.data.data[0].PO_BALANCE
             ) {
@@ -529,8 +525,8 @@ const InvoiceManager = () => {
       let now = moment();
       let deliverydate = moment(uploadExcelJson[i].DELIVERY_DATE);
       if (now < deliverydate) {
-        err_code = 2;        
-      } 
+        err_code = 2;
+      }
       let podate = moment(po_date);
       if (podate > deliverydate) {
         err_code = 6;
@@ -614,14 +610,10 @@ const InvoiceManager = () => {
     setUploadExcelJSon(tempjson);
     setTrigger(!trigger);
   };
-
-  const handle_upInvoiceXKHL = async ()=> {
-    if(selectedxuatkhopo.length >0)
-    {
-      for(let i=0;i<selectedxuatkhopo.length; i++)
-      {
-        if(selectedxuatkhopo[i].CHECKSTATUS.substring(0,2)==='OK')
-        {
+  const handle_upInvoiceXKHL = async () => {
+    if (selectedxuatkhopo.length > 0) {
+      for (let i = 0; i < selectedxuatkhopo.length; i++) {
+        if (selectedxuatkhopo[i].CHECKSTATUS.substring(0, 2) === 'OK') {
           await generalQuery("insert_invoice", {
             DELIVERY_QTY: selectedxuatkhopo[i].THISDAY_OUT_QTY,
             DELIVERY_DATE: selectedxuatkhopo[i].OUT_DATE,
@@ -632,31 +624,26 @@ const InvoiceManager = () => {
             EMPL_NO: userData?.EMPL_NO,
             INVOICE_NO: "",
           })
-          .then((response) => {
-            console.log(response.data.tk_status);
-            if (response.data.tk_status !== "NG") {
-              
-            } else {
-              
-            }
-          })
-          .catch((error) => {
-            console.log(error);
-          });
+            .then((response) => {
+              console.log(response.data.tk_status);
+              if (response.data.tk_status !== "NG") {
+              } else {
+              }
+            })
+            .catch((error) => {
+              console.log(error);
+            });
         }
-        
-
       }
       loadXuatKho();
     }
-    else
-    {
-      Swal.fire('Cảnh báo','Chọn ít nhất 1 dòng để thực hiện','error');
+    else {
+      Swal.fire('Cảnh báo', 'Chọn ít nhất 1 dòng để thực hiện', 'error');
     }
   }
-  const loadXuatKho = ()=> {
+  const loadXuatKho = () => {
     generalQuery("loadxuatkhopo", {
-     OUT_DATE: moment.utc(newinvoicedate).format('YYYYMMDD')
+      OUT_DATE: moment.utc(newinvoicedate).format('YYYYMMDD')
     })
       .then((response) => {
         console.log(response.data.tk_status);
@@ -670,7 +657,7 @@ const InvoiceManager = () => {
               };
             }
           );
-          setXuatKhoPOTable(loadeddata);         
+          setXuatKhoPOTable(loadeddata);
         } else {
           setXuatKhoPOTable([]);
         }
@@ -794,32 +781,30 @@ const InvoiceManager = () => {
       CUST_CD: selectedCust_CD?.CUST_CD,
       PO_NO: newpono,
     })
-    .then((response) => {
-      console.log(response.data.tk_status);
-      if (response.data.tk_status !== "NG") {
-        po_date = response.data.data.PO_DATE;
-        if (newinvoiceQTY > response.data.data.PO_BALANCE) {
-          err_code = 5; //giao hang nhieu hon PO balance
+      .then((response) => {
+        console.log(response.data.tk_status);
+        if (response.data.tk_status !== "NG") {
+          po_date = response.data.data[0].PO_DATE;
+          if (newinvoiceQTY > response.data.data.PO_BALANCE) {
+            err_code = 5; //giao hang nhieu hon PO balance
+          }
+          //tempjson[i].CHECKSTATUS = "NG: Đã tồn tại PO";
+        } else {
+          err_code = 1;
         }
-        //tempjson[i].CHECKSTATUS = "NG: Đã tồn tại PO";
-      } else {
-        err_code = 1;
-      }
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-    
+      })
+      .catch((error) => {
+        console.log(error);
+      });
     let now = moment();
     let invoicedate = moment(newinvoicedate);
     if (now < invoicedate) {
-      err_code = 2;      
-    } 
+      err_code = 2;
+    }
     let podate = moment(po_date);
     if (podate > invoicedate) {
       err_code = 6;
     }
-
     if (selectedCode?.USE_YN === "N") {
       err_code = 3;
     }
@@ -848,7 +833,6 @@ const InvoiceManager = () => {
       .catch((error) => {
         console.log(error);
       });
-
     if (err_code === 0) {
       await generalQuery("insert_invoice", {
         G_CODE: selectedCode?.G_CODE,
@@ -894,7 +878,7 @@ const InvoiceManager = () => {
         "error",
       );
     } else if (err_code === 6) {
-      Swal.fire("Thông báo","NG: Ngày Invoice không được trước ngày PO","error");
+      Swal.fire("Thông báo", "NG: Ngày Invoice không được trước ngày PO", "error");
     }
   };
   const clearInvoiceform = () => {
@@ -905,7 +889,6 @@ const InvoiceManager = () => {
     setNewInvoiceDate(moment().format("YYYY-MM-DD"));
     setNewInvoiceRemark("");
   };
-
   const handle_fillsuaformInvoice = () => {
     if (invoicedatatablefilter.current.length === 1) {
       setSelection({
@@ -977,17 +960,17 @@ const InvoiceManager = () => {
       CUST_CD: selectedCust_CD?.CUST_CD,
       PO_NO: newpono,
     })
-    .then((response) => {
-      console.log(response.data.tk_status);
-      if (response.data.tk_status !== "NG") {
-        //tempjson[i].CHECKSTATUS = "NG: Đã tồn tại PO";
-      } else {
-        err_code = 1;
-      }
-    })
-    .catch((error) => {
-      console.log(error);
-    });
+      .then((response) => {
+        console.log(response.data.tk_status);
+        if (response.data.tk_status !== "NG") {
+          //tempjson[i].CHECKSTATUS = "NG: Đã tồn tại PO";
+        } else {
+          err_code = 1;
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
     let now = moment();
     let invoicedate = moment(newinvoicedate);
     if (now < invoicedate) {
@@ -1012,18 +995,17 @@ const InvoiceManager = () => {
       CUST_CD: selectedCust_CD?.CUST_CD,
       PO_NO: newpono,
     })
-    .then((response) => {
-      console.log(response.data.tk_status);
-      if (response.data.tk_status !== "NG") {
-        let tem_this_po_balance: number = response.data.data[0].PO_BALANCE;
-        if (tem_this_po_balance + old_invoice_qty < newinvoiceQTY) err_code = 5;
-      } else {
-      }
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-
+      .then((response) => {
+        console.log(response.data.tk_status);
+        if (response.data.tk_status !== "NG") {
+          let tem_this_po_balance: number = response.data.data[0].PO_BALANCE;
+          if (tem_this_po_balance + old_invoice_qty < newinvoiceQTY) err_code = 5;
+        } else {
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
     if (err_code === 0) {
       await generalQuery("update_invoice", {
         G_CODE: selectedCode?.G_CODE,
@@ -1124,30 +1106,30 @@ const InvoiceManager = () => {
     matchFrom: "any",
     limit: 100,
   });
-  const updateInvoiceNo = async (invoice_no: string) => {    
-    if (invoicedatatablefilter.current.length >= 1) {      
+  const updateInvoiceNo = async (invoice_no: string) => {
+    if (invoicedatatablefilter.current.length >= 1) {
       let err_code: boolean = false;
-      for (let i = 0; i < invoicedatatablefilter.current.length; i++) {         
-        console.log(userData?.EMPL_NO);       
-        console.log(invoicedatatablefilter.current[i].EMPL_NO);       
-        console.log('invoice_no',invoice_no);       
+      for (let i = 0; i < invoicedatatablefilter.current.length; i++) {
+        console.log(userData?.EMPL_NO);
+        console.log(invoicedatatablefilter.current[i].EMPL_NO);
+        console.log('invoice_no', invoice_no);
         if (invoicedatatablefilter.current[i].EMPL_NO === userData?.EMPL_NO) {
           await generalQuery("update_invoice_no", {
             DELIVERY_ID: invoicedatatablefilter.current[i].DELIVERY_ID,
             INVOICE_NO: invoice_no_ref.current
           })
-          .then((response) => {
-            console.log(response.data.tk_status);
-            if (response.data.tk_status !== "NG") {
-              //Swal.fire("Thông báo", "Delete Po thành công", "success");
-            } else {
-              //Swal.fire("Thông báo", "Update PO thất bại: " +response.data.message , "error");
-              err_code = true;
-            }
-          })
-          .catch((error) => {
-            console.log(error);
-          });
+            .then((response) => {
+              console.log(response.data.tk_status);
+              if (response.data.tk_status !== "NG") {
+                //Swal.fire("Thông báo", "Delete Po thành công", "success");
+              } else {
+                //Swal.fire("Thông báo", "Update PO thất bại: " +response.data.message , "error");
+                err_code = true;
+              }
+            })
+            .catch((error) => {
+              console.log(error);
+            });
         }
       }
       if (!err_code) {
@@ -1631,7 +1613,7 @@ const InvoiceManager = () => {
                 <IconButton
                   className="buttonIcon"
                   onClick={() => {
-                    updateInvoiceNo(invoice_no_ref.current);                    
+                    updateInvoiceNo(invoice_no_ref.current);
                   }}
                 >
                   <MdUpdate color="#dc3240" size={15} />
@@ -1683,13 +1665,12 @@ const InvoiceManager = () => {
                 summaryType='sum'
                 valueFormat={"currency"}
               />
-
             </Summary>
           </DataGrid>
         </CustomResponsiveContainer>
       </div>
     ),
-    [invoicedatatable,getGlobalSetting()]
+    [invoicedatatable, getGlobalSetting()]
   );
   const excelDataTable = React.useMemo(
     () => (
@@ -1802,7 +1783,7 @@ const InvoiceManager = () => {
             keyExpr='id'
             height={"75vh"}
             showBorders={true}
-            onSelectionChanged={(e) => { 
+            onSelectionChanged={(e) => {
               console.log(e.selectedRowsData)
               setSelectedXuatKhoPo(e.selectedRowsData);
             }}
@@ -1977,7 +1958,6 @@ const InvoiceManager = () => {
             </form>
             <div className="insertInvoiceTable">
               {excelDataTable}
-
               {/* <DataGrid
                   sx={{ fontSize: "0.7rem", flex: 1 }}
                   components={{
@@ -1993,7 +1973,6 @@ const InvoiceManager = () => {
                   ]}
                   editMode="row"
                 /> */}
-
             </div>
           </div>
         </div>
@@ -2207,7 +2186,7 @@ const InvoiceManager = () => {
                           "en-US",
                           {
                             style: "currency",
-                            currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
+                            currency: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD",
                           },
                         )}{" "}
                       </td>
@@ -2439,51 +2418,47 @@ const InvoiceManager = () => {
       {
         selection.checkkho && (
           <div className="newinvoice">
-          <div className="batchnewinvoice">
-            <h3>Check Giao Hàng Theo PO</h3>
-            <form className="formupload">
+            <div className="batchnewinvoice">
+              <h3>Check Giao Hàng Theo PO</h3>
+              <form className="formupload">
                 <label>
                   <b>DATE:</b>{" "}
                   <input
                     onKeyDown={(e) => {
-                      
                     }}
                     className="inputdata"
                     type="date"
                     value={newinvoicedate.slice(0, 10)}
                     onChange={(e) => setNewInvoiceDate(e.target.value)}
                   ></input>
-                </label>  
-              <div
-                className="checkpobutton"
-                onClick={(e) => {
-                  e.preventDefault();
-                  loadXuatKho();
-                }}
-              >
-                Load Xuất Kho
+                </label>
+                <div
+                  className="checkpobutton"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    loadXuatKho();
+                  }}
+                >
+                  Load Xuất Kho
+                </div>
+                <div
+                  className="uppobutton"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    confirmUpInvoiceHangLoat2();
+                  }}
+                >
+                  Up Invoice XK
+                </div>
+              </form>
+              <div className="insertInvoiceTable">
+                {xuatkhoPOTable}
               </div>
-              <div
-                className="uppobutton"
-                onClick={(e) => {
-                  e.preventDefault();
-                  confirmUpInvoiceHangLoat2();
-                }}
-              >
-                Up Invoice XK
-              </div>
-            </form>
-            <div className="insertInvoiceTable">
-              {xuatkhoPOTable} 
             </div>
           </div>
-        </div>
         )
       }
-
-
     </div>
   );
 };
 export default InvoiceManager;
-
