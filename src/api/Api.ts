@@ -293,6 +293,7 @@ export async function upload55Query(
   uploadfoldername: string,
   filenamelist?: string[]
 ) {
+  console.log('UPLOAD_URL',UPLOAD_URL);
   const formData = new FormData();
   formData.append("uploadedfile", file);
   formData.append("filename", filename);

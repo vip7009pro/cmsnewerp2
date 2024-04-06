@@ -937,9 +937,9 @@ const PoManager = () => {
       });
     let now = moment();
     let invoicedate = moment(newinvoicedate);
-    let podate = moment(newpodate);
+    let podate = moment(newpodate.substring(0,10));
     if (now < invoicedate) {
-      err_code = 2;      
+      err_code = 2;
     }
     if (podate > invoicedate) {
       err_code = 6;      
@@ -1204,7 +1204,9 @@ const PoManager = () => {
       err_code = 5;
     }
     if (getCompany() !== 'CMS') {
-      if (newpoprice !== clickedRow.current.PROD_PRICE) {
+      if (Number(newpoprice) !== clickedRow.current.PROD_PRICE) {
+        console.log('newpoprice', newpoprice)
+        console.log('clickedRow.current.PROD_PRICE', clickedRow.current.PROD_PRICE)
         err_code = 6;
       }
     }

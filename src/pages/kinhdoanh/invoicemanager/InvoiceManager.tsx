@@ -378,7 +378,7 @@ const InvoiceManager = () => {
         .then((response) => {
           if (response.data.tk_status !== "NG") {
             po_date = response.data.data[0].PO_DATE;
-            console.log(po_date);
+            //console.log(po_date);
             if (
               uploadExcelJson[i].DELIVERY_QTY > response.data.data[0].PO_BALANCE
             ) {
@@ -397,7 +397,7 @@ const InvoiceManager = () => {
       if (now < deliverydate) {
         err_code = 2;
       }
-      let podate = moment(po_date);
+      let podate = moment(po_date.substring(0, 10));
       if (podate > deliverydate) {
         err_code = 6;
       }
@@ -527,7 +527,7 @@ const InvoiceManager = () => {
       if (now < deliverydate) {
         err_code = 2;
       }
-      let podate = moment(po_date);
+      let podate = moment(po_date.substring(0, 10));
       if (podate > deliverydate) {
         err_code = 6;
       }
@@ -801,7 +801,7 @@ const InvoiceManager = () => {
     if (now < invoicedate) {
       err_code = 2;
     }
-    let podate = moment(po_date);
+    let podate = moment(po_date.substring(0, 10));
     if (podate > invoicedate) {
       err_code = 6;
     }
