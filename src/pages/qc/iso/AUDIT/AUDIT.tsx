@@ -34,11 +34,16 @@ import { DataDiv, DataTBDiv, FormButtonColumn, FromInputColumn, FromInputDiv, NN
 import PivotTable from "../../../../components/PivotChart/PivotChart";
 import './AUDIT.scss'
 import { HiSave } from "react-icons/hi";
+import { TbLogout } from "react-icons/tb";
+import { BiRefresh } from "react-icons/bi";
 const AUDIT = () => {
+  const showhidesearchdiv = useRef(false);
   const dataGridRef = useRef<any>(null);
+  const [sh, setSH] = useState(true);
   const [showhideupdatennds, setShowHideUpdateNNDS] = useState(false);
   const [currentNN, setCurrentNN] = useState("");
   const [currentDS, setCurrentDS] = useState("");
+  const [selectedAuditResultID,setSelectedAuditResultID] = useState(1);
   const [currentDefectRow, setCurrentDefectRow] = useState<CSCONFIRM_DATA>({
     YEAR_WEEK: '',
     CONFIRM_ID: 0,
@@ -519,6 +524,17 @@ const AUDIT = () => {
             <Export enabled={true} />
             <Toolbar disabled={false}>
               <Item location="before">
+              <IconButton
+                  className='buttonIcon'
+                  onClick={() => {
+                    showhidesearchdiv.current = !showhidesearchdiv.current;
+                    setSH(!showhidesearchdiv.current);
+                  }}
+                >
+                  <TbLogout color='green' size={15} />
+                  Show/Hide
+                </IconButton>
+
                 <IconButton
                   className="buttonIcon"
                   onClick={() => {
@@ -551,6 +567,15 @@ const AUDIT = () => {
                 >
                   <HiSave color="#ff0000" size={15} />
                   Reset Evident
+                </IconButton>
+                <IconButton
+                  className='buttonIcon'
+                  onClick={() => {
+                    loadAuditResultCheckList(selectedAuditResultID);
+                  }}
+                >
+                  <BiRefresh color='yellow' size={20} />
+                  Refresh
                 </IconButton>
               </Item>
               <Item name="searchPanel" />
@@ -672,9 +697,11 @@ const AUDIT = () => {
             showBorders={true}
             onSelectionChanged={(e) => {
               //setFilterData(e.selectedRowsData[0]);
+              
             }}
             onRowClick={async (e) => {
               //console.log(e.data);
+              setSelectedAuditResultID(e.data.AUDIT_RESULT_ID);
               if (await checkAuditResultCheckListExist(e.data.AUDIT_RESULT_ID)) {
                 loadAuditResultCheckList(e.data.AUDIT_RESULT_ID);
               }
@@ -1178,7 +1205,7 @@ const AUDIT = () => {
   return (
     <div className="audit">
       <div className="tracuuDataInspection">
-        <div className="tracuuDataInspectionform">
+        {sh && <div className="tracuuDataInspectionform">
           <div className="forminput">
             <div className="forminputcolumn">
               <label>
@@ -1250,7 +1277,7 @@ const AUDIT = () => {
             }}>Load Data</Button>
           </div>
           {auditListResultTable}
-        </div>
+        </div>}
         <div className="tracuuYCSXTable">
           {auditListResultCheckListTable}
         </div>
