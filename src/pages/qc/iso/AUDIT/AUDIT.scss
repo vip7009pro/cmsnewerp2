@@ -276,6 +276,53 @@
           font-size: 0.7rem;
         }
       }
+      
+    }
+    .upgia {
+      display: flex;
+      align-items: flex-start;
+      flex-direction: column;
+      position: absolute;
+      top: 1vh;
+      left: 7%;
+      width: 85%;
+      height: 85vh;
+      overflow: scroll;
+      padding: 10px;
+      border-radius: 5px;
+      background-image: linear-gradient(0deg, #9ff07f, #ffe986);
+      -webkit-box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.27);
+      box-shadow: 5px 5px 10px 5px rgba(0, 0, 0, 0.27);
+      z-index: 100;
+      .barbutton {
+        display: flex;
+        align-items: center;
+        .upgiaform {
+          margin-right: 5px;
+          .inputdata {
+            padding-left: 5px;
+            margin-left: 2px;
+            width: 120px;
+            height: 35px;
+            background-color: transparent;
+            outline: none;
+            border: solid 0.5px;
+            border-color: rgba(0, 0, 0, 0.3);
+            border-radius: 5px;
+            font-size: 16px;
+            margin-left: 20px;
+            color: black;
+          }
+          .autocomplete1 {
+            display: flex;
+            width: 300px;
+          }
+        }
+      }
+
+      * {
+        font-size: 0.7rem;
+      }
     }
   }
 

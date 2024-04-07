@@ -3569,6 +3569,7 @@ export interface AUDIT_LIST {
   PASS_SCORE: number,
 }
 export interface AUDIT_CHECK_LIST {
+  id: number,
   AUDIT_DETAIL_ID: number,
   AUDIT_ID: number,
   AUDIT_NAME: string,
