@@ -33,32 +33,40 @@ import { AiFillCloseCircle, AiFillFileExcel } from "react-icons/ai";
 import Swal from "sweetalert2";
 import "./QLGN.scss";
 import { UserContext } from "../../../api/Context";
-import { generalQuery } from "../../../api/Api";
+import { generalQuery, getUserData } from "../../../api/Api";
 import { CustomResponsiveContainer, SaveExcel } from "../../../api/GlobalFunction";
 import { MdOutlinePivotTableChart } from "react-icons/md";
 import PivotTable from "../../../components/PivotChart/PivotChart";
 import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
-import { CodeListData, HANDOVER_DATA } from "../../../api/GlobalInterface";
-
+import { CodeListData, CustomerListData, HANDOVER_DATA } from "../../../api/GlobalInterface";
 const QLGN = () => {
+  const [customerList, setCustomerList] = useState<CustomerListData[]>([
+    {
+      CUST_CD: "6969",
+      CUST_NAME_KD: "CMSV",
+      CUST_NAME: "CMSV",
+    },
+  ]);
+  const [selectedCust_CD, setSelectedCust_CD] =
+    useState<CustomerListData | null>({
+      CUST_CD: "6969",
+      CUST_NAME_KD: "CMSV",
+      CUST_NAME: "CMSV",
+    });
   const [showhidePivotTable, setShowHidePivotTable] = useState(false);
-  const [handoverdatatable, setHandoverDataTable] = useState<
-    Array<HANDOVER_DATA>
-  >([]);
+  const [handoverdatatable, setHandoverDataTable] = useState<Array<HANDOVER_DATA>>([]);
   const [fromdate, setFromDate] = useState(moment.utc().format("YYYY-MM-DD"));
-  const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));
-  const [codeKD, setCodeKD] = useState("");
-  const [codeCMS, setCodeCMS] = useState("");
-  const [machine, setMachine] = useState("ALL");
-  const [factory, setFactory] = useState("ALL");
-  const [prodrequestno, setProdRequestNo] = useState("");
-  const [plan_id, setPlanID] = useState("");
-  const [alltime, setAllTime] = useState(true);
-  const [datasxtable, setDataSXTable] = useState<Array<any>>([]);
-  const [m_name, setM_Name] = useState("");
-  const [m_code, setM_Code] = useState("");
+  const [daofimltotalqty, setDaoFilmTotalQty] = useState(0);
+  const [ohpfilmqty, setOHPFilmQTy] = useState(0);
+  const [madaofilm, setMaDaoFilm] = useState("");
+  const [vitritailieu, setViTriTaiLieu] = useState("");
+  const [g_width, setG_Width] = useState(0);
+  const [g_length, setG_Length] = useState(0);
+  const [remark, setRemark] = useState("");
   const [plph, setPLPH] = useState("PH");
-  const [pltl, setPLTL] = useState("PH");
+  const [pltl, setPLTL] = useState("D");
+  const [pldao, setPLDao] = useState("PVC");
+  const [plfilm, setPLFilm] = useState("CTF");
   const [ldph, setLDPH] = useState("New Code");
   const [rndEmpl, setRNDEMPL] = useState("");
   const [qcEmpl, setQCEMPL] = useState("");
@@ -95,6 +103,18 @@ const QLGN = () => {
     PROD_LAST_PRICE: 0,
     USE_YN: "N",
   });
+  const getcustomerlist = () => {
+    generalQuery("selectCustomerAndVendorList", {})
+      .then((response) => {
+        if (response.data.tk_status !== "NG") {
+          setCustomerList(response.data.data);
+        } else {
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
   const [codeList, setCodeList] = useState<CodeListData[]>([]);
   const load_handoverdata_table = () => {
     generalQuery("loadquanlygiaonhan", {})
@@ -136,55 +156,6 @@ const QLGN = () => {
     //console.log(tempcodefullinfo);
     setSelectedRows(tempHandoverData);
   };
-  const addBarcode = async () => {
-    let barcodeExist: boolean = false;
-    await generalQuery("checkbarcodeExist", selectedRows)
-      .then((response) => {
-        if (response.data.tk_status !== "NG") {
-          barcodeExist = true;
-        } else {
-          barcodeExist = false;
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-    if (barcodeExist === false) {
-      await generalQuery("addBarcode", selectedRows)
-        .then((response) => {
-          //console.log(response.data.data);
-          if (response.data.tk_status !== "NG") {
-            Swal.fire("Thông báo", "Thêm vật liệu thành công", "success");
-          } else {
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    } else {
-      Swal.fire("Thông báo", "Vật liệu đã tồn tại", "error");
-    }
-  };
-  const updateBarcode = async () => {
-    generalQuery("updateBarcode", selectedRows)
-      .then((response) => {
-        //console.log(response.data.data);
-        if (response.data.tk_status !== "NG") {
-          Swal.fire("Thông báo", "Update vật liệu thành công", "success");
-        } else {
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
-  const handleSearchCodeKeyDown = (
-    e: React.KeyboardEvent<HTMLInputElement>,
-  ) => {
-    if (e.key === "Enter") {
-      load_handoverdata_table();
-    }
-  };
   const HandoverDataTable = React.useMemo(
     () => (
       <div className="datatb">
@@ -202,7 +173,7 @@ const QLGN = () => {
             keyExpr="id"
             height={"75vh"}
             showBorders={true}
-            onRowPrepared={(e) => {}}
+            onRowPrepared={(e) => { }}
             onSelectionChanged={(e) => {
               //setSelectedRows(e.selectedRowsData[0]);
             }}
@@ -225,7 +196,7 @@ const QLGN = () => {
               allowDeleting={false}
               mode="batch"
               confirmDelete={true}
-              onChangesChange={(e) => {}}
+              onChangesChange={(e) => { }}
             />
             <Export enabled={true} />
             <Toolbar disabled={false}>
@@ -361,7 +332,6 @@ const QLGN = () => {
               caption="KNIFE_TYPE"
               width={100}
             ></Column>
-
             <Summary>
               <TotalItem
                 alignment="right"
@@ -376,642 +346,6 @@ const QLGN = () => {
     ),
     [handoverdatatable],
   );
-
-  const dataSource = new PivotGridDataSource({
-    fields: [
-      {
-        caption: "INS_DATE",
-        width: 80,
-        dataField: "INS_DATE",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "date",
-        summaryType: "count",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "M_LOT_NO",
-        width: 80,
-        dataField: "M_LOT_NO",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "string",
-        summaryType: "count",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "M_CODE",
-        width: 80,
-        dataField: "M_CODE",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "string",
-        summaryType: "count",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "M_NAME",
-        width: 80,
-        dataField: "M_NAME",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "string",
-        summaryType: "count",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "WIDTH_CD",
-        width: 80,
-        dataField: "WIDTH_CD",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "string",
-        summaryType: "count",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "XUAT_KHO",
-        width: 80,
-        dataField: "XUAT_KHO",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "string",
-        summaryType: "count",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "VAO_FR",
-        width: 80,
-        dataField: "VAO_FR",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "string",
-        summaryType: "count",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "VAO_SR",
-        width: 80,
-        dataField: "VAO_SR",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "string",
-        summaryType: "count",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "VAO_DC",
-        width: 80,
-        dataField: "VAO_DC",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "string",
-        summaryType: "count",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "VAO_ED",
-        width: 80,
-        dataField: "VAO_ED",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "string",
-        summaryType: "count",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "CONFIRM_GIAONHAN",
-        width: 80,
-        dataField: "CONFIRM_GIAONHAN",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "string",
-        summaryType: "count",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "VAO_KIEM",
-        width: 80,
-        dataField: "VAO_KIEM",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "string",
-        summaryType: "count",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "NHATKY_KT",
-        width: 80,
-        dataField: "NHATKY_KT",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "string",
-        summaryType: "count",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "RA_KIEM",
-        width: 80,
-        dataField: "RA_KIEM",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "string",
-        summaryType: "count",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "ROLL_QTY",
-        width: 80,
-        dataField: "ROLL_QTY",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "number",
-        summaryType: "sum",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "OUT_CFM_QTY",
-        width: 80,
-        dataField: "OUT_CFM_QTY",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "number",
-        summaryType: "sum",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "TOTAL_OUT_QTY",
-        width: 80,
-        dataField: "TOTAL_OUT_QTY",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "number",
-        summaryType: "sum",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "FR_RESULT",
-        width: 80,
-        dataField: "FR_RESULT",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "number",
-        summaryType: "sum",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "SR_RESULT",
-        width: 80,
-        dataField: "SR_RESULT",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "number",
-        summaryType: "sum",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "DC_RESULT",
-        width: 80,
-        dataField: "DC_RESULT",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "number",
-        summaryType: "sum",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "ED_RESULT",
-        width: 80,
-        dataField: "ED_RESULT",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "number",
-        summaryType: "sum",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "INSPECT_TOTAL_QTY",
-        width: 80,
-        dataField: "INSPECT_TOTAL_QTY",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "number",
-        summaryType: "sum",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "INSPECT_OK_QTY",
-        width: 80,
-        dataField: "INSPECT_OK_QTY",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "number",
-        summaryType: "sum",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "INS_OUT",
-        width: 80,
-        dataField: "INS_OUT",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "number",
-        summaryType: "sum",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "PD",
-        width: 80,
-        dataField: "PD",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "number",
-        summaryType: "sum",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "CAVITY",
-        width: 80,
-        dataField: "CAVITY",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "number",
-        summaryType: "sum",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "TOTAL_OUT_EA",
-        width: 80,
-        dataField: "TOTAL_OUT_EA",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "number",
-        summaryType: "sum",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "FR_EA",
-        width: 80,
-        dataField: "FR_EA",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "number",
-        summaryType: "sum",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "SR_EA",
-        width: 80,
-        dataField: "SR_EA",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "number",
-        summaryType: "sum",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "DC_EA",
-        width: 80,
-        dataField: "DC_EA",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "number",
-        summaryType: "sum",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "ED_EA",
-        width: 80,
-        dataField: "ED_EA",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "number",
-        summaryType: "sum",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "INSPECT_TOTAL_EA",
-        width: 80,
-        dataField: "INSPECT_TOTAL_EA",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "number",
-        summaryType: "sum",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "INSPECT_OK_EA",
-        width: 80,
-        dataField: "INSPECT_OK_EA",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "number",
-        summaryType: "sum",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "INS_OUTPUT_EA",
-        width: 80,
-        dataField: "INS_OUTPUT_EA",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "number",
-        summaryType: "sum",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "ROLL_LOSS_KT",
-        width: 80,
-        dataField: "ROLL_LOSS_KT",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "number",
-        summaryType: "sum",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "ROLL_LOSS",
-        width: 80,
-        dataField: "ROLL_LOSS",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "number",
-        summaryType: "sum",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "PROD_REQUEST_NO",
-        width: 80,
-        dataField: "PROD_REQUEST_NO",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "string",
-        summaryType: "count",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "PLAN_ID",
-        width: 80,
-        dataField: "PLAN_ID",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "string",
-        summaryType: "count",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "PLAN_EQ",
-        width: 80,
-        dataField: "PLAN_EQ",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "string",
-        summaryType: "count",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "G_CODE",
-        width: 80,
-        dataField: "G_CODE",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "string",
-        summaryType: "count",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "G_NAME",
-        width: 80,
-        dataField: "G_NAME",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "string",
-        summaryType: "count",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-      {
-        caption: "FACTORY",
-        width: 80,
-        dataField: "FACTORY",
-        allowSorting: true,
-        allowFiltering: true,
-        dataType: "string",
-        summaryType: "count",
-        format: "fixedPoint",
-        headerFilter: {
-          allowSearch: true,
-          height: 500,
-          width: 300,
-        },
-      },
-    ],
-    store: datasxtable,
-  });
   const filterOptions1 = createFilterOptions({
     matchFrom: "any",
     limit: 100,
@@ -1033,8 +367,55 @@ const QLGN = () => {
         console.log(error);
       });
   };
+  const confirmAddBanGiao = () => {
+    Swal.fire({
+      title: "Thêm Giao Nhận",
+      text: "Chắc chắn thêm giao nhận dao film tài liệu ?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "OK",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        addBanGiao();
+      }
+    });
+  }
+  const addBanGiao = ()=> {
+    generalQuery("addbangiaodaofilmtailieu", {
+      FACTORY: getUserData()?.FACTORY_CODE === 1? 'NM1':'NM2',
+      NGAYBANGIAO: moment(fromdate).format("YYYY-MM-DD"),
+      G_CODE: selectedCode?.G_CODE,
+      LOAIBANGIAO_PDP: pltl,
+      LOAIPHATHANH: plph,
+      SOLUONG: daofimltotalqty,
+      SOLUONGOHP: ohpfilmqty,
+      LYDOBANGIAO: ldph,
+      PQC_EMPL_NO: qcEmpl,
+      RND_EMPL_NO: rndEmpl,
+      SX_EMPL_NO: sxEmpl,
+      REMARK: remark,
+      MA_DAO: madaofilm,
+      CUST_CD: selectedCust_CD?.CUST_CD,
+      G_WIDTH: g_width,
+      G_LENGTH: g_length,
+      KNIFE_TYPE: pldao
+    })
+      .then((response) => {
+        if (response.data.tk_status !== "NG") {
+          Swal.fire('Thông báo','Thêm thành công','success');
+        } else {
+          Swal.fire('Thông báo','Thất bại','error');
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
   useEffect(() => {
     getcodelist("");
+    getcustomerlist();
     load_handoverdata_table();
     //setColumnDefinition(column_inspect_output);
   }, []);
@@ -1043,6 +424,32 @@ const QLGN = () => {
       <div className="tracuuDataInspection">
         <div className="tracuuDataInspectionform">
           <div className="forminput">
+          <div className="forminputcolumn">
+            <label>
+            <Autocomplete
+                sx={{ fontSize: 10, width: "150px" }}
+                size="small"
+                disablePortal
+                options={customerList}
+                className="autocomplete1"
+                filterOptions={filterOptions1}
+                isOptionEqualToValue={(option: any, value: any) =>
+                  option.CUST_CD === value.CUST_CD
+                }
+                getOptionLabel={(option: CustomerListData | any) =>
+                  `${option.CUST_CD}: ${option.CUST_NAME_KD}`
+                }
+                renderInput={(params) => (
+                  <TextField {...params} label="Select customer" />
+                )}
+                value={selectedCust_CD}
+                onChange={(event: any, newValue: CustomerListData | any) => {
+                  console.log(newValue);
+                  setSelectedCust_CD(newValue);
+                }}
+              />
+            </label>
+          </div>
             <div className="forminputcolumn">
               <label>
                 <Autocomplete
@@ -1078,13 +485,12 @@ const QLGN = () => {
               <label>
                 <b>Ngày bàn giao:</b>
                 <input
-                  onKeyDown={(e) => {}}
+                  onKeyDown={(e) => { }}
                   type="date"
                   value={fromdate.slice(0, 10)}
                   onChange={(e) => setFromDate(e.target.value)}
                 ></input>
               </label>
-
               <label>
                 <b>Phân loại phát hành:</b>{" "}
                 <select
@@ -1132,7 +538,6 @@ const QLGN = () => {
                   <option value="Amendment">Amendment</option>
                 </select>
               </label>
-
               <label>
                 <b>Mã nhân viên RND:</b>{" "}
                 <input
@@ -1163,6 +568,103 @@ const QLGN = () => {
                 ></input>
               </label>
             </div>
+            <div className="forminputcolumn">
+              <label>
+                <b>SL Dao/film/TL:</b>{" "}
+                <input
+                  type="text"
+                  placeholder="D/F/T Qty"
+                  value={daofimltotalqty}
+                  onChange={(e) => setDaoFilmTotalQty(Number(e.target.value))}
+                ></input>
+              </label>
+              {(pltl === 'D' || pltl === 'M') && <label>
+                <b>Phân loại dao:</b>{" "}
+                <select
+                  name="vendor"
+                  value={pldao}
+                  onChange={(e) => {
+                    setPLDao(e.target.value);
+                  }}
+                >
+                  <option value="PVC">PVC</option>
+                  <option value="PINACLE">PINACLE</option>
+                </select>
+              </label>}
+              {pltl === 'F' &&  <label>
+                <b>Phân loại film:</b>{" "}
+                <select
+                  name="vendor"
+                  value={plfilm}
+                  onChange={(e) => {
+                    setPLFilm(e.target.value);
+                  }}
+                >
+                  <option value="CTF">CTF</option>
+                  <option value="CTP">CTP</option>
+                </select>
+              </label>}
+            </div>
+            <div className="forminputcolumn">
+              {pltl === 'F' && <label>
+                <b>Số lượng OHP Film</b>{" "}
+                <input
+                  type="text"
+                  placeholder="Nhập số lượng OHP Film vào đây"
+                  value={ohpfilmqty}
+                  onChange={(e) => setOHPFilmQTy(Number(e.target.value))}
+                ></input>
+              </label>}
+              {(pltl === 'D' || pltl === 'F') &&  <label>
+                <b>Mã Dao/Film</b>{" "}
+                <input
+                  type="text"
+                  placeholder="Mã dao film"
+                  value={madaofilm}
+                  onChange={(e) => setMaDaoFilm(e.target.value)}
+                ></input>
+              </label>}
+              {(pltl === 'T') &&<label>
+                <b>Vị trí tài liệu</b>{" "}
+                <input
+                  type="text"
+                  placeholder="Vị trí tài liệu"
+                  value={vitritailieu}
+                  onChange={(e) => setViTriTaiLieu(e.target.value)}
+                ></input>
+              </label>}
+            </div>
+            <div className="forminputcolumn">
+              <label>
+                <b>Rộng</b>{" "}
+                <input
+                  type="text"
+                  placeholder="SX"
+                  value={g_width}
+                  onChange={(e) => setG_Width(Number(e.target.value))}
+                ></input>
+              </label>
+              <label>
+                <b>Dài</b>{" "}
+                <input
+                  type="text"
+                  placeholder="SX"
+                  value={g_length}
+                  onChange={(e) => setG_Length(Number(e.target.value))}
+                ></input>
+              </label>
+            </div>
+            <div className="forminputcolumn">
+              <label>
+                <b>Remark</b>{" "}
+                <input
+                  type="text"
+                  placeholder="Remark here"
+                  value={remark}
+                  onChange={(e) => setRemark(e.target.value)}
+                ></input>
+              </label>
+            </div>
           </div>
           <div className="formbutton">
             <button
@@ -1176,36 +678,14 @@ const QLGN = () => {
             <button
               className="tranhatky"
               onClick={() => {
-                addBarcode();
+                confirmAddBanGiao();
               }}
             >
-              Add
-            </button>
-            <button
-              className="traxuatkiembutton"
-              onClick={() => {
-                updateBarcode();
-              }}
-            >
-              Update
-            </button>
+              Thêm Bàn Giao
+            </button>            
           </div>
         </div>
-        <div className="tracuuYCSXTable">{HandoverDataTable}</div>
-        {showhidePivotTable && (
-          <div className="pivottable1">
-            <IconButton
-              className="buttonIcon"
-              onClick={() => {
-                setShowHidePivotTable(false);
-              }}
-            >
-              <AiFillCloseCircle color="blue" size={15} />
-              Close
-            </IconButton>
-            <PivotTable datasource={dataSource} tableID="invoicetablepivot" />
-          </div>
-        )}
+        <div className="tracuuYCSXTable">{HandoverDataTable}</div>      
       </div>
     </div>
   );

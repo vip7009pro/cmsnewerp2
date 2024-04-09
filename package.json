@@ -52,7 +52,8 @@
     "universal-cookie": "^4.0.4",
     "vite-plugin-compression": "^0.5.1",
     "web-vitals": "^2.1.4",
-    "xlsx": "^0.18.5"
+    "xlsx": "^0.18.5",
+    "xlsx-populate": "^1.21.0"
   },
   "scripts": {
     "start": "vite --port 3001",
@@ -86,6 +87,7 @@
     "devextreme-themebuilder": "^22.2.4",
     "vite": "^4.3.9",
     "vite-plugin-svgr": "^3.2.0",
-    "vite-tsconfig-paths": "^4.2.0"
+    "vite-tsconfig-paths": "^4.2.0",
+    "@types/xlsx-populate": "git+https://github.com/JanLoebel/types-xlsx-populate.git"
   }
 }

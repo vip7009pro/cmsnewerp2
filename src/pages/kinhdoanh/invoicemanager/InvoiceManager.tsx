@@ -213,6 +213,8 @@ const InvoiceManager = () => {
               return {
                 ...element,
                 DELIVERY_DATE: element.DELIVERY_DATE.slice(0, 10),
+                PO_DATE: element.PO_DATE.slice(0, 10),
+                RD_DATE: element.RD_DATE.slice(0, 10),
               };
             },
           );

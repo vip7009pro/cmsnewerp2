@@ -28,12 +28,9 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 import { AiFillCloseCircle, AiFillFileAdd, AiFillFileExcel } from "react-icons/ai";
 import Swal from "sweetalert2";
 import { MdOutlinePivotTableChart } from "react-icons/md";
-import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
 import { generalQuery, getGlobalSetting, getUserData, uploadQuery } from "../../../../api/Api";
 import { AUDIT_CHECKLIST_RESULT, AUDIT_CHECK_LIST, AUDIT_LIST, AUDIT_RESULT, CSCONFIRM_DATA, CS_CNDB_DATA, CS_RMA_DATA, CS_TAXI_DATA, CustomerListData, WEB_SETTING_DATA } from "../../../../api/GlobalInterface";
-import { CustomResponsiveContainer, SaveExcel, checkBP, readUploadFile } from "../../../../api/GlobalFunction";
-import { DataDiv, DataTBDiv, FormButtonColumn, FromInputColumn, FromInputDiv, NNDSDiv, PivotTableDiv, QueryFormDiv } from "../../../../components/StyledComponents/ComponentLib";
-import PivotTable from "../../../../components/PivotChart/PivotChart";
+import { CustomResponsiveContainer, SaveExcel,} from "../../../../api/GlobalFunction";
 import './AUDIT.scss'
 import { HiSave } from "react-icons/hi";
 import { TbLogout } from "react-icons/tb";
@@ -63,17 +60,13 @@ const AUDIT = () => {
   const dataGridRef = useRef<any>(null);
   const [sh, setSH] = useState(true);
   const [showhideaddform, setShowHideAddForm] = useState(false);
-
   const [selectedAuditResultID, setSelectedAuditResultID] = useState(-1);
-
   const [auditList, setAuditList] = useState<AUDIT_LIST[]>([]);
   const [auditResultList, setAuditResultList] = useState<AUDIT_RESULT[]>([]);
   const [auditResultCheckList, setAuditResultCheckList] = useState<AUDIT_CHECKLIST_RESULT[]>([]);
   const selectedauditResultCheckListRows = useRef<AUDIT_CHECKLIST_RESULT[]>([]);
   const [selectedAuditID, setSelectedAuditID] = useState(1);
   const [showhidePivotTable, setShowHidePivotTable] = useState(false);
-  const [cs_table_data, set_cs_table_data] = useState<Array<CSCONFIRM_DATA>>([]);
-  const [cs_rma_table_data, set_cs_rma_table_data] = useState<Array<CS_RMA_DATA>>([]);
   const [filterData, setFilterData] = useState({
     FROM_DATE: moment().format("YYYY-MM-DD"),
     TO_DATE: moment().format("YYYY-MM-DD"),
@@ -131,7 +124,7 @@ const AUDIT = () => {
     }
   };
   const getcustomerlist = () => {
-    generalQuery("selectcustomerList", {})
+    generalQuery("selectCustomerAndVendorList", {})
       .then((response) => {
         if (response.data.tk_status !== "NG") {
           setCustomerList(response.data.data);
@@ -142,24 +135,21 @@ const AUDIT = () => {
         console.log(error);
       });
   };
-  
-  const insertCheckSheetList =async () => {
+  const insertCheckSheetList = async () => {
     let err_code: number = 0;
     let lastAudit_ID: number = 1;
     await generalQuery("checklastAuditID", {})
       .then((response) => {
         //console.log(response.data.data);
         if (response.data.tk_status !== "NG") {
-          lastAudit_ID = response.data.data[0].MAX_AUDIT_ID;          
+          lastAudit_ID = response.data.data[0].MAX_AUDIT_ID;
         } else {
-          
         }
       })
       .catch((error) => {
         console.log(error);
       });
-
-    for(let i=0; i< uploadExcelJson.length; i++) {      
+    for (let i = 0; i < uploadExcelJson.length; i++) {
       await generalQuery("insertCheckSheetData", {
         AUDIT_ID: lastAudit_ID,
         MAIN_ITEM_NO: uploadExcelJson[i].MAIN_ITEM_NO,
@@ -171,15 +161,13 @@ const AUDIT = () => {
         DETAIL_KR: uploadExcelJson[i].DETAIL_KR,
         DETAIL_EN: uploadExcelJson[i].DETAIL_EN,
         MAX_SCORE: uploadExcelJson[i].MAX_SCORE,
-        DEPARTMENT: uploadExcelJson[i].DEPARTMENT,        
+        DEPARTMENT: uploadExcelJson[i].DEPARTMENT,
       })
         .then((response) => {
           //console.log(response.data.data);
           if (response.data.tk_status !== "NG") {
-            
           } else {
-           
-            console.log('Error',response.data.message);
+            console.log('Error', response.data.message);
           }
         })
         .catch((error) => {
@@ -187,58 +175,60 @@ const AUDIT = () => {
           console.log(error);
         });
     }
-    if(err_code ===0) {
-      Swal.fire("Thông báo","Thêm thành công","success");
+    if (err_code === 0) {
+      Swal.fire("Thông báo", "Thêm thành công", "success");
     }
     else {
-      Swal.fire("Thông báo","Thêm checksheet lỗi, hãy kiểm tra lại","error");
+      Swal.fire("Thông báo", "Thêm checksheet lỗi, hãy kiểm tra lại", "error");
     }
-
   }
   const insertNewAuditInfo = async () => {
     //check if auditname exist
     let auditnameExist: boolean = false;
-    await generalQuery("checkAuditNamebyCustomer", {
-      AUDIT_NAME: auditname,
-      CUST_CD: selectedCust_CD?.CUST_CD,
-    })
-      .then((response) => {
-        //console.log(response.data.data);
-        if (response.data.tk_status !== "NG") {
-          if (response.data.data.length > 0) auditnameExist = true;
-        } else {
-        }
+    if (auditname !== '') {
+      await generalQuery("checkAuditNamebyCustomer", {
+        AUDIT_NAME: auditname,
+        CUST_CD: selectedCust_CD?.CUST_CD,
       })
-      .catch((error) => {
-        console.log(error);
-      });
-    if (!auditnameExist) {
-      if(uploadExcelJson.length >0)
-       {
-        await generalQuery("insertNewAuditInfo", {
-          AUDIT_NAME: auditname,
-          CUST_CD: selectedCust_CD?.CUST_CD,
-          PASS_SCORE: passScore
+        .then((response) => {
+          //console.log(response.data.data);
+          if (response.data.tk_status !== "NG") {
+            if (response.data.data.length > 0) auditnameExist = true;
+          } else {
+          }
         })
-          .then((response) => {
-            //console.log(response.data.data);
-            if (response.data.tk_status !== "NG") {  
-              insertCheckSheetList();             
-            } else {
-              Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
-            }
+        .catch((error) => {
+          console.log(error);
+        });
+      if (!auditnameExist) {
+        if (uploadExcelJson.length > 0) {
+          await generalQuery("insertNewAuditInfo", {
+            AUDIT_NAME: auditname,
+            CUST_CD: selectedCust_CD?.CUST_CD,
+            PASS_SCORE: passScore
           })
-          .catch((error) => {
-            console.log(error);
-          });
-       }
-       else {
-        Swal.fire("Thông báo", "Nội dung checksheet trống !", "error");
-       }
-      
+            .then((response) => {
+              //console.log(response.data.data);
+              if (response.data.tk_status !== "NG") {
+                insertCheckSheetList();
+              } else {
+                Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
+              }
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+        }
+        else {
+          Swal.fire("Thông báo", "Nội dung checksheet trống !", "error");
+        }
+      }
+      else {
+        Swal.fire("Thông báo", "Đã có Audit này với khách này rồi,chọn khách khác hoặc sửa tên audit", "error");
+      }
     }
     else {
-      Swal.fire("Thông báo", "Đã có Audit này với khách này rồi,chọn khách khác hoặc sửa tên audit", "error");
+      Swal.fire("Thông báo", "Hãy nhập tên Audit", "error");
     }
   }
   const upFormAuditTable = React.useMemo(
@@ -400,7 +390,7 @@ const AUDIT = () => {
           let loadeddata = response.data.data.map(
             (element: AUDIT_CHECKLIST_RESULT, index: number) => {
               return {
-                ...element,
+                ...element,                
                 INS_DATE: moment(element.INS_DATE).format('YYYY-MM-DD HH:mm:ss'),
                 UPD_DATE: element.UPD_DATE !== null ? moment(element.UPD_DATE).format('YYYY-MM-DD HH:mm:ss') : '',
                 id: index,
@@ -708,7 +698,7 @@ const AUDIT = () => {
                 <IconButton
                   className="buttonIcon"
                   onClick={() => {
-                    SaveExcel(cs_table_data, "CS Xac Nhan Table");
+                    SaveExcel(auditResultCheckList, "auditResultCheckList");
                   }}
                 >
                   <AiFillFileExcel color="green" size={15} />
@@ -740,12 +730,11 @@ const AUDIT = () => {
                 <IconButton
                   className='buttonIcon'
                   onClick={() => {
-                    if(selectedAuditResultID!== -1)
-                    {
+                    if (selectedAuditResultID !== -1) {
                       loadAuditResultCheckList(selectedAuditResultID);
                     }
                     else {
-                      Swal.fire('Thông báo','Chọn ít nhất một checksheet kết quả audit để refresh (bảng bên phải)','error');
+                      Swal.fire('Thông báo', 'Chọn ít nhất một checksheet kết quả audit để refresh (bảng bên phải)', 'error');
                     }
                     loadAuditList();
                   }}
@@ -904,7 +893,7 @@ const AUDIT = () => {
                 <IconButton
                   className="buttonIcon"
                   onClick={() => {
-                    SaveExcel(cs_rma_table_data, "CS RMA Table");
+                    SaveExcel(auditResultList, "auditResultList");
                   }}
                 >
                   <AiFillFileExcel color="green" size={15} />

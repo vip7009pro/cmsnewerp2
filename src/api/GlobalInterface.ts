@@ -103,6 +103,8 @@ export interface InvoiceTableData {
   G_NAME: string;
   G_NAME_KD: string;
   PO_NO: string;
+  PO_DATE: string;
+  RD_DATE: string;
   DELIVERY_DATE: string;
   DELIVERY_QTY: number;
   PROD_PRICE: string;
