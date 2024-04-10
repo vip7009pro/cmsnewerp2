@@ -16,11 +16,15 @@ import ChartPOBalance from "../../../components/Chart/Chart4";
 import CustomerDailyClosing from "../../../components/DataTable/CustomerDailyClosing";
 import CustomerWeeklyClosing from "../../../components/DataTable/CustomerWeeklyClosing";
 import CustomerPobalancebyTypeNew from "../../../components/DataTable/CustomerPoBalanceByTypeNew";
-import { CUSTOMER_REVENUE_DATA, CustomerListData, MonthlyClosingData, PIC_REVENUE_DATA, RunningPOData, WEB_SETTING_DATA, WeekLyPOData, WeeklyClosingData } from "../../../api/GlobalInterface";
+import { CUSTOMER_REVENUE_DATA, CustomerListData, MonthlyClosingData, OVERDUE_DATA, PIC_REVENUE_DATA, RunningPOData, WEB_SETTING_DATA, WeekLyPOData, WeeklyClosingData } from "../../../api/GlobalInterface";
 import { Checkbox, IconButton } from "@mui/material";
 import { SaveExcel } from "../../../api/GlobalFunction";
 import { AiFillFileExcel } from "react-icons/ai";
 import CustomerMonthlyClosing from "../../../components/DataTable/CustomerMonthlyClosing";
+import KDDailyOverdue from "../../../components/Chart/KDDailyOverdue";
+import KDWeeklyOverdue from "../../../components/Chart/KDWeeklyOverdue";
+import KDMonthlyOverdue from "../../../components/Chart/KDMonthlyOverdue";
+import KDYearlyOverdue from "../../../components/Chart/KDYearlyOverdue";
 interface YearlyClosingData {
   YEAR_NUM: string;
   DELIVERY_QTY: number;
@@ -82,6 +86,11 @@ const KinhDoanhReport = () => {
       FCST8W_QTY: 0,
       FCST8W_AMOUNT: 0,
     });
+    const [dailyOverdueData,setDailyOverdueData] = useState<OVERDUE_DATA[]>([]);
+    const [weeklyOverdueData,setweeklyOverdueData] = useState<OVERDUE_DATA[]>([]);
+    const [monthlyOverdueData,setmonthyOverdueData] = useState<OVERDUE_DATA[]>([]);
+    const [yearlyOverdueData,setyearlyOverdueData] = useState<OVERDUE_DATA[]>([]);
+
   const [customerList, setCustomerList] = useState<CustomerListData[]>([]);
   const [selectedCustomerList, setSelectedCustomerList] = useState<CustomerListData[]>([]);
   const handleGetFCSTAmount = async () => {
@@ -394,6 +403,119 @@ const KinhDoanhReport = () => {
             .catch((error) => {
               console.log(error);
             });
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+  const handleGetDailyOverdue = async () => {
+    let yesterday = moment().add(0, "day").format("YYYY-MM-DD");
+    let yesterday2 = moment().add(-12, "day").format("YYYY-MM-DD");
+    await generalQuery("dailyoverduedata", {
+      START_DATE: df ? yesterday2 : fromdate,
+      END_DATE: df ? yesterday : todate,
+      D_PLUS: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'KD_DPLUS')[0]?.CURRENT_VALUE ?? 6
+    })
+      .then((response) => {
+        if (response.data.tk_status !== "NG") {
+          const loadeddata: OVERDUE_DATA[] = response.data.data.map(
+            (element: OVERDUE_DATA, index: number) => {
+              return {
+                ...element,
+                OK_RATE: element.OK_IV*1.0/element.TOTAL_IV,
+                DELIVERY_DATE: element.DELIVERY_DATE?.slice(0, 10),
+              };
+            },
+          );
+          //console.log(loadeddata)
+          setDailyOverdueData(loadeddata);
+        } else {
+          //Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+  const handleGetWeeklyOverdue = async () => {
+    let yesterday = moment().add(0, "day").format("YYYY-MM-DD");
+    let yesterday2 = moment().add(-70, "day").format("YYYY-MM-DD");
+    await generalQuery("weeklyoverduedata", {
+      START_DATE: df ? yesterday2 : fromdate,
+      END_DATE: df ? yesterday : todate,
+      D_PLUS: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'KD_DPLUS')[0]?.CURRENT_VALUE ?? 6
+    })
+      .then((response) => {
+        if (response.data.tk_status !== "NG") {
+          const loadeddata: OVERDUE_DATA[] = response.data.data.map(
+            (element: OVERDUE_DATA, index: number) => {
+              return {
+                ...element,      
+                OK_RATE: element.OK_IV*1.0/element.TOTAL_IV,         
+              };
+            },
+          );
+          //console.log(loadeddata)
+          setweeklyOverdueData(loadeddata);
+        } else {
+          //Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+  const handleGetMonthlyOverdue = async () => {
+    let yesterday = moment().add(0, "day").format("YYYY-MM-DD");
+    let yesterday2 = moment().add(-365, "day").format("YYYY-MM-DD");
+    await generalQuery("monthlyoverduedata", {
+      START_DATE: df ? yesterday2 : fromdate,
+      END_DATE: df ? yesterday : todate,
+      D_PLUS: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'KD_DPLUS')[0]?.CURRENT_VALUE ?? 6
+    })
+      .then((response) => {
+        if (response.data.tk_status !== "NG") {
+          const loadeddata: OVERDUE_DATA[] = response.data.data.map(
+            (element: OVERDUE_DATA, index: number) => {
+              return {
+                ...element,      
+                OK_RATE: element.OK_IV*1.0/element.TOTAL_IV,         
+              };
+            },
+          );
+          //console.log(loadeddata)
+          setmonthyOverdueData(loadeddata);
+        } else {
+          //Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+  const handleGetYearlyOverdue = async () => {
+    let yesterday = moment().add(0, "day").format("YYYY-MM-DD");
+    let yesterday2 = moment().add(-3650, "day").format("YYYY-MM-DD");
+    await generalQuery("yearlyoverduedata", {
+      START_DATE: df ? yesterday2 : fromdate,
+      END_DATE: df ? yesterday : todate,
+      D_PLUS: getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'KD_DPLUS')[0]?.CURRENT_VALUE ?? 6
+    })
+      .then((response) => {
+        if (response.data.tk_status !== "NG") {
+          const loadeddata: OVERDUE_DATA[] = response.data.data.map(
+            (element: OVERDUE_DATA, index: number) => {
+              return {
+                ...element,      
+                OK_RATE: element.OK_IV*1.0/element.TOTAL_IV,         
+              };
+            },
+          );
+          //console.log(loadeddata)
+          setyearlyOverdueData(loadeddata);
+        } else {
+          //Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
         }
       })
       .catch((error) => {
@@ -922,6 +1044,10 @@ const KinhDoanhReport = () => {
       handleGetYearlyClosing(),
       loadDailyClosing(),
       loadWeeklyClosing(),
+      handleGetDailyOverdue(),
+      handleGetWeeklyOverdue(),
+      handleGetMonthlyOverdue(),
+      handleGetYearlyOverdue(),
       loadPoOverWeek(),
       loadRunningPOBalanceData(),
       handleGetCustomerRevenue(),
@@ -1144,6 +1270,56 @@ const KinhDoanhReport = () => {
                 Excel
               </IconButton></span>
               <CustomerMonthlyClosing data={monthlyvRevenuebyCustomer} columns={columnsmonth} />
+            </div>
+          </div>
+          <div className="monthlyweeklygraph">
+            <div className="dailygraph">
+            <span className="subsection">Daily Overdue<IconButton
+                className='buttonIcon'
+                onClick={() => {
+                  SaveExcel(dailyOverdueData, "dailyOverdueData");
+                }}
+              >
+                <AiFillFileExcel color='green' size={15} />
+                Excel
+              </IconButton></span>
+              <KDDailyOverdue processColor="#53eb34" materialColor="#ff0000" dldata={[...dailyOverdueData].reverse()}></KDDailyOverdue>
+            </div>
+            <div className="dailygraph">
+            <span className="subsection">Weekly Overdue<IconButton
+                className='buttonIcon'
+                onClick={() => {
+                  SaveExcel(weeklyOverdueData, "weeklyOverdueData");
+                }}
+              >
+                <AiFillFileExcel color='green' size={15} />
+                Excel
+              </IconButton></span>
+              <KDWeeklyOverdue processColor="#53eb34" materialColor="#ff0000" dldata={[...weeklyOverdueData].reverse()}></KDWeeklyOverdue>
+            </div>
+            <div className="dailygraph">
+            <span className="subsection">Monthly Overdue<IconButton
+                className='buttonIcon'
+                onClick={() => {
+                  SaveExcel(monthlyOverdueData, "monthlyOverdueData");
+                }}
+              >
+                <AiFillFileExcel color='green' size={15} />
+                Excel
+              </IconButton></span>
+              <KDMonthlyOverdue processColor="#53eb34" materialColor="#ff0000" dldata={[...monthlyOverdueData].reverse()}></KDMonthlyOverdue>
+            </div>
+            <div className="dailygraph">
+            <span className="subsection">Yearly Overdue<IconButton
+                className='buttonIcon'
+                onClick={() => {
+                  SaveExcel(yearlyOverdueData, "yearlyOverdueData");
+                }}
+              >
+                <AiFillFileExcel color='green' size={15} />
+                Excel
+              </IconButton></span>
+              <KDYearlyOverdue processColor="#53eb34" materialColor="#ff0000" dldata={[...yearlyOverdueData].reverse()}></KDYearlyOverdue>
             </div>
           </div>
           <br></br>

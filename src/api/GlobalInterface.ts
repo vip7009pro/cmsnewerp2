@@ -3624,3 +3624,14 @@ export interface AUDIT_CHECKLIST_RESULT {
   UPD_DATE: string,
   UPD_EMPL: string,
 }
+
+export interface OVERDUE_DATA {
+  DELIVERY_DATE?: string,
+  YEARNUM?: string,
+  DEL_YM?: string,
+  DEL_YW?: string,
+  TOTAL_IV: number,
+  OK_IV: number,
+  OVER_IV: number,
+  OK_RATE: number,
+}
