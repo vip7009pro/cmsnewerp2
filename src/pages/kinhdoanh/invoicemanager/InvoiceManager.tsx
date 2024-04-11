@@ -574,7 +574,7 @@ const InvoiceManager = () => {
         await generalQuery("insert_invoice", {
           DELIVERY_QTY: uploadExcelJson[i].DELIVERY_QTY,
           DELIVERY_DATE: uploadExcelJson[i].DELIVERY_DATE,
-          REMARK: "",
+          REMARK: uploadExcelJson[i]?.REMARK ?? "",
           G_CODE: uploadExcelJson[i].G_CODE,
           CUST_CD: uploadExcelJson[i].CUST_CD,
           PO_NO: uploadExcelJson[i].PO_NO,

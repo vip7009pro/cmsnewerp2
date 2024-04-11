@@ -247,6 +247,97 @@ const CODE_MANAGER = () => {
       editable: enableEdit,
     },
     {
+      field: "APPSHEET",
+      headerName: "APPSHEET",
+      width: 260,
+      renderCell: (params: any) => {
+        let file: any = null;
+        const uploadFile2: any = async (e: any) => {
+          //console.log(file);
+          checkBP(userData, ["RND", "KD"], ["ALL"], ["ALL"], async () => {
+            uploadQuery(file, "Appsheet_" + params.row.G_CODE + ".docx", "appsheet")
+              .then((response) => {
+                if (response.data.tk_status !== "NG") {
+                  generalQuery("update_appsheet_value", {
+                    G_CODE: params.row.G_CODE,
+                    appsheetvalue: "Y",
+                  })
+                    .then((response) => {
+                      if (response.data.tk_status !== "NG") {
+                        Swal.fire(
+                          "Thông báo",
+                          "Upload Appsheet thành công",
+                          "success",
+                        );                        
+                        /* let tempcodeinfodatatable = rows.map(
+                          (element: CODE_FULL_INFO, index: number) => {
+                            console.log("element G_CODE", element.G_CODE);
+                            return element.G_CODE === params.row.G_CODE
+                              ? { ...element, APPSHEET: "Y" }
+                              : element;
+                          },
+                        );                        
+                        setRows(tempcodeinfodatatable); */
+                      } else {
+                        Swal.fire(
+                          "Thông báo",
+                          "Upload appsheet thất bại",
+                          "error",
+                        );
+                      }
+                    })
+                    .catch((error) => {
+                      console.log(error);
+                    });
+                } else {
+                  Swal.fire(
+                    "Thông báo",
+                    "Upload file thất bại:" + response.data.message,
+                    "error",
+                  );
+                }
+              })
+              .catch((error) => {
+                console.log(error);
+              });
+          });
+        };
+        let hreftlink = "/appsheet/Appsheet_" + params.row.G_CODE + ".docx";
+        if (params.row.APPSHEET !== "N" && params.row.APPSHEET !== null) {
+          return (
+            <span style={{ color: "gray" }}>
+              <a target="_blank" rel="noopener noreferrer" href={hreftlink}>
+                LINK
+              </a>
+            </span>
+          );
+        } else {
+          return (
+            <div className="uploadfile">
+              <IconButton
+                className="buttonIcon"
+                onClick={(e) => {
+                  uploadFile2(e);
+                }}
+              >
+                <AiOutlineCloudUpload color="yellow" size={15} />
+                Upload
+              </IconButton>
+              <input
+                accept=".docx"
+                type="file"
+                onChange={(e: any) => {
+                  file = e.target.files[0];
+                  console.log(file);
+                }}
+              />
+            </div>
+          );
+        }
+      },
+      editable: enableEdit,
+    },
+    {
       field: "NO_INSPECTION",
       headerName: "KT NGOAI QUAN",
       width: 120,

@@ -2319,6 +2319,9 @@ export interface CODE_FULL_INFO {
   LOSS_ST_SX4?: number;
   NOTE?: string;
   BEP?: number;
+  QL_HSD?: string;
+  EXP_DATE?: string;
+  APPSHEET?: string;
 }
 export interface LIST_BOM_AMAZON {
   id: string;

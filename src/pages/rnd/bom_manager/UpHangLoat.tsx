@@ -401,7 +401,7 @@ const UpHangLoat = () => {
       let err_code: string = '';
       let tempTable = currentTable;
       for (let i = 0; i < currentTable.length; i++) {
-        let insertStatus = await handleAddNewCode(currentTable[i]);
+        let insertStatus = await handleAddNewCode({...currentTable[i], QL_HSD: currentTable[i]?.QL_HSD ?? 'Y',});
         if (insertStatus === false) {
           err_code += `${currentTable[i].G_NAME_KD}: NG | `;
           tempTable[i]['CHECKSTATUS'] = 'NG';

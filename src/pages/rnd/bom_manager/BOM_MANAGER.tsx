@@ -205,8 +205,10 @@ const BOM_MANAGER = () => {
     PO_TYPE: "E1",
     FSC: "N",
     PROD_DVT: "01",
+    QL_HSD: "Y",
   });
   const [file, setFile] = useState<any>(null);
+  const [file2, setFile2] = useState<any>(null);
   const [bomsxtable, setBOMSXTable] = useState<BOM_SX[]>([]);
   const [bomgiatable, setBOMGIATable] = useState<BOM_GIA[]>([]);
   const [customerList, setCustomerList] = useState<CustomerListData[]>([]);
@@ -839,6 +841,66 @@ const BOM_MANAGER = () => {
                           : element;
                       });
                       //setRows(tempcodeinfodatatable);
+                    } else {
+                      Swal.fire("Thông báo", "Upload bản vẽ thất bại", "error");
+                    }
+                  })
+                  .catch((error) => {
+                    //console.log(error);
+                  });
+              } else {
+                Swal.fire(
+                  "Thông báo",
+                  "Upload file thất bại:" + response.data.message,
+                  "error",
+                );
+              }
+            })
+            .catch((error) => {
+              //console.log(error);
+            });
+        } else {
+          Swal.fire("Thông báo", "Chọn code trước khi up bản vẽ", "error");
+        }
+      } else {
+        Swal.fire("Thông báo", "Hãy chọn file", "error");
+      }
+    });
+  };
+  const uploadFileAppsheet = async (e: any) => {
+    checkBP(userData, ["RND", "KD"], ["ALL"], ["ALL"], async () => {
+      if (file2 !== null && file2 !== undefined) {
+        if (codefullinfo.G_CODE !== "-------") {
+          uploadQuery(file2, "Appsheet_" + codefullinfo.G_CODE + ".docx", "appsheet")
+            .then((response) => {
+              if (response.data.tk_status !== "NG") {
+                generalQuery("update_appsheet_value", {
+                  G_CODE: codefullinfo.G_CODE,
+                  appsheetvalue: "Y",
+                })
+                  .then((response) => {
+                    if (response.data.tk_status !== "NG") {
+                      /* generalQuery("pdbanve", {
+                        G_CODE: codefullinfo.G_CODE,
+                        VALUE: "N",
+                      })
+                        .then((response) => {
+                          //console.log(response.data.tk_status);
+                          if (response.data.tk_status !== "NG") {
+                            //Swal.fire("Thông báo", "Delete Po thành công", "success");
+                          } else {
+                            //Swal.fire("Thông báo", "Update PO thất bại: " +response.data.message , "error");
+                          }
+                        })
+                        .catch((error) => {
+                          //console.log(error);
+                        }); */
+
+                      Swal.fire(
+                        "Thông báo",
+                        "Upload appsheet thành công",
+                        "success",
+                      );                     
                     } else {
                       Swal.fire("Thông báo", "Upload bản vẽ thất bại", "error");
                     }
@@ -3478,6 +3540,35 @@ const BOM_MANAGER = () => {
                         }}
                       ></input>
                     </label>
+                    <label>
+                      QL_HSD:
+                      <select
+                        disabled={enableform}
+                        name="may1"
+                        value={
+                          codefullinfo?.QL_HSD === null || codefullinfo?.QL_HSD === ""
+                            ? "N"
+                            : codefullinfo?.QL_HSD
+                        }
+                        onChange={(e) => {
+                          handleSetCodeInfo("QL_HSD", e.target.value);
+                        }}
+                      >
+                        <option value="Y">YES</option>
+                        <option value="N">NO</option>
+                      </select>
+                    </label>
+                    <label>
+                      HSD
+                      <input
+                        disabled={enableform}
+                        type="text"
+                        value={codefullinfo?.EXP_DATE ?? 0}
+                        onChange={(e) => {
+                          handleSetCodeInfo("EXP_DATE", e.target.value);
+                        }}
+                      ></input>
+                    </label>
                     {/*  <label>
                       <span style={{fontSize:'1.2rem', color: codefullinfo.USE_YN ==='Y'? 'blue':'red', backgroundColor:codefullinfo.USE_YN ==='Y'? 'white': 'white'}}   >{codefullinfo.USE_YN ==='Y'? 'MỞ':'KHÓA'}</span>
                     </label> */}
@@ -3488,11 +3579,23 @@ const BOM_MANAGER = () => {
                           rel="noopener noreferrer"
                           href={`/banve/${codefullinfo.G_CODE}.pdf`}
                         >
-                          LINK
+                          LINK BẢN VẼ
+                        </a>
+                      </span>
+                      __
+                      <span style={{ color: "gray" }}>
+                        <a
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          href={`/appsheet/Appsheet_${codefullinfo.G_CODE}.pdf`}
+                        >
+                          LINK APPSHEET
                         </a>
                       </span>
                     </label>
                     <label>
+                      <div className="updiv">
+                      Up bản vẽ
                       <div className="uploadfile">
                         <IconButton
                           disabled={enableform}
@@ -3512,6 +3615,35 @@ const BOM_MANAGER = () => {
                           }}
                         />
                       </div>
+
+                      </div>
+                      
+                    </label>
+                    <label>
+                      <div className="updiv">
+                      Up appsheet
+                      <div className="uploadfile">
+                        <IconButton
+                          disabled={enableform}
+                          className="buttonIcon"
+                          onClick={uploadFileAppsheet}
+                        >
+                          <AiOutlineCloudUpload color="yellow" size={15} />
+                          Upload
+                        </IconButton>
+                        <input
+                          disabled={enableform}
+                          accept=".docx"
+                          type="file"
+                          onChange={(e: any) => {
+                            setFile2(e.target.files[0]);
+                            //console.log(e.target.files[0]);
+                          }}
+                        />
+                      </div>
+
+                      </div>
+                      
                     </label>
                     <FormControlLabel
                       disabled={enableform}
