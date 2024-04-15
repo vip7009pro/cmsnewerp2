@@ -79,13 +79,11 @@ import {
   UserData,
 } from "../../../api/GlobalInterface";
 import UpHangLoat from "./UpHangLoat";
-
 const BOM_MANAGER = () => {
   const labelprintref = useRef(null);
   const handlePrint = useReactToPrint({
     content: () => labelprintref.current,
   });
-
   const company: string = useSelector(
     (state: RootState) => state.totalSlice.company,
   );
@@ -112,22 +110,22 @@ const BOM_MANAGER = () => {
     M_LOSS_UNIT: 0,
   });
   const [showhidetemlot, setShowHideTemLot] = useState(false);
-  const checkG_NAME_KD_Exist = async (g_name_kd: string)=> {
-    let gnamekdExist:boolean = false;
+  const checkG_NAME_KD_Exist = async (g_name_kd: string) => {
+    let gnamekdExist: boolean = false;
     await generalQuery("checkGNAMEKDExist", {
       G_NAME_KD: g_name_kd
     })
-    .then((response) => {
-      //console.log(response.data);
-      if (response.data.tk_status !== "NG") {
-        gnamekdExist = true;
-      } else {
-        gnamekdExist = false;
-      }
-    })
-    .catch((error) => {
-      //console.log(error);
-    });
+      .then((response) => {
+        //console.log(response.data);
+        if (response.data.tk_status !== "NG") {
+          gnamekdExist = true;
+        } else {
+          gnamekdExist = false;
+        }
+      })
+      .catch((error) => {
+        //console.log(error);
+      });
     return gnamekdExist;
   }
   const loadDefaultDM = () => {
@@ -164,13 +162,12 @@ const BOM_MANAGER = () => {
         //console.log(error);
       });
   };
-
   const [codefullinfo, setCodeFullInfo] = useState<CODE_FULL_INFO>({
     CUST_CD: company === "CMS" ? "0000" : "KH000",
     PROD_PROJECT: "",
     PROD_MODEL: "",
     CODE_12: "7",
-    PROD_TYPE: getCompany()==='CMS'? "TSP":"LABEL",
+    PROD_TYPE: getCompany() === 'CMS' ? "TSP" : "LABEL",
     G_NAME_KD: "",
     DESCR: "",
     PROD_MAIN_MATERIAL: "",
@@ -781,17 +778,17 @@ const BOM_MANAGER = () => {
             G_CODE: codedatatablefilter[i].G_CODE,
             VALUE: value,
           })
-          .then((response) => {
-            //console.log(response.data.tk_status);
-            if (response.data.tk_status !== "NG") {
-              //Swal.fire("Thông báo", "Delete Po thành công", "success");
-            } else {
-              //Swal.fire("Thông báo", "Update PO thất bại: " +response.data.message , "error");
-            }
-          })
-          .catch((error) => {
-            //console.log(error);
-          });
+            .then((response) => {
+              //console.log(response.data.tk_status);
+              if (response.data.tk_status !== "NG") {
+                //Swal.fire("Thông báo", "Delete Po thành công", "success");
+              } else {
+                //Swal.fire("Thông báo", "Update PO thất bại: " +response.data.message , "error");
+              }
+            })
+            .catch((error) => {
+              //console.log(error);
+            });
         }
         Swal.fire("Thông báo", "RESET BAN VE THÀNH CÔNG", "success");
       } else {
@@ -829,7 +826,6 @@ const BOM_MANAGER = () => {
                         .catch((error) => {
                           //console.log(error);
                         });
-
                       Swal.fire(
                         "Thông báo",
                         "Upload bản vẽ thành công",
@@ -895,12 +891,11 @@ const BOM_MANAGER = () => {
                         .catch((error) => {
                           //console.log(error);
                         }); */
-
                       Swal.fire(
                         "Thông báo",
                         "Upload appsheet thành công",
                         "success",
-                      );                     
+                      );
                     } else {
                       Swal.fire("Thông báo", "Upload bản vẽ thất bại", "error");
                     }
@@ -1113,7 +1108,7 @@ const BOM_MANAGER = () => {
                     : element.CODE_12,
                 PROD_TYPE:
                   element.PROD_TYPE === null || element.PROD_TYPE === ""
-                    ? getCompany()==='CMS'? "TSP":"LABEL"
+                    ? getCompany() === 'CMS' ? "TSP" : "LABEL"
                     : element.PROD_TYPE.trim(),
                 G_NAME_KD:
                   element.G_NAME_KD === null || element.G_NAME_KD === ""
@@ -1188,6 +1183,8 @@ const BOM_MANAGER = () => {
                     : element.PROD_PRINT_TIMES,
                 PO_TYPE: element.PO_TYPE === null ? "E1" : element.PO_TYPE,
                 FSC: element.FSC === null ? "N" : element.FSC,
+                QL_HSD: element.QL_HSD === null? 'N': element.QL_HSD,
+                EXP_DATE: element.EXP_DATE === null? 0: element.QL_HSD,
                 id: index,
               };
             },
@@ -1293,7 +1290,6 @@ const BOM_MANAGER = () => {
               } else if (e.DOITUONG_NAME === "LOTINFO") {
                 value = `${userData?.EMPL_NO}/SP3HU001/SAMPLEWEB`;
               }
-
               return {
                 ...e,
                 GIATRI: value,
@@ -1394,10 +1390,9 @@ const BOM_MANAGER = () => {
   const handleCheckCodeInfo = async () => {
     let abc: CODE_FULL_INFO = codefullinfo;
     let result: boolean = true;
-
-    if (company !== "CMS" && userData?.MAINDEPTNAME === "KD") {     
+    if (company !== "CMS" && userData?.MAINDEPTNAME === "KD") {
       result = true;
-    } else {      
+    } else {
       for (const [k, v] of Object.entries(abc)) {
         if (
           (v === null || v === "") &&
@@ -1594,10 +1589,9 @@ const BOM_MANAGER = () => {
   };
   const handleAddNewCode = async () => {
     ////console.log(handleCheckCodeInfo());
-    let checkg_name_kd:boolean = await checkG_NAME_KD_Exist(codefullinfo.G_NAME_KD===undefined? 'zzzzzzzzz': codefullinfo.G_NAME_KD);
+    let checkg_name_kd: boolean = await checkG_NAME_KD_Exist(codefullinfo.G_NAME_KD === undefined ? 'zzzzzzzzz' : codefullinfo.G_NAME_KD);
     //console.log('checkg_name_kd',checkg_name_kd);
-
-    if ((getCompany()==='CMS') && await handleCheckCodeInfo() || (getCompany()!=='CMS' && checkg_name_kd=== false)) {
+    if ((getCompany() === 'CMS') && await handleCheckCodeInfo() || (getCompany() !== 'CMS' && checkg_name_kd === false)) {
       let CODE_27 = "C";
       if (
         codefullinfo.PROD_TYPE.trim() === "TSP" ||
@@ -1612,7 +1606,7 @@ const BOM_MANAGER = () => {
       } else if (codefullinfo.PROD_TYPE.trim() === "RIBBON") {
         CODE_27 = "E";
       }
-      let nextcodeinfo =  await getNextG_CODE(
+      let nextcodeinfo = await getNextG_CODE(
         codefullinfo.CODE_12,
         CODE_27,
       );
@@ -1639,18 +1633,15 @@ const BOM_MANAGER = () => {
       handleinsertCodeTBG(nextcode);
     }
     else {
-      if(getCompany()==='CMS')
-      {
-
+      if (getCompany() === 'CMS') {
       }
-      else
-      {
-        Swal.fire('Cảnh báo','Code '+(codefullinfo.G_NAME_KD===undefined? 'zzzzzzzzz': codefullinfo.G_NAME_KD)+ ' đã tồn tại','error');
+      else {
+        Swal.fire('Cảnh báo', 'Code ' + (codefullinfo.G_NAME_KD === undefined ? 'zzzzzzzzz' : codefullinfo.G_NAME_KD) + ' đã tồn tại', 'error');
       }
     }
   };
   const handleAddNewVer = async () => {
-    if ((getCompany()==='CMS') && await handleCheckCodeInfo() || getCompany()!=='CMS') {
+    if ((getCompany() === 'CMS') && await handleCheckCodeInfo() || getCompany() !== 'CMS') {
       let CODE_27 = "C";
       if (
         codefullinfo.PROD_TYPE.trim() === "TSP" ||
@@ -1703,7 +1694,7 @@ const BOM_MANAGER = () => {
     }
   };
   const handleUpdateCode = async () => {
-    if ((getCompany()==='CMS') && await handleCheckCodeInfo() || getCompany()!=='CMS') {
+    if ((getCompany() === 'CMS') && await handleCheckCodeInfo() || getCompany() !== 'CMS') {
       await generalQuery("updateM100", codefullinfo)
         .then((response) => {
           ////console.log(response.data);
@@ -1720,7 +1711,6 @@ const BOM_MANAGER = () => {
         .catch((error) => {
           //console.log(error);
         });
-
       confirmUpdateM100TBG();
     }
   };
@@ -2284,9 +2274,7 @@ const BOM_MANAGER = () => {
           "Đang Update Thông tin",
           "success",
         );
-
         let checkTBGExist: number = 0;
-
         generalQuery("checkTBGExist", {
           G_CODE: codefullinfo.G_CODE,
         })
@@ -2379,7 +2367,6 @@ const BOM_MANAGER = () => {
         //console.log(error);
         Swal.fire("Thông báo", " Có lỗi : " + error, "error");
       });
-
     return nextCodeKH;
   };
   const [componentList, setComponentList] = useState<COMPONENT_DATA[]>([
@@ -2538,7 +2525,7 @@ const BOM_MANAGER = () => {
   };
   const renderOptionCustomer = (props: React.HTMLAttributes<HTMLLIElement>, option: CustomerListData, state: AutocompleteRenderOptionState) => (
     <Typography style={{ fontSize: '0.7rem' }} {...props}>
-     {`${option.CUST_NAME_KD}${option.CUST_CD}`}
+      {`${option.CUST_NAME_KD}${option.CUST_CD}`}
     </Typography>
   );
   const renderOptionMaterial = (props: React.HTMLAttributes<HTMLLIElement>, option: MaterialListData, state: AutocompleteRenderOptionState) => (
@@ -2574,7 +2561,7 @@ const BOM_MANAGER = () => {
         </div>
         <div
           className="mininavitem"
-          onClick={() =>           
+          onClick={() =>
             checkBP(userData, ["RND", "KD"], ["ALL"], ["ALL"], () => {
               setNav(2);
             })
@@ -2822,9 +2809,9 @@ const BOM_MANAGER = () => {
                         renderInput={(params) => (
                           <TextField {...params} style={{ height: "10px" }} />
                         )}
-                        renderOption={(props, option:any)=> <Typography style={{ fontSize: '0.7rem' }} {...props}>
-                        {`${option.CUST_NAME_KD}${option.CUST_CD}`}
-                       </Typography>}
+                        renderOption={(props, option: any) => <Typography style={{ fontSize: '0.7rem' }} {...props}>
+                          {`${option.CUST_NAME_KD}${option.CUST_CD}`}
+                        </Typography>}
                         defaultValue={{
                           CUST_CD: company === "CMS" ? "0000" : "KH000",
                           CUST_NAME: company === "CMS" ? "SEOJIN" : "PVN",
@@ -2939,7 +2926,7 @@ const BOM_MANAGER = () => {
                         name="phanloaisanpham"
                         value={
                           codefullinfo?.PROD_TYPE === null
-                            ? getCompany()==='CMS'? "TSP":"LABEL"
+                            ? getCompany() === 'CMS' ? "TSP" : "LABEL"
                             : codefullinfo?.PROD_TYPE
                         }
                         onChange={(e) => {
@@ -3012,9 +2999,9 @@ const BOM_MANAGER = () => {
                         renderInput={(params) => (
                           <TextField {...params} style={{ height: "10px" }} />
                         )}
-                        renderOption={(props, option: any)=> <Typography style={{ fontSize: '0.7rem' }} {...props}>
-                        {`${option.M_NAME}`}
-                      </Typography>}
+                        renderOption={(props, option: any) => <Typography style={{ fontSize: '0.7rem' }} {...props}>
+                          {`${option.M_NAME}`}
+                        </Typography>}
                         defaultValue={{
                           M_NAME: "SJ-203020HC",
                         }}
@@ -3560,14 +3547,20 @@ const BOM_MANAGER = () => {
                     </label>
                     <label>
                       HSD
-                      <input
+                      <select
                         disabled={enableform}
-                        type="text"
+                        name="may1"
                         value={codefullinfo?.EXP_DATE ?? 0}
                         onChange={(e) => {
                           handleSetCodeInfo("EXP_DATE", e.target.value);
                         }}
-                      ></input>
+                      >
+                        <option value={0}>Chưa nhập HSD</option>
+                        <option value={6}>6 tháng</option>
+                        <option value={12}>12 tháng</option>
+                        <option value={18}>18 tháng</option>
+                        <option value={24}>24 tháng</option>
+                      </select>
                     </label>
                     {/*  <label>
                       <span style={{fontSize:'1.2rem', color: codefullinfo.USE_YN ==='Y'? 'blue':'red', backgroundColor:codefullinfo.USE_YN ==='Y'? 'white': 'white'}}   >{codefullinfo.USE_YN ==='Y'? 'MỞ':'KHÓA'}</span>
@@ -3595,55 +3588,51 @@ const BOM_MANAGER = () => {
                     </label>
                     <label>
                       <div className="updiv">
-                      Up bản vẽ
-                      <div className="uploadfile">
-                        <IconButton
-                          disabled={enableform}
-                          className="buttonIcon"
-                          onClick={uploadFilebanVe}
-                        >
-                          <AiOutlineCloudUpload color="yellow" size={15} />
-                          Upload
-                        </IconButton>
-                        <input
-                          disabled={enableform}
-                          accept=".pdf"
-                          type="file"
-                          onChange={(e: any) => {
-                            setFile(e.target.files[0]);
-                            //console.log(e.target.files[0]);
-                          }}
-                        />
+                        Up bản vẽ
+                        <div className="uploadfile">
+                          <IconButton
+                            disabled={enableform}
+                            className="buttonIcon"
+                            onClick={uploadFilebanVe}
+                          >
+                            <AiOutlineCloudUpload color="yellow" size={15} />
+                            Upload
+                          </IconButton>
+                          <input
+                            disabled={enableform}
+                            accept=".pdf"
+                            type="file"
+                            onChange={(e: any) => {
+                              setFile(e.target.files[0]);
+                              //console.log(e.target.files[0]);
+                            }}
+                          />
+                        </div>
                       </div>
-
-                      </div>
-                      
                     </label>
                     <label>
                       <div className="updiv">
-                      Up appsheet
-                      <div className="uploadfile">
-                        <IconButton
-                          disabled={enableform}
-                          className="buttonIcon"
-                          onClick={uploadFileAppsheet}
-                        >
-                          <AiOutlineCloudUpload color="yellow" size={15} />
-                          Upload
-                        </IconButton>
-                        <input
-                          disabled={enableform}
-                          accept=".docx"
-                          type="file"
-                          onChange={(e: any) => {
-                            setFile2(e.target.files[0]);
-                            //console.log(e.target.files[0]);
-                          }}
-                        />
+                        Up appsheet
+                        <div className="uploadfile">
+                          <IconButton
+                            disabled={enableform}
+                            className="buttonIcon"
+                            onClick={uploadFileAppsheet}
+                          >
+                            <AiOutlineCloudUpload color="yellow" size={15} />
+                            Upload
+                          </IconButton>
+                          <input
+                            disabled={enableform}
+                            accept=".docx"
+                            type="file"
+                            onChange={(e: any) => {
+                              setFile2(e.target.files[0]);
+                              //console.log(e.target.files[0]);
+                            }}
+                          />
+                        </div>
                       </div>
-
-                      </div>
-                      
                     </label>
                     <FormControlLabel
                       disabled={enableform}
@@ -3705,7 +3694,6 @@ const BOM_MANAGER = () => {
                         Show/Hide Tem LOT
                       </Button>
                     )}
-
                     {company === "CMS" && showhidetemlot && (
                       <div className="lotlabelbackground">
                         <Button
@@ -3750,9 +3738,9 @@ const BOM_MANAGER = () => {
                 renderInput={(params) => (
                   <TextField {...params} label="Select material" />
                 )}
-                renderOption={(props, option: any)=> <Typography style={{ fontSize: '0.7rem' }} {...props}>
-                {`${option.M_NAME}|${option.WIDTH_CD}|${option.M_CODE}`}
-              </Typography>}
+                renderOption={(props, option: any) => <Typography style={{ fontSize: '0.7rem' }} {...props}>
+                  {`${option.M_NAME}|${option.WIDTH_CD}|${option.M_CODE}`}
+                </Typography>}
                 defaultValue={{
                   M_CODE: "A0007770",
                   M_NAME: "SJ-203020HC",
@@ -3874,7 +3862,7 @@ const BOM_MANAGER = () => {
       )}
       {selection.thempohangloat && (
         <div className="uphangloat">
-          <UpHangLoat/>
+          <UpHangLoat />
         </div>
       )}
     </div>

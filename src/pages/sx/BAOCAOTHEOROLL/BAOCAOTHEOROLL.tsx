@@ -29,7 +29,7 @@ import React, {
 import Swal from "sweetalert2";
 import "./BAOCAOTHEOROLL.scss";
 import { useSelector } from "react-redux";
-import { MACHINE_LIST, SX_ACHIVE_DATE, SX_BAOCAOROLLDATA, SX_LOSS_TREND_DATA, UserData } from "../../../api/GlobalInterface";
+import { MACHINE_LIST, SX_ACHIVE_DATE, SX_BAOCAOROLLDATA, SX_LOSS_TREND_DATA, SX_TREND_LOSS_DATA, UserData } from "../../../api/GlobalInterface";
 import { generalQuery } from "../../../api/Api";
 import { RootState } from "../../../redux/store";
 import { CustomResponsiveContainer, SaveExcel } from "../../../api/GlobalFunction";
@@ -40,6 +40,10 @@ import { AiFillCloseCircle, AiFillFileExcel } from "react-icons/ai";
 import { MdOutlinePivotTableChart } from "react-icons/md";
 import PivotTable from "../../../components/PivotChart/PivotChart";
 import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
+import SX_DailyLossTrend from "../../../components/Chart/SX_DailyLossTrend";
+import SX_WeeklyLossTrend from "../../../components/Chart/SX_WeeklyLossTrend";
+import SX_MonthlyLossTrend from "../../../components/Chart/SX_MonthlyLossTrend";
+import SX_YearlyLossTrend from "../../../components/Chart/SX_YearlyLossTrend";
 const BAOCAOTHEOROLL = () => {
   const dataGridRef = useRef<any>(null);
   const datatbTotalRow = useRef(0);
@@ -52,7 +56,7 @@ const BAOCAOTHEOROLL = () => {
     if (dataGridRef.current) {
       dataGridRef.current.instance.clearSelection();
       qlsxplandatafilter.current = [];
-      console.log(dataGridRef.current);
+      //console.log(dataGridRef.current);
     }
   };
   const getMachineList = () => {
@@ -137,11 +141,17 @@ const BAOCAOTHEOROLL = () => {
     INPUT_DATE: 'TOTAL',
     IS_SETTING: 'Y',
     LOSS_SQM: 0,
-    USED_SQM: 0
+    USED_SQM: 0,
+    PURE_INPUT:0,
+    PURE_OUTPUT:0
   });
   const qlsxplandatafilter = useRef<SX_BAOCAOROLLDATA[]>([]);
   const [sxlosstrendingdata, setSXLossTrendingData] = useState<SX_LOSS_TREND_DATA[]>([]);
   const [showhidePivotTable, setShowHidePivotTable] = useState(false);
+  const [dailyLossTrend, setDailyLossTrend] = useState<SX_TREND_LOSS_DATA[]>([]);
+  const [weeklyLossTrend, setWeeklyLossTrend] = useState<SX_TREND_LOSS_DATA[]>([]);
+  const [monthyLossTrend, setMonthlyLossTrend] = useState<SX_TREND_LOSS_DATA[]>([]);
+  const [yearlyLossTrend, setYearlyLossTrend] = useState<SX_TREND_LOSS_DATA[]>([]);
   const loadBaoCaoTheoRoll = async () => {
     //console.log(todate);
     await generalQuery("loadBaoCaoTheoRoll", {
@@ -207,6 +217,8 @@ const BAOCAOTHEOROLL = () => {
             IS_SETTING: 'Y',
             LOSS_SQM: 0,
             USED_SQM: 0,
+            PURE_INPUT:0,
+            PURE_OUTPUT:0
           };
           for (let i = 0; i < loadeddata.length; i++) {
             temp_plan_data.PLAN_QTY += loadeddata[i].PLAN_QTY;
@@ -221,6 +233,8 @@ const BAOCAOTHEOROLL = () => {
             temp_plan_data.OUTPUT_EA += Number(loadeddata[i].OUTPUT_EA);
             temp_plan_data.INSPECT_INPUT += Number(loadeddata[i].INSPECT_INPUT);
             temp_plan_data.INSPECT_TT_QTY += Number(loadeddata[i].INSPECT_TT_QTY);
+            temp_plan_data.PURE_INPUT += Number(loadeddata[i].PURE_INPUT);
+            temp_plan_data.PURE_OUTPUT += Number(loadeddata[i].PURE_OUTPUT);
           }
           temp_plan_data.LOSS_ST = (temp_plan_data.SETTING_MET / temp_plan_data.USED_QTY) * 100;
           temp_plan_data.LOSS_SX = (temp_plan_data.PR_NG / temp_plan_data.USED_QTY) * 100;
@@ -271,6 +285,116 @@ const BAOCAOTHEOROLL = () => {
           setSXLossTrendingData(loaded_data);
         } else {
           setSXLossTrendingData([]);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+  const getDailyLossTrend = async (mc: string, ft: string, fr: string, td: string) => {
+    await generalQuery("dailysxlosstrend", {
+      MACHINE: mc,
+      FACTORY: ft,
+      FROM_DATE: fr,
+      TO_DATE: td,
+    })
+      .then((response) => {
+        //console.log(response.data.data);
+        if (response.data.tk_status !== "NG") {
+          const loaded_data: SX_TREND_LOSS_DATA[] = response.data.data.map(
+            (element: SX_TREND_LOSS_DATA, index: number) => {
+              return {
+                ...element,                
+                INPUT_DATE: moment(element.INPUT_DATE).utc().format("YYYY-MM-DD"),   
+                LOSS_RATE:  1-element.PURE_OUTPUT*1.0/element.PURE_INPUT         
+              };
+            }
+          );
+          console.log(loaded_data)
+          setDailyLossTrend(loaded_data);
+        } else {
+          setDailyLossTrend([]);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+  const getWeeklyLossTrend = async (mc: string, ft: string, fr: string, td: string) => {
+    await generalQuery("weeklysxlosstrend", {
+      MACHINE: mc,
+      FACTORY: ft,
+      FROM_DATE: fr,
+      TO_DATE: td,
+    })
+      .then((response) => {
+        //console.log(response.data.data);
+        if (response.data.tk_status !== "NG") {
+          const loaded_data: SX_TREND_LOSS_DATA[] = response.data.data.map(
+            (element: SX_TREND_LOSS_DATA, index: number) => {
+              return {
+                ...element,
+                LOSS_RATE:  1-element.PURE_OUTPUT*1.0/element.PURE_INPUT 
+              };
+            }
+          );
+          setWeeklyLossTrend(loaded_data);
+        } else {
+          setWeeklyLossTrend([]);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+  const getMonthlyLossTrend = async (mc: string, ft: string, fr: string, td: string) => {
+    await generalQuery("monthlysxlosstrend", {
+      MACHINE: mc,
+      FACTORY: ft,
+      FROM_DATE: fr,
+      TO_DATE: td,
+    })
+      .then((response) => {
+        //console.log(response.data.data);
+        if (response.data.tk_status !== "NG") {
+          const loaded_data: SX_TREND_LOSS_DATA[] = response.data.data.map(
+            (element: SX_TREND_LOSS_DATA, index: number) => {
+              return {
+                ...element,
+                LOSS_RATE:  1-element.PURE_OUTPUT*1.0/element.PURE_INPUT 
+              };
+            }
+          );
+          setMonthlyLossTrend(loaded_data);
+        } else {
+          setMonthlyLossTrend([]);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+  const getYearlyLossTrend = async (mc: string, ft: string, fr: string, td: string) => {
+    await generalQuery("yearlysxlosstrend", {
+      MACHINE: mc,
+      FACTORY: ft,
+      FROM_DATE: fr,
+      TO_DATE: td,
+    })
+      .then((response) => {
+        //console.log(response.data.data);
+        if (response.data.tk_status !== "NG") {
+          const loaded_data: SX_TREND_LOSS_DATA[] = response.data.data.map(
+            (element: SX_TREND_LOSS_DATA, index: number) => {
+              return {
+                ...element,
+                LOSS_RATE:  1-element.PURE_OUTPUT*1.0/element.PURE_INPUT 
+              };
+            }
+          );
+          setYearlyLossTrend(loaded_data);
+        } else {
+          setYearlyLossTrend([]);
         }
       })
       .catch((error) => {
@@ -1290,7 +1414,6 @@ const BAOCAOTHEOROLL = () => {
     ],
     store: plandatatable,
   });
-
   const initFunction = async () => {
     Swal.fire({
       title: "Đang tải báo cáo",
@@ -1304,18 +1427,22 @@ const BAOCAOTHEOROLL = () => {
     
     Promise.all([
       loadBaoCaoTheoRoll(),
-      getDailySXLossTrendingData(machine, factory, fromdate,todate)
+      getDailySXLossTrendingData(machine, factory, fromdate,todate),
+      getDailyLossTrend(machine, factory, fromdate,todate),
+      getWeeklyLossTrend(machine, factory, fromdate,todate),
+      getMonthlyLossTrend(machine, factory, fromdate,todate),
+      getYearlyLossTrend(machine, factory, fromdate,todate)
       /* getPatrolHeaderData(fromdate, todate), */
     ]).then((values) => {
       Swal.fire("Thông báo", "Đã load xong báo cáo", 'success');
     });    
   }
-
-
+  
   useEffect(() => {
     getMachineList();
-    getDailySXLossTrendingData(machine,factory, moment().add(-8, "day").format("YYYY-MM-DD"), moment().add(0, "day").format("YYYY-MM-DD"));
-    loadBaoCaoTheoRoll();
+    initFunction();
+    /* getDailySXLossTrendingData(machine,factory, moment().add(-8, "day").format("YYYY-MM-DD"), moment().add(0, "day").format("YYYY-MM-DD"));
+    loadBaoCaoTheoRoll(); */
     
     return () => {
       /* window.clearInterval(intervalID);       */
@@ -1395,10 +1522,24 @@ const BAOCAOTHEOROLL = () => {
               </div>
             </div>
           </div>
-          <div className="graph">
-           
-             {productionLossTrendingchartMM}
+          <div className="graph">           
+             {productionLossTrendingchartMM}          
+          </div>
+         
           
+          <div className="graph2">   
+            <div className="childgraph">
+              <SX_DailyLossTrend dldata={dailyLossTrend} processColor="#53eb34" materialColor="#ff0000" />
+            </div>
+            <div className="childgraph">
+              <SX_WeeklyLossTrend dldata={[...weeklyLossTrend].reverse()} processColor="#53eb34" materialColor="#ff0000" />
+            </div>
+            <div className="childgraph">
+              <SX_MonthlyLossTrend dldata={[...monthyLossTrend].reverse()} processColor="#53eb34" materialColor="#ff0000" />
+            </div>
+            <div className="childgraph">
+              <SX_YearlyLossTrend dldata={[...yearlyLossTrend].reverse()} processColor="#53eb34" materialColor="#ff0000" />
+            </div> 
           </div>
           <div className='lossinfo'>
             <table>
@@ -1436,6 +1577,15 @@ const BAOCAOTHEOROLL = () => {
                   </td>
                   <td style={{ color: "black", fontWeight: "normal" }}>
                     11.OK_EA
+                  </td>
+                  <td style={{ color: "black", fontWeight: "normal" }}>
+                    11.PURE_IN
+                  </td>
+                  <td style={{ color: "black", fontWeight: "normal" }}>
+                    12.PURE_OUT
+                  </td>
+                  <td style={{ color: "black", fontWeight: "normal" }}>
+                    13.ALL_LOSS
                   </td>
                   {/* <th style={{ color: "black", fontWeight: "normal" }}>
                     11.OUTPUT_EA
@@ -1511,6 +1661,22 @@ const BAOCAOTHEOROLL = () => {
                   </td>
                   <td style={{ color: "green", fontWeight: "bold" }}>
                     {summarydata.OK_EA?.toLocaleString("en-US", {
+                      maximumFractionDigits: 0,
+                    })}
+                  </td>
+                  <td style={{ color: "blue", fontWeight: "bold" }}>
+                    {summarydata.PURE_INPUT?.toLocaleString("en-US", {
+                      maximumFractionDigits: 0,
+                    })}
+                  </td>
+                  <td style={{ color: "blue", fontWeight: "bold" }}>
+                    {summarydata.PURE_OUTPUT?.toLocaleString("en-US", {
+                      maximumFractionDigits: 0,
+                    })}
+                  </td>
+                  <td style={{ color: "red", fontWeight: "bold" }}>
+                    {(1-summarydata.PURE_OUTPUT*1.0/summarydata.PURE_INPUT)?.toLocaleString("en-US", {
+                      style: 'percent',
                       maximumFractionDigits: 0,
                     })}
                   </td>

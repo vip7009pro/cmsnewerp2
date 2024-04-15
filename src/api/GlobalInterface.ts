@@ -3125,7 +3125,9 @@ export interface SX_BAOCAOROLLDATA {
   INPUT_DATE: string,
   IS_SETTING: string,
   USED_SQM: number,
-  LOSS_SQM: number
+  LOSS_SQM: number,
+  PURE_INPUT: number,
+  PURE_OUTPUT: number,
 }
 export interface OQC_DATA{
   OQC_ID: number,
@@ -3637,4 +3639,13 @@ export interface OVERDUE_DATA {
   OK_IV: number,
   OVER_IV: number,
   OK_RATE: number,
+}
+export interface SX_TREND_LOSS_DATA {
+  INPUT_DATE?: string,
+  INPUT_YEAR?: string,
+  INPUT_YW?: string,
+  INPUT_YM?: string,
+  PURE_INPUT: number,
+  PURE_OUTPUT: number,
+  LOSS_RATE: number,
 }
