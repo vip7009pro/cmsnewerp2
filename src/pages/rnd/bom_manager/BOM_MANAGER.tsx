@@ -74,6 +74,7 @@ import {
   DEFAULT_DM,
   M_NAME_LIST,
   MACHINE_LIST,
+  MASTER_MATERIAL_HSD,
   MATERIAL_INFO,
   MaterialListData,
   UserData,
@@ -219,10 +220,16 @@ const BOM_MANAGER = () => {
       WIDTH_CD: 1200,
     },
   ]);
-  const [masterMaterialList, setMasterMaterialList] = useState<string[]>([]);
+  const [masterMaterialList, setMasterMaterialList] = useState<MASTER_MATERIAL_HSD[]>([
+    {
+      M_NAME: "SJ-203020HC",
+      EXP_DATE: 6
+    }
+  ]);
   const [selectedMasterMaterial, setSelectedMasterMaterial] =
-    useState<M_NAME_LIST>({
-      M_NAME: "",
+    useState<MASTER_MATERIAL_HSD>({
+      M_NAME: "SJ-203020HC",
+      EXP_DATE: 6
     });
   const [selectedMaterial, setSelectedMaterial] =
     useState<MaterialListData | null>({
@@ -1184,13 +1191,18 @@ const BOM_MANAGER = () => {
                 PO_TYPE: element.PO_TYPE === null ? "E1" : element.PO_TYPE,
                 FSC: element.FSC === null ? "N" : element.FSC,
                 QL_HSD: element.QL_HSD === null? 'N': element.QL_HSD,
-                EXP_DATE: element.EXP_DATE === null? 0: element.QL_HSD,
+                EXP_DATE: element.EXP_DATE === null? 0: element.EXP_DATE,
                 id: index,
               };
             },
           );
           ////console.log(loaded_data[0]);
           setCodeFullInfo(loaded_data[0]);
+          console.log(loaded_data[0])
+          setSelectedMasterMaterial({
+            M_NAME:loaded_data[0]?.PROD_MAIN_MATERIAL ??"",
+            EXP_DATE: masterMaterialList.filter((ele: MASTER_MATERIAL_HSD, index: number)=>  ele.M_NAME ===loaded_data[0]?.PROD_MAIN_MATERIAL)[0].EXP_DATE??0
+          })
           setComponentList(
             componentList.map((e: COMPONENT_DATA, index: number) => {
               let value: string = e.GIATRI;
@@ -1319,6 +1331,7 @@ const BOM_MANAGER = () => {
       }
       ////console.log(datafilter[0]);
       handlecodefullinfo(datafilter[0].G_CODE);
+
     } else {
       setCodeDataTableFilter([]);
     }
@@ -1387,6 +1400,29 @@ const BOM_MANAGER = () => {
       PROD_DVT: "01",
     });
   };
+  const checkHSD = (): boolean=> {
+   /*  console.log('codefullinfo.QL_HSD',codefullinfo.QL_HSD)
+    console.log('selectedMasterMaterial.EXP_DATE',selectedMasterMaterial.EXP_DATE)
+    console.log('codefullinfo.EXP_DATE',codefullinfo.EXP_DATE) */
+    let checkhd: boolean = false;
+    if(codefullinfo.QL_HSD==='N')
+    {      
+      checkhd=  true;
+    }
+    else {
+      let hsdVL: number = Number(selectedMasterMaterial.EXP_DATE??0);
+      let hsdSP: number = Number(codefullinfo.EXP_DATE??0);
+      if((hsdVL === hsdSP) && hsdVL !==0) {
+       
+        checkhd=  true;
+      }
+      if(!checkhd) {
+        Swal.fire('Thông báo','Hạn sử dụng sản phẩm không khớp vs HSD NVL, hãy check lại với mua hàng: HSD VL '+ hsdVL +', HSD SP '+ hsdSP ,'error');
+      }
+    }  
+    
+    return checkhd;
+  }
   const handleCheckCodeInfo = async () => {
     let abc: CODE_FULL_INFO = codefullinfo;
     let result: boolean = true;
@@ -1426,7 +1462,9 @@ const BOM_MANAGER = () => {
         }
       }
     }
-    return result;
+    let checkhsd = checkHSD();   
+   
+    return result && checkhsd;
   };
   const confirmAddNewCode = () => {
     Swal.fire({
@@ -1439,7 +1477,7 @@ const BOM_MANAGER = () => {
       confirmButtonText: "Vẫn thêm!",
     }).then((result) => {
       if (result.isConfirmed) {
-        Swal.fire("Tiến hành thêm", "Đang thêm Code mới", "success");
+        
         /* checkBP(
           userData?.EMPL_NO,
           userData?.MAINDEPTNAME,
@@ -1468,7 +1506,7 @@ const BOM_MANAGER = () => {
       confirmButtonText: "Vẫn thêm!",
     }).then((result) => {
       if (result.isConfirmed) {
-        Swal.fire("Tiến hành thêm", "Đang thêm Ver mới", "success");
+        
         /*   checkBP(
           userData?.EMPL_NO,
           userData?.MAINDEPTNAME,
@@ -1496,8 +1534,7 @@ const BOM_MANAGER = () => {
       cancelButtonColor: "#d33",
       confirmButtonText: "Vẫn update!",
     }).then((result) => {
-      if (result.isConfirmed) {
-        Swal.fire("Tiến hành Update", "Đang update code", "success");
+      if (result.isConfirmed) {        
         /* checkBP(
           userData?.EMPL_NO,
           userData?.MAINDEPTNAME,
@@ -3000,16 +3037,19 @@ const BOM_MANAGER = () => {
                           <TextField {...params} style={{ height: "10px" }} />
                         )}
                         renderOption={(props, option: any) => <Typography style={{ fontSize: '0.7rem' }} {...props}>
-                          {`${option.M_NAME}`}
+                          {`${option.M_NAME}| ${option.EXP_DATE}`}
                         </Typography>}
                         defaultValue={{
                           M_NAME: "SJ-203020HC",
+                          EXP_DATE: 6
                         }}
                         value={{
                           M_NAME: codefullinfo.PROD_MAIN_MATERIAL,
+                          EXP_DATE: codefullinfo.EXP_DATE
                         }}
                         onChange={(event: any, newValue: any) => {
-                          //console.log(newValue);
+                          console.log(newValue);
+                          setSelectedMasterMaterial(newValue);
                           handleSetCodeInfo(
                             "PROD_MAIN_MATERIAL",
                             newValue === null ? "" : newValue.M_NAME,

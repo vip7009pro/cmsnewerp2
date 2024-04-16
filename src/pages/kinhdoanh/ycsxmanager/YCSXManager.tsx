@@ -1449,7 +1449,7 @@ const YCSXManager = () => {
               ...element,
               id: index,
               CHECKSTATUS: "Waiting",
-              PHANLOAI: getCompany() === 'CMS' ? "TT" : element.PHANLOAI,
+              PHANLOAI: element.PHANLOAI?? "TT",
               PROD_REQUEST_DATE: getCompany() === 'CMS' ? element.PROD_REQUEST_DATE : moment(element.PROD_REQUEST_DATE).format('YYYYMMDD')
             };
           })

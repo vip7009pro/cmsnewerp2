@@ -3649,3 +3649,8 @@ export interface SX_TREND_LOSS_DATA {
   PURE_OUTPUT: number,
   LOSS_RATE: number,
 }
+
+export interface MASTER_MATERIAL_HSD {
+  M_NAME: string,
+  EXP_DATE: number,
+}

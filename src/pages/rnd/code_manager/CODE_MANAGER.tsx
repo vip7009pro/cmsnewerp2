@@ -381,6 +381,8 @@ const CODE_MANAGER = () => {
         );
       },
     },
+    {field: "QL_HSD",headerName: "QL_HSD",width: 80,},
+    {field: "EXP_DATE",headerName: "EXP_DATE",width: 80,},
     {
       field: "TENCODE",
       headerName: "TENCODE",
