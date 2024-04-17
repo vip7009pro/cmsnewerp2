@@ -1405,13 +1405,13 @@ const BOM_MANAGER = () => {
     console.log('selectedMasterMaterial.EXP_DATE',selectedMasterMaterial.EXP_DATE)
     console.log('codefullinfo.EXP_DATE',codefullinfo.EXP_DATE) */
     let checkhd: boolean = false;
-    if(codefullinfo.QL_HSD==='N')
+    if(codefullinfo.PD_HSD==='Y')
     {      
       checkhd=  true;
     }
     else {
       let hsdVL: number = Number(selectedMasterMaterial.EXP_DATE??0);
-      let hsdSP: number = Number(codefullinfo.EXP_DATE??0);
+      let hsdSP: number = Number(codefullinfo.EXP_DATE??0);      
       if((hsdVL === hsdSP) && hsdVL !==0) {
        
         checkhd=  true;
@@ -1454,7 +1454,8 @@ const BOM_MANAGER = () => {
           k !== "LOSS_SETTING2" &&
           k !== "LOSS_SETTING3" &&
           k !== "LOSS_SETTING4" &&
-          k !== "NOTE"
+          k !== "NOTE" &&
+          k !== "PD_HSD"
         ) {
           Swal.fire("Thông báo", "Không được để trống: " + k, "error");
           result = false;

@@ -2322,6 +2322,7 @@ export interface CODE_FULL_INFO {
   QL_HSD?: string;
   EXP_DATE?: string;
   APPSHEET?: string;
+  PD_HSD?: string;
 }
 export interface LIST_BOM_AMAZON {
   id: string;
