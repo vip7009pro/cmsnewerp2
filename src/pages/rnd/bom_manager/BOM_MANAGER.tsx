@@ -1423,6 +1423,66 @@ const BOM_MANAGER = () => {
     
     return checkhd;
   }
+  const checkHSD2 = (): boolean=> {
+   /*  console.log('codefullinfo.QL_HSD',codefullinfo.QL_HSD)
+    console.log('selectedMasterMaterial.EXP_DATE',selectedMasterMaterial.EXP_DATE)
+    console.log('codefullinfo.EXP_DATE',codefullinfo.EXP_DATE) */
+    let checkhd: boolean = false;
+    let hsdVL: number = Number(selectedMasterMaterial.EXP_DATE??0);
+    let hsdSP: number = Number(codefullinfo.EXP_DATE??0);      
+    if((hsdVL === hsdSP) && hsdVL !==0) {      
+      checkhd=  true;
+    }
+    if(!checkhd) {
+      Swal.fire('Thông báo','Hạn sử dụng sản phẩm không khớp vs HSD NVL, hãy check lại với mua hàng: HSD VL '+ hsdVL +', HSD SP '+ hsdSP ,'error');
+    }    
+    return checkhd;
+  }
+  
+  const handleCheckCodeInfo2 = async () => {
+    let abc: CODE_FULL_INFO = codefullinfo;
+    let result: boolean = true;
+    if (company !== "CMS" && userData?.MAINDEPTNAME === "KD") {
+      result = true;
+    } else {
+      for (const [k, v] of Object.entries(abc)) {
+        if (
+          (v === null || v === "") &&
+          k !== "REMK" &&
+          k !== "FACTORY" &&
+          k !== "Setting1" &&
+          k !== "Setting2" &&
+          k !== "Setting3" &&
+          k !== "Setting4" &&
+          k !== "UPH1" &&
+          k !== "UPH2" &&
+          k !== "UPH3" &&
+          k !== "UPH4" &&
+          k !== "Step1" &&
+          k !== "Step2" &&
+          k !== "Step3" &&
+          k !== "Step4" &&
+          k !== "LOSS_SX1" &&
+          k !== "LOSS_SX2" &&
+          k !== "LOSS_SX3" &&
+          k !== "LOSS_SX4" &&
+          k !== "LOSS_SETTING1" &&
+          k !== "LOSS_SETTING2" &&
+          k !== "LOSS_SETTING3" &&
+          k !== "LOSS_SETTING4" &&
+          k !== "NOTE" &&
+          k !== "PD_HSD"
+        ) {
+          Swal.fire("Thông báo", "Không được để trống: " + k, "error");
+          result = false;
+          break;
+        }
+      }
+    }
+    //let checkhsd = checkHSD();   
+   
+    return result;
+  };
   const handleCheckCodeInfo = async () => {
     let abc: CODE_FULL_INFO = codefullinfo;
     let result: boolean = true;
@@ -1732,8 +1792,15 @@ const BOM_MANAGER = () => {
     }
   };
   const handleUpdateCode = async () => {
-    if ((getCompany() === 'CMS') && await handleCheckCodeInfo() || getCompany() !== 'CMS') {
-      await generalQuery("updateM100", codefullinfo)
+    if ((getCompany() === 'CMS') && await handleCheckCodeInfo2() || getCompany() !== 'CMS') {
+      let tempInfo = codefullinfo;
+      if((!(await checkHSD2())) && (getCompany() === 'CMS')) {
+        tempInfo = {...codefullinfo, PD_HSD:'P'}
+      }
+      else {
+        tempInfo = {...codefullinfo, PD_HSD:'N'}
+      }
+      await generalQuery("updateM100", tempInfo)
         .then((response) => {
           ////console.log(response.data);
           if (response.data.tk_status !== "NG") {
