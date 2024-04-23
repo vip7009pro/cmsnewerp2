@@ -1190,8 +1190,8 @@ const BOM_MANAGER = () => {
                     : element.PROD_PRINT_TIMES,
                 PO_TYPE: element.PO_TYPE === null ? "E1" : element.PO_TYPE,
                 FSC: element.FSC === null ? "N" : element.FSC,
-                QL_HSD: element.QL_HSD === null? 'N': element.QL_HSD,
-                EXP_DATE: element.EXP_DATE === null? 0: element.EXP_DATE,
+                QL_HSD: element.QL_HSD === null ? 'N' : element.QL_HSD,
+                EXP_DATE: element.EXP_DATE === null ? 0 : element.EXP_DATE,
                 id: index,
               };
             },
@@ -1200,8 +1200,8 @@ const BOM_MANAGER = () => {
           setCodeFullInfo(loaded_data[0]);
           console.log(loaded_data[0])
           setSelectedMasterMaterial({
-            M_NAME:loaded_data[0]?.PROD_MAIN_MATERIAL ??"",
-            EXP_DATE: masterMaterialList.filter((ele: MASTER_MATERIAL_HSD, index: number)=>  ele.M_NAME ===loaded_data[0]?.PROD_MAIN_MATERIAL)[0].EXP_DATE??0
+            M_NAME: loaded_data[0]?.PROD_MAIN_MATERIAL ?? "",
+            EXP_DATE: masterMaterialList.filter((ele: MASTER_MATERIAL_HSD, index: number) => ele.M_NAME === loaded_data[0]?.PROD_MAIN_MATERIAL)[0].EXP_DATE ?? 0
           })
           setComponentList(
             componentList.map((e: COMPONENT_DATA, index: number) => {
@@ -1331,7 +1331,6 @@ const BOM_MANAGER = () => {
       }
       ////console.log(datafilter[0]);
       handlecodefullinfo(datafilter[0].G_CODE);
-
     } else {
       setCodeDataTableFilter([]);
     }
@@ -1400,45 +1399,41 @@ const BOM_MANAGER = () => {
       PROD_DVT: "01",
     });
   };
-  const checkHSD = (): boolean=> {
-   /*  console.log('codefullinfo.QL_HSD',codefullinfo.QL_HSD)
-    console.log('selectedMasterMaterial.EXP_DATE',selectedMasterMaterial.EXP_DATE)
-    console.log('codefullinfo.EXP_DATE',codefullinfo.EXP_DATE) */
+  const checkHSD = (): boolean => {
+    /*  console.log('codefullinfo.QL_HSD',codefullinfo.QL_HSD)
+     console.log('selectedMasterMaterial.EXP_DATE',selectedMasterMaterial.EXP_DATE)
+     console.log('codefullinfo.EXP_DATE',codefullinfo.EXP_DATE) */
     let checkhd: boolean = false;
-    if(codefullinfo.PD_HSD==='Y')
-    {      
-      checkhd=  true;
+    if (codefullinfo.PD_HSD === 'Y') {
+      checkhd = true;
     }
     else {
-      let hsdVL: number = Number(selectedMasterMaterial.EXP_DATE??0);
-      let hsdSP: number = Number(codefullinfo.EXP_DATE??0);      
-      if((hsdVL === hsdSP) && hsdVL !==0) {
-       
-        checkhd=  true;
+      let hsdVL: number = Number(selectedMasterMaterial.EXP_DATE ?? 0);
+      let hsdSP: number = Number(codefullinfo.EXP_DATE ?? 0);
+      if ((hsdVL === hsdSP) && hsdVL !== 0) {
+        checkhd = true;
       }
-      if(!checkhd) {
-        Swal.fire('Thông báo','Hạn sử dụng sản phẩm không khớp vs HSD NVL, hãy check lại với mua hàng: HSD VL '+ hsdVL +', HSD SP '+ hsdSP ,'error');
+      if (!checkhd) {
+        Swal.fire('Thông báo', 'Hạn sử dụng sản phẩm không khớp vs HSD NVL, hãy check lại với mua hàng: HSD VL ' + hsdVL + ', HSD SP ' + hsdSP, 'error');
       }
-    }  
-    
-    return checkhd;
-  }
-  const checkHSD2 = (): boolean=> {
-   /*  console.log('codefullinfo.QL_HSD',codefullinfo.QL_HSD)
-    console.log('selectedMasterMaterial.EXP_DATE',selectedMasterMaterial.EXP_DATE)
-    console.log('codefullinfo.EXP_DATE',codefullinfo.EXP_DATE) */
-    let checkhd: boolean = false;
-    let hsdVL: number = Number(selectedMasterMaterial.EXP_DATE??0);
-    let hsdSP: number = Number(codefullinfo.EXP_DATE??0);      
-    if((hsdVL === hsdSP) && hsdVL !==0) {      
-      checkhd=  true;
     }
-    if(!checkhd) {
-      Swal.fire('Thông báo','Hạn sử dụng sản phẩm không khớp vs HSD NVL, hãy check lại với mua hàng: HSD VL '+ hsdVL +', HSD SP '+ hsdSP ,'error');
-    }    
     return checkhd;
   }
-  
+  const checkHSD2 = (): boolean => {
+    /*  console.log('codefullinfo.QL_HSD',codefullinfo.QL_HSD)
+     console.log('selectedMasterMaterial.EXP_DATE',selectedMasterMaterial.EXP_DATE)
+     console.log('codefullinfo.EXP_DATE',codefullinfo.EXP_DATE) */
+    let checkhd: boolean = false;
+    let hsdVL: number = Number(selectedMasterMaterial.EXP_DATE ?? 0);
+    let hsdSP: number = Number(codefullinfo.EXP_DATE ?? 0);
+    if ((hsdVL === hsdSP) && hsdVL !== 0) {
+      checkhd = true;
+    }
+    if (!checkhd) {
+      Swal.fire('Thông báo', 'Hạn sử dụng sản phẩm không khớp vs HSD NVL, hãy check lại với mua hàng: HSD VL ' + hsdVL + ', HSD SP ' + hsdSP, 'error');
+    }
+    return checkhd;
+  }
   const handleCheckCodeInfo2 = async () => {
     let abc: CODE_FULL_INFO = codefullinfo;
     let result: boolean = true;
@@ -1480,7 +1475,6 @@ const BOM_MANAGER = () => {
       }
     }
     //let checkhsd = checkHSD();   
-   
     return result;
   };
   const handleCheckCodeInfo = async () => {
@@ -1523,8 +1517,7 @@ const BOM_MANAGER = () => {
         }
       }
     }
-    let checkhsd = checkHSD();   
-   
+    let checkhsd = checkHSD();
     return result && checkhsd;
   };
   const confirmAddNewCode = () => {
@@ -1538,7 +1531,6 @@ const BOM_MANAGER = () => {
       confirmButtonText: "Vẫn thêm!",
     }).then((result) => {
       if (result.isConfirmed) {
-        
         /* checkBP(
           userData?.EMPL_NO,
           userData?.MAINDEPTNAME,
@@ -1567,7 +1559,6 @@ const BOM_MANAGER = () => {
       confirmButtonText: "Vẫn thêm!",
     }).then((result) => {
       if (result.isConfirmed) {
-        
         /*   checkBP(
           userData?.EMPL_NO,
           userData?.MAINDEPTNAME,
@@ -1595,7 +1586,7 @@ const BOM_MANAGER = () => {
       cancelButtonColor: "#d33",
       confirmButtonText: "Vẫn update!",
     }).then((result) => {
-      if (result.isConfirmed) {        
+      if (result.isConfirmed) {
         /* checkBP(
           userData?.EMPL_NO,
           userData?.MAINDEPTNAME,
@@ -1794,11 +1785,11 @@ const BOM_MANAGER = () => {
   const handleUpdateCode = async () => {
     if ((getCompany() === 'CMS') && await handleCheckCodeInfo2() || getCompany() !== 'CMS') {
       let tempInfo = codefullinfo;
-      if((!(await checkHSD2())) && (getCompany() === 'CMS')) {
-        tempInfo = {...codefullinfo, PD_HSD:'P'}
+      if ((!(await checkHSD2())) && (getCompany() === 'CMS')) {
+        tempInfo = { ...codefullinfo, PD_HSD: 'P' }
       }
       else {
-        tempInfo = {...codefullinfo, PD_HSD:'N'}
+        tempInfo = { ...codefullinfo, PD_HSD: 'N' }
       }
       await generalQuery("updateM100", tempInfo)
         .then((response) => {
@@ -3688,7 +3679,7 @@ const BOM_MANAGER = () => {
                         <a
                           target="_blank"
                           rel="noopener noreferrer"
-                          href={`/appsheet/Appsheet_${codefullinfo.G_CODE}.pdf`}
+                          href={`/appsheet/Appsheet_${codefullinfo.G_CODE}.docx`}
                         >
                           LINK APPSHEET
                         </a>
