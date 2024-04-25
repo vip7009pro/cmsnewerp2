@@ -301,6 +301,6 @@ export async function upload55Query(
   formData.append("token_string", cookies.get("token"));
   if (filenamelist)
     formData.append("newfilenamelist", JSON.stringify(filenamelist));
-  let data = await axios.post(getSever() + "/uploadfilechecksheet", formData);
+  let data = await axios.post(getSever() + "/uploadfile55", formData);
   return data;
 }
