@@ -204,6 +204,8 @@ const BOM_MANAGER = () => {
     FSC: "N",
     PROD_DVT: "01",
     QL_HSD: "Y",
+    EXP_DATE:'0',    
+
   });
   const [file, setFile] = useState<any>(null);
   const [file2, setFile2] = useState<any>(null);
