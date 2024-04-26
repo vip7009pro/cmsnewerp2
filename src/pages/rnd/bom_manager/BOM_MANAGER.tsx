@@ -3626,7 +3626,7 @@ const BOM_MANAGER = () => {
                         }}
                       ></input>
                     </label>
-                    <label>
+                    {getCompany()==='CMS' &&<label>
                       QL_HSD:
                       <select
                         disabled={enableform}
@@ -3643,8 +3643,8 @@ const BOM_MANAGER = () => {
                         <option value="Y">YES</option>
                         <option value="N">NO</option>
                       </select>
-                    </label>
-                    <label>
+                    </label>}
+                    {getCompany()==='CMS' && <label>
                       HSD
                       <select
                         disabled={enableform}
@@ -3660,7 +3660,7 @@ const BOM_MANAGER = () => {
                         <option value={18}>18 tháng</option>
                         <option value={24}>24 tháng</option>
                       </select>
-                    </label>
+                    </label>}
                     {/*  <label>
                       <span style={{fontSize:'1.2rem', color: codefullinfo.USE_YN ==='Y'? 'blue':'red', backgroundColor:codefullinfo.USE_YN ==='Y'? 'white': 'white'}}   >{codefullinfo.USE_YN ==='Y'? 'MỞ':'KHÓA'}</span>
                     </label> */}
@@ -3675,7 +3675,7 @@ const BOM_MANAGER = () => {
                         </a>
                       </span>
                       __
-                      <span style={{ color: "gray" }}>
+                      {getCompany()==='CMS' && <span style={{ color: "gray" }}>
                         <a
                           target="_blank"
                           rel="noopener noreferrer"
@@ -3683,7 +3683,7 @@ const BOM_MANAGER = () => {
                         >
                           LINK APPSHEET
                         </a>
-                      </span>
+                      </span>}
                     </label>
                     <label>
                       <div className="updiv">
@@ -3710,7 +3710,7 @@ const BOM_MANAGER = () => {
                       </div>
                     </label>
                     <label>
-                      <div className="updiv">
+                      {getCompany()==='CMS' && <div className="updiv">
                         Up appsheet
                         <div className="uploadfile">
                           <IconButton
@@ -3731,7 +3731,7 @@ const BOM_MANAGER = () => {
                             }}
                           />
                         </div>
-                      </div>
+                      </div>}
                     </label>
                     <FormControlLabel
                       disabled={enableform}
