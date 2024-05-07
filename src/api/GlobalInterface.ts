@@ -405,6 +405,9 @@ export interface YCSXTableData {
   PL_HANG?: string;
   DELIVERY_DT?: string;
   SETVL?: string;
+  G_WIDTH?: number;
+  G_LENGTH?: number;
+  PROD_PRINT_TIMES?: number;
 }
 export interface UploadAmazonData {
   G_CODE?: string;

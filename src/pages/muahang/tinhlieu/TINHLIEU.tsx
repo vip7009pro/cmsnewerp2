@@ -58,7 +58,7 @@ const TINHLIEU = () => {
   };
   const load_material_table = (option: string) => {
     if (option === 'PO') {
-      generalQuery("loadMaterialByPO", formdata)
+      generalQuery(getCompany ()=='CMS' ?"loadMaterialByPO" : "loadMaterialByYCSX", formdata)
         .then((response) => {
           //console.log(response.data.data);
           if (response.data.tk_status !== "NG") {
@@ -121,7 +121,7 @@ const TINHLIEU = () => {
         });
     }
     else if (option === 'ALL') {
-      generalQuery("loadMaterialMRPALL", formdata)
+      generalQuery(getCompany ()=='CMS' ?"loadMaterialMRPALL":"loadMaterialByYCSX_ALL", formdata)
         .then((response) => {
           //console.log(response.data.data);
           if (response.data.tk_status !== "NG") {

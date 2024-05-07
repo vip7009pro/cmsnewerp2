@@ -10,7 +10,7 @@ import React, {
 import MACHINE_COMPONENT from "./MACHINE_COMPONENT";
 import "./MACHINE.scss";
 import Swal from "sweetalert2";
-import { generalQuery, uploadQuery } from "../../../../api/Api";
+import { generalQuery, getCompany, uploadQuery } from "../../../../api/Api";
 import moment from "moment";
 import { UserContext } from "../../../../api/Context";
 import {
@@ -336,7 +336,7 @@ const MACHINE = () => {
         console.log(error);
       });
   };
-  const column_ycsxtable = [
+  const column_ycsxtable = getCompany()==='CMS'? [
     { field: "G_CODE", headerName: "G_CODE", width: 80 },
     {
       field: "G_NAME_KD",
@@ -767,6 +767,441 @@ const MACHINE = () => {
           );
       },
     },
+  ]:[
+    { field: "G_CODE", headerName: "G_CODE", width: 80 },
+    {
+      field: "G_NAME_KD",
+      headerName: "G_NAME_KD",
+      width: 100,
+      renderCell: (params: any) => {
+        if (params.row.PDBV === "P" || params.row.PDBV === null)
+          return <span style={{ color: "red" }}>{params.row.G_NAME_KD}</span>;
+        return <span style={{ color: "green" }}>{params.row.G_NAME_KD}</span>;
+      },
+    },
+    {
+      field: "G_NAME",
+      headerName: "G_NAME",
+      width: 250,
+      renderCell: (params: any) => {
+        if (params.row.PDBV === "P" || params.row.PDBV === null)
+          return <span style={{ color: "red" }}>{params.row.G_NAME}</span>;
+        return <span style={{ color: "green" }}>{params.row.G_NAME}</span>;
+      },
+    },
+    
+    { field: "G_WIDTH", headerName: "G_WIDTH", width: 120 },
+    { field: "G_LENGTH", headerName: "G_LENGTH", width: 120 },
+    { field: "PROD_PRINT_TIMES", headerName: "PRINT_TIMES", width: 120 },
+    { field: "CUST_NAME_KD", headerName: "KHÁCH", width: 120 },
+    {
+      field: "PROD_REQUEST_NO", headerName: "SỐ YCSX", width: 80, renderCell: (params: any) => {
+        if (params.row.DACHITHI === null) {
+          return (
+            <span style={{ color: "black" }}>
+              {params.row.PROD_REQUEST_NO.toLocaleString("en-US")}
+            </span>
+          );
+        } else {
+          return (
+            <span style={{ color: "green" }}>
+              <b>{params.row.PROD_REQUEST_NO.toLocaleString("en-US")}</b>
+            </span>
+          );
+        }
+      },
+    },
+    { field: "PROD_REQUEST_DATE", headerName: "NGÀY YCSX", width: 80 },
+    { field: "DELIVERY_DT", headerName: "NGÀY GH", width: 80 },
+    {
+      field: "PO_BALANCE",
+      headerName: "PO_BALANCE",
+      width: 110,
+      renderCell: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            <b>{params.row.PO_BALANCE.toLocaleString("en", "US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "PROD_REQUEST_QTY",
+      type: "number",
+      headerName: "SL YCSX",
+      width: 80,
+      renderCell: (params: any) => {
+        return (
+          <span style={{ color: "#009933" }}>
+            <b>{params.row.PROD_REQUEST_QTY.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "CD1",
+      headerName: "CD1",
+      width: 80,
+      renderCell: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            <b>{params.row.CD1.toLocaleString("en", "US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "CD2",
+      headerName: "CD2",
+      width: 80,
+      renderCell: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            <b>{params.row.CD2.toLocaleString("en", "US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "CD3",
+      headerName: "CD3",
+      width: 80,
+      renderCell: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            <b>{params.row.CD3.toLocaleString("en", "US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "CD4",
+      headerName: "CD4",
+      width: 80,
+      renderCell: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            <b>{params.row.CD4.toLocaleString("en", "US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "LOT_TOTAL_INPUT_QTY_EA",
+      type: "number",
+      headerName: "NK",
+      width: 80,
+      renderCell: (params: any) => {
+        return (
+          <span style={{ color: "#cc0099" }}>
+            <b>{params.row.LOT_TOTAL_INPUT_QTY_EA.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "LOT_TOTAL_OUTPUT_QTY_EA",
+      type: "number",
+      headerName: "XK",
+      width: 80,
+      renderCell: (params: any) => {
+        return (
+          <span style={{ color: "#cc0099" }}>
+            <b>{params.row.LOT_TOTAL_OUTPUT_QTY_EA.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "TON_CD1",
+      headerName: "TCD1",
+      width: 80,
+      renderCell: (params: any) => {
+        return (
+          <span style={{ color: "red" }}>
+            <b>{params.row.TON_CD1.toLocaleString("en", "US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "TON_CD2",
+      headerName: "TCD2",
+      width: 80,
+      renderCell: (params: any) => {
+        return (
+          <span style={{ color: "red" }}>
+            <b>{params.row.TON_CD2.toLocaleString("en", "US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "TON_CD3",
+      headerName: "TCD3",
+      width: 80,
+      renderCell: (params: any) => {
+        return (
+          <span style={{ color: "red" }}>
+            <b>{params.row.TON_CD3.toLocaleString("en", "US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "TON_CD4",
+      headerName: "TCD4",
+      width: 80,
+      renderCell: (params: any) => {
+        return (
+          <span style={{ color: "red" }}>
+            <b>{params.row.TON_CD4.toLocaleString("en", "US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "INSPECT_BALANCE",
+      type: "number",
+      headerName: "TỒN KIỂM",
+      width: 80,
+      renderCell: (params: any) => {
+        return (
+          <span style={{ color: "#cc0099" }}>
+            <b>{params.row.INSPECT_BALANCE.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "EQ1",
+      headerName: "EQ1",
+      width: 80,
+      renderCell: (params: any) => {
+        return <span style={{ color: "black" }}>{params.row.EQ1}</span>;
+      },
+    },
+    {
+      field: "EQ2",
+      headerName: "EQ2",
+      width: 80,
+      renderCell: (params: any) => {
+        return <span style={{ color: "black" }}>{params.row.EQ2}</span>;
+      },
+    },
+    {
+      field: "EQ3",
+      headerName: "EQ3",
+      width: 80,
+      renderCell: (params: any) => {
+        return <span style={{ color: "black" }}>{params.row.EQ3}</span>;
+      },
+    },
+    {
+      field: "EQ4",
+      headerName: "EQ4",
+      width: 80,
+      renderCell: (params: any) => {
+        return <span style={{ color: "black" }}>{params.row.EQ4}</span>;
+      },
+    },
+    {
+      field: "SHORTAGE_YCSX",
+      type: "number",
+      headerName: "TỒN YCSX",
+      width: 80,
+      renderCell: (params: any) => {
+        return (
+          <span style={{ color: "blue" }}>
+            <b>{params.row.SHORTAGE_YCSX.toLocaleString("en-US")}</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "PHAN_LOAI",
+      headerName: "PHAN_LOAI",
+      width: 80,
+      renderCell: (params: any) => {
+        if (params.row.PHAN_LOAI === "01")
+          return (
+            <span style={{ color: "black" }}>
+              <b>Thông thường</b>
+            </span>
+          );
+        else if (params.row.PHAN_LOAI === "02")
+          return (
+            <span style={{ color: "black" }}>
+              <b>SDI</b>
+            </span>
+          );
+        else if (params.row.PHAN_LOAI === "03")
+          return (
+            <span style={{ color: "black" }}>
+              <b>GC</b>
+            </span>
+          );
+        else if (params.row.PHAN_LOAI === "04")
+          return (
+            <span style={{ color: "black" }}>
+              <b>SAMPLE</b>
+            </span>
+          );
+      },
+    },
+    { field: "PL_HANG", headerName: "PL_HANG", width: 120 },
+    { field: "REMARK", headerName: "REMARK", width: 120 },
+    {
+      field: "PDUYET",
+      headerName: "PDUYET",
+      width: 80,
+      renderCell: (params: any) => {
+        if (params.row.PDUYET === 1)
+          return (
+            <span style={{ color: "green" }}>
+              <b>Đã Duyệt</b>
+            </span>
+          );
+        else
+          return (
+            <span style={{ color: "red" }}>
+              <b>Không Duyệt</b>
+            </span>
+          );
+      },
+    },
+    {
+      field: "BANVE",
+      headerName: "BANVE",
+      width: 260,
+      renderCell: (params: any) => {
+        let file: any = null;
+        const uploadFile2 = async (e: any) => {
+          //console.log(file);
+          checkBP(userData, ['KD', 'RND'], ['ALL'], ['ALL'], async () => {
+            uploadQuery(file, params.row.G_CODE + ".pdf", "banve")
+              .then((response) => {
+                if (response.data.tk_status !== "NG") {
+                  generalQuery("update_banve_value", {
+                    G_CODE: params.row.G_CODE,
+                    banvevalue: "Y",
+                  })
+                    .then((response) => {
+                      if (response.data.tk_status !== "NG") {
+                        Swal.fire(
+                          "Thông báo",
+                          "Upload bản vẽ thành công",
+                          "success"
+                        );
+                        let tempcodeinfodatatable = ycsxdatatable.map(
+                          (element: YCSXTableData, index) => {
+                            return element.G_CODE === params.row.G_CODE
+                              ? { ...element, BANVE: "Y" }
+                              : element;
+                          }
+                        );
+                        setYcsxDataTable(tempcodeinfodatatable);
+                      } else {
+                        Swal.fire(
+                          "Thông báo",
+                          "Upload bản vẽ thất bại",
+                          "error"
+                        );
+                      }
+                    })
+                    .catch((error) => {
+                      console.log(error);
+                    });
+                } else {
+                  Swal.fire(
+                    "Thông báo",
+                    "Upload file thất bại:" + response.data.message,
+                    "error"
+                  );
+                }
+              })
+              .catch((error) => {
+                console.log(error);
+              });
+          })
+        };
+        let hreftlink = "/banve/" + params.row.G_CODE + ".pdf";
+        if (params.row.BANVE !== "N" && params.row.BANVE !== null) {
+          return (
+            <span style={{ color: "gray" }}>
+              <a target='_blank' rel='noopener noreferrer' href={hreftlink}>
+                LINK
+              </a>
+            </span>
+          );
+        } else {
+          return (
+            <div className='uploadfile'>
+              <IconButton className='buttonIcon' onClick={uploadFile2}>
+                <AiOutlineCloudUpload color='yellow' size={15} />
+                Upload
+              </IconButton>
+              <input
+                accept='.pdf'
+                type='file'
+                onChange={(e: any) => {
+                  file = e.target.files[0];
+                  console.log(file);
+                }}
+              />
+            </div>
+          );
+        }
+      },
+    },
+    {
+      field: "PDBV",
+      headerName: "PD BANVE",
+      width: 80,
+      renderCell: (params: any) => {
+        if (params.row.PDBV === "P" || params.row.PDBV === null)
+          return (
+            <span style={{ color: "red" }}>
+              <b>PENDING</b>
+            </span>
+          );
+        return (
+          <span style={{ color: "green" }}>
+            <b>APPROVED</b>
+          </span>
+        );
+      },
+    },
+    {
+      field: "",
+      headerName: "G_NAME",
+      width: 250,
+      renderCell: (params: any) => {
+        if (params.row.PDBV === "P" || params.row.PDBV === null)
+          return <span style={{ color: "red" }}>{params.row.G_NAME}</span>;
+        return <span style={{ color: "green" }}>{params.row.G_NAME}</span>;
+      },
+    },
+    {
+      field: "YCSX_PENDING",
+      headerName: "YCSX_PENDING",
+      width: 80,
+      renderCell: (params: any) => {
+        if (params.row.YCSX_PENDING === 1)
+          return (
+            <span style={{ color: "red" }}>
+              <b>PENDING</b>
+            </span>
+          );
+        else
+          return (
+            <span style={{ color: "green" }}>
+              <b>CLOSED</b>
+            </span>
+          );
+      },
+    },
+    { field: "EMPL_NAME", headerName: "PIC KD", width: 150 },
   ];
   const column_plandatatable = [
     {

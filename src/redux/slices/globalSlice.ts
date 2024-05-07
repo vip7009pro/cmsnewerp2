@@ -11,7 +11,9 @@ import {
   UserData,
   WEB_SETTING_DATA,
 } from "../../api/GlobalInterface";
+
 const startCPN: string = "CMS";
+
 console.log("protocol", window.location.protocol);
 const protocol = window.location.protocol.startsWith("https")
   ? "https"
