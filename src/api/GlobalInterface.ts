@@ -408,6 +408,8 @@ export interface YCSXTableData {
   G_WIDTH?: number;
   G_LENGTH?: number;
   PROD_PRINT_TIMES?: number;
+  G_C?: number;
+  G_C_R?: number
 }
 export interface UploadAmazonData {
   G_CODE?: string;

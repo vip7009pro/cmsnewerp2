@@ -790,9 +790,11 @@ const MACHINE = () => {
       },
     },
     
-    { field: "G_WIDTH", headerName: "G_WIDTH", width: 120 },
-    { field: "G_LENGTH", headerName: "G_LENGTH", width: 120 },
-    { field: "PROD_PRINT_TIMES", headerName: "PRINT_TIMES", width: 120 },
+    { field: "G_WIDTH", headerName: "WIDTH", width: 60 },
+    { field: "G_LENGTH", headerName: "LENGTH", width: 60 },
+    { field: "G_C", headerName: "CVT_C", width: 60 },
+    { field: "G_C_R", headerName: "CVT_R", width: 60 },
+    { field: "PROD_PRINT_TIMES", headerName: "SL_IN", width: 60 },
     { field: "CUST_NAME_KD", headerName: "KHÁCH", width: 120 },
     {
       field: "PROD_REQUEST_NO", headerName: "SỐ YCSX", width: 80, renderCell: (params: any) => {

@@ -58,7 +58,7 @@ const TINHLIEU = () => {
   };
   const load_material_table = (option: string) => {
     if (option === 'PO') {
-      generalQuery(getCompany ()=='CMS' ?"loadMaterialByPO" : "loadMaterialByYCSX", formdata)
+      generalQuery(getCompany() == 'CMS' ? "loadMaterialByPO" : "loadMaterialByYCSX", formdata)
         .then((response) => {
           //console.log(response.data.data);
           if (response.data.tk_status !== "NG") {
@@ -83,14 +83,14 @@ const TINHLIEU = () => {
                 cellRender: (ele: any) => {
                   //console.log(ele);
                   if (['M_NAME', 'id'].indexOf(e) > -1) {
-                    return <span style={{fontWeight:'bold'}}>{ele.data[e]}</span>;
+                    return <span style={{ fontWeight: 'bold' }}>{ele.data[e]}</span>;
                   }
-                  else if (["PO_QTY","DELIVERY_QTY","PO_BALANCE"].indexOf(e)>-1) {
+                  else if (["PO_QTY", "DELIVERY_QTY", "PO_BALANCE"].indexOf(e) > -1) {
                     return <span style={{ color: "#F633EA", fontWeight: "normal" }}>
                       {ele.data[e]?.toLocaleString("en-US",)}
                     </span>
                   }
-                  else if (["NEED_M_QTY"].indexOf(e)>-1) {
+                  else if (["NEED_M_QTY"].indexOf(e) > -1) {
                     return <span style={{ color: "#2300e9", fontWeight: "bold" }}>
                       {ele.data[e]?.toLocaleString("en-US",)}
                     </span>
@@ -104,7 +104,6 @@ const TINHLIEU = () => {
               };
             });
             setColumns(column_map);
-
             Swal.fire(
               "Thông báo",
               "Đã load: " + response.data.data.length + " dòng",
@@ -121,16 +120,16 @@ const TINHLIEU = () => {
         });
     }
     else if (option === 'ALL') {
-      generalQuery(getCompany ()=='CMS' ?"loadMaterialMRPALL":"loadMaterialByYCSX_ALL", formdata)
+      generalQuery(getCompany() == 'CMS' ? "loadMaterialMRPALL" : "loadMaterialByYCSX_ALL", formdata)
         .then((response) => {
           //console.log(response.data.data);
           if (response.data.tk_status !== "NG") {
             let loadeddata = response.data.data.map(
               (element: MaterialPOSumData, index: number) => {
                 return {
-                  ...element,     
-                  NEED_M_QTY: Number(element.NEED_M_QTY),             
-                  M_SHORTAGE: Number(element.M_SHORTAGE),             
+                  ...element,
+                  NEED_M_QTY: Number(element.NEED_M_QTY),
+                  M_SHORTAGE: Number(element.M_SHORTAGE),
                   id: index,
                 };
               },
@@ -147,14 +146,14 @@ const TINHLIEU = () => {
                 cellRender: (ele: any) => {
                   //console.log(ele);
                   if (['M_NAME', 'id'].indexOf(e) > -1) {
-                    return <span style={{fontWeight:'bold'}}>{ele.data[e]}</span>;
+                    return <span style={{ fontWeight: 'bold' }}>{ele.data[e]}</span>;
                   }
-                  else if (["STOCK_M","HOLDING_M","NEED_M_QTY"].indexOf(e)>-1) {
+                  else if (["STOCK_M", "HOLDING_M", "NEED_M_QTY"].indexOf(e) > -1) {
                     return <span style={{ color: "#6e21ff", fontWeight: "normal" }}>
                       {ele.data[e]?.toLocaleString("en-US",)}
                     </span>
                   }
-                  else if (["M_SHORTAGE"].indexOf(e)>-1) {
+                  else if (["M_SHORTAGE"].indexOf(e) > -1) {
                     return <span style={{ color: "#ff0000", fontWeight: "bold" }}>
                       {ele.data[e]?.toLocaleString("en-US",)}
                     </span>
@@ -262,7 +261,7 @@ const TINHLIEU = () => {
               infoText="Page #{0}. Total: {1} ({2} items)"
               displayMode="compact"
             />
-            {columns.map((column, index) => {              
+            {columns.map((column, index) => {
               return <Column key={index} {...column}></Column>;
             })}
             <Summary>
@@ -277,7 +276,7 @@ const TINHLIEU = () => {
         </CustomResponsiveContainer>
       </div>
     ),
-    [currentTable,columns],
+    [currentTable, columns],
   );
   const dataSource = new PivotGridDataSource({
     fields: [
@@ -923,7 +922,7 @@ const TINHLIEU = () => {
       <div className="tracuuDataInspection">
         <div className="tracuuDataInspectionform">
           <div className="forminput">
-           {/*  <div className="forminputcolumn">
+            {/*  <div className="forminputcolumn">
               <label>
                 <b>Mã Vật Liệu:</b>{" "}
                 <input
@@ -942,14 +941,12 @@ const TINHLIEU = () => {
                   onChange={(e) => setFormInfo("M_NAME", e.target.value)}
                 ></input>
               </label>
-
             </div> */}
-             <div className="forminputcolumn">
+            <div className="forminputcolumn">
               <label>
                 <b>Từ ngày:</b>
                 <input
                   onKeyDown={(e) => {
-                   
                   }}
                   type="date"
                   value={formdata.FROM_DATE.slice(0, 10)}
@@ -960,28 +957,25 @@ const TINHLIEU = () => {
                 <b>Tới ngày:</b>{" "}
                 <input
                   onKeyDown={(e) => {
-                    
                   }}
                   type="date"
                   value={formdata.TO_DATE.slice(0, 10)}
-                  onChange={(e) =>  setFormInfo("TO_DATE", e.target.value)}
+                  onChange={(e) => setFormInfo("TO_DATE", e.target.value)}
                 ></input>
               </label>
               <label>
-              <b>All Time:</b>
-              <input
-                onKeyDown={(e) => {
-                  
-                }}
-                type="checkbox"
-                name="alltimecheckbox"
-                defaultChecked={formdata.ALLTIME}
-                onChange={() =>  setFormInfo("ALLTIME", !formdata.ALLTIME)}
-              ></input>
-            </label>
+                <b>All Time:</b>
+                <input
+                  onKeyDown={(e) => {
+                  }}
+                  type="checkbox"
+                  name="alltimecheckbox"
+                  defaultChecked={formdata.ALLTIME}
+                  onChange={() => setFormInfo("ALLTIME", !formdata.ALLTIME)}
+                ></input>
+              </label>
             </div>
-
-            <div className="forminputcolumn" style={{ display: 'flex', flexDirection: 'row' , alignItems: 'flex-start' }}>
+            <div className="forminputcolumn" style={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-start' }}>
               <label>
                 <FormControlLabel
                   label="Chỉ liệu thiếu"
@@ -1019,10 +1013,10 @@ const TINHLIEU = () => {
           <div className="formbutton">
             <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#129232' }} onClick={() => {
               load_material_table('PO');
-            }}>MRP PO</Button>
+            }}>MRP DETAIL</Button>
             <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#f05bd7' }} onClick={() => {
               load_material_table('ALL');
-            }}>MRP TOTAL</Button>
+            }}>MRP SUMMARY</Button>
           </div>
         </div>
         <div className="tracuuYCSXTable">{materialDataTable}</div>
