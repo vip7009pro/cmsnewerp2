@@ -707,7 +707,11 @@ const YCSXManager = () => {
       },
     },
     { field: "CUST_NAME_KD", headerName: "KHÁCH", width: 120 },
-    { field: "EMPL_NAME", headerName: "PIC KD", width: 150 },
+    { field: "G_WIDTH", headerName: "WIDTH", width: 60 },
+    { field: "G_LENGTH", headerName: "LENGTH", width: 60 },
+    { field: "G_C", headerName: "CVT_C", width: 60 },
+    { field: "G_C_R", headerName: "CVT_R", width: 60 },
+    { field: "PROD_PRINT_TIMES", headerName: "SL_IN", width: 60 },    
     {
       field: "PROD_REQUEST_NO", headerName: "SỐ YCSX", width: 80, renderCell: (params: any) => {
         if (params.row.DACHITHI === null) {
@@ -1017,6 +1021,7 @@ const YCSXManager = () => {
         );
       },
     },
+    { field: "EMPL_NAME", headerName: "PIC KD", width: 150 },    
   ];
   const column_excel2 = [
     { field: "id", headerName: "id", width: 180 },
