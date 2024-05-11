@@ -1990,32 +1990,45 @@ const YCSXManager = () => {
         .then((response) => {
           //console.log(response.data.tk_status);
           if (response.data.tk_status !== "NG") {
-            console.log(response.data.data);
-            if (response.data.data[0].USE_YN === "Y") {
-              //tempjson[i].CHECKSTATUS = "OK";
-            } else {
-              //tempjson[i].CHECKSTATUS = "NG: Ver này đã bị khóa";
+            //console.log(response.data.data);
+            if (response.data.data[0].USE_YN === "Y") {             
+            } else {              
               err_code = 3;
             }
-          } else {
-            //tempjson[i].CHECKSTATUS = "NG: Không có Code ERP này";
+          } else {           
             err_code = 4;
           }
         })
         .catch((error) => {
           console.log(error);
         });
+      
+        if(uploadExcelJson[i].CODE_50=== undefined) err_code = 5;
+        if(uploadExcelJson[i].CODE_55=== undefined) err_code = 6;
+        if(customerList.filter((ele: CustomerListData,index: number)=> ele.CUST_CD ===uploadExcelJson[i].CUST_CD).length ===0) err_code= 7;
+        if(codeList.filter((ele: CodeListData,index: number)=> ele.G_CODE ===uploadExcelJson[i].G_CODE).length =0)  err_code= 8;
+        if(uploadExcelJson[i].PHANLOAI=== undefined) err_code = 9;      
+        
       if (err_code === 0) {
         tempjson[i].CHECKSTATUS = "OK";
       } else if (err_code === 1) {
         tempjson[i].CHECKSTATUS = "NG: Đã tồn tại PO";
       } else if (err_code === 2) {
-        tempjson[i].CHECKSTATUS =
-          "NG: Ngày giao hàng dự kiến không được trước ngày hôm nay";
+        tempjson[i].CHECKSTATUS = "NG: Ngày giao hàng dự kiến không được trước ngày hôm nay";
       } else if (err_code === 3) {
         tempjson[i].CHECKSTATUS = "NG: Ver này đã bị khóa";
       } else if (err_code === 4) {
         tempjson[i].CHECKSTATUS = "NG: Không có Code ERP này";
+      } else if (err_code === 5) {
+        tempjson[i].CHECKSTATUS = "NG: Chưa nhập phân loại xuất hàng";
+      } else if (err_code === 6) {
+        tempjson[i].CHECKSTATUS = "NG: Chưa nhập phân loại sản xuất";
+      } else if (err_code === 7) {
+        tempjson[i].CHECKSTATUS = "NG: Mã khách hàng không tồn tại";
+      } else if (err_code === 8) {
+        tempjson[i].CHECKSTATUS = "NG: Mã sản phẩm G_CODE không tồn tại";
+      } else if (err_code === 9) {
+        tempjson[i].CHECKSTATUS = "NG: Chưa nhập phân loại sản phẩm";
       }
     }
     setisLoading(false);
@@ -2047,9 +2060,15 @@ const YCSXManager = () => {
         })
         .catch((error) => {
           console.log(error);
-        });
-      if (err_code === 0) {
-        console.log("vao den day");
+      });
+      if(uploadExcelJson[i].CODE_50=== undefined) err_code = 5;
+      if(uploadExcelJson[i].CODE_55=== undefined) err_code = 6;
+      if(customerList.filter((ele: CustomerListData,index: number)=> ele.CUST_CD ===uploadExcelJson[i].CUST_CD).length =0)  err_code= 7;
+      if(codeList.filter((ele: CodeListData,index: number)=> ele.G_CODE ===uploadExcelJson[i].G_CODE).length =0)  err_code= 8;
+      if(uploadExcelJson[i].PHANLOAI=== undefined) err_code = 9;
+      
+
+      if (err_code === 0) {       
         let err_code1: number = 0;
         let last_prod_request_no: string = "";
         let next_prod_request_no: string = "";
@@ -2342,6 +2361,16 @@ const YCSXManager = () => {
         tempjson[i].CHECKSTATUS = "NG: Ver này đã bị khóa";
       } else if (err_code === 4) {
         tempjson[i].CHECKSTATUS = "NG: Không có Code ERP này";
+      } else if (err_code === 5) {
+        tempjson[i].CHECKSTATUS = "NG: Chưa nhập phân loại xuất hàng";
+      } else if (err_code === 6) {
+        tempjson[i].CHECKSTATUS = "NG: Chưa nhập phân loại sản xuất";
+      } else if (err_code === 7) {
+        tempjson[i].CHECKSTATUS = "NG: Mã khách hàng không tồn tại";
+      } else if (err_code === 8) {
+        tempjson[i].CHECKSTATUS = "NG: Mã sản phẩm G_CODE không tồn tại";
+      } else if (err_code === 9) {
+        tempjson[i].CHECKSTATUS = "NG: Chưa nhập phân loại sản phẩm";
       }
     }
     setisLoading(false);
